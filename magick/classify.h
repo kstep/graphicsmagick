@@ -23,8 +23,13 @@ typedef enum
 {
   UndefinedChannel,
   RedChannel,
+  CyanChannel,
   GreenChannel,
+  MagentaChannel,
   BlueChannel,
+  YellowChannel,
+  OpacityChannel,
+  BlackChannel,
   MatteChannel
 } ChannelType;
 

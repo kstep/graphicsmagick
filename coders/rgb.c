@@ -104,6 +104,9 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     i,
     x;
 
+  register PixelPacket
+    *q;
+
   size_t
     count;
 
@@ -171,7 +174,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           if ((y > 0) || (image->previous == (Image *) NULL))
             (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-          if (!SetImagePixels(image,0,y,image->columns,1))
+          q=SetImagePixels(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
             break;
           if (!image->matte)
             (void) PushImagePixels(image,RGBQuantum,scanline+x);
@@ -200,7 +204,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           if ((y > 0) || (image->previous == (Image *) NULL))
             (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-          if (!SetImagePixels(image,0,y,image->columns,1))
+          q=SetImagePixels(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
             break;
           (void) PushImagePixels(image,RedQuantum,scanline+x);
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
@@ -249,7 +254,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           if ((y > 0) || (image->previous == (Image *) NULL))
             (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-          if (!SetImagePixels(image,0,y,image->columns,1))
+          q=SetImagePixels(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
             break;
           (void) PushImagePixels(image,RedQuantum,scanline+x);
           if (!SyncImagePixels(image))
@@ -275,7 +281,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (y=0; y < (long) image->rows; y++)
         {
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-          if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
+          q=GetImagePixels(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
             break;
           (void) PushImagePixels(image,GreenQuantum,scanline+x);
           if (!SyncImagePixels(image))
@@ -301,7 +308,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (y=0; y < (long) image->rows; y++)
         {
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-          if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
+          q=GetImagePixels(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
             break;
           (void) PushImagePixels(image,BlueQuantum,scanline+x);
           if (!SyncImagePixels(image))
@@ -335,7 +343,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               (void) ReadBlob(image,packet_size*image->tile_info.width,
                 scanline);
-              if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
+              q=GetImagePixels(image,0,y,image->columns,1);
+              if (q == (PixelPacket *) NULL)
                 break;
               (void) PushImagePixels(image,AlphaQuantum,scanline+x);
               if (!SyncImagePixels(image))
@@ -363,6 +372,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
+    if (image_info->interlace == PartitionInterlace)
+      break;
     count=ReadBlob(image,packet_size*image->tile_info.width,scanline);
     if (count != 0)
       {

@@ -106,6 +106,9 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
     i,
     x;
 
+  register PixelPacket
+    *q;
+
   size_t
     count;
 
@@ -174,7 +177,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         {
           if ((y > 0) || (image->previous == (Image *) NULL))
             (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-          if (!SetImagePixels(image,0,y,image->columns,1))
+          q=SetImagePixels(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
             break;
           if (!image->matte)
             (void) PushImagePixels(image,CMYKQuantum,scanline+x);
@@ -203,7 +207,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         {
           if ((y > 0) || (image->previous == (Image *) NULL))
             (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-          if (!SetImagePixels(image,0,y,image->columns,1))
+          q=SetImagePixels(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
             break;
           (void) PushImagePixels(image,CyanQuantum,scanline+x);
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
@@ -254,7 +259,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         {
           if ((y > 0) || (image->previous == (Image *) NULL))
             (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-          if (!SetImagePixels(image,0,y,image->columns,1))
+          q=SetImagePixels(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
             break;
           (void) PushImagePixels(image,CyanQuantum,scanline+x);
           if (!SyncImagePixels(image))
@@ -280,7 +286,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         for (y=0; y < (long) image->rows; y++)
         {
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-          if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
+          q=GetImagePixels(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
             break;
           (void) PushImagePixels(image,MagentaQuantum,scanline+x);
           if (!SyncImagePixels(image))
@@ -306,7 +313,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         for (y=0; y < (long) image->rows; y++)
         {
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-          if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
+          q=GetImagePixels(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
             break;
           (void) PushImagePixels(image,YellowQuantum,scanline+x);
           if (!SyncImagePixels(image))
@@ -332,7 +340,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         for (y=0; y < (long) image->rows; y++)
         {
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-          if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
+          q=GetImagePixels(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
             break;
           (void) PushImagePixels(image,BlackQuantum,scanline+x);
           if (!SyncImagePixels(image))
@@ -366,7 +375,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             {
               (void) ReadBlob(image,packet_size*image->tile_info.width,
                 scanline);
-              if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
+              q=GetImagePixels(image,0,y,image->columns,1);
+              if (q == (PixelPacket *) NULL)
                 break;
               (void) PushImagePixels(image,AlphaQuantum,scanline+x);
               if (!SyncImagePixels(image))
@@ -394,6 +404,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
+    if (image_info->interlace == PartitionInterlace)
+      break;
     count=ReadBlob(image,packet_size*image->tile_info.width,scanline);
     if (count != 0)
       {
@@ -558,7 +570,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
     /*
       Convert MIFF to CMYK raster pixels.
     */
-    (void) TransformRGBImage(image,CMYKColorspace);
+    (void) RGBTransformImage(image,CMYKColorspace);
     if (LocaleCompare(image_info->magick,"CMYKA") == 0)
       if (!image->matte)
         SetImageOpacity(image,OpaqueOpacity);

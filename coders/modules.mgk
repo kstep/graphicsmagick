@@ -14,6 +14,14 @@
   <module name="URL" alias="FTP"/>
   <module name="FAX" alias="G3"/>
   <module name="GIF" alias="GIF87"/>
+  <module name="GRAY" alias="R"/>
+  <module name="GRAY" alias="C"/>
+  <module name="GRAY" alias="G"/>
+  <module name="GRAY" alias="M"/>
+  <module name="GRAY" alias="B"/>
+  <module name="GRAY" alias="Y"/>
+  <module name="GRAY" alias="O"/>
+  <module name="GRAY" alias="K"/>
   <module name="LOGO" alias="GRANITE"/>
   <module name="LOGO" alias="H"/>
   <module name="HDF" alias="H5"/>

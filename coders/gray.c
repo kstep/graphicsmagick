@@ -107,6 +107,9 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
     i,
     x;
 
+  register PixelPacket
+    *q;
+
   size_t
     count;
 
@@ -160,7 +163,8 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
     {
       if ((y > 0) || (image->previous == (Image *) NULL))
         (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-      if (!SetImagePixels(image,0,y,image->columns,1))
+      q=SetImagePixels(image,0,y,image->columns,1);
+      if (q == (PixelPacket *) NULL)
         break;
       (void) PushImagePixels(image,GrayQuantum,scanline+x);
       if (!SyncImagePixels(image))
@@ -236,6 +240,70 @@ ModuleExport void RegisterGRAYImage(void)
   entry->encoder=WriteGRAYImage;
   entry->raw=True;
   entry->description=AllocateString("Raw gray bytes");
+  entry->module=AllocateString("GRAY");
+  (void) RegisterMagickInfo(entry);
+  entry=SetMagickInfo("R");
+  entry->decoder=ReadGRAYImage;
+  entry->encoder=WriteGRAYImage;
+  entry->stealth=True;
+  entry->raw=True;
+  entry->description=AllocateString("Raw red bytes");
+  entry->module=AllocateString("GRAY");
+  (void) RegisterMagickInfo(entry);
+  entry=SetMagickInfo("C");
+  entry->decoder=ReadGRAYImage;
+  entry->encoder=WriteGRAYImage;
+  entry->stealth=True;
+  entry->raw=True;
+  entry->description=AllocateString("Raw cyan bytes");
+  entry->module=AllocateString("GRAY");
+  (void) RegisterMagickInfo(entry);
+  entry=SetMagickInfo("G");
+  entry->decoder=ReadGRAYImage;
+  entry->encoder=WriteGRAYImage;
+  entry->stealth=True;
+  entry->raw=True;
+  entry->description=AllocateString("Raw green bytes");
+  entry->module=AllocateString("GRAY");
+  (void) RegisterMagickInfo(entry);
+  entry=SetMagickInfo("M");
+  entry->decoder=ReadGRAYImage;
+  entry->encoder=WriteGRAYImage;
+  entry->stealth=True;
+  entry->raw=True;
+  entry->description=AllocateString("Raw magenta bytes");
+  entry->module=AllocateString("GRAY");
+  (void) RegisterMagickInfo(entry);
+  entry=SetMagickInfo("B");
+  entry->decoder=ReadGRAYImage;
+  entry->encoder=WriteGRAYImage;
+  entry->stealth=True;
+  entry->raw=True;
+  entry->description=AllocateString("Raw blue bytes");
+  entry->module=AllocateString("GRAY");
+  (void) RegisterMagickInfo(entry);
+  entry=SetMagickInfo("Y");
+  entry->decoder=ReadGRAYImage;
+  entry->encoder=WriteGRAYImage;
+  entry->stealth=True;
+  entry->raw=True;
+  entry->description=AllocateString("Raw yellow bytes");
+  entry->module=AllocateString("GRAY");
+  (void) RegisterMagickInfo(entry);
+  entry=SetMagickInfo("O");
+  entry->decoder=ReadGRAYImage;
+  entry->encoder=WriteGRAYImage;
+  entry->stealth=True;
+  entry->raw=True;
+  entry->description=AllocateString("Raw opacity bytes");
+  entry->module=AllocateString("GRAY");
+  (void) RegisterMagickInfo(entry);
+  entry=SetMagickInfo("K");
+  entry->decoder=ReadGRAYImage;
+  entry->encoder=WriteGRAYImage;
+  entry->stealth=True;
+  entry->raw=True;
+  entry->description=AllocateString("Raw black bytes");
   entry->module=AllocateString("GRAY");
   (void) RegisterMagickInfo(entry);
 }

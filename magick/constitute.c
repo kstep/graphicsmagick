@@ -1236,7 +1236,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
       break;
     }
     case GreenQuantum:
-    case YellowQuantum:
+    case MagentaQuantum:
     {
       if (image->depth <= 8)
         {
@@ -1256,7 +1256,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
       break;
     }
     case BlueQuantum:
-    case MagentaQuantum:
+    case YellowQuantum:
     {
       if (image->depth <= 8)
         {
@@ -1319,15 +1319,15 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            *q++=DownScale(MaxRGB-p->opacity);
+            *q++=DownScale(p->opacity);
             p++;
           }
           break;
         }
       for (x=0; x < (long) image->columns; x++)
       {
-        *q++=(MaxRGB-p->opacity) >> 8;
-        *q++=MaxRGB-p->opacity;
+        *q++=(p->opacity) >> 8;
+        *q++=p->opacity;
         p++;
       }
       break;
@@ -1634,7 +1634,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
       break;
     }
     case GreenQuantum:
-    case YellowQuantum:
+    case MagentaQuantum:
     {
       if (image->depth <= 8)
         {
@@ -1654,7 +1654,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
       break;
     }
     case BlueQuantum:
-    case MagentaQuantum:
+    case YellowQuantum:
     {
       if (image->depth <= 8)
         {

@@ -737,6 +737,9 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
   long
     y;
 
+  register IndexPacket
+    *indexes;
+
   register long
     x;
 
@@ -745,9 +748,6 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if ((channel == MatteChannel) && !image->matte)
-    ThrowBinaryException(OptionWarning,"Unable to extract channel",
-      "image does not have a matte channel");
   /*
     Channel DirectClass packets.
   */
@@ -757,28 +757,43 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexes(image);
     for (x=0; x < (long) image->columns; x++)
     {
       switch (channel)
       {
         case RedChannel:
+        case CyanChannel:
         {
           q->green=q->red;
           q->blue=q->red;
           break;
         }
         case GreenChannel:
+        case MagentaChannel:
         {
           q->red=q->green;
           q->blue=q->green;
           break;
         }
         case BlueChannel:
+        case YellowChannel:
         {
           q->red=q->blue;
           q->green=q->blue;
           break;
         }
+        case OpacityChannel:
+        {
+          if (image->colorspace == CMYKColorspace)
+            {
+              q->red=indexes[x];
+              q->green=indexes[x];
+              q->blue=indexes[x];
+              break;
+            }
+        }
+        case BlackChannel:
         case MatteChannel:
         default:
         {
@@ -3464,10 +3479,20 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                 option=argv[++i];
                 if (LocaleCompare("Red",option) == 0)
                   channel=RedChannel;
+                if (LocaleCompare("Cyan",option) == 0)
+                  channel=CyanChannel;
                 if (LocaleCompare("Green",option) == 0)
                   channel=GreenChannel;
+                if (LocaleCompare("Magenta",option) == 0)
+                  channel=MagentaChannel;
                 if (LocaleCompare("Blue",option) == 0)
                   channel=BlueChannel;
+                if (LocaleCompare("Yellow",option) == 0)
+                  channel=YellowChannel;
+                if (LocaleCompare("Opacity",option) == 0)
+                  channel=OpacityChannel;
+                if (LocaleCompare("Black",option) == 0)
+                  channel=BlackChannel;
                 if (LocaleCompare("Matte",option) == 0)
                   channel=MatteChannel;
               }
@@ -5229,6 +5254,8 @@ MagickExport unsigned int RGBTransformImage(Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  if (image->colorspace == colorspace)
+    return;
   if ((colorspace == RGBColorspace) || (colorspace == TransparentColorspace))
     return(True);
   if (colorspace == CMYKColorspace)
@@ -5259,11 +5286,6 @@ MagickExport unsigned int RGBTransformImage(Image *image,
           magenta=MaxRGB-q->green;
           yellow=MaxRGB-q->blue;
           black=cyan < magenta ? Min(cyan,yellow) : Min(magenta,yellow);
-          black=cyan;
-          if (magenta < black)
-            black=magenta;
-          if (yellow < black)
-            black=yellow;
           q->red=(Quantum) cyan;
           q->green=(Quantum) magenta;
           q->blue=(Quantum) yellow;
@@ -6487,6 +6509,8 @@ MagickExport unsigned int TransformRGBImage(Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  if (image->colorspace == colorspace)
+    return(True);
   if ((image->colorspace == CMYKColorspace) && (colorspace == RGBColorspace))
     {
       IndexPacket
@@ -6507,7 +6531,6 @@ MagickExport unsigned int TransformRGBImage(Image *image,
           q->green=(unsigned long)
             ((MaxRGB-q->green)*(MaxRGB-q->opacity))/MaxRGB;
           q->blue=(unsigned long) ((MaxRGB-q->blue)*(MaxRGB-q->opacity))/MaxRGB;
-          if (image->matte)
           q->opacity=image->matte ? indexes[x] : OpaqueOpacity;
           q++;
         }

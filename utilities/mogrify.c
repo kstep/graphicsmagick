@@ -63,7 +63,7 @@
 %    -bordercolor color   border color
 %    -box color           color for annotation bounding box
 %    -cache threshold     megabytes of memory available to the pixel cache
-%    -channel type        Red, Green, Blue, Matte
+%    -channel type        extract a particular color chanell from image
 %    -charcoal radius     simulate a charcoal drawing
 %    -colorize value      colorize the image with the fill color
 %    -colors value        preferred number of colors in the image
@@ -192,7 +192,7 @@ static void Usage(void)
       "-bordercolor color   border color",
       "-box color           color for annotation bounding box",
       "-cache threshold     megabytes of memory available to the pixel cache",
-      "-channel type        Red, Green, Blue, Matte",
+      "-channel type        extract a particular color chanell from image",
       "-charcoal radius     simulate a charcoal drawing",
       "-colorize value      colorize the image with the fill color",
       "-colors value        preferred number of colors in the image",
@@ -484,14 +484,24 @@ int main(int argc,char **argv)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
                   channel=UndefinedChannel;
-                  if (LocaleCompare("Red",option) == 0)
-                    channel=RedChannel;
-                  if (LocaleCompare("Green",option) == 0)
-                    channel=GreenChannel;
-                  if (LocaleCompare("Blue",option) == 0)
-                    channel=BlueChannel;
-                  if (LocaleCompare("Matte",option) == 0)
-                    channel=MatteChannel;
+                 if (LocaleCompare("Red",option) == 0)
+                   channel=RedChannel;
+                 if (LocaleCompare("Cyan",option) == 0)
+                   channel=CyanChannel;
+                 if (LocaleCompare("Green",option) == 0)
+                   channel=GreenChannel;
+                 if (LocaleCompare("Magenta",option) == 0)
+                   channel=MagentaChannel;
+                 if (LocaleCompare("Blue",option) == 0)
+                   channel=BlueChannel;
+                 if (LocaleCompare("Yellow",option) == 0)
+                   channel=YellowChannel;
+                 if (LocaleCompare("Opacity",option) == 0)
+                   channel=OpacityChannel;
+                 if (LocaleCompare("Black",option) == 0)
+                   channel=BlackChannel;
+                 if (LocaleCompare("Matte",option) == 0)
+                   channel=MatteChannel;
                   if (channel == UndefinedChannel)
                     MagickError(OptionError,"Invalid channel type",option);
                 }
