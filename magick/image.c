@@ -262,6 +262,7 @@ MagickExport unsigned int AllocateImageColormap(Image *image,
     image->colormap[i].red=((unsigned long) (MaxRGB*i)/Max(colors-1,1));
     image->colormap[i].green=((unsigned long) (MaxRGB*i)/Max(colors-1,1));
     image->colormap[i].blue=((unsigned long) (MaxRGB*i)/Max(colors-1,1));
+    image->colormap[i].opacity=OpaqueOpacity;
   }
   return(True);
 }
