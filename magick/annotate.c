@@ -521,13 +521,13 @@ static unsigned short *ConvertTextToUnicode(const char *text,size_t *count)
 %  GetTypeMetrics() returns the following information for the specified font
 %  and text:
 %
-%    o character width, expressed in integer pixels
-%    o character height, expressed in integer pixels
-%    o ascent, expressed in 26.6 fixed point pixels
-%    o descent, expressed in 26.6 fixed point pixels
-%    o text width, expressed in 26.6 fixed point pixels
-%    o text height, expressed in 26.6 fixed point pixels
-%    o maximum horizontal advance, expressed in 26.6 fixed point pixels
+%    o character width
+%    o character height
+%    o ascent
+%    o descent
+%    o text width
+%    o text height
+%    o maximum horizontal advance
 %
 %  The format of the GetTypeMetrics method is:
 %
