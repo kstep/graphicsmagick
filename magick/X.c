@@ -547,7 +547,7 @@ Export XFontStruct *XBestFont(Display *display,
   p=Fonts;
   if (text_font)
     p=TextFonts;
-  if (XDisplayHeight(display,XDefaultScreen(display)) >= 768)
+  if (XDisplayHeight(display,XDefaultScreen(display)) >= 748)
     p++;
   while (*p != (char *) NULL)
   {
@@ -1620,6 +1620,10 @@ Export void XDisplayImageInfo(Display *display,
   else
     (void) strcat(text,"  shared memory: False\n");
   (void) strcat(text,"\n");
+  if (resource_info->font != (char *) NULL)
+    FormatString(text,"%sFont: %.128s\n\n",text,resource_info->font);
+  if (resource_info->text_font != (char *) NULL)
+    FormatString(text,"%sText font: %.128s\n\n",text,resource_info->text_font);
   /*
     Display info about the undo image cache.
   */

@@ -4821,6 +4821,7 @@ Export void GetImageInfo(ImageInfo *image_info)
   *image_info->filename='\0';
   *image_info->magick='\0';
   image_info->affirm=False;
+  image_info->temporary=False;
   image_info->subimage=0;
   image_info->subrange=0;
   image_info->server_name=(char *) NULL;
@@ -9340,8 +9341,8 @@ Export void SetImageInfo(ImageInfo *image_info,unsigned int rectify)
   char
     magick[MaxTextExtent];
 
-  FILE
-    *file;
+  Image
+    image;
 
   register char
     *p,
@@ -9389,14 +9390,14 @@ Export void SetImageInfo(ImageInfo *image_info,unsigned int rectify)
       image_info->subrange-=image_info->subimage-1;
       break;
     }
-  while ((*p != '.') && (p > image_info->filename))
+  while ((*p != '.') && (p > (image_info->filename+1)))
     p--;
   if ((Latin1Compare(p,".gz") == 0) || (Latin1Compare(p,".Z") == 0) ||
       (Latin1Compare(p,".bz2") == 0))
     do
     {
       p--;
-    } while ((*p != '.') && (p > image_info->filename));
+    } while ((*p != '.') && (p > (image_info->filename+1)));
   if ((*p == '.') && (Extent(p) < sizeof(magick)))
     {
       /*
@@ -9447,10 +9448,13 @@ Export void SetImageInfo(ImageInfo *image_info,unsigned int rectify)
           p++;
           (void) strcpy(image_info->filename,p);
           if (Latin1Compare(magick,"IMPLICIT") != 0)
-            (void) strcpy(image_info->magick,magick);
-          if ((Latin1Compare(magick,"IMPLICIT") != 0) &&
-              (Latin1Compare(magick,"TMP") != 0))
-            image_info->affirm=True;
+            {
+              (void) strcpy(image_info->magick,magick);
+              if (Latin1Compare(magick,"TMP") != 0)
+                image_info->affirm=True;
+              else
+                image_info->temporary=True;
+            }
         }
     }
   if (rectify)
@@ -9475,14 +9479,46 @@ Export void SetImageInfo(ImageInfo *image_info,unsigned int rectify)
     }
   if (image_info->affirm)
     return;
-  file=fopen(image_info->filename,ReadBinaryType);
-  if (file == (FILE *) NULL)
-    return;
   /*
     Determine the image format from the first few bytes of the file.
   */
-  (void) ReadData(magick,1,MaxTextExtent,file);
-  (void) fclose(file);
+  (void) strcpy(image.filename,image_info->filename);
+  OpenImage(image_info,&image,ReadBinaryType);
+  if (image.file == (FILE *) NULL)
+    return;
+  if (!image.exempt)
+    (void) ReadData(magick,1,MaxTextExtent,image.file);
+  else
+    {
+      FILE
+        *file;
+
+      register int
+        c,
+        i;
+
+      /*
+        Copy standard input or pipe to temporary file.
+      */
+      TemporaryFilename(image.filename);
+      image_info->temporary=True;
+      FormatString(image_info->filename,"%s",image.filename);
+      file=fopen(image.filename,WriteBinaryType);
+      if (file == (FILE *) NULL)
+        {
+          MagickWarning(FileOpenWarning,"Unable to write file",image.filename);
+          return;
+        }
+      i=0;
+      for (c=fgetc(image.file); c != EOF; c=fgetc(image.file))
+      {
+        if (i < MaxTextExtent)
+          magick[i++]=c;
+        (void) putc(c,file);
+      }
+      (void) fclose(file);
+    }
+  (void) fclose(image.file);
   magick[MaxTextExtent-1]='\0';
   if (strncmp(magick,"BM",2) == 0)
     (void) strcpy(image_info->magick,"BMP");

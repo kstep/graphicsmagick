@@ -4344,9 +4344,9 @@ Export void XFileBrowserWidget(Display *display,XWindows *windows,char *action,
 
             special_info.text=FormatButtonText;
             p=reply+Extent(reply)-1;
-            while ((p > reply) && (*(p-1) != '.'))
+            while ((p > (reply+1)) && (*(p-1) != '.'))
               p--;
-            if ((p > reply) && (*(p-1) == '.'))
+            if ((p > (reply+1)) && (*(p-1) == '.'))
               (void) strcpy(format,p);
           }
         XGetWidgetInfo(UpButtonText,&up_info);

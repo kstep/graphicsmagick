@@ -6657,9 +6657,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       image_info.preview_type=(PreviewType) (i+1);
       image_info.group=windows->image.id;
       LabelImage(*image,"Preview");
-      (void) strcpy((*image)->magick,"PREVIEW");
       TemporaryFilename((*image)->filename);
-      status=WriteImage(&image_info,*image);
+      status=WritePREVIEWImage(&image_info,*image);
       (void) strcpy((*image)->magick,"SHOW");
       status=WriteImage(&image_info,*image);
       if (status)
@@ -6678,9 +6677,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       image_info.group=windows->image.id;
       LabelImage(*image,"Histogram");
-      (void) strcpy((*image)->magick,"HISTOGRAM");
       TemporaryFilename((*image)->filename);
-      status=WriteImage(&image_info,*image);
+      status=WriteHISTOGRAMImage(&image_info,*image);
       (void) strcpy((*image)->magick,"SHOW");
       status=WriteImage(&image_info,*image);
       if (status)
@@ -6705,9 +6703,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       image_info.group=windows->image.id;
       LabelImage(*image,"Matte");
-      (void) strcpy((*image)->magick,"MATTE");
       TemporaryFilename((*image)->filename);
-      status=WriteImage(&image_info,*image);
+      status=WriteMATTEImage(&image_info,*image);
       (void) strcpy((*image)->magick,"SHOW");
       status=WriteImage(&image_info,*image);
       if (status)

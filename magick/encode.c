@@ -2848,7 +2848,7 @@ unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
         Determine image map filename.
       */
       (void) strcpy(image->filename,filename);
-      for (p=filename+Extent(filename)-1; p > filename; p--)
+      for (p=filename+Extent(filename)-1; p > (filename+1); p--)
         if (*p == '.')
           {
             (void) strncpy(image->filename,filename,p-filename);
@@ -3702,6 +3702,73 @@ unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
     (int) packets,image->file);
   CloseImage(image);
   return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e M A T T E I m a g e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Function WriteMATTEImage writes an image of matte bytes to a file.  It
+%  consists of data from the matte component of the image [0..255].
+%
+%  The format of the WriteMATTEImage routine is:
+%
+%      status=WriteMATTEImage(image_info,image)
+%
+%  A description of each parameter follows.
+%
+%    o status: Function WriteMATTEImage return True if the image is written.
+%      False is returned is there is a memory shortage or if the image file
+%      fails to write.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%    o image:  A pointer to a Image structure.
+%
+%
+*/
+unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
+{
+  Image
+    *matte_image;
+
+  register int
+    i;
+
+  unsigned int
+    status;
+
+  if (!image->matte)
+    PrematureExit(ResourceLimitWarning,"Image does not have a matte channel",
+      image);
+  image->orphan=True;
+  matte_image=CloneImage(image,image->columns,image->rows,True);
+  image->orphan=False;
+  if (matte_image == (Image *) NULL)
+    PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
+  matte_image->class=PseudoClass;
+  matte_image->colors=(Opaque-Transparent)+1;
+  matte_image->colormap=(ColorPacket *)
+    malloc(matte_image->colors*sizeof(ColorPacket));
+  if (matte_image->colormap == (ColorPacket *) NULL)
+    PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
+  for (i=Transparent; i <= Opaque; i++)
+  {
+    matte_image->colormap[i].red=i;
+    matte_image->colormap[i].green=i;
+    matte_image->colormap[i].blue=i;
+  }
+  SyncImage(matte_image);
+  status=WriteMIFFImage(image_info,matte_image);
+  DestroyImage(matte_image);
+  return(status);
 }
 
 /*
@@ -7891,7 +7958,7 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,
     images[i]->previous=images[i-1];
     images[i-1]->next=images[i];
   }
-  (void) strcpy(montage_info.filename,image_info->filename);
+  (void) strcpy(montage_info.filename,image->filename);
   montage_image=XMontageImages(&resource_info,&montage_info,*images);
   for (i=0;  i < i; i++)
     DestroyImage(images[i]);

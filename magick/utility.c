@@ -101,7 +101,7 @@ Export void AppendImageFormat(const char *format,char *filename)
       return;
     }
   p=filename+Extent(filename)-1;
-  while ((p > filename) && !IsBasenameSeparator(*p))
+  while ((p > (filename+1)) && !IsBasenameSeparator(*p))
   {
     if (*(p-1) == '.')
       {

@@ -457,12 +457,16 @@ Export void SignatureImage(Image *image)
   char
     *hex;
 
+  int
+    i;
+
   MessageDigest
     message_digest;
 
   register int
-    i,
-    j;
+    runlength,
+    x,
+    y;
 
   register RunlengthPacket
     *p;
@@ -485,7 +489,8 @@ Export void SignatureImage(Image *image)
   if (image->signature != (char *) NULL)
     FreeMemory((char *) image->signature);
   image->signature=(char *) AllocateMemory(33*sizeof(char));
-  message=(unsigned char *) AllocateMemory((MaxRGB+1)*sizeof(RunlengthPacket));
+  message=(unsigned char *)
+    AllocateMemory(image->columns*sizeof(RunlengthPacket));
   if ((image->signature == (char *) NULL) ||
       (message == (unsigned char *) NULL))
     {
@@ -498,11 +503,22 @@ Export void SignatureImage(Image *image)
   */
   InitializeMessageDigest(&message_digest);
   p=image->pixels;
-  for (i=0; i < image->packets; i++)
+  runlength=p->length+1;
+  for (y=0; y < image->rows; y++)
   {
+    /*
+      Read a scan line.
+    */
     q=message;
-    for (j=0; j <= ((int) p->length); j++)
+    for (x=0; x < image->columns; x++)
     {
+      if (runlength != 0)
+        runlength--;
+      else
+        {
+          p++;
+          runlength=p->length;
+        }
       WriteQuantum(p->red,q);
       WriteQuantum(p->green,q);
       WriteQuantum(p->blue,q);
@@ -510,7 +526,6 @@ Export void SignatureImage(Image *image)
         WriteQuantum(p->index,q);
     }
     UpdateMessageDigest(&message_digest,message,q-message);
-    p++;
   }
   ComputeMessageDigest(&message_digest);
   FreeMemory((char *) message);

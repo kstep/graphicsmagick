@@ -17553,15 +17553,11 @@ Export Image *ReadImage(ImageInfo *image_info)
   register char
     *p;
 
-  unsigned int
-    temporary;
-
   /*
     Determine image type from filename prefix or suffix (e.g. image.jpg).
   */
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->filename != (char *) NULL);
-  temporary=False;
   SetImageInfo(image_info,False);
   if (GetDelegateInfo(image_info->magick,(char *) NULL,&delegate_info))
     {
@@ -17580,7 +17576,7 @@ Export Image *ReadImage(ImageInfo *image_info)
       status=InvokeDelegate(image_info,image,image_info->magick,(char *) NULL);
       DestroyImages(image);
       if (status == False)
-        temporary=True;
+        image_info->temporary=True;
       SetImageInfo(image_info,False);
     }
   /*
@@ -17594,9 +17590,10 @@ Export Image *ReadImage(ImageInfo *image_info)
   else
     MagickWarning(MissingDelegateWarning,"no delegate for this image format",
       image_info->magick);
-  if (temporary)
+  if (image_info->temporary)
     {
       (void) remove(image_info->filename);
+      image_info->temporary=False;
       if (image != (Image *) NULL)
         (void) strcpy(image->filename,filename);
     }

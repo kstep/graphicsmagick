@@ -1365,7 +1365,7 @@ int main(int argc,char **argv)
               Modify filename to include a user specified image format.
             */
             p=image->filename+Extent(image->filename)-1;
-            while ((*p != '.') && (p > image->filename))
+            while ((*p != '.') && (p > (image->filename+1)))
               p--;
             p++;
             if (Latin1Compare(p,image->magick) == 0)

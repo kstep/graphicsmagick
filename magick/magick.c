@@ -157,6 +157,7 @@ static MagickInfo
     { "LOGO", ReadLOGOImage, WriteLOGOImage, False, "ImageMagick Logo" },
     { "MAP", ReadMAPImage, WriteMAPImage, False,
       "Colormap intensities and indices" },
+    { "MATTE", ReadMIFFImage, WriteMATTEImage, True, "Matte format" },
     { "MNG", ReadPNGImage, WritePNGImage, True,
       "Multiple-image Network Graphics" },
     { "MONO", ReadMONOImage, WriteMONOImage, False,

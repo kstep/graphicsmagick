@@ -369,6 +369,7 @@ typedef struct _ImageInfo
 
   unsigned int
     affirm,
+    temporary,
     subimage,
     subrange;
 
@@ -833,6 +834,7 @@ extern Export unsigned int
   WriteJPEGImage(const ImageInfo *image_info,Image *image),
   WriteLOGOImage(const ImageInfo *image_info,Image *image),
   WriteMAPImage(const ImageInfo *image_info,Image *image),
+  WriteMATTEImage(const ImageInfo *image_info,Image *image),
   WriteMIFFImage(const ImageInfo *image_info,Image *image),
   WriteMONOImage(const ImageInfo *image_info,Image *image),
   WriteMTVImage(const ImageInfo *image_info,Image *image),
