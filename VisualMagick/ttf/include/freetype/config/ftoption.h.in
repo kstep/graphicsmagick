@@ -20,6 +20,11 @@
 #define FTOPTION_H
 
 
+#ifdef __cplusplus
+  extern "C" {
+#endif
+
+
   /*************************************************************************/
   /*                                                                       */
   /*                 USER-SELECTABLE CONFIGURATION MACROS                  */
@@ -150,34 +155,34 @@
   /*   declarations.                                                       */
   /*                                                                       */
   /*   Two macros are used within the FreeType source code to define       */
-  /*   exported library functions: FT_EXPORT_DEF and FT_EXPORT_FUNC.       */
+  /*   exported library functions: FT_EXPORT and FT_EXPORT_DEF.            */
   /*                                                                       */
-  /*     FT_EXPORT_DEF( return_type )                                      */
+  /*     FT_EXPORT( return_type )                                          */
   /*                                                                       */
   /*       is used in a function declaration, as in                        */
   /*                                                                       */
-  /*         FT_EXPORT_DEF( FT_Error )                                     */
+  /*         FT_EXPORT( FT_Error )                                         */
   /*         FT_Init_FreeType( FT_Library*  alibrary );                    */
   /*                                                                       */
   /*                                                                       */
-  /*     FT_EXPORT_FUNC( return_type )                                     */
+  /*     FT_EXPORT_DEF( return_type )                                      */
   /*                                                                       */
   /*       is used in a function definition, as in                         */
   /*                                                                       */
-  /*         FT_EXPORT_FUNC( FT_Error )                                    */
+  /*         FT_EXPORT_DEF( FT_Error )                                     */
   /*         FT_Init_FreeType( FT_Library*  alibrary )                     */
   /*         {                                                             */
   /*           ... some code ...                                           */
   /*           return FT_Err_Ok;                                           */
   /*         }                                                             */
   /*                                                                       */
-  /*   You can provide your own implementation of FT_EXPORT_DEF and        */
-  /*   FT_EXPORT_FUNC here if you want.  If you leave them undefined, they */
+  /*   You can provide your own implementation of FT_EXPORT and            */
+  /*   FT_EXPORT_DEF here if you want.  If you leave them undefined, they  */
   /*   will be later automatically defined as `extern return_type' to      */
   /*   allow normal compilation.                                           */
   /*                                                                       */
+#undef FT_EXPORT
 #undef FT_EXPORT_DEF
-#undef FT_EXPORT_FUNC
 
 #if defined(_VISUALC_)
 #ifndef  FT_EXPORT_DEF
@@ -188,14 +193,14 @@
 #		pragma warning( disable: 4273 )	/* Disable the stupid dll linkage warnings */
 #		if !defined(_TTFLIB_)
 #     define FT_EXPORT_DEF( x ) __declspec(dllimport) x
-#     define FT_EXPORT_FUNC( x ) __declspec(dllimport) x
+#     define FT_EXPORT( x ) __declspec(dllimport) x
 #		else
 #     define FT_EXPORT_DEF( x ) __declspec(dllexport) x
-#     define FT_EXPORT_FUNC( x ) __declspec(dllexport) x
+#     define FT_EXPORT( x ) __declspec(dllexport) x
 #		endif
 #	else
 #   define FT_EXPORT_DEF( x ) extern x
-#   define FT_EXPORT_FUNC( x ) extern x
+#   define FT_EXPORT( x ) extern x
 #	endif
 
 #pragma warning(disable : 4018)
@@ -214,9 +219,6 @@
 
 #endif
 
-
-
-
   /*************************************************************************/
   /*                                                                       */
   /* Debug level                                                           */
@@ -231,8 +233,8 @@
   /*                                                                       */
   /*   Don't define any of these macros to compile in `release' mode!      */
   /*                                                                       */
-#define FT_DEBUG_LEVEL_ERROR
-#define FT_DEBUG_LEVEL_TRACE
+#undef  FT_DEBUG_LEVEL_ERROR
+#undef  FT_DEBUG_LEVEL_TRACE
 
 
   /*************************************************************************/
@@ -252,7 +254,7 @@
   /*                                                                       */
   /* This must be greater than 4kByte.                                     */
   /*                                                                       */
-#define FT_RENDER_POOL_SIZE  16384
+#define FT_RENDER_POOL_SIZE  32768
 
 
   /*************************************************************************/
@@ -369,14 +371,6 @@
 
   /*************************************************************************/
   /*                                                                       */
-  /* T1_MAX_STACK_DEPTH is the maximal depth of the token stack used by    */
-  /* the Type 1 parser (see t1load.c).  A minimum of 16 is required.       */
-  /*                                                                       */
-#define T1_MAX_STACK_DEPTH  16
-
-
-  /*************************************************************************/
-  /*                                                                       */
   /* T1_MAX_DICT_DEPTH is the maximal depth of nest dictionaries and       */
   /* arrays in the Type 1 stream (see t1load.c).  A minimum of 4 is        */
   /* required.                                                             */
@@ -389,14 +383,17 @@
   /* T1_MAX_SUBRS_CALLS details the maximum number of nested sub-routine   */
   /* calls during glyph loading.                                           */
   /*                                                                       */
-#define T1_MAX_SUBRS_CALLS  8
+#define T1_MAX_SUBRS_CALLS  16
 
 
   /*************************************************************************/
   /*                                                                       */
-  /* T1_MAX_CHARSTRING_OPERANDS is the charstring stack's capacity.        */
+  /* T1_MAX_CHARSTRING_OPERANDS is the charstring stack's capacity.  A     */
+  /* minimum of 16 is required.                                            */
   /*                                                                       */
-#define T1_MAX_CHARSTRINGS_OPERANDS  32
+  /* The Chinese font MingTiEG-Medium (CNS 11643 character set) needs 256. */
+  /*                                                                       */
+#define T1_MAX_CHARSTRINGS_OPERANDS  256
 
 
   /*************************************************************************/
@@ -424,6 +421,11 @@
   /* driver.                                                               */
   /*                                                                       */
 #undef T1_CONFIG_OPTION_NO_MM_SUPPORT
+
+
+#ifdef __cplusplus
+  }
+#endif
 
 
 #endif /* FTOPTION_H */

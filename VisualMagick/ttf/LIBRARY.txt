@@ -68,4 +68,14 @@ EXCLUDE = z1objs.c
 EXCLUDE = z1parse.c
 #
 EXCLUDE = type1z.c
+#
+EXCLUDE = psauxmod.c
+EXCLUDE = psobjs.c
+EXCLUDE = t1decode.c
+#
+EXCLUDE = ftraster.c
+EXCLUDE = ftrend1.c
+#
+EXCLUDE = ftmac.c
+EXCLUDE = ftmac.h
 
