@@ -723,7 +723,6 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
           break;
       }
     }
-  image->depth=8;
   /*
     Compute the character per pixel.
   */
