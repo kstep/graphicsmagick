@@ -1550,7 +1550,7 @@ static void WriteOneChannel( Image* image, Image* tmp_image,
       p=AcquireImagePixels(tmp_image,0,y,tmp_image->columns,1,&image->exception);
       if (p == (const PixelPacket *) NULL)
         break;
-      (void) ExportImagePixelArea(tmp_image,whichQuantum,quantum_size,pixels);
+      (void) ExportImagePixelArea(tmp_image,whichQuantum,quantum_size,pixels,0);
       (void) WriteBlob(image,packet_size*tmp_image->columns,pixels);
     }
 }

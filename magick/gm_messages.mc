@@ -137,6 +137,12 @@ default warning
 .
 
 MessageId       = +1
+SymbolicName    = CoderErrorColormapTooLarge
+Language        = English
+Colormap size exceeds limit
+.
+
+MessageId       = +1
 SymbolicName    = CoderErrorColormapTypeNotSupported
 Language        = English
 Colormap type not supported

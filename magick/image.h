@@ -153,6 +153,13 @@ typedef unsigned int Quantum;
 */
 typedef enum
 {
+  UnspecifiedAlpha,
+  AssociatedAlpha,
+  UnassociatedAlpha
+} AlphaType;
+
+typedef enum
+{
   UndefinedChannel,
   RedChannel,
   CyanChannel,
@@ -477,15 +484,6 @@ typedef struct _PixelPacket
     blue,
     opacity;
 #else
-#if defined(macintosh)
-  /* ARGB (as used by MacOS) */
-#define MAGICK_PIXELS_ARGB 1
-  Quantum
-    opacity,
-    red,
-    green,
-    blue;
-#else
   /* BGRA (as used by Microsoft Windows DIB) */
 #define MAGICK_PIXELS_BGRA 1
   Quantum
@@ -493,7 +491,6 @@ typedef struct _PixelPacket
     green,
     red,
     opacity;
-#endif
 #endif
 } PixelPacket;
 
@@ -670,7 +667,7 @@ typedef struct _Image
 
   unsigned int
     dither,             /* True if image is to be dithered */
-    matte;              /* True if image has an opacity channel */ 
+    matte;              /* True if image has an opacity (alpha) channel */ 
 
   unsigned long
     columns,            /* Number of image columns */
@@ -808,6 +805,9 @@ typedef struct _Image
   /*
     Only private members appear past this point
   */
+
+  AlphaType
+    alpha_type;         /* Alpha channel handling */
 
   ProfileInfo
     color_profile,      /* ICC color profile */

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003, 2004 GraphicsMagick Group
+  Copyright (C) 2003, 2004, 2005 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
  
   This program is covered by multiple licenses, which are described in
@@ -15,38 +15,74 @@
 extern "C" {
 #endif /* defined(__cplusplus) || defined(c_plusplus) */
 
+/*
+  Quantum import/export types as used by ImportImagePixelArea() and
+  ExportImagePixelArea(). Values are imported or exported in network
+  byte order.
+*/
 typedef enum
 {
-  UndefinedQuantum,
-  IndexQuantum,
-  GrayQuantum,
-  IndexAlphaQuantum,
-  GrayAlphaQuantum,
-  RedQuantum,
-  CyanQuantum,
-  GreenQuantum,
-  YellowQuantum,
-  BlueQuantum,
-  MagentaQuantum,
-  AlphaQuantum,
-  BlackQuantum,
-  RGBQuantum,
-  RGBAQuantum,
-  CMYKQuantum,
-  CMYKAQuantum,
-  GrayInvertedQuantum,
-  GrayInvertedAlphaQuantum
+  UndefinedQuantum,  /* Not specified */
+  IndexQuantum,      /* Colormap indexes */
+  GrayQuantum,       /* Grayscale values (minimum value is black) */
+  IndexAlphaQuantum, /* Colormap indexes with transparency */
+  GrayAlphaQuantum,  /* Grayscale values with transparency */
+  RedQuantum,        /* Red values only (RGBA) */
+  CyanQuantum,       /* Cyan values only (CMYKA) */
+  GreenQuantum,      /* Green values only (RGBA) */
+  YellowQuantum,     /* Yellow values only (CMYKA) */
+  BlueQuantum,       /* Blue values only (RGBA) */
+  MagentaQuantum,    /* Magenta values only (CMYKA) */
+  AlphaQuantum,      /* Transparency values (RGBA or CMYKA) */
+  BlackQuantum,      /* Black values only (CMYKA) */
+  RGBQuantum,        /* Red, green, and blue values */
+  RGBAQuantum,       /* Red, green, blue, and transparency values */
+  CMYKQuantum,       /* Cyan, magenta, yellow, and black values */
+  CMYKAQuantum       /* Cyan, magenta, yellow, black, and transparency values */
 } QuantumType;
 
+/*
+  Quantum size types as used by ConstituteImage() and DispatchImage()/
+*/
 typedef enum
 {
-  CharPixel,
-  ShortPixel,
-  IntegerPixel,
-  LongPixel,
-  FloatPixel,
-  DoublePixel
+  CharPixel,         /* Unsigned 8 bit 'unsigned char' */
+  ShortPixel,        /* Unsigned 16 bit 'unsigned short int' */
+  IntegerPixel,      /* Unsigned 32 bit 'unsigned int' */
+  LongPixel,         /* Unsigned 32 or 64 bit (CPU dependent) 'unsigned long' */
+  FloatPixel,        /* Floating point 32-bit 'float' */
+  DoublePixel        /* Floating point 64-bit 'double' */
 } StorageType;
+
+/*
+  Additional options for ExportImagePixelArea()
+*/
+typedef struct _ExportPixelAreaOptions
+{
+  AlphaType
+    alpha_type;         /* Alpha channel handling */
+
+  MagickBool
+    grayscale_inverted; /* Grayscale is inverted (minimum value is white) */
+
+  unsigned long
+  signature;
+} ExportPixelAreaOptions;
+
+/*
+  Additional options for ImportImagePixelArea()
+*/
+typedef struct _ImportPixelAreaOptions
+{
+  AlphaType
+    alpha_type;         /* Alpha channel handling */
+
+  MagickBool
+    grayscale_inverted; /* Grayscale is inverted (minimum value is white) */
+
+  unsigned long
+    signature;
+} ImportPixelAreaOptions;
 
 extern MagickExport Image
   *ConstituteImage(const unsigned long width,const unsigned long height,
@@ -62,17 +98,21 @@ MagickExport MagickPassFail
     const unsigned long columns,const unsigned long rows,const char *map,
     const StorageType type,void *pixels,ExceptionInfo *exception),
   ExportImagePixelArea(const Image *image,const QuantumType quantum_type,
-    const unsigned int quantum_size,unsigned char *destination);
+    const unsigned int quantum_size,unsigned char *destination,
+    const ExportPixelAreaOptions *options);
 
 extern MagickExport MagickPassFail
   ImportImagePixelArea(Image *image,const QuantumType quantum_type,
-    const unsigned int quantum_size,const unsigned char *source),
+    const unsigned int quantum_size,const unsigned char *source,
+    const ImportPixelAreaOptions *options),
   WriteImage(const ImageInfo *image_info,Image *image),
   WriteImages(const ImageInfo *image_info,Image *image,const char *filename,
     ExceptionInfo *exception);
 
 extern MagickExport void
-  DestroyConstitute(void);
+  DestroyConstitute(void),
+  ExportPixelAreaOptionsInit(ExportPixelAreaOptions *options),
+  ImportPixelAreaOptionsInit(ImportPixelAreaOptions *options);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

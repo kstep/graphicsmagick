@@ -867,6 +867,7 @@ static MagickPassFail RenderType(Image *image,const DrawInfo *draw_info,
 %
 */
 
+#if 0
 static inline PixelPacket AlphaComposite(const PixelPacket *p,
   const double alpha,const PixelPacket *q,const double beta)
 {
@@ -889,6 +890,7 @@ static inline PixelPacket AlphaComposite(const PixelPacket *p,
     (MaxRGB-(MaxRGB_alpha+alpha*MaxRGB_beta/MaxRGB)+0.5);
   return(composite);
 }
+#endif
 
 #if defined(HasTTF)
 static int TraceCubicBezier(FT_Vector *p,FT_Vector *q,FT_Vector *to,

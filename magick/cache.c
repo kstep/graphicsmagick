@@ -494,10 +494,21 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AcquireImagePixels() acquires pixels from the in-memory or disk pixel cache
-%  as defined by the geometry parameters.   A pointer to the pixel is returned
-%  if the pixels are transferred, otherwise a NULL is returned.  If you plan
-%  to modify the pixels, use GetImagePixels() instead.
+%  AcquireImagePixels() obtains a pixel region for read-only access. If the
+%  region is successfully accessed, a pointer to it is returned, otherwise
+%  NULL is returned. The returned pointer may point to a temporary working
+%  copy of the pixels or it may point to the original pixels in memory.
+%  Performance is maximized if the selected area is part of one row, or one
+%  or more full rows, since then there is opportunity to access the pixels
+%  in-place (without a copy) if the image is in RAM, or in a memory-mapped
+%  file. The returned pointer should *never* be deallocated by the user.
+%
+%  Pixels accessed via the returned pointer represent a simple array of type
+%  PixelPacket. If the image storage class is PsudeoClass, call GetIndexes()
+%  after invoking GetImagePixels() to obtain the colormap indexes (of type
+%  IndexPacket) corresponding to the region.
+%
+%  If you plan to modify the pixels, use GetImagePixels() instead.
 %
 %  The format of the AcquireImagePixels() method is:
 %
@@ -593,7 +604,8 @@ static const PixelPacket *AcquirePixelCache(const Image *image,const long x,
 %
 %  AcquireOnePixel() returns a single pixel at the specified (x,y) location.
 %  The image background color is returned if an error occurs.  If you plan to
-%  modify the pixel, use GetOnePixel() instead.
+%  modify the pixel, use GetOnePixel() instead. This function is convenient
+%  but performance will be poor if it is used too often.
 %
 %  The format of the AcquireOnePixel() method is:
 %
@@ -1416,9 +1428,21 @@ MagickExport PixelPacket *GetCacheNexus(Image *image,const long x,const long y,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImagePixels() gets pixels from the in-memory or disk pixel cache as
-%  defined by the geometry parameters.   A pointer to the pixels is returned
-%  if the pixels are transferred, otherwise a NULL is returned.
+%  GetImagePixels() obtains a pixel region for read/write access. If the
+%  region is successfully accessed, a pointer to it is returned, otherwise
+%  NULL is returned. The returned pointer may point to a temporary working
+%  copy of the pixels or it may point to the original pixels in memory.
+%  Performance is maximized if the selected area is part of one row, or one
+%  or more full rows, since then there is opportunity to access the pixels
+%  in-place (without a copy) if the image is in RAM, or in a memory-mapped
+%  file. The returned pointer should *never* be deallocated by the user.
+%
+%  Pixels accessed via the returned pointer represent a simple array of type
+%  PixelPacket. If the image storage class is PsudeoClass, call GetIndexes()
+%  after invoking GetImagePixels() to obtain the colormap indexes (of type
+%  IndexPacket) corresponding to the region.  Once the PixelPacket (and/or
+%  IndexPacket) array has been updated, the changes must be saved back to
+%  the underlying image using SyncPixelCache() or they may be lost.
 %
 %  The format of the GetImagePixels() method is:
 %
@@ -1448,6 +1472,7 @@ MagickExport PixelPacket *GetImagePixels(Image *image,const long x,const long y,
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
+  /* printf("GetImagePixels %ldx%ld+%ld+%ld\n",columns,rows,x,y); */
   if (cache_info->methods.get_pixel_handler == (GetPixelHandler) NULL)
     return((PixelPacket *) NULL);
   return(cache_info->methods.get_pixel_handler(image,x,y,columns,rows));
@@ -1502,8 +1527,9 @@ MagickExport VirtualPixelMethod GetImageVirtualPixelMethod(const Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetIndexes() returns the indexes associated with the last call to
-%  SetImagePixels() or GetImagePixels().
+%  GetIndexes() returns the colormap indexes associated with the last call to
+%  SetImagePixels() or GetImagePixels(). NULL is returned if colormap indexes
+%  are not available.
 %
 %  The format of the GetIndexes() method is:
 %
@@ -1720,7 +1746,8 @@ MagickExport PixelPacket *GetNexusPixels(const Cache cache,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetOnePixel() returns a single pixel at the specified (x,y) location.
-%  The image background color is returned if an error occurs.
+%  The image background color is returned if an error occurs.  This function
+%  is convenient but performance will be poor if it is used too often.
 %
 %  The format of the GetOnePixel() method is:
 %
@@ -1803,7 +1830,8 @@ static PixelPacket GetOnePixelFromCache(Image *image,const long x,const long y)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetPixels() returns the pixels associated with the last call to
-%  SetImagePixels() or GetImagePixels().
+%  SetImagePixels() or GetImagePixels(). This is useful in order to access
+%  an already selected region without passing the geometry of the region.
 %
 %  The format of the GetPixels() method is:
 %
@@ -2662,6 +2690,7 @@ static unsigned int ReadCachePixels(const Cache cache,const unsigned long nexus)
     rows;
 
   assert(cache != (Cache *) NULL);
+  /* printf("ReadCachePixels\n"); */
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
   nexus_info=cache_info->nexus_info+nexus;
@@ -2847,11 +2876,22 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetImagePixels() allocates an area to store image pixels as defined by the
-%  region rectangle and returns a pointer to the area.  This area is
-%  subsequently transferred from the pixel cache with SyncImagePixels().  A
-%  pointer to the pixels is returned if the pixels are transferred, otherwise
-%  a NULL is returned.
+%  SetImagePixels() initializes a pixel region for write-only access. If the
+%  region is successfully intialized a pointer to it is returned, otherwise
+%  NULL is returned. The returned pointer may point to a temporary working
+%  buffer for the pixels or it may point to the final location of the pixels
+%  in memory. Performance is maximized if the selected area is part of one
+%  row, or one or more full rows, since then there is opportunity to access
+%  the pixels in-place (without a copy) if the image is in RAM, or in a
+%  memory-mapped file. The returned pointer should *never* be deallocated
+%  by the user.
+%
+%  Pixels accessed via the returned pointer represent a simple array of type
+%  PixelPacket. If the image storage class is PsudeoClass, call GetIndexes()
+%  after invoking GetImagePixels() to obtain the colormap indexes (of type
+%  IndexPacket) corresponding to the region.  Once the PixelPacket (and/or
+%  IndexPacket) array has been updated, the changes must be saved back to
+%  the underlying image using SyncPixelCache() or they may be lost.
 %
 %  The format of the SetImagePixels() method is:
 %
@@ -2879,6 +2919,7 @@ MagickExport PixelPacket *SetImagePixels(Image *image,const long x,const long y,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (Cache) NULL);
+  /* printf("SetImagePixels %ldx%ld+%ld+%ld\n",columns,rows,x,y); */
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   if (cache_info->methods.set_pixel_handler == (SetPixelHandler) NULL)
@@ -3312,11 +3353,12 @@ MagickExport unsigned int SyncImagePixels(Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  SyncPixelCache() saves the image pixels to the in-memory or disk cache.
-%  The method returns True if the pixel region is synced, otherwise False.
+%  The method returns MagickPass if the pixel region is synced, otherwise
+%  MagickFail.
 %
 %  The format of the SyncPixelCache() method is:
 %
-%      unsigned int SyncPixelCache(Image *image)
+%      MagickPassFail SyncPixelCache(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -3324,7 +3366,7 @@ MagickExport unsigned int SyncImagePixels(Image *image)
 %
 %
 */
-static unsigned int SyncPixelCache(Image *image)
+static MagickPassFail SyncPixelCache(Image *image)
 {
   return(SyncCacheNexus(image,0));
 }

@@ -993,6 +993,28 @@ imagemask operator instead of the image operator.
 
 .in 15
 .in 15
+.B "tiff:alpha={unspecified|associated|unassociated}"
+.in 20
+ \fR
+.in 20
+
+Specify the TIFF alpha channel type when reading or writing TIFF files,
+overriding the normal value. The default alpha channel type for new files
+is associated alpha. Existing alpha settings are preserved when
+converting from one TIFF file to another. When a TIFF file uses
+associated alpha, the image pixels are pre-multiplied (i.e. altered) with
+the alpha channel. Files with "associated" alpha appear as if they were
+alpha composited on a black background when the matte channel is
+disabled. If the unassociated alpha type is selected, then the alpha
+channel is saved without altering the pixels. Photoshop recognizes
+associated alpha as transparency information, if the file is saves with
+unassociated alpha, the alpha information is loaded as an independent
+channel.  Note that for many years, ImageMagick and GraphicsMagick marked
+TIFF files as using associated alpha, without properly pre-multiplying
+the pixels.
+
+.in 15
+.in 15
 .B "tiff:bits-per-sample=<value>"
 .in 20
  \fR

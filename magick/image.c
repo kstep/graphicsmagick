@@ -1070,6 +1070,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->matte_color=image->matte_color;
   clone_image->gamma=image->gamma;
   clone_image->chromaticity=image->chromaticity;
+  clone_image->alpha_type=image->alpha_type;
   if (image->color_profile.length != 0)
     {
       /*
@@ -5960,7 +5961,9 @@ MagickExport MagickPassFail SyncImage(Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  TextureImage() repeatedly tiles the texture image across and down the image
-%  canvas. False is returned if an error is encountered.
+%  canvas. If the image canvas includes a matte channel, then the tile is
+%  alpha-composited "under" the image. MagickFail is returned if an error is
+%  encountered.
 %
 %  The format of the TextureImage method is:
 %
@@ -5998,6 +6001,9 @@ MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
   MagickPassFail
     status=MagickPass;
 
+  MagickBool
+    is_grayscale;
+
   unsigned long
     width;
 
@@ -6008,44 +6014,67 @@ MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
   assert(image->signature == MagickSignature);
   if (texture == (const Image *) NULL)
     return MagickFail;
+  is_grayscale=image->is_grayscale;
   image->storage_class=DirectClass;
   for (y=0; y < (long) image->rows; y++)
-  {
-    p=AcquireImagePixels(texture,0,y % texture->rows,texture->columns,1,
-      &image->exception);
-    q=GetImagePixels(image,0,y,image->columns,1);
-    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      {
-        status=MagickFail;
-        break;
-      }
-    pixels=p;
-    for (x=0; x < (long) image->columns; x+=texture->columns)
     {
-      width=texture->columns;
-      if ((x+width) > image->columns)
-        width=image->columns-x;
-      p=pixels;
-      for (z=(long) width; z != 0; z--)
-      {
-        *q=(*p);
-        p++;
-        q++;
-      }
-    }
-    if (!SyncImagePixels(image))
-      {
-        status=MagickFail;
-        break;
-      }
-    if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(TextureImageText,y,image->rows,&image->exception))
+      p=AcquireImagePixels(texture,0,y % texture->rows,texture->columns,1,
+                           &image->exception);
+      if (p == (const PixelPacket *) NULL)
         {
           status=MagickFail;
           break;
         }
-  }
-  image->is_grayscale=texture->is_grayscale;
+      pixels=p;
+
+      q=GetImagePixels(image,0,y,image->columns,1);
+      if (q == (PixelPacket *) NULL)
+        {
+          status=MagickFail;
+          break;
+        }
+
+      for (x=0; x < (long) image->columns; x+=texture->columns)
+        {
+          width=texture->columns;
+          if ((x+width) > image->columns)
+            width=image->columns-x;
+          p=pixels;
+          if (image->matte)
+            {
+              for (z=(long) width; z != 0; z--)
+                {
+                  *q=AlphaComposite(q,q->opacity,p,p->opacity);
+                  p++;
+                  q++;
+                }
+            }
+          else
+            {
+              for (z=(long) width; z != 0; z--)
+                {
+                  *q=(*p);
+                  p++;
+                  q++;
+                }
+            }
+        }
+      if (!SyncImagePixels(image))
+        {
+          status=MagickFail;
+          break;
+        }
+      if (QuantumTick(y,image->rows))
+        if (!MagickMonitor(TextureImageText,y,image->rows,&image->exception))
+          {
+            status=MagickFail;
+            break;
+          }
+    }
+  if (image->matte)
+    image->is_grayscale=(is_grayscale && texture->is_grayscale);
+  else
+    image->is_grayscale=texture->is_grayscale;
   return (status);
 }
 

@@ -12,7 +12,7 @@
 #
 # Written by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1; print "1..25\n"; }
+BEGIN { $| = 1; $test=1; print "1..26\n"; }
 END {print "not ok $test\n" unless $loaded;}
 
 use Graphics::Magick;
@@ -86,7 +86,15 @@ testRead( 'input_truecolor_08.tiff',
   '326599218925e7aa27c735d482332744cccf41f460a1ba2d276a2d172f2b3de0' );
 
 #
-# 9) Test Reading TrueColor (10-bit)
+# 9) Test Reading TrueColor (8-bit + matte channel)
+# 
+++$test;
+print("TrueColor (8-bit) image with alpha channel ...\n");
+testRead( 'input_truecolor_08_matte.tiff',
+  'e4f197c0de1bd1e9c43c3659953a4af81dda6d56433840c6ce508e3a2bb757e4' );
+
+#
+# 10) Test Reading TrueColor (10-bit)
 # 
 ++$test;
 print("TrueColor (10-bit) image ...\n");
@@ -96,7 +104,7 @@ testRead( 'input_truecolor_10.tiff',
   '59178f8b7f9df6dd59b2965161100db5b11fd4d46d0a790c7393c82f8b6a4f84' );
 
 #
-# 10) Test Reading TrueColor (12-bit)
+# 11) Test Reading TrueColor (12-bit)
 # 
 ++$test;
 print("TrueColor (12-bit) image ...\n");
@@ -106,7 +114,7 @@ testRead( 'input_truecolor_12.tiff',
   '56ff48dbfbe3602198010130717523664d83068cd41cf27422414bd4385abda0' );
 
 #
-# 11) Test Reading TrueColor (14-bit)
+# 12) Test Reading TrueColor (14-bit)
 # 
 ++$test;
 print("TrueColor (14-bit) image ...\n");
@@ -116,7 +124,7 @@ testRead( 'input_truecolor_14.tiff',
   '412b3f0188113505c79dc226eef901b25e5f66d8bae28eb832e48c89eb139e81' );
 
 #
-# 12) Test Reading TrueColor (16-bit)
+# 13) Test Reading TrueColor (16-bit)
 #
 ++$test;
 print("TrueColor (16-bit) image ...\n");
@@ -125,7 +133,7 @@ testRead( 'input_truecolor_16.tiff',
   '72fd047e4f5942b4edc96e8b16444580e9eb1f265017dd6bb11795a842e58d58' );
 
 #
-# 13) Test Reading TrueColor (32-bit)
+# 14) Test Reading TrueColor (32-bit)
 #
 ++$test;
 print("TrueColor (32-bit) image ...\n");
@@ -135,7 +143,7 @@ testRead( 'input_truecolor_32.tiff',
   '8fa932366715755135be018e7da7b4417b2628f582a1ba5b371a80a840f5b791');
 
 #
-# 14) Test Reading 8-bit TrueColor Tiled (32x32 tiles)
+# 15) Test Reading 8-bit TrueColor Tiled (32x32 tiles)
 #
 ++$test;
 print("TrueColor (8-bit) tiled image, 32x32 tiles ...\n");
@@ -143,7 +151,7 @@ testRead( 'input_truecolor_08_tiled32x32.tiff',
   '326599218925e7aa27c735d482332744cccf41f460a1ba2d276a2d172f2b3de0' );
 
 #
-# 15) Test Reading 8-bit TrueColor Planar
+# 16) Test Reading 8-bit TrueColor Planar
 #
 ++$test;
 print("TrueColor (8-bit) planar image ...\n");
@@ -151,7 +159,7 @@ testRead( 'input_truecolor_08_planar.tiff',
   '326599218925e7aa27c735d482332744cccf41f460a1ba2d276a2d172f2b3de0' );
 
 #
-# 16) Test Reading 8-bit TrueColor Stripped (8 rows per strip)
+# 17) Test Reading 8-bit TrueColor Stripped (8 rows per strip)
 # 
 ++$test;
 print("TrueColor (8-bit) stripped image, 8 rows per strip ...\n");
@@ -159,7 +167,7 @@ testRead( 'input_truecolor_08_stripped.tiff',
   '326599218925e7aa27c735d482332744cccf41f460a1ba2d276a2d172f2b3de0' );
 
 #
-# 17) Test Reading Grayscale 4-bit
+# 18) Test Reading Grayscale 4-bit
 #
 ++$test;
 print("Grayscale (4-bit) ...\n");
@@ -167,7 +175,7 @@ testRead( 'input_gray_04bit.tiff',
   '45c0655a417852480336d5e12d7bb16b9647d911b11589e9d000a05dd1813570');
 
 #
-# 18) Test Reading Grayscale 4-bit + matte
+# 19) Test Reading Grayscale 4-bit + matte
 #
 ++$test;
 print("Grayscale (4-bit + matte) ...\n");
@@ -175,7 +183,7 @@ testRead( 'input_gray_04bit_matte.tiff',
   '1e4ca36f33b13d8799bcda20108d20c1a2da913c27eb7872d95a6928cb8b0b48');
 
 #
-# 19) Test Reading Grayscale 8-bit
+# 20) Test Reading Grayscale 8-bit
 # 
 ++$test;
 print("Grayscale (8-bit) ...\n");
@@ -183,7 +191,7 @@ testRead( 'input_gray_08bit.tiff',
   '00f6147d547f5a654369a5b41d18f0b44b38f9cc753c773f384808b9a18cac92');
 
 #
-# 20) Test Reading Grayscale 8-bit + matte
+# 21) Test Reading Grayscale 8-bit + matte
 # 
 ++$test;
 print("Grayscale (8-bit + matte) ...\n");
@@ -191,7 +199,7 @@ testRead( 'input_gray_08bit_matte.tiff',
   '70e1e096e53af6a312ec6aa54890a59b35d3c6932dfc052d6b355f62733635be');
 
 #
-# 21) Test Reading Grayscale 10-bit
+# 22) Test Reading Grayscale 10-bit
 # 
 ++$test;
 print("Grayscale (10-bit) ...\n");
@@ -201,7 +209,7 @@ testRead( 'input_gray_10bit.tiff',
   'b5be0d42f6e491343f86744af8fcd4b51ef70373fad69593046a27ad2d805788');
 
 #
-# 22) Test Reading Grayscale 12-bit
+# 23) Test Reading Grayscale 12-bit
 # 
 ++$test;
 print("Grayscale (12-bit) ...\n");
@@ -211,7 +219,7 @@ testRead( 'input_gray_12bit.tiff',
   '4d382632a407732017ec16d6cbcb92a81cdb56150e9aedce1b987ac9b68d5948');
 
 #
-# 23) Test Reading Grayscale 14-bit
+# 24) Test Reading Grayscale 14-bit
 # 
 ++$test;
 print("Grayscale (14-bit) ...\n");
@@ -221,7 +229,7 @@ testRead( 'input_gray_14bit.tiff',
   'e61921b0de711a9a109cb97920a4487852f0aea9fdb255c357b8290be408ebaa');
 
 #
-# 24) Test Reading Grayscale 16-bit
+# 25) Test Reading Grayscale 16-bit
 # 
 ++$test;
 print("Grayscale (16-bit) ...\n");
@@ -230,7 +238,7 @@ testRead( 'input_gray_16bit.tiff',
   '1db9216ffb84dab419b4924e6aba945e922f728c0dca8ce24c3d7f4c47c604b9' );
 
 #
-# 25) Test Reading Grayscale 32-bit
+# 26) Test Reading Grayscale 32-bit
 # 
 ++$test;
 print("Grayscale (32-bit) ...\n");

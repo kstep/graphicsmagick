@@ -84,6 +84,9 @@
   </Cache>
   <Coder>
     <Error>
+      <Message name="ColormapTooLarge">
+        Colormap size exceeds limit
+      </Message>
       <Message name="ColormapTypeNotSupported">
         Colormap type not supported
       </Message>

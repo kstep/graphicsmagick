@@ -1241,6 +1241,23 @@ If the ps:imagemask flag is defined, the PS3 and EPS3 coders will
 create Postscript files that render bilevel images with the Postscript
 imagemask operator instead of the image operator.
 </dd>
+<dt>tiff:alpha={unspecified|associated|unassociated}</dt>
+<dd>
+Specify the TIFF alpha channel type when reading or writing TIFF files,
+overriding the normal value. The default alpha channel type for new files
+is associated alpha. Existing alpha settings are preserved when
+converting from one TIFF file to another. When a TIFF file uses
+associated alpha, the image pixels are pre-multiplied (i.e. altered) with
+the alpha channel. Files with "associated" alpha appear as if they were
+alpha composited on a black background when the matte channel is
+disabled. If the unassociated alpha type is selected, then the alpha
+channel is saved without altering the pixels. Photoshop recognizes
+associated alpha as transparency information, if the file is saves with
+unassociated alpha, the alpha information is loaded as an independent
+channel.  Note that for many years, ImageMagick and GraphicsMagick marked
+TIFF files as using associated alpha, without properly pre-multiplying
+the pixels.
+</dd>
 <dt>tiff:bits-per-sample=&lt;value&gt;</dt>
 <dd>
 If the tiff:bits-per-sample key is defined, GraphicsMagick will write

@@ -1019,7 +1019,8 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
 %      MagickPassFail ExportImagePixelArea(const Image *image,
 %                                          const QuantumType quantum_type,
 %                                          unsigned int quantum_size,
-%                                          unsigned char *destination)
+%                                          unsigned char *destination,
+%                                          const ExportPixelAreaOptions *options)
 %
 %  A description of each parameter follows:
 %
@@ -1033,6 +1034,8 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
 %    o quantum_size: Bits per quantum sample.
 %
 %    o destination:  The components are transferred to this buffer.
+%
+%    o options: Additional options specific to quantum_type (may be NULL).
 %
 %
 */
@@ -1050,7 +1053,7 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
 
 MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
   const QuantumType quantum_type,const unsigned int quantum_size,
-  unsigned char *destination)
+  unsigned char *destination,const ExportPixelAreaOptions *options)
 {
   register IndexPacket
     *indexes;
@@ -1074,6 +1077,8 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(destination != (unsigned char *) NULL);
+  assert((options == (const ExportPixelAreaOptions *) NULL) ||
+         (options->signature == MagickSignature));
 
   if (QuantumDepth == quantum_size)
     {
@@ -1171,7 +1176,6 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
           }
         break;
       }
-    case GrayInvertedQuantum:
     case GrayQuantum:
       {
         if ( (quantum_size >= 8) && (quantum_size % 8U == 0U) )
@@ -1188,7 +1192,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                       pixel=p->red;
                     else
                       pixel=PixelIntensityToQuantum(p);
-                    if (GrayInvertedQuantum == quantum_type)
+                    if ((options) && (options->grayscale_inverted))
                       pixel=MaxRGB-pixel;
                     ExportModulo8Quantum(q,quantum_size,pixel);
                     p++;
@@ -1203,7 +1207,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                       pixel=p->red;
                     else
                       pixel=PixelIntensityToQuantum(p);
-                    if (GrayInvertedQuantum == quantum_type)
+                    if ((options) && (options->grayscale_inverted))
                       pixel=MaxRGB-pixel;
                     pixel /= sample_scale;
                     ExportModulo8Quantum(q,quantum_size,pixel);
@@ -1219,7 +1223,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                       pixel=p->red;
                     else
                       pixel=PixelIntensityToQuantum(p);
-                    if (GrayInvertedQuantum == quantum_type)
+                    if ((options) && (options->grayscale_inverted))
                       pixel=MaxRGB-pixel;
                     pixel *= sample_scale;
                     ExportModulo8Quantum(q,quantum_size,pixel);
@@ -1238,7 +1242,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
               black=0,
               white=1;
 
-            if (GrayInvertedQuantum == quantum_type)
+            if ((options) && (options->grayscale_inverted))
               {
                 black=1;
                 white=0;
@@ -1280,7 +1284,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                       pixel=p->red;
                     else
                       pixel=PixelIntensityToQuantum(p);
-                    if (GrayInvertedQuantum == quantum_type)
+                    if ((options) && (options->grayscale_inverted))
                       pixel=MaxRGB-pixel;
                     BitStreamMSBWrite(&stream,quantum_size,pixel);
                     p++;
@@ -1295,7 +1299,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                       pixel=p->red;
                     else
                       pixel=PixelIntensityToQuantum(p);
-                    if (GrayInvertedQuantum == quantum_type)
+                    if ((options) && (options->grayscale_inverted))
                       pixel=MaxRGB-pixel;
                     pixel /= sample_scale;
                     BitStreamMSBWrite(&stream,quantum_size,pixel);
@@ -1311,7 +1315,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                       pixel=p->red;
                     else
                       pixel=PixelIntensityToQuantum(p);
-                    if (GrayInvertedQuantum == quantum_type)
+                    if ((options) && (options->grayscale_inverted))
                       pixel=MaxRGB-pixel;
                     pixel *= sample_scale;
                     BitStreamMSBWrite(&stream,quantum_size,pixel);
@@ -1322,7 +1326,6 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
         break;
       }
     case GrayAlphaQuantum:
-    case GrayInvertedAlphaQuantum:
       {
         if ( (quantum_size >= 8) && (quantum_size % 8U == 0U) )
           {
@@ -1338,7 +1341,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                       pixel=p->red;
                     else
                       pixel=PixelIntensityToQuantum(p);
-                    if (GrayInvertedAlphaQuantum == quantum_type)
+                    if ((options) && (options->grayscale_inverted))
                       pixel=MaxRGB-pixel;
                     ExportModulo8Quantum(q,quantum_size,pixel);
                     pixel=MaxRGB-p->opacity;
@@ -1355,7 +1358,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                       pixel=p->red;
                     else
                       pixel=PixelIntensityToQuantum(p);
-                    if (GrayInvertedAlphaQuantum == quantum_type)
+                    if ((options) && (options->grayscale_inverted))
                       pixel=MaxRGB-pixel;
                     pixel /= sample_scale;
                     ExportModulo8Quantum(q,quantum_size,pixel);
@@ -1373,7 +1376,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                       pixel=p->red;
                     else
                       pixel=PixelIntensityToQuantum(p);
-                    if (GrayInvertedAlphaQuantum == quantum_type)
+                    if ((options) && (options->grayscale_inverted))
                       pixel=MaxRGB-pixel;
                     pixel *= sample_scale;
                     ExportModulo8Quantum(q,quantum_size,pixel);
@@ -1401,7 +1404,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                       pixel=p->red;
                     else
                       pixel=PixelIntensityToQuantum(p);
-                    if (GrayInvertedAlphaQuantum == quantum_type)
+                    if ((options) && (options->grayscale_inverted))
                       pixel=MaxRGB-pixel;
                     BitStreamMSBWrite(&stream,quantum_size,pixel);
                     BitStreamMSBWrite(&stream,quantum_size,MaxRGB-p->opacity);
@@ -1417,7 +1420,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                       pixel=p->red;
                     else
                       pixel=PixelIntensityToQuantum(p);
-                    if (GrayInvertedAlphaQuantum == quantum_type)
+                    if ((options) && (options->grayscale_inverted))
                       pixel=MaxRGB-pixel;
                     pixel /= sample_scale;
                     BitStreamMSBWrite(&stream,quantum_size,pixel);
@@ -1435,7 +1438,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                       pixel=p->red;
                     else
                       pixel=PixelIntensityToQuantum(p);
-                    if (GrayInvertedAlphaQuantum == quantum_type)
+                    if ((options) && (options->grayscale_inverted))
                       pixel=MaxRGB-pixel;
                     pixel *= sample_scale;
                     BitStreamMSBWrite(&stream,quantum_size,pixel);
@@ -2351,6 +2354,36 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   E x p o r t P i x e l A r e a O p t i o n s I n i t                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ExportPixelAreaOptionsInit() initializes the options structure which is
+%  optionally passed to ExportPixelArea()
+%
+%  The format of the ExportPixelAreaOptionsInit method is:
+%
+%      void ExportPixelAreaOptionsInit(ExportPixelAreaOptions *options)
+%
+%  A description of each parameter follows:
+%
+%    o options: Options structure to initialize.
+%
+*/
+MagickExport void ExportPixelAreaOptionsInit(ExportPixelAreaOptions *options)
+{
+  assert(options != (ExportPixelAreaOptions *) NULL);
+  memset((void *) options, 0, sizeof(ExportPixelAreaOptions));
+  options->signature=MagickSignature;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   I m p o r t I m a g e P i x e l A r e a                                   %
 %                                                                             %
 %                                                                             %
@@ -2359,15 +2392,16 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
 %
 %  ImportImagePixelArea() transfers one or more pixel components from a user
 %  supplied buffer into the image pixel cache of an image. The pixels are
-%  read in network (big-endian) byte order. It returns MagickPass if the
+%  read in network (big-endian) byte/bit order. It returns MagickPass if the
 %  pixels are successfully transferred, otherwise MagickFail.
 %
 %  The format of the ImportImagePixelArea method is:
 %
 %      MagickPassFail ImportImagePixelArea(Image *image,
 %                                          const QuantumType quantum_type,
-%                                          unsigned int quantum_size,
-%                                          const unsigned char *source)
+%                                          const unsigned int quantum_size,
+%                                          const unsigned char *source,
+%                                          const ImportPixelAreaOptions *options)
 %
 %  A description of each parameter follows:
 %
@@ -2386,6 +2420,8 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
 %
 %    o source:  The pixel components are transferred from this buffer.
 %
+%    o options: Additional options specific to quantum_type (may be NULL).
+%
 */
 #define ImportModulo8Quantum(quantum,quantum_size,p) \
 { \
@@ -2402,7 +2438,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
 
 MagickExport MagickPassFail ImportImagePixelArea(Image *image,
   const QuantumType quantum_type,const unsigned int quantum_size,
-  const unsigned char *source)
+  const unsigned char *source,const ImportPixelAreaOptions *options)
 {
   register const unsigned char
     *p;
@@ -2430,6 +2466,8 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(source != (const unsigned char *) NULL);
+  assert((options == (const ExportPixelAreaOptions *) NULL) ||
+         (options->signature == MagickSignature));
 
   /* Maximum value which may be represented by a sample */
   maximum_sample_value=MaxValueGivenBits(quantum_size);
@@ -2562,7 +2600,6 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
           }
         break;
       }
-    case GrayInvertedQuantum:
     case GrayQuantum:
       {
         if (DirectClass == image->storage_class)
@@ -2581,7 +2618,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     for (x = number_pixels; x > 0; --x)
                       {
                         ImportModulo8Quantum(quantum,quantum_size,p);
-                        if (GrayInvertedQuantum == quantum_type)
+                        if ((options) && (options->grayscale_inverted))
                           quantum=MaxRGB-quantum;
                         q->red=q->green=q->blue=quantum;
                         q->opacity=0U;
@@ -2595,7 +2632,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       {
                         ImportModulo8Quantum(quantum,quantum_size,p);
                         quantum *= quantum_scale;
-                        if (GrayInvertedQuantum == quantum_type)
+                        if ((options) && (options->grayscale_inverted))
                           quantum=MaxRGB-quantum;
                         q->red=q->green=q->blue=quantum;
                         q->opacity=0U;
@@ -2609,7 +2646,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       {
                         ImportModulo8Quantum(quantum,quantum_size,p);
                         quantum /= quantum_scale;
-                        if (GrayInvertedQuantum == quantum_type)
+                        if ((options) && (options->grayscale_inverted))
                           quantum=MaxRGB-quantum;
                         q->red=q->green=q->blue=quantum;
                         q->opacity=0U;
@@ -2629,7 +2666,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     for (x = number_pixels; x > 0; --x)
                       {
                         quantum=BitStreamMSBRead(&stream,quantum_size)*quantum_scale;
-                        if (GrayInvertedQuantum == quantum_type)
+                        if ((options) && (options->grayscale_inverted))
                           quantum = MaxRGB-quantum;
                         q->red=q->green=q->blue=quantum;
                         q->opacity=0U;
@@ -2642,7 +2679,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     for (x = number_pixels; x > 0; --x)
                       {
                         quantum=BitStreamMSBRead(&stream,quantum_size)/quantum_scale;
-                        if (GrayInvertedQuantum == quantum_type)
+                        if ((options) && (options->grayscale_inverted))
                           quantum = MaxRGB-quantum;
                         q->red=q->green=q->blue=quantum;
                         q->opacity=0U;
@@ -2675,7 +2712,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       {
                         ImportModulo8Quantum(index,quantum_size,p);
                         VerifyColormapIndex(image,index);
-                        if (GrayInvertedQuantum == quantum_type)
+                        if ((options) && (options->grayscale_inverted))
                           index=(image->colors-1)-index;
                         *indexes++=index;
                         *q++=image->colormap[index];
@@ -2688,7 +2725,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                         ImportModulo8Quantum(index,quantum_size,p);
                         index /= indexes_scale;
                         VerifyColormapIndex(image,index);
-                        if (GrayInvertedQuantum == quantum_type)
+                        if ((options) && (options->grayscale_inverted))
                           index=(image->colors-1)-index;
                         *indexes++=index;
                         *q++=image->colormap[index];
@@ -2707,7 +2744,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                   {
                     --bit;
                     index=(*p >> bit) & 0x01;
-                    if (GrayInvertedQuantum == quantum_type)
+                    if ((options) && (options->grayscale_inverted))
                       index ^= 0x01;
                     *indexes++=index;
                     *q++=image->colormap[index];
@@ -2732,7 +2769,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     index=BitStreamMSBRead(&stream,quantum_size);
                     index /= indexes_scale;
                     VerifyColormapIndex(image,index);
-                    if (GrayInvertedQuantum == quantum_type)
+                    if ((options) && (options->grayscale_inverted))
                       index=(image->colors-1)-index;
                     *indexes++=index;
                     *q++=image->colormap[index];
@@ -2741,7 +2778,6 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
           }
         break;
       }
-    case GrayInvertedAlphaQuantum:
     case GrayAlphaQuantum:
       {
         if (DirectClass == image->storage_class)
@@ -2760,7 +2796,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     for (x = number_pixels; x > 0; --x)
                       {
                         ImportModulo8Quantum(quantum,quantum_size,p);
-                        if (GrayInvertedQuantum == quantum_type)
+                        if ((options) && (options->grayscale_inverted))
                           quantum=MaxRGB-quantum;
                         q->red=q->green=q->blue=quantum;
 
@@ -2776,7 +2812,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       {
                         ImportModulo8Quantum(quantum,quantum_size,p);
                         quantum *= quantum_scale;
-                        if (GrayInvertedQuantum == quantum_type)
+                        if ((options) && (options->grayscale_inverted))
                           quantum=MaxRGB-quantum;
                         q->red=q->green=q->blue=quantum;
 
@@ -2793,7 +2829,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       {
                         ImportModulo8Quantum(quantum,quantum_size,p);
                         quantum /= quantum_scale;
-                        if (GrayInvertedQuantum == quantum_type)
+                        if ((options) && (options->grayscale_inverted))
                           quantum=MaxRGB-quantum;
                         q->red=q->green=q->blue=quantum;
 
@@ -2816,7 +2852,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     for (x = number_pixels; x > 0; --x)
                       {
                         quantum=BitStreamMSBRead(&stream,quantum_size)*quantum_scale;
-                        if (GrayInvertedQuantum == quantum_type)
+                        if ((options) && (options->grayscale_inverted))
                           quantum = MaxRGB-quantum;
                         q->red=q->green=q->blue=quantum;
 
@@ -2832,7 +2868,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     for (x = number_pixels; x > 0; --x)
                       {
                         quantum=BitStreamMSBRead(&stream,quantum_size)/quantum_scale;
-                        if (GrayInvertedQuantum == quantum_type)
+                        if ((options) && (options->grayscale_inverted))
                           quantum = MaxRGB-quantum;
                         q->red=q->green=q->blue=quantum;
 
@@ -2873,7 +2909,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       {
                         ImportModulo8Quantum(index,quantum_size,p);
                         VerifyColormapIndex(image,index);
-                        if (GrayInvertedAlphaQuantum == quantum_type)
+                        if ((options) && (options->grayscale_inverted))
                           index=(image->colors-1)-index;
                         *indexes++=index;
                         *q=image->colormap[index];
@@ -2894,7 +2930,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                         ImportModulo8Quantum(index,quantum_size,p);
                         index /= indexes_scale;
                         VerifyColormapIndex(image,index);
-                        if (GrayInvertedAlphaQuantum == quantum_type)
+                        if ((options) && (options->grayscale_inverted))
                           index=(image->colors-1)-index;
                         *indexes++=index;
                         *q=image->colormap[index];
@@ -2923,7 +2959,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     index=BitStreamMSBRead(&stream,quantum_size);
                     index /= indexes_scale;
                     VerifyColormapIndex(image,index);
-                    if (GrayInvertedAlphaQuantum == quantum_type)
+                    if ((options) && (options->grayscale_inverted))
                       index=(image->colors-1)-index;
                     *indexes++=index;
                     *q=image->colormap[index];
@@ -3162,7 +3198,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     for (x = number_pixels; x > 0; --x)
                       {
                         ImportModulo8Quantum(quantum,quantum_size,p);
-                        *indexes++=quantum;
+                        *indexes++=(IndexPacket) MaxRGB-quantum;
                       }
                   }
                 else if (QuantumDepth >  quantum_size)
@@ -3171,7 +3207,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     for (x = number_pixels; x > 0; --x)
                       {
                         ImportModulo8Quantum(quantum,quantum_size,p);
-                        *indexes++=quantum*quantum_scale;
+                        *indexes++=(IndexPacket) MaxRGB-quantum*quantum_scale;
                       }
                   }
                 else
@@ -3180,7 +3216,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     for (x = number_pixels; x > 0; --x)
                       {
                         ImportModulo8Quantum(quantum,quantum_size,p);
-                        *indexes++=quantum/quantum_scale;
+                        *indexes++=(IndexPacket) MaxRGB-quantum/quantum_scale;
                       }
                   }
               }
@@ -3198,7 +3234,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     /* Scale up */
                     for (x = number_pixels; x > 0; --x)
                       {
-                        *indexes++=BitStreamMSBRead(&stream,quantum_size)*quantum_scale;
+                        *indexes++=(IndexPacket) MaxRGB-BitStreamMSBRead(&stream,quantum_size)*quantum_scale;
                       }
                   }
                 else
@@ -3206,7 +3242,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     /* Scale down */
                     for (x = number_pixels; x > 0; --x)
                       {
-                        *indexes++=BitStreamMSBRead(&stream,quantum_size)/quantum_scale;
+                        *indexes++=(IndexPacket) MaxRGB-BitStreamMSBRead(&stream,quantum_size)/quantum_scale;
                       }
                   }
               }
@@ -3224,7 +3260,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 for (x = number_pixels; x > 0; --x)
                   {
                     ImportModulo8Quantum(quantum,quantum_size,p);
-                    q->opacity=quantum;
+                    q->opacity=MaxRGB-quantum;
                     q++;
                   }
               }
@@ -3234,7 +3270,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 for (x = number_pixels; x > 0; --x)
                   {
                     ImportModulo8Quantum(quantum,quantum_size,p);
-                    q->opacity=quantum*quantum_scale;
+                    q->opacity=MaxRGB-quantum*quantum_scale;
                     q++;
                   }
               }
@@ -3244,7 +3280,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 for (x = number_pixels; x > 0; --x)
                   {
                     ImportModulo8Quantum(quantum,quantum_size,p);
-                    q->opacity=quantum/quantum_scale;
+                    q->opacity=MaxRGB-quantum/quantum_scale;
                     q++;
                   }
               }
@@ -3263,7 +3299,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 /* Scale up */
                 for (x = number_pixels; x > 0; --x)
                   {
-                    q->opacity=BitStreamMSBRead(&stream,quantum_size)*quantum_scale;
+                    q->opacity=MaxRGB-BitStreamMSBRead(&stream,quantum_size)*quantum_scale;
                     q++;
                   }
               }
@@ -3272,7 +3308,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 /* Scale down */
                 for (x = number_pixels; x > 0; --x)
                   {
-                    q->opacity=BitStreamMSBRead(&stream,quantum_size)/quantum_scale;
+                    q->opacity=MaxRGB-BitStreamMSBRead(&stream,quantum_size)/quantum_scale;
                     q++;
                   }
               }
@@ -3701,7 +3737,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     q->green=BitStreamMSBRead(&stream,quantum_size)*quantum_scale;
                     q->blue=BitStreamMSBRead(&stream,quantum_size)*quantum_scale;
                     q->opacity=BitStreamMSBRead(&stream,quantum_size)*quantum_scale;
-                    *indexes++=BitStreamMSBRead(&stream,quantum_size)*quantum_scale;
+                    *indexes++=(IndexPacket) MaxRGB-BitStreamMSBRead(&stream,quantum_size)*quantum_scale;
                     q++;
                   }
               }
@@ -3714,7 +3750,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     q->green=BitStreamMSBRead(&stream,quantum_size)/quantum_scale;
                     q->blue=BitStreamMSBRead(&stream,quantum_size)/quantum_scale;
                     q->opacity=BitStreamMSBRead(&stream,quantum_size)/quantum_scale;
-                    *indexes++=BitStreamMSBRead(&stream,quantum_size)/quantum_scale;
+                    *indexes++=(IndexPacket) MaxRGB-BitStreamMSBRead(&stream,quantum_size)/quantum_scale;
                     q++;
                   }
               }
@@ -3723,6 +3759,36 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
       }
     }
   return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I m p o r t P i x e l A r e a O p t i o n s I n i t                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ImportPixelAreaOptionsInit() initializes the options structure which is
+%  optionally passed to ImportPixelArea()
+%
+%  The format of the ImportPixelAreaOptionsInit method is:
+%
+%      void ImportPixelAreaOptionsInit(ImportPixelAreaOptions *options)
+%
+%  A description of each parameter follows:
+%
+%    o options: Options structure to initialize.
+%
+*/
+MagickExport void ImportPixelAreaOptionsInit(ImportPixelAreaOptions *options)
+{
+  assert(options != (ImportPixelAreaOptions *) NULL);
+  memset((void *) options, 0, sizeof(ImportPixelAreaOptions));
+  options->signature=MagickSignature;
 }
 
 /*

@@ -57,11 +57,11 @@
 #if defined(HasTIFF)
 #  if defined(HAVE_TIFFCONF_H)
 #    include "tiffconf.h"
-#  endif
+#  endif /* defined(HAVE_TIFFCONF_H) */
 #  include "tiffio.h"
 #  if !defined(COMPRESSION_ADOBE_DEFLATE)
 #    define COMPRESSION_ADOBE_DEFLATE  8
-#  endif
+#  endif  /* !defined(COMPRESSION_ADOBE_DEFLATE) */
 
 /*
   Global declarations.
@@ -415,7 +415,8 @@ static tsize_t TIFFWriteBlob(thandle_t image,tdata_t data,tsize_t size)
   Convert TIFF data from libtiff "native" format to byte-parsable big endian
 */
 #if !defined(WORDS_BIGENDIAN)
-void SwabDataToBigEndian(uint16 bits_per_sample, tdata_t data, tsize_t size)
+static void SwabDataToBigEndian(const uint16 bits_per_sample, tdata_t data,
+                         const tsize_t size)
 {
   if (bits_per_sample == 64U)
     {
@@ -439,7 +440,8 @@ void SwabDataToBigEndian(uint16 bits_per_sample, tdata_t data, tsize_t size)
   Convert TIFF data from byte-parsable big endian to libtiff "native" format.
 */
 #if !defined(WORDS_BIGENDIAN)
-void SwabDataToNativeEndian(uint16 bits_per_sample, tdata_t data, tsize_t size)
+static void SwabDataToNativeEndian(const uint16 bits_per_sample, tdata_t data,
+                            const tsize_t size)
 {
   if (bits_per_sample == 64)
     {
@@ -459,6 +461,9 @@ void SwabDataToNativeEndian(uint16 bits_per_sample, tdata_t data, tsize_t size)
 }
 #endif
 
+/*
+  Initialize the image colormap.
+*/
 static MagickPassFail InitializeImageColormap(Image *image, TIFF *tiff)
 {
   uint16
@@ -486,7 +491,12 @@ static MagickPassFail InitializeImageColormap(Image *image, TIFF *tiff)
   if (MaxColormapSize > max_sample_value)
     image->colors=max_sample_value+1;
   else if (MaxColormapSize > MaxRGB)
-    image->colors=MaxColormapSize;
+    {
+      if (photometric == PHOTOMETRIC_PALETTE)
+        return status;
+      else
+        image->colors=MaxColormapSize;
+    }
   
   if (image->colors > 0)
     {
@@ -567,151 +577,209 @@ static MagickPassFail InitializeImageColormap(Image *image, TIFF *tiff)
             break;
           }
         }
+      if (status == MagickPass)
+        {
+          register const PixelPacket
+            *p;
+
+          register unsigned int
+            scale;
+
+          unsigned int
+            depth=1;
+
+          /*
+            Evaluate colormap depth.
+          */
+          p=image->colormap;
+          scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));
+          for (i=image->colors; i > 0; i--)
+            {
+              if ((p->red != scale*(p->red/scale)) ||
+                  (p->green != scale*(p->green/scale)) ||
+                  (p->blue != scale*(p->blue/scale)))
+                {
+                  depth++;
+                  if (depth == QuantumDepth)
+                    break;
+                  scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));
+                  continue;
+                }
+              p++;
+            }
+          if (depth < 8)
+            depth=8;
+          else
+            depth=16;
+          image->depth=depth;
+        }
     }
 
   return status;
 }
 
+/*
+  Determine the quauntum import/export method to use with
+  ImportImagePixelArea() and ExportImagePixelArea() based on the
+  nature of the image, the TIFF photometric, sample format, the
+  desired planar configuration, and the specified plane (0 for
+  contiguous planar configuration). Updates quantum_type with the
+  import/export method, and quantum_samples with the number of samples
+  consumed by one pixel. Returns MagickPass if the photometric is
+  supported.
+*/
 static MagickPassFail QuantumTransferMode(const Image *image,
                                           const uint16 photometric,
-                                          uint16 planar_config,
-                                          unsigned int plane,
+                                          const uint16 sample_format,
+                                          const uint16 planar_config,
+                                          const unsigned int plane,
                                           QuantumType *quantum_type,
                                           int *quantum_samples)
 {
+  *quantum_type=UndefinedQuantum;
   *quantum_samples=0;
-  switch (photometric)
+  if ((sample_format == SAMPLEFORMAT_UINT) ||
+      (sample_format == SAMPLEFORMAT_VOID))
     {
-    case PHOTOMETRIC_MINISBLACK:
-      {
-        if (image->matte)
-          {
-            *quantum_type=GrayAlphaQuantum;
-            *quantum_samples=2;
-          }
-        else
-          {
-            if (image->storage_class == PseudoClass)
-              *quantum_type=IndexQuantum;
-            else
-              *quantum_type=GrayQuantum;
-            *quantum_samples=1;
-          }
-        break;
-      }
-    case PHOTOMETRIC_MINISWHITE:
-      {
-        if (image->matte)
-          {
-            *quantum_type=GrayInvertedAlphaQuantum;
-            *quantum_samples=2;
-          }
-        else
-          {
-            if (image->storage_class == PseudoClass)
-              *quantum_type=IndexQuantum;
-            else
-              *quantum_type=GrayInvertedQuantum;
-            *quantum_samples=1;
-          }
-        break;
-      }
-    case PHOTOMETRIC_PALETTE:
-      {
-        if (image->matte)
-          {
-            *quantum_type=IndexAlphaQuantum;
-            *quantum_samples=2;
-          }
-        else
-          {
-            *quantum_type=IndexQuantum;
-            *quantum_samples=1;
-          }
-        break;
-      }
-    case PHOTOMETRIC_RGB:
-      {
-        if (planar_config == PLANARCONFIG_SEPARATE)
-          {
-            switch (plane)
-              {
-              case 0:
-                *quantum_type=RedQuantum;
-                break;
-              case 1:
-                *quantum_type=GreenQuantum;
-                break;
-              case 2:
-                *quantum_type=BlueQuantum;
-                break;
-              case 3:
-                *quantum_type=AlphaQuantum;
-                break;
-              }
-            *quantum_samples=1;
-          }
-        else
+      switch (photometric)
+        {
+        case PHOTOMETRIC_MINISBLACK:
+        case PHOTOMETRIC_MINISWHITE:
           {
             if (image->matte)
               {
-                *quantum_type=RGBAQuantum;
-                *quantum_samples=4;
+                *quantum_type=GrayAlphaQuantum;
+                *quantum_samples=2;
               }
             else
               {
-                *quantum_type=RGBQuantum;
-                *quantum_samples=3;
+                if (image->storage_class == PseudoClass)
+                  *quantum_type=IndexQuantum;
+                else
+                  *quantum_type=GrayQuantum;
+                *quantum_samples=1;
               }
+            break;
           }
-        break;
-      }
-    case PHOTOMETRIC_SEPARATED:
-      {
-        if (planar_config == PLANARCONFIG_SEPARATE)
-          {
-            switch (plane)
-              {
-              case 0:
-                *quantum_type=CyanQuantum;
-                break;
-              case 1:
-                *quantum_type=MagentaQuantum;
-                break;
-              case 2:
-                *quantum_type=YellowQuantum;
-                break;
-              case 3:
-                *quantum_type=BlackQuantum;
-                break;
-              case 4:
-                *quantum_type=AlphaQuantum;
-                break;
-              }
-            *quantum_samples=1;
-          }
-        else
+#if 0
+        case PHOTOMETRIC_MINISWHITE:
           {
             if (image->matte)
               {
-                *quantum_type=CMYKAQuantum;
-                *quantum_samples=5;
+                *quantum_type=GrayInvertedAlphaQuantum;
+                *quantum_samples=2;
               }
             else
               {
-                *quantum_type=CMYKQuantum;
-                *quantum_samples=4;
+                if (image->storage_class == PseudoClass)
+                  *quantum_type=IndexQuantum;
+                else
+                  *quantum_type=GrayInvertedQuantum;
+                *quantum_samples=1;
               }
+            break;
           }
-        break;
-      }
+#endif
+        case PHOTOMETRIC_PALETTE:
+          {
+            if (image->matte)
+              {
+                *quantum_type=IndexAlphaQuantum;
+                *quantum_samples=2;
+              }
+            else
+              {
+                *quantum_type=IndexQuantum;
+                *quantum_samples=1;
+              }
+            break;
+          }
+        case PHOTOMETRIC_RGB:
+          {
+            if (planar_config == PLANARCONFIG_SEPARATE)
+              {
+                switch (plane)
+                  {
+                  case 0:
+                    *quantum_type=RedQuantum;
+                    break;
+                  case 1:
+                    *quantum_type=GreenQuantum;
+                    break;
+                  case 2:
+                    *quantum_type=BlueQuantum;
+                    break;
+                  case 3:
+                    *quantum_type=AlphaQuantum;
+                    break;
+                  }
+                *quantum_samples=1;
+              }
+            else
+              {
+                if (image->matte)
+                  {
+                    *quantum_type=RGBAQuantum;
+                    *quantum_samples=4;
+                  }
+                else
+                  {
+                    *quantum_type=RGBQuantum;
+                    *quantum_samples=3;
+                  }
+              }
+            break;
+          }
+        case PHOTOMETRIC_SEPARATED:
+          {
+            if (planar_config == PLANARCONFIG_SEPARATE)
+              {
+                switch (plane)
+                  {
+                  case 0:
+                    *quantum_type=CyanQuantum;
+                    break;
+                  case 1:
+                    *quantum_type=MagentaQuantum;
+                    break;
+                  case 2:
+                    *quantum_type=YellowQuantum;
+                    break;
+                  case 3:
+                    *quantum_type=BlackQuantum;
+                    break;
+                  case 4:
+                    *quantum_type=AlphaQuantum;
+                    break;
+                  }
+                *quantum_samples=1;
+              }
+            else
+              {
+                if (image->matte)
+                  {
+                    *quantum_type=CMYKAQuantum;
+                    *quantum_samples=5;
+                  }
+                else
+                  {
+                    *quantum_type=CMYKQuantum;
+                    *quantum_samples=4;
+                  }
+              }
+            break;
+          }
+        }
     }
   
   return (*quantum_samples != 0 ? MagickPass : MagickFail);
 }
 
 /*
-  Compact samples to only contain raster data.
+  Compact samples to only contain raster data. This may seem
+  inefficient, but it allows us to easily deal with contiguous images
+  which contain extra samples while optimizing performance for images
+  without extra samples.
 */
 static void CompactSamples( const unsigned long total_pixels,
                             const unsigned int bits_per_sample,
@@ -753,6 +821,79 @@ static void CompactSamples( const unsigned long total_pixels,
               (void) BitStreamMSBRead(&read_stream,bits_per_sample);
             }
         }
+    }
+}
+
+
+/*
+  Convert selected pixel area to associated alpha representation.
+*/
+static void AssociateAlphaRegion(Image *image)
+{
+  register PixelPacket
+    *q;
+
+  register long
+    x;
+
+  register double
+    alpha,
+    value;
+
+  long
+    number_pixels;
+
+  number_pixels=(long) GetPixelCacheArea(image);
+  q=GetPixels(image);
+
+  for (x = number_pixels; x > 0; --x)
+    {
+      alpha=((double) MaxRGB-q->opacity)/MaxRGB;
+      value=(double) q->red*alpha;
+      q->red=RoundToQuantum(value);
+      value=(double) q->green*alpha;
+      q->green=RoundToQuantum(value);
+      value=(double) q->blue*alpha;
+      q->blue=RoundToQuantum(value);
+      q++;
+    }
+}
+
+/*
+  Convert associated alpha to internal representation for selected
+  pixel area.
+*/
+static void DisassociateAlphaRegion(Image *image)
+{
+  register PixelPacket
+    *q;
+
+  register long
+    x;
+
+  register double
+    alpha,
+    value;
+
+  long
+    number_pixels;
+
+  number_pixels=(long) GetPixelCacheArea(image);
+  q=GetPixels(image);
+
+  for (x = number_pixels; x > 0; --x)
+    {
+      if (q->opacity != (Quantum) MaxRGB)
+        {
+          alpha=((double) MaxRGB-q->opacity)/MaxRGB;
+          value=(double) q->red/alpha;
+          q->red=RoundToQuantum(value);
+          value=(double) q->green/alpha;
+          q->green=RoundToQuantum(value);
+          value=(double) q->blue/alpha;
+          q->blue=RoundToQuantum(value);
+        }
+      q++;
     }
 }
 
@@ -811,6 +952,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     photometric,
     planar_config,
     *sample_info,
+    sample_format,
     samples_per_pixel,
     units,
     value;
@@ -822,6 +964,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 
   TIFFMethod
     method;
+
+  ImportPixelAreaOptions
+    import_options;
 
   unsigned int
     filename_is_temporary=False,
@@ -899,6 +1044,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_PLANARCONFIG,&planar_config);
       (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,&samples_per_pixel);
       (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_BITSPERSAMPLE,&bits_per_sample);
+      (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLEFORMAT,&sample_format);
       (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_MINSAMPLEVALUE,&min_sample_value);
       (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_MAXSAMPLEVALUE,&max_sample_value);
       (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_PHOTOMETRIC,&photometric);
@@ -915,11 +1061,32 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                 "Samples per pixel: %u", samples_per_pixel);
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "Sample format: %s",
+                                sample_format == SAMPLEFORMAT_UINT ? "Unsigned integer" :
+                                sample_format == SAMPLEFORMAT_INT ? "Signed integer" :
+                                sample_format == SAMPLEFORMAT_IEEEFP ? "IEEE floating point" :
+                                sample_format == SAMPLEFORMAT_VOID ? "Untyped data" :
+                                sample_format == SAMPLEFORMAT_COMPLEXINT ? "Complex signed int" :
+                                sample_format == SAMPLEFORMAT_COMPLEXIEEEFP ? "Complex IEEE floating point" :
+                                "UNKNOWN");
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                 "Bits per sample: %u",bits_per_sample);
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                 "Min sample value: %u",min_sample_value);
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                 "Max sample value: %u",max_sample_value);
+          if (sample_format == SAMPLEFORMAT_IEEEFP)
+            {
+              double
+                value;
+
+              if (TIFFGetField(tiff,TIFFTAG_SMINSAMPLEVALUE,&value))
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                      "Special min sample value: %g", value);
+              if (TIFFGetField(tiff,TIFFTAG_SMAXSAMPLEVALUE,&value))
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                      "Special max sample value: %g", value);
+            }
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                 "Photometric: %s", PhotometricTagToString(photometric));
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -935,6 +1102,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                 "Rows per strip: %u",(unsigned int) rows_per_strip);
         }
+      ImportPixelAreaOptionsInit(&import_options);
       if (photometric == PHOTOMETRIC_CIELAB)
         {
           TIFFClose(tiff);
@@ -944,10 +1112,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         }
       if (photometric == PHOTOMETRIC_SEPARATED)
         image->colorspace=CMYKColorspace;
-#if 0
-      if (photometric == PHOTOMETRIC_YCBCR)
-        image->colorspace=YCbCrColorspace;
-#endif
       (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_RESOLUTIONUNIT,&units);
       x_resolution=image->x_resolution;
       y_resolution=image->y_resolution;
@@ -1046,6 +1210,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       image->columns=width;
       image->rows=height;
       image->depth=bits_per_sample;
+
       /*
         Obtain information about any extra samples.
       */
@@ -1053,7 +1218,35 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       if (TIFFGetField(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
                        &sample_info))
         {
-          int sample_index;
+          int
+            sample_index;
+
+          
+          if (extra_samples > 0)
+            {
+              const char *
+                value;
+
+              image->alpha_type=AssociatedAlpha;
+              image->matte=True;
+
+              if ((value=AccessDefinition(image_info,"tiff","alpha")))
+                {
+                  if (LocaleCompare(value,"unspecified") == 0)
+                    image->alpha_type=UnspecifiedAlpha;
+                  else if (LocaleCompare(value,"associated") == 0)
+                    image->alpha_type=AssociatedAlpha;
+                  else if (LocaleCompare(value,"unassociated") == 0)
+                    image->alpha_type=UnassociatedAlpha;
+                }
+              else if (sample_info[0] == EXTRASAMPLE_UNSPECIFIED)
+                image->alpha_type=UnspecifiedAlpha;
+              else if (sample_info[0] == EXTRASAMPLE_UNASSALPHA)
+                image->alpha_type=UnassociatedAlpha;
+              else if (sample_info[0] == EXTRASAMPLE_ASSOCALPHA)
+                image->alpha_type=AssociatedAlpha;
+            }
+
           for (sample_index=0 ; sample_index < extra_samples; sample_index++)
             {
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -1061,9 +1254,23 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                                     ((sample_info[sample_index] == EXTRASAMPLE_ASSOCALPHA) ? "ASSOCIATED" :
                                      (sample_info[sample_index] == EXTRASAMPLE_UNASSALPHA) ? "UNASSOCIATED" :
                                      "UNSPECIFIED"));
-              image->matte=(sample_info[sample_index] == EXTRASAMPLE_ASSOCALPHA);
             }
         }
+
+      /*
+        Handle RGBA images which are improperly marked.
+      */
+      if (extra_samples == 0)
+        if ((photometric == PHOTOMETRIC_RGB) && (samples_per_pixel == 4))
+          {
+            extra_samples=1;
+            image->alpha_type=AssociatedAlpha;
+            image->matte=MagickTrue;
+          }
+
+      if (image->matte)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                              "Image has a matte channel.");
 
       if (units == RESUNIT_INCH)
         image->units=PixelsPerInchResolution;
@@ -1072,28 +1279,49 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       value=(unsigned short) image->scene;
       (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_PAGENUMBER,&value,&pages);
       image->scene=value;
+
       if (TIFFGetField(tiff,TIFFTAG_ARTIST,&text) == 1)
         (void) SetImageAttribute(image,"artist",text);
+
+      if (TIFFGetField(tiff,33432,&text) == 1) /* TIFFTAG_COPYRIGHT */
+        (void) SetImageAttribute(image,"copyright",text);
+
       if (TIFFGetField(tiff,TIFFTAG_DATETIME,&text) == 1)
         (void) SetImageAttribute(image,"timestamp",text);
-      if (TIFFGetField(tiff,TIFFTAG_SOFTWARE,&text) == 1)
-        (void) SetImageAttribute(image,"software",text);
+
       if (TIFFGetField(tiff,TIFFTAG_DOCUMENTNAME,&text) == 1)
         (void) SetImageAttribute(image,"document",text);
-      if (TIFFGetField(tiff,TIFFTAG_MAKE,&text) == 1)
-        (void) SetImageAttribute(image,"make",text);
-      if (TIFFGetField(tiff,TIFFTAG_MODEL,&text) == 1)
-        (void) SetImageAttribute(image,"model",text);
-      if (TIFFGetField(tiff,33432,&text) == 1)
-        (void) SetImageAttribute(image,"copyright",text);
-      if (TIFFGetField(tiff,33423,&text) == 1)
-        (void) SetImageAttribute(image,"kodak-33423",text);
-      if (TIFFGetField(tiff,36867,&text) == 1)
-        (void) SetImageAttribute(image,"kodak-36867",text);
-      if (TIFFGetField(tiff,TIFFTAG_PAGENAME,&text) == 1)
-        (void) SetImageAttribute(image,"label",text);
+
+      if (TIFFGetField(tiff,TIFFTAG_HOSTCOMPUTER,&text) == 1)
+        (void) SetImageAttribute(image,"hostcomputer",text);
+
       if (TIFFGetField(tiff,TIFFTAG_IMAGEDESCRIPTION,&text) == 1)
         (void) SetImageAttribute(image,"comment",text);
+
+      if (TIFFGetField(tiff,32781,&text) == 1) /* TIFFTAG_OPIIMAGEID */
+        (void) SetImageAttribute(image,"imageid",text);
+
+      if (TIFFGetField(tiff,TIFFTAG_MAKE,&text) == 1)
+        (void) SetImageAttribute(image,"make",text);
+
+      if (TIFFGetField(tiff,TIFFTAG_MODEL,&text) == 1)
+        (void) SetImageAttribute(image,"model",text);
+
+      if (TIFFGetField(tiff,TIFFTAG_PAGENAME,&text) == 1)
+        (void) SetImageAttribute(image,"label",text);
+
+      if (TIFFGetField(tiff,TIFFTAG_SOFTWARE,&text) == 1)
+        (void) SetImageAttribute(image,"software",text);
+
+      if (TIFFGetField(tiff,33423,&text) == 1)
+        (void) SetImageAttribute(image,"kodak-33423",text);
+
+      if (TIFFGetField(tiff,36867,&text) == 1)
+        (void) SetImageAttribute(image,"kodak-36867",text);
+
+      /*
+        Quit if in "ping" mode and we are outside of requested range.
+      */
       if (image_info->ping && (image_info->subrange != 0))
         if (image->scene >= (image_info->subimage+image_info->subrange-1))
           break;
@@ -1107,7 +1335,16 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           */
 
           if (MaxColormapSize > MaxValueGivenBits(bits_per_sample))
-            (void) InitializeImageColormap(image,tiff);
+            {
+              (void) InitializeImageColormap(image,tiff);
+            }
+          else if (photometric == PHOTOMETRIC_PALETTE)
+            {
+              TIFFClose(tiff);
+              if (filename_is_temporary)
+                (void) LiberateTemporaryFile(filename);
+              ThrowReaderException(CoderError,ColormapTooLarge,image);
+            }
         }
       /*
         Determine which method to use for reading pixels.
@@ -1132,8 +1369,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         method=RGBAPuntMethod;
         quantum_type=UndefinedQuantum;
         quantum_samples=0;
-        if (QuantumTransferMode(image,photometric,planar_config,0,&quantum_type,
-                                &quantum_samples) == MagickPass)
+        if (QuantumTransferMode(image,photometric,sample_format,planar_config,0,
+                                &quantum_type,&quantum_samples) == MagickPass)
           {
             method=ScanLineMethod;
             if ((compress_tag == COMPRESSION_JPEG) ||
@@ -1148,13 +1385,15 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               method=TiledMethod;
             else if ((TIFFStripSize(tiff)) < (1024*64))
               method=StrippedMethod;
+            if (photometric == PHOTOMETRIC_MINISWHITE)
+              import_options.grayscale_inverted=MagickTrue;
           }
         else
           {
-            if (TIFFGetField(tiff,TIFFTAG_ROWSPERSTRIP,&rows_per_strip))
-              method=RGBAStrippedMethod;
-            else if (TIFFIsTiled(tiff))
+            if (TIFFIsTiled(tiff))
               method=RGBATiledMethod;
+            else if (TIFFGetField(tiff,TIFFTAG_ROWSPERSTRIP,&rows_per_strip))
+              method=RGBAStrippedMethod;
           }
       }
 
@@ -1202,8 +1441,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             max_sample=1;
             if (planar_config == PLANARCONFIG_SEPARATE)
               {
-                if (QuantumTransferMode(image,photometric,PLANARCONFIG_CONTIG,
-                                        0,&quantum_type,&quantum_samples)
+                if (QuantumTransferMode(image,photometric,sample_format,
+                                        PLANARCONFIG_CONTIG,0,&quantum_type,
+                                        &quantum_samples)
                     == MagickPass)
                   max_sample=quantum_samples;
               }
@@ -1231,7 +1471,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                     /*
                       Determine quantum parse method.
                     */
-                    if (QuantumTransferMode(image,photometric,planar_config,sample,&quantum_type,
+                    if (QuantumTransferMode(image,photometric,sample_format,
+                                            planar_config,sample,&quantum_type,
                                             &quantum_samples) == MagickFail)
                       {
                         status=MagickFail;
@@ -1247,8 +1488,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                     /*
                       Import scanline into image.
                     */
-                    if (ImportImagePixelArea(image,quantum_type,bits_per_sample,scanline)
-                        == MagickFail)
+                    if (ImportImagePixelArea(image,quantum_type,bits_per_sample,scanline,
+                                             &import_options) == MagickFail)
                       {
                         status=MagickFail;
                         break;
@@ -1256,6 +1497,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                   }
                 if (status == MagickFail)
                   break;
+                /*
+                  Disassociate alpha from pixels if necessary.
+                */
+                if ((image->matte) && (image->alpha_type == AssociatedAlpha))
+                  DisassociateAlphaRegion(image);
                 /*
                   Save our updates.
                 */
@@ -1328,9 +1574,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             max_sample=1;
             if (planar_config == PLANARCONFIG_SEPARATE)
               {
-                if (QuantumTransferMode(image,photometric,PLANARCONFIG_CONTIG,
-                                        0,&quantum_type,&quantum_samples)
-                    == MagickPass)
+                if (QuantumTransferMode(image,photometric,sample_format,
+                                        PLANARCONFIG_CONTIG,0,&quantum_type,
+                                        &quantum_samples) == MagickPass)
                   max_sample=quantum_samples;
               }
             /*
@@ -1346,7 +1592,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 /*
                   Determine quantum parse method.
                 */
-                if (QuantumTransferMode(image,photometric,planar_config,sample,&quantum_type,
+                if (QuantumTransferMode(image,photometric,sample_format,
+                                        planar_config,sample,&quantum_type,
                                         &quantum_samples) == MagickFail)
                   {
                     status=MagickFail;
@@ -1396,8 +1643,21 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                     /*
                       Import strip row into image.
                     */
-                    if (ImportImagePixelArea(image,quantum_type,bits_per_sample,p)
-                        == MagickFail)
+                    if (ImportImagePixelArea(image,quantum_type,bits_per_sample,p,
+                                             &import_options) == MagickFail)
+                      {
+                        status=MagickFail;
+                        break;
+                      }
+                    /*
+                      Disassociate alpha from pixels if necessary.
+                    */
+                    if ((image->matte) && (image->alpha_type == AssociatedAlpha))
+                      DisassociateAlphaRegion(image);
+                    /*
+                      Save our updates.
+                    */
+                    if (!SyncImagePixels(image))
                       {
                         status=MagickFail;
                         break;
@@ -1407,14 +1667,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                     */
                     p += stride;
                     rows_remaining--;
-                    /*
-                      Save our updates.
-                    */
-                    if (!SyncImagePixels(image))
-                      {
-                        status=MagickFail;
-                        break;
-                      }
+
                     if (image->previous == (Image *) NULL)
                       if (QuantumTick(y,image->rows))
                         if (!MagickMonitor(LoadImageText,y,image->rows,exception))
@@ -1506,9 +1759,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             max_sample=1;
             if (planar_config == PLANARCONFIG_SEPARATE)
               {
-                if (QuantumTransferMode(image,photometric,PLANARCONFIG_CONTIG,
-                                        0,&quantum_type,&quantum_samples)
-                    == MagickPass)
+                if (QuantumTransferMode(image,photometric,sample_format,
+                                        PLANARCONFIG_CONTIG,0,&quantum_type,
+                                        &quantum_samples) == MagickPass)
                   max_sample=quantum_samples;
               }
             /*
@@ -1549,9 +1802,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                         /*
                           Determine quantum parse method.
                         */
-                        if (QuantumTransferMode(image,photometric,planar_config,
-                                                sample,&quantum_type,
-                                                &quantum_samples) == MagickFail)
+                        if (QuantumTransferMode(image,photometric,sample_format,
+                                                planar_config,sample,
+                                                &quantum_type,&quantum_samples)
+                            == MagickFail)
                           {
                             status=MagickFail;
                             break;
@@ -1592,12 +1846,19 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                             /*
                               Import tile row
                             */
-                            if (ImportImagePixelArea(image,quantum_type,bits_per_sample,p)
+                            if (ImportImagePixelArea(image,quantum_type,
+                                                     bits_per_sample,p,
+                                                     &import_options)
                                 == MagickFail)
                               {
                                 status=MagickFail;
                                 break;
                               }
+                            /*
+                              Disassociate alpha from pixels if necessary.
+                            */
+                            if ((image->matte) && (image->alpha_type == AssociatedAlpha))
+                              DisassociateAlphaRegion(image);
                             /*
                               Save our updates.
                             */
@@ -1696,6 +1957,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                     p++;
                     q++;
                   }
+                /*
+                  Disassociate alpha from pixels if necessary.
+                */
+                if ((image->matte) && (image->alpha_type == AssociatedAlpha))
+                  DisassociateAlphaRegion(image);                
                 if (!SyncImagePixels(image))
                   {
                     status=MagickFail;
@@ -1847,6 +2113,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                   }
                 if (status == MagickFail)
                   break;
+                /*
+                  Disassociate alpha from pixels if necessary.
+                */
+                if ((image->matte) && (image->alpha_type == AssociatedAlpha))
+                  DisassociateAlphaRegion(image);                
                 if (!SyncImagePixels(image))
                   {
                     status=MagickFail;
@@ -1935,6 +2206,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                       p--;
                       q--;
                     }
+                /*
+                  Disassociate alpha from pixels if necessary.
+                */
+                if ((image->matte) && (image->alpha_type == AssociatedAlpha))
+                  DisassociateAlphaRegion(image);
                 if (!SyncImagePixels(image))
                   {
                     status=MagickFail;
@@ -1956,12 +2232,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         }
       if (image->depth > QuantumDepth)
         image->depth=QuantumDepth;
-      if (image->storage_class == PseudoClass)
-        {
-          image->depth=GetImageDepth(image,exception);
-          if (image->depth < 8)
-            image->depth=8;
-        }
       /*
         Proceed to next image.
       */
@@ -2306,10 +2576,17 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
     fill_order,
     photometric,
     planar_config,
+    sample_format,
     samples_per_pixel;
+
+  AlphaType
+    alpha_type;
 
   TIFFMethod
     method;
+
+  ExportPixelAreaOptions
+    export_options;
 
   MagickBool
     filename_is_temporary=MagickFalse,
@@ -2372,12 +2649,14 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                                    &samples_per_pixel);
       (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_BITSPERSAMPLE,
                                    &bits_per_sample);
+      (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLEFORMAT,&sample_format);
       if (LocaleCompare(image_info->magick,"PTIF") == 0)
         if (image->previous != (Image *) NULL)
           (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_REDUCEDIMAGE);
       (void) TIFFSetField(tiff,TIFFTAG_IMAGELENGTH,(uint32) image->rows);
       (void) TIFFSetField(tiff,TIFFTAG_IMAGEWIDTH,(uint32) image->columns);
 
+      ExportPixelAreaOptionsInit(&export_options);
       depth=image->depth;
       bits_per_sample=8;
       method=ScanLineMethod;
@@ -2414,7 +2693,6 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           {
             compress_tag=COMPRESSION_JPEG;
             image->storage_class=DirectClass;
-            depth=8;
             if (logging)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                     "Set image type to DirectClass");
@@ -2471,11 +2749,23 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                               "Using %s compression", CompressionTagToString(compress_tag));
 
-      /*
-        Support writing RGB bits per sample of 8, 16, & 32 by default.
-      */
-      for (bits_per_sample=8; bits_per_sample < depth; )
-        bits_per_sample*=2;
+      if (image->compression == JPEGCompression)
+        {
+          /*
+            JPEG compression can only use size specified by BITS_IN_JSAMPLE.
+            FIXME
+          */
+          depth=8;
+          bits_per_sample=8;
+        }
+      else
+        {
+          /*
+            Support writing RGB bits per sample of 8, 16, & 32 by default.
+          */
+          for (bits_per_sample=8; bits_per_sample < depth; )
+            bits_per_sample*=2;
+        }
 
       if (((image_info->colorspace == UndefinedColorspace) &&
            (image->colorspace == CMYKColorspace)) ||
@@ -2547,19 +2837,51 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                               "Image depth %lu bits",depth);
 
+      alpha_type=image->alpha_type;
       if (image->matte)
         {
           /*
-            Image has a matte channel.
+            Image has a matte channel.  Mark it correctly.
           */
           uint16
             extra_samples,
             sample_info[1];
 
+          const char *
+            value;
+
+          if ((value=AccessDefinition(image_info,"tiff","alpha")))
+            {
+              if (LocaleCompare(value,"unspecified") == 0)
+                alpha_type=UnspecifiedAlpha;
+              else if (LocaleCompare(value,"associated") == 0)
+                alpha_type=AssociatedAlpha;
+              else if (LocaleCompare(value,"unassociated") == 0)
+                alpha_type=UnassociatedAlpha;
+            }
+
           samples_per_pixel += 1;
           extra_samples=1;
-          /* sample_info[0]=EXTRASAMPLE_UNASSALPHA; */
           sample_info[0]=EXTRASAMPLE_ASSOCALPHA;
+          switch (alpha_type)
+            {
+            case UnspecifiedAlpha:
+              {
+                sample_info[0]=EXTRASAMPLE_UNSPECIFIED;
+                break;
+              }
+            case AssociatedAlpha:
+              {
+                sample_info[0]=EXTRASAMPLE_ASSOCALPHA;
+                break;
+              }
+            case UnassociatedAlpha:
+              {
+                sample_info[0]=EXTRASAMPLE_UNASSALPHA;
+                break;
+              }
+            }
+            
           (void) TIFFSetField(tiff,TIFFTAG_EXTRASAMPLES,extra_samples,
                               &sample_info);
         }
@@ -2663,6 +2985,9 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
         {
         case COMPRESSION_JPEG:
           {
+            /*
+              RowsPerStrip must be multiple of 8 for JPEG.
+            */
             (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,
                                 strip_size+(8-(strip_size % 8)));
             break;
@@ -2811,33 +3136,51 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
       attribute=GetImageAttribute(image,"artist");
       if (attribute != (const ImageAttribute *) NULL)
         (void) TIFFSetField(tiff,TIFFTAG_ARTIST,attribute->value);
-      attribute=GetImageAttribute(image,"timeStamp");
-      if (attribute != (const ImageAttribute *) NULL)
-        (void) TIFFSetField(tiff,TIFFTAG_DATETIME,attribute->value);
-      attribute=GetImageAttribute(image,"make");
-      if (attribute != (const ImageAttribute *) NULL)
-        (void) TIFFSetField(tiff,TIFFTAG_MAKE,attribute->value);
-      attribute=GetImageAttribute(image,"model");
-      if (attribute != (const ImageAttribute *) NULL)
-        (void) TIFFSetField(tiff,TIFFTAG_MODEL,attribute->value);
-      (void) TIFFSetField(tiff,TIFFTAG_SOFTWARE,
-                          GetMagickVersion((unsigned long *) NULL));
-      (void) TIFFSetField(tiff,TIFFTAG_DOCUMENTNAME,image->filename);
+
       attribute=GetImageAttribute(image,"copyright");
       if (attribute != (const ImageAttribute *) NULL)
-        (void) TIFFSetField(tiff,33432,attribute->value);
-      attribute=GetImageAttribute(image,"kodak-33423");
+        (void) TIFFSetField(tiff,33432,attribute->value);  /* TIFFTAG_COPYRIGHT */
+
+      attribute=GetImageAttribute(image,"timestamp");
       if (attribute != (const ImageAttribute *) NULL)
-        (void) TIFFSetField(tiff,33423,attribute->value);
-      attribute=GetImageAttribute(image,"kodak-36867");
+        (void) TIFFSetField(tiff,TIFFTAG_DATETIME,attribute->value);
+
+      (void) TIFFSetField(tiff,TIFFTAG_DOCUMENTNAME,image->filename);
+
+      attribute=GetImageAttribute(image,"hostcomputer");
       if (attribute != (const ImageAttribute *) NULL)
-        (void) TIFFSetField(tiff,36867,attribute->value);
-      attribute=GetImageAttribute(image,"label");
-      if (attribute != (const ImageAttribute *) NULL)
-        (void) TIFFSetField(tiff,TIFFTAG_PAGENAME,attribute->value);
+        (void) TIFFSetField(tiff,TIFFTAG_HOSTCOMPUTER,attribute->value);
+
       attribute=GetImageAttribute(image,"comment");
       if (attribute != (const ImageAttribute *) NULL)
         (void) TIFFSetField(tiff,TIFFTAG_IMAGEDESCRIPTION,attribute->value);
+      
+      attribute=GetImageAttribute(image,"imageid");
+      if (attribute != (const ImageAttribute *) NULL)
+        (void) TIFFSetField(tiff,32781,attribute->value); /* TIFFTAG_OPIIMAGEID */
+
+      attribute=GetImageAttribute(image,"make");
+      if (attribute != (const ImageAttribute *) NULL)
+        (void) TIFFSetField(tiff,TIFFTAG_MAKE,attribute->value);
+ 
+      attribute=GetImageAttribute(image,"model");
+      if (attribute != (const ImageAttribute *) NULL)
+        (void) TIFFSetField(tiff,TIFFTAG_MODEL,attribute->value);
+
+      attribute=GetImageAttribute(image,"label");
+      if (attribute != (const ImageAttribute *) NULL)
+        (void) TIFFSetField(tiff,TIFFTAG_PAGENAME,attribute->value);
+
+      (void) TIFFSetField(tiff,TIFFTAG_SOFTWARE,
+                          GetMagickVersion((unsigned long *) NULL));
+
+      attribute=GetImageAttribute(image,"kodak-33423");
+      if (attribute != (const ImageAttribute *) NULL)
+        (void) TIFFSetField(tiff,33423,attribute->value);
+
+      attribute=GetImageAttribute(image,"kodak-36867");
+      if (attribute != (const ImageAttribute *) NULL)
+        (void) TIFFSetField(tiff,36867,attribute->value);
 
       if (photometric == PHOTOMETRIC_PALETTE)
         {
@@ -2874,6 +3217,9 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           MagickFreeMemory(green);
           MagickFreeMemory(blue);
         }
+
+      if (photometric == PHOTOMETRIC_MINISWHITE)
+        export_options.grayscale_inverted=MagickTrue;
 
       switch (method)
         {
@@ -2917,9 +3263,9 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
             max_sample=1;
             if (planar_config == PLANARCONFIG_SEPARATE)
               {
-                if (QuantumTransferMode(image,photometric,PLANARCONFIG_CONTIG,
-                                        0,&quantum_type,&quantum_samples)
-                    == MagickPass)
+                if (QuantumTransferMode(image,photometric,sample_format,
+                                        PLANARCONFIG_CONTIG,0,&quantum_type,
+                                        &quantum_samples) == MagickPass)
                   max_sample=quantum_samples;
               }
             /*
@@ -2930,7 +3276,8 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 /*
                   Determine quantum parse method.
                 */
-                if (QuantumTransferMode(image,photometric,planar_config,sample,&quantum_type,
+                if (QuantumTransferMode(image,photometric,sample_format,
+                                        planar_config,sample,&quantum_type,
                                         &quantum_samples) == MagickFail)
                   {
                     status=MagickFail;
@@ -2945,10 +3292,16 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                         break;
                       }
                     /*
+                      Convert to associated alpha if necessary.
+                    */
+                    if ((image->matte) && (alpha_type == AssociatedAlpha))
+                      AssociateAlphaRegion(image);
+                    /*
                       Export pixels to scanline.
                     */
                     if (ExportImagePixelArea(image,quantum_type,bits_per_sample,
-                                             scanline) == MagickFail)
+                                             scanline,&export_options)
+                        == MagickFail)
                       {
                         status=MagickFail;
                         break;
@@ -3090,9 +3443,9 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
             max_sample=1;
             if (planar_config == PLANARCONFIG_SEPARATE)
               {
-                if (QuantumTransferMode(image,photometric,PLANARCONFIG_CONTIG,
-                                        0,&quantum_type,&quantum_samples)
-                    == MagickPass)
+                if (QuantumTransferMode(image,photometric,sample_format,
+                                        PLANARCONFIG_CONTIG,0,&quantum_type,
+                                        &quantum_samples) == MagickPass)
                   max_sample=quantum_samples;
               }
             /*
@@ -3136,8 +3489,8 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                         /*
                           Determine quantum parse method.
                         */
-                        if (QuantumTransferMode(image,photometric,planar_config,
-                                                sample,&quantum_type,
+                        if (QuantumTransferMode(image,photometric,sample_format,
+                                                planar_config,sample,&quantum_type,
                                                 &quantum_samples) == MagickFail)
                           {
                             status=MagickFail;
@@ -3156,10 +3509,17 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                                 break;
                               }
                             /*
+                              Convert to associated alpha if necessary.
+                            */
+                            if ((image->matte) && (alpha_type == AssociatedAlpha))
+                              AssociateAlphaRegion(image);
+                            /*
                               Export tile row
                             */
-                            if (ExportImagePixelArea(image,quantum_type,bits_per_sample,
-                                                     q) == MagickFail)
+                            if (ExportImagePixelArea(image,quantum_type,
+                                                     bits_per_sample,q,
+                                                     &export_options)
+                                == MagickFail)
                               {
                                 status=MagickFail;
                                 break;

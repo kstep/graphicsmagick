@@ -39,6 +39,7 @@
 #include "magick/cache.h"
 #include "magick/color.h"
 #include "magick/composite.h"
+#include "magick/constitute.h"
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/shear.h"
@@ -5427,7 +5428,7 @@ MagickExport unsigned int XMakeImage(Display *display,
               if (window->image != image)
                 DestroyImage(window->image);
               window->image=crop_image;
-              window->destroy=True;
+              window->destroy=MagickTrue;
             }
         }
       if ((width != (unsigned int) window->image->columns) ||
@@ -5453,9 +5454,45 @@ MagickExport unsigned int XMakeImage(Display *display,
               if (window->image != image)
                 DestroyImage(window->image);
               window->image=resize_image;
-              window->destroy=True;
+              window->destroy=MagickTrue;
             }
         }
+#if 1
+      if ((window->immutable == MagickFalse) &&
+          (window->image->matte != MagickFalse) &&
+          (window->pixel_info->colors == 0))
+        {
+          Image
+            *texture;
+
+          /*
+            Tile background with texture.
+          */
+          strlcpy(resource_info->image_info->filename,"image:checkerboard",MaxTextExtent);
+          texture=ReadImage(resource_info->image_info,&window->image->exception);
+          if (texture != (Image *) NULL)
+            {
+              Image
+                *textured_image;
+
+              textured_image=CloneImage(window->image,window->image->columns,
+                window->image->rows,MagickTrue,&window->image->exception);
+              if (textured_image != (Image *) NULL)
+                {
+/*                   strlcpy(window->image->filename,"textured_image.miff", MaxTextExtent); */
+/*                   WriteImage(resource_info->image_info,window->image); */
+                  TextureImage(textured_image,texture);
+                  textured_image->matte=MagickFalse;
+                  if (window->image != image)
+                    DestroyImage(window->image);
+                  window->image=textured_image;
+                  window->destroy=MagickTrue;
+                }
+              DestroyImage(texture);
+              texture=(Image *) NULL;
+            }
+          }
+#endif
       width=(unsigned int) window->image->columns;
       height=(unsigned int) window->image->rows;
     }

@@ -1,3 +1,35 @@
+2005-02-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* win2k/IMDisplay/IMDisplayView.cpp (DoDisplayImage): Use
+	TextureImage to apply background pattern.
+	* magick/image.c (TextureImage): Alpha blend the texture onto the
+	background if the image has a matte channel.
+	* magick/constitute.h (enum QuantumType): Eliminated
+	GrayInvertedQuantum and GrayInvertedAlphaQuantum which were added
+	since GraphicsMagick 1.1.  Replaced this "inverted" gray
+	functionality with the grayscale_inverted flag in
+	ExportPixelAreaOptions and ImportPixelAreaOptions.
+	* magick/constitute.c (ExportImagePixelArea): Added an extra
+	parameter for passing seldom used options via an
+	ExportPixelAreaOptions structure.
+	(ImportImagePixelArea): Added an extra parameter for passing
+	seldom used options via an ImportPixelAreaOptions structure.
+	(ExportPixelAreaOptionsInit): New function to initialize the
+	ExportPixelAreaOptions structure with defaults.
+	(ImportPixelAreaOptionsInit): New function to intialize the
+	ImportPixelAreaOptions structure with defaults.
+	* coders/jpeg.c (WriteJPEGImage): Don't use jpeglib private
+	BITS_IN_JSAMPLE definition to select JPEG bit depth.
+	* coders/tiff.c (ReadTIFFImage): Support using -define
+	tiff:alpha={unspecified|associated|unassociated} to specify the
+	alpha channel type in case the alpha channel is marked
+	incorrectly.
+	Properly read associated alpha images.
+	(WriteTIFFImage): Support using -define
+	tiff:alpha={unspecified|associated|unassociated} to override the
+	alpha channel type.
+	Properly write associated alpha images by default.
+
 2005-02-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (WritePTIFImage): Ensure that pyramid image frames
