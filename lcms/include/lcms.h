@@ -24,8 +24,6 @@
 
 #ifndef __cms_H
 
-#define LCMS_VERSION 1011
-
 #ifdef _VISUALC_
 #  if defined(_DLL) && !defined(_LIB)
      // Using DLLs

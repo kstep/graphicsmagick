@@ -1,5 +1,6 @@
 #ECF - this file contains additional configuration info.
 DEFINE = _XMLLIB_
+EXPORTSDEF = ..\..\libxml\libxml2.def
 EXCLUDE = testC14N.c
 EXCLUDE = testDocbook.c
 EXCLUDE = testHTML.c
