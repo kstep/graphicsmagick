@@ -788,8 +788,10 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
     */
     (void) TransformRGBImage(image,RGBColorspace);
     magick=(char *) image_info->magick;
-    if (((LocaleCompare(magick,"PGM") == 0) && !IsGrayImage(image)) ||
-        ((LocaleCompare(magick,"PBM") == 0) && !IsMonochromeImage(image)))
+    if (((LocaleCompare(magick,"PGM") == 0) &&
+         !IsGrayImage(image,&image->exception)) ||
+        ((LocaleCompare(magick,"PBM") == 0) &&
+         !IsMonochromeImage(image,&image->exception)))
       {
         QuantizeInfo
           quantize_info;
@@ -823,7 +825,8 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         format='6';
         if ((image_info->compression == NoCompression) || (image->depth > 8))
           format='3';
-        if ((LocaleCompare(magick,"PPM") != 0) && IsGrayImage(image))
+        if ((LocaleCompare(magick,"PPM") != 0) &&
+            IsGrayImage(image,&image->exception))
           {
             /*
               Grayscale PNM image.

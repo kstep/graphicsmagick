@@ -329,7 +329,7 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
   /*
     Allocate colormap.
   */
-  if (!IsPseudoClass(image))
+  if (!IsPaletteImage(image,&image->exception))
     {
       QuantizeInfo
         quantize_info;

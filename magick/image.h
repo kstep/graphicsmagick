@@ -666,7 +666,7 @@ extern MagickExport ImageInfo
   *CloneImageInfo(const ImageInfo *);
 
 extern MagickExport ImageType
-  GetImageType(Image *);
+  GetImageType(const Image *,ExceptionInfo *);
 
 extern MagickExport IndexPacket
   *GetIndexes(const Image *),
@@ -710,13 +710,13 @@ extern MagickExport unsigned int
   GammaImage(Image *,const char *),
   GetNumberScenes(const Image *),
   IsGeometry(const char *),
-  IsGrayImage(Image *),
+  IsGrayImage(const Image *,ExceptionInfo *),
   IsImagesEqual(Image *,Image *),
   IsImageTainted(const Image *),
   IsMagickConflict(const char *),
-  IsMonochromeImage(Image *),
-  IsOpaqueImage(Image *),
-  IsPseudoClass(Image *),
+  IsMonochromeImage(const Image *,ExceptionInfo *),
+  IsOpaqueImage(const Image *,ExceptionInfo *),
+  IsPaletteImage(const Image *,ExceptionInfo *),
   IsSubimage(const char *,const unsigned int),
   ListColorInfo(FILE *,ExceptionInfo *),
   ListMagickInfo(FILE *,ExceptionInfo *),
@@ -749,7 +749,7 @@ extern MagickExport unsigned int
     int (*)(const Image *,const void *,const size_t));
 
 extern MagickExport unsigned long
-  GetImageDepth(Image *),
+  GetImageDepth(const Image *,ExceptionInfo *),
   GetNumberColors(const Image *,FILE *,ExceptionInfo *);
 
 extern MagickExport void

@@ -694,7 +694,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   scene=0;
   do
   {
-    if ((compression == FaxCompression) && !IsMonochromeImage(image))
+    if ((compression == FaxCompression) &&
+        !IsMonochromeImage(image,&image->exception))
       {
         QuantizeInfo
           quantize_info;

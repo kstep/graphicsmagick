@@ -499,7 +499,7 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
   /*
     Convert MIFF to X bitmap pixels.
   */
-  if (!IsMonochromeImage(image))
+  if (!IsMonochromeImage(image,&image->exception))
     {
       QuantizeInfo
         quantize_info;

@@ -1271,13 +1271,13 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     {
       case FaxCompression:
       {
-        if (IsMonochromeImage(image))
+        if (IsMonochromeImage(image,&image->exception))
           compress_tag=COMPRESSION_CCITTFAX3;
         break;
       }
       case Group4Compression:
       {
-        if (IsMonochromeImage(image))
+        if (IsMonochromeImage(image,&image->exception))
           compress_tag=COMPRESSION_CCITTFAX4;
         break;
       }
@@ -1296,7 +1296,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     }
     if ((image_info->compression == FaxCompression) ||
         (image_info->compression == Group4Compression))
-      if (!IsMonochromeImage(image))
+      if (!IsMonochromeImage(image,&image->exception))
         {
           QuantizeInfo
             quantize_info;
@@ -1339,14 +1339,14 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
           (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
           photometric=PHOTOMETRIC_PALETTE;
-          if (IsMonochromeImage(image))
+          if (IsMonochromeImage(image,&image->exception))
             {
               (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,1);
               photometric=PHOTOMETRIC_MINISWHITE;
               compress_tag=COMPRESSION_CCITTFAX4;
             }
           else
-            if (IsGrayImage(image))
+            if (IsGrayImage(image,&image->exception))
               {
                 if (image->depth > 8)
                   (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
@@ -1644,14 +1644,15 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           byte,
           polarity;
 
-        if (!IsMonochromeImage(image))
+        if (!IsMonochromeImage(image,&image->exception))
           {
             /*
               Convert PseudoClass packets to contiguous grayscale scanlines.
             */
             for (y=0; y < (long) image->rows; y++)
             {
-              if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
+              p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+              if (p == (const PixelPacket *) NULL)
                 break;
               if (photometric != PHOTOMETRIC_PALETTE)
                 (void) PopImagePixels(image,GrayQuantum,scanline);

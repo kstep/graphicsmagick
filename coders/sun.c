@@ -696,7 +696,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
         sun_info.length+=image->columns & 0x01 ? image->rows : 0;
       }
     else
-      if (IsMonochromeImage(image))
+      if (IsMonochromeImage(image,&image->exception))
         {
           /*
             Monochrome SUN raster.
@@ -780,7 +780,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
         LiberateMemory((void **) &pixels);
       }
     else
-      if (IsMonochromeImage(image))
+      if (IsMonochromeImage(image,&image->exception))
         {
           register unsigned char
             bit,

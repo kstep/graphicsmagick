@@ -795,7 +795,7 @@ MagickExport void CompressColormap(Image *image)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (!IsPseudoClass(image))
+  if (!IsPaletteImage(image,&image->exception))
     return;
   GetQuantizeInfo(&quantize_info);
   quantize_info.number_colors=image->colors;

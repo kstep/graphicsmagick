@@ -747,12 +747,11 @@ static void Histogram(const Image *image,CubeInfo *cube_info,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method IsGrayImage returns True if the image is grayscale otherwise
-%  False is returned.  If the image is DirectClass and grayscale, it is demoted
-%  to PseudoClass.
+%  False is returned.
 %
 %  The format of the IsGrayImage method is:
 %
-%      unsigned int IsGrayImage(Image *image)
+%      unsigned int IsGrayImage(const Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -762,24 +761,43 @@ static void Histogram(const Image *image,CubeInfo *cube_info,
 %    o image: The image;  returned from
 %      ReadImage.
 %
+%    o exception: Return any errors or warnings in this structure.
+%
 %
 */
-MagickExport unsigned int IsGrayImage(Image *image)
+MagickExport unsigned int IsGrayImage(const Image *image,
+  ExceptionInfo *exception)
 {
+  long
+    y;
+
+  register const PixelPacket
+    *p;
+
   register long
-    i;
+    x;
 
   /*
     Determine if image is grayscale.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  (void) IsPseudoClass(image);
-  if (image->storage_class != PseudoClass)
+  if (!IsPaletteImage(image,exception))
     return(False);
-  for (i=0; i < (long) image->colors; i++)
-    if (!IsGray(image->colormap[i]))
-      return(False);
+  for (y=0; y < (long) image->rows; y++)
+  {
+    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+    if (p == (const PixelPacket *) NULL)
+      break;
+    for (x=0; x < (long) image->columns; x++)
+    {
+      if (p->red != p->green)
+        return(False);
+      if (p->green != p->blue)
+        return(False);
+      p++;
+    }
+  }
   return(True);
 }
 
@@ -799,36 +817,55 @@ MagickExport unsigned int IsGrayImage(Image *image)
 %
 %  The format of the IsMonochromeImage method is:
 %
-%      status=IsMonochromeImage(image)
+%      unsigned int IsMonochromeImage(const Image *image,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o status: Method IsMonochromeImage returns True if the image is
 %      monochrome otherwise False is returned.
 %
-%    o image: The image;  returned from
-%      ReadImage.
+%    o image: The image.
+%
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
-MagickExport unsigned int IsMonochromeImage(Image *image)
+MagickExport unsigned int IsMonochromeImage(const Image *image,
+  ExceptionInfo *exception)
 {
+  long
+    y;
+
+  register const PixelPacket
+    *p;
+
+  register long
+    x;
+
   /*
-    Determine if image is monochrome.
+    Determine if image is grayscale.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (!IsGrayImage(image))
+  if (!IsGrayImage(image,exception))
     return(False);
-  if (image->colors > 2)
-    return(False);
-  if ((Intensity(image->colormap[0]) != 0) &&
-      (Intensity(image->colormap[0]) != MaxRGB))
-    return(False);
-  if (image->colors == 2)
-    if ((Intensity(image->colormap[1]) != 0) &&
-        (Intensity(image->colormap[1]) != MaxRGB))
-      return(False);
+  for (y=0; y < (long) image->rows; y++)
+  {
+    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+    if (p == (const PixelPacket *) NULL)
+      return(True);
+    for (x=0; x < (long) image->columns; x++)
+    {
+      if (p->red != p->green)
+        return(False);
+      if (p->green != p->blue)
+        return(False);
+      if ((p->red != 0) && (p->red != MaxRGB))
+        return(False);
+      p++;
+    }
+  }
   return(True);
 }
 
@@ -847,7 +884,7 @@ MagickExport unsigned int IsMonochromeImage(Image *image)
 %
 %  The format of the IsOpaqueImage method is:
 %
-%      unsigned int IsOpaqueImage(Image *image)
+%      unsigned int IsOpaqueImage(const Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -856,9 +893,12 @@ MagickExport unsigned int IsMonochromeImage(Image *image)
 %
 %    o image: The image.
 %
+%    o exception: Return any errors or warnings in this structure.
+%
 %
 */
-MagickExport unsigned int IsOpaqueImage(Image *image)
+MagickExport unsigned int IsOpaqueImage(const Image *image,
+  ExceptionInfo *exception)
 {
   long
     y;
@@ -878,7 +918,7 @@ MagickExport unsigned int IsOpaqueImage(Image *image)
     return(True);
   for (y=0; y < (long) image->rows; y++)
   {
-    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
     if (p == (const PixelPacket *) NULL)
       return(True);
     for (x=0; x < (long) image->columns; x++)
@@ -888,7 +928,6 @@ MagickExport unsigned int IsOpaqueImage(Image *image)
       p++;
     }
   }
-  image->matte=False;
   return(True);
 }
 
@@ -897,30 +936,33 @@ MagickExport unsigned int IsOpaqueImage(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  I s P s e u d o C l a s s                                                  %
+%  I s P a l e t t e I m a g e                                                %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method IsPseudoClass returns True if the image is PseudoClass and has 256
+%  Method IsPaletteImage returns True if the image is PseudoClass and has 256
 %  unique colors or less.  If the image is DirectClass and has 256 colors
 %  or less, the image is demoted to PseudoClass.
 %
-%  The format of the IsPseudoClass method is:
+%  The format of the IsPaletteImage method is:
 %
-%      unsigned int IsPseudoClass(Image *image)
+%      unsigned int IsPaletteImage(const Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
-%    o status:  Method IsPseudoClass returns True is the image is
+%    o status:  Method IsPaletteImage returns True is the image is
 %      PseudoClass or has 256 color or less.
 %
 %    o image: The image.
 %
+%    o exception: Return any errors or warnings in this structure.
+%
 %
 */
-MagickExport unsigned int IsPseudoClass(Image *image)
+MagickExport unsigned int IsPaletteImage(const Image *image,
+  ExceptionInfo *exception)
 {
   CubeInfo
     *cube_info;
@@ -931,17 +973,11 @@ MagickExport unsigned int IsPseudoClass(Image *image)
   register const PixelPacket
     *p;
 
-  register IndexPacket
-    *indexes;
-
   register long
     x;
 
   register NodeInfo
     *node_info;
-
-  register PixelPacket
-    *q;
 
   register long
     i;
@@ -964,11 +1000,14 @@ MagickExport unsigned int IsPseudoClass(Image *image)
   */
   cube_info=GetCubeInfo();
   if (cube_info == (CubeInfo *) NULL)
-    ThrowBinaryException(ResourceLimitWarning,"Unable to determine image class",
-      "Memory allocation failed");
+    {
+      ThrowException(exception,ResourceLimitWarning,
+        "Unable to determine image class","Memory allocation failed");
+      return(False);
+    }
   for (y=0; (y < (long) image->rows) && (cube_info->colors <= 256); y++)
   {
-    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
     if (p == (const PixelPacket *) NULL)
       return(False);
     for (x=0; (x < (long) image->columns) && (cube_info->colors <= 256); x++)
@@ -987,8 +1026,11 @@ MagickExport unsigned int IsPseudoClass(Image *image)
           {
             node_info->child[id]=GetNodeInfo(cube_info,level);
             if (node_info->child[id] == (NodeInfo *) NULL)
-              ThrowBinaryException(ResourceLimitWarning,
-                "Unable to determine image class","Memory allocation failed");
+              {
+                ThrowException(exception,ResourceLimitWarning,
+                  "Unable to determine image class","Memory allocation failed");
+                return(False);
+              }
           }
         node_info=node_info->child[id];
         index--;
@@ -1007,8 +1049,11 @@ MagickExport unsigned int IsPseudoClass(Image *image)
             ReacquireMemory((void **) &node_info->list,
               (i+1)*sizeof(ColorPacket));
           if (node_info->list == (ColorPacket *) NULL)
-            ThrowBinaryException(ResourceLimitWarning,
-              "Unable to determine image class","Memory allocation failed");
+            {
+              ThrowException(exception,ResourceLimitWarning,
+                "Unable to determine image class","Memory allocation failed");
+              return(False);
+            }
           node_info->list[i].red=p->red;
           node_info->list[i].green=p->green;
           node_info->list[i].blue=p->blue;
@@ -1018,62 +1063,8 @@ MagickExport unsigned int IsPseudoClass(Image *image)
       p++;
     }
   }
-  if (cube_info->colors <= 256)
-    {
-      IndexPacket
-        index;
-
-      /*
-        Create colormap.
-      */
-      image->storage_class=PseudoClass;
-      image->colors=cube_info->colors;
-      if (image->colormap == (PixelPacket *) NULL)
-        image->colormap=(PixelPacket *)
-          AcquireMemory(image->colors*sizeof(PixelPacket));
-      else
-        ReacquireMemory((void **) &image->colormap,
-          image->colors*sizeof(PixelPacket));
-      if (image->colormap == (PixelPacket *) NULL)
-        ThrowBinaryException(ResourceLimitWarning,
-          "Unable to determine image class","Memory allocation failed");
-      for (y=0; y < (long) image->rows; y++)
-      {
-        q=GetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        indexes=GetIndexes(image);
-        for (x=0; x < (long) image->columns; x++)
-        {
-          /*
-            Start at the root and proceed level by level.
-          */
-          node_info=cube_info->root;
-          index=MaxTreeDepth-1;
-          for (level=1; level < MaxTreeDepth; level++)
-          {
-            id=((DownScale(q->red) >> index) & 0x01) << 2 |
-               ((DownScale(q->green) >> index) & 0x01) << 1 |
-               ((DownScale(q->blue) >> index) & 0x01);
-            node_info=node_info->child[id];
-            index--;
-          }
-          for (i=0; i < (long) node_info->number_unique; i++)
-            if (ColorMatch(*q,node_info->list[i],0))
-              break;
-          index=node_info->list[i].index;
-          indexes[x]=index;
-          image->colormap[index].red=node_info->list[i].red;
-          image->colormap[index].green=node_info->list[i].green;
-          image->colormap[index].blue=node_info->list[i].blue;
-          q++;
-        }
-        if (!SyncImagePixels(image))
-          break;
-      }
-    }
   DestroyCubeInfo(cube_info);
-  return((image->storage_class == PseudoClass) && (image->colors <= 256));
+  return((image->storage_class == PseudoClass) && (cube_info->colors <= 256));
 }
 
 /*

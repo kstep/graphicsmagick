@@ -516,7 +516,7 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 
 if(palette==NULL)
     {		/*attempt to detect binary (black&white) images*/
-    if(IsGrayImage(image))
+    if(IsGrayImage(image,&image->exception))
       {
       if(GetCutColors(image)==2)
          {

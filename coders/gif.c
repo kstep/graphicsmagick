@@ -1177,7 +1177,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   do
   {
     (void) TransformRGBImage(image,RGBColorspace);
-    if (!IsPseudoClass(image))
+    if (!IsPaletteImage(image,&image->exception))
       {
         /*
           GIF requires that the image is colormapped.

@@ -779,7 +779,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
     iris_info.rows=(unsigned short) image->rows;
     iris_info.depth=image->matte ? 4 : 3;
     if (image->storage_class != DirectClass)
-      if (IsGrayImage(image))
+      if (IsGrayImage(image,&image->exception))
         {
           iris_info.dimension=2;
           iris_info.depth=1;

@@ -2131,7 +2131,9 @@ void Magick::Image::depth ( unsigned int depth_ )
 }
 unsigned int Magick::Image::depth ( void ) const
 {
-  return GetImageDepth( const_cast<MagickLib::Image*>(constImage()) );
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  return GetImageDepth( const_cast<MagickLib::Image*>(constImage()) , &exceptionInfo );
 }
 
 std::string Magick::Image::directory ( void ) const
@@ -2881,7 +2883,9 @@ void Magick::Image::transformSkewY ( double skewy_ )
 // Image representation type
 Magick::ImageType Magick::Image::type ( void ) const
 {
-  return static_cast<Magick::ImageType>(MagickLib::GetImageType(const_cast<MagickLib::Image *>(constImage())));
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  return static_cast<Magick::ImageType>(MagickLib::GetImageType(const_cast<MagickLib::Image *>(constImage()), &exceptionInfo));
 }
 void Magick::Image::type ( Magick::ImageType type_)
 {

@@ -416,7 +416,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     /*
       Convert pixels to a bitmap.
     */
-    if (!IsMonochromeImage(image))
+    if (!IsMonochromeImage(image,&image->exception))
       {
         QuantizeInfo
           quantize_info;

@@ -309,7 +309,8 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,buffer);
   width=(density*width)/75;
   height=(density*height)/75;
-  if ((image->storage_class == DirectClass) || !IsGrayImage(image))
+  if ((image->storage_class == DirectClass) ||
+      !IsGrayImage(image,&image->exception))
     {
       /*
         Write PCL color image.
@@ -381,7 +382,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
             ThrowWriterException(ResourceLimitWarning,"Unable to scale image",
               image);
         }
-      if (!IsMonochromeImage(monochrome_image))
+      if (!IsMonochromeImage(monochrome_image,&monochrome_image->exception))
         {
           QuantizeInfo
             quantize_info;

@@ -971,7 +971,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
         viff_info.color_space_model=VFF_CM_NONE;
         viff_info.data_storage_type=VFF_TYP_1_BYTE;
         packets=number_pixels;
-        if (!IsGrayImage(image))
+        if (!IsGrayImage(image,&image->exception))
           {
             /*
               Colormapped VIFF raster.
@@ -1064,7 +1064,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
         }
       }
     else
-      if (!IsGrayImage(image))
+      if (!IsGrayImage(image,&image->exception))
         {
           unsigned char
             *viff_colormap;

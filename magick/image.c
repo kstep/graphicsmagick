@@ -796,7 +796,6 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
     if (QuantumTick(y,image->rows))
       MagickMonitor(ChannelImageText,y,image->rows);
   }
-  (void) IsGrayImage(image);
   return(True);
 }
 
@@ -1784,7 +1783,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       (void) fprintf(file,"  Base Geometry: %lux%lu\n",image->magick_columns,
         image->magick_rows);
   (void) fprintf(file,"  Type: ");
-  switch (GetImageType(image))
+  switch (GetImageType(image,&image->exception))
   {
     case BilevelType: (void) fprintf(file,"bilevel"); break;
     case GrayscaleType: (void) fprintf(file,"grayscale"); break;
@@ -1803,7 +1802,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   }
   (void) fprintf(file,"\n");
   (void) fprintf(file,"  Depth: %lu bits per pixel component\n",
-    GetImageDepth(image));
+    GetImageDepth(image, &image->exception));
   x=0;
   p=(Image *) NULL;
   if ((image->matte && (strcmp(image->magick,"GIF") != 0)) || image->taint)
@@ -2603,15 +2602,18 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
 %
 %  The format of the GetImageDepth method is:
 %
-%      unsigned long GetImageDepth(Image *image)
+%      unsigned long GetImageDepth(const Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: The image.
 %
+%    o exception: Return any errors or warnings in this structure.
+%
 %
 */
-MagickExport unsigned long GetImageDepth(Image *image)
+MagickExport unsigned long GetImageDepth(const Image *image,
+  ExceptionInfo *exception)
 {
   long
     y;
@@ -2624,31 +2626,28 @@ MagickExport unsigned long GetImageDepth(Image *image)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  image->depth=8;
   if (QuantumDepth == 8)
-    return(image->depth);
-  image->depth=16;
+    return(QuantumDepth);
   for (y=0; y < (long) image->rows; y++)
   {
-    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
       if (p->red != UpScale(DownScale(p->red)))
-        return(image->depth);
+        return(QuantumDepth);
       if (p->green != UpScale(DownScale(p->green)))
-        return(image->depth);
+        return(QuantumDepth);
       if (p->blue != UpScale(DownScale(p->blue)))
-        return(image->depth);
+        return(QuantumDepth);
       if (image->matte)
         if (p->opacity != UpScale(DownScale(p->opacity)))
-          return(image->depth);
+          return(QuantumDepth);
       p++;
     }
   }
-  image->depth=8;
-  return(image->depth);
+  return(8);
 }
 
 /*
@@ -2717,15 +2716,17 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
 %
 %  The format of the GetImageType method is:
 %
-%      ImageType GetImageType(Image *image)
+%      ImageType GetImageType(const Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: The image.
 %
+%    o exception: Return any errors or warnings in this structure.
+%
 %
 */
-MagickExport ImageType GetImageType(Image *image)
+MagickExport ImageType GetImageType(const Image *image,ExceptionInfo *exception)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2735,17 +2736,21 @@ MagickExport ImageType GetImageType(Image *image)
         return(ColorSeparationType);
       return(ColorSeparationMatteType);
     }
-  if (IsMonochromeImage(image))
-    return(BilevelType);
-  if (IsGrayImage(image) && image->matte)
-    return(GrayscaleMatteType);
-  if (IsGrayImage(image))
-    return(GrayscaleType);
-  if (IsPseudoClass(image) && image->matte)
-    return(PaletteMatteType);
-  if (IsPseudoClass(image))
-    return(PaletteType);
-  if (!IsOpaqueImage(image))
+  if (IsGrayImage(image,exception))
+    {
+      if (IsMonochromeImage(image,exception))
+        return(BilevelType);
+      if (image->matte)
+        return(GrayscaleMatteType);
+      return(GrayscaleType);
+    }
+  if (IsPaletteImage(image,exception))
+    {
+      if (image->matte)
+        return(PaletteMatteType);
+      return(PaletteType);
+    }
+  if (!IsOpaqueImage(image,exception))
     return(TrueColorMatteType);
   return(TrueColorType);
 }
@@ -3320,7 +3325,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
   quantize_info.tree_depth=0;
   quantize_info.dither=True;
   if (clone_info->monochrome)
-    if (!IsMonochromeImage(*image))
+    if (!IsMonochromeImage(*image,&(*image)->exception))
       {
         quantize_info.number_colors=2;
         quantize_info.tree_depth=8;
@@ -4684,7 +4689,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                   image_type;
 
                 option=argv[++i];
-                image_type=GetImageType(*image);
+                image_type=GetImageType(*image,&(*image)->exception);
                 if (LocaleCompare("Bilevel",option) == 0)
                   image_type=BilevelType;
                 if (LocaleCompare("Grayscale",option) == 0)
@@ -5805,7 +5810,7 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned long depth)
   image->depth=depth;
   if (image->depth == QuantumDepth)
     return(True);
-  if (GetImageDepth(image) == depth)
+  if (GetImageDepth(image,&image->exception) == depth)
     return(True);
   image->depth=8;
   for (y=0; y < (long) image->rows; y++)

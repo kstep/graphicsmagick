@@ -363,7 +363,6 @@ MagickExport Image *MontageImages(const Image *image,
     {
       for (i=0; i < (long) tile; i++)
         DestroyImage(next_list[i]);
-      (void) SetMonitorHandler(handler);
       return((Image *) NULL);
     }
   /*

@@ -3036,7 +3036,7 @@ Get(ref,...)
               if (info)
                 s=newSViv(info->image_info->depth);
               if (image)
-                s=newSViv(GetImageDepth(image));
+                s=newSViv(GetImageDepth(image,&image->exception));
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
@@ -3292,7 +3292,8 @@ Get(ref,...)
             }
           if (LocaleCompare(attribute,"monochrome") == 0)
             {
-              j=info ? info->image_info->monochrome : IsMonochromeImage(image);
+              j=info ? info->image_info->monochrome :
+                IsMonochromeImage(image,&image->exception);
               s=newSViv(j);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -3526,7 +3527,7 @@ Get(ref,...)
             {
               if (!image)
                 break;
-              j=(int) GetImageType(image);
+              j=(int) GetImageType(image,&image->exception);
               s=newSViv(j);
               if ((j >= 0) && (j < NumberOf(ImageTypes)-1))
                 {

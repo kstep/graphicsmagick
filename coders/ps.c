@@ -977,7 +977,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             /*
               Dump image as bitmap.
             */
-            if (!IsMonochromeImage(preview_image))
+            if (!IsMonochromeImage(preview_image,&preview_image->exception))
               {
                 QuantizeInfo
                   quantize_info;
@@ -1207,12 +1207,13 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobByte(image,'\n');
       }
     else
-      if (IsGrayImage(image))
+      if (IsGrayImage(image,&image->exception))
         {
           FormatString(buffer,"%u %u\n1\n1\n1\n%d\n",
-            image->columns,image->rows,IsMonochromeImage(image) ? 1 : 8);
+            image->columns,image->rows,
+            IsMonochromeImage(image,&image->exception) ? 1 : 8);
           (void) WriteBlobString(image,buffer);
-          if (!IsMonochromeImage(image))
+          if (!IsMonochromeImage(image,&image->exception))
             {
               /*
                 Dump image as grayscale.

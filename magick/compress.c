@@ -707,8 +707,10 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
   if (scanline == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
       (char *) NULL);
-  huffman_image=(Image *) image;
-  if (!IsMonochromeImage(huffman_image))
+  huffman_image=CloneImage(image,0,0,True,&image->exception);
+  if (huffman_image == (Image *) NULL)
+    return(False);
+  if (!IsMonochromeImage(huffman_image,&image->exception))
     {
       QuantizeInfo
         quantize_info;
@@ -716,9 +718,6 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
       /*
         Convert image to monochrome.
       */
-      huffman_image=CloneImage(image,0,0,True,&image->exception);
-      if (huffman_image == (Image *) NULL)
-        return(False);
       GetQuantizeInfo(&quantize_info);
       quantize_info.number_colors=2;
       quantize_info.dither=image_info->dither;
@@ -839,8 +838,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
     }
   if (LocaleCompare(image_info->magick,"FAX") != 0)
     Ascii85Flush(image);
-  if (huffman_image != image)
-    DestroyImage(huffman_image);
+  DestroyImage(huffman_image);
   LiberateMemory((void **) &scanline);
   return(True);
 }
@@ -922,7 +920,7 @@ MagickExport unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   huffman_image=CloneImage(image,0,0,True,&image->exception);
   if (huffman_image == (Image *) NULL)
     return(False);
-  if (!IsMonochromeImage(huffman_image))
+  if (!IsMonochromeImage(huffman_image,&image->exception))
     {
       QuantizeInfo
         quantize_info;
