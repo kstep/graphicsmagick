@@ -7961,9 +7961,7 @@ MagickExport void XMonitorWidget(Display *display,XWindows *windows,
   if (!windows->info.mapped || (task != monitor_info.text))
     XInfoWidget(display,windows,task);
   width=(unsigned int) (((quantum+1)*(windows->info.width-
-    (monitor_info.x << 1)))/span);
-  if (width == monitor_info.width)
-    return;
+    (2*monitor_info.x)))/span);
   if (width < monitor_info.width)
     {
       monitor_info.raised=True;

@@ -1116,7 +1116,7 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
           DestroyImage(resize_image);
           return((Image *) NULL);
         }
-      span=resize_image->columns+source_image->columns;
+      span=resize_image->columns+source_image->rows;
       status=VerticalFilter(image,source_image,y_factor,&filters[i],blur,
         contribution,span,&quantum,exception);
       status|=HorizontalFilter(source_image,resize_image,x_factor,&filters[i],
