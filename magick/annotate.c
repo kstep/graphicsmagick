@@ -1542,8 +1542,8 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
             fill_color=AcquireOnePixel(pattern,
               (x-pattern->tile_info.x) % pattern->columns,
               (y-pattern->tile_info.y) % pattern->rows,&image->exception);
-          q->opacity=(Quantum) (MaxRGB-((unsigned long) ((MaxRGB-ScaleIntensityToQuantum(q))*
-            (MaxRGB-fill_color.opacity))/MaxRGB));
+          q->opacity=(Quantum) (MaxRGB-((unsigned long) ((MaxRGB-
+            PixelIntensityToQuantum(q))*(MaxRGB-fill_color.opacity))/MaxRGB));
           q->red=fill_color.red;
           q->green=fill_color.green;
           q->blue=fill_color.blue;

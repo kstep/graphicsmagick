@@ -779,7 +779,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               case 'i':
               case 'I':
               {
-                *q++=ScaleQuantumToChar(ScaleIntensityToQuantum(p));
+                *q++=ScaleQuantumToChar(PixelIntensityToQuantum(p));
                 break;
               }
               default:
@@ -846,7 +846,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               case 'i':
               case 'I':
               {
-                *q++=ScaleQuantumToShort(ScaleIntensityToQuantum(p));
+                *q++=ScaleQuantumToShort(PixelIntensityToQuantum(p));
                 break;
               }
               default:
@@ -913,7 +913,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               case 'i':
               case 'I':
               {
-                *q++=ScaleQuantumToLong(ScaleIntensityToQuantum(p));
+                *q++=ScaleQuantumToLong(PixelIntensityToQuantum(p));
                 break;
               }
               default:
@@ -980,7 +980,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               case 'i':
               case 'I':
               {
-                *q++=ScaleQuantumToLong(ScaleIntensityToQuantum(p));
+                *q++=ScaleQuantumToLong(PixelIntensityToQuantum(p));
                 break;
               }
               default:
@@ -1047,7 +1047,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               case 'i':
               case 'I':
               {
-                *q++=(float) ScaleIntensityToQuantum(p)/MaxRGB;
+                *q++=(float) PixelIntensityToQuantum(p)/MaxRGB;
                 break;
               }
               default:
@@ -1114,7 +1114,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               case 'i':
               case 'I':
               {
-                *q++=(double) ScaleIntensityToQuantum(p)/MaxRGB;
+                *q++=(double) PixelIntensityToQuantum(p)/MaxRGB;
                 break;
               }
               default:
@@ -1330,7 +1330,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToChar(ScaleIntensityToQuantum(p));
+            pixel=ScaleQuantumToChar(PixelIntensityToQuantum(p));
             *q++=pixel;
             p++;
           }
@@ -1340,7 +1340,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToShort(ScaleIntensityToQuantum(p));
+            pixel=ScaleQuantumToShort(PixelIntensityToQuantum(p));
             *q++=pixel >> 8;
             *q++=pixel;
             p++;
@@ -1349,7 +1349,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       for (x=0; x < (long) number_pixels; x++)
       {
-        pixel=ScaleQuantumToLong(ScaleIntensityToQuantum(p));
+        pixel=ScaleQuantumToLong(PixelIntensityToQuantum(p));
         *q++=pixel >> 24;
         *q++=pixel >> 16;
         *q++=pixel >> 8;
@@ -1364,7 +1364,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToChar(ScaleIntensityToQuantum(p));
+            pixel=ScaleQuantumToChar(PixelIntensityToQuantum(p));
             *q++=pixel;
             pixel=ScaleQuantumToChar(MaxRGB-p->opacity);
             *q++=pixel;
@@ -1376,7 +1376,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToShort(ScaleIntensityToQuantum(p));
+            pixel=ScaleQuantumToShort(PixelIntensityToQuantum(p));
             *q++=pixel >> 8;
             *q++=pixel;
             pixel=ScaleQuantumToShort(MaxRGB-p->opacity);
@@ -1388,7 +1388,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       for (x=0; x < (long) number_pixels; x++)
       {
-        pixel=ScaleQuantumToLong(ScaleIntensityToQuantum(p));
+        pixel=ScaleQuantumToLong(PixelIntensityToQuantum(p));
         *q++=pixel >> 24;
         *q++=pixel >> 16;
         *q++=pixel >> 8;

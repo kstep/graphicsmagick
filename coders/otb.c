@@ -337,9 +337,10 @@ static unsigned int WriteOTBImage(const ImageInfo *image_info,Image *image)
       quantize_info.colorspace=GRAYColorspace;
       (void) QuantizeImage(&quantize_info,image);
     }
-  polarity=ScaleIntensityToQuantum(&image->colormap[0]) > (0.5*MaxRGB);
+  polarity=PixelIntensityToQuantum(&image->colormap[0]) > (0.5*MaxRGB);
   if (image->colors == 2)
-    polarity=ScaleIntensityToQuantum(&image->colormap[0]) > ScaleIntensityToQuantum(&image->colormap[1]);
+    polarity=PixelIntensityToQuantum(&image->colormap[0]) >
+      PixelIntensityToQuantum(&image->colormap[1]);
   info=0;
   if ((image->columns >= 256) || (image->rows >= 256))
     SetBit(info,4,1);

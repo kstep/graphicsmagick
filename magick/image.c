@@ -1367,7 +1367,7 @@ MagickExport unsigned int CompositeImage(Image *image,
               q++;
               continue;
             }
-          x_displace=(horizontal_scale*(ScaleIntensityToQuantum(p)-
+          x_displace=(horizontal_scale*(PixelIntensityToQuantum(p)-
             (0.5*(MaxRGB+1))))/(0.5*(MaxRGB+1));
           y_displace=x_displace;
           if (composite_image->matte)
@@ -1634,13 +1634,13 @@ MagickExport unsigned int CompositeImage(Image *image,
         case BumpmapCompositeOp:
         {
           destination.red=(Quantum) ((double)
-            ((ScaleIntensityToQuantum(&source)*destination.red)/MaxRGB));
+            ((PixelIntensityToQuantum(&source)*destination.red)/MaxRGB));
           destination.green=(Quantum) ((double)
-            ((ScaleIntensityToQuantum(&source)*destination.green)/MaxRGB));
+            ((PixelIntensityToQuantum(&source)*destination.green)/MaxRGB));
           destination.blue=(Quantum) ((double)
-            ((ScaleIntensityToQuantum(&source)*destination.blue)/MaxRGB));
+            ((PixelIntensityToQuantum(&source)*destination.blue)/MaxRGB));
           destination.opacity=(Quantum) ((double)
-            ((ScaleIntensityToQuantum(&source)*destination.opacity)/MaxRGB));
+            ((PixelIntensityToQuantum(&source)*destination.opacity)/MaxRGB));
           break;
         }
         case CopyCompositeOp:
@@ -1668,7 +1668,7 @@ MagickExport unsigned int CompositeImage(Image *image,
         {
           if (!composite_image->matte)
             {
-              destination.opacity=ScaleIntensityToQuantum(&source);
+              destination.opacity=PixelIntensityToQuantum(&source);
               break;
             }
           destination.opacity=source.opacity;
@@ -1738,7 +1738,7 @@ MagickExport unsigned int CompositeImage(Image *image,
           long
             offset;
 
-          offset=(long) (ScaleIntensityToQuantum(&source)-midpoint);
+          offset=(long) (PixelIntensityToQuantum(&source)-midpoint);
           if (offset == 0)
             break;
           TransformHSL(destination.red,destination.green,destination.blue,
@@ -4599,7 +4599,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               for (x=0; x < (long) mask->columns; x++)
               {
                 if (!mask->matte)
-                  q->opacity=(Quantum) ScaleIntensityToQuantum(q);
+                  q->opacity=PixelIntensityToQuantum(q);
                 q->red=q->opacity;
                 q->green=q->opacity;
                 q->blue=q->opacity;
@@ -6986,13 +6986,18 @@ extern "C" {
 
 static int IntensityCompare(const void *x,const void *y)
 {
+  long
+    intensity;
+
   PixelPacket
     *color_1,
     *color_2;
 
   color_1=(PixelPacket *) x;
   color_2=(PixelPacket *) y;
-  return((int) (ScaleIntensityToQuantum(color_2)-ScaleIntensityToQuantum(color_1)));
+  intensity=PixelIntensityToQuantum(color_2)-
+    (long) PixelIntensityToQuantum(color_1);
+  return(intensity);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)

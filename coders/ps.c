@@ -1064,11 +1064,11 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             if ((preview_image->storage_class == DirectClass) ||
                 !IsMonochromeImage(preview_image,&preview_image->exception))
               SetImageType(preview_image,BilevelType);
-            polarity=(Quantum)
-              ScaleIntensityToQuantum(&preview_image->colormap[0]) < (0.5*MaxRGB);
+            polarity=PixelIntensityToQuantum(&preview_image->colormap[0]) <
+              (0.5*MaxRGB);
             if (preview_image->colors == 2)
-              polarity=ScaleIntensityToQuantum(&preview_image->colormap[0]) >
-                ScaleIntensityToQuantum(&preview_image->colormap[1]);
+              polarity=PixelIntensityToQuantum(&preview_image->colormap[0]) >
+                PixelIntensityToQuantum(&preview_image->colormap[1]);
             FormatString(buffer,"%%%%BeginPreview: %lu %lu %lu %lu\n%%  ",
               preview_image->columns,preview_image->rows,1L,
               (((preview_image->columns+7) >> 3)*preview_image->rows+35)/36);
@@ -1213,7 +1213,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               for (x=0; x < (long) image->columns; x++)
               {
                 FormatString(buffer,"%02X",
-                  ScaleQuantumToChar(ScaleIntensityToQuantum(p)));
+                  ScaleQuantumToChar(PixelIntensityToQuantum(p)));
                 (void) WriteBlobString(image,buffer);
                 i++;
                 if (i == 36)
@@ -1239,10 +1239,11 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             if ((image->storage_class == DirectClass) ||
                 !IsMonochromeImage(image,&image->exception))
               SetImageType(image,BilevelType);
-            polarity=ScaleIntensityToQuantum(&image->colormap[0]) > (0.5*MaxRGB);
+            polarity=PixelIntensityToQuantum(&image->colormap[0]) >
+              (0.5*MaxRGB);
             if (image->colors == 2)
-              polarity=ScaleIntensityToQuantum(&image->colormap[1]) >
-                ScaleIntensityToQuantum(&image->colormap[0]);
+              polarity=PixelIntensityToQuantum(&image->colormap[1]) >
+                PixelIntensityToQuantum(&image->colormap[0]);
             count=0;
             for (y=0; y < (long) image->rows; y++)
             {

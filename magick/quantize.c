@@ -465,8 +465,8 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
           unsigned int
             polarity;
 
-          polarity=
-            ScaleIntensityToQuantum(&image->colormap[0]) > ScaleIntensityToQuantum(&image->colormap[1]);
+          polarity=PixelIntensityToQuantum(&image->colormap[0]) >
+            PixelIntensityToQuantum(&image->colormap[1]);
           image->colormap[polarity].red=0;
           image->colormap[polarity].green=0;
           image->colormap[polarity].blue=0;
@@ -1735,7 +1735,7 @@ MagickExport unsigned int OrderedDitherImage(Image *image)
     indexes=GetIndexes(image);
     for (x=0; x < (long) image->columns; x++)
     {
-      index=(Quantum) (ScaleIntensityToQuantum(q) >
+      index=(Quantum) (PixelIntensityToQuantum(q) >
         ScaleCharToQuantum(DitherMatrix[y & 0x07][x & 0x07]) ? 1 : 0);
       indexes[x]=index;
       q->red=image->colormap[index].red;

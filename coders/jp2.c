@@ -585,14 +585,15 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
     for (x=0; x < (long) image->columns; x++)
     {
       if (number_components == 1)
-        jas_matrix_setv(pixels[0],x,(Quantum) ScaleQuantumToChar(ScaleIntensityToQuantum(p)));
+        jas_matrix_setv(pixels[0],x,
+          ScaleQuantumToChar(PixelIntensityToQuantum(p)));
       else
         {
-          jas_matrix_setv(pixels[0],x,(Quantum) ScaleQuantumToChar(p->red));
-          jas_matrix_setv(pixels[1],x,(Quantum) ScaleQuantumToChar(p->green));
-          jas_matrix_setv(pixels[2],x,(Quantum) ScaleQuantumToChar(p->blue));
+          jas_matrix_setv(pixels[0],x,ScaleQuantumToChar(p->red));
+          jas_matrix_setv(pixels[1],x,ScaleQuantumToChar(p->green));
+          jas_matrix_setv(pixels[2],x,ScaleQuantumToChar(p->blue));
           if (number_components > 3)
-            jas_matrix_setv(pixels[3],x,(Quantum) ScaleQuantumToChar(p->opacity));
+            jas_matrix_setv(pixels[3],x,ScaleQuantumToChar(p->opacity));
         }
       p++;
     }

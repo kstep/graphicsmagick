@@ -685,7 +685,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
               break;
             for (x=0; x < (long) image->columns; x++)
             {
-              *q++=ScaleQuantumToChar(ScaleIntensityToQuantum(p));
+              *q++=ScaleQuantumToChar(PixelIntensityToQuantum(p));
               p++;
             }
             if (image->previous == (Image *) NULL)

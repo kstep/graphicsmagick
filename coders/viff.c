@@ -617,8 +617,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         */
         polarity=0;
         if (image->colors >= 2)
-          polarity=ScaleIntensityToQuantum(&image->colormap[0]) <
-            ScaleIntensityToQuantum(&image->colormap[1]);
+          polarity=PixelIntensityToQuantum(&image->colormap[0]) <
+            PixelIntensityToQuantum(&image->colormap[1]);
         for (y=0; y < (long) image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
@@ -1127,10 +1127,11 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
             /*
               Convert PseudoClass image to a VIFF monochrome image.
             */
-            polarity=ScaleIntensityToQuantum(&image->colormap[0]) > (0.5*MaxRGB);
+            polarity=PixelIntensityToQuantum(&image->colormap[0]) >
+              (0.5*MaxRGB);
             if (image->colors == 2)
-              polarity=
-                ScaleIntensityToQuantum(&image->colormap[0]) > ScaleIntensityToQuantum(&image->colormap[1]);
+              polarity=PixelIntensityToQuantum(&image->colormap[0]) >
+                PixelIntensityToQuantum(&image->colormap[1]);
             for (y=0; y < (long) image->rows; y++)
             {
               p=AcquireImagePixels(image,0,y,image->columns,1,
@@ -1173,7 +1174,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                *q++=(unsigned char) ScaleIntensityToQuantum(p);
+                *q++=(unsigned char) PixelIntensityToQuantum(p);
                 p++;
               }
               if (image->previous == (Image *) NULL)

@@ -442,9 +442,10 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     if ((image->storage_class == DirectClass) ||
         !IsMonochromeImage(image,&image->exception))
       SetImageType(image,BilevelType);
-    polarity=ScaleIntensityToQuantum(&image->colormap[0]) > (0.5*MaxRGB);
+    polarity=PixelIntensityToQuantum(&image->colormap[0]) > (0.5*MaxRGB);
     if (image->colors == 2)
-      polarity=ScaleIntensityToQuantum(&image->colormap[0]) > ScaleIntensityToQuantum(&image->colormap[1]);
+      polarity=PixelIntensityToQuantum(&image->colormap[0]) >
+        PixelIntensityToQuantum(&image->colormap[1]);
     q=pixels;
     for (y=0; y < (long) image->rows; y++)
     {

@@ -1882,14 +1882,14 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         /*
           Convert PseudoClass packets to contiguous monochrome scanlines.
         */
-        polarity=ScaleIntensityToQuantum(&image->colormap[0]) > (0.5*MaxRGB);
+        polarity=PixelIntensityToQuantum(&image->colormap[0]) > (0.5*MaxRGB);
         if (photometric == PHOTOMETRIC_PALETTE)
           polarity=1;
         else
           if (image->colors == 2)
             {
-              polarity=ScaleIntensityToQuantum(&image->colormap[0]) >
-                ScaleIntensityToQuantum(&image->colormap[1]);
+              polarity=PixelIntensityToQuantum(&image->colormap[0]) >
+                PixelIntensityToQuantum(&image->colormap[1]);
               if (photometric == PHOTOMETRIC_MINISBLACK)
                 polarity=!polarity;
             }

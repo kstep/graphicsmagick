@@ -2213,7 +2213,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
       {
         for (u=0; u < width; u++)
         {
-          k=ScaleIntensityToQuantum(r+u);
+          k=PixelIntensityToQuantum(r+u);
           histogram[k]++;
           if (histogram[k] > count)
             {
@@ -2706,13 +2706,13 @@ MagickExport Image *ShadeImage(const Image *image,
       /*
         Determine the surface normal and compute shading.
       */
-      normal.x=ScaleIntensityToQuantum(s0-1)+ScaleIntensityToQuantum(s1-1)+
-        ScaleIntensityToQuantum(s2-1)-(long) ScaleIntensityToQuantum(s0+1)-
-        (long) ScaleIntensityToQuantum(s1+1)-
-        (long) ScaleIntensityToQuantum(s2+1);
-      normal.y=ScaleIntensityToQuantum(s2-1)+ScaleIntensityToQuantum(s2)+
-        ScaleIntensityToQuantum(s2+1)-(long) ScaleIntensityToQuantum(s0-1)-
-        (long) ScaleIntensityToQuantum(s0)-(long) ScaleIntensityToQuantum(s0+1);
+      normal.x=PixelIntensityToQuantum(s0-1)+PixelIntensityToQuantum(s1-1)+
+        PixelIntensityToQuantum(s2-1)-(long) PixelIntensityToQuantum(s0+1)-
+        (long) PixelIntensityToQuantum(s1+1)-
+        (long) PixelIntensityToQuantum(s2+1);
+      normal.y=PixelIntensityToQuantum(s2-1)+PixelIntensityToQuantum(s2)+
+        PixelIntensityToQuantum(s2+1)-(long) PixelIntensityToQuantum(s0-1)-
+        (long) PixelIntensityToQuantum(s0)-(long) PixelIntensityToQuantum(s0+1);
       if ((normal.x == 0.0) && (normal.y == 0.0))
         shade=light.z;
       else
@@ -3107,17 +3107,17 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
         {
           case 0:
           {
-            SetBit(q->red,j,GetBit(ScaleIntensityToQuantum(&pixel),i));
+            SetBit(q->red,j,GetBit(PixelIntensityToQuantum(&pixel),i));
             break;
           }
           case 1:
           {
-            SetBit(q->green,j,GetBit(ScaleIntensityToQuantum(&pixel),i));
+            SetBit(q->green,j,GetBit(PixelIntensityToQuantum(&pixel),i));
             break;
           }
           case 2:
           {
-            SetBit(q->blue,j,GetBit(ScaleIntensityToQuantum(&pixel),i));
+            SetBit(q->blue,j,GetBit(PixelIntensityToQuantum(&pixel),i));
             break;
           }
         }
@@ -3425,7 +3425,7 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
     indexes=GetIndexes(image);
     for (x=0; x < (long) image->columns; x++)
     {
-      index=ScaleIntensityToQuantum(q) < threshold ? 0 : 1;
+      index=PixelIntensityToQuantum(q) < threshold ? 0 : 1;
       indexes[x]=index;
       q->red=image->colormap[index].red;
       q->green=image->colormap[index].green;

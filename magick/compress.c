@@ -738,8 +738,8 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
   */
   polarity=0;
   if (huffman_image->colors == 2)
-    polarity=(ScaleIntensityToQuantum(&huffman_image->colormap[0]) >
-      ScaleIntensityToQuantum(&huffman_image->colormap[1]) ? 0 : 1);
+    polarity=(PixelIntensityToQuantum(&huffman_image->colormap[0]) >
+      PixelIntensityToQuantum(&huffman_image->colormap[1]) ? 0 : 1);
   q=scanline;
   for (i=0; i < (long) width; i++)
     *q++=(unsigned char) polarity;

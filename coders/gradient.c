@@ -116,7 +116,7 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   (void) sscanf(image_info->filename,"%[^-]",colorname);
   (void) QueryColorDatabase(colorname,&start_color,exception);
   (void) strcpy(colorname,"white");
-  if (ScaleIntensityToQuantum(&start_color) > (0.5*MaxRGB))
+  if (PixelIntensityToQuantum(&start_color) > (0.5*MaxRGB))
     (void) strcpy(colorname,"black");
   (void) sscanf(image_info->filename,"%*[^-]-%s",colorname);
   (void) QueryColorDatabase(colorname,&stop_color,exception);
