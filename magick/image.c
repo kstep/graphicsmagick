@@ -970,9 +970,10 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         memcpy(q,p,image->columns*sizeof(PixelPacket));
-        indexes=GetIndexes(clone_image);
+        indexes=GetIndexes(image);
         if (indexes != (IndexPacket *) NULL)
-          memcpy(indexes,GetIndexes(image),image->columns*sizeof(IndexPacket));
+          memcpy(GetIndexes(clone_image),indexes,
+            image->columns*sizeof(IndexPacket));
         if (!SyncImagePixels(clone_image))
           break;
       }

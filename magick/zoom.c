@@ -773,9 +773,9 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         memcpy(q,p,source->columns*sizeof(PixelPacket));
-        indexes=GetIndexes(destination);
+        indexes=GetIndexes(source);
         if (indexes != (IndexPacket *) NULL)
-          memcpy(indexes,GetIndexes(source),
+          memcpy(GetIndexes(destination),indexes,
             source->columns*sizeof(IndexPacket));
         if (!SyncImagePixels(destination))
           break;
@@ -907,9 +907,9 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         memcpy(q,p,source->columns*sizeof(PixelPacket));
-        indexes=GetIndexes(destination);
+        indexes=GetIndexes(indexes);
         if (indexes != (IndexPacket *) NULL)
-          memcpy(indexes,GetIndexes(source),
+          memcpy(GetIndexes(destination),indexes,
             source->columns*sizeof(IndexPacket));
         if (!SyncImagePixels(destination))
           break;

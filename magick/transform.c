@@ -423,9 +423,10 @@ MagickExport Image *CropImage(Image *image,const RectangleInfo *crop_info,
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     memcpy(q,p,crop_image->columns*sizeof(PixelPacket));
-    indexes=GetIndexes(crop_image);
+    indexes=GetIndexes(image);
     if (indexes != (IndexPacket *) NULL)
-      memcpy(indexes,GetIndexes(image),crop_image->columns*sizeof(IndexPacket));
+      memcpy(GetIndexes(crop_image),indexes,
+        crop_image->columns*sizeof(IndexPacket));
     if (!SyncImagePixels(crop_image))
       break;
     if (QuantumTick(y,crop_image->rows))
@@ -748,9 +749,10 @@ MagickExport Image *FlipImage(Image *image,ExceptionInfo *exception)
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     memcpy(q,p,flip_image->columns*sizeof(PixelPacket));
-    indexes=GetIndexes(flip_image);
+    indexes=GetIndexes(image);
     if (indexes != (IndexPacket *) NULL)
-      memcpy(indexes,GetIndexes(image),flip_image->columns*sizeof(IndexPacket));
+      memcpy(GetIndexes(flip_image),indexes,
+        image->columns*sizeof(IndexPacket));
     status=SyncImagePixels(flip_image);
     if (status == False)
       break;

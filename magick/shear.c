@@ -145,9 +145,10 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         memcpy(q,p,image->columns*sizeof(PixelPacket));
-        indexes=GetIndexes(rotate_image);
+        indexes=GetIndexes(image);
         if (indexes != (IndexPacket *) NULL)
-          memcpy(indexes,GetIndexes(image),image->columns*sizeof(IndexPacket));
+          memcpy(GetIndexes(rotate_image),indexes,
+            image->columns*sizeof(IndexPacket));
         if (!SyncImagePixels(rotate_image))
           break;
         if (QuantumTick(y,image->rows))
@@ -167,9 +168,10 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         memcpy(q,p,image->columns*sizeof(PixelPacket));
-        indexes=GetIndexes(rotate_image);
+        indexes=GetIndexes(image);
         if (indexes != (IndexPacket *) NULL)
-          memcpy(indexes,GetIndexes(image),image->columns*sizeof(IndexPacket));
+          memcpy(GetIndexes(rotate_image),indexes,
+            image->columns*sizeof(IndexPacket));
         if (!SyncImagePixels(rotate_image))
           break;
         if (QuantumTick(y,image->rows))
