@@ -1,3 +1,9 @@
+2003-05-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* images: The logo image was determined to have a copyright
+	problem so replace with blank image until a replacement is
+	available.
+
 2003-05-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* VisualMagick/magick/magick_config.h.in (HAVE_SYS_TYPES_H): 
