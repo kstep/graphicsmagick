@@ -800,7 +800,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
   */
   if (IsEventLogging())
     for (i=0; i < (long) count; i++)
-      (void) LogMagickEvent(GetMagickModule(LocaleEvent),"%.1024s",locale[i]);
+      (void) LogMagickEvent(LocaleEvent,GetMagickModule(),"%.1024s",locale[i]);
   locales=(struct locale_str *) NULL;
   accumulate((const char **) locale,count,&locales);
   WriteBlobString(image,prologue);

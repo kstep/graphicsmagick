@@ -739,7 +739,7 @@ MagickExport void DestroyCacheInfo(Cache cache)
   if (cache_info->semaphore != (SemaphoreInfo *) NULL)
     DestroySemaphoreInfo(&cache_info->semaphore);
   FormatString(message,"destroy %.1024s",cache_info->filename);
-  (void) LogMagickEvent(GetMagickModule(CacheEvent),message);
+  (void) LogMagickEvent(CacheEvent,GetMagickModule(),message);
   LiberateMemory((void **) &cache_info);
 }
 
@@ -1918,7 +1918,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
             FormatSize(cache_info->length,format);
             FormatString(message,"open %.1024s (%.1024s)",cache_info->filename,
               format);
-            (void) LogMagickEvent(GetMagickModule(CacheEvent),message);
+            (void) LogMagickEvent(CacheEvent,GetMagickModule(),message);
             return(True);
           }
       }
@@ -1996,7 +1996,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   FormatString(message,"open %.1024s (%.1024s, %.1024s, %.1024s)",
     cache_info->filename,cache_info->cache_filename,
     cache_info->type == MapCache ? "memory-mapped" : "disk",format);
-  (void) LogMagickEvent(GetMagickModule(CacheEvent),message);
+  (void) LogMagickEvent(CacheEvent,GetMagickModule(),message);
   return(True);
 }
 

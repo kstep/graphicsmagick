@@ -4723,32 +4723,32 @@ MagickExport XWindows *XInitializeWindows(Display *display,
   if (IsEventLogging())
     {
       (void) XSynchronize(display,True);
-      (void) LogMagickEvent(GetMagickModule(X11Event),"Version: %.1024s",
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"Version: %.1024s",
         GetMagickVersion((unsigned long *) NULL));
-      (void) LogMagickEvent(GetMagickModule(X11Event),"Protocols:");
-      (void) LogMagickEvent(GetMagickModule(X11Event),"  Window Manager: 0x%lx",
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"Protocols:");
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"  Window Manager: 0x%lx",
         windows->wm_protocols);
-      (void) LogMagickEvent(GetMagickModule(X11Event),"    delete window: 0x%lx",
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"    delete window: 0x%lx",
         windows->wm_delete_window);
-      (void) LogMagickEvent(GetMagickModule(X11Event),"    take focus: 0x%lx",
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"    take focus: 0x%lx",
         windows->wm_take_focus);
-      (void) LogMagickEvent(GetMagickModule(X11Event),"  ImageMagick: 0x%lx",
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"  ImageMagick: 0x%lx",
         windows->im_protocols);
-      (void) LogMagickEvent(GetMagickModule(X11Event),"    remote command: 0x%lx",
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"    remote command: 0x%lx",
         windows->im_remote_command);
-      (void) LogMagickEvent(GetMagickModule(X11Event),"    update widget: 0x%lx",
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"    update widget: 0x%lx",
         windows->im_update_widget);
-      (void) LogMagickEvent(GetMagickModule(X11Event),
+      (void) LogMagickEvent(X11Event,GetMagickModule(),
         "    update colormap: 0x%lx",windows->im_update_colormap);
-      (void) LogMagickEvent(GetMagickModule(X11Event),"    former image: 0x%lx",
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"    former image: 0x%lx",
         windows->im_former_image);
-      (void) LogMagickEvent(GetMagickModule(X11Event),"    next image: 0x%lx",
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"    next image: 0x%lx",
         windows->im_next_image);
-      (void) LogMagickEvent(GetMagickModule(X11Event),"    retain colors: 0x%lx",
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"    retain colors: 0x%lx",
         windows->im_retain_colors);
-      (void) LogMagickEvent(GetMagickModule(X11Event),"    exit: 0x%lx",
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"    exit: 0x%lx",
         windows->im_exit);
-      (void) LogMagickEvent(GetMagickModule(X11Event),"  Drag and Drop: 0x%lx",
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"  Drag and Drop: 0x%lx",
         windows->dnd_protocols);
     }
   /*
@@ -4786,20 +4786,20 @@ MagickExport XWindows *XInitializeWindows(Display *display,
       resource_info->visual_type);
   if (IsEventLogging())
     {
-      (void) LogMagickEvent(GetMagickModule(X11Event),"Visual:");
-      (void) LogMagickEvent(GetMagickModule(X11Event),"  visual id: 0x%lx",
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"Visual:");
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"  visual id: 0x%lx",
         windows->visual_info->visualid);
-      (void) LogMagickEvent(GetMagickModule(X11Event),"  class: %.1024s",
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"  class: %.1024s",
         XVisualClassName(windows->visual_info->storage_class));
-      (void) LogMagickEvent(GetMagickModule(X11Event),"  depth: %d planes",
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"  depth: %d planes",
         windows->visual_info->depth);
-      (void) LogMagickEvent(GetMagickModule(X11Event),
+      (void) LogMagickEvent(X11Event,GetMagickModule(),
         "  size of colormap: %d entries",windows->visual_info->colormap_size);
-      (void) LogMagickEvent(GetMagickModule(X11Event),
+      (void) LogMagickEvent(X11Event,GetMagickModule(),
         "  red, green, blue masks: 0x%lx 0x%lx 0x%lx",
         windows->visual_info->red_mask,windows->visual_info->green_mask,
         windows->visual_info->blue_mask);
-      (void) LogMagickEvent(GetMagickModule(X11Event),
+      (void) LogMagickEvent(X11Event,GetMagickModule(),
         "  significant bits in color: %d bits",
         windows->visual_info->bits_per_rgb);
     }
@@ -5100,23 +5100,23 @@ MagickExport unsigned int XMakeImage(Display *display,
     }
   if (IsEventLogging())
     {
-      (void) LogMagickEvent(GetMagickModule(X11Event),"XImage:");
-      (void) LogMagickEvent(GetMagickModule(X11Event),"  width, height: %dx%d",
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"XImage:");
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"  width, height: %dx%d",
         ximage->width,ximage->height);
-      (void) LogMagickEvent(GetMagickModule(X11Event),"  format: %d",
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"  format: %d",
         ximage->format);
-      (void) LogMagickEvent(GetMagickModule(X11Event),"  byte order: %d",
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"  byte order: %d",
         ximage->byte_order);
-      (void) LogMagickEvent(GetMagickModule(X11Event),
+      (void) LogMagickEvent(X11Event,GetMagickModule(),
         "  bitmap unit, bit order, pad: %d %d %d",ximage->bitmap_unit,
         ximage->bitmap_bit_order,ximage->bitmap_pad);
-      (void) LogMagickEvent(GetMagickModule(X11Event),"  depth: %d",
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"  depth: %d",
         ximage->depth);
-      (void) LogMagickEvent(GetMagickModule(X11Event),"  bytes per line: %d",
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"  bytes per line: %d",
         ximage->bytes_per_line);
-      (void) LogMagickEvent(GetMagickModule(X11Event),"  bits per pixel: %d",
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"  bits per pixel: %d",
         ximage->bits_per_pixel);
-      (void) LogMagickEvent(GetMagickModule(X11Event),
+      (void) LogMagickEvent(X11Event,GetMagickModule(),
         "  red, green, blue masks: 0x%lx 0x%lx 0x%lx",ximage->red_mask,
         ximage->green_mask,ximage->blue_mask);
     }
@@ -5177,8 +5177,8 @@ MagickExport unsigned int XMakeImage(Display *display,
           (char *) NULL,width,height,XBitmapPad(display),0);
         if (IsEventLogging())
           {
-            (void) LogMagickEvent(GetMagickModule(X11Event),"Matte Image:");
-            (void) LogMagickEvent(GetMagickModule(X11Event),
+            (void) LogMagickEvent(X11Event,GetMagickModule(),"Matte Image:");
+            (void) LogMagickEvent(X11Event,GetMagickModule(),
               "  width, height: %dx%d",matte_image->width,matte_image->height);
           }
         if (matte_image != (XImage *) NULL)
@@ -6923,8 +6923,8 @@ static unsigned int XMakePixmap(Display *display,
       window->ximage,0,0,0,0,width,height);
   if (IsEventLogging())
     {
-      (void) LogMagickEvent(GetMagickModule(X11Event),"Pixmap:");
-      (void) LogMagickEvent(GetMagickModule(X11Event),"  width, height: %ux%u",
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"Pixmap:");
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"  width, height: %ux%u",
         width,height);
     }
   /*
@@ -7099,13 +7099,13 @@ MagickExport void XMakeStandardColormap(Display *display,
           }
       if (IsEventLogging())
         {
-          (void) LogMagickEvent(GetMagickModule(X11Event),"Standard Colormap:");
-          (void) LogMagickEvent(GetMagickModule(X11Event),"  colormap id: 0x%lx",
+          (void) LogMagickEvent(X11Event,GetMagickModule(),"Standard Colormap:");
+          (void) LogMagickEvent(X11Event,GetMagickModule(),"  colormap id: 0x%lx",
             map_info->colormap);
-          (void) LogMagickEvent(GetMagickModule(X11Event),
+          (void) LogMagickEvent(X11Event,GetMagickModule(),
             "  red, green, blue max: %lu %lu %lu",map_info->red_max,
             map_info->green_max,map_info->blue_max);
-          (void) LogMagickEvent(GetMagickModule(X11Event),
+          (void) LogMagickEvent(X11Event,GetMagickModule(),
             "  red, green, blue mult: %lu %lu %lu",map_info->red_mult,
             map_info->green_mult,map_info->blue_mult);
         }
@@ -7539,13 +7539,13 @@ MagickExport void XMakeStandardColormap(Display *display,
   LiberateMemory((void **) &colors);
   if (IsEventLogging())
     {
-      (void) LogMagickEvent(GetMagickModule(X11Event),"Standard Colormap:");
-      (void) LogMagickEvent(GetMagickModule(X11Event),"  colormap id: 0x%lx",
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"Standard Colormap:");
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"  colormap id: 0x%lx",
         map_info->colormap);
-      (void) LogMagickEvent(GetMagickModule(X11Event),
+      (void) LogMagickEvent(X11Event,GetMagickModule(),
         "  red, green, blue max: %lu %lu %lu",map_info->red_max,
         map_info->green_max,map_info->blue_max);
-      (void) LogMagickEvent(GetMagickModule(X11Event),
+      (void) LogMagickEvent(X11Event,GetMagickModule(),
         "  red, green, blue mult: %lu %lu %lu",map_info->red_mult,
         map_info->green_mult,map_info->blue_mult);
     }

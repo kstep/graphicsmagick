@@ -567,7 +567,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  logging=LogMagickEvent(GetMagickModule(CoderEvent),"enter WriteMPEGImage()");
+  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter WriteMPEGImage()");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
@@ -659,12 +659,12 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
       if (logging)
         {
           if (status)
-            (void) LogMagickEvent(GetMagickModule(CoderEvent),"  %lu. Wrote YUV file for scene %lu:",i,
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  %lu. Wrote YUV file for scene %lu:",i,
               p->scene);
           else
-            (void) LogMagickEvent(GetMagickModule(CoderEvent),
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "  %lu. Failed to write YUV file for scene %lu:",i,p->scene);
-          (void) LogMagickEvent(GetMagickModule(CoderEvent),"  %.1024s",filename);
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  %.1024s",filename);
         }
     }
     p->scene=scene;
@@ -703,6 +703,6 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   if (coalesce_image != image)
     DestroyImage(coalesce_image);
   if (logging)
-    (void) LogMagickEvent(GetMagickModule(CoderEvent),"exit WriteMPEGImage()");
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"exit WriteMPEGImage()");
   return(status);
 }

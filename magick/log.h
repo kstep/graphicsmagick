@@ -16,13 +16,12 @@ extern "C" {
 #endif
 
 #if defined __STDC_VERSION__ && (__STDC_VERSION__ >= 199901L)
-# define GetMagickModule(severity)  severity,__FILE__,__func__,__LINE__
+# define GetMagickModule()  __FILE__,__func__,__LINE__
 #else
 # if defined(__cplusplus) ? GNUC_Prerequiste(2,6) : GNUC_Prerequiste(2,4)
-#  define GetMagickModule(severity)  \
-     severity,__FILE,__PRETTY_FUNCTION__,__LINE__
+#  define GetMagickModule()  __FILE__,__PRETTY_FUNCTION__,__LINE__
 # else
-#  define GetMagickModule(severity)  severity,__FILE__,"unknown",__LINE__
+#  define GetMagickModule()  __FILE__,"unknown",__LINE__
 # endif
 #endif
 

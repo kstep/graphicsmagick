@@ -2309,15 +2309,15 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   wmfD_Rect
     bbox;
 
-  logging=LogMagickEvent(GetMagickModule(CoderEvent),"enter ReadWMFImage()");
+  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter ReadWMFImage()");
 
   image = AllocateImage(image_info);
   if (!OpenBlob(image_info,image,ReadBinaryBlobMode,exception))
     {
       if(logging)
         {
-          (void) LogMagickEvent(GetMagickModule(CoderEvent),"  OpenBlob failed");
-          (void) LogMagickEvent(GetMagickModule(CoderEvent),"leave ReadWMFImage()");
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  OpenBlob failed");
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadWMFImage()");
         }
       ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
     }
@@ -2342,8 +2342,8 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
         wmf_api_destroy(API);
       if(logging)
         {
-          (void) LogMagickEvent(GetMagickModule(CoderEvent),"  wmf_api_create failed");
-          (void) LogMagickEvent(GetMagickModule(CoderEvent),"leave ReadWMFImage()");
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  wmf_api_create failed");
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadWMFImage()");
         }
       ThrowReaderException(DelegateError,"UnableToInitializeWMFLibrary",image);
     }
@@ -2373,8 +2373,8 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
       wmf_api_destroy(API);
       if(logging)
         {
-          (void) LogMagickEvent(GetMagickModule(CoderEvent),"  wmf_bbuf_input failed");
-          (void) LogMagickEvent(GetMagickModule(CoderEvent),"leave ReadWMFImage()");
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  wmf_bbuf_input failed");
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadWMFImage()");
         }
       ThrowReaderException(FileOpenError,"UnableToOpenFile", image);
     }
@@ -2384,15 +2384,15 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
    *
    */
   if (logging)
-    (void) LogMagickEvent(GetMagickModule(CoderEvent),"  Scanning WMF to obtain bounding box");
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Scanning WMF to obtain bounding box");
   wmf_error = wmf_scan(API, 0, &bbox);
   if (wmf_error != wmf_E_None)
     {
       wmf_api_destroy(API);
       if (logging)
         {
-          (void) LogMagickEvent(GetMagickModule(CoderEvent),"  wmf_scan failed with wmf_error %d", wmf_error);
-          (void) LogMagickEvent(GetMagickModule(CoderEvent),"leave ReadWMFImage()");
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  wmf_scan failed with wmf_error %d", wmf_error);
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadWMFImage()");
         }
       ThrowReaderException(DelegateError,"FailedToScanFile",image);
     }
@@ -2428,8 +2428,8 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
       wmf_api_destroy(API);
       if (logging)
         {
-          (void) LogMagickEvent(GetMagickModule(CoderEvent),"  wmf_size failed with wmf_error %d", wmf_error);
-          (void) LogMagickEvent(GetMagickModule(CoderEvent),"leave ReadWMFImage()");
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  wmf_size failed with wmf_error %d", wmf_error);
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadWMFImage()");
         }
       ThrowReaderException(DelegateError,"FailedToComputeOutputSize",image);
     }
@@ -2482,26 +2482,26 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
 
   if (logging)
     {
-      (void) LogMagickEvent(GetMagickModule(CoderEvent),"  Placeable metafile:          %s",
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Placeable metafile:          %s",
                      (API)->File->placeable ? "Yes" : "No");
       
-      (void) LogMagickEvent(GetMagickModule(CoderEvent),"  Size in metafile units:      %.4gx%.4g",
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Size in metafile units:      %.4gx%.4g",
                      wmf_width, wmf_height);
-      (void) LogMagickEvent(GetMagickModule(CoderEvent),"  Metafile units/inch:         %.4g",
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Metafile units/inch:         %.4g",
                      units_per_inch);
-      (void) LogMagickEvent(GetMagickModule(CoderEvent),"  Size in inches:              %.4gx%.4g",
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Size in inches:              %.4gx%.4g",
                      image_width_inch,image_height_inch);
-      (void) LogMagickEvent(GetMagickModule(CoderEvent),"  Bounding Box:                %.4g,%.4g %.4g,%.4g",
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Bounding Box:                %.4g,%.4g %.4g,%.4g",
                      bbox.TL.x, bbox.TL.y, bbox.BR.x, bbox.BR.y);
-      (void) LogMagickEvent(GetMagickModule(CoderEvent),"  Bounding width x height:     %.4gx%.4g",
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Bounding width x height:     %.4gx%.4g",
                      bounding_width, bounding_height);
-      (void) LogMagickEvent(GetMagickModule(CoderEvent),"  Output resolution:           %.4gx%.4g",
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Output resolution:           %.4gx%.4g",
                      resolution_x, resolution_y);
-      (void) LogMagickEvent(GetMagickModule(CoderEvent),"  Image size:                  %.4gx%.4g",
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Image size:                  %.4gx%.4g",
                      image_width, image_height);
-      (void) LogMagickEvent(GetMagickModule(CoderEvent),"  Bounding box scale factor:   %.4g,%.4g",
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Bounding box scale factor:   %.4g,%.4g",
                      ddata->scale_x, ddata->scale_y);
-      (void) LogMagickEvent(GetMagickModule(CoderEvent),"  Translation:                 %.4g,%.4g",
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Translation:                 %.4g,%.4g",
                      ddata->translate_x, ddata->translate_y);
     }
 
@@ -2555,12 +2555,12 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
       wmf_api_destroy(API);
       CloseBlob(image);
       if(logging)
-        (void) LogMagickEvent(GetMagickModule(CoderEvent),"leave ReadWMFImage()");
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadWMFImage()");
       return(image);
     }
 
   if (logging)
-    (void) LogMagickEvent(GetMagickModule(CoderEvent),"  Creating canvas image with size %ldx%ld", image->rows, image->columns);
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Creating canvas image with size %ldx%ld", image->rows, image->columns);
 
   /*
    * Set solid background color
@@ -2596,7 +2596,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
    */
 
   if (logging)
-    (void) LogMagickEvent(GetMagickModule(CoderEvent),"  Playing WMF to prepare vectors");
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Playing WMF to prepare vectors");
 
   wmf_error = wmf_play(API, 0, &bbox);
   if (wmf_error != wmf_E_None)
@@ -2604,8 +2604,8 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
       wmf_api_destroy(API);
       if (logging)
         {
-          (void) LogMagickEvent(GetMagickModule(CoderEvent),"  Playing WMF failed with wmf_error %d", wmf_error);
-          (void) LogMagickEvent(GetMagickModule(CoderEvent),"leave ReadWMFImage()");
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Playing WMF failed with wmf_error %d", wmf_error);
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadWMFImage()");
         }
       ThrowReaderException(DelegateError,"FailedToRenderFile",image);
     }
@@ -2616,7 +2616,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
    */
 
   if (logging)
-    (void) LogMagickEvent(GetMagickModule(CoderEvent),"  Rendering WMF vectors");
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Rendering WMF vectors");
   DrawRender(ddata->draw_context);
 
   /* Cleanup allocated data */
@@ -2624,7 +2624,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   CloseBlob(image);
 
   if(logging)
-    (void) LogMagickEvent(GetMagickModule(CoderEvent),"leave ReadWMFImage()");
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadWMFImage()");
 
   /* Return image */
   return image;
