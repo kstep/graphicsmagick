@@ -83,7 +83,9 @@
 #define MNG_INSERT_LAYERS   /* Troublesome, but seem to work as of 5.4.4 */
 #define PNG_BUILD_PALETTE   /* This works as of 5.4.3. */
 #define PNG_SORT_PALETTE    /* This works as of 5.4.0. */
-#define JNG_SUPPORTED /* Not finished as of 5.5.2.  See "To do" comments. */
+#if defined(HasJPEG)
+#  define JNG_SUPPORTED /* Not finished as of 5.5.2.  See "To do" comments. */
+#endif
 
 /*
   Establish thread safety.
@@ -421,13 +423,8 @@ static unsigned int
 static unsigned int
   WriteMNGImage(const ImageInfo *,Image *);
 #if defined(JNG_SUPPORTED)
-#if !defined(HasJPEG)
-#  define HasJPEG 1
-#endif /* !defined(HasJPEG) */
-#if defined(HasJPEG)
 static unsigned int
   WriteJNGImage(const ImageInfo *,Image *);
-#endif
 #endif
 
 #if defined(HasPNG)
@@ -2774,7 +2771,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
 
 #if defined(JNG_SUPPORTED)
-#if defined(HasJPEG)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -3311,6 +3307,9 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   jng_image=ReadImage(color_image_info,exception);
 
   (void) remove(color_image->filename);
+  if (logging)
+     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+         "    Removed %.1024s",color_image->filename);
   DestroyImage(color_image);
   DestroyImageInfo(color_image_info);
 
@@ -3369,6 +3368,9 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
              break;
          }
          (void) remove(alpha_image->filename);
+         if (logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                "    Removed %.1024s",alpha_image->filename);
          DestroyImage(alpha_image);
          DestroyImageInfo(alpha_image_info);
          DestroyImage(jng_image);
@@ -3505,7 +3507,6 @@ static Image *ReadJNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"exit ReadJNGImage()");
   return (image);
 }
-#endif
 #endif
 
 static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
@@ -5688,7 +5689,6 @@ ModuleExport void RegisterPNGImage(void)
   (void) RegisterMagickInfo(entry);
 
 #if defined(JNG_SUPPORTED)
-#if defined(HasJPEG)
   entry=SetMagickInfo("JNG");
 #if defined(HasPNG)
   entry->decoder=(DecoderHandler) ReadJNGImage;
@@ -5701,7 +5701,6 @@ ModuleExport void RegisterPNGImage(void)
   entry->module=AcquireString("PNG");
   entry->note=AcquireString(JNGNote);
   (void) RegisterMagickInfo(entry);
-#endif
 #endif
 }
 
@@ -5732,9 +5731,7 @@ ModuleExport void UnregisterPNGImage(void)
   (void) UnregisterMagickInfo("PNG24");
   (void) UnregisterMagickInfo("PNG32");
 #if defined(JNG_SUPPORTED)
-#if defined(HasJPEG)
   (void) UnregisterMagickInfo("JNG");
-#endif
 #endif
 }
 
@@ -7253,7 +7250,6 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 }
 
 #if defined(JNG_SUPPORTED)
-#if defined(HasJPEG)
 
 /* Write one JNG image */
 static unsigned int WriteOneJNGImage(MngInfo *mng_info,
@@ -7403,7 +7399,10 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
 
         }
       /* Destroy JPEG image and image_info */
-      (void) remove(jpeg_image->filename);
+      (void) remove(jpeg_image_info->filename);
+      if (logging)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "    Removed %.1024s",jpeg_image_info->filename);
       DestroyImage(jpeg_image);
       DestroyImageInfo(jpeg_image_info);
     }
@@ -7711,7 +7710,10 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
   (void) WriteBlobMSBULong(image,crc32(crc32(0,chunk,4),(unsigned char *)
       blob,length));
 
-  (void) remove(jpeg_image->filename);
+  (void) remove(jpeg_image_info->filename);
+  if (logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "    Removed %.1024s",jpeg_image_info->filename);
   DestroyImage(jpeg_image);
   DestroyImageInfo(jpeg_image_info);
   LiberateMemory((void **) &blob);
@@ -7779,7 +7781,6 @@ static unsigned int WriteJNGImage(const ImageInfo *image_info,Image *image)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"exit WriteJNGImage()");
   return (status);
 }
-#endif
 #endif
 
 
