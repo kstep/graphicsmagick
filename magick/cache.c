@@ -136,19 +136,20 @@ MagickExport void
 MagickExport void AllocateCacheNexus(CacheInfo *cache_info)
 {
   register int
-    i;
+    id;
 
   /*
     Allocate cache nexus.
   */
+  assert(cache_info != (CacheInfo *) NULL);
   cache_info->nexus=(NexusInfo *)
     AcquireMemory((cache_info->rows+1)*sizeof(NexusInfo));
   if (cache_info->nexus == (NexusInfo *) NULL)
     MagickError(ResourceLimitError,"Memory allocation failed",
       "unable to allocate cache nexus");
   memset(cache_info->nexus,0,(cache_info->rows+1)*sizeof(NexusInfo));
-  for (i=1; i <= cache_info->rows; i++)
-    cache_info->nexus[i].available=True;
+  for (id=1; id <= cache_info->rows; id++)
+    cache_info->nexus[id].available=True;
 }
 
 /*
@@ -201,7 +202,7 @@ static void CloseCache(Cache cache)
 %  Method ClosePixelCache closes the pixel cache.  Use this method to prevent
 %  the too many file descriptors from being allocated when reading an image
 %  sequence.  File descriptors are only used for a disk-based cache.  This is
-%  essentially a no-op for a memory-based cache.
+%  a no-op for a memory-based cache.
 %
 %  The format of the ClosePixelCache method is:
 %
