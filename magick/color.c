@@ -163,6 +163,62 @@ static void
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   C o l o r M a t c h                                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ColorMatch() returns true if two pixels are identical in color.
+%
+%  The format of the ColorMatch method is:
+%
+%      void ColorMatch(const PixelPacket *p,const PixelPacket *q,
+%        const double fuzz)
+%
+%  A description of each parameter follows:
+%
+%    o p: Pixel p.
+%
+%    o q: Pixel q.
+%
+%    o distance:  Define how much tolerance is acceptable to consider
+%      two colors as the same.
+%
+%
+*/
+MagickExport unsigned int ColorMatch(const PixelPacket *p,const PixelPacket *q,
+  const double fuzz)
+{
+  register double
+    blue,
+    distance,
+    green,
+    red;
+
+  if ((fuzz == 0.0) && (p->red == q->red) && (p->green == q->green) &&
+      (p->blue == q->blue))
+    return(True);
+  red=(double) (p->red-q->red);
+  distance=red*red;
+  if (distance > (fuzz*fuzz))
+    return(False);
+  green=(double) (p->green-q->green);
+  distance+=green*green;
+  if (distance > (fuzz*fuzz))
+    return(False);
+  blue=(double) (p->blue-q->blue);
+  distance+=blue*blue;
+  if (distance > (fuzz*fuzz))
+    return(False);
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   D e s t r o y C o l o r I n f o                                           %
 %                                                                             %
 %                                                                             %
@@ -1690,4 +1746,46 @@ static unsigned int ReadConfigurationFile(const char *basename,
   while (color_list->previous != (ColorInfo *) NULL)
     color_list=color_list->previous;
   return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   V a l i d a t e C o l o r m a p I n d e x                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ValidateColormapIndex() validates the colormap index.  If the index does
+%  not range from 0 to the number of colors in the colormap an exception
+%  is issued and 0 is returned.
+%
+%  The format of the ValidateColormapIndex method is:
+%
+%      IndexPacket ValidateColormapIndex(Image *image,const unsigned int index)
+%
+%  A description of each parameter follows:
+%
+%    o index: Method ValidateColormapIndex returns colormap index if it is
+%      valid other an exception is issued and 0 is returned.
+%
+%    o image: The image.
+%
+%    o index: This integer is the colormap index.
+%
+%
+*/
+MagickExport IndexPacket ValidateColormapIndex(Image *image,
+  const unsigned long index)
+{
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (index < image->colors)
+    return((IndexPacket) index);
+  ThrowException(&image->exception,CorruptImageWarning,
+    "invalid colormap index",image->filename);
+  return(0);
 }

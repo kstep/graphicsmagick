@@ -1040,7 +1040,20 @@ ModuleExport void RegisterMIFFImage(void)
   entry->magick=IsMIFF;
   entry->description=AcquireString("Magick Image File Format");
 #if defined(MagickLibVersionText)
-  entry->version=AcquireString(MagickLibVersionText);
+  {
+    char
+      version[MaxTextExtent];
+
+    (void) strncpy(version,MagickLibVersionText,MaxTextExtent >> 1);
+#if defined(ZLIB_VERSION)
+		(void) strcat(version," with Zlib ");
+		(void) strncat(version,ZLIB_VERSION,MaxTextExtent-strlen(version)-1);
+#endif
+#if defined(HasBZLIB)
+		(void) strcat(version," with BZlib");
+#endif
+    entry->version=AcquireString(version);
+  }
 #endif
   entry->module=AcquireString("MIFF");
   (void) RegisterMagickInfo(entry);
