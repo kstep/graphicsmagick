@@ -1062,7 +1062,7 @@ static unsigned int RenderPostscript(Image *image,
       crop_info=GetImageBoundingBox(annotate_image);
       crop_info.height=(unsigned int) ceil((resolution.y/72.0)*
         ExpandAffine(&annotate_info->affine)*annotate_info->pointsize-0.5);
-      crop_info.y=(int) ceil((resolution.y/72.0)*extent.y/8.0+0.5);
+      crop_info.y=(int) ceil((resolution.y/72.0)*extent.y/8.0-0.5);
       (void) FormatString(geometry,"%ux%u%+d%+d",crop_info.width,
         crop_info.height,crop_info.x,crop_info.y);
       TransformImage(&annotate_image,geometry,(char *) NULL);
