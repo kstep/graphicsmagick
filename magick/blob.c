@@ -266,7 +266,7 @@ MagickExport void CloseBlob(Image *image)
       if (image->exempt)
         return;
       if (image->blob->mapped)
-        (void) UnmapBlob(image->blob->data,image->blob->extent);
+        (void) UnmapBlob(image->blob->data,image->blob->length);
       DetachBlob(image->blob);
       if (!image->orphan)
         {
@@ -1525,16 +1525,19 @@ MagickExport off_t SeekBlob(Image *image,const off_t offset,const int whence)
       if (image->blob->offset <= image->blob->length)
         image->blob->eof=False;
       else
-        {
-          image->blob->extent=image->blob->offset+image->blob->quantum;
-          ReacquireMemory((void **) &image->blob->data,image->blob->extent+1);
-          SyncBlob(image);
-          if (image->blob->data == (unsigned char *) NULL)
-            {
-              DetachBlob(image->blob);
-              return(-1);
-            }
-        }
+        if (image->blob->mapped)
+          return(-1);
+        else
+          {
+            image->blob->extent=image->blob->offset+image->blob->quantum;
+            ReacquireMemory((void **) &image->blob->data,image->blob->extent+1);
+            SyncBlob(image);
+            if (image->blob->data == (unsigned char *) NULL)
+              {
+                DetachBlob(image->blob);
+                return(-1);
+              }
+          }
       return(TellBlob(image));
     }
   if (image->file == (FILE *) NULL)
@@ -1786,6 +1789,8 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
     {
       if (length > (image->blob->extent-image->blob->offset))
         {
+          if (image->blob->mapped)
+            return(0);
           image->blob->extent+=length+image->blob->quantum;
           ReacquireMemory((void **) &image->blob->data,image->blob->extent+1);
           SyncBlob(image);
