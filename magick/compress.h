@@ -20,7 +20,7 @@ extern MagickExport unsigned int
 extern MagickExport void
   Ascii85Encode(Image *,const unsigned int),
   Ascii85Flush(Image *),
-  Ascii85Initialize(void);
+  Ascii85Initialize(Image *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

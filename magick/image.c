@@ -196,6 +196,8 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   allocate_image->magick_rows=0;
   allocate_image->taint=False;
   allocate_image->restart_animation_here=False;
+  allocate_image->ascii85.offset=0;
+  allocate_image->ascii85.line_break=0;
   GetExceptionInfo(&allocate_image->exception);
   GetTimerInfo(&allocate_image->timer);
   allocate_image->cache=(void *) NULL;

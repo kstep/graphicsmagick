@@ -378,7 +378,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         file=fopen(filename,ReadBinaryType);
         if (file == (FILE *) NULL)
           ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-        Ascii85Initialize();
+        Ascii85Initialize(image);
         for (c=fgetc(file); c != EOF; c=fgetc(file))
           Ascii85Encode(image,c);
         Ascii85Flush(image);
@@ -442,7 +442,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         /*
           Dump uncompressed DirectColor packets.
         */
-        Ascii85Initialize();
+        Ascii85Initialize(image);
         for (y=0; y < (int) image->rows; y++)
         {
           p=GetImagePixels(image,0,y,image->columns,1);

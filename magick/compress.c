@@ -228,13 +228,6 @@ static const HuffmanTable
 */
 #define MaxLineExtent  36
 
-static int
-  offset,
-  line_break;
-
-static unsigned char
-  ascii85_buffer[10];
-
 static char *Ascii85Tuple(unsigned char *data)
 {
   static char
@@ -269,10 +262,10 @@ static char *Ascii85Tuple(unsigned char *data)
   return(tuple);
 }
 
-MagickExport void Ascii85Initialize(void)
+MagickExport void Ascii85Initialize(Image *image)
 {
-  line_break=MaxLineExtent << 1;
-  offset=0;
+  image->ascii85.line_break=MaxLineExtent << 1;
+  image->ascii85.offset=0;
 }
 
 MagickExport void Ascii85Flush(Image *image)
@@ -281,13 +274,14 @@ MagickExport void Ascii85Flush(Image *image)
     *tuple;
 
   assert(image != (Image *) NULL);
-  if (offset > 0)
+  if (image->ascii85.offset > 0)
     {
-      ascii85_buffer[offset]=0;
-      ascii85_buffer[offset+1]=0;
-      ascii85_buffer[offset+2]=0;
-      tuple=Ascii85Tuple(ascii85_buffer);
-      (void) WriteBlob(image,offset+1,*tuple == 'z' ? "!!!!" : tuple);
+      image->ascii85.buffer[image->ascii85.offset]=0;
+      image->ascii85.buffer[image->ascii85.offset+1]=0;
+      image->ascii85.buffer[image->ascii85.offset+2]=0;
+      tuple=Ascii85Tuple(image->ascii85.buffer);
+      (void) WriteBlob(image,image->ascii85.offset+1,
+        *tuple == 'z' ? "!!!!" : tuple);
     }
   (void) WriteByte(image,'~');
   (void) WriteByte(image,'>');
@@ -306,29 +300,29 @@ MagickExport void Ascii85Encode(Image *image,const unsigned int code)
     *p;
 
   assert(image != (Image *) NULL);
-  ascii85_buffer[offset]=code;
-  offset++;
-  if (offset < 4)
+  image->ascii85.buffer[image->ascii85.offset]=code;
+  image->ascii85.offset++;
+  if (image->ascii85.offset < 4)
     return;
-  p=ascii85_buffer;
-  for (n=offset; n >= 4; n-=4)
+  p=image->ascii85.buffer;
+  for (n=image->ascii85.offset; n >= 4; n-=4)
   {
     for (q=Ascii85Tuple(p); *q; q++)
     {
-      line_break--;
-      if ((line_break < 0) && (*(q+1) != '%'))
+      image->ascii85.line_break--;
+      if ((image->ascii85.line_break < 0) && (*(q+1) != '%'))
         {
           (void) WriteByte(image,'\n');
-          line_break=2*MaxLineExtent;
+          image->ascii85.line_break=2*MaxLineExtent;
         }
       (void) WriteByte(image,*q);
     }
     p+=8;
   }
-  offset=n;
+  image->ascii85.offset=n;
   p-=4;
   for (n=0; n < 4; n++)
-    ascii85_buffer[n]=(*p++);
+    image->ascii85.buffer[n]=(*p++);
 }
 
 /*
@@ -734,7 +728,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
   byte=0;
   bit=0x80;
   if (LocaleCompare(image_info->magick,"FAX") != 0)
-    Ascii85Initialize();
+    Ascii85Initialize(image);
   else
     {
       /*
@@ -978,7 +972,7 @@ MagickExport unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
   TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&fillorder);
   for (i=0; i < (int) TIFFNumberOfStrips(tiff); i++)
   {
-    Ascii85Initialize();
+    Ascii85Initialize(image);
     count=TIFFReadRawStrip(tiff,i,buffer,byte_count[i]);
     if (fillorder == FILLORDER_LSB2MSB)
       TIFFReverseBits(buffer,count);
@@ -1095,7 +1089,7 @@ MagickExport unsigned int LZWEncodeImage(Image *image,
   code_width=9;
   number_bits=0;
   last_code=0;
-  Ascii85Initialize();
+  Ascii85Initialize(image);
   OutputCode(LZWClr);
   for (index=0; index < 256; index++)
   {
@@ -1234,7 +1228,7 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,
   if (packbits == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
       (char *) NULL);
-  Ascii85Initialize();
+  Ascii85Initialize(image);
   i=number_pixels;
   while (i != 0)
   {
@@ -1404,7 +1398,7 @@ MagickExport unsigned int ZLIBEncodeImage(Image *image,
       (char *) NULL)
   else
     {
-      Ascii85Initialize();
+      Ascii85Initialize(image);
       for (i=0; i < (int) compressed_packets; i++)
         Ascii85Encode(image,compressed_pixels[i]);
       Ascii85Flush(image);

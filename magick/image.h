@@ -50,6 +50,16 @@ typedef unsigned char Quantum;
 /*
   Typedef declarations.
 */
+typedef struct _Ascii85Info
+{
+  int
+    offset,
+    line_break;
+
+  unsigned char
+    buffer[10];
+} Ascii85Info;
+
 typedef struct _PointInfo
 {
   double
@@ -399,6 +409,9 @@ typedef struct _Image
   int
     restart_animation_here,
     taint;
+
+  Ascii85Info
+    ascii85;
 
   ExceptionInfo
     exception;

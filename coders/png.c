@@ -1941,7 +1941,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           compression;
 
         png_get_iCCP(ping,ping_info,&image->color_profile.name,
-          &compression,&image->color_profile.info,&image->color_profile.length);
+          &compression,(png_charpp) &image->color_profile.info,
+          (png_uint_32 *) &image->color_profile.length);
       }
 #endif
 #if defined(PNG_READ_sRGB_SUPPORTED)
@@ -3807,7 +3808,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 #if defined(PNG_WRITE_iCCP_SUPPORTED)
     if (ping_info->valid & PNG_INFO_iCCP)
       png_set_iCCP(ping,ping_info,image->color_profile.name,0,
-        &image->color_profile.info,image->color_profile.length);
+        (char *) &image->color_profile.info,image->color_profile.length);
 #endif
 #if defined(PNG_WRITE_sRGB_SUPPORTED)
     if (!have_write_global_srgb &&
