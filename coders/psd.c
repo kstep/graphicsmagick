@@ -161,7 +161,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
             default:
             {
               if (image->colorspace == CMYKColorspace)
-                indexes[x]=UpScale(pixel);
+                indexes=UpScale(pixel);
               break;
             }
           }
@@ -211,7 +211,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
         default:
         {
           if (image->colorspace == CMYKColorspace)
-            indexes[x]=UpScale(pixel);
+            indexes=UpScale(pixel);
           break;
         }
       }
