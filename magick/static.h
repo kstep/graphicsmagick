@@ -1,5 +1,5 @@
 /*
-  ImageMagick Coder Registration Methods
+  ImageMagick Coder Registration Methods.
 */
 #ifndef _MAGICK_STATIC_H
 #define _MAGICK_STATIC_H
@@ -7,14 +7,6 @@
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-/*
-  Include declarations.
-*/
-
-/*
-  Define declarations.
-*/
 
 #if !defined(HasMODULES)
 extern ModuleExport void
