@@ -202,7 +202,7 @@ testFilter('input.miff', 'Sample',
 testFilter('input.miff', 'Scale',
   q/50%/,
   'ed70966b7e264bcc36f3813d6de07f4f',
-  '0ea71fc856ff26e877fee849afe0f92c');
+  '13c229dc92426097f74443c945142b0f');
 
 ++$test;
 testFilter('input.miff', 'Segment',

@@ -14,6 +14,11 @@ sub testRead {
   my( $infile, $md5, $md5_16 ) =  @_;
 
   my($image);
+
+  if ( !defined( $md5_16 ) )
+    {
+      $md5_16 = $md5;
+    }
   
   $image=Image::Magick->new;
   $image->Set(size=>'512x512');
@@ -30,6 +35,7 @@ sub testRead {
       if ( $md5 ne $md5_16 and $md5_16 ne "same") {
          print "      if 16-bit: $md5_16\n";
       }
+      #$image->Display();
       print "not ok $test\n";
     } else {
       print "ok $test\n";
@@ -93,6 +99,11 @@ sub testReadWrite {
   my( $infile, $outfile, $writeoptions, $md5, $md5_16 ) = @_;
   
   my($image);
+
+  if ( !defined( $md5_16 ) )
+    {
+      $md5_16 = $md5;
+    }
 
   $image=Image::Magick->new;
   $status=$image->ReadImage("$infile");
@@ -471,6 +482,8 @@ sub testFilter {
 
   my($image);
 
+  print( $filter, " ...\n" );
+
   # Create temporary image
   $image=Image::Magick->new;
 
@@ -488,6 +501,7 @@ sub testFilter {
       if ( $md5 ne $md5_16 and $md5_16 ne "same") {
          print "   if 16-bit: $md5_16\n";
       }
+#      $image->Display();
       print "not ok $test\n";
     } else {
       print "ok $test\n";

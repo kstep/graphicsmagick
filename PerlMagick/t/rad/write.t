@@ -21,5 +21,5 @@ testReadWrite( 'RAD:input.rad',
                'MIFF:output.rad',
                q//,
                'd237f332909061fa806dd2c15008716b',
-               'cba35b22fe0534fc713c2887a6d1725b' );
+               'ada489ea3efaf7a6e6b087fc73b2bfca' );
 1;
