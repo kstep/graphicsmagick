@@ -264,7 +264,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   for (i=0; i < (long) TIFFNumberOfStrips(tiff); i++)
   {
     Ascii85Initialize(image);
-    count=TIFFReadRawStrip(tiff,(uint32) i,buffer,byte_count[i]);
+    count=TIFFReadRawStrip(tiff,(uint32) i,buffer,(long) byte_count[i]);
     if (fillorder == FILLORDER_LSB2MSB)
       TIFFReverseBits(buffer,count);
     for (j=0; j < count; j++)

@@ -235,7 +235,6 @@ int main(int argc,char **argv)
     *image_info;
 
   int
-    j,
     x;
 
   long
@@ -367,15 +366,11 @@ int main(int argc,char **argv)
   */
   filename=(char *) NULL;
   target_window=(char *) NULL;
-  j=0;
   for (i=1; i < argc; i++)
   {
     option=argv[i];
     if ((strlen(option) < 2) || ((*option != '-') && (*option != '+')))
-      {
-        filename=argv[i];
-        j=i;
-      }
+      filename=argv[i];
     else
       switch(*(option+1))
       {

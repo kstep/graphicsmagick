@@ -1252,8 +1252,8 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
             p=bitmap->bitmap.buffer;
             for (y=0; y < (long) bitmap->bitmap.rows; y++)
             {
-              if (((unsigned long) ceil(point.y+y-0.5) < 0) ||
-                  ((unsigned long) ceil(point.y+y-0.5) >= image->rows))
+              if ((ceil(point.y+y-0.5) < 0) ||
+                  (ceil(point.y+y-0.5) >= image->rows))
                 {
                   p+=bitmap->bitmap.width;
                   continue;
@@ -1278,8 +1278,8 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
                 fill_color=draw_info->fill;
                 if (fill_pattern != (Image *) NULL)
                   fill_color=GetOnePixel(fill_pattern,
-                    ((long) ceil(point.x+x-0.5) % fill_pattern->columns),
-                    ((long) ceil(point.y+y-0.5) % fill_pattern->rows));
+                    ((long) ceil(point.x+x-0.5) % (long) fill_pattern->columns),
+                    ((long) ceil(point.y+y-0.5) % (long) fill_pattern->rows));
                 opacity=(Quantum) ((unsigned long) ((MaxRGB-opacity)*
                   (MaxRGB-fill_color.opacity))/MaxRGB);
                 if (!active)

@@ -356,7 +356,7 @@ static int load_tile_rle (Image* image, Image* tile_image, XCFDocInfo* inDocInfo
   unsigned char *xcfdata, *xcfodata, *xcfdatalimit;
   PixelPacket*	q;
 
-  bpp = inDocInfo->bpp;
+  bpp = (int) inDocInfo->bpp;
  
   xcfdata = xcfodata = (unsigned char *) AcquireMemory(data_length);
 

@@ -447,7 +447,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 #if defined(IPTC_SUPPORT)
 #if defined(PHOTOSHOP_SUPPORT)
     if (TIFFGetField(tiff,TIFFTAG_PHOTOSHOP,&length,&text) == 1)
-      (void) ReadNewsProfile(text,length,image,TIFFTAG_PHOTOSHOP);
+      (void) ReadNewsProfile(text,(long) length,image,TIFFTAG_PHOTOSHOP);
 #else
     if (TIFFGetField(tiff,TIFFTAG_RICHTIFFIPTC,&length,&text) == 1)
       {
@@ -495,7 +495,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       image->units=PixelsPerInchResolution;
     if (units == RESUNIT_CENTIMETER)
       image->units=PixelsPerCentimeterResolution;
-    value=image->scene;
+    value=(unsigned short) image->scene;
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_PAGENUMBER,&value,&pages);
     image->scene=value;
     if (TIFFGetField(tiff,TIFFTAG_ARTIST,&text) == 1)
@@ -1124,7 +1124,7 @@ static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,unsigned long row,
   /*
     Fill scanlines to tile height.
   */
-  i=(row % image->tile_info.height)*TIFFScanlineSize(tiff);
+  i=(long) (row % image->tile_info.height)*TIFFScanlineSize(tiff);
   (void) memcpy(scanlines+i,(char *) scanline,TIFFScanlineSize(tiff));
   if (((row % image->tile_info.height) != (image->tile_info.height-1)) &&
       (row != image->rows-1))
@@ -1133,8 +1133,8 @@ static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,unsigned long row,
     Write tile to TIFF image.
   */
   status=0;
-  bytes_per_pixel=
-    TIFFTileSize(tiff)/(image->tile_info.height*image->tile_info.width);
+  bytes_per_pixel=TIFFTileSize(tiff)/(long)
+    (image->tile_info.height*image->tile_info.width);
   number_tiles=
     (image->columns+image->tile_info.width-1)/image->tile_info.height;
   for (i=0; i < (long) number_tiles; i++)
@@ -1681,9 +1681,12 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         */
         for (i=0; i < (long) image->colors; i++)
         {
-          red[i]=((unsigned long) (65535L*image->colormap[i].red)/MaxRGB);
-          green[i]=((unsigned long) (65535L*image->colormap[i].green)/MaxRGB);
-          blue[i]=((unsigned long) (65535L*image->colormap[i].blue)/MaxRGB);
+          red[i]=(unsigned short)
+            ((unsigned long) (65535L*image->colormap[i].red)/MaxRGB);
+          green[i]=(unsigned short)
+            ((unsigned long) (65535L*image->colormap[i].green)/MaxRGB);
+          blue[i]=(unsigned short)
+            ((unsigned long) (65535L*image->colormap[i].blue)/MaxRGB);
         }
         for ( ; i < (1L << image->depth); i++)
         {

@@ -93,17 +93,8 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   DrawInfo
     *draw_info;
 
-  long
-    y;
-
   Image
     *image;
-
-  register long
-    x;
-
-  register PixelPacket
-    *q;
 
   TypeMetric
     metrics;
