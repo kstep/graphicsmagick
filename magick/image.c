@@ -126,7 +126,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   /*
     Initialize Image structure.
   */
-  GetBlobInfo(&allocate_image->blob);
+  GetBlobInfo(allocate_image->blob);
   (void) strcpy(allocate_image->magick,"MIFF");
   allocate_image->storage_class=DirectClass;
   allocate_image->depth=QuantumDepth;
@@ -936,7 +936,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
           image->generic_profile[i].info,length);
       }
     }
-  GetBlobInfo(&clone_image->blob);
+  GetBlobInfo(clone_image->blob);
   GetCacheInfo(&clone_image->cache);
   if ((columns != 0) || (rows != 0))
     {
@@ -2698,7 +2698,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   */
   assert(image_info != (ImageInfo *) NULL);
   memset(image_info,0,sizeof(ImageInfo));
-  GetBlobInfo(&(image_info->blob));
+  GetBlobInfo(image_info->blob);
   TemporaryFilename(image_info->unique);
   (void) strcat(image_info->unique,"u");
   TemporaryFilename(image_info->zero);
