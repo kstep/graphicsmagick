@@ -1129,7 +1129,10 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           WriterExit(FileOpenWarning,"Unable to pyramid encode image",image);
         next_image->exempt=True;
         if (pyramid_image == (Image *) NULL)
-          pyramid_image=next_image;
+          {
+            pyramid_image=next_image;
+            pyramid_image->next=(Image *) NULL;
+          }
         else
           {
             register Image
