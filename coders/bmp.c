@@ -143,7 +143,7 @@ static unsigned int
 %  The format of the DecodeImage method is:
 %
 %      unsigned int DecodeImage(Image *image,const unsigned long compression,
-%        unsigned char *pixels)
+%        unsigned long bytes_per_line, unsigned char *pixels)
 %
 %  A description of each parameter follows:
 %
@@ -157,13 +157,15 @@ static unsigned int
 %      A value of 2 means a 16-color bitmap.  A value of 3 means bitfields
 %      encoding.
 %
+%    o bytes_per_line: The number of bytes in a scanline of compressed pixels
+%
 %    o pixels:  The address of a byte (8 bits) array of pixel data created by
 %      the decoding process.
 %
 %
 */
 static unsigned int DecodeImage(Image *image,const unsigned long compression,
-  unsigned char *pixels)
+  unsigned bytes_per_line,unsigned char *pixels)
 {
   long
     byte,
@@ -179,7 +181,7 @@ static unsigned int DecodeImage(Image *image,const unsigned long compression,
 
   assert(image != (Image *) NULL);
   assert(pixels != (unsigned char *) NULL);
-  (void) memset(pixels,0,image->columns*image->rows);
+  (void) memset(pixels,0,bytes_per_line*image->rows);
   byte=0;
   x=0;
   q=pixels;
@@ -300,6 +302,8 @@ static unsigned int DecodeImage(Image *image,const unsigned long compression,
 %      runlength encoded compress_pixels array.
 %
 %    o image:  A pointer to a Image structure.
+%
+%    o bytes_per_line: The number of bytes in a scanline of compressed pixels
 %
 %    o pixels:  The address of a byte (8 bits) array of pixel data created by
 %      the compression process.
@@ -767,7 +771,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert run-length encoded raster pixels.
         */
-        status=DecodeImage(image,bmp_info.compression,pixels);
+        status=DecodeImage(image,bmp_info.compression,bytes_per_line,pixels);
         if (status == False)
           ThrowReaderException(CorruptImageWarning,"runlength decoding failed",
             image);
@@ -1368,16 +1372,11 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
       {
         register unsigned char
           bit,
-          byte,
-          polarity;
+          byte;
 
         /*
           Convert PseudoClass image to a BMP monochrome image.
         */
-        polarity=Intensity(&image->colormap[0]) < (MaxRGB >> 1);
-        if (image->colors == 2)
-          polarity=
-            Intensity(&image->colormap[0]) < Intensity(&image->colormap[1]);
         for (y=0; y < (long) image->rows; y++)
         {
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
@@ -1389,9 +1388,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           byte=0;
           for (x=0; x < (long) image->columns; x++)
           {
-            byte<<=1;
-            if (indexes[x] == polarity)
-              byte|=0x01;
+            byte=(byte<<1)|indexes[x];
             bit++;
             if (bit == 8)
               {
