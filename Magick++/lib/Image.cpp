@@ -2751,25 +2751,25 @@ Magick::Color Magick::Image::strokeColor ( void ) const
 }
 
 // dash pattern for drawing vector objects (default one)
-void Magick::Image::strokeDashArray ( const unsigned int* strokeDashArray_ )
+void Magick::Image::strokeDashArray ( const double* strokeDashArray_ )
 {
   modifyImage();
   options()->strokeDashArray( strokeDashArray_ );
 }
 
-const unsigned int* Magick::Image::strokeDashArray ( void ) const
+const double* Magick::Image::strokeDashArray ( void ) const
 {
   return constOptions()->strokeDashArray( );
 }
 
 // dash offset for drawing vector objects (default one)
-void Magick::Image::strokeDashOffset ( unsigned int strokeDashOffset_ )
+void Magick::Image::strokeDashOffset ( double strokeDashOffset_ )
 {
   modifyImage();
   options()->strokeDashOffset( strokeDashOffset_ );
 }
 
-unsigned int Magick::Image::strokeDashOffset ( void ) const
+double Magick::Image::strokeDashOffset ( void ) const
 {
   return constOptions()->strokeDashOffset( );
 }
