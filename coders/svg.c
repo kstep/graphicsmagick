@@ -2839,6 +2839,9 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   size_t
     length;
 
+  SVGInfo
+    svg_info;
+
   unsigned int
     active,
     status;
@@ -3229,18 +3232,27 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
                 GetToken(q,&q,token);
                 (void) strncpy(type,token,MaxTextExtent-1);
                 GetToken(q,&q,token);
+                svg_info.segment.x1=atof(token);
+                svg_info.element.cx=atof(token);
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
+                svg_info.segment.y1=atof(token);
+                svg_info.element.cy=atof(token);
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
+                svg_info.segment.x2=atof(token);
+                svg_info.element.major=atof(token);
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
+                svg_info.segment.y2=atof(token);
+                svg_info.element.minor=atof(token);
                 FormatString(message,"<%sGradient id=\"%s\" x1=\"%g\" "
-                  "y1=\"%g\" y1=\"%g\" y2=\"%g\">\n",type,name,
-                  0.0,0.0,0.0,0.0);
+                  "y1=\"%g\" x2=\"%g\" y2=\"%g\">\n",type,name,
+                  svg_info.segment.x1,svg_info.segment.y1,svg_info.segment.x2,
+                  svg_info.segment.y2);
                 if (LocaleCompare(type,"radial") == 0)
                   {
                     GetToken(q,&q,token);
@@ -3248,7 +3260,9 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
                       GetToken(q,&q,token);
                     FormatString(message,"<%sGradient id=\"%s\" cx=\"%g\" "
                       "cy=\"%g\" r=\"%g\" fx=\"%g\" fy=\"%g\">\n",type,name,
-                      0.0,0.0,0.0,0.0,0.0);
+                      svg_info.element.cx,svg_info.element.cy,
+                      svg_info.element.angle,svg_info.element.major,
+                      svg_info.element.minor);
                   }
                 (void) WriteBlobString(image,message);
                 break;
@@ -3266,28 +3280,26 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
               }
             if (LocaleCompare("pattern",token) == 0)
               {
-                RectangleInfo
-                  bounds;
-
                 GetToken(q,&q,token);
                 (void) strncpy(name,token,MaxTextExtent-1);
                 GetToken(q,&q,token);
-                bounds.x=atol(token);
+                svg_info.bounds.x=atof(token);
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
-                bounds.y=atol(token);
+                svg_info.bounds.y=atof(token);
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
-                bounds.width=atol(token);
+                svg_info.bounds.width=atof(token);
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
-                bounds.height=atol(token);
-                FormatString(message,"<pattern id=\"%s\" x=\"%ld\" y=\"%ld\" "
-                  "width=\"%lu\" height=\"%lu\">\n",name,bounds.x,bounds.y,
-                  bounds.width,bounds.height);
+                svg_info.bounds.height=atof(token);
+                FormatString(message,"<pattern id=\"%s\" x=\"%g\" y=\"%g\" "
+                  "width=\"%g\" height=\"%g\">\n",name,svg_info.bounds.x,
+                  svg_info.bounds.y,svg_info.bounds.width,
+                  svg_info.bounds.height);
                 (void) WriteBlobString(image,message);
                 break;
               }
