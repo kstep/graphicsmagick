@@ -132,14 +132,18 @@ if ((alpha) == OpaqueOpacity) \
 else \
   if ((alpha) != TransparentOpacity) \
     { \
-      (q)->red=(Quantum) (((double) (MaxRGB-(alpha))*(p)->red+ \
-        (double) (alpha)*(MaxRGB-(beta))*(q)->red/MaxRGB)/MaxRGB+0.5); \
-      (q)->green=(Quantum) (((double) (MaxRGB-(alpha))*(p)->green+ \
-        (double) (alpha)*(MaxRGB-(beta))*(q)->green/MaxRGB)/MaxRGB+0.5); \
-      (q)->blue=(Quantum) (((double) (MaxRGB-(alpha))*(p)->blue+ \
-        (double) (alpha)*(MaxRGB-(beta))*(q)->blue/MaxRGB)/MaxRGB+0.5); \
-      (q)->opacity=(Quantum) (((double) (MaxRGB-(alpha))+ \
-        (double) (alpha)*(MaxRGB-(beta))/MaxRGB)/MaxRGB+0.5); \
+      double \
+        gamma; \
+ \
+      gamma=1.0/MaxRGB; \
+      (q)->red=(Quantum) (gamma*((double) (MaxRGB-(alpha))*(p)->red+ \
+        (double) (alpha)*(MaxRGB-(beta))*(q)->red/MaxRGB)+0.5); \
+      (q)->green=(Quantum) (gamma*((double) (MaxRGB-(alpha))*(p)->green+ \
+        (double) (alpha)*(MaxRGB-(beta))*(q)->green/MaxRGB)+0.5); \
+      (q)->blue=(Quantum) (gamma*((double) (MaxRGB-(alpha))*(p)->blue+ \
+        (double) (alpha)*(MaxRGB-(beta))*(q)->blue/MaxRGB)+0.5); \
+      (q)->opacity=(Quantum) (gamma*((double) (MaxRGB-(alpha))+ \
+        (double) (alpha)*(MaxRGB-(beta))/MaxRGB)+0.5); \
     }
 #define ColorMatch(color,target,distance) \
   (((distance) == 0) ? \
