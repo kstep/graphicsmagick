@@ -110,6 +110,12 @@ typedef struct _MSLInfo
 #endif
 } MSLInfo;
 
+/*
+  Forward declarations.
+*/
+static unsigned int
+  WriteMSLImage(const ImageInfo *,Image *);
+
 #if defined(HasXML)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -459,6 +465,61 @@ static void MSLEndDocument(void *context)
   msl_info=(MSLInfo *) context;
   if (msl_info->debug)
     (void) fprintf(stdout,"  SAX.endDocument()\n");
+}
+
+static void MSLPushImage(MSLInfo *msl_info,Image *image)
+{
+  const ImageAttribute
+    *attribute;
+
+  long
+    n;
+
+  assert(msl_info != (MSLInfo *) NULL);
+  msl_info->n++;
+  n=msl_info->n;
+  ReacquireMemory((void **) &msl_info->image_info,(n+1)*sizeof(ImageInfo *));
+  ReacquireMemory((void **) &msl_info->draw_info,(n+1)*sizeof(DrawInfo *));
+  ReacquireMemory((void **) &msl_info->attributes,(n+1)*sizeof(Image *));
+  ReacquireMemory((void **) &msl_info->image,(n+1)*sizeof(Image *));
+  if ((msl_info->image_info == (ImageInfo **) NULL) ||
+    (msl_info->draw_info == (DrawInfo **) NULL) ||
+    (msl_info->attributes == (Image **) NULL) ||
+    (msl_info->image == (Image **) NULL))
+      ThrowException(msl_info->exception,ResourceLimitError,
+        "Unable to allocate image","Memory allocation failed");
+  msl_info->image_info[n]=CloneImageInfo(msl_info->image_info[n-1]);
+  msl_info->draw_info[n]=CloneDrawInfo(msl_info->image_info[n-1], msl_info->draw_info[n-1]);
+  msl_info->attributes[n]=AllocateImage(msl_info->image_info[n]);
+  msl_info->image[n]=(Image *) image;
+  if ((msl_info->image_info[n] == (ImageInfo *) NULL) ||
+    (msl_info->attributes[n] == (Image *) NULL))
+    ThrowException(msl_info->exception,ResourceLimitError,
+      "Unable to allocate image","Memory allocation failed");
+  if ( msl_info->nGroups )
+    msl_info->group_info[msl_info->nGroups-1].numImages++;
+  attribute=GetImageAttribute(msl_info->attributes[n-1],(char *) NULL);
+  while (attribute != (const ImageAttribute *) NULL)
+  {
+    (void) SetImageAttribute(msl_info->attributes[n],attribute->key,
+      attribute->value);
+    attribute=attribute->next;
+  }
+}
+
+static void MSLPopImage(MSLInfo *msl_info)
+{
+  /*
+    only dispose of images when they aren't in a group
+  */
+  if ( msl_info->nGroups == 0 )
+  {
+    if (msl_info->image[msl_info->n] != (Image *) NULL)
+      DestroyImage(msl_info->image[msl_info->n]);
+    DestroyImage(msl_info->attributes[msl_info->n]);
+    DestroyImageInfo(msl_info->image_info[msl_info->n]);
+    msl_info->n--;
+  }
 }
 
 static void MSLStartElement(void *context,const xmlChar *name,
@@ -1843,41 +1904,11 @@ static void MSLStartElement(void *context,const xmlChar *name,
     {
       if (LocaleCompare(name,"image") == 0)
         {
-          const ImageAttribute
-            *attribute;
+          long
+            n;
 
-          n++;
-          msl_info->n=n;
-          ReacquireMemory((void **) &msl_info->image_info,
-            (n+1)*sizeof(ImageInfo *));
-          ReacquireMemory((void **) &msl_info->draw_info,
-            (n+1)*sizeof(DrawInfo *));
-          ReacquireMemory((void **) &msl_info->attributes,
-            (n+1)*sizeof(Image *));
-          ReacquireMemory((void **) &msl_info->image,(n+1)*sizeof(Image *));
-          if ((msl_info->image_info == (ImageInfo **) NULL) ||
-              (msl_info->draw_info == (DrawInfo **) NULL) ||
-              (msl_info->attributes == (Image **) NULL) ||
-              (msl_info->image == (Image **) NULL))
-            ThrowException(msl_info->exception,ResourceLimitError,
-              "Unable to allocate image","Memory allocation failed");
-          msl_info->image_info[n]=CloneImageInfo(msl_info->image_info[n-1]);
-          msl_info->draw_info[n]=CloneDrawInfo(msl_info->image_info[n-1], msl_info->draw_info[n-1]);
-          msl_info->attributes[n]=AllocateImage(msl_info->image_info[n]);
-          msl_info->image[n]=(Image *) NULL;
-          if ((msl_info->image_info[n] == (ImageInfo *) NULL) ||
-              (msl_info->attributes[n] == (Image *) NULL))
-            ThrowException(msl_info->exception,ResourceLimitError,
-              "Unable to allocate image","Memory allocation failed");
-      if ( msl_info->nGroups )
-      msl_info->group_info[msl_info->nGroups-1].numImages++;
-          attribute=GetImageAttribute(msl_info->attributes[n-1],(char *) NULL);
-          while (attribute != (const ImageAttribute *) NULL)
-          {
-            (void) SetImageAttribute(msl_info->attributes[n],attribute->key,
-              attribute->value);
-            attribute=attribute->next;
-          }
+          MSLPushImage(msl_info,(Image *) NULL);
+          n=msl_info->n;
           if (attributes == (const xmlChar **) NULL)
             break;
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
@@ -3860,19 +3891,7 @@ static void MSLEndElement(void *context,const xmlChar *name)
     case 'i':
     {
       if (LocaleCompare(name, "image") == 0)
-      {
-        /*
-          only dispose of images when they aren't in a group
-        */
-        if ( msl_info->nGroups == 0 )
-        {
-          if (msl_info->image[msl_info->n] != (Image *) NULL)
-            DestroyImage(msl_info->image[msl_info->n]);
-          DestroyImage(msl_info->attributes[msl_info->n]);
-          DestroyImageInfo(msl_info->image_info[msl_info->n]);
-          msl_info->n--;
-        }
-      }
+        MSLPopImage(msl_info);
     }
     break;
 
@@ -4037,7 +4056,7 @@ static void MSLError(void *context,const char *format,...)
 #else
   (void) vsnprintf(reason,MaxTextExtent,format,operands);
 #endif
-  ThrowException(msl_info->exception,DelegateError,reason,(char *) NULL);
+  ThrowException(msl_info->exception,DelegateError,reason,"some text");
   va_end(operands);
 }
 
@@ -4142,7 +4161,8 @@ static void MSLExternalSubset(void *context,const xmlChar *name,
 }
 #endif
 
-static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static unsigned int ProcessMSLScript(const ImageInfo *image_info,Image **image,
+  ExceptionInfo *exception)
 {
   xmlSAXHandler
     SAXModules =
@@ -4180,7 +4200,7 @@ static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     message[MaxTextExtent];
 
   Image
-    *image;
+    *msl_image;
 
   long
     n;
@@ -4199,19 +4219,25 @@ static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  image=AllocateImage(image_info);
-  status=OpenBlob(image_info,image,ReadBinaryType,exception);
+  assert(image != (Image **) NULL);
+  msl_image=AllocateImage(image_info);
+  status=OpenBlob(image_info,msl_image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    {
+      ThrowException(exception,FileOpenWarning,
+        "Unable to open the MSL file",(msl_image)->filename);
+      return(False);
+    }
+    
   /*
     Parse MSL file.
   */
   (void) memset(&msl_info,0,sizeof(MSLInfo));
   msl_info.exception=exception;
   msl_info.image_info=(ImageInfo **) AcquireMemory(sizeof(ImageInfo *));
+  msl_info.debug=image_info->debug;
   msl_info.draw_info=(DrawInfo **) AcquireMemory(sizeof(DrawInfo *));
+  /* top of the stack is the MSL file itself */
   msl_info.image=(Image **) AcquireMemory(sizeof(Image *));
   msl_info.attributes=(Image **) AcquireMemory(sizeof(Image *));
   msl_info.group_info=(MSLGroupInfo *) AcquireMemory(sizeof(MSLGroupInfo));
@@ -4224,13 +4250,16 @@ static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   *msl_info.image_info=CloneImageInfo(image_info);
   *msl_info.draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   *msl_info.attributes=CloneImage(image_info->attributes,0,0,True,exception);
-  *msl_info.image=image;
   msl_info.group_info[0].numImages=0;
+  /* the first slot is used to point to the MSL file image */
+  *msl_info.image=msl_image;
+  if (*image != (Image *) NULL)
+    MSLPushImage(&msl_info,*image);
   (void) xmlSubstituteEntitiesDefault(1);
   SAXHandler=(&SAXModules);
   msl_info.parser=xmlCreatePushParserCtxt(SAXHandler,&msl_info,(char *) NULL,0,
-    image->filename);
-  while (ReadBlobString(image,message) != (char *) NULL)
+    msl_image->filename);
+  while (ReadBlobString(msl_image,message) != (char *) NULL)
   {
     n=(long) strlen(message);
     if (n == 0)
@@ -4242,12 +4271,32 @@ static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (msl_info.exception->severity != UndefinedException)
       break;
   }
-  (void) xmlParseChunk(msl_info.parser," ",1,True);
+  if (msl_info.exception->severity == UndefinedException)
+    (void) xmlParseChunk(msl_info.parser," ",1,True);
   xmlFreeParserCtxt(msl_info.parser);
   if (msl_info.debug)
     (void) fprintf(stdout,"end SAX\n");
   xmlCleanupParser();
   LiberateMemory((void **) &msl_info.group_info);
+  if (*image == (Image *) NULL)
+    *image=*msl_info.image;
+  return((*msl_info.image)->exception.severity == UndefinedException);
+}
+
+static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
+{
+  Image *
+    image;
+
+  /*
+    Open image file.
+  */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  image=(Image *) NULL;
+  (void) ProcessMSLScript(image_info,&image,exception);
   return(image);
 }
 #else
@@ -4289,6 +4338,7 @@ ModuleExport void RegisterMSLImage(void)
 
   entry=SetMagickInfo("MSL");
   entry->decoder=ReadMSLImage;
+  entry->encoder=WriteMSLImage;
   entry->description=AllocateString("Magick Scripting Language");
   entry->module=AllocateString("MSL");
   (void) RegisterMagickInfo(entry);
@@ -4317,3 +4367,55 @@ ModuleExport void UnregisterMSLImage(void)
 {
   (void) UnregisterMagickInfo("MSL");
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e M S L I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method WriteMSLImage writes an image to a file in MVG image format.
+%
+%  The format of the WriteMSLImage method is:
+%
+%      unsigned int WriteMSLImage(const ImageInfo *image_info,Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o status: Method WriteMSLImage return True if the image is written.
+%      False is returned is there is a memory shortage or if the image file
+%      fails to write.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%    o image:  A pointer to a Image structure.
+%
+%
+*/
+#if defined(HasXML)
+static unsigned int WriteMSLImage(const ImageInfo *image_info,Image *image)
+{
+  ExceptionInfo
+    exception;
+
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  GetExceptionInfo(&exception);
+  (void) ReferenceImage(image);
+  (void) ProcessMSLScript(image_info,&image,&exception);
+  return(True);
+}
+#else
+static unsigned int WriteMSLImage(const ImageInfo *image_info,Image *image)
+{
+  ThrowBinaryException(MissingDelegateWarning,"XML library is not available",
+    image->filename);
+}
+#endif
