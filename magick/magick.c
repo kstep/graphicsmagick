@@ -162,15 +162,11 @@ MagickExport char *GetImageMagick(const unsigned char *magick,
   assert(magick != (const unsigned char *) NULL);
   AcquireSemaphore(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
-    if (p->magick)
-      if (p->magick(magick,length))
-        break;
-  if (p != (MagickInfo *) NULL)
-    {
-      LiberateSemaphore(&magick_semaphore);
-      return(p->tag);
-    }
+    if (p->magick && p->magick(magick,length))
+      break;
   LiberateSemaphore(&magick_semaphore);
+  if (p != (MagickInfo *) NULL)
+    return(p->tag);
   return((char *) NULL);
 }
 
@@ -381,9 +377,10 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag,ExceptionInfo *exception)
       RegisterXWDImage();
       RegisterYUVImage();
 #endif
+      atexit(DestroyMagickInfo);
     }
   LiberateSemaphore(&magick_semaphore);
-  if ((tag == (char *) NULL) || (*tag == '\0'))
+  if ((tag == (const char *) NULL) || (*tag == '\0'))
     return(magick_list);
   /*
     Find tag in list
@@ -399,7 +396,7 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag,ExceptionInfo *exception)
     }
   LiberateSemaphore(&magick_semaphore);
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
-  (void) OpenModule(tag);
+  (void) OpenModule(tag,exception);
   AcquireSemaphore(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
     if (LocaleCompare(p->tag,tag) == 0)
@@ -462,19 +459,18 @@ MagickExport char *GetMagickVersion(unsigned int *version)
 %
 %  The format of the ListMagickInfo method is:
 %
-%      void ListMagickInfo(FILE *file)
+%      unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o file: A pointer to a FILE structure.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-MagickExport void ListMagickInfo(FILE *file)
+MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
 {
-  ExceptionInfo
-    exception;
-
   register MagickInfo
     *p;
 
@@ -486,11 +482,12 @@ MagickExport void ListMagickInfo(FILE *file)
   (void) fprintf(file,"    Format  Mode  Description\n");
   (void) fprintf(file,"--------------------------------------------------------"
     "-----------------\n");
-  GetExceptionInfo(&exception);
-  (void) GetMagickInfo((char *) NULL,&exception);
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
-  OpenModules();
+  OpenModules(exception);
 #endif    
+  p=GetMagickInfo((char *) NULL,exception);
+  if (p == (MagickInfo *) NULL)
+    return(False);
   AcquireSemaphore(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
     if (p->stealth != True)
@@ -501,6 +498,7 @@ MagickExport void ListMagickInfo(FILE *file)
   LiberateSemaphore(&magick_semaphore);
   (void) fprintf(file,"\n* native blob support\n\n");
   (void) fflush(file);
+  return(True);
 }
 
 /*
