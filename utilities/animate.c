@@ -896,8 +896,8 @@ int main(int argc,char **argv)
             i++;
             if (i == argc)
               MagickFatalError(OptionFatalError,"Missing command",option);
-            XRemoteCommand(display,resource_info.window_id,argv[i]);
-            Exit(0);
+            status=XRemoteCommand(display,resource_info.window_id,argv[i]);
+            Exit(!status);
           }
         if (LocaleCompare("rotate",option+1) == 0)
           {
