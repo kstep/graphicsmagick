@@ -82,6 +82,7 @@
 %    -resize geometry    resize the image
 %    -rotate degrees     apply Paeth rotation to the image
 %    -scene value        image scene number
+%    -sharpen geometry    sharpen the image
 %    -size geometry      width and height of image
 %    -stegano offset     hide watermark within an image
 %    -stereo             combine two image to create a stereo anaglyph
@@ -393,6 +394,7 @@ static void CompositeUsage(void)
       "-resize geometry    resize the image",
       "-rotate degrees     apply Paeth rotation to the image",
       "-scene value        image scene number",
+			"-sharpen geometry   sharpen the image",
       "-size geometry      width and height of image",
       "-stegano offset     hide watermark within an image",
       "-stereo             combine two image to create a stereo anaglyph",
