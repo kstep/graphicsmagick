@@ -2,7 +2,7 @@
 <html>
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.72 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <meta name="GENERATOR" content="Mozilla/4.78 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <meta name="Author" content="Bob Friesenhahn">
    <meta name="Description" content="Documentation on Magick++'s STL support templates.">
    <meta name="Keywords" content="STL,Magick++,ImageMagick">
@@ -13,31 +13,32 @@
 <center>
 <h1>
 Magick++ STL Support</h1></center>
-Magick++ provides a set of Standard Template Libary (STL) algorithms for
-operating across ranges of image frames in a container. It also provides
+Magick++ provides a set of <a href="http://www.sgi.com/tech/stl/">Standard
+Template Libary</a> (<a href="http://www.sgi.com/tech/stl/">STL</a>) algorithms
+for operating across ranges of image frames in a container. It also provides
 a set of STL unary function objects to apply an operation on image frames
 in a container via an algorithm which uses unary function objects. A good
 example of a standard algorithm which is useful for processing containers
-of image frames is the STL <i><a href="http://www.sgi.com/Technology/STL/for_each.html">for_each</a></i>
+of image frames is the STL <i><a href="http://www.sgi.com/tech/stl/for_each.html">for_each</a></i>
 algorithm which invokes a unary function object on a range of container
 elements.
 <p>Magick++ uses a limited set of template argument types. The current
 template argument types are:
-<blockquote>Container
-<blockquote>A container having the properties of a <a href="http://www.sgi.com/Technology/STL/BackInsertionSequence.html">Back
+<blockquote><a href="http://www.sgi.com/tech/stl/Container.html">Container</a>
+<blockquote>A container having the properties of a <a href="http://www.sgi.com/tech/stl/BackInsertionSequence.html">Back
 Insertion Sequence</a>. Sequences support forward iterators and Back Insertion
 Sequences support the additional abilty to append an element via push_back().
-Common compatable container types are the STL &lt;<a href="http://www.sgi.com/Technology/STL/Vector.html">vector</a>>
-and &lt;<a href="http://www.sgi.com/Technology/STL/List.html">list</a>>
-template containers. This template argument is usually used to represent
-an output container in which one or more image frames may be appended.
-Containers like STL &lt;<a href="http://www.sgi.com/Technology/STL/Vector.html">vector</a>>
+Common compatable container types are the STL &lt;<a href="http://www.sgi.com/tech/stl/Vector.html">vector</a>>
+and &lt;<a href="http://www.sgi.com/tech/stl/List.html">list</a>> template
+containers. This template argument is usually used to represent an output
+container in which one or more image frames may be appended. Containers
+like STL &lt;<a href="http://www.sgi.com/tech/stl/Vector.html">vector</a>>
 which have a given default <i>capacity</i> may need to have their <i>capacity</i>
 adjusted via r<i>eserve() </i>to a larger <i>capacity</i> in order to support
 the expected final <i>size</i> . Since Magick++ images are very small,
-it is likely that the default capacity of STL &lt;<a href="http://www.sgi.com/Technology/STL/Vector.html">vector</a>>
+it is likely that the default capacity of STL &lt;<a href="http://www.sgi.com/tech/stl/Vector.html">vector</a>>
 is sufficient for most situations.</blockquote>
-<a href="http://www.sgi.com/Technology/STL/InputIterator.html">InputIterator</a>
+<a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
 <blockquote>An input iterator used to express a position in a container.
 These template arguments are typically used to represent a range of elements
 with f<i>irst_</i> representing the first element to be processed and <i>last_</i>
@@ -90,7 +91,9 @@ of image frames are shown in the following table:
 <center><a NAME="animateImages"></a><font size=-1>animateImages</font></center>
 </td>
 
-<td><font size=-1>InputIterator first_, InputIterator last_</font></td>
+<td><font size=-1><a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
+first_, <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
+last_</font></td>
 
 <td><font size=-1>Animate a sequence of image frames. Image frames are
 displayed in succession, creating an animated effect. The animation options
@@ -103,8 +106,9 @@ X11 at the moment.</font></td>
 <center><a NAME="appendImages"></a><font size=-1>appendImages</font></center>
 </td>
 
-<td><font size=-1><a href="Image.html">Image</a> *appendedImage_, InputIterator
-first_, InputIterator last_, bool stack_ = false</font></td>
+<td><font size=-1><a href="Image.html">Image</a> *appendedImage_, <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
+first_, <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
+last_, bool stack_ = false</font></td>
 
 <td><font size=-1>Append a sequence of image frames, writing the result
 to <i>appendedImage_.</i> All the input image frames must have the same
@@ -119,8 +123,9 @@ otherwise top-to-bottom.</font></td>
 <center><a NAME="averageImages"></a><font size=-1>averageImages</font></center>
 </td>
 
-<td><font size=-1><a href="Image.html">Image</a> *averagedImage_, InputIterator
-first_, InputIterator last_</font></td>
+<td><font size=-1><a href="Image.html">Image</a> *averagedImage_, <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
+first_, <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
+last_</font></td>
 
 <td><font size=-1>Average a sequence of image frames, writing the result
 to <i>averagedImage_</i>. All the input image frames must be the same size
@@ -132,7 +137,9 @@ in pixels.</font></td>
 <center><a NAME="coalesceImages"></a><font size=-1>coalesceImages</font></center>
 </td>
 
-<td><font size=-1>InputIterator first_, InputIterator last_</font></td>
+<td><font size=-1><a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
+first_, <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
+last_</font></td>
 
 <td><font size=-1>Merge a sequence of images. This is useful for GIF animation
 sequences that have page offsets and disposal methods. The input images
@@ -144,8 +151,10 @@ are modified in-place.</font></td>
 <center><a NAME="deconstructImages"></a>d<font size=-1>econstructImages</font></center>
 </td>
 
-<td><font size=-1>Container *deconstructedImages_, InputIterator first_,
-InputIterator last_</font></td>
+<td><font size=-1><a href="http://www.sgi.com/tech/stl/Container.html">Container</a>
+*deconstructedImages_, <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
+first_, <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
+last_</font></td>
 
 <td><font size=-1>Break down an image sequence into constituent parts.&nbsp;
 This is useful for creating GIF or MNG animation sequences. The input sequence
@@ -158,7 +167,9 @@ are returned via <i>deconstructedImages_</i>.</font></td>
 <center><a NAME="displayImages"></a><font size=-1>displayImages</font></center>
 </td>
 
-<td><font size=-1>InputIterator first_, InputIterator last_</font></td>
+<td><font size=-1><a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
+first_, <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
+last_</font></td>
 
 <td><font size=-1>Display a sequence of image frames. Through use of a
 pop-up menu, image frames may be selected in succession. This feature is
@@ -174,7 +185,8 @@ if this is a problem.</font></td>
 <center><a NAME="flattenImages"></a><font size=-1>flattenImages</font></center>
 </td>
 
-<td><font size=-1>Image *flattendImage_, InputIterator first_, InputIterator
+<td><font size=-1><a href="Image.html">Image</a> *flattendImage_, <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
+first_, <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
 last_</font></td>
 
 <td><font size=-1>Merge a sequence of image frames which represent image
@@ -188,8 +200,10 @@ This function is useful for combining Photoshop layers into a single image.</fon
 <center><a NAME="mapImages"></a><font size=-1>mapImages</font></center>
 </td>
 
-<td><font size=-1>InputIterator first_, InputIterator last_, const Image&amp;
-mapImage_, bool dither_,&nbsp; bool measureError_ = false</font></td>
+<td><font size=-1><a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
+first_, <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
+last_, const <a href="Image.html">Image</a>&amp; mapImage_, bool dither_,&nbsp;
+bool measureError_ = false</font></td>
 
 <td><font size=-1>Replace the colors of a sequence of images with the closest
 color from a reference image. Set <i>dither_</i> to <i>true</i> to enable
@@ -202,7 +216,9 @@ quantization error.</font></td>
 <center><a NAME="montageImages"></a><font size=-1>montageImages</font></center>
 </td>
 
-<td><font size=-1>Container *montageImages_, InputIterator first_, InputIterator
+<td><font size=-1><a href="http://www.sgi.com/tech/stl/Container.html">Container</a>
+*montageImages_, <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
+first_, <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
 last_, const <a href="Montage.html">Montage</a> &amp;montageOpts_</font></td>
 
 <td><font size=-1>Create a composite image by combining several separate
@@ -223,7 +239,9 @@ as options by <i>montageImages().</i></font></td>
 <center><a NAME="morphImages"></a><font size=-1>morphImages</font></center>
 </td>
 
-<td><font size=-1>Container *morphedImages_, InputIterator first_, InputIterator
+<td><font size=-1><a href="http://www.sgi.com/tech/stl/Container.html">Container</a>
+*morphedImages_, <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
+first_, <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
 last_, unsigned int frames_</font></td>
 
 <td><font size=-1>Morph a seqence of image frames. This algorithm&nbsp;
@@ -238,7 +256,8 @@ as an animation.</font></td>
 <center><a NAME="mosaicImages"></a><font size=-1>mosaicImages</font></center>
 </td>
 
-<td><font size=-1>Image *mosaicImage_, InputIterator first_, InputIterator
+<td><font size=-1><a href="Image.html">Image</a> *mosaicImage_, <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
+first_, <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
 last_</font></td>
 
 <td><font size=-1>Inlay a number of images to form a single coherent picture.
@@ -251,7 +270,8 @@ the image sequence represented by <i>first_</i> through <i>last_</i>.</font></td
 <center><a NAME="readImages"></a><font size=-1>readImages</font></center>
 </td>
 
-<td><font size=-1>Container *sequence_, const std::string &amp;imageSpec_</font></td>
+<td><font size=-1><a href="http://www.sgi.com/tech/stl/Container.html">Container</a>
+*sequence_, const std::string &amp;imageSpec_</font></td>
 
 <td><font size=-1>Read a sequence of image frames into existing container
 (appending to container <i>sequence_</i>) with image names specified in
@@ -259,8 +279,8 @@ the string <i>imageSpec_</i>.</font></td>
 </tr>
 
 <tr>
-<td><font size=-1>Container *sequence_, const <a href="Blob.html">Blob</a>
-&amp;blob_</font></td>
+<td><font size=-1><a href="http://www.sgi.com/tech/stl/Container.html">Container</a>
+*sequence_, const <a href="Blob.html">Blob</a> &amp;blob_</font></td>
 
 <td><font size=-1>Read a sequence of image frames into existing container
 (appending to container sequence_) from <a href="Blob.html">Blob</a> blob_.</font></td>
@@ -271,8 +291,9 @@ the string <i>imageSpec_</i>.</font></td>
 <center><a NAME="writeImages"></a><font size=-1>writeImages</font></center>
 </td>
 
-<td><font size=-1>InputIterator first_, InputIterator last_, const std::string
-&amp;imageSpec_, bool adjoin_ = true</font></td>
+<td><font size=-1><a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
+first_, <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
+last_, const std::string &amp;imageSpec_, bool adjoin_ = true</font></td>
 
 <td><font size=-1>Write images in container to file specified by string
 <i>imageSpec_</i>.
@@ -287,8 +308,9 @@ be quantized to fewer colors. Use a copy of the original if this is a problem.</
 </tr>
 
 <tr>
-<td><font size=-1>InputIterator first_, InputIterator last_, <a href="Blob.html">Blob</a>
-*blob_, bool adjoin_ = true</font></td>
+<td><font size=-1><a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
+first_, <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
+last_, <a href="Blob.html">Blob</a> *blob_, bool adjoin_ = true</font></td>
 
 <td><font size=-1>Write images in container to in-memory BLOB specified
 by <a href="Blob.html">Blob</a> blob_. Set adjoin_ to false to write a
@@ -302,8 +324,9 @@ be quantized to fewer colors. Use a copy of the original if this is a problem.</
 <tr>
 <td><a NAME="quantizeImages"></a><font size=-1>quantizeImages</font></td>
 
-<td><font size=-1>InputIterator first_, InputIterator last_, bool measureError_
-= false</font></td>
+<td><font size=-1><a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
+first_, <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
+last_, bool measureError_ = false</font></td>
 
 <td><font size=-1>Quantize colors in images using current quantization
 settings. Set <i>measureError_</i> to <i>true</i> in order to measure quantization
@@ -340,8 +363,8 @@ and selects the appropriate Image method based on the arguments supplied.
 provide the means to construct an object which caches arguments for later
 use by an algorithm designed for use with unary function objects. There
 is a unary function object corresponding each algorithm provided by the
-Image class and there is a contructor available compatable with each synonymous
-method in the Image class.
+<a href="Image.html">Image</a> class and there is a contructor available
+compatable with each synonymous method in the Image class.
 <p>The unary function objects that Magick++ provides to support manipulating
 images are shown in the following table:
 <br>&nbsp;
@@ -380,7 +403,7 @@ bounding area is entire image.</font></td>
 </tr>
 
 <tr>
-<td><font size=-1>string text_, const <a href="Geometry.html">Geometry</a>
+<td><font size=-1>std::string text_, const <a href="Geometry.html">Geometry</a>
 &amp;boundingArea_, <a href="Enumerations.html#GravityType">GravityType</a>
 gravity_</font></td>
 
@@ -468,7 +491,8 @@ opacity for red, green, and blue quantums.</font></td>
 </tr>
 
 <tr>
-<td><font size=-1>const unsigned int opacity_, const Color &amp;penColor_</font></td>
+<td><font size=-1>const unsigned int opacity_, const <a href="Color.html">Color</a>
+&amp;penColor_</font></td>
 
 <td><font size=-1>Colorize image with pen color, using specified percent
 opacity.</font></td>
@@ -479,7 +503,7 @@ opacity.</font></td>
 <center><a NAME="commentImage"></a><font size=-1>commentImage</font></center>
 </td>
 
-<td><font size=-1>const string &amp;comment_</font></td>
+<td><font size=-1>const std::string &amp;comment_</font></td>
 
 <td><font size=-1>Comment image (add comment string to image).&nbsp; By
 default, each image is commented with its file name. Use&nbsp; this&nbsp;
@@ -494,7 +518,8 @@ format characters.</a></font></td>
 <center><a NAME="compositeImage"></a><font size=-1>compositeImage</font></center>
 </td>
 
-<td><font size=-1>const Image &amp;compositeImage_, int xOffset_, int yOffset_,
+<td><font size=-1>const <a href="Image.html">Image</a> &amp;compositeImage_,
+int xOffset_, int yOffset_,
 <a href="Enumerations.html#CompositeOperator">CompositeOperator</a>
 compose_ = <i>InCompositeOp</i></font></td>
 
@@ -503,7 +528,8 @@ offset and using specified algorithm</font></td>
 </tr>
 
 <tr>
-<td><font size=-1>const Image &amp;compositeImage_, const Geometry &amp;offset_,
+<td><font size=-1>const <a href="Image.html">Image</a> &amp;compositeImage_,
+const Geometry &amp;offset_,
 <a href="Enumerations.html#CompositeOperator">CompositeOperator</a>
 compose_ = <i>InCompositeOp</i></font></td>
 </tr>
@@ -673,7 +699,8 @@ const <a href="Color.html">Color</a> &amp;fillColor_, const <a href="Color.html"
 <br><font size=-1>TextureImage</font></center>
 </td>
 
-<td><font size=-1>unsigned int x_, unsigned int y_,&nbsp; const Image &amp;texture_</font></td>
+<td><font size=-1>unsigned int x_, unsigned int y_,&nbsp; const <a href="Image.html">Image</a>
+&amp;texture_</font></td>
 
 <td ROWSPAN="2" NOSAVE><font size=-1>Flood-fill texture across pixels that
 match the color of the target pixel and are neighbors of the target pixel.
@@ -808,7 +835,8 @@ image.</font></td>
 <center><a NAME="mapImage"></a><font size=-1>mapImage</font></center>
 </td>
 
-<td><font size=-1>const Image &amp;mapImage_ , bool dither_ = false</font></td>
+<td><font size=-1>const <a href="Image.html">Image</a> &amp;mapImage_ ,
+bool dither_ = false</font></td>
 
 <td><font size=-1>Remap image colors with closest color from reference
 image. Set dither_ to <i>true</i> in to apply Floyd/Steinberg error diffusion
@@ -1054,7 +1082,7 @@ in pixels.</font></td>
 <center><a NAME="shaveImage"></a><font size=-1>shaveImage</font></center>
 </td>
 
-<td><font size=-1>const Geometry &amp;geometry_</font></td>
+<td><font size=-1>const <a href="Geometry.html">Geometry</a> &amp;geometry_</font></td>
 
 <td><font size=-1>Shave pixels from image edges.</font></td>
 </tr>
@@ -1083,7 +1111,7 @@ filled&nbsp; with&nbsp; the&nbsp; color&nbsp; defined as <i>borderColor</i>.&nbs
 <center><a NAME="solarizeImage"></a><font size=-1>solarizeImage</font></center>
 </td>
 
-<td><font size=-1>double factor_ = 50.0</font></td>
+<td><font size=-1>double factor_</font></td>
 
 <td NOSAVE><font size=-1>Solarize image (similar to effect seen when exposing
 a photographic film to light during the development process)</font></td>
@@ -1104,7 +1132,7 @@ a photographic film to light during the development process)</font></td>
 <center><a NAME="steganoImage"></a><font size=-1>steganoImage</font></center>
 </td>
 
-<td><font size=-1>const Image &amp;watermark_</font></td>
+<td><font size=-1>const <a href="Image.html">Image</a> &amp;watermark_</font></td>
 
 <td><font size=-1>Add a digital watermark to the image (based on second
 image)</font></td>
@@ -1115,7 +1143,7 @@ image)</font></td>
 <center><a NAME="stereoImage"></a><font size=-1>stereoImage</font></center>
 </td>
 
-<td><font size=-1>const Image &amp;rightImage_</font></td>
+<td><font size=-1>const <a href="Image.html">Image</a> &amp;rightImage_</font></td>
 
 <td><font size=-1>Create an image which appears in stereo when viewed with
 red-blue glasses (Red image on left, blue on right)</font></td>
@@ -1136,7 +1164,7 @@ red-blue glasses (Red image on left, blue on right)</font></td>
 <center><a NAME="textureImage"></a><font size=-1>textureImage</font></center>
 </td>
 
-<td><font size=-1>const Image &amp;texture_</font></td>
+<td><font size=-1>const <a href="Image.html">Image</a> &amp;texture_</font></td>
 
 <td><font size=-1>Layer a texture on image background</font></td>
 </tr>
@@ -1318,7 +1346,7 @@ loop extension) for.</font></td>
 <br><font size=-1>TextureImage</font></center>
 </td>
 
-<td><font size=-1>string</font></td>
+<td><font size=-1>std::string</font></td>
 
 <td><font size=-1>const string &amp;texture_</font></td>
 
@@ -1491,9 +1519,9 @@ depths. Defaults to the quantum depth that ImageMagick is compiled with.</font><
 <center><a NAME="fileName"></a><font size=-1>fileNameImage</font></center>
 </td>
 
-<td><font size=-1>string</font></td>
+<td><font size=-1>std::string</font></td>
 
-<td><font size=-1>const string &amp;fileName_</font></td>
+<td><font size=-1>const std::string &amp;fileName_</font></td>
 
 <td><font size=-1>Image file name.</font></td>
 </tr>
@@ -1531,9 +1559,9 @@ been shown to produce good results when reducing images.</font></td>
 <center><a NAME="font"></a><font size=-1>fontImage</font></center>
 </td>
 
-<td><font size=-1>string</font></td>
+<td><font size=-1>std::string</font></td>
 
-<td><font size=-1>const string &amp;font_</font></td>
+<td><font size=-1>const std::string &amp;font_</font></td>
 
 <td><font size=-1>Text rendering font. If the font is a fully qualified
 X server font name, the font is obtained from an X&nbsp; server. To use
@@ -1613,9 +1641,9 @@ if argument is false.</font></td>
 <center><a NAME="label"></a><font size=-1>labelImage</font></center>
 </td>
 
-<td><font size=-1>string</font></td>
+<td><font size=-1>std::string</font></td>
 
-<td><font size=-1>const string &amp;label_</font></td>
+<td><font size=-1>const std::string &amp;label_</font></td>
 
 <td><font size=-1>Image label</font></td>
 </tr>
@@ -1638,9 +1666,9 @@ See <a href="Drawable.html">Drawable</a>.</font></td>
 <center><a NAME="magick"></a><font size=-1>magickImage</font></center>
 </td>
 
-<td><font size=-1>string</font></td>
+<td><font size=-1>std::string</font></td>
 
-<td NOSAVE><font size=-1>&nbsp;const string &amp;magick_</font></td>
+<td NOSAVE><font size=-1>&nbsp;const std::string &amp;magick_</font></td>
 
 <td><font size=-1>Get image format (e.g. "GIF")</font></td>
 </tr>
@@ -1718,7 +1746,7 @@ for a scene in an animation)</font></td>
 <center><a NAME="penTexture"></a><font size=-1>penTextureImage</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
+<td><font size=-1><a href="Image.html">Image</a></font></td>
 
 <td><font size=-1>const Image &amp; penTexture_</font></td>
 
@@ -1893,9 +1921,9 @@ CD, JBIG, or JPEG.</font></td>
 <center><a NAME="strokeColorImage"></a><font size=-1>strokeColorImage</font></center>
 </td>
 
-<td><font size=-1>Color</font></td>
+<td><font size=-1><a href="Color.html">Color</a></font></td>
 
-<td><font size=-1>const Color &amp;strokeColor_</font></td>
+<td><font size=-1>const <a href="Color.html">Color</a> &amp;strokeColor_</font></td>
 
 <td><font size=-1>Color to use when drawing object outlines</font></td>
 </tr>
@@ -1929,9 +1957,9 @@ CD, JBIG, or JPEG.</font></td>
 <center><a NAME="tileName"></a><font size=-1>tileNameImage</font></center>
 </td>
 
-<td><font size=-1>string</font></td>
+<td><font size=-1>std::string</font></td>
 
-<td><font size=-1>const string &amp;tileName_</font></td>
+<td><font size=-1>const std::string &amp;tileName_</font></td>
 
 <td><font size=-1>Tile name</font></td>
 </tr>
@@ -1965,9 +1993,9 @@ CD, JBIG, or JPEG.</font></td>
 <center><a NAME="view"></a><font size=-1>viewImage</font></center>
 </td>
 
-<td><font size=-1>string</font></td>
+<td><font size=-1>std::string</font></td>
 
-<td><font size=-1>const string &amp;view_</font></td>
+<td><font size=-1>const std::string &amp;view_</font></td>
 
 <td><font size=-1>FlashPix viewing parameters.</font></td>
 </tr>
@@ -1977,9 +2005,9 @@ CD, JBIG, or JPEG.</font></td>
 <center><a NAME="x11Display"></a><font size=-1>x11DisplayImage</font></center>
 </td>
 
-<td><font size=-1>string (e.g. "hostname:0.0")</font></td>
+<td><font size=-1>std::string (e.g. "hostname:0.0")</font></td>
 
-<td><font size=-1>const string &amp;display_</font></td>
+<td><font size=-1>const std::string &amp;display_</font></td>
 
 <td><font size=-1>X11 display to display to, obtain fonts from, or to capture
 image from</font></td>
