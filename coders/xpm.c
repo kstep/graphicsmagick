@@ -230,7 +230,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
     Read XPM file.
   */
@@ -606,7 +606,7 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   (void) TransformRGBImage(image,RGBColorspace);
   SetGeometry(image,&geometry);
   (void) GetMagickGeometry(PiconGeometry,&geometry.x,&geometry.y,
@@ -840,7 +840,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   (void) TransformRGBImage(image,RGBColorspace);
   transparent=False;
   if (image->storage_class == PseudoClass)

@@ -465,7 +465,7 @@ static void MSLPushImage(MSLInfo *msl_info,Image *image)
     (msl_info->attributes == (Image **) NULL) ||
     (msl_info->image == (Image **) NULL))
       ThrowException(msl_info->exception,ResourceLimitFatalError,
-        "Unable to allocate image","Memory allocation failed");
+        "Unable to allocate image","MemoryAllocationFailed");
   msl_info->image_info[n]=CloneImageInfo(msl_info->image_info[n-1]);
   msl_info->draw_info[n]=CloneDrawInfo(msl_info->image_info[n-1], msl_info->draw_info[n-1]);
   msl_info->attributes[n]=AllocateImage(msl_info->image_info[n]);
@@ -473,7 +473,7 @@ static void MSLPushImage(MSLInfo *msl_info,Image *image)
   if ((msl_info->image_info[n] == (ImageInfo *) NULL) ||
     (msl_info->attributes[n] == (Image *) NULL))
     ThrowException(msl_info->exception,ResourceLimitFatalError,
-      "Unable to allocate image","Memory allocation failed");
+      "Unable to allocate image","MemoryAllocationFailed");
   if ( msl_info->nGroups )
     msl_info->group_info[msl_info->nGroups-1].numImages++;
   attribute=GetImageAttribute(msl_info->attributes[n-1],(char *) NULL);
@@ -4184,7 +4184,7 @@ static unsigned int ProcessMSLScript(const ImageInfo *image_info,Image **image,
       (msl_info.attributes == (Image **) NULL) ||
       (msl_info.group_info == (MSLGroupInfo *) NULL))
     MagickFatalError(ResourceLimitFatalError,"Unable to interpret MSL image",
-      "Memory allocation failed");
+      "MemoryAllocationFailed");
   *msl_info.image_info=CloneImageInfo(image_info);
   *msl_info.draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   *msl_info.attributes=CloneImage(image_info->attributes,0,0,True,exception);

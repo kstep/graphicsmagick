@@ -307,7 +307,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
     *q;
 
   /*
-    Initialize convolved image attributes.
+    Initialize convolve image attributes.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -315,10 +315,10 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
   assert(exception->signature == MagickSignature);
   width=(long) order;
   if ((width % 2) == 0)
-    ThrowImageException(OptionError,"Unable to convolve image",
+    ThrowImageException(OptionError,"UnableToConvolveImage",
       "kernel width must be an odd number");
   if (((long) image->columns < width) || ((long) image->rows < width))
-    ThrowImageException(OptionError,"Unable to convolve image",
+    ThrowImageException(OptionError,"UnableToConvolveImage",
       "image smaller than kernel width");
   convolve_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (convolve_image == (Image *) NULL)
@@ -755,7 +755,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth(radius,0.5);
   if (((long) image->columns < width) || ((long) image->rows < width))
-    ThrowImageException(OptionError,"Unable to oil paint",
+    ThrowImageException(OptionError,"UnableToPaintImage",
       "image smaller than radius");
   paint_image=CloneImage(image,0,0,True,exception);
   if (paint_image == (Image *) NULL)
@@ -1098,7 +1098,7 @@ MagickExport Image *StereoImage(const Image *image,const Image *offset_image,
   assert(offset_image != (const Image *) NULL);
   if ((image->columns != offset_image->columns) ||
       (image->rows != offset_image->rows))
-    ThrowImageException(ResourceLimitError,"Unable to create stereo image",
+    ThrowImageException(ImageError,"UnableToCreateStereoImage",
       "left and right image sizes differ");
   /*
     Initialize stereo image attributes.

@@ -934,7 +934,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   count=ReadBlob(image,14,(char *) magick);
   if ((count == 0) ||
       (LocaleNCompare((char *) magick,"gimp xcf file",14) != 0))
@@ -1193,7 +1193,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (j=0; j < current_layer; j++)
           DestroyImage(layer_info[j].image);
         ThrowReaderException(ResourceLimitError,
-           "Memory allocation failed",image)
+           "MemoryAllocationFailed",image)
       }
 
       /* restore the saved position so we'll be ready to

@@ -227,7 +227,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
     Initialize image header.
   */
@@ -352,7 +352,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     image->storage_class=PseudoClass;
     image->scene=scene;
     if (!AllocateImageColormap(image,1 << image->depth))
-      ThrowReaderException(FileOpenError,"Unable to open file",image);
+      ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
@@ -552,7 +552,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     }
     LiberateMemory((void **) &fits_pixels);
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
+      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
     /*
       Proceed to next image.
     */
@@ -706,7 +706,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   (void) TransformRGBImage(image,RGBColorspace);
   /*
     Allocate image memory.

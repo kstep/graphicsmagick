@@ -673,7 +673,7 @@ MagickExport QuantizeInfo *CloneQuantizeInfo(const QuantizeInfo *quantize_info)
   clone_info=(QuantizeInfo *) AcquireMemory(sizeof(QuantizeInfo));
   if (clone_info == (QuantizeInfo *) NULL)
     MagickFatalError(ResourceLimitFatalError,"Unable to clone quantize info",
-      "Memory allocation failed");
+      "MemoryAllocationFailed");
   GetQuantizeInfo(clone_info);
   if (quantize_info == (QuantizeInfo *) NULL)
     return(clone_info);

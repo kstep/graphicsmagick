@@ -466,7 +466,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
     Determine if this is a DIB file.
   */
@@ -795,7 +795,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   LiberateMemory((void **) &pixels);
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
+    ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
   if (dib_info.height < 0)
     {
       Image
@@ -951,7 +951,7 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   /*
     Initialize DIB raster file header.
   */
@@ -1110,7 +1110,7 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
           {
             LiberateMemory((void **) &pixels);
             ThrowWriterException(ResourceLimitError,
-              "Memory allocation failed",image)
+              "MemoryAllocationFailed",image)
           }
         dib_info.image_size=EncodeImage(image,bytes_per_line,pixels,dib_data);
         LiberateMemory((void **) &pixels);

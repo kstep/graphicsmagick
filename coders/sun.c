@@ -284,7 +284,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
     Read SUN raster header.
   */
@@ -326,7 +326,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
             */
             if (!AllocateImageColormap(image,image->colors))
               ThrowReaderException(ResourceLimitError,
-                "Memory allocation failed",image);
+                "MemoryAllocationFailed",image);
           }
         break;
       }
@@ -390,7 +390,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
     count=ReadBlob(image,sun_info.length,(char *) sun_data);
     if ((count == 0) && (sun_info.type != RT_ENCODED))
-      ThrowReaderException(CorruptImageError,"Unable to read image data",
+      ThrowReaderException(CorruptImageError,"UnableToReadImageData",
         image);
     sun_pixels=sun_data;
     if (sun_info.type == RT_ENCODED)
@@ -504,7 +504,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       SyncImage(image);
     LiberateMemory((void **) &sun_pixels);
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
+      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
     /*
       Proceed to next image.
     */
@@ -686,7 +686,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   scene=0;
   do
   {

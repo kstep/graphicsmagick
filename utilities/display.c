@@ -294,7 +294,7 @@ int main(int argc,char **argv)
   ReadCommandlLine(argc,&argv);
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
-    MagickFatalError(ResourceLimitFatalError,"Memory allocation failed",
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       (char *) NULL);
   /*
     Set defaults.
@@ -309,7 +309,7 @@ int main(int argc,char **argv)
   image_marker=(unsigned int *) AcquireMemory((argc+1)*sizeof(unsigned int));
   if (image_marker == (unsigned int *) NULL)
     MagickFatalError(ResourceLimitFatalError,"Unable to display image",
-      "Memory allocation failed");
+      "MemoryAllocationFailed");
   for (i=0; i <= argc; i++)
     image_marker[i]=argc;
   resource_database=(XrmDatabase) NULL;

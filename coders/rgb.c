@@ -136,7 +136,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
       if (status == False)
-        ThrowReaderException(FileOpenError,"Unable to open file",image);
+        ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
       for (i=0; i < image->offset; i++)
         (void) ReadBlobByte(image);
     }
@@ -257,7 +257,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             AppendImageFormat("R",image->filename);
             status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
             if (status == False)
-              ThrowReaderException(FileOpenError,"Unable to open file",image);
+              ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
           }
         packet_size=image->depth > 8 ? 2 : 1;
         for (y=0; y < image->tile_info.y; y++)
@@ -289,7 +289,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             AppendImageFormat("G",image->filename);
             status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
             if (status == False)
-              ThrowReaderException(FileOpenError,"Unable to open file",image);
+              ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
           }
         for (y=0; y < image->tile_info.y; y++)
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
@@ -317,7 +317,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             AppendImageFormat("B",image->filename);
             status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
             if (status == False)
-              ThrowReaderException(FileOpenError,"Unable to open file",image);
+              ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
           }
         for (y=0; y < image->tile_info.y; y++)
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
@@ -350,7 +350,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 AppendImageFormat("A",image->filename);
                 status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
                 if (status == False)
-                  ThrowReaderException(FileOpenError,"Unable to open file",
+                  ThrowReaderException(FileOpenError,"UnableToOpenFile",
                     image);
               }
             for (y=0; y < image->tile_info.y; y++)
@@ -383,7 +383,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     }
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
+      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
     /*
       Proceed to next image.
     */
@@ -553,7 +553,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
       */
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       if (status == False)
-        ThrowWriterException(FileOpenError,"Unable to open file",image);
+        ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
     }
   scene=0;
   do
@@ -633,7 +633,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
             AppendImageFormat("R",image->filename);
             status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
             if (status == False)
-              ThrowWriterException(FileOpenError,"Unable to open file",image);
+              ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
           }
         for (y=0; y < (long) image->rows; y++)
         {
@@ -649,7 +649,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
             AppendImageFormat("G",image->filename);
             status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
             if (status == False)
-              ThrowWriterException(FileOpenError,"Unable to open file",image);
+              ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
           }
         if (!MagickMonitor(SaveImageText,100,400,&image->exception))
           break;
@@ -667,7 +667,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
             AppendImageFormat("B",image->filename);
             status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
             if (status == False)
-              ThrowWriterException(FileOpenError,"Unable to open file",image);
+              ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
           }
         if (!MagickMonitor(SaveImageText,200,400,&image->exception))
           break;
@@ -690,7 +690,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
                 status=OpenBlob(image_info,image,WriteBinaryBlobMode,
                   &image->exception);
                 if (status == False)
-                  ThrowWriterException(FileOpenError,"Unable to open file",
+                  ThrowWriterException(FileOpenError,"UnableToOpenFile",
                     image);
               }
             for (y=0; y < (long) image->rows; y++)

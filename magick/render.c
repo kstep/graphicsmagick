@@ -182,7 +182,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   clone_info=(DrawInfo *) AcquireMemory(sizeof(DrawInfo));
   if (clone_info == (DrawInfo *) NULL)
     MagickFatalError(ResourceLimitFatalError,"Unable to clone draw info",
-      "Memory allocation failed");
+      "MemoryAllocationFailed");
   GetDrawInfo(image_info,clone_info);
   if (draw_info == (DrawInfo *) NULL)
     return(clone_info);
@@ -243,7 +243,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
       clone_info->dash_pattern=(double *) AcquireMemory((x+1)*sizeof(double));
       if (clone_info->dash_pattern == (double *) NULL)
         MagickFatalError(ResourceLimitFatalError,"Unable to clone dash pattern",
-          "Memory allocation failed");
+          "MemoryAllocationFailed");
       (void) memcpy(clone_info->dash_pattern,draw_info->dash_pattern,
         (x+1)*sizeof(double));
     }
@@ -372,8 +372,8 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
   segment_stack=(SegmentInfo *) AcquireMemory(MaxStacksize*sizeof(SegmentInfo));
   if ((floodplane== (unsigned char *) NULL) ||
       (segment_stack == (SegmentInfo *) NULL))
-    ThrowBinaryException(ResourceLimitError,"Unable to floodfill image",
-      image->filename);
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      "Unable to floodfill image");
   (void) memset(floodplane,False,image->columns*image->rows);
   /*
     Push initial segment on stack.
@@ -1829,7 +1829,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   if (graphic_context == (DrawInfo **) NULL)
     {
       LiberateMemory((void **) &primitive);
-      ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
+      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         "Unable to draw image");
     }
   number_points=2047;
@@ -4404,8 +4404,8 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
   */
   segment_stack=(SegmentInfo *) AcquireMemory(MaxStacksize*sizeof(SegmentInfo));
   if (segment_stack == (SegmentInfo *) NULL)
-    ThrowBinaryException(ResourceLimitError,"Unable to floodfill image",
-      image->filename);
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      "Unable to floodfill image");
   /*
     Push initial segment on stack.
   */

@@ -197,7 +197,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode , exception );
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
     Read HDF image.
   */
@@ -532,7 +532,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode, &image->exception );
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   CloseBlob(image);
   scene=0;
   do
@@ -712,7 +712,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
             hdf_palette=(unsigned char *) AcquireMemory(768);
             if (hdf_palette == (unsigned char *) NULL)
               ThrowWriterException(ResourceLimitError,
-                "Memory allocation failed",image);
+                "MemoryAllocationFailed",image);
             q=hdf_palette;
             for (i=0; i < (long) image->colors; i++)
             {

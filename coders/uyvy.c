@@ -136,7 +136,7 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
   (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image)
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image)
   for (i=0; i < image->offset; i++)
     (void) ReadBlobByte(image);
   image->depth=8;
@@ -176,7 +176,7 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
   }
   (void) TransformRGBImage(image,YCbCrColorspace);
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
+    ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
   CloseBlob(image);
   return(image);
 }
@@ -310,7 +310,7 @@ static unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   (void) TransformRGBImage(image,RGBColorspace);
   /*
     Convert to YUV, at full resolution.

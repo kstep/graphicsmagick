@@ -5511,7 +5511,7 @@ static unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   logo_image=CloneImage(image,0,0,True,&image->exception);
   if (logo_image == (Image *) NULL)
     ThrowWriterException(FileOpenError,"Unable to clone image",image);

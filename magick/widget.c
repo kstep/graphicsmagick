@@ -5440,7 +5440,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
   if (fontlist == (char **) NULL)
     {
       XNoticeWidget(display,windows,"Unable to view fonts:",
-        "Memory allocation failed");
+        "MemoryAllocationFailed");
       return;
     }
   for (i=0; i < fonts; i++)
@@ -5718,7 +5718,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
         if (fontlist == (char **) NULL)
           {
             XNoticeWidget(display,windows,"Unable to view fonts:",
-              "Memory allocation failed");
+              "MemoryAllocationFailed");
             return;
           }
         for (i=0; i < fonts; i++)

@@ -133,7 +133,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
     Read PIX image.
   */
@@ -203,7 +203,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image->storage_class == PseudoClass)
       SyncImage(image);
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
+      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
     /*
       Proceed to next image.
     */

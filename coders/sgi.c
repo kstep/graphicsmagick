@@ -273,7 +273,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
     Read SGI raster header.
   */
@@ -563,7 +563,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     LiberateMemory((void **) &iris_pixels);
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
+      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
     /*
       Proceed to next image.
     */
@@ -779,7 +779,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
       "Width or height limit exceeded",image);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   scene=0;
   do
   {

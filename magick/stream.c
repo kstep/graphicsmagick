@@ -225,7 +225,7 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
     if (offset != stream_info->length)
       ReacquireMemory((void **) &stream_info->pixels,offset);
   if (stream_info->pixels == (void *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"Memory allocation failed",
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       "unable to allocate cache info");
   stream_info->length=offset;
   stream_info->indexes=(IndexPacket *) NULL;
@@ -604,7 +604,7 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
         stream_info->length=offset;
       }
   if (stream_info->pixels == (void *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"Memory allocation failed",
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       "unable to allocate cache info");
   stream_info->indexes=(IndexPacket *) NULL;
   if ((image->storage_class == PseudoClass) ||

@@ -196,7 +196,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
     Determine if this is a RLE file.
   */
@@ -539,7 +539,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
       LiberateMemory((void **) &colormap);
     LiberateMemory((void **) &rle_pixels);
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
+      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
     /*
       Proceed to next image.
     */

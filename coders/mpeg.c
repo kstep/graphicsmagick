@@ -165,7 +165,7 @@ static Image *ReadMPEGImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   CloseBlob(image);
   /*
     Convert MPEG to PPM with delegate.
@@ -570,7 +570,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   logging=LogMagickEvent(CoderEvent,"enter WriteMPEGImage()");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   CloseBlob(image);
   /*
     Determine if the sequence of images have identical page info.

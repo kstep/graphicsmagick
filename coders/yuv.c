@@ -178,7 +178,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
       if (status == False)
-        ThrowReaderException(FileOpenError,"Unable to open file",image);
+        ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
       for (i=0; i < image->offset; i++)
         (void) ReadBlobByte(image);
     }
@@ -208,7 +208,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         AppendImageFormat("Y",image->filename);
         status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
         if (status == False)
-          ThrowReaderException(FileOpenError,"Unable to open file",image);
+          ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
       }
     for (y=0; y < (long) image->rows; y++)
     {
@@ -270,7 +270,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         AppendImageFormat("U",image->filename);
         status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
         if (status == False)
-          ThrowReaderException(FileOpenError,"Unable to open file",image);
+          ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
       }
     if (interlace != NoInterlace)
       {
@@ -297,7 +297,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
           AppendImageFormat("V",image->filename);
           status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
           if (status == False)
-            ThrowReaderException(FileOpenError,"Unable to open file",image);
+            ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
         }
       for (y=0; y < (long) chroma_image->rows; y++)
       {
@@ -345,7 +345,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (interlace == PartitionInterlace)
       (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
+      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
     /*
       Proceed to next image.
     */
@@ -536,14 +536,14 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       */
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       if (status == False)
-        ThrowWriterException(FileOpenError,"Unable to open file",image);
+        ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
     }
   else
     {
       AppendImageFormat("Y",image->filename);
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       if (status == False)
-        ThrowWriterException(FileOpenError,"Unable to open file",image);
+        ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
     }
   scene=0;
   do
@@ -633,7 +633,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
             status=OpenBlob(image_info,image,WriteBinaryBlobMode,
               &image->exception);
             if (status == False)
-              ThrowWriterException(FileOpenError,"Unable to open file",image);
+              ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
           }
         for (y=0; y < (long) chroma_image->rows; y++)
         {
@@ -657,7 +657,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
             status=OpenBlob(image_info,image,WriteBinaryBlobMode,
               &image->exception);
             if (status == False)
-              ThrowWriterException(FileOpenError,"Unable to open file",image);
+              ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
           }
         for (y=0; y < (long) chroma_image->rows; y++)
         {

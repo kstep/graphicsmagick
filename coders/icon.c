@@ -185,7 +185,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   icon_file.reserved=ReadBlobLSBShort(image);
   icon_file.resource_type=ReadBlobLSBShort(image);
   icon_file.count=ReadBlobLSBShort(image);
@@ -451,7 +451,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
             break;
     }
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
+      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
     /*
       Proceed to next image.
     */

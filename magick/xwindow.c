@@ -642,7 +642,7 @@ MagickExport void XBestIconSize(Display *display,XWindowInfo *window,
       icon_size=XAllocIconSize();
       if (icon_size == (XIconSize *) NULL)
         {
-          MagickError(ResourceLimitError,"Memory allocation failed",
+          MagickError(ResourceLimitError,"MemoryAllocationFailed",
             "Unable to get best icon size");
           return;
         }
@@ -763,7 +763,7 @@ MagickExport void XBestPixel(Display *display,const Colormap colormap,
       if (colors == (XColor *) NULL)
         {
           MagickError(XServerError,"Unable to read X server colormap",
-            "Memory allocation failed");
+            "MemoryAllocationFailed");
           return;
         }
       for (i=0; i < (int) number_colors; i++)
@@ -1649,7 +1649,7 @@ MagickExport void XDisplayImageInfo(Display *display,
   if (text == (char *) NULL)
     {
       XNoticeWidget(display,windows,"Unable to display image info",
-        "Memory allocation failed");
+        "MemoryAllocationFailed");
       return;
     }
   textlist=StringToList(text);
@@ -2645,7 +2645,7 @@ MagickExport void XGetPixelPacket(Display *display,
   pixel->pixels=(unsigned long *) AcquireMemory(packets*sizeof(unsigned long));
   if (pixel->pixels == (unsigned long *) NULL)
     MagickFatalError(ResourceLimitFatalError,"Unable to get pixel info",
-      "Memory allocation failed");
+      "MemoryAllocationFailed");
   /*
     Set foreground color.
   */
@@ -4759,7 +4759,7 @@ MagickExport XWindows *XInitializeWindows(Display *display,
   if ((windows->map_info == (XStandardColormap *) NULL) ||
       (windows->icon_map == (XStandardColormap *) NULL))
     MagickFatalError(ResourceLimitFatalError,
-      "Unable to create standard colormap","Memory allocation failed");
+      "Unable to create standard colormap","MemoryAllocationFailed");
   windows->map_info->colormap=(Colormap) NULL;
   windows->icon_map->colormap=(Colormap) NULL;
   windows->pixel_info->pixels=(unsigned long *) NULL;
@@ -6991,7 +6991,7 @@ MagickExport void XMakeStandardColormap(Display *display,
             map_image=AllocateImage((ImageInfo *) NULL);
             if (map_image == (Image *) NULL)
               MagickFatalError(ResourceLimitFatalError,"Unable to dither image",
-                "Memory allocation failed");
+                "MemoryAllocationFailed");
             map_image->columns=number_colors;
             map_image->rows=1;
             /*
@@ -7086,7 +7086,7 @@ MagickExport void XMakeStandardColormap(Display *display,
         AcquireMemory(visual_info->colormap_size*sizeof(XColor));
       if (colors == (XColor *) NULL)
         MagickFatalError(XServerFatalError,"Unable to create colormap",
-          "Memory allocation failed");
+          "MemoryAllocationFailed");
       p=colors;
       color.flags=DoRed | DoGreen | DoBlue;
       for (i=0; i < (long) image->colors; i++)
@@ -7126,7 +7126,7 @@ MagickExport void XMakeStandardColormap(Display *display,
         AcquireMemory(visual_info->colormap_size*sizeof(XColor));
       if (colors == (XColor *) NULL)
         MagickFatalError(ResourceLimitFatalError,"Unable to create colormap",
-          "Memory allocation failed");
+          "MemoryAllocationFailed");
       /*
         Preallocate our GUI colors.
       */
@@ -7172,7 +7172,7 @@ MagickExport void XMakeStandardColormap(Display *display,
             AcquireMemory(image->colors*sizeof(DiversityPacket));
           if (diversity == (DiversityPacket *) NULL)
             MagickFatalError(ResourceLimitFatalError,
-              "Unable to create colormap","Memory allocation failed");
+              "Unable to create colormap","MemoryAllocationFailed");
           for (i=0; i < (long) image->colors; i++)
           {
             diversity[i].red=image->colormap[i].red;
@@ -7234,7 +7234,7 @@ MagickExport void XMakeStandardColormap(Display *display,
             AcquireMemory(visual_info->colormap_size*sizeof(XColor));
           if (server_colors == (XColor *) NULL)
             MagickFatalError(ResourceLimitFatalError,
-              "Unable to create colormap","Memory allocation failed");
+              "Unable to create colormap","MemoryAllocationFailed");
           for (x=0; x < visual_info->colormap_size; x++)
             server_colors[x].pixel=(unsigned long) x;
           (void) XQueryColors(display,colormap,server_colors,
@@ -7374,7 +7374,7 @@ MagickExport void XMakeStandardColormap(Display *display,
       colors=(XColor *) AcquireMemory(number_colors*sizeof(XColor));
       if (colors == (XColor *) NULL)
         MagickFatalError(ResourceLimitFatalError,"Unable to create colormap",
-          "Memory allocation failed");
+          "MemoryAllocationFailed");
       /*
         Initialize linear color ramp.
       */
@@ -7542,7 +7542,7 @@ MagickExport void XMakeWindow(Display *display,Window parent,char **argv,
   size_hints=XAllocSizeHints();
   if (size_hints == (XSizeHints *) NULL)
     MagickFatalError(ResourceLimitFatalError,"Unable to make X window",
-      "Memory allocation failed");
+      "MemoryAllocationFailed");
   size_hints->flags=(long) window_info->flags;
   size_hints->x=window_info->x;
   size_hints->y=window_info->y;

@@ -930,7 +930,7 @@ static unsigned int ReadConfigureFile(const char *basename,
         module_info=(ModuleInfo *) AcquireMemory(sizeof(ModuleInfo));
         if (module_info == (ModuleInfo *) NULL)
           MagickFatalError(ResourceLimitFatalError,
-            "Unable to allocate module info","Memory allocation failed");
+            "Unable to allocate module info","MemoryAllocationFailed");
         (void) memset(module_info,0,sizeof(ModuleInfo));
         module_info->path=AcquireString(path);
         module_info->signature=MagickSignature;
@@ -1125,7 +1125,7 @@ static CoderInfo *SetCoderInfo(const char *tag)
   entry=(CoderInfo *) AcquireMemory(sizeof(CoderInfo));
   if (entry == (CoderInfo *) NULL)
     MagickFatalError(ResourceLimitFatalError,"Unable to allocate module info",
-      "Memory allocation failed");
+      "MemoryAllocationFailed");
   (void) memset(entry,0,sizeof(CoderInfo));
   entry->tag=AcquireString(tag);
   entry->signature=MagickSignature;

@@ -536,7 +536,7 @@ MagickExport unsigned int LevelImage(Image *image,const char *levels)
     white_point=65535L-black_point;
   levels_map=(unsigned short *) AcquireMemory(65536L*sizeof(unsigned short));
   if (levels_map == (unsigned short *) NULL)
-    ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       "Unable to level the image");
   for (i=0; i <= 65535L; i++)
   {
@@ -872,7 +872,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
   normalize_map=(PixelPacket *) AcquireMemory(65536L*sizeof(PixelPacket));
   if ((histogram == (DoublePixelPacket *) NULL) ||
       (normalize_map == (PixelPacket *) NULL))
-    ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       "Unable to normalize image");
   /*
     Form histogram.

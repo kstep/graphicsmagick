@@ -178,7 +178,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   (void) strncpy(cache_filename,image->filename,MaxTextExtent-1);
   AppendImageFormat("cache",cache_filename);
   c=ReadBlobByte(image);
@@ -233,7 +233,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
           if (comment == (char *) NULL)
             ThrowReaderException(ResourceLimitError,
-              "Memory allocation failed",image);
+              "MemoryAllocationFailed",image);
           *p='\0';
           (void) SetImageAttribute(image,"comment",comment);
           LiberateMemory((void **) &comment);
@@ -269,7 +269,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
               if (values == (char *) NULL)
                 ThrowReaderException(ResourceLimitError,
-                  "Memory allocation failed",image);
+                  "MemoryAllocationFailed",image);
               *p++=c;
               c=ReadBlobByte(image);
               if (*values != '{')
@@ -521,7 +521,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         (i+1)*sizeof(ProfileInfo));
                     if (image->generic_profile == (ProfileInfo *) NULL)
                       ThrowReaderException(ResourceLimitError,
-                        "Memory allocation failed",image);
+                        "MemoryAllocationFailed",image);
                     image->generic_profile[i].name=AllocateString(keyword+8);
                     image->generic_profile[i].length=atol(values);
                     image->generic_profile[i].info=(unsigned char *) NULL;
@@ -681,7 +681,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         image->directory=AllocateString((char *) NULL);
         if (image->directory == (char *) NULL)
-          ThrowReaderException(CorruptImageError,"Unable to read image data",
+          ThrowReaderException(CorruptImageError,"UnableToReadImageData",
             image);
         p=image->directory;
         do
@@ -696,7 +696,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 (strlen(image->directory)+MaxTextExtent+1));
               if (image->directory == (char *) NULL)
                 ThrowReaderException(CorruptImageError,
-                  "Unable to read image data",image);
+                  "UnableToReadImageData",image);
               p=image->directory+strlen(image->directory);
             }
           c=ReadBlobByte(image);
@@ -778,7 +778,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             colormap=(unsigned char *) AcquireMemory(packet_size*image->colors);
             if (colormap == (unsigned char *) NULL)
               ThrowReaderException(ResourceLimitError,
-                "Memory allocation failed",image);
+                "MemoryAllocationFailed",image);
             (void) ReadBlob(image,packet_size*image->colors,colormap);
             p=colormap;
             if (image->depth <= 8)
@@ -802,7 +802,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
       }
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
+      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
@@ -963,7 +963,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   (void) strncpy(cache_filename,image->filename,MaxTextExtent-1);
   AppendImageFormat("cache",cache_filename);
   scene=0;

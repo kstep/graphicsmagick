@@ -165,7 +165,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   if (tiff == (TIFF *) NULL)
     {
       (void) remove(filename);
-      ThrowBinaryException(FileOpenError,"Unable to open file",
+      ThrowBinaryException(FileOpenError,"UnableToOpenFile",
         image_info->filename)
     }
   /*
@@ -377,7 +377,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   compression=image->compression;
   if (image_info->compression != UndefinedCompression)
     compression=image_info->compression;

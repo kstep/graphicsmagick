@@ -393,7 +393,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   tiff_exception=exception;
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
@@ -424,7 +424,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     {
       if ((image->blob->file == stdin) || image->blob->pipet)
         remove(filename);
-      ThrowReaderException(FileOpenError,"Unable to open file",image)
+      ThrowReaderException(FileOpenError,"UnableToOpenFile",image)
     }
   if (image_info->subrange != 0)
     while (image->scene < image_info->subimage)
@@ -1440,7 +1440,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   logging=LogMagickEvent(CoderEvent,"enter WriteTIFFImage()");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   tiff_exception=(&image->exception);
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
@@ -2014,7 +2014,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       */
       file=fopen(filename,"rb");
       if (file == (FILE *) NULL)
-        ThrowWriterException(FileOpenError,"Unable to open file",image);
+        ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
       for (c=fgetc(file); c != EOF; c=fgetc(file))
         (void) WriteBlobByte(image,c);
       (void) fclose(file);

@@ -11434,7 +11434,7 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
       map_info=XAllocStandardColormap();
       if (map_info == (XStandardColormap *) NULL)
         MagickFatalError(XServerFatalError,"Unable to create standard colormap",
-          "Memory allocation failed");
+          "MemoryAllocationFailed");
       map_info->colormap=(Colormap) NULL;
       pixel.pixels=(unsigned long *) NULL;
       /*
@@ -11545,7 +11545,7 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
       size_hints=XAllocSizeHints();
       if (size_hints == (XSizeHints *) NULL)
         MagickFatalError(ResourceLimitFatalError,"Unable to display on window",
-          "Memory allocation failed");
+          "MemoryAllocationFailed");
       size_hints->flags=(long) NULL;
       FormatString(default_geometry,"%lux%lu",width,height);
       flags=XWMGeometry(display,visual_info->screen,resources.image_geometry,
@@ -12096,7 +12096,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       windows=XSetWindows(XInitializeWindows(display,resource_info));
       if (windows == (XWindows *) NULL)
         MagickFatalError(XServerFatalError,"Unable to create X windows",
-          "Memory allocation failed");
+          "MemoryAllocationFailed");
       /*
         Initialize window id's.
       */

@@ -431,14 +431,14 @@ static unsigned int CompressColormapTransFirst(Image *image)
   marker=(unsigned char *) AcquireMemory(image->colors);
   if (marker == (unsigned char *) NULL)
     ThrowBinaryException((ExceptionType) ResourceLimitError,
-      "Unable to compress colormap", "Memory allocation failed");
+      "Unable to compress colormap", "MemoryAllocationFailed");
   opacity=(IndexPacket *)
     AcquireMemory(image->colors*sizeof(IndexPacket));
   if (opacity == (IndexPacket *) NULL)
     {
       LiberateMemory((void **) &marker);
       ThrowBinaryException((ExceptionType) ResourceLimitError,
-        "Unable to compress colormap", "Memory allocation failed")
+        "Unable to compress colormap", "MemoryAllocationFailed")
     }
   /*
     Mark colors that are present.
@@ -539,7 +539,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
       LiberateMemory((void **) &marker);
       LiberateMemory((void **) &opacity);
       ThrowBinaryException((ExceptionType) ResourceLimitError,
-        "Unable to compress colormap", "Memory allocation failed")
+        "Unable to compress colormap", "MemoryAllocationFailed")
     }
   /*
     Eliminate unused colormap entries.
@@ -551,7 +551,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
       LiberateMemory((void **) &opacity);
       LiberateMemory((void **) &colormap);
       ThrowBinaryException((ExceptionType) ResourceLimitError,
-        "Unable to compress colormap", "Memory allocation failed")
+        "Unable to compress colormap", "MemoryAllocationFailed")
     }
   k=0;
   for (i=0; i < number_colors; i++)
@@ -1292,7 +1292,7 @@ png_read_raw_profile(Image *image, const ImageInfo *image_info,
    if (info == (unsigned char *) NULL)
    {
      ThrowException(&image->exception,(ExceptionType) ResourceLimitError,
-        "Unable to copy profile", "Memory allocation failed");
+        "Unable to copy profile", "MemoryAllocationFailed");
      return (False);
    }
    /* copy profile, skipping white space and column 1 "=" signs */
@@ -1545,7 +1545,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       mng_info=(MngInfo *) AcquireMemory(sizeof(MngInfo));
       if (mng_info == (MngInfo *) NULL)
         ThrowReaderException((ExceptionType) ResourceLimitError,
-        "Memory allocation failed",
+        "MemoryAllocationFailed",
           image);
       have_mng_structure=True;
       mng_info->image=image;
@@ -2643,20 +2643,20 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
     if (ping == (png_struct *) NULL)
       ThrowReaderException((ExceptionType) ResourceLimitError,
-        "Memory allocation failed",image);
+        "MemoryAllocationFailed",image);
     ping_info=png_create_info_struct(ping);
     if (ping_info == (png_info *) NULL)
       {
         png_destroy_read_struct(&ping,(png_info **) NULL,(png_info **) NULL);
         ThrowReaderException((ExceptionType) ResourceLimitError,
-          "Memory allocation failed", image)
+          "MemoryAllocationFailed", image)
       }
     end_info=png_create_info_struct(ping);
     if (end_info == (png_info *) NULL)
       {
         png_destroy_read_struct(&ping,&ping_info,(png_info **) NULL);
         ThrowReaderException((ExceptionType) ResourceLimitError,
-          "Memory allocation failed", image)
+          "MemoryAllocationFailed", image)
       }
     png_pixels=(unsigned char *) NULL;
     scanlines=(unsigned char **) NULL;
@@ -2780,7 +2780,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (image->color_profile.info == (unsigned char *) NULL)
               {
                  MagickError(OptionError, "Unable to allocate ICC profile",
-                    "Memory allocation failed");
+                    "MemoryAllocationFailed");
                  image->color_profile.length=0;
               }
             else
@@ -3096,7 +3096,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if (!AllocateImageColormap(image,image->colors))
           ThrowReaderException((ExceptionType) ResourceLimitError,
-            "Memory allocation failed",image);
+            "MemoryAllocationFailed",image);
         if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
           {
             int
@@ -3152,7 +3152,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((png_pixels == (unsigned char *) NULL) ||
         (scanlines == (unsigned char **) NULL))
       ThrowReaderException((ExceptionType) ResourceLimitError,
-        "Memory allocation failed",image);
+        "MemoryAllocationFailed",image);
     for (i=0; i < (long) image->rows; i++)
       scanlines[i]=png_pixels+(i*ping_info->rowbytes);
     png_read_image(ping,scanlines);
@@ -3336,7 +3336,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
            image->columns*sizeof(Quantum));
         if (quantum_scanline == (Quantum *) NULL)
           ThrowReaderException((ExceptionType) ResourceLimitError,
-            "Memory allocation failed",image);
+            "MemoryAllocationFailed",image);
         for (y=0; y < (long) image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
@@ -3564,7 +3564,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 ThrowException(&image->exception,(ExceptionType)
                    ResourceLimitError,
-                  "Unable to read text chunk","Memory allocation failed");
+                  "Unable to read text chunk","MemoryAllocationFailed");
                 break;
               }
             *value='\0';
@@ -3829,7 +3829,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                      DestroyImageList(image);
                      MngInfoFreeStruct(mng_info,&have_mng_structure);
                      ThrowReaderException((ExceptionType) ResourceLimitError,
-                       "Memory allocation failed while magnifying",image)
+                       "MemoryAllocationFailed while magnifying",image)
                   }
                 n=GetImagePixels(image,0,0,image->columns,1);
                 (void) memcpy(next,n,length);
@@ -5335,13 +5335,13 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 #endif
     if (ping == (png_struct *) NULL)
       ThrowWriterException((ExceptionType) ResourceLimitError,
-        "Memory allocation failed",image);
+        "MemoryAllocationFailed",image);
     ping_info=png_create_info_struct(ping);
     if (ping_info == (png_info *) NULL)
       {
         png_destroy_write_struct(&ping,(png_info **) NULL);
         ThrowWriterException((ExceptionType) ResourceLimitError,
-           "Memory allocation failed",image)
+           "MemoryAllocationFailed",image)
       }
     png_set_write_fn(ping,image,png_put_data,png_flush_data);
     png_pixels=(unsigned char *) NULL;
@@ -5694,7 +5694,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                   AcquireMemory(number_colors*sizeof(png_color));
                 if (palette == (png_color *) NULL)
                   ThrowWriterException((ExceptionType) ResourceLimitError,
-                    "Memory allocation failed",image);
+                    "MemoryAllocationFailed",image);
                 for (i=0; i < (long) number_colors; i++)
                 {
                   palette[i].red=ScaleQuantumToChar(image->colormap[i].red);
@@ -5717,7 +5717,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             ping_info->trans=(unsigned char *) AcquireMemory(number_colors);
             if (ping_info->trans == (unsigned char *) NULL)
               ThrowWriterException((ExceptionType) ResourceLimitError,
-                "Memory allocation failed",image);
+                "MemoryAllocationFailed",image);
             assert(number_colors <= 256);
             for (i=0; i < (long) number_colors; i++)
                ping_info->trans[i]=255;
@@ -6068,7 +6068,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     if ((png_pixels == (unsigned char *) NULL) ||
         (scanlines == (unsigned char **) NULL))
       ThrowWriterException((ExceptionType) ResourceLimitError,
-        "Memory allocation failed",image);
+        "MemoryAllocationFailed",image);
     /*
       Initialize image scanlines.
     */

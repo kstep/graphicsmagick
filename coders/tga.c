@@ -183,7 +183,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
     Read TGA header information.
   */
@@ -329,7 +329,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 count=ReadBlob(image,1,(char *) &runlength);
                 if (count == 0)
                   ThrowReaderException(CorruptImageError,
-                    "Unable to read image data",image);
+                    "UnableToReadImageData",image);
                 flag=runlength & 0x80;
                 if (flag != 0)
                   runlength-=128;
@@ -389,7 +389,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
           }
         if (status == False)
-          ThrowReaderException(CorruptImageError,"Unable to read image data",
+          ThrowReaderException(CorruptImageError,"UnableToReadImageData",
             image);
         if (image->storage_class == PseudoClass)
           indexes[x]=index;
@@ -415,7 +415,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
     }
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
+      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
     /*
       Proceed to next image.
     */
@@ -636,7 +636,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   scene=0;
   do
   {

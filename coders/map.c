@@ -140,7 +140,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(OptionError,"Must specify image size",image);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
     Initialize image structure.
   */
@@ -207,7 +207,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   LiberateMemory((void **) &pixels);
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
+    ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
   CloseBlob(image);
   return(image);
 }
@@ -341,7 +341,7 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   (void) TransformRGBImage(image,RGBColorspace);
   /*
     Allocate colormap.

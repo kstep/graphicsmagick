@@ -219,7 +219,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
     Open temporary output file.
   */
@@ -864,7 +864,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   page=1;
   scene=0;
   do
@@ -983,7 +983,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             preview_image=CloneImage(image,0,0,True,&image->exception);
             if (preview_image == (Image *) NULL)
               ThrowWriterException(ResourceLimitError,
-                "Memory allocation failed",image);
+                "MemoryAllocationFailed",image);
             /*
               Dump image as bitmap.
             */

@@ -223,7 +223,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   CloseBlob(image);
   (void) TransformRGBImage(image,RGBColorspace);
   clone_info=CloneImageInfo(image_info);

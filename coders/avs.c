@@ -135,7 +135,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
     Read AVS image.
   */
@@ -161,8 +161,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       count=ReadBlob(image,4*image->columns,pixels);
       if (count == 0)
-        ThrowReaderException(CorruptImageError,"Unable to read image data",
-          image);
+        ThrowReaderException(CorruptImageError,"UnableToReadImageData",image);
       p=pixels;
       q=SetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
@@ -185,7 +184,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     LiberateMemory((void **) &pixels);
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
+      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
     /*
       Proceed to next image.
     */
@@ -337,7 +336,7 @@ static unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   scene=0;
   do
   {

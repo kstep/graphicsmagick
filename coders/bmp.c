@@ -518,7 +518,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
     Determine if this is a BMP file.
   */
@@ -1239,7 +1239,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     LiberateMemory((void **) &pixels);
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
+      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
     if (bmp_info.height < 0)
       {
         Image
@@ -1447,7 +1447,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
   logging=LogMagickEvent(CoderEvent,"enter WriteBMPImage()");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   type=4;
   if (LocaleCompare(image_info->magick,"BMP2") == 0)
     type=2;
@@ -1659,7 +1659,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
             {
               LiberateMemory((void **) &pixels);
               ThrowWriterException(ResourceLimitError,
-                "Memory allocation failed",image)
+                "MemoryAllocationFailed",image)
             }
           bmp_info.file_size-=bmp_info.image_size;
           bmp_info.image_size=EncodeImage(image,bytes_per_line,pixels,bmp_data);

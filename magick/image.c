@@ -126,7 +126,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   allocate_image=(Image *) AcquireMemory(sizeof(Image));
   if (allocate_image == (Image *) NULL)
     MagickFatalError(ResourceLimitFatalError,"Unable to allocate image",
-      "Memory allocation failed");
+      "MemoryAllocationFailed");
   (void) memset(allocate_image,0,sizeof(Image));
   /*
     Initialize Image structure.
@@ -1132,7 +1132,7 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   clone_info=(ImageInfo *) AcquireMemory(sizeof(ImageInfo));
   if (clone_info == (ImageInfo *) NULL)
     MagickFatalError(ResourceLimitFatalError,"Unable to clone image info",
-      "Memory allocation failed");
+      "MemoryAllocationFailed");
   GetImageInfo(clone_info);
   if (image_info == (ImageInfo *) NULL)
     return(clone_info);
@@ -6729,7 +6729,7 @@ MagickExport unsigned int SortColormapByIntensity(Image *image)
   pixels=(unsigned short *) AcquireMemory(image->colors*sizeof(unsigned short));
   if (pixels == (unsigned short *) NULL)
     ThrowBinaryException(MissingDelegateError,"Unable to sort colormap",
-      "Memory allocation failed");
+      "MemoryAllocationFailed");
   /*
     Assign index values to colormap entries.
   */

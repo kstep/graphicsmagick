@@ -167,7 +167,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   if (tiff == (TIFF *) NULL)
     {
       (void) remove(filename);
-      ThrowBinaryException(FileOpenError,"Unable to open file",
+      ThrowBinaryException(FileOpenError,"UnableToOpenFile",
         image_info->filename)
     }
   /*
@@ -362,7 +362,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
     Open temporary output file.
   */
@@ -731,7 +731,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   if ((image->blob->file == stdout) || image->blob->pipet)
     {
       /*
@@ -742,7 +742,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       image->blob->temporary=True;
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       if (status == False)
-        ThrowWriterException(FileOpenError,"Unable to open file",image);
+        ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
     }
   compression=image->compression;
   if (image_info->compression != UndefinedCompression)
@@ -1120,7 +1120,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             pixels=(unsigned char *) AcquireMemory(length);
             if (pixels == (unsigned char *) NULL)
               ThrowWriterException(ResourceLimitError,
-                "Memory allocation failed",image);
+                "MemoryAllocationFailed",image);
             /*
               Dump Runlength encoded pixels.
             */
@@ -1222,7 +1222,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             pixels=(unsigned char *) AcquireMemory(length);
             if (pixels == (unsigned char *) NULL)
               ThrowWriterException(ResourceLimitError,
-                "Memory allocation failed",image);
+                "MemoryAllocationFailed",image);
             /*
               Dump runoffset encoded pixels.
             */
@@ -1324,7 +1324,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               pixels=(unsigned char *) AcquireMemory(length);
               if (pixels == (unsigned char *) NULL)
                 ThrowWriterException(ResourceLimitError,
-                  "Memory allocation failed",image);
+                  "MemoryAllocationFailed",image);
               /*
                 Dump Runlength encoded pixels.
               */
@@ -1521,7 +1521,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               {
                 DestroyImage(tile_image);
                 ThrowWriterException(ResourceLimitError,
-                  "Memory allocation failed",image)
+                  "MemoryAllocationFailed",image)
               }
             /*
               Dump Runlength encoded pixels.
@@ -1619,7 +1619,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               {
                 DestroyImage(tile_image);
                 ThrowWriterException(ResourceLimitError,
-                  "Memory allocation failed",image)
+                  "MemoryAllocationFailed",image)
               }
             /*
               Dump runoffset encoded pixels.
@@ -1715,7 +1715,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 {
                   DestroyImage(tile_image);
                   ThrowWriterException(ResourceLimitError,
-                    "Memory allocation failed",image)
+                    "MemoryAllocationFailed",image)
                 }
               /*
                 Dump Runlength encoded pixels.
@@ -1882,7 +1882,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       */
       file=fopen(image->filename,"rb");
       if (file == (FILE *) NULL)
-        ThrowWriterException(FileOpenError,"Unable to open file",image);
+        ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
       for (c=fgetc(file); c != EOF; c=fgetc(file))
         (void) fputc(c,encode_image.blob->file);
       (void) fclose(file);

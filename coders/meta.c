@@ -788,7 +788,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   image->columns=1;
   image->rows=1;
   SetImage(image,OpaqueOpacity);
@@ -800,12 +800,12 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
       */
       buff=AllocateImage((ImageInfo *) NULL);
       if (buff == (Image *) NULL)
-        ThrowReaderException(FileOpenError,"Memory allocation failed",image);
+        ThrowReaderException(FileOpenError,"MemoryAllocationFailed",image);
       blob=(unsigned char *) AcquireMemory(length);
       if (blob == (unsigned char *) NULL)
         {
           DestroyImage(buff);
-          ThrowReaderException(FileOpenError,"Memory allocation failed",image)
+          ThrowReaderException(FileOpenError,"MemoryAllocationFailed",image)
         }
       AttachBlob(buff->blob,blob,length);
       if (LocaleCompare(image_info->magick,"8BIMTEXT") == 0)
@@ -846,7 +846,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
       if (image->generic_profile == (ProfileInfo *) NULL)
         {
           image->generic_profiles=0;
-          ThrowReaderException(FileOpenError,"Memory allocation failed",image)
+          ThrowReaderException(FileOpenError,"MemoryAllocationFailed",image)
         }
       image->generic_profiles++;
       image->generic_profile[i].name=AllocateString((char *) NULL);
@@ -856,12 +856,12 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
 
       buff=AllocateImage((ImageInfo *) NULL);
       if (buff == (Image *) NULL)
-        ThrowReaderException(FileOpenError,"Memory allocation failed",image);
+        ThrowReaderException(FileOpenError,"MemoryAllocationFailed",image);
       blob=(unsigned char *) AcquireMemory(length);
       if (blob == (unsigned char *) NULL)
         {
           DestroyImage(buff);
-          ThrowReaderException(FileOpenError,"Memory allocation failed",image)
+          ThrowReaderException(FileOpenError,"MemoryAllocationFailed",image)
         }
       AttachBlob(buff->blob,blob,length);
       if (LocaleCompare(image_info->magick,"APP1JPEG") == 0)
@@ -890,7 +890,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
               DetachBlob(buff->blob);
               LiberateMemory((void **) &blob);
               DestroyImage(buff);
-              ThrowReaderException(FileOpenError,"Memory allocation failed",image)
+              ThrowReaderException(FileOpenError,"MemoryAllocationFailed",image)
             }
           AttachBlob(iptc->blob,pinfo->info,pinfo->length);
           result=jpeg_embed(image,buff,iptc);
@@ -924,12 +924,12 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
     {
       buff=AllocateImage((ImageInfo *) NULL);
       if (buff == (Image *) NULL)
-        ThrowReaderException(FileOpenError,"Memory allocation failed",image);
+        ThrowReaderException(FileOpenError,"MemoryAllocationFailed",image);
       blob=(unsigned char *) AcquireMemory(length);
       if (blob == (unsigned char *) NULL)
         {
           DestroyImage(buff);
-          ThrowReaderException(FileOpenError,"Memory allocation failed",image)
+          ThrowReaderException(FileOpenError,"MemoryAllocationFailed",image)
         }
       AttachBlob(buff->blob,blob,length);
       for ( ; ; )
@@ -948,12 +948,12 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
     {
       buff=AllocateImage((ImageInfo *) NULL);
       if (buff == (Image *) NULL)
-        ThrowReaderException(FileOpenError,"Memory allocation failed",image);
+        ThrowReaderException(FileOpenError,"MemoryAllocationFailed",image);
       blob=(unsigned char *) AcquireMemory(length);
       if (blob == (unsigned char *) NULL)
         {
           DestroyImage(buff);
-          ThrowReaderException(FileOpenError,"Memory allocation failed",image)
+          ThrowReaderException(FileOpenError,"MemoryAllocationFailed",image)
         }
       AttachBlob(buff->blob,blob,length);
       /* write out the header - length field patched below */
@@ -1461,7 +1461,7 @@ static int formatIPTC(Image *ifile, Image *ofile)
     str=(unsigned char *) AcquireMemory((unsigned int) (taglen+1));
     if (str == (unsigned char *) NULL)
       {
-        printf("Memory allocation failed");
+        printf("MemoryAllocationFailed");
         return 0;
       }
     for (tagindx=0; tagindx<taglen; tagindx++)
@@ -1587,7 +1587,7 @@ static int formatIPTCfromBuffer(Image *ofile, char *s, long len)
     str=(unsigned char *) AcquireMemory((unsigned int) (taglen+1));
     if (str == (unsigned char *) NULL)
       {
-        printf("Memory allocation failed");
+        printf("MemoryAllocationFailed");
         return 0;
       }
     for (tagindx=0; tagindx<taglen; tagindx++)
@@ -1675,7 +1675,7 @@ static int format8BIM(Image *ifile, Image *ofile)
       PString=(unsigned char *) AcquireMemory((unsigned int) (plen+1));
       if (PString == (unsigned char *) NULL)
       {
-        printf("Memory allocation failed");
+        printf("MemoryAllocationFailed");
         return 0;
       }
       for (i=0; i<plen; i++)
@@ -1697,7 +1697,7 @@ static int format8BIM(Image *ifile, Image *ofile)
     str=(unsigned char *) AcquireMemory(Size);
     if (str == (unsigned char *) NULL)
       {
-        printf("Memory allocation failed");
+        printf("MemoryAllocationFailed");
         return 0;
       }
     for (i=0; i<Size; i++)
@@ -1762,7 +1762,7 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
         ThrowWriterException(FileOpenError,"No 8BIM data is available",image);
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       if (status == False)
-        ThrowWriterException(FileOpenError,"Unable to open file",image);
+        ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
       (void) WriteBlob(image,image->iptc_profile.length,
         (char *) image->iptc_profile.info);
     }
@@ -1793,10 +1793,10 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
         ThrowWriterException(FileOpenError,"No 8BIM data is available",image);
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       if (status == False)
-        ThrowWriterException(FileOpenError,"Unable to open file",image);
+        ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
       buff=AllocateImage((ImageInfo *) NULL);
       if (buff == (Image *) NULL)
-        ThrowWriterException(FileOpenError,"Memory allocation failed",image);
+        ThrowWriterException(FileOpenError,"MemoryAllocationFailed",image);
       AttachBlob(buff->blob,image->iptc_profile.info,image->iptc_profile.length);
       format8BIM(buff,image);
       DetachBlob(buff->blob);
@@ -1822,10 +1822,10 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
         ThrowWriterException(FileOpenError,"No IPTC info was found",image);
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       if (status == False)
-        ThrowWriterException(FileOpenError,"Unable to open file",image);
+        ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
       buff=AllocateImage((ImageInfo *) NULL);
       if (buff == (Image *) NULL)
-        ThrowWriterException(FileOpenError,"Memory allocation failed",image);
+        ThrowWriterException(FileOpenError,"MemoryAllocationFailed",image);
       AttachBlob(buff->blob,info,length);
       formatIPTC(buff,image);
       DetachBlob(buff->blob);
@@ -1848,7 +1848,7 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
             */
             status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
             if (status == False)
-              ThrowWriterException(FileOpenError,"Unable to open file",image);
+              ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
             p=(unsigned char *) image->generic_profile[i].info;
             /* We used to do lossless embedding of IPTC into JPEG's at the
                point of writing out the data using the APP1 mechanism, but
@@ -1874,7 +1874,7 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
                 iptc=AllocateImage((ImageInfo *) NULL);
                 jpeg=AllocateImage((ImageInfo *) NULL);
                 if ((iptc == (Image *) NULL) || (jpeg == (Image *) NULL))
-                  ThrowWriterException(FileOpenError,"Memory allocation failed",image);
+                  ThrowWriterException(FileOpenError,"MemoryAllocationFailed",image);
                 if ((image->iptc_profile.info == (unsigned char *) NULL) ||
                     (image->iptc_profile.length <= 0))
                   ThrowWriterException(FileOpenError,"No iptc profile available",image);
@@ -1909,7 +1909,7 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
         ThrowWriterException(FileOpenError,"No color profile available",image);
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       if (status == False)
-        ThrowWriterException(FileOpenError,"Unable to open file",image);
+        ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
       (void) WriteBlob(image,image->color_profile.length,
         (char *) image->color_profile.info);
     }

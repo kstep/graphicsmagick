@@ -262,7 +262,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
     Read VIFF header (1024 bytes).
   */
@@ -393,7 +393,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
               image->colors=2;
             if (!AllocateImageColormap(image,image->colors))
               ThrowReaderException(ResourceLimitError,
-                "Memory allocation failed",image);
+                "MemoryAllocationFailed",image);
           }
         break;
       }
@@ -707,7 +707,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     if (image->storage_class == PseudoClass)
       SyncImage(image);
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
+      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
     /*
       Proceed to next image.
     */
@@ -933,7 +933,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   scene=0;
   do
   {
@@ -1093,7 +1093,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
           viff_colormap=(unsigned char *) AcquireMemory(3*image->colors);
           if (viff_colormap == (unsigned char *) NULL)
             ThrowWriterException(ResourceLimitError,
-              "Memory allocation failed",image);
+              "MemoryAllocationFailed",image);
           q=viff_colormap;
           for (i=0; i < (long) image->colors; i++)
             *q++=ScaleQuantumToChar(image->colormap[i].red);

@@ -482,7 +482,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
     Determine if this is a PCD file.
   */
@@ -737,7 +737,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   else
     (void) TransformRGBImage(image,YCCColorspace);
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
+    ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
   if ((rotate == 1) || (rotate == 3))
     {
       double
@@ -1013,7 +1013,7 @@ static unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,pcd_image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",pcd_image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",pcd_image);
   (void) TransformRGBImage(pcd_image,RGBColorspace);
   /*
     Write PCD image header.

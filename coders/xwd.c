@@ -199,7 +199,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
      Read in header information.
   */
@@ -458,7 +458,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   LiberateMemory((void **) &ximage->data);
   LiberateMemory((void **) &ximage);
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
+    ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
   CloseBlob(image);
   return(image);
 }
@@ -610,7 +610,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   (void) TransformRGBImage(image,RGBColorspace);
   /*
     Initialize XWD file header.

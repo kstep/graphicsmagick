@@ -280,7 +280,7 @@ static char **GetStyleTokens(void *context,const char *text,int *number_tokens)
   if (tokens == (char **) NULL)
     {
       ThrowException(svg_info->exception,ResourceLimitError,
-        "Unable to convert string to tokens","Memory allocation failed");
+        "Unable to convert string to tokens","MemoryAllocationFailed");
       return((char **) NULL);
     }
   /*
@@ -338,7 +338,7 @@ static char **GetTransformTokens(void *context,const char *text,
   if (tokens == (char **) NULL)
     {
       ThrowException(svg_info->exception,ResourceLimitError,
-        "Unable to convert string to tokens","Memory allocation failed");
+        "Unable to convert string to tokens","MemoryAllocationFailed");
       return((char **) NULL);
     }
   /*
@@ -699,7 +699,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
   if (svg_info->scale == (double *) NULL)
     {
       ThrowException(svg_info->exception,ResourceLimitError,
-        "Unable to convert SVG image","Memory allocation failed");
+        "Unable to convert SVG image","MemoryAllocationFailed");
       return;
     }
   svg_info->scale[svg_info->n]=svg_info->scale[svg_info->n-1];
@@ -2563,14 +2563,14 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
     Open draw file.
   */
   TemporaryFilename(filename);
   file=fopen(filename,"w");
   if (file == (FILE *) NULL)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
     Parse SVG file.
   */
@@ -2987,7 +2987,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
     ThrowWriterException(DelegateError,"no image vector graphics",image);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   /*
     Write SVG header.
   */
@@ -3701,7 +3701,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       if (primitive_info == (PrimitiveInfo *) NULL)
         {
           ThrowException(&image->exception,ResourceLimitError,
-            "Unable to draw image","Memory allocation failed");
+            "Unable to draw image","MemoryAllocationFailed");
           break;
         }
     }
@@ -3895,7 +3895,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             if (primitive_info == (PrimitiveInfo *) NULL)
               {
                 ThrowException(&image->exception,ResourceLimitError,
-                  "Unable to draw image","Memory allocation failed");
+                  "Unable to draw image","MemoryAllocationFailed");
                 break;
               }
           }

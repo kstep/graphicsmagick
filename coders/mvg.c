@@ -175,7 +175,7 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
       if (status == False)
-        ThrowReaderException(FileOpenError,"Unable to open file",image);
+        ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
       while (ReadBlobString(image,primitive) != (char *) NULL)
       {
         for (p=primitive; (*p == ' ') || (*p == '\t'); p++);
@@ -312,7 +312,7 @@ static unsigned int WriteMVGImage(const ImageInfo *image_info,Image *image)
     ThrowWriterException(DelegateError,"no image vector graphics",image);
   status=OpenBlob(image_info,image,WriteBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   (void) WriteBlob(image,strlen(attribute->value),attribute->value);
   CloseBlob(image);
   return(True);

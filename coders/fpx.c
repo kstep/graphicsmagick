@@ -220,7 +220,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
     Copy image to temporary file.
   */
@@ -311,7 +311,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             FPX_ClearSystem();
             ThrowReaderException(ResourceLimitError,
-              "Memory allocation failed",image);
+              "MemoryAllocationFailed",image);
           }
         (void) strncpy(label,(char *) summary_info.title.ptr,
           summary_info.title.length);
@@ -334,7 +334,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             FPX_ClearSystem();
             ThrowReaderException(ResourceLimitError,
-              "Memory allocation failed",image);
+              "MemoryAllocationFailed",image);
           }
         (void) strncpy(comments,(char *) summary_info.comments.ptr,
           summary_info.comments.length);
@@ -451,7 +451,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) FPX_CloseImage(flashpix);
             FPX_ClearSystem();
             ThrowReaderException(ResourceLimitError,
-              "Memory allocation failed",image);
+              "MemoryAllocationFailed",image);
           }
       }
     /*
@@ -846,7 +846,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   /*
     Initialize FPX toolkit.
   */
@@ -895,7 +895,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       compression,&flashpix);
   }
   if (fpx_status != FPX_OK)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   if (image_info->compression == JPEGCompression)
     {
       /*
@@ -1159,7 +1159,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       */
       file=fopen(filename,"rb");
       if (file == (FILE *) NULL)
-        ThrowWriterException(FileOpenError,"Unable to open file",image);
+        ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
       for (c=fgetc(file); c != EOF; c=fgetc(file))
         (void) WriteBlobByte(image,c);
       (void) fclose(file);

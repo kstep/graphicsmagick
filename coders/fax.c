@@ -152,7 +152,7 @@ static Image *ReadFAXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
     Initialize image structure.
   */
@@ -180,9 +180,9 @@ static Image *ReadFAXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   status=HuffmanDecodeImage(image);
   if (status == False)
-    ThrowReaderException(CorruptImageError,"Unable to read image data",image);
+    ThrowReaderException(CorruptImageError,"UnableToReadImageData",image);
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
+    ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
   CloseBlob(image);
   return(image);
 }
@@ -307,7 +307,7 @@ static unsigned int WriteFAXImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   clone_info=CloneImageInfo(image_info);
   (void) strcpy(clone_info->magick,"FAX");
   scene=0;

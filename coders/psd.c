@@ -552,7 +552,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
     Read image header.
   */
@@ -613,7 +613,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           */
           if (!AllocateImageColormap(image,length/3))
             ThrowReaderException(ResourceLimitError,
-              "Memory allocation failed",image);
+              "MemoryAllocationFailed",image);
           for (i=0; i < (long) image->colors; i++)
             image->colormap[i].red=ScaleCharToQuantum(ReadBlobByte(image));
           for (i=0; i < (long) image->colors; i++)
@@ -764,7 +764,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for (j=0; j < i; j++)
               DestroyImage(layer_info[j].image);
             ThrowReaderException(ResourceLimitError,
-              "Memory allocation failed",image)
+              "MemoryAllocationFailed",image)
           }
         SetImage(layer_info[i].image,OpaqueOpacity);
         layer_info[i].image->compose=
@@ -1334,7 +1334,7 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   packet_size=image->depth > 8 ? 6 : 3;
   if (image->matte)
     packet_size+=image->depth > 8 ? 2 : 1;

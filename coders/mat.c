@@ -305,7 +305,7 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
   
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
     Read MATLAB image.
   */

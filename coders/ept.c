@@ -220,7 +220,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
     Open temporary output file.
   */
@@ -556,6 +556,6 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
     (void) remove(ps_filename);
   (void) remove(tiff_filename);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   return(True);
 }

@@ -70,6 +70,42 @@
       </Message>
     </Error>
   </Configure>
+  <Corrupt>
+    <Image>
+      <Error>
+        <Message name="ImproperImageHeader">
+          Improper image header
+        </Message>
+        <Message name="InvalidColormapIndex">
+          Invalid colormap index
+        </Message>
+        <Message name="UnableToReadColorProfile">
+          Unable to read color profile
+        </Message>
+        <Message name="UnableToReadGenericProfile">
+          Unable to read generic profile
+        </Message>
+        <Message name="UnableToReadIPTCProfile">
+          Unable to read IPTC profile
+        </Message>
+        <Message name="UnableToReadImageData">
+          Unable to read image data
+        </Message>
+        <Message name="UnexpectedEndOfFile">
+          Unexpected end-of-file
+        </Message>
+      </Error>
+    </Image>
+  </Corrupt>
+  <File>
+    <Open>
+      <Error>
+        <Message name="UnableToOpenFile">
+          Unable to open file
+        </Message>
+      </Error>
+    </Open>
+  </File>
   <Image>
     <Error>
       <Message name="ImageSequenceIsRequired">
@@ -77,6 +113,9 @@
       </Message>
       <Message name="UnableToCompareImages">
         Unable to compare images
+      </Message>
+      <Message name="UnableToCreateStereoImage">
+        Unable to create stereo image
       </Message>
     </Error>
   </Image>
@@ -93,6 +132,33 @@
       </Message>
       <Message name="NoProfileNameWasGiven">
         No profile name was given
+      </Message>
+      <Message name="UnableToBlurImage">
+        Unable to blur image
+      </Message>
+      <Message name="UnableToConvolveImage">
+        Unable to convolve image
+      </Message>
+      <Message name="UnableToEdgeImage">
+        Unable to edge image
+      </Message>
+      <Message name="UnableToFilterImage">
+        Unable to filter image
+      </Message>
+      <Message name="UnableToFrameImage">
+        Unable to frame image
+      </Message>
+      <Message name="UnableToPaintImage">
+        Unable to paint image
+      </Message>
+      <Message name="UnableToRaiseImage">
+        Unable to raise image
+      </Message>
+      <Message name="UnableToSharpenImage">
+        Unable to sharpen image
+      </Message>
+      <Message name="UnableToThresholdImage">
+        Unable to threshold image
       </Message>
     </Error>
   </Option>
@@ -122,4 +188,11 @@
       </Warning>
     </Limit>
   </Resource>
+  <Type>
+    <Error>
+      <Message name="FontSubstitutionRequired">
+        Font substitution required
+      </Message>
+    </Error>
+  </Type>
 </locale>

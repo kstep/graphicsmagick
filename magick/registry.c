@@ -331,7 +331,7 @@ MagickExport void *GetMagickRegistry(const long id,RegistryType *type,
         if (blob == (void *) NULL)
           {
             ThrowException(exception,RegistryError,"Unable to get registry",
-              "Memory allocation failed");
+              "MemoryAllocationFailed");
             break;
           }
         (void) memcpy(blob,registry_info->blob,registry_info->length);
@@ -455,7 +455,7 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
   registry_info=(RegistryInfo *) AcquireMemory(sizeof(RegistryInfo));
   if (registry_info == (RegistryInfo *) NULL)
     MagickFatalError(ResourceLimitFatalError,"Unable to allocate registry",
-      "Memory allocation failed");
+      "MemoryAllocationFailed");
   (void) memset(registry_info,0,sizeof(RegistryInfo));
   registry_info->type=type;
   registry_info->blob=clone_blob;

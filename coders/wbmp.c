@@ -158,7 +158,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   if (!ReadBlob(image,2,(char *) &header)) 
     ThrowReaderException(CorruptImageError,"Not a WBMP image file",image);
   if (header != 0)
@@ -215,7 +215,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
   }
   SyncImage(image);
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
+    ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
   CloseBlob(image);
   return(image);
 }
@@ -376,7 +376,7 @@ static unsigned int WriteWBMPImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   (void) TransformRGBImage(image,RGBColorspace);
   /*
     Convert image to a bi-level image.

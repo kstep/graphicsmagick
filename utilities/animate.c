@@ -266,7 +266,7 @@ int main(int argc,char **argv)
   ReadCommandlLine(argc,&argv);
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
-    MagickFatalError(ResourceLimitFatalError,"Memory allocation failed",
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       (char *) NULL);
   /*
     Set defaults.

@@ -138,7 +138,7 @@ int main(int argc,char **argv)
   image=AllocateImage(image_info);
   if (image == (Image *) NULL)
     MagickError(ResourceLimitError,"Unable to display image",
-      "Memory allocation failed");
+      "MemoryAllocationFailed");
   /*
     Initialize smiley image.
   */

@@ -310,7 +310,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
     Determine if this is a PDB image file.
   */
@@ -396,7 +396,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   packets=(bits_per_pixel*image->columns/8)*image->rows;
   pixels=(unsigned char *) AcquireMemory(packets+256);
   if (pixels == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitWarning,"MemoryAllocationFailed",image);
   switch (pdb_image.version)
   {
     case 0:
@@ -518,7 +518,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   LiberateMemory((void **) &pixels);
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
+    ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
   if ((offset-TellBlob(image)) == 0)
     {
       char
@@ -775,14 +775,14 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
   packets=(bits_per_pixel*image->columns/8)*image->rows;
   p=(unsigned char *) AcquireMemory(packets+packets/128);
   if (p == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitWarning,"MemoryAllocationFailed",image);
   buffer=(unsigned char *) AcquireMemory(256);
   if (buffer == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitWarning,"MemoryAllocationFailed",image);
   packet_size=image->depth > 8 ? 2: 1;
   scanline=(unsigned char *) AcquireMemory(packet_size*image->columns);
   if (scanline == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitWarning,"MemoryAllocationFailed",image);
   (void) TransformRGBImage(image,RGBColorspace);
   /*
     Convert to GRAY raster scanline.

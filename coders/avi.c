@@ -399,7 +399,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   (void) memset(&avi_info,0,sizeof(AVIInfo));
   (void) memset(&bmp_info,0,sizeof(BMPInfo));
   colormap=(PixelPacket *) NULL;
@@ -443,7 +443,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->y_resolution=bmp_info.y_pixels/100.0;
         if (!AllocateImageColormap(image,number_colors ? number_colors : 256))
           ThrowReaderException(ResourceLimitError,
-            "Memory allocation failed",image);
+            "MemoryAllocationFailed",image);
         if (number_colors != 0)
           (void) memcpy(image->colormap,colormap,
             number_colors*sizeof(PixelPacket));
@@ -774,7 +774,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   AcquireMemory(number_colors*sizeof(PixelPacket));
                 if (colormap == (PixelPacket *) NULL)
                   ThrowReaderException(ResourceLimitError,
-                    "Memory allocation failed",image);
+                    "MemoryAllocationFailed",image);
                 for (i=0; i < (long) number_colors; i++)
                 {
                   colormap[i].blue=ScaleCharToQuantum(ReadBlobByte(image));

@@ -777,7 +777,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
     Read PICT header.
   */
@@ -1011,7 +1011,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                   {
                     DestroyImage(tile_image);
                     ThrowReaderException(ResourceLimitError,
-                      "Memory allocation failed",image)
+                      "MemoryAllocationFailed",image)
                   }
                 if (bytes_per_line & 0x8000)
                   {
@@ -1063,7 +1063,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               {
                 DestroyImage(tile_image);
                 ThrowReaderException(ResourceLimitError,
-                  "Memory allocation failed",image)
+                  "MemoryAllocationFailed",image)
               }
             /*
               Convert PICT tile image to pixel packets.
@@ -1173,7 +1173,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                   AcquireMemory(length);
                 if (image->color_profile.info == (unsigned char *) NULL)
                   ThrowReaderException(ResourceLimitError,
-                    "Memory allocation failed",image);
+                    "MemoryAllocationFailed",image);
                 image->color_profile.length=length;
                 (void) memcpy(image->color_profile.info,info,length);
                 break;
@@ -1184,7 +1184,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                   AcquireMemory(length);
                 if (image->iptc_profile.info == (unsigned char *) NULL)
                   ThrowReaderException(ResourceLimitError,
-                    "Memory allocation failed",image);
+                    "MemoryAllocationFailed",image);
                 image->iptc_profile.length=length;
                 (void) memcpy(image->iptc_profile.info,info,length);
                 break;
@@ -1292,7 +1292,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
       }
   }
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
+    ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
   CloseBlob(image);
   return(image);
 }
@@ -1472,7 +1472,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       image);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   (void) TransformRGBImage(image,RGBColorspace);
   /*
     Initialize image info.

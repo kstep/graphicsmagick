@@ -277,7 +277,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
     Read PNM image.
   */
@@ -504,7 +504,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
         }
         if (EOFBlob(image))
-          ThrowReaderException(CorruptImageError,"Unexpected end-of-file",
+          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",
             image);
         break;
       }
@@ -524,7 +524,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           count=ReadBlob(image,packets*image->columns,pixels);
           if (count == 0)
             ThrowReaderException(CorruptImageError,
-              "Unable to read image data",image);
+              "UnableToReadImageData",image);
           p=pixels;
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
@@ -566,7 +566,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         LiberateMemory((void **) &pixels);
         if (EOFBlob(image))
-          ThrowReaderException(CorruptImageError,"Unexpected end-of-file",
+          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",
             image);
         break;
       }
@@ -584,7 +584,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           count=ReadBlob(image,packets*image->columns,pixels);
           if (count == 0)
-            ThrowReaderException(CorruptImageError,"Unable to read image data",
+            ThrowReaderException(CorruptImageError,"UnableToReadImageData",
               image);
           p=pixels;
           q=SetImagePixels(image,0,y,image->columns,1);
@@ -638,7 +638,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         handler=SetMonitorHandler((MonitorHandler) NULL);
         (void) SetMonitorHandler(handler);
         if (EOFBlob(image))
-          ThrowReaderException(CorruptImageError,"Unexpected end-of-file",
+          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",
             image);
         break;
       }
@@ -846,7 +846,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   scene=0;
   do
   {
@@ -1215,7 +1215,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
                 (green_map[i][j] == (unsigned short *) NULL) ||
                 (blue_map[i][j] == (unsigned short *) NULL))
               ThrowWriterException(ResourceLimitError,
-                "Memory allocation failed",image);
+                "MemoryAllocationFailed",image);
           }
         /*
           Initialize dither tables.

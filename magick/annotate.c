@@ -469,7 +469,7 @@ static unsigned short *EncodeSJIS(const char *text,size_t *count)
     AcquireMemory((strlen(text)+MaxTextExtent)*sizeof(unsigned short));
   if (encoding == (unsigned short *) NULL)
     MagickFatalError(ResourceLimitFatalError,
-      "Unable to convert text to Textcode","Memory allocation failed");
+      "Unable to convert text to Textcode","MemoryAllocationFailed");
   q=encoding;
   for (p=text; *p != '\0'; p+=length)
   {
@@ -536,7 +536,7 @@ static unsigned short *EncodeText(const char *text,size_t *count)
     AcquireMemory((strlen(text)+MaxTextExtent)*sizeof(unsigned short));
   if (encoding == (unsigned short *) NULL)
     MagickFatalError(ResourceLimitFatalError,"Unable to convert text to Text",
-      "Memory allocation failed");
+      "MemoryAllocationFailed");
   q=encoding;
   for (p=text; *p != '\0'; p++)
     *q++=(unsigned char) *p;
@@ -650,7 +650,7 @@ static unsigned short *EncodeUnicode(const char *text,size_t *count)
     AcquireMemory((strlen(text)+MaxTextExtent)*sizeof(unsigned short));
   if (unicode == (unsigned short *) NULL)
     MagickFatalError(ResourceLimitFatalError,
-      "Unable to convert text to Unicode","Memory allocation failed");
+      "Unable to convert text to Unicode","MemoryAllocationFailed");
   q=unicode;
   for (p=text; *p != '\0'; p+=length)
   {
@@ -1133,7 +1133,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
       (void) FT_Done_Face(face);
       (void) FT_Done_FreeType(library);
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-        "Memory allocation failed")
+        "MemoryAllocationFailed")
     }
   /*
     Compute bounding box.

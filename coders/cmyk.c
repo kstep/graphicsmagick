@@ -138,7 +138,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
       */
       status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
       if (status == False)
-        ThrowReaderException(FileOpenError,"Unable to open file",image);
+        ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
       for (i=0; i < image->offset; i++)
         (void) ReadBlobByte(image);
     }
@@ -262,7 +262,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             AppendImageFormat("C",image->filename);
             status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
             if (status == False)
-              ThrowReaderException(FileOpenError,"Unable to open file",image);
+              ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
           }
         packet_size=image->depth > 8 ? 2 : 1;
         for (y=0; y < image->tile_info.y; y++)
@@ -294,7 +294,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             AppendImageFormat("M",image->filename);
             status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
             if (status == False)
-              ThrowReaderException(FileOpenError,"Unable to open file",image);
+              ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
           }
         for (y=0; y < image->tile_info.y; y++)
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
@@ -322,7 +322,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             AppendImageFormat("Y",image->filename);
             status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
             if (status == False)
-              ThrowReaderException(FileOpenError,"Unable to open file",image);
+              ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
           }
         for (y=0; y < image->tile_info.y; y++)
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
@@ -350,7 +350,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             AppendImageFormat("K",image->filename);
             status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
             if (status == False)
-              ThrowReaderException(FileOpenError,"Unable to open file",image);
+              ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
           }
         for (y=0; y < image->tile_info.y; y++)
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
@@ -383,7 +383,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                 AppendImageFormat("A",image->filename);
                 status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
                 if (status == False)
-                  ThrowReaderException(FileOpenError,"Unable to open file",
+                  ThrowReaderException(FileOpenError,"UnableToOpenFile",
                     image);
               }
             for (y=0; y < image->tile_info.y; y++)
@@ -416,7 +416,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
       }
     }
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
+      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
     /*
       Proceed to next image.
     */
@@ -588,7 +588,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
       */
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       if (status == False)
-        ThrowWriterException(FileOpenError,"Unable to open file",image);
+        ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
     }
   scene=0;
   do
@@ -670,7 +670,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
             AppendImageFormat("C",image->filename);
             status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
             if (status == False)
-              ThrowWriterException(FileOpenError,"Unable to open file",image);
+              ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
           }
         for (y=0; y < (long) image->rows; y++)
         {
@@ -687,7 +687,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
             status=OpenBlob(image_info,image,WriteBinaryBlobMode,
               &image->exception);
             if (status == False)
-              ThrowWriterException(FileOpenError,"Unable to open file",image);
+              ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
           }
         if (!MagickMonitor(SaveImageText,100,400,&image->exception))
           break;
@@ -706,7 +706,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
             status=OpenBlob(image_info,image,WriteBinaryBlobMode,
               &image->exception);
             if (status == False)
-              ThrowWriterException(FileOpenError,"Unable to open file",image);
+              ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
           }
         if (!MagickMonitor(SaveImageText,200,400,&image->exception))
           break;
@@ -725,7 +725,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
             status=OpenBlob(image_info,image,WriteBinaryBlobMode,
               &image->exception);
             if (status == False)
-              ThrowWriterException(FileOpenError,"Unable to open file",image);
+              ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
           }
         if (!MagickMonitor(SaveImageText,200,400,&image->exception))
           break;
@@ -748,7 +748,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
                 status=OpenBlob(image_info,image,WriteBinaryBlobMode,
                   &image->exception);
                 if (status == False)
-                  ThrowWriterException(FileOpenError,"Unable to open file",
+                  ThrowWriterException(FileOpenError,"UnableToOpenFile",
                     image);
               }
             for (y=0; y < (long) image->rows; y++)

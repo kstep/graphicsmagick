@@ -349,7 +349,7 @@ static Image *ReadLOCALEImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   if (status == False)
     {
       DestroyImage(image);
@@ -763,13 +763,13 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   attribute=GetImageAttribute(image,"[Locale]");
   if (attribute == (const ImageAttribute *) NULL)
     ThrowWriterException(FileOpenError,"No [LOCALE] image attribute",image);
   locale=StringToList(attribute->value);
   if (locale == (char **) NULL)
-    ThrowWriterException(FileOpenError,"Memory allocation failed",image);
+    ThrowWriterException(FileOpenError,"MemoryAllocationFailed",image);
   /*
     Sort locale messages.
   */

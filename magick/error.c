@@ -384,10 +384,13 @@ static const char *ExceptionSeverityToTag(const ExceptionType severity)
     case BlobError: return("Blob/Error/");
     case CacheError: return("Cache/Error/");
     case ConfigureError: return("Configure/Error/");
-    case OptionError: return("Option/Error/");
+    case CorruptImageError: return("Corrupt/Image/Error/");
+    case FileOpenError: return("File/Open/Error/");
     case ImageError: return("Image/Error/");
+    case OptionError: return("Option/Error/");
     case ResourceLimitError: return("Resource/Limit/Error/");
     case ResourceLimitWarning: return("Resource/Limit/Warning/");
+    case TypeError: return("Type/Error/");
     default: return("");
   }
   return("");

@@ -212,7 +212,7 @@ int main(int argc,char **argv)
   }
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
-    MagickFatalError(ResourceLimitFatalError,"Memory allocation failed",
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       (char *) NULL);
   if (argc < 4)
     CompositeUsage();

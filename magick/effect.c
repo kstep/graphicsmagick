@@ -131,7 +131,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth(radius,sigma);
   if (((long) image->columns < width) || ((long) image->rows < width))
-    ThrowImageException(OptionError,"Unable to threshold image",
+    ThrowImageException(OptionError,"UnableToThresholdImage",
       "image smaller than radius");
   threshold_image=CloneImage(image,0,0,True,exception);
   if (threshold_image == (Image *) NULL)
@@ -522,7 +522,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
         }
     }
   if (width < 3)
-    ThrowImageException(OptionError,"Unable to blur image",
+    ThrowImageException(OptionError,"UnableToBlurImage",
       "kernel radius is too small");
   /*
     Allocate blur image.
@@ -898,7 +898,7 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth(radius,0.5);
   if (((long) image->columns < width) || ((long) image->rows < width))
-    ThrowImageException(OptionError,"Unable to edge image",
+    ThrowImageException(OptionError,"UnableToEdgeImage",
       "image is smaller than radius");
   kernel=(double *) AcquireMemory(width*width*sizeof(double));
   if (kernel == (double *) NULL)
@@ -1203,12 +1203,12 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth2D(radius,sigma);
   if (((long) image->columns < width) || ((long) image->rows < width))
-    ThrowImageException(OptionError,"Unable to Gaussian blur image",
+    ThrowImageException(OptionError,"UnableToBlurImage",
       "image is smaller than radius");
   kernel=(double *) AcquireMemory(width*width*sizeof(double));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-      "Unable to Gaussian blur image");
+      "Unable to blur image");
   i=0;
   for (v=(-width/2); v <= (width/2); v++)
   {
@@ -1491,7 +1491,7 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth(radius,0.5);
   if (((long) image->columns < width) || ((long) image->rows < width))
-    ThrowImageException(OptionError,"Unable to median filter image",
+    ThrowImageException(OptionError,"UnableToFilterImage",
       "image smaller than kernel radius");
   median_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (median_image == (Image *) NULL)
@@ -1680,11 +1680,11 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
         }
     }
   if (width < 3)
-    ThrowImageException(OptionError,"Unable to motion blur image",
+    ThrowImageException(OptionError,"UnableToBlurimage",
       "kernel radius is too small");
   offsets=(PointInfo *) AcquireMemory(width*sizeof(PointInfo));
   if (offsets == (PointInfo *) NULL)
-    ThrowImageException(ResourceLimitError,"Memory allocation failed",
+    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
       "Unable to motion blur image");
   /*
     Allocate blur image.
@@ -1861,7 +1861,7 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth(radius,0.5);
   if (((long) image->columns < width) || ((long) image->rows < width))
-    ThrowImageException(OptionError,"Unable to noise filter image",
+    ThrowImageException(OptionError,"UnableToFilterImage",
       "image smaller than kernel radius");
   noise_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (noise_image == (Image *) NULL)
@@ -2119,7 +2119,7 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth(radius,sigma);
   if (((long) image->columns < width) || ((long) image->rows < width))
-    ThrowImageException(OptionError,"Unable to sharpen image",
+    ThrowImageException(OptionError,"UnableToSharpenImage",
       "image is smaller than radius");
   kernel=(double *) AcquireMemory(width*width*sizeof(double));
   if (kernel == (double *) NULL)

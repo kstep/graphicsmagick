@@ -137,7 +137,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
     ThrowReaderException(OptionError,"Must specify image size",image);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   for (i=0; i < image->offset; i++)
     (void) ReadBlobByte(image);
   /*
@@ -189,7 +189,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
     for (j=0; j < (long) count; j++)
       (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
+      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
     /*
       Proceed to next image.
     */
@@ -408,7 +408,7 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   /*
     Convert image to gray scale PseudoColor class.
   */

@@ -2754,7 +2754,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
     Read DCM preamble.
   */
@@ -2906,7 +2906,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               data=(unsigned char *) AcquireMemory(quantum*(length+1));
               if (data == (unsigned char *) NULL)
                 ThrowReaderException(ResourceLimitError,
-                  "Memory allocation failed",image);
+                  "MemoryAllocationFailed",image);
               (void) ReadBlob(image,quantum*length,(char *) data);
               data[length*quantum]=0;
             }
@@ -3426,7 +3426,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
       }
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
+      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
     /*
       Proceed to next image.
     */

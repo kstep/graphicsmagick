@@ -646,7 +646,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
     Initialize image structure.
   */
@@ -1369,7 +1369,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   logging=LogMagickEvent(CoderEvent,"enter WriteJPEGImage()");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   /*
     Initialize JPEG parameters.
   */

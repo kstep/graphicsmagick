@@ -2317,7 +2317,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
 
   image = AllocateImage(image_info);
   if (!OpenBlob(image_info,image,ReadBinaryBlobMode,exception))
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
 
   /*
    * Create WMF API

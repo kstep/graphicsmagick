@@ -153,7 +153,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (file == (FILE *) NULL)
     {
       DestroyImageInfo(clone_info);
-      ThrowReaderException(FileOpenError,"Unable to open file",image)
+      ThrowReaderException(FileOpenError,"UnableToOpenFile",image)
     }
   (void) strncpy(filename,image_info->magick,MaxTextExtent-1);
   (void) strcat(filename,":");

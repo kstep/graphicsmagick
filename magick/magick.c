@@ -729,7 +729,7 @@ MagickExport MagickInfo *SetMagickInfo(const char *name)
   magick_info=(MagickInfo *) AcquireMemory(sizeof(MagickInfo));
   if (magick_info == (MagickInfo *) NULL)
     MagickFatalError(ResourceLimitFatalError,"Unable to allocate image",
-      "Memory allocation failed");
+      "MemoryAllocationFailed");
   (void) memset(magick_info,0,sizeof(MagickInfo));
   magick_info->name=AcquireString(name);
   magick_info->adjoin=True;

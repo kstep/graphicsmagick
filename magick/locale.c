@@ -210,6 +210,61 @@ const char *GetLocaleMessage(const char *tag)
           else
             return *np ? tag : "include element nested too deeply";
         else
+        if (p - tp == 7 && !LocaleNCompare(tp, "Corrupt", 7))
+          if (LocaleNCompare(NEXT_FIELD, "Image", 5) || p - tp != 5)
+            return tag;
+          else
+          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+            return tag;
+          else
+            switch (*NEXT_FIELD)
+            {
+            default:
+              return tag;
+
+            case 'i':  case 'I':
+              if (p - tp == 19 && !LocaleNCompare(tp, "ImproperImageHeader", 19))
+                return *np ? tag : "Improper image header";
+              else
+              if (p - tp == 20 && !LocaleNCompare(tp, "InvalidColormapIndex", 20))
+                return *np ? tag : "Invalid colormap index";
+              else
+                return tag;
+
+            case 'u':  case 'U':
+              if (p - tp == 24 && !LocaleNCompare(tp, "UnableToReadColorProfile", 24))
+                return *np ? tag : "Unable to read color profile";
+              else
+              if (p - tp == 26 && !LocaleNCompare(tp, "UnableToReadGenericProfile", 26))
+                return *np ? tag : "Unable to read generic profile";
+              else
+              if (p - tp == 21 && !LocaleNCompare(tp, "UnableToReadImageData", 21))
+                return *np ? tag : "Unable to read image data";
+              else
+              if (p - tp == 23 && !LocaleNCompare(tp, "UnableToReadIPTCProfile", 23))
+                return *np ? tag : "Unable to read IPTC profile";
+              else
+              if (p - tp == 19 && !LocaleNCompare(tp, "UnexpectedEndOfFile", 19))
+                return *np ? tag : "Unexpected end-of-file";
+              else
+                return tag;
+            }
+        else
+          return tag;
+
+      case 'f':  case 'F':
+        if (p - tp == 4 && !LocaleNCompare(tp, "File", 4))
+          if (LocaleNCompare(NEXT_FIELD, "Open", 4) || p - tp != 4)
+            return tag;
+          else
+          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+            return tag;
+          else
+          if (LocaleNCompare(NEXT_FIELD, "UnableToOpenFile", 16) || p - tp != 16)
+            return tag;
+          else
+            return *np ? tag : "Unable to open file";
+        else
           return tag;
 
       case 'i':  case 'I':
@@ -231,6 +286,9 @@ const char *GetLocaleMessage(const char *tag)
             case 'u':  case 'U':
               if (p - tp == 21 && !LocaleNCompare(tp, "UnableToCompareImages", 21))
                 return *np ? tag : "Unable to compare images";
+              else
+              if (p - tp == 25 && !LocaleNCompare(tp, "UnableToCreateStereoImage", 25))
+                return *np ? tag : "Unable to create stereo image";
               else
                 return tag;
             }
@@ -265,6 +323,36 @@ const char *GetLocaleMessage(const char *tag)
             case 'n':  case 'N':
               if (p - tp == 21 && !LocaleNCompare(tp, "NoProfileNameWasGiven", 21))
                 return *np ? tag : "No profile name was given";
+              else
+                return tag;
+
+            case 'u':  case 'U':
+              if (p - tp == 17 && !LocaleNCompare(tp, "UnableToBlurImage", 17))
+                return *np ? tag : "Unable to blur image";
+              else
+              if (p - tp == 21 && !LocaleNCompare(tp, "UnableToConvolveImage", 21))
+                return *np ? tag : "Unable to convolve image";
+              else
+              if (p - tp == 17 && !LocaleNCompare(tp, "UnableToEdgeImage", 17))
+                return *np ? tag : "Unable to edge image";
+              else
+              if (p - tp == 19 && !LocaleNCompare(tp, "UnableToFilterImage", 19))
+                return *np ? tag : "Unable to filter image";
+              else
+              if (p - tp == 18 && !LocaleNCompare(tp, "UnableToFrameImage", 18))
+                return *np ? tag : "Unable to frame image";
+              else
+              if (p - tp == 18 && !LocaleNCompare(tp, "UnableToPaintImage", 18))
+                return *np ? tag : "Unable to paint image";
+              else
+              if (p - tp == 18 && !LocaleNCompare(tp, "UnableToRaiseImage", 18))
+                return *np ? tag : "Unable to raise image";
+              else
+              if (p - tp == 20 && !LocaleNCompare(tp, "UnableToSharpenImage", 20))
+                return *np ? tag : "Unable to sharpen image";
+              else
+              if (p - tp == 22 && !LocaleNCompare(tp, "UnableToThresholdImage", 22))
+                return *np ? tag : "Unable to threshold image";
               else
                 return tag;
             }
@@ -330,6 +418,18 @@ const char *GetLocaleMessage(const char *tag)
               else
                 return tag;
             }
+        else
+          return tag;
+
+      case 't':  case 'T':
+        if (p - tp == 4 && !LocaleNCompare(tp, "Type", 4))
+          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+            return tag;
+          else
+          if (LocaleNCompare(NEXT_FIELD, "FontSubstitutionRequired", 24) || p - tp != 24)
+            return tag;
+          else
+            return *np ? tag : "Font substitution required";
         else
           return tag;
 
@@ -445,23 +545,8 @@ const char *GetLocaleMessage(const char *tag)
           else
             return *np ? tag : "include element nested too deeply";
         else
-          return tag;
-
-      case 'i':  case 'I':
-        if (p - tp == 5 && !LocaleNCompare(tp, "Image", 5))
-          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
-            return tag;
-          else
-          if (LocaleNCompare(NEXT_FIELD, "ImageSequenceIsRequired", 23) || p - tp != 23)
-            return tag;
-          else
-            return *np ? tag : "Image sequence is required";
-        else
-          return tag;
-
-      case 'r':  case 'R':
-        if (p - tp == 8 && !LocaleNCompare(tp, "Resource", 8))
-          if (LocaleNCompare(NEXT_FIELD, "Limit", 5) || p - tp != 5)
+        if (p - tp == 7 && !LocaleNCompare(tp, "Corrupt", 7))
+          if (LocaleNCompare(NEXT_FIELD, "Image", 5) || p - tp != 5)
             return tag;
           else
           if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
@@ -472,36 +557,214 @@ const char *GetLocaleMessage(const char *tag)
             default:
               return tag;
 
-            case 'c':  case 'C':
-              if (p - tp == 23 && !LocaleNCompare(tp, "CacheResourcesExhausted", 23))
-                return *np ? tag : "Cache resources exhausted";
+            case 'i':  case 'I':
+              if (p - tp == 19 && !LocaleNCompare(tp, "ImproperImageHeader", 19))
+                return *np ? tag : "Improper image header";
               else
-                return tag;
-
-            case 'm':  case 'M':
-              if (p - tp == 22 && !LocaleNCompare(tp, "MemoryAllocationFailed", 22))
-                return *np ? tag : "Memory allocation failed";
-              else
-                return tag;
-
-            case 'n':  case 'N':
-              if (p - tp == 22 && !LocaleNCompare(tp, "NoPixelsDefinedInCache", 22))
-                return *np ? tag : "No pixels defined in cache";
-              else
-                return tag;
-
-            case 'p':  case 'P':
-              if (p - tp == 26 && !LocaleNCompare(tp, "PixelCacheAllocationFailed", 26))
-                return *np ? tag : "Pixel cache allocation failed";
+              if (p - tp == 20 && !LocaleNCompare(tp, "InvalidColormapIndex", 20))
+                return *np ? tag : "Invalid colormap index";
               else
                 return tag;
 
             case 'u':  case 'U':
-              if (p - tp == 19 && !LocaleNCompare(tp, "UnableToManageColor", 19))
-                return *np ? tag : "Unable to manage color";
+              if (p - tp == 24 && !LocaleNCompare(tp, "UnableToReadColorProfile", 24))
+                return *np ? tag : "Unable to read color profile";
+              else
+              if (p - tp == 26 && !LocaleNCompare(tp, "UnableToReadGenericProfile", 26))
+                return *np ? tag : "Unable to read generic profile";
+              else
+              if (p - tp == 21 && !LocaleNCompare(tp, "UnableToReadImageData", 21))
+                return *np ? tag : "Unable to read image data";
+              else
+              if (p - tp == 23 && !LocaleNCompare(tp, "UnableToReadIPTCProfile", 23))
+                return *np ? tag : "Unable to read IPTC profile";
+              else
+              if (p - tp == 19 && !LocaleNCompare(tp, "UnexpectedEndOfFile", 19))
+                return *np ? tag : "Unexpected end-of-file";
               else
                 return tag;
             }
+        else
+          return tag;
+
+      case 'f':  case 'F':
+        if (p - tp == 4 && !LocaleNCompare(tp, "File", 4))
+          if (LocaleNCompare(NEXT_FIELD, "Open", 4) || p - tp != 4)
+            return tag;
+          else
+          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+            return tag;
+          else
+          if (LocaleNCompare(NEXT_FIELD, "UnableToOpenFile", 16) || p - tp != 16)
+            return tag;
+          else
+            return *np ? tag : "Unable to open file";
+        else
+          return tag;
+
+      case 'i':  case 'I':
+        if (p - tp == 5 && !LocaleNCompare(tp, "Image", 5))
+          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+            return tag;
+          else
+            switch (*NEXT_FIELD)
+            {
+            default:
+              return tag;
+
+            case 'i':  case 'I':
+              if (p - tp == 23 && !LocaleNCompare(tp, "ImageSequenceIsRequired", 23))
+                return *np ? tag : "Image sequence is required";
+              else
+                return tag;
+
+            case 'u':  case 'U':
+              if (p - tp == 21 && !LocaleNCompare(tp, "UnableToCompareImages", 21))
+                return *np ? tag : "Unable to compare images";
+              else
+              if (p - tp == 25 && !LocaleNCompare(tp, "UnableToCreateStereoImage", 25))
+                return *np ? tag : "Unable to create stereo image";
+              else
+                return tag;
+            }
+        else
+          return tag;
+
+      case 'o':  case 'O':
+        if (p - tp == 6 && !LocaleNCompare(tp, "Option", 6))
+          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+            return tag;
+          else
+            switch (*NEXT_FIELD)
+            {
+            default:
+              return tag;
+
+            case 'g':  case 'G':
+              if (p - tp == 25 && !LocaleNCompare(tp, "GeometryDimensionsAreZero", 25))
+                return *np ? tag : "Geometry dimensions are zero";
+              else
+              if (p - tp == 27 && !LocaleNCompare(tp, "GeometryDoesNotContainImage", 27))
+                return *np ? tag : "Geometry does not contain image";
+              else
+                return tag;
+
+            case 'i':  case 'I':
+              if (p - tp == 23 && !LocaleNCompare(tp, "ImagesAreNotTheSameSize", 23))
+                return *np ? tag : "Images are not the same size";
+              else
+                return tag;
+
+            case 'n':  case 'N':
+              if (p - tp == 21 && !LocaleNCompare(tp, "NoProfileNameWasGiven", 21))
+                return *np ? tag : "No profile name was given";
+              else
+                return tag;
+
+            case 'u':  case 'U':
+              if (p - tp == 17 && !LocaleNCompare(tp, "UnableToBlurImage", 17))
+                return *np ? tag : "Unable to blur image";
+              else
+              if (p - tp == 21 && !LocaleNCompare(tp, "UnableToConvolveImage", 21))
+                return *np ? tag : "Unable to convolve image";
+              else
+              if (p - tp == 17 && !LocaleNCompare(tp, "UnableToEdgeImage", 17))
+                return *np ? tag : "Unable to edge image";
+              else
+              if (p - tp == 19 && !LocaleNCompare(tp, "UnableToFilterImage", 19))
+                return *np ? tag : "Unable to filter image";
+              else
+              if (p - tp == 18 && !LocaleNCompare(tp, "UnableToFrameImage", 18))
+                return *np ? tag : "Unable to frame image";
+              else
+              if (p - tp == 18 && !LocaleNCompare(tp, "UnableToPaintImage", 18))
+                return *np ? tag : "Unable to paint image";
+              else
+              if (p - tp == 18 && !LocaleNCompare(tp, "UnableToRaiseImage", 18))
+                return *np ? tag : "Unable to raise image";
+              else
+              if (p - tp == 20 && !LocaleNCompare(tp, "UnableToSharpenImage", 20))
+                return *np ? tag : "Unable to sharpen image";
+              else
+              if (p - tp == 22 && !LocaleNCompare(tp, "UnableToThresholdImage", 22))
+                return *np ? tag : "Unable to threshold image";
+              else
+                return tag;
+            }
+        else
+          return tag;
+
+      case 'r':  case 'R':
+        if (p - tp == 8 && !LocaleNCompare(tp, "Resource", 8))
+          if (LocaleNCompare(NEXT_FIELD, "Limit", 5) || p - tp != 5)
+            return tag;
+          else
+            switch (*NEXT_FIELD)
+            {
+            default:
+              return tag;
+
+            case 'e':  case 'E':
+              if (p - tp == 5 && !LocaleNCompare(tp, "Error", 5))
+                switch (*NEXT_FIELD)
+                {
+                default:
+                  return tag;
+
+                case 'c':  case 'C':
+                  if (p - tp == 23 && !LocaleNCompare(tp, "CacheResourcesExhausted", 23))
+                    return *np ? tag : "Cache resources exhausted";
+                  else
+                    return tag;
+
+                case 'm':  case 'M':
+                  if (p - tp == 22 && !LocaleNCompare(tp, "MemoryAllocationFailed", 22))
+                    return *np ? tag : "Memory allocation failed";
+                  else
+                    return tag;
+
+                case 'n':  case 'N':
+                  if (p - tp == 22 && !LocaleNCompare(tp, "NoPixelsDefinedInCache", 22))
+                    return *np ? tag : "No pixels defined in cache";
+                  else
+                    return tag;
+
+                case 'p':  case 'P':
+                  if (p - tp == 26 && !LocaleNCompare(tp, "PixelCacheAllocationFailed", 26))
+                    return *np ? tag : "Pixel cache allocation failed";
+                  else
+                    return tag;
+
+                case 'u':  case 'U':
+                  if (p - tp == 19 && !LocaleNCompare(tp, "UnableToManageColor", 19))
+                    return *np ? tag : "Unable to manage color";
+                  else
+                    return tag;
+                }
+              else
+                return tag;
+
+            case 'w':  case 'W':
+              if (p - tp == 7 && !LocaleNCompare(tp, "Warning", 7))
+                if (LocaleNCompare(NEXT_FIELD, "MemoryAllocationFailed", 22) || p - tp != 22)
+                  return tag;
+                else
+                  return *np ? tag : "Memory allocation failed";
+              else
+                return tag;
+            }
+        else
+          return tag;
+
+      case 't':  case 'T':
+        if (p - tp == 4 && !LocaleNCompare(tp, "Type", 4))
+          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+            return tag;
+          else
+          if (LocaleNCompare(NEXT_FIELD, "FontSubstitutionRequired", 24) || p - tp != 24)
+            return tag;
+          else
+            return *np ? tag : "Font substitution required";
         else
           return tag;
 

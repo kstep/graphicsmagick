@@ -828,7 +828,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
     Determine if this is a GIF file.
   */
@@ -1200,7 +1200,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   /*
     Determine image bounding box.
   */
@@ -1278,7 +1278,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
                 LiberateMemory((void **) &global_colormap);
                 LiberateMemory((void **) &colormap);
                 ThrowWriterException(ResourceLimitError,
-                  "Memory allocation failed",image)
+                  "MemoryAllocationFailed",image)
               }
             image->colormap[opacity]=image->background_color;
             for (y=0; y < (long) image->rows; y++)

@@ -564,7 +564,7 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
     {
       (void) close(file);
       ThrowException(exception,BlobError,"UnableToCreateBlob",
-        "Memory allocation failed");
+        "MemoryAllocationFailed");
       return((void *) NULL);
     }
   *length=(size_t) attributes.st_size;
@@ -573,7 +573,7 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
     {
       (void) close(file);
       ThrowException(exception,BlobError,"UnableToCreateBlob",
-        "Memory allocation failed");
+        "MemoryAllocationFailed");
       return((void *) NULL);
     }
   map=MapBlob(file,ReadMode,0,*length);
@@ -1161,7 +1161,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
       if (clone_info->blob == (void *) NULL)
         {
           ThrowException(exception,BlobError,"Unable to create blob",
-            "Memory allocation failed");
+            "MemoryAllocationFailed");
           DestroyImageInfo(clone_info);
           return((void *) NULL);
         }
