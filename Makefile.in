@@ -763,7 +763,7 @@ dist-hook:
 @WITH_PERL_TRUE@	  perlmagick=`(cd $(VPATH)/$(PERLMAGICK); pwd)` && \
 @WITH_PERL_TRUE@	  ( cd $(PERLMAGICK) && \
 @WITH_PERL_TRUE@	    for file in "$$perlmagick/"* ; do \
-@WITH_PERL_TRUE@	      @LN_S@ $$file . ; \
+@WITH_PERL_TRUE@	      if test ! -r `basename $$file` ; then @LN_S@ $$file . ; fi ; \
 @WITH_PERL_TRUE@	    done \
 @WITH_PERL_TRUE@	  ) \
 @WITH_PERL_TRUE@	fi

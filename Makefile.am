@@ -101,7 +101,7 @@ perl-sources:
 	  perlmagick=`(cd $(VPATH)/$(PERLMAGICK); pwd)` && \
 	  ( cd $(PERLMAGICK) && \
 	    for file in "$$perlmagick/"* ; do \
-	      @LN_S@ $$file . ; \
+	      if test ! -r `basename $$file` ; then @LN_S@ $$file . ; fi ; \
 	    done \
 	  ) \
 	fi
