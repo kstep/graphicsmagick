@@ -1025,6 +1025,7 @@ MagickExport Image *XAnimateImages(Display *display,
 
   char
     command[MaxTextExtent],
+    geometry[MaxTextExtent],
     resource_name[MaxTextExtent];
 
   CommandType
@@ -1042,7 +1043,9 @@ MagickExport Image *XAnimateImages(Display *display,
   long
     first_scene,
     iterations,
-    scene;
+    scene,
+    x,
+    y;
 
   KeySym
     key_symbol;
@@ -1074,7 +1077,9 @@ MagickExport Image *XAnimateImages(Display *display,
     state;
 
   unsigned long
-    number_scenes;
+    height,
+    number_scenes,
+    width;
 
   WarningHandler
     warning_handler;
@@ -1310,8 +1315,8 @@ MagickExport Image *XAnimateImages(Display *display,
   XMakeWindow(display,root_window,argv,argc,class_hints,manager_hints,
     &windows->context);
   if (IsEventLogging())
-    (void) LogMagickEvent(X11Event,GetMagickModule(),"Window id: 0x%lx (context)",
-      windows->context.id);
+    (void) LogMagickEvent(X11Event,GetMagickModule(),
+      "Window id: 0x%lx (context)",windows->context.id);
   context_values.background=pixel->background_color.pixel;
   context_values.font=font_info->fid;
   context_values.foreground=pixel->foreground_color.pixel;
@@ -1414,12 +1419,16 @@ MagickExport Image *XAnimateImages(Display *display,
     windows->image.immutable=True;
   windows->image.shape=True;
   windows->image.geometry=resource_info->image_geometry;
-  windows->image.width=(unsigned int) display_image->columns;
-  if ((int) windows->image.width > XDisplayWidth(display,visual_info->screen))
-    windows->image.width=XDisplayWidth(display,visual_info->screen);
-  windows->image.height=(unsigned int) display_image->rows;
-  if ((int) windows->image.height > XDisplayHeight(display,visual_info->screen))
-    windows->image.height=XDisplayHeight(display,visual_info->screen);
+  FormatString(geometry,"%ux%u+0+0>!",
+    90*XDisplayWidth(display,visual_info->screen)/100,
+    90*XDisplayHeight(display,visual_info->screen)/100);
+  width=display_image->columns;
+  height=display_image->rows;
+  x=0;
+  y=0;
+  (void) GetMagickGeometry(geometry,&x,&y,&width,&height);
+  windows->image.width=(unsigned int) width;
+  windows->image.height=(unsigned int) height;
   windows->image.attributes.event_mask=ButtonMotionMask | ButtonPressMask |
     ButtonReleaseMask | EnterWindowMask | ExposureMask | KeyPressMask |
     KeyReleaseMask | LeaveWindowMask | OwnerGrabButtonMask |
