@@ -2177,7 +2177,7 @@ else
   with_gnu_ld=no
 fi;
 ac_prog=ld
-if test "$ac_cv_c_compiler_gnu()" = yes; then
+if test "$ac_cv_c_compiler_gnu" = yes; then
   # Check if gcc -print-prog-name=ld gives a path.
   echo "configure:2182: checking for ld used by GCC" >&5
 echo $ECHO_N "checking for ld used by GCC... $ECHO_C" >&6
@@ -3449,7 +3449,7 @@ libtool_flags="--cache-file=$cache_file"
 test "$enable_shared" = no && libtool_flags="$libtool_flags --disable-shared"
 test "$enable_static" = no && libtool_flags="$libtool_flags --disable-static"
 test "$enable_fast_install" = no && libtool_flags="$libtool_flags --disable-fast-install"
-test "$ac_cv_c_compiler_gnu()" = yes -o "$ac_cv_c_compiler_gnu" = yes && libtool_flags="$libtool_flags --with-gcc"
+test "$ac_cv_c_compiler_gnu" = yes -o "$ac_cv_c_compiler_gnu" = yes && libtool_flags="$libtool_flags --with-gcc"
 test "$ac_cv_prog_gnu_ld" = yes && libtool_flags="$libtool_flags --with-gnu-ld"
 libtool_flags="$libtool_flags --enable-dlopen"
 
@@ -12473,9 +12473,9 @@ EOF
 
 fi
 
- echo "configure:12476: checking whether the compiler supports the explicit keyword" >&5
-echo $ECHO_N "checking whether the compiler supports the explicit keyword... $ECHO_C" >&6
-if test "${ac_cv_cxx_explicit+set}" = set; then
+ echo "configure:12476: checking whether the compiler implements namespaces" >&5
+echo $ECHO_N "checking whether the compiler implements namespaces... $ECHO_C" >&6
+if test "${ac_cv_cxx_namespaces+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
 
@@ -12491,22 +12491,22 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 #ifdef __cplusplus
 extern "C" void exit (int);
 #endif
-class A{public:explicit A(double){}};
+namespace Outer { namespace Inner { int i = 0; }}
 int
 main ()
 {
-double c = 5.0;A x(c);return 0;
+using namespace Outer::Inner; return i;
   ;
   return 0;
 }
 _ACEOF
 rm -f conftest.$ac_objext
 if { (eval echo configure:12504: \"$ac_compile\") >&5; (eval $ac_compile) 2>&5; } && test -s conftest.$ac_objext; then
-  ac_cv_cxx_explicit=yes
+  ac_cv_cxx_namespaces=yes
 else
   echo "configure: failed program was:" >&5
   cat conftest.$ac_ext >&5
-  ac_cv_cxx_explicit=no
+  ac_cv_cxx_namespaces=no
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
  ac_ext=cc
@@ -12516,19 +12516,19 @@ ac_link='${CXX-g++} -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 fi
-echo "configure:12519: result: $ac_cv_cxx_explicit" >&5
-echo "${ECHO_T}$ac_cv_cxx_explicit" >&6
-if test "$ac_cv_cxx_explicit" = yes; then
+echo "configure:12519: result: $ac_cv_cxx_namespaces" >&5
+echo "${ECHO_T}$ac_cv_cxx_namespaces" >&6
+if test "$ac_cv_cxx_namespaces" = yes; then
 
 cat >>confdefs.h <<\EOF
-#define HAVE_EXPLICIT
+#define HAVE_NAMESPACES
 EOF
 
 fi
 
- echo "configure:12529: checking whether the compiler implements namespaces" >&5
-echo $ECHO_N "checking whether the compiler implements namespaces... $ECHO_C" >&6
-if test "${ac_cv_cxx_namespaces+set}" = set; then
+ echo "configure:12529: checking whether the compiler supports the explicit keyword" >&5
+echo $ECHO_N "checking whether the compiler supports the explicit keyword... $ECHO_C" >&6
+if test "${ac_cv_cxx_explicit+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
 
@@ -12544,22 +12544,22 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 #ifdef __cplusplus
 extern "C" void exit (int);
 #endif
-namespace Outer { namespace Inner { int i = 0; }}
+class A{public:explicit A(double){}};
 int
 main ()
 {
-using namespace Outer::Inner; return i;
+double c = 5.0;A x(c);return 0;
   ;
   return 0;
 }
 _ACEOF
 rm -f conftest.$ac_objext
 if { (eval echo configure:12557: \"$ac_compile\") >&5; (eval $ac_compile) 2>&5; } && test -s conftest.$ac_objext; then
-  ac_cv_cxx_namespaces=yes
+  ac_cv_cxx_explicit=yes
 else
   echo "configure: failed program was:" >&5
   cat conftest.$ac_ext >&5
-  ac_cv_cxx_namespaces=no
+  ac_cv_cxx_explicit=no
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
  ac_ext=cc
@@ -12569,17 +12569,17 @@ ac_link='${CXX-g++} -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 fi
-echo "configure:12572: result: $ac_cv_cxx_namespaces" >&5
-echo "${ECHO_T}$ac_cv_cxx_namespaces" >&6
-if test "$ac_cv_cxx_namespaces" = yes; then
+echo "configure:12572: result: $ac_cv_cxx_explicit" >&5
+echo "${ECHO_T}$ac_cv_cxx_explicit" >&6
+if test "$ac_cv_cxx_explicit" = yes; then
 
 cat >>confdefs.h <<\EOF
-#define HAVE_NAMESPACES
+#define HAVE_EXPLICIT
 EOF
 
 fi
 
-echo "configure:12582: checking whether the compiler supports ISO C++ standard library" >&5
+ echo "configure:12582: checking whether the compiler supports ISO C++ standard library" >&5
 echo $ECHO_N "checking whether the compiler supports ISO C++ standard library... $ECHO_C" >&6
 if test "${ac_cv_cxx_have_std+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -12753,60 +12753,7 @@ EOF
 
 fi
 
- echo "configure:12756: checking whether the compiler implements namespaces" >&5
-echo $ECHO_N "checking whether the compiler implements namespaces... $ECHO_C" >&6
-if test "${ac_cv_cxx_namespaces+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-
- ac_ext=cc
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='${CXX-g++} -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='${CXX-g++} -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
- cat >conftest.$ac_ext <<_ACEOF
-#line 12769 "configure"
-#include "confdefs.h"
-#ifdef __cplusplus
-extern "C" void exit (int);
-#endif
-namespace Outer { namespace Inner { int i = 0; }}
-int
-main ()
-{
-using namespace Outer::Inner; return i;
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (eval echo configure:12784: \"$ac_compile\") >&5; (eval $ac_compile) 2>&5; } && test -s conftest.$ac_objext; then
-  ac_cv_cxx_namespaces=yes
-else
-  echo "configure: failed program was:" >&5
-  cat conftest.$ac_ext >&5
-  ac_cv_cxx_namespaces=no
-fi
-rm -f conftest.$ac_objext conftest.$ac_ext
- ac_ext=cc
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='${CXX-g++} -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='${CXX-g++} -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
-fi
-echo "configure:12799: result: $ac_cv_cxx_namespaces" >&5
-echo "${ECHO_T}$ac_cv_cxx_namespaces" >&6
-if test "$ac_cv_cxx_namespaces" = yes; then
-
-cat >>confdefs.h <<\EOF
-#define HAVE_NAMESPACES
-EOF
-
-fi
-
- echo "configure:12809: checking whether the compiler accepts the new for scoping rules" >&5
+ echo "configure:12756: checking whether the compiler accepts the new for scoping rules" >&5
 echo $ECHO_N "checking whether the compiler accepts the new for scoping rules... $ECHO_C" >&6
 if test "${ac_cv_cxx_new_for_scoping+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -12819,7 +12766,7 @@ ac_link='${CXX-g++} -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
  cat >conftest.$ac_ext <<_ACEOF
-#line 12822 "configure"
+#line 12769 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" void exit (int);
@@ -12840,7 +12787,7 @@ main ()
 }
 _ACEOF
 rm -f conftest.$ac_objext
-if { (eval echo configure:12843: \"$ac_compile\") >&5; (eval $ac_compile) 2>&5; } && test -s conftest.$ac_objext; then
+if { (eval echo configure:12790: \"$ac_compile\") >&5; (eval $ac_compile) 2>&5; } && test -s conftest.$ac_objext; then
   ac_cv_cxx_new_for_scoping=yes
 else
   echo "configure: failed program was:" >&5
@@ -12855,7 +12802,7 @@ ac_link='${CXX-g++} -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 fi
-echo "configure:12858: result: $ac_cv_cxx_new_for_scoping" >&5
+echo "configure:12805: result: $ac_cv_cxx_new_for_scoping" >&5
 echo "${ECHO_T}$ac_cv_cxx_new_for_scoping" >&6
 if test "$ac_cv_cxx_new_for_scoping" = yes; then
 
@@ -12865,7 +12812,7 @@ EOF
 
 fi
 
- echo "configure:12868: checking whether the compiler supports static_cast<>" >&5
+ echo "configure:12815: checking whether the compiler supports static_cast<>" >&5
 echo $ECHO_N "checking whether the compiler supports static_cast<>... $ECHO_C" >&6
 if test "${ac_cv_cxx_static_cast+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -12878,7 +12825,7 @@ ac_link='${CXX-g++} -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
  cat >conftest.$ac_ext <<_ACEOF
-#line 12881 "configure"
+#line 12828 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" void exit (int);
@@ -12897,7 +12844,7 @@ Derived d; Base& b = d; Derived& s = static_cast<Derived&> (b); return g (s);
 }
 _ACEOF
 rm -f conftest.$ac_objext
-if { (eval echo configure:12900: \"$ac_compile\") >&5; (eval $ac_compile) 2>&5; } && test -s conftest.$ac_objext; then
+if { (eval echo configure:12847: \"$ac_compile\") >&5; (eval $ac_compile) 2>&5; } && test -s conftest.$ac_objext; then
   ac_cv_cxx_static_cast=yes
 else
   echo "configure: failed program was:" >&5
@@ -12912,7 +12859,7 @@ ac_link='${CXX-g++} -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 fi
-echo "configure:12915: result: $ac_cv_cxx_static_cast" >&5
+echo "configure:12862: result: $ac_cv_cxx_static_cast" >&5
 echo "${ECHO_T}$ac_cv_cxx_static_cast" >&6
 if test "$ac_cv_cxx_static_cast" = yes; then
 
@@ -12922,7 +12869,7 @@ EOF
 
 fi
 
- echo "configure:12925: checking whether the compiler supports basic templates" >&5
+ echo "configure:12872: checking whether the compiler supports basic templates" >&5
 echo $ECHO_N "checking whether the compiler supports basic templates... $ECHO_C" >&6
 if test "${ac_cv_cxx_templates+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -12935,7 +12882,7 @@ ac_link='${CXX-g++} -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
  cat >conftest.$ac_ext <<_ACEOF
-#line 12938 "configure"
+#line 12885 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" void exit (int);
@@ -12952,7 +12899,7 @@ A<double> d; A<int> i; f(d); f(i); return 0;
 }
 _ACEOF
 rm -f conftest.$ac_objext
-if { (eval echo configure:12955: \"$ac_compile\") >&5; (eval $ac_compile) 2>&5; } && test -s conftest.$ac_objext; then
+if { (eval echo configure:12902: \"$ac_compile\") >&5; (eval $ac_compile) 2>&5; } && test -s conftest.$ac_objext; then
   ac_cv_cxx_templates=yes
 else
   echo "configure: failed program was:" >&5
@@ -12967,7 +12914,7 @@ ac_link='${CXX-g++} -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 fi
-echo "configure:12970: result: $ac_cv_cxx_templates" >&5
+echo "configure:12917: result: $ac_cv_cxx_templates" >&5
 echo "${ECHO_T}$ac_cv_cxx_templates" >&6
 if test "$ac_cv_cxx_templates" = yes; then
 
@@ -12977,7 +12924,7 @@ EOF
 
 fi
 
- echo "configure:12980: checking whether using Sun Workshop C++ compiler" >&5
+ echo "configure:12927: checking whether using Sun Workshop C++ compiler" >&5
 echo $ECHO_N "checking whether using Sun Workshop C++ compiler... $ECHO_C" >&6
 if test "${rssh_cv_check_sunpro_cc+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -12990,7 +12937,7 @@ ac_link='${CXX-g++} -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
  cat >conftest.$ac_ext <<_ACEOF
-#line 12993 "configure"
+#line 12940 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" void exit (int);
@@ -13008,7 +12955,7 @@ main ()
 }
 _ACEOF
 rm -f conftest.$ac_objext
-if { (eval echo configure:13011: \"$ac_compile\") >&5; (eval $ac_compile) 2>&5; } && test -s conftest.$ac_objext; then
+if { (eval echo configure:12958: \"$ac_compile\") >&5; (eval $ac_compile) 2>&5; } && test -s conftest.$ac_objext; then
   rssh_cv_check_sunpro_cc=yes
 else
   echo "configure: failed program was:" >&5
@@ -13023,7 +12970,7 @@ ac_link='${CXX-g++} -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 fi
-echo "configure:13026: result: $rssh_cv_check_sunpro_cc" >&5
+echo "configure:12973: result: $rssh_cv_check_sunpro_cc" >&5
 echo "${ECHO_T}$rssh_cv_check_sunpro_cc" >&6
 if test ${rssh_cv_check_sunpro_cc} = yes
 then
@@ -13034,7 +12981,7 @@ else
   :
 fi
 
- echo "configure:13037: checking whether C++ compiler is sufficient for Magick++" >&5
+ echo "configure:12984: checking whether C++ compiler is sufficient for Magick++" >&5
 echo $ECHO_N "checking whether C++ compiler is sufficient for Magick++... $ECHO_C" >&6
  if test \
   $ac_cv_cxx_bool = 'yes' -a \
@@ -13052,7 +12999,7 @@ echo $ECHO_N "checking whether C++ compiler is sufficient for Magick++... $ECHO_
  then
   with_magick_plus_plus='yes'
  fi
- echo "configure:13055: result: $with_magick_plus_plus" >&5
+ echo "configure:13002: result: $with_magick_plus_plus" >&5
 echo "${ECHO_T}$with_magick_plus_plus" >&6
 fi
 
@@ -13748,7 +13695,7 @@ done; }
       -) echo $tmp/stdin ;;
       [\\/$]* | ?:[\\/]*)
          # Absolute
-         test -f "$f" || { echo "configure:13751: error: cannot find input file \\\`$f'" >&5
+         test -f "$f" || { echo "configure:13698: error: cannot find input file \\\`$f'" >&5
   echo "configure: error: cannot find input file \\\`$f'" >&2
   { false; exit; }; }
          echo $f;;
@@ -13761,7 +13708,7 @@ done; }
            echo $ac_given_srcdir/$f
          else
            # /dev/null tree
-           { echo "configure:13764: error: cannot find input file \\\`$f'" >&5
+           { echo "configure:13711: error: cannot find input file \\\`$f'" >&5
   echo "configure: error: cannot find input file \\\`$f'" >&2
   { false; exit; }; }
          fi;;
@@ -13832,7 +13779,7 @@ for ac_file in : $CONFIG_HEADERS; do test "x$ac_file" = x: && continue
       -) echo $tmp/stdin ;;
       [\\/$]* | ?:[\\/]*)
          # Absolute
-         test -f "$f" || { echo "configure:13835: error: cannot find input file \\\`$f'" >&5
+         test -f "$f" || { echo "configure:13782: error: cannot find input file \\\`$f'" >&5
   echo "configure: error: cannot find input file \\\`$f'" >&2
   { false; exit; }; }
          echo $f;;
@@ -13845,7 +13792,7 @@ for ac_file in : $CONFIG_HEADERS; do test "x$ac_file" = x: && continue
            echo $ac_given_srcdir/$f
          else
            # /dev/null tree
-           { echo "configure:13848: error: cannot find input file \\\`$f'" >&5
+           { echo "configure:13795: error: cannot find input file \\\`$f'" >&5
   echo "configure: error: cannot find input file \\\`$f'" >&2
   { false; exit; }; }
          fi;;
@@ -14112,7 +14059,7 @@ done; }
 
        if test -d ./$ac_subdir; then :;
        else
-         { echo "configure:14115: error: cannot create \`pwd\`/$ac_subdir" >&5
+         { echo "configure:14062: error: cannot create \`pwd\`/$ac_subdir" >&5
   echo "configure: error: cannot create \`pwd\`/$ac_subdir" >&2
   { false; exit; }; }
        fi
@@ -14143,7 +14090,7 @@ done; }
     elif test -f $ac_sub_srcdir/configure.in; then
       ac_sub_configure=$ac_configure
     else
-      { echo "configure:14146: WARNING: no configuration information is in $ac_subdir" >&5
+      { echo "configure:14093: WARNING: no configuration information is in $ac_subdir" >&5
 echo "configure: WARNING: no configuration information is in $ac_subdir" >&2; }
       ac_sub_configure=
     fi
@@ -14166,7 +14113,7 @@ echo "configure: WARNING: no configuration information is in $ac_subdir" >&2; }
       if eval $ac_sub_configure $ac_sub_configure_args --cache-file=$ac_sub_cache_file --srcdir=$ac_sub_srcdir
       then :
       else
-        { echo "configure:14169: error: $ac_sub_configure failed for $ac_subdir" >&5
+        { echo "configure:14116: error: $ac_sub_configure failed for $ac_subdir" >&5
   echo "configure: error: $ac_sub_configure failed for $ac_subdir" >&2
   { false; exit; }; }
       fi
