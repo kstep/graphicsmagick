@@ -44,6 +44,7 @@
 #include "shear.h"
 #include "transform.h"
 #include "resize.h"
+#include "tempfile.h"
 #include "utility.h"
 #include "version.h"
 #include "xwindow.h"
@@ -1566,8 +1567,7 @@ MagickExport void XDisplayImageInfo(Display *display,
   assert(resource_info != (XResourceInfo *) NULL);
   assert(windows != (XWindows *) NULL);
   assert(image != (Image *) NULL);
-  TemporaryFilename(filename);
-  file=fopen(filename,"w");
+  file=AcquireTemporaryFileStream(filename,TextFileIOMode);
   if (file == (FILE *) NULL)
     {
       XNoticeWidget(display,windows,"Unable to display image info",filename);
@@ -1631,7 +1631,7 @@ MagickExport void XDisplayImageInfo(Display *display,
   DescribeImage(image,file,True);
   (void) fclose(file);
   text=(char *) FileToBlob(filename,&length,&image->exception);
-  (void) remove(filename);
+  LiberateTemporaryFile(filename);
   if (text == (char *) NULL)
     {
       XNoticeWidget(display,windows,"MemoryAllocationFailed",

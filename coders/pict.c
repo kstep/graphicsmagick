@@ -44,6 +44,7 @@
 #include "log.h"
 #include "magick.h"
 #include "monitor.h"
+#include "tempfile.h"
 #include "transform.h"
 #include "utility.h"
 
@@ -1227,8 +1228,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         clone_info=CloneImageInfo(image_info);
         clone_info->blob=(void *) NULL;
         clone_info->length=0;
-        TemporaryFilename(clone_info->filename);
-        file=fopen(clone_info->filename,"wb");
+        file=AcquireTemporaryFileStream(clone_info->filename,BinaryFileIOMode);
         if (file == (FILE *) NULL)
           ThrowReaderException(FileOpenError,"UnableToWriteFile",image);
         length=ReadBlobMSBLong(image);
@@ -1245,7 +1245,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         (void) fclose(file);
         tile_image=ReadImage(clone_info,exception);
         DestroyImageInfo(clone_info);
-        (void) remove(clone_info->filename);
+        LiberateTemporaryFile(clone_info->filename);
         if (tile_image == (Image *) NULL)
           continue;
         FormatString(geometry,"%lux%lu",Max(image->columns,tile_image->columns),

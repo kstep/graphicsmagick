@@ -50,6 +50,7 @@
 #include "quantize.h"
 #include "resize.h"
 #include "shear.h"
+#include "tempfile.h"
 #include "transform.h"
 #include "utility.h"
 
@@ -564,7 +565,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
 
         clone_info->quality=(unsigned int) (percentage+13.0);
         FormatString(factor,"%lu",clone_info->quality);
-        TemporaryFilename(filename);
+        AcquireTemporaryFileName(filename);
         FormatString(preview_image->filename,"jpeg:%.1024s",filename);
         status=WriteImage(clone_info,preview_image);
         if (status != False)
@@ -575,13 +576,13 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
             (void) strncpy(clone_info->filename,preview_image->filename,
               MaxTextExtent-1);
             quality_image=ReadImage(clone_info,&image->exception);
-            (void) remove(preview_image->filename);
             if (quality_image != (Image *) NULL)
               {
                 DestroyImage(preview_image);
                 preview_image=quality_image;
               }
           }
+        LiberateTemporaryFile(filename);
         if ((GetBlobSize(preview_image)/1024) >= 1024)
           FormatString(label,"quality %.1024s\n%gmb ",factor,
             (double) GetBlobSize(preview_image)/1024.0/1024.0);

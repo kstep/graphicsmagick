@@ -44,6 +44,7 @@
 #include "blob.h"
 #include "constitute.h"
 #include "delegate.h"
+#include "tempfile.h"
 #include "utility.h"
 
 /*
@@ -362,8 +363,8 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
         decode ? decode : encode);
       return(False);
     }
-  TemporaryFilename(image_info->unique);
-  TemporaryFilename(image_info->zero);
+  AcquireTemporaryFileName(image_info->unique);
+  AcquireTemporaryFileName(image_info->zero);
   if (delegate_info->mode != 0)
     if ((decode && (delegate_info->encode != (char *) NULL)) ||
         (encode && (delegate_info->decode != (char *) NULL)))
@@ -442,8 +443,8 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
       (void) ConcatenateString(&command," &");
     status=SystemCommand(image_info->verbose,command);
     LiberateMemory((void **) &command);
-    (void) remove(image_info->zero);
-    (void) remove(image_info->unique);
+    LiberateTemporaryFile(image_info->zero);
+    LiberateTemporaryFile(image_info->unique);
     if (status != False)
       ThrowException(exception,DelegateError,"DelegateFailed",commands[i]);
     LiberateMemory((void **) &commands[i]);

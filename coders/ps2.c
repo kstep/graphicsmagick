@@ -44,6 +44,7 @@
 #include "compress.h"
 #include "magick.h"
 #include "monitor.h"
+#include "tempfile.h"
 #include "utility.h"
 #if defined(HasTIFF)
 #define CCITTParam  "-1"
@@ -137,7 +138,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   if (huffman_image == (Image *) NULL)
     return(False);
   SetImageType(huffman_image,BilevelType);
-  TemporaryFilename(filename);
+  AcquireTemporaryFileName(filename);
   FormatString(huffman_image->filename,"tiff:%s",filename);
   clone_info=CloneImageInfo(image_info);
   clone_info->compression=Group4Compression;
@@ -165,7 +166,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   if (buffer == (unsigned char *) NULL)
     {
       TIFFClose(tiff);
-      (void) remove(filename);
+      LiberateTemporaryFile(filename);
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         (char *) NULL)
     }
@@ -185,7 +186,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   }
   LiberateMemory((void **) &buffer);
   TIFFClose(tiff);
-  (void) remove(filename);
+  LiberateTemporaryFile(filename);
   return(True);
 }
 #else

@@ -44,6 +44,7 @@
 #include "enhance.h"
 #include "magick.h"
 #include "monitor.h"
+#include "tempfile.h"
 #include "utility.h"
 
 /*
@@ -3211,8 +3212,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Handle 2.4.50 lossy JPEG and 2.4.70 lossless JPEG.
       */
-      TemporaryFilename(filename);
-      file=fopen(filename,"wb");
+      file=AcquireTemporaryFileStream(filename,BinaryFileIOMode);
       if (file == (FILE *) NULL)
         ThrowReaderException(FileOpenError,"UnableToWriteFile",image);
       (void) memset(magick,0,sizeof(magick));
@@ -3238,7 +3238,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       clone_info->length=0;
       FormatString(clone_info->filename,"jpeg:%.1024s",filename);
       image=ReadImage(clone_info,exception);
-      (void) remove(filename);
+      LiberateTemporaryFile(filename);
       DestroyImageInfo(clone_info);
       return(image);
     }

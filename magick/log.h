@@ -37,7 +37,8 @@ typedef enum
   DeprecateEvent = 0x0200,
   UserEvent = 0x0400,
   ResourceEvent = 0x0800,
-  AllEvents = 0xFFFF
+  TemporaryFileEvent = 0x01000,
+  AllEvents = 0xFFFFF
 } LogEventType;
 
 /*

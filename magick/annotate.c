@@ -46,6 +46,7 @@
 #include "gem.h"
 #include "log.h"
 #include "render.h"
+#include "tempfile.h"
 #include "transform.h"
 #include "utility.h"
 #include "xwindow.h"
@@ -1411,8 +1412,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
   (void) LogMagickEvent(AnnotateEvent,GetMagickModule(),
     "Font %.1024s; pointsize %g",draw_info->font != (char *) NULL ?
     draw_info->font : "none",draw_info->pointsize);
-  TemporaryFilename(filename);
-  file=fopen(filename,"wb");
+  file=AcquireTemporaryFileStream(filename,BinaryFileIOMode);
   if (file == (FILE *) NULL)
     ThrowBinaryException(FileOpenError,"UnableToOpenFile",filename);
   (void) fprintf(file,"%%!PS-Adobe-3.0\n");
@@ -1476,7 +1476,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
     MagickError(image->exception.severity,image->exception.reason,
       image->exception.description);
   DestroyImageInfo(clone_info);
-  (void) remove(filename);
+  LiberateTemporaryFile(filename);
   if (annotate_image == (Image *) NULL)
     return(False);
   resolution.x=72.0;

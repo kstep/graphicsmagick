@@ -44,6 +44,7 @@
 #include "magick.h"
 #include "monitor.h"
 #include "stream.h"
+#include "tempfile.h"
 #include "utility.h"
 
 /*
@@ -2727,7 +2728,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           /*
             Coder requires a random access stream.
           */
-          TemporaryFilename(clone_info->filename);
+          AcquireTemporaryFileName(clone_info->filename);
           (void) ImageToFile(image,clone_info->filename,exception);
           clone_info->temporary=True;
         }
@@ -2761,7 +2762,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
             ThrowException(exception,FileOpenError,"UnableToOpenFile",
               clone_info->filename);
           if (clone_info->temporary)
-            (void) remove(clone_info->filename);
+            LiberateTemporaryFile(clone_info->filename);
           DestroyImageInfo(clone_info);
           return((Image *) NULL);
         }
@@ -2775,7 +2776,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           return((Image *) NULL);
         }
       (void) strncpy(image->filename,clone_info->filename,MaxTextExtent-1);
-      TemporaryFilename(clone_info->filename);
+      AcquireTemporaryFileName(clone_info->filename);
       (void) InvokeDelegate(clone_info,image,clone_info->magick,(char *) NULL,
         exception);
       DestroyImageList(image);
@@ -2792,6 +2793,8 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           else
             ThrowException(exception,FileOpenError,"UnableToOpenFile",
               clone_info->filename);
+          if (clone_info->temporary)
+            LiberateTemporaryFile(clone_info->filename);
           DestroyImageInfo(clone_info);
           return((Image *) NULL);
         }
@@ -2808,7 +2811,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     }
   if (clone_info->temporary)
     {
-      (void) remove(clone_info->filename);
+      LiberateTemporaryFile(clone_info->filename);
       clone_info->temporary=False;
       if (image != (Image *) NULL)
         (void) strncpy(image->filename,filename,MaxTextExtent-1);
@@ -2819,7 +2822,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       return(image);
     }
   if (image->blob->temporary)
-    (void) remove(clone_info->filename);
+    LiberateTemporaryFile(clone_info->filename);
   if ((image->next != (Image *) NULL) && IsSubimage(clone_info->tile,False))
     {
       char
@@ -3192,10 +3195,10 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
           /*
             Let our encoding delegate process the image.
           */
-          TemporaryFilename(image->filename);
+          AcquireTemporaryFileName(image->filename);
           status=InvokeDelegate(clone_info,image,(char *) NULL,
             clone_info->magick,&image->exception);
-          (void) remove(image->filename);
+          LiberateTemporaryFile(image->filename);
           DestroyImageInfo(clone_info);
           return(!status);
         }

@@ -44,6 +44,7 @@
 #include "log.h"
 #include "magick.h"
 #include "render.h"
+#include "tempfile.h"
 #include "utility.h"
 #if defined(HasXML)
 #  if defined(WIN32)
@@ -2585,8 +2586,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Open draw file.
   */
-  TemporaryFilename(filename);
-  file=fopen(filename,"w");
+  file=AcquireTemporaryFileStream(filename,TextFileIOMode);
   if (file == (FILE *) NULL)
     ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   /*
@@ -2600,7 +2600,11 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   svg_info.text=AllocateString("");
   svg_info.scale=(double *) AcquireMemory(sizeof(double));
   if (svg_info.scale == (double *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    {
+      (void) fclose(file);
+      LiberateTemporaryFile(filename);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    }
   IdentityAffine(&svg_info.affine);
   svg_info.affine.sx=
     image->x_resolution == 0.0 ? 1.0 : image->x_resolution/72.0;
@@ -2666,7 +2670,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) SetImageAttribute(image,"comment",svg_info.comment);
       LiberateMemory((void **) &svg_info.comment);
     }
-  (void) remove(filename);
+  LiberateTemporaryFile(filename);
   return(image);
 }
 #endif

@@ -1,3 +1,29 @@
+2003-03-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dcm.c, coders/ept.c, coders/histogram.c, coders/mpeg.c,
+	coders/pdf.c, coders/pict.c, coders/preview.c, coders/ps.c,
+	coders/ps2.c, coders/ps3.c, coders/pwp.c, coders/sfw.c,
+	coders/svg.c, coders/tiff.c, coders/url.c, coders/wpg.c,
+	magick/annotate.c, magick/attribute.c, magick/blob.c,
+	magick/cache.c, magick/constitute.c, magick/delegate.c,
+	magick/display.c, magick/image.c, magick/magick.c,
+	magick/utility.c, magick/xwindow.c: Updated to use new temporary
+	file allocation APIs.
+	* magick/tempfile.c: New temporary file allocation subsystem for
+	allocating, tracking, and deallocating temporary files.  Use of
+	this subsystem should reduce the likelyhood that temporary
+	files will be left behind once the process exits.
+	If the environment variable MAGICK_TMPDIR is set, then its
+	value is used as the location to place temporary files.
+	* magick/utility.c (IsAccessibleAndNotEmpty): New function
+	for testing for file exists, is a regular file, and is not empty.
+	Used to test if a temporary file has been updated by a delegate.
+	* magick/log.c (SetLogEventMask): Add support for setting
+	TemporaryFileEvent.
+	* PerlMagick/Magick.xs: Added TemporaryFile log event type.
+	* magick/log.h (LogEventType): Add TemporaryFileEvent event
+	classification.
+
 2003-03-29  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* magick/resize.c (SampleImage) and magick/render.c (DrawAffineImage():

@@ -43,6 +43,7 @@
 #include "constitute.h"
 #include "magick.h"
 #include "monitor.h"
+#include "tempfile.h"
 #include "utility.h"
 
 /*
@@ -310,8 +311,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   LiberateMemory((void **) &blue);
   LiberateMemory((void **) &green);
   LiberateMemory((void **) &red);
-  TemporaryFilename(filename);
-  file=fopen(filename,"wb");
+  file=AcquireTemporaryFileStream(filename,BinaryFileIOMode);
   if (file != (FILE *) NULL)
     {
       char
@@ -324,7 +324,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
       (void) fclose(file);
       FormatString(command,"@%.1024s",filename);
       (void) SetImageAttribute(histogram_image,"comment",command);
-      (void) remove(filename);
+      LiberateTemporaryFile(filename);
     }
   /*
     Write Histogram image as MIFF.

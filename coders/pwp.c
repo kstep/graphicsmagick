@@ -40,6 +40,7 @@
 #include "constitute.h"
 #include "magick.h"
 #include "monitor.h"
+#include "tempfile.h"
 #include "utility.h"
 
 /*
@@ -165,7 +166,6 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   clone_info=CloneImageInfo(image_info);
   clone_info->blob=(void *) NULL;
   clone_info->length=0;
-  TemporaryFilename(clone_info->filename);
   image=(Image *) NULL;
   for ( ; ; )
   {
@@ -180,11 +180,13 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (c == EOF)
       break;
     if (LocaleNCompare((char *) (magick+12),"SFW94A",6) != 0)
-      ThrowReaderException(CorruptImageError,"NotAPWPImageFile",pwp_image);
+      {
+        ThrowReaderException(CorruptImageError,"NotAPWPImageFile",pwp_image);
+      }
     /*
       Dump SFW image to a temporary file.
     */
-    file=fopen(clone_info->filename,"wb");
+    file=AcquireTemporaryFileStream(clone_info->filename,BinaryFileIOMode);
     if (file == (FILE *) NULL)
       ThrowReaderException(FileOpenError,"UnableToWriteFile",image);
     (void) fwrite("SFW94A",1,6,file);
@@ -197,6 +199,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) fclose(file);
     handler=SetMonitorHandler((MonitorHandler) NULL);
     next_image=ReadImage(clone_info,exception);
+    LiberateTemporaryFile(clone_info->filename);
     (void) SetMonitorHandler(handler);
     if (next_image == (Image *) NULL)
       break;
@@ -219,7 +222,6 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (!MagickMonitor(LoadImagesText,TellBlob(pwp_image),GetBlobSize(image),&image->exception))
       break;
   }
-  (void) remove(clone_info->filename);
   DestroyImageInfo(clone_info);
   CloseBlob(pwp_image);
   DestroyImage(pwp_image);

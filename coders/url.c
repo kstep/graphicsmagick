@@ -39,6 +39,7 @@
 #include "blob.h"
 #include "constitute.h"
 #include "magick.h"
+#include "tempfile.h"
 #include "utility.h"
 #if defined(HasXML)
 #  if defined(WIN32)
@@ -131,8 +132,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   clone_info=CloneImageInfo(image_info);
   clone_info->blob=(void *) NULL;
   clone_info->length=0;
-  TemporaryFilename(clone_info->filename);
-  file=fopen(clone_info->filename,"wb");
+  file=AcquireTemporaryFileStream(clone_info->filename,BinaryFileIOMode);
   if (file == (FILE *) NULL)
     {
       DestroyImageInfo(clone_info);
@@ -174,14 +174,17 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
     }
   (void) fclose(file);
-  if (!IsAccessible(clone_info->filename))
-    ThrowException(exception,CoderError,"NoDataReturned",filename);
+  if (!IsAccessibleAndNotEmpty(clone_info->filename))
+    {
+      LiberateTemporaryFile(clone_info->filename);
+      ThrowException(exception,CoderError,"NoDataReturned",filename);
+    }
   else
     {
       *clone_info->magick='\0';
       image=ReadImage(clone_info,exception);
     }
-  (void) remove(clone_info->filename);
+  LiberateTemporaryFile(clone_info->filename);
   DestroyImageInfo(clone_info);
   return(image);
 }

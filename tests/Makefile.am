@@ -150,7 +150,7 @@ TRUECOLOR_FORMATS = \
 	$(TIFF) \
 	$(XWD)
 
-# Blob formats to test that don't require that size be specified
+# Blob formats to test which don't require that size be specified
 CHECK_BLOB_FORMATS = \
 	AVS \
 	BMP \
@@ -196,7 +196,7 @@ CHECK_BLOB_FORMATS = \
 	XPM \
 	$(XWD)
 
-# File formats to test that don't require that size be specified
+# File formats to test which don't require that size be specified
 CHECK_FILE_FORMATS = \
 	AVS \
 	BMP \

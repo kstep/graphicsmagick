@@ -39,6 +39,7 @@
 #include "blob.h"
 #include "constitute.h"
 #include "magick.h"
+#include "tempfile.h"
 #include "transform.h"
 #include "utility.h"
 
@@ -280,8 +281,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   clone_info=CloneImageInfo(image_info);
   clone_info->blob=(void *) NULL;
   clone_info->length=0;
-  TemporaryFilename(clone_info->filename);
-  file=fopen(clone_info->filename,"wb");
+  file=AcquireTemporaryFileStream(clone_info->filename,BinaryFileIOMode);
   if (file == (FILE *) NULL)
     {
       LiberateMemory((void **) &buffer);
@@ -296,7 +296,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   LiberateMemory((void **) &buffer);
   if (status)
     {
-      (void) remove(clone_info->filename);
+      LiberateTemporaryFile(clone_info->filename);
       DestroyImageInfo(clone_info);
       ThrowReaderException(FileOpenError,"UnableToWriteFile",image)
     }
@@ -304,7 +304,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read JPEG image.
   */
   image=ReadImage(clone_info,exception);
-  (void) remove(clone_info->filename);
+  LiberateTemporaryFile(clone_info->filename);
   DestroyImageInfo(clone_info);
   if (image == (Image *) NULL)
     return(image);

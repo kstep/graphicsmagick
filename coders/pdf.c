@@ -48,6 +48,7 @@
 #include "shear.h"
 #include "resize.h"
 #include "utility.h"
+#include "tempfile.h"
 #include "version.h"
 #if defined(HasTIFF)
 #define CCITTParam  "-1"
@@ -141,7 +142,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   if (huffman_image == (Image *) NULL)
     return(False);
   SetImageType(huffman_image,BilevelType);
-  TemporaryFilename(filename);
+  AcquireTemporaryFileName(filename);
   FormatString(huffman_image->filename,"tiff:%s",filename);
   clone_info=CloneImageInfo(image_info);
   clone_info->compression=Group4Compression;
@@ -153,7 +154,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   tiff=TIFFOpen(filename,"rb");
   if (tiff == (TIFF *) NULL)
     {
-      (void) remove(filename);
+      LiberateTemporaryFile(filename);
       ThrowBinaryException(FileOpenError,"UnableToOpenFile",
         image_info->filename)
     }
@@ -169,7 +170,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   if (buffer == (unsigned char *) NULL)
     {
       TIFFClose(tiff);
-      (void) remove(filename);
+      LiberateTemporaryFile(filename);
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         (char *) NULL)
     }
@@ -185,7 +186,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   }
   LiberateMemory((void **) &buffer);
   TIFFClose(tiff);
-  (void) remove(filename);
+  LiberateTemporaryFile(filename);
   return(True);
 }
 #else
@@ -348,8 +349,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Open temporary output file.
   */
-  TemporaryFilename(postscript_filename);
-  file=fopen(postscript_filename,"wb");
+  file=AcquireTemporaryFileStream(postscript_filename,BinaryFileIOMode);
   if (file == (FILE *) NULL)
     ThrowReaderException(FileOpenError,"UnableToWriteFile",image);
   /*
@@ -451,14 +451,14 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) MagickMonitor(RenderPostscriptText,7,8,&image->exception);
   if (status)
     {
-      (void) remove(postscript_filename);
+      LiberateTemporaryFile(postscript_filename);
       ThrowReaderException(DelegateError,"PostscriptDelegateFailed",image)
     }
   DestroyImage(image);
   clone_info->blob=(void *) NULL;
   clone_info->length=0;
   image=ReadImage(clone_info,exception);
-  (void) remove(postscript_filename);
+  LiberateTemporaryFile(postscript_filename);
   (void) remove(clone_info->filename);
   DestroyImageInfo(clone_info);
   if (image == (Image *) NULL)

@@ -39,6 +39,7 @@
 #include "delegate.h"
 #include "log.h"
 #include "magick.h"
+#include "tempfile.h"
 #include "transform.h"
 #include "utility.h"
 
@@ -581,7 +582,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   /*
     Write YUV files.
   */
-  TemporaryFilename(basename);
+  AcquireTemporaryFileName(basename);
   FormatString(coalesce_image->filename,basename);
   clone_info=CloneImageInfo(image_info);
   (void) strncpy(clone_info->unique,basename,MaxTextExtent-1);
@@ -590,7 +591,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
     {
       if (coalesce_image != image)
         DestroyImage(coalesce_image);
-      (void) remove(basename);
+      LiberateTemporaryFile(basename);
       if (image_info->quality != DefaultCompressionQuality)
         {
           FormatString(filename,"%.1024s.iqm",basename);
@@ -681,7 +682,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
     }
     (void) strncpy(p->filename,image_info->filename,MaxTextExtent-1);
   }
-  (void) remove(basename);
+  LiberateTemporaryFile(basename);
   FormatString(filename,"%.1024s.iqm",basename);
   (void) remove(filename);
   FormatString(filename,"%.1024s.niq",basename);

@@ -52,6 +52,7 @@
 #include "registry.h"
 #include "resource.h"
 #include "render.h"
+#include "temporary.h"
 #include "utility.h"
 
 /*
@@ -95,6 +96,7 @@ MagickExport void DestroyMagick(void)
   DestroyConstitute();
   DestroyMagickRegistry();
   DestroyMagickResources();
+  DestroyTemporaryFiles();
   DestroySemaphore();
 #if defined(WIN32)
   DestroyTracingCriticalSection();

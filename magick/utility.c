@@ -42,6 +42,7 @@
 #include "color.h"
 #include "log.h"
 #include "signature.h"
+#include "tempfile.h"
 #include "utility.h"
 /*
   Static declarations.
@@ -2140,6 +2141,52 @@ MagickExport unsigned int IsAccessible(const char *filename)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%  I s A c c e s s i b l e A n d N o t E m p t y                              %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IsAccessibleAndNotEmpty() returns True if the file as defined by filename
+%  exists, is a regular file, and contains at least one byte of data.
+%
+%  The format of the IsAccessibleAndNotEmpty method is:
+%
+%      unsigned int IsAccessibleAndNotEmpty(const char *filename)
+%
+%  A description of each parameter follows.
+%
+%    o status:  Method IsAccessibleAndNotEmpty returns True if the file as
+%      defined by filename exists, is a regular file, and contains content,
+%      otherwise False is returned.
+%
+%    o filename:  A pointer to an array of characters containing the filename.
+%
+%
+*/
+MagickExport unsigned int IsAccessibleAndNotEmpty(const char *filename)
+{
+  int
+    status;
+
+  struct stat
+    file_info;
+
+  if ((filename == (const char *) NULL) || (*filename == '\0'))
+    return(False);
+  status=stat(filename,&file_info);
+
+  if ((status == 0) && S_ISREG(file_info.st_mode) && (file_info.st_size > 0))
+    return (True);
+
+  return (False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +  I s D i r e c t o r y                                                      %
 %                                                                             %
 %                                                                             %
@@ -3959,7 +4006,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       {
         (void) strncpy(filename,clone_info->unique,MaxTextExtent-1);
         if (*filename == '\0')
-          TemporaryFilename(filename);
+          AcquireTemporaryFileName(filename);
         (void) strncpy(q,filename,MaxTextExtent-1);
         q+=strlen(filename);
         break;
@@ -3990,7 +4037,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       {
         (void) strncpy(filename,clone_info->zero,MaxTextExtent-1);
         if (*filename == '\0')
-          TemporaryFilename(filename);
+          AcquireTemporaryFileName(filename);
         (void) strncpy(q,filename,MaxTextExtent-1);
         q+=strlen(filename);
         break;

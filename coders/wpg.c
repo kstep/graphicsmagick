@@ -39,6 +39,7 @@
 #include "color.h"
 #include "constitute.h"
 #include "magick.h"
+#include "tempfile.h"
 #include "utility.h"
 
 /*
@@ -499,12 +500,11 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
     return(image);
   clone_info->blob=(void *) NULL;
   clone_info->length=0;
-  TemporaryFilename((char *) clone_info->filename);
-
-  if( (f=fopen(clone_info->filename,"wb"))==NULL)
+  if( (f=AcquireTemporaryFileStream(clone_info->filename,BinaryFileIOMode))
+      ==NULL)
     goto FINISH;
   (void) SeekBlob(image,PS_Offset,SEEK_SET);
-  while(PS_Size-->0)
+  while(PS_Size-- > 0)
     {
       (void) fputc(ReadBlobByte(image),f);
     }
@@ -527,7 +527,7 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
     }
     
  FINISH_UNL:    
-  (void) remove(clone_info->filename);/* */
+  LiberateTemporaryFile(clone_info->filename);
  FINISH:
   DestroyImageInfo(clone_info);
   return(image);

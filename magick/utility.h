@@ -87,6 +87,7 @@ extern MagickExport unsigned int
   ExpandFilenames(int *,char ***),
   GetExecutionPath(char *),
   IsAccessible(const char *),
+  IsAccessibleAndNotEmpty(const char *),
   IsGeometry(const char *),
   IsGlob(const char *);
 

@@ -49,6 +49,7 @@
 #include "module.h"
 #include "resource.h"
 #include "stream.h"
+#include "tempfile.h"
 #include "utility.h"
 #if defined(HasZLIB)
 #include "zlib.h"
@@ -413,7 +414,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   */
   clone_info->blob=(void *) NULL;
   clone_info->length=0;
-  TemporaryFilename(clone_info->filename);
+  AcquireTemporaryFileName(clone_info->filename);
   status=BlobToFile(clone_info->filename,blob,length,exception);
   if (status == False)
     {
@@ -425,7 +426,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   image=ReadImage(clone_info,exception);
   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
     "Removing temporary file \"%s\"\n",clone_info->filename);
-  (void) remove(clone_info->filename);
+  LiberateTemporaryFile(clone_info->filename);
   DestroyImageInfo(clone_info);
   (void) LogMagickEvent(BlobEvent,GetMagickModule(), "Leaving BlobToImage");
   return(image);
@@ -1303,12 +1304,13 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
     Write file to disk in blob image format.
   */
   (void) strncpy(filename,image->filename,MaxTextExtent-1);
-  TemporaryFilename(unique);
+  AcquireTemporaryFileName(unique);
   FormatString(image->filename,"%.1024s:%.1024s",image->magick,unique);
   status=WriteImage(clone_info,image);
   DestroyImageInfo(clone_info);
   if (status == False)
     {
+      LiberateTemporaryFile(unique);
       ThrowException(exception,BlobError,"UnableToWriteBlob",image->filename);
       (void) LogMagickEvent(BlobEvent,GetMagickModule(),
         "Exiting ImageToBlob");
@@ -1318,7 +1320,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
     Read image from disk as blob.
   */
   blob=(unsigned char *) FileToBlob(image->filename,length,exception);
-  (void) remove(image->filename);
+  LiberateTemporaryFile(image->filename);
   (void) strncpy(image->filename,filename,MaxTextExtent-1);
   if (blob == (unsigned char ) NULL)
     {

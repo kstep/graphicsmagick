@@ -48,11 +48,8 @@ static SemaphoreInfo
 */
 static void AddTemporaryFileToList(const char *filename)
 {
-  /*
-    Initialize semaphore
-  */
-  printf("AddTemporaryFileToList: Adding \"%s\" ...\n",filename);
-
+  (void) LogMagickEvent(TemporaryFileEvent,GetMagickModule(),
+    "Allocating temporary file \"%s\"",filename);
   AcquireSemaphoreInfo(&templist_semaphore);
   {
     TempfileInfo
@@ -67,7 +64,6 @@ static void AddTemporaryFileToList(const char *filename)
           templist=info;
         else
           {
-            /* Add to front of list */
             info->next=templist;
             templist=info;
           }
@@ -85,49 +81,28 @@ static unsigned int RemoveTemporaryFileFromList(const char *filename)
   unsigned int
     status=False;
 
-  printf("RemoveTemporaryFileFromList: Removing \"%s\"\n",filename);
+  (void) LogMagickEvent(TemporaryFileEvent,GetMagickModule(),
+    "Deallocating temporary file \"%s\"",filename);
+
   AcquireSemaphoreInfo(&templist_semaphore);
   {
-    if (templist)
-      {
-        TempfileInfo
-          *member,
-          *remove;
+    TempfileInfo
+      *current,
+      *previous=0;
 
-        /* Check first element for match */
-        if (strcmp(templist->filename,filename) == 0)
+    for (current=templist; current; current=current->next)
+      {
+        if (strcmp(current->filename,filename) == 0)
           {
-            printf("Removing first element \"%s\"\n",templist->filename);
-            fflush(stdout);
-            /* Remove first element */
-            remove=templist;
-            if (templist->next)
-              templist=templist->next;
+            if (previous)
+              previous->next=current->next;
             else
-              templist=0;
-            LiberateMemory((void **)&remove);
+              templist=current->next;
+            LiberateMemory((void **)&current);
             status=True;
+            break;
           }
-        else
-          {
-            /* Check remaining elements for match */
-            for (member=templist; member->next && member->next->next;
-                 member=member->next)
-              if (strcmp(member->next->filename,filename) == 0)
-                {
-                  /* Remove next element */
-                  printf("Removing next element  \"%s\"\n",member->next->filename);
-                  fflush(stdout);
-                  remove=member->next;
-                  if (member->next->next)
-                    member->next=member->next->next;
-                  else
-                    member->next=0;
-                  LiberateMemory((void **)&remove);
-                  status=True;
-                  break;
-                }
-          }
+        previous=current;
       }
   }
   LiberateSemaphoreInfo(&templist_semaphore);
@@ -139,7 +114,7 @@ static unsigned int RemoveTemporaryFileFromList(const char *filename)
   selected from a "safe" set of characters which are unlikely to
   be interpreted by a shell or program and cause confusion.
 */
-#if defined(P_tmpdir)
+#if defined(P_tmpdir) || defined(HAVE_TEMPNAM)
 static void ComposeTemporaryFileName(char *name)
 {
   static const char SafeChars[]
@@ -241,7 +216,8 @@ MagickExport unsigned int AcquireTemporaryFileName(char *filename)
 MagickExport int AcquireTemporaryFileDescriptor(char *filename)
 {
   char
-    fname[MaxTextExtent];
+    fname[MaxTextExtent],
+    *tempdir=0;
 
   int
     fd=-1;
@@ -249,67 +225,60 @@ MagickExport int AcquireTemporaryFileDescriptor(char *filename)
   assert(filename != (char *) NULL);
   filename[0]='\0';
 
-#if defined(P_tmpdir)
-  {
-    /*
-      Use our own temporary filename generator
-    */
-    char
-      *tempdir=0,
-      tempname[MaxTextExtent];
-
-    int
-      tries=0;
-
+  tempdir=getenv("MAGICK_TMPDIR");
+#if defined(POSIX)
+  if (!tempdir)
     tempdir=getenv("TMPDIR");
-    if (!tempdir)
-      tempdir=getenv("TMP");
-    if (!tempdir)
-      tempdir=P_tmpdir;
+#endif /* POSIX */
+#if defined(WIN32)
+  if (!tempdir)
+    tempdir=getenv("TMP");
+  if (!tempdir)
+    tempdir=getenv("TEMP");
+#endif /* WIN32 */
+#if defined(P_tmpdir)
+  if (!tempdir)
+    tempdir=P_tmpdir;
+#endif
 
-    for (tries=0; tries < 10; tries++)
-      {
-        strcpy(tempname,"gmXXXXXX.tmp");
-        ComposeTemporaryFileName(tempname);
-        strcpy(fname,tempdir);
-        if (tempdir[strlen(tempdir)-1] != DirectorySeparator[0])
-          strcat(fname,DirectorySeparator);
-        strcat(fname,tempname);
-        fd=open(fname,O_WRONLY | O_CREAT | O_BINARY | O_EXCL, S_MODE);
-        if (fd != -1)
-          {
-            strcpy(filename,fname);
-            AddTemporaryFileToList(filename);
-            break;
-          }
-      }
-    return (fd);
-  }
+  if (tempdir)
+    {
+      /*
+        Use our own temporary filename generator if the temporary
+        file directory is known.
+      */
+      char
+        tempname[MaxTextExtent];
+      
+      int
+        tries=0;
+      
+      for (tries=0; tries < 10; tries++)
+        {
+          strcpy(tempname,"gmXXXXXX.tmp");
+          ComposeTemporaryFileName(tempname);
+          strcpy(fname,tempdir);
+          if (tempdir[strlen(tempdir)-1] != DirectorySeparator[0])
+            strcat(fname,DirectorySeparator);
+          strcat(fname,tempname);
+          fd=open(fname,O_WRONLY | O_CREAT | O_BINARY | O_EXCL, S_MODE);
+          if (fd != -1)
+            {
+              strcpy(filename,fname);
+              AddTemporaryFileToList(filename);
+              break;
+            }
+        }
+      return (fd);
+    }
 
-#elif HAVE_MKSTEMP
-  /*
-    Use mkstemp().
-    Mkstemp opens the the temporary file to assure that there is
-    no race condition between allocating the name and creating the
-    file. This helps improve security.
-  */
-  {
-    (void) strcpy(fname,"gmXXXXXX");
-    fd=mkstemp(fname);
-    if (fd != -1)
-      {
-        strcpy(filename,fname);
-        AddTemporaryFileToList(filename);
-      }
-    return (fd);
-  }
-#elif HAVE_TEMPNAM
+#if HAVE_TEMPNAM
   /*
     Use tempnam().
     Windows has _tempnam which works similar to Unix tempnam.
     Note that Windows _tempnam only produces temporary file
-    names which are unique to the current process so we prepend
-    the process ID to help ensure uniqueness. Windows _tempnam
+    names which are unique to the current process so we compute
+    a random part in the name ourselves. Windows _tempnam
     is documented to place sequential numbers in the file
     extension.
   */
@@ -317,8 +286,9 @@ MagickExport int AcquireTemporaryFileDescriptor(char *filename)
     char
       *name;
 
-    (void) sprintf(fname,"gm%ld",(long) getpid());
-    if ((name=tempnam(NULL,fname)))
+    strcpy(fname,"gmXXXXXX");
+    ComposeTemporaryFileName(fname);
+    if ((name=tempnam(tempdir,fname)))
       {
         (void) remove(filename);
         fd=open(name,O_WRONLY | O_CREAT | O_BINARY | O_EXCL, S_MODE);
@@ -331,6 +301,26 @@ MagickExport int AcquireTemporaryFileDescriptor(char *filename)
       }
     return (fd);
   }
+#elif HAVE_MKSTEMP
+  /*
+    Use mkstemp().
+    Mkstemp opens the the temporary file to assure that there is
+    no race condition between allocating the name and creating the
+    file. This helps improve security.  However, the other cases
+    also create the file in advance as well so there is not actually
+    much advantage.
+  */
+  {
+    (void) strcpy(fname,"gmXXXXXX");
+    fd=mkstemp(fname);
+    if (fd != -1)
+      {
+        strcpy(filename,fname);
+        AddTemporaryFileToList(filename);
+      }
+    return (fd);
+  }
+
 #else
   /*
     Use ANSI C standard tmpnam
@@ -429,9 +419,11 @@ MagickExport void DestroyTemporaryFiles(void)
     {
       liberate=member;
       member=member->next;
-      printf("DestroyTemporaryFiles: Removing \"%s\" ...\n",liberate->filename);
+      (void) LogMagickEvent(TemporaryFileEvent,GetMagickModule(),
+        "Removing leaked temporary file \"%s\"",liberate->filename);
       if ((remove(liberate->filename)) != 0)
-        printf("DestroyTemporaryFiles: Failure to remove \"%s\"!\n",liberate->filename);
+        (void) LogMagickEvent(TemporaryFileEvent,GetMagickModule(),
+          "Temporary file removal failed \"%s\"",liberate->filename);
       LiberateMemory((void **)&liberate);
     }
 }
@@ -463,9 +455,11 @@ MagickExport void LiberateTemporaryFile(const char *filename)
   if (RemoveTemporaryFileFromList(filename))
     {
       if ((remove(filename)) != 0)
-        printf("LiberateTemporaryFile: Failure to remove \"%s\"!\n",filename);
+        (void) LogMagickEvent(TemporaryFileEvent,GetMagickModule(),
+          "Temporary file removal failed \"%s\"",filename);
     }
   else
-    printf("LiberateTemporaryFile: \"%s\" not in list!\n",filename);
+    (void) LogMagickEvent(TemporaryFileEvent,GetMagickModule(),
+      "Temporary file \"%s\" to be removed not allocated!\n",filename);
     
 }

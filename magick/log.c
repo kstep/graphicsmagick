@@ -566,6 +566,7 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
     case DeprecateEvent: domain=(char *) "Deprecate"; break;
     case UserEvent: domain=(char *) "User"; break;
     case ResourceEvent: domain=(char *) "Resource"; break;
+    case TemporaryFileEvent: domain=(char *) "TemporaryFile"; break;
     default: domain=(char *) "UnknownEvent"; break;
   }
   va_start(operands,format);
@@ -886,6 +887,8 @@ static unsigned int ReadConfigureFile(const char *basename,
               log_info->events|=RenderEvent;
             if (GlobExpression(token,"*[Tt]ransform*"))
               log_info->events|=TransformEvent;
+            if (GlobExpression(token,"*[Tt]emporary*"))
+              log_info->events|=TemporaryFileEvent;
             if (GlobExpression(token,"*[U]ser*"))
               log_info->events|=UserEvent;
             if (GlobExpression(token,"*[X]11*"))
@@ -1032,6 +1035,8 @@ MagickExport unsigned long SetLogEventMask(const char *events)
     log_info->events|=ResourceEvent;
   if (GlobExpression(events,"*[Tt]ransform*"))
     log_info->events|=TransformEvent;
+  if (GlobExpression(events,"*[Tt]emporary*"))
+    log_info->events|=TemporaryFileEvent;
   if (GlobExpression(events,"*[U]ser*"))
     log_info->events|=UserEvent;
   if (GlobExpression(events,"*[X]11*"))

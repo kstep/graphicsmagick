@@ -42,6 +42,7 @@
 #include "log.h"
 #include "magick.h"
 #include "resource.h"
+#include "tempfile.h"
 #include "utility.h"
 #if defined(HasZLIB)
 #include "zlib.h"
@@ -1001,7 +1002,7 @@ MagickExport void DestroyCacheInfo(Cache cache)
           LiberateMagickResource(FileResource,1);
         }
       cache_info->file=(-1);
-      (void) remove(cache_info->cache_filename);
+      LiberateTemporaryFile(cache_info->cache_filename);
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),
         "remove %.1024s (%.1024s)",cache_info->filename,
         cache_info->cache_filename);
@@ -2195,7 +2196,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
     ThrowBinaryException(ResourceLimitError,"CacheResourcesExhausted",
       image->filename);
   if (*cache_info->cache_filename == '\0')
-    TemporaryFilename(cache_info->cache_filename);
+    AcquireTemporaryFileName(cache_info->cache_filename);
   switch (mode)
   {
     case ReadMode:
@@ -2229,7 +2230,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   if (!ExtendCache(file,cache_info->offset+cache_info->length))
     {
       close(file);
-      (void) remove(cache_info->cache_filename);
+      LiberateTemporaryFile(cache_info->cache_filename);
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),
         "remove %.1024s (%.1024s)",cache_info->filename,
         cache_info->cache_filename);

@@ -45,6 +45,7 @@
 #include "magick.h"
 #include "monitor.h"
 #include "resize.h"
+#include "tempfile.h"
 #include "utility.h"
 #include "version.h"
 #if defined(HasTIFF)
@@ -378,6 +379,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     method;
 
   unsigned int
+    filename_is_temporary=False,
     logging,
     status;
 
@@ -402,7 +404,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       TIFFUnmapBlob);
   else
     {
-      TemporaryFilename(filename);
+      filename_is_temporary=True;
+      AcquireTemporaryFileName(filename);
       (void) ImageToFile(image,filename,exception);
       tiff=TIFFOpen(filename,"rb");
       if (logging)
@@ -411,9 +414,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     }
   if (tiff == (TIFF *) NULL)
     {
-      if ((image->blob->type != FileStream) &&
-          (image->blob->type != BlobStream))
-        remove(filename);
+      if (filename_is_temporary)
+        LiberateTemporaryFile(filename);
       ThrowReaderException(FileOpenError,"UnableToOpenFile",image)
     }
   if (image_info->subrange != 0)
@@ -427,9 +429,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       if (status == False)
         {
           TIFFClose(tiff);
-          if ((image->blob->type != FileStream) &&
-              (image->blob->type != BlobStream))
-            remove(filename);
+          if (filename_is_temporary)
+            LiberateTemporaryFile(filename);
           ThrowReaderException(CorruptImageError,"UnableToReadSubimage",
             image)
         }
@@ -507,6 +508,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if (photometric == PHOTOMETRIC_CIELAB)
       {
         TIFFClose(tiff);
+        if (filename_is_temporary)
+          LiberateTemporaryFile(filename);
         ThrowReaderException(CoderError,"UnableToReadCIELABImages",image)
       }
     if (photometric == PHOTOMETRIC_SEPARATED)
@@ -679,9 +682,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             (scanline == (unsigned char *) NULL))
           {
             TIFFClose(tiff);
-            if ((image->blob->type != FileStream) &&
-                (image->blob->type != BlobStream))
-              remove(filename);
+            if (filename_is_temporary)
+              LiberateTemporaryFile(filename);
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
               image)
           }
@@ -891,9 +893,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (scanline == (unsigned char *) NULL)
           {
             TIFFClose(tiff);
-            if ((image->blob->type != FileStream) &&
-                (image->blob->type != BlobStream))
-              remove(filename);
+            if (filename_is_temporary)
+              LiberateTemporaryFile(filename);
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
               image)
           }
@@ -979,9 +980,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
            || !TIFFGetField(tiff,TIFFTAG_TILELENGTH,&tile_rows))
           {
             TIFFClose(tiff);
-            if ((image->blob->type != FileStream) &&
-                (image->blob->type != BlobStream))
-              remove(filename);
+            if (filename_is_temporary)
+              LiberateTemporaryFile(filename);
             ThrowReaderException(CoderError,"ImageIsNotTiled",image)
           }
         tile_total_pixels=tile_columns*tile_rows;
@@ -1000,9 +1000,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (tile_pixels == (uint32 *) NULL)
           {
             TIFFClose(tiff);
-            if ((image->blob->type != FileStream) &&
-                (image->blob->type != BlobStream))
-              remove(filename);
+            if (filename_is_temporary)
+              LiberateTemporaryFile(filename);
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
               image)
           }
@@ -1180,9 +1179,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (pixels == (uint32 *) NULL)
           {
             TIFFClose(tiff);
-            if ((image->blob->type != FileStream) &&
-                (image->blob->type != BlobStream))
-              remove(filename);
+            if (filename_is_temporary)
+              LiberateTemporaryFile(filename);
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
               image)
           }
@@ -1256,8 +1254,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       }
   } while (status == True);
   TIFFClose(tiff);
-  if ((image->blob->type != FileStream) && (image->blob->type != BlobStream))
-    remove(filename);
+  if (filename_is_temporary)
+    LiberateTemporaryFile(filename);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   return(image);
@@ -1670,6 +1668,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     *scanline;
 
   unsigned int
+    filename_is_temporary=False,
     logging,
     status;
 
@@ -1697,12 +1696,19 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
   (void) strncpy(filename,image->filename,MaxTextExtent-1);
   if (btype != FileStream)
-    TemporaryFilename(filename);
+    {
+      filename_is_temporary=True;
+      AcquireTemporaryFileName(filename);
+    }
   else
     CloseBlob(image);
   tiff=TIFFOpen(filename,"wb");
   if (tiff == (TIFF *) NULL)
-    return(False);
+    {
+      if (filename_is_temporary)
+        LiberateTemporaryFile(filename);
+      return(False);
+    }
   scene=0;
   do
   {
@@ -2277,7 +2283,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       for (c=fgetc(file); c != EOF; c=fgetc(file))
         (void) WriteBlobByte(image,c);
       (void) fclose(file);
-      (void) remove(filename);
+      LiberateTemporaryFile(filename);
       CloseBlob(image);
     }
 #else
@@ -2344,7 +2350,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           LiberateMemory((void **) &buffer);
         }
       (void) close(file);
-      (void) remove(filename);
+      LiberateTemporaryFile(filename);
       CloseBlob(image);
     }
 #endif

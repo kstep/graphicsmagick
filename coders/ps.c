@@ -44,6 +44,7 @@
 #include "delegate.h"
 #include "magick.h"
 #include "monitor.h"
+#include "tempfile.h"
 #include "utility.h"
 
 /*
@@ -209,8 +210,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Open temporary output file.
   */
-  TemporaryFilename(postscript_filename);
-  file=fopen(postscript_filename,"wb");
+  file=AcquireTemporaryFileStream(postscript_filename,BinaryFileIOMode);
   if (file == (FILE *) NULL)
     ThrowReaderException(FileOpenError,"UnableToWriteFile",image);
   FormatString(translate_geometry,"%g %g translate\n              ",0.0,0.0);
@@ -300,6 +300,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (ferror(file))
     {
       (void) fclose(file);
+      LiberateTemporaryFile(postscript_filename);
       ThrowReaderException(CorruptImageError,"AnErrorHasOccurredWritingToFile",
         image)
     }
@@ -317,31 +318,35 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     FormatString(options,"-dFirstPage=%lu -dLastPage=%lu",
       image_info->subimage+1,image_info->subimage+image_info->subrange);
   (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
-  TemporaryFilename((char *) image_info->filename);
+  AcquireTemporaryFileName((char *) image_info->filename);
   FormatString(command,delegate_info->commands,image_info->antialias ? 4 : 1,
     image_info->antialias ? 4 : 1,geometry,density,options,image_info->filename,
     postscript_filename);
   (void) MagickMonitor(RenderPostscriptText,0,8,&image->exception);
   status=InvokePostscriptDelegate(image_info->verbose,command);
-  if (!IsAccessible(image_info->filename))
+  if (!IsAccessibleAndNotEmpty(image_info->filename))
     {
       /*
-        Ghostscript requires a showpage operator.
+        Append a showpage operator if needed.
       */
       file=fopen(postscript_filename,"ab");
       if (file == (FILE *) NULL)
-        ThrowReaderException(FileOpenError,"UnableToWriteFile",image);
+        {
+          LiberateTemporaryFile(image_info->filename);
+          ThrowReaderException(FileOpenError,"UnableToWriteFile",image);
+        }
       (void) fputs("showpage\n",file);
       (void) fclose(file);
       status=InvokePostscriptDelegate(image_info->verbose,command);
     }
-  (void) remove(postscript_filename);
+  LiberateTemporaryFile(postscript_filename);
   (void) MagickMonitor(RenderPostscriptText,7,8,&image->exception);
-  if (!IsAccessible(image_info->filename))
+  if (!IsAccessibleAndNotEmpty(image_info->filename))
     {
       /*
         Ghostscript has failed-- try the Display Postscript Extension.
       */
+      LiberateTemporaryFile(image_info->filename);
       (void) FormatString((char *) image_info->filename,"dps:%.1024s",filename);
       image=ReadImage(image_info,exception);
       if (image != (Image *) NULL)
@@ -353,7 +358,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   clone_info->length=0;
   image=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);
-  (void) remove(image_info->filename);
+  LiberateTemporaryFile(image_info->filename);
   if (image == (Image *) NULL)
     ThrowReaderException(DelegateError,"PostscriptDelegateFailed",image);
   do

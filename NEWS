@@ -73,12 +73,15 @@ Major changes associated with GraphicsMagick 1.0.0
     threshold an image to bilevel using random thresholding.
 
   Major bug fixes:
+    * Temporary file management subsystem added to ensure that all
+    temporary files are removed before program exit.
     * When dithering is disabled, don't dither when converting to a
     PseudoClass, grayscale, or monochrome image. Disabling dithering
     may cause these translations to be much faster.
     * PICON format works with BLOBs.
     * No longer removes input file when pinging a FlashPIX file.
     * Arc drawing and texture fill fixes from ImageMagick.
+    * Sample, scale and affine fixes from ImageMagick.
 
   Windows platform enhancements:
     * Configure updated for Visual C++ 7.0.

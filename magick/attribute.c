@@ -41,6 +41,7 @@
 #include "attribute.h"
 #include "blob.h"
 #include "render.h"
+#include "tempfile.h"
 #include "utility.h"
 
 /*
@@ -1241,7 +1242,7 @@ MagickExport const ImageAttribute *GetImageInfoAttribute(
         {
           (void) strncpy(filename,image_info->unique,MaxTextExtent-1);
           if (*filename == '\0')
-            TemporaryFilename(filename);
+            AcquireTemporaryFileName(filename);
           (void) strncpy(attribute,filename,MaxTextExtent-1);
           break;
         }
@@ -1281,7 +1282,7 @@ MagickExport const ImageAttribute *GetImageInfoAttribute(
         {
           (void) strncpy(filename,image_info->zero,MaxTextExtent-1);
           if (*filename == '\0')
-            TemporaryFilename(filename);
+            AcquireTemporaryFileName(filename);
           (void) strncpy(attribute,filename,MaxTextExtent-1);
           break;
         }

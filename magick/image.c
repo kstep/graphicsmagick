@@ -55,6 +55,7 @@
 #include "quantize.h"
 #include "render.h"
 #include "signature.h"
+#include "tempfile.h"
 #include "utility.h"
 #include "xwindow.h"
 
@@ -4676,7 +4677,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       /*
         Copy standard input or pipe to temporary file.
       */
-      TemporaryFilename(filename);
+      AcquireTemporaryFileName(filename);
       (void) ImageToFile(image,filename,exception);
       CloseBlob(image);
       (void) strcpy(image->filename,filename);
