@@ -1,3 +1,8 @@
+2002-05-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * ImageMagick may now be built (static build only) using the
+    free MinGW development package from http://www.mingw.org.
+    Leonard's "clipboard" coder is included in the build.
+
 2002-05-28  Leonard Rosenthol  <leonardr@lazerware.com>
   * Added new "clipboard" coder for reading/writing the system's
     clipboard.  Currently this is only implemented on Windows.
