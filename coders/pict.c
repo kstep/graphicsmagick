@@ -712,8 +712,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
     geometry[MaxTextExtent];
 
   Image
-    *image,
-    *tile_image;
+    *image;
 
   IndexPacket
     index;
@@ -926,6 +925,9 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
           unsigned char
             *pixels;
 
+          Image
+            *tile_image;
+
           /*
             Pixmap clipped by a rectangle.
           */
@@ -942,8 +944,13 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
           /*
             Initialize tile_image.
           */
-          tile_image=CloneImage(image,frame.right-frame.left,
-            frame.bottom-frame.top,True,exception);
+          if (frame.left == 0 && frame.top == 0
+                && frame.right == image->columns
+                && frame.bottom == image->rows)
+            tile_image=image;
+          else
+            tile_image=CloneImage(image,frame.right-frame.left,
+              frame.bottom-frame.top,True,exception);
           if (tile_image == (Image *) NULL)
             return((Image *) NULL);
           if ((code == 0x9a) || (bytes_per_line & 0x8000))
@@ -1076,9 +1083,12 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 ProgressMonitor(LoadImageText,y,tile_image->rows);
           }
           (void) FreeMemory((void **) &pixels);
-          CompositeImage(image,ReplaceCompositeOp,tile_image,destination.left,
-            destination.top);
-          DestroyImage(tile_image);
+          if (tile_image != image)
+            {
+              CompositeImage(image,ReplaceCompositeOp,tile_image,destination.left,
+                destination.top);
+              DestroyImage(tile_image);
+            }
           if (destination.bottom != (int) image->rows)
             ProgressMonitor(LoadImageText,destination.bottom,image->rows);
           break;
@@ -1133,6 +1143,9 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
       {
         FILE
           *file;
+
+        Image
+          *tile_image;
 
         ImageInfo
           *clone_info;
