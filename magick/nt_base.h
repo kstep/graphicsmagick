@@ -43,6 +43,15 @@ extern "C" {
 #define RW_OK 6
 #define HAVE_VSNPRINTF 1
 #define HAVE_TEMPNAM 1
+
+#if !defined(chsize)
+# if defined(__BORLANDC__)
+#   define chsize(file,length) chsize(file,length)
+# else
+#   define chsize(file,length) _chsize(file,length)
+# endif
+#endif
+
 #if !defined(tempnam)
 # define tempnam _tempnam
 #endif

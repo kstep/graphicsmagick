@@ -1,3 +1,7 @@
+2003-04-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* fpxlib.h: Borland C already has typedefs for WCHAR.
+
 2003-04-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Applied patches from Mikhail Teterin to resolve buffer alignment

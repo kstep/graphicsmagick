@@ -449,7 +449,7 @@ MagickExport void InitializeMagick(const char *path)
     }
 #if defined(WIN32)
     InitializeTracingCriticalSection();
-# if defined(_DEBUG)
+# if defined(_DEBUG) && !defined(__BORLANDC__)
     /* if (IsEventLogging()) */
       {
         int

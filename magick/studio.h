@@ -340,10 +340,15 @@ extern "C" {
 /*
   I/O defines.
 */
-#if defined(WIN32) && !defined(Windows95)
+#if defined(WIN32) && !defined(Windows95) && !defined(__BORLANDC__)
+  /* Windows '95 and Borland C do not support _lseeki64 */
 #  define MagickSeek(file,offset,whence)  _lseeki64(file,offset,whence)
+#  define MagickTell(file) _telli64(file)
+#  define MagickOffset ExtendedSignedIntegralType
 #else
 #  define MagickSeek(file,offset,whence)  lseek(file,offset,whence)
+#  define MagickTell(file) tell(file)
+#  define MagickOffset off_t
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)

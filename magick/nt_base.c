@@ -390,11 +390,11 @@ MagickExport int ftruncate(int filedes, off_t length)
   int
     status;
 
-  __int64
+  MagickOffset
     current_pos;
 
   status=0;
-  current_pos=_telli64(filedes);
+  current_pos=MagickTell(filedes);
 
   /*
     Truncate file to size, filling any extension with nulls.
@@ -407,7 +407,7 @@ MagickExport int ftruncate(int filedes, off_t length)
     the file EOF to the current file position. This approach does
     not ensure that bytes in the extended portion are null
   */ 
-  status=_chsize(filedes,length);
+  status=chsize(filedes,length);
 
   /*
     It is not documented if _chsize preserves the seek 
@@ -415,7 +415,7 @@ MagickExport int ftruncate(int filedes, off_t length)
     does
   */
   if (!status)
-    status=_lseeki64(filedes,current_pos,SEEK_SET);
+    status=MagickSeek(filedes,current_pos,SEEK_SET);
   return(status);
 }
 
@@ -948,7 +948,7 @@ char *NTGetLastError(void)
     reason=AllocateString("An unknown error occurred");
   else
     {
-      reason=AllocateString(buffer);
+      reason=AllocateString((const char *)buffer);
       LocalFree(buffer);
     }
   return(reason);
@@ -1449,11 +1449,12 @@ MagickExport int NTGhostscriptLoadDLL(void)
 
   memset((void*)&gs_vectors, 0, sizeof(GhostscriptVectors));
 
-  gs_vectors.exit=lt_dlsym(gs_dll_handle,"gsapi_exit");
-  gs_vectors.init_with_args=lt_dlsym(gs_dll_handle,"gsapi_init_with_args");
-  gs_vectors.new_instance=lt_dlsym(gs_dll_handle,"gsapi_new_instance");
-  gs_vectors.run_string=lt_dlsym(gs_dll_handle,"gsapi_run_string");
-  gs_vectors.delete_instance=lt_dlsym(gs_dll_handle,"gsapi_delete_instance");
+#define GSCast(foo) ((int (MagickDLLCall *)(gs_main_instance *))(foo))
+  gs_vectors.exit=GSCast(lt_dlsym(gs_dll_handle,"gsapi_exit"));
+  gs_vectors.init_with_args=GSCast(lt_dlsym(gs_dll_handle,"gsapi_init_with_args"));
+  gs_vectors.new_instance=GSCast(lt_dlsym(gs_dll_handle,"gsapi_new_instance"));
+  gs_vectors.run_string=GSCast(lt_dlsym(gs_dll_handle,"gsapi_run_string"));
+  gs_vectors.delete_instance=GSCast(lt_dlsym(gs_dll_handle,"gsapi_delete_instance"));
 
   if ((gs_vectors.exit==NULL) ||
       (gs_vectors.init_with_args==NULL) ||

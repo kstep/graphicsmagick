@@ -1,5 +1,7 @@
 2003-04-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/magick.c, magick/blob.c, magick/studio.h: Added
+	Compilation fixes recommended by Harold Bien for for Borland C++.
 	* www/contribute.html: Added text regarding contributing to
 	GraphicsMagick.
 	* www/api/types.html: Documentation for GraphicsMagick API types
