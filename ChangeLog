@@ -1,3 +1,8 @@
+2003-03-09  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* www/gm.html, utilities/gm.1, guide/gm.tex: First cut at
+	manpage for gm, to replace individual utility manpages.
+
 2003-03-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/blob.c: Fix some erroneous log printf specifications.
