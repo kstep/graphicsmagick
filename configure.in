@@ -1,0 +1,1183 @@
+dnl Process this file with autoconf to produce a configure script.
+dnl Currently maintained by Bob Friesenhahn, bfriesen@simple.dallas.tx.us
+#
+# ImageMagick Configure Script
+#
+
+AC_INIT(magick/magick.h)
+
+# Set version
+MAJOR_VERSION=4
+MINOR_VERSION=1
+MICRO_VERSION=0
+echo "configuring ImageMagick $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
+AC_SUBST(MAJOR_VERSION)dnl
+AC_SUBST(MINOR_VERSION)dnl
+AC_SUBST(MICRO_VERSION)dnl
+AM_INIT_AUTOMAKE(ImageMagick,$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION)
+
+# Generate configure header.
+AM_CONFIG_HEADER(magick/config.h)
+
+# Check for programs
+AC_PROG_CC
+AM_PROG_CC_STDC
+AC_PROG_INSTALL
+AC_PROG_CPP
+AC_PROG_MAKE_SET
+AC_PROG_LN_S
+AC_PROG_RANLIB
+
+# Configure libtool
+AM_ENABLE_SHARED(no)
+AM_ENABLE_STATIC(yes)
+AM_PROG_LIBTOOL
+
+# Check to see if building shared libraries
+libtool_build_shared_libs='no'
+if ./libtool --config | grep 'build_libtool_libs=yes' > /dev/null
+then
+  libtool_build_shared_libs='yes'
+fi
+
+# Check to see if building static libraries
+libtool_build_static_libs='no'
+if ./libtool --config | grep 'build_old_libs=yes' > /dev/null
+then
+  libtool_build_static_libs='yes'
+fi
+
+# Check standard headers
+AC_HEADER_DIRENT
+AC_HEADER_STDC
+AC_HEADER_SYS_WAIT
+AC_CHECK_HEADER(elf.h,AC_DEFINE(SVR4))
+AC_CHECK_HEADERS(fcntl.h strings.h sys/file.h sys/time.h unistd.h)
+
+# Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_RETSIGTYPE
+AC_TYPE_MODE_T
+AC_TYPE_OFF_T
+AC_TYPE_PID_T
+AC_TYPE_SIZE_T
+AC_HEADER_TIME
+
+# Checks for library functions.
+AC_PROG_GCC_TRADITIONAL
+AC_FUNC_MEMCMP
+AC_TYPE_SIGNAL
+AC_FUNC_VPRINTF
+AC_CHECK_FUNCS(getcwd gethostname mkdir select strcspn strerror strtol sysconf)
+AC_FUNC_MMAP
+
+# Check standard functions
+AC_CHECK_FUNCS(strerror)
+AC_MSG_CHECKING(for sys_errlist)
+AC_TRY_LINK([extern char** sys_errlist;],[char** p = sys_errlist;],
+AC_MSG_RESULT(yes); AC_DEFINE(HAVE_SYS_ERRLIST),AC_MSG_RESULT(no))
+
+# Add configure option --enable-maintainer-mode which enables dependency
+# checking and generation useful to package maintainers.  This is made an
+# option to avoid confusing end users.
+AM_MAINTAINER_MODE
+AC_CANONICAL_HOST
+
+# Add configure option --with-dmalloc to enable malloc debugging.
+# dmalloc is available at ftp://ftp.letters.com/src/dmalloc/dmalloc.tar.gz
+AM_WITH_DMALLOC
+
+# Enable LZW compression.
+AC_ARG_ENABLE(lzw,
+	      [  --enable-lzw            enable LZW support (default is no)],
+	      [with_lzw=$enableval],
+	      [with_lzw='no'])
+test "$with_lzw" = 'yes' && AC_DEFINE(HasLZW)
+
+# Enable 16-bit pixels.
+AC_ARG_ENABLE(16bit-pixel,
+	      [  --enable-16bit-pixel    enable 16 bit pixels (default is no)],
+	      [with_16_bit_pixel=$enableval],
+	      [with_16_bit_pixel='no'])
+test "$with_16_bit_pixel" = 'yes' && AC_DEFINE(QuantumLeap)
+
+# Enable sfio stdio support
+AC_ARG_ENABLE(sfio,
+	      [  --enable-sfio           enable sfio-based stdio support (default is no)],
+	      [with_sfio=$enableval],
+	      [with_sfio='no'])
+
+# Enable SOCKS version 5 proxy support
+AC_ARG_ENABLE(socks,
+	      [  --enable-socks          enable SOCKS v5 proxy support (default is no)],
+	      [with_socks=$enableval],
+	      [with_socks='no'])
+
+# Enable build/install of PerlMagick.
+AC_ARG_WITH(perl,
+	      [  --with-perl             enable build/install of PerlMagick (default is no)],
+	      [with_perl=$withval],
+	      [with_perl='no'])
+
+
+AM_CONDITIONAL(WITH_PERL, test "$with_perl" != 'no')
+with_perl_static='no'
+if test "$with_perl" != 'no' && test "$libtool_build_shared_libs" = 'no'
+then
+  with_perl_static='yes'
+fi
+with_perl_dynamic='no'
+if test "$with_perl" != 'no' && test "$libtool_build_shared_libs" = 'yes'
+then
+  with_perl_dynamic='yes'
+fi
+AM_CONDITIONAL(WITH_PERL_STATIC, test $with_perl_static = 'yes')
+AM_CONDITIONAL(WITH_PERL_DYNAMIC, test $with_perl_dynamic = 'yes')
+
+# Enable BZLIB (bzip2 library)
+AC_ARG_WITH(bzlib,
+	      [  --with-bzlib            enable BZLIB (default is yes)],
+	      [with_bzlib=$withval],
+	      [with_bzlib='yes'])
+
+# Enable Display Postscript.
+AC_ARG_WITH(dps,
+	      [  --with-dps              enable Display Postscript (default is yes)],
+	      [with_dps=$withval],
+	      [with_dps='yes'])
+
+# Enable FlashPIX.
+AC_ARG_WITH(fpx,
+	      [  --with-fpx              enable FlashPIX (default is yes)],
+	      [with_fpx=$withval],
+	      [with_fpx='yes'])
+
+# Enable HDF.
+AC_ARG_WITH(hdf,
+	      [  --with-hdf              enable HDF (default is yes)],
+	      [with_hdf=$withval],
+	      [with_hdf='yes'])
+
+# Enable JBIG.
+AC_ARG_WITH(jbig,
+	      [  --with-jbig             enable JBIG (default is yes)],
+	      [with_jbig=$withval],
+	      [with_jbig='yes'])
+
+# Enable JPEG.
+AC_ARG_WITH(jpeg,
+	      [  --with-jpeg             enable JPEG (default is yes)],
+	      [with_jpeg=$withval],
+	      [with_jpeg='yes'])
+
+# Enable PNG.
+AC_ARG_WITH(png,
+	      [  --with-png              enable PNG (default is yes)],
+	      [with_png=$withval],
+	      [with_png='yes'])
+
+# Enable TIFF.
+AC_ARG_WITH(tiff,
+	      [  --with-tiff             enable TIFF (default is yes)],
+	      [with_tiff=$withval],
+	      [with_tiff='yes'])
+
+# Enable TTF.
+AC_ARG_WITH(ttf,
+	      [  --with-ttf              enable TrueType (default is yes)],
+	      [with_ttf=$withval],
+	      [with_ttf='yes'])
+
+# Enable Zlib.
+AC_ARG_WITH(zlib,
+	      [  --with-zlib             enable ZLIB (default is yes)],
+	      [with_zlib=$withval],
+	      [with_zlib='yes'])
+
+# Extend includedir to include magick subdirectory offset
+includedir="$includedir/magick"
+
+# Check for plug-in sub-directories and add -I & -L options as required.
+# This presumes that plug-ins are installed as detailed in the ImageMagick
+# README. If plug-ins are installed in a standard location where the
+# compiler will automatically find them then these options should not be
+# required.
+
+srcdirfull=`cd $srcdir && pwd`
+builddir=`pwd`
+
+#
+# Sfio has a different structure than most plugins
+#
+if test "$with_sfio" != 'no'
+then
+  if test -d "$builddir/sfio/include" && test -d "$builddir/sfio/lib"
+  then
+    CPPFLAGS="$CPPFLAGS -I$builddir/sfio/include"
+    LDFLAGS="$LDFLAGS -L$builddir/sfio/lib"
+  else
+    if test -d "$srcdirfull/sfio/include" && test -d "$srcdirfull/sfio/lib"
+    then
+      CPPFLAGS="$CPPFLAGS -I$srcdirfull/sfio/include"
+      LDFLAGS="$LDFLAGS -L$srcdirfull/sfio/lib"
+    fi
+  fi
+fi
+
+#
+# Most plugins have includes in the same directory as the library
+#
+for dir in bzlib hdf/hdf/src jbig/libjbig jpeg zlib png tiff/libtiff ttf ttf/lib ttf/lib/.libs
+do
+  if test -d "$builddir/$dir"
+  then
+    CPPFLAGS="$CPPFLAGS -I$builddir/$dir"
+    LDFLAGS="$LDFLAGS -L$builddir/$dir"
+  else
+    if test -d "$srcdirfull/$dir"
+    then
+      CPPFLAGS="$CPPFLAGS -I$srcdirfull/$dir"
+      LDFLAGS="$LDFLAGS -L$srcdirfull/$dir"
+    fi
+  fi
+done
+
+
+#
+# Determine installation prefix
+# Unfortunately, this depends on Autoconf internals that may change
+#
+PREFIX="$prefix"
+test "x$PREFIX" = xNONE && PREFIX=$ac_default_prefix
+
+libdir="$PREFIX/lib"
+LDFLAGS="$LDFLAGS -L$libdir"
+
+CPPFLAGS="$CPPFLAGS -I$PREFIX/include"
+TRAILING_LIBS=''
+
+#
+# Find math library
+#
+AC_CHECK_LIB(m,sqrt,LIB_MATH="-lm",,)
+
+dnl Add math library at end of trailing library list
+if test "$LIB_MATH"
+then
+    TRAILING_LIBS="$TRAILING_LIBS $LIB_MATH"
+fi
+
+
+#
+# Find the X11 include and library directories.
+#
+AC_PATH_XTRA
+
+X11STUBSDIR=''
+X11STUBSLA=''
+X11STUBSLIB=''
+if test "$with_x" != 'no'
+then
+    with_x='yes'dnl Ensure value is set
+    LDFLAGS="$LDFLAGS $X_LIBS"
+    LIBS="$LIBS -lX11 $X_EXTRA_LIBS"
+    CPPFLAGS="$CPPFLAGS $X_CFLAGS"
+
+    AC_CHECK_LIB(Xext,XShmAttach,LIBS="$LIBS -lXext",,)
+    AC_CHECK_LIB(Xext,XShmAttach,AC_DEFINE(HasSharedMemory),,)
+    AC_CHECK_LIB(Xext,XShapeCombineMask,AC_DEFINE(HasShape),,)
+
+    AC_CHECK_LIB(Xt,XtSetEventDispatcher,LIBS="$LIBS -lXt",,)
+else
+    dnl Check for X11 stubs library
+    AC_MSG_CHECKING(for X11 stubs library)
+    if test -f "$srcdir/xlib/X11_stubs.c"
+    then
+	CPPFLAGS="$CPPFLAGS -I$srcdirfull/xlib"
+	X11STUBSDIR="$srcdir/xlib"
+	X11STUBSLANAME="libX11_stubs.la"
+	X11STUBSLA="$srcdir/xlib/$X11STUBSLANAME"
+	X11STUBSLIB="-lX11_stubs"
+	AC_MSG_RESULT(yes)
+    else
+	AC_MSG_RESULT(no)
+	AC_MSG_ERROR(ImageMagick requires X11 library or X11 stubs library to build)
+    fi
+fi
+AC_SUBST(X11STUBSDIR)
+AC_SUBST(X11STUBSLANAME)
+AC_SUBST(X11STUBSLA)
+AC_SUBST(X11STUBSLIB)
+
+
+#
+# Find the X11 RGB database
+#
+AC_CACHE_CHECK(for X11 RGB database,im_cv_x_rgbdb,
+[# Look for the header file in a standard set of common directories.
+# Check X11 before X11Rn because it is often a symlink to the current release.
+  for ac_dir in               \
+    /lib/usr/lib/X11	  \
+    /usr/X11/lib          \
+    /usr/X11R4/lib        \
+    /usr/X11R5/lib        \
+    /usr/X11R6/lib        \
+    /usr/X386/lib         \
+    /usr/XFree86/lib/X11  \
+    /usr/athena/lib       \
+    /usr/lib              \
+    /usr/lib/X11          \
+    /usr/lib/X11R4        \
+    /usr/lib/X11R5        \
+    /usr/lib/X11R6        \
+    /usr/local/X11/lib    \
+    /usr/local/X11R4/lib  \
+    /usr/local/X11R5/lib  \
+    /usr/local/X11R6/lib  \
+    /usr/local/lib        \
+    /usr/local/lib/X11    \
+    /usr/local/lib/X11R4  \
+    /usr/local/lib/X11R5  \
+    /usr/local/lib/X11R6  \
+    /usr/local/x11r5/lib  \
+    /usr/lpp/Xamples/lib  \
+    /usr/openwin/lib      \
+    /usr/openwin/share/lib \
+    /usr/unsupported/lib  \
+    /usr/x386/lib         \
+    ; \
+  do
+    if test -f "$ac_dir/X11/rgb.txt"
+    then
+        im_cv_x_rgbdb="$ac_dir/X11/rgb.txt"
+	break
+    elif test -f "$ac_dir/rgb.txt"
+    then 
+        im_cv_x_rgbdb="$ac_dir/rgb.txt"
+        break
+    fi
+
+  done])
+AC_DEFINE_UNQUOTED(RGBColorDatabase,"$im_cv_x_rgbdb")
+
+#
+# Check for Sfio
+#
+have_sfio='no'
+LIB_SFIO=''
+if test "$with_sfio" != 'no'
+then
+    AC_CHECKING(for SFIO support ...)
+    failed=0;
+    passed=0;
+    AC_CHECK_HEADER(stdio.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_LIB(sfio,_stdopen,passed=`expr $passed + 1`,failed=`expr $failed + 1`,$TRAILING_LIBS)
+    AC_CHECK_LIB(stdio,vprintf,passed=`expr $passed + 1`,failed=`expr $failed + 1`,-lsfio $TRAILING_LIBS)
+    AC_MSG_CHECKING(if SFIO package is complete)
+    if test $passed -gt 0
+    then
+	if test $failed -gt 0
+	then
+	    AC_MSG_RESULT(no -- some components failed test)
+	    have_sfio='no (failed tests)'
+	else
+	    LIB_SFIO='-lstdio -lsfio'
+	    TRAILING_LIBS="$TRAILING_LIBS $LIB_SFIO"
+	    AC_DEFINE(HasSFIO)
+	    AC_MSG_RESULT(yes)
+	    have_sfio='yes'
+	fi
+    else
+	AC_MSG_RESULT(no)
+    fi
+fi
+
+#
+# Check for FlashPIX
+#
+have_fpx='no'
+LIB_FPX=''
+if test "$with_fpx" != 'no'
+then
+    AC_CHECKING(for FlashPIX components ...)
+    failed=0;
+    passed=0;
+    AC_CHECK_HEADER(fpx.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_LIB(fpx,FPX_OpenImageByFilename,passed=`expr $passed + 1`,failed=`expr $failed + 1`,$TRAILING_LIBS)
+    AC_MSG_CHECKING(if FlashPIX package is complete)
+    if test $passed -gt 0
+    then
+    if test $failed -gt 0
+    then
+	AC_MSG_RESULT(no -- some components failed test)
+	have_fpx='no (failed tests)'
+    else
+	LIB_FPX='-lfpx'
+	LIBS="$LIBS $LIB_FPX"
+	AC_DEFINE(HasFPX)
+	AC_MSG_RESULT(yes)
+        have_fpx='yes'
+    fi
+    else
+        AC_MSG_RESULT(no)
+    fi
+fi
+
+#
+# Check for JBIG
+#
+have_jbig='no'
+LIB_JBIG=''
+if test "$with_jbig" != 'no'
+then
+    AC_CHECKING(for JBIG support ...)
+    failed=0;
+    passed=0;
+    AC_CHECK_HEADER(jbig.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_LIB(jbig,jbg_dec_init,passed=`expr $passed + 1`,failed=`expr $failed + 1`,$TRAILING_LIBS)
+    AC_MSG_CHECKING(if JBIG package is complete)
+    if test $passed -gt 0
+    then
+    if test $failed -gt 0
+    then
+	AC_MSG_RESULT(no -- some components failed test)
+        have_jbig='no (failed tests)'
+    else
+	LIB_JBIG='-ljbig'
+	LIBS="$LIBS $LIB_JBIG"
+	AC_DEFINE(HasJBIG)
+	AC_MSG_RESULT(yes)
+        have_jbig='yes'
+    fi
+    else
+        AC_MSG_RESULT(no)
+    fi
+fi
+
+#
+# Check for JPEG
+#
+have_jpeg='no'
+LIB_JPEG=''
+if test "$with_jpeg" != 'no'
+then
+    AC_CHECKING(for JPEG support ...)
+    failed=0;
+    passed=0;
+    AC_CHECK_HEADER(jconfig.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_HEADER(jerror.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_HEADER(jmorecfg.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_HEADER(jpeglib.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_LIB(jpeg,jpeg_read_header,passed=`expr $passed + 1`,failed=`expr $failed + 1`,$TRAILING_LIBS)
+    AC_MSG_CHECKING(if JPEG package is complete)
+    if test $passed -gt 0
+    then
+    if test $failed -gt 0
+    then
+	AC_MSG_RESULT(no -- some components failed test)
+        have_jpeg='no (failed tests)'
+    else
+	LIB_JPEG='-ljpeg'
+	LIBS="$LIBS $LIB_JPEG"
+	AC_DEFINE(HasJPEG)
+	AC_MSG_RESULT(yes)
+        have_jpeg='yes'
+    fi
+    else
+        AC_MSG_RESULT(no)
+    fi
+fi
+
+#
+# Check for BZLIB
+#
+have_bzlib='no'
+if test "$with_bzlib" != 'no'
+then
+  LIB_BZLIB=''
+  AC_CHECKING(for BZLIB support ...)
+  failed=0;
+  passed=0;
+  AC_CHECK_HEADER(bzlib.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+  AC_CHECK_LIB(bz2,bzBuffToBuffCompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,$TRAILING_LIBS)
+  AC_CHECK_LIB(bz2,bzBuffToBuffDecompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,$TRAILING_LIBS)
+  AC_MSG_CHECKING(if BZLIB package is complete)
+  if test $passed -gt 0
+  then
+    if test $failed -gt 0
+    then
+      AC_MSG_RESULT(no -- some components failed test)
+      have_bzlib='no (failed tests)'
+    else
+      LIB_BZLIB='-lbz2'
+      LIBS="$LIBS $LIB_BZLIB"
+      AC_DEFINE(HasBZLIB)
+      AC_MSG_RESULT(yes)
+      have_bzlib='yes'
+    fi
+  else
+    AC_MSG_RESULT(no)
+  fi
+fi
+
+#
+# Check for ZLIB
+#
+have_zlib='no'
+dnl PNG requires zlib so enable zlib check if PNG is requested
+if test "$with_zlib" != 'no' || test "$with_png" != 'no'
+then
+  LIB_ZLIB=''
+  AC_CHECKING(for ZLIB support ...)
+  failed=0;
+  passed=0;
+  AC_CHECK_HEADER(zconf.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+  AC_CHECK_HEADER(zlib.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+  AC_CHECK_LIB(z,compress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,$TRAILING_LIBS)
+  AC_CHECK_LIB(z,uncompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,$TRAILING_LIBS)
+  AC_CHECK_LIB(z,deflate,passed=`expr $passed + 1`,failed=`expr $failed + 1`,$TRAILING_LIBS)
+  AC_CHECK_LIB(z,inflate,passed=`expr $passed + 1`,failed=`expr $failed + 1`,$TRAILING_LIBS)
+  AC_MSG_CHECKING(if ZLIB package is complete)
+  if test $passed -gt 0
+  then
+    if test $failed -gt 0
+    then
+      AC_MSG_RESULT(no -- some components failed test)
+      have_zlib='no (failed tests)'
+    else
+      LIB_ZLIB='-lz'
+dnl Other libs may depend on -lz and some linkers don't work very well so put -lz in trailing libs
+      TRAILING_LIBS="$LIB_ZLIB $TRAILING_LIBS"
+      AC_DEFINE(HasZLIB)
+      AC_MSG_RESULT(yes)
+      have_zlib='yes'
+    fi
+  else
+    AC_MSG_RESULT(no)
+  fi
+fi
+
+#
+# Check for HDF
+#
+have_hdf='no'
+LIB_HDF=''
+if test "$with_hdf" != 'no'
+then
+    AC_CHECKING(for HDF components ...)
+    failed=0;
+    passed=0;
+    AC_CHECK_HEADER(hdf.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_LIB(df,DFANputlabel,passed=`expr $passed + 1`,failed=`expr $failed + 1`,$TRAILING_LIBS)
+    AC_MSG_CHECKING(if HDF package is complete)
+    if test $passed -gt 0
+    then
+    if test $failed -gt 0
+    then
+	AC_MSG_RESULT(no -- some components failed test)
+        have_hdf='no (failed tests)'
+    else
+	LIB_HDF='-ldf'
+	LIBS="$LIBS $LIB_HDF"
+	AC_DEFINE(HasHDF)
+	AC_MSG_RESULT(yes)
+	have_hdf='yes'
+    fi
+    else
+    AC_MSG_RESULT(no)
+    fi
+fi
+
+#
+# Check for PNG
+#
+have_png='no'
+LIB_PNG=''
+if test "$with_png" != 'no'
+then
+    AC_CHECKING(for PNG support ...)
+    failed=0;
+    passed=0;
+    AC_CHECK_HEADER(png.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_HEADER(pngconf.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_LIB(png,png_info_init,passed=`expr $passed + 1`,failed=`expr $failed + 1`,$TRAILING_LIBS)
+    AC_MSG_CHECKING(if PNG package is complete)
+    if test $passed -gt 0
+    then
+    if test $failed -gt 0
+    then
+	AC_MSG_RESULT(no -- some components failed test)
+	have_png='no (failed tests)'
+    else
+	LIB_PNG='-lpng'
+	LIBS="$LIBS $LIB_PNG"
+	AC_DEFINE(HasPNG)
+	AC_MSG_RESULT(yes)
+	have_png='yes'
+    fi
+    else
+    AC_MSG_RESULT(no)
+    fi
+fi
+
+#
+# Check for TIFF
+#
+have_tiff='no'
+LIB_TIFF=''
+if test "$with_tiff" != 'no'
+then
+    AC_CHECKING(for TIFF support ...)
+    failed=0;
+    passed=0;
+    AC_CHECK_HEADER(tiff.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_HEADER(tiffio.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_LIB(tiff,TIFFOpen,passed=`expr $passed + 1`,failed=`expr $failed + 1`,$TRAILING_LIBS)
+    AC_MSG_CHECKING(if TIFF package is complete)
+    if test $passed -gt 0
+    then
+    if test $failed -gt 0
+    then
+	AC_MSG_RESULT(no -- some components failed test)
+	have_tiff='no (failed tests)'
+    else
+	LIB_TIFF='-ltiff'
+	LIBS="$LIBS $LIB_TIFF"
+	AC_DEFINE(HasTIFF)
+	AC_MSG_RESULT(yes)
+	have_tiff='yes'
+    fi
+    else
+    AC_MSG_RESULT(no)
+    fi
+fi
+
+#
+# Check for TTF
+#
+have_ttf='no'
+LIB_TTF=''
+if test "$with_ttf" != 'no'
+then
+    AC_CHECKING(for TrueType Font support ...)
+    failed=0;
+    passed=0;
+    AC_CHECK_HEADER(freetype.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_LIB(ttf,TT_Init_FreeType,passed=`expr $passed + 1`,failed=`expr $failed + 1`,$TRAILING_LIBS)
+    AC_MSG_CHECKING(if FreeType package is complete)
+    if test $passed -gt 0
+    then
+	if test $failed -gt 0
+	then
+	    AC_MSG_RESULT(no -- some components failed test)
+	    have_ttf='no (failed tests)'
+	else
+	    LIB_TTF='-lttf'
+	    LIBS="$LIBS $LIB_TTF"
+	    AC_DEFINE(HasTTF)
+	    AC_MSG_RESULT(yes)
+	    have_ttf='yes'
+	fi
+    else
+	AC_MSG_RESULT(no)
+    fi
+fi
+
+#
+# Check for Display Postscript
+#
+have_dps='no'
+LIB_DPS=''
+if test "$with_dps" != 'no' && test "$with_x" != 'no'
+then
+    AC_CHECKING([for Display Postscript support ...])
+    failed=0;
+    passed=0;
+    O_CPPFLAGS="$CPPFLAGS"
+    CPPFLAGS="$CPPFLAGS -I${ac_x_includes}/X11"
+    AC_CHECK_HEADER(DPS/dpsXclient.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_HEADER(DPS/dpsXpreview.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_LIB(dps,DPSInitialize,passed=`expr $passed + 1`,failed=`expr $failed + 1`,$TRAILING_LIBS)
+    AC_CHECK_LIB(dpstk,XDPSPixelsPerPoint,passed=`expr $passed + 1`,failed=`expr $failed + 1`,-ldps $TRAILING_LIBS)
+    AC_MSG_CHECKING(if DPS package is complete)
+    if test $passed -gt 0
+    then
+    if test $failed -gt 0
+    then
+	AC_MSG_RESULT([no -- some components failed test])
+        have_dps='no (failed tests)'
+	CPPFLAGS="$O_CPPFLAGS"
+    else
+	LIB_DPS='-ldpstk -ldps'
+	LIBS="$LIBS $LIB_DPS"
+	AC_DEFINE(HasDPS)
+	AC_MSG_RESULT(yes)
+	have_dps='yes'
+    fi
+    else
+    AC_MSG_RESULT(no)
+    CPPFLAGS=$O_CPPFLAGS
+    fi
+fi
+
+
+#
+# Add trailing libs to end of library list
+#
+if test "$TRAILING_LIBS"
+then
+    LIBS="$LIBS $TRAILING_LIBS"
+fi
+
+#
+# Look for Netscape program.
+#
+have_netscape='no'
+AC_PATH_PROG(BrowseDelegate, netscape)
+if test -n "$BrowseDelegate"
+then
+    AC_DEFINE_UNQUOTED(BrowseDelegate,"$BrowseDelegate")
+    have_netscape='yes'
+fi
+
+#
+# Look for 'bzip2' program
+#
+have_bzip2='no'
+AC_PATH_PROG(BZIPDelegate, bzip2)
+if test -n "$BZIPDelegate"
+then
+    AC_DEFINE_UNQUOTED(BZIPDelegate,"$BZIPDelegate")
+    have_bzip2='yes'
+fi
+
+
+#
+# Look for 'compress' program
+#
+have_compress='no'
+AC_PATH_PROG(LZWEncodeDelegate, compress)
+if test -n "$LZWEncodeDelegate"
+then
+    AC_DEFINE_UNQUOTED(LZWEncodeDelegate,"$LZWEncodeDelegate")
+    have_compress='yes'
+fi
+
+#
+# Look for xterm program.
+#
+have_editor='no'
+AC_PATH_PROG(EditorDelegate, xterm)
+if test -n "$EditorDelegate"
+then
+    AC_DEFINE_UNQUOTED(EditorDelegate,"$EditorDelegate")
+    have_editor='yes'
+fi
+
+#
+# Look for Fig format support program 'fig2dev'
+#
+have_xfig='no'
+AC_PATH_PROG(FIGDecodeDelegate, fig2dev)
+if test -n "$FIGDecodeDelegate"
+then
+   AC_DEFINE_UNQUOTED(FIGDecodeDelegate, "$FIGDecodeDelegate")
+   have_xfig='yes'
+fi
+
+#
+# Look for Ghostscript 'gs'
+#
+have_gs='no';
+AC_PATH_PROG(PSDelegate, gs)
+if test -n "$PSDelegate"
+then
+  AC_DEFINE_UNQUOTED(PSDelegate,"$PSDelegate")
+  have_gs='yes'
+fi
+
+#
+# Look for Gimp program.
+#
+have_gimp='no'
+AC_PATH_PROG(LaunchDelegate, gimp)
+if test -n "$LaunchDelegate"
+then
+    AC_DEFINE_UNQUOTED(LaunchDelegate,"$LaunchDelegate")
+    have_gimp='yes'
+fi
+
+#
+# Look for LP program.
+#
+have_lp='no'
+AC_PATH_PROG(LPDelegate, lp)
+if test -n "$LPDelegate"
+then
+    AC_DEFINE_UNQUOTED(LPDelegate,"$LPDelegate")
+    have_lp='yes'
+fi
+
+#
+# Look for MPEG support programs 'mpeg2decode' & 'mpeg2encode'
+#
+have_mpeg='no'
+AC_PATH_PROG(MPEGDecodeDelegate, mpeg2decode)
+AC_PATH_PROG(MPEGEncodeDelegate, mpeg2encode)
+if test -n "$MPEGDecodeDelegate" && test -n "$MPEGEncodeDelegate"
+then
+    AC_DEFINE_UNQUOTED(MPEGDecodeDelegate,"$MPEGDecodeDelegate")
+    AC_DEFINE_UNQUOTED(MPEGEncodeDelegate,"$MPEGEncodeDelegate")
+    have_mpeg='yes'
+fi
+
+#
+# Look for 'pgpv' program
+#
+have_pgpv='no'
+AC_PATH_PROG(PGPDecodeDelegate, pgpv)
+if test -n "$PGPDecodeDelegate"
+then
+    AC_DEFINE_UNQUOTED(PGPDecodeDelegate,"$PGPDecodeDelegate")
+    have_pgpv='yes'
+fi
+
+#
+# Look for Radiance format support program 'ra_ppm'
+#
+have_rad='no'
+AC_PATH_PROG(RADDecodeDelegate, ra_ppm)
+if test -n "$RADDecodeDelegate"
+then
+    AC_DEFINE_UNQUOTED(RADDecodeDelegate,"$RADDecodeDelegate")
+    have_rad='yes'
+fi
+
+#
+# Look for CGM support program 'ralcgm'
+#
+have_cgm='no'
+AC_PATH_PROG(CGMDecodeDelegate, ralcgm)
+if test -n "$CGMDecodeDelegate"
+then
+    AC_DEFINE_UNQUOTED(CGMDecodeDelegate,"$CGMDecodeDelegate")
+    have_cgm='yes'
+fi
+
+#
+# Look for 'uncompress' program
+#
+have_uncompress='no'
+AC_PATH_PROG(LZWDecodeDelegate, uncompress)
+if test -n "$LZWDecodeDelegate"
+then
+    AC_DEFINE_UNQUOTED(LZWDecodeDelegate,"$LZWDecodeDelegate")
+    have_uncompress='yes'
+fi
+
+#
+# Look for 'hp2xx' program
+#
+have_hp2xx='no'
+AC_PATH_PROG(HPGLDecodeDelegate, hp2xx)
+if test -n "$HPGLDecodeDelegate"
+then
+    AC_DEFINE_UNQUOTED(HPGLDecodeDelegate,"$HPGLDecodeDelegate")
+    have_hp2xx='yes'
+fi
+
+#
+# Look for 'html2ps' program
+#
+have_html2ps='no'
+AC_PATH_PROG(HTMLDecodeDelegate, html2ps)
+if test -n "$HTMLDecodeDelegate"
+then
+    AC_DEFINE_UNQUOTED(HTMLDecodeDelegate,"$HTMLDecodeDelegate")
+    have_html2ps='yes'
+fi
+
+#
+# Look for display program.
+#
+have_display='no'
+AC_PATH_PROG(ShowImageDelegate, display)
+if test -n "$ShowImageDelegate"
+then
+    AC_DEFINE_UNQUOTED(ShowImageDelegate,"$ShowImageDelegate")
+    have_display='yes'
+fi
+
+#
+# Look for 'rawtorle' program
+#
+have_rawtorle='no'
+AC_PATH_PROG(RLEEncodeDelegate, rawtorle)
+if test -n "$RLEEncodeDelegate"
+then
+    AC_DEFINE_UNQUOTED(RLEEncodeDelegate,"$RLEEncodeDelegate")
+    have_rawtorle='yes'
+fi
+
+#
+# Look for 'scanimage' program
+#
+have_scanimage='no'
+AC_PATH_PROG(SCANDecodeDelegate, scanimage)
+if test -n "$SCANDecodeDelegate"
+then
+    AC_DEFINE_UNQUOTED(SCANDecodeDelegate,"$SCANDecodeDelegate")
+    have_scanimage='yes'
+fi
+
+#
+# Look for 'GET' program
+#
+have_GET='no'
+AC_PATH_PROG(WWWDecodeDelegate, GET)
+if test -n "$WWWDecodeDelegate"
+then
+    AC_DEFINE_UNQUOTED(WWWDecodeDelegate,"$WWWDecodeDelegate")
+    have_GET='yes'
+fi
+
+#
+# PerlMagick-related configuration
+#
+
+# Look for PERL if PerlMagick requested
+# If name/path of desired PERL interpreter is specified, look for that one first
+have_perl='no'
+if test "$with_perl" != 'no'
+then
+    if test "$with_perl" != 'yes'
+    then
+	AC_CACHE_CHECK(for perl,ac_cv_path_PERL,ac_cv_path_PERL="$with_perl");
+	PERL=$ac_cv_path_PERL
+	AC_SUBST(PERL)dnl
+	have_perl="$ac_cv_path_PERL"
+    else
+	AC_PATH_PROGS(PERL,perl perl5,)dnl
+	if test "$ac_cv_path_PERL"
+        then
+	  have_perl="$ac_cv_path_PERL"
+        fi
+    fi
+fi
+
+# Determine path to pick up ImageMagick library from for use with building PerlMagick
+MAGICKLIB="-L$PREFIX/lib -L/usr/local/lib -lMagick"
+if test $with_perl_static = 'yes'
+then
+  MAGICKLIB="-L${builddir}/magick -lMagick"
+fi
+AC_SUBST(MAGICKLIB)dnl
+
+# Create a simple string containing format names for all plug-in libraries
+PLUGINS=''
+if test "$have_bzlib"  = 'yes' ; then PLUGINS="$PLUGINS bzlib"  ; fi
+if test "$have_cgm"  = 'yes' ; then PLUGINS="$PLUGINS cgm"  ; fi
+if test "$have_fpx"  = 'yes' ; then PLUGINS="$PLUGINS fpx"  ; fi
+if test "$have_hdf"  = 'yes' ; then PLUGINS="$PLUGINS hdf"  ; fi
+if test "$have_jbig" = 'yes' ; then PLUGINS="$PLUGINS jbig" ; fi
+if test "$have_jpeg" = 'yes' ; then PLUGINS="$PLUGINS jpeg" ; fi
+if test "$have_mpeg" = 'yes' ; then PLUGINS="$PLUGINS mpeg" ; fi
+if test "$have_png"  = 'yes' ; then PLUGINS="$PLUGINS png"  ; fi
+
+have_ps='no'
+if test "$have_dps"  = 'yes' || test "$have_gs" = 'yes' ; then have_ps='yes'  ; fi
+if test "$have_ps"   = 'yes' ; then PLUGINS="$PLUGINS ps"  ; fi
+
+if test "$have_rad"  = 'yes' ; then PLUGINS="$PLUGINS rad" ; fi
+if test "$have_tiff" = 'yes' ; then PLUGINS="$PLUGINS tiff" ; fi
+if test "$have_ttf"  = 'yes' ; then PLUGINS="$PLUGINS ttf"  ; fi
+if test "$have_x"    = 'yes' ; then PLUGINS="$PLUGINS x"    ; fi
+if test "$have_xfig" = 'yes' && test "$have_ps" = 'yes'  ; then PLUGINS="$PLUGINS xfig"    ; fi
+if test "$have_zlib" = 'yes' ; then PLUGINS="$PLUGINS zlib" ; fi
+
+AC_SUBST(PLUGINS)dnl
+
+# Check for networking libraries and definitions needed by xtp
+#
+# This code was obtained from the 'expect' package written by Don Libes of NIST
+# which contains statements similar to: Design and implementation of this
+# program was paid for by U.S. tax dollars.  Therefore it is public domain.
+# However, the author and NIST would appreciate credit if this program or parts
+# of it are used.
+#
+# Look for various features to determine what kind of pty
+# we have. For some weird reason, ac_compile_check would not
+# work, but ac_test_program does.
+#
+
+AC_MSG_CHECKING([for HP style pty allocation])
+# following test fails on DECstations and other things that don't grok -c
+# but that's ok, since they don't have PTYMs anyway
+if test -r /dev/ptym/ptyp0 2>/dev/null ; then
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(HAVE_PTYM)
+    AC_MSG_WARN([HP style ptys not yet supported.])
+else
+    AC_MSG_RESULT(no)
+fi
+
+AC_MSG_CHECKING([for HP style pty trapping])
+AC_HEADER_EGREP([struct.*request_info], sys/ptyio.h,
+        AC_MSG_RESULT(yes)
+        AC_DEFINE(HAVE_PTYTRAP)
+,
+        AC_MSG_RESULT(no)
+)
+
+AC_MSG_CHECKING([for AIX new-style pty allocation])
+if test -r /dev/ptc -a -r /dev/pts ; then
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(HAVE_PTC_PTS)
+    AC_MSG_WARN([AIX new-style ptys not yet supported.])
+else
+    AC_MSG_RESULT(no)
+fi
+
+AC_MSG_CHECKING([for SGI old-style pty allocation])
+if test -r /dev/ptc -a ! -r /dev/pts ; then
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(HAVE_PTC)
+    AC_MSG_WARN([SGI old-style ptys not yet supported.])
+else
+    AC_MSG_RESULT(no)
+fi
+
+# On SCO OpenServer, two types of ptys are available: SVR4 streams and c-list.
+# The library routines to open the SVR4 ptys are broken on certain systems and
+# the SCO command to increase the number of ptys only configure c-list ones
+# anyway.  So we chose these, which have a special numbering scheme.
+#
+AC_MSG_CHECKING([for SCO style pty allocation])
+sco_ptys=""
+case "${host}" in
+  *-sco3.2v[[45]]*)     sco_clist_ptys=1 svr4_ptys_broken=1;;
+esac
+
+if test x"${sco_clist_ptys}" != x"" ; then
+  AC_MSG_RESULT(yes)
+  AC_DEFINE(HAVE_SCO_CLIST_PTYS)
+  AC_MSG_WARN([SCO Clist ptys not yet supported.])
+else
+  AC_MSG_RESULT(no)
+fi
+
+AC_MSG_CHECKING([for SVR4/UNIX-'98 style pty allocation])
+if test -r /dev/ptmx -a "x$svr4_ptys_broken" = x ; then
+  AC_MSG_RESULT(yes)
+  AC_DEFINE(HAVE_PTMX)
+  # aargg. Some systems need libpt.a to use /dev/ptmx
+  AC_CHECK_FUNC(ptsname, , LIBS="${LIBS} -lpt")
+else
+  AC_MSG_RESULT(no)
+fi
+
+# In OSF/1 case, SVR4 are somewhat different.
+# Gregory Depp <depp@osf.org> 17Aug93
+AC_MSG_CHECKING([for OSF/1 style pty allocation])
+if test -r /dev/ptmx_bsd ; then
+    AC_DEFINE(HAVE_PTMX_BSD)
+    AC_MSG_WARN([OSF/1 style ptys not yet supported.])
+    AC_MSG_RESULT(yes)
+else
+    AC_MSG_RESULT(no)
+fi
+
+#
+# End of pty checks lifted from 'expect'
+#
+
+have_socks='no'
+XTP_LIBS="$LIB_SFIO"
+XTP_DEFS=''
+XTP_FTP='ftp'
+if test "$with_socks" = 'yes'
+then
+  have_socks_header='no'
+  have_socks_lib='no'
+  AC_CHECK_HEADER(socks.h,have_socks_header='yes',have_socks_header='no')
+  AC_CHECK_LIB(socks5,SOCKSinit,have_socks_lib='yes',have_socks_lib='no',)
+  if test $have_socks_header = 'yes' && test $have_socks_lib = 'yes'
+  then
+    XTP_LIBS="$XTP_LIBS -lsocks5"
+    XTP_DEFS="$XTP_DEFS -DSOCKS"
+    have_socks='yes'
+  fi
+  AC_PATH_PROGS(XTP_FTP,rftp ftp,,)
+fi
+XTP_DEFS="$XTP_DEFS -DXTP_FTP=\"\\\"$XTP_FTP\\\"\""
+AC_CHECK_LIB(nsl,gethostbyname,XTP_LIBS="$XTP_LIBS -lnsl",,)
+AC_CHECK_LIB(socket,socket,XTP_LIBS="$XTP_LIBS -lsocket",,)
+AC_SUBST(XTP_LIBS)dnl
+AC_SUBST(XTP_DEFS)dnl
+
+
+#
+# Remove extraneous spaces from output variables (asthetic)
+#
+X_CFLAGS=`echo $X_CFLAGS | sed -e 's/ +/ /g'`
+X_PRE_LIBS=`echo $X_PRE_LIBS | sed -e 's/ +/ /g'`
+X_LIBS=`echo $X_LIBS | sed -e 's/ +/ /g'`
+X_EXTRA_LIBS=`echo $X_EXTRA_LIBS | sed -e 's/ +/ /g'`
+
+CC=`echo $CC | sed -e 's/ +/ /g'`
+CFLAGS=`echo $CFLAGS | sed -e 's/ +/ /g'`
+CPPFLAGS=`echo $CPPFLAGS | sed -e 's/ +/ /g'`
+LDFLAGS=`echo $LDFLAGS | sed -e 's/ +/ /g'`
+LIBS=`echo $LIBS | sed -e 's/ +/ /g'`
+
+AC_OUTPUT(Makefile magick/Makefile xtp/Makefile xlib/Makefile PerlMagick/Makefile.PL)
+
+echo ""
+
+echo "ImageMagick is configured as follows. Please verify that this"
+echo "configuration matches your expectations."
+echo ""
+echo "Host system type : $host"
+echo ""
+echo "Option            Configure option        Configured value"
+echo "----------------------------------------------------------"
+echo "Shared libraries  --enable-shared=$enable_shared		$libtool_build_shared_libs"
+echo "Static libraries  --enable-static=$enable_static		$libtool_build_static_libs"
+echo "GNU ld            --with-gnu-ld=$with_gnu_ld		$ac_cv_prog_gnu_ld"
+echo "Ghostscript       None                          $have_gs"
+echo "LZW support       --enable-lzw=$with_lzw		$with_lzw"
+echo "16 bit pixels     --enable-16bit-pixel=$with_16_bit_pixel	$with_16_bit_pixel"
+echo "SFIO              --enable-sfio=$with_sfio		$have_sfio"
+echo "SOCKS             --enable-socks=$with_socks		$have_socks"
+echo "PERL              --with-perl=$with_perl		$have_perl"
+echo "BZLIB             --with-bzlib=$with_bzlib		$with_bzlib"
+echo "DPS               --with-dps=$with_dps		$have_dps"
+echo "FlashPIX          --with-fpx=$with_fpx		$have_fpx"
+echo "HDF               --with-hdf=$with_hdf		$have_hdf"
+echo "JBIG              --with-jbig=$with_jbig		$have_jbig"
+echo "JPEG              --with-jpeg=$with_jpeg		$have_jpeg"
+echo "PNG               --with-png=$with_png		$have_png"
+echo "TIFF              --with-tiff=$with_tiff		$have_tiff"
+echo "TrueType          --with-ttf=$with_ttf		$have_ttf"
+echo "ZLIB              --with-zlib=$with_zlib		$have_zlib"
+echo "X11               --with-x=$with_x			$have_x"
+echo ""
+echo "X11 Configuration:"
+if test "$have_x" != 'no'
+then
+  echo "  X_CFLAGS     = $X_CFLAGS"
+  echo "  X_PRE_LIBS   = $X_PRE_LIBS"
+  echo "  X_LIBS       = $X_LIBS"
+  echo "  X_EXTRA_LIBS = $X_EXTRA_LIBS"
+else
+  echo ""
+  echo "  Using X11 stubs library"
+fi
+echo ""
+echo "Final Compilation Flags:"
+echo "  CC       = $CC"
+echo "  CFLAGS   = $CFLAGS"
+echo "  CPPFLAGS = $CPPFLAGS"
+echo "  LDFLAGS  = $LDFLAGS"
+echo "  LIBS     = $LIBS"
+echo ""

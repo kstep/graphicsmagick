@@ -1,0 +1,73 @@
+<HTML>
+<HEAD>
+<TITLE>encode - Utility Routines to Write Image Formats</TITLE>
+<LINK REV="made" HREF="mailto:cristy@mystic.es.dupont.com">
+</HEAD>
+
+<body background="../../images/background.gif">
+
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#NAME">NAME</A>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
+	<UL>
+
+		<LI><A HREF="#WriteImage">WriteImage</A>
+	</UL>
+
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="NAME">NAME</A></H1>
+<P>
+encode - Utility Routines to Write Image Formats
+
+<P>
+<HR>
+<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
+status=<STRONG>WriteImage</STRONG>(image_info,image)
+
+<P>
+<HR>
+<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<P>
+<HR>
+<H2><A NAME="WriteImage">WriteImage</A></H2>
+<P>
+Method WriteImage writes an image to a file. You can specify a particular
+image format by prefixing the file with the image type and a colon (i.e.
+ps:image) or specify the image type as the filename suffix (i.e. image.ps).
+
+<P>
+The format of the WriteImage routine is:
+
+<P>
+<PRE>        status=WriteImage(image_info,image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG><A NAME="item_o">status:</A></STRONG><DD>
+<P>
+Method WriteImage return True if the image is written. False is returned is
+there is a memory shortage or if the image file fails to write.
+
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+Specifies a pointer to an ImageInfo structure.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+A pointer to a Image structure.
+
+</DL></DL>
+</BODY>
+
+</HTML>

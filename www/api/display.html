@@ -1,0 +1,125 @@
+<HTML>
+<HEAD>
+<TITLE>display - Interactively Display and Edit an Image</TITLE>
+<LINK REV="made" HREF="mailto:cristy@mystic.es.dupont.com">
+</HEAD>
+
+<body background="../../images/background.gif">
+
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#NAME">NAME</A>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
+	<UL>
+
+		<LI><A HREF="#XDisplayBackgroundImage">XDisplayBackgroundImage</A>
+		<LI><A HREF="#XDisplayImage">XDisplayImage</A>
+	</UL>
+
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="NAME">NAME</A></H1>
+<P>
+display - Interactively Display and Edit an Image
+
+<P>
+<HR>
+<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
+status=<STRONG>XDisplayBackgroundImage</STRONG>(display,resource_info,image)
+
+<P>
+loaded_image=<STRONG>XDisplayImage</STRONG>(display,resource_info,argv,argc,image,state)
+
+<P>
+<HR>
+<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<P>
+<HR>
+<H2><A NAME="XDisplayBackgroundImage">XDisplayBackgroundImage</A></H2>
+<P>
+Method XDisplayBackgroundImage displays an image in the background of a
+window.
+
+<P>
+The format of the XDisplayBackgroundImage routine is:
+
+<P>
+<PRE>        status=XDisplayBackgroundImage(display,resource_info,image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG><A NAME="item_o">status:</A></STRONG><DD>
+<P>
+Method XDisplayBackgroundImage returns True if the designated window is the
+root window.
+
+<DT><STRONG>display:</STRONG><DD>
+<P>
+Specifies a connection to an X server; returned from XOpenDisplay.
+
+<DT><STRONG>resource_info:</STRONG><DD>
+<P>
+Specifies a pointer to a X11 XResourceInfo structure.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+Specifies a pointer to a Image structure; returned from ReadImage.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="XDisplayImage">XDisplayImage</A></H2>
+<P>
+Method XDisplayImage displays an image via X11. A new image is created and
+returned if the user interactively transforms the displayed image.
+
+<P>
+The format of the XDisplayImage routine is:
+
+<P>
+<PRE>        loaded_image=XDisplayImage(display,resource_info,argv,argc,image,state)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>loaded_image:</STRONG><DD>
+<P>
+Method XDisplayImage returns an image when the user chooses 'Open Image'
+from the command menu or picks a tile from the image directory. Otherwise a
+null image is returned.
+
+<DT><STRONG>display:</STRONG><DD>
+<P>
+Specifies a connection to an X server; returned from XOpenDisplay.
+
+<DT><STRONG>resource_info:</STRONG><DD>
+<P>
+Specifies a pointer to a X11 XResourceInfo structure.
+
+<DT><STRONG>argv:</STRONG><DD>
+<P>
+Specifies the application's argument list.
+
+<DT><STRONG>argc:</STRONG><DD>
+<P>
+Specifies the number of arguments.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+Specifies an address to an address of an Image structure; returned from
+ReadImage.
+
+</DL></DL>
+</BODY>
+
+</HTML>

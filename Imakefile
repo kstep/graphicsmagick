@@ -1,0 +1,103 @@
+#ifndef XCOMM
+#define XCOMM #
+#endif
+
+XCOMM
+XCOMM Imakefile for ImageMagick.
+XCOMM
+XCOMM Copyright 1998 E. I. du Pont de Nemours and Company
+XCOMM
+XCOMM Permission is hereby granted, free of charge, to any person obtaining a
+XCOMM copy of this software and associated documentation files ("ImageMagick"),
+XCOMM to deal in ImageMagick without restriction, including without limitation
+XCOMM the rights to use, copy, modify, merge, publish, distribute, sublicense,
+XCOMM and/or sell copies of ImageMagick, and to permit persons to whom the
+XCOMM ImageMagick is furnished to do so, subject to the following conditions:
+XCOMM
+XCOMM The above copyright notice and this permission notice shall be included in
+XCOMM all copies or substantial portions of ImageMagick.
+XCOMM
+XCOMM The software is provided "as is", without warranty of any kind, express or
+XCOMM implied, including but not limited to the warranties of merchantability,
+XCOMM fitness for a particular purpose and noninfringement.  In no event shall
+XCOMM E. I. du Pont de Nemours and Company be liable for any claim, damages or
+XCOMM other liability, whether in an action of contract, tort or otherwise,
+XCOMM arising from, out of or in connection with ImageMagick or the use or other
+XCOMM dealings in ImageMagick.
+XCOMM
+XCOMM Except as contained in this notice, the name of the E. I. du Pont de
+XCOMM Nemours and Company shall not be used in advertising or otherwise to
+XCOMM promote the sale, use or other dealings in ImageMagick without prior
+XCOMM written authorization from the E. I. du Pont de Nemours and Company.
+XCOMM
+MANSUFFIX = 1
+#include "Magick.tmpl"
+
+#ifndef ForceSubdirs
+#define ForceSubdirs(dirs)
+#endif
+#define IHaveSubdirs
+#define PassCDebugFlags CCOPTIONS='$(CCOPTIONS)'
+
+HEADERS = magick/magick.h magick/image.h magick/compress.h magick/utility.h \
+  magick/monitor.h magick/X.h magick/widget.h magick/PreRvIcccm.h
+
+LINTSRCS = display.c magick/image.c magick/gems.c magick/shear.c \
+  magick/quantize.c magick/colors.c magick/signature.c magick/decode.c \
+  magick/encode.c magick/compress.c magick/utility.c magick/monitor.c \
+  magick/error.c magick/X.c magick/display.c magick/animate.c magick/widget.c \
+  magick/PreRvIcccm.c
+
+SRCS = display.c animate.c import.c montage.c convert.c mogrify.c identify.c \
+  combine.c
+OBJS = display.o animate.o import.o montage.o convert.o mogrify.o identify.o \
+  combine.o
+
+#ifdef __CYGWIN32__
+PROGRAMS = magick display.exe animate.exe import.exe montage.exe convert.exe \
+  mogrify.exe identify.exe combine.exe
+#else
+PROGRAMS = magick display animate import montage convert mogrify identify \
+  combine xtp
+#endif
+
+SUBDIRS = magick xtp
+
+AllTarget($(PROGRAMS))
+DependTarget()
+
+ForceSubdirs($(SUBDIRS))
+#if (ProjectX < 5) && !defined(uxpArchitecture)
+InstallSubdirs($(SUBDIRS))
+#endif
+DependSubdirs($(SUBDIRS))
+
+
+NormalProgramTarget(display,display.o,$(DEPLIBS),$(LOCAL_LIBRARIES),$(XLIB) -lm)
+NormalLintTarget($(LINTSRCS))
+InstallProgram(display,$(LOCALDIR))
+InstallMultipleMan(display.1,$(LOCALMAN1))
+NormalProgramTarget(montage,montage.o,$(DEPLIBS),$(LOCAL_LIBRARIES),$(XLIB) -lm)
+InstallProgram(montage,$(LOCALDIR))
+InstallMultipleMan(montage.1,$(LOCALMAN1))
+NormalProgramTarget(import,import.o,$(DEPLIBS),$(LOCAL_LIBRARIES),$(XLIB) -lm)
+InstallProgram(import,$(LOCALDIR))
+InstallMultipleMan(import.1,$(LOCALMAN1))
+NormalProgramTarget(animate,animate.o,$(DEPLIBS),$(LOCAL_LIBRARIES),$(XLIB) -lm)
+InstallProgram(animate,$(LOCALDIR))
+InstallMultipleMan(animate.1,$(LOCALMAN1))
+NormalProgramTarget(convert,convert.o,$(DEPLIBS),$(LOCAL_LIBRARIES),$(XLIB) -lm)
+InstallProgram(convert,$(LOCALDIR))
+InstallMultipleMan(convert.1,$(LOCALMAN1))
+NormalProgramTarget(identify,identify.o,$(DEPLIBS),$(LOCAL_LIBRARIES),$(XLIB) -lm)
+InstallProgram(identify,$(LOCALDIR))
+InstallMultipleMan(identify.1,$(LOCALMAN1))
+NormalProgramTarget(mogrify,mogrify.o,$(DEPLIBS),$(LOCAL_LIBRARIES),$(XLIB) -lm)
+InstallProgram(mogrify,$(LOCALDIR))
+InstallMultipleMan(mogrify.1,$(LOCALMAN1))
+NormalProgramTarget(combine,combine.o,$(DEPLIBS),$(LOCAL_LIBRARIES),$(XLIB) -lm)
+InstallProgram(combine,$(LOCALDIR))
+InstallMultipleMan(combine.1,$(LOCALMAN1))
+InstallMultipleMan(ImageMagick.1,$(LOCALMAN1))
+InstallMultipleMan(miff.4,$(LOCALMAN4))
+InstallMultipleMan(quantize.5,$(LOCALMAN5))

@@ -1,0 +1,1170 @@
+<HTML VERSION="2.0">
+<HEAD>
+<TITLE>ImageMagick 4.1 README</TITLE>
+<LINK rev="made" href="mailto:cristy@mystic.es.dupont.com">
+<meta name="description" content="ImageMagick, version 4.1, is a package for
+  display and interactive manipulation of images for the X Window System. It
+  is written in C and interfaces to the X library, and therefore does not
+  require any proprietary toolkit in order to compile.  Although the software
+  is copyrighted, it is available for free and can be redistributed without
+  fee.">
+<meta name="keywords" content="ImageMagick, Image Magick, Image Magic,
+  PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,
+  WebMagick, Web Magic, visualization, image processing, software development,
+  simulation, image, software, AniMagick, Animagic, X11">
+</HEAD>
+<body background="../images/background.gif">
+<CENTER>
+<img src="../images/install.gif" align=bottom width=381 height=45>
+</CENTER>
+<pre>
+ 
+</pre>
+<BLOCKQUOTE>
+<I>
+"I swear by my life and my love of it that I will never live
+for the sake of another man, nor ask another man to live for
+mine"
+</I>
+<p>
+<I>John Galt</I> in <B>Atlas Shrugged</B>, by <I>Ayn Rand</I>
+</BLOCKQUOTE>
+<pre>
+ 
+</pre>
+<H2>
+<A NAME="Contents">Contents</A>
+</H2>
+<H4>
+<UL>
+<LI><A HREF="#auth">Author</A>
+<LI><A HREF="#avai">Availability</A>
+<LI><A HREF="#www">WWW</A>
+<LI><A HREF="#mail">Mailing List</A>
+<LI><A HREF="#memo">Memory Requirements</A>
+<LI><A HREF="#unix">UNIX Compilation</A>
+<LI><A HREF="#extr">Plug-ins</A>
+<LI><A HREF="#howt">How to Compile</A>
+<LI><A HREF="#vmsc">VMS Compilation</A>
+<LI><A HREF="#ntc">NT Compilation</A>
+<LI><A HREF="#macc">Macintosh Compilation</A>
+<LI><A HREF="#anim">Animation</A>
+<LI><A HREF="#imag">16-BIT Imaging</A>
+<LI><A HREF="#mach">64-BIT Machines</A>
+<LI><A HREF="#miff">MIFF Image Format</A>
+<LI><A HREF="#copy">Copyright</A>
+</UL>
+</H4>
+<br>
+<hr>
+<DL>
+<H2>
+<A NAME="auth">
+<DT>Author
+</H2>
+<DD>The author is
+<A HREF="mailto:cristy@mystic.es.dupont.com">cristy@mystic.es.dupont.com</A>.  This
+software is NOT shareware.  However, I am interested in who might be using
+it.  Please consider sending me a picture postcard of the area
+where you live.  Send postcards to
+<P>
+<PRE>
+      John Cristy
+      P.O. Box 40
+      Landenberg, PA  19350
+      USA
+</PRE>
+<dd>  I'm also interested in receiving coins from around the world for
+my collection.
+</DL>
+<p><A HREF="#top"><I>Back to Contents</I></A><p>
+<HR>
+<DL>
+<br>
+<H2>
+<A NAME="avai">
+<DT>Availability
+</H2>
+<DD><B>ImageMagick</B>, version 4.1, is available on 
+<A HREF="ftp://204.183.81.131/pub/ImageMagick/">
+204.183.81.131</A>.  ImageMagick client
+<A HREF="ftp://204.183.81.131/pub/ImageMagick/binaries">exectuables</a>
+are available for some platforms.
+<A HREF="ftp://204.183.81.131/pub/ImageMagick/mac">Macintosh</a>,
+<A HREF="ftp://204.183.81.131/pub/ImageMagick/nt">NT</a>,
+<A HREF="ftp://204.183.81.131/pub/ImageMagick/vms">VMS</a>, and
+<A HREF="ftp://204.183.81.131/pub/ImageMagick/linux">Linux</a>
+source and binaries are also available.
+<p>
+I want <B>ImageMagick</B> to be of high quality,
+so if you encounter a problem I will investigate.  <EM>However, be sure you
+are using the most recent version from
+<a HREF="ftp://204.183.81.131/pub/ImageMagick/">
+204.183.81.131</a>, or a mirror site, before submitting any bug
+reports or suggestions</EM>.
+</DL>
+<DL>
+<P><A HREF="#top"><I>Back to Contents</I></A><p>
+<HR>
+<br>
+<H2>
+<A NAME="www">
+<DT>WWW
+</H2>
+<DD>The official <B>ImageMagick</B> WWW page is at
+<A HREF="http://www.wizards.dupont.com/cristy/ImageMagick.html">
+www.wizards.dupont.com</A>.
+<P>
+<DD>To use 
+<A HREF="../www/display.html"><I>display</I></A> as your external image
+viewer, edit the 
+global <I>mailcap</I> file or your personal mailcap file <I>.mailcap</I>
+(located in your home directory) and put this entry:
+<PRE>
+      image/*; display %s
+</PRE>
+</DL>
+<P>
+<DL>
+<br>
+<P><A HREF="#top"><I>Back to Contents</I></A><p>
+<HR>
+<H2>
+<A NAME="mail">
+<DT>Mailing List
+</H2>
+<DD>There is a mailing list for discussions and bug reports about
+<B>ImageMagick</B>.  To subscribe send the message
+<P>
+<PRE>
+      subscribe magick
+</PRE>
+to
+<A HREF="mailto:majordomo@wizards.dupont.com">majordomo@wizards.dupont.com</A>.
+You will receive a welcome message which tells you how to post messages
+to the list
+<A HREF="mailto:magick@wizards.dupont.com">magick@wizards.dupont.com</A>.
+</DL>
+<br>
+<DL>
+<P><A HREF="#top"><I>Back to Contents</I></A><p>
+<HR>
+<H2>
+<A NAME="memo">
+<DT>Memory Requirements
+</H2>
+<DD> You should allocate sufficient swap space on your system before
+running ImageMagick; otherwise, you may experience random server
+or application crashes. Anything less than 80 megabytes of swap
+space is likely to cause random crashes.
+<p>
+<DD> On many systems, you will find that 80 megabytes is insufficient
+and you will have to allocate more swap space.  You should also
+have at least 32 megabytes of real memory although 64 megabytes
+or more is recommended.
+</DL>
+<br>
+<DL>
+<P><A HREF="#top"><I>Back to Contents</I></A><p>
+<HR>
+<H2>
+<A NAME="unix">
+<DT>UNIX Compilation
+</H2>
+<DD>Type:
+<PRE>
+      gunzip ImageMagick-4.1.tar.gz
+      tar xvf ImageMagick-4.1.tar
+      cd ImageMagick
+</PRE>
+<P>
+<DD>If you do not have <tt>gunzip</tt>, it is available on 
+<A HREF="ftp://prep.ai.mit.edu:pub/gnu/gzip-1.2.4.shar">prep.ai.mit.edu</A>.
+<p>
+There are currently two mechanisms available to create makefiles to
+build <b>ImageMagick</b>:
+<p>
+<ul>
+<li> GNU configure:
+<p>
+This option is easiest to use and is recommended when ImageMagick
+is to be installed outside of the X11 distribution or working imake
+configuration files are not available.  Use of <tt>configure</tt> enables
+automated configuration, building, and installation of 
+<a href=perl.html>PerlMagick</a>.
+
+If you are willing to accept configure's default options, type:
+<p>
+<pre>
+      ./configure
+</pre>
+<p>
+and watch the configure script output to verify that it finds
+everything that you think it should. If it does not, then adjust
+your environment so that it does.
+<p>
+If you are not happy with configure's choice of compiler,
+compilation flags, or libraries, you can give <tt>configure</tt> initial
+values for variables by setting them in the environment.  Using a
+Bourne-compatible shell, you can do that on the command line like
+this:
+<p>
+<pre>
+    CC=c89 CFLAGS=-O2 LIBS=-lposix ./configure
+</pre>
+<p>
+Or on systems that have the <tt>env</tt> program, you can do it like this
+<p>
+<pre>
+    env CPPFLAGS=-I/usr/local/include LDFLAGS=-s ./configure
+</pre>
+<p>
+The configure variables you should be aware of are:
+<p>
+<pre>
+        CC          Name of C compiler (e.g. 'cc -Xa') to use
+        CFLAGS      Compiler flags (e.g. '-g -O2') to compile with
+        CPPFLAGS    Include paths (-I/somedir) to look for header files
+        LDFLAGS     Library paths (-L/somedir) to look for libraries
+                    Systems that support the notion of a library
+                    run-path may additionally require -R/somedir or
+                    '-rpath /somedir' in order to find shared libraries
+                    at run time.
+        LIBS        Extra libraries (-lsomelib) required to link
+</pre>
+<p>
+Any variable (e.g. CPPFLAGS or LDFLAGS) which requires a directory
+path must specify an absolute path rather than a relative path.
+<p>
+By default, <tt>make install</tt> will install the package's files in
+<tt>/usr/local/bin</tt>, <tt>/usr/local/man</tt>, etc.  You can specify an
+installation prefix other than <tt>/usr/local</tt> by giving configure
+the option <tt>--prefix=PATH</tt>.
+<p>
+Configure can usually find the X include and library files
+automatically, but if it doesn't, you can use the configure
+options <tt>--x-includes=DIR</tt> and <tt>--x-libraries=DIR</tt> to specify
+their locations.
+<p>
+The configure script provides a number of ImageMagick specific
+options.  When disabling an option <em>--disable-something</em> is equivalent
+to specifying <em>--enable-something=no</em> and <em>--without-something</em> is
+equivalent to <em>--with-something=no</em>.  The configure options are as
+follows (execute <tt>configure --help</tt> to see all options).
+<p>
+<pre>
+      --enable-shared      build shared libraries (default is no)
+      --enable-static      build static libraries (default is yes)
+      --enable-lzw         enable LZW support (default is no)
+      --enable-16bit-pixel enable 16 bit pixels (default is no)
+      --enable-socks       enable use of SOCKS 5 library and 'rftp'
+      --with-perl          enable build/install of PerlMagick (default is no)
+      --with-bzlib         enable BZlib (default is yes)
+      --with-dps           enable Display Postscript (default is yes)
+      --with-fpx           enable FlashPIX (default is yes)
+      --with-hdf           enable HDF (default is yes)
+      --with-jbig          enable JBIG (default is yes)
+      --with-jpeg          enable JPEG (default is yes)
+      --with-png           enable PNG (default is yes)
+      --with-tiff          enable TIFF (default is yes)
+      --with-ttf           enable TrueType (default is yes)
+      --with-zlib          enable Zlib (default is yes)
+      --with-x             use the X Window System
+</pre>
+ImageMagick options represent either features to be enabled or
+packages to be included in the build.  When a feature is enabled
+(via <em>--enable-something</em>), it enables code already present in
+<b>ImageMagick</b>.  When a package is enabled (via <em>--with-something</em>),
+ the configure script will search for it, and if is is properly
+installed and ready to use (headers and built libraries are found
+by compiler) it will be included in the build.  The configure script
+is delivered with all features disabled and all packages enabled.
+In general, the only reason to disable a package is if a package
+exists but it is unsuitable for the build (perhaps an old
+versionor not compiled with the right compilation flags).
+<p>
+Several configure options require special note:
+<p>
+<ul>
+<li><tt>--disable-shared</tt>: the shared libraries is not built.  Shared
+libraries are valuable because they are <em>shared</em> across more
+than one invocation of an ImageMagick or PerlMagick client.  In
+addition, the clients take much less disk space and shared
+libraries are required in order for PERL to dynamically load
+the PerlMagick extension.
+
+<p>
+ImageMagick built with plug-ins (see
+<A HREF="#extr">Plug-ins</A> below) can
+pose additional challenges.  You can build all the plug-ins
+statically and link them into the ImageMagick shared library
+(i.e. <tt>libMagick.so</tt>) or alternatively you can build the plug-ins
+as shared libraries (some systems already have plug-ins
+installed as shared libraries).  Shared libraries compilation
+flags differ from vendor to vendor (gcc's is <tt>-fPIC</tt>).  However,
+you must compile all shared library source with the same flag
+(for gcc use <tt>-fPIC</tt> rather than <tt>-fpic</tt>).
+<p>
+<li><tt>--disable-static</tt>: static archive libraries (with extension
+<tt>.a</tt>) are not built.  If you are building shared libraries, there is
+little value to building static libraries.  Reasons to build
+static libraries include:  1) they can be easier to debug; 2)
+the clients do not have external dependencies (i.e.
+<tt>libMagick.so</tt>);  3) building PIC versions of the plug-in libraries may
+take additional expertise and effort;  4) you are unable to build shared
+libraries.
+<p>
+<li><tt>--with-perl</tt>: conveniently compile and install
+<b>PerlMagick</b> in one step.  Without this option you first install
+<b>ImageMagick</b>, change to the <b>PerlMagick</b> subdirectory, build, and
+finally install <b>PerlMagick</b>.  Note, <b>PerlMagick</b> is
+configured even if <tt>--with-perl</tt> is not supplied.  If
+<tt>--enable-shared</tt> is not
+ specified, a new PERL interpreter (PerlMagick) is built which is
+ statically linked against the PerlMagick extension.  This new
+interpreter is installed alongside your existing PERL interpreter.  If
+--enable-shared is specified, the PerlMagick extension is built as
+a dynamically loadable object which is loaded into your current PERL
+interpreter at run-time.  Use of dynamically-loaded extensions is
+preferable over statically linked extensions so
+<tt>--enable-shared</tt> should be specified if possible.  If the
+argument <tt>--with-perl=/path/to/perl</tt> is supplied, then
+<tt>/path/to/perl</tt> is taken as the PERL interpreter to use.
+<p>
+<li><tt>--with-x=no</tt>: build and use the X11 stubs library
+(<tt>ImageMagick/xlib</tt>) instead of the core X11 libraries.  This may
+necessary on systems where X11 is not installed (e.g. a web
+server).  
+<A HREF="../www/display.html"><I>Display</I></A>,
+<A HREF="../www/animate.html"><I>animate</I></A>, and
+<A HREF="../www/import.html"><I>import</I></A> will not work with this
+library.  The remaining programs have reduced functionality.,
+</ul>
+<p>
+Dealing with configuration failures
+While configure is designed to ease installation of ImageMagick,
+it often discovers problems that would otherwise be encountered
+later when compiling ImageMagick. The configure script tests for
+headers and libraries by executing the compiler (CC) with the
+specified compilation flags (CFLAGS), pre-processor flags
+(CPPFLAGS), and linker flags (LDFLAGS). Any errors are logged to
+the file <tt>config.log</tt>. If configure fails to discover a header or
+library please review this log file to determine why. After taking
+corrective action, be sure to remove the 'config.cache' file
+before running configure so that configure will re-inspect the
+environment rather than using cached values.
+
+Common causes of configure falures are: 1) a plug-in header is not
+in the header include path (CPPFLAGS -I option); 2) a plug-in
+library is not in the linker search/run path (LDFLAGS -L/-R
+option); 3) a plug-in library is missing a function (old
+version?); 4) compilation environment is faulty.
+
+If all reasonable corrective actions have been tried and the
+problem appears to be due to a flaw in the configure script,
+please send a bug report to the configure script maintainer
+(currently bfriesen@simple.dallas.tx.us). All bug reports should
+contain the operating system type (as reported by 'uname -a') and
+the compiler/compiler-version. A copy of the configure script
+output and/or the <tt>config.log</tt> file may be valuable in order to find
+the problem.
+<p>
+
+<li> X11 Imake:
+<p>
+Use this option if working imake configuration files are available,
+the package is to be installed where ever imake installs things
+(usually the X11 distribution directory), and you don't mind
+editing a configuration file. Use of this scheme requires a
+seperate step to install <b>PerlMagick</b> (see the README file in the
+<b>PerlMagick</b> subdirectory).
+<p>
+Review the defines in <tt>magick/magick.h</tt> and <tt>magick/delegates.h</tt>
+and make sure the meet the requirements of your local system.
+<p>
+Edit <tt>Magick.tmpl</tt> and set the variables to suit your local
+environment. Now type:
+<p>
+<pre>
+       xmkmf
+       make Makefiles
+</pre>
+<p>
+or just
+<p>
+<pre>
+       xmkmf -a
+</pre>
+If you are using X11R6 imake.
+<p>
+Note, <em>ImageMagick requires an ANSI compiler</em>.  If the compile fails,
+first check to ensure your compile is ANSI compatible.  If it fails for some
+other reason, try
+<PRE>
+      cd magick
+      make -k
+      cd ..
+      make -k
+</PRE>
+<p>
+</ul>
+<p>
+<DD>To confirm your build of the <b>ImageMagick</b> distribution was
+successful, type:
+<p>
+<PRE>
+      display
+</PRE>
+<dd>If the program faults make sure that you may have inadvertingly linked
+to an older version of the libMagick library.  In this case type
+<PRE>
+      cd ImageMagick/magick
+      make install
+      cd ..
+      make
+</PRE>
+<p>
+If the image colors are not correct use this command
+<PRE>
+      display -visual default
+</PRE>
+<DD>You can find other example images in the <em>images</em> directory.
+<P>
+For additional information, see the manual pages for these <B>ImageMagick</B>
+utilities
+<P>
+<UL>
+<DD><IMG ALT="*" SRC="../images/ball.gif">
+    <A HREF="../www/display.html">display</A>
+<DD><IMG ALT="*" SRC="../images/ball.gif">
+    <A HREF="../www/convert.html">convert</A>
+<DD><IMG ALT="*" SRC="../images/ball.gif">
+    <A HREF="../www/montage.html">montage</A>
+<DD><IMG ALT="*" SRC="../images/ball.gif">
+    <A HREF="../www/identify.html">identify</A>
+<DD><IMG ALT="*" SRC="../images/ball.gif">
+    <A HREF="../www/animate.html">animate</A>
+<DD><IMG ALT="*" SRC="../images/ball.gif">
+    <A HREF="../www/import.html">import</A>
+<DD><IMG ALT="*" SRC="../images/ball.gif">
+    <A HREF="../www/mogrify.html">mogrify</A>
+<DD><IMG ALT="*" SRC="../images/ball.gif">
+    <A HREF="../www/combine.html">combine</A>
+</UL>
+<P>
+<DD>Also read the <B>ImageMagick</B>
+<A HREF="Magick.html">Frequently Asked Questions</A>
+This is a required reading.  Most of the questions I get via electronic
+mail are answered in this document.
+<P>
+<DD>Place <A HREF="../www/display.html">display</A>
+<B>X application defaults</B> in
+<I>/usr/lib/X11/app-defaults/Display</I>.  Use the appropriate name
+for other clients (e.g. Animate, Montage, etc).
+To execute <A HREF="../www/display.html"><I>display</I></A>
+from as a menu item of any window manager (olwm, mwm, twm, etc), use
+<p>
+<PRE>
+    display logo:Untitled
+</PRE>
+<P>
+</DL>
+<DL>
+<P><A HREF="#top"><I>Back to Contents</I></A><p>
+<HR>
+<H2>
+<A NAME="extr">
+<DT>Plug-ins
+</H2>
+<DD>To further enhance the capabilities of <B>ImageMagick</B>, you may
+want to get these programs or libraries:
+<P>
+<DL>
+<H3>
+<DT> <A HREF="http://www.meat.com/textures/">Background Texture </A>
+</H3>
+<DD><B>ImageMagick</B> requires a background texture for the <B>TILE</B>
+format and for the <B>-texture</B> option of 
+<A HREF="../www/montage.html">montage</A>.  You can
+use your own or get samples or get additional samples from
+<A HREF="http://the-tech.mit.edu/KPT/"> KPT</A>.
+</DL>
+<P>
+<DL>
+<H3>
+<DT> <A HREF="(http://www.muraroa.demon.co.uk"> BZLIB </A>
+</H3>
+<DD><B>ImageMagick</B> requires the <B>BZLIB</B>
+library to read or write Zip compressed MIFF images.
+</DL>
+<P>
+<DL>
+<H3>
+<DT>
+<A HREF="http://www.agocg.ac.uk/Graphics/CGM/ralcgm.html">RALCGM</A>
+</H3>
+<DD><B>ImageMagick</B> requires <B>ralcgm</B> to read <B>Computer Graphic
+Metafile</B> images (may not compile under linux).  You also need
+Ghostscript (see below).
+</DL>
+<P>
+<DL>
+<H3>
+<DT>
+<A HREF="ftp://ftp.x.org/contrib/applications/drawing_tools/transfig">
+  TransFig</A>
+</H3>
+<DD><B>ImageMagick</B> requires <B>fig2dev</B> to read <B>TransFig</B> images.
+</DL>
+<P>
+<DL>
+<H3>
+<DT> <A HREF="http://www.sn.no/libwww-perl/">GET</A>
+</H3>
+<DD><B>ImageMagick</B> requires <B>GET</B> 
+to read images specified with a World Wide Web (WWW) uniform
+resource locator (URL).  <B>Get(1)</B> must be in <tt>/usr/local/bin</tt>.
+See <tt>WWWcommand</tt> in <tt>magick/magick.h</tt> to change its location.
+<EM> Note: do not confuse this get program with SCCS get program</EM>.
+If you do not have a <B>HTTP server</B>, you can use 
+<A HREF="../www/xtp.html">xtp</A>, available
+in the <B>ImageMagick</B> distribution, for URL's whose protocol is
+<B>FTP</B>.
+</DL>
+<DL>
+<H3>
+<DT>
+<A HREF="http://www.kodak.com/US/en/drg/productsTechnologies/prodTechFlashPix.shtml">FPX</A>
+</H3>
+<DD><B>ImageMagick</B> requires the <B>FlashPix SDK</B> 
+to read and write the <B>FPX</B> image format.
+</DL>
+<P>
+<DL>
+<P>
+<H3>
+<DT> <A HREF="http://www.freetype.org">FreeType </A>
+</H3>
+<DD><b>ImageMagick</b> requires the FreeType software, version 1.1 or above,
+to annotate with TrueType fonts.
+</DL>
+<P>
+<DL>
+<H3>
+<DT>
+<A HREF="ftp://ftp.ncsa.uiuc.edu/HDF/HDF_Current">HDF</A>
+</H3>
+<DD><B>ImageMagick</B> requires the <B>NCSA HDF</B> library
+to read and write the <B>HDF</B> image format.
+</DL>
+<P>
+<DL>
+<H3>
+<DT>
+<A HREF="http://www.tdb.uu.se/~jan/">HTML2PS</A>
+</H3>
+<DD><B>ImageMagick</B> requires <B>html2ps</B> to read <B>HyperText Markup
+Language</B> (html) documents.
+</DL>
+<P>
+<DL>
+<H3>
+<A HREF="ftp://ftp.informatik.uni-erlangen.de/pub/doc/ISO/JBIG/"> JBIG </A>
+<DT>
+</H3>
+<DD><B>ImageMagick</B> requires the <I>JBIG-Kit</I> software
+to read and write the <B>JBIG</B> image format.
+</DL>
+<P>
+<DL>
+<H3>
+<A HREF="ftp://ftp.uu.net/graphics/jpeg/"> JPEG </A>
+<DT>
+</H3>
+<DD><B>ImageMagick</B> requires the <I>Independent JPEG Group's</I> software
+to read and write the JPEG image format.
+<p>
+Concerning iterative JPEG compression:  see Kinoshita and
+Yamamuro, Journal of Imaging Science and Technology, <em>Image
+Quality with Reiterative JPEG Compression</em>, Volume 39, Number 4,
+July 1995, 306-312 who claim that (1) the iterative factor of the
+repetitive JPEG operation had no influence on image quality, and
+(2) the first compression determined base image quality.
+
+</DL>
+<P>
+<DL>
+<H3>
+<DT> <A HREF="ftp://ftp.mpeg.org/pub/mpeg/mssg/"> MPEG </A>
+</H3>
+<DD><B>ImageMagick</B> requires the MPEG encoder / decoder
+to read or write the <B>MPEG</B> image format.
+</DL>
+<P>
+<DL>
+<H3>
+<DT> <A HREF="http://www.cdrom.com/pub/png/pngcode.html">PNG</A>
+</H3>
+<DD><B>ImageMagick</B> requires the <B>PNG</B> library to read the <B>PNG</B>
+image format.
+</DL>
+<P>
+<DL>
+<H3>
+<DT>
+<A HREF="ftp://ftp.cs.wisc.edu/pub/ghost/aladdin/"> Postscript </A>
+</H3>
+<P>
+<DD><B>ImageMagick</B> requires 
+<a href=http://www.cs.wisc.edu/~ghost/>Ghostscript</a> software
+to read the <I>PostScript</I> or the Portable Document format. 
+It is used to annotate an image when an X server is not available.
+See the FreeType library above for another means to annotate an image.
+Note, Ghostscript must support the ppmraw device (type gs -h to verify).
+If Ghostscript is unavailable, the Display Postscript extension is
+used to rasterize a Postscript document (assuming you define HasDPS).
+The DPS extension is less robust than Ghostscript in that it will only    
+rasterize one page of a multi-page document.
+</DL>
+<p>
+<DL>
+<H3>
+<DT> <A HREF="http://radsite.lbl.gov/radiance/HOME.html"> RA_PPM </A>
+</H3>
+<DD><B>ImageMagick</B> requires <B>ra_ppm</B> from <I>Greg Ward's</I> Radiance
+software to read the Radiance image format (may not compile under linux).
+</DL>
+<DL>
+<H3> <A HREF="ftp://ftp.cs.utah.edu/pub/urt-3.1b.tar.Z"> RAWTORLE
+</A>
+<DT>
+</H3>
+<DD><B>ImageMagick</B> requires <B>rawtorle</B> from the <I>Utah Raster
+Toolkit</I> to write the RLE image format (may not compile under linux)..
+</DL>
+<DL>
+<H3>
+<DT>
+<A HREF="http://www.mostang.com/sane/"> SANE</A>
+</H3>
+<DD><B>ImageMagick</B> requires <B>scanimage</B> to import images from
+a scanner device.
+</DL>
+<P>
+<DL>
+<H3>
+<DT> <A HREF="ftp://sgi.com/graphics/tiff/"> TIFF </A>
+</H3>
+<DD><B>ImageMagick</B> requires <I>Sam Leffler's</I> <B>TIFF</B> software
+to read and write the <B>TIFF</B> image format. It in turn optionally requires
+the JPEG and ZLIB libraries.
+</DL>
+<P>
+<DL>
+<H3>
+<DT> <A HREF="http://www.cdrom.com/pub/infozip/zlib/index.html"> ZLIB </A>
+</H3>
+<DD><B>ImageMagick</B> requires the <B>ZLIB</B>
+library to read or write <B>PNG</B> or ZLIB compressed MIFF images.
+</DL>
+</DL>
+<DL>
+<br>
+<P><A HREF="#top"><I>Back to Contents</I></A><p>
+<HR>
+<H2>
+<A NAME="howt">
+<DT>How to Compile
+</H2>
+<DD>  NOTE: The following procedure describes how to build ImageMagick
+extension libraries in subdirectories of the ImageMagick directory.
+An alternative to these procedures is to install one or more of
+these under your system's regular include/lib directory (e.g. the
+directory specified by <tt>--prefix</tt> to configure or <tt>/usr/local</tt>).
+This allows the libraries to be shared by other packages. When using the
+configure script, the two schemes may be mixed. Also, please note
+that when the configure option <tt>--enable-shared</tt> is not disabled,
+these procedures must be supplemented with whatever compilation
+flags are required on your system to generate PIC code. In the case
+of gcc, this usually means that <tt>-fPIC</tt> must be added to the compiler
+options (i.e. CFLAGS) when building each plug-in library.
+<p>
+<DD>To display images in the <B>HDF, JPEG, PNG</B>, <B>TIFF</B> or
+<b>TTF</b> format, get the respective archives and build <B>ImageMagick</B> as
+follows:
+<P>
+<DL>
+<H3>
+<DT> HDF
+</H3>
+<PRE>
+      cd ImageMagick
+      gunzip -c HDF4.1r2.tar.gz | tar xvf -
+      mv HDF4.1r2 hdf
+      cd hdf
+      configure
+      make -k hdf-libnofortran
+      cd ..
+</PRE>
+</DL>
+<DL>
+<H3>
+<DT> JBIG
+</H3>
+<PRE>
+      cd ImageMagick
+      gunzip -c jbigkit-1.0.tar.gz | tar xvof -
+      mv jbig-kit jbig
+      cd jbig
+      make
+      cd ..
+</PRE>
+</DL>
+<DL>
+<H3>
+<DT> JPEG
+</H3>
+<PRE>
+      cd ImageMagick
+      gunzip -c jpegsrc.v6b.tar.gz | tar xvof -
+      mv jpeg-6b jpeg
+      cd jpeg
+      configure
+      make
+      cd ..
+</PRE>
+</DL>
+<DL>
+<H3>
+<DT> PNG
+</H3>
+<PRE>
+      cd ImageMagick
+      gunzip -c libpng-1.0.2.tar.gz | tar xvf -
+      mv libpng-1.0.2 png
+      cd png
+      make
+      cd ..
+</PRE>
+</DL>
+<DL>
+<H3>
+<DT> TIFF
+</H3>
+<PRE>
+      cd ImageMagick
+      gunzip -c tiff-v3.4beta037.tar.Z | tar xvof -
+      mv tiff-v3.4beta037 tiff
+      cd tiff
+      ./configure
+      make
+      cd ..
+</PRE>
+</DL>
+<DL>
+<H3>
+<DT> TTF
+</H3>
+<PRE>
+      cd ImageMagick
+      gunzip -c freetype-1.1.tar.gz | tar xvof -
+      mv freetype-1.1 ttf
+      cd ttf
+      ./configure -disable-shared
+      make
+      cd ..
+</PRE>
+</DL>
+<DL>
+<H3>
+<DT> ZLIB
+</H3>
+<PRE>
+      cd ImageMagick
+      gunzip -c zlib-1.1.3.tar.gz | tar xvf -
+      mv zlib-1.1.3.tar.gz zlib
+      cd zlib
+      make
+      cd ..
+</PRE>
+</DL>
+<P>
+<DD>If your computer system supports shared libraries you must
+type
+<PRE>
+      make install
+</PRE>
+<DD>Finally, perform the following:
+<PRE>
+      cd ImageMagick
+      <i>edit Magick.tmpl and define Has???? as instructed</i>
+      xmkmf
+      make Makefiles
+      make clean
+      make
+</PRE>
+<DD>If prefer to use <tt>configure</tt> rather than Imake:
+<PRE>
+      configure
+      make clean
+      make -k
+</PRE>
+<DD>If the compile fails due to a function redefinition it may be that
+either <tt>jpeg/jconfig.h</tt> or <tt>mpeg/mpeg.h</tt> is redefining
+<code>const</code>.  Fix this problem and try again.
+<p>
+<DD>You can now convert or display images in the JPEG, TIFF, PNG, etc.
+image formats.
+<P>
+<DD>If you have <B>HDF, JBIG, JPEG, PNG,</B> and <B>TIFF</B> sources
+installed as directed above, you can also type
+<PRE>
+      Install sun
+</PRE>
+<DD> Substitute the appropriate machine type (<I>aix, hpux, sgi</I>, etc).
+</DL>
+<DL>
+<br>
+<P><A HREF="#top"><I>Back to Contents</I></A><p>
+<HR>
+<H2>
+<A NAME="vmsc">
+<DT>VMS Compilation
+</H2>
+<p>
+<dd> You might want to check the values of certain program definitions
+before compiling.  Change the definitions of <em>ApplicationDefaults,
+DocumentationBrowser, EditorCommand, PostscriptColorDevice,
+PrintCommand,</em> and <em>RGBColorDatabase</em> in
+<tt>magick/magick.h</tt> to suit your local requirements.  Next, type.
+<p>
+<DD>Type
+<PRE>
+      @make
+      set display/create/node=node_name::
+</PRE>
+<DD>where node_name is the <B>DECNET</B> X server to contact.
+<P>
+<DD>Finally type:
+<PRE>
+      display
+</PRE>
+<DD>Alternatively, get a zipped distribution (with <B>JPEG, TIFF,</B> and
+<B>TTF</B>) from <A HREF="ftp://204.183.81.131/pub/ImageMagick/vms/">
+204.183.81.131</A>.
+<P>
+<DD>The VMS <B>JPEG, TIFF,</B> and <B>XPM</B> source libraries are available on
+<I>axp.psl.ku.dk</I> in [<I>anonymous.decwindows.lib</I>].
+<P>
+<DD>Thanks to 
+<A HREF="mailto:pmoreau@cenaath.cena.dgac.fr"> pmoreau@cenaath.cena.dgac.fr</A>
+for supplying invaluable help as well as the VMS versions of the <B>JPEG, MPEG,
+TIFF,</B> and <B>XPM</B> libraries.
+</DL>
+<DL>
+<br>
+<P><A HREF="#top"><I>Back to Contents</I></A><p>
+<HR>
+<H2>
+<A NAME="ntc">
+<DT>NT Compilation
+</H2>
+<p>
+<dd>The <A HREF="ftp://204.183.81.131/pub/ImageMagick/nt">NT</a>
+distribution contains <b>MetroWerks Codewarrior Professional</b>
+projects and a <b>Visual C++</b> workspace (thanks to
+<a href="mailto:BillR@corbis.com">Bill Radcliffe</a>) for
+compilation.  For those who do not have access to CodeWarrior or
+Visual C++, the binaries for the command line utilities are
+enclosed.
+<p>
+<dd> If you have an NT X server like
+<A HREF="http://www.hummingbird.com">Exceed</A> you will also need to include
+<p>
+<pre>
+    SET DISPLAY=<local-ip-address>:0.0
+</pre>
+<dd>in the System Control panel (NT) or <tt>Autoexec.bat</tt> (Win95).
+<tt>Autoexec.bat</tt> requires that you restart your computer.  See
+<a href=http://www.rahul.net/kenton/xsites.html>
+Technical  Window System and OSF/Motif WWW Sites</a> for a list of
+commercial and free X server software.  Without an X server
+you can still <A HREF="../www/display.html">display</A> or
+<A HREF="../www/animate.html">animate</A> to, or
+<A HREF="../www/import.html">import</A> from, a remote X server.
+<A HREF="../www/convert.html">Convert</A>,
+<A HREF="../www/mogrify.html">mogrify</A>,
+<A HREF="../www/montage.html">montage</A>,
+<A HREF="../www/combine.html">combine</A>, and
+<A HREF="../www/identify.html">identify</A>, will work with or without
+an X server directly from the command prompt.
+<p>
+<dd>To view any image in a Microsoft window, type
+<p>
+<pre>
+    convert image.ext win:
+</pre>
+<p>
+<dd><A HREF="../www/import.html">Import</A> works if you have at least one
+X window open.  Alternatively, type
+<p>
+<pre>
+    convert x:root image.gif
+</pre>
+<p>
+<dd>Make sure <tt>gswin32</tt> (Ghostscript) is in your execution path (see
+<tt>Autoexec.bat</tt>), otherwise, you will be unable to convert or view
+a Postscript document.
+<p>
+<dd>Make sure <tt>iexplore</tt> (Internet Explorer) is in your execution
+path (see <tt>Autoexec.bat</tt>), otherwise, you will be unable to browse
+the <b>ImageMagick</b> documentation.
+<p>
+<dd>To compile the source with Codewarrior, start with
+<tt>Magick/Magick.mcp</tt> and then <tt>animate.mcp</tt>, <tt>convert.mcp</tt>,
+etc..  The Visual C++ workspace is <tt>ImageMagick.dsw</tt>.
+<p>
+<dd>And yes, the NT executables will work under Windows 95.
+<p>
+</DL>
+<DL>
+<br>
+<P><A HREF="#top"><I>Back to Contents</I></A><p>
+<HR>
+<H2>
+<A NAME="macc">
+<DT>Macintosh Compilation
+</H2>
+<p>
+<dd>The <A HREF="ftp://204.183.81.131/pub/ImageMagick/mac">Macintosh</a>
+Macintosh distribution contains MetroWerks Codewarrior
+Professional projects for compilation.  For those who do not have
+access to CodeWarrior, the binaries for the command line utilities
+are enclosed.  I had to comment the inline intrinsic functions in
+<tt>math.h</tt> in order to compile.  If you have a better solution, let me
+know.
+
+<A HREF="../www/display.html"><I>Display</I></A>,
+<A HREF="../www/animate.html"><I>animate</I></A>, and
+<A HREF="../www/import.html"><I>import</I></A>
+currently do not work on the Macintosh.
+<p>
+<dd>I'm looking for a volunteer to get
+<A HREF="../www/display.html"><I>Display</I></A> and
+<A HREF="../www/animate.html"><I>animate</I></A> to work on the Macintosh.
+I also need a volunteer is needed to write a simple Mac program to call the
+<em>libMagick</em> routines and display an image in a window.
+</DL>
+<DL>
+<br>
+<P><A HREF="#top"><I>Back to Contents</I></A><p>
+<HR>
+<H2>
+<A NAME="anim">
+<DT>Animation
+</H2>
+<DD>To prevent color flashing on visuals that have colormaps,
+animate(1) creates a single colormap from the image sequence.
+This can be rather time consuming.  You can speed this
+operation up by reducing the colors in the image before you
+<B>animate</B> them.  Use
+<A HREF="../www/mogrify.html">mogrify</A> to color reduce the images:
+<PRE>
+      mogrify +map -colors 256 scenes/dna.[0-9]*
+</PRE>
+Alternatively, you can use a <I>Standard
+Colormap</I>; or a <I>static</I>, <I>direct</I>, or <I>true color visual</I>.
+You can
+define a <I>Standard Colormap</I> with <I>xstdcmap</I>(1).  For example, to
+use the "best" <I>Standard Colormap</I>, type:
+<PRE>
+      xstdcmap -best
+      animate -map best scenes/dna.[0-9]*
+</PRE>
+<DD>or to use a true color visual:
+<PRE>
+      animate -visual truecolor scenes/dna.[0-9]*
+</PRE>
+<DD>Image filenames can appear in any order on the command line if
+the scene keyword is specified in the <B>MIFF</B> image.  Otherwise
+the images display in the order they appear on the command
+line.  A scene is specified when converting from another image
+format to <B>MIFF</B> by using the "scene" option with any filter.
+Be sure to choose a scene number other than zero.  For
+example, to convert a <B>TIFF</B> image to a <B>MIFF</B> image as scene #2,
+type:
+<PRE>
+      convert -scene 2 image.tiff image.miff
+</PRE>
+</DL>
+<DL>
+<br>
+<P><A HREF="#top"><I>Back to Contents</I></A><p>
+<HR>
+<H2>
+<A NAME="imag">
+<DT>16-BIT Imaging
+</H2>
+<DD> By default, ImageMagick uses a color depth of 8 bits (e.g. [0..255]
+for each of red, green, blue, and transparency components).  Any 16-bit image
+is scaled immediately to 8-bits before any image viewing or processing occurs.
+If you want to work directly with 16-bit images (e.g. [0..65535]), edit
+<TT>Magick.tmpl</TT>  and define <tt>QuantumLeap</tt> or use
+<tt>-enable-16bit</tt> with configure.  Next, type:
+<P>
+<pre>
+    make clean
+    make
+</pre>
+<P>
+In 16-bit mode expect to use about 33% more memory on the average.
+Also expect some processing to be slower than in 8-bit
+mode (e.g.  Oil Painting, Segment, etc).
+<P>  
+In general, 16-bit mode is only useful if you have 16-bit images that
+you want to manipulate and save the transformed image back to a 16-bit
+image format (e.g. <B>PNG</B>, <B>VIFF</B>).
+</DL>
+<DL>
+<br>
+<P><A HREF="#top"><I>Back to Contents</I></A><p>
+<HR>
+<H2>
+<A NAME="mach">
+<DT>64-BIT Machines
+</H2>
+<DD> Each pixel, within <B>ImageMagick</B>, is represented by the
+<tt>RunlengthPacket</tt> structure found in <tt>magick/image.h</tt>.
+Only 8 bits are required for each color component and 16 bits for the
+colormap index for a total of 6 bytes.  If <tt>QuantumLeap</tt> is defined
+(see 16-BIT IMAGING above), the color component size increases to 16 bits for
+a total of 10 bytes.  Some 64-bit machines pad the structure which can
+cause a significant waste of memory.  For the cray, change the
+<tt>RunlengthPacket</tt> structure to this
+<p>
+<pre>
+    typedef struct _RunlengthPacket
+    {
+      unsigned char
+        red : QuantumDepth,
+        green : QuantumDepth,
+        blue : QuantumDepth,
+        length : QuantumDepth;
+
+      unsigned short
+        index : 16;
+    } RunlengthPacket;
+</pre>
+<p>
+before compiling.
+<p>
+I'm not sure if this will work on other 64-bit machines that pad.  If you
+know a better solution, please send me E-mail.  Note, that the Dec Alpha
+apparently does not pad the structure so ImageMagick should be fine on
+this particular 64-bit machine.
+<P>
+</DL>
+<DL>
+<br>
+<P><A HREF="#top"><I>Back to Contents</I></A><p>
+<HR>
+<H2>
+<A NAME="miff">
+<DT>MIFF Image Format
+</H2>
+<DD><A HREF="../www/miff.html"> MIFF</A> is an image format which I developed.
+I like it because
+<P>
+<OL>
+<LI>It is machine independent.  It can be read on virtually
+       any computer.  No byte swapping is necessary.
+<P>
+<LI>It has a text header.  Most image formats are coded in
+       binary and you cannot easily tell attributes about the
+       image.  Use more(1) on <B>MIFF</B> image files and the
+       attributes are displayed in text form.
+<P>
+
+<LI>It can handle runlength-encoded images.  Although most
+       scanned images do not benefit from runlength-encoding,
+       most computer-generated images do.  Images of mostly
+       uniform colors have a high compression ratio and
+       therefore take up less memory and disk space.
+<P>
+
+<LI>It allows a scene number to be specified.  This allows
+       you to specify an animation sequence out-of-order on the
+       command line.  The correct order is determined by the
+       scene number of each image.
+<P>
+
+<LI><B>MIFF</B> computes a digital signature for images.
+       This is useful for comparing images.
+       If two image files have the same signature, they are identical images.
+<P>
+
+<LI>There is a <B>montage</B> keyword allowing an image to act as
+       a visual image directory.  See display(1) for more details.
+</OL>
+<P>
+<DD>One way to get an image into <B>MIFF</B> format is to use
+<A HREF="../www/convert.html">convert</A> or read it from an X
+window using the 
+<A HREF="../www/import.html">import</A> program.  Alternatively,
+type the necessary header information in a file with a text editor.  Next,
+dump the binary bytes into another file.  Finally, type
+<PRE>
+      cat header binary_image | display -write image.miff -
+</PRE>
+<DD>For example, suppose you have a raw red, green, blue image
+  file on disk that is 640 by 480.  The header file would look
+  like this:
+<PRE>
+      id=ImageMagick columns=640 rows=480 :
+</PRE>
+<DD>The image file would have red, green, blue tuples (rgbrgbrgb...).
+
+  Refer to the
+<A HREF="../www/display.html">display</A> manual page for more details.
+</DL>
+<DL>
+<br>
+<P><A HREF="#top"><I>Back to Contents</I></A><p>
+<HR>
+<H2>
+<A NAME="copy">
+<DT>Copyright
+</H2>
+<B>
+<dd>Copyright 1998 E. I. du Pont de Nemours and Company
+<p>
+<dd>Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files ("ImageMagick"),
+to deal in ImageMagick without restriction, including without limitation 
+the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+and/or sell copies of ImageMagick, and to permit persons to whom the 
+ImageMagick is furnished to do so, subject to the following conditions:
+<p>
+<dd>The above copyright notice and this permission notice shall be included in 
+all copies or substantial portions of ImageMagick. 
+<p>
+<dd>The software is provided "as is", without warranty of any kind, express or 
+implied, including but not limited to the warranties of merchantability, 
+fitness for a particular purpose and noninfringement.In no event shall 
+E. I. du Pont de Nemours and Company be liable for any claim, damages or 
+other liability, whether in an action of contract, tort or otherwise,
+arising from, out of or in connection with ImageMagick or the use or other 
+dealings in ImageMagick. 
+<p>
+<dd>Except as contained in this notice, the name of the E. I. du Pont de 
+Nemours and Company shall not be used in advertising or otherwise to 
+promote the sale, use or other dealings in ImageMagick without prior 
+written authorization from the E. I. du Pont de Nemours and Company. 
+</B>
+</DL>
+<p><hr><p>
+<a href="../ImageMagick.html"><img alt="Home Page"
+  src="../images/home.gif" width=40 height=40 align=middle border=0></a>
+<font size="-2">Image manipulation software that works like magic.</font>
+</body>
+</html>

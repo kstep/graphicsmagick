@@ -1,0 +1,154 @@
+#ifndef XCOMM
+#define XCOMM #
+#endif
+
+XCOMM
+XCOMM Imakefile for display, animate, montage, and import.
+XCOMM
+XCOMM Copyright 1998 E. I. du Pont de Nemours & Company
+XCOMM
+XCOMM Permission is hereby granted, free of charge, to any person obtaining a
+XCOMM copy of this software and associated documentation files ("ImageMagick"),
+XCOMM to deal in ImageMagick without restriction, including without limitation
+XCOMM the rights to use, copy, modify, merge, publish, distribute, sublicense,
+XCOMM and/or sell copies of ImageMagick, and to permit persons to whom the
+XCOMM ImageMagick is furnished to do so, subject to the following conditions:
+XCOMM
+XCOMM The above copyright notice and this permission notice shall be included in
+XCOMM all copies or substantial portions of ImageMagick.
+XCOMM
+XCOMM The software is provided "as is", without warranty of any kind, express or
+XCOMM implied, including but not limited to the warranties of merchantability,
+XCOMM fitness for a particular purpose and noninfringement.  In no event shall
+XCOMM E. I. du Pont de Nemours and Company be liable for any claim, damages or
+XCOMM other liability, whether in an action of contract, tort or otherwise,
+XCOMM arising from, out of or in connection with ImageMagick or the use or other
+XCOMM dealings in ImageMagick.
+XCOMM
+XCOMM Except as contained in this notice, the name of the E. I. du Pont de
+XCOMM Nemours and Company shall not be used in advertising or otherwise to
+XCOMM promote the sale, use or other dealings in ImageMagick without prior
+XCOMM written authorization from the E. I. du Pont de Nemours and Company.
+XCOMM
+XCOMM
+
+#include "../Magick.tmpl"
+
+#ifdef SGIArchitecture
+OTHERLIBS= $(REQUIRED_LIBRARIES)
+#else
+#if (ProjectX > 5)
+#ifdef SunArchitecture
+SHLIBLDFLAGS= -G
+PICFLAGS= -K PIC
+#endif
+REQUIREDLIBS= $(REQUIRED_LIBRARIES) $(LDPRELIB) -lXext -lX11
+#endif
+#endif
+
+#ifdef AlphaArchitecture
+SO_REQLIBS= -lX11 -lc
+#endif
+
+HEADERS = magick.h image.h gems.h compress.h monitor.h error.h utility.h \
+  X.h widget.h PreRvIcccm.h memory.h delegates.h
+
+SRCS = image.c effects.c shear.c segment.c quantize.c colors.c gems.c \
+  signature.c decode.c encode.c compress.c utility.c monitor.c error.c \
+  X.c display.c animate.c widget.c PreRvIcccm.c memory.c
+OBJS = image.o effects.o shear.o segment.o quantize.o colors.o gems.o \
+  signature.o decode.o encode.o compress.o utility.o monitor.o error.o \
+  X.o display.o animate.o widget.o PreRvIcccm.o memory.o
+
+#ifdef HPArchitecture
+
+ARLIB = libMagick.a
+SHLIB = libMagick.sl
+
+# Add -Dhpux9 if compiling under HP-UX 9.X
+EXTRA_DEFINES = +z # -Dhpux9
+
+all: install-arlib install-shlib
+
+$(ARLIB): $(OBJS)
+	-$(RM) $(ARLIB)
+	-ar rc $(ARLIB) $(OBJS)
+
+$(SHLIB): $(OBJS)
+	-ld -b -s -o $(SHLIB) $(OBJS)
+
+
+install-arlib: $(ARLIB)
+	-mkdir -p -m 755 $(MAGICKDIR)
+	-cp $(ARLIB) $(MAGICKDIR)
+	-chmod a+r $(MAGICKDIR) $(MAGICKDIR)/$(ARLIB)
+
+install-shlib: $(SHLIB)
+	-mkdir -p -m 755 $(MAGICKDIR)
+	-cp $(SHLIB) $(MAGICKDIR)
+	-chmod a+rx $(MAGICKDIR) $(MAGICKDIR)/$(SHLIB)
+
+clean::
+	-$(RM) $(ARLIB) $(SHLIB)
+
+#else
+
+#ifndef DoNormalLib
+#define DoNormalLib  YES
+#endif
+
+#define IncSubdir magick
+
+#ifndef SGIArchitecture
+SOMAGICKLIBREV= 4.0.10
+#endif
+
+#if (ProjectX < 5)
+  STD_DEFINES = LibraryDefines
+  CDEBUGFLAGS = LibraryCDebugFlags
+#if DoSharedLib
+  SharedLibraryObjectRule()
+  NormalSharedLibraryTarget(Magick,$(SOMAGICKLIBREV),$(OBJS))
+  InstallSharedLibrary(Magick,$(SOMAGICKLIBREV),$(LOCALLIB))
+#else
+  NormalLibraryObjectRule()
+  NormalLibraryTarget(Magick,$(OBJS))
+  InstallLibrary(Magick,$(LOCALLIB))
+#endif
+#endif
+
+#if (ProjectX == 5)
+#define LibName Magick
+#define SoRev SOMAGICKLIBREV
+#include <Library.tmpl>
+  LibraryObjectRule()
+#if DoSharedLib
+  NormalLibraryTarget(Magick,$(OBJS))
+  InstallLibrary(Magick,$(LOCALLIB))
+  SharedLibraryTarget(Magick,$(SOMAGICKLIBREV),$(OBJS),shared,..)
+  InstallSharedLibrary(Magick,$(SOMAGICKLIBREV),$(LOCALLIB))
+#else
+  NormalLibraryTarget(Magick,$(OBJS))
+  InstallLibrary(Magick,$(LOCALLIB))
+#endif
+#endif
+
+#if (ProjectX > 5)
+#define SoRev SOMAGICKLIBREV
+#include <Library.tmpl>
+  LibraryObjectRule()
+#if DoSharedLib
+  NormalLibraryTarget(Magick,$(OBJS))
+  InstallLibrary(Magick,$(LOCALLIB))
+  SharedLibraryTarget(Magick,$(SOMAGICKLIBREV),$(OBJS),.,.)
+  InstallSharedLibrary(Magick,$(SOMAGICKLIBREV),$(LOCALLIB))
+#else
+  UnsharedLibraryTarget(Magick,$(OBJS),.,.)
+  InstallLibrary(Magick,$(LOCALLIB))
+#endif
+#endif
+
+#endif /* HPArchitecture */
+
+InstallMultiple($(HEADERS),$(LOCALINC))
+DependTarget()

@@ -1,0 +1,153 @@
+<HTML VERSION="2.0">
+<HEAD>
+<TITLE>ImageMagick - Application Programmer Interface</TITLE>
+<liNK rev="made" href="mailto:cristy@mystic.es.dupont.com">
+<meta name="description" content="ImageMagick, version 4.1, is a package for
+  display and interactive manipulation of images for the X Window System. It
+  is written in C and interfaces to the X library, and therefore does not
+  require any proprietary toolkit in order to compile.  Although the software
+  is copyrighted, it is available for free and can be redistributed without
+  fee.">
+<meta name="keywords" content="ImageMagick, Image Magick, Image Magic,
+  PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,
+  WebMagick, Web Magic, visualization, image processing, software development,
+  simulation, image, software, AniMagick, Animagic, X11">
+</HEAD>
+<body background="../images/background.gif">
+<center>
+<img alt="Image Magick" src="../images/api.gif" width=330 height=57>
+</center>
+<pre>
+</pre>
+<b>ImageMagick</b> has a number of functions that allow you to read,
+manipulate, write, or display an image.  These functions are accessible
+through the various <a href="tools.html">tools</a> or the object-oriented
+Perl interface, <a href="perl.html">PerlMagick</a>.  However, you can also
+access the functions directly from your program through the Magick
+Application Programmer Interface.  To invoke the functions, write your program
+in your favorite language while making calls to the Magick image functions and
+link with <tt>libMagick.a</tt>, <tt>libMagick.so</tt>, or <tt>Magick.dll</tt>
+depending on your system.
+<p>
+The API is divided into a number of categories:
+<dl>
+<dd> <img alt="*" src="../images/ball.gif" width=14 height=14>
+  <a href="api/decode.html">Utility Routines to Read Image Formats </a>
+<dd> <img alt="*" src="../images/ball.gif" width=14 height=14>
+  <a href="api/display.html">Interactively Display an Image </a>
+<dd> <img alt="*" src="../images/ball.gif" width=14 height=14>
+  <a href="api/animate.html">Interactively Animate an Image Sequence</a>
+<dd> <img alt="*" src="../images/ball.gif" width=14 height=14>
+  <a href="api/encode.html">Utility Routines to Write Image Formats</a>
+<dd> <img alt="*" src="../images/ball.gif" width=14 height=14>
+  <a href="api/image.html">ImageMagick Image Manipulation Routines</a>
+<dd> <img alt="*" src="../images/ball.gif" width=14 height=14>
+  <a href="api/effects.html">ImageMagick Image Effects Routines</a>
+<dd> <img alt="*" src="../images/ball.gif" width=14 height=14>
+  <a href="api/gems.html">Graphic Gems - Graphic Support Routines</a>
+<dd> <img alt="*" src="../images/ball.gif" width=14 height=14>
+  <a href="api/quantize.html">Reduce the Number of Unique Colors in an Image</a>
+<dd> <img alt="*" src="../images/ball.gif" width=14 height=14>
+  <a href="api/colors.html">Count the Colors in an Image</a>
+<dd> <img alt="*" src="../images/ball.gif" width=14 height=14>
+  <a href="api/shear.html">Shear or rotate a raster image by an
+    arbitrary angle</a>
+<dd> <img alt="*" src="../images/ball.gif" width=14 height=14>
+  <a href="api/segment.html">Segment an Image with Thresholding and the Fuzzy
+    c-Means Technique</a>
+<dd> <img alt="*" src="../images/ball.gif" width=14 height=14>
+  <a href="api/error.html">ImageMagick Error Routines</a>
+<dd> <img alt="*" src="../images/ball.gif" width=14 height=14>
+  <a href="api/monitor.html">ImageMagick Progress Monitor Routines</a>
+<dd> <img alt="*" src="../images/ball.gif" width=14 height=14>
+  <a href="api/signature.html">Compute a Digital Signature for an Image</a>
+<dd> <img alt="*" src="../images/ball.gif" width=14 height=14>
+  <a href="api/compress.html">Image Compression/Decompression Coders</a>
+<dd> <img alt="*" src="../images/ball.gif" width=14 height=14>
+  <a href="api/utility.html">ImageMagick Utility Routines</a>
+<dd> <img alt="*" src="../images/ball.gif" width=14 height=14>
+  <a href="api/X.html">X11 Utility Routines for ImageMagick</a>
+<dd> <img alt="*" src="../images/ball.gif" width=14 height=14>
+  <a href="api/widget.html">X11 User Interface Routines for ImageMagick</a>
+</dl>
+<p>
+Here is a sample program to get you started.  To find out about all the
+functions that are available, read the source code.  Each function is
+delinated with a full rows of percent signs with comments describing the
+parameters required for the function and what it does.  For ease in finding
+a function, they are sorted in alphabetical order.  Most of the image
+functions are found in <tt>image.c</tt> and <tt>effects.c</tt>.
+<p>
+Here is a full example of a program, <tt>example.c</tt>, that reads a JPEG
+image, creates a thumbnail, and writes it to disk in the GIF image format.
+<p>
+<pre>
+    #include &lt;magick.h&gt;
+
+    int main(int argc,char **argv)
+    {
+      Image
+        *image,
+        *scaled_image;
+
+      ImageInfo
+        image_info;
+
+      /*
+        Initialize the image info structure and read an image.
+      */
+      GetImageInfo(&image_info);
+      (void) strcpy(image_info.filename,"image.jpg");
+      image=ReadImage(&image_info);
+      if (image == (Image *) NULL)
+        exit(1);
+      /*
+        Turn the image into a thumbnail.
+      */
+      scaled_image=ZoomImage(image,106,80,MitchellFilter);
+      if (scaled_image != (Image *) NULL)
+        {
+          DestroyImage(image);
+          image=scaled_image;
+        }
+      /*
+        Write the image as GIF and destroy it.
+      */
+      (void) strcpy(image-&gt;filename,"image.gif");
+      WriteImage(&image_info,image);
+      DestroyImage(image);
+    }
+</pre>
+<p>
+Now we need to compile.  On Unix, the command would look something like
+this:
+<p>
+<pre>
+    cc -o example -O -I/usr/local/include/magick example.c \
+      -L/usr/local/lib -ljpeg -lMagick -lX11 -lm
+</pre>
+<p>
+Another example is <a href="smile.c">smile.c</a>.  Compile and excute it to
+display a smiley face on your X server.
+<p>
+If you compile with C++ you must undefine <tt>class</tt> (since it is
+a C++ reserved word).   The <tt>class</tt> element of the <tt>Image</tt>
+structure in C++ is defined as <tt>c_class</tt>.  Both of these requirements
+are illustrated here:
+<p>
+<pre>
+    #include &lt;magick.h&gt;
+    #if defined(__cplusplus) || defined(c_plusplus)
+    #undef class
+    #endif
+
+    ...
+
+    if (image-&gt;c_class == DirectClass)
+</pre>
+<p><hr><p>
+<a href="../ImageMagick.html"><img alt="Home Page"
+  src="../images/home.gif" width=40 height=40 align=middle border=0></a>
+<font size="-2">Image manipulation software that works like magic.</font>
+</body>
+</html>

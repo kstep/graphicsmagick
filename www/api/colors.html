@@ -1,0 +1,126 @@
+<HTML>
+<HEAD>
+<TITLE>colors - Count the Colors in an Image</TITLE>
+<LINK REV="made" HREF="mailto:cristy@mystic.es.dupont.com">
+</HEAD>
+
+<body background="../../images/background.gif">
+
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#NAME">NAME</A>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
+	<UL>
+
+		<LI><A HREF="#IsPseudoClass">IsPseudoClass</A>
+		<LI><A HREF="#NumberColors">NumberColors</A>
+	</UL>
+
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="NAME">NAME</A></H1>
+<P>
+colors - Count the Colors in an Image
+
+<P>
+<HR>
+<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
+status=<STRONG>IsPseudoClass</STRONG>(image)
+
+<P>
+<STRONG>NumberColors</STRONG>(image,file)
+
+<P>
+<HR>
+<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG><A NAME="item_o">node_info:</A></STRONG><DD>
+<P>
+The address of a structure of type NodeInfo which points to a node in the
+color cube tree that is to be pruned.
+
+</DL></DL>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG>color_cube:</STRONG><DD>
+<P>
+A pointer to the CubeInfo structure.
+
+<DT><STRONG>level:</STRONG><DD>
+<P>
+Specifies the level in the classification the node resides.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="IsPseudoClass">IsPseudoClass</A></H2>
+<P>
+Method IsPseudoClass returns True if the image is PseudoClass and has 256
+unique colors or less. If the image is DirectClass and has less 256 colors
+or less, the image is demoted to PseudoClass.
+
+<P>
+The format of the IsPseudoClass routine is:
+
+<P>
+<PRE>        status=IsPseudoClass(image)
+</PRE>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method IsPseudoClass returns True is the image is PseudoClass or has 256
+color or less.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a byte (8 bits) array of run-length encoded pixel data of
+your source image. The sum of the run-length counts in the source image
+must be equal to or exceed the number of pixels.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="NumberColors">NumberColors</A></H2>
+<P>
+Method NumberColors returns the number of unique colors in an image.
+
+<P>
+The format of the NumberColors routine is:
+
+<P>
+<PRE>        NumberColors(image,file)
+</PRE>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a byte (8 bits) array of run-length encoded pixel data of
+your source image. The sum of the run-length counts in the source image
+must be equal to or exceed the number of pixels.
+
+<DT><STRONG>file:</STRONG><DD>
+<P>
+An pointer to a FILE. If it is non-null a list of unique pixel field values
+and the number of times each occurs in the image is written to the file.
+
+</DL></DL>
+</BODY>
+
+</HTML>

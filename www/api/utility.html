@@ -1,0 +1,963 @@
+<HTML>
+<HEAD>
+<TITLE>utility - ImageMagick Utility Routines</TITLE>
+<LINK REV="made" HREF="mailto:cristy@mystic.es.dupont.com">
+</HEAD>
+
+<body background="../../images/background.gif">
+
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#NAME">NAME</A>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
+	<UL>
+
+		<LI><A HREF="#AppendImageFormat">AppendImageFormat</A>
+		<LI><A HREF="#BaseFilename">BaseFilename</A>
+		<LI><A HREF="#ConvertTextToUnicode">ConvertTextToUnicode</A>
+		<LI><A HREF="#ExpandFilename">ExpandFilename</A>
+		<LI><A HREF="#ExpandFilenames">ExpandFilenames</A>
+		<LI><A HREF="#GlobExpression">GlobExpression</A>
+		<LI><A HREF="#IsAccessible">IsAccessible</A>
+		<LI><A HREF="#IsDirectory">IsDirectory</A>
+		<LI><A HREF="#ListColors">ListColors</A>
+		<LI><A HREF="#ListFiles">ListFiles</A>
+		<LI><A HREF="#LocaleFilename">LocaleFilename</A>
+		<LI><A HREF="#LSBFirstReadLong">LSBFirstReadLong</A>
+		<LI><A HREF="#LSBFirstReadShort">LSBFirstReadShort</A>
+		<LI><A HREF="#LSBFirstWriteLong">LSBFirstWriteLong</A>
+		<LI><A HREF="#LSBFirstWriteShort">LSBFirstWriteShort</A>
+		<LI><A HREF="#MSBFirstOrderLong">MSBFirstOrderLong</A>
+		<LI><A HREF="#MSBFirstOrderShort">MSBFirstOrderShort</A>
+		<LI><A HREF="#MSBFirstReadShort">MSBFirstReadShort</A>
+		<LI><A HREF="#MSBFirstReadLong">MSBFirstReadLong</A>
+		<LI><A HREF="#MSBFirstWriteLong">MSBFirstWriteLong</A>
+		<LI><A HREF="#MSBFirstWriteShort">MSBFirstWriteShort</A>
+		<LI><A HREF="#MultilineCensus">MultilineCensus</A>
+		<LI><A HREF="#PostscriptGeometry">PostscriptGeometry</A>
+		<LI><A HREF="#ReadData">ReadData</A>
+		<LI><A HREF="#ReadDataBlock">ReadDataBlock</A>
+		<LI><A HREF="#SetClientName">SetClientName</A>
+		<LI><A HREF="#StringToArgv">StringToArgv</A>
+		<LI><A HREF="#StringToList">StringToList</A>
+		<LI><A HREF="#Strip">Strip</A>
+		<LI><A HREF="#TemporaryFilename">TemporaryFilename</A>
+	</UL>
+
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="NAME">NAME</A></H1>
+<P>
+utility - ImageMagick Utility Routines
+
+<P>
+<HR>
+<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
+<STRONG>AppendImageFormat</STRONG>(format,filename)
+
+<P>
+<STRONG>BaseFilename</STRONG>(name)
+
+<P>
+unicode=<STRONG>ConvertTextToUnicode</STRONG>(text,count)
+
+<P>
+<STRONG>ExpandFilename</STRONG>(filename)
+
+<P>
+<STRONG>ExpandFilenames</STRONG>(argc,argv)
+
+<P>
+<STRONG>GlobExpression</STRONG>(expression,pattern)
+
+<P>
+status=<STRONG>IsAccessible</STRONG>(filename)
+
+<P>
+status=<STRONG>IsDirectory</STRONG>(filename)
+
+<P>
+value=<STRONG>LSBFirstReadLong</STRONG>(file)
+
+<P>
+value=<STRONG>LSBFirstReadShort</STRONG>(file)
+
+<P>
+<STRONG>LSBFirstWriteLong</STRONG>(value,file)
+
+<P>
+<STRONG>LSBFirstWriteShort</STRONG>(value,file)
+
+<P>
+filelist=<STRONG>ListColors</STRONG>(pattern,number_colors)
+
+<P>
+filelist=<STRONG>ListFiles</STRONG>(directory,pattern,number_entries)
+
+<P>
+<STRONG>LocaleFilename</STRONG>(filename)
+
+<P>
+<STRONG>MSBFirstOrderLong</STRONG>(p,length);
+
+<P>
+value=<STRONG>MSBFirstReadLong</STRONG>(file)
+
+<P>
+value=<STRONG>MSBFirstReadShort</STRONG>(file)
+
+<P>
+<STRONG>MSBFirstWriteLong</STRONG>(value,file)
+
+<P>
+<STRONG>MSBFirstWriteShort</STRONG>(value,file)
+
+<P>
+geometry=<STRONG>PostscriptGeometry</STRONG>(page)
+
+<P>
+status=<STRONG>ReadData</STRONG>(data,size,number_items,file)
+
+<P>
+client_name=<STRONG>SetClientName</STRONG>(name)
+
+<P>
+argv=<STRONG>StringToArgv</STRONG>(text,argc)
+
+<P>
+list=<STRONG>StringToList</STRONG>(text)
+
+<P>
+<STRONG>Strip</STRONG>(data)
+
+<P>
+<STRONG>TemporaryFilename</STRONG>(filename)
+
+<P>
+<HR>
+<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<P>
+<HR>
+<H2><A NAME="AppendImageFormat">AppendImageFormat</A></H2>
+<P>
+Method AppendImageFormat appends the image format type to the filename. If
+an extension to the file already exists, it is first removed.
+
+<P>
+The format of the AppendImageFormat routine is:
+
+<P>
+<PRE>         AppendImageFormat(format,filename)
+</PRE>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG><A NAME="item_o">format:</A></STRONG><DD>
+<P>
+Specifies a pointer to an array of characters. This is the format of the
+image.
+
+<DT><STRONG>filename:</STRONG><DD>
+<P>
+Specifies a pointer to an array of characters. The unique file name is
+returned in this array.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="BaseFilename">BaseFilename</A></H2>
+<P>
+Method BaseFilename removes the path name component and any extensions.
+
+<P>
+The format of the BaseFilename function is:
+
+<P>
+<PRE>        BaseFilename(name)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>name:</STRONG><DD>
+<P>
+Specifies a pointer to an character array that contains the name.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ConvertTextToUnicode">ConvertTextToUnicode</A></H2>
+<P>
+Method ConvertTextToUnicode converts an ASCII text string to Unicode and
+returns the Unicode translation and the character count. Normal characters
+are just copied. However, escaped hex codes are interpreted before
+converting to Unicode (e.g. \0x30a3 is 12451 in the Unicode character set).
+
+<P>
+The format of the ConvertTextToUnicode function is:
+
+<P>
+<PRE>        unicode=ConvertTextToUnicode(text,count)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>unicode:</STRONG><DD>
+<P>
+Method ConvertTextToUnicode returns a pointer to an unsigned short array
+representing the Unicode translation of the ASCII string.
+
+<DT><STRONG>text:</STRONG><DD>
+<P>
+Specifies a pointer to an character array that contains the text to
+convert.
+
+<DT><STRONG>count:</STRONG><DD>
+<P>
+The number of characters that were translated from ASCII to Unicode is
+returned in this unsigned integer pointer.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ExpandFilename">ExpandFilename</A></H2>
+<P>
+Method ExpandFilename expands '~' in a filename.
+
+<P>
+The format of the ExpandFilename function is:
+
+<P>
+<PRE>        ExpandFilename(filename)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>filename:</STRONG><DD>
+<P>
+Specifies a pointer to an character array that contains the filename.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ExpandFilenames">ExpandFilenames</A></H2>
+<P>
+Method ExpandFilenames checks each argument of the command line vector and
+expands it if they have a wildcard character. For example, *.jpg might
+expand to: bird.jpg rose.jpg tiki.jpg.
+
+<P>
+The format of the ExpandFilenames function is:
+
+<P>
+<PRE>        ExpandFilenames(argc,argv)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>argc:</STRONG><DD>
+<P>
+Specifies a pointer to an integer describing the number of elements in the
+argument vector.
+
+<DT><STRONG>argv:</STRONG><DD>
+<P>
+Specifies a pointer to a text array containing the command line arguments.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="GlobExpression">GlobExpression</A></H2>
+<P>
+Method GlobExpression returns True if the expression matches the pattern.
+
+<P>
+The format of the GlobExpression function is:
+
+<P>
+<PRE>        GlobExpression(expression,pattern)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>expression:</STRONG><DD>
+<P>
+Specifies a pointer to a text string containing a file name.
+
+<DT><STRONG>pattern:</STRONG><DD>
+<P>
+Specifies a pointer to a text string containing a pattern.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="IsAccessible">IsAccessible</A></H2>
+<P>
+Method IsAccessible returns True if the file as defined by filename is
+accessible.
+
+<P>
+The format of the IsAccessible routine is:
+
+<P>
+<PRE>         status=IsAccessible(filename)
+</PRE>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method IsAccessible returns True is the file as defined by filename is
+accessible, otherwise False is returned.
+
+<DT><STRONG>filename:</STRONG><DD>
+<P>
+Specifies a pointer to an array of characters. The unique file name is
+returned in this array.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="IsDirectory">IsDirectory</A></H2>
+<P>
+Method IsDirectory returns True if the file as defined by filename is a
+directory. Once MetroWerks write a <CODE>stat(2)</CODE> function, we can
+remove the <CODE>chdir(2)</CODE> function.
+
+<P>
+The format of the IsAccessible routine is:
+
+<P>
+<PRE>         status=IsDirectory(filename)
+</PRE>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method IsDirectory returns True is the file as defined by filename is a
+directory, otherwise False is returned.
+
+<DT><STRONG>filename:</STRONG><DD>
+<P>
+Specifies a pointer to an array of characters. The unique file name is
+returned in this array.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ListColors">ListColors</A></H2>
+<P>
+Method ListColors reads the X client color database and returns a list of
+colors contained in the database sorted in ascending alphabetic order.
+
+<P>
+The format of the ListColors function is:
+
+<P>
+<PRE>        filelist=ListColors(pattern,number_colors)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>filelist:</STRONG><DD>
+<P>
+Method ListColors returns a list of colors contained in the database. If
+the database cannot be read, a NULL list is returned.
+
+<DT><STRONG>pattern:</STRONG><DD>
+<P>
+Specifies a pointer to a text string containing a pattern.
+
+<DT><STRONG>number_colors:</STRONG><DD>
+<P>
+This integer returns the number of colors in the list.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ListFiles">ListFiles</A></H2>
+<P>
+Method ListFiles reads the directory specified and returns a list of
+filenames contained in the directory sorted in ascending alphabetic order.
+
+<P>
+The format of the ListFiles function is:
+
+<P>
+<PRE>        filelist=ListFiles(directory,pattern,number_entries)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>filelist:</STRONG><DD>
+<P>
+Method ListFiles returns a list of filenames contained in the directory. If
+the directory specified cannot be read or it is a file a NULL list is
+returned.
+
+<DT><STRONG>directory:</STRONG><DD>
+<P>
+Specifies a pointer to a text string containing a directory name.
+
+<DT><STRONG>pattern:</STRONG><DD>
+<P>
+Specifies a pointer to a text string containing a pattern.
+
+<DT><STRONG>number_entries:</STRONG><DD>
+<P>
+This integer returns the number of filenames in the list.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="LocaleFilename">LocaleFilename</A></H2>
+<P>
+Method LocaleFilename replaces the contents of the string pointed to by
+filename by a unique file name relative to the directory.
+
+<P>
+The format of the LocaleFilename routine is:
+
+<P>
+<PRE>         LocaleFilename(filename)
+</PRE>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG>filename:</STRONG><DD>
+<P>
+Specifies a pointer to an array of characters. The unique file name is
+returned in this array.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="LSBFirstReadLong">LSBFirstReadLong</A></H2>
+<P>
+Method LSBFirstReadLong reads a long value as a 32 bit quantity in
+least-significant byte first order.
+
+<P>
+The format of the LSBFirstReadLong routine is:
+
+<P>
+<PRE>         value=LSBFirstReadLong(file)
+</PRE>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG>value:</STRONG><DD>
+<P>
+Method LSBFirstReadLong returns an unsigned long read from the file.
+
+<DT><STRONG>file:</STRONG><DD>
+<P>
+Specifies the file to read the data from.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="LSBFirstReadShort">LSBFirstReadShort</A></H2>
+<P>
+Method LSBFirstReadShort reads a short value as a 16 bit quantity in
+least-significant byte first order.
+
+<P>
+The format of the LSBFirstReadShort routine is:
+
+<P>
+<PRE>         value=LSBFirstReadShort(file)
+</PRE>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG>value:</STRONG><DD>
+<P>
+Method LSBFirstReadShort returns an unsigned short read from the file.
+
+<DT><STRONG>file:</STRONG><DD>
+<P>
+Specifies the file to read the data from.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="LSBFirstWriteLong">LSBFirstWriteLong</A></H2>
+<P>
+Method LSBFirstWriteLong writes a long value as a 32 bit quantity in
+least-significant byte first order.
+
+<P>
+The format of the LSBFirstWriteLong routine is:
+
+<P>
+<PRE>         LSBFirstWriteLong(value,file)
+</PRE>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG>value:</STRONG><DD>
+<P>
+Specifies the value to write.
+
+<DT><STRONG>file:</STRONG><DD>
+<P>
+Specifies the file to write the data to.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="LSBFirstWriteShort">LSBFirstWriteShort</A></H2>
+<P>
+Method LSBFirstWriteShort writes a long value as a 16 bit quantity in
+least-significant byte first order.
+
+<P>
+The format of the LSBFirstWriteShort routine is:
+
+<P>
+<PRE>         LSBFirstWriteShort(value,file)
+</PRE>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG>value:</STRONG><DD>
+<P>
+Specifies the value to write.
+
+<DT><STRONG>file:</STRONG><DD>
+<P>
+Specifies the file to write the data to.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="MSBFirstOrderLong">MSBFirstOrderLong</A></H2>
+<P>
+Method MSBFirstOrderLong converts a least-significant byte first buffer of
+integers to most-significant byte first.
+
+<P>
+The format of the MSBFirstOrderLong routine is:
+
+<P>
+<PRE>         MSBFirstOrderLong(p,length);
+</PRE>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG>p:</STRONG><DD>
+<P>
+Specifies a pointer to a buffer of integers.
+
+<DT><STRONG>length:</STRONG><DD>
+<P>
+Specifies the length of the buffer.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="MSBFirstOrderShort">MSBFirstOrderShort</A></H2>
+<P>
+Method MSBFirstOrderShort converts a least-significant byte first buffer of
+integers to most-significant byte first.
+
+<P>
+The format of the MSBFirstOrderShort routine is:
+
+<P>
+<PRE>     MSBFirstOrderLongShort(p,length);
+</PRE>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG>p:</STRONG><DD>
+<P>
+Specifies a pointer to a buffer of integers.
+
+<DT><STRONG>length:</STRONG><DD>
+<P>
+Specifies the length of the buffer.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="MSBFirstReadShort">MSBFirstReadShort</A></H2>
+<P>
+Method MSBFirstReadShort reads a short value as a 16 bit quantity in
+most-significant byte first order.
+
+<P>
+The format of the MSBFirstReadShort routine is:
+
+<P>
+<PRE>         value=MSBFirstReadShort(file)
+</PRE>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG>value:</STRONG><DD>
+<P>
+Method MSBFirstReadShort returns an unsigned short read from the file.
+
+<DT><STRONG>file:</STRONG><DD>
+<P>
+Specifies the file to read the data from.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="MSBFirstReadLong">MSBFirstReadLong</A></H2>
+<P>
+Method MSBFirstReadLong reads a long value as a 32 bit quantity in
+most-significant byte first order.
+
+<P>
+The format of the MSBFirstReadLong routine is:
+
+<P>
+<PRE>         value=MSBFirstReadLong(file)
+</PRE>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG>value:</STRONG><DD>
+<P>
+Method MSBFirstReadLong returns an unsigned long read from the file.
+
+<DT><STRONG>file:</STRONG><DD>
+<P>
+Specifies the file to read the data from.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="MSBFirstWriteLong">MSBFirstWriteLong</A></H2>
+<P>
+Method MSBFirstWriteLong writes a long value as a 32 bit quantity in
+most-significant byte first order.
+
+<P>
+The format of the MSBFirstWriteLong routine is:
+
+<P>
+<PRE>         MSBFirstWriteLong(value,file)
+</PRE>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG>value:</STRONG><DD>
+<P>
+Specifies the value to write.
+
+<DT><STRONG>file:</STRONG><DD>
+<P>
+Specifies the file to write the data to.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="MSBFirstWriteShort">MSBFirstWriteShort</A></H2>
+<P>
+Method MSBFirstWriteShort writes a long value as a 16 bit quantity in
+most-significant byte first order.
+
+<P>
+The format of the MSBFirstWriteShort routine is:
+
+<P>
+<PRE>         MSBFirstWriteShort(value,file)
+</PRE>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG>value:</STRONG><DD>
+<P>
+Specifies the value to write.
+
+<DT><STRONG>file:</STRONG><DD>
+<P>
+Specifies the file to write the data to.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="MultilineCensus">MultilineCensus</A></H2>
+<P>
+Method MultilineCensus returns the number of lines within a label. A line
+is represented by a \n character.
+
+<P>
+The format of the MultilineCenus routine is:
+
+<P>
+<PRE>     MultilineCenus(label)
+</PRE>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG>label:</STRONG><DD>
+<P>
+This character string is the label.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="PostscriptGeometry">PostscriptGeometry</A></H2>
+<P>
+Method PostscriptGeometry replaces any page mneumonic with the equivalent
+size in picas.
+
+<P>
+The format of the PostscriptGeometry routine is:
+
+<P>
+<PRE>         geometry=PostscriptGeometry(page)
+</PRE>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG>page:</STRONG><DD>
+<P>
+Specifies a pointer to an array of characters. The string is either a
+Postscript page name (e.g. A4) or a postscript page geometry (e.g.
+612x792+36+36).
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ReadData">ReadData</A></H2>
+<P>
+Method ReadData reads data from the image file and returns it. If it cannot
+read the requested number of items, False is returned indicating an error.
+
+<P>
+The format of the ReadData routine is:
+
+<P>
+<PRE>        status=ReadData(data,size,number_items,file)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method ReadData returns True if all the data requested is obtained without
+error, otherwise False.
+
+<DT><STRONG>data:</STRONG><DD>
+<P>
+Specifies an area to place the information reuested from the file.
+
+<DT><STRONG>size:</STRONG><DD>
+<P>
+Specifies an integer representing the length of an individual item to be
+read from the file.
+
+<DT><STRONG>number_items:</STRONG><DD>
+<P>
+Specifies an integer representing the number of items to read from the
+file.
+
+<DT><STRONG>file:</STRONG><DD>
+<P>
+Specifies a file to read the data.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ReadDataBlock">ReadDataBlock</A></H2>
+<P>
+Method ReadDataBlock reads data from the image file and returns it. The
+amount of data is determined by first reading a count byte. If
+ReadDataBlock cannot read the requested number of items, `-1' is returned
+indicating an error.
+
+<P>
+The format of the ReadData routine is:
+
+<P>
+<PRE>    status=ReadData(data,file)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method ReadData returns the number of characters read unless there is an
+error, otherwise `-1'.
+
+<DT><STRONG>data:</STRONG><DD>
+<P>
+Specifies an area to place the information reuested from the file.
+
+<DT><STRONG>file:</STRONG><DD>
+<P>
+Specifies a file to read the data.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="SetClientName">SetClientName</A></H2>
+<P>
+Method SetClientName sets the client name if the name is specified.
+Otherwise the current client name is returned.
+
+<P>
+The format of the SetClientName routine is:
+
+<P>
+<PRE>        client_name=SetClientName(name)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>client_name:</STRONG><DD>
+<P>
+Method SetClientName returns the current client name.
+
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Specifies the new client name.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="StringToArgv">StringToArgv</A></H2>
+<P>
+Method StringToArgv converts a text string into command line arguments.
+
+<P>
+The format of the StringToArgv routine is:
+
+<P>
+<PRE>        argv=StringToArgv(text,argc)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>argv:</STRONG><DD>
+<P>
+Method StringToArgv returns the string list unless an error occurs,
+otherwise NULL.
+
+<DT><STRONG>text:</STRONG><DD>
+<P>
+Specifies the string to segment into a list.
+
+<DT><STRONG>argc:</STRONG><DD>
+<P>
+This integer pointer returns the number of arguments in the list.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="StringToList">StringToList</A></H2>
+<P>
+Method StringToList converts a text string into a list by segmenting the
+text string at each carriage return discovered. The list is converted to
+HEX characters if any control characters are discovered within the text
+string.
+
+<P>
+The format of the StringToList routine is:
+
+<P>
+<PRE>        list=StringToList(text)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>list:</STRONG><DD>
+<P>
+Method StringToList returns the string list unless an error occurs,
+otherwise NULL.
+
+<DT><STRONG>text:</STRONG><DD>
+<P>
+Specifies the string to segment into a list.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="Strip">Strip</A></H2>
+<P>
+Method Strip strips the whitespace from the beginning and end of a string
+of characters.
+
+<P>
+The format of the Strip routine is:
+
+<P>
+<PRE>       Strip(data)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>data:</STRONG><DD>
+<P>
+Specifies an array of characters.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="TemporaryFilename">TemporaryFilename</A></H2>
+<P>
+Method TemporaryFilename replaces the contents of the string pointed to by
+filename by a unique file name.
+
+<P>
+The format of the TemporaryFilename routine is:
+
+<P>
+<PRE>         TemporaryFilename(filename)
+</PRE>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG>filename:</STRONG><DD>
+<P>
+Specifies a pointer to an array of characters. The unique file name is
+returned in this array.
+
+</DL></DL>
+</BODY>
+
+</HTML>

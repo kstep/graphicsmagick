@@ -1,0 +1,346 @@
+<HTML VERSION="2.0">
+<HEAD>
+<TITLE>ImageMagick Image File Format</TITLE>
+<LINK rev="made" href="mailto:cristy@mystic.es.dupont.com">
+<meta name="description" content="ImageMagick, version 4.1, is a package for
+  display and interactive manipulation of images for the X Window System. It
+  is written in C and interfaces to the X library, and therefore does not
+  require any proprietary toolkit in order to compile.  Although the software
+  is copyrighted, it is available for free and can be redistributed without
+  fee.">
+<meta name="keywords" content="ImageMagick, Image Magick, Image Magic,
+  PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,
+  WebMagick, Web Magic, visualization, image processing, software development,
+  simulation, image, software, AniMagick, Animagic, X11">
+</HEAD>
+<body background="../images/background.gif">
+<CENTER>
+<img src="../images/miff.gif" align=bottom width=433 height=116>
+</CENTER>
+<pre>
+
+</pre>
+<DL>
+<H2>
+<A NAME="desc">
+<DT>Description
+</A>
+</H2>
+<DD> <B>Magick Image File Format (MIFF)</B> is a platform-independent
+format for storing bitmap images.  <B>MIFF</B> is a part of the
+<a href=../ImageMagick.html>ImageMagick</a> toolkit of image manipulation
+utilities for the <I>X Window System</I>.  <B>ImageMagick</B> is capable of
+converting many different image file formats to and from <B>MIFF</B>
+(<I>e.g.</I> <B>JPEG, XPM, TIFF,</B> <I>etc.</I>).
+<P>
+A <B>MIFF</B> image file consist of two sections.  The first
+section is a header composed of keywords describing the
+image in text form.  The next section is the binary image
+data.  The header is separated from the image data by a <tt>:</tt>
+character immediately followed by a <I>newline</I>.
+<P>
+The <B>MIFF</B> header is composed entirely of LATIN-1 characters.
+The fields in the header are keyword and value combination
+in the <EM>keyword</EM>=<EM>value</EM> format, with each keyword and value
+separated by an equal sign (=).  Each <EM>keyword</EM>=<EM>value</EM>
+combination is delimited by at least one control or
+whitespace character.  Comments may appear in the header
+section and are always delimited by braces.  The <B>MIFF</B> header
+always ends with a colon (<tt>:</tt>) character, followed by a
+<I>newline</I> character.  It is also common for a
+<I>formfeed</I> and a
+<I>newline</I> character to appear before the colon. You can then
+list the image keywords with <b>more(1)</b>, without printing the
+binary image that follows the colon separator.
+<P>
+The following is a list of <EM>keyword</EM>=<EM>value</EM> combinations that
+may be found in a <B>MIFF</B> file:
+<p>
+<DL>
+<DL>
+<DT><B>class</B>=<I>DirectClass</I>
+<DT><B>class</B>=<I>PseudoClass</I>
+<DD>the type of binary image data stored in the <B>MIFF</B> file.  If this
+keyword is not present, <I>DirectClass</I> image data is assumed.
+<P>
+<DT><B>colors</B>=<I>value</I>
+<DD> the number of colors in a <I>DirectClass</I> image.
+For a <I>PseudoClass</I> image, this keyword specifies the
+size of the colormap.  If this keyword is not present
+in the header, and the image is <I>PseudoClass</I>, a linear
+256 color grayscale colormap is used with the image
+data.
+<P>
+<DT><B>columns</B>=<I>value</I>
+<DD>the width of the image in pixels.  This is a
+required keyword and has no default.
+<P>
+<DT><B>color-profile</B>=<I>value</I>
+<DD>the number of bytes in the International Color Consortium color profile.
+The profile is defined by the <a href=ftp://sgigate.sgi.com/pub/icc/icc34.ps>
+ICC profile specification</a>.
+<P>
+<DT><B>compression</B>=<I>RunlengthEncoded</I>
+<DT><B>compression</B>=<I>Zip</I>
+<DT><B>compression</B>=<I>BZip</I>
+<DD>the type of algorithm
+  used to compress the image data.  If this keyword is
+  not present, the image data is assumed to be
+  uncompressed.
+<P>
+<DT><B>delay</B> <EM>&lt;1/100ths of a second&gt;</EM>
+<DD>the interframe delay in an image sequence.  The maximum delay is 65535.
+<P>
+<DT><B>depth</B>=<I>8</I>
+<DT><B>depth</B>=<I>16</I>
+<DD> depth of a single color value representing values from 0 to
+ 255 (depth 8) or 65535 (depth 16).  If this keyword is absent, a depth of 8 is
+assumed.
+<P>
+<DT><B>gamma</B>=<I>value</I>
+<DD>
+gamma of the image.  If it is not specified, a gamma of 1.0
+(linear brightness response) is assumed,
+<P>
+<DT><B>id</B>=<I>ImageMagick</I>
+<DD>identify the file as a <B>MIFF</B>-format
+image file.  This keyword is required and has no
+default.  Although this keyword can appear anywhere in
+the header, it should start as the first keyword of the
+header in column 1.  This will allow programs like
+<I>file</I>(1) to easily identify the file as <B>MIFF</B>.
+<P>
+<DT><B>iterations</B> <EM>value</EM>
+<DD> the number of times an image sequence loops before stopping.
+<p>
+<DT><B>label</B>="<I>value</I>"
+<DD> this optional keyword defines a short title or caption for the image.  If
+any whitespace appears in the label, it must be enclosed within double
+quotes.
+<P>
+<DT><B>matte</B>=<I>True</I>
+<DT><B>matte</B>=<I>False</I>
+<DD>specifies whether a <I>DirectClass</I> image has
+  matte data.  Matte data is generally useful for image
+  compositing.  This keyword has no meaning for pseudocolor images.
+<P>
+<DT><B>montage</B>=<I>&lt;width&gt;x&lt;height&gt;{+-}&lt;x</I>
+<I>offset</I>&gt;{+-}&lt;<I>y</I> <EM>offset</EM>&gt;
+<DD>size and location of the individual tiles of a
+composite image.  See <I>X(1)</I> for details about the
+geometry specification.
+<P>
+<DD>Use this keyword when the image is a composite of a number
+of different tiles.  A tile consists of an image and
+optionally a border and a label.  &lt;<EM>width</EM>&gt; is the size in
+pixels of each individual tile in the horizontal direction
+and &lt;<EM>height</EM>&gt; is the size in the vertical direction.  Each
+tile must have an equal number of pixels in width and equal
+in height.  However, the width can differ from the height.
+&lt;<I>x</I> <EM>offset</EM>&gt; is the offset in number of pixels from the
+vertical edge of the composite image where the first tile of
+a row begins and &lt;<I>y</I> <EM>offset</EM>&gt; is the offset from the
+horizontal edge where the first tile of a column begins.
+<P>
+<DD>If this keyword is specified, a directory of tile names must
+follow the image header.  The format of the directory is
+explained below.
+<P>
+<DT><B>packets</B>=<I>value</I>
+<DD>the number of compressed color packets in the
+image data section.  This keyword is optional for
+<I>RunlengthEncoded</I> images, mandatory for 
+<A HREF="http://www.cdrom.com/pub/infozip/zlib/index.html">Zip</A> or
+<A HREF="http://www.muraroa.demon.co.uk">BZip</A> compressed images,
+and not used for uncompressed image.
+<p>
+<DT><B>page</B>=<I>value</I>
+<DD>preferred size and location of an image canvas.
+<P>
+<DT><B>red-primary</B>=<I>x,y</I>
+<DT><B>green-primary</B>=<I>x,y</I>
+<DT><B>blue-primary</B>=<I>x,y</I>
+<DT><B>white-point</B>=<I>x,y</I>
+<DD>this optional keyword reflects the chromaticity primaries and white point.
+<P>
+<DT><B>rendering-intent</B>=<I>saturation</I>
+<DT><B>rendering-intent</B>=<I>perceptual</I>
+<DT><B>rendering-intent</B>=<I>absolute</I>
+<DT><B>rendering-intent</B>=<I>relative</I>
+<DD>Rendering intent is the CSS-1 property that has been defined by the
+<a href=http://www.color.org>International Color Consortium</a>.
+<P>
+<DT><B>resolution</B>=<I>&lt;x-resolution&gt;x&lt;y-resolution&gt;</I>
+<DD>
+vertical and horizontal resolution of the image.  See <b>units</b>
+for the specific resolution units (e.g. pixels per inch).
+<P>
+<DT><B>rows</B>=<I>value</I>
+<DD>the height of the image in pixels.  This is a
+required keyword and has no default.
+<P>
+<DT><B>scene</B>=<I>value</I>
+<DD> the sequence number for this <B>MIFF</B> image file.
+  This optional keyword is used when a <B>MIFF</B> image file is
+  one in a sequence of files used in an animation.
+<P>
+<DT><B>signature</B>=<I>value</I>
+<DD> this optional keyword contains a string that uniquely identifies
+the image pixel contents.  RSA's Data Security MD5 Digest Algorithm is
+recommended.
+<P>
+<DT><B>units</B>=<b>pixels-per-inch</b>
+<DT><B>units</B>=<I>pixels-per-centimeter</I>
+<DD> image resolution units.
+<P>
+</DL>
+</DL>
+<p>
+The following is a sample <B>MIFF</B> header.  In this example,
+&lt;FF&gt; is a formfeed character:
+<PRE>
+      id=ImageMagick
+      class=PseudoClass  colors=256
+      compression=RunlengthEncoded  packets=27601
+      columns=1280  rows=1024
+      scene=1
+      signature=d79e1c308aa5bbcdeea8ed63df412da9
+      {
+         Rendered via Dore by Sandi Tennyson.
+      }
+      &lt;FF&gt;
+      :
+</PRE>
+Note that <EM>keyword</EM>=<EM>value</EM> combinations may be separated by
+newlines or spaces and may occur in any order within the
+header.  Comments (within braces) may appear anywhere before
+the colon.
+<P>
+If you specify the <B>montage</B> keyword in the header, follow the
+header with a directory of image tiles.  This directory
+consists of a name for each tile of the composite image
+separated by a <B>newline</B> character.  The list is terminated
+with a NULL character.
+<p>
+If you specify the <b>color-profile</b> keyword in the header, follow
+the header (or montage directory if the <b>montage</b> keyword is in the
+header) with the binary color profile.
+<p>
+<P>
+Next comes the binary image data itself.
+How the image data is formatted depends upon the class of
+the image as specified (or not specified) by the value of
+the <B>class</B> keyword in the header.
+<P>
+<B>DirectClass</B> images (<tt>class=DirectClass</tt>) are continuous-tone,
+<B>RGB</B> images stored as intensity values in red-green-blue
+order.  Each color value is one byte in size for an image depth of 8 and there
+are three bytes per pixel (four with an optional matte value).  If the depth
+is 16, each color value is two bytes with the most significant byte being first.
+The total number of pixels in a <B>DirectClass</B> image
+is calculates by multiplying the rows value by the column
+value in the header.
+<P>
+<B>PseudoClass</B> images (<tt>class=PseudoClass</tt>) are colormapped 
+<B>RGB</B> images.  The colormap is stored as a series of red-green-blue 
+pixel values, each value being a byte in size.  If the image depth is 16,
+each colormap entry is two bytes with the most significant byte being
+first. The number of colormap entries is indicated by the colors
+keyword in the header, with a maximum of 65,535 total
+entries allowed.  The colormap data occurs immediately
+following the header (or image directory if the <B>montage</B>
+keyword is in the header).
+<P>
+<B>PseudoClass</B> image data is an array of index values into the
+color map.  If these are 256 or fewer colors in the image,
+each byte of image data contains an index value.  If the
+image contains more than 256 colors or the depth is 16, the index value
+is stored as two contiguous bytes with the most significant
+byte being first.  The total number of pixels in a
+<I>PseudoClass</I> image is calculated by multiplying the rows
+value by the columns value in the header.
+<P>
+The image data in a <B>MIFF</B> file may be uncompressed or may be
+compressed using one of two algorithms.  The compression
+keyword in the header indicates how the image data is
+compressed. The run-length encoding (RLE) algorithm may be
+used to encode image data into packets of compressed data.
+For <B>DirectClass</B> images, runs of identical pixels values (not
+BYTE values) are encoded into a series of four-byte packets
+(five bytes if a matte value is included).  The first three
+bytes of the packet contain the red, green, and blue values
+of the pixel in the run.  The fourth byte contains the
+number of pixels in the run.  This value is in the range of
+0 to 255 and is one less than the actual number of pixels in
+the run.  For example, a value of 127 indicates that there
+are 128 pixels in the run.
+<P>
+For <B>PseudoClass</B> images, the same RLE algorithm is used.
+Runs of identical index values are encoded into packets.
+Each packet contains the colormap index value followed by
+the number of index values in the run.  The number of bytes
+<i>n</i> a <B>PseudoClass</B> RLE packet will be either two or three,
+depending upon the size of the index values.  The number of
+RLE packets stored in the file is specified by the packets
+keyword in the header, but is not required.
+<p>
+Use <A HREF="ftp://ftp.uu.net/graphics/png/src/">Zip</A> compression 
+to achieve a greater compression ratio than run-length encoding.  The
+number of compressed packets stored in the file is specified by the
+<b>packets</b> keyword in the header.
+<P>
+<B>MIFF</B> files may contain more than one image.  Simply
+concatenate each individual image (composed of a header and
+image data) into one file.
+</DL>
+<DL>
+<H2>
+<A NAME="copy">
+<DT>Copyright   
+</A>
+</H2>
+<B>
+<dd>Copyright 1998 E. I. du Pont de Nemours and Company
+<p>
+<dd>Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files ("ImageMagick"),
+to deal in ImageMagick without restriction, including without limitation 
+the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+and/or sell copies of ImageMagick, and to permit persons to whom the 
+ImageMagick is furnished to do so, subject to the following conditions:
+<p>
+<dd>The above copyright notice and this permission notice shall be included in 
+all copies or substantial portions of ImageMagick. 
+<p>
+<dd>The software is provided "as is", without warranty of any kind, express or 
+implied, including but not limited to the warranties of merchantability, 
+fitness for a particular purpose and noninfringement.In no event shall 
+E. I. du Pont de Nemours and Company be liable for any claim, damages or 
+other liability, whether in an action of contract, tort or otherwise,
+arising from, out of or in connection with ImageMagick or the use or other 
+dealings in ImageMagick. 
+<p>
+<dd>Except as contained in this notice, the name of the E. I. du Pont de 
+Nemours and Company shall not be used in advertising or otherwise to 
+promote the sale, use or other dealings in ImageMagick without prior 
+written authorization from the E. I. du Pont de Nemours and Company. 
+</B>
+</DL>
+<DL>
+<H2>
+<A NAME="auth">
+<DT>Authors
+</A>
+</H2>
+<DD><I>John Cristy</I>, <A HREF="mailto:cristy@mystic.es.dupont.com">
+ <I>cristy@mystic.es.dupont.com</I></A> <B>E.I. du Pont de Nemours and Company
+Incorporated</B>.
+</DL>
+<P>
+<A HREF="#top"><I>Back to Contents</I></A>
+<p><hr><p>
+<a href="../ImageMagick.html"><img alt="Home Page"
+  src="../images/home.gif" width=40 height=40 align=middle border=0></a>
+<font size="-2">Image manipulation software that works like magic.</font>
+</body>
+</html>

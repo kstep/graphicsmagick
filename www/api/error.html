@@ -1,0 +1,199 @@
+<HTML>
+<HEAD>
+<TITLE>error - ImageMagick Error Routines</TITLE>
+<LINK REV="made" HREF="mailto:cristy@mystic.es.dupont.com">
+</HEAD>
+
+<body background="../../images/background.gif">
+
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#NAME">NAME</A>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
+	<UL>
+
+		<LI><A HREF="#MagickError">MagickError</A>
+		<LI><A HREF="#MagickWarning">MagickWarning</A>
+		<LI><A HREF="#SetErrorHandler">SetErrorHandler</A>
+		<LI><A HREF="#SetErrorStatus">SetErrorStatus</A>
+		<LI><A HREF="#SetWarningHandler">SetWarningHandler</A>
+	</UL>
+
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="NAME">NAME</A></H1>
+<P>
+error - ImageMagick Error Routines
+
+<P>
+<HR>
+<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
+<STRONG>MagickError</STRONG>(error,message,qualifier)
+
+<P>
+<STRONG>MagickWarning</STRONG>(warning,message,qualifier)
+
+<P>
+previous_handler=<STRONG>SetErrorHandler</STRONG>(handler)
+
+<P>
+previous_status=<STRONG>SetErrorStatus</STRONG>(status)
+
+<P>
+previous_handler=<STRONG>SetWarningHandler</STRONG>(handler)
+
+<P>
+<HR>
+<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG><A NAME="item_o">message:</A></STRONG><DD>
+<P>
+Specifies the message to display before terminating the program.
+
+<DT><STRONG>qualifier:</STRONG><DD>
+<P>
+Specifies any qualifier to the message.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="MagickError">MagickError</A></H2>
+<P>
+Method MagickError calls the error handler routines with an error message.
+
+<P>
+The format of the MagickError routine is:
+
+<P>
+<PRE>        MagickError(error,message,qualifier)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>error:</STRONG><DD>
+<P>
+Specifies the numeric error category.
+
+<DT><STRONG>message:</STRONG><DD>
+<P>
+Specifies the message to display before terminating the program.
+
+<DT><STRONG>qualifier:</STRONG><DD>
+<P>
+Specifies any qualifier to the message.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="MagickWarning">MagickWarning</A></H2>
+<P>
+Method MagickWarning calls the warning handler routines with an warning
+message.
+
+<P>
+The format of the MagickWarning routine is:
+
+<P>
+<PRE>        MagickWarning(warning,message,qualifier)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>warning:</STRONG><DD>
+<P>
+Specifies the numeric warning category.
+
+<DT><STRONG>message:</STRONG><DD>
+<P>
+Specifies the message to display before terminating the program.
+
+<DT><STRONG>qualifier:</STRONG><DD>
+<P>
+Specifies any qualifier to the message.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="SetErrorHandler">SetErrorHandler</A></H2>
+<P>
+Method SetErrorHandler sets the error handler to the specified routine and
+returns the previous error handler.
+
+<P>
+The format of the SetErrorHandler routine is:
+
+<P>
+<PRE>        previous_handler=SetErrorHandler(handler)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>handler:</STRONG><DD>
+<P>
+Specifies a pointer to a routine to handle errors.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="SetErrorStatus">SetErrorStatus</A></H2>
+<P>
+Method SetErrorStatus sets the error handler status and returns the
+previous status.
+
+<P>
+The format of the SetErrorStatus routine is:
+
+<P>
+<PRE>        previous_status=SetErrorStatus(status)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>previous_status:</STRONG><DD>
+<P>
+Method SetErrorStatus returns the current error status.
+
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Specifies the new status value.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="SetWarningHandler">SetWarningHandler</A></H2>
+<P>
+Method SetWarningHandler sets the warning handler to the specified routine
+and returns the previous warning handler.
+
+<P>
+The format of the SetWarningHandler routine is:
+
+<P>
+<PRE>        previous_handler=SetWarningHandler(handler)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>handler:</STRONG><DD>
+<P>
+Specifies a pointer to a routine to handle warnings.
+
+</DL></DL>
+</BODY>
+
+</HTML>

@@ -1,0 +1,578 @@
+<HTML>
+<HEAD>
+<TITLE>widget - X11 User Interface Routines for ImageMagick</TITLE>
+<LINK REV="made" HREF="mailto:cristy@mystic.es.dupont.com">
+</HEAD>
+
+<body background="../../images/background.gif">
+
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#NAME">NAME</A>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
+	<UL>
+
+		<LI><A HREF="#XColorBrowserWidget">XColorBrowserWidget</A>
+		<LI><A HREF="#XCommandWidget">XCommandWidget</A>
+		<LI><A HREF="#XConfirmWidget">XConfirmWidget</A>
+		<LI><A HREF="#XDialogWidget">XDialogWidget</A>
+		<LI><A HREF="#XFileBrowserWidget">XFileBrowserWidget</A>
+		<LI><A HREF="#XFontBrowserWidget">XFontBrowserWidget</A>
+		<LI><A HREF="#XInfoWidget">XInfoWidget</A>
+		<LI><A HREF="#XListBrowserWidget">XListBrowserWidget</A>
+		<LI><A HREF="#XMenuWidget">XMenuWidget</A>
+		<LI><A HREF="#XMonitorWidget">XMonitorWidget</A>
+		<LI><A HREF="#XNoticeWidget">XNoticeWidget</A>
+		<LI><A HREF="#XPreferencesWidget">XPreferencesWidget</A>
+		<LI><A HREF="#XTextViewWidget">XTextViewWidget</A>
+	</UL>
+
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="NAME">NAME</A></H1>
+<P>
+widget - X11 User Interface Routines for ImageMagick
+
+<P>
+<HR>
+<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
+<STRONG>XColorBrowserWidget</STRONG>(display,windows,action,reply)
+
+<P>
+selection_number=<STRONG>XCommandWidget</STRONG>(display,windows,selections,event)
+
+<P>
+status=<STRONG>XConfirmWidget</STRONG>(display,windows,message,qualifier)
+
+<P>
+<STRONG>XDialogWidget</STRONG>(display,windows,action,query,reply)
+
+<P>
+<STRONG>XFileBrowserWidget</STRONG>(display,windows,action,reply)
+
+<P>
+<STRONG>XFontBrowserWidget</STRONG>(display,windows,action,reply)
+
+<P>
+<STRONG>XInfoWidget</STRONG>(display,windows,activity)
+
+<P>
+<STRONG>XListBrowserWidget</STRONG>(display,windows,window_info,list,action,query,reply)
+
+<P>
+selection_number=<STRONG>XMenuWidget</STRONG>(display,windows,title,selections,item)
+
+<P>
+<STRONG>XMonitorWidget</STRONG>(display,windows,task,quantum,span)
+
+<P>
+<STRONG>XNoticeWidget</STRONG>(display,windows,message,qualifier)
+
+<P>
+<STRONG>XPreferencesWidget</STRONG>(display,resource_info,windows)
+
+<P>
+<STRONG>XTextViewWidget</STRONG>(display,resource_info,windows,mono,title,textlist)
+
+<P>
+<HR>
+<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<P>
+<HR>
+<H2><A NAME="XColorBrowserWidget">XColorBrowserWidget</A></H2>
+<P>
+Method XColorBrowserWidget displays a Color Browser widget with a color
+query to the user. The user keys a reply and presses the Action or Cancel
+button to exit. The typed text is returned as the reply function parameter.
+
+<P>
+The format of the XColorBrowserWidget routine is:
+
+<P>
+<PRE>      XColorBrowserWidget(display,windows,action,reply)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG><A NAME="item_o">display:</A></STRONG><DD>
+<P>
+Specifies a connection to an X server; returned from XOpenDisplay.
+
+<DT><STRONG>window:</STRONG><DD>
+<P>
+Specifies a pointer to a XWindows structure.
+
+<DT><STRONG>action:</STRONG><DD>
+<P>
+Specifies a pointer to the action of this widget.
+
+<DT><STRONG>reply:</STRONG><DD>
+<P>
+The response from the user is returned in this parameter.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="XCommandWidget">XCommandWidget</A></H2>
+<P>
+Method XCommandWidget maps a menu and returns the command pointed to by the
+user when the button is released.
+
+<P>
+The format of the XCommandWidget routine is:
+
+<P>
+<PRE>      selection_number=XCommandWidget(display,windows,selections,event)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>selection_number:</STRONG><DD>
+<P>
+Specifies the number of the selection that the user choose.
+
+<DT><STRONG>display:</STRONG><DD>
+<P>
+Specifies a connection to an X server; returned from XOpenDisplay.
+
+<DT><STRONG>window:</STRONG><DD>
+<P>
+Specifies a pointer to a XWindows structure.
+
+<DT><STRONG>selections:</STRONG><DD>
+<P>
+Specifies a pointer to one or more strings that comprise the choices in the
+menu.
+
+<DT><STRONG>event:</STRONG><DD>
+<P>
+Specifies a pointer to a X11 XEvent structure.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="XConfirmWidget">XConfirmWidget</A></H2>
+<P>
+Method XConfirmWidget displays a Confirm widget with a notice to the user.
+The function returns -1 if Dismiss is pressed, 0 for Cancel, and 1 for Yes.
+
+<P>
+The format of the XConfirmWidget routine is:
+
+<P>
+<PRE>      status=XConfirmWidget(display,windows,message,qualifier)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method XConfirmWidget returns True if the user presses Yes otherwise False
+is returned.
+
+<DT><STRONG>display:</STRONG><DD>
+<P>
+Specifies a connection to an X server; returned from XOpenDisplay.
+
+<DT><STRONG>window:</STRONG><DD>
+<P>
+Specifies a pointer to a XWindows structure.
+
+<DT><STRONG>message:</STRONG><DD>
+<P>
+Specifies the message to display before terminating the program.
+
+<DT><STRONG>qualifier:</STRONG><DD>
+<P>
+Specifies any qualifier to the message.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="XDialogWidget">XDialogWidget</A></H2>
+<P>
+Method XDialogWidget displays a Dialog widget with a query to the user. The
+user keys a reply and presses the Ok or Cancel button to exit. The typed
+text is returned as the reply function parameter.
+
+<P>
+The format of the XDialogWidget routine is:
+
+<P>
+<PRE>      XDialogWidget(display,windows,action,query,reply)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>display:</STRONG><DD>
+<P>
+Specifies a connection to an X server; returned from XOpenDisplay.
+
+<DT><STRONG>window:</STRONG><DD>
+<P>
+Specifies a pointer to a XWindows structure.
+
+<DT><STRONG>action:</STRONG><DD>
+<P>
+Specifies a pointer to the action of this widget.
+
+<DT><STRONG>query:</STRONG><DD>
+<P>
+Specifies a pointer to the query to present to the user.
+
+<DT><STRONG>reply:</STRONG><DD>
+<P>
+The response from the user is returned in this parameter.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="XFileBrowserWidget">XFileBrowserWidget</A></H2>
+<P>
+Method XFileBrowserWidget displays a File Browser widget with a file query
+to the user. The user keys a reply and presses the Action or Cancel button
+to exit. The typed text is returned as the reply function parameter.
+
+<P>
+The format of the XFileBrowserWidget routine is:
+
+<P>
+<PRE>      XFileBrowserWidget(display,windows,action,reply)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>display:</STRONG><DD>
+<P>
+Specifies a connection to an X server; returned from XOpenDisplay.
+
+<DT><STRONG>window:</STRONG><DD>
+<P>
+Specifies a pointer to a XWindows structure.
+
+<DT><STRONG>action:</STRONG><DD>
+<P>
+Specifies a pointer to the action of this widget.
+
+<DT><STRONG>reply:</STRONG><DD>
+<P>
+The response from the user is returned in this parameter.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="XFontBrowserWidget">XFontBrowserWidget</A></H2>
+<P>
+Method XFontBrowserWidget displays a Font Browser widget with a font query
+to the user. The user keys a reply and presses the Action or Cancel button
+to exit. The typed text is returned as the reply function parameter.
+
+<P>
+The format of the XFontBrowserWidget routine is:
+
+<P>
+<PRE>      XFontBrowserWidget(display,windows,action,reply)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>display:</STRONG><DD>
+<P>
+Specifies a connection to an X server; returned from XOpenDisplay.
+
+<DT><STRONG>window:</STRONG><DD>
+<P>
+Specifies a pointer to a XWindows structure.
+
+<DT><STRONG>action:</STRONG><DD>
+<P>
+Specifies a pointer to the action of this widget.
+
+<DT><STRONG>reply:</STRONG><DD>
+<P>
+The response from the user is returned in this parameter.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="XInfoWidget">XInfoWidget</A></H2>
+<P>
+Method XInfoWidget displays text in the Info widget. The purpose is to
+inform the user that what activity is currently being performed (e.g.
+reading an image, rotating an image, etc.).
+
+<P>
+The format of the XInfoWidget routine is:
+
+<P>
+<PRE>      XInfoWidget(display,windows,activity)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>display:</STRONG><DD>
+<P>
+Specifies a connection to an X server; returned from XOpenDisplay.
+
+<DT><STRONG>window:</STRONG><DD>
+<P>
+Specifies a pointer to a XWindows structure.
+
+<DT><STRONG>activity:</STRONG><DD>
+<P>
+This character string reflects the current activity and is displayed in the
+Info widget.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="XListBrowserWidget">XListBrowserWidget</A></H2>
+<P>
+Method XListBrowserWidget displays a List Browser widget with a query to
+the user. The user keys a reply or select a reply from the list. Finally,
+the user presses the Action or Cancel button to exit. The typed text is
+returned as the reply function parameter.
+
+<P>
+The format of the XListBrowserWidget routine is:
+
+<P>
+<PRE>      XListBrowserWidget(display,windows,window_info,list,action,query,reply)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>display:</STRONG><DD>
+<P>
+Specifies a connection to an X server; returned from XOpenDisplay.
+
+<DT><STRONG>window:</STRONG><DD>
+<P>
+Specifies a pointer to a XWindows structure.
+
+<DT><STRONG>list:</STRONG><DD>
+<P>
+Specifies a pointer to an array of strings. The user can select from these
+strings as a possible reply value.
+
+<DT><STRONG>action:</STRONG><DD>
+<P>
+Specifies a pointer to the action of this widget.
+
+<DT><STRONG>query:</STRONG><DD>
+<P>
+Specifies a pointer to the query to present to the user.
+
+<DT><STRONG>reply:</STRONG><DD>
+<P>
+The response from the user is returned in this parameter.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="XMenuWidget">XMenuWidget</A></H2>
+<P>
+Method XMenuWidget maps a menu and returns the command pointed to by the
+user when the button is released.
+
+<P>
+The format of the XMenuWidget routine is:
+
+<P>
+<PRE>      selection_number=XMenuWidget(display,windows,title,selections,item)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>selection_number:</STRONG><DD>
+<P>
+Specifies the number of the selection that the user choose.
+
+<DT><STRONG>display:</STRONG><DD>
+<P>
+Specifies a connection to an X server; returned from XOpenDisplay.
+
+<DT><STRONG>window:</STRONG><DD>
+<P>
+Specifies a pointer to a XWindows structure.
+
+<DT><STRONG>title:</STRONG><DD>
+<P>
+Specifies a character string that describes the menu selections.
+
+<DT><STRONG>selections:</STRONG><DD>
+<P>
+Specifies a pointer to one or more strings that comprise the choices in the
+menu.
+
+<DT><STRONG>item:</STRONG><DD>
+<P>
+Specifies a character array. The item selected from the menu is returned
+here.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="XMonitorWidget">XMonitorWidget</A></H2>
+<P>
+Method XMonitorWidget displays the progress a task is making in completing
+a task. A span of zero toggles the active status. An inactive state
+disables the progress monitor.
+
+<P>
+The format of the XMonitorWidget routine is:
+
+<P>
+<PRE>      XMonitorWidget(display,windows,task,quantum,span)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>display:</STRONG><DD>
+<P>
+Specifies a connection to an X server; returned from XOpenDisplay.
+
+<DT><STRONG>window:</STRONG><DD>
+<P>
+Specifies a pointer to a XWindows structure.
+
+<DT><STRONG>task:</STRONG><DD>
+<P>
+Identifies the task in progress.
+
+<DT><STRONG>quantum:</STRONG><DD>
+<P>
+Specifies the quantum position within the span which represents how much
+progress has been made in completing a task.
+
+<DT><STRONG>span:</STRONG><DD>
+<P>
+Specifies the span relative to completing a task.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="XNoticeWidget">XNoticeWidget</A></H2>
+<P>
+Method XNoticeWidget displays a Notice widget with a notice to the user.
+The function returns when the user presses the ``Dismiss'' button.
+
+<P>
+The format of the XNoticeWidget routine is:
+
+<P>
+<PRE>      XNoticeWidget(display,windows,message,qualifier)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>display:</STRONG><DD>
+<P>
+Specifies a connection to an X server; returned from XOpenDisplay.
+
+<DT><STRONG>window:</STRONG><DD>
+<P>
+Specifies a pointer to a XWindows structure.
+
+<DT><STRONG>message:</STRONG><DD>
+<P>
+Specifies the message to display before terminating the program.
+
+<DT><STRONG>qualifier:</STRONG><DD>
+<P>
+Specifies any qualifier to the message.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="XPreferencesWidget">XPreferencesWidget</A></H2>
+<P>
+Method XPreferencesWidget displays a Preferences widget with program
+preferences. If the user presses the Apply button, the preferences are
+stored in a configuration file in the users' home directory.
+
+<P>
+The format of the XPreferencesWidget routine is:
+
+<P>
+<PRE>      XPreferencesWidget(display,resource_info,windows)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>display:</STRONG><DD>
+<P>
+Specifies a connection to an X server; returned from XOpenDisplay.
+
+<DT><STRONG>resource_info:</STRONG><DD>
+<P>
+Specifies a pointer to a X11 XResourceInfo structure.
+
+<DT><STRONG>window:</STRONG><DD>
+<P>
+Specifies a pointer to a XWindows structure.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="XTextViewWidget">XTextViewWidget</A></H2>
+<P>
+Method XTextViewWidget displays text in a Text View widget.
+
+<P>
+The format of the XTextViewWidget routine is:
+
+<P>
+<PRE>      XTextViewWidget(display,resource_info,windows,mono,title,textlist)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>display:</STRONG><DD>
+<P>
+Specifies a connection to an X server; returned from XOpenDisplay.
+
+<DT><STRONG>resource_info:</STRONG><DD>
+<P>
+Specifies a pointer to a X11 XResourceInfo structure.
+
+<DT><STRONG>window:</STRONG><DD>
+<P>
+Specifies a pointer to a XWindows structure.
+
+<DT><STRONG>mono:</STRONG><DD>
+<P>
+Use mono-spaced font when displaying text.
+
+<DT><STRONG>title:</STRONG><DD>
+<P>
+This character string is displayed at the top of the widget window.
+
+<DT><STRONG>textlist:</STRONG><DD>
+<P>
+This string list is displayed within the Text View widget.
+
+</DL></DL>
+</BODY>
+
+</HTML>

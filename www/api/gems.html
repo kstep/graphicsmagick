@@ -1,0 +1,339 @@
+<HTML>
+<HEAD>
+<TITLE>gems - Graphic Gems - Graphic Support Routines</TITLE>
+<LINK REV="made" HREF="mailto:cristy@mystic.es.dupont.com">
+</HEAD>
+
+<body background="../../images/background.gif">
+
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#NAME">NAME</A>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
+	<UL>
+
+		<LI><A HREF="#Constrast">Constrast</A>
+		<LI><A HREF="#GenerateNoise">GenerateNoise</A>
+		<LI><A HREF="#HSLTransform">HSLTransform</A>
+		<LI><A HREF="#Hull">Hull</A>
+		<LI><A HREF="#InsidePrimitive">InsidePrimitive</A>
+		<LI><A HREF="#Interpolate">Interpolate</A>
+		<LI><A HREF="#Modulate">Modulate</A>
+		<LI><A HREF="#TransformHSL">TransformHSL</A>
+		<LI><A HREF="#Upsample">Upsample</A>
+	</UL>
+
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="NAME">NAME</A></H1>
+<P>
+gems - Graphic Gems - Graphic Support Routines
+
+<P>
+<HR>
+<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
+<STRONG>GenerateNoise</STRONG>(pixel,noise_type)
+
+<P>
+<STRONG>HSLTransform</STRONG>(hue,saturation,luminosity,red,green,blue)
+
+<P>
+<STRONG>Hull</STRONG>(x_offset,y_offset,polarity,columns,rows,f,g)
+
+<P>
+status=<STRONG>InsidePrimitive</STRONG>(primitive_info,annotate_info,x,y,image)
+
+<P>
+<STRONG>Interpolate</STRONG>(image,pixel,x,y)
+
+<P>
+<STRONG>TransformHSL</STRONG>(red,green,blue,hue,saturation,luminosity)
+
+<P>
+<STRONG>Upsample</STRONG>(width,height,scaled_width,pixels)
+
+<P>
+<HR>
+<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<P>
+<HR>
+<H2><A NAME="Constrast">Constrast</A></H2>
+<P>
+Method Contrast enhances the intensity differences between the lighter and
+darker elements of the image.
+
+<P>
+The format of the ContrastImage routine is:
+
+<P>
+<PRE>    Contrast(sign,red,green,blue)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG><A NAME="item_o">sign:</A></STRONG><DD>
+<P>
+A positive value enhances the contrast otherwise it is reduced.
+
+<DT><STRONG>red, green, blue:</STRONG><DD>
+<P>
+A pointer to a pixel component of type Quantum.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="GenerateNoise">GenerateNoise</A></H2>
+<P>
+Method GenerateNoise adds noise to a pixel.
+
+<P>
+The format of the GenerateNoise routine is:
+
+<P>
+<PRE>        GenerateNoise(pixel,noise_type)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>pixel:</STRONG><DD>
+<P>
+A structure of type Quantum.
+
+<DT><STRONG>noise_type:</STRONG><DD>
+<P>
+The type of noise: gaussian, multiplicative gaussian, impulse, laplacian,
+or poisson.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="HSLTransform">HSLTransform</A></H2>
+<P>
+Method HSLTransform converts a (hue, saturation, luminosity) to a (red,
+green, blue) triple.
+
+<P>
+The format of the HSLTransformImage routine is:
+
+<P>
+<PRE>        HSLTransform(hue,saturation,luminosity,red,green,blue)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>hue, saturation, luminosity:</STRONG><DD>
+<P>
+A double value representing a component of the HSL color space.
+
+<DT><STRONG>red, green, blue:</STRONG><DD>
+<P>
+A pointer to a pixel component of type Quantum.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="Hull">Hull</A></H2>
+<P>
+Method Hull implements the eight hull algorithm described in Applied
+Optics, Vol. 24, No. 10, 15 May 1985, ``Geometric filter for Speckle
+Reduction'', by Thomas R Crimmins. Each pixel in the image is replaced by
+one of its eight of its surrounding pixels using a polarity and negative
+hull function.
+
+<P>
+The format of the Hull routine is:
+
+<P>
+<PRE>        Hull(x_offset,y_offset,polarity,columns,rows,f,g)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>x_offset, y_offset:</STRONG><DD>
+<P>
+An integer value representing the offset of the current pixel within the
+image.
+
+<DT><STRONG>polarity:</STRONG><DD>
+<P>
+An integer value declaring the polarity (+,-).
+
+<DT><STRONG>columns, rows:</STRONG><DD>
+<P>
+Specifies the number of rows and columns in the image.
+
+<DT><STRONG>f, g:</STRONG><DD>
+<P>
+A pointer to an image pixel and one of it's neighbor.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="InsidePrimitive">InsidePrimitive</A></H2>
+<P>
+Method InsidePrimitive returns True if the (x,y) position is inside the
+primitive as defined in primitive_info. Otherwise False is returned.
+
+<P>
+The format of the InsidePrimitive routine is:
+
+<P>
+<PRE>        status=InsidePrimitive(primitive_info,annotate_info,x,y,image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method InsidePrimitive returns True if the (x,y) position is inside the
+primitive as defined in primitive_info. Otherwise False is returned.
+
+<DT><STRONG>primitive_info:</STRONG><DD>
+<P>
+Specifies a pointer to a PrimitiveInfo structure.
+
+<DT><STRONG>annotate_info:</STRONG><DD>
+<P>
+Specifies a pointer to a AnnotateInfo structure.
+
+<DT><STRONG>x,y:</STRONG><DD>
+<P>
+Integers representing the (x,y) location in the image.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="Interpolate">Interpolate</A></H2>
+<P>
+Method Interpolate applies bi-linear interpolation between a pixel and it's
+neighbors.
+
+<P>
+The format of the Interpolate routine is:
+
+<P>
+<PRE>        Interpolate(image,pixel,x,y)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<DT><STRONG>pixel:</STRONG><DD>
+<P>
+A pointer to a RunlengthPacket representing the current pixel.
+
+<DT><STRONG>x,y:</STRONG><DD>
+<P>
+A double representing the current (x,y) position of the pixel.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="Modulate">Modulate</A></H2>
+<P>
+Method Modulate modulates the hue, saturation, and brightness of an image.
+
+<P>
+The format of the ModulateImage routine is:
+
+<P>
+<PRE>    Modulate(percent_hue,percent_saturation,percent_luminosity,red,green,
+</PRE>
+<P>
+<PRE>      blue)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>percent_hue, percent_saturation, percent_luminosity:</STRONG><DD>
+<P>
+A double value representing the percent change in a component of the HSL
+color space.
+
+<DT><STRONG>red, green, blue:</STRONG><DD>
+<P>
+A pointer to a pixel component of type Quantum.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="TransformHSL">TransformHSL</A></H2>
+<P>
+Method TransformHSL converts a (red, green, blue) to a (hue, saturation,
+luminosity) triple.
+
+<P>
+The format of the TransformHSL routine is:
+
+<P>
+<PRE>        TransformHSL(red,green,blue,hue,saturation,luminosity)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>red, green, blue:</STRONG><DD>
+<P>
+A Quantum value representing the red, green, and blue component of a
+pixel..
+
+<DT><STRONG>hue, saturation, luminosity:</STRONG><DD>
+<P>
+A pointer to a double value representing a component of the HSL color
+space.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="Upsample">Upsample</A></H2>
+<P>
+Method Upsample
+
+<P>
+The format of the UpSample routine is:
+
+<P>
+<PRE>        Upsample(width,height,scaled_width,pixels)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>width,height:</STRONG><DD>
+<P>
+Unsigned values representinf the width and height of the image pixel array.
+
+<DT><STRONG>scaled_width:</STRONG><DD>
+<P>
+Specifies the final width of the upsampled pixel array.
+
+<DT><STRONG>pixels:</STRONG><DD>
+<P>
+An unsigned char containing the pixel data. On output the upsampled pixels
+are returned here.
+
+</DL></DL>
+</BODY>
+
+</HTML>

@@ -1,0 +1,80 @@
+<HTML>
+<HEAD>
+<TITLE>segment - Segment an Image with Thresholding and the Fuzzy c-Means Technique</TITLE>
+<LINK REV="made" HREF="mailto:cristy@mystic.es.dupont.com">
+</HEAD>
+
+<body background="../../images/background.gif">
+
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#NAME">NAME</A>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
+	<UL>
+
+		<LI><A HREF="#SegmentImage">SegmentImage</A>
+	</UL>
+
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="NAME">NAME</A></H1>
+<P>
+segment - Segment an Image with Thresholding and the Fuzzy c-Means
+Technique
+
+<P>
+<HR>
+<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
+colors=<STRONG>SegmentImage</STRONG>(image,colorspace,verbose)
+
+<P>
+<HR>
+<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<P>
+<HR>
+<H2><A NAME="SegmentImage">SegmentImage</A></H2>
+<P>
+Method SegmentImage analyzes the colors within a reference image and
+
+<P>
+The format of the SegmentImage routine is:
+
+<P>
+<PRE>        colors=SegmentImage(image,colorspace,verbose)
+</PRE>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG><A NAME="item_o">colors:</A></STRONG><DD>
+<P>
+The SegmentImage function returns this integer value. It is the actual
+number of colors allocated in the colormap.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+Specifies a pointer to an Image structure; returned from ReadImage.
+
+<DT><STRONG>colorspace:</STRONG><DD>
+<P>
+An unsigned integer value that indicates the colorspace. Empirical evidence
+suggests that distances in YUV or YIQ correspond to perceptual color
+differences more closely than do distances in RGB space. The image is then
+returned to RGB colorspace after color reduction.
+
+<DT><STRONG>verbose:</STRONG><DD>
+<P>
+A value greater than zero prints detailed information about the identified
+classes.
+
+</DL></DL>
+</BODY>
+
+</HTML>

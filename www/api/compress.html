@@ -1,0 +1,718 @@
+<HTML>
+<HEAD>
+<TITLE>compress - Image Compression/Decompression Coders</TITLE>
+<LINK REV="made" HREF="mailto:cristy@mystic.es.dupont.com">
+</HEAD>
+
+<body background="../../images/background.gif">
+
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#NAME">NAME</A>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
+	<UL>
+
+		<LI><A HREF="#ASCII85Encode">ASCII85Encode</A>
+		<LI><A HREF="#BMPDecodeImage">BMPDecodeImage</A>
+		<LI><A HREF="#BMPEncodeImage">BMPEncodeImage</A>
+		<LI><A HREF="#GIFDecodeImage">GIFDecodeImage</A>
+		<LI><A HREF="#GIFEncodeImage">GIFEncodeImage</A>
+		<LI><A HREF="#HuffmanDecodeImage">HuffmanDecodeImage</A>
+		<LI><A HREF="#HuffmanEncodeImage">HuffmanEncodeImage</A>
+		<LI><A HREF="#Huffman2DEncodeImage">Huffman2DEncodeImage</A>
+		<LI><A HREF="#LZWEncodeImage">LZWEncodeImage</A>
+		<LI><A HREF="#PackbitsDecodeImage">PackbitsDecodeImage</A>
+		<LI><A HREF="#PackbitsEncodeImage">PackbitsEncodeImage</A>
+		<LI><A HREF="#PCDDecodeImage">PCDDecodeImage</A>
+		<LI><A HREF="#PICTDecodeImage">PICTDecodeImage</A>
+		<LI><A HREF="#PICTEncodeImage">PICTEncodeImage</A>
+		<LI><A HREF="#RunlengthDecodeImage">RunlengthDecodeImage</A>
+		<LI><A HREF="#RunlengthEncodeImage">RunlengthEncodeImage</A>
+		<LI><A HREF="#SUNDecodeImage">SUNDecodeImage</A>
+		<LI><A HREF="#ZLIBEncodeImage">ZLIBEncodeImage</A>
+	</UL>
+
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="NAME">NAME</A></H1>
+<P>
+compress - Image Compression/Decompression Coders
+
+<P>
+<HR>
+<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
+<STRONG>ASCII85Encode</STRONG>(code,file)
+
+<P>
+status=<STRONG>BMPDecodeImage</STRONG>(file,pixels,compression,number_columns,number_rows)
+
+<P>
+status=<STRONG>GIFDecodeImage</STRONG>(image)
+
+<P>
+status=<STRONG>GIFEncodeImage</STRONG>(image,data_size)
+
+<P>
+status=<STRONG>Huffman2DEncodeImage</STRONG>(image_info,image)
+
+<P>
+status=<STRONG>HuffmanDecodeImage</STRONG>(image)
+
+<P>
+status=<STRONG>HuffmanEncodeImage</STRONG>(image_info,image)
+
+<P>
+status=<STRONG>LZWEncodeImage</STRONG>(file,pixels,number_pixels)
+
+<P>
+status=<STRONG>PCDDecodeImage</STRONG>(image,luma,chroma1,chroma2)
+
+<P>
+status=<STRONG>PICTDecodeImage</STRONG>(image,bytes_per_line,bits_per_pixel)
+
+<P>
+status=<STRONG>PICTEncodeImage</STRONG>(image,scanline,pixels)
+
+<P>
+<STRONG>PackbitsDecodeImage</STRONG>(image,channel)
+
+<P>
+status=<STRONG>PackbitsEncodeImage</STRONG>(file,pixels,number_pixels)
+
+<P>
+status=<STRONG>RunlengthDecodeImage</STRONG>(image)
+
+<P>
+count=<STRONG>RunlengthEncodeImage</STRONG>(image)
+
+<P>
+status=<STRONG>ZLIBEncodeImage</STRONG>(file,pixels,number_pixels)
+
+<P>
+<HR>
+<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<P>
+<HR>
+<H2><A NAME="ASCII85Encode">ASCII85Encode</A></H2>
+<P>
+Method ASCII85Encode encodes data in ASCII base-85 format. ASCII base-85
+encoding produces five ASCII printing characters from every four bytes of
+binary data.
+
+<P>
+The format of the ASCII85Encode routine is:
+
+<P>
+<PRE>        ASCII85Encode(code,file)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG><A NAME="item_o">code:</A></STRONG><DD>
+<P>
+a binary unsigned char to encode to ASCII 85.
+
+<DT><STRONG>file:</STRONG><DD>
+<P>
+write the encoded ASCII character to this file.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="BMPDecodeImage">BMPDecodeImage</A></H2>
+<P>
+Method BMPDecodeImage unpacks the packed image pixels into
+runlength-encoded pixel packets.
+
+<P>
+The format of the BMPDecodeImage routine is:
+
+<P>
+<PRE>        status=BMPDecodeImage(file,pixels,compression,number_columns,number_rows)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method BMPDecodeImage returns True if all the pixels are uncompressed
+without error, otherwise False.
+
+<DT><STRONG>file:</STRONG><DD>
+<P>
+The address of a structure of type FILE. BMP encoded pixels are read from
+this file.
+
+<DT><STRONG>pixels:</STRONG><DD>
+<P>
+The address of a byte (8 bits) array of pixel data created by the decoding
+process.
+
+<DT><STRONG>compression:</STRONG><DD>
+<P>
+A value of 1 means the compressed pixels are runlength encoded for a
+256-color bitmap. A value of 2 means a 16-color bitmap.
+
+<DT><STRONG>number_columns:</STRONG><DD>
+<P>
+An integer value that is the number of columns or width in pixels of your
+source image.
+
+<DT><STRONG>number_rows:</STRONG><DD>
+<P>
+An integer value that is the number of rows or heigth in pixels of your
+source image.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="BMPEncodeImage">BMPEncodeImage</A></H2>
+<P>
+Method BMPEncodeImage compresses pixels using a runlength encoded format.
+
+<P>
+The format of the BMPEncodeImage routine is:
+
+<P>
+<PRE>    status=BMPEncodeImage(pixels,compressed_pixels,number_columns,
+</PRE>
+<P>
+<PRE>      number_rows)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method BMPEncodeImage returns the number of bytes in the runlength encoded
+compress_pixels array.
+
+<DT><STRONG>pixels:</STRONG><DD>
+<P>
+The address of a byte (8 bits) array of pixel data created by the
+compression process.
+
+<DT><STRONG>compressed_pixels:</STRONG><DD>
+<P>
+The address of a byte (8 bits) array of compressed pixel data.
+
+<DT><STRONG>number_columns:</STRONG><DD>
+<P>
+An integer value that is the number of columns or width in pixels of your
+source image.
+
+<DT><STRONG>number_rows:</STRONG><DD>
+<P>
+An integer value that is the number of rows or heigth in pixels of your
+source image.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="GIFDecodeImage">GIFDecodeImage</A></H2>
+<P>
+Method GIFDecodeImage uncompresses an image via GIF-coding.
+
+<P>
+The format of the GIFDecodeImage routine is:
+
+<P>
+<PRE>        status=GIFDecodeImage(image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method GIFDecodeImage returns True if all the pixels are uncompressed
+without error, otherwise False.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="GIFEncodeImage">GIFEncodeImage</A></H2>
+<P>
+Method GIFEncodeImage compresses an image via GIF-coding.
+
+<P>
+The format of the GIFEncodeImage routine is:
+
+<P>
+<PRE>        status=GIFEncodeImage(image,data_size)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method GIFEncodeImage returns True if all the pixels are compressed without
+error, otherwise False.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="HuffmanDecodeImage">HuffmanDecodeImage</A></H2>
+<P>
+Method HuffmanDecodeImage uncompresses an image via Huffman-coding.
+
+<P>
+The format of the HuffmanDecodeImage routine is:
+
+<P>
+<PRE>        status=HuffmanDecodeImage(image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method HuffmanDecodeImage returns True if all the pixels are compressed
+without error, otherwise False.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="HuffmanEncodeImage">HuffmanEncodeImage</A></H2>
+<P>
+Method HuffmanEncodeImage compresses an image via Huffman-coding.
+
+<P>
+The format of the HuffmanEncodeImage routine is:
+
+<P>
+<PRE>        status=HuffmanEncodeImage(image_info,image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method HuffmanEncodeImage returns True if all the pixels are compressed
+without error, otherwise False.
+
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+Specifies a pointer to an ImageInfo structure.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="Huffman2DEncodeImage">Huffman2DEncodeImage</A></H2>
+<P>
+Method Huffman2DEncodeImage compresses an image via two-dimensional
+Huffman-coding.
+
+<P>
+The format of the Huffman2DEncodeImage routine is:
+
+<P>
+<PRE>        status=Huffman2DEncodeImage(image_info,image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method Huffman2DEncodeImage returns True if all the pixels are compressed
+without error, otherwise False.
+
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+Specifies a pointer to an ImageInfo structure.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="LZWEncodeImage">LZWEncodeImage</A></H2>
+<P>
+Method LZWEncodeImage compresses an image via LZW-coding specific to
+Postscript Level II or Portable Document Format. To ensure portability, the
+binary LZW bytes are encoded as ASCII base-85.
+
+<P>
+The format of the LZWEncodeImage routine is:
+
+<P>
+<PRE>        status=LZWEncodeImage(file,pixels,number_pixels)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method LZWEncodeImage returns True if all the pixels are compressed without
+error, otherwise False.
+
+<DT><STRONG>file:</STRONG><DD>
+<P>
+The address of a structure of type FILE. LZW encoded pixels are written to
+this file.
+
+<DT><STRONG>pixels:</STRONG><DD>
+<P>
+The address of an unsigned array of characters containing the pixels to
+compress.
+
+<DT><STRONG>number_pixels:</STRONG><DD>
+<P>
+An unsigned interger that specifies the number of pixels to compress.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="PackbitsDecodeImage">PackbitsDecodeImage</A></H2>
+<P>
+Method PackbitsDecodeImage uncompresses an image via Macintosh Packbits
+encoding specific to the Adobe Photoshop image format.
+
+<P>
+The format of the PackbitsDecodeImage routine is:
+
+<P>
+<PRE>        PackbitsDecodeImage(image,channel)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<DT><STRONG>channel:</STRONG><DD>
+<P>
+Specifies which channel: red, green, blue, or index to decode the pixel
+values into.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="PackbitsEncodeImage">PackbitsEncodeImage</A></H2>
+<P>
+Method PackbitsEncodeImage compresses an image via Macintosh Packbits
+encoding specific to Postscript Level II or Portable Document Format. To
+ensure portability, the binary Packbits bytes are encoded as ASCII Base-85.
+
+<P>
+The format of the PackbitsEncodeImage routine is:
+
+<P>
+<PRE>        status=PackbitsEncodeImage(file,pixels,number_pixels)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method PackbitsEncodeImage returns True if all the pixels are compressed
+without error, otherwise False.
+
+<DT><STRONG>file:</STRONG><DD>
+<P>
+The address of a structure of type FILE. LZW encoded pixels are written to
+this file.
+
+<DT><STRONG>pixels:</STRONG><DD>
+<P>
+The address of an unsigned array of characters containing the pixels to
+compress.
+
+<DT><STRONG>number_pixels:</STRONG><DD>
+<P>
+An unsigned integer that specifies the number of pixels to compress.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="PCDDecodeImage">PCDDecodeImage</A></H2>
+<P>
+Method PCDDecodeImage recovers the Huffman encoded luminance and
+chrominance deltas.
+
+<P>
+The format of the PCDDecodeImage routine is:
+
+<P>
+<PRE>        status=PCDDecodeImage(image,luma,chroma1,chroma2)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method PCDDecodeImage returns True if all the deltas are recovered without
+error, otherwise False.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<DT><STRONG>luma:</STRONG><DD>
+<P>
+The address of a character buffer that contains the luminance information.
+
+<DT><STRONG>chroma1:</STRONG><DD>
+<P>
+The address of a character buffer that contains the chrominance
+information.
+
+<DT><STRONG>chroma2:</STRONG><DD>
+<P>
+The address of a character buffer that contains the chrominance
+information.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="PICTDecodeImage">PICTDecodeImage</A></H2>
+<P>
+Method PICTDecodeImage decompresses an image via Macintosh pack bits
+decoding for Macintosh PICT images.
+
+<P>
+The format of the PICTDecodeImage routine is:
+
+<P>
+<PRE>        status=PICTDecodeImage(image,bytes_per_line,bits_per_pixel)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method PICTDecodeImage returns True if all the pixels are uncompressed
+without error, otherwise False.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<DT><STRONG>bytes_per_line:</STRONG><DD>
+<P>
+This integer identifies the number of bytes in a scanline.
+
+<DT><STRONG>bits_per_pixel:</STRONG><DD>
+<P>
+The number of bits in a pixel.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="PICTEncodeImage">PICTEncodeImage</A></H2>
+<P>
+Method PICTEncodeImage compresses an image via Macintosh pack bits encoding
+for Macintosh PICT images.
+
+<P>
+The format of the PICTEncodeImage routine is:
+
+<P>
+<PRE>        status=PICTEncodeImage(image,scanline,pixels)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method PICTEncodeImage returns True if all the pixels are compressed
+without error, otherwise False.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<DT><STRONG>scanline:</STRONG><DD>
+<P>
+A pointer to an array of characters to pack.
+
+<DT><STRONG>pixels:</STRONG><DD>
+<P>
+A pointer to an array of characters where the packed characters are stored.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="RunlengthDecodeImage">RunlengthDecodeImage</A></H2>
+<P>
+Method RunlengthDecodeImage unpacks the packed image pixels into
+runlength-encoded pixel packets. The packed image pixel memory is then
+freed.
+
+<P>
+The format of the RunlengthDecodeImage routine is:
+
+<P>
+<PRE>        status=RunlengthDecodeImage(image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method RunlengthDecodeImage return True if the image is decoded. False is
+returned if there is an error occurs.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="RunlengthEncodeImage">RunlengthEncodeImage</A></H2>
+<P>
+Method RunlengthEncodeImage packs the runlength-encoded pixel packets into
+the minimum number of bytes.
+
+<P>
+The format of the RunlengthEncodeImage routine is:
+
+<P>
+<PRE>        count=RunlengthEncodeImage(image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method RunlengthEncodeImage return the number of bytes the image consumes.
+Zero is returned if an error occurs.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="SUNDecodeImage">SUNDecodeImage</A></H2>
+<P>
+Method SUNDecodeImage unpacks the packed image pixels into
+runlength-encoded pixel packets.
+
+<P>
+The format of the SUNDecodeImage routine is:
+
+<P>
+<PRE>    status=SUNDecodeImage(compressed_pixels,pixels,number_columns,
+</PRE>
+<P>
+<PRE>      number_rows)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method SUNDecodeImage returns True if all the pixels are uncompressed
+without error, otherwise False.
+
+<DT><STRONG>compressed_pixels:</STRONG><DD>
+<P>
+The address of a byte (8 bits) array of compressed pixel data.
+
+<DT><STRONG>pixels:</STRONG><DD>
+<P>
+The address of a byte (8 bits) array of pixel data created by the
+uncompression process. The number of bytes in this array must be at least
+equal to the number columns times the number of rows of the source pixels.
+
+<DT><STRONG>number_columns:</STRONG><DD>
+<P>
+An integer value that is the number of columns or width in pixels of your
+source image.
+
+<DT><STRONG>number_rows:</STRONG><DD>
+<P>
+An integer value that is the number of rows or heigth in pixels of your
+source image.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ZLIBEncodeImage">ZLIBEncodeImage</A></H2>
+<P>
+Method ZLIBEncodeImage compresses an image via ZLIB-coding specific to
+Postscript Level II or Portable Document Format. To ensure portability, the
+binary ZLIB bytes are encoded as ASCII base-85.
+
+<P>
+The format of the ZLIBEncodeImage routine is:
+
+<P>
+<PRE>        status=ZLIBEncodeImage(file,pixels,number_pixels)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method ZLIBEncodeImage returns True if all the pixels are compressed
+without error, otherwise False.
+
+<DT><STRONG>file:</STRONG><DD>
+<P>
+The address of a structure of type FILE. ZLIB encoded pixels are written to
+this file.
+
+<DT><STRONG>pixels:</STRONG><DD>
+<P>
+The address of an unsigned array of characters containing the pixels to
+compress.
+
+<DT><STRONG>number_pixels:</STRONG><DD>
+<P>
+An unsigned integer that specifies the number of pixels to compress.
+
+<DT><STRONG>quality:</STRONG><DD>
+<P>
+the compression level (0-100).
+
+</DL></DL>
+</BODY>
+
+</HTML>

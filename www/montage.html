@@ -1,0 +1,964 @@
+<HTML VERSION="2.0">
+<HEAD>
+<TITLE>ImageMagick Image Montage Utility</TITLE>
+<LINK rev="made" href="mailto:cristy@mystic.es.dupont.com">
+<meta name="description" content="ImageMagick, version 4.1, is a package for
+  display and interactive manipulation of images for the X Window System. It
+  is written in C and interfaces to the X library, and therefore does not
+  require any proprietary toolkit in order to compile.  Although the software
+  is copyrighted, it is available for free and can be redistributed without
+  fee.">
+<meta name="keywords" content="ImageMagick, Image Magick, Image Magic,
+  PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,
+  WebMagick, Web Magic, visualization, image processing, software development,
+  simulation, image, software, AniMagick, Animagic, X11">
+</HEAD>
+<body background="../images/background.gif">
+<A NAME="top"></A>
+<CENTER>
+<img src="../images/montage.gif" align=bottom width=248 height=54>
+</CENTER>
+<pre>
+ 
+</pre>
+<H2>
+<A NAME="Contents">Contents</A>
+</H2>
+<UL>
+<LI><A HREF="#syno">Synopsis</A>
+<LI><A HREF="#desc">Description</A>
+<LI><A HREF="#exam">Examples</A>
+<LI><A HREF="#opti">Options</A>
+<LI><A HREF="#xres">X Resources</A>
+<LI><A HREF="#envi">Environment</A>
+<LI><A HREF="#copy">Copyright</A>
+<LI><A HREF="#ackn">Acknowledgement</A>
+<LI><A HREF="#auth">Authors</A>
+</UL>
+<HR>
+<DL>
+<H2>
+<A NAME="syno">
+<DT>Synopsis
+</A>
+</H2>
+<DD><B>montage</B> <B>[</B> <EM>options</EM> <B>...]</B> <EM>file</EM> [ [
+<EM>options</EM> ...] <EM>file</EM> ...] <EM>output_file</EM>
+<P>
+</DL>
+<P>
+<DL>
+<HR>
+<A HREF="#top"><I>Back to Contents</I></A>
+<H2>
+<A NAME="desc">
+<DT>Description
+</A>
+</H2>
+<DD><B>montage</B> creates a composite image by combining several
+separate images.  The images are tiled on the composite
+image with the name of the image optionally appearing just
+below the individual tile.
+<P>
+<DD>The composite image is constructed in the following manner.
+First, each image specified on the command line, except for
+the last, is scaled to fit the maximum tile size.  The
+maximum tile size by default is 120x120.  It can be modified
+with the <B>-geometry</B> command line argument or X resource.  See
+<A HREF="#opti"><B>Options</B></A>
+for more information on command line arguments. See
+<B>X(1)</B> for more information on X resources.  Note that the
+maximum tile size need not be a square.  To respect the
+aspect ratio of each image append <B>~</B> to the geometry
+specification.
+<P>
+<DD>Next the composite image is initialized with the color
+specified by the <B>-background</B> command line argument or X
+resource.  The width and height of the composite image is
+determined by the title specified, the maximum tile size,
+the number of tiles per row, the tile border width and
+height, the image border width, and the label height.  The
+number of tiles per row specifies how many images are to
+appear in each row of the composite image.  The default is
+to have 5 tiles in each row and 4 tiles in each column of
+the composite.  A specific value is specified with <B>-tile</B>.
+The tile border width and height, and the image border width
+defaults to the value of the X resource <B>-borderwidth</B>.  It
+can be changed with the <B>-borderwidth</B> or <B>-geometry</B> command
+line argument or X resource.  The label height is determined
+by the font you specify with the <B>-font</B> command line argument
+or X resource.  If you do not specify a font, a font is
+chosen that allows the name of the image to fit the maximum
+width of a tiled area.  The label colors is determined by
+the <B>-background</B> and <B>-pen</B> command line argument or X
+resource.  Note, that if the background and pen
+colors are the same, labels will not appear.
+<P>
+<DD>Initially, the composite image title is placed at the top if
+one is specified (refer to <B>-pen</B>).  Next,
+each image is set onto the composite image, surrounded by
+its border color, with its name centered just below it.  The
+individual images are left-justified within the width of the
+tiled area.  The order of the images is the same as they
+appear on the command line unless the images have a scene
+keyword.  If a scene number is specified in each image, then
+the images are tiled onto the composite in the order of
+their scene number.  Finally, the last argument on the
+command line is the name assigned to the composite image.
+By default, the image is written in the <B>MIFF</B> format and can
+be viewed or printed with 
+<A HREF="../www/display.html"><B>display</B>.</A>
+<P>
+<DD>Note, that if the number of tiles exceeds the default number of 20
+(5 per row, 4 per column), more than one composite image is
+created. To ensure a single image is produced, use <strong>-tile</strong> to
+increase the number of tiles to meet or exceed the number of input
+images.
+<p>
+<dd> Finally, to create one or more empty spaces in the sequence of tiles,
+use the <B>NULL</B> image format.
+</DL>
+<P>
+<A HREF="#top"><I>Back to Contents</I></A>
+<HR>
+<DL>
+<H2>
+<A NAME="exam">
+<DT>Examples
+</A>
+</H2>
+<DD>To create a montage of a cockatoo, a parrot, and a
+hummingbird and write it to a file called birds, use:
+<p><dl>
+  <dd><tt>montage cockatoo.miff parrot.miff hummingbird.miff birds.miff</tt>
+</p></dl>
+<DD>To tile several bird images so that they are at most 256
+pixels in width and 192 pixels in height, surrounded by a
+red border, and separated by 10 pixels of background color,
+use:
+<p><dl>
+  <dd><tt>montage -geometry 256x192+10+10 -bordercolor red birds.* montage.miff</tt>
+</p></dl>
+<DD>To create an unlabeled parrot image, 640 by 480 pixels, and
+surrounded by a border of black, use:
+<p><dl>
+  <dd><tt>montage -geometry 640x480 -bordercolor black -label "" parrot.miff bird.miff</tt>
+</p></dl>
+<DD>To create an image of an eagle with a textured background, use:
+<p><dl>
+  <dd><tt>montage -texture bumps.jpg eagle.jpg eagle.png</tt>
+</p></dl>
+<DD>To join several GIF images together without any extraneous
+graphics (e.g. no label, no shadowing, no surrounding tile
+frame), use:
+<p><dl>
+  <dd><tt>montage +frame +shadow +label -tile 5x1 -geometry 50x50+0+0 *.gif joined.gif</tt>
+</p></dl>
+</DL>
+<P> 
+<A HREF="#top"><I>Back to Contents</I></A>
+<HR>
+<DL>
+<H2>
+<A NAME="opti">
+<DT>Options
+</A>
+</H2>
+<DL>
+<DT><B>-adjoin</B>
+<DD> join images into a single multi-image file.
+<p> 
+<dd>This option is useful for creating a multi-frame animation sequence within
+the same file (e.g. GIF).
+<P>
+<DT><B>-colors</B> <EM>value</EM>
+<DD>preferred number of colors in the image.
+<P>
+<DD>The actual number of colors in the image may be less
+than your request, but never more.  Note, this is a
+color reduction option.  Images with less unique colors
+than specified with this option will have any duplicate
+or unused colors removed.
+Refer to 
+<A HREF="../www/quantize.html"><B>quantize</B></A> for more details.
+<P>
+<DD>Note, options <B>-dither</B>, <B>-colorspace</B>, and <B>-treedepth</B>
+affect the color reduction algorithm.
+<P>
+<DT><B>-colorspace</B> <EM>value</EM>
+<DD>the type of colorspace: <B>GRAY</B>, <B>OHTA</B>, <B>RGB</B>,
+<B>Transparent</B>, <B>XYZ</B>, <B>YCbCr</B>, <B>YIQ</B>, <B>YPbPr</B>,
+<B>YUV</B>, or <B>CMYK</B>.
+<P>
+<DD>Color reduction, by default, takes place in the RGB
+color space.  Empirical evidence suggests that
+distances in color spaces such as YUV or YIQ correspond
+to perceptual color differences more closely than do
+distances in RGB space.  These color spaces may give
+better results when color reducing an image.  Refer to
+<A HREF="../www/quantize.html"><B>quantize</B></A> for more details.
+<P>
+The <B>Transparent</B> color space behaves uniquely in that it preserves
+the matte channel of the image if it exists.
+<P>
+<DD>The <B>-colors</B> or <B>-monochrome</B> option is required for this
+option to take effect.
+<P>
+<DT><B>-comment</B> <EM>string</EM>
+<DD>annotate an image with a comment.
+<P>
+<DD>By default, each image is commented with its file name.
+Use this option to assign a specific comment to the
+image.  Optionally you can include the image filename,
+type, width, height, or scene number by embedding
+special format characters.  Embed <tt>%f</tt> for filename,
+<tt>%d</tt> for directory, <tt>%e</tt> for filename extention, <tt>%t</tt> for
+top of filename, <tt>%m</tt> for magick, <tt>%w</tt> for width, <tt>%h</tt> for 
+height, <tt>%p</tt> for page number, <tt>%s</tt> for scene number, or 
+<tt>\n</tt> for newline.  For example,
+<P>
+<pre>
+    -comment "%m:%f %wx%h"
+</pre>
+<P>
+<DD>produces an image comment of <B>MIFF:bird.miff</B> <B>512x480</B> for
+an image titled <B>bird.miff</B> and whose width is 512 and
+height is 480.
+<P>
+<DD>If the first character of <EM>string</EM> is <B>@</B>, the image
+comment is read from a file titled by the remaining
+characters in the string.
+<P>
+<DT><B>-compose</B> <EM>operator</EM>
+<DD>the type of image composition.
+<P>
+<DD>By default, each of the composite image pixels are
+replaced by the corresponding image tile pixel. You can
+choose an alternate composite operation:
+<PRE>
+    over
+    in
+    out
+    atop
+    xor
+    plus
+    minus
+    add
+    subtract
+    difference
+    bumpmap
+    replace
+</PRE>
+The operations behaves as follows:
+<P>
+<DL>
+<DT><B>over</B>
+<DD>The result will be the union of the two image shapes, with
+<EM>composite image</EM> obscuring <EM>image</EM> in the region of overlap.
+<P>
+<DT><B>in</B>
+<DD>The result is simply <EM>composite image</EM> cut by the shape of
+<EM>image</EM>.  None of the image data of <EM>image</EM> will be in the
+result.
+<P>
+<DT><B>out</B>
+<DD>The resulting image is <EM>image</EM> with the shape of
+<EM>composite image</EM> cut out.
+<P>
+<DT><B>atop</B>
+<DD>The result is the same shape as image <EM>image</EM>, with
+<EM>composite image</EM> obscuring <EM>image</EM> where the image shapes
+overlap.  Note this differs from <B>over</B> because the portion of
+<EM>composite image</EM> outside <EM>image</EM>'s shape does not appear in
+the result.
+<P>
+<DT><B>xor</B>
+<DD>The result is the image data from both <EM>composite image</EM> and
+<EM>image</EM> that is outside the overlap region.  The overlap region will be
+blank.
+<P>
+<DT><B>plus</B>
+<DD>The result is just the sum of the image data.
+Output values are cropped to 255 (no overflow).
+This operation is independent of the matte
+channels.
+<P>
+<DT><B>minus</B>
+<DD>The result of <EM>composite image</EM> - <EM>image</EM>, with
+underflow cropped to zero.  The matte channel is
+ignored (set to 255, full coverage).
+<P>
+<DT><B>add</B>
+<DD>The result of <EM>composite image</EM> + <EM>image</EM>, with overflow
+wrapping around (<EM>mod</EM> 256).
+<P>
+<DT><B>subtract</B>
+<DD>The result of <EM>composite image</EM> - <EM>image</EM>, with underflow
+wrapping around (<EM>mod</EM> 256).  The <B>add</B> and <B>subtract</B>
+operators can be used to perform reversible transformations.
+<P>
+<DT><B>difference</B>
+<DD>The result of abs(<EM>composite image</EM> - <EM>image)</EM>.  This is
+useful for comparing two very similar images.
+<P>
+<DT><B>bumpmap</B>
+<DD>The result <EM>image</EM> shaded by <EM>composite image</EM>.
+<P>
+<DT><B>replace</B>
+<DD>The resulting image is <EM>image</EM> replaced
+with <EM>composite image</EM>.  Here the matte information is ignored.
+<P>
+</DL>
+<dd>The image compositor requires an matte, or alpha
+channel in the image for some operations.  This
+extra channel usually defines a mask which
+represents a sort of a cookie-cutter for the image.
+This is the case when matte is 255 (full coverage)
+for pixels inside the shape, zero outside, and
+between zero and 255 on the boundary.  If <EM>image</EM>
+does not have an matte channel, it is initialized
+with 0 for any pixel matching in color to pixel
+location (0,0), otherwise 255 (to work properly
+<B>borderwidth</B> must be 0).
+<P>
+<DT><B>-compress</B> <EM>type</EM>
+<DD>the type of image compression: <I>None</I>, <I>BZip</I>, <I>JPEG</I>,
+<I>LZW</I>, <I>RunlengthEncoded</I> or <I>Zip</I>.
+<P>
+<DD>This option specifies the type of image compression for
+the composite image.  See <B>miff(5)</B> for details.
+<P>
+<DD>Specify <B>+compress</B> to store the binary image in an
+uncompressed format.  The default is the compression
+type of the specified image file.
+<P>
+<DT><B>-crop</B> &lt;<EM>width</EM>&gt;{%}<B>x</B>&lt;<EM>height</EM>&gt;{%}{+-}&lt;<B>x</B> <EM>offset</EM>&gt;{+-}&lt;<B>y</B> <EM>offset</EM>&gt;
+<DD>preferred size and location of the cropped image.  See
+<B>X(1)</B> for details about the geometry specification.
+<P>
+<DD>To specify a percentage width or height instead, append
+<B>%</B>.  For example to crop the image by ten percent on all
+sides of the image, use <B>-crop</B> <B>10%</B>.
+<P>
+<DD>Use cropping to tile only a particular area of an
+image.
+<p>
+<DD>Omit the x and y offset to generate one or more subimages of a uniform size.
+<p>
+<DD>Use cropping to crop a particular area of an image.   Use <b>-crop
+0x0</b> to trim edges that are the background color.  Add a x and y offset
+to leave a portion of the trimmed edges with the image.
+<P>
+<DD>The equivalent X resource for this option is
+<B>cropGeometry</B> (class <B>CropGeometry</B>).  See <B>X</B> <B>RESOURCES</B> for details.
+<P>
+<DT><B>-density</B> &lt;<EM>width</EM>&gt;<B>x</B>&lt;<EM>height</EM>&gt;
+<DD>vertical and horizontal resolution in pixels of the image.
+<P>
+<DD>This option specifies an image density when decoding a
+Postscript or Portable Document page.  The default is
+72 pixels per inch in the horizontal and vertical
+direction.  This option is used in concert with <b>-page</b>.
+<P>
+<DT><B>-display</B> <EM>host</EM>:<EM>display</EM>[.<EM>screen</EM>]
+<DD>specifies the X server to contact; see <B>X(1)</B>.
+<P>
+<DD>Specify <B>+display</B> if an X server is not available.  The
+label font is obtained from the X server.  If none is
+available, the composite image will not have labels.
+<P>
+<dt><b>-dispose</b> <i>method</i>
+<dd>GIF disposal method.
+<p>
+<dd> Here are the valid methods:
+<p>
+<pre>
+  0     No disposal specified.
+  1     Do not dispose.      
+  2     Restore to background color.
+  3     Restore to previous.
+</pre>
+<P>
+<DT><B>-dither</B>
+<DD>apply Floyd/Steinberg error diffusion to the image.
+<P>
+<DD>The basic strategy of dithering is to trade intensity
+resolution for spatial resolution by averaging the
+intensities of several neighboring pixels.  Images
+which suffer from severe contouring when reducing
+colors can be improved with this option.
+<P>
+<DD>The <B>-colors</B> or <B>-monochrome</B> option is required for
+this option to take effect.
+<P>
+<DD>Use <B>+dither</B> to render Postscript without text or graphic aliasing.
+<p>
+<DT><B>-draw</B> <I>string</I>
+<dd>annotate an image with one or more graphic primitives.
+<p>
+<dd>Use this option to annotate an image with one or more graphic primitives.
+The primitives include
+<p>
+<pre>
+  rectangle
+  circle
+  polygon
+  color
+  matte
+  text
+  image
+</pre>
+<p> 
+<dd><b>Rectangle</b>, <b>text</b>, and <b>image</b> requires an upper left and
+lower right coordinate.  <b>Circle</b> requires the center coordinate and a
+coordinate on the outer edge.  Finally, <b>polygon</b>
+requires three or more coordinates defining its boundaries.  Coordinates are
+integers separated by an optional comma.  For example, to define a
+<b>circle</b> centered at 100,100 that extends to 150,150 use:
+<p>
+<pre>
+  -draw 'circle 100,100 150,150'
+</pre>
+</p>
+<dd>Use <b>color</b> to change the color of a pixel.  Follow the
+pixel coordinate with a method:
+<pre>
+  point
+  replace
+  floodfill
+  reset
+</pre>
+<p> 
+<dd>Consider the target pixel as that specified by your coordinate.  The
+<b>point</b> method recolors the target pixel.  The <b>replace</b> method
+recolors any pixel that matches the color of the target pixel.
+<b>Floodfill</b> recolors any pixel that matches the color of the target
+pixel and is a neighbor.  Finally, <b>reset</b> recolors all pixels.
+<p> 
+<dd>Use <b>matte</b> to the change the pixel matte value to transparent.
+Follow the pixel coordinate with a method (see the <b>color</b>
+primitive for a description of methods).  The <b>point</b> method
+changes the matte value of the target pixel.  The <b>replace</b> method
+changes the matte value of any pixel that matches the color of the
+target pixel.  <b>Floodfill</b> changes the matte value of any pixel
+that matches the color of the target pixel and is a neighbor. Finally
+<b>reset</b> changes the matte value of all pixels.
+<p> 
+<dd>Use <b>text</b> to annotate an image with text.  Follow the
+text coordinates with a string.  If the string has embedded spaces,
+enclose it in double quotes.  Optionally you can
+include the image filename, type, width, height, or scene number by
+embedding special format characters.  Embed <tt>%f</tt> for filename,
+<tt>%d</tt> for directory, <tt>%e</tt> for filename extention, <tt>%t</tt> for
+top of filename, <tt>%m</tt> for magick, <tt>%w</tt> for width, <tt>%h</tt> for 
+height, <tt>%p</tt> for page number, <tt>%s</tt> for scene number, or
+<tt>\n</tt> for newline.  For example,
+<p>
+<pre>
+     -draw 'text 100,100 "%m:%f %wx%h"'
+</pre>
+<p>
+annotates the image with <tt>MIFF:bird.miff 512x480</tt> for an image
+titled <tt>bird.miff</tt> and whose width is 512 and height is 480.
+To generate a Unicode character (<i>TrueType fonts only</i>), embed the
+code as an escaped hex string (e.g. <tt>\\0x30a3</tt>).
+<p> 
+Use <b>image</b> to composite an image with another image.  Follow the
+image coordinates with the filename of an image.
+<p>
+<dd>If the first character of <em>string</em> is <i>@</i>, the text is read
+from a file titled by the remaining characters in the string.
+<p> 
+You can set the primitive color, font color, and font bounding box color with
+<b>-pen</b>, <b>-font</b>, and <b>-box</b> respectively.  Options are
+processed in command line order so be sure to use <b>-pen</b>
+<em>before</em> the <b>-draw</b> option.
+<P>
+<DT><B>-frame</B>
+<DD>    surround the image with an ornamental border.
+<P>
+<DD>    The color of the border is specified with the
+<B>-mattecolor</B> command line option.  If no frame is desired, use
+<B>+frame</B>.
+<P>
+<DT><B>-font</B> <EM>name</EM>
+<DD>use this font when annotating the image with text.
+<p>
+<dd>If the font is a fully qualified X server font name, the font is obtained
+from an X server (e.g.
+<tt>-*-helvetica-medium-r-*-*-12-*-*-*-*-*-iso8859-*</tt>).  To
+use a TrueType font, precede the TrueType filename with a <tt>@</tt> (e.g.
+<tt>@times.ttf</tt>).  Otherwise, specify a Postscript font (e.g.
+<tt>helvetica</tt>).
+<P>
+<DT><B>-gamma</B> <EM>value</EM>
+<DD>level of gamma correction.
+<P>
+<DD>The same color image displayed on two different
+workstations may look different due to differences in
+the display monitor.  Use gamma correction to adjust
+for this color difference.  Reasonable values extend
+from 0.8 to 2.3.
+<P>
+<DD>You can apply separate gamma values to the red, green,
+and blue channels of the image with a gamma value list
+delineated with slashes (i.e. 1.7/2.3/1.2).
+<p>
+<DD>Use <b>+gamma</b> to set the image gamma level without actually adjusting
+the image pixels.  This option is useful if the image is of a known
+gamma but not set as an image attribute (e.g. PNG images).
+<P>
+<DT><B>-geometry</B> &lt;<EM>width</EM>&gt;<B>x</B>&lt;<EM>height</EM>&gt;+&lt;<EM>border</EM> <EM>width</EM>&gt;+&lt;<EM>border</EM> <EM>height</EM>&gt;{!}{&lt;}{&gt;}
+<DD>preferred tile and border size of each tile of the composite image.
+<P>
+<DD>By default, the width and height are maximum values.
+That is, the image is expanded or contracted to fit the
+width and height value while maintaining the aspect
+ratio of the image.  Append an exclamation point to the
+geometry to force the image size to exactly the size
+you specify.  For example, if you specify <B>640x480!</B> the
+image width is set to 640 pixels and height to 480.  If
+only one factor is specified, both the width and height
+assume the value.
+<P>
+<DD>Use <B>&gt;</B> to change the dimensions of the image
+<em>only</em> if its size exceeds the geometry
+specification.  <B>&lt;</B> resizes the image <em>only</em>
+if its dimensions is less than the geometry specification.
+For example, if you specify <b>640x480&gt;</b> and the image
+size is 512x512, the image size does not change.  However, if
+the image is 1024x1024, it is resized to 640x480.
+<P>
+<DD>Each image is surrounded by a border whose size in
+pixels is specified as &lt;<EM>border</EM> <EM>width</EM>&gt; and
+&lt;<EM>border</EM> <EM>height</EM>&gt; and whose color is the background
+color.  By default, the tile size is 256x256 and there is no border.
+<P>
+<DD>The equivalent X resource for this option is
+<B>imageGeometry</B> (class <B>ImageGeometry</B>).  See 
+<A HREF="#xres"><B>X</B> <B>Resources</B></A> for details.
+<P>
+<DT><B>-gravity</B> <EM>direction</EM>
+<DD>direction image gravitates to within a tile.  See <B>X(1)</B>
+for details about the gravity specification.
+<P>
+<DD>A tile of the composite image is a fixed width and
+height.  However, the image within the tile may not
+fill it completely (see <B>-geometry</B>).  The direction you
+choose specifies where to position the image within
+the tile.  For example <EM>Center</EM> gravity forces the image
+to be centered within the tile.  By default, the image
+gravity is <EM>Center</EM>.
+<P>
+<DT><B>-interlace</B> <I>type</I>
+<DD>the type of interlacing scheme: <B>None</B>, <B>Line</B>, <B>Plane</B>,
+or <b>Partition</b>.  The default is <B>None</B>.
+<P>
+<DD>This option is used to specify the type of interlacing scheme for raw
+image formats such as <B>RGB</B> or <B>YUV</B>.  <B>None</B> means do not
+interlace (RGBRGBRGBRGBRGBRGB...), <B>Line</B> uses scanline interlacing
+(RRR...GGG...BBB...RRR...GGG...BBB...), and <B>Plane</B> uses plane
+interlacing (RRRRRR...GGGGGG...BBBBBB...).    <b>Partition</b> is like plane
+except the different planes are saved to individual files (e.g.  image.R,
+image.G, and image.B).
+<P>
+<DD>Use <B>Line</B>, or <B>Plane</B> to create an <B>interlaced GIF</B>
+or <B>progressive JPEG</b> image.
+<P>
+<DT><B>-label</B> <EM>name</EM>
+<DD>assign a label to an image.
+<P>
+<DD>By default, each image is labeled with its file name.
+Use this option to assign a specific label to the
+image.  Optionally you can include the image filename,
+type, width, height, or scene number in the label by
+embedding special format characters.  Embed <tt>%f</tt> for filename,
+<tt>%d</tt> for directory, <tt>%e</tt> for filename extention, <tt>%t</tt> for
+top of filename, <tt>%m</tt> for magick, <tt>%w</tt> for width, <tt>%h</tt> for 
+height, <tt>%p</tt> for page number, <tt>%s</tt> for scene number, or 
+<tt>\n</tt> for newline.  For example,
+<PRE>
+    -label "%m:%f %wx%h"
+</PRE>
+<DD>produces an image label of <B>MIFF:bird.miff</B> <B>512x480</B> for
+an image titled <B>bird.miff</B> and whose width is 512 and
+height is 480.
+<P>
+<DD>If the first character of <EM>string</EM> is <B>@</B>, the image label
+is read from a file titled by the remaining characters
+in the string.
+<P>
+<DT><B>-matte</B>
+<DD>store matte channel if the image has one otherwise create an opaque one.
+<P>
+<DT><B>-mode</B> <EM>type</EM>
+<DD>the type of montage: <B>Frame</B>, <B>Unframe</B>, or <B>Concatenate</B>.
+The default is <B>Unframe</B>.
+<P>
+<DD>This option is for convenience.  You can obtain the desired result by
+setting individual options (e.g. <b>Unframe</b> is equivalent to
+<b>+frame</b> <b>+shadow</b> <b>+borderwidth</b>).
+<P>
+<DT><B>-monochrome</B>
+<DD>transform the image to black and white.
+<P>
+<DT><B>-page</B> <I>&lt;width&gt;{%}x&lt;height&gt;{%}{!}{&lt;}{&gt;}</I>
+<DD>size and location of an image canvas.
+<P>
+<DD>Use this option to specify the dimensions of the
+<I>PostScript</I> page in dots per inch or a TEXT page in
+pixels.  The choices for a Postscript page are:
+<PRE>
+   Letter      612x 792
+   Tabloid     792x1224
+   Ledger     1224x 792
+   Legal       612x1008
+   Statement   396x 612
+   Executive   540x 720
+   A3          842x1190
+   A4          595x 842
+   A5          420x 595
+   B4          729x1032
+   B5          516x 729
+   Folio       612x 936
+   Quarto      610x 780
+   10x14       720x1008
+</PRE>
+<DD>For convenience you can specify the page size by media
+(e.g. A4, Ledger, etc.).  Otherwise, <b>-page</b> behaves much like
+<b>-geometry</b> (e.g. <tt>-page letter+43+43&gt</tt>).
+<P>
+<P>
+To position a GIF image, use <b>-page</b> +LEFT+TOP (e.g. -page +100+200).
+<P>
+<dd>For a Postscript page, the image is sized as in <b>-geometry</b> and
+positioned relative to the lower left hand corner of the page by
+{+-}&lt;<B>x</B> <EM>offset</EM>&gt;{+-}&lt;<B>y</B> <EM>offset</EM>&gt;.
+Use <tt>-page 612x792&gt</tt>, for example, to center the image within the
+page.  If the image size exceeds the Postscript page, it is reduced to fit the
+page.
+<p>
+<DD><B>The default page dimensions for a TEXT image is 612x792</B>.
+<P>
+<DT><B>-pen</B> <I>Color</I>
+<DD>set the color of the font.
+<p>
+<DD>See <B>X(1)</B> for details about the color specification.
+<P>
+<P>
+<DT><B>-pointsize</B> <I>value</I>
+<DD>pointsize of the Postscript font.
+<P>
+<DT><B>-quality</B> <I>value</I>
+<DD>JPEG/MIFF/PNG compression level.
+<P>
+<DD> For the JPEG image format, quality is 0 (worst) to 100 (best).
+The default quality is 75.
+<p>
+<dd> Quality for the MIFF and PNG image format sets the amount of image compression 
+(quality / 10) and filter-type (quality % 10).  Compression quality
+values range from 0 (worst) to 100 (best).  If filter-type is 4
+or less, the specified filter-type is used for all scanlines:
+<p>
+<pre>
+    0: none
+    1: sub
+    2: up
+    3: average
+    4: Paeth
+</pre>
+<p>
+<dd>If filter-type is 5, adaptive filtering is used when quality
+is greater than 50 and the image does not have a color map,
+otherwise no filtering is used.
+<p>
+<dd>If filter-type is 6 or more, adaptive filtering with 
+<em>minimum-sum-of-absolute-values</em> is used.
+<p>
+<dd>The default is quality is 75.  Which means nearly the best compression
+with adaptive filtering.
+<p>
+<dd>For further information, see the PNG specification
+(<a href=http://www.w3.org/pub/WWW/TR>RFC 2083</a>).
+<P>
+<DT><B>-rotate</B> <I>degrees{&lt;}{&gt;}</I>
+<DD>apply Paeth image rotation to the image.
+<P>   
+<dd>Use <tt>&gt;</tt> to rotate the image </t>only</i> if its width exceeds the
+height.  <tt>&lt;</tt> rotates the image <i>only</i> if its width is less than
+the height.  For example, if you specify <tt>-90&gt;</tt> and the image size
+is 480x640, the image is not rotated by the specified angle.  However,
+if the image is 640x480, it is rotated by -90 degrees.
+<P>
+<DD>Empty triangles left over from rotating the image are
+filled with the color defined as <B>bordercolor</B> (class
+<B>borderColor</B>).  See <I>X(1)</I> for details.
+<P>
+<DT><B>-scene</B> <EM>value</EM>
+<DD>image scene number.
+<P>
+<DT><B>-shadow</B>
+<DD>add a shadow beneath a tile to simulate depth.
+<P>
+<DT><B>-size</B> &lt;<EM>width</EM>&gt;{%}<B>x</B>&lt;<EM>height</EM>&gt;{%}{+<EM>offset</EM>}{!}
+<DD>width and height of the image.
+<P>
+<DD>Use this option to specify the width and height of raw
+images whose dimensions are unknown such as <B>GRAY</B>, <B>RGB</B>,
+or <B>CMYK</B>.  In addition to width and height, use <B>-size</B> to skip any header information in the image or
+tell the number of colors in a <B>MAP</B> image file, (e.g.
+-size 640x512+256).
+<P>
+<DT><B>-texture</B> <EM>filename</EM>
+<DD>name of texture to tile onto the image background.
+<P>
+<DT><B>-tile</B> &lt;<EM>width</EM>&gt;<B>x</B>&lt;<EM>height</EM>&gt;
+<DD>specifies how many tiles are to appear in each row and column of the
+composite image.
+<P>
+<DD>Specify the number of tiles per row with width and
+tiles per column with height.  For example if you want
+1 tile in each row and a maximum of 10 tiles in the
+composite image, use -tile 1x10.  The default is to
+have 5 tiles in each row and 4 tiles in each column of
+the composite.
+<P>
+<DT><B>-transparency</B> <EM>color</EM>
+<DD>make this color transparent within the image.
+<P>
+<DT><B>-treedepth</B> <EM>value</EM>
+<DD>Normally, this integer value is zero or one.  A zero or
+one tells <B>montage</B> to choose a optimal tree depth for
+the color reduction algorithm.
+<P>
+<DD>An optimal depth generally allows the best
+representation of the source image with the fastest
+computational speed and the least amount of memory.
+However, the default depth is inappropriate for some
+images.  To assure the best representation, try values
+between 2 and 8 for this parameter.  Refer to
+<B>quantize(9)</B> for more details.
+<P>
+<DD>The <B>-colors</B> or <B>-monochrome</B> option is required for this
+option to take effect.
+<P>
+<DT><B>-verbose</B>
+<DD>print detailed information about the image.
+<P>
+<DD>This information is printed: image scene number;  image
+name;  image size; the image class (<EM>DirectClass</EM> or
+<EM>PseudoClass)</EM>;  the total number of unique colors;  and
+the number of seconds to read and write the image.
+<P>
+</dl>
+<dd>In addition to those listed above, you can specify these
+standard X resources as command line options:  <B>-background</B>,
+<B>-bordercolor</B>, <B>-borderwidth</B>, <B>-font</B>, <B>-foreground</B>,
+<B>-mattecolor</B>, or <B>-title</B>.  See <A HREF="#xres"><B>X</B>
+<B>Resources</B></A> for details.
+<P>
+Options are processed in command line order.  Any option you
+specify on the command line remains in effect until it is
+explicitly changed by specifying the option again with a
+different effect.  For example, to montage two images, the
+first with 32 colors and the second with only 16 colors,
+use:
+<P>
+<pre>
+    montage -colors 32 cockatoo.1 -colors 16 cockatoo.2 cockatoo.miff
+</pre>
+<P>
+By default, the image format is determined by its magic
+number. To specify a particular image format, precede the
+filename with an image format name and a colon (i.e.
+ps:image) or specify the image type as the filename suffix
+(e.g. <tt>image.ps</tt>).  See <B>convert(1)</B> for a list of valid image
+formats.
+<P>
+When you specify <B>X</B> as your image type, the filename has
+special meaning.  It specifies an X window by id, name, or
+<B>root</B>.  If no filename is specified, the window is selected
+by clicking the mouse in the desired window.
+<P>
+Specify <EM>file</EM> as - for standard input, <EM>output_file</EM> as - for
+standard output.  If <EM>file</EM> has the extension <B>.Z</B> or
+<B>.gz</B>, the file is uncompressed with <B>uncompress</B> or
+<B>gunzip</B> respectively.
+If <EM>output_file</EM> has the extension <B>compress</B> or <B>gzip</B>
+respectively.  Finally, precede the image file name with |
+to pipe to or from a system command.
+<P>
+<DD>Use an optional index enclosed in brackets after a file name to specify
+a desired subimage of a multi-resolution image format like Photo CD
+(e.g. img0001.pcd[4]) or a range for MPEG images (e.g. video.mpg[50-75]).
+A subimage specification can be disjoint (e.g. image.tiff[2,7,4]).
+For raw images, specify a subimage with a geometry (e.g.  -size 640x512
+image.rgb[320x256+50+50]).
+<P>
+Single images are written with  the  filename  you  specify.
+However,  multi-part  images  (i.e.  a multi-page PostScript
+document with <b>+adjoin</b> specified) are written with the filename followed
+by a period (<B>.</B>)  and  the scene number.  You can change this behavior by
+embedding a <B>printf</B> format specification in  the  file  name.
+For example,
+<P>
+<PRE>
+      <B>image%02d.miff</B>
+</PRE>
+montages files image00.miff, image01.miff, etc.
+<P>
+Note, a composite MIFF image displayed to an X server with
+<B>display</B> behaves differently than other images.  You can
+think of the composite as a visual image directory.  Choose
+a particular tile of the composite and press a button to
+display it.  See <B>display(1)</B> and <B>miff(5)</B> for details.
+</dl>
+<P>
+<A HREF="#top">Back to Contents</A>
+<HR> 
+<dl>
+<H2>
+<A NAME="xres">
+<DT>X Resources
+</A>
+</H2>
+<DD><B>montage</B> options can appear on the command line or in your X
+resource file.  Options on the command line supersede values
+specified in your X resource file.  See <B>X(1)</B> for more
+information on X resources.
+<P>
+<DD>All <B>montage</B> options have a corresponding X resource.  In
+addition, <B>montage</B> uses the following X resources:
+<DL>
+<DL>
+<P>
+<DT><B>background</B> <B>(</B>class <B>Background)</B>
+<DD>Specifies the preferred color to use for the composite
+image background.  The default is #ccc.
+<P>
+<DT><B>borderColor</B> <B>(</B>class <B>BorderColor)</B>
+<DD>Specifies the preferred color to use for the composite
+image border.  The default is #ccc.
+<P>
+<DT><B>borderWidth</B> <B>(</B>class <B>BorderWidth)</B>
+<DD>Specifies the width in pixels of the composite image
+border.  The default is 2.
+<P>
+<DT><B>font</B> <B>(</B>class <B>Font)</B>
+<DD>Specifies the name of the preferred font to use when
+displaying text within the composite image.  The
+default is 9x15, fixed, or 5x8 determined by the
+composite image size.
+<P>
+<DT><B>matteColor</B> <B>(</B>class <B>MatteColor)</B>
+<DD>Specify the color of an image frame.  A 3D  effect  is
+achieved  by using highlight and shadow colors derived
+from this color.  The default value is #697B8F.
+<P>
+<DT><B>pen</B> <B>(</B>class <B>Pen)</B>
+<DD>Specifies the preferred color to use for text within
+the composite image.  The default is black.
+<P>
+<DT><B>title</B> <B>(</B>class <B>Title)</B>
+<DD>This resource specifies the title to be placed at the
+top of the composite image.  The default is not to
+place a title at the top of the composite image.
+<P>
+</DL>
+</DL>
+</DL>
+<P>
+<A HREF="#top"><I>Back to Contents</I></A>
+<HR>
+<DL>
+<H2>
+<A NAME="envi">
+<DT>Environment
+</A>
+</H2>
+<DL>
+<DT><B>DISPLAY</B>
+<DD>To get the default host, display number, and screen.
+</DL>
+</DL>
+<P>  
+<A HREF="#top"><I>Back to Contents</I></A>
+<HR>
+<DL>
+<H2>
+<A NAME="copy">
+<DT>Copyright
+</A>
+</H2>
+<B>
+<dd>Copyright 1998 E. I. du Pont de Nemours and Company
+<p>
+<dd>Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files ("ImageMagick"),
+to deal in ImageMagick without restriction, including without limitation 
+the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+and/or sell copies of ImageMagick, and to permit persons to whom the 
+ImageMagick is furnished to do so, subject to the following conditions:
+<p>
+<dd>The above copyright notice and this permission notice shall be included in 
+all copies or substantial portions of ImageMagick. 
+<p>
+<dd>The software is provided "as is", without warranty of any kind, express or 
+implied, including but not limited to the warranties of merchantability, 
+fitness for a particular purpose and noninfringement.In no event shall 
+E. I. du Pont de Nemours and Company be liable for any claim, damages or 
+other liability, whether in an action of contract, tort or otherwise,
+arising from, out of or in connection with ImageMagick or the use or other 
+dealings in ImageMagick. 
+<p>
+<dd>Except as contained in this notice, the name of the E. I. du Pont de 
+Nemours and Company shall not be used in advertising or otherwise to 
+promote the sale, use or other dealings in ImageMagick without prior 
+written authorization from the E. I. du Pont de Nemours and Company. 
+</B>
+</DL>
+<P>  
+<A HREF="#top"><I>Back to Contents</I></A>
+<HR>
+<DL>
+<H2>
+<A NAME="ackn">
+<DT>Acknowledgements
+</A>
+</H2>
+<DD>The <B>MIT X Consortium</B> for making network transparent
+graphics a reality.
+<P>
+<DD><I>Michael Halle</I>, <B>Spatial Imaging Group at MIT</B>, for the
+initial implementation of Alan Paeth's image rotation
+algorithm.
+<P> 
+<DD><I>David Pensak</I>, <B>E. I. du Pont de Nemours and Company</B>, for
+providing a computing environment that made this program
+possible.
+<P>  
+<I>Paul Raveling</I>, <B>USC Information Sciences Institute</B>. The
+spacial subdivision color reduction algorithm is based on
+his Img software.
+</DL>
+<P>  
+<A HREF="#top"><I>Back to Contents</I></A>
+<HR>
+<DL>
+<H2>
+<A NAME="auth">
+<DT>Authors
+</A>
+</H2>
+<DD><I>John Cristy</I>, <A HREF="mailto:cristy@mystic.es.dupont.com">
+ <I>cristy@mystic.es.dupont.com</I></A> <B>E.I. du Pont de Nemours and Company
+Incorporated</B>.
+</DL>
+<P>
+<A HREF="#top"><I>Back to Contents</I></A>
+<p><hr><p>
+<a href="../ImageMagick.html"><img alt="Home Page"
+  src="../images/home.gif" width=40 height=40 align=middle border=0></a>
+<font size="-2">Image manipulation software that works like magic.</font>
+</body>
+</html>

@@ -1,0 +1,1593 @@
+<HTML VERSION="2.0">
+<HEAD>
+<TITLE>Perl Magick</TITLE>
+<LINK rev="made" href="mailto:cristy@mystic.es.dupont.com">
+<meta name="description" content="ImageMagick, version 4.1, is a package for
+  display and interactive manipulation of images for the X Window System. It
+  is written in C and interfaces to the X library, and therefore does not
+  require any proprietary toolkit in order to compile.  Although the software
+  is copyrighted, it is available for free and can be redistributed without
+  fee.">
+<meta name="keywords" content="ImageMagick, Image Magick, Image Magic, 
+  PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic, 
+  WebMagick, Web Magic, visualization, image processing, software development, 
+  simulation, image, software, AniMagick, Animagic, X11">
+</HEAD>
+<body background="../images/background.gif">
+<center>
+<img alt="Perl Magick" src="../images/perl.gif" width=355 height=57>
+</center>
+<pre>
+
+</pre>
+<H2>
+<A NAME="Contents">Contents</A>
+</H2>
+<UL>
+<LI><A HREF="#intr">Introduction</A>
+<LI><A HREF="#inst">Installation</A>
+<LI><A HREF="#over">Overview</A>
+<LI><A HREF="#exam">Example Script</A>
+<LI><A HREF="#read">Read or Write an Image</A>
+<LI><A HREF="#mani">Manipulate an Image</A>
+<LI><A HREF="#seta">Set an Image Attribute</A>
+<LI><A HREF="#geta">Get an Image Attribute</A>
+<LI><A HREF="#mont">Create an Image Montage</A>
+<LI><A HREF="#misc">Miscellaneous Methods</A>
+<LI><A HREF="#erro">Handling Errors</A>
+<LI><A HREF="#copy">Copyright</A>
+</UL>
+<dl>
+<h2>
+<p><hr><p>
+<a name="intr">
+<dt>Introduction
+</h2>
+<dd><a href="ftp://204.183.81.131/pub/ImageMagick/perl">PerlMagick</a>, 
+version 1.45, is an objected-oriented <a href="http://www.perl.com/perl/">
+Perl</a> interface to <a href="../ImageMagick.html">ImageMagick</a>.  Use the
+module to read, manipulate, or write an image or image sequence
+from within a Perl script.  This makes it very suitable for Web CGI scripts.
+You must have <b>ImageMagick</b> 4.0.9 or above and Perl version 5.002 or
+greater installed on your system for either of these utilities to work.  Perl
+version 5.004_04 or greater is required for <b>PerlMagick</b> to work on an NT
+system.
+<p>
+There are a number of useful scripts available to show you the value of
+<b>PerlMagick</b>.  You can do Web based image manipulation and conversion with
+<a href="ftp://204.183.81.131/pub/ImageMagick/perl">MogrifyMagick</a>, or use
+<a href="ftp://204.183.81.131/pub/ImageMagick/perl">L-systems</a> to
+create images of plants using mathematical constructs, and finally
+navigate through collections of thumbnail images and select the image
+to view with the
+<a href="ftp://204.183.81.131/pub/ImageMagick/perl">WebMagick Image Navigator</a>.
+<p>
+An object-oriented Python interface to <b>ImageMagick</b> is also available, 
+see <a href="http://starship.skyport.net/crew/zack/pymagick/">PythonMagick</a>.
+</dl>
+<P>
+<A HREF="#top"><I>Back to Contents</I></A>
+<HR>
+<dl>
+<h2>
+<a name="inst">
+<dt>Installation
+</h2>
+<dd>Get the <a href="ftp://204.183.81.131/pub/ImageMagick/perl">
+PerlMagick</a> distribution and type the following:
+<p>
+<pre>
+    gunzip -c PerlMagick-1.45.tar.gz
+    tar xvf PerlMagick-1.45.tar
+    cd PerlMagick
+</pre>
+<p>
+Next, edit <tt>Makefile.PL</tt> and change LIBS and INC to include the
+appropriate path information to the required <tt>libMagick</tt> library.
+You will also need paths to JPEG, PNG, TIFF, etc. plug-ins if they were
+included with your installed version of <b>ImageMagick</b>.  Now type
+<p>
+<pre>
+    perl Makefile.PL
+    make
+    make install
+</pre>
+<p>
+Use <tt>nmake</tt> instead of <tt>make</tt> on an NT system.  Download
+the <a href=ftp://204.183.81.131/pub/ImageMagick/nt>NT source</a>
+distribution and build out of the PerlMagick directory.
+Copy <tt>..\bin\IMagick.dll</tt> and <tt>..\bin\X11.dll</tt> to a directory
+in your dynamic load path such as <tt>c:\perl\site\5.00502</tt>.  Next, type
+<p>
+<pre>
+    cd PerlMagick
+    copy Makefile.nt Makefile.PL
+    perl Makefile.PL
+    nmake
+    nmake install
+</pre>
+<p>
+For Unix, you typically need to be <tt>root</tt> to install the software.
+There are ways around this.  Consult the Perl manual pages for more
+information.  
+<p>
+To verify a correct installation, type
+<p>
+<pre>
+    make test
+</pre>
+<p>
+There is also a two scripts available to demo many of the functions
+<b>PerlMagick</b> can perform.  Type
+<p>
+<pre>
+    perl t.pl
+    perl demo.pl
+</pre>
+<p>
+You are now ready to utilize the <b>PerlMagick</b> methods from
+within your Perl scripts.
+</dl>
+<P>
+<A HREF="#top"><I>Back to Contents</I></A>
+<HR>
+<dl>
+<h2>
+<a name="over">
+<dt>Overview
+</h2>
+<dd>Any script that wants to use <b>PerlMagick</b> methods must first
+define the methods within its namespace.  Do this with:
+<p>
+<pre>
+    use Image::Magick;
+</pre>
+<p>
+Next you will want to read an image or image sequence, manipulate it, 
+and then display or write it.  The input and output methods for
+<b>PerlMagick</b> are defined in <A HREF="#read">Read or Write an Image</A>.
+See <A HREF="#seta">Set an Image Attribute</A> for methods that affect the
+way an image is read or written.  Refer to
+<A HREF="#mani">Manipulate an Image</A> for a list of methods to transform
+an image.  <A HREF="#geta">Get an Image Attribute</A> describes how to
+retrieve an attribute for an image.  Refer to
+<A HREF="#mont">Create an Image Montage</A> for details about tiling 
+your images as thumbnails on a background.  Finally, some methods do not
+neatly fit into any of the catagories just mentioned.  Review
+<A HREF="#misc">Miscellaneous Methods</A> for a list of these methods.
+<p>
+Once you are finished with a <b>PerlMagick</b> object you should consider
+destroying it.  Each image in an image sequence is stored in virtual memory.
+This can potentially add up to mega-bytes of memory.  Upon destroying a
+<b>PerlMagick</b> object, the memory is returned for use by other Perl
+methods.  The recommended way to destroy an object is with <tt>undef</tt>:
+<p>
+<pre>
+    undef $image;
+</pre>
+<p>
+To delete all the images but retain the <tt>Image::Magick</tt> object use
+<p>
+<pre>
+    undef @$image;
+</pre>
+and finally, to delete a single image from a multi-image sequence, use
+<p>
+<pre>
+    undef $image-&gt;[x];
+</pre>
+<p>
+The next section illustrates how to use various <b>PerlMagick</b> methods
+to manipulate an image sequence.
+<p>
+Some of the <b>PerlMagick</b> methods require external programs such as
+<em>Ghostscript</em>.  This may require an explicit path in your
+PATH environment variable to work properly.  For example, 
+<p>
+<pre>
+    $ENV{PATH}='/bin:/usr/bin:/usr/local/bin';
+</pre>
+</dl>
+<P>
+<A HREF="#top"><I>Back to Contents</I></A>
+<dl>
+<hr>
+<h2>
+<a name="exam">
+<dt>Example Script
+</h2>
+<dd>Here is an example script to get you started:
+<p>
+<pre>
+    #!/usr/local/bin/perl
+    use Image::Magick;
+
+    my($image, $x);
+
+    $image = Image::Magick-&gt;new;
+    $x = $image-&gt;Read('girl.gif', 'logo.gif', 'rose.gif');
+    warn "$x" if "$x";
+
+    $x = $image-&gt;Crop(geometry=&gt;'100x100+100+100');
+    warn "$x" if "$x";
+
+    $x = $image-&gt;Write('x.gif');
+    warn "$x" if "$x";
+</pre>
+<p>
+The script reads three images, crops them, and writes a single image as a
+GIF animation sequence.  In many cases you may want to access individual
+images of a sequence.  The next example illustrates how this is done:
+<p>
+<pre>
+    #!/usr/local/bin/perl
+    use Image::Magick;
+
+    my($image, $p, $q);
+
+    $image = new Image::Magick;
+    $image-&gt;Read('x1.gif');
+    $image-&gt;Read('j*.jpg');
+    $image-&gt;Read('k.miff[1, 5, 3]');
+    $image-&gt;Contrast;
+    for ($x = 0; $image-&gt;[x]; $x++)
+    {
+      $image-&gt;[x]-&gt;Frame('100x200') if $image-&gt;[x]-&gt;Get('magick') eq 'GIF';
+      undef $image-&gt;[x] if $image-&gt;[x]-&gt;Get('columns') &lt; 100;
+    }
+    $p = $image-&gt;[1];
+    $p-&gt;Draw(pen=&gt;'red', primitive=&gt;'rectangle', points=&gt;20, 20 100, 100');
+    $q = $p-&gt;Montage();
+    undef $image;
+    $q-&gt;Write('x.miff');
+</pre>
+<p>
+Suppose you want to start out with a 100 by 100 pixel black canvas with
+a red pixel in the center.  Try
+<p>
+<pre>
+    $image = Image::Magick-&gt;new;
+    $image-&gt;Set(size=&gt;'100x100');
+    $image-&gt;ReadImage('xc:white');
+    $image-&gt;Set('pixel[49, 49]'=&gt;'red');
+</pre>
+<p>
+Or suppose you want to convert your color image to grayscale:
+<p>
+<pre>
+    $image-&gt;Quantize(colorspace=&gt;'gray');
+</pre>
+<p>
+Other clever things you can do with <b>PerlMagick</b> objects include
+<p>
+<pre>
+    $i = $#$p+1;     # return the number of images associated with object p
+    push(@$q, @$p);  # push the images from object p onto object q
+    undef @$p;       # delete the images but not the object p
+</pre>
+</dl>
+<P>
+<A HREF="#top"><I>Back to Contents</I></A>
+<HR>
+<dl>
+<h2>
+<a name="read">
+<dt>Read or Write an Image
+</h2>
+<dd>Use the methods listed below to either read, write, or display an
+image or image sequence. 
+<p>
+<table border>
+<caption>
+Read or Write Methods
+</caption>
+<tr>
+    <th>Method</th>
+    <th>Parameters</th>
+    <th>Return Value</th>
+    <th>Description</th>
+</tr>
+<tr>
+  <td>Read</td>
+  <td>one or more filenames</td>
+  <td>the number of images read </td>
+  <td>read an image or image sequence</td>
+</tr>
+<tr>
+  <td>Write</td>
+  <td>filename</td>
+  <td>the number of images written </td>
+  <td>write an image or image sequence</td>
+</tr>
+<tr>
+  <td>Display</td>
+  <td>server name</td>
+  <td>the number of images displayed </td>
+  <td>display the image or image sequence to an X server</td>
+</tr>
+<tr>
+  <td>Animate</td>
+  <td>server name</td>
+  <td>the number of images animated </td>
+  <td>animate image sequence to an X server</td>
+</tr>
+</table>
+<p>
+For convenience, methods <tt>Write</tt>, <tt>Display</tt>, and <tt>Animate</tt>
+can take any parameter that <A HREF="#seta">SetAttribute</A> knows about.  For
+example, 
+<p>
+<pre>
+    $image-&gt;Write(filename=&gt;'image.png', compress=&gt;'None');
+</pre>
+<p>
+Use <tt>-</tt> as the filename to method <tt>Read</tt> to read from
+standard in or to method <tt>Write</tt> to write to standard out:
+<p>
+<pre>
+    binmode STDOUT;
+    $image-&gt;Write('gif:-');
+</pre>
+To read an image in the GIF format from a PERL filehandle, use:
+<p>
+<pre>
+    $filename = "image.gif";
+    open(DATA, $filename);
+    $image-&gt;Read(file=&gt;DATA, filename=&gt;$filename);
+    close(DATA);
+</pre>
+To write an image in the PNG format to a PERL filehandle, use:
+<p>
+<pre>
+    $filename = "image.png";
+    open(DATA, "&gt;$filename");
+    $image-&gt;Write(file=&gt;DATA, filename=&gt;$filename);
+    close(DATA);
+</pre>
+<p>
+<p>
+You can optionally add <tt>Image</tt> to any method name.  For example, 
+<tt>ReadImage</tt> is an alias for method <tt>Read</tt>.
+</dl>
+<P>
+<A HREF="#top"><I>Back to Contents</I></A>
+<HR>
+<dl>
+<h2>
+<a name="mani">
+<dt>Manipulate an Image
+</h2>
+<dd>Once you create an image with, for example, method <tt>ReadImage</tt> you
+may want to operate on it.  Below is a list of all the image manipulations 
+methods available to you with <b>PerlMagick</b>.  There are 
+<a href="../images/examples.jpg" width=760 height=1808>examples</a> of select
+<b>PerlMagick</b> methods.
+
+Here is an example call to an image manipulation method:
+<p>
+<pre>
+    $image-&gt;Crop(geometry=&gt;'100x100+10+20');
+    $image-&gt;[x]-&gt;Frame("100x200");
+</pre>
+<p>
+And here is a list of other image manipulation methods you can call:
+<p>
+<table border>
+<caption>
+Image Manipulation Methods
+</caption>
+<tr>
+    <th>Method</th>
+    <th>Parameters</th>
+    <th>Description</th>
+</tr>
+<tr>
+  <td>AddNoise</td>
+  <td>noise=&gt;{Uniform, Gaussian, Multiplicative, Impulse, Laplacian, 
+    Poisson}</td>
+  <td>add noise to an image</td>
+</tr>
+<tr>
+  <td>Annotate</td>
+  <td>
+    server=&gt;<i>string</i>, font=&gt;<i>string</i>, pointsize=&gt;<i>integer</i>, 
+    density=&gt;<i>geometry</i>, box=&gt;<i>colorname</i>, 
+    pen=&gt;<i>colorname</i>, geometry=&gt;<i>geometry</i>, 
+    text=&gt;{<i>string</i>, @<i>filename</i>}, align=&gt;{Left, Center, Right}, 
+    x=&gt;<i>integer</i>, y=&gt;<i>integer</i>
+  </td>
+  <td>annotate an image with text</td>
+</tr>
+<tr>
+  <td>Blur</td>
+  <td>factor=&gt;<i>percentage</i></td>
+  <td>blurs an image</td>
+</tr>
+<tr>
+  <td>Border</td>
+  <td>geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, height=&gt;<i>integer</i>, 
+    color=<i>colorname</i></td>
+  <td>surround the image with a border of color</td>
+</tr>
+<tr>
+  <td>Charcoal</td>
+  <td>factor=&gt;<i>percentage</i></td>
+  <td>simulate a charcoal drawing</td>
+</tr>
+<tr>
+  <td>Chop</td>
+  <td>geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, height=&gt;<i>integer</i>, 
+    x=&gt;<i>integer</i>, y=&gt;<i>integer</i></td>
+  <td>chop an image</td>
+</tr>
+<tr>
+  <td>Composite</td>
+  <td>compose=&gt;{Over, In, Out, Atop, Xor, Plus, 
+    Minus, Add, Subtract, Difference, Bumpmap, Replace, ReplaceRed, 
+    ReplaceGreen, ReplaceBlue, ReplaceMatte, Blend, Displace}, 
+    image=&gt;<i>image-handle<i>, geometry=&gt;<i>geometry</i>, x=&gt;<i>integer</i>, 
+    y=&gt;<i>integer</i>, gravity=&gt;{NorthWest, North, NorthEast, West, Center, 
+    East, SouthWest, South, SouthEast}</td>
+  <td>composite one image onto another</td>
+</tr>
+<tr>
+  <td>Contrast</td>
+  <td>sharpen=&gt;{True, False}</td>
+  <td>enhance or reduce the image contrast</td>
+</tr>
+<tr>
+  <td>Clone</td>
+  <td></td>
+  <td>make a copy an image</td>
+</tr>
+<tr>
+  <td>Crop</td>
+  <td>geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, height=&gt;<i>integer</i>, 
+    x=&gt;<i>integer</i>, y=&gt;<i>integer</i></td>
+  <td>crop an image</td>
+</tr>
+<tr>
+  <td>Colorize</td>
+  <td>color=&gt;<i>colorname</i>, pen=&gt;<i>colorname</i></td>
+  <td>colorize the image with the pen color</td>
+</tr>
+<tr>
+  <td>Comment</td>
+  <td>string</td>
+  <td>add a comment to your image</td>
+</tr>
+<tr>
+  <td>Condense</td>
+  <td></td>
+  <td>compress image to take up the least amount of memory</td>
+</tr>
+<tr>
+  <td>CycleColormap</td>
+  <td>amount=&gt;<i>integer</i></td>
+  <td>displace image colormap by amount</td>
+</tr>
+<tr>
+  <td>Despeckle</td>
+  <td></td>
+  <td>reduce the speckles within an image</td>
+</tr>
+<tr>
+  <td>Draw</td>
+  <td>
+    primitive={Point, Line, Rectangle, FillRectangle, Circle, FillCircle, 
+      Polygon, FillPolygon, Color, Matte, Text, Image, @<i>filename</i>}, 
+    points=&gt;<i>string</i>, method=<i>{Point, Replace, Floodfill, Reset}</i>, 
+    pen=&gt;<i>colorname</i>, linewidth=&gt;<i>integer</i>, server=&gt;<i>string</i>, 
+  </td>
+  <td>annotate an image with one or more graphic primitives</td>
+</tr>
+<tr>
+  <td>Edge</td>
+  <td>factor=&gt;<i>percentage</i></td>
+  <td>detect edges within an image</td>
+</tr>
+<tr>
+  <td>Emboss</td>
+  <td></td>
+  <td>emboss the image</td>
+</tr>
+<tr>
+  <td>Enhance</td>
+  <td></td>
+  <td>apply a digital filter to enhance a noisy image</td>
+</tr>
+<tr>
+  <td>Equalize</td>
+  <td></td>
+  <td>perform histogram equalization to the image</td>
+</tr>
+<tr>
+  <td>Flip</td>
+  <td></td>
+  <td>create a <em>mirror image</em> by reflecting the image scanlines in the
+      vertical direction</td>
+</tr>
+<tr>
+  <td>Flop</td>
+  <td></td>
+  <td>create a <em>mirror image</em> by reflecting the image scanlines in the
+  horizontal direction</td>
+</tr>
+<tr>
+  <td>Frame</td>
+  <td>geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, height=&gt;<i>integer</i>, 
+    inner=&gt;<i>integer</i>, outer=&gt;<i>integer</i>, color=&gt;<i>colorname</i></td>
+  <td>surround the image with an ornamental border</td>
+</tr>
+<tr>
+  <td>Gamma</td>
+  <td>gamma=&gt;<i>double</i>, red=&gt;<i>double</i>, green=&gt;<i>double</i>, 
+     blue=&gt;<i>double</i></td>
+  <td>gamma correct the image</td>
+</tr>
+<tr>
+  <td>Implode</td>
+  <td>factor=&gt;<i>percentage</i></td>
+  <td>implode image pixels about the center</td>
+</tr>
+<tr>
+  <td>Label</td>
+  <td>string</td>
+  <td>assign a label to an image</td>
+</tr>
+<tr>
+  <td>Layer</td>
+  <td>layer={Red, Green, Blue, Matte}</td>
+  <td>extract a layer from the image</td>
+</tr>
+<tr>
+  <td>Magnify</td>
+  <td></td>
+  <td>double the size of an image</td>
+</tr>
+<tr>
+  <td>Map</td>
+  <td>image=&gt;<i>image-handle</i>, dither={True, False}</td>
+  <td>choose a particular set of colors from this image</td>
+</tr>
+<tr>
+  <td>Minify</td>
+  <td></td>
+  <td>half the size of an image</td>
+</tr>
+<tr>
+  <td>Modulate</td>
+  <td>brightness=&gt;<i>double</i>,  saturation=&gt;<i>double</i>, 
+     hue=&gt;<i>double</i></td>
+  <td>vary the brightness, saturation, and hue of an image</td>
+</tr>
+<tr>
+  <td>Negate</td>
+  <td>gray=&gt;{True, False}</td>
+  <td>apply color inversion to image</td>
+</tr>
+<tr>
+  <td>Normalize</td>
+  <td></td>
+  <td>transform image to span the full range of color values</td>
+<tr>
+  <td>OilPaint</td>
+  <td>radius=&gt;<i>integer</i></td>
+  <td>simulate an oil painting</td>
+</tr>
+<tr>
+  <td>Opaque</td>
+  <td>color=&gt;<i>colorname</i>, pen=&gt;<i>colorname</i></td>
+  <td>change this color to the pen color within the image</td>
+</tr>
+<tr>
+  <td>Quantize</td>
+  <td> colors=&gt;<i>integer</i>, colorspace=&gt;{RGB, Gray, Transparent, OHTA, 
+      XYZ, YCbCr, YIQ, YPbPr, YUV, CMYK}, treedepth=&gt;
+      <i>integer</i>, dither=&gt;{True, False}, measure_error&gt;{True, False}
+      </td>
+  <td>preferred number of colors in the image</td>
+</tr>
+<tr>
+  <td>Raise</td>
+  <td>geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, height=&gt;<i>integer</i>, 
+    x=&gt;<i>integer</i>, y=&gt;<i>integer</i>, raise=&gt;{True, False}</td>
+  <td>lighten or darken image edges to create a 3-D effect</td>
+</tr>
+<tr>
+  <td>ReduceNoise</td>
+  <td></td>
+  <td>add or reduce the noise in an image</td>
+</tr>
+<tr>
+  <td>Roll</td>
+  <td>geometry=&gt;<i>geometry</i>, x=&gt;<i>integer</i>, y=&gt;<i>integer</i></td>
+  <td>roll an image vertically or horizontally</td>
+</tr>
+<tr>
+  <td>Rotate</td>
+  <td>degrees=&gt;<i>double</i>, crop=&gt;{True, False}, sharpen=&gt;{True, False}</td>
+  <td>roll an image vertically or horizontally</td>
+</tr>
+<tr>
+  <td>Sample</td>
+  <td>geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, 
+      height=&gt;<i>integer</i> </td>
+  <td>scale image with pixel sampling</td>
+</tr>
+<tr>
+  <td>Scale</td>
+  <td>geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, 
+      height=&gt;<i>integer</i> </td>
+  <td>scale image to desired size</td>
+</tr>
+<tr>
+  <td>Segment</td>
+  <td>colorspace=&gt;{RGB, Gray, Transparent, OHTA, XYZ, YCbCr, YCC, YIQ, YPbPr, 
+    YUV, CMYK}, verbose={True, False}, cluster=&gt;<i>double</i>, 
+    smooth=<i>double</i> </td>
+  <td>segment an image by analyzing the histograms of the color components and
+  identifying units that are homogeneous</td>
+</tr>
+<tr>
+  <td>Shade</td>
+  <td>geometry=&gt;<i>geometry</i>, azimuth=&gt;<i>double</i>, 
+      elevation=&gt;<i>double</i>, color=&gt;{true, false} </td>
+  <td>shade the image using a distant light source</td>
+</tr>
+<tr>
+  <td>Sharpen</td>
+  <td>factor=&gt;<i>percentage</i></td>
+  <td>sharpen an image</td>
+</tr>
+<tr>
+  <td>Shear</td>
+  <td>geometry=&gt;<i>geometry</i>, x=&gt;<i>double</i>, y=&gt;<i>double</i>, 
+    crop=&gt;{true, false}</td>
+  <td>shear the image along the X or Y axis by a positive or negative shear
+      angle</td>
+</tr>
+<tr>
+  <td>Signature</td>
+  <td></td>
+  <td>generate an MD5 signature for the image</td>
+</tr>
+<tr>
+  <td>Solarize</td>
+  <td>factor=&gt;<i>percentage</i></td>
+  <td>negate all pixels above the threshold level</td>
+</tr>
+<tr>
+  <td>Spread</td>
+  <td>amount=&gt;<i>integer</i></td>
+  <td>displace image pixels by a random amount</td>
+</tr>
+<tr>
+  <td>Swirl</td>
+  <td>degrees=&gt;<i>double</i></td>
+  <td>swirl image pixels about the center</td>
+</tr>
+<tr>
+  <td>Texture</td>
+  <td>filename=&gt;<i>string</i></td>
+  <td>name of texture to tile onto the image background</td>
+</tr>
+<tr>
+  <td>Transform</td>
+  <td>crop=&gt;<i>geometry</i>, geometry=&gt;<i>geometry</i></td>
+  <td>crop or resize an image with a fully-qualified geometry specification</td>
+</tr>
+<tr>
+  <td>Transparent</td>
+  <td>color=&gt;<i>colorname</i></td>
+  <td>make this color transparent within the image</td>
+</tr>
+<tr>
+  <td>Threshold</td>
+  <td>threshold=&gt;<i>integer</i></td>
+  <td>threshold the image</td>
+</tr>
+<tr>
+  <td>Trim</td>
+  <td></td>
+  <td>remove edges that are the background color from the image</td>
+</tr>
+<tr>
+  <td>Wave</td>
+  <td>geometry=&gt;<i>geometry</i>, amplitude=&gt;<i>double</i>, 
+      wavelength=&gt;<i>double</i> </td>
+  <td>alter an image along a sine wave</td>
+</tr>
+<tr>
+  <td>Zoom</td>
+  <td>geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, 
+      height=&gt;<i>integer</i>, filter=&gt;{Point, Box, Triangle, Hermite, 
+      Hanning, Hamming, Blackman, Gaussian, Quadratic, Cubic, Catrom, 
+      Mitchell, Lanczos, Bessel, Sinc}</td>
+  <td>scale image to desired size</td>
+</tr>
+</table>
+<p>
+Note, that the <tt>geometry</tt> parameter is a short cut for the
+<tt>width</tt> and <tt>height</tt> parameters (e.g. <tt>geometry=&gt;'106x80'</tt>
+is equivalent to <tt>width=&gt;106, height=&gt;80</tt>).
+<p>
+You can specify <tt>@filename</tt> in both <tt>Annotate</tt> and <tt>Draw</tt>.
+This reads the text or graphic primitive instructions from a file on disk.
+For example, 
+<p>
+<pre>
+   $image-&gt;Draw(pen=&gt;'red', primitive=&gt;'rectangle', 
+     points=&gt;'20, 20 100, 100  40, 40 200, 200  60, 60 300, 300');
+</pre>
+<p>
+Is eqivalent to
+<p>
+<pre>
+   $image-&gt;Draw(pen=&gt;'red', primitive=&gt;'@draw.txt');
+</pre>
+<p>
+Where <tt>draw.txt</tt> is a file on disk that contains this:
+<p>
+<pre>
+  rectangle 20, 20 100, 100
+  rectangle 40, 40 200, 200
+  rectangle 60, 60 300, 300
+</pre>
+<p>
+You can optionally add <tt>Image</tt> to any method name.  For example, 
+<tt>TrimImage</tt> is an alias for method <tt>Trim</tt>.
+<p>
+Most of the attributes listed above have an analog in
+<a href="convert.html">convert</a>.  See the documentation for
+a more detailed description of these attributes.
+</dl>
+<P>
+<A HREF="#top"><I>Back to Contents</I></A>
+<HR>
+<dl>
+<h2>
+<a name="seta">
+<dt>Set an Image Attribute
+</h2>
+<dd>Use method <tt>Set</tt> to set an image attribute.  For example, 
+<p>
+<pre>
+    $image-&gt;Set(dither=&gt;'True');
+    $image-&gt;[$x]-&gt;Set(delay=&gt;3);
+</pre>
+<p>
+And here is a list of all the image attributes you can set:
+<p>
+<table border>
+<caption>
+Image Attributes
+</caption>
+<tr>
+    <th>Attribute</th>
+    <th>Values</th>
+    <th>Description</th>
+</tr>
+<tr>
+  <td>adjoin</td>
+  <td>{True, False}</td>
+  <td>join images into a single multi-image file</td>
+</tr>
+<tr>
+  <td>background</td>
+  <td><i>string</i></td>
+  <td>image background color</td>
+</tr>
+<tr>
+  <td>blue-primary</td>
+  <td><i>x-value</i>, <i>y-value</i></td>
+  <td>chromaticity blue primary point (e.g. 0.15, 0.06)</td>
+</tr>
+<tr>
+  <td>bordercolor</td>
+  <td><i>string</i></td>
+  <td>set the image border color</td>
+</tr>
+<tr>
+  <td>colormap[<i>i</i>]</td>
+  <td><i>string</i></td>
+  <td>color name (e.g. red) or hex value (e.g. #ccc) at position <i>i</i></td>
+</tr>
+<tr>
+  <td>colorspace</td>
+  <td>{RGB, Gray, Transparent, OHTA, XYZ, YCbCr, YCC, YIQ, YPbPr, YUV, CMYK}</td>
+  <td>type of colorspace</td>
+</tr>
+<tr>
+  <td>colors</td>
+  <td><i>integer<i></td>
+  <td>preferred number of colors in the image</td>
+</tr>
+<tr>
+  <td>compress</td>
+  <td>None, JPEG, LZW, Runlength, Zip</td>
+  <td>type of image compression</td>
+</tr>
+<tr>
+  <td>density</td>
+  <td><i>geometry</i></td>
+  <td>vertical and horizontal resolution in pixels of the image</td>
+</tr>
+<tr>
+  <td>dispose</td>
+  <td><i>{1, 2, 3, 4}</i></td>
+  <td>GIF disposal method</td>
+</tr>
+<tr>
+  <td>delay</td>
+  <td><i>integer<i></td>
+  <td>this many 1/100ths of a second\fP must expire before displaying the next
+    image in a sequence</td>
+</tr>
+<tr>
+  <td>dither</td>
+  <td>{True, False}</td>
+  <td>apply Floyd/Steinberg error diffusion to the image</td>
+</tr>
+<tr>
+  <td>display</td>
+  <td><i>string</i></td>
+  <td>specifies the X server to contact</td>
+</tr>
+<tr>
+  <td>file</td>
+  <td><i>filehandle</i></td>
+  <td>set the image filehandle</td>
+</tr>
+<tr>
+  <td>filename</td>
+  <td><i>string</i></td>
+  <td>set the image filename</td>
+</tr>
+<tr>
+  <td>filter</td>
+  <td>{ Point, Box, Triangle, Hermite, Hanning, Hamming, Blackman, Gaussian, 
+    Quadratic, Cubic, Catrom, Mitchell, Lanczos, Bessel, Sinc} </td>
+  <td>use this filter when resizing an image</td>
+</tr>
+<tr>
+  <td>font</td>
+  <td><i>string</i></td>
+  <td>use this font when annotating the image with text</td>
+</tr>
+<tr>
+  <td>format</td>
+  <td><i>string</i></td>
+  <td>set the image format</td>
+</tr>
+<tr>
+  <td>green-primary</td>
+  <td><i>x-value</i>, <i>y-value</i></td>
+  <td>chromaticity green primary point (e.g. 0.3, 0.6)</td>
+</tr>
+<tr>
+  <td>iterations</td>
+  <td><i>integer</i></td>
+  <td>add Netscape loop extension to your GIF animation</td>
+</tr>
+<tr>
+  <td>interlace</td>
+  <td>{None, Line, Plane, Partition}</td>
+  <td>the type of interlacing scheme</td>
+</tr>
+<tr>
+  <td>loop</td>
+  <td><i>integer</i></td>
+  <td>add Netscape loop extension to your GIF animation</td>
+</tr>
+<tr>
+  <td>magick</td>
+  <td><i>string</i></td>
+  <td>set the image format</td>
+</tr>
+<tr>
+  <td>mattecolor</td>
+  <td><i>string</i></td>
+  <td>set the image matte color</td>
+</tr>
+<tr>
+  <td>monochrome</td>
+  <td>{True, False}</td>
+  <td>transform the image to black and white</td>
+</tr>
+<tr>
+  <td>page</td>
+  <td>{ Letter, Tabloid, Ledger, Legal, Statement, Executive, 
+    A3, A4, A5, B4, B5, Folio, Quarto, 10x14} or <i>geometry</i></td>
+  <td>preferred size and location of an image canvas</td>
+</tr>
+<tr>
+  <td>pen</td>
+  <td><i>color</i></td>
+  <td>color name (e.g. red) or hex value (e.g. #ccc) for annotating or
+    changing opaque color</td>
+</tr>
+<tr>
+  <td>pixel[<i>x</i>, <i>y</i>]</td>
+  <td><i>string</i></td>
+  <td>color name (e.g. red) or hex value (e.g. #ccc) at position (<i>x</i>, <i>y</i>)</td>
+</tr>
+<tr>
+  <td>pointsize</td>
+  <td><i>integer<i></td>
+  <td>pointsize of the Postscript font</td>
+</tr>
+<tr>
+  <td>preview</td>
+  <td>{ Rotate, Shear, Roll, Hue, Saturation, Brightness, Gamma, Spiff, 
+    Dull, Grayscale, Quantize, Despeckle, ReduceNoise, AddNoise, Sharpen, Blur, 
+    Threshold, EdgeDetect, Spread, Solarize, Shade, Raise, Segment, Swirl, 
+    Implode, Wave, OilPaint, CharcoalDrawing} </td>
+  <td>type of preview for the Preview image format</td>
+</tr>
+<tr>
+  <td>quality</td>
+  <td><i>integer<i></td>
+  <td>JPEG/MIFF/PNG compression level</td>
+</tr>
+<tr>
+  <td>red-primary</td>
+  <td><i>x-value</i>, <i>y-value</i></td>
+  <td>chromaticity red primary point (e.g. 0.64, 0.33)</td>
+</tr>
+<tr>
+  <td>rendering-intent</td>
+  <td>{Undefined, Saturation, Perceptual, Absolute, Relative}</td>
+  <td>the type of rendering intent</td>
+</tr>
+<tr>
+  <td>scene</td>
+  <td><i>integer</i></td>
+  <td>image scene number</td>
+</tr>
+<tr>
+  <td>subimage</td>
+  <td><i>integer<i></td>
+  <td>subimage of an image sequence</td>
+</tr>
+<tr>
+  <td>subrange</td>
+  <td><i>integer<i></td>
+  <td>number of images relative to the base image</td>
+</tr>
+<tr>
+  <td>server</td>
+  <td><i>string<i></td>
+  <td>specifies the X server to contact</td>
+</tr>
+<tr>
+  <td>size</td>
+  <td><i>string<i></td>
+  <td>width and height of a raw image</td>
+</tr>
+<tr>
+  <td>tile</td>
+  <td><i>string<i></td>
+  <td>tile name</td>
+</tr>
+<tr>
+  <td>texture</td>
+  <td><i>string<i></td>
+  <td>name of texture to tile onto the image background</td>
+</tr>
+<tr>
+  <td>treedepth</td>
+  <td><i>{0, 1, 2, 3, 4, 5, 6, 7, 8}<i></td>
+  <td> depth of the color classification tree</td>
+</tr>
+<tr>
+  <td>undercolor</td>
+  <td><i>undercolor factor</i>x<i>black-generation factor</i></td>
+  <td>control undercolor removal and black generation on CMYK images</td>
+</tr>
+<tr>
+  <td>verbose</td>
+  <td>{True, False}</td>
+  <td>print detailed information about the image</td>
+</tr>
+<tr>
+  <td>white-point</td>
+  <td><i>x-value</i>, <i>y-value</i></td>
+  <td>chromaticity white point (e.g. 0.3127, 0.329)</td>
+</tr>
+</table>
+<p>
+Note, that the <tt>geometry</tt> parameter is a short cut for the
+<tt>width</tt> and <tt>height</tt> parameters (e.g. <tt>geometry=&gt;'106x80'</tt>
+is equivalent to <tt>width=&gt;106, height=&gt;80</tt>).
+<p>
+<tt>SetAttribute</tt> is an alias for method <tt>Set</tt>.
+<p>
+Most of the attributes listed above have an analog in
+<a href="convert.html">convert</a>.  See the documentation for
+a more detailed description of these attributes.
+</dl>
+<p>
+<A HREF="#top">Back to Contents</A>
+<HR>
+<dl>
+<h2>
+<a name="geta">
+<dt>Get an Image Attribute
+</h2>
+<dd>Use method <tt>Get</tt> to get an image attribute.  For example, 
+<p>
+<pre>
+    ($a, $b, $c) = $image-&gt;Get('colorspace', 'magick', 'adjoin');
+    $width = $image-&gt;[3]-&gt;Get('columns');
+</pre>
+<p>
+In addition to all the attributes listed in <A HREF="#seta">Set an Image
+Attribute</A>, you can get these additional attributes:
+<p>
+<table border>
+<caption>
+Image Attributes
+</caption>
+<tr>
+    <th>Attribute</th>
+    <th>Values</th>
+    <th>Description</th>
+</tr>
+<tr>
+  <td>base_columns</td>
+  <td><i>integer</i></td>
+  <td>base image width (before transformations)</td>
+</tr>
+<tr>
+  <td>base_filename</td>
+  <td><i>string</i></td>
+  <td>base image filename (before transformations)</td>
+</tr>
+<tr>
+  <td>base_rows</td>
+  <td><i>integer</i></td>
+  <td>base image height (before transformations)</td>
+</tr>
+<tr>
+  <td>class</td>
+  <td>{Direct, Pseudo}</td>
+  <td>image class</td>
+</tr>
+<tr>
+  <td>comment</td>
+  <td><i>string</i></td>
+  <td>image comment</td>
+</tr>
+<tr>
+  <td>columns</td>
+  <td><i>integer</i></td>
+  <td>image width</td>
+</tr>
+<tr>
+  <td>depth</td>
+  <td><i>integer</i></td>
+  <td>image depth</td>
+</tr>
+<tr>
+  <td>directory</td>
+  <td><i>string</i></td>
+  <td>tile names from within an image montage</td>
+</tr>
+<tr>
+  <td>filesize</td>
+  <td><i>integer</i></td>
+  <td>number of bytes of the image on disk</td>
+</tr>
+<tr>
+  <td>gamma</td>
+  <td><i>double</i></td>
+  <td>gamma level of the image</td>
+</tr>
+<tr>
+  <td>geometry</td>
+  <td><i>string</i></td>
+  <td>image geometry</td>
+</tr>
+<tr>
+  <td>height</td>
+  <td><i>integer</i></td>
+  <td>the number of rows or height of an image</td>
+</tr>
+<tr>
+  <td>label</td>
+  <td><i>string</i></td>
+  <td>image label</td>
+</tr>
+<tr>
+  <td>matte</td>
+  <td>{True, False}</td>
+  <td>True if the image has transparency</td>
+</tr>
+<tr>
+  <td>mean</td>
+  <td><i>double</i></td>
+  <td>the mean error per pixel computed when an image is color reduced</td>
+</tr>
+<tr>
+  <td>montage</td>
+  <td><i>geometry</i></td>
+  <td>tile size and offset within an image montage</td>
+</tr>
+<tr>
+  <td>normalized_max</td>
+  <td><i>double</i></td>
+  <td>the normalized max error per pixel computed when an image is color reduced</td>
+</tr>
+<tr>
+  <td>normalized_mean</td>
+  <td><i>double</i></td>
+  <td>the normalized mean error per pixel computed when an image is color reduced</td>
+</tr>
+<tr>
+  <td>packetsize</td>
+  <td><i>integer</i></td>
+  <td>the number of bytes in each pixel packet</td>
+</tr>
+<tr>
+  <td>packets</td>
+  <td><i>integer</i></td>
+  <td>the number of runlength-encoded packets in the image</td>
+</tr>
+<tr>
+  <td>rows</td>
+  <td><i>integer</i></td>
+  <td>the number of rows or height of an image</td>
+</tr>
+<tr>
+  <td>signature</td>
+  <td><i>string</i></td>
+  <td>MD5 signature associated with the image</td>
+</tr>
+<tr>
+  <td>text</td>
+  <td><i>string</i></td>
+  <td>any text associated with the image</td>
+</tr>
+<tr>
+  <td>total_colors</td>
+  <td><i>integer<i></td>
+  <td>number of colors in the image</td>
+</tr>
+<tr>
+  <td>type</td>
+  <td>{bilevel, greyscale, palette, true color, true color with transparency, 
+    color separation }</td>
+  <td>image type</td>
+</tr>
+<tr>
+  <td>units</td>
+  <td>{Undefined, pixels / inch, pixels / centimeter}</td>
+  <td>units of resolution</td>
+</tr>
+<tr>
+  <td>view</td>
+  <td><i>string</i></td>
+  <td>FlashPix viewing parameters</td>
+</tr>
+<tr>
+  <td>width</td>
+  <td><i>integer</i></td>
+  <td>the number of columns or width of an image</td>
+</tr>
+<tr>
+  <td>x_resolution</td>
+  <td><i>integer</i></td>
+  <td>x resolution of the image</td>
+</tr>
+<tr>
+  <td>y_resolution</td>
+  <td><i>integer</i></td>
+  <td>y resolution of the image</td>
+</tr>
+</table>
+<p>
+<tt>GetAttribute</tt> is an alias for method <tt>Get</tt>.
+<p>
+Most of the attributes listed above have an analog in
+<a href="convert.html">convert</a>.  See the documentation for
+a more detailed description of these attributes.
+</dl>
+<p>
+<A HREF="#top">Back to Contents</A>
+<HR>
+<dl>
+<h2>
+<a name="mont">
+<dt>Create an Image Montage
+</h2>
+<dd>Use method <tt>Montage</tt> to create a composite image by combining
+several separate images.  The images are tiled on the composite image with the
+name of the image optionally appearing just below the individual tile.
+For example, 
+<p>
+<pre>
+    $image-&gt;Montage(geometry=&gt;'160x160', tile=&gt;'2x2', texture=&gt;'granite:');
+</pre>
+<p>
+And here is a list of <tt>Montage</tt> parameters you can set:
+<p>
+<table border>
+<caption>
+Montage Parameters
+</caption>
+<tr>
+    <th>Parameter</th>
+    <th>Values</th>
+    <th>Description</th>
+</tr>
+<tr>
+  <td>background</td>
+  <td><i>string</i></td>
+  <td>X11 color name</td>
+</tr>
+<tr>
+  <td>borderwidth</td>
+  <td><i>integer</i></td>
+  <td>image border width</td>
+</tr>
+<tr>
+  <td>compose</td>
+  <td>{Over, In, Out, Atop, Xor, Plus, Minus, Add, 
+    Subtract, Difference, Bumpmap, Replace, MatteReplace, Mask, Blend, 
+    Displace}</td>
+  <td>composite operator</td>
+</tr>
+<tr>
+  <td>filename</td>
+  <td><i>string</i></td>
+  <td>name of montage image</td>
+</tr>
+<tr>
+  <td>font</td>
+  <td><i>string</i></td>
+  <td>X11 font name</td>
+</tr>
+<tr>
+  <td>foreground</td>
+  <td><i>string</i></td>
+  <td>X11 color name</td>
+</tr>
+<tr>
+  <td>frame</td>
+  <td><i>geometry</i></td>
+  <td>surround the image with an ornamental border</td>
+</tr>
+<tr>
+  <td>geometry</td>
+  <td><i>geometry</i></td>
+  <td>preferred tile and border size of each tile of the composite image</td>
+</tr>
+<tr>
+  <td>gravity</td>
+  <td>{NorthWest, North, NorthEast, West, 
+      Center, East, SouthWest, South, SouthEast}</td>
+  <td>direction image gravitates to within a tile</td>
+</tr>
+<tr>
+  <td>label</td>
+  <td><i>string</i></td>
+  <td>assign a label to an image</td>
+</tr>
+<tr>
+  <td>mode</td>
+  <td>{Frame, Unframe, Concatenate}</td>
+  <td>thumbnail framing options</td>
+</tr>
+<tr>
+  <td>pen</td>
+  <td>string</td>
+  <td>color for annotation text</td>
+</tr>
+<tr>
+  <td>pointsize</td>
+  <td><i>integer<i></td>
+  <td>pointsize of the Postscript font</td>
+</tr>
+<tr>
+  <td>shadow</td>
+  <td>{True, False}</td>
+  <td>add a shadow beneath a tile to simulate depth</td>
+</tr>
+<tr>
+  <td>texture</td>
+  <td><i>string</i></td>
+  <td>name of texture to tile onto the image background</td>
+</tr>
+<tr>
+  <td>tile</td>
+  <td><i>geometry<i></td>
+  <td>number of tiles per row and column</td>
+</tr>
+<tr>
+  <td>title</td>
+  <td>string</td>
+  <td>assign a title to the image montage</td>
+</tr>
+<tr>
+  <td>transparent</td>
+  <td><i>string</i></td>
+  <td>make this color transparent within the image</td>
+</tr>
+</table>
+<p>
+Note, that the <tt>geometry</tt> parameter is a short cut for the
+<tt>width</tt> and <tt>height</tt> parameters (e.g. <tt>geometry=&gt;'106x80'</tt>
+is equivalent to <tt>width=&gt;106, height=&gt;80</tt>).
+<p>
+<tt>MontageImage</tt> is an alias for method <tt>Montage</tt>.
+<p>
+Most of the attributes listed above have an analog in
+<a href="montage.html">montage</a>.  See the documentation for
+a more detailed description of these attributes.
+</dl>
+<p>
+<dl>
+<HR>
+<h2>
+<a name="misc">Miscellaneous Methods
+<dt>
+</h2>
+<dd>The <tt>Append</tt> method append a set of images.  For example, 
+<p>
+<pre>
+    $x = $image-&gt;Append();
+</pre>
+<p>
+appends all the images associated with object <tt>$q</tt>.
+<p>
+<dd>The <tt>Average</tt> method averages a set of images.  For example, 
+<p>
+<pre>
+    $x = $image-&gt;Average();
+</pre>
+<p>
+averages all the images associated with object <tt>$q</tt>.
+<p>
+Method <tt>Mogrify</tt> is a single entry point for the image
+manipulation methods (<A HREF="#mani">Manipulate an Image</A>).  The
+parameters are the name of a method followed by any parameters the
+method may require.  For example, these calls are equivalent:
+<p>
+<pre>
+    $image-&gt;Crop('340x256+0+0');
+    $image-&gt;Mogrify('crop', '340x256+0+0');
+</pre>
+<p>
+Method <tt>MogrifyRegion</tt> applies a transform to a region of the
+image.  It is similiar to <tt>Mogrify</tt> but begins with the region
+geometry.  For example, suppose you want to brighten a 100x100 region
+of your image at location (40, 50):
+<p>
+<pre>
+    $image-&gt;MogrifyRegion('100x100+40+50', 'modulate', brightness=&gt;50);
+</pre>
+<p>
+<p>
+<dd>The <tt>Clone</tt> method copies a set of images.  For example, 
+<p>
+<pre>
+    $p = $image-&gt;Clone();
+</pre>
+<p>
+copies all the images from object <tt>$q</tt> to <tt>$p</tt>.  Use this
+method for multi-image sequences.  <b>PerlMagick</b> transparently creates
+a linked list from an image array.  If two locations in the array point to
+the same object, the linked list goes into an infinite loop and your
+script will run forever until interrupted.  Instead of
+<p>
+<pre>
+    push(@$images, $image);
+    push(@$images, $image);  # warning duplicate object
+</pre>
+<p>
+use cloning to prevent an infinite loop:
+<p>
+<pre>
+    push(@$images, $image);
+    $clone=$image->Clone();
+    push(@$images, $clone);  # same image but different object
+</pre>
+<p>
+<tt>Ping</tt> accepts one or more image file names and returns their
+respective width, height,  size in bytes, and format (e.g. GIF, JPEG, etc.).
+For example, 
+<p>
+<pre>
+    ($width, $height, $size, $format) = split(', ', $image-&gt;Ping('logo.gif'));
+</pre>
+<p>
+This is a more efficient and less memory intensive way to query if an image
+exists and what its characteristics are.  Note, only information about the
+first image in a multi-frame image file is returned.
+<p>
+You can optionally add <tt>Image</tt> to any method name above.  For example, 
+<tt>PingImage</tt> is an alias for method <tt>Ping</tt>.
+<p>
+Use <tt>RemoteCommand</tt> to send a command to an already running 
+<a href="display.html">display</a> or <a href="animate.html">animate</a>
+application.  The only parameter is the name of the image file to display or
+animate.
+<p>
+Finally, for convenience, method <tt>QueryColor</tt> accepts one or more
+color names and returns their respective red, green, and blue color values:
+<p>
+<pre>
+    ($red, $green, $blue) = split(', ', $image-&gt;QueryColor('cyan'));
+</pre>
+</dl>
+<A HREF="#top">Back to Contents</A>
+<dl>
+<HR>
+<h2>
+<a name="erro">Handling Errors
+<dt>
+</h2>
+<dd>All <b>PerlMagick</b> methods return an undefined string context upon
+success.  If any problems occur, the error is returned as a string with
+an embedded numeric status code.  A status code less than 400 is a
+warning.  This means that the operation did not complete but was recoverable
+to some degree.  A numeric code greater or equal to 400 is an error and
+indicates the operation failed completely. Here is how errors are returned for
+the different methods:
+<p>
+<ul>
+<li>Methods which return a number (e.g. <tt>Read</tt>, <tt>Write</tt>):
+<pre>
+    $x = $image-&gt;Read(...);
+    warn "$x" if "$x";      # print the error message
+    $x =~ /(\d+)/;
+    print $1;               # print the error number 
+    print 0+$x;             # print the number of images read
+</pre>
+<li>Methods which operate on an image (e.g. <tt>Zoom</tt>, <tt>Crop</tt>):
+<pre>
+    $x = $image-&gt;Crop(...);
+    warn "$x" if "$x";      # print the error message
+    $x =~ /(\d+)/;
+    print $1;               # print the error number 
+</pre>
+<li>Methods which return images (<tt>Average</tt>, <tt>Montage</tt>, 
+<tt>Clone</tt>) should be checked for errors this way:
+<p>
+<pre>
+    $x = $image-&gt;Montage(...);
+    warn "$x" if !ref($x);  # print the error message
+    $x =~ /(\d+)/;
+    print $1;               # print the error number 
+</pre>
+</ul>
+<p>
+Here is an example error message:
+<p>
+<pre>
+    Error 400: Memory allocation failed
+</pre>
+<p>
+Below is a list of error and warning codes:
+<p>
+<table border>
+<caption>
+Error and Warning Codes
+</caption>
+<tr>
+    <th>Code</th>
+    <th>Mnemonic</th>
+    <th>Description</th>
+</tr>
+<tr>
+  <td>0</td>
+  <td>Success</td>
+  <td>method completed without an error or warning</td>
+</tr>
+<tr>
+  <td>300</td>
+  <td>ResourceLimitWarning</td>
+  <td>a program resource is exhausted (e.g. not enough memory)</td>
+</tr>
+<tr>
+  <td>305</td>
+  <td>XServerWarning</td>
+  <td>an X resource is unavailable</td>
+</tr>
+<tr>
+  <td>310</td>
+  <td>OptionWarning</td>
+  <td>a command-line option was malformed</td>
+</tr>
+<tr>
+  <td>315</td>
+  <td>PluginWarning</td>
+  <td>an ImageMagick plug-in returned a warning</td>
+</tr>
+<tr>
+  <td>320</td>
+  <td>MissingPluginWarning</td>
+  <td>the image type can not be read or written because the appropriate 
+      plug-in is missing</td>
+</tr>
+<tr>
+  <td>325</td>
+  <td>CorruptImageWarning</td>
+  <td>the image file may be corrupt</td>
+</tr>
+<tr>
+  <td>330</td>
+  <td>FileOpenWarning</td>
+  <td>the image file could not be opened</td>
+</tr>
+<tr>
+  <td>400</td>
+  <td>ResourceLimitError</td>
+  <td>a program resource is exhausted (e.g. not enough memory)</td>
+</tr>
+<tr>
+  <td>405</td>
+  <td>XServerError</td>
+  <td>an X resource is unavailable</td>
+</tr>
+<tr>
+  <td>410</td>
+  <td>OptionError</td>
+  <td>a command-line option was malformed</td>
+</tr>
+</table>
+<p>
+The following illustrates how you can use a numeric status code:
+<p>
+<pre>
+    $x = $image-&gt;Read('rose.gif');
+    $x =~ /(\d+)/;
+    die "unable to continue" if ($1 == ResourceLimitError);
+</pre>
+</dl>
+<A HREF="#top">Back to Contents</A>
+</dl>
+<p><hr><p>
+<DL>
+<H2>
+<A NAME="copy">
+<DT>Copyright
+</A>
+</H2>
+<B>
+<dd>Copyright 1998 E. I. du Pont de Nemours and Company
+<p>
+<dd>Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files ("PerlMagick"), 
+to deal in PerlMagick without restriction, including without limitation 
+the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+and/or sell copies of PerlMagick, and to permit persons to whom the 
+PerlMagick is furnished to do so, subject to the following conditions:
+<p>
+<dd>The above copyright notice and this permission notice shall be included in 
+all copies or substantial portions of PerlMagick. 
+<p> 
+<dd>The software is provided "as is", without warranty of any kind, express or 
+implied, including but not limited to the warranties of merchantability, 
+fitness for a particular purpose and noninfringement.In no event shall 
+E. I. du Pont de Nemours and Company be liable for any claim, damages or 
+other liability, whether in an action of contract, tort or otherwise, 
+arising from, out of or in connection with PerlMagick or the use or other 
+dealings in PerlMagick. 
+<p> 
+<dd>Except as contained in this notice, the name of the E. I. du Pont de 
+Nemours and Company shall not be used in advertising or otherwise to 
+promote the sale, use or other dealings in PerlMagick without prior 
+written authorization from the E. I. du Pont de Nemours and Company. 
+</B>
+</DL>
+<P>
+<A HREF="#top">Back to Contents</A>
+<HR>
+<DL>
+<a href="../ImageMagick.html"><img alt="Home Page"
+  src="../images/home.gif" width=40 height=40 align=middle border=0></a>
+<font size="-2">Image manipulation software that works like magic.</font>
+</body>
+</html>

@@ -1,0 +1,745 @@
+<HTML>
+<HEAD>
+<TITLE>effects - ImageMagick Image Effects Routines</TITLE>
+<LINK REV="made" HREF="mailto:cristy@mystic.es.dupont.com">
+</HEAD>
+
+<body background="../../images/background.gif">
+
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#NAME">NAME</A>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
+	<UL>
+
+		<LI><A HREF="#AddNoiseImage">AddNoiseImage</A>
+		<LI><A HREF="#BlurImage">BlurImage</A>
+		<LI><A HREF="#DespeckleImage">DespeckleImage</A>
+		<LI><A HREF="#EdgeImage">EdgeImage</A>
+		<LI><A HREF="#EmbossImage">EmbossImage</A>
+		<LI><A HREF="#EnhanceImage">EnhanceImage</A>
+		<LI><A HREF="#ImplodeImage">ImplodeImage</A>
+		<LI><A HREF="#OilPaintImage">OilPaintImage</A>
+		<LI><A HREF="#PlasmaImage">PlasmaImage</A>
+		<LI><A HREF="#RaiseImage">RaiseImage</A>
+		<LI><A HREF="#ReduceNoiseImage">ReduceNoiseImage</A>
+		<LI><A HREF="#ShadeImage">ShadeImage</A>
+		<LI><A HREF="#SharpenImage">SharpenImage</A>
+		<LI><A HREF="#SolarizeImage">SolarizeImage</A>
+		<LI><A HREF="#SpreadImage">SpreadImage</A>
+		<LI><A HREF="#SwirlImage">SwirlImage</A>
+		<LI><A HREF="#WaveImage">WaveImage</A>
+	</UL>
+
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="NAME">NAME</A></H1>
+<P>
+effects - ImageMagick Image Effects Routines
+
+<P>
+<HR>
+<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
+noisy_image=<STRONG>AddNoiseImage</STRONG>(image,noise_type)
+
+<P>
+blurred_image=<STRONG>BlurImage</STRONG>(image,factor)
+
+<P>
+despeckled_image=<STRONG>DespeckleImage</STRONG>(image)
+
+<P>
+edged_image=<STRONG>EdgeImage</STRONG>(image,factor)
+
+<P>
+embossed_image=<STRONG>EmbossImage</STRONG>(image)
+
+<P>
+enhanced_image=<STRONG>EnhanceImage</STRONG>(image)
+
+<P>
+imploded_image=<STRONG>ImplodeImage</STRONG>(image,factor)
+
+<P>
+painted_image=<STRONG>OilPaintImage</STRONG>(image,radius)
+
+<P>
+status=<STRONG>PlasmaImage</STRONG>(image,segment_info,attenuate,depth)
+
+<P>
+<STRONG>RaiseImage</STRONG>(image,raise_info,raised)
+
+<P>
+noisy_image=<STRONG>ReduceNoiseImage</STRONG>(image)
+
+<P>
+shaded_image=<STRONG>ShadeImage</STRONG>(image,color_shading,azimuth,elevation)
+
+<P>
+sharpened_image=<STRONG>SharpenImage</STRONG>(image,factor)
+
+<P>
+<STRONG>SolarizeImage</STRONG>(image,factor)
+
+<P>
+spread_image=<STRONG>SpreadImage</STRONG>(image,amount)
+
+<P>
+swirled_image=<STRONG>SwirlImage</STRONG>(image,degrees)
+
+<P>
+waved_image=<STRONG>WaveImage</STRONG>(image,amplitude,frequency)
+
+<P>
+<HR>
+<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<P>
+<HR>
+<H2><A NAME="AddNoiseImage">AddNoiseImage</A></H2>
+<P>
+Method AddNoiseImage creates a new image that is a copy of an existing one
+with noise added. It allocates the memory necessary for the new Image
+structure and returns a pointer to the new image.
+
+<P>
+The format of the AddNoiseImage routine is:
+
+<P>
+<PRE>        noisy_image=AddNoiseImage(image,noise_type)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG><A NAME="item_o">noisy_image:</A></STRONG><DD>
+<P>
+Method AddNoiseImage returns a pointer to the image after the noise is
+minified. A null image is returned if there is a memory shortage.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+<DT><STRONG>noise_type:</STRONG><DD>
+<P>
+The type of noise: gaussian, multiplicative gaussian, impulse, laplacian,
+or poisson.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="BlurImage">BlurImage</A></H2>
+<P>
+Method BlurImage creates a new image that is a copy of an existing one with
+the pixels blurred. It allocates the memory necessary for the new Image
+structure and returns a pointer to the new image.
+
+<P>
+BlurImage convolves the pixel neighborhood with this blurring mask:
+
+<P>
+<PRE>   1  2  1
+</PRE>
+<P>
+<PRE>   2  W  2
+</PRE>
+<P>
+<PRE>   1  2  1
+</PRE>
+<P>
+The scan only processes pixels that have a full set of neighbors. Pixels in
+the top, bottom, left, and right pairs of rows and columns are omitted from
+the scan.
+
+<P>
+The format of the BlurImage routine is:
+
+<P>
+<PRE>        blurred_image=BlurImage(image,factor)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>blurred_image:</STRONG><DD>
+<P>
+Method BlurImage returns a pointer to the image after it is blurred. A null
+image is returned if there is a memory shortage.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+<DT><STRONG>factor:</STRONG><DD>
+<P>
+An double value reflecting the percent weight to give to the center pixel
+of the neighborhood.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="DespeckleImage">DespeckleImage</A></H2>
+<P>
+Method DespeckleImage creates a new image that is a copy of an existing one
+with the speckle noise minified. It uses the eight hull algorithm described
+in Applied Optics, Vol. 24, No. 10, 15 May 1985, ``Geometric filter for
+Speckle Reduction'', by Thomas R Crimmins. Each pixel in the image is
+replaced by one of its eight of its surrounding pixels using a polarity and
+negative hull function. DespeckleImage allocates the memory necessary for
+the new Image structure and returns a pointer to the new image.
+
+<P>
+The format of the DespeckleImage routine is:
+
+<P>
+<PRE>        despeckled_image=DespeckleImage(image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>despeckled_image:</STRONG><DD>
+<P>
+Method DespeckleImage returns a pointer to the image after it is
+despeckled. A null image is returned if there is a memory shortage.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="EdgeImage">EdgeImage</A></H2>
+<P>
+Method EdgeImage creates a new image that is a copy of an existing one with
+the edges highlighted. It allocates the memory necessary for the new Image
+structure and returns a pointer to the new image.
+
+<P>
+EdgeImage convolves the pixel neighborhood with this edge detection mask:
+
+<P>
+<PRE>  -1 -1 -1
+</PRE>
+<P>
+<PRE>  -1  W -1
+</PRE>
+<P>
+<PRE>  -1 -1 -1
+</PRE>
+<P>
+The scan only processes pixels that have a full set of neighbors. Pixels in
+the top, bottom, left, and right pairs of rows and columns are omitted from
+the scan.
+
+<P>
+The format of the EdgeImage routine is:
+
+<P>
+<PRE>        edged_image=EdgeImage(image,factor)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>edged_image:</STRONG><DD>
+<P>
+Method EdgeImage returns a pointer to the image after it is edged. A null
+image is returned if there is a memory shortage.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+<DT><STRONG>factor:</STRONG><DD>
+<P>
+An double value reflecting the percent weight to give to the center pixel
+of the neighborhood.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="EmbossImage">EmbossImage</A></H2>
+<P>
+Method EmbossImage creates a new image that is a copy of an existing one
+with the edge highlighted. It allocates the memory necessary for the new
+Image structure and returns a pointer to the new image.
+
+<P>
+EmbossImage convolves the pixel neighborhood with this edge detection mask:
+
+<P>
+<PRE>  -1 -2  0
+</PRE>
+<P>
+<PRE>  -2  0  2
+</PRE>
+<P>
+<PRE>   0  2  1
+</PRE>
+<P>
+The scan only processes pixels that have a full set of neighbors. Pixels in
+the top, bottom, left, and right pairs of rows and columns are omitted from
+the scan.
+
+<P>
+The format of the EmbossImage routine is:
+
+<P>
+<PRE>        embossed_image=EmbossImage(image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>embossed_image:</STRONG><DD>
+<P>
+Method EmbossImage returns a pointer to the image after it is embossed. A
+null image is returned if there is a memory shortage.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="EnhanceImage">EnhanceImage</A></H2>
+<P>
+Method EnhanceImage creates a new image that is a copy of an existing one
+with the noise minified. It allocates the memory necessary for the new
+Image structure and returns a pointer to the new image.
+
+<P>
+EnhanceImage does a weighted average of pixels in a 5x5 cell around each
+target pixel. Only pixels in the 5x5 cell that are within a RGB distance
+threshold of the target pixel are averaged.
+
+<P>
+Weights assume that the importance of neighboring pixels is negately
+proportional to the square of their distance from the target pixel.
+
+<P>
+The scan only processes pixels that have a full set of neighbors. Pixels in
+the top, bottom, left, and right pairs of rows and columns are omitted from
+the scan.
+
+<P>
+The format of the EnhanceImage routine is:
+
+<P>
+<PRE>        enhanced_image=EnhanceImage(image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>enhanced_image:</STRONG><DD>
+<P>
+Method EnhanceImage returns a pointer to the image after it is enhanced. A
+null image is returned if there is a memory shortage.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ImplodeImage">ImplodeImage</A></H2>
+<P>
+Method ImplodeImage creates a new image that is a copy of an existing one
+with the image pixels ``imploded'' by the specified percentage. It
+allocates the memory necessary for the new Image structure and returns a
+pointer to the new image.
+
+<P>
+The format of the ImplodeImage routine is:
+
+<P>
+<PRE>        imploded_image=ImplodeImage(image,factor)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>imploded_image:</STRONG><DD>
+<P>
+Method ImplodeImage returns a pointer to the image after it is imploded. A
+null image is returned if there is a memory shortage.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+<DT><STRONG>factor:</STRONG><DD>
+<P>
+An double value that defines the extent of the implosion.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="OilPaintImage">OilPaintImage</A></H2>
+<P>
+Method OilPaintImage creates a new image that is a copy of an existing one
+with each pixel component replaced with the color of greatest frequency in
+a circular neighborhood.
+
+<P>
+The format of the OilPaintImage routine is:
+
+<P>
+<PRE>        painted_image=OilPaintImage(image,radius)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>painted_image:</STRONG><DD>
+<P>
+Method OilPaintImage returns a pointer to the image after it is `painted'.
+A null image is returned if there is a memory shortage.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+<DT><STRONG>radius:</STRONG><DD>
+<P>
+An unsigned int that is the radius of the circular neighborhood.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="PlasmaImage">PlasmaImage</A></H2>
+<P>
+Method PlasmaImage initializes an image with plasma fractal values. The
+image must be initialized with a base color and the random number generator
+seeded before this routine is called.
+
+<P>
+The format of the PlasmaImage routine is:
+
+<P>
+<PRE>        status=PlasmaImage(image,segment_info,attenuate,depth)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method PlasmaImage returns True when the fractal process is complete.
+Otherwise False is returned.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+<DT><STRONG>segment_info:</STRONG><DD>
+<P>
+specifies a structure of type SegmentInfo that defines the boundaries of
+the area where the plasma fractals are applied.
+
+<DT><STRONG>attenuate:</STRONG><DD>
+<P>
+specifies the plasma attentuation factor.
+
+<DT><STRONG>depth:</STRONG><DD>
+<P>
+this integer values define the plasma recursion depth.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="RaiseImage">RaiseImage</A></H2>
+<P>
+Method RaiseImage lightens and darkens the edges of an image to give a 3-D
+raised or lower effect.
+
+<P>
+The format of the RaiseImage routine is:
+
+<P>
+<PRE>        RaiseImage(image,raise_info,raised)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<DT><STRONG>raise_info:</STRONG><DD>
+<P>
+Specifies a pointer to a XRectangle which defines the raised region.
+
+<DT><STRONG>raised:</STRONG><DD>
+<P>
+A value other than zero causes the image to have a 3-D raised effect,
+otherwise it has a lowered effect.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ReduceNoiseImage">ReduceNoiseImage</A></H2>
+<P>
+Method ReduceNoiseImage creates a new image that is a copy of an existing
+one with the noise minified with a noise peak elimination filter. It
+allocates the memory necessary for the new Image structure and returns a
+pointer to the new image.
+
+<P>
+The principal function of noise peak elimination filter is to smooth the
+objects within an image without losing edge information and without
+creating undesired structures. The central idea of the algorithm is to
+replace a pixel with its next neighbor in value within a 3 x 3 window, if
+this pixel has been found to be noise. A pixel is defined as noise if and
+only if this pixel is a maximum or minimum within the 3 x 3 window.
+
+<P>
+The format of the ReduceNoiseImage routine is:
+
+<P>
+<PRE>        noisy_image=ReduceNoiseImage(image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>noisy_image:</STRONG><DD>
+<P>
+Method ReduceNoiseImage returns a pointer to the image after the noise is
+minified. A null image is returned if there is a memory shortage.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ShadeImage">ShadeImage</A></H2>
+<P>
+Method ShadeImage creates a new image that is a copy of an existing one
+with the image pixels shaded using a distance light source. It allocates
+the memory necessary for the new Image structure and returns a pointer to
+the new image.
+
+<P>
+The format of the ShadeImage routine is:
+
+<P>
+<PRE>        shaded_image=ShadeImage(image,color_shading,azimuth,elevation)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>shaded_image:</STRONG><DD>
+<P>
+Method ShadeImage returns a pointer to the image after it is shaded. A null
+image is returned if there is a memory shortage.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+<DT><STRONG>color_shading:</STRONG><DD>
+<P>
+A value other than zero shades the red, green, and blue components of the
+image.
+
+<DT><STRONG>azimuth, elevation:</STRONG><DD>
+<P>
+A double value that indicates the light source direction.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="SharpenImage">SharpenImage</A></H2>
+<P>
+Method SharpenImage creates a new image that is a copy of an existing one
+with the pixels sharpened. It allocates the memory necessary for the new
+Image structure and returns a pointer to the new image.
+
+<P>
+SharpenImage convolves the pixel neighborhood with this sharpening mask:
+
+<P>
+<PRE>  -1 -2 -1
+</PRE>
+<P>
+<PRE>  -2  W -2
+</PRE>
+<P>
+<PRE>  -1 -2 -1
+</PRE>
+<P>
+The scan only processes pixels that have a full set of neighbors. Pixels in
+the top, bottom, left, and right pairs of rows and columns are omitted from
+the scan.
+
+<P>
+The format of the SharpenImage routine is:
+
+<P>
+<PRE>        sharpened_image=SharpenImage(image,factor)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>sharpened_image:</STRONG><DD>
+<P>
+Method SharpenImage returns a pointer to the image after it is sharpened. A
+null image is returned if there is a memory shortage.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+<DT><STRONG>factor:</STRONG><DD>
+<P>
+An double value reflecting the percent weight to give to the center pixel
+of the neighborhood.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="SolarizeImage">SolarizeImage</A></H2>
+<P>
+Method SolarizeImage produces a 'solarization' effect seen when exposing a
+photographic film to light during the development process.
+
+<P>
+The format of the SolarizeImage routine is:
+
+<P>
+<PRE>        SolarizeImage(image,factor)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+<DT><STRONG>factor:</STRONG><DD>
+<P>
+An double value that defines the extent of the solarization.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="SpreadImage">SpreadImage</A></H2>
+<P>
+Method SpreadImage creates a new image that is a copy of an existing one
+with the image pixels randomly displaced. It allocates the memory necessary
+for the new Image structure and returns a pointer to the new image.
+
+<P>
+The format of the SpreadImage routine is:
+
+<P>
+<PRE>        spread_image=SpreadImage(image,amount)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>spread_image:</STRONG><DD>
+<P>
+Method SpreadImage returns a pointer to the image after it is spread. A
+null image is returned if there is a memory shortage.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+<DT><STRONG>amount:</STRONG><DD>
+<P>
+An unsigned value constraining the ``vicintity'' for choosing a random
+pixel to swap.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="SwirlImage">SwirlImage</A></H2>
+<P>
+Method SwirlImage creates a new image that is a copy of an existing one
+with the image pixels ``swirled'' at a specified angle. It allocates the
+memory necessary for the new Image structure and returns a pointer to the
+new image.
+
+<P>
+The format of the SwirlImage routine is:
+
+<P>
+<PRE>        swirled_image=SwirlImage(image,degrees)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>swirled_image:</STRONG><DD>
+<P>
+Method SwirlImage returns a pointer to the image after it is swirled. A
+null image is returned if there is a memory shortage.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+<DT><STRONG>degrees:</STRONG><DD>
+<P>
+An double value that defines the tightness of the swirling.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="WaveImage">WaveImage</A></H2>
+<P>
+Method WaveImage creates a new image that is a copy of an existing one with
+the image pixels altered along a sine wave. It allocates the memory
+necessary for the new Image structure and returns a pointer to the new
+image.
+
+<P>
+The format of the WaveImage routine is:
+
+<P>
+<PRE>        waved_image=WaveImage(image,amplitude,frequency)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>shaded_image:</STRONG><DD>
+<P>
+Method WaveImage returns a pointer to the image after it is shaded. A null
+image is returned if there is a memory shortage.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+<DT><STRONG>amplitude, frequency:</STRONG><DD>
+<P>
+A double value that indicates the amplitude and wavelength of the sine
+wave.
+
+</DL></DL>
+</BODY>
+
+</HTML>

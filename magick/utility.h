@@ -1,0 +1,120 @@
+#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+#if HAVE_SYS_NDIR_H || HAVE_SYS_DIR_H || HAVE_NDIR_H
+# define dirent direct
+# define NAMLEN(dirent) (dirent)->d_namlen
+# if HAVE_SYS_NDIR_H
+#  include <sys/ndir.h>
+# endif
+# if HAVE_SYS_DIR_H
+#  include <sys/dir.h>
+# endif
+# if HAVE_NDIR_H
+#  include <ndir.h>
+# endif
+#else
+# include <dirent.h>
+# define NAMLEN(dirent) Extent((dirent)->d_name)
+#endif
+#include <pwd.h>
+#else
+#if defined(vms)
+#include "vms.h"
+#endif
+#if defined(macintosh)
+#include "mac.h"
+#endif
+#if defined(WIN32)
+#include "nt.h"
+#endif
+#endif
+
+#if !defined(S_ISDIR)
+#define S_ISDIR(mode) (((mode) & S_IFMT) == S_IFDIR)
+#endif
+
+/*
+  Utility define declarations.
+*/
+#if !defined(vms)
+#define IsGlob(text) \
+  ((strchr(text,'*') != (char *) NULL) || \
+   (strchr(text,'?') != (char *) NULL) || \
+   (strchr(text,'{') != (char *) NULL) || \
+   (strchr(text,'}') != (char *) NULL) || \
+   (strchr(text,'[') != (char *) NULL) || \
+   (strchr(text,']') != (char *) NULL))
+#else
+#define IsGlob(text) \
+  ((strchr(text,'*') != (char *) NULL) || \
+   (strchr(text,'?') != (char *) NULL) || \
+   (strchr(text,'{') != (char *) NULL) || \
+   (strchr(text,'}') != (char *) NULL))
+#endif
+#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+#define BasenameSeparator  "/"
+#define DirectorySeparator  "/"
+#define SystemCommand(command)  system(command)
+#define TemporaryTemplate  "%s/magickXXXXXX"
+#else
+#if defined(vms)
+#define BasenameSeparator  "]"
+#define DirectorySeparator  ""
+#define SystemCommand(command)  (!system(command))
+#endif
+#if defined(macintosh)
+#define BasenameSeparator  ":"
+#define DirectorySeparator  ":"
+#define SystemCommand(command)  MACSystemCommand(command)
+#endif
+#if defined(WIN32)
+#define BasenameSeparator  "/"
+#define DirectorySeparator  "/"
+#define SystemCommand(command)  NTSystemCommand(command)
+#endif
+#endif
+
+/*
+  Utilities routines.
+*/
+extern Export char
+  *BaseFilename(const char *),
+  **ListColors(const char *,int *),
+  **ListFiles(char *,const char *,int *),
+  *PostscriptGeometry(const char *),
+  *SetClientName(const char *),
+  **StringToArgv(const char *,int *),
+  **StringToList(char *);
+
+extern Export int
+  GlobExpression(char *,const char *),
+  MultilineCensus(const char *),
+  ReadDataBlock(char *,FILE *);
+
+extern Export unsigned int
+  ExpandFilenames(int *,char ***),
+  IsAccessible(const char *),
+  IsDirectory(const char *),
+  ReadData(char *,const unsigned int,const unsigned int,FILE *);
+
+extern Export unsigned long
+  LSBFirstReadLong(FILE *),
+  MSBFirstReadLong(FILE *);
+
+extern Export unsigned short
+  *ConvertTextToUnicode(char *,unsigned int *),
+  LSBFirstReadShort(FILE *),
+  MSBFirstReadShort(FILE *);
+
+extern Export void
+  AppendImageFormat(const char *,char *),
+  DestroyPostscriptGeometry(char *),
+  ExpandFilename(char *),
+  LocaleFilename(char *),
+  LSBFirstWriteLong(const unsigned long,FILE *),
+  LSBFirstWriteShort(const unsigned int,FILE *),
+  MSBFirstOrderLong(char *,const unsigned int),
+  MSBFirstOrderShort(char *,const unsigned int),
+  MSBFirstWriteLong(const unsigned long,FILE *),
+  MSBFirstWriteShort(const unsigned int,FILE *),
+  Strip(char *),
+  TemporaryFilename(char *);

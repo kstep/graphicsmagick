@@ -1,0 +1,462 @@
+<HTML VERSION="2.0">
+<HEAD>
+<TITLE>Image Formats</TITLE>
+<LINK rev="made" href="mailto:cristy@mystic.es.dupont.com">
+<meta name="description" content="ImageMagick, version 4.1, is a package for
+  display and interactive manipulation of images for the X Window System. It
+  is written in C and interfaces to the X library, and therefore does not
+  require any proprietary toolkit in order to compile.  Although the software
+  is copyrighted, it is available for free and can be redistributed without
+  fee.">
+<meta name="keywords" content="ImageMagick, Image Magick, Image Magic,
+  PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,
+  WebMagick, Web Magic, visualization, image processing, software development,
+  simulation, image, software, AniMagick, Animagic, X11">
+</HEAD>
+<body background="../images/background.gif">
+<CENTER>
+<img src="../images/format.gif" align=bottom width=435 height=54>
+</CENTER>
+<br>
+<br>
+Here is a table of image formats <b>ImageMagick</b> can read and/or write.
+Support for some of the formats are delegated to plug-ins or
+external programs.  <A HREF="install.html#extr">README</A> mentions where to
+find these distributions.
+<p>
+<br>
+<center>
+<TABLE BORDER>
+<CAPTION>
+</CAPTION>
+<TR>
+    <TH>Tag</TH>
+    <TH>Description</TH>
+    <TH>Notes</TH>
+</TR>
+<TR>
+  <td><B>AVS</B></td>
+  <td>AVS X image file</td>
+</TR>
+
+<TR>
+  <td><B>BMP</B></td>
+  <td>Microsoft Windows bitmap image file</td>
+</TR>
+<TR>
+  <td><B>BMP24</B></td>
+  <td>Microsoft Windows 24-bit bitmap image file</td>
+</TR>
+<TR>
+  <td><B>CGM</B></td>
+  <td>Computer Graphics Metafile</td>
+  <td>requires <a href=http://www.agocg.ac.uk/Graphics/CGM/ralcgm.html>ralcgm</a>; read only</td>
+</TR>
+<TR>
+  <td><B>CMYK</B></td>
+  <td>Raw cyan, magenta, yellow, and black bytes</td>
+  <td>use <tt>-size</tt> command line option to specify width and height</td>
+</TR>
+<TR>
+  <td><B>DCX</B></td>
+  <td>ZSoft IBM PC multi-page Paintbrush file</td>
+</TR>
+<TR>
+  <td><B>DIB</B></td>
+  <td>Microsoft Windows bitmap image file</td>
+</TR>
+<TR>
+  <td><B>EPDF</B></td>
+  <td>Encapsulated Portable Document Format</td>
+</TR>
+<TR>
+  <td><B>EPI</B></td>
+  <td>Adobe Encapsulated PostScript Interchange format</td>
+  <td>requires <a href=http://www.cs.wisc.edu/~ghost/>Ghostscript</a> to read</td>
+</TR>
+<TR>
+  <td><B>EPS</B></td>
+  <td>Adobe Encapsulated PostScript file</td>
+  <td>requires <a href=http://www.cs.wisc.edu/~ghost/>Ghostscript</a> to read</td>
+</TR>
+<TR>
+  <td><B>EPS2</B></td>
+  <td>Adobe Level II Encapsulated PostScript file</td>
+  <td>requires <a href=http://www.cs.wisc.edu/~ghost/>Ghostscript</a> to read</td>
+</TR>
+<TR>
+  <td><B>EPSF</B></td>
+  <td>Adobe Encapsulated PostScript file</td>
+  <td>requires <a href=http://www.cs.wisc.edu/~ghost/>Ghostscript</a> to read</td>
+</TR>
+<TR>
+  <td><B>EPSI</B></td>
+  <td>Adobe Encapsulated PostScript Interchange format</td>
+  <td>requires <a href=http://www.cs.wisc.edu/~ghost/>Ghostscript</a> to read</td>
+</TR>
+<TR>
+  <td><B>EPT</B></td>
+  <td>Adobe Encapsulated PostScript Interchange format with TIFF preview</td>
+  <td>requires <a href=http://www.cs.wisc.edu/~ghost/>Ghostscript</a> to read</td>
+</TR>
+<TR>
+  <td><B>FAX</B></td>
+  <td>Group 3</td>
+</TR>
+<TR>
+  <td><B>FIG</B></td>
+  <td>TransFig image format</td>
+  <td>requires
+    <a href=ftp://ftp.x.org/contrib/applications/drawing_tools/transfig>
+    TransFig</a></td>
+</TR>
+<TR>
+  <td><B>FITS</B></td>
+  <td>Flexible Image Transport System</td>
+</TR>
+<TR>
+  <td><b>FPX</b></td>
+  <td>FlashPix Format</td>
+  <td>requires <A HREF="http://www.kodak.com/daiHome/flashPix/flashPixHome.shtml">
+    FlashPix SDK</A></td>
+</TR>
+<TR>
+  <td><B>GIF</B></td>
+  <td>CompuServe graphics interchange format</td>
+  <td>8-bit color</td>
+</TR>
+<TR>
+  <td><B>GIF87</B></td>
+  <td>CompuServe graphics interchange format</td>
+  <td>8-bit color (version 87a)</td>
+</TR>
+<TR>
+  <td><B>GRADATION</B></td>
+  <td>gradual passing from one shade to another</td>
+  <td>specify the desired shading
+      as the filename (e.g. <tt>gradation:red-blue</tt>)</td>
+</TR>
+<TR>
+  <td><B>GRANITE</B></td>
+  <td>granite texture.</td>
+</TR>
+<TR>
+  <td><B>GRAY</B></td>
+  <td>Raw gray bytes</td>
+  <td>use <tt>-size</tt> command line option to specify width and height</td>
+</TR>
+<TR>
+  <td><b>HDF</b></td>
+  <td>Hierarchical Data Format</td>
+  <td>requires <a href="ftp://ftp.ncsa.uiuc.edu/HDF/">
+    HDF4.1r2.tar.gz</a></td>
+</TR>
+<TR>
+  <td><B>HISTOGRAM</B></td>
+  <td>Histogram of the image</td>
+</TR>
+<TR>
+  <td><B>HPGL</B></td>
+  <td>HP-GL plotter language</td>
+  <td>requires <a href=http://ftp.wizards.dupont.com/pub/ImageMagick/plug-ins/hp2xx-3.2.0.tar.gz</a></td>
+</TR>
+<TR>
+  <td><B>HTML</B></td>
+  <td>Hypertext Markup Language with a client-side image map</td>
+  <td>requires <a href=http://www.tdb.uu.se/~jan/>html2ps</a> to read</td>
+</TR>
+<TR>
+  <td><B>JBIG<B></td>
+  <td>Joint Bi-level Image experts Group file interchange format</td>
+  <td>requires <a href="ftp://ftp.uni-erlangen.de/pub/doc/ISO/JBIG/">
+    jbigkit-1.0.tar.gz</a></td>
+</TR>
+<TR>
+  <td><b>JPEG</b></td>
+  <td>Joint Photographic Experts Group JFIF format</td>
+  <td>requires <a href="ftp://ftp.uu.net/graphics/jpeg/">
+    jpegsrc.v6b.tar.gz</a></td>
+</TR>
+<TR>
+  <td><B>ICO</B></td>
+  <td>Microsoft icon</td>
+  <td>read only</td>
+</TR>
+<TR>
+  <td><B>LABEL</B></td>
+  <td>text image format</td>
+  <td>specify the desired text
+      as the filename (e.g. <tt>label:This is a label</tt>)</td>
+</TR>
+<TR>
+  <td><B>MAP</B></td>
+  <td>colormap intensities and indices</td>
+</TR>
+<TR>
+  <td><A HREF="miff.html">MIFF</A></td>
+  <td>Magick image file format</td>
+</TR>
+<TR>
+  <td><A HREF="http://www.cdrom.com/pub/mng/">MNG</a></td>
+  <td>Multiple-image Network Graphics</td>
+  <td>requires <a href="ftp://ftp.uu.net/graphics/png/src/">
+    libpng-1.02.tar.gz</a></td>
+</TR>
+<TR>
+  <td><A HREF="http://www.mpeg.org/"> MPEG </A></td>
+  <td>Motion Picture Experts Group file interchange format</td>
+  <td>requires <a href=ftp://ftp.mpeg.org/pub/mpeg/mssg/>
+    mpeg2vidcodec_v12.tar.gz</a></td>
+</TR>
+<TR>
+  <td><A HREF="http://www.mpeg.org/"> M2V </A></td>
+  <td>Motion Picture Experts Group file interchange format (version 2)</td>
+  <td>requires <a href=ftp://ftp.mpeg.org/pub/mpeg/mssg/>
+    mpeg2vidcodec_v12.tar.gz</a></td>
+</TR>
+<TR>
+  <td><B>MTV</B></td>
+  <td>MTV Raytracing image format</td>
+</TR>
+<TR>
+  <td><B>NETSCAPE</B></td>
+  <td>Netscape 216 color cube.</td>
+</TR>
+<TR>
+  <td><B>NULL</B></td>
+  <td>NULL image</td>
+  <td>useful for creating blank tiles with
+      <A HREF="montage.html">montage</A></td>
+</TR>
+<TR>
+  <td><B>PBM</B></td>
+  <td>Portable bitmap format (black and white)</td>
+</TR>
+<TR>
+  <td><B>PCD</B></td>
+  <td>Photo CD</td>
+  <td>the maximum resolution written is 512x768 pixels</td>
+</TR>
+<TR>
+  <td><B>PCDS</B></td>
+  <td>Photo CD</td>
+  <td>decode with the sRGB color tables</td>
+</TR>
+<TR>
+  <td><B>PCL</B></td>
+  <td>Page Control Language</td>
+  <td>write only</td>
+</TR>
+<TR>
+  <td><B>PCX</B></td>
+  <td>ZSoft IBM PC Paintbrush file</td>
+</TR>
+<TR>
+  <td><B>PDF</B></td>
+  <td>Portable Document Format</td>
+  <td>requires <a href=http://www.cs.wisc.edu/~ghost/>Ghostscript</a> to read</td>
+</TR>
+<TR>
+  <td><B>PGM</B></td>
+  <td>Portable graymap format (gray scale)</td>
+</TR>
+<TR>
+  <td><B>PICT</B></td>
+  <td>Apple Macintosh QuickDraw/PICT file</td>
+</TR>
+<TR>
+  <td><B>PIX</B></td>
+  <td>Alias/Wavefront RLE image format</td>
+  <td>read only</td>
+</TR>
+<TR>
+  <td><B>PLASMA</B></td>
+  <td>plasma fractal image.</td>
+  <td>Specify the base color as the filename
+      (e.g. <tt>plasma:blue-yellow</tt>).   Use <tt>fractal</tt> to initialize
+      to a random value (e.g. <tt>plasma:fractal</tt>)</td>
+</TR>
+<TR>
+  <td><A HREF="http://www.cdrom.com/pub/png/">PNG</a></td>
+  <td>Portable Network Graphics</td>
+  <td>requires <a href="ftp://ftp.uu.net/graphics/png/src/">
+    libpng-1.02.tar.gz</a></td>
+</TR>
+<TR>
+  <td><B>PNM</B></td>
+  <td>Portable anymap</td>
+  <td>use <tt>+compress</tt> to produce ASCII renditions</td>
+</TR>
+<TR>
+  <td><B>PPM</B></td>
+  <td>Portable pixmap format (color)</td>
+</TR>
+<TR>
+  <td><B>PS</B></td>
+  <td>Adobe PostScript file</td>
+  <td>requires <a href=http://www.cs.wisc.edu/~ghost/>Ghostscript</a> to read</td>
+</TR>
+<TR>
+  <td><B><A HREF="http://www.mediatel.lu/workshop/graphic/2D_fileformat/files/ps30.pdf"> PSD </A></B></td>
+  <td>Adobe Photoshop bitmap file</td>
+</TR>
+<TR>
+  <td><B>PS2</B></td>
+  <td>Adobe Level II PostScript file</td>
+  <td>requires <a href=http://www.cs.wisc.edu/~ghost/>Ghostscript</a> to read</td>
+</TR>
+<TR>
+  <td><B>P7</B></td>
+  <td>Xv's visual schnauzer format</td>
+</TR>
+<TR>
+  <td><B>RAD</B></td>
+  <td>Radiance image file</td>
+</TR>
+<TR>
+  <td><B>RGB</B></td>
+  <td>Raw red, green, and blue bytes</td>
+  <td>use <tt>-size</tt> command line option to specify width and height</td>
+</TR>
+<TR>
+  <td><B>RGBA</B></td>
+  <td>Raw red, green, blue, and matte bytes</td>
+  <td>use <tt>-size</tt> command line option to specify width and height</td>
+</TR>
+<TR>
+  <td><B>RLA</B></td>
+  <td>Alias/Wavefront image file</td>
+  <td>read only</td>
+</TR>
+<TR>
+  <td><B>RLE</B></td>
+  <td>Utah Run length encoded image file</td>
+  <td>read only</td>
+</TR>
+<TR>
+  <td><B>SCAN</B></td>
+  <td>import image from a scanner device</td>
+  <td>requires <a href=http://www.mostang.com/sane/>SANE</a>
+  Specify the device name and path as the filename
+	(e.g. <tt>scan:mustek:/dev/scanner</tt>)</td>
+</TR>
+<TR>
+  <td><B>SGI</B></td>
+  <td>Irix RGB image file</td>
+</TR>
+<TR>
+  <td><B>SHTML</B></td>
+  <td>Hypertext Markup Language with a client-side image map</td>
+  <td>write only</td>
+</TR>
+<TR>
+  <td><B>SUN</B></td>
+  <td>SUN Rasterfile</td>
+</TR>
+<TR>
+  <td><B>TEXT</B></td>
+  <td>raw text file</td>
+  <td>read only</td>
+</TR>
+<TR>
+  <td><B>TGA</B></td>
+  <td>Truevision Targa image file</td>
+</TR>
+<TR>
+  <td><b>TIFF</b></td>
+  <td>Tagged Image File Format</td>
+  <td>requires <a href="ftp://sgi.com/graphics/tiff/">
+    tiff-v3.4beta037.tar.gza></td>
+</TR>
+<TR>
+  <td><b>TIFF24</b></td>
+  <td>24-bit Tagged Image File Format</td>
+  <td>requires <a href="ftp://sgi.com/graphics/tiff/">
+    tiff-v3.4beta037.tar.gza></td>
+</TR>
+<TR>
+  <td><B>TILE</B></td>
+  <td>tile image with a texture</td>
+  <td>read only</td>
+</TR>
+<TR>
+  <td><B>TIM</B></td>
+  <td>PSX TIM file</td>
+  <td>read only</td>
+</TR>
+<TR>
+  <td><B><a href=http://www.freetype.org/>TTF</a></B></td>
+  <td>TrueType font file</td>
+  <td>requires <a href=ftp://ftp.freetype.org/pub/freetype/>
+    freetype-1.1.tar.gz</a></td>
+</TR>
+<TR>
+  <td><B>UIL</B></td>
+  <td>X-Motif UIL table</td>
+</TR>
+<TR>
+  <td><B>UYVY</B></td>
+  <td>16bit/pixel interleaved YUV</td>
+  <td>use <tt>-size</tt> command line option to specify width and height</td>
+</TR>
+<TR>
+  <td><B>VICAR</B></td>
+  <td></td>
+  <td>read only</td>
+</TR>
+<TR>
+  <td><B>VID</B></td>
+  <td>Visual Image Directory</td>
+</TR>
+<TR>
+  <td><B>VIFF</B></td>
+  <td>Khoros Visualization image file</td>
+</TR>
+<TR>
+  <td><B>WIN</B></td>
+  <td>select image from or display image to your computer screen</td>
+</TR>
+<TR>
+  <td><B>X</B></td>
+  <td>select image from or display image to your X server screen</td>
+</TR>
+<TR>
+  <td><B>XC</B></td>
+  <td>constant image of X server color</td>
+  <td>use <tt>-size</tt> command line option to specify width and height</td>
+</TR>
+<TR>
+  <td><B>XBM</B></td>
+  <td>X Windows system bitmap, black and white only</td>
+</TR>
+<TR>
+  <td><A HREF="http://www.inria.fr/koala/lehors/xpm.html">XPM</A></td>
+  <td>X Windows system pixmap file (color)</td>
+</TR>
+<TR>
+  <td><B>XWD</B></td>
+  <td>X Windows system window dump file (color)</td>
+</TR>
+<TR>
+  <td><B>YUV</B></td>
+  <td>CCIR 601 4:1:1 file</td>
+  <td>use <tt>-size</tt> command line option to specify width and height</td>
+</TR>
+</TABLE>
+<P>
+<br>
+</center>
+<p>
+On some platforms, ImageMagick automatically processes these extensions:
+<tt>.gz</tt> for Zip compression, <tt>.Z</tt> for Unix compression,
+<tt>.bz2</tt> for block compression, and <tt>.pgp</tt> for PGP encryption.
+For example, a PNM image called <tt>image.pnm.gz</tt> is automatically
+uncompressed with the <tt>gzip</tt> program and the image is subsequently
+read.
+</FONT>
+<p><hr><p>
+<a href="../ImageMagick.html"><img alt="Home Page"
+  src="../images/home.gif" width=40 height=40 align=middle border=0></a>
+<font size="-2">Image manipulation software that works like magic.</font>
+</body>
+</html>

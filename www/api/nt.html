@@ -1,0 +1,367 @@
+    <HTML> 
+	<HEAD> 
+	    <TITLE>nt - Windows NT Utility Routines for ImageMagick
+
+</TITLE> 
+	</HEAD>
+
+	<body background="../../images/background.gif">
+
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#NAME">NAME</A>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
+	<UL>
+
+		<LI><A HREF="#closedir">closedir</A>
+		<LI><A HREF="#Exit">Exit</A>
+		<LI><A HREF="#opendir">opendir</A>
+		<LI><A HREF="#readdir">readdir</A>
+		<LI><A HREF="#seekdir">seekdir</A>
+		<LI><A HREF="#systemNT">systemNT</A>
+		<LI><A HREF="#telldir">telldir</A>
+		<LI><A HREF="#DllMain">DllMain</A>
+	</UL>
+
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="NAME">NAME
+
+</A></H1>
+nt - Windows NT Utility Routines for ImageMagick
+
+
+<P>
+
+<P>
+<HR>
+<H1><A NAME="SYNOPSIS">SYNOPSIS
+
+</A></H1>
+<STRONG>Exit</STRONG>(status)
+
+
+<P>
+
+<STRONG>closedir</STRONG>(entry)
+
+
+<P>
+
+<STRONG>opendir</STRONG>(entry)
+
+
+<P>
+
+<STRONG>readdir</STRONG>(entry)
+
+
+<P>
+
+<STRONG>systemNT</STRONG>(command)
+
+
+<P>
+
+<STRONG>telldir</STRONG>(entry)
+
+
+<P>
+
+<P>
+<HR>
+<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS
+
+</A></H1>
+<P>
+<HR>
+<H2><A NAME="closedir">closedir
+
+</A></H2>
+Function closedir closes the named directory stream and frees the DIR
+structure.
+
+
+<P>
+
+The format of the closedir routine is:
+
+
+<P>
+
+<PRE>        closedir(entry)
+</PRE>
+
+<P>
+
+A description of each parameter follows:
+
+
+<P>
+
+<DL>
+<DT><STRONG><A NAME="item_o">o entry:
+
+</A></STRONG><DD>
+Specifies a pointer to a DIR structure.
+
+
+<P>
+
+</DL>
+<P>
+<HR>
+<H2><A NAME="Exit">Exit
+
+</A></H2>
+Function Exit calls TerminateProcess for Win95.
+
+
+<P>
+
+The format of the Exit routine is:
+
+
+<P>
+
+<PRE>        Exit(status)
+</PRE>
+
+<P>
+
+A description of each parameter follows:
+
+
+<P>
+
+<DL>
+<DT><STRONG>o status:
+
+</A></STRONG><DD>
+an integer value representing the status of the terminating process.
+
+
+<P>
+
+</DL>
+<P>
+<HR>
+<H2><A NAME="opendir">opendir
+
+</A></H2>
+Function opendir opens the directory named by filename and associates a
+directory stream with it.
+
+
+<P>
+
+The format of the opendir routine is:
+
+
+<P>
+
+<PRE>        opendir(entry)
+</PRE>
+
+<P>
+
+A description of each parameter follows:
+
+
+<P>
+
+<DL>
+<DT><STRONG>o entry:
+
+</A></STRONG><DD>
+Specifies a pointer to a DIR structure.
+
+
+<P>
+
+</DL>
+<P>
+<HR>
+<H2><A NAME="readdir">readdir
+
+</A></H2>
+Function readdir returns a pointer to a structure representing the
+directory entry at the current position in the directory stream to which
+entry refers.
+
+
+<P>
+
+The format of the readdir
+
+
+<P>
+
+<PRE>        readdir(entry)
+</PRE>
+
+<P>
+
+A description of each parameter follows:
+
+
+<P>
+
+<DL>
+<DT><STRONG>o entry:
+
+</A></STRONG><DD>
+Specifies a pointer to a DIR structure.
+
+
+<P>
+
+</DL>
+<P>
+<HR>
+<H2><A NAME="seekdir">seekdir
+
+</A></H2>
+<PRE> Function seekdir sets the position of the next readdir() operation
+</PRE>
+
+<P>
+
+<PRE> on the directory stream.
+</PRE>
+
+<P>
+
+The format of the seekdir routine is:
+
+
+<P>
+
+<PRE>    closedir(entry,position)
+</PRE>
+
+<P>
+
+A description of each parameter follows:
+
+
+<P>
+
+<DL>
+<DT><STRONG>o entry:
+
+</A></STRONG><DD>
+Specifies a pointer to a DIR structure.
+
+
+<P>
+
+<DT><STRONG>o position:
+
+</A></STRONG><DD>
+specifies the position associated with the directory stream.
+
+
+<P>
+
+</DL>
+<P>
+<HR>
+<H2><A NAME="systemNT">systemNT
+
+</A></H2>
+<PRE> Function systemNT executes the specified command and waits until it
+</PRE>
+
+<P>
+
+<PRE> terminates.  The returned value is the exit status of the command.
+</PRE>
+
+<P>
+
+The format of the systemNT routine is:
+
+
+<P>
+
+<PRE>        systemNT(command)
+</PRE>
+
+<P>
+
+A description of each parameter follows:
+
+
+<P>
+
+<DL>
+<DT><STRONG>o command:
+
+</A></STRONG><DD>
+This string is the command to execute.
+
+
+<P>
+
+</DL>
+<P>
+<HR>
+<H2><A NAME="telldir">telldir
+
+</A></H2>
+<PRE> Function telldir returns the current location associated  with  the
+</PRE>
+
+<P>
+
+<PRE> named directory stream.
+</PRE>
+
+<P>
+
+The format of the telldir routine is:
+
+
+<P>
+
+<PRE>        telldir(entry)
+</PRE>
+
+<P>
+
+A description of each parameter follows:
+
+
+<P>
+
+<DL>
+<DT><STRONG>o entry:
+
+</A></STRONG><DD>
+Specifies a pointer to a DIR structure.
+
+
+<P>
+
+</DL>
+<P>
+<HR>
+<H2><A NAME="DllMain">DllMain
+
+</A></H2>
+Function Dllmain is the entry point for the ImageMagick DLL library.
+
+
+<P>
+
+</DL>
+    </BODY>
+
+    </HTML>

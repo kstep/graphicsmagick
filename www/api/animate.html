@@ -1,0 +1,109 @@
+<HTML>
+<HEAD>
+<TITLE>animate - Interactively Animate an Image Sequence</TITLE>
+<LINK REV="made" HREF="mailto:cristy@mystic.es.dupont.com">
+</HEAD>
+
+<body background="../../images/background.gif">
+
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#NAME">NAME</A>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
+	<UL>
+
+		<LI><A HREF="#XAnimateBackgroundImage">XAnimateBackgroundImage</A>
+		<LI><A HREF="#XAnimateImage">XAnimateImage</A>
+	</UL>
+
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="NAME">NAME</A></H1>
+<P>
+animate - Interactively Animate an Image Sequence
+
+<P>
+<HR>
+<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
+<STRONG>XAnimateBackgroundImage</STRONG>(display,resource_info,image)
+
+<P>
+<HR>
+<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<P>
+<HR>
+<H2><A NAME="XAnimateBackgroundImage">XAnimateBackgroundImage</A></H2>
+<P>
+Method XAnimateBackgroundImage animates an image sequence in the background
+of a window.
+
+<P>
+The format of the XAnimateBackgroundImage routine is:
+
+<P>
+<PRE>        XAnimateBackgroundImage(display,resource_info,image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG><A NAME="item_o">display:</A></STRONG><DD>
+<P>
+Specifies a connection to an X server; returned from XOpenDisplay.
+
+<DT><STRONG>resource_info:</STRONG><DD>
+<P>
+Specifies a pointer to a X11 XResourceInfo structure.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+Specifies a pointer to a Image structure; returned from ReadImage.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="XAnimateImage">XAnimateImage</A></H2>
+<P>
+Method XAnimateImages displays an image via X11.
+
+<P>
+The format of the XAnimateImages routine is:
+
+<P>
+<PRE>    XAnimateImages(display,resource_info,argv,argc,image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>display:</STRONG><DD>
+<P>
+Specifies a connection to an X server; returned from XOpenDisplay.
+
+<DT><STRONG>resource_info:</STRONG><DD>
+<P>
+Specifies a pointer to a X11 XResourceInfo structure.
+
+<DT><STRONG>argv:</STRONG><DD>
+<P>
+Specifies the application's argument list.
+
+<DT><STRONG>argc:</STRONG><DD>
+<P>
+Specifies the number of arguments.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+Specifies a pointer to a Image structure; returned from ReadImage.
+
+</DL></DL>
+</BODY>
+
+</HTML>

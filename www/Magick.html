@@ -1,0 +1,770 @@
+<HTML VERSION="2.0">
+<HEAD>
+<TITLE>ImageMagick Frequently Asked Questions</TITLE>
+<LINK rev="made" href="mailto:cristy@mystic.es.dupont.com">
+<meta name="description" content="ImageMagick, version 4.1, is a package for
+  display and interactive manipulation of images for the X Window System. It
+  is written in C and interfaces to the X library, and therefore does not
+  require any proprietary toolkit in order to compile.  Although the software
+  is copyrighted, it is available for free and can be redistributed without
+  fee.">
+<meta name="keywords" content="ImageMagick, Image Magick, Image Magic,
+  PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,
+  WebMagick, Web Magic, visualization, image processing, software development,
+  simulation, image, software, AniMagick, Animagic, X11">
+</HEAD>
+<body background="../images/background.gif">
+<CENTER>
+<img src="../images/faq.gif" align=bottom width=511 height=134>
+</CENTER>
+<pre>
+
+</pre>
+<OL>
+<LI><A HREF="#C1">I received the following message, "?????? delegation
+     failed ...".  What does it mean?</A>
+<LI><A HREF="#C2">How can I improve the appearance of 24-bit images
+displayed on my colormapped <I>X server</I>?</A>
+<LI><A HREF="#C3">How do I set the transparency index in a GIF
+image so it displays properly within Mosaic?</A>
+<LI><A HREF="#C4">How can I stop the filenames from changing in the
+title bar of the animate(1) image window?</A>
+<LI><A HREF="#C5">The image grabbed by import(1) does not look like the image
+on my <I>X server</I>.  What's wrong</A>
+<LI><A HREF="#C6">How do I animate a digital YUV image sequence?</A>
+<LI><A HREF="#C7">How do I view only the red channel of an RGB
+image?</A> 
+<LI><A HREF="#C8">How do I change the default <I>PostScript</I> page size?</A>
+<LI><A HREF="#C9">When I display or convert an image, I get
+<em>Memory allocation error</em>. What can I do?</A>
+<LI><A HREF="#C10">How do I concatenate three images left-to-right
+with no borders, frames, or text?</A>
+<LI><A HREF="#C11">How do I create a GIF animation sequence to display
+within Netscape? </A>
+<LI><A HREF="#C12">When I display a <I>PostScript</I> image it appears to
+be trimmed.  I would like to display the entire page, including any white
+space.</A>
+<LI><A HREF="#C13">What are visual image directories?  How do I use
+them?</A>
+<LI><A HREF="#C14">I have an HP.  How do I take advantage of the
+Color Recovery option?</A>
+<LI><A HREF="#C15">I use the window ID reported by
+<I>xwininfo(1)</I> with import and it does include the window manager frame
+as expected.  How can I save the window with its frame?</A>
+<LI><A HREF="#C16">I displayed an image and it appears as one solid
+color.  What did I do wrong?</A>
+<LI><A HREF="#C17">I received the following message, "???? library
+is not available ...".  What does it mean?</A>
+<LI><A HREF="#C18">I want to inspect the values of the matte
+channel within my image.  How can I do that?</A>
+<LI><A HREF="#C20">How can I add one of those cool bevels to my image that
+I see used on the Web?</a>
+<LI><A HREF="#C21">I try to launch display from my window manager and it fails.
+What's up?</a>
+<LI><A HREF="#C22">When I convert Postscript to another format, how can I
+improve the appearance of the text?</a>
+<LI><A HREF="#C23">How can I annotate an image with text that is 2 to 3
+inches tall?</a>
+<LI><A HREF="#C24">How can I convert my GIF animation sequence to individual
+image files?</a>
+<LI><A HREF="#C25">How can I remove the background that prints around my
+image when I display it with Netscape?</a>
+<LI><A HREF="#C26">How do I create a GIF image with Web safe colors?</a>
+<LI><A HREF="#C27">How come Adobe Acrobat 2.1 can't read ImageMagick's PDF
+format?</a>
+<LI><A HREF="#C28">How can I add a matte layer to my image?</a>
+</OL>
+<DL>
+<PRE>
+
+</PRE>
+<p><hr size=5 width=325><p>
+<dt><B><A NAME="C1"> 1.  I received the following message, "??????
+delegation failed ...".  What does it mean?</A></B>
+<P>
+<DD><B>ImageMagick</B> uses several freely available packages to perform the
+translation of certain image formats (<I>PostScript</I>, <I>MPEG</I>, etc.).
+Make sure these packages are available as described in the
+<A HREF="install.html"> README</A>
+file.  Also verify that you have plenty of temporary disk space.
+If not, set the TMPDIR environment variable to an area where space
+is available.  Finally, for <I>PostScript</I>, verify that Ghostscript
+supports the <b>pnmraw</b> or <b>ppmraw</b> device (<tt>gs -h</tt>) and that
+the document contains valid <I>PostScript</I> statements (<tt>gs image.ps</tt>).
+<P>
+<PRE>
+
+</PRE>
+<p><hr size=5 width=325><p>
+<dt><B><A NAME="C2">2.  How can I improve the appearance of 24-bit images
+displayed on my colormapped <I>X server</I>?</A></B>
+<P>
+<DD>If you have a colormapped <I>X server</I>, the number of unique colors in
+an image must first be reduced to match the requirements of your
+server before it can be displayed.  <A
+HREF="display.html">Display</A> tries to make the
+color reduced image closely resemble the original.  However, there
+are some options that may improve the appearance.
+<P>
+You can use a private colormap.  By default, your image must share
+colors with existing applications on your <I>X server</I>.  The colors in
+your image may be very different than the shared colors and the
+results may be visually unsatisfactory.  Try
+<P>
+<PRE>
+    display -colormap private image.miff
+</PRE>
+The disadvantage is the annoying colormap loading and unloading as
+you move your pointer in and out of the image window.
+<P>
+The YCbCr colorspace may give better results when color reducing
+images of people faces.  Try
+<P>
+<PRE>
+    display -colorspace YCbCr image.miff
+</PRE>
+<P>
+If you intend to view an image frequently, reduce the number of
+colors to match the resolution of your <I>X server</I> once and write to a
+new image.  Then display this new image.  For example,
+<P>
+<PRE>
+    convert -colors 256 -dither image.jpeg image.miff
+    display image.miff
+</PRE>
+<P>
+This forces the time-consuming process of color reducing the image
+to one-time, rather than each time the image is displayed.
+<P>
+<PRE>
+
+</PRE>
+<p><hr size=5 width=325><p>
+<dt><B><A NAME="C3">3.  How do I set the transparency index in a GIF image
+so it displays properly within Mosaic?</A></B>
+<P>
+<DD>Display your GIF image with <A
+HREF="display.html">display</A>.  Choose
+<B>Matte</B> from the <B>Image Edit</B> command menu and identify a pixel
+that has the <I>transparency</I> color.  Press <B>Method</B> and select a
+matte edit method from a pop-up menu.   Choose from these methods:
+<P>
+<PRE>
+    point
+    replace
+    floodfill
+</PRE>
+<P>
+The <B>point</B> method changes the matte value of any pixel selected with
+the pointer until the button is is released.  The <B>replace</B> method
+changes the matte value of any pixel that matches the color of the
+pixel you select with a button press.  <B>Floodfill</B> changes the matte
+value of any pixel that matches the color of the pixel you select
+with a button press and is a neighbor.
+<P>
+Select your transparent pixel with the pointer and press a button.
+The image is redisplayed with any transparent pixels recolored to
+the background color.  You can select other pixels or areas to
+force to transparent.  When you are satisfied, press Return.
+<P>
+Finally, choose <B>Save</B> from the command menu and write your GIF
+image to a file.  <EM>Note that setting transparency works best on a
+TrueColor or DirectColor visual</EM>.  If your server only exports
+colormapped visuals you will need to use a <B>Standard Colormap</B> to set
+transparency.
+<P>
+<PRE>
+    xstdcmap -best
+    display -map list image.gif
+      <i>choose Matte Edit  
+      select your transparent pixel then press Return  
+      choose Save</i>
+</PRE>
+If you do not have the <I>xstdcmap(1)</I> program, try
+<P>
+<PRE>
+    display -visual TrueColor image.gif
+</PRE>
+
+<PRE>
+
+</PRE>
+<p><hr size=5 width=325><p>
+<dt><B><A NAME="C4">4.  How can I stop the filenames from changing in the title bar of the animate(1) image window?</A></B>
+<P>
+<DD> <A HREF="animate.html">Animate</A>
+updates the image file name in the title bar of the
+image window as each image is displayed from the image sequence.
+To display just a single name that will not change, use <I>-title</I>:
+<P>
+<PRE>
+    animate -title "My Image Sequence" images.
+</PRE>
+
+<PRE>
+
+</PRE>
+<p><hr size=5 width=325><p>
+<dt><B><A NAME="C5">5.  The image grabbed by import(1) does not look like
+the image on my <I>X server</I>.  What's wrong?</A></B>
+<P>
+<DD>Use the <I>-descend</I> option:
+<P>
+<PRE>
+    import -descend image.miff
+</PRE>
+or set this <I>X resource</I>:
+<P>
+<PRE>
+    import.descend:  True
+</PRE>
+<P>
+By default, <A HREF="import.html">import</A> quickly grabs
+the image from the <I>X server</I>.  However, 
+it may not always have the correct colors
+in some areas.  This can happen when a subwindow has a
+different colormap than its parent.  With <I>-descend</I>,
+<A HREF="import.html">import</A>
+descends the window hierarchy.  Descending involves
+grabbing the image and colormap of each window or subwindow
+associated with the window you select and compositing it on
+a blank canvas.  This can be significantly slower than just
+grabbing the top-level window but ensures the correct image.
+<P>
+<PRE>
+
+</PRE>
+<p><hr size=5 width=325><p>
+<dt><B><A NAME="C6">6.  How do I animate a digital YUV image sequence?</A></B>
+<P>
+<DD>Suppose your sequence is 72 352x240 frames titled frame0.Y,
+frame0.U, frame0.V, frame1.Y, frame1.U, etc.  Use this command:
+<P>
+<PRE>
+    animate -geometry 352x240 -scene 0-71 yuv3:frame%d
+</PRE>
+<P>
+<PRE>
+
+</PRE>
+<p><hr size=5 width=325><p>
+<dt><B><A NAME="C7">7.  How do I view only the red channel of an RGB
+image?</A></B> 
+<P>
+<dd>Use the <i>-gamma</i> option, for example,
+<P>
+<PRE>
+    display -gamma 1.0,0.0,0.0 image.miff
+</PRE>
+<P>
+<PRE>
+
+</PRE>
+<p><hr size=5 width=325><p>
+<dt><B><A NAME="C8">8.  How do I change the default <I>PostScript</I> page size?</A></B>
+<P>
+<DD>The default dimensions of a <I>PostScript</I> page is 612x792.  If you
+prefer another default, change the page geometries in <I>magick/image.h</I>
+and recompile.
+<P>
+<PRE>
+
+</PRE>
+<p><hr size=5 width=325><p>
+<dt><B><A NAME="C9">9.  When I display or convert an image, I get
+<em>Memory allocation error</em>. What can I do? </A></B>
+<P>
+<DD>The simplest thing to do is to increase your real memory or
+virtual memory by expanding your swap partition.  For <b>ImageMagick</b> to
+work effectively, you should have at least 24mb of real memory and
+48mb of virtual on your computer.  And keep in mind processor speed as
+well.  An image operation that takes 5 seconds on my 200mhz Sun Ultra
+may take 2 minutes on a 486pc.
+<P>
+<B>ImageMagick</B> is designed to be general purpose.  It can display many
+image storage formats (<I>Monochrome</i>, <i>PseudoColor</i>, or
+<i>TrueColor</I>) on many different types of <I>X visuals</I> (<I>StaticGray,
+StaticColor, PseudoColor, GrayScale, DirectColor,</I> or <I>TrueColor</I>).
+To support all these combinations of image storage formats and X visuals, extra
+memory is required.  In fact, each image requires up to 6 bytes per pixel
+to store in memory.  Additionally, <A
+HREF="animate.html">animate</A> and <A
+HREF="montage.html">montage</A> store an entire image
+sequence in memory.  <B>ImageMagick</B> does reduce memory requirements
+by compressing pixel information with run-length encoding.  However, this
+is only effective for images with large runs of like pixels such as Postscript
+or computer generated images. As an example, a 1728x2500 fax image may
+require only 0.5mb of memory.  In contrast a JPEG image this size could
+require 20mb of memory.
+<P>
+For animation, consider using the MPEG programs from Berkeley if
+you encounter memory limitations with <A
+HREF="animate.html">animate</A>. 
+It only stores a few frames at a time in memory.  <A
+HREF="convert.html">Convert</A> has an option to create the
+proper CCIR 601 2:1:1 files as input to the MPEG program.  However, the
+CCIR 601 2:1:1 image format is lossy.  Computer generated images may not
+look very good.
+<P>
+<PRE>
+
+</PRE>
+<p><hr size=5 width=325><p>
+<dt><B><A NAME="C10">10. How do I concatenate three images left-to-right with no
+borders, frames, or text?</A></B>
+<P>
+<DD>Assume your three images are called <tt>image1.ppm</tt>,
+<tt>image2.ppm</tt>, and <tt>image3.ppm</tt>.  Type
+<P>
+<PRE>
+    montage -mode concatenate -tile 3x1 image1.ppm image2.ppm \
+      image3.ppm concatenated.miff
+</PRE>
+<P>
+To concatenate the images top-to-bottom, use <tt>-tile 1x3</tt>.
+<P>
+For more control over the placement of an image, use
+<A HREF="combine.html">combine</A>.  First create a matte image and position
+your images onto the matte.  For example,
+<PRE>
+    convert -size 350x500 xc:black composite.miff
+    combine -geometry +0+0   composite.miff image1.gif composite.miff
+    combine -geometry +100+0 composite.miff image2.gif composite.miff
+    combine -geometry +0+300 composite.miff image3.gif composite.miff
+    combine -geometry +0+375 composite.miff image4.gif composite.miff
+</PRE>
+<P>
+<PRE>
+
+</PRE>
+<p><hr size=5 width=325><p>
+<dt><B><A NAME="C11">11.  How do I create a GIF animation sequence to display
+within Netscape? </A></B>
+<P>
+<DD> Use <A HREF="convert.html">convert</A> with the <b>-delay</b> and
+<b>-page</b> options.  The <b>-delay</b> option is used to specify the
+delay in <b>1/100ths of a second</b> between the display of each frame
+of the animation.  For example,
+<pre>
+    convert -delay 20 frame*.gif animation.gif
+</pre>
+You can also declare specific delays for each frame of the image
+sequence.  For example, if the delay was 20, 10, and 5, use
+<pre>
+    convert -delay 20 frame1.gif -delay 10 frame2.gif \
+	-delay 5 frame3.gif animation.gif
+</pre>
+Use <b>-page</b> to specify the <i>left</i> and <i>top</i> locations of
+the image frame:
+<pre>
+    convert frame1.gif -page +50+100 frame2.gif -page +0+100 \
+	frame3.gif animation.gif
+</pre>
+Finally, if you want the image to loop within <b>Netscape</b>, use
+<b>-loop</b>:
+<pre>
+    convert -loop 50 frame*.gif animation.gif
+</pre>
+<p>
+For further information about GIF animation, see
+<A HREF="http://members.aol.com/royalef/gifmake.htm"> GIF Animation
+on the WWW</A>.
+<p>
+Note, that all the images are combined into a single multi-image GIF
+animation.  If you want a single image produced for each frame, use
+<b>+adjoin</b>:
+<pre>
+    convert +adjoin images.* frames%d.gif
+</pre>
+<P>
+<PRE>
+
+</PRE>
+<p><hr size=5 width=325><p>
+<dt><B><A NAME="C12">12. When I display a <I>PostScript</I> image it
+appears to be trimmed.  I would like to display the entire page, including
+any white space.</A></B>
+<P>
+<DD><B>ImageMagick</B> automatically trims any <I>PostScript</I> image as
+defined by the bounding box.  To preempt this behavior, remove the bounding
+box statement from the Postscrpt or explicitly set the
+page size.  For example,
+<P>
+<PRE>
+    display -page letter image.ps
+</PRE>
+<P>
+<PRE>
+
+</PRE>
+<p><hr size=5 width=325><p>
+<dt><B><A NAME="C13">13. What are visual image directories?  How do I use
+them?</A></B>
+<P>
+<DD>A visual image directory (VID) is an image that contains thumbnails
+of one or more images in a file directory.  Rather than displaying
+each individual image at its full resolution, you can browse the
+visual image directory and choose an image to display.  You can
+create a VID with either of these commands:
+<P>
+<PRE>
+    montage *.jpg directory.vid
+    convert 'vid:*.jpg' directory.vid
+</PRE>
+<P>
+Of course you can substitute any filenames you desire.  <A
+HREF="montage.html">Montage</A> has many relevant command
+line options.  You can exercise more control over the appearance of the VID
+than with <A HREF="convert.html">convert</A>.
+<P>
+Next display the directory:
+<P>
+<PRE>
+    display directory.vid
+</PRE>
+<P>
+Finally browse and select an image to display.  Move the pointer to
+the image and press button 3.
+<P>
+    You can create the VID directory with this command:
+<P>
+<PRE>
+    display 'vid:*.jpg'
+</PRE>
+<P>
+You can also select <B>Visual Image...</B> from the <B>File</B> menu of the
+command widget.
+<P>
+<EM>Note, that creating a VID is time consuming</EM>.  Creating them
+on-the-fly within <A HREF="display.html">display</A> may be
+less convenient than using <A
+HREF="montage.html">montage</A> or <A
+HREF="convert.html">convert</A> .  Also, if you create them
+with <A HREF="montage.html">montage</A>.  or <A
+HREF="convert.html">convert</A>, you can reuse them as often
+as necessary.
+<P>
+Note that a visual image directory is useful for looking at
+individual frames of an image sequence:
+<P>
+<PRE>
+    display vid:movie.mpg
+</PRE>
+<P>
+<PRE>
+
+</PRE>
+<p><hr size=5 width=325><p>
+<dt><B><A NAME="C14">14. I have an HP.  How do I take advantage of the
+Color Recovery option?</A></B>
+<P>
+<DD>Type
+<P>
+<PRE>
+    display -map list image.miff
+</PRE>
+If you want to use <A
+HREF="http://hpsgml.fc.hp.com/mhm/WhitePapers/ColorRecovery/
+ColorRecovery.html">Color Recovery</A> all the time, put this in your X
+defaults file:
+<P>
+<PRE>
+    display.map: list
+</PRE>
+<P>
+Now if you need to turn off Color Recovery temporarily, type
+<PRE>
+    display +dither image.miff
+</PRE>
+<P>
+<PRE>
+
+</PRE>
+<p><hr size=5 width=325><p>
+<dt><B><A NAME="C15">15. I use the window ID reported by <I>xwininfo(1)</I> with
+import and it does include the window manager frame as expected.  How can I
+save the window with its frame?</A></B>
+<P>
+<DD>By default, <I>xwininfo(1)</I> returns the ID of the window you click on.
+Use the <i>-frame</i> option to get the reparented window ID:
+<P>
+<PRE>
+    xwininfo -frame
+</PRE>
+You can then use the returned window ID with <A HREF="import.html">import</A>:
+<P>
+<PRE>
+    import -frame -window ID window.miff
+</PRE>
+<P>
+<PRE>
+
+</PRE>
+<p><hr size=5 width=325><p>
+<dt><B><A NAME="C16">16. I displayed an image and it appears as one solid
+color.  What did I do wrong?</A></B>
+<P>
+<DD>A blank image generally means that the image is either corrupt or
+it has a matte channel and the matte values are all zero.
+<B>ImageMagick</B> treats a matte value of zero as completely
+transparent.  To determine if this is the problem, try
+<P>
+<PRE>
+    display +matte image.miff
+</PRE>
+<P>
+<PRE>
+
+</PRE>
+<p><hr size=5 width=325><p>
+<dt><B><A NAME="C17">17. I received the following message, "???? library is
+not available ...".  What does it mean?</A></B>
+<P>
+<DD><B>ImageMagick</B> requires source libraries not included with the
+distribution to view or convert certain image formats such as JPEG
+or TIFF.  The above message means you did not compile the required
+library and link with the <B>ImageMagick</B> utilities.  See
+<A HREF="install.html"> README</A>
+for the location of these libraries and
+compiling instructions.  Next, edit <tt>Magick.tmpl</tt>
+if you use <tt>xmkmf</tt> or set the appropriate command line arguments to
+<tt>configure</tt> and uncomment the appropriate plug-in defines as
+instructed.  Finally, type
+<P>
+<PRE>
+    cd ImageMagick
+    rm display
+    rm magick/decode.o magick/encode.o magick/compress.o
+    make
+</PRE>
+<p>
+Make sure the compile command line includes the appropriate define.  For
+example, with JPEG the compile line should have <tt>-DHasJPEG</tt>.  The
+link line should include the library path and name.  For JPEG, this
+might be <tt>-Ljpeg -ljpeg</tt>.  Also, make sure the clients link to the
+new ImageMagick library.  In particular, with shared libraries the compile
+may link to a system version of <tt>libMagick.so</tt>.  In this case,
+type:
+<P>
+<PRE>
+    cd magick
+    make install
+    cd ..
+    make install
+</PRE>
+<P>
+<PRE>
+
+</PRE>
+<p><hr size=5 width=325><p>
+<dt><B><A NAME="C18">18. I want to inspect the values of the matte channel within my image.  How can I do that?</A></B>
+<P>
+<DD>View the matte image as a gray scale image.  Suppose you have a
+TIFF image that has a matte channel and is 640 pixels in width and
+480 in height.  Type:
+<P>
+<PRE>
+    convert image.tiff image.matte
+    display -size 640x480 gray:image.matte
+</PRE>
+</DL>
+<PRE>
+
+</PRE>
+<p><hr size=5 width=325><p>
+<dt><B><A NAME="C20">20.  How can I add one of those cool bevels to my image
+that I see used on the Web? </A></B>
+<p>
+There are four types of ornamental borders you can add to your image with
+ImageMagick.  Each is listed below with the procedure to use them with
+your image.
+<p>
+<ul>
+<li><em>Surround the image with a border of color</em>:  Use <tt>-border</tt>
+followed by the width and height of the border.  Set the color of the border
+with <tt>-bordercolor</tt>.  For example, to surround your image with a red
+border that is 25 pixels wide on each side, use:
+<p>
+<pre>
+    convert -bordercolor red -border 25x25 image.jpg image.gif
+</pre>
+<p>
+<li><em>Lighten or darken image edges to create a 3-D effect</em>: Use
+<tt>-raise</tt> followed by the width of the image edge.  For example, to
+create a raised edge effect of 25 pixels, use:
+<p>
+<pre>
+    convert -raise 25 image.jpg image.gif
+</pre>
+<p>
+<li><em>Surround the image with an ornamental frame</em>:  Use <tt>-frame</tt>
+followed by the width and height of the frame.  Set the color of the border
+with <tt>-mattecolor</tt>.  For example, to surround your image with a gray
+frame that is 25 pixels wide on each side, use:
+<p>
+<pre>
+    convert -mattecolor gray -frame 25x25 image.jpg image.gif
+</pre>
+<p>
+<li><em>Surround the image with a raised or sunken bevel</em>: Use
+<tt>-frame</tt> followed by the width and height of the bevel.  Set the color
+of the border with <tt>-mattecolor</tt>.  This is just like the description
+above except you specify a bevel width that matches the frame width.
+For example, to surround your image with a gray bevel that is 25 pixels wide
+on each side, use:
+<p>
+<pre>
+    convert -mattecolor gray -frame 25x25+0+25 image.jpg image.gif
+    convert -mattecolor gray -frame 25x25+25+0 image.jpg image.gif
+</pre>
+<p>
+</ul>
+<P>
+<PRE>
+
+</PRE>
+<p><hr size=5 width=325><p>
+<dt><B><A NAME="C21">21.  I try to launch display from my window manager and
+it fails.  What's up?</b></a>
+<P>
+<DD> <A HREF="display.html">Display</A> determines if it is executing
+interactively and behaves differently depending on the result.  To convince
+<A HREF="display.html">display</A> you are running in an interactive environment
+when launching from a window manager, use either of
+<P>
+<PRE>
+    display logo:Untitled
+    display &lt; /dev/console
+</PRE>
+<P>
+<PRE>
+
+</PRE>
+<p><hr size=5 width=325><p>
+<dt><B><A NAME="C22">22.  When I convert Postscript to another format, how can I
+improve the appearance of the text?</b></a>
+<P>
+<DD>Simple.  Increase the dots-per-inch when converting and sub-sample:
+<p>
+<PRE>
+    convert -density 288 -geometry 25% image.ps image.gif
+</PRE>
+Change the density to 144 and geometry to 50% if the above command fails
+due to insufficient memory.  Alternatively, see the Ghostscript documentation
+about using high-quality fonts.
+<p>
+The <tt>-density</tt> option increases the number of pixels (or dots)
+generated by Ghostscript when processing the input postscript file.
+However as all other images formats are generally displayed on screens
+which are typically about 72 to 100 dots per inch, the output image will
+be larger.
+<p>
+The <em>-geometry</em> option reduces the large image output of ghostscript
+image back to a normal 72 dpi resolution (25% of 288 dpi gives 72 dpi)
+but in the process anti-aliases (or smooths) the fonts and lines of the
+image so as to remove the <em>jaggies</em> you would otherwise get from a
+normal postscript to image conversion.
+<p>
+<PRE>
+
+</PRE>
+<p><hr size=5 width=325><p>
+<dt><B><A NAME="C23">23.  How can I annotate an image with text that is 2 to 3
+inches tall?</B>
+<p>
+<dd>If you do not access to a particular named font that is large, try scalable
+fonts.  First see if you have any scalable fonts.  Type
+<p>
+<pre>
+    xlsfonts -fn '*-0-0-0-0-*'
+</pre>
+<p>
+<dd>Or if you are using <A HREF="display.html">display</A>, use the font pattern
+above within the Font Browser (see Image Edit->Annotate).  Next substitute the
+appropriate resolution.  Keep in mind that a scalable font must be fully
+qualified to work.  That is, all 14 fields must be specified.  Here is one
+example where we annotate an image with large <em>Helvetica</em> text:
+<p>
+<pre>
+    convert -font '-*-helvetica-*-*-*--300-300-*-*-*-*-iso8859-1' \
+      -pen green -draw 'text 50,300 Magick' image.png annotated.png
+</pre>
+<p>
+If you have the FreeType support built into ImageMagick, just increase
+your pointsize and/or density:
+<p>
+<pre>
+  convert -font @ArtBrush -pointsize 100 -density 300 ...
+<PRE>
+
+</PRE>
+<p><hr size=5 width=325><p>
+<dt><B><A NAME="C24">24.  How can I convert my GIF animation sequence to
+individual image files?</B>
+<p>
+<dd>Use the scene embedded file format with <a href="convert.html">convert</A>:
+<p>
+<pre>
+    convert animation.gif frame%02d.gif
+</pre>
+<p>
+<dd>The resulting image files are titled <tt>frame01.gif</tt>, 
+<tt>frame02.gif</tt>, <tt>frame03.gif</tt>, etc.
+<p><hr size=5 width=325><p>
+<dt><B><A NAME="C25">25. How can I remove the background that prints around my
+image when I display it with Netscape?</B>
+<p>
+<dd>Use the <tt>+page</tt> option of the <a href="convert.html">convert</A>
+command:
+<p>
+<pre>
+    convert +page alpha.gif beta.gif
+</pre>
+<p>
+<dd>GIF allows for a page offset relative to some background.  The page offset
+information may have been in your GIF image already or it could have been
+introduced by <b>ImageMagick</b>.  Either way, <tt>+page</tt> removes the
+unwanted page offset and Netscape should behave as expected.
+<p><hr size=5 width=325><p>
+<dt><B><A NAME="C26">26. How do I create a GIF image with Web safe colors?</B>
+<p>
+<dd>Use the <tt>-map</tt> option of the <a href="convert.html">convert</A>
+command:
+<p>
+<pre>
+    convert -map netscape: alpha.gif beta.gif
+</pre>
+<p>
+<dd>Netscape predefines 216 colors for colormapped workstations.  Use the
+above command to ensure only these predefined colors are used.  Otherwise
+Netscape dithers your image with varying degrees of image fidelity.
+<p><hr size=5 width=325><p>
+<dt><B><A NAME="C27">27. How come Adobe Acrobat 2.1 can't read ImageMagick's
+PDF format? </b>
+<p>
+<dd> The default PDF compression is <em>Zip</em>.  You need Acrobat
+3.0 and above to read Zip compressed PDF.  Instead use no compression or
+LZW compression when you create the PDF file:
+<p>
+<pre>
+    convert +compress images.tiff image.pdf
+</pre>
+<p><hr size=5 width=325><p>
+<dt><B> <A NAME="C28">28. How can I add a matte layer to my image?</b>
+<p>
+<dd>One way is to use a bitmap as your transparency mask.  Try
+<p>
+<pre>
+    combine -compose ReplaceMatte image.gif mask.xbm transparent.gif
+</pre>
+<p>
+<dd>Note, GIF is limited to one transparent color.  If your mask has variable
+opacity, use a format like MIFF, TIFF, or PNG as you output image format.
+</DL>
+</DL>
+<p><hr><p>
+<a href="../ImageMagick.html"><img alt="Home Page"
+  src="../images/home.gif" width=40 height=40 align=middle border=0></a>
+<font size="-2">Image manipulation software that works like magic.</font>
+</body>
+</html>

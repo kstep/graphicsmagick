@@ -1,0 +1,236 @@
+<HTML>
+<HEAD>
+<TITLE>decode - Utility Routines to Read Image Formats</TITLE>
+<LINK REV="made" HREF="mailto:cristy@mystic.es.dupont.com">
+</HEAD>
+
+<body background="../../images/background.gif">
+
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#NAME">NAME</A>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
+	<UL>
+
+		<LI><A HREF="#ReadFITSImage">ReadFITSImage</A>
+		<LI><A HREF="#ReadMIFFImage">ReadMIFFImage</A>
+		<LI><A HREF="#ReadPICTImage">ReadPICTImage</A>
+		<LI><A HREF="#ReadTIMImage">ReadTIMImage</A>
+		<LI><A HREF="#ReadXImage">ReadXImage</A>
+		<LI><A HREF="#ReadImage">ReadImage</A>
+	</UL>
+
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="NAME">NAME</A></H1>
+<P>
+decode - Utility Routines to Read Image Formats
+
+<P>
+<HR>
+<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
+image=<STRONG>ReadFITSImage</STRONG>(image_info)
+
+<P>
+image=<STRONG>ReadImage</STRONG>(image_info)
+
+<P>
+image=<STRONG>ReadMIFFImage</STRONG>(filename)
+
+<P>
+image=<STRONG>ReadPICTImage</STRONG>(image_info)
+
+<P>
+image=<STRONG>ReadTIMImage</STRONG>(image_info)
+
+<P>
+image=<STRONG>ReadXImage</STRONG>(image_info,ximage_info);
+
+<P>
+<HR>
+<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<P>
+<HR>
+<H2><A NAME="ReadFITSImage">ReadFITSImage</A></H2>
+<P>
+Method ReadFITSImage reads a FITS image file and returns it. It allocates
+the memory necessary for the new Image structure and returns a pointer to
+the new image.
+
+<P>
+The format of the ReadFITSImage routine is:
+
+<P>
+<PRE>        image=ReadFITSImage(image_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG><A NAME="item_o">image:</A></STRONG><DD>
+<P>
+Method ReadFITSImage returns a pointer to the image after reading. A null
+image is returned if there is a a memory shortage or if the image cannot be
+read.
+
+<DT><STRONG>filename:</STRONG><DD>
+<P>
+Specifies the name of the image to read.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ReadMIFFImage">ReadMIFFImage</A></H2>
+<P>
+Method ReadMIFFImage reads a MIFF image file and returns it. It allocates
+the memory necessary for the new Image structure and returns a pointer to
+the new image.
+
+<P>
+The format of the ReadMIFFImage routine is:
+
+<P>
+<PRE>        image=ReadMIFFImage(filename)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+Method ReadMIFFImage returns a pointer to the image after reading. A null
+image is returned if there is a a memory shortage or if the image cannot be
+read.
+
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+Specifies a pointer to an ImageInfo structure.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ReadPICTImage">ReadPICTImage</A></H2>
+<P>
+Method ReadPICTImage reads an Apple Macintosh QuickDraw/PICT image file and
+returns it. It allocates the memory necessary for the new Image structure
+and returns a pointer to the new image.
+
+<P>
+The format of the ReadPICTImage routine is:
+
+<P>
+<PRE>        image=ReadPICTImage(image_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+Method ReadPICTImage returns a pointer to the image after reading. A null
+image is returned if there is a a memory shortage or if the image cannot be
+read.
+
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+Specifies a pointer to an ImageInfo structure.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ReadTIMImage">ReadTIMImage</A></H2>
+<P>
+Method ReadTIMImage reads a PSX TIM image file and returns it. It allocates
+the memory necessary for the new Image structure and returns a pointer to
+the new image.
+
+<P>
+Contributed by <A HREF="mailto:os@scee.sony.co.uk.">os@scee.sony.co.uk.</A>
+
+<P>
+The format of the ReadTIMImage routine is:
+
+<P>
+<PRE>        image=ReadTIMImage(image_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+Method ReadTIMImage returns a pointer to the image after reading. A null
+image is returned if there is a a memory shortage or if the image cannot be
+read.
+
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+Specifies a pointer to an ImageInfo structure.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ReadXImage">ReadXImage</A></H2>
+<P>
+Procedure ReadXImage reads an image from an X window.
+
+<P>
+The format of the ReadXImage routine is:
+
+<P>
+<PRE>        image=ReadXImage(image_info,ximage_info);
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+Specifies a pointer to an ImageInfo structure.
+
+<DT><STRONG>ximage_info:</STRONG><DD>
+<P>
+Specifies a pointer to an XImportInfo structure.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ReadImage">ReadImage</A></H2>
+<P>
+Method ReadImage reads an image and returns it. It allocates the memory
+necessary for the new Image structure and returns a pointer to the new
+image. By default, the image format is determined by its magic number. To
+specify a particular image format, precede the filename with an explicit
+image format name and a colon (i.e. ps:image) or as the filename suffix
+(i.e. image.ps).
+
+<P>
+The format of the ReadImage routine is:
+
+<P>
+<PRE>        image=ReadImage(image_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+Method ReadImage returns a pointer to the image after reading. A null image
+is returned if there is a a memory shortage or if the image cannot be read.
+
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+Specifies a pointer to an ImageInfo structure.
+
+</DL></DL>
+</BODY>
+
+</HTML>

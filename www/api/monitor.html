@@ -1,0 +1,94 @@
+<HTML>
+<HEAD>
+<TITLE>monitor - ImageMagick Progress Monitor Routines</TITLE>
+<LINK REV="made" HREF="mailto:cristy@mystic.es.dupont.com">
+</HEAD>
+
+<body background="../../images/background.gif">
+
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#NAME">NAME</A>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
+	<UL>
+
+		<LI><A HREF="#ProgressMonitor">ProgressMonitor</A>
+		<LI><A HREF="#SetMonitorHandler">SetMonitorHandler</A>
+	</UL>
+
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="NAME">NAME</A></H1>
+<P>
+monitor - ImageMagick Progress Monitor Routines
+
+<P>
+<HR>
+<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
+<STRONG>ProgressMonitor</STRONG>(text,quantum,span)
+
+<P>
+previous_handler=<STRONG>SetMonitorHandler</STRONG>(handler)
+
+<P>
+<HR>
+<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<P>
+<HR>
+<H2><A NAME="ProgressMonitor">ProgressMonitor</A></H2>
+<P>
+Method ProgressMonitor calls the monitor handler routines with a text
+string that describes the task and a measure of completion.
+
+<P>
+The format of the ProgressMonitor routine is:
+
+<P>
+<PRE>        ProgressMonitor(text,quantum,span)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG><A NAME="item_o">quantum:</A></STRONG><DD>
+<P>
+Specifies the quantum position within the span which represents how much
+progress has been made in completing a task.
+
+<DT><STRONG>span:</STRONG><DD>
+<P>
+Specifies the span relative to completing a task.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="SetMonitorHandler">SetMonitorHandler</A></H2>
+<P>
+Method SetMonitorHandler sets the monitor handler to the specified routine
+and returns the previous monitor handler.
+
+<P>
+The format of the SetMonitorHandler routine is:
+
+<P>
+<PRE>        previous_handler=SetMonitorHandler(handler)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>handler:</STRONG><DD>
+<P>
+Specifies a pointer to a routine to handle monitors.
+
+</DL></DL>
+</BODY>
+
+</HTML>

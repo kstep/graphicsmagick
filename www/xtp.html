@@ -1,0 +1,398 @@
+<HTML VERSION="2.0">
+<HEAD>
+<TITLE>ImageMagick File Transfer Utility</TITLE>
+<LINK rev="made" href="mailto:cristy@mystic.es.dupont.com">
+<meta name="description" content="ImageMagick, version 4.1, is a package for
+  display and interactive manipulation of images for the X Window System. It
+  is written in C and interfaces to the X library, and therefore does not
+  require any proprietary toolkit in order to compile.  Although the software
+  is copyrighted, it is available for free and can be redistributed without
+  fee.">
+<meta name="keywords" content="ImageMagick, Image Magick, Image Magic,
+  PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,
+  WebMagick, Web Magic, visualization, image processing, software development,
+  simulation, image, software, AniMagick, Animagic, X11">
+</HEAD>
+<body background="../images/background.gif">
+<A NAME="top"></A>
+<CENTER>
+<img src="../images/xtp.gif" align=bottom width=108 height=42>
+</CENTER>
+<pre>
+ 
+</pre>
+<H2>
+<A NAME="Contents">Contents</A>
+</H2>
+<H4>
+<UL>
+<LI><A HREF="#syno">Synopsis</A>
+<LI><A HREF="#desc">Description</A>
+<LI><A HREF="#exam">Examples</A>
+<LI><A HREF="#opti">Options</A>
+<LI><A HREF="#rege">Regular Expressions</A>
+<LI><A HREF="#file">Files</A>
+<LI><A HREF="#envi">Environment</A>
+<LI><A HREF="#copy">Copyright</A>
+<LI><A HREF="#ackn">Acknowledgement</A>
+<LI><A HREF="#auth">Authors</A>
+</UL>
+</H4>
+<HR>
+<DL>
+<H2>
+<A NAME="syno">
+<DT>Synopsis
+</A>   
+</H2>  
+<DD><B>xtp</B> [ -<EM>options</EM> ... ] &lt;<EM>uniform</EM> <EM>resource</EM> <EM>locator</EM>&gt;
+</DL>
+<P>
+<A HREF="#top"><I>Back to Contents</I></A>
+<HR>
+<DL>
+<H2>
+<A NAME="desc">
+<DT>Description
+</A>
+</H2>
+<DD><B>Xtp</B> is a utility for retrieving, listing, or printing files
+from a remote network site, or sending files to a remote
+network site.  <EM>xtp</EM> performs most of the same functions as
+the <B>ftp(1)</B> program, but does not require any interactive
+commands.  You simply specify the file transfer task on the
+command line and <B>xtp</B> performs the task automatically.
+</DL>
+<P>
+<A HREF="#top"><I>Back to Contents</I></A>
+<HR>
+<DL>
+<H2>
+<A NAME="exam">
+<DT>Examples
+</A> 
+</H2>
+<DD>To retrieve the file <B>bird.jpg</B> in directory <B>images</B> from  host
+<B>wizard.mystic.es.dupont.com</B>, use:
+<p><dl>
+   <dd><tt>xtp ftp://wizard.mystic.es.dupont.com/images/bird.jpg</tt>
+</p></dl>
+<P>
+<DD>To retrieve all the files from directory <b>images</B>
+from host <B>wizard.mystic.es.dupont.com</B>, use:
+<p><dl>
+   <dd><tt>xtp -retrieve ftp://wizard.mystic.es.dupont.com/images/</tt>
+</p></dl>
+You will be prompted for a password.
+<p>
+<DD>To retrieve all the files from directory <b>images</B>
+as user <b>cristy</b> and password <b>magick</b> from host
+<B>wizard.mystic.es.dupont.com</B>, use:
+<p><dl>
+   <dd><tt>xtp -retrieve ftp://cristy:magick@wizard.mystic.es.dupont.com/images/</tt>
+</p></dl>
+</DL>
+<P>
+<A HREF="#top"><I>Back to Contents</I></A>
+<HR>
+<DL>
+<H2>
+<A NAME="opti">
+<DT>Options
+</A>
+</H2>
+<DL>
+<DT><B>-account</B> <EM>password</EM>
+<DD>Supply a supplemental password required by a remote
+system for access to resources.
+<P>
+<DT><B>-binary</B>
+<DD>retrieve files as binary.  This is the default.  Use
+<B>+binary</B> to retrieve files as text.
+<P>
+<DT><B>-directory</B>
+<DD>list the names of files and their attributes that match
+the filename component of the uniform resource locator.
+The filename component is processed as a regular
+expression.
+<P>
+<DT><B>-exclude</B> <EM>expression</EM>
+<DD>exclude files that match the regular <EM>expression</EM>.
+<P>
+<DD>This option applies to the <B>-directory</B>, <B>-print</B>, or
+<B>-retrieve</B> options.
+<P>
+<DT><B>-file</B> <EM>name</EM>
+<DD>store the file with this name.
+<P>
+<DD>Refer to the <B>-get</B> and <B>-put</B> option for more details.
+<P>
+<DT><B>-get</B>
+<DD>get files that match the filename component of the
+uniform resource locator.  The filename component is
+expanded by passing it to <B>csh(1)</B>.
+<P>
+<DD>This option is equivalent to using the <B>ftp</B> <B>get</B> command.
+However, if the filename contains globbing characters
+this option is equivalent to the <B>ftp</B> <B>mget</B> command.
+Without globbing characters, you can store the file
+locally with a different name by using the <B>-file</B>
+option.
+<P>
+<DT><B>-ident</B> <EM>password</EM>
+<DD>Supply a password required by a remote system.  This
+defaults to your username and hostname.
+<P>
+<DT><B>-port</B> <EM>number</EM>
+<DD>If no port number is specified, <B>xtp</B> attempts to contact
+a FTP server at the default port.  Otherwise, the
+specified port number is used.
+<P>
+<DT><B>-proxy</B> <EM>hostname</EM>
+<DD>access the remote host via a proxy <B>ftpd</B> client running
+on this host.
+<P>
+<DD>The default value of this option can be set with the
+environment variable <B>xtp_proxy</B>.  See 
+<A HREF="#envi"><B>Environment</B></A> for
+more details.  Use <B>+proxy</B> to prevent proxy connections.
+<P>
+<DT><B>-print</B>
+<DD>print files that match the filename component of the
+uniform resource locator.  The filename component is
+processed as a regular expression.
+<P>
+<DT><B>-prune</B>
+<DD>process files in the remote directory specified by the
+directory component of the uniform resource locator.
+Do not recursively search for files.
+<P>
+<DT><B>-put</B>
+<DD>put files that match the filename component of the
+uniform resource locator.  The filename component is
+expanded by passing it to <B>csh(1)</B>.
+<P>
+<DD>This option is equivalent to using the <B>ftp</B> <B>put</B> command.
+However, if the filename contains globbing characters, this option is
+equivalent to the <B>ftp mput</B> command.
+<P>
+<DD>Without globbing characters, you can store the file
+remotely with a different name by using the <B>-file</B>
+option.
+<P>
+<DT><B>-retrieve</B>
+<DD>retrieve files that match the filename component of the
+uniform resource locator.  The filename component is
+processed as a regular expression.
+<P>
+<DD>Retrieved files are stored on your local host directory
+as the full name of the retrieved file.  For example,
+if the retrieved file is named <B>documents/xtp.man</B> on the
+remote FTP server, it will appear in your remote
+directory as <B>documents/xtp.man</B>.
+<P>
+<DT><B>-timeout</B> <EM>seconds</EM>
+<DD>specifies the maximum seconds to complete your remote
+FTP server request.  If this time expires, the program
+terminates.  The program also terminates if one tenth
+of this value is exceeded while logging onto the remote
+FTP server.
+<P>
+<DT><B>-type</B> <EM>name</EM>
+<DD>identify the remote system type: UNIX, VMS, or other.
+<p> 
+<dd> The system type is determined automatically, however, you can override
+the system type with this option.
+<P>
+<P>
+<DT><B>-verbose</B>
+<DD>show all responses from the remote server.
+<p> 
+</DL>
+<p>
+<dd>If only the program name is specified on the command line, the program
+command syntax and options are listed.
+<p>
+<dd>If neither <b>-directory</b>, <b>-print</b>, <b>-put</b>, or
+<b>-retrieve</b> are specified on the command line, the file or files
+specified by the uniform resource locator is retrieved from the remote
+network host (as if <b>-get</b> was specified).
+<p>
+<dd><i><uniform resource locator></i> has the format:
+<p>
+<pre>
+    protocol://host/[directory/[filename]]
+</pre>
+<p>
+<dd>where protocol is <tt>ftp</tt> and host is
+<tt>[user[:password]]@hostname</tt>.  User defaults to <tt>anonymous</tt> and
+password defaults to <tt>host.domain</tt>.  Note that
+<tt>directory/[filename]</tt> is interpreted relative to the home directory
+for <tt>user</tt>, thus an absolute pathname must be specified with the
+leading <tt>/</tt>;
+<p>
+<pre>
+    ftp://host//tmp/anyfile
+</pre>
+<p>
+<dd>As an extension, the filename part of the locator is expanded by the
+shell for options <b>-get</b> or <b>-put</b>, otherwise it is processed as a
+regular expression.  For convenience, the protocol component of the uniform
+resource locator (<tt>ftp://</tt>) may be omitted.
+<p>
+<dd><b>Xtp</b> retrieves files from the remote directory for <b>-get</b> and
+puts files in the remote directory for <b>-put</b>.  Otherwise, <b>xtp</b>
+looks for a file of the form <tt>ls-lls-l([Rt])+([Rt])*</tt> and assumes it
+contains a recursive directory listing.  If none is found, <b>xtp</b>
+recursively descends the directory hierarchy from the remote directory.
+Some remote hosts may have thousands of files causing a significant
+delay satisfying your request.  This can be wasteful if the files you
+are interested in reside in a known directory.  You can reduce the
+searching required by specifying <i>remote directory</i> on the command
+line.  This limits the filename search to the specified directory and
+any of its subdirectories.  Alternatively, <b>-prune</b> restricts the
+search to the remote directory only.
+</DL>
+<A HREF="#top"><I>Back to Contents</I></A>
+<HR>
+<DL>
+<H2>
+<A NAME="rege">
+<DT>Regular Expressions
+</A>
+</H2>
+<DD>A <EM>regular</EM> <EM>expression</EM> is zero or more branches,
+separated by <B>|</B>.  It matches anything that matches one of the branches.
+<P>
+<DD>A branch is zero or more pieces, concatenated.  It matches a
+match for the first, followed by a match for the second,
+etc.
+<P>
+<DD>A piece is an atom possibly followed by <B>*</B>, <B>+</B>, or
+<B>?</B>.  An atom followed by <B>*</B> matches a sequence of 0 or more
+matches of the
+atom.  An atom followed by <B>+</B> matches a sequence of 1 or more
+matches of the atom.  An atom followed by <B>?</B> matches a match
+of the atom, or the null pattern.
+<P>
+<DD>An atom is a <EM>regular</EM> <EM>expression</EM> in parentheses (matching a
+match for the <EM>regular</EM> <EM>expression)</EM>, a range (see below), <B>.</B>
+(matching any single character), <B>^</B> (matching the null
+pattern at the beginning of the input pattern), <B>$</B> (matching
+the null pattern at the end of the input pattern), a <B>'</B>
+followed by a single character (matching that character), or
+a single character with no other significance (matching that
+character).
+<P>
+<DD>A range is a sequence of characters enclosed in <B>[]</B>.  It
+normally matches any single character from the sequence.  If
+the sequence begins with <B>^</B>, it matches any single character
+not from the rest of the sequence.  If two characters in the
+sequence are separated by <B>-</B>, this is shorthand for the full
+list of ASCII characters between them (e.g.  <B>[0-9]</B> matches
+any decimal digit). To include a literal <B>]</B> in the sequence,
+make it the first character (following a possible <B>^</B>).  To
+include a literal <B>-</B>, make it the first or last character.
+<P>
+</DL>
+<P>
+<A HREF="#top"><I>Back to Contents</I></A>
+<HR>
+<DL>
+<H2>
+<A NAME="file">
+<DT>Files
+</A>
+</H2>
+<DL>
+<DT><tt>~/.netrc</tt>
+</DL>
+</DL>
+<P>
+<A HREF="#top"><I>Back to Contents</I></A>
+<HR>
+<DL>
+<H2>
+<A NAME="envi">
+<DT>Environment
+</A>
+</H2>
+<DL>
+<DT><B>xtp_proxy</B>
+<DD>Specifies that the remote site should be contacted by
+proxy.  See <B>-proxy</B>.
+</DL>
+</DL>
+<P>
+<A HREF="#top"><I>Back to Contents</I></A>
+<HR>
+<DL>
+<H2>
+<A NAME="copy">
+<DT>Copyright
+</A>
+</H2>
+<B>
+<dd>Copyright 1998 E. I. du Pont de Nemours and Company
+<p>
+<dd>Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files ("ImageMagick"),
+to deal in ImageMagick without restriction, including without limitation 
+the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+and/or sell copies of ImageMagick, and to permit persons to whom the 
+ImageMagick is furnished to do so, subject to the following conditions:
+<p>
+<dd>The above copyright notice and this permission notice shall be included in 
+all copies or substantial portions of ImageMagick. 
+<p> 
+<dd>The software is provided "as is", without warranty of any kind, express or 
+implied, including but not limited to the warranties of merchantability, 
+fitness for a particular purpose and noninfringement.In no event shall 
+E. I. du Pont de Nemours and Company be liable for any claim, damages or 
+other liability, whether in an action of contract, tort or otherwise,
+arising from, out of or in connection with ImageMagick or the use or other 
+dealings in ImageMagick. 
+<p> 
+<dd>Except as contained in this notice, the name of the E. I. du Pont de 
+Nemours and Company shall not be used in advertising or otherwise to 
+promote the sale, use or other dealings in ImageMagick without prior 
+written authorization from the E. I. du Pont de Nemours and Company. 
+</B>
+</DL>
+<P>
+<A HREF="#top"><I>Back to Contents</I></A>
+<HR>
+<DL>
+<H2>
+<A NAME="ackn">
+<DT>Acknowledgements
+</A>
+</H2>
+<DD><I>Steve Singles</I>, <B>University of Delaware</B>, for the initial
+implementation of this program.
+<p>
+<dd><I>Henry Spencer</I>, <B>University of Toronto</B>, for the implementation
+of the <EM>regular</EM> <EM>expression</EM> interpreter and the text in
+<B>Regular</B> <B>Expressions</B>.
+</DL>
+<P>
+<A HREF="#top">Back to Contents</A>
+<HR>
+<DL>
+<H2>
+<A NAME="auth">
+<DT>Authors
+</A>
+</H2>
+<DD><I>John Cristy</I>, <A HREF="mailto:cristy@mystic.es.dupont.com">
+ <I>cristy@mystic.es.dupont.com</I></A> <B>E.I. du Pont de Nemours and Company
+Incorporated</B>.
+</DL>
+<P>
+<A HREF="#top">Back to Contents</A>
+<p><hr><p>
+<a href="../ImageMagick.html"><img alt="Home Page"
+  src="../images/home.gif" width=40 height=40 align=middle border=0></a>
+<font size="-2">Image manipulation software that works like magic.</font>
+</body>
+</html>
