@@ -208,7 +208,9 @@ UNIX/Cygwin COMPILATION
       search path.  Besides the installation directory, modules will
       be found in $HOME/.magick, and in directories specified by
       the environment variable MAGICK_MODULE_PATH. The modules option
-      is only available in conjunction with --enable-shared.
+      is only available in conjunction with --enable-shared.  If
+      --enable-shared is not also specified, then support for modules
+      is disabled.
 
     o --enable-lzw: Unisys claims a patent on the algorithm supporting
       LZW compression (e.g. used by GIF and TIFF).  To avoid infringing
