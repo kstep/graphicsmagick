@@ -26,7 +26,14 @@ for details):
 
     - WMF rendering is significantly improved. Fill patterns and
       clip-masks are now supported. Text is properly centered.
-
+      
+    - PSD coder now supports more types of images (Duotone, etc.)
+      and should read more PSD files.
+      
+    - PSD and XCF coders now support setting the layer
+      CompositeOperator.
+    
+    - PDF coder now writes out a CropBox for each page
       
   o Utilities enhancements/changes:
 
@@ -40,8 +47,15 @@ for details):
     - Memory-mapped files are now properly unmapped for PingImage().
 
     - Corrected bias when downsizing an image with ResizeImage().
+    
+    - Added a number of new CompositeOperators: 
+    	  NoCompositeOp, DarkenCompositeOp,
+	  LightenCompositeOp, HueCompositeOp, SaturateCompositeOp,
+	  ValueCompositeOp, ColorizeCompositeOp, LuminizeCompositeOp,
+	  ScreenCompositeOp, OverlayCompositeOp.
 
-		- Improvements to PSD and XCF coders.
+    - Image now has a compose member for storing the CompositeOperator
+      to be used when flattening.
 
   o C++ API enhancements:
 
