@@ -563,7 +563,7 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
     return(False);
   for (p=delegate_list; p != (DelegateInfo *) NULL; p=p->next)
   {
-    if (p->restrict)
+    if (p->restrain)
       continue;
     i=0;
     if (p->commands != (char *) NULL)
@@ -752,9 +752,9 @@ static unsigned int ReadConfigurationFile(const char *filename)
       case 'R':
       case 'r':
       {
-        if (LocaleCompare((char *) keyword,"restrict") == 0)
+        if (LocaleCompare((char *) keyword,"restrain") == 0)
           {
-            delegate_list->restrict=LocaleCompare(value,"True") == 0;
+            delegate_list->restrain=LocaleCompare(value,"True") == 0;
             break;
           }
         break;

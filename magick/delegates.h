@@ -22,7 +22,7 @@ typedef struct _DelegateInfo
     mode;
 
   unsigned int
-    restrict,
+    restrain,
     spawn;
 
   struct _DelegateInfo
