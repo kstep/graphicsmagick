@@ -126,7 +126,6 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   /*
     Initialize Image structure.
   */
-  allocate_image->blob=CloneBlobInfo((BlobInfo *) NULL);
   (void) strcpy(allocate_image->magick,"MIFF");
   allocate_image->storage_class=DirectClass;
   allocate_image->depth=QuantumDepth;
@@ -137,25 +136,25 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   (void) QueryColorDatabase(MatteColor,&allocate_image->matte_color);
   allocate_image->filter=LanczosFilter;
   allocate_image->blur=1.0;
+  allocate_image->reference_count=1;
   GetExceptionInfo(&allocate_image->exception);
   GetTimerInfo(&allocate_image->timer);
   GetCacheInfo(&allocate_image->cache);
-  allocate_image->reference_count=1;
+  allocate_image->blob=CloneBlobInfo((BlobInfo *) NULL);
   allocate_image->signature=MagickSignature;
   if (image_info == (ImageInfo *) NULL)
     return(allocate_image);
   /*
     Transfer image info.
   */
-  *allocate_image->blob=(*image_info->blob);
   allocate_image->exempt=image_info->file != (FILE *) NULL;
   (void) strcpy(allocate_image->filename,image_info->filename);
   (void) strcpy(allocate_image->magick_filename,image_info->filename);
   (void) strcpy(allocate_image->magick,image_info->magick);
   if (image_info->size != (char *) NULL)
     {
-      (void) sscanf(image_info->size,"%ux%u",
-        &allocate_image->columns,&allocate_image->rows);
+      (void) sscanf(image_info->size,"%ux%u",&allocate_image->columns,
+        &allocate_image->rows);
       flags=ParseGeometry(image_info->size,&allocate_image->offset,
         &allocate_image->offset,&allocate_image->columns,&allocate_image->rows);
       if ((flags & HeightValue) == 0)
@@ -166,8 +165,8 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   if (image_info->tile != (char *) NULL)
     if (!IsSubimage(image_info->tile,False))
       {
-        (void) sscanf(image_info->tile,"%ux%u",
-          &allocate_image->columns,&allocate_image->rows);
+        (void) sscanf(image_info->tile,"%ux%u",&allocate_image->columns,
+          &allocate_image->rows);
         flags=ParseGeometry(image_info->tile,&allocate_image->tile_info.x,
           &allocate_image->tile_info.y,&allocate_image->columns,
           &allocate_image->rows);
@@ -204,6 +203,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   allocate_image->matte_color=image_info->matte_color;
   allocate_image->fifo=image_info->fifo;
   allocate_image->client_data=image_info->client_data;
+  *allocate_image->blob=(*image_info->blob);
   return(allocate_image);
 }
 
@@ -936,7 +936,11 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
           image->generic_profile[i].info,length);
       }
     }
-  clone_image->blob=CloneBlobInfo((BlobInfo *) NULL);
+  clone_image->attributes=(ImageAttribute *) NULL;
+  attribute=GetImageAttribute(image,(char *) NULL);
+  for ( ; attribute != (ImageAttribute *) NULL; attribute=attribute->next)
+    (void) SetImageAttribute(clone_image,attribute->key,attribute->value);
+  GetExceptionInfo(&clone_image->exception);
   GetCacheInfo(&clone_image->cache);
   if ((columns != 0) || (rows != 0))
     {
@@ -988,11 +992,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
         clone_image->clip_mask=
           CloneImage(image->clip_mask,0,0,True,&image->clip_mask->exception);
     }
-  clone_image->attributes=(ImageAttribute *) NULL;
-  attribute=GetImageAttribute(image,(char *) NULL);
-  for ( ; attribute != (ImageAttribute *) NULL; attribute=attribute->next)
-    (void) SetImageAttribute(clone_image,attribute->key,attribute->value);
-  GetExceptionInfo(&clone_image->exception);
+  clone_image->blob=CloneBlobInfo((BlobInfo *) NULL);
   if (clone_image->orphan || orphan)
     {
       clone_image->orphan=False;
@@ -1053,7 +1053,6 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
       return(clone_info);
     }
   *clone_info=(*image_info);
-  clone_info->blob=CloneBlobInfo(image_info->blob);
   if (image_info->size != (char *) NULL)
     clone_info->size=AllocateString(image_info->size);
   if (image_info->tile != (char *) NULL)
@@ -1070,6 +1069,7 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
     clone_info->density=AllocateString(image_info->density);
   if (image_info->view != (char *) NULL)
     clone_info->view=AllocateString(image_info->view);
+  clone_info->blob=CloneBlobInfo(image_info->blob);
   return(clone_info);
 }
 
@@ -2291,6 +2291,8 @@ MagickExport void DestroyImage(Image *image)
   DestroyExceptionInfo(&image->exception);
   if (image->clip_mask != (Image *) NULL)
     DestroyImage(image->clip_mask);
+  DestroyBlobInfo(image->blob);
+  DestroySemaphoreInfo(image->semaphore);
   if (!image->orphan)
     {
       /*
@@ -2311,8 +2313,6 @@ MagickExport void DestroyImage(Image *image)
             image->next->previous=(Image *) NULL;
         }
     }
-  DestroySemaphoreInfo(image->semaphore);
-  DestroyBlobInfo(image->blob);
   LiberateMemory((void **) &image);
 }
 
