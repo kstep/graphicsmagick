@@ -894,6 +894,11 @@ shifted.
 .B "-deconstruct"
 \fRbreak down an image sequence into constituent parts
 
+This option compares each image with the next in a sequence and
+returns the maximum bounding region of any pixel differences it discovers.
+This method can undo a coalesced sequence returned by the
+\fB-coalesce\fP option.
+
 The sequence of images
 is terminated by the appearance of any option.
 If the \fB-deconstruct\fP
