@@ -37,7 +37,7 @@ Unix/Linux/Cygwin Install:
 
   Download
 
-      ftp://www.wizards.dupont.com/pub/ImageMagick/ImageMagick-5.2.6.tar.gz
+      ftp://ftp.simplesystems.org/pub/ImageMagick/ImageMagick-5.2.6.tar.gz
 
   and type
 
@@ -49,14 +49,14 @@ Unix/Linux/Cygwin Install:
       identify -verbose logo:
 
   Alternatively, download the appropriate binary from
-  ftp://www.wizards.dupont.com/pub/ImageMagick/binaries.
+  ftp://ftp.simplesystems.org/pub/ImageMagick/binaries.
 
 
 Win2K, NT, Win98, Win95 Install:
 
   Download
 
-      ftp://www.wizards.dupont.com/pub/ImageMagick/win2k/ImageMagick-win2k.zip
+      ftp://ftp.simplesystems.org/pub/ImageMagick/win2k/ImageMagick-win2k.zip
 
   and double click on it to extract the distribution.
 
@@ -67,7 +67,7 @@ Win2K, NT, Win98, Win95 Install:
 
   Alternatively, download the ImageMagick NT source
 
-      ftp://www.wizards.dupont.com/pub/ImageMagick/win2k/ImageMagick-5.2.6.zip
+      ftp://ftp.simplesystems.org/pub/ImageMagick/win2k/ImageMagick-5.2.6.zip
 
   and read README.txt for detailed instructions on compiling the ImageMagick
   source as well as additional details on ways to tell ImageMagick how to
@@ -78,7 +78,7 @@ MAC Install:
 
   Download
 
-      ftp://www.wizards.dupont.com/pub/ImageMagick/mac/ImageMagick-mac.sit.hqx
+      ftp://ftp.simplesystems.org/pub/ImageMagick/mac/ImageMagick-mac.sit.hqx
 
   and double click on it to extract the distribution.   Move to the
   ImageMagick-5.2.6 directory and double click on the identify program
@@ -90,7 +90,7 @@ MAC Install:
 
   Alternatively, download the ImageMagick MAC source
 
-      ftp://www.wizards.dupont.com/pub/ImageMagick/mac/ImageMagick-5.2.6.sit.hqx
+      ftp://ftp.simplesystems.org/pub/ImageMagick/mac/ImageMagick-5.2.6.sit.hqx
 
   and double click on the Make AppleScript script to build from the source.
 
