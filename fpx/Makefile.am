@@ -32,7 +32,7 @@ MINOR_VERSION=@MINOR_VERSION@
 MICRO_VERSION=@MICRO_VERSION@
 
 # Additional files to distribute
-EXTRA_DIST = README _mac.sea ltcf-c.sh ltcf-cxx.sh
+EXTRA_DIST = README _mac.sea
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = flashpix.h
