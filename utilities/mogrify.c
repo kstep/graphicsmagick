@@ -178,9 +178,6 @@
 */
 static void Usage()
 {
-  const char
-    **p;
-
   static const char
     *options[]=
     {
@@ -274,6 +271,12 @@ static void Usage()
       (char *) NULL
     };
 
+  const char
+    **p;
+
+  ExceptionInfo
+    exception;
+
   unsigned int
     version;
 
@@ -294,8 +297,11 @@ static void Usage()
   (void) printf(
     "image type as the filename suffix (i.e. image.ps).  Specify 'file' as\n");
   (void) printf("'-' for standard input or output.\n");
-  ListMagickInfo((FILE *) NULL);
-  ListDelegateInfo((FILE *) NULL);
+  GetExceptionInfo(&exception);
+  if (!ListMagickInfo((FILE *) NULL,&exception))
+    MagickWarning(exception.severity,exception.reason,exception.description);
+  if (!ListDelegateInfo((FILE *) NULL,&exception))
+    MagickWarning(exception.severity,exception.reason,exception.description);
   Exit(0);
 }
 

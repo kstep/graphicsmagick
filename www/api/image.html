@@ -109,13 +109,13 @@
 <P>unsigned int  <STRONG>IsSubimage</STRONG>( const char *geometry, const unsigned int pedantic );</P>
 <P>Image **  <STRONG>ListToGroupImage</STRONG>( Image *image, unsigned int *number_images );</P>
 <P>unsigned int  <STRONG>MogrifyImage</STRONG>( const ImageInfo *image_info, const int argc, char ** argv, Image ** image );</P>
-<P>unsigned int  <STRONG>MogrifyImages</STRONG>( const ImageInfo *next_info, const int argc, char ** argv, Image ** image );</P>
+<P>unsigned int  <STRONG>MogrifyImages</STRONG>( const ImageInfo *image_info, const int argc, char ** argv, Image ** images );</P>
 <P>Image * <STRONG>MosaicImages</STRONG>( const Image *image, ExceptionInfo *exception );</P>
 <P>int  <STRONG>ParseImageGeometry</STRONG>( const char *geometry, int *x, int *y, unsigned int *width, unsigned int *height );</P>
 <P>unsigned int  <STRONG>RGBTransformImage</STRONG>( Image *image, const ColorspaceType colorspace );</P>
 <P>void  <STRONG>SetImage</STRONG>( Image *image, opacity );</P>
 <P>unsigned int  <STRONG>SetImageDepth</STRONG>( Image *image, const unsigned int );</P>
-<P>unsigned int  <STRONG>SetImageInfo</STRONG>( ImageInfo *image_info, const unsigned int rectify );</P>
+<P>unsigned int  <STRONG>SetImageInfo</STRONG>( ImageInfo *image_info, const unsigned int rectify, ExceptionInfo *exception );</P>
 <P>void  <STRONG>SetImageOpacity</STRONG>( Image *image, const unsigned int opacity );</P>
 <P><STRONG>SetImageType</STRONG>( Image *image, const ImageType image_type );</P>
 <P>void  <STRONG>SyncImage</STRONG>( Image *image );</P>
@@ -650,10 +650,10 @@ The address of a structure of type Image; returned from ReadImage.
 <H2><A NAME="mogrifyimages">MogrifyImages</A></H2>
 <P>Method MogrifyImages applies next processing options to a sequence of images as prescribed by command line options.</P>
 <P>The format of the MogrifyImage method is:</P>
-<blockquote>unsigned int MogrifyImages ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *next_info, const int argc, char **argv, <A HREF="types/Image.html">Image</A> **image ); </blockquote><P>
+<blockquote>unsigned int MogrifyImages ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const int argc, char **argv, <A HREF="types/Image.html">Image</A> **images ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_next_info%3A">next_info:</A></STRONG><BR>
+<p><dt><STRONG>image_info:</STRONG><BR>
 <DD>
 Specifies a pointer to an ImageInfo structure.
 <P></P>
@@ -665,7 +665,7 @@ Specifies a pointer to an integer describing the number of elements in the argum
 <DD>
 Specifies a pointer to a text array containing the command line arguments.
 <P></P>
-<p><dt><STRONG>image:</STRONG><BR>
+<p><dt><STRONG>images:</STRONG><BR>
 <DD>
 The address of a structure of type Image; returned from ReadImage.
 <P></P></DL></DL>
@@ -766,7 +766,7 @@ specified the image depth.
 <FONT SIZE=-1>JPEG</FONT> is returned for this filename: `image.jpg'. The filename prefix has precendence over the suffix.  Use an optional index enclosed in brackets after a file name to specify a desired subimage of a multi-resolution image format like Photo 
 <FONT SIZE=-1>CD</FONT> (e.g.  img0001.pcd[4]).</P>
 <P>The format of the SetImageInfo method is:</P>
-<blockquote>unsigned int SetImageInfo ( <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const unsigned int rectify ); </blockquote><P>
+<blockquote>unsigned int SetImageInfo ( <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const unsigned int rectify, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image_info:</STRONG><BR>
@@ -776,6 +776,10 @@ Specifies a pointer to an ImageInfo structure.
 <p><dt><STRONG><A NAME="item_o_rectify%3A">rectify:</A></STRONG><BR>
 <DD>
 an unsigned value other than zero rectifies the attribute for multi-frame support (user may want multi-frame but image format may not support it).
+<P></P>
+<p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setimageopacity">SetImageOpacity</A></H2>

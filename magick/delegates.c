@@ -524,22 +524,21 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
 %
 %  The format of the ListDelegateInfo method is:
 %
-%      unsigned int ListDelegateInfo(FILE *file)
+%      unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o file:  An pointer to a FILE.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-MagickExport unsigned int ListDelegateInfo(FILE *file)
+MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
 {
   char
     delegate[MaxTextExtent],
     tag[MaxTextExtent];
-
-  ExceptionInfo
-    exception;
 
   register DelegateInfo
     *p;
@@ -554,8 +553,9 @@ MagickExport unsigned int ListDelegateInfo(FILE *file)
   (void) fprintf(file,"Decode-Tag   Encode-Tag  Delegate\n");
   (void) fprintf(file,"--------------------------------------------------------"
     "-----------------\n");
-  GetExceptionInfo(&exception);
-  (void) GetDelegateInfo("*","*",&exception);
+  p=GetDelegateInfo("*","*",exception);
+  if (p == (DelegateInfo *) NULL)
+    return(False);
   for (p=delegate_list; p != (DelegateInfo *) NULL; p=p->next)
   {
     i=0;

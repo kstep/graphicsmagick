@@ -75,10 +75,23 @@
 #endif
 
 /*
+  Typedef declarations.
+*/
+typedef struct _ModuleAlias
+{
+  char
+    *alias,
+    *module;
+
+  struct _ModuleAlias
+    *next;
+} ModuleAlias;
+
+/*
   Global declarations.
 */
-static ModuleAliases
-  *module_aliases = (ModuleAliases *) NULL;
+static ModuleAlias
+  *module_aliases = (ModuleAlias *) NULL;
 
 static ModuleInfo
   *module_list = (ModuleInfo *) NULL;
@@ -130,7 +143,7 @@ extern "C" {
 
 static void DestroyModuleInfo(void)
 {
-  register ModuleAliases
+  register ModuleAlias
     *q;
 
   register ModuleInfo
@@ -145,7 +158,7 @@ static void DestroyModuleInfo(void)
     Free module list and aliases.
   */
   AcquireSemaphore(&module_semaphore);
-  for (q=module_aliases; q != (ModuleAliases *) NULL; )
+  for (q=module_aliases; q != (ModuleAlias *) NULL; )
   {
     if (q->alias != (char *) NULL)
       LiberateMemory((void **) &q->alias);
@@ -155,7 +168,7 @@ static void DestroyModuleInfo(void)
     q=q->next;
     LiberateMemory((void **) &module_aliases);
   }
-  module_aliases=(ModuleAliases *) NULL;
+  module_aliases=(ModuleAlias *) NULL;
   for (p=module_list; p != (ModuleInfo *) NULL; )
   {
     if (p->tag != (char *) NULL)
@@ -362,6 +375,7 @@ static char **ListModules(void)
   if (path == (char *) NULL)
     return((char **) NULL);
   GetPathComponent(path,HeadPath,filename);
+  LiberateMemory((void **) &path);
   directory=opendir(filename);
   if (directory == (DIR *) NULL)
     return((char **) NULL);
@@ -457,14 +471,21 @@ void ModuleToTag(const char *filename,const char *format,char *module)
 %
 %  The format of the OpenModule method is:
 %
-%      int OpenModule(const char *module)
+%      unsigned int OpenModule(const char *module,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
+%    o status: Method OpenModule returns True if the specified module is
+%      loaded, otherwise False.
+%
 %    o module: a character string that indicates the module to load.
 %
+%    o exception: return any errors or warnings in this structure.
+%
+%
 */
-MagickExport int OpenModule(const char *module)
+MagickExport unsigned int OpenModule(const char *module,
+  ExceptionInfo *exception)
 {
   char
     message[MaxTextExtent],
@@ -479,7 +500,7 @@ MagickExport int OpenModule(const char *module)
   ModuleInfo
     *module_info;
 
-  register ModuleAliases
+  register ModuleAlias
     *p;
 
   void
@@ -490,9 +511,9 @@ MagickExport int OpenModule(const char *module)
   */
   assert(module != (const char *) NULL);
   (void) strcpy(module_name,module);
-  if (module_aliases != (ModuleAliases *) NULL)
+  if (module_aliases != (ModuleAlias *) NULL)
     {
-      for (p=module_aliases; p != (ModuleAliases *) NULL; p=p->next)
+      for (p=module_aliases; p != (ModuleAlias *) NULL; p=p->next)
         if (LocaleCompare(p->alias,module) == 0)
           {
             (void) strcpy(module_name,p->module);
@@ -511,7 +532,7 @@ MagickExport int OpenModule(const char *module)
       if (handle == (ModuleHandle) NULL)
         {
           FormatString(message,"failed to load module \"%.1024s\"",path);
-          MagickWarning(MissingDelegateWarning,message,lt_dlerror());
+          ThrowException(exception,MissingDelegateWarning,message,lt_dlerror());
         }
       LiberateMemory((void **) &path);
     }
@@ -538,7 +559,7 @@ MagickExport int OpenModule(const char *module)
   method=(void (*)(void)) lt_dlsym(handle,name);
   if (method == (void (*)(void)) NULL)
     {
-      MagickWarning(MissingDelegateWarning,"failed to find symbol",
+      ThrowException(exception,MissingDelegateWarning,"failed to find symbol",
         lt_dlerror());
       return(False);
     }
@@ -561,10 +582,17 @@ MagickExport int OpenModule(const char *module)
 %
 %  The format of the OpenModules method is:
 %
-%      void OpenModules(void)
+%      unsigned int OpenModules(ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method OpenModules returns True if the modules are loaded,
+%      otherwise False.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport int OpenModules(void)
+MagickExport unsigned int OpenModules(ExceptionInfo *exception)
 {
   char
     **modules;
@@ -578,12 +606,13 @@ MagickExport int OpenModules(void)
   /*
     Load all modules.
   */
+  (void) GetMagickInfo((char *) NULL,exception);
   modules=ListModules();
   if (modules == (char **) NULL)
     return(False);
   p=modules;
   while (*p)
-    OpenModule(*p++);
+    OpenModule(*p++,exception);
   /*
     Free resources.
   */
@@ -630,9 +659,9 @@ static unsigned int ReadConfigurationFile(const char *filename)
   FILE
     *file;
 
-  ModuleAliases
+  ModuleAlias
     *aliases,
-    *entry;
+    *module_alias;
 
   unsigned int
     match;
@@ -646,13 +675,13 @@ static unsigned int ReadConfigurationFile(const char *filename)
   /*
     Read the module configuration files.
   */
-  module_aliases=(ModuleAliases *) NULL;
+  module_aliases=(ModuleAlias *) NULL;
   path=GetMagickConfigurePath(filename);
   if (path == (char *) NULL)
     return(False);
   file=fopen(path,"r");
   LiberateMemory((void **) &path);
-  if (file == (FILE*) NULL)
+  if (file == (FILE *) NULL)
     return(False);
   aliases=module_aliases;
   while (!feof(file))
@@ -660,35 +689,35 @@ static unsigned int ReadConfigurationFile(const char *filename)
     if (fscanf(file,"%s %s",alias,module) != 2)
       continue;
     match=False;
-    entry=module_aliases;
-    while (entry != (ModuleAliases *) NULL)
+    module_alias=module_aliases;
+    while (module_alias != (ModuleAlias *) NULL)
     {
-      if (LocaleCompare(entry->alias,alias) == 0)
+      if (LocaleCompare(module_alias->alias,alias) == 0)
         {
           match=True;
           break;
         }
-      entry=entry->next;
+      module_alias=module_alias->next;
     }
     if (match != False)
       continue;
-    entry=(ModuleAliases *) AcquireMemory(sizeof(ModuleAliases));
-    if (entry == (ModuleAliases*) NULL)
+    module_alias=(ModuleAlias *) AcquireMemory(sizeof(ModuleAlias));
+    if (module_alias == (ModuleAlias *) NULL)
       continue;
-    entry->alias=AllocateString(alias);
-    entry->module=AllocateString(module);
-    entry->next=(ModuleAliases *) NULL;
-    if (module_aliases == (ModuleAliases *) NULL)
+    memset(module_alias,0,sizeof(ModuleAlias));
+    module_alias->alias=AllocateString(alias);
+    module_alias->module=AllocateString(module);
+    if (module_aliases == (ModuleAlias *) NULL)
       {
-        module_aliases=entry;
+        module_aliases=module_alias;
         aliases=module_aliases;
         continue;
       }
-    aliases->next=entry;
+    aliases->next=module_alias;
     aliases=aliases->next;
   }
   (void) fclose(file);
-  return(module_list != (ModuleInfo *) NULL);
+  return(module_aliases != (ModuleAlias *) NULL);
 }
 
 /*

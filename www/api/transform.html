@@ -29,6 +29,7 @@
 		<LI><A HREF="#flopimage">FlopImage</A></LI>
 		<LI><A HREF="#profileimage">ProfileImage</A></LI>
 		<LI><A HREF="#rollimage">RollImage</A></LI>
+		<LI><A HREF="#shaveimage">ShaveImage</A></LI>
 		<LI><A HREF="#transformimage">TransformImage</A></LI>
 	</UL>
 
@@ -53,6 +54,7 @@
 <P>Image * <STRONG>FlopImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>ProfileImage</STRONG>( Image *image, const char *profile_name, const char *filename );</P>
 <P>Image * <STRONG>RollImage</STRONG>( Image *image, const int x_offset, const int y_offset, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>ShaveImage</STRONG>( Image *image, const RectangleInfo *shave_info, ExceptionInfo *exception );</P>
 <P>void  <STRONG>TransformImage</STRONG>( Image ** image, const char *crop_geometry, const char *image_geometry );</P>
 <P>
 <HR>
@@ -104,14 +106,14 @@ return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="cropimage">CropImage</A></H2>
-<P>Method CropImage creates a new image that is a subregion of an existing one.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.  This method is optimized to preserve the runlength encoding.  That is, the crop image will always use less memory than the original.</P>
+<P>Method CropImage creates a new image that is a subregion of an existing one.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
 <P>The format of the CropImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *CropImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *crop_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_crop_image%3A">crop_image:</A></STRONG><BR>
 <DD>
-Method CropImage returns a pointer to the crop image.  
+Method CropImage returns a pointer to the cropped image.  
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage or if the image width or height is zero.
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -248,6 +250,30 @@ An integer that specifies the number of columns to roll in the horizontal direct
 <p><dt><STRONG><A NAME="item_o_y_offset%3A">y_offset:</A></STRONG><BR>
 <DD>
 An integer that specifies the number of rows to roll in the vertical direction.
+<P></P>
+<p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="shaveimage">ShaveImage</A></H2>
+<P>Method ShaveImage shaves pixels from the image edges.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
+<P>The format of the ShaveImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *ShaveImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *shave_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_shave_image%3A">shave_image:</A></STRONG><BR>
+<DD>
+Method ShaveImage returns a pointer to the shaved image.  
+<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage or if the image width or height is zero.
+<P></P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The address of a structure of type Image.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_shave_info%3A">shave_info:</A></STRONG><BR>
+<DD>
+Specifies a pointer to a RectangleInfo which defines the region of the image to crop.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>

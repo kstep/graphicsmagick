@@ -15,16 +15,6 @@ typedef lt_dlhandle ModuleHandle;
 typedef void *ModuleHandle;
 #endif
 
-typedef struct _ModuleAliases
-{
-  char
-    *alias,
-    *module;
-
-  struct _ModuleAliases
-    *next;
-} ModuleAliases;
-
 typedef struct _ModuleInfo
 {
   char
@@ -47,15 +37,14 @@ typedef struct _ModuleInfo
 /*
   Modules declarations.
 */
-extern MagickExport int
-  OpenModule(const char *module),
-  OpenModules(void);
 
 extern MagickExport ModuleInfo
   *GetModuleInfo(const char *,ExceptionInfo *);
 
 extern MagickExport unsigned int
-  ExecuteModuleProcess(const char *,Image *,const int,char **);
+  ExecuteModuleProcess(const char *,Image *,const int,char **),
+  OpenModule(const char *,ExceptionInfo *),
+  OpenModules(ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
