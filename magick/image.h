@@ -271,6 +271,9 @@ typedef struct _Image
     filename[MaxTextExtent],
     magick[MaxTextExtent];
 
+  BlobInfo
+    blob;
+
   FILE
     *file;
 
@@ -398,9 +401,6 @@ typedef struct _Image
   Ascii85Info
     ascii85;
 
-  BlobInfo
-    blob;
-
   ImageAttribute
     *attributes;
 
@@ -413,14 +413,14 @@ typedef struct _Image
   int
     (*fifo)(const struct _Image *,const void *,const size_t);
 
-  void
-    *client_data;
-
   SemaphoreInfo
     *semaphore;
 
   int
     reference_count;
+
+  void
+    *client_data;
 
   unsigned int
     orphan;
