@@ -193,8 +193,8 @@ MICRO_VERSION = @MICRO_VERSION@
 INCLUDES = -I$(top_srcdir)
 
 libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
-@WITH_MODULES_TRUE@libMagick_la_SOURCES = PreRvIcccm.c animate.c annotate.c blob.c cache.c   cache_io.c colors.c compress.c decorate.c delegates.c display.c draw.c   effects.c enhance.c error.c gems.c gradation.c histogram.c html.c image.c   label.c magick.c map.c matte.c memory.c monitor.c montage.c quantize.c   segment.c shear.c signature.c stegano.c timer.c transform.c ttf.c   utility.c widget.c xwindows.c zoom.c
-@WITH_MODULES_FALSE@libMagick_la_SOURCES = PreRvIcccm.c animate.c annotate.c avs.c bim.c blob.c bmp.c   cache.c cache_io.c cmyk.c colors.c compress.c dcm.c decorate.c delegates.c   display.c dps.c draw.c effects.c enhance.c ept.c error.c fax.c fits.c fpx.c   gems.c gif.c gradation.c gray.c hdf.c histogram.c html.c icc.c icon.c   image.c iptc.c jbig.c jpeg.c label.c logo.c magick.c map.c matte.c memory.c   miff.c monitor.c mono.c montage.c mtv.c null.c pcd.c pcl.c pcx.c pdb.c   pdf.c pict.c pix.c plasma.c png.c pnm.c preview.c ps.c ps2.c ps3.c   psd.c pwp.c quantize.c rgb.c rla.c rle.c segment.c sct.c sfw.c sgi.c   shear.c signature.c stegano.c sun.c tga.c tiff.c tile.c tim.c timer.c   transform.c ttf.c txt.c uil.c utility.c uyvy.c vicar.c vid.c viff.c wbmp.c   widget.c x.c xbm.c xc.c xpm.c xwd.c xwindows.c yuv.c zoom.c
+@WITH_MODULES_TRUE@libMagick_la_SOURCES = PreRvIcccm.c animate.c annotate.c attributes.c blob.c cache.c   cache_io.c colors.c compress.c decorate.c delegates.c display.c draw.c   effects.c enhance.c error.c gems.c gradation.c histogram.c html.c image.c   label.c magick.c map.c matte.c memory.c monitor.c montage.c quantize.c   segment.c shear.c signature.c stegano.c timer.c transform.c ttf.c   utility.c widget.c xwindows.c zoom.c
+@WITH_MODULES_FALSE@libMagick_la_SOURCES = PreRvIcccm.c animate.c annotate.c attributes.c avs.c bim.c blob.c bmp.c   cache.c cache_io.c cmyk.c colors.c compress.c dcm.c decorate.c delegates.c   display.c dps.c draw.c effects.c enhance.c ept.c error.c fax.c fits.c fpx.c   gems.c gif.c gradation.c gray.c hdf.c histogram.c html.c icc.c icon.c   image.c iptc.c jbig.c jpeg.c label.c logo.c magick.c map.c matte.c memory.c   miff.c monitor.c mono.c montage.c mtv.c null.c pcd.c pcl.c pcx.c pdb.c   pdf.c pict.c pix.c plasma.c png.c pnm.c preview.c ps.c ps2.c ps3.c   psd.c pwp.c quantize.c rgb.c rla.c rle.c segment.c sct.c sfw.c sgi.c   shear.c signature.c stegano.c sun.c tga.c tiff.c tile.c tim.c timer.c   transform.c ttf.c txt.c uil.c utility.c uyvy.c vicar.c vid.c viff.c wbmp.c   widget.c x.c xbm.c xc.c xpm.c xwd.c xwindows.c yuv.c zoom.c
 
 libMagick_la_LIBADD = @LIB_TIFF@ @LIB_JPEG@ @LIB_TTF@ @LIB_XEXT@ @LIB_XT@   @LIB_X11@ @LIB_BZLIB@ @LIB_ZLIB@
 
@@ -549,33 +549,34 @@ LTLIBRARIES =  $(lib_LTLIBRARIES) $(pkg_LTLIBRARIES)
 LIBS = @LIBS@
 libMagick_la_DEPENDENCIES = 
 @WITH_MODULES_TRUE@libMagick_la_OBJECTS =  PreRvIcccm.lo animate.lo \
-@WITH_MODULES_TRUE@annotate.lo blob.lo cache.lo cache_io.lo colors.lo \
-@WITH_MODULES_TRUE@compress.lo decorate.lo delegates.lo display.lo \
-@WITH_MODULES_TRUE@draw.lo effects.lo enhance.lo error.lo gems.lo \
-@WITH_MODULES_TRUE@gradation.lo histogram.lo html.lo image.lo label.lo \
-@WITH_MODULES_TRUE@magick.lo map.lo matte.lo memory.lo monitor.lo \
-@WITH_MODULES_TRUE@montage.lo quantize.lo segment.lo shear.lo \
-@WITH_MODULES_TRUE@signature.lo stegano.lo timer.lo transform.lo ttf.lo \
-@WITH_MODULES_TRUE@utility.lo widget.lo xwindows.lo zoom.lo
+@WITH_MODULES_TRUE@annotate.lo attributes.lo blob.lo cache.lo \
+@WITH_MODULES_TRUE@cache_io.lo colors.lo compress.lo decorate.lo \
+@WITH_MODULES_TRUE@delegates.lo display.lo draw.lo effects.lo \
+@WITH_MODULES_TRUE@enhance.lo error.lo gems.lo gradation.lo \
+@WITH_MODULES_TRUE@histogram.lo html.lo image.lo label.lo magick.lo \
+@WITH_MODULES_TRUE@map.lo matte.lo memory.lo monitor.lo montage.lo \
+@WITH_MODULES_TRUE@quantize.lo segment.lo shear.lo signature.lo \
+@WITH_MODULES_TRUE@stegano.lo timer.lo transform.lo ttf.lo utility.lo \
+@WITH_MODULES_TRUE@widget.lo xwindows.lo zoom.lo
 @WITH_MODULES_FALSE@libMagick_la_OBJECTS =  PreRvIcccm.lo animate.lo \
-@WITH_MODULES_FALSE@annotate.lo avs.lo bim.lo blob.lo bmp.lo cache.lo \
-@WITH_MODULES_FALSE@cache_io.lo cmyk.lo colors.lo compress.lo dcm.lo \
-@WITH_MODULES_FALSE@decorate.lo delegates.lo display.lo dps.lo draw.lo \
-@WITH_MODULES_FALSE@effects.lo enhance.lo ept.lo error.lo fax.lo \
-@WITH_MODULES_FALSE@fits.lo fpx.lo gems.lo gif.lo gradation.lo gray.lo \
-@WITH_MODULES_FALSE@hdf.lo histogram.lo html.lo icc.lo icon.lo image.lo \
-@WITH_MODULES_FALSE@iptc.lo jbig.lo jpeg.lo label.lo logo.lo magick.lo \
-@WITH_MODULES_FALSE@map.lo matte.lo memory.lo miff.lo monitor.lo \
-@WITH_MODULES_FALSE@mono.lo montage.lo mtv.lo null.lo pcd.lo pcl.lo \
-@WITH_MODULES_FALSE@pcx.lo pdb.lo pdf.lo pict.lo pix.lo plasma.lo \
-@WITH_MODULES_FALSE@png.lo pnm.lo preview.lo ps.lo ps2.lo ps3.lo psd.lo \
-@WITH_MODULES_FALSE@pwp.lo quantize.lo rgb.lo rla.lo rle.lo segment.lo \
-@WITH_MODULES_FALSE@sct.lo sfw.lo sgi.lo shear.lo signature.lo \
-@WITH_MODULES_FALSE@stegano.lo sun.lo tga.lo tiff.lo tile.lo tim.lo \
-@WITH_MODULES_FALSE@timer.lo transform.lo ttf.lo txt.lo uil.lo \
-@WITH_MODULES_FALSE@utility.lo uyvy.lo vicar.lo vid.lo viff.lo wbmp.lo \
-@WITH_MODULES_FALSE@widget.lo x.lo xbm.lo xc.lo xpm.lo xwd.lo \
-@WITH_MODULES_FALSE@xwindows.lo yuv.lo zoom.lo
+@WITH_MODULES_FALSE@annotate.lo attributes.lo avs.lo bim.lo blob.lo \
+@WITH_MODULES_FALSE@bmp.lo cache.lo cache_io.lo cmyk.lo colors.lo \
+@WITH_MODULES_FALSE@compress.lo dcm.lo decorate.lo delegates.lo \
+@WITH_MODULES_FALSE@display.lo dps.lo draw.lo effects.lo enhance.lo \
+@WITH_MODULES_FALSE@ept.lo error.lo fax.lo fits.lo fpx.lo gems.lo \
+@WITH_MODULES_FALSE@gif.lo gradation.lo gray.lo hdf.lo histogram.lo \
+@WITH_MODULES_FALSE@html.lo icc.lo icon.lo image.lo iptc.lo jbig.lo \
+@WITH_MODULES_FALSE@jpeg.lo label.lo logo.lo magick.lo map.lo matte.lo \
+@WITH_MODULES_FALSE@memory.lo miff.lo monitor.lo mono.lo montage.lo \
+@WITH_MODULES_FALSE@mtv.lo null.lo pcd.lo pcl.lo pcx.lo pdb.lo pdf.lo \
+@WITH_MODULES_FALSE@pict.lo pix.lo plasma.lo png.lo pnm.lo preview.lo \
+@WITH_MODULES_FALSE@ps.lo ps2.lo ps3.lo psd.lo pwp.lo quantize.lo \
+@WITH_MODULES_FALSE@rgb.lo rla.lo rle.lo segment.lo sct.lo sfw.lo \
+@WITH_MODULES_FALSE@sgi.lo shear.lo signature.lo stegano.lo sun.lo \
+@WITH_MODULES_FALSE@tga.lo tiff.lo tile.lo tim.lo timer.lo transform.lo \
+@WITH_MODULES_FALSE@ttf.lo txt.lo uil.lo utility.lo uyvy.lo vicar.lo \
+@WITH_MODULES_FALSE@vid.lo viff.lo wbmp.lo widget.lo x.lo xbm.lo xc.lo \
+@WITH_MODULES_FALSE@xpm.lo xwd.lo xwindows.lo yuv.lo zoom.lo
 avs_la_DEPENDENCIES = 
 avs_la_OBJECTS =  avs.lo
 bmp_la_DEPENDENCIES = 
@@ -720,27 +721,28 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = gtar
 GZIP_ENV = --best
 DEP_FILES =  .deps/PreRvIcccm.P .deps/animate.P .deps/annotate.P \
-.deps/avs.P .deps/bim.P .deps/blob.P .deps/bmp.P .deps/cache.P \
-.deps/cache_io.P .deps/cmyk.P .deps/colors.P .deps/compress.P \
-.deps/dcm.P .deps/decorate.P .deps/delegates.P .deps/display.P \
-.deps/dps.P .deps/draw.P .deps/effects.P .deps/enhance.P .deps/ept.P \
-.deps/error.P .deps/fax.P .deps/fits.P .deps/fpx.P .deps/gems.P \
-.deps/gif.P .deps/gradation.P .deps/gray.P .deps/hdf.P \
-.deps/histogram.P .deps/html.P .deps/icc.P .deps/icon.P .deps/image.P \
-.deps/iptc.P .deps/jbig.P .deps/jpeg.P .deps/label.P .deps/logo.P \
-.deps/mac.P .deps/magick.P .deps/map.P .deps/matte.P .deps/memory.P \
-.deps/miff.P .deps/monitor.P .deps/mono.P .deps/montage.P .deps/mtv.P \
-.deps/nt.P .deps/null.P .deps/pcd.P .deps/pcl.P .deps/pcx.P .deps/pdb.P \
-.deps/pdf.P .deps/pict.P .deps/pix.P .deps/plasma.P .deps/png.P \
-.deps/pnm.P .deps/preview.P .deps/ps.P .deps/ps2.P .deps/ps3.P \
-.deps/psd.P .deps/pwp.P .deps/quantize.P .deps/rgb.P .deps/rla.P \
-.deps/rle.P .deps/sct.P .deps/segment.P .deps/sfw.P .deps/sgi.P \
-.deps/shear.P .deps/signature.P .deps/stegano.P .deps/sun.P .deps/tga.P \
-.deps/tiff.P .deps/tile.P .deps/tim.P .deps/timer.P .deps/transform.P \
-.deps/ttf.P .deps/txt.P .deps/uil.P .deps/utility.P .deps/uyvy.P \
-.deps/vicar.P .deps/vid.P .deps/viff.P .deps/vms.P .deps/wbmp.P \
-.deps/widget.P .deps/x.P .deps/xbm.P .deps/xc.P .deps/xpm.P .deps/xwd.P \
-.deps/xwindows.P .deps/yuv.P .deps/zoom.P
+.deps/attributes.P .deps/avs.P .deps/bim.P .deps/blob.P .deps/bmp.P \
+.deps/cache.P .deps/cache_io.P .deps/cmyk.P .deps/colors.P \
+.deps/compress.P .deps/dcm.P .deps/decorate.P .deps/delegates.P \
+.deps/display.P .deps/dps.P .deps/draw.P .deps/effects.P \
+.deps/enhance.P .deps/ept.P .deps/error.P .deps/fax.P .deps/fits.P \
+.deps/fpx.P .deps/gems.P .deps/gif.P .deps/gradation.P .deps/gray.P \
+.deps/hdf.P .deps/histogram.P .deps/html.P .deps/icc.P .deps/icon.P \
+.deps/image.P .deps/iptc.P .deps/jbig.P .deps/jpeg.P .deps/label.P \
+.deps/logo.P .deps/mac.P .deps/magick.P .deps/map.P .deps/matte.P \
+.deps/memory.P .deps/miff.P .deps/monitor.P .deps/mono.P \
+.deps/montage.P .deps/mtv.P .deps/nt.P .deps/null.P .deps/pcd.P \
+.deps/pcl.P .deps/pcx.P .deps/pdb.P .deps/pdf.P .deps/pict.P \
+.deps/pix.P .deps/plasma.P .deps/png.P .deps/pnm.P .deps/preview.P \
+.deps/ps.P .deps/ps2.P .deps/ps3.P .deps/psd.P .deps/pwp.P \
+.deps/quantize.P .deps/rgb.P .deps/rla.P .deps/rle.P .deps/sct.P \
+.deps/segment.P .deps/sfw.P .deps/sgi.P .deps/shear.P .deps/signature.P \
+.deps/stegano.P .deps/sun.P .deps/tga.P .deps/tiff.P .deps/tile.P \
+.deps/tim.P .deps/timer.P .deps/transform.P .deps/ttf.P .deps/txt.P \
+.deps/uil.P .deps/utility.P .deps/uyvy.P .deps/vicar.P .deps/vid.P \
+.deps/viff.P .deps/vms.P .deps/wbmp.P .deps/widget.P .deps/x.P \
+.deps/xbm.P .deps/xc.P .deps/xpm.P .deps/xwd.P .deps/xwindows.P \
+.deps/yuv.P .deps/zoom.P
 SOURCES = $(libMagick_la_SOURCES) $(EXTRA_libMagick_la_SOURCES) $(avs_la_SOURCES) $(bmp_la_SOURCES) $(cmyk_la_SOURCES) $(dcm_la_SOURCES) $(dps_la_SOURCES) $(ept_la_SOURCES) $(fax_la_SOURCES) $(fpx_la_SOURCES) $(fits_la_SOURCES) $(gif_la_SOURCES) $(gray_la_SOURCES) $(hdf_la_SOURCES) $(icc_la_SOURCES) $(icon_la_SOURCES) $(iptc_la_SOURCES) $(jbig_la_SOURCES) $(jpeg_la_SOURCES) $(logo_la_SOURCES) $(miff_la_SOURCES) $(mono_la_SOURCES) $(mtv_la_SOURCES) $(null_la_SOURCES) $(pcd_la_SOURCES) $(pcl_la_SOURCES) $(pcx_la_SOURCES) $(pdb_la_SOURCES) $(pdf_la_SOURCES) $(pict_la_SOURCES) $(png_la_SOURCES) $(pix_la_SOURCES) $(plasma_la_SOURCES) $(pnm_la_SOURCES) $(preview_la_SOURCES) $(ps_la_SOURCES) $(ps2_la_SOURCES) $(ps3_la_SOURCES) $(psd_la_SOURCES) $(pwp_la_SOURCES) $(rgb_la_SOURCES) $(rla_la_SOURCES) $(rle_la_SOURCES) $(sct_la_SOURCES) $(sfw_la_SOURCES) $(sgi_la_SOURCES) $(sun_la_SOURCES) $(tga_la_SOURCES) $(tiff_la_SOURCES) $(tile_la_SOURCES) $(tim_la_SOURCES) $(txt_la_SOURCES) $(uil_la_SOURCES) $(uyvy_la_SOURCES) $(vicar_la_SOURCES) $(vid_la_SOURCES) $(viff_la_SOURCES) $(wbmp_la_SOURCES) $(x_la_SOURCES) $(xbm_la_SOURCES) $(xc_la_SOURCES) $(xpm_la_SOURCES) $(xwd_la_SOURCES) $(yuv_la_SOURCES) $(bim_la_SOURCES)
 OBJECTS = $(libMagick_la_OBJECTS) $(avs_la_OBJECTS) $(bmp_la_OBJECTS) $(cmyk_la_OBJECTS) $(dcm_la_OBJECTS) $(dps_la_OBJECTS) $(ept_la_OBJECTS) $(fax_la_OBJECTS) $(fpx_la_OBJECTS) $(fits_la_OBJECTS) $(gif_la_OBJECTS) $(gray_la_OBJECTS) $(hdf_la_OBJECTS) $(icc_la_OBJECTS) $(icon_la_OBJECTS) $(iptc_la_OBJECTS) $(jbig_la_OBJECTS) $(jpeg_la_OBJECTS) $(logo_la_OBJECTS) $(miff_la_OBJECTS) $(mono_la_OBJECTS) $(mtv_la_OBJECTS) $(null_la_OBJECTS) $(pcd_la_OBJECTS) $(pcl_la_OBJECTS) $(pcx_la_OBJECTS) $(pdb_la_OBJECTS) $(pdf_la_OBJECTS) $(pict_la_OBJECTS) $(png_la_OBJECTS) $(pix_la_OBJECTS) $(plasma_la_OBJECTS) $(pnm_la_OBJECTS) $(preview_la_OBJECTS) $(ps_la_OBJECTS) $(ps2_la_OBJECTS) $(ps3_la_OBJECTS) $(psd_la_OBJECTS) $(pwp_la_OBJECTS) $(rgb_la_OBJECTS) $(rla_la_OBJECTS) $(rle_la_OBJECTS) $(sct_la_OBJECTS) $(sfw_la_OBJECTS) $(sgi_la_OBJECTS) $(sun_la_OBJECTS) $(tga_la_OBJECTS) $(tiff_la_OBJECTS) $(tile_la_OBJECTS) $(tim_la_OBJECTS) $(txt_la_OBJECTS) $(uil_la_OBJECTS) $(uyvy_la_OBJECTS) $(vicar_la_OBJECTS) $(vid_la_OBJECTS) $(viff_la_OBJECTS) $(wbmp_la_OBJECTS) $(x_la_OBJECTS) $(xbm_la_OBJECTS) $(xc_la_OBJECTS) $(xpm_la_OBJECTS) $(xwd_la_OBJECTS) $(yuv_la_OBJECTS) $(bim_la_OBJECTS)
 
