@@ -494,7 +494,7 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
   (void) GetMagickInfo("*",exception);
   module_file=TagToModule("MIFF");
   GetExceptionInfo(&path_exception);
-  path=FindModuleFile(module_file,&path_exception);
+  path=GetModulePath(module_file,&path_exception);
   DestroyExceptionInfo(&path_exception);
   if (path != (char *) NULL)
     {

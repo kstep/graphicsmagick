@@ -643,7 +643,7 @@ MagickExport char *EscapeString(const char *source,const char escape)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   E x p a n d F i l e n a m e                                               %
+%   E x p a n d P a t h   n a m e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -723,7 +723,7 @@ MagickExport void ExpandFilename(char *filename)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   E x p a n d F i l e n a m e s                                             %
+%   E x p a n d P a t h   n a m e s                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -899,24 +899,23 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  F i n d C o n f i g u r a t i o n F i l e                                  %
+%  G e t C o n f i g u r a t i o n P a t h                                    %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  FindConfigurationFile() searches a number of pre-defined locations for the
+%  GetConfigurePath() searches a number of pre-defined locations for the
 %  specified ImageMagick configuration file and returns the path.
 %
-%  The format of the FindConfigurationFile method is:
+%  The format of the GetConfigurePath method is:
 %
-%      char *FindConfigurationFile(const char *filename,
-%        ExceptionInfo *exception)
+%      char *GetConfigurePath(const char *filename,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o path:  FindConfigurationFile() returns the path if the configuration
-%      file is found, otherwise NULL is returned.
+%    o path:  GetConfigurePath() returns the path if the configuration file
+%      is found, otherwise NULL is returned.
 %
 %    o filename: A character string representing the desired configuration
 %      file.
@@ -931,7 +930,7 @@ static unsigned int CheckFileAccessability(const char *path,
 {
   unsigned int
     accessible;
-  
+
   accessible=IsAccessible(path);
   if (debug)
     {
@@ -951,10 +950,10 @@ static void TruncatePathElements(char *path,const unsigned long elements,
 
   size_t
     length;
-  
+
   unsigned long
     count;
-  
+
   count=0;
   length=strlen(path);
   p=path+length;
@@ -972,7 +971,7 @@ static void TruncatePathElements(char *path,const unsigned long elements,
     (void) fprintf(stdout,"truncated path \"%s\"\n", path);
 }
 
-MagickExport char *FindConfigurationFile(const char *filename,
+MagickExport char *GetConfigurePath(const char *filename,
   ExceptionInfo *exception)
 {
   char
@@ -1106,22 +1105,22 @@ MagickExport char *FindConfigurationFile(const char *filename,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  F i n d F o n t F i l e                                                    %
+%  G e t F o n t P a t h                                                      %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  FindFontFile() searches a number of pre-defined locations for the specified
+%  GetFontPath() searches a number of pre-defined locations for the specified
 %  font file and returns the path.
 %
-%  The format of the FindFontFile method is:
+%  The format of the GetFontPath method is:
 %
-%      char *FindFontFile(const char *filename,ExceptionInfo *exception)
+%      char *GetFontPath(const char *filename,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o path:  FindFontFile() returns the path if the file is found, otherwise
+%    o path:  GetFontPath() returns the path if the file is found, otherwise
 %      NULL is returned.
 %
 %    o filename: A character string representing the desired font file.
@@ -1130,7 +1129,7 @@ MagickExport char *FindConfigurationFile(const char *filename,
 %
 %
 */
-MagickExport char *FindFontFile(const char *filename,ExceptionInfo *exception)
+MagickExport char *GetFontPath(const char *filename,ExceptionInfo *exception)
 {
   char
     *path;
@@ -1207,22 +1206,22 @@ MagickExport char *FindFontFile(const char *filename,ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  F i n d M o d u l e F i l e                                                %
+%  G e t M o d u l e P a t h                                                  %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  FindModuleFile() searches a number of pre-defined locations for the
+%  GetModulePath() searches a number of pre-defined locations for the
 %  specified module file and returns the path.
 %
-%  The format of the FindModuleFile method is:
+%  The format of the GetModulePath method is:
 %
-%      char *FindModuleFile(const char *filename,ExceptionInfo *exception)
+%      char *GetModulePath(const char *filename,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o path:  Method FindModuleFile returns the path if the
+%    o path:  Method GetModulePath returns the path if the
 %      file is found, otherwise NULL is returned.
 %
 %    o filename: A character string representing the desired module
@@ -1232,7 +1231,7 @@ MagickExport char *FindFontFile(const char *filename,ExceptionInfo *exception)
 %
 %
 */
-MagickExport char *FindModuleFile(const char *filename,ExceptionInfo *exception)
+MagickExport char *GetModulePath(const char *filename,ExceptionInfo *exception)
 {
   char
     *path;
@@ -1436,7 +1435,7 @@ MagickExport unsigned int GetExecutionPath(char *path)
   {
     char
       *execution_path;
-              
+
     execution_path=getexecname();
     if (execution_path != (char *) NULL)
       {
@@ -2640,7 +2639,7 @@ MagickExport unsigned int IsGlob(const char *path)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   L i s t F i l e s                                                         %
+%   L i s t P a t h   s                                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
