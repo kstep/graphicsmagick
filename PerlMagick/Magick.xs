@@ -4566,15 +4566,16 @@ Mogrify(ref,...)
           char
             geometry[MaxTextExtent];
           
-          Image
-            *composite_image;
-          
           CompositeOperator
             compose;
 
           double
             opacity;
 
+          Image
+            *composite_image,
+            *rotate_image;
+          
           int
             status,
             x,
@@ -4595,6 +4596,44 @@ Mogrify(ref,...)
             }
           if (attribute_flag[1])
             compose=(CompositeOperator) argument_list[1].int_reference;
+          opacity=OpaqueOpacity;
+          if (attribute_flag[6])
+            opacity=argument_list[6].double_reference;
+          if (opacity != OpaqueOpacity)
+            SetImageOpacity(composite_image,opacity);
+          if (compose == DissolveCompositeOp)
+            {
+              register PixelPacket 
+                *q;
+
+              for (y=0; y < (int) composite_image->rows; y++)
+              {
+                q=GetImagePixels(composite_image,0,y,
+                  composite_image->columns,1);
+                if (q == (PixelPacket *) NULL)
+                  break;
+                for (x=0; x < (int) composite_image->columns; x++)
+                {
+                  if (composite_image->matte)
+                    q->opacity=((MaxRGB-q->opacity)*opacity)/100;
+                  else
+                    q->opacity=(MaxRGB*opacity)/100;
+                  q++;
+                }
+                if (!SyncImagePixels(composite_image))
+                  break;
+              }
+            }
+          if (attribute_flag[8])
+            {
+               /*
+                 Rotate image.
+               */
+               rotate_image=RotateImage(composite_image,
+                 argument_list[8].double_reference,&image->exception);
+               if (rotate_image == (Image *) NULL)
+                 break;
+            }
           if (attribute_flag[7] && argument_list[7].int_reference)
             {
               /*
@@ -4603,10 +4642,15 @@ Mogrify(ref,...)
               for (y=0; y < (int) image->rows; y+=composite_image->rows)
                 for (x=0; x < (int) image->columns; x+=composite_image->columns)
                 {
-                  status=CompositeImage(image,compose,composite_image,x,y);
+                  if (attribute_flag[8])
+                    status=CompositeImage(image,compose,rotate_image,x,y);
+                  else
+                    status=CompositeImage(image,compose,composite_image,x,y);
                   if (status == False)
                     CatchImageException(image);
                 }
+              if (attribute_flag[8])
+                DestroyImage(rotate_image);
               break;
             }
           /*
@@ -4685,34 +4729,6 @@ Mogrify(ref,...)
                 break;
               }
             }
-          opacity=OpaqueOpacity;
-          if (attribute_flag[6])
-            opacity=argument_list[6].double_reference;
-          if (opacity != OpaqueOpacity)
-            SetImageOpacity(composite_image,opacity);
-          if (compose == DissolveCompositeOp)
-            {
-              register PixelPacket 
-                *q;
-
-              for (y=0; y < (int) composite_image->rows; y++)
-              {
-                q=GetImagePixels(composite_image,0,y,
-                  composite_image->columns,1);
-                if (q == (PixelPacket *) NULL)
-                  break;
-                for (x=0; x < (int) composite_image->columns; x++)
-                {
-                  if (composite_image->matte)
-                    q->opacity=((MaxRGB-q->opacity)*opacity)/100;
-                  else
-                    q->opacity=(MaxRGB*opacity)/100;
-                  q++;
-                }
-                if (!SyncImagePixels(composite_image))
-                  break;
-              }
-            }
           /*
             Composite image.
           */
@@ -4721,16 +4737,9 @@ Mogrify(ref,...)
             CompositeImage(image,compose,composite_image,x,y);
           else
             {
-              Image
-                *rotate_image;
-
               /*
                 Rotate image.
               */
-              rotate_image=RotateImage(composite_image,
-                argument_list[8].double_reference,&image->exception);
-              if (rotate_image == (Image *) NULL)
-                break;
               x-=(int) (rotate_image->columns-composite_image->columns)/2;
               y-=(int) (rotate_image->rows-composite_image->rows)/2;
               CompositeImage(image,compose,rotate_image,x,y);
