@@ -5,8 +5,12 @@ This file records noteworthy changes.
   * BLOB sizes are now specified using size_t type.
   * Rotate() no longer accepts sharpen or crop options.
   * Shear() No longer accepts a crop option.
+  * FontPointsize() now takes a double.
   * The condense, uncondense, and condensed methods have been removed
     since ImageMagick 5.0 no longer uses run-length encoding.
+  * The quantizeError method has been removed since it never worked.
+  * The cacheThreshold method is added to set the threshold of
+    ImageMagick's image cache.
 
 (0.8.9)
   * Blob reference counting was totally broken, leading to a memory

@@ -8,11 +8,11 @@ In order to compile Magick++ you must have access to a standard C++
 implementation and have ImageMagick installed
 (ftp://ftp.wizards.dupont.com/pub/ImageMagick/). Magick++ is co-packaged as
 a subdirectory of ImageMagick as of ImageMagick version 4.2.2 and later. The
-author uses the egcs 1.1.2 version of GNU C++ which is available under UNIX
-and under the Cygwin UNIX-emulation environment for Windows. Standards
-compliant commercial C++ compilers should also work fine. Most modern C++
-compilers for PCs should also work (project files are provided for Microsoft
-Visual C++ 6.0).
+author uses  gcc 2.95.2 (GNU C++) which is available under UNIX and under
+the Cygwin UNIX-emulation environment for Windows. Standards compliant
+commercial C++ compilers should also work fine. Most modern C++ compilers
+for PCs should also work (project files are provided for Microsoft Visual
+C++ 6.0).
 
 The compiler must support the following recent C++ standard features:
 
@@ -29,28 +29,38 @@ following compiler/platform combinations:
                             Tested Configurations
 
    Operating System      Architecture                 Compiler
- Solaris 2.6          SPARC             egcs 1.1.1
  Solaris 2.6          SPARC             egcs 1.1.2
+ Solaris 2.6          SPARC             gcc-2.95.2
  FreeBSD 2.2.7        Intel Pentium II  egcs 1.1.2
  Windows NT 4.0 SP3   Intel Pentium II  Visual C++ 6.0 Standard Edition
 
-User's of Magick++ have reported that the following configurations appear to
-work with Magick++:
+User's of Magick++ have reported that the following configurations work with
+Magick++:
 
-                        Other Working Configurations
+                         Other Working Configurations
 
  Operating
-  System   Architecture Compiler Reported By
- Red Hat               egcs      Dr. Alexander Zimmermann
- Linux 6.0 i386        1.1.2     <Alexander.Zimmermann@fmi.uni-passau.de>
- Red Hat               egcs      Dr. Alexander Zimmermann
- Linux 5.2 Alpha       1.1.2     <Alexander.Zimmermann@fmi.uni-passau.de>
+  System  Architecture    Compiler   Reported By
+ Red Hat                             Dr. Alexander Zimmermann
+ Linux 6.0i386         egcs 1.1.2    <Alexander.Zimmermann@fmi.uni-passau.de>
 
- SGI IRIX  MIPS        IRIX C++  Albert Chin-A-Young
-                       7.2.1.2m  <china@thewrittenword.com>
+ Red Hat               egcs 1.1.2    Dr. Alexander Zimmermann
+ Linux 5.2i386         (updated from <Alexander.Zimmermann@fmi.uni-passau.de>
+                       SRPM)
 
- SGI IRIX  MIPS        IRIX C++  Albert Chin-A-Young
-                       7.2.1.3m  <china@thewrittenword.com>
+ Red Hat               egcs 1.1.2    Dr. Alexander Zimmermann
+ Linux 5.2Alpha        (updated from <Alexander.Zimmermann@fmi.uni-passau.de>
+                       SRPM)
+
+ SGI IRIX MIPS         IRIX C++      Albert Chin-A-Young
+                       7.2.1.2m      <china@thewrittenword.com>
+
+ SGI IRIX MIPS         IRIX C++      Albert Chin-A-Young
+                       7.2.1.3m      <china@thewrittenword.com>
+
+ Mac OS                CodeWarrior
+ 8.1?     PowerPC      Professional  Leonard Rosenthol <leonardr@digapp.com>
+                       Release 5
 
 Please let me know if you have successfully built and executed Magick++
 using a different configuration so that I can add to the table of verified
@@ -58,7 +68,7 @@ configurations.
 
   ------------------------------------------------------------------------
 
-                                 UNIX/Linux
+                                 Unix/Linux
 
 Building From Source
 

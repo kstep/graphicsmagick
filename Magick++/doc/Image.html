@@ -1122,10 +1122,13 @@ be quantized to fewer colors. Use a copy of the original if this is a problem.</
 </tr>
 
 <tr>
-<td><font size=-1><a href="Blob.html">Blob</a> *blob_</font></td>
+<td><font size=-1><a href="Blob.html">Blob</a> *blob_, size_t lengthEstimate_
+= 1664</font></td>
 
 <td><font size=-1>Write image to a in-memory <a href="Blob.html">BLOB</a>
-stored in <i>blob_</i>.</font>
+stored in <i>blob_</i>. The optional parameter <i>lengthEstimate_</i> may
+be specified in order to improve performance by avoiding excessive memory
+reallocations.</font>
 <br><font size=-1><b><font color="#FF0000">Caution: </font></b>if an image
 format is selected which is capable of supporting fewer colors than the
 original image or quantization has been requested, the original image will

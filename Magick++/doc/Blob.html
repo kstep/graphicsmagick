@@ -63,7 +63,7 @@ may be used for other purposes as well.
 </tr>
 
 <tr>
-<td><font size=-1>const void* data_, unsigned long length_</font></td>
+<td><font size=-1>const void* data_, size_t length_</font></td>
 
 <td><font size=-1>Construct object with data, making a copy of the supplied
 data</font></td>
@@ -90,7 +90,7 @@ data</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td><font size=-1>const void* data_, unsigned long length_</font></td>
+<td><font size=-1>const void* data_, size_t length_</font></td>
 
 <td><font size=-1>Update object contents, making a copy of the supplied
 data. Any existing data in the object is deallocated.</font></td>
@@ -109,7 +109,7 @@ data. Any existing data in the object is deallocated.</font></td>
 <tr>
 <td><font size=-1>length</font></td>
 
-<td><font size=-1>unsigned long</font></td>
+<td><font size=-1>size_t</font></td>
 
 <td><font size=-1>void</font></td>
 
@@ -121,7 +121,7 @@ data. Any existing data in the object is deallocated.</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td><font size=-1>void* data_, unsigned long length_</font></td>
+<td><font size=-1>void* data_, size_t length_</font></td>
 
 <td><font size=-1>Update object contents, using supplied pointer directly
 (no copy) Any existing data in the object is deallocated.&nbsp; The user

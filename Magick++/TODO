@@ -18,8 +18,6 @@ Items large and small which remain to be done before Magick++ 1.0
   Paul S. Mostert <pmostert@gte.net>
   Mario Olimpio de Menezes <mario@curiango.ipen.br>
 
-* Image canvas should be DirectClass rather than PseudoClass.
-
 * Support manipulating IPTC profiles directly. Bill Radcliffe
   <BillR@corbis.com> has agreed to write a container class to support
   this.
@@ -30,6 +28,8 @@ Items large and small which remain to be done before Magick++ 1.0
   storing the error report in thread-specific storage, Magick++
   will become thread safe provided that only one thread works on an
   image at one time (one thread per image).
+
+* Integrate with GdkMagick.
 
 * Port to Sun Workshop 5.0 under Solaris (no access to compiler yet
   but hope so soon ...)
@@ -60,7 +60,7 @@ Items which will require the aid of volunteers.  Volunteers?
 
 * Port to Cray C++ compiler
 
-* Port to MacOS
+* Port to MacOS (with CodeWarrior)
 
 * Port to VMS
 
