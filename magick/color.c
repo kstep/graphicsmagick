@@ -66,7 +66,7 @@
   Declare color map.
 */
 static char
-  *ColorMap =
+  *ColorMap = (char *) 
     "<?xml version=\"1.0\"?>"
     "<colormap>"
     "  <color name=\"none\" red=\"0\" green=\"0\" blue=\"0\" opacity=\"255\" />"

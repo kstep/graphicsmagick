@@ -1190,11 +1190,19 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
 %
 */
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 static int StreamHandler(const Image *image,const void *pixels,
   const size_t columns)
 {
   return(True);
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 MagickExport Image *PingImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
@@ -2602,8 +2610,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   image=(Image *) NULL;
   magick_info=GetMagickInfo(clone_info->magick,exception);
   if ((magick_info != (const MagickInfo *) NULL) &&
-      (magick_info->decoder !=
-        (Image *(*)(const ImageInfo *,ExceptionInfo *)) NULL))
+      (magick_info->decoder != NULL))
     {
       if (!magick_info->thread_support)
         AcquireSemaphoreInfo(&constitute_semaphore);
@@ -2646,8 +2653,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       (void) SetImageInfo(clone_info,False,exception);
       magick_info=GetMagickInfo(clone_info->magick,exception);
       if ((magick_info == (const MagickInfo *) NULL) ||
-          (magick_info->decoder ==
-            (Image *(*)(const ImageInfo *,ExceptionInfo *)) NULL))
+          (magick_info->decoder == NULL))
         {
           if (IsAccessible(clone_info->filename))
             ThrowException(exception,MissingDelegateError,
@@ -3016,8 +3022,8 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
   */
   status=False;
   magick_info=GetMagickInfo(clone_info->magick,&image->exception);
-  if ((magick_info != (const MagickInfo *) NULL) && (magick_info->encoder !=
-      (unsigned int (*)(const ImageInfo *,Image *)) NULL))
+  if ((magick_info != (const MagickInfo *) NULL) &&
+      (magick_info->encoder != NULL))
     {
       if (!magick_info->thread_support)
         AcquireSemaphoreInfo(&constitute_semaphore);
@@ -3045,8 +3051,8 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
       if (!clone_info->affirm && (magick_info == (const MagickInfo *) NULL))
         magick_info=(MagickInfo *)
           GetMagickInfo(image->magick,&image->exception);
-      if ((magick_info == (MagickInfo *) NULL) || (magick_info->encoder ==
-          (unsigned int (*)(const ImageInfo *,Image *)) NULL))
+      if ((magick_info == (MagickInfo *) NULL) ||
+          (magick_info->encoder == NULL))
         {
           DestroyImageInfo(clone_info);
           ThrowBinaryException(MissingDelegateError,

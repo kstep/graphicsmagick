@@ -380,13 +380,11 @@ MagickExport void CloseBlob(Image *image)
           image->blob->file=(FILE *) NULL;
         }
     }
-  if (image->blob->fifo !=
-       (int (*)(const Image *,const void *,const size_t)) NULL)
+  if (image->blob->fifo)
     {
       (void) image->blob->fifo(image,(const void *) NULL,0);
       if (!image->blob->exempt)
-        image->blob->fifo=
-          (int (*)(const Image *,const void *,const size_t)) NULL;
+        image->blob->fifo=NULL;
     }
 }
 
@@ -1452,14 +1450,13 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
   DetachBlob(image->blob);
   switch (mode)
   {
-    default: type="r"; break;
-    case ReadBlobMode: type="r"; break;
-    case ReadBinaryBlobMode: type="rb"; break;
-    case WriteBlobMode: type="w"; break;
-    case WriteBinaryBlobMode: type="wb"; break;
+    default: type=(char *) "r"; break;
+    case ReadBlobMode: type=(char *) "r"; break;
+    case ReadBinaryBlobMode: type=(char *) "rb"; break;
+    case WriteBlobMode: type=(char *) "w"; break;
+    case WriteBinaryBlobMode: type=(char *) "wb"; break;
   }
-  if (image_info->fifo !=
-      (int (*)(const Image *,const void *,const size_t)) NULL)
+  if (image_info->fifo)
     {
       image->blob->fifo=image_info->fifo;  /* image stream */
       if (*type == 'w')
@@ -1704,11 +1701,19 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
 %
 */
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 static int StreamHandler(const Image *image,const void *pixels,
   const size_t columns)
 {
   return(True);
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
   const size_t length,ExceptionInfo *exception)
@@ -2363,8 +2368,7 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(data != (const char *) NULL);
-  if (image->blob->fifo !=
-       (int (*)(const Image *,const void *,const size_t)) NULL)
+  if (image->blob->fifo)
     return(image->blob->fifo(image,data,length));
   if (image->blob->data != (unsigned char *) NULL)
     {
