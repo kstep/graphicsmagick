@@ -1,1 +1,8 @@
-This is a placeholder to make sure that this directory exists.
+#ECF - this file contains additional configuration info.
+EXCLUDE = testDAV.c
+EXCLUDE = testHTML.c
+EXCLUDE = testOasis.c
+EXCLUDE = testSAX.c
+EXCLUDE = testURI.c
+EXCLUDE = testXPath.c
+EXCLUDE = slashrdf.c
