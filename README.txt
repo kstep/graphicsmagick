@@ -373,10 +373,11 @@ UNIX/Cygwin COMPILATION
     will work) and it includes the Freetype v2 DLL required to support
     TrueType and Postscript Type 1 fonts. Make sure that /usr/X11R6/bin
     is in your PATH prior to running configure. If you are using Cygwin
-    version 1.3.9 or later, you may specify the configure options
-    '--enable-shared' or '--enable-shared --with-modules' to build
-    Cygwin DLLs. ImageMagick DLL support under Cygwin is considered
-    experimental at this time.
+    version 1.3.9 or later, you may specify the configure option
+    '--enable-shared' to build Cygwin DLLs. Specifying '--enable-shared'
+    is required if you want to build PerlMagick under Cygwin because
+    Cygwin does not provide the libperl.a static library required to
+    create a static PerlMagick.
 
   Dealing with configuration failures:
 
