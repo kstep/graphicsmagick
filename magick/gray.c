@@ -167,7 +167,7 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
         (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
       if (!SetPixelCache(image,0,y,image->columns,1))
         break;
-      ReadPixelCache(image,GrayQuantum,scanline+x);
+      (void) ReadPixelCache(image,GrayQuantum,scanline+x);
       if (!SyncPixelCache(image))
         break;
       if (image->previous == (Image *) NULL)
@@ -282,7 +282,7 @@ Export unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
     {
       if (!GetPixelCache(image,0,y,image->columns,1))
         break;
-      WritePixelCache(image,GrayQuantum,pixels);
+      (void) WritePixelCache(image,GrayQuantum,pixels);
       (void) WriteBlob(image,packet_size*image->columns,pixels);
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))

@@ -515,12 +515,12 @@ Export void SignatureImage(Image *image)
     if (!GetPixelCache(image,0,y,image->columns,1))
       break;
     if (image->colorspace == CMYKColorspace)
-      WritePixelCache(image,CMYKQuantum,message);
+      (void) WritePixelCache(image,CMYKQuantum,message);
     else
       if (!image->matte)
-        WritePixelCache(image,RGBQuantum,message);
+        (void) WritePixelCache(image,RGBQuantum,message);
       else
-        WritePixelCache(image,RGBAQuantum,message);
+        (void) WritePixelCache(image,RGBAQuantum,message);
     UpdateMessageDigest(&message_digest,message,packet_size*image->columns);
   }
   FreeMemory(message);

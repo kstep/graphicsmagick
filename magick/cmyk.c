@@ -164,7 +164,7 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
             (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
           if (!SetPixelCache(image,0,y,image->columns,1))
             break;
-          ReadPixelCache(image,CMYKQuantum,scanline+x);
+          (void) ReadPixelCache(image,CMYKQuantum,scanline+x);
           if (!SyncPixelCache(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -190,13 +190,13 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
             (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
           if (!SetPixelCache(image,0,y,image->columns,1))
             break;
-          ReadPixelCache(image,CyanQuantum,scanline+x);
+          (void) ReadPixelCache(image,CyanQuantum,scanline+x);
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-          ReadPixelCache(image,YellowQuantum,scanline+x);
+          (void) ReadPixelCache(image,YellowQuantum,scanline+x);
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-          ReadPixelCache(image,MagentaQuantum,scanline+x);
+          (void) ReadPixelCache(image,MagentaQuantum,scanline+x);
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-          ReadPixelCache(image,BlackQuantum,scanline+x);
+          (void) ReadPixelCache(image,BlackQuantum,scanline+x);
           if (!SyncPixelCache(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -235,7 +235,7 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
             (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
           if (!SetPixelCache(image,0,y,image->columns,1))
             break;
-          ReadPixelCache(image,CyanQuantum,scanline+x);
+          (void) ReadPixelCache(image,CyanQuantum,scanline+x);
           if (!SyncPixelCache(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -261,7 +261,7 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
           if (!GetPixelCache(image,0,y,image->columns,1))
             break;
-          ReadPixelCache(image,YellowQuantum,scanline+x);
+          (void) ReadPixelCache(image,YellowQuantum,scanline+x);
           if (!SyncPixelCache(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -287,7 +287,7 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
           if (!GetPixelCache(image,0,y,image->columns,1))
             break;
-          ReadPixelCache(image,MagentaQuantum,scanline+x);
+          (void) ReadPixelCache(image,MagentaQuantum,scanline+x);
           if (!SyncPixelCache(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -314,7 +314,7 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
             scanline);
           if (!GetPixelCache(image,0,y,image->columns,1))
             break;
-          ReadPixelCache(image,BlackQuantum,scanline+x);
+          (void) ReadPixelCache(image,BlackQuantum,scanline+x);
           if (!SyncPixelCache(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -441,7 +441,7 @@ Export unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         {
           if (!GetPixelCache(image,0,y,image->columns,1))
             break;
-          WritePixelCache(image,CMYKQuantum,pixels);
+          (void) WritePixelCache(image,CMYKQuantum,pixels);
           (void) WriteBlob(image,packet_size*image->columns,pixels);
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
@@ -458,13 +458,13 @@ Export unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         {
           if (!GetPixelCache(image,0,y,image->columns,1))
             break;
-          WritePixelCache(image,CyanQuantum,pixels);
+          (void) WritePixelCache(image,CyanQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
-          WritePixelCache(image,YellowQuantum,pixels);
+          (void) WritePixelCache(image,YellowQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
-          WritePixelCache(image,MagentaQuantum,pixels);
+          (void) WritePixelCache(image,MagentaQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
-          WritePixelCache(image,BlackQuantum,pixels);
+          (void) WritePixelCache(image,BlackQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
           if (QuantumTick(y,image->rows))
             ProgressMonitor(SaveImageText,y,image->rows);
@@ -488,7 +488,7 @@ Export unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         {
           if (!GetPixelCache(image,0,y,image->columns,1))
             break;
-          WritePixelCache(image,CyanQuantum,pixels);
+          (void) WritePixelCache(image,CyanQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
         }
         if (image_info->interlace == PartitionInterlace)
@@ -504,7 +504,7 @@ Export unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         {
           if (!GetPixelCache(image,0,y,image->columns,1))
             break;
-          WritePixelCache(image,YellowQuantum,pixels);
+          (void) WritePixelCache(image,YellowQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
         }
         if (image_info->interlace == PartitionInterlace)
@@ -520,7 +520,7 @@ Export unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         {
           if (!GetPixelCache(image,0,y,image->columns,1))
             break;
-          WritePixelCache(image,MagentaQuantum,pixels);
+          (void) WritePixelCache(image,MagentaQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
         }
         if (image->matte)
@@ -538,7 +538,7 @@ Export unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
             {
               if (!GetPixelCache(image,0,y,image->columns,1))
                 break;
-              WritePixelCache(image,BlackQuantum,pixels);
+              (void) WritePixelCache(image,BlackQuantum,pixels);
               (void) WriteBlob(image,image->columns,pixels);
             }
           }

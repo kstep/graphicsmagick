@@ -879,12 +879,12 @@ Export unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     if (!GetPixelCache(image,0,y,image->columns,1))
       break;
     if (fpx_info.numberOfComponents == 1)
-      WritePixelCache(image,GrayQuantum,pixels);
+      (void) WritePixelCache(image,GrayQuantum,pixels);
     else
       if (!image->matte)
-        WritePixelCache(image,RGBQuantum,pixels);
+        (void) WritePixelCache(image,RGBQuantum,pixels);
       else
-        WritePixelCache(image,RGBAQuantum,pixels);
+        (void) WritePixelCache(image,RGBAQuantum,pixels);
     fpx_status=FPX_WriteImageLine(flashpix,&fpx_info);
     if (fpx_status != FPX_OK)
       break;

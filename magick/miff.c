@@ -633,18 +633,18 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
           if (image->class == PseudoClass)
             {
               if (!image->matte)
-                ReadPixelCache(image,IndexQuantum,pixels);
+                (void) ReadPixelCache(image,IndexQuantum,pixels);
               else
-                ReadPixelCache(image,IndexOpacityQuantum,pixels);
+                (void) ReadPixelCache(image,IndexOpacityQuantum,pixels);
             }
           else
             if (image->colorspace == CMYKColorspace)
-              ReadPixelCache(image,CMYKQuantum,pixels);
+              (void) ReadPixelCache(image,CMYKQuantum,pixels);
             else
               if (!image->matte)
-                ReadPixelCache(image,RGBQuantum,pixels);
+                (void) ReadPixelCache(image,RGBQuantum,pixels);
               else
-                ReadPixelCache(image,RGBAQuantum,pixels);
+                (void) ReadPixelCache(image,RGBAQuantum,pixels);
         }
       else
         {
@@ -1086,18 +1086,18 @@ Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           if (image->class == PseudoClass)
             {
               if (!image->matte)
-                WritePixelCache(image,IndexQuantum,pixels);
+                (void) WritePixelCache(image,IndexQuantum,pixels);
               else
-                WritePixelCache(image,IndexOpacityQuantum,pixels);
+                (void) WritePixelCache(image,IndexOpacityQuantum,pixels);
             }
           else
             if (image->colorspace == CMYKColorspace)
-              WritePixelCache(image,CMYKQuantum,pixels);
+              (void) WritePixelCache(image,CMYKQuantum,pixels);
             else
               if (!image->matte)
-                WritePixelCache(image,RGBQuantum,pixels);
+                (void) WritePixelCache(image,RGBQuantum,pixels);
               else
-                WritePixelCache(image,RGBAQuantum,pixels);
+                (void) WritePixelCache(image,RGBAQuantum,pixels);
         }
       else
         {

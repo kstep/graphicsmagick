@@ -766,9 +766,9 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
               }
             }
           if (!image->matte)
-            ReadPixelCache(image,RGBQuantum,scanline);
+            (void) ReadPixelCache(image,RGBQuantum,scanline);
           else
-            ReadPixelCache(image,RGBAQuantum,scanline);
+            (void) ReadPixelCache(image,RGBAQuantum,scanline);
           if (!SyncPixelCache(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -1388,9 +1388,9 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
               if (!GetPixelCache(image,0,y,image->columns,1))
                 break;
               if (!image->matte)
-                WritePixelCache(image,RGBQuantum,scanline);
+                (void) WritePixelCache(image,RGBQuantum,scanline);
               else
-                WritePixelCache(image,RGBAQuantum,scanline);
+                (void) WritePixelCache(image,RGBAQuantum,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
                 break;
               if (image->previous == (Image *) NULL)
@@ -1409,7 +1409,7 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             {
               if (!GetPixelCache(image,0,y,image->columns,1))
                 break;
-              WritePixelCache(image,RedQuantum,scanline);
+              (void) WritePixelCache(image,RedQuantum,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
                 break;
             }
@@ -1418,7 +1418,7 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             {
               if (!GetPixelCache(image,0,y,image->columns,1))
                 break;
-              WritePixelCache(image,GreenQuantum,scanline);
+              (void) WritePixelCache(image,GreenQuantum,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,1,image) < 0)
                 break;
             }
@@ -1427,7 +1427,7 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             {
               if (!GetPixelCache(image,0,y,image->columns,1))
                 break;
-              WritePixelCache(image,BlueQuantum,scanline);
+              (void) WritePixelCache(image,BlueQuantum,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,2,image) < 0)
                 break;
             }
@@ -1437,7 +1437,7 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
               {
                 if (!GetPixelCache(image,0,y,image->columns,1))
                   break;
-                WritePixelCache(image,OpacityQuantum,scanline);
+                (void) WritePixelCache(image,OpacityQuantum,scanline);
                 if (TIFFWritePixels(tiff,(char *) scanline,y,3,image) < 0)
                   break;
               }
@@ -1458,7 +1458,7 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         {
           if (!GetPixelCache(image,0,y,image->columns,1))
             break;
-          WritePixelCache(image,RGBAQuantum,scanline);
+          (void) WritePixelCache(image,RGBAQuantum,scanline);
           if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
             break;
           if (image->previous == (Image *) NULL)
@@ -1524,9 +1524,9 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
               if (!GetPixelCache(image,0,y,image->columns,1))
                 break;
               if (photometric == PHOTOMETRIC_PALETTE)
-                WritePixelCache(image,IndexQuantum,scanline);
+                (void) WritePixelCache(image,IndexQuantum,scanline);
               else
-                WritePixelCache(image,GrayQuantum,scanline);
+                (void) WritePixelCache(image,GrayQuantum,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
                 break;
               if (image->previous == (Image *) NULL)

@@ -1969,18 +1969,18 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
           if (!SetPixelCache(image,0,y,image->columns,1))
             break;
           if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
-            ReadPixelCache(image,GrayQuantum,scanlines[y]);
+            (void) ReadPixelCache(image,GrayQuantum,scanlines[y]);
           else
             if (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
-              ReadPixelCache(image,GrayOpacityQuantum,scanlines[y]);
+              (void) ReadPixelCache(image,GrayOpacityQuantum,scanlines[y]);
             else
               if (ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
-                ReadPixelCache(image,RGBAQuantum,scanlines[y]);
+                (void) ReadPixelCache(image,RGBAQuantum,scanlines[y]);
               else
                 if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
-                  ReadPixelCache(image,IndexQuantum,scanlines[y]);
+                  (void) ReadPixelCache(image,IndexQuantum,scanlines[y]);
                 else
-                  ReadPixelCache(image,RGBQuantum,scanlines[y]);
+                  (void) ReadPixelCache(image,RGBQuantum,scanlines[y]);
           if (!SyncPixelCache(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -3589,7 +3589,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         {
           if (!GetPixelCache(image,0,y,image->columns,1))
             break;
-          WritePixelCache(image,IndexQuantum,scanlines[y]);
+          (void) WritePixelCache(image,IndexQuantum,scanlines[y]);
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(SaveImageText,y,image->rows);
@@ -3603,9 +3603,9 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             if (!GetPixelCache(image,0,y,image->columns,1))
               break;
             if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
-              WritePixelCache(image,GrayQuantum,scanlines[y]);
+              (void) WritePixelCache(image,GrayQuantum,scanlines[y]);
             else
-              WritePixelCache(image,GrayOpacityQuantum,scanlines[y]);
+              (void) WritePixelCache(image,GrayOpacityQuantum,scanlines[y]);
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
                 ProgressMonitor(SaveImageText,y,image->rows);
@@ -3619,15 +3619,15 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               if (!GetPixelCache(image,0,y,image->columns,1))
                 break;
               if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
-                WritePixelCache(image,GrayQuantum,scanlines[y]);
+                (void) WritePixelCache(image,GrayQuantum,scanlines[y]);
               else
                 if (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
-                  WritePixelCache(image,GrayOpacityQuantum,scanlines[y]);
+                  (void) WritePixelCache(image,GrayOpacityQuantum,scanlines[y]);
                 else
                   if (!image->matte)
-                    WritePixelCache(image,RGBQuantum,scanlines[y]);
+                    (void) WritePixelCache(image,RGBQuantum,scanlines[y]);
                   else
-                    WritePixelCache(image,RGBAQuantum,scanlines[y]);
+                    (void) WritePixelCache(image,RGBAQuantum,scanlines[y]);
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
                   ProgressMonitor(SaveImageText,y,image->rows);
@@ -3638,9 +3638,9 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             if (!GetPixelCache(image,0,y,image->columns,1))
               break;
             if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
-              WritePixelCache(image,GrayQuantum,scanlines[y]);
+              (void) WritePixelCache(image,GrayQuantum,scanlines[y]);
             else
-              WritePixelCache(image,IndexQuantum,scanlines[y]);
+              (void) WritePixelCache(image,IndexQuantum,scanlines[y]);
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
                 ProgressMonitor(SaveImageText,y,image->rows);

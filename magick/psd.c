@@ -378,7 +378,11 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
   short int
     number_layers;
 
+  unsigned char
+    *scanline;
+
   unsigned int
+    packet_size,
     status;
 
   unsigned short
@@ -552,47 +556,60 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
               /*
                 Read uncompressed pixel data as separate planes.
               */
+              packet_size=1;
+              if ((layer_info[i].image->depth > 8) ||
+                  ((layer_info[i].image->class == PseudoClass) &&
+                   (layer_info[i].image->colors > 256)))
+                packet_size++;
+              scanline=(unsigned char *) AllocateMemory(
+                packet_size*layer_info[i].image->columns*sizeof(unsigned char));
+              if (scanline == (unsigned char *) NULL)
+                ReaderExit(ResourceLimitWarning,"Memory allocation failed",
+                  image);
               for (y=0; y < (int) layer_info[i].image->rows; y++)
               {
                 q=SetPixelCache(layer_info[i].image,0,y,
                   layer_info[i].image->columns,1);
                 if (q == (PixelPacket *) NULL)
                   break;
+                (void) ReadBlob(layer_info[i].image,packet_size*
+                  layer_info[i].image->columns,(char *) scanline);
                 switch (layer_info[i].channel_info[j].type)
                 {
                   case 0:
                   {
                     if (layer_info[i].image->class == PseudoClass)
-                      ReadPixelCache(layer_info[i].image,IndexQuantum,
-                        (unsigned char *) NULL);
+                      (void) ReadPixelCache(layer_info[i].image,IndexQuantum,
+                        scanline);
                     else
-                      ReadPixelCache(layer_info[i].image,RedQuantum,
-                        (unsigned char *) NULL);
+                      (void) ReadPixelCache(layer_info[i].image,RedQuantum,
+                        scanline);
                     break;
                   }
                   case 1:
                   {
-                    ReadPixelCache(layer_info[i].image,GreenQuantum,
-                      (unsigned char *) NULL);
+                    (void) ReadPixelCache(layer_info[i].image,GreenQuantum,
+                      scanline);
                     break;
                   }
                   case 2:
                   {
-                    ReadPixelCache(layer_info[i].image,BlueQuantum,
-                      (unsigned char *) NULL);
+                    (void) ReadPixelCache(layer_info[i].image,BlueQuantum,
+                      scanline);
                     break;
                   }
                   case 3:
                   default:
                   {
-                    ReadPixelCache(layer_info[i].image,OpacityQuantum,
-                      (unsigned char *) NULL);
+                    (void) ReadPixelCache(layer_info[i].image,OpacityQuantum,
+                      scanline);
                     break;
                   }
                 }
                 if (!SyncPixelCache(layer_info[i].image))
                   break;
               }
+              FreeMemory(scanline);
             }
         }
         image->file=layer_info[i].image->file;
@@ -666,6 +683,15 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
       /*
         Read uncompressed pixel data as separate planes.
       */
+      packet_size=1;
+      if ((image->depth > 8) || (image->colors > 256))
+        packet_size++;
+      if ((image->depth > 8) ||
+          ((image->class == PseudoClass) && (image->colors > 256)))
+      scanline=(unsigned char *)
+        AllocateMemory(packet_size*image->columns*sizeof(unsigned char));
+      if (scanline == (unsigned char *) NULL)
+        ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
       for (i=0; i < (int) psd_header.channels; i++)
       {
         for (y=0; y < (int) image->rows; y++)
@@ -673,30 +699,31 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
           q=GetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
+          (void) ReadBlob(image,packet_size*image->columns,(char *) scanline);
           switch (i)
           {
             case 0:
             {
               if (image->class == PseudoClass)
-                ReadPixelCache(image,IndexQuantum,(unsigned char *) NULL);
+                (void) ReadPixelCache(image,IndexQuantum,scanline);
               else
-                ReadPixelCache(image,RedQuantum,(unsigned char *) NULL);
+                (void) ReadPixelCache(image,RedQuantum,scanline);
               break;
             }
             case 1:
             {
-              ReadPixelCache(image,GreenQuantum,(unsigned char *) NULL);
+              (void) ReadPixelCache(image,GreenQuantum,scanline);
               break;
             }
             case 2:
             {
-              ReadPixelCache(image,BlueQuantum,(unsigned char *) NULL);
+              (void) ReadPixelCache(image,BlueQuantum,scanline);
               break;
             }
             case 3:
             default:
             {
-              ReadPixelCache(image,OpacityQuantum,(unsigned char *) NULL);
+              (void) ReadPixelCache(image,OpacityQuantum,scanline);
               break;
             }
           }
@@ -704,6 +731,7 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
             break;
         }
       }
+      FreeMemory(scanline);
     }
   if (image->colorspace == CMYKColorspace)
     {
@@ -858,7 +886,7 @@ Export unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
     {
       if (!GetPixelCache(image,0,y,image->columns,1))
         break;
-      WritePixelCache(image,IndexQuantum,pixels);
+      (void) WritePixelCache(image,IndexQuantum,pixels);
       (void) WriteBlob(image,image->columns,pixels);
     }
   else
@@ -869,9 +897,9 @@ Export unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
         if (!GetPixelCache(image,0,y,image->columns,1))
           break;
         if (image->colorspace == CMYKColorspace)
-          WritePixelCache(image,CyanQuantum,pixels);
+          (void) WritePixelCache(image,CyanQuantum,pixels);
         else
-          WritePixelCache(image,RedQuantum,pixels);
+          (void) WritePixelCache(image,RedQuantum,pixels);
         (void) WriteBlob(image,packet_size*image->columns,pixels);
       }
       for (y=0; y < (int) image->rows; y++)
@@ -879,9 +907,9 @@ Export unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
         if (!GetPixelCache(image,0,y,image->columns,1))
           break;
         if (image->colorspace == CMYKColorspace)
-          WritePixelCache(image,YellowQuantum,pixels);
+          (void) WritePixelCache(image,YellowQuantum,pixels);
         else
-          WritePixelCache(image,GreenQuantum,pixels);
+          (void) WritePixelCache(image,GreenQuantum,pixels);
         (void) WriteBlob(image,packet_size*image->columns,pixels);
       }
       for (y=0; y < (int) image->rows; y++)
@@ -889,9 +917,9 @@ Export unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
         if (!GetPixelCache(image,0,y,image->columns,1))
           break;
         if (image->colorspace == CMYKColorspace)
-          WritePixelCache(image,MagentaQuantum,pixels);
+          (void) WritePixelCache(image,MagentaQuantum,pixels);
         else
-          WritePixelCache(image,BlueQuantum,pixels);
+          (void) WritePixelCache(image,BlueQuantum,pixels);
         (void) WriteBlob(image,packet_size*image->columns,pixels);
       }
       if (image->matte || (image->colorspace == CMYKColorspace))
@@ -900,9 +928,9 @@ Export unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
           if (!GetPixelCache(image,0,y,image->columns,1))
             break;
           if (image->colorspace == CMYKColorspace)
-            WritePixelCache(image,BlackQuantum,pixels);
+            (void) WritePixelCache(image,BlackQuantum,pixels);
           else
-            WritePixelCache(image,OpacityQuantum,pixels);
+            (void) WritePixelCache(image,OpacityQuantum,pixels);
           (void) WriteBlob(image,packet_size*image->columns,pixels);
         }
     }

@@ -229,6 +229,9 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
     index;
 
   int
+    blue,
+    green,
+    red,
     y;
 
   MonitorHandler
@@ -318,11 +321,6 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
           }
         else
           {
-            int
-              blue,
-              green,
-              red;
-
             /*
               Initialize 332 colormap.
             */
@@ -416,15 +414,18 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
             break;
           for (x=0; x < (int) image->columns; x++)
           {
-            q->red=PNMInteger(image,10);
-            q->green=PNMInteger(image,10);
-            q->blue=PNMInteger(image,10);
+            red=PNMInteger(image,10);
+            green=PNMInteger(image,10);
+            blue=PNMInteger(image,10);
             if (scale != (Quantum *) NULL)
               {
-                q->red=scale[q->red];
-                q->green=scale[q->green];
-                q->blue=scale[q->blue];
+                red=scale[red];
+                green=scale[green];
+                blue=scale[blue];
               }
+            q->red=red;
+            q->green=green;
+            q->blue=blue;
             q++;
           }
           if (!SyncPixelCache(image))
@@ -488,8 +489,8 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
               index=ReadByte(image);
             else
               index=LSBFirstReadShort(image);
-            if (index > max_value)
-              index=max_value;
+            if (index >= image->colors)
+              ReaderExit(CorruptImageWarning,"invalid colormap index",image);
             image->indexes[x]=index;
             *q++=image->colormap[index];
           }
@@ -515,22 +516,25 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
           {
             if (max_value <= MaxRawValue)
               {
-                q->red=ReadByte(image);
-                q->green=ReadByte(image);
-                q->blue=ReadByte(image);
+                red=ReadByte(image);
+                green=ReadByte(image);
+                blue=ReadByte(image);
               }
             else
               {
-                q->red=LSBFirstReadShort(image);
-                q->green=LSBFirstReadShort(image);
-                q->blue=LSBFirstReadShort(image);
+                red=LSBFirstReadShort(image);
+                green=LSBFirstReadShort(image);
+                blue=LSBFirstReadShort(image);
               }
             if (scale != (Quantum *) NULL)
               {
-                q->red=scale[q->red];
-                q->green=scale[q->green];
-                q->blue=scale[q->blue];
+                red=scale[red];
+                green=scale[green];
+                blue=scale[blue];
               }
+            q->red=red;
+            q->green=green;
+            q->blue=blue;
             q++;
           }
           if (!SyncPixelCache(image))
