@@ -254,7 +254,7 @@ mpc_la_LIBADD     = ../magick/libMagick.la
 # MPEG module
 mpeg_la_SOURCES    = mpeg.c
 mpeg_la_LDFLAGS    = -no-undefined -module -avoid-version
-mpeg_la_LIBADD     = ../magick/libMagick.la
+mpeg_la_LIBADD     = ../magick/libMagick.la @LIB_MPEG2@
 
 # MTV module
 mtv_la_SOURCES      = mtv.c

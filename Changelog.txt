@@ -1,3 +1,6 @@
+2001-10-22 Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+        * Added tests for mpeg2 library to configure.
+
 2001-10-22  Cristy  <cristy@mystic.es.dupont.com>
 	* Added a MPEG coder module.
 	* Added ImageType member to the image_info structure (suggested

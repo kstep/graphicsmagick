@@ -204,6 +204,9 @@
 /* Include LZW compression */
 #undef HasLZW
 
+/* Define if you have MPEG2 library */
+#undef HasMPEG2
+
 /* Define if you have PNG library */
 #undef HasPNG
 

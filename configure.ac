@@ -299,6 +299,12 @@ AC_ARG_WITH(lcms,
 	      [with_lcms=$withval],
 	      [with_lcms='yes'])
 
+# Disable MPEG.
+AC_ARG_WITH(mpeg2,
+	      [  --without-mpeg2         disable MPEG support],
+	      [with_mpeg2=$withval],
+	      [with_mpeg2='yes'])
+
 # Disable PNG.
 AC_ARG_WITH(png,
 	      [  --without-png           disable PNG support],
@@ -395,7 +401,7 @@ builddir=`pwd`
 # Most delegates have includes in the same directory as the library, but not all ...
 #
 # Includes
-for dir in bzlib fpx hdf/src jasper jbig/libjbig jpeg lcms/src png tiff/libtiff ttf/include wmf/include xml zlib
+for dir in bzlib fpx hdf/src jasper jbig/libjbig jpeg lcms/src mpeg2/include png tiff/libtiff ttf/include wmf/include xml zlib
 do
   if test -d "$builddir/$dir"
   then
@@ -409,7 +415,7 @@ do
 done
 
 # Libraries
-for dir in bzlib fpx/obj hdf/src/.libs jasper jbig/libjbig jpeg lcms/src png tiff/libtiff ttf/objs/.libs wmf/src/.libs xml/.libs zlib
+for dir in bzlib fpx/obj hdf/src/.libs jasper jbig/libjbig jpeg lcms/src png mpeg2/libmpeg2/.libs tiff/libtiff ttf/objs/.libs wmf/src/.libs xml/.libs zlib
 do
   if test -d "$builddir/$dir"
   then
@@ -923,6 +929,40 @@ then
 fi
 AM_CONDITIONAL(HasGS, test "$have_gslib" != 'no')
 AC_SUBST(LIB_GS)
+
+#
+# Check for MPEG2 library
+#
+have_mpeg2='no'
+LIB_MPEG2=''
+if test "$with_mpeg2" != 'no'
+then
+    AC_MSG_CHECKING(for MPEG version 2 support )
+    AC_MSG_RESULT()
+    failed=0;
+    passed=0;
+    AC_CHECK_HEADER(mpeg2dec/mpeg2.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_LIB(mpeg2,mpeg2_decode_data,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_MSG_CHECKING(if MPEG version 2 support package is complete)
+    if test $passed -gt 0
+    then
+    if test $failed -gt 0
+    then
+	AC_MSG_RESULT(no -- some components failed test)
+	have_mpeg2='no (failed tests)'
+    else
+	LIB_MPEG2='-lmpeg2'
+	LIBS="$LIB_MPEG2 $LIBS"
+	AC_DEFINE(HasMPEG2,,Define if you have MPEG2 library)
+	AC_MSG_RESULT(yes)
+	have_mpeg2='yes'
+    fi
+    else
+    AC_MSG_RESULT(no)
+    fi
+fi
+AM_CONDITIONAL(HasMPEG2, test "$have_mpeg2" != 'no')
+AC_SUBST(LIB_MPEG2)
 
 #
 # Check for TTF
@@ -1528,6 +1568,7 @@ if test "$have_jbig"   = 'yes' ; then DELEGATES="$DELEGATES jbig" ; fi
 if test "$have_jp2"   = 'yes' ; then DELEGATES="$DELEGATES jp2" ; fi
 if test "$have_jpeg"   = 'yes' ; then DELEGATES="$DELEGATES jpeg" ; fi
 if test "$have_lcms"    = 'yes' ; then DELEGATES="$DELEGATES lcms"  ; fi
+if test "$have_mpeg2"   = 'yes' ; then DELEGATES="$DELEGATES mpeg2" ; fi
 if test "$have_mpeg2decode" = 'yes' && test "$have_mpeg2encode"  = 'yes' ; then DELEGATES="$DELEGATES mpeg" ; fi
 if test "$have_png"    = 'yes' ; then DELEGATES="$DELEGATES png"  ; fi
 
@@ -1636,7 +1677,7 @@ if test "$with_modules" != 'no'
 then
   MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_XEXT $LIB_XT $LIB_X11 $LIB_ZLIB $LIB_THREAD $LIB_LF $LIB_MATH"
 else
-  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_HDF $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_XT $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_THREAD $LIB_LF $LIB_MATH"
+  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_HDF $LIB_LCMS $LIB_MPEG2 $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_XT $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_THREAD $LIB_LF $LIB_MATH"
 fi
 AC_SUBST(MAGICK_DEP_LIBS)
 
@@ -1697,6 +1738,7 @@ echo "JBIG              --with-jbig=$with_jbig        	$have_jbig"
 echo "JPEG v1           --with-jpeg=$with_jpeg        	$have_jpeg"
 echo "JPEG v2           --with-jp2=$with_jp2          	$have_jp2"
 echo "LCMS              --with-lcms=$with_lcms        	$have_lcms"
+echo "MPEG v2           --with-mpeg2=$with_mpeg2      	$have_mpeg2"
 echo "PNG               --with-png=$with_png          	$have_png"
 echo "TIFF              --with-tiff=$with_tiff        	$have_tiff"
 echo "FreeType 2.0      --with-ttf=$with_ttf          	$have_ttf"
