@@ -952,11 +952,8 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
     }
   clone_image->attributes=(ImageAttribute *) NULL;
   attribute=GetImageAttribute(image,(char *) NULL);
-  while (attribute != (ImageAttribute *) NULL)
-  {
+  for ( ; attribute != (ImageAttribute *) NULL; attribute=attribute->next)
     (void) SetImageAttribute(clone_image,attribute->key,attribute->value);
-    attribute=attribute->next;
-  }
   GetExceptionInfo(&clone_image->exception);
   if (clone_image->orphan || orphan)
     {
@@ -2228,11 +2225,12 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           tile->magick_rows,tile->magick);
         SignatureImage(tile);
         attribute=GetImageAttribute(tile,(char *) NULL);
-        while (attribute != (ImageAttribute *) NULL)
+        for ( ; attribute != (ImageAttribute *) NULL; attribute=attribute->next)
         {
+          if (*attribute->key == '[')
+            continue;
           (void) fprintf(file,"  %.1024s:\n",attribute->key);
           (void) fprintf(file,"%s\n",attribute->value);
-          attribute=attribute->next;
         }
         DestroyImage(tile);
       }
@@ -2242,11 +2240,12 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     Display image attributes.
   */
   attribute=GetImageAttribute(image,(char *) NULL);
-  while (attribute != (ImageAttribute *) NULL)
+  for ( ; attribute != (ImageAttribute *) NULL; attribute=attribute->next)
   {
+    if (*attribute->key == '[')
+      continue;
     (void) fprintf(file,"  %.1024s: ",attribute->key);
     (void) fprintf(file,"%s\n",attribute->value);
-    attribute=attribute->next;
   }
   if (image->taint)
     (void) fprintf(file,"  Tainted: True\n");

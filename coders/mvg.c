@@ -221,7 +221,7 @@ static unsigned int WriteMVGImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  attribute=GetImageAttribute(image,"MVG");
+  attribute=GetImageAttribute(image,"[MVG]");
   if (attribute == (ImageAttribute *) NULL)
     ThrowWriterException(DelegateWarning,"no image vector graphics",image);
   status=OpenBlob(image_info,image,WriteBinaryType);

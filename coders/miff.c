@@ -1305,8 +1305,10 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       }
     SignatureImage(image);
     attribute=GetImageAttribute(image,(char *) NULL);
-    while (attribute != (ImageAttribute *) NULL)
+    for ( ; attribute != (ImageAttribute *) NULL; attribute=attribute->next)
     {
+      if (*attribute->key == '[')
+        continue;
       FormatString(buffer,"%.1024s=",attribute->key);
       (void) WriteBlob(image,strlen(buffer),buffer);
       for (i=0; i < strlen(attribute->value); i++)
@@ -1318,7 +1320,6 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       if (i < strlen(attribute->value))
         (void) WriteByte(image,'}');
       (void) WriteByte(image,'\n');
-      attribute=attribute->next;
     }
     (void) strcpy(buffer,"\f\n:\032");
     (void) WriteBlob(image,strlen(buffer),buffer);

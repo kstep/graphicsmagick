@@ -4253,8 +4253,10 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     ping_info->num_text=0;
 #endif
     attribute=GetImageAttribute(image,(char *) NULL);
-    while (attribute != (ImageAttribute *) NULL)
+    for ( ; attribute != (ImageAttribute *) NULL; attribute=attribute->next)
     {
+      if (*attribute->key == '[')
+        continue;
 #if (PNG_LIBPNG_VER > 10005)
       png_textp
         text;
@@ -4292,7 +4294,6 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         (image_info->compression == UndefinedCompression &&
         ping_info->text[i].text_length < 128) ? -1 : 0;
 #endif
-      attribute=attribute->next;
     }
     png_write_end(ping,ping_info);
     if (need_fram && image->dispose == 2)

@@ -1105,7 +1105,7 @@ static unsigned int WriteCACHEImage(const ImageInfo *image_info,Image *image)
       }
     SignatureImage(image);
     attribute=GetImageAttribute(image,(char *) NULL);
-    while (attribute != (ImageAttribute *) NULL)
+    for ( ; attribute != (ImageAttribute *) NULL; attribute=attribute->next)
     {
       if (attribute->value != NULL)
         {
@@ -1121,7 +1121,6 @@ static unsigned int WriteCACHEImage(const ImageInfo *image_info,Image *image)
             (void) WriteByte(image,'}');
           (void) WriteByte(image,'\n');
         }
-      attribute=attribute->next;
     }
     (void) strcpy(buffer,"\f\n:\032");
     (void) WriteBlob(image,strlen(buffer),buffer);
