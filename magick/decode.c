@@ -13059,8 +13059,7 @@ Image *ReadSTEGANOImage(const ImageInfo *image_info)
   */
   local_info=CloneImageInfo(image_info);
   if (local_info == (ImageInfo *) NULL)
-    PrematureExit(ResourceLimitWarning,"Memory allocation failed",
-      stegano_image);
+    PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
   *local_info->magick='\0';
   stegano_image=ReadImage(local_info);
   DestroyImageInfo(local_info);
@@ -14744,7 +14743,7 @@ Image *ReadTILEImage(const ImageInfo *image_info)
   */
   local_info=CloneImageInfo(image_info);
   if (local_info == (ImageInfo *) NULL)
-    PrematureExit(ResourceLimitWarning,"Memory allocation failed",tiled_image);
+    PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
   *local_info->magick='\0';
   tiled_image=ReadImage(local_info);
   DestroyImageInfo(local_info);

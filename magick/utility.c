@@ -2675,9 +2675,6 @@ Export char *TranslateText(const ImageInfo *image_info,const Image *image,
     *p,
     *q;
 
-  Image
-    *local_image;
-
   ImageInfo
     *local_info;
 
