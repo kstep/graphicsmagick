@@ -116,6 +116,17 @@ int main ( int argc, char **argv )
       (char *)MagickMapDereferenceIterator(iterator,0));
 
   MagickMapDeallocateIterator(iterator);
+
+  i=2;
+  MagickMapAddEntry(map,KeyVal[i].key,(void *)KeyVal[i].value,0,&exception);
+  printf("Add entry for key \"%s\" and then iterate forward ...\n",
+         KeyVal[i].key);
+
+  iterator=MagickMapAllocateIterator(map);  
+  while(MagickMapIterateNext(iterator,&key))
+    printf("key=%s value=%s\n",key,
+           (char *)MagickMapDereferenceIterator(iterator,0));
+
   MagickMapDeallocateMap(map);
 
   DestroyExceptionInfo(&exception);
