@@ -279,7 +279,7 @@ typedef struct _Image
   FILE
     *file;
 
-  unsigned long
+  double
     filesize;
 
   int

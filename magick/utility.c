@@ -3028,7 +3028,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
     {
       case 'b':
       {
-        FormatString(q,"%lu",image->filesize);
+        FormatString(q,"%g",image->filesize);
         q=translated_text+Extent(translated_text);
         break;
       }
