@@ -308,7 +308,6 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
       ConcatenateString(&search_path,"; MAGICK_FONT_PATH:");
       ConcatenateString(&search_path,path);
     }
-
 #if defined(WIN32)
   {
     char
