@@ -186,6 +186,13 @@ static void
 %
 %
 */
+
+MagickExport IndexPacket ValidateColormapIndex(Image *image,
+  const unsigned long index)
+{
+  return(ConstrainColormapIndex(image,index));
+}
+
 MagickExport IndexPacket ConstrainColormapIndex(Image *image,
   const unsigned long index)
 {
