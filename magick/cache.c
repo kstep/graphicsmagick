@@ -727,7 +727,6 @@ MagickExport void DestroyCacheInfo(Cache cache)
     case MemoryCache:
     {
       LiberateMemory((void **) &cache_info->pixels);
-      (void) GetCacheThreshold(-cache_info->length);
       break;
     }
     case MemoryMappedCache:
@@ -755,6 +754,7 @@ MagickExport void DestroyCacheInfo(Cache cache)
     }
   if (cache_info->semaphore != (SemaphoreInfo *) NULL)
     DestroySemaphoreInfo(&cache_info->semaphore);
+  (void) GetCacheThreshold(-cache_info->length);
   FormatString(message,"destroy %.1024s",cache_info->filename);
   LogMagickEvent(CacheEvent,message);
   LiberateMemory((void **) &cache_info);
@@ -2063,6 +2063,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
         }
     }
   (void) close(file);
+  (void) GetCacheThreshold(cache_info->length);
 #if defined(SIGBUS)
   (void) signal(SIGBUS,CacheSignalHandler);
 #endif
