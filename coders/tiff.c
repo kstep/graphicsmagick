@@ -792,6 +792,14 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               "Memory allocation failed",image)
           }
         image->matte=extra_samples == 1;
+        if (image->colorspace == CMYKColorspace)
+          {
+            if (samples_per_pixel > 4)
+              image->matte=True;
+          }
+        else
+          if (samples_per_pixel > 3)
+            image->matte=True;
         for (y=0; y < (long) image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
