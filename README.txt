@@ -532,9 +532,9 @@ MAGICK DELEGATES
 
           http://www.wvware.com/libwmf.html
 
-      to read the Windows Meta File image format.  If libwmf is
-      used, then WMF files are rendered directly by ImageMagick
-      otherwise the rendering is done by wmftopng.
+      to read the Windows Meta File image format (16-bit WMF files only,
+      not 32-bit WMF). If libwmf is used, then WMF files are rendered
+      directly by ImageMagick otherwise the rendering is done by wmftopng.
 
     o ImageMagick requires wget available via the Web as
 
