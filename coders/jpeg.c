@@ -850,6 +850,7 @@ ModuleExport void RegisterJPEGImage(void)
     *entry;
 
   entry=SetMagickInfo("JPEG");
+  entry->thread_support=False;
   entry->decoder=ReadJPEGImage;
   entry->encoder=WriteJPEGImage;
   entry->magick=IsJPEG;
@@ -865,6 +866,7 @@ ModuleExport void RegisterJPEGImage(void)
     entry->version=AcquireString(version);
   }
 #endif
+  entry->module=AcquireString("JPEG");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("JPG");
   entry->thread_support=False;

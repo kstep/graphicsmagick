@@ -1513,23 +1513,23 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobLSBLong(image,0xff000000UL);  /* Alpha mask */
         (void) WriteBlobLSBLong(image,0x00000001L);  /* CSType==Calib. RGB */
         (void) WriteBlobLSBLong(image,
-           (long) image->chromaticity.red_primary.x*0x3ffffff);
+          (long) image->chromaticity.red_primary.x*0x3ffffff);
         (void) WriteBlobLSBLong(image,
-           (long) image->chromaticity.red_primary.y*0x3ffffff);
+          (long) image->chromaticity.red_primary.y*0x3ffffff);
         (void) WriteBlobLSBLong(image,
-           (long) image->chromaticity.red_primary.z*0x3ffffff);
+          (long) image->chromaticity.red_primary.z*0x3ffffff);
         (void) WriteBlobLSBLong(image,
-           (long) image->chromaticity.green_primary.x*0x3ffffff);
+          (long) image->chromaticity.green_primary.x*0x3ffffff);
         (void) WriteBlobLSBLong(image,
-           (long) image->chromaticity.green_primary.y*0x3ffffff);
+          (long) image->chromaticity.green_primary.y*0x3ffffff);
         (void) WriteBlobLSBLong(image,
-           (long) image->chromaticity.green_primary.z*0x3ffffff);
+          (long) image->chromaticity.green_primary.z*0x3ffffff);
         (void) WriteBlobLSBLong(image,
-           (long) image->chromaticity.blue_primary.x*0x3ffffff);
+          (long) image->chromaticity.blue_primary.x*0x3ffffff);
         (void) WriteBlobLSBLong(image,
-           (long) image->chromaticity.blue_primary.y*0x3ffffff);
+          (long) image->chromaticity.blue_primary.y*0x3ffffff);
         (void) WriteBlobLSBLong(image,
-           (long) image->chromaticity.blue_primary.z*0x3ffffff);
+          (long) image->chromaticity.blue_primary.z*0x3ffffff);
         (void) WriteBlobLSBLong(image,(long) bmp_info.gamma_scale.x*0xffff);
         (void) WriteBlobLSBLong(image,(long) bmp_info.gamma_scale.y*0xffff);
         (void) WriteBlobLSBLong(image,(long) bmp_info.gamma_scale.z*0xffff);
