@@ -1,27 +1,27 @@
 The ImageMagick Studio LLC development group announces the release of
-ImageMagick 5.5.2. Version 5.5.2 provides a number of significant
+ImageMagick 5.5.2.  Version 5.5.2 provides a number of significant
 enhancements over earlier ImageMagick versions.
 
 ImageMagick is a robust collection of tools and libraries to read,
 write, and manipulate an image in many image formats (over 87 major
 formats) including popular formats like FlashPIX, GIF, JPEG, PDF, PNG,
-Photo CD, SVG, TIFF, and WMF. With ImageMagick images can be created
-dynamically, making it suitable for Web applications. You can also
+Photo CD, SVG, TIFF, and WMF.  With ImageMagick images can be created
+dynamically, making it suitable for Web applications.  You can also
 resize, rotate, sharpen, color reduce, or add special effects to an
 image and save your completed work in the same or differing image
-format. Image processing operations are available from the command line,
-as well as through C, C++, PERL, Visual Basic, VBscript, and Jscript
-based programming interfaces. Support for programming with Java and
+format.  Image processing operations are available from the command line,
+as well as through C, C++, PERL, Visual Basic, VBscript, and Jscript-
+based programming interfaces.  Support for programming with Java and
 Python is provided by 3rd parties.
 
 ImageMagick is copyrighted by ImageMagick Studio, a nonprofit
 organization dedicated to making software imaging solutions freely
-available. ImageMagick is available for free, may be used to support
+available.  ImageMagick is available for free, may be used to support
 both open and proprietary applications, and may be redistributed without
 fee.
 
-Significant changes from the 5.5.1 release (see release ChangeLog for
-details):
+Significant changes from the 5.5.1 release (see ChangeLog in the distribution
+for details):
 
   o General:
 
@@ -37,19 +37,23 @@ details):
       + ImageMagick now reads CMYK + alpha layered PSD files correctly.
 
       + PNG coder now supports the PNG8, PNG24, and PNG32 magick tag
-        specifications in order to provide the user with more control over
-        the output sub-format.
+        specifications in order to provide the user with more control
+        over the output sub-format.
 
       + PDF coder now writes much smaller files when the source image
         is a TIFF file.
 
       + PS2 and PS3 coders now write valid Postscript files.
 
+      + Most error messages are prepared for Internationalization.
+        Complete Internationalization is still a few releases in the
+        future.
+
     - Windows specific changes
 
      + The image pixel cache now supports large images (>2GB of total
        uncompressed pixel data) under Windows NT. Support for the large
-       pixel cache is enabled by default. Windows '95 is not supported
+       pixel cache is enabled by default.  Windows '95 is not supported
        unless the large pixel cache support is disabled.
 
      + Updated to use Jasper 1.600.0 for JPEG v2 support.
@@ -64,10 +68,10 @@ details):
 
      - The 'display' utility is tremendously faster at loading large
        images (larger than the display size), and is faster at loading
-       images, and at quitting, in general.
+       images, and exiting, in general.
 
   o C API enhancements:
-     - Added AdaptiveThresholdImage() function.
+     - Added AdaptiveThresholdImage() method.
      - List APIs improved.
 
   o C++ API enhancements:
@@ -90,7 +94,7 @@ The ImageMagick 5.5.2 Windows install package is available via ftp as
 
   ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-i686-pc-windows.exe
 
-         or (QuantumDepth=8 version)
+or (QuantumDepth=8 version)
 
   ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-i686-Q8-windows.exe
 
