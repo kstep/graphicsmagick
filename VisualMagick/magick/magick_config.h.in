@@ -1,25 +1,25 @@
 #if defined(WIN32)
-#define inline __inline
+//#define HasAUTOTRACE
+#define HAVE_FREETYPE_FREETYPE_H
+#define HAVE_LIBXML_XMLERROR_H
+#define HAVE_MMAP
+#define HAVE_SYS_TYPES_H 1
+#define HasBZLIB
+#define HasFPX
+//#define HasHDF
 #define HasJBIG
+#define HasJP2
 #define HasJPEG
 #define HasLCMS
+#define HasLZW 1
 #define HasPNG
 #define HasTIFF
 #define HasTTF
-#define HasX11
-#define HasZLIB
-#define HasBZLIB
-//#define HasHDF
-#define HasFPX
-#define HasJP2
-#define HAVE_MMAP
-#define HAVE_IOSFWD 1
-#define HasXML
-#define HAVE_LIBXML_XMLERROR_H
-#define HAVE_FREETYPE_FREETYPE_H
-#define QuantumDepth 16
-#define HasLZW 1
-//#define HasAUTOTRACE
-#define HasWMFlite
 #define HasWIN32WMFAPI
+#define HasWMFlite
+#define HasX11
+#define HasXML
+#define HasZLIB
+#define QuantumDepth 16
+#define inline __inline
 #endif
