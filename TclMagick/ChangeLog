@@ -1,3 +1,15 @@
+2003-12-27  David N. Welton  <davidw@dedasys.com>
+
+	* doc/: Moved files over from www directory as doc/ is proper for
+	a Tcl package.
+
+	* src/TclMagick.c: Removed USE_TCL_STUBS - it should not be hard
+	coded in the file, but passed on the command line or in some other
+	fashion.
+
+	* src/: Added src directory for sources to correspond with a
+	regular Tcl package layout.
+
 2003-12-26  David N. Welton  <davidw@dedasys.com>
 
 	* source/TclMagick.c: Removed funny ^M characters.  I hope this

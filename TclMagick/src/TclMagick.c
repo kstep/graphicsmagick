@@ -12,8 +12,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define USE_TCL_STUBS
-
 #include "TclMagick.h"
 #include <wand/magick_wand.h>
 
