@@ -194,7 +194,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   {
     if ((count == 0) || (tga_info.image_type == 0) ||
         (tga_info.image_type > 11))
-      ThrowReaderException(CorruptImageError,"Not a TGA image file",image);
+      ThrowReaderException(CorruptImageError,"NotATGAImageFile",image);
     tga_info.colormap_index=ReadBlobLSBShort(image);
     tga_info.colormap_length=ReadBlobLSBShort(image);
     tga_info.colormap_size=ReadBlobByte(image);
@@ -328,8 +328,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 count=ReadBlob(image,1,(char *) &runlength);
                 if (count == 0)
-                  ThrowReaderException(CorruptImageError,"UnableToReadImageData",
-                    image);
+                  ThrowReaderException(CorruptImageError,
+                    "UnableToReadImageData",image);
                 flag=runlength & 0x80;
                 if (flag != 0)
                   runlength-=128;

@@ -167,6 +167,12 @@ const char *GetLocaleMessage(const char *tag)
             default:
               return tag;
 
+            case 'i':  case 'I':
+              if (p - tp == 31 && !LocaleNCompare(tp, "InconsistentPeristentCacheDepth", 31))
+                return *np ? tag : "Inconsistent peristent cache depth";
+              else
+                return tag;
+
             case 'p':  case 'P':
               if (p - tp == 19 && !LocaleNCompare(tp, "PixelCacheIsNotOpen", 19))
                 return *np ? tag : "Pixel cache is not open";
@@ -188,6 +194,9 @@ const char *GetLocaleMessage(const char *tag)
               else
               if (p - tp == 17 && !LocaleNCompare(tp, "UnableToOpenCache", 17))
                 return *np ? tag : "Unable to open cache";
+              else
+              if (p - tp == 20 && !LocaleNCompare(tp, "UnableToPersistCache", 20))
+                return *np ? tag : "Unable to persist pixel cache";
               else
               if (p - tp == 22 && !LocaleNCompare(tp, "UnableToReadPixelCache", 22))
                 return *np ? tag : "Unable to read pixel cache";
@@ -212,20 +221,41 @@ const char *GetLocaleMessage(const char *tag)
                 return tag;
 
               case 'c':  case 'C':
+                if (p - tp == 24 && !LocaleNCompare(tp, "ColormapTypeNotSupported", 24))
+                  return *np ? tag : "Colormap type not supported";
+                else
                 if (p - tp == 21 && !LocaleNCompare(tp, "ColorTypeNotSupported", 21))
                   return *np ? tag : "Color type not supported";
                 else
                   return tag;
 
+              case 'd':  case 'D':
+                if (p - tp == 20 && !LocaleNCompare(tp, "DeltaPNGNotSupported", 20))
+                  return *np ? tag : "Delta-PNG is not supported";
+                else
+                  return tag;
+
               case 'i':  case 'I':
+                if (p - tp == 29 && !LocaleNCompare(tp, "ImageDoesNotHaveAMatteChannel", 29))
+                  return *np ? tag : "Image does not have a matte channel";
+                else
                 if (p - tp == 21 && !LocaleNCompare(tp, "ImageTypeNotSupported", 21))
                   return *np ? tag : "Image type not supported";
+                else
+                if (p - tp == 24 && !LocaleNCompare(tp, "IncompatibleSizeOfDouble", 24))
+                  return *np ? tag : "Incompatible size of double";
                 else
                   return tag;
 
               case 'j':  case 'J':
+                if (p - tp == 26 && !LocaleNCompare(tp, "JNGCompressionNotSupported", 26))
+                  return *np ? tag : "JNG compression not supported";
+                else
                 if (p - tp == 27 && !LocaleNCompare(tp, "JPEGCompressionNotSupported", 27))
                   return *np ? tag : "JPEG compression not supported";
+                else
+                if (p - tp == 19 && !LocaleNCompare(tp, "JPEGEmbeddingFailed", 19))
+                  return *np ? tag : "JPEG embedding failed";
                 else
                   return tag;
 
@@ -233,11 +263,44 @@ const char *GetLocaleMessage(const char *tag)
                 if (p - tp == 24 && !LocaleNCompare(tp, "MSBByteOrderNotSupported", 24))
                   return *np ? tag : "MSB order not supported bitmap";
                 else
+                if (p - tp == 39 && !LocaleNCompare(tp, "MultidimensionalMatricesAreNotSupported", 39))
+                  return *np ? tag : "Multi-dimensional matrices are not supported";
+                else
+                if (p - tp == 30 && !LocaleNCompare(tp, "MultipleRecordListNotSupported", 30))
+                  return *np ? tag : "Multiple record list not supported";
+                else
                   return tag;
 
               case 'n':  case 'N':
+                if (p - tp == 21 && !LocaleNCompare(tp, "No8BIMDataIsAvailable", 21))
+                  return *np ? tag : "No 8BIM data is available";
+                else
+                if (p - tp == 21 && !LocaleNCompare(tp, "NoAPP1DataIsAvailable", 21))
+                  return *np ? tag : "No APP1 data is available";
+                else
                 if (p - tp == 19 && !LocaleNCompare(tp, "NoBitmapOnClipboard", 19))
                   return *np ? tag : "No bitmap on clipboard";
+                else
+                if (p - tp == 25 && !LocaleNCompare(tp, "NoColorProfileIsAvailable", 25))
+                  return *np ? tag : "No color profile is available";
+                else
+                if (p - tp == 18 && !LocaleNCompare(tp, "NoIPTCInfoWasFound", 18))
+                  return *np ? tag : "No IPTC info was found";
+                else
+                if (p - tp == 22 && !LocaleNCompare(tp, "NoIPTCProfileAvailable", 22))
+                  return *np ? tag : "No IPTC profile available";
+                else
+                if (p - tp == 22 && !LocaleNCompare(tp, "NotASupportedImageFile", 22))
+                  return *np ? tag : "Not a support image file";
+                else
+                  return tag;
+
+              case 'o':  case 'O':
+                if (p - tp == 34 && !LocaleNCompare(tp, "OnlyContinuousTonePictureSupported", 34))
+                  return *np ? tag : "Only continuous tone picture supported";
+                else
+                if (p - tp == 27 && !LocaleNCompare(tp, "OnlyLevelZerofilesSupported", 27))
+                  return *np ? tag : "Only level zero files Supported";
                 else
                   return tag;
 
@@ -254,17 +317,32 @@ const char *GetLocaleMessage(const char *tag)
                   return tag;
 
               case 'u':  case 'U':
+                if (p - tp == 19 && !LocaleNCompare(tp, "UnableToCopyProfile", 19))
+                  return *np ? tag : "Unable to copy profile";
+                else
                 if (p - tp == 17 && !LocaleNCompare(tp, "UnableToCreateADC", 17))
                   return *np ? tag : "Unable to create a DC";
                 else
                 if (p - tp == 20 && !LocaleNCompare(tp, "UnableToCreateBitmap", 20))
                   return *np ? tag : "Unable to create bitmap";
                 else
+                if (p - tp == 24 && !LocaleNCompare(tp, "UnableToReadCIELABImages", 24))
+                  return *np ? tag : "Unable to read CIELAB images";
+                else
                 if (p - tp == 21 && !LocaleNCompare(tp, "UnableToTranslateText", 21))
                   return *np ? tag : "Unable to translate text";
                 else
+                if (p - tp == 27 && !LocaleNCompare(tp, "UnableToWriteMPEGParameters", 27))
+                  return *np ? tag : "Unable to write MPEG parameters";
+                else
                 if (p - tp == 24 && !LocaleNCompare(tp, "UnableToZipCompressImage", 24))
                   return *np ? tag : "Unable to zip-compress image";
+                else
+                if (p - tp == 30 && !LocaleNCompare(tp, "UnsupportedCellTypeInTheMatrix", 30))
+                  return *np ? tag : "Unsupported cell type in the matrix";
+                else
+                if (p - tp == 23 && !LocaleNCompare(tp, "UnsupportedRLEImagefile", 23))
+                  return *np ? tag : "Unsupported RLE image file";
                 else
                   return tag;
               }
@@ -375,6 +453,9 @@ const char *GetLocaleMessage(const char *tag)
                   else
                   if (p - tp == 22 && !LocaleNCompare(tp, "UnableToSetSummaryInfo", 22))
                     return *np ? tag : "Unable to set summary info";
+                  else
+                  if (p - tp == 22 && !LocaleNCompare(tp, "UnableToWriteSVGFormat", 22))
+                    return *np ? tag : "Unable to write SVG format";
                   else
                     return tag;
                 }
@@ -489,6 +570,9 @@ const char *GetLocaleMessage(const char *tag)
                       if (p - tp == 18 && !LocaleNCompare(tp, "NoImagesWereLoaded", 18))
                         return *np ? tag : "No images were loaded";
                       else
+                      if (p - tp == 22 && !LocaleNCompare(tp, "NoLocaleImageAttribute", 22))
+                        return *np ? tag : "No [LOCALE] image attribute";
+                      else
                         return tag;
 
                     case 'u':  case 'U':
@@ -506,6 +590,12 @@ const char *GetLocaleMessage(const char *tag)
                       else
                       if (p - tp == 24 && !LocaleNCompare(tp, "UnableToSetImageClipMask", 24))
                         return *np ? tag : "Unable to set image clip mask";
+                      else
+                        return tag;
+
+                    case 'w':  case 'W':
+                      if (p - tp == 25 && !LocaleNCompare(tp, "WidthOrHeightExceedsLimit", 25))
+                        return *np ? tag : "Width or height exceeds limit";
                       else
                         return tag;
                     }
@@ -780,6 +870,12 @@ const char *GetLocaleMessage(const char *tag)
                         return tag;
 
                     case 'n':  case 'N':
+                      if (p - tp == 15 && !LocaleNCompare(tp, "NoImagesDefined", 15))
+                        return *np ? tag : "No images defined";
+                      else
+                      if (p - tp == 21 && !LocaleNCompare(tp, "NoImageVectorGraphics", 21))
+                        return *np ? tag : "No image vector graphics";
+                      else
                       if (p - tp == 21 && !LocaleNCompare(tp, "NoProfileNameWasGiven", 21))
                         return *np ? tag : "No profile name was given";
                       else
@@ -821,6 +917,12 @@ const char *GetLocaleMessage(const char *tag)
                       else
                       if (p - tp == 22 && !LocaleNCompare(tp, "UnableToThresholdImage", 22))
                         return *np ? tag : "Unable to threshold image";
+                      else
+                      if (p - tp == 21 && !LocaleNCompare(tp, "UnrecognizedAttribute", 21))
+                        return *np ? tag : "Unrecognized attribute";
+                      else
+                      if (p - tp == 19 && !LocaleNCompare(tp, "UnrecognizedElement", 19))
+                        return *np ? tag : "Unrecognized element";
                       else
                       if (p - tp == 18 && !LocaleNCompare(tp, "UnrecognizedOption", 18))
                         return *np ? tag : "Unrecognized option";
@@ -1039,6 +1141,9 @@ const char *GetLocaleMessage(const char *tag)
                     return tag;
 
                 case 'c':  case 'C':
+                  if (p - tp == 24 && !LocaleNCompare(tp, "ColormapExceeds256Colors", 24))
+                    return *np ? tag : "Colormap exceeded 256 colors";
+                  else
                   if (p - tp == 19 && !LocaleNCompare(tp, "CompressionNotValid", 19))
                     return *np ? tag : "Compression not valid";
                   else
@@ -1047,6 +1152,18 @@ const char *GetLocaleMessage(const char *tag)
                   else
                   if (p - tp == 18 && !LocaleNCompare(tp, "CorruptInlineImage", 18))
                     return *np ? tag : "Corrupt inline image";
+                  else
+                  if (p - tp == 15 && !LocaleNCompare(tp, "CorruptMNGImage", 15))
+                    return *np ? tag : "Corrupt MNG image";
+                  else
+                  if (p - tp == 15 && !LocaleNCompare(tp, "CorruptOTBImage", 15))
+                    return *np ? tag : "Corrupt OTB image";
+                  else
+                  if (p - tp == 15 && !LocaleNCompare(tp, "CorruptPCDImage", 15))
+                    return *np ? tag : "Corrupt PCD image";
+                  else
+                  if (p - tp == 15 && !LocaleNCompare(tp, "CorruptPDBImage", 15))
+                    return *np ? tag : "Corrupt PDB image";
                   else
                     return tag;
 
@@ -1103,6 +1220,9 @@ const char *GetLocaleMessage(const char *tag)
                       if (p - tp == 16 && !LocaleNCompare(tp, "NotADCMImageFile", 16))
                         return *np ? tag : "Not a DCM image file";
                       else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotADCXImageFile", 16))
+                        return *np ? tag : "Not a DCX image file";
+                      else
                       if (p - tp == 16 && !LocaleNCompare(tp, "NotADIBImageFile", 16))
                         return *np ? tag : "Not a DIB image file";
                       else
@@ -1111,6 +1231,15 @@ const char *GetLocaleMessage(const char *tag)
                       else
                       if (p - tp == 16 && !LocaleNCompare(tp, "NotAGIFImageFile", 16))
                         return *np ? tag : "Not a GIF image file";
+                      else
+                      if (p - tp == 19 && !LocaleNCompare(tp, "NotAMATLABImageFile", 19))
+                        return *np ? tag : "Not a MATLAB image file";
+                      else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotAMNGImageFile", 16))
+                        return *np ? tag : "Not a MNG image file";
+                      else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotAMTVImageFile", 16))
+                        return *np ? tag : "Not a MTV image file";
                       else
                       if (p - tp == 17 && !LocaleNCompare(tp, "NotAnARTImageFile", 17))
                         return *np ? tag : "Not an ART image file";
@@ -1127,11 +1256,59 @@ const char *GetLocaleMessage(const char *tag)
                       if (p - tp == 17 && !LocaleNCompare(tp, "NotAnICOImageFile", 17))
                         return *np ? tag : "Not a ICO image file";
                       else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotAOTBImageFile", 16))
+                        return *np ? tag : "Not a OTB image file";
+                      else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotAPCDImageFile", 16))
+                        return *np ? tag : "Not a PCD image file";
+                      else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotAPCXImageFile", 16))
+                        return *np ? tag : "Not a PCX image file";
+                      else
+                      if (p - tp == 17 && !LocaleNCompare(tp, "NotAPICTImageFile", 17))
+                        return *np ? tag : "Not a PICT image file";
+                      else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotAPIXImageFile", 16))
+                        return *np ? tag : "Not a PIX image file";
+                      else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotAPNMImageFile", 16))
+                        return *np ? tag : "Not a PNM image file";
+                      else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotAPSDImageFile", 16))
+                        return *np ? tag : "Not a PSD image file";
+                      else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotAPWPImageFile", 16))
+                        return *np ? tag : "Not a PSP image file";
+                      else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotARLEImageFile", 16))
+                        return *np ? tag : "Not a RLE image file";
+                      else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotASCTImageFile", 16))
+                        return *np ? tag : "Not a SCT image file";
+                      else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotASFWImageFile", 16))
+                        return *np ? tag : "Not a SFW image file";
+                      else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotASGIImageFile", 16))
+                        return *np ? tag : "Not a SGI image file";
+                      else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotASUNImageFile", 16))
+                        return *np ? tag : "Not a SUN image file";
+                      else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotATGAImageFile", 16))
+                        return *np ? tag : "Not a TGA image file";
+                      else
                         return tag;
 
                     case 's':  case 'S':
                       if (p - tp == 30 && !LocaleNCompare(tp, "StaticPlanesValueNotEqualToOne", 30))
                         return *np ? tag : "Static planes value not equal to 1";
+                      else
+                        return tag;
+
+                    case 't':  case 'T':
+                      if (p - tp == 22 && !LocaleNCompare(tp, "TooMuchImageDataInFile", 22))
+                        return *np ? tag : "Too much image data in file";
                       else
                         return tag;
 
@@ -1154,14 +1331,29 @@ const char *GetLocaleMessage(const char *tag)
                       if (p - tp == 28 && !LocaleNCompare(tp, "UnableToRunlengthDecodeImage", 28))
                         return *np ? tag : "Unable to runlength decode image";
                       else
+                      if (p - tp == 23 && !LocaleNCompare(tp, "UnableToUncompressImage", 23))
+                        return *np ? tag : "Unable to uncompress image";
+                      else
                       if (p - tp == 19 && !LocaleNCompare(tp, "UnexpectedEndOfFile", 19))
                         return *np ? tag : "Unexpected end-of-file";
+                      else
+                      if (p - tp == 18 && !LocaleNCompare(tp, "UnknownPatternType", 18))
+                        return *np ? tag : "Unknown pattern type";
                       else
                       if (p - tp == 29 && !LocaleNCompare(tp, "UnrecognizedCompressionMethod", 29))
                         return *np ? tag : "Unrecognized compression method";
                       else
                         return tag;
                     }
+                  else
+                    return tag;
+
+                case 'w':  case 'W':
+                  if (p - tp == 7 && !LocaleNCompare(tp, "Warning", 7))
+                    if (LocaleNCompare(NEXT_FIELD, "SkipToSyncByte", 14) || p - tp != 14)
+                      return tag;
+                    else
+                      return *np ? tag : "Corrupt PCD image, skipping to sync byte";
                   else
                     return tag;
                 }
@@ -1240,6 +1432,12 @@ const char *GetLocaleMessage(const char *tag)
             default:
               return tag;
 
+            case 'i':  case 'I':
+              if (p - tp == 31 && !LocaleNCompare(tp, "InconsistentPeristentCacheDepth", 31))
+                return *np ? tag : "Inconsistent peristent cache depth";
+              else
+                return tag;
+
             case 'p':  case 'P':
               if (p - tp == 19 && !LocaleNCompare(tp, "PixelCacheIsNotOpen", 19))
                 return *np ? tag : "Pixel cache is not open";
@@ -1261,6 +1459,9 @@ const char *GetLocaleMessage(const char *tag)
               else
               if (p - tp == 17 && !LocaleNCompare(tp, "UnableToOpenCache", 17))
                 return *np ? tag : "Unable to open cache";
+              else
+              if (p - tp == 20 && !LocaleNCompare(tp, "UnableToPersistCache", 20))
+                return *np ? tag : "Unable to persist pixel cache";
               else
               if (p - tp == 22 && !LocaleNCompare(tp, "UnableToReadPixelCache", 22))
                 return *np ? tag : "Unable to read pixel cache";
@@ -1285,20 +1486,41 @@ const char *GetLocaleMessage(const char *tag)
                 return tag;
 
               case 'c':  case 'C':
+                if (p - tp == 24 && !LocaleNCompare(tp, "ColormapTypeNotSupported", 24))
+                  return *np ? tag : "Colormap type not supported";
+                else
                 if (p - tp == 21 && !LocaleNCompare(tp, "ColorTypeNotSupported", 21))
                   return *np ? tag : "Color type not supported";
                 else
                   return tag;
 
+              case 'd':  case 'D':
+                if (p - tp == 20 && !LocaleNCompare(tp, "DeltaPNGNotSupported", 20))
+                  return *np ? tag : "Delta-PNG is not supported";
+                else
+                  return tag;
+
               case 'i':  case 'I':
+                if (p - tp == 29 && !LocaleNCompare(tp, "ImageDoesNotHaveAMatteChannel", 29))
+                  return *np ? tag : "Image does not have a matte channel";
+                else
                 if (p - tp == 21 && !LocaleNCompare(tp, "ImageTypeNotSupported", 21))
                   return *np ? tag : "Image type not supported";
+                else
+                if (p - tp == 24 && !LocaleNCompare(tp, "IncompatibleSizeOfDouble", 24))
+                  return *np ? tag : "Incompatible size of double";
                 else
                   return tag;
 
               case 'j':  case 'J':
+                if (p - tp == 26 && !LocaleNCompare(tp, "JNGCompressionNotSupported", 26))
+                  return *np ? tag : "JNG compression not supported";
+                else
                 if (p - tp == 27 && !LocaleNCompare(tp, "JPEGCompressionNotSupported", 27))
                   return *np ? tag : "JPEG compression not supported";
+                else
+                if (p - tp == 19 && !LocaleNCompare(tp, "JPEGEmbeddingFailed", 19))
+                  return *np ? tag : "JPEG embedding failed";
                 else
                   return tag;
 
@@ -1306,11 +1528,44 @@ const char *GetLocaleMessage(const char *tag)
                 if (p - tp == 24 && !LocaleNCompare(tp, "MSBByteOrderNotSupported", 24))
                   return *np ? tag : "MSB order not supported bitmap";
                 else
+                if (p - tp == 39 && !LocaleNCompare(tp, "MultidimensionalMatricesAreNotSupported", 39))
+                  return *np ? tag : "Multi-dimensional matrices are not supported";
+                else
+                if (p - tp == 30 && !LocaleNCompare(tp, "MultipleRecordListNotSupported", 30))
+                  return *np ? tag : "Multiple record list not supported";
+                else
                   return tag;
 
               case 'n':  case 'N':
+                if (p - tp == 21 && !LocaleNCompare(tp, "No8BIMDataIsAvailable", 21))
+                  return *np ? tag : "No 8BIM data is available";
+                else
+                if (p - tp == 21 && !LocaleNCompare(tp, "NoAPP1DataIsAvailable", 21))
+                  return *np ? tag : "No APP1 data is available";
+                else
                 if (p - tp == 19 && !LocaleNCompare(tp, "NoBitmapOnClipboard", 19))
                   return *np ? tag : "No bitmap on clipboard";
+                else
+                if (p - tp == 25 && !LocaleNCompare(tp, "NoColorProfileIsAvailable", 25))
+                  return *np ? tag : "No color profile is available";
+                else
+                if (p - tp == 18 && !LocaleNCompare(tp, "NoIPTCInfoWasFound", 18))
+                  return *np ? tag : "No IPTC info was found";
+                else
+                if (p - tp == 22 && !LocaleNCompare(tp, "NoIPTCProfileAvailable", 22))
+                  return *np ? tag : "No IPTC profile available";
+                else
+                if (p - tp == 22 && !LocaleNCompare(tp, "NotASupportedImageFile", 22))
+                  return *np ? tag : "Not a support image file";
+                else
+                  return tag;
+
+              case 'o':  case 'O':
+                if (p - tp == 34 && !LocaleNCompare(tp, "OnlyContinuousTonePictureSupported", 34))
+                  return *np ? tag : "Only continuous tone picture supported";
+                else
+                if (p - tp == 27 && !LocaleNCompare(tp, "OnlyLevelZerofilesSupported", 27))
+                  return *np ? tag : "Only level zero files Supported";
                 else
                   return tag;
 
@@ -1327,17 +1582,32 @@ const char *GetLocaleMessage(const char *tag)
                   return tag;
 
               case 'u':  case 'U':
+                if (p - tp == 19 && !LocaleNCompare(tp, "UnableToCopyProfile", 19))
+                  return *np ? tag : "Unable to copy profile";
+                else
                 if (p - tp == 17 && !LocaleNCompare(tp, "UnableToCreateADC", 17))
                   return *np ? tag : "Unable to create a DC";
                 else
                 if (p - tp == 20 && !LocaleNCompare(tp, "UnableToCreateBitmap", 20))
                   return *np ? tag : "Unable to create bitmap";
                 else
+                if (p - tp == 24 && !LocaleNCompare(tp, "UnableToReadCIELABImages", 24))
+                  return *np ? tag : "Unable to read CIELAB images";
+                else
                 if (p - tp == 21 && !LocaleNCompare(tp, "UnableToTranslateText", 21))
                   return *np ? tag : "Unable to translate text";
                 else
+                if (p - tp == 27 && !LocaleNCompare(tp, "UnableToWriteMPEGParameters", 27))
+                  return *np ? tag : "Unable to write MPEG parameters";
+                else
                 if (p - tp == 24 && !LocaleNCompare(tp, "UnableToZipCompressImage", 24))
                   return *np ? tag : "Unable to zip-compress image";
+                else
+                if (p - tp == 30 && !LocaleNCompare(tp, "UnsupportedCellTypeInTheMatrix", 30))
+                  return *np ? tag : "Unsupported cell type in the matrix";
+                else
+                if (p - tp == 23 && !LocaleNCompare(tp, "UnsupportedRLEImagefile", 23))
+                  return *np ? tag : "Unsupported RLE image file";
                 else
                   return tag;
               }
@@ -1448,6 +1718,9 @@ const char *GetLocaleMessage(const char *tag)
                   else
                   if (p - tp == 22 && !LocaleNCompare(tp, "UnableToSetSummaryInfo", 22))
                     return *np ? tag : "Unable to set summary info";
+                  else
+                  if (p - tp == 22 && !LocaleNCompare(tp, "UnableToWriteSVGFormat", 22))
+                    return *np ? tag : "Unable to write SVG format";
                   else
                     return tag;
                 }
@@ -1562,6 +1835,9 @@ const char *GetLocaleMessage(const char *tag)
                       if (p - tp == 18 && !LocaleNCompare(tp, "NoImagesWereLoaded", 18))
                         return *np ? tag : "No images were loaded";
                       else
+                      if (p - tp == 22 && !LocaleNCompare(tp, "NoLocaleImageAttribute", 22))
+                        return *np ? tag : "No [LOCALE] image attribute";
+                      else
                         return tag;
 
                     case 'u':  case 'U':
@@ -1579,6 +1855,12 @@ const char *GetLocaleMessage(const char *tag)
                       else
                       if (p - tp == 24 && !LocaleNCompare(tp, "UnableToSetImageClipMask", 24))
                         return *np ? tag : "Unable to set image clip mask";
+                      else
+                        return tag;
+
+                    case 'w':  case 'W':
+                      if (p - tp == 25 && !LocaleNCompare(tp, "WidthOrHeightExceedsLimit", 25))
+                        return *np ? tag : "Width or height exceeds limit";
                       else
                         return tag;
                     }
@@ -1853,6 +2135,12 @@ const char *GetLocaleMessage(const char *tag)
                         return tag;
 
                     case 'n':  case 'N':
+                      if (p - tp == 15 && !LocaleNCompare(tp, "NoImagesDefined", 15))
+                        return *np ? tag : "No images defined";
+                      else
+                      if (p - tp == 21 && !LocaleNCompare(tp, "NoImageVectorGraphics", 21))
+                        return *np ? tag : "No image vector graphics";
+                      else
                       if (p - tp == 21 && !LocaleNCompare(tp, "NoProfileNameWasGiven", 21))
                         return *np ? tag : "No profile name was given";
                       else
@@ -1894,6 +2182,12 @@ const char *GetLocaleMessage(const char *tag)
                       else
                       if (p - tp == 22 && !LocaleNCompare(tp, "UnableToThresholdImage", 22))
                         return *np ? tag : "Unable to threshold image";
+                      else
+                      if (p - tp == 21 && !LocaleNCompare(tp, "UnrecognizedAttribute", 21))
+                        return *np ? tag : "Unrecognized attribute";
+                      else
+                      if (p - tp == 19 && !LocaleNCompare(tp, "UnrecognizedElement", 19))
+                        return *np ? tag : "Unrecognized element";
                       else
                       if (p - tp == 18 && !LocaleNCompare(tp, "UnrecognizedOption", 18))
                         return *np ? tag : "Unrecognized option";
@@ -2112,6 +2406,9 @@ const char *GetLocaleMessage(const char *tag)
                     return tag;
 
                 case 'c':  case 'C':
+                  if (p - tp == 24 && !LocaleNCompare(tp, "ColormapExceeds256Colors", 24))
+                    return *np ? tag : "Colormap exceeded 256 colors";
+                  else
                   if (p - tp == 19 && !LocaleNCompare(tp, "CompressionNotValid", 19))
                     return *np ? tag : "Compression not valid";
                   else
@@ -2120,6 +2417,18 @@ const char *GetLocaleMessage(const char *tag)
                   else
                   if (p - tp == 18 && !LocaleNCompare(tp, "CorruptInlineImage", 18))
                     return *np ? tag : "Corrupt inline image";
+                  else
+                  if (p - tp == 15 && !LocaleNCompare(tp, "CorruptMNGImage", 15))
+                    return *np ? tag : "Corrupt MNG image";
+                  else
+                  if (p - tp == 15 && !LocaleNCompare(tp, "CorruptOTBImage", 15))
+                    return *np ? tag : "Corrupt OTB image";
+                  else
+                  if (p - tp == 15 && !LocaleNCompare(tp, "CorruptPCDImage", 15))
+                    return *np ? tag : "Corrupt PCD image";
+                  else
+                  if (p - tp == 15 && !LocaleNCompare(tp, "CorruptPDBImage", 15))
+                    return *np ? tag : "Corrupt PDB image";
                   else
                     return tag;
 
@@ -2176,6 +2485,9 @@ const char *GetLocaleMessage(const char *tag)
                       if (p - tp == 16 && !LocaleNCompare(tp, "NotADCMImageFile", 16))
                         return *np ? tag : "Not a DCM image file";
                       else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotADCXImageFile", 16))
+                        return *np ? tag : "Not a DCX image file";
+                      else
                       if (p - tp == 16 && !LocaleNCompare(tp, "NotADIBImageFile", 16))
                         return *np ? tag : "Not a DIB image file";
                       else
@@ -2184,6 +2496,15 @@ const char *GetLocaleMessage(const char *tag)
                       else
                       if (p - tp == 16 && !LocaleNCompare(tp, "NotAGIFImageFile", 16))
                         return *np ? tag : "Not a GIF image file";
+                      else
+                      if (p - tp == 19 && !LocaleNCompare(tp, "NotAMATLABImageFile", 19))
+                        return *np ? tag : "Not a MATLAB image file";
+                      else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotAMNGImageFile", 16))
+                        return *np ? tag : "Not a MNG image file";
+                      else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotAMTVImageFile", 16))
+                        return *np ? tag : "Not a MTV image file";
                       else
                       if (p - tp == 17 && !LocaleNCompare(tp, "NotAnARTImageFile", 17))
                         return *np ? tag : "Not an ART image file";
@@ -2200,11 +2521,59 @@ const char *GetLocaleMessage(const char *tag)
                       if (p - tp == 17 && !LocaleNCompare(tp, "NotAnICOImageFile", 17))
                         return *np ? tag : "Not a ICO image file";
                       else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotAOTBImageFile", 16))
+                        return *np ? tag : "Not a OTB image file";
+                      else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotAPCDImageFile", 16))
+                        return *np ? tag : "Not a PCD image file";
+                      else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotAPCXImageFile", 16))
+                        return *np ? tag : "Not a PCX image file";
+                      else
+                      if (p - tp == 17 && !LocaleNCompare(tp, "NotAPICTImageFile", 17))
+                        return *np ? tag : "Not a PICT image file";
+                      else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotAPIXImageFile", 16))
+                        return *np ? tag : "Not a PIX image file";
+                      else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotAPNMImageFile", 16))
+                        return *np ? tag : "Not a PNM image file";
+                      else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotAPSDImageFile", 16))
+                        return *np ? tag : "Not a PSD image file";
+                      else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotAPWPImageFile", 16))
+                        return *np ? tag : "Not a PSP image file";
+                      else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotARLEImageFile", 16))
+                        return *np ? tag : "Not a RLE image file";
+                      else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotASCTImageFile", 16))
+                        return *np ? tag : "Not a SCT image file";
+                      else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotASFWImageFile", 16))
+                        return *np ? tag : "Not a SFW image file";
+                      else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotASGIImageFile", 16))
+                        return *np ? tag : "Not a SGI image file";
+                      else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotASUNImageFile", 16))
+                        return *np ? tag : "Not a SUN image file";
+                      else
+                      if (p - tp == 16 && !LocaleNCompare(tp, "NotATGAImageFile", 16))
+                        return *np ? tag : "Not a TGA image file";
+                      else
                         return tag;
 
                     case 's':  case 'S':
                       if (p - tp == 30 && !LocaleNCompare(tp, "StaticPlanesValueNotEqualToOne", 30))
                         return *np ? tag : "Static planes value not equal to 1";
+                      else
+                        return tag;
+
+                    case 't':  case 'T':
+                      if (p - tp == 22 && !LocaleNCompare(tp, "TooMuchImageDataInFile", 22))
+                        return *np ? tag : "Too much image data in file";
                       else
                         return tag;
 
@@ -2227,14 +2596,29 @@ const char *GetLocaleMessage(const char *tag)
                       if (p - tp == 28 && !LocaleNCompare(tp, "UnableToRunlengthDecodeImage", 28))
                         return *np ? tag : "Unable to runlength decode image";
                       else
+                      if (p - tp == 23 && !LocaleNCompare(tp, "UnableToUncompressImage", 23))
+                        return *np ? tag : "Unable to uncompress image";
+                      else
                       if (p - tp == 19 && !LocaleNCompare(tp, "UnexpectedEndOfFile", 19))
                         return *np ? tag : "Unexpected end-of-file";
+                      else
+                      if (p - tp == 18 && !LocaleNCompare(tp, "UnknownPatternType", 18))
+                        return *np ? tag : "Unknown pattern type";
                       else
                       if (p - tp == 29 && !LocaleNCompare(tp, "UnrecognizedCompressionMethod", 29))
                         return *np ? tag : "Unrecognized compression method";
                       else
                         return tag;
                     }
+                  else
+                    return tag;
+
+                case 'w':  case 'W':
+                  if (p - tp == 7 && !LocaleNCompare(tp, "Warning", 7))
+                    if (LocaleNCompare(NEXT_FIELD, "SkipToSyncByte", 14) || p - tp != 14)
+                      return tag;
+                    else
+                      return *np ? tag : "Corrupt PCD image, skipping to sync byte";
                   else
                     return tag;
                 }

@@ -306,8 +306,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   p=values+strlen(values);
                 }
               if (values == (char *) NULL)
-                ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
-                  image);
+                ThrowReaderException(ResourceLimitError,
+                  "MemoryAllocationFailed",image);
               *p++=c;
               c=ReadBlobByte(image);
               if (*values != '{')

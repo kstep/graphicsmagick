@@ -270,8 +270,8 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   p=values+strlen(values);
                 }
               if (values == (char *) NULL)
-                ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
-                  image);
+                ThrowReaderException(ResourceLimitError,
+                  "MemoryAllocationFailed",image);
               *p++=c;
               c=ReadBlobByte(image);
               if (*values != '{')
@@ -668,11 +668,9 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (image->storage_class == UndefinedClass) ||
         (image->compression == UndefinedCompression) || (image->columns == 0) ||
         (image->rows == 0))
-      ThrowReaderException(CorruptImageError,"Incorrect image header in file",
-        image);
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader",image);
     if (quantum_depth != QuantumDepth)
-      ThrowReaderException(CacheError,"Inconsistent peristent cache depth",
-        image);
+      ThrowReaderException(CacheError,"InconsistentPeristentCacheDepth",image);
     if (image->montage != (char *) NULL)
       {
         register char
@@ -712,7 +710,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->color_profile.info=(unsigned char *)
           AcquireMemory(image->color_profile.length);
         if (image->color_profile.info == (unsigned char *) NULL)
-          ThrowReaderException(CorruptImageError,"Unable to read color profile",
+          ThrowReaderException(CorruptImageError,"UnableToReadColorProfile",
             image);
         (void) ReadBlob(image,image->color_profile.length,
           image->color_profile.info);
@@ -725,7 +723,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->iptc_profile.info=(unsigned char *)
           AcquireMemory(image->iptc_profile.length);
         if (image->iptc_profile.info == (unsigned char *) NULL)
-          ThrowReaderException(CorruptImageError,"Unable to read IPTC profile",
+          ThrowReaderException(CorruptImageError,"UnableToReadIPTCProfile",
             image);
         (void) ReadBlob(image,image->iptc_profile.length,
           image->iptc_profile.info);
@@ -742,8 +740,8 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->generic_profile[i].info=(unsigned char *)
             AcquireMemory(image->generic_profile[i].length);
           if (image->generic_profile[i].info == (unsigned char *) NULL)
-            ThrowReaderException(CorruptImageError,
-              "Unable to read generic profile",image);
+            ThrowReaderException(CorruptImageError,"UnableToReadGenericProfile",
+              image);
           (void) ReadBlob(image,image->generic_profile[i].length,
             image->generic_profile[i].info);
         }
@@ -812,7 +810,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     status=PersistCache(image,cache_filename,True,&offset,exception);
     if (status == False)
-      ThrowReaderException(CacheError,"Unable to perist pixel cache",image);
+      ThrowReaderException(CacheError,"UnableToPeristPixelCache",image);
     /*
       Proceed to next image.
     */
@@ -1272,7 +1270,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     */
     status=PersistCache(image,cache_filename,False,&offset,&image->exception);
     if (status == False)
-      ThrowWriterException(CacheError,"Unable to perist pixel cache",image);
+      ThrowWriterException(CacheError,"UnableToPeristPixelCache",image);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);

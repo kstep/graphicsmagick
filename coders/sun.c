@@ -295,7 +295,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Verify SUN identifier.
     */
     if (sun_info.magic != 0x59a66a95)
-      ThrowReaderException(CorruptImageError,"Not a SUN raster image",image);
+      ThrowReaderException(CorruptImageError,"NotASUNRasterImage",image);
     sun_info.width=ReadBlobMSBLong(image);
     sun_info.height=ReadBlobMSBLong(image);
     sun_info.depth=ReadBlobMSBLong(image);
@@ -374,8 +374,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       }
       default:
-        ThrowReaderException(CorruptImageError,"Colormap type is not supported",
-          image)
+        ThrowReaderException(CoderError,"ColormapTypeNotSupported",image)
     } 
     image->matte=(sun_info.depth == 32);
     image->columns=sun_info.width;

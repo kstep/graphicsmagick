@@ -284,7 +284,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Verify SGI identifier.
     */
     if (iris_info.magic != 0x01DA)
-      ThrowReaderException(CorruptImageError,"Not a SGI RGB image",image);
+      ThrowReaderException(CorruptImageError,"NotASGIImage",image);
     iris_info.storage=ReadBlobByte(image);
     iris_info.bytes_per_pixel=ReadBlobByte(image);
     iris_info.dimension=ReadBlobMSBShort(image);
@@ -775,8 +775,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if ((image->columns > 65535L) || (image->rows > 65535L))
-    ThrowWriterException(ResourceLimitError,
-      "Width or height limit exceeded",image);
+    ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit",image);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"UnableToOpenFile",image);

@@ -325,11 +325,12 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MATLAB_HDR.NameFlag=ReadBlobLSBShort(image);
 
   if (strncmp(MATLAB_HDR.identific,"MATLAB",6))
-MATLAB_KO:  ThrowReaderException(CorruptImageError,"Not a MATLAB image file!",image);
+MATLAB_KO:  ThrowReaderException(CorruptImageError,"NotAMATLABImageFile",image);
   if (strncmp(MATLAB_HDR.idx,"\1IM",3)) goto MATLAB_KO;
   if(MATLAB_HDR.unknown0!=0x0E) goto MATLAB_KO;
   if(MATLAB_HDR.DimFlag!=8) 
-            ThrowReaderException(CorruptImageError,"Multi-dimensional matrices are not supported!",image);
+    ThrowReaderException(CoderError,"MultidimensionalMatricesAreNotSupported",
+      image);
 
 /*printf("MATLAB_HDR.StructureFlag %ld\n",MATLAB_HDR.StructureFlag);*/
   if(MATLAB_HDR.StructureFlag!=6 && MATLAB_HDR.StructureFlag!=0x806) goto MATLAB_KO;
@@ -363,13 +364,15 @@ MATLAB_KO:  ThrowReaderException(CorruptImageError,"Not a MATLAB image file!",im
        if(MATLAB_HDR.StructureFlag==0x806) goto MATLAB_KO;    
              break; 
       case 9:image->depth=24;      /*double type cell*/
-             if(sizeof(double)!=8) ThrowReaderException(CorruptImageError,"Incompatible size of double!",image);
+             if(sizeof(double)!=8) ThrowReaderException(CoderError,
+               "IncompatibleSizeOfDouble",image);
        if(MATLAB_HDR.StructureFlag==0x806) 
           {      /*complex double type cell*/
     }
        ldblk=(long) (8*MATLAB_HDR.SizeX);
              break; 
-      default:ThrowReaderException(CorruptImageError,"Unsupported cell type in the matrix!",image)
+      default:ThrowReaderException(CoderError,"UnsupportedCellTypeInTheMatrix",
+        image)
       }    
 
    image->columns= MATLAB_HDR.SizeX;

@@ -496,7 +496,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
     if (scanline_length >= row_bytes)
       {
         ThrowException(&image->exception,CorruptImageError,
-          "Unable to uncompress image","scanline length exceeds row bytes");
+          "UnableToUncompressImage","scanline length exceeds row bytes");
         break;
       }
     (void) ReadBlob(blob,scanline_length,(char *) scanline);
@@ -787,17 +787,17 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   ReadRectangle(frame);
   while ((c=ReadBlobByte(image)) == 0);
   if (c != 0x11)
-    ThrowReaderException(CorruptImageError,"Not a PICT image file",image);
+    ThrowReaderException(CorruptImageError,"NotAPICTImageFile",image);
   version=ReadBlobByte(image);
   if (version == 2)
     {
       c=ReadBlobByte(image);
       if (c != 0xff)
-        ThrowReaderException(CorruptImageError,"Not a PICT image file",image);
+        ThrowReaderException(CorruptImageError,"NotAPICTImageFile",image);
     }
   else
     if (version != 1)
-      ThrowReaderException(CorruptImageError,"Not a PICT image file",image);
+      ThrowReaderException(CorruptImageError,"NotAPICTImageFile",image);
   /*
     Create black canvas.
   */
@@ -874,7 +874,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 break;
               }
             if (pattern != 1)
-              ThrowReaderException(CorruptImageError,"Unknown pattern type",
+              ThrowReaderException(CorruptImageError,"UnknownPatternType",
                 image);
             length=ReadBlobMSBShort(image);
             ReadRectangle(frame);
@@ -1062,8 +1062,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             if (pixels == (unsigned char *) NULL)
               {
                 DestroyImage(tile_image);
-                ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
-                  image)
+                ThrowReaderException(ResourceLimitError,
+                  "MemoryAllocationFailed",image)
               }
             /*
               Convert PICT tile image to pixel packets.
@@ -1468,8 +1468,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if ((image->columns > 65535L) || (image->rows > 65535L))
-    ThrowWriterException(ResourceLimitError,"Width or height exceeds limit",
-      image);
+    ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit",image);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"UnableToOpenFile",image);

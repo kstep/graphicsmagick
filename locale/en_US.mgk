@@ -24,6 +24,9 @@
   </Blob>
   <Cache>
     <Error>
+      <Message name="InconsistentPeristentCacheDepth">
+        Inconsistent peristent cache depth
+      </Message>
       <Message name="PixelCacheIsNotOpen">
         Pixel cache is not open
       </Message>
@@ -45,6 +48,9 @@
       <Message name="UnableToGetPixelsFromCache">
         Unable to get pixels from cache
       </Message>
+      <Message name="UnableToPersistCache">
+        Unable to persist pixel cache
+      </Message>
       <Message name="UnableToReadPixelCache">
         Unable to read pixel cache
       </Message>
@@ -55,17 +61,65 @@
       <Message name="ColorTypeNotSupported">
         Color type not supported
       </Message>
+      <Message name="ColormapTypeNotSupported">
+        Colormap type not supported
+      </Message>
+      <Message name="DeltaPNGNotSupported">
+        Delta-PNG is not supported
+      </Message>
+      <Message name="ImageDoesNotHaveAMatteChannel">
+        Image does not have a matte channel
+      </Message>
       <Message name="ImageTypeNotSupported">
         Image type not supported
+      </Message>
+      <Message name="IncompatibleSizeOfDouble">
+        Incompatible size of double
+      </Message>
+      <Message name="JNGCompressionNotSupported">
+        JNG compression not supported
       </Message>
       <Message name="JPEGCompressionNotSupported">
         JPEG compression not supported
       </Message>
+      <Message name="JPEGEmbeddingFailed">
+        JPEG embedding failed
+      </Message>
       <Message name="MSBByteOrderNotSupported">
         MSB order not supported bitmap
       </Message>
+      <Message name="MultidimensionalMatricesAreNotSupported">
+        Multi-dimensional matrices are not supported
+      </Message>
+      <Message name="MultipleRecordListNotSupported">
+        Multiple record list not supported
+      </Message>
       <Message name="NoBitmapOnClipboard">
         No bitmap on clipboard
+      </Message>
+      <Message name="NoAPP1DataIsAvailable">
+        No APP1 data is available
+      </Message>
+      <Message name="No8BIMDataIsAvailable">
+        No 8BIM data is available
+      </Message>
+      <Message name="NoColorProfileIsAvailable">
+        No color profile is available
+      </Message>
+      <Message name="NoIPTCProfileAvailable">
+        No IPTC profile available
+      </Message>
+      <Message name="NoIPTCInfoWasFound">
+        No IPTC info was found
+      </Message>
+      <Message name="NotASupportedImageFile">
+        Not a support image file
+      </Message>
+      <Message name="OnlyContinuousTonePictureSupported">
+        Only continuous tone picture supported
+      </Message>
+      <Message name="OnlyLevelZerofilesSupported">
+        Only level zero files Supported
       </Message>
       <Message name="PNGCompressionNotSupported">
         PNG compression not supported
@@ -73,17 +127,32 @@
       <Message name="RLECompressionNotSupported">
         RLE compression not supported
       </Message>
+      <Message name="UnableToCopyProfile">
+        Unable to copy profile
+      </Message>
       <Message name="UnableToCreateBitmap">
         Unable to create bitmap
       </Message>
       <Message name="UnableToCreateADC">
         Unable to create a DC
       </Message>
+      <Message name="UnableToReadCIELABImages">
+        Unable to read CIELAB images
+      </Message>
       <Message name="UnableToTranslateText">
         Unable to translate text
       </Message>
+      <Message name="UnableToWriteMPEGParameters">
+        Unable to write MPEG parameters
+      </Message>
       <Message name="UnableToZipCompressImage">
         Unable to zip-compress image
+      </Message>
+      <Message name="UnsupportedRLEImagefile">
+        Unsupported RLE image file
+      </Message>
+      <Message name="UnsupportedCellTypeInTheMatrix">
+        Unsupported cell type in the matrix
       </Message>
     </Error>
     <Warning>
@@ -118,6 +187,9 @@
         <Message name="AnErrorHasOccurredWritingToFile">
           An error has occurred writing to file
         </Message>
+        <Message name="ColormapExceeds256Colors">
+          Colormap exceeded 256 colors
+        </Message>
         <Message name="CompressionNotValid">
           Compression not valid
         </Message>
@@ -126,6 +198,18 @@
         </Message>
         <Message name="CorruptInlineImage">
           Corrupt inline image
+        </Message>
+        <Message name="CorruptMNGImage">
+          Corrupt MNG image
+        </Message>
+        <Message name="CorruptOTBImage">
+          Corrupt OTB image
+        </Message>
+        <Message name="CorruptPCDImage">
+          Corrupt PCD image
+        </Message>
+        <Message name="CorruptPDBImage">
+          Corrupt PDB image
         </Message>
         <Message name="ImageFileDoesNotContainAnyImageData">
           Image file or does not contain any image data
@@ -175,6 +259,9 @@
         <Message name="NotADCMImageFile">
           Not a DCM image file
         </Message>
+        <Message name="NotADCXImageFile">
+          Not a DCX image file
+        </Message>
         <Message name="NotADIBImageFile">
           Not a DIB image file
         </Message>
@@ -189,6 +276,60 @@
         </Message>
         <Message name="NotAnICOImageFile">
           Not a ICO image file
+        </Message>
+        <Message name="NotAMATLABImageFile">
+          Not a MATLAB image file
+        </Message>
+        <Message name="NotAMNGImageFile">
+          Not a MNG image file
+        </Message>
+        <Message name="NotAMTVImageFile">
+          Not a MTV image file
+        </Message>
+        <Message name="NotAOTBImageFile">
+          Not a OTB image file
+        </Message>
+        <Message name="NotAPCDImageFile">
+          Not a PCD image file
+        </Message>
+        <Message name="NotAPCXImageFile">
+          Not a PCX image file
+        </Message>
+        <Message name="NotAPICTImageFile">
+          Not a PICT image file
+        </Message>
+        <Message name="NotAPIXImageFile">
+          Not a PIX image file
+        </Message>
+        <Message name="NotAPNMImageFile">
+          Not a PNM image file
+        </Message>
+        <Message name="NotAPSDImageFile">
+          Not a PSD image file
+        </Message>
+        <Message name="NotAPWPImageFile">
+          Not a PSP image file
+        </Message>
+        <Message name="NotARLEImageFile">
+          Not a RLE image file
+        </Message>
+        <Message name="NotASCTImageFile">
+          Not a SCT image file
+        </Message>
+        <Message name="NotASFWImageFile">
+          Not a SFW image file
+        </Message>
+        <Message name="NotASGIImageFile">
+          Not a SGI image file
+        </Message>
+        <Message name="NotASUNImageFile">
+          Not a SUN image file
+        </Message>
+        <Message name="NotATGAImageFile">
+          Not a TGA image file
+        </Message>
+        <Message name="TooMuchImageDataInFile">
+          Too much image data in file
         </Message>
         <Message name="StaticPlanesValueNotEqualToOne">
 					Static planes value not equal to 1
@@ -211,13 +352,24 @@
         <Message name="UnableToRunlengthDecodeImage">
           Unable to runlength decode image
         </Message>
+        <Message name="UnableToUncompressImage">
+          Unable to uncompress image
+        </Message>
         <Message name="UnexpectedEndOfFile">
           Unexpected end-of-file
+        </Message>
+        <Message name="UnknownPatternType">
+          Unknown pattern type
         </Message>
         <Message name="UnrecognizedCompressionMethod">
           Unrecognized compression method
         </Message>
       </Error>
+      <Warning>
+        <Message name="SkipToSyncByte">
+          Corrupt PCD image, skipping to sync byte
+        </Message>
+      </Warning>
     </Image>
   </Corrupt>
   <Delegate>
@@ -282,6 +434,9 @@
       <Message name="UnableToSetSummaryInfo">
         Unable to set summary info
       </Message>
+      <Message name="UnableToWriteSVGFormat">
+        Unable to write SVG format
+      </Message>
     </Error>
   </Delegate>
   <Draw>
@@ -335,6 +490,9 @@
       <Message name="NoImagesWereLoaded">
         No images were loaded
       </Message>
+      <Message name="NoLocaleImageAttribute">
+        No [LOCALE] image attribute
+      </Message>
       <Message name="UnableToCompareImages">
         Unable to compare images
       </Message>
@@ -349,6 +507,9 @@
       </Message>
       <Message name="UnableToSetImageClipMask">
         Unable to set image clip mask
+      </Message>
+      <Message name="WidthOrHeightExceedsLimit">
+        Width or height exceeds limit
       </Message>
     </Error>
   </Image>
@@ -559,6 +720,12 @@
       <Message name="MustSpecifyImageSize">
         Must specify image size
       </Message>
+      <Message name="NoImagesDefined">
+        No images defined
+      </Message>
+      <Message name="NoImageVectorGraphics">
+        No image vector graphics
+      </Message>
       <Message name="NoProfileNameWasGiven">
         No profile name was given
       </Message>
@@ -594,6 +761,12 @@
       </Message>
       <Message name="UnableToThresholdImage">
         Unable to threshold image
+      </Message>
+      <Message name="UnrecognizedAttribute">
+        Unrecognized attribute
+      </Message>
+      <Message name="UnrecognizedElement">
+        Unrecognized element
       </Message>
       <Message name="UnrecognizedOption">
         Unrecognized option

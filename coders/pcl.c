@@ -378,7 +378,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
           monochrome_image=ResizeImage(image,geometry.width,geometry.height,
             TriangleFilter,1.0,&image->exception);
           if (monochrome_image == (Image *) NULL)
-            ThrowWriterException(ResourceLimitError,"Unable to resize image",
+            ThrowWriterException(ResourceLimitError,image->exception.reason,
               image);
         }
       SetImageType(monochrome_image,BilevelType);

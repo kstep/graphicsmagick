@@ -285,13 +285,10 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   do
   {
     /*
-      Verify PNM identifier.
-    */
-    if ((count == 0) || (format != 'P'))
-      ThrowReaderException(CorruptImageError,"Not a PNM image file",image);
-    /*
       Initialize image structure.
     */
+    if ((count == 0) || (format != 'P'))
+      ThrowReaderException(CorruptImageError,"NotAPNMImageFile",image);
     format=ReadBlobByte(image);
     if (format == '7')
       (void) PNMInteger(image,10);
@@ -310,8 +307,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     number_pixels=image->columns*image->rows;
     if (number_pixels == 0)
-      ThrowReaderException(CorruptImageError,
-        "Unable to read image: image dimensions are zero",image);
+      ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize",image);
     scale=(unsigned long *) NULL;
     if (image->storage_class == PseudoClass)
       {
@@ -379,7 +375,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (index >= image->colors)
               {
                 ThrowException(&image->exception,CorruptImageError,
-                  "invalid colormap index",image->filename);
+                  "InvalidColormapIndex",image->filename);
                 index=0;
               }
             indexes[x]=index;
@@ -417,7 +413,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (index >= image->colors)
               {
                 ThrowException(&image->exception,CorruptImageError,
-                  "invalid colormap index",image->filename);
+                  "InvalidColormapIndex",image->filename);
                 index=0;
               }
             indexes[x]=index;
@@ -550,7 +546,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (index >= image->colors)
                 {
                   ThrowException(&image->exception,CorruptImageError,
-                    "invalid colormap index",image->filename);
+                    "InvalidColormapIndex",image->filename);
                   index=0;
                 }
               indexes[x]=index;
@@ -640,7 +636,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       }
       default:
-        ThrowReaderException(CorruptImageError,"Not a PNM image file",image)
+        ThrowReaderException(CorruptImageError,"NotAPNMImageFile",image)
     }
     if (scale != (unsigned long *) NULL)
       LiberateMemory((void **) &scale);
@@ -1211,8 +1207,8 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             if ((red_map[i][j] == (unsigned short *) NULL) ||
                 (green_map[i][j] == (unsigned short *) NULL) ||
                 (blue_map[i][j] == (unsigned short *) NULL))
-              ThrowWriterException(ResourceLimitError,
-                "MemoryAllocationFailed",image);
+              ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+                image);
           }
         /*
           Initialize dither tables.

@@ -190,7 +190,7 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
             {
               if (depth > 200)
                 ThrowException(exception,ConfigureError,
-                  "<include /> nested too deeply",path);
+                  "IncludeElementNestedTooDeeply",path);
               else
                 {
                   char
@@ -766,7 +766,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
     ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   attribute=GetImageAttribute(image,"[Locale]");
   if (attribute == (const ImageAttribute *) NULL)
-    ThrowWriterException(FileOpenError,"No [LOCALE] image attribute",image);
+    ThrowWriterException(ImageError,"NoLocaleImageAttribute",image);
   locale=StringToList(attribute->value);
   if (locale == (char **) NULL)
     ThrowWriterException(FileOpenError,"MemoryAllocationFailed",image);

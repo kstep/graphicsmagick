@@ -143,7 +143,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ReadBlobString(image,buffer);
   count=sscanf(buffer,"%lu %lu\n",&columns,&rows);
   if (count <= 0)
-    ThrowReaderException(CorruptImageError,"Not a MTV image file",image);
+    ThrowReaderException(CorruptImageError,"NotAMTVImageFile",image);
   do
   {
     /*

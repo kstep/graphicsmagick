@@ -309,7 +309,7 @@ static unsigned int WriteMVGImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   attribute=GetImageAttribute(image,"[MVG]");
   if (attribute == (ImageAttribute *) NULL)
-    ThrowWriterException(CoderError,"no image vector graphics",image);
+    ThrowWriterException(OptionError,"NoImageVectorGraphics",image);
   status=OpenBlob(image_info,image,WriteBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"UnableToOpenFile",image);

@@ -465,8 +465,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (status)
     {
       (void) remove(postscript_filename);
-      ThrowReaderException(FileOpenError,"Portable Document delegate failed",
-        image)
+      ThrowReaderException(DelegateError,"PostscriptDelegateFailed",image)
     }
   DestroyImage(image);
   clone_info->blob=(void *) NULL;
@@ -843,7 +842,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobString(image,buffer);
         kid_image=kid_image->next;
       }
-      ReacquireMemory((void **) &xref,(count+2048)*sizeof(ExtendedSignedIntegralType));
+      ReacquireMemory((void **) &xref,
+        (count+2048)*sizeof(ExtendedSignedIntegralType));
       if (xref == (ExtendedSignedIntegralType *) NULL)
         ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
     }

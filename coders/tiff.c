@@ -439,7 +439,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           TIFFClose(tiff);
           if ((image->blob->file == stdin) || image->blob->pipet)
             remove(filename);
-          ThrowReaderException(CorruptImageError,"Unable to read subimage",image)
+          ThrowReaderException(CorruptImageError,"Unable to read subimage",
+            image)
         }
     }
   do
@@ -505,8 +506,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if (photometric == PHOTOMETRIC_CIELAB)
       {
         TIFFClose(tiff);
-        ThrowReaderException(CorruptImageWarning,"Unable to read CIELAB images",
-          image)
+        ThrowReaderException(CoderError,"UnableToReadCIELABImages",image)
       }
     if (photometric == PHOTOMETRIC_SEPARATED)
       image->colorspace=CMYKColorspace;
@@ -1166,14 +1166,13 @@ static unsigned int WritePTIFImage(const ImageInfo *image_info,Image *image)
   */
   pyramid_image=CloneImage(image,0,0,True,&image->exception);
   if (pyramid_image == (Image *) NULL)
-    ThrowWriterException(FileOpenError,"Unable to pyramid-encode image",image);
+    ThrowWriterException(FileOpenError,image->exception.reason,image);
   do
   {
     pyramid_image->next=ResizeImage(image,pyramid_image->columns/2,
       pyramid_image->rows/2,TriangleFilter,1.0,&image->exception);
     if (pyramid_image->next == (Image *) NULL)
-      ThrowWriterException(FileOpenError,"Unable to pyramid-encode image",
-        image);
+      ThrowWriterException(FileOpenError,image->exception.reason,image);
     pyramid_image->next->previous=pyramid_image;
     pyramid_image=pyramid_image->next;
   } while ((pyramid_image->columns > 64) && (pyramid_image->rows > 64));

@@ -252,7 +252,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   count=ReadBlob(image,GetBlobSize(image),(char *) buffer);
   if ((count == 0) || (LocaleNCompare((char *) buffer,"SFW",3) != 0))
-    ThrowReaderException(CorruptImageError,"Not a SFW image file",image);
+    ThrowReaderException(CorruptImageError,"NotASFWImageFile",image);
   CloseBlob(image);
   DestroyImage(image);
   /*
@@ -263,7 +263,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (header == (unsigned char *) NULL)
     {
       LiberateMemory((void **) &buffer);
-      ThrowReaderException(CorruptImageError,"Not a SFW image file",image)
+      ThrowReaderException(CorruptImageError,"NotASFWImageFile",image)
     }
   TranslateSFWMarker(header);  /* translate soi and app tags */
   TranslateSFWMarker(header+2);
@@ -286,7 +286,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (data == (unsigned char *) NULL)
     {
       LiberateMemory((void **) &buffer);
-      ThrowReaderException(CorruptImageError,"Not a SFW image file",image)
+      ThrowReaderException(CorruptImageError,"NotASFWImageFile",image)
     }
   TranslateSFWMarker(data++);  /* translate eoi marker */
   /*

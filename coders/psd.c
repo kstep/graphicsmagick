@@ -249,11 +249,11 @@ static unsigned int DecodeImage(Image *image,const int channel)
     Guarentee the correct number of pixel packets.
   */
   if (number_pixels > 0)
-    ThrowBinaryException(CorruptImageError,"insufficient image data in file",
+    ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
       image->filename)
   else
     if (number_pixels < 0)
-      ThrowBinaryException(CorruptImageError,"too much image data in file",
+      ThrowBinaryException(CorruptImageError,"TooMuchImageDataInFile",
         image->filename);
   return(True);
 }
@@ -560,7 +560,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   psd_info.version=ReadBlobMSBShort(image);
   if ((count == 0) || (LocaleNCompare(psd_info.signature,"8BPS",4) != 0) ||
       (psd_info.version != 1))
-    ThrowReaderException(CorruptImageError,"Not a PSD image file",image);
+    ThrowReaderException(CorruptImageError,"NotAPSDImageFile",image);
   (void) ReadBlob(image,6,(char *) psd_info.reserved);
   psd_info.channels=ReadBlobMSBShort(image);
   psd_info.rows=ReadBlobMSBLong(image);
@@ -633,11 +633,10 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       data=(unsigned char *) AcquireMemory(length);
       if (data == (unsigned char *) NULL)
-        ThrowReaderException(ResourceLimitError,
-          "8BIM resource memory allocation failed",image);
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
       count=ReadBlob(image,length,(char *) data);
       if ((count == 0) || (LocaleNCompare((char *) data,"8BIM",4) != 0))
-        ThrowReaderException(CorruptImageError,"Not a PSD image file",image);
+        ThrowReaderException(CorruptImageError,"NotAPSDImageFile",image);
       image->iptc_profile.info=data;
       image->iptc_profile.length=length;
     }
@@ -691,7 +690,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         count=ReadBlob(image,4,(char *) type);
         if ((count == 0) || (LocaleNCompare(type,"8BIM",4) != 0))
-          ThrowReaderException(CorruptImageError,"Not a PSD image file",image);
+          ThrowReaderException(CorruptImageError,"NotAPSDImageFile",image);
         (void) ReadBlob(image,4,(char *) layer_info[i].blendkey);
         layer_info[i].opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(ReadBlobByte(image)));
         layer_info[i].clipping=ReadBlobByte(image);

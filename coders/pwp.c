@@ -177,7 +177,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(FileOpenError,"UnableToOpenFile",pwp_image);
   count=ReadBlob(pwp_image,5,(char *) magick);
   if ((count == 0) || (LocaleNCompare((char *) magick,"SFW95",5) != 0))
-    ThrowReaderException(CorruptImageError,"Not a PWP image file",pwp_image);
+    ThrowReaderException(CorruptImageError,"NotAPWPImageFile",pwp_image);
   clone_info=CloneImageInfo(image_info);
   clone_info->blob=(void *) NULL;
   clone_info->length=0;
@@ -196,7 +196,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (c == EOF)
       break;
     if (LocaleNCompare((char *) (magick+12),"SFW94A",6) != 0)
-      ThrowReaderException(CorruptImageError,"Not a PWP image file",pwp_image);
+      ThrowReaderException(CorruptImageError,"NotAPWPImageFile",pwp_image);
     /*
       Dump SFW image to a temporary file.
     */

@@ -274,7 +274,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
           }
           default:
           {
-            ThrowBinaryException(CorruptImageError,"Corrupt PCD image",
+            ThrowBinaryException(CorruptImageError,"CorruptPCDImage",
               image->filename)
           }
         }
@@ -292,8 +292,8 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
       r++;
     if ((row > image->rows) || (r == (PCDTable *) NULL))
       {
-        ThrowException(&image->exception,CorruptImageError,
-          "Corrupt PCD image, skipping to sync byte",image->filename);
+        ThrowException(&image->exception,CorruptImageWarning,"SkipToSyncByte",
+          image->filename);
         while ((sum & 0x00fff000) != 0x00fff000)
           PCDGetBits(8);
         while (!IsSync)
@@ -493,7 +493,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   overview=LocaleNCompare((char *) header,"PCD_OPA",7) == 0;
   if ((count == 0) ||
       ((LocaleNCompare((char *) header+0x800,"PCD",3) != 0) && !overview))
-    ThrowReaderException(CorruptImageError,"Not a PCD image file",image);
+    ThrowReaderException(CorruptImageError,"NotAPCDImageFile",image);
   rotate=header[0x0e02] & 0x03;
   number_images=(header[10] << 8) | header[11];
   LiberateMemory((void **) &header);

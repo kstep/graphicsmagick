@@ -169,13 +169,12 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (LocaleNCompare((char *) magick,"BM",2) != 0) &&
       (LocaleNCompare((char *) magick,"PG",2) != 0) &&
       (LocaleNCompare((char *) magick,"TX",2) != 0))
-    ThrowReaderException(CorruptImageError,"Not a SCT image file",image);
+    ThrowReaderException(CorruptImageError,"NotASCTImageFile",image);
   if ((LocaleNCompare((char *) magick,"LW",2) == 0) ||
       (LocaleNCompare((char *) magick,"BM",2) == 0) ||
       (LocaleNCompare((char *) magick,"PG",2) == 0) ||
       (LocaleNCompare((char *) magick,"TX",2) == 0))
-    ThrowReaderException(CorruptImageError,
-      "only Continuous Tone Picture supported",image);
+    ThrowReaderException(CoderError,"OnlyContinuousTonePictureSupported",image);
   (void) ReadBlob(image,174,(char *) buffer);
   (void) ReadBlob(image,768,(char *) buffer);
   /*

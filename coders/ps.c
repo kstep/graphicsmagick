@@ -314,7 +314,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (ferror(file))
     {
       (void) fclose(file);
-      ThrowReaderException(FileOpenError,"An error has occurred writing to file",
+      ThrowReaderException(CorruptImageError,"AnErrorHasOccurredWritingToFile",
         image)
     }
   (void) rewind(file);
@@ -360,7 +360,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=ReadImage(image_info,exception);
       if (image != (Image *) NULL)
         return(image);
-      ThrowReaderException(CorruptImageError,"Postscript delegate failed",image)
+      ThrowReaderException(DelegateError,"PostscriptDelegateFailed",image)
     }
   clone_info=CloneImageInfo(image_info);
   clone_info->blob=(void *) NULL;
@@ -369,7 +369,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   DestroyImageInfo(clone_info);
   (void) remove(image_info->filename);
   if (image == (Image *) NULL)
-    ThrowReaderException(CorruptImageError,"Postscript delegate failed",image);
+    ThrowReaderException(DelegateError,"PostscriptDelegateFailed",image);
   do
   {
     (void) strcpy(image->magick,"PS");

@@ -202,7 +202,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   count=ReadBlob(image,2,(char *) magick);
   if ((count == 0) || (memcmp(magick,"\122\314",2) != 0))
-    ThrowReaderException(CorruptImageError,"Not a RLE image file",image);
+    ThrowReaderException(CorruptImageError,"NotARLEImageFile",image);
   do
   {
     /*
@@ -220,7 +220,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     map_length=1 << ReadBlobByte(image);
     if ((number_planes == 0) || (number_planes == 2) || (bits_per_pixel != 8) ||
         (image->columns == 0))
-      ThrowReaderException(CorruptImageError,"Unsupported RLE image file",image);
+      ThrowReaderException(CorruptImageError,"UnsupportedRLEImageFile",image);
     if (flags & 0x02)
       {
         /*

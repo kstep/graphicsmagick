@@ -279,7 +279,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       magic=ReadBlobLSBLong(image);
       if (magic != 987654321)
-        ThrowReaderException(CorruptImageError,"Not a DCX image file",image);
+        ThrowReaderException(CorruptImageError,"NotADCXImageFile",image);
       page_table=(ExtendedSignedIntegralType *)
          AcquireMemory(1024*sizeof(ExtendedSignedIntegralType));
       if (page_table == (ExtendedSignedIntegralType *) NULL)
@@ -301,7 +301,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     pcx_info.version=ReadBlobByte(image);
     if ((count == 0) || (pcx_info.identifier != 0x0a))
-      ThrowReaderException(CorruptImageError,"Not a PCX image file",image);
+      ThrowReaderException(CorruptImageError,"NotAPCXImageFile",image);
     pcx_info.encoding=ReadBlobByte(image);
     pcx_info.bits_per_pixel=ReadBlobByte(image);
     pcx_info.left=ReadBlobLSBShort(image);
@@ -389,8 +389,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             Initialize image colormap.
           */
           if (image->colors > 256)
-            ThrowReaderException(CorruptImageError,
-              "PCX colormap exceeded 256 colors",image);
+            ThrowReaderException(CorruptImageError,"ColormapExceeds256Colors",
+              image);
           if ((pcx_info.bits_per_pixel*pcx_info.planes) == 1)
             {
               /*
@@ -770,7 +770,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
         Write the DCX page table.
       */
       (void) WriteBlobLSBLong(image,0x3ADE68B1L);
-      page_table=(ExtendedSignedIntegralType *) AcquireMemory(1024*sizeof(ExtendedSignedIntegralType));
+      page_table=(ExtendedSignedIntegralType *)
+        AcquireMemory(1024*sizeof(ExtendedSignedIntegralType));
       if (page_table == (ExtendedSignedIntegralType *) NULL)
         ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
       for (scene=0; scene < 1024; scene++)

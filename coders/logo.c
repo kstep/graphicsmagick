@@ -5533,7 +5533,7 @@ static unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
     ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   logo_image=CloneImage(image,0,0,True,&image->exception);
   if (logo_image == (Image *) NULL)
-    ThrowWriterException(FileOpenError,"Unable to clone image",image);
+    ThrowWriterException(ResourceLimitError,image->exception.reason,image);
   if (LocaleCompare(image_info->magick,"ROSE") == 0)
     {
       (void) strcpy(logo_image->magick,"PPM");
@@ -5548,7 +5548,7 @@ static unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
   if (blob == (void *) NULL)
     {
       DestroyImage(logo_image);
-      ThrowWriterException(FileOpenError,"Unable to write blob",image)
+      ThrowWriterException(FileOpenError,image->exception.reason,image)
     }
   (void) WriteBlobString(image,"/*\n");
   (void) WriteBlobString(image,"  Logo image declaration.\n");

@@ -150,11 +150,10 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->rows=ReadBlobMSBShort(image);
     }
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(CorruptImageError,"Not a OTB image file",image);
+    ThrowReaderException(CorruptImageError,"NotAOTBImageFile",image);
   depth=ReadBlobByte(image);
   if (depth != 1)
-    ThrowReaderException(CorruptImageError,"Only OTB level 0 files supported",
-      image);
+    ThrowReaderException(CoderError,"OnlyLevelZerofilesSupported",image);
   if (!AllocateImageColormap(image,2))
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   if (image_info->ping)
@@ -179,7 +178,7 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           byte=ReadBlobByte(image);
           if (byte == EOF)
-            ThrowReaderException(CorruptImageError,"Corrupt OTB image",image);
+            ThrowReaderException(CorruptImageError,"CorruptOTBImage",image);
         }
       indexes[x]=(byte & (0x01 << (7-bit))) ? 0x01 : 0x00;
       bit++;

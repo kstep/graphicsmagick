@@ -327,14 +327,12 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ReadBlob(image,4,pdb_info.id);
   if ((count == 0) || (memcmp(pdb_info.type,"vIMG",4) != 0) ||
       (memcmp(pdb_info.id,"View",4) != 0))
-    ThrowReaderException(CorruptImageWarning,"Not a supported PDB image file",
-      image);
+    ThrowReaderException(CoderError,"NotASupportedImageFile",image);
   pdb_info.seed=ReadBlobMSBLong(image);
   pdb_info.next_record=ReadBlobMSBLong(image);
   pdb_info.number_records=ReadBlobMSBShort(image);
   if (pdb_info.next_record != 0)
-    ThrowReaderException(CorruptImageWarning,
-      "Multiple Record List PDB Unsupported",image);
+    ThrowReaderException(CoderError,"MultipleRecordListNotSupported",image);
   /*
     Read record header.
   */
@@ -343,7 +341,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   record_type=ReadBlobByte(image);
   if (((record_type != 0x00) && (record_type != 0x01)) ||
       (memcmp(tag,"\x40\x6f\x80",3) != 0))
-    ThrowReaderException(CorruptImageError,"Corrupt PDB image file",image);
+    ThrowReaderException(CorruptImageError,"CorruptPDBImageFile",image);
   if ((offset-TellBlob(image)) == 6)
     {
       (void) ReadBlobByte(image);
@@ -356,7 +354,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       record_type=ReadBlobByte(image);
       if (((record_type != 0x00) && (record_type != 0x01)) ||
           (memcmp(tag,"\x40\x6f\x80",3) != 0))
-        ThrowReaderException(CorruptImageError,"Corrupt PDB image file",image);
+        ThrowReaderException(CorruptImageError,"CorruptPDBImageFile",image);
       if ((offset-TellBlob(image)) == 6)
         {
           (void) ReadBlobByte(image);
@@ -412,7 +410,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     }
     default:
-      ThrowReaderException(CorruptImageWarning,"Unknown compression type",image)
+      ThrowReaderException(CorruptImageWarning,"UnknownCompressionType",image)
   }
   p=pixels;
   switch (bits_per_pixel)
@@ -514,7 +512,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     }
     default:
-      ThrowReaderException(CorruptImageError,"Not a PDB image file",image)
+      ThrowReaderException(CorruptImageError,"NotAPDBImageFile",image)
   }
   LiberateMemory((void **) &pixels);
   if (EOFBlob(image))
@@ -716,7 +714,7 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   (void) TransformRGBImage(image,RGBColorspace);
   bits_per_pixel=image_info->depth;
   if (GetImageType(image,&image->exception) == BilevelType)

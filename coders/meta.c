@@ -846,7 +846,8 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
       if (image->generic_profile == (ProfileInfo *) NULL)
         {
           image->generic_profiles=0;
-          ThrowReaderException(FileOpenError,"MemoryAllocationFailed",image)
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+            image)
         }
       image->generic_profiles++;
       image->generic_profile[i].name=AllocateString((char *) NULL);
@@ -856,12 +857,13 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
 
       buff=AllocateImage((ImageInfo *) NULL);
       if (buff == (Image *) NULL)
-        ThrowReaderException(FileOpenError,"MemoryAllocationFailed",image);
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
       blob=(unsigned char *) AcquireMemory(length);
       if (blob == (unsigned char *) NULL)
         {
           DestroyImage(buff);
-          ThrowReaderException(FileOpenError,"MemoryAllocationFailed",image)
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+            image)
         }
       AttachBlob(buff->blob,blob,length);
       if (LocaleCompare(image_info->magick,"APP1JPEG") == 0)
@@ -882,8 +884,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
               DetachBlob(buff->blob);
               LiberateMemory((void **) &blob);
               DestroyImage(buff);
-              ThrowReaderException(FileOpenError,"No IPTC profile available",
-                image)
+              ThrowReaderException(CoderError,"NoIPTCProfileAvailable",image)
             }
           iptc=AllocateImage((ImageInfo *) NULL);
           if (iptc == (Image *) NULL)
@@ -891,7 +892,8 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
               DetachBlob(buff->blob);
               LiberateMemory((void **) &blob);
               DestroyImage(buff);
-              ThrowReaderException(FileOpenError,"MemoryAllocationFailed",image)
+              ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+                image)
             }
           AttachBlob(iptc->blob,pinfo->info,pinfo->length);
           result=jpeg_embed(image,buff,iptc);
@@ -902,7 +904,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
               DetachBlob(buff->blob);
               LiberateMemory((void **) &blob);
               DestroyImage(buff);
-              ThrowReaderException(FileOpenError,"jpeg embedding failed",image)
+              ThrowReaderException(CoderError,"JPEGEmbeddingFailed",image)
             }
         }
       else
@@ -1760,7 +1762,7 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
         Write 8BIM image.
       */
       if (image->iptc_profile.length == 0)
-        ThrowWriterException(FileOpenError,"No 8BIM data is available",image);
+        ThrowWriterException(CoderError,"No8BIMDataIsAvailable",image);
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       if (status == False)
         ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
@@ -1776,13 +1778,13 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
         *info;
 
       if (image->iptc_profile.length == 0)
-        ThrowWriterException(FileOpenError,"No IPTC profile available",image);
+        ThrowWriterException(FileOpenError,"NoIPTCProfileAvailable",image);
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       info=image->iptc_profile.info;
       length=image->iptc_profile.length;
       length=GetIPTCStream(&info,length);
       if (length == 0)
-        ThrowWriterException(FileOpenError,"No IPTC info was found",image);
+        ThrowWriterException(FileOpenError,"NoIPTCInfoWasFound",image);
       (void) WriteBlob(image,length,info);
     }
   if (LocaleCompare(image_info->magick,"8BIMTEXT") == 0)
@@ -1791,13 +1793,13 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
         *buff;
 
       if (image->iptc_profile.length == 0)
-        ThrowWriterException(FileOpenError,"No 8BIM data is available",image);
+        ThrowWriterException(FileOpenError,"No8BIMDataIsAvailable",image);
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       if (status == False)
         ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
       buff=AllocateImage((ImageInfo *) NULL);
       if (buff == (Image *) NULL)
-        ThrowWriterException(FileOpenError,"MemoryAllocationFailed",image);
+        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
       AttachBlob(buff->blob,image->iptc_profile.info,image->iptc_profile.length);
       format8BIM(buff,image);
       DetachBlob(buff->blob);
@@ -1815,18 +1817,18 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
         *info;
 
       if (image->iptc_profile.length == 0)
-        ThrowWriterException(FileOpenError,"No IPTC data is available",image);
+        ThrowWriterException(CoderError,"NoIPTCDataIsAvailable",image);
       info=image->iptc_profile.info;
       length=image->iptc_profile.length;
       length=GetIPTCStream(&info,length);
       if (length == 0)
-        ThrowWriterException(FileOpenError,"No IPTC info was found",image);
+        ThrowWriterException(CoderError,"NoIPTCInfoWasFound",image);
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       if (status == False)
         ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
       buff=AllocateImage((ImageInfo *) NULL);
       if (buff == (Image *) NULL)
-        ThrowWriterException(FileOpenError,"MemoryAllocationFailed",image);
+        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
       AttachBlob(buff->blob,info,length);
       formatIPTC(buff,image);
       DetachBlob(buff->blob);
@@ -1875,15 +1877,18 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
                 iptc=AllocateImage((ImageInfo *) NULL);
                 jpeg=AllocateImage((ImageInfo *) NULL);
                 if ((iptc == (Image *) NULL) || (jpeg == (Image *) NULL))
-                  ThrowWriterException(FileOpenError,"MemoryAllocationFailed",image);
+                  ThrowWriterException(ResourceLimitError,
+                    "MemoryAllocationFailed",image);
                 if ((image->iptc_profile.info == (unsigned char *) NULL) ||
                     (image->iptc_profile.length <= 0))
-                  ThrowWriterException(FileOpenError,"No iptc profile available",image);
+                  ThrowWriterException(CoderError,"NoIPTCProfileAvailable",
+                    image);
                 AttachBlob(iptc->blob,image->iptc_profile.info,
                   image->iptc_profile.length);
                 if ((p == (unsigned char *) NULL) ||
                     (image->generic_profile[i].length <= 0))
-                  ThrowWriterException(FileOpenError,"No jpeg profile available",image);
+                  ThrowWriterException(CoderError,"NoJPEGProfileAvailable",
+                    image);
                 AttachBlob(jpeg->blob,p,image->generic_profile[i].length);
                 result=jpeg_embed(jpeg,image,iptc);
                 DetachBlob(jpeg->blob);
@@ -1891,14 +1896,14 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
                 DetachBlob(iptc->blob);
                 DestroyImage(iptc);
                 if (result == 0)
-                  ThrowWriterException(FileOpenError,"jpeg embedding failed",image);
+                  ThrowWriterException(CoderError,"JpegEmbeddingFailed",image);
               }
 #endif
             CloseBlob(image);
             return(True);
           }
       }
-      ThrowWriterException(FileOpenError,"No APP1 data is available",image)
+      ThrowWriterException(FileOpenError,"NoAPP1DataIsAvailable",image)
     }
   if ((LocaleCompare(image_info->magick,"ICC") == 0) ||
       (LocaleCompare(image_info->magick,"ICM") == 0))
@@ -1907,7 +1912,7 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
         Write ICM image.
       */
       if (image->color_profile.length == 0)
-        ThrowWriterException(FileOpenError,"No color profile available",image);
+        ThrowWriterException(FileOpenError,"NoColorProfileAvailable",image);
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       if (status == False)
         ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
