@@ -158,6 +158,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     value[MaxTextExtent];
 
   double
+    exponential[2048],
     pixel,
     scale,
     scaled_pixel;
@@ -172,12 +173,15 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     index;
 
   int
-    c,
-    j,
-    packet_size,
-    quantum;
+    c;
 
   long
+    exponent,
+    j,
+    k,
+    l,
+    packet_size,
+    quantum,
     scene,
     y;
 
@@ -329,6 +333,22 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   if ((!fits_info.simple) || (fits_info.number_axes < 1) ||
       (fits_info.number_axes > 4) || (number_pixels == 0))
     ThrowReaderException(CorruptImageWarning,"image type not supported",image);
+  if (fits_info.bits_per_pixel == -32)
+    {
+      exponential[150]=1.0;
+      for (i=151; i < 256; i++)
+        exponential[i]=2.0*exponential[i-1];
+      for (i=149; i >= 0; i--)
+        exponential[i]=exponential[i+1]/2.0;
+    }
+  if (fits_info.bits_per_pixel == -64)
+    {
+      exponential[1075]=1.0;
+      for (i=1076; i < 2048; i++)
+        exponential[i]=2.0*exponential[i-1];
+      for (i=1074; i >= 0; i--)
+        exponential[i]=exponential[i+1]/2.0;
+    }
   for (scene=0; scene < (long) fits_info.number_scenes; scene++)
   {
     /*
@@ -370,9 +390,9 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         p=fits_pixels;
         long_quantum[0]=(*p);
         quantum=(*p++);
-        for (j=0; j < (packet_size-1); j++)
+        for (j=1; j <= (packet_size-1); j++)
         {
-          long_quantum[j+1]=(*p);
+          long_quantum[j]=(*p);
           quantum=(quantum << 8) | (*p++);
         }
         pixel=(double) quantum;
@@ -380,18 +400,46 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           if (pixel > 32767)
             pixel-=65536;
         if (fits_info.bits_per_pixel == -32)
-          pixel=(double) (*((float *) &long_quantum));
+          {
+            j=((int) long_quantum[1] << 16) | ((int) long_quantum[2] << 8) |
+               (int) long_quantum[3];
+            k=(int) *long_quantum;
+            exponent=((k & 127) << 1) | (j >> 23);
+            *(float *) long_quantum=
+              exponential[exponent]*(float) (j | 0x800000);
+            if ((exponent | j) == 0)
+              *(float *) long_quantum=0.0;
+            if (k & 128)
+              *(float *) long_quantum=(-(*(float *) long_quantum));
+            pixel=(double) (*((float *) long_quantum));
+          }
         if (fits_info.bits_per_pixel == -64)
-          pixel=(double) (*((double *) long_quantum));
+          {
+            j=((unsigned int) long_quantum[1] << 24) |
+              ((unsigned int) long_quantum[2] << 16) |
+              ((unsigned int) long_quantum[3] << 8) |
+               (unsigned int) long_quantum[4];
+            k=(int) *long_quantum;
+            l=((int) long_quantum[5] << 16) | ((int) long_quantum[6] << 8) |
+               (int) long_quantum[7];
+            exponent=((k & 127) << 4) | (j >> 28);
+            *(double *) long_quantum=exponential[exponent]*(16777216.0*
+              (double) ((j & 0x0FFFFFFF) | 0x10000000)+(double) l);
+            if ((exponent | j | l) == 0)
+              *(double *) long_quantum=0.0;
+            if (k & 128)
+              *(double *)long_quantum=(-(*(double *) long_quantum));
+            pixel=(double) (*((double *) long_quantum));
+          }
         fits_info.min_data=pixel*fits_info.scale-fits_info.zero;
         fits_info.max_data=pixel*fits_info.scale-fits_info.zero;
         for (i=1; i < (long) number_pixels; i++)
         {
           long_quantum[0]=(*p);
           quantum=(*p++);
-          for (j=0; j < (packet_size-1); j++)
+          for (j=1; j <= (packet_size-1); j++)
           {
-            long_quantum[j+1]=(*p);
+            long_quantum[j]=(*p);
             quantum=(quantum << 8) | (*p++);
           }
           pixel=(double) quantum;
@@ -399,9 +447,37 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
             if (pixel > 32767)
               pixel-=65536;
           if (fits_info.bits_per_pixel == -32)
-            pixel=(double) (*((float *) &long_quantum));
+            {
+              j=((int) long_quantum[1] << 16) | ((int) long_quantum[2] << 8) |
+                 (int) long_quantum[3];
+              k=(int) *long_quantum;
+              exponent=((k & 127) << 1) | (j >> 23);
+              *(float *) long_quantum=
+                exponential[exponent]*(float) (j | 0x800000);
+              if ((exponent | j) == 0)
+                *(float *) long_quantum=0.0;
+              if (k & 128)
+                *(float *) long_quantum=(-(*(float *) long_quantum));
+              pixel=(double) (*((float *) long_quantum));
+            }
           if (fits_info.bits_per_pixel == -64)
-            pixel=(double) (*((double *) long_quantum));
+            {
+              j=((unsigned int) long_quantum[1] << 24) |
+                ((unsigned int) long_quantum[2] << 16) |
+                ((unsigned int) long_quantum[3] << 8) |
+                 (unsigned int) long_quantum[4];
+              k=(int) *long_quantum;
+              l=((int) long_quantum[5] << 16) | ((int) long_quantum[6] << 8) |
+                 (int) long_quantum[7];
+              exponent=((k & 127) << 4) | (j >> 28);
+              *(double *) long_quantum=exponential[exponent]*(16777216.0*
+                (double) ((j & 0x0FFFFFFF) | 0x10000000)+(double) l);
+              if ((exponent | j | l) == 0)
+                *(double *) long_quantum=0.0;
+              if (k & 128)
+                *(double *)long_quantum=(-(*(double *) long_quantum));
+              pixel=(double) (*((double *) long_quantum));
+            }
           scaled_pixel=pixel*fits_info.scale-fits_info.zero;
           if (scaled_pixel < fits_info.min_data)
             fits_info.min_data=scaled_pixel;
@@ -413,7 +489,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       Convert FITS pixels to pixel packets.
     */
     scale=1.0;
-    if (((fits_info.max_data-fits_info.min_data) <= 1.0) ||
+    if ((fits_info.bits_per_pixel < 0) ||
         ((fits_info.max_data-fits_info.min_data) > ((1 << image->depth)-1)))
       scale=((1 << image->depth)-1)/(fits_info.max_data-fits_info.min_data);
     p=fits_pixels;
@@ -427,9 +503,9 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       {
         long_quantum[0]=(*p);
         quantum=(*p++);
-        for (j=0; j < (packet_size-1); j++)
+        for (j=1; j <= (packet_size-1); j++)
         {
-          long_quantum[j+1]=(*p);
+          long_quantum[j]=(*p);
           quantum=(quantum << 8) | (*p++);
         }
         pixel=(double) quantum;
@@ -437,9 +513,37 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           if (pixel > 32767)
             pixel-=65536;
         if (fits_info.bits_per_pixel == -32)
-          pixel=(double) (*((float *) &long_quantum));
+          {
+            j=((int) long_quantum[1] << 16) | ((int) long_quantum[2] << 8) |
+               (int) long_quantum[3];
+            k=(int) *long_quantum;
+            exponent=((k & 127) << 1) | (j >> 23);
+            *(float *) long_quantum=
+              exponential[exponent]*(float) (j | 0x800000);
+            if ((exponent | j) == 0)
+              *(float *) long_quantum=0.0;
+            if (k & 128)
+              *(float *) long_quantum=(-(*(float *) long_quantum));
+            pixel=(double) (*((float *) long_quantum));
+          }
         if (fits_info.bits_per_pixel == -64)
-          pixel=(double) (*((double *) long_quantum));
+          {
+            j=((unsigned int) long_quantum[1] << 24) |
+              ((unsigned int) long_quantum[2] << 16) |
+              ((unsigned int) long_quantum[3] << 8) |
+               (unsigned int) long_quantum[4];
+            k=(int) *long_quantum;
+            l=((int) long_quantum[5] << 16) | ((int) long_quantum[6] << 8) |
+               (int) long_quantum[7];
+            exponent=((k & 127) << 4) | (j >> 28);
+            *(double *) long_quantum=exponential[exponent]*(16777216.0*
+              (double) ((j & 0x0FFFFFFF) | 0x10000000)+(double) l);
+            if ((exponent | j | l) == 0)
+              *(double *) long_quantum=0.0;
+            if (k & 128)
+              *(double *)long_quantum=(-(*(double *) long_quantum));
+            pixel=(double) (*((double *) long_quantum));
+          }
         scaled_pixel=scale*
           (pixel*fits_info.scale-fits_info.min_data-fits_info.zero);
         index=(IndexPacket) ((scaled_pixel < 0) ? 0 :
