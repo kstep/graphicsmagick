@@ -244,7 +244,7 @@ struct dirent *readdir(DIR *directory)
 %
 %  The format of the VMSIsMagickConflict method is:
 %
-%      status=VMSIsMagickConflict(magick)
+%      status=VMSIsMagickConflict(const char *magick)
 %
 %  A description of each parameter follows:
 %
@@ -255,7 +255,7 @@ struct dirent *readdir(DIR *directory)
 %
 %
 */
-MagickExport unsigned int VMSIsMagickConflict(char *magick)
+MagickExport unsigned int VMSIsMagickConflict(const char *magick)
 {
   ile3
     item_list[2];
