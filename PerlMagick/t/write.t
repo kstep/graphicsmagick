@@ -98,7 +98,7 @@ testReadWrite( 'MTV:input.mtv',
 print("Xv's visual schnauzer format ...\n");
 ++$test;
 testReadWriteCompare( 'input.miff', 'P7:output_p7.p7', 'reference/write/output_p7.miff',
-                      q/depth=>8/, q/dither=>0, depth=>8/, 0, 0);
+                      q/depth=>8/, q/dither=>0, depth=>8/, 0.002, 0.004);
 
 print("Portable bitmap format (black and white), ASCII format ...\n");
 ++$test;

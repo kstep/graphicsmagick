@@ -157,7 +157,7 @@ sub testCompositeCompare {
     {
       print("  mean-error=$normalized_mean_error, maximum-error=$normalized_maximum_error\n");
       print "not ok $test\n";
-      $background->Display();
+      defined $ENV{'PERL_DEBUG'} && $background->Display();
       undef $background;
       undef $composite;
       undef $refimage;
@@ -245,7 +245,7 @@ sub testRead {
 	print "     Expected: $ref_signature\n";
         print "     Depth:    $depth\n";
         ++$failure;
-        $image->Display();
+        defined $ENV{'PERL_DEBUG'} && $image->Display();
       }
     }
     undef $image;
@@ -282,7 +282,7 @@ sub testRead {
               print "     Computed: $signature\n";
               print "     Expected: $ref_signature\n";
               print "     Depth:    $depth\n";
-              #$image->Display();
+              defined $ENV{'PERL_DEBUG'} && $image->Display();
               ++$failure;
             }
           }
@@ -389,7 +389,7 @@ sub testReadCompare {
        ($normalized_maximum_error > $normalized_maximum_error_max) )
     {
       print("mean-error=$normalized_mean_error, maximum-error=$normalized_maximum_error\n");
-      $srcimage->Display();
+      defined $ENV{'PERL_DEBUG'} && $srcimage->Display();
       print "not ok $test\n";
       return 1
     }
@@ -465,7 +465,7 @@ sub testReadSized {
 	print "     Expected: $ref_signature\n";
         print "     Depth:    $depth\n";
         print "not ok $test\n";
-        #$image->Display();
+        defined $ENV{'PERL_DEBUG'} && $image->Display();
       } else {
         print "ok $test\n";
     }
@@ -553,7 +553,7 @@ sub testReadWrite {
           print "     Expected: $ref_signature\n";
           print "     Depth:    $depth\n";
           print "not ok $test\n";
-          $image->Display();
+          defined $ENV{'PERL_DEBUG'} && $image->Display();
         } else {
           print "ok $test\n";
           ($file = $outfile) =~ s/.*://g;
@@ -689,7 +689,7 @@ sub testReadWriteCompare {
     {
       print("mean-error=$normalized_mean_error, maximum-error=$normalized_maximum_error\n");
       print "not ok $test\n";
-      $image->Display();
+      defined $ENV{'PERL_DEBUG'} && $image->Display();
       return 1
     }
 
@@ -870,7 +870,7 @@ sub testReadWriteSized {
           print "     Expected: $ref_signature\n";
           print "     Depth:    $depth\n";
           print "not ok $test\n";
-          #$image->Display();
+          defined $ENV{'PERL_DEBUG'} && $image->Display();
         } else {
           print "ok $test\n";
           #$image->Display();
@@ -1144,7 +1144,7 @@ sub testFilterSignature {
       print "     Computed: $signature\n";
       print "     Expected: $ref_signature\n";
       print "     Depth:    $depth\n";
-      #$image->Display();
+      defined $ENV{'PERL_DEBUG'} && $image->Display();
       print "not ok $test\n";
     } else {
       print "ok $test\n";
@@ -1253,7 +1253,7 @@ sub testFilterCompare {
     {
       print("  mean-error=$normalized_mean_error, maximum-error=$normalized_maximum_error\n");
       print "not ok $test\n";
-      $srcimage->Display();
+      defined $ENV{'PERL_DEBUG'} && $srcimage->Display();
       undef $srcimage;
       undef $refimage;
       return 1

@@ -263,7 +263,7 @@ int main ( int argc, char **argv )
        !strcmp( "PCDS", format ) ||
        !strcmp( "UYVY", format ) ||
        !strcmp( "YUV", format ) )
-    fuzz_factor = 0.008;
+    fuzz_factor = 0.06;
 
   if ( !IsImagesEqual(original, final ) &&
        (original->error.normalized_mean_error > fuzz_factor) )

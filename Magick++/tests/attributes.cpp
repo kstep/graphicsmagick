@@ -591,13 +591,13 @@ int main( int /*argc*/, char ** argv)
     //
     // depth
     //
-    if ( image.depth() != 8 )
+    if ( image.depth() != QuantumDepth )
       {
 	++failures;
 	cout << "Line: " << __LINE__
              << ", depth ("
              << image.depth()
-             << ") is not equal to 8" << endl;
+             << ") is not equal to " << QuantumDepth << endl;
       }
 
     //

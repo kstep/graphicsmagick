@@ -1,3 +1,10 @@
+2003-12-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick, tests: Adjusted allowed error values for tests based
+	on new error computation arithmatic.  Some tests were left failing
+	since the operation they test provides results which are
+	unreasonably inaccurate, or obviously broken.
+
 2003-12-17  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* coders/jpeg.c: Changed "JPEG:preserve-settings from a key/value
