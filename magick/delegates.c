@@ -160,17 +160,6 @@ Export unsigned int GetDelegateInfo(const char *decode_tag,
   delegates=SetDelegateInfo((DelegateInfo *) NULL);
   if (delegates == (DelegateInfo *) NULL)
     {
-      DelegateInfo
-        delegate_info;
-
-      /*
-        The delegate list is empty, read delegates from the configuration file.
-      */
-      *delegate_info.decode_tag='\0';
-      delegate_info.direction=0;
-      *delegate_info.encode_tag='\0';
-      delegate_info.commands=(char *) NULL;
-      (void) SetDelegateInfo(&delegate_info);
       (void) ReadDelegates(DelegatePath,(char *) NULL);
       (void) ReadDelegates((char *) getenv("DELEGATE_PATH"),DirectorySeparator);
       (void) ReadDelegates((char *) getenv("HOME"),"/.magick/");
