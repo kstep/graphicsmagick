@@ -100,6 +100,7 @@ HTMLDecodeDelegate = @HTMLDecodeDelegate@
 ILBMDecodeDelegate = @ILBMDecodeDelegate@
 ILBMEncodeDelegate = @ILBMEncodeDelegate@
 INCLTDL = @INCLTDL@
+LD = @LD@
 LIBLTDL = @LIBLTDL@
 LIBTOOL = @LIBTOOL@
 LIB_BZLIB = @LIB_BZLIB@
@@ -206,6 +207,8 @@ MICRO_VERSION = @MICRO_VERSION@
 INCLUDES = -I$(top_srcdir)
 
 libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
+
+# Library base sources
 MAGICK_BASE_SRCS = PreRvIcccm.c animate.c annotate.c attributes.c blob.c \
   cache.c cache_view.c colors.c compress.c decorate.c delegates.c display.c \
   draw.c effects.c enhance.c error.c gems.c gradation.c histogram.c html.c \
@@ -213,6 +216,8 @@ MAGICK_BASE_SRCS = PreRvIcccm.c animate.c annotate.c attributes.c blob.c \
   pixel_cache.c quantize.c segment.c shear.c signature.c stegano.c timer.c \
   transform.c ttf.c utility.c widget.c xwindows.c zoom.c
 
+
+# Library coder sources
 MAGICK_CODER_SRCS = avs.c bim.c bmp.c cmyk.c dcm.c dps.c ept.c fax.c fits.c \
   fpx.c gif.c gray.c hdf.c icc.c icon.c iptc.c jbig.c jpeg.c logo.c miff.c \
   mono.c mtv.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c png.c plasma.c \
@@ -223,9 +228,11 @@ MAGICK_CODER_SRCS = avs.c bim.c bmp.c cmyk.c dcm.c dps.c ept.c fax.c fits.c \
 @WITH_MODULES_TRUE@libMagick_la_SOURCES = @WITH_MODULES_TRUE@$(MAGICK_BASE_SRCS)
 @WITH_MODULES_FALSE@libMagick_la_SOURCES = @WITH_MODULES_FALSE@$(MAGICK_BASE_SRCS) $(MAGICK_CODER_SRCS)
 @WITH_MODULES_TRUE@libMagick_la_LIBADD = @WITH_MODULES_TRUE@@LIB_TIFF@ @LIB_JPEG@ @LIB_TTF@ @LIB_XEXT@ @LIB_XT@ \
-@WITH_MODULES_TRUE@  @LIB_X11@ @LIB_BZLIB@ @LIB_ZLIB@ $(top_builddir)/ltdl/libltdlc.la
-@WITH_MODULES_FALSE@libMagick_la_LIBADD = @WITH_MODULES_FALSE@@LIB_TIFF@ @LIB_JPEG@ @LIB_TTF@ @LIB_XEXT@ @LIB_XT@ \
-@WITH_MODULES_FALSE@  @LIB_X11@ @LIB_BZLIB@ @LIB_ZLIB@
+@WITH_MODULES_TRUE@  @LIB_X11@ @LIB_BZLIB@ @LIB_ZLIB@ @LIB_SFIO@ @LIB_THREAD@ @LIB_LF@ \
+@WITH_MODULES_TRUE@  @LIB_MATH@ $(top_builddir)/ltdl/libltdlc.la
+@WITH_MODULES_FALSE@libMagick_la_LIBADD = @WITH_MODULES_FALSE@@LIB_JBIG@ @LIB_HDF@ @LIB_TIFF@ @LIB_TTF@ @LIB_JPEG@ \
+@WITH_MODULES_FALSE@  @LIB_PNG@ @LIB_FPX@ @LIB_DPS@ @LIB_XEXT@ @LIB_XT@ \
+@WITH_MODULES_FALSE@  @LIB_X11@ @LIB_BZLIB@ @LIB_ZLIB@ @LIB_SFIO@ @LIB_THREAD@ @LIB_LF@ @LIB_MATH@
 
 # Binary scripts
 bin_SCRIPTS = Magick-config
@@ -241,7 +248,9 @@ include_HEADERS = attributes.h magick.h api.h classify.h image.h quantize.h \
 noinst_HEADERS = animate.h defines.h display.h mac.h mng.h nt.h vms.h
 
 # Additional files to distribute
-EXTRA_DIST = Imakefile Magick-config.in Make.com mac.c nt.c vms.c
+EXTRA_DIST = Imakefile Magick-config.in Make.com mac.c nt.c vms.c \
+  $(MAGICK_BASE_SRCS)
+
 
 #
 # Libtool Modules

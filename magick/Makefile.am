@@ -40,27 +40,34 @@ MICRO_VERSION=@MICRO_VERSION@
 INCLUDES = -I$(top_srcdir)
 
 libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
+
+# Library base sources
 MAGICK_BASE_SRCS=PreRvIcccm.c animate.c annotate.c attributes.c blob.c \
   cache.c cache_view.c colors.c compress.c decorate.c delegates.c display.c \
   draw.c effects.c enhance.c error.c gems.c gradation.c histogram.c html.c \
   image.c label.c magick.c map.c matte.c memory.c monitor.c montage.c \
   pixel_cache.c quantize.c segment.c shear.c signature.c stegano.c timer.c \
   transform.c ttf.c utility.c widget.c xwindows.c zoom.c
+
+# Library coder sources
 MAGICK_CODER_SRCS=avs.c bim.c bmp.c cmyk.c dcm.c dps.c ept.c fax.c fits.c \
   fpx.c gif.c gray.c hdf.c icc.c icon.c iptc.c jbig.c jpeg.c logo.c miff.c \
   mono.c mtv.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c png.c plasma.c \
   pnm.c preview.c ps.c ps2.c ps3.c psd.c pwp.c rgb.c rla.c rle.c sct.c sfw.c \
   sgi.c sun.c tga.c tiff.c tile.c tim.c txt.c uil.c uyvy.c vicar.c vid.c \
   viff.c wbmp.c x.c xbm.c xc.c xpm.c xwd.c yuv.c
+
 # Library sources
 if WITH_MODULES
 libMagick_la_SOURCES = $(MAGICK_BASE_SRCS)
 libMagick_la_LIBADD = @LIB_TIFF@ @LIB_JPEG@ @LIB_TTF@ @LIB_XEXT@ @LIB_XT@ \
-  @LIB_X11@ @LIB_BZLIB@ @LIB_ZLIB@ $(top_builddir)/ltdl/libltdlc.la
+  @LIB_X11@ @LIB_BZLIB@ @LIB_ZLIB@ @LIB_SFIO@ @LIB_THREAD@ @LIB_LF@ \
+  @LIB_MATH@ $(top_builddir)/ltdl/libltdlc.la
 else
 libMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_CODER_SRCS)
-libMagick_la_LIBADD = @LIB_TIFF@ @LIB_JPEG@ @LIB_TTF@ @LIB_XEXT@ @LIB_XT@ \
-  @LIB_X11@ @LIB_BZLIB@ @LIB_ZLIB@
+libMagick_la_LIBADD = @LIB_JBIG@ @LIB_HDF@ @LIB_TIFF@ @LIB_TTF@ @LIB_JPEG@ \
+  @LIB_PNG@ @LIB_FPX@ @LIB_DPS@ @LIB_XEXT@ @LIB_XT@ \
+  @LIB_X11@ @LIB_BZLIB@ @LIB_ZLIB@ @LIB_SFIO@ @LIB_THREAD@ @LIB_LF@ @LIB_MATH@
 endif # WITH_MODULES
 
 # Binary scripts

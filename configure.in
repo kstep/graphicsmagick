@@ -1265,9 +1265,11 @@ LDFLAGS=`echo $LDFLAGS | sed -e 's/  */ /g'`
 #LIBS=`echo $LIBS | sed -e 's/  */ /g'`
 if test "$with_modules" = 'no'
 then
-  LIBS=`echo "$LIB_JBIG $LIB_HDF $LIB_TIFF $LIB_TTF $LIB_JPEG $LIB_PNG $LIB_FPX $LIB_DPS $LIB_XEXT $LIB_XT $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_SFIO $LIB_THREAD $LIB_LF $LIB_MATH" | sed -e 's/  */ /g'`
+#  LIBS=`echo "$LIB_JBIG $LIB_HDF $LIB_TIFF $LIB_TTF $LIB_JPEG $LIB_PNG $LIB_FPX $LIB_DPS $LIB_XEXT $LIB_XT $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_SFIO $LIB_THREAD $LIB_LF $LIB_MATH" | sed -e 's/  */ /g'`
+  LIBS=`echo "" | sed -e 's/  */ /g'`
 else
-  LIBS=`echo "$LIB_SFIO $LIB_THREAD $LIB_LF $LIB_MATH" | sed -e 's/  */ /g'`
+#  LIBS=`echo "$LIB_SFIO $LIB_THREAD $LIB_LF $LIB_MATH" | sed -e 's/  */ /g'`
+  LIBS=`echo "" | sed -e 's/  */ /g'`
 fi
 
 AC_SUBST(CPPFLAGS)
