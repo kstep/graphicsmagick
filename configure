@@ -32436,7 +32436,7 @@ echo "${ECHO_T}no -- some components failed test" >&6
 	have_fpx='no (failed tests)'
     else
 	LIB_FPX='-lfpx'
-	LIBS="$LIB_FPX $LIBS"
+	# LIBS="$LIB_FPX $LIBS"
 
 cat >>confdefs.h <<\_ACEOF
 #define HasFPX 1
