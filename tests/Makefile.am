@@ -134,7 +134,6 @@ CHECK_BLOB_FORMATS = \
 	PNM \
 	PPM \
 	PSD \
-	$(PTIF) \
 	RAS \
 	RGB \
 	RGBA \
@@ -189,7 +188,6 @@ CHECK_FILE_FORMATS = \
 	PPM \
 	PS \
 	PSD \
-	$(PTIF) \
 	RAS \
 	RGB \
 	RGBA \
