@@ -97,7 +97,7 @@ extern "C" {
 #define False  0
 #define ImageReference  (char **) 3
 #define IntegerReference  (char **) 1
-#define MaxArguments  24
+#define MaxArguments  26
 #ifndef na
 #define na  PL_na
 #endif
@@ -343,7 +343,8 @@ static struct
       {"skewY", DoubleReference}, {"strokewidth", IntegerReference},
       {"antialias", BooleanTypes}, {"family", StringReference},
       {"style", StyleTypes}, {"stretch", StretchTypes},
-      {"weight", IntegerReference}, {"align", AlignTypes} } },
+      {"weight", IntegerReference}, {"align", AlignTypes},
+      {"encoding", StringReference}, {"unicode", BooleanTypes } } },
     { "ColorFloodfill", { {"geometry", StringReference},
       {"x", IntegerReference}, {"y", IntegerReference},
       {"fill", StringReference}, {"bordercolor", StringReference},
@@ -4855,6 +4856,11 @@ Mogrify(ref,...)
             draw_info->weight=argument_list[22].int_reference;
           if (attribute_flag[23])
             draw_info->align=(AlignType) argument_list[23].int_reference;
+          if (attribute_flag[24])
+            (void) CloneString(&draw_info->encoding,
+              argument_list[24].string_reference);
+          if (attribute_flag[25])
+            draw_info->unicode=argument_list[25].int_reference != 0;
           AnnotateImage(image,draw_info);
           DestroyDrawInfo(draw_info);
           break;
