@@ -622,7 +622,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroyConstitute destroys the constitute environment.
+%  DestroyConstitute() destroys the constitute environment.
 %
 %  The format of the DestroyConstitute method is:
 %
