@@ -810,5 +810,5 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
     LiberateMemory((void **) &locale[i]);
   LiberateMemory((void **) &locale);
   CloseBlob(image);
-  return(False);
+  return(True);
 }
