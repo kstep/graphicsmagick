@@ -1,3 +1,8 @@
+2004-12-21  David N. Welton  <davidw@dedasys.com>
+
+	* generic/TclMagick.c (wandObjCmd): Return errors on failure for
+	image compare methods.
+
 2004-12-20  David N. Welton  <davidw@dedasys.com>
 
 	* generic/TclMagick.c (myMagickError): Use package name function

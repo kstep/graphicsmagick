@@ -1666,6 +1666,9 @@ static int wandObjCmd(
 					      metricTypes[metricIdx], &value );
 	if (newWand != NULL) {
             DestroyMagickWand(newWand);
+	} else {
+	    myMagickError(interp, wandPtr);
+	    return TCL_ERROR;
 	}
 	Tcl_SetObjResult(interp, Tcl_NewDoubleObj(value));
 
@@ -1695,6 +1698,9 @@ static int wandObjCmd(
 	newWand = MagickCompareImages( wandPtr, refWand, metricTypes[metricIdx], &value );
 	if (newWand != NULL) {
             DestroyMagickWand(newWand);
+	} else {
+	    myMagickError(interp, wandPtr);
+	    return TCL_ERROR;
 	}
 	Tcl_SetObjResult(interp, Tcl_NewDoubleObj(value));
 
