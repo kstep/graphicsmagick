@@ -10,24 +10,26 @@ extern "C" {
 
 extern MagickExport Image
   *CloneImageList(const Image *,ExceptionInfo *),
-  *GetImageList(const Image *,const unsigned long,ExceptionInfo *),
+  *GetImageList(const Image *,const long,ExceptionInfo *),
   *GetNextImage(const Image *),
   **ImageListToArray(const Image *,ExceptionInfo *),
   *NewImageList(void),
   *PopImageList(Image **),
   *ReverseImageList(const Image *,ExceptionInfo *),
   *ShiftImageList(Image **),
-  *SpliceImageList(Image *,const unsigned long,const unsigned long,
-    const Image *,ExceptionInfo *);
+  *SpliceImageList(Image *,const long,const unsigned long,const Image *,
+    ExceptionInfo *);
+
+extern MagickExport long
+  GetImageListIndex(const Image *);
 
 extern MagickExport unsigned int
-  DeleteImageList(Image *,const unsigned long),
+  DeleteImageList(Image *,const long),
   PushImageList(Image **,const Image *,ExceptionInfo *),
-  SetImageList(Image **,const Image *,const unsigned long,ExceptionInfo *),
+  SetImageList(Image **,const Image *,const long,ExceptionInfo *),
   UnshiftImageList(Image **,const Image *,ExceptionInfo *);
 
 extern MagickExport unsigned long
-  GetImageListIndex(const Image *),
   GetImageListSize(const Image *);
 
 extern MagickExport void

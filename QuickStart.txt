@@ -9,6 +9,7 @@ Configuration Files:
       <client path>/
       $MAGICK_HOME/
       $HOME/.magick/
+      $MAGICK_FONT_PATH
       MagickLibPath
       MagickModulesPath
       MagickSharePath
@@ -97,9 +98,9 @@ MAC Install:
 
       ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-mac.sit
 
-       or
+        or
 
-      ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-powerpc-apple-darwin5.4.tar.gz
+      ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-powerpc-apple-darwin5.5.tar.gz
 
   and double click on it to extract the distribution.   Move to the
   ImageMagick folder and double click on the convert program icon.
