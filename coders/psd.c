@@ -689,7 +689,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
                 case 2:
                 {
-                  q->green=UpScale(pixel);
+                  q->blue=UpScale(pixel);
                   break;
                 }
                 case 3:
