@@ -142,7 +142,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
     {
 #if defined(HasLTDL)
       /* Cache format is treated specially */
-      RegisterCacheImage();
+      RegisterCACHEImage();
 
       /* Initialize ltdl */
       InitializeModules();
@@ -156,7 +156,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       Register8BIMImage();
       RegisterAVSImage();
       RegisterBMPImage();
-      RegisterCacheImage();
+      RegisterCACHEImage();
       RegisterCMYKImage();
       RegisterDCMImage();
       RegisterFAXImage();
