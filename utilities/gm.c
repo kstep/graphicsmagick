@@ -178,6 +178,7 @@ int main(int argc,char **argv)
   if (LocaleCompare("animate",option) == 0 ||
       LocaleCompare("animate",option+1) == 0)
     {
+      SetClientName("animate");
       status=AnimateImageCommand(argc,argv);
       Exit(!status);
       return(False);
@@ -186,6 +187,7 @@ int main(int argc,char **argv)
   else if (LocaleCompare("conjure",option) == 0 ||
       LocaleCompare("conjure",option+1) == 0)
     {
+      SetClientName("conjure");
       status=ConjureImageCommand(argc,argv);
       Exit(!status);
       return(False);
@@ -194,6 +196,7 @@ int main(int argc,char **argv)
   else if (LocaleCompare("display",option) == 0 ||
       LocaleCompare("display",option+1) == 0)
     {
+      SetClientName("display");
       status=DisplayImageCommand(argc,argv);
       Exit(!status);
       return(False);
@@ -202,6 +205,7 @@ int main(int argc,char **argv)
   else if (LocaleCompare("import",option) == 0 ||
       LocaleCompare("import",option+1) == 0)
     {
+      SetClientName("import");
       status=ImportImageCommand(argc,argv);
       Exit(!status);
       return(False);
@@ -217,6 +221,7 @@ int main(int argc,char **argv)
   if (LocaleCompare("composite",option) == 0 ||
       LocaleCompare("composite",option+1) == 0)
     {
+      SetClientName("composite");
       if (help_wanted)
         CompositeUsage();
       status=CompositeImageCommand(image_info,argc,argv,(char **) NULL,
@@ -226,6 +231,7 @@ int main(int argc,char **argv)
   else if (LocaleCompare("convert",option) == 0 ||
       LocaleCompare("convert",option+1) == 0)
     {
+      SetClientName("convert");
       if (help_wanted)
         ConvertUsage();
       status=ConvertImageCommand(image_info,argc,argv,(char **) NULL,
@@ -235,6 +241,7 @@ int main(int argc,char **argv)
   else if (LocaleCompare("mogrify",option) == 0 ||
       LocaleCompare("mogrify",option+1) == 0)
     {
+      SetClientName("mogrify");
       if (help_wanted)
         MogrifyUsage();
       status=MogrifyImageCommand(image_info,argc,argv,(char **) NULL,
@@ -244,6 +251,7 @@ int main(int argc,char **argv)
   else if (LocaleCompare("montage",option) == 0 ||
       LocaleCompare("montage",option+1) == 0)
     {
+      SetClientName("montage");
       if (help_wanted)
         MontageUsage();
       status=MontageImageCommand(image_info,argc,argv,(char **) NULL,
@@ -253,6 +261,7 @@ int main(int argc,char **argv)
   else if (LocaleCompare("identify",option) == 0 ||
       LocaleCompare("identify",option+1) == 0)
     {
+      SetClientName("identify");
       if (help_wanted)
         IdentifyUsage();
       status=IdentifyImageCommand(image_info,argc,argv,&text,&exception);
