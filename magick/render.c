@@ -1057,8 +1057,8 @@ MagickExport unsigned int DrawAffineImage(Image *image,const Image *composite,
   extent[3].y=composite->rows;
   for (i=0; i < 4; i++)
   {
-    x=(long) (extent[i].x+0.5);
-    y=(long) (extent[i].y+0.5);
+    x=(long) extent[i].x;
+    y=(long) extent[i].y;
     extent[i].x=x*affine->sx+y*affine->ry+affine->tx;
     extent[i].y=x*affine->rx+y*affine->sy+affine->ty;
   }
@@ -1105,12 +1105,10 @@ MagickExport unsigned int DrawAffineImage(Image *image,const Image *composite,
       break;
     for ( ; x <= stop; x++)
     {
-      point.x=(x+0.5)*inverse_affine.sx+(y+0.5)*inverse_affine.ry+
-        inverse_affine.tx;
-      point.y=(x+0.5)*inverse_affine.rx+(y+0.5)*inverse_affine.sy+
-        inverse_affine.ty;
-      pixel=AcquireOnePixel(composite,(long) ceil(point.x-0.5),
-        (long) ceil(point.y-0.5),&image->exception);
+      point.x=x*inverse_affine.sx+y*inverse_affine.ry+inverse_affine.tx;
+      point.y=x*inverse_affine.rx+y*inverse_affine.sy+inverse_affine.ty;
+      pixel=AcquireOnePixel(composite,(long) point.x,(long) point.y,
+        &image->exception);
       *q=AlphaComposite(&pixel,pixel.opacity,q,q->opacity);
       q++;
     }

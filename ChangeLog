@@ -1,3 +1,10 @@
+2003-03-29  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* magick/resize.c (SampleImage) and magick/render.c (DrawAffineImage():
+	Applied Cristy fix for bug that offset images to the top and left.
+	* magick/resize.c (ScaleImage): Fixed bug that caused intensity
+	levels to be one unit too high.
+
 2003-03-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/resize.c (ResizeImage): Applied fix authored by John

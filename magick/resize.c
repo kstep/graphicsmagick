@@ -1315,12 +1315,12 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
     q=SetImagePixels(sample_image,0,y,sample_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    if (j != (long) floor(y_offset[y]+0.5))
+    if (j != (long) y_offset[y])
       {
         /*
           Read a scan line.
         */
-        j=(long) floor(y_offset[y]+0.5);
+        j=(long) y_offset[y];
         p=AcquireImagePixels(image,0,j,image->columns,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
@@ -1330,13 +1330,13 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
       Sample each column.
     */
     for (x=0; x < (long) sample_image->columns; x++)
-      *q++=pixels[(long) floor(x_offset[x]+0.5)];
+      *q++=pixels[(long) x_offset[x]];
     indexes=GetIndexes(image);
     sample_indexes=GetIndexes(sample_image);
     if ((indexes != (IndexPacket *) NULL) &&
         (sample_indexes != (IndexPacket *) NULL))
       for (x=0; x < (long) sample_image->columns; x++)
-        sample_indexes[x]=indexes[(long) floor(x_offset[x]+0.5)];
+        sample_indexes[x]=indexes[(long) x_offset[x]];
     if (!SyncImagePixels(sample_image))
       break;
     if (QuantumTick(y,sample_image->rows))
@@ -1562,10 +1562,10 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
           pixel.green=y_vector[x].green+y_span*x_vector[x].green;
           pixel.blue=y_vector[x].blue+y_span*x_vector[x].blue;
           pixel.opacity=y_vector[x].opacity+y_span*x_vector[x].opacity;
-          s->red=pixel.red > MaxRGB ? MaxRGB : pixel.red+0.5;
-          s->green=pixel.green > MaxRGB ? MaxRGB : pixel.green+0.5;
-          s->blue=pixel.blue > MaxRGB ? MaxRGB : pixel.blue+0.5;
-          s->opacity=pixel.opacity > MaxRGB ? MaxRGB : pixel.opacity+0.5;
+          s->red=pixel.red > MaxRGB ? MaxRGB : pixel.red;
+          s->green=pixel.green > MaxRGB ? MaxRGB : pixel.green;
+          s->blue=pixel.blue > MaxRGB ? MaxRGB : pixel.blue;
+          s->opacity=pixel.opacity > MaxRGB ? MaxRGB : pixel.opacity;
           s++;
           y_vector[x].red=0;
           y_vector[x].green=0;
@@ -1588,10 +1588,10 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
         s=scanline;
         for (x=0; x < (long) scale_image->columns; x++)
         {
-          q->red=(Quantum) s->red;
-          q->green=(Quantum) s->green;
-          q->blue=(Quantum) s->blue;
-          q->opacity=(Quantum) s->opacity;
+          q->red=(Quantum) (s->red+0.5);
+          q->green=(Quantum) (s->green+0.5);
+          q->blue=(Quantum) (s->blue+0.5);
+          q->opacity=(Quantum) (s->opacity+0.5);
           q++;
           s++;
         }
@@ -1620,10 +1620,10 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
             pixel.green+=x_span*s->green;
             pixel.blue+=x_span*s->blue;
             pixel.opacity+=x_span*s->opacity;
-            t->red=pixel.red > MaxRGB ? MaxRGB : pixel.red+0.5;
-            t->green=pixel.green > MaxRGB ? MaxRGB : pixel.green+0.5;
-            t->blue=pixel.blue > MaxRGB ? MaxRGB : pixel.blue+0.5;
-            t->opacity=pixel.opacity > MaxRGB ? MaxRGB : pixel.opacity+0.5;
+            t->red=pixel.red > MaxRGB ? MaxRGB : pixel.red;
+            t->green=pixel.green > MaxRGB ? MaxRGB : pixel.green;
+            t->blue=pixel.blue > MaxRGB ? MaxRGB : pixel.blue;
+            t->opacity=pixel.opacity > MaxRGB ? MaxRGB : pixel.opacity;
             x_scale-=x_span;
             x_span=1.0;
             next_column=True;
@@ -1654,10 +1654,10 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
         }
       if (!next_column && ((t-scale_scanline) < (long) scale_image->columns))
         {
-          t->red=pixel.red > MaxRGB ? MaxRGB : pixel.red+0.5;
-          t->green=pixel.green > MaxRGB ? MaxRGB : pixel.green+0.5;
-          t->blue=pixel.blue > MaxRGB ? MaxRGB : pixel.blue+0.5;
-          t->opacity=pixel.opacity > MaxRGB ? MaxRGB : pixel.opacity+0.5;
+          t->red=pixel.red > MaxRGB ? MaxRGB : pixel.red;
+          t->green=pixel.green > MaxRGB ? MaxRGB : pixel.green;
+          t->blue=pixel.blue > MaxRGB ? MaxRGB : pixel.blue;
+          t->opacity=pixel.opacity > MaxRGB ? MaxRGB : pixel.opacity;
         }
       /*
         Transfer scanline to scaled image.
@@ -1665,10 +1665,10 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
       t=scale_scanline;
       for (x=0; x < (long) scale_image->columns; x++)
       {
-        q->red=(Quantum) t->red;
-        q->green=(Quantum) t->green;
-        q->blue=(Quantum) t->blue;
-        q->opacity=(Quantum) t->opacity;
+        q->red=(Quantum) (t->red+0.5);
+        q->green=(Quantum) (t->green+0.5);
+        q->blue=(Quantum) (t->blue+0.5);
+        q->opacity=(Quantum) (t->opacity+0.5);
         q++;
         t++;
       }
