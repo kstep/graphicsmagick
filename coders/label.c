@@ -139,25 +139,6 @@ static char *EscapeParenthesis(const char *text)
   return(buffer);
 }
 
-static void EscapeText(char *text,const char escape)
-{
-  register char
-    *p;
-
-  register int
-    i;
-
-  p=text;
-  for (i=0; i < Extent(text); i++)
-  {
-    if ((text[i] == escape) && (text[i+1] != escape))
-      i++;
-    *p++=text[i];
-  }
-  *p='\0';
-  return;
-}
-
 #if defined(HasTTF)
 #if !defined(FREETYPE_MAJOR)
 static void GetFontInfo(TT_Face face,TT_Face_Properties *face_properties,
@@ -1293,10 +1274,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
     Create image label.
   */
   if (image_info->filename[0] != '@')
-    {
-      label=AllocateString(image_info->filename);
-      EscapeText(label,'\\');
-    }
+    label=AllocateString(image_info->filename);
   else
     {
       FILE

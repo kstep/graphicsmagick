@@ -2980,12 +2980,6 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         p++;
         continue;
       }
-    if (*p == '\\')
-      {
-        p++;
-        *q++=(*p);
-        continue;
-      }
     if (*p != '%')
       {
         *q++=(*p);
