@@ -6197,9 +6197,9 @@ Montage(ref,...)
     }
     exception=(&image->exception);
     image=MontageImages(image,montage_info,exception);
-    DestroyMontageInfo(montage_info);
     if (exception->severity != UndefinedException)
       CatchException(exception);
+    DestroyMontageInfo(montage_info);
     if (transparent_color.opacity != TransparentOpacity)
       for (next=image; next; next=next->next)
         TransparentImage(next,transparent_color,TransparentOpacity);
