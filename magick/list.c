@@ -785,12 +785,8 @@ MagickExport void SpliceImageIntoList(Image **images,const unsigned long length,
   if (split == (Image *) NULL)
     return;
   AppendImageToList(images,splice);
-  for (i=0; i < length; i++)
-  {
-    if (split == (Image *) NULL)
-      return;
+  for (i=0; (i < length) && (split != (Image *) NULL); i++)
     (void) DeleteImageFromList(&split);
-  }
   AppendImageToList(images,split);
 }
 
