@@ -124,19 +124,13 @@ MagickExport PixelPacket AlphaComposite(const CompositeOperator compose,
         }
         default:
         {
-          double
-            gamma;
-
-          gamma=
-            (MaxRGB-beta)+(MaxRGB-alpha)-(MaxRGB-beta)*(MaxRGB-alpha)/MaxRGB;
-          color.red=(Quantum) (((MaxRGB-beta)*(q->red)+(MaxRGB-alpha)*
-            ((p->red)-(MaxRGB-beta)*(q->red)/MaxRGB))/gamma);
-          color.green=(Quantum) (((MaxRGB-beta)*(q->green)+(MaxRGB-alpha)*
-            ((p->green)-(MaxRGB-beta)*(q->green)/MaxRGB))/gamma);
-          color.blue=(Quantum) (((MaxRGB-beta)*(q->blue)+(MaxRGB-alpha)*
-            ((p->blue)-(MaxRGB-beta)*(q->blue)/MaxRGB))/gamma);
-          color.opacity=(Quantum) (((MaxRGB-beta)*(q->opacity)+(MaxRGB-alpha)*
-            ((p->opacity)-(MaxRGB-beta)*(q->opacity)/MaxRGB))/gamma);
+          color.red=(Quantum) (((MaxRGB-alpha)*p->red+
+            alpha/MaxRGB*(MaxRGB-beta)*q->red)/MaxRGB);
+          color.green=(Quantum) (((MaxRGB-alpha)*p->green+
+            alpha/MaxRGB*(MaxRGB-beta)*q->green)/MaxRGB);
+          color.blue=(Quantum) (((MaxRGB-alpha)*p->blue+
+            alpha/MaxRGB*(MaxRGB-beta)*q->blue)/MaxRGB);
+          color.opacity=(Quantum) (alpha*beta/MaxRGB);
           return(color);
         }
       }
@@ -144,26 +138,20 @@ MagickExport PixelPacket AlphaComposite(const CompositeOperator compose,
     }
     case InCompositeOp:
     {
-      double
-        gamma;
-
-      gamma=(double) MaxRGB*MaxRGB;
-      color.red=(Quantum) ((MaxRGB-alpha)*p->red*(MaxRGB-beta)/gamma);
-      color.green=(Quantum) ((MaxRGB-alpha)*p->green*(MaxRGB-beta)/gamma);
-      color.blue=(Quantum) ((MaxRGB-alpha)*p->blue*(MaxRGB-beta)/gamma);
-      color.opacity=(Quantum) ((MaxRGB-alpha)*alpha*(MaxRGB-beta)/gamma);
+      color.red=(Quantum) ((MaxRGB-alpha)/MaxRGB*p->red*(MaxRGB-beta)/MaxRGB);
+      color.green=(Quantum)
+        ((MaxRGB-alpha)/MaxRGB*p->green*(MaxRGB-beta)/MaxRGB);
+      color.blue=(Quantum) ((MaxRGB-alpha)/MaxRGB*p->blue*(MaxRGB-beta)/MaxRGB);
+      color.opacity=(Quantum)
+        ((MaxRGB-alpha)/MaxRGB*alpha*(MaxRGB-beta)/MaxRGB);
       return(color);
     }
     case OutCompositeOp:
     {
-      double
-        gamma;
-
-      gamma=(double) MaxRGB*MaxRGB;
-      color.red=(Quantum) ((MaxRGB-alpha)*p->red*beta/gamma);
-      color.green=(Quantum) ((MaxRGB-alpha)*p->green*beta/gamma);
-      color.blue=(Quantum) ((MaxRGB-alpha)*p->blue*beta/gamma);
-      color.opacity=(Quantum) ((MaxRGB-alpha)*alpha*beta/gamma);
+      color.red=(Quantum) ((MaxRGB-alpha)/MaxRGB*p->red*beta/MaxRGB);
+      color.green=(Quantum) ((MaxRGB-alpha)/MaxRGB*p->green*beta/MaxRGB);
+      color.blue=(Quantum) ((MaxRGB-alpha)/MaxRGB*p->blue*beta/MaxRGB);
+      color.opacity=(Quantum) ((MaxRGB-alpha)/MaxRGB*alpha*beta/MaxRGB);
       return(color);
     }
     case AtopCompositeOp:
@@ -171,22 +159,20 @@ MagickExport PixelPacket AlphaComposite(const CompositeOperator compose,
       double
         blue,
         green,
-        gamma,
         opacity,
         red;
 
-      gamma=(double) MaxRGB*MaxRGB;
-      red=((MaxRGB-alpha)*p->red*(MaxRGB-beta)+
-        (MaxRGB-beta)*q->red*alpha)/gamma;
+      red=((MaxRGB-alpha)/MaxRGB*p->red*(MaxRGB-beta)+
+        (MaxRGB-beta)/MaxRGB*q->red*alpha)/MaxRGB;
       color.red=(Quantum) (red > MaxRGB ? MaxRGB : red);
-      green=((MaxRGB-alpha)*p->green*(MaxRGB-beta)+
-        (MaxRGB-beta)*q->green*alpha)/gamma;
+      green=((MaxRGB-alpha)/MaxRGB*p->green*(MaxRGB-beta)+
+        (MaxRGB-beta)/MaxRGB*q->green*alpha)/MaxRGB;
       color.green=(Quantum) (green > MaxRGB ? MaxRGB : green);
-      blue=((MaxRGB-alpha)*p->blue*(MaxRGB-beta)+
-        (MaxRGB-beta)*q->blue*alpha)/gamma;
+      blue=((MaxRGB-alpha)/MaxRGB*p->blue*(MaxRGB-beta)+
+        (MaxRGB-beta)/MaxRGB*q->blue*alpha)/MaxRGB;
       color.blue=(Quantum) (blue > MaxRGB ? MaxRGB : blue);
-      opacity=((MaxRGB-alpha)*alpha*(MaxRGB-beta)+
-        (MaxRGB-beta)*beta*alpha)/gamma;
+      opacity=((MaxRGB-alpha)/MaxRGB*alpha*(MaxRGB-beta)+
+        (MaxRGB-beta)/MaxRGB*beta*alpha)/MaxRGB;
       color.opacity=(Quantum) (opacity > MaxRGB ? MaxRGB : opacity);
       return(color);
     }
@@ -195,18 +181,20 @@ MagickExport PixelPacket AlphaComposite(const CompositeOperator compose,
       double
         blue,
         green,
-        gamma,
         opacity,
         red;
 
-      gamma=(double) MaxRGB*MaxRGB;
-      red=((MaxRGB-alpha)*p->red*beta+(MaxRGB-beta)*q->red*alpha)/gamma;
+      red=((MaxRGB-alpha)/MaxRGB*p->red*beta+
+        (MaxRGB-beta)/MaxRGB*q->red*alpha)/MaxRGB;
       color.red=(Quantum) (red > MaxRGB ? MaxRGB : red);
-      green=((MaxRGB-alpha)*p->green*beta+(MaxRGB-beta)*q->green*alpha)/gamma;
+      green=((MaxRGB-alpha)/MaxRGB*p->green*beta+
+        (MaxRGB-beta)/MaxRGB*q->green*alpha)/MaxRGB;
       color.green=(Quantum) (green > MaxRGB ? MaxRGB : green);
-      blue=((MaxRGB-alpha)*p->blue*beta+(MaxRGB-beta)*q->blue*alpha)/gamma;
+      blue=((MaxRGB-alpha)/MaxRGB*p->blue*beta+
+        (MaxRGB-beta)/MaxRGB*q->blue*alpha)/MaxRGB;
       color.blue=(Quantum) (blue > MaxRGB ? MaxRGB : blue);
-      opacity=((MaxRGB-alpha)*alpha*beta+(MaxRGB-beta)*beta*alpha)/gamma;
+      opacity=((MaxRGB-alpha)/MaxRGB*alpha*beta+
+        (MaxRGB-beta)/MaxRGB*beta*alpha)/MaxRGB;
       color.opacity=(Quantum) (opacity > MaxRGB ? MaxRGB : opacity);
       return(color);
     }
