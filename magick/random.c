@@ -202,6 +202,9 @@ MagickExport unsigned int GetRandomKey(unsigned char *key,const size_t length,
       char
         filename[MaxTextExtent];
 
+      int
+        file;
+
       pid_t
         pid;
 
@@ -222,6 +225,16 @@ MagickExport unsigned int GetRandomKey(unsigned char *key,const size_t length,
       DistillRandomEvent((const unsigned char *) &pid,sizeof(pid_t),exception);
       DistillRandomEvent((const unsigned char *) *roulette,
         sizeof(unsigned long *),exception);
+      file=open("/dev/random",O_RDONLY | O_BINARY,0777);
+      if (file != -1)
+        {
+          unsigned char
+            random[MaxTextExtent];
+
+          (void) read(file,random,MaxTextExtent);
+          (void) close(file);
+          DistillRandomEvent(random,MaxTextExtent,exception);
+        }
     }
   n=length;
   while (n > 0)

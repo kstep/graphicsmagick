@@ -1,3 +1,8 @@
+2002-10-31  Cristy  <cristy@mystic.es.dupont.com>
+  * If no filter is specified and the image area is scaled by 90% or
+    more, ZoomImage() now uses subsampling and scaling to reduce the image
+    size.  This change was made to speed-up the generation of thumbnails.
+
 2002-10-30  Leonard Rosenthol <leonardr@lazerware.com>
   * ReadPSDImage() is now fully instrumented with logging
   * Fixed long standing bug in ReadPSDImage, so it no longer 
