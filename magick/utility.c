@@ -2432,8 +2432,7 @@ MagickExport char *MagickToMime(const char *magick)
 
   char
     buffer[MaxTextExtent],
-    lower_magick[MaxTextExtent],
-    *result;
+    lower_magick[MaxTextExtent];
 
   strncpy(lower_magick,magick, sizeof(lower_magick)-1);
   LocaleLower(lower_magick);
