@@ -1,8 +1,21 @@
 2003-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* coders/msl.c (MSLStartElement): Don't reset gravity if the
-	user provides an x,y coordinate. Passing coodinates was loosing
-	the gravity setting.
+	* coders/logo.c: Renamed "transparent" image to "checkerboard"
+	since it is a better description.  Added a set of tiny bilevel
+	images (accessed via IMAGE:) for use when tiling, filling, or for
+	use as a texture image.  The complete set of image names available
+	via the IMAGE: coder are now BRICKS, CIRCLES, CROSSHATCH,
+	CROSSHATCH30, CROSSHATCH45, FISHSCALES, GRANITE, HEXAGONS,
+	HORIZONTAL, HORIZONTALSAW, HS_BDIAGONAL, HS_CROSS, HS_DIAGCROSS,
+	HS_FDIAGONAL, HS_HORIZONTAL, HS_VERTICAL, LEFT30, LEFT45,
+	LEFTSHINGLE, LOGO, NETSCAPE, OCTAGONS, RIGHT30, RIGHT45,
+	RIGHTSHINGLE, ROSE, SMALLFISHSCALES, CHECKERBOARD, VERTICAL,
+	VERTICALBRICKS, VERTICALLEFTSHINGLE, VERTICALRIGHTSHINGLE, &
+	VERTICALSAW.  The HS_* variants are similar to the standard
+	pattern images provided with the Windows GDI.
+	* coders/msl.c (MSLStartElement): Don't reset gravity if the user
+	provides an x,y coordinate. Passing coodinates was loosing the
+	gravity setting.
 
 2003-05-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

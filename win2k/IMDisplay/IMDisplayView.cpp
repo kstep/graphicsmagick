@@ -830,7 +830,7 @@ void CIMDisplayView::DoDisplayImage( Image &inImage, CDC* pDC )
         {
           Magick::Image matteImage;
           matteImage.size(Magick::Geometry(inImage.columns(), inImage.rows()));
-          matteImage.read("tile:image:transparent");
+          matteImage.read("tile:image:checkerboard");
           matteImage.composite(inImage,0,0,AtopCompositeOp);
           image=matteImage;
         }
