@@ -174,6 +174,8 @@ MagickExport void MgkDrawSetClipRule(MgkDrawContext context,
     case NonZeroRule:
       p = "nonzero";
       break;
+    default:
+      break;
     }
 
   if (p != NULL)
@@ -281,6 +283,8 @@ MagickExport void MgkDrawSetFillRule(MgkDrawContext context,
       break;
     case NonZeroRule:
       p = "nonzero";
+      break;
+    default:
       break;
     }
 
@@ -994,6 +998,8 @@ MagickExport void MgkDrawSetStrokeLineCap(MgkDrawContext context,
     case SquareCap:
       p = "square";
       break;
+    default:
+      break;
     }
 
   if (p != NULL)
@@ -1014,6 +1020,8 @@ MagickExport void MgkDrawSetStrokeLineJoin(MgkDrawContext context,
       break;
     case BevelJoin:
       p = "square";
+      break;
+    default:
       break;
     }
 
