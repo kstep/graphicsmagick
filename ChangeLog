@@ -6,6 +6,9 @@
 	exit program. Clean-up to avoid any appearance of leaks.
 	* magick/static.c: Don't bind in process filter functions for
 	Visual C++ since the build environment doesn't support it yet.
+	* Code wasn't actually testing $HOME for log.mgk, now it does.
+	* Eliminate accidental recursive, or repeated, initialization of
+	the logging system.
 
 2003-03-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

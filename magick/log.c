@@ -112,6 +112,9 @@ static char
 /*
   Static declarations.
 */
+static unsigned int
+  log_initialize = True;
+
 static LogInfo
   *log_info = (LogInfo *) NULL;
 
@@ -307,6 +310,7 @@ static void *GetLogBlob(const char *filename,char *path,size_t *length,
   /*
     Search current directory.
   */
+  (void) strncpy(path,filename,MaxTextExtent-1);
   if (IsLogAccessible(path))
     return(LogToBlob(path,length,exception));
 #if defined(WIN32)
@@ -344,15 +348,19 @@ MagickExport unsigned int IsEventLogging(void)
   if (log_info == (LogInfo *) NULL)
     {
       AcquireSemaphoreInfo(&log_semaphore);
-      if (log_info == (LogInfo *) NULL)
-        {
-          ExceptionInfo
-            exception;
+      if (log_initialize == True)
+      {
+        log_initialize=False;
+        if (log_info == (LogInfo *) NULL)
+          {
+            ExceptionInfo
+              exception;
 
-          GetExceptionInfo(&exception);
-          (void) ReadConfigureFile(LogFilename,0,&exception);
-          DestroyExceptionInfo(&exception);
-        }
+            GetExceptionInfo(&exception);
+            (void) ReadConfigureFile(LogFilename,0,&exception);
+            DestroyExceptionInfo(&exception);
+          }
+      }
       LiberateSemaphoreInfo(&log_semaphore);
     }
   if (log_info == (LogInfo *) NULL)
@@ -788,7 +796,7 @@ static unsigned int ReadConfigureFile(const char *basename,
     *xml;
 
   size_t
-    length;
+    length=0;
 
   /*
     Read the log configure file.
