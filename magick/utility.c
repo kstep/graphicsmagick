@@ -53,7 +53,6 @@
 */
 #include "magick.h"
 #include "defines.h"
-#include "Colorlist.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1233,7 +1232,7 @@ Export void Latin1Upper(char *string)
     if (isupper(c))
       continue;
     c=toupper(c);
-    *string=c;
+    *string=(char) c;
   }
 }
 

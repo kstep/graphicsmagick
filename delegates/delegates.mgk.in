@@ -99,7 +99,7 @@ dvi=>
 	@DVIDecodeDelegate@ -q -o %o %i
 
 edit=>
-	@EditorDelegate@ -title "Edit Image Comment" -e vi %i
+	@EditorDelegate@ -title "Edit Image Comment" -e vi %o
 
 eps<=>pdf
 	@PSDelegate@ -dMaxBitmap=300000000 -sDEVICE=@GSPDFDevice@ -q -dNOPAUSE -dSAFER \

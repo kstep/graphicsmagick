@@ -39,14 +39,6 @@ typedef unsigned char Quantum;
 #endif
 
 /*
-  Image Geometry defines (extends XParseGeometry flags).
-*/
-#define PercentValue  0x1000
-#define AspectValue  0x2000
-#define LessValue  0x4000
-#define GreaterValue  0x8000
-
-/*
   Typedef declarations.
 */
 typedef struct _ColorPacket
@@ -460,6 +452,31 @@ typedef struct _AnnotateInfo
   RectangleInfo
     bounds;
 } AnnotateInfo;
+
+/*
+  Image const declarations.
+*/
+extern const char
+  *Alphabet,
+  *DefaultPointSize,
+  *DefaultImageQuality,
+  *DefaultTileFrame,
+  *DefaultTileGeometry,
+  *DefaultTileLabel,
+  *PSDensityGeometry,
+  *PSPageGeometry,
+  *ReadBinaryType,
+  *ReadBinaryUnbufferedType,
+  *WriteBinaryType;
+
+extern const double
+  SharpenFactor;
+
+extern const unsigned int
+  AspectValue,
+  LessValue,
+  GreaterValue,
+  PercentValue;
 
 /*
   Image utilities methods.

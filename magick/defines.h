@@ -108,58 +108,14 @@ extern "C" {
 #endif
 
 /*
-  Review these definitions and change them to suit your local requirements.
-*/
-#define AppendBinaryType  "ab"
-#define DefaultDisplayGamma  "2.2"
-#define DefaultImageQuality  "75"
-#define DefaultImportName  "magick.miff"
-#define DefaultInterlace  NoInterlace
-#define DefaultPointSize  "12"
-#define DefaultPreviewGeometry  "204x204+10+10"
-#define DefaultPreviewMatte  "#dfdfdf"
-#define DefaultPreviewPageGeometry  "3x3"
-#define DefaultPSFont  "Helvetica"
-#define DefaultPyramidHeight  64
-#define DefaultPyramidWidth  64
-#define DefaultTextBackground  "#c0c0c0"
-#define DefaultTextForeground  "#000000"
-#define DefaultTileBackground  "#c0c0c0"
-#define DefaultTileBorderWidth  0
-#define DefaultTileFrame  "15x15+3+3"
-#define DefaultTileGeometry  "106x106+4+3>"
-#define DefaultTileLabel  "%f\n%wx%h\n%b"
-#define DefaultTileMatte  "#bdbdbd"
-#define DefaultTilePageGeometry  "6x4"
-#define DefaultThumbnailGeometry  "106x106+0+0>"
-#define DefaultXFont  "-adobe-helvetica-medium-r-*-*-14-*-*-*-*-*-iso8859-*"
-#define DocumentationURL  \
-  "http://www.wizards.dupont.com/cristy/ImageMagick.html"
-#define ReadBinaryType  "rb"
-#define ReadBinaryUnbufferedType  "rbu"
-#define WriteBinaryType  "wb"
-/*
-  Page geometries:
-*/
-#define PCLPageGeometry  "612x792>"
-#define PCLDensityGeometry  "75x75"
-#define PDFPageGeometry  "612x792>"
-#define PSDensityGeometry  "72x72"
-#define PSPageGeometry  "612x792>"
-#define TextPageGeometry  "612x792+43+43"
-
-/*
   Define declarations.
 */
 #define AbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
-#define Alphabet  "`-=[]\\;',./~!@#$%^&*()_+{}|:\"<>?" \
-  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 #define ColorMatch(color,target,distance) \
   (((((color).red-(int) (target).red)*((color).red-(int) (target).red))+ \
     (((color).green-(int) (target).green)*((color).green-(int) (target).green))+ \
     (((color).blue-(int) (target).blue)*((color).blue-(int) (target).blue))) <= \
     (distance*distance))
-#define DoOpacity  (1 << 20)
 #define DownShift(x) (((int) ((x)+(1L << 13))) >> 14)
 #define Extent(string)  ((int) strlen(string))
 #define False  0
@@ -171,13 +127,10 @@ extern "C" {
 #define IsGray(color)  \
   (((color).red == (color).green) && ((color).green == (color).blue))
 #define Max(x,y)  (((x) > (y)) ? (x) : (y))
-#define MaxColormapSize  65535L
-#define MaxTreeDepth  8
 #define Min(x,y)  (((x) < (y)) ? (x) : (y))
 #if !defined(M_PI)
 #define M_PI  3.14159265358979323846
 #endif
-#define NodesInAList  2048
 #define Opaque  MaxRGB
 #define PixelOffset(image,x,y) \
   ((image)->pixels+(((int) (y))*(image)->columns+((int) (x))))
@@ -202,8 +155,6 @@ extern "C" {
   else \
     quantum=MSBFirstReadShort(image->file) >> (image->depth-QuantumDepth); \
 }
-#define SharpenFactor  60.0
-#define SuspendTime  50
 #define Swap(x,y) ((x)^=(y), (y)^=(x), (x)^=(y))
 #if !defined(STDIN_FILENO)
 #define STDIN_FILENO  0
@@ -236,37 +187,6 @@ extern "C" {
     else \
       MSBFirstWriteShort(quantum,image->file); \
 }
-
-/*
-  3D effects.
-*/
-#define AccentuateModulate  UpScale(80)
-#define HighlightModulate  UpScale(125)
-#define ShadowModulate  UpScale(135)
-#define DepthModulate  UpScale(185)
-#define TroughModulate  UpScale(110)
-
-/*
-  Default colors declarations.
-*/
-#define BackgroundColor  "#bdbdbd"  /* gray */
-#define BorderColor  "#bdbdbd"  /* gray */
-#define ForegroundColor  "#000"  /* black */
-#define MatteColor  "#bdbdbd"  /* gray */
-/*
-  Display state declarations.
-*/
-#define DefaultState  0x0000
-#define EscapeState  0x0001
-#define ExitState  0x0002
-#define FormerImageState  0x0004
-#define ModifierState  0x0008
-#define MontageImageState  0x0010
-#define NextImageState  0x0020
-#define RetainColorsState  0x0040
-#define UpdateConfigurationState  0x0080
-#define UpdateRegionState  0x0100
-
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

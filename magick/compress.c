@@ -675,7 +675,7 @@ Export unsigned int GIFDecodeImage(Image *image)
   for (code=0; code < clear; code++)
   {
     prefix[code]=0;
-    suffix[code]=code;
+    suffix[code]=(unsigned char) code;
   }
   /*
     Decode GIF pixel stream.
@@ -738,7 +738,7 @@ Export unsigned int GIFDecodeImage(Image *image)
           {
             *top_stack++=suffix[code];
             old_code=code;
-            first=code;
+            first=(unsigned char) code;
             continue;
           }
         in_code=code;

@@ -101,7 +101,7 @@ dvi=>
 	dvips -q -o %o %i
 
 edit=>
-	notepad %i
+	notepad %o
 
 eps<=>pdf
 	gswin32 -dMaxBitmap=300000000 -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \

@@ -97,7 +97,7 @@ dvi=>
 	dvips -q -o %o %i
 
 edit=>
-	xterm -title "Edit Image Comment" -e vi %i
+	xterm -title "Edit Image Comment" -e vi %o
 
 eps<=>pdf
 	-dMaxBitmap=300000000 -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \

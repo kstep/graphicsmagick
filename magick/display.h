@@ -11,10 +11,7 @@ extern "C" {
 /*
   Define declarations.
 */
-#define DefaultPageSize  "Letter"
 #define MaxColors  Min(windows->visual_info->colormap_size,256)
-#define MinPanSize  96
-#define RoiDelta  8
 
 /*
   Static declarations.

@@ -126,6 +126,9 @@
 /* Define if you have FreeType (TrueType font) library */
 #undef HasTTF
 
+/* Define to specify default TrueType font path. */
+#undef TT_FONT_PATH
+
 /* Define if you have the SFIO mmap-based stdio library emulation */
 #undef HasSFIO
 
@@ -236,12 +239,6 @@
 
 /* Define if you have the <unistd.h> header file.  */
 #undef HAVE_UNISTD_H
-
-/* Name of package */
-#undef PACKAGE
-
-/* Version number of package */
-#undef VERSION
 
 /* define if compiled symbols have a leading underscore */
 #undef WITH_SYMBOL_UNDERSCORE

@@ -800,7 +800,7 @@ int main(int argc,char **argv)
       }
   }
   if (filename == (char *) NULL)
-    filename=DefaultImportName;
+    filename="magick.miff";
   /*
     Read image from X server.
   */

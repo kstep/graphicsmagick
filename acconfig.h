@@ -41,12 +41,6 @@
 /* Define if the X Window System is missing or not being used.  */
 #undef X_DISPLAY_MISSING
 
-/* Package name */
-#undef PACKAGE
-
-/* Package version */
-#undef VERSION
-
 /* Include patented LZW compression */
 #undef HasLZW
 
@@ -91,6 +85,9 @@
 
 /* Define if you have FreeType (TrueType font) library */
 #undef HasTTF
+
+/* Define to specify default TrueType font path. */
+#undef TT_FONT_PATH
 
 /* Define if you have the SFIO mmap-based stdio library emulation */
 #undef HasSFIO

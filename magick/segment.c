@@ -99,12 +99,7 @@
 /*
   Define declarations.
 */
-#define Blue  2
-#define Dimension  3
-#define Green  1
-#define Red  0
-#define SafeMargin  3
-#define TreeLength  600
+#define  Dimension  3
 
 /*
   Typedef declarations.
@@ -147,6 +142,16 @@ typedef struct _ZeroCrossing
   short
     crossings[MaxRGB+1];
 } ZeroCrossing;
+
+/*
+  Constant declarations.
+*/
+const int
+  Blue = 2,
+  Green = 1,
+  Red = 0,
+  SafeMargin = 3,
+  TreeLength = 600;
 
 /*
   Method prototypes.

@@ -72,6 +72,19 @@
 #define RenderPostscriptText  "  Rendering postscript...  "
 
 /*
+  Constant declarations.
+*/
+const char
+  *AppendBinaryType = "ab",
+  *DefaultTileLabel = "%f\n%wx%h\n%b",
+  *DefaultTileGeometry = "106x106+4+3>",
+  *DefaultXFont = "-adobe-helvetica-medium-r-*-*-14-*-*-*-*-*-iso8859-*",
+  *PSDensityGeometry = "72x72",
+  *PSPageGeometry = "612x792>",
+  *ReadBinaryType = "rb",
+  *ReadBinaryUnbufferedType = "rbu";
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -1253,7 +1266,7 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
           (element == dicom_info[i].element))
         break;
     (void) strcpy(implicit_vr,dicom_info[i].vr);
-    ReadData((char *) explicit_vr,1,2,image->file);
+    status=ReadData((char *) explicit_vr,1,2,image->file);
     if (strcmp(implicit_vr,"xs") == 0)
       if (isupper((int) *explicit_vr) && isupper((int) *(explicit_vr+1)))
         (void) strcpy(implicit_vr,explicit_vr);
@@ -1654,7 +1667,7 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
         */
         image->packets=image->columns*image->rows;
         SetImage(image);
-        for (i=0; i < samples_per_pixel; i++)
+        for (i=0; i < (int) samples_per_pixel; i++)
         {
           q=image->pixels;
           for (y=0; y < (int) image->rows; y++)
@@ -6100,7 +6113,7 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
           MagickWarning(XServerWarning,"Unable to open X server",
             local_info->server_name);
           DestroyImage(image);
-          (void) CloneString(&local_info->font,DefaultPSFont);
+          (void) CloneString(&local_info->font,"Helvetica");
           image=ReadLABELImage(local_info);
           DestroyImageInfo(local_info);
           return(image);
@@ -7455,7 +7468,7 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image)
     return((Image *) NULL);
   commands[0]=SetClientName((char *) NULL);
   commands[1]="-label";
-  commands[2]=DefaultTileLabel;
+  commands[2]=(char *) DefaultTileLabel;
   MogrifyImages(local_info,3,commands,&image);
   DestroyImageInfo(local_info);
   /*
@@ -11652,7 +11665,7 @@ Export Image *ReadPWPImage(const ImageInfo *image_info)
     {
       for (i=0; i < 17; i++)
         magick[i]=magick[i+1];
-      magick[17]=c;
+      magick[17]=(unsigned char) c;
       if (strncmp((char *) (magick+12),"SFW94A",6) == 0)
         break;
     }
@@ -15865,7 +15878,7 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
   bounding_box.height=792;
   bounding_box.x=0;
   bounding_box.y=0;
-  (void) ParseImageGeometry(TextPageGeometry,&bounding_box.x,&bounding_box.y,
+  (void) ParseImageGeometry("612x792+43+43",&bounding_box.x,&bounding_box.y,
     &bounding_box.width,&bounding_box.height);
   if (image_info->page != (char *) NULL)
     (void) ParseImageGeometry(image_info->page,&bounding_box.x,&bounding_box.y,
@@ -15882,7 +15895,7 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
     AllocateMemory(image->packets*sizeof(RunlengthPacket));
   if (image->pixels == (RunlengthPacket *) NULL)
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-  (void) XQueryColorDatabase(DefaultTextBackground,&color);
+  (void) XQueryColorDatabase("#c0c0c0",&color);
   image->background_color.red=XDownScale(color.red);
   image->background_color.green=XDownScale(color.green);
   image->background_color.blue=XDownScale(color.blue);
@@ -16448,9 +16461,9 @@ Export Image *ReadVIDImage(const ImageInfo *image_info)
   (void) CloneString(&local_info->size,DefaultTileGeometry);
   commands[0]=SetClientName((char *) NULL);
   commands[1]="-label";
-  commands[2]=DefaultTileLabel;
+  commands[2]=(char *) DefaultTileLabel;
   commands[3]="-geometry";
-  commands[4]=DefaultTileGeometry;
+  commands[4]=(char *) DefaultTileGeometry;
   for (i=0; i < number_files; i++)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);

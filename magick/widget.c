@@ -61,33 +61,18 @@
 #define AreaIsActive(matte_info,position)  \
   ((position.y >= (int) (matte_info.y-matte_info.bevel_width)) &&  \
    (position.y < (int) (matte_info.y+matte_info.height+matte_info.bevel_width)))
-#define BorderOffset  4
-#define DoubleClick  250
 #define MatteIsActive(matte_info,position)  \
   ((position.x >= (int) (matte_info.x-matte_info.bevel_width)) && \
    (position.y >= (int) (matte_info.y-matte_info.bevel_width)) &&  \
    (position.x < (int) (matte_info.x+matte_info.width+matte_info.bevel_width)) &&  \
    (position.y < (int) (matte_info.y+matte_info.height+matte_info.bevel_width)))
+#define MaxTextWidth  (80*TextWidth(font_info,"_",1))
+#define MinTextWidth  (26*TextWidth(font_info,"_",1))
+#define QuantumMargin   Max(font_info->max_bounds.width,12)
 #define WindowIsActive(window_info,position)  \
   ((position.x >= 0) && (position.y >= 0) &&  \
    (position.x < (int) window_info.width) &&  \
    (position.y < (int) window_info.height))
-/*
-  State declarations.
-*/
-#define ControlState  0x0001
-#define DefaultState  0x0000
-#define ExitState  0x0002
-#define InactiveWidgetState  0x0004
-#define JumpListState  0x0008
-#define MaxTextWidth  (80*TextWidth(font_info,"_",1))
-#define MinTextWidth  (26*TextWidth(font_info,"_",1))
-#define QuantumMargin  Max(font_info->max_bounds.width,12)
-#define RedrawActionState  0x0010
-#define RedrawListState  0x0020
-#define RedrawWidgetState  0x0040
-#define UpdateConfigurationState  0x0080
-#define UpdateListState  0x0100
 
 /*
   Variable declarations.
@@ -108,6 +93,20 @@ static XWidgetInfo
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     (char *) NULL, (char *) NULL, (char *) NULL
   };
+
+/*
+  Constant declarations.
+*/
+const unsigned int
+  BorderOffset = 4,
+  ControlState = 0x0001,
+  DoubleClick = 250,
+  InactiveWidgetState = 0x0004,
+  JumpListState = 0x0008,
+  RedrawActionState = 0x0010,
+  RedrawListState = 0x0020,
+  RedrawWidgetState = 0x0040,
+  UpdateListState = 0x0100;
 
 /*
   Method prototypes.

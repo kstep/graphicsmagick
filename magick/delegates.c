@@ -61,9 +61,10 @@
 #include "defines.h"
 
 /*
-  Delegates defines.
+  Constant declaractions.
 */
-#define DelegateFilename  "delegates.mgk"
+const char
+  *DelegateFilename = "delegates.mgk";
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

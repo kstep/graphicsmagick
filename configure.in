@@ -21,7 +21,7 @@ AC_SUBST(MICRO_VERSION)dnl
 # Generate configure header.
 AM_CONFIG_HEADER(magick/config.h)
 
-AM_INIT_AUTOMAKE(ImageMagick,$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION)
+AM_INIT_AUTOMAKE(ImageMagick,$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION, ' ')
 
 # Check for programs
 AC_PROG_CC
@@ -198,12 +198,22 @@ AC_ARG_WITH(ttf,
 	      [with_ttf=$withval],
 	      [with_ttf='yes'])
 
-# Enable Zlib.
+# Set default TrueType font path
+AC_ARG_WITH(ttf-fontpath,
+	      [  --with-ttf-fontpath    set default TrueType font path (default none)],
+	      [with_ttf_fontpath=$withval],
+	      [with_ttf_fontpath=''])
+if test "$with_ttf_fontpath" != "yes" && test -z "$with_ttf_fontpath"
+then
+  with_ttf_fontpath=''
+else
+  AC_DEFINE_UNQUOTED(TT_FONT_PATH,"$with_ttf_fontpath")
+fi
+
 AC_ARG_WITH(zlib,
 	      [  --with-zlib             enable ZLIB (default is yes)],
 	      [with_zlib=$withval],
 	      [with_zlib='yes'])
-
 
 # Check standard headers
 AC_HEADER_STDC
@@ -1251,7 +1261,8 @@ echo "JBIG              --with-jbig=$with_jbig		$have_jbig"
 echo "JPEG              --with-jpeg=$with_jpeg		$have_jpeg"
 echo "PNG               --with-png=$with_png		$have_png"
 echo "TIFF              --with-tiff=$with_tiff		$have_tiff"
-echo "TrueType          --with-ttf=$with_ttf		$have_ttf"
+echo "TrueType (TTF)    --with-ttf=$with_ttf		$have_ttf"
+echo "TTF Path          --with-ttf-fontpath=          \"$with_ttf_fontpath\""
 echo "ZLIB              --with-zlib=$with_zlib		$have_zlib"
 echo "X11               --with-x=$with_x			$have_x"
 echo ""

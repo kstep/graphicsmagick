@@ -8,6 +8,9 @@
 extern "C" {
 #endif
 
+#define ErrorQueueLength  16
+#define NodesInAList  2048
+
 /*
   Typedef declarations.
 */
@@ -29,6 +32,15 @@ typedef struct _QuantizeInfo
   ColorspaceType
     colorspace;
 } QuantizeInfo;
+
+/*
+  Constant declarations.
+*/
+extern const int
+  MaxTreeDepth;
+
+extern const long
+  MaxColormapSize;
 
 /*
   Quantization utilities methods.

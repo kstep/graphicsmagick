@@ -57,6 +57,14 @@ extern "C" {
 */
 #define MaxNumberPens  11
 #define MaxNumberFonts  11
+/*
+  3D effects.
+*/
+#define AccentuateModulate  UpScale(80)
+#define HighlightModulate  UpScale(125)
+#define ShadowModulate  UpScale(135)
+#define DepthModulate  UpScale(185)
+#define TroughModulate  UpScale(110)
 
 /*
   Enumeration declarations.
@@ -169,6 +177,17 @@ typedef struct _XDrawInfo
   XPoint
     *coordinate_info;
 } XDrawInfo;
+
+typedef struct _XColorlist
+{
+  char
+    *name;
+
+  unsigned char
+    red,
+    green,
+    blue;
+} XColorlist;
 
 typedef struct _XImportInfo
 {
@@ -476,11 +495,37 @@ typedef struct _XWindows
 } XWindows;
 
 /*
+  Constant declarations.
+*/
+extern const char
+  *BackgroundColor,
+  *BorderColor,
+  *ForegroundColor,
+  *MatteColor;
+
+extern const unsigned int
+  DefaultState,
+  EscapeState,
+  ExitState,
+  FormerImageState,
+  ModifierState,
+  MontageImageState,
+  NextImageState,
+  RetainColorsState,
+  SuspendTime,
+  UpdateConfigurationState,
+  UpdateRegionState;
+
+extern const XColorlist
+  Colorlist[757],
+  XPMColorlist[235];
+
+/*
   X utilities routines.
 */
 extern Export char
   *XGetResourceClass(XrmDatabase,const char *,const char *,char *),
-  *XGetResourceInstance(XrmDatabase,const char *,const char *,char *),
+  *XGetResourceInstance(XrmDatabase,const char *,const char *,const char *),
   *XGetScreenDensity(Display *),
   *XVisualClassName(const int);
 

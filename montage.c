@@ -806,7 +806,7 @@ int main(int argc,char **argv)
                   if (Latin1Compare("frame",option) == 0)
                     {
                       mode=FrameMode;
-                      (void) CloneString(&montage_info.frame,DefaultTileFrame);
+                      (void) CloneString(&montage_info.frame,"15x15+3+3");
                       montage_info.shadow=True;
                       break;
                     }

@@ -194,13 +194,6 @@
 #include "defines.h"
 
 /*
-  Define declarations.
-*/
-#define CacheShift  (QuantumDepth-6)
-#define ErrorQueueLength  16
-#define MaxNodes  266817
-
-/*
   Typdef declarations.
 */
 typedef struct _NodeInfo
@@ -283,6 +276,17 @@ typedef struct _CubeInfo
   double
     weights[ErrorQueueLength];
 } CubeInfo;
+
+/*
+  Const declarations.
+*/
+const int
+  CacheShift = (QuantumDepth-6),
+  MaxNodes = 266817,
+  MaxTreeDepth = 8;
+
+const long
+  MaxColormapSize = 65535L;
 
 /*
   Method prototypes.
@@ -554,7 +558,7 @@ static unsigned int Classification(CubeInfo *cube_info,const Image *image)
   p=image->pixels;
   for (i=0; i < (int) image->packets; i++)
   {
-    if (cube_info->nodes > MaxNodes)
+    if ((int) cube_info->nodes > MaxNodes)
       {
         /*
           Prune one level if the color tree is too large.
@@ -1957,7 +1961,7 @@ Export unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
   number_colors=quantize_info->number_colors;
   if (number_colors == 0)
     number_colors=MaxRGB+1;
-  if (number_colors > MaxColormapSize)
+  if ((int) number_colors > MaxColormapSize)
     number_colors=MaxColormapSize;
   depth=quantize_info->tree_depth;
   if (depth == 0)
@@ -2068,7 +2072,7 @@ Export unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
   number_colors=quantize_info->number_colors;
   if (number_colors == 0)
     number_colors=MaxRGB+1;
-  if (number_colors > MaxColormapSize)
+  if ((int) number_colors > MaxColormapSize)
     number_colors=MaxColormapSize;
   depth=quantize_info->tree_depth;
   if (depth == 0)

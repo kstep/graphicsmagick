@@ -54,7 +54,6 @@
 */
 #include "magick.h"
 #include "defines.h"
-#include "Colorlist.h"
 
 /*
   Image defines.
@@ -72,6 +71,27 @@
       p->y2=(delta); \
       p++; \
     }
+
+/*
+  Constant declaration.
+*/
+const char
+  *Alphabet = "`-=[]\\;',./~!@#$%^&*()_+{}|:\"<>?" \
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
+  *DefaultImageQuality = "75",
+  *DefaultPointSize = "12";
+
+const double
+  SharpenFactor = 60.0;
+
+const InterlaceType
+  DefaultInterlace = NoInterlace;
+
+const unsigned int
+  AspectValue = 0x2000,
+  GreaterValue = 0x8000,
+  LessValue = 0x4000,
+  PercentValue = 0x1000;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -832,7 +852,7 @@ Export Image *AverageImages(const Image *images)
         "Memory allocation failed");
       return((Image *) NULL);
     }
-  for (i=0; i < (images->columns*images->rows); i++)
+  for (i=0; i < (int) (images->columns*images->rows); i++)
   {
     sum[i].red=0.0;
     sum[i].green=0.0;
@@ -861,7 +881,7 @@ Export Image *AverageImages(const Image *images)
   {
     x=0;
     p=image->pixels;
-    for (i=0; i < image->packets; i++)
+    for (i=0; i < (int) image->packets; i++)
     {
       for (j=0; j <= p->length; j++)
       {
@@ -2824,7 +2844,7 @@ Image *CreateImage(const unsigned int width,const unsigned int height,
     Convert a rectangular array of float pixels to runlength-encoded.
   */
   q=image->pixels;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     if (red != (float *) NULL)
       q->red=(Quantum) (MaxRGB*red[i]);
@@ -2833,7 +2853,7 @@ Image *CreateImage(const unsigned int width,const unsigned int height,
     if (blue != (float *) NULL)
       q->blue=(Quantum) (MaxRGB*blue[i]);
     if (opacity != (float *) NULL)
-      q->index=(unsigned short) Opaque*opacity[i];
+      q->index=(unsigned short) (Opaque*opacity[i]);
     q->length=0;
   }
   return(image);
@@ -5490,17 +5510,17 @@ Export void GetMontageInfo(MontageInfo *montage_info)
   assert(montage_info != (MontageInfo *) NULL);
   *montage_info->filename='\0';
   montage_info->geometry=AllocateString(DefaultTileGeometry);
-  montage_info->tile=AllocateString(DefaultTilePageGeometry);
-  montage_info->background_color=AllocateString(DefaultTileBackground);
+  montage_info->tile=AllocateString("6x4");
+  montage_info->background_color=AllocateString("#c0c0c0");
   montage_info->border_color=(char *) NULL;
-  montage_info->matte_color=AllocateString(DefaultTileMatte);
+  montage_info->matte_color=AllocateString("#bdbdbd");
   montage_info->title=(char *) NULL;
   montage_info->frame=(char *) NULL;
   montage_info->texture=(char *) NULL;
   montage_info->pen=(char *) NULL;
   montage_info->font=(char *) NULL;
   montage_info->pointsize=atoi(DefaultPointSize);
-  montage_info->border_width=DefaultTileBorderWidth;
+  montage_info->border_width=0;
   montage_info->gravity=CenterGravity;
   montage_info->shadow=False;
   montage_info->compose=ReplaceCompositeOp;
@@ -10512,6 +10532,7 @@ Export Image *ScaleImage(const Image *image,const unsigned int columns,
     x;
 
   register long
+    index,
     packets;
 
   register RunlengthPacket
@@ -10534,7 +10555,6 @@ Export Image *ScaleImage(const Image *image,const unsigned int columns,
   unsigned long
     blue,
     green,
-    index,
     max_packets,
     red,
     scale_factor;

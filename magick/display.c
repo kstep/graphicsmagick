@@ -57,6 +57,12 @@
 #include "display.h"
 
 /*
+  Constant declaration.
+*/
+const int
+  RoiDelta = 8;
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -2731,8 +2737,7 @@ static unsigned int XConfigureImage(Display *display,
   */
   windows->pan.crop_geometry=windows->image.crop_geometry;
   XBestIconSize(display,&windows->pan,image);
-  while ((windows->pan.width < MinPanSize) &&
-         (windows->pan.height < MinPanSize))
+  while ((windows->pan.width < 96) && (windows->pan.height < 96))
   {
     windows->pan.width<<=1;
     windows->pan.height<<=1;
@@ -6869,7 +6874,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
             Display documentation using Netscape remote control.
           */
           FormatString(command,"openURL(%.1024s,new-window,noraise)",
-            DocumentationURL);
+            "http://www.wizards.dupont.com/cristy/ImageMagick.html");
           mozilla_atom=XInternAtom(display,"_MOZILLA_COMMAND",False);
           XChangeProperty(display,mozilla_window,mozilla_atom,XA_STRING,8,
             PropModeReplace,(unsigned char *) command,Extent(command));
@@ -8532,7 +8537,7 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
     Request Postscript page geometry from user.
   */
   image_info=CloneImageInfo(resource_info->image_info);
-  FormatString(geometry,DefaultPageSize);
+  FormatString(geometry,"Letter");
   if (image_info->page != (char *) NULL)
     (void) strcpy(geometry,image_info->page);
   XListBrowserWidget(display,windows,&windows->widget,PageSizes,"Select",
@@ -10090,7 +10095,7 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
       */
       FormatString(geometry,PSPageGeometry);
       if (Latin1Compare(image_info->magick,"PDF") == 0)
-        FormatString(geometry,PDFPageGeometry);
+        FormatString(geometry,PSPageGeometry);
       if (image_info->page != (char *) NULL)
         (void) strcpy(geometry,image_info->page);
       XListBrowserWidget(display,windows,&windows->widget,PageSizes,"Select",
@@ -11146,9 +11151,9 @@ static Image *XVisualDirectoryImage(Display *display,
   image=(Image *) NULL;
   commands[0]=resource_info->client_name;
   commands[1]="-label";
-  commands[2]=DefaultTileLabel;
+  commands[2]=(char *) DefaultTileLabel;
   commands[3]="-geometry";
-  commands[4]=DefaultTileGeometry;
+  commands[4]=(char *) DefaultTileGeometry;
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
   for (i=0; i < number_files; i++)
