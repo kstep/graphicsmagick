@@ -1,16 +1,4 @@
 /* config.h.in.  Generated automatically from configure.in by autoheader.  */
-/* Some of these are defined here, not in configure.in, because
-   they're AC_DEFINEd in two different places, which causes two
-   defines to appear.  Some C compilers might now appreciate it...  */
-
-/* Define if you have the libdl library or equivalent.  */
-#undef HAVE_LIBDL
-
-/* Define if you have the GNU dld library.  */
-#undef HAVE_DLD
-
-/* Define if you have the shl_load function.  */
-#undef HAVE_SHL_LOAD
 
 /* Define if you have the <ctype.h> header file. */
 #undef HAVE_CTYPE_H
@@ -35,6 +23,9 @@
 
 /* Define if you have the libdl library or equivalent. */
 #undef HAVE_LIBDL
+
+/* Define if you have the `dld' library (-ldld). */
+#undef HAVE_LIBDLD
 
 /* Define if you have the <malloc.h> header file. */
 #undef HAVE_MALLOC_H
@@ -80,16 +71,19 @@
    library search path. */
 #undef LTDL_SHLIBPATH_VAR
 
-/* Define to the extension used for shared libraries, say, ".so". */
+/* Define to the extension used for shared libraries, say, .so. */
 #undef LTDL_SHLIB_EXT
 
 /* Define to the system default library search path. */
 #undef LTDL_SYSSEARCHPATH
 
+/* Define if dlsym() requires a leading underscode in symbol names. */
+#undef NEED_USCORE
+
 /* Define if you have the ANSI C header files. */
 #undef STDC_HEADERS
 
-/* Define to empty if `const' does not conform to ANSI C. */
+/* Define to empty if the keyword `const' is not conform to ANSI C. */
 #undef const
 
 /* Define as `__inline' if that's what the C compiler calls it, or to nothing
