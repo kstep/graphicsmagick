@@ -219,6 +219,7 @@ xml2_config = @xml2_config@
 AUTOMAKE_OPTIONS = 1.4 foreign
 
 INCLUDES = -I../ -I$(top_srcdir) -I../magick
+#INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/magick
 # ../magick/config.h is needed.
 
 #
@@ -689,10 +690,12 @@ check-rwfile:
 	fi ; \
 	exit $$status
 
-check: check-rwfile check-rwblob
+check-drawtest:
 	./drawtest drawtest_out.miff
 	./drawtest drawtest_out.mvg
 	./drawtest drawtest_out.svg
+
+check: check-drawtest check-rwfile check-rwblob
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

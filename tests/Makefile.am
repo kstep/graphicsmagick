@@ -31,6 +31,7 @@
 AUTOMAKE_OPTIONS = 1.4 foreign
 
 INCLUDES = -I../ -I$(top_srcdir) -I../magick
+#INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/magick
 # ../magick/config.h is needed.
 
 #
@@ -276,7 +277,9 @@ check-rwfile:
 	fi ; \
 	exit $$status
 
-check: check-rwfile check-rwblob
+check-drawtest:
 	./drawtest drawtest_out.miff
 	./drawtest drawtest_out.mvg
 	./drawtest drawtest_out.svg
+
+check: check-drawtest check-rwfile check-rwblob
