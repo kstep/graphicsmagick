@@ -1178,13 +1178,9 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
         ThrowCompositeException(OptionError,"Unrecognized option",option);
       }
       case '?':
-      {
         break;
-      }
       default:
-      {
         ThrowCompositeException(OptionError,"Unrecognized option",option);
-      }
     }
   }
   if (image == (Image *) NULL)
@@ -2874,13 +2870,9 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
         ThrowConvertException(OptionError,"Unrecognized option",option);
       }
       case '?':
-      {
         break;
-      }
       default:
-      {
         ThrowConvertException(OptionError,"Unrecognized option",option);
-      }
     }
   }
   if ((image == (Image *) NULL) && (image_list == (Image *) NULL))
@@ -3211,13 +3203,9 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
         ThrowIdentifyException(OptionError,"Unrecognized option",option);
       }
       case '?':
-      {
         break;
-      }
       default:
-      {
         ThrowIdentifyException(OptionError,"Unrecognized option",option);
-      }
     }
   }
   if (number_images == 0)
@@ -4748,9 +4736,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
       case '?':
         break;
       default:
-      {
         ThrowMogrifyException(OptionWarning,"Unrecognized option",option);
-      }
     }
   }
   if ((i != argc) || (image == (Image *) NULL))
@@ -5845,13 +5831,9 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
         ThrowMontageException(OptionError,"Unrecognized option",option);
       }
       case '?':
-      {
         break;
-      }
       default:
-      {
         ThrowMontageException(OptionError,"Unrecognized option",option);
-      }
     }
   }
   if ((image == (Image *) NULL) && (image_list == (Image *) NULL))
