@@ -1175,7 +1175,16 @@ extern PNG_EXPORT(png_free_ptr,png_IM_free)
   PNGARG((png_structp png_ptr,png_voidp ptr));
 png_voidp png_IM_malloc(png_structp png_ptr,png_uint_32 size)
 {
+#if (PNG_LIBPNG_VER < 10011)
+  png_voidp
+    ret;
+  ret = ((png_voidp) AcquireMemory((size_t) size));
+  if (ret == NULL)
+    png_error("Insufficient memory.");
+  return (ret);
+#else
   return((png_voidp) AcquireMemory((size_t) size));
+#endif
 }
 
 /*
@@ -1243,9 +1252,9 @@ png_read_raw_profile(Image *image, const ImageInfo *image_info,
      while (*sp < '0' || (*sp > '9' && *sp < 'a') || *sp > 'f')
         sp++;
      if (i%2 == 0)
-        *dp=16*unhex[(int) (*sp++)];
+        *dp=16*unhex[(int) *sp++];
      else
-        (*dp++)+=unhex[(int) (*sp++)];
+        (*dp++)+=unhex[(int) *sp++];
    }
 
    /* We have already read "Raw profile type " */
@@ -1379,24 +1388,24 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     mng_height = 0,
     mng_iterations=0,
     mng_width = 0,
-    subframe_height,
-    subframe_width,
+    subframe_height=0,
+    subframe_width=0,
     ticks_per_second;
 
-  png_textp
-    text;
+    png_textp
+      text;
 
   /*
     Open image file.
   */
   image=AllocateImage(image_info);
+  mng_info=(MngInfo *) NULL;
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   first_mng_object=False;
   skipping_loop=(-1);
   have_mng_structure=False;
-  mng_info=(MngInfo *) NULL;
   if (LocaleCompare(image_info->magick,"MNG") == 0)
     {
       char
@@ -1519,7 +1528,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 "Delta-PNG is not implemented yet",image->filename);
             mng_info->dhdr_warning++;
           }
-        if (length)
+       p=NULL;
+       if (length)
           {
             chunk=(unsigned char *) AcquireMemory(length);
             if (chunk == (unsigned char *) NULL)
@@ -2997,7 +3007,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
             {
               image->depth=8;
-              (void) PushImagePixels(image,GrayAlphaQuantum,scanlines[y]);
+              (void) PushImagePixels(image,GrayOpacityQuantum,scanlines[y]);
               image->depth=depth;
             }
           else if (depth == 8 && ping_info->color_type == PNG_COLOR_TYPE_RGB)
@@ -3015,7 +3025,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
             (void) PushImagePixels(image,GrayQuantum,scanlines[y]);
           else if (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
-            (void) PushImagePixels(image,GrayAlphaQuantum,scanlines[y]);
+            (void) PushImagePixels(image,GrayOpacityQuantum,scanlines[y]);
           else if (ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
             (void) PushImagePixels(image,RGBAQuantum,scanlines[y]);
           else if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
@@ -4062,7 +4072,7 @@ png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
 #endif
    if (image_info->verbose)
      {
-     printf("writing raw profile: type=%s, length=%d\n",
+     printf("writing raw profile: type=%s, length=%lu\n",
        profile_type, length);
      }
 #if (PNG_LIBPNG_VER > 10005)
@@ -4081,7 +4091,7 @@ png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
    strcat(dp,(const char *) profile_description);
    dp+=description_length;
    *dp++='\n';
-   sprintf(dp,"%8d ",length);
+   sprintf(dp,"%8lu ",length);
    dp+=8;
    for (i=0; i<length; i++)
    {
@@ -4118,10 +4128,10 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     equal_palettes,
     need_local_plte,
 #endif
-    equal_backgrounds,
+    equal_backgrounds=True,
     equal_chrms,
     equal_gammas,
-    equal_physs,
+    equal_physs=True,
     equal_srgbs,
     framing_mode,
     have_write_global_chrm,
@@ -4145,10 +4155,10 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 
   register int
     i,
-    x;
+    x=0;
 
   register PixelPacket
-    *p;
+    *p=NULL;
 
   RectangleInfo
     page;
@@ -4166,12 +4176,12 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 
   unsigned int
     delay,
-    final_delay,
+    final_delay=0,
     initial_delay,
     matte,
     scene,
     status,
-    ticks_per_second;
+    ticks_per_second=0;
 
   /*
     Open image file.
@@ -4213,7 +4223,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       need_geom=True;
       if (image_info->page != (char *) NULL)
         {
-          (void) ParseImageGeometry(image_info->page,&page.x,&page.y,
+          (void) ParseGeometry(image_info->page,&page.x,&page.y,
             &page.width,&page.height);
           need_geom=False;
         }
@@ -4222,11 +4232,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       */
       initial_delay=image->delay;
       need_iterations=False;
-      equal_backgrounds=True;
       equal_chrms=image->chromaticity.white_point.x != 0.0;
       equal_gammas=True;
       equal_srgbs=True;
-      equal_physs=True;
       image_count=0;
 #ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
       all_images_are_gray=True;
@@ -4513,8 +4521,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
        or does not cover the entire frame.
      */
      if (image->matte || image->page.x > 0 || image->page.y > 0 ||
-         image->page.width && (image->page.width+image->page.x < page.width) ||
-         image->page.height && (image->page.height+image->page.y < page.height))
+         (image->page.width && (image->page.width+image->page.x < page.width)) ||
+         (image->page.height && (image->page.height+image->page.y < page.height)))
        {
          WriteBlobMSBLong(image,6L);
          PNGType(chunk,mng_BACK);
@@ -5308,7 +5316,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 #endif
                   }
                 else /* PseudoClass */
-                   (void) PopImagePixels(image,GrayAlphaQuantum,scanlines[y]);
+                   (void) PopImagePixels(image,GrayOpacityQuantum,scanlines[y]);
               }
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
@@ -5330,7 +5338,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                     (void) PopImagePixels(image,GrayQuantum,scanlines[y]);
                 }
               else if (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
-                (void) PopImagePixels(image,GrayAlphaQuantum,scanlines[y]);
+                (void) PopImagePixels(image,GrayOpacityQuantum,scanlines[y]);
               else if (image->matte)
                 (void) PopImagePixels(image,RGBAQuantum,scanlines[y]);
               else
