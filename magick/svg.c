@@ -425,8 +425,10 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     i;
 
   unsigned int
+    height,
     quote,
-    status;
+    status,
+    width;
 
   /*
     Open image file.
@@ -441,9 +443,9 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Open draw file.
   */
-  TemporaryFilename(filename);
-puts(filename);
-  file=fopen(filename,"w");
+  (void) strcpy(filename,"@");
+  TemporaryFilename(filename+1);
+  file=fopen(filename+1,"w");
   if (file == (FILE *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
@@ -454,15 +456,7 @@ puts(filename);
   element.minor=0.0;
   element.major=0.0;
   element.angle=0.0;
-  url=AllocateString("logo:");
-  keyword=AllocateString("none");
-  quote=False;
-  GetPageInfo(&page);
-  primitive=AllocateString("none");
-  text=AllocateString("none");
-  token=AllocateString("none");
-  value=AllocateString("none");
-  vertices=AllocateString("");
+  height=image->rows;
   for (i=0; i < MaxContexts; i++)
   {
     graphic_context[i].fill=AllocateString("none");
@@ -473,6 +467,16 @@ puts(filename);
     graphic_context[i].antialias=True;
   }
   n=0;
+  keyword=AllocateString("none");
+  quote=False;
+  GetPageInfo(&page);
+  primitive=AllocateString("none");
+  text=AllocateString("none");
+  token=AllocateString("none");
+  url=AllocateString("logo:");
+  value=AllocateString("none");
+  vertices=AllocateString("");
+  width=image->columns;
   /*
     Parse SVG drawing primitives.
   */
@@ -583,21 +587,16 @@ puts(filename);
         (void) fprintf(file,"translate %g,%g\n",translate.x,translate.y);
         (void) fprintf(file,"rotate %g\n",element.angle);
         (void) fprintf(file,"opacity %g\n",graphic_context[n].opacity);
-        (void) fprintf(file,"fill %d\n",
-          Latin1Compare(graphic_context[n].fill,"none") != 0 ? 1 : 0);
-        if (Latin1Compare(graphic_context[n].fill,"none") == 0)
-          {
-            (void) fprintf(file,"pen %s\n",graphic_context[n].stroke);
-            (void) fprintf(file,"%s\n",command);
-          }
-        else
+        if (Latin1Compare(graphic_context[n].fill,"none") != 0)
           {
             (void) fprintf(file,"pen %s\n",graphic_context[n].fill);
-            (void) fprintf(file,"%s\n",command);
-            (void) fprintf(file,"fill 0\n");
-            (void) fprintf(file,"pen %s\n",graphic_context[n].stroke);
+            (void) fprintf(file,"fill 1\n");
             (void) fprintf(file,"%s\n",command);
           }
+        if (Latin1Compare(graphic_context[n].stroke,"none") != 0)
+          (void) fprintf(file,"pen %s\n",graphic_context[n].stroke);
+        (void) fprintf(file,"fill 0\n");
+        (void) fprintf(file,"%s\n",command);
         FreeMemory((void *) &command);
         (void) CloneString(&primitive,"none");
         (void) CloneString(&vertices," ");
@@ -650,11 +649,8 @@ puts(filename);
       {
         (void) sscanf(value,"%u",&page.height);
         page.height*=UnitOfMeasure(value);
-	/*
-        FormatString(geometry,"%ux%u!",image->columns,page.height);
-        if ((image->columns < page.width) || (image->rows < page.height))
-          TransformImage(&image,(char *) NULL,geometry);
-	  */
+        if (height < page.height)
+          height=page.height;
       }
     if (Latin1Compare(keyword,"href") == 0)
       (void) CloneString(&url,value);
@@ -757,21 +753,17 @@ puts(filename);
       {
         (void) sscanf(value,"%d %d %u %u",&page.x,&page.y,
           &page.width,&page.height);
-        FormatString(geometry,"%ux%u!",page.width,page.height);
-	/*
-        if ((image->columns < page.width) || (image->rows < page.height))
-          TransformImage(&image,(char *) NULL,geometry);
-	  */
+        if (height < page.height)
+          height=page.height;
+        if (width < page.width)
+          width=page.width;
       }
     if (Latin1Compare(keyword,"width") == 0)
       {
         (void) sscanf(value,"%u",&page.width);
         page.width*=UnitOfMeasure(value);
-	/*
-        FormatString(geometry,"%ux%u!",page.width,image->rows);
-        if ((image->columns < page.width) || (image->rows < page.height))
-          TransformImage(&image,(char *) NULL,geometry);
-	  */
+        if (width < page.width)
+          width=page.width;
       }
     if (Latin1Compare(keyword,"x") == 0)
       {
@@ -809,16 +801,19 @@ puts(filename);
   FreeMemory((void *) &primitive);
   FreeMemory((void *) &keyword);
   (void) fclose(file);
+  CloseBlob(image);
   /*
     Draw image.
+  */
+  FormatString(geometry,"%ux%u!",width,height);
+  TransformImage(&image,(char *) NULL,geometry);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  (void) CloneString(&draw_info->primitive,command);
+  (void) CloneString(&draw_info->primitive,filename);
   status=DrawImage(image,draw_info);
   if (status == False)
-    ThrowReaderException(ResourceLimitWarning,"Unable to draw primitive",image);
+    ThrowReaderException(CorruptImageWarning,"Unable to read SVG image",image);
   DestroyDrawInfo(draw_info);
-  remove(filename);
-  */
+  remove(filename+1);
   return(image);
 }
 
