@@ -1887,6 +1887,7 @@ MagickExport unsigned int QuantizationError(Image *image)
   double
     distance,
     maximum_error_per_pixel,
+		normalize,
     total_error;
 
   DoublePixelPacket
@@ -1932,13 +1933,13 @@ MagickExport unsigned int QuantizationError(Image *image)
     indexes=GetIndexes(image);
     for (x=0; x < (long) image->columns; x+=count)
     {
-      for (count=1; (x+count) < (long) image->columns; count++)
-        if (!ColorMatch(p,p+count))
-          break;
       index=indexes[x];
       pixel.red=p->red-(double) image->colormap[index].red;
       pixel.green=p->green-(double) image->colormap[index].green;
       pixel.blue=p->blue-(double) image->colormap[index].blue;
+      for (count=1; (x+count) < (long) image->columns; count++)
+        if (!ColorMatch(p,p+count))
+          break;
       distance=count*pixel.red*pixel.red+count*pixel.green*pixel.green+
         count*pixel.blue*pixel.blue;
       total_error+=distance;
@@ -1950,11 +1951,10 @@ MagickExport unsigned int QuantizationError(Image *image)
   /*
     Compute final error statistics.
   */
+  normalize=3.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0);
   image->mean_error_per_pixel=total_error/image->columns/image->rows;
-  image->normalized_mean_error=image->mean_error_per_pixel/
-    (3.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0));
-  image->normalized_maximum_error=maximum_error_per_pixel/
-    (3.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0));
+  image->normalized_mean_error=image->mean_error_per_pixel/normalize;
+  image->normalized_maximum_error=maximum_error_per_pixel/normalize;
   return(True);
 }
 
