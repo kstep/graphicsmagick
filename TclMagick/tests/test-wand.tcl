@@ -33,7 +33,7 @@ set TMP "../tmp"
 ##########################################
 # Check which tests should be performed
 #
-set TestFunctions {
+set xTestFunctions {
     AnnotateImage               img     0
     ClipImage                   img     0
     ClipPathImage               img     0
@@ -42,7 +42,7 @@ set TestFunctions {
     MapImage                    img     1
     TextureImage                img     1    
 }
-set xTestFunctions {
+set TestFunctions {
     AdaptiveThresholdImage      img     1
     AddImage                    seq     1
     AddNoiseImage               img     1
