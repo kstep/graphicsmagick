@@ -369,7 +369,7 @@ MATLAB_KO:  ThrowReaderException(CorruptImageWarning,"Not a MATLAB image file!",
 		}
 	     ldblk=8*MATLAB_HDR.SizeX;
              break; 
-      default:ThrowReaderException(CorruptImageWarning,"Unsupported cell type in the matrix!",image);   
+      default:ThrowReaderException(CorruptImageWarning,"Unsupported cell type in the matrix!",image)
       }	  
 
    image->columns= MATLAB_HDR.SizeX;
