@@ -2586,7 +2586,7 @@ Export void DestroyImage(Image *image)
         (void) remove(image->filename);
     }
   DestroyCacheInfo(image->cache);
-  image->cache=(Cache)NULL;
+  image->cache=(Cache) NULL;
   /*
     Deallocate the image montage directory.
   */
