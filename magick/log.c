@@ -75,6 +75,9 @@ typedef struct _LogInfo
     generations,
     limit;
 
+  const char
+    *format;
+
   FILE
     *file;
 
@@ -99,6 +102,7 @@ static char
     "  <log filename=\"Magick-%d.log\" />"
     "  <log generations=\"3\" />"
     "  <log limit=\"2000\" />"
+    "  <log format=\"%t %r %u %p %m/%f/%l/%d:\n  %e\" />"
     "</magicklog>";
 
 /*
@@ -157,6 +161,8 @@ MagickExport void DestroyLogInfo(void)
     LiberateMemory((void **) &log_info->filename);
   if (log_info->path != (char *) NULL)
     LiberateMemory((void **) &log_info->path);
+  if (log_info->format != (char *) NULL)
+    LiberateMemory((void **) &log_info->format);
   LiberateMemory((void **) &log_info);
   DestroySemaphoreInfo(&log_semaphore);
 }
@@ -512,15 +518,15 @@ static void *LogToBlob(const char *filename,size_t *length,
 %  The format of the LogMagickEvent method is:
 %
 %      unsigned int LogMagickEvent(const LogEventType type,const char *module,
-%        const char *method,const unsigned long line,const char *format,...)
+%        const char *function,const unsigned long line,const char *format,...)
 %
 %  A description of each parameter follows:
 %
 %    o type: The event type.
 %
-%    o module: The source module name.
+%    o filename: The source module filename.
 %
-%    o method: The method.
+%    o function: The function name.
 %
 %    o line: The line number of the source module.
 %
@@ -529,7 +535,7 @@ static void *LogToBlob(const char *filename,size_t *length,
 %
 */
 MagickExport unsigned int LogMagickEvent(const LogEventType type,
-  const char *module,const char *method,const unsigned long line,
+  const char *module,const char *function,const unsigned long line,
   const char *format,...)
 {
   char
@@ -540,6 +546,9 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
   double
     elapsed_time,
     user_time;
+
+  register const char
+    *p;
 
   struct tm
     *time_meridian;
@@ -579,18 +588,11 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
   time_meridian=localtime(&seconds);
   elapsed_time=GetElapsedTime(&log_info->timer);
   user_time=GetUserTime(&log_info->timer);
-  if ((log_info->file == stdout) || (log_info->file == stderr))
+  if ((log_info->file != stdout) && (log_info->file != stderr))
     {
-      FormatString(timestamp,"%02d:%02d:%02d",
-        time_meridian->tm_hour,time_meridian->tm_min,time_meridian->tm_sec);
-      (void) fprintf(log_info->file,"%.1024s %ld:%02ld %0.2fu %ld "
-        "%.1024s/%.1024s/%lu/%.1024s:%c  %.1024s\n",timestamp,
-        (long) (elapsed_time/60.0),(long) ceil(fmod(elapsed_time,60.0)),
-        user_time,(long) getpid(),module,method,line,domain,
-        strlen(event) > 20 ? '\n' : ' ',event);
-    }
-  else
-    {
+      /*
+        Log to a file in the XML format.
+      */
       log_info->count++;
       if (log_info->count == log_info->limit)
         {
@@ -625,16 +627,137 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
         user_time);
       (void) fprintf(log_info->file,"  <pid>%ld</pid>\n",(long) getpid());
       (void) fprintf(log_info->file,"  <module>%.1024s</module>\n",module);
-      (void) fprintf(log_info->file,"  <method>%.1024s</method>\n",method);
+      (void) fprintf(log_info->file,"  <function>%.1024s</function>\n",
+        function);
       (void) fprintf(log_info->file,"  <line>%lu</line>\n",line);
       (void) fprintf(log_info->file,"  <domain>%.1024s</domain>\n",domain);
       (void) fprintf(log_info->file,"  <event>%.1024s</event>\n",event);
       (void) fprintf(log_info->file,"</record>\n");
       (void) fflush(log_info->file);
+      ContinueTimer((TimerInfo *) &log_info->timer);
+      LiberateSemaphoreInfo(&log_semaphore);
+      return(True);
     }
+  /*
+    Log to stdout in a "human readable" format.
+  */
+  for (p=log_info->format; *p != '\0'; p++)
+  {
+    /*
+      Process formatting characters in text.
+    */
+    if ((*p == '\\') && (*(p+1) == 'r'))
+      {
+        (void) fprintf(stdout,"\r");
+        p++;
+        continue;
+      }
+    if ((*p == '\\') && (*(p+1) == 'n'))
+      {
+        (void) fprintf(stdout,"\n");
+        p++;
+        continue;
+      }
+    if (*p != '%')
+      {
+        (void) fprintf(stdout,"%c",*p);
+        continue;
+      }
+    p++;
+    switch (*p)
+    {
+      case 'd':
+      {
+        (void) fprintf(stdout,"%.1024s",domain);
+        break;
+      }
+      case 'e':
+      {
+        (void) fprintf(stdout,"%.1024s",event);
+        break;
+      }
+      case 'f':
+      {
+        (void) fprintf(stdout,"%.1024s",function);
+        break;
+      }
+      case 'l':
+      {
+        (void) fprintf(stdout,"%lu",line);
+        break;
+      }
+      case 'm':
+      {
+        (void) fprintf(stdout,"%.1024s",module);
+        break;
+      }
+      case 'p':
+      {
+        (void) fprintf(stdout,"%ld",(long) getpid());
+        break;
+      }
+      case 'r':
+      {
+        (void) fprintf(stdout,"%ld:%02ld",(long) (elapsed_time/60.0),
+          (long) ceil(fmod(elapsed_time,60.0)));
+        break;
+      }
+      case 't':
+      {
+        (void) fprintf(stdout,"%02d:%02d:%02d",time_meridian->tm_hour,
+          time_meridian->tm_min,time_meridian->tm_sec);
+        break;
+      }
+      case 'u':
+      {
+        (void) fprintf(stdout,"%0.2fu",user_time);
+        break;
+      }
+      default:
+      {
+        (void) fprintf(stdout,"%");
+        (void) fprintf(stdout,"%c",*p);
+        break;
+      }
+    }
+  }
+  (void) fprintf(stdout,"\n");
   ContinueTimer((TimerInfo *) &log_info->timer);
   LiberateSemaphoreInfo(&log_semaphore);
   return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   L o g M a g i c k F o r m a t                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  LogMagickFormat() sets the format for the "human readable" log record.
+%
+%  The format of the LogMagickFormat method is:
+%
+%      LogMagickFormat(const char *format)
+%
+%  A description of each parameter follows:
+%
+%    o format: The log record format.
+%
+%
+*/
+MagickExport void LogMagickFormat(const char *format)
+{
+  AcquireSemaphoreInfo(&log_semaphore);
+  if (log_info->format != (char *) NULL)
+    LiberateMemory((void **) &log_info->format);
+  log_info->format=AcquireString(format);
+  LiberateSemaphoreInfo(&log_semaphore);
 }
 
 /*
@@ -801,6 +924,11 @@ static unsigned int ReadConfigureFile(const char *basename,
         if (LocaleCompare((char *) keyword,"filename") == 0)
           {
             log_info->filename=AcquireString(token);
+            break;
+          }
+        if (LocaleCompare((char *) keyword,"format") == 0)
+          {
+            log_info->format=AcquireString(token);
             break;
           }
         break;
