@@ -1223,7 +1223,8 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
       if (text == (char *) NULL)
         ThrowCompositeException(ResourceLimitError,
           "Unable to format image metadata","Memory allocation failed");
-      *metadata=text;
+      (void) ConcatenateString(&(*metadata),text);
+      (void) ConcatenateString(&(*metadata),"\n");
     }
   LiberateCompositeOptions(&option_info);
   DestroyImageList(composite_image);
@@ -2932,7 +2933,8 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
       if (text == (char *) NULL)
         ThrowConvertException(ResourceLimitError,
           "Unable to format image metadata","Memory allocation failed");
-      *metadata=text;
+      (void) ConcatenateString(&(*metadata),text);
+      (void) ConcatenateString(&(*metadata),"\n");
     }
   DestroyImageList(image_list);
   return(status);
@@ -3072,10 +3074,15 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
             }
           if (metadata != (char **) NULL)
             {
-              (*metadata)=TranslateText(image_info,p,format);
-              if ((*metadata) == (char *) NULL)
+              char
+                *text;
+
+              text=TranslateText(image_info,p,format);
+              if (text == (char *) NULL)
                 ThrowIdentifyException(ResourceLimitError,
                   "Unable to format image metadata","Memory allocation failed");
+              (void) ConcatenateString(&(*metadata),text);
+              (void) ConcatenateString(&(*metadata),"\n");
             }
         }
         DestroyImageList(image);
@@ -5925,7 +5932,8 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
       if (text == (char *) NULL)
         ThrowMontageException(ResourceLimitError,
           "Unable to format image metadata","Memory allocation failed");
-      *metadata=text;
+      (void) ConcatenateString(&(*metadata),text);
+      (void) ConcatenateString(&(*metadata),"\n");
     }
   DestroyImageList(montage_image);
   DestroyMontageInfo(montage_info);
