@@ -396,7 +396,7 @@ MagickExport Image *NewImageList(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  PopImageList() removes the first image in the list and returns it.
+%  PopImageList() takes the image off the end of the image list.
 %
 %  The format of the PopImageList method is:
 %
@@ -483,6 +483,66 @@ MagickExport unsigned int PushImageList(Image **images,const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e v e r s e I m a g e L i s t                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReverseImageList() reverses the image list.
+%
+%  The format of the ReverseImageList method is:
+%
+%      Image *ReverseImageList(const Image *images,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport Image *ReverseImageList(const Image *images,
+  ExceptionInfo *exception)
+{
+  Image
+    *clone_images,
+    *image;
+
+  assert(images != (Image *) NULL);
+  if (images == (Image *) NULL)
+    return((Image *) NULL);
+  assert(images->signature == MagickSignature);
+  clone_images=NewImageList();
+  for ( ; images != (Image *) NULL; images=images->next)
+  {
+    image=CloneImage(images,0,0,True,exception);
+    if (image == (Image *) NULL)
+      {
+        if (clone_images != (Image *) NULL)
+          DestroyImageList(clone_images);
+        break;
+      }
+    if (clone_images == (Image *) NULL)
+      {
+        clone_images=image;
+        continue;
+      }
+    image->previous=clone_images;
+    clone_images->next=image;
+    clone_images=clone_images->next;
+  }
+  while (clone_images->previous != (Image *) NULL)
+    clone_images=clone_images->previous;
+  return(clone_images);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   S e t I m a g e L i s t                                                   %
 %                                                                             %
 %                                                                             %
@@ -532,6 +592,99 @@ MagickExport unsigned int SetImageList(Image **images,const Image *image,
       break;
   if (next == (Image *) NULL)
     return(False);
+  next->next=CloneImageList(image,exception);
+  if (next->next == (Image *) NULL)
+    return(False);
+  next->next->previous=next;
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S h i f t I m a g e L i s t                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ShiftImageList() removes the first image in the list and returns it.
+%
+%  The format of the ShiftImageList method is:
+%
+%      Image *ShiftImageList(Image **images)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%
+*/
+MagickExport Image *ShiftImageList(Image **images)
+{
+  Image
+    *image;
+
+  assert(images != (Image **) NULL);
+  if ((*images) == (Image *) NULL)
+    return((Image *) NULL);
+  assert((*images)->signature == MagickSignature);
+  while ((*images)->previous != (Image *) NULL)
+    (*images)=(*images)->previous;
+  image=(*images);
+  *images=(*images)->next;
+  if ((*images) != (Image *) NULL)
+    (*images)->previous=NewImageList();
+  image->next=NewImageList();
+  return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n s h i f t I m a g e L i s t                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  UnshiftImageList() adds the image to the beginning of the image list.
+%
+%  The format of the UnshiftImageList method is:
+%
+%      unsigned int UnshiftImageList(Image *images,const Image *image,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%    o image: The image.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport unsigned int UnshiftImageList(Image **images,const Image *image,
+  ExceptionInfo *exception)
+{
+  Image
+    *next;
+
+  assert(images != (Image **) NULL);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if ((*images) == (Image *) NULL)
+    {
+      *images=CloneImageList(image,exception);
+      return(*images != (Image *) NULL);
+    }
+  assert((*images)->signature == MagickSignature);
+  for (next=(*images); next->next != (Image *) NULL; next=next->next);
   next->next=CloneImageList(image,exception);
   if (next->next == (Image *) NULL)
     return(False);
