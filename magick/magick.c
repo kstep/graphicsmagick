@@ -92,7 +92,7 @@ static SemaphoreInfo *
 extern "C" {
 #endif
 
-MagickExport void DestroyMagickInfo(void)
+static void DestroyMagickInfo(void)
 {
   MagickInfo
     *entry;

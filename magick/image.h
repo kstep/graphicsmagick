@@ -767,7 +767,6 @@ extern MagickExport void
   DestroyImageInfo(ImageInfo *),
   (*DestroyImagePixels)(Image *),
   DestroyImages(Image *),
-  DestroyMagickInfo(void),
   DestroyMontageInfo(MontageInfo *),
   GetImageInfo(ImageInfo *),
   GetMontageInfo(const ImageInfo *,MontageInfo *),

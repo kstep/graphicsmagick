@@ -3050,8 +3050,6 @@ namespace Magick
   public:
     ~MagickCleanUp( void )
       {
-	DestroyMagickInfo();
-	DestroyDelegateInfo();
       }
   };
 

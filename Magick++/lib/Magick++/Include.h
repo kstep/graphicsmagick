@@ -361,12 +361,10 @@ namespace Magick
   using MagickLib::DelegateError;
   using MagickLib::DelegateWarning;
   using MagickLib::DespeckleImage;
-  using MagickLib::DestroyDelegateInfo;
   using MagickLib::DestroyDrawInfo;
   using MagickLib::DestroyImage;
   using MagickLib::DestroyImageInfo;
   using MagickLib::DestroyImages;
-  using MagickLib::DestroyMagickInfo;
   using MagickLib::DestroyPostscriptGeometry;
   using MagickLib::DestroyQuantizeInfo;
   using MagickLib::DispatchImage;
