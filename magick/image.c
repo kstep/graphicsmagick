@@ -3026,14 +3026,14 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       }
       case 'b':
       {
-        if (LocaleCompare("-background",option) == 0)
+        if (LocaleCompare("background",option+1) == 0)
           {
             (void) QueryColorDatabase(argv[++i],&clone_info->background_color,
               &(*image)->exception);
             (*image)->background_color=clone_info->background_color;
             continue;
           }
-        if (LocaleCompare("-blur",option) == 0)
+        if (LocaleCompare("blur",option+1) == 0)
           {
             double
               radius,
@@ -3055,7 +3055,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=blur_image;
             continue;
           }
-        if (LocaleCompare("-border",option) == 0)
+        if (LocaleCompare("border",option+1) == 0)
           {
             Image
               *border_image;
@@ -3071,7 +3071,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=border_image;
             continue;
           }
-        if (LocaleCompare("-bordercolor",option) == 0)
+        if (LocaleCompare("bordercolor",option+1) == 0)
           {
             (void) QueryColorDatabase(argv[++i],&clone_info->border_color,
               &(*image)->exception);
@@ -3079,7 +3079,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             (*image)->border_color=clone_info->border_color;
             continue;
           }
-        if (LocaleCompare("-box",option) == 0)
+        if (LocaleCompare("box",option+1) == 0)
           {
             (void) QueryColorDatabase(argv[++i],&draw_info->undercolor,
               &(*image)->exception);
@@ -3089,7 +3089,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       }
       case 'c':
       {
-        if (LocaleCompare("-channel",option) == 0)
+        if (LocaleCompare("channel",option+1) == 0)
           {
             ChannelType
               channel;
@@ -3119,7 +3119,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             (void) ChannelImage(*image,channel);
             continue;
           }
-        if (LocaleCompare("-charcoal",option) == 0)
+        if (LocaleCompare("charcoal",option+1) == 0)
           {
             double
               radius,
@@ -3142,7 +3142,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=charcoal_image;
             continue;
           }
-        if (LocaleCompare("-chop",option) == 0)
+        if (LocaleCompare("chop",option+1) == 0)
           {
             Image
               *chop_image;
@@ -3168,7 +3168,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             (void) ClipImage(*image);
             continue;
           }
-        if (LocaleCompare("-colorize",option) == 0)
+        if (LocaleCompare("colorize",option+1) == 0)
           {
             Image
               *colorize_image;
@@ -3184,7 +3184,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=colorize_image;
             continue;
           }
-        if (LocaleCompare("-colors",option) == 0)
+        if (LocaleCompare("colors",option+1) == 0)
           {
             quantize_info.number_colors=atol(argv[++i]);
             continue;
@@ -3326,12 +3326,12 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             (void) ContrastImage(*image,(unsigned int) (*option == '-'));
             continue;
           }
-        if (LocaleCompare("-crop",option) == 0)
+        if (LocaleCompare("crop",option+1) == 0)
           {
             TransformImage(image,argv[++i],(char *) NULL);
             continue;
           }
-        if (LocaleCompare("-cycle",option) == 0)
+        if (LocaleCompare("cycle",option+1) == 0)
           {
             /*
               Cycle an image colormap.
@@ -3374,7 +3374,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               }
             continue;
           }
-        if (LocaleCompare("-density",option) == 0)
+        if (LocaleCompare("density",option+1) == 0)
           {
             /*
               Set image density.
@@ -3387,12 +3387,12 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               (*image)->y_resolution=(*image)->x_resolution;
             continue;
           }
-        if (LocaleCompare("-depth",option) == 0)
+        if (LocaleCompare("depth",option+1) == 0)
           {
             (void) SetImageDepth(*image,atol(argv[++i]));
             continue;
           }
-        if (LocaleCompare("-despeckle",option) == 0)
+        if (LocaleCompare("despeckle",option+1) == 0)
           {
             Image
               *despeckle_image;
@@ -3407,13 +3407,13 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=despeckle_image;
             continue;
           }
-        if (LocaleCompare("-display",option) == 0)
+        if (LocaleCompare("display",option+1) == 0)
           {
             (void) CloneString(&clone_info->server_name,argv[++i]);
             (void) CloneString(&draw_info->server_name,clone_info->server_name);
             continue;
           }
-        if (LocaleCompare("-dispose",option) == 0)
+        if (LocaleCompare("dispose",option+1) == 0)
           {
             /*
               Set image dispose.
@@ -3427,7 +3427,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             quantize_info.dither=(*option == '-');
             continue;
           }
-        if (LocaleCompare("-draw",option) == 0)
+        if (LocaleCompare("draw",option+1) == 0)
           {
             /*
               Draw image.
@@ -3440,7 +3440,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       }
       case 'e':
       {
-        if (LocaleCompare("-edge",option) == 0)
+        if (LocaleCompare("edge",option+1) == 0)
           {
             double
               radius;
@@ -3459,7 +3459,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=edge_image;
             continue;
           }
-        if (LocaleCompare("-emboss",option) == 0)
+        if (LocaleCompare("emboss",option+1) == 0)
           {
             double
               radius,
@@ -3481,7 +3481,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=emboss_image;
             continue;
           }
-        if (LocaleCompare("-encoding",option) == 0)
+        if (LocaleCompare("encoding",option+1) == 0)
           {
             (void) CloneString(&draw_info->encoding,argv[++i]);
             continue;
@@ -3505,7 +3505,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             clone_info->endian=endian;
             continue;
           }
-        if (LocaleCompare("-enhance",option) == 0)
+        if (LocaleCompare("enhance",option+1) == 0)
           {
             Image
               *enhance_image;
@@ -3520,7 +3520,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=enhance_image;
             continue;
           }
-        if (LocaleCompare("-equalize",option) == 0)
+        if (LocaleCompare("equalize",option+1) == 0)
           {
             /*
               Equalize image.
@@ -3532,7 +3532,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       }
       case 'f':
       {
-        if (LocaleCompare("-fill",option) == 0)
+        if (LocaleCompare("fill",option+1) == 0)
           {
             (void) QueryColorDatabase(argv[++i],&draw_info->fill,
               &(*image)->exception);
@@ -3583,7 +3583,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             (*image)->filter=filter;
             continue;
           }
-        if (LocaleCompare("-flip",option) == 0)
+        if (LocaleCompare("flip",option+1) == 0)
           {
             Image
               *flip_image;
@@ -3598,7 +3598,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=flip_image;
             continue;
           }
-        if (LocaleCompare("-flop",option) == 0)
+        if (LocaleCompare("flop",option+1) == 0)
           {
             Image
               *flop_image;
@@ -3613,7 +3613,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=flop_image;
             continue;
           }
-        if (LocaleCompare("-frame",option) == 0)
+        if (LocaleCompare("frame",option+1) == 0)
           {
             Image
               *frame_image;
@@ -3640,12 +3640,12 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=frame_image;
             continue;
           }
-        if (LocaleCompare("-fuzz",option) == 0)
+        if (LocaleCompare("fuzz",option+1) == 0)
           {
             (*image)->fuzz=StringToDouble(argv[++i],MaxRGB);
             continue;
           }
-        if (LocaleCompare("-font",option) == 0)
+        if (LocaleCompare("font",option+1) == 0)
           {
             (void) CloneString(&clone_info->font,argv[++i]);
             (void) CloneString(&draw_info->font,clone_info->font);
@@ -3663,7 +3663,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               (void) GammaImage(*image,argv[++i]);
             continue;
           }
-        if (LocaleCompare("-gaussian",option) == 0)
+        if (LocaleCompare("gaussian",option+1) == 0)
           {
             double
               radius,
@@ -3686,7 +3686,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=blur_image;
             continue;
           }
-        if (LocaleCompare("-geometry",option) == 0)
+        if (LocaleCompare("geometry",option+1) == 0)
           {
             Image
               *zoom_image;
@@ -3745,7 +3745,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       }
       case 'i':
       {
-        if (LocaleCompare("-implode",option) == 0)
+        if (LocaleCompare("implode",option+1) == 0)
           {
             double
               amount;
@@ -3826,12 +3826,12 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             (void) LevelImage(*image,argv[++i]);
             continue;
           }
-        if (LocaleCompare("-linewidth",option) == 0)
+        if (LocaleCompare("linewidth",option+1) == 0)
           {
             draw_info->stroke_width=atof(argv[++i]);
             continue;
           }
-        if (LocaleCompare("-loop",option) == 0)
+        if (LocaleCompare("loop",option+1) == 0)
           {
             /*
               Set image iterations.
@@ -3843,7 +3843,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       }
       case 'm':
       {
-        if (LocaleCompare("-map",option) == 0)
+        if (LocaleCompare("map",option+1) == 0)
           {
             /*
               Transform image colors to match this set of colors.
@@ -3909,14 +3909,14 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             (*image)->matte=(*option == '-');
             continue;
           }
-        if (LocaleCompare("-mattecolor",option) == 0)
+        if (LocaleCompare("mattecolor",option+1) == 0)
           {
             (void) QueryColorDatabase(argv[++i],&clone_info->matte_color,
               &(*image)->exception);
             (*image)->matte_color=clone_info->matte_color;
             continue;
           }
-        if (LocaleCompare("-median",option) == 0)
+        if (LocaleCompare("median",option+1) == 0)
           {
             double
               radius;
@@ -3935,13 +3935,13 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=median_image;
             continue;
           }
-        if (LocaleCompare("-modulate",option) == 0)
+        if (LocaleCompare("modulate",option+1) == 0)
           {
             (void) ModulateImage(*image,argv[++i]);
             continue;
           }
-        if ((LocaleCompare("-mono",option) == 0) ||
-            (LocaleCompare("-monochrome",option) == 0))
+        if ((LocaleCompare("mono",option+1) == 0) ||
+            (LocaleCompare("monochrome",option+1) == 0))
           {
             clone_info->monochrome=True;
             quantize_info.number_colors=2;
@@ -3995,7 +3995,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=noisy_image;
             continue;
           }
-        if (LocaleCompare("-normalize",option) == 0)
+        if (LocaleCompare("normalize",option+1) == 0)
           {
             (void) NormalizeImage(*image);
             continue;
@@ -4004,7 +4004,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       }
       case 'o':
       {
-        if (LocaleCompare("-opaque",option) == 0)
+        if (LocaleCompare("opaque",option+1) == 0)
           {
             PixelPacket
               target;
@@ -4018,7 +4018,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       }
       case 'p':
       {
-        if (LocaleCompare("-paint",option) == 0)
+        if (LocaleCompare("paint",option+1) == 0)
           {
             double
               radius;
@@ -4037,13 +4037,13 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=paint_image;
             continue;
           }
-        if (LocaleCompare("-pen",option) == 0)
+        if (LocaleCompare("pen",option+1) == 0)
           {
             (void) QueryColorDatabase(argv[++i],&draw_info->fill,
               &(*image)->exception);
             continue;
           }
-        if (LocaleCompare("-pointsize",option) == 0)
+        if (LocaleCompare("pointsize",option+1) == 0)
           {
             clone_info->pointsize=atof(argv[++i]);
             draw_info->pointsize=clone_info->pointsize;
@@ -4154,7 +4154,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             draw_info->render=(*option == '+');
             continue;
           }
-        if (LocaleCompare("-resize",option) == 0)
+        if (LocaleCompare("resize",option+1) == 0)
           {
             Image
               *resize_image;
@@ -4174,7 +4174,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=resize_image;
             continue;
           }
-        if (LocaleCompare("-roll",option) == 0)
+        if (LocaleCompare("roll",option+1) == 0)
           {
             Image
               *roll_image;
@@ -4224,7 +4224,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       }
       case 's':
       {
-        if (LocaleCompare("-sample",option) == 0)
+        if (LocaleCompare("sample",option+1) == 0)
           {
             Image
               *sample_image;
@@ -4244,7 +4244,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=sample_image;
             continue;
           }
-        if (LocaleCompare("-sampling_factor",option) == 0)
+        if (LocaleCompare("sampling_factor",option+1) == 0)
           {
             /*
               Set image sampling factor.
@@ -4255,7 +4255,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         if (LocaleCompare("sans",option+1) == 0)
           if (*option == '-')
             i++;
-        if (LocaleCompare("-scale",option) == 0)
+        if (LocaleCompare("scale",option+1) == 0)
           {
             Image
               *scale_image;
@@ -4275,12 +4275,12 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=scale_image;
             continue;
           }
-        if (LocaleCompare("-scene",option) == 0)
+        if (LocaleCompare("scene",option+1) == 0)
           {
             (*image)->scene=atol(argv[++i]);
             continue;
           }
-        if (LocaleCompare("-segment",option) == 0)
+        if (LocaleCompare("segment",option+1) == 0)
           {
             double
               cluster_threshold,
@@ -4320,7 +4320,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=shade_image;
             continue;
           }
-        if (LocaleCompare("-sharpen",option) == 0)
+        if (LocaleCompare("sharpen",option+1) == 0)
           {
             double
               radius,
@@ -4342,7 +4342,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=sharp_image;
             continue;
           }
-        if (LocaleCompare("-shave",option) == 0)
+        if (LocaleCompare("shave",option+1) == 0)
           {
             Image
               *shave_image;
@@ -4380,7 +4380,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=shear_image;
             continue;
           }
-        if (LocaleCompare("-solarize",option) == 0)
+        if (LocaleCompare("solarize",option+1) == 0)
           {
             double
               threshold;
@@ -4389,7 +4389,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             SolarizeImage(*image,threshold);
             continue;
           }
-        if (LocaleCompare("-spread",option) == 0)
+        if (LocaleCompare("spread",option+1) == 0)
           {
             unsigned int
               amount;
@@ -4408,18 +4408,18 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=spread_image;
             continue;
           }
-        if (LocaleCompare("-stroke",option) == 0)
+        if (LocaleCompare("stroke",option+1) == 0)
           {
             (void) QueryColorDatabase(argv[++i],&draw_info->stroke,
               &(*image)->exception);
             continue;
           }
-        if (LocaleCompare("-strokewidth",option) == 0)
+        if (LocaleCompare("strokewidth",option+1) == 0)
           {
             draw_info->stroke_width=atof(argv[++i]);
             continue;
           }
-        if (LocaleCompare("-swirl",option) == 0)
+        if (LocaleCompare("swirl",option+1) == 0)
           {
             double
               degrees;
@@ -4442,7 +4442,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       }
       case 't':
       {
-        if (LocaleCompare("-threshold",option) == 0)
+        if (LocaleCompare("threshold",option+1) == 0)
           {
             double
               threshold;
@@ -4454,7 +4454,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             (void) ThresholdImage(*image,threshold);
             continue;
           }
-        if (LocaleCompare("-tile",option) == 0)
+        if (LocaleCompare("tile",option+1) == 0)
           {
             Image
               *fill_pattern;
@@ -4468,7 +4468,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             DestroyImage(fill_pattern);
             continue;
           }
-        if (LocaleCompare("-transform",option) == 0)
+        if (LocaleCompare("transform",option+1) == 0)
           {
             Image
               *transform_image;
@@ -4484,7 +4484,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=transform_image;
             continue;
           }
-        if (LocaleCompare("-transparent",option) == 0)
+        if (LocaleCompare("transparent",option+1) == 0)
           {
             PixelPacket
               target;
@@ -4494,17 +4494,17 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             (void) TransparentImage(*image,target,TransparentOpacity);
             continue;
           }
-        if (LocaleCompare("-treedepth",option) == 0)
+        if (LocaleCompare("treedepth",option+1) == 0)
           {
             quantize_info.tree_depth=atoi(argv[++i]);
             continue;
           }
-        if (LocaleCompare("-trim",option) == 0)
+        if (LocaleCompare("trim",option+1) == 0)
           {
             TransformImage(image,"0x0",(char *) NULL);
             continue;
           }
-        if (LocaleCompare("-type",option) == 0)
+        if (LocaleCompare("type",option+1) == 0)
           {
             ImageType
               image_type;
@@ -4538,7 +4538,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       }
       case 'u':
       {
-        if (LocaleCompare("-undercolor",option) == 0)
+        if (LocaleCompare("undercolor",option+1) == 0)
           {
             (void) QueryColorDatabase(argv[++i],&draw_info->undercolor,
               &(*image)->exception);
@@ -4563,7 +4563,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             (*image)->units=resolution;
             continue;
           }
-        if (LocaleCompare("-unsharp",option) == 0)
+        if (LocaleCompare("unsharp",option+1) == 0)
           {
             double
               amount,
@@ -4605,7 +4605,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       }
       case 'w':
       {
-        if (LocaleCompare("-wave",option) == 0)
+        if (LocaleCompare("wave",option+1) == 0)
           {
             double
               amplitude,
@@ -4752,7 +4752,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
     {
       case 's':
       {
-        if (LocaleCompare("-scene",option) == 0)
+        if (LocaleCompare("scene",option+1) == 0)
           scene=True;
         break;
       }
@@ -4812,7 +4812,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
               }
             break;
           }
-        if (LocaleCompare("-average",option) == 0)
+        if (LocaleCompare("average",option+1) == 0)
           {
             Image
               *average_image;
@@ -4830,7 +4830,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
       }
       case 'c':
       {
-        if (LocaleCompare("-coalesce",option) == 0)
+        if (LocaleCompare("coalesce",option+1) == 0)
           {
             Image
               *coalesce_image;
@@ -4848,7 +4848,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
       }
       case 'd':
       {
-        if (LocaleCompare("-deconstruct",option) == 0)
+        if (LocaleCompare("deconstruct",option+1) == 0)
           {
             Image
               *deconstruct_image;
@@ -4866,7 +4866,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
       }
       case 'f':
       {
-        if (LocaleCompare("-flatten",option) == 0)
+        if (LocaleCompare("flatten",option+1) == 0)
           {
             Image
               *flatten_image;
@@ -4909,7 +4909,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
               }
             break;
           }
-        if (LocaleCompare("-mosaic",option) == 0)
+        if (LocaleCompare("mosaic",option+1) == 0)
           {
             Image
               *mosaic_image;
@@ -4927,7 +4927,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
       }
       case 'p':
       {
-        if (LocaleCompare("-process",option) == 0)
+        if (LocaleCompare("process",option+1) == 0)
           {
             char
               *arguments,
