@@ -47,10 +47,10 @@ sub testRead {
 # Test reading a file which requires a file size to read (GRAY, RGB, CMYK)
 # or supports multiple resolutions (JBIG, JPEG, PCD)
 #
-# Usage: testRead( read filename, size, expected md5 [, expected md5_16] );
+# Usage: testRead( read filename, size, depth, expected md5 [, expected md5_16] );
 #
 sub testReadSized {
-  my( $infile, $size, $md5, $md5_16 ) =  @_;
+  my( $infile, $size, $depth, $md5, $md5_16 ) =  @_;
   
   my($image);
 
@@ -59,6 +59,12 @@ sub testReadSized {
   # Set size attribute
   $status=$image->SetAttribute(size=>"$size");
   warn "$status" if "$status";
+
+  # If depth is not zero, then set it
+  if ( $depth != 0 ) {
+    $status=$image->SetAttribute(depth=>"$depth");
+    warn "$status" if "$status";
+  }
 
   $status=$image->ReadImage("$infile");
   if( "$status" ) {

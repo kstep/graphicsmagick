@@ -179,32 +179,46 @@ print("TILE (Tile image with a texture) ...\n");
 # We will tile using the default image and a MIFF file
 #
 ++$test;
-testReadSized( 'TILE:input.miff', '140x92', '79610a0f0d4dd5f5ae1c69607e881792');
+testReadSized( 'TILE:input.miff', '140x92', 8, '79610a0f0d4dd5f5ae1c69607e881792');
 
 
 print("CMYK format ...\n");
 ++$test;
-testReadSized( 'input_70x46.cmyk', '70x46',
-                                            'a69ea409ec1962729ed7b5c6985619b6',
-                                            '840c11bcfa1e39cb97589813dc139c28');
+testReadSized( 'input_70x46.cmyk',
+	       '70x46',
+	       8,
+	       'a69ea409ec1962729ed7b5c6985619b6',
+	       '840c11bcfa1e39cb97589813dc139c28');
 
 print("GRAY format ...\n");
 ++$test;
-testReadSized( 'input_70x46.gray', '70x46', 'f0ad0e33df6ed019b9e15ee5e1741d16',
-                                            'e0b0d2607784a1b831024d66b9565b2c' );
+testReadSized( 'input_70x46.gray',
+	       '70x46',
+	       8,
+	       'f0ad0e33df6ed019b9e15ee5e1741d16',
+	       'e0b0d2607784a1b831024d66b9565b2c' );
 
 print("RGB format ...\n");
 ++$test;
-testReadSized( 'input_70x46.rgb', '70x46', 'eb4d6e084afe2835a1ad28ad7fc12ced',
-                                           '35ce65f982f803221d4417a403effa2e' );
+testReadSized( 'input_70x46.rgb',
+	       '70x46',
+	       8,
+	       'eb4d6e084afe2835a1ad28ad7fc12ced',
+	       '35ce65f982f803221d4417a403effa2e' );
 
 print("RGBA format ...\n");
 ++$test;
-testReadSized( 'input_70x46.rgba', '70x46', 'eb4d6e084afe2835a1ad28ad7fc12ced',
-                                            '97558e5d40363309da60696286664df1' );
+testReadSized( 'input_70x46.rgba',
+	       '70x46',
+	       8,
+	       'eb4d6e084afe2835a1ad28ad7fc12ced',
+	       '97558e5d40363309da60696286664df1' );
 
 
 print("UYVY format ...\n");
 ++$test;
-testReadSized( 'input_70x46.uyvy', '70x46', '8d77e402e2d3ce1bce884d7ab886af5b',
-                                            'b8480eb8088e74023c12c75e6c0a23a7' );
+testReadSized( 'input_70x46.uyvy',
+	       '70x46',
+	       0,
+	       '8d77e402e2d3ce1bce884d7ab886af5b',
+	       'b8480eb8088e74023c12c75e6c0a23a7' );
