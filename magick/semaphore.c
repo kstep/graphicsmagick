@@ -109,7 +109,7 @@ static pthread_mutex_t
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method AcquireSemaphoreInfo acquires a semaphore.
+%  AcquireSemaphoreInfo() acquires a semaphore.
 %
 %  The format of the AcquireSemaphoreInfo method is:
 %
@@ -118,8 +118,6 @@ static pthread_mutex_t
 %  A description of each parameter follows:
 %
 %    o semaphore_info: Specifies a pointer to an SemaphoreInfo structure.
-%
-%    o exit: call this method on termination of the program.
 %
 %
 */
@@ -130,8 +128,10 @@ MagickExport void AcquireSemaphoreInfo(SemaphoreInfo **semaphore_info)
   (void) pthread_mutex_lock(&semaphore_mutex);
 #endif
 #if defined(WIN32)
-  if (active_critical_section)
-    EnterCriticalSection(&critical_section);
+  if (!active_critical_section)
+    InitializeCriticalSection(&critical_section);
+  active_critical_section=True;
+  EnterCriticalSection(&critical_section);
 #endif
   if (*semaphore_info == (SemaphoreInfo *) NULL)
     *semaphore_info=AllocateSemaphoreInfo();
@@ -140,8 +140,7 @@ MagickExport void AcquireSemaphoreInfo(SemaphoreInfo **semaphore_info)
   (void) pthread_mutex_unlock(&semaphore_mutex);
 #endif
 #if defined(WIN32)
-  if (active_critical_section)
-    LeaveCriticalSection(&critical_section);
+  LeaveCriticalSection(&critical_section);
 #endif
 }
 
@@ -181,7 +180,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
   if (semaphore_info == (SemaphoreInfo *) NULL)
     MagickFatalError(ResourceLimitFatalError,
       "Unable to allocate semaphore info","Memory allocation failed");
-  semaphore_info->signature=MagickSignature;
+  memset(semaphore_info,0,sizeof(SemaphoreInfo));
   /*
     Initialize the semaphore.
   */
@@ -215,6 +214,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
       }
   }
 #endif
+  semaphore_info->signature=MagickSignature;
   return(semaphore_info);
 }
 
@@ -229,9 +229,9 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroySemaphore destroys the semaphore environment.
+%  DestroySemaphore() destroys the semaphore environment.
 %
-%  The format of the InitializeSemaphore method is:
+%  The format of the DestroySemaphore method is:
 %
 %      DestroySemaphore(void)
 %
@@ -241,7 +241,6 @@ MagickExport void DestroySemaphore(void)
 {
 #if defined(HasPTHREADS)
   (void) pthread_mutex_destroy(&semaphore_mutex);
-  semaphore_mutex=PTHREAD_MUTEX_INITIALIZER;
 #endif
 #if defined(WIN32)
   if (active_critical_section)
@@ -283,8 +282,10 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
   (void) pthread_mutex_lock(&semaphore_mutex);
 #endif
 #if defined(WIN32)
-  if (active_critical_section)
-    EnterCriticalSection(&critical_section);
+  if (!active_critical_section)
+    InitializeCriticalSection(&critical_section);
+  active_critical_section=True;
+  EnterCriticalSection(&critical_section);
 #endif
   if (*semaphore_info == (SemaphoreInfo *) NULL)
     return;
@@ -295,13 +296,12 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
 #if defined(WIN32) && defined(_MT)
   CloseHandle((*semaphore_info)->id);
 #endif
-  LiberateMemory((void **) semaphore_info);
+  LiberateMemory((void **) &(*semaphore_info));
 #if defined(HasPTHREADS)
   (void) pthread_mutex_unlock(&semaphore_mutex);
 #endif
 #if defined(WIN32)
-  if (active_critical_section)
-    LeaveCriticalSection(&critical_section);
+  LeaveCriticalSection(&critical_section);
 #endif
 }
 
@@ -326,6 +326,10 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
 */
 MagickExport void InitializeSemaphore(void)
 {
+#if defined(HasPTHREADS)
+  (void) pthread_mutex_init(&semaphore_mutex,
+    (const pthread_mutexattr_t *) NULL);
+#endif
 #if defined(WIN32)
   InitializeCriticalSection(&critical_section);
   active_critical_section=True;
@@ -398,14 +402,14 @@ MagickExport unsigned int LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
   assert(semaphore_info != (SemaphoreInfo *) NULL);
   assert(semaphore_info->signature == MagickSignature);
   status=False;
-#if defined(WIN32) && defined(_MT)
-  status=WaitForSingleObject(semaphore_info->id,INFINITE);
-  if (status == WAIT_FAILED)
-    return(False);
-#endif
 #if defined(HasPTHREADS)
   status=pthread_mutex_lock(&semaphore_info->id);
   if (status != 0)
+    return(False);
+#endif
+#if defined(WIN32) && defined(_MT)
+  status=WaitForSingleObject(semaphore_info->id,INFINITE);
+  if (status == WAIT_FAILED)
     return(False);
 #endif
   return(True);
