@@ -13,6 +13,7 @@
 #include <strstream>
 
 #include "Magick++/Drawable.h"
+#include "Magick++/Image.h"
 
 using namespace std;
 
@@ -262,61 +263,61 @@ void Magick::DrawableGravity::print (std::ostream& stream_) const
 
   switch ( _gravity )
     {
-      case ForgetGravity :
-        {
-          stream_ << "ForgetGravity";
-          break;
-        }
-      case NorthWestGravity :
-        {
-          stream_ << "NorthWestGravity";
-          break;
-        }
-      case NorthGravity :
-        {
-          stream_ << "NorthGravity";
-          break;
-        }
-      case NorthEastGravity :
-        {
-          stream_ << "NorthEastGravity";
-          break;
-        }
-      case WestGravity :
-        {
-          stream_ << "WestGravity";
-          break;
-        }
-      case CenterGravity :
-        {
-          stream_ << "CenterGravity";
-          break;
-        }
-      case EastGravity :
-        {
-          stream_ << "EastGravity";
-          break;
-        }
-      case SouthWestGravity :
-        {
-          stream_ << "SouthWestGravity";
-          break;
-        }
-      case SouthGravity :
-        {
-          stream_ << "SouthGravity";
-          break;
-        }
-      case SouthEastGravity :
-        {
-          stream_ << "SouthEastGravity";
-          break;
-        }
-      case StaticGravity :
-        {
-          stream_ << "StaticGravity";
-          break;
-        }
+    case ForgetGravity :
+      {
+        stream_ << "ForgetGravity";
+        break;
+      }
+    case NorthWestGravity :
+      {
+        stream_ << "NorthWestGravity";
+        break;
+      }
+    case NorthGravity :
+      {
+        stream_ << "NorthGravity";
+        break;
+      }
+    case NorthEastGravity :
+      {
+        stream_ << "NorthEastGravity";
+        break;
+      }
+    case WestGravity :
+      {
+        stream_ << "WestGravity";
+        break;
+      }
+    case CenterGravity :
+      {
+        stream_ << "CenterGravity";
+        break;
+      }
+    case EastGravity :
+      {
+        stream_ << "EastGravity";
+        break;
+      }
+    case SouthWestGravity :
+      {
+        stream_ << "SouthWestGravity";
+        break;
+      }
+    case SouthGravity :
+      {
+        stream_ << "SouthGravity";
+        break;
+      }
+    case SouthEastGravity :
+      {
+        stream_ << "SouthEastGravity";
+        break;
+      }
+    case StaticGravity :
+      {
+        stream_ << "StaticGravity";
+        break;
+      }
 
     default :
       {
@@ -326,6 +327,93 @@ void Magick::DrawableGravity::print (std::ostream& stream_) const
 }
 
 // Draw image at point
+Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,
+                                                         double width_, double height_,
+                                                         const std::string &image_,
+                                                         Magick::CompositeOperator composition_ )
+  : _composition(composition_),
+    _x(x_),
+    _y(y_),
+    _width(width_),
+    _height(height_),
+    _image(new Image(image_))
+{
+}
+Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,
+                                                         double width_, double height_,
+                                                         const Image &image_,
+                                                         CompositeOperator composition_ )
+  : _composition(composition_),
+    _x(x_),
+    _y(y_),
+    _width(width_),
+    _height(height_),
+    _image(new Image(image_))
+{
+}
+Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,
+                                                         double width_, double height_,
+                                                         const std::string &image_ )
+  :_composition(Magick::CopyCompositeOp),
+   _x(x_),
+   _y(y_),
+   _width(width_),
+   _height(height_),
+   _image(new Image(image_))
+{
+}
+Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,
+                                                         double width_, double height_,
+                                                         const Image &image_ )
+  :_composition(Magick::CopyCompositeOp),
+   _x(x_),
+   _y(y_),
+   _width(width_),
+   _height(height_),
+   _image(new Image(image_))
+{
+}
+Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,
+                                                         const std::string &image_ )
+  : _composition(Magick::CopyCompositeOp),
+    _x(x_),
+    _y(y_),
+    _width(0),
+    _height(0),
+    _image(new Image(image_))
+{
+}
+Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,
+                                                         const Image &image_ )
+  : _composition(Magick::CopyCompositeOp),
+    _x(x_),
+    _y(y_),
+    _width(0),
+    _height(0),
+    _image(new Image(image_))
+{
+}
+Magick::DrawableCompositeImage::~DrawableCompositeImage( void )
+{
+  delete _image;
+}
+void Magick::DrawableCompositeImage::image( const std::string &image_ )
+{
+  _image = new Image(image_);
+}
+std::string Magick::DrawableCompositeImage::image( void )
+{
+  return _image->fileName();
+}
+
+void Magick::DrawableCompositeImage::image( const Image &image_ )
+{
+  _image = new Image(image_);
+}
+Magick::Image Magick::DrawableCompositeImage::image( void ) const
+{
+  return *_image;
+}
 void Magick::DrawableCompositeImage::print (std::ostream& stream_) const
 {
   stream_ << "image ";
@@ -392,17 +480,7 @@ void Magick::DrawableCompositeImage::print (std::ostream& stream_) const
   stream_ << Magick::Coordinate( _x, _y)
           << " "
           << Magick::Coordinate( _width, _height)
-          << " '"
-          << _image
-          << " '";
-  
-  for ( unsigned int i = 0; i < _image.length(); ++i )
-    {
-      if ( _image[i] == '\'' )
-	stream_ << "\\";
-      stream_ << _image[i];
-    }
-  stream_  << "'";
+          << " 'mpr:" << _image->registerId() << "'";
 }
 
 // Line

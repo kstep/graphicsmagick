@@ -999,6 +999,12 @@ namespace Magick
     // Test for ImageMagick error and throw exception if error
     void            throwImageException( void );
 
+    // Register image with image registry or obtain registration id
+    long            registerId( void );
+
+    // Unregister image from image registry
+    void            unregisterId( void) ;
+
   private:
     ImageRef *      _imgRef;
   };
@@ -1032,6 +1038,7 @@ namespace Magick
     
     MagickLib::Image *   _image;    // ImageMagick Image
     Options *            _options;  // User-specified options
+    long                 _id;       // Registry ID (-1 if not registered)
     int                  _refCount; // Reference count
     MutexLock            _mutexLock;// Mutex lock
   };

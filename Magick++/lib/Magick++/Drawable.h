@@ -548,42 +548,35 @@ private:
 };
 
 // Draw image at point, scaled to size specified by width and height
+class Image;
 class DrawableCompositeImage : public DrawableBase
 {
 public:
   DrawableCompositeImage ( double x_, double y_,
-                           const std::string &image_ )
-    : _composition(CopyCompositeOp),
-      _x(x_),
-      _y(y_),
-      _width(0),
-      _height(0),
-      _image(image_)
-    {
-    }
+                           const std::string &image_ );
+
+  DrawableCompositeImage ( double x_, double y_,
+                           const Image &image_ );
+
   DrawableCompositeImage ( double x_, double y_,
                            double width_, double height_,
-                           const std::string &image_ )
-    : _composition(CopyCompositeOp),
-      _x(x_),
-      _y(y_),
-      _width(width_),
-      _height(height_),
-      _image(image_)
-    {
-    }
+                           const std::string &image_ );
+
+  DrawableCompositeImage ( double x_, double y_,
+                           double width_, double height_,
+                           const Image &image_ );
+
   DrawableCompositeImage ( double x_, double y_,
                            double width_, double height_,
                            const std::string &image_,
-                           CompositeOperator composition_ )
-    : _composition(composition_),
-      _x(x_),
-      _y(y_),
-      _width(width_),
-      _height(height_),
-      _image(image_)
-    {
-    }
+                           CompositeOperator composition_ );
+
+  DrawableCompositeImage ( double x_, double y_,
+                           double width_, double height_,
+                           const Image &image_,
+                           CompositeOperator composition_ );
+
+  ~DrawableCompositeImage( void );
 
   // Support a polymorphic print-to-stream operator
   /*virtual*/ void print (std::ostream& stream_) const;
@@ -640,14 +633,11 @@ public:
       return _height;
     }
 
-  void image( const std::string &image_ )
-    {
-      _image = image_;
-    }
-  std::string image( void ) const
-    {
-      return _image;
-    }
+  void image( const std::string &image_ );
+  std::string image( void );
+
+  void image( const Image &image_ );
+  Magick::Image image( void ) const;
 
 private:
   CompositeOperator  _composition;
@@ -655,7 +645,7 @@ private:
   double             _y;
   double             _width;
   double             _height;
-  std::string        _image;
+  Image*             _image;
 };
 
 // Decoration (text decoration)

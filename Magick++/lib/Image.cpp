@@ -3204,6 +3204,33 @@ void Magick::Image::throwImageException( void )
   throwException( except );
 }
 
+// Register image with image registry or obtain registration id
+long Magick::Image::registerId( void )
+{
+  Lock( &_imgRef->_mutexLock );
+  if( _imgRef->_id < 0 )
+    {
+      ExceptionInfo exceptionInfo;
+      GetExceptionInfo( &exceptionInfo );
+      _imgRef->_id = SetMagickRegistry(ImageRegistryType, _imgRef->_image,
+                                       sizeof(Image), &exceptionInfo);
+      if( _imgRef->_id < 0 )
+        throwException( exceptionInfo );
+    }
+  return _imgRef->_id;
+}
+
+// Unregister image from image registry
+void Magick::Image::unregisterId( void)
+{
+  Lock( &_imgRef->_mutexLock );
+  if( _imgRef->_id > -1 )
+    {
+      DeleteMagickRegistry( _imgRef->_id );
+      _imgRef->_id = -1;
+    }
+}
+
 /////////////////////////////////////////////
 //
 // ImageRef image handle implementation
@@ -3214,6 +3241,7 @@ void Magick::Image::throwImageException( void )
 Magick::ImageRef::ImageRef ( MagickLib::Image * image_ )
   : _image(image_),
     _options(new Options),
+    _id(-1),
     _refCount(1),
     _mutexLock()
 {
@@ -3225,6 +3253,7 @@ Magick::ImageRef::ImageRef ( MagickLib::Image * image_,
 			     const Options * options_ )
   : _image(image_),
     _options(0),
+    _id(-1),
     _refCount(1),
     _mutexLock()
 {
@@ -3235,6 +3264,7 @@ Magick::ImageRef::ImageRef ( MagickLib::Image * image_,
 Magick::ImageRef::ImageRef ( void )
   : _image(0),
     _options(new Options),
+    _id(-1),
     _refCount(1),
     _mutexLock()
 {
@@ -3248,12 +3278,21 @@ Magick::ImageRef::ImageRef ( void )
 // Destructor
 Magick::ImageRef::~ImageRef( void )
 {
+  // Unregister image (if still registered)
+  if( _id > -1 )
+    {
+      DeleteMagickRegistry( _id );
+      _id=-1;
+    }
+
+  // Deallocate image
   if ( _image )
     {
       DestroyImages( _image );
       _image = 0;
     }
 
+  // Deallocate image options
   delete _options;
   _options = 0;
 }
@@ -3269,10 +3308,10 @@ namespace Magick
   class MagickCleanUp
   {
   public:
-    MagickCleanUp( void )
-      {
-        InitializeMagick(NULL);
-      }
+//     MagickCleanUp( void )
+//       {
+//         InitializeMagick(NULL);
+//       }
     ~MagickCleanUp( void )
       {
         DestroyMagick();

@@ -362,12 +362,13 @@ namespace Magick
   using MagickLib::CycleColormapImage;
   using MagickLib::DelegateError;
   using MagickLib::DelegateWarning;
+  using MagickLib::DeleteMagickRegistry;
   using MagickLib::DespeckleImage;
   using MagickLib::DestroyDrawInfo;
-  using MagickLib::DestroyMagick;
   using MagickLib::DestroyImage;
   using MagickLib::DestroyImageInfo;
   using MagickLib::DestroyImages;
+  using MagickLib::DestroyMagick;
   using MagickLib::DestroyQuantizeInfo;
   using MagickLib::DispatchImage;
   using MagickLib::DisplayImages;
@@ -404,6 +405,7 @@ namespace Magick
   using MagickLib::GetImageType;
   using MagickLib::GetIndexes;
   using MagickLib::GetMagickInfo;
+  using MagickLib::GetMagickRegistry;
   using MagickLib::GetNumberColors;
   using MagickLib::GetPixels;
   using MagickLib::GetQuantizeInfo;
@@ -413,6 +415,8 @@ namespace Magick
   using MagickLib::HeightValue;
   using MagickLib::ImageAttribute;
   using MagickLib::ImageInfo;
+  using MagickLib::ImageInfoRegistryType;
+  using MagickLib::ImageRegistryType;
   using MagickLib::ImageToBlob;
   using MagickLib::ImplodeImage;
   using MagickLib::IsGeometry;
@@ -457,6 +461,7 @@ namespace Magick
   using MagickLib::RectangleInfo;
   using MagickLib::ReduceNoiseImage;
   using MagickLib::RegisterMagickInfo;
+  using MagickLib::RegistryType;
   using MagickLib::ResourceLimitError;
   using MagickLib::ResourceLimitWarning;
   using MagickLib::RollImage;
@@ -476,6 +481,7 @@ namespace Magick
   using MagickLib::SetImagePixels;
   using MagickLib::SetImageType;
   using MagickLib::SetMagickInfo;
+  using MagickLib::SetMagickRegistry;
   using MagickLib::ShadeImage;
   using MagickLib::SharpenImage;
   using MagickLib::ShaveImage;
@@ -497,6 +503,7 @@ namespace Magick
   using MagickLib::TransformRGBImage;
   using MagickLib::TransparentImage;
   using MagickLib::UndefinedException;
+  using MagickLib::UndefinedRegistryType;
   using MagickLib::UnregisterMagickInfo;
   using MagickLib::UnsharpMaskImage;
   using MagickLib::ViewInfo;
