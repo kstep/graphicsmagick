@@ -5,8 +5,8 @@
 	
 2001-12-25  Leonard Rosenthol  <leonardr@lazerware.com>
 	* Made a huge number of improvements to conjure.  It now
-	  supports over 15 different commands for manipulating
-	  your images.
+	  supports over 15 different commands for manipulating your
+	  images.
 
 2001-12-24  Cristy  <cristy@mystic.es.dupont.com>
 	* Started a new scripting language utility, conjure.
