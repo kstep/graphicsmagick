@@ -707,6 +707,9 @@ static void DrawDashPolygon(const DrawInfo *draw_info,
     scale,
     this_distance;
 
+  DrawInfo
+    *clone_info;
+
   int
     j,
     n;
@@ -724,6 +727,8 @@ static void DrawDashPolygon(const DrawInfo *draw_info,
   unsigned int
     number_vertices;
 
+  clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+  clone_info->miterlimit=0.0;
   for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++);
   number_vertices=i;
   dash_polygon=(PrimitiveInfo *)
@@ -800,7 +805,7 @@ static void DrawDashPolygon(const DrawInfo *draw_info,
           j++;
           dash_polygon[0].coordinates=j;
           dash_polygon[j].primitive=UndefinedPrimitive;
-          DrawStrokePolygon(draw_info,dash_polygon,image);
+          DrawStrokePolygon(clone_info,dash_polygon,image);
         }
       n++;
       if (draw_info->dash_pattern[n] == 0)
@@ -815,6 +820,7 @@ static void DrawDashPolygon(const DrawInfo *draw_info,
     j++;
   }
   LiberateMemory((void **) &dash_polygon);
+  DestroyDrawInfo(clone_info);
 }
 
 /*
@@ -2498,9 +2504,9 @@ static PathInfo *ConvertPrimitiveToPath(const PrimitiveInfo *primitive_info)
     code;
 
   PointInfo
-    first,
-    last,
-    point;
+    p,
+    point,
+    q;
 
   register int
     i,
@@ -2522,8 +2528,8 @@ static PathInfo *ConvertPrimitiveToPath(const PrimitiveInfo *primitive_info)
   }
   coordinates=0;
   n=0;
-  last.x=(-1.0);
-  last.y=(-1.0);
+  q.x=(-1.0);
+  q.y=(-1.0);
   path_length=0;
   path_info=(PathInfo *) NULL;
   for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
@@ -2541,35 +2547,35 @@ static PathInfo *ConvertPrimitiveToPath(const PrimitiveInfo *primitive_info)
         if (path_info == (PathInfo *) NULL)
           return((PathInfo *) NULL);
         start=n;
-        first=point;
+        p=point;
         code=MoveToCode;
       }
     coordinates--;
     /*
       Reject duplicate points.
     */
-    if ((fabs(last.x-point.x) > MagickEpsilon) ||
-        (fabs(last.y-point.y) > MagickEpsilon))
+    if ((fabs(q.x-point.x) > MagickEpsilon) ||
+        (fabs(q.y-point.y) > MagickEpsilon))
       {
         path_info[n].code=code;
         path_info[n].point=point;
-        last=point;
+        q=point;
         n++;
       }
     if (coordinates > 0)
       continue;
-    if ((fabs(first.x-point.x) <= MagickEpsilon) &&
-        (fabs(first.y-point.y) <= MagickEpsilon))
+    if ((fabs(p.x-point.x) <= MagickEpsilon) &&
+        (fabs(p.y-point.y) <= MagickEpsilon))
       continue;
     /*
-      Mark the first point as open if it does not match the last.
+      Mark the p point as open if it does not match the q.
     */
     path_info[start].code=OpenCode;
     path_info[n].code=GhostlineCode;
     path_info[n].point=point;
     n++;
     path_info[n].code=LineToCode;
-    path_info[n].point=first;
+    path_info[n].point=p;
     n++;
   }
   path_info[n].code=EndCode;
@@ -2645,8 +2651,8 @@ static void PrintPrimitiveInfo(const PrimitiveInfo *primitive_info)
     y;
 
   PointInfo
-    first,
-    last,
+    p,
+    q,
     point;
 
   register int
@@ -2689,8 +2695,8 @@ static void PrintPrimitiveInfo(const PrimitiveInfo *primitive_info)
       break;
   }
   coordinates=0;
-  last.x=(-1.0);
-  last.y=(-1.0);
+  q.x=(-1.0);
+  q.y=(-1.0);
   for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
   {
     point=primitive_info[i].point;
@@ -2698,24 +2704,24 @@ static void PrintPrimitiveInfo(const PrimitiveInfo *primitive_info)
       {
         coordinates=primitive_info[i].coordinates;
         (void) fprintf(stdout,"  begin open (%d)\n",coordinates);
-        first=point;
+        p=point;
       }
     point=primitive_info[i].point;
-    if ((fabs(last.x-point.x) <= MagickEpsilon) &&
-        (fabs(last.y-point.y) <= MagickEpsilon))
+    if ((fabs(q.x-point.x) <= MagickEpsilon) &&
+        (fabs(q.y-point.y) <= MagickEpsilon))
       (void) fprintf(stdout,"    %d: %g,%g (duplicate)\n",coordinates,point.x,
         point.y);
     else
       (void) fprintf(stdout,"    %d: %g,%g\n",coordinates,point.x,point.y);
-    last=point;
+    q=point;
     coordinates--;
     if (coordinates > 0)
       continue;
-    if ((fabs(first.x-point.x) <= MagickEpsilon) &&
-        (fabs(first.y-point.y) <= MagickEpsilon))
+    if ((fabs(p.x-point.x) <= MagickEpsilon) &&
+        (fabs(p.y-point.y) <= MagickEpsilon))
       (void) fprintf(stdout,"  end open (%d)\n",coordinates);
     else
-      (void) fprintf(stdout,"  end last (%d)\n",coordinates);
+      (void) fprintf(stdout,"  end q (%d)\n",coordinates);
   }
 }
 
@@ -3028,11 +3034,11 @@ static void DrawPrimitive(const DrawInfo *draw_info,
       mid=ExpandAffine(&draw_info->affine)*draw_info->linewidth/2.0;
       if ((mid > 1.0) && (draw_info->stroke.opacity != TransparentOpacity))
         {
-          int
+          unsigned int
             closed;
 
           /*
-            Handle line caps/joins.
+            Draw strokes while respecting line cap/join attributes.
           */
           for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++);
           closed=(primitive_info[i-1].point.x == primitive_info[0].point.x) &&
@@ -3072,7 +3078,7 @@ static void DrawPrimitive(const DrawInfo *draw_info,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method DrawStrokePolygon draws a stroked polygon (line, rectangle, ellipse)
-%  on the image while respecting the line caps and join attributes.
+%  on the image while respecting the line cap and join attributes.
 %
 %  The format of the DrawStrokePolygon method is:
 %
@@ -3108,11 +3114,6 @@ static void DrawRoundLinecap(const DrawInfo *draw_info,
   register int
     i;
 
-  assert(primitive_info != (PrimitiveInfo *) NULL);
-  assert(draw_info != (DrawInfo *) NULL);
-  assert(draw_info->signature == MagickSignature);
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
   for (i=0; i < 4; i++)
     linecap[i]=(*primitive_info);
   linecap[0].coordinates=4;
@@ -3138,30 +3139,22 @@ static void DrawRoundLinecap(const DrawInfo *draw_info,
 static void DrawStrokePolygon(const DrawInfo *draw_info,
   const PrimitiveInfo *primitive_info,Image *image)
 {
+  typedef struct _LineSegment
+  {
+    double
+      p,
+      q;
+  } LineSegment;
+
   double
-    arc_delta,
     delta_theta,
     dot_product,
-    dx1,
-    dx2,
-    dy1,
-    dy2,
-    inverse_slope1,
-    inverse_slope2,
-    miterlimit_2,
-    offset,
-    slope1,
-    slope2,
-    theta1,
-    theta2,
-    xleft[5],
-    xoffset1,
-    xoffset2,
-    xright[5],
-    yleft[5],
-    yoffset1,
-    yoffset2,
-    yright[5];
+    mid,
+    miterlimit,
+    xl[5],
+    xr[5],
+    yl[5],
+    yr[5];
 
   DrawInfo
     *clone_info;
@@ -3170,20 +3163,26 @@ static void DrawStrokePolygon(const DrawInfo *draw_info,
     arc_segments,
     closed,
     l,
-    max_left,
-    max_right,
+    max_strokes,
     n,
     r,
-    xcenter,
-    ycenter,
     z;
+
+  LineSegment
+    dx,
+    dy,
+    inverse_slope,
+    slope,
+    theta;
 
   PathInfo
     *path_info;
 
   PointInfo
-    *right,
-    *left;
+    center,
+    *left,
+    offset,
+    *right;
 
   PolygonInfo
     *polygon_info;
@@ -3198,11 +3197,9 @@ static void DrawStrokePolygon(const DrawInfo *draw_info,
   unsigned int
     number_vertices;
 
-  assert(primitive_info != (PrimitiveInfo *) NULL);
-  assert(draw_info != (DrawInfo *) NULL);
-  assert(draw_info->signature == MagickSignature);
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  /*
+    Clone the polygon primitive.
+  */
   for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++);
   closed=(primitive_info[i-1].point.x == primitive_info[0].point.x) &&
     (primitive_info[i-1].point.y == primitive_info[0].point.y);
@@ -3212,322 +3209,262 @@ static void DrawStrokePolygon(const DrawInfo *draw_info,
   if (stroke_polygon == (PrimitiveInfo *) NULL)
     MagickError(ResourceLimitWarning,"Unable to draw image",
       "Memory allocation failed");
-  for (i=0; i < number_vertices; i++)
-    stroke_polygon[i]=primitive_info[i];
-  if (!closed || (draw_info->linejoin != MiterJoin))
+  memcpy(stroke_polygon,primitive_info,number_vertices*sizeof(PrimitiveInfo));
+  /*
+    Compute the slope for the first polygon segment, p.
+  */
+  if ((draw_info->linejoin != MiterJoin) || !closed)
     stroke_polygon[number_vertices].primitive=UndefinedPrimitive;
   else
     {
       stroke_polygon[number_vertices]=primitive_info[1];
       number_vertices++;
     }
-  l=0;
-  r=0;
-  max_left=2*number_vertices;
-  max_right=2*number_vertices;
-  right=(PointInfo *) AcquireMemory(max_right*sizeof(PointInfo));
-  left=(PointInfo *) AcquireMemory(max_left*sizeof(PointInfo));
-  if ((right == (PointInfo *) NULL) || (left == (PointInfo *) NULL))
-    MagickError(ResourceLimitWarning,"Unable to draw image",
-      "Memory allocation failed");
-  /*
-    Compute the coordinate deltas for the first polygon segment.
-  */
-  offset=draw_info->linewidth/2.0;
-  miterlimit_2=draw_info->miterlimit*draw_info->miterlimit*offset*offset;
-  n=1;
-  while ((fabs(stroke_polygon[n].point.x-stroke_polygon[0].point.x) < MagickEpsilon) &&
-         (fabs(stroke_polygon[n].point.y-stroke_polygon[0].point.y) < MagickEpsilon) &&
-         (n < number_vertices))
-    n++;
-  dx1=stroke_polygon[n].point.x-stroke_polygon[0].point.x;
-  dy1=stroke_polygon[n].point.y-stroke_polygon[0].point.y;
-  if (fabs(dx1) <= MagickEpsilon)
+  for (n=1; n < number_vertices; n++)
+  {
+    dx.p=stroke_polygon[n].point.x-stroke_polygon[0].point.x;
+    dy.p=stroke_polygon[n].point.y-stroke_polygon[0].point.y;
+    if ((fabs(dx.p) >= MagickEpsilon) || (fabs(dy.p) >= MagickEpsilon))
+      break;
+  }
+  if (fabs(dx.p) <= MagickEpsilon)
     {
-      inverse_slope1=0.0;
-      if (dx1 >= 0.0)
-        {
-          if (dy1 < 0.0)
-            slope1=(-1000000.0);
-          else
-            slope1=1000000.0;
-        }
+      inverse_slope.p=0.0;
+      if (dx.p >= 0.0)
+        slope.p=dy.p < 0.0 ? -1000000.0 : 1000000.0;
       else
-        {
-          if (dy1 < 0)
-            slope1=1000000.0;
-          else
-            slope1=(-1000000.0);
-        }
+        slope.p=dy.p < 0.0 ? 1000000.0 : -1000000.0;
     }
   else
-    if (fabs(dy1) <= MagickEpsilon)
+    if (fabs(dy.p) <= MagickEpsilon)
       {
-        slope1=0.0;
-        if (dy1 >= 0.0)
-          {
-            if (dx1 < 0)
-              inverse_slope1=(-1000000.0);
-            else
-              inverse_slope1=1000000.0;
-          }
+        slope.p=0.0;
+        if (dy.p >= 0.0)
+          inverse_slope.p=dx.p < 0.0 ? -1000000.0 : 1000000.0;
         else
-          {
-            if (dx1 < 0)
-              inverse_slope1=1000000.0;
-            else
-              inverse_slope1=(-1000000.0);
-          }
+          inverse_slope.p=dx.p < 0.0 ? 1000000.0 : -1000000.0;
       }
     else
       {
-        slope1=dy1/dx1;
-        inverse_slope1=(-1.0/slope1);
+        slope.p=dy.p/dx.p;
+        inverse_slope.p=(-1.0/slope.p);
       }
-  if (!closed && (draw_info->linecap == SquareCap))
-    TraceSquareLinecap(stroke_polygon,number_vertices,offset);
-  xoffset1=sqrt(offset*offset/(1.0+(inverse_slope1*inverse_slope1)));
-  yoffset1=xoffset1*inverse_slope1;
-  if (((dy1*xoffset1)-(dx1*yoffset1)) > 0.0)
+  l=0;
+  r=0;
+  max_strokes=2*number_vertices+1;
+  right=(PointInfo *) AcquireMemory(max_strokes*sizeof(PointInfo));
+  left=(PointInfo *) AcquireMemory(max_strokes*sizeof(PointInfo));
+  if ((right == (PointInfo *) NULL) || (left == (PointInfo *) NULL))
+    MagickError(ResourceLimitWarning,"Unable to draw image",
+      "Memory allocation failed");
+  mid=draw_info->linewidth/2.0;
+  miterlimit=draw_info->miterlimit*draw_info->miterlimit*mid*mid;
+  if ((draw_info->linecap == SquareCap) && !closed)
+    TraceSquareLinecap(stroke_polygon,number_vertices,mid);
+  offset.x=sqrt(mid*mid/(inverse_slope.p*inverse_slope.p+1.0));
+  offset.y=offset.x*inverse_slope.p;
+  if ((dy.p*offset.x-dx.p*offset.y) > 0.0)
     {
-      xleft[0]=stroke_polygon[0].point.x+xoffset1;
-      xleft[1]=stroke_polygon[n].point.x+xoffset1;
-      yleft[0]=stroke_polygon[0].point.y+(xoffset1*inverse_slope1);
-      yleft[1]=stroke_polygon[n].point.y+(xoffset1*inverse_slope1);
-      xright[0]=stroke_polygon[0].point.x-xoffset1;
-      xright[1]=stroke_polygon[n].point.x-xoffset1;
-      yright[0]=stroke_polygon[0].point.y-(xoffset1*inverse_slope1);
-      yright[1]=stroke_polygon[n].point.y-(xoffset1*inverse_slope1);
+      xl[0]=stroke_polygon[0].point.x+offset.x;
+      xl[1]=stroke_polygon[n].point.x+offset.x;
+      yl[0]=stroke_polygon[0].point.y+offset.x*inverse_slope.p;
+      yl[1]=stroke_polygon[n].point.y+offset.x*inverse_slope.p;
+      xr[0]=stroke_polygon[0].point.x-offset.x;
+      xr[1]=stroke_polygon[n].point.x-offset.x;
+      yr[0]=stroke_polygon[0].point.y-offset.x*inverse_slope.p;
+      yr[1]=stroke_polygon[n].point.y-offset.x*inverse_slope.p;
     }
   else
     {
-      xright[0]=stroke_polygon[0].point.x+xoffset1;
-      xright[1]=stroke_polygon[n].point.x+xoffset1;
-      yright[0]=stroke_polygon[0].point.y+yoffset1;
-      yright[1]=stroke_polygon[n].point.y+yoffset1;
-      xleft[0]=stroke_polygon[0].point.x-xoffset1;
-      xleft[1]=stroke_polygon[n].point.x-xoffset1;
-      yleft[0]=stroke_polygon[0].point.y-yoffset1;
-      yleft[1]=stroke_polygon[n].point.y-yoffset1;
+      xr[0]=stroke_polygon[0].point.x+offset.x;
+      xr[1]=stroke_polygon[n].point.x+offset.x;
+      yr[0]=stroke_polygon[0].point.y+offset.y;
+      yr[1]=stroke_polygon[n].point.y+offset.y;
+      xl[0]=stroke_polygon[0].point.x-offset.x;
+      xl[1]=stroke_polygon[n].point.x-offset.x;
+      yl[0]=stroke_polygon[0].point.y-offset.y;
+      yl[1]=stroke_polygon[n].point.y-offset.y;
     }
-  left[0].x=xleft[0];
-  left[0].y=yleft[0];
-  right[0].x=xright[0];
-  right[0].y=yright[0];
+  left[0].x=xl[0];
+  left[0].y=yl[0];
+  right[0].x=xr[0];
+  right[0].y=yr[0];
   l++;
   r++;
   for (i=n+1; i < number_vertices; i++)
   {
-    dx2=stroke_polygon[i].point.x-stroke_polygon[n].point.x;
-    dy2=stroke_polygon[i].point.y-stroke_polygon[n].point.y;
-    if ((dx2*dx2+dy2*dy2) < 0.25)
+    /*
+      Compute the slope for this polygon segment, q.
+    */
+    dx.q=stroke_polygon[i].point.x-stroke_polygon[n].point.x;
+    dy.q=stroke_polygon[i].point.y-stroke_polygon[n].point.y;
+    dot_product=dx.q*dx.q+dy.q*dy.q;
+    if (dot_product < 0.25)
       continue;
+    if (fabs(dx.q) < MagickEpsilon)
+      {
+        inverse_slope.q=0.0;
+        if (dx.q >= 0.0)
+          slope.q=dy.q < 0.0 ? -1000000.0 : 1000000.0;
+        else
+          slope.q=dy.q < 0.0 ? 1000000.0 : -1000000.0;
+      }
     else
-      if (fabs(dx2) < MagickEpsilon)
+      if (fabs(dy.q) <= MagickEpsilon)
         {
-          inverse_slope2=0.0;
-          if (dx2 >= 0.0)
-            {
-              if (dy2 < 0)
-                slope2=(-1000000.0);
-              else
-                slope2=1000000.0;
-            }
+          slope.q=0.0;
+          if (dy.q >= 0.0)
+            inverse_slope.q=dx.q < 0.0 ? -1000000.0 : 1000000.0;
           else
-            {
-              if (dy2 < 0)
-                slope2=1000000.0;
-              else
-                slope2=(-1000000.0);
-            }
+            inverse_slope.q=dx.q < 0.0 ? 1000000.0 : -1000000.0;
         }
       else
-        if (fabs(dy2) <= MagickEpsilon)
-          {
-            slope2=0.0;
-            if (dy2 >= 0.0)
-              {
-                if (dx2 < 0)
-                  inverse_slope2=(-1000000.0);
-                else
-                  inverse_slope2=1000000.0;
-              }
-            else
-              {
-                if (dx2 < 0)
-                  inverse_slope2=1000000.0;
-                else
-                  inverse_slope2=(-1000000.0);
-              }
-          }
-        else
-          {
-            slope2=dy2/dx2;
-            inverse_slope2=(-1.0/slope2);
-          }
-    xoffset2=sqrt(offset*offset/(1.0+(inverse_slope2*inverse_slope2)));
-    yoffset2=xoffset2*inverse_slope2;
-    if (((dy2*xoffset2)-(dx2*yoffset2)) > 0.0)
+        {
+          slope.q=dy.q/dx.q;
+          inverse_slope.q=(-1.0/slope.q);
+        }
+    offset.x=sqrt(mid*mid/(inverse_slope.q*inverse_slope.q+1.0));
+    offset.y=offset.x*inverse_slope.q;
+    dot_product=dy.q*offset.x-dx.q*offset.y;
+    if (dot_product > 0.0)
       {
-        xleft[2]=stroke_polygon[n].point.x+xoffset2;
-        xleft[3]=stroke_polygon[i].point.x+xoffset2;
-        yleft[2]=stroke_polygon[n].point.y+yoffset2;
-        yleft[3]=stroke_polygon[i].point.y+yoffset2;
-        xright[2]=stroke_polygon[n].point.x-xoffset2;
-        xright[3]=stroke_polygon[i].point.x-xoffset2;
-        yright[2]=stroke_polygon[n].point.y-yoffset2;
-        yright[3]=stroke_polygon[i].point.y-yoffset2;
+        xl[2]=stroke_polygon[n].point.x+offset.x;
+        xl[3]=stroke_polygon[i].point.x+offset.x;
+        yl[2]=stroke_polygon[n].point.y+offset.y;
+        yl[3]=stroke_polygon[i].point.y+offset.y;
+        xr[2]=stroke_polygon[n].point.x-offset.x;
+        xr[3]=stroke_polygon[i].point.x-offset.x;
+        yr[2]=stroke_polygon[n].point.y-offset.y;
+        yr[3]=stroke_polygon[i].point.y-offset.y;
       }
     else
       {
-        xright[2]=stroke_polygon[n].point.x+xoffset2;
-        xright[3]=stroke_polygon[i].point.x+xoffset2;
-        yright[2]=stroke_polygon[n].point.y+yoffset2;
-        yright[3]=stroke_polygon[i].point.y+yoffset2;
-        xleft[2]=stroke_polygon[n].point.x-xoffset2;
-        xleft[3]=stroke_polygon[i].point.x-xoffset2;
-        yleft[2]=stroke_polygon[n].point.y-yoffset2;
-        yleft[3]=stroke_polygon[i].point.y-yoffset2;
+        xr[2]=stroke_polygon[n].point.x+offset.x;
+        xr[3]=stroke_polygon[i].point.x+offset.x;
+        yr[2]=stroke_polygon[n].point.y+offset.y;
+        yr[3]=stroke_polygon[i].point.y+offset.y;
+        xl[2]=stroke_polygon[n].point.x-offset.x;
+        xl[3]=stroke_polygon[i].point.x-offset.x;
+        yl[2]=stroke_polygon[n].point.y-offset.y;
+        yl[3]=stroke_polygon[i].point.y-offset.y;
       }
-    dot_product=(dx2*dy1)-(dx1*dy2);
-    if (fabs(slope1-slope2) > MagickEpsilon)
+    if (fabs(slope.p-slope.q) <= MagickEpsilon)
       {
-        xright[4]=((slope1*xright[0])-yright[0]-(slope2*xright[3])+yright[3])/
-          (slope1-slope2);
-        yright[4]=slope1*(xright[4]-xright[0])+yright[0];
-        xleft[4]=((slope1*xleft[0])-yleft[0]-(slope2*xleft[3])+yleft[3])/
-          (slope1-slope2);
-        yleft[4]=slope1*(xleft[4]-xleft[0])+yleft[0];
+        xr[4]=xr[1];
+        xl[4]=xl[1];
+        yr[4]=yr[1];
+        yl[4]=yl[1];
       }
     else
       {
-        xright[4]=xright[1];
-        xleft[4]=xleft[1];
-        yright[4]=yright[1];
-        yleft[4]=yleft[1];
+        xr[4]=(slope.p*xr[0]-yr[0]-slope.q*xr[3]+yr[3])/(slope.p-slope.q);
+        yr[4]=slope.p*(xr[4]-xr[0])+yr[0];
+        xl[4]=(slope.p*xl[0]-yl[0]-slope.q*xl[3]+yl[3])/(slope.p-slope.q);
+        yl[4]=slope.p*(xl[4]-xl[0])+yl[0];
       }
+    if (l >= (int) (max_strokes-6*BezierQuantum-360))
+      {
+         max_strokes+=6*BezierQuantum+360;
+         ReacquireMemory((void **) &right,max_strokes*sizeof(PointInfo));
+         ReacquireMemory((void **) &left,max_strokes*sizeof(PointInfo));
+         if ((right == (PointInfo *) NULL) || (left == (PointInfo *) NULL))
+           MagickError(ResourceLimitWarning,"Unable to draw image",
+             "Memory allocation failed");
+      }
+    dot_product=dx.q*dy.p-dx.p*dy.q;
     if (dot_product <= 0.0)
       switch (draw_info->linejoin)
       {
         case BevelJoin:
         {
-          left[l].x=xleft[1];
-          left[l++].y=yleft[1];
-          left[l].x=xleft[2];
-          left[l++].y=yleft[2];
-          if ((l+3) > max_left)
+          left[l].x=xl[1];
+          left[l].y=yl[1];
+          l++;
+          left[l].x=xl[2];
+          left[l].y=yl[2];
+          l++;
+          dot_product=(xl[4]-xr[4])*(xl[4]-xr[4])+(yl[4]-yr[4])*(yl[4]-yr[4]);
+          if (dot_product <= miterlimit)
             {
-              max_left+=(max_left/10 > 30 ? max_left/10 : 30);
-              ReacquireMemory((void **) &left,max_left*sizeof(PointInfo));
-            }
-          if (((xleft[4]-xright[4])*(xleft[4]-xright[4])+
-              (yleft[4]-yright[4])*(yleft[4]-yright[4])) > miterlimit_2)
-            {
-              right[r].x=xright[1];
-              right[r++].y=yright[1];
-              right[r].x=xright[2];
-              right[r++].y=yright[2];
+              right[r].x=xr[4];
+              right[r].y=yr[4];
             }
           else
             {
-              right[r].x=xright[4];
-              right[r++].y=yright[4];
+              right[r].x=xr[1];
+              right[r].y=yr[1];
+              r++;
+              right[r].x=xr[2];
+              right[r].y=yr[2];
             }
-          if ((r+3) > max_right)
-            {
-              max_right+=(max_right/10 > 30 ? max_right/10 : 30);
-              ReacquireMemory((void **) &right,max_right*sizeof(PointInfo));
-            }
+          r++;
           break;
         }
         case MiterJoin:
         {
-          if (((xleft[4]-xright[4])*(xleft[4]-xright[4])+
-              (yleft[4]-yright[4])*(yleft[4]-yright[4])) > miterlimit_2)
+          dot_product=(xl[4]-xr[4])*(xl[4]-xr[4])+(yl[4]-yr[4])*(yl[4]-yr[4]);
+          if (dot_product > miterlimit)
             {
-              left[l].x=xleft[1];
-              left[l++].y=yleft[1];
-              left[l].x=xleft[2];
-              left[l++].y=yleft[2];
-              if ((l+3) > max_left)
-                {
-                  max_left+=(max_left/10 > 30 ? max_left/10 : 30);
-                  ReacquireMemory((void **) &left,max_left*sizeof(PointInfo));
-                }
-              right[r].x=xright[1];
-              right[r++].y=yright[1];
-              right[r].x=xright[2];
-              right[r++].y=yright[2];
-              if ((r+3) > max_right)
-                {
-                  max_right+=(max_right/10 > 30 ? max_right/10 : 30);
-                  ReacquireMemory((void **) &right,max_right*sizeof(PointInfo));
-                }
+              left[l].x=xl[1];
+              left[l].y=yl[1];
+              l++;
+              left[l].x=xl[2];
+              left[l].y=yl[2];
+              l++;
+              right[r].x=xr[1];
+              right[r].y=yr[1];
+              r++;
+              right[r].x=xr[2];
+              right[r].y=yr[2];
+              r++;
            }
          else
            {
-             left[l].x=xleft[4];
-             left[l++].y=yleft[4];
-             if ((l+3) > max_left)
-               {
-                 max_left+=(max_left/10 > 30 ? max_left/10 : 30);
-                 ReacquireMemory((void **) &left,max_left*sizeof(PointInfo));
-               }
-             right[r].x=xright[4];
-             right[r++].y=yright[4];
-             if ((r+3) > max_right)
-               {
-                 max_right+=(max_right/10 > 30 ? max_right/10 : 30);
-                 ReacquireMemory((void **) &right,
-                   max_right*sizeof(PointInfo));
-             }
+             left[l].x=xl[4];
+             left[l].y=yl[4];
+             l++;
+             right[r].x=xr[4];
+             right[r].y=yr[4];
+             r++;
            }
           break;
         }
         case RoundJoin:
         {
-          if (((xleft[4]-xright[4])*(xleft[4]-xright[4])+
-               (yleft[4]-yright[4])*(yleft[4]-yright[4])) > miterlimit_2)
+          dot_product=(xl[4]-xr[4])*(xl[4]-xr[4])+(yl[4]-yr[4])*(yl[4]-yr[4]);
+          if (dot_product <= miterlimit)
             {
-              right[r].x=xright[1];
-              right[r++].y=yright[1];
-              right[r].x=xright[2];
-              right[r++].y=yright[2];
+              right[r].x=xr[4];
+              right[r].y=yr[4];
             }
           else
             {
-              right[r].x=xright[4];
-              right[r++].y=yright[4];
+              right[r].x=xr[1];
+              right[r].y=yr[1];
+              r++;
+              right[r].x=xr[2];
+              right[r].y=yr[2];
             }
-          if ((r+3) > max_right)
-            {
-              max_right+=(max_right/10 > 30 ? max_right/10 : 30);
-              ReacquireMemory((void **) &right,max_right*sizeof(PointInfo));
-            }
-          arc_delta=2*sqrt(1.0/offset);
-          xcenter=stroke_polygon[n].point.x;
-          ycenter=stroke_polygon[n].point.y;
-          theta1=atan2(yleft[1]-ycenter,xleft[1]-xcenter);
-          theta2=atan2(yleft[2]-ycenter,xleft[2]-xcenter);
-          if (theta2 < theta1)
-            theta2+=2.0*M_PI;
-          arc_segments=ceil((theta2-theta1)/arc_delta);
-          if ((l+arc_segments) >= max_left)
-            {
-              max_left+=(max_left/10 > 30 ? max_left/10 : 30);
-              max_left+=arc_segments;
-              ReacquireMemory((void **) &left,max_left*sizeof(PointInfo));
-            }
-          left[l].x=xleft[1];
-          left[l++].y=yleft[1];
+          r++;
+          center=stroke_polygon[n].point;
+          theta.p=atan2(yl[1]-center.y,xl[1]-center.x);
+          theta.q=atan2(yl[2]-center.y,xl[2]-center.x);
+          if (theta.q < theta.p)
+            theta.q+=2.0*M_PI;
+          arc_segments=ceil((theta.q-theta.p)/(2.0*sqrt(1.0/mid)));
+          left[l].x=xl[1];
+          left[l].y=yl[1];
+          l++;
           for (z=1; z < arc_segments; z++)
           {
-            delta_theta=((theta2-theta1)*z)/arc_segments;
-            left[l].x=xcenter+(cos(delta_theta+theta1)*offset);
-            left[l++].y=ycenter+(sin(delta_theta+theta1)*offset);
+            delta_theta=z*(theta.q-theta.p)/arc_segments;
+            left[l].x=center.x+mid*cos(delta_theta+theta.p);
+            left[l].y=center.y+mid*sin(delta_theta+theta.p);
+            l++;
           }
-          left[l].x=xleft[2];
-          left[l++].y=yleft[2];
+          left[l].x=xl[2];
+          left[l].y=yl[2];
+          l++;
           break;
         }
         default:
@@ -3538,216 +3475,163 @@ static void DrawStrokePolygon(const DrawInfo *draw_info,
       {
         case BevelJoin:
         {
-          right[r].x=xright[1];
-          right[r++].y=yright[1];
-          right[r].x=xright[2];
-          right[r++].y=yright[2];
-          if ((r+3) > max_right)
+          right[r].x=xr[1];
+          right[r].y=yr[1];
+          r++;
+          right[r].x=xr[2];
+          right[r].y=yr[2];
+          r++;
+          dot_product=(xl[4]-xr[4])*(xl[4]-xr[4])+(yl[4]-yr[4])*(yl[4]-yr[4]);
+          if (dot_product <= miterlimit)
             {
-              max_right+=(max_right/10 > 30 ? max_right/10 : 30);
-              ReacquireMemory((void **) &right,max_right*sizeof(PointInfo));
-            }
-          if (((xleft[4]-xright[4])*(xleft[4]-xright[4])+
-              (yleft[4]-yright[4])*(yleft[4]-yright[4])) > miterlimit_2)
-            {
-              left[l].x=xleft[1];
-              left[l++].y=yleft[1];
-              left[l].x=xleft[2];
-              left[l++].y=yleft[2];
+              left[l].x=xl[4];
+              left[l].y=yl[4];
             }
           else
             {
-              left[l].x=xleft[4];
-              left[l++].y=yleft[4];
+              left[l].x=xl[1];
+              left[l].y=yl[1];
+              l++;
+              left[l].x=xl[2];
+              left[l].y=yl[2];
             }
-          if ((l+3) > max_left)
-            {
-              max_left+=(max_left/10 > 30 ? max_left/10 : 30);
-              ReacquireMemory((void **) &left,max_left*sizeof(PointInfo));
-            }
+          l++;
           break;
         }
         case MiterJoin:
         {
-          if (((xleft[4]-xright[4])*(xleft[4]-xright[4])+
-              (yleft[4]-yright[4])*(yleft[4]-yright[4])) > miterlimit_2)
+          dot_product=(xl[4]-xr[4])*(xl[4]-xr[4])+(yl[4]-yr[4])*(yl[4]-yr[4]);
+          if (dot_product > miterlimit)
             {
-              left[l].x=xleft[1];
-              left[l++].y=yleft[1];
-              left[l].x=xleft[2];
-              left[l++].y=yleft[2];
-              if ((l+3) > max_left)
-                {
-                  max_left+=(max_left/10 > 30 ? max_left/10 : 30);
-                  ReacquireMemory((void **) &left,max_left*sizeof(PointInfo));
-                }
-              right[r].x=xright[1];
-              right[r++].y=yright[1];
-              right[r].x=xright[2];
-              right[r++].y=yright[2];
-              if ((r+3) > max_right)
-                {
-                  max_right+=(max_right/10 > 30 ? max_right/10 : 30);
-                  ReacquireMemory((void **) &right,max_right*sizeof(PointInfo));
-                }
+              left[l].x=xl[1];
+              left[l].y=yl[1];
+              l++;
+              left[l].x=xl[2];
+              left[l].y=yl[2];
+              l++;
+              right[r].x=xr[1];
+              right[r].y=yr[1];
+              r++;
+              right[r].x=xr[2];
+              right[r].y=yr[2];
+              r++;
             }
           else
             {
-              left[l].x=xleft[4];
-              left[l++].y=yleft[4];
-              if ((l+3) > max_left)
-                {
-                  max_left+=(max_left/10 > 30 ? max_left/10 : 30);
-                  ReacquireMemory((void **) &left,max_left*sizeof(PointInfo));
-                }
-              right[r].x=xright[4];
-              right[r++].y=yright[4];
-              if ((r+3) > max_right)
-                {
-                  max_right+=(max_right/10 > 30 ? max_right/10 : 30);
-                  ReacquireMemory((void **) &right,
-                    max_right*sizeof(PointInfo));
-              }
+              left[l].x=xl[4];
+              left[l].y=yl[4];
+              l++;
+              right[r].x=xr[4];
+              right[r].y=yr[4];
+              r++;
             }
           break;
         }
         case RoundJoin:
         {
-          double
-            arc_delta,
-            theta1,
-            theta2;
-
-          int
-            arc_segments,
-            z,
-            xcenter,
-            ycenter;
-
-          if (((xleft[4]-xright[4])*(xleft[4]-xright[4])+
-              (yleft[4]-yright[4])*(yleft[4]-yright[4])) > miterlimit_2)
+          dot_product=(xl[4]-xr[4])*(xl[4]-xr[4])+(yl[4]-yr[4])*(yl[4]-yr[4]);
+          if (dot_product <= miterlimit)
             {
-              left[l].x=xleft[1];
-              left[l++].y=yleft[1];
-              left[l].x=xleft[2];
-              left[l++].y=yleft[2];
+              left[l].x=xl[4];
+              left[l].y=yl[4];
             }
           else
             {
-              left[l].x=xleft[4];
-              left[l++].y=yleft[4];
+              left[l].x=xl[1];
+              left[l].y=yl[1];
+              l++;
+              left[l].x=xl[2];
+              left[l].y=yl[2];
             }
-          if ((l+3) > max_left)
-            {
-              max_left+=(max_left/10 > 30 ? max_left/10 : 30);
-              ReacquireMemory((void **) &left,max_left*sizeof(PointInfo));
-            }
-          arc_delta=2.0*sqrt(1.0/offset);
-          xcenter=stroke_polygon[n].point.x;
-          ycenter=stroke_polygon[n].point.y;
-          theta1=atan2(yright[1]-ycenter,xright[1]-xcenter);
-          theta2=atan2(yright[2]-ycenter,xright[2]-xcenter);
-          if (theta1 < theta2)
-            theta1+=2.0*M_PI;
-          arc_segments=ceil((theta1-theta2)/arc_delta);
-          if ((r+arc_segments) >= max_right)
-            {
-              max_right+=(max_right/10 > 30 ? max_right/10 : 30);
-              max_right+=arc_segments;
-              ReacquireMemory((void **) &right,max_right*sizeof(PointInfo));
-            }
-          right[r].x=xright[1];
-          right[r++].y=yright[1];
-          xcenter=stroke_polygon[n].point.x;
-          ycenter=stroke_polygon[n].point.y;
+          l++;
+          center=stroke_polygon[n].point;
+          theta.p=atan2(yr[1]-center.y,xr[1]-center.x);
+          theta.q=atan2(yr[2]-center.y,xr[2]-center.x);
+          if (theta.p < theta.q)
+            theta.p+=2.0*M_PI;
+          arc_segments=ceil((theta.p-theta.q)/(2.0*sqrt(1.0/mid)));
+          right[r].x=xr[1];
+          right[r].y=yr[1];
+          r++;
           for (z=1; z < arc_segments; z++)
           {
-            delta_theta=((theta2-theta1)*z)/arc_segments;
-            right[r].x=xcenter+(cos(delta_theta+theta1)*offset);
-            right[r++].y=ycenter+(sin(delta_theta+theta1)*offset);
+            delta_theta=z*(theta.q-theta.p)/arc_segments;
+            right[r].x=center.x+mid*cos(delta_theta+theta.p);
+            right[r].y=center.y+mid*sin(delta_theta+theta.p);
+            r++;
           }
-          right[r].x=xright[2];
-          right[r++].y=yright[2];
+          right[r].x=xr[2];
+          right[r].y=yr[2];
+          r++;
           break;
         }
         default:
           break;
       }
-    slope1=slope2;
-    inverse_slope1=inverse_slope2;
-    xoffset1=xoffset2;
-    xleft[0]=xleft[2];
-    xleft[1]=xleft[3];
-    yleft[0]=yleft[2];
-    yleft[1]=yleft[3];
-    xright[0]=xright[2];
-    xright[1]=xright[3];
-    yright[0]=yright[2];
-    yright[1]=yright[3];
-    dx1=dx2;
-    dy1=dy2;
+    slope.p=slope.q;
+    inverse_slope.p=inverse_slope.q;
+    xl[0]=xl[2];
+    xl[1]=xl[3];
+    yl[0]=yl[2];
+    yl[1]=yl[3];
+    xr[0]=xr[2];
+    xr[1]=xr[3];
+    yr[0]=yr[2];
+    yr[1]=yr[3];
+    dx.p=dx.q;
+    dy.p=dy.q;
     n=i;
   }
-  right[r].x=xright[1];
-  right[r++].y=yright[1];
-  left[l].x=xleft[1];
-  left[l++].y=yleft[1];
+  right[r].x=xr[1];
+  right[r].y=yr[1];
+  r++;
+  left[l].x=xl[1];
+  left[l].y=yl[1];
+  l++;
+  /*
+    Create stroked polygon.
+  */
   stroke=(PrimitiveInfo *)
-    AcquireMemory((l+r+2*(closed+1))*sizeof(PrimitiveInfo));
+    AcquireMemory((l+r+2*closed+2)*sizeof(PrimitiveInfo));
   if (stroke == (PrimitiveInfo *) NULL)
     MagickError(ResourceLimitWarning,"Unable to draw image",
       "Memory allocation failed");
   for (i=0; i < r; i++)
   {
-    stroke[i].point.x=right[i].x;
-    stroke[i].point.y=right[i].y;
-    stroke[i].point.z=stroke_polygon[0].point.z;
-    stroke[i].primitive=stroke_polygon[0].primitive;
+    stroke[i]=stroke_polygon[0];
+    stroke[i].point=right[i];
     stroke[i].coordinates=1;
-    stroke[i].method=stroke_polygon[0].method;
-    stroke[i].text=NULL;
   }
   if (closed)
     {
-      stroke[i].point.x=stroke[0].point.x;
-      stroke[i].point.y=stroke[0].point.y;
-      stroke[i].point.z=stroke_polygon[0].point.z;
-      stroke[i].primitive=stroke_polygon[0].primitive;
+      stroke[i]=stroke_polygon[0];
+      stroke[i].point=stroke[0].point;
       stroke[i].coordinates=1;
-      stroke[i].method=stroke_polygon[0].method;
-      stroke[i++].text=(char *) NULL;
+      i++;
     }
   for ( ; i < (r+l+closed); i++)
   {
-    stroke[i].point.x=left[l+r+closed-(i+1)].x;
-    stroke[i].point.y=left[l+r+closed-(i+1)].y;
-    stroke[i].point.z=stroke_polygon[0].point.z;
-    stroke[i].primitive=stroke_polygon[0].primitive;
+    stroke[i]=stroke_polygon[0];
+    stroke[i].point=left[l+r+closed-(i+1)];
     stroke[i].coordinates=1;
-    stroke[i].method=stroke_polygon[0].method;
-    stroke[i].text=(char *) NULL;
   }
-  LiberateMemory((void **) &left);
-  LiberateMemory((void **) &right);
   if (closed)
     {
-      stroke[i].point.x=stroke[r+closed].point.x;
-      stroke[i].point.y=stroke[r+closed].point.y;
-      stroke[i].point.z=stroke_polygon[0].point.z;
-      stroke[i].primitive=stroke_polygon[0].primitive;
+      stroke[i]=stroke_polygon[0];
+      stroke[i].point=stroke[r+closed].point;
       stroke[i].coordinates=1;
-      stroke[i].method=stroke_polygon[0].method;
-      stroke[i++].text=(char *) NULL;
+      i++;
     }
-  stroke[i].point.x=stroke[0].point.x;
-  stroke[i].point.y=stroke[0].point.y;
-  stroke[i].point.z=stroke_polygon[0].point.z;
-  stroke[i].primitive=stroke_polygon[0].primitive;
+  stroke[i]=stroke_polygon[0];
+  stroke[i].point=stroke[0].point;
   stroke[i].coordinates=1;
-  stroke[i].method=stroke_polygon[0].method;
-  stroke[i++].text=NULL;
-  stroke[0].coordinates=l+r+1+(closed*2);
-  stroke[i].primitive=UndefinedPrimitive;
+  stroke[0].coordinates=l+r+2*closed+1;
+  stroke[i+1].primitive=UndefinedPrimitive;
+  LiberateMemory((void **) &left);
+  LiberateMemory((void **) &right);
+  /*
+    Draw stroked polygon.
+  */
   path_info=ConvertPrimitiveToPath(stroke);
   if (path_info == (PathInfo *) NULL)
     return;
@@ -3764,7 +3648,7 @@ static void DrawStrokePolygon(const DrawInfo *draw_info,
   DestroyDrawInfo(clone_info);
   LiberateMemory((void **) &stroke);
   DestroyPolygonInfo(polygon_info);
-  if (!closed && (draw_info->linecap == RoundCap))
+  if ((draw_info->linecap == RoundCap) && !closed)
     {
       DrawRoundLinecap(draw_info,&stroke_polygon[0],image);
       DrawRoundLinecap(draw_info,&stroke_polygon[number_vertices-1],image);
