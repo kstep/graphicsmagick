@@ -198,8 +198,9 @@ static Image *ReadMPEGImage(const ImageInfo *image_info,
       if (i >= (long) (clone_info->subimage+clone_info->subrange-1))
         break;
   }
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
+  if (image != (Image *) NULL)
+     while (image->previous != (Image *) NULL)
+        image=image->previous;
   /*
     Free resources.
   */
