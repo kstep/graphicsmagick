@@ -1043,6 +1043,9 @@ namespace Magick
     
     void                 options ( Options * options_ );
     Options *            options ( void );
+
+    void                 id ( long id_ );
+    long                 id ( void ) const;
     
     MagickLib::Image *   _image;    // ImageMagick Image
     Options *            _options;  // User-specified options
@@ -1061,26 +1064,22 @@ namespace Magick
 // ImageRef
 //
 
-// Set image pointer
-inline void Magick::ImageRef::image ( MagickLib::Image * image_ )
-{
-  _image = image_;
-}
-// Get image pointer
+// Retrieve image from reference
 inline MagickLib::Image *& Magick::ImageRef::image ( void )
 {
   return _image;
 }
 
-// Set options pointer
-inline void  Magick::ImageRef::options ( Options * options_ )
-{
-  _options = options_;
-}
-// Get options pointer
+// Retrieve Options from reference
 inline Magick::Options * Magick::ImageRef::options ( void )
 {
   return _options;
+}
+
+// Retrieve registration id from reference
+inline long Magick::ImageRef::id ( void ) const
+{
+  return _id;
 }
 
 //

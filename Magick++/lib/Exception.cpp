@@ -154,23 +154,38 @@ Magick::ErrorCache::ErrorCache ( const std::string& what_ )
 }
 
 // Format and throw exception
-void Magick::throwExceptionExplicit( ExceptionType error_,
+void Magick::throwExceptionExplicit( ExceptionType severity_,
 				     const char* reason_,
 				     const char* description_)
 {
   // Just return if there is no reported error
-  if ( error_ == UndefinedException )
+  if ( severity_ == UndefinedException )
     return;
+
+  ExceptionInfo exception;
+
+  GetExceptionInfo( &exception );
+  ThrowException( &exception, severity_, reason_, description_ );
+  throwException( exception );
+}
+
+// Format and throw exception
+void Magick::throwException( ExceptionInfo &exception_ )
+{
+  // Just return if there is no reported error
+  if ( exception_.severity == UndefinedException )
+    return;
+
   // Format error message ImageMagick-style
   std::string message = SetClientName(0);
-  if ( reason_ != 0 )
+  if ( exception_.reason != 0 )
     {
       message += std::string(": ");
-      message += std::string(reason_);
+      message += std::string(exception_.reason);
     }
 
-  if ( description_ != 0 )
-    message += " (" + std::string(description_) + ")";
+  if ( exception_.description != 0 )
+    message += " (" + std::string(exception_.description) + ")";
 
 //   if ( error_ != OptionError && errno)
 //     {
@@ -178,7 +193,11 @@ void Magick::throwExceptionExplicit( ExceptionType error_,
 //       errno = 0;
 //     }
 
-  switch ( error_ )
+  
+  ExceptionType severity = exception_.severity;
+  DestroyExceptionInfo( &exception_ );
+
+  switch ( severity )
     {
       // Warnings
     case ResourceLimitWarning :
@@ -223,17 +242,5 @@ void Magick::throwExceptionExplicit( ExceptionType error_,
     default :
       throw ErrorUndefined( message );
     }
-}
 
-// Format and throw exception
-void Magick::throwException( const ExceptionInfo &exception_ )
-{
-
-  // Just return if there is no reported error
-  if ( exception_.severity == UndefinedException )
-    return;
-
-  throwExceptionExplicit( exception_.severity,
-			  exception_.reason,
-			  exception_.description );
 }

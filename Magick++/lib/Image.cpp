@@ -3190,36 +3190,29 @@ Magick::Image::Image ( MagickLib::Image* image_, Magick::Options* options_ )
 //
 MagickLib::Image * Magick::Image::replaceImage( MagickLib::Image* replacement_ )
 {
-  Lock( &_imgRef->_mutexLock );
-  if ( _imgRef->_refCount == 1 )
-    {
-      // We own the image, just replace it
-      if ( _imgRef->_image )
-        DestroyImageList( _imgRef->_image );
-      if( replacement_ )
-        _imgRef->image(replacement_);
-      else
-        {
-          // If replacement is null, substitute an uninitialized image
-          // so that Image is sane yet fails the isValid() test.
-          _imgRef->image(AllocateImage(_imgRef->_options->imageInfo()));
-//           cout << "Warning: image is invalid" << endl;
-        }
-    }
+  MagickLib::Image* image;
+  
+  if( replacement_ )
+    image = replacement_;
   else
-    {
-      // We don't own the image, dereference and replace with copy
-      --_imgRef->_refCount;
-      if( replacement_ )
-        _imgRef = new ImageRef( replacement_, _imgRef->_options );
-      else
-        {
-          // If replacement is null, substitute an uninitialized image
-          // so that Image is sane yet fails the isValid() test.
-          _imgRef = new ImageRef;
-//           cout << "Warning: image is invalid" << endl;
-        }
-    }
+    image = AllocateImage(constImageInfo());
+
+  {
+    Lock( &_imgRef->_mutexLock );
+
+    if ( _imgRef->_refCount == 1 )
+      {
+        // We own the image, just replace it, and de-register
+        _imgRef->id( -1 );
+        _imgRef->image(image);
+      }
+    else
+      {
+        // We don't own the image, dereference and replace with copy
+        --_imgRef->_refCount;
+        _imgRef = new ImageRef( image, constOptions() );
+      }
+  }
 
   return _imgRef->_image;
 }
@@ -3230,23 +3223,23 @@ MagickLib::Image * Magick::Image::replaceImage( MagickLib::Image* replacement_ )
 //
 void Magick::Image::modifyImage( void )
 {
-  // Nothing to do if we are sole owner of image
   {
     Lock( &_imgRef->_mutexLock );
     if ( _imgRef->_refCount == 1 )
-      return;
+      {
+        // De-register image and return
+        _imgRef->id( -1 );
+        return;
+      }
   }
 
-  MagickLib::Image* image = _imgRef->image();
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  MagickLib::Image* newImage =
-    CloneImage( image,
-                0, // columns
-                0, // rows
-                1, // orphan
-		&exceptionInfo);
-  replaceImage( newImage );
+  replaceImage( CloneImage( image(),
+                            0, // columns
+                            0, // rows
+                            1, // orphan
+                            &exceptionInfo) );
   throwException( exceptionInfo );
   return;
 }
@@ -3260,39 +3253,42 @@ void Magick::Image::throwImageException( void )
   if ( constImage()->exception.severity == UndefinedException )
     return;
 
-  // Save exception
-  const ExceptionInfo except = image()->exception;
-  // Reset original exception to defaults
+  // Save ImageMagick exception
+  ExceptionInfo exception;
+  ThrowException( &exception,
+                  image()->exception.severity,
+                  image()->exception.reason,
+                  image()->exception.description );
+
+  // Reset Image exception to defaults
+  DestroyExceptionInfo( &image()->exception );
   GetExceptionInfo( &image()->exception );
-  // Throw exception
-  throwException( except );
+
+  // Throw C++ exception
+  throwException( exception );
 }
 
 // Register image with image registry or obtain registration id
 long Magick::Image::registerId( void )
 {
   Lock( &_imgRef->_mutexLock );
-  if( _imgRef->_id < 0 )
+  if( _imgRef->id() < 0 )
     {
       ExceptionInfo exceptionInfo;
       GetExceptionInfo( &exceptionInfo );
-      _imgRef->_id = SetMagickRegistry(ImageRegistryType, _imgRef->_image,
-                                       sizeof(Image), &exceptionInfo);
-      if( _imgRef->_id < 0 )
+      _imgRef->id(SetMagickRegistry(ImageRegistryType, image(),
+                                    sizeof(Image), &exceptionInfo));
+      if( _imgRef->id() < 0 )
         throwException( exceptionInfo );
     }
-  return _imgRef->_id;
+  return _imgRef->id();
 }
 
 // Unregister image from image registry
-void Magick::Image::unregisterId( void)
+void Magick::Image::unregisterId( void )
 {
-  Lock( &_imgRef->_mutexLock );
-  if( _imgRef->_id > -1 )
-    {
-      DeleteMagickRegistry( _imgRef->_id );
-      _imgRef->_id = -1;
-    }
+  modifyImage();
+  _imgRef->id( -1 );
 }
 
 /////////////////////////////////////////////
@@ -3361,6 +3357,29 @@ Magick::ImageRef::~ImageRef( void )
   _options = 0;
 }
 
+// Assign image to reference
+void Magick::ImageRef::image ( MagickLib::Image * image_ )
+{
+  if(_image)
+    DestroyImageList( _image );
+  _image = image_;
+}
+
+// Assign options to reference
+void  Magick::ImageRef::options ( Magick::Options * options_ )
+{
+  delete _options;
+  _options = options_;
+}
+
+// Assign registration id to reference
+void Magick::ImageRef::id ( long id_ )
+{
+  if( _id > -1 )
+    DeleteMagickRegistry( _id );
+  _id = id_;
+}
+
 //
 // Cleanup class to ensure that ImageMagick singletons are destroyed
 // so as to avoid any resemblence to a memory leak (which seems to
@@ -3372,17 +3391,21 @@ namespace Magick
   class MagickCleanUp
   {
   public:
-//     MagickCleanUp( void )
-//       {
-//         InitializeMagick(NULL);
-//       }
-    ~MagickCleanUp( void )
-      {
-        DestroyMagick();
-      }
+    MagickCleanUp( void );
+    ~MagickCleanUp( void );
   };
 
   // The destructor for this object is invoked when the destructors for
   // static objects in this translation unit are invoked.
   static MagickCleanUp magickCleanUpGuard;
+}
+
+Magick::MagickCleanUp::MagickCleanUp ( void )
+{
+  // InitializeMagick(NULL);
+}
+
+Magick::MagickCleanUp::~MagickCleanUp ( void )
+{
+  // DestroyMagick();
 }

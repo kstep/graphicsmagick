@@ -1,3 +1,15 @@
+2002-01-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (throwImageException): Throwing exceptions was
+ 	leaking memory.
+
+	* lib/Exception.cpp (throwException): Throwing exceptions was
+ 	leaking memory.
+
+	* lib/Image.cpp (replaceImage): Updated to properly handle
+ 	registration ids.
+	(modifyImage): Updated to properly handle registration ids.
+
 2002-01-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Drawable.cpp (Magick::DrawableGravity::print):

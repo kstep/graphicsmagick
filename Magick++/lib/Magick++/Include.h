@@ -374,6 +374,7 @@ namespace Magick
   using MagickLib::DeleteMagickRegistry;
   using MagickLib::DespeckleImage;
   using MagickLib::DestroyDrawInfo;
+  using MagickLib::DestroyExceptionInfo;
   using MagickLib::DestroyImage;
   using MagickLib::DestroyImageInfo;
   using MagickLib::DestroyImageList;
@@ -507,6 +508,7 @@ namespace Magick
   using MagickLib::SyncImagePixels;
   using MagickLib::TextureImage;
   using MagickLib::ThresholdImage;
+  using MagickLib::ThrowException;
   using MagickLib::TransformHSL;
   using MagickLib::TransformImage;
   using MagickLib::TransformRGBImage;

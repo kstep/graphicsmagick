@@ -435,6 +435,6 @@ int main( int /*argc*/, char ** argv)
       cout << "Caught exception: " << error_.what() << endl;
       return 1;
     }
-  
+
   return 0;
 }

@@ -164,12 +164,12 @@ namespace Magick
     VPath ( void )
       : dp(0)
       { }
-
+    
     // Construct from VPathBase
     VPath ( const VPathBase& original_ )
       : dp(original_.copy())
       { }
-
+    
     // Destructor
     virtual ~VPath ( void )
       {
@@ -179,21 +179,22 @@ namespace Magick
     // Copy constructor
     VPath ( const VPath& original_ )
       : dp(original_.dp? original_.dp->copy(): 0)
-      { }
+      {
+      }
+    
+    // Assignment operator
+    VPath& operator= (const VPath& original_ )
+      {
+        if (this != &original_)
+          {
+            delete dp;
+            dp = (original_.dp ? original_.dp->copy() : 0);
+          }
+        return *this;
+      }
 
-// Assignment operator
-VPath& operator= (const VPath& original_ )
-{
-  if (this != &original_)
-    {
-      delete dp;
-      dp = (original_.dp ? original_.dp->copy() : 0);
-    }
-  return *this;
-}
-
-// private:  FIXME
-VPathBase* dp;
+    // private:  FIXME
+    VPathBase* dp;
 };
 
 //
@@ -230,63 +231,63 @@ public:
     {
       _sx = sx_;
     }
-double sx( void ) const
-{
-  return _sx;
-}
+  double sx( void ) const
+    {
+      return _sx;
+    }
 
-void sy( double sy_ )
-{
-  _sy = sy_;
-}
-double sy( void ) const
-{
-  return _sy;
-}
+  void sy( double sy_ )
+    {
+      _sy = sy_;
+    }
+  double sy( void ) const
+    {
+      return _sy;
+    }
 
-void rx( double rx_ )
-{
-  _rx = rx_;
-}
-double rx( void ) const
-{
-  return _rx;
-}
-    
-void ry( double ry_ )
-{
-  _ry = ry_;
-}
-double ry( void ) const
-{
-  return _ry;
-}
-
-void tx( double tx_ )
-{
-  _tx = tx_;
-}
-double tx( void ) const
-{
-  return _tx;
-}
-
-void ty( double ty_ )
-{
-  _ty = ty_;
-}
-double ty( void ) const
-{
-  return _ty;
-}
-
+  void rx( double rx_ )
+    {
+      _rx = rx_;
+    }
+  double rx( void ) const
+    {
+      return _rx;
+    }
+  
+  void ry( double ry_ )
+    {
+      _ry = ry_;
+    }
+  double ry( void ) const
+    {
+      return _ry;
+    }
+  
+  void tx( double tx_ )
+    {
+      _tx = tx_;
+    }
+  double tx( void ) const
+    {
+      return _tx;
+    }
+  
+  void ty( double ty_ )
+    {
+      _ty = ty_;
+    }
+  double ty( void ) const
+    {
+      return _ty;
+    }
+  
 private:
-double _sx;
-double _sy;
-double _rx;
-double _ry;
-double _tx;
-double _ty;
+  double _sx;
+  double _sy;
+  double _rx;
+  double _ry;
+  double _tx;
+  double _ty;
 };
 
 // Angle (drawing angle)
@@ -311,13 +312,13 @@ public:
     {
       _angle = angle_;
     }
-double angle( void ) const
-{
-  return _angle;
-}
-
+  double angle( void ) const
+    {
+      return _angle;
+    }
+  
 private:
-double _angle;
+  double _angle;
 };
 
 // Arc
@@ -342,69 +343,69 @@ public:
   /*virtual*/ DrawableBase* copy() const
     {
       return new DrawableArc(*this);
-}
+    }
 
   void startX( double startX_ )
     {
       _startX = startX_;
     }
-double startX( void ) const
-{
-  return _startX;
-}
+  double startX( void ) const
+    {
+      return _startX;
+    }
+  
+  void startY( double startY_ )
+    {
+      _startY = startY_;
+    }
+  double startY( void ) const
+    {
+      return _startY;
+    }
+  
+  void endX( double endX_ )
+    {
+      _endX = endX_;
+    }
+  double endX( void ) const
+    {
+      return _endX;
+    }
 
-void startY( double startY_ )
-{
-  _startY = startY_;
-}
-double startY( void ) const
-{
-  return _startY;
-}
+  void endY( double endY_ )
+    {
+      _endY = endY_;
+    }
+  double endY( void ) const
+    {
+      return _endY;
+    }
+  
+  void startDegrees( double startDegrees_ )
+    {
+      _startDegrees = startDegrees_;
+    }
+  double startDegrees( void ) const
+    {
+      return _startDegrees;
+    }
 
-void endX( double endX_ )
-{
-  _endX = endX_;
-}
-double endX( void ) const
-{
-  return _endX;
-}
-
-void endY( double endY_ )
-{
-  _endY = endY_;
-}
-double endY( void ) const
-{
-  return _endY;
-}
-
-void startDegrees( double startDegrees_ )
-{
-  _startDegrees = startDegrees_;
-}
-double startDegrees( void ) const
-{
-  return _startDegrees;
-}
-
-void endDegrees( double endDegrees_ )
-{
-  _endDegrees = endDegrees_;
-}
-double endDegrees( void ) const
-{
-  return _endDegrees;
-}
-
+  void endDegrees( double endDegrees_ )
+    {
+      _endDegrees = endDegrees_;
+    }
+  double endDegrees( void ) const
+    {
+      return _endDegrees;
+    }
+  
 private:
-double _startX;
-double _startY;
-double _endX;
-double _endY;
-double _startDegrees;
-double _endDegrees;
+  double _startX;
+  double _startY;
+  double _endX;
+  double _endY;
+  double _startDegrees;
+  double _endDegrees;
 };
 
 // Bezier curve (Coordinate list must contain at least three members)
@@ -413,7 +414,8 @@ class DrawableBezier : public DrawableBase
 public:
   DrawableBezier ( const std::list<Magick::Coordinate> &coordinates_ )
     : _coordinates(coordinates_)
-    { }
+    {
+    }
 
   // Support a polymorphic print-to-stream operator
   /*virtual*/ void print (std::ostream& stream_) const;
@@ -422,76 +424,77 @@ public:
   /*virtual*/ DrawableBase* copy() const
     {
       return new DrawableBezier(*this);
-}
-
+    }
+  
 private:
   std::list<Magick::Coordinate> _coordinates;
 };
 
-// Circle
-class DrawableCircle : public DrawableBase
-{
-public:
-  DrawableCircle ( double originX_, double originY_,
-                   double perimX_, double perimY_ )
-    : _originX(originX_),
-      _originY(originY_),
-      _perimX(perimX_),
-      _perimY(perimY_)
-    { }
+  // Circle
+  class DrawableCircle : public DrawableBase
+  {
+  public:
+    DrawableCircle ( double originX_, double originY_,
+                     double perimX_, double perimY_ )
+      : _originX(originX_),
+        _originY(originY_),
+        _perimX(perimX_),
+        _perimY(perimY_)
+      {
+      }
+    
+    // Support a polymorphic print-to-stream operator
+    /*virtual*/ void print (std::ostream& stream_) const;
+    
+    // Return polymorphic copy of object
+    /*virtual*/
+    DrawableBase* copy() const
+      {
+        return new DrawableCircle(*this);
+      }
 
-  // Support a polymorphic print-to-stream operator
-  /*virtual*/ void print (std::ostream& stream_) const;
+    void originX( double originX_ )
+      {
+        _originX = originX_;
+      }
+    double originX( void ) const
+      {
+        return _originX;
+      }
 
-  // Return polymorphic copy of object
-  /*virtual*/
-  DrawableBase* copy() const
-    {
-      return new DrawableCircle(*this);
-    }
+    void originY( double originY_ )
+      {
+        _originY = originY_;
+      }
+    double originY( void ) const
+      {
+        return _originY;
+      }
 
-  void originX( double originX_ )
-    {
-      _originX = originX_;
-    }
-  double originX( void ) const
-    {
-      return _originX;
-    }
+    void perimX( double perimX_ )
+      {
+        _perimX = perimX_;
+      }
+    double perimX( void ) const
+      {
+        return _perimX;
+      }
 
-  void originY( double originY_ )
-    {
-      _originY = originY_;
-    }
-  double originY( void ) const
-    {
-      return _originY;
-    }
+    void perimY( double perimY_ )
+      {
+        _perimY = perimY_;
+      }
+    double perimY( void ) const
+      {
+        return _perimY;
+      }
 
-  void perimX( double perimX_ )
-    {
-      _perimX = perimX_;
-    }
-  double perimX( void ) const
-    {
-      return _perimX;
-    }
-
-  void perimY( double perimY_ )
-    {
-      _perimY = perimY_;
-    }
-  double perimY( void ) const
-    {
-      return _perimY;
-    }
-
-private:
-  double _originX;
-  double _originY;
-  double _perimX;
-  double _perimY;
-};
+  private:
+    double _originX;
+    double _originY;
+    double _perimX;
+    double _perimY;
+  };
 
 // Colorize at point using PaintMethod
 class DrawableColor : public DrawableBase
@@ -846,7 +849,7 @@ public:
   DrawableBase* copy() const
     {
       return new DrawableFillOpacity(*this);
-    }
+}
 
   void opacity( double opacity_ )
     {
@@ -1154,7 +1157,7 @@ public:
   DrawableBase* copy() const
     {
       return new DrawablePolygon(*this);
-    }
+}
 
 private:
   std::list<Magick::Coordinate> _coordinates;
@@ -1426,7 +1429,7 @@ public:
       return _hight;
     }
 
-  void cornerWidth( double cornerWidth_ )
+void cornerWidth( double cornerWidth_ )
     {
       _cornerWidth = cornerWidth_;
     }
@@ -2013,7 +2016,7 @@ public:
       return _largeArcFlag;
     }
 
-  void sweepFlag( bool sweepFlag_ )
+void sweepFlag( bool sweepFlag_ )
     {
       _sweepFlag = sweepFlag_;
     }
@@ -2044,8 +2047,8 @@ private:
   double	_radiusX;	// X radius
   double	_radiusY;	// Y radius
   double	_xAxisRotation;	// Rotation relative to X axis
-  bool	_largeArcFlag;	// Draw longer of the two matching arcs
-  bool	_sweepFlag;	// Draw arc matching clock-wise rotation
+  bool          _largeArcFlag;	// Draw longer of the two matching arcs
+  bool          _sweepFlag;	// Draw arc matching clock-wise rotation
   double	_x;		// End-point X
   double	_y;		// End-point Y
 };
@@ -2267,7 +2270,7 @@ public:
     }
 
 private:
-  std::list<Magick::Coordinate> _coordinates;
+    std::list<Magick::Coordinate> _coordinates;
 };
 class PathSmoothCurvetoRel : public VPathBase
 {
@@ -2397,7 +2400,7 @@ public:
     }
 
 private:
-  std::list<Magick::PathQuadraticCurvetoArgs> _args;
+    std::list<Magick::PathQuadraticCurvetoArgs> _args;
 };
 class PathSmoothQuadraticCurvetoAbs : public VPathBase
 {
@@ -2421,7 +2424,7 @@ public:
     }
 
 private:
-  std::list<Magick::Coordinate> _coordinates;
+    std::list<Magick::Coordinate> _coordinates;
 };
 class PathSmoothQuadraticCurvetoRel : public VPathBase
 {
@@ -2521,7 +2524,7 @@ public:
     }
 
 private:
-  double _x;
+    double _x;
 };
 class PathLinetoHorizontalRel : public VPathBase
 {
