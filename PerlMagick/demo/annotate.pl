@@ -21,8 +21,7 @@ for ($angle=0; $angle < 360; $angle+=30)
   $label->Draw(primitive=>'rectangle',points=>"100,100 500,500",fill=>'none',
     stroke=>'#600');
   $label->Annotate(text=>"North West",gravity=>"NorthWest",x=>$x,y=>$y,
-box=>'yellow',
-    rotate=>$angle);
+    undercolor=>'yellow',rotate=>$angle);
   $label->Annotate(text=>"North",gravity=>"North",y=>$y,rotate=>$angle);
   $label->Annotate(text=>"North East",gravity=>"NorthEast",x=>$x,y=>$y,
     rotate=>$angle);
