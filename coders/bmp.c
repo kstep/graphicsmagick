@@ -205,15 +205,23 @@ static unsigned int DecodeImage(Image *image,const unsigned long compression,
           Encoded mode.
         */
         byte=ReadBlobByte(image);
-        for (i=0; i < count; i++)
-        {
-          if (compression == BI_RLE8)
-            *q++=(unsigned char) byte;
-          else
-            *q++=(unsigned char)
-              ((i & 0x01) ? (byte & 0x0f) : ((byte >> 4) & 0x0f));
-          x++;
-        }
+        if (compression == BI_RLE8)
+          {
+            for ( i=count; i != 0; --i )
+              {
+                *q++=(unsigned char) byte;
+                x++;
+              }
+          }
+        else
+          {
+            for ( i=count; i != 0; --i )
+              {
+                *q++=(unsigned char)
+                  ((i & 0x01) ? (byte & 0x0f) : ((byte >> 4) & 0x0f));
+                x++;
+              }
+          }
       }
     else
       {
@@ -1058,10 +1066,16 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
-          for (x=0; x < (long) image->columns; x++)
+          for (x = (long)image->columns; x != 0; --x)
           {
-            index=ConstrainColormapIndex(image,*p);
-            indexes[x]=index;
+            index=(IndexPacket)*p;
+            if (index >= image->colors)
+              {
+                index=0;
+                ThrowException(&image->exception,CorruptImageError,
+                               "InvalidColormapIndex",image->filename);
+              }
+            *indexes++=index;
             *q=image->colormap[index];
             p++;
             q++;

@@ -1,3 +1,8 @@
+2002-12-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/bmp.c: Sped up RLE expansion and sped up byte-size
+	PseudoColor scanline conversion.  Results in 50% speed-up
+	when running on SPARC.
+
 2002-12-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* utilities: Removed legacy ImageMagick utilities which
 	have been rolled up into gm.c/command.c.
