@@ -37,7 +37,7 @@ int main( int /*argc*/, char ** /*argv*/)
     poly.push_back( Coordinate(30,290) );
     drawable.fillPolygon( poly );
 
-    Image texture( "tile.gif" );
+    Image texture( "tile.miff" );
     image.penTexture( texture );
     image.draw( drawable );
     texture.isValid( false );
@@ -97,8 +97,8 @@ int main( int /*argc*/, char ** /*argv*/)
     // Write image.
     //
 
-    cout << "Writing image \"shapes.gif\" ..." << endl;
-    image.write( "shapes.gif" );
+    cout << "Writing image \"shapes.miff\" ..." << endl;
+    image.write( "shapes.miff" );
 
     // cout << "Display image..." << endl;
     // image.display( );

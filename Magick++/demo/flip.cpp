@@ -25,7 +25,7 @@ int main( int /*argc*/, char ** /*argv*/)
 
     // Read images into STL list
     list<Image> imageList;
-    readImages( &imageList, "smile_anim.gif" );
+    readImages( &imageList, "smile_anim.miff" );
 
     // Flip images
     for_each( imageList.begin(), imageList.end(), flipImage() );
@@ -36,8 +36,8 @@ int main( int /*argc*/, char ** /*argv*/)
     morphImages( &morphed, imageList.begin(), imageList.end(), 3 );
 
     // Write out images
-    cout << "Writing image \"flip_out.gif\" ..." << endl;
-    writeImages( morphed.begin(), morphed.end(), "flip_out.gif" );
+    cout << "Writing image \"flip_out.miff\" ..." << endl;
+    writeImages( morphed.begin(), morphed.end(), "flip_out.miff" );
 
   }
   catch( Exception error_ )

@@ -31,12 +31,12 @@ int main( int /*argc*/, char ** /*argv*/)
     null.size( "70x70" );
     null.read( "null:black" );
 
-    Image model( "model.gif" );
+    Image model( "model.miff" );
     model.label( "Magick++" );
     model.borderColor( "black" );
     model.backgroundColor( "black" );
 
-    Image smile( "smile.gif" );
+    Image smile( "smile.miff" );
     smile.label( "Smile" );
     smile.borderColor( "black" );
 
@@ -45,10 +45,16 @@ int main( int /*argc*/, char ** /*argv*/)
     //
     cout << "Transform image..." << endl;
 
-    // Construct list containing five copies of null image
+    // Construct initial list containing five copies of null image
     list<Image> images( 5, null );
 
     Image example = model;
+
+    // Each of the following follow the pattern
+    //  1. obtain reference to (own copy of) image
+    //  2. apply label to image
+    //  3. apply operation to image
+    //  4. append image to container
 
     cout << "  annotate ..." << endl;
     example.label( "Annotate" );
@@ -280,19 +286,6 @@ int main( int /*argc*/, char ** /*argv*/)
     example.zoom( "50%" );
     images.push_back( example );
 
-//     {
-//       list<Image> temp = images;
-//       animateImages( temp.begin(), temp.end() );
-//     }
-//     {
-//       list<Image> temp = images;
-//       displayImages( temp.begin(), temp.end() );
-//     }
-//     {
-//       list<Image> temp = images;
-//       writeImages( temp.begin(), temp.end(), "demo-anim.gif", true );
-//     }
-
     //
     // Create title.
     //
@@ -351,10 +344,11 @@ int main( int /*argc*/, char ** /*argv*/)
 		    "Magick++ and ImageMagick libraries.",
 		    "+20+175" );
 
-    cout << "Writing image \"demo.jpg\" ..." << endl;
+    cout << "Writing image \"demo.miff\" ..." << endl;
     final.matte( false );
-    final.write( "demo.jpg" );
+    final.write( "demo.miff" );
 
+    // Uncomment following lines to display image to screen
 //    cout <<  "Display image..." << endl;
 //    final.display();
 

@@ -77,7 +77,8 @@ int main( int /*argc*/, char ** /*argv*/)
     button.quantize();
 
     // Save to file
-    button.write("GIF:button.gif");
+    cout << "Writing to button.miff" << endl;
+    button.write("button.miff");
 
     // Display on screen
     // button.display();

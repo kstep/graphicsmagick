@@ -101,7 +101,7 @@ demo_SOURCES = demo.cpp
 flip_SOURCES = flip.cpp
 shapes_SOURCES = shapes.cpp
 
-EXTRA_DIST = Generic.ttf model.gif smile.gif smile_anim.gif tile.gif 	button.dsp demo.dsp flip.dsp shapes.dsp
+EXTRA_DIST = Generic.ttf model.miff smile.miff smile_anim.miff tile.miff 	button.dsp demo.dsp flip.dsp shapes.dsp
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_CLEAN_FILES = 
@@ -371,7 +371,7 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 check:
 	./button
-	-./demo
+	./demo
 	./flip
 	./shapes
 
