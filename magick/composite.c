@@ -414,11 +414,11 @@ MagickExport unsigned int CompositeImage(Image *image,
             pixel.opacity;
           destination.green=(Quantum)
             (pixel.green > MaxRGB ? MaxRGB : pixel.green+0.5);
-          pixel.green=((double) (MaxRGB-destination.opacity)*source.green/
-            MaxRGB+(MaxRGB-source.opacity)*destination.green/MaxRGB)/
+          pixel.blue=((double) (MaxRGB-destination.opacity)*source.blue/
+            MaxRGB+(MaxRGB-source.opacity)*destination.blue/MaxRGB)/
             pixel.opacity;
-          destination.green=(Quantum)
-            (pixel.green > MaxRGB ? MaxRGB : pixel.green+0.5);
+          destination.blue=(Quantum)
+            (pixel.blue > MaxRGB ? MaxRGB : pixel.blue+0.5);
           pixel.opacity=((double) (MaxRGB-destination.opacity)*source.opacity/
             MaxRGB+(MaxRGB-source.opacity)*destination.opacity/MaxRGB)/
             pixel.opacity;
