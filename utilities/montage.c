@@ -325,6 +325,7 @@ int main(int argc,char **argv)
   SetImageInfo(image_info,True);
   montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
   GetQuantizeInfo(&quantize_info);
+  quantize_info.number_colors=0;
   scene=0;
   transparent_color=(char *) NULL;
   /*
