@@ -154,7 +154,6 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   } FITSInfo;
 
   char
-    long_quantum[8],
     keyword[MaxTextExtent],
     value[MaxTextExtent];
 
@@ -201,7 +200,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     count;
 
   unsigned char
-    *fits_pixels;
+    *fits_pixels,
+    long_quantum[8];
 
   unsigned int
     status,

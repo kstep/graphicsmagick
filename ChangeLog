@@ -1,5 +1,5 @@
 2002-03-25  Leonard Rosenthol  <leonardr@lazerware.com>
-  * Fixed a bunch of bugs related to layered CMYK PSD images.
+  * Fixed bugs related to layered CMYK PSD images.
 
 2002-03-13  Leonard Rosenthol  <leonardr@lazerware.com>
   * PSD coder now saves layer information (name, offset & opacity)
