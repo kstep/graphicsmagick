@@ -21,7 +21,7 @@ class myBlob : public Blob
 public:
   // Construct from open binary stream
   myBlob( std::ifstream &stream_ )
-    : Blob::Blob()
+    : Blob()
     {
       unsigned char* blobData = new unsigned char[100000];
       stream_.read( (char*)blobData, 100000 );
@@ -32,7 +32,7 @@ public:
 };
 
 
-int main( int /*argc*/, char **/*argv*/)
+int main( int /*argc*/, char ** /*argv*/)
 {
   int failures=0;
 
