@@ -22,7 +22,8 @@ typedef struct _DelegateInfo
     mode;
 
   unsigned int
-    wait;
+    restrict,
+    spawn;
 
   struct _DelegateInfo
     *previous,

@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <delegatemap>
-  <delegate decode="browse" restrict="True"" spawn="True" command='@BrowseDelegate@ http://www.imagemagick.org/ImageMagick/'  />
-  <delegate decode="bzip" restrict="True"" restrict="True"" command='|@BZIPDelegate@ -cd "%i"' />
+  <delegate decode="browse" restrict="True" spawn="True" command='@BrowseDelegate@ http://www.imagemagick.org/ImageMagick/'  />
+  <delegate decode="bzip" restrict="True" command='|@BZIPDelegate@ -cd "%i"' />
   <delegate decode="cgm" command='@CGMDecodeDelegate@ -d ps "%i" "%o" %u\n@ConvertDelegate@ -concatenate "%o"*.ps "%o"' />
-  <delegate decode="compress" restrict="True"" command='|@LZWDecodeDelegate@ -c "%i"' />
+  <delegate decode="compress" restrict="True" command='|@LZWDecodeDelegate@ -c "%i"' />
   <delegate decode="dot" command='@DOTDecodeDelegate@ -Tps "%i" -o "%o"' />
   <delegate decode="dvi" command='@DVIDecodeDelegate@ -q -o "%o" "%i"' />
   <delegate decode="edit" command='@EditorDelegate@ -title "Edit Image Comment" -e vi "%o"' />
@@ -42,9 +42,9 @@
   <delegate decode="yuv" encode="m2v" mode="encode" command='@MPEGEncodeDelegate@ %u "%o"\n@ConvertDelegate@ -concatenate "%i*.yuv" %u' />
   <delegate decode="yuv" encode="mpeg" mode="encode" command='@MPEGEncodeDelegate@ %u "%o"\n@ConvertDelegate@ -concatenate "%i*.yuv" %u' />
   <delegate decode="yuv" encode="mpg" mode="encode" command='@MPEGEncodeDelegate@ %u "%o"\n@ConvertDelegate@ -concatenate "%i*.yuv" %u' />
-  <delegate decode="zip" restrict="True"" command='|@ZipDelegate@ -cdfq "%i"' />
-  <delegate encode="bzip" restrict="True"" restrict="True"" command='|@BZIPDelegate@ -f > "%o"' />
-  <delegate encode="compress" restrict="True"" command='|@LZWEncodeDelegate@ -c > "%o"' />
-  <delegate encode="show" restrict="True"" spawn="True" command='@ShowImageDelegate@ -immutable -window_group %g -title "%l of %f" "tmp:%o"' />
-  <delegate encode="zip" restrict="True"" command='|@ZipDelegate@ -cf > "%o"' />
+  <delegate decode="zip" restrict="True" command='|@ZipDelegate@ -cdfq "%i"' />
+  <delegate encode="bzip" restrict="True" command='|@BZIPDelegate@ -f > "%o"' />
+  <delegate encode="compress" restrict="True" command='|@LZWEncodeDelegate@ -c > "%o"' />
+  <delegate encode="show" restrict="True" spawn="True" command='@ShowImageDelegate@ -immutable -window_group %g -title "%l of %f" "tmp:%o"' />
+  <delegate encode="zip" restrict="True" command='|@ZipDelegate@ -cf > "%o"' />
 </delegatemap>
