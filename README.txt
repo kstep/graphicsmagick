@@ -593,7 +593,7 @@ MAGICK DELEGATES
       use LZW compression, support is available via a seperate
       LZW compression kit (a patch) at the sites listed above.
 
-    o ImageMagick requires libwmf 0.2.2 (a component of wvWare) available
+    o ImageMagick requires libwmf 0.2.2 (or CVS libwmf) available
       from
 
           http://sourceforge.net/projects/wvware/
@@ -626,8 +626,17 @@ MAGICK DELEGATES
 
         http://www.microsoft.com/typography/fontpack/default.htm
 
-      The libwmf-based WMF renderer is not yet capable of using fonts
-      other than Ghostscript fonts. This should be resolved soon.
+      The libwmf-based WMF renderer is not capable of using Windows
+      fonts with libwmf 0.2.2.  Windows fonts are fully supported
+      when the CVS (development) version of libwmf is used.
+
+    o ImageMagick requires the FlashPIX library version 1.2.0 from
+      the Digital Imaging Group in order to support the FlashPIX
+      format. The FlashPIX library may be obtained from ImageMagick
+      anonymous CVS by checking out the 'fpx' module, or retrieving
+      the file libfpx-1.2.0.4.tar.gz from the ftp directory
+
+        ftp://ftp.imagemagick.org/pub/ImageMagick/delegates/.
 
     o ImageMagick requires an X server for display and animate to work
       properly.  There is a nearly free X server available for Windows
