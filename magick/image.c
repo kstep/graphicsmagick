@@ -67,6 +67,7 @@ const char
   *AppendBinaryType = "ab",
   *BackgroundColor = "#dfdfdf",  /* gray */
   *BorderColor = "#dfdfdf",  /* gray */
+  *DefaultPointSize = "12",
   *DefaultTileFrame = "15x15+3+3",
   *DefaultTileGeometry = "120x120+4+3>",
   *DefaultTileLabel = "%f\n%wx%h\n%b",
@@ -694,7 +695,8 @@ MagickExport Image *AverageImages(Image *image,ExceptionInfo *exception)
   /*
     Allocate sum accumulation buffer.
   */
-  sum=(SumPacket *) AcquireMemory(image->columns*image->rows*sizeof(SumPacket));
+  sum=(SumPacket *)
+    AcquireMemory(image->columns*image->rows*sizeof(SumPacket));
   if (sum == (SumPacket *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to average image sequence",
       "Memory allocation failed");
@@ -777,8 +779,9 @@ MagickExport Image *AverageImages(Image *image,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CloneImage clones an image.  If the specified columns and rows is
-%  0, an exact copy of the image is returned, otherwise the pixel data is
+%  Method CloneImage returns a copy of all fields of the input image.  The
+%  image pixels and indexes are copied only if the columns and rows of the
+%  cloned image are the same as the original otherwise the pixel data is
 %  undefined and must be initialized with SetImagePixels() and SyncImagePixels()
 %  methods.
 %
@@ -906,7 +909,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
     }
   GetBlobInfo(&clone_image->blob);
   clone_image->cache=(void *) NULL;
-  if ((columns != 0) || (rows != 0))
+  if ((image->columns != columns) || (image->rows != rows))
     {
       clone_image->columns=columns;
       clone_image->rows=rows;
@@ -952,8 +955,11 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
     }
   clone_image->attributes=(ImageAttribute *) NULL;
   attribute=GetImageAttribute(image,(char *) NULL);
-  for ( ; attribute != (ImageAttribute *) NULL; attribute=attribute->next)
+  while (attribute != (ImageAttribute *) NULL)
+  {
     (void) SetImageAttribute(clone_image,attribute->key,attribute->value);
+    attribute=attribute->next;
+  }
   GetExceptionInfo(&clone_image->exception);
   if (clone_image->orphan || orphan)
     {
@@ -1083,19 +1089,12 @@ MagickExport unsigned int CompositeImage(Image *image,
 {
   double
     alpha,
-    amount,
     blue,
-    brightness,
     green,
-    hue,
     midpoint,
     opacity,
-    percent_brightness,
-    percent_saturation,
     red,
-    saturation,
-    shade,
-    threshold;
+    shade;
 
   int
     y;
@@ -1114,6 +1113,15 @@ MagickExport unsigned int CompositeImage(Image *image,
     *p,
     *q;
 
+  double
+    amount,
+    saturation_scale,
+    brightness_scale,
+    brightness,
+    hue,
+    saturation,
+    threshold;
+
   /*
     Prepare composite image.
   */
@@ -1121,6 +1129,11 @@ MagickExport unsigned int CompositeImage(Image *image,
   assert(image->signature == MagickSignature);
   assert(composite_image != (Image *) NULL);
   assert(composite_image->signature == MagickSignature);
+  alpha=1.0/MaxRGB;
+  red=0.0;
+  green=0.0;
+  blue=0.0;
+  midpoint=0x80;
   switch (compose)
   {
     case XorCompositeOp:
@@ -1163,7 +1176,8 @@ MagickExport unsigned int CompositeImage(Image *image,
       /*
         Allocate the displace image.
       */
-      displace_image=CloneImage(composite_image,0,0,True,&image->exception);
+      displace_image=CloneImage(composite_image,composite_image->columns,
+        composite_image->rows,True,&image->exception);
       if (displace_image == (Image *) NULL)
         return(False);
       horizontal_scale=20.0;
@@ -1226,8 +1240,8 @@ MagickExport unsigned int CompositeImage(Image *image,
       image->storage_class=DirectClass;
       composite_image->storage_class=DirectClass;
       midpoint=0x80;
-      percent_saturation=50.0;
-      percent_brightness=50.0;
+      saturation_scale=50.0;
+      brightness_scale=50.0;
       if (composite_image->geometry != (char *) NULL)
         {
           int
@@ -1237,12 +1251,12 @@ MagickExport unsigned int CompositeImage(Image *image,
             Determine the brightness and saturation scale.
           */
           count=sscanf(composite_image->geometry,"%lfx%lf\n",
-            &percent_brightness,&percent_saturation);
+            &brightness_scale,&saturation_scale);
           if (count == 1)
-            percent_saturation=percent_brightness;
+            saturation_scale=brightness_scale;
         }
-      percent_brightness/=100.0;
-      percent_saturation/=100.0;
+      brightness_scale/=100.0;
+      saturation_scale/=100.0;
       break;
     }
     case ThresholdCompositeOp:
@@ -1252,8 +1266,6 @@ MagickExport unsigned int CompositeImage(Image *image,
       */
       amount=0.5;
       threshold=0.05;
-      image->storage_class=DirectClass;
-      composite_image->storage_class=DirectClass;
       if (composite_image->geometry != (char *) NULL)
         (void) sscanf(composite_image->geometry,"%lfx%lf\n",
           &amount,&threshold);
@@ -1296,30 +1308,31 @@ MagickExport unsigned int CompositeImage(Image *image,
         MatteImage(image,OpaqueOpacity);
       if (!composite_image->matte)
         {
-          unsigned int
-            monochrome;
-
-          monochrome=IsMonochromeImage(composite_image);
-          red=composite_image->background_color.red;
-          green=composite_image->background_color.green;
-          blue=composite_image->background_color.blue;
+          (void) IsMonochromeImage(composite_image);
           for (y=0; y < (int) composite_image->rows; y++)
           {
-            q=GetImagePixels(composite_image,0,y,composite_image->columns,1);
-            if (q == (PixelPacket *) NULL)
+            p=GetImagePixels(composite_image,0,y,composite_image->columns,1);
+            if (p == (PixelPacket *) NULL)
               break;
-            if ((y == 0) && !monochrome)
+            if (y == 0)
               {
-                red=q->red;
-                green=q->green;
-                blue=q->blue;
+                red=p->red;
+                green=p->green;
+                blue=p->blue;
+                if (IsMonochromeImage(composite_image))
+                  {
+                    red=composite_image->background_color.red;
+                    green=composite_image->background_color.green;
+                    blue=composite_image->background_color.blue;
+                  }
               }
             for (x=0; x < (int) composite_image->columns; x++)
             {
-              q->opacity=OpaqueOpacity;
-              if ((q->red == red) && (q->green == green) && (q->blue == blue))
-                q->opacity=TransparentOpacity;
-              q++;
+              p->opacity=OpaqueOpacity;
+              if ((p->red == red) && (p->green == green) &&
+                  (p->blue == blue))
+                p->opacity=TransparentOpacity;
+              p++;
             }
             if (!SyncImagePixels(composite_image))
               break;
@@ -1333,7 +1346,6 @@ MagickExport unsigned int CompositeImage(Image *image,
   /*
     Composite image.
   */
-  alpha=1.0/MaxRGB;
   for (y=0; y < image->rows; y++)
   {
     if (y < y_offset)
@@ -1354,12 +1366,9 @@ MagickExport unsigned int CompositeImage(Image *image,
       if ((x-x_offset) >= composite_image->columns)
         break;
       p=GetImagePixels(composite_image,x-x_offset,y-y_offset,1,1);
-      if (p == (PixelPacket *) NULL)
+      if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         break;
       composite_indexes=GetIndexes(composite_image);
-      red=q->red;
-      green=q->green;
-      blue=q->blue;
       opacity=q->opacity;
       switch (compose)
       {
@@ -1373,62 +1382,61 @@ MagickExport unsigned int CompositeImage(Image *image,
               green=q->green;
               blue=q->blue;
               opacity=q->opacity;
-              break;
             }
-          if (composite_image->matte && (p->opacity == OpaqueOpacity))
-            {
-              red=p->red;
-              green=p->green;
-              blue=p->blue;
-              opacity=p->opacity;
-              break;
-            }
-          red=(double) (p->red*(MaxRGB-p->opacity)+q->red*p->opacity)*alpha;
-          green=(double)
-            (p->green*(MaxRGB-p->opacity)+q->green*p->opacity)*alpha;
-          blue=(double) (p->blue*(MaxRGB-p->opacity)+q->blue*p->opacity)*alpha;
-          if (composite_image->matte)
-            opacity=(double)
-              (p->opacity*(MaxRGB-p->opacity)+q->opacity*p->opacity)*alpha;
+          else
+            if (composite_image->matte && (p->opacity == OpaqueOpacity))
+              {
+                red=p->red;
+                green=p->green;
+                blue=p->blue;
+                opacity=p->opacity;
+              }
+            else
+              {
+                red=alpha*(p->red*(MaxRGB-p->opacity)+q->red*p->opacity);
+                green=alpha*(p->green*(MaxRGB-p->opacity)+q->green*p->opacity);
+                blue=alpha*(p->blue*(MaxRGB-p->opacity)+q->blue*p->opacity);
+                if (composite_image->matte)
+                  opacity=alpha*(p->opacity*(MaxRGB-p->opacity)+
+                    q->opacity*p->opacity);
+              }
           break;
         }
         case InCompositeOp:
         {
-          red=(double) (p->red*(MaxRGB-q->opacity))*alpha;
-          green=(double) (p->green*(MaxRGB-q->opacity))*alpha;
-          blue=(double) (p->blue*(MaxRGB-q->opacity))*alpha;
+          red=alpha*(p->red*(MaxRGB-q->opacity));
+          green=alpha*(p->green*(MaxRGB-q->opacity));
+          blue=alpha*(p->blue*(MaxRGB-q->opacity));
           if (composite_image->matte)
-            opacity=(double) (p->opacity*(MaxRGB-q->opacity))*alpha;
+            opacity=alpha*(p->opacity*(MaxRGB-q->opacity));
           break;
         }
         case OutCompositeOp:
         {
-          red=(double) (p->red*q->opacity)*alpha;
-          green=(double) (p->green*q->opacity)*alpha;
-          blue=(double) (p->blue*q->opacity)*alpha;
+          red=alpha*(p->red*q->opacity);
+          green=alpha*(p->green*q->opacity);
+          blue=alpha*(p->blue*q->opacity);
           if (composite_image->matte)
-            opacity=(double) (p->opacity*q->opacity)*alpha;
+            opacity=alpha*(p->opacity*q->opacity);
           break;
         }
         case AtopCompositeOp:
         {
-          red=(double) (p->red*q->opacity+q->red*(MaxRGB-p->opacity))*alpha;
-          green=(double)
-            (p->green*q->opacity+q->green*(MaxRGB-p->opacity))*alpha;
-          blue=(double) (p->blue*q->opacity+q->blue*(MaxRGB-p->opacity))*alpha;
+          red=alpha*(p->red*(MaxRGB-q->opacity)+q->red*p->opacity);
+          green=alpha*(p->green*(MaxRGB-q->opacity)+q->green*p->opacity);
+          blue=alpha*(p->blue*(MaxRGB-q->opacity)+q->blue*p->opacity);
           if (composite_image->matte)
-            opacity=(double)
-              (p->opacity*q->opacity+q->opacity*(MaxRGB-p->opacity))*alpha;
+            opacity=alpha*(p->opacity*(MaxRGB-q->opacity)+
+              q->opacity*p->opacity);
           break;
         }
         case XorCompositeOp:
         {
-          red=(double) (p->red*q->opacity+q->red*p->opacity)*alpha;
-          green=(double) (p->green*q->opacity+q->green*p->opacity)*alpha;
-          blue=(double) (p->blue*q->opacity+q->blue*p->opacity)*alpha;
+          red=alpha*(p->red*q->opacity+q->red*p->opacity);
+          green=alpha*(p->green*q->opacity+q->green*p->opacity);
+          blue=alpha*(p->blue*q->opacity+q->blue*p->opacity);
           if (composite_image->matte)
-            opacity=(double)
-              (p->opacity*q->opacity+q->opacity*p->opacity)*alpha;
+            opacity=alpha*(p->opacity*q->opacity+q->opacity*p->opacity);
           break;
         }
         case PlusCompositeOp:
@@ -1442,9 +1450,9 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
         case MinusCompositeOp:
         {
-          red=p->red-(double) q->red;
-          green=p->green-(double) q->green;
-          blue=p->blue-(double) q->blue;
+          red=p->red-(int) q->red;
+          green=p->green-(int) q->green;
+          blue=p->blue-(int) q->blue;
           opacity=OpaqueOpacity;
           break;
         }
@@ -1498,10 +1506,10 @@ MagickExport unsigned int CompositeImage(Image *image,
         case BumpmapCompositeOp:
         {
           shade=Intensity(*p);
-          red=(double) (q->red*shade)*alpha;
-          green=(double) (q->green*shade)*alpha;
-          blue=(double) (q->blue*shade)*alpha;
-          opacity=(double) (q->opacity*shade)*alpha;
+          red=alpha*(q->red*shade);
+          green=alpha*(q->green*shade);
+          blue=alpha*(q->blue*shade);
+          opacity=alpha*(q->opacity*shade);
           break;
         }
         case ReplaceCompositeOp:
@@ -1544,12 +1552,9 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
         case BlendCompositeOp:
         {
-          red=(double)
-            (p->red*(MaxRGB-p->opacity)+q->red*(MaxRGB-q->opacity))*alpha;
-          green=(double)
-            (p->green*(MaxRGB-p->opacity)+q->green*(MaxRGB-q->opacity))*alpha;
-          blue=(double)
-            (p->blue*(MaxRGB-p->opacity)+q->blue*(MaxRGB-q->opacity))*alpha;
+          red=alpha*(p->red*p->opacity+q->red*(MaxRGB-p->opacity));
+          green=alpha*(p->green*p->opacity+q->green*(MaxRGB-p->opacity));
+          blue=alpha*(p->blue*p->opacity+q->blue*(MaxRGB-p->opacity));
           opacity=OpaqueOpacity;
           break;
         }
@@ -1587,24 +1592,34 @@ MagickExport unsigned int CompositeImage(Image *image,
             offset;
 
           offset=(int) (Intensity(*p)-midpoint);
-          if (offset == 0)
-            break;
-          color=(*q);
-          TransformHSL(color.red,color.green,color.blue,&hue,&saturation,
-            &brightness);
-          percent_brightness=(percent_brightness*offset)/midpoint;
-          brightness+=percent_brightness;
-          if (brightness < 0.0)
-            brightness=0.0;
-          else
-            if (brightness > 1.0)
-              brightness=1.0;
-          HSLTransform(hue,saturation,brightness,&color.red,&color.green,
-            &color.blue);
-          red=color.red;
-          green=color.green;
-          blue=color.blue;
-          opacity=OpaqueOpacity;
+          if (offset != 0)
+            {
+              double
+                percent_brightness;
+
+              /*
+                Pixel is not at 0 point.
+              */
+              color=(*q);
+              TransformHSL(color.red,color.green,color.blue,&hue,&saturation,
+                &brightness);
+              brightness+=(brightness_scale*offset)/midpoint;
+              if (brightness < 0.0)
+                brightness=0.0;
+              else
+                if (brightness > 1.0)
+                  brightness=1.0;
+              HSLTransform(hue,saturation,brightness,&color.red,&color.green,
+                &color.blue);
+              red=color.red;
+              green=color.green;
+              blue=color.blue;
+              opacity=OpaqueOpacity;
+              break;
+            }
+          red=q->red;
+          green=q->green;
+          blue=q->blue;
           break;
         }
       }
@@ -1837,7 +1852,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       (*magick_info->description == '\0'))
     (void) fprintf(file,"  Format: %.1024s\n",image->magick);
   else
-    (void) fprintf(file,"  Format: %.1024s (%.1024s)\n",image->magick,
+    (void) fprintf(file,"  Format: %.1024s (%s)\n",image->magick,
       magick_info->description);
   (void) fprintf(file,"  Type: ");
   switch (GetImageType(image))
@@ -2057,7 +2072,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           default: tag="unknown"; break;
         }
         i++;
-        (void) fprintf(file,"    %.1024s:\n",tag);
+        (void) fprintf(file,"    %s:\n",tag);
         length=image->iptc_profile.info[i++] << 8;
         length|=image->iptc_profile.info[i++];
         text=(char *) AcquireMemory(length+1);
@@ -2090,7 +2105,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   {
     if (image->generic_profile[i].length == 0)
       continue;
-    (void) fprintf(file,"  Profile-%.1024s: %u bytes\n",
+    (void) fprintf(file,"  Profile-%s: %u bytes\n",
       image->generic_profile[i].name == (char *) NULL ? "generic" :
       image->generic_profile[i].name,image->generic_profile[i].length);
   }
@@ -2222,12 +2237,11 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           tile->magick_rows,tile->magick);
         SignatureImage(tile);
         attribute=GetImageAttribute(tile,(char *) NULL);
-        for ( ; attribute != (ImageAttribute *) NULL; attribute=attribute->next)
+        while (attribute != (ImageAttribute *) NULL)
         {
-          if (*attribute->key == '[')
-            continue;
-          (void) fprintf(file,"  %.1024s:\n",attribute->key);
+          (void) fprintf(file,"  %s:\n",attribute->key);
           (void) fprintf(file,"%s\n",attribute->value);
+          attribute=attribute->next;
         }
         DestroyImage(tile);
       }
@@ -2237,12 +2251,11 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     Display image attributes.
   */
   attribute=GetImageAttribute(image,(char *) NULL);
-  for ( ; attribute != (ImageAttribute *) NULL; attribute=attribute->next)
+  while (attribute != (ImageAttribute *) NULL)
   {
-    if (*attribute->key == '[')
-      continue;
-    (void) fprintf(file,"  %.1024s: ",attribute->key);
+    (void) fprintf(file,"  %s: ",attribute->key);
     (void) fprintf(file,"%s\n",attribute->value);
+    attribute=attribute->next;
   }
   if (image->taint)
     (void) fprintf(file,"  Tainted: True\n");
@@ -2594,14 +2607,21 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
     File and image dimension members.
   */
   assert(image_info != (ImageInfo *) NULL);
-  memset(image_info,0,sizeof(ImageInfo));
   GetBlobInfo(&(image_info->blob));
+  image_info->file=(FILE *) NULL;
+  *image_info->filename='\0';
+  *image_info->magick='\0';
   TemporaryFilename(image_info->unique);
   (void) strcat(image_info->unique,"u");
   TemporaryFilename(image_info->zero);
   image_info->temporary=False;
   image_info->adjoin=True;
+  image_info->subimage=0;
+  image_info->subrange=0;
   image_info->depth=QuantumDepth;
+  image_info->size=(char *) NULL;
+  image_info->tile=(char *) NULL;
+  image_info->page=(char *) NULL;
   image_info->interlace=NoInterlace;
   image_info->units=UndefinedResolution;
   /*
@@ -2612,15 +2632,15 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   /*
     Annotation members.
   */
-  image_info->font=AllocateString("Times-Roman");
+  image_info->server_name=(char *) NULL;
+  image_info->font=(char *) NULL;
+  image_info->texture=(char *) NULL;
+  image_info->density=(char *) NULL;
   image_info->antialias=True;
-  image_info->pointsize=13;
-  image_info->affine.sx=1.0;
-  image_info->affine.rx=0.0;
-  image_info->affine.ry=0.0;
-  image_info->affine.sy=1.0;
-  image_info->affine.tx=0.0;
-  image_info->affine.ty=0.0;
+  image_info->pointsize=atof(DefaultPointSize);
+  for (i=0; i < 6; i++)
+    image_info->affine[i]=(i == 0) || (i == 3) ? 1.0 : 0.0;
+  image_info->fuzz=0.0;
   (void) QueryColorDatabase("none",&image_info->stroke);
   (void) QueryColorDatabase("none",&image_info->fill);
   (void) QueryColorDatabase("#ffffff",&image_info->background_color);
@@ -2630,11 +2650,25 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
     Color reduction members.
   */
   image_info->dither=True;
+  image_info->monochrome=False;
   image_info->colorspace=UndefinedColorspace;
+  /*
+    Animation members.
+  */
+  image_info->dispose=(char *) NULL;
+  image_info->delay=(char *) NULL;
+  image_info->iterations=(char *) NULL;
+  image_info->decode_all_MNG_objects=False;
+  image_info->coalesce_frames=False;
+  image_info->insert_backdrops=False;
   /*
     Miscellaneous members.
   */
+  image_info->verbose=False;
   image_info->preview_type=JPEGPreview;
+  image_info->view=(char *) NULL;
+  image_info->group=0L;
+  image_info->ping=False;
   image_info->fifo=(int (*)(const Image *,const void *,const size_t)) NULL;
   image_info->signature=MagickSignature;
 }
@@ -2791,7 +2825,10 @@ MagickExport unsigned int GetNumberScenes(const Image *image)
 MagickExport void GetPageInfo(RectangleInfo *page)
 {
   assert(page != (RectangleInfo *) NULL);
-  memset(page,0,sizeof(RectangleInfo));
+  page->width=0;
+  page->height=0;
+  page->x=0;
+  page->y=0;
 }
 
 /*
@@ -2869,7 +2906,7 @@ MagickExport unsigned int IsGeometry(const char *geometry)
   if (geometry == (const char *) NULL)
     return(False);
   flags=ParseGeometry((char *) geometry,&x,&y,&width,&height);
-  return((flags != NoValue) || (sscanf(geometry,"%lf",&value) > 0));
+  return((flags != NoValue) || sscanf(geometry,"%lf",&value));
 }
 
 /*
@@ -3299,1328 +3336,1221 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
     option=argv[i];
     if ((Extent(option) <= 1) || ((*option != '-') && (*option != '+')))
       continue;
-    switch (*(option+1))
-    {
-      case 'a':
+    if (LocaleNCompare("-affine",option,4) == 0)
       {
-        if (LocaleNCompare("-affine",option,4) == 0)
-          {
-            char
-              *p;
+        char
+          *p;
 
-            /*
-              Draw affine matrix.
-            */
-            p=argv[++i];
-            draw_info->affine.sx=strtod(p,&p);
-            if (*p ==',')
-              p++;
-            draw_info->affine.rx=strtod(p,&p);
-            if (*p ==',')
-              p++;
-            draw_info->affine.ry=strtod(p,&p);
-            if (*p ==',')
-              p++;
-            draw_info->affine.sy=strtod(p,&p);
-            if (*p ==',')
-              p++;
-            draw_info->affine.tx=strtod(p,&p);
-            if (*p ==',')
-              p++;
-            draw_info->affine.ty=strtod(p,&p);
-            break;
-          }
-        if (LocaleNCompare("antialias",option+1,3) == 0)
-          {
-            clone_info->antialias=(*option == '-');
-            draw_info->stroke_antialias=(*option == '-');
-            draw_info->text_antialias=(*option == '-');
-            break;
-          }
-        break;
+        /*
+          Draw affine matrix.
+        */
+        p=argv[++i];
+        for (x=0; x < 6; x++)
+        {
+          draw_info->affine[x]=strtod(p,&p);
+          if (*p ==',')
+            p++;
+        }
+        continue;
       }
-      case 'b':
+    if (LocaleNCompare("antialias",option+1,3) == 0)
       {
-        if (LocaleNCompare("-background",option,6) == 0)
-          {
-            (void) QueryColorDatabase(argv[++i],&clone_info->background_color);
-            (*image)->background_color=clone_info->background_color;
-            continue;
-          }
-        if (LocaleCompare("blur",option+1) == 0)
-          {
-            double
-              radius,
-              sigma;
-
-            Image
-              *blur_image;
-
-            /*
-              Gaussian blur image.
-            */
-            radius=0.0;
-            sigma=1.0;
-            if (*option == '-')
-              (void) sscanf(argv[++i],"%lfx%lf",&radius,&sigma);
-            blur_image=BlurImage(*image,radius,sigma,&(*image)->exception);
-            if (blur_image == (Image *) NULL)
-              break;
-            DestroyImage(*image);
-            *image=blur_image;
-            continue;
-          }
-        if (LocaleCompare("-border",option) == 0)
-          {
-            Image
-              *border_image;
-
-            RectangleInfo
-              border_info;
-
-            /*
-              Surround image with a border of solid color.
-            */
-            border_info.width=0;
-            border_info.height=0;
-            border_info.x=0;
-            border_info.y=0;
-            flags=ParseGeometry(argv[++i],&border_info.x,&border_info.y,
-              &border_info.width,&border_info.height);
-            if ((flags & HeightValue) == 0)
-              border_info.height=border_info.width;
-            border_image=BorderImage(*image,&border_info,&(*image)->exception);
-            if (border_image == (Image *) NULL)
-              break;
-            DestroyImage(*image);
-            border_image->storage_class=DirectClass;
-            *image=border_image;
-            continue;
-          }
-        if (LocaleNCompare("-bordercolor",option,8) == 0)
-          {
-            (void) QueryColorDatabase(argv[++i],&clone_info->border_color);
-            (*image)->border_color=clone_info->border_color;
-            continue;
-          }
-        if (LocaleCompare("-box",option) == 0)
-          {
-            (void) QueryColorDatabase(argv[++i],&draw_info->box);
-            continue;
-          }
-        break;
+        clone_info->antialias=(*option == '-');
+        draw_info->antialias=(*option == '-');
+        continue;
       }
-      case 'c':
+    if (LocaleNCompare("-background",option,6) == 0)
       {
-        if (LocaleNCompare("-charcoal",option,3) == 0)
-          {
-            char
-              *commands[7];
+        (void) QueryColorDatabase(argv[++i],&clone_info->background_color);
+        (*image)->background_color=clone_info->background_color;
+        continue;
+      }
+    if (LocaleCompare("blur",option+1) == 0)
+      {
+        double
+          radius,
+          sigma;
 
-            QuantizeInfo
-              quantize_info;
+        Image
+          *blur_image;
 
-            /*
-              Charcoal drawing.
-            */
-            i++;
-            GetQuantizeInfo(&quantize_info);
-            quantize_info.dither=image_info->dither;
-            quantize_info.colorspace=GRAYColorspace;
-            (void) QuantizeImage(&quantize_info,*image);
-            commands[0]=SetClientName((char *) NULL);
-            commands[1]="-edge";
-            commands[2]=argv[i];
-            commands[3]="-blur";
-            commands[4]=argv[i];
-            commands[5]="-normalize";
-            commands[6]="-negate";
-            MogrifyImage(clone_info,7,commands,image);
-            (void) QuantizeImage(&quantize_info,*image);
-            continue;
-          }
-        if (LocaleNCompare("-colorize",option,8) == 0)
-          {
-            Image
-              *colorize_image;
+        /*
+          Gaussian blur image.
+        */
+        radius=0.0;
+        sigma=1.0;
+        if (*option == '-')
+          (void) sscanf(argv[++i],"%lfx%lf",&radius,&sigma);
+        blur_image=BlurImage(*image,radius,sigma,&(*image)->exception);
+        if (blur_image == (Image *) NULL)
+          break;
+        DestroyImage(*image);
+        *image=blur_image;
+        continue;
+      }
+    if (LocaleCompare("-border",option) == 0)
+      {
+        Image
+          *border_image;
 
-            /*
-              Colorize the image.
-            */
-            colorize_image=ColorizeImage(*image,argv[++i],clone_info->fill,
-              &(*image)->exception);
-            if (colorize_image == (Image *) NULL)
-              break;
-            DestroyImage(*image);
-            *image=colorize_image;
-            continue;
-          }
-        if (LocaleNCompare("-compress",option,6) == 0)
-          {
-            if (*option == '-')
-              {
-                CompressionType
-                  compression;
+        RectangleInfo
+          border_info;
 
-                option=argv[++i];
-                compression=UndefinedCompression;
-                if (LocaleCompare("None",option) == 0)
-                  compression=NoCompression;
-                if (LocaleCompare("BZip",option) == 0)
-                  compression=BZipCompression;
-                if (LocaleCompare("Fax",option) == 0)
-                  compression=FaxCompression;
-                if (LocaleCompare("Group4",option) == 0)
-                  compression=Group4Compression;
-                if (LocaleCompare("JPEG",option) == 0)
-                  compression=JPEGCompression;
-                if (LocaleCompare("LZW",option) == 0)
-                  compression=LZWCompression;
-                if (LocaleCompare("RunlengthEncoded",option) == 0)
-                  compression=RunlengthEncodedCompression;
-                if (LocaleCompare("Zip",option) == 0)
-                  compression=ZipCompression;
-                (*image)->compression=compression;
-              }
-            continue;
-          }
-        if (LocaleCompare("-colors",option) == 0)
-          {
-            quantize_info.number_colors=atoi(argv[++i]);
-            continue;
-          }
-        if (LocaleNCompare("colorspace",option+1,7) == 0)
-          {
-            char
-              type;
+        /*
+          Surround image with a border of solid color.
+        */
+        border_info.width=0;
+        border_info.height=0;
+        border_info.x=0;
+        border_info.y=0;
+        flags=ParseGeometry(argv[++i],&border_info.x,&border_info.y,
+          &border_info.width,&border_info.height);
+        if ((flags & HeightValue) == 0)
+          border_info.height=border_info.width;
+        border_image=BorderImage(*image,&border_info,&(*image)->exception);
+        if (border_image == (Image *) NULL)
+          break;
+        DestroyImage(*image);
+        border_image->storage_class=DirectClass;
+        *image=border_image;
+        continue;
+      }
+    if (LocaleNCompare("-bordercolor",option,8) == 0)
+      {
+        (void) QueryColorDatabase(argv[++i],&clone_info->border_color);
+        (*image)->border_color=clone_info->border_color;
+        continue;
+      }
+    if (LocaleCompare("-box",option) == 0)
+      {
+        (void) QueryColorDatabase(argv[++i],&draw_info->box);
+        continue;
+      }
+    if (LocaleNCompare("-charcoal",option,3) == 0)
+      {
+        char
+          *commands[7];
 
-            type=(*option);
+        QuantizeInfo
+          quantize_info;
+
+        /*
+          Charcoal drawing.
+        */
+        i++;
+        GetQuantizeInfo(&quantize_info);
+        quantize_info.dither=image_info->dither;
+        quantize_info.colorspace=GRAYColorspace;
+        (void) QuantizeImage(&quantize_info,*image);
+        commands[0]=SetClientName((char *) NULL);
+        commands[1]="-edge";
+        commands[2]=argv[i];
+        commands[3]="-blur";
+        commands[4]=argv[i];
+        commands[5]="-normalize";
+        commands[6]="-negate";
+        MogrifyImage(clone_info,7,commands,image);
+        (void) QuantizeImage(&quantize_info,*image);
+        continue;
+      }
+    if (LocaleNCompare("-colorize",option,8) == 0)
+      {
+        Image
+          *colorize_image;
+
+        /*
+          Colorize the image.
+        */
+        colorize_image=
+          ColorizeImage(*image,argv[++i],clone_info->fill,&(*image)->exception);
+        if (colorize_image == (Image *) NULL)
+          break;
+        DestroyImage(*image);
+        *image=colorize_image;
+        continue;
+      }
+    if (LocaleNCompare("-compress",option,6) == 0)
+      {
+        if (*option == '-')
+          {
+            CompressionType
+              compression;
+
             option=argv[++i];
-            if (LocaleCompare("cmyk",option) == 0)
-              {
-                RGBTransformImage(*image,CMYKColorspace);
-                quantize_info.colorspace=CMYKColorspace;
-              }
-            if (LocaleCompare("gray",option) == 0)
-              {
-                quantize_info.colorspace=GRAYColorspace;
-                if (quantize_info.number_colors == 0)
-                  quantize_info.number_colors=256;
-                quantize_info.tree_depth=8;
-              }
-            if (LocaleCompare("ohta",option) == 0)
-              quantize_info.colorspace=OHTAColorspace;
-            if (LocaleCompare("rgb",option) == 0)
-              {
-                TransformRGBImage(*image,RGBColorspace);
-                quantize_info.colorspace=RGBColorspace;
-              }
-            if (LocaleCompare("srgb",option) == 0)
-              quantize_info.colorspace=sRGBColorspace;
-            if (LocaleCompare("transparent",option) == 0)
-              quantize_info.colorspace=TransparentColorspace;
-            if (LocaleCompare("xyz",option) == 0)
-              quantize_info.colorspace=XYZColorspace;
-            if (LocaleCompare("ycbcr",option) == 0)
-              quantize_info.colorspace=YCbCrColorspace;
-            if (LocaleCompare("ycc",option) == 0)
-              quantize_info.colorspace=YCCColorspace;
-            if (LocaleCompare("yiq",option) == 0)
-              quantize_info.colorspace=YIQColorspace;
-            if (LocaleCompare("ypbpr",option) == 0)
-              quantize_info.colorspace=YPbPrColorspace;
-            if (LocaleCompare("yuv",option) == 0)
-              quantize_info.colorspace=YUVColorspace;
-            clone_info->colorspace=quantize_info.colorspace;
-            if (type == '+')
-              (*image)->colorspace=clone_info->colorspace;
-            continue;
+            compression=UndefinedCompression;
+            if (LocaleCompare("None",option) == 0)
+              compression=NoCompression;
+            if (LocaleCompare("BZip",option) == 0)
+              compression=BZipCompression;
+            if (LocaleCompare("Fax",option) == 0)
+              compression=FaxCompression;
+            if (LocaleCompare("Group4",option) == 0)
+              compression=Group4Compression;
+            if (LocaleCompare("JPEG",option) == 0)
+              compression=JPEGCompression;
+            if (LocaleCompare("LZW",option) == 0)
+              compression=LZWCompression;
+            if (LocaleCompare("RunlengthEncoded",option) == 0)
+              compression=RunlengthEncodedCompression;
+            if (LocaleCompare("Zip",option) == 0)
+              compression=ZipCompression;
+            (*image)->compression=compression;
           }
-        if (LocaleNCompare("comment",option+1,4) == 0)
-          {
-            if (*option == '-')
-              (void) SetImageAttribute(*image,"Comment",argv[++i]);
-            else
-              (void) SetImageAttribute(*image,"Comment",(char *) NULL);
-            continue;
-          }
-        if (LocaleNCompare("contrast",option+1,3) == 0)
-          {
-            ContrastImage(*image,(unsigned int) (*option == '-'));
-            continue;
-          }
-        if (LocaleNCompare("-crop",option,3) == 0)
-          {
-            TransformImage(image,argv[++i],(char *) NULL);
-            continue;
-          }
-        if (LocaleNCompare("-cycle",option,3) == 0)
-          {
-            /*
-              Cycle an image colormap.
-            */
-            CycleColormapImage(*image,atoi(argv[++i]));
-            continue;
-          }
-        break;
+        continue;
       }
-      case 'd':
+    if (LocaleCompare("-colors",option) == 0)
       {
-        if (LocaleNCompare("-density",option,4) == 0)
-          {
-            int
-              count;
-
-            /*
-              Set image density.
-            */
-            (void) CloneString(&clone_info->density,argv[++i]);
-            count=sscanf(clone_info->density,"%lfx%lf",
-              &(*image)->x_resolution,&(*image)->y_resolution);
-            if (count != 2)
-              (*image)->y_resolution=(*image)->x_resolution;
-          }
-        if (LocaleNCompare("-depth",option,4) == 0)
-          {
-            (*image)->depth=atoi(argv[++i]) <= 8 ? 8 : 16;
-            continue;
-          }
-        if (LocaleNCompare("-despeckle",option,4) == 0)
-          {
-            Image
-              *despeckle_image;
-
-            /*
-              Reduce the speckles within an image.
-            */
-            despeckle_image=DespeckleImage(*image,&(*image)->exception);
-            if (despeckle_image == (Image *) NULL)
-              break;
-            DestroyImage(*image);
-            *image=despeckle_image;
-            continue;
-          }
-        if (LocaleNCompare("-display",option,6) == 0)
-          {
-            (void) CloneString(&clone_info->server_name,argv[++i]);
-            continue;
-          }
-        if (LocaleNCompare("dither",option+1,3) == 0)
-          {
-            clone_info->dither=(*option == '-');
-            quantize_info.dither=(*option == '-');
-            continue;
-          }
-        if (LocaleNCompare("-draw",option,3) == 0)
-          {
-            /*
-              Draw image.
-            */
-            (void) CloneString(&draw_info->primitive,argv[++i]);
-            DrawImage(*image,draw_info);
-            continue;
-          }
-        break;
+        quantize_info.number_colors=atoi(argv[++i]);
+        continue;
       }
-      case 'e':
+    if (LocaleNCompare("-colorspace",option,8) == 0)
       {
-        if (LocaleNCompare("-edge",option,3) == 0)
+        option=argv[++i];
+        if (LocaleCompare("cmyk",option) == 0)
           {
-            double
-              radius;
-
-            Image
-              *edge_image;
-
-            /*
-              Enhance edges in the image.
-            */
-            radius=atof(argv[++i]);
-            edge_image=EdgeImage(*image,radius,&(*image)->exception);
-            if (edge_image == (Image *) NULL)
-              break;
-            DestroyImage(*image);
-            *image=edge_image;
-            continue;
+            RGBTransformImage(*image,CMYKColorspace);
+            quantize_info.colorspace=CMYKColorspace;
           }
-        if (LocaleNCompare("-emboss",option,3) == 0)
+        if (LocaleCompare("gray",option) == 0)
           {
-            double
-              radius,
-              sigma;
-
-            Image
-              *emboss_image;
-
-            /*
-              Emboss the image.
-            */
-            radius=0.0;
-            sigma=1.0;
-            if (*option == '-')
-              (void) sscanf(argv[++i],"%lfx%lf",&radius,&sigma);
-            emboss_image=EmbossImage(*image,radius,sigma,&(*image)->exception);
-            if (emboss_image == (Image *) NULL)
-              break;
-            DestroyImage(*image);
-            *image=emboss_image;
-            continue;
-          }
-        if (LocaleNCompare("-enhance",option,3) == 0)
-          {
-            Image
-              *enhance_image;
-
-            /*
-              Enhance image.
-            */
-            enhance_image=EnhanceImage(*image,&(*image)->exception);
-            if (enhance_image == (Image *) NULL)
-              break;
-            DestroyImage(*image);
-            *image=enhance_image;
-            continue;
-          }
-        if (LocaleNCompare("-equalize",option,3) == 0)
-          {
-            /*
-              Equalize image.
-            */
-            EqualizeImage(*image);
-            continue;
-          }
-        break;
-      }
-      case 'f':
-      {
-        if (LocaleCompare("-fill",option) == 0)
-          {
-            (void) QueryColorDatabase(argv[++i],&clone_info->fill);
-            draw_info->fill=clone_info->fill;
-            continue;
-          }
-        if (LocaleNCompare("filter",option+1,4) == 0)
-          {
-            if (*option == '-')
-              {
-                FilterTypes
-                  filter;
-
-                option=argv[++i];
-                filter=LanczosFilter;
-                if (LocaleCompare("Point",option) == 0)
-                  filter=PointFilter;
-                if (LocaleCompare("Box",option) == 0)
-                  filter=BoxFilter;
-                if (LocaleCompare("Triangle",option) == 0)
-                  filter=TriangleFilter;
-                if (LocaleCompare("Hermite",option) == 0)
-                  filter=HermiteFilter;
-                if (LocaleCompare("Hanning",option) == 0)
-                  filter=HanningFilter;
-                if (LocaleCompare("Hamming",option) == 0)
-                  filter=HammingFilter;
-                if (LocaleCompare("Blackman",option) == 0)
-                  filter=BlackmanFilter;
-                if (LocaleCompare("Gaussian",option) == 0)
-                  filter=GaussianFilter;
-                if (LocaleCompare("Quadratic",option) == 0)
-                  filter=QuadraticFilter;
-                if (LocaleCompare("Cubic",option) == 0)
-                  filter=CubicFilter;
-                if (LocaleCompare("Catrom",option) == 0)
-                  filter=CatromFilter;
-                if (LocaleCompare("Mitchell",option) == 0)
-                  filter=MitchellFilter;
-                if (LocaleCompare("Lanczos",option) == 0)
-                  filter=LanczosFilter;
-                if (LocaleCompare("Bessel",option) == 0)
-                  filter=BesselFilter;
-                if (LocaleCompare("Sinc",option) == 0)
-                  filter=SincFilter;
-                (*image)->filter=filter;
-              }
-            continue;
-          }
-        if (LocaleNCompare("-flip",option,4) == 0)
-          {
-            Image
-              *flip_image;
-
-            /*
-              Flip image scanlines.
-            */
-            flip_image=FlipImage(*image,&(*image)->exception);
-            if (flip_image == (Image *) NULL)
-              break;
-            DestroyImage(*image);
-            *image=flip_image;
-            continue;
-          }
-        if (LocaleNCompare("-flop",option,4) == 0)
-          {
-            Image
-              *flop_image;
-
-            /*
-              Flop image scanlines.
-            */
-            flop_image=FlopImage(*image,&(*image)->exception);
-            if (flop_image == (Image *) NULL)
-              break;
-            DestroyImage(*image);
-            *image=flop_image;
-            continue;
-          }
-        if (LocaleCompare("-frame",option) == 0)
-          {
-            Image
-              *frame_image;
-
-            FrameInfo
-              frame_info;
-
-            /*
-              Surround image with an ornamental border.
-            */
-            frame_info.width=0;
-            frame_info.height=0;
-            frame_info.outer_bevel=0;
-            frame_info.inner_bevel=0;
-            flags=ParseGeometry(argv[++i],&frame_info.outer_bevel,
-              &frame_info.inner_bevel,&frame_info.width,&frame_info.height);
-            if ((flags & HeightValue) == 0)
-              frame_info.height=frame_info.width;
-            if ((flags & XValue) == 0)
-              frame_info.outer_bevel=(frame_info.width >> 2)+1;
-            if ((flags & YValue) == 0)
-              frame_info.inner_bevel=frame_info.outer_bevel;
-            frame_info.x=frame_info.width;
-            frame_info.y=frame_info.height;
-            frame_info.width=(*image)->columns+(frame_info.width << 1);
-            frame_info.height=(*image)->rows+(frame_info.height << 1);
-            frame_image=FrameImage(*image,&frame_info,&(*image)->exception);
-            if (frame_image == (Image *) NULL)
-              break;
-            DestroyImage(*image);
-            frame_image->storage_class=DirectClass;
-            *image=frame_image;
-            continue;
-          }
-        if (LocaleNCompare("-fuzz",option,3) == 0)
-          {
-            (*image)->fuzz=atof(argv[++i]);
-            continue;
-          }
-        if (LocaleCompare("-font",option) == 0)
-          {
-            i++;
-            (void) CloneString(&clone_info->font,argv[i]);
-            (void) CloneString(&draw_info->font,argv[i]);
-            continue;
-          }
-        break;
-      }
-      case 'g':
-      {
-        if (LocaleNCompare("gamma",option+1,3) == 0)
-          {
-            if (*option == '+')
-              (*image)->gamma=atof(argv[++i]);
-            else
-              GammaImage(*image,argv[++i]);
-            continue;
-          }
-        if (LocaleCompare("gaussian",option+1) == 0)
-          {
-            double
-              radius,
-              sigma;
-
-            Image
-              *blur_image;
-
-            /*
-              Gaussian blur image.
-            */
-            radius=0.0;
-            sigma=1.0;
-            if (*option == '-')
-              (void) sscanf(argv[++i],"%lfx%lf",&radius,&sigma);
-            blur_image=GaussianBlurImage(*image,radius,sigma,
-              &(*image)->exception);
-            if (blur_image == (Image *) NULL)
-              break;
-            DestroyImage(*image);
-            *image=blur_image;
-            continue;
-          }
-        if (LocaleNCompare("-geometry",option,4) == 0)
-          {
-            Image
-              *resize_image;
-
-            /*
-              Resize image.
-            */
-            width=(*image)->columns;
-            height=(*image)->rows;
-            x=0;
-            y=0;
-            (void) CloneString(&geometry,argv[++i]);
-            (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
-            resize_image=ZoomImage(*image,width,height,&(*image)->exception);
-            if (resize_image == (Image *) NULL)
-              break;
-            DestroyImage(*image);
-            *image=resize_image;
-            continue;
-          }
-        if (LocaleNCompare("gravity",option+1,2) == 0)
-          {
-            draw_info->gravity=(GravityType) NorthWestGravity;
-            if (*option == '-')
-              {
-                option=argv[++i];
-                if (LocaleCompare("NorthWest",option) == 0)
-                  draw_info->gravity=(GravityType) NorthWestGravity;
-                if (LocaleCompare("North",option) == 0)
-                  draw_info->gravity=(GravityType) NorthGravity;
-                if (LocaleCompare("NorthEast",option) == 0)
-                  draw_info->gravity=(GravityType) NorthEastGravity;
-                if (LocaleCompare("West",option) == 0)
-                  draw_info->gravity=(GravityType) WestGravity;
-                if (LocaleCompare("Center",option) == 0)
-                  draw_info->gravity=(GravityType) CenterGravity;
-                if (LocaleCompare("East",option) == 0)
-                  draw_info->gravity=(GravityType) EastGravity;
-                if (LocaleCompare("SouthWest",option) == 0)
-                  draw_info->gravity=(GravityType) SouthWestGravity;
-                if (LocaleCompare("South",option) == 0)
-                  draw_info->gravity=(GravityType) SouthGravity;
-                if (LocaleCompare("SouthEast",option) == 0)
-                  draw_info->gravity=(GravityType) SouthEastGravity;
-              }
-            continue;
-          }
-        break;
-      }
-      case 'i':
-      {
-        if (LocaleNCompare("-implode",option,4) == 0)
-          {
-            double
-              amount;
-
-            Image
-              *implode_image;
-
-            /*
-              Implode image.
-            */
-            amount=atof(argv[++i]);
-            implode_image=ImplodeImage(*image,amount,&(*image)->exception);
-            if (implode_image == (Image *) NULL)
-              break;
-            DestroyImage(*image);
-            *image=implode_image;
-            continue;
-          }
-        if (LocaleNCompare("intent",option+1,5) == 0)
-          {
-            if (*option == '-')
-              {
-                RenderingIntent
-                  rendering_intent;
-
-                option=argv[++i];
-                rendering_intent=UndefinedIntent;
-                if (LocaleCompare("Absolute",option) == 0)
-                  rendering_intent=AbsoluteIntent;
-                if (LocaleCompare("Perceptual",option) == 0)
-                  rendering_intent=PerceptualIntent;
-                if (LocaleCompare("Relative",option) == 0)
-                  rendering_intent=RelativeIntent;
-                if (LocaleCompare("Saturation",option) == 0)
-                  rendering_intent=SaturationIntent;
-                (*image)->rendering_intent=rendering_intent;
-              }
-            continue;
-          }
-        break;
-      }
-      case 'l':
-      {
-        if (LocaleNCompare("label",option+1,3) == 0)
-          {
-            if (*option == '-')
-              (void) SetImageAttribute(*image,"Label",argv[++i]);
-            else
-              (void) SetImageAttribute(*image,"Label",(char *) NULL);
-            continue;
-          }
-        if (LocaleNCompare("layer",option+1,3) == 0)
-          {
-            LayerType
-              layer;
-
-            layer=UndefinedLayer;
-            if (*option == '-')
-              {
-                option=argv[++i];
-                if (LocaleCompare("Red",option) == 0)
-                  layer=RedLayer;
-                if (LocaleCompare("Green",option) == 0)
-                  layer=GreenLayer;
-                if (LocaleCompare("Blue",option) == 0)
-                  layer=BlueLayer;
-                if (LocaleCompare("Matte",option) == 0)
-                  layer=MatteLayer;
-              }
-            if ((*image)->colorspace != clone_info->colorspace)
-              RGBTransformImage(*image,clone_info->colorspace);
-            LayerImage(*image,layer);
-            continue;
-          }
-        if (LocaleNCompare("-linewidth",option,3) == 0)
-          {
-            draw_info->linewidth=atof(argv[++i]);
-            continue;
-          }
-        break;
-      }
-      case 'm':
-      {
-        if (LocaleCompare("-map",option) == 0)
-          {
-            /*
-              Transform image colors to match this set of colors.
-            */
-            (void) strcpy(clone_info->filename,argv[++i]);
-            map_image=ReadImage(clone_info,&(*image)->exception);
-            continue;
-          }
-        if (LocaleCompare("matte",option+1) == 0)
-          {
-            if (*option == '-')
-              if (!(*image)->matte)
-                MatteImage(*image,OpaqueOpacity);
-            (*image)->matte=(*option == '-');
-            continue;
-          }
-        if (LocaleNCompare("-mattecolor",option,7) == 0)
-          {
-            (void) QueryColorDatabase(argv[++i],&clone_info->matte_color);
-            (*image)->matte_color=clone_info->matte_color;
-            continue;
-          }
-        if (LocaleNCompare("-median",option,4) == 0)
-          {
-            Image
-              *median_image;
-
-            /*
-              Median filter image.
-            */
-            median_image=
-              MedianFilterImage(*image,atoi(argv[++i]),&(*image)->exception);
-            if (median_image == (Image *) NULL)
-              break;
-            DestroyImage(*image);
-            *image=median_image;
-            continue;
-          }
-        if (LocaleNCompare("-modulate",option,4) == 0)
-          {
-            ModulateImage(*image,argv[++i]);
-            continue;
-          }
-        if (LocaleNCompare("-monochrome",option,4) == 0)
-          {
-            clone_info->monochrome=True;
-            quantize_info.number_colors=2;
+            quantize_info.colorspace=GRAYColorspace;
+            if (quantize_info.number_colors == 0)
+              quantize_info.number_colors=256;
             quantize_info.tree_depth=8;
-            quantize_info.colorspace=GRAYColorspace;
-            continue;
           }
-        break;
+        if (LocaleCompare("ohta",option) == 0)
+          quantize_info.colorspace=OHTAColorspace;
+        if (LocaleCompare("rgb",option) == 0)
+          {
+            TransformRGBImage(*image,RGBColorspace);
+            quantize_info.colorspace=RGBColorspace;
+          }
+        if (LocaleCompare("srgb",option) == 0)
+          quantize_info.colorspace=sRGBColorspace;
+        if (LocaleCompare("transparent",option) == 0)
+          quantize_info.colorspace=TransparentColorspace;
+        if (LocaleCompare("xyz",option) == 0)
+          quantize_info.colorspace=XYZColorspace;
+        if (LocaleCompare("ycbcr",option) == 0)
+          quantize_info.colorspace=YCbCrColorspace;
+        if (LocaleCompare("ycc",option) == 0)
+          quantize_info.colorspace=YCCColorspace;
+        if (LocaleCompare("yiq",option) == 0)
+          quantize_info.colorspace=YIQColorspace;
+        if (LocaleCompare("ypbpr",option) == 0)
+          quantize_info.colorspace=YPbPrColorspace;
+        if (LocaleCompare("yuv",option) == 0)
+          quantize_info.colorspace=YUVColorspace;
+        clone_info->colorspace=quantize_info.colorspace;
+        continue;
       }
-      case 'n':
+    if (LocaleNCompare("comment",option+1,4) == 0)
       {
-        if (LocaleNCompare("negate",option+1,3) == 0)
+        if (*option == '-')
+          (void) SetImageAttribute(*image,"Comment",argv[++i]);
+        else
+          (void) SetImageAttribute(*image,"Comment",(char *) NULL);
+        continue;
+      }
+    if (LocaleNCompare("contrast",option+1,3) == 0)
+      {
+        ContrastImage(*image,(unsigned int) (*option == '-'));
+        continue;
+      }
+    if (LocaleNCompare("-crop",option,3) == 0)
+      {
+        TransformImage(image,argv[++i],(char *) NULL);
+        continue;
+      }
+    if (LocaleNCompare("-cycle",option,3) == 0)
+      {
+        /*
+          Cycle an image colormap.
+        */
+        CycleColormapImage(*image,atoi(argv[++i]));
+        continue;
+      }
+    if (LocaleNCompare("-density",option,4) == 0)
+      {
+        int
+          count;
+
+        /*
+          Set image density.
+        */
+        (void) CloneString(&clone_info->density,argv[++i]);
+        count=sscanf(clone_info->density,"%lfx%lf",
+          &(*image)->x_resolution,&(*image)->y_resolution);
+        if (count != 2)
+          (*image)->y_resolution=(*image)->x_resolution;
+      }
+    if (LocaleNCompare("-depth",option,4) == 0)
+      {
+        (*image)->depth=atoi(argv[++i]) <= 8 ? 8 : 16;
+        continue;
+      }
+    if (LocaleNCompare("-despeckle",option,4) == 0)
+      {
+        Image
+          *despeckle_image;
+
+        /*
+          Reduce the speckles within an image.
+        */
+        despeckle_image=DespeckleImage(*image,&(*image)->exception);
+        if (despeckle_image == (Image *) NULL)
+          break;
+        DestroyImage(*image);
+        *image=despeckle_image;
+        continue;
+      }
+    if (LocaleNCompare("-display",option,6) == 0)
+      {
+        (void) CloneString(&clone_info->server_name,argv[++i]);
+        continue;
+      }
+    if (LocaleNCompare("dither",option+1,3) == 0)
+      {
+        clone_info->dither=(*option == '-');
+        quantize_info.dither=(*option == '-');
+        continue;
+      }
+    if (LocaleNCompare("-draw",option,3) == 0)
+      {
+        /*
+          Draw image.
+        */
+        (void) CloneString(&draw_info->primitive,argv[++i]);
+        DrawImage(*image,draw_info);
+        continue;
+      }
+    if (LocaleNCompare("-edge",option,3) == 0)
+      {
+        double
+          radius;
+
+        Image
+          *edge_image;
+
+        /*
+          Enhance edges in the image.
+        */
+        radius=atof(argv[++i]);
+        edge_image=EdgeImage(*image,radius,&(*image)->exception);
+        if (edge_image == (Image *) NULL)
+          break;
+        DestroyImage(*image);
+        *image=edge_image;
+        continue;
+      }
+    if (LocaleNCompare("-emboss",option,3) == 0)
+      {
+        double
+          radius,
+          sigma;
+
+        Image
+          *emboss_image;
+
+        /*
+          Emboss the image.
+        */
+        radius=0.0;
+        sigma=1.0;
+        if (*option == '-')
+          (void) sscanf(argv[++i],"%lfx%lf",&radius,&sigma);
+        emboss_image=EmbossImage(*image,radius,sigma,&(*image)->exception);
+        if (emboss_image == (Image *) NULL)
+          break;
+        DestroyImage(*image);
+        *image=emboss_image;
+        continue;
+      }
+    if (LocaleNCompare("-enhance",option,3) == 0)
+      {
+        Image
+          *enhance_image;
+
+        /*
+          Enhance image.
+        */
+        enhance_image=EnhanceImage(*image,&(*image)->exception);
+        if (enhance_image == (Image *) NULL)
+          break;
+        DestroyImage(*image);
+        *image=enhance_image;
+        continue;
+      }
+    if (LocaleNCompare("-equalize",option,3) == 0)
+      {
+        /*
+          Equalize image.
+        */
+        EqualizeImage(*image);
+        continue;
+      }
+    if (LocaleCompare("-fill",option) == 0)
+      {
+        (void) QueryColorDatabase(argv[++i],&clone_info->fill);
+        draw_info->fill=clone_info->fill;
+        continue;
+      }
+    if (LocaleNCompare("filter",option+1,4) == 0)
+      {
+        if (*option == '-')
           {
-            NegateImage(*image,*option == '+');
-            continue;
-          }
-        if (LocaleNCompare("noise",option+1,4) == 0)
-          {
-            Image
-              *noisy_image;
+            FilterTypes
+              filter;
 
             option=argv[++i];
-            if (*option == '-')
-              noisy_image=
-                ReduceNoiseImage(*image,atoi(option),&(*image)->exception);
-            else
-              {
-                NoiseType
-                  noise_type;
-
-                /*
-                  Add noise to image.
-                */
-                noise_type=UniformNoise;
-                if (LocaleCompare("Gaussian",option) == 0)
-                  noise_type=GaussianNoise;
-                if (LocaleCompare("multiplicative",option) == 0)
-                  noise_type=MultiplicativeGaussianNoise;
-                if (LocaleCompare("impulse",option) == 0)
-                  noise_type=ImpulseNoise;
-                if (LocaleCompare("laplacian",option) == 0)
-                  noise_type=LaplacianNoise;
-                if (LocaleCompare("Poisson",option) == 0)
-                  noise_type=PoissonNoise;
-                noisy_image=AddNoiseImage(*image,noise_type,
-                  &(*image)->exception);
-              }
-            if (noisy_image == (Image *) NULL)
-              break;
-            DestroyImage(*image);
-            *image=noisy_image;
-            continue;
+            filter=LanczosFilter;
+            if (LocaleCompare("Point",option) == 0)
+              filter=PointFilter;
+            if (LocaleCompare("Box",option) == 0)
+              filter=BoxFilter;
+            if (LocaleCompare("Triangle",option) == 0)
+              filter=TriangleFilter;
+            if (LocaleCompare("Hermite",option) == 0)
+              filter=HermiteFilter;
+            if (LocaleCompare("Hanning",option) == 0)
+              filter=HanningFilter;
+            if (LocaleCompare("Hamming",option) == 0)
+              filter=HammingFilter;
+            if (LocaleCompare("Blackman",option) == 0)
+              filter=BlackmanFilter;
+            if (LocaleCompare("Gaussian",option) == 0)
+              filter=GaussianFilter;
+            if (LocaleCompare("Quadratic",option) == 0)
+              filter=QuadraticFilter;
+            if (LocaleCompare("Cubic",option) == 0)
+              filter=CubicFilter;
+            if (LocaleCompare("Catrom",option) == 0)
+              filter=CatromFilter;
+            if (LocaleCompare("Mitchell",option) == 0)
+              filter=MitchellFilter;
+            if (LocaleCompare("Lanczos",option) == 0)
+              filter=LanczosFilter;
+            if (LocaleCompare("Bessel",option) == 0)
+              filter=BesselFilter;
+            if (LocaleCompare("Sinc",option) == 0)
+              filter=SincFilter;
+            (*image)->filter=filter;
           }
-        if (LocaleNCompare("-normalize",option,4) == 0)
-          {
-            NormalizeImage(*image);
-            continue;
-          }
-        break;
+        continue;
       }
-      case 'o':
+    if (LocaleNCompare("-flip",option,4) == 0)
       {
-        if (LocaleNCompare("-opaque",option,3) == 0)
-          {
-            PixelPacket
-              target;
+        Image
+          *flip_image;
 
-            target=GetOnePixel(*image,0,0);
-            (void) QueryColorDatabase(argv[++i],&target);
-            OpaqueImage(*image,target,draw_info->fill);
-            continue;
-          }
-        break;
+        /*
+          Flip image scanlines.
+        */
+        flip_image=FlipImage(*image,&(*image)->exception);
+        if (flip_image == (Image *) NULL)
+          break;
+        DestroyImage(*image);
+        *image=flip_image;
+        continue;
       }
-      case 'p':
+    if (LocaleNCompare("-flop",option,4) == 0)
       {
-        if (LocaleNCompare("-paint",option,4) == 0)
+        Image
+          *flop_image;
+
+        /*
+          Flop image scanlines.
+        */
+        flop_image=FlopImage(*image,&(*image)->exception);
+        if (flop_image == (Image *) NULL)
+          break;
+        DestroyImage(*image);
+        *image=flop_image;
+        continue;
+      }
+    if (LocaleCompare("-frame",option) == 0)
+      {
+        Image
+          *frame_image;
+
+        FrameInfo
+          frame_info;
+
+        /*
+          Surround image with an ornamental border.
+        */
+        frame_info.width=0;
+        frame_info.height=0;
+        frame_info.outer_bevel=0;
+        frame_info.inner_bevel=0;
+        flags=ParseGeometry(argv[++i],&frame_info.outer_bevel,
+          &frame_info.inner_bevel,&frame_info.width,&frame_info.height);
+        if ((flags & HeightValue) == 0)
+          frame_info.height=frame_info.width;
+        if ((flags & XValue) == 0)
+          frame_info.outer_bevel=(frame_info.width >> 2)+1;
+        if ((flags & YValue) == 0)
+          frame_info.inner_bevel=frame_info.outer_bevel;
+        frame_info.x=frame_info.width;
+        frame_info.y=frame_info.height;
+        frame_info.width=(*image)->columns+(frame_info.width << 1);
+        frame_info.height=(*image)->rows+(frame_info.height << 1);
+        frame_image=FrameImage(*image,&frame_info,&(*image)->exception);
+        if (frame_image == (Image *) NULL)
+          break;
+        DestroyImage(*image);
+        frame_image->storage_class=DirectClass;
+        *image=frame_image;
+        continue;
+      }
+    if (LocaleNCompare("-fuzz",option,3) == 0)
+      {
+        (*image)->fuzz=atof(argv[++i]);
+        continue;
+      }
+    if (LocaleCompare("-font",option) == 0)
+      {
+        i++;
+        (void) CloneString(&clone_info->font,argv[i]);
+        (void) CloneString(&draw_info->font,argv[i]);
+        continue;
+      }
+    if (LocaleNCompare("gamma",option+1,3) == 0)
+      {
+        if (*option == '+')
+          (*image)->gamma=atof(argv[++i]);
+        else
+          GammaImage(*image,argv[++i]);
+        continue;
+      }
+    if (LocaleCompare("gaussian",option+1) == 0)
+      {
+        double
+          radius,
+          sigma;
+
+        Image
+          *blur_image;
+
+        /*
+          Gaussian blur image.
+        */
+        radius=0.0;
+        sigma=1.0;
+        if (*option == '-')
+          (void) sscanf(argv[++i],"%lfx%lf",&radius,&sigma);
+        blur_image=GaussianBlurImage(*image,radius,sigma,&(*image)->exception);
+        if (blur_image == (Image *) NULL)
+          break;
+        DestroyImage(*image);
+        *image=blur_image;
+        continue;
+      }
+    if (LocaleNCompare("-geometry",option,4) == 0)
+      {
+        Image
+          *resize_image;
+
+        /*
+          Resize image.
+        */
+        width=(*image)->columns;
+        height=(*image)->rows;
+        x=0;
+        y=0;
+        (void) CloneString(&geometry,argv[++i]);
+        (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
+        resize_image=ZoomImage(*image,width,height,&(*image)->exception);
+        if (resize_image == (Image *) NULL)
+          break;
+        DestroyImage(*image);
+        *image=resize_image;
+        continue;
+      }
+    if (LocaleNCompare("gravity",option+1,2) == 0)
+      {
+        draw_info->gravity=(GravityType) NorthWestGravity;
+        if (*option == '-')
           {
-            Image
-              *paint_image;
+            option=argv[++i];
+            if (LocaleCompare("NorthWest",option) == 0)
+              draw_info->gravity=(GravityType) NorthWestGravity;
+            if (LocaleCompare("North",option) == 0)
+              draw_info->gravity=(GravityType) NorthGravity;
+            if (LocaleCompare("NorthEast",option) == 0)
+              draw_info->gravity=(GravityType) NorthEastGravity;
+            if (LocaleCompare("West",option) == 0)
+              draw_info->gravity=(GravityType) WestGravity;
+            if (LocaleCompare("Center",option) == 0)
+              draw_info->gravity=(GravityType) CenterGravity;
+            if (LocaleCompare("East",option) == 0)
+              draw_info->gravity=(GravityType) EastGravity;
+            if (LocaleCompare("SouthWest",option) == 0)
+              draw_info->gravity=(GravityType) SouthWestGravity;
+            if (LocaleCompare("South",option) == 0)
+              draw_info->gravity=(GravityType) SouthGravity;
+            if (LocaleCompare("SouthEast",option) == 0)
+              draw_info->gravity=(GravityType) SouthEastGravity;
+          }
+        continue;
+      }
+    if (LocaleNCompare("-implode",option,4) == 0)
+      {
+        double
+          amount;
+
+        Image
+          *implode_image;
+
+        /*
+          Implode image.
+        */
+        amount=atof(argv[++i]);
+        implode_image=ImplodeImage(*image,amount,&(*image)->exception);
+        if (implode_image == (Image *) NULL)
+          break;
+        DestroyImage(*image);
+        *image=implode_image;
+        continue;
+      }
+    if (LocaleNCompare("intent",option+1,5) == 0)
+      {
+        if (*option == '-')
+          {
+            RenderingIntent
+              rendering_intent;
+
+            option=argv[++i];
+            rendering_intent=UndefinedIntent;
+            if (LocaleCompare("Absolute",option) == 0)
+              rendering_intent=AbsoluteIntent;
+            if (LocaleCompare("Perceptual",option) == 0)
+              rendering_intent=PerceptualIntent;
+            if (LocaleCompare("Relative",option) == 0)
+              rendering_intent=RelativeIntent;
+            if (LocaleCompare("Saturation",option) == 0)
+              rendering_intent=SaturationIntent;
+            (*image)->rendering_intent=rendering_intent;
+          }
+        continue;
+      }
+    if (LocaleNCompare("label",option+1,3) == 0)
+      {
+        if (*option == '-')
+          (void) SetImageAttribute(*image,"Label",argv[++i]);
+        else
+          (void) SetImageAttribute(*image,"Label",(char *) NULL);
+        continue;
+      }
+    if (LocaleNCompare("layer",option+1,3) == 0)
+      {
+        LayerType
+          layer;
+
+        layer=UndefinedLayer;
+        if (*option == '-')
+          {
+            option=argv[++i];
+            if (LocaleCompare("Red",option) == 0)
+              layer=RedLayer;
+            if (LocaleCompare("Green",option) == 0)
+              layer=GreenLayer;
+            if (LocaleCompare("Blue",option) == 0)
+              layer=BlueLayer;
+            if (LocaleCompare("Matte",option) == 0)
+              layer=MatteLayer;
+          }
+        LayerImage(*image,layer);
+        continue;
+      }
+    if (LocaleNCompare("-linewidth",option,3) == 0)
+      {
+        draw_info->linewidth=atof(argv[++i]);
+        continue;
+      }
+    if (LocaleCompare("-map",option) == 0)
+      {
+        /*
+          Transform image colors to match this set of colors.
+        */
+        (void) strcpy(clone_info->filename,argv[++i]);
+        map_image=ReadImage(clone_info,&(*image)->exception);
+        continue;
+      }
+    if (LocaleCompare("matte",option+1) == 0)
+      {
+        if (*option == '-')
+          if (!(*image)->matte)
+            MatteImage(*image,OpaqueOpacity);
+        (*image)->matte=(*option == '-');
+        continue;
+      }
+    if (LocaleNCompare("-mattecolor",option,7) == 0)
+      {
+        (void) QueryColorDatabase(argv[++i],&clone_info->matte_color);
+        (*image)->matte_color=clone_info->matte_color;
+        continue;
+      }
+    if (LocaleNCompare("-median",option,4) == 0)
+      {
+        Image
+          *median_image;
+
+        /*
+          Median filter image.
+        */
+        median_image=
+          MedianFilterImage(*image,atoi(argv[++i]),&(*image)->exception);
+        if (median_image == (Image *) NULL)
+          break;
+        DestroyImage(*image);
+        *image=median_image;
+        continue;
+      }
+    if (LocaleNCompare("-modulate",option,4) == 0)
+      {
+        ModulateImage(*image,argv[++i]);
+        continue;
+      }
+    if (LocaleNCompare("-monochrome",option,4) == 0)
+      {
+        clone_info->monochrome=True;
+        quantize_info.number_colors=2;
+        quantize_info.tree_depth=8;
+        quantize_info.colorspace=GRAYColorspace;
+        continue;
+      }
+    if (LocaleNCompare("negate",option+1,3) == 0)
+      {
+        NegateImage(*image,*option == '+');
+        continue;
+      }
+    if (LocaleNCompare("noise",option+1,4) == 0)
+      {
+        Image
+          *noisy_image;
+
+        option=argv[++i];
+        if (*option == '-')
+          noisy_image=
+            ReduceNoiseImage(*image,atoi(option),&(*image)->exception);
+        else
+          {
+            NoiseType
+              noise_type;
 
             /*
-              Oil paint image.
+              Add noise to image.
             */
-            paint_image=OilPaintImage(*image,atoi(argv[++i]),
-              &(*image)->exception);
-            if (paint_image == (Image *) NULL)
-              break;
-            DestroyImage(*image);
-            *image=paint_image;
-            continue;
+            noise_type=UniformNoise;
+            if (LocaleCompare("Gaussian",option) == 0)
+              noise_type=GaussianNoise;
+            if (LocaleCompare("multiplicative",option) == 0)
+              noise_type=MultiplicativeGaussianNoise;
+            if (LocaleCompare("impulse",option) == 0)
+              noise_type=ImpulseNoise;
+            if (LocaleCompare("laplacian",option) == 0)
+              noise_type=LaplacianNoise;
+            if (LocaleCompare("Poisson",option) == 0)
+              noise_type=PoissonNoise;
+            noisy_image=AddNoiseImage(*image,noise_type,&(*image)->exception);
           }
-        if (LocaleCompare("-pen",option) == 0)  /* anachronism */
-          {
-            (void) QueryColorDatabase(argv[++i],&clone_info->stroke);
-            draw_info->stroke=clone_info->stroke;
-            clone_info->fill=clone_info->stroke;
-            draw_info->fill=clone_info->fill;
-            continue;
-          }
-        if (LocaleNCompare("pointsize",option+1,2) == 0)
-          {
-            clone_info->pointsize=atof(argv[++i]);
-            continue;
-          }
+        if (noisy_image == (Image *) NULL)
+          break;
+        DestroyImage(*image);
+        *image=noisy_image;
+        continue;
+      }
+    if (LocaleNCompare("-normalize",option,4) == 0)
+      {
+        NormalizeImage(*image);
+        continue;
+      }
+    if (LocaleNCompare("-opaque",option,3) == 0)
+      {
+        PixelPacket
+          target;
+
+        target=GetOnePixel(*image,0,0);
+        (void) QueryColorDatabase(argv[++i],&target);
+        OpaqueImage(*image,target,draw_info->fill);
+        continue;
+      }
+    if (LocaleNCompare("-paint",option,4) == 0)
+      {
+        Image
+          *paint_image;
+
+        /*
+          Oil paint image.
+        */
+        paint_image=OilPaintImage(*image,atoi(argv[++i]),&(*image)->exception);
+        if (paint_image == (Image *) NULL)
+          break;
+        DestroyImage(*image);
+        *image=paint_image;
+        continue;
+      }
+    if (LocaleCompare("-pen",option) == 0)  /* anachronism */
+      {
+        (void) QueryColorDatabase(argv[++i],&clone_info->stroke);
+        draw_info->stroke=clone_info->stroke;
+        clone_info->fill=clone_info->stroke;
+        draw_info->fill=clone_info->fill;
+        continue;
+      }
+    if (LocaleNCompare("pointsize",option+1,2) == 0)
+      {
+        clone_info->pointsize=atof(argv[++i]);
+        continue;
+      }
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
-        if (LocaleNCompare("-process",option,5) == 0)
+    if (LocaleNCompare("-process",option,5) == 0)
+      {
+        char
+          *arguments,
+          breaker,
+          quote,
+          *token;
+
+        int
+          next,
+          status;
+
+        unsigned int
+          length;
+
+        TokenInfo
+          token_info;
+
+        length=Extent(argv[++i]);
+        token=(char *) AcquireMemory(length+1);
+        if (token == (char *) NULL)
+          continue;
+        next=0;
+        arguments=argv[i];
+        status=Tokenizer(&token_info,0,token,length,arguments,"","=","\"",0,
+          &breaker,&next,&quote);
+        if (status == 0)
           {
             char
-              *arguments,
-              breaker,
-              quote,
-              *token;
+              *argv;
 
-            int
-              next,
-              status;
-
-            unsigned int
-              length;
-
-            TokenInfo
-              token_info;
-
-            length=Extent(argv[++i]);
-            token=(char *) AcquireMemory(length+1);
-            if (token == (char *) NULL)
-              continue;
-            next=0;
-            arguments=argv[i];
-            status=Tokenizer(&token_info,0,token,length,arguments,"","=","\"",0,
-              &breaker,&next,&quote);
-            if (status == 0)
-              {
-                char
-                  *argv;
-
-                argv=&(arguments[next]);
-                ExecuteModuleProcess((const char *) token,*image,1,&argv);
-              }
-            LiberateMemory((void **) &token);
-            continue;
+            argv=&(arguments[next]);
+            ExecuteModuleProcess((const char *) token,*image,1,&argv);
           }
+        LiberateMemory((void **) &token);
+        continue;
+      }
 #endif
-        if (LocaleNCompare("profile",option+1,4) == 0)
-          {
-            if (*option == '+')
-              {
-                /*
-                  Remove a ICC, IPTC, or generic profile from the image.
-                */
-                ProfileImage(*image,argv[++i],(char *) NULL);
-                continue;
-              }
-            /*
-              Add a ICC, IPTC, or generic profile to the image.
-            */
-            ProfileImage(*image,(char *) NULL,argv[++i]);
-            continue;
-          }
-        break;
-      }
-      case 'r':
+    if (LocaleNCompare("profile",option+1,4) == 0)
       {
-        if (LocaleNCompare("raise",option+1,2) == 0)
+        if (*option == '+')
           {
-            RectangleInfo
-              raise_info;
-
             /*
-              Surround image with a raise of solid color.
+              Remove a ICC or IPTC profile from the image.
             */
-            raise_info.width=0;
-            raise_info.height=0;
-            raise_info.x=0;
-            raise_info.y=0;
-            flags=ParseGeometry(argv[++i],&raise_info.x,&raise_info.y,
-              &raise_info.width,&raise_info.height);
-            if ((flags & HeightValue) == 0)
-              raise_info.height=raise_info.width;
-            RaiseImage(*image,&raise_info,*option == '-');
+            option=argv[++i];
+            if (LocaleCompare("icm",option) == 0)
+              ProfileImage(*image,ICMProfile,(const char *) NULL);
+            if (LocaleCompare("iptc",option) == 0)
+              ProfileImage(*image,IPTCProfile,(const char *) NULL);
+            if (LocaleCompare("8bim",option) == 0)
+              ProfileImage(*image,IPTCProfile,(const char *) NULL);
             continue;
           }
-        if (LocaleNCompare("region",option+1,3) == 0)
-          {
-            Image
-              *crop_image;
+        /*
+          Add a ICC or IPTC profile to the image.
+        */
+        ProfileImage(*image,UndefinedProfile,argv[++i]);
+        continue;
+      }
+    if (LocaleNCompare("raise",option+1,2) == 0)
+      {
+        RectangleInfo
+          raise_info;
 
-            if (region_image != (Image *) NULL)
-              {
-                /*
-                  Composite region.
-                */
-                matte=region_image->matte;
-                CompositeImage(region_image,
-                  (*image)->matte ? OverCompositeOp : ReplaceCompositeOp,*image,
-                  region_info.x,region_info.y);
-                DestroyImage(*image);
-                *image=region_image;
-                (*image)->matte=matte;
-              }
-            if (*option == '+')
-              continue;
+        /*
+          Surround image with a raise of solid color.
+        */
+        raise_info.width=0;
+        raise_info.height=0;
+        raise_info.x=0;
+        raise_info.y=0;
+        flags=ParseGeometry(argv[++i],&raise_info.x,&raise_info.y,
+          &raise_info.width,&raise_info.height);
+        if ((flags & HeightValue) == 0)
+          raise_info.height=raise_info.width;
+        RaiseImage(*image,&raise_info,*option == '-');
+        continue;
+      }
+    if (LocaleNCompare("region",option+1,3) == 0)
+      {
+        Image
+          *crop_image;
+
+        if (region_image != (Image *) NULL)
+          {
             /*
-              Apply transformations to a selected region of the image.
+              Composite region.
             */
-            width=(*image)->columns;
-            height=(*image)->rows;
-            region_info.x=0;
-            region_info.y=0;
-            flags=ParseGeometry(argv[++i],&region_info.x,&region_info.y,
-              &width,&height);
-            if ((flags & WidthValue) == 0)
-              width=(unsigned int) ((int) (*image)->columns-region_info.x);
-            if ((flags & HeightValue) == 0)
-              height=(unsigned int) ((int) (*image)->rows-region_info.y);
-            if ((width != 0) || (height != 0))
-              {
-                if ((flags & XNegative) != 0)
-                  region_info.x+=(*image)->columns-width;
-                if ((flags & YNegative) != 0)
-                  region_info.y+=(*image)->rows-height;
-              }
-            if (strchr(argv[i],'%') != (char *) NULL)
-              {
-                /*
-                  Region geometry is relative to image size.
-                */
-                x=0;
-                y=0;
-                (void) ParseImageGeometry(argv[i],&x,&y,&width,&height);
-                if (width > (*image)->columns)
-                  width=(*image)->columns;
-                if (height > (*image)->rows)
-                  height=(*image)->rows;
-                region_info.x=width >> 1;
-                region_info.y=height >> 1;
-                width=(*image)->columns-width;
-                height=(*image)->rows-height;
-                flags|=XValue | YValue;
-              }
-            region_info.width=width;
-            region_info.height=height;
-            crop_image=CropImage(*image,&region_info,&(*image)->exception);
-            if (crop_image == (Image *) NULL)
-              break;
-            region_image=(*image);
-            *image=crop_image;
-            continue;
+            matte=region_image->matte;
+            CompositeImage(region_image,
+              (*image)->matte ? OverCompositeOp : ReplaceCompositeOp,*image,
+              region_info.x,region_info.y);
+            DestroyImage(*image);
+            *image=region_image;
+            (*image)->matte=matte;
           }
-        if (LocaleNCompare("-roll",option,4) == 0)
+        if (*option == '+')
+          continue;
+        /*
+          Apply transformations to a selected region of the image.
+        */
+        width=(*image)->columns;
+        height=(*image)->rows;
+        region_info.x=0;
+        region_info.y=0;
+        flags=ParseGeometry(argv[++i],&region_info.x,&region_info.y,
+          &width,&height);
+        if ((flags & WidthValue) == 0)
+          width=(unsigned int) ((int) (*image)->columns-region_info.x);
+        if ((flags & HeightValue) == 0)
+          height=(unsigned int) ((int) (*image)->rows-region_info.y);
+        if ((width != 0) || (height != 0))
           {
-            Image
-              *roll_image;
-
+            if ((flags & XNegative) != 0)
+              region_info.x+=(*image)->columns-width;
+            if ((flags & YNegative) != 0)
+              region_info.y+=(*image)->rows-height;
+          }
+        if (strchr(argv[i],'%') != (char *) NULL)
+          {
             /*
-              Roll image.
+              Region geometry is relative to image size.
             */
             x=0;
             y=0;
-            flags=ParseGeometry(argv[++i],&x,&y,&width,&height);
-            roll_image=RollImage(*image,x,y,&(*image)->exception);
-            if (roll_image == (Image *) NULL)
-              break;
-            DestroyImage(*image);
-            *image=roll_image;
-            continue;
+            (void) ParseImageGeometry(argv[i],&x,&y,&width,&height);
+            if (width > (*image)->columns)
+              width=(*image)->columns;
+            if (height > (*image)->rows)
+              height=(*image)->rows;
+            region_info.x=width >> 1;
+            region_info.y=height >> 1;
+            width=(*image)->columns-width;
+            height=(*image)->rows-height;
+            flags|=XValue | YValue;
           }
-        if (LocaleNCompare("-rotate",option,4) == 0)
-          {
-            double
-              degrees;
-
-            Image
-              *rotate_image;
-
-            /*
-              Check for conditional image rotation.
-            */
-            i++;
-            if (strchr(argv[i],'>') != (char *) NULL)
-              if ((*image)->columns <= (*image)->rows)
-                break;
-            if (strchr(argv[i],'<') != (char *) NULL)
-              if ((*image)->columns >= (*image)->rows)
-                break;
-            /*
-              Rotate image.
-            */
-            degrees=atof(argv[i]);
-            rotate_image=RotateImage(*image,degrees,&(*image)->exception);
-            if (rotate_image == (Image *) NULL)
-              break;
-            DestroyImage(*image);
-            *image=rotate_image;
-            continue;
-          }
-        break;
+        region_info.width=width;
+        region_info.height=height;
+        crop_image=CropImage(*image,&region_info,&(*image)->exception);
+        if (crop_image == (Image *) NULL)
+          break;
+        region_image=(*image);
+        *image=crop_image;
+        continue;
       }
-      case 's':
+    if (LocaleNCompare("-roll",option,4) == 0)
       {
-        if (LocaleNCompare("-sample",option,3) == 0)
-          {
-            Image
-              *sample_image;
+        Image
+          *roll_image;
 
-            /*
-              Sample image with pixel replication.
-            */
-            width=(*image)->columns;
-            height=(*image)->rows;
-            x=0;
-            y=0;
-            (void) ParseImageGeometry(argv[++i],&x,&y,&width,&height);
-            sample_image=SampleImage(*image,width,height,&(*image)->exception);
-            if (sample_image == (Image *) NULL)
-              break;
-            DestroyImage(*image);
-            *image=sample_image;
-            continue;
-          }
-        if (LocaleNCompare("sans",option+1,2) == 0)
-          if (*option == '-')
-            i++;
-        if (LocaleNCompare("-scale",option,4) == 0)
-          {
-            Image
-              *scale_image;
-
-            /*
-              Resize image.
-            */
-            width=(*image)->columns;
-            height=(*image)->rows;
-            x=0;
-            y=0;
-            (void) CloneString(&geometry,argv[++i]);
-            (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
-            scale_image=ScaleImage(*image,width,height,&(*image)->exception);
-            if (scale_image == (Image *) NULL)
-              break;
-            DestroyImage(*image);
-            *image=scale_image;
-            continue;
-          }
-        if (LocaleCompare("-scene",option) == 0)
-          {
-            (*image)->scene=atoi(argv[++i]);
-            continue;
-          }
-        if (LocaleNCompare("-segment",option,4) == 0)
-          {
-            double
-              cluster_threshold,
-              smoothing_threshold;
-
-            /*
-              Segment image.
-            */
-            cluster_threshold=1.0;
-            smoothing_threshold=1.5;
-            (void) sscanf(argv[++i],"%lfx%lf",&cluster_threshold,
-              &smoothing_threshold);
-            (void) SegmentImage(*image,quantize_info.colorspace,
-              clone_info->verbose,cluster_threshold,smoothing_threshold);
-            continue;
-          }
-        if (LocaleNCompare("shade",option+1,5) == 0)
-          {
-            double
-              azimuth,
-              elevation;
-
-            Image
-              *shade_image;
-
-            /*
-              Shade image.
-            */
-            azimuth=30.0;
-            elevation=30.0;
-            (void) sscanf(argv[++i],"%lfx%lf",&azimuth,&elevation);
-            shade_image=ShadeImage(*image,*option == '-',azimuth,
-              elevation,&(*image)->exception);
-            if (shade_image == (Image *) NULL)
-              break;
-            DestroyImage(*image);
-            *image=shade_image;
-            continue;
-          }
-        if (LocaleNCompare("-sharpen",option,5) == 0)
-          {
-            double
-              radius,
-              sigma;
-
-            Image
-              *sharp_image;
-
-            /*
-              Gaussian sharpen image.
-            */
-            radius=0.0;
-            sigma=1.0;
-            if (*option == '-')
-              (void) sscanf(argv[++i],"%lfx%lf",&radius,&sigma);
-            sharp_image=SharpenImage(*image,radius,sigma,&(*image)->exception);
-            if (sharp_image == (Image *) NULL)
-              break;
-            DestroyImage(*image);
-            *image=sharp_image;
-            continue;
-          }
-        if (LocaleNCompare("-shear",option,4) == 0)
-          {
-            double
-              x_shear,
-              y_shear;
-
-            Image
-              *shear_image;
-
-            /*
-              Shear image.
-            */
-            x_shear=0.0;
-            y_shear=0.0;
-            (void) sscanf(argv[++i],"%lfx%lf",&x_shear,&y_shear);
-            shear_image=ShearImage(*image,x_shear,y_shear,&(*image)->exception);
-            if (shear_image == (Image *) NULL)
-              break;
-            DestroyImage(*image);
-            shear_image->storage_class=DirectClass;
-            *image=shear_image;
-            continue;
-          }
-        if (LocaleNCompare("-solarize",option,3) == 0)
-          {
-            SolarizeImage(*image,atof(argv[++i]));
-            continue;
-          }
-        if (LocaleNCompare("-spread",option,3) == 0)
-          {
-            unsigned int
-              amount;
-
-            Image
-              *spread_image;
-
-            /*
-              Spread an image.
-            */
-            amount=atoi(argv[++i]);
-            spread_image=SpreadImage(*image,amount,&(*image)->exception);
-            if (spread_image == (Image *) NULL)
-              break;
-            DestroyImage(*image);
-            *image=spread_image;
-            continue;
-          }
-        if (LocaleCompare("-stroke",option) == 0)
-          {
-            (void) QueryColorDatabase(argv[++i],&clone_info->stroke);
-            draw_info->stroke=clone_info->stroke;
-            continue;
-          }
-        if (LocaleNCompare("-swirl",option,3) == 0)
-          {
-            double
-              degrees;
-
-            Image
-              *swirl_image;
-
-            /*
-              Swirl image.
-            */
-            degrees=atof(argv[++i]);
-            swirl_image=SwirlImage(*image,degrees,&(*image)->exception);
-            if (swirl_image == (Image *) NULL)
-              break;
-            DestroyImage(*image);
-            *image=swirl_image;
-            continue;
-          }
-        break;
+        /*
+          Roll image.
+        */
+        x=0;
+        y=0;
+        flags=ParseGeometry(argv[++i],&x,&y,&width,&height);
+        roll_image=RollImage(*image,x,y,&(*image)->exception);
+        if (roll_image == (Image *) NULL)
+          break;
+        DestroyImage(*image);
+        *image=roll_image;
+        continue;
       }
-      case 't':
+    if (LocaleNCompare("-rotate",option,4) == 0)
       {
-        if (LocaleNCompare("-threshold",option,3) == 0)
-          {
-            double
-              threshold;
+        double
+          degrees;
 
-            /*
-              Threshold image.
-            */
-            threshold=atof(argv[++i]);
-            ThresholdImage(*image,threshold);
-            continue;
-          }
-        if (LocaleCompare("-tile",option) == 0)
-          {
-            ExceptionInfo
-              exception;
+        Image
+          *rotate_image;
 
-            (void) strcpy(clone_info->filename,argv[++i]);
-            draw_info->tile=ReadImage(clone_info,&exception);
-            continue;
-          }
-        if (LocaleNCompare("-transparent",option,8) == 0)
-          {
-            PixelPacket
-              target;
-
-            target=GetOnePixel(*image,0,0);
-            (void) QueryColorDatabase(argv[++i],&target);
-            TransparentImage(*image,target);
-            continue;
-          }
-        if (LocaleNCompare("-treedepth",option,4) == 0)
-          {
-            quantize_info.tree_depth=atoi(argv[++i]);
-            continue;
-          }
-        break;
+        /*
+          Check for conditional image rotation.
+        */
+        i++;
+        if (strchr(argv[i],'>') != (char *) NULL)
+          if ((*image)->columns <= (*image)->rows)
+            break;
+        if (strchr(argv[i],'<') != (char *) NULL)
+          if ((*image)->columns >= (*image)->rows)
+            break;
+        /*
+          Rotate image.
+        */
+        degrees=atof(argv[i]);
+        rotate_image=RotateImage(*image,degrees,&(*image)->exception);
+        if (rotate_image == (Image *) NULL)
+          break;
+        DestroyImage(*image);
+        *image=rotate_image;
+        continue;
       }
-      case 'u':
+    if (LocaleNCompare("-sample",option,3) == 0)
       {
-        if (LocaleNCompare("units",option+1,3) == 0)
-          {
-            (*image)->units=UndefinedResolution;
-            if (*option == '-')
-              {
-                option=argv[++i];
-                if (LocaleCompare("PixelsPerInch",option) == 0)
-                  (*image)->units=PixelsPerInchResolution;
-                if (LocaleCompare("PixelsPerCentimeter",option) == 0)
-                  (*image)->units=PixelsPerCentimeterResolution;
-              }
-            continue;
-          }
-        break;
-      }
-      case 'v':
-      {
-        if (LocaleNCompare("verbose",option+1,3) == 0)
-          {
-            clone_info->verbose=(*option == '-');
-            quantize_info.measure_error=(*option == '-');
-            continue;
-          }
-        break;
-      }
-      case 'w':
-      {
-        if (LocaleCompare("wave",option+1) == 0)
-          {
-            double
-              amplitude,
-              wavelength;
+        Image
+          *sample_image;
 
-            Image
-              *wave_image;
-
-            /*
-              Wave image.
-            */
-            amplitude=25.0;
-            wavelength=150.0;
-            if (*option == '-')
-              (void) sscanf(argv[++i],"%lfx%lf",&amplitude,&wavelength);
-            wave_image=WaveImage(*image,amplitude,wavelength,
-              &(*image)->exception);
-            if (wave_image == (Image *) NULL)
-              break;
-            DestroyImage(*image);
-            *image=wave_image;
-            continue;
-          }
-        break;
+        /*
+          Sample image with pixel replication.
+        */
+        width=(*image)->columns;
+        height=(*image)->rows;
+        x=0;
+        y=0;
+        (void) ParseImageGeometry(argv[++i],&x,&y,&width,&height);
+        sample_image=SampleImage(*image,width,height,&(*image)->exception);
+        if (sample_image == (Image *) NULL)
+          break;
+        DestroyImage(*image);
+        *image=sample_image;
+        continue;
       }
-      default:
-        break;
-    }
+    if (LocaleNCompare("sans",option+1,2) == 0)
+      if (*option == '-')
+        i++;
+    if (LocaleNCompare("-scale",option,4) == 0)
+      {
+        Image
+          *scale_image;
+
+        /*
+          Resize image.
+        */
+        width=(*image)->columns;
+        height=(*image)->rows;
+        x=0;
+        y=0;
+        (void) CloneString(&geometry,argv[++i]);
+        (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
+        scale_image=ScaleImage(*image,width,height,&(*image)->exception);
+        if (scale_image == (Image *) NULL)
+          break;
+        DestroyImage(*image);
+        *image=scale_image;
+        continue;
+      }
+    if (LocaleCompare("-scene",option) == 0)
+      {
+        (*image)->scene=atoi(argv[++i]);
+        continue;
+      }
+    if (LocaleNCompare("-segment",option,4) == 0)
+      {
+        double
+          cluster_threshold,
+          smoothing_threshold;
+
+        /*
+          Segment image.
+        */
+        cluster_threshold=1.0;
+        smoothing_threshold=1.5;
+        (void) sscanf(argv[++i],"%lfx%lf",&cluster_threshold,
+          &smoothing_threshold);
+        (void) SegmentImage(*image,quantize_info.colorspace,clone_info->verbose,
+          cluster_threshold,smoothing_threshold);
+        continue;
+      }
+    if (LocaleNCompare("shade",option+1,5) == 0)
+      {
+        double
+          azimuth,
+          elevation;
+
+        Image
+          *shade_image;
+
+        /*
+          Shade image.
+        */
+        azimuth=30.0;
+        elevation=30.0;
+        (void) sscanf(argv[++i],"%lfx%lf",&azimuth,&elevation);
+        shade_image=ShadeImage(*image,*option == '-',azimuth,
+          elevation,&(*image)->exception);
+        if (shade_image == (Image *) NULL)
+          break;
+        DestroyImage(*image);
+        *image=shade_image;
+        continue;
+      }
+    if (LocaleNCompare("-sharpen",option,5) == 0)
+      {
+        double
+          radius,
+          sigma;
+
+        Image
+          *sharp_image;
+
+        /*
+          Gaussian sharpen image.
+        */
+        radius=0.0;
+        sigma=1.0;
+        if (*option == '-')
+          (void) sscanf(argv[++i],"%lfx%lf",&radius,&sigma);
+        sharp_image=SharpenImage(*image,radius,sigma,&(*image)->exception);
+        if (sharp_image == (Image *) NULL)
+          break;
+        DestroyImage(*image);
+        *image=sharp_image;
+        continue;
+      }
+    if (LocaleNCompare("-shear",option,4) == 0)
+      {
+        double
+          x_shear,
+          y_shear;
+
+        Image
+          *shear_image;
+
+        /*
+          Shear image.
+        */
+        x_shear=0.0;
+        y_shear=0.0;
+        (void) sscanf(argv[++i],"%lfx%lf",&x_shear,&y_shear);
+        shear_image=ShearImage(*image,x_shear,y_shear,&(*image)->exception);
+        if (shear_image == (Image *) NULL)
+          break;
+        DestroyImage(*image);
+        shear_image->storage_class=DirectClass;
+        *image=shear_image;
+        continue;
+      }
+    if (LocaleNCompare("-solarize",option,3) == 0)
+      {
+        SolarizeImage(*image,atof(argv[++i]));
+        continue;
+      }
+    if (LocaleNCompare("-spread",option,3) == 0)
+      {
+        unsigned int
+          amount;
+
+        Image
+          *spread_image;
+
+        /*
+          Spread an image.
+        */
+        amount=atoi(argv[++i]);
+        spread_image=SpreadImage(*image,amount,&(*image)->exception);
+        if (spread_image == (Image *) NULL)
+          break;
+        DestroyImage(*image);
+        *image=spread_image;
+        continue;
+      }
+    if (LocaleCompare("-stroke",option) == 0)
+      {
+        (void) QueryColorDatabase(argv[++i],&clone_info->stroke);
+        draw_info->stroke=clone_info->stroke;
+        continue;
+      }
+    if (LocaleNCompare("-swirl",option,3) == 0)
+      {
+        double
+          degrees;
+
+        Image
+          *swirl_image;
+
+        /*
+          Swirl image.
+        */
+        degrees=atof(argv[++i]);
+        swirl_image=SwirlImage(*image,degrees,&(*image)->exception);
+        if (swirl_image == (Image *) NULL)
+          break;
+        DestroyImage(*image);
+        *image=swirl_image;
+        continue;
+      }
+    if (LocaleNCompare("-threshold",option,3) == 0)
+      {
+        double
+          threshold;
+
+        /*
+          Threshold image.
+        */
+        threshold=atof(argv[++i]);
+        ThresholdImage(*image,threshold);
+        continue;
+      }
+    if (LocaleNCompare("-transparent",option,8) == 0)
+      {
+        PixelPacket
+          target;
+
+        target=GetOnePixel(*image,0,0);
+        (void) QueryColorDatabase(argv[++i],&target);
+        TransparentImage(*image,target);
+        continue;
+      }
+    if (LocaleNCompare("-treedepth",option,4) == 0)
+      {
+        quantize_info.tree_depth=atoi(argv[++i]);
+        continue;
+      }
+    if (LocaleNCompare("units",option+1,3) == 0)
+      {
+        (*image)->units=UndefinedResolution;
+        if (*option == '-')
+          {
+            option=argv[++i];
+            if (LocaleCompare("PixelsPerInch",option) == 0)
+              (*image)->units=PixelsPerInchResolution;
+            if (LocaleCompare("PixelsPerCentimeter",option) == 0)
+              (*image)->units=PixelsPerCentimeterResolution;
+          }
+        continue;
+      }
+    if (LocaleNCompare("verbose",option+1,3) == 0)
+      {
+        clone_info->verbose=(*option == '-');
+        quantize_info.measure_error=(*option == '-');
+        continue;
+      }
+    if (LocaleCompare("wave",option+1) == 0)
+      {
+        double
+          amplitude,
+          wavelength;
+
+        Image
+          *wave_image;
+
+        /*
+          Wave image.
+        */
+        amplitude=25.0;
+        wavelength=150.0;
+        if (*option == '-')
+          (void) sscanf(argv[++i],"%lfx%lf",&amplitude,&wavelength);
+        wave_image=WaveImage(*image,amplitude,wavelength,&(*image)->exception);
+        if (wave_image == (Image *) NULL)
+          break;
+        DestroyImage(*image);
+        *image=wave_image;
+        continue;
+      }
   }
   if (region_image != (Image *) NULL)
     {
@@ -5112,6 +5042,12 @@ MagickExport unsigned int RGBTransformImage(Image *image,
     return(True);
   if (colorspace == CMYKColorspace)
     {
+      Quantum
+        black,
+        cyan,
+        magenta,
+        yellow;
+
       /*
         Convert RGB to CMYK colorspace.
       */
@@ -5123,10 +5059,18 @@ MagickExport unsigned int RGBTransformImage(Image *image,
           break;
         for (x=0; x < (int) image->columns; x++)
         {
-          q->opacity=Min(Min(MaxRGB-q->red,MaxRGB-q->green),MaxRGB-q->blue);
-          q->red=MaxRGB-q->red-q->opacity;
-          q->green=MaxRGB-q->green-q->opacity;
-          q->blue=MaxRGB-q->blue-q->opacity;
+          cyan=MaxRGB-q->red;
+          magenta=MaxRGB-q->green;
+          yellow=MaxRGB-q->blue;
+          black=cyan;
+          if (magenta < black)
+            black=magenta;
+          if (yellow < black)
+            black=yellow;
+          q->red=cyan;
+          q->green=magenta;
+          q->blue=yellow;
+          q->opacity=black;
           q++;
         }
         if (!SyncImagePixels(image))
@@ -5719,8 +5663,6 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       */
       (void) strncpy(magic,image_info->filename,p-image_info->filename);
       magic[p-image_info->filename]='\0';
-      if (LocaleCompare(magic,"GRADATION") == 0)
-        (void) strcpy(magic,"GRADIENT");
       LocaleUpper(magic);
 #if defined(macintosh) || defined(WIN32) || defined(vms)
       if (!ImageFormatConflict(magic))
@@ -5880,7 +5822,8 @@ MagickExport unsigned int SortColormapByIntensity(Image *image)
   /*
     Allocate memory for pixel indexes.
   */
-  pixels=(unsigned short *) AcquireMemory(image->colors*sizeof(unsigned short));
+  pixels=(unsigned short *)
+    AcquireMemory(image->colors*sizeof(unsigned short));
   if (pixels == (unsigned short *) NULL)
     ThrowBinaryException(MissingDelegateWarning,"Unable to sort colormap",
       "Memory allocation failed");
@@ -6239,10 +6182,11 @@ MagickExport unsigned int TransformRGBImage(Image *image,
   assert(image->signature == MagickSignature);
   if ((image->colorspace == CMYKColorspace) && (colorspace == RGBColorspace))
     {
-      double
-        blue,
-        green,
-        red;
+      unsigned int
+        black,
+        cyan,
+        magenta,
+        yellow;
 
       /*
         Transform image from CMYK to RGB.
@@ -6255,15 +6199,23 @@ MagickExport unsigned int TransformRGBImage(Image *image,
           break;
         for (x=0; x < (int) image->columns; x++)
         {
-          red=MaxRGB-(double) (q->red+q->opacity);
-          green=MaxRGB-(double) (q->green+q->opacity);
-          blue=MaxRGB-(double) (q->blue+q->opacity);
-          q->red=(Quantum) ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
-          q->green=(Quantum)
-            ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
-          q->blue=(Quantum)
-            ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
-          q->opacity=OpaqueOpacity;
+          cyan=q->red;
+          magenta=q->green;
+          yellow=q->blue;
+          black=q->opacity;
+          if ((cyan+black) > MaxRGB)
+            q->red=0;
+          else
+            q->red=MaxRGB-(cyan+black);
+          if ((magenta+black) > MaxRGB)
+            q->green=0;
+          else
+            q->green=MaxRGB-(magenta+black);
+          if ((yellow+black) > MaxRGB)
+            q->blue=0;
+          else
+            q->blue=MaxRGB-(yellow+black);
+          q->opacity=0;
           q++;
         }
         if (!SyncImagePixels(image))
