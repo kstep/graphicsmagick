@@ -1601,7 +1601,7 @@ MagickExport unsigned int MapImages(Image *images,const Image *map_image,
       /*
         Create a global colormap for an image sequence.
       */
-      for ( ; image != (Image *) NULL; image=GetNextImage(image))
+      for ( ; image != (Image *) NULL; image=image->next)
         if (image->matte)
           quantize_info.colorspace=TransparentColorspace;
       status=QuantizeImages(&quantize_info,images);
@@ -1621,7 +1621,7 @@ MagickExport unsigned int MapImages(Image *images,const Image *map_image,
         Classify image colors from the reference image.
       */
       quantize_info.number_colors=cube_info->colors;
-      for (image=images; image != (Image *) NULL; image=GetNextImage(image))
+      for (image=images; image != (Image *) NULL; image=image->next)
       {
         quantize_info.colorspace=image->matte ? TransparentColorspace :
           RGBColorspace;
@@ -2129,7 +2129,7 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
       if (quantize_info->dither)
         depth--;
       pseudo_class=True;
-      for (image=images; image != (Image *) NULL; image=GetNextImage(image))
+      for (image=images; image != (Image *) NULL; image=image->next)
         pseudo_class|=(image->storage_class == PseudoClass);
       if (pseudo_class)
         depth+=2;
@@ -2146,7 +2146,7 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
   {
     if (quantize_info->colorspace != RGBColorspace)
       (void) RGBTransformImage(image,quantize_info->colorspace);
-    image=GetNextImage(image);
+    image=image->next;
   }
   number_images=i;
   image=images;
@@ -2156,7 +2156,7 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
     status=Classification(cube_info,image,&image->exception);
     if (status == False)
       break;
-    image=GetNextImage(image);
+    image=image->next;
     (void) SetMonitorHandler(handler);
     MagickMonitor(ClassifyImageText,i,number_images);
   }
@@ -2175,7 +2175,7 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
           break;
         if (quantize_info->colorspace != RGBColorspace)
           (void) TransformRGBImage(image,quantize_info->colorspace);
-        image=GetNextImage(image);
+        image=image->next;
         (void) SetMonitorHandler(handler);
         MagickMonitor(AssignImageText,i,number_images);
       }
