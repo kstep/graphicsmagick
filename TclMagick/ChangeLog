@@ -1,3 +1,10 @@
+2004-12-18  David N. Welton  <davidw@dedasys.com>
+
+	* tests/test-bmp-compare.tcl: New tests, thanks to Sheila Miguez.
+
+	* images/*.bmp: Added some bitmap images from Sheila for the
+	comparison test.
+
 2004-12-16  David N. Welton  <davidw@dedasys.com>
 
 	* generic/TkMagick.c (MagickToPhoto): Added ifdef'ed
