@@ -1,3 +1,8 @@
+2002-03-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+        * Updated to autoconf 2.53
+        * Updated to automake 1.6
+
 2002-03-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Expanded tabs in sources to spaces (two spaces per tab) and
