@@ -1,3 +1,6 @@
+2002-09-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * Update to Autoconf 2.54.
+
 2002-08-08  Cristy  <cristy@mystic.es.dupont.com>
   * Added logging capabilities to the CORE API.  This facility is useful
     for debugging.

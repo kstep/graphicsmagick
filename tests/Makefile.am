@@ -341,8 +341,8 @@ check-rwfile-sized:
 	exit $$status
 
 check-drawtest:
-	./drawtest drawtest_out.miff
-	./drawtest drawtest_out.mvg
-	./drawtest drawtest_out.svg
+	-./drawtest drawtest_out.miff
+	-./drawtest drawtest_out.mvg
+	-./drawtest drawtest_out.svg
 
 check: check-drawtest check-rwfile check-rwfile-sized check-rwblob check-rwblob-sized
