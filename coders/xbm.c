@@ -239,7 +239,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (sscanf(buffer,"static short %s = {",name) == 1)
       version=10;
     else
-      if (sscanf(buffer,"static unsigned char %.1024s = {",name) == 1)
+      if (sscanf(buffer,"static unsigned char %s = {",name) == 1)
         version=11;
       else
         if (sscanf(buffer,"static char %s = {",name) == 1)
