@@ -1018,7 +1018,6 @@ static CoderInfo *RegisterModule(CoderInfo *entry,ExceptionInfo *exception)
   assert(entry != (CoderInfo *) NULL);
   assert(entry->signature == MagickSignature);
   AcquireSemaphoreInfo(&module_semaphore);
-  (void) UnregisterModule(entry->tag,exception);
   entry->previous=(CoderInfo *) NULL;
   entry->next=(CoderInfo *) NULL;
   if (coder_list == (CoderInfo *) NULL)
@@ -1036,6 +1035,14 @@ static CoderInfo *RegisterModule(CoderInfo *entry,ExceptionInfo *exception)
   for (p=coder_list; p->next != (CoderInfo *) NULL; p=p->next)
     if (LocaleCompare(p->tag,entry->tag) >= 0)
       break;
+  if (LocaleCompare(p->tag,entry->tag) == 0)
+    {
+      /*
+        Module already registered.
+      */
+      LiberateSemaphoreInfo(&module_semaphore);
+      return(entry);
+    }
   if (LocaleCompare(p->tag,entry->tag) < 0)
     {
       /*
