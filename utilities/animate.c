@@ -420,8 +420,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if (i == argc)
-                  ThrowCompositeException(OptionError,"Missing password",
-                    option);
+                  MagickFatalError(OptionError,"Missing password",option);
                 (void) CloneString(&image_info->authenticate,argv[i]);
               }
             break;
