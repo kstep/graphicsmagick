@@ -1166,6 +1166,13 @@ unsigned int CompositeUtility(int argc,char **argv)
                 }
               break;
             }
+          if (LocaleCompare("sharpen",option+1) == 0)
+            {
+              i++;
+              if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                MagickError(OptionError,"Missing geometry",option);
+              break;
+            }
           if (LocaleCompare("size",option+1) == 0)
             {
               (void) CloneString(&image_info->size,(char *) NULL);
