@@ -1448,6 +1448,7 @@ MagickExport void FormatString(char *string,const char *format,...)
 */
 MagickExport unsigned int GetExecutionPath(char *path)
 {
+  *path='\0';
 #if defined(WIN32)
   return(NTGetExecutionPath(path));
 #endif
