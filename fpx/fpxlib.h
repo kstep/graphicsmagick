@@ -22,7 +22,8 @@
 		unsigned short Data3;
 		unsigned char  Data4[8];
 	} XGUID;
-	typedef XGUID CLSID;
+	//typedef XGUID CLSID;
+  #define CLSID XGUID
 
 	#ifndef FARSTRUCT
 		#define FARSTRUCT
