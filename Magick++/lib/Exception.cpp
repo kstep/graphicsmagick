@@ -8,6 +8,7 @@
 #define MAGICK_IMPLEMENTATION
 
 #include <string>
+#include <iostream>
 
 using namespace std;
 

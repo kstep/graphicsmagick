@@ -14,11 +14,11 @@
 
 #include <string>
 #include <exception>
+#include <iosfwd> // iostreams forward declarations
 #include "Magick++/Include.h"
 
 namespace Magick
 {
-
   class Exception : public std::exception
   {
     friend std::ostream& operator<<(std::ostream& stream_, const Exception& exception_);

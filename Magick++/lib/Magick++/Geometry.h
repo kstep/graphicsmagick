@@ -11,7 +11,7 @@
 #define Geometry_header
 
 #include <string>
-#include <iostream>
+#include <iosfwd> // iostreams forward declarations
 
 #include "Magick++/Include.h"
 
