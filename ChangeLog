@@ -15,6 +15,9 @@
 	used to initialize logging.
 	(IsLogAccessible): No longer need this duplicate of IsAccessible().
 	(SetLogEventMask): Use  InitializeLogInfo().
+	* coders/fpx.c (ReadFPXImage): FlashPIX library does not support
+	BLOB I/O so don't use OpenBlob/CloseBlob.  Opening the blob caused
+	a conflict when the FlashPIX library attempted to open the file.
 
 2003-03-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
