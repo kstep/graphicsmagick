@@ -374,7 +374,7 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image **image,
   return(status);
 #else
   return(ExecuteStaticModuleProcess(tag,image,argc,argv));
-#endif
+#endif /* defined(SupportMagickModules) */
 }
 
 /*
@@ -842,7 +842,7 @@ static void *GetModuleBlob(const char *filename,char *path,size_t *length,
             }
         }
     }
-#endif
+#endif /* defined(WIN32) */
   return (blob);
 }
 #endif /* #if defined(SupportMagickModules) */
@@ -1132,7 +1132,7 @@ MagickExport unsigned int OpenModule(const char *module,
       }
     coder_info->register_function();
   }
-#endif
+#endif /* defined(SupportMagickModules) */
   return(True);
 }
 
@@ -1190,7 +1190,7 @@ MagickExport unsigned int OpenModules(ExceptionInfo *exception)
       MagickFreeMemory(modules[i]);
     MagickFreeMemory(modules);
   }
-#endif
+#endif /* defined(SupportMagickModules) */
   return(True);
 }
 
@@ -1380,7 +1380,7 @@ static unsigned int ReadConfigureFile(const char *basename,
     module_list=module_list->previous;
   return(True);
 }
-#endif
+#endif /* defined(SupportMagickModules) */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

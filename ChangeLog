@@ -1,5 +1,7 @@
 2003-10-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* VisualMagick/magick/magick_config.h.in: Added
+	PREFIX_MAGICK_SYMBOLS as a configuration option.
 	* magick/module.c (_CoderInfo): Added register_function and
 	unregister_function members to record the module's register and
 	unregister function addresses.
