@@ -53,12 +53,38 @@
 </tr>
 </table>
 <p>
+2003-05-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/modules.mgk: Support the IMAGE: format via the LOGO
+        module.<BR>
+  <LI> win2k/IMDisplay/IMDisplayView.cpp (DoDisplayImage):
+        Transparent tile is created by reading "tile:image:transparent".
+  <LI> coders/logo.c (ReadLOGOImage): Add IMAGE: format to front for
+        embedded images so that adding new images doesn't proliferate coder
+        registrations. Legacy logo magick names (GRANITE, LOGO, NETSCAPE,
+        and ROSE) are still supported, but they are also available in the
+        IMAGE file space (e.g. IMAGE:ROSE).
+
+</UL>
+<p>
+2003-05-09  William Radcliffe  &lt;billr@corbis.com&gt;
+
+<UL>
+  <LI> VisualMagick\configure : Further refinements that support both
+        the new "big" library and the normal dynamic DLL buidling styles.
+
+</UL>
+<p>
 2003-05-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
-  <LI> coders/logo.c (ReadLOGOImage): Added a "TRANSPARENT:" pattern
+  <LI> coders/logo.c (ReadLOGOImage): Added a "TRANSPARENT" pattern
         image which can be tiled to form the background of transparent
-        images.
+        images.<BR>
+  <LI> win32/IMDisplay/IMDisplayView.cpp: When displaying images which
+        include an opacity channel, use a checker-board pattern as the
+        image background so non-opaque pixels become evident.
 
 </UL>
 <p>

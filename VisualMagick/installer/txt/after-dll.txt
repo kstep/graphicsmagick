@@ -1,7 +1,7 @@
 You have now installed GraphicsMagick. To test the installation select "Command
 Prompt" from the Windows Start menu. Within the window type
     
-        gm convert logo: logo.miff
+        gm convert image:logo logo.miff
         gmdisplay logo.miff
     
 and the GraphicsMagick logo should be displayed in a window.

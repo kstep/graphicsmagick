@@ -1,3 +1,15 @@
+2003-05-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/modules.mgk: Support the IMAGE: format via the LOGO
+	module.
+	* win2k/IMDisplay/IMDisplayView.cpp (DoDisplayImage):
+	Transparent tile is created by reading "tile:image:transparent".
+	* coders/logo.c (ReadLOGOImage): Add IMAGE: format to front for
+	embedded images so that adding new images doesn't proliferate coder
+	registrations. Legacy logo magick names (GRANITE, LOGO, NETSCAPE,
+	and ROSE) are still supported, but they are also available in the
+	IMAGE file space (e.g. IMAGE:ROSE).
+
 2003-05-09  William Radcliffe  <billr@corbis.com>
 
 	* VisualMagick\configure : Further refinements that support both
@@ -5,7 +17,7 @@
 
 2003-05-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* coders/logo.c (ReadLOGOImage): Added a "TRANSPARENT:" pattern
+	* coders/logo.c (ReadLOGOImage): Added a "TRANSPARENT" pattern
 	image which can be tiled to form the background of transparent
 	images.
 	* win32/IMDisplay/IMDisplayView.cpp: When displaying images which

@@ -5093,6 +5093,25 @@ static const unsigned char
     0x1E, 0xE8, 0x54, 0x5A, 0xA5, 0x6A, 0xAC, 0x9E, 0x02, 0x00, 0x3B, 
   };
 
+
+typedef struct _EmbeddedImage
+{
+  char          name[MaxTextExtent];    /* image name */
+  char          magick[MaxTextExtent];	/* blob format */
+  const void   *blob;			/* blob data */
+  size_t        extent;			/* blob size */
+} EmbeddedImage;
+
+static const EmbeddedImage EmbeddedImageList[]=
+  {
+    { "LOGO", "GIF", LogoImage, LogoImageExtent },
+    { "GRANITE", "GIF", GraniteImage, GraniteImageExtent },
+    { "NETSCAPE", "GIF", NetscapeImage, NetscapeImageExtent },
+    { "ROSE", "PPM", RoseImage, RoseImageExtent },
+    { "TRANSPARENT", "GIF", TransparentBackgroundImage, TransparentBackgroundImageExtent },
+    { "", "", 0, 0 }
+  };
+
 /*
   Forward declarations.
 */
@@ -5146,39 +5165,35 @@ static Image *ReadLOGOImage(const ImageInfo *image_info,
   size_t
     extent;
 
+  int
+    i;
+
   clone_info=CloneImageInfo(image_info);
   image=(Image *) NULL;
   blob=NULL;
   extent=0;
 
-  (void) strcpy(clone_info->magick,"GIF");
-  if (LocaleCompare(image_info->magick,"LOGO") == 0)
-    {
-      blob=LogoImage;
-      extent=LogoImageExtent;
-    }
-  else if (LocaleCompare(image_info->magick,"GRANITE") == 0)
-    {
-      blob=GraniteImage;
-      extent=GraniteImageExtent;
-    }
-  else if (LocaleCompare(image_info->magick,"NETSCAPE") == 0)
-    {
-      blob=NetscapeImage;
-      extent=NetscapeImageExtent;
-    }
-  else if (LocaleCompare(image_info->magick,"ROSE") == 0)
-    {
-      (void) strcpy(clone_info->magick,"PPM");
-      blob=RoseImage;
-      extent=RoseImageExtent;
-    }
-  else if (LocaleCompare(image_info->magick,"TRANSPARENT") == 0)
-    {
-      blob=TransparentBackgroundImage;
-      extent=TransparentBackgroundImageExtent;
-    }
+  /*
+    Support legacy format names
+  */
+  if (!(LocaleCompare(image_info->magick,"IMAGE") == 0))
+    strcpy(clone_info->filename,image_info->magick);
 
+  /*
+    Search for image name in list
+  */
+  for( i=0; EmbeddedImageList[i].blob != 0; i++)
+    if (LocaleCompare(clone_info->filename, EmbeddedImageList[i].name) == 0)
+      {
+        (void) strcpy(clone_info->magick,EmbeddedImageList[i].magick);
+        blob=EmbeddedImageList[i].blob;
+        extent=EmbeddedImageList[i].extent;
+        break;
+      }
+
+  /*
+    If a matching entry is found, then retrieve the image.
+  */
   if (blob)
     image=BlobToImage(clone_info,blob,extent,exception);
 
@@ -5230,6 +5245,13 @@ ModuleExport void RegisterLOGOImage(void)
   entry->module=AcquireString("LOGO");
   (void) RegisterMagickInfo(entry);
 
+  entry=SetMagickInfo("IMAGE");
+  entry->decoder=(DecoderHandler) ReadLOGOImage;
+  entry->adjoin=False;
+  entry->description=AcquireString("GraphicsMagick Embedded Image");
+  entry->module=AcquireString("LOGO");
+  (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("LOGO");
   entry->decoder=(DecoderHandler) ReadLOGOImage;
   entry->encoder=(EncoderHandler) WriteLOGOImage;
@@ -5250,14 +5272,6 @@ ModuleExport void RegisterLOGOImage(void)
   entry->adjoin=False;
   entry->stealth=True;
   entry->description=AcquireString("70x46 Truecolor rose");
-  entry->module=AcquireString("LOGO");
-  (void) RegisterMagickInfo(entry);
-
-  entry=SetMagickInfo("TRANSPARENT");
-  entry->decoder=(DecoderHandler) ReadLOGOImage;
-  entry->adjoin=False;
-  entry->stealth=True;
-  entry->description=AcquireString("30x30 Transparent background pattern");
   entry->module=AcquireString("LOGO");
   (void) RegisterMagickInfo(entry);
 }

@@ -33,6 +33,7 @@
   <module magick="ICC" name="META" />
   <module magick="ICM" name="META" />
   <module magick="ICO" name="ICON" />
+  <module magick="IMAGE" name="LOGO" />
   <module magick="IMPLICIT" name="MIFF" />
   <module magick="IPTC" name="META" />
   <module magick="JBG" name="JBIG" />
