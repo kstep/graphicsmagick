@@ -284,7 +284,8 @@ MagickExport void DestroyImageList(Image *images)
 %
 %  The format of the GetImageFromList method is:
 %
-%      Image *GetImageFromList(const Image *images,const long offset)
+%      Image *GetImageFromList(const Image *images,const long offset,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -292,11 +293,14 @@ MagickExport void DestroyImageList(Image *images)
 %
 %    o offset: The position within the list.
 %
+%    o exception: Return any errors or warnings in this structure.
+%
 %
 */
-MagickExport Image *GetImageFromList(Image *images,const long offset)
+MagickExport Image *GetImageFromList(const Image *images,const long offset,
+  ExceptionInfo *exception)
 {
-  register Image
+  register const Image
     *p;
 
   register long
@@ -311,7 +315,7 @@ MagickExport Image *GetImageFromList(Image *images,const long offset)
       break;
   if (p == (Image *) NULL)
     return((Image *) NULL);
-  return(p);
+  return(CloneImage(p,0,0,True,exception));
 }
 
 /*
@@ -520,7 +524,7 @@ MagickExport Image **ImageListToArray(const Image *images,
       return((Image **) NULL);
     }
   for (i=0; i < (long) GetImageListLength(images); i++)
-    group[i]=GetImageFromList(images,i);
+    group[i]=GetImageFromList(images,i,exception);
   return(group);
 }
 

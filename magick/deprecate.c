@@ -176,7 +176,7 @@ MagickExport void DestroyImages(Image *image)
 MagickExport Image *GetImageList(const Image *images,const long offset,
   ExceptionInfo *exception)
 {
-  return(CloneImage(GetImageFromList(images,offset),0,0,True,exception));
+  return(CloneImage(GetImageFromList(images,offset,exception),0,0,True,exception));
 }
 
 /*
