@@ -51,76 +51,6 @@
 #include "magick.h"
 #include "defines.h"
 
-#if !defined(WIN32)
-#define DWORD unsigned long
-#define WORD  unsigned
-#define BYTE  unsigned char
-#endif
-
-/*
-  Forward declarations.
-*/
-typedef struct
-	{
-	DWORD FileId;
-	DWORD DataOffset;
-	WORD ProductType;
-	WORD FileType;
-	BYTE MajorVersion;
-	BYTE MinorVersion;
-	WORD EncryptKey;
-	WORD Reserved;
-	}WPGHeader;
-typedef struct
-	{
-	BYTE	RecType;
-	DWORD   RecordLength;
-	}WPGRecord;
-typedef struct 
-	{
-	BYTE	RecLeader;
-	WORD    RecType;
-	DWORD   RecordLength;
-	} WPG2Record;
-typedef struct
-	{
-	WORD Width;
-	WORD Heigth;
-	WORD Depth;
-	WORD HorzRes;
-	WORD VertRes;
-	}WPGBitmapType1;
-typedef struct
-	{
-	WORD Width;
-	WORD Heigth;
-	WORD Depth;
-	}WPG2BitmapType1;
-typedef struct
-	{
-	WORD RotAngle;
-	WORD LowLeftX;
-	WORD LowLeftY;
-	WORD UpRightX;
-	WORD UpRightY;
-	WORD Width;
-	WORD Heigth;
-	WORD Depth;
-	WORD HorzRes;
-	WORD VertRes;
-	}WPGBitmapType2;
-typedef struct
-	{
-	WORD StartIndex;
-	WORD NumOfEntries;
-	}WPGColorMapRec;
-typedef struct {
-	DWORD PS_unknown1;
-	WORD PS_unknown2;
-	WORD PS_unknown3;
-       } WPGPSl1Record;	
-  
-
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -153,38 +83,39 @@ typedef struct {
 */
 static unsigned int IsWPG(const unsigned char *magick,const unsigned int length)
 {
-  if (length < 4) return(False);
+  if (length < 4)
+    return(False);
   if (LocaleNCompare((char *) magick,"\377WPC",4) == 0)
-	return(True);
+    return(True);
   return(False);
 }
-
 
 
-static void Rd_WP_DWORD(Image *image, DWORD *d)
+static void Rd_WP_DWORD(Image *image,unsigned long *d)
 {
-   unsigned char b;
+  unsigned char
+    b;
 
-   b=ReadByte(image);
-   *d = b;
-   if(b<0xFF) return;
-
-   b=ReadByte(image);
-   *d = (DWORD)b ;
-   b=ReadByte(image);
-   *d += (DWORD)b * 256;
-   if(*d<0x8000) return;
-
-   *d = (*d & 0x7FFF) << 16;
-   b=ReadByte(image);
-   *d += (DWORD)b;
-   b=ReadByte(image);
-   *d += (DWORD)b * 256l;
-   return;
+  b=ReadByte(image);
+  *d=b;
+  if (b < 0xFF)
+    return;
+  b=ReadByte(image);
+  *d=(unsigned long) b;
+  b=ReadByte(image);
+  *d+=(unsigned long) b*256l;
+  if (*d < 0x8000)
+    return;
+  *d=(*d & 0x7FFF) << 16;
+  b=ReadByte(image);
+  *d+=(unsigned long) b;
+  b=ReadByte(image);
+  *d+=(unsigned long) b*256l;
+  return;
 }
 
 
-static void InsertRow(BYTE *p,int y,Image *image)
+static void InsertRow(unsigned char *p,int y,Image *image)
 {
 int bit,x;
 register PixelPacket *q;
@@ -355,8 +286,8 @@ register IndexPacket *indexes;
 static int UnpackWPGRaster(Image *image)
 {
 unsigned x,y,i;
-BYTE bbuf,RunCount;
-BYTE *BImgBuff;
+unsigned char bbuf,RunCount;
+unsigned char *BImgBuff;
 
 long ldblk;
 
@@ -503,6 +434,65 @@ return(image);
 */
 static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
+typedef struct
+	{
+	unsigned long FileId;
+	unsigned long DataOffset;
+	unsigned int ProductType;
+	unsigned int FileType;
+	unsigned char MajorVersion;
+	unsigned char MinorVersion;
+	unsigned int EncryptKey;
+	unsigned int Reserved;
+	}WPGHeader;
+typedef struct
+	{
+	unsigned char	RecType;
+	unsigned long   RecordLength;
+	}WPGRecord;
+typedef struct 
+	{
+	unsigned char	RecLeader;
+	unsigned int    RecType;
+	unsigned long   RecordLength;
+	} WPG2Record;
+typedef struct
+	{
+	unsigned int Width;
+	unsigned int Heigth;
+	unsigned int Depth;
+	unsigned int HorzRes;
+	unsigned int VertRes;
+	}WPGBitmapType1;
+typedef struct
+	{
+	unsigned int Width;
+	unsigned int Heigth;
+	unsigned int Depth;
+	}WPG2BitmapType1;
+typedef struct
+	{
+	unsigned int RotAngle;
+	unsigned int LowLeftX;
+	unsigned int LowLeftY;
+	unsigned int UpRightX;
+	unsigned int UpRightY;
+	unsigned int Width;
+	unsigned int Heigth;
+	unsigned int Depth;
+	unsigned int HorzRes;
+	unsigned int VertRes;
+	}WPGBitmapType2;
+typedef struct
+	{
+	unsigned int StartIndex;
+	unsigned int NumOfEntries;
+	}WPGColorMapRec;
+typedef struct {
+	unsigned long PS_unknown1;
+	unsigned int PS_unknown2;
+	unsigned int PS_unknown3;
+       } WPGPSl1Record;	
   Image *image;
   unsigned int status;
   WPGHeader  Header;
@@ -514,7 +504,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   WPGColorMapRec WPG_Palette;
   int i;
   long ldblk;
-  BYTE *BImgBuff;
+  unsigned char *BImgBuff;
 
   /*
     Open image file.
@@ -733,9 +723,7 @@ NoMemory:		ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 	     for(i=0;i<image->rows;i++)
 		{
 		ReadBlob(image,ldblk,(char *)BImgBuff);
-//		if(fread(BImgBuff,ldblk,1,f)!=1) {goto KONEC;}
 		InsertRow(BImgBuff,i,image);
-	//	AlineProc(i,p);
 		}
 	     if(BImgBuff) free(BImgBuff);
 	     
@@ -809,7 +797,6 @@ ModuleExport void RegisterWPGImage(void)
 
   entry=SetMagickInfo("WPG");
   entry->decoder=ReadWPGImage;
-//  entry->encoder=WriteWPGImage;
   entry->magick=IsWPG;
   entry->description=AllocateString("Word Perfect Graphics");
   entry->module=AllocateString("WPG");

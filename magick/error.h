@@ -32,8 +32,13 @@ extern "C" {
 }
 #define ThrowReaderException(code,reason,image) \
 { \
-  ThrowException(exception,code,reason,image->filename); \
-  DestroyImages(image); \
+  if (image == (Image *) NULL) \
+    ThrowException(exception,code,reason,(char *) NULL) \
+  else \
+    { \
+      ThrowException(exception,code,reason,image->filename); \
+      DestroyImages(image); \
+    } \
   return((Image *) NULL); \
 }
 #define ThrowWriterException(code,reason,image) \
