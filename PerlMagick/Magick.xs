@@ -685,15 +685,14 @@ static void errorhandler(const ExceptionType error,const char *message,
   const char *qualifier)
 {
   char
-    *text;
+    text[MaxTextExtent];
 
   int
     error_number;
 
   error_number=errno;
   errno=0;
-  text=AllocateString(message);
-  FormatString(text,"Exception %d: %.1024s%.1024s%.1024s%.1024s%.1024s%.1024s%.1024s",error,
+  FormatString(text,"Exception %d: %.1024s%s%.1024s%s%s%.64s%s",error,
     (message ? message : "ERROR"),
     qualifier ? " (" : "",qualifier ? qualifier : "",qualifier ? ")" : "",
     error_number ? " [" : "",error_number ? strerror(error_number) : "",
@@ -703,12 +702,9 @@ static void errorhandler(const ExceptionType error,const char *message,
       /*
         Set up message buffer.
       */
-      warn("%.1024s",text);
+      warn("%s",text);
       if (error_jump == NULL)
-        {
-          LiberateMemory((void **) text);
-          exit((int) error % 100);
-        }
+        exit((int) error % 100);
     }
   if (error_list)
     {
@@ -716,7 +712,6 @@ static void errorhandler(const ExceptionType error,const char *message,
         sv_catpv(error_list,"\n");
       sv_catpv(error_list,text);
     }
-  LiberateMemory((void **) text);
   longjmp(*error_jump,(int) error);
 }
 
@@ -872,7 +867,7 @@ static struct PackageInfo *GetPackageInfo(void *reference,
   struct PackageInfo *oldinfo)
 {
   char
-    *message;
+    message[MaxTextExtent];
 
   struct PackageInfo
     *info;
@@ -880,17 +875,14 @@ static struct PackageInfo *GetPackageInfo(void *reference,
   SV
     *sv;
 
-  message=AllocateString(PackageName);
-  FormatString(message,"%.1024s::A_%lx_Z",PackageName,(long) reference);
+  FormatString(message,"%s::A_%lx_Z",PackageName,(long) reference);
   sv=perl_get_sv(message,(TRUE | 0x02));
   if (!sv)
     {
       MagickWarning(ResourceLimitWarning,"Unable to create info variable",
         message);
-      LiberateMemory((void **) &message);
       return(oldinfo);
     }
-  LiberateMemory((void **) &message);
   if (SvREFCNT(sv) == 0)
     (void) SvREFCNT_inc(sv);
   if (SvIOKp(sv) && (info=(struct PackageInfo *) SvIV(sv)))
@@ -1006,7 +998,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     case 'A':
     case 'a':
     {
-      if (strEQcase(attribute,"adjoin"))
+      if (LocaleCompare(attribute,"adjoin") == 0)
         {
           sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
@@ -1018,7 +1010,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             info->image_info->adjoin=sp;
           return;
         }
-      if (strEQcase(attribute,"antialias"))
+      if (LocaleCompare(attribute,"antialias") == 0)
         {
           sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
@@ -1036,7 +1028,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     case 'B':
     case 'b':
     {
-      if (strEQcase(attribute,"background"))
+      if (LocaleCompare(attribute,"background") == 0)
         {
           (void) QueryColorDatabase(SvPV(sval,na),&target_color);
           if (info)
@@ -1045,7 +1037,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             image->background_color=target_color;
           return;
         }
-      if (strEQcase(attribute,"blue-") || strEQcase(attribute,"blue_"))
+      if (LocaleCompare(attribute,"blue-primary") == 0)
         {
           for ( ; image; image=image->next)
           {
@@ -1058,7 +1050,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
           }
           return;
         }
-      if (strEQcase(attribute,"bordercolor"))
+      if (LocaleCompare(attribute,"bordercolor") == 0)
         {
           (void) QueryColorDatabase(SvPV(sval,na),&target_color);
           if (info)
@@ -1072,12 +1064,12 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     case 'C':
     case 'c':
     {
-      if (strEQcase(attribute,"cache"))
+      if (LocaleCompare(attribute,"cache") == 0)
         {
           SetCacheThreshold(SvIV(sval));
           return;
         }
-      if (strEQcase(attribute,"colormap"))
+      if (LocaleNCompare(attribute,"colormap",8) == 0)
         {
           for ( ; image; image=image->next)
           {
@@ -1110,7 +1102,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
           }
           return;
         }
-      if (strEQcase(attribute,"colorsp"))
+      if (LocaleCompare(attribute,"colorspace") == 0)
         {
           sp=SvPOK(sval) ? LookupStr(ColorspaceTypes,SvPV(sval,na)) :
             SvIV(sval);
@@ -1126,9 +1118,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             RGBTransformImage(image,(ColorspaceType) sp);
           return;
         }
-      if (strEQcase(attribute,"colors"))
-        return;
-      if (strEQcase(attribute,"compres"))
+      if (LocaleCompare(attribute,"compress") == 0)
         {
           sp=SvPOK(sval) ? LookupStr(CompressionTypes,SvPV(sval,na)) :
             SvIV(sval);
@@ -1149,7 +1139,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     case 'D':
     case 'd':
     {
-      if (strEQcase(attribute,"debug"))
+      if (LocaleCompare(attribute,"debug") == 0)
         {
           sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
@@ -1161,13 +1151,13 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             info->image_info->debug=sp;
           return;
         }
-      if (strEQcase(attribute,"delay"))
+      if (LocaleCompare(attribute,"delay") == 0)
         {
           for ( ; image; image=image->next)
             image->delay=SvIV(sval);
           return;
         }
-      if (strEQcase(attribute,"density"))
+      if (LocaleCompare(attribute,"density") == 0)
         {
           if (!IsGeometry(SvPV(sval,na)))
             {
@@ -1189,7 +1179,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
           }
           return;
         }
-      if (strEQcase(attribute,"depth"))
+      if (LocaleCompare(attribute,"depth") == 0)
         {
           if (info)
             info->image_info->depth=SvIV(sval);
@@ -1197,13 +1187,13 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             SetImageDepth(image,SvIV(sval));
           return;
         }
-      if (strEQcase(attribute,"dispose"))
+      if (LocaleCompare(attribute,"dispose") == 0)
         {
           for (; image; image=image->next)
             image->dispose=SvIV(sval);
           return;
         }
-      if (strEQcase(attribute,"dither"))
+      if (LocaleCompare(attribute,"dither") == 0)
         {
           if (info)
             {
@@ -1219,7 +1209,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             }
           return;
         }
-      if (strEQcase(attribute,"display"))
+      if (LocaleCompare(attribute,"display") == 0)
         {
           display:
           if (info)
@@ -1228,34 +1218,31 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         }
       break;
     }
-    case 'E':
-    case 'e':
-      break;
     case 'F':
     case 'f':
     {
-      if (strEQcase(attribute,"filen"))
+      if (LocaleCompare(attribute,"filename") == 0)
         {
           if (info)
-            (void) FormatString(info->image_info->filename,"%.1024s",
-              SvPV(sval,na));
+            (void) strncpy(info->image_info->filename,SvPV(sval,na),
+              MaxTextExtent-1);
           for ( ; image; image=image->next)
-            (void) FormatString(image->filename,"%.1024s",SvPV(sval,na));
+            (void) strncpy(image->filename,SvPV(sval,na),MaxTextExtent-1);
           return;
         }
-      if (strEQcase(attribute,"file"))
+      if (LocaleCompare(attribute,"file") == 0)
         {
           if (info)
             info->image_info->file=(FILE *) IoIFP(sv_2io(sval));
           return;
         }
-      if (strEQcase(attribute,"font"))
+      if (LocaleCompare(attribute,"font") == 0)
         {
           if (info)
             (void) CloneString(&info->image_info->font,SvPV(sval,na));
           return;
         }
-      if (strEQcase(attribute,"fuzz"))
+      if (LocaleCompare(attribute,"fuzz") == 0)
         {
           if (info)
             info->image_info->fuzz=SvNV(sval);
@@ -1268,7 +1255,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     case 'G':
     case 'g':
     {
-      if (strEQcase(attribute,"green-") || strEQcase(attribute,"green_"))
+      if (LocaleCompare(attribute,"green-primary") == 0)
         {
           for ( ; image; image=image->next)
           {
@@ -1283,13 +1270,10 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         }
       break;
     }
-    case 'H':
-    case 'h':
-      break;
     case 'I':
     case 'i':
     {
-      if (strEQcase(attribute,"index"))
+      if (LocaleNCompare(attribute,"index",5) == 0)
         {
           int
             index,
@@ -1321,14 +1305,14 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
           }
           return;
         }
-      if (strEQcase(attribute,"iterat"))
+      if (LocaleCompare(attribute,"iterations") == 0)
         {
   iterations:
           for ( ; image; image=image->next)
             image->iterations=SvIV(sval);
           return;
         }
-      if (strEQcase(attribute,"interla"))
+      if (LocaleCompare(attribute,"interlace") == 0)
         {
           sp=SvPOK(sval) ? LookupStr(InterlaceTypes,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
@@ -1345,23 +1329,17 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         }
       break;
     }
-    case 'J':
-    case 'j':
-      break;
-    case 'K':
-    case 'k':
-      break;
     case 'L':
     case 'l':
     {
-      if (strEQcase(attribute,"loop"))
+      if (LocaleCompare(attribute,"loop") == 0)
         goto iterations;
       break;
     }
     case 'M':
     case 'm':
     {
-      if (strEQcase(attribute,"magick"))
+      if (LocaleCompare(attribute,"magick") == 0)
         {
           if (info)
             {
@@ -1376,7 +1354,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             }
           return;
         }
-      if (strEQcase(attribute,"mattec") || strEQcase(attribute,"matte-color"))
+      if (LocaleCompare(attribute,"mattecolor") == 0)
         {
           (void) QueryColorDatabase(SvPV(sval,na),&target_color);
           if (info)
@@ -1385,7 +1363,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             image->matte_color=target_color;
           return;
         }
-      if (strEQcase(attribute,"matte"))
+      if (LocaleCompare(attribute,"matte") == 0)
         {
           sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
@@ -1397,7 +1375,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             image->matte=sp;
           return;
         }
-      if (strEQcase(attribute,"monoch"))
+      if (LocaleCompare(attribute,"monochrome") == 0)
         {
           sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
@@ -1412,13 +1390,10 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         }
       break;
     }
-    case 'O':
-    case 'o':
-      break;
     case 'P':
     case 'p':
     {
-      if (strEQcase(attribute,"page"))
+      if (LocaleCompare(attribute,"page") == 0)
         {
           char
             *p;
@@ -1435,13 +1410,13 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
           DestroyPostscriptGeometry(p);
           return;
         }
-      if (strEQcase(attribute,"pen"))
+      if (LocaleCompare(attribute,"pen") == 0)
         {
           if (info)
             (void) QueryColorDatabase(SvPV(sval,na),&info->image_info->pen);
           return;
         }
-      if (strEQcase(attribute,"pixel"))
+      if (LocaleNCompare(attribute,"pixel",5) == 0)
         {
           int
             x,
@@ -1485,13 +1460,13 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
           }
           return;
         }
-      if (strEQcase(attribute,"points"))
+      if (LocaleCompare(attribute,"points") == 0)
         {
           if (info)
             (void) sscanf(SvPV(sval,na),"%lf",&info->image_info->pointsize);
           return;
         }
-      if (strEQcase(attribute,"preview"))
+      if (LocaleCompare(attribute,"preview") == 0)
         {
           sp=SvPOK(sval) ? LookupStr(PreviewTypes,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
@@ -1508,7 +1483,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     case 'Q':
     case 'q':
     {
-      if (strEQcase(attribute,"qualit"))
+      if (LocaleCompare(attribute,"quality") == 0)
         {
           if (info && (info->image_info->quality=SvIV(sval)) <= 0)
             info->image_info->quality=75;
@@ -1519,7 +1494,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     case 'R':
     case 'r':
     {
-      if (strEQcase(attribute,"red-") || strEQcase(attribute,"red_"))
+      if (LocaleCompare(attribute,"red-primary") == 0)
         {
           for ( ; image; image=image->next)
           {
@@ -1532,7 +1507,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
           }
           return;
         }
-      if (strEQcase(attribute,"render"))
+      if (LocaleCompare(attribute,"render") == 0)
         {
           sp=SvPOK(sval) ? LookupStr(IntentTypes,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
@@ -1550,27 +1525,27 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     case 'S':
     case 's':
     {
-      if (strEQcase(attribute,"scene"))
+      if (LocaleCompare(attribute,"scene") == 0)
         {
           for ( ; image; image=image->next)
             image->scene=SvIV(sval);
           return;
         }
-      if (strEQcase(attribute,"subim"))
+      if (LocaleCompare(attribute,"subimage") == 0)
         {
           if (info)
             info->image_info->subimage=SvIV(sval);
           return;
         }
-      if (strEQcase(attribute,"subra"))
+      if (LocaleCompare(attribute,"subrange") == 0)
         {
           if (info)
             info->image_info->subrange=SvIV(sval);
           return;
         }
-      if (strEQcase(attribute,"server"))
+      if (LocaleCompare(attribute,"server") == 0)
         goto display;
-      if (strEQcase(attribute,"size"))
+      if (LocaleCompare(attribute,"size") == 0)
         {
           if (info)
             {
@@ -1589,19 +1564,19 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     case 'T':
     case 't':
     {
-      if (strEQcase(attribute,"tile"))
+      if (LocaleCompare(attribute,"tile") == 0)
         {
           if (info)
             (void) CloneString(&info->image_info->tile,SvPV(sval,na));
           return;
         }
-      if (strEQcase(attribute,"texture"))
+      if (LocaleCompare(attribute,"texture") == 0)
         {
           if (info)
             (void) CloneString(&info->image_info->texture,SvPV(sval,na));
           return;
         }
-      if (strEQcase(attribute,"type"))
+      if (LocaleCompare(attribute,"type") == 0)
         {
           sp=SvPOK(sval) ? LookupStr(ImageTypes,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
@@ -1618,7 +1593,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     case 'U':
     case 'u':
     {
-      if (strEQcase(attribute,"unit"))
+      if (LocaleCompare(attribute,"unit") == 0)
         {
           sp=SvPOK(sval) ? LookupStr(ResolutionTypes,SvPV(sval,na)) :
             SvIV(sval);
@@ -1639,7 +1614,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     case 'V':
     case 'v':
     {
-      if (strEQcase(attribute,"verbose"))
+      if (LocaleCompare(attribute,"verbose") == 0)
         {
           sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
@@ -1652,7 +1627,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             info->image_info->verbose=sp;
           return;
         }
-      if (strEQcase(attribute,"view"))
+      if (LocaleCompare(attribute,"view") == 0)
         {
           if (info)
             (void) CloneString(&info->image_info->view,SvPV(sval,na));
@@ -1663,7 +1638,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     case 'W':
     case 'w':
     {
-      if (strEQcase(attribute,"white-") || strEQcase(attribute,"white_"))
+      if (LocaleCompare(attribute,"white-primary") == 0)
         {
           for ( ; image; image=image->next)
           {
@@ -1678,17 +1653,13 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         }
       break;
     }
-    case 'X':
-    case 'x':
-      break;
-    case 'Y':
-    case 'y':
-      break;
-    case 'Z':
-    case 'z':
+    default:
       break;
   }
-  MagickWarning(OptionWarning,"Invalid attribute",attribute);
+  if (image == (Image *) NULL)
+    MagickWarning(OptionWarning,"Invalid attribute",attribute);
+  for ( ; image; image=image->next)
+    (void) SetImageAttribute(image,attribute,SvPV(sval,na));
 }
 
 /*
@@ -1828,7 +1799,7 @@ static void warninghandler(const ExceptionType warning,const char *message,
   const char *qualifier)
 {
   char
-    *text;
+    text[MaxTextExtent];
 
   int
     error_number;
@@ -1837,8 +1808,7 @@ static void warninghandler(const ExceptionType warning,const char *message,
   errno=0;
   if (!message)
     return;
-  text=AllocateString(message);
-  FormatString(text,"Warning %d: %.1024s%.1024s%.1024s%.1024s%.1024s%.64s%.1024s",warning,
+  FormatString(text,"Warning %d: %.1024s%s%.1024s%s%s%.64s%s",warning,
     message,qualifier ? " (" : "",qualifier ? qualifier : "",
     qualifier? ")" : "",error_number ? " [" : "",
     error_number ? strerror(error_number) : "",error_number ? "]" : "");
@@ -1847,17 +1817,13 @@ static void warninghandler(const ExceptionType warning,const char *message,
       /*
         Set up message buffer.
       */
-      warn("%.1024s",text);
+      warn("%s",text);
       if (error_list == NULL)
-        {
-          LiberateMemory((void **) text);
-          return;
-        }
+        return;
     }
   if (SvCUR(error_list))
     sv_catpv(error_list,"\n");  /* add \n separator between messages */
   sv_catpv(error_list,text);
-  LiberateMemory((void **) text);
 }
 
 /*
@@ -1907,11 +1873,11 @@ Animate(ref,...)
     animateimage  = 3
   PPCODE:
   {
-    Image
-      *image;
-
     jmp_buf
       error_jmp;
+
+    Image
+      *image;
 
     register int
       i;
@@ -1997,15 +1963,15 @@ Append(ref,...)
     HV
       *hv;
 
+    jmp_buf
+      error_jmp;
+
     Image
       *image,
       *next;
 
     int
       stack;
-
-    jmp_buf
-      error_jmp;
 
     register int
       i;
@@ -2137,12 +2103,12 @@ Average(ref)
     HV
       *hv;
 
+    jmp_buf
+      error_jmp;
+
     Image
       *image,
       *next;
-
-    jmp_buf
-      error_jmp;
 
     struct PackageInfo
       *info;
@@ -2192,7 +2158,7 @@ Average(ref)
     av_push(av,sv_bless(rv,hv));
     SvREFCNT_dec(sv);
     info=GetPackageInfo((void *) av,info);
-    FormatString(info->image_info->filename,"average-%.1024s",
+    FormatString(info->image_info->filename,"average-%.*s",MaxTextExtent-9,
       ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
     (void) strcpy(image->filename,info->image_info->filename);
     SetImageInfo(info->image_info,False,&image->exception);
@@ -2383,11 +2349,11 @@ Coalesce(ref)
     HV
       *hv;
 
-    Image
-      *image;
-
     jmp_buf
       error_jmp;
+
+    Image
+      *image;
 
     struct PackageInfo
       *info;
@@ -2437,7 +2403,7 @@ Coalesce(ref)
     av_push(av,sv_bless(rv,hv));
     SvREFCNT_dec(sv);
     info=GetPackageInfo((void *) av,info);
-    FormatString(info->image_info->filename,"average-%.1024s",
+    FormatString(info->image_info->filename,"average-%.*s",MaxTextExtent-9,
       ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
     (void) strcpy(image->filename,info->image_info->filename);
     SetImageInfo(info->image_info,False,&image->exception);
@@ -2584,7 +2550,7 @@ DESTROY(ref)
       case SVt_PVAV:
       {
         char
-          *message;
+          message[MaxTextExtent];
 
         struct PackageInfo
           *info;
@@ -2595,10 +2561,8 @@ DESTROY(ref)
         /*
           Array (AV *) reference
         */
-        message=AllocateString(PackageName);
-        FormatString(message,"%.1024s::A_%lx_Z",PackageName,(long) reference);
+        FormatString(message,"%s::A_%lx_Z",PackageName,(long) reference);
         sv=perl_get_sv(message,FALSE);
-        LiberateMemory((void **) &message);
         if (sv)
           {
             if ((SvREFCNT(sv) == 1) && SvIOK(sv) &&
@@ -2653,11 +2617,11 @@ Display(ref,...)
     displayimage  = 3
   PPCODE:
   {
-    Image
-      *image;
-
     jmp_buf
       error_jmp;
+
+    Image
+      *image;
 
     register int
       i;
@@ -2744,11 +2708,11 @@ Flatten(ref)
     HV
       *hv;
 
-    Image
-      *image;
-
     jmp_buf
       error_jmp;
+
+    Image
+      *image;
 
     struct PackageInfo
       *info;
@@ -2784,8 +2748,7 @@ Flatten(ref)
     image=FlattenImages(image,&exception);
     if (!image)
       {
-        MagickWarning(exception.severity,exception.reason,
-          exception.description);
+        MagickWarning(exception.severity,exception.reason,exception.description);
         goto MethodException;
       }
     /*
@@ -2799,7 +2762,7 @@ Flatten(ref)
     av_push(av,sv_bless(rv,hv));
     SvREFCNT_dec(sv);
     info=GetPackageInfo((void *) av,info);
-    FormatString(info->image_info->filename,"average-%.1024s",
+    FormatString(info->image_info->filename,"average-%.*s",MaxTextExtent-9,
       ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
     (void) strcpy(image->filename,info->image_info->filename);
     SetImageInfo(info->image_info,False,&image->exception);
@@ -2849,6 +2812,9 @@ Get(ref,...)
     Image
       *image;
 
+    ImageAttribute
+      *image_attribute;
+
     int
       j;
 
@@ -2885,25 +2851,26 @@ Get(ref,...)
         case 'A':
         case 'a':
         {
-          if (strEQcase(attribute,"adjoin"))
+          if (LocaleCompare(attribute,"adjoin") == 0)
             {
               if (info)
                 s=newSViv(info->image_info->adjoin);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"antialias"))
+          if (LocaleCompare(attribute,"antialias") == 0)
             {
               if (info)
                 s=newSViv(info->image_info->antialias);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
           break;
         }
         case 'B':
         case 'b':
         {
-          if (strEQcase(attribute,"background") ||
-              strEQcase(attribute,"background-color"))
+          if (LocaleCompare(attribute,"background") == 0)
             {
               if (!image)
                 break;
@@ -2911,54 +2878,55 @@ Get(ref,...)
                 image->background_color.green,image->background_color.blue,
                 image->background_color.opacity);
               s=newSVpv(color,0);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"base-column") ||
-              strEQcase(attribute,"base_column"))
+          if (LocaleCompare(attribute,"base-columns") == 0)
             {
               if (image)
                 s=newSViv(image->magick_columns);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"base-filename") ||
-              strEQcase(attribute,"base_filename"))
+          if (LocaleCompare(attribute,"base-filename") == 0)
             {
               if (image)
                 s=newSVpv(image->magick_filename,0);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"base-height") ||
-              strEQcase(attribute,"base_height"))
+          if (LocaleCompare(attribute,"base-height") == 0)
             {
               if (image)
                 s=newSViv(image->magick_rows);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"base-row") ||
-              strEQcase(attribute,"base_row"))
+          if (LocaleCompare(attribute,"base-rows") == 0)
             {
               if (image)
                 s=newSViv(image->magick_rows);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"base-width") ||
-              strEQcase(attribute,"base_width"))
+          if (LocaleCompare(attribute,"base-width") == 0)
             {
               if (image)
                 s=newSViv(image->magick_columns);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"blue-") || strEQcase(attribute,"blue_"))
+          if (LocaleCompare(attribute,"blue-primary") == 0)
             {
               if (!image)
                 break;
               FormatString(color,"%g,%g",image->chromaticity.blue_primary.x,
                 image->chromaticity.blue_primary.y);
               s=newSVpv(color,0);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"bordercolor") ||
-              strEQcase(attribute,"border-color"))
+          if (LocaleCompare(attribute,"bordercolor") == 0)
             {
               if (!image)
                 break;
@@ -2966,14 +2934,15 @@ Get(ref,...)
                 image->border_color.green,image->border_color.blue,
                 image->border_color.opacity);
               s=newSVpv(color,0);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
           break;
         }
         case 'C':
         case 'c':
         {
-          if (strEQcase(attribute,"comment"))
+          if (LocaleCompare(attribute,"comment") == 0)
             {
               ImageAttribute
                 *attribute;
@@ -2981,9 +2950,10 @@ Get(ref,...)
               attribute=GetImageAttribute(image,"Comment");
               if (attribute != (ImageAttribute *) NULL)
                 s=newSVpv(attribute->value,0);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"class"))
+          if (LocaleCompare(attribute,"class") == 0)
             {
               if (!image)
                 break;
@@ -2998,9 +2968,10 @@ Get(ref,...)
                   (void) sv_setpv(s,ClassTypes[j]);
                   SvIOK_on(s);
                 }
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"compress"))
+          if (LocaleCompare(attribute,"compress") == 0)
             {
               j=info ? info->image_info->compression : image->compression;
               if (info)
@@ -3012,9 +2983,10 @@ Get(ref,...)
                   (void) sv_setpv(s,CompressionTypes[j]);
                   SvIOK_on(s);
                 }
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"colorspace"))
+          if (LocaleCompare(attribute,"colorspace") == 0)
             {
               j=image ? image->colorspace : RGBColorspace;
               s=newSViv(j);
@@ -3023,15 +2995,17 @@ Get(ref,...)
                   (void) sv_setpv(s,ColorspaceTypes[j]);
                   SvIOK_on(s);
                 }
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"colors"))
+          if (LocaleCompare(attribute,"colors") == 0)
             {
               if (image)
                 s=newSViv(GetNumberColors(image,(FILE *) NULL));
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"colormap"))
+          if (LocaleNCompare(attribute,"colormap",8) == 0)
             {
               if (!image || !image->colormap)
                 break;
@@ -3043,86 +3017,97 @@ Get(ref,...)
                 image->colormap[j].green,image->colormap[j].blue,
                 image->colormap[j].opacity);
               s=newSVpv(color,0);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"column"))
+          if (LocaleCompare(attribute,"columns") == 0)
             {
               if (image)
                 s=newSViv(image->columns);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
           break;
         }
         case 'D':
         case 'd':
         {
-          if (strEQcase(attribute,"density"))
+          if (LocaleCompare(attribute,"density") == 0)
             {
               if (info && info->image_info->density)
                 s=newSVpv(info->image_info->density,0);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"dispose"))
+          if (LocaleCompare(attribute,"dispose") == 0)
             {
               if (image)
                 s=newSViv(image->dispose);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"delay"))
+          if (LocaleCompare(attribute,"delay") == 0)
             {
               if (image)
                 s=newSViv(image->delay);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"depth"))
+          if (LocaleCompare(attribute,"depth") == 0)
             {
               if (info)
                 s=newSViv(info->image_info->depth);
               if (image)
                 s=newSViv(GetImageDepth(image));
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"dither"))
+          if (LocaleCompare(attribute,"dither") == 0)
             {
               if (info)
                 s=newSViv(info->image_info->dither);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"display"))  /* same as server */
+          if (LocaleCompare(attribute,"display") == 0)  /* same as server */
             {
               if (info && info->image_info->server_name)
                 s=newSVpv(info->image_info->server_name,0);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"directory"))
+          if (LocaleCompare(attribute,"directory") == 0)
             {
               if (image && image->directory)
                 s=newSVpv(image->directory,0);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
           break;
         }
         case 'E':
         case 'e':
         {
-          if (strEQcase(attribute,"error"))
+          if (LocaleCompare(attribute,"error") == 0)
             {
               if (image)
                 s=newSViv(image->mean_error_per_pixel);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
           break;
         }
         case 'F':
         case 'f':
         {
-          if (strEQcase(attribute,"filesize"))
+          if (LocaleCompare(attribute,"filesize") == 0)
             {
               if (image)
                 s=newSViv(image->filesize);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"filen"))
+          if (LocaleCompare(attribute,"filename") == 0)
             {
               if (image)
                 s=newSVpv(image->filename,0);
@@ -3130,9 +3115,10 @@ Get(ref,...)
                 if (info && info->image_info->filename &&
                     *info->image_info->filename)
                   s=newSVpv(info->image_info->filename,0);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"filter"))
+          if (LocaleCompare(attribute,"filter") == 0)
             {
               j=image->filter;
               s=newSViv(j);
@@ -3141,15 +3127,17 @@ Get(ref,...)
                   (void) sv_setpv(s,FilterTypess[j]);
                   SvIOK_on(s);
                 }
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"font"))
+          if (LocaleCompare(attribute,"font") == 0)
             {
               if (info && info->image_info->font)
                 s=newSVpv(info->image_info->font,0);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"format"))
+          if (LocaleCompare(attribute,"format") == 0)
             {
               MagickInfo
                 *magick_info;
@@ -3164,60 +3152,66 @@ Get(ref,...)
                 if ((magick_info != (MagickInfo *) NULL) &&
                     (*magick_info->description != '\0'))
                   s=newSVpv((char *) magick_info->description,0);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"fuzz"))
+          if (LocaleCompare(attribute,"fuzz") == 0)
             {
               if (info)
                 s=newSVnv(info->image_info->fuzz);
               else
                 if (image)
                   s=newSVnv(image->fuzz);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
           break;
         }
         case 'G':
         case 'g':
         {
-          if (strEQcase(attribute,"gamma"))
+          if (LocaleCompare(attribute,"gamma") == 0)
             {
               if (image)
                 s=newSVnv(image->gamma);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"geom"))
+          if (LocaleCompare(attribute,"geometry") == 0)
             {
               if (image && image->geometry)
                 s=newSVpv(image->geometry,0);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"green-") || strEQcase(attribute,"green_"))
+          if (LocaleCompare(attribute,"green-primary") == 0)
             {
               if (!image)
                 break;
               FormatString(color,"%g,%g",image->chromaticity.green_primary.x,
                 image->chromaticity.green_primary.y);
               s=newSVpv(color,0);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
           break;
         }
         case 'H':
         case 'h':
         {
-          if (strEQcase(attribute,"height"))
+          if (LocaleCompare(attribute,"height") == 0)
             {
               if (image)
                 s=newSViv(image->rows);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
           break;
         }
         case 'I':
         case 'i':
         {
-          if (strEQcase(attribute,"index"))
+          if (LocaleNCompare(attribute,"index",5) == 0)
             {
               char
                 name[MaxTextExtent];
@@ -3244,15 +3238,17 @@ Get(ref,...)
               indexes=GetIndexes(image);
               FormatString(name,"%u",*indexes);
               s=newSVpv(name,0);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"iterat"))  /* same as loop */
+          if (LocaleCompare(attribute,"iterations") == 0)  /* same as loop */
             {
               if (image)
                 s=newSViv(image->iterations);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"interlace"))
+          if (LocaleCompare(attribute,"interlace") == 0)
             {
               j=info ? info->image_info->interlace : image->interlace;
               s=newSViv(j);
@@ -3261,20 +3257,15 @@ Get(ref,...)
                   (void) sv_setpv(s,InterlaceTypes[j]);
                   SvIOK_on(s);
                 }
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
           break;
         }
-        case 'J':
-        case 'j':
-          break;
-        case 'K':
-        case 'k':
-          break;
         case 'L':
         case 'l':
         {
-          if (strEQcase(attribute,"label"))
+          if (LocaleCompare(attribute,"label") == 0)
             {
               ImageAttribute
                 *attribute;
@@ -3284,48 +3275,53 @@ Get(ref,...)
               attribute=GetImageAttribute(image,"Label");
               if (attribute != (ImageAttribute *) NULL)
                 s=newSVpv(attribute->value,0);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"loop"))  /* same as iterations */
+          if (LocaleCompare(attribute,"loop") == 0)  /* same as iterations */
             {
               if (image)
                 s=newSViv(image->iterations);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
           break;
         }
         case 'M':
         case 'm':
         {
-          if (strEQcase(attribute,"magick"))
+          if (LocaleCompare(attribute,"magick") == 0)
             {
               if (info && *info->image_info->magick)
                 s=newSVpv(info->image_info->magick,0);
               else
                 if (image)
                   s=newSVpv(image->magick,0);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"maximum-error"))
+          if (LocaleCompare(attribute,"maximum-error") == 0)
             {
               if (image)
                 s=newSVnv(image->normalized_maximum_error);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"mean-error"))
+          if (LocaleCompare(attribute,"mean-error") == 0)
             {
               if (image)
                 s=newSVnv(image->normalized_mean_error);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"monoch"))
+          if (LocaleCompare(attribute,"monochrome") == 0)
             {
               j=info ? info->image_info->monochrome : IsMonochromeImage(image);
               s=newSViv(j);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"mattecolor") ||
-              strEQcase(attribute,"matte-color"))
+          if (LocaleCompare(attribute,"mattecolor") == 0)
             {
               if (!image)
                 break;
@@ -3333,29 +3329,29 @@ Get(ref,...)
                 image->matte_color.green,image->matte_color.blue,
                 image->matte_color.opacity);
               s=newSVpv(color,0);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"matte"))
+          if (LocaleCompare(attribute,"matte") == 0)
             {
               if (image)
                 s=newSViv(image->matte);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"montage"))
+          if (LocaleCompare(attribute,"montage") == 0)
             {
               if (image && image->montage)
                 s=newSVpv(image->montage,0);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
           break;
         }
-        case 'O':
-        case 'o':
-          break;
         case 'P':
         case 'p':
         {
-          if (strEQcase(attribute,"page"))
+          if (LocaleCompare(attribute,"page") == 0)
             {
               if (info && info->image_info->page)
                 s=newSVpv(info->image_info->page,0);
@@ -3369,9 +3365,10 @@ Get(ref,...)
                       image->page.height,image->page.x,image->page.y);
                     s=newSVpv(geometry,0);
                   }
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"pixel"))
+          if (LocaleNCompare(attribute,"pixel",5) == 0)
             {
               char
                 name[MaxTextExtent];
@@ -3393,15 +3390,17 @@ Get(ref,...)
               FormatString(name,"%u,%u,%u,%u",pixel.red,pixel.green,pixel.blue,
                 pixel.opacity);
               s=newSVpv(name,0);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"points"))
+          if (LocaleCompare(attribute,"points") == 0)
             {
               if (info)
                 s=newSViv(info->image_info->pointsize);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"preview"))
+          if (LocaleCompare(attribute,"preview") == 0)
             {
               s=newSViv(info->image_info->preview_type);
               if ((info->image_info->preview_type >= 0) &&
@@ -3411,25 +3410,27 @@ Get(ref,...)
                     PreviewTypes[info->image_info->preview_type]);
                   SvIOK_on(s);
                 }
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
           break;
         }
         case 'Q':
         case 'q':
         {
-          if (strEQcase(attribute,"quality"))
+          if (LocaleCompare(attribute,"quality") == 0)
             {
               if (info)
                 s=newSViv(info->image_info->quality);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
           break;
         }
         case 'R':
         case 'r':
         {
-          if (strEQcase(attribute,"render"))
+          if (LocaleCompare(attribute,"render") == 0)
             {
               j=image->rendering_intent;
               s=newSViv(j);
@@ -3438,59 +3439,67 @@ Get(ref,...)
                   (void) sv_setpv(s,IntentTypes[j]);
                   SvIOK_on(s);
                 }
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"red-") || strEQcase(attribute,"red_"))
+          if (LocaleCompare(attribute,"red-primary") == 0)
             {
               if (!image)
                 break;
               FormatString(color,"%g,%g",image->chromaticity.red_primary.x,
                 image->chromaticity.red_primary.y);
               s=newSVpv(color,0);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"row"))
+          if (LocaleCompare(attribute,"rows") == 0)
             {
               if (image)
                 s=newSViv(image->rows);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
           break;
         }
         case 'S':
         case 's':
         {
-          if (strEQcase(attribute,"subimage"))
+          if (LocaleCompare(attribute,"subimage") == 0)
             {
               if (info)
                 s=newSViv(info->image_info->subimage);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"subrange"))
+          if (LocaleCompare(attribute,"subrange") == 0)
             {
               if (info)
                 s=newSViv(info->image_info->subrange);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"server"))  /* same as display */
+          if (LocaleCompare(attribute,"server") == 0)  /* same as display */
             {
               if (info && info->image_info->server_name)
                 s=newSVpv(info->image_info->server_name,0);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"size"))
+          if (LocaleCompare(attribute,"size") == 0)
             {
               if (info && info->image_info->size)
                 s=newSVpv(info->image_info->size,0);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"scene"))
+          if (LocaleCompare(attribute,"scene") == 0)
             {
               if (image)
                 s=newSViv(image->scene);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"sign"))
+          if (LocaleCompare(attribute,"signature") == 0)
             {
               ImageAttribute
                 *attribute;
@@ -3501,38 +3510,43 @@ Get(ref,...)
               attribute=GetImageAttribute(image,"Signature");
               if (attribute != (ImageAttribute *) NULL)
                 s=newSVpv(attribute->value,0);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
           break;
         }
         case 'T':
         case 't':
         {
-          if (strEQcase(attribute,"taint"))
+          if (LocaleCompare(attribute,"taint") == 0)
             {
               if (image)
                 s=newSViv(IsImageTainted(image));
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"temporary"))
+          if (LocaleCompare(attribute,"temporary") == 0)
             {
               if (image)
                 s=newSViv(image->temporary);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"tile"))
+          if (LocaleCompare(attribute,"tile") == 0)
             {
               if (info && info->image_info->tile)
                 s=newSVpv(info->image_info->tile,0);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"texture"))
+          if (LocaleCompare(attribute,"texture") == 0)
             {
               if (info && info->image_info->texture)
                 s=newSVpv(info->image_info->texture,0);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"type"))
+          if (LocaleCompare(attribute,"type") == 0)
             {
               if (!image)
                 break;
@@ -3543,14 +3557,15 @@ Get(ref,...)
                   (void) sv_setpv(s,ImageTypes[j]);
                   SvIOK_on(s);
                 }
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
           break;
         }
         case 'U':
         case 'u':
         {
-          if (strEQcase(attribute,"units"))
+          if (LocaleCompare(attribute,"units") == 0)
             {
               j=info ? info->image_info->units : image->units;
               if (info)
@@ -3563,74 +3578,89 @@ Get(ref,...)
                   s=newSVpv("pixels / inch",0);
                 else
                   s=newSVpv("pixels / centimeter",0);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
           break;
         }
         case 'V':
         case 'v':
         {
-          if (strEQcase(attribute,"verbose"))
+          if (LocaleCompare(attribute,"verbose") == 0)
             {
               if (info)
                 s=newSViv(info->image_info->verbose);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"view"))
+          if (LocaleCompare(attribute,"view") == 0)
             {
               if (info && info->image_info->view)
                 s=newSVpv(info->image_info->view,0);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
           break;
         }
         case 'W':
         case 'w':
         {
-          if (strEQcase(attribute,"white-") || strEQcase(attribute,"white_"))
+          if (LocaleCompare(attribute,"white-primary") == 0)
             {
               if (!image)
                 break;
               FormatString(color,"%g,%g",image->chromaticity.white_point.x,
                 image->chromaticity.white_point.y);
               s=newSVpv(color,0);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
-          if (strEQcase(attribute,"width"))
+          if (LocaleCompare(attribute,"width") == 0)
             {
               if (image)
                 s=newSViv(image->columns);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
           break;
         }
         case 'X':
         case 'x':
         {
-          if (strEQcase(attribute,"x"))
+          if (LocaleCompare(attribute,"x-resolution") == 0)
             {
               if (image)
                 s=newSVnv(image->x_resolution);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
           break;
         }
         case 'Y':
         case 'y':
         {
-          if (strEQcase(attribute,"y"))
+          if (LocaleCompare(attribute,"y-resolution") == 0)
             {
               if (image)
                 s=newSVnv(image->y_resolution);
-              break;
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
             }
           break;
         }
-        case 'Z':
-        case 'z':
+        default:
           break;
       }
-      PUSHs(s ? sv_2mortal(s) : &sv_undef);
+      if (image == (Image *) NULL)
+        MagickWarning(OptionWarning,"Invalid attribute",attribute);
+      image_attribute=GetImageAttribute(image,attribute);
+      if (image_attribute == (ImageAttribute *) NULL)
+        MagickWarning(OptionWarning,"Invalid attribute",attribute);
+      else
+        {
+          s=newSVpv(image_attribute->value,0);
+          PUSHs(s ? sv_2mortal(s) : &sv_undef);
+        }
     }
   }
 
@@ -3669,11 +3699,11 @@ ImageToBlob(ref,...)
     int
       scene;
 
-    jmp_buf
-      error_jmp;
-
     register int
       i;
+
+    jmp_buf
+      error_jmp;
 
     struct PackageInfo
       *info,
@@ -3921,6 +3951,9 @@ Mogrify(ref,...)
     FrameInfo
       frame_info;
 
+    jmp_buf
+      error_jmp;
+
     Image
       *image,
       *next,
@@ -3930,9 +3963,6 @@ Mogrify(ref,...)
       base,
       first,
       flags;
-
-    jmp_buf
-      error_jmp;
 
     PixelPacket
       fill_color;
@@ -3974,9 +4004,6 @@ Mogrify(ref,...)
         goto ReturnIt;
       }
     reference=SvRV(ST(0));
-    error_jump=(&error_jmp);
-    if (setjmp(error_jmp))
-      goto ReturnIt;
     region_info.width=0;
     region_info.height=0;
     region_info.x=0;
@@ -4098,8 +4125,7 @@ Mogrify(ref,...)
                     if ((al->int_reference < 0) &&
                         ((al->int_reference=SvIV(sv)) <= 0))
                       {
-                        FormatString(message,"invalid %.1024s value",
-                          pp->method);
+                        FormatString(message,"invalid %.60s value",pp->method);
                         MagickWarning(OptionWarning,message,attribute);
                         goto continue_outer_loop;
                       }
@@ -4107,6 +4133,9 @@ Mogrify(ref,...)
       attribute_flag[pp-rp->arguments]++;
       continue_outer_loop: ;
     }
+    error_jump=(&error_jmp);
+    if (setjmp(error_jmp))
+      goto ReturnIt;
     (void) memset((char *) &fill_color,0,sizeof(PixelPacket));
     first=True;
     pv=reference_vector;
@@ -5687,8 +5716,6 @@ Montage(ref,...)
               montage_info->border_width=SvIV(ST(i));
               break;
             }
-          MagickWarning(OptionWarning,"Invalid attribute",attribute);
-          break;
         }
         case 'C':
         case 'c':
@@ -5706,7 +5733,6 @@ Montage(ref,...)
               montage_info->compose=(CompositeOperator) sp;
               break;
             }
-          MagickWarning(OptionWarning,"Invalid attribute",attribute);
           break;
         }
         case 'F':
@@ -5738,7 +5764,6 @@ Montage(ref,...)
               (void) CloneString(&montage_info->font,SvPV(ST(i),na));
               break;
             }
-          MagickWarning(OptionWarning,"Invalid attribute",attribute);
           break;
         }
         case 'G':
@@ -5776,8 +5801,7 @@ Montage(ref,...)
              montage_info->gravity=(GravityType) in;
              break;
            }
-          MagickWarning(OptionWarning,"Invalid attribute",attribute);
-          break;
+         break;
         }
         case 'L':
         case 'l':
@@ -5788,7 +5812,6 @@ Montage(ref,...)
                 (void) SetImageAttribute(next,"Label",SvPV(ST(i),na));
               break;
             }
-          MagickWarning(OptionWarning,"Invalid attribute",attribute);
           break;
         }
         case 'M':
@@ -5839,7 +5862,6 @@ Montage(ref,...)
               }
               break;
             }
-          MagickWarning(OptionWarning,"Invalid attribute",attribute);
           break;
         }
         case 'P':
@@ -5850,7 +5872,6 @@ Montage(ref,...)
               montage_info->pointsize=SvIV(ST(i));
               break;
             }
-          MagickWarning(OptionWarning,"Invalid attribute",attribute);
           break;
         }
         case 'S':
@@ -5874,7 +5895,6 @@ Montage(ref,...)
               (void) QueryColorDatabase(SvPV(ST(i),na),&montage_info->stroke);
               break;
             }
-          MagickWarning(OptionWarning,"Invalid attribute",attribute);
           break;
         }
         case 'T':
@@ -5911,12 +5931,10 @@ Montage(ref,...)
                 TransparentImage(next,transparent_color,TransparentOpacity);
               break;
             }
-          MagickWarning(OptionWarning,"Invalid attribute",attribute);
           break;
         }
-        default:
-          MagickWarning(OptionWarning,"Invalid attribute",attribute);
       }
+      MagickWarning(OptionWarning,"Invalid attribute",attribute);
     }
     GetExceptionInfo(&exception);
     image=MontageImages(image,montage_info,&exception);
@@ -5989,11 +6007,11 @@ Morph(ref,...)
       *next,
       *image;
 
-    int
-      number_frames;
-
     jmp_buf
       error_jmp;
+
+    int
+      number_frames;
 
     register int
       i;
@@ -6023,13 +6041,13 @@ Morph(ref,...)
       }
     reference=SvRV(ST(0));
     hv=SvSTASH(reference);
+    av=newAV();
+    av_reference=sv_2mortal(sv_bless(newRV((SV *) av),hv));
+    SvREFCNT_dec(av);
     error_jump=(&error_jmp);
     status=setjmp(error_jmp);
     if (status)
       goto MethodException;
-    av=newAV();
-    av_reference=sv_2mortal(sv_bless(newRV((SV *) av),hv));
-    SvREFCNT_dec(av);
     image=SetupList(reference,&info,&reference_vector);
     if (!image)
       {
@@ -6122,11 +6140,11 @@ Mosaic(ref)
     HV
       *hv;
 
-    Image
-      *image;
-
     jmp_buf
       error_jmp;
+
+    Image
+      *image;
 
     struct PackageInfo
       *info;
@@ -6224,9 +6242,6 @@ Ping(ref,...)
     Image
       *image;
 
-    jmp_buf
-      error_jmp;
-
     register int
       i;
 
@@ -6237,16 +6252,9 @@ Ping(ref,...)
       *reference,  /* reference is the SV* of ref=SvIV(reference) */
       *s;
 
-    volatile int
-      status;
-
     EXTEND(sp,items-1);
     error_list=newSVpv("",0);
     reference=SvRV(ST(0));
-    error_jump=(&error_jmp);
-    status=setjmp(error_jmp);
-    if (status)
-      goto MethodException;
     av=(AV *) reference;
     info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
     EXTEND(sp,4*items-1);
@@ -6280,8 +6288,6 @@ Ping(ref,...)
         }
     }
     info->image_info->file=(FILE *) NULL;
-
-  MethodException:
     SvREFCNT_dec(error_list);  /* throw away all errors */
     error_list=NULL;
   }
@@ -6369,9 +6375,6 @@ QueryColorname(ref,...)
     Image
       *image;
 
-    jmp_buf
-      error_jmp;
-
     PixelPacket
       target_color;
 
@@ -6385,16 +6388,9 @@ QueryColorname(ref,...)
       *reference,  /* reference is the SV* of ref=SvIV(reference) */
       *s;
 
-    volatile int
-      status;
-
     EXTEND(sp,items-1);
     error_list=newSVpv("",0);
     reference=SvRV(ST(0));
-    error_jump=(&error_jmp);
-    status=setjmp(error_jmp);
-    if (status)
-      goto MethodException;
     av=(AV *) reference;
     info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
     image=SetupList(reference,&info,(SV ***) NULL);
@@ -6407,8 +6403,6 @@ QueryColorname(ref,...)
         s=sv_2mortal(newSVpv(message,0));
       PUSHs(s);
     }
-
-  MethodException:
     SvREFCNT_dec(error_list);
     error_list=NULL;
   }
@@ -6456,9 +6450,6 @@ QueryFontMetrics(ref,...)
     Image
       *image;
 
-    jmp_buf
-      error_jmp;
-
     register int
       i;
 
@@ -6475,10 +6466,6 @@ QueryFontMetrics(ref,...)
     EXTEND(sp,items-1);
     error_list=newSVpv("",0);
     reference=SvRV(ST(0));
-    error_jump=(&error_jmp);
-    status=setjmp(error_jmp);
-    if (status)
-      goto MethodException;
     av=(AV *) reference;
     info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
     EXTEND(sp,7*items-1);
@@ -6832,9 +6819,6 @@ Remote(ref,...)
     AV
       *av;
 
-    jmp_buf
-      error_jmp;
-
     SV
       *reference;
 
@@ -6844,9 +6828,6 @@ Remote(ref,...)
     EXTEND(sp,items-1);
     error_list=newSVpv("",0);
     reference=SvRV(ST(0));
-    error_jump=(&error_jmp);
-    if (setjmp(error_jmp))
-      goto MethodException;
     av=(AV *) reference;
     info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
 #if defined(XlibSpecificationRelease)
@@ -6862,8 +6843,6 @@ Remote(ref,...)
         XRemoteCommand(display,(char *) NULL,(char *) SvPV(ST(i),na));
     }
 #endif
-
-  MethodException:
     SvREFCNT_dec(error_list);    /* throw away all errors */
     error_list=NULL;
   }
@@ -6894,9 +6873,6 @@ Set(ref,...)
     Image
       *image;
 
-    jmp_buf
-      error_jmp;
-
     register int
       i;
 
@@ -6913,9 +6889,6 @@ Set(ref,...)
         goto MethodException;
       }
     reference=SvRV(ST(0));
-    error_jump=(&error_jmp);
-    if (setjmp(error_jmp))
-      goto MethodException;
     image=SetupList(reference,&info,(SV ***) NULL);
     for (i=2; i < items; i+=2)
       SetAttribute(info,image,SvPV(ST(i-1),na),ST(i));
@@ -6999,13 +6972,13 @@ Transform(ref,...)
       }
     reference=SvRV(ST(0));
     hv=SvSTASH(reference);
+    av=newAV();
+    av_reference=sv_2mortal(sv_bless(newRV((SV *) av),hv));
+    SvREFCNT_dec(av);
     error_jump=(&error_jmp);
     status=setjmp(error_jmp);
     if (status)
       goto MethodException;
-    av=newAV();
-    av_reference=sv_2mortal(sv_bless(newRV((SV *) av),hv));
-    SvREFCNT_dec(av);
     image=SetupList(reference,&info,&reference_vector);
     if (!image)
       {
@@ -7114,11 +7087,11 @@ Write(ref,...)
     int
       scene;
 
-    jmp_buf
-      error_jmp;
-
     register int
       i;
+
+    jmp_buf
+      error_jmp;
 
     struct PackageInfo
       *info,
