@@ -140,7 +140,10 @@ static unsigned int DecodeImage(Image *image,const int channel)
           {
             case -1:
             {
-              q->opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(pixel));
+              if (image->colorspace == CMYKColorspace)
+                indexes[0]=(Quantum) (MaxRGB-ScaleCharToQuantum(pixel));
+			  else
+				q->opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(pixel));
               break;
             }
             case 0:
@@ -148,7 +151,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
               q->red=ScaleCharToQuantum(pixel);
               if (image->storage_class == PseudoClass)
                 {
-                  indexes[x]=(IndexPacket) pixel;
+                  indexes[0]=(IndexPacket) pixel;
                   *q=image->colormap[pixel];
                 }
               break;
@@ -174,7 +177,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
             case 4:
             {
               if (image->colorspace == CMYKColorspace)
-                indexes[x]=ScaleCharToQuantum(pixel);
+                indexes[0]=(Quantum) (MaxRGB-ScaleCharToQuantum(pixel));
               break;
             }
             default:
@@ -200,7 +203,10 @@ static unsigned int DecodeImage(Image *image,const int channel)
       {
         case -1:
         {
-          q->opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(pixel));
+          if (image->colorspace == CMYKColorspace)
+            indexes[0]=(Quantum) (MaxRGB-ScaleCharToQuantum(pixel));
+		  else
+			q->opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(pixel));
           break;
         }
         case 0:
@@ -208,7 +214,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
           q->red=ScaleCharToQuantum(pixel);
           if (image->storage_class == PseudoClass)
             {
-              indexes[x]=(IndexPacket) pixel;
+              indexes[0]=(IndexPacket) pixel;
               *q=image->colormap[pixel];
             }
           break;
@@ -234,7 +240,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
         case 4:
         {
           if (image->colorspace == CMYKColorspace)
-            indexes[x]=ScaleCharToQuantum(pixel);
+                indexes[0]=(Quantum) (MaxRGB-ScaleCharToQuantum(pixel));
           break;
         }
         default:
@@ -537,7 +543,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   size_t
     count,
     length,
-  combinedlength,
+	combinedlength,
     size;
 
   ExtendedSignedIntegralType
@@ -560,7 +566,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     pixel;
 
   int
-	logging;
+	logging,
+	padBytes;
 
 
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter ReadPSDImage()");
@@ -890,17 +897,26 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 /*
                   Layer blending ranges info.
                 */
-                /*
-                  Skip over it for now...
-                */
 				  if(logging)
 					{
 					  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
 									"      layer blending ranges: length=%ld",
 									(long) length);
 					}
-                for (j=0; j < (long) (length); j++)
-                  (void) ReadBlobByte(image);
+
+                /*
+                  we read it, but don't use it...
+                */
+                for (j=0; j < (long) (length); j+=8) {
+					size_t blend_source = ReadBlobMSBLong(image);
+					size_t blend_dest = ReadBlobMSBLong(image);
+					  if(logging)
+						{
+						  (void) LogMagickEvent(CoderEvent,__MagickMethod,
+										"        source(%x), dest(%x)",
+										blend_source, blend_dest);
+						}
+				}
               }
             combinedlength += length + 4;  /* +4 for length */
 
@@ -918,7 +934,54 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 											layer_info[i].name);
 					}
 			  }
+#if 0
+			if ( length == 0 )
+				padBytes = 3;
+			else
+				padBytes = (4 - (length % 4));
+			if ( padBytes != 0 ) { /* we need to pad */
+				for ( i=0; i < padBytes; i++)
+					(void) ReadBlobByte(image);
+			}
+            combinedlength += length + padBytes + 1;  /* +1 for length */
+#else
             combinedlength += length + 1;  /* +1 for length */
+#endif
+
+#if 0	/* still in development */
+			/*
+				Adjustment layers and other stuff...
+			*/
+			{
+				char	alsig[4],
+						alkey[4];
+
+				count=ReadBlob(image,4,(char *) alsig);
+				if ((count == 0) || (LocaleNCompare(alsig,"8BIM",4) != 0)) {
+				  if(logging)
+					{
+					  (void) LogMagickEvent(CoderEvent,__MagickMethod,"  adjustment layer type was %.4s instead of 8BIM", alsig);
+					  (void) LogMagickEvent(CoderEvent,__MagickMethod,"leave ReadPSDImage()");
+					}
+				  ThrowReaderException(CorruptImageError,"NotAPSDImageFile",image);
+				}
+				(void) ReadBlob(image,4,(char *) alkey);
+				length=ReadBlobMSBLong(image);
+				  if(logging)
+					{
+					  (void) LogMagickEvent(CoderEvent,__MagickMethod,
+											"      adjustment layer key: %.4s, data length=%ld",
+											alkey, length);
+					}
+
+				  if ( length ) {
+					for (j=0; j < (long) (length); j++)
+					  (void) ReadBlobByte(image);
+				  }
+
+			}
+			combinedlength += 12 + length;	/* sig, key, length + the actual length*/
+#endif
 
            /*
               Skip the rest of the variable data until we support it.
@@ -996,11 +1059,13 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 			{
 			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"    reading data for channel %ld", j);
 			}
-          if (layer_info[i].channel_info[j].size <=
-              (2*layer_info[i].image->rows))
+#if 0
+          if (layer_info[i].channel_info[j].size <= (2*layer_info[i].image->rows))
             {
               long
                 k;
+
+			  (void) LogMagickEvent(CoderEvent,__MagickMethod,"      layer data is empty");
 
               /*
                 A layer without data.
@@ -1009,21 +1074,26 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 (void) ReadBlobByte(layer_info[i].image);
               continue;
             }
+#endif
           compression=ReadBlobMSBShort(layer_info[i].image);
           if (compression == 1)
             {
               /*
                 Read RLE compressed data.
               */
+			  (void) LogMagickEvent(CoderEvent,__MagickMethod,"      layer data is RLE compressed");
+
               for (y=0; y < (long) layer_info[i].image->rows; y++)
                 (void) ReadBlobMSBShort(layer_info[i].image);
               (void) DecodeImage(layer_info[i].image,
-                layer_info[i].channel_info[j].type);
+								 layer_info[i].channel_info[j].type);
               continue;
             }
+
           /*
             Read uncompressed pixel data as separate planes.
           */
+		  (void) LogMagickEvent(CoderEvent,__MagickMethod,"      layer data is uncompressed");
           packet_size=1;
           if (layer_info[i].image->storage_class == PseudoClass)
             {
@@ -1050,7 +1120,10 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 case -1:  /* transparency mask */
                 {
-                  q->opacity=(Quantum) (MaxRGB-pixel);
+                   if (image->colorspace == CMYKColorspace)
+                     indexes[x]=(Quantum) (MaxRGB-pixel);
+				   else
+					 q->opacity=(Quantum) (MaxRGB-pixel);
                   break;
                 }
                 case 0:  /* first component (Red, Cyan, Gray or Index) */
@@ -1058,7 +1131,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   q->red=(Quantum) pixel;
                   if (layer_info[i].image->storage_class == PseudoClass)
                     {
-                      indexes[x]=(IndexPacket) ScaleQuantumToChar(pixel);
+                      indexes[x]=(IndexPacket) MaxRGB - ScaleQuantumToChar(pixel);
                       *q=layer_info[i].image->colormap[indexes[x]];
                     }
                   break;
@@ -1084,7 +1157,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 case 4:  /* fifth component (opacity) */
                 {
                   if (image->colorspace == CMYKColorspace)
-                    indexes[x]=(Quantum) pixel;
+                    indexes[x]=(Quantum) (MaxRGB-pixel);
                   break;
                 }
                 default:
