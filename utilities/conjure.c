@@ -135,6 +135,9 @@ int main(int argc,char **argv)
   unsigned int
     status;
 
+  /*
+    Parse command-line arguments.
+  */
   ReadCommandlLine(argc,&argv);
   InitializeMagick(*argv);
   status=ExpandFilenames(&argc,&argv);
@@ -156,6 +159,9 @@ int main(int argc,char **argv)
       MagickError(ResourceLimitError,"Unable to persist key",argv[i]);
     i+=2;
   }
+  /*
+    Interpret MSL script.
+  */
   for ( ; i < argc; i++)
   {
     status=SetImageAttribute(image_info->attributes,"filename",(char *) NULL);
