@@ -25,8 +25,8 @@ FreeType:
 
 jasper
   cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import jasper 1.700.2' delegates/jp2 \
-    JASPER_DIST JASPER_1_700_2
+    import -m 'Import jasper 1.701.0' delegates/jp2 \
+    JASPER_DIST JASPER_1_701_0
 
 jbig:
 

@@ -24,6 +24,10 @@
 2005-03-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> jp2: Updated Jasper library to version 1.701.0.
+  <LI> magick/nt_base.c (NTGhostscriptFonts): Fixed a coding error
+        which was added when strcpy/strcat code was replaced with
+        strlcpy/strlcat.  Ghostscript fonts were not being found.
   <LI> magick/constitute.c (ReadImage): Don't attempt to access image
         members if image pointer is null.  Oops!
 
