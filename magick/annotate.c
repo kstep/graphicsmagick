@@ -456,6 +456,9 @@ Export void DestroyAnnotateInfo(AnnotateInfo *annotate_info)
 Export void GetAnnotateInfo(const ImageInfo *image_info,
   AnnotateInfo *annotate_info)
 {
+  ImageAttribute
+    *attribute;
+
   Image
     *annotate_image;
 
@@ -494,8 +497,9 @@ Export void GetAnnotateInfo(const ImageInfo *image_info,
   annotate_image=ReadLABELImage(annotate_info->image_info);
   if (annotate_image == (Image *) NULL)
     return;
-  if (annotate_image->label != (char *) NULL)
-    annotate_info->font_name=AllocateString(annotate_image->label);
+  attribute=GetImageAttribute(annotate_image,"label");
+  if (attribute != (ImageAttribute *) NULL)
+    annotate_info->font_name=attribute->value;
   annotate_info->bounds.width=
     (annotate_image->columns+(strlen(Alphabet) >> 1))/strlen(Alphabet);
   annotate_info->bounds.height=annotate_image->rows;

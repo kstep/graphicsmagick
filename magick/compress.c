@@ -55,9 +55,6 @@
 */
 #include "magick.h"
 #include "defines.h"
-#if defined(HasTIFF)
-#include "tiffio.h"
-#endif
 #if defined(HasZLIB)
 #include "zlib.h"
 #endif
@@ -436,8 +433,7 @@ Export unsigned int HuffmanDecodeImage(Image *image)
   assert(image != (Image *) NULL);
   mb_hash=(HuffmanTable **) AllocateMemory(HashSize*sizeof(HuffmanTable *));
   mw_hash=(HuffmanTable **) AllocateMemory(HashSize*sizeof(HuffmanTable *));
-  scanline=(unsigned char *)
-    AllocateMemory(image->columns*sizeof(unsigned char));
+  scanline=(unsigned char *) AllocateMemory(image->columns);
   if ((mb_hash == (HuffmanTable **) NULL) ||
       (mw_hash == (HuffmanTable **) NULL) ||
       (scanline == (unsigned char *) NULL))
@@ -705,7 +701,7 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
   width=image->columns;
   if (Latin1Compare(image_info->magick,"FAX") == 0)
     width=Max(image->columns,1728);
-  scanline=(unsigned char *) AllocateMemory((width+1)*sizeof(unsigned char));
+  scanline=(unsigned char *) AllocateMemory(width+1);
   if (scanline == (unsigned char *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Memory allocation failed",
@@ -752,7 +748,7 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
       Intensity(huffman_image->colormap[1]) ? 0 : 1);
   q=scanline;
   for (i=0; i < (int) width; i++)
-    *q++=(unsigned char) polarity;
+    *q++=polarity;
   q=scanline;
   for (y=0; y < (int) huffman_image->rows; y++)
   {
@@ -761,7 +757,7 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
       break;
     for (x=0; x < (int) huffman_image->columns; x++)
     {
-      *q=(unsigned char) (huffman_image->indexes[x] == polarity ?
+      *q=(huffman_image->indexes[x] == polarity ?
         (int) polarity : (int) !polarity);
       q++;
     }
@@ -848,8 +844,8 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
   FreeMemory(scanline);
   return(True);
 }
+#if !defined(HasTIFF)
 
-#if defined(HasTIFF)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -878,115 +874,6 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
 %    o image: The address of a structure of type Image.
 %
 */
-Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
-{
-  char
-    filename[MaxTextExtent];
-
-  Image
-    *huffman_image;
-
-  ImageInfo
-    *local_info;
-
-  int
-    count;
-
-  register int
-    i,
-    j;
-
-  TIFF
-    *tiff;
-
-
-  uint16
-    fillorder;
-
-  unsigned char
-    *buffer;
-
-  unsigned int
-    *byte_count,
-    status,
-    strip_size;
-
-  /*
-    Write image as CCITTFax4 TIFF image to a temporary file.
-  */
-  assert(image_info != (ImageInfo *) NULL);
-  assert(image != (Image *) NULL);
-  huffman_image=CloneImage(image,image->columns,image->rows,True);
-  if (huffman_image == (Image *) NULL)
-    return(False);
-  if (!IsMonochromeImage(huffman_image))
-    {
-      QuantizeInfo
-        quantize_info;
-
-      /*
-        Convert image to monochrome.
-      */
-      GetQuantizeInfo(&quantize_info);
-      quantize_info.number_colors=2;
-      quantize_info.dither=image_info->dither;
-      quantize_info.colorspace=GRAYColorspace;
-      (void) QuantizeImage(&quantize_info,huffman_image);
-    }
-  TemporaryFilename(filename);
-  (void) strcpy(huffman_image->filename,filename);
-  (void) strcpy(huffman_image->magick,"TIFF");
-  local_info=CloneImageInfo(image_info);
-  local_info->compression=Group4Compression;
-  status=WriteImage(local_info,huffman_image);
-  DestroyImageInfo(local_info);
-  DestroyImage(huffman_image);
-  if (status == False)
-    return(False);
-  tiff=TIFFOpen(filename,ReadBinaryType);
-  if (tiff == (TIFF *) NULL)
-    {
-      MagickWarning(FileOpenWarning,"Unable to open file",image_info->filename);
-      (void) remove(filename);
-      return(False);
-    }
-  /*
-    Allocate raw strip buffer.
-  */
-  TIFFGetField(tiff,TIFFTAG_STRIPBYTECOUNTS,&byte_count);
-  strip_size=byte_count[0];
-  for (i=1; i < (int) TIFFNumberOfStrips(tiff); i++)
-    if (byte_count[i] > strip_size)
-      strip_size=byte_count[i];
-  buffer=(unsigned char *) AllocateMemory(strip_size*sizeof(unsigned char));
-  if (buffer == (unsigned char *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-        (char *) NULL);
-      TIFFClose(tiff);
-      (void) remove(filename);
-      return(False);
-    }
-  /*
-    Compress runlength encoded to 2D Huffman pixels.
-  */
-  TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&fillorder);
-  for (i=0; i < (int) TIFFNumberOfStrips(tiff); i++)
-  {
-    Ascii85Initialize();
-    count=TIFFReadRawStrip(tiff,i,buffer,byte_count[i]);
-    if (fillorder == FILLORDER_LSB2MSB)
-      TIFFReverseBits(buffer,count);
-    for (j=0; j < count; j++)
-      Ascii85Encode(image,(unsigned int) buffer[j]);
-    Ascii85Flush(image);
-  }
-  FreeMemory(buffer);
-  TIFFClose(tiff);
-  (void) remove(filename);
-  return(True);
-}
-#else
 Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
 {
   assert(image != (Image *) NULL);
@@ -1226,7 +1113,7 @@ Export unsigned int PackbitsEncodeImage(Image *image,
   */
   assert(image != (Image *) NULL);
   assert(pixels != (unsigned char *) NULL);
-  packbits=(unsigned char *) AllocateMemory(128*sizeof(unsigned char));
+  packbits=(unsigned char *) AllocateMemory(128);
   if (packbits == (unsigned char *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Memory allocation failed",
@@ -1377,8 +1264,7 @@ Export unsigned int ZLIBEncodeImage(Image *image,
 
   assert(image != (Image *) NULL);
   compressed_packets=(unsigned long) (1.001*number_pixels+12);
-  compressed_pixels=(unsigned char *)
-    AllocateMemory(compressed_packets*sizeof(unsigned char));
+  compressed_pixels=(unsigned char *) AllocateMemory(compressed_packets);
   if (compressed_pixels == (unsigned char *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Memory allocation failed",

@@ -135,6 +135,7 @@ static void GetFontInfo(TT_Face face,TT_Face_Properties *face_properties,
   Image *image)
 {
   char
+    *label,
     *name;
 
   static const unsigned short
@@ -159,11 +160,10 @@ static void GetFontInfo(TT_Face face,TT_Face_Properties *face_properties,
   */
   if (face_properties->num_Names == 0)
     return;
-  image->label=(char *)
-    AllocateMemory((face_properties->num_Names*MaxTextExtent)*sizeof(char));
-  if (image->label == (char *) NULL)
+  label=(char *) AllocateMemory(face_properties->num_Names*MaxTextExtent);
+  if (label == (char *) NULL)
     return;
-  *image->label='\0';
+  *label='\0';
   for (i=0; i < (int) (sizeof(ids)/sizeof(unsigned short)); i++)
   {
     TT_Get_Name_ID(face,ids[i],&platform,&encoding,&language,&id);
@@ -171,14 +171,15 @@ static void GetFontInfo(TT_Face face,TT_Face_Properties *face_properties,
         ((platform != 3) || (encoding > 1) || ((language & 0x3FF) != 0x009)))
       continue;
     TT_Get_Name_String(face,ids[i],&name,&length);
-    p=image->label+strlen(image->label);
+    p=label+strlen(label);
     for (j=1; j < (int) Min(length,MaxTextExtent); j+=2)
       *p++=name[j];
     *p='\0';
     break;
   }
-  image->label=(char *) ReallocateMemory((char *)
-    image->label,(strlen(image->label)+1)*sizeof(char));
+  label=(char *) ReallocateMemory((char *) label,strlen(label)+1);
+  (void) SetImageAttribute(image,"Label",label);
+  FreeMemory(label);
 }
 
 static void RenderGlyph(TT_Raster_Map *canvas,TT_Raster_Map *character,

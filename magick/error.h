@@ -27,6 +27,19 @@ extern int
 /*
   Error typedef declarations.
 */
+typedef struct _ErrorInfo
+{
+  ErrorType
+    type;
+
+  char
+    *message,
+    *qualifier;
+} ErrorInfo;
+
+/*
+  Error typedef declarations.
+*/
 typedef void
   (*ErrorHandler)(const ErrorType,const char *,const char *);
 
@@ -40,6 +53,7 @@ extern Export ErrorHandler
   SetErrorHandler(ErrorHandler);
 
 extern Export void
+  GetErrorInfo(ErrorInfo *),
   MagickError(const ErrorType,const char *,const char *),
   MagickWarning(const WarningType,const char *,const char *);
 

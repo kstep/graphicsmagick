@@ -88,7 +88,7 @@ Export void DestroyMagickInfo()
   register MagickInfo
     *p;
 
-  for (p=GetMagickInfo((char *) NULL); p != (MagickInfo *) NULL; )
+  for (p=magick_info; p != (MagickInfo *) NULL; )
   {
     entry=p;
     p=p->next;
@@ -98,6 +98,7 @@ Export void DestroyMagickInfo()
       FreeMemory(entry->description);
     FreeMemory(entry);
   }
+  magick_info=(MagickInfo *) NULL;
 }
 
 /*
@@ -508,6 +509,10 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->magick=IsPCX;
       entry->adjoin=False;
       entry->description=AllocateString("ZSoft IBM PC Paintbrush");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("PDB");
+      entry->decoder=ReadPDBImage;
+      entry->description=AllocateString("Pilot Image Format");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("PDF");
       entry->decoder=ReadPDFImage;
@@ -921,7 +926,7 @@ Export MagickInfo *RegisterMagickInfo(MagickInfo *entry)
   /*
     Add tag info to the image format list.
   */
-  p=(MagickInfo*) NULL;
+  p=(MagickInfo *) NULL;
   if (magick_info != (MagickInfo *) NULL)
     {
       for (p=magick_info; p->next != (MagickInfo *) NULL; p=p->next)
@@ -1045,10 +1050,10 @@ Export unsigned int UnregisterMagickInfo(const char *tag)
         else
           {
             magick_info=p->next;
-            if (p->next != (MagickInfo*) NULL)
+            if (p->next != (MagickInfo *) NULL)
               p->next->previous=(MagickInfo *) NULL;
           }
-        if (p->next != (MagickInfo*) NULL)
+        if (p->next != (MagickInfo *) NULL)
           p->next->previous=p->previous;
         FreeMemory(p);
         return(True);

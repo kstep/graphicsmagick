@@ -300,7 +300,7 @@ int XStringListToTextProperty(char **argv,int argc,XTextProperty *property)
   protocol.value=NULL;
   if (number_bytes <= 0)
     {
-      protocol.value=(unsigned char *) AllocateMemory(sizeof(char));
+      protocol.value=(unsigned char *) AllocateMemory(1);
       if (!protocol.value)
         return(False);
       *protocol.value='\0';
@@ -310,7 +310,7 @@ int XStringListToTextProperty(char **argv,int argc,XTextProperty *property)
       register char
         *buffer;
 
-      buffer=(char *) AllocateMemory(number_bytes*sizeof(char));
+      buffer=(char *) AllocateMemory(number_bytes);
       if (buffer == (char *) NULL)
         return(False);
       protocol.value=(unsigned char *) buffer;

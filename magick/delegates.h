@@ -30,8 +30,7 @@ typedef struct _DelegateInfo
   Exported delegate methods.
 */
 extern Export char
-  *GetDelegateCommand(const ImageInfo *,const Image *,const char *,
-    const char *);
+  *GetDelegateCommand(const ImageInfo *,Image *,const char *,const char *);
 
 extern Export DelegateInfo
   *SetDelegateInfo(DelegateInfo *);

@@ -133,11 +133,9 @@ Export Image *ReadMAPImage(const ImageInfo *image_info)
   image->class=PseudoClass;
   image->colors=image->offset ? image->offset : 256;
   packet_size=image->depth > 8 ? 2 : 1;
-  pixels=(unsigned char *)
-    AllocateMemory(packet_size*image->columns*sizeof(unsigned char));
+  pixels=(unsigned char *) AllocateMemory(packet_size*image->columns);
   packet_size=image->colors > 256 ? 6 : 3;
-  colormap=(unsigned char *)
-    AllocateMemory(packet_size*image->colors*sizeof(unsigned char));
+  colormap=(unsigned char *) AllocateMemory(packet_size*image->colors);
   image->colormap=(PixelPacket *)
     AllocateMemory(image->colors*sizeof(PixelPacket));
   if ((pixels == (unsigned char *) NULL) ||
@@ -270,11 +268,9 @@ Export unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
       (void) QuantizeImage(&quantize_info,image);
     }
   packet_size=image->depth > 8 ? 2 : 1;
-  pixels=(unsigned char *)
-    AllocateMemory(image->columns*packet_size*sizeof(unsigned char));
+  pixels=(unsigned char *) AllocateMemory(image->columns*packet_size);
   packet_size=image->colors > 256 ? 6 : 3;
-  colormap=(unsigned char *)
-    AllocateMemory(packet_size*image->colors*sizeof(unsigned char));
+  colormap=(unsigned char *) AllocateMemory(packet_size*image->colors);
   if ((pixels == (unsigned char *) NULL) ||
       (colormap == (unsigned char *) NULL))
     WriterExit(ResourceLimitWarning,"Memory allocation failed",image);

@@ -128,7 +128,7 @@ Export Image *ReadDPSImage(const ImageInfo *image_info)
     *dps_image;
 
   XRectangle
-    page_info,
+    page,
     bits_per_pixel;
 
   XResourceInfo
@@ -204,7 +204,7 @@ Export Image *ReadDPSImage(const ImageInfo *image_info)
   if ((image->x_resolution != 0.0) && (image->y_resolution != 0.0))
     pixels_per_point=Min(image->x_resolution,image->y_resolution)/72.0;
   status=XDPSCreatePixmapForEPSF((DPSContext) NULL,screen,image->file,
-    visual_info->depth,pixels_per_point,&pixmap,&bits_per_pixel,&page_info);
+    visual_info->depth,pixels_per_point,&pixmap,&bits_per_pixel,&page);
   if ((status == dps_status_failure) || (status == dps_status_no_extension))
     {
       DestroyImage(image);
@@ -216,8 +216,8 @@ Export Image *ReadDPSImage(const ImageInfo *image_info)
     Rasterize the file into the pixmap.
   */
   status=XDPSImageFileIntoDrawable((DPSContext) NULL,screen,pixmap,image->file,
-    bits_per_pixel.height,visual_info->depth,&page_info,-page_info.x,
-    -page_info.y,pixels_per_point,True,False,True,&sans);
+    bits_per_pixel.height,visual_info->depth,&page,-page.x,
+    -page.y,pixels_per_point,True,False,True,&sans);
   if (status != dps_status_success)
     {
       DestroyImage(image);
@@ -440,12 +440,12 @@ Export Image *ReadDPSImage(const ImageInfo *image_info)
     Rasterize matte image.
   */
   status=XDPSCreatePixmapForEPSF((DPSContext) NULL,screen,image->file,1,
-    pixels_per_point,&pixmap,&bits_per_pixel,&page_info);
+    pixels_per_point,&pixmap,&bits_per_pixel,&page);
   if ((status != dps_status_failure) && (status != dps_status_no_extension))
     {
       status=XDPSImageFileIntoDrawable((DPSContext) NULL,screen,pixmap,
-        image->file,bits_per_pixel.height,1,&page_info,-page_info.x,
-        -page_info.y,pixels_per_point,True,True,True,&sans);
+        image->file,bits_per_pixel.height,1,&page,-page.x,
+        -page.y,pixels_per_point,True,True,True,&sans);
       if (status == dps_status_success)
         {
           XImage

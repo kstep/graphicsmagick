@@ -183,12 +183,6 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         (void) strcpy(local_info->filename,filelist[i]);
         *local_info->magick='\0';
         next_image=ReadImage(local_info);
-#if 0
-        /* Something's wrong here.  No matching AllocMemory except for
-           filelist[0] .. glennrp Jun 1999 */
-        if (filelist[i] != filenames)
-          FreeMemory(filelist[i]);
-#endif
         if (next_image != (Image *) NULL)
           {
             if (image == (Image *) NULL)
@@ -205,9 +199,6 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         (void) SetMonitorHandler(handler);
         ProgressMonitor(LoadImageText,i,number_files);
       }
-#if 1
-      FreeMemory(filelist[0]);
-#endif
       DestroyImageInfo(local_info);
       if (image == (Image *) NULL)
         {
@@ -231,10 +222,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       FormatString(windows->image.name,"ImageMagick: %.1024s",
         BaseFilename((*image)->filename));
       if (resource_info->title != (char *) NULL)
-        {
-          LabelImage(*image,resource_info->title);
-          (void) strcpy(windows->image.name,(*image)->label);
-        }
+        windows->image.name=
+          TranslateText(resource_info->image_info,*image,resource_info->title);
       status=XStringListToTextProperty(&windows->image.name,1,&window_name);
       if (status == 0)
         break;
@@ -1298,25 +1287,23 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
     resource_info,&windows->image);
   windows->image.shape=True;  /* non-rectangular shape hint */
   windows->image.shared_memory=resource_info->use_shared_memory;
-  windows->image.name=(char *) AllocateMemory(MaxTextExtent*sizeof(char));
-  windows->image.icon_name=(char *) AllocateMemory(MaxTextExtent*sizeof(char));
-  if ((windows->image.name == NULL) || (windows->image.icon_name == NULL))
-    MagickError(ResourceLimitError,"Unable to create Image window",
-      "Memory allocation failed");
   if (resource_info->title != (char *) NULL)
     {
-      /*
-        User specified window name.
-      */
-      LabelImage(displayed_image,resource_info->title);
-      (void) strcpy(windows->image.name,displayed_image->label);
-      (void) strcpy(windows->image.icon_name,displayed_image->label);
+      windows->image.name=TranslateText(resource_info->image_info,
+        displayed_image,resource_info->title);
+      windows->image.icon_name=TranslateText(resource_info->image_info,
+        displayed_image,resource_info->title);
     }
   else
     {
       /*
         Window name is the base of the filename.
       */
+      windows->image.name=(char *) AllocateMemory(MaxTextExtent);
+      windows->image.icon_name=(char *) AllocateMemory(MaxTextExtent);
+      if ((windows->image.name == NULL) || (windows->image.icon_name == NULL))
+        MagickError(ResourceLimitError,"Unable to create Image window",
+          "Memory allocation failed");
       p=displayed_image->filename+Extent(displayed_image->filename)-1;
       while ((p > displayed_image->filename) && !IsBasenameSeparator(*(p-1)))
         p--;
@@ -1483,7 +1470,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
   FormatString(resource_name,"%.1024s.widget",resource_info->client_name);
   windows->widget.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
-  windows->widget.name=(char *) AllocateMemory(MaxTextExtent*sizeof(char));
+  windows->widget.name=(char *) AllocateMemory(MaxTextExtent);
   if (windows->widget.name == NULL)
     MagickError(ResourceLimitError,"Unable to create Image window",
       "Memory allocation failed");
@@ -1515,7 +1502,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
     FreeMemory(windows->popup.name);
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->popup);
-  windows->popup.name=(char *) AllocateMemory(MaxTextExtent*sizeof(char));
+  windows->popup.name=(char *) AllocateMemory(MaxTextExtent);
   if (windows->popup.name == NULL)
     MagickError(ResourceLimitError,"Unable to create Image window",
       "Memory allocation failed");
@@ -1614,10 +1601,8 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
       Window name is the base of the filename.
     */
     if (resource_info->title != (char *) NULL)
-      {
-        LabelImage(images[scene],resource_info->title);
-        (void) strcpy(windows->image.name,images[scene]->label);
-      }
+      windows->image.name=TranslateText(resource_info->image_info,
+        images[scene],resource_info->title);
     else
       {
         p=images[scene]->filename+Extent(images[scene]->filename)-1;
@@ -1714,10 +1699,8 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
               FormatString(windows->image.name,
                 "ImageMagick: %.1024s[%u of %u]",p,scene,number_scenes);
               if (resource_info->title != (char *) NULL)
-                {
-                  LabelImage(image,resource_info->title);
-                  (void) strcpy(windows->image.name,image->label);
-                }
+                windows->image.name=TranslateText(resource_info->image_info,
+                  image,resource_info->title);
               status=
                 XStringListToTextProperty(&windows->image.name,1,&window_name);
               if (status != 0)

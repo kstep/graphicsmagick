@@ -196,6 +196,9 @@ Export unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   status=True;
   if (Latin1Compare(image_info->magick,"SHTML") != 0)
     {
+      ImageAttribute
+        *attribute;
+
       /*
         Open output image file.
       */
@@ -209,8 +212,12 @@ Export unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlob(image,strlen(buffer),buffer);
       (void) strcpy(buffer,"<head>\n");
       (void) WriteBlob(image,strlen(buffer),buffer);
-      (void) sprintf(buffer,"<title>%.1024s</title>\n",
-        image->label ? image->label : BaseFilename(image->filename));
+      attribute=GetImageAttribute(image,"Label");
+      if (attribute != (ImageAttribute *) NULL)
+        (void) sprintf(buffer,"<title>%.1024s</title>\n",attribute->value);
+      else
+        (void) sprintf(buffer,"<title>%.1024s</title>\n",
+          BaseFilename(image->filename));
       (void) WriteBlob(image,strlen(buffer),buffer);
       (void) strcpy(buffer,"</head>\n");
       (void) WriteBlob(image,strlen(buffer),buffer);

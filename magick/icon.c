@@ -231,8 +231,7 @@ Export Image *ReadICONImage(const ImageInfo *image_info)
     /*
       Read ICON raster colormap.
     */
-    icon_colormap=(unsigned char *)
-      AllocateMemory(4*image->colors*sizeof(unsigned char));
+    icon_colormap=(unsigned char *) AllocateMemory(4*image->colors);
     if (icon_colormap == (unsigned char *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     (void) ReadBlob(image,4*image->colors,(char *) icon_colormap);
@@ -255,7 +254,7 @@ Export Image *ReadICONImage(const ImageInfo *image_info)
       case 1:
       {
         /*
-          Convert bitmap scanline to runlength-encoded color packets.
+          Convert bitmap scanline.
         */
         for (y=image->rows-1; y >= 0; y--)
         {
@@ -284,7 +283,7 @@ Export Image *ReadICONImage(const ImageInfo *image_info)
       case 4:
       {
         /*
-          Convert PseudoColor scanline to runlength-encoded color packets.
+          Read 4-bit Icon scanline.
         */
         for (y=image->rows-1; y >= 0; y--)
         {
@@ -312,7 +311,7 @@ Export Image *ReadICONImage(const ImageInfo *image_info)
       case 8:
       {
         /*
-          Convert PseudoColor scanline to runlength-encoded color packets.
+          Convert PseudoColor scanline.
         */
         for (y=image->rows-1; y >= 0; y--)
         {
@@ -334,7 +333,7 @@ Export Image *ReadICONImage(const ImageInfo *image_info)
       case 16:
       {
         /*
-          Convert PseudoColor scanline to runlength-encoded color packets.
+          Convert PseudoColor scanline.
         */
         for (y=image->rows-1; y >= 0; y--)
         {

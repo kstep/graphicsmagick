@@ -115,15 +115,15 @@ Export void CompressColormapTransFirst(Image *image)
   assert(image != (Image *) NULL);
   if (image->class != PseudoClass)
     return;
-  marker=(unsigned char *) AllocateMemory(image->colors*sizeof(unsigned char));
+  marker=(unsigned char *) AllocateMemory(image->colors);
   if (marker == (unsigned char *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to compress colormap",
         "Memory allocation failed");
       return;
     }
-  opacity=(unsigned short *) AllocateMemory(image->colors*sizeof(unsigned
-      short));
+  opacity=(unsigned short *)
+    AllocateMemory(image->colors*sizeof(unsigned short));
   if (opacity == (unsigned short *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to compress colormap",
@@ -239,22 +239,22 @@ Export void CompressColormapTransFirst(Image *image)
          }
        }
   }
-
   index=0;
   for (i=0; i < number_colors; i++)
-    {
-      if (marker[i])
-        {
-          colormap[index]=image->colormap[i];
-          opacity[index]=opacity[i];
-          index++;
-        }
-    }
-   
+  {
+    if (marker[i])
+      {
+        colormap[index]=image->colormap[i];
+        opacity[index]=opacity[i];
+        index++;
+      }
+  }
   FreeMemory(marker);
   if (have_transparency && opacity[0] != Transparent)
     {
-      /* Move the first transparent color to palette entry 0 */
+      /*
+        Move the first transparent color to palette entry 0
+      */
       for (i=1; i < image->colors; i++)
       {
         if (opacity[i] == Transparent)
@@ -810,7 +810,7 @@ static void MNGCoalesce(Image *image)
   delay=(long) image->delay;
   CoalesceImages(p);
   p->file=(FILE *) NULL;
-  p->blob_info.mapped=False;
+  p->blob.mapped=False;
   p->orphan=False;
   DestroyImage(p);
   image->delay=delay;
@@ -821,30 +821,6 @@ static void PNGErrorHandler(png_struct *ping,png_const_charp message)
 {
   MagickWarning(DelegateWarning,message,(char *) NULL);
   longjmp(ping->jmpbuf,1);
-}
-
-static void ReadTextChunk(png_textp text,unsigned int i,char **value)
-{
-  unsigned int
-    length;
-
-  length=text[i].text_length;
-  if (*value != (char *) NULL)
-    *value=(char *) ReallocateMemory((char *) *value,strlen(*value)+length+1);
-  else
-    {
-      *value=(char *) AllocateMemory(length+1);
-      if (*value != (char *) NULL)
-        **value='\0';
-    }
-  if (*value == (char *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"a. Memory allocation failed",
-        (char *) NULL);
-      return;
-    }
-  (void) strncat(*value,text[i].text,length);
-  (*value)[length]='\0';
 }
 
 static void PNGWarningHandler(png_struct *ping,png_const_charp message)
@@ -1120,8 +1096,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
           }
         if (length)
           {
-            chunk=(unsigned char *)
-              AllocateMemory(length*sizeof(unsigned char));
+            chunk=(unsigned char *) AllocateMemory(length);
             if (chunk == (unsigned char *) NULL)
               ReaderExit(ResourceLimitWarning,
                "Unable to allocate memory for chunk data",image);
@@ -1181,7 +1156,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                     MngInfoFreeStruct(mng_info,&have_mng_structure);
                     return((Image *) NULL);
                   }
-                image->next->blob_info=image->blob_info;
+                image->next->blob=image->blob;
                 image=image->next;
                 mng_info->image=image;
               }
@@ -1496,7 +1471,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                     MngInfoFreeStruct(mng_info,&have_mng_structure);
                     return((Image *) NULL);
                   }
-                image->next->blob_info=image->blob_info;
+                image->next->blob=image->blob;
                 image=image->next;
                 mng_info->image=image;
                 if (term_chunk_found)
@@ -1506,10 +1481,10 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                   }
                 image->columns=subframe_width;
                 image->rows=subframe_height;
-                image->page_info.width=subframe_width;
-                image->page_info.height=subframe_height;
-                image->page_info.x=clip.left;
-                image->page_info.y=clip.top;
+                image->page.width=subframe_width;
+                image->page.height=subframe_height;
+                image->page.x=clip.left;
+                image->page.y=clip.top;
                 image->background_color=mng_background_color;
                 image->matte=False;
                 image->delay=0;
@@ -1837,7 +1812,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                     MngInfoFreeStruct(mng_info,&have_mng_structure);
                     return((Image *) NULL);
                   }
-                image->next->blob_info=image->blob_info;
+                image->next->blob=image->blob;
                 image=image->next;
                 mng_info->image=image;
                 if (term_chunk_found)
@@ -1849,10 +1824,10 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 image->delay=0;
                 image->columns=subframe_width;
                 image->rows=subframe_height;
-                image->page_info.width=subframe_width;
-                image->page_info.height=subframe_height;
-                image->page_info.x=clip.left;
-                image->page_info.y=clip.top;
+                image->page.width=subframe_width;
+                image->page.height=subframe_height;
+                image->page.x=clip.left;
+                image->page.y=clip.top;
                 image->background_color=mng_background_color;
                 image->matte=False;
                 SetImage(image);
@@ -1879,10 +1854,10 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 image->delay=0;
                 image->columns=mng_width;
                 image->rows=mng_height;
-                image->page_info.width=mng_width;
-                image->page_info.height=mng_height;
-                image->page_info.x=0;
-                image->page_info.y=0;
+                image->page.width=mng_width;
+                image->page.height=mng_height;
+                image->page.x=0;
+                image->page.y=0;
                 image->background_color=mng_background_color;
                 image->matte=False;
                 image->delay=delay;
@@ -1905,7 +1880,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 MngInfoFreeStruct(mng_info,&have_mng_structure);
                 return((Image *) NULL);
               }
-            image->next->blob_info=image->blob_info;
+            image->next->blob=image->blob;
             image=image->next;
             mng_info->image=image;
             ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
@@ -1922,10 +1897,10 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
           }
         else
           image->delay=0;
-        image->page_info.width=mng_width;
-        image->page_info.height=mng_height;
-        image->page_info.x=mng_info->x_off[object_id];
-        image->page_info.y=mng_info->y_off[object_id];
+        image->page.width=mng_width;
+        image->page.height=mng_height;
+        image->page.x=mng_info->x_off[object_id];
+        image->page.y=mng_info->y_off[object_id];
         /*
           Seek back to the beginning of the IHDR chunk's length field.
         */
@@ -2129,32 +2104,32 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 #ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
                      mng_info->have_saved_bkgd_index ||
 #endif
-			 ping_info->valid & PNG_INFO_bKGD)
-		      {
-			png_color_16
-			   background;
+                         ping_info->valid & PNG_INFO_bKGD)
+                      {
+                        png_color_16
+                           background;
 
     #ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
-			if (mng_info->have_saved_bkgd_index)
-			  background.index=mng_info->saved_bkgd_index;
-			else
+                        if (mng_info->have_saved_bkgd_index)
+                          background.index=mng_info->saved_bkgd_index;
+                        else
     #endif
-			  background.index=ping_info->background.index;
-			background.red=
-			  (png_uint_16) mng_info->global_plte[background.index].red;
-			background.green= (png_uint_16)
-			  mng_info->global_plte[background.index].green;
-			background.blue=(png_uint_16)
-			  mng_info->global_plte[background.index].blue;
-			png_set_bKGD(ping,ping_info,&background);
-		      }
+                          background.index=ping_info->background.index;
+                        background.red=
+                          (png_uint_16) mng_info->global_plte[background.index].red;
+                        background.green= (png_uint_16)
+                          mng_info->global_plte[background.index].green;
+                        background.blue=(png_uint_16)
+                          mng_info->global_plte[background.index].blue;
+                        png_set_bKGD(ping,ping_info,&background);
+                      }
     #endif
-		  }
-		else
-		  MagickWarning(DelegateWarning,
-		    "No global PLTE in file",image_info->filename);
-	      }
-	  }
+                  }
+                else
+                  MagickWarning(DelegateWarning,
+                    "No global PLTE in file",image_info->filename);
+              }
+          }
 
 #if defined(PNG_READ_bKGD_SUPPORTED)
     if (have_global_bkgd && !(ping_info->valid & PNG_INFO_bKGD))
@@ -2349,7 +2324,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
              *sizeof(Quantum));
         if (quantum_scanline == (Quantum *) NULL)
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-
         for (y=0; y < (int) image->rows; y++)
         {
           q=SetPixelCache(image,0,y,image->columns,1);
@@ -2533,52 +2507,33 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
       image->depth = 8;
 #endif
     {
-    png_textp
-       text;
+      int
+        num_text;
 
-    int
-       num_text;
+      png_textp
+        text;
 
-    if (png_get_text(ping, ping_info, &text, &num_text) > 0)
-      for (i=0; i < num_text; i++)
+      if (png_get_text(ping,ping_info,&text,&num_text) > 0)
+        for (i=0; i < num_text; i++)
         {
-          if (Latin1Compare(text[i].key,"Comment") == 0)
-            ReadTextChunk(text,i,&image->comments);
-          if (Latin1Compare(text[i].key,"Delay") == 0)
-            if (image_info->delay == (char *) NULL)
-              {
-                char
-                  *delay;
+          char
+            *value;
 
-                delay=(char *) NULL;
-                ReadTextChunk(text,i,&delay);
-                image->delay=atoi(delay);
-                FreeMemory(delay);
-              }
-          if (Latin1Compare(text[i].key,"Description") == 0)
-            ReadTextChunk(text,i,&image->comments);
-          if (Latin1Compare(text[i].key,"Directory") == 0)
-            ReadTextChunk(text,i,&image->directory);
-          if (Latin1Compare(text[i].key,"Label") == 0)
-            ReadTextChunk(text,i,&image->label);
-          if (Latin1Compare(text[i].key,"Montage") == 0)
-            ReadTextChunk(text,i,&image->montage);
-          if (Latin1Compare(text[i].key,"Scene") == 0)
+          length=text[i].text_length;
+          value=(char *) AllocateMemory(length+1);
+          if (value == (char *) NULL)
             {
-              char
-                *scene;
-
-              scene=(char *) NULL;
-              ReadTextChunk(text,i,&scene);
-              image->scene=atoi(scene);
-              FreeMemory(scene);
+              MagickWarning(ResourceLimitWarning,"Unable to read text chunk",
+                "Memory allocation failed");
+              break;
             }
-          if (Latin1Compare(text[i].key,"Signature") == 0)
-            ReadTextChunk(text,i,&image->signature);
-          if (Latin1Compare(text[i].key,"Title") == 0)
-            ReadTextChunk(text,i,&image->label);
+          *value='\0';
+          (void) strncat(value,text[i].text,length);
+          value[length]='\0';
+          (void) SetImageAttribute(image,text[i].key,value);
+          FreeMemory(value);
         }
-    }
+      }
 #ifdef MNG_OBJECT_BUFFERS
     /*
       Store the object if necessary.
@@ -2708,10 +2663,10 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                   (crop_box.right-crop_box.left);
                 crop_info.height=(unsigned int)
                   (crop_box.bottom-crop_box.top);
-                image->page_info.width=image->columns;
-                image->page_info.height=image->rows;
-                image->page_info.x=0;
-                image->page_info.y=0;
+                image->page.width=image->columns;
+                image->page.height=image->rows;
+                image->page.x=0;
+                image->page.y=0;
                 image->orphan=True;
                 p=CropImage(image,&crop_info);
                 if (p != (Image *) NULL)
@@ -2721,12 +2676,12 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                     image->rows=p->rows;
                     p->orphan=True;
                     p->file=(FILE *) NULL;
-                    p->blob_info.mapped=False;
+                    p->blob.mapped=False;
                     DestroyImage(p);
-                    image->page_info.width=image->columns;
-                    image->page_info.height=image->rows;
-                    image->page_info.x=crop_box.left;
-                    image->page_info.y=crop_box.top;
+                    image->page.width=image->columns;
+                    image->page.height=image->rows;
+                    image->page.x=crop_box.left;
+                    image->page.y=crop_box.top;
                   }
               }
             else
@@ -2741,10 +2696,10 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 image->matte=True;
                 image->colors=2;
                 SetTransparentImage(image);
-                image->page_info.width=1;
-                image->page_info.height=1;
-                image->page_info.x=0;
-                image->page_info.y=0;
+                image->page.width=1;
+                image->page.height=1;
+                image->page.x=0;
+                image->page.y=0;
               }
           }
         if (image_info->coalesce_frames)
@@ -2776,14 +2731,14 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
               return((Image *) NULL);
             }
           image=image->next;
-          image->next->blob_info=image->blob_info;
+          image->next->blob=image->blob;
         }
       image->columns=mng_width;
       image->rows=mng_height;
-      image->page_info.width=mng_width;
-      image->page_info.height=mng_height;
-      image->page_info.x=0;
-      image->page_info.y=0;
+      image->page.width=mng_width;
+      image->page.height=mng_height;
+      image->page.x=0;
+      image->page.y=0;
       image->background_color=mng_background_color;
       image->matte=False;
       SetImage(image);
@@ -2940,56 +2895,15 @@ static void PNGType(png_bytep p,png_bytep type)
   (void) memcpy(p,type,4*sizeof(png_byte));
 }
 
-static void WriteTextChunk(const Image *image, const ImageInfo *image_info,
-  png_struct *ping, png_info *ping_info,char *keyword,char *value)
-{
-#if (PNG_LIBPNG_VER > 10005)
-  png_textp
-    text;
-
-  text=(png_textp) png_malloc(ping,(png_uint_32) sizeof(png_text));
-  text[0].key=keyword;
-  text[0].text=value;
-  text[0].text_length=Extent(value);
-  text[0].compression=
-    image_info->compression == NoCompression ||
-    (image_info->compression == UndefinedCompression &&
-    text[0].text_length < 128) ? -1 : 0;
-  png_set_text(ping,ping_info,text,1);
-  png_free(ping,text);
-#else
-  /* Work directly with ping_info struct; png_set_text before libpng version
-   * 1.0.5a is leaky */
-  register int
-    i;
-
-  if (ping_info->num_text == 0)
-    {
-      ping_info->text=(png_text *) AllocateMemory(256*sizeof(png_text));
-      if (ping_info->text == (png_text *) NULL)
-        MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-          image->filename);
-    }
-  i=ping_info->num_text++;
-  if (i > 255)
-    MagickWarning(ResourceLimitWarning,
-      "Cannot write more than 256 PNG text chunks",image->filename);
-  ping_info->text[i].key=keyword;
-  ping_info->text[i].text=value;
-  ping_info->text[i].text_length=Extent(value);
-  ping_info->text[i].compression=
-    image_info->compression == NoCompression ||
-    (image_info->compression == UndefinedCompression &&
-    ping_info->text[i].text_length < 128) ? -1 : 0;
-#endif
-}
-
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
 
 Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 {
+  ImageAttribute
+    *attribute;
+
   int
     all_images_are_gray,
     equal_backgrounds,
@@ -3023,7 +2937,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     *p;
 
   RectangleInfo
-    page_info;
+    page;
 
   png_info
     *ping_info;
@@ -3058,10 +2972,10 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   use_global_plte=False;
-  page_info.width=0;
-  page_info.height=0;
-  page_info.x=0;
-  page_info.y=0;
+  page.width=0;
+  page.height=0;
+  page.x=0;
+  page.y=0;
   have_write_global_plte=False;
   need_local_plte=True;
   have_write_global_srgb=False;
@@ -3090,8 +3004,8 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       need_geom=True;
       if (image_info->page != (char *) NULL)
         {
-          (void) ParseGeometry(image_info->page,&page_info.x,&page_info.y,
-            &page_info.width,&page_info.height);
+          (void) ParseGeometry(image_info->page,&page.x,&page.y,
+            &page.width,&page.height);
           need_geom=False;
         }
       /*
@@ -3110,22 +3024,22 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       image_count=0;
       for (next_image=image; next_image != (Image *) NULL; )
       {
-        page_info=next_image->page_info;
+        page=next_image->page;
         if (need_geom)
           {
-            if ((next_image->columns+page_info.x) > page_info.width)
-              page_info.width=next_image->columns+page_info.x;
-            if ((next_image->rows+page_info.y) > page_info.height)
-              page_info.height=next_image->rows+page_info.y;
+            if ((next_image->columns+page.x) > page.width)
+              page.width=next_image->columns+page.x;
+            if ((next_image->rows+page.y) > page.height)
+              page.height=next_image->rows+page.y;
           }
-        if (page_info.x || page_info.y)
+        if (page.x || page.y)
           need_defi=True;
         if (next_image->matte)
           need_matte=True;
         if (next_image->dispose >= 2)
-          if (next_image->matte || page_info.x || page_info.y ||
-              ((next_image->columns < page_info.width) &&
-               (next_image->rows < page_info.height)))
+          if (next_image->matte || page.x || page.y ||
+              ((next_image->columns < page.width) &&
+               (next_image->rows < page.height)))
             need_fram=True;
         if (next_image->iterations)
           need_iterations=True;
@@ -3157,7 +3071,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               equal_backgrounds=False;
             if (next_image->gamma != next_image->next->gamma)
               equal_gammas=False;
-            if (next_image->rendering_intent != 
+            if (next_image->rendering_intent !=
                 next_image->next->rendering_intent)
               equal_srgbs=False;
             if ((next_image->units != next_image->next->units) ||
@@ -3246,8 +3160,8 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
      (void) WriteBlob(image,8,"\212MNG\r\n\032\n");
      MSBFirstWriteLong(image,28L);  /* chunk data length = 28 */
      PNGType(chunk,mng_MHDR);
-     PNGLong(chunk+4,page_info.width);
-     PNGLong(chunk+8,page_info.height);
+     PNGLong(chunk+4,page.width);
+     PNGLong(chunk+8,page.height);
      PNGLong(chunk+12,ticks_per_second);
      PNGLong(chunk+16,0L);  /* layer count = unknown */
      PNGLong(chunk+20,0L);  /* frame count = unknown */
@@ -3412,12 +3326,9 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
          PNGType(chunk,mng_PLTE);
          for (i=0; i < (int) image->colors; i++)
          {
-           chunk[4+i*3]=
-             (unsigned char) DownScale(image->colormap[i].red)&0xff;
-           chunk[5+i*3]=
-             (unsigned char) DownScale(image->colormap[i].green)&0xff;
-           chunk[6+i*3]=
-             (unsigned char) DownScale(image->colormap[i].blue)&0xff;
+           chunk[4+i*3]=DownScale(image->colormap[i].red) & 0xff;
+           chunk[5+i*3]=DownScale(image->colormap[i].green) & 0xff;
+           chunk[6+i*3]= DownScale(image->colormap[i].blue) & 0xff;
          }
          (void) WriteBlob(image,data_length+4,(char *) chunk);
          MSBFirstWriteLong(image,crc32(0,chunk,data_length+4));
@@ -3458,12 +3369,9 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                 PNGType(chunk,mng_PLTE);
                 for (i=0; i < (int) image->colors; i++)
                 {
-                  chunk[4+i*3]=
-                    (unsigned char) DownScale(image->colormap[i].red) & 0xff;
-                  chunk[5+i*3]=
-                    (unsigned char) DownScale(image->colormap[i].green) & 0xff;
-                  chunk[6+i*3]=
-                    (unsigned char) DownScale(image->colormap[i].blue) & 0xff;
+                  chunk[4+i*3]=DownScale(image->colormap[i].red) & 0xff;
+                  chunk[5+i*3]=DownScale(image->colormap[i].green) & 0xff;
+                  chunk[6+i*3]=DownScale(image->colormap[i].blue) & 0xff;
                 }
                 (void) WriteBlob(image,data_length+4,(char *) chunk);
                 MSBFirstWriteLong(image,crc32(0,chunk,data_length+4));
@@ -3481,16 +3389,16 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 
         if (scene)
           {
-            previous_x=page_info.x;
-            previous_y=page_info.y;
+            previous_x=page.x;
+            previous_y=page.y;
           }
         else
           {
             previous_x=0;
             previous_y=0;
           }
-        page_info=image->page_info;
-        if ((page_info.x !=  previous_x) || (page_info.y != previous_y))
+        page=image->page;
+        if ((page.x !=  previous_x) || (page.y != previous_y))
           {
              MSBFirstWriteLong(image,12L);  /* data length = 12 */
              PNGType(chunk,mng_DEFI);
@@ -3498,8 +3406,8 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
              chunk[5]=0; /* object 0 LSB */
              chunk[6]=0; /* visible  */
              chunk[7]=0; /* abstract */
-             PNGLong(chunk+8,page_info.x);
-             PNGLong(chunk+12,page_info.y);
+             PNGLong(chunk+8,page.x);
+             PNGLong(chunk+12,page.y);
              (void) WriteBlob(image,16,(char *) chunk);
              MSBFirstWriteLong(image,crc32(0,chunk,16));
           }
@@ -3681,7 +3589,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             break;
         }
         if ((y == (int) image->rows) && (x == (int) image->columns))
-          { 
+          {
             /*
               No transparent pixels are present.  Change 4 or 6 to 0 or 2,
               and do not set the PNG_INFO_tRNS flag in ping_info->valid.
@@ -3810,8 +3718,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             /*
               Identify which colormap entry is transparent.
             */
-            ping_info->trans=(unsigned char *)
-              AllocateMemory(image->colors*sizeof(unsigned char));
+            ping_info->trans=(unsigned char *) AllocateMemory(image->colors);
             if (ping_info->trans == (unsigned char *) NULL)
               WriterExit(ResourceLimitWarning,"Memory allocation failed",
                 image);
@@ -3883,7 +3790,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           {
             /*
               Note image gamma.
-              To do: check for cHRM+gAMA == sRGB, and write sRGB instead. 
+              To do: check for cHRM+gAMA == sRGB, and write sRGB instead.
             */
             png_set_gAMA(ping, ping_info, image->gamma);
           }
@@ -3891,7 +3798,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           {
             /*
               Note image chromaticity.
-              To do: check for cHRM+gAMA == sRGB, and write sRGB instead. 
+              To do: check for cHRM+gAMA == sRGB, and write sRGB instead.
             */
          png_set_cHRM(ping, ping_info,
             image->chromaticity.white_point.x,
@@ -4064,53 +3971,57 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     /*
       Generate text chunks.
     */
-    {
 #if (PNG_LIBPNG_VER <= 10005)
     ping_info->num_text=0;
 #endif
-    /*
-      Write a Software tEXt chunk only in the first PNG datastream.
-    */
-    if (image->scene == 0)
-      WriteTextChunk(image,image_info,ping,ping_info,"Software",MagickVersion);
-    if (!image_info->adjoin)
-      {
-        SignatureImage(image);
-        if (image->signature != (char *) NULL)
-          WriteTextChunk(image,image_info,ping,ping_info,"Signature",
-            image->signature);
-        if (image->delay != 0)
-          {
-            char
-              delay[MaxTextExtent];
+    attribute=GetImageAttribute(image,(char *) NULL);
+    while (attribute != (ImageAttribute *) NULL)
+    {
+#if (PNG_LIBPNG_VER > 10005)
+      png_textp
+        text;
 
-            FormatString(delay,"%u",image->delay);
-            WriteTextChunk(image,image_info,ping,ping_info,"Delay",delay);
-          }
-        if (image->scene != 0)
-          {
-            char
-              scene[MaxTextExtent];
+      text=(png_textp) png_malloc(ping,(png_uint_32) sizeof(png_text));
+      text[0].key=attribute->key;
+      text[0].text=attribute->value;
+      text[0].text_length=Extent(attribute->value);
+      text[0].compression=image_info->compression == NoCompression ||
+        (image_info->compression == UndefinedCompression &&
+        text[0].text_length < 128) ? -1 : 0;
+      png_set_text(ping,ping_info,text,1);
+      png_free(ping,text);
+#else
+  /* Work directly with ping_info struct; png_set_text before libpng version
+   * 1.0.5a is leaky */
+      register int
+        i;
 
-            FormatString(scene,"%u",image->scene);
-            WriteTextChunk(image,image_info,ping,ping_info,"Scene",scene);
-          }
-      }
-    if (image->label != (char *) NULL)
-      WriteTextChunk(image,image_info,ping,ping_info,"Title",image->label);
-    if (image->montage != (char *) NULL)
-      WriteTextChunk(image,image_info,ping,ping_info,"Montage",image->montage);
-    if (image->directory != (char *) NULL)
-      WriteTextChunk(image,image_info,ping,ping_info,"Directory",image->directory);
-    if (image->comments != (char *) NULL)
-      WriteTextChunk(image,image_info,ping,ping_info,"Comment",image->comments);
+      if (ping_info->num_text == 0)
+        {
+          ping_info->text=(png_text *) AllocateMemory(256*sizeof(png_text));
+          if (ping_info->text == (png_text *) NULL)
+            MagickWarning(ResourceLimitWarning,"Memory allocation failed",
+              image->filename);
+        }
+      i=ping_info->num_text++;
+      if (i > 255)
+        MagickWarning(ResourceLimitWarning,
+          "Cannot write more than 256 PNG text chunks",image->filename);
+      ping_info->text[i].key=attribute->key;
+      ping_info->text[i].text=attribute->value;
+      ping_info->text[i].text_length=Extent(attribute->value);
+      ping_info->text[i].compression=image_info->compression == NoCompression ||
+        (image_info->compression == UndefinedCompression &&
+        ping_info->text[i].text_length < 128) ? -1 : 0;
+#endif
+      attribute=attribute->next;
     }
     png_write_end(ping,ping_info);
     if (need_fram && image->dispose == 2)
       {
-        if (page_info.x || page_info.y ||
-            (ping_info->width != page_info.width) ||
-            (ping_info->height != page_info.height))
+        if (page.x || page.y ||
+            (ping_info->width != page.width) ||
+            (ping_info->height != page.height))
           {
             /*
               Write FRAM 4 with clipping boundaries followed by FRAM 1.
@@ -4125,10 +4036,10 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             chunk[9]=0;  /* flag for changing frame sync_id */
             PNGLong(chunk+10,(png_uint_32) (0L)); /* temporary 0 delay */
             chunk[14]=0; /* clipping boundaries delta type */
-            PNGLong(chunk+15,(png_uint_32) (page_info.x)); /* left cb */
-            PNGLong(chunk+19,(png_uint_32) (page_info.x + ping_info->width));
-            PNGLong(chunk+23,(png_uint_32) (page_info.y)); /* top cb */
-            PNGLong(chunk+27,(png_uint_32) (page_info.y + ping_info->height));
+            PNGLong(chunk+15,(png_uint_32) (page.x)); /* left cb */
+            PNGLong(chunk+19,(png_uint_32) (page.x + ping_info->width));
+            PNGLong(chunk+23,(png_uint_32) (page.y)); /* top cb */
+            PNGLong(chunk+27,(png_uint_32) (page.y + ping_info->height));
             (void) WriteBlob(image,31,(char *) chunk);
             MSBFirstWriteLong(image,crc32(0,chunk,31));
             old_framing_mode=4;

@@ -299,7 +299,7 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
     image->x_resolution=pcx_header.horizontal_resolution;
     image->y_resolution=pcx_header.vertical_resolution;
     image->colors=16;
-    pcx_colormap=(unsigned char *) AllocateMemory(3*256*sizeof(unsigned char));
+    pcx_colormap=(unsigned char *) AllocateMemory(3*256);
     if (pcx_colormap == (unsigned char *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     (void) ReadBlob(image,3*image->colors,(char *) pcx_colormap);
@@ -345,10 +345,8 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
       Read image data.
     */
     pcx_packets=image->rows*pcx_header.bytes_per_line*pcx_header.planes;
-    pcx_pixels=(unsigned char *)
-      AllocateMemory(pcx_packets*sizeof(unsigned char));
-    scanline=(unsigned char *)
-      AllocateMemory(image->columns*pcx_header.planes*sizeof(unsigned char));
+    pcx_pixels=(unsigned char *) AllocateMemory(pcx_packets);
+    scanline=(unsigned char *) AllocateMemory(image->columns*pcx_header.planes);
     if ((pcx_pixels == (unsigned char *) NULL) ||
         (scanline == (unsigned char *) NULL))
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
@@ -532,7 +530,7 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
             }
             case 8:
             {
-              (void) memcpy(r,p,image->columns*sizeof(unsigned char));
+              (void) memcpy(r,p,image->columns);
               break;
             }
             default:
@@ -769,7 +767,7 @@ Export unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     /*
       Dump colormap to file.
     */
-    pcx_colormap=(unsigned char *) AllocateMemory(3*256*sizeof(unsigned char));
+    pcx_colormap=(unsigned char *) AllocateMemory(3*256);
     if (pcx_colormap == (unsigned char *) NULL)
       WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
     for (i=0; i < (3*256); i++)
@@ -790,7 +788,7 @@ Export unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     for (i=0; i < 58; i++)
       (void) WriteByte(image,'\0');
     packets=image->rows*pcx_header.bytes_per_line*pcx_header.planes;
-    pcx_pixels=(unsigned char *) AllocateMemory(packets*sizeof(unsigned char));
+    pcx_pixels=(unsigned char *) AllocateMemory(packets);
     if (pcx_pixels == (unsigned char *) NULL)
       WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
     q=pcx_pixels;

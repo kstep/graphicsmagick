@@ -162,8 +162,7 @@ Export Image *ReadIPTCImage(const ImageInfo *image_info)
   */
   length=MaxTextExtent;
   tag_length=12;
-  data=(unsigned char *)
-    AllocateMemory((length+2)*sizeof(unsigned char));
+  data=(unsigned char *) AllocateMemory(length+2);
   if (data == (unsigned char *) NULL)
     WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
   (void) memcpy((char *) data,"8BIM\04\04\0\0\0\0\0\0",tag_length);
@@ -178,13 +177,12 @@ Export Image *ReadIPTCImage(const ImageInfo *image_info)
       {
         image->iptc_profile.length=q-data;
         length<<=1;
-        data=(unsigned char *) ReallocateMemory((char *)
-          data,(length+2)*sizeof(unsigned char));
+        data=(unsigned char *) ReallocateMemory((char *) data,length+2);
         if (data == (unsigned char *) NULL)
           break;
         q=data+image->iptc_profile.length;
       }
-    *q++=(unsigned char) c;
+    *q++=c;
   }
   image->iptc_profile.length=0;
   if (data != (unsigned char *) NULL)

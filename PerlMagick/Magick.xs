@@ -1300,8 +1300,8 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             (void) CloneString(&info->image_info->page,p);
           for ( ; image; image=image->next)
             ParseImageGeometry(PostscriptGeometry(p),
-              &image->page_info.x,&image->page_info.y,
-              &image->page_info.width,&image->page_info.height);
+              &image->page.x,&image->page.y,
+              &image->page.width,&image->page.height);
           DestroyPostscriptGeometry(p);
           return;
         }
@@ -2573,8 +2573,12 @@ Get(ref,...)
         {
           if (strEQcase(attribute,"comment"))
             {
-              if (image && image->comments)
-                s=newSVpv(image->comments,0);
+              ImageAttribute
+                *attribute;
+
+              attribute=GetImageAttribute(image,"Comment");
+              if (attribute != (ImageAttribute *) NULL)
+                s=newSVpv(attribute->value,0);
               break;
             }
           if (strEQcase(attribute,"class"))
@@ -2839,8 +2843,14 @@ Get(ref,...)
         {
           if (strEQcase(attribute,"label"))
             {
-              if (image && image->label)
-                s=newSVpv(image->label,0);
+              ImageAttribute
+                *attribute;
+
+              if (!image)
+                break;
+              attribute=GetImageAttribute(image,"Label");
+              if (attribute != (ImageAttribute *) NULL)
+                s=newSVpv(attribute->value,0);
               break;
             }
           if (strEQcase(attribute,"loop"))  /* same as iterations */
@@ -2935,9 +2945,8 @@ Get(ref,...)
                     char
                       geometry[MaxTextExtent];
 
-                    FormatString(geometry,"%ux%u%+d%+d",image->page_info.width,
-                      image->page_info.height,image->page_info.x,
-                      image->page_info.y);
+                    FormatString(geometry,"%ux%u%+d%+d",image->page.width,
+                      image->page.height,image->page.x,image->page.y);
                     s=newSVpv(geometry,0);
                   }
               break;
@@ -3077,11 +3086,15 @@ Get(ref,...)
             }
           if (strEQcase(attribute,"sign"))
             {
-              if (image)
-                {
-                  SignatureImage(image);
-                  s=newSVpv(image->signature,0);
-                }
+              ImageAttribute
+                *attribute;
+
+              if (!image)
+                break;
+              SignatureImage(image);
+              attribute=GetImageAttribute(image,"Signature");
+              if (attribute != (ImageAttribute *) NULL)
+                s=newSVpv(attribute->value,0);
               break;
             }
           break;
@@ -3689,14 +3702,18 @@ Mogrify(ref,...)
         {
           if (!attribute_flag[0])
             argument_list[0].string_reference=(char *) NULL;
-          CommentImage(image,argument_list[0].string_reference);
+          while (SetImageAttribute(image,"Comment",(char *) NULL) != False);
+          (void) SetImageAttribute(image,"Comment",
+            argument_list[0].string_reference);
           break;
         }
         case 2:  /* Label */
         {
           if (!attribute_flag[0])
             argument_list[0].string_reference=(char *) NULL;
-          LabelImage(image,argument_list[0].string_reference);
+          while (SetImageAttribute(image,"Label",(char *) NULL) != False);
+          (void) SetImageAttribute(image,"Label",
+            argument_list[0].string_reference);
           break;
         }
         case 3:  /* AddNoise */
@@ -4859,7 +4876,7 @@ Montage(ref,...)
           if (strEQcase(attribute,"label"))
             {
               for (next=image; next; next=next->next)
-                LabelImage(next,SvPV(ST(i),na));
+                (void) SetImageAttribute(next,"Label",SvPV(ST(i),na));
               continue;
             }
           break;

@@ -177,7 +177,7 @@ Export Image *ReadPSImage(const ImageInfo *image_info)
 
   RectangleInfo
     box,
-    page_info;
+    page;
 
   register char
     *p;
@@ -236,12 +236,12 @@ Export Image *ReadPSImage(const ImageInfo *image_info)
         image->y_resolution=image->x_resolution;
     }
   FormatString(density,"%gx%g",image->x_resolution,image->y_resolution);
-  page_info.width=612;
-  page_info.height=792;
-  page_info.x=0;
-  page_info.y=0;
-  (void) ParseImageGeometry(PSPageGeometry,&page_info.x,&page_info.y,
-    &page_info.width,&page_info.height);
+  page.width=612;
+  page.height=792;
+  page.x=0;
+  page.y=0;
+  (void) ParseImageGeometry(PSPageGeometry,&page.x,&page.y,
+    &page.width,&page.height);
   /*
     Determine page geometry from the Postscript bounding box.
   */
@@ -311,18 +311,18 @@ Export Image *ReadPSImage(const ImageInfo *image_info)
       height++;
     if ((width <= box.width) && (height <= box.height))
       continue;
-    page_info.width=width;
-    page_info.height=height;
-    box=page_info;
+    page.width=width;
+    page.height=height;
+    box=page;
   }
   if (eps_level != 0)
     (void) fputs("showpage\n",file);
   if (image_info->page != (char *) NULL)
-    (void) ParseImageGeometry(image_info->page,&page_info.x,&page_info.y,
-      &page_info.width,&page_info.height);
+    (void) ParseImageGeometry(image_info->page,&page.x,&page.y,
+      &page.width,&page.height);
   FormatString(geometry,"%ux%u",
-    (unsigned int) ((page_info.width*image->x_resolution+0.5)/dx_resolution),
-    (unsigned int) ((page_info.height*image->y_resolution+0.5)/dy_resolution));
+    (unsigned int) ((page.width*image->x_resolution+0.5)/dx_resolution),
+    (unsigned int) ((page.height*image->y_resolution+0.5)/dy_resolution));
   if (ferror(file))
     {
       MagickWarning(FileOpenWarning,"An error has occurred writing to file",
@@ -378,7 +378,7 @@ Export Image *ReadPSImage(const ImageInfo *image_info)
       return((Image *) NULL);
     }
   local_info=CloneImageInfo(image_info);
-  GetBlobInfo(&(local_info->blob_info));
+  GetBlobInfo(&(local_info->blob));
   image=ReadPNMImage(local_info);
   DestroyImageInfo(local_info);
   (void) remove(image_info->filename);
@@ -713,6 +713,9 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     y_resolution,
     y_scale;
 
+  ImageAttribute
+    *attribute;
+
   IndexPacket
     index;
 
@@ -764,8 +767,9 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     */
     TransformRGBImage(image,RGBColorspace);
     text_size=0;
-    if (image->label != (char *) NULL)
-      text_size=MultilineCensus(image->label)*image_info->pointsize+12;
+    attribute=GetImageAttribute(image,"Label");
+    if (attribute != (ImageAttribute *) NULL)
+      text_size=MultilineCensus(attribute->value)*image_info->pointsize+12;
     width=image->columns;
     height=image->rows;
     x=0;
@@ -774,9 +778,9 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     if (image_info->page != (char *) NULL)
       (void) strcpy(geometry,image_info->page);
     else
-      if ((image->page_info.width != 0) && (image->page_info.height != 0))
-        (void) FormatString(geometry,"%ux%u%+d%+d",image->page_info.width,
-	  image->page_info.height,image->page_info.x,image->page_info.y);
+      if ((image->page.width != 0) && (image->page.height != 0))
+        (void) FormatString(geometry,"%ux%u%+d%+d",image->page.width,
+	  image->page.height,image->page.x,image->page.y);
       else
         if (Latin1Compare(image_info->magick,"PS") == 0)
           (void) strcpy(geometry,PSPageGeometry);
@@ -831,7 +835,8 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           (void) sprintf(buffer,"%%%%BoundingBox: %g %g %g %g\n",
             bounding_box.x1,bounding_box.y1,bounding_box.x2,bounding_box.y2);
         (void) WriteBlob(image,strlen(buffer),buffer);
-        if (image->label != (char *) NULL)
+        attribute=GetImageAttribute(image,"Label");
+        if (attribute != (ImageAttribute *) NULL)
           {
             (void) strcpy(buffer,
               "%%%%DocumentNeededResources: font Helvetica\n");
@@ -968,16 +973,18 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           (void) sprintf(buffer,"%.255s\n",*q);
           (void) WriteBlob(image,strlen(buffer),buffer);
         }
-        for (i=MultilineCensus(image->label)-1; i >= 0; i--)
-        {
-          (void) strcpy(buffer,"  /label 512 string def\n");
-          (void) WriteBlob(image,strlen(buffer),buffer);
-          (void) strcpy(buffer,"  currentfile label readline pop\n");
-          (void) WriteBlob(image,strlen(buffer),buffer);
-          (void) sprintf(buffer,"  0 y %f add moveto label show pop\n",
-            i*image_info->pointsize+12);
-          (void) WriteBlob(image,strlen(buffer),buffer);
-        }
+        attribute=GetImageAttribute(image,"Label");
+        if (attribute != (ImageAttribute *) NULL)
+          for (i=MultilineCensus(attribute->value)-1; i >= 0; i--)
+          {
+            (void) strcpy(buffer,"  /label 512 string def\n");
+            (void) WriteBlob(image,strlen(buffer),buffer);
+            (void) strcpy(buffer,"  currentfile label readline pop\n");
+            (void) WriteBlob(image,strlen(buffer),buffer);
+            (void) sprintf(buffer,"  0 y %f add moveto label show pop\n",
+              i*image_info->pointsize+12);
+            (void) WriteBlob(image,strlen(buffer),buffer);
+          }
         for (q=PostscriptEpilog; *q; q++)
         {
           (void) sprintf(buffer,"%.255s\n",*q);
@@ -1006,7 +1013,8 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
       bounding_box.x2=x+width-1;
     if ((y+(int) (height+text_size)-1) > bounding_box.y2)
       bounding_box.y2=y+(height+text_size)-1;
-    if (image->label != (char *) NULL)
+    attribute=GetImageAttribute(image,"Label");
+    if (attribute != (ImageAttribute *) NULL)
       {
         (void) strcpy(buffer,"%%%%PageResources: font Helvetica\n");
         (void) WriteBlob(image,strlen(buffer),buffer);
@@ -1023,10 +1031,13 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     /*
       Output image data.
     */
-    labels=StringToList(image->label);
     (void) sprintf(buffer,"%d %d\n%g %g\n%f\n",x,y,x_scale,y_scale,
       image_info->pointsize);
     (void) WriteBlob(image,strlen(buffer),buffer);
+    labels=(char **) NULL;
+    attribute=GetImageAttribute(image,"Label");
+    if (attribute != (ImageAttribute *) NULL)
+      labels=StringToList(attribute->value);
     if (labels != (char **) NULL)
       {
         for (i=0; labels[i] != (char *) NULL; i++)

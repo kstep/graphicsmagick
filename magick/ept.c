@@ -205,9 +205,9 @@ Export unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
   LSBFirstWriteLong(image,tiff_length);
   LSBFirstWriteShort(image,0xffff);
   for (c=fgetc(ps_file); c != EOF; c=fgetc(ps_file))
-    (void) WriteByte(image,(char) c);
+    (void) WriteByte(image,c);
   for (c=fgetc(tiff_file); c != EOF; c=fgetc(tiff_file))
-    (void) WriteByte(image,(char) c);
+    (void) WriteByte(image,c);
   (void) fclose(tiff_file);
   CloseBlob(image);
   return(True);

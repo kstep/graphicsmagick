@@ -7,7 +7,7 @@ use Config;
 WriteMakefile(
     'NAME'	=> 'Image::Magick',
     'VERSION_FROM' => 'Magick.pm', # finds $VERSION
-    'LIBS'	=> ['-L/usr/local/lib -L/usr/openwin/lib -R/usr/openwin/lib -L/pathos/home/cristy/Archive/ImageMagick/ImageMagick/magick -lMagick -ldpstk -ldps -lXext -lXt -lX11 -lsocket -lnsl -lpthread -lm'],
+    'LIBS'	=> ['-L/usr/local/lib -L/usr/openwin/lib -R/usr/openwin/lib -L/pathos/home/cristy/Archive/ImageMagick/ImageMagick-5.2.0/magick -lMagick -ldpstk -ldps -lXext -lXt -lX11 -lsocket -lnsl -lpthread -lm'],
     'DEFINE'	=> '-DHAVE_CONFIG_H',     # e.g., '-DHAVE_SOMETHING' 
     'INC'	=> '-I../ -I.. -D_REENTRANT -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -I/usr/local/include -I/usr/openwin/include -I/usr/openwin/include/X11',
     ($Config{'archname'} =~ /-object$/i ? ('CAPI' => 'TRUE') : ()),

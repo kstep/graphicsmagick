@@ -166,7 +166,7 @@ Export Image *ReadPDFImage(const ImageInfo *image_info)
 
   RectangleInfo
     box,
-    page_info;
+    page;
 
   register char
     *p;
@@ -222,12 +222,12 @@ Export Image *ReadPDFImage(const ImageInfo *image_info)
         image->y_resolution=image->x_resolution;
     }
   FormatString(density,"%gx%g",image->x_resolution,image->y_resolution);
-  page_info.width=612;
-  page_info.height=792;
-  page_info.x=0;
-  page_info.y=0;
-  (void) ParseImageGeometry(PSPageGeometry,&page_info.x,&page_info.y,
-    &page_info.width,&page_info.height);
+  page.width=612;
+  page.height=792;
+  page.x=0;
+  page.y=0;
+  (void) ParseImageGeometry(PSPageGeometry,&page.x,&page.y,
+    &page.width,&page.height);
   portrait=True;
   /*
     Determine page geometry from the PDF media box.
@@ -240,7 +240,7 @@ Export Image *ReadPDFImage(const ImageInfo *image_info)
     if (c == EOF)
       break;
     (void) fputc(c,file);
-    *p++=(char) c;
+    *p++=c;
     if ((c != '\n') && (c != '\r') && ((p-command) < (MaxTextExtent-1)))
       continue;
     *p='\0';
@@ -270,16 +270,16 @@ Export Image *ReadPDFImage(const ImageInfo *image_info)
       height++;
     if ((width <= box.width) && (height <= box.height))
       continue;
-    page_info.width=width;
-    page_info.height=height;
-    box=page_info;
+    page.width=width;
+    page.height=height;
+    box=page;
   }
   if (image_info->page != (char *) NULL)
-    (void) ParseImageGeometry(image_info->page,&page_info.x,&page_info.y,
-      &page_info.width,&page_info.height);
+    (void) ParseImageGeometry(image_info->page,&page.x,&page.y,
+      &page.width,&page.height);
   FormatString(geometry,"%ux%u",
-    (unsigned int) ((page_info.width*image->x_resolution+0.5)/dx_resolution),
-    (unsigned int) ((page_info.height*image->y_resolution+0.5)/dy_resolution));
+    (unsigned int) ((page.width*image->x_resolution+0.5)/dx_resolution),
+    (unsigned int) ((page.height*image->y_resolution+0.5)/dy_resolution));
   if (ferror(file))
     {
       MagickWarning(FileOpenWarning,"An error has occurred writing to file",
@@ -314,7 +314,7 @@ Export Image *ReadPDFImage(const ImageInfo *image_info)
       return((Image *) NULL);
     }
   local_info=CloneImageInfo(image_info);
-  GetBlobInfo(&local_info->blob_info);
+  GetBlobInfo(&local_info->blob);
   image=ReadPNMImage(local_info);
   DestroyImageInfo(local_info);
   (void) remove(postscript_filename);
@@ -408,6 +408,9 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     x_scale,
     y_resolution,
     y_scale;
+
+  ImageAttribute
+    *attribute;
 
   int
     count,
@@ -569,8 +572,9 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       Scale image to size of Portable Document page.
     */
     text_size=0;
-    if (image->label != (char *) NULL)
-      text_size=MultilineCensus(image->label)*image_info->pointsize+12;
+    attribute=GetImageAttribute(image,"Label");
+    if (attribute != (ImageAttribute *) NULL)
+      text_size=MultilineCensus(attribute->value)*image_info->pointsize+12;
     width=image->columns;
     height=image->rows;
     x=0;
@@ -579,9 +583,9 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     if (image_info->page != (char *) NULL)
       (void) strcpy(geometry,image_info->page);
     else
-      if ((image->page_info.width != 0) && (image->page_info.height != 0))
-        (void) FormatString(geometry,"%ux%u%+d%+d",image->page_info.width,
-	  image->page_info.height,image->page_info.x,image->page_info.y);
+      if ((image->page.width != 0) && (image->page.height != 0))
+        (void) FormatString(geometry,"%ux%u%+d%+d",image->page.width,
+	  image->page.height,image->page.x,image->page.y);
       else
         if (Latin1Compare(image_info->magick,"PDF") == 0)
           (void) strcpy(geometry,PSPageGeometry);
@@ -658,7 +662,10 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     length=TellBlob(image);
     (void) strcpy(buffer,"q\n");
     (void) WriteBlob(image,strlen(buffer),buffer);
-    labels=StringToList(image->label);
+    labels=(char **) NULL;
+    attribute=GetImageAttribute(image,"Label");
+    if (attribute != (ImageAttribute *) NULL)
+      labels=StringToList(attribute->value);
     if (labels != (char **) NULL)
       {
         for (i=0; labels[i] != (char *) NULL; i++)
@@ -842,8 +849,7 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           */
           number_packets=(image->colorspace == CMYKColorspace ? 4 : 3)*
             image->columns*image->rows;
-          pixels=(unsigned char *)
-            AllocateMemory(number_packets*sizeof(unsigned char));
+          pixels=(unsigned char *) AllocateMemory(number_packets);
           if (pixels == (unsigned char *) NULL)
             WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
           /*
@@ -1016,8 +1022,7 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 Allocate pixel array.
               */
               number_packets=image->columns*image->rows;
-              pixels=(unsigned char *)
-                AllocateMemory(number_packets*sizeof(unsigned char));
+              pixels=(unsigned char *) AllocateMemory(number_packets);
               if (pixels == (unsigned char *) NULL)
                 WriterExit(ResourceLimitWarning,"Memory allocation failed",
                   image);
@@ -1031,7 +1036,7 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   break;
                 for (x=0; x < (int) image->columns; x++)
                 {
-                  *q++=(unsigned char) image->indexes[x];
+                  *q++=image->indexes[x];
                   p++;
                 }
                 if (image->previous == (Image *) NULL)
@@ -1066,7 +1071,7 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   break;
                 for (x=0; x < (int) image->columns; x++)
                 {
-                  Ascii85Encode(image,(unsigned char) image->indexes[x]);
+                  Ascii85Encode(image,image->indexes[x]);
                   p++;
                 }
                 if (image->previous == (Image *) NULL)
@@ -1180,8 +1185,7 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           */
           number_packets=(image->colorspace == CMYKColorspace ? 4 : 3)*
             image->columns*image->rows;
-          pixels=(unsigned char *)
-            AllocateMemory(number_packets*sizeof(unsigned char));
+          pixels=(unsigned char *) AllocateMemory(number_packets);
           if (pixels == (unsigned char *) NULL)
             {
               DestroyImage(tile_image);
@@ -1286,8 +1290,7 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 Allocate pixel array.
               */
               number_packets=((tile_image->columns+7) >> 3)*tile_image->rows;
-              pixels=(unsigned char *)
-                AllocateMemory(number_packets*sizeof(unsigned char));
+              pixels=(unsigned char *) AllocateMemory(number_packets);
               if (pixels == (unsigned char *) NULL)
                 {
                   DestroyImage(tile_image);
@@ -1391,8 +1394,7 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 Allocate pixel array.
               */
               number_packets=tile_image->columns*tile_image->rows;
-              pixels=(unsigned char *)
-                AllocateMemory(number_packets*sizeof(unsigned char));
+              pixels=(unsigned char *) AllocateMemory(number_packets);
               if (pixels == (unsigned char *) NULL)
                 {
                   DestroyImage(tile_image);
@@ -1409,7 +1411,7 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   break;
                 for (x=0; x < (int) tile_image->columns; x++)
                 {
-                  *q++=(unsigned char) tile_image->indexes[x];
+                  *q++=tile_image->indexes[x];
                   p++;
                 }
               }

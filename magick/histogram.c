@@ -286,15 +286,19 @@ Export unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
       char
         command[MaxTextExtent];
 
+      ImageAttribute
+        *attribute;
+
       /*
         Add a histogram as an image comment.
       */
-      if (image->comments != (char *) NULL)
-        (void) fprintf(file,"%s\n",image->comments);
+      attribute=GetImageAttribute(image,"Comment");
+      if (attribute != (ImageAttribute *) NULL)
+        (void) fprintf(file,"%s\n",attribute->value);
       (void) GetNumberColors(image,file);
       (void) fclose(file);
       FormatString(command,"@%.1024s",filename);
-      CommentImage(histogram_image,command);
+      (void) SetImageAttribute(histogram_image,"Comment",command);
       (void) remove(filename);
     }
   /*

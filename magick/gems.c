@@ -763,5 +763,5 @@ Export void Upsample(const unsigned int width,const unsigned int height,
   }
   p=pixels+(2*height-2)*scaled_width;
   q=pixels+(2*height-1)*scaled_width;
-  (void) memcpy(q,p,2*width*sizeof(unsigned char));
+  (void) memcpy(q,p,2*width);
 }

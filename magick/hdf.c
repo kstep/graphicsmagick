@@ -209,8 +209,8 @@ Export Image *ReadHDFImage(const ImageInfo *image_info)
         return(image);
       }
     packet_size=image->class == DirectClass ? 3 : 1;
-    hdf_pixels=(unsigned char *) AllocateMemory(
-      packet_size*image->columns*image->rows*sizeof(unsigned char));
+    hdf_pixels=(unsigned char *)
+      AllocateMemory(packet_size*image->columns*image->rows);
     if (hdf_pixels == (unsigned char *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     if (image->class == PseudoClass)
@@ -221,7 +221,7 @@ Export Image *ReadHDFImage(const ImageInfo *image_info)
         /*
           Create colormap.
         */
-        hdf_palette=(unsigned char *) AllocateMemory(768*sizeof(unsigned char));
+        hdf_palette=(unsigned char *) AllocateMemory(768);
         image->colormap=(PixelPacket *)
           AllocateMemory(image->colors*sizeof(PixelPacket));
         if ((hdf_palette == (unsigned char *) NULL) ||
@@ -295,25 +295,38 @@ Export Image *ReadHDFImage(const ImageInfo *image_info)
     length=DFANgetlablen(image->filename,DFTAG_RIG,reference);
     if (length > 0)
       {
+        char
+          *label;
+
         /*
           Read the image label.
         */
         length+=MaxTextExtent;
-        image->label=(char *) AllocateMemory(length*sizeof(char));
-        if (image->label != (char *) NULL)
-          DFANgetlabel(image->filename,DFTAG_RIG,reference,image->label,length);
+        label=(char *) AllocateMemory(length);
+        if (label != (char *) NULL)
+          {
+            DFANgetlabel(image->filename,DFTAG_RIG,reference,label,length);
+            (void) SetImageAttribute(image,"Label",label);
+            FreeMemory(label);
+          }
       }
     length=DFANgetdesclen(image->filename,DFTAG_RIG,reference);
     if (length > 0)
       {
+        char
+          *comments;
+
         /*
           Read the image comments.
         */
         length+=MaxTextExtent;
-        image->comments=(char *) AllocateMemory(length*sizeof(char));
-        if (image->comments != (char *) NULL)
-          DFANgetdesc(image->filename,DFTAG_RIG,reference,image->comments,
-            length);
+        comments=(char *) AllocateMemory(length);
+        if (comments != (char *) NULL)
+          {
+            DFANgetdesc(image->filename,DFTAG_RIG,reference,comments,length);
+            (void) SetImageAttribute(image,"Comment",comments);
+            FreeMemory(comments);
+          }
       }
     FreeMemory(hdf_pixels);
     if (image->class == PseudoClass)
@@ -393,6 +406,9 @@ Export Image *ReadHDFImage(const ImageInfo *image_info)
 */
 Export unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 {
+  ImageAttribute
+    *attribute;
+
   int
     status,
     y;
@@ -435,8 +451,8 @@ Export unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
     */
     TransformRGBImage(image,RGBColorspace);
     packet_size=image->class == DirectClass ? 3 : 11;
-    hdf_pixels=(unsigned char *) AllocateMemory(packet_size*image->columns*
-      image->rows*sizeof(unsigned char));
+    hdf_pixels=(unsigned char *)
+      AllocateMemory(packet_size*image->columns*image->rows);
     if (hdf_pixels == (unsigned char *) NULL)
       WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
     if (!IsPseudoClass(image) && !IsGrayImage(image))
@@ -589,8 +605,7 @@ Export unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
             unsigned char
               *hdf_palette;
 
-            hdf_palette=(unsigned char *)
-              AllocateMemory(768*sizeof(unsigned char));
+            hdf_palette=(unsigned char *) AllocateMemory(768);
             if (hdf_palette == (unsigned char *) NULL)
               WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
             q=hdf_palette;
@@ -626,11 +641,13 @@ Export unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
             image->columns,image->rows,compression);
         reference=DFR8lastref();
       }
-    if (image->label != (char *) NULL)
-      (void) DFANputlabel(image->filename,DFTAG_RIG,reference,image->label);
-    if (image->comments != (char *) NULL)
-      (void) DFANputdesc(image->filename,DFTAG_RIG,reference,image->comments,
-        Extent(image->comments)+1);
+    attribute=GetImageAttribute(image,"Label");
+    if (attribute != (ImageAttribute *) NULL)
+      (void) DFANputlabel(image->filename,DFTAG_RIG,reference,attribute->value);
+    attribute=GetImageAttribute(image,"Comment");
+    if (attribute != (ImageAttribute *) NULL)
+      (void) DFANputdesc(image->filename,DFTAG_RIG,reference,attribute->value,
+        Extent(attribute->value)+1);
     FreeMemory(hdf_pixels);
     if (image->next == (Image *) NULL)
       break;

@@ -247,8 +247,7 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
         /*
           Note image label.
         */
-        image->label=(char *) AllocateMemory((unsigned int)
-          (summary_info.title.length+1)*sizeof(char));
+        image->label=(char *) AllocateMemory(summary_info.title.length+1);
         if (image->label == (char *) NULL)
           MagickWarning(DelegateWarning,"Memory allocation failed",
             image_info->filename);
@@ -266,8 +265,7 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
         /*
           Note image comment.
         */
-        image->comments=(char *) AllocateMemory((unsigned int)
-          (summary_info.comments.length+1)*sizeof(char));
+        image->comments=(char *) AllocateMemory(summary_info.comments.length+1);
         if (image->comments == (char *) NULL)
           MagickWarning(DelegateWarning,"Memory allocation failed",
             image_info->filename);
@@ -335,7 +333,7 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
   */
   packets=0;
   scanline=(unsigned char *) AllocateMemory(colorspace.numberOfComponents*
-    image->columns*(tile_height+1)*sizeof(unsigned char));
+    image->columns*(tile_height+1));
   if (scanline == (unsigned char *) NULL)
     {
       FPX_ClearSystem();
@@ -351,8 +349,7 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
     fpx_info.components[i].myColorType.myDataType=DATA_TYPE_UNSIGNED_BYTE;
     fpx_info.components[i].horzSubSampFactor=1;
     fpx_info.components[i].vertSubSampFactor=1;
-    fpx_info.components[i].columnStride=
-      fpx_info.numberOfComponents*sizeof(unsigned char);
+    fpx_info.components[i].columnStride=fpx_info.numberOfComponents;
     fpx_info.components[i].lineStride=
       image->columns*fpx_info.components[i].columnStride;
     fpx_info.components[i].theData=scanline+i;
@@ -812,7 +809,7 @@ Export unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       summary_info.title_valid=True;
       summary_info.title.length=strlen(image->label);
       summary_info.title.ptr=(unsigned char *)
-        AllocateMemory((strlen(image->label)+1)*sizeof(unsigned char));
+        AllocateMemory(strlen(image->label)+1);
       if (summary_info.title.ptr != (unsigned char *) NULL)
         (void) strcpy((char *) summary_info.title.ptr,image->label);
       else
@@ -827,7 +824,7 @@ Export unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       summary_info.comments_valid=True;
       summary_info.comments.length=strlen(image->comments);
       summary_info.comments.ptr=(unsigned char *)
-        AllocateMemory((strlen(image->comments)+1)*sizeof(unsigned char));
+        AllocateMemory(strlen(image->comments)+1);
       if (summary_info.comments.ptr != (unsigned char *) NULL)
         (void) strcpy((char *) summary_info.comments.ptr,image->comments);
       else
@@ -840,8 +837,8 @@ Export unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   /*
     Allocate pixels.
   */
-  pixels=(unsigned char *) AllocateMemory(colorspace.numberOfComponents*
-    image->columns*sizeof(unsigned char));
+  pixels=(unsigned char *)
+    AllocateMemory(colorspace.numberOfComponents*image->columns);
   if (pixels == (unsigned char *) NULL)
     {
       (void) FPX_CloseImage(flashpix);
@@ -857,8 +854,7 @@ Export unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     fpx_info.components[i].myColorType.myDataType=DATA_TYPE_UNSIGNED_BYTE;
     fpx_info.components[i].horzSubSampFactor=1;
     fpx_info.components[i].vertSubSampFactor=1;
-    fpx_info.components[i].columnStride=
-      fpx_info.numberOfComponents*sizeof(unsigned char);
+    fpx_info.components[i].columnStride=fpx_info.numberOfComponents;
     fpx_info.components[i].lineStride=
       image->columns*fpx_info.components[i].columnStride;
     fpx_info.components[i].theData=pixels+i;

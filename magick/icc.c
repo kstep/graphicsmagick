@@ -117,8 +117,7 @@ Export Image *ReadICCImage(const ImageInfo *image_info)
     Read ICC image.
   */
   length=MaxTextExtent;
-  image->color_profile.info=(unsigned char *)
-    AllocateMemory(length*sizeof(unsigned char));
+  image->color_profile.info=(unsigned char *) AllocateMemory(length);
   for (q=image->color_profile.info; ; q++)
   {
     c=ReadByte(image);
@@ -128,13 +127,13 @@ Export Image *ReadICCImage(const ImageInfo *image_info)
       {
         image->color_profile.length=q-image->color_profile.info;
         length<<=1;
-        image->color_profile.info=(unsigned char *) ReallocateMemory((char *)
-          image->color_profile.info,length*sizeof(unsigned char));
+        image->color_profile.info=(unsigned char *)
+          ReallocateMemory((char *) image->color_profile.info,length);
         if (image->color_profile.info == (unsigned char *) NULL)
           break;
         q=image->color_profile.info+image->color_profile.length;
       }
-    *q=(unsigned char) c;
+    *q=c;
   }
   image->color_profile.length=0;
   if (image->color_profile.info != (unsigned char *) NULL)

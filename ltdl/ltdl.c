@@ -46,7 +46,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 #include <malloc.h>
 #endif
 
-#if HAVE_MEMORY_H
+#if HHAVE_MEMORY_H
 #include <memory.h>
 #endif
 

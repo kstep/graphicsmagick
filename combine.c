@@ -956,7 +956,6 @@ int main(int argc,char **argv)
   /*
     Transmogrify image as defined by the image processing options.
   */
-  CommentImage(combined_image,composite_image->comments);
   MogrifyImage(image_info,argc,argv,&combined_image);
   /*
     Write image.

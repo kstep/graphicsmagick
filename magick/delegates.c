@@ -68,140 +68,10 @@ const char
   *DelegateFilename = "delegates.mgk";
 
 /*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   R e a d D e l e g a t e s                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ReadDelegates reads one or more delegates from a file on disk
-%  specified by the given path and directory name.  True is returned if
-%  the delegates file is read and at least one delegate is noted.
-%
-%  The format of the ReadDelegates method is:
-%
-%      unsigned int ReadDelegates(const char *path,const char *directory)
-%
-%  A description of each parameter follows:
-%
-%    o status: Method ReadDelegates returns True if at least one delegate
-%      can be read otherwise False.
-%
-%    o path:  The path component of the delegates filename.
-%
-%    o directory:  The directory component of the delegates filename.
-%
-%
+  Forward declaractions.
 */
-static unsigned int ReadDelegates(const char *path,const char *directory)
-{
-  char
-    filename[MaxTextExtent],
-    text[MaxTextExtent];
-
-  DelegateInfo
-    delegate_info;
-
-  FILE
-    *file;
-
-  register char
-    *p;
-
-  unsigned int
-    number_delegates;
-
-  /*
-    Determine delegate filename.
-  */
-  *filename='\0';
-  if (path != (char *) NULL)
-    (void) strcat(filename,path);
-  if (directory != (char *) NULL)
-    (void) strcat(filename,directory);
-  (void) strcat(filename,DelegateFilename);
-  /*
-    Read delegate file.
-  */
-  number_delegates=0;
-  file=fopen(filename,"r");
-  if (file == (FILE *) NULL)
-    return(False);
-  while (fgets(text,MaxTextExtent,file) != (char *) NULL)
-  {
-    if (*text == '#')
-      continue;
-    Strip(text);
-    if (*text == '\0')
-      continue;
-    *delegate_info.decode_tag='\0';
-    *delegate_info.encode_tag='\0';
-    for (p=text; (*p != '<') && (*p != '=') && (*p != '\0'); p++);
-    (void) strncpy(delegate_info.decode_tag,text,p-text);
-    delegate_info.decode_tag[p-text]='\0';
-    Strip(delegate_info.decode_tag);
-    delegate_info.direction=0;
-    if (*p == '<')
-      {
-        delegate_info.direction--;
-        p++;
-      }
-    if (*p == '=')
-      p++;
-    if (*p == '>')
-      {
-        delegate_info.direction++;
-        p++;
-      }
-    while (isspace((int) *p))
-      p++;
-    if (*p != '0')
-      (void) strcpy(delegate_info.encode_tag,p);
-    Strip(delegate_info.encode_tag);
-    delegate_info.commands=(char *) NULL;
-    while (fgets(text,MaxTextExtent,file) != (char *) NULL)
-    {
-      if (*text != '\t')
-        break;
-      Strip(text);
-      if (delegate_info.commands != (char *) NULL)
-        delegate_info.commands=(char *) ReallocateMemory(delegate_info.commands,
-          (strlen(delegate_info.commands)+strlen(text)+2)*sizeof(char));
-      else
-        {
-          delegate_info.commands=(char *)
-            AllocateMemory((strlen(text)+2)*sizeof(char));
-          if (delegate_info.commands != (char *) NULL)
-            *delegate_info.commands='\0';
-        }
-      if (delegate_info.commands == (char *) NULL)
-        break;
-      (void) strcat(delegate_info.commands,text);
-      if (delegate_info.commands[strlen(delegate_info.commands)-1] != '\\')
-        (void) strcat(delegate_info.commands,"\n");
-      else
-        delegate_info.commands[strlen(delegate_info.commands)-1]='\0';
-    }
-    if (delegate_info.commands == (char *) NULL)
-      {
-        MagickWarning(DelegateWarning,"no commands for this delgate",
-          delegate_info.decode_tag);
-        continue;
-      }
-    /*
-      Add delegate to the delegate list.
-    */
-    Strip(delegate_info.commands);
-    (void) SetDelegateInfo(&delegate_info);
-    number_delegates++;
-    FreeMemory(delegate_info.commands);
-  }
-  return(number_delegates != 0);
-}
+static unsigned int
+  ReadDelegates(const char *,const char *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -357,7 +227,7 @@ Export unsigned int GetDelegateInfo(const char *decode_tag,
 %
 %  The format of the GetDelegateCommand method is:
 %
-%      char *GetDelegateCommand(const ImageInfo *image_info,const Image *image,
+%      char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
 %        const char *decode_tag,const char *encode_tag)
 %
 %  A description of each parameter follows:
@@ -377,7 +247,7 @@ Export unsigned int GetDelegateInfo(const char *decode_tag,
 %
 %
 */
-Export char *GetDelegateCommand(const ImageInfo *image_info,const Image *image,
+Export char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
   const char *decode_tag,const char *encode_tag)
 {
   char
@@ -739,6 +609,141 @@ Export void ListDelegateInfo(FILE *file)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   R e a d D e l e g a t e s                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadDelegates reads one or more delegates from a file on disk
+%  specified by the given path and directory name.  True is returned if
+%  the delegates file is read and at least one delegate is noted.
+%
+%  The format of the ReadDelegates method is:
+%
+%      unsigned int ReadDelegates(const char *path,const char *directory)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method ReadDelegates returns True if at least one delegate
+%      can be read otherwise False.
+%
+%    o path:  The path component of the delegates filename.
+%
+%    o directory:  The directory component of the delegates filename.
+%
+%
+*/
+static unsigned int ReadDelegates(const char *path,const char *directory)
+{
+  char
+    filename[MaxTextExtent],
+    text[MaxTextExtent];
+
+  DelegateInfo
+    delegate_info;
+
+  FILE
+    *file;
+
+  register char
+    *p;
+
+  unsigned int
+    number_delegates;
+
+  /*
+    Determine delegate filename.
+  */
+  *filename='\0';
+  if (path != (char *) NULL)
+    (void) strcat(filename,path);
+  if (directory != (char *) NULL)
+    (void) strcat(filename,directory);
+  (void) strcat(filename,DelegateFilename);
+  /*
+    Read delegate file.
+  */
+  number_delegates=0;
+  file=fopen(filename,"r");
+  if (file == (FILE *) NULL)
+    return(False);
+  while (fgets(text,MaxTextExtent,file) != (char *) NULL)
+  {
+    if (*text == '#')
+      continue;
+    Strip(text);
+    if (*text == '\0')
+      continue;
+    *delegate_info.decode_tag='\0';
+    *delegate_info.encode_tag='\0';
+    for (p=text; (*p != '<') && (*p != '=') && (*p != '\0'); p++);
+    (void) strncpy(delegate_info.decode_tag,text,p-text);
+    delegate_info.decode_tag[p-text]='\0';
+    Strip(delegate_info.decode_tag);
+    delegate_info.direction=0;
+    if (*p == '<')
+      {
+        delegate_info.direction--;
+        p++;
+      }
+    if (*p == '=')
+      p++;
+    if (*p == '>')
+      {
+        delegate_info.direction++;
+        p++;
+      }
+    while (isspace((int) *p))
+      p++;
+    if (*p != '0')
+      (void) strcpy(delegate_info.encode_tag,p);
+    Strip(delegate_info.encode_tag);
+    delegate_info.commands=(char *) NULL;
+    while (fgets(text,MaxTextExtent,file) != (char *) NULL)
+    {
+      if (*text != '\t')
+        break;
+      Strip(text);
+      if (delegate_info.commands != (char *) NULL)
+        delegate_info.commands=(char *) ReallocateMemory(delegate_info.commands,
+          (strlen(delegate_info.commands)+strlen(text)+2));
+      else
+        {
+          delegate_info.commands=(char *) AllocateMemory(strlen(text)+2);
+          if (delegate_info.commands != (char *) NULL)
+            *delegate_info.commands='\0';
+        }
+      if (delegate_info.commands == (char *) NULL)
+        break;
+      (void) strcat(delegate_info.commands,text);
+      if (delegate_info.commands[strlen(delegate_info.commands)-1] != '\\')
+        (void) strcat(delegate_info.commands,"\n");
+      else
+        delegate_info.commands[strlen(delegate_info.commands)-1]='\0';
+    }
+    if (delegate_info.commands == (char *) NULL)
+      {
+        MagickWarning(DelegateWarning,"no commands for this delgate",
+          delegate_info.decode_tag);
+        continue;
+      }
+    /*
+      Add delegate to the delegate list.
+    */
+    Strip(delegate_info.commands);
+    (void) SetDelegateInfo(&delegate_info);
+    number_delegates++;
+    FreeMemory(delegate_info.commands);
+  }
+  return(number_delegates != 0);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   S e t D e l e g a t e I n f o                                             %
 %                                                                             %
 %                                                                             %
@@ -766,7 +771,7 @@ Export void ListDelegateInfo(FILE *file)
 Export DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
 {
   DelegateInfo
-    *new_delegate;
+    *delegate;
 
   register DelegateInfo
     *p;
@@ -779,29 +784,29 @@ Export DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
   /*
     Initialize new delegate.
   */
-  new_delegate=(DelegateInfo *) AllocateMemory(sizeof(DelegateInfo));
-  if (new_delegate == (DelegateInfo *) NULL)
+  delegate=(DelegateInfo *) AllocateMemory(sizeof(DelegateInfo));
+  if (delegate == (DelegateInfo *) NULL)
     return(delegates);
-  (void) strcpy(new_delegate->decode_tag,delegate_info->decode_tag);
-  (void) strcpy(new_delegate->encode_tag,delegate_info->encode_tag);
-  new_delegate->direction=delegate_info->direction;
-  new_delegate->commands=(char *) NULL;
+  (void) strcpy(delegate->decode_tag,delegate_info->decode_tag);
+  (void) strcpy(delegate->encode_tag,delegate_info->encode_tag);
+  delegate->direction=delegate_info->direction;
+  delegate->commands=(char *) NULL;
   if (delegate_info->commands != (char *) NULL)
     {
       /*
         Note commands associated with this delegate.
       */
-      new_delegate->commands=(char *)
-        AllocateMemory((strlen(delegate_info->commands)+1)*sizeof(char));
-      if (new_delegate->commands == (char *) NULL)
+      delegate->commands=(char *)
+        AllocateMemory(strlen(delegate_info->commands)+1);
+      if (delegate->commands == (char *) NULL)
         return(delegates);
-      (void) strcpy(new_delegate->commands,delegate_info->commands);
+      (void) strcpy(delegate->commands,delegate_info->commands);
     }
-  new_delegate->previous=(DelegateInfo *) NULL;
-  new_delegate->next=(DelegateInfo *) NULL;
+  delegate->previous=(DelegateInfo *) NULL;
+  delegate->next=(DelegateInfo *) NULL;
   if (delegates == (DelegateInfo *) NULL)
     {
-      delegates=new_delegate;
+      delegates=delegate;
       return(delegates);
     }
   for (p=delegates; p != (DelegateInfo *) NULL; p=p->next)
@@ -814,8 +819,8 @@ Export DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
           Delegate overrides an existing one with the same tags.
         */
         FreeMemory(p->commands);
-        p->commands=new_delegate->commands;
-        FreeMemory(new_delegate);
+        p->commands=delegate->commands;
+        FreeMemory(delegate);
         return(delegates);
       }
     if (p->next == (DelegateInfo *) NULL)
@@ -824,7 +829,7 @@ Export DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
   /*
     Place new delegate at the end of the delegate list.
   */
-  new_delegate->previous=p;
-  p->next=new_delegate;
+  delegate->previous=p;
+  p->next=delegate;
   return(delegates);
 }

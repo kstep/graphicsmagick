@@ -50,53 +50,6 @@ typedef unsigned char Quantum;
 /*
   Typedef declarations.
 */
-typedef struct _BlobInfo
-{
-  unsigned int
-    mapped;
-
-  char
-    *data;
-
-  off_t
-    offset;
-
-  size_t
-    length,
-    extent,
-    quantum;
-} BlobInfo;
-
-typedef void* Cache;
-
-typedef struct _ColorlistInfo
-{
-  char
-    *name;
-
-  unsigned char
-    red,
-    green,
-    blue;
-} ColorlistInfo;
-
-typedef struct _FrameInfo
-{
-  int
-    x,
-    y;
-
-  unsigned int
-    width,
-    height;
-
-  int
-    inner_bevel,
-    outer_bevel;
-} FrameInfo;
-
-typedef unsigned short IndexPacket;
-
 typedef struct _PixelPacket
 {
 #if defined(WORDS_BIGENDIAN)
@@ -122,13 +75,74 @@ typedef struct _PixelPacket
 #endif
 } PixelPacket;
 
+typedef struct _BlobInfo
+{
+  unsigned int
+    mapped;
+
+  char
+    *data;
+
+  off_t
+    offset;
+
+  size_t
+    length,
+    extent,
+    quantum;
+} BlobInfo;
+
+typedef void* Cache;
+
+typedef struct _ColorlistInfo
+{
+  char
+    *name;
+
+  Quantum
+    red,
+    green,
+    blue;
+} ColorlistInfo;
+
+typedef struct _FrameInfo
+{
+  int
+    x,
+    y;
+
+  unsigned int
+    width,
+    height;
+
+  int
+    inner_bevel,
+    outer_bevel;
+} FrameInfo;
+
+typedef struct _ImageAttribute
+{
+  char
+    *key,
+    *value;
+
+  unsigned int
+    compression;
+
+  struct _ImageAttribute
+    *previous,
+    *next;
+} ImageAttribute;
+
+typedef unsigned short IndexPacket;
+
 typedef struct _ImageInfo
 {
   /*
     Blob member.
   */
   BlobInfo
-    blob_info;
+    blob;
 
   /*
     File and image dimension members.
@@ -233,6 +247,9 @@ typedef struct _ImageInfo
 
   long
     group;
+
+  ErrorInfo
+    error;
 } ImageInfo;
 
 typedef struct _MontageInfo
@@ -271,6 +288,15 @@ typedef struct _PointInfo
     y,
     z;
 } PointInfo;
+
+typedef struct _ChromaticityInfo
+{
+  PointInfo
+    red_primary,
+    green_primary,
+    blue_primary,
+    white_point;
+} ChromaticityInfo;
 
 typedef struct _ProfileInfo
 {
@@ -319,15 +345,6 @@ typedef struct _TimerInfo
     state;
 } TimerInfo;
 
-typedef struct _ChromaticityInfo
-{
-  PointInfo
-    red_primary,
-    green_primary,
-    blue_primary,
-    white_point;
-} ChromaticityInfo;
-
 typedef struct _Image
 {
   int
@@ -348,9 +365,10 @@ typedef struct _Image
     pipe;
 
   char
-    magick[MaxTextExtent],
-    *comments,
-    *label;
+    magick[MaxTextExtent];
+
+  ImageAttribute
+    *attributes;
 
   ClassType
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -415,9 +433,6 @@ typedef struct _Image
     x_resolution,
     y_resolution;
 
-  char
-    *signature;
-
   PixelPacket
     *pixels;
 
@@ -433,7 +448,7 @@ typedef struct _Image
     *geometry;
 
   RectangleInfo
-    page_info;
+    page;
 
   unsigned int
     dispose,
@@ -471,19 +486,22 @@ typedef struct _Image
     tainted;
 
   TimerInfo
-    timer_info;
+    timer;
 
   unsigned int
     orphan;
 
   BlobInfo
-    blob_info;
+    blob;
 
   Cache
     cache;
 
   RectangleInfo
     cache_info;
+
+  ErrorInfo
+    error;
 
   struct _Image
     *previous,
@@ -638,6 +656,7 @@ extern Export Image
   *ReadPCDImage(const ImageInfo *image_info),
   *ReadPCLImage(const ImageInfo *image_info),
   *ReadPCXImage(const ImageInfo *image_info),
+  *ReadPDBImage(const ImageInfo *image_info),
   *ReadPDFImage(const ImageInfo *image_info),
   *ReadPICTImage(const ImageInfo *image_info),
   *ReadPIXImage(const ImageInfo *image_info),
@@ -728,6 +747,7 @@ extern Export unsigned int
   IsPCD(const unsigned char *,const unsigned int),
   IsPCL(const unsigned char *,const unsigned int),
   IsPCX(const unsigned char *,const unsigned int),
+  IsPDB(const unsigned char *,const unsigned int),
   IsPDF(const unsigned char *,const unsigned int),
   IsPNG(const unsigned char *,const unsigned int),
   IsPNM(const unsigned char *,const unsigned int),
@@ -779,6 +799,7 @@ extern Export unsigned int
   WritePCDImage(const ImageInfo *image_info,Image *image),
   WritePCLImage(const ImageInfo *image_info,Image *image),
   WritePCXImage(const ImageInfo *image_info,Image *image),
+  WritePDBImage(const ImageInfo *image_info,Image *image),
   WritePDFImage(const ImageInfo *image_info,Image *image),
   WritePICTImage(const ImageInfo *image_info,Image *image),
   WritePNGImage(const ImageInfo *image_info,Image *image),
@@ -810,7 +831,6 @@ extern Export void
   AnnotateImage(Image *,const AnnotateInfo *),
   ColorFloodfillImage(Image *,const PixelPacket *,Image *,const int x,
     const int y,const PaintMethod),
-  CommentImage(Image *,const char *),
   CompositeImage(Image *,const CompositeOperator,Image *,const int,const int),
   CompressColormap(Image *),
   ContrastImage(Image *,const unsigned int),
@@ -832,7 +852,6 @@ extern Export void
   GetPixels(Image *,const int,const int,const unsigned int,const unsigned int,
     const char *,const StorageType,void *),
   GetPixelPacket(PixelPacket *),
-  LabelImage(Image *,const char *),
   LayerImage(Image *,const LayerType),
   ListMagickInfo(FILE *),
   MatteFloodfillImage(Image *,const PixelPacket *,const unsigned int,

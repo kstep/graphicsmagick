@@ -168,6 +168,9 @@ Export unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
     buffer[MaxTextExtent],
     geometry[MaxTextExtent];
 
+  ImageAttribute
+    *attribute;
+
   int
     sans_offset,
     x,
@@ -207,8 +210,9 @@ Export unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
     Center image on PCL page.
   */
   text_size=0;
-  if (image->label != (char *) NULL)
-    text_size=MultilineCensus(image->label)*image_info->pointsize+12;
+  attribute=GetImageAttribute(image,"Label");
+  if (attribute != (ImageAttribute *) NULL)
+    text_size=MultilineCensus(attribute->value)*image_info->pointsize+12;
   width=image->columns;
   height=image->rows;
   x=0;
@@ -217,9 +221,9 @@ Export unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   if (image_info->page != (char *) NULL)
     (void) strcpy(geometry,image_info->page);
   else
-    if ((image->page_info.width != 0) && (image->page_info.height != 0))
-      (void) FormatString(geometry,"%ux%u%+d%+d",image->page_info.width,
-        image->page_info.height,image->page_info.x,image->page_info.y);
+    if ((image->page.width != 0) && (image->page.height != 0))
+      (void) FormatString(geometry,"%ux%u%+d%+d",image->page.width,
+        image->page.height,image->page.x,image->page.y);
     else
       if (Latin1Compare(image_info->magick,"PCL") == 0)
         (void) strcpy(geometry,PSPageGeometry);
@@ -254,7 +258,8 @@ Export unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       &density,&density);
   (void) sprintf(buffer,"\033*p%dx%dY",x,y);
   (void) WriteBlob(image,strlen(buffer),buffer);
-  if (image->label != (char *) NULL)
+  attribute=GetImageAttribute(image,"Label");
+  if (attribute != (ImageAttribute *) NULL)
     {
       /*
         Print label.
@@ -264,7 +269,7 @@ Export unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       (void) sprintf(buffer,"\033(s1p%uv5t3b",(unsigned int)
         image_info->pointsize);
       (void) WriteBlob(image,strlen(buffer),buffer);
-      (void) sprintf(buffer,"\n%.1024s\n",image->label);
+      (void) sprintf(buffer,"\n%.1024s\n",attribute->value);
       (void) WriteBlob(image,strlen(buffer),buffer);
       (void) strcpy(buffer,"\033(s0B");
       (void) WriteBlob(image,strlen(buffer),buffer);

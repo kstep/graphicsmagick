@@ -553,8 +553,8 @@ static unsigned int XAnnotateEditImage(Display *display,
   annotate_info->height=font_info->ascent+font_info->descent;
   annotate_info->degrees=degrees;
   annotate_info->font_info=font_info;
-  annotate_info->text=(char *) AllocateMemory(
-    (windows->image.width/Max(font_info->min_bounds.width,1)+2)*sizeof(char));
+  annotate_info->text=(char *)
+    AllocateMemory(windows->image.width/Max(font_info->min_bounds.width,1)+2);
   if (annotate_info->text == (char *) NULL)
     return(False);
   /*
@@ -822,8 +822,8 @@ static unsigned int XAnnotateEditImage(Display *display,
             *annotate_info->next=(*annotate_info);
             annotate_info->next->previous=annotate_info;
             annotate_info=annotate_info->next;
-            annotate_info->text=(char *) AllocateMemory((windows->image.width/
-              Max(font_info->min_bounds.width,1)+2)*sizeof(char));
+            annotate_info->text=(char *) AllocateMemory(windows->image.width/
+              Max(font_info->min_bounds.width,1)+2);
             if (annotate_info->text == (char *) NULL)
               return(False);
             annotate_info->y+=annotate_info->height;
@@ -915,8 +915,8 @@ static unsigned int XAnnotateEditImage(Display *display,
           *annotate_info->next=(*annotate_info);
           annotate_info->next->previous=annotate_info;
           annotate_info=annotate_info->next;
-          annotate_info->text=(char *) AllocateMemory((windows->image.width/
-            Max(font_info->min_bounds.width,1)+2)*sizeof(char));
+          annotate_info->text=(char *) AllocateMemory(windows->image.width/
+            Max(font_info->min_bounds.width,1)+2);
           if (annotate_info->text == (char *) NULL)
             return(False);
           annotate_info->y+=annotate_info->height;
@@ -4769,8 +4769,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       cache_image->geometry=windows->image.crop_geometry;
       if (windows->image.crop_geometry != (char *) NULL)
         {
-          cache_image->geometry=(char *)
-            AllocateMemory(MaxTextExtent*sizeof(char));
+          cache_image->geometry=(char *) AllocateMemory(MaxTextExtent);
           if (cache_image->geometry != (char *) NULL)
             (void) strcpy(cache_image->geometry,windows->image.crop_geometry);
         }
@@ -6649,15 +6648,20 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     }
     case CommentCommand:
     {
+      FILE
+        *file;
+
+      ImageAttribute
+        *comment;
+
       /*
         Edit image comment.
       */
       TemporaryFilename(image_info->filename);
-      if ((*image)->comments != (char *) NULL)
+      comment=GetImageAttribute(*image,"comment");
+      if ((comment != (ImageAttribute *) NULL) &&
+          (comment->value != (char *) NULL))
         {
-          FILE
-            *file;
-
           register char
             *p;
 
@@ -6668,7 +6672,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
                 image_info->filename);
               break;
             }
-          for (p=(*image)->comments; *p != '\0'; p++)
+          for (p=comment->value; *p != '\0'; p++)
             (void) fputc((int) *p,file);
           (void) fputc('\n',file);
           (void) fclose(file);
@@ -6685,7 +6689,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
             command[MaxTextExtent];
 
           FormatString(command,"@%.1024s",image_info->filename);
-          CommentImage(*image,command);
+          (void) SetImageAttribute(*image,"Comment",command);
         }
       (void) remove(image_info->filename);
       XSetCursorState(display,windows,False);
@@ -6772,7 +6776,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       image_info->preview_type=(PreviewType) (i+1);
       image_info->group=windows->image.id;
-      LabelImage(*image,"Preview");
+      (void) SetImageAttribute(*image,"Label","Preview");
       TemporaryFilename((*image)->filename);
       status=WritePREVIEWImage(image_info,*image);
       (void) strcpy((*image)->magick,"SHOW");
@@ -6792,7 +6796,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       image_info->group=windows->image.id;
-      LabelImage(*image,"Histogram");
+      (void) SetImageAttribute(*image,"Label","Histogram");
       TemporaryFilename((*image)->filename);
       status=WriteHISTOGRAMImage(image_info,*image);
       (void) strcpy((*image)->magick,"SHOW");
@@ -6818,7 +6822,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       image_info->group=windows->image.id;
-      LabelImage(*image,"Matte");
+      (void) SetImageAttribute(*image,"Label","Matte");
       TemporaryFilename((*image)->filename);
       status=WriteMATTEImage(image_info,*image);
       (void) strcpy((*image)->magick,"SHOW");
@@ -7964,7 +7968,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
       if (file == (FILE *) NULL)
         return((Image *) NULL);
       length=MaxTextExtent;
-      text=(char *) AllocateMemory(length*sizeof(char));
+      text=(char *) AllocateMemory(length);
       for (p=text ; text != (char *) NULL; p++)
       {
         c=fgetc(file);
@@ -7974,12 +7978,12 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
           {
             *p='\0';
             length<<=1;
-            text=(char *) ReallocateMemory((char *) text,length*sizeof(char));
+            text=(char *) ReallocateMemory((char *) text,length);
             if (text == (char *) NULL)
               break;
             p=text+Extent(text);
           }
-        *p=(unsigned char) c;
+        *p=c;
       }
       (void) fclose(file);
       if (text == (char *) NULL)
@@ -10509,8 +10513,7 @@ static void XSetCropGeometry(Display *display,XWindows *windows,
       /*
         Allocate crop geometry string.
       */
-      windows->image.crop_geometry=(char *)
-        AllocateMemory(MaxTextExtent*sizeof(char));
+      windows->image.crop_geometry=(char *) AllocateMemory(MaxTextExtent);
       if (windows->image.crop_geometry == (char *) NULL)
         MagickError(ResourceLimitError,"Unable to crop X image",
           windows->image.name);
@@ -12146,19 +12149,12 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     resource_info,&windows->image);
   windows->image.shape=True;  /* non-rectangular shape hint */
   windows->image.shared_memory=resource_info->use_shared_memory;
-  windows->image.name=(char *) AllocateMemory(MaxTextExtent*sizeof(char));
-  windows->image.icon_name=(char *) AllocateMemory(MaxTextExtent*sizeof(char));
-  if ((windows->image.name == NULL) || (windows->image.icon_name == NULL))
-    MagickError(ResourceLimitError,"Unable to create Image window",
-      "Memory allocation failed");
   if ((resource_info->title != (char *) NULL) && !(*state & MontageImageState))
     {
-      /*
-        User specified window name.
-      */
-      LabelImage(displayed_image,resource_info->title);
-      (void) strcpy(windows->image.name,displayed_image->label);
-      (void) strcpy(windows->image.icon_name,displayed_image->label);
+      windows->image.name=TranslateText(resource_info->image_info,
+        displayed_image,resource_info->title);
+      windows->image.icon_name=TranslateText(resource_info->image_info,
+        displayed_image,resource_info->title);
     }
   else
     {
@@ -12174,6 +12170,11 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       /*
         Window name is the base of the filename.
       */
+      windows->image.name=(char *) AllocateMemory(MaxTextExtent);
+      windows->image.icon_name=(char *) AllocateMemory(MaxTextExtent);
+      if ((windows->image.name == NULL) || (windows->image.icon_name == NULL))
+        MagickError(ResourceLimitError,"Unable to create Image window",
+          "Memory allocation failed");
       p=displayed_image->filename+Extent(displayed_image->filename)-1;
       while ((p > displayed_image->filename) && !IsBasenameSeparator(*(p-1)))
         p--;
@@ -12354,7 +12355,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   FormatString(resource_name,"%.1024s.widget",resource_info->client_name);
   windows->widget.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
-  windows->widget.name=(char *) AllocateMemory(MaxTextExtent*sizeof(char));
+  windows->widget.name=(char *) AllocateMemory(MaxTextExtent);
   if (windows->widget.name == NULL)
     MagickError(ResourceLimitError,"Unable to create Image window",
       "Memory allocation failed");
@@ -12386,7 +12387,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     FreeMemory(windows->popup.name);
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->popup);
-  windows->popup.name=(char *) AllocateMemory(MaxTextExtent*sizeof(char));
+  windows->popup.name=(char *) AllocateMemory(MaxTextExtent);
   if (windows->popup.name == NULL)
     MagickError(ResourceLimitError,"Unable to create Image window",
       "Memory allocation failed");
@@ -12421,7 +12422,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   FormatString(resource_name,"%.1024s.magnify",resource_info->client_name);
   windows->magnify.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
-  windows->magnify.name=(char *) AllocateMemory(MaxTextExtent*sizeof(char));
+  windows->magnify.name=(char *) AllocateMemory(MaxTextExtent);
   if (windows->magnify.name == NULL)
     MagickError(ResourceLimitError,"Unable to create Magnify window",
       "Memory allocation failed");

@@ -249,7 +249,7 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
         do
         {
           if ((p-keyword) < (MaxTextExtent-1))
-            *p++=(char) c;
+            *p++=c;
           c=ReadByte(image);
           count++;
         } while (isalnum(c) || (c == '_'));
@@ -270,7 +270,7 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
         while (isalnum(c) || (c == '-') || (c == '+') || (c == '.'))
         {
           if ((p-value) < (MaxTextExtent-1))
-            *p++=(char) c;
+            *p++=c;
           c=ReadByte(image);
           count++;
         }
@@ -348,8 +348,8 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
     packet_size=fits_header.bits_per_pixel/8;
     if (packet_size < 0)
       packet_size=(-packet_size);
-    fits_pixels=(unsigned char *) AllocateMemory(
-      packet_size*image->columns*image->rows*sizeof(unsigned char));
+    fits_pixels=(unsigned char *)
+      AllocateMemory(packet_size*image->columns*image->rows);
     if (fits_pixels == (unsigned char *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     /*
@@ -544,9 +544,8 @@ Export unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
     Allocate image memory.
   */
   packet_size=image->depth > 8 ? 2 : 1;
-  fits_header=(char *) AllocateMemory(2880*sizeof(unsigned char));
-  pixels=(unsigned char *)
-    AllocateMemory(packet_size*image->columns*sizeof(unsigned char));
+  fits_header=(char *) AllocateMemory(2880);
+  pixels=(unsigned char *) AllocateMemory(packet_size*image->columns);
   if ((fits_header == (char *) NULL) || (pixels == (unsigned char *) NULL))
     WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
   /*

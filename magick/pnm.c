@@ -144,6 +144,9 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
       return(0);
     if (c == '#')
       {
+        char
+          *comment;
+
         register char
           *p,
           *q;
@@ -155,45 +158,38 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
         /*
           Read comment.
         */
-        if (image->comments != (char *) NULL)
-          {
-            p=image->comments+Extent(image->comments);
-            length=p-image->comments;
-          }
-        else
-          {
-            length=MaxTextExtent;
-            image->comments=(char *)
-              AllocateMemory((length+strlen(P7Comment)+1)*sizeof(char));
-            p=image->comments;
-          }
-        offset=p-image->comments;
-        if (image->comments != (char *) NULL)
+        length=MaxTextExtent;
+        comment=(char *) AllocateMemory(length+strlen(P7Comment)+1);
+        p=comment;
+        offset=p-comment;
+        if (comment != (char *) NULL)
           for ( ; (c != EOF) && (c != '\n'); p++)
           {
-            if ((p-image->comments) >= length)
+            if ((p-comment) >= length)
               {
                 length<<=1;
                 length+=MaxTextExtent;
-                image->comments=(char *) ReallocateMemory((char *)
-                  image->comments,(length+strlen(P7Comment)+1)*sizeof(char));
-                if (image->comments == (char *) NULL)
+                comment=(char *)
+                  ReallocateMemory(comment,length+strlen(P7Comment)+1);
+                if (comment == (char *) NULL)
                   break;
-                p=image->comments+Extent(image->comments);
+                p=comment+Extent(comment);
               }
             c=ReadByte(image);
-            *p=(char) c;
+            *p=c;
             *(p+1)='\0';
           }
-        if (image->comments == (char *) NULL)
+        if (comment == (char *) NULL)
           {
             MagickWarning(ResourceLimitWarning,"Memory allocation failed",
               (char *) NULL);
             return(0);
           }
-        q=image->comments+offset;
+        q=comment+offset;
         if (Latin1Compare(q,P7Comment) == 0)
           *q='\0';
+        (void) SetImageAttribute(image,"Comment",comment);
+        FreeMemory(comment);
         continue;
       }
   } while (!isdigit(c));
@@ -658,6 +654,9 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
     buffer[MaxTextExtent],
     *magick;
 
+  ImageAttribute
+    *attribute;
+
   int
     y;
 
@@ -756,7 +755,8 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
     else
       (void) sprintf(buffer,"P%c\n",format);
     (void) WriteBlob(image,strlen(buffer),buffer);
-    if (image->comments != (char *) NULL)
+    attribute=GetImageAttribute(image,"Label");
+    if (attribute != (ImageAttribute *) NULL)
       {
         register char
           *p;
@@ -765,7 +765,7 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           Write comments to file.
         */
         (void) WriteByte(image,'#');
-        for (p=image->comments; *p != '\0'; p++)
+        for (p=attribute->value; *p != '\0'; p++)
         {
           (void) WriteByte(image,*p);
           if ((*p == '\n') && (*(p+1) != '\0'))

@@ -133,7 +133,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
         for (i=0; i < count; i++)
         {
           if (compression == 1)
-            *q++=(unsigned char) byte;
+            *q++=byte;
           else
             *q++=(i & 0x01) ? (byte & 0x0f) : ((byte >> 4) & 0x0f);
           x++;
@@ -224,8 +224,9 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
 %
 %  The format of the EncodeImage method is:
 %
-%      status=EncodeImage(pixels,number_columns,number_rows,
-%        compressed_pixels)
+%    static unsigned int EncodeImage(const unsigned char *pixels,
+%      const unsigned int number_columns,const unsigned int number_rows,
+%      unsigned char *compressed_pixels)
 %
 %  A description of each parameter follows:
 %
@@ -285,7 +286,7 @@ static unsigned int EncodeImage(const unsigned char *pixels,
       for (i=1; ((x+i) < (int) bytes_per_line); i++)
         if ((*(p+i) != *p) || (i == 255))
           break;
-      *q++=(unsigned char) i;
+      *q++=i;
       *q++=(*p);
       p+=i;
     }
@@ -454,8 +455,8 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
     *p;
 
   unsigned char
-    *bmp_pixels,
-    magick[12];
+    magick[12],
+    *pixels;
 
   unsigned int
     bytes_per_line,
@@ -589,8 +590,7 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
         /*
           Read BMP raster colormap.
         */
-        bmp_colormap=(unsigned char *)
-          AllocateMemory(4*image->colors*sizeof(unsigned char));
+        bmp_colormap=(unsigned char *) AllocateMemory(4*image->colors);
         if (bmp_colormap == (unsigned char *) NULL)
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
         packet_size=4;
@@ -618,19 +618,18 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
       bmp_header.bits_per_pixel<<=1;
     bytes_per_line=((image->columns*bmp_header.bits_per_pixel+31)/32)*4;
     image_size=bytes_per_line*image->rows;
-    bmp_pixels=(unsigned char *)
-      AllocateMemory(image_size*sizeof(unsigned char));
-    if (bmp_pixels == (unsigned char *) NULL)
+    pixels=(unsigned char *) AllocateMemory(image_size);
+    if (pixels == (unsigned char *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     if ((bmp_header.compression == 0) || (bmp_header.compression == 3))
-      (void) ReadBlob(image,image_size,(char *) bmp_pixels);
+      (void) ReadBlob(image,image_size,(char *) pixels);
     else
       {
         /*
           Convert run-length encoded raster pixels.
         */
         status=DecodeImage(image,(unsigned int) bmp_header.compression,
-          (unsigned int) bmp_header.width,image->rows,bmp_pixels);
+          (unsigned int) bmp_header.width,image->rows,pixels);
         if (status == False)
           ReaderExit(CorruptImageWarning,"runlength decoding failed",image);
       }
@@ -648,11 +647,11 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
       case 1:
       {
         /*
-          Convert bitmap scanline to runlength-encoded color packets.
+          Convert bitmap scanline.
         */
         for (y=image->rows-1; y >= 0; y--)
         {
-          p=bmp_pixels+(image->rows-y-1)*bytes_per_line;
+          p=pixels+(image->rows-y-1)*bytes_per_line;
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
@@ -687,11 +686,11 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
       case 4:
       {
         /*
-          Convert PseudoColor scanline to runlength-encoded color packets.
+          Convert PseudoColor scanline.
         */
         for (y=image->rows-1; y >= 0; y--)
         {
-          p=bmp_pixels+(image->rows-y-1)*bytes_per_line;
+          p=pixels+(image->rows-y-1)*bytes_per_line;
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
@@ -723,13 +722,13 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
       case 8:
       {
         /*
-          Convert PseudoColor scanline to runlength-encoded color packets.
+          Convert PseudoColor scanline.
         */
         if ((bmp_header.compression == 1) || (bmp_header.compression == 2))
           bytes_per_line=image->columns;
         for (y=image->rows-1; y >= 0; y--)
         {
-          p=bmp_pixels+(image->rows-y-1)*bytes_per_line;
+          p=pixels+(image->rows-y-1)*bytes_per_line;
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
@@ -754,14 +753,14 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
           l;
 
         /*
-          Convert PseudoColor scanline to runlength-encoded color packets.
+          Convert PseudoColor scanline.
         */
         image->class=DirectClass;
         if (bmp_header.compression == 1)
           bytes_per_line=image->columns << 1;
         for (y=image->rows-1; y >= 0; y--)
         {
-          p=bmp_pixels+(image->rows-y-1)*bytes_per_line;
+          p=pixels+(image->rows-y-1)*bytes_per_line;
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
@@ -787,11 +786,11 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
       case 32:
       {
         /*
-          Convert DirectColor scanline to runlength-encoded color packets.
+          Convert DirectColor scanline.
         */
         for (y=image->rows-1; y >= 0; y--)
         {
-          p=bmp_pixels+(image->rows-y-1)*bytes_per_line;
+          p=pixels+(image->rows-y-1)*bytes_per_line;
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
@@ -815,7 +814,7 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
       default:
         ReaderExit(CorruptImageWarning,"Not a BMP image file",image);
     }
-    FreeMemory(bmp_pixels);
+    FreeMemory(pixels);
     if (bmp_header.height < 0)
       {
         Image
@@ -937,7 +936,7 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
 
   unsigned char
     *bmp_data,
-    *bmp_pixels;
+    *pixels;
 
   unsigned int
     bytes_per_line,
@@ -1011,9 +1010,8 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     /*
       Convert MIFF to BMP raster pixels.
     */
-    bmp_pixels=(unsigned char *)
-      AllocateMemory(bmp_header.image_size*sizeof(unsigned char));
-    if (bmp_pixels == (unsigned char *) NULL)
+    pixels=(unsigned char *) AllocateMemory(bmp_header.image_size);
+    if (pixels == (unsigned char *) NULL)
       WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
     switch (bmp_header.bit_count)
     {
@@ -1036,7 +1034,7 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           p=GetPixelCache(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
-          q=bmp_pixels+(image->rows-y-1)*bytes_per_line;
+          q=pixels+(image->rows-y-1)*bytes_per_line;
           bit=0;
           byte=0;
           for (x=0; x < (int) image->columns; x++)
@@ -1071,7 +1069,7 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           p=GetPixelCache(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
-          q=bmp_pixels+(image->rows-y-1)*bytes_per_line;
+          q=pixels+(image->rows-y-1)*bytes_per_line;
           for (x=0; x < (int) image->columns; x++)
           {
             *q++=image->indexes[x];
@@ -1094,7 +1092,7 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           p=GetPixelCache(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
-          q=bmp_pixels+(image->rows-y-1)*bytes_per_line;
+          q=pixels+(image->rows-y-1)*bytes_per_line;
           for (x=0; x < (int) image->columns; x++)
           {
             *q++=DownScale(p->blue);
@@ -1122,19 +1120,18 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           */
           packets=(unsigned int)
             ((bytes_per_line*(bmp_header.height+2)+1) << 1);
-          bmp_data=(unsigned char *)
-            AllocateMemory(packets*sizeof(unsigned char));
-          if (bmp_pixels == (unsigned char *) NULL)
+          bmp_data=(unsigned char *) AllocateMemory(packets);
+          if (pixels == (unsigned char *) NULL)
             {
-              FreeMemory(bmp_pixels);
+              FreeMemory(pixels);
               WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
             }
           bmp_header.file_size-=bmp_header.image_size;
           bmp_header.image_size=
-            EncodeImage(bmp_pixels,image->columns,image->rows,bmp_data);
+            EncodeImage(pixels,image->columns,image->rows,bmp_data);
           bmp_header.file_size+=bmp_header.image_size;
-          FreeMemory(bmp_pixels);
-          bmp_pixels=bmp_data;
+          FreeMemory(pixels);
+          pixels=bmp_data;
           bmp_header.compression=1;
         }
     /*
@@ -1165,7 +1162,7 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           Dump colormap to file.
         */
         bmp_colormap=(unsigned char *)
-          AllocateMemory(4*(1 << bmp_header.bit_count)*sizeof(unsigned char));
+          AllocateMemory(4*(1 << bmp_header.bit_count));
         if (bmp_colormap == (unsigned char *) NULL)
           WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
         q=bmp_colormap;
@@ -1187,8 +1184,8 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           (char *) bmp_colormap);
         FreeMemory(bmp_colormap);
       }
-    (void) WriteBlob(image,bmp_header.image_size,(char *) bmp_pixels);
-    FreeMemory(bmp_pixels);
+    (void) WriteBlob(image,bmp_header.image_size,(char *) pixels);
+    FreeMemory(pixels);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);

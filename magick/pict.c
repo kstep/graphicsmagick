@@ -448,11 +448,10 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *image,
   /*
     Allocate pixel and scanline buffer.
   */
-  pixels=(unsigned char *)
-    AllocateMemory(row_bytes*image->rows*sizeof(unsigned char));
+  pixels=(unsigned char *) AllocateMemory(row_bytes*image->rows);
   if (pixels == (unsigned char *) NULL)
     return((unsigned char *) NULL);
-  scanline=(unsigned char *) AllocateMemory(row_bytes*sizeof(unsigned char));
+  scanline=(unsigned char *) AllocateMemory(row_bytes);
   if (scanline == (unsigned char *) NULL)
     return((unsigned char *) NULL);
   if (bytes_per_line < 8)
@@ -466,7 +465,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *image,
         number_pixels=bytes_per_line;
         (void) ReadBlob(image,number_pixels,(char *) scanline);
         p=ExpandBuffer(scanline,&number_pixels,bits_per_pixel);
-        (void) memcpy(q,p,number_pixels*sizeof(unsigned char));
+        (void) memcpy(q,p,number_pixels);
       }
       FreeMemory(scanline);
       return(pixels);
@@ -488,7 +487,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *image,
           length=(scanline[x] & 0xff)+1;
           number_pixels=length*bytes_per_pixel;
           p=ExpandBuffer(scanline+x+1,&number_pixels,bits_per_pixel);
-          (void) memcpy(q,p,number_pixels*sizeof(unsigned char));
+          (void) memcpy(q,p,number_pixels);
           q+=number_pixels;
           x+=length*bytes_per_pixel+1;
         }
@@ -499,7 +498,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *image,
           p=ExpandBuffer(scanline+x+1,&number_pixels,bits_per_pixel);
           for (i=0; i < length; i++)
           {
-            (void) memcpy(q,p,number_pixels*sizeof(unsigned char));
+            (void) memcpy(q,p,number_pixels);
             q+=number_pixels;
           }
           x+=bytes_per_pixel+1;
@@ -1076,6 +1075,9 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
         }
         case 0xa1:
         {
+          char
+            *comment;
+
           /*
             Comment.
           */
@@ -1083,14 +1085,14 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
           length=MSBFirstReadShort(image);
           if (length == 0)
             break;
-          if (image->comments != (char *) NULL)
-            FreeMemory(image->comments);
-          image->comments=(char *) AllocateMemory((length+1)*sizeof(char));
-          if (image->comments == (char *) NULL)
+          comment=(char *) AllocateMemory(length+1);
+          if (comment == (char *) NULL)
             break;
           for (i=0; i < length; i++)
-            image->comments[i]=ReadByte(image);
-          image->comments[i]='\0';
+            comment[i]=ReadByte(image);
+          comment[i]='\0';
+          (void) SetImageAttribute(image,"Comment",comment);
+          FreeMemory(comment);
           break;
         }
         default:
@@ -1131,7 +1133,7 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
         local_info=CloneImageInfo(image_info);
         if (local_info == (ImageInfo *) NULL)
           ReaderExit(FileOpenWarning,"Unable to write file",image);
-        GetBlobInfo(&(local_info->blob_info));
+        GetBlobInfo(&(local_info->blob));
         TemporaryFilename(local_info->filename);
         file=fopen(local_info->filename,WriteBinaryType);
         if (file == (FILE *) NULL)
@@ -1327,10 +1329,9 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   if ((image->class == DirectClass) ||
       (Latin1Compare(image_info->magick,"PICT24") == 0))
     bytes_per_line*=image->matte ? 4 : 3;
-  buffer=(unsigned char *) AllocateMemory(PictHeaderSize*sizeof(unsigned char));
-  packed_scanline=(unsigned char *)
-    AllocateMemory((row_bytes+MaxCount)*sizeof(unsigned char));
-  scanline=(unsigned char *) AllocateMemory(row_bytes*sizeof(unsigned char));
+  buffer=(unsigned char *) AllocateMemory(PictHeaderSize);
+  packed_scanline=(unsigned char *) AllocateMemory(row_bytes+MaxCount);
+  scanline=(unsigned char *) AllocateMemory(row_bytes);
   if ((buffer == (unsigned char *) NULL) ||
       (packed_scanline == (unsigned char *) NULL) ||
       (scanline == (unsigned char *) NULL))

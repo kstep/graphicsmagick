@@ -108,10 +108,10 @@ Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
     count;
 
   local_info=CloneImageInfo(image_info);
-  local_info->blob_info.data=(char *) blob;
-  local_info->blob_info.offset=0;
-  local_info->blob_info.length=length;
-  local_info->blob_info.extent=length;
+  local_info->blob.data=(char *) blob;
+  local_info->blob.offset=0;
+  local_info->blob.length=length;
+  local_info->blob.extent=length;
   SetImageInfo(local_info,False);
   magick_info=(MagickInfo *) GetMagickInfo(local_info->magick);
   if (magick_info == (MagickInfo *) NULL)
@@ -121,20 +121,20 @@ Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
       DestroyImageInfo(local_info);
       return((Image *) NULL);
     }
-  GetBlobInfo(&(local_info->blob_info));
+  GetBlobInfo(&(local_info->blob));
   if (magick_info->blob_support)
     {
       /*
         Native blob support for this image format.
       */
       *local_info->filename='\0';
-      local_info->blob_info.data=(char *) blob;
-      local_info->blob_info.length=length;
-      local_info->blob_info.extent=length;
+      local_info->blob.data=(char *) blob;
+      local_info->blob.length=length;
+      local_info->blob.extent=length;
       image=ReadImage(local_info);
       DestroyImageInfo(local_info);
       if (image != (Image *) NULL)
-        GetBlobInfo(&(image->blob_info));
+        GetBlobInfo(&(image->blob));
       return(image);
     }
   /*
@@ -197,9 +197,9 @@ Export void CloseBlob(Image *image)
   CloseCache(image->cache);
   image->tainted=False;
   image->filesize=SizeBlob(image);
-  if (image->blob_info.data != (char *) NULL)
+  if (image->blob.data != (char *) NULL)
     {
-      image->blob_info.extent=image->blob_info.length;
+      image->blob.extent=image->blob.length;
       return;
     }
   if (image->file == (FILE *) NULL)
@@ -240,20 +240,20 @@ Export void CloseBlob(Image *image)
 %
 %  The format of the DestroyBlobInfo method is:
 %
-%      void DestroyBlobInfo(BlobInfo *blob_info)
+%      void DestroyBlobInfo(BlobInfo *blob)
 %
 %  A description of each parameter follows:
 %
-%    o blob_info: Specifies a pointer to a BlobInfo structure.
+%    o blob: Specifies a pointer to a BlobInfo structure.
 %
 %
 */
-Export void DestroyBlobInfo(BlobInfo *blob_info)
+Export void DestroyBlobInfo(BlobInfo *blob)
 {
-  assert(blob_info != (BlobInfo *) NULL);
-  if (blob_info->mapped)
-    UnmapBlob(blob_info->data,blob_info->length);
-  GetBlobInfo(blob_info);
+  assert(blob != (BlobInfo *) NULL);
+  if (blob->mapped)
+    UnmapBlob(blob->data,blob->length);
+  GetBlobInfo(blob);
 }
 
 /*
@@ -286,9 +286,9 @@ Export void DestroyBlobInfo(BlobInfo *blob_info)
 Export int EOFBlob(const Image *image)
 {
   assert(image != (Image *) NULL);
-  if (image->blob_info.data == (char *) NULL)
+  if (image->blob.data == (char *) NULL)
     return(feof(image->file));
-  return(image->blob_info.offset > image->blob_info.length);
+  return(image->blob.offset > image->blob.length);
 }
 
 /*
@@ -306,23 +306,23 @@ Export int EOFBlob(const Image *image)
 %
 %  The format of the GetBlobInfo method is:
 %
-%      void GetBlobInfo(BlobInfo *blob_info)
+%      void GetBlobInfo(BlobInfo *blob)
 %
 %  A description of each parameter follows:
 %
-%    o blob_info: Specifies a pointer to a BlobInfo structure.
+%    o blob: Specifies a pointer to a BlobInfo structure.
 %
 %
 */
-Export void GetBlobInfo(BlobInfo *blob_info)
+Export void GetBlobInfo(BlobInfo *blob)
 {
-  assert(blob_info != (BlobInfo *) NULL);
-  blob_info->mapped=False;
-  blob_info->data=(char *) NULL;
-  blob_info->offset=0;
-  blob_info->length=0;
-  blob_info->extent=0;
-  blob_info->quantum=BlobQuantum;
+  assert(blob != (BlobInfo *) NULL);
+  blob->mapped=False;
+  blob->data=(char *) NULL;
+  blob->offset=0;
+  blob->length=0;
+  blob->extent=0;
+  blob->quantum=BlobQuantum;
 }
 
 /*
@@ -452,17 +452,17 @@ Export void *ImageToBlob(const ImageInfo *image_info,Image *image,
         Native blob support for this image format.
       */
       *image->filename='\0';
-      local_info->blob_info.extent=Max((int) *length,image->blob_info.quantum);
-      local_info->blob_info.data=(char *)
-        AllocateMemory(local_info->blob_info.extent);
-      if (local_info->blob_info.data == (char *) NULL)
+      local_info->blob.extent=Max((int) *length,image->blob.quantum);
+      local_info->blob.data=(char *)
+        AllocateMemory(local_info->blob.extent);
+      if (local_info->blob.data == (char *) NULL)
         {
           MagickWarning(BlobWarning,"Unable to create blob",
             "Memory allocation failed");
           return((char *) NULL);
         }
-      local_info->blob_info.offset=0;
-      local_info->blob_info.length=0;
+      local_info->blob.offset=0;
+      local_info->blob.length=0;
       status=WriteImage(local_info,image);
       if (status == False)
         {
@@ -471,9 +471,9 @@ Export void *ImageToBlob(const ImageInfo *image_info,Image *image,
           return((char *) NULL);
         }
       DestroyImageInfo(local_info);
-      *length=image->blob_info.length;
-      blob=image->blob_info.data;
-      GetBlobInfo(&(image->blob_info));
+      *length=image->blob.length;
+      blob=image->blob.data;
+      GetBlobInfo(&(image->blob));
       return(blob);
     }
   /*
@@ -503,7 +503,7 @@ Export void *ImageToBlob(const ImageInfo *image_info,Image *image,
       return((char *) NULL);
     }
   *length=fstat(file,&attributes) < 0 ? 0 : attributes.st_size;
-  blob=(char *) AllocateMemory(*length*sizeof(char));
+  blob=(char *) AllocateMemory(*length);
   if (blob == (char *) NULL)
     {
       (void) remove(image->filename);
@@ -1085,12 +1085,12 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
   assert(image_info != (ImageInfo *) NULL);
   assert(image != (Image *) NULL);
   assert(type != (char *) NULL);
-  if (image_info->blob_info.data != (char *) NULL)
+  if (image_info->blob.data != (char *) NULL)
     {
-      image->blob_info=image_info->blob_info;
+      image->blob=image_info->blob;
       return(True);
     }
-  GetBlobInfo(&image->blob_info);
+  GetBlobInfo(&image->blob);
   image->exempt=False;
   if (image_info->file != (FILE *) NULL)
     {
@@ -1229,12 +1229,12 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                     /*
                       Format supports blobs-- try memory-mapped I/O.
                     */
-                    image->blob_info.length=0;
-                    image->blob_info.data=(char *) MapBlob(fileno(image->file),
-                      ReadMode,&image->blob_info.length);
-                    image->blob_info.mapped=
-                      image->blob_info.data != (void *) NULL;
-                    if (image->blob_info.mapped)
+                    image->blob.length=0;
+                    image->blob.data=(char *) MapBlob(fileno(image->file),
+                      ReadMode,&image->blob.length);
+                    image->blob.mapped=
+                      image->blob.data != (void *) NULL;
+                    if (image->blob.mapped)
                       {
                         (void) fclose(image->file);
                         image->file=(FILE *) NULL;
@@ -1250,7 +1250,7 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
       image->next=(Image *) NULL;
       image->previous=(Image *) NULL;
     }
-  return((image->file != (FILE *) NULL) || (image->blob_info.data != NULL));
+  return((image->file != (FILE *) NULL) || (image->blob.data != NULL));
 }
 
 /*
@@ -1292,15 +1292,15 @@ Export size_t ReadBlob(Image *image,const size_t length,void *data)
 
   assert(image != (Image *) NULL);
   assert(data != (char *) NULL);
-  if (image->blob_info.data != (char *) NULL)
+  if (image->blob.data != (char *) NULL)
     {
       /*
         Read bytes from blob.
       */
-      count=Min(length,image->blob_info.length-image->blob_info.offset);
+      count=Min(length,image->blob.length-image->blob.offset);
       if (count > 0)
-        (void) memcpy(data,image->blob_info.data+image->blob_info.offset,count);
-      image->blob_info.offset+=count;
+        (void) memcpy(data,image->blob.data+image->blob.offset,count);
+      image->blob.offset+=count;
       return(count);
     }
   /*
@@ -1439,7 +1439,7 @@ Export off_t SeekBlob(Image *image,const off_t offset,const int whence)
     status;
 
   assert(image != (Image *) NULL);
-  if (image->blob_info.data == (char *) NULL)
+  if (image->blob.data == (char *) NULL)
     {
       status=fseek(image->file,offset,whence);
       if (status == -1)
@@ -1453,37 +1453,37 @@ Export off_t SeekBlob(Image *image,const off_t offset,const int whence)
     {
       if (offset < 0)
         return(-1);
-      image->blob_info.offset=offset;
+      image->blob.offset=offset;
       break;
     }
     case SEEK_CUR:
     {
-      if ((image->blob_info.offset+offset) < 0)
+      if ((image->blob.offset+offset) < 0)
         return(-1);
-      image->blob_info.offset+=offset;
+      image->blob.offset+=offset;
       break;
     }
     case SEEK_END:
     {
-      if ((image->blob_info.offset+image->blob_info.length+offset) < 0)
+      if ((image->blob.offset+image->blob.length+offset) < 0)
         return(-1);
-      image->blob_info.offset=image->blob_info.length+offset;
+      image->blob.offset=image->blob.length+offset;
       break;
     }
   }
-  if (image->blob_info.offset > image->blob_info.length)
+  if (image->blob.offset > image->blob.length)
     {
-      image->blob_info.length=image->blob_info.offset;
-      image->blob_info.data=(char *)
-        ReallocateMemory(image->blob_info.data,image->blob_info.length);
-      if (image->blob_info.data == (char *) NULL)
+      image->blob.length=image->blob.offset;
+      image->blob.data=(char *)
+        ReallocateMemory(image->blob.data,image->blob.length);
+      if (image->blob.data == (char *) NULL)
         {
-          image->blob_info.length=0;
+          image->blob.length=0;
           return(-1);
         }
-      image->blob_info.extent=image->blob_info.length;
+      image->blob.extent=image->blob.length;
     }
-  return(image->blob_info.offset);
+  return(image->blob.offset);
 }
 
 /*
@@ -1503,20 +1503,20 @@ Export off_t SeekBlob(Image *image,const off_t offset,const int whence)
 %
 %  The format of the SetBlobQuantum method is:
 %
-%      void SetBlobQuantum(BlobInfo *blob_info,const size_t quantum)
+%      void SetBlobQuantum(BlobInfo *blob,const size_t quantum)
 %
 %  A description of each parameter follows:
 %
-%    o blob_info:  A pointer to a BlobInfo structure.
+%    o blob:  A pointer to a BlobInfo structure.
 %
 %    o quantum: A size_t that reflects the number of bytes to increase a blob.
 %
 %
 */
-Export void SetBlobQuantum(BlobInfo *blob_info,const size_t quantum)
+Export void SetBlobQuantum(BlobInfo *blob,const size_t quantum)
 {
-  assert(blob_info != (BlobInfo *) NULL);
-  blob_info->quantum=quantum;
+  assert(blob != (BlobInfo *) NULL);
+  blob->quantum=quantum;
 }
 
 /*
@@ -1552,7 +1552,7 @@ Export off_t SizeBlob(Image *image)
 
   assert(image != (Image *) NULL);
   if (image->file == (FILE *) NULL)
-    return(image->blob_info.length);
+    return(image->blob.length);
   SyncBlob(image);
   return(fstat(fileno(image->file),&attributes) < 0 ? 0 : attributes.st_size);
 }
@@ -1623,7 +1623,7 @@ Export off_t TellBlob(Image *image)
   assert(image != (Image *) NULL);
   if (image->file != (FILE *) NULL)
     return(ftell(image->file));
-  return(image->blob_info.offset);
+  return(image->blob.offset);
 }
 
 /*
@@ -1709,26 +1709,26 @@ Export size_t WriteBlob(Image *image,const size_t length,const void *data)
 
   assert(image != (Image *) NULL);
   assert(data != (const char *) NULL);
-  if (image->blob_info.data == (char *) NULL)
+  if (image->blob.data == (char *) NULL)
     {
       count=fwrite((char *) data,1,length,image->file);
       return(count);
     }
-  if (length > (image->blob_info.extent-image->blob_info.offset))
+  if (length > (image->blob.extent-image->blob.offset))
     {
-      image->blob_info.extent+=length+image->blob_info.quantum;
-      image->blob_info.data=(char *)
-        ReallocateMemory(image->blob_info.data,image->blob_info.extent);
-      if (image->blob_info.data == (char *) NULL)
+      image->blob.extent+=length+image->blob.quantum;
+      image->blob.data=(char *)
+        ReallocateMemory(image->blob.data,image->blob.extent);
+      if (image->blob.data == (char *) NULL)
         {
-          image->blob_info.extent=0;
+          image->blob.extent=0;
           return(0);
         }
     }
-  (void) memcpy(image->blob_info.data+image->blob_info.offset,data,length);
-  image->blob_info.offset+=length;
-  if (image->blob_info.offset > image->blob_info.length)
-    image->blob_info.length=image->blob_info.offset;
+  (void) memcpy(image->blob.data+image->blob.offset,data,length);
+  image->blob.offset+=length;
+  if (image->blob.offset > image->blob.length)
+    image->blob.length=image->blob.offset;
   return(length);
 }
 
@@ -1769,7 +1769,7 @@ Export size_t WriteByte(Image *image,const int value)
     count;
 
   assert(image != (Image *) NULL);
-  c=(char) value;
+  c=value;
   count=WriteBlob(image,1,&c);
   return(count);
 }

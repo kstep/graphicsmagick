@@ -127,8 +127,7 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
     Allocate memory for a scanline.
   */
   packet_size=image->depth > 8 ? 8 : 4;
-  scanline=(unsigned char *)
-    AllocateMemory(packet_size*image->tile_info.width*sizeof(unsigned char));
+  scanline=(unsigned char *) AllocateMemory(packet_size*image->tile_info.width);
   if (scanline == (unsigned char *) NULL)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
   if (image_info->subrange != 0)
@@ -406,8 +405,7 @@ Export unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
     Allocate memory for pixels.
   */
   packet_size=image->depth > 8 ? 8 : 4;
-  pixels=(unsigned char *)
-    AllocateMemory(packet_size*image->columns*sizeof(unsigned char));
+  pixels=(unsigned char *) AllocateMemory(packet_size*image->columns);
   if (pixels == (unsigned char *) NULL)
     WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
   if (image_info->interlace != PartitionInterlace)

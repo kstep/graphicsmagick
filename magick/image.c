@@ -130,8 +130,13 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   /*
     Initialize Image structure.
   */
-  GetBlobInfo(&(allocated_image->blob_info));
+  GetCacheInfo(&allocated_image->cache);
+  allocated_image->cache_info.x=0;
+  allocated_image->cache_info.y=0;
+  allocated_image->cache_info.width=0;
+  allocated_image->cache_info.height=0;
   allocated_image->file=(FILE *) NULL;
+  GetBlobInfo(&allocated_image->blob);
   allocated_image->exempt=False;
   allocated_image->status=False;
   allocated_image->temporary=False;
@@ -139,8 +144,7 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->filesize=0;
   allocated_image->pipe=False;
   (void) strcpy(allocated_image->magick,"MIFF");
-  allocated_image->comments=(char *) NULL;
-  allocated_image->label=(char *) NULL;
+  allocated_image->attributes=(ImageAttribute *) NULL;
   allocated_image->class=DirectClass;
   allocated_image->matte=False;
   allocated_image->compression=UndefinedCompression;
@@ -176,18 +180,13 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->color_profile.info=(unsigned char *) NULL;
   allocated_image->iptc_profile.length=0;
   allocated_image->iptc_profile.info=(unsigned char *) NULL;
-  GetCacheInfo(&allocated_image->cache);
-  allocated_image->cache_info.x=0;
-  allocated_image->cache_info.y=0;
-  allocated_image->cache_info.width=0;
-  allocated_image->cache_info.height=0;
   allocated_image->pixels=(PixelPacket *) NULL;
   allocated_image->indexes=(IndexPacket *) NULL;
   (void) QueryColorDatabase(BackgroundColor,&allocated_image->background_color);
   (void) QueryColorDatabase(BorderColor,&allocated_image->border_color);
   (void) QueryColorDatabase(MatteColor,&allocated_image->matte_color);
   allocated_image->geometry=(char *) NULL;
-  GetPageInfo(&allocated_image->page_info);
+  GetPageInfo(&allocated_image->page);
   allocated_image->dispose=0;
   allocated_image->delay=0;
   allocated_image->iterations=1;
@@ -198,23 +197,23 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->normalized_mean_error=0.0;
   allocated_image->normalized_maximum_error=0.0;
   allocated_image->mean_error_per_pixel=0;
-  allocated_image->signature=(char *) NULL;
   *allocated_image->magick_filename='\0';
   allocated_image->magick_columns=0;
   allocated_image->magick_rows=0;
-  GetTimerInfo(&(allocated_image->timer_info));
   allocated_image->tainted=False;
+  allocated_image->restart_animation_here=False;
+  GetTimerInfo(&allocated_image->timer);
+  GetErrorInfo(&allocated_image->error);
   allocated_image->orphan=False;
   allocated_image->previous=(Image *) NULL;
   allocated_image->list=(Image *) NULL;
   allocated_image->next=(Image *) NULL;
-  allocated_image->restart_animation_here=False;
   if (image_info == (ImageInfo *) NULL)
     return(allocated_image);
   /*
     Transfer image info.
   */
-  allocated_image->blob_info=image_info->blob_info;
+  allocated_image->blob=image_info->blob;
   allocated_image->exempt=image_info->file != (FILE *) NULL;
   (void) strcpy(allocated_image->filename,image_info->filename);
   (void) strcpy(allocated_image->magick_filename,image_info->filename);
@@ -259,8 +258,8 @@ Export Image *AllocateImage(const ImageInfo *image_info)
     }
   if (image_info->page != (char *) NULL)
     ParseImageGeometry(PostscriptGeometry(image_info->page),
-      &allocated_image->page_info.x,&allocated_image->page_info.y,
-      &allocated_image->page_info.width,&allocated_image->page_info.height);
+      &allocated_image->page.x,&allocated_image->page.y,
+      &allocated_image->page.width,&allocated_image->page.height);
   if (image_info->dispose != (char *) NULL)
     allocated_image->dispose=atoi(image_info->dispose);
   if (image_info->delay != (char *) NULL)
@@ -313,7 +312,7 @@ Export void AllocateNextImage(const ImageInfo *image_info,Image *image)
   (void) strcpy(image->next->filename,image->filename);
   if (image_info != (ImageInfo *) NULL)
     (void) strcpy(image->next->filename,image_info->filename);
-  image->next->blob_info=image->blob_info;
+  image->next->blob=image->blob;
   image->next->filesize=image->filesize;
   image->next->file=image->file;
   image->next->filesize=image->filesize;
@@ -746,6 +745,9 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
   Image
     *clone_image;
 
+  ImageAttribute
+    *attribute;
+
   unsigned long
     length;
 
@@ -760,15 +762,8 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
     Clone the image.
   */
   *clone_image=(*image);
-  clone_image->comments=(char *) NULL;
-  clone_image->label=(char *) NULL;
   clone_image->montage=(char *) NULL;
   clone_image->directory=(char *) NULL;
-  clone_image->signature=(char *) NULL;
-  if (image->comments != (char *) NULL)
-    (void) CloneString(&clone_image->comments,image->comments);
-  if (image->label != (char *) NULL)
-    (void) CloneString(&clone_image->label,image->label);
   if (image->colormap != (PixelPacket *) NULL)
     {
       /*
@@ -785,7 +780,7 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
       /*
         Allocate and copy the image ICC profile.
       */
-      length=image->color_profile.length*sizeof(unsigned char);
+      length=image->color_profile.length;
       clone_image->color_profile.info=(unsigned char *) AllocateMemory(length);
       if (clone_image->color_profile.info == (unsigned char *) NULL)
         return((Image *) NULL);
@@ -797,14 +792,14 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
       /*
         Allocate and copy the image IPTC profile.
       */
-      length=image->iptc_profile.length*sizeof(unsigned char);
+      length=image->iptc_profile.length;
       clone_image->iptc_profile.info=(unsigned char *) AllocateMemory(length);
       if (clone_image->iptc_profile.info == (unsigned char *) NULL)
         return((Image *) NULL);
       (void) memcpy(clone_image->iptc_profile.info,image->iptc_profile.info,
         length);
     }
-  GetBlobInfo(&clone_image->blob_info);
+  GetBlobInfo(&clone_image->blob);
   GetCacheInfo(&clone_image->cache);
   clone_image->cache_info.x=0;
   clone_image->cache_info.y=0;
@@ -816,7 +811,7 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
     {
       clone_image->columns=columns;
       clone_image->rows=rows;
-      GetPageInfo(&clone_image->page_info);
+      GetPageInfo(&clone_image->page);
     }
   else
     {
@@ -847,9 +842,14 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
         (void) CloneString(&clone_image->montage,image->montage);
       if (image->directory != (char *) NULL)
         (void) CloneString(&clone_image->directory,image->directory);
-      if (image->signature != (char *) NULL)
-        (void) CloneString(&clone_image->signature,image->signature);
     }
+  clone_image->attributes=(ImageAttribute *) NULL;
+  attribute=GetImageAttribute(image,(char *) NULL);
+  while (attribute != (ImageAttribute *) NULL)
+  {
+    (void) SetImageAttribute(clone_image,attribute->key,attribute->value);
+    attribute=attribute->next;
+  }
   if (clone_image->orphan || orphan)
     {
       clone_image->orphan=False;
@@ -939,41 +939,6 @@ Export ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   if (image_info->view != (char *) NULL)
     clone_info->view=AllocateString(image_info->view);
   return(clone_info);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   C o m m e n t I m a g e                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method CommentImage initializes an image comment.  Optionally the
-%  comment can include the image filename, type, width, height, or scene
-%  number by embedding special format characters.
-%
-%  The format of the CommentImage method is:
-%
-%      void CommentImage(Image *image,const char *comments)
-%
-%  A description of each parameter follows:
-%
-%    o image: The address of a structure of type Image.
-%
-%    o comments: The address of a character string containing the comment
-%      format.
-%
-%
-*/
-Export void CommentImage(Image *image,const char *comments)
-{
-  if (image->comments != (char *) NULL)
-    FreeMemory(image->comments);
-  image->comments=TranslateText((ImageInfo *) NULL,image,comments);
 }
 
 /*
@@ -1154,11 +1119,11 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
               continue;
             }
           x_displace=(horizontal_scale*((double) Intensity(*p)-
-            ((MaxRGB+1) >> 1)))/((MaxRGB+1) >> 1);
+            ((MaxRGB+1)/2)))/((MaxRGB+1)/2);
           y_displace=x_displace;
           if (composite_image->matte)
             y_displace=(vertical_scale*((double) p->opacity-
-              ((MaxRGB+1) >> 1)))/((MaxRGB+1) >> 1);
+              ((MaxRGB+1)/2)))/((MaxRGB+1)/2);
           *r=InterpolateColor(image,x_offset+x+x_displace,
             y_offset+y+y_displace);
           p++;
@@ -1587,7 +1552,7 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
 %
 %    o height: Specifies the height in pixels of the image.
 %
-%    o map:  This character string can be any combination or order of 
+%    o map:  This character string can be any combination or order of
 %      R = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow,
 %      M = magenta, and K = black.  The ordering reflects the order of the
 %      pixels in the supplied pixel array.
@@ -2099,6 +2064,9 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
   Image
     *p;
 
+  ImageAttribute
+    *attribute;
+
   int
     y;
 
@@ -2117,9 +2085,9 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
 
   assert(image != (Image *) NULL);
   assert(file != (FILE *) NULL);
-  elapsed_time=GetElapsedTime(&image->timer_info);
-  user_time=GetUserTime(&image->timer_info);
-  ContinueTimer(&image->timer_info);
+  elapsed_time=GetElapsedTime(&image->timer);
+  user_time=GetUserTime(&image->timer);
+  ContinueTimer(&image->timer);
   if (!verbose)
     {
       /*
@@ -2138,11 +2106,11 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
             (image->magick_rows != image->rows))
           (void) fprintf(file,"%ux%u=>",image->magick_columns,
             image->magick_rows);
-      if ((image->page_info.width <= 1) || (image->page_info.height <= 1))
+      if ((image->page.width <= 1) || (image->page.height <= 1))
         (void) fprintf(file,"%ux%u ",image->columns,image->rows);
       else
-        (void) fprintf(file,"%ux%u%+d%+d ",image->page_info.width,
-          image->page_info.height,image->page_info.x,image->page_info.y);
+        (void) fprintf(file,"%ux%u%+d%+d ",image->page.width,
+          image->page.height,image->page.x,image->page.y);
       if (image->class == DirectClass)
         {
           (void) fprintf(file,"DirectClass ");
@@ -2176,16 +2144,17 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
   /*
     Display verbose info about the image.
   */
+  SignatureImage(image);
   number_colors=GetNumberColors(image,(FILE *) NULL);
   (void) fprintf(file,"Image: %.1024s\n",image->filename);
   magick_info=(MagickInfo *) GetMagickInfo(image->magick);
   if ((magick_info == (MagickInfo *) NULL) ||
       (*magick_info->description == '\0'))
-    (void) fprintf(file,"  format: %.1024s\n",image->magick);
+    (void) fprintf(file,"  Format: %.1024s\n",image->magick);
   else
-    (void) fprintf(file,"  format: %.1024s (%s)\n",image->magick,
+    (void) fprintf(file,"  Format: %.1024s (%s)\n",image->magick,
       magick_info->description);
-  (void) fprintf(file,"  type: ");
+  (void) fprintf(file,"  Type: ");
   switch (GetImageType(image))
   {
     case BilevelType: (void) fprintf(file,"bilevel"); break;
@@ -2201,23 +2170,23 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
   }
   (void) fprintf(file,"\n");
   if (image->class == DirectClass)
-    (void) fprintf(file,"  class: DirectClass\n");
+    (void) fprintf(file,"  Class: DirectClass\n");
   else
-    (void) fprintf(file,"  class: PseudoClass\n");
+    (void) fprintf(file,"  Class: PseudoClass\n");
   if ((image->magick_columns != 0) || (image->magick_rows != 0))
     if ((image->magick_columns != image->columns) ||
         (image->magick_rows != image->rows))
-      (void) fprintf(file,"  base geometry: %ux%u\n",image->magick_columns,
+      (void) fprintf(file,"  Base Geometry: %ux%u\n",image->magick_columns,
         image->magick_rows);
-  (void) fprintf(file,"  geometry: %ux%u\n",image->columns,image->rows);
-  (void) fprintf(file,"  depth: %u\n",image->depth);
+  (void) fprintf(file,"  Geometry: %ux%u\n",image->columns,image->rows);
+  (void) fprintf(file,"  Depth: %u\n",image->depth);
   x=0;
   p=(Image *) NULL;
   if (!image->matte)
-    (void) fprintf(file,"  matte: False\n");
+    (void) fprintf(file,"  Matte: False\n");
   else
     if ((strcmp(image->magick,"GIF") != 0) || image->tainted)
-      (void) fprintf(file,"  matte: True\n");
+      (void) fprintf(file,"  Matte: True\n");
     else
       {
         PixelPacket
@@ -2241,20 +2210,20 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
         if ((x < (int) image->columns) || (y < (int) image->rows))
           {
             if (image->depth == 8)
-              (void) fprintf(file,"  matte: (%3d,%3d,%3d) #%02x%02x%02x\n",
+              (void) fprintf(file,"  Matte: (%3d,%3d,%3d) #%02x%02x%02x\n",
                 p->red,p->green,p->blue,p->red,p->green,p->blue);
             else
-              (void) fprintf(file,"  matte: (%5d,%5d,%5d) #%04x%04x%04x\n",
+              (void) fprintf(file,"  Matte: (%5d,%5d,%5d) #%04x%04x%04x\n",
                 p->red,p->green,p->blue,p->red,p->green,p->blue);
           }
       }
   if (image->class == DirectClass)
-    (void) fprintf(file,"  colors: %lu\n",number_colors);
+    (void) fprintf(file,"  Colors: %lu\n",number_colors);
   else
     if (number_colors <= image->colors)
-      (void) fprintf(file,"  colors: %u\n",image->colors);
+      (void) fprintf(file,"  Colors: %u\n",image->colors);
     else
-      (void) fprintf(file,"  colors: %lu=>%u\n",number_colors,image->colors);
+      (void) fprintf(file,"  Colors: %lu=>%u\n",number_colors,image->colors);
   if (image->class == DirectClass)
     {
       if (number_colors < 1024)
@@ -2283,33 +2252,33 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
       }
     }
   if (image->mean_error_per_pixel != 0)
-    (void) fprintf(file,"  mean error per pixel: %d\n",
+    (void) fprintf(file,"  Mean Error Per Pixel: %d\n",
       image->mean_error_per_pixel);
   if (image->normalized_mean_error != 0)
-    (void) fprintf(file,"  normalized mean error: %.6f\n",
+    (void) fprintf(file,"  Normalized Mean Error: %.6f\n",
       image->normalized_mean_error);
   if (image->normalized_maximum_error != 0)
-    (void) fprintf(file,"  normalized maximum error: %.6f\n",
+    (void) fprintf(file,"  Normalized Maximum Error: %.6f\n",
       image->normalized_maximum_error);
   if (image->rendering_intent == SaturationIntent)
-    (void) fprintf(file,"  rendering-intent: saturation\n");
+    (void) fprintf(file,"  Rendering-Intent: saturation\n");
   else
     if (image->rendering_intent == PerceptualIntent)
-      (void) fprintf(file,"  rendering-intent: perceptual\n");
+      (void) fprintf(file,"  Rendering-Intent: perceptual\n");
     else
       if (image->rendering_intent == AbsoluteIntent)
-        (void) fprintf(file,"  rendering-intent: absolute\n");
+        (void) fprintf(file,"  Rendering-Intent: absolute\n");
     else
       if (image->rendering_intent == RelativeIntent)
-        (void) fprintf(file,"  rendering-intent: relative\n");
+        (void) fprintf(file,"  Rendering-Intent: relative\n");
   if (image->gamma != 0.0)
-    (void) fprintf(file,"  gamma: %g\n",image->gamma);
+    (void) fprintf(file,"  Gamma: %g\n",image->gamma);
   if (image->chromaticity.white_point.x != 0.0)
     {
       /*
         Display image chromaticity.
       */
-      (void) fprintf(file,"  chromaticity:\n");
+      (void) fprintf(file,"  Chromaticity:\n");
       (void) fprintf(file,"    red primary: (%g,%g)\n",
         image->chromaticity.red_primary.x,image->chromaticity.red_primary.y);
       (void) fprintf(file,"    green primary: (%g,%g)\n",
@@ -2321,7 +2290,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
         image->chromaticity.white_point.x,image->chromaticity.white_point.y);
     }
   if (image->color_profile.length > 0)
-    (void) fprintf(file,"  color profile: %u bytes\n",
+    (void) fprintf(file,"  Color Profile: %u bytes\n",
       image->color_profile.length);
   if (image->iptc_profile.length > 0)
     {
@@ -2335,7 +2304,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
       /*
         Describe IPTC data.
       */
-      (void) fprintf(file,"  IPTC profile: %u bytes\n",
+      (void) fprintf(file,"  IPTC Profile: %u bytes\n",
         image->iptc_profile.length);
       for (i=0; i < image->iptc_profile.length; i++)
       {
@@ -2401,7 +2370,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
         (void) fprintf(file,"    %s:\n",tag);
         length=image->iptc_profile.info[++i] << 8;
         length|=image->iptc_profile.info[++i];
-        text=(char *) AllocateMemory((length+1)*sizeof(char));
+        text=(char *) AllocateMemory(length+1);
         if (text != (char *) NULL)
           {
             char
@@ -2427,14 +2396,14 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
       }
     }
   if ((image->tile_info.width*image->tile_info.height) != 0)
-    (void) fprintf(file,"  tile geometry: %ux%u%+d%+d\n",image->tile_info.width,
+    (void) fprintf(file,"  Tile Geometry: %ux%u%+d%+d\n",image->tile_info.width,
       image->tile_info.height,image->tile_info.x,image->tile_info.y);
   if ((image->x_resolution != 0.0) && (image->y_resolution != 0.0))
     {
       /*
         Display image resolution.
       */
-      (void) fprintf(file,"  resolution: %gx%g",image->x_resolution,
+      (void) fprintf(file,"  Resolution: %gx%g",image->x_resolution,
         image->y_resolution);
       if (image->units == UndefinedResolution)
         (void) fprintf(file," pixels\n");
@@ -2450,52 +2419,50 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
   if (image->filesize != 0)
     {
       if (image->filesize >= (1 << 24))
-        (void) fprintf(file,"  filesize: %dmb\n",image->filesize/1024/1024);
+        (void) fprintf(file,"  Filesize: %dmb\n",image->filesize/1024/1024);
       else
         if (image->filesize >= (1 << 14))
-          (void) fprintf(file,"  filesize: %dkb\n",image->filesize/1024);
+          (void) fprintf(file,"  Filesize: %dkb\n",image->filesize/1024);
         else
-          (void) fprintf(file,"  filesize: %db\n",image->filesize);
+          (void) fprintf(file,"  Filesize: %db\n",image->filesize);
     }
   if (image->interlace == NoInterlace)
-    (void) fprintf(file,"  interlace: None\n");
+    (void) fprintf(file,"  Interlace: None\n");
   else
     if (image->interlace == LineInterlace)
-      (void) fprintf(file,"  interlace: Line\n");
+      (void) fprintf(file,"  Interlace: Line\n");
     else
       if (image->interlace == PlaneInterlace)
-        (void) fprintf(file,"  interlace: Plane\n");
+        (void) fprintf(file,"  Interlace: Plane\n");
     else
       if (image->interlace == PartitionInterlace)
-        (void) fprintf(file,"  interlace: Partition\n");
+        (void) fprintf(file,"  Interlace: Partition\n");
   (void) QueryColorName(&image->background_color,color);
-  (void) fprintf(file,"  background-color: %.1024s\n",color);
+  (void) fprintf(file,"  Background Color: %.1024s\n",color);
   (void) QueryColorName(&image->border_color,color);
-  (void) fprintf(file,"  border-color: %.1024s\n",color);
+  (void) fprintf(file,"  Border Color: %.1024s\n",color);
   (void) QueryColorName(&image->matte_color,color);
-  (void) fprintf(file,"  matte-color: %.1024s\n",color);
-  if ((image->page_info.width != 0) && (image->page_info.height != 0))
-    (void) fprintf(file,"  page geometry: %ux%u%+d%+d\n",image->page_info.width,
-      image->page_info.height,image->page_info.x,image->page_info.y);
+  (void) fprintf(file,"  Matte Color: %.1024s\n",color);
+  if ((image->page.width != 0) && (image->page.height != 0))
+    (void) fprintf(file,"  Page Geometry: %ux%u%+d%+d\n",image->page.width,
+      image->page.height,image->page.x,image->page.y);
   if (image->dispose != 0)
-    (void) fprintf(file,"  dispose method: %d\n",image->dispose);
+    (void) fprintf(file,"  Dispose Method: %d\n",image->dispose);
   if (image->delay != 0)
-    (void) fprintf(file,"  delay: %d\n",image->delay);
+    (void) fprintf(file,"  Delay: %d\n",image->delay);
   if (image->iterations != 1)
-    (void) fprintf(file,"  iterations: %d\n",image->iterations);
+    (void) fprintf(file,"  Iterations: %d\n",image->iterations);
   p=image;
   while (p->previous != (Image *) NULL)
     p=p->previous;
   for (count=1; p->next != (Image *) NULL; count++)
     p=p->next;
   if (count > 1)
-    (void) fprintf(file,"  scene: %u of %u\n",image->scene,count);
+    (void) fprintf(file,"  Scene: %u of %u\n",image->scene,count);
   else
     if (image->scene != 0)
-      (void) fprintf(file,"  scene: %u\n",image->scene);
-  if (image->label != (char *) NULL)
-    (void) fprintf(file,"  label: %.1024s\n",image->label);
-  (void) fprintf(file,"  compression: ");
+      (void) fprintf(file,"  Scene: %u\n",image->scene);
+  (void) fprintf(file,"  Compression: ");
   switch (image->compression)
   {
     case NoCompression: (void) fprintf(file,"None\n"); break;
@@ -2509,44 +2476,8 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     case ZipCompression: (void) fprintf(file,"Zip\n"); break;
     default: (void) fprintf(file,"\n");  break;
   }
-  if (image->tainted)
-    (void) fprintf(file,"  tainted: True\n");
-  else
-    (void) fprintf(file,"  tainted: False\n");
-  SignatureImage(image);
-  (void) fprintf(file,"  signature: %.1024s\n",image->signature);
-  (void) fprintf(file,"  cache type: ");
-  switch (GetCacheType(image->cache))
-  {
-    case MemoryCache: (void) fprintf(file,"memory\n"); break;
-    case DiskCache: (void) fprintf(file,"disk\n"); break;
-    case MemoryMappedCache: (void) fprintf(file,"memory-mapped\n"); break;
-    default: (void) fprintf(file,"\n");  break;
-  }
-  if (user_time != 0.0)
-    (void) fprintf(file,"  user time: %.1fu\n",user_time);
-  if (elapsed_time != 0.0)
-    (void) fprintf(file,"  elapsed time: %d:%02d\n",
-      (int) (elapsed_time/60.0),(int) ceil(fmod(elapsed_time,60.0)));
-  if (image->comments != (char *) NULL)
-    {
-      /*
-        Display image comment.
-      */
-      (void) fprintf(file,"  comments:\n");
-      textlist=StringToList(image->comments);
-      if (textlist != (char **) NULL)
-        {
-          for (i=0; textlist[i] != (char *) NULL; i++)
-          {
-            (void) fprintf(file,"  %.1024s\n",textlist[i]);
-            FreeMemory(textlist[i]);
-          }
-          FreeMemory(textlist);
-        }
-    }
   if (image->montage != (char *) NULL)
-    (void) fprintf(file,"  montage: %.1024s\n",image->montage);
+    (void) fprintf(file,"  Montage: %.1024s\n",image->montage);
   if (image->directory != (char *) NULL)
     {
       WarningHandler
@@ -2567,7 +2498,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
       */
       image_info=CloneImageInfo((ImageInfo *) NULL);
       (void) CloneString(&image_info->size,"64x64");
-      (void) fprintf(file,"  directory:\n");
+      (void) fprintf(file,"  Directory:\n");
       for (p=image->directory; *p != '\0'; p++)
       {
         q=p;
@@ -2587,26 +2518,45 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
           }
         (void) fprintf(file," %ux%u %.1024s\n",tile->magick_columns,
           tile->magick_rows,tile->magick);
-        if (tile->comments != (char *) NULL)
-          {
-            /*
-              Display tile comment.
-            */
-            textlist=StringToList(tile->comments);
-            if (textlist != (char **) NULL)
-              {
-                for (i=0; textlist[i] != (char *) NULL; i++)
-                {
-                  (void) fprintf(file,"    %.1024s\n",textlist[i]);
-                  FreeMemory(textlist[i]);
-                }
-                FreeMemory(textlist);
-              }
-          }
+        SignatureImage(tile);
+        attribute=GetImageAttribute(tile,(char *) NULL);
+        while (attribute != (ImageAttribute *) NULL)
+        {
+          (void) fprintf(file,"  %s:\n",attribute->key);
+          (void) fprintf(file,"%s\n",attribute->value);
+          attribute=attribute->next;
+        }
         DestroyImage(tile);
       }
       DestroyImageInfo(image_info);
     }
+  /*
+    Display image attributes.
+  */
+  attribute=GetImageAttribute(image,(char *) NULL);
+  while (attribute != (ImageAttribute *) NULL)
+  {
+    (void) fprintf(file,"  %s: ",attribute->key);
+    (void) fprintf(file,"%s\n",attribute->value);
+    attribute=attribute->next;
+  }
+  if (image->tainted)
+    (void) fprintf(file,"  Tainted: True\n");
+  else
+    (void) fprintf(file,"  Tainted: False\n");
+  (void) fprintf(file,"  Cache Type: ");
+  switch (GetCacheType(image->cache))
+  {
+    case MemoryCache: (void) fprintf(file,"memory\n"); break;
+    case DiskCache: (void) fprintf(file,"disk\n"); break;
+    case MemoryMappedCache: (void) fprintf(file,"memory-mapped\n"); break;
+    default: (void) fprintf(file,"\n");  break;
+  }
+  if (user_time != 0.0)
+    (void) fprintf(file,"  User Time: %.1fu\n",user_time);
+  if (elapsed_time != 0.0)
+    (void) fprintf(file,"  Elapsed Time: %d:%02d\n",
+      (int) (elapsed_time/60.0),(int) ceil(fmod(elapsed_time,60.0)));
   (void) fflush(file);
 }
 
@@ -2639,7 +2589,7 @@ Export void DestroyImage(Image *image)
     Close image.
   */
   assert(image != (Image *) NULL);
-  DestroyBlobInfo(&image->blob_info);
+  DestroyBlobInfo(&image->blob);
   if (image->file != (FILE *) NULL)
     {
       CloseBlob(image);
@@ -2648,16 +2598,6 @@ Export void DestroyImage(Image *image)
     }
   DestroyCacheInfo(image->cache);
   image->cache=(Cache)NULL;
-  /*
-    Deallocate the image comments.
-  */
-  if (image->comments != (char *) NULL)
-    FreeMemory(image->comments);
-  /*
-    Deallocate the image label.
-  */
-  if (image->label != (char *) NULL)
-    FreeMemory(image->label);
   /*
     Deallocate the image montage directory.
   */
@@ -2681,10 +2621,9 @@ Export void DestroyImage(Image *image)
   if (image->iptc_profile.length > 0)
     FreeMemory(image->iptc_profile.info);
   /*
-    Deallocate the image signature.
+    Deallocate the image text attributes.
   */
-  if (image->signature != (char *) NULL)
-    FreeMemory(image->signature);
+  DestroyImageAttributes(image);
   /*
     Deallocate the image pixels.
   */
@@ -2939,7 +2878,7 @@ Export void GetImageInfo(ImageInfo *image_info)
     File and image dimension members.
   */
   assert(image_info != (ImageInfo *) NULL);
-  GetBlobInfo(&(image_info->blob_info));
+  GetBlobInfo(&(image_info->blob));
   image_info->file=(FILE *) NULL;
   *image_info->filename='\0';
   *image_info->magick='\0';
@@ -3000,6 +2939,7 @@ Export void GetImageInfo(ImageInfo *image_info)
   image_info->preview_type=JPEGPreview;
   image_info->view=(char *) NULL;
   image_info->group=0L;
+  GetErrorInfo(&image_info->error);
 }
 
 /*
@@ -3074,7 +3014,7 @@ Export ImageType GetImageType(Image *image)
 Export Image *GetNextImage(Image *image)
 {
   assert(image != (Image *) NULL);
-  image->next->blob_info=image->blob_info;
+  image->next->blob=image->blob;
   image->next->file=image->file;
   return(image->next);
 }
@@ -3140,21 +3080,21 @@ Export unsigned int GetNumberScenes(const Image *image)
 %
 %  The format of the GetPageInfo method is:
 %
-%      void GetPageInfo(RectangleInfo *page_info)
+%      void GetPageInfo(RectangleInfo *page)
 %
 %  A description of each parameter follows:
 %
-%    o page_info: Specifies a pointer to a RectangleInfo structure.
+%    o page: Specifies a pointer to a RectangleInfo structure.
 %
 %
 */
-Export void GetPageInfo(RectangleInfo *page_info)
+Export void GetPageInfo(RectangleInfo *page)
 {
-  assert(page_info != (RectangleInfo *) NULL);
-  page_info->width=0;
-  page_info->height=0;
-  page_info->x=0;
-  page_info->y=0;
+  assert(page != (RectangleInfo *) NULL);
+  page->width=0;
+  page->height=0;
+  page->x=0;
+  page->y=0;
 }
 
 /*
@@ -3190,7 +3130,7 @@ Export void GetPageInfo(RectangleInfo *page_info)
 %    o x,y,columns,rows:  These values define the perimeter of a region of
 %      pixels you want to extract.
 %
-%    o map:  This character string can be any combination or order of 
+%    o map:  This character string can be any combination or order of
 %      R = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow,
 %      M = magenta, and K = black.  The ordering reflects the order of the
 %      pixels in the supplied pixel array.
@@ -3712,40 +3652,6 @@ Export unsigned int IsTainted(const Image *image)
       return(True);
   }
   return(False);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   L a b e l I m a g e                                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method LabelImage initializes an image label.  Optionally the label
-%  can include the image filename, type, width, height, or scene number by
-%  embedding special format characters.
-%
-%  The format of the LabelImage method is:
-%
-%      void LabelImage(Image *image,const char *label)
-%
-%  A description of each parameter follows:
-%
-%    o image: The address of a structure of type Image.
-%
-%    o label: The address of a character string containing the label format.
-%
-%
-*/
-Export void LabelImage(Image *image,const char *label)
-{
-  if (image->label != (char *) NULL)
-    FreeMemory(image->label);
-  image->label=TranslateText((ImageInfo *) NULL,image,label);
 }
 
 /*
@@ -4274,9 +4180,9 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
     if (strncmp("comment",option+1,4) == 0)
       {
         if (*option == '-')
-          CommentImage(*image,argv[++i]);
+          (void) SetImageAttribute(*image,"Comment",argv[++i]);
         else
-          CommentImage(*image,(char *) NULL);
+          (void) SetImageAttribute(*image,"Comment",(char *) NULL);
         continue;
       }
     if (strncmp("contrast",option+1,3) == 0)
@@ -4622,9 +4528,9 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
     if (strncmp("label",option+1,3) == 0)
       {
         if (*option == '-')
-          LabelImage(*image,argv[++i]);
+          (void) SetImageAttribute(*image,"Label",argv[++i]);
         else
-          LabelImage(*image,(char *) NULL);
+          (void) SetImageAttribute(*image,"Label",(char *) NULL);
         continue;
       }
     if (strncmp("layer",option+1,3) == 0)
@@ -5040,14 +4946,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
         */
         azimuth=30.0;
         elevation=30.0;
-        /*
-          The following prevents shading an image using the color
-          algorithm from programs like "convert"
-        */
-#ifdef PREVENT_MINUS_OPTION_ON_SHADE
-        if (*option == '-')
-#endif
-          (void) sscanf(argv[++i],"%lfx%lf",&azimuth,&elevation);
+        (void) sscanf(argv[++i],"%lfx%lf",&azimuth,&elevation);
         shaded_image=ShadeImage(*image,*option == '-',(double) azimuth,
           (double) elevation);
         if (shaded_image != (Image *) NULL)
@@ -5367,7 +5266,7 @@ Export Image *MosaicImages(Image *images)
     y;
 
   RectangleInfo
-    page_info;
+    page;
 
   register int
     x;
@@ -5388,18 +5287,18 @@ Export Image *MosaicImages(Image *images)
   /*
     Determine image bounding box.
   */
-  page_info.width=images->columns;
-  page_info.height=images->rows;
-  page_info.x=0;
-  page_info.y=0;
+  page.width=images->columns;
+  page.height=images->rows;
+  page.x=0;
+  page.y=0;
   for (image=images; image != (Image *) NULL; image=image->next)
   {
-    page_info.x=image->page_info.x;
-    page_info.y=image->page_info.y;
-    if ((image->columns+page_info.x) > page_info.width)
-      page_info.width=image->columns+page_info.x;
-    if ((image->rows+page_info.y) > page_info.height)
-      page_info.height=image->rows+page_info.y;
+    page.x=image->page.x;
+    page.y=image->page.y;
+    if ((image->columns+page.x) > page.width)
+      page.width=image->columns+page.x;
+    if ((image->rows+page.y) > page.height)
+      page.height=image->rows+page.y;
   }
   /*
     Allocate image structure.
@@ -5410,8 +5309,8 @@ Export Image *MosaicImages(Image *images)
   /*
     Initialize colormap.
   */
-  mosaic_image->columns=page_info.width;
-  mosaic_image->rows=page_info.height;
+  mosaic_image->columns=page.width;
+  mosaic_image->rows=page.height;
   for (y=0; y < (int) mosaic_image->rows; y++)
   {
     q=SetPixelCache(mosaic_image,0,y,mosaic_image->columns,1);
@@ -5428,8 +5327,8 @@ Export Image *MosaicImages(Image *images)
   scene=0;
   for (image=images; image != (Image *) NULL; image=image->next)
   {
-    CompositeImage(mosaic_image,ReplaceCompositeOp,image,image->page_info.x,
-      image->page_info.y);
+    CompositeImage(mosaic_image,ReplaceCompositeOp,image,image->page.x,
+      image->page.y);
     ProgressMonitor(MosaicImageText,scene++,GetNumberScenes(images));
   }
   return(mosaic_image);
@@ -5898,10 +5797,10 @@ Export Image *ReadImage(ImageInfo *image_info)
   if (image->status)
     MagickWarning(CorruptImageWarning,"An error has occurred reading file",
       image->filename);
-  DestroyBlobInfo(&image->blob_info);
+  DestroyBlobInfo(&image->blob);
   for (next_image=image; next_image; next_image=next_image->next)
   {
-    GetBlobInfo(&next_image->blob_info);
+    GetBlobInfo(&next_image->blob);
     next_image->tainted=False;
     (void) strcpy(next_image->magick_filename,image_info->filename);
     if (image->temporary)
@@ -5992,7 +5891,7 @@ Export Image *ReadImages(ImageInfo *image_info)
           break;
         p=command+Extent(command);
       }
-    *p=(unsigned char) c;
+    *p=c;
   }
   (void) fclose(file);
   if (command == (char *) NULL)
@@ -6208,8 +6107,8 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
         I and Q, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
       */
-      ty=(MaxRGB+1) >> 1;
-      tz=(MaxRGB+1) >> 1;
+      ty=(MaxRGB+1)/2;
+      tz=(MaxRGB+1)/2;
       for (i=0; i <= MaxRGB; i++)
       {
         x_map[i+X]=0.33333*i;
@@ -6298,8 +6197,8 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
         Cb and Cr, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
       */
-      ty=(MaxRGB+1) >> 1;
-      tz=(MaxRGB+1) >> 1;
+      ty=(MaxRGB+1)/2;
+      tz=(MaxRGB+1)/2;
       for (i=0; i <= MaxRGB; i++)
       {
         x_map[i+X]=0.299*i;
@@ -6365,8 +6264,8 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
         I and Q, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
       */
-      ty=(MaxRGB+1) >> 1;
-      tz=(MaxRGB+1) >> 1;
+      ty=(MaxRGB+1)/2;
+      tz=(MaxRGB+1)/2;
       for (i=0; i <= MaxRGB; i++)
       {
         x_map[i+X]=0.299*i;
@@ -6393,8 +6292,8 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
         Pb and Pr, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
       */
-      ty=(MaxRGB+1) >> 1;
-      tz=(MaxRGB+1) >> 1;
+      ty=(MaxRGB+1)/2;
+      tz=(MaxRGB+1)/2;
       for (i=0; i <= MaxRGB; i++)
       {
         x_map[i+X]=0.299*i;
@@ -6422,8 +6321,8 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
         U and V, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.  Note that U = 0.493*(B-Y), V = 0.877*(R-Y).
       */
-      ty=(MaxRGB+1) >> 1;
-      tz=(MaxRGB+1) >> 1;
+      ty=(MaxRGB+1)/2;
+      tz=(MaxRGB+1)/2;
       for (i=0; i <= MaxRGB; i++)
       {
         x_map[i+X]=0.299*i;
@@ -6629,7 +6528,7 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
         continue;
       if (!IsGeometry(q+1))
         break;
-      tile=(char *) AllocateMemory((p-q)*sizeof(char));
+      tile=(char *) AllocateMemory(p-q);
       if (tile == (char *) NULL)
         break;
       (void) strncpy(tile,q+1,p-q-1);
@@ -6762,7 +6661,7 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
       DestroyImage(image);
       return;
     }
-  if ((image->blob_info.data != (char *) NULL)  || !image->exempt)
+  if ((image->blob.data != (char *) NULL)  || !image->exempt)
     (void) ReadBlob(image,MaxTextExtent-1,magick);
   else
     {

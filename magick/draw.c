@@ -487,7 +487,7 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
               break;
             q=primitive+Extent(primitive);
           }
-        *q++=(unsigned char) c;
+        *q++=c;
       }
       (void) fclose(file);
       if (primitive == (char *) NULL)
@@ -505,8 +505,8 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
   number_coordinates=2048;
   primitive_info=(PrimitiveInfo *)
     AllocateMemory(number_coordinates*sizeof(PrimitiveInfo));
-  local_info->geometry=(char *) AllocateMemory(MaxTextExtent*sizeof(char));
-  local_info->text=(char *) AllocateMemory(Extent(primitive)*sizeof(char));
+  local_info->geometry=(char *) AllocateMemory(MaxTextExtent);
+  local_info->text=(char *) AllocateMemory(Extent(primitive));
   if ((primitive_info == (PrimitiveInfo *) NULL) ||
       (local_info->geometry == (char *) NULL) ||
       (local_info->text == (char *) NULL))

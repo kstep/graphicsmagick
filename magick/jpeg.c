@@ -272,12 +272,10 @@ static boolean ReadColorProfile(j_decompress_ptr jpeg_info)
   (void) GetCharacter(jpeg_info);  /* markers */
   length-=14;
   if (image->color_profile.length == 0)
-    image->color_profile.info=(unsigned char *)
-      AllocateMemory((unsigned int) length*sizeof(unsigned char));
+    image->color_profile.info=(unsigned char *) AllocateMemory(length);
   else
     image->color_profile.info=(unsigned char *) ReallocateMemory((char *)
-      image->color_profile.info,(image->color_profile.length+length)*
-      sizeof(unsigned char));
+      image->color_profile.info,image->color_profile.length+length);
   if (image->color_profile.info == (unsigned char *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Memory allocation failed",
@@ -296,6 +294,9 @@ static boolean ReadColorProfile(j_decompress_ptr jpeg_info)
 
 static boolean ReadComment(j_decompress_ptr jpeg_info)
 {
+  char
+    *comment;
+
   long int
     length;
 
@@ -308,17 +309,8 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   length=GetCharacter(jpeg_info) << 8;
   length+=GetCharacter(jpeg_info);
   length-=2;
-  if (image->comments != (char *) NULL)
-    image->comments=(char *) ReallocateMemory((char *) image->comments,
-      (unsigned int) (Extent(image->comments)+length+1)*sizeof(char));
-  else
-    {
-      image->comments=(char *)
-        AllocateMemory((unsigned int) (length+1)*sizeof(char));
-      if (image->comments != (char *) NULL)
-        *image->comments='\0';
-    }
-  if (image->comments == (char *) NULL)
+  comment=(char *) AllocateMemory(length+1);
+  if (comment == (char *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Memory allocation failed",
         (char *) NULL);
@@ -327,10 +319,12 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   /*
     Read comment.
   */
-  p=image->comments+Extent(image->comments);
+  p=comment;
   while (--length >= 0)
     *p++=GetCharacter(jpeg_info);
   *p='\0';
+  (void) SetImageAttribute(image,"Comment",comment);
+  FreeMemory(comment);
   return(True);
 }
 
@@ -403,13 +397,11 @@ static boolean ReadNewsProfile(j_decompress_ptr jpeg_info)
   if (length <= 0)
     return(True);
   if (image->iptc_profile.length != 0)
-    image->iptc_profile.info=(unsigned char *) ReallocateMemory((char *)
-      image->iptc_profile.info,
-        (unsigned int) (length+taglen)*sizeof(unsigned char));
+    image->iptc_profile.info=(unsigned char *)
+      ReallocateMemory((char *) image->iptc_profile.info,length+taglen);
   else
     {
-      image->iptc_profile.info=(unsigned char *)
-        AllocateMemory((unsigned int) (length+taglen)*sizeof(unsigned char));
+      image->iptc_profile.info=(unsigned char *) AllocateMemory(length+taglen);
       if (image->iptc_profile.info != (unsigned char *) NULL)
         image->iptc_profile.length=0;
     }
@@ -834,7 +826,7 @@ static void WriteColorProfile(j_compress_ptr jpeg_info,Image *image)
   for (i=0; i < (int) image->color_profile.length; i+=65519)
   {
     length=Min(image->color_profile.length-i,65519);
-    profile=(unsigned char *) AllocateMemory((length+14)*sizeof(unsigned char));
+    profile=(unsigned char *) AllocateMemory(length+14);
     if (profile == (unsigned char *) NULL)
       break;
     (void) strcpy((char *) profile,"ICC_PROFILE");
@@ -874,8 +866,7 @@ static void WriteNewsProfile(j_compress_ptr jpeg_info,Image *image)
   {
     length=Min(image->iptc_profile.length-i,65500);
     roundup=(length & 0x01); /* round up for Photoshop */
-    profile=(unsigned char *)
-      AllocateMemory((length+roundup+taglen)*sizeof(unsigned char));
+    profile=(unsigned char *) AllocateMemory(length+roundup+taglen);
     if (profile == (unsigned char *) NULL)
       break;
 #ifdef GET_ONLY_IPTC_DATA
@@ -914,6 +905,9 @@ static void JPEGDestinationManager(j_compress_ptr cinfo,Image * image)
 
 Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 {
+  ImageAttribute
+    *attribute;
+
   int
     flags,
     sans_offset,
@@ -1021,10 +1015,11 @@ Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     jpeg_simple_progression(&jpeg_info);
 #endif
   jpeg_start_compress(&jpeg_info,True);
-  if (image->comments != (char *) NULL)
-    for (i=0; i < Extent(image->comments); i+=65533)
-      jpeg_write_marker(&jpeg_info,JPEG_COM,(unsigned char *) image->comments+i,
-        (unsigned int) Min(Extent(image->comments+i),65533));
+  attribute=GetImageAttribute(image,"Comment");
+  if (attribute != (ImageAttribute *) NULL)
+    for (i=0; i < Extent(attribute->value); i+=65533)
+      jpeg_write_marker(&jpeg_info,JPEG_COM,(unsigned char *) attribute->value+
+        i,(unsigned int) Min(Extent(attribute->value+i),65533));
   if (image->color_profile.length > 0)
     WriteColorProfile(&jpeg_info,image);
   if (image->iptc_profile.length > 0)

@@ -150,7 +150,7 @@ Export unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
   if (preview_image == (Image *) NULL)
     WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
   preview_image->exempt=True;
-  LabelImage(preview_image,DefaultTileLabel);
+  (void) SetImageAttribute(preview_image,"Label",DefaultTileLabel);
   /*
     Apply enhancement at varying strengths.
   */

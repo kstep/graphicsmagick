@@ -168,7 +168,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
   assert(luma != (unsigned char *) NULL);
   assert(chroma1 != (unsigned char *) NULL);
   assert(chroma2 != (unsigned char *) NULL);
-  buffer=(unsigned char *) AllocateMemory(0x800*sizeof(unsigned char));
+  buffer=(unsigned char *) AllocateMemory(0x800);
   if (buffer == (unsigned char *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Memory allocation failed",
@@ -488,7 +488,7 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
   /*
     Determine if this is a PCD file.
   */
-  header=(unsigned char *) AllocateMemory(3*0x800*sizeof(unsigned char));
+  header=(unsigned char *) AllocateMemory(3*0x800);
   if (header == (unsigned char *) NULL)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
   status=ReadBlob(image,3*0x800,(char *) header);
@@ -548,12 +548,9 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
   /*
     Allocate luma and chroma memory.
   */
-  chroma1=(unsigned char *)
-    AllocateMemory((image->columns*image->rows+1)*sizeof(unsigned char));
-  chroma2=(unsigned char *)
-    AllocateMemory((image->columns*image->rows+1)*sizeof(unsigned char));
-  luma=(unsigned char *)
-    AllocateMemory((image->columns*image->rows+1)*sizeof(unsigned char));
+  chroma1=(unsigned char *) AllocateMemory(image->columns*image->rows+1);
+  chroma2=(unsigned char *) AllocateMemory(image->columns*image->rows+1);
+  luma=(unsigned char *) AllocateMemory(image->columns*image->rows+1);
   if ((chroma1 == (unsigned char *) NULL) ||
       (chroma2 == (unsigned char *) NULL) || (luma == (unsigned char *) NULL))
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);

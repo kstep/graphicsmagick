@@ -41,59 +41,28 @@ INCLUDES = -I$(top_srcdir)
 libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
 
 # Library sources
-libMagick_la_SOURCES = PreRvIcccm.c animate.c annotate.c avs.c blob.c bmp.c \
-  cache.c cache_io.c cmyk.c colors.c compress.c dcm.c decorate.c delegates.c \
-  display.c dps.c draw.c effects.c enhance.c ept.c error.c fax.c fits.c fpx.c \
-  gems.c gif.c gradation.c gray.c hdf.c histogram.c html.c icc.c icon.c \
-  image.c iptc.c jbig.c jpeg.c label.c logo.c magick.c map.c matte.c memory.c \
-  miff.c monitor.c mono.c montage.c mtv.c null.c pcd.c pcl.c pcx.c \
-  pdf.c pict.c pix.c plasma.c png.c pnm.c preview.c ps.c ps2.c ps3.c \
-  psd.c pwp.c quantize.c rgb.c rla.c rle.c segment.c sct.c sfw.c sgi.c shear.c \
-  signature.c stegano.c sun.c tga.c tiff.c tile.c tim.c timer.c transform.c \
-  ttf.c txt.c uil.c utility.c uyvy.c vicar.c vid.c viff.c wbmp.c widget.c x.c \
-  xbm.c xc.c xpm.c xwd.c xwindows.c yuv.c zoom.c 8bim.c
+libMagick_la_SOURCES = PreRvIcccm.c animate.c annotate.c attributes.c avs.c \
+  bim.c blob.c bmp.c cache.c cache_io.c cmyk.c colors.c compress.c dcm.c \
+  decorate.c delegates.c display.c dps.c draw.c effects.c enhance.c ept.c \
+  error.c fax.c fits.c fpx.c gems.c gif.c gradation.c gray.c hdf.c histogram.c \
+  html.c icc.c icon.c image.c iptc.c jbig.c jpeg.c label.c logo.c magick.c \
+  map.c matte.c memory.c miff.c monitor.c mono.c montage.c mtv.c null.c pcd.c \
+  pcl.c pcx.c pdb.c pdf.c pict.c pix.c plasma.c png.c pnm.c preview.c ps.c \
+  ps2.c ps3.c psd.c pwp.c quantize.c rgb.c rla.c rle.c segment.c sct.c sfw.c \
+  sgi.c shear.c signature.c stegano.c sun.c tga.c tiff.c tile.c tim.c timer.c \
+  transform.c ttf.c txt.c uil.c utility.c uyvy.c vicar.c vid.c viff.c wbmp.c \
+  widget.c x.c xbm.c xc.c xpm.c xwd.c xwindows.c yuv.c zoom.c
 
 # Source files not used for Unix library but which are distributed
 EXTRA_libMagick_la_SOURCES = mac.c nt.c vms.c
-
-#
-# Libtool Modules
-#
-pkgdir            = $(libdir)/ImageMagick/coders
-pkg_LTLIBRARIES   = hdf.la jbig.la jpeg.la png.la tiff.la
-
-# HDF module
-hdf_la_SOURCES    = hdf.c
-hdf_la_LDFLAGS    = -no-undefined -module -avoid-version
-hdf_la_LIBADD     = -ldf -ljpeg -lz
-
-# JBIG module
-jbig_la_SOURCES   = jbig.c
-jbig_la_LDFLAGS   = -no-undefined -module -avoid-version
-jbig_la_LIBADD    = -ljbig
-
-# JPEG module
-jpeg_la_SOURCES   = jpeg.c
-jpeg_la_LDFLAGS   = -no-undefined -module -avoid-version
-jpeg_la_LIBADD    = -ljpeg
-
-# PNG module
-png_la_SOURCES    = png.c
-png_la_LDFLAGS    = -no-undefined -module -avoid-version
-png_la_LIBADD     = -lpng -lz
-
-# TIFF module
-tiff_la_SOURCES   = tiff.c
-tiff_la_LDFLAGS   = -no-undefined -module -avoid-version
-tiff_la_LIBADD    = -ltiff -lz
 
 # Binary scripts
 bin_SCRIPTS = Magick-config
 
 # Headers which are installed
-include_HEADERS = magick.h api.h classify.h image.h quantize.h gems.h \
-	blob.h compress.h utility.h cache.h cache_io.h monitor.h error.h \
-	memory.h delegates.h timer.h version.h xwindows.h config.h
+include_HEADERS = magick.h api.h attributes.h classify.h image.h quantize.h \
+	gems.h blob.h compress.h utility.h cache.h cache_io.h monitor.h \
+	error.h memory.h delegates.h timer.h version.h xwindows.h config.h
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = animate.h defines.h display.h mac.h mng.h nt.h \

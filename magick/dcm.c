@@ -2751,7 +2751,7 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
   (void) strcpy(photometric,"MONOCHROME1 ");
   bits_allocated=8;
   bytes_per_pixel=1;
-  data=(unsigned char) NULL;
+  data=NULL;
   element=0;
   graymap=(unsigned short *) NULL;
   group=0;
@@ -2900,8 +2900,7 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
         else
           if ((quantum != 0) && (length > 0))
             {
-              data=(unsigned char *)
-                AllocateMemory(quantum*(length+1)*sizeof(unsigned char));
+              data=(unsigned char *) AllocateMemory(quantum*(length+1));
               if (data == (unsigned char *) NULL)
                 ReaderExit(ResourceLimitWarning,"Memory allocation failed",
                   image);
@@ -3107,7 +3106,7 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
             else
               for (i=0; i < length; i++)
                 if (isprint(data[i]))
-                  (void) fprintf(stdout,"%c",(char) data[i]);
+                  (void) fprintf(stdout,"%c",data[i]);
                 else
                   (void) fprintf(stdout,"%c",'.');
             (void) fprintf(stdout,"\n");

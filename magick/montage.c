@@ -257,6 +257,9 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
     *texture,
     *tiled_image;
 
+  ImageAttribute
+    *attribute;
+
   ImageInfo
     *local_info;
 
@@ -451,8 +454,13 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
     (border_width << 1))*Min(number_images,tiles_per_column)) >> 1,
     &font_height);
   for (tile=0; tile < number_images; tile++)
-    FormatLabel(local_info,image_list[tile]->label,tile_info.width+
-      (border_width << 1),&font_height);
+  {
+    attribute=GetImageAttribute(image_list[tile],"Label");
+    if (attribute == (ImageAttribute *) NULL)
+      continue;
+    FormatLabel(local_info,attribute->value,tile_info.width+(border_width << 1),
+      &font_height);
+  }
   /*
     Determine the number of lines in an image label.
   */
@@ -462,8 +470,13 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
       (tile_info.y << 1);
   number_lines=0;
   for (tile=0; tile < number_images; tile++)
-    if (MultilineCensus(image_list[tile]->label) > (int) number_lines)
-      number_lines=MultilineCensus(image_list[tile]->label);
+  {
+    attribute=GetImageAttribute(image_list[tile],"Label");
+    if (attribute == (ImageAttribute *) NULL)
+      continue;
+    if (MultilineCensus(attribute->value) > (int) number_lines)
+      number_lines=MultilineCensus(attribute->value);
+  }
   /*
     Allocate image structure.
   */
@@ -518,11 +531,11 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
     /*
       Set montage geometry.
     */
-    montage_image->montage=(char *) AllocateMemory(MaxTextExtent*sizeof(char));
+    montage_image->montage=(char *) AllocateMemory(MaxTextExtent);
     count=1;
     for (tile=0; tile < tiles_per_page; tile++)
       count+=Extent(image_list[tile]->filename)+1;
-    montage_image->directory=(char *) AllocateMemory(count*sizeof(char));
+    montage_image->directory=(char *) AllocateMemory(count);
     if ((montage_image->montage == (char *) NULL) ||
         (montage_image->directory == (char *) NULL))
       {
@@ -677,8 +690,10 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
           */
           tile_info=frame_info;
           tile_info.width=width+2*frame_info.width;
-          tile_info.height=height+2*frame_info.height+
-            (font_height+4)*MultilineCensus(image->label);
+          tile_info.height=height+2*frame_info.height;
+          attribute=GetImageAttribute(image,"Label");
+          if (attribute != (ImageAttribute *) NULL)
+            tile_info.height+=(font_height+4)*MultilineCensus(attribute->value);
           image->orphan=True;
           framed_image=FrameImage(image,&tile_info);
           if (framed_image != (Image *) NULL)
@@ -739,7 +754,8 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
                   break;
               }
             }
-          if (image->label != (char *) NULL)
+          attribute=GetImageAttribute(image,"Label");
+          if (attribute != (ImageAttribute *) NULL)
             {
               /*
                 Annotate composite image tile with label.
@@ -751,7 +767,7 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
                 (border_width << 1)-bevel_width-2 : y_offset+tile_info.height+
                 (border_width << 1)+(montage_info->shadow ? 4 : 0)+2));
               (void) CloneString(&annotate_info->geometry,geometry);
-              (void) CloneString(&annotate_info->text,image->label);
+              (void) CloneString(&annotate_info->text,attribute->value);
               AnnotateImage(montage_image,annotate_info);
             }
         }

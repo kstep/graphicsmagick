@@ -156,7 +156,7 @@ Export Image *ReadJBIGImage(const ImageInfo *image_info)
   /*
     Read JBIG file.
   */
-  buffer=(unsigned char *) AllocateMemory(MaxBufferSize*sizeof(unsigned char));
+  buffer=(unsigned char *) AllocateMemory(MaxBufferSize);
   if (buffer == (unsigned char *) NULL)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
   status=JBG_EAGAIN;
@@ -323,8 +323,7 @@ Export unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     */
     TransformRGBImage(image,RGBColorspace);
     number_packets=((image->columns+7) >> 3)*image->rows;
-    pixels=(unsigned char *)
-      AllocateMemory(number_packets*sizeof(unsigned char));
+    pixels=(unsigned char *) AllocateMemory(number_packets);
     if (pixels == (unsigned char *) NULL)
       WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
     /*

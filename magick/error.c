@@ -172,6 +172,37 @@ static void DefaultWarningHandler(const WarningType warning,const char *message,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t E r r o r I n f o                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetErrorInfo initializes the ErrorInfo structure.
+%
+%  The format of the GetErrorInfo method is:
+%
+%      GetErrorInfo(ErrorInfo *error_info)
+%
+%  A description of each parameter follows:
+%
+%    o error_info: Specifies a pointer to a ErrorInfo structure.
+%
+%
+*/
+Export void GetErrorInfo(ErrorInfo *error_info)
+{
+  assert(error_info != (ErrorInfo *) NULL);
+  error_info->type=UndefinedError;
+  error_info->message=(char *) NULL;
+  error_info->qualifier=(char *) NULL;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k E r r o r                                                     %
 %                                                                             %
 %                                                                             %
