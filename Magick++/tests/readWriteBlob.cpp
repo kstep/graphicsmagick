@@ -23,9 +23,20 @@ public:
   myBlob( std::ifstream &stream_ )
     : Blob()
     {
-      unsigned char* blobData = new unsigned char[100000];
-      stream_.read( reinterpret_cast<char*>(blobData), 100000 );
-      size_t blobLen =  stream_.gcount();
+      char* blobData = new char[100000];
+      char* c=blobData;
+      size_t blobLen=0;
+      while( (blobLen< 100000) && stream_.get(*c) )
+        {
+          c++;
+          blobLen++;
+        }
+      if ((!stream_.eof()) || (blobLen == 0))
+        {
+          cout << "Failed to stream into blob!" << endl;
+          exit(1);
+        }
+
       // Insert data into blob
       updateNoCopy( reinterpret_cast<void*>(blobData), blobLen,
                     Blob::NewAllocator );
@@ -69,15 +80,19 @@ int main( int /*argc*/, char ** argv)
 	  cout << "Failed to open file " << testimage << " for input!" << endl;
 	  exit(1);
 	}
-      unsigned char* blobData = new unsigned char[100000];
-      in.read( reinterpret_cast<char*>(blobData), 100000 );
-      size_t blobLen =  in.gcount();
+      char* blobData = new char[100000];
+      char* c=blobData;
+      size_t blobLen=0;
+      while( (blobLen< 100000) && in.get(*c) )
+        {
+          c++;
+          blobLen++;
+        }
       if ((!in.eof()) || (blobLen == 0))
         {
           cout << "Failed to read file " << testimage << " for input!" << endl;
           exit(1);
         }
-
       in.close();
 
       // Construct Magick++ Blob

@@ -2,6 +2,7 @@
 
 	* tests/readWriteBlob.cpp (main): Added check for
 	stream read failure when reading blob data.
+	(class myBlob): Use get rather than read.
 
 2003-03-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
