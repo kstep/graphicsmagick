@@ -727,10 +727,14 @@ MagickExport void DestroyCacheInfo(Cache cache)
     case MemoryCache:
     {
       LiberateMemory((void **) &cache_info->pixels);
+      (void) GetCacheThreshold(-cache_info->length);
       break;
     }
     case MemoryMappedCache:
+    {
       (void) UnmapBlob(cache_info->pixels,cache_info->length);
+      (void) GetCacheThreshold(-cache_info->length);
+    }
     case DiskCache:
     {
       (void) remove(cache_info->cache_filename);
@@ -743,7 +747,6 @@ MagickExport void DestroyCacheInfo(Cache cache)
       break;
     }
   }
-  (void) GetCacheThreshold(-cache_info->length);
   if (cache_info->type != UndefinedCache)
     {
       register unsigned long
@@ -2062,13 +2065,13 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
           if ((cache_info->storage_class == PseudoClass) ||
               (cache_info->colorspace == CMYKColorspace))
             cache_info->indexes=(IndexPacket *) (pixels+number_pixels);
+          (void) GetCacheThreshold(cache_info->length);
         }
     }
   (void) close(file);
 #if defined(SIGBUS)
   (void) signal(SIGBUS,CacheSignalHandler);
 #endif
-  (void) GetCacheThreshold(cache_info->length);
   FormatSize(cache_info->length,format);
   FormatString(message,"open %.1024s (%.1024s, %.1024s, %.1024s)",
     cache_info->filename,cache_info->cache_filename,
