@@ -467,16 +467,27 @@ MagickExport const char *GetMagickVersion(unsigned int *version)
 MagickExport void InitializeMagick(const char *path)
 {
   char
-    directory[MaxTextExtent];
+    directory[MaxTextExtent],
+    filename[MaxTextExtent];
 
   InitializeSemaphore();
   (void) setlocale(LC_ALL,"");
   (void) setlocale(LC_NUMERIC,"C");
+  (void) getcwd(directory,MaxTextExtent);
+  (void) SetClientPath(directory);
+  if (path != (const char *) NULL)
+    {
+      GetPathComponent(path,HeadPath,filename);
+      (void) SetClientPath(filename);
+      GetPathComponent(path,BasePath,filename);
+      (void) SetClientName(filename);
+    }
 #if defined(WIN32)
-  if (path == (const char *) NULL)
-    path=NTGetExecutionPath();
 #if defined(_DEBUG)
   {
+    char
+      *execution_path;
+
     int
       debug;
 
@@ -484,26 +495,16 @@ MagickExport void InitializeMagick(const char *path)
     debug|=_CRTDBG_CHECK_ALWAYS_DF;
     debug|=_CRTDBG_DELAY_FREE_MEM_DF;
     debug|=_CRTDBG_LEAK_CHECK_DF;
-    //debug=_CrtSetDbgFlag(debug);
+    // debug=_CrtSetDbgFlag(debug);
+    execution_path=NTGetExecutionPath();
+    GetPathComponent(execution_path,HeadPath,filename);
+    (void) SetClientPath(filename);
+    GetPathComponent(execution_path,TailPath,filename);
+    (void) SetClientName(filename);
+    LiberateMemory((void **) &execution_path);
   }
 #endif
 #endif
-  (void) getcwd(directory,MaxTextExtent);
-  (void) SetClientPath(directory);
-  if (path != (const char *) NULL)
-    {
-      char
-        filename[MaxTextExtent];
-
-      GetPathComponent(path,HeadPath,filename);
-      (void) SetClientPath(filename);
-#if defined(WIN32)
-      GetPathComponent(path,TailPath,filename);
-#else
-      GetPathComponent(path,BasePath,filename);
-#endif
-      (void) SetClientName(filename);
-    }
 }
 
 /*
