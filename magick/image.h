@@ -253,6 +253,24 @@ typedef struct _MontageInfo
     signature;
 } MontageInfo;
 
+typedef struct _PrimitiveInfo
+{
+  PointInfo
+    point;
+
+  PrimitiveType
+    primitive;
+
+  unsigned int
+    coordinates;
+
+  PaintMethod
+    method;
+
+  char
+    *text;
+} PrimitiveInfo;
+
 typedef struct _ProfileInfo
 {
   unsigned int

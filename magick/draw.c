@@ -74,38 +74,11 @@
       s++; \
     }
 
-/*
-  Typedef declaractions.
-*/
-typedef struct _PrimitiveInfo
-{
-  PointInfo
-    point;
-
-  PrimitiveType
-    primitive;
-
-  unsigned int
-    coordinates;
-
-  PaintMethod
-    method;
-
-  char
-    *text;
-} PrimitiveInfo;
-
-/*
-  Forward declarations
-*/
-static double
-  IntersectPrimitive(PrimitiveInfo *,const DrawInfo *,Image *,
-    const PointInfo *,double *);
-
 static unsigned int
   GeneratePath(PrimitiveInfo *,const char *);
 
 static void
+  DrawPrimitive(Image *,const DrawInfo *,SegmentInfo *,PrimitiveInfo *),
   GenerateArc(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo,
     const double,const unsigned int,const unsigned int),
   GenerateBezier(PrimitiveInfo *),
@@ -516,10 +489,7 @@ MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
 */
 MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 {
-#define DrawImageText  "  Drawing on image...  "
-
   char
-    geometry[MaxTextExtent],
     keyword[MaxTextExtent],
     *marker,
     *p,
@@ -528,9 +498,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   double
     alpha,
     beta,
-    fill_opacity,
-    mid,
-    stroke_opacity;
+    mid;
 
   DrawInfo
     *clone_info;
@@ -541,12 +509,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     number_points,
     y;
 
-  PixelPacket
-    color;
-
   PointInfo
-    point,
-    target;
+    point;
 
   PrimitiveInfo
     *primitive_info;
@@ -557,9 +521,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   register int
     i,
     x;
-
-  register PixelPacket
-    *q;
 
   SegmentInfo
     bounds;
@@ -1122,120 +1083,33 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
       case ImagePrimitive:
       {
-        Image
-          *composite_image;
-
-        ImageInfo
-          *composite_info;
-
-        register char
-          *q;
-
         if (primitive_info[j].coordinates != 2)
           {
             primitive_type=UndefinedPrimitive;
             break;
           }
-        composite_info=CloneImageInfo((ImageInfo *) NULL);
-        q=composite_info->filename;
-        if (*p != '\0')
-          {
-            primitive_info[j].text=p;
-            if (*p == '"')
-              {
-                for (p++; *p != '\0'; p++)
-                {
-                  if ((*p == '"') && (*(p-1) != '\\'))
-                    break;
-                  *q++=(*p);
-                }
-              }
-            else
-              if (*p == '\'')
-                {
-                  for (p++; *p != '\0'; p++)
-                  {
-                    if ((*p == '\'') && (*(p-1) != '\\'))
-                      break;
-                    *q++=(*p);
-                  }
-                }
-              else
-                for ( ;  *p != '\0'; p++)
-                {
-                  if (isspace((int) *p) && (*(p-1) != '\\') && (*p != '\0'))
-                    break;
-                  *q++=(*p);
-                }
-            if (*p != '\0')
-              p++;
-          }
-        *q='\0';
-        composite_image=ReadImage(composite_info,&image->exception);
-        if (composite_image == (Image *) NULL)
+        if (*p == '\0')
           break;
-        if ((primitive_info[j+1].point.x != 0) &&
-            (primitive_info[j+1].point.y != 0))
+        primitive_info[j].text=p;
+        if (*p == '"')
           {
-            /*
-              Resize image.
-            */
-            FormatString(geometry,"%gx%g",primitive_info[j+1].point.x,
-              primitive_info[j+1].point.y);
-            TransformImage(&composite_image,(char *) NULL,geometry);
-          }
-        if ((clone_info->affine[1] == 0.0) && (clone_info->affine[2] == 0.0))
-          {
-            if ((clone_info->affine[0] != 1.0) ||
-                (clone_info->affine[0] != 1.0))
-              {
-                Image
-                  *scale_image;
-
-                unsigned int
-                  height,
-                  width;
-
-                width=(unsigned int)
-                  (clone_info->affine[0]*composite_image->columns);
-                height=(unsigned int)
-                  (clone_info->affine[3]*composite_image->rows);
-                scale_image=ZoomImage(composite_image,width,height,
-                  &image->exception);
-                if (scale_image != (Image *) NULL)
-                  {
-                    DestroyImage(composite_image);
-                    composite_image=scale_image;
-                  }
-              }
+            for (p++; *p != '\0'; p++)
+              if ((*p == '"') && (*(p-1) != '\\'))
+                break;
           }
         else
-          {
-            if (((clone_info->affine[0]-clone_info->affine[3]) == 0.0) &&
-                ((clone_info->affine[1]+clone_info->affine[2]) == 0.0))
-              {
-                double
-                  theta;
-
-                Image
-                  *rotate_image;
-
-                theta=(180.0/M_PI)*
-                  atan2(clone_info->affine[1],clone_info->affine[0]);
-                rotate_image=
-                  RotateImage(composite_image,theta,&image->exception);
-                if (rotate_image != (Image *) NULL)
-                  {
-                    DestroyImage(composite_image);
-                    composite_image=rotate_image;
-                  }
-              }
-          }
-        CompositeImage(image,image->matte ? OverCompositeOp :
-          ReplaceCompositeOp,composite_image,(int) primitive_info[j].point.x,
-          (int) primitive_info[j].point.y);
-        DestroyImage(composite_image);
-        DestroyImageInfo(composite_info);
+          if (*p == '\'')
+            {
+              for (p++; *p != '\0'; p++)
+                if ((*p == '\'') && (*(p-1) != '\\'))
+                  break;
+            }
+          else
+            for (p++;  *p != '\0'; p++)
+              if (isspace((int) *p) && (*(p-1) != '\\') && (*p != '\0'))
+                break;
+        if (*p != '\0')
+          p++;
         break;
       }
     }
@@ -1293,72 +1167,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     bounds.y2+=mid;
     if (bounds.y2 >= image->rows)
       bounds.y2=image->rows-1.0;
-    alpha=1.0/MaxRGB;
-    for (y=(int) ceil(bounds.y1-0.5); y <= (int) floor(bounds.y2-0.5); y++)
-    {
-      /*
-        Fill the primitive on the image.
-      */
-      x=(int) ceil(bounds.x1-0.5);
-      n=(int) floor(bounds.x2-0.5)-x;
-      q=GetImagePixels(image,x,y,n+1,1);
-      if (q == (PixelPacket *) NULL)
-        break;
-      target.y=y;
-      for ( ; x <= (int) floor(bounds.x2-0.5); x++)
-      {
-        target.x=x;
-        stroke_opacity=IntersectPrimitive(primitive_info,clone_info,image,
-          &target,&fill_opacity);
-        color=clone_info->fill;
-        if (clone_info->tile != (Image *) NULL)
-          color=GetOnePixel(clone_info->tile,x % clone_info->tile->columns,
-            y % clone_info->tile->rows);
-        if ((fill_opacity != 0.0) && (color.opacity != TransparentOpacity))
-          {
-            /*
-              Fill.
-            */
-            fill_opacity=MaxRGB-
-              0.01*(MaxRGB-color.opacity)*clone_info->opacity*fill_opacity;
-            if (!clone_info->antialias)
-              fill_opacity=(Quantum) (OpaqueOpacity*clone_info->opacity/100.0);
-            q->red=(Quantum) (alpha*(color.red*(MaxRGB-fill_opacity)+
-              q->red*fill_opacity));
-            q->green=(Quantum) (alpha*(color.green*(MaxRGB-fill_opacity)+
-              q->green*fill_opacity));
-            q->blue=(Quantum) (alpha*(color.blue*(MaxRGB-fill_opacity)+
-              q->blue*fill_opacity));
-            q->opacity=(Quantum) (alpha*(fill_opacity*(MaxRGB-fill_opacity)+
-              q->opacity*fill_opacity));
-          }
-        color=clone_info->stroke;
-        if ((stroke_opacity != 0.0) && (color.opacity != TransparentOpacity))
-          {
-            /*
-              Stroke.
-            */
-            stroke_opacity=MaxRGB-
-              0.01*(MaxRGB-color.opacity)*clone_info->opacity*stroke_opacity;
-            if (!clone_info->antialias)
-              stroke_opacity=(Quantum)
-                (OpaqueOpacity*clone_info->opacity/100.0);
-            q->red=(Quantum) (alpha*(color.red*(MaxRGB-stroke_opacity)+
-              q->red*stroke_opacity));
-            q->green=(Quantum) (alpha*(color.green*(MaxRGB-stroke_opacity)+
-              q->green*stroke_opacity));
-            q->blue=(Quantum) (alpha*(color.blue*(MaxRGB-stroke_opacity)+
-              q->blue*stroke_opacity));
-            q->opacity=(Quantum) (alpha*(stroke_opacity*(MaxRGB-stroke_opacity)+
-              q->opacity*stroke_opacity));
-          }
-        q++;
-      }
-      if (!SyncImagePixels(image))
-        break;
-      if (QuantumTick(y,image->rows))
-        MagickMonitor(DrawImageText,y,image->rows);
-    }
+    DrawPrimitive(image,clone_info,&bounds,primitive_info);
   }
   /*
     Free resources.
@@ -1373,6 +1182,412 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   image->storage_class=DirectClass;
   (void) IsMatteImage(image);
   return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D r a w P r i m i t i v e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DrawPrimitive draws a primitive (line, rectangle, ellipse) on the
+%  image.
+%
+%  The format of the DrawPrimitive method is:
+%
+%      void DrawPrimitive(Image *image,const DrawInfo *draw_info,
+%        SegmentInfo *bounds,PrimitiveInfo *primitive_info))
+%
+%  A description of each parameter follows:
+%
+%    o image: The address of a structure of type Image.
+%
+%    o draw_info: The address of a DrawInfo structure.
+%
+%    o bounds: Specifies a pointer to a SegmentInfo structure which defines
+%      the bounding box of the graphic primitive relative to the image.
+%
+%    o primitive_info: Specifies a pointer to a PrimitiveInfo structure.
+%
+%
+*/
+static void DrawPrimitive(Image *image,const DrawInfo *draw_info,
+  SegmentInfo *bounds,PrimitiveInfo *primitive_info)
+{
+  int
+    n,
+    y;
+
+  register int
+    i,
+    x;
+
+  register PixelPacket
+    *q;
+
+  x=(int) ceil(primitive_info->point.x-0.5);
+  y=(int) ceil(primitive_info->point.y-0.5);
+  switch (primitive_info->primitive)
+  {
+    case PointPrimitive:
+    {
+      q=GetImagePixels(image,x,y,1,1);
+      if (q == (PixelPacket *) NULL)
+        break;
+      *q=draw_info->stroke;
+      (void) SyncImagePixels(image);
+    }
+    case ColorPrimitive:
+    {
+      switch (primitive_info->method)
+      {
+        case PointMethod:
+        default:
+        {
+          q=GetImagePixels(image,x,y,1,1);
+          if (q == (PixelPacket *) NULL)
+            break;
+          *q=draw_info->stroke;
+          (void) SyncImagePixels(image);
+          break;
+        }
+        case ReplaceMethod:
+        {
+          PixelPacket
+            target;
+
+          target=GetOnePixel(image,x,y);
+          (void) OpaqueImage(image,target,draw_info->fill);
+          break;
+        }
+        case FloodfillMethod:
+        case FillToBorderMethod:
+        {
+          PixelPacket
+            border_color,
+            target;
+
+          target=GetOnePixel(image,x,y);
+          if (primitive_info->method == FillToBorderMethod)
+            {
+              border_color=draw_info->border_color;
+              target=border_color;
+            }
+          (void) ColorFloodfillImage(image,draw_info,target,x,y,
+            primitive_info->method);
+          break;
+        }
+        case ResetMethod:
+        {
+          for (y=0; y < (int) image->rows; y++)
+          {
+            q=GetImagePixels(image,0,y,image->columns,1);
+            if (q == (PixelPacket *) NULL)
+              break;
+            for (x=0; x < (int) image->columns; x++)
+            {
+              *q=draw_info->stroke;
+              q++;
+            }
+            if (!SyncImagePixels(image))
+              break;
+          }
+          break;
+        }
+      }
+      break;
+    }
+    case MattePrimitive:
+    {
+      register PixelPacket
+        *q;
+
+      if (!image->matte)
+        MatteImage(image,OpaqueOpacity);
+      switch (primitive_info->method)
+      {
+        case PointMethod:
+        default:
+        {
+          q=GetImagePixels(image,x,y,1,1);
+          if (q == (PixelPacket *) NULL)
+            break;
+          q->opacity=TransparentOpacity;
+          (void) SyncImagePixels(image);
+          break;
+        }
+        case ReplaceMethod:
+        {
+          PixelPacket
+            target;
+
+          target=GetOnePixel(image,x,y);
+          (void) TransparentImage(image,target);
+          break;
+        }
+        case FloodfillMethod:
+        case FillToBorderMethod:
+        {
+          PixelPacket
+            border_color,
+            target;
+
+          target=GetOnePixel(image,x,y);
+          if (primitive_info->method == FillToBorderMethod)
+            {
+              border_color=draw_info->border_color;
+              target=border_color;
+            }
+          (void) MatteFloodfillImage(image,target,TransparentOpacity,x,y,
+            primitive_info->method);
+          break;
+        }
+        case ResetMethod:
+        {
+          for (y=0; y < (int) image->rows; y++)
+          {
+            q=GetImagePixels(image,0,y,image->columns,1);
+            if (q == (PixelPacket *) NULL)
+              break;
+            for (x=0; x < (int) image->columns; x++)
+            {
+              q->opacity=draw_info->stroke.opacity;
+              q++;
+            }
+            if (!SyncImagePixels(image))
+              break;
+          }
+          break;
+        }
+      }
+      break;
+    }
+    case TextPrimitive:
+    {
+      AnnotateInfo
+        *annotate;
+
+      ImageInfo
+        *clone_info;
+
+      register char
+        *p,
+        *q;
+
+      if (primitive_info->text == (char *) NULL)
+        break;
+      p=primitive_info->text;
+      q=primitive_info->text;
+      if (*q == '"')
+        {
+          p++;
+          for (q++; *q != '\0'; q++)
+            if ((*q == '"') && (*(q-1) != '\\'))
+              break;
+        }
+      else
+        if (*q == '\'')
+          {
+            p++;
+            for (q++; *q != '\0'; q++)
+              if ((*q == '\'') && (*(q-1) != '\\'))
+                break;
+          }
+        else
+          for (q++;  *q != '\0'; q++)
+            if (isspace((int) *q) && (*(q-1) != '\\') && (*q != '\0'))
+              break;
+      clone_info=CloneImageInfo((ImageInfo *) NULL);
+      clone_info->font=AllocateString(draw_info->font);
+      clone_info->antialias=draw_info->antialias;
+      clone_info->pointsize=draw_info->pointsize;
+      for (i=0; i < 6; i++)
+        clone_info->affine[i]=draw_info->affine[i];
+      annotate=CloneAnnotateInfo(clone_info,(AnnotateInfo *) NULL);
+      DestroyImageInfo(clone_info);
+      annotate->degrees=draw_info->angle;
+      annotate->gravity=draw_info->gravity;
+      annotate->decorate=draw_info->decorate;
+      annotate->geometry=AllocateString("");
+      annotate->fill=draw_info->fill;
+      annotate->stroke=draw_info->stroke;
+      annotate->box=draw_info->box;
+      annotate->text=(char *) AcquireMemory(q-p+1);
+      if (annotate->text == (char *) NULL)
+        MagickError(ResourceLimitError,"Unable to annotate image",
+          "Memory allocation failed");
+      (void) strncpy(annotate->text,p,q-p);
+      annotate->text[q-p]='\0';
+      FormatString(annotate->geometry,"%+d%+d",x,y);
+      AnnotateImage(image,annotate);
+      DestroyAnnotateInfo(annotate);
+      break;
+    }
+    case ImagePrimitive:
+    {
+      Image
+        *composite_image;
+
+      ImageInfo
+        *composite_info;
+
+      composite_info=CloneImageInfo((ImageInfo *) NULL);
+      (void) strcpy(composite_info->filename,primitive_info->text);
+      composite_image=ReadImage(composite_info,&image->exception);
+      if (composite_image == (Image *) NULL)
+        break;
+      if ((primitive_info[1].point.x != 0) && (primitive_info[1].point.y != 0))
+        {
+          char
+            geometry[MaxTextExtent];
+
+          /*
+            Resize image.
+          */
+          FormatString(geometry,"%gx%g",primitive_info[1].point.x,
+            primitive_info[1].point.y);
+          TransformImage(&composite_image,(char *) NULL,geometry);
+        }
+      if ((draw_info->affine[1] == 0.0) && (draw_info->affine[2] == 0.0))
+        {
+          if ((draw_info->affine[0] != 1.0) || (draw_info->affine[0] != 1.0))
+            {
+              Image
+                *scale_image;
+
+              unsigned int
+                height,
+                width;
+
+              width=(unsigned int)
+                (draw_info->affine[0]*composite_image->columns);
+              height=(unsigned int)
+                (draw_info->affine[3]*composite_image->rows);
+              scale_image=ZoomImage(composite_image,width,height,
+                &image->exception);
+              if (scale_image != (Image *) NULL)
+                {
+                  DestroyImage(composite_image);
+                  composite_image=scale_image;
+                }
+            }
+        }
+      else
+        {
+          if (((draw_info->affine[0]-draw_info->affine[3]) == 0.0) &&
+              ((draw_info->affine[1]+draw_info->affine[2]) == 0.0))
+            {
+              double
+                theta;
+
+              Image
+                *rotate_image;
+
+              theta=(180.0/M_PI)*
+                atan2(draw_info->affine[1],draw_info->affine[0]);
+              rotate_image=
+                RotateImage(composite_image,theta,&image->exception);
+              if (rotate_image != (Image *) NULL)
+                {
+                  DestroyImage(composite_image);
+                  composite_image=rotate_image;
+                }
+            }
+        }
+      CompositeImage(image,image->matte ? OverCompositeOp : ReplaceCompositeOp,
+        composite_image,x,y);
+      DestroyImage(composite_image);
+      DestroyImageInfo(composite_info);
+      break;
+    }
+    default:
+    {
+      double
+        alpha,
+        fill_opacity,
+        stroke_opacity;
+
+      int
+        n;
+
+      PixelPacket
+        color;
+
+      PointInfo
+        target;
+
+      alpha=1.0/MaxRGB;
+      for (y=(int) ceil(bounds->y1-0.5); y <= (int) floor(bounds->y2-0.5); y++)
+      {
+        /*
+          Fill the primitive on the image.
+        */
+        x=(int) ceil(bounds->x1-0.5);
+        n=(int) floor(bounds->x2-0.5)-x;
+        q=GetImagePixels(image,x,y,n+1,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        target.y=y;
+        for ( ; x <= (int) floor(bounds->x2-0.5); x++)
+        {
+          target.x=x;
+          stroke_opacity=IntersectPrimitive(primitive_info,draw_info,image,
+            &target,&fill_opacity);
+          color=draw_info->fill;
+          if (draw_info->tile != (Image *) NULL)
+            color=GetOnePixel(draw_info->tile,x % draw_info->tile->columns,
+              y % draw_info->tile->rows);
+          if ((fill_opacity != 0.0) && (color.opacity != TransparentOpacity))
+            {
+              /*
+                Fill.
+              */
+              fill_opacity=MaxRGB-
+                0.01*(MaxRGB-color.opacity)*draw_info->opacity*fill_opacity;
+              if (!draw_info->antialias)
+                fill_opacity=(Quantum) (OpaqueOpacity*draw_info->opacity/100.0);
+              q->red=(Quantum) (alpha*(color.red*(MaxRGB-fill_opacity)+
+                q->red*fill_opacity));
+              q->green=(Quantum) (alpha*(color.green*(MaxRGB-fill_opacity)+
+                q->green*fill_opacity));
+              q->blue=(Quantum) (alpha*(color.blue*(MaxRGB-fill_opacity)+
+                q->blue*fill_opacity));
+              q->opacity=(Quantum) (alpha*(fill_opacity*(MaxRGB-fill_opacity)+
+                q->opacity*fill_opacity));
+            }
+          color=draw_info->stroke;
+          if ((stroke_opacity != 0.0) && (color.opacity != TransparentOpacity))
+            {
+              /*
+                Stroke.
+              */
+              stroke_opacity=MaxRGB-
+                0.01*(MaxRGB-color.opacity)*draw_info->opacity*stroke_opacity;
+              if (!draw_info->antialias)
+                stroke_opacity=(Quantum)
+                  (OpaqueOpacity*draw_info->opacity/100.0);
+              q->red=(Quantum) (alpha*(color.red*(MaxRGB-stroke_opacity)+
+                q->red*stroke_opacity));
+              q->green=(Quantum) (alpha*(color.green*(MaxRGB-stroke_opacity)+
+                q->green*stroke_opacity));
+              q->blue=(Quantum) (alpha*(color.blue*(MaxRGB-stroke_opacity)+
+                q->blue*stroke_opacity));
+              q->opacity=(Quantum) (alpha*(stroke_opacity*
+                (MaxRGB-stroke_opacity)+q->opacity*stroke_opacity));
+            }
+          q++;
+        }
+        if (!SyncImagePixels(image))
+          break;
+      }
+      break;
+    }
+  }
 }
 
 /*
@@ -1651,11 +1866,13 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
 
   unsigned int
     number_coordinates,
+    subpath,
     z_count;
 
   point.x=0;
   point.y=0;
   number_coordinates=0;
+  subpath=False;
   z_count=0;
   primitive_type=primitive_info->primitive;
   q=primitive_info;
@@ -1683,6 +1900,7 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         /*
           Compute arc points.
         */
+        subpath=True;
         arc.x=strtod(p,&p);
         if (*p == ',')
           p++;
@@ -1715,6 +1933,7 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         /*
           Compute bezier points.
         */
+        subpath=True;
         do
         {
           points[0]=point;
@@ -1769,9 +1988,12 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
       case 'M':
       case 'm':
       {
-        primitive_info->coordinates=q-primitive_info;
-        number_coordinates+=primitive_info->coordinates;
-        primitive_info=q;
+        if (subpath)
+          {
+            primitive_info->coordinates=q-primitive_info;
+            number_coordinates+=primitive_info->coordinates;
+            primitive_info=q;
+          }
         do
         {
           x=strtod(p,&p);
@@ -1792,6 +2014,7 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         /*
           Compute bezier points.
         */
+        subpath=True;
         do
         {
           points[0]=point;
@@ -1822,6 +2045,7 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         /*
           Compute bezier points.
         */
+        subpath=True;
         do
         {
           points[0]=points[3];
@@ -1854,6 +2078,7 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         /*
           Compute bezier points.
         */
+        subpath=True;
         do
         {
           points[0]=points[2];
@@ -2076,429 +2301,6 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->tile=(Image *) NULL;
   draw_info->verbose=image_info->verbose;
   draw_info->signature=MagickSignature;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   I n t e r s e c t P r i m i t i v e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method IntersectPrimitive returns the value from [0..1] for the (x,y)
-%  position of the image.  The opacity is 1.0 if the (x,y) position intersects
-%  within the bounds of the primitive as defined in primitive_info.  A value
-%  less than 1.0 and greater than 0.0 is returned for a primitive edge point
-%  to allow for anti-aliasing.  Otherwise 0.0 is returned.
-%
-%  Rick Mabry provided the algorithms for anti-aliased primitives.
-%
-%  The format of the IntersectPrimitive method is:
-%
-%      double IntersectPrimitive(PrimitiveInfo *primitive_info,
-%        const DrawInfo *draw_info,Image *image,const PointInfo *point,
-%        double *fill_opacity)
-%
-%  A description of each parameter follows:
-%
-%    o opacity:  Method IntersectPrimitive returns a stroke opacity from
-%      [0..1] as determined by intesecting the (x,y) position of the image
-%      with the specified primitive list.
-%
-%    o primitive_info: Specifies a pointer to a PrimitiveInfo structure.
-%
-%    o draw_info: Specifies a pointer to a DrawInfo structure.
-%
-%    o image: The address of a structure of type Image.
-%
-%    o target: PointInfo representing the (x,y) location in the image.
-%
-%    o fill_opacity: returns a fill opacity from [0..1] as determined by
-%      intesecting the (x,y) position of the image with the specified
-%      primitive list.
-%
-%
-*/
-
-static inline double DistanceToLine(const PointInfo *point,const PointInfo *p,
-  const PointInfo *q)
-{
-  double
-    dot_product,
-    gamma,
-    phi;
-
-  register double
-    alpha,
-    beta;
-
-  alpha=point->x-p->x;
-  beta=point->y-p->y;
-  dot_product=alpha*(q->x-p->x)+beta*(q->y-p->y);
-  if (dot_product <= 0)
-    return(alpha*alpha+beta*beta);
-  phi=(q->x-p->x)*(q->x-p->x)+(q->y-p->y)*(q->y-p->y);
-  gamma=dot_product*dot_product/phi;
-  if (gamma <= phi)
-    return(alpha*alpha+beta*beta-gamma+MagickEpsilon);
-  alpha=point->x-q->x;
-  beta=point->y-q->y;
-  return(alpha*alpha+beta*beta);
-}
-
-static inline double PixelOnLine(const PointInfo *point,const PointInfo *p,
-  const PointInfo *q,const double mid,const double opacity)
-{
-  register double
-    alpha,
-    distance;
-
-  if ((mid == 0.0) || (opacity == 1.0))
-    return(opacity);
-  if ((p->x == q->x) && (p->y == q->y))
-    return((point->x == p->x) && (point->y == p->y) ? 1.0 : opacity);
-  distance=DistanceToLine(point,p,q);
-  alpha=mid-0.5;
-  if (distance <= (alpha*alpha))
-    return(1.0);
-  alpha=mid+0.5;
-  if (distance <= (alpha*alpha))
-    {
-      alpha=sqrt(distance)-mid-0.5;
-      return(Max(opacity,alpha*alpha));
-    }
-  return(opacity);
-}
-
-static double IntersectPrimitive(PrimitiveInfo *primitive_info,
-  const DrawInfo *draw_info,Image *image,const PointInfo *point,
-  double *fill_opacity)
-{
-  PixelPacket
-    border_color;
-
-  double
-    alpha,
-    beta,
-    distance,
-    mid,
-    stroke_opacity;
-
-  register int
-    i;
-
-  register PrimitiveInfo
-    *p,
-    *q;
-
-  PixelPacket
-    target;
-
-  assert(primitive_info != (PrimitiveInfo *) NULL);
-  assert(draw_info != (DrawInfo *) NULL);
-  assert(draw_info->signature == MagickSignature);
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  *fill_opacity=0.0;
-  stroke_opacity=0.0;
-  mid=draw_info->affine[0]*draw_info->linewidth/2.0;
-  p=primitive_info;
-  while (p->primitive != UndefinedPrimitive)
-  {
-    q=p+p->coordinates-1;
-    switch (p->primitive)
-    {
-      case PointPrimitive:
-      default:
-      {
-        if ((ceil(point->x-0.5) == ceil(p->point.x-0.5)) &&
-            (ceil(point->y-0.5) == ceil(p->point.y-0.5)))
-          stroke_opacity=1.0;
-        break;
-      }
-      case ArcPrimitive:
-      case BezierPrimitive:
-      case CirclePrimitive:
-      case EllipsePrimitive:
-      case LinePrimitive:
-      case PathPrimitive:
-      case PolylinePrimitive:
-      case PolygonPrimitive:
-      case RectanglePrimitive:
-      case RoundRectanglePrimitive:
-      {
-        double
-          minimum_distance,
-          subpath_opacity;
-
-        int
-          crossing,
-          crossings;
-
-        minimum_distance=DistanceToLine(point,&q->point,&p->point);
-        subpath_opacity=0.0;
-        if ((primitive_info->method == FillToBorderMethod) &&
-            (*fill_opacity != 0.0))
-          subpath_opacity=PixelOnLine(point,&q->point,&p->point,1.0,0.0);
-        crossings=0;
-        if ((point->y < q->point.y) != (point->y < p->point.y))
-          {
-            crossing=point->x < q->point.x;
-            if (crossing != (point->x < p->point.x))
-              crossings+=point->x < (q->point.x-(q->point.y-point->y)*
-                (p->point.x-q->point.x)/(p->point.y-q->point.y));
-            else
-              if (crossing)
-                crossings++;
-          }
-        for (p++; (p <= q) && (stroke_opacity != 1.0); p++)
-        {
-          distance=DistanceToLine(point,&(p-1)->point,&p->point);
-          if (distance < minimum_distance)
-            minimum_distance=distance;
-          stroke_opacity=
-            PixelOnLine(point,&(p-1)->point,&p->point,mid,stroke_opacity);
-          if ((primitive_info->method == FillToBorderMethod) &&
-              (*fill_opacity != 0.0) && (subpath_opacity != 1.0))
-            subpath_opacity=
-              PixelOnLine(point,&(p-1)->point,&p->point,1.0,subpath_opacity);
-          if (point->y < (p-1)->point.y)
-            {
-              if (point->y < p->point.y)
-                continue;
-              crossing=point->x < (p-1)->point.x;
-              if (crossing != (point->x < p->point.x))
-                crossings+=point->x < ((p-1)->point.x-((p-1)->point.y-point->y)*
-                  (p->point.x-(p-1)->point.x)/(p->point.y-(p-1)->point.y));
-              else
-                if (crossing)
-                  crossings++;
-              continue;
-            }
-          if (point->y >= p->point.y)
-            continue;
-          crossing=point->x < (p-1)->point.x;
-          if (crossing != (point->x < p->point.x))
-            crossings+=point->x < ((p-1)->point.x-((p-1)->point.y-point->y)*
-              (p->point.x-(p-1)->point.x)/(p->point.y-(p-1)->point.y));
-          else
-            if (crossing)
-              crossings++;
-        }
-        if (stroke_opacity == 1.0)
-          break;
-        if ((primitive_info->method == FillToBorderMethod) &&
-            (*fill_opacity != 0.0))
-          if ((crossings & 0x01)|| (minimum_distance <= (0.5*0.5)))
-            {
-              *fill_opacity=subpath_opacity;
-              break;
-            }
-        if (!draw_info->antialias || (minimum_distance > (0.5*0.5)))
-          {
-            if (crossings & 0x01)
-              *fill_opacity=1.0;
-            break;
-          }
-        alpha=0.5+(crossings & 0x01 ? 1.0 : -1.0)*sqrt(minimum_distance);
-        beta=alpha*alpha;
-        if (beta > *fill_opacity)
-          *fill_opacity=beta;
-        break;
-      }
-      case ColorPrimitive:
-      {
-        switch (p->method)
-        {
-          case PointMethod:
-          default:
-          {
-            if ((ceil(point->x-0.5) != ceil(p->point.x-0.5)) ||
-                (ceil(point->y-0.5) != ceil(p->point.y-0.5)))
-              break;
-            stroke_opacity=1.0;
-            break;
-          }
-          case ReplaceMethod:
-          {
-            PixelPacket
-              target;
-
-            if ((ceil(point->x-0.5) != ceil(p->point.x-0.5)) ||
-                (ceil(point->y-0.5) != ceil(p->point.y-0.5)))
-              break;
-            target=GetOnePixel(image,ceil(p->point.x-0.5),(int)
-              ceil(p->point.y-0.5));
-            (void) OpaqueImage(image,target,draw_info->fill);
-            stroke_opacity=0.0;
-            break;
-          }
-          case FloodfillMethod:
-          case FillToBorderMethod:
-          {
-            if ((ceil(point->x-0.5) != ceil(p->point.x-0.5)) ||
-                (ceil(point->y-0.5) != ceil(p->point.y-0.5)))
-              break;
-            target=GetOnePixel(image,ceil(p->point.x-0.5),(int)
-              ceil(p->point.y-0.5));
-            if (p->method == FillToBorderMethod)
-              {
-                border_color=draw_info->border_color;
-                target=border_color;
-              }
-            (void) ColorFloodfillImage(image,draw_info,target,
-              ceil(point->x-0.5),ceil(point->y-0.5),p->method);
-            break;
-          }
-          case ResetMethod:
-          {
-            stroke_opacity=1.0;
-            break;
-          }
-        }
-        break;
-      }
-      case MattePrimitive:
-      {
-        register PixelPacket
-          *q;
-
-        if (!image->matte)
-          MatteImage(image,OpaqueOpacity);
-        switch (p->method)
-        {
-          case PointMethod:
-          default:
-          {
-            if ((ceil(point->x-0.5) != ceil(p->point.x-0.5)) ||
-                (ceil(point->y-0.5) != ceil(p->point.y-0.5)))
-              break;
-            q=GetImagePixels(image,ceil(point->x-0.5),(int)
-              ceil(point->y-0.5),1,1);
-            if (q != (PixelPacket *) NULL)
-              {
-                q->opacity=TransparentOpacity;
-                (void) SyncImagePixels(image);
-              }
-            break;
-          }
-          case ReplaceMethod:
-          {
-            PixelPacket
-              target;
-
-              if ((ceil(point->x-0.5) != ceil(p->point.x-0.5)) ||
-                  (ceil(point->y-0.5) != ceil(p->point.y-0.5)))
-              break;
-            target=GetOnePixel(image,ceil(p->point.x-0.5),(int)
-              ceil(p->point.y-0.5));
-            (void) TransparentImage(image,target);
-            stroke_opacity=0.0;
-            break;
-          }
-          case FloodfillMethod:
-          case FillToBorderMethod:
-          {
-            if ((ceil(point->x-0.5) != ceil(p->point.x-0.5)) ||
-                (ceil(point->y-0.5) != ceil(p->point.y-0.5)))
-              break;
-            target=GetOnePixel(image,ceil(p->point.x-0.5),(int)
-              ceil(p->point.y-0.5));
-            if (p->method == FillToBorderMethod)
-              {
-                border_color=draw_info->border_color;
-                target=border_color;
-              }
-            (void) MatteFloodfillImage(image,target,TransparentOpacity,
-              (int) point->x,(int) point->y,p->method);
-            break;
-          }
-          case ResetMethod:
-          {
-            q=GetImagePixels(image,ceil(point->x-0.5),(int)
-              ceil(point->y-0.5),1,1);
-            if (q != (PixelPacket *) NULL)
-              {
-                q->opacity=OpaqueOpacity;
-                (void) SyncImagePixels(image);
-              }
-            break;
-          }
-        }
-        break;
-      }
-      case TextPrimitive:
-      {
-        AnnotateInfo
-          *annotate;
-
-        ImageInfo
-          *clone_info;
-
-        register char
-          *r;
-
-        if ((ceil(point->x-0.5) != ceil(p->point.x-0.5)) ||
-            (ceil(point->y-0.5) != ceil(p->point.y-0.5)))
-          break;
-        if (p->text == (char *) NULL)
-          break;
-        r=p->text;
-        if (*r == '"')
-          {
-            p->text++;
-            for (r++; *r != '\0'; r++)
-              if ((*r == '"') && (*(r-1) != '\\'))
-                break;
-          }
-        else
-          if (*r == '\'')
-            {
-              p->text++;
-              for (r++; *r != '\0'; r++)
-                if ((*r == '\'') && (*(r-1) != '\\'))
-                  break;
-            }
-          else
-            for (r++;  *r != '\0'; r++)
-              if (isspace((int) *r) && (*(r-1) != '\\') && (*r != '\0'))
-                break;
-        clone_info=CloneImageInfo((ImageInfo *) NULL);
-        clone_info->font=AllocateString(draw_info->font);
-        clone_info->antialias=draw_info->antialias;
-        clone_info->pointsize=draw_info->pointsize;
-        for (i=0; i < 6; i++)
-          clone_info->affine[i]=draw_info->affine[i];
-        annotate=CloneAnnotateInfo(clone_info,(AnnotateInfo *) NULL);
-        DestroyImageInfo(clone_info);
-        annotate->degrees=draw_info->angle;
-        annotate->gravity=draw_info->gravity;
-        annotate->decorate=draw_info->decorate;
-        annotate->geometry=AllocateString("");
-        annotate->fill=draw_info->fill;
-        annotate->stroke=draw_info->stroke;
-        annotate->box=draw_info->box;
-        annotate->text=(char *) AcquireMemory(r-p->text+1);
-        if (annotate->text == (char *) NULL)
-          MagickError(ResourceLimitError,"Unable to annotate image",
-            "Memory allocation failed");
-        (void) strncpy(annotate->text,p->text,r-p->text);
-        annotate->text[r-p->text]='\0';
-        FormatString(annotate->geometry,"%+f%+f",p->point.x,p->point.y);
-        AnnotateImage(image,annotate);
-        DestroyAnnotateInfo(annotate);
-        break;
-      }
-      case ImagePrimitive:
-        break;
-    }
-    p=q+1;
-  }
-  return(stroke_opacity);
 }
 
 /*

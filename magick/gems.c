@@ -542,6 +542,226 @@ MagickExport void Hull(const int x_offset,const int y_offset,const int polarity,
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   I n t e r s e c t P r i m i t i v e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IntersectPrimitive returns the value from [0..1] for the (x,y)
+%  position of the image.  The opacity is 1.0 if the (x,y) position intersects
+%  within the bounds of the primitive as defined in primitive_info.  A value
+%  less than 1.0 and greater than 0.0 is returned for a primitive edge point
+%  to allow for anti-aliasing.  Otherwise 0.0 is returned.
+%
+%  Rick Mabry provided the algorithms for anti-aliased primitives.
+%
+%  The format of the IntersectPrimitive method is:
+%
+%      double IntersectPrimitive(PrimitiveInfo *primitive_info,
+%        const DrawInfo *draw_info,Image *image,const PointInfo *point,
+%        double *fill_opacity)
+%
+%  A description of each parameter follows:
+%
+%    o opacity:  Method IntersectPrimitive returns a stroke opacity from
+%      [0..1] as determined by intesecting the (x,y) position of the image
+%      with the specified primitive list.
+%
+%    o primitive_info: Specifies a pointer to a PrimitiveInfo structure.
+%
+%    o draw_info: Specifies a pointer to a DrawInfo structure.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o target: PointInfo representing the (x,y) location in the image.
+%
+%    o fill_opacity: returns a fill opacity from [0..1] as determined by
+%      intesecting the (x,y) position of the image with the specified
+%      primitive list.
+%
+%
+*/
+
+static inline double DistanceToLine(const PointInfo *point,const PointInfo *p,
+  const PointInfo *q)
+{
+  double
+    dot_product,
+    gamma,
+    phi;
+
+  register double
+    alpha,
+    beta;
+
+  alpha=point->x-p->x;
+  beta=point->y-p->y;
+  dot_product=alpha*(q->x-p->x)+beta*(q->y-p->y);
+  if (dot_product <= 0)
+    return(alpha*alpha+beta*beta);
+  phi=(q->x-p->x)*(q->x-p->x)+(q->y-p->y)*(q->y-p->y);
+  gamma=dot_product*dot_product/phi;
+  if (gamma <= phi)
+    return(alpha*alpha+beta*beta-gamma+MagickEpsilon);
+  alpha=point->x-q->x;
+  beta=point->y-q->y;
+  return(alpha*alpha+beta*beta);
+}
+
+static inline double PixelOnLine(const PointInfo *point,const PointInfo *p,
+  const PointInfo *q,const double mid,const double opacity)
+{
+  register double
+    alpha,
+    distance;
+
+  if ((mid == 0.0) || (opacity == 1.0))
+    return(opacity);
+  if ((p->x == q->x) && (p->y == q->y))
+    return((point->x == p->x) && (point->y == p->y) ? 1.0 : opacity);
+  distance=DistanceToLine(point,p,q);
+  alpha=mid-0.5;
+  if (distance <= (alpha*alpha))
+    return(1.0);
+  alpha=mid+0.5;
+  if (distance <= (alpha*alpha))
+    {
+      alpha=sqrt(distance)-mid-0.5;
+      return(Max(opacity,alpha*alpha));
+    }
+  return(opacity);
+}
+
+MagickExport double IntersectPrimitive(PrimitiveInfo *primitive_info,
+  const DrawInfo *draw_info,Image *image,const PointInfo *point,
+  double *fill_opacity)
+{
+  double
+    alpha,
+    beta,
+    distance,
+    mid,
+    minimum_distance,
+    stroke_opacity,
+    subpath_opacity;
+
+  int
+    crossing,
+    crossings;
+
+  register int
+    i;
+
+  register PrimitiveInfo
+    *p,
+    *q;
+
+  PixelPacket
+    target;
+
+  assert(primitive_info != (PrimitiveInfo *) NULL);
+  assert(draw_info != (DrawInfo *) NULL);
+  assert(draw_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  *fill_opacity=0.0;
+  if (primitive_info->coordinates <= 0)
+    return(0.0);
+  if (primitive_info->coordinates == 1)
+    {
+      if ((point->x == (int) ceil(p->point.x-0.5)) &&
+          (point->y == (int) ceil(p->point.y-0.5)))
+        return(1.0);
+      return(0.0);
+    }
+  p=primitive_info;
+  mid=draw_info->affine[0]*draw_info->linewidth/2.0;
+  if (primitive_info->coordinates == 2)
+    return(PixelOnLine(point,&p->point,&(p+1)->point,mid,0.0));
+  stroke_opacity=0.0;
+  while (p->primitive != UndefinedPrimitive)
+  {
+    q=p+p->coordinates-1;
+    minimum_distance=DistanceToLine(point,&q->point,&p->point);
+    subpath_opacity=0.0;
+    if ((primitive_info->method == FillToBorderMethod) &&
+        (*fill_opacity != 0.0))
+      subpath_opacity=PixelOnLine(point,&q->point,&p->point,1.0,0.0);
+    crossings=0;
+    if ((point->y < q->point.y) != (point->y < p->point.y))
+      {
+        crossing=point->x < q->point.x;
+        if (crossing != (point->x < p->point.x))
+          crossings+=point->x < (q->point.x-(q->point.y-point->y)*
+            (p->point.x-q->point.x)/(p->point.y-q->point.y));
+        else
+          if (crossing)
+            crossings++;
+      }
+    for (p++; (p <= q) && (stroke_opacity != 1.0); p++)
+    {
+      distance=DistanceToLine(point,&(p-1)->point,&p->point);
+      if (distance < minimum_distance)
+        minimum_distance=distance;
+      stroke_opacity=PixelOnLine(point,&(p-1)->point,&p->point,mid,
+        stroke_opacity);
+      if ((primitive_info->method == FillToBorderMethod) &&
+          (*fill_opacity != 0.0) && (subpath_opacity != 1.0))
+        subpath_opacity=PixelOnLine(point,&(p-1)->point,&p->point,1.0,
+          subpath_opacity);
+      if (point->y < (p-1)->point.y)
+        {
+          if (point->y < p->point.y)
+            continue;
+          crossing=point->x < (p-1)->point.x;
+          if (crossing != (point->x < p->point.x))
+            crossings+=point->x < ((p-1)->point.x-((p-1)->point.y-point->y)*
+              (p->point.x-(p-1)->point.x)/(p->point.y-(p-1)->point.y));
+          else
+            if (crossing)
+              crossings++;
+          continue;
+        }
+      if (point->y >= p->point.y)
+        continue;
+      crossing=point->x < (p-1)->point.x;
+      if (crossing != (point->x < p->point.x))
+        crossings+=point->x < ((p-1)->point.x-((p-1)->point.y-point->y)*
+          (p->point.x-(p-1)->point.x)/(p->point.y-(p-1)->point.y));
+      else
+        if (crossing)
+          crossings++;
+    }
+    p=q+1;
+    if (stroke_opacity == 1.0)
+      continue;
+    if ((primitive_info->method == FillToBorderMethod) &&
+        (*fill_opacity != 0.0))
+      if ((crossings & 0x01)|| (minimum_distance <= (0.5*0.5)))
+        {
+          *fill_opacity=subpath_opacity;
+          continue;
+        }
+    if (!draw_info->antialias || (minimum_distance > (0.5*0.5)))
+      {
+        if (crossings & 0x01)
+          *fill_opacity=1.0;
+        continue;
+      }
+    alpha=0.5+(crossings & 0x01 ? 1.0 : -1.0)*sqrt(minimum_distance);
+    beta=alpha*alpha;
+    if (beta > *fill_opacity)
+      *fill_opacity=beta;
+  }
+  return(stroke_opacity);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   I n t e r p o l a t e C o l o r                                           %
 %                                                                             %
 %                                                                             %

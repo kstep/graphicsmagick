@@ -12,6 +12,8 @@ extern "C" {
   Graphic gems define declarations.
 */
 extern MagickExport double
+  IntersectPrimitive(PrimitiveInfo *,const DrawInfo *,Image *,
+    const PointInfo *,double *),
   Permutate(int,int);
 
 extern MagickExport int
