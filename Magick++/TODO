@@ -1,8 +1,6 @@
 Items large and small which remain to be done before Magick++ 1.0
 --------------------------------------------------------------------
 
-* Remove unneeded include paths from VC++ project files.
-
 * Support an efficient yet simple way to manipulate image pixels and
   colormap (if pseudocolor) via an array style mechanism. Probably
   support image as a two-dimensional array of a derived class of

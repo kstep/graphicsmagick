@@ -320,20 +320,25 @@ subdirectories.
 X11 support</blockquote>
 These build environments are based on similarly named workspaces in the
 VisualMagick subdirectory.
-<br>Open the desired workspace in Visual C++, select the menu named "Build",
+<p>Open the desired workspace in Visual C++, select the menu named "Build",
 the menu entry "Batch Build", and then click on the "Rebuild All" button
 in order to build the complete VisualMagick package, including the Magick++
 library.
 <p>Executables and DLLs are output to the directory <i>ImageMagick\VisualMagick\bin.</i>
 Linkable libraries are output to the directory <i>ImageMagick\VisualMagick\lib</i>.
+<p>The VisualMagick build does not build the Magick++ demos or tests. These
+are built by seperate workspaces.
 <h5>
 Magick++ Demos</h5>
-The VisualMagick build does not build the Magick++ demos or tests. These
-are built by seperate workspaces.
-<p>In order to build the Magick++ demos, open the workspace <i>ImageMagick\VisualMagick\Magick++Demos.dsw
-</i>and do a Batch Build, using the same build options as used for VisualMagick.
-The demos may be executed by running the batch script <i>run_demos.bat</i>
-in the directory <i>ImageMagick\Magick++\demos</i>.
+In order to build the Magick++ demos, open the workspace <i>ImageMagick\VisualMagick\Magick++Demos.dsw
+</i>and do a Batch Build, using the same options as used for VisualMagick.
+The executables for the demos are output to the <i>ImageMagick\VisualMagick\bin</i>
+directory. The demos may be executed by running the batch script <i>Magick++Demo.bat
+</i>in the directory <i>ImageMagick\VisualMagick</i>, with output files
+written to the directory <i>ImageMagick\Magick++\demo</i>. An alternative
+way to run the demos is to add the directory <i>ImageMagick\VisualMagick\bin</i>
+(with actual path prefix) to your path, and then cd to the <i>ImageMagick\Magick++\demo</i>
+directory before running the demo (e.g. 'button').
 <p>Available demos are:
 <blockquote>button
 <br>&nbsp;&nbsp; program to create a simple rectangular button with an
@@ -349,11 +354,14 @@ animation
 <h5>
 Magick++ Tests</h5>
 In order to build the Magick++ tests, open the workspace <i>ImageMagick\VisualMagick\Magick++Tests.dsw</i>
-and do a Batch Build, using the same build options as used&nbsp; for VisualMagick.
-The executables for the tests and demos are output to the same directory
-as VisualMagick. The tests may be executed by running the batch script
-<i>run_tests.bat</i> in the directory <i>ImageMagick\Magick++\tests</i>.
-<br>&nbsp;
+and do a Batch Build, using the same options as used&nbsp; for VisualMagick.&nbsp;
+The executables for the tests are output to the <i>ImageMagick\VisualMagick\bin</i>
+directory. The tests may be executed by running the batch script <i>Magick++Tests.bat
+</i>in the directory <i>ImageMagick\VisualMagick</i>, with output files
+written to the directory <i>ImageMagick\Magick++\tests</i>. An alternative
+way to run the tests is to add the directory <i>ImageMagick\VisualMagick\bin</i>
+(with actual path prefix) to your path, and then cd to the <i>ImageMagick\Magick++\demo</i>
+directory to run the test (e.g. 'appendImages').
 <p>The available tests are:
 <blockquote>appendImages
 <br>&nbsp;&nbsp; test STL appendImages function
@@ -379,7 +387,7 @@ Cygwin &amp; EGCS</h4>
 It is possible to build both ImageMagick and Magick++ under the Cygwin
 Unix-emulation environment for Windows NT. Obtain and install Cgywin from
 <a href="http://sourceware.cygnus.com/cygwin/">http://sourceware.cygnus.com/cygwin/</a>
-and update to the latest EGCS compiler from <a href="http://www.xraylith.wisc.edu/~khan/software/gnu-win32/egcs.html">http://www.xraylith.wisc.edu/~khan/software/gnu-win32/egcs.html</a>.&nbsp;&nbsp;
+and update to the latest GNU compiler from <a href="http://www.xraylith.wisc.edu/~khan/software/gnu-win32/gcc.html">http://www.xraylith.wisc.edu/~khan/software/gnu-win32/gcc.html</a>.&nbsp;&nbsp;
 X11R6.4 libraries are available from <a href="http://dao.gsfc.nasa.gov/software/grads/win32/X11R6.4/">http://dao.gsfc.nasa.gov/software/grads/win32/X11R6.4/</a>.&nbsp;
 To build using Cygwin and EGCS, follow the instructions for building under
 Unix. ImageMagick and Magick++ do not yet include support for building

@@ -26,7 +26,7 @@ readWriteImages_SOURCES = readWriteImages.cpp
 readWriteBlob_SOURCES	= readWriteBlob.cpp
 
 EXTRA_DIST = \
-	Generic.ttf test_image.miff test_image_anim.miff run_tests.bat
+	Generic.ttf test_image.miff test_image_anim.miff
 
 CLEANFILES = testmagick_anim_out.miff
 
