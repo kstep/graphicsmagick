@@ -42,6 +42,11 @@ Digital Imaging Group Flashpix OpenSource Toolkit
   This toolkit is used to support the FlashPIX file format.  The license for
   the toolkit may be found in the file "fpx.txt".
 
+FreeType
+  This library is used to support rendering TrueType and Postscript
+  Type 1 fonts.  The license for this library may be found in the file
+  "ttf.txt".
+
 Ghostscript Library
   This library ("libgs") is used in some environments to support reading
   the Postscript, Encapsulated Postscript, and Portable Document Format (PDF).
@@ -54,6 +59,10 @@ HDF5
 JBIG
   This library is used to support the JBIG file format. Its license may
   be found in the file "jbig.txt".
+
+Hp2xx
+  This stand-alone program is used to support rendering HP-GL plotter
+  files.  Its license may be found in the file "hp2xx.txt".
 
 JasPer
   This library is used to support the JPEG2 file format. Its license may
