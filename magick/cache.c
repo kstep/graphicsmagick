@@ -257,6 +257,8 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
             case ConstantVPType:
             default:
             {
+              (void) AcquireCacheNexus(image,EdgeX(x+u),EdgeY(y+v),1,1,
+                image_nexus,exception);
               p=(&cache_info->virtual_pixel);
               break;
             }
