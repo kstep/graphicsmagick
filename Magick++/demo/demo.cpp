@@ -341,7 +341,7 @@ int main( int /*argc*/, char ** argv)
     montageOpts.borderColor( "green" );
     montageOpts.borderWidth( 1 );
     montageOpts.compose( OverCompositeOp );
-    montageOpts.fileName( "Magick++" );
+    montageOpts.fileName( "Magick++ Demo" );
     montageOpts.font( font );
     montageOpts.geometry( "130x194+10+5>" );
     montageOpts.gravity( CenterGravity );
@@ -357,7 +357,7 @@ int main( int /*argc*/, char ** argv)
 
     final.font( font );
     final.fontPointsize( 18 );
-    final.strokeColor( "#600" );
+    final.penColor( "#600" );
     final.annotate( "Every thing you see on this page was created with the "\
 		    "Magick++ and ImageMagick libraries.",
 		    "+20+175" );

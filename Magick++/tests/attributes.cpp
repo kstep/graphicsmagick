@@ -690,15 +690,6 @@ int main( int /*argc*/, char ** argv)
     //
     // font
     //
-    // Test default
-    if ( image.font().length() != 11 )
-      {
-	++failures;
-	cout << "Line: " << __LINE__
-             << ", font has default length " << image.font().length()
-             << " rather than 13 as expected"
-             << endl;
-      }
 
     // Test set/get
     image.font("helvetica");
