@@ -961,14 +961,18 @@ MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
     LiberateMemory((void **) &draw_info->text);
   if (draw_info->geometry != (char *) NULL)
     LiberateMemory((void **) &draw_info->geometry);
+  if (draw_info->tile != (Image *) NULL)
+    DestroyImage(draw_info->tile);
+  if (draw_info->fill_pattern != (Image *) NULL)
+    DestroyImage(draw_info->fill_pattern);
+  if (draw_info->stroke_pattern != (Image *) NULL)
+    DestroyImage(draw_info->stroke_pattern);
   if (draw_info->font != (char *) NULL)
     LiberateMemory((void **) &draw_info->font);
   if (draw_info->encoding != (char *) NULL)
     LiberateMemory((void **) &draw_info->encoding);
   if (draw_info->density != (char *) NULL)
     LiberateMemory((void **) &draw_info->density);
-  if (draw_info->fill_pattern != (Image *) NULL)
-    DestroyImage(draw_info->fill_pattern);
   if (draw_info->server_name != (char *) NULL)
     LiberateMemory((void **) &draw_info->server_name);
   if (draw_info->dash_pattern != (double *) NULL)
