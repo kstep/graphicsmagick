@@ -60,9 +60,12 @@
 #define DRAW_BINARY_IMPLEMENTATION 0
 
 #define ThrowDrawException(code,reason,description) \
+{ \
   if (context->image->exception.severity > (long)code) \
     ThrowException(&context->image->exception,code,reason,description); \
-  return
+  return; \
+}
+
 #define CurrentContext (context->graphic_context[context->index])
 #define PixelPacketMatch(p,q) (((p)->red == (q)->red) && \
   ((p)->green == (q)->green) && ((p)->blue == (q)->blue) && \
@@ -107,7 +110,7 @@ struct _DrawContext
     mvg_alloc,          /* total allocated memory */
     mvg_length;         /* total MVG length */
 
-  int
+  unsigned int
     mvg_width;          /* current line length */
 
   /* Pattern support */
@@ -131,7 +134,7 @@ struct _DrawContext
     filter_off;         /* true if not filtering attributes */
 
   /* Pretty-printing depth */
-  long
+  unsigned int
     indent_depth;       /* number of left-hand pad characters */
 
   /* Path operation support */
@@ -342,6 +345,11 @@ static int
 #if defined(__GNUC__)
 __attribute__ ((format (printf, 2, 3)))
 #endif
+,
+  MvgAutoWrapPrintf(DrawContext context, const char *format, ...)
+#if defined(__GNUC__)
+__attribute__ ((format (printf, 2, 3)))
+#endif
 ;
 static void
   MvgAppendColor(DrawContext context, const PixelPacket *color);
@@ -357,7 +365,7 @@ static int MvgPrintf(DrawContext context, const char *format, ...)
   assert(context->signature == MagickSignature);
 
   /* Allocate initial memory */
-  if (context->mvg == 0)
+  if (context->mvg == (char*) NULL)
     {
       context->mvg = (char *) AcquireMemory(alloc_size);
       if( context->mvg == (char*) NULL )
@@ -394,42 +402,50 @@ static int MvgPrintf(DrawContext context, const char *format, ...)
 
   /* Write to end of existing MVG string */
   {
-    size_t
-      str_length;
+    int
+      formatted_length; /* must be a signed type! */
 
     va_list
       argp;
 
     /* Pretty-print indentation */
-    if (*(context->mvg + context->mvg_length - 1) == '\n')
+    while(context->mvg_width < context->indent_depth)
       {
-        long i;
-
-        for (i = context->indent_depth; i; i--)
-          {
-            *(context->mvg + context->mvg_length) = ' ';
-            ++context->mvg_length;
-          }
-        *(context->mvg + context->mvg_length) = 0;
-        context->mvg_width = context->indent_depth;
+        context->mvg[context->mvg_length] = ' ';
+        ++context->mvg_length;
+        ++context->mvg_width;
       }
+    context->mvg[context->mvg_length] = 0;
+
     va_start(argp, format);
 #if !defined(HAVE_VSNPRINTF)
-    str_length = vsprintf(context->mvg + context->mvg_length, format, argp);
+    formatted_length = vsprintf(context->mvg + context->mvg_length, format, argp);
 #else
-    str_length =
+    formatted_length =
       vsnprintf(context->mvg + context->mvg_length,
                 context->mvg_alloc - context->mvg_length - 1, format, argp);
 #endif
     va_end(argp);
 
-    context->mvg_length += str_length;
-    context->mvg_width += str_length;
-    *(context->mvg + context->mvg_length) = 0;
+    if (formatted_length < 0)
+      {
+        ThrowException(&context->image->exception,StreamError,"vsprintf failed",
+                       format);
+      }
+    else
+      {
+        context->mvg_length += formatted_length;
+        context->mvg_width += formatted_length;
+      }
+    context->mvg[context->mvg_length] = 0;
+
+    if( (context->mvg_length > 1) &&
+        (context->mvg[context->mvg_length-1] == '\n') )
+      context->mvg_width = 0;
 
     assert(context->mvg_length + 1 < context->mvg_alloc);
 
-    return str_length;
+    return formatted_length;
   }
 }
 
@@ -440,29 +456,37 @@ static int MvgAutoWrapPrintf(DrawContext context, const char *format, ...)
     argp;
 
   int
-    str_length;
+    formatted_length;
 
   char
     buffer[MaxTextExtent];
 
   va_start(argp, format);
 #if !defined(HAVE_VSNPRINTF)
-  str_length = vsprintf(buffer, format, argp);
+  formatted_length = vsprintf(buffer, format, argp);
 #else
-  str_length =
+  formatted_length =
     vsnprintf(buffer,
               sizeof(buffer) - 1, format, argp);
 #endif
   va_end(argp);
   *(buffer+sizeof(buffer)-1)=0;
 
-  if( ((context->mvg_width + str_length) > 78) &&
-      buffer[str_length-1] != '\n' )
-    MvgPrintf(context, "\n");
+  if (formatted_length < 0)
+    {
+      ThrowException(&context->image->exception,StreamError,"vsprintf failed",
+                     format);
+    }
+  else
+    {
+      if( ((context->mvg_width + formatted_length) > 78) &&
+          buffer[formatted_length-1] != '\n' )
+        MvgPrintf(context, "\n");
 
-  MvgPrintf(context, "%s", buffer);
+      MvgPrintf(context, "%s", buffer);
+    }
 
-  return str_length;
+  return formatted_length;
 }
 
 static void MvgAppendColor(DrawContext context, const PixelPacket *color)
@@ -558,7 +582,7 @@ MagickExport void DrawSetAffine(DrawContext context, const AffineMatrix *affine)
   AdjustAffine( context, affine );
 
   MvgPrintf(context, "affine %.4g,%.4g,%.4g,%.4g,%.4g,%.4g\n",
-            affine->sy, affine->rx, affine->ry, affine->sy,
+            affine->sx, affine->rx, affine->ry, affine->sy,
             affine->tx, affine->ty);
 }
 
@@ -574,7 +598,6 @@ MagickExport DrawContext DrawAllocateContext(const DrawInfo *draw_info,
     MagickFatalError(ResourceLimitFatalError,
                      "Unable to allocate initial drawing context",
                      "Memory allocation failed");
-  assert(context != (DrawContext)NULL); /* This helps lint */
 
   /* Support structures */
   context->image = image;
@@ -806,11 +829,13 @@ MagickExport void DrawDestroyContext(DrawContext context)
   context->indent_depth = 0;
 
   /* Graphic context */
-  for ( ; context->index >= 0; context->index--)
+  for ( ; context->index > 0; context->index--)
     {
       DestroyDrawInfo(CurrentContext);
       CurrentContext = (DrawInfo*) NULL;
     }
+  DestroyDrawInfo(CurrentContext);
+  CurrentContext = (DrawInfo*) NULL;
   LiberateMemory((void **) &context->graphic_context);
 
   /* Pattern support */
@@ -1815,7 +1840,8 @@ MagickExport void DrawPopClipPath(DrawContext context)
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  context->indent_depth--;
+  if(context->indent_depth > 0)
+    context->indent_depth--;
   MvgPrintf(context, "pop clip-path\n");
 }
 
@@ -1824,7 +1850,8 @@ MagickExport void DrawPopDefs(DrawContext context)
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  context->indent_depth--;
+  if(context->indent_depth > 0)
+    context->indent_depth--;
   MvgPrintf(context, "pop defs\n");
 }
 
@@ -1832,11 +1859,6 @@ MagickExport void DrawPopGraphicContext(DrawContext context)
 {
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
-
-  if(context->index == 0)
-    {
-      ThrowDrawException(CorruptImageError,"unbalanced graphic context push/pop",NULL);
-    }
 
   if(context->index > 0)
     {
@@ -1851,9 +1873,14 @@ MagickExport void DrawPopGraphicContext(DrawContext context)
       DestroyDrawInfo(CurrentContext);
       CurrentContext=(DrawInfo*)NULL;
       context->index--;
-      
-      context->indent_depth--;
+
+      if(context->indent_depth > 0)
+        context->indent_depth--;
       MvgPrintf(context, "pop graphic-context\n");
+    }
+  else
+    {
+      ThrowDrawException(CorruptImageError,"unbalanced graphic context push/pop",NULL);
     }
 }
 
@@ -1887,7 +1914,8 @@ MagickExport void DrawPopPattern(DrawContext context)
 
   context->filter_off = False;
 
-  context->indent_depth--;
+  if(context->indent_depth > 0)
+    context->indent_depth--;
   MvgPrintf(context, "pop pattern\n");
 }
 
@@ -1928,7 +1956,7 @@ MagickExport void DrawPushGraphicContext(DrawContext context)
     CloneDrawInfo((ImageInfo *) NULL,context->graphic_context[context->index-1]);
   if(CurrentContext == (DrawInfo*) NULL)
     ThrowDrawException(ResourceLimitError, "Unable to draw image",
-                       "Memory allocation failed");
+                       "Failed to clone drawing context");
 
   MvgPrintf(context, "push graphic-context\n");
   context->indent_depth++;
