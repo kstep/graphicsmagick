@@ -1378,25 +1378,64 @@ MagickExport int NTGhostscriptEXE(char *path, int path_length)
 MagickExport int NTGhostscriptFonts(char *path, int path_length)
 {
   int
-    gsver;
+    ghostscript_version;
 
   char
-    buf[256],
-    *p;
+    gs_lib_path[MaxTextExtent];
 
   *path='\0';
-  gsver = NTGetLatestGhostscript();
-  if ((gsver == FALSE) || (gsver < GS_MINIMUM_VERSION))
+  ghostscript_version = NTGetLatestGhostscript();
+  if ((ghostscript_version == FALSE) || (ghostscript_version < GS_MINIMUM_VERSION))
     return FALSE;
 
-  if (!NTGhostscriptGetString(gsver, "GS_LIB", buf, sizeof(buf)))
+  if (!NTGhostscriptGetString(ghostscript_version, "GS_LIB", gs_lib_path,
+                              sizeof(gs_lib_path)))
     return FALSE;
 
-  p = strrchr(buf, ';');
-  if (p) {
-    p++;
-    strncpy(path,p,path_length-1);
-    return TRUE;
+  /*
+    The format of the GS_LIB string is a path similar to
+    "c:\gs8.14\lib;C:\gs\fonts;C:\gs\gs8.14\Resource". Ghostscript
+    7.0X does not include the Resource entry.
+  */
+  {
+    const char
+      *end = NULL,
+      *start = gs_lib_path;
+        
+    end=start+strlen(start);
+    while ( start < end )
+      {
+        char
+          font_dir[MaxTextExtent],
+          font_dir_file[MaxTextExtent];
+            
+        const char
+          *seperator;
+            
+        int
+          length;
+            
+        seperator = strchr(start,DirectoryListSeparator);
+        if (seperator)
+          length=seperator-start;
+        else
+          length=end-start;
+        if (length > MaxTextExtent-1)
+          length = MaxTextExtent-1;
+        strncpy(font_dir,start,length);
+        font_dir[length]='\0';
+        FormatString(font_dir_file,"%.1024s%sfonts.dir",font_dir,DirectorySeparator);
+        if (IsAccessible(font_dir_file))
+          {
+            strncpy(path,font_dir,path_length-1);
+            path[path_length-1]='\0';
+            (void) LogMagickEvent(AnnotateEvent,GetMagickModule(),
+                                  "Ghostscript fonts in directory \"%s\"",
+                                  path);
+            return TRUE;
+          }
+        start += length+1;
+      }
   }
 
   return FALSE;

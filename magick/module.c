@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003, 2004 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -17,7 +17,7 @@
 %                  M   M   OOO   DDDD    UUU   LLLLL  EEEEE                   %
 %                                                                             %
 %                                                                             %
-%                       GraphicsMagick Module Methods                         %
+%                               Module Loader                                 %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -44,6 +44,7 @@
 #include "magick/log.h"
 #include "magick/magic.h"
 #include "magick/magick.h"
+#include "magick/map.h"
 #include "magick/module.h"
 #include "magick/semaphore.h"
 #include "magick/utility.h"
@@ -126,6 +127,21 @@ static CoderInfo
 static ModuleInfo
   *module_list = (ModuleInfo *) NULL;
 
+/*
+  List of directories to search for coder modules
+*/
+static MagickMap
+  coder_path_map = (MagickMap) NULL;
+
+/*
+  List of directories to search for filter modules
+*/
+static MagickMap
+  filter_path_map = (MagickMap) NULL;
+
+/*
+  Set to True if libltdl has been initialized.
+*/
 static unsigned int
   ltdl_initialized=False;
 
@@ -152,6 +168,7 @@ static const CoderInfo
 
 
 static unsigned int
+  InitializeModuleSearchPath(MagickModuleType module_type,ExceptionInfo *exception),
   ReadModuleConfigureFile(const char *,const unsigned long,ExceptionInfo *),
   UnloadModule(const CoderInfo *,ExceptionInfo *),
   UnregisterModule(const char *,ExceptionInfo *);
@@ -179,6 +196,18 @@ static unsigned int
 MagickExport void DestroyMagickModules(void)
 {
   DestroyModuleInfo();
+
+  if (coder_path_map != (MagickMap) NULL)
+    {
+      MagickMapDeallocateMap(coder_path_map);
+      coder_path_map = (MagickMap) NULL;
+    }
+
+  if (filter_path_map != (MagickMap) NULL)
+    {
+      MagickMapDeallocateMap(filter_path_map);
+      filter_path_map = (MagickMap) NULL;
+    }
 }
 
 /*
@@ -293,7 +322,7 @@ MagickExport void DestroyModuleInfo(void)
 %      arguments.
 %
 */
-MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image **image,
+MagickExport MagickPassFail ExecuteModuleProcess(const char *tag,Image **image,
   const int argc,char **argv)
 {
   ModuleHandle
@@ -304,15 +333,15 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image **image,
 
   assert(image != (Image **) NULL);
   assert((*image)->signature == MagickSignature);
-  status=False;
+  status=MagickFail;
 
 #if !defined(BuildMagickModules)
   /*
     Try to locate and execute a static module.
   */
   status=ExecuteStaticModuleProcess(tag,image,argc,argv);
-  if (status != False)
-    return;
+  if (status != MagickFail)
+    return (status);
 #endif
 
   {
@@ -324,7 +353,7 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image **image,
     TagToFilterModuleName(tag,module_name);
     if (!FindMagickModule(module_name,MagickFilterModule,module_path,
       &(*image)->exception))
-      return( False);
+      return(MagickFail);
 
     /* Open the module */
     handle=lt_dlopen(module_path);
@@ -451,11 +480,12 @@ static const CoderInfo *GetCoderInfo(const char *tag,
 %
 %  FindMagickModule() finds a module with the specified module type and
 %  file name. The buffer pointed to by 'path' is updated with the file path
-%  if the file is found. True is returned if the module is found.
+%  if the file is found. MagickPass is returned if the module is found or
+%  MagickFail is returned if the module can not be located.
 %
 %  The format of the FindMagickModule method is:
 %
-%      unsigned int FindMagickModule(const char *filename,
+%      MagickPassFail FindMagickModule(const char *filename,
 %        MagickModuleType module_type,char *path,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -463,7 +493,7 @@ static const CoderInfo *GetCoderInfo(const char *tag,
 %    o filename: The module file name.
 %
 %    o module_type: The module type (MagickCoderModule or MagickFilterModule)
-
+%
 %    o path: A pointer to the buffer to place the path to the module file. The
 %            buffer must be at least MaxTextExtent characters in size.
 %
@@ -471,39 +501,31 @@ static const CoderInfo *GetCoderInfo(const char *tag,
 %
 %
 */
-#if !defined(UseInstalledMagick) && defined(POSIX)
-static void ChopPathComponents(char *path,const unsigned long components)
+
+static MagickPassFail FindMagickModule(const char *filename,
+                                       MagickModuleType module_type,
+                                       char *path,
+                                       ExceptionInfo *exception)
 {
-  long
-    count;
+  MagickMap
+    path_map = (MagickMap) NULL;
 
-  register char
-    *p;
+  MagickMapIterator
+    path_map_iterator = (MagickMapIterator) NULL;
 
-  if (*path == '\0')
-    return;
-  p=path+strlen(path);
-  if (*p == *DirectorySeparator)
-    *p='\0';
-  for (count=0; (count < (long) components) && (p > path); p--)
-    if (*p == *DirectorySeparator)
-      {
-        *p='\0';
-        count++;
-      }
-}
-#endif /* !defined(UseInstalledMagick) && defined(POSIX) */
-
-static unsigned int FindMagickModule(const char *filename,
-  MagickModuleType module_type,char *path,ExceptionInfo *exception)
-{
   const char
-    *module_path = NULL;
+    *key;
+
+  MagickPassFail
+    status=MagickFail;
 
   assert(filename != (const char *) NULL);
   assert(path != (char *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   (void) strncpy(path,filename,MaxTextExtent-1);
+  
+  if (InitializeModuleSearchPath(module_type,exception) == MagickFail)
+    return (status);
 
   switch (module_type)
     {
@@ -511,210 +533,64 @@ static unsigned int FindMagickModule(const char *filename,
     default:
       {
         (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-           "Searching for coder module file \"%s\" ...",filename);
-        module_path = getenv("MAGICK_CODER_MODULE_PATH");
+                              "Searching for coder module file \"%s\" ...",
+                              filename);
+        path_map=coder_path_map;
         break;
       }
     case MagickFilterModule:
       {
         (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-           "Searching for filter module file \"%s\" ...",filename);
-        module_path = getenv("MAGICK_FILTER_MODULE_PATH");
+                              "Searching for filter module file \"%s\" ...",
+                              filename);
+        path_map=filter_path_map;
         break;
       }
     }
-
-  {
-    /*
-      Allow the module search path to be explicitly specified.
-    */
-    if ( module_path )
-      {
-        const char
-          *end = NULL,
-          *start = module_path;
-        
-        end=start+strlen(start);
-        while ( start < end )
-          {
-            const char
-              *seperator;
-            
-            int
-              length;
-            
-            seperator = strchr(start,DirectoryListSeparator);
-            if (seperator)
-              length=seperator-start;
-            else
-              length=end-start;
-            if (length > MaxTextExtent-1)
-              length = MaxTextExtent-1;
-            strncpy(path,start,length);
-            path[length]='\0';
-            if (path[length-1] != DirectorySeparator[0])
-              strcat(path,DirectorySeparator);
-            strcat(path,filename);
-            if (IsAccessible(path))
-              return(True);
-            start += length+1;
-          }
-      }
-  }
-
-#if defined(UseInstalledMagick)
-# if defined(MagickCoderModulesPath)
-  {
-    /*
-      Search hard coded paths.
-    */
-    char
-      *module_directory=NULL;
-
-    switch (module_type)
-      {
-      case MagickCoderModule:
-      default:
-        module_directory=MagickCoderModulesPath;
-        break;
-      case MagickFilterModule:
-        module_directory=MagickFilterModulesPath;
-        break;
-      }
-    
-    FormatString(path,"%.512s%.256s",module_directory,filename);
-    if (!IsAccessible(path))
-      {
-        ThrowException(exception,ConfigureError,UnableToAccessModuleFile,path);
-        return (False);
-      }
-    return (True);
-  }
-# else
-#  if defined(WIN32)
-  {
-    /*
-      Locate path via registry key.
-    */
-    char
-      *key=NULL,
-      *key_value;
-
-    switch (module_type)
-      {
-      case MagickCoderModule:
-      default:
-        key="CoderModulesPath";
-        break;
-      case MagickFilterModule:
-        key="FilterModulesPath";
-        break;
-      }
-
-    key_value=NTRegistryKeyLookup(key);
-    if (key_value == (char *) NULL)
-      {
-        ThrowException(exception,ConfigureError,RegistryKeyLookupFailed,key);
-        return (False);
-      }
-
-    FormatString(path,"%.512s%s%.256s",key_value,DirectorySeparator,
-                 filename);
-    if (!IsAccessible(path))
-      {
-        ThrowException(exception,ConfigureError,UnableToAccessModuleFile,
-                       path);
-        return (False);
-      }
-    return (True);
-  }
-#  endif /* defined(WIN32) */
-# endif /* !defined(MagickCoderModulesPath) */
-# if !defined(MagickCoderModulesPath) && !defined(WIN32)
-#  error MagickCoderModulesPath or WIN32 must be defined when UseInstalledMagick is defined
-# endif
-#else /* end defined(UseInstalledMagick) */
-  if (getenv("MAGICK_HOME") != (char *) NULL)
+  
+  path_map_iterator=MagickMapAllocateIterator(path_map);
+  
+  if (IsEventLogging())
     {
-      /*
-        Search MAGICK_HOME.
-      */
-# if defined(POSIX)
       char
-        *subdir=NULL;
-
-      switch (module_type)
+        list_seperator[2],
+        *search_path=0;
+      
+      list_seperator[0]=DirectoryListSeparator;
+      list_seperator[1]='\0';
+      while(MagickMapIterateNext(path_map_iterator,&key))
         {
-        case MagickCoderModule:
-        default:
-          subdir=MagickCoderModulesSubdir;
-          break;
-        case MagickFilterModule:
-          subdir=MagickFilterModulesSubdir;
+          if (search_path)
+            ConcatenateString(&search_path,list_seperator);
+          ConcatenateString(&search_path,
+                            MagickMapDereferenceIterator(path_map_iterator,0));
+        }
+      
+      (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+                            "Searching for module file \"%s\" in path \"%s\"",filename,search_path);
+      
+      MagickFreeMemory(search_path);
+      MagickMapIterateToFront(path_map_iterator);
+    }
+  
+  while(MagickMapIterateNext(path_map_iterator,&key))
+    {
+      FormatString(path,"%.1024s%.256s",
+                   (const char *)MagickMapDereferenceIterator(path_map_iterator,0),
+                   filename);
+      
+      if (IsAccessible(path))
+        {
+          status=MagickPass;
           break;
         }
-
-      FormatString(path,"%.512s/lib/%s/%.256s",getenv("MAGICK_HOME"),
-        subdir,filename);
-# else
-      FormatString(path,"%.512s%s%.256s",getenv("MAGICK_HOME"),
-        DirectorySeparator,filename);
-# endif /* !POSIX */
-      if (IsAccessible(path))
-        return(True);
     }
-  if (*SetClientPath((char *) NULL) != '\0')
-    {
-      /*
-        Search based on executable directory if directory is known.
-      */
-# if defined(POSIX)
-      char
-        *module_subdir=NULL,
-        prefix[MaxTextExtent];
 
-      switch (module_type)
-        {
-        case MagickCoderModule:
-        default:
-          module_subdir="coders";
-          break;
-        case MagickFilterModule:
-          module_subdir="filters";
-          break;
-        }
+  if (status == MagickFail)
+    path[0]='\0';
 
-      (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
-      ChopPathComponents(prefix,1);
-      FormatString(path,"%.512s/lib/%s/modules-Q%d/%s/%.256s",prefix,
-        MagickLibSubdir,QuantumDepth,module_subdir,filename);
-# else /* end defined(POSIX) */
-      FormatString(path,"%.512s%s%.256s",SetClientPath((char *) NULL),
-        DirectorySeparator,filename);
-# endif /* !POSIX */
-      if (IsAccessible(path))
-        return(True);
-    }
-  if (getenv("HOME") != (char *) NULL)
-    {
-      /*
-        Search $HOME/.magick.
-      */
-      FormatString(path,"%.512s%s%s%.256s",getenv("HOME"),
-        *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator,filename);
-      if (IsAccessible(path))
-        return(True);
-    }
-  /*
-    Search current directory.
-  */
-  if (IsAccessible(path))
-    return(True);
-  if (exception->severity < ConfigureError)
-    ThrowException(exception,ConfigureError,UnableToAccessModuleFile,
-      filename);
-  return(False);
-#endif /* End defined(UseInstalledMagick) */
+  MagickMapDeallocateIterator(path_map_iterator);
+  return (status);
 }
 
 /*
@@ -743,46 +619,39 @@ static unsigned int FindMagickModule(const char *filename,
 %    o exception: Return any errors or warnings in this structure.
 %
 */
-static char **GetModuleList(ExceptionInfo *exception)
+static MagickPassFail GetModuleListForDirectory
+( const char *path,           /* Directory to scan. */
+  char **list,                /* List to extend. */
+  unsigned long *max_entries, /* Allocated list entries. */
+  ExceptionInfo *exception )  /* Any exception. */
 {
   char
-    **modules,
-    module_file_name[MaxTextExtent],
-    module_path[MaxTextExtent],
-    path[MaxTextExtent];
+    module_tag[MaxTextExtent];
 
   DIR
     *directory;
 
   register long
-    i;
+    i,
+    j;
 
   struct dirent
     *entry;
 
-  unsigned long
-    max_entries;
-
-  /*
-    Learn where modules live by using FindMagickModule to locate the
-    LOGO module (which is expected to exist for other reasons).
-  */
-  TagToCoderModuleName("LOGO",module_file_name);
-  if (!FindMagickModule(module_file_name,MagickCoderModule,module_path,
-        exception))
-    return((char **) NULL);
-  GetPathComponent(module_path,HeadPath,path);
-
-  max_entries=255;
-  modules=MagickAllocateMemory(char **,(max_entries+1)*sizeof(char *));
-  if (modules == (char **) NULL)
-    return((char **) NULL);
-  *modules=(char *) NULL;
+  assert( path != (char *) NULL );
+  assert( list != (char **) NULL );
+  assert( max_entries != (unsigned long *) NULL );
+  assert( exception != (ExceptionInfo *) NULL );
 
   directory=opendir(path);
   if (directory == (DIR *) NULL)
-    return((char **) NULL);
-  i=0;
+    return(MagickFail);
+
+  /*
+    Find number of entries in list.
+  */
+  for (i=0; list[i] != (char *) NULL; i++);
+
   entry=readdir(directory);
   while (entry != (struct dirent *) NULL)
   {
@@ -791,29 +660,88 @@ static char **GetModuleList(ExceptionInfo *exception)
         entry=readdir(directory);
         continue;
       }
-    if (i >= (long) max_entries)
+    if (i >= (long) *max_entries)
       {
-        max_entries<<=1;
-        MagickReallocMemory(modules,max_entries*sizeof(char *));
-        if (modules == (char **) NULL)
+        *max_entries<<=1;
+        MagickReallocMemory(list,*max_entries*sizeof(char *));
+        if (list == (char **) NULL)
           break;
       }
     /*
-      Add new module name to list.
+      Determine module tag
     */
-    modules[i]=AllocateString((char *) NULL);
-    GetPathComponent(entry->d_name,BasePath,modules[i]);
-    LocaleUpper(modules[i]);
-    if (LocaleNCompare("IM_MOD_",modules[i],7) == 0)
+    module_tag[0]='\0';
+    GetPathComponent(entry->d_name,BasePath,module_tag);
+    LocaleUpper(module_tag);
+    if (LocaleNCompare("IM_MOD_",module_tag,7) == 0)
       {
-        (void) strcpy(modules[i],modules[i]+10);
-        modules[i][strlen(modules[i])-1]='\0';
+        (void) strcpy(module_tag,module_tag+10);
+        module_tag[strlen(module_tag)-1]='\0';
       }
-    i++;
-    modules[i]=(char *) NULL;
+
+    /*
+      Add module tag to list if it is not already in list.
+    */
+    for (j=0; list[j] != (char *) NULL; j++)
+      {
+        if (LocaleCompare(module_tag,list[j]) == 0)
+          break;
+      }
+    if (list[j] == (char *) NULL)
+      {
+        list[i]=AllocateString(module_tag);
+        i++;
+        list[i]=(char *) NULL;
+      }
+
+    /*
+      Read next directory entry and continue
+    */
     entry=readdir(directory);
   }
   (void) closedir(directory);
+  return(MagickPass);
+}
+static char **GetModuleList(ExceptionInfo *exception)
+{
+  MagickMap
+    path_map = (MagickMap) NULL;
+
+  MagickMapIterator
+    path_map_iterator = (MagickMapIterator) NULL;
+
+  const char
+    *key;
+
+  char
+    **modules;
+
+  unsigned long
+    max_entries;
+
+  if (InitializeModuleSearchPath(MagickCoderModule,exception) == MagickFail)
+    return ((char **) NULL);
+
+  max_entries=255;
+  modules=MagickAllocateMemory(char **,(max_entries+1)*sizeof(char *));
+  if (modules == (char **) NULL)
+    return((char **) NULL);
+  modules[0]=(char *) NULL;
+
+  path_map=coder_path_map;
+  path_map_iterator=MagickMapAllocateIterator(path_map);
+
+  while(MagickMapIterateNext(path_map_iterator,&key))
+    {
+      const char
+        *path;
+
+      path=(const char *) MagickMapDereferenceIterator(path_map_iterator,0);
+      (void) GetModuleListForDirectory(path,modules,&max_entries,exception);
+    }
+
+  MagickMapDeallocateIterator(path_map_iterator);
+
   return(modules);
 }
 
@@ -847,7 +775,7 @@ MagickExport void InitializeMagickModules(void)
   if (module_list == (const ModuleInfo *) NULL)
     {
       /*
-        Read modules.
+        Read module aliases file.
       */
       if (!ltdl_initialized)
         {
@@ -859,6 +787,306 @@ MagickExport void InitializeMagickModules(void)
       ReadModuleConfigureFile(ModuleFilename,0,&exception);
     }
   LiberateSemaphoreInfo(&module_semaphore);
+  InitializeModuleSearchPath(MagickCoderModule,&exception);
+  InitializeModuleSearchPath(MagickFilterModule,&exception);
+
+  DestroyExceptionInfo(&exception);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  I n i t i a l i z e M o d u l e S e a r c h P a t h                        %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  InitializeModuleSearchPath() initializes the module search path for the
+%  specified type of module.
+%
+%  The format of the InitializeModuleSearchPath method is:
+%
+%    MagickPassFail InitializeModuleSearchPath(MagickModuleType module_type,
+%                                              ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o module_type: The module type (MagickCoderModule or MagickFilterModule)
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+*/
+static void AddModulePath(MagickMap path_map, unsigned int *path_index,
+  const char *path,ExceptionInfo *exception)
+{
+  char
+    key[MaxTextExtent];
+
+  FormatString(key,"%u",*path_index);
+  MagickMapAddEntry(path_map,key,(void *)path,0,exception);
+  (*path_index)++;
+}
+
+#if !defined(UseInstalledMagick) && defined(POSIX)
+static void ChopPathComponents(char *path,const unsigned long components)
+{
+  long
+    count;
+
+  register char
+    *p;
+
+  if (*path == '\0')
+    return;
+  p=path+strlen(path);
+  if (*p == *DirectorySeparator)
+    *p='\0';
+  for (count=0; (count < (long) components) && (p > path); p--)
+    if (*p == *DirectorySeparator)
+      {
+        *p='\0';
+        count++;
+      }
+}
+#endif /* !defined(UseInstalledMagick) && defined(POSIX) */
+
+MagickPassFail InitializeModuleSearchPath(MagickModuleType module_type,
+                                          ExceptionInfo *exception)
+{
+  MagickMap
+    path_map = (MagickMap) NULL;
+
+  MagickPassFail
+    status=MagickPass;
+
+  unsigned int
+    path_index=0;
+
+  char
+    path[MaxTextExtent];
+
+  const char
+    *module_path = NULL;
+
+  assert(exception != (ExceptionInfo *) NULL);
+
+  AcquireSemaphoreInfo(&module_semaphore);
+  switch (module_type)
+    {
+    case MagickCoderModule:
+    default:
+      {
+        if (coder_path_map != (MagickMap) NULL)
+          {
+            /*
+              Already initialized.
+            */
+            LiberateSemaphoreInfo(&module_semaphore);
+            return (status);
+          }
+        coder_path_map=MagickMapAllocateMap(MagickMapCopyString,MagickMapDeallocateString);
+        path_map=coder_path_map;
+        module_path = getenv("MAGICK_CODER_MODULE_PATH");
+        break;
+      }
+    case MagickFilterModule:
+      {
+        if (filter_path_map != (MagickMap) NULL)
+          {
+            /*
+              Already initialized.
+            */
+            LiberateSemaphoreInfo(&module_semaphore);
+            return (status);
+          }
+        filter_path_map=MagickMapAllocateMap(MagickMapCopyString,MagickMapDeallocateString);
+        path_map=filter_path_map;
+        module_path = getenv("MAGICK_FILTER_MODULE_PATH");
+        break;
+      }
+    }
+
+  path[0]='\0';
+
+  /*
+    Allow the module search path to be explicitly specified.
+  */
+  if ( module_path )
+    {
+      const char
+        *end = NULL,
+        *start = module_path;
+      
+      end=start+strlen(start);
+      while ( start < end )
+        {
+          char
+            buffer[MaxTextExtent];
+          
+          const char
+            *seperator;
+          
+          int
+            length;
+          
+          seperator = strchr(start,DirectoryListSeparator);
+          if (seperator)
+            length=seperator-start;
+          else
+            length=end-start;
+          if (length > MaxTextExtent-1)
+            length = MaxTextExtent-1;
+          strncpy(buffer,start,length);
+          buffer[length]='\0';
+          if (buffer[length-1] != DirectorySeparator[0])
+            strcat(buffer,DirectorySeparator);
+          AddModulePath(path_map,&path_index,buffer,exception);
+          start += length+1;
+        }
+    }
+
+#if defined(UseInstalledMagick)
+# if defined(MagickCoderModulesPath)
+  {
+    /*
+      Search hard coded paths.
+    */
+    char
+      *module_directory=NULL;
+
+    switch (module_type)
+      {
+      case MagickCoderModule:
+      default:
+        module_directory=MagickCoderModulesPath;
+        break;
+      case MagickFilterModule:
+        module_directory=MagickFilterModulesPath;
+        break;
+      }
+
+    AddModulePath(path_map,&path_index,module_directory,exception);
+    LiberateSemaphoreInfo(&module_semaphore);
+    return (status);
+  }
+# else
+#  if defined(WIN32)
+  {
+    /*
+      Locate path via registry key.
+    */
+    char
+      *key=NULL,
+      *key_value;
+
+    switch (module_type)
+      {
+      case MagickCoderModule:
+      default:
+        key="CoderModulesPath";
+        break;
+      case MagickFilterModule:
+        key="FilterModulesPath";
+        break;
+      }
+
+    key_value=NTRegistryKeyLookup(key);
+    if (key_value == (char *) NULL)
+      {
+        ThrowException(exception,ConfigureError,RegistryKeyLookupFailed,key);
+        return (MagickFail);
+      }
+
+    FormatString(path,"%.512s%s",key_value,DirectorySeparator);
+    AddModulePath(path_map,&path_index,path,exception);
+    LiberateSemaphoreInfo(&module_semaphore);
+    return (status);
+  }
+#  endif /* defined(WIN32) */
+# endif /* !defined(MagickCoderModulesPath) */
+# if !defined(MagickCoderModulesPath) && !defined(WIN32)
+#  error MagickCoderModulesPath or WIN32 must be defined when UseInstalledMagick is defined
+# endif
+#else /* end defined(UseInstalledMagick) */
+  if (getenv("MAGICK_HOME") != (char *) NULL)
+    {
+      /*
+        Search MAGICK_HOME.
+      */
+# if defined(POSIX)
+      char
+        *subdir=NULL;
+
+      switch (module_type)
+        {
+        case MagickCoderModule:
+        default:
+          subdir=MagickCoderModulesSubdir;
+          break;
+        case MagickFilterModule:
+          subdir=MagickFilterModulesSubdir;
+          break;
+        }
+
+      FormatString(path,"%.512s/lib/%s/",getenv("MAGICK_HOME"),subdir);
+# else
+      FormatString(path,"%.512s%s",getenv("MAGICK_HOME"),
+        DirectorySeparator);
+# endif /* !POSIX */
+      AddModulePath(path_map,&path_index,path,exception);
+    }
+  if (*SetClientPath((char *) NULL) != '\0')
+    {
+      /*
+        Search based on executable directory if directory is known.
+      */
+# if defined(POSIX)
+      char
+        *module_subdir=NULL,
+        prefix[MaxTextExtent];
+
+      switch (module_type)
+        {
+        case MagickCoderModule:
+        default:
+          module_subdir="coders";
+          break;
+        case MagickFilterModule:
+          module_subdir="filters";
+          break;
+        }
+
+      (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
+      ChopPathComponents(prefix,1);
+      FormatString(path,"%.512s/lib/%s/modules-Q%d/%s/",prefix,
+        MagickLibSubdir,QuantumDepth,module_subdir);
+# else /* end defined(POSIX) */
+      FormatString(path,"%.512s%s",SetClientPath((char *) NULL),
+        DirectorySeparator);
+# endif /* !POSIX */
+      AddModulePath(path_map,&path_index,path,exception);
+    }
+  if (getenv("HOME") != (char *) NULL)
+    {
+      /*
+        Search $HOME/.magick.
+      */
+      FormatString(path,"%.512s%s%s",getenv("HOME"),
+        *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator);
+      AddModulePath(path_map,&path_index,path,exception);
+    }
+  /*
+    Search current directory.
+  */
+  strcpy(path,"");
+  AddModulePath(path_map,&path_index,path,exception);
+
+  LiberateSemaphoreInfo(&module_semaphore);
+  return (status);
+#endif /* End defined(UseInstalledMagick) */
 }
 
 /*
@@ -884,8 +1112,8 @@ MagickExport void InitializeMagickModules(void)
 %
 %  A description of each parameter follows:
 %
-%    o module_info: GetModuleInfo() returns a pointer ModuleInfo structure
-%      that matches the specified tag.
+%    o module_info: GetModuleInfo() returns a pointer to a ModuleInfo
+%      structure that matches the specified tag.
 %
 %    o name: a character string that represents the module alias we are
 %      looking for.

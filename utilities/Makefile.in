@@ -883,7 +883,7 @@ uninstall-man: uninstall-man1 uninstall-man4 uninstall-man5
 @MAGICK_COMPAT_TRUE@	done
 
 clean-local:
-	rm -f *_out.miff demo.miff gm.core core
+	rm -f *_out.miff *_out.txt demo.miff gm.core core
 
 check:
 	rm -f demo.miff *_out.miff
@@ -955,6 +955,20 @@ check:
 	  -compress rle montage_out.miff
 	${GM} convert logo: -resize 40% logo_out.miff
 	${GM} composite 'tmp:logo_out.miff' -gravity north 'tmp:montage_out.miff' demo.miff
+	@echo ./gm convert -list color \> list_color_out.txt
+	${GM} convert -list color > list_color_out.txt
+	@echo ./gm convert -list delegate \> list_delegate_out.txt
+	${GM} convert -list delegate > list_delegate_out.txt
+	@echo ./gm convert -list format \> list_format_out.txt
+	${GM} convert -list format > list_format_out.txt
+	@echo ./gm convert -list magic \> list_magic_out.txt
+	${GM} convert -list magic > list_magic_out.txt
+	@echo ./gm convert -list resource \> list_resource_out.txt
+	${GM} convert -list resource > list_resource_out.txt
+@WITH_MODULES_TRUE@	@echo ./gm convert -list modules \> list_modules_out.txt
+@WITH_MODULES_TRUE@	${GM} convert -list modules > list_modules_out.txt
+	@echo ./gm convert -list type \> list_type_out.txt
+	${GM} convert -list type > list_type_out.txt
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

@@ -626,6 +626,11 @@ static unsigned int ReadTypeConfigureFile(const char *basename,
     *token,
     *xml;
 
+#if defined(WIN32)
+  char
+    GhostscriptFontDir[MaxTextExtent];
+#endif
+
   size_t
     length;
 
@@ -635,6 +640,14 @@ static unsigned int ReadTypeConfigureFile(const char *basename,
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
     "File path=\"%.1024s\", recursion depth=%lu",basename,depth);
   (void) strcpy(path,basename);
+#if defined(WIN32)
+  /*
+    For Windows, cache the location of the Ghostscript fonts.
+  */
+  GhostscriptFontDir[0]='\0';
+  if (NTGhostscriptFonts(GhostscriptFontDir,MaxTextExtent-2))
+    (void) strcat(GhostscriptFontDir,DirectorySeparator);
+#endif
   if (depth == 0)
     {
       /*
@@ -796,14 +809,7 @@ static unsigned int ReadTypeConfigureFile(const char *basename,
             CloneString(&glyphs,token);
 #if defined(WIN32)
             if (strchr(glyphs,'@') != (char *) NULL)
-              {
-                char
-                  path[MaxTextExtent];
-
-                NTGhostscriptFonts(path,MaxTextExtent-2);
-                (void) strcat(path,DirectorySeparator);
-                SubstituteString(&glyphs,"@ghostscript_font_dir@",path);
-              }
+              SubstituteString(&glyphs,"@ghostscript_font_dir@",GhostscriptFontDir);
 #endif
             type_list->glyphs=glyphs;
             break;
@@ -821,14 +827,7 @@ static unsigned int ReadTypeConfigureFile(const char *basename,
             metrics=AcquireString(token);
 #if defined(WIN32)
             if (strchr(metrics,'@') != (char *) NULL)
-              {
-                char
-                  path[MaxTextExtent];
-
-                NTGhostscriptFonts(path,MaxTextExtent-2);
-                (void) strcat(path,DirectorySeparator);
-                SubstituteString(&metrics,"@ghostscript_font_dir@",path);
-              }
+              SubstituteString(&metrics,"@ghostscript_font_dir@",GhostscriptFontDir);
 #endif
             type_list->metrics=metrics;
             break;

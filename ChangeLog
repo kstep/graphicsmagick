@@ -1,3 +1,27 @@
+2004-06-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/constitute.c (DispatchImage): Support 8-bit output to
+	common formats BGR, BGRO, BGRP, RGB, RGBO, and I as special cases
+	in order to improve performance.
+	(ConstituteImage): Support 8-bit input from common formats BGR,
+	BGRO, BGRP, RGB, RGBO, and I as special cases in order to improve
+	performance.
+	* utilities/Makefile.am (check): Add convert -list tests.
+	* magick/module.c: (InitializeModuleSearchPath): Evaluate and cache
+	module search path.
+	(FindMagickModule): Use cached module search path.
+	(OpenModules): Load all modules rather than just the modules in
+	the directory where the LOGO module is found.  Besides allowing
+	user-provided modules in non-GraphicsMagick directories to be
+	loaded, this allows the "moby" shared build to load additional
+	modules via OpenModules.
+	* GraphicsMagick.spec.in: Install *-config scripts with mode 755
+	rather than default 644.
+	* magick/type.c (ReadTypeConfigureFile): Determine location of
+	Ghostscript fonts only once in order to improve performance.
+	* magick/nt_base.c (NTGhostscriptFonts): Properly determine
+	Ghostscript font location for Ghostscript 8.0 and later.
+
 2004-05-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Magick++ needs to be built as a static library
