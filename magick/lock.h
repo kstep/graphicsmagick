@@ -54,14 +54,22 @@
 */
 #include "magick.h"
 #include "defines.h"
-#include <pthread.h>
+
+#if defined(HasPTHREADS)
+# include <pthread.h>
+#endif
 
 /* Simple mutex lock */
+#if defined(HasPTHREADS)
 typedef pthread_mutex_t SimpleMutexLock_t;
+#else
+typedef void * SimpleMutexLock_t;
+#endif
 
 /* Recursive mutex lock (may be locked multiple times by same thread) */
 typedef struct _RecursiveMutexLock
 {
+#if defined(HasPTHREADS)
   /* Guards the state of the nesting level and thread id. */
   pthread_mutex_t nesting_mutex;
 
@@ -74,6 +82,7 @@ typedef struct _RecursiveMutexLock
 
   /* Current owner of the lock. */
   pthread_t owner_id;
+#endif /* defined(HasPTHREADS) */
 
 } RecursiveMutexLock_t;
 

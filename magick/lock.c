@@ -1,11 +1,11 @@
 
 #include "lock.h"
 
-static pthread_t NULL_thread;
-
 MagickExport int RecursiveMutexInit(RecursiveMutexLock_t *lock)
 {
-  if(mutex_init(&lock->nesting_mutex) == -1)
+#if defined(HasPTHREADS)
+  static pthread_t NULL_thread;
+  if(pthread_mutex_init(&lock->nesting_mutex,NULL) == -1)
     return -1;
   else if(pthread_cond_init(&lock->lock_available,NULL) == -1)
     return -1;
@@ -15,18 +15,22 @@ MagickExport int RecursiveMutexInit(RecursiveMutexLock_t *lock)
       lock->owner_id=NULL_thread;
       return 0;
     }
+#endif /* defined(HasPTHREADS) */
 }
 MagickExport int RecursiveMutexDestroy(RecursiveMutexLock_t *lock)
 {
+#if defined(HasPTHREADS)
   if(pthread_mutex_destroy(&lock->nesting_mutex) == -1)
     return -1;
   else if(pthread_cond_destroy(&lock->lock_available) == -1)
     return -1;
   else
     return 0;
+#endif /* defined(HasPTHREADS) */
 }
 MagickExport int RecursiveMutexLock(RecursiveMutexLock_t *lock)
 {
+#if defined(HasPTHREADS)
   int result=0;
   int oerrno=0;
   pthread_t t_id=pthread_self();
@@ -60,9 +64,11 @@ MagickExport int RecursiveMutexLock(RecursiveMutexLock_t *lock)
   pthread_mutex_unlock(&lock->nesting_mutex);
   errno=oerrno;
   return result;
+#endif /* defined(HasPTHREADS) */
 }
 MagickExport int RecursiveMutexTryLock(RecursiveMutexLock_t *lock)
 {
+#if defined(HasPTHREADS)
   int result=0;
   int oerrno=0;
   pthread_t t_id=pthread_self();
@@ -91,11 +97,15 @@ MagickExport int RecursiveMutexTryLock(RecursiveMutexLock_t *lock)
   oerrno=errno;
   pthread_mutex_unlock(&lock->nesting_mutex);
   errno=oerrno;
+  return result;
+#endif /* defined(HasPTHREADS) */
 }
 MagickExport int RecursiveMutexUnLock(RecursiveMutexLock_t *lock)
 {
+#if defined(HasPTHREADS)
   int result=0;
   int oerrno=0;
+  static pthread_t NULL_thread;
   pthread_t t_id=pthread_self();
 
   if(pthread_mutex_lock(&lock->nesting_mutex) == -1)
@@ -126,25 +136,36 @@ MagickExport int RecursiveMutexUnLock(RecursiveMutexLock_t *lock)
   pthread_mutex_unlock(&lock->nesting_mutex);
   errno=oerrno;
   return result;
+#endif /* defined(HasPTHREADS) */
 }
 
 MagickExport int SimpleMutexInit(SimpleMutexLock_t *lock)
 {
+#if defined(HasPTHREADS)
   pthread_mutex_init(lock,NULL);
+#endif /* defined(HasPTHREADS) */
 }
 MagickExport int SimpleMutexDestroy(SimpleMutexLock_t *lock)
 {
+#if defined(HasPTHREADS)
   pthread_mutex_destroy(lock);
+#endif /* defined(HasPTHREADS) */
 }
 MagickExport int SimpleMutexLock(SimpleMutexLock_t *lock)
 {
+#if defined(HasPTHREADS)
   pthread_mutex_lock(lock);
+#endif /* defined(HasPTHREADS) */
 }
 MagickExport int SimpleMutexTryLock(SimpleMutexLock_t *lock)
 {
+#if defined(HasPTHREADS)
   pthread_mutex_trylock(lock);
+#endif /* defined(HasPTHREADS) */
 }
 MagickExport int SimpleMutexUnLock(SimpleMutexLock_t *lock)
 {
+#if defined(HasPTHREADS)
   pthread_mutex_unlock(lock);
+#endif /* defined(HasPTHREADS) */
 }
