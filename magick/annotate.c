@@ -734,9 +734,6 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
   FILE
     *file;
 
-  ExceptionInfo
-    exception;
-
   Image
     *annotate_image;
 
@@ -824,9 +821,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
   if (draw_info->density != (char *) NULL)
     (void) CloneString(&clone_info->density,draw_info->density);
   clone_info->antialias=draw_info->text_antialias;
-  annotate_image=ReadImage(clone_info,&exception);
-  if (exception.severity != UndefinedException)
-    MagickWarning(exception.severity,exception.reason,exception.description);
+  annotate_image=ReadImage(clone_info,&image->exception);
   DestroyImageInfo(clone_info);
   (void) remove(filename);
   if (annotate_image == (Image *) NULL)
@@ -849,7 +844,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
       RectangleInfo
         crop_info;
 
-      crop_info=GetImageBoundingBox(annotate_image,&annotate_image->exception);
+      crop_info=GetImageBoundingBox(annotate_image,&image->exception);
       crop_info.height=(unsigned int) ceil((resolution.y/72.0)*
         ExpandAffine(&draw_info->affine)*draw_info->pointsize-0.5);
       crop_info.y=(long) ceil((resolution.y/72.0)*extent.y/8.0-0.5);
