@@ -1,5 +1,6 @@
 2004-02-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/command.c (ImportImageCommand): Eliminate memory leaks.
 	* magick/memory.c (LiberateMemory): Use MagickFreeMemory macro for
 	implementation.
 	(ReacquireMemory): Use MagickReallocMemory macro for

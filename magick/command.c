@@ -13808,8 +13808,9 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
   status&=MogrifyImages(image_info,argc-1,argv,&image);
   (void) CatchImageException(image);
   status&=WriteImages(image_info,image,filename,&image->exception);
+  DestroyImageInfo(image_info);
+  DestroyQuantizeInfo(quantize_info);
   DestroyImageList(image);
-  DestroyMagick();
   LiberateArgumentList(argc,argv);
   return(!status);
 #else
