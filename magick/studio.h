@@ -133,6 +133,9 @@ extern "C" {
 #if defined(WIN32) || defined(POSIX)
 # include <sys/types.h>
 # include <sys/stat.h>
+# if defined(HAVE_GETTIMEOFDAY)
+# include <sys/time.h>
+# endif
 # if defined(HAVE_FTIME)
 # include <sys/timeb.h>
 # endif
