@@ -262,13 +262,13 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
   image->class=PseudoClass;
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetPixelCache(image,0,y,image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
     for (x=0; x < (int) image->columns; x++)
       indexes[x]=False;
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
   }
   /*
@@ -293,7 +293,7 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
     /*
       Recolor neighboring pixels.
     */
-    q=GetPixelCache(image,0,y,x1+1,1);
+    q=GetImagePixels(image,0,y,x1+1,1);
     if (q == (PixelPacket *) NULL)
       break;
     q+=x1;
@@ -313,7 +313,7 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
       *q=color;
       q--;
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
     skip=x >= x1;
     if (!skip)
@@ -329,7 +329,7 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
         {
           if (x < image->columns)
             {
-              q=GetPixelCache(image,x,y,image->columns-x,1);
+              q=GetImagePixels(image,x,y,image->columns-x,1);
               if (q == (PixelPacket *) NULL)
                 break;
               indexes=GetIndexes(image);
@@ -349,7 +349,7 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
                 i++;
                 q++;
               }
-              if (!SyncPixelCache(image))
+              if (!SyncImagePixels(image))
                 break;
             }
           Push(y,start,x-1,offset);
@@ -360,7 +360,7 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
       x++;
       if (x <= x2)
         {
-          q=GetPixelCache(image,x,y,x2-x+1,1);
+          q=GetImagePixels(image,x,y,x2-x+1,1);
           if (q == (PixelPacket *) NULL)
             break;
           for ( ; x <= x2; x++)
@@ -385,7 +385,7 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
   */
   for (y=0; y < (int) image->rows; y++)
   {
-    q=GetPixelCache(image,0,y,image->columns,1);
+    q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
@@ -393,7 +393,7 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
     {
       if (indexes[x])
         {
-          p=GetPixelCache(tile,x % tile->columns,y % tile->rows,1,1);
+          p=GetImagePixels(tile,x % tile->columns,y % tile->rows,1,1);
           if (p == (PixelPacket *) NULL)
             break;
           if (!tile->matte)
@@ -412,7 +412,7 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
         }
       q++;
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
   }
   image->class=DirectClass;
@@ -1010,7 +1010,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   for (y=(int) bounds.y1; y <= (int) bounds.y2; y++)
   {
     target.y=y;
-    q=GetPixelCache(image,(int) bounds.x1,y,(int) (bounds.x2-bounds.x1+1.0),1);
+    q=GetImagePixels(image,(int) bounds.x1,y,(int) (bounds.x2-bounds.x1+1.0),1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=(int) bounds.x1; x <= (int) bounds.x2; x++)
@@ -1025,7 +1025,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           register PixelPacket
             *p;
 
-          p=GetPixelCache(clone_info->tile,x % clone_info->tile->columns,
+          p=GetImagePixels(clone_info->tile,x % clone_info->tile->columns,
             y % clone_info->tile->rows,1,1);
           if (p == (PixelPacket *) NULL)
             break;
@@ -1052,7 +1052,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         }
       q++;
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(DrawImageText,y,image->rows);
@@ -1499,11 +1499,11 @@ static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
             if ((pixel->x != (int) (p->pixel.x+0.5)) &&
                 (pixel->y != (int) (p->pixel.y+0.5)))
               break;
-            q=GetPixelCache(image,(int) pixel->x,(int) pixel->y,1,1);
+            q=GetImagePixels(image,(int) pixel->x,(int) pixel->y,1,1);
             if (q != (PixelPacket *) NULL)
               {
                 q->opacity=Transparent;
-                (void) SyncPixelCache(image);
+                (void) SyncImagePixels(image);
               }
             break;
           }
@@ -1520,10 +1520,10 @@ static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
             color=GetOnePixel(image,(int) p->pixel.x,(int) p->pixel.y);
             if (ColorMatch(color,target,image->fuzz))
               {
-                q=GetPixelCache(image,(int) pixel->x,(int) pixel->y,1,1);
+                q=GetImagePixels(image,(int) pixel->x,(int) pixel->y,1,1);
                 if (q != (PixelPacket *) NULL)
                 q->opacity=Transparent;
-                (void) SyncPixelCache(image);
+                (void) SyncImagePixels(image);
               }
             break;
           }
@@ -1547,11 +1547,11 @@ static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
           }
           case ResetMethod:
           {
-            q=GetPixelCache(image,(int) pixel->x,(int) pixel->y,1,1);
+            q=GetImagePixels(image,(int) pixel->x,(int) pixel->y,1,1);
             if (q != (PixelPacket *) NULL)
               {
                 q->opacity=Opaque;
-                (void) SyncPixelCache(image);
+                (void) SyncImagePixels(image);
               }
             break;
           }
@@ -1686,7 +1686,7 @@ Export unsigned int MatteFloodfillImage(Image *image,const PixelPacket *target,
     return(False);
   if (target->opacity == matte)
     return(False);
-  q=GetPixelCache(image,x_offset,y_offset,1,1);
+  q=GetImagePixels(image,x_offset,y_offset,1,1);
   if (q == (PixelPacket *) NULL)
     return(False);
   if (q->opacity == matte)
@@ -1724,7 +1724,7 @@ Export unsigned int MatteFloodfillImage(Image *image,const PixelPacket *target,
     /*
       Recolor neighboring pixels.
     */
-    q=GetPixelCache(image,0,y,image->columns,1);
+    q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     q+=x1;
@@ -1741,7 +1741,7 @@ Export unsigned int MatteFloodfillImage(Image *image,const PixelPacket *target,
       q->opacity=matte;
       q--;
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
     skip=x >= x1;
     if (!skip)
@@ -1755,7 +1755,7 @@ Export unsigned int MatteFloodfillImage(Image *image,const PixelPacket *target,
     {
       if (!skip)
         {
-          q=GetPixelCache(image,0,y,image->columns,1);
+          q=GetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           q+=x;
@@ -1772,14 +1772,14 @@ Export unsigned int MatteFloodfillImage(Image *image,const PixelPacket *target,
             q->opacity=matte;
             q++;
           }
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           Push(y,start,x-1,offset);
           if (x > (x2+1))
             Push(y,x2+1,x-1,-offset);
         }
       skip=False;
-      q=GetPixelCache(image,0,y,image->columns,1);
+      q=GetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
       q+=x;
@@ -1874,7 +1874,7 @@ Export unsigned int OpaqueImage(Image *image,const char *opaque_color,
       */
       for (y=0; y < (int) image->rows; y++)
       {
-        q=GetPixelCache(image,0,y,image->columns,1);
+        q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (int) image->columns; x++)
@@ -1883,7 +1883,7 @@ Export unsigned int OpaqueImage(Image *image,const char *opaque_color,
             *q=target_color;
           q++;
         }
-        if (!SyncPixelCache(image))
+        if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
           ProgressMonitor(OpaqueImageText,y,image->rows);
@@ -1969,7 +1969,7 @@ Export unsigned int TransparentImage(Image *image,const char *color)
     MatteImage(image,Opaque);
   for (y=0; y < (int) image->rows; y++)
   {
-    q=GetPixelCache(image,0,y,image->columns,1);
+    q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) image->columns; x++)
@@ -1978,7 +1978,7 @@ Export unsigned int TransparentImage(Image *image,const char *color)
         q->opacity=Transparent;
       q++;
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(TransparentImageText,y,image->rows);

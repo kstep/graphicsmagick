@@ -348,7 +348,7 @@ static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
     TransformRGBImage(image,RGBColorspace);
     for (y=0; y < (int) image->rows; y++)
     {
-      p=GetPixelCache(image,0,y,image->columns,1);
+      p=GetImagePixels(image,0,y,image->columns,1);
       if (p == (PixelPacket *) NULL)
         break;
       for (x=0; x < (int) image->columns; x++)

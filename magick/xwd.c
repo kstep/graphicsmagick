@@ -360,7 +360,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->colors != 0)
         for (y=0; y < (int) image->rows; y++)
         {
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           for (x=0; x < (int) image->columns; x++)
@@ -374,7 +374,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             q->blue=XDownScale(colors[index].blue);
             q++;
           }
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           if (QuantumTick(y,image->rows))
             ProgressMonitor(LoadImageText,y,image->rows);
@@ -382,7 +382,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       else
         for (y=0; y < (int) image->rows; y++)
         {
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           for (x=0; x < (int) image->columns; x++)
@@ -396,7 +396,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             q->blue=XDownScale((color*65535L)/blue_mask);
             q++;
           }
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           if (QuantumTick(y,image->rows))
             ProgressMonitor(LoadImageText,y,image->rows);
@@ -421,7 +421,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
       for (y=0; y < (int) image->rows; y++)
       {
-        q=SetPixelCache(image,0,y,image->columns,1);
+        q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
@@ -434,7 +434,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               image);
           *q++=image->colormap[index];
         }
-        if (!SyncPixelCache(image))
+        if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
           ProgressMonitor(LoadImageText,y,image->rows);
@@ -667,7 +667,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
     (bytes_per_line-((image->columns*bits_per_pixel) >> 3));
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetPixelCache(image,0,y,image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);

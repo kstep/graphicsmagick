@@ -93,6 +93,7 @@ typedef enum
   FileOpenWarning = 330,
   BlobWarning = 335,
   CacheWarning = 340,
+  StreamWarning = 345,
   FatalException = 400,
   ResourceLimitError = 400,
   XServerError = 405,
@@ -102,7 +103,8 @@ typedef enum
   CorruptImageError = 425,
   FileOpenError = 430,
   BlobError = 435,
-  CacheError = 440
+  CacheError = 440,
+  StreamError = 445
 } ExceptionType;
 
 typedef enum

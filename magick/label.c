@@ -532,7 +532,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
       p=(unsigned char *) canvas.bitmap;
       for (y=0; y < (int) image->rows; y++)
       {
-        q=SetPixelCache(image,0,y,image->columns,1);
+        q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (int) image->columns; x++)
@@ -558,7 +558,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
           p++;
           q++;
         }
-        if (!SyncPixelCache(image))
+        if (!SyncImagePixels(image))
           break;
         if ((image->columns % 2) != 0)
           p++;
@@ -723,7 +723,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
           image);
       for (y=0; y < (int) image->rows; y++)
       {
-        q=GetPixelCache(image,0,y,image->columns,1);
+        q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (int) image->columns; x++)
@@ -740,7 +740,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
             }
           q++;
         }
-        if (!SyncPixelCache(image))
+        if (!SyncImagePixels(image))
           break;
       }
       DestroyImageInfo(clone_info);
@@ -802,7 +802,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
   corner.blue=0;
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetPixelCache(image,0,y,image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) image->columns; x++)
@@ -819,7 +819,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
   image->matte=True;
   for (y=0; y < (int) image->rows; y++)
   {
-    q=GetPixelCache(image,0,y,image->columns,1);
+    q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) image->columns; x++)
@@ -836,7 +836,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
         }
       q++;
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
   }
   return(image);

@@ -627,7 +627,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   for (y=0; y < (int) image->rows; y++)
   {
     p=jpeg_pixels;
-    q=SetPixelCache(image,0,y,image->columns,1);
+    q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
@@ -668,7 +668,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
           }
       q++;
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(LoadImageText,y,image->rows);
@@ -680,7 +680,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       */
       for (y=0; y < (int) image->rows; y++)
       {
-        q=GetPixelCache(image,0,y,image->columns,1);
+        q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (int) image->columns; x++)
@@ -691,7 +691,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
           q->opacity=MaxRGB-q->opacity;
           q++;
         }
-        if (!SyncPixelCache(image))
+        if (!SyncImagePixels(image))
           break;
       }
     }
@@ -928,16 +928,15 @@ static void WriteNewsProfile(j_compress_ptr jpeg_info,Image *image)
     if (profile == (unsigned char *) NULL)
       break;
 #ifdef GET_ONLY_IPTC_DATA
-    memcpy((char *) profile,"Photoshop 3.0 8BIM\04\04\0\0\0\0",24);
+    memcpy(profile,"Photoshop 3.0 8BIM\04\04\0\0\0\0",24);
     profile[13]=0x00;
     profile[24]=length >> 8;
     profile[25]=length & 0xff;
 #else
-    memcpy((char *) profile,"Photoshop 3.0 ",14);
+    memcpy(profile,"Photoshop 3.0 ",14);
     profile[13]=0x00;
 #endif
-    memcpy((char *) &(profile[taglen]),&(image->iptc_profile.info[i]),
-      length);
+    memcpy(&(profile[taglen]),&(image->iptc_profile.info[i]),length);
     if (roundup)
       profile[length+taglen]=0;
     jpeg_write_marker(jpeg_info,IPTC_MARKER,profile,(unsigned int)
@@ -1095,7 +1094,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       if (jpeg_info.in_color_space == JCS_GRAYSCALE)
         for (y=0; y < (int) image->rows; y++)
         {
-          p=GetPixelCache(image,0,y,image->columns,1);
+          p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
           q=jpeg_pixels;
@@ -1112,7 +1111,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         if (jpeg_info.in_color_space == JCS_RGB)
           for (y=0; y < (int) image->rows; y++)
           {
-            p=GetPixelCache(image,0,y,image->columns,1);
+            p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             q=jpeg_pixels;
@@ -1130,7 +1129,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         else
           for (y=0; y < (int) image->rows; y++)
           {
-            p=GetPixelCache(image,0,y,image->columns,1);
+            p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             q=jpeg_pixels;
@@ -1154,7 +1153,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     if (jpeg_info.in_color_space == JCS_GRAYSCALE)
       for (y=0; y < (int) image->rows; y++)
       {
-        p=GetPixelCache(image,0,y,image->columns,1);
+        p=GetImagePixels(image,0,y,image->columns,1);
         if (p == (PixelPacket *) NULL)
           break;
         q=jpeg_pixels;
@@ -1171,7 +1170,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       if (jpeg_info.in_color_space == JCS_RGB)
         for (y=0; y < (int) image->rows; y++)
         {
-          p=GetPixelCache(image,0,y,image->columns,1);
+          p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
           q=jpeg_pixels;
@@ -1189,7 +1188,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       else
         for (y=0; y < (int) image->rows; y++)
         {
-          p=GetPixelCache(image,0,y,image->columns,1);
+          p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
           q=jpeg_pixels;

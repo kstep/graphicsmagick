@@ -111,7 +111,7 @@ Export unsigned int ContrastImage(Image *image,const unsigned int sharpen)
       */
       for (y=0; y < (int) image->rows; y++)
       {
-        q=GetPixelCache(image,0,y,image->columns,1);
+        q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (int) image->columns; x++)
@@ -119,7 +119,7 @@ Export unsigned int ContrastImage(Image *image,const unsigned int sharpen)
           Contrast(sign,&q->red,&q->green,&q->blue);
           q++;
         }
-        if (!SyncPixelCache(image))
+        if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
           {
@@ -225,7 +225,7 @@ Export unsigned int EqualizeImage(Image *image)
     histogram[i]=0;
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetPixelCache(image,0,y,image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) image->columns; x++)
@@ -272,7 +272,7 @@ Export unsigned int EqualizeImage(Image *image)
       */
       for (y=0; y < (int) image->rows; y++)
       {
-        q=GetPixelCache(image,0,y,image->columns,1);
+        q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (int) image->columns; x++)
@@ -282,7 +282,7 @@ Export unsigned int EqualizeImage(Image *image)
           q->blue=equalize_map[q->blue];
           q++;
         }
-        if (!SyncPixelCache(image))
+        if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
           ProgressMonitor(EqualizeImageText,y,image->rows);
@@ -417,7 +417,7 @@ Export unsigned int GammaImage(Image *image,const char *gamma)
       */
       for (y=0; y < (int) image->rows; y++)
       {
-        q=GetPixelCache(image,0,y,image->columns,1);
+        q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (int) image->columns; x++)
@@ -428,7 +428,7 @@ Export unsigned int GammaImage(Image *image,const char *gamma)
           q->opacity=gamma_map[q->opacity].opacity;
           q++;
         }
-        if (!SyncPixelCache(image))
+        if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
           ProgressMonitor(GammaImageText,y,image->rows);
@@ -526,7 +526,7 @@ Export unsigned int ModulateImage(Image *image,const char *modulate)
       */
       for (y=0; y < (int) image->rows; y++)
       {
-        q=GetPixelCache(image,0,y,image->columns,1);
+        q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (int) image->columns; x++)
@@ -535,7 +535,7 @@ Export unsigned int ModulateImage(Image *image,const char *modulate)
             &q->red,&q->green,&q->blue);
           q++;
         }
-        if (!SyncPixelCache(image))
+        if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
           ProgressMonitor(ModulateImageText,y,image->rows);
@@ -620,7 +620,7 @@ Export unsigned int NegateImage(Image *image,const unsigned int grayscale)
       */
       for (y=0; y < (int) image->rows; y++)
       {
-        q=GetPixelCache(image,0,y,image->columns,1);
+        q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (int) image->columns; x++)
@@ -637,7 +637,7 @@ Export unsigned int NegateImage(Image *image,const unsigned int grayscale)
           q->opacity=(~q->opacity);
           q++;
         }
-        if (!SyncPixelCache(image))
+        if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
           ProgressMonitor(NegateImageText,y,image->rows);
@@ -732,7 +732,7 @@ Export unsigned int NormalizeImage(Image *image)
     histogram[i]=0;
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetPixelCache(image,0,y,image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) image->columns; x++)
@@ -807,7 +807,7 @@ Export unsigned int NormalizeImage(Image *image)
       */
       for (y=0; y < (int) image->rows; y++)
       {
-        q=GetPixelCache(image,0,y,image->columns,1);
+        q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (int) image->columns; x++)
@@ -817,7 +817,7 @@ Export unsigned int NormalizeImage(Image *image)
           q->blue=normalize_map[q->blue];
           q++;
         }
-        if (!SyncPixelCache(image))
+        if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
           ProgressMonitor(NormalizeImageText,y,image->rows);

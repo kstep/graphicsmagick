@@ -742,7 +742,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         */
         for (y=0; y < (int) image->rows; y++)
         {
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           TIFFReadScanline(tiff,(char *) scanline,y,0);
@@ -835,8 +835,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           /*
             Transfer image scanline.
           */
-          (void) ReadPixelCache(image,IndexQuantum,quantum_scanline);
-          if (!SyncPixelCache(image))
+          (void) PullImagePixels(image,IndexQuantum,quantum_scanline);
+          if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
@@ -864,7 +864,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           image->matte=extra_samples == 1;
         for (y=0; y < (int) image->rows; y++)
         {
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           TIFFReadScanline(tiff,(char *) scanline,y,0);
@@ -897,13 +897,13 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               }
             }
           if (image->colorspace == CMYKColorspace)
-            (void) ReadPixelCache(image,CMYKQuantum,scanline);
+            (void) PullImagePixels(image,CMYKQuantum,scanline);
           else
             if (!image->matte)
-              (void) ReadPixelCache(image,RGBQuantum,scanline);
+              (void) PullImagePixels(image,RGBQuantum,scanline);
             else
-              (void) ReadPixelCache(image,RGBAQuantum,scanline);
-          if (!SyncPixelCache(image))
+              (void) PullImagePixels(image,RGBAQuantum,scanline);
+          if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
@@ -950,7 +950,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         p=pixels+image->columns*image->rows-1;
         for (y=0; y < (int) image->rows; y++)
         {
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           q+=image->columns-1;
@@ -964,7 +964,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             p--;
             q--;
           }
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
@@ -1128,7 +1128,7 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
       profile=(unsigned char *) AllocateMemory(length+roundup);
       if ((length == 0) || (profile == (unsigned char *) NULL))
         return;
-      memcpy((char *) profile,image->iptc_profile.info,length);
+      memcpy(profile,image->iptc_profile.info,length);
       for (i=0; i < roundup; i++)
         profile[length + i] = 0;
       length=(image->iptc_profile.length+roundup)/4;
@@ -1146,7 +1146,7 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
   roundup=(length & 0x01); /* round up for Photoshop */
   profile=(unsigned char *) AllocateMemory(length+roundup+12);
   if ((length == 0) || (profile == (unsigned char *) NULL))
-    memcpy((char *) profile,"8BIM\04\04\0\0",8);
+    memcpy(profile,"8BIM\04\04\0\0",8);
   profile[8]=(length >> 24) & 0xff;
   profile[9]=(length >> 16) & 0xff;
   profile[10]=(length >> 8) & 0xff;
@@ -1164,7 +1164,7 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
   profile=(unsigned char *) AllocateMemory(length+roundup);
   if (profile == (unsigned char *) NULL)
     return;
-  memcpy((char *) profile,image->iptc_profile.info,length);
+  memcpy(profile,image->iptc_profile.info,length);
   if (roundup)
     profile[length+roundup]=0;
   TIFFSetField(tiff,type,(uint32) length+roundup,(void *) profile);
@@ -1206,7 +1206,7 @@ static int TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
     Fill scanlines to tile height.
   */
   i=(row % image->tile_info.height)*TIFFScanlineSize(tiff);
-  memcpy((char *) scanlines+i,(char *) scanline,TIFFScanlineSize(tiff));
+  memcpy(scanlines+i,(char *) scanline,TIFFScanlineSize(tiff));
   if (((row % image->tile_info.height) != (image->tile_info.height-1)) &&
       (row != image->rows-1))
     return(0);
@@ -1594,12 +1594,12 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           {
             for (y=0; y < (int) image->rows; y++)
             {
-              if (!GetPixelCache(image,0,y,image->columns,1))
+              if (!GetImagePixels(image,0,y,image->columns,1))
                 break;
               if (!image->matte)
-                (void) WritePixelCache(image,RGBQuantum,scanline);
+                (void) PushImagePixels(image,RGBQuantum,scanline);
               else
-                (void) WritePixelCache(image,RGBAQuantum,scanline);
+                (void) PushImagePixels(image,RGBAQuantum,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
                 break;
               if (image->previous == (Image *) NULL)
@@ -1616,27 +1616,27 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             */
             for (y=0; y < (int) image->rows; y++)
             {
-              if (!GetPixelCache(image,0,y,image->columns,1))
+              if (!GetImagePixels(image,0,y,image->columns,1))
                 break;
-              (void) WritePixelCache(image,RedQuantum,scanline);
+              (void) PushImagePixels(image,RedQuantum,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
                 break;
             }
             ProgressMonitor(SaveImageText,100,400);
             for (y=0; y < (int) image->rows; y++)
             {
-              if (!GetPixelCache(image,0,y,image->columns,1))
+              if (!GetImagePixels(image,0,y,image->columns,1))
                 break;
-              (void) WritePixelCache(image,GreenQuantum,scanline);
+              (void) PushImagePixels(image,GreenQuantum,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,1,image) < 0)
                 break;
             }
             ProgressMonitor(SaveImageText,200,400);
             for (y=0; y < (int) image->rows; y++)
             {
-              if (!GetPixelCache(image,0,y,image->columns,1))
+              if (!GetImagePixels(image,0,y,image->columns,1))
                 break;
-              (void) WritePixelCache(image,BlueQuantum,scanline);
+              (void) PushImagePixels(image,BlueQuantum,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,2,image) < 0)
                 break;
             }
@@ -1644,9 +1644,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             if (image->matte)
               for (y=0; y < (int) image->rows; y++)
               {
-                if (!GetPixelCache(image,0,y,image->columns,1))
+                if (!GetImagePixels(image,0,y,image->columns,1))
                   break;
-                (void) WritePixelCache(image,OpacityQuantum,scanline);
+                (void) PushImagePixels(image,OpacityQuantum,scanline);
                 if (TIFFWritePixels(tiff,(char *) scanline,y,3,image) < 0)
                   break;
               }
@@ -1665,9 +1665,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           RGBTransformImage(image,CMYKColorspace);
         for (y=0; y < (int) image->rows; y++)
         {
-          if (!GetPixelCache(image,0,y,image->columns,1))
+          if (!GetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) WritePixelCache(image,RGBAQuantum,scanline);
+          (void) PushImagePixels(image,RGBAQuantum,scanline);
           if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
             break;
           if (image->previous == (Image *) NULL)
@@ -1731,12 +1731,12 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             */
             for (y=0; y < (int) image->rows; y++)
             {
-              if (!GetPixelCache(image,0,y,image->columns,1))
+              if (!GetImagePixels(image,0,y,image->columns,1))
                 break;
               if (photometric == PHOTOMETRIC_PALETTE)
-                (void) WritePixelCache(image,IndexQuantum,scanline);
+                (void) PushImagePixels(image,IndexQuantum,scanline);
               else
-                (void) WritePixelCache(image,GrayQuantum,scanline);
+                (void) PushImagePixels(image,GrayQuantum,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
                 break;
               if (image->previous == (Image *) NULL)
@@ -1761,7 +1761,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             }
         for (y=0; y < (int) image->rows; y++)
         {
-          p=GetPixelCache(image,0,y,image->columns,1);
+          p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);

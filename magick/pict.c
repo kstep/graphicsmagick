@@ -1022,7 +1022,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,ExceptionInfo *exception
           p=pixels;
           for (y=0; y < (int) tile_image->rows; y++)
           {
-            q=SetPixelCache(tile_image,0,y,tile_image->columns,1);
+            q=SetImagePixels(tile_image,0,y,tile_image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
             indexes=GetIndexes(tile_image);
@@ -1064,7 +1064,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,ExceptionInfo *exception
               p++;
               q++;
             }
-            if (!SyncPixelCache(tile_image))
+            if (!SyncImagePixels(tile_image))
               break;
             if ((tile_image->class == DirectClass) &&
                 (pixmap.bits_per_pixel != 16))
@@ -1508,7 +1508,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       (image->class == PseudoClass))
     for (y=0; y < (int) image->rows; y++)
     {
-      p=GetPixelCache(image,0,y,image->columns,1);
+      p=GetImagePixels(image,0,y,image->columns,1);
       if (p == (PixelPacket *) NULL)
         break;
       indexes=GetIndexes(image);
@@ -1532,7 +1532,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       opacity=scanline+3*image->columns;
       for (y=0; y < (int) image->rows; y++)
       {
-        p=GetPixelCache(image,0,y,image->columns,1);
+        p=GetImagePixels(image,0,y,image->columns,1);
         if (p == (PixelPacket *) NULL)
           break;
         red=scanline;

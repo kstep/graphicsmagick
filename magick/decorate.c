@@ -240,7 +240,7 @@ Export Image *FrameImage(Image *image,const FrameInfo *frame_info,
   */
   height=frame_info->outer_bevel+(frame_info->y-bevel_width)+
     frame_info->inner_bevel;
-  q=SetPixelCache(frame_image,0,0,frame_image->columns,Max(height,1));
+  q=SetImagePixels(frame_image,0,0,frame_image->columns,Max(height,1));
   if (q == (PixelPacket *) NULL)
     {
       DestroyImage(frame_image);
@@ -284,7 +284,7 @@ Export Image *FrameImage(Image *image,const FrameInfo *frame_info,
     for (x=0; x < frame_info->outer_bevel; x++)
       *q++=shadow;
   }
-  if (!SyncPixelCache(frame_image))
+  if (!SyncImagePixels(frame_image))
     {
       DestroyImage(frame_image);
       return((Image *) NULL);
@@ -297,8 +297,8 @@ Export Image *FrameImage(Image *image,const FrameInfo *frame_info,
     /*
       Initialize scanline with border color.
     */
-    p=GetPixelCache(image,0,y,image->columns,1);
-    q=SetPixelCache(frame_image,0,frame_info->y+y,frame_image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
+    q=SetImagePixels(frame_image,0,frame_info->y+y,frame_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     for (x=0; x < frame_info->outer_bevel; x++)
@@ -319,7 +319,7 @@ Export Image *FrameImage(Image *image,const FrameInfo *frame_info,
       *q++=matte;
     for (x=0; x < frame_info->outer_bevel; x++)
       *q++=shadow;
-    if (!SyncPixelCache(frame_image))
+    if (!SyncImagePixels(frame_image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(FrameImageText,y,image->rows);
@@ -329,7 +329,7 @@ Export Image *FrameImage(Image *image,const FrameInfo *frame_info,
   */
   height=frame_info->inner_bevel+frame_info->height-frame_info->y-image->rows-
     bevel_width+frame_info->outer_bevel;
-  q=SetPixelCache(frame_image,0,frame_image->rows-Max(height,1),
+  q=SetImagePixels(frame_image,0,frame_image->rows-Max(height,1),
     frame_image->columns,Max(height,1));
   if (q == (PixelPacket *) NULL)
     {
@@ -375,7 +375,7 @@ Export Image *FrameImage(Image *image,const FrameInfo *frame_info,
       else
         *q++=trough;
   }
-  if (!SyncPixelCache(frame_image))
+  if (!SyncImagePixels(frame_image))
     {
       DestroyImage(frame_image);
       return((Image *) NULL);
@@ -457,7 +457,7 @@ Export unsigned int RaiseImage(Image *image,const RectangleInfo *raise_info,
   image->class=DirectClass;
   for (y=0; y < (int) raise_info->height; y++)
   {
-    q=GetPixelCache(image,0,i++,image->columns,1);
+    q=GetImagePixels(image,0,i++,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < y; x++)
@@ -490,7 +490,7 @@ Export unsigned int RaiseImage(Image *image,const RectangleInfo *raise_info,
         (q->blue*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
       q++;
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
     if (QuantumTick(i,image->rows))
       ProgressMonitor(RaiseImageText,i,image->rows);
@@ -498,7 +498,7 @@ Export unsigned int RaiseImage(Image *image,const RectangleInfo *raise_info,
   height=image->rows-(raise_info->height << 1);
   for (y=0; y < (int) height; y++)
   {
-    q=GetPixelCache(image,0,i++,image->columns,1);
+    q=GetImagePixels(image,0,i++,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) raise_info->width; x++)
@@ -523,14 +523,14 @@ Export unsigned int RaiseImage(Image *image,const RectangleInfo *raise_info,
         (q->blue*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
       q++;
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
     if (QuantumTick(i,image->rows))
       ProgressMonitor(RaiseImageText,i,image->rows);
   }
   for (y=0; y < (int) raise_info->height; y++)
   {
-    q=GetPixelCache(image,0,i++,image->columns,1);
+    q=GetImagePixels(image,0,i++,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) (raise_info->width-y); x++)
@@ -563,7 +563,7 @@ Export unsigned int RaiseImage(Image *image,const RectangleInfo *raise_info,
         (q->blue*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
       q++;
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
     if (QuantumTick(i,image->rows))
       ProgressMonitor(RaiseImageText,i,image->rows);

@@ -349,7 +349,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (visual_info->class == DirectColor))
         for (y=0; y < (int) image->rows; y++)
         {
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           for (x=0; x < (int) image->columns; x++)
@@ -363,7 +363,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
             q->blue=XDownScale(colors[index].blue);
             q++;
           }
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           if (QuantumTick(y,image->rows))
             ProgressMonitor(LoadImageText,y,image->rows);
@@ -371,7 +371,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       else
         for (y=0; y < (int) image->rows; y++)
         {
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           for (x=0; x < (int) image->columns; x++)
@@ -385,7 +385,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
             q->blue=XDownScale((color*65535L)/blue_mask);
             q++;
           }
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           if (QuantumTick(y,image->rows))
             ProgressMonitor(LoadImageText,y,image->rows);
@@ -420,13 +420,13 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       for (y=0; y < (int) image->rows; y++)
       {
-        q=SetPixelCache(image,0,y,image->columns,1);
+        q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
         for (x=0; x < (int) image->columns; x++)
           indexes[x]=(unsigned short) XGetPixel(dps_image,x,y);
-        if (!SyncPixelCache(image))
+        if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
           ProgressMonitor(LoadImageText,y,image->rows);
@@ -465,7 +465,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
               image->matte=True;
               for (y=0; y < (int) image->rows; y++)
               {
-                q=SetPixelCache(image,0,y,image->columns,1);
+                q=SetImagePixels(image,0,y,image->columns,1);
                 if (q == (PixelPacket *) NULL)
                   break;
                 for (x=0; x < (int) image->columns; x++)
@@ -475,7 +475,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     q->opacity=Transparent;
                   q++;
                 }
-                if (!SyncPixelCache(image))
+                if (!SyncImagePixels(image))
                   break;
               }
               XDestroyImage(matte_image);

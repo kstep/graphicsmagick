@@ -135,8 +135,6 @@ typedef struct _BlobInfo
     quantum;
 } BlobInfo;
 
-typedef void* Cache;
-
 typedef struct _ChromaticityInfo
 {
   PointInfo
@@ -406,11 +404,11 @@ typedef struct _Image
   BlobInfo
     blob;
 
-  Cache
-    cache;
+  void
+    *cache;
 
   void
-    (*fifo)(struct _Image *);
+    (*fifo)(const struct _Image *);
 
   unsigned int
     orphan;
@@ -554,7 +552,7 @@ typedef struct _ImageInfo
     ping;
 
   void
-    (*fifo)(Image *);
+    (*fifo)(const Image *);
 } ImageInfo;
 
 typedef struct _MagickInfo
@@ -632,7 +630,7 @@ extern Export Image
     ExceptionInfo *),
   *CoalesceImages(Image *,ExceptionInfo *),
   *ColorizeImage(Image *,const char *,const char *,ExceptionInfo *),
-  *CreateImage(const unsigned int,const unsigned int,const char *,
+  *ConstituteImage(const unsigned int,const unsigned int,const char *,
     const StorageType,const void *,ExceptionInfo *),
   *CropImage(Image *,const RectangleInfo *,ExceptionInfo *),
   *DeconstructImages(Image *,ExceptionInfo *),
@@ -655,8 +653,8 @@ extern Export Image
   *MosaicImages(Image *,ExceptionInfo *),
   *OilPaintImage(Image *,const unsigned int,ExceptionInfo *),
   *PingImage(const ImageInfo *,ExceptionInfo *),
-  *ReadImage(ImageInfo *,ExceptionInfo *),
-  *ReadImages(ImageInfo *,ExceptionInfo *),
+  *ReadImage(const ImageInfo *,ExceptionInfo *),
+  *ReadImages(const ImageInfo *,ExceptionInfo *),
   *ReduceNoiseImage(Image *,ExceptionInfo *),
   *RollImage(Image *,const int,const int,ExceptionInfo *),
   *RotateImage(Image *,const double,ExceptionInfo *),
@@ -678,6 +676,9 @@ extern Export ImageInfo
 extern Export ImageType
   GetImageType(Image *);
 
+extern Export IndexPacket
+  *(*GetIndexes)(const Image *);
+
 extern Export int
   ParseGeometry(const char *,int *,int *,unsigned int *,unsigned int *),
   ParseImageGeometry(const char *,int *,int *,unsigned int *,unsigned int *);
@@ -690,6 +691,14 @@ extern Export MagickInfo
 extern Export MontageInfo
   *CloneMontageInfo(const ImageInfo *,const MontageInfo *);
 
+extern Export PixelPacket
+  *(*GetImagePixels)
+    (Image *,const int,const int,const unsigned int,const unsigned int),
+  (*GetOnePixel)(Image *,const int,const int),
+  *(*GetPixels)(const Image *),
+  *(*SetImagePixels)
+    (Image *,const int,const int,const unsigned int,const unsigned int);
+
 extern Export unsigned int
   AnimateImages(const ImageInfo *image_info,Image *image),
   AnnotateImage(Image *,const AnnotateInfo *),
@@ -697,13 +706,13 @@ extern Export unsigned int
     const int y,const PaintMethod),
   CompositeImage(Image *,const CompositeOperator,Image *,const int,const int),
   ContrastImage(Image *,const unsigned int),
+  DispatchImage(Image *,const int,const int,const unsigned int,
+    const unsigned int,const char *,const StorageType,void *),
   DisplayImages(const ImageInfo *image_info,Image *image),
   DrawImage(Image *,const DrawInfo *),
   EqualizeImage(Image *),
   GammaImage(Image *,const char *),
   GetNumberScenes(const Image *),
-  GetImagePixels(Image *,const int,const int,const unsigned int,
-    const unsigned int,const char *,const StorageType,void *),
   IsGeometry(const char *),
   IsGrayImage(Image *),
   IsMatteImage(Image *),
@@ -720,12 +729,16 @@ extern Export unsigned int
   NormalizeImage(Image *),
   OpaqueImage(Image *,const char *,const char *),
   PlasmaImage(Image *,const SegmentInfo *,int,int),
+  PullImagePixels(const Image *,const QuantumTypes,const unsigned char *),
+  PushImagePixels(const Image *,const QuantumTypes,unsigned char *),
   QueryColorDatabase(const char *,PixelPacket *),
   RaiseImage(Image *,const RectangleInfo *,const int),
   RGBTransformImage(Image *,const ColorspaceType),
   SetImageInfo(ImageInfo *,const unsigned int),
   SignatureImage(Image *),
   SortColormapByIntensity(Image *),
+  StreamImage(const ImageInfo *,void (*)(const Image *),ExceptionInfo *),
+  (*SyncImagePixels)(Image *),
   ThresholdImage(Image *,const double),
   TransformRGBImage(Image *,const ColorspaceType),
   TransparentImage(Image *,const char *),
@@ -734,6 +747,7 @@ extern Export unsigned int
 
 extern Export void
   AllocateNextImage(const ImageInfo *,Image *),
+  (*CloseImagePixels)(Image *),
   CompressColormap(Image *),
   CycleColormapImage(Image *,const int),
   DescribeImage(Image *,FILE *,const unsigned int),
@@ -741,6 +755,7 @@ extern Export void
   DestroyDrawInfo(DrawInfo *),
   DestroyImage(Image *),
   DestroyImageInfo(ImageInfo *),
+  (*DestroyImagePixels)(Image *),
   DestroyImages(Image *),
   DestroyMagickInfo(),
   DestroyMontageInfo(MontageInfo *),
@@ -864,7 +879,9 @@ extern Export void
   RegisterXVImage(void),
   RegisterXWDImage(void),
   RegisterYUVImage(void),
+  SetCacheThreshold(const off_t),
   SetImage(Image *,Quantum),
+  SetPixelCacheMethods(void),
   SolarizeImage(Image *,const double),
   SyncImage(Image *),
   TextureImage(Image *,Image *),

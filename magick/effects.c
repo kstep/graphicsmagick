@@ -122,8 +122,8 @@ Export Image *AddNoiseImage(Image *image,const NoiseType noise_type,
   */
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetPixelCache(image,0,y,image->columns,1);
-    q=SetPixelCache(noise_image,0,y,noise_image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
+    q=SetImagePixels(noise_image,0,y,noise_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     for (x=0; x < (int) image->columns; x++)
@@ -134,7 +134,7 @@ Export Image *AddNoiseImage(Image *image,const NoiseType noise_type,
       p++;
       q++;
     }
-    if (!SyncPixelCache(noise_image))
+    if (!SyncImagePixels(noise_image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(AddNoiseImageText,y,image->rows);
@@ -237,8 +237,8 @@ Export Image *BlurImage(Image *image,const double factor,
   quantum=Max(weight+12.0,1.0);
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetPixelCache(image,0,Min(Max(y-1,0),image->rows-3),image->columns,3);
-    q=SetPixelCache(blur_image,0,y,blur_image->columns,1);
+    p=GetImagePixels(image,0,Min(Max(y-1,0),image->rows-3),image->columns,3);
+    q=SetImagePixels(blur_image,0,y,blur_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     /*
@@ -269,7 +269,7 @@ Export Image *BlurImage(Image *image,const double factor,
     }
     p++;
     *q++=(*p);
-    if (!SyncPixelCache(blur_image))
+    if (!SyncImagePixels(blur_image))
       break;
     if (QuantumTick(y,image->rows-1))
       ProgressMonitor(BlurImageText,y,image->rows-1);
@@ -365,8 +365,8 @@ Export Image *ColorizeImage(Image *image,const char *opacity,
   */
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetPixelCache(image,0,y,image->columns,1);
-    q=SetPixelCache(colorize_image,0,y,colorize_image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
+    q=SetImagePixels(colorize_image,0,y,colorize_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     for (x=0; x < (int) image->columns; x++)
@@ -380,7 +380,7 @@ Export Image *ColorizeImage(Image *image,const char *opacity,
       p++;
       q++;
     }
-    if (!SyncPixelCache(colorize_image))
+    if (!SyncImagePixels(colorize_image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(ColorizeImageText,y,image->rows);
@@ -500,7 +500,7 @@ Export Image *DespeckleImage(Image *image,ExceptionInfo *exception)
   j=image->columns+2;
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetPixelCache(image,0,y,image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     j++;
@@ -558,7 +558,7 @@ Export Image *DespeckleImage(Image *image,ExceptionInfo *exception)
   j=image->columns+2;
   for (y=0; y < (int) image->rows; y++)
   {
-    q=SetPixelCache(despeckle_image,0,y,despeckle_image->columns,1);
+    q=SetImagePixels(despeckle_image,0,y,despeckle_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     j++;
@@ -571,7 +571,7 @@ Export Image *DespeckleImage(Image *image,ExceptionInfo *exception)
       q++;
       j++;
     }
-    if (!SyncPixelCache(despeckle_image))
+    if (!SyncImagePixels(despeckle_image))
       break;
     j++;
   }
@@ -679,8 +679,8 @@ Export Image *EdgeImage(Image *image,const double factor,
   weight=factor/8.0;
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetPixelCache(image,0,Min(Max(y-1,0),image->rows-3),image->columns,3);
-    q=SetPixelCache(edge_image,0,y,edge_image->columns,1);
+    p=GetImagePixels(image,0,Min(Max(y-1,0),image->rows-3),image->columns,3);
+    q=SetImagePixels(edge_image,0,y,edge_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     /*
@@ -714,7 +714,7 @@ Export Image *EdgeImage(Image *image,const double factor,
     }
     p++;
     *q++=(*p);
-    if (!SyncPixelCache(edge_image))
+    if (!SyncImagePixels(edge_image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(EdgeImageText,y,image->rows-1);
@@ -810,8 +810,8 @@ Export Image *EmbossImage(Image *image,ExceptionInfo *exception)
   */
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetPixelCache(image,0,Min(Max(y-1,0),image->rows-3),image->columns,3);
-    q=SetPixelCache(emboss_image,0,y,emboss_image->columns,1);
+    p=GetImagePixels(image,0,Min(Max(y-1,0),image->rows-3),image->columns,3);
+    q=SetImagePixels(emboss_image,0,y,emboss_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     /*
@@ -846,7 +846,7 @@ Export Image *EmbossImage(Image *image,ExceptionInfo *exception)
     }
     p++;
     *q++=(*p);
-    if (!SyncPixelCache(emboss_image))
+    if (!SyncImagePixels(emboss_image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(EmbossImageText,y,image->rows-1);
@@ -974,8 +974,8 @@ Export Image *EnhanceImage(Image *image,ExceptionInfo *exception)
     /*
       Read another scan line.
     */
-    p=GetPixelCache(image,0,Min(Max(y-2,0),image->rows-5),image->columns,5);
-    q=SetPixelCache(enhance_image,0,y,enhance_image->columns,1);
+    p=GetImagePixels(image,0,Min(Max(y-2,0),image->rows-5),image->columns,5);
+    q=SetImagePixels(enhance_image,0,y,enhance_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     /*
@@ -1016,7 +1016,7 @@ Export Image *EnhanceImage(Image *image,ExceptionInfo *exception)
     *q++=(*p);
     p++;
     *q++=(*p);
-    if (!SyncPixelCache(enhance_image))
+    if (!SyncImagePixels(enhance_image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(EnhanceImageText,y,image->rows-2);
@@ -1176,7 +1176,7 @@ Export Image *GaussianBlurImage(Image *image,const double width,
   */
   for (y=0; y < (int) blur_image->rows; y++)
   {
-    p=GetPixelCache(blur_image,0,y,blur_image->columns,1);
+    p=GetImagePixels(blur_image,0,y,blur_image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     j=0;
@@ -1218,7 +1218,7 @@ Export Image *GaussianBlurImage(Image *image,const double width,
       p->blue=blue+0.5;
       p++;
     }
-    if (!SyncPixelCache(blur_image))
+    if (!SyncImagePixels(blur_image))
       break;
     if (QuantumTick(y,blur_image->rows+blur_image->columns))
       ProgressMonitor(GaussianBlurImageText,y,blur_image->rows+
@@ -1229,7 +1229,7 @@ Export Image *GaussianBlurImage(Image *image,const double width,
   */
   for (x=0; x < (int) blur_image->columns; x++)
   {
-    p=GetPixelCache(blur_image,x,0,1,blur_image->rows);
+    p=GetImagePixels(blur_image,x,0,1,blur_image->rows);
     if (p == (PixelPacket *) NULL)
       break;
     j=0;
@@ -1271,7 +1271,7 @@ Export Image *GaussianBlurImage(Image *image,const double width,
       p->blue=blue+0.5;
       p++;
     }
-    if (!SyncPixelCache(blur_image))
+    if (!SyncImagePixels(blur_image))
       break;
     if (QuantumTick(blur_image->rows+x,blur_image->rows+blur_image->columns))
       ProgressMonitor(GaussianBlurImageText,blur_image->rows+x,
@@ -1382,8 +1382,8 @@ Export Image *ImplodeImage(Image *image,const double factor,
   */
   for (y=0; y < image->rows; y++)
   {
-    p=GetPixelCache(image,0,y,image->columns,1);
-    q=SetPixelCache(implode_image,0,y,implode_image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
+    q=SetImagePixels(implode_image,0,y,implode_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     y_distance=y_scale*(y-y_center);
@@ -1413,7 +1413,7 @@ Export Image *ImplodeImage(Image *image,const double factor,
       p++;
       q++;
     }
-    if (!SyncPixelCache(implode_image))
+    if (!SyncImagePixels(implode_image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(ImplodeImageText,y,image->rows);
@@ -1522,8 +1522,8 @@ Export Image *MedianFilterImage(Image *image,const unsigned int radius,
   */
   for (y=radius; y < (int) (image->rows-radius); y++)
   {
-    p=GetPixelCache(image,0,y-radius,image->columns,2*radius+1);
-    q=GetPixelCache(median_image,0,y,median_image->columns,1);
+    p=GetImagePixels(image,0,y-radius,image->columns,2*radius+1);
+    q=GetImagePixels(median_image,0,y,median_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     p+=radius*image->columns+radius;
@@ -1553,7 +1553,7 @@ Export Image *MedianFilterImage(Image *image,const unsigned int radius,
       p++;
       q++;
     }
-    if (!SyncPixelCache(median_image))
+    if (!SyncImagePixels(median_image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(MedianFilterImageText,y,image->rows);
@@ -1673,8 +1673,8 @@ Export Image *MorphImages(Image *image,const unsigned int number_frames,
       morph_images->class=DirectClass;
       for (y=0; y < (int) morph_images->rows; y++)
       {
-        p=GetPixelCache(morph_image,0,y,morph_image->columns,1);
-        q=GetPixelCache(morph_images,0,y,morph_images->columns,1);
+        p=GetImagePixels(morph_image,0,y,morph_image->columns,1);
+        q=GetImagePixels(morph_images,0,y,morph_images->columns,1);
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         for (x=0; x < (int) morph_images->columns; x++)
@@ -1686,7 +1686,7 @@ Export Image *MorphImages(Image *image,const unsigned int number_frames,
           p++;
           q++;
         }
-        if (!SyncPixelCache(morph_images))
+        if (!SyncImagePixels(morph_images))
           break;
       }
       DestroyImage(morph_image);
@@ -1805,8 +1805,8 @@ Export Image *OilPaintImage(Image *image,const unsigned int radius,
   k=0;
   for (y=radius; y < (int) (image->rows-radius-1); y++)
   {
-    p=GetPixelCache(image,0,y-radius,image->columns,2*radius+1);
-    q=SetPixelCache(paint_image,0,y,paint_image->columns,1);
+    p=GetImagePixels(image,0,y-radius,image->columns,2*radius+1);
+    q=SetImagePixels(paint_image,0,y,paint_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     p+=radius*image->columns+radius;
@@ -1861,7 +1861,7 @@ Export Image *OilPaintImage(Image *image,const unsigned int radius,
       p++;
       q++;
     }
-    if (!SyncPixelCache(paint_image))
+    if (!SyncImagePixels(paint_image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(OilPaintImageText,y,image->rows);
@@ -1981,13 +1981,13 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
       */
       pixel_1=GetOnePixel(image,(int) segment->x1,(int) segment->y1);
       pixel_2=GetOnePixel(image,(int) segment->x1,(int) segment->y2);
-      q=SetPixelCache(image,(int) segment->x1,(int) y_mid,1,1);
+      q=SetImagePixels(image,(int) segment->x1,(int) y_mid,1,1);
       if (q != (PixelPacket *) NULL)
         {
           q->red=PlasmaPixel((int) (pixel_1.red+pixel_2.red)/2,plasma);
           q->green=PlasmaPixel((int) (pixel_1.green+pixel_2.green)/2,plasma);
           q->blue=PlasmaPixel((int) (pixel_1.blue+pixel_2.blue)/2,plasma);
-          (void) SyncPixelCache(image);
+          (void) SyncImagePixels(image);
         }
       if (segment->x1 != segment->x2)
         {
@@ -1996,14 +1996,14 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
           */
           pixel_1=GetOnePixel(image,(int) segment->x2,(int) segment->y1);
           pixel_2=GetOnePixel(image,(int) segment->x2,(int) segment->y2);
-          q=SetPixelCache(image,(int) segment->x2,(int) y_mid,1,1);
+          q=SetImagePixels(image,(int) segment->x2,(int) y_mid,1,1);
           if (q != (PixelPacket *) NULL)
             {
               q->red=PlasmaPixel((int) (pixel_1.red+pixel_2.red)/2,plasma);
               q->green=
                 PlasmaPixel((int) (pixel_1.green+pixel_2.green)/2,plasma);
               q->blue=PlasmaPixel((int) (pixel_1.blue+pixel_2.blue)/2,plasma);
-              (void) SyncPixelCache(image);
+              (void) SyncImagePixels(image);
             }
         }
     }
@@ -2016,14 +2016,14 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
           */
           pixel_1=GetOnePixel(image,(int) segment->x1,(int) segment->y2);
           pixel_2=GetOnePixel(image,(int) segment->x2,(int) segment->y2);
-          q=SetPixelCache(image,(int) x_mid,(int) segment->y2,1,1);
+          q=SetImagePixels(image,(int) x_mid,(int) segment->y2,1,1);
           if (q != (PixelPacket *) NULL)
             {
               q->red=PlasmaPixel((int) (pixel_1.red+pixel_2.red)/2,plasma);
               q->green=
                 PlasmaPixel((int) (pixel_1.green+pixel_2.green)/2,plasma);
               q->blue=PlasmaPixel((int) (pixel_1.blue+pixel_2.blue)/2,plasma);
-              (void) SyncPixelCache(image);
+              (void) SyncImagePixels(image);
             }
         }
       if (segment->y1 != segment->y2)
@@ -2033,14 +2033,14 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
           */
           pixel_1=GetOnePixel(image,(int) segment->x1,(int) segment->y1);
           pixel_2=GetOnePixel(image,(int) segment->x2,(int) segment->y1);
-          q=SetPixelCache(image,(int) x_mid,(int) segment->y1,1,1);
+          q=SetImagePixels(image,(int) x_mid,(int) segment->y1,1,1);
           if (q != (PixelPacket *) NULL)
             {
               q->red=PlasmaPixel((int) (pixel_1.red+pixel_2.red)/2,plasma);
               q->green=
                 PlasmaPixel((int) (pixel_1.green+pixel_2.green)/2,plasma);
               q->blue=PlasmaPixel((int) (pixel_1.blue+pixel_2.blue)/2,plasma);
-              (void) SyncPixelCache(image);
+              (void) SyncImagePixels(image);
             }
         }
     }
@@ -2052,14 +2052,14 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
       */
       pixel_1=GetOnePixel(image,(int) segment->x1,(int) segment->y1);
       pixel_2=GetOnePixel(image,(int) segment->x2,(int) segment->y2);
-      q=SetPixelCache(image,(int) x_mid,(int) y_mid,1,1);
+      q=SetImagePixels(image,(int) x_mid,(int) y_mid,1,1);
       if (q != (PixelPacket *) NULL)
         {
           q->red=PlasmaPixel((int) (pixel_1.red+pixel_2.red)/2,plasma);
           q->green=PlasmaPixel((int) (pixel_1.green+pixel_2.green)/2,plasma);
           q->blue=PlasmaPixel((int) (pixel_1.blue+pixel_2.blue)/2,plasma);
         }
-      (void) SyncPixelCache(image);
+      (void) SyncImagePixels(image);
     }
   if (((segment->x2-segment->x1) < 3.0) && ((segment->y2-segment->y1) < 3.0))
     return(True);
@@ -2159,8 +2159,8 @@ Export Image *ReduceNoiseImage(Image *image,ExceptionInfo *exception)
     /*
       Read another scan line.
     */
-    p=GetPixelCache(image,0,Min(Max(y-1,0),image->rows-3),image->columns,3);
-    q=SetPixelCache(noise_image,0,y,noise_image->columns,1);
+    p=GetImagePixels(image,0,Min(Max(y-1,0),image->rows-3),image->columns,3);
+    q=SetImagePixels(noise_image,0,y,noise_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     /*
@@ -2213,7 +2213,7 @@ Export Image *ReduceNoiseImage(Image *image,ExceptionInfo *exception)
     }
     p++;
     *q++=(*p);
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(ReduceNoiseImageText,y,image->rows-1);
@@ -2312,8 +2312,8 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
   */
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetPixelCache(image,0,Min(Max(y-1,0),image->rows-3),image->columns,3);
-    q=SetPixelCache(shade_image,0,y,shade_image->columns,1);
+    p=GetImagePixels(image,0,Min(Max(y-1,0),image->rows-3),image->columns,3);
+    q=SetImagePixels(shade_image,0,y,shade_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     /*
@@ -2368,7 +2368,7 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
       q++;
     }
     *q++=(*s1);
-    if (!SyncPixelCache(shade_image))
+    if (!SyncImagePixels(shade_image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(ShadeImageText,y,image->rows);
@@ -2471,8 +2471,8 @@ Export Image *SharpenImage(Image *image,const double factor,
   quantum=Max(weight-12.0,1.0);
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetPixelCache(image,0,Min(Max(y-1,0),image->rows-3),image->columns,3);
-    q=SetPixelCache(sharpen_image,0,y,sharpen_image->columns,1);
+    p=GetImagePixels(image,0,Min(Max(y-1,0),image->rows-3),image->columns,3);
+    q=SetImagePixels(sharpen_image,0,y,sharpen_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     /*
@@ -2527,7 +2527,7 @@ Export Image *SharpenImage(Image *image,const double factor,
     }
     p++;
     *q++=(*p);
-    if (!SyncPixelCache(sharpen_image))
+    if (!SyncImagePixels(sharpen_image))
       break;
     if (QuantumTick(y,image->rows-1))
       ProgressMonitor(SharpenImageText,y,image->rows-1);
@@ -2590,7 +2590,7 @@ Export void SolarizeImage(Image *image,const double factor)
       */
       for (y=0; y < (int) image->rows; y++)
       {
-        q=GetPixelCache(image,0,y,image->columns,1);
+        q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (int) image->columns; x++)
@@ -2600,7 +2600,7 @@ Export void SolarizeImage(Image *image,const double factor)
           q->blue=q->blue > threshold ? MaxRGB-q->blue : q->blue;
           q++;
         }
-        if (!SyncPixelCache(image))
+        if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
           ProgressMonitor(SolarizeImageText,y,image->rows);
@@ -2701,7 +2701,7 @@ Export Image *SpreadImage(Image *image,const unsigned int amount,
   quantum=(amount+1) >> 1;
   for (y=0; y < image->rows; y++)
   {
-    q=SetPixelCache(spread_image,0,y,spread_image->columns,1);
+    q=SetImagePixels(spread_image,0,y,spread_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < image->columns; x++)
@@ -2711,7 +2711,7 @@ Export Image *SpreadImage(Image *image,const unsigned int amount,
       *q++=GetOnePixel(image,Min(x+x_distance,image->columns-1),
         Min(y+y_distance,image->rows-1));
     }
-    if (!SyncPixelCache(spread_image))
+    if (!SyncImagePixels(spread_image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(SpreadImageText,y,image->rows);
@@ -2756,7 +2756,7 @@ Export Image *SteganoImage(Image *image,Image *watermark,
 {
 #define EmbedBit(byte) \
 { \
-  q=GetPixelCache(watermark,j % watermark->columns,j/watermark->columns,1,1); \
+  q=GetImagePixels(watermark,j % watermark->columns,j/watermark->columns,1,1); \
   if (q == (PixelPacket *) NULL) \
     break;  \
   (byte)&=(~0x01); \
@@ -2822,13 +2822,13 @@ Export Image *SteganoImage(Image *image,Image *watermark,
             stegano_image->colormap[i]=stegano_image->colormap[i >> 1];
           for (y=0; y < (int) stegano_image->rows; y++)
           {
-            q=GetPixelCache(stegano_image,0,y,stegano_image->columns,1);
+            q=GetImagePixels(stegano_image,0,y,stegano_image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
             indexes=GetIndexes(stegano_image);
             for (x=0; x < (int) stegano_image->columns; x++)
               indexes[x]*=2;
-            if (!SyncPixelCache(stegano_image))
+            if (!SyncImagePixels(stegano_image))
               break;
           }
         }
@@ -2845,7 +2845,7 @@ Export Image *SteganoImage(Image *image,Image *watermark,
     {
       if (i == (stegano_image->columns*stegano_image->rows))
         i=0;
-      p=GetPixelCache(stegano_image,i % stegano_image->columns,
+      p=GetImagePixels(stegano_image,i % stegano_image->columns,
         i/stegano_image->columns,1,1);
       if (p == (PixelPacket *) NULL)
         break;
@@ -2858,7 +2858,7 @@ Export Image *SteganoImage(Image *image,Image *watermark,
           EmbedBit(p->green);
           EmbedBit(p->blue);
         }
-      if (!SyncPixelCache(stegano_image))
+      if (!SyncImagePixels(stegano_image))
         break;
       i++;
     }
@@ -2946,9 +2946,9 @@ Export Image *StereoImage(Image *image,Image *offset_image,
   */
   for (y=0; y < (int) stereo_image->rows; y++)
   {
-    p=GetPixelCache(image,0,y,image->columns,1);
-    q=GetPixelCache(offset_image,0,y,offset_image->columns,1);
-    r=SetPixelCache(stereo_image,0,y,stereo_image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
+    q=GetImagePixels(offset_image,0,y,offset_image->columns,1);
+    r=SetImagePixels(stereo_image,0,y,stereo_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL) ||
         (r == (PixelPacket *) NULL))
       break;
@@ -2962,7 +2962,7 @@ Export Image *StereoImage(Image *image,Image *offset_image,
       q++;
       r++;
     }
-    if (!SyncPixelCache(stereo_image))
+    if (!SyncImagePixels(stereo_image))
       break;
     if (QuantumTick(y,stereo_image->rows))
       ProgressMonitor(StereoImageText,y,stereo_image->rows);
@@ -3062,8 +3062,8 @@ Export Image *SwirlImage(Image *image,double degrees,ExceptionInfo *exception)
   */
   for (y=0; y < image->rows; y++)
   {
-    p=GetPixelCache(image,0,y,image->columns,1);
-    q=SetPixelCache(swirl_image,0,y,swirl_image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
+    q=SetImagePixels(swirl_image,0,y,swirl_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     y_distance=y_scale*(y-y_center);
@@ -3090,7 +3090,7 @@ Export Image *SwirlImage(Image *image,double degrees,ExceptionInfo *exception)
       p++;
       q++;
     }
-    if (!SyncPixelCache(swirl_image))
+    if (!SyncImagePixels(swirl_image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(SwirlImageText,y,image->rows);
@@ -3166,7 +3166,7 @@ Export unsigned int ThresholdImage(Image *image,const double threshold)
   image->colormap[1].blue=MaxRGB;
   for (y=0; y < (int) image->rows; y++)
   {
-    q=GetPixelCache(image,0,y,image->columns,1);
+    q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
@@ -3176,7 +3176,7 @@ Export unsigned int ThresholdImage(Image *image,const double threshold)
       indexes[x]=index;
       *q++=image->colormap[index];
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(ThresholdImageText,y,image->rows);
@@ -3267,7 +3267,7 @@ Export Image *WaveImage(Image *image,const double amplitude,
   */
   for (y=0; y < (int) wave_image->rows; y++)
   {
-    q=SetPixelCache(wave_image,0,y,wave_image->columns,1);
+    q=SetImagePixels(wave_image,0,y,wave_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) wave_image->columns; x++)
@@ -3275,7 +3275,7 @@ Export Image *WaveImage(Image *image,const double amplitude,
       *q=InterpolateColor(image,x,(int) (y-sine_map[x]));
       q++;
     }
-    if (!SyncPixelCache(wave_image))
+    if (!SyncImagePixels(wave_image))
       break;
     if (QuantumTick(y,wave_image->rows))
       ProgressMonitor(WaveImageText,y,wave_image->rows);

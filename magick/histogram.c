@@ -211,7 +211,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   }
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetPixelCache(image,0,y,image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) image->columns; x++)
@@ -249,7 +249,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   SetImage(histogram_image,Opaque);
   for (x=0; x < (int) histogram_image->columns; x++)
   {
-    q=GetPixelCache(histogram_image,x,0,1,histogram_image->rows);
+    q=GetImagePixels(histogram_image,x,0,1,histogram_image->rows);
     if (q == (PixelPacket *) NULL)
       break;
     y=histogram_image->rows-(int) (scale*red[x]);
@@ -273,7 +273,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
       p->blue=MaxRGB;
       p++;
     }
-    if (!SyncPixelCache(histogram_image))
+    if (!SyncImagePixels(histogram_image))
       break;
     if (QuantumTick(x,histogram_image->columns))
       ProgressMonitor(SaveImageText,x,histogram_image->columns);
@@ -281,9 +281,9 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   /*
     Free memory resources.
   */
-  FreeMemory ((char *) blue);
-  FreeMemory ((char *) green);
-  FreeMemory ((char *) red);
+  FreeMemory((void *) &blue);
+  FreeMemory((void *) &green);
+  FreeMemory((void *) &red);
   TemporaryFilename(filename);
   file=fopen(filename,WriteBinaryType);
   if (file != (FILE *) NULL)

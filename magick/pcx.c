@@ -429,7 +429,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     for (y=0; y < (int) image->rows; y++)
     {
       p=pcx_pixels+(y*pcx_header.bytes_per_line*pcx_header.planes);
-      q=SetPixelCache(image,0,y,image->columns,1);
+      q=SetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
       indexes=GetIndexes(image);
@@ -565,7 +565,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         q++;
       }
-      if (!SyncPixelCache(image))
+      if (!SyncImagePixels(image))
         break;
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
@@ -862,7 +862,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
           q=pcx_pixels+(y*pcx_header.bytes_per_line*pcx_header.planes);
           for (i=0; i < (int) pcx_header.planes; i++)
           {
-            p=GetPixelCache(image,0,y,image->columns,1);
+            p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             for (x=0; x < pcx_header.bytes_per_line; x++)
@@ -902,7 +902,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       if (pcx_header.bits_per_pixel > 1)
         for (y=0; y < (int) image->rows; y++)
         {
-          p=GetPixelCache(image,0,y,image->columns,1);
+          p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
@@ -929,7 +929,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
               Intensity(image->colormap[1]);
           for (y=0; y < (int) image->rows; y++)
           {
-            p=GetPixelCache(image,0,y,image->columns,1);
+            p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);

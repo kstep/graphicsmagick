@@ -420,7 +420,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (sun_header.depth == 1)
       for (y=0; y < (int) image->rows; y++)
       {
-        q=SetPixelCache(image,0,y,image->columns,1);
+        q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
@@ -438,7 +438,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         if ((((image->columns/8)+(image->columns % 8 ? 1 : 0)) % 2) != 0)
           p++;
-        if (!SyncPixelCache(image))
+        if (!SyncImagePixels(image))
           break;
         if (image->previous == (Image *) NULL)
           if (QuantumTick(y,image->rows))
@@ -448,7 +448,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->class == PseudoClass)
         for (y=0; y < (int) image->rows; y++)
         {
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
@@ -456,7 +456,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
             indexes[x]=(*p++);
           if ((image->columns % 2) != 0)
             p++;
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
@@ -465,7 +465,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       else
         for (y=0; y < (int) image->rows; y++)
         {
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           for (x=0; x < (int) image->columns; x++)
@@ -494,7 +494,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
           if (((image->columns % 2) != 0) && (image->matte == False))
             p++;
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
@@ -729,7 +729,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
         */
         for (y=0; y < (int) image->rows; y++)
         {
-          p=GetPixelCache(image,0,y,image->columns,1);
+          p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
           q=pixels;
@@ -768,7 +768,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
               Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
           for (y=0; y < (int) image->rows; y++)
           {
-            p=GetPixelCache(image,0,y,image->columns,1);
+            p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
@@ -814,7 +814,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
           */
           for (y=0; y < (int) image->rows; y++)
           {
-            p=GetPixelCache(image,0,y,image->columns,1);
+            p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);

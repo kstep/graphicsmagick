@@ -381,7 +381,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         q=pixels;
         for (y=0; y < (int) image->rows; y++)
         {
-          p=GetPixelCache(image,0,y,image->columns,1);
+          p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
           for (x=0; x < (int) image->columns; x++)
@@ -420,7 +420,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         Ascii85Initialize();
         for (y=0; y < (int) image->rows; y++)
         {
-          p=GetPixelCache(image,0,y,image->columns,1);
+          p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
           for (x=0; x < (int) image->columns; x++)

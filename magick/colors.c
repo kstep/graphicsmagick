@@ -1055,7 +1055,7 @@ Export unsigned long GetNumberColors(Image *image,FILE *file)
     }
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetPixelCache(image,0,y,image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       return(False);
     for (x=0; x < (int) image->columns; x++)
@@ -1365,7 +1365,7 @@ Export unsigned int IsMatteImage(Image *image)
     return(False);
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetPixelCache(image,0,y,image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       return(False);
     for (x=0; x < (int) image->columns; x++)
@@ -1507,7 +1507,7 @@ Export unsigned int IsPseudoClass(Image *image)
       "Memory allocation failed");
   for (y=0; (y < (int) image->rows) && (color_cube.colors <= 256); y++)
   {
-    p=GetPixelCache(image,0,y,image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       return(False);
     for (x=0; (x < (int) image->columns) && (color_cube.colors <= 256); x++)
@@ -1578,7 +1578,7 @@ Export unsigned int IsPseudoClass(Image *image)
           "Unable to determine image class","Memory allocation failed");
       for (y=0; y < (int) image->rows; y++)
       {
-        q=GetPixelCache(image,0,y,image->columns,1);
+        q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
@@ -1607,7 +1607,7 @@ Export unsigned int IsPseudoClass(Image *image)
           image->colormap[index].blue=node_info->list[i].blue;
           q++;
         }
-        if (!SyncPixelCache(image))
+        if (!SyncImagePixels(image))
           break;
       }
     }

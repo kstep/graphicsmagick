@@ -407,7 +407,7 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
   if (!dither)
     for (y=0; y < (int) image->rows; y++)
     {
-      q=GetPixelCache(image,0,y,image->columns,1);
+      q=GetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
       indexes=GetIndexes(image);
@@ -445,7 +445,7 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
           }
         q++;
       }
-      if (!SyncPixelCache(image))
+      if (!SyncImagePixels(image))
         break;
       if (QuantumTick(y,image->rows))
         ProgressMonitor(AssignImageText,y,image->rows);
@@ -578,7 +578,7 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
     3.0*(MaxRGB/2.0)*(MaxRGB/2.0)*image->columns*image->rows;
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetPixelCache(image,0,y,image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     if ((int) cube_info->nodes > MaxNodes)
@@ -959,7 +959,7 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
       /*
         Distribute error.
       */
-      q=GetPixelCache(image,p->x,p->y,1,1);
+      q=GetImagePixels(image,p->x,p->y,1,1);
       if (q == (PixelPacket *) NULL)
         return(False);
       indexes=GetIndexes(image);
@@ -1023,7 +1023,7 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
           q->green=image->colormap[index].green;
           q->blue=image->colormap[index].blue;
         }
-      if (!SyncPixelCache(image))
+      if (!SyncImagePixels(image))
         return(False);
       /*
         Propagate the error as the last entry of the error queue.
@@ -1699,7 +1699,7 @@ static unsigned int OrderedDitherImage(Image *image)
   */
   for (y=0; y < (int) image->rows; y++)
   {
-    q=GetPixelCache(image,0,y,image->columns,1);
+    q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
@@ -1712,7 +1712,7 @@ static unsigned int OrderedDitherImage(Image *image)
       q->blue=image->colormap[index].blue;
       q++;
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(DitherImageText,y,image->rows);
@@ -1911,7 +1911,7 @@ Export unsigned int QuantizationError(Image *image)
   total_error=0;
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetPixelCache(image,0,y,image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);

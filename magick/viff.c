@@ -621,7 +621,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
             Intensity(image->colormap[1]);
         for (y=0; y < (int) image->rows; y++)
         {
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
@@ -637,7 +637,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                 indexes[x+bit]=(*p) & (0x01 << bit) ? !polarity : polarity;
               p++;
             }
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
@@ -648,13 +648,13 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
       if (image->class == PseudoClass)
         for (y=0; y < (int) image->rows; y++)
         {
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
           for (x=0; x < (int) image->columns; x++)
             indexes[x]=(*p++);
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
@@ -671,7 +671,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
           offset=image->columns*image->rows;
           for (y=0; y < (int) image->rows; y++)
           {
-            q=SetPixelCache(image,0,y,image->columns,1);
+            q=SetImagePixels(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
             for (x=0; x < (int) image->columns; x++)
@@ -689,7 +689,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
               p++;
               q++;
             }
-            if (!SyncPixelCache(image))
+            if (!SyncImagePixels(image))
               break;
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
@@ -1022,7 +1022,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
         offset=image->columns*image->rows;
         for (y=0; y < (int) image->rows; y++)
         {
-          p=GetPixelCache(image,0,y,image->columns,1);
+          p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
           for (x=0; x < (int) image->columns; x++)
@@ -1068,7 +1068,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
           q=viff_pixels;
           for (y=0; y < (int) image->rows; y++)
           {
-            p=GetPixelCache(image,0,y,image->columns,1);
+            p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
@@ -1100,7 +1100,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
                 Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
             for (y=0; y < (int) image->rows; y++)
             {
-              p=GetPixelCache(image,0,y,image->columns,1);
+              p=GetImagePixels(image,0,y,image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
               indexes=GetIndexes(image);
@@ -1133,7 +1133,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
             */
             for (y=0; y < (int) image->rows; y++)
             {
-              p=GetPixelCache(image,0,y,image->columns,1);
+              p=GetImagePixels(image,0,y,image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
               for (x=0; x < (int) image->columns; x++)

@@ -141,17 +141,16 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
       */
       for (y=0; y < (int) image->rows; y++)
       {
-        p=GetPixelCache(image,0,y,image->columns,1);
-        q=SetPixelCache(rotate_image,0,y,rotate_image->columns,1);
+        p=GetImagePixels(image,0,y,image->columns,1);
+        q=SetImagePixels(rotate_image,0,y,rotate_image->columns,1);
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         indexes=GetIndexes(image);
         rotate_indexes=GetIndexes(rotate_image);
         if (image->class == PseudoClass)
-          memcpy(rotate_indexes,indexes,
-            image->columns*sizeof(IndexPacket));
+          memcpy(rotate_indexes,indexes,image->columns*sizeof(IndexPacket));
         memcpy(q,p,image->columns*sizeof(PixelPacket));
-        if (!SyncPixelCache(rotate_image))
+        if (!SyncImagePixels(rotate_image))
           break;
         if (QuantumTick(y,image->rows))
           ProgressMonitor(RotateImageText,y,image->rows);
@@ -165,17 +164,16 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
       */
       for (y=0; y < (int) image->rows; y++)
       {
-        p=GetPixelCache(image,0,y,image->columns,1);
-        q=SetPixelCache(rotate_image,image->rows-y-1,0,1,rotate_image->rows);
+        p=GetImagePixels(image,0,y,image->columns,1);
+        q=SetImagePixels(rotate_image,image->rows-y-1,0,1,rotate_image->rows);
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         indexes=GetIndexes(image);
         rotate_indexes=GetIndexes(rotate_image);
         if (image->class == PseudoClass)
-          memcpy(rotate_indexes,indexes,
-            image->columns*sizeof(IndexPacket));
+          memcpy(rotate_indexes,indexes,image->columns*sizeof(IndexPacket));
         memcpy(q,p,image->columns*sizeof(PixelPacket));
-        if (!SyncPixelCache(rotate_image))
+        if (!SyncImagePixels(rotate_image))
           break;
         if (QuantumTick(y,image->rows))
           ProgressMonitor(RotateImageText,y,image->rows);
@@ -192,8 +190,8 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
       */
       for (y=0; y < (int) image->rows; y++)
       {
-        p=GetPixelCache(image,0,y,image->columns,1);
-        q=SetPixelCache(rotate_image,0,image->rows-y-1,image->columns,1);
+        p=GetImagePixels(image,0,y,image->columns,1);
+        q=SetImagePixels(rotate_image,0,image->rows-y-1,image->columns,1);
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         q+=image->columns;
@@ -204,7 +202,7 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
             rotate_indexes[image->columns-x-1]=indexes[x];
         for (x=0; x < (int) image->columns; x++)
           *--q=(*p++);
-        if (!SyncPixelCache(rotate_image))
+        if (!SyncImagePixels(rotate_image))
           break;
         if (QuantumTick(y,image->rows))
           ProgressMonitor(RotateImageText,y,image->rows);
@@ -220,8 +218,8 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
       */
       for (y=0; y < (int) image->rows; y++)
       {
-        p=GetPixelCache(image,0,y,image->columns,1);
-        q=SetPixelCache(rotate_image,y,0,1,rotate_image->rows);
+        p=GetImagePixels(image,0,y,image->columns,1);
+        q=SetImagePixels(rotate_image,y,0,1,rotate_image->rows);
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         q+=image->columns;
@@ -232,7 +230,7 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
         if (image->class == PseudoClass)
           for (x=0; x < (int) image->columns; x++)
             rotate_indexes[image->columns-x-1]=indexes[x];
-        if (!SyncPixelCache(rotate_image))
+        if (!SyncImagePixels(rotate_image))
           break;
         if (QuantumTick(y,image->rows))
           ProgressMonitor(RotateImageText,y,image->rows);
@@ -342,7 +340,7 @@ static void XShearImage(Image *image,const double degrees,
             */
             if (step > x_offset)
               break;
-            p=GetPixelCache(image,0,y_offset,image->columns,1);
+            p=GetImagePixels(image,0,y_offset,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             p+=x_offset;
@@ -361,7 +359,7 @@ static void XShearImage(Image *image,const double degrees,
             /*
               Transfer pixels right-to-left.
             */
-            p=GetPixelCache(image,0,y_offset,image->columns,1);
+            p=GetImagePixels(image,0,y_offset,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             p+=x_offset+width;
@@ -376,7 +374,7 @@ static void XShearImage(Image *image,const double degrees,
             break;
           }
         }
-        if (!SyncPixelCache(image))
+        if (!SyncImagePixels(image))
           break;
         continue;
       }
@@ -394,7 +392,7 @@ static void XShearImage(Image *image,const double degrees,
         */
         if (step > x_offset)
           break;
-        p=GetPixelCache(image,0,y_offset,image->columns,1);
+        p=GetImagePixels(image,0,y_offset,image->columns,1);
         if (p == (PixelPacket *) NULL)
           break;
         p+=x_offset;
@@ -443,7 +441,7 @@ static void XShearImage(Image *image,const double degrees,
         /*
           Transfer pixels right-to-left.
         */
-        p=GetPixelCache(image,0,y_offset,image->columns,1);
+        p=GetImagePixels(image,0,y_offset,image->columns,1);
         if (p == (PixelPacket *) NULL)
           break;
         p+=x_offset+width;
@@ -485,7 +483,7 @@ static void XShearImage(Image *image,const double degrees,
         break;
       }
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,height))
       ProgressMonitor(XShearImageText,y,height);
@@ -588,7 +586,7 @@ static void YShearImage(Image *image,const double degrees,
             */
             if (step > y_offset)
               break;
-            p=GetPixelCache(image,x_offset,0,1,image->rows);
+            p=GetImagePixels(image,x_offset,0,1,image->rows);
             if (p == (PixelPacket *) NULL)
               break;
             p+=y_offset;
@@ -607,7 +605,7 @@ static void YShearImage(Image *image,const double degrees,
             /*
               Transfer pixels bottom-to-top.
             */
-            p=GetPixelCache(image,x_offset,0,1,image->rows);
+            p=GetImagePixels(image,x_offset,0,1,image->rows);
             if (p == (PixelPacket *) NULL)
               break;
             p+=y_offset+height;
@@ -622,7 +620,7 @@ static void YShearImage(Image *image,const double degrees,
             break;
           }
         }
-        if (!SyncPixelCache(image))
+        if (!SyncImagePixels(image))
           break;
         continue;
       }
@@ -640,7 +638,7 @@ static void YShearImage(Image *image,const double degrees,
         */
         if (step > y_offset)
           break;
-        p=GetPixelCache(image,x_offset,0,1,image->rows);
+        p=GetImagePixels(image,x_offset,0,1,image->rows);
         if (p == (PixelPacket *) NULL)
           break;
         p+=y_offset;
@@ -683,7 +681,7 @@ static void YShearImage(Image *image,const double degrees,
         /*
           Transfer pixels bottom-to-top.
         */
-        p=GetPixelCache(image,x_offset,0,1,image->rows);
+        p=GetImagePixels(image,x_offset,0,1,image->rows);
         if (p == (PixelPacket *) NULL)
           break;
         p+=y_offset+height;
@@ -725,7 +723,7 @@ static void YShearImage(Image *image,const double degrees,
         break;
       }
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,width))
       ProgressMonitor(YShearImageText,y,width);

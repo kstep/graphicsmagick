@@ -162,7 +162,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(CorruptImageWarning,"Unable to read image data",
           image);
       p=pixels;
-      q=SetPixelCache(image,0,y,image->columns,1);
+      q=SetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
       for (x=0; x < (int) image->columns; x++)
@@ -172,7 +172,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q->blue=UpScale(*p++);
         q++;
       }
-      if (!SyncPixelCache(image))
+      if (!SyncImagePixels(image))
         break;
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
@@ -323,7 +323,7 @@ static unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlob(image,strlen(buffer),buffer);
     for (y=0; y < (int) image->rows; y++)
     {
-      p=GetPixelCache(image,0,y,image->columns,1);
+      p=GetImagePixels(image,0,y,image->columns,1);
       if (p == (PixelPacket *) NULL)
         break;
       q=pixels;

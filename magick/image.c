@@ -195,7 +195,8 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->restart_animation_here=False;
   GetExceptionInfo(&allocated_image->exception);
   GetTimerInfo(&allocated_image->timer);
-  GetCacheInfo(&allocated_image->cache);
+  allocated_image->cache=(void *) NULL;
+  allocated_image->fifo=(void (*)(const Image *)) NULL;
   allocated_image->orphan=False;
   allocated_image->previous=(Image *) NULL;
   allocated_image->list=(Image *) NULL;
@@ -298,7 +299,7 @@ Export void AllocateNextImage(const ImageInfo *image_info,Image *image)
     Allocate image structure.
   */
   assert(image != (Image *) NULL);
-  CloseCache(image->cache);
+  CloseImagePixels(image);
   image->next=AllocateImage(image_info);
   if (image->next == (Image *) NULL)
     return;
@@ -636,7 +637,7 @@ Export Image *AverageImages(Image *image,ExceptionInfo *exception)
     i=0;
     for (y=0; y < (int) next->rows; y++)
     {
-      p=GetPixelCache(next,0,y,next->columns,1);
+      p=GetImagePixels(next,0,y,next->columns,1);
       if (p == (PixelPacket *) NULL)
         break;
       for (x=0; x < (int) next->columns; x++)
@@ -657,7 +658,7 @@ Export Image *AverageImages(Image *image,ExceptionInfo *exception)
   i=0;
   for (y=0; y < (int) average_image->rows; y++)
   {
-    q=SetPixelCache(average_image,0,y,average_image->columns,1);
+    q=SetImagePixels(average_image,0,y,average_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) average_image->columns; x++)
@@ -669,7 +670,7 @@ Export Image *AverageImages(Image *image,ExceptionInfo *exception)
       q++;
       i++;
     }
-    if (!SyncPixelCache(average_image))
+    if (!SyncImagePixels(average_image))
       break;
     if (QuantumTick(y,average_image->rows))
       ProgressMonitor(AverageImageText,y,average_image->rows);
@@ -692,7 +693,7 @@ Export Image *AverageImages(Image *image,ExceptionInfo *exception)
 %  Method CloneImage returns a copy of all fields of the input image.  The
 %  image pixels and indexes are copied only if the columns and rows of the
 %  cloned image are the same as the original otherwise the pixel data is
-%  undefined and must be initialized with SetPixelCache() and SyncPixelCache()
+%  undefined and must be initialized with SetImagePixels() and SyncImagePixels()
 %  methods.
 %
 %  The format of the CloneImage method is:
@@ -767,8 +768,7 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
       if (clone_image->color_profile.info == (unsigned char *) NULL)
         ThrowImageException(ResourceLimitWarning,"Unable to clone image",
           "Memory allocation failed");
-      memcpy(clone_image->color_profile.info,image->color_profile.info,
-        length);
+      memcpy(clone_image->color_profile.info,image->color_profile.info,length);
     }
   if (image->iptc_profile.length > 0)
     {
@@ -780,11 +780,10 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
       if (clone_image->iptc_profile.info == (unsigned char *) NULL)
         ThrowImageException(ResourceLimitWarning,"Unable to clone image",
           "Memory allocation failed");
-      memcpy(clone_image->iptc_profile.info,image->iptc_profile.info,
-        length);
+      memcpy(clone_image->iptc_profile.info,image->iptc_profile.info,length);
     }
   GetBlobInfo(&clone_image->blob);
-  GetCacheInfo(&clone_image->cache);
+  clone_image->cache=(void *) NULL;
   if ((image->columns != columns) || (image->rows != rows))
     {
       clone_image->columns=columns;
@@ -809,17 +808,16 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
       */
       for (y=0; y < (int) image->rows; y++)
       {
-        p=GetPixelCache(image,0,y,image->columns,1);
-        q=SetPixelCache(clone_image,0,y,clone_image->columns,1);
+        p=GetImagePixels(image,0,y,image->columns,1);
+        q=SetImagePixels(clone_image,0,y,clone_image->columns,1);
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         memcpy(q,p,image->columns*sizeof(PixelPacket));
         indexes=GetIndexes(image);
         clone_indexes=GetIndexes(clone_image);
         if (image->class == PseudoClass)
-          memcpy(clone_indexes,indexes,
-            image->columns*sizeof(IndexPacket));
-        if (!SyncPixelCache(clone_image))
+          memcpy(clone_indexes,indexes,image->columns*sizeof(IndexPacket));
+        if (!SyncImagePixels(clone_image))
           break;
       }
       if (y < image->rows)
@@ -1083,9 +1081,9 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
       {
         if (((y+y_offset) < 0) || ((y+y_offset) >= (int) image->rows))
           continue;
-        p=GetPixelCache(composite_image,0,y,composite_image->columns,1);
-        q=GetPixelCache(image,0,y+y_offset,image->columns,1);
-        r=GetPixelCache(displace_image,0,y,displace_image->columns,1);
+        p=GetImagePixels(composite_image,0,y,composite_image->columns,1);
+        q=GetImagePixels(image,0,y+y_offset,image->columns,1);
+        r=GetImagePixels(displace_image,0,y,displace_image->columns,1);
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL) ||
             (r == (PixelPacket *) NULL))
           break;
@@ -1110,7 +1108,7 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
           q++;
           r++;
         }
-        if (!SyncPixelCache(displace_image))
+        if (!SyncImagePixels(displace_image))
           break;
       }
       composite_image=displace_image;
@@ -1176,7 +1174,7 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
           (void) IsMonochromeImage(composite_image);
           for (y=0; y < (int) composite_image->rows; y++)
           {
-            p=GetPixelCache(composite_image,0,y,composite_image->columns,1);
+            p=GetImagePixels(composite_image,0,y,composite_image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             if (y == 0)
@@ -1199,7 +1197,7 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
                 p->opacity=Transparent;
               p++;
             }
-            if (!SyncPixelCache(composite_image))
+            if (!SyncImagePixels(composite_image))
               break;
           }
           composite_image->class=DirectClass;
@@ -1223,8 +1221,8 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
         continue;
       if ((x-x_offset) >= composite_image->columns)
         break;
-      p=GetPixelCache(composite_image,x-x_offset,y-y_offset,1,1);
-      q=GetPixelCache(image,x,y,1,1);
+      p=GetImagePixels(composite_image,x-x_offset,y-y_offset,1,1);
+      q=GetImagePixels(image,x,y,1,1);
       if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         break;
       composite_indexes=GetIndexes(composite_image);
@@ -1482,7 +1480,7 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
       q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue;
       q->opacity=(opacity < Transparent) ? Transparent :
         (opacity > Opaque) ? Opaque : opacity;
-      if (!SyncPixelCache(image))
+      if (!SyncImagePixels(image))
         break;
     }
   }
@@ -1490,445 +1488,6 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
     DestroyImage(composite_image);
   (void) IsMatteImage(image);
   return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   C r e a t e I m a g e                                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method CreateImage is a convenience routine that creates an image from the
-%  pixel data you supply and returns it.  It allocates the memory necessary
-%  for the new Image structure and returns a pointer to the new image.  The
-%  pixel data must be in scanline order top-to-bottom.  The data can be
-%  character, short int, integer, float, or double.  Float and double require
-%  the pixels to be normalized [0..1].  The other types are [0..MaxRGB].  For
-%  example, to create a 640x480 image from unsigned red-green-blue character
-%  data, use
-%
-%      image=CreateImage(640,480,"RGB",0,pixels,&exception);
-%
-%  The format of the CreateImage method is:
-%
-%      Image *CreateImage(const unsigned int width,const unsigned int height,
-%        const char *map,const StorageType type,const void *pixels,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image:  Method CreateImage returns a pointer to the image.  A null
-%      image is returned if there is a memory shortage or if the image cannot
-%      be read.
-%
-%    o width: Specifies the width in pixels of the image.
-%
-%    o height: Specifies the height in pixels of the image.
-%
-%    o map:  This character string can be any combination or order of
-%      R = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow,
-%      M = magenta, and K = black.  The ordering reflects the order of the
-%      pixels in the supplied pixel array.
-%
-%    o type: pixel type where 0 = unsigned char, 1 = short int, 2 = int,
-%      3 = float, and 4 = double.  Float and double types are expected to be
-%      normalized [0..1] otherwise [0..MaxRGB].
-%
-%    o pixels: This array of values contain the pixel components as defined
-%      by the map and type parameters.  The length of the arrays must
-%      equal the area specified by the width and height values and type
-%      parameters.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-%
-*/
-Export Image *CreateImage(const unsigned int width,const unsigned int height,
-  const char *map,const StorageType type,const void *pixels,
-  ExceptionInfo *exception)
-{
-  Image
-    *image;
-
-  int
-    y;
-
-  register int
-    i,
-    x;
-
-  PixelPacket
-    *q;
-
-  /*
-    Allocate image structure.
-  */
-  assert(pixels != (void *) NULL);
-  GetExceptionInfo(exception);
-  image=AllocateImage((ImageInfo *) NULL);
-  if (image == (Image *) NULL)
-    return((Image *) NULL);
-  if ((width*height) == 0)
-    ThrowBinaryException(OptionWarning,"Unable to create image",
-      "impossible image size");
-  image->columns=width;
-  image->rows=height;
-  for (i=0; i < strlen(map); i++)
-    switch (map[i])
-    {
-      case 'a':
-      case 'A':
-      {
-        image->matte=True;
-        break;
-      }
-      case 'c':
-      case 'C':
-      case 'm':
-      case 'M':
-      case 'y':
-      case 'Y':
-      case 'k':
-      case 'K':
-      {
-        image->colorspace=CMYKColorspace;
-        break;
-      }
-      default:
-        break;
-    }
-  /*
-    Transfer the pixels from the pixel data array to the image.
-  */
-  switch (type)
-  {
-    case CharPixel:
-    {
-      register char
-        *p;
-
-      p=(char *) pixels;
-      for (y=0; y < (int) image->rows; y++)
-      {
-        q=SetPixelCache(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        for (x=0; x < (int) image->columns; x++)
-        {
-          for (i=0; i < strlen(map); i++)
-          {
-            switch (map[i])
-            {
-              case 'r':
-              case 'R':
-              case 'c':
-              case 'C':
-              {
-                q->red=(*p++);
-                break;
-              }
-              case 'g':
-              case 'G':
-              case 'y':
-              case 'Y':
-              {
-                q->green=(*p++);
-                break;
-              }
-              case 'b':
-              case 'B':
-              case 'm':
-              case 'M':
-              {
-                q->blue=(*p++);
-                break;
-              }
-              case 'a':
-              case 'A':
-              case 'k':
-              case 'K':
-              {
-                q->opacity=(*p++);
-                break;
-              }
-              default:
-              {
-                DestroyImage(image);
-                ThrowImageException(OptionWarning,"Invalid pixel map",map);
-              }
-            }
-          }
-          q++;
-        }
-        if (!SyncPixelCache(image))
-          break;
-      }
-      break;
-    }
-    case ShortPixel:
-    {
-      register unsigned short
-        *p;
-
-      p=(unsigned short *) pixels;
-      for (y=0; y < (int) image->rows; y++)
-      {
-        q=SetPixelCache(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        for (x=0; x < (int) image->columns; x++)
-        {
-          for (i=0; i < strlen(map); i++)
-          {
-            switch (map[i])
-            {
-              case 'r':
-              case 'R':
-              case 'c':
-              case 'C':
-              {
-                q->red=(*p++);
-                break;
-              }
-              case 'g':
-              case 'G':
-              case 'y':
-              case 'Y':
-              {
-                q->green=(*p++);
-                break;
-              }
-              case 'b':
-              case 'B':
-              case 'm':
-              case 'M':
-              {
-                q->blue=(*p++);
-                break;
-              }
-              case 'a':
-              case 'A':
-              case 'k':
-              case 'K':
-              {
-                q->opacity=(*p++);
-                break;
-              }
-              default:
-              {
-                DestroyImage(image);
-                ThrowImageException(OptionWarning,"Invalid pixel map",map);
-              }
-            }
-          }
-          q++;
-        }
-        if (!SyncPixelCache(image))
-          break;
-      }
-      break;
-    }
-    case IntegerPixel:
-    {
-      register unsigned int
-        *p;
-
-      p=(unsigned int *) pixels;
-      for (y=0; y < (int) image->rows; y++)
-      {
-        q=SetPixelCache(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        for (x=0; x < (int) image->columns; x++)
-        {
-          for (i=0; i < strlen(map); i++)
-          {
-            switch (map[i])
-            {
-              case 'r':
-              case 'R':
-              case 'c':
-              case 'C':
-              {
-                q->red=(*p++);
-                break;
-              }
-              case 'g':
-              case 'G':
-              case 'y':
-              case 'Y':
-              {
-                q->green=(*p++);
-                break;
-              }
-              case 'b':
-              case 'B':
-              case 'm':
-              case 'M':
-              {
-                q->blue=(*p++);
-                break;
-              }
-              case 'a':
-              case 'A':
-              case 'k':
-              case 'K':
-              {
-                q->opacity=(*p++);
-                break;
-              }
-              default:
-              {
-                DestroyImage(image);
-                ThrowImageException(OptionWarning,"Invalid pixel map",map);
-              }
-            }
-          }
-          q++;
-        }
-        if (!SyncPixelCache(image))
-          break;
-      }
-      break;
-    }
-    case FloatPixel:
-    {
-      register float
-        *p;
-
-      p=(float *) pixels;
-      for (y=0; y < (int) image->rows; y++)
-      {
-        q=SetPixelCache(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        for (x=0; x < (int) image->columns; x++)
-        {
-          for (i=0; i < strlen(map); i++)
-          {
-            switch (map[i])
-            {
-              case 'r':
-              case 'R':
-              case 'c':
-              case 'C':
-              {
-                q->red=MaxRGB*(*p++);
-                break;
-              }
-              case 'g':
-              case 'G':
-              case 'y':
-              case 'Y':
-              {
-                q->green=MaxRGB*(*p++);
-                break;
-              }
-              case 'b':
-              case 'B':
-              case 'm':
-              case 'M':
-              {
-                q->blue=MaxRGB*(*p++);
-                break;
-              }
-              case 'a':
-              case 'A':
-              case 'k':
-              case 'K':
-              {
-                q->opacity=MaxRGB*(*p++);
-                break;
-              }
-              default:
-              {
-                DestroyImage(image);
-                ThrowImageException(OptionWarning,"Invalid pixel map",map);
-              }
-            }
-          }
-          q++;
-        }
-        if (!SyncPixelCache(image))
-          break;
-      }
-      break;
-    }
-    case DoublePixel:
-    {
-      register double
-        *p;
-
-      p=(double *) pixels;
-      for (y=0; y < (int) image->rows; y++)
-      {
-        q=SetPixelCache(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        for (x=0; x < (int) image->columns; x++)
-        {
-          for (i=0; i < strlen(map); i++)
-          {
-            switch (map[i])
-            {
-              case 'r':
-              case 'R':
-              case 'c':
-              case 'C':
-              {
-                q->red=MaxRGB*(*p++);
-                break;
-              }
-              case 'g':
-              case 'G':
-              case 'y':
-              case 'Y':
-              {
-                q->green=MaxRGB*(*p++);
-                break;
-              }
-              case 'b':
-              case 'B':
-              case 'm':
-              case 'M':
-              {
-                q->blue=MaxRGB*(*p++);
-                break;
-              }
-              case 'a':
-              case 'A':
-              case 'k':
-              case 'K':
-              {
-                q->opacity=MaxRGB*(*p++);
-                break;
-              }
-              default:
-              {
-                DestroyImage(image);
-                ThrowImageException(OptionWarning,"Invalid pixel map",map);
-              }
-            }
-          }
-          q++;
-        }
-        if (!SyncPixelCache(image))
-          break;
-      }
-      break;
-    }
-    default:
-    {
-      DestroyImage(image);
-      ThrowImageException(OptionWarning,"Invalid pixel map",map);
-    }
-  }
-  return(image);
 }
 
 /*
@@ -1986,7 +1545,7 @@ Export void CycleColormapImage(Image *image,const int amount)
     }
   for (y=0; y < (int) image->rows; y++)
   {
-    q=GetPixelCache(image,0,y,image->columns,1);
+    q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
@@ -2001,7 +1560,7 @@ Export void CycleColormapImage(Image *image,const int amount)
       q->blue=image->colormap[index].blue;
       q++;
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
   }
 }
@@ -2178,7 +1737,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
         p=(PixelPacket *) NULL;
         for (y=0; y < (int) image->rows; y++)
         {
-          p=GetPixelCache(image,0,y,image->columns,1);
+          p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
           for (x=0; x < (int) image->columns; x++)
@@ -2530,14 +2089,6 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     (void) fprintf(file,"  Tainted: True\n");
   else
     (void) fprintf(file,"  Tainted: False\n");
-  (void) fprintf(file,"  Cache Type: ");
-  switch (GetCacheType(image->cache))
-  {
-    case MemoryCache: (void) fprintf(file,"memory\n"); break;
-    case DiskCache: (void) fprintf(file,"disk\n"); break;
-    case MemoryMappedCache: (void) fprintf(file,"memory-mapped\n"); break;
-    default: (void) fprintf(file,"\n");  break;
-  }
   if (user_time != 0.0)
     (void) fprintf(file,"  User Time: %.1fu\n",user_time);
   if (elapsed_time != 0.0)
@@ -2582,8 +2133,7 @@ Export void DestroyImage(Image *image)
       if (image->temporary)
         (void) remove(image->filename);
     }
-  DestroyCacheInfo(image->cache);
-  image->cache=(Cache) NULL;
+  DestroyImagePixels(image);
   /*
     Deallocate the image montage directory.
   */
@@ -2901,7 +2451,7 @@ Export void GetImageInfo(ImageInfo *image_info)
   image_info->view=(char *) NULL;
   image_info->group=0L;
   image_info->ping=False;
-  image_info->fifo=(void (*)(Image *)) NULL;
+  image_info->fifo=(void (*)(const Image *)) NULL;
 }
 
 /*
@@ -3057,369 +2607,6 @@ Export void GetPageInfo(RectangleInfo *page)
   page->height=0;
   page->x=0;
   page->y=0;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t I m a g e P i x e l s                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method GetImagePixels is a convenience routine.  Use it to extract pixel
-%  data from an image and place it in a buffer you supply.  The data is saved
-%  either as char, short int, integer, float or double format in the order
-%  specified by the type parameter.  For example, we want to extract
-%  scanline 1 of a 640x480 image as character data in red-green-blue order:
-%
-%      GetImagePixels(image,0,0,640,1,"RGB",0,pixels);
-%
-%  The format of the GetImagePixels method is:
-%
-%      unsigned int GetImagePixels(Image *image,const int x,const int y,
-%        const unsigned int columns,const unsigned int rows,
-%        const char *map,const StorageType type,void *pixels)
-%
-%  A description of each parameter follows:
-%
-%    o image: Specifies a pointer to a Image structure;  returned from
-%      ReadImage.
-%
-%    o x,y,columns,rows:  These values define the perimeter of a region of
-%      pixels you want to extract.
-%
-%    o map:  This character string can be any combination or order of
-%      R = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow,
-%      M = magenta, and K = black.  The ordering reflects the order of the
-%      pixels in the supplied pixel array.
-%
-%    o type: pixel type where 0 = unsigned char, 1 = short int, 2 = int,
-%      3 = float, and 4 = double.  Float and double types are expected to
-%      be normalized [0..1] otherwise [0..MaxRGB].
-%
-%    o pixels: This array of values contain the pixel components as defined
-%      by the map and type parameters.  The length of the arrays must
-%      equal the area specified by the width and height values and type
-%      parameters.
-%
-%
-*/
-Export unsigned int GetImagePixels(Image *image,const int x,const int y,
-  const unsigned int columns,const unsigned int rows,const char *map,
-  const StorageType type,void *pixels)
-{
-  register int
-    i,
-    j;
-
-  register PixelPacket
-    *p;
-
-  assert(image != (Image *) NULL);
-  for (i=0; i < strlen(map); i++)
-    switch (map[i])
-    {
-      case 'c':
-      case 'C':
-      case 'm':
-      case 'M':
-      case 'y':
-      case 'Y':
-      case 'k':
-      case 'K':
-      {
-        if (image->colorspace != CMYKColorspace)
-          RGBTransformImage(image,CMYKColorspace);
-        break;
-      }
-      default:
-        break;
-    }
-  switch (type)
-  {
-    case CharPixel:
-    {
-      register unsigned char
-        *q;
-
-      p=GetPixelCache(image,x,y,columns,rows);
-      if (p == (PixelPacket *) NULL)
-        break;
-      q=(unsigned char *) pixels;
-      for (i=0; i < (columns*rows); i++)
-      {
-        for (j=0; j < strlen(map); j++)
-        {
-          switch (map[j])
-          {
-            case 'r':
-            case 'R':
-            case 'c':
-            case 'C':
-            {
-              *q++=p->red;
-              break;
-            }
-            case 'g':
-            case 'G':
-            case 'y':
-            case 'Y':
-            {
-              *q++=p->green;
-              break;
-            }
-            case 'b':
-            case 'B':
-            case 'm':
-            case 'M':
-            {
-              *q++=p->blue;
-              break;
-            }
-            case 'a':
-            case 'A':
-            case 'k':
-            case 'K':
-            {
-              *q++=p->opacity;
-              break;
-            }
-            default:
-              ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
-          }
-        }
-        p++;
-      }
-      break;
-    }
-    case ShortPixel:
-    {
-      register unsigned short
-        *q;
-
-      p=GetPixelCache(image,x,y,columns,rows);
-      if (p == (PixelPacket *) NULL)
-        break;
-      q=(unsigned short *) pixels;
-      for (i=0; i < (columns*rows); i++)
-      {
-        for (j=0; j < strlen(map); j++)
-        {
-          switch (map[j])
-          {
-            case 'r':
-            case 'R':
-            case 'c':
-            case 'C':
-            {
-              *q++=p->red;
-              break;
-            }
-            case 'g':
-            case 'G':
-            case 'y':
-            case 'Y':
-            {
-              *q++=p->green;
-              break;
-            }
-            case 'b':
-            case 'B':
-            case 'm':
-            case 'M':
-            {
-              *q++=p->blue;
-              break;
-            }
-            case 'a':
-            case 'A':
-            case 'k':
-            case 'K':
-            {
-              *q++=p->opacity;
-              break;
-            }
-            default:
-              ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
-          }
-        }
-        p++;
-      }
-      break;
-    }
-    case IntegerPixel:
-    {
-      register unsigned int
-        *q;
-
-      p=GetPixelCache(image,x,y,columns,rows);
-      if (p == (PixelPacket *) NULL)
-        break;
-      q=(unsigned int *) pixels;
-      for (i=0; i < (columns*rows); i++)
-      {
-        for (j=0; j < strlen(map); j++)
-        {
-          switch (map[j])
-          {
-            case 'r':
-            case 'R':
-            case 'c':
-            case 'C':
-            {
-              *q++=p->red;
-              break;
-            }
-            case 'g':
-            case 'G':
-            case 'y':
-            case 'Y':
-            {
-              *q++=p->green;
-              break;
-            }
-            case 'b':
-            case 'B':
-            case 'm':
-            case 'M':
-            {
-              *q++=p->blue;
-              break;
-            }
-            case 'a':
-            case 'A':
-            case 'k':
-            case 'K':
-            {
-              *q++=p->opacity;
-              break;
-            }
-            default:
-              ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
-          }
-        }
-        p++;
-      }
-      break;
-    }
-    case FloatPixel:
-    {
-      register float
-        *q;
-
-      p=GetPixelCache(image,x,y,columns,rows);
-      if (p == (PixelPacket *) NULL)
-        break;
-      q=(float *) pixels;
-      for (i=0; i < (columns*rows); i++)
-      {
-        for (j=0; j < strlen(map); j++)
-        {
-          switch (map[j])
-          {
-            case 'r':
-            case 'R':
-            case 'c':
-            case 'C':
-            {
-              *q++=p->red/MaxRGB;
-              break;
-            }
-            case 'g':
-            case 'G':
-            case 'y':
-            case 'Y':
-            {
-              *q++=p->green/MaxRGB;
-              break;
-            }
-            case 'b':
-            case 'B':
-            case 'm':
-            case 'M':
-            {
-              *q++=p->blue/MaxRGB;
-              break;
-            }
-            case 'a':
-            case 'A':
-            case 'k':
-            case 'K':
-            {
-              *q++=p->opacity/MaxRGB;
-              break;
-            }
-            default:
-              ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
-          }
-        }
-        p++;
-      }
-      break;
-    }
-    case DoublePixel:
-    {
-      register double
-        *q;
-
-      p=GetPixelCache(image,x,y,columns,rows);
-      if (p == (PixelPacket *) NULL)
-        break;
-      q=(double *) pixels;
-      for (i=0; i < (columns*rows); i++)
-      {
-        for (j=0; j < strlen(map); j++)
-        {
-          switch (map[j])
-          {
-            case 'r':
-            case 'R':
-            case 'c':
-            case 'C':
-            {
-              *q++=p->red/MaxRGB;
-              break;
-            }
-            case 'g':
-            case 'G':
-            case 'y':
-            case 'Y':
-            {
-              *q++=p->green/MaxRGB;
-              break;
-            }
-            case 'b':
-            case 'B':
-            case 'm':
-            case 'M':
-            {
-              *q++=p->blue/MaxRGB;
-              break;
-            }
-            case 'a':
-            case 'A':
-            case 'k':
-            case 'K':
-            {
-              *q++=p->opacity/MaxRGB;
-              break;
-            }
-            default:
-              ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
-          }
-        }
-        p++;
-      }
-      break;
-    }
-    default:
-      ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
-  }
-  return(True);
 }
 
 /*
@@ -3648,7 +2835,7 @@ Export unsigned int LayerImage(Image *image,const LayerType layer)
   image->matte=False;
   for (y=0; y < (int) image->rows; y++)
   {
-    q=GetPixelCache(image,0,y,image->columns,1);
+    q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) image->columns; x++)
@@ -3684,7 +2871,7 @@ Export unsigned int LayerImage(Image *image,const LayerType layer)
       }
       q++;
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(LayerImageText,y,image->rows);
@@ -3799,7 +2986,7 @@ Export void MatteImage(Image *image,Quantum opacity)
   image->matte=True;
   for (y=0; y < (int) image->rows; y++)
   {
-    q=GetPixelCache(image,0,y,image->columns,1);
+    q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) image->columns; x++)
@@ -3807,7 +2994,7 @@ Export void MatteImage(Image *image,Quantum opacity)
       q->opacity=opacity;
       q++;
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
   }
 }
@@ -5082,7 +4269,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
     FreeMemory((void *) &geometry);
   DestroyDrawInfo(draw_info);
   DestroyImageInfo(clone_info);
-  CloseCache((*image)->cache);
+  CloseImagePixels(*image);
   return((*image)->exception.severity == UndefinedException);
 }
 
@@ -5257,7 +4444,7 @@ Export Image *MosaicImages(Image *image,ExceptionInfo *exception)
   mosaic_image->rows=page.height;
   for (y=0; y < (int) mosaic_image->rows; y++)
   {
-    q=SetPixelCache(mosaic_image,0,y,mosaic_image->columns,1);
+    q=SetImagePixels(mosaic_image,0,y,mosaic_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) mosaic_image->columns; x++)
@@ -5265,7 +4452,7 @@ Export Image *MosaicImages(Image *image,ExceptionInfo *exception)
       *q=mosaic_image->background_color;
       q++;
     }
-    if (!SyncPixelCache(mosaic_image))
+    if (!SyncImagePixels(mosaic_image))
       break;
   }
   scene=0;
@@ -5467,420 +4654,6 @@ Export int ParseImageGeometry(const char *geometry,int *x,int *y,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%                                                                             %
-%   P i n g I m a g e                                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method PingImage returns the image size in bytes if it exists and can be
-%  read (at %  least up until it reveals it's size).  The width and height of
-%  the image is returned as well.  Note, only the first image in a multi-frame
-%  image file is pinged.
-%
-%  The format of the PingImage method is:
-%
-%      Image *PingImage(const ImageInfo *image_info,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o Image: Method PingImage returns the image size in bytes if the
-%      image file exists and it size can be determined otherwise 0.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%
-*/
-Export Image *PingImage(const ImageInfo *image_info,ExceptionInfo *exception)
-{
-  Image
-    *image;
-
-  ImageInfo
-    *ping_info;
-
-  ping_info=CloneImageInfo(image_info);
-  ping_info->ping=True;
-  ping_info->verbose=False;
-  ping_info->subimage=0;
-  ping_info->subrange=0;
-  image=ReadImage(ping_info,exception);
-  DestroyImageInfo(ping_info);
-  if (image == (Image *) NULL)
-    return((Image *) NULL);
-  if (image_info->verbose)
-    DescribeImage(image,stdout,False);
-  return(image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   R e a d I m a g e                                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ReadImage reads an image and returns it.  It allocates
-%  the memory necessary for the new Image structure and returns a pointer to
-%  the new image.  By default, the image format is determined by its magic
-%  number. To specify a particular image format, precede the filename with an
-%  explicit image format name and a colon (i.e.  ps:image) or as the filename
-%  suffix  (i.e. image.ps).
-%
-%  The format of the ReadImage method is:
-%
-%      Image *ReadImage(ImageInfo *image_info,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: Method ReadImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a memory shortage or
-%      if the image cannot be read.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-%
-*/
-Export Image *ReadImage(ImageInfo *image_info,ExceptionInfo *exception)
-{
-  char
-    filename[MaxTextExtent];
-
-  DelegateInfo
-    delegate_info;
-
-  Image
-    *image,
-    *next;
-
-  MagickInfo
-    *magick_info;
-
-  register char
-    *p;
-
-  /*
-    Determine image type from filename prefix or suffix (e.g. image.jpg).
-  */
-  assert(image_info != (ImageInfo *) NULL);
-  assert(image_info->filename != (char *) NULL);
-  assert(exception != (ExceptionInfo *) NULL);
-  GetExceptionInfo(exception);
-  if (*image_info->filename == '@')
-    return(ReadImages(image_info,exception));
-  SetImageInfo(image_info,False);
-  (void) strcpy(filename,image_info->filename);
-  /*
-    Call appropriate image reader based on image type.
-  */
-  image=(Image *) NULL;
-  magick_info=(MagickInfo *) GetMagickInfo(image_info->magick);
-  if ((magick_info != (MagickInfo *) NULL) &&
-      (magick_info->decoder !=
-        (Image *(*)(const ImageInfo *,ExceptionInfo *)) NULL))
-    image=(magick_info->decoder)(image_info,exception);
-  else
-    if (!GetDelegateInfo(image_info->magick,(char *) NULL,&delegate_info))
-      ThrowException(exception,MissingDelegateWarning,
-        "no delegate for this image format",image_info->filename)
-    else
-      {
-        unsigned int
-          status;
-
-        /*
-          Let our decoding delegate process the image.
-        */
-        image=AllocateImage(image_info);
-        if (image == (Image *) NULL)
-          return((Image *) NULL);
-        (void) strcpy(image->filename,image_info->filename);
-        TemporaryFilename(image_info->filename);
-        status=
-          InvokeDelegate(image_info,image,image_info->magick,(char *) NULL);
-        DestroyImages(image);
-        image=(Image *) NULL;
-        if (status != False)
-          image_info->temporary=True;
-        SetImageInfo(image_info,False);
-        magick_info=(MagickInfo *) GetMagickInfo(image_info->magick);
-        if ((magick_info != (MagickInfo *) NULL) &&
-            (magick_info->decoder !=
-              (Image *(*)(const ImageInfo *,ExceptionInfo *)) NULL))
-          image=(magick_info->decoder)(image_info,exception);
-        else
-          ThrowException(exception,MissingDelegateWarning,
-            "no delegate for this image format",image_info->filename);
-      }
-  if (image_info->temporary)
-    {
-      (void) remove(image_info->filename);
-      image_info->temporary=False;
-      if (image != (Image *) NULL)
-        (void) strcpy(image->filename,filename);
-    }
-  if (image == (Image *) NULL)
-    return(image);
-  if (image->temporary)
-    (void) remove(image_info->filename);
-  if (IsSubimage(image_info->tile,False))
-    {
-      int
-        count,
-        offset,
-        quantum;
-
-      Image
-        *subimages;
-
-      unsigned int
-        last,
-        target;
-
-      /*
-        User specified subimages (e.g. image.miff[1,3-5,7-6,2]).
-      */
-      subimages=(Image *) NULL;
-      target=atoi(image_info->tile);
-      for (p=image_info->tile; *p != '\0'; p+=Max(offset,1))
-      {
-        offset=0;
-        count=sscanf(p,"%u%n-%u%n",&target,&offset,&last,&offset);
-        if (count == 0)
-          continue;
-        if (count == 1)
-          last=target;
-        quantum=target > last ? -1 : 1;
-        for ( ; target != (last+quantum); target+=quantum)
-        {
-          for (next=image; next; next=next->next)
-          {
-            Image
-              *clone_image;
-
-            if (next->scene != target)
-              continue;
-            /*
-              Clone this subimage.
-            */
-            clone_image=
-              CloneImage(next,next->columns,next->rows,True,exception);
-            if (clone_image == (Image *) NULL)
-              break;
-            if (subimages == (Image *) NULL)
-              {
-                subimages=clone_image;
-                continue;
-              }
-            subimages->next=clone_image;
-            subimages->next->previous=subimages;
-            subimages=subimages->next;
-          }
-        }
-      }
-      DestroyImages(image);
-      image=(Image *) NULL;
-      if (subimages == (Image *) NULL)
-        ThrowException(exception,OptionWarning,
-          "Subimage specification returns no images",image_info->filename);
-      while (subimages->previous != (Image *) NULL)
-        subimages=subimages->previous;
-      image=subimages;
-    }
-  else
-    if ((image_info->subrange != 0) && (image->next != (Image *) NULL))
-      {
-        int
-          retain;
-
-        /*
-          User specified subimages (e.g. image.miff[1]).
-        */
-        for ( ; ; )
-        {
-          retain=(image->scene >= image_info->subimage) &&
-            (image->scene <= (image_info->subimage+image_info->subrange-1));
-          if (image->next != (Image *) NULL)
-            {
-              image=image->next;
-              if (!retain)
-                DestroyImage(image->previous);
-              continue;
-            }
-          if (image->previous != (Image *) NULL)
-            {
-              image=image->previous;
-              if (!retain)
-                DestroyImage(image->next);
-              break;
-            }
-          if (!retain)
-            {
-              DestroyImage(image);
-              image=(Image *) NULL;
-            }
-          break;
-        }
-        if (image == (Image *) NULL)
-          {
-            ThrowException(exception,OptionWarning,
-              "Subimage specification returns no images",image_info->filename);
-          }
-        while (image->previous != (Image *) NULL)
-          image=image->previous;
-      }
-  if (image->status)
-    ThrowException(exception,CorruptImageWarning,
-      "An error has occurred reading file",image_info->filename);
-  DestroyBlobInfo(&image->blob);
-  for (next=image; next; next=next->next)
-  {
-    GetBlobInfo(&next->blob);
-    next->taint=False;
-    next->fifo=(void (*)(Image *)) NULL;
-    (void) strcpy(next->magick_filename,image_info->filename);
-    if (image->temporary)
-      (void) strcpy(next->filename,image_info->filename);
-    if (next->magick_columns == 0)
-      next->magick_columns=next->columns;
-    if (next->magick_rows == 0)
-      next->magick_rows=next->rows;
-  }
-  return(image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   R e a d I m a g e s                                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ReadImages reads a list of image names from a file and then returns
-%  the images as a linked list.
-%
-%  The format of the ReadImage method is:
-%
-%      Image *ReadImages(ImageInfo *image_info,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: Method ReadImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a memory shortage or
-%      if the image cannot be read.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%
-*/
-Export Image *ReadImages(ImageInfo *image_info,ExceptionInfo *exception)
-{
-  char
-    *command,
-    **images;
-
-  FILE
-    *file;
-
-  Image
-    *image;
-
-  int
-    c,
-    length,
-    number_images;
-
-  register char
-    *p;
-
-  register Image
-    *next;
-
-  register int
-    i;
-
-  /*
-    Read image list from a file.
-  */
-  file=(FILE *) fopen(image_info->filename+1,"r");
-  if (file == (FILE *) NULL)
-    {
-      ThrowException(exception,ResourceLimitWarning,"Unable to read image list",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
-  length=MaxTextExtent;
-  command=(char *) AllocateMemory(length);
-  for (p=command; command != (char *) NULL; p++)
-  {
-    c=fgetc(file);
-    if (c == EOF)
-      break;
-    if ((p-command+1) >= length)
-      {
-        *p='\0';
-        length<<=1;
-        command=(char *) ReallocateMemory((char *) command,length);
-        if (command == (char *) NULL)
-          break;
-        p=command+Extent(command);
-      }
-    *p=c;
-  }
-  (void) fclose(file);
-  if (command == (char *) NULL)
-    {
-      ThrowException(exception,ResourceLimitWarning,"Unable to read image list",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
-  *p='\0';
-  Strip(command);
-  images=StringToArgv(command,&number_images);
-  FreeMemory((void *) &command);
-  /*
-    Read the images into a linked list.
-  */
-  image=(Image *) NULL;
-  for (i=1; i < number_images; i++)
-  {
-    (void) strcpy(image_info->filename,images[i]);
-    next=ReadImage(image_info,exception);
-    if (next == (Image *) NULL)
-      continue;
-    if (image == (Image *) NULL)
-      image=next;
-    else
-      {
-        register Image
-          *q;
-
-        /*
-          Link image into image list.
-        */
-        for (q=image; q->next != (Image *) NULL; q=q->next);
-        next->previous=q;
-        q->next=next;
-      }
-  }
-  return(image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
 %     R G B T r a n s f o r m I m a g e                                       %
 %                                                                             %
 %                                                                             %
@@ -5954,7 +4727,7 @@ Export unsigned int RGBTransformImage(Image *image,
       image->colorspace=CMYKColorspace;
       for (y=0; y < (int) image->rows; y++)
       {
-        q=GetPixelCache(image,0,y,image->columns,1);
+        q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (int) image->columns; x++)
@@ -5973,7 +4746,7 @@ Export unsigned int RGBTransformImage(Image *image,
           q->opacity=black;
           q++;
         }
-        if (!SyncPixelCache(image))
+        if (!SyncImagePixels(image))
           break;
       }
       return(True);
@@ -5986,7 +4759,7 @@ Export unsigned int RGBTransformImage(Image *image,
       */
       for (y=0; y < (int) image->rows; y++)
       {
-        p=GetPixelCache(image,0,y,image->columns,1);
+        p=GetImagePixels(image,0,y,image->columns,1);
         if (p == (PixelPacket *) NULL)
           break;
         for (x=0; x < (int) image->columns; x++)
@@ -6293,7 +5066,7 @@ Export unsigned int RGBTransformImage(Image *image,
       */
       for (y=0; y < (int) image->rows; y++)
       {
-        q=GetPixelCache(image,0,y,image->columns,1);
+        q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (int) image->columns; x++)
@@ -6306,7 +5079,7 @@ Export unsigned int RGBTransformImage(Image *image,
           q->blue=blue < 0 ? 0 : blue > MaxRGB ? MaxRGB : blue;
           q++;
         }
-        if (!SyncPixelCache(image))
+        if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
           ProgressMonitor(RGBTransformImageText,y,image->rows);
@@ -6391,7 +5164,7 @@ Export void SetImage(Image *image,Quantum opacity)
   background_color.opacity=opacity;
   for (y=0; y < (int) image->rows; y++)
   {
-    q=SetPixelCache(image,0,y,image->columns,1);
+    q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
@@ -6401,7 +5174,7 @@ Export void SetImage(Image *image,Quantum opacity)
         indexes[x]=0;
       *q++=background_color;
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
   }
 }
@@ -6758,7 +5531,7 @@ Export unsigned int SortColormapByIntensity(Image *image)
     pixels[image->colormap[i].opacity]=(unsigned short) i;
   for (y=0; y < (int) image->rows; y++)
   {
-    q=GetPixelCache(image,0,y,image->columns,1);
+    q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
@@ -6819,7 +5592,7 @@ Export void SyncImage(Image *image)
     return;
   for (y=0; y < (int) image->rows; y++)
   {
-    q=GetPixelCache(image,0,y,image->columns,1);
+    q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
@@ -6831,7 +5604,7 @@ Export void SyncImage(Image *image)
       q->blue=image->colormap[index].blue;
       q++;
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
   }
 }
@@ -7016,7 +5789,7 @@ Export unsigned int TransformRGBImage(Image *image,
       image->colorspace=RGBColorspace;
       for (y=0; y < (int) image->rows; y++)
       {
-        q=GetPixelCache(image,0,y,image->columns,1);
+        q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (int) image->columns; x++)
@@ -7040,7 +5813,7 @@ Export unsigned int TransformRGBImage(Image *image,
           q->opacity=0;
           q++;
         }
-        if (!SyncPixelCache(image))
+        if (!SyncImagePixels(image))
           break;
       }
       return(True);
@@ -7281,7 +6054,7 @@ Export unsigned int TransformRGBImage(Image *image,
       */
       for (y=0; y < (int) image->rows; y++)
       {
-        q=GetPixelCache(image,0,y,image->columns,1);
+        q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (int) image->columns; x++)
@@ -7309,7 +6082,7 @@ Export unsigned int TransformRGBImage(Image *image,
           q->blue=blue;
           q++;
         }
-        if (!SyncPixelCache(image))
+        if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
           ProgressMonitor(TransformRGBImageText,y,image->rows);
@@ -7362,119 +6135,4 @@ Export unsigned int TransformRGBImage(Image *image,
   FreeMemory((void *) &green_map);
   FreeMemory((void *) &red_map);
   return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   W r i t e I m a g e                                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method WriteImage writes an image to a file as defined by image->filename.
-%  You can specify a particular image format by prefixing the file with the
-%  image type and a colon (i.e. ps:image) or specify the image type as the
-%  filename suffix (i.e. image.ps).  The image may be modified to adapt it
-%  to the requirements of the image format.  For example, DirectClass images
-%  must be color-reduced to PseudoClass if the format is GIF.
-%
-%  The format of the WriteImage method is:
-%
-%      unsigned int WriteImage(const ImageInfo *image_info,Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o status: Method WriteImage return True if the image is written.
-%      False is returned is there is a memory shortage or if the image file
-%      fails to write.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o image: A pointer to a Image structure.
-%
-%
-*/
-Export unsigned int WriteImage(const ImageInfo *image_info,Image *image)
-{
-  DelegateInfo
-    delegate_info;
-
-  ImageInfo
-    *clone_info;
-
-  MagickInfo
-    *magick_info;
-
-  unsigned int
-    status;
-
-  /*
-    Determine image type from filename prefix or suffix (e.g. image.jpg).
-  */
-  assert(image_info != (ImageInfo *) NULL);
-  assert(image_info->filename != (char *) NULL);
-  assert(image != (Image *) NULL);
-  clone_info=CloneImageInfo(image_info);
-  (void) strcpy(clone_info->filename,image->filename);
-  (void) strcpy(clone_info->magick,image->magick);
-  SetImageInfo(clone_info,True);
-  (void) strcpy(image->filename,clone_info->filename);
-  if ((image->next == (Image *) NULL) || clone_info->adjoin)
-    if ((image->previous == (Image *) NULL) && !IsTainted(image))
-      if (IsAccessible(image->magick_filename))
-        if (GetDelegateInfo(image->magick,clone_info->magick,&delegate_info))
-          if (delegate_info.direction == 0)
-            {
-              /*
-                Let our bi-directional delegate process the image.
-              */
-              (void) strcpy(image->filename,image->magick_filename);
-              status=InvokeDelegate(clone_info,image,image->magick,
-                clone_info->magick);
-              DestroyImageInfo(clone_info);
-              return(!status);
-            }
-  /*
-    Call appropriate image writer based on image type.
-  */
-  status=False;
-  magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick);
-  if ((magick_info != (MagickInfo *) NULL) &&
-      (magick_info->encoder !=
-        (unsigned int (*)(const ImageInfo *,Image *)) NULL))
-    status=(magick_info->encoder)(clone_info,image);
-  else
-    if (!GetDelegateInfo((char *) NULL,clone_info->magick,&delegate_info))
-      {
-        magick_info=(MagickInfo *) GetMagickInfo(image->magick);
-        if ((magick_info != (MagickInfo *) NULL) &&
-            (magick_info->encoder !=
-              (unsigned int (*)(const ImageInfo *,Image *)) NULL))
-          status=(magick_info->encoder)(clone_info,image);
-        else
-          ThrowBinaryException(MissingDelegateWarning,
-            "no encode delegate for this image format",clone_info->magick);
-      }
-    else
-      {
-        /*
-          Let our encoding delegate process the image.
-        */
-        TemporaryFilename(image->filename);
-        status=
-          InvokeDelegate(clone_info,image,(char *) NULL,clone_info->magick);
-        (void) remove(image->filename);
-        DestroyImageInfo(clone_info);
-        return(!status);
-      }
-  (void) strcpy(image->magick,clone_info->magick);
-  DestroyImageInfo(clone_info);
-  if (image->status)
-    ThrowBinaryException(CorruptImageWarning,
-      "An error has occurred writing to file",image->filename);
-  return(status);
 }

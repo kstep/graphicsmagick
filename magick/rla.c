@@ -279,7 +279,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
         if (runlength < 0)
           {
-            q=GetPixelCache(image,x % image->columns,y/image->columns,1,1);
+            q=GetImagePixels(image,x % image->columns,y/image->columns,1,1);
             if (q == (PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
@@ -312,7 +312,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   break;
                 }
               }
-              if (!SyncPixelCache(image))
+              if (!SyncImagePixels(image))
                 break;
               x++;
               runlength++;
@@ -324,7 +324,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         runlength++;
         do
         {
-          q=GetPixelCache(image,x % image->columns,y/image->columns,1,1);
+          q=GetImagePixels(image,x % image->columns,y/image->columns,1,1);
           if (q == (PixelPacket *) NULL)
             break;
           switch (channel)
@@ -352,7 +352,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             }
           }
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           x++;
           runlength--;

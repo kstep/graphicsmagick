@@ -43,11 +43,11 @@ libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VE
 
 # Library base sources
 MAGICK_BASE_SRCS=PreRvIcccm.c animate.c annotate.c attributes.c blob.c \
-  cache.c cache_view.c colors.c compress.c decorate.c delegates.c display.c \
-  draw.c effects.c enhance.c error.c gems.c gradation.c histogram.c html.c \
-  image.c label.c magick.c map.c matte.c memory.c monitor.c montage.c \
-  pixel_cache.c quantize.c segment.c shear.c signature.c stegano.c timer.c \
-  transform.c ttf.c utility.c widget.c xwindows.c zoom.c
+  cache.c cache_view.c colors.c compress.c constitute.c decorate.c delegates.c \
+  display.c draw.c effects.c enhance.c error.c gems.c gradation.c histogram.c \
+  html.c image.c label.c magick.c map.c matte.c memory.c monitor.c montage.c \
+  pixel_cache.c quantize.c segment.c shear.c signature.c stegano.c stream.c \
+  timer.c transform.c ttf.c utility.c widget.c xwindows.c zoom.c
 
 # Library coder sources
 MAGICK_CODER_SRCS=avs.c bim.c bmp.c cmyk.c dcm.c dps.c ept.c fax.c fits.c \
@@ -74,13 +74,13 @@ endif # WITH_MODULES
 bin_SCRIPTS = Magick-config
 
 # Headers which are installed
-include_HEADERS = attributes.h magick.h api.h classify.h image.h quantize.h \
-	gems.h blob.h compress.h utility.h pixel_cache.h cache_view.h cache.h \
-	monitor.h error.h memory.h delegates.h timer.h version.h xwindows.h \
-	config.h PreRvIcccm.h widget.h
+include_HEADERS = PreRvIcccm.h api.h attributes.h blob.h cache_view.h \
+  classify.h compress.h config.h delegates.h error.h gems.h image.h magick.h \
+  memory.h monitor.h quantize.h timer.h utility.h version.h widget.h xwindows.h
 
 # Headers which are not installed but which are distributed
-noinst_HEADERS = animate.h defines.h display.h mac.h mng.h nt.h vms.h
+noinst_HEADERS = animate.h cache.h defines.h display.h mac.h mng.h nt.h \
+  vms.h
 
 # Additional files to distribute
 EXTRA_DIST = Imakefile Magick-config.in Make.com mac.c nt.c vms.c \

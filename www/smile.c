@@ -160,7 +160,7 @@ int main(int argc,char **argv)
   p=smile_bits;
   for (y=0; y < image->rows; y++)
   {
-    q=SetPixelCache(image,0,y,image->columns,1);
+    q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < image->columns; x++)
@@ -171,7 +171,7 @@ int main(int argc,char **argv)
       p++;
       q++;
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
   }
   /*

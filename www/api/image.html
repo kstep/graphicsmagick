@@ -28,7 +28,6 @@
 		<LI><A HREF="#cloneimage">CloneImage</A></LI>
 		<LI><A HREF="#cloneimageinfo">CloneImageInfo</A></LI>
 		<LI><A HREF="#compositeimage">CompositeImage</A></LI>
-		<LI><A HREF="#createimage">CreateImage</A></LI>
 		<LI><A HREF="#cyclecolormapimage">CycleColormapImage</A></LI>
 		<LI><A HREF="#describeimage">DescribeImage</A></LI>
 		<LI><A HREF="#destroyimage">DestroyImage</A></LI>
@@ -40,7 +39,6 @@
 		<LI><A HREF="#getnextimage">GetNextImage</A></LI>
 		<LI><A HREF="#getnumberscenes">GetNumberScenes</A></LI>
 		<LI><A HREF="#getpageinfo">GetPageInfo</A></LI>
-		<LI><A HREF="#getimagepixels">GetImagePixels</A></LI>
 		<LI><A HREF="#getpixelpacket">GetPixelPacket</A></LI>
 		<LI><A HREF="#isgeometry">IsGeometry</A></LI>
 		<LI><A HREF="#issubimage">IsSubimage</A></LI>
@@ -52,9 +50,6 @@
 		<LI><A HREF="#mogrifyimages">MogrifyImages</A></LI>
 		<LI><A HREF="#mosaicimages">MosaicImages</A></LI>
 		<LI><A HREF="#parseimagegeometry">ParseImageGeometry</A></LI>
-		<LI><A HREF="#pingimage">PingImage</A></LI>
-		<LI><A HREF="#readimage">ReadImage</A></LI>
-		<LI><A HREF="#readimages">ReadImages</A></LI>
 		<LI><A HREF="#rgbtransformimage">RGBTransformImage</A></LI>
 		<LI><A HREF="#setimage">SetImage</A></LI>
 		<LI><A HREF="#setimageinfo">SetImageInfo</A></LI>
@@ -62,7 +57,6 @@
 		<LI><A HREF="#syncimage">SyncImage</A></LI>
 		<LI><A HREF="#textureimage">TextureImage</A></LI>
 		<LI><A HREF="#transformrgbimage">TransformRGBImage</A></LI>
-		<LI><A HREF="#writeimage">WriteImage</A></LI>
 	</UL>
 
 </UL>
@@ -86,7 +80,6 @@
 <P>Image * <STRONG>CloneImage</STRONG>( Image *image, const unsigned int columns, const unsigned int rows, const unsigned int orphan, ExceptionInfo *exception );</P>
 <P>ImageInfo * <STRONG>CloneImageInfo</STRONG>( const ImageInfo *image_info );</P>
 <P>unsigned int  <STRONG>CompositeImage</STRONG>( Image *image, const CompositeOperator compose, Image *composite_image, const int x_offset, const int y_offset );</P>
-<P>Image * <STRONG>CreateImage</STRONG>( const unsigned int width, const unsigned int height, const char *map, const StorageType type, const void *pixels, ExceptionInfo *exception );</P>
 <P><STRONG>CycleColormapImage</STRONG>( image, amount );</P>
 <P>void  <STRONG>DescribeImage</STRONG>( Image *image, 
 <FONT SIZE=-1>FILE</FONT> *file, const unsigned int verbose );</P>
@@ -95,7 +88,6 @@
 <P>void  <STRONG>DestroyImages</STRONG>( Image *image );</P>
 <P>unsigned int  <STRONG>DisplayImages</STRONG>( const ImageInfo *image_info, Image *image );</P>
 <P>void  <STRONG>GetImageInfo</STRONG>( ImageInfo *image_info );</P>
-<P>unsigned int  <STRONG>GetImagePixels</STRONG>( Image *image, const int x, const int y, const unsigned int columns, const unsigned int rows, const char *map, const StorageType type, void *pixels );</P>
 <P>ImageType  <STRONG>GetImageType</STRONG>( Image *image );</P>
 <P>Image * <STRONG>GetNextImage</STRONG>( Image *image );</P>
 <P>unsigned int  <STRONG>GetNumberScenes</STRONG>( const Image *image );</P>
@@ -111,16 +103,12 @@
 <P>unsigned int  <STRONG>MogrifyImages</STRONG>( const ImageInfo *next_info, const int argc, char ** argv, Image ** image );</P>
 <P>Image * <STRONG>MosaicImages</STRONG>( const Image *image, ExceptionInfo *exception );</P>
 <P>int  <STRONG>ParseImageGeometry</STRONG>( const char *geometry, int *x, int *y, unsigned int *width, unsigned int *height );</P>
-<P>Image * <STRONG>PingImage</STRONG>( const ImageInfo *image_info, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>RGBTransformImage</STRONG>( Image *image, const ColorspaceType colorspace );</P>
-<P>Image * <STRONG>ReadImage</STRONG>( ImageInfo *image_info, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>ReadImages</STRONG>( ImageInfo *image_info, ExceptionInfo *exception );</P>
 <P>void  <STRONG>SetImage</STRONG>( Image *image, opacity );</P>
 <P>unsigned int  <STRONG>SetImageInfo</STRONG>( ImageInfo *image_info, const unsigned int rectify );</P>
 <P>void  <STRONG>SyncImage</STRONG>( Image *image );</P>
 <P>void  <STRONG>TextureImage</STRONG>( Image *image, Image *texture );</P>
 <P>unsigned int  <STRONG>TransformRGBImage</STRONG>( Image *image, const ColorspaceType colorspace );</P>
-<P>unsigned int  <STRONG>WriteImage</STRONG>( const ImageInfo *image_info, Image *image );</P>
 <P>
 <A HREF="#__index__"><SMALL>page index</SMALL></A>
 <HR>
@@ -219,7 +207,7 @@ return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="cloneimage">CloneImage</A></H2>
-<P>Method CloneImage returns a copy of all fields of the input image.  The image pixels and indexes are copied only if the columns and rows of the cloned image are the same as the original otherwise the pixel data is undefined and must be initialized with <CODE>SetPixelCache</CODE> and <CODE>SyncPixelCache</CODE> methods.</P>
+<P>Method CloneImage returns a copy of all fields of the input image.  The image pixels and indexes are copied only if the columns and rows of the cloned image are the same as the original otherwise the pixel data is undefined and must be initialized with <CODE>SetImagePixels</CODE> and <CODE>SyncImagePixels</CODE> methods.</P>
 <P>The format of the CloneImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *CloneImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows, const unsigned int orphan, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
@@ -292,50 +280,6 @@ An integer that specifies the column offset of the composited image.
 <p><dt><STRONG><A NAME="item_o_y_offset%3A">y_offset:</A></STRONG><BR>
 <DD>
 An integer that specifies the row offset of the composited image.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="createimage">CreateImage</A></H2>
-<P>Method CreateImage is a convenience routine that creates an image from the pixel data you supply and returns it.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.  The pixel data must be in scanline order top-to-bottom.  The data can be character, short int, integer, float, or double.  Float and double require the pixels to be normalized [0..1]. The other types are [0..MaxRGB]. For example, to create a 640x480 image from unsigned red-green-blue character data, use</P>
-<blockquote>image=CreateImage ( 640, 480, "RGB", 0, pixels, &exception );; </blockquote><P>The format of the CreateImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *CreateImage ( const unsigned int width, const unsigned int height, const char *map, const StorageType type, const void *pixels, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-Method CreateImage returns a pointer to the image.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage or if the image cannot be read.
-<P></P>
-<p><dt><STRONG><A NAME="item_o_width%3A">width:</A></STRONG><BR>
-<DD>
-Specifies the width in pixels of the image.
-<P></P>
-<p><dt><STRONG><A NAME="item_o_height%3A">height:</A></STRONG><BR>
-<DD>
-Specifies the height in pixels of the image.
-<P></P>
-<p><dt><STRONG><A NAME="item_o_map%3A">map:</A></STRONG><BR>
-<DD>
-This character string can be any combination or order of 
-<FONT SIZE=-1>R</FONT> = red, 
-<FONT SIZE=-1>G</FONT> = green, 
-<FONT SIZE=-1>B</FONT> = blue, 
-<FONT SIZE=-1>A</FONT> = alpha, 
-<FONT SIZE=-1>C</FONT> = cyan, 
-<FONT SIZE=-1>Y</FONT> = yellow, 
-<FONT SIZE=-1>M</FONT> = magenta, and 
-<FONT SIZE=-1>K</FONT> = black.  The ordering reflects the order of the pixels in the supplied pixel array.
-<P></P>
-<p><dt><STRONG><A NAME="item_o_type%3A">type:</A></STRONG><BR>
-<DD>
-pixel type where 0 = unsigned char, 1 = short int, 2 = int, 3 = float, and 4 = double.  Float and double types are expected to be normalized [0..1] otherwise [0..MaxRGB].
-<P></P>
-<p><dt><STRONG><A NAME="item_o_pixels%3A">pixels:</A></STRONG><BR>
-<DD>
-This array of values contain the pixel components as defined by the map and type parameters.  The length of the arrays must equal the area specified by the width and height values and type parameters.
-<P></P>
-<p><dt><STRONG>exception:</STRONG><BR>
-<DD>
-return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="cyclecolormapimage">CycleColormapImage</A></H2>
@@ -443,7 +387,7 @@ Specifies a pointer to an ImageInfo structure.
 <blockquote><A HREF="types/Enumerations.html#ImageType">ImageType</A> GetImageType ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>type:</STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_type%3A">type:</A></STRONG><BR>
 <DD>
 Method GetImageType returns a ImageType enum that specifies the type of the specified image (e.g.  bilevel, palette, etc).
 <P></P>
@@ -491,41 +435,6 @@ The address of a structure of type Image.
 <p><dt><STRONG><A NAME="item_o_page%3A">page:</A></STRONG><BR>
 <DD>
 Specifies a pointer to a RectangleInfo structure.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="getimagepixels">GetImagePixels</A></H2>
-<P>Method GetImagePixels is a convenience routine.  Use it to extract pixel data from an image and place it in a buffer you supply.  The data is saved either as char, short int, integer, float or double format in the order specified by the type parameter.  For example, we want to extract scanline 1 of a 640x480 image as character data in red-green-blue order:</P>
-<blockquote>GetImagePixels ( image, 0, 0, 640, 1, "RGB", 0, pixels );; </blockquote><P>The format of the GetImagePixels method is:</P>
-<blockquote>unsigned int GetImagePixels ( <A HREF="types/Image.html">Image</A> *image, const int x, const int y, const unsigned int columns, const unsigned int rows, const char *map, const StorageType type, void *pixels ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-Specifies a pointer to a Image structure; returned from ReadImage.
-<P></P>
-<p><dt><STRONG><A NAME="item_o_x%2Cy%2Ccolumns%2Crows%3A">x,y,columns,rows:</A></STRONG><BR>
-<DD>
-These values define the perimeter of a region of pixels you want to extract.
-<P></P>
-<p><dt><STRONG>map:</STRONG><BR>
-<DD>
-This character string can be any combination or order of 
-<FONT SIZE=-1>R</FONT> = red, 
-<FONT SIZE=-1>G</FONT> = green, 
-<FONT SIZE=-1>B</FONT> = blue, 
-<FONT SIZE=-1>A</FONT> = alpha, 
-<FONT SIZE=-1>C</FONT> = cyan, 
-<FONT SIZE=-1>Y</FONT> = yellow, 
-<FONT SIZE=-1>M</FONT> = magenta, and 
-<FONT SIZE=-1>K</FONT> = black.  The ordering reflects the order of the pixels in the supplied pixel array.
-<P></P>
-<p><dt><STRONG>type:</STRONG><BR>
-<DD>
-pixel type where 0 = unsigned char, 1 = short int, 2 = int, 3 = float, and 4 = double.  Float and double types are expected to be normalized [0..1] otherwise [0..MaxRGB].
-<P></P>
-<p><dt><STRONG>pixels:</STRONG><BR>
-<DD>
-This array of values contain the pixel components as defined by the map and type parameters.  The length of the arrays must equal the area specified by the width and height values and type parameters.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getpixelpacket">GetPixelPacket</A></H2>
@@ -726,57 +635,6 @@ Specifies a character string representing the geometry specification.
 <FONT SIZE=-1>A</FONT> pointer to an unsigned integer.  The width and height as determined by the geometry specification is returned here.
 <P></P></DL></DL>
 <P>
-<H2><A NAME="pingimage">PingImage</A></H2>
-<P>Method PingImage returns the image size in bytes if it exists and can be the image is returned as well.  Note, only the first image in a multi-frame image file is pinged.</P>
-<P>The format of the PingImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *PingImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG><A NAME="item_o_Image%3A">Image:</A></STRONG><BR>
-<DD>
-Method PingImage returns the image size in bytes if the image file exists and it size can be determined otherwise 0.
-<P></P>
-<p><dt><STRONG>image_info:</STRONG><BR>
-<DD>
-Specifies a pointer to an ImageInfo structure.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="readimage">ReadImage</A></H2>
-<P>Method ReadImage reads an image and returns it.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.  By default, the image format is determined by its magic number.  To specify a particular image format, precede the filename with an explicit image format name and a colon (i.e.  ps:image) or as the filename suffix (i.e.  image.ps).</P>
-<P>The format of the ReadImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ReadImage ( <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-Method ReadImage returns a pointer to the image after reading.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage or if the image cannot be read.
-<P></P>
-<p><dt><STRONG>image_info:</STRONG><BR>
-<DD>
-Specifies a pointer to an ImageInfo structure.
-<P></P>
-<p><dt><STRONG>exception:</STRONG><BR>
-<DD>
-return any errors or warnings in this structure.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="readimages">ReadImages</A></H2>
-<P>Method ReadImages reads a list of image names from a file and then returns the images as a linked list.</P>
-<P>The format of the ReadImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ReadImages ( <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-Method ReadImage returns a pointer to the image after reading.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage or if the image cannot be read.
-<P></P>
-<p><dt><STRONG>image_info:</STRONG><BR>
-<DD>
-Specifies a pointer to an ImageInfo structure.
-<P></P></DL></DL>
-<P>
 <H2><A NAME="rgbtransformimage">RGBTransformImage</A></H2>
 <P>Method RGBTransformImage converts the reference image from 
 <FONT SIZE=-1>RGB</FONT> to an alternate colorspace.  The transformation matrices are not the standard ones: the weights are rescaled to normalized the range of the transformed values to be [0..MaxRGB].</P>
@@ -879,27 +737,6 @@ The address of a structure of type Image; returned from ReadImage.
 <p><dt><STRONG>colorspace:</STRONG><BR>
 <DD>
 An unsigned integer value defines which colorspace to transform the image to.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="writeimage">WriteImage</A></H2>
-<P>Method WriteImage writes an image to a file as defined by image-&gt;filename.  You can specify a particular image format by prefixing the file with the image type and a colon (i.e.  ps:image) or specify the image type as the filename suffix (i.e.  image.ps). The image may be modified to adapt it to the requirements of the image format.  For example, DirectClass images must be color-reduced to PseudoClass if the format is 
-<FONT SIZE=-1>GIF.</FONT></P>
-<P>The format of the WriteImage method is:</P>
-<blockquote>unsigned int WriteImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>status:</STRONG><BR>
-<DD>
-Method WriteImage return True if the image is written.  False is returned is there is a memory shortage or if the image file fails to write.
-<P></P>
-<p><dt><STRONG>image_info:</STRONG><BR>
-<DD>
-Specifies a pointer to an ImageInfo structure.
-<P></P>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-
-<FONT SIZE=-1>A</FONT> pointer to a Image structure.
 </DL></DL>
 <P><A HREF="#__index__"><SMALL>page index</SMALL></A></P>
 

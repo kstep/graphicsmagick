@@ -158,8 +158,8 @@ Export Image *ChopImage(Image *image,const RectangleInfo *chop_info,
   j=0;
   for (y=0; y < clone_info.y; y++)
   {
-    p=GetPixelCache(image,0,i++,image->columns,1);
-    q=SetPixelCache(chop_image,0,j++,chop_image->columns,1);
+    p=GetImagePixels(image,0,i++,image->columns,1);
+    q=SetImagePixels(chop_image,0,j++,chop_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     indexes=GetIndexes(image);
@@ -175,7 +175,7 @@ Export Image *ChopImage(Image *image,const RectangleInfo *chop_info,
         }
       p++;
     }
-    if (!SyncPixelCache(chop_image))
+    if (!SyncImagePixels(chop_image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(ChopImageText,y,image->rows);
@@ -186,8 +186,8 @@ Export Image *ChopImage(Image *image,const RectangleInfo *chop_info,
   i+=clone_info.height;
   for (y=0; y < (int) (image->rows-(clone_info.y+clone_info.height)); y++)
   {
-    p=GetPixelCache(image,0,i++,image->columns,1);
-    q=SetPixelCache(chop_image,0,j++,chop_image->columns,1);
+    p=GetImagePixels(image,0,i++,image->columns,1);
+    q=SetImagePixels(chop_image,0,j++,chop_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     indexes=GetIndexes(image);
@@ -203,7 +203,7 @@ Export Image *ChopImage(Image *image,const RectangleInfo *chop_info,
         }
       p++;
     }
-    if (!SyncPixelCache(chop_image))
+    if (!SyncImagePixels(chop_image))
       break;
     if (QuantumTick(i,image->rows))
       ProgressMonitor(ChopImageText,i,image->rows);
@@ -399,7 +399,7 @@ Export Image *CropImage(Image *image,const RectangleInfo *crop_info,
       corners[2]=GetOnePixel(image,0,image->rows-1);
       for (y=0; y < (int) image->rows; y++)
       {
-        p=GetPixelCache(image,0,y,image->columns,1);
+        p=GetImagePixels(image,0,y,image->columns,1);
         if (p == (PixelPacket *) NULL)
           break;
         if (image->matte)
@@ -473,17 +473,16 @@ Export Image *CropImage(Image *image,const RectangleInfo *crop_info,
   crop_image->page=page;
   for (y=0; y < (int) crop_image->rows; y++)
   {
-    p=GetPixelCache(image,page.x,page.y+y,crop_image->columns,1);
-    q=SetPixelCache(crop_image,0,y,crop_image->columns,1);
+    p=GetImagePixels(image,page.x,page.y+y,crop_image->columns,1);
+    q=SetImagePixels(crop_image,0,y,crop_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     indexes=GetIndexes(image);
     crop_indexes=GetIndexes(crop_image);
     if (image->class == PseudoClass)
-      memcpy(crop_indexes,indexes,
-        crop_image->columns*sizeof(IndexPacket));
+      memcpy(crop_indexes,indexes,crop_image->columns*sizeof(IndexPacket));
     memcpy(q,p,crop_image->columns*sizeof(PixelPacket));
-    if (!SyncPixelCache(crop_image))
+    if (!SyncImagePixels(crop_image))
       break;
     if (QuantumTick(y,crop_image->rows))
       ProgressMonitor(CropImageText,y,crop_image->rows-1);
@@ -578,8 +577,8 @@ Export Image *DeconstructImages(Image *image,ExceptionInfo *exception)
     */
     for (x=0; x < (int) next->columns; x++)
     {
-      p=GetPixelCache(next,x,0,1,next->rows);
-      q=GetPixelCache(next->previous,x,0,1,next->previous->rows);
+      p=GetImagePixels(next,x,0,1,next->rows);
+      q=GetImagePixels(next->previous,x,0,1,next->previous->rows);
       if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         break;
       for (y=0; y < (int) next->rows; y++)
@@ -595,8 +594,8 @@ Export Image *DeconstructImages(Image *image,ExceptionInfo *exception)
     bounding_box[i].x=x;
     for (y=0; y < (int) next->rows; y++)
     {
-      p=GetPixelCache(next,0,y,next->columns,1);
-      q=GetPixelCache(next->previous,0,y,next->previous->columns,1);
+      p=GetImagePixels(next,0,y,next->columns,1);
+      q=GetImagePixels(next->previous,0,y,next->previous->columns,1);
       if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         break;
       for (x=0; x < (int) next->columns; x++)
@@ -612,8 +611,8 @@ Export Image *DeconstructImages(Image *image,ExceptionInfo *exception)
     bounding_box[i].y=y;
     for (x=next->columns-1; x >= 0; x--)
     {
-      p=GetPixelCache(next,x,0,1,next->rows);
-      q=GetPixelCache(next->previous,x,0,1,next->previous->rows);
+      p=GetImagePixels(next,x,0,1,next->rows);
+      q=GetImagePixels(next->previous,x,0,1,next->previous->rows);
       if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         break;
       for (y=0; y < (int) next->rows; y++)
@@ -629,8 +628,8 @@ Export Image *DeconstructImages(Image *image,ExceptionInfo *exception)
     bounding_box[i].width=x-bounding_box[i].x+1;
     for (y=next->rows-1; y >= 0; y--)
     {
-      p=GetPixelCache(next,0,y,next->columns,1);
-      q=GetPixelCache(next->previous,0,y,next->previous->columns,1);
+      p=GetImagePixels(next,0,y,next->columns,1);
+      q=GetImagePixels(next->previous,0,y,next->previous->columns,1);
       if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         break;
       for (x=0; x < (int) next->columns; x++)
@@ -742,8 +741,8 @@ Export Image *FlipImage(Image *image,ExceptionInfo *exception)
   */
   for (y=0; y < (int) flip_image->rows; y++)
   {
-    p=GetPixelCache(image,0,y,image->columns,1);
-    q=SetPixelCache(flip_image,0,flip_image->rows-y-1,flip_image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
+    q=SetImagePixels(flip_image,0,flip_image->rows-y-1,flip_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     indexes=GetIndexes(image);
@@ -755,9 +754,8 @@ Export Image *FlipImage(Image *image,ExceptionInfo *exception)
       q++;
     }
     if (flip_image->class == PseudoClass)
-      memcpy(flip_indexes,indexes,
-        flip_image->columns*sizeof(IndexPacket));
-    status=SyncPixelCache(flip_image);
+      memcpy(flip_indexes,indexes,flip_image->columns*sizeof(IndexPacket));
+    status=SyncImagePixels(flip_image);
     if (status == False)
       break;
     if (QuantumTick(y,flip_image->rows))
@@ -833,8 +831,8 @@ Export Image *FlopImage(Image *image,ExceptionInfo *exception)
   */
   for (y=0; y < (int) flop_image->rows; y++)
   {
-    p=GetPixelCache(image,0,y,image->columns,1);
-    q=SetPixelCache(flop_image,0,y,flop_image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
+    q=SetImagePixels(flop_image,0,y,flop_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     indexes=GetIndexes(image);
@@ -848,7 +846,7 @@ Export Image *FlopImage(Image *image,ExceptionInfo *exception)
       *q=(*p);
       p++;
     }
-    status=SyncPixelCache(flop_image);
+    status=SyncImagePixels(flop_image);
     if (status == False)
       break;
     if (QuantumTick(y,flop_image->rows))
@@ -940,13 +938,13 @@ Export Image *RollImage(Image *image,const int x_offset,const int y_offset,
     /*
       Transfer scanline.
     */
-    p=GetPixelCache(image,0,y,image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
     for (x=0; x < (int) image->columns; x++)
     {
-      q=SetPixelCache(roll_image,((int) offset.x+x) % image->columns,
+      q=SetImagePixels(roll_image,((int) offset.x+x) % image->columns,
         ((int) offset.y+y) % image->rows,1,1);
       if (q == (PixelPacket *) NULL)
         break;
@@ -955,7 +953,7 @@ Export Image *RollImage(Image *image,const int x_offset,const int y_offset,
         *roll_indexes=indexes[x];
       *q=(*p);
       p++;
-      if (!SyncPixelCache(roll_image))
+      if (!SyncImagePixels(roll_image))
         break;
     }
     if (QuantumTick(y,image->rows))

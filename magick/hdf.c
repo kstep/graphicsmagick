@@ -260,13 +260,13 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         p=hdf_pixels;
         for (y=0; y < (int) image->rows; y++)
         {
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
           for (x=0; x < (int) image->columns; x++)
             indexes[x]=(*p++);
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
@@ -285,7 +285,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->interlace=interlace ? PlaneInterlace : NoInterlace;
         for (y=0; y < (int) image->rows; y++)
         {
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           for (x=0; x < (int) image->columns; x++)
@@ -295,7 +295,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             q->blue=UpScale(*p++);
             q++;
           }
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
@@ -525,7 +525,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
             DF24setil(DFIL_PIXEL);
             for (y=0; y < (int) image->rows; y++)
             {
-              p=GetPixelCache(image,0,y,image->columns,1);
+              p=GetImagePixels(image,0,y,image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
               for (x=0; x < (int) image->columns; x++)
@@ -549,7 +549,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
             DF24setil(DFIL_LINE);
             for (y=0; y < (int) image->rows; y++)
             {
-              p=GetPixelCache(image,0,y,image->columns,1);
+              p=GetImagePixels(image,0,y,image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
               for (x=0; x < (int) image->columns; x++)
@@ -557,7 +557,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
                 *q++=DownScale(p->red);
                 p++;
               }
-              p=GetPixelCache(image,0,y,image->columns,1);
+              p=GetImagePixels(image,0,y,image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
               for (x=0; x < (int) image->columns; x++)
@@ -565,7 +565,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
                 *q++=DownScale(p->green);
                 p++;
               }
-              p=GetPixelCache(image,0,y,image->columns,1);
+              p=GetImagePixels(image,0,y,image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
               for (x=0; x < (int) image->columns; x++)
@@ -587,7 +587,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
             DF24setil(DFIL_PLANE);
             for (y=0; y < (int) image->rows; y++)
             {
-              p=GetPixelCache(image,0,y,image->columns,1);
+              p=GetImagePixels(image,0,y,image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
               for (x=0; x < (int) image->columns; x++)
@@ -599,7 +599,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
             ProgressMonitor(SaveImageText,100,400);
             for (y=0; y < (int) image->rows; y++)
             {
-              p=GetPixelCache(image,0,y,image->columns,1);
+              p=GetImagePixels(image,0,y,image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
               for (x=0; x < (int) image->columns; x++)
@@ -611,7 +611,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
             ProgressMonitor(SaveImageText,250,400);
             for (y=0; y < (int) image->rows; y++)
             {
-              p=GetPixelCache(image,0,y,image->columns,1);
+              p=GetImagePixels(image,0,y,image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
               for (x=0; x < (int) image->columns; x++)
@@ -641,7 +641,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
         if (IsGrayImage(image))
           for (y=0; y < (int) image->rows; y++)
           {
-            p=GetPixelCache(image,0,y,image->columns,1);
+            p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             for (x=0; x < (int) image->columns; x++)
@@ -674,7 +674,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
             q=hdf_pixels;
             for (y=0; y < (int) image->rows; y++)
             {
-              p=GetPixelCache(image,0,y,image->columns,1);
+              p=GetImagePixels(image,0,y,image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
               indexes=GetIndexes(image);

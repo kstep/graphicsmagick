@@ -29,6 +29,7 @@ $call Make cache_view.c
 $call Make cmyk.c
 $call Make colors.c
 $call Make compress.c
+$call Make constitute.c
 $call Make dcm.c
 $call Make decorate.c
 $call Make delegates.c
@@ -94,6 +95,7 @@ $call Make sgi.c
 $call Make shear.c
 $call Make signature.c
 $call Make stegano.c
+$call Make stream.c
 $call Make sun.c
 $call Make tga.c
 $call Make tiff.c
@@ -123,8 +125,8 @@ $call Make zoom.c
 $call Make 8bim.c
 $library/create libmagick.olb PreRvIcccm.obj,animate.obj,annotate.obj, -
   avs.obj,blob.obj,bmp.obj,cache.obj,cache_view.obj,cmyk.obj,colors.obj, -
-  compress.obj,dcm.obj,decorate.obj,delegates.obj,display.obj,dps.obj, -
-  draw.obj,effects.obj,enhance.obj,ept.obj,error.obj,fax.obj,fits.obj, -
+  compress.obj,constitute.obj,dcm.obj,decorate.obj,delegates.obj,display.obj, -
+  dps.obj,draw.obj,effects.obj,enhance.obj,ept.obj,error.obj,fax.obj,fits.obj, -
   fpx.obj,gems.obj,gif.obj,gradation.obj,gray.obj,hdf.obj, -
   histogram.obj,html.obj,icc.obj,icon.obj,image.obj,iptc.obj, -
   jbig.obj,jpeg.obj,label.obj,logo.obj,magick.obj, -
@@ -133,7 +135,7 @@ $library/create libmagick.olb PreRvIcccm.obj,animate.obj,annotate.obj, -
   pdf.obj,pict.obj,pix.obj,pixel_cache.obj,plasma.obj,png.obj,pnm.obj, -
   preview.obj,ps.obj,ps2.obj,ps3.obj,psd.obj,pwp.obj,quantize.obj, -
   rgb.obj,rla.obj,rle.obj,segment.obj,sct.obj,sfw.obj,sgi.obj,shear.obj, -
-  signature.obj,stegano.obj,sun.obj,tga.obj,tiff.obj,tile.obj, -
+  signature.obj,stegano.obj,stream.obj,sun.obj,tga.obj,tiff.obj,tile.obj, -
   tim.obj,timer.obj,transform.obj,ttf.obj,txt.obj,uil.obj,utility.obj, -
   uyvy.obj,vicar.obj,vid.obj,viff.obj,vms.obj,widget.obj,wbmp.obj,x.obj, -
   xbm.obj,xc.obj,xpm.obj,xwd.obj,xwindows.obj,yuv.obj,zoom.obj,8bim.obj

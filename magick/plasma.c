@@ -90,13 +90,13 @@ static Image *ReadPLASMAImage(const ImageInfo *image_info,ExceptionInfo *excepti
 #define PlasmaImageText  "  Applying image plasma...  "
 #define PlasmaPixel(x,y) \
 { \
-  q=GetPixelCache(image,(int) x,(int) y,1,1); \
+  q=GetImagePixels(image,(int) x,(int) y,1,1); \
   if (q != (PixelPacket *) NULL) \
     { \
       q->red=(Quantum) (rand() % (MaxRGB+1)); \
       q->green=(Quantum) (rand() % (MaxRGB+1)); \
       q->blue=(Quantum) (rand() % (MaxRGB+1)); \
-     (void) SyncPixelCache(image); \
+     (void) SyncImagePixels(image); \
     } \
 }
 
@@ -135,7 +135,7 @@ static Image *ReadPLASMAImage(const ImageInfo *image_info,ExceptionInfo *excepti
   image->class=DirectClass;
   for (y=0; y < (int) image->rows; y++)
   {
-    q=GetPixelCache(image,0,y,image->columns,1);
+    q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) image->columns; x++)
@@ -143,7 +143,7 @@ static Image *ReadPLASMAImage(const ImageInfo *image_info,ExceptionInfo *excepti
       q->opacity=(Opaque-Transparent) >> 1;
       q++;
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
   }
   segment_info.x1=0;

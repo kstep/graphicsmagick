@@ -345,12 +345,12 @@ Export Image *MagnifyImage(Image *image,ExceptionInfo *exception)
   */
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetPixelCache(image,0,y,image->columns,1);
-    q=SetPixelCache(magnify_image,0,y,magnify_image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
+    q=SetImagePixels(magnify_image,0,y,magnify_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     memcpy(q,p,image->columns*sizeof(PixelPacket));
-    if (!SyncPixelCache(magnify_image))
+    if (!SyncImagePixels(magnify_image))
       break;
   }
   /*
@@ -358,11 +358,11 @@ Export Image *MagnifyImage(Image *image,ExceptionInfo *exception)
   */
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetPixelCache(magnify_image,0,image->rows-1-y,magnify_image->columns,1);
+    p=GetImagePixels(magnify_image,0,image->rows-1-y,magnify_image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     memcpy(scanline,p,magnify_image->columns*sizeof(PixelPacket));
-    q=GetPixelCache(magnify_image,0,(image->rows-1-y) << 1,
+    q=GetImagePixels(magnify_image,0,(image->rows-1-y) << 1,
       magnify_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
@@ -380,13 +380,13 @@ Export Image *MagnifyImage(Image *image,ExceptionInfo *exception)
       (q+1)->blue=(((int) p->blue)+((int) (p+1)->blue)+1) >> 1;
       (q+1)->opacity=(((int) p->opacity)+((int) (p+1)->opacity)+1) >> 1;
     }
-    if (!SyncPixelCache(magnify_image))
+    if (!SyncImagePixels(magnify_image))
       break;
   }
   for (y=0; y < (int) image->rows; y++)
   {
     rows=Min(image->rows-y,3);
-    p=GetPixelCache(magnify_image,0,y << 1,magnify_image->columns,rows);
+    p=GetImagePixels(magnify_image,0,y << 1,magnify_image->columns,rows);
     if (p == (PixelPacket *) NULL)
       break;
     q=p;
@@ -424,18 +424,18 @@ Export Image *MagnifyImage(Image *image,ExceptionInfo *exception)
     q->green=(((int) p->green)+((int) s->green)+1) >> 1;
     q->blue=(((int) p->blue)+((int) s->blue)+1) >> 1;
     q->opacity=(((int) p->opacity)+((int) s->opacity)+1) >> 1;
-    if (!SyncPixelCache(magnify_image))
+    if (!SyncImagePixels(magnify_image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(MagnifyImageText,y,image->rows);
   }
-  p=GetPixelCache(magnify_image,0,2*image->rows-2,magnify_image->columns,1);
+  p=GetImagePixels(magnify_image,0,2*image->rows-2,magnify_image->columns,1);
   if (p != (PixelPacket *) NULL)
     memcpy(scanline,p,magnify_image->columns*sizeof(PixelPacket));
-  q=GetPixelCache(magnify_image,0,2*image->rows-1,magnify_image->columns,1);
+  q=GetImagePixels(magnify_image,0,2*image->rows-1,magnify_image->columns,1);
   if (q != (PixelPacket *) NULL)
     memcpy(q,scanline,magnify_image->columns*sizeof(PixelPacket));
-  (void) SyncPixelCache(magnify_image);
+  (void) SyncImagePixels(magnify_image);
   FreeMemory((void *) &scanline);
   return(magnify_image);
 }
@@ -532,8 +532,8 @@ Export Image *MinifyImage(Image *image,ExceptionInfo *exception)
   */
   for (y=0; y < (int) minify_image->rows; y++)
   {
-    p=GetPixelCache(image,0,Min(y << 1,image->rows-4),image->columns,4);
-    q=SetPixelCache(minify_image,0,y,minify_image->columns,1);
+    p=GetImagePixels(image,0,Min(y << 1,image->rows-4),image->columns,4);
+    q=SetImagePixels(minify_image,0,y,minify_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     for (x=0; x < (int) (minify_image->columns-1); x++)
@@ -562,7 +562,7 @@ Export Image *MinifyImage(Image *image,ExceptionInfo *exception)
     }
     p++;
     *q++=(*p);
-    if (!SyncPixelCache(minify_image))
+    if (!SyncImagePixels(minify_image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(MinifyImageText,y,image->rows-1);
@@ -682,7 +682,7 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
   j=(-1);
   for (y=0; y < (int) sample_image->rows; y++)
   {
-    q=SetPixelCache(sample_image,0,y,sample_image->columns,1);
+    q=SetImagePixels(sample_image,0,y,sample_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     sample_indexes=GetIndexes(sample_image);
@@ -692,7 +692,7 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
           Read a scan line.
         */
         j=y_offset[y];
-        p=GetPixelCache(image,0,j,image->columns,1);
+        p=GetImagePixels(image,0,j,image->columns,1);
         if (p == (PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
@@ -710,7 +710,7 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
         sample_indexes[x]=index[k];
       *q++=pixels[k];
     }
-    if (!SyncPixelCache(sample_image))
+    if (!SyncImagePixels(sample_image))
       break;
     if (QuantumTick(y,sample_image->rows))
       ProgressMonitor(SampleImageText,y,sample_image->rows);
@@ -866,7 +866,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
   i=0;
   for (y=0; y < scale_image->rows; y++)
   {
-    q=SetPixelCache(scale_image,0,y,scale_image->columns,1);
+    q=SetImagePixels(scale_image,0,y,scale_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     if (scale_image->rows == image->rows)
@@ -874,7 +874,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
         /*
           Read a new scanline.
         */
-        p=GetPixelCache(image,0,i++,image->columns,1);
+        p=GetImagePixels(image,0,i++,image->columns,1);
         if (p == (PixelPacket *) NULL)
           break;
         for (x=0; x < (int) image->columns; x++)
@@ -898,7 +898,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
               /*
                 Read a new scanline.
               */
-              p=GetPixelCache(image,0,i++,image->columns,1);
+              p=GetImagePixels(image,0,i++,image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
               for (x=0; x < (int) image->columns; x++)
@@ -927,7 +927,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
             /*
               Read a new scanline.
             */
-            p=GetPixelCache(image,0,i++,image->columns,1);
+            p=GetImagePixels(image,0,i++,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             for (x=0; x < (int) image->columns; x++)
@@ -1068,7 +1068,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
         t++;
       }
     }
-    if (!SyncPixelCache(scale_image))
+    if (!SyncImagePixels(scale_image))
       break;
     if (QuantumTick(y,scale_image->rows))
       ProgressMonitor(ScaleImageText,y,scale_image->rows);
@@ -1339,9 +1339,9 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
     if ((density != 0.0) && (density != 1.0))
       for (i=0; i < n; i++)
         contribution[i].weight/=density;  /* normalize */
-    p=GetPixelCache(source,contribution[0].pixel,0,
+    p=GetImagePixels(source,contribution[0].pixel,0,
       contribution[n-1].pixel-contribution[0].pixel+1,source->rows);
-    q=SetPixelCache(destination,x,0,1,destination->rows);
+    q=SetImagePixels(destination,x,0,1,destination->rows);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     source_indexes=GetIndexes(source);
@@ -1374,7 +1374,7 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
         destination_indexes[y]=source_indexes[j];
       q++;
     }
-    if (!SyncPixelCache(destination))
+    if (!SyncImagePixels(destination))
       break;
     if (QuantumTick(*quantum,span))
       ProgressMonitor(ZoomImageText,*quantum,span);
@@ -1452,9 +1452,9 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
     if ((density != 0.0) && (density != 1.0))
       for (i=0; i < n; i++)
         contribution[i].weight/=density;  /* normalize */
-    p=GetPixelCache(source,0,contribution[0].pixel,source->columns,
+    p=GetImagePixels(source,0,contribution[0].pixel,source->columns,
       contribution[n-1].pixel-contribution[0].pixel+1);
-    q=SetPixelCache(destination,0,y,destination->columns,1);
+    q=SetImagePixels(destination,0,y,destination->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     source_indexes=GetIndexes(source);
@@ -1486,7 +1486,7 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
         destination_indexes[x]=source_indexes[j];
       q++;
     }
-    if (!SyncPixelCache(destination))
+    if (!SyncImagePixels(destination))
       break;
     if (QuantumTick(*quantum,span))
       ProgressMonitor(ZoomImageText,*quantum,span);
@@ -1598,12 +1598,15 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
       status|=HorizontalFilter(source_image,zoom_image,x_factor,
         &filters[image->filter],contribution,span,&quantum);
     }
-  if (status == False)
-    ThrowImageException(CacheWarning,"Unable to zoom image",(char *) NULL);
   /*
     Free allocated memory.
   */
   FreeMemory((void *) &contribution);
   DestroyImage(source_image);
+  if (status == False)
+    {
+      DestroyImage(zoom_image);
+      ThrowImageException(CacheWarning,"Unable to zoom image",(char *) NULL);
+    }
   return(zoom_image);
 }

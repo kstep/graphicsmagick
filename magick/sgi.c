@@ -399,7 +399,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (y=0; y < (int) image->rows; y++)
         {
           p=iris_pixels+((image->rows-1)-y)*(image->columns*4);
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           for (x=0; x < (int) image->columns; x++)
@@ -411,7 +411,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             p+=4;
             q++;
           }
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
@@ -442,7 +442,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         for (y=0; y < (int) image->rows; y++)
         {
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
@@ -454,7 +454,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             p+=4;
             q++;
           }
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
@@ -716,7 +716,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
     */
     for (y=0; y < (int) image->rows; y++)
     {
-      p=GetPixelCache(image,0,y,image->columns,1);
+      p=GetImagePixels(image,0,y,image->columns,1);
       if (p == (PixelPacket *) NULL)
         break;
       q=iris_pixels+((iris_header.rows-1)-y)*(iris_header.columns*4);

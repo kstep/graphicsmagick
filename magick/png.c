@@ -159,7 +159,7 @@ Export unsigned int CompressColormapTransFirst(Image *image)
   }
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetPixelCache(image,0,y,image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
@@ -293,7 +293,7 @@ Export unsigned int CompressColormapTransFirst(Image *image)
   */
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetPixelCache(image,0,y,image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
@@ -302,7 +302,7 @@ Export unsigned int CompressColormapTransFirst(Image *image)
       index=indexes[x];
       indexes[x]=map[index];
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
   }
   FreeMemory((void *) &map);
@@ -2239,22 +2239,22 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->matte=True;
         for (y=0; y < (int) image->rows; y++)
         {
-          if (!SetPixelCache(image,0,y,image->columns,1))
+          if (!SetImagePixels(image,0,y,image->columns,1))
             break;
           if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
-            (void) ReadPixelCache(image,GrayQuantum,scanlines[y]);
+            (void) PullImagePixels(image,GrayQuantum,scanlines[y]);
           else
             if (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
-              (void) ReadPixelCache(image,GrayOpacityQuantum,scanlines[y]);
+              (void) PullImagePixels(image,GrayOpacityQuantum,scanlines[y]);
             else
               if (ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
-                (void) ReadPixelCache(image,RGBAQuantum,scanlines[y]);
+                (void) PullImagePixels(image,RGBAQuantum,scanlines[y]);
               else
                 if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
-                  (void) ReadPixelCache(image,IndexQuantum,scanlines[y]);
+                  (void) PullImagePixels(image,IndexQuantum,scanlines[y]);
                 else
-                  (void) ReadPixelCache(image,RGBQuantum,scanlines[y]);
-          if (!SyncPixelCache(image))
+                  (void) PullImagePixels(image,RGBQuantum,scanlines[y]);
+          if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
@@ -2279,7 +2279,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image);
         for (y=0; y < (int) image->rows; y++)
         {
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
@@ -2392,7 +2392,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
             for (x=0; x < (int) image->columns; x++)
               indexes[x]=(*r++);
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
@@ -2416,7 +2416,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (y=0; y < (int) image->rows; y++)
           {
             image->class=class;
-            q=GetPixelCache(image,0,y,image->columns,1);
+            q=GetImagePixels(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
@@ -2453,7 +2453,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                    q->opacity=Transparent;
               q++;
             }
-            if (!SyncPixelCache(image))
+            if (!SyncImagePixels(image))
               break;
           }
         }
@@ -3472,7 +3472,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         */
         for (y=0; y < (int) image->rows; y++)
         {
-          p=GetPixelCache(image,0,y,image->columns,1);
+          p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
           for (x=0; x < (int) image->columns; x++)
@@ -3561,7 +3561,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         ping_info->color_type=PNG_COLOR_TYPE_GRAY_ALPHA;
         for (y=0; y < (int) image->rows; y++)
         {
-          p=GetPixelCache(image,0,y,image->columns,1);
+          p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
           for (x=0; x < (int) image->columns; x++)
@@ -3579,7 +3579,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         */
         for (y=0; y < (int) image->rows; y++)
         {
-          p=GetPixelCache(image,0,y,image->columns,1);
+          p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
           for (x=0; x < (int) image->columns; x++)
@@ -3618,7 +3618,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             */
             for (y=0; y < (int) image->rows; y++)
             {
-              p=GetPixelCache(image,0,y,image->columns,1);
+              p=GetImagePixels(image,0,y,image->columns,1);
               x=0;
               if (p == (PixelPacket *) NULL)
                 break;
@@ -3729,7 +3729,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                ping_info->trans[i]=(png_byte) DownScale(Opaque);
             for (y=0; y < (int) image->rows; y++)
             {
-              p=GetPixelCache(image,0,y,image->columns,1);
+              p=GetImagePixels(image,0,y,image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
               indexes=GetIndexes(image);
@@ -3910,9 +3910,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         */
         for (y=0; y < (int) image->rows; y++)
         {
-          if (!GetPixelCache(image,0,y,image->columns,1))
+          if (!GetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) WritePixelCache(image,GrayQuantum,scanlines[y]);
+          (void) PushImagePixels(image,GrayQuantum,scanlines[y]);
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(SaveImageText,y,image->rows);
@@ -3924,12 +3924,12 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         {
           for (y=0; y < (int) image->rows; y++)
           {
-            if (!GetPixelCache(image,0,y,image->columns,1))
+            if (!GetImagePixels(image,0,y,image->columns,1))
               break;
             if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
-              (void) WritePixelCache(image,GrayQuantum,scanlines[y]);
+              (void) PushImagePixels(image,GrayQuantum,scanlines[y]);
             else
-              (void) WritePixelCache(image,GrayOpacityQuantum,scanlines[y]);
+              (void) PushImagePixels(image,GrayOpacityQuantum,scanlines[y]);
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
                 ProgressMonitor(SaveImageText,y,image->rows);
@@ -3940,18 +3940,18 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           if (image->depth > 8 || !IsPseudoClass(image))
             for (y=0; y < (int) image->rows; y++)
             {
-              if (!GetPixelCache(image,0,y,image->columns,1))
+              if (!GetImagePixels(image,0,y,image->columns,1))
                 break;
               if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
-                (void) WritePixelCache(image,GrayQuantum,scanlines[y]);
+                (void) PushImagePixels(image,GrayQuantum,scanlines[y]);
               else
                 if (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
-                  (void) WritePixelCache(image,GrayOpacityQuantum,scanlines[y]);
+                  (void) PushImagePixels(image,GrayOpacityQuantum,scanlines[y]);
                 else
                   if (!image->matte)
-                    (void) WritePixelCache(image,RGBQuantum,scanlines[y]);
+                    (void) PushImagePixels(image,RGBQuantum,scanlines[y]);
                   else
-                    (void) WritePixelCache(image,RGBAQuantum,scanlines[y]);
+                    (void) PushImagePixels(image,RGBAQuantum,scanlines[y]);
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
                   ProgressMonitor(SaveImageText,y,image->rows);
@@ -3959,12 +3959,12 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         else
           for (y=0; y < (int) image->rows; y++)
           {
-            if (!GetPixelCache(image,0,y,image->columns,1))
+            if (!GetImagePixels(image,0,y,image->columns,1))
               break;
             if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
-              (void) WritePixelCache(image,GrayQuantum,scanlines[y]);
+              (void) PushImagePixels(image,GrayQuantum,scanlines[y]);
             else
-              (void) WritePixelCache(image,IndexQuantum,scanlines[y]);
+              (void) PushImagePixels(image,IndexQuantum,scanlines[y]);
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
                 ProgressMonitor(SaveImageText,y,image->rows);

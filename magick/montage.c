@@ -785,7 +785,7 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info,
               */
               for (rows=0; rows < ((int) next->rows-4); rows++)
               {
-                q=GetPixelCache(montage_next,x+x_offset+next->columns,
+                q=GetImagePixels(montage_next,x+x_offset+next->columns,
                   y_offset+y+rows+4,Min(tile_info.x,4),1);
                 if (q == (PixelPacket *) NULL)
                   break;
@@ -794,12 +794,12 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info,
                   Modulate(0.0,0.0,-25.0+4*columns,&q->red,&q->green,&q->blue);
                   q++;
                 }
-                if (!SyncPixelCache(montage_next))
+                if (!SyncImagePixels(montage_next))
                   break;
               }
               for (rows=0; rows < Min(tile_info.y,4); rows++)
               {
-                q=GetPixelCache(montage_next,x+x_offset+4,y_offset+y+
+                q=GetImagePixels(montage_next,x+x_offset+4,y_offset+y+
                   next->rows+rows,next->columns,1);
                 if (q == (PixelPacket *) NULL)
                   break;
@@ -808,7 +808,7 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info,
                   Modulate(0.0,0.0,-25.0+4*rows,&q->red,&q->green,&q->blue);
                   q++;
                 }
-                if (!SyncPixelCache(montage_next))
+                if (!SyncImagePixels(montage_next))
                   break;
               }
             }

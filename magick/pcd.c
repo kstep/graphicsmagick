@@ -594,7 +594,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         c2=chroma2;
         for (y=0; y < (int) image->rows; y++)
         {
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           for (x=0; x < (int) image->columns; x++)
@@ -604,7 +604,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             q->blue=UpScale(*c2++);
             q++;
           }
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
         }
         if (Latin1Compare(image_info->magick,"PCDS") == 0)
@@ -698,7 +698,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   c2=chroma2;
   for (y=0; y < (int) image->rows; y++)
   {
-    q=SetPixelCache(image,0,y,image->columns,1);
+    q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) image->columns; x++)
@@ -708,7 +708,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       q->blue=UpScale(*c2++);
       q++;
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(LoadImageText,y,image->rows);
@@ -899,7 +899,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
   */
   for (y=0; y < (int) tile_image->rows; y+=2)
   {
-    p=GetPixelCache(tile_image,0,y,tile_image->columns,2);
+    p=GetImagePixels(tile_image,0,y,tile_image->columns,2);
     if (p == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) (tile_image->columns << 1); x++)
@@ -907,7 +907,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
       (void) WriteByte(image,DownScale(p->red));
       p++;
     }
-    q=GetPixelCache(downsampled_image,0,y >> 1,downsampled_image->columns,1);
+    q=GetImagePixels(downsampled_image,0,y >> 1,downsampled_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) downsampled_image->columns; x++)
@@ -915,7 +915,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
       (void) WriteByte(image,DownScale(q->green));
       q++;
     }
-    q=GetPixelCache(downsampled_image,0,y >> 1,downsampled_image->columns,1);
+    q=GetImagePixels(downsampled_image,0,y >> 1,downsampled_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) downsampled_image->columns; x++)

@@ -193,7 +193,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->colorspace=CMYKColorspace;
   for (y=0; y < (int) image->rows; y++)
   {
-    q=SetPixelCache(image,0,y,image->columns,1);
+    q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) image->columns; x++)
@@ -203,7 +203,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     if ((image->columns % 2) != 0)
       (void) ReadByte(image);  /* pad */
-    q=GetPixelCache(image,0,y,image->columns,1);
+    q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) image->columns; x++)
@@ -213,7 +213,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     if ((image->columns % 2) != 0)
       (void) ReadByte(image);  /* pad */
-    q=GetPixelCache(image,0,y,image->columns,1);
+    q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) image->columns; x++)
@@ -223,7 +223,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     if ((image->columns % 2) != 0)
       (void) ReadByte(image);  /* pad */
-    q=GetPixelCache(image,0,y,image->columns,1);
+    q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) image->columns; x++)
@@ -231,7 +231,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       q->opacity=MaxRGB-UpScale(ReadByte(image));
       q++;
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
     if ((image->columns % 2) != 0)
       (void) ReadByte(image);  /* pad */

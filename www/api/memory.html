@@ -39,7 +39,7 @@
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>void * <STRONG>AllocateMemory</STRONG>( const size_t size );</P>
-<P>void  <STRONG>FreeMemory</STRONG>( void *memory );</P>
+<P>void  <STRONG>FreeMemory</STRONG>( void ** memory );</P>
 <P>void * <STRONG>ReallocateMemory</STRONG>( void *memory, const size_t size );</P>
 <P>
 <A HREF="#__index__"><SMALL>page index</SMALL></A>
@@ -66,7 +66,7 @@ Specifies the size of the memory to return.
 <H2><A NAME="freememory">FreeMemory</A></H2>
 <P>Method FreeMemory frees memory that has already been allocated.</P>
 <P>The format of the FreeMemory method is:</P>
-<blockquote>void FreeMemory ( void *memory ); </blockquote><P>
+<blockquote>void FreeMemory ( void **memory ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_span%3A">span:</A></STRONG><BR>

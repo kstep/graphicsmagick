@@ -178,7 +178,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   for (y=0; y < (int) image->rows; y++)
   {
     p=pixels;
-    q=SetPixelCache(image,0,y,image->columns,1);
+    q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
@@ -194,7 +194,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       indexes[x]=index;
       *q++=image->colormap[index];
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
   }
   FreeMemory((void *) &pixels);
@@ -353,7 +353,7 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
   */
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetPixelCache(image,0,y,image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);

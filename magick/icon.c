@@ -260,7 +260,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,ExceptionInfo *exception
         */
         for (y=image->rows-1; y >= 0; y--)
         {
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
@@ -276,7 +276,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,ExceptionInfo *exception
               for (bit=0; bit < (int) (image->columns % 8); bit++)
                 indexes[x+bit]=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
             }
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
@@ -291,7 +291,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,ExceptionInfo *exception
         */
         for (y=image->rows-1; y >= 0; y--)
         {
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
@@ -306,7 +306,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,ExceptionInfo *exception
               byte=ReadByte(image);
               indexes[x]=(byte >> 4) & 0xf;
             }
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
@@ -321,7 +321,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,ExceptionInfo *exception
         */
         for (y=image->rows-1; y >= 0; y--)
         {
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
@@ -330,7 +330,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,ExceptionInfo *exception
             byte=ReadByte(image);
             indexes[x]=(IndexPacket) byte;
           }
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
@@ -345,7 +345,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,ExceptionInfo *exception
         */
         for (y=image->rows-1; y >= 0; y--)
         {
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
@@ -356,7 +356,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,ExceptionInfo *exception
             byte=ReadByte(image);
             indexes[x]|=byte << 8;
           }
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
@@ -375,7 +375,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,ExceptionInfo *exception
     image->matte=True;
     for (y=image->rows-1; y >= 0; y--)
     {
-      q=GetPixelCache(image,0,y,image->columns,1);
+      q=GetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
       for (x=0; x < ((int) image->columns-7); x+=8)
@@ -390,7 +390,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,ExceptionInfo *exception
           for (bit=0; bit < (int) (image->columns % 8); bit++)
             q[x+bit].opacity=(byte & (0x80 >> bit) ? Transparent : Opaque);
         }
-      if (!SyncPixelCache(image))
+      if (!SyncImagePixels(image))
         break;
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))

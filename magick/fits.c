@@ -423,7 +423,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     p=fits_pixels;
     for (y=image->rows-1; y >= 0; y--)
     {
-      q=SetPixelCache(image,0,y,image->columns,1);
+      q=SetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
       indexes=GetIndexes(image);
@@ -455,7 +455,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         indexes[x]=index;
         *q++=image->colormap[index];
       }
-      if (!SyncPixelCache(image))
+      if (!SyncImagePixels(image))
         break;
       if (QuantumTick(y,image->rows))
         ProgressMonitor(LoadImageText,y,image->rows);
@@ -624,10 +624,10 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   */
   for (y=image->rows-1; y >= 0; y--)
   {
-    p=GetPixelCache(image,0,y,image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
-    (void) WritePixelCache(image,GrayQuantum,pixels);
+    (void) PushImagePixels(image,GrayQuantum,pixels);
     (void) WriteBlob(image,packet_size*image->columns,pixels);
     if (QuantumTick(image->rows-y-1,image->rows))
       ProgressMonitor(SaveImageText,image->rows-y-1,image->rows);

@@ -3206,7 +3206,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           for (y=0; y < (int) image->rows; y++)
           {
-            q=GetPixelCache(image,0,y,image->columns,1);
+            q=GetImagePixels(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
             for (x=0; x < (int) image->columns; x++)
@@ -3221,7 +3221,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
               q++;
             }
-            if (!SyncPixelCache(image))
+            if (!SyncImagePixels(image))
               break;
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
@@ -3241,7 +3241,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         byte=0;
         for (y=0; y < (int) image->rows; y++)
         {
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
@@ -3295,7 +3295,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
             q++;
           }
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))

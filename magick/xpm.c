@@ -630,7 +630,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     p=textlist[i++];
     if (p == (char *) NULL)
       break;
-    r=SetPixelCache(image,0,y,image->columns,1);
+    r=SetImagePixels(image,0,y,image->columns,1);
     if (r == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
@@ -648,7 +648,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       r++;
       p+=width;
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
   }
   /*
@@ -806,7 +806,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
           */
           for (y=0; y < (int) image->rows; y++)
           {
-            p=GetPixelCache(image,0,y,image->columns,1);
+            p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             for (x=0; x < (int) image->columns; x++)
@@ -816,7 +816,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
                 transparent=True;
               p++;
             }
-            if (!SyncPixelCache(image))
+            if (!SyncImagePixels(image))
               break;
           }
         }
@@ -829,7 +829,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
           colors++;
           for (y=0; y < (int) image->rows; y++)
           {
-            p=GetPixelCache(image,0,y,image->columns,1);
+            p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
@@ -839,7 +839,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
                 indexes[x]=image->colors;
               p++;
             }
-            if (!SyncPixelCache(image))
+            if (!SyncImagePixels(image))
               break;
           }
         }
@@ -914,7 +914,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlob(image,strlen(buffer),buffer);
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetPixelCache(image,0,y,image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);

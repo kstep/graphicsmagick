@@ -206,7 +206,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
               "Memory allocation failed",image);
           for (y=0; y < (int) image->rows; y++)
           {
-            p=GetPixelCache(image,0,y,image->columns,1);
+            p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             for (x=0; x < (int) image->columns; x++)
@@ -228,7 +228,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
           colors++;
           for (y=0; y < (int) image->rows; y++)
           {
-            p=GetPixelCache(image,0,y,image->columns,1);
+            p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
@@ -315,7 +315,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlob(image,strlen(buffer),buffer);
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetPixelCache(image,0,y,image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);

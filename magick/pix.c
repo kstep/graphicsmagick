@@ -182,7 +182,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     length=0;
     for (y=0; y < (int) image->rows; y++)
     {
-      q=SetPixelCache(image,0,y,image->columns,1);
+      q=SetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
       indexes=GetIndexes(image);
@@ -207,7 +207,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         length--;
         q++;
       }
-      if (!SyncPixelCache(image))
+      if (!SyncImagePixels(image))
         break;
       if (image->previous == (Image *) NULL)
         ProgressMonitor(LoadImageText,y,image->rows);

@@ -579,7 +579,7 @@ Export unsigned int HuffmanDecodeImage(Image *image)
       Transfer scanline to image pixels.
     */
     p=scanline;
-    q=SetPixelCache(image,0,y,image->columns,1);
+    q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
@@ -589,7 +589,7 @@ Export unsigned int HuffmanDecodeImage(Image *image)
       indexes[x]=index;
       *q++=image->colormap[index];
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(LoadImageText,y,image->rows);
@@ -754,7 +754,7 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
   q=scanline;
   for (y=0; y < (int) huffman_image->rows; y++)
   {
-    p=GetPixelCache(huffman_image,0,y,huffman_image->columns,1);
+    p=GetImagePixels(huffman_image,0,y,huffman_image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(huffman_image);

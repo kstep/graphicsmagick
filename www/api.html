@@ -26,6 +26,10 @@ depending on your system.
 <p>The API is divided into a number of categories:
 <dl>
 <dd>
+<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/constitute.html">ImageMagick
+Methods to Constitute an Image</a></dd>
+
+<dd>
 <img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/image.html">ImageMagick
 Image Methods</a></dd>
 
@@ -84,10 +88,6 @@ to Compute a Digital Signature for an Image</a></dd>
 <dd>
 <img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/attributes.html">Image
 Text Attributes Methods</a></dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/pixel_cache.html">ImageMagick
-Pixel Cache Methods</a></dd>
 
 <dd>
 <img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/cache_view.html">ImageMagick
@@ -154,9 +154,9 @@ format.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Initialize the image info structure and read an image.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; image_info=CloneImageInfo((ImageInfo *) NULL)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void) strcpy(image_info.filename,"image.jpg");
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; image=ReadImage(&amp;image_info,&amp;exception);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; image_info=CloneImageInfo((ImageInfo *) NULL);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void) strcpy(image_info->filename,"image.jpg");
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; image=ReadImage(image_info,&amp;exception);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (image == (Image *) NULL)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MagickError(exception.severity,exception.message,exception.qualifier);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*

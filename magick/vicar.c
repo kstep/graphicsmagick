@@ -310,7 +310,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,ExceptionInfo *exceptio
   p=vicar_pixels;
   for (y=0; y < (int) image->rows; y++)
   {
-    q=SetPixelCache(image,0,y,image->columns,1);
+    q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
@@ -320,7 +320,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,ExceptionInfo *exceptio
       indexes[x]=index;
       *q++=image->colormap[index];
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(LoadImageText,y,image->rows);
@@ -472,7 +472,7 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
   */
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetPixelCache(image,0,y,image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     q=pixels;

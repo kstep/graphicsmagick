@@ -297,7 +297,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       real=offset;
       if (((unsigned char) (tga_header.attributes & 0x20) >> 5) == 0)
         real=image->rows-real-1;
-      q=SetPixelCache(image,0,real,image->columns,1);
+      q=SetImagePixels(image,0,real,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
       indexes=GetIndexes(image);
@@ -392,7 +392,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
           base++;
           offset=base;
         }
-      if (!SyncPixelCache(image))
+      if (!SyncImagePixels(image))
         break;
       if (EOFBlob(image))
         break;
@@ -673,7 +673,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
         image);
     for (y=(int) (image->rows-1); y >= 0; y--)
     {
-      p=GetPixelCache(image,0,y,image->columns,1);
+      p=GetImagePixels(image,0,y,image->columns,1);
       if (p == (PixelPacket *) NULL)
         break;
       q=targa_pixels;

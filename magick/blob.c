@@ -203,7 +203,7 @@ Export void CloseBlob(Image *image)
     Close image file.
   */
   assert(image != (Image *) NULL);
-  CloseCache(image->cache);
+  CloseImagePixels(image);
   image->taint=False;
   image->filesize=SizeBlob(image);
   if (image->blob.data != (char *) NULL)

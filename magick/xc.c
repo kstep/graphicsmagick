@@ -125,7 +125,7 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) QueryColorDatabase((char *) image_info->filename,&image->colormap[0]);
   for (y=0; y < (int) image->rows; y++)
   {
-    q=SetPixelCache(image,0,y,image->columns,1);
+    q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
@@ -136,7 +136,7 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       q->opacity=image->colormap[0].opacity;
       q++;
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
   }
   return(image);

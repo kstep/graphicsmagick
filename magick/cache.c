@@ -55,6 +55,7 @@
 */
 #include "magick.h"
 #include "defines.h"
+#include "cache.h"
 
 /*
   Typedef declarations.
@@ -339,7 +340,7 @@ Export void GetCacheInfo(Cache *cache)
   CacheInfo
     *cache_info;
 
-  assert(cache != (Cache *) NULL);
+  assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) AllocateMemory(sizeof(CacheInfo));
   if (cache_info == (CacheInfo *) NULL)
     MagickError(ResourceLimitError,"Memory allocation failed",
@@ -1167,6 +1168,9 @@ Export PixelPacket *SetCacheNexus(Cache cache,const unsigned int id,
   else
     if (nexus->length != length)
       nexus->stash=ReallocateMemory(nexus->stash,length);
+  if (nexus->stash == (void *) NULL)
+    MagickError(ResourceLimitError,"Memory allocation failed",
+      "unable to allocate cache info");
   nexus->length=length;
   nexus->pixels=(PixelPacket *) nexus->stash;
   nexus->indexes=(IndexPacket *) (nexus->pixels+nexus->columns*nexus->rows);

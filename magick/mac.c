@@ -1173,7 +1173,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   */
   for (y=0; y < image->rows; y++)
   {
-    q=SetPixelCache(image,0,y,image->columns,1);
+    q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
@@ -1187,7 +1187,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         indexes[x]=(unsigned short) Color2Index(&Pixel);
       q++;
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(LoadImageText,y,image->rows);

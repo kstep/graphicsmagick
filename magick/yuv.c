@@ -161,7 +161,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if ((y > 0) || (image->previous == (Image *) NULL))
         (void) ReadBlob(image,image->columns,scanline);
       p=scanline;
-      q=SetPixelCache(image,0,y,image->columns,1);
+      q=SetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
       for (x=0; x < (int) image->columns; x++)
@@ -171,7 +171,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q->blue=0;
         q++;
       }
-      if (!SyncPixelCache(image))
+      if (!SyncImagePixels(image))
         break;
       if (image->previous == (Image *) NULL)
         ProgressMonitor(LoadImageText,y,image->rows);
@@ -192,7 +192,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       (void) ReadBlob(image,chroma_image->columns,scanline);
       p=scanline;
-      q=SetPixelCache(chroma_image,0,y,chroma_image->columns,1);
+      q=SetImagePixels(chroma_image,0,y,chroma_image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
       for (x=0; x < (int) chroma_image->columns; x++)
@@ -202,7 +202,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q->blue=0;
         q++;
       }
-      if (!SyncPixelCache(chroma_image))
+      if (!SyncImagePixels(chroma_image))
         break;
     }
     if (image_info->interlace == PartitionInterlace)
@@ -217,7 +217,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       (void) ReadBlob(image,chroma_image->columns,scanline);
       p=scanline;
-      q=GetPixelCache(chroma_image,0,y,chroma_image->columns,1);
+      q=GetImagePixels(chroma_image,0,y,chroma_image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
       for (x=0; x < (int) chroma_image->columns; x++)
@@ -225,7 +225,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q->blue=UpScale(*p++);
         q++;
       }
-      if (!SyncPixelCache(chroma_image))
+      if (!SyncImagePixels(chroma_image))
         break;
     }
     /*
@@ -239,8 +239,8 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image);
     for (y=0; y < (int) image->rows; y++)
     {
-      q=GetPixelCache(image,0,y,image->columns,1);
-      r=GetPixelCache(zoom_image,0,y,zoom_image->columns,1);
+      q=GetImagePixels(image,0,y,image->columns,1);
+      r=GetImagePixels(zoom_image,0,y,zoom_image->columns,1);
       if ((q == (PixelPacket *) NULL) || (r == (PixelPacket *) NULL))
         break;
       for (x=0; x < (int) image->columns; x++)
@@ -250,7 +250,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         r++;
         q++;
       }
-      if (!SyncPixelCache(image))
+      if (!SyncImagePixels(image))
         break;
     }
     DestroyImage(zoom_image);
@@ -409,7 +409,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     */
     for (y=0; y < (int) yuv_image->rows; y++)
     {
-      p=GetPixelCache(yuv_image,0,y,yuv_image->columns,1);
+      p=GetImagePixels(yuv_image,0,y,yuv_image->columns,1);
       if (p == (PixelPacket *) NULL)
         break;
       for (x=0; x < (int) yuv_image->columns; x++)
@@ -443,7 +443,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       }
     for (y=0; y < (int) chroma_image->rows; y++)
     {
-      p=GetPixelCache(chroma_image,0,y,chroma_image->columns,1);
+      p=GetImagePixels(chroma_image,0,y,chroma_image->columns,1);
       if (p == (PixelPacket *) NULL)
         break;
       for (x=0; x < (int) chroma_image->columns; x++)
@@ -465,7 +465,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       }
     for (y=0; y < (int) chroma_image->rows; y++)
     {
-      p=GetPixelCache(chroma_image,0,y,chroma_image->columns,1);
+      p=GetImagePixels(chroma_image,0,y,chroma_image->columns,1);
       if (p == (PixelPacket *) NULL)
         break;
       for (x=0; x < (int) chroma_image->columns; x++)

@@ -1999,13 +1999,13 @@ static unsigned int XColorEditImage(Display *display,
               Update color information using point algorithm.
             */
             (*image)->class=DirectClass;
-            p=GetPixelCache(*image,x_offset,y_offset,1,1);
+            p=GetImagePixels(*image,x_offset,y_offset,1,1);
             if (p == (PixelPacket *) NULL)
               break;
             p->red=XDownScale(color.red);
             p->green=XDownScale(color.green);
             p->blue=XDownScale(color.blue);
-            (void) SyncPixelCache(*image);
+            (void) SyncImagePixels(*image);
             break;
           }
           case ReplaceMethod:
@@ -2021,7 +2021,7 @@ static unsigned int XColorEditImage(Display *display,
               {
                 for (y=0; y < (int) (*image)->rows; y++)
                 {
-                  q=GetPixelCache(*image,0,y,(*image)->columns,1);
+                  q=GetImagePixels(*image,0,y,(*image)->columns,1);
                   if (q == (PixelPacket *) NULL)
                     break;
                   for (x=0; x < (int) (*image)->columns; x++)
@@ -2034,7 +2034,7 @@ static unsigned int XColorEditImage(Display *display,
                       }
                     q++;
                   }
-                  if (!SyncPixelCache(*image))
+                  if (!SyncImagePixels(*image))
                     break;
                 }
               }
@@ -2091,7 +2091,7 @@ static unsigned int XColorEditImage(Display *display,
             (*image)->class=DirectClass;
             for (y=0; y < (int) (*image)->rows; y++)
             {
-              q=SetPixelCache(*image,0,y,(*image)->columns,1);
+              q=SetImagePixels(*image,0,y,(*image)->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
               for (x=0; x < (int) (*image)->columns; x++)
@@ -2101,7 +2101,7 @@ static unsigned int XColorEditImage(Display *display,
                 q->blue=XDownScale(color.blue);
                 q++;
               }
-              if (!SyncPixelCache(*image))
+              if (!SyncImagePixels(*image))
                 break;
             }
             break;
@@ -2620,7 +2620,7 @@ static unsigned int XCompositeImage(Display *display,
       image->matte=True;
       for (y=0; y < (int) image->rows; y++)
       {
-        q=GetPixelCache(image,0,y,image->columns,1);
+        q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (int) image->columns; x++)
@@ -2628,7 +2628,7 @@ static unsigned int XCompositeImage(Display *display,
           q->opacity=opacity;
           q++;
         }
-        if (!SyncPixelCache(image))
+        if (!SyncImagePixels(image))
           break;
       }
     }
@@ -3544,7 +3544,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
     MatteImage(image,Opaque);
   for (y=0; y < (int) crop_info.height; y++)
   {
-    q=GetPixelCache(image,crop_info.x,y+crop_info.y,crop_info.width,1);
+    q=GetImagePixels(image,crop_info.x,y+crop_info.y,crop_info.width,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) crop_info.width; x++)
@@ -3552,7 +3552,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
       q->opacity=Transparent;
       q++;
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
   }
   /*
@@ -7711,11 +7711,11 @@ static unsigned int XMatteEditImage(Display *display,
             /*
               Update matte information using point algorithm.
             */
-            q=GetPixelCache(*image,x_offset,y_offset,1,1);
+            q=GetImagePixels(*image,x_offset,y_offset,1,1);
             if (q == (PixelPacket *) NULL)
               break;
             q->opacity=atoi(matte) & 0xff;
-            (void) SyncPixelCache(*image);
+            (void) SyncImagePixels(*image);
             break;
           }
           case ReplaceMethod:
@@ -7729,7 +7729,7 @@ static unsigned int XMatteEditImage(Display *display,
             target=GetOnePixel(*image,x_offset,y_offset);
             for (y=0; y < (int) (*image)->rows; y++)
             {
-              q=GetPixelCache(*image,0,y,(*image)->columns,1);
+              q=GetImagePixels(*image,0,y,(*image)->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
               for (x=0; x < (int) (*image)->columns; x++)
@@ -7738,7 +7738,7 @@ static unsigned int XMatteEditImage(Display *display,
                   q->opacity=atoi(matte) & 0xff;
                 q++;
               }
-              if (!SyncPixelCache(*image))
+              if (!SyncImagePixels(*image))
                 break;
             }
             break;
@@ -7771,7 +7771,7 @@ static unsigned int XMatteEditImage(Display *display,
             (*image)->class=DirectClass;
             for (y=0; y < (int) (*image)->rows; y++)
             {
-              q=SetPixelCache(*image,0,y,(*image)->columns,1);
+              q=SetImagePixels(*image,0,y,(*image)->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
               for (x=0; x < (int) (*image)->columns; x++)
@@ -7779,7 +7779,7 @@ static unsigned int XMatteEditImage(Display *display,
                 q->opacity=atoi(matte) & 0xff;
                 q++;
               }
-              if (!SyncPixelCache(*image))
+              if (!SyncImagePixels(*image))
                 break;
             }
             if ((atoi(matte) & 0xff) == Opaque)
@@ -10821,12 +10821,12 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
         pixel=GetOnePixel(image,0,0);
         for (i=0; i < (int) height; i++)
         {
-          s=GetPixelCache(image,x_offset,y_offset+i,width,1);
+          s=GetImagePixels(image,x_offset,y_offset+i,width,1);
           if (s == (PixelPacket *) NULL)
             break;
           for (j=0; j < (int) width; j++)
             *s++=pixel;
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
         }
         tile++;

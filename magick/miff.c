@@ -575,7 +575,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
     length=0;
     for (y=0; y < (int) image->rows; y++)
     {
-      q=SetPixelCache(image,0,y,image->columns,1);
+      q=SetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
       indexes=GetIndexes(image);
@@ -650,18 +650,18 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
           if (image->class == PseudoClass)
             {
               if (!image->matte)
-                (void) ReadPixelCache(image,IndexQuantum,pixels);
+                (void) PullImagePixels(image,IndexQuantum,pixels);
               else
-                (void) ReadPixelCache(image,IndexOpacityQuantum,pixels);
+                (void) PullImagePixels(image,IndexOpacityQuantum,pixels);
             }
           else
             if (image->colorspace == CMYKColorspace)
-              (void) ReadPixelCache(image,CMYKQuantum,pixels);
+              (void) PullImagePixels(image,CMYKQuantum,pixels);
             else
               if (!image->matte)
-                (void) ReadPixelCache(image,RGBQuantum,pixels);
+                (void) PullImagePixels(image,RGBQuantum,pixels);
               else
-                (void) ReadPixelCache(image,RGBAQuantum,pixels);
+                (void) PullImagePixels(image,RGBAQuantum,pixels);
         }
       else
         {
@@ -715,7 +715,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
             *q++=pixel;
           }
         }
-      if (!SyncPixelCache(image))
+      if (!SyncImagePixels(image))
         break;
     }
     FreeMemory((void *) &pixels);
@@ -1135,7 +1135,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     status=True;
     for (y=0; y < (int) image->rows; y++)
     {
-      p=GetPixelCache(image,0,y,image->columns,1);
+      p=GetImagePixels(image,0,y,image->columns,1);
       if (p == (PixelPacket *) NULL)
         break;
       indexes=GetIndexes(image);
@@ -1145,18 +1145,18 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           if (image->class == PseudoClass)
             {
               if (!image->matte)
-                (void) WritePixelCache(image,IndexQuantum,pixels);
+                (void) PushImagePixels(image,IndexQuantum,pixels);
               else
-                (void) WritePixelCache(image,IndexOpacityQuantum,pixels);
+                (void) PushImagePixels(image,IndexOpacityQuantum,pixels);
             }
           else
             if (image->colorspace == CMYKColorspace)
-              (void) WritePixelCache(image,CMYKQuantum,pixels);
+              (void) PushImagePixels(image,CMYKQuantum,pixels);
             else
               if (!image->matte)
-                (void) WritePixelCache(image,RGBQuantum,pixels);
+                (void) PushImagePixels(image,RGBQuantum,pixels);
               else
-                (void) WritePixelCache(image,RGBAQuantum,pixels);
+                (void) PushImagePixels(image,RGBAQuantum,pixels);
         }
       else
         {

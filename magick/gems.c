@@ -494,7 +494,7 @@ Export PixelPacket InterpolateColor(Image *image,const double x_offset,
       register PixelPacket
         *t;
 
-      t=GetPixelCache(image,(int) x,(int) y,2,2);
+      t=GetImagePixels(image,(int) x,(int) y,2,2);
       if (t == (PixelPacket *) NULL)
         return(image->background_color);
       p=(*t++);

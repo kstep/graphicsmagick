@@ -13,6 +13,11 @@ extern "C" {
 #endif
 
 /*
+  Typedef declaractions.
+*/
+typedef void* Cache;
+
+/*
   Exported interfaces.
 */
 extern Export CacheType

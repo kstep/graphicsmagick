@@ -61,35 +61,145 @@
 */
 #include "magick.h"
 #include "defines.h"
+#include "cache.h"
+
+/*
+  Declare pixel cache interfaces.
+*/
+static IndexPacket
+  *GetIndexesFromCache(const Image *);
+
+static PixelPacket
+  GetOnePixelFromCache(Image *,const int,const int),
+  *GetPixelsFromCache(const Image *),
+  *GetPixelCache(Image *,const int,const int,const unsigned int,
+    const unsigned int),
+  *SetPixelCache(Image *,const int,const int,const unsigned int,
+    const unsigned int);
+
+static unsigned int
+  SyncPixelCache(Image *);
+
+static void
+  ClosePixelCache(Image *),
+  DestroyPixelCache(Image *);
+
+/*
+  Initialize the image pixel methods.
+*/
+Export IndexPacket
+  *(*GetIndexes)(const Image *) = GetIndexesFromCache;
+
+Export PixelPacket
+  *(*GetImagePixels)(Image *,const int,const int,const unsigned int,
+    const unsigned int) = GetPixelCache,
+  (*GetOnePixel)(Image *,const int,const int) = GetOnePixelFromCache,
+  *(*GetPixels)(const Image *) = GetPixelsFromCache,
+  *(*SetImagePixels)(Image *,const int,const int,const unsigned int,
+    const unsigned int) = SetPixelCache;
+
+Export unsigned int
+  (*SyncImagePixels)(Image *) = SyncPixelCache;
+
+Export void
+  (*CloseImagePixels)(Image *) = ClosePixelCache,
+  (*DestroyImagePixels)(Image *) = DestroyPixelCache;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t I n d e x e s                                                       %
+%   C l o s e P i x e l C a c h e                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetIndexes returns the colormap indexes associated with the last call
-%  to the SetPixelCache() or GetPixelCache() methods.
+%  Method ClosePixelCache closes the pixel cache.  Use this method to prevent
+%  the too many file descriptors from being allocated when reading an image
+%  sequence.  File descriptors are only used for a disk-based cache.  This is
+%  essentially a no-op for a memory-based cache.
 %
-%  The format of the GetIndexes method is:
+%  The format of the ClosePixelCache method is:
 %
-%      IndexPacket *GetIndexes(const Image *image)
+%      void ClosePixelCache(Image *image)
 %
 %  A description of each parameter follows:
-%
-%    o indexes: Method GetIndexes returns the colormap indexes associated with
-%      the last call to the SetPixelCache() or GetPixelCache() methods.
 %
 %    o image: The address of a structure of type Image.
 %
 %
 */
-Export IndexPacket *GetIndexes(const Image *image)
+Export void ClosePixelCache(Image *image)
+{
+  assert(image != (Image *) NULL);
+  if (image->cache == (void *) NULL)
+    return;
+  CloseCache(image->cache);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D e s t r o y P i x e l C a c h e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DestroyPixelCache deallocates memory associated with the pixel cache.
+%
+%  The format of the DestroyPixelCache method is:
+%
+%      void DestroyPixelCache(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+Export void DestroyPixelCache(Image *image)
+{
+  assert(image != (Image *) NULL);
+  if (image->cache == (void *) NULL)
+    return;
+  DestroyCacheInfo(image->cache);
+  image->cache=(Cache) NULL;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t I n d e x e s F r o m C a c h e                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetIndexesFromCache returns the colormap indexes associated with
+%  the last call to the SetPixelCache() or GetPixelCache() methods.
+%
+%  The format of the GetIndexesFromCache method is:
+%
+%      IndexPacket *GetIndexesFromCache(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o indexes: Method GetIndexesFromCache returns the colormap indexes
+%      associated with the last call to the SetPixelCache() or GetPixelCache()
+%      methods.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+static IndexPacket *GetIndexesFromCache(const Image *image)
 {
   assert(image != (Image *) NULL);
   return(GetNexusIndexes(image->cache,0));
@@ -100,30 +210,31 @@ Export IndexPacket *GetIndexes(const Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t O n e P i x e l                                                     %
+%   G e t O n e P i x e l F r o m C a c h e                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetOnePixel returns a single pixel at the specified (x,y) location.
-%  The image background color is returned if an error occurs.
+%  Method GetOnePixelFromCache returns a single pixel at the specified (x,y)
+%  location.  The image background color is returned if an error occurs.
 %
-%  The format of the GetOnePixel method is:
+%  The format of the GetOnePixelFromCache method is:
 %
-%      PixelPacket *GetOnePixel(const Image image,const int x,const int y)
+%      PixelPacket *GetOnePixelFromCache(const Image image,const int x,
+%        const int y)
 %
 %  A description of each parameter follows:
 %
-%    o pixels: Method GetOnePixel returns a pixel at the specified (x,y)
-%      location.
+%    o pixels: Method GetOnePixelFromCache returns a pixel at the
+%      specified (x,y) location.
 %
 %    o image: The address of a structure of type Image.
 %
 %    o x,y:  These values define the location of the pixel to return.
 %
 */
-Export PixelPacket GetOnePixel(Image *image,const int x,const int y)
+static PixelPacket GetOnePixelFromCache(Image *image,const int x,const int y)
 {
   register PixelPacket
     *pixel;
@@ -167,7 +278,7 @@ Export PixelPacket GetOnePixel(Image *image,const int x,const int y)
 %
 %
 */
-Export PixelPacket *GetPixelCache(Image *image,const int x,const int y,
+static PixelPacket *GetPixelCache(Image *image,const int x,const int y,
   const unsigned int columns,const unsigned int rows)
 {
   PixelPacket
@@ -191,7 +302,7 @@ Export PixelPacket *GetPixelCache(Image *image,const int x,const int y,
   if (status == False)
     {
       ThrowException(&image->exception,CacheWarning,
-        "Unable to read pixels from cache",image->filename);
+        "Unable to get pixels from cache",image->filename);
       return((PixelPacket *) NULL);
     }
   return(pixels);
@@ -202,323 +313,32 @@ Export PixelPacket *GetPixelCache(Image *image,const int x,const int y,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t P i x e l s                                                         %
+%   G e t P i x e l s F r o m C a c h e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetPixels returns the pixels associated with the last call to the
-%  SetPixelCache() or GetPixelCache() methods.
+%  Method GetPixelsFromCache returns the pixels associated with the last call
+%  to the SetPixelCache() or GetPixelCache() methods.
 %
-%  The format of the GetPixels method is:
+%  The format of the GetPixelsFromCache method is:
 %
-%      PixelPacket *GetPixels(const Image image)
+%      PixelPacket *GetPixelsFromCache(const Image image)
 %
 %  A description of each parameter follows:
 %
-%    o pixels: Method GetPixels returns the pixels associated with the
-%      last call to the SetPixelCache() or GetPixelCache() methods.
+%    o pixels: Method GetPixelsFromCache returns the pixels associated with
+%      the last call to the SetPixelCache() or GetPixelCache() methods.
 %
 %    o image: The address of a structure of type Image.
 %
 %
 */
-Export PixelPacket *GetPixels(const Image *image)
+static PixelPacket *GetPixelsFromCache(const Image *image)
 {
   assert(image != (Image *) NULL);
   return(GetNexusPixels(image->cache,0));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   R e a d P i x e l C a c h e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ReadPixelCache transfers one or more pixel components from a buffer
-%  or file into the image pixel buffer of an image.  It returns True if the
-%  pixels are successfully transferred, otherwise False.
-%
-%  The format of the ReadPixelCache method is:
-%
-%      unsigned int ReadPixelCache(const Image *image,
-%        const QuantumTypes quantum,const unsigned char *source)
-%
-%  A description of each parameter follows:
-%
-%    o status: Method ReadPixelCache returns True if the pixels are
-%      successfully transferred, otherwise False.
-%
-%    o image: The address of a structure of type Image.
-%
-%    o quantum: Declare which pixel components to transfer (red, green, blue,
-%      opacity, RGB, or RGBA).
-%
-%    o source:  The pixel components are transferred from this buffer.
-%
-*/
-Export unsigned int ReadPixelCache(const Image *image,
-  const QuantumTypes quantum,const unsigned char *source)
-{
-  IndexPacket
-    index;
-
-  register const unsigned char
-    *p;
-
-  register IndexPacket
-    *indexes;
-
-  register int
-    x;
-
-  register PixelPacket
-    *q;
-
-  assert(image != (Image *) NULL);
-  assert(source != (const unsigned char *) NULL);
-  p=source;
-  q=GetNexusPixels(image->cache,0);
-  indexes=GetNexusIndexes(image->cache,0);
-  switch (quantum)
-  {
-    case IndexQuantum:
-    {
-      if (image->colors <= 256)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            index=(*p++);
-            indexes[x]=index;
-            *q++=image->colormap[index];
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        index=(*p++ << 8);
-        index|=(*p++);
-        indexes[x]=index;
-        *q++=image->colormap[index];
-      }
-      break;
-    }
-    case IndexOpacityQuantum:
-    {
-      if (image->colors <= 256)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            index=(*p++);
-            indexes[x]=index;
-            *q=image->colormap[index];
-            q->opacity=UpScale(*p++);
-            q++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        index=(*p++ << 8);
-        index|=(*p++);
-        indexes[x]=index;
-        *q=image->colormap[index];
-        q->opacity=(*p++ << 8);
-        q->opacity|=(*p++);
-        q++;
-      }
-      break;
-    }
-    case GrayQuantum:
-    {
-      if (image->colors <= 256)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            index=(*p++);
-            indexes[x]=index;
-            *q++=image->colormap[index];
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        index=(*p++ << 8);
-        index|=(*p++);
-        indexes[x]=index;
-        *q++=image->colormap[index];
-      }
-      break;
-    }
-    case GrayOpacityQuantum:
-    {
-      if (image->colors <= 256)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            index=(*p++);
-            indexes[x]=index;
-            *q=image->colormap[index];
-            q->opacity=(*p++);
-            q++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        index=(*p++ << 8);
-        index|=(*p++);
-        indexes[x]=index;
-        *q=image->colormap[index];
-        q->opacity=(*p++ << 8);
-        q->opacity|=(*p++);
-        q++;
-      }
-      break;
-    }
-    case RedQuantum:
-    case CyanQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            q->red=UpScale(*p++);
-            q++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        q->red=(*p++ << 8);
-        q->red|=(*p++);
-        q++;
-      }
-      break;
-    }
-    case GreenQuantum:
-    case YellowQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            q->green=UpScale(*p++);
-            q++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        q->green=(*p++ << 8);
-        q->green|=(*p++);
-        q++;
-      }
-      break;
-    }
-    case BlueQuantum:
-    case MagentaQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            q->blue=UpScale(*p++);
-            q++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        q->blue=(*p++ << 8);
-        q->blue|=(*p++);
-        q++;
-      }
-      break;
-    }
-    case OpacityQuantum:
-    case BlackQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            q->opacity=UpScale(*p++);
-            q++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        q->opacity=(*p++ << 8);
-        q->opacity|=(*p++);
-        q++;
-      }
-      break;
-    }
-    case RGBQuantum:
-    default:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            q->red=UpScale(*p++);
-            q->green=UpScale(*p++);
-            q->blue=UpScale(*p++);
-            q++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        q->red=(*p++ << 8);
-        q->red|=(*p++);
-        q->green=(*p++ << 8);
-        q->green|=(*p++);
-        q->blue=(*p++ << 8);
-        q->blue|=(*p++);
-        q++;
-      }
-      break;
-    }
-    case RGBAQuantum:
-    case CMYKQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            q->red=UpScale(*p++);
-            q->green=UpScale(*p++);
-            q->blue=UpScale(*p++);
-            q->opacity=UpScale(*p++);
-            q++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        q->red=(*p++ << 8);
-        q->red|=(*p++);
-        q->green=(*p++ << 8);
-        q->green|=(*p++);
-        q->blue=(*p++ << 8);
-        q->blue|=(*p++);
-        q->opacity=(*p++ << 8);
-        q->opacity|=(*p++);
-        q++;
-      }
-      break;
-    }
-  }
-  return(True);
 }
 
 /*
@@ -555,7 +375,7 @@ Export unsigned int ReadPixelCache(const Image *image,
 %
 %
 */
-Export PixelPacket *SetPixelCache(Image *image,const int x,const int y,
+static PixelPacket *SetPixelCache(Image *image,const int x,const int y,
   const unsigned int columns,const unsigned int rows)
 {
   RectangleInfo
@@ -575,8 +395,9 @@ Export PixelPacket *SetPixelCache(Image *image,const int x,const int y,
         "image does not contain the cache geometry");
       return((PixelPacket *) NULL);
     }
-  if ((image->cache == (Cache) NULL) ||
-      (image->class != GetCacheClassType(image->cache)))
+  if (image->cache == (Cache) NULL)
+    GetCacheInfo(&image->cache);
+  if (image->class != GetCacheClassType(image->cache))
     {
       /*
         Allocate pixel cache.
@@ -594,6 +415,37 @@ Export PixelPacket *SetPixelCache(Image *image,const int x,const int y,
   region.width=columns;
   region.height=rows;
   return(SetCacheNexus(image->cache,0,&region));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t P i x e l C a c h e M e t h o d s                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ResetPixelCacheMethods set the default image pixel methods to
+%  use the pixel cache.
+%
+%
+*/
+Export void SetPixelCacheMethods(void)
+{
+  /*
+    Reset image pixel methods.
+  */
+  CloseImagePixels=ClosePixelCache;
+  DestroyImagePixels=DestroyPixelCache;
+  GetImagePixels=GetPixelCache;
+  GetIndexes=GetIndexesFromCache;
+  GetOnePixel=GetOnePixelFromCache;
+  GetPixels=GetPixelsFromCache;
+  SetImagePixels=SetPixelCache;
+  SyncImagePixels=SyncPixelCache;
 }
 
 /*
@@ -623,7 +475,7 @@ Export PixelPacket *SetPixelCache(Image *image,const int x,const int y,
 %
 %
 */
-Export unsigned int SyncPixelCache(Image *image)
+static unsigned int SyncPixelCache(Image *image)
 {
   unsigned int
     status;
@@ -636,8 +488,6 @@ Export unsigned int SyncPixelCache(Image *image)
     ThrowBinaryException(CacheWarning,"pixel cache is not allocated",
       image->filename);
   image->taint=True;
-  if (image->fifo != (void (*)(Image *)) NULL)
-    image->fifo(image);
   if (IsNexusInCore(image->cache,0))
     return(True);
   status=WriteCachePixels(image->cache,0);
@@ -646,278 +496,5 @@ Export unsigned int SyncPixelCache(Image *image)
   if (status == False)
     ThrowBinaryException(CacheWarning,"Unable to sync pixel cache",
       image->filename);
-  return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   W r i t e P i x e l C a c h e                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method WritePixelCache transfers one or more pixel components from the image
-%  pixel buffer to a buffer or file. It returns True if the pixels are
-%  successfully transferred, otherwise False.
-%
-%  The format of the WritePixelCache method is:
-%
-%      unsigned int WritePixelCache(const Image *,const QuantumTypes quantum,
-%        unsigned char *destination)
-%
-%  A description of each parameter follows:
-%
-%    o status: Method WritePixelCache returns True if the pixels are
-%      successfully transferred, otherwise False.
-%
-%    o image: The address of a structure of type Image.
-%
-%    o quantum: Declare which pixel components to transfer (red, green, blue,
-%      opacity, RGB, or RGBA).
-%
-%    o destination:  The components are transferred to this buffer.
-%
-%
-*/
-Export unsigned int WritePixelCache(const Image *image,
-  const QuantumTypes quantum,unsigned char *destination)
-{
-  register IndexPacket
-    *indexes;
-
-  register int
-    x;
-
-  register PixelPacket
-    *p;
-
-  register unsigned char
-    *q;
-
-  assert(image != (Image *) NULL);
-  assert(destination != (unsigned char *) NULL);
-  p=GetNexusPixels(image->cache,0);
-  indexes=GetNexusIndexes(image->cache,0);
-  q=destination;
-  switch (quantum)
-  {
-    case IndexQuantum:
-    {
-      if (image->colors <= 256)
-        {
-          for (x=0; x < (int) image->columns; x++)
-            *q++=indexes[x];
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=indexes[x] >> 8;
-        *q++=indexes[x];
-      }
-      break;
-    }
-    case IndexOpacityQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            *q++=indexes[x];
-            *q++=p->opacity;
-            p++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=indexes[x] >> 8;
-        *q++=indexes[x];
-        *q++=p->opacity >> 8;
-        *q++=p->opacity;
-        p++;
-      }
-      break;
-    }
-    case GrayQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            *q++=Intensity(*p);
-            p++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=Intensity(*p) >> 8;
-        *q++=Intensity(*p);
-        p++;
-      }
-      break;
-    }
-    case GrayOpacityQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            *q++=Intensity(*p);
-            *q++=p->opacity;
-            p++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=Intensity(*p) >> 8;
-        *q++=Intensity(*p);
-        *q++=p->opacity >> 8;
-        *q++=p->opacity;
-        p++;
-      }
-      break;
-    }
-    case RedQuantum:
-    case CyanQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            *q++=DownScale(p->red);
-            p++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=p->red >> 8;
-        *q++=p->red;
-        p++;
-      }
-      break;
-    }
-    case GreenQuantum:
-    case YellowQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            *q++=DownScale(p->green);
-            p++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=p->green >> 8;
-        *q++=p->green;
-        p++;
-      }
-      break;
-    }
-    case BlueQuantum:
-    case MagentaQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            *q++=DownScale(p->blue);
-            p++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=p->blue >> 8;
-        *q++=p->blue;
-        p++;
-      }
-      break;
-    }
-    case OpacityQuantum:
-    case BlackQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            *q++=DownScale(p->opacity);
-            p++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=p->opacity >> 8;
-        *q++=p->opacity;
-        p++;
-      }
-      break;
-    }
-    case RGBQuantum:
-    default:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            *q++=DownScale(p->red);
-            *q++=DownScale(p->green);
-            *q++=DownScale(p->blue);
-            p++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=p->red >> 8;
-        *q++=p->red;
-        *q++=p->green >> 8;
-        *q++=p->green;
-        *q++=p->blue >> 8;
-        *q++=p->blue;
-        p++;
-      }
-      break;
-    }
-    case RGBAQuantum:
-    case CMYKQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            *q++=DownScale(p->red);
-            *q++=DownScale(p->green);
-            *q++=DownScale(p->blue);
-            *q++=DownScale(p->opacity);
-            p++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=p->red >> 8;
-        *q++=p->red;
-        *q++=p->green >> 8;
-        *q++=p->green;
-        *q++=p->blue >> 8;
-        *q++=p->blue;
-        *q++=p->opacity >> 8;
-        *q++=p->opacity;
-        p++;
-      }
-      break;
-    }
-  }
   return(True);
 }

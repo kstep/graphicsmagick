@@ -21,7 +21,7 @@
 	<UL>
 
 		<LI><A HREF="#getindexes">GetIndexes</A></LI>
-		<LI><A HREF="#getpixel">GetPixel</A></LI>
+		<LI><A HREF="#getonepixel">GetOnePixel</A></LI>
 		<LI><A HREF="#getpixelcache">GetPixelCache</A></LI>
 		<LI><A HREF="#getpixels">GetPixels</A></LI>
 		<LI><A HREF="#readpixelcache">ReadPixelCache</A></LI>
@@ -44,7 +44,7 @@
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>IndexPacket * <STRONG>GetIndexes</STRONG>( const Image *image );</P>
-<P>PixelPacket * <STRONG>GetPixel</STRONG>( const Image image, const int x, const int y );</P>
+<P>PixelPacket * <STRONG>GetOnePixel</STRONG>( const Image image, const int x, const int y );</P>
 <P>PixelPacket * <STRONG>GetPixelCache</STRONG>( Image *image, const int x, const int y, const unsigned int columns, const unsigned int rows );</P>
 <P>PixelPacket * <STRONG>GetPixels</STRONG>( const Image image );</P>
 <P>unsigned int  <STRONG>ReadPixelCache</STRONG>( const Image *image, const QuantumTypes quantum, const unsigned char *source );</P>
@@ -73,15 +73,15 @@ Method GetIndexes returns the colormap indexes associated with the last call to 
 The address of a structure of type Image.
 <P></P></DL></DL>
 <P>
-<H2><A NAME="getpixel">GetPixel</A></H2>
-<P>Method GetPixel returns a single pixel at the specified (x,y) location.  The image background color is returned if an error occurs.</P>
-<P>The format of the GetPixel method is:</P>
-<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetPixel ( const <A HREF="types/Image.html">Image</A> image, const int x, const int y ); </blockquote><P>
+<H2><A NAME="getonepixel">GetOnePixel</A></H2>
+<P>Method GetOnePixel returns a single pixel at the specified (x,y) location.  The image background color is returned if an error occurs.</P>
+<P>The format of the GetOnePixel method is:</P>
+<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetOnePixel ( const <A HREF="types/Image.html">Image</A> image, const int x, const int y ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_pixels%3A">pixels:</A></STRONG><BR>
 <DD>
-Method GetPixels returns the pixels associated with the last call to the <CODE>SetPixelCache</CODE> or <CODE>GetPixelCache</CODE> methods.
+Method GetOnePixel returns a pixel at the specified (x,y) location.
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>

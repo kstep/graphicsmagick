@@ -181,7 +181,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
   */
   for (y=0; y < (int) image->rows; y++)
   {
-    q=SetPixelCache(image,0,y,image->columns,1);
+    q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
@@ -201,7 +201,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
       if (bit == 8)
         bit=0;
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(LoadImageText,y,image->rows);
@@ -362,7 +362,7 @@ static unsigned int WriteWBMPImage(const ImageInfo *image_info,Image *image)
   WBMPWriteInteger(image,image->rows);
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetPixelCache(image,0,y,image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);

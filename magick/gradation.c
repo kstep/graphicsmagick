@@ -148,7 +148,7 @@ static Image *ReadGRADATIONImage(const ImageInfo *image_info,ExceptionInfo *exce
   */
   for (y=0; y < (int) image->rows; y++)
   {
-    q=SetPixelCache(image,0,y,image->columns,1);
+    q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) image->columns; x++)
@@ -159,7 +159,7 @@ static Image *ReadGRADATIONImage(const ImageInfo *image_info,ExceptionInfo *exce
       saturation+=saturation_step;
       brightness+=brightness_step;
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(LoadImageText,y,image->rows);

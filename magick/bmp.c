@@ -662,7 +662,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (y=image->rows-1; y >= 0; y--)
         {
           p=pixels+(image->rows-y-1)*bytes_per_line;
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
@@ -686,7 +686,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
               p++;
             }
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
@@ -702,7 +702,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (y=image->rows-1; y >= 0; y--)
         {
           p=pixels+(image->rows-y-1)*bytes_per_line;
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
@@ -723,7 +723,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
               *q++=image->colormap[index];
               p++;
             }
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
@@ -741,7 +741,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (y=image->rows-1; y >= 0; y--)
         {
           p=pixels+(image->rows-y-1)*bytes_per_line;
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
@@ -751,7 +751,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             indexes[x]=index;
             *q++=image->colormap[index];
           }
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
@@ -774,7 +774,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (y=image->rows-1; y >= 0; y--)
         {
           p=pixels+(image->rows-y-1)*bytes_per_line;
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           for (x=0; x < (int) image->columns; x++)
@@ -787,7 +787,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             q->blue=(MaxRGB*((int) (h & 0x1f)))/31;
             q++;
           }
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
@@ -804,7 +804,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (y=image->rows-1; y >= 0; y--)
         {
           p=pixels+(image->rows-y-1)*bytes_per_line;
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           for (x=0; x < (int) image->columns; x++)
@@ -816,7 +816,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
               q->opacity=Opaque-UpScale(*p++);
             q++;
           }
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
@@ -1096,7 +1096,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
             Intensity(image->colormap[1]) > Intensity(image->colormap[0]);
         for (y=0; y < (int) image->rows; y++)
         {
-          p=GetPixelCache(image,0,y,image->columns,1);
+          p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
@@ -1132,7 +1132,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         */
         for (y=0; y < (int) image->rows; y++)
         {
-          p=GetPixelCache(image,0,y,image->columns,1);
+          p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
@@ -1156,7 +1156,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         */
         for (y=0; y < (int) image->rows; y++)
         {
-          p=GetPixelCache(image,0,y,image->columns,1);
+          p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
           q=pixels+(image->rows-y-1)*bytes_per_line;

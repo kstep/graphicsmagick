@@ -378,7 +378,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   for (y=0; y < (int) image->rows; y++)
   {
-    q=SetPixelCache(image,0,y,image->columns,1);
+    q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
@@ -435,7 +435,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       b+=blue_component->columnStride;
       a+=alpha_component->columnStride;
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(LoadImageText,y,image->rows);
@@ -809,9 +809,9 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       fsspec;
 
     FilenameToFSSpec(image->filename,&fsspec);
-    fpx_status=FPX_CreateImageByFilename((const FSSpec &) fsspec,
+    fpx_status=FPX_ConstituteByFilename((const FSSpec &) fsspec,
 #else
-    fpx_status=FPX_CreateImageByFilename(image->filename,
+    fpx_status=FPX_ConstituteByFilename(image->filename,
 #endif
     image->columns,image->rows,tile_width,tile_height,colorspace,
     background_color,compression,&flashpix);
@@ -918,15 +918,15 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   */
   for (y=0; y < (int) image->rows; y++)
   {
-    if (!GetPixelCache(image,0,y,image->columns,1))
+    if (!GetImagePixels(image,0,y,image->columns,1))
       break;
     if (fpx_info.numberOfComponents == 1)
-      (void) WritePixelCache(image,GrayQuantum,pixels);
+      (void) PushImagePixels(image,GrayQuantum,pixels);
     else
       if (!image->matte)
-        (void) WritePixelCache(image,RGBQuantum,pixels);
+        (void) PushImagePixels(image,RGBQuantum,pixels);
       else
-        (void) WritePixelCache(image,RGBAQuantum,pixels);
+        (void) PushImagePixels(image,RGBAQuantum,pixels);
     fpx_status=FPX_WriteImageLine(flashpix,&fpx_info);
     if (fpx_status != FPX_OK)
       break;

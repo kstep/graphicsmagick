@@ -983,7 +983,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             count=0;
             for (y=0; y < (int) image->rows; y++)
             {
-              p=GetPixelCache(preview_image,0,y,preview_image->columns,1);
+              p=GetImagePixels(preview_image,0,y,preview_image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
               indexes=GetIndexes(preview_image);
@@ -1136,7 +1136,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             */
             for (y=0; y < (int) image->rows; y++)
             {
-              p=GetPixelCache(image,0,y,image->columns,1);
+              p=GetImagePixels(image,0,y,image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
               indexes=GetIndexes(image);
@@ -1190,7 +1190,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             i=0;
             for (y=0; y < (int) image->rows; y++)
             {
-              p=GetPixelCache(image,0,y,image->columns,1);
+              p=GetImagePixels(image,0,y,image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
               for (x=0; x < (int) image->columns; x++)
@@ -1232,7 +1232,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               i++;
               for (y=0; y < (int) image->rows; y++)
               {
-                p=GetPixelCache(image,0,y,image->columns,1);
+                p=GetImagePixels(image,0,y,image->columns,1);
                 if (p == (PixelPacket *) NULL)
                   break;
                 for (x=0; x < (int) image->columns; x++)
@@ -1267,7 +1267,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               count=0;
               for (y=0; y < (int) image->rows; y++)
               {
-                p=GetPixelCache(image,0,y,image->columns,1);
+                p=GetImagePixels(image,0,y,image->columns,1);
                 if (p == (PixelPacket *) NULL)
                   break;
                 indexes=GetIndexes(image);
@@ -1347,7 +1347,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               i=0;
               for (y=0; y < (int) image->rows; y++)
               {
-                p=GetPixelCache(image,0,y,image->columns,1);
+                p=GetImagePixels(image,0,y,image->columns,1);
                 if (p == (PixelPacket *) NULL)
                   break;
                 indexes=GetIndexes(image);
@@ -1393,7 +1393,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               i=0;
               for (y=0; y < (int) image->rows; y++)
               {
-                p=GetPixelCache(image,0,y,image->columns,1);
+                p=GetImagePixels(image,0,y,image->columns,1);
                 if (p == (PixelPacket *) NULL)
                   break;
                 indexes=GetIndexes(image);

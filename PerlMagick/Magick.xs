@@ -1334,7 +1334,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             x=0;
             y=0;
             (void) sscanf(attribute,"%*[^[][%d,%d",&x,&y);
-            pixel=GetPixelCache(image,x % image->columns,y % image->rows,1,1);
+            pixel=GetImagePixels(image,x % image->columns,y % image->rows,1,1);
             if (pixel == (PixelPacket *) NULL)
               break;
             image->class=DirectClass;
@@ -1357,7 +1357,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                 pixel->opacity=(unsigned short) ((opacity < Transparent) ?
                   Transparent : (opacity > Opaque) ? Opaque : opacity);
               }
-            (void) SyncPixelCache(image);
+            (void) SyncImagePixels(image);
           }
           return;
         }
@@ -3015,7 +3015,7 @@ Get(ref,...)
               x=0;
               y=0;
               (void) sscanf(attribute,"%*[^[][%d,%d",&x,&y);
-              pixel=GetPixelCache(image,x % image->columns,y % image->rows,1,1);
+              pixel=GetImagePixels(image,x % image->columns,y % image->rows,1,1);
               if (pixel == (PixelPacket *) NULL)
                 break;
               FormatString(name,"%u,%u,%u,%u",pixel->red,pixel->green,
@@ -4167,7 +4167,7 @@ Mogrify(ref,...)
               argument_list[3].string_reference);
           if (attribute_flag[4])
             QueryColorDatabase(argument_list[4].string_reference,&border_color);
-          pixel=GetPixelCache(image,rectangle_info.x % image->columns,
+          pixel=GetImagePixels(image,rectangle_info.x % image->columns,
             rectangle_info.y % image->rows,1,1);
           if (pixel != (PixelPacket *) NULL)
             target=(*pixel);
@@ -4402,7 +4402,7 @@ Mogrify(ref,...)
             matte=argument_list[3].int_reference;
           if (!image->matte)
             MatteImage(image,Opaque);
-          pixel=GetPixelCache(image,rectangle_info.x % image->columns,
+          pixel=GetImagePixels(image,rectangle_info.x % image->columns,
             rectangle_info.y % image->rows,1,1);
           if (pixel != (PixelPacket *) NULL)
             target=(*pixel);

@@ -124,7 +124,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
         pixel=ReadByte(image);
         for (count=(-count+1); count > 0; count--)
         {
-          q=SetPixelCache(image,x % image->columns,x/image->columns,1,1);
+          q=SetImagePixels(image,x % image->columns,x/image->columns,1,1);
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
@@ -157,7 +157,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
               break;
             }
           }
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           x++;
           length--;
@@ -168,7 +168,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
     for (i=count; i > 0; i--)
     {
       pixel=ReadByte(image);
-      q=SetPixelCache(image,x % image->columns,x/image->columns,1,1);
+      q=SetImagePixels(image,x % image->columns,x/image->columns,1,1);
       if (q == (PixelPacket *) NULL)
         break;
       indexes=GetIndexes(image);
@@ -201,7 +201,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
           break;
         }
       }
-      if (!SyncPixelCache(image))
+      if (!SyncImagePixels(image))
         break;
       x++;
       length--;
@@ -578,7 +578,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   "Memory allocation failed",image);
               for (y=0; y < (int) layer_info[i].image->rows; y++)
               {
-                q=SetPixelCache(layer_info[i].image,0,y,
+                q=SetImagePixels(layer_info[i].image,0,y,
                   layer_info[i].image->columns,1);
                 if (q == (PixelPacket *) NULL)
                   break;
@@ -589,34 +589,34 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   case 0:
                   {
                     if (layer_info[i].image->class == PseudoClass)
-                      (void) ReadPixelCache(layer_info[i].image,IndexQuantum,
+                      (void) PullImagePixels(layer_info[i].image,IndexQuantum,
                         scanline);
                     else
-                      (void) ReadPixelCache(layer_info[i].image,RedQuantum,
+                      (void) PullImagePixels(layer_info[i].image,RedQuantum,
                         scanline);
                     break;
                   }
                   case 1:
                   {
-                    (void) ReadPixelCache(layer_info[i].image,GreenQuantum,
+                    (void) PullImagePixels(layer_info[i].image,GreenQuantum,
                       scanline);
                     break;
                   }
                   case 2:
                   {
-                    (void) ReadPixelCache(layer_info[i].image,BlueQuantum,
+                    (void) PullImagePixels(layer_info[i].image,BlueQuantum,
                       scanline);
                     break;
                   }
                   case 3:
                   default:
                   {
-                    (void) ReadPixelCache(layer_info[i].image,OpacityQuantum,
+                    (void) PullImagePixels(layer_info[i].image,OpacityQuantum,
                       scanline);
                     break;
                   }
                 }
-                if (!SyncPixelCache(layer_info[i].image))
+                if (!SyncImagePixels(layer_info[i].image))
                   break;
               }
               FreeMemory((void *) &scanline);
@@ -631,7 +631,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             */
             for (y=0; y < (int) layer_info[i].image->rows; y++)
             {
-              q=SetPixelCache(layer_info[i].image,0,y,
+              q=SetImagePixels(layer_info[i].image,0,y,
                 layer_info[i].image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
@@ -643,7 +643,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 q->opacity=MaxRGB-q->opacity;
                 q++;
               }
-              if (!SyncPixelCache(layer_info[i].image))
+              if (!SyncImagePixels(layer_info[i].image))
                 break;
             }
           }
@@ -655,7 +655,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               */
               for (y=0; y < (int) layer_info[i].image->rows; y++)
               {
-                q=GetPixelCache(layer_info[i].image,0,y,
+                q=GetImagePixels(layer_info[i].image,0,y,
                   layer_info[i].image->columns,1);
                 if (q == (PixelPacket *) NULL)
                   break;
@@ -664,7 +664,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   q->opacity=(int) (q->opacity*layer_info[i].opacity)/Opaque;
                   q++;
                 }
-                if (!SyncPixelCache(layer_info[i].image))
+                if (!SyncImagePixels(layer_info[i].image))
                   break;
               }
             }
@@ -715,7 +715,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         for (y=0; y < (int) image->rows; y++)
         {
-          q=GetPixelCache(image,0,y,image->columns,1);
+          q=GetImagePixels(image,0,y,image->columns,1);
           status=ReadBlob(image,packet_size*image->columns,(char *) scanline);
           if ((status == False) || (q == (PixelPacket *) NULL))
             break;
@@ -724,29 +724,29 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             case 0:
             {
               if (image->class == PseudoClass)
-                (void) ReadPixelCache(image,IndexQuantum,scanline);
+                (void) PullImagePixels(image,IndexQuantum,scanline);
               else
-                (void) ReadPixelCache(image,RedQuantum,scanline);
+                (void) PullImagePixels(image,RedQuantum,scanline);
               break;
             }
             case 1:
             {
-              (void) ReadPixelCache(image,GreenQuantum,scanline);
+              (void) PullImagePixels(image,GreenQuantum,scanline);
               break;
             }
             case 2:
             {
-              (void) ReadPixelCache(image,BlueQuantum,scanline);
+              (void) PullImagePixels(image,BlueQuantum,scanline);
               break;
             }
             case 3:
             default:
             {
-              (void) ReadPixelCache(image,OpacityQuantum,scanline);
+              (void) PullImagePixels(image,OpacityQuantum,scanline);
               break;
             }
           }
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
         }
       }
@@ -761,7 +761,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       for (y=0; y < (int) image->rows; y++)
       {
-        q=GetPixelCache(image,0,y,image->columns,1);
+        q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (int) image->columns; x++)
@@ -772,7 +772,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q->opacity=MaxRGB-q->opacity;
           q++;
         }
-        if (!SyncPixelCache(image))
+        if (!SyncImagePixels(image))
           break;
       }
     }
@@ -941,9 +941,9 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   if (image->class == PseudoClass)
     for (y=0; y < (int) image->rows; y++)
     {
-      if (!GetPixelCache(image,0,y,image->columns,1))
+      if (!GetImagePixels(image,0,y,image->columns,1))
         break;
-      (void) WritePixelCache(image,IndexQuantum,pixels);
+      (void) PushImagePixels(image,IndexQuantum,pixels);
       (void) WriteBlob(image,image->columns,pixels);
     }
   else
@@ -952,47 +952,47 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
       if (image->matte)
         for (y=0; y < (int) image->rows; y++)
         {
-          if (!GetPixelCache(image,0,y,image->columns,1))
+          if (!GetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) WritePixelCache(image,OpacityQuantum,pixels);
+          (void) PushImagePixels(image,OpacityQuantum,pixels);
           (void) WriteBlob(image,packet_size*image->columns,pixels);
         }
       for (y=0; y < (int) image->rows; y++)
       {
-        if (!GetPixelCache(image,0,y,image->columns,1))
+        if (!GetImagePixels(image,0,y,image->columns,1))
           break;
         if (image->colorspace == CMYKColorspace)
-          (void) WritePixelCache(image,CyanQuantum,pixels);
+          (void) PushImagePixels(image,CyanQuantum,pixels);
         else
-          (void) WritePixelCache(image,RedQuantum,pixels);
+          (void) PushImagePixels(image,RedQuantum,pixels);
         (void) WriteBlob(image,packet_size*image->columns,pixels);
       }
       for (y=0; y < (int) image->rows; y++)
       {
-        if (!GetPixelCache(image,0,y,image->columns,1))
+        if (!GetImagePixels(image,0,y,image->columns,1))
           break;
         if (image->colorspace == CMYKColorspace)
-          (void) WritePixelCache(image,YellowQuantum,pixels);
+          (void) PushImagePixels(image,YellowQuantum,pixels);
         else
-          (void) WritePixelCache(image,GreenQuantum,pixels);
+          (void) PushImagePixels(image,GreenQuantum,pixels);
         (void) WriteBlob(image,packet_size*image->columns,pixels);
       }
       for (y=0; y < (int) image->rows; y++)
       {
-        if (!GetPixelCache(image,0,y,image->columns,1))
+        if (!GetImagePixels(image,0,y,image->columns,1))
           break;
         if (image->colorspace == CMYKColorspace)
-          (void) WritePixelCache(image,MagentaQuantum,pixels);
+          (void) PushImagePixels(image,MagentaQuantum,pixels);
         else
-          (void) WritePixelCache(image,BlueQuantum,pixels);
+          (void) PushImagePixels(image,BlueQuantum,pixels);
         (void) WriteBlob(image,packet_size*image->columns,pixels);
       }
       if (image->colorspace == CMYKColorspace)
         for (y=0; y < (int) image->rows; y++)
         {
-          if (!GetPixelCache(image,0,y,image->columns,1))
+          if (!GetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) WritePixelCache(image,BlackQuantum,pixels);
+          (void) PushImagePixels(image,BlackQuantum,pixels);
           (void) WriteBlob(image,packet_size*image->columns,pixels);
         }
     }

@@ -134,7 +134,7 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,ExceptionInfo *exception
   image->depth=8;
   for (y=0; y < (int) image->rows; y++)
   {
-    q=SetPixelCache(image,0,y,image->columns,1);
+    q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) (image->columns >> 1); x++)
@@ -152,7 +152,7 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,ExceptionInfo *exception
       q->blue=UpScale(v);
       q++;
     }
-    if (!SyncPixelCache(image))
+    if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(LoadImageText,y,image->rows);
@@ -269,7 +269,7 @@ static unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
   full=False;
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetPixelCache(image,0,y,image->columns,1);
+    p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) image->columns; x++)

@@ -73,7 +73,6 @@ typedef void
 extern Export ErrorHandler
   SetErrorHandler(ErrorHandler);
 
-
 extern Export void
   CatchImageException(Image *),
   GetImageException(Image *,ExceptionInfo *),

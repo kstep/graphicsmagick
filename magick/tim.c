@@ -234,7 +234,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         for (y=image->rows-1; y >= 0; y--)
         {
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
@@ -250,7 +250,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               indexes[x]=(*p >> 4) & 0xf;
               p++;
             }
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           if (QuantumTick(y,image->rows))
             ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
@@ -264,14 +264,14 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         for (y=image->rows-1; y >= 0; y--)
         {
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
           p=tim_pixels+y*bytes_per_line;
           for (x=0; x < (int) image->columns; x++)
             indexes[x]=(*p++);
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           if (QuantumTick(y,image->rows))
             ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
@@ -286,7 +286,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (y=image->rows-1; y >= 0; y--)
         {
           p=tim_pixels+y*bytes_per_line;
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           for (x=0; x < (int) image->columns; x++)
@@ -298,7 +298,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             q->red=UpScale(ScaleColor5to8(word & 0x1f));
             q++;
           }
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           if (QuantumTick(y,image->rows))
             ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
@@ -313,7 +313,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (y=image->rows-1; y >= 0; y--)
         {
           p=tim_pixels+y*bytes_per_line;
-          q=SetPixelCache(image,0,y,image->columns,1);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           for (x=0; x < (int) image->columns; x++)
@@ -323,7 +323,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             q->blue=UpScale(*p++);
             q++;
           }
-          if (!SyncPixelCache(image))
+          if (!SyncImagePixels(image))
             break;
           if (QuantumTick(y,image->rows))
             ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);

@@ -399,7 +399,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       for (y=0; y < (int) image->rows; y++)
       {
-        q=SetPixelCache(image,0,y,image->columns,1);
+        q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
@@ -413,7 +413,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
           p++;
         }
-        if (!SyncPixelCache(image))
+        if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
           ProgressMonitor(LoadImageText,y,image->rows);
@@ -427,7 +427,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       for (y=0; y < (int) image->rows; y++)
       {
-        q=SetPixelCache(image,0,y,image->columns,1);
+        q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
@@ -447,7 +447,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           *q++=image->colormap[index];
           p++;
         }
-        if (!SyncPixelCache(image))
+        if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
           ProgressMonitor(LoadImageText,y,image->rows);
@@ -461,7 +461,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       for (y=0; y < (int) image->rows; y++)
       {
-        q=SetPixelCache(image,0,y,image->columns,1);
+        q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
@@ -475,7 +475,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           *q++=image->colormap[index];
           p++;
         }
-        if (!SyncPixelCache(image))
+        if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
           ProgressMonitor(LoadImageText,y,image->rows);
