@@ -46,20 +46,20 @@ SRCDIR=					# dir where source is located
 #
 PREFIX=/usr/local                       # root of installation 
 EPREFIX=${PREFIX}
-DIRS_LIBINC=/home/cristy/ImageMagick-5.2.9/jpeg 				# dirs to search for ancillary includes
-DIR_JPEGLIB=/usr/include
-DIR_GZLIB=/usr/include
-DSO=no				# auto-enable DSO support
+DIRS_LIBINC=				# dirs to search for ancillary includes
+DIR_JPEGLIB=				# dir for IJG -ljpeg
+DIR_GZLIB=				# dir for zlib -lgz
+DSO=auto				# auto-enable DSO support
 LIBCOPTS=				# library-specific C-compiler options
-JPEG=yes					# configure JPEG support
-ZIP=yes					# configure ZIP/Deflate support
+JPEG=no					# configure JPEG support
+ZIP=no					# configure ZIP/Deflate support
 PORT=auto				# enable portability emulations
 HTML=no					# install HTML documentation
 LIBGL=auto				# auto-enable build of SGI -lgl apps
 LIBIMAGE=auto				# auto-enable build of SGI -limage apps
-MACHDEPLIBS=-lm				# machine-dependent libraries for apps
 : ${CC=}				# name of C compiler to use
 : ${CCOMPILER=}				# full pathname of C compiler
+: ${OPTIMIZER=-O}			# Optimization flag
 : ${ENVOPTS=}				# CC opts for ANSI C compilation
 : ${MAKE=make}				# make to use
 
@@ -502,9 +502,9 @@ checkCompiler()
     if [ -z "${ENVOPTS-}" ]; then
 	case $ISGCC-$TARGET in
 	no-*-irix*)	C_ANSI="-ansi";;
-	no-*-hp*)	C_ANSI="-Aa -D_HPUX_SOURCE -Dhpux";;
+	no-*-hp*)	C_ANSI="-D_HPUX_SOURCE";;
 	no-*-apollo-*)	C_ANSI="-A nansi";;
-	no-*-aix*)	C_ANSI="-Dunix -qlanglvl=ansi -qsrcmsg";;
+	no-*-aix*)	C_ANSI="-Dunix -qlanglvl=ansi -qsrcmsg -qmaxmem=8192";;
 	*-sco*)		C_ANSI="-Dsco";;
 	esac
     else
@@ -591,10 +591,10 @@ if [ -z "${GCOPTS-}" ]; then
     if capture $CCOMPILER $ENVOPTS -g -c dummy.c; then
 	Note "Looks like $CCOMPILER supports the -g option."
 	# NB: cannot use captureX here 'cuz we lose stderr
-	if $CCOMPILER $ENVOPTS -c -g -O dummy.c >t 2>&1 && CheckForGandO t; then
+	if $CCOMPILER $ENVOPTS -c -g $OPTIMIZER dummy.c >t 2>&1 && CheckForGandO t; then
 	    GCOPTS="-g"
 	else
-	    Note "... but not together with the -O option, not using it."
+	    Note "... but not together with the $OPTIMIZER option, not using it."
 	    GCOPTS=
 	fi
     else
@@ -634,14 +634,18 @@ EOF
     boom
 fi
 
+# Find sh (likely /bin/sh or /usr/bin/sh), and put in SCRIPT_SH
+
+test -z "${SCRIPT_SH-}" && SCRIPT_SH=`findAppDef sh $PATH sh`
+
 #
 # Check whether or not $MAKE automatically sets MAKE
 # in the Makefiles.  If not, we add an explicit define
 # for places where recursive calls are made.
 #
 if [ -z "${SETMAKE-}" ]; then
-    if (cat<<'EOF'
-SHELL=/bin/sh
+    if (sed "s;@SHELL@;$SCRIPT_SH;" <<'EOF'
+SHELL=@SHELL@
 all:
 	@if [ -n "${MAKE}" ] ; then echo "make sets make"  ; fi
 EOF
@@ -762,6 +766,21 @@ CheckForFunc()
     echo "extern int $1(); main(){$1();exit(0);}" >t.c
     runMake t "t:; ${CCOMPILER} ${ENVOPTS} t.c ${MACHDEPLIBS}"
 }
+
+# 
+# Verify that we have -lm.  Darwin (for instance) does not.  Add to 
+# MACHDEPLIBS if required.
+#
+
+if [ -z "${MACHDEPLIBS-}" ]; then
+    MACHDEPLIBS=""
+    if CheckForFunc cos ; then
+        echo "Leaving MACHDEPLIBS empty, apparently you don't need -lm."
+    else
+        MACHDEPLIBS="-lm"
+        echo "Defaulting MACHDEPLIBS to -lm."
+    fi
+fi
 
 #
 # Look for a function declaration in system include files.
@@ -901,13 +920,12 @@ main()
   int fd;
 
   buf1 = (char *)valloc(i2);
-  buf2 = (char *)valloc(i);
   buf3 = (char *)malloc(i2);
   for (j = 0; j < i2; ++j)
     *(buf1 + j) = rand();
   fd = open("conftestmmap", O_CREAT | O_RDWR, 0666);
   write(fd, buf1, i2);
-  mmap(buf2, i, PROT_READ | PROT_WRITE, MAP_FIXED | MAP_PRIVATE, fd, 0);
+  buf2 = mmap(0, i, PROT_READ|PROT_WRITE, MAP_VARIABLE|MAP_PRIVATE, fd, 0);
   for (j = 0; j < i; ++j)
     if (*(buf1 + j) != *(buf2 + j))
       exit(1);
@@ -1118,6 +1136,7 @@ if [ "$DSO" = auto ]; then
 	DSOOPTS='-r'
 	LIBCOPTS="-bM\:SRE"
 	DSO=AIX
+	TIFFLIBREF='-L${DEPTH}/libtiff -ltiff'
 	;;
     *-hpux*yes)
         DSOSUF=sl
@@ -1129,10 +1148,11 @@ if [ "$DSO" = auto ]; then
         ;;		 
     *-hpux*)
 	DSOSUF=sl
+	DSOSUF_VERSION=${DIST_MAJOR}.${DIST_MINOR}${DIST_POINT}
 	DSOOPTS='-b'
-	LIBCOPTS="+Z"
+	LIBCOPTS="+z"
 	DSO=HPUX
-	TIFFLIBREF="-Wl,+s,+b${DIR_LIB}"' -L${DEPTH}/libtiff -ltiff'
+	TIFFLIBREF='-L$(DEPTH)/libtiff -ltiff'
 	;;
     *-solaris*)
 	DSOSUF=so
@@ -1158,6 +1178,29 @@ if [ "$DSO" = auto ]; then
 	DSOOPTS='-shared'
 	DSO=GNULD
 	;;
+    *-openbsd*)
+	DSOSUF=so.${DIST_MAJOR}.${DIST_MINOR}
+	LIBCOPTS='-fpic'
+	TIFFLIBREF='-L${DEPTH}/libtiff -ltiff'
+	case "$TARGET" in
+	   *-openbsd[01].* | *-openbsd2.[0-7] | *-openbsd2.[0-7].*)
+	      DSO=oldOPENBSD
+	   ;;
+	   *)
+	      DSO=OPENBSD
+	      DSOLD="${CCOMPILER} ${ENVOPTS}"
+	      DSOOPTS='-shared ${LIBCOPTS}'
+	   ;;
+	esac
+	;;
+    *-darwin*)
+        DSOSUF=${DIST_MAJOR}.dylib
+        DSOSUF_VERSION=${DIST_MAJOR}.${DIST_MINOR}.${DIST_POINT}.dylib
+        LIBCOPTS='-fno-common'
+          DSOLD=gcc
+        DSOOPTS='-dynamiclib -undefined suppress'
+        DSO=DARWIN
+        ;;
     *-linux*)
 	DSOSUF=so.${DIST_MAJOR}
 	DSOSUF_VERSION=${DSOSUF}.${DIST_MINOR}.${DIST_POINT}
@@ -1170,6 +1213,7 @@ if [ "$DSO" = auto ]; then
 	DSOOPTS='-shared'
 	DSO=OSF
 	;;
+
     esac
 fi
 if [ "$DSO" != no ]; then
@@ -1234,7 +1278,6 @@ Note "Selecting programs used during installation."
 #
 test -z "${CHMOD-}"	&& CHMOD=`findAppDef chmod $PATH chmod`
 test -z "${LN-}"	&& LN=`findAppDef ln $PATH ln`
-test -z "${SCRIPT_SH-}" && SCRIPT_SH=`findAppDef sh $PATH sh`
 test -z "${SED-}"	&& SED=`findAppDef sed $PATH sed`
 test -z "${STRIP-}"	&& STRIP=`findAppDef strip $PATH strip`
 
@@ -1272,7 +1315,7 @@ fi
 if [ -z "${INSTALL-}" ]; then
     case $TARGET in
     *-irix*)	INSTALL=`findApp install /sbin:$PATH`;;
-    *)		INSTALL='${SHELL} ../port/install.sh';;
+    *)		INSTALL='${SCRIPT_SH} ../port/install.sh';;
     esac
 fi
 
@@ -1333,7 +1376,7 @@ if [ -z "${MANSCHEME-}" ]; then
     *-ultrix*)			MANSCHEME=bsd-source-cat;;
     *-sunos*)			MANSCHEME=bsd-source-cat-strip;;
     *-sysv[234]*)		MANSCHEME=sysv-source-cat-strip;;
-    *-hpux*)			MANSCHEME=sysv-source-cat-strip;;
+    *-hpux*)			MANSCHEME=sysv-source-cat;;
     *-solaris*)			MANSCHEME=sysv-source-cat-strip;;
     *-aix*)			MANSCHEME=sysv-source-strip;;
     *-isc*|*-sco*)		MANSCHEME=sysv-source-cat;;
@@ -1748,6 +1791,7 @@ s;@MANCVT@;${MANCVT};g
 s;@MANSEDLOCAL@;${MANSEDLOCAL};g
 s;@MANLIB@;${MANLIB};g
 s;@MV_F@;${MV_F};g
+s;@OPTIMIZER@;${OPTIMIZER};g
 s;@PORT@;${PORT};g
 s;@PORTFUNCS@;${PORTFUNCS};g
 s;@RANLIB@;${RANLIB};g

@@ -36,6 +36,7 @@ SRCDIR	= @RELSRCDIR@/man
 # CCOMPILER:	@CCOMPILER@
 #
 SHELL	= @SCRIPT_SH@
+SCRIPT_SH = @SCRIPT_SH@
 NULL	=
 ECHO	= echo
 SED	= sed
@@ -95,6 +96,7 @@ MANTOOLS=\
 	apps/sgi2tiff.1 \
 	apps/thumbnail.1 \
 	apps/tiff2bw.1 \
+	apps/tiff2rgba.1 \
 	apps/tiff2ps.1 \
 	apps/tiffcmp.1 \
 	apps/tiffcp.1 \
@@ -163,6 +165,7 @@ MANDEVLINKS=\
 	lib/TIFFCurrentStrip.3t \
 	lib/TIFFCurrentTile.3t \
 	lib/TIFFFdOpen.3t \
+	lib/TIFFClientOpen.3t \
 	lib/TIFFFileName.3t \
 	lib/TIFFFileno.3t \
 	lib/TIFFFindCODEC.3t \
@@ -175,6 +178,7 @@ MANDEVLINKS=\
 	lib/TIFFLastDirectory.3t \
 	lib/TIFFRegisterCODEC.3t \
 	lib/TIFFReverseBits.3t \
+	lib/TIFFRewriteDirectory.3t \
 	lib/TIFFRGBAImageOK.3t \
 	lib/TIFFRGBAImageBegin.3t \
 	lib/TIFFRGBAImageGet.3t \
@@ -226,6 +230,7 @@ apps/rgb2ycbcr.1::	${SRCDIR}/rgb2ycbcr.1;	${MANCVT}
 apps/sgi2tiff.1::	${SRCDIR}/sgi2tiff.1;	${MANCVT}
 apps/thumbnail.1::	${SRCDIR}/thumbnail.1;	${MANCVT}
 apps/tiff2bw.1::	${SRCDIR}/tiff2bw.1;	${MANCVT}
+apps/tiff2rgba.1::	${SRCDIR}/tiff2rgba.1;	${MANCVT}
 apps/tiff2ps.1::	${SRCDIR}/tiff2ps.1;	${MANCVT}
 apps/tiffcmp.1::	${SRCDIR}/tiffcmp.1;	${MANCVT}
 apps/tiffcp.1::		${SRCDIR}/tiffcp.1;	${MANCVT}
@@ -284,6 +289,7 @@ lib/TIFFCurrentRow.3t:;		${ECHO} ".so ${MANDIR}TIFFquery.3t" > $@
 lib/TIFFCurrentStrip.3t:;	${ECHO} ".so ${MANDIR}TIFFquery.3t" > $@
 lib/TIFFCurrentTile.3t:;	${ECHO} ".so ${MANDIR}TIFFquery.3t" > $@
 lib/TIFFFdOpen.3t:;		${ECHO} ".so ${MANDIR}TIFFOpen.3t" > $@
+lib/TIFFClientOpen.3t:;		${ECHO} ".so ${MANDIR}TIFFOpen.3t" > $@
 lib/TIFFFileName.3t:;		${ECHO} ".so ${MANDIR}TIFFquery.3t" > $@
 lib/TIFFFileno.3t:;		${ECHO} ".so ${MANDIR}TIFFquery.3t" > $@
 lib/TIFFFlushData.3t:;		${ECHO} ".so ${MANDIR}TIFFFlush.3t" > $@
@@ -294,6 +300,7 @@ lib/TIFFIsUpSampled.3t:;	${ECHO} ".so ${MANDIR}TIFFquery.3t" > $@
 lib/TIFFIsMSB2LSB.3t:;		${ECHO} ".so ${MANDIR}TIFFquery.3t" > $@
 lib/TIFFLastDirectory.3t:;	${ECHO} ".so ${MANDIR}TIFFquery.3t" > $@
 lib/TIFFReverseBits.3t:;	${ECHO} ".so ${MANDIR}TIFFswab.3t" > $@
+lib/TIFFRewriteDirectory.3t:;	${ECHO} ".so ${MANDIR}TIFFWriteDirectory.3t" > $@
 lib/TIFFRGBAImageOK.3t:;	${ECHO} ".so ${MANDIR}TIFFRGBAImage.3t" > $@
 lib/TIFFRGBAImageBegin.3t:;	${ECHO} ".so ${MANDIR}TIFFRGBAImage.3t" > $@
 lib/TIFFRGBAImageGet.3t:;	${ECHO} ".so ${MANDIR}TIFFRGBAImage.3t" > $@
@@ -330,35 +337,37 @@ lib/TIFFWriteBufferSetup.3t:;	${ECHO} ".so ${MANDIR}TIFFbuffer.3t" > $@
 
 apps/Makefile:
 	test -d apps || mkdir apps
-	${MAKE} ${MANTOOLS}
+	${MAKE} -${MAKEFLAGS} ${MANTOOLS}
 	${RM} apps/Makefile
 	(cd apps;							\
 	 ${ECHO} 'install:';						\
 	 for i in *.1; do						\
 	    f=${MANAPPNAME};						\
-	    ${ECHO} '	cd ..; ${INSTALL} -m 444 -F ${MAN}/${MANAPPS}	\
+	    ${ECHO} '	cd ..; ${INSTALL} -m 444 			\
+		-F ${DESTDIR}${MAN}/${MANAPPS}				\
 		-idb tiff.man.tools -src' apps/"$$i" '-O' "$$f";	\
 	 done								\
 	)>apps/Makefile
 lib/Makefile:
 	test -d lib || mkdir lib
-	${MAKE} ${MANDEV} ${MANDEVLINKS}
+	${MAKE} -${MAKEFLAGS} ${MANDEV} ${MANDEVLINKS}
 	${RM} lib/Makefile
 	(cd lib;							\
 	 ${ECHO} 'install:';						\
 	 for i in *.3t; do						\
 	    f=${MANLIBNAME};						\
-	    ${ECHO} '	cd ..; ${INSTALL} -m 444 -F ${MAN}/${MANLIB}	\
+	    ${ECHO} '	cd ..; ${INSTALL} -m 444 			\
+		-F ${DESTDIR}${MAN}/${MANLIB}				\
 		-idb tiff.man.dev -src' lib/"$$i" '-O' "$$f";		\
 	 done								\
 	)>lib/Makefile
 
 install: all
-	${INSTALL} -m 755 -dir -idb tiff.man.tools ${MAN}
-	${INSTALL} -m 755 -dir -idb tiff.man.tools ${MAN}/${MANAPPS}
-	cd apps; ${MAKE} install
-	${INSTALL} -m 755 -dir -idb tiff.man.dev ${MAN}/${MANLIB}
-	cd lib; ${MAKE} install
+	${INSTALL} -m 755 -dir -idb tiff.man.tools ${DESTDIR}${MAN}
+	${INSTALL} -m 755 -dir -idb tiff.man.tools ${DESTDIR}${MAN}/${MANAPPS}
+	cd apps; ${MAKE} -${MAKEFLAGS} install
+	${INSTALL} -m 755 -dir -idb tiff.man.dev ${DESTDIR}${MAN}/${MANLIB}
+	cd lib; ${MAKE} -${MAKEFLAGS} install
 
 clean:
 	rm -rf apps lib

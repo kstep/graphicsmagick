@@ -38,6 +38,7 @@ SRCDIR	= @SRCDIR@
 #
 @SETMAKE@
 SHELL	= @SCRIPT_SH@
+SCRIPT_SH = @SCRIPT_SH@
 NULL	=
 ECHO	= echo
 GENDIST	= ${TOOLROOT}/usr/sbin/gendist
@@ -45,38 +46,38 @@ INSTALL	= @INSTALL@
 
 all default:
 	@if [ "@PORT@" = yes ]; then \
-	    ${ECHO} "= "port; cd port; ${MAKE}; \
+	    ${ECHO} "= "port; cd port; ${MAKE} -${MAKEFLAGS}; \
 	else \
 	    true; \
 	fi
-	@${ECHO} "= "libtiff; cd libtiff; ${MAKE}
-	@${ECHO} "= "tools; cd tools; ${MAKE}
-	@${ECHO} "= "man; cd man; ${MAKE}
+	@${ECHO} "= "libtiff; cd libtiff; ${MAKE} -${MAKEFLAGS}
+	@${ECHO} "= "tools; cd tools; ${MAKE} -${MAKEFLAGS}
+	@${ECHO} "= "man; cd man; ${MAKE} -${MAKEFLAGS}
 
 install:
-	@${ECHO} "= "libtiff; cd libtiff; ${MAKE} install
-	@${ECHO} "= "tools; cd tools; ${MAKE} install
-	@${ECHO} "= "man; cd man; ${MAKE} install
+	@${ECHO} "= "libtiff; cd libtiff; ${MAKE} -${MAKEFLAGS} install
+	@${ECHO} "= "tools; cd tools; ${MAKE} -${MAKEFLAGS} install
+	@${ECHO} "= "man; cd man; ${MAKE} -${MAKEFLAGS} install
 	@if [ "@HTML@" = yes ]; then \
-	    ${ECHO} "= "html; cd html; ${MAKE} install; \
+	    ${ECHO} "= "html; cd html; ${MAKE} -${MAKEFLAGS} install; \
 	else \
 	    true; \
 	fi
 
 install-private: install
-	@${ECHO} "= "libtiff; cd libtiff; ${MAKE} installPrivateHdrs
+	@${ECHO} "= "libtiff; cd libtiff; ${MAKE} -${MAKEFLAGS} installPrivateHdrs
 
 clean:
 	@if [ "@PORT@" = yes ]; then \
-	    ${ECHO} "= "port; cd port; ${MAKE} clean; \
+	    ${ECHO} "= "port; cd port; ${MAKE} -${MAKEFLAGS} clean; \
 	else \
 	    true; \
 	fi
-	@${ECHO} "= "libtiff; cd libtiff; ${MAKE} clean
-	@${ECHO} "= "tools; cd tools; ${MAKE} clean
-	@${ECHO} "= "man; cd man; ${MAKE} clean
-#	-cd contrib/dbs; ${MAKE} clean
-#	-cd contrib/dbs/xtiff; ${MAKE} clean
+	@${ECHO} "= "libtiff; cd libtiff; ${MAKE} -${MAKEFLAGS} clean
+	@${ECHO} "= "tools; cd tools; ${MAKE} -${MAKEFLAGS} clean
+	@${ECHO} "= "man; cd man; ${MAKE} -${MAKEFLAGS} clean
+#	-cd contrib/dbs; ${MAKE} -${MAKEFLAGS} clean
+#	-cd contrib/dbs/xtiff; ${MAKE} -${MAKEFLAGS} clean
 
 clobber distclean: clean
 	rm -f Makefile libtiff/port.h config.log
@@ -99,7 +100,7 @@ installLink::
 product::
 	test -d dist || mkdir dist
 	rm -f dist/rawidb
-	SRC=`pwd` RAWIDB=`pwd`/dist/rawidb ${MAKE} install installLink
+	SRC=`pwd` RAWIDB=`pwd`/dist/rawidb ${MAKE} -${MAKEFLAGS} install installLink
 	rm -f dist/idb
 	sort -u +4 dist/rawidb > dist/idb
 	${GENDIST} -v -dist dist -idb dist/idb \
@@ -162,6 +163,7 @@ TIFFFILES=\
 	    libtiff/tif_flush.c			\
 	    libtiff/tif_getimage.c		\
 	    libtiff/tif_jpeg.c			\
+	    libtiff/tif_ojpeg.c			\
 	    libtiff/tif_luv.c			\
 	    libtiff/tif_lzw.c			\
 	    libtiff/tif_msdos.c			\
@@ -179,6 +181,7 @@ TIFFFILES=\
 	    libtiff/tif_tile.c			\
 	    libtiff/tif_unix.c			\
 	    libtiff/tif_version.c		\
+	    libtiff/tiffvers.h			\
 	    libtiff/tif_vms.c			\
 	    libtiff/tif_warning.c		\
 	    libtiff/tif_win3.c			\
@@ -216,6 +219,7 @@ TIFFFILES=\
 	    tools/tiffinfo.c			\
 	    tools/tiffmedian.c			\
 	    tools/tiffsplit.c			\
+	    tools/tiffset.c			\
 	    tools/ycbcr.c			\
 	man/Makefile.in				\
 	    man/fax2tiff.1			\
@@ -228,6 +232,7 @@ TIFFFILES=\
 	    man/sgi2tiff.1			\
 	    man/thumbnail.1			\
 	    man/tiff2bw.1			\
+	    man/tiff2rgba.1			\
 	    man/tiff2ps.1			\
 	    man/tiffcmp.1			\
 	    man/tiffcp.1			\
@@ -319,6 +324,7 @@ TIFFFILES=\
 	    html/v3.5.1.html				\
 	    html/v3.5.2.html				\
 	    html/v3.5.3.html				\
+	    html/v3.5.7.html				\
 	    html/man				\
 	    html/man/TIFFClose.3t.html				\
 	    html/man/TIFFError.3t.html				\
@@ -395,6 +401,8 @@ CONTRIBFILES=\
 	contrib/ras/README			\
 	    contrib/ras/ras2tif.c		\
 	    contrib/ras/tif2ras.c		\
+	contrib/ojpeg/README			\
+	    contrib/ojpeg/jdhuff_add.c		\
 	contrib/vms/libtiff/makevms.com		\
 	    contrib/vms/libtiff/tiff.opt	\
 	    contrib/vms/libtiff/tiffshraxp.opt	\
@@ -460,6 +468,8 @@ CONTRIBFILES=\
 	    contrib/addtiffo/Makefile.vc	\
 	    contrib/addtiffo/addtiffo.c		\
 	    contrib/addtiffo/tif_overview.c	\
+	    contrib/addtiffo/tif_ovrcache.c	\
+	    contrib/addtiffo/tif_ovrcache.h	\
 	contrib/iptcutil/Makefile		\
 		contrib/iptcutil/iptcutil.c	\
 		contrib/iptcutil/test.iptc	\
@@ -488,10 +498,11 @@ rcsclean:
 
 release:
 	(cd ${SRCDIR}/dist; sh newversion)
-	${MAKE} release.stamp
+	${MAKE}  -${MAKEFLAGS} release.stamp
+	(cd ${SRCDIR}/libtiff; ${MAKE} -${MAKEFLAGS} tiffvers.h)
 #	${SRCDIR}/configure ${CONFIG}
-#	${MAKE} product
-	${MAKE} release.tar.zip
+#	${MAKE} -${MAKEFLAGS} product
+	${MAKE} -${MAKEFLAGS} release.tar.zip
 
 
 # stamp relevant files according to current alpha
@@ -506,7 +517,11 @@ releasediff:
 
 # create release or beta distribution archive
 release.tar.zip:
-	VERSIONREL="@VERSION@-@RELEASE@";				\
+	if test "@RELEASE@" = "" ; then					\
+	  VERSIONREL="@VERSION@";					\
+	else								\
+	  VERSIONREL="@VERSION@-@RELEASE@";				\
+	fi;								\
 	rm -f ../tiff-$$VERSIONREL $$VERSIONREL $$VERSIONREL-tar;			\
 	ln -s ${SRCDIR} tiff-$$VERSIONREL;					\
 	(for i in ${DISTFILES}; do					\

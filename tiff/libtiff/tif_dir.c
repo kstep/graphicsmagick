@@ -167,16 +167,10 @@ _TIFFVSetField(TIFF* tif, ttag_t tag, va_list ap)
 		/*
 		 * Setup new compression routine state.
 		 */
-		if ( ! tif->tif_mode == O_RDONLY ) { 
-		  /* Handle removal of LZW compression */ 
-		  if ( v == COMPRESSION_LZW ) { 
-		    TIFFError(tif->tif_name, 
-			      "LZW compression no longer supported due to Unisys patent enforcement"); 
-		    v=COMPRESSION_NONE;
-		  }
-		}
 		if( (status = TIFFSetCompressionScheme(tif, v)) != 0 )
-		  td->td_compression = v;
+                    td->td_compression = v;
+                else
+                    status = 0;
 		break;
 	case TIFFTAG_PHOTOMETRIC:
 		td->td_photometric = (uint16) va_arg(ap, int);
@@ -213,6 +207,9 @@ _TIFFVSetField(TIFF* tif, ttag_t tag, va_list ap)
 		break;
 	case TIFFTAG_SOFTWARE:
 		_TIFFsetString(&td->td_software, va_arg(ap, char*));
+		break;
+	case TIFFTAG_COPYRIGHT:
+		_TIFFsetString(&td->td_copyright, va_arg(ap, char*));
 		break;
 	case TIFFTAG_ORIENTATION:
 		v = va_arg(ap, int);
@@ -641,6 +638,9 @@ _TIFFVGetField(TIFF* tif, ttag_t tag, va_list ap)
 	case TIFFTAG_SOFTWARE:
 		*va_arg(ap, char**) = td->td_software;
 		break;
+	case TIFFTAG_COPYRIGHT:
+		*va_arg(ap, char**) = td->td_copyright;
+		break;
 	case TIFFTAG_ORIENTATION:
 		*va_arg(ap, uint16*) = td->td_orientation;
 		break;
@@ -917,6 +917,7 @@ TIFFFreeDirectory(TIFF* tif)
 	CleanupField(td_make);
 	CleanupField(td_model);
 	CleanupField(td_software);
+	CleanupField(td_copyright);
 	CleanupField(td_pagename);
 	CleanupField(td_sampleinfo);
 #if SUBIFD_SUPPORT

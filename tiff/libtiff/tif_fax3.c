@@ -45,12 +45,6 @@
 #include <stdio.h>
 
 /*
- * NB: define PURIFY if you're using purify and you want
- * to avoid some harmless array bounds complaints that
- * can happen in the _TIFFFax3fillruns routine.
- */
-
-/*
  * Compression+decompression state blocks are
  * derived from this ``base state'' block.
  */
@@ -321,7 +315,7 @@ Fax3Decode2D(TIFF* tif, tidata_t buf, tsize_t occ, tsample_t s)
  * this is <8 bytes.  We optimize the code here to reflect the
  * machine characteristics.
  */
-#if defined(__alpha) || _MIPS_SZLONG == 64
+#if defined(__alpha) || _MIPS_SZLONG == 64 || defined(__LP64__)
 #define FILL(n, cp)							    \
     switch (n) {							    \
     case 15:(cp)[14] = 0xff; case 14:(cp)[13] = 0xff; case 13: (cp)[12] = 0xff;\
@@ -402,12 +396,8 @@ _TIFFFax3fillruns(u_char* buf, uint32* runs, uint32* erun, uint32 lastx)
 			ZERO(n, cp);
 			run &= 7;
 		    }
-#ifdef PURIFY
 		    if (run)
 			cp[0] &= 0xff >> run;
-#else
-		    cp[0] &= 0xff >> run;
-#endif
 		} else
 		    cp[0] &= ~(_fillmasks[run]>>bx);
 		x += runs[0];
@@ -441,12 +431,8 @@ _TIFFFax3fillruns(u_char* buf, uint32* runs, uint32* erun, uint32 lastx)
 			FILL(n, cp);
 			run &= 7;
 		    }
-#ifdef PURIFY
 		    if (run)
 			cp[0] |= 0xff00 >> run;
-#else
-		    cp[0] |= 0xff00 >> run;
-#endif
 		} else
 		    cp[0] |= _fillmasks[run]>>bx;
 		x += runs[1];

@@ -34,6 +34,7 @@ SRCDIR	= @LIBSRCDIR@
 # CCOMPILER:	@CCOMPILER@
 #
 SHELL	= @SCRIPT_SH@
+SCRIPT_SH = @SCRIPT_SH@
 NULL	=
 CC	= @CCOMPILER@
 AR	= @AR@
@@ -62,7 +63,7 @@ IPATH	= -I. -I${SRCDIR} @COPT_LIBINC@
 #
 CONF_LIBRARY=@CONF_JPEG@ @CONF_ZIP@
 COPTS	= @GCOPTS@
-OPTIMIZER=-O
+OPTIMIZER=@OPTIMIZER@
 CFLAGS	= @ENVOPTS@ @LIBCOPTS@ ${COPTS} ${OPTIMIZER} ${IPATH} ${CONF_LIBRARY}
 #
 SRCS	= \
@@ -84,6 +85,7 @@ SRCS	= \
 	tif_luv.c \
 	tif_lzw.c \
 	tif_next.c \
+	tif_ojpeg.c \
 	tif_open.c \
 	tif_packbits.c \
 	tif_pixarlog.c \
@@ -119,6 +121,7 @@ OBJS	= \
 	tif_luv.o \
 	tif_lzw.o \
 	tif_next.o \
+	tif_ojpeg.o \
 	tif_open.o \
 	tif_packbits.o \
 	tif_pixarlog.o \
@@ -139,7 +142,7 @@ TARGETS	= libtiff.a
 
 all:	${TARGETS}
 	if [ @DSO@dso != nodso ]; then \
-	    ${MAKE} @DSO@dso; \
+	    ${MAKE} -${MAKEFLAGS} @DSO@dso; \
 	else \
 	    true; \
 	fi
@@ -180,9 +183,9 @@ IRIX52dso: ${OBJS}
 SOLARISdso: ${OBJS}
 	${LD} -L@DIR_LIB@ -G -h libtiff.@DSOSUF@ -o libtiff.@DSOSUF@ ${OBJS}
 	touch $@
-# HP-UX A.09.03
+# HP-UX 10.x+
 HPUXdso: ${OBJS}
-	${LD} +b@DIR_LIB@ -b -o libtiff.@DSOSUF@ ${OBJS}
+	${LD} -b -o libtiff.@DSOSUF_VERSION@ +h libtiff.@DSOSUF_VERSION@ ${OBJS}
 	touch $@
 # AIX 2.3.5 and 4.1.1
 AIXdso: ${OBJS}
@@ -203,12 +206,22 @@ GNULDdso: ${OBJS}
 	    -o libtiff.@DSOSUF_VERSION@  ${OBJS} \
 		@LIBJPEG@ @LIBGZ@ @MACHDEPLIBS@
 	rm -f libtiff.@DSOSUF@
-	if [ @DSOSUB_VERSION != @DSOSUF ] ; then \
+	if [ @DSOSUF_VERSION@ != @DSOSUF@ ] ; then \
+	  @LN@ @LN_S@ libtiff.@DSOSUF_VERSION@ libtiff.@DSOSUF@; \
+	fi
+	touch $@
+DARWINdso: ${OBJS}
+	${CC} -dynamiclib -undefined suppress \
+	  -install_name libtiff.@DSOSUF@ \
+	  -o libtiff.@DSOSUF_VERSION@  ${OBJS} \
+	  @LIBJPEG@ @LIBGZ@ @MACHDEPLIBS@
+	rm -f libtiff.@DSOSUF@
+	if [ @DSOSUF_VERSION@ != @DSOSUF@ ] ; then \
 	  @LN@ @LN_S@ libtiff.@DSOSUF_VERSION@ libtiff.@DSOSUF@; \
 	fi
 	touch $@
 # NetBSD 1.1 or FreeBSD (old style)
-NETBSDdso FREEBSDdso: ${OBJS}
+NETBSDdso FREEBSDdso oldOPENBSDdso: ${OBJS}
 	@rm -f libtiff_pic.a
 	@${AR} cq libtiff_pic.a `lorder ${OBJS} | tsort -q`
 	${RANLIB} libtiff_pic.a
@@ -226,6 +239,10 @@ LINUXdso:  ${OBJS}
 # OSF/1 3.2 shared lib rule
 OSFdso: ${OBJS}
 	${LD} -o libtiff.@DSOSUF@ -shared -error_unresolved ${OBJS} @LIBJPEG@ @LIBGZ@ -lc -lm
+
+OPENBSDdso: ${OBJS}
+	${CC} -shared @LIBCOPTS@ -o libtiff.@DSOSUF_VERSION@ ${OBJS} @LIBJPEG@ @LIBGZ@ -lm
+	touch $@
 
 
 ${OBJS}: ${SRCDIR}/tiffio.h ${SRCDIR}/tiff.h ${SRCDIR}/tif_dir.h
@@ -330,39 +347,39 @@ INCS	= ${SRCDIR}/tiff.h ${SRCDIR}/tiffio.h ${SRCDIR}/tiffconf.h \
 INCS_PRIVATE = ${SRCDIR}/tiffiop.h ${SRCDIR}/tif_dir.h ${SRCDIR}/port.h
 
 installHdrs: ${INCS}
-	${INSTALL} -idb tiff.sw.dev -m 755 -dir @DIR_INC@
+	${INSTALL} -idb tiff.sw.dev -m 755 -dir ${DESTDIR}@DIR_INC@
 	for i in ${INCS}; do						\
 	    f=`basename $$i`;						\
-	    ${INSTALL} -idb tiff.sw.dev -m 444 -F @DIR_INC@		\
+	    ${INSTALL} -idb tiff.sw.dev -m 444 -F ${DESTDIR}@DIR_INC@	\
 		-src $$i -O $$f;					\
 	done
 
 installPrivateHdrs: ${INCS_PRIVATE}
-	${INSTALL} -idb tiff.sw.dev -m 755 -dir @DIR_INC@
+	${INSTALL} -idb tiff.sw.dev -m 755 -dir ${DESTDIR}@DIR_INC@
 	for i in ${INCS_PRIVATE}; do					\
 	    f=`basename $$i`;						\
-	    ${INSTALL} -idb tiff.sw.dev -m 444 -F @DIR_INC@		\
+	    ${INSTALL} -idb tiff.sw.dev -m 444 -F ${DESTDIR}@DIR_INC@	\
 		-src $$i -O $$f;					\
 	done
 
 installDSO: @DSO@dso
 	if [ @DSOSUF_VERSION@ != @DSOSUF@ ]; then			\
-	    ${INSTALL} -idb tiff.sw.tools -m 555 -F @DIR_LIB@		\
+	    ${INSTALL} -idb tiff.sw.tools -m 555 -F ${DESTDIR}@DIR_LIB@	\
 		-O libtiff.@DSOSUF_VERSION@;				\
-	    ${INSTALL} -idb tiff.sw.tools -F @DIR_LIB@			\
+	    ${INSTALL} -idb tiff.sw.tools -F ${DESTDIR}@DIR_LIB@	\
 		-lns libtiff.@DSOSUF_VERSION@ -O libtiff.@DSOSUF@;	\
-	    ${INSTALL} -idb tiff.sw.tools -F @DIR_LIB@			\
+	    ${INSTALL} -idb tiff.sw.tools -F ${DESTDIR}@DIR_LIB@	\
 		-lns libtiff.@DSOSUF@ -O libtiff.so;			\
 	else								\
-	    ${INSTALL} -idb tiff.sw.tools -m 555 -F @DIR_LIB@		\
+	    ${INSTALL} -idb tiff.sw.tools -m 555 -F ${DESTDIR}@DIR_LIB@	\
 		-O libtiff.@DSOSUF@;					\
 	fi
 
 install: all installHdrs
-	${INSTALL} -idb tiff.sw.dev -m 755 -dir @DIR_LIB@
-	${INSTALL} -idb tiff.sw.dev -m 444 -F @DIR_LIB@ -O libtiff.a
+	${INSTALL} -idb tiff.sw.dev -m 755 -dir ${DESTDIR}@DIR_LIB@
+	${INSTALL} -idb tiff.sw.dev -m 444 -F ${DESTDIR}@DIR_LIB@ -O libtiff.a
 	if [ @DSO@dso != nodso ]; then					\
-	    ${MAKE} installDSO;						\
+	    ${MAKE} -${MAKEFLAGS} installDSO;				\
 	else								\
 	    true;							\
 	fi

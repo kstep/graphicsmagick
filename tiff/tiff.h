@@ -42,8 +42,24 @@
 #define	TIFF_BIGENDIAN		0x4d4d
 #define	TIFF_LITTLEENDIAN	0x4949
 
-#ifndef _TIFF_DATA_TYPEDEFS_
+/*
+ * The so called TIFF types conflict with definitions from inttypes.h 
+ * included from sys/types.h on AIX (at least using VisualAge compiler). 
+ * We try to work around this by detecting this case.  Defining 
+ * _TIFF_DATA_TYPEDEFS_ short circuits the later definitions in tiff.h, and
+ * we will in the holes not provided for by inttypes.h. 
+ *
+ * See http://bugzilla.remotesensing.org/show_bug.cgi?id=39
+ */
+#if defined(_H_INTTYPES) && defined(_ALL_SOURCE)
+
 #define _TIFF_DATA_TYPEDEFS_
+typedef unsigned char uint8;
+typedef unsigned short uint16;
+typedef unsigned int uint32;
+
+#endif
+
 /*
  * Intrinsic data types required by the file format:
  *
@@ -52,6 +68,9 @@
  * 32-bit quantities	int32/uint32
  * strings		unsigned char*
  */
+#ifndef _TIFF_DATA_TYPEDEFS_
+#define _TIFF_DATA_TYPEDEFS_
+
 #ifdef __STDC__
 typedef	signed char int8;	/* NB: non-ANSI compilers may not grok */
 #else
@@ -60,7 +79,7 @@ typedef	char int8;
 typedef	unsigned char uint8;
 typedef	short int16;
 typedef	unsigned short uint16;	/* sizeof (uint16) must == 2 */
-#if defined(__alpha) || (defined(_MIPS_SZLONG) && _MIPS_SZLONG == 64)
+#if defined(__alpha) || (defined(_MIPS_SZLONG) && _MIPS_SZLONG == 64) || defined(__LP64__)
 typedef	int int32;
 typedef	unsigned int uint32;	/* sizeof (uint32) must == 4 */
 #else
@@ -68,6 +87,14 @@ typedef	long int32;
 typedef	unsigned long uint32;	/* sizeof (uint32) must == 4 */
 #endif
 #endif /* _TIFF_DATA_TYPEDEFS_ */
+
+/*	For TIFFReassignTagToIgnore */
+enum TIFFIgnoreSense /* IGNORE tag table */
+{
+	TIS_STORE,
+	TIS_EXTRACT,
+	TIS_EMPTY
+};
 
 typedef	struct {
 	uint16	tiff_magic;	/* magic number (defines byte order) */
@@ -142,8 +169,10 @@ typedef	enum {
 #define	    COMPRESSION_NONE		1	/* dump mode */
 #define	    COMPRESSION_CCITTRLE	2	/* CCITT modified Huffman RLE */
 #define	    COMPRESSION_CCITTFAX3	3	/* CCITT Group 3 fax encoding */
+#define     COMPRESSION_CCITT_T4        3       /* CCITT T.4 (TIFF 6 name) */
 #define	    COMPRESSION_CCITTFAX4	4	/* CCITT Group 4 fax encoding */
-#define	    COMPRESSION_LZW		5	/* Lempel-Ziv  & Welch */
+#define     COMPRESSION_CCITT_T6        4       /* CCITT T.6 (TIFF 6 name) */
+#define	    COMPRESSION_LZW		5       /* Lempel-Ziv  & Welch */
 #define	    COMPRESSION_OJPEG		6	/* !6.0 JPEG */
 #define	    COMPRESSION_JPEG		7	/* %JPEG DCT compression */
 #define	    COMPRESSION_NEXT		32766	/* NeXT 2-bit RLE */
@@ -159,6 +188,7 @@ typedef	enum {
 #define     COMPRESSION_PIXARFILM	32908   /* Pixar companded 10bit LZW */
 #define	    COMPRESSION_PIXARLOG	32909   /* Pixar companded 11bit ZIP */
 #define	    COMPRESSION_DEFLATE		32946	/* Deflate compression */
+#define     COMPRESSION_ADOBE_DEFLATE   8       /* Deflate compression, as recognized by Adobe */
 /* compression code 32947 is reserved for Oceana Matrix <dev@oceana.com> */
 #define     COMPRESSION_DCS             32947   /* Kodak DCS encoding */
 #define	    COMPRESSION_JBIG		34661	/* ISO JBIG */
@@ -173,6 +203,7 @@ typedef	enum {
 #define	    PHOTOMETRIC_SEPARATED	5	/* !color separations */
 #define	    PHOTOMETRIC_YCBCR		6	/* !CCIR 601 */
 #define	    PHOTOMETRIC_CIELAB		8	/* !1976 CIE L*a*b* */
+#define	    PHOTOMETRIC_ITULAB		10	/* ITU L*a*b* */
 #define     PHOTOMETRIC_LOGL		32844	/* CIE Log2(L) */
 #define     PHOTOMETRIC_LOGLUV		32845	/* CIE Log2(L) (u',v') */
 #define	TIFFTAG_THRESHHOLDING		263	/* +thresholding used on data */
@@ -221,10 +252,12 @@ typedef	enum {
 #define	    GRAYRESPONSEUNIT_100000S	5	/* hundred-thousandths */
 #define	TIFFTAG_GRAYRESPONSECURVE	291	/* $gray scale response curve */
 #define	TIFFTAG_GROUP3OPTIONS		292	/* 32 flag bits */
+#define	TIFFTAG_T4OPTIONS		292	/* TIFF 6.0 proper name alias */
 #define	    GROUP3OPT_2DENCODING	0x1	/* 2-dimensional coding */
 #define	    GROUP3OPT_UNCOMPRESSED	0x2	/* data not compressed */
 #define	    GROUP3OPT_FILLBITS		0x4	/* fill to byte boundary */
 #define	TIFFTAG_GROUP4OPTIONS		293	/* 32 flag bits */
+#define TIFFTAG_T6OPTIONS               293     /* TIFF 6.0 proper name */
 #define	    GROUP4OPT_UNCOMPRESSED	0x2	/* data not compressed */
 #define	TIFFTAG_RESOLUTIONUNIT		296	/* units of resolutions */
 #define	    RESUNIT_NONE		1	/* no meaningful units */
@@ -273,6 +306,8 @@ typedef	enum {
 #define	    SAMPLEFORMAT_INT		2	/* !signed integer data */
 #define	    SAMPLEFORMAT_IEEEFP		3	/* !IEEE floating point data */
 #define	    SAMPLEFORMAT_VOID		4	/* !untyped data */
+#define	    SAMPLEFORMAT_COMPLEXINT	5	/* !complex signed int */
+#define	    SAMPLEFORMAT_COMPLEXIEEEFP	6	/* !complex ieee floating */
 #define	TIFFTAG_SMINSAMPLEVALUE		340	/* !variable MinSampleValue */
 #define	TIFFTAG_SMAXSAMPLEVALUE		341	/* !variable MaxSampleValue */
 #define	TIFFTAG_JPEGTABLES		347	/* %JPEG table stream */
@@ -317,6 +352,14 @@ typedef	enum {
  */
 #define TIFFTAG_PIXAR_IMAGEFULLWIDTH    33300   /* full image size in x */
 #define TIFFTAG_PIXAR_IMAGEFULLLENGTH   33301   /* full image size in y */
+ /* Tags 33302-33306 are used to identify special image modes and data
+  * used by Pixar's texture formats.
+  */
+#define TIFFTAG_PIXAR_TEXTUREFORMAT	33302	/* texture map format */
+#define TIFFTAG_PIXAR_WRAPMODES		33303	/* s & t wrap modes */
+#define TIFFTAG_PIXAR_FOVCOT		33304	/* cotan(fov) for env. maps */
+#define TIFFTAG_PIXAR_MATRIX_WORLDTOSCREEN 33305
+#define TIFFTAG_PIXAR_MATRIX_WORLDTOCAMERA 33306
 /* tag 33405 is a private tag registered to Eastman Kodak */
 #define TIFFTAG_WRITERSERIALNUMBER      33405   /* device serial number */
 /* tag 33432 is listed in the 6.0 spec w/ unknown ownership */
@@ -343,6 +386,7 @@ typedef	enum {
 /* tag 34750 is a private tag registered to Adobe? */
 #define TIFFTAG_ICCPROFILE		34675	/* ICC profile data */
 /* tag 34377 is private tag registered to Adobe for PhotoShop */
+#define TIFFTAG_PHOTOSHOP				34377 
 /* tag 34750 is a private tag registered to Pixel Magic */
 #define	TIFFTAG_JBIGOPTIONS		34750	/* JBIG options */
 /* tags 34908-34914 are private tags registered to SGI */
@@ -418,4 +462,7 @@ typedef	enum {
 #define     SGILOGDATAFMT_16BIT		1	/* 16-bit samples */
 #define     SGILOGDATAFMT_RAW		2	/* uninterpreted data */
 #define     SGILOGDATAFMT_8BIT		3	/* 8-bit RGB monitor values */
+#define TIFFTAG_SGILOGENCODE		65561 /* SGILog data encoding control*/
+#define     SGILOGENCODE_NODITHER	0     /* do not dither encoded values*/
+#define     SGILOGENCODE_RANDITHER	1     /* randomly dither encd values */
 #endif /* _TIFF_ */
