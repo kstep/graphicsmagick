@@ -95,72 +95,230 @@ static void Usage(const char *client_name)
 %
 */
 
-typedef struct _html_code
+/*  -------------------------------------------------------------------------
+    Function: decode_hex
+
+    Synopsis: Decodes a hexadecimal string.  Stops after outmax characters
+    or when an invalid hex character is reached.  Sets the input pointer
+    to the first unprocessed character.  Returns the result.
+    -------------------------------------------------------------------------*/
+
+int decode_hex (const char **input,size_t outmax)
 {
-  short
-    len;
-  const char
-    *code,
-    val;
-} html_code;
+    static char
+        hex_to_bin [128] = {
+           -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,    /*            */
+           -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,    /*            */
+           -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,    /*            */
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9,-1,-1,-1,-1,-1,-1,    /*   0..9     */
+           -1,10,11,12,13,14,15,-1,-1,-1,-1,-1,-1,-1,-1,-1,    /*   A..F     */
+           -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,    /*            */
+           -1,10,11,12,13,14,15,-1,-1,-1,-1,-1,-1,-1,-1,-1,    /*   a..f     */
+           -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1 };  /*            */
+    int
+        nextch;
+    size_t
+        index,
+        result;
 
-static html_code html_codes[] = {
-  4,"&lt;",'<',
-  4,"&gt;",'>',
-  5,"&amp;",'&',
-  6,"&quot;",'"'
-};
+    assert(input != (const char **) NULL);
+    assert((*input) != (const char *) NULL);
 
-/*
-  This routine converts HTML escape sequences back to the
-  original ASCII representation and returns the number of
-  characters dropped.
-*/
-int convertHTMLcodes(char *s, int len)
-{
-  if (len <=0 || s==(char*)NULL || *s=='\0')
-    return 0;
-
-  if (s[1] == '#')
-    {
-      int val, o;
-
-      if (sscanf(s,"&#%d;",&val) == 1)
+    index  = 0;
+    result = 0;
+    while (outmax == 0 || index < outmax)
       {
-        o = 3;
-        while (s[o] != ';')
-        {
-          o++;
-          if (o > 5)
+        nextch = (*input) [index] & 127;
+        if (nextch && hex_to_bin [nextch] != -1)
+          {
+            result = result * 16 + hex_to_bin [nextch];
+            index++;
+          }
+        else
             break;
-        }
-        if (o < 6)
-          strcpy(s+1, s+1+o);
-        *s = val;
-        return o;
       }
-    }
-  else
-    {
-      int
-        i,
-        codes = sizeof(html_codes) / sizeof(html_code);
-
-      for (i=0; i < codes; i++)
-      {
-        if (html_codes[i].len <= len)
-          if (strnicmp(s, html_codes[i].code, html_codes[i].len) == 0)
-            {
-              strcpy(s+1, s+html_codes[i].len);
-              *s = html_codes[i].val;
-              return html_codes[i].len-1;
-            }
-      }
-    }
-  return 0;
+    (*input) += index;
+    return (result);
 }
 
-#define IsCGIDelimiter(c)  (((c) == '&') || ((c) == '='))
+/*  ---------------------------------------------------------------------[<]-
+    Function: http_unescape
+
+    Synopsis: Removes HTTP escaping from a string.  See http_escape() for
+    details of the escaping algorithm.  If the result string is NULL,
+    modifies the source string in place, else fills-in the result string.
+    Returns the resulting string.  End-of-line sequences (%0A%0D) are
+    stored as a single new-line character, i.e. carriage-returns (%0D) are
+    not stored.
+    ---------------------------------------------------------------------[>]-*/
+
+char *http_unescape(char *string,char *result)
+{
+  char
+    *target;                          /*  Where we store the result        */
+
+  assert(string != (char *) NULL);
+  if (!result)                        /*  If result string is null,        */
+    result = string;                  /*    modify in place                */
+  target = result;
+
+  while (*string)
+  {
+    if (*string == '%'                /*  Unescape %xx sequence            */
+          && string [1] && string [2])
+      {
+        string++;
+        *target = decode_hex ((const char **) &string, 2);
+        if (*target != '\r')
+          target++;                   /*  We do not store CRs              */
+      }
+    else
+      {
+        if (*string == '+')           /*  Spaces are escaped as '+'        */
+          *target++ = ' ';
+        else
+          *target++ = *string;        /*  Otherwise just copy              */
+
+        string++;
+      }
+  }
+  *target = '\0';                     /*  Terminate target string          */
+  return (result);
+}
+
+
+/*  ---------------------------------------------------------------------[<]-
+    Function: http_unescape_hex
+
+    Synopsis: Removes HTTP hex escaping from a URL string, by expanding any
+    sequences of characters %xx.
+    ---------------------------------------------------------------------[>]-*/
+
+char *http_unescape_hex(char *string,char *result)
+{
+  char
+    *target;                          /*  Where we store the result        */
+
+  assert(string != (char *) NULL);
+  if (!result)                        /*  If result string is null,        */
+    result = string;                  /*    modify in place                */
+  target = result;
+
+  while (*string)
+  {
+    if (*string == '%'                /*  Unescape %xx sequence            */
+      &&   string [1] && string [2])
+      {
+        string++;
+        *target = decode_hex ((const char **) &string, 2);
+        target++;             
+      }
+    else
+      {
+        *target++ = *string;          /*  Otherwise just copy              */
+        string++;
+      }
+  }
+  *target = '\0';                     /*  Terminate target string          */
+  return (result);
+}
+
+/* Defines for input methods. */
+#define CGI_GET  0
+#define CGI_POST 1
+#define CGI_ANY  2
+
+char *cgi_get_input(int iMethod)
+{
+  int iStdinLen = 0, iMethodWas = 0;
+  char *strHead, *strRetBuf;
+
+  if (iMethod == CGI_POST || iMethod == CGI_ANY)
+    {
+      if (getenv ("CONTENT_LENGTH"))
+        {
+          iStdinLen = atoi (getenv ("CONTENT_LENGTH"));
+          iMethodWas = CGI_POST;
+        }
+    }
+  if (iMethod == CGI_GET || (iMethod == CGI_ANY && !iStdinLen))
+    {
+      if (getenv ("QUERY_STRING"))
+        {
+          iStdinLen = Extent (getenv ("QUERY_STRING"));
+          iMethodWas = CGI_GET;
+        }
+    }
+  if (!iStdinLen)
+      return (NULL);
+
+  strHead = strRetBuf = (char *) AllocateMemory(sizeof (char) * iStdinLen + 1);
+  if (strHead == (char *) NULL)
+      return (NULL);
+
+  memset (strRetBuf, 0, iStdinLen + 1);
+  if (iMethodWas == CGI_POST)
+    {
+#ifdef WIN32
+			setmode(fileno(stdin), O_BINARY);
+#endif
+      fread (strRetBuf, sizeof (char), iStdinLen, stdin);
+    }
+  else
+    strncpy (strRetBuf, getenv ("QUERY_STRING"), (iStdinLen + 1));
+
+  return (*strHead? strHead: NULL);
+}
+
+/*  ---------------------------------------------------------------------[<]-
+    Function: env_get_string
+
+    Synopsis: Translates the specified environment variable and returns a
+    static string containing the value.  If the variable is not defined in
+    the environment, returns the specified default value.  Note: if you
+    want to use the value in a program you should use strdupl() to make a
+    copy.  The environment variable name is always translated into upper
+    case.  The default value may be NULL.
+
+    Examples:
+    config_file = strdupl (env_get_string ("config", "default.cfg"));
+    ---------------------------------------------------------------------[>]-*/
+
+char *env_get_string(const char *name,const char *default_value)
+{
+  char
+    *variable_name,
+    *variable_value;
+
+  variable_name = AllocateString (name);
+  LocaleUpper (variable_name);
+  variable_value = getenv (variable_name);
+  FreeMemory((void **) &variable_name);
+  return (variable_value? variable_value: (char *) default_value);
+}
+
+/*  ---------------------------------------------------------------------[<]-
+    Function: env_get_number
+
+    Synopsis: Translates the specified environment variable and returns the
+    long numeric value of the string.  If the variable is not defined in
+    the environment, returns the specified default value.  The environment
+    variable name is always translated into upper case.
+
+    Examples:
+    max_retries = env_get_number ("retries", 5);
+    ---------------------------------------------------------------------[>]-*/
+
+long env_get_number(const char *name,long default_value)
+{
+  char
+    *variable_value;
+
+  variable_value = env_get_string (name, NULL);
+  return (variable_value? atol (variable_value): default_value);
+}
+
+#define IsCGIDelimiter(c)  (((c) == '&') || ((c) == '=') || ((c) == '\0'))
 
 unsigned int CGIToArgv(const char *text,int *argc,char ***argv)
 {
@@ -185,16 +343,26 @@ unsigned int CGIToArgv(const char *text,int *argc,char ***argv)
     return(False);
   if (argv == (char ***) NULL)
     return(False);
-  count=0;
   /*
     Determine the number of arguments by scanning for delimiters
   */
-  for (p=text; *p != '\0'; p++)
+  q=text;
+  count=0;
+  while (1)
   {
-    if (IsCGIDelimiter(*p))
+    int
+      len;
+
+    p=q;
+    while (!IsCGIDelimiter(*q))
+      q++;
+    len=q-p;
+    if (len > 0)
       count++;
+    if (*q == '\0')
+      break;
+    q++;
   }
-  count++;
   vector=(char **) AllocateMemory((count+2)*sizeof(char *));
   if (vector == (char **) NULL)
     {
@@ -206,28 +374,42 @@ unsigned int CGIToArgv(const char *text,int *argc,char ***argv)
     Convert string to an ASCII list.
   */
   vector[0]=AllocateString("magick");
+  vector[count+1]=(char *) NULL;
   q=text;
-  for (i=1; i < count+1; i++)
+  i=1;
+  while (i <= count)
   {
+    int
+      len;
+
     p=q;
     while (!IsCGIDelimiter(*q))
       q++;
-    vector[i]=(char *) AllocateMemory(q-p+1);
-    if (vector[i] == (char *) NULL)
-      {
-        MagickError(ResourceLimitError,"Unable to convert string to argv",
-          "Memory allocation failed");
-        return(False);
-      }
-    (void) strncpy(vector[i],p,q-p);
-    vector[i][q-p]='\0';
     /*
-      Convert any special HTML codes in place back to ASCII
+       Skip an zero length tokens. This typically happens for the case
+       of xxx=& on a CGI GET or POST were the name value pair has no
+       value
     */
-    convertHTMLcodes(vector[i], q-p);
+    len=q-p;
+    if (len > 0)
+      {
+        vector[i]=(char *) AllocateMemory(q-p+1);
+        if (vector[i] == (char *) NULL)
+          {
+            MagickError(ResourceLimitError,"Unable to convert string to argv",
+              "Memory allocation failed");
+            return(False);
+          }
+        (void) strncpy(vector[i],p,q-p);
+        vector[i][q-p]='\0';
+        /*
+          Convert any special HTML codes in place back to ASCII
+        */
+        http_unescape(vector[i], (char *) NULL);
+        i++;
+      }
     q++;
   }
-  vector[i]=(char *) NULL;
   *argc=count+1;
   *argv=vector;
   return(True);
@@ -268,31 +450,38 @@ int main(int argc,char **argv)
     {
       FormatString(prefix,"HTTP/1.0 200 Ok\nContent-Type: %s\n\n","image/jpeg");
       if (!getenv("GATEWAY_INTERFACE"))
-          status=CGIToArgv(argv[1],&argc,&argv);
+        status=CGIToArgv(argv[1],&argc,&argv);
       else
-          status=CGIToArgv(getenv("QUERY_STRING"),&argc,&argv);
+        {
+          char
+            *query;
+
+          query=cgi_get_input(CGI_ANY);
+          status=CGIToArgv(query,&argc,&argv);
+          FreeMemory((void **) &query);
+        }
       if (status == True)
         {
           for (argc_hw=1; argc_hw < argc; argc_hw++)
           {
             argv_hw = &argv[argc_hw];
-            if (LocaleCompare("-convert",argv[argc_hw]) == 0)
+            if (LocaleNCompare("-convert",argv[argc_hw],8) == 0)
               {
                 for (i=argc_hw; i < argc; i++)
                 {
-                  if (LocaleCompare("convert-",argv[i]) == 0)
+                  if (LocaleNCompare("convert-",argv[i],8) == 0)
                     break;
                 }
                 convert_main(i-argc_hw,argv_hw,prefix,Extent(prefix));
                 argc_hw = i+1;
                 argv_hw = &argv[argc_hw];
               }
-            else if (LocaleCompare("-combine",argv[i]) == 0)
+            else if (LocaleNCompare("-combine",argv[argc_hw],8) == 0)
               {
                 argv_hw = &argv[argc_hw];
                 for (i=argc_hw+1; i < argc; i++)
                 {
-                  if (LocaleCompare("combine-",argv[i]) == 0)
+                  if (LocaleNCompare("combine-",argv[i],8) == 0)
                     break;
                 }
                 combine_main(argc-argc_hw-1,argv_hw,prefix,Extent(prefix));
