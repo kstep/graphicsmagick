@@ -84,14 +84,6 @@ struct SemaphoreInfo
 };
 
 /*
-  Static declaractions.
-*/
-#if defined(HasPTHREADS)
-  static pthread_mutex_t
-    semaphore_mutex = PTHREAD_MUTEX_INITIALIZER;
-#endif
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -116,15 +108,16 @@ struct SemaphoreInfo
 */
 MagickExport void AcquireSemaphore(SemaphoreInfo **semaphore_info)
 {
-#if defined(HasPTHREADS)
-  pthread_mutex_lock(&semaphore_mutex);
-#endif
+  static SemaphoreInfo
+    *acquire_info = (SemaphoreInfo *) NULL;
+
+  if (acquire_info == (SemaphoreInfo *) NULL)
+    acquire_info=AllocateSemaphoreInfo();
+  (void) LockSemaphore(acquire_info);
   if (*semaphore_info == (SemaphoreInfo *) NULL)
     *semaphore_info=AllocateSemaphoreInfo();
   (void) LockSemaphore(*semaphore_info);
-#if defined(HasPTHREADS)
-  pthread_mutex_unlock(&semaphore_mutex);
-#endif
+  (void) UnlockSemaphore(acquire_info);
 }
 
 /*
