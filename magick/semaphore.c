@@ -308,9 +308,6 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
 */
 MagickExport void InitializeSemaphore(void)
 {
-#if defined(HasPTHREADS)
-  /* semaphore_mutex is statically initialized */
-#endif
 #if defined(WIN32)
   InitializeCriticalSection(&critical_section);
   critical_section_exists=True;

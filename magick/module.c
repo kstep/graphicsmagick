@@ -110,7 +110,7 @@ static CoderInfo
 
 static unsigned int
   ReadConfigurationFile(const char *,ExceptionInfo *),
-  UnloadModule(const char *),
+  UnloadModule(const char *,ExceptionInfo *),
   UnregisterModule(const char *);
 
 /*
@@ -136,6 +136,9 @@ MagickExport void DestroyModuleInfo(void)
   CoderInfo
     *coder_info;
 
+  ExceptionInfo
+    exception;
+
   ModuleInfo
     *module_info;
 
@@ -148,13 +151,15 @@ MagickExport void DestroyModuleInfo(void)
   /*
     Free module & coder list.
   */
+  GetExceptionInfo(&exception);
   for (p=coder_list; p != (CoderInfo *) NULL; )
   {
     coder_info=p;
     p=p->next;
-    (void) UnloadModule(coder_info->tag);
+    (void) UnloadModule(coder_info->tag,&exception);
     (void) UnregisterModule(coder_info->tag);
   }
+  DestroyExceptionInfo(&exception);
   coder_list=(CoderInfo *) NULL;
   AcquireSemaphoreInfo(&module_semaphore);
   for (q=module_list; q != (ModuleInfo *) NULL; )
@@ -1157,14 +1162,17 @@ MagickExport char *TagToModule(const char *tag)
 %
 %  The format of the UnloadModule method is:
 %
-%      unsigned int UnloadModule(const char *module)
+%      unsigned int UnloadModule(const char *module,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o module: a character string that indicates the module to unload.
 %
+%    o exception: Return any errors or warnings in this structure.
+%
+%
 */
-static unsigned int UnloadModule(const char *module)
+static unsigned int UnloadModule(const char *module,ExceptionInfo *exception)
 {
   char
     name[MaxTextExtent];
@@ -1172,15 +1180,11 @@ static unsigned int UnloadModule(const char *module)
   const CoderInfo
     *coder_info;
 
-  ExceptionInfo
-    exception;
-
   void
     (*method)(void);
 
   assert(module != (const char *) NULL);
-  GetExceptionInfo(&exception);
-  coder_info=GetCoderInfo(module,&exception);
+  coder_info=GetCoderInfo(module,exception);
   if (coder_info == (const CoderInfo *) NULL)
     return(False);
   /*
