@@ -147,25 +147,6 @@ namespace Magick
 // Implementation of Montage
 //
 
-inline Magick::Montage::Montage ( void )
-  : _backgroundColor(),
-    _compose(UndefinedCompositeOp),
-    _fileName(),
-    _fill(),
-    _font(),
-    _geometry(),
-    _gravity(CenterGravity),
-    _label(),
-    _pointSize(0),
-    _shadow(false),
-    _stroke(),
-    _texture(),
-    _tile(),
-    _title(),
-    _transparentColor()
-{
-}
-
 inline Magick::Montage::~Montage( void )
 {
   // Nothing to do
@@ -321,14 +302,6 @@ inline Magick::Color Magick::Montage::transparentColor ( void ) const
 //
 // Implementation of MontageFramed
 //
-
-inline Magick::MontageFramed::MontageFramed ( void )
-  : _borderColor(),
-    _borderWidth(0),
-    _frame(),
-    _matteColor()
-{
-}
 
 inline /* virtual */ Magick::MontageFramed::~MontageFramed ( void )
 {

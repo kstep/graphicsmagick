@@ -1,3 +1,9 @@
+2001-07-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Montage.cpp (Montage): Montage initial defaults are no
+ 	longer drawn from ImageInfo.  MontageInfo structure is entirely
+ 	filled out by updateMontageInfo();
+
 2001-07-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Montage.cpp (updateMontageInfo): Bugfix; colors which were

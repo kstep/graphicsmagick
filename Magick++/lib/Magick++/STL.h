@@ -2256,26 +2256,6 @@ namespace Magick
 
     MagickLib::MontageInfo* montageInfo =
       static_cast<MagickLib::MontageInfo*>(MagickLib::AcquireMemory(sizeof(MagickLib::MontageInfo)));
-    MagickLib::ImageInfo* imageInfo = first_->imageInfo();
-    MagickLib::GetMontageInfo( imageInfo, montageInfo );
-
-    // Set some default options based on current imageInfo settings.
-    montageInfo->background_color = first_->backgroundColor();
-
-    montageInfo->border_color = first_->borderColor();
-
-    montageInfo->matte_color = first_->matteColor();
-
-    montageInfo->stroke = first_->strokeColor();
-
-    montageInfo->fill = first_->fillColor();
-
-    if ( first_->font().length() != 0 )
-      Magick::CloneString ( &montageInfo->font,
-			    first_->font() );
-
-    if ( first_->fontPointsize() != 0 )
-      montageInfo->pointsize = first_->fontPointsize();
 
     // Update montage options with those set in montageOpts_
     montageOpts_.updateMontageInfo( *montageInfo );

@@ -6,6 +6,8 @@ with Magick++ itself.
 (5.3.6)
   * Adjusted parameters to 'edge' and 'medianFilter' to match
     equivalent libMagick functions.
+  * Fixed a Montage bug which was not allowing color options to be unset.
+  * Montage defaults are no longer taken from first Image in list.
   * Magick++ demo output looks like PerlMagick demo output again.
 
 (5.3.5)
