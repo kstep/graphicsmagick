@@ -1789,12 +1789,12 @@ static unsigned int ExtendCache(int file,ExtendedSignedIntegralType length)
     count,
     offset;
 
-  offset=lseek(file,0,SEEK_END);
+  offset=MagickSeek(file,0,SEEK_END);
   if (offset < 0)
     return(False);
   if (offset >= length)
     return(True);
-  offset=lseek(file,length-1,SEEK_SET);
+  offset=MagickSeek(file,length-1,SEEK_SET);
   if (offset < 0)
     return(False);
   count=write(file,(void *) "",1);
@@ -2221,7 +2221,7 @@ static unsigned int ReadCacheIndexes(const Cache cache,
   number_pixels=cache_info->columns*cache_info->rows;
   for (y=0; y < (long) nexus_info->rows; y++)
   {
-    count=lseek(file,cache_info->offset+number_pixels*sizeof(PixelPacket)+
+    count=MagickSeek(file,cache_info->offset+number_pixels*sizeof(PixelPacket)+
       offset*sizeof(IndexPacket),SEEK_SET);
     if (count == -1)
       return(False);
@@ -2325,7 +2325,8 @@ static unsigned int ReadCachePixels(const Cache cache,const unsigned long nexus)
     return(False);
   for (y=0; y < (long) nexus_info->rows; y++)
   {
-    count=lseek(file,cache_info->offset+offset*sizeof(PixelPacket),SEEK_SET);
+    count=MagickSeek(file,cache_info->offset+offset*sizeof(PixelPacket),
+      SEEK_SET);
     if (count == -1)
       return(False);
     for (i=0; i < length; i+=count)
@@ -3052,7 +3053,7 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned long nexus)
   number_pixels=cache_info->columns*cache_info->rows;
   for (y=0; y < (long) nexus_info->rows; y++)
   {
-    count=lseek(file,cache_info->offset+number_pixels*sizeof(PixelPacket)+
+    count=MagickSeek(file,cache_info->offset+number_pixels*sizeof(PixelPacket)+
       offset*sizeof(IndexPacket),SEEK_SET);
     if (count == -1)
       return(False);
@@ -3159,7 +3160,8 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned long nexus)
     return(False);
   for (y=0; y < (long) nexus_info->rows; y++)
   {
-    count=lseek(file,cache_info->offset+offset*sizeof(PixelPacket),SEEK_SET);
+    count=MagickSeek(file,cache_info->offset+offset*sizeof(PixelPacket),
+      SEEK_SET);
     if (count == -1)
       return(False);
     for (i=0; i < length; i+=count)

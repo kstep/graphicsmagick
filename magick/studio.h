@@ -324,6 +324,15 @@ extern "C" {
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
 #define HasMODULES
 #endif
+
+/*
+  I/O defines.
+*/
+#if defined(WIN32) && !defined(Windows95)
+#define MagickSeek(file,offset,whence)  lseeki64(file,offset,whence)
+#else
+#define MagickSeek(file,offset,whence)  lseek(file,offset,whence)
+#endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -455,7 +455,7 @@ static void *LogToBlob(const char *filename,size_t *length,
   file=open(filename,O_RDONLY | O_BINARY,0777);
   if (file == -1)
     return((void *) NULL);
-  offset=lseek(file,0,SEEK_END);
+  offset=MagickSeek(file,0,SEEK_END);
   if ((offset < 0) || (offset != (size_t) offset))
     {
       (void) close(file);

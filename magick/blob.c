@@ -559,7 +559,7 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
       ThrowException(exception,BlobError,"UnableToOpenFile",filename);
       return((void *) NULL);
     }
-  offset=lseek(file,0,SEEK_END);
+  offset=MagickSeek(file,0,SEEK_END);
   if ((offset < 0) || (offset != (size_t) offset))
     {
       (void) close(file);
@@ -590,7 +590,7 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
       register size_t
         i;
 
-      (void) lseek(file,0,SEEK_SET);
+      (void) MagickSeek(file,0,SEEK_SET);
       count=0;
       for (i=0; i < *length; i+=count)
       {
