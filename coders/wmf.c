@@ -468,7 +468,7 @@ static void wmf_magick_device_begin(wmfAPI * API)
     }
   else
     {
-      /* Draw rectangle with texture */
+      /* FIXME: Draw rectangle with texture image */
     }
 
   magick_mvg_printf(API, "fill-opacity 1\n");
@@ -1962,15 +1962,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
         *pixel,
         background_color;
 
-      /* Ensure that background is white rather than "none" */
-      QueryColorDatabase("none", &background_color);
-      if( background_color.red     == image_info->background_color.red &&
-          background_color.green   == image_info->background_color.green &&
-          background_color.blue    == image_info->background_color.blue &&
-          background_color.opacity == image_info->background_color.opacity )
-        QueryColorDatabase("white", &background_color);
-      else
-        background_color = image_info->background_color;
+      background_color = image_info->background_color;
       image->background_color = background_color;
       if(background_color.opacity != OpaqueOpacity)
         image->matte = True;
