@@ -492,6 +492,7 @@ ModuleExport void RegisterEPTImage(void)
   entry->encoder=WriteEPTImage;
   entry->magick=IsEPT;
   entry->adjoin=False;
+  entry->blob_support=False;
   entry->description=
     AllocateString("Adobe Encapsulated PostScript with TIFF preview");
   entry->module=AllocateString("EPT");
