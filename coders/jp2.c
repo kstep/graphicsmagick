@@ -347,6 +347,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       return(image);
     }
   number_components=Min(jas_image_numcmpts(jp2_image),4);
+  image->matte=number_components > 3;
   for (i=0; i < (long) number_components; i++)
   {
     if (jas_image_cmptprec(jp2_image,i) <= 8)
