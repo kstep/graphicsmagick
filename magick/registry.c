@@ -117,6 +117,11 @@ MagickExport unsigned int DeleteMagickRegistry(const long id)
             DestroyImage((Image *) registry_info->blob);
             break;
           }
+          case ImageInfoRegistryType:
+          {
+            DestroyImageInfo((Image *) registry_info->blob);
+            break;
+          }
           default:
           {
             LiberateMemory((void **) &registry_info->blob);
@@ -174,6 +179,11 @@ MagickExport void DestroyMagickRegistry(void)
       case ImageRegistryType:
       {
         DestroyImage((Image *) p->blob);
+        break;
+      }
+      case ImageInfoRegistryType:
+      {
+        DestroyImageInfo((Image *) p->blob);
         break;
       }
       default:
@@ -306,6 +316,29 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
           return(-1);
         }
       clone_blob=(void *) CloneImage(image,0,0,True,exception);
+      if (clone_blob == (void *) NULL)
+        return(-1);
+      break;
+    }
+    case ImageInfoRegistryType:
+    {
+      ImageInfo
+        *image_info;
+
+      image_info=(ImageInfo *) blob;
+      if (length != sizeof(ImageInfo))
+        {
+          ThrowException(exception,RegistryWarning,"Unable to set registry",
+            "Structure size mismatch");
+          return(-1);
+        }
+      if (image_info->signature != MagickSignature)
+        {
+          ThrowException(exception,RegistryWarning,"Unable to set registry",
+            "Image expected");
+          return(-1);
+        }
+      clone_blob=(void *) CloneImageInfo(image_info);
       if (clone_blob == (void *) NULL)
         return(-1);
       break;

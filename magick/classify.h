@@ -411,7 +411,8 @@ typedef enum
 typedef enum
 {
   UndefinedRegistryType,
-  ImageRegistryType
+  ImageRegistryType,
+  ImageInfoRegistryType
 } RegistryType;
 
 typedef enum
