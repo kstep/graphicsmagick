@@ -1971,7 +1971,7 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
                     else if (order == 3)
                       threshold=(double) MaxRGB*o3[(x%3)+3*(y%3)];
                     else if (order == 4)
-                      threshold=(double) MaxRGB*o4[(x%4)+4*(y%4)];
+                      threshold=(double) MaxRGB*o4[(x%4)+4*(y%4)]/1.7;
                     index=(double) q->red <= threshold ? 0 : 1;
                     *indexes++=index;
                     q->red=q->green=q->blue=image->colormap[index].red;
@@ -2001,7 +2001,7 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
                     else if (order == 3)
                       threshold=(double) MaxRGB*o3[(x%3)+3*(y%3)];
                     else if (order == 4)
-                      threshold=(double) MaxRGB*o4[(x%4)+4*(y%4)];
+                      threshold=(double) MaxRGB*o4[(x%4)+4*(y%4)]/1.7;
                     q->red=q->green=q->blue=(Quantum) (intensity <=
                        threshold ? 0 : MaxRGB);
                     q++;
@@ -2030,7 +2030,7 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
               else if (order == 3)
                 threshold=(double) MaxRGB*o3[(x%3)+3*(y%3)];
               else if (order == 4)
-                threshold=(double) MaxRGB*o4[(x%4)+4*(y%4)];
+                threshold=(double) MaxRGB*o4[(x%4)+4*(y%4)]/1.7;
               q->opacity=(Quantum) ((double) q->opacity <= threshold ?
                  0 : MaxRGB);
               q++;
