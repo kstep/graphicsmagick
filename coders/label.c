@@ -124,6 +124,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       /*
         Fit label to canvas size.
       */
+      /* first size text up until it no longer fits into the canvas */
       for ( ; GetTypeMetrics(image,draw_info,&metrics); draw_info->pointsize*=2)
       {
         width=(unsigned long) floor(metrics.width+metrics.max_advance+0.5);
@@ -132,13 +133,19 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
             ((image->rows != 0) && (height >= image->rows)))
           break;
       }
+      /* second size text down until it fits into the canvas */
       for ( ; GetTypeMetrics(image,draw_info,&metrics); draw_info->pointsize--)
       {
         width=(unsigned long) floor(metrics.width+metrics.max_advance+0.5);
         height=(unsigned long) floor(metrics.height+0.5);
-        if (((image->columns != 0) && (width <= image->columns)) ||
-            ((image->rows != 0) && (height <= image->rows)) ||
-            (draw_info->pointsize < 2.0))
+        /* very tricky logic - image must satisfy all criteria - be careful */
+        if ((image->columns != 0) && (width <= image->columns) &&
+           ((image->rows == 0) || (height <= image->rows)))
+          break;
+        if ((image->rows != 0) && (height <= image->rows) &&
+           ((image->columns == 0) || (width <= image->columns)))
+          break;
+        if (draw_info->pointsize < 2.0)
           break;
       }
     }
