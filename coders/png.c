@@ -85,6 +85,7 @@
 */
 #undef MNG_OBJECT_BUFFERS
 #undef MNG_BASI_SUPPORTED
+#undef MNG_INSERT_LAYERS /* This feature was broken in 5.4.3 */
 #define PNG_SORT_PALETTE
 
 
@@ -1369,7 +1370,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     previous_fb;
 
   PixelPacket
+#ifdef MNG_INSERT_LAYERS
     mng_background_color,
+#endif
     mng_global_bkgd,
     transparent_color;
 
@@ -1410,7 +1413,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     **scanlines;
 
   unsigned int
+#ifdef MNG_INSERT_LAYERS
     mandatory_back=0,
+#endif
     status;
 
   volatile unsigned int
@@ -1423,8 +1428,10 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned long
     default_frame_timeout,
     frame_timeout,
+#ifdef MNG_INSERT_LAYERS
     image_height,
     image_width,
+#endif
     length;
 
   volatile unsigned long
@@ -1433,7 +1440,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     frame_delay,
     global_plte_length,
     global_trns_length,
+#ifdef MNG_INSERT_LAYERS
     insert_layers,
+#endif
     mng_height=0,
     mng_iterations=0,
     mng_width=0,
@@ -1552,7 +1561,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     }
   mng_type=0;
+#ifdef MNG_INSERT_LAYERS
   insert_layers=False;  /* should be False when converting or mogrifying */
+#endif
   default_frame_delay=0;
   default_frame_timeout=0;
   frame_delay=0;
@@ -1563,7 +1574,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   term_chunk_found=False;
   image_found=False;
   framing_mode=1;
+#ifdef MNG_INSERT_LAYERS
   mandatory_back=False;
+#endif
   have_global_chrm=False;
   have_global_bkgd=False;
   have_global_gama=False;
@@ -1572,7 +1585,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   have_global_srgb=False;
   global_plte_length=0;
   global_trns_length=0;
+#ifdef MNG_INSERT_LAYERS
   mng_background_color=image->background_color;
+#endif
   do
   {
     if (LocaleCompare(image_info->magick,"MNG") == 0)
@@ -1662,8 +1677,10 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               mng_type=2; /* LC */
             if ((simplicity != 0) && ((simplicity | 9) == 9))
               mng_type=3; /* VLC */
+#ifdef MNG_INSERT_LAYERS
             if (mng_type != 3)
               insert_layers=True;
+#endif
             if (GetPixels(image) != (PixelPacket *) NULL)
               {
                 /*
@@ -1785,6 +1802,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         if (!memcmp(type,mng_BACK,4))
           {
+#ifdef MNG_INSERT_LAYERS
             if (length>6)
               mandatory_back=p[6];
             else
@@ -1802,6 +1820,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #ifdef MNG_OBJECT_BUFFERS
             if (length > 8)
               mng_background_object=(p[7] << 8) | p[8];
+#endif
 #endif
             LiberateMemory((void **) &chunk);
             continue;
@@ -1978,6 +1997,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Insert a background layer behind the frame if framing_mode is 4.
             */
+#ifdef MNG_INSERT_LAYERS
             if (insert_layers && (framing_mode == 4) && (subframe_width) &&
                 (subframe_height))
               {
@@ -2016,6 +2036,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 image->delay=0;
                 SetImage(image,OpaqueOpacity);
               }
+#endif
             LiberateMemory((void **) &chunk);
             continue;
           }
@@ -2420,14 +2441,17 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             LiberateMemory((void **) &chunk);
             continue;
           }
+#ifdef MNG_INSERT_LAYERS
         image_width=mng_get_long(p);
         image_height=mng_get_long(&p[4]);
+#endif
         LiberateMemory((void **) &chunk);
 
         /*
           Insert a transparent background layer behind the entire animation
           if it is not full screen.
         */
+#ifdef MNG_INSERT_LAYERS
         if (insert_layers && mng_type && first_mng_object)
           {
             if ((clip.left > 0) || (clip.top > 0) ||
@@ -2515,6 +2539,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image->matte=False;
             SetImage(image,OpaqueOpacity);
           }
+#endif /* MNG_INSERT_LAYERS */
         first_mng_object=False;
         /*
           Read the PNG image.
@@ -3931,6 +3956,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
       CatchImageException(image);
   } while (LocaleCompare(image_info->magick,"MNG") == 0);
+#ifdef MNG_INSERT_LAYERS
   if (insert_layers && !image_found && (mng_width) && (mng_height))
     {
       /*
@@ -3962,6 +3988,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       SetImage(image,OpaqueOpacity);
       image_found++;
     }
+#endif
   if (ticks_per_second)
      image->delay=(100*final_delay/ticks_per_second);
   else
@@ -4000,6 +4027,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       MngInfoFreeStruct(mng_info,&have_mng_structure);
       return((Image *) NULL);
     }
+#ifdef MNG_INSERT_LAYERS
   if (insert_layers)
     {
       Image
@@ -4024,6 +4052,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
            }
       }
     }
+#endif
   CloseBlob(image);
   MngInfoFreeStruct(mng_info,&have_mng_structure);
   have_mng_structure=False;
