@@ -827,7 +827,7 @@ MagickExport Image *FlopImage(Image *image,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ProfileImage removes or adds a ICC, IPTC, or generic profile to an
+%  Method ProfileImage removes or adds a ICM, IPTC, or generic profile to an
 %  image.  If the profile name is specified it is deleted from the image.  If
 %  a filename is specified, one or more profiles are read and added to the
 %  image.
@@ -846,7 +846,7 @@ MagickExport Image *FlopImage(Image *image,ExceptionInfo *exception)
 %
 %    o profile_name: Specifies the type of profile to add or remove.
 %
-%    o filename: Specifies the filename of the ICC or IPTC profile.
+%    o filename: Specifies the filename of the ICM or IPTC profile.
 %
 %
 */
@@ -868,7 +868,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
   if (filename == (const char *) NULL)
     {
       /*
-        Remove a ICC, IPTC, or generic profile from the image.
+        Remove a ICM, IPTC, or generic profile from the image.
       */
       if (LocaleCompare("icm",profile_name) == 0)
         {
@@ -901,7 +901,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
       return(True);
     }
   /*
-    Add a ICC, IPTC, or generic profile to the image.
+    Add a ICM, IPTC, or generic profile to the image.
   */
   image_info=CloneImageInfo((ImageInfo *) NULL);
   (void) strcpy(image_info->filename,filename);

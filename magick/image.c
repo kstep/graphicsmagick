@@ -881,7 +881,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
   if (image->color_profile.length != 0)
     {
       /*
-        Allocate and clone any ICC profile.
+        Allocate and clone any ICM profile.
       */
       length=image->color_profile.length;
       clone_image->color_profile.info=(unsigned char *) AcquireMemory(length);
@@ -2047,7 +2047,7 @@ MagickExport void DestroyImage(Image *image)
   if (image->colormap != (PixelPacket *) NULL)
     LiberateMemory((void **) &image->colormap);
   /*
-    Deallocate the image ICC profile.
+    Deallocate the image ICM profile.
   */
   if (image->color_profile.name != (char *) NULL)
     LiberateMemory((void **) &image->color_profile.name);
@@ -4080,13 +4080,13 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             if (*option == '+')
               {
                 /*
-                  Remove a ICC, IPTC, or generic profile from the image.
+                  Remove a ICM, IPTC, or generic profile from the image.
                 */
                 ProfileImage(*image,argv[++i],(char *) NULL);
                 continue;
               }
             /*
-              Add a ICC, IPTC, or generic profile to the image.
+              Add a ICM, IPTC, or generic profile to the image.
             */
             ProfileImage(*image,(char *) NULL,argv[++i]);
             continue;

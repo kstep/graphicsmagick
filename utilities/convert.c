@@ -119,7 +119,7 @@
 %    -ping                efficiently determine image characteristics
 %    -pointsize value     pointsize of Postscript font
 %    -preview type        image preview type
-%    -profile filename    add ICC or IPTC information profile to image
+%    -profile filename    add ICM or IPTC information profile to image
 %    -quality value       JPEG/MIFF/PNG compression level
 %    -raise value         lighten/darken image edges to create a 3-D effect
 %    -region geometry     apply options to a portion of the image
@@ -318,7 +318,7 @@ static void Usage()
       "-ping                efficiently determine image characteristics",
       "-pointsize value     pointsize of Postscript font",
       "-preview type        image preview type",
-      "-profile filename    add ICC or IPTC information profile to image",
+      "-profile filename    add ICM or IPTC information profile to image",
       "-quality value       JPEG/MIFF/PNG compression level",
       "-raise value         lighten/darken image edges to create a 3-D effect",
       "-region geometry     apply options to a portion of the image",
