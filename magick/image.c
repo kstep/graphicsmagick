@@ -2165,7 +2165,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
               (void) fprintf(file,"%db ",image->filesize);
         }
       (void) fprintf(file,"%.1024s %.1fu %d:%02d\n",image->magick,user_time,
-        (int) ((elapsed_time+0.5)/60.0),(int) fmod(elapsed_time+0.5,60.0));
+        (int) (elapsed_time/60.0),(int) ceil(fmod(elapsed_time,60.0)));
       return;
     }
   /*
@@ -2522,7 +2522,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     (void) fprintf(file,"  user time: %.1fu\n",user_time);
   if (elapsed_time != 0.0)
     (void) fprintf(file,"  elapsed time: %d:%02d\n",
-      (int) (elapsed_time/60.0),(int) fmod(elapsed_time+0.5,60.0));
+      (int) (elapsed_time/60.0),(int) ceil(fmod(elapsed_time,60.0)));
   if (image->comments != (char *) NULL)
     {
       /*
