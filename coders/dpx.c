@@ -150,6 +150,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *q;
 
   unsigned int
+    bits_per_pixel,
     status;
 
   unsigned long
@@ -175,7 +176,11 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) ReadBlobByte(image);
   width=ReadBlobMSBLong(image);
   height=ReadBlobMSBLong(image);
-  for (i=0; i < (offset-780); i++)
+  for (i=0; i < 22; i++)
+    (void) ReadBlobByte(image);
+  bits_per_pixel=ReadBlobByte(image);
+  offset-=TellBlob(image);
+  for (i=0; i < offset; i++)
     (void) ReadBlobByte(image);
   /*
     Initialize image structure.
