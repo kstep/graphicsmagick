@@ -151,7 +151,7 @@ testRead( 'input_p6.ppm',
 print("Adobe Photoshop bitmap file ...\n");
 ++$test;
 testRead( 'input.psd',
-  'cc7b6bf7c0c0cc4332be9cdbfa8f44b924e0686b03c133bae907392525b2de2a');
+  'a5d122b2b7a0944d835243afd4a81815bbea5bc1ae6c3a6ba79301662b4474a1');
 
 print("Irix RGB image file ...\n");
 ++$test;
