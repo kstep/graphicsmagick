@@ -160,7 +160,6 @@ static unsigned int ExecutePostscriptInterpreter(const unsigned int verbose,
   if ((status == 0) || (status == -101))
     return(False);
   return(True);
-
 #else
   return(SystemCommand(verbose,command));
 #endif
