@@ -707,7 +707,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
   register size_t
     i;
 
-  unsigned int
+  unsigned long
     high,
     low;
 
