@@ -339,8 +339,6 @@ MagickExport void CloseBlob(Image *image)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
   image->taint=False;
   if (image->fifo != (int (*)(const Image *,const void *,const size_t)) NULL)
     {
@@ -365,6 +363,8 @@ MagickExport void CloseBlob(Image *image)
 #endif
     (void) fclose(image->file);
   image->file=(FILE *) NULL;
+  while (image->previous != (Image *) NULL)
+    image=image->previous;
   for (next=image; next != (Image *) NULL; next=next->next)
     next->file=(FILE *) NULL;
 }
