@@ -1371,8 +1371,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       }
                     case 0:
                       {
-                        if (x==0 && y==0)
-                          printf("red=%lu\n",pixel);
+/*                         if (x==0 && y==0) */
+/*                           printf("red=%lu\n",pixel); */
                         q->red=(Quantum) pixel;
                         if (image->storage_class == PseudoClass)
                           {
@@ -1383,8 +1383,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       }
                     case 1:
                       {
-                        if (x==0 && y==0)
-                          printf("green=%lu\n",pixel);
+/*                         if (x==0 && y==0) */
+/*                           printf("green=%lu\n",pixel); */
                         if (image->storage_class == PseudoClass)
                           q->opacity=(Quantum) pixel;
                         else
@@ -1393,8 +1393,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       }
                     case 2:
                       {
-                        if (x==0 && y==0)
-                          printf("blue=%lu\n",pixel);
+/*                         if (x==0 && y==0) */
+/*                           printf("blue=%lu\n",pixel); */
                         q->blue=(Quantum) pixel;
                         break;
                       }

@@ -1328,11 +1328,11 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
         }
         if ((t == TAG_EXIF_OFFSET) || (t == TAG_INTEROP_OFFSET))
           {
-            long
+            size_t
               offset;
 
-            offset=(long) Read32u(morder,pval);
-            if ((offset < (long) length) || (level < (DE_STACK_SIZE-2)))
+            offset=(size_t) Read32u(morder,pval);
+            if ((offset < length) || (level < (DE_STACK_SIZE-2)))
               {
                 /*
                   Push our current directory state onto the stack.

@@ -21,11 +21,21 @@
 </tr>
 </table>
 <p>
-2005-03-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+2005-13-10 Glenn Randers-Pehrson &lt;glennrp@glennrp.com&gt;
 
 <UL>
-  <LI> coders/tiff.c: Added some code to support extending libtiff's
-        knowledge of private tags.
+  <LI> coders/png.c: Avoid attempting to write indexed PNG when
+        a color entry has more than one opacity level.  The PNG format
+        supports this but GM's colormap does not, so erroneous files
+        were being written.
+
+</UL>
+<p>
+2005-03-09  Arne Rusek  &lt;zonk@matfyz.cz&gt;
+
+<UL>
+  <LI> magick/attribute.c (GenerateEXIFAttribute): Offset type
+        correction to fix loop termination if size_t type is not 'long'.
 
 </UL>
 <p>

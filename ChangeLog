@@ -5,10 +5,10 @@
 	supports this but GM's colormap does not, so erroneous files
 	were being written.
 
-2005-03-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2005-03-09  Arne Rusek  <zonk@matfyz.cz>
 
-	* coders/tiff.c: Added some code to support extending libtiff's
-	knowledge of private tags.
+	* magick/attribute.c (GenerateEXIFAttribute): Offset type
+	correction to fix loop termination if size_t type is not 'long'.
 
 2005-03-09  Alexander Yaworsky  <yaworsky@users.sourceforge.net>
 
