@@ -1257,6 +1257,7 @@ static unsigned int DrawClipPath(Image *image,DrawInfo *draw_info,
   clone_info->clip_path=(char *) NULL;
   status=DrawImage(image->clip_mask,clone_info);
   draw_info->clip_units=clone_info->clip_units;
+  (void) NegateImage(image->clip_mask,False);
   DestroyDrawInfo(clone_info);
   if (draw_info->debug)
     (void) fprintf(stdout,"end clip-path\n\n");
