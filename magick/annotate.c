@@ -311,7 +311,7 @@ MagickExport unsigned int AnnotateImage(Image *image,
     if (q == (PixelPacket *) NULL)
       continue;
     for (j=0; j < (int) font_width; j++)
-      *q++=clone_info->stroke;
+      *q++=clone_info->fill;
     SyncImagePixels(image);
   }
   image->matte=matte;
@@ -870,7 +870,7 @@ static unsigned int RenderTruetype(Image *image,
           (int) ceil(point.y+y-0.5),1,1);
         if (q == (PixelPacket *) NULL)
           break;
-        opacity=MaxRGB-UpScale(*p);
+        opacity=MaxRGB-(UpScale(*p)*fill_color.opacity/MaxRGB);
         q->red=(Quantum) (((double) fill_color.red*(MaxRGB-opacity)+
           (double) q->red*opacity)*alpha);
         q->green=(Quantum) (((double) fill_color.green*(MaxRGB-opacity)+
@@ -906,7 +906,8 @@ static unsigned int RenderPostscript(Image *image,
     geometry[MaxTextExtent];
 
   double
-    font_height;
+    font_height,
+    opacity;
 
   FILE
     *file;
@@ -922,6 +923,9 @@ static unsigned int RenderPostscript(Image *image,
 
   int
     y;
+
+  PixelPacket
+    fill_color;
 
   PointInfo
     extent,
@@ -977,8 +981,8 @@ static unsigned int RenderPostscript(Image *image,
     annotate_info->pointsize);
   (void) fprintf(file,
     "/%.1024s-ISO dup /%.1024s ReencodeFont findfont setfont\n",
-    annotate_info->font ? annotate_info->font : "Times-Roman",
-    annotate_info->font ? annotate_info->font : "Times-Roman");
+    annotate_info->font ? annotate_info->font : "Times",
+    annotate_info->font ? annotate_info->font : "Times");
   (void) fprintf(file,"[%g %g %g %g 0 0] concat\n",annotate_info->affine.sx,
     -annotate_info->affine.rx,-annotate_info->affine.ry,
     annotate_info->affine.sy);
@@ -1027,6 +1031,7 @@ static unsigned int RenderPostscript(Image *image,
       return(True);
     }
   annotate_image->matte=True;
+  fill_color=annotate_info->fill;
   for (y=0; y < (int) annotate_image->rows; y++)
   {
     q=GetImagePixels(annotate_image,0,y,annotate_image->columns,1);
@@ -1034,10 +1039,11 @@ static unsigned int RenderPostscript(Image *image,
       break;
     for (x=0; x < (int) annotate_image->columns; x++)
     {
-      q->opacity=(Quantum) Intensity(*q);
-      q->red=annotate_info->fill.red;
-      q->green=annotate_info->fill.green;
-      q->blue=annotate_info->fill.blue;
+      opacity=(MaxRGB-Intensity(*q))*fill_color.opacity/MaxRGB;
+      q->opacity=(Quantum) (MaxRGB-ceil(opacity+0.5));
+      q->red=fill_color.red;
+      q->green=fill_color.green;
+      q->blue=fill_color.blue;
       q++;
     }
     if (!SyncImagePixels(annotate_image))

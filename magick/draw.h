@@ -54,22 +54,17 @@ typedef struct _DrawInfo
   AffineInfo
     affine;
 
-  double
-    angle;
-
   GravityType
     gravity;
 
-  PixelPacket
-    fill;
-
-  FillRule
-    fill_rule;
+  Quantum
+    opacity;
 
   Image
     *tile;
 
   PixelPacket
+    fill,
     stroke;
 
   unsigned int
@@ -77,6 +72,9 @@ typedef struct _DrawInfo
 
   double
     linewidth;
+
+  FillRule
+    fill_rule;
 
   LineCap
     linecap;

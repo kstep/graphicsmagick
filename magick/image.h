@@ -784,7 +784,7 @@ extern MagickExport void
   GetPageInfo(RectangleInfo *),
   GetPixelPacket(PixelPacket *),
   ListMagickInfo(FILE *),
-  MatteImage(Image *,Quantum),
+  MatteImage(Image *,const unsigned int),
   MagickIncarnate(const char *),
   Register8BIMImage(void),
   RegisterAVIImage(void),

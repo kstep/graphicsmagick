@@ -1031,7 +1031,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           }
         if (LocaleCompare("angle",keyword) == 0)
           {
-            graphic_context[n]->angle=strtod(q,&q);
+            (void) strtod(q,&q);
             break;
           }
         if (LocaleCompare("arc",keyword) == 0)
@@ -1114,6 +1114,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 value[x]=(*q++);
             value[x]='\0';
             (void) QueryColorDatabase(value,&graphic_context[n]->fill);
+            if (graphic_context[n]->fill.opacity != TransparentOpacity)
+              graphic_context[n]->fill.opacity=graphic_context[n]->opacity;
             break;
           }
         if (LocaleCompare("fill-rule",keyword) == 0)
@@ -1129,7 +1131,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           }
         if (LocaleCompare("fill-opacity",keyword) == 0)
           {
-            graphic_context[n]->fill.opacity=MaxRGB*strtod(q,&q);
+            graphic_context[n]->fill.opacity=(Quantum)
+              ceil(MaxRGB*strtod(q,&q)/100.0+0.5);
             break;
           }
         if (LocaleCompare("font",keyword) == 0)
@@ -1214,8 +1217,10 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (LocaleCompare("opacity",keyword) == 0)
           {
-            graphic_context[n]->fill.opacity=MaxRGB*strtod(q,&q);
-            graphic_context[n]->stroke.opacity=MaxRGB*strtod(q,&q);
+            graphic_context[n]->opacity=(Quantum)
+              ceil(MaxRGB*strtod(q,&q)/100.0+0.5);
+            graphic_context[n]->fill.opacity=graphic_context[n]->opacity;
+            graphic_context[n]->stroke.opacity=graphic_context[n]->opacity;
             break;
           }
         status=True;
@@ -1337,6 +1342,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 value[x]=(*q++);
             value[x]='\0';
             (void) QueryColorDatabase(value,&graphic_context[n]->stroke);
+            if (graphic_context[n]->stroke.opacity != TransparentOpacity)
+              graphic_context[n]->stroke.opacity=graphic_context[n]->opacity;
             break;
           }
         if (LocaleCompare("stroke-antialias",keyword) == 0)
@@ -1416,7 +1423,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           }
         if (LocaleCompare("stroke-opacity",keyword) == 0)
           {
-            graphic_context[n]->stroke.opacity=MaxRGB*strtod(q,&q);
+            graphic_context[n]->stroke.opacity=(Quantum)
+              ceil(MaxRGB*strtod(q,&q)/100.0+0.5);
             break;
           }
         if (LocaleCompare("stroke-width",keyword) == 0)
@@ -2935,6 +2943,9 @@ static void DrawPrimitive(const DrawInfo *draw_info,
       ImageInfo
         *clone_info;
 
+      unsigned int
+        matte;
+
       if (primitive_info->text == (char *) NULL)
         break;
       clone_info=CloneImageInfo((ImageInfo *) NULL);
@@ -2943,6 +2954,8 @@ static void DrawPrimitive(const DrawInfo *draw_info,
       DestroyImageInfo(clone_info);
       if (composite_image == (Image *) NULL)
         break;
+      if (draw_info->opacity != OpaqueOpacity)
+        MatteImage(composite_image,draw_info->opacity);
       if ((primitive_info[1].point.x != 0) && (primitive_info[1].point.y != 0))
         {
           char
@@ -3000,9 +3013,11 @@ static void DrawPrimitive(const DrawInfo *draw_info,
                 }
             }
         }
-      CompositeImage(image,image->matte ? OverCompositeOp : ReplaceCompositeOp,
-        composite_image,x,y);
+      matte=image->matte;
+      CompositeImage(image,composite_image->matte ? OverCompositeOp :
+        ReplaceCompositeOp,composite_image,x,y);
       DestroyImage(composite_image);
+      image->matte=matte;
       break;
     }
     default:
@@ -3737,11 +3752,12 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   clone_info=CloneImageInfo(image_info);
   draw_info->affine=clone_info->affine;
   draw_info->gravity=NorthWestGravity;
+  draw_info->opacity=OpaqueOpacity;
   draw_info->fill=clone_info->fill;
-  draw_info->fill_rule=EvenOddRule;
   draw_info->stroke=clone_info->stroke;
   draw_info->stroke_antialias=clone_info->antialias;
   draw_info->linewidth=1.0;
+  draw_info->fill_rule=EvenOddRule;
   draw_info->linecap=ButtCap;
   draw_info->linejoin=MiterJoin;
   draw_info->miterlimit=10;

@@ -3242,11 +3242,12 @@ MagickExport Image **ListToGroupImage(Image *image,unsigned int *number_images)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method MatteImage initializes the matte channel of the reference image to
-%  opaque.
+%  the specified value.  If the image already has a matte channel it is
+%  attenuated with the opacity value.
 %
 %  The format of the MatteImage method is:
 %
-%      void MatteImage(Image *image,Quantum opacity)
+%      void MatteImage(Image *image,const unsigned int opacity)
 %
 %  A description of each parameter follows:
 %
@@ -3257,7 +3258,7 @@ MagickExport Image **ListToGroupImage(Image *image,unsigned int *number_images)
 %
 %
 */
-MagickExport void MatteImage(Image *image,Quantum opacity)
+MagickExport void MatteImage(Image *image,const unsigned int opacity)
 {
   int
     y;
@@ -3270,7 +3271,23 @@ MagickExport void MatteImage(Image *image,Quantum opacity)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  image->storage_class=DirectClass;
+  if (image->matte)
+    {
+      for (y=0; y < (int) image->rows; y++)
+      {
+        q=GetImagePixels(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (int) image->columns; x++)
+        {
+          q->opacity=((unsigned long) (opacity*q->opacity)/MaxRGB);
+          q++;
+        }
+        if (!SyncImagePixels(image))
+          break;
+      }
+      return;
+    }
   image->matte=True;
   for (y=0; y < (int) image->rows; y++)
   {
