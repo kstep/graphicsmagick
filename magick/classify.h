@@ -463,13 +463,13 @@ typedef enum
 {
   NormalStretch,
   UltraCondensedStretch,
-	ExtraCondensedStretch,
-	CondensedStretch,
-	SemiCondensedStretch,
-	SemiExpandedStretch,
-	ExpandedStretch,
-	ExtraExpandedStretch,
-	UltraExpandedStretch,
+  ExtraCondensedStretch,
+  CondensedStretch,
+  SemiCondensedStretch,
+  SemiExpandedStretch,
+  ExpandedStretch,
+  ExtraExpandedStretch,
+  UltraExpandedStretch,
   AnyStretch
 } StretchType;
 
