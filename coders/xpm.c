@@ -382,38 +382,42 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       LiberateMemory((void **) &textlist);
       ThrowReaderException(CorruptImageWarning,"Corrupt XPM image file",image)
     }
-  /*
-    Read image pixels.
-  */
   j=0;
   key[width]='\0';
   if (!image_info->ping);
-    for (y=0; y < (long) image->rows; y++)
     {
-      p=textlist[i++];
-      if (p == (char *) NULL)
-        break;
-      r=SetImagePixels(image,0,y,image->columns,1);
-      if (r == (PixelPacket *) NULL)
-        break;
-      indexes=GetIndexes(image);
-      for (x=0; x < (long) image->columns; x++)
+      /*
+        Read image pixels.
+      */
+      for (y=0; y < (long) image->rows; y++)
       {
-        (void) strncpy(key,p,width);
-        if (strcmp(key,keys[j]) != 0)
-          for (j=0; j < (long) Max(image->colors-1,1); j++)
-            if (strcmp(key,keys[j]) == 0)
-              break;
-        if (image->storage_class == PseudoClass)
-          indexes[x]=(IndexPacket) j;
-        *r=image->colormap[j];
-        r->opacity=(Quantum)
-          (j == (long) none ? TransparentOpacity : OpaqueOpacity);
-        r++;
-        p+=width;
+        p=textlist[i++];
+        if (p == (char *) NULL)
+          break;
+        r=SetImagePixels(image,0,y,image->columns,1);
+        if (r == (PixelPacket *) NULL)
+          break;
+        indexes=GetIndexes(image);
+        for (x=0; x < (long) image->columns; x++)
+        {
+          (void) strncpy(key,p,width);
+          if (strcmp(key,keys[j]) != 0)
+            for (j=0; j < (long) Max(image->colors-1,1); j++)
+              if (strcmp(key,keys[j]) == 0)
+                break;
+          if (image->storage_class == PseudoClass)
+            indexes[x]=(IndexPacket) j;
+          *r=image->colormap[j];
+          r->opacity=(Quantum)
+            (j == (long) none ? TransparentOpacity : OpaqueOpacity);
+          r++;
+          p+=width;
+        }
+        if (!SyncImagePixels(image))
+          break;
       }
-      if (!SyncImagePixels(image))
-        break;
+      if (y < (long) image->rows)
+        ThrowReaderException(CorruptImageWarning,"Not enough pixel data",image);
     }
   /*
     Free resources.
