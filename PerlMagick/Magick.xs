@@ -3127,12 +3127,6 @@ Get(ref,...)
                 s=newSVpv(info->image_info->texture,0);
               break;
             }
-          if (strEQcase(attribute,"text"))
-            {
-              if (image && image->text)
-                s=newSVpv(image->text,0);
-              break;
-            }
           if (strEQcase(attribute,"type"))
             {
               if (!image)
