@@ -133,6 +133,9 @@ extern "C" {
 #if defined(WIN32) || defined(POSIX)
 # include <sys/types.h>
 # include <sys/stat.h>
+# if defined(HAVE_FTIME)
+# include <sys/timeb.h>
+# endif
 # if defined(POSIX)
 #  if defined(HAVE_SYS_NDIR_H) || defined(HAVE_SYS_DIR_H) || defined(HAVE_NDIR_H)
 #   define dirent direct
