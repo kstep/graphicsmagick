@@ -136,7 +136,7 @@ typedef struct _ColorInfo
 
   PixelPacket
     color;
-  
+
   struct _ColorInfo
     *previous,
     *next;
@@ -619,7 +619,7 @@ extern MagickExport const unsigned int
 /*
   Image utilities methods.
 */
-extern MagickExport char 
+extern MagickExport char
   **GetColorList(const char *,int *),
   *GetImageMagick(const unsigned char *,const unsigned int),
   *GetMagickConfigurePath(const char *),
