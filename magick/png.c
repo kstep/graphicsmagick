@@ -88,9 +88,9 @@
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%  To do, more or less in chronological order (as of version 4.2.8,
+%  To do, more or less in chronological order (as of version 4.2.9,
 %
-%     July 20, 1999 -- glennrp -- see also "To do" under WritePNGImage):
+%     August 29, 1999 -- glennrp -- see also "To do" under WritePNGImage):
 %
 %    (At this point, PNG decoding is supposed to be in full MNG-LC compliance)
 %
@@ -316,7 +316,7 @@ int PalettesAreEqual(const ImageInfo *image_info,Image *a,Image *b)
           printf("PalettesAreEqual: Palettes differ.\n");
         return((int) False);
       }
-    }
+  }
   return((int)True);
 }
 
@@ -353,7 +353,7 @@ static void MngDiscardObject(Mng *m,int i)
       m->object_clip[i].bottom=PNG_MAX_UINT;
       if (m->verbose)
         printf("Discarded object %d\n",i);
-  }
+    }
 }
 
 static void MngFreeStruct(Mng *m,int *have_mng_structure)
@@ -789,7 +789,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                   }
               }
             for (i=0; i<4; i++)
-             {
+            {
                const char
                  upper[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
                  lower[] = "abcdefghijklmnopqrstuvwxyz";
@@ -804,7 +804,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                      printf("Invalid byte (0x%x) in chunk name\n",type[i]);
                      chunk_name[i]=0x3f;   /* '?' */
                    }
-              }
+            }
             chunk_name[4]=0;
             printf("chunk %s, length=%lu\n",chunk_name,length);
           }
@@ -2012,17 +2012,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         transparent_color.green=ping_info->trans_values.green;
         transparent_color.blue=ping_info->trans_values.blue;
         transparent_color.index=ping_info->trans_values.gray;
-        if (ping_info->bit_depth > QuantumDepth)
-          {
-            transparent_color.red=
-              (unsigned short) XDownScale(ping_info->trans_values.red);
-            transparent_color.green=
-              (unsigned short) XDownScale(ping_info->trans_values.green);
-            transparent_color.blue=
-              (unsigned short) XDownScale(ping_info->trans_values.blue);
-            transparent_color.index=
-              (unsigned short) XDownScale(ping_info->trans_values.gray);
-          }
         if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
           {
             transparent_color.red=transparent_color.index;
@@ -2084,6 +2073,8 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         MngFreeStruct(m,&have_mng_structure);
         return(image);
       }
+    if (image_info->verbose)
+      printf("rowbytes=%d\n",ping_info->rowbytes);
     png_pixels=(unsigned char *)
       AllocateMemory(ping_info->rowbytes*image->rows*sizeof(Quantum));
     scanlines=(unsigned char **)
@@ -2174,10 +2165,69 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
               ReadQuantum(index,p);
             if (ping_info->valid & PNG_INFO_tRNS &&
                 (ping_info->color_type != PNG_COLOR_TYPE_PALETTE))
-              if ((red == transparent_color.red) &&
-                  (green == transparent_color.green) &&
-                  (blue == transparent_color.blue))
-                index=Transparent;
+              {
+#if (QuantumDepth == 8)
+                if (ping_info->bit_depth <= QuantumDepth)
+                  {
+#endif
+                    if ((red == transparent_color.red) &&
+                        (green == transparent_color.green) &&
+                        (blue == transparent_color.blue))
+                      index=Transparent;
+#if (QuantumDepth == 8)
+                  }
+                else
+                  {
+                    /*
+                       We are reading a 16-bit/sample PNG but are storing
+                       only 8 bits.  We must compare the full 16-bit samples
+                       for transparency.
+                    */
+                    if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
+                      {
+                        png_uint_16
+                          gray_16;
+
+                        gray_16 = (*(p-2) << 8) + *(p-1);
+
+                        if (gray_16 == transparent_color.red)
+                          index=Transparent;
+                      }
+                    else
+                      {
+                        png_uint_16
+                          red_16,
+                          green_16,
+                          blue_16;
+
+                        red_16 = (*(p-6) << 8) | *(p-5);
+                        green_16 = (*(p-4) << 8) | *(p-3);
+                        blue_16 = (*(p-2) << 8) | *(p-1);
+
+                        if ((red_16 == transparent_color.red) &&
+                            (green_16 == transparent_color.green) &&
+                            (blue_16 == transparent_color.blue))
+                          index=Transparent;
+                      }
+                  }
+#endif
+              }
+#if (QuantumDepth == 8)
+            if (!reduction_warning && ping_info->bit_depth > 8)
+              if ((*(p-1) != *(p-2)) ||
+                  ((ping_info->color_type != PNG_COLOR_TYPE_GRAY) &&
+                  (*(p-3) != *(p-4))) ||
+                  ((ping_info->color_type == PNG_COLOR_TYPE_RGB) &&
+                  (*(p-5) != *(p-6))) ||
+                  ((ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA) &&
+                  (*(p-5) != *(p-6)) || (*(p-7) != *(p-8))))
+                {
+                  MagickWarning(DelegateWarning,
+                      "Lossy reduction of 16-bit PNG image to 8-bit",
+                      image->filename);
+                  reduction_warning=True;
+                }
+#endif
             if ((red == q->red) && (green == q->green) && (blue == q->blue) &&
                 (index == q->index) && ((int) q->length < MaxRunlength))
               q->length++;
@@ -2191,22 +2241,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 q->blue=blue;
                 q->index=index;
                 q->length=0;
-#if (QuantumDepth == 8)
-                if (!reduction_warning && ping_info->bit_depth > 8)
-                  if ((*(p-1) != *(p-2)) ||
-                      ((ping_info->color_type != PNG_COLOR_TYPE_GRAY) &&
-                      (*(p-3) != *(p-4))) ||
-                      ((ping_info->color_type == PNG_COLOR_TYPE_RGB) &&
-                      (*(p-5) != *(p-6))) ||
-                      ((ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA) &&
-                      (*(p-5) != *(p-6)) || (*(p-7) != *(p-8))))
-                    {
-                      MagickWarning(DelegateWarning,
-                          "Lossy reduction of 16-bit PNG image to 8-bit",
-                          image->filename);
-                      reduction_warning=True;
-                    }
-#endif
               }
           }
           if (image->previous == (Image *) NULL)
@@ -2797,7 +2831,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 %    o image:  A pointer to an Image structure.
 %
 %
-%  To do (as of version 4.2.8, July 20 1999 -- glennrp -- see also
+%  To do (as of version 4.2.9, August 29, 1999 -- glennrp -- see also
 %    "To do" under ReadPNGImage):
 %
 %    Preserve all unknown and not-yet-handled known chunks found in input
@@ -2916,6 +2950,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     need_local_plte,
     need_matte,
     old_framing_mode,
+    rowbytes,
     save_image_depth,
     use_global_plte,
     x,
@@ -2987,6 +3022,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   need_matte=False;
   framing_mode=1;
   old_framing_mode=1;
+
   if (image_info->adjoin)
     {
       Image
@@ -2997,6 +3033,10 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         height,
         width;
 
+      unsigned short
+        red,
+        green,
+        blue;
       /*
         Determine image bounding box.
       */
@@ -3022,17 +3062,17 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       equal_physs=True;
       image_count=0;
       for (next_image=image; next_image != (Image *) NULL; )
-    {
-       if (next_image->page != (char *) NULL)
-         {
-           (void) ParseGeometry(next_image->page,&page_info.x,
-             &page_info.y, &width, &height);
-         }
+      {
+        if (next_image->page != (char *) NULL)
+          {
+            (void) ParseGeometry(next_image->page,&page_info.x,
+              &page_info.y, &width, &height);
+          }
         else
-         {
-           page_info.x=0;
-           page_info.y=0;
-         }
+          {
+            page_info.x=0;
+            page_info.y=0;
+          }
         if (need_geom)
           {
             if ((next_image->columns+page_info.x) > page_info.width)
@@ -3169,7 +3209,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         ../glennrp Feb 99.
      */
      /*
-        Write the MNG version 0.95 signature and MHDR chunk.
+        Write the MNG version 0.96 signature and MHDR chunk.
      */
      (void) WriteBlob(image,8,"\212MNG\r\n\032\n");
      MSBFirstWriteLong(image,28L);  /* chunk data length = 28 */
@@ -3311,33 +3351,25 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
          (void) WriteBlob(image,13,(char *) chunk);
          MSBFirstWriteLong(image,crc32(0,chunk,13));
        }
-
+     /*
+       Write MNG BACK chunk and global bKGD chunk
+     */
+     MSBFirstWriteLong(image,6L);
+     PNGType(chunk,mng_BACK);
+     red=(unsigned short) UpScale(image->background_color.red);
+     green=(unsigned short) UpScale(image->background_color.green);
+     blue=(unsigned short) UpScale(image->background_color.blue);
+     PNGShort(chunk+4,red);
+     PNGShort(chunk+6,green);
+     PNGShort(chunk+8,blue);
+     (void) WriteBlob(image,10,(char *) chunk);
+     MSBFirstWriteLong(image,crc32(0,chunk,10));
+     if (equal_backgrounds)
        {
-         /*
-           Write MNG BACK chunk and global bKGD chunk
-         */
-         unsigned short
-           red,
-           green,
-           blue;
-
          MSBFirstWriteLong(image,6L);
-         PNGType(chunk,mng_BACK);
-         red=(unsigned short) UpScale(image->background_color.red);
-         green=(unsigned short) UpScale(image->background_color.green);
-         blue=(unsigned short) UpScale(image->background_color.blue);
-         PNGShort(chunk+4,red);
-         PNGShort(chunk+6,green);
-         PNGShort(chunk+8,blue);
+         PNGType(chunk,mng_bKGD);
          (void) WriteBlob(image,10,(char *) chunk);
          MSBFirstWriteLong(image,crc32(0,chunk,10));
-         if (equal_backgrounds)
-           {
-             MSBFirstWriteLong(image,6L);
-             PNGType(chunk,mng_bKGD);
-             (void) WriteBlob(image,10,(char *) chunk);
-             MSBFirstWriteLong(image,crc32(0,chunk,10));
-           }
        }
      if (!need_local_plte && IsPseudoClass(image) && !all_images_are_gray)
        {
@@ -3519,17 +3551,22 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           ok_to_reduce=((((p->red >> 8) & 0xff) == (p->red & 0xff)) &&
             (((p->green >> 8) & 0xff) == (p->green & 0xff)) &&
             (((p->blue >> 8) & 0xff) == (p->blue & 0xff)) &&
-            (((p->index >> 8) & 0xff) == (p->index & 0xff)));
+            (((!image->matte || ((p->index >> 8) & 0xff) == (p->index & 0xff)))));
           if (!ok_to_reduce)
             {
               if (image_info->verbose)
                 {
-                  printf("Cannot reduce 16-bit samples to 8-bit because.\n");
+                  int ii;
+                  printf("Cannot reduce 16-bit samples to 8-bit because\n");
                   printf("packet %d has ",i);
-                  printf("  red=%x %x, ",p->red>>8, p->red&0xff);
-                  printf("green=%x %x, ",p->green>>8, p->green&0xff);
-                  printf(" blue=%x %x, ",p->blue>>8, p->blue&0xff);
-                  printf("alpha=%x %x.\n",p->index>>8, p->index&0xff);
+                  printf("  red=%04x, ",p->red);
+                  printf("green=%04x, ",p->green);
+                  printf(" blue=%04x",p->blue);
+                  if(image->matte)
+                     printf(", alpha=%04x",p->index);
+                  printf(".\n");
+                  printf("\nPackets:\n");
+                  p=image->pixels;
                 }
               break;
             }
@@ -3537,6 +3574,8 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         }
         if (ok_to_reduce)
           {
+            if (image_info->verbose)
+              printf("Reducing 16-bit samples to 8-bit.\n");
             ping_info->bit_depth=8;
             image->depth=8;
           }
@@ -3676,18 +3715,13 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               }
           }
       }
-    if (image_info->verbose)
-      {
-        printf("image->colors = %d\n",image->colors);
-        printf("ping_info->color_type = %d\n",ping_info->color_type);
-      }
     matte=image->matte;
     if (ping_info->valid & PNG_INFO_tRNS)
       image->matte=False;
     if (IsGrayImage(image))
       ping_info->color_type=PNG_COLOR_TYPE_GRAY;
     else
-      if (IsPseudoClass(image))
+      if (image->depth <= 8 && IsPseudoClass(image))
         {
           /*
             Set image palette.
@@ -3769,6 +3803,12 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             printf("background index = %d of %d\n",i, image->colors);
           ping_info->background.index=(unsigned short) i;
         }
+    if (image_info->verbose)
+      {
+        if(image->colors)
+          printf("image->colors = %d\n",image->colors);
+        printf("ping_info->color_type = %d\n",ping_info->color_type);
+      }
     image->matte=matte;
 #if defined(PNG_WRITE_sRGB_SUPPORTED)
     if (!have_write_global_srgb &&
@@ -3874,11 +3914,24 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     /*
       Allocate memory.
     */
-    ping_info->rowbytes=image->columns;
-    if (!IsPseudoClass(image))
-      ping_info->rowbytes*=(matte ? 4 : 3)*(image->depth >> 3);
+    rowbytes=image->columns;
+    if (image->depth <= 8)
+      {
+        if (IsGrayImage(image))
+          rowbytes*=(matte ? 2 : 1);
+        else
+          if(!IsPseudoClass(image))
+            rowbytes*=(matte ? 4 : 3);
+      }
+    else
+      {
+        if (IsGrayImage(image))
+          rowbytes*=(matte ? 4 : 2);
+        else
+          rowbytes*=(matte ? 8 : 6);
+      }
     png_pixels=(unsigned char *)
-      AllocateMemory(ping_info->rowbytes*image->rows*sizeof(Quantum));
+      AllocateMemory(rowbytes*image->rows*sizeof(Quantum));
     scanlines=(unsigned char **)
       AllocateMemory(image->rows*sizeof(unsigned char *));
     if ((png_pixels == (unsigned char *) NULL) ||
@@ -3888,7 +3941,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       Initialize image scanlines.
     */
     for (i=0; i < (int) image->rows; i++)
-      scanlines[i]=png_pixels+(ping_info->rowbytes*i);
+      scanlines[i]=png_pixels+(rowbytes*i);
     x=0;
     y=0;
     p=image->pixels;
@@ -3926,40 +3979,18 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       }
     else
       if (IsGrayImage(image))
-      {
-        for (i=0; i < (int) image->packets; i++)
         {
-          for (j=0; j <= ((int) p->length); j++)
-          {
-            WriteQuantum(Intensity(*p),q);
-            x++;
-            if (x == (int) image->columns)
-              {
-                if (image->previous == (Image *) NULL)
-                  if (QuantumTick(y,image->rows))
-                    ProgressMonitor(SaveImageText,y,image->rows);
-                x=0;
-                y++;
-                q=scanlines[y];
-              }
-          }
-          p++;
-        }
-      }
-      else
-        if (!IsPseudoClass(image))
+          if (image_info->verbose)
+            {
+              printf("Writing GrayImage, QuantumDepth=%d and image->depth=%d\n",
+                QuantumDepth,image->depth);
+              printf("columns=%d, rowbytes=%d\n",image->columns,rowbytes);
+            }
           for (i=0; i < (int) image->packets; i++)
           {
             for (j=0; j <= ((int) p->length); j++)
             {
-              WriteQuantum(p->red,q);
-              if (ping_info->color_type != PNG_COLOR_TYPE_GRAY_ALPHA)
-                {
-                  WriteQuantum(p->green,q);
-                  WriteQuantum(p->blue,q);
-                }
-              if (matte)
-                WriteQuantum(p->index,q);
+              WriteQuantum(Intensity(*p),q);
               x++;
               if (x == (int) image->columns)
                 {
@@ -3968,12 +3999,48 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                       ProgressMonitor(SaveImageText,y,image->rows);
                   x=0;
                   y++;
-                  if (y < (int) image->rows)
-                    q=scanlines[y];
+                  q=scanlines[y];
                 }
             }
             p++;
           }
+        }
+      else
+        {
+          if (image_info->verbose)
+            {
+               printf("Writing image, QuantumDepth=%d and image->depth=%d\n",
+                 QuantumDepth,image->depth);
+               printf("columns=%d, rowbytes=%d\n",image->columns,
+                 rowbytes);
+             }
+          if (image->depth > 8 || !IsPseudoClass(image))
+            for (i=0; i < (int) image->packets; i++)
+            {
+              for (j=0; j <= ((int) p->length); j++)
+              {
+                WriteQuantum(p->red,q);
+                if (ping_info->color_type != PNG_COLOR_TYPE_GRAY_ALPHA)
+                  {
+                    WriteQuantum(p->green,q);
+                    WriteQuantum(p->blue,q);
+                  }
+                if (matte)
+                  WriteQuantum(p->index,q);
+                x++;
+                if (x == (int) image->columns)
+                  {
+                    if (image->previous == (Image *) NULL)
+                      if (QuantumTick(y,image->rows))
+                        ProgressMonitor(SaveImageText,y,image->rows);
+                    x=0;
+                    y++;
+                    if (y < (int) image->rows)
+                      q=scanlines[y];
+                  }
+              }
+              p++;
+            }
         else
           for (i=0; i < (int) image->packets; i++)
           {
@@ -3997,6 +4064,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             }
             p++;
           }
+       }
     png_write_image(ping,scanlines);
     /*
       Generate text chunks.

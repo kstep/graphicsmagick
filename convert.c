@@ -356,8 +356,8 @@ static void Usage(const char *client_name)
   (void) printf(
     "image type as the filename suffix (i.e. image.ps).  Specify 'file' as\n");
   (void) printf("'-' for standard input or output.\n");
-  ListMagickInfo(stdout);
-  ListDelegateInfo(stdout);
+  ListMagickInfo((FILE *) NULL);
+  ListDelegateInfo((FILE *) NULL);
   Exit(0);
 }
 
@@ -1658,7 +1658,7 @@ int main(int argc,char **argv)
       break;
   }
   if (image_info.verbose)
-    DescribeImage(image,stdout,False);
+    DescribeImage(image,(FILE *) NULL,False);
   DestroyDelegateInfo();
   Exit(status ? 0 : errno);
   return(False);

@@ -1947,8 +1947,12 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
             break;
           q++;
         }
-        (void) fprintf(file,"  matte: (%3d,%3d,%3d) #%02x%02x%02x\n",
-          q->red,q->green,q->blue,q->red,q->green,q->blue);
+        if (image->depth == 8)
+          (void) fprintf(file,"  matte: (%3d,%3d,%3d) #%02x%02x%02x\n",
+            q->red,q->green,q->blue,q->red,q->green,q->blue);
+        else
+          (void) fprintf(file,"  matte: (%5d,%5d,%5d) #%04x%04x%04x\n",
+            q->red,q->green,q->blue,q->red,q->green,q->blue);
       }
   if (image->class == DirectClass)
     (void) fprintf(file,"  colors: %lu\n",number_colors);

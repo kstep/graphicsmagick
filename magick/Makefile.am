@@ -61,12 +61,13 @@ EXTRA_libMagick_la_SOURCES = mac.c nt.c vms.c
 bin_SCRIPTS = Magick-config
 
 # Headers which are installed
-include_HEADERS = api.h blob.h classify.h compress.h config.h defines.h \
-	delegates.h error.h gems.h image.h magick.h memory.h mng.h monitor.h \
-	PreRvIcccm.h quantize.h utility.h version.h widget.h xwindows.h
+include_HEADERS = magick.h api.h classify.h image.h quantize.h gems.h \
+	blob.h compress.h utility.h monitor.h error.h memory.h delegates.h \
+	version.h config.h
 
 # Headers which are not installed but which are distributed
-noinst_HEADERS = animate.h display.h mac.h nt.h vms.h
+noinst_HEADERS = animate.h display.h mac.h nt.h vms.h defines.h mng.h \
+	PreRvIcccm.h widget.h xwindows.h
 
 # Additional files to distribute
 EXTRA_DIST = Imakefile Magick-config.in Make.com

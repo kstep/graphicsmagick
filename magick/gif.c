@@ -926,13 +926,23 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
         /*
           Create matte channel.
         */
+        ColorPacket
+          transparent_color;
+
+        transparent_color=
+          image->colormap[Min(transparency_index,image->colors-1)];
         q=image->pixels;
         for (i=0; i < (int) image->packets; i++)
         {
           if (q->index != (unsigned short) transparency_index)
             q->index=Opaque;
           else
-            q->index=Transparent;
+            {
+              q->index=Transparent;
+              q->red=transparent_color.red;
+              q->green=transparent_color.green;
+              q->blue=transparent_color.blue;
+            }
           q++;
         }
         transparency_index=(-1);

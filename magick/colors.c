@@ -1236,7 +1236,11 @@ static void Histogram(CubeInfo *color_cube,const NodeInfo *node_info,FILE *file)
       p=node_info->list;
       for (i=0; i < (int) node_info->number_unique; i++)
       {
+#if (QuantumDepth == 8)
         (void) fprintf(file,"%10lu: (%3d,%3d,%3d)  #%02x%02x%02x",
+#else
+        (void) fprintf(file,"%10lu: (%5d,%5d,%5d)  #%04x%04x%04x",
+#endif
           p->count,p->red,p->green,p->blue,(unsigned int) p->red,
           (unsigned int) p->green,(unsigned int) p->blue);
         (void) fprintf(file,"  ");
