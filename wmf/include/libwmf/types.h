@@ -23,7 +23,8 @@
 #include <stdio.h>
 #include <sys/types.h>
 
-#include <freetype/freetype.h>
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 #include <libwmf/fund.h>
 
@@ -158,6 +159,9 @@ typedef struct _wmfStream              wmfStream;
 
 typedef struct _wmfImage               wmfImage;
 
+typedef struct _wmfAttributes          wmfAttributes;
+typedef struct _wmfAttributeStore      wmfAttributeStore;
+
 /* API Structure defs
  */
 
@@ -202,6 +206,33 @@ struct _wmfFontMap
 	char* italic;
 	char* bold;
 	char* bolditalic;
+};
+
+/**
+ * Structure containing list of XML attributes
+ */
+struct _wmfAttributes
+{	char * name;
+
+	char ** atts;
+
+	unsigned long count;
+	unsigned long max;
+
+	unsigned char * buffer;
+
+	unsigned long length;
+	unsigned long offset;
+};
+
+/**
+ * Structure containing list of lists of XML attributes
+ */
+struct _wmfAttributeStore
+{	wmfAttributes * attrlist;
+
+	unsigned long count;
+	unsigned long max;
 };
 
 /**
@@ -268,6 +299,8 @@ struct _wmfAPI_Options
 	char* xtra_fontmap_file;
 	char* gs_fontmap_file;
 
+	char* write_file;
+
 	void (*function) (wmfAPI*);
 
 	char*  module;
@@ -290,6 +323,10 @@ struct _wmfAPI
 
 	FILE* debug_out; /* Output streams for debugger & error reports... */
 	FILE* error_out;
+
+	wmfAttributeStore store;
+
+	void* write_data; /* Output stream data for --wmf-write=<file> */
 
 	void* user_data; /* These are hooks for data to hang on to... */
 

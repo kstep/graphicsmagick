@@ -1,4 +1,12 @@
-SUBDIRS = . src include fonts doc
+if LIBWMF_BUILD_ALL
+DIRHEAVY = . src include fonts doc
+else
+DIRHEAVY = . src include
+endif
+
+DIST_SUBDIRS = . src include fonts doc
+
+SUBDIRS = $(DIRHEAVY)
 
 bin_SCRIPTS = libwmf-config
 
@@ -23,4 +31,5 @@ WMFEXAMPLES = \
 
 EXTRA_DIST = AUTHORS BUILDING CREDITS NEWS README $(WMFEXAMPLES) \
 	libwmf.spec \
-	patches/acconfig.h
+	patches/acconfig.h \
+	ac-helpers/pkg-config/pkg.m4

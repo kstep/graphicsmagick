@@ -20,10 +20,10 @@
 #ifndef WMF_FONT_H
 #define WMF_FONT_H
 
-#include <freetype/freetype.h>
-#include <freetype/ftglyph.h>
+#include <ft2build.h>
 
-
+#include FT_FREETYPE_H
+#include FT_GLYPH_H
 
 static void ipa_font_add_wmf (wmfAPI*,wmfFontMap*);
 static void ipa_font_add_sub (wmfAPI*,wmfMapping*);
@@ -49,7 +49,7 @@ struct _EXML_FontData
 };
 #endif /* HAVE_EXPAT */
 
-#ifdef HAVE_XML2
+#ifdef HAVE_LIBXML2
 static void xml2_start (void*,const char*,const char**);
 static void xml2fontmap_read (wmfAPI*,wmfXML_FontData*,char*);
 
@@ -60,7 +60,7 @@ struct _XML2_FontData
 
 	wmfXML_FontData* FD;
 };
-#endif /* HAVE_XML2 */
+#endif /* HAVE_LIBXML2 */
 
 static void            ipa_font_gs_file (wmfAPI* API,wmfGS_FontData* FD,char* file);
 static void            ipa_font_gs_add (wmfAPI* API,wmfGS_FontData* FD,char* name,char* alias);
