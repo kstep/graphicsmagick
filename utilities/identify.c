@@ -160,6 +160,7 @@ int IdentifyUtility(int argc,char **argv)
   char
     *format,
     *option,
+    *q,
     *text;
 
   double
@@ -216,7 +217,7 @@ int IdentifyUtility(int argc,char **argv)
   image_info=CloneImageInfo((ImageInfo *) NULL);
   image=(Image *) NULL;
   number_images=0;
-	status=True;
+  status=True;
   /*
     Identify an image.
   */
@@ -355,10 +356,13 @@ int IdentifyUtility(int argc,char **argv)
     */
     (void) strncpy(image_info->filename,argv[i],MaxTextExtent-1);
     if (format != (char *) NULL)
-			if ((strchr(format,'k') != (char *) NULL) ||
-          (strchr(format,'#') != (char *) NULL))
-        image_info->verbose=True;
-		if (image_info->verbose)
+      for (q=strchr(format,'%'); q != (char *) NULL; q=strchr(q+1,'%'))
+        if ((*(q+1) == 'k') || (*(q+1) == '#'))
+          {
+            image_info->verbose=True;
+            break;
+          }
+    if (image_info->verbose)
       image=ReadImage(image_info,&exception);
     else
       image=PingImage(image_info,&exception);
