@@ -341,7 +341,7 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-Blob.lo Blob.o : Blob.cpp Magick++/Blob.h Magick++/Include.h
+Blob.lo Blob.o : Blob.cpp Magick++/Include.h Magick++/Blob.h
 Color.lo Color.o : Color.cpp Magick++/Color.h Magick++/Include.h \
 	Magick++/Functions.h Magick++/LastError.h
 Drawable.lo Drawable.o : Drawable.cpp Magick++/Drawable.h \

@@ -14,6 +14,16 @@
 // user code.
 //
 
+#if defined(__BORLANDC__)
+//
+// The following includes need to be specified to compile with Borland
+// C++ Builder 4.0.
+//
+#include <vcl.h>
+#include <stdio.h>
+
+#endif // defined(__BORLANDC__)
+
 // If <clocale> is not included, then SPARC Works 5.0 blows up when
 // including locale.h
 #include <clocale>

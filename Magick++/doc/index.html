@@ -36,11 +36,28 @@ changes may be expected to implemented APIs based on operational experience.
 <br>&nbsp;
 <center>
 <h3>
-Installation</h3></center>
-Download the latest Magick++ library sources from the master site (<a href="http://web2.airmail.net/bfriesen/Magick++/index.html">http://web2.airmail.net/bfriesen/Magick++/</a>)
-or use the release of Magick++ which is co-packaged as a subdirectory of
-ImageMagick.
+Obtaining Magick++</h3></center>
+You may download Magick++ source packages from this page, retrieve the
+latest sources via anonymous <a href="http://www.cyclic.com/">CVS</a>,
+or use the copy of Magick++ which is co-packaged as a subdirectory of the
+<a href="http://www.wizards.dupont.com/cristy/ImageMagick.html">ImageMagick</a>
+source releases.
+<h4>
+Magick++ Source Packages</h4>
+
 <ul>
+<li>
+Version 0.8.6 (tested with ImageMagick 4.2.9)</li>
+
+<ul>
+<li>
+<a href="Magick++-0.8.6.tar.gz">Magick++-0.8.6.tar.gz</a> (gzip'ed tar
+format, 472K)</li>
+
+<li>
+<a href="Magick++-0.8.6.zip">Magick++-0.8.6.zip</a> (PK-ZIP format, 504K)</li>
+</ul>
+
 <li>
 Version 0.8.5 (tested with ImageMagick 4.2.8)</li>
 
@@ -65,9 +82,31 @@ format, 432K)</li>
 <a href="Magick++-0.8.4.zip">Magick++-0.8.4.zip</a> (PK-ZIP format, 464K)</li>
 </ul>
 </ul>
-Then follow these <a href="Install.html">installation instructions</a>
-for UNIX and Windows.
-<br>&nbsp;
+
+<h4>
+CVS Source Access</h4>
+Magick++ sources may be retrieved via remote CVS. Remote CVS is valuable
+for developers and for those who must maintain the most current sources.&nbsp;
+Check out files from the CVS server (into subdirectory "Magick++") by performing
+these steps:
+<p><tt>cvs -d ":pserver:anonymous@cvs.simplesystems.org:/cvsroot" login</tt>
+<p>Provide the password "<tt>anonymous</tt>" to the " CVS password:" prompt,
+and then execute
+<p><tt>cvs -d ":pserver:anonymous@cvs.simplesystems.org:/cvsroot" co Magick++</tt>
+<p>to check out the Magick++ files.&nbsp; You may also set your CVSROOT
+environment variable to ":<tt>pserver:anonymous@cvs.simplesystems.org:/cvsroot</tt>"
+prior to executing the commands in order to avoid specifying the -d option.
+<p>The CVS repository version of Magick++ does not include the configure
+script, Makefile.in, or libtool files required to build under Unix. To
+overcome this, ensure that you have GNU libtool 1.1.3, automake 1.4, and
+autoconf 2.13 installed and then execute
+<p><tt>./bootstrap</tt><tt></tt>
+<p>in the Magick++ directory prior to continuing with installation.
+<center>
+<h3>
+Installation</h3></center>
+Once you have the sources available, follow these detailed <a href="Install.html">installation
+instructions</a> for UNIX and Windows.
 <center>
 <h3>
 Documentation</h3></center>
