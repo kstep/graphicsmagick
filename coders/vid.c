@@ -144,7 +144,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   image=(Image *) NULL;
   clone_info=CloneImageInfo(image_info);
-  DisengageBlob(clone_info->blob);
+  RewindBlob(clone_info->blob);
   for (i=0; i < number_files; i++)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);

@@ -431,7 +431,7 @@ ExceptionInfo exception;
 Image *image2;
 
 if ((clone_info=CloneImageInfo(image_info)) == NULL) return(image);
-DisengageBlob(clone_info->blob);
+RewindBlob(clone_info->blob);
 TemporaryFilename((char *) clone_info->filename);
 
 if( (f=fopen(clone_info->filename,"wb"))==NULL) goto FINISH;

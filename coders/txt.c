@@ -170,7 +170,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         *clone_info;
 
       clone_info=CloneImageInfo(image_info);
-      DisengageBlob(clone_info->blob);
+      RewindBlob(clone_info->blob);
       (void) strcpy(clone_info->filename,image_info->texture);
       texture=ReadImage(clone_info,exception);
       if (texture != (Image *) NULL)

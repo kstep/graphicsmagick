@@ -134,7 +134,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   image=(Image *) NULL;
   clone_info=CloneImageInfo(image_info);
-  DisengageBlob(clone_info->blob);
+  RewindBlob(clone_info->blob);
   TemporaryFilename(clone_info->filename);
   file=fopen(clone_info->filename,WriteBinaryType);
   if (file == (FILE *) NULL)
