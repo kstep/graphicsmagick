@@ -2122,31 +2122,21 @@ namespace Magick
 		    const std::string &imageSpec_,
 		    bool adjoin_ = true ) {
 
-    // Save original image settings
-    std::string origFileName = first_->fileName();
-    std::string origMagick = first_->magick();
-    bool origAdjoin = first_->adjoin();
-
-    first_->fileName( imageSpec_ );
     first_->adjoin( adjoin_ );
 
     MagickLib::ExceptionInfo exceptionInfo;
     MagickLib::GetExceptionInfo( &exceptionInfo );
 
     linkImages( first_, last_ );
-    int errorStat = MagickLib::WriteImage( first_->imageInfo(),
-					   first_->image() );
+    int errorStat = MagickLib::WriteImages( first_->imageInfo(),
+                                            first_->image(),
+                                            imageSpec_.c_str(),
+                                            &exceptionInfo );
     unlinkImages( first_, last_ );
-
-    // Restore original image settings
-    first_->fileName( origFileName );
-    first_->magick( origMagick );
-    first_->adjoin( origAdjoin );
 
     if ( errorStat != false )
       return;
 
-    MagickLib::GetImageException( first_->image(), &exceptionInfo );
     throwException( exceptionInfo );
   }
   // Write images to BLOB
@@ -2155,9 +2145,6 @@ namespace Magick
 		    InputIterator last_,
 		    Blob *blob_,
 		    bool adjoin_ = true) {
-    // Save original image settings
-    std::string origMagick = first_->magick();
-    bool origAdjoin = first_->adjoin();
 
     first_->adjoin( adjoin_ );
 
@@ -2174,14 +2161,8 @@ namespace Magick
 
     unlinkImages( first_, last_ );
 
-    // Restore original image settings
-    first_->magick( origMagick );
-    first_->adjoin( origAdjoin );
-
     throwException( exceptionInfo );
   }
-
-
 
 } // namespace Magick
 

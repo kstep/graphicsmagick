@@ -1,3 +1,8 @@
+2003-01-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/STL.h (writeImages): Should have been invoking
+ 	WriteImages rather than WriteImage!
+
 2003-01-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Include.h: Add HSL and HWB colorspace
