@@ -1,28 +1,26 @@
 2002-08-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-  * Added --disable-installed option to configure to support
-    building an ImageMagick which is not installed via
-    hard-coded paths. This is intended to be used for the
-    ad-hoc binary distributions built by ImageMagick Studio.
-  * The UseInstalledImageMagick define is to be used by builds
-    formally installed under a prefix, or via the Windows
-    registry.
+  * Added --disable-installed option to configure to support building
+    an ImageMagick which is not installed via hard-coded paths. This
+    is intended to be used for the ad-hoc binary distributions built by
+    ImageMagick Studio.
+  * The UseInstalledImageMagick define is to be used by builds formally
+    installed under a prefix, or via the Windows registry.
   * Replaced GetMagickConfigurePath() with the three functions
     FindConfigurationFile(), FindFontFile(), and FindModuleFile().
-  * Re-implemented InitializeMagick() to try harder at finding
-    the uninstalled ImageMagick without the help of MAGICK_HOME.
-    In the future, it can try even harder.
-  * Unix binaries packages (built with --disable-installed) should
-    now work using the same file layout as the distribution file.
-    There is no longer a need to put all files in the same directory.
+  * Re-implemented InitializeMagick() to try harder at finding the
+    uninstalled ImageMagick without the help of MAGICK_HOME.  In the future,
+    it can try even harder.
+  * Unix binaries packages (built with --disable-installed) should now
+    work using the same file layout as the distribution file.  There is
+    no longer a need to put all files in the same directory.
 
 2002-08-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-  * Under Windows, define UseInstalledImageMagick to locate
-    components using the registry rather than scanning the
-    filesystem.
+  * Under Windows, define UseInstalledImageMagick to locate components
+    using the registry rather than scanning the filesystem.
 
 2002-08-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-  * Added DrawSetTextEncoding() function to specify text
-    encoding (e.g. "UTF-8").
+  * Added DrawSetTextEncoding() function to specify text encoding
+    (e.g. "UTF-8").
 
 2002-08-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Extend 'convert -list type' output so it prints more details.
@@ -40,9 +38,9 @@
     filename to the text.
 
 2002-08-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-  * Render Postscript via Ghostscript DLL (gsdll32.dll) under
-    Windows if it can be loaded.  Only ps.c currently uses
-    this to verify there are no problems.
+  * Render Postscript via Ghostscript DLL (gsdll32.dll) under Windows
+    if it can be loaded.  Only ps.c currently uses this to verify there
+    are no problems.
 
 2002-08-14  Cristy  <cristy@mystic.es.dupont.com>
   * Added 16-bit raw write support to PPM.
@@ -58,15 +56,15 @@
   * Added experimental 32-bit QuantumDepth pixel support.
   * Stream support was not thread-safe (bug report by William Radcliffe).
   * Push/PopImagePixels() now recognizes the proper buffer length
-	  (previously it operated on one scanline at a time).
+    (previously it operated on one scanline at a time).
   * Deprecated Down/Upscale defines.  Replaced them with Scale*ToQuantum()
     and ScaleQuantumTo*() methods.
     
 2002-08-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Changed configure argument --disable-16bit-pixel to
-    --with-quantum-depth in order to make its usage more
-    straightforward and generic.  Build ImageMagick using
-    an eight-bit quantum via --with-quantum-depth=8.
+    --with-quantum-depth in order to make its usage more straightforward
+    and generic.  Build ImageMagick using an eight-bit quantum via
+    --with-quantum-depth=8.
   * Magick++ library builds as a DLL under Windows now.
 
 2002-07-31  Cristy  <cristy@mystic.es.dupont.com>
