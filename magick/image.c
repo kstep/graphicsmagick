@@ -1583,9 +1583,6 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
         case ModulateCompositeOp:
         {
-          double
-            percent_brightness;
-
           int
             offset;
 
