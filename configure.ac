@@ -1,4 +1,3 @@
-dnl Process this file with autoconf to produce a configure script..
 #
 # ImageMagick Configure Script
 #
@@ -33,15 +32,35 @@ CPPFLAGS_INITIAL=$CPPFLAGS
 LDFLAGS_INITIAL=$LDFLAGS
 LIBS_INITIAL=$LIBS
 
+# Set native_win32_build to 'yes' if building under MinGW
+native_win32_build='no'
+dirsep='/'
+case "${host_os}" in
+  mingw* )
+    native_win32_build='yes'
+    dirsep='\\'
+    ;;
+esac
+AM_CONDITIONAL(WIN32, test "$native_win32_build" != 'no')
+
 #
 # Evaluate shell variable equivalents to Makefile directory variables
 #
-# The following is extracted from AC_OUTPUT since we need the values of
-# prefix and exec_prefix earlier.
-#
-test "x$prefix" = xNONE && prefix=$ac_default_prefix
+if test "x$prefix" = xNONE
+then
+  if test "$native_win32_build" = 'yes'
+  then
+    prefix='c:\\ImageMagick\\'
+  else
+    prefix=$ac_default_prefix
+  fi
+fi
 # Let make expand exec_prefix.
-test "x$exec_prefix" = xNONE && exec_prefix='${prefix}'
+if test "x$exec_prefix" = xNONE
+then
+  exec_prefix='${prefix}'
+fi
+
 #
 eval "eval PREFIX_DIR=${prefix}"
 AC_SUBST(PREFIX_DIR)
@@ -87,18 +106,12 @@ AC_PROG_LN_S
 AC_EXEEXT
 AC_OBJEXT
 
-native_win32_build='no'
 LIB_GDI32=''
-dirsep='/'
-case "${host_os}" in
-  mingw* )
-    native_win32_build='yes'
-    LIB_GDI32='-lgdi32'
-    AC_SUBST(LIB_GDI32)
-    dirsep='\\'
-    ;;
-esac
-AM_CONDITIONAL(WIN32, test "$native_win32_build" != 'no')
+if test "$native_win32_build" = 'yes'
+then
+  LIB_GDI32='-lgdi32'
+  AC_SUBST(LIB_GDI32)
+fi
 
 if test "${GCC}" != "yes"
 then
@@ -166,9 +179,15 @@ then
     DLLDFLAGS=-export-dynamic
     AC_SUBST(DLLDFLAGS)
   fi
-   im_cv_x_coder_modules="${LIB_DIR}${dirsep}ImageMagick${dirsep}modules${dirsep}coders${dirsep}"
+  if test "$native_win32_build" = 'yes'
+  then
+    im_cv_x_coder_modules="${prefix}lib${dirsep}ImageMagick${dirsep}modules${dirsep}coders${dirsep}"
+  else
+    im_cv_x_coder_modules="${LIB_DIR}/ImageMagick/modules/coders/"
+  fi
   AC_DEFINE_UNQUOTED(MagickModulesPath,"$im_cv_x_coder_modules",Location of coder modules)
 fi
+
 
 # Enable build using delegate libraries built in subdirectories rather than installed
 # delegate libraries (bzlib fpx hdf jasper jbig jpeg lcms mpeg2 png tiff ttf wmf xml zlib)
@@ -192,6 +211,7 @@ fi
 # checking and generation useful to package maintainers.  This is made an
 # option to avoid confusing end users.
 AM_MAINTAINER_MODE
+
 
 # Enable ccmalloc memory debugging support
 AC_ARG_ENABLE(ccmalloc,
@@ -442,6 +462,32 @@ AC_SUBST(LIBSTDCLDFLAGS)
 
 # Does gcc required -traditional?
 AC_PROG_GCC_TRADITIONAL
+
+#
+# Set defines required to build DLLs and modules using MinGW
+#
+# libMagick: _DLL _MAGICK_MOD_ _MAGICKLIB_
+# module:    _DLL 
+MODULE_EXTRA_CPPFLAGS=''
+LIBRARY_EXTRA_CPPFLAGS=''
+if test "$native_win32_build" = 'yes'
+then
+  if test "$libtool_build_shared_libs" = 'yes'
+  then
+    CPPFLAGS="$CPPFLAGS -D_DLL"
+    LIBRARY_EXTRA_CPPFLAGS="$LIBRARY_EXTRA_CPPFLAGS -D_MAGICKLIB_"
+  fi
+  if test "$with_modules" = 'yes'
+  then
+    LIBRARY_EXTRA_CPPFLAGS="$LIBRARY_EXTRA_CPPFLAGS -D_MAGICK_MOD_"  
+  fi
+  if test "$with_threads" = 'yes'
+  then
+     CPPFLAGS="$CPPFLAGS -D_MT"
+  fi
+fi
+AC_SUBST(MODULE_EXTRA_CPPFLAGS)
+AC_SUBST(LIBRARY_EXTRA_CPPFLAGS)
 
 #
 # Check for large file support
@@ -1503,7 +1549,12 @@ AC_SUBST(LIB_WMF_DEPS)
 
 # Directory where configured ImageMagick/delegates.mgk lives
 # (default /usr/local/lib/ImageMagick).
-MagickLibPath="${LIB_DIR}${dirsep}ImageMagick${dirsep}"
+if test "$native_win32_build" = 'yes'
+then
+  MagickLibPath="${prefix}lib${dirsep}ImageMagick${dirsep}"
+else
+  MagickLibPath="${LIB_DIR}/ImageMagick/"
+fi
 AC_DEFINE_UNQUOTED(MagickLibPath,"$MagickLibPath",Directory where architecture-dependent files live.)
 
 # Directory where magic.mgk lives. (default /usr/local/share/ImageMagick)
@@ -1511,7 +1562,12 @@ AC_ARG_WITH(share-path,
 [  --with-share-path=DIR   Alternate path to share directory
                           (default share/ImageMagick)],
  MagickSharePath="${with_share_path}${dirsep}",
- MagickSharePath="${DATA_DIR}${dirsep}ImageMagick${dirsep}")
+ if test "$native_win32_build" = 'yes'
+ then
+   MagickSharePath="${prefix}share${dirsep}ImageMagick${dirsep}"
+ else
+   MagickSharePath="${DATA_DIR}/ImageMagick/"
+ fi)
 AC_DEFINE_UNQUOTED(MagickSharePath,"$MagickSharePath",Directory where architecture-independent files live.)
 AC_SUBST(MagickSharePath)
 

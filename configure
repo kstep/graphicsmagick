@@ -1901,15 +1901,44 @@ CPPFLAGS_INITIAL=$CPPFLAGS
 LDFLAGS_INITIAL=$LDFLAGS
 LIBS_INITIAL=$LIBS
 
+# Set native_win32_build to 'yes' if building under MinGW
+native_win32_build='no'
+dirsep='/'
+case "${host_os}" in
+  mingw* )
+    native_win32_build='yes'
+    dirsep='\\'
+    ;;
+esac
+
+
+if test "$native_win32_build" != 'no'; then
+  WIN32_TRUE=
+  WIN32_FALSE='#'
+else
+  WIN32_TRUE='#'
+  WIN32_FALSE=
+fi
+
+
 #
 # Evaluate shell variable equivalents to Makefile directory variables
 #
-# The following is extracted from AC_OUTPUT since we need the values of
-# prefix and exec_prefix earlier.
-#
-test "x$prefix" = xNONE && prefix=$ac_default_prefix
+if test "x$prefix" = xNONE
+then
+  if test "$native_win32_build" = 'yes'
+  then
+    prefix='c:\\ImageMagick\\'
+  else
+    prefix=$ac_default_prefix
+  fi
+fi
 # Let make expand exec_prefix.
-test "x$exec_prefix" = xNONE && exec_prefix='${prefix}'
+if test "x$exec_prefix" = xNONE
+then
+  exec_prefix='${prefix}'
+fi
+
 #
 eval "eval PREFIX_DIR=${prefix}"
 
@@ -3267,27 +3296,12 @@ fi
 
 
 
-native_win32_build='no'
 LIB_GDI32=''
-dirsep='/'
-case "${host_os}" in
-  mingw* )
-    native_win32_build='yes'
-    LIB_GDI32='-lgdi32'
+if test "$native_win32_build" = 'yes'
+then
+  LIB_GDI32='-lgdi32'
 
-    dirsep='\\'
-    ;;
-esac
-
-
-if test "$native_win32_build" != 'no'; then
-  WIN32_TRUE=
-  WIN32_FALSE='#'
-else
-  WIN32_TRUE='#'
-  WIN32_FALSE=
 fi
-
 
 if test "${GCC}" != "yes"
 then
@@ -3744,7 +3758,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 3747 "configure"' > conftest.$ac_ext
+  echo '#line 3761 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -7650,7 +7664,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7653 "configure"
+#line 7667 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -7748,7 +7762,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7751 "configure"
+#line 7765 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -10895,7 +10909,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 10898 "configure"
+#line 10912 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -10993,7 +11007,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 10996 "configure"
+#line 11010 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13655,7 +13669,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 13658 "configure"
+#line 13672 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13753,7 +13767,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 13756 "configure"
+#line 13770 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -14745,13 +14759,19 @@ _ACEOF
     DLLDFLAGS=-export-dynamic
 
   fi
-   im_cv_x_coder_modules="${LIB_DIR}${dirsep}ImageMagick${dirsep}modules${dirsep}coders${dirsep}"
+  if test "$native_win32_build" = 'yes'
+  then
+    im_cv_x_coder_modules="${prefix}lib${dirsep}ImageMagick${dirsep}modules${dirsep}coders${dirsep}"
+  else
+    im_cv_x_coder_modules="${LIB_DIR}/ImageMagick/modules/coders/"
+  fi
 
 cat >>confdefs.h <<_ACEOF
 #define MagickModulesPath "$im_cv_x_coder_modules"
 _ACEOF
 
 fi
+
 
 # Enable build using delegate libraries built in subdirectories rather than installed
 # delegate libraries (bzlib fpx hdf jasper jbig jpeg lcms mpeg2 png tiff ttf wmf xml zlib)
@@ -14801,6 +14821,7 @@ else
 fi
 
   MAINT=$MAINTAINER_MODE_TRUE
+
 
 
 
@@ -15267,6 +15288,32 @@ echo "${ECHO_T}$ac_cv_prog_gcc_traditional" >&6
     CC="$CC -traditional"
   fi
 fi
+
+
+#
+# Set defines required to build DLLs and modules using MinGW
+#
+# libMagick: _DLL _MAGICK_MOD_ _MAGICKLIB_
+# module:    _DLL
+MODULE_EXTRA_CPPFLAGS=''
+LIBRARY_EXTRA_CPPFLAGS=''
+if test "$native_win32_build" = 'yes'
+then
+  if test "$libtool_build_shared_libs" = 'yes'
+  then
+    CPPFLAGS="$CPPFLAGS -D_DLL"
+    LIBRARY_EXTRA_CPPFLAGS='-D_MAGICKLIB_'
+  fi
+  if test "$with_modules" = 'yes'
+  then
+    LIBRARY_EXTRA_CPPFLAGS="$LIBRARY_EXTRA_CPPFLAGS -D_MAGICK_MOD_"
+  fi
+  if test "$with_threads" = 'yes'
+  then
+     CPPFLAGS="$CPPFLAGS -D_MT"
+  fi
+fi
+
 
 
 #
@@ -27293,7 +27340,12 @@ fi
 
 # Directory where configured ImageMagick/delegates.mgk lives
 # (default /usr/local/lib/ImageMagick).
-MagickLibPath="${LIB_DIR}${dirsep}ImageMagick${dirsep}"
+if test "$native_win32_build" = 'yes'
+then
+  MagickLibPath="${prefix}lib${dirsep}ImageMagick${dirsep}"
+else
+  MagickLibPath="${LIB_DIR}/ImageMagick/"
+fi
 
 cat >>confdefs.h <<_ACEOF
 #define MagickLibPath "$MagickLibPath"
@@ -27307,7 +27359,12 @@ if test "${with_share_path+set}" = set; then
   withval="$with_share_path"
   MagickSharePath="${with_share_path}${dirsep}"
 else
-  MagickSharePath="${DATA_DIR}${dirsep}ImageMagick${dirsep}"
+  if test "$native_win32_build" = 'yes'
+ then
+   MagickSharePath="${prefix}share${dirsep}ImageMagick${dirsep}"
+ else
+   MagickSharePath="${DATA_DIR}/ImageMagick/"
+ fi
 fi;
 
 cat >>confdefs.h <<_ACEOF
@@ -29280,17 +29337,17 @@ fi
 
 DEFS=-DHAVE_CONFIG_H
 
-if test -z "${AMDEP_TRUE}" && test -z "${AMDEP_FALSE}"; then
-  { { echo "$as_me:$LINENO: error: conditional \"AMDEP\" was never defined.
-Usually this means the macro was only invoked conditionally." >&5
-echo "$as_me: error: conditional \"AMDEP\" was never defined.
-Usually this means the macro was only invoked conditionally." >&2;}
-   { (exit 1); exit 1; }; }
-fi
 if test -z "${WIN32_TRUE}" && test -z "${WIN32_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"WIN32\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"WIN32\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${AMDEP_TRUE}" && test -z "${AMDEP_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"AMDEP\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"AMDEP\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -30009,6 +30066,8 @@ s,@ac_ct_STRIP@,$ac_ct_STRIP,;t t
 s,@INSTALL_STRIP_PROGRAM@,$INSTALL_STRIP_PROGRAM,;t t
 s,@AWK@,$AWK,;t t
 s,@SET_MAKE@,$SET_MAKE,;t t
+s,@WIN32_TRUE@,$WIN32_TRUE,;t t
+s,@WIN32_FALSE@,$WIN32_FALSE,;t t
 s,@PREFIX_DIR@,$PREFIX_DIR,;t t
 s,@EXEC_PREFIX_DIR@,$EXEC_PREFIX_DIR,;t t
 s,@BIN_DIR@,$BIN_DIR,;t t
@@ -30041,8 +30100,6 @@ s,@CPP@,$CPP,;t t
 s,@LD@,$LD,;t t
 s,@LN_S@,$LN_S,;t t
 s,@LIB_GDI32@,$LIB_GDI32,;t t
-s,@WIN32_TRUE@,$WIN32_TRUE,;t t
-s,@WIN32_FALSE@,$WIN32_FALSE,;t t
 s,@INCLTDL@,$INCLTDL,;t t
 s,@LIBLTDL@,$LIBLTDL,;t t
 s,@ECHO@,$ECHO,;t t
@@ -30071,6 +30128,8 @@ s,@WITH_PERL_STATIC_FALSE@,$WITH_PERL_STATIC_FALSE,;t t
 s,@WITH_PERL_DYNAMIC_TRUE@,$WITH_PERL_DYNAMIC_TRUE,;t t
 s,@WITH_PERL_DYNAMIC_FALSE@,$WITH_PERL_DYNAMIC_FALSE,;t t
 s,@LIBSTDCLDFLAGS@,$LIBSTDCLDFLAGS,;t t
+s,@MODULE_EXTRA_CPPFLAGS@,$MODULE_EXTRA_CPPFLAGS,;t t
+s,@LIBRARY_EXTRA_CPPFLAGS@,$LIBRARY_EXTRA_CPPFLAGS,;t t
 s,@LIB_LF@,$LIB_LF,;t t
 s,@LIBOBJS@,$LIBOBJS,;t t
 s,@WITH_MAGICK_PLUS_PLUS_TRUE@,$WITH_MAGICK_PLUS_PLUS_TRUE,;t t
