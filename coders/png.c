@@ -95,7 +95,7 @@
 /*
   Establish thread safety.
   setjmp/longjmp is claimed to be safe on these platforms:
-  setjmp/longjmp is allegged to be unsafe on these platforms:
+  setjmp/longjmp is alleged to be unsafe on these platforms:
 */
 #ifndef SETJMP_IS_THREAD_SAFE
 #define PNG_SETJMP_NOT_THREAD_SAFE
@@ -1099,7 +1099,7 @@ static void png_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
         {
           char
             msg[MaxTextExtent];
- 
+
           sprintf(msg,"Expected %lu bytes; found %lu bytes",
              (unsigned long) length,(unsigned long) check);
           png_warning(png_ptr,msg);
@@ -1713,7 +1713,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   else
     image->depth=8;
 #endif
-    
+
   if (ping_info->bit_depth < 8)
     {
       if ((ping_info->color_type == PNG_COLOR_TYPE_PALETTE))
@@ -3348,12 +3348,12 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
          if (logging)
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                "    Reading opacity from alpha_blob.");
-   
+
          FormatString(alpha_image_info->filename,"%.1024s",
              alpha_image->filename);
 
          jng_image=ReadImage(alpha_image_info,exception);
-   
+
          for (y=0; y < (long) image->rows; y++)
          {
            s=AcquireImagePixels(jng_image,0,y,image->columns,1,
@@ -8498,6 +8498,7 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
        mng_info->old_framing_mode=mng_info->framing_mode;
      }
 
+#if defined(JNG_SUPPORTED)
    if (image->compression == JPEGCompression)
      {
        if (logging)
@@ -8508,6 +8509,7 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
        status=WriteOneJNGImage(mng_info,image_info,image);
      }
    else
+#endif
      {
        if (logging)
          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
