@@ -503,11 +503,6 @@ gradient_la_SOURCES = gradient.c
 gradient_la_LDFLAGS = $(MODULECOMMONFLAGS)
 gradient_la_LIBADD = $(LIBMAGICK)
 
-# HDF module
-# hdf_la_SOURCES      = hdf.c
-# hdf_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-# hdf_la_LIBADD       = $(LIBMAGICK) @LIB_HDF@ @LIB_JPEG@ @LIB_ZLIB@
-
 # HISTOGRAM module
 histogram_la_SOURCES = histogram.c
 histogram_la_LDFLAGS = $(MODULECOMMONFLAGS)
