@@ -392,29 +392,32 @@ srcdirfull=`cd $srcdir && pwd`
 builddir=`pwd`
 
 #
-# Most delegates have includes in the same directory as the library
+# Most delegates have includes in the same directory as the library, but not all ...
 #
-for dir in bzlib fpx hdf/src hdf/src/.libs jasper jbig/libjbig jpeg lcms/src png tiff/libtiff ttf/objs/.libs ttf/include wmf xml xml/.libs zlib
+# Includes
+for dir in bzlib fpx hdf/src jasper jbig/libjbig jpeg lcms/src png tiff/libtiff ttf/include wmf/include xml zlib
 do
   if test -d "$builddir/$dir"
   then
     CPPFLAGS="$CPPFLAGS -I$builddir/$dir"
-    if test "$dir" != 'fpx'
-    then
-      LDFLAGS="$LDFLAGS -L$builddir/$dir"
-    else
-      LDFLAGS="$LDFLAGS -L$builddir/$dir/obj"
-    fi
   else
     if test -d "$srcdirfull/$dir"
     then
       CPPFLAGS="$CPPFLAGS -I$srcdirfull/$dir"
-      if test "$dir" != 'fpx'
-      then
+    fi
+  fi
+done
+
+# Libraries
+for dir in bzlib fpx/obj hdf/src/.libs jasper jbig/libjbig jpeg lcms/src png tiff/libtiff ttf/objs/.libs wmf xml/.libs zlib
+do
+  if test -d "$builddir/$dir"
+  then
+    LDFLAGS="$LDFLAGS -L$builddir/$dir"
+  else
+    if test -d "$srcdirfull/$dir"
+    then
         LDFLAGS="$LDFLAGS -L$srcdirfull/$dir"
-      else
-        LDFLAGS="$LDFLAGS -L$srcdirfull/$dir/obj"
-      fi
     fi
   fi
 done
