@@ -314,8 +314,8 @@ MagickExport MagickInfo *GetMagickInfo(const char *name,
       /*
         Register image formats.
       */
-      (void) GetModuleInfo((char *) NULL,exception);
       LiberateSemaphoreInfo(&magick_semaphore);
+      (void) GetModuleInfo((char *) NULL,exception);
     }
   if ((name == (const char *) NULL) ||  (LocaleCompare(name,"*") == 0))
     return(magick_list);
