@@ -394,31 +394,6 @@ MagickExport Image *MontageImages(const Image *images,
   /*
     Determine tile sizes.
   */
-  border_width=montage_info->border_width;
-  bevel_width=0;
-  if (montage_info->frame != (char *) NULL)
-    {
-      SetGeometry(image_list[0],&geometry);
-      (void) strncpy(montage_geometry,montage_info->geometry,MaxTextExtent-2);
-      (void) strcat(montage_geometry,"!");
-      flags=ParseImageGeometry(montage_geometry,&geometry.x,&geometry.y,
-        &geometry.width,&geometry.height);
-      (void) memset(&frame_info,0,sizeof(FrameInfo));
-      frame_info.width=geometry.width;
-      frame_info.height=geometry.height;
-      frame_info.outer_bevel=geometry.x;
-      frame_info.inner_bevel=geometry.y;
-      if ((flags & HeightValue) == 0)
-        frame_info.height=frame_info.width;
-      if ((flags & XValue) == 0)
-        frame_info.outer_bevel=(long) (frame_info.width >> 2)+1;
-      if ((flags & YValue) == 0)
-        frame_info.inner_bevel=frame_info.outer_bevel;
-      frame_info.x=(long) frame_info.width;
-      frame_info.y=(long) frame_info.height;
-      bevel_width=Max(frame_info.inner_bevel,frame_info.outer_bevel);
-      border_width=Max(frame_info.width,frame_info.height);
-    }
   concatenate=False;
   SetGeometry(image_list[0],&tile_info);
   tile_info.x=(long) montage_info->border_width;
@@ -434,6 +409,26 @@ MagickExport Image *MontageImages(const Image *images,
         &tile_info.width,&tile_info.height);
       if ((tile_info.x == 0) && (tile_info.y == 0))
         concatenate=!((flags & WidthValue) || (flags & HeightValue));
+    }
+  border_width=montage_info->border_width;
+  bevel_width=0;
+  if (montage_info->frame != (char *) NULL)
+    {
+      (void) memset(&frame_info,0,sizeof(FrameInfo));
+      frame_info.width=tile_info.width;
+      frame_info.height=tile_info.height;
+      flags=ParseImageGeometry(montage_info->frame,&frame_info.outer_bevel,
+        &frame_info.inner_bevel,&frame_info.width,&frame_info.height);
+      if ((flags & HeightValue) == 0)
+        frame_info.height=frame_info.width;
+      if ((flags & XValue) == 0)
+        frame_info.outer_bevel=(long) (frame_info.width >> 2)+1;
+      if ((flags & YValue) == 0)
+        frame_info.inner_bevel=frame_info.outer_bevel;
+      frame_info.x=(long) frame_info.width;
+      frame_info.y=(long) frame_info.height;
+      bevel_width=Max(frame_info.inner_bevel,frame_info.outer_bevel);
+      border_width=Max(frame_info.width,frame_info.height);
     }
   for (i=1; i < (long) number_images; i++)
   {
