@@ -328,9 +328,6 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
   struct jpeg_error_mgr
     jpeg_error;
 
-  unsigned long
-    max_packets;
-
   unsigned short
     index;
 
@@ -424,15 +421,6 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
       CloseImage(image);
       return(image);
     }
-  packets=0;
-  max_packets=Max((image->columns*image->rows+2) >> 2,1);
-  image->pixels=(RunlengthPacket *)
-    AllocateMemory(max_packets*sizeof(RunlengthPacket));
-  jpeg_pixels=(JSAMPLE *)
-    AllocateMemory(jpeg_info.output_components*image->columns*sizeof(JSAMPLE));
-  if ((image->pixels == (RunlengthPacket *) NULL) ||
-      (jpeg_pixels == (JSAMPLE *) NULL))
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
   if (jpeg_info.out_color_space == JCS_GRAYSCALE)
     {
       /*
@@ -451,6 +439,14 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
         image->colormap[i].blue=UpScale(i);
       }
     }
+  packets=0;
+  jpeg_pixels=(JSAMPLE *)
+    AllocateMemory(jpeg_info.output_components*image->columns*sizeof(JSAMPLE));
+  image->pixels=(RunlengthPacket *)
+    AllocateMemory(image->columns*image->rows*sizeof(RunlengthPacket));
+  if ((image->pixels == (RunlengthPacket *) NULL) ||
+      (jpeg_pixels == (JSAMPLE *) NULL))
+    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
   /*
     Convert JPEG pixels to runlength-encoded packets.
   */
@@ -499,20 +495,6 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
           if (packets != 0)
             q++;
           packets++;
-          if (packets == (int) max_packets)
-            {
-              max_packets<<=1;
-              image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-                image->pixels,max_packets*sizeof(RunlengthPacket));
-              if (image->pixels == (RunlengthPacket *) NULL)
-                {
-                  FreeMemory((char *) jpeg_pixels);
-                  jpeg_destroy_decompress(&jpeg_info);
-                  ReaderExit(ResourceLimitWarning,"Memory allocation failed",
-                    image);
-                }
-              q=image->pixels+packets-1;
-            }
           q->red=red;
           q->green=green;
           q->blue=blue;

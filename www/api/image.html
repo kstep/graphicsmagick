@@ -20,6 +20,7 @@
 		<LI><A HREF="#AnimateImages">AnimateImages</A>
 		<LI><A HREF="#AppendImages">AppendImages</A>
 		<LI><A HREF="#AverageImages">AverageImages</A>
+		<LI><A HREF="#BlobImage">BlobImage</A>
 		<LI><A HREF="#CloneImage">CloneImage</A>
 		<LI><A HREF="#CloneImageInfo">CloneImageInfo</A>
 		<LI><A HREF="#CloseImage">CloseImage</A>
@@ -83,6 +84,9 @@ image - ImageMagick Image Methods
 allocated_image=<STRONG>AllocateImage</STRONG>(image_info)
 
 <P>
+<STRONG>AllocateNextImage</STRONG>(image_info,image)
+
+<P>
 status=<STRONG>AnimateImages</STRONG>(image_info,image)
 
 <P>
@@ -90,6 +94,9 @@ status=<STRONG>AnimateImages</STRONG>(image_info,image)
 
 <P>
 averaged_image=<STRONG>AverageImages</STRONG>(images)
+
+<P>
+blob=<STRONG>BlobImage</STRONG>(image_info,image,length)
 
 <P>
 clone_image=<STRONG>CloneImage</STRONG>(image,columns,rows,clone_pixels)
@@ -261,7 +268,7 @@ field to a default value.
 The format of the AllocateNextImage routine is:
 
 <P>
-<PRE>    AllocateImage(image_info,image)
+<PRE>        AllocateNextImage(image_info,image)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -360,6 +367,41 @@ Method AverageImages returns the mean pixel value for an image sequence.
 <DT><STRONG>images:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="BlobImage">BlobImage</A></H2>
+<P>
+Method BlobImage implements direct to memory image formats. It returns the
+image as a blob and its length.
+
+<P>
+The format of the BlobImage routine is:
+
+<P>
+<PRE>        blob=BlobImage(image_info,image,length)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>blob:</STRONG><DD>
+<P>
+Method BlobImage returns a chunk of memory written in the desired image
+format (e.g. JPEG, GIF, etc.). If an error occurs NULL is returned.
+
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+Specifies a pointer to an ImageInfo structure.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<DT><STRONG>length:</STRONG><DD>
+<P>
+This pointer to an unsigned long is set to the length of the image blob.
 
 </DL></DL>
 <P>

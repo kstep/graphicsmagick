@@ -100,7 +100,6 @@ Export Image *ReadPIXImage(const ImageInfo *image_info)
 
   unsigned long
     height,
-    max_packets,
     number_pixels,
     width;
 
@@ -161,9 +160,8 @@ Export Image *ReadPIXImage(const ImageInfo *image_info)
         return(image);
       }
     packets=0;
-    max_packets=Max((image->columns*image->rows+4) >> 3,1);
     image->pixels=(RunlengthPacket *)
-      AllocateMemory(max_packets*sizeof(RunlengthPacket));
+      AllocateMemory(image->columns*image->rows*sizeof(RunlengthPacket));
     if (image->pixels == (RunlengthPacket *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     /*
@@ -188,16 +186,6 @@ Export Image *ReadPIXImage(const ImageInfo *image_info)
       number_pixels+=q->length;
       q++;
       packets++;
-      if (packets == (int) max_packets)
-        {
-          max_packets<<=1;
-          image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-            image->pixels,max_packets*sizeof(RunlengthPacket));
-          if (image->pixels == (RunlengthPacket *) NULL)
-            ReaderExit(ResourceLimitWarning,"Memory allocation failed",
-              image);
-          q=image->pixels+packets;
-        }
       if (image->previous == (Image *) NULL)
         ProgressMonitor(LoadImageText,number_pixels,image->columns*image->rows);
     } while (number_pixels < (image->columns*image->rows));

@@ -156,7 +156,6 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
     status;
 
   unsigned long
-    max_packets,
     *page_table;
 
   unsigned short
@@ -275,21 +274,23 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
     /*
       Read image data.
     */
-    packets=0;
-    max_packets=Max((image->columns*image->rows+4) >> 3,1);
-    if ((pcx_header.bits_per_pixel*pcx_header.planes) == 1)
-      max_packets=Max((image->columns*image->rows+8) >> 4,1);
-    image->pixels=(RunlengthPacket *)
-      AllocateMemory(max_packets*sizeof(RunlengthPacket));
     pcx_packets=image->rows*pcx_header.bytes_per_line*pcx_header.planes;
     pcx_pixels=(unsigned char *)
       AllocateMemory(pcx_packets*sizeof(unsigned char));
     scanline=(unsigned char *)
       AllocateMemory(image->columns*pcx_header.planes*sizeof(unsigned char));
-    if ((image->pixels == (RunlengthPacket *) NULL) ||
-        (pcx_pixels == (unsigned char *) NULL) ||
+    if ((pcx_pixels == (unsigned char *) NULL) ||
         (scanline == (unsigned char *) NULL))
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+    packets=0;
+    image->pixels=(RunlengthPacket *)
+      AllocateMemory(image->columns*image->rows*sizeof(RunlengthPacket));
+    if (image->pixels == (RunlengthPacket *) NULL)
+      {
+        FreeMemory((char *) scanline);
+        FreeMemory((char *) pcx_pixels);
+        ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+      }
     /*
       Uncompress image data.
     */
@@ -506,19 +507,6 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
             if (packets != 0)
               q++;
             packets++;
-            if (packets == (int) max_packets)
-              {
-                max_packets<<=1;
-                image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-                  image->pixels,max_packets*sizeof(RunlengthPacket));
-                if (image->pixels == (RunlengthPacket *) NULL)
-                  {
-                    FreeMemory((char *) scanline);
-                    ReaderExit(ResourceLimitWarning,
-                      "Memory allocation failed",image);
-                  }
-                q=image->pixels+packets-1;
-              }
             q->red=red;
             q->green=green;
             q->blue=blue;

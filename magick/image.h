@@ -726,6 +726,7 @@ extern Export unsigned int
 extern Export void
   AllocateNextImage(const ImageInfo *,Image *),
   AnnotateImage(Image *,const AnnotateInfo *),
+  *BlobImage(const ImageInfo *,Image *,unsigned int *),
   CloseImage(Image *),
   CoalesceImages(Image *),
   ColorFloodfillImage(Image *,const RunlengthPacket *,Image *,const int x,

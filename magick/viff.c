@@ -101,6 +101,7 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
 #define VFF_TYP_1_BYTE  1
 #define VFF_TYP_2_BYTE  2
 #define VFF_TYP_4_BYTE  4
+#define VFF_TYP_FLOAT  5
 
   typedef struct _ViffHeader
   {
@@ -271,7 +272,8 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
     if ((viff_header.data_storage_type != VFF_TYP_BIT) &&
         (viff_header.data_storage_type != VFF_TYP_1_BYTE) &&
         (viff_header.data_storage_type != VFF_TYP_2_BYTE) &&
-        (viff_header.data_storage_type != VFF_TYP_4_BYTE))
+        (viff_header.data_storage_type != VFF_TYP_4_BYTE) &&
+        (viff_header.data_storage_type != VFF_TYP_FLOAT))
       ReaderExit(CorruptImageWarning,
         "Data storage type is not supported",image);
     if (viff_header.data_encode_scheme != VFF_DES_RAW)
@@ -372,7 +374,8 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
     bytes_per_pixel=1;
     if (viff_header.data_storage_type == VFF_TYP_2_BYTE)
       bytes_per_pixel=2;
-    if (viff_header.data_storage_type == VFF_TYP_4_BYTE)
+    if ((viff_header.data_storage_type == VFF_TYP_4_BYTE) ||
+        (viff_header.data_storage_type == VFF_TYP_FLOAT))
       bytes_per_pixel=4;
     if (viff_header.data_storage_type == VFF_TYP_BIT)
       max_packets=((viff_header.columns+7) >> 3)*viff_header.rows;
@@ -387,11 +390,6 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
       max_packets,image->file);
     switch (viff_header.data_storage_type)
     {
-      int
-        max_value,
-        min_value,
-        value;
-
       register Quantum
         *q;
 
@@ -400,6 +398,9 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
 
       case VFF_TYP_1_BYTE:
       {
+        int
+          value;
+
         register unsigned char
           *p;
 
@@ -423,8 +424,15 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
       }
       case VFF_TYP_2_BYTE:
       {
+        int
+          value;
+
         register short int
           *p;
+
+        short
+          max_value,
+          min_value;
 
         /*
           Ensure the header byte-order is most-significant byte first.
@@ -436,7 +444,7 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
         /*
           Determine scale factor.
         */
-        p=(short int *) viff_pixels;
+        p=(short *) viff_pixels;
         max_value=(*p);
         min_value=(*p);
         for (i=0; i < (int) max_packets; i++)
@@ -479,6 +487,11 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
       }
       case VFF_TYP_4_BYTE:
       {
+        int
+          max_value,
+          min_value,
+          value;
+
         register int
           *p;
 
@@ -518,6 +531,67 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
           Scale integer pixels to [0..MaxRGB].
         */
         p=(int *) viff_pixels;
+        q=(Quantum *) viff_pixels;
+        for (i=0; i < (int) max_packets; i++)
+        {
+          value=DownShift((*p-min_value)*scale_factor);
+          if (value > MaxRGB)
+            value=MaxRGB;
+          else
+            if (value < 0)
+              value=0;
+          *q=(unsigned char) value;
+          p++;
+          q++;
+        }
+        break;
+      }
+      case VFF_TYP_FLOAT:
+      {
+        float
+          max_value,
+          min_value,
+          value;
+
+        register float
+          *p;
+
+        /*
+          Ensure the header byte-order is most-significant byte first.
+        */
+        if ((viff_header.machine_dependency == VFF_DEP_DECORDER) ||
+            (viff_header.machine_dependency == VFF_DEP_NSORDER))
+          MSBFirstOrderLong((char *) &viff_header,
+            (unsigned int) (bytes_per_pixel*max_packets));
+        /*
+          Determine scale factor.
+        */
+        p=(float *) viff_pixels;
+        max_value=(*p);
+        min_value=(*p);
+        for (i=0; i < (int) max_packets; i++)
+        {
+          if (*p > max_value)
+            max_value=(*p);
+          else
+            if (*p < min_value)
+              min_value=(*p);
+          p++;
+        }
+        if ((min_value == 0) && (max_value == 0))
+          scale_factor=0;
+        else
+          if (min_value == max_value)
+            {
+              scale_factor=UpShift(MaxRGB)/min_value;
+              min_value=0;
+            }
+          else
+            scale_factor=UpShift(MaxRGB)/(max_value-min_value);
+        /*
+          Scale integer pixels to [0..MaxRGB].
+        */
+        p=(float *) viff_pixels;
         q=(Quantum *) viff_pixels;
         for (i=0; i < (int) max_packets; i++)
         {

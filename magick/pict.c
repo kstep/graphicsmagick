@@ -951,9 +951,6 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
           unsigned char
             *pixels;
 
-          unsigned long
-            max_packets;
-
           unsigned short
             index;
 
@@ -1042,9 +1039,8 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
                 (void) fgetc(image->file);
             }
           packets=0;
-          max_packets=Max((tiled_image->columns*tiled_image->rows+4) >> 3,1);
-          tiled_image->pixels=(RunlengthPacket *)
-            AllocateMemory(5*max_packets*sizeof(RunlengthPacket));
+          tiled_image->pixels=(RunlengthPacket *) AllocateMemory(
+            tiled_image->columns*tiled_image->rows*sizeof(RunlengthPacket));
           if ((code != 0x9a) && (bytes_per_line & 0x8000) == 0)
             pixels=DecodeImage(tiled_image,bytes_per_line,1);
           else
@@ -1099,21 +1095,6 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
                   if (packets != 0)
                     q++;
                   packets++;
-                  if (packets == (int) max_packets)
-                    {
-                      max_packets<<=1;
-                      tiled_image->pixels=(RunlengthPacket *) ReallocateMemory(
-                        (char *) tiled_image->pixels,max_packets*
-                        sizeof(RunlengthPacket));
-                      if (tiled_image->pixels == (RunlengthPacket *) NULL)
-                        {
-                          (void) FreeMemory((char *) pixels);
-                          DestroyImage(tiled_image);
-                          ReaderExit(ResourceLimitWarning,
-                            "Memory allocation failed",image);
-                        }
-                      q=tiled_image->pixels+packets-1;
-                    }
                   q->red=red;
                   q->green=green;
                   q->blue=blue;

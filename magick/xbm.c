@@ -149,9 +149,6 @@ Export Image *ReadXBMImage(const ImageInfo *image_info)
     value,
     version;
 
-  unsigned long
-    max_packets;
-
   unsigned short
     index;
 
@@ -220,9 +217,8 @@ Export Image *ReadXBMImage(const ImageInfo *image_info)
   image->colormap=(ColorPacket *)
     AllocateMemory(image->colors*sizeof(ColorPacket));
   packets=0;
-  max_packets=Max((image->columns*image->rows+4) >> 3,1);
   image->pixels=(RunlengthPacket *)
-    AllocateMemory(max_packets*sizeof(RunlengthPacket));
+    AllocateMemory(image->columns*image->rows*sizeof(RunlengthPacket));
   padding=0;
   if ((image->columns % 16) && ((image->columns % 16) < 9)  && (version == 10))
     padding=1;
@@ -313,19 +309,6 @@ Export Image *ReadXBMImage(const ImageInfo *image_info)
           if (packets != 0)
             q++;
           packets++;
-          if (packets == (int) max_packets)
-            {
-              max_packets<<=1;
-              image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-                image->pixels,max_packets*sizeof(RunlengthPacket));
-              if (image->pixels == (RunlengthPacket *) NULL)
-                {
-                  FreeMemory((char *) data);
-                  ReaderExit(ResourceLimitWarning,"Memory allocation failed",
-                    image);
-                }
-              q=image->pixels+packets-1;
-            }
           q->index=index;
           q->length=0;
         }

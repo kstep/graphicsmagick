@@ -205,9 +205,6 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
     max_value,
     status;
 
-  unsigned long
-    max_packets;
-
   unsigned short
     blue,
     green,
@@ -262,14 +259,6 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
     if ((image->columns*image->rows) == 0)
       ReaderExit(CorruptImageWarning,
         "Unable to read image: image dimensions are zero",image);
-    packets=0;
-    max_packets=Max((image->columns*image->rows+4) >> 3,1);
-    if ((format == '1') || (format == '4'))
-      max_packets=Max((image->columns*image->rows+8) >> 4,1);
-    image->pixels=(RunlengthPacket *)
-      AllocateMemory(max_packets*sizeof(RunlengthPacket));
-    if (image->pixels == (RunlengthPacket *) NULL)
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     scale=(Quantum *) NULL;
     if (image->class == PseudoClass)
       {
@@ -315,11 +304,15 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
           */
           scale=(Quantum *) AllocateMemory((max_value+1)*sizeof(Quantum));
           if (scale == (Quantum *) NULL)
-            ReaderExit(ResourceLimitWarning,"Memory allocation failed",
-              image);
+            ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
           for (i=0; i <= (int) max_value; i++)
             scale[i]=(Quantum) ((i*MaxRGB+(max_value >> 1))/max_value);
         }
+    packets=0;
+    image->pixels=(RunlengthPacket *)
+      AllocateMemory(image->columns*image->rows*sizeof(RunlengthPacket));
+    if (image->pixels == (RunlengthPacket *) NULL)
+      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     /*
       Convert PNM pixels to runlength-encoded MIFF packets.
     */
@@ -344,16 +337,6 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
                 if (packets != 0)
                   q++;
                 packets++;
-                if (packets == (int) max_packets)
-                  {
-                    max_packets<<=1;
-                    image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-                      image->pixels,max_packets*sizeof(RunlengthPacket));
-                    if (image->pixels == (RunlengthPacket *) NULL)
-                      ReaderExit(ResourceLimitWarning,
-                        "Memory allocation failed",image);
-                    q=image->pixels+packets-1;
-                  }
                 q->index=index;
                 q->length=0;
               }
@@ -381,20 +364,6 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
                 if (packets != 0)
                   q++;
                 packets++;
-                if (packets == (int) max_packets)
-                  {
-                    max_packets<<=1;
-                    image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-                      image->pixels,max_packets*sizeof(RunlengthPacket));
-                    if (image->pixels == (RunlengthPacket *) NULL)
-                      {
-                        if (scale != (Quantum *) NULL)
-                          FreeMemory((char *) scale);
-                        ReaderExit(ResourceLimitWarning,
-                          "Memory allocation failed",image);
-                      }
-                    q=image->pixels+packets-1;
-                  }
                 q->index=index;
                 q->length=0;
               }
@@ -431,20 +400,6 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
                 if (packets != 0)
                   q++;
                 packets++;
-                if (packets == (int) max_packets)
-                  {
-                    max_packets<<=1;
-                    image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-                      image->pixels,max_packets*sizeof(RunlengthPacket));
-                    if (image->pixels == (RunlengthPacket *) NULL)
-                      {
-                        if (scale != (Quantum *) NULL)
-                          FreeMemory((char *) scale);
-                        ReaderExit(ResourceLimitWarning,
-                          "Memory allocation failed",image);
-                      }
-                    q=image->pixels+packets-1;
-                  }
                 q->red=red;
                 q->green=green;
                 q->blue=blue;
@@ -483,16 +438,6 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
                 if (packets != 0)
                   q++;
                 packets++;
-                if (packets == (int) max_packets)
-                  {
-                    max_packets<<=1;
-                    image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-                      image->pixels,max_packets*sizeof(RunlengthPacket));
-                    if (image->pixels == (RunlengthPacket *) NULL)
-                      ReaderExit(ResourceLimitWarning,
-                        "Memory allocation failed",image);
-                    q=image->pixels+packets-1;
-                  }
                 q->index=index;
                 q->length=0;
               }
@@ -530,16 +475,6 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
                 if (packets != 0)
                   q++;
                 packets++;
-                if (packets == (int) max_packets)
-                  {
-                    max_packets<<=1;
-                    image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-                      image->pixels,max_packets*sizeof(RunlengthPacket));
-                    if (image->pixels == (RunlengthPacket *) NULL)
-                      ReaderExit(ResourceLimitWarning,
-                        "Memory allocation failed",image);
-                    q=image->pixels+packets-1;
-                  }
                 q->index=index;
                 q->length=0;
               }
@@ -585,20 +520,6 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
                 if (packets != 0)
                   q++;
                 packets++;
-                if (packets == (int) max_packets)
-                  {
-                    max_packets<<=1;
-                    image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-                      image->pixels,max_packets*sizeof(RunlengthPacket));
-                    if (image->pixels == (RunlengthPacket *) NULL)
-                      {
-                        if (scale != (Quantum *) NULL)
-                          FreeMemory((char *) scale);
-                        ReaderExit(ResourceLimitWarning,
-                          "Memory allocation failed",image);
-                      }
-                    q=image->pixels+packets-1;
-                  }
                 q->red=red;
                 q->green=green;
                 q->blue=blue;

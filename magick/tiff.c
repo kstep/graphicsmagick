@@ -440,9 +440,11 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
     if (bits_per_sample < 8)
       image->depth=8;
     packets=0;
-    max_packets=Max((image->columns*image->rows+4) >> 3,1);
+    max_packets=image->columns*image->rows;
+    if (samples_per_pixel == 1)
+      max_packets=Max((image->columns*image->rows+1) >> 1,1);
     if (bits_per_sample == 1)
-      max_packets=Max((image->columns*image->rows+8) >> 4,1);
+      max_packets=Max((image->columns*image->rows+2) >> 2,1);
     image->pixels=(RunlengthPacket *)
       AllocateMemory(max_packets*sizeof(RunlengthPacket));
     if (image->pixels == (RunlengthPacket *) NULL)
@@ -1105,6 +1107,9 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   unsigned int
     scene;
 
+  unsigned long
+    strip_size;
+
   unsigned short
     value;
 
@@ -1305,14 +1310,14 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       if ((image_info->interlace == PlaneInterlace) ||
           (image_info->interlace == PartitionInterlace))
         TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_SEPARATE);
+    strip_size=Max(TIFFDefaultStripSize(tiff,-1),1);
     if (compress_tag == COMPRESSION_JPEG)
-      TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,TIFFDefaultStripSize(tiff,-1)+
-        (8-(TIFFDefaultStripSize(tiff,-1) % 8)));
+      TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,strip_size+(8-(strip_size % 8)));
     else
       if (compress_tag == COMPRESSION_CCITTFAX4)
         TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
       else
-        TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,TIFFDefaultStripSize(tiff,-1));
+        TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,strip_size);
     if ((image->x_resolution != 0) && (image->y_resolution != 0))
       {
         unsigned short

@@ -2054,19 +2054,13 @@ Blob(ref,...)
   PPCODE:
   {
     char
-      *data,
       filename[MaxTextExtent];
 
-    FILE
-      *file;
-
     Image
-      *clone,
       *image,
       *next;
 
     int
-      filesize,
       scene;
 
     register int
@@ -2081,6 +2075,12 @@ Blob(ref,...)
 
     SV
       *reference;
+
+    unsigned int
+      length;
+
+    void
+      *blob;
 
     package_info=(struct PackageInfo *) NULL;
     error_list=newSVpv("",0);
@@ -2102,42 +2102,21 @@ Blob(ref,...)
     package_info=ClonePackageInfo(info);
     for (i=2; i < items; i+=2)
       SetAttribute(package_info,NULL,SvPV(ST(i-1),na),ST(i));
-    (void) strcpy(filename,package_info->image_info->unique);
+    (void) strcpy(filename,package_info->image_info->filename);
     scene=0;
     for (next=image; next; next=next->next)
     {
-      next->orphan=True;
-      clone=CloneImage(next,next->columns,next->rows,True);
-      next->orphan=False;
-      if (clone == (Image *) NULL)
-        {
-          PUSHs(&sv_undef);
-          continue;
-        }
-      FormatString(clone->filename,"%.1024s:%.1024s",clone->magick,filename);
-      clone->scene=scene++;
-      if (!WriteImage(package_info->image_info,clone))
-        {
-          DestroyImage(clone);
-          PUSHs(&sv_undef);
-          continue;
-        }
-      DestroyImage(clone);
-      file=fopen(filename,"rb");
-      remove(filename);
-      if (file == (FILE *) NULL)
-        {
-          PUSHs(&sv_undef);
-          continue;
-        }
-      (void) fseek(file,0L,SEEK_END);
-      filesize=ftell(file);
-      (void) fseek(file,0L,SEEK_SET);
-      data=(char *) safemalloc(filesize);
-      ReadData(data,1,filesize,file);
-      (void) fclose(file);
-      PUSHs(sv_2mortal(newSVpv(data,filesize)));
-      safefree((char *) data);
+      (void) strcpy(next->filename,filename);
+      next->scene=scene++;
+    }
+    SetImageInfo(package_info->image_info,True);
+    for (next=image; next; next=next->next)
+    {
+      blob=BlobImage(package_info->image_info,next,&length);
+      PUSHs(sv_2mortal(newSVpv(blob,length)));
+      safefree((char *) blob);
+      if (package_info->image_info->adjoin)
+        break;
     }
 
   MethodError:

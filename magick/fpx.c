@@ -143,7 +143,6 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
 
   unsigned long
     height,
-    max_packets,
     memory_limit,
     tile_width,
     tile_height,
@@ -339,11 +338,10 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
     Allocate memory for the image and pixel buffer.
   */
   packets=0;
-  max_packets=Max((image->columns*image->rows+2) >> 2,1);
-  image->pixels=(RunlengthPacket *)
-    AllocateMemory(max_packets*sizeof(RunlengthPacket));
   scanline=(unsigned char *) AllocateMemory(colorspace.numberOfComponents*
     image->columns*(tile_height+1)*sizeof(unsigned char));
+  image->pixels=(RunlengthPacket *)
+    AllocateMemory(image->columns*image->rows*sizeof(RunlengthPacket));
   if ((image->pixels == (RunlengthPacket *) NULL) ||
       (scanline == (unsigned char *) NULL))
     {
@@ -442,21 +440,6 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
           if (packets != 0)
             q++;
           packets++;
-          if (packets == (int) max_packets)
-            {
-              max_packets<<=1;
-              image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-                image->pixels,max_packets*sizeof(RunlengthPacket));
-              if (image->pixels == (RunlengthPacket *) NULL)
-                {
-                  FreeMemory((char *) scanline);
-                  (void) FPX_CloseImage(flashpix);
-                  FPX_ClearSystem();
-                  ReaderExit(ResourceLimitWarning,"Memory allocation failed",
-                    image);
-                }
-              q=image->pixels+packets-1;
-            }
           q->red=red;
           q->green=green;
           q->blue=blue;

@@ -111,9 +111,6 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
   unsigned int
     packet_size;
 
-  unsigned long
-    max_packets;
-
   unsigned short
     index,
     value;
@@ -156,15 +153,6 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
   do
   {
     /*
-      Initialize image structure.
-    */
-    packets=0;
-    max_packets=Max((image->columns*image->rows+2) >> 2,1);
-    image->pixels=(RunlengthPacket *)
-      AllocateMemory(max_packets*sizeof(RunlengthPacket));
-    if (image->pixels == (RunlengthPacket *) NULL)
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-    /*
       Create linear colormap.
     */
     image->class=PseudoClass;
@@ -179,6 +167,14 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
       image->colormap[i].green=(Quantum) i;
       image->colormap[i].blue=(Quantum) i;
     }
+    /*
+      Initialize image structure.
+    */
+    packets=0;
+    image->pixels=(RunlengthPacket *)
+      AllocateMemory(image->columns*image->rows*sizeof(RunlengthPacket));
+    if (image->pixels == (RunlengthPacket *) NULL)
+      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     /*
       Convert raster image to runlength-encoded packets.
     */
@@ -203,19 +199,6 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
             if (packets != 0)
               q++;
             packets++;
-            if (packets == (int) max_packets)
-              {
-                max_packets<<=1;
-                image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-                  image->pixels,max_packets*sizeof(RunlengthPacket));
-                if (image->pixels == (RunlengthPacket *) NULL)
-                  {
-                    FreeMemory((char *) scanline);
-                    ReaderExit(ResourceLimitWarning,
-                      "Memory allocation failed",image);
-                  }
-                q=image->pixels+packets-1;
-              }
             q->index=index;
             q->length=0;
           }

@@ -177,20 +177,6 @@ Export Image *ReadJBIGImage(const ImageInfo *image_info)
     }
   } while ((status == JBG_EAGAIN) || (status == JBG_EOK));
   /*
-    Initialize image structure.
-  */
-  image->columns=(unsigned int) jbg_dec_getwidth(&jbig_info);
-  image->rows=(unsigned int) jbg_dec_getheight(&jbig_info);
-  packets=0;
-  max_packets=Max((image->columns*image->rows+8) >> 4,1);
-  image->pixels=(RunlengthPacket *)
-    AllocateMemory(max_packets*sizeof(RunlengthPacket));
-  if (image->pixels == (RunlengthPacket *) NULL)
-    {
-      FreeMemory((char *) buffer);
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-    }
-  /*
     Create colormap.
   */
   image->class=PseudoClass;
@@ -210,6 +196,20 @@ Export Image *ReadJBIGImage(const ImageInfo *image_info)
   image->colormap[1].blue=MaxRGB;
   image->x_resolution=300;
   image->y_resolution=300;
+  /*
+    Initialize image structure.
+  */
+  image->columns=(unsigned int) jbg_dec_getwidth(&jbig_info);
+  image->rows=(unsigned int) jbg_dec_getheight(&jbig_info);
+  packets=0;
+  max_packets=Max((image->columns*image->rows+2) >> 2,1);
+  image->pixels=(RunlengthPacket *)
+    AllocateMemory(max_packets*sizeof(RunlengthPacket));
+  if (image->pixels == (RunlengthPacket *) NULL)
+    {
+      FreeMemory((char *) buffer);
+      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+    }
   /*
     Convert X bitmap image to runlength-encoded packets.
   */

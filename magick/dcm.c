@@ -3157,9 +3157,9 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
         }
       }
     packets=0;
-    max_packets=Max((image->columns*image->rows+4) >> 3,1);
-    if ((samples_per_pixel == 3) && (image->interlace == PlaneInterlace))
-      max_packets=image->columns*image->rows;
+    max_packets=image->columns*image->rows;
+    if (samples_per_pixel == 1)
+      max_packets=Max((image->columns*image->rows+1) >> 1,1);
     image->pixels=(RunlengthPacket *)
       AllocateMemory(max_packets*sizeof(RunlengthPacket));
     if (image->pixels == (RunlengthPacket *) NULL)

@@ -319,7 +319,7 @@ Export Image *AllocateImage(const ImageInfo *image_info)
 %
 %  The format of the AllocateNextImage routine is:
 %
-%      AllocateImage(image_info,image)
+%      AllocateNextImage(image_info,image)
 %
 %  A description of each parameter follows:
 %
@@ -740,6 +740,89 @@ Export Image *AverageImages(const Image *images)
   }
   FreeMemory((char *) sum);
   return(averaged_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   B l o b I m a g e                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method BlobImage implements direct to memory image formats.  It returns
+%  the image as a blob and its length.
+%
+%  The format of the BlobImage routine is:
+%
+%      blob=BlobImage(image_info,image,length)
+%
+%  A description of each parameter follows:
+%
+%    o blob:  Method BlobImage returns a chunk of memory written in the
+%      desired image format (e.g. JPEG, GIF, etc.).  If an error occurs
+%      NULL is returned.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o length: This pointer to an unsigned int is set to the length of
+%      the image blob.
+%
+%
+*/
+Export void *BlobImage(const ImageInfo *image_info,Image *image,
+  unsigned int *length)
+{
+  char
+    filename[MaxTextExtent];
+
+  FILE
+    *file;
+
+  ImageInfo
+    *local_info;
+
+  void
+    *blob;
+
+  /*
+    Write file to disk in blob image format.
+  */
+  *length=0;
+  local_info=CloneImageInfo(image_info);
+  (void) strcpy(filename,image->filename);
+  FormatString(image->filename,"%.1024s:%.1024s",image->magick,
+    local_info->unique);
+  (void) WriteImage(local_info,image);
+  /*
+    Read image from disk as blob.
+  */
+  file=fopen(image->filename,"rb");
+  remove(image->filename);
+  (void) strcpy(image->filename,filename);
+  DestroyImageInfo(local_info);
+  if (file == (FILE *) NULL)
+    {
+      MagickError(ResourceLimitWarning,"Unable to read blob",
+        "Memory allocation failed");
+      return((void *) NULL);
+    }
+  (void) fseek(file,0L,SEEK_END);
+  *length=ftell(file);
+  (void) fseek(file,0L,SEEK_SET);
+  blob=(char *) AllocateMemory(*length);
+  if (blob != (void *) NULL)
+    (void) ReadData((char *) blob,1,*length,file);
+  else
+    MagickError(ResourceLimitWarning,"Unable to create blob",
+      "Memory allocation failed");
+  (void) fclose(file);
+  return(blob);
 }
 
 /*

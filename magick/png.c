@@ -526,7 +526,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
     status;
 
   unsigned long
-    max_packets,
     length;
 
   long
@@ -1796,20 +1795,13 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         MngFreeStruct(m,&have_mng_structure);
         return(image);
       }
-    packets=0;
-    max_packets=Max((image->columns*image->rows+4) >> 3,1);
-    if (ping_info->bit_depth == 1)
-      max_packets=Max((image->columns*image->rows+8) >> 4,1);
-    image->pixels=(RunlengthPacket *)
-      AllocateMemory(max_packets*sizeof(RunlengthPacket));
     png_pixels=(unsigned char *)
       AllocateMemory(ping_info->rowbytes*image->rows*sizeof(Quantum));
     scanlines=(unsigned char **)
       AllocateMemory(image->rows*sizeof(unsigned char *));
-    if ((image->pixels == (RunlengthPacket *) NULL) ||
-        (png_pixels == (unsigned char *) NULL) ||
+    if ((png_pixels == (unsigned char *) NULL) ||
         (scanlines == (unsigned char **) NULL))
-      ReaderExit(ResourceLimitWarning,"j. Memory allocation failed",image);
+      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     if (image->class == PseudoClass)
       {
         /*
@@ -1818,7 +1810,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         image->colormap=(ColorPacket *)
           AllocateMemory(image->colors*sizeof(ColorPacket));
         if (image->colormap == (ColorPacket *) NULL)
-          ReaderExit(ResourceLimitWarning,"k. Memory allocation failed",image);
+          ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
         for (i=0; i < (int) image->colors; i++)
         {
           image->colormap[i].red=(MaxRGB*i)/Max(image->colors-1,1);
@@ -1835,6 +1827,15 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             image->colormap[i].blue=
                (unsigned short)UpScale(ping_info->palette[i].blue);
           }
+      }
+    packets=0;
+    image->pixels=(RunlengthPacket *)
+      AllocateMemory(image->columns*image->rows*sizeof(RunlengthPacket));
+    if (image->pixels == (RunlengthPacket *) NULL)
+      {
+        FreeMemory((char *) png_pixels);
+        FreeMemory((char *) scanlines);
+        ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
       }
     /*
       Read image scanlines.
@@ -1893,19 +1894,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 if (packets != 0)
                   q++;
                 packets++;
-                if (packets == (int) max_packets)
-                  {
-                    max_packets<<=1;
-                    image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-                      image->pixels,max_packets*sizeof(RunlengthPacket));
-                    if (image->pixels == (RunlengthPacket *) NULL)
-                      {
-                        FreeMemory((char *) png_pixels);
-                        ReaderExit(ResourceLimitWarning,
-                          "l. Memory allocation failed",image);
-                      }
-                    q=image->pixels+packets-1;
-                  }
                 q->red=red;
                 q->green=green;
                 q->blue=blue;
@@ -2021,19 +2009,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 if (packets != 0)
                   q++;
                 packets++;
-                if (packets == (int) max_packets)
-                  {
-                    max_packets<<=1;
-                    image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-                      image->pixels,max_packets*sizeof(RunlengthPacket));
-                    if (image->pixels == (RunlengthPacket *) NULL)
-                      {
-                        FreeMemory((char *) quantum_scanline);
-                        ReaderExit(ResourceLimitWarning,
-                          "n. Memory allocation failed",image);
-                      }
-                    q=image->pixels+packets-1;
-                  }
                 q->index=index;
                 q->length=0;
               }

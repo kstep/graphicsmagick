@@ -128,16 +128,11 @@ Export Image *ReadMONOImage(const ImageInfo *image_info)
   /*
     Initialize image structure.
   */
-  packets=0;
-  max_packets=Max((image->columns*image->rows+8) >> 4,1);
-  image->pixels=(RunlengthPacket *)
-    AllocateMemory(max_packets*sizeof(RunlengthPacket));
   image->class=PseudoClass;
   image->colors=2;
   image->colormap=(ColorPacket *)
     AllocateMemory(image->colors*sizeof(ColorPacket));
-  if ((image->pixels == (RunlengthPacket *) NULL) ||
-      (image->colormap == (ColorPacket *) NULL))
+  if (image->colormap == (ColorPacket *) NULL)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
   for (i=0; i < (int) image->colors; i++)
   {
@@ -145,6 +140,12 @@ Export Image *ReadMONOImage(const ImageInfo *image_info)
     image->colormap[i].green=(MaxRGB*i)/(image->colors-1);
     image->colormap[i].blue=(MaxRGB*i)/(image->colors-1);
   }
+  packets=0;
+  max_packets=Max((image->columns*image->rows+2) >> 2,1);
+  image->pixels=(RunlengthPacket *)
+    AllocateMemory(max_packets*sizeof(RunlengthPacket));
+  if (image->pixels == (RunlengthPacket *) NULL)
+    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
   /*
     Convert bi-level image to runlength-encoded packets.
   */

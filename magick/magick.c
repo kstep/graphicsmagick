@@ -132,17 +132,15 @@ static const MagickInfo
 #if defined(HasJBIG)
     { "JBG", ReadJBIGImage, WriteJBIGImage, True,
       "Joint Bi-level Image experts Group file interchange format" },
-#endif
-#if defined(HasJPEG)
     { "JBIG", ReadJBIGImage, WriteJBIGImage, True,
       "Joint Bi-level Image experts Group file interchange format" },
 #endif
 #if defined(HasJPEG)
-    { "JPG", ReadJPEGImage, WriteJPEGImage, True,
+    { "JPG", ReadJPEGImage, WriteJPEGImage, False,
       "Joint Photographic Experts Group JFIF format" },
-    { "JPEG", ReadJPEGImage, WriteJPEGImage, True,
+    { "JPEG", ReadJPEGImage, WriteJPEGImage, False,
       "Joint Photographic Experts Group JFIF format" },
-    { "JPEG24", ReadJPEGImage, WriteJPEGImage, True,
+    { "JPEG24", ReadJPEGImage, WriteJPEGImage, False,
       "Joint Photographic Experts Group JFIF format" },
 #endif
     { "LABEL", ReadLABELImage,

@@ -123,8 +123,7 @@ static unsigned int DecodeImage(Image *image)
     *top_stack;
 
   unsigned long
-    packets,
-    max_packets;
+    packets;
 
   unsigned short
     index;
@@ -333,9 +332,8 @@ static unsigned int DecodeImage(Image *image)
     Convert GIF pixels to runlength-encoded packets.
   */
   packets=0;
-  max_packets=Max((image->columns*image->rows+2) >> 2,1);
   image->pixels=(RunlengthPacket *)
-    AllocateMemory(max_packets*sizeof(RunlengthPacket));
+    AllocateMemory(image->columns*image->rows*sizeof(RunlengthPacket));
   if (image->pixels == (RunlengthPacket *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Memory allocation failed",
@@ -355,19 +353,6 @@ static unsigned int DecodeImage(Image *image)
          if (packets != 0)
            q++;
          packets++;
-         if (packets == max_packets)
-           {
-             max_packets<<=1;
-             image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-               image->pixels,max_packets*sizeof(RunlengthPacket));
-             if (image->pixels == (RunlengthPacket *) NULL)
-               {
-                 MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-                   image->filename);
-                 break;
-               }
-             q=image->pixels+packets-1;
-           }
          q->index=index;
          q->length=0;
        }
