@@ -742,13 +742,11 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
     resolution;
 
   register long
+    i,
     x;
 
   register PixelPacket
     *q;
-
-  register long
-    i;
 
   unsigned int
     identity;
@@ -1254,8 +1252,8 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
                 fill_color=draw_info->fill;
                 if (draw_info->fill_pattern != (Image *) NULL)
                   fill_color=GetOnePixel(draw_info->fill_pattern,
-                    (long) (x % draw_info->fill_pattern->columns),
-                    (long) (y % draw_info->fill_pattern->rows));
+                    ((long) ceil(point.x+x-0.5) % draw_info->fill_pattern->columns),
+                    ((long) ceil(point.y+y-0.5) % draw_info->fill_pattern->rows));
                 opacity=(Quantum) ((unsigned long) ((MaxRGB-opacity)*
                   (MaxRGB-fill_color.opacity))/MaxRGB);
                 if (!active)

@@ -66,7 +66,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Contrast() enhances the intensity differences between the lighter and
+%  ContrastImage() enhances the intensity differences between the lighter and
 %  darker elements of the image.  Set sharpen to a value other than 0 to
 %  increase the image contrast otherwise the contrast is reduced.
 %

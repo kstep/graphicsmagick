@@ -67,9 +67,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method ReadGRADIENTImage creates a gradient image and initializes it to
-%  the X server color range as specified by the filename.  It allocates the
-%  memory necessary for the new Image structure and returns a pointer to the
-%  new image.
+%  the color range as specified by the filename.  It allocates the memory
+%  necessary for the new Image structure and returns a pointer to the new
+%  image.
 %
 %  The format of the ReadGRADIENTImage method is:
 %
@@ -95,30 +95,11 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
     colorname[MaxTextExtent];
 
   PixelPacket
-    color;
-
-  double
-    brightness,
-    brightness_step,
-    hue,
-    hue_step,
-    saturation,
-    saturation_step;
+    start_color,
+    stop_color;
 
   Image
     *image;
-
-  long
-    y;
-
-  register long
-    x;
-
-  register PixelPacket
-    *q;
-
-  unsigned long
-    number_pixels;
 
   /*
     Initialize Image structure.
@@ -128,51 +109,19 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
+  if ((image->columns == 0) || (image->rows == 0))
+    ThrowReaderException(OptionWarning,"Must specify image size",image);
+  SetImage(image,OpaqueOpacity);
   (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
-  if (image->columns == 0)
-    image->columns=512;
-  if (image->rows == 0)
-    image->rows=512;
-  /*
-    Determine (Hue, Saturation, Brightness) gradient.
-  */
   (void) strncpy(colorname,image_info->filename,MaxTextExtent-1);
   (void) sscanf(image_info->filename,"%[^-]",colorname);
-  (void) QueryColorDatabase(colorname,&color);
-  (void) TransformHSL(color.red,color.green,color.blue,&hue,&saturation,
-    &brightness);
+  (void) QueryColorDatabase(colorname,&start_color);
   (void) strcpy(colorname,"white");
-  if (Intensity(&color) > (0.5*MaxRGB))
+  if (Intensity(&start_color) > (0.5*MaxRGB))
     (void) strcpy(colorname,"black");
   (void) sscanf(image_info->filename,"%*[^-]-%s",colorname);
-  (void) QueryColorDatabase(colorname,&color);
-  (void) TransformHSL(color.red,color.green,color.blue,&hue_step,
-    &saturation_step,&brightness_step);
-  number_pixels=image->columns*image->rows;
-  hue_step=(hue_step-hue)/number_pixels;
-  saturation_step=(saturation_step-saturation)/number_pixels;
-  brightness_step=(brightness_step-brightness)/number_pixels;
-  /*
-    Initialize image pixels.
-  */
-  for (y=0; y < (long) image->rows; y++)
-  {
-    q=SetImagePixels(image,0,y,image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    for (x=0; x < (long) image->columns; x++)
-    {
-      HSLTransform(hue,saturation,brightness,&q->red,&q->green,&q->blue);
-      q++;
-      hue+=hue_step;
-      saturation+=saturation_step;
-      brightness+=brightness_step;
-    }
-    if (!SyncImagePixels(image))
-      break;
-    if (QuantumTick(y,image->rows))
-      MagickMonitor(LoadImageText,y,image->rows);
-  }
+  (void) QueryColorDatabase(colorname,&stop_color);
+  (void) GradientImage(image,&start_color,&stop_color);
   return(image);
 }
 

@@ -1456,6 +1456,9 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
   PointInfo
     point;
 
+  PixelPacket
+    start_color;
+
   PrimitiveInfo
     *primitive_info;
 
@@ -1542,6 +1545,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
     }
   graphic_context[n]=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   token=AllocateString(primitive);
+  (void) QueryColorDatabase("black",&start_color);
   status=True;
   for (q=primitive; *q != '\0'; )
   {
@@ -1710,7 +1714,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                 graphic_context[n]->decorate=LineThroughDecoration;
                 break;
               }
-            if(QueryColorDatabase(token,&graphic_context[n]->box)==True)
+            if (!QueryColorDatabase(token,&graphic_context[n]->box))
               {
                 if (graphic_context[n]->box.opacity == TransparentOpacity)
                   graphic_context[n]->decorate=NoDecoration;
@@ -2093,22 +2097,22 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                 (void) strncpy(type,token,MaxTextExtent-1);
                 GetToken(q,&q,token);
                 segment.x1=atof(token);
-		element.cx=atof(token);
+                element.cx=atof(token);
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
                 segment.y1=atof(token);
-		element.cy=atof(token);
+                element.cy=atof(token);
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
                 segment.x2=atof(token);
-		element.major=atof(token);
+                element.major=atof(token);
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
                 segment.y2=atof(token);
-		element.minor=atof(token);
+                element.minor=atof(token);
                 if (LocaleCompare(type,"radial") == 0)
                   {
                     GetToken(q,&q,token);
@@ -2131,8 +2135,8 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                 FormatString(key,"[%.1024s]",name);
                 (void) SetImageAttribute(image,key,token);
                 FormatString(key,"[%.1024s-geometry]",name);
-                FormatString(geometry,"%gx%g%+g%+g",segment.x2,segment.y2,
-                  segment.x1,segment.y1);
+                FormatString(geometry,"%gx%g%+g%+g",segment.x2,segment.y2-
+                  segment.y2+1.0,segment.x1,segment.y1);
                 (void) SetImageAttribute(image,key,geometry);
                 GetToken(q,&q,token);
                 break;
@@ -2254,7 +2258,13 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
           }
         if (LocaleCompare("stop-color",keyword) == 0)
           {
+            PixelPacket
+              stop_color;
+
             GetToken(q,&q,token);
+            (void) QueryColorDatabase(token,&stop_color);
+            GradientImage(image,&start_color,&stop_color);
+            start_color=stop_color;
             GetToken(q,&q,token);
             break;
           }
@@ -3208,14 +3218,14 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
         }
       if (draw_info->fill_pattern != (Image *) NULL)
         fill_color=GetOnePixel(draw_info->fill_pattern,
-          (long) ((x-(long) ceil(bounds.x1-0.5)) % draw_info->fill_pattern->columns),
-          (long) ((y-(long) ceil(bounds.y1-0.5)) % draw_info->fill_pattern->rows));
+          (((long) ceil(x-bounds.x1-0.5)) % draw_info->fill_pattern->columns),
+          (((long) ceil(y-bounds.y1-0.5)) % draw_info->fill_pattern->rows));
       fill_opacity=MaxRGB-fill_opacity*(MaxRGB-fill_color.opacity);
       *q=AlphaComposite(&fill_color,fill_opacity,q,q->opacity);
       if (draw_info->stroke_pattern != (Image *) NULL)
         stroke_color=GetOnePixel(draw_info->stroke_pattern,
-          (long) ((x-(long) ceil(bounds.x1-0.5)) % draw_info->stroke_pattern->columns),
-          (long) ((y-(long) ceil(bounds.y1-0.5)) % draw_info->stroke_pattern->rows));
+          (((long) ceil(x-bounds.x1-0.5)) % draw_info->stroke_pattern->columns),
+          (((long) ceil(y-bounds.y1-0.5)) % draw_info->stroke_pattern->rows));
       stroke_opacity=MaxRGB-stroke_opacity*(MaxRGB-stroke_color.opacity);
       *q=AlphaComposite(&stroke_color,stroke_opacity,q,q->opacity);
       q++;

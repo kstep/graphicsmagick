@@ -405,8 +405,8 @@ MagickExport unsigned int AnimateImages(const ImageInfo *image_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  The Append() method takes a set of images and appends them to each other.
-%  Each image in the set must have the same width or height (or both)
+%  The AppendImages() method takes a set of images and appends them to each
+%  other.  Each image in the set must have the same width or height (or both)
 %  (or both).  Append() returns a single image where each image in the
 %  original set is side-by-side if all the heights are the same or stacked
 %  on top of each other if all widths are the same.   On failure, a NULL
@@ -2861,6 +2861,100 @@ MagickExport unsigned int GetNumberScenes(const Image *image)
   for (number_scenes=0; next != (Image *) NULL; number_scenes++)
     next=next->next;
   return(number_scenes);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
++     G r a d i e n t I m a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GradientImage() applies a continuously smooth color transitions along a
+%  vector from one color to another.
+%
+%  Note, the interface of this method will change in the future to support
+%  more than one transistion.
+%
+%  The format of the GradientImage method is:
+%
+%      unsigned int GradientImage(Image *image,const PixelPacket *start_color,
+%        const PixelPacket *stop_color)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o start_color: The start color.
+%
+%    o stop_color: The stop color.
+%
+%
+*/
+MagickExport unsigned int GradientImage(Image *image,
+  const PixelPacket *start_color,const PixelPacket *stop_color)
+{
+  double
+    brightness,
+    brightness_step,
+    hue,
+    hue_step,
+    saturation,
+    saturation_step;
+
+  long
+    y;
+
+  register long
+    x;
+
+  register const PixelPacket
+    *q;
+
+  unsigned long
+    number_pixels;
+
+  /*
+    Determine (Hue, Saturation, Brightness) gradient.
+  */
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(start_color != (const PixelPacket *) NULL);
+  assert(stop_color != (const PixelPacket *) NULL);
+  (void) TransformHSL(start_color->red,start_color->green,start_color->blue,
+    &hue,&saturation,&brightness);
+  (void) TransformHSL(stop_color->red,stop_color->green,stop_color->blue,
+    &hue_step,&saturation_step,&brightness_step);
+  number_pixels=image->columns*image->rows;
+  hue_step=(hue_step-hue)/number_pixels;
+  saturation_step=(saturation_step-saturation)/number_pixels;
+  brightness_step=(brightness_step-brightness)/number_pixels;
+  /*
+    Initialize image pixels.
+  */
+  for (y=0; y < (long) image->rows; y++)
+  {
+    q=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    if (q == (const PixelPacket *) NULL)
+      break;
+    for (x=0; x < (long) image->columns; x++)
+    {
+      HSLTransform(hue,saturation,brightness,&q->red,&q->green,&q->blue);
+      q->opacity=OpaqueOpacity;
+      q++;
+      hue+=hue_step;
+      saturation+=saturation_step;
+      brightness+=brightness_step;
+    }
+    if (!SyncImagePixels(image))
+      break;
+    if (QuantumTick(y,image->rows))
+      MagickMonitor(LoadImageText,y,image->rows);
+  }
+  return(True);
 }
 
 /*
