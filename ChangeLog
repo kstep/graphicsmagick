@@ -1,4 +1,4 @@
-2002-06-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2002-07-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Added NTRegistryKeyLookup() to nt.c in order to look up
     ImageMagick installation parameters from the Windows
     Registry.
