@@ -421,15 +421,15 @@ MagickExport char **ListModules(void)
   module_list=(char **) AcquireMemory((max_entries+1)*sizeof(char *));
   if (module_list == (char **)NULL)
     return((char **) NULL);
-  i=0;
   *module_list=(char *) NULL;
   path=GetMagickConfigurePath(ModuleFilename);
   if (path == (char *) NULL)
     return((char **) NULL);
-  path[strlen(path)-strlen(ModuleFilename)]='\0';
+  path[strlen(path)-strlen(ModuleFilename)-1]='\0';
   directory=opendir(path);
   if (directory == (DIR *) NULL)
-    return((char **) NULL);;
+    return((char **) NULL);
+  i=0;
   entry=readdir(directory);
   while (entry != (struct dirent *) NULL)
   {
