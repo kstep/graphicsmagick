@@ -854,14 +854,20 @@ static inline PixelPacket AlphaComposite(const PixelPacket *p,
   PixelPacket
     composite;
 
+  double
+    MaxRGB_alpha,
+    MaxRGB_beta;
+
+  MaxRGB_alpha=MaxRGB-alpha;
+  MaxRGB_beta=MaxRGB-beta;
   composite.red=(Quantum)
-    (((MaxRGB-alpha)*p->red+alpha*(MaxRGB-beta)*q->red/MaxRGB)/MaxRGB+0.5);
+    ((MaxRGB_alpha*p->red+alpha*MaxRGB_beta*q->red/MaxRGB)/MaxRGB+0.5);
   composite.green=(Quantum)
-    (((MaxRGB-alpha)*p->green+alpha*(MaxRGB-beta)*q->green/MaxRGB)/MaxRGB+0.5);
+    ((MaxRGB_alpha*p->green+alpha*MaxRGB_beta*q->green/MaxRGB)/MaxRGB+0.5);
   composite.blue=(Quantum)
-    (((MaxRGB-alpha)*p->blue+alpha*(MaxRGB-beta)*q->blue/MaxRGB)/MaxRGB+0.5);
+    ((MaxRGB_alpha*p->blue+alpha*MaxRGB_beta*q->blue/MaxRGB)/MaxRGB+0.5);
   composite.opacity=(Quantum)
-    (MaxRGB-((MaxRGB-alpha)+alpha*(MaxRGB-beta)/MaxRGB)+0.5);
+    (MaxRGB-(MaxRGB_alpha+alpha*MaxRGB_beta/MaxRGB)+0.5);
   return(composite);
 }
 
@@ -1216,7 +1222,6 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
             if (status != False)
               continue;
             bitmap=(FT_BitmapGlyph) glyph.image;
-            SetImageType(image,TrueColorMatteType);
             point.x=offset->x+bitmap->left;
             point.y=offset->y-bitmap->top;
             p=bitmap->bitmap.buffer;
@@ -1249,7 +1254,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
                   fill_color=AcquireOnePixel(pattern,
                     (long) (point.x+x-pattern->tile_info.x) % pattern->columns,
                     (long) (point.y+y-pattern->tile_info.y) % pattern->rows,
-										&image->exception);
+                            &image->exception);
                 opacity=((MaxRGB-opacity)*(MaxRGB-fill_color.opacity))/MaxRGB;
                 if (!active)
                   q=GetImagePixels(image,(long) ceil(point.x+x-0.5),
@@ -1260,6 +1265,8 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
                     q++;
                     continue;
                   }
+                if (!image->matte)
+                  q->opacity=OpaqueOpacity;
                 *q=AlphaComposite(&fill_color,opacity,q,q->opacity);
                 if (!active)
                   (void) SyncImagePixels(image);

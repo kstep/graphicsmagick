@@ -301,13 +301,14 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
     *k;
 
   register const PixelPacket
-    *p,
-    *r;
+    *p;
 
   register long
     i,
     u,
-    v,
+    v;
+
+  long
     x;
 
   register PixelPacket
@@ -400,18 +401,24 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
     if (!range_check)
       for (x=0; x < (long) convolve_image->columns; x++)
       {
+        register const PixelPacket
+          *r=p;
+
         pixel=zero;
-        r=p;
         k=normal_kernel;
-        for (v=0; v < width; v++)
+        for (v=width; v > 0; v--)
         {
-          for (u=0; u < width; u++)
+          register const PixelPacket
+            *ru=r;
+
+          for (u=width; u > 0; u--)
           {
-            pixel.red+=(*k)*r[u].red;
-            pixel.green+=(*k)*r[u].green;
-            pixel.blue+=(*k)*r[u].blue;
-            pixel.opacity+=(*k)*r[u].opacity;
+            pixel.red+=(*k)*ru->red;
+            pixel.green+=(*k)*ru->green;
+            pixel.blue+=(*k)*ru->blue;
+            pixel.opacity+=(*k)*ru->opacity;
             k++;
+            ru++;
           }
           r+=image->columns+width;
         }
@@ -425,18 +432,24 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
     else
       for (x=0; x < (long) convolve_image->columns; x++)
       {
+        register const PixelPacket
+          *r=p;
+
         pixel=zero;
-        r=p;
         k=normal_kernel;
-        for (v=0; v < width; v++)
+        for (v=width; v > 0; v--)
         {
-          for (u=0; u < width; u++)
+          register const PixelPacket
+            *ru=r;
+
+          for (u=width; u > 0; u--)
           {
-            pixel.red+=(*k)*r[u].red;
-            pixel.green+=(*k)*r[u].green;
-            pixel.blue+=(*k)*r[u].blue;
-            pixel.opacity+=(*k)*r[u].opacity;
+            pixel.red+=(*k)*ru->red;
+            pixel.green+=(*k)*ru->green;
+            pixel.blue+=(*k)*ru->blue;
+            pixel.opacity+=(*k)*ru->opacity;
             k++;
+            ru++;
           }
           r+=image->columns+width;
         }

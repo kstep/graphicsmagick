@@ -1853,6 +1853,17 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("contrast",option+1) == 0)
           break;
+        if (LocaleCompare("convolve",option+1) == 0)
+          {
+           if (*option == '-')
+             {
+               i++;
+               if ((i == (argc-1)) || !IsGeometry(argv[i]))
+                 ThrowConvertException(OptionError,"MissingCoefficients",
+                   option);
+             }
+           break;
+         }
         if (LocaleCompare("crop",option+1) == 0)
           {
             if (*option == '-')
@@ -4068,6 +4079,50 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         if (LocaleCompare("contrast",option+1) == 0)
           {
             (void) ContrastImage(*image,*option == '-');
+            continue;
+          }
+        if (LocaleCompare("convolve",option+1) == 0)
+          {
+            char
+              *p,
+              token[MaxTextExtent];
+
+            double
+              *kernel;
+
+            register long
+              x;
+
+            unsigned int
+              order;
+
+            /*
+              Convolve image.
+            */
+            p=argv[++i];
+            for (x=0; *p != '\0'; x++)
+            {
+              GetToken(p,&p,token);
+              if (*token == ',')
+                GetToken(p,&p,token);
+            }
+            order=(unsigned int) sqrt(x+1);
+            kernel=(double *) AcquireMemory(order*order*sizeof(double));
+            if (kernel == (double *) NULL)
+              MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+                "UnableToAllocateCoefficients");
+            p=argv[i];
+            for (x=0; *p != '\0'; x++)
+            {
+              GetToken(p,&p,token);
+              if (*token == ',')
+                GetToken(p,&p,token);
+              kernel[x]=atof(token);
+            }
+            for ( ; x < (long) (order*order); x++)
+              kernel[x]=0.0;
+            (void) ConvolveImage(*image,order,kernel,&(*image)->exception);
+            LiberateMemory((void **) &kernel);
             continue;
           }
         if (LocaleCompare("crop",option+1) == 0)
@@ -6322,6 +6377,17 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("contrast",option+1) == 0)
           break;
+        if (LocaleCompare("convolve",option+1) == 0)
+          {
+           if (*option == '-')
+             {
+               i++;
+               if ((i == (argc-1)) || !IsGeometry(argv[i]))
+                 ThrowMogrifyException(OptionError,"MissingCoefficients",
+                   option);
+             }
+           break;
+         }
         if (LocaleCompare("crop",option+1) == 0)
           {
             if (*option == '-')

@@ -418,7 +418,8 @@ int main( int /*argc*/, char ** argv)
       logo.zoom( "45%" );
 
       // Composite logo into montage image
-      montage_image.composite( logo, "+245+0", OverCompositeOp );
+      Geometry placement(0,0,(montage_image.columns()/2)-(logo.columns()/2),0);
+      montage_image.composite( logo, placement, OverCompositeOp );
     }
 
     cout << "Writing image \"demo_out.miff\" ..." << endl;

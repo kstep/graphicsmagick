@@ -368,22 +368,23 @@ MagickExport unsigned int FuzzyColorMatch(const PixelPacket *p,
     pixel;
 
   register double
-    distance;
+    distance,
+    fuzz_squared;
 
-  if ((fuzz == 0.0) && (p->red == q->red) && (p->green == q->green) &&
-      (p->blue == q->blue))
+  if ((fuzz == 0.0) && ColorMatch(q,p))
     return(True);
+  fuzz_squared=fuzz*fuzz;
   pixel.red=p->red-(double) q->red;
   distance=pixel.red*pixel.red;
-  if (distance > (fuzz*fuzz))
+  if (distance > (fuzz_squared))
     return(False);
   pixel.green=p->green-(double) q->green;
   distance+=pixel.green*pixel.green;
-  if (distance > (fuzz*fuzz))
+  if (distance > (fuzz_squared))
     return(False);
   pixel.blue=p->blue-(double) q->blue;
   distance+=pixel.blue*pixel.blue;
-  if (distance > (fuzz*fuzz))
+  if (distance > (fuzz_squared))
     return(False);
   return(True);
 }

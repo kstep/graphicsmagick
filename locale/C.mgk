@@ -806,6 +806,9 @@
       <Message name="MissingBorderColor">
         Missing border color
       </Message>
+      <Message name="MissingCoefficients">
+        Missing coefficients
+      </Message>
       <Message name="MissingColorizeValue">
         Missing colorize value
       </Message>
@@ -1299,6 +1302,9 @@
         </Message>
         <Message name="UnableToAcquireString">
           unable to acquire string
+        </Message>
+        <Message name="UnableToAllocateCoefficients">
+          unable to allocate coefficients
         </Message>
         <Message name="UnableToAllocateString">
           unable to allocate string

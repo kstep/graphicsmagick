@@ -19,32 +19,36 @@
 %                               September 2002                                % 
 %                                                                             % 
 %                                                                             % 
-%  Copyright (C) 2002 GraphicsMagick Group, an organization dedicated	      %
-%  to making software imaging solutions freely available.		      %
-%									      %
-%  Permission is hereby granted, free of charge, to any person obtaining a    %
-%  copy of this software and associated documentation files ("Open	      %
-%  ImageMagick"), to deal in GraphicsMagick without restriction,	      %
-%  including without limitation the rights to use, copy, modify, merge,	      %
-%  publish, distribute, sublicense, and/or sell copies of ImageMagick, and    %
-%  to permit persons to whom GraphicsMagick is furnished to do so,	      %
-%  subject to the following conditions:					      %
-%									      %
-%  The above copyright notice and this permission notice shall be included    %
-%  in all copies or substantial portions of GraphicsMagick.		      %
-%									      %
-%  The software is provided "as is", without warranty of any kind, express    %
-%  or implied, including but not limited to the warranties of		      %
-%  merchantability, fitness for a particular purpose and noninfringement.     %
-%  In no event shall GraphicsMagick Group be liable for any claim,	      %
-%  damages or other liability, whether in an action of contract, tort or      %
-%  otherwise, arising from, out of or in connection with GraphicsMagick	      %
-%  or the use or other dealings in GraphicsMagick.			      %
-%									      %
-%  Except as contained in this notice, the name of the GraphicsMagick	      %
-%  Group shall not be used in advertising or otherwise to promote the	      %
-%  sale, use or other dealings in GraphicsMagick without prior written	      %
-%  authorization from the GraphicsMagick Group.				      %
+%  Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated % 
+%  to making software imaging solutions freely available.                     % 
+%                                                                             % 
+%  Permission is hereby granted, free of charge, to any person obtaining a    % 
+%  copy of this software and associated documentation files ("ImageMagick"),  % 
+%  to deal in ImageMagick without restriction, including without limitation   % 
+%  the rights to use, copy, modify, merge, publish, distribute, sublicense,   % 
+%  and/or sell copies of ImageMagick, and to permit persons to whom the       % 
+%  ImageMagick is furnished to do so, subject to the following conditions:    % 
+%                                                                             % 
+%  The above copyright notice and this permission notice shall be included in % 
+%  all copies or substantial portions of ImageMagick.                         % 
+%                                                                             % 
+%  Licensor ("ImageMagick Studio LLC") warrants that the copyright in and to  % 
+%  the Software ("ImageMagick") is owned by ImageMagick Studio LLC or that    % 
+%  ImageMagick is distributed by ImageMagick Studio LLC under a valid current % 
+%  license. Except as expressly stated in the immediately preceding           % 
+%  sentence, ImageMagick is provided by ImageMagick Studio LLC, contributors, % 
+%  and copyright owners "AS IS", without warranty of any kind, express or     % 
+%  implied, including but not limited to the warranties of merchantability,   % 
+%  fitness for a particular purpose and non-infringement.  In no event shall  % 
+%  ImageMagick Studio LLC, contributors or copyright owners be liable for     % 
+%  any claim, damages, or other liability, whether in an action of contract,  % 
+%  tort or otherwise, arising from, out of or in connection with              % 
+%  ImageMagick.                                                               % 
+%                                                                             % 
+%  Except as contained in this notice, the name of the ImageMagick Studio     % 
+%  shall not be used in advertising or otherwise to promote the sale, use or  % 
+%  other dealings in ImageMagick without prior written authorization from the % 
+%  ImageMagick Studio.                                                        % 
 %                                                                             % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 % 
@@ -93,8 +97,6 @@ const char *GetLocaleMessage(const char *tag)
    if (!tag || *tag == '\0')
       return "";
 
-#ifdef NON_HARDCODED_LOCALE
-   /* no need to do any of this, since the locale is hard coded below */
    if ( (!locale &&
          ( (!(locale = setlocale(LC_CTYPE, 0)) || *locale == '\0') &&
            (!(locale = getenv("LC_ALL"))       || *locale == '\0') &&
@@ -106,9 +108,9 @@ const char *GetLocaleMessage(const char *tag)
 
    if (!LocaleNCompare(locale,"en_US",5))
       locale = "C";
-#endif
 
    locale = "C";
+
    tp = locale;
    p = locale + strlen(locale);
    np = tag;
@@ -1380,6 +1382,9 @@ const char *GetLocaleMessage(const char *tag)
             if (p - tp == 18 && !LocaleNCompare(tp, "MissingBorderColor", 18))
               return *np ? tag : "Missing border color";
             else
+            if (p - tp == 19 && !LocaleNCompare(tp, "MissingCoefficients", 19))
+              return *np ? tag : "Missing coefficients";
+            else
             if (p - tp == 20 && !LocaleNCompare(tp, "MissingColorizeValue", 20))
               return *np ? tag : "Missing colorize value";
             else
@@ -1787,6 +1792,9 @@ const char *GetLocaleMessage(const char *tag)
                 else
                 if (p - tp == 22 && !LocaleNCompare(tp, "UnableToAddIPTCProfile", 22))
                   return *np ? tag : "unable to add IPTC profile";
+                else
+                if (p - tp == 28 && !LocaleNCompare(tp, "UnableToAllocateCoefficients", 28))
+                  return *np ? tag : "unable to allocate coefficients";
                 else
                 if (p - tp == 24 && !LocaleNCompare(tp, "UnableToAllocateColormap", 24))
                   return *np ? tag : "Unable to allocate colormap";

@@ -2782,7 +2782,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   height=0;
   max_value=255;
   mask=0xffff;
-  msb_first=False;
   number_scenes=1;
   samples_per_pixel=1;
   significant_bits=0;
@@ -3089,7 +3088,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             bytes_per_pixel=1;
             if (datum > 8)
               bytes_per_pixel=2;
-            max_value=(1 << (8*bytes_per_pixel))-1;
+            max_value=(1 << bits_allocated)-1;
             break;
           }
           case 0x0101:
@@ -3116,7 +3115,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Pixel representation.
             */
-            msb_first=datum;
             break;
           }
           case 0x1200:
@@ -3274,6 +3272,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (i=0; i <= (long) max_value; i++)
         scale[i]=(Quantum) (((double) MaxRGB*i)/max_value+0.5);
     }
+  msb_first=strcmp(transfer_syntax,"1.2.840.10008.1.2.2") == 0;
   for (scene=0; scene < (long) number_scenes; scene++)
   {
     /*

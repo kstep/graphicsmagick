@@ -1,4 +1,41 @@
+2003-01-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/annotate.c (RenderFreetype): For images with
+ 	matte==False, simply set the opacity of the pixel to be updated to
+ 	OpaqueOpacity before alpha-compositing the pixel rather than using
+ 	SetImageType(TrueColorMatteType) to initialize the opacity of the
+ 	entire image.  This is much faster and scales to large images.
+
+	* magick/image.c (SetImageType): Eliminated unnecessary conditionals.
+
 2003-01-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/effect.c (InsertMedianList): Assign computed quantum
+ 	indexes to variables to avoid extra computations for
+ 	QuantumDepth>8.
+
+	* magick/composite.c (AlphaComposite): Pre-compute common
+ 	expressions in order to improve performance.
+
+	* magick/fx.c (ConvolveImage): Optimized loops.
+
+	* magick/paint.c (TransparentImage): Optimize for case fuzz == 0.
+
+	* magick/color.c (FuzzyColorMatch): Minor cleanup and optimization.
+
+	* magick/locale.c: Added error messages for convolve option.
+
+	* coders/locale.c: Picked up recent changes from ImageMagick version.
+
+	* locale/C.mgk: Added error messages for convolve option.
+
+	* magick/command.c (MogrifyImage): Added support for convolve option.
+
+	* coders/xcf.c (ReadXCFImage): Recognize latest GIMP XCF header.
+
+	* coders/dcm.c: Transferred the apparent salient fixes from
+ 	ImageMagick for a bug described as "Some DCM grayscale images did
+ 	not display correctly.".
 
 	* coders/miff.c (ReadMIFFImage): Reading RLE-compressed MIFFs is
  	now about 4X faster.
