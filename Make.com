@@ -6,19 +6,19 @@ $ option := 'p1'
 $ if option .eqs. "CLEAN"
 $ then
 $    deletee/log [.magick]libMagick.olb;*
-$    deletee/log [.coders]libCoders.olb;*
+$    deletee/log [.coders]libCoder.olb;*
 $    exit
 $ endif
 $ if option .eqs. "REALCLEAN"
 $ then
 $    deletee/log [.magick]libMagick.olb;*,[...]*.obj;*
-$    deletee/log [.coders]libCoders.olb;*,[...]*.obj;*
+$    deletee/log [.coders]libCoder.olb;*,[...]*.obj;*
 $    exit
 $ endif
 $ if option .eqs. "DISTCLEAN"
 $ then
 $    deletee/log [.magick]libMagick.olb;*,[...]*.obj;*,*.exe;*,magickshr.olb;*
-$    deletee/log [.coders]libCoders.olb;*,[...]*.obj;*,*.exe;*,magickshr.olb;*
+$    deletee/log [.coders]libCoder.olb;*,[...]*.obj;*,*.exe;*,magickshr.olb;*
 $    exit
 $ endif
 $ if option .eqs. "NOSHR"
@@ -68,7 +68,7 @@ $ if share
 $ then
 $    write sys$output "Making shareable image"
 $    link/share/exe=magickshr.exe   [.magick]libMagick.olb/lib, -
-  [-.coders]libCoders.olb/lib, -
+  [-.coders]libCoder.olb/lib, -
   $disk2:[joukj.public.freetype.freetype.freetype2.lib]freetype.olb/lib, -
   []magickshr.opt/opt
 $ libr/crea/share/log magickshr.olb magickshr.exe
@@ -80,7 +80,7 @@ $    write sys$output "Shareable image logical MAGICKSHR defined:"
 $    show logi magickshr
 $ else
 $    link_libraries := [-.magick]libMagick.olb/lib, -
-  [-.coders]libCoders.olb/lib
+  [-.coders]libCoder.olb/lib
 $ endif
 $ define magick [-.magick]
 $ set def [.utilities]
