@@ -66,30 +66,30 @@ that may be found in a <b>MIFF</b> file:
 <p>
 <dl>
 <dl>
-<dt>
+<p><dt>
 <b>background-color</b>=<i>x,y</i></dt>
 
-<dt>
+<p><dt>
 <b>border-color</b>=<i>x,y</i></dt>
 
-<dt>
+<p><dt>
 <b>matte-color</b>=<i>x,y</i></dt>
 
 <dd>
 these optional keywords reflects the image background, border, and matte
 colors respectively.</dd>
 
-<dt>
+<p><dt>
 <b>class</b>=<i>DirectClass</i></dt>
 
-<dt>
+<p><dt>
 <b>class</b>=<i>PseudoClass</i></dt>
 
 <dd>
 the type of binary image data stored in the <b>MIFF</b> file. If this keyword
 is not present, <i>DirectClass</i> image data is assumed.</dd>
 
-<dt>
+<p><dt>
 <b>colors</b>=<i>value</i></dt>
 
 <dd>
@@ -98,14 +98,14 @@ image, this keyword specifies the size of the colormap. If this keyword
 is not present in the header, and the image is <i>PseudoClass</i>, a linear
 256 color grayscale colormap is used with the image data.</dd>
 
-<dt>
+<p><dt>
 <b>columns</b>=<i>value</i></dt>
 
 <dd>
 the width of the image in pixels. This is a required keyword and has no
 default.</dd>
 
-<dt>
+<p><dt>
 <b>color-profile</b>=<i>value</i></dt>
 
 <dd>
@@ -113,45 +113,45 @@ the number of bytes in the International Color Consortium color profile.
 The profile is defined by the <a href="ftp://sgigate.sgi.com/pub/icc/icc34.ps">ICC
 profile specification</a>.</dd>
 
-<dt>
+<p><dt>
 <b>colorspace</b>=<i>RGB</i></dt>
 
-<dt>
+<p><dt>
 <b>colorspace</b>=<i>CMYK</i></dt>
 
 <dd>
 the colorspace of the pixel data. The default is <i>RGB</i>.</dd>
 
-<dt>
+<p><dt>
 <b>compression</b>=<i>RunlengthEncoded</i></dt>
 
-<dt>
+<p><dt>
 <b>compression</b>=<i>Zip</i></dt>
 
-<dt>
+<p><dt>
 <b>compression</b>=<i>BZip</i></dt>
 
 <dd>
 the type of algorithm used to compress the image data. If this keyword
 is not present, the image data is assumed to be uncompressed.</dd>
 
-<dt>
+<p><dt>
 <b>delay</b> <i>&lt;1/100ths of a second&gt;</i></dt>
 
 <dd>
 the interframe delay in an image sequence. The maximum delay is 65535.</dd>
 
-<dt>
+<p><dt>
 <b>depth</b>=<i>8</i></dt>
 
-<dt>
+<p><dt>
 <b>depth</b>=<i>16</i></dt>
 
 <dd>
 depth of a single color value representing values from 0 to 255 (depth
 8) or 65535 (depth 16). If this keyword is absent, a depth of 8 is assumed.</dd>
 
-<dt>
+<p><dt>
 <b>dispose</b> <i>value</i></dt>
 
 <dd>
@@ -165,14 +165,14 @@ Here are the valid methods:</dd>
 &nbsp; 2&nbsp;&nbsp;&nbsp;&nbsp; Overwrite frame with background color from header.
 &nbsp; 3&nbsp;&nbsp;&nbsp;&nbsp; Overwrite with previous frame.</pre>
 
-<dt>
+<p><dt>
 <b>gamma</b>=<i>value</i></dt>
 
 <dd>
 gamma of the image. If it is not specified, a gamma of 1.0 (linear brightness
 response) is assumed,</dd>
 
-<dt>
+<p><dt>
 <b>id</b>=<i>ImageMagick</i></dt>
 
 <dd>
@@ -182,13 +182,13 @@ it should start as the first keyword of the header in column 1. This will
 allow programs like
 <i>file</i>(1) to easily identify the file as <b>MIFF</b>.</dd>
 
-<dt>
+<p><dt>
 <b>iterations</b> <i>value</i></dt>
 
 <dd>
 the number of times an image sequence loops before stopping.</dd>
 
-<dt>
+<p><dt>
 <b>label</b>="<i>value</i>"</dt>
 
 <dd>
@@ -196,10 +196,10 @@ this optional keyword defines a short title or caption for the image. If
 any whitespace appears in the label, it must be enclosed within double
 quotes.</dd>
 
-<dt>
+<p><dt>
 <b>matte</b>=<i>True</i></dt>
 
-<dt>
+<p><dt>
 <b>matte</b>=<i>False</i></dt>
 
 <dd>
@@ -207,7 +207,7 @@ specifies whether a <i>DirectClass</i> image has matte data. Matte data
 is generally useful for image compositing. This keyword has no meaning
 for pseudocolor images.</dd>
 
-<dt>
+<p><dt>
 <b>montage</b>=<i>&lt;width&gt;x&lt;height&gt;{+-}&lt;xoffset</i>&gt;{+-}&lt;<i>y</i>
 <i>offset</i>&gt;</dt>
 
@@ -231,7 +231,7 @@ of a column begins.</dd>
 If this keyword is specified, a directory of tile names must follow the
 image header. The format of the directory is explained below.</dd>
 
-<dt>
+<p><dt>
 <b>packets</b>=<i>value</i></dt>
 
 <dd>
@@ -242,37 +242,37 @@ or
 <a href="http://www.muraroa.demon.co.uk">BZip</a> compressed images,
 and not used for uncompressed image.</dd>
 
-<dt>
+<p><dt>
 <b>page</b>=<i>value</i></dt>
 
 <dd>
 preferred size and location of an image canvas.</dd>
 
-<dt>
+<p><dt>
 <b>red-primary</b>=<i>x,y</i></dt>
 
-<dt>
+<p><dt>
 <b>green-primary</b>=<i>x,y</i></dt>
 
-<dt>
+<p><dt>
 <b>blue-primary</b>=<i>x,y</i></dt>
 
-<dt>
+<p><dt>
 <b>white-point</b>=<i>x,y</i></dt>
 
 <dd>
 this optional keyword reflects the chromaticity primaries and white point.</dd>
 
-<dt>
+<p><dt>
 <b>rendering-intent</b>=<i>saturation</i></dt>
 
-<dt>
+<p><dt>
 <b>rendering-intent</b>=<i>perceptual</i></dt>
 
-<dt>
+<p><dt>
 <b>rendering-intent</b>=<i>absolute</i></dt>
 
-<dt>
+<p><dt>
 <b>rendering-intent</b>=<i>relative</i></dt>
 
 <dd>
@@ -280,21 +280,21 @@ Rendering intent is the CSS-1 property that has been defined by the
 <a href="http://www.color.org">International
 Color Consortium</a>.</dd>
 
-<dt>
+<p><dt>
 <b>resolution</b>=<i>&lt;x-resolution&gt;x&lt;y-resolution&gt;</i></dt>
 
 <dd>
 vertical and horizontal resolution of the image. See <b>units</b> for the
 specific resolution units (e.g. pixels per inch).</dd>
 
-<dt>
+<p><dt>
 <b>rows</b>=<i>value</i></dt>
 
 <dd>
 the height of the image in pixels. This is a required keyword and has no
 default.</dd>
 
-<dt>
+<p><dt>
 <b>scene</b>=<i>value</i></dt>
 
 <dd>
@@ -302,17 +302,17 @@ the sequence number for this <b>MIFF</b> image file. This optional keyword
 is used when a <b>MIFF</b> image file is one in a sequence of files used
 in an animation.</dd>
 
-<dt>
+<p><dt>
 <b>signature</b>=<i>value</i></dt>
 
 <dd>
 this optional keyword contains a string that uniquely identifies the image
 pixel contents. RSA's Data Security MD5 Digest Algorithm is recommended.</dd>
 
-<dt>
+<p><dt>
 <b>units</b>=<b>pixels-per-inch</b></dt>
 
-<dt>
+<p><dt>
 <b>units</b>=<i>pixels-per-centimeter</i></dt>
 
 <dd>
@@ -320,6 +320,7 @@ image resolution units.</dd>
 
 </dl>
 </dl>
+<p>
 The following is a sample <b>MIFF</b> header. In this example, &lt;FF&gt;
 is a formfeed character:
 <pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; id=ImageMagick
