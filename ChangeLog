@@ -1,3 +1,9 @@
+2004-08-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* NEWS: Updated with more changes since the 1.1.2 release.
+	* coders/tiff.c (ReadTIFFImage): Support reading RGB/CMYK scanline
+	oriented TIFF images with arbitrary depth.
+
 2004-08-05  Glenn Randers-Pehrson <glennrp@glennrp.com>
 
 	* coders/png.c: Fixes for CERT security alert TA04-217A described
