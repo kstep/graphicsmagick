@@ -2855,21 +2855,21 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
   else
     if (bounds.y2 >= image->rows)
       bounds.y2=image->rows-1;
-  for (y=(int) ceil(bounds.y1-0.5); y <= (int) floor(bounds.y2+0.5); y++)
+  switch (primitive_info->coordinates)
   {
-    x=(int) ceil(bounds.x1-0.5);
-    q=GetImagePixels(image,x,y,(int) floor(bounds.x2+0.5)-x,1);
-    if (q == (PixelPacket *) NULL)
+    case 0:
       break;
-    switch (primitive_info->coordinates)
+    case 1:
     {
-      case 0:
-        break;
-      case 1:
+      /*
+        Point.
+      */
+      for (y=(int) ceil(bounds.y1-0.5); y <= (int) floor(bounds.y2+0.5); y++)
       {
-        /*
-          Point.
-        */
+        x=(int) ceil(bounds.x1-0.5);
+        q=GetImagePixels(image,x,y,(int) floor(bounds.x2+0.5)-x,1);
+        if (q == (PixelPacket *) NULL)
+          break;
         for ( ; x <= (int) floor(bounds.x2+0.5); x++)
         {
           if ((x == (int) ceil(primitive_info->point.x-0.5)) &&
@@ -2877,12 +2877,21 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
             *q=stroke_color;
           q++;
         }
+        if (!SyncImagePixels(image))
+          break;
       }
-      default:
+    }
+    default:
+    {
+      /*
+        Polygon or line.
+      */
+      for (y=(int) ceil(bounds.y1-0.5); y <= (int) floor(bounds.y2+0.5); y++)
       {
-        /*
-          Polygon or line.
-        */
+        x=(int) ceil(bounds.x1-0.5);
+        q=GetImagePixels(image,x,y,(int) floor(bounds.x2+0.5)-x,1);
+        if (q == (PixelPacket *) NULL)
+          break;
         for ( ; x <= (int) floor(bounds.x2+0.5); x++)
         {
           fill_opacity=0.0;
@@ -3005,11 +3014,11 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
           }
           q++;
         }
-        break;
+        if (!SyncImagePixels(image))
+          break;
       }
-    }
-    if (!SyncImagePixels(image))
       break;
+    }
   }
   if (draw_info->debug)
     (void) fprintf(stdout,"    end draw-polygon (%.2fu)\n",GetUserTime(&timer));
