@@ -1756,17 +1756,20 @@ static void XDitherImage(Image *image,XImage *ximage)
         if (x < 48)
           value=x/2+8;
         value+=dither_red[i][j];
-        red_map[i][j][x]=(value < 0) ? 0 : (value > MaxRGB) ? MaxRGB : value;
+        red_map[i][j][x]=(unsigned short)
+          (value < 0) ? 0 : (value > MaxRGB) ? MaxRGB : value;
         value=x-16;
         if (x < 48)
           value=x/2+8;
         value+=dither_green[i][j];
-        green_map[i][j][x]=(value < 0) ? 0 : (value > MaxRGB) ? MaxRGB : value;
+        green_map[i][j][x]=(unsigned short)
+          (value < 0) ? 0 : (value > MaxRGB) ? MaxRGB : value;
         value=x-32;
         if (x < 112)
           value=x/2+24;
         value+=(dither_blue[i][j] << 1);
-        blue_map[i][j][x]=(value < 0) ? 0 : (value > MaxRGB) ? MaxRGB : value;
+        blue_map[i][j][x]=(unsigned short)
+          (value < 0) ? 0 : (value > MaxRGB) ? MaxRGB : value;
       }
   /*
     Dither image.

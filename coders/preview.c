@@ -58,7 +58,7 @@
 /*
   Constant declarations.
 */
-const char
+static const char
   *DefaultPreviewGeometry = "204x204+10+10";
 
 /*

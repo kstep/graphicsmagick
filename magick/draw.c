@@ -3192,6 +3192,7 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
         break;
       *q=draw_info->fill;
       (void) SyncImagePixels(image);
+      break;
     }
     case ColorPrimitive:
     {
@@ -4259,13 +4260,11 @@ static unsigned int TracePath(PrimitiveInfo *primitive_info,const char *path)
 
   unsigned int
     number_coordinates,
-    subpath,
     z_count;
 
   point.x=0;
   point.y=0;
   number_coordinates=0;
-  subpath=False;
   z_count=0;
   primitive_type=primitive_info->primitive;
   q=primitive_info;
@@ -4294,7 +4293,6 @@ static unsigned int TracePath(PrimitiveInfo *primitive_info,const char *path)
         /*
           Compute arc points.
         */
-        subpath=True;
         GetToken(p,&p,token);
         arc.x=atof(token);
         GetToken(p,&p,token);
@@ -4334,7 +4332,6 @@ static unsigned int TracePath(PrimitiveInfo *primitive_info,const char *path)
         /*
           Compute bezier points.
         */
-        subpath=True;
         do
         {
           points[0]=point;
@@ -4420,7 +4417,6 @@ static unsigned int TracePath(PrimitiveInfo *primitive_info,const char *path)
         /*
           Compute bezier points.
         */
-        subpath=True;
         do
         {
           points[0]=point;
@@ -4452,7 +4448,6 @@ static unsigned int TracePath(PrimitiveInfo *primitive_info,const char *path)
         /*
           Compute bezier points.
         */
-        subpath=True;
         do
         {
           points[0]=points[3];
@@ -4486,7 +4481,6 @@ static unsigned int TracePath(PrimitiveInfo *primitive_info,const char *path)
         /*
           Compute bezier points.
         */
-        subpath=True;
         do
         {
           points[0]=points[2];

@@ -1013,6 +1013,7 @@ int main(int argc,char **argv)
                           break;
                         }
                       MagickError(OptionError,"Invalid list type",option);
+                      break;
                     }
                     case 'D':
                     case 'd':
@@ -1023,6 +1024,7 @@ int main(int argc,char **argv)
                           break;
                         }
                       MagickError(OptionError,"Invalid list type",option);
+                      break;
                     }
                     case 'F':
                     case 'f':
@@ -1033,6 +1035,7 @@ int main(int argc,char **argv)
                           break;
                         }
                       MagickError(OptionError,"Invalid list type",option);
+                      break;
                     }
                     case 'M':
                     case 'm':
@@ -1050,6 +1053,7 @@ int main(int argc,char **argv)
                         }
 #endif /* HasMODULES */
                       MagickError(OptionError,"Invalid list type",option);
+                      break;
                     }
                     case 'T':
                     case 't':

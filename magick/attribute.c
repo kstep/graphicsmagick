@@ -211,7 +211,7 @@ static long ReadMSBLong(char **p,size_t *length)
   {
     c=(*(*p)++);
     (*length)--;
-    buffer[i]=c;
+    buffer[i]=(unsigned char) c;
   }
   value=buffer[0] << 24;
   value|=buffer[1] << 16;
@@ -238,7 +238,7 @@ static int ReadMSBShort(char **p,size_t *length)
   {
     c=(*(*p)++);
     (*length)--;
-    buffer[i]=c;
+    buffer[i]=(unsigned char) c;
   }
   value=buffer[0] << 8;
   value|=buffer[1];
@@ -379,7 +379,6 @@ static int Generate8BIMAttribute(Image *image,const char *key)
     length;
 
   unsigned char
-    c,
     *info;
 
   unsigned int
@@ -422,7 +421,7 @@ static int Generate8BIMAttribute(Image *image,const char *key)
           }
       }
     if (!(count & 0x01))
-      c=ReadByte((char **) &info,&length);
+      (void) ReadByte((char **) &info,&length);
     count=ReadMSBLong((char **) &info,&length);
     attribute=(char *) AcquireMemory(count+MaxTextExtent);
     if (attribute != (char *) NULL)

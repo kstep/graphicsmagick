@@ -1299,7 +1299,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,PixelPacket *color
       color->red=UpScale(red);
       color->green=UpScale(green);
       color->blue=UpScale(blue);
-      color->opacity=opacity;
+      color->opacity=(Quantum) opacity;
       return(True);
     }
   GetExceptionInfo(&exception);

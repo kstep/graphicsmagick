@@ -126,7 +126,7 @@ typedef struct _PICTRectangle
     right;
 } PICTRectangle;
 
-const PICTCode
+static const PICTCode
   codes[] =
   {
     /* 0x00 */ { (char *) "NOP", 0, (char *) "nop" },

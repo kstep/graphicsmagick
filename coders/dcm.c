@@ -2717,7 +2717,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     bits_allocated,
     bytes_per_pixel,
     height,
-    high_bit,
     mask,
     msb_first,
     number_scenes,
@@ -2760,7 +2759,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   graymap=(unsigned short *) NULL;
   group=0;
   height=0;
-  high_bit=0;
   max_value=MaxRGB;
   mask=0xffff;
   msb_first=False;
@@ -3026,7 +3024,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               High bit.
             */
-            high_bit=datum;
             break;
           }
           case 0x0103:
@@ -3155,7 +3152,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         magick[0]=magick[1];
         magick[1]=magick[2];
-        magick[2]=c;
+        magick[2]=(unsigned char) c;
         if (memcmp(magick,"\377\330\377",3) == 0)
           break;
       }
@@ -3324,9 +3321,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     blue=scale[blue];
                   }
               }
-            q->red=red;
-            q->green=green;
-            q->blue=blue;
+            q->red=(Quantum) red;
+            q->green=(Quantum) green;
+            q->blue=(Quantum) blue;
             q++;
           }
           if (!SyncImagePixels(image))

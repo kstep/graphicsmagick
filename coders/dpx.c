@@ -239,7 +239,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     }
     default:
-      ThrowReaderException(CorruptImageWarning,"color type not supported",image);
+      ThrowReaderException(CorruptImageWarning,"color type not supported",
+        image);
   }
   if (EOFBlob(image))
     ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);

@@ -186,7 +186,6 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   unsigned int
     height,
-    level,
     width;
 
   if (image_info->monochrome)
@@ -249,7 +248,6 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   box.width=0;
   box.height=0;
-  level=0;
   p=command;
   for (i=0; i < filesize; i++)
   {

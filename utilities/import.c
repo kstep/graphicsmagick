@@ -694,12 +694,14 @@ int main(int argc,char **argv)
               break;
             }
           MagickError(OptionError,"Unrecognized option",option);
+          break;
         }
         case 'n':
         {
           if (LocaleNCompare("negate",option+1,2) == 0)
             break;
           MagickError(OptionError,"Unrecognized option",option);
+          break;
         }
         case 'p':
         {

@@ -301,10 +301,8 @@ static char **GetStyleTokens(const char *text,int *number_tokens)
     Determine the number of arguments.
   */
   for (p=text; *p != '\0'; p++)
-  {
     if (*p == ':')
       (*number_tokens)+=2;
-  }
   tokens=(char **) AcquireMemory((*number_tokens+2)*sizeof(char *));
   if (tokens == (char **) NULL)
     MagickError(ResourceLimitError,"Unable to convert string to tokens",
@@ -2646,6 +2644,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   char
     keyword[MaxTextExtent],
     message[MaxTextExtent],
+    *p,
     *q,
     *token;
 
@@ -2665,9 +2664,6 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
 
   PrimitiveType
     primitive_type;
-
-  register char
-    *p;
 
   register int
     i,
@@ -2716,7 +2712,6 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
     /*
       Interpret graphic primitive.
     */
-    p=q;
     GetToken(q,&q,keyword);
     if (*keyword == '\0')
       break;
@@ -3130,9 +3125,6 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           {
             if (IsGeometry(q))
               {
-                char
-                  *p;
-
                 p=q;
                 GetToken(p,&p,token);
                 for (x=0; IsGeometry(token); x++)
@@ -3468,9 +3460,6 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       {
         int
           number_attributes;
-
-        register char
-          *p;
 
         GetToken(q,&q,token);
         number_attributes=1;

@@ -139,7 +139,6 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
   unsigned int
     height,
     matte,
-    number_lines,
     status,
     width;
 
@@ -166,7 +165,6 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
   for (i=1; textlist[i] != (char *) NULL; i++)
     if (Extent(textlist[i]) > (int) length)
       length=Extent(textlist[i]);
-  number_lines=i;
   text=(char *) AcquireMemory(length+MaxTextExtent);
   if (text == (char *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to annotate image",

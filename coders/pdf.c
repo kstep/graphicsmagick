@@ -168,9 +168,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     count,
     status;
 
-  long int
-    filesize;
-
   RectangleInfo
     box,
     page;
@@ -295,7 +292,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   (void) fclose(file);
   CloseBlob(image);
-  filesize=SizeBlob(image);
   /*
     Use Ghostscript to convert Postscript image.
   */

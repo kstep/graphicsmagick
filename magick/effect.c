@@ -3077,7 +3077,7 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
     *p,
     *q;
 
-  size_t
+  long
     i,
     j;
 

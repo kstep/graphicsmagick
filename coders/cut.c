@@ -483,7 +483,7 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
     		{
     		if(RunCountMasked>j)
 			{		/*Wrong Data*/
-			RunCountMasked=j;
+			RunCountMasked=(unsigned char) j;
 			if(j==0) 
 			    {
 			    break;

@@ -416,9 +416,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 green=scale[green];
                 blue=scale[blue];
               }
-            q->red=red;
-            q->green=green;
-            q->blue=blue;
+            q->red=(Quantum) red;
+            q->green=(Quantum) green;
+            q->blue=(Quantum) blue;
             q++;
           }
           if (!SyncImagePixels(image))
@@ -552,9 +552,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 green=scale[green];
                 blue=scale[blue];
               }
-            q->red=red;
-            q->green=green;
-            q->blue=blue;
+            q->red=(Quantum) red;
+            q->green=(Quantum) green;
+            q->blue=(Quantum) blue;
             q++;
           }
           if (!SyncImagePixels(image))
