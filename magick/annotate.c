@@ -348,8 +348,8 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
       metrics.underline_thickness,metrics.width);
     if (annotate->decorate == OverlineDecoration)
       {
-        clone_info->affine.ty-=draw_info->affine.sy*
-          (metrics.ascent+metrics.descent)-metrics.underline_position;
+        clone_info->affine.ty-=(draw_info->affine.sy*
+          (metrics.ascent+metrics.descent)-metrics.underline_position);
         (void) CloneString(&clone_info->primitive,primitive);
         (void) DrawImage(image,clone_info);
       }
@@ -368,8 +368,8 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
       break;
     if (annotate->decorate == LineThroughDecoration)
       {
-        clone_info->affine.ty-=draw_info->affine.sy*height/2.0-
-          metrics.underline_position/2.0;
+        clone_info->affine.ty-=(draw_info->affine.sy*height+
+          metrics.underline_position)/2.0;
         (void) CloneString(&clone_info->primitive,primitive);
         (void) DrawImage(image,clone_info);
       }
