@@ -1082,7 +1082,7 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
     }
   GetGWorld(&port,&device);
   theErr=NewGWorld(&graphic_world,0,&(**picture_handle).picFrame,nil,nil,
-    useTempMem|keepLocal);
+    useTempMem | keepLocal);
   if (theErr != noErr && graphic_world == nil)
     {
       DisposeHandle((Handle) picture_handle);
@@ -1131,14 +1131,14 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
   image->rows=picture_info.sourceRect.bottom-picture_info.sourceRect.top;
   if ((depth <= 8) && ((*(picture_info.theColorTable))->ctSize != 0))
     {
+      unsigned int
+        number_colors;
+
       /*
         Colormapped PICT image.
       */
-      image->storage_class=PseudoClass;
-      image->colors=(*(picture_info.theColorTable))->ctSize;
-      image->colormap=(PixelPacket *)
-        AcquireMemory(image->colors*sizeof(PixelPacket));
-      if (image->colormap == (PixelPacket *) NULL)
+      number_colors=(*(picture_info.theColorTable))->ctSize;
+      if (!AllocateImageColormap(image,number_colors))
         {
           if (picture_info.theColorTable != nil)
             DisposeHandle((Handle) picture_info.theColorTable);

@@ -470,7 +470,7 @@ MagickExport Image *BlurImage(Image *image,const double radius,
   for (y=0; y < image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
-    q=GetImagePixels(blur_image,0,y,image->columns,1);
+    q=SetImagePixels(blur_image,0,y,image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     BlurScanline(kernel,width,p,q,image->columns);
@@ -1765,7 +1765,7 @@ MagickExport Image *MorphImages(Image *image,const unsigned int number_frames,
   if (image->next == (Image *) NULL)
     ThrowImageException(OptionWarning,"Unable to morph image sequence",
       "next sequence required");
-  morph_images=CloneImage(image,image->columns,image->rows,True,exception);
+  morph_images=CloneImage(image,0,0,True,exception);
   if (morph_images == (Image *) NULL)
     return((Image *) NULL);
   /*
@@ -1822,8 +1822,7 @@ MagickExport Image *MorphImages(Image *image,const unsigned int number_frames,
     /*
       Clone last frame in sequence.
     */
-    morph_images->next=CloneImage(next->next,next->next->columns,
-      next->next->rows,True,exception);
+    morph_images->next=CloneImage(next->next,0,0,True,exception);
     if (morph_images->next == (Image *) NULL)
       {
         DestroyImages(morph_images);
@@ -3049,8 +3048,7 @@ MagickExport Image *StereoImage(Image *image,Image *offset_image,
   /*
     Initialize stereo image attributes.
   */
-  stereo_image=
-    CloneImage(image,image->columns,image->rows,False,exception);
+  stereo_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (stereo_image == (Image *) NULL)
     return((Image *) NULL);
   stereo_image->storage_class=DirectClass;

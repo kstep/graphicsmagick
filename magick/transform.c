@@ -1184,7 +1184,7 @@ MagickExport Image *RollImage(Image *image,const int x_offset,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  roll_image=CloneImage(image,0,0,False,exception);
+  roll_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (roll_image == (Image *) NULL)
     return((Image *) NULL);
   /*
