@@ -778,18 +778,14 @@ MagickExport void NTErrorHandler(const ExceptionType error,const char *reason,
 %
 %  The format of the GetExecutionPath method is:
 %
-%      char *NTGetExecutionPath(void)
+%      unsigned int NTGetExecutionPath(char *path)
 %
 %
 */
-MagickExport char *NTGetExecutionPath(void)
+MagickExport unsigned int NTGetExecutionPath(char *path)
 {
-  char
-    *path;
-
-  path=AllocateString((char *) NULL);
   GetModuleFileName(0,path,MaxTextExtent);
-  return(path);
+  return(True);
 }
 
 /*

@@ -349,36 +349,25 @@ MagickExport void InitializeMagick(const char *path)
   InitializeSemaphore();
   *execution_path='\0';
 #if !defined(UseInstalledImageMagick)
-# if defined(POSIX) || defined(WIN32)
+#if defined(POSIX) || defined(WIN32)
   if ((path == (const char *) NULL) ||
       (strchr(path,*DirectorySeparator) == (char *) NULL) ||
       (strlen(path) <= 2))
-    {
-      char
-        *path;
-
-      path=GetExecutionPath();
-      if (path != (char *) NULL)
-        (void) strcpy(execution_path,path);
-    }
+    (void) GetExecutionPath(execution_path);
   else
     {
 #if defined(POSIX)
       if (*path == *DirectorySeparator)
 #elif defined(WIN32)
-      if ((path[1] == ':') || ((path[0] == *DirectorySeparator) &&
-          (path[1] == *DirectorySeparator)))
+      if (((*path == *DirectorySeparator) &&
+           (*(path+1) == *DirectorySeparator)) || (*(path+1) == ':'))
 #else
       if (1)
 #endif
         (void) strcpy(execution_path,path);
       else
         {
-          char
-            directory[MaxTextExtent];
-
-          (void) getcwd(directory,sizeof(directory)-1);
-          (void) strcpy(execution_path,directory);
+          (void) getcwd(execution_path,MaxTextExtent-1);
           (void) strcat(execution_path,DirectorySeparator);
           if((path[0] == '.') && (path[1] == *DirectorySeparator))
             (void) strcat(execution_path,path+2);
@@ -386,8 +375,8 @@ MagickExport void InitializeMagick(const char *path)
             (void) strcat(execution_path,path);
         }
     }
-#endif /* POSIX || WIN32 */
-#endif /* !UseInstalledImageMagick */
+#endif
+#endif
   if (*execution_path == '\0')
     {
       if (path != (char *) NULL)
@@ -405,19 +394,18 @@ MagickExport void InitializeMagick(const char *path)
     }
 #if defined(WIN32)
     InitializeTracingCriticalSection();
-#if defined(_DEBUG)
-    {
-      int
-        debug;
+    if (getenv("MAGICK_DEBUG"))
+      {
+        int
+          debug;
 
-      debug=_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
-      debug|=_CRTDBG_CHECK_ALWAYS_DF;
-      debug|=_CRTDBG_DELAY_FREE_MEM_DF;
-      debug|=_CRTDBG_LEAK_CHECK_DF;
-      // debug=_CrtSetDbgFlag(debug);
-      // _ASSERTE(_CrtCheckMemory());  // use this to check condition of memory
-    }
-#endif
+        debug=_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
+        debug|=_CRTDBG_CHECK_ALWAYS_DF;
+        debug|=_CRTDBG_DELAY_FREE_MEM_DF;
+        debug|=_CRTDBG_LEAK_CHECK_DF;
+        // debug=_CrtSetDbgFlag(debug);
+        // _ASSERTE(_CrtCheckMemory());
+      }
 #endif
 }
 

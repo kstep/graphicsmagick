@@ -55,7 +55,7 @@ int main ( int argc, char **argv )
     exception;
 
   if (LocaleNCompare("rwblob",argv[0],7) == 0)
-    InitializeMagick(GetExecutionPath());
+    InitializeMagick((char *) NULL);
   else
     InitializeMagick(*argv);
 

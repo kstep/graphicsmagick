@@ -1434,54 +1434,43 @@ MagickExport void FormatString(char *string,const char *format,...)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetExecutionPath function returns the pathname of the executable
-%  that started the process.
+%  GetExecutionPath() returns the pathname of the executable that started
+%  the process.  On success True is returned, otherwise False.
 %
 %  The format of the GetExecutionPath method is:
 %
-%      char *GetExecutionPath(void)
+%      unsigned int GetExecutionPath(char *path)
 %
 %  A description of each parameter follows:
 %
-%    o execution_path: Method GetExecutionPath returns the pathname of the
-%      executable that started the process.
+%    o path: The pathname of the executable that started the process.
 %
 */
-MagickExport char *GetExecutionPath(void)
+MagickExport unsigned int GetExecutionPath(char *path)
 {
 #if defined(WIN32)
-  return(NTGetExecutionPath());
+  return(NTGetExecutionPath(path));
 #endif
 #if defined(HAVE_GETEXECNAME)
-  /*
-    Solaris provides getexecname() to return argv[0]
-   */
-  extern const char *getexecname(void);
   {
     char
-      execpath[MaxTextExtent];
+      *execution_path;
               
-    const char
-      *execname = getexecname();
-
-    if (*execname == *DirectorySeparator)
+    execution_path=getexecname();
+    if (execution_path != (char *) NULL)
       {
-        (void) strcpy(execpath,execname);
+        if (*execution_path != *DirectorySeparator)
+          {
+            (void) getcwd(path,MaxTextExtent-1);
+            (void) strcat(path,"/");
+          }
+        (void) strcat(path,execution_path);
+        if (IsAccessible(path))
+          return(True);
       }
-    else
-      {
-        char
-          directory[MaxTextExtent];
-
-        (void) getcwd(directory,sizeof(directory)-1);
-        (void) strcpy(execpath,directory);
-        (void) strcat(execpath,"/");
-        (void) strcat(execpath,execname);
-      }
-    if (IsAccessible(execpath))
-      return(AllocateString(execpath));  }
-#endif /* HAVE_GETEXECNAME */
-  return((char *) NULL);
+  }
+#endif
+  return(False);
 }
 
 /*

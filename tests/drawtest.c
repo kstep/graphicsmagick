@@ -370,7 +370,7 @@ int main ( int argc, char **argv )
   strncpy( outfile, argv[1], MaxTextExtent-1 );
 
   if (LocaleNCompare("drawtest",argv[0],7) == 0)
-    InitializeMagick(GetExecutionPath());
+    InitializeMagick((char *) NULL);
   else
     InitializeMagick(*argv);
 

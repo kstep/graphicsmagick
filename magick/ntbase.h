@@ -76,7 +76,6 @@ typedef struct _DIR
   NT utilities routines.
 */
 extern MagickExport char
-  *NTGetExecutionPath(void),
   *NTGetLastError(void);
 
 extern MagickExport int
@@ -115,6 +114,9 @@ extern MagickExport struct dirent
 
 extern MagickExport unsigned char
   *NTResourceToBlob(const char *);
+
+extern MagickExport unsigned int
+  *NTGetExecutionPath(char *);
 
 extern MagickExport void
   closedir(DIR *),

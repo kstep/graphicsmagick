@@ -37,7 +37,6 @@ extern MagickExport char
   *FindConfigurationFile(const char *,ExceptionInfo *),
   *FindFontFile(const char *,ExceptionInfo *),
   *FindModuleFile(const char *,ExceptionInfo *),
-  *GetExecutionPath(void),
   *GetPageGeometry(const char *),
   **ListFiles(const char *,const char *,long *),
   *PostscriptGeometry(const char *),
@@ -73,6 +72,7 @@ extern MagickExport unsigned int
   CloneString(char **,const char *),
   ConcatenateString(char **,const char *),
   ExpandFilenames(int *,char ***),
+  GetExecutionPath(char *),
   IsAccessible(const char *),
   IsGeometry(const char *),
   IsGlob(const char *);
