@@ -217,7 +217,7 @@ if(len>0) (void) SeekBlob(I,len,SEEK_CUR);
 }
 
 
-MagickExport double ReadBlobLSBdouble(Image *image)
+static double ReadBlobLSBdouble(Image *image)
 {
  typedef union
    {
