@@ -54,6 +54,36 @@
 */
 #include "magick.h"
 #include "defines.h"
+
+#if defined(vms)
+# include "vms.h"
+#elif defined(macintosh)
+# include "mac.h"
+#elif defined(WIN32)
+# include "nt.h"
+#else
+# if HAVE_SYS_NDIR_H || HAVE_SYS_DIR_H || HAVE_NDIR_H
+#  define dirent direct
+#  define NAMLEN(dirent) (dirent)->d_namlen
+#  if HAVE_SYS_NDIR_H
+#   include <sys/ndir.h>
+#  endif
+#  if HAVE_SYS_DIR_H
+#   include <sys/dir.h>
+#  endif
+#  if HAVE_NDIR_H
+#   include <ndir.h>
+#  endif
+# else
+#  include <dirent.h>
+#  define NAMLEN(dirent) Extent((dirent)->d_name)
+# endif
+# include <pwd.h>
+#endif
+
+#if !defined(S_ISDIR)
+# define S_ISDIR(mode) (((mode) & S_IFMT) == S_IFDIR)
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
