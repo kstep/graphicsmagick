@@ -149,12 +149,6 @@
 /* Define if you have the <hdf/hdf.h> header file.  */
 #undef HAVE_HDF_HDF_H
 
-/* Define if you have the <libxml/xml-error.h> header file.  */
-#undef HAVE_LIBXML_XML_ERROR_H
-
-/* Define if you have the <libxml/xmlerror.h> header file.  */
-#undef HAVE_LIBXML_XMLERROR_H
-
 /* Define if you have the <malloc.h> header file.  */
 #undef HAVE_MALLOC_H
 

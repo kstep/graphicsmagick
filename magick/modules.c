@@ -143,6 +143,9 @@ extern "C" {
 
 static void DestroyModuleInfo(void)
 {
+  ModuleInfo
+    *module_info;
+
   register ModuleAlias
     *q;
 
@@ -152,10 +155,12 @@ static void DestroyModuleInfo(void)
   /*
     Unload and unregister all loaded modules.
   */
-  for (p=module_list; p != (ModuleInfo *) NULL; p=p->next)
+  for (p=module_list; p != (ModuleInfo *) NULL; )
   {
-    UnloadDynamicModule(p->tag);
-    UnregisterModuleInfo(p->tag);
+    module_info=p;
+    p=p->next;
+    UnloadDynamicModule(module_info->tag);
+    UnregisterModuleInfo(module_info->tag);
   }
   /*
     Free module list and aliases.

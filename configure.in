@@ -1082,7 +1082,7 @@ then
         have_xml='yes'
 
 	# check which xml error header file to use
-        AC_CHECK_HEADERS(libxml/xml-error.h libxml/xmlerror.h)
+        AC_CHECK_HEADERS(libxml/xmlerror.h)
     fi
     else
         AC_MSG_RESULT(no)

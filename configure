@@ -8377,7 +8377,7 @@ echo "${ECHO_T}yes" >&6
 
 	# check which xml error header file to use
 
-for ac_header in libxml/xml-error.h libxml/xmlerror.h
+for ac_header in libxml/xmlerror.h
 do
 ac_ac_Header=`echo "ac_cv_header_$ac_header" | $ac_tr_sh`
 echo "$as_me:8383: checking for $ac_header" >&5
