@@ -1892,7 +1892,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             bit++;
             if (bit == 8)
               {
-                *q++=byte >> 8;
+                *q++=byte;
                 bit=0;
                 byte=0;
               }
