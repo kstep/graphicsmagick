@@ -8,12 +8,12 @@ CFG=LIBR_FPX - WIN32 RELEASE
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "LIBR_FPX_mt_dll.mak".
+!MESSAGE NMAKE /f "LIBR_fpx_mt_dll.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "LIBR_FPX_mt_dll.mak" CFG="LIBR_FPX - WIN32 RELEASE"
+!MESSAGE NMAKE /f "LIBR_fpx_mt_dll.mak" CFG="LIBR_FPX - WIN32 RELEASE"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
@@ -54,7 +54,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /machine:I386
-# ADD LINK32 ..\lib\LIBR_FPXjpeg.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /pdb:"..\bin\LIBR_FPX.pdb" /machine:I386 /out:"..\bin\LIBR_FPX.dll"
+# ADD LINK32 ..\lib\LIBR_FPXjpeg.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /base:"0x66700000" /subsystem:windows /dll /pdb:"..\bin\LIBR_FPX.pdb" /machine:I386 /out:"..\bin\LIBR_FPX.dll"
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "LIBR_FPX - Win32 Debug"
@@ -82,7 +82,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /debug /machine:I386
-# ADD LINK32 ..\lib\LIBR_DB_FPXjpeg.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib uuid.lib odbc32.lib odbccp32.lib ole32.lib oleaut32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"..\bin\LIBR_DB_FPX.pdb" /debug /machine:I386 /out:"..\bin\LIBR_DB_FPX.dll"
+# ADD LINK32 ..\lib\LIBR_DB_FPXjpeg.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib uuid.lib odbc32.lib odbccp32.lib ole32.lib oleaut32.lib /nologo /base:"0x66700000" /subsystem:windows /dll /incremental:no /pdb:"..\bin\LIBR_DB_FPX.pdb" /debug /machine:I386 /out:"..\bin\LIBR_DB_FPX.dll"
 # SUBTRACT LINK32 /pdb:none
 
 !ENDIF 
