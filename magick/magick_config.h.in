@@ -82,6 +82,9 @@
 /* Define to 1 if you have the `ftime' function. */
 #undef HAVE_FTIME
 
+/* Define to 1 if you have the `getc_unlocked' function. */
+#undef HAVE_GETC_UNLOCKED
+
 /* Define to 1 if you have the `getexecname' function. */
 #undef HAVE_GETEXECNAME
 
@@ -148,6 +151,9 @@
 
 /* Define if libtool can extract symbol lists from object files. */
 #undef HAVE_PRELOADED_SYMBOLS
+
+/* Define to 1 if you have the `putc_unlocked' function. */
+#undef HAVE_PUTC_UNLOCKED
 
 /* Define to 1 if you have the `readdir' function. */
 #undef HAVE_READDIR

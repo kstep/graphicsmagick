@@ -2754,7 +2754,7 @@ MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
     if (p == (const PixelPacket *) NULL)
       break;
     if (!image->matte)
-      for (x=0; x < (long) image->columns; x++)
+      for (x=(long) image->columns; x > 0; x--)
       {
         pixel.red=p->red-(double) q->red;
         pixel.green=p->green-(double) q->green;
@@ -2768,7 +2768,7 @@ MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
         q++;
       }
     else
-      for (x=0; x < (long) image->columns; x++)
+      for (x=(long) image->columns; x > 0; x--)
       {
         pixel.red=p->red-(double) q->red;
         pixel.green=p->green-(double) q->green;

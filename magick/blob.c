@@ -76,6 +76,20 @@
 */
 #define DefaultBlobQuantum  65541
 
+/*
+  Some systems have unlocked versions of getc & putc which are faster
+  when multi-threading is enabled.  Blobs do not require multi-thread
+  support since Images are only allowed to be accessed by one thread at
+  a time. Using the unlocked version improves performance by about 30%.
+*/
+#if defined(HAVE_GETC_UNLOCKED)
+#  undef getc
+#  define getc getc_unlocked
+#endif
+#if defined(HAVE_PUTC_UNLOCKED)
+#  undef putc
+#  define putc putc_unlocked
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2100,7 +2114,25 @@ MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
     case StandardStream:
     case PipeStream:
     {
-      count=fread(data,1,length,image->blob->file);
+      if (length == 1)
+        {
+          unsigned int
+            c;
+
+          if ((c=getc(image->blob->file)) != EOF)
+            {
+              *((unsigned char *)data)=c;
+              count=1;
+            }
+          else
+            {
+              count=0;
+            }
+        }
+      else
+        {
+          count=fread(data,1,length,image->blob->file);
+        }
       break;
     }
     case ZipStream:
@@ -2223,24 +2255,35 @@ MagickExport int ReadBlobByte(Image *image)
 {
   unsigned char
     c;
-
+  
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-
-  if (image->blob->type == BlobStream)
+  
+  switch (image->blob->type)
     {
-      if (image->blob->offset < image->blob->length)
-        {
-          c=*((unsigned char *)image->blob->data+image->blob->offset);
-          image->blob->offset++;
+    case FileStream:
+    case StandardStream:
+    case PipeStream:
+      {
+        return getc(image->blob->file);
+      }
+    case BlobStream:
+      {
+        if (image->blob->offset < image->blob->length)
+          {
+            c=*((unsigned char *)image->blob->data+image->blob->offset);
+            image->blob->offset++;
+            return (c);
+          }
+        image->blob->eof=True;
+        break;
+      }
+    default:
+      {
+        /* Do things the slow way */
+        if (ReadBlob(image,1,&c) == 1)
           return (c);
-        }
-      image->blob->eof=True;
-    }
-  else
-    {
-      if (ReadBlob(image,1,&c) == 1)
-        return (c);
+      }
     }
   return(EOF);
 }
@@ -2904,7 +2947,7 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
   assert(data != (const char *) NULL);
   assert(image->blob != (BlobInfo *) NULL);
   assert(image->blob->type != UndefinedStream);
-  count=0;
+  count=length;
   switch (image->blob->type)
   {
     case UndefinedStream:
@@ -2913,7 +2956,17 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
     case StandardStream:
     case PipeStream:
     {
-      count=fwrite((char *) data,1,length,image->blob->file);
+      if (length == 1)
+        {
+          if((putc((int)*((unsigned char *)data),image->blob->file)) != EOF)
+            count=1;
+          else
+            count=0;
+        }
+      else
+        {
+          count=fwrite((char *) data,1,length,image->blob->file);
+        }
       break;
     }
     case ZipStream:
@@ -2937,6 +2990,9 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
     }
     case BlobStream:
     {
+      void
+        *dest;
+
       if ((image->blob->offset+length) >= image->blob->extent)
         {
           if (image->blob->mapped)
@@ -2951,7 +3007,20 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
               return(0);
             }
         }
-      (void) memcpy(image->blob->data+image->blob->offset,data,length);
+
+      dest=image->blob->data+image->blob->offset;
+      if (length <= 10)
+        {
+          register size_t
+            i;
+
+          for(i=length; i > 0; i--)
+            *(unsigned char*)dest++=*(const unsigned char*)data++;
+        }
+      else
+        {
+          (void) memcpy(dest,data,length);
+        }
       image->blob->offset+=length;
       if (image->blob->offset > (ExtendedSignedIntegralType)
           image->blob->length)
@@ -2993,12 +3062,29 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
 MagickExport size_t WriteBlobByte(Image *image,const unsigned long value)
 {
   unsigned char
-    buffer[1];
+    c;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  buffer[0]=(unsigned char) value;
-  return(WriteBlob(image,1,buffer));
+
+  switch (image->blob->type)
+    {
+    case FileStream:
+    case StandardStream:
+    case PipeStream:
+      {
+        if(putc((int)value,image->blob->file) != EOF)
+          return 1;
+        return 0;
+      }
+      /* case BlobStream: TBD */
+    default:
+      {
+        c=(unsigned char) value;
+        return(WriteBlob(image,1,&c));
+      }
+    }
+
 }
 
 /*

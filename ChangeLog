@@ -1,11 +1,18 @@
 2003-01-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/blob.c (ReadBlobByte): Use getc when reading from FILE stream.
+
+	* configure.ac: Added tests for getc_unlocked and putc_unlocked.
+
 	* magick/blob.c (ReadBlobByte): Optimized reading from BlobStream.
 	(ReadBlobLSBLong): Optimized reading from BlobStream.
 	(ReadBlobLSBShort): Optimized reading from BlobStream.
 	(ReadBlobMSBLong): Optimized reading from BlobStream.
 	(ReadBlobMSBShort): Optimized reading from BlobStream.
 	(ReadBlobStream): New static inline function to read from BlobStream.
+	(WriteBlob): "Manually" copy data rather than using memcpy() for
+ 	very small copy sizes.
+	(WriteBlobByte): Use putc() when writing to a FILE stream.
 
 2003-01-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

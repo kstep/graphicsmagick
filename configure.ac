@@ -673,7 +673,7 @@ fi
 #
 ########
 AC_FUNC_MMAP
-AC_CHECK_FUNCS(ftime getexecname poll select times strerror sysconf vsnprintf)
+AC_CHECK_FUNCS(ftime getexecname getc_unlocked poll putc_unlocked select times strerror sysconf vsnprintf)
 
 ########
 #
