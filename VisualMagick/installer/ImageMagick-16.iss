@@ -77,7 +77,7 @@ OutputBaseFilename=ImageMagick-5.4.9-win2k
 [Tasks]
 Name: desktop_icon; Description: "Create a &desktop icon"; MinVersion: 4,4
 Name: update_path; Description: "Update executable search path"
-Name: associate_extensions; Description: "Associate supported file extensions with ImageMagick"
+Name: associate_extensions; Description: "Associate supported file extensions with ImageMagick"; Flags: unchecked
 Name: install_PerlMagick; Description: "Install PerlMagick for ActiveState Perl v5.6.1 build 633"; Flags: unchecked
 Name: install_Magick_DLL; Description: "Install ImageMagickObject OLE Control for VBscript, Visual Basic, and WSH"; Flags: unchecked
 
