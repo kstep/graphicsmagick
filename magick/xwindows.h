@@ -593,11 +593,6 @@ extern MagickExport XVisualInfo
 extern MagickExport XWindows
   *XInitializeWindows(Display *,XResourceInfo *),
   *XSetWindows(XWindows *);
-
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
 
 /*
   Invoke pre-X11R6 ICCCM routines if XlibSpecificationRelease is not 6.
