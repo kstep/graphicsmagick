@@ -3502,8 +3502,6 @@ Get(ref,...)
 #                                                                             #
 ###############################################################################
 #
-#  Blobs are not very interesting until ImageMagick implements direct to memory
-#  image formats (via memory-mapped I/O).
 #
 void
 ImageToBlob(ref,...)
