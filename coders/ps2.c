@@ -680,15 +680,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           switch (compression)
           {
             case NoCompression: FormatString(buffer,*q,"ASCII85Decode"); break;
-            case JPEGCompression: 
-            {
-              FormatString(buffer,*q,"DCTDecode"); 
-              if (image->colorspace != CMYKColorspace)
-                break;
-              (void) WriteBlobString(image,buffer);
-              (void) strcpy(buffer,"/Decode [1 0 1 0 1 0 1 0]\n");
-              break;
-            }
+            case JPEGCompression: FormatString(buffer,*q,"DCTDecode"); break;
             case LZWCompression: FormatString(buffer,*q,"LZWDecode"); break;
             case FaxCompression: FormatString(buffer,*q,"ASCII85Decode"); break;
             default: FormatString(buffer,*q,"RunLengthDecode"); break;
