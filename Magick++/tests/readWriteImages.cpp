@@ -26,7 +26,7 @@ int main( int /*argc*/, char ** argv)
 
   string srcdir("");
   if(getenv("SRCDIR") != 0)
-    srcdir = getenv("SRCDIR") + string("/");
+    srcdir = getenv("SRCDIR");
 
   try {
 
