@@ -94,22 +94,31 @@ MagickExport MontageInfo *CloneMontageInfo(const ImageInfo *image_info,
   if (clone_info == (MontageInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to clone montage info",
       "Memory allocation failed");
+  GetMontageInfo(image_info,clone_info);
   if (montage_info == (MontageInfo *) NULL)
-    {
-      GetMontageInfo(image_info,clone_info);
-      return(clone_info);
-    }
-  *clone_info=(*montage_info);
+    return(clone_info);
   if (montage_info->geometry != (char *) NULL)
     clone_info->geometry=GetString(montage_info->geometry);
   if (montage_info->tile != (char *) NULL)
     clone_info->tile=GetString(montage_info->tile);
+  if (montage_info->title != (char *) NULL)
+    clone_info->title=GetString(montage_info->title);
   if (montage_info->frame != (char *) NULL)
     clone_info->frame=GetString(montage_info->frame);
   if (montage_info->texture != (char *) NULL)
     clone_info->texture=GetString(montage_info->texture);
   if (montage_info->font != (char *) NULL)
     clone_info->font=GetString(montage_info->font);
+  clone_info->pointsize=montage_info->pointsize;
+  clone_info->border_width=montage_info->border_width;
+  clone_info->shadow=montage_info->shadow;
+  clone_info->fill=montage_info->fill;
+  clone_info->stroke=montage_info->stroke;
+  clone_info->background_color=montage_info->background_color;
+  clone_info->border_color=montage_info->border_color;
+  clone_info->matte_color=montage_info->matte_color;
+  clone_info->gravity=montage_info->gravity;
+  (void) strncpy(clone_info->filename,montage_info->filename,MaxTextExtent-1);
   return(clone_info);
 }
 
