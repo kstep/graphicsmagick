@@ -11,15 +11,6 @@ extern "C" {
 /*
   Review these platform specific definitions.
 */
-#if defined(sgi)
-#if !defined(X11ConfigurePath)
-#define X11ConfigurePath  "/usr/lib/X11/rgb.txt"
-#endif
-#if !defined(ApplicationDefaults)
-#define ApplicationDefaults  "/usr/lib/X11/app-defaults/"
-#endif
-#endif
-
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
 #if !defined(ApplicationDefaults)
 #define ApplicationDefaults  "/usr/X11R6/lib/X11/app-defaults/"
@@ -46,7 +37,7 @@ extern "C" {
 #define ProcessPendingEvents(text)
 #define ReadCommandlLine(argc,argv)
 #if !defined(X11ConfigurePath)
-#define X11ConfigurePath  "/usr/X11R6/lib/X11/rgb.txt"
+#define X11ConfigurePath  "/usr/X11R6/lib/X11/"
 #endif
 #define SetNotifyHandlers
 #define TemporaryTemplate  "magick"
@@ -71,7 +62,7 @@ extern "C" {
 #define ProcessPendingEvents(text)
 #define ReadCommandlLine(argc,argv)
 #if !defined(X11ConfigurePath)
-#define X11ConfigurePath  "sys$common:[sysmgr]decw$rgb.dat"
+#define X11ConfigurePath  "sys$common:[sysmgr]rgb.dat"
 #endif
 #define SetNotifyHandlers
 #endif
@@ -95,7 +86,7 @@ extern "C" {
 #define PreferencesDefaults  "~/."
 #define ReadCommandlLine(argc,argv)  argc=ccommand(argv); puts(MagickVersion);
 #if !defined(X11ConfigurePath)
-#define X11ConfigurePath  "../xlib/lib/X11/rgb.txt"
+#define X11ConfigurePath  "../xlib/lib/X11/"
 #endif
 #define SetNotifyHandlers \
   SetErrorHandler(MACErrorHandler); \
@@ -124,7 +115,7 @@ extern "C" {
 #define ProcessPendingEvents(text)
 #define ReadCommandlLine(argc,argv)
 #if !defined(X11ConfigurePath)
-#define X11ConfigurePath  "c:\\ImageMagick\\rgb.txt"
+#define X11ConfigurePath  "c:\\ImageMagick\\"
 #endif
 #define SetNotifyHandlers \
   SetErrorHandler(NTErrorHandler); \
