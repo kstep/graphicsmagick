@@ -2005,7 +2005,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
           (unsigned int) windows->widget.visual_info->colormap_size,
           &windows->widget.pixel_info->matte_color);
         mode_info.text=colorname;
-        FormatString(mode_info.text,"#%02x%02x%02x",
+        FormatString(mode_info.text,"#%02lx%02lx%02lx",
           XDownscale(windows->widget.pixel_info->matte_color.red),
           XDownscale(windows->widget.pixel_info->matte_color.green),
           XDownscale(windows->widget.pixel_info->matte_color.blue));

@@ -3397,21 +3397,6 @@ MagickExport int Tokenizer(TokenInfo *token_info,unsigned flag,char *token,
 %
 %
 */
-
-/*
-  Static declarations.
-*/
-static char
-  *ClassTypes[] =
-  {
-    "Undefined", "DirectClass", "PseudoClass", (char *) NULL
-  },
-  *ColorspaceTypes[] =
-  {
-    "undefined", "RGB", "Gray", "Transparent", "OHTA", "XYZ", "YCbCr",
-    "YCC", "YIQ", "YPbPr", "YUV", "CMYK", "sRGB", (char *) NULL
-  };
-
 MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
   const char *formatted_text)
 {
@@ -3628,10 +3613,18 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'r':
       {
-        /* This code is meant to be Ping friendly. We do not want to
-           make a call like GetImageType, which could be a heavy hit
-           and also assumes that the pixels are around.
-         */
+        static char
+          *ClassTypes[] =
+          {
+            "Undefined", "DirectClass", "PseudoClass", (char *) NULL
+          },
+          *ColorspaceTypes[] =
+          {
+            "undefined", "RGB", "Gray", "Transparent", "OHTA", "XYZ",
+            "YCbCr", "YCC", "YIQ", "YPbPr", "YUV", "CMYK", "sRGB",
+            (char *) NULL
+          };
+
         FormatString(q,"%s%s%s",ClassTypes[image->storage_class],
           ColorspaceTypes[image->colorspace],(image->matte ? "Matte" : ""));
         q=translated_text+strlen(translated_text);
