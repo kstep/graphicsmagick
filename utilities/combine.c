@@ -1004,6 +1004,8 @@ int main(int argc,char **argv)
       /*
         Create mattes for dissolve.
       */
+      if (!composite_image->matte)
+        SetImageOpacity(image,OpaqueOpacity);
       for (y=0; y < (int) composite_image->rows; y++)
       {
         q=GetImagePixels(composite_image,0,y,composite_image->columns,1);
@@ -1011,17 +1013,12 @@ int main(int argc,char **argv)
           break;
         for (x=0; x < (int) composite_image->columns; x++)
         {
-          if (composite_image->matte)
-            q->opacity=(Quantum) (((MaxRGB-q->opacity)*dissolve)/100);
-          else
-            q->opacity=(Quantum) ((MaxRGB*dissolve)/100);
+          q->opacity=(Quantum) (((MaxRGB-q->opacity)*dissolve)/100);
           q++;
         }
         if (!SyncImagePixels(composite_image))
           break;
       }
-      composite_image->storage_class=DirectClass;
-      composite_image->matte=True;
     }
   if (compose == DisplaceCompositeOp)
     CloneString(&composite_image->geometry,displacement_geometry);
