@@ -2045,8 +2045,9 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   cache_info->colorspace=image->colorspace;
   cache_info->type=DiskCache;
   if ((cache_info->length > MinBlobExtent) &&
-      (cache_info->length <= MaxBlobExtent) &&
-      (cache_info->length == (size_t) cache_info->length))
+      (cache_info->length == (size_t) cache_info->length) &&
+      ((GetCacheThreshold(0).minimum == ~0) ||
+       (cache_info->length <= (2*GetCacheThreshold(0).minimum))))
     {
       pixels=(PixelPacket *)
         MapBlob(file,mode,cache_info->offset,cache_info->length);
