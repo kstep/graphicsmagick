@@ -1,4 +1,3 @@
-//
 //  Little cms
 //  Copyright (C) 1998-2004 Marti Maria
 //
@@ -33,7 +32,7 @@
 
 #define CHANGE_ENDIAN(w)    (WORD) ((WORD) ((w)<<8)|((w)>>8))
 
-// These macros handles reverse flavor
+// These macros handles reversing (negative)
 
 #define REVERSE_FLAVOR_8(x)     ((BYTE) (0xff-(x)))
 #define REVERSE_FLAVOR_16(x)    ((WORD)(0xffff-(x)))
@@ -65,10 +64,11 @@ LPBYTE UnrollAnyBytes(register _LPcmsTRANSFORM info, register WORD wIn[], regist
        return accum;
 }
 
+
+
 static
 LPBYTE Unroll4Bytes(register _LPcmsTRANSFORM info, register WORD wIn[], register LPBYTE accum)
 {
-
        wIn[0] = RGB_8_TO_16(*accum); accum++; // C
        wIn[1] = RGB_8_TO_16(*accum); accum++; // M
        wIn[2] = RGB_8_TO_16(*accum); accum++; // Y
@@ -245,6 +245,20 @@ LPBYTE Unroll3Bytes(register _LPcmsTRANSFORM info, register WORD wIn[], register
        wIn[0] = RGB_8_TO_16(*accum); accum++;     // R
        wIn[1] = RGB_8_TO_16(*accum); accum++;     // G
        wIn[2] = RGB_8_TO_16(*accum); accum++;     // B
+
+       return accum;
+}
+
+
+// Lab8 encoding using v2 PCS
+
+static
+LPBYTE Unroll3BytesLab(register _LPcmsTRANSFORM info, register WORD wIn[], register LPBYTE accum)
+{
+
+       wIn[0] = (WORD) ((*accum) << 8); accum++;     
+       wIn[1] = (WORD) ((*accum) << 8); accum++;     
+       wIn[2] = (WORD) ((*accum) << 8); accum++;     
 
        return accum;
 }
@@ -942,6 +956,17 @@ LPBYTE Pack3Bytes(register _LPcmsTRANSFORM info, register WORD wOut[], register 
 }
 
 static
+LPBYTE Pack3BytesLab(register _LPcmsTRANSFORM info, register WORD wOut[], register LPBYTE output)
+{
+       *output++ = (BYTE) (wOut[0] >> 8);
+       *output++ = (BYTE) (wOut[1] >> 8);
+       *output++ = (BYTE) (wOut[2] >> 8);
+
+       return output;
+}
+
+
+static
 LPBYTE Pack3BytesSwap(register _LPcmsTRANSFORM info, register WORD wOut[], register LPBYTE output)
 {
        *output++ = RGB_16_TO_8(wOut[2]);
@@ -1322,26 +1347,25 @@ _cmsFIXFN _cmsIdentifyInputFormat(_LPcmsTRANSFORM xform, DWORD dwInput)
            }
                     
        }
-       else     
+       else {    
        
-       if (T_PLANAR(dwInput)) {
-
-       switch (T_BYTES(dwInput)) {
-
-              case 1: 
-                      FromInput = UnrollPlanarBytes;
-                      break;
-
-              case 2:
-                  
-                      if (T_ENDIAN16(dwInput))
-                            FromInput = UnrollPlanarWordsBigEndian;
-                      else
-                            FromInput = UnrollPlanarWords;                
-                      break;
-
-              default:;
-       }
+           if (T_PLANAR(dwInput)) {
+               
+               switch (T_BYTES(dwInput)) {
+                   
+               case 1: 
+                   FromInput = UnrollPlanarBytes;
+                   break;
+                   
+               case 2:                   
+                   if (T_ENDIAN16(dwInput))
+                       FromInput = UnrollPlanarWordsBigEndian;
+                   else
+                       FromInput = UnrollPlanarWords;                
+                   break;
+                   
+               default:;
+               }
        }
        else {
 
@@ -1349,8 +1373,8 @@ _cmsFIXFN _cmsIdentifyInputFormat(_LPcmsTRANSFORM xform, DWORD dwInput)
 
        case 1: // 1 byte per channel
 
-              switch (T_CHANNELS(dwInput) + T_EXTRA(dwInput))
-              {
+              switch (T_CHANNELS(dwInput) + T_EXTRA(dwInput)) {
+
               case 1: if (T_FLAVOR(dwInput))
                                 FromInput = Unroll1ByteReversed;
                             else
@@ -1369,10 +1393,15 @@ _cmsFIXFN _cmsIdentifyInputFormat(_LPcmsTRANSFORM xform, DWORD dwInput)
                             if (T_EXTRA(dwInput) == 2)
                                 FromInput = Unroll1ByteSkip2;
                             else
-                                FromInput = Unroll3Bytes;
+                                if (T_COLORSPACE(dwInput) == PT_Lab)
+                                    FromInput = Unroll3BytesLab;
+                                else
+                                    FromInput = Unroll3Bytes;
                       }
                       break;
               case 4:
+                      // TODO: ALab8 must be fixed to match v2 encoding
+
                       if (T_DOSWAP(dwInput)) {
                             if (T_SWAPFIRST(dwInput))
 
@@ -1497,6 +1526,8 @@ _cmsFIXFN _cmsIdentifyInputFormat(_LPcmsTRANSFORM xform, DWORD dwInput)
        default:;
        }
        }
+       }
+
 
        if (!FromInput)
               cmsSignalError(LCMS_ERRC_ABORTED, "Unknown input format");
@@ -1580,11 +1611,16 @@ _cmsFIXFN _cmsIdentifyOutputFormat(_LPcmsTRANSFORM xform, DWORD dwOutput)
 
                          case 0: if (T_DOSWAP(dwOutput))
                                    ToOutput = Pack3BytesSwap;
-                             else
-                                   ToOutput = Pack3Bytes;
+                                 else
+                                     if (T_COLORSPACE(dwOutput) == PT_Lab)
+                                        ToOutput = Pack3BytesLab;
+                                     else
+                                        ToOutput = Pack3Bytes;
                              break;
 
-                         case 1: if (T_DOSWAP(dwOutput)) {
+                         case 1:    // TODO: ALab8 should be handled here
+                             
+                                    if (T_DOSWAP(dwOutput)) {
 
                                     if (T_SWAPFIRST(dwOutput))  
                                         ToOutput = Pack3BytesAndSkip1SwapSwapFirst;

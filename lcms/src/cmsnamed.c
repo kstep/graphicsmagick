@@ -150,8 +150,8 @@ BOOL LCMSEXPORT cmsNamedColorInfo(cmsHTRANSFORM xform, int nColor, char* Name, c
      if (nColor < 0 || nColor >= cmsNamedColorCount(xform)) return FALSE;
 
      if (Name) strncpy(Name, v ->NamedColorList->List[nColor].Name, 31);
-     if (Prefix) strncpy(Name, v ->NamedColorList->Prefix, 31);
-     if (Suffix) strncpy(Name, v ->NamedColorList->Suffix, 31);
+     if (Prefix) strncpy(Prefix, v ->NamedColorList->Prefix, 31);
+     if (Suffix) strncpy(Suffix, v ->NamedColorList->Suffix, 31);
 
      return TRUE;
 }

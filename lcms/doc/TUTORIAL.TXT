@@ -8,7 +8,7 @@
 
                           by Marti Maria
 
-                            Ver 1.12 
+                            Ver 1.13 
 
         ---------------------------------------------------
 
@@ -66,7 +66,7 @@ Introduction:
   recommend the excellent color & gamma FAQs by Charles A.
   Poynton,
 
-                http://www.inforamp.net/~poynton
+                http://www.poynton.com
 
   For more details about profile architecture, you can reach the
   latest ICC specs on:
@@ -1496,7 +1496,7 @@ double  cmsCIE2000DeltaE(LPcmsCIELab Lab1, LPcmsCIELab Lab2, double Kl, double K
  We create a transform using:
 
 
- hTransform = cmmCreateColorTransform(hNamedColorProfile,
+ hTransform = cmsCreateTransform(hNamedColorProfile,
                                            TYPE_NAMED_COLOR_INDEX,
                                            hOutputProfile,
                                            TYPE_BGR_8,

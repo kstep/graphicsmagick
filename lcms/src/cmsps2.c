@@ -305,8 +305,12 @@ typedef struct {
                 char* PreMin;
                 char* PostMin;
 
-                int  lIsInput;  // Handle L* encoding
+                int  lIsInput;    // Handle L* encoding
+                int  FixWhite;    // Force mapping of pure white 
 
+                icColorSpaceSignature  ColorSpace;  // ColorSpace of profile
+
+                
             } SAMPLERCARGO, FAR* LPSAMPLERCARGO;
 
 
@@ -338,12 +342,12 @@ BYTE Word2Byte(WORD w)
 }
 
 
-// Convert L* to byte (using ICC2 notation)
+// Convert to byte (using ICC2 notation)
 
 static
 BYTE L2Byte(WORD w)
-{
-    return (BYTE) ((WORD) (w >> 8) & 0xFF);
+{    
+    return (BYTE) ((WORD) ((w + 0x0080) >> 8) & 0xFF);
 }
 
 // Write a raw, uncooked byte. Check for space
@@ -654,6 +658,8 @@ BOOL IsLUTbased(cmsHPROFILE hProfile, int Intent)
     return cmsIsTag(hProfile, Tag);
 }
 
+
+
 // Following code dumps a LUT onto memory stream
         
 
@@ -674,6 +680,28 @@ int OutputValueSampler(register WORD In[], register WORD Out[], register LPVOID 
 {
     LPSAMPLERCARGO sc = (LPSAMPLERCARGO) Cargo;
     unsigned int i;
+
+
+    if (sc -> FixWhite) {
+
+        if (In[0] == 0xFFFF) {  // Only in L* = 100
+
+            if ((In[1] >= 0x8000 && In[1] <= 0x87FF) ||
+                (In[2] >= 0x8000 && In[2] <= 0x87FF)) {
+
+                WORD* Black;
+                WORD* White;
+                int nOutputs;
+
+                _cmsEndPointsBySpace(sc ->ColorSpace, &White, &Black, &nOutputs);
+                for (i=0; i < (unsigned int) nOutputs; i++)
+                        Out[i] = White[i];
+            }
+
+             
+        }
+    }
+
 
     // Hadle the parenthesis on rows
 
@@ -705,6 +733,7 @@ int OutputValueSampler(register WORD In[], register WORD Out[], register LPVOID 
             sc ->SecondComponent = In[1]; 
     }
 
+
     
     // Dump table. Could be Word or byte based on
     // depending on bps member (16 bps mode is not currently 
@@ -719,8 +748,13 @@ int OutputValueSampler(register WORD In[], register WORD Out[], register LPVOID 
             // Value as byte
             BYTE wByteOut;
             
-            if (sc ->lIsInput && i == 0)
+            // If is input, convert from Lab2 to Lab4 (just divide by 256)
+
+            if (sc ->lIsInput) {
+
+          
                 wByteOut = L2Byte(wWordOut);
+            }
             else
                 wByteOut = Word2Byte(wWordOut);
 
@@ -744,7 +778,9 @@ void WriteCLUT(LPMEMSTREAM m, LPLUT Lut, int bps, char* PreMaj,
                                                   char* PostMaj,
                                                   char* PreMin,
                                                   char* PostMin,
-                                                  int lIsInput)
+                                                  int lIsInput,
+                                                  int FixWhite,
+                                                  icColorSpaceSignature ColorSpace)
 {
     unsigned int i;
     SAMPLERCARGO sc;
@@ -760,6 +796,8 @@ void WriteCLUT(LPMEMSTREAM m, LPLUT Lut, int bps, char* PreMaj,
     sc.PreMin = PreMin;
     sc.PostMin= PostMin;
     sc.lIsInput = lIsInput;
+    sc.FixWhite = FixWhite;
+    sc.ColorSpace = ColorSpace;
 
     Writef(m, "[");
 
@@ -892,7 +930,7 @@ int EmitCIEBasedDEF(LPMEMSTREAM m, LPLUT Lut, int Intent, LPcmsCIEXYZ BlackPoint
     if (Lut ->wFlags & LUT_HAS3DGRID) {
 
             Writef(m, "/Table ");    
-            WriteCLUT(m, Lut, 8, PreMaj, PostMaj, PreMin, PostMin, TRUE);
+            WriteCLUT(m, Lut, 8, PreMaj, PostMaj, PreMin, PostMin, TRUE, FALSE, (icColorSpaceSignature) 0);
             Writef(m, "]\n");
     }
        
@@ -1027,7 +1065,7 @@ int WriteInputMatrixShaper(LPMEMSTREAM m, cmsHPROFILE hProfile)
 
 
     ColorSpace = cmsGetColorSpace(hProfile);
-    MatShaper  = cmsBuildInputMatrixShaper(hProfile, NULL);
+    MatShaper  = cmsBuildInputMatrixShaper(hProfile);
 
     cmsDetectBlackPoint(&BlackPointAdaptedToD50, hProfile, INTENT_RELATIVE_COLORIMETRIC, LCMS_BPFLAGS_D50_ADAPTED);
 
@@ -1254,7 +1292,7 @@ DWORD LCMSEXPORT cmsGetPostScriptCSA(cmsHPROFILE hProfile,
 
 
 static
-void EmitPQRStage(LPMEMSTREAM m, int DoBPC)
+void EmitPQRStage(LPMEMSTREAM m, int DoBPC, int lIsAbsolute)
 {
 
     
@@ -1263,42 +1301,55 @@ void EmitPQRStage(LPMEMSTREAM m, int DoBPC)
 
         Writef(m, "/RangePQR [ -0.5 2 -0.5 2 -0.5 2 ]\n");
 
+        
+        if (lIsAbsolute) {
+
+            // For absolute colorimetric intent, do nothing
+        
+            Writef(m, "%% Absolute colorimetric -- no transformation\n"
+                      "/TransformPQR [\n"
+                      "{exch pop exch pop exch pop exch pop} bind dup dup]\n"); 
+            return;
+        }
+        
+
         // No BPC
 
         if (!DoBPC) {
 
-        Writef(m, "%% VonKries-like transform in Bradford Cone Space\n"
-                  "/TransformPQR [\n"
-                  "{exch pop exch 3 get mul exch pop exch 3 get div} bind\n"
-                  "{exch pop exch 4 get mul exch pop exch 4 get div} bind\n"
-                  "{exch pop exch 5 get mul exch pop exch 5 get div} bind\n]\n"); 
+            Writef(m, "%% VonKries-like transform in Bradford Cone Space\n"
+                      "/TransformPQR [\n"
+                      "{exch pop exch 3 get mul exch pop exch 3 get div} bind\n"
+                      "{exch pop exch 4 get mul exch pop exch 4 get div} bind\n"
+                      "{exch pop exch 5 get mul exch pop exch 5 get div} bind\n]\n"); 
         } else {
 
-        // BPC
+            // BPC
 
-        Writef(m, "%% VonKries-like transform in Bradford Cone Space plus BPC\n"
-                  "/TransformPQR [\n");
+            Writef(m, "%% VonKries-like transform in Bradford Cone Space plus BPC\n"
+                      "/TransformPQR [\n");
                   
-    Writef(m, "{4 index 3 get div 2 index 3 get mul "
-                "2 index 3 get 2 index 3 get sub mul "                          
-                "2 index 3 get 4 index 3 get 3 index 3 get sub mul sub "
-                "3 index 3 get 3 index 3 get exch sub div "
-                "exch pop exch pop exch pop exch pop } bind\n");
+            Writef(m, "{4 index 3 get div 2 index 3 get mul "
+                    "2 index 3 get 2 index 3 get sub mul "                          
+                    "2 index 3 get 4 index 3 get 3 index 3 get sub mul sub "
+                    "3 index 3 get 3 index 3 get exch sub div "
+                    "exch pop exch pop exch pop exch pop } bind\n");
 
-    Writef(m, "{4 index 4 get div 2 index 4 get mul "
-                "2 index 4 get 2 index 4 get sub mul "
-                "2 index 4 get 4 index 4 get 3 index 4 get sub mul sub "
-                "3 index 4 get 3 index 4 get exch sub div "
-                "exch pop exch pop exch pop exch pop } bind\n");
+            Writef(m, "{4 index 4 get div 2 index 4 get mul "
+                    "2 index 4 get 2 index 4 get sub mul "
+                    "2 index 4 get 4 index 4 get 3 index 4 get sub mul sub "
+                    "3 index 4 get 3 index 4 get exch sub div "
+                    "exch pop exch pop exch pop exch pop } bind\n");
 
-    Writef(m, "{4 index 5 get div 2 index 5 get mul "
-                "2 index 5 get 2 index 5 get sub mul "
-                "2 index 5 get 4 index 5 get 3 index 5 get sub mul sub "
-                "3 index 5 get 3 index 5 get exch sub div "
-                "exch pop exch pop exch pop exch pop } bind\n]\n");
+            Writef(m, "{4 index 5 get div 2 index 5 get mul "
+                    "2 index 5 get 2 index 5 get sub mul "
+                    "2 index 5 get 4 index 5 get 3 index 5 get sub mul sub "
+                    "3 index 5 get 3 index 5 get exch sub div "
+                    "exch pop exch pop exch pop exch pop } bind\n]\n");
 
         }
           
+        
 }
 
 
@@ -1312,11 +1363,22 @@ void EmitXYZ2Lab(LPMEMSTREAM m)
     Writef(m, "]\n");
     Writef(m, "/MatrixABC [ 0 1 0 1 -1 1 0 0 -1 ]\n");
     Writef(m, "/EncodeABC [\n");
+    
+    
+    
     Writef(m, "{ 116 mul  16 sub 100 div  } bind\n");
     Writef(m, "{ 500 mul 128 add 255 div  } bind\n");
     Writef(m, "{ 200 mul 128 add 255 div  } bind\n");
+    
+    
+    /*
+    Writef(m, "{ 116 mul  16 sub 256 mul 25700 div  } bind\n");
+    Writef(m, "{ 500 mul 128 add 256 mul 65535 div  } bind\n");
+    Writef(m, "{ 200 mul 128 add 256 mul 65535 div  } bind\n");
+    */
+    
     Writef(m, "]\n");
-    // Writef(m, "/RangeABC [ 0 1 0 1 0 1]\n");
+    
 
 }
 
@@ -1340,33 +1402,37 @@ int WriteOutputLUT(LPMEMSTREAM m, cmsHPROFILE hProfile, int Intent, DWORD dwFlag
     cmsCIEXYZ BlackPointAdaptedToD50;
     BOOL lFreeDeviceLink = FALSE;
     BOOL lDoBPC = (dwFlags & cmsFLAGS_BLACKPOINTCOMPENSATION);
-
+        
     
-    hLab         = cmsCreateLabProfile(NULL);
+    // Trick our v4 profile as it were v2. This prevents the ajusting done
+    // in perceptual & saturation. We only neew v4 encoding!
+
+    hLab         = cmsCreateLab4Profile(NULL);
+    cmsSetProfileICCversion(hLab, 0);
+
     ColorSpace  =  cmsGetColorSpace(hProfile);
     nChannels   = _cmsChannelsOf(ColorSpace);
     OutputFormat = CHANNELS_SH(nChannels) | BYTES_SH(2);
-
     
     // Is a devicelink profile?
     if (cmsGetDeviceClass(hProfile) == icSigLinkClass) {
 
-        // if devicelink input already in Lab, use it directly
+        // if devicelink input already in Lab
 
         if (ColorSpace == icSigLabData) {
-            
-            xform = cmsCreateTransform(hProfile, TYPE_Lab_DBL, NULL, 
-                            OutputFormat, Intent, 0);
-        }
-        else {
 
-            // Nope, adjust input to Lab if possible
+              // adjust input to Lab to out v4
 
             Profiles[0] = hLab;
             Profiles[1] = hProfile;
 
             xform = cmsCreateMultiprofileTransform(Profiles, 2, TYPE_Lab_DBL, 
-                                    OutputFormat, Intent, 0);
+                                                        OutputFormat, Intent, cmsFLAGS_NOPRELINEARIZATION);
+            
+        }
+        else {
+          cmsSignalError(LCMS_ERRC_ABORTED, "Cannot use devicelink profile for CRD creation");
+          return 0;
         }
 
 
@@ -1374,14 +1440,13 @@ int WriteOutputLUT(LPMEMSTREAM m, cmsHPROFILE hProfile, int Intent, DWORD dwFlag
     else {
 
         // This is a normal profile
-        xform = cmsCreateTransform(hLab, TYPE_Lab_DBL, 
-                                  hProfile, OutputFormat, 
-                                  Intent, 0);
+        xform = cmsCreateTransform(hLab, TYPE_Lab_DBL, hProfile, 
+                            OutputFormat, Intent, cmsFLAGS_NOPRELINEARIZATION);
     }
 
     if (xform == NULL) {
                         
-            cmsSignalError(LCMS_ERRC_ABORTED, "Cannot create transform Lab -> Profile");
+            cmsSignalError(LCMS_ERRC_ABORTED, "Cannot create transform Lab -> Profile in CRD creation");
             return 0;
     }
 
@@ -1404,25 +1469,27 @@ int WriteOutputLUT(LPMEMSTREAM m, cmsHPROFILE hProfile, int Intent, DWORD dwFlag
 
     // Emit headers, etc.
     EmitWhiteBlackD50(m, &BlackPointAdaptedToD50);
-    EmitPQRStage(m, lDoBPC);
+    EmitPQRStage(m, lDoBPC, Intent == INTENT_ABSOLUTE_COLORIMETRIC);
     EmitXYZ2Lab(m);
         
     if (DeviceLink ->wFlags & LUT_HASTL1) {
 
         // Shouldn't happen
-        cmsSignalError(LCMS_ERRC_ABORTED, "Internal error (prelinearization on CRD)");
-
-        /*
-        Writef(m, "/EncodeABC [ ");
-        EmitNGamma(m, DeviceLink ->InputChan, DeviceLink ->L1, DeviceLink ->CLut16params.nSamples);
-        Writef(m, "]\n");
-        */
+        cmsSignalError(LCMS_ERRC_ABORTED, "Internal error (prelinearization on CRD)");       
     }
+    
+
+    // FIXUP: map Lab (100, 0, 0) to perfect white, because the particular encoding for Lab 
+    // does map a=b=0 not falling into any specific node. Since range a,b goes -128..127, 
+    // zero is slightly moved towards right, so assure next node (in L=100 slice) is mapped to
+    // zero. This would sacrifice a bit of highlights, but failure to do so would cause
+    // scum dot. Ouch.
     
     Writef(m, "/RenderTable ");
     
-    WriteCLUT(m, DeviceLink, 8, "<", ">\n", "", "", FALSE);
-
+    WriteCLUT(m, DeviceLink, 8, "<", ">\n", "", "", FALSE, 
+                (Intent != INTENT_ABSOLUTE_COLORIMETRIC), ColorSpace);
+    
     Writef(m, " %d {} bind ", nChannels);
 
     for (i=1; i < nChannels; i++)

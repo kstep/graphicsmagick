@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2003 Marti Maria
+//  Copyright (C) 1998-2004 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -48,11 +48,8 @@ int    cdecl xgetopt(int argc, char *argv[], char *optionS);
 
 // ------------------------------------------------------------------------
 
-#ifdef NON_WINDOWS
-#  ifndef stricmp
-#     define stricmp strcasecmp
-#  endif
-#endif
+extern cmsHPROFILE OpenStockProfile(const char* File);
+
 
 // Flags
 
@@ -69,10 +66,11 @@ static int ProofingIntent          = INTENT_PERCEPTUAL;
 static int PrecalcMode             = 1;
 static double InkLimit             = 400;
 
-static char *cInpProf  = NULL;
-static char *cOutProf  = NULL;
-static char *cProofing = NULL;
+static const char *cInpProf  = NULL;
+static const char *cOutProf  = NULL;
+static const char *cProofing = NULL;
 
+static const char* SaveEmbedded = NULL;
 
 // Console error & warning
 
@@ -122,13 +120,6 @@ void FatalError(const char *frm, ...)
        ConsoleErrorHandler("TIFFICC", frm, args);
        va_end(args);
        exit(1);
-}
-
-static
-int MyErrorHandler(int ErrorCode, const char *ErrorText)
-{
-    FatalError("%s", ErrorText);
-    return 0;
 }
 
 
@@ -228,6 +219,27 @@ DWORD GetInputPixelType(TIFF *Bank)
            if (ColorChannels == 8)
                   pt = PT_HiFi8;           
            else
+           if (ColorChannels == 9)
+                  pt = PT_HiFi9;           
+           else
+           if (ColorChannels == 10)
+                  pt = PT_HiFi10;           
+           else
+           if (ColorChannels == 11)
+                  pt = PT_HiFi11;           
+           else
+		   if (ColorChannels == 12)
+                  pt = PT_HiFi8;           
+		   else
+           if (ColorChannels == 13)
+                  pt = PT_HiFi13;           
+           else
+           if (ColorChannels == 14)
+                  pt = PT_HiFi14;           
+           else
+           if (ColorChannels == 15)
+                  pt = PT_HiFi15;           
+           else
                   FatalError("What a weird separation of %d channels?!?!", ColorChannels);
            break;
 
@@ -277,41 +289,70 @@ DWORD GetInputPixelType(TIFF *Bank)
 static
 DWORD ComputeOutputFormatDescriptor(DWORD dwInput, int OutColorSpace, int bps)
 {
-   int IsPlanar  = T_PLANAR(dwInput);
-   int Channels = 0;
-
-   switch (OutColorSpace) {
-
-   case PT_GRAY:
-               Channels = 1;
-               break;
-   case PT_RGB:
-   case PT_CMY:
-   case PT_Lab:
-   case PT_YUV:
-   case PT_YCbCr:
-               Channels = 3;
-               break;
-
-   case PT_CMYK:
-               Channels = 4;
-               break;
-
-   case  PT_HiFi:
-               Channels = 6;
-               break;
-
-   case PT_HiFi7:
-               Channels = 7;
-               break;
-
-   case  PT_HiFi8:
-               Channels = 8;
-               break;
-   default:
-               FatalError("Unsupported output color space");
-   }
-
+    int IsPlanar  = T_PLANAR(dwInput);
+    int Channels = 0;
+    
+    switch (OutColorSpace) {
+        
+    case PT_GRAY:
+        Channels = 1;
+        break;
+    case PT_RGB:
+    case PT_CMY:
+    case PT_Lab:
+    case PT_YUV:
+    case PT_YCbCr:
+        Channels = 3;
+        break;
+        
+    case PT_CMYK:
+        Channels = 4;
+        break;
+        
+    case  PT_HiFi:
+        Channels = 6;
+        break;
+        
+    case PT_HiFi7:
+        Channels = 7;
+        break;
+        
+    case  PT_HiFi8:
+        Channels = 8;
+        break;
+        
+    case  PT_HiFi9:
+        Channels = 9;
+        break;
+        
+    case  PT_HiFi10:
+        Channels = 10;
+        break;
+        
+    case  PT_HiFi11:
+        Channels = 11;
+        break;
+        
+    case PT_HiFi12:
+        Channels = 12;
+        break;
+        
+    case  PT_HiFi13:
+        Channels = 13;
+        break;
+        
+    case  PT_HiFi14:
+        Channels = 14;
+        break;
+        
+    case  PT_HiFi15:
+        Channels = 15;
+        break;
+        
+    default:
+        FatalError("Unsupported output color space");
+    }
+    
     return (COLORSPACE_SH(OutColorSpace)|PLANAR_SH(IsPlanar)|CHANNELS_SH(Channels)|BYTES_SH(bps));
 }
 
@@ -443,13 +484,21 @@ static
 void WriteOutputTags(TIFF *out, int Colorspace, int BytesPerSample)
 {
     int BitsPerSample = (8 * BytesPerSample);
-    uint16 Extra[4] = { EXTRASAMPLE_UNASSALPHA, 
-                        EXTRASAMPLE_UNASSALPHA, 
-                        EXTRASAMPLE_UNASSALPHA,
-                        EXTRASAMPLE_UNASSALPHA};
+    uint16 Extra[] = { EXTRASAMPLE_UNASSALPHA, 
+                       EXTRASAMPLE_UNASSALPHA, 
+                       EXTRASAMPLE_UNASSALPHA,
+                       EXTRASAMPLE_UNASSALPHA,
+					   EXTRASAMPLE_UNASSALPHA, 
+                       EXTRASAMPLE_UNASSALPHA, 
+                       EXTRASAMPLE_UNASSALPHA,
+                       EXTRASAMPLE_UNASSALPHA,
+                       EXTRASAMPLE_UNASSALPHA,
+                       EXTRASAMPLE_UNASSALPHA,
+                       EXTRASAMPLE_UNASSALPHA
+					};
 
 
-    switch (Colorspace) {
+  switch (Colorspace) {
 
   case PT_GRAY:
            TIFFSetField(out, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISBLACK);
@@ -526,6 +575,113 @@ void WriteOutputTags(TIFF *out, int Colorspace, int BytesPerSample)
 
             if (StoreAsAlpha) {                                        
                 TIFFSetField(out, TIFFTAG_EXTRASAMPLES, 4, Extra);            
+            }
+            else {
+            
+                TIFFSetField(out, TIFFTAG_INKSET, 2);
+            }            
+            TIFFSetField(out, TIFFTAG_BITSPERSAMPLE, BitsPerSample);
+            break;
+
+    case PT_HiFi9:
+
+            TIFFSetField(out, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_SEPARATED);
+            TIFFSetField(out, TIFFTAG_SAMPLESPERPIXEL, 9);
+
+            if (StoreAsAlpha) {                                        
+                TIFFSetField(out, TIFFTAG_EXTRASAMPLES, 5, Extra);            
+            }
+            else {
+            
+                TIFFSetField(out, TIFFTAG_INKSET, 2);
+            }            
+            TIFFSetField(out, TIFFTAG_BITSPERSAMPLE, BitsPerSample);
+            break;
+
+    case PT_HiFi10:
+
+            TIFFSetField(out, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_SEPARATED);
+            TIFFSetField(out, TIFFTAG_SAMPLESPERPIXEL, 10);
+
+            if (StoreAsAlpha) {                                        
+                TIFFSetField(out, TIFFTAG_EXTRASAMPLES, 6, Extra);            
+            }
+            else {
+            
+                TIFFSetField(out, TIFFTAG_INKSET, 2);
+            }            
+            TIFFSetField(out, TIFFTAG_BITSPERSAMPLE, BitsPerSample);
+            break;
+
+
+    case PT_HiFi11:
+
+            TIFFSetField(out, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_SEPARATED);
+            TIFFSetField(out, TIFFTAG_SAMPLESPERPIXEL, 11);
+
+            if (StoreAsAlpha) {                                        
+                TIFFSetField(out, TIFFTAG_EXTRASAMPLES, 7, Extra);            
+            }
+            else {
+            
+                TIFFSetField(out, TIFFTAG_INKSET, 2);
+            }            
+            TIFFSetField(out, TIFFTAG_BITSPERSAMPLE, BitsPerSample);
+            break;
+
+
+	 case PT_HiFi12:
+
+            TIFFSetField(out, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_SEPARATED);
+            TIFFSetField(out, TIFFTAG_SAMPLESPERPIXEL, 12);
+
+            if (StoreAsAlpha) {                                        
+                TIFFSetField(out, TIFFTAG_EXTRASAMPLES, 8, Extra);            
+            }
+            else {
+            
+                TIFFSetField(out, TIFFTAG_INKSET, 2);
+            }            
+            TIFFSetField(out, TIFFTAG_BITSPERSAMPLE, BitsPerSample);
+            break;
+
+     case PT_HiFi13:
+
+            TIFFSetField(out, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_SEPARATED);
+            TIFFSetField(out, TIFFTAG_SAMPLESPERPIXEL, 13);
+
+            if (StoreAsAlpha) {                                        
+                TIFFSetField(out, TIFFTAG_EXTRASAMPLES, 9, Extra);            
+            }
+            else {
+            
+                TIFFSetField(out, TIFFTAG_INKSET, 2);
+            }            
+            TIFFSetField(out, TIFFTAG_BITSPERSAMPLE, BitsPerSample);
+            break;
+
+    case PT_HiFi14:
+
+            TIFFSetField(out, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_SEPARATED);
+            TIFFSetField(out, TIFFTAG_SAMPLESPERPIXEL, 14);
+
+            if (StoreAsAlpha) {                                        
+                TIFFSetField(out, TIFFTAG_EXTRASAMPLES, 10, Extra);            
+            }
+            else {
+            
+                TIFFSetField(out, TIFFTAG_INKSET, 2);
+            }            
+            TIFFSetField(out, TIFFTAG_BITSPERSAMPLE, BitsPerSample);
+            break;
+
+    case PT_HiFi15:
+
+            TIFFSetField(out, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_SEPARATED);
+            TIFFSetField(out, TIFFTAG_SAMPLESPERPIXEL, 15);
+
+            if (StoreAsAlpha) {                                        
+                TIFFSetField(out, TIFFTAG_EXTRASAMPLES, 11, Extra);            
             }
             else {
             
@@ -638,45 +794,118 @@ void DoEmbedProfile(TIFF* Out, const char* ProfileFile)
 
 
 static
-cmsHPROFILE OpenProfile(const char* File)
+void SaveMemoryBlock(const LPBYTE Buffer, DWORD dwLen, const char* Filename)
 {
-       if (!File) 
-            return cmsCreate_sRGBProfile();    
-       
-       if (stricmp(File, "*Lab") == 0)
-                return cmsCreateLabProfile(NULL);
-       
-       if (stricmp(File, "*XYZ") == 0)
-                return cmsCreateXYZProfile();
-         
-       if (stricmp(File, "*Gray22") == 0) {
-           LPGAMMATABLE Gamma = cmsBuildGamma(256, 2.2);
-           cmsHPROFILE hProfile = cmsCreateGrayProfile(cmsD50_xyY(), Gamma);
-           cmsFreeGamma(Gamma);
-           return hProfile;
+    FILE* out = fopen(Filename, "wb");
+    if (out == NULL)
+           FatalError("Cannot create '%s'", Filename);
 
-       }
+    if (fwrite(Buffer, 1, dwLen, out) != dwLen)
+            FatalError("Cannot write %ld bytes to %s", dwLen, Filename);
 
-        return cmsOpenProfileFromFile(File, "r");
+    if (fclose(out) != 0) 
+            FatalError("Error flushing file '%s'", Filename);
 }
 
 
 
+static
+cmsHPROFILE GetTIFFProfile(TIFF* in)
+{    
+    cmsCIExyYTRIPLE Primaries;
+	float* chr;
+    cmsCIExyY WhitePoint;
+    float* wp;
+    int i;       
+    LPGAMMATABLE Gamma[3]; 
+    LPWORD gmr, gmg, gmb;
+    cmsHPROFILE hProfile;
+    DWORD EmbedLen;
+    LPBYTE EmbedBuffer;
+      
+              
+       if (IgnoreEmbedded) return NULL;
+
+       if (TIFFGetField(in, TIFFTAG_ICCPROFILE, &EmbedLen, &EmbedBuffer)) {
+
+              hProfile = cmsOpenProfileFromMem(EmbedBuffer, EmbedLen);
+   
+              if (Verbose) {
+
+                  fprintf(stdout, " (Embedded profile found)\n");
+                  fprintf(stdout, "Product name: %s\n", cmsTakeProductName(hProfile));
+                  fprintf(stdout, "Description : %s\n", cmsTakeProductDesc(hProfile));                          
+                  fflush(stdout);
+              }
+
+              if (hProfile != NULL && SaveEmbedded != NULL)
+                  SaveMemoryBlock(EmbedBuffer, EmbedLen, SaveEmbedded);
+
+              if (hProfile) return hProfile;
+       }
+
+        // Try to see if "colorimetric" tiff
+
+       if (TIFFGetField(in, TIFFTAG_PRIMARYCHROMATICITIES, &chr)) {
+                      
+           Primaries.Red.x   =  chr[0];
+           Primaries.Red.y   =  chr[1];
+           Primaries.Green.x =  chr[2];
+           Primaries.Green.y =  chr[3];
+           Primaries.Blue.x  =  chr[4];
+           Primaries.Blue.y  =  chr[5];
+           
+           Primaries.Red.Y = Primaries.Green.Y = Primaries.Blue.Y = 1.0;
+                      
+           if (TIFFGetField(in, TIFFTAG_WHITEPOINT, &wp)) {
+               
+               WhitePoint.x = wp[0];
+               WhitePoint.y = wp[1];
+               WhitePoint.Y = 1.0;
+                                             
+               // Transferfunction is a bit harder....
+               
+               for (i=0; i < 3; i++)
+                   Gamma[i] = cmsAllocGamma(256);
+                                            
+               TIFFGetFieldDefaulted(in, TIFFTAG_TRANSFERFUNCTION,
+                   &gmr, 
+                   &gmg,
+                   &gmb);
+               
+               CopyMemory(Gamma[0]->GammaTable, gmr, 256*sizeof(WORD));
+               CopyMemory(Gamma[1]->GammaTable, gmg, 256*sizeof(WORD));
+               CopyMemory(Gamma[2]->GammaTable, gmb, 256*sizeof(WORD));
+               
+               hProfile = cmsCreateRGBProfile(&WhitePoint, &Primaries, Gamma);
+               
+               for (i=0; i < 3; i++)
+                   cmsFreeGamma(Gamma[i]);
+
+                if (Verbose) {
+                  fprintf(stdout, " (Colorimetric TIFF)\n");
+                }
+             
+               
+               return hProfile;
+           }
+       }
+
+       return NULL;
+}
 
 
 // Transform one image
 
 static
-int TransformImage(TIFF* in, TIFF* out, char *cDefInpProf, char *cOutProf)
+int TransformImage(TIFF* in, TIFF* out, const char *cDefInpProf, const char *cOutProf)
 {
        cmsHPROFILE hIn, hOut, hProof, hInkLimit = NULL;
        cmsHTRANSFORM xform;
        DWORD wInput, wOutput;
        int OutputColorSpace;
        int bps = (Width16 ? 2 : 1);
-       DWORD dwFlags = 0; 
-       DWORD EmbedLen;
-       LPBYTE EmbedBuffer;
+       DWORD dwFlags = 0;        
        int nPlanes;
 
        if (EmbedProfile && cOutProf) 
@@ -713,29 +942,16 @@ int TransformImage(TIFF* in, TIFF* out, char *cDefInpProf, char *cOutProf)
        }
        else {
 
-                if (!IgnoreEmbedded && 
-                    TIFFGetField(in, TIFFTAG_ICCPROFILE, &EmbedLen, &EmbedBuffer)) {
+               hIn =  GetTIFFProfile(in);
 
-                      hIn = cmsOpenProfileFromMem(EmbedBuffer, EmbedLen);
-                      if (Verbose) {
-                          fprintf(stdout, " (Embedded profile found)\n");
-                          fprintf(stdout, "Product name: %s\n", cmsTakeProductName(hIn));
-                          fprintf(stdout, "Description : %s\n", cmsTakeProductDesc(hIn));                          
-                          fflush(stdout);
-                      }
-
-                }
-                else
-                {                    
-                       hIn = OpenProfile(cDefInpProf);
-                }
-
+               if (hIn == NULL)                    
+                       hIn = OpenStockProfile(cDefInpProf);               
                
-                 hOut = OpenProfile(cOutProf);
+               hOut = OpenStockProfile(cOutProf);
                  
-                 if (cProofing != NULL) {
+               if (cProofing != NULL) {
 
-                   hProof = cmsOpenProfileFromFile(cProofing, "r");
+                   hProof = OpenStockProfile(cProofing);
                    dwFlags |= cmsFLAGS_SOFTPROOFING;
                }
        }
@@ -832,7 +1048,7 @@ int TransformImage(TIFF* in, TIFF* out, char *cDefInpProf, char *cOutProf)
 static
 void Help(int level)
 {
-    fprintf(stderr, "little cms ICC profile applier for TIFF - v3.5\n\n");
+    fprintf(stderr, "little cms ICC profile applier for TIFF - v4.1\n\n");
     fflush(stderr);
     
      switch(level) {
@@ -849,15 +1065,18 @@ void Help(int level)
      fprintf(stderr, "%cl<profile> - Transform by device-link profile\n", SW);   
      fprintf(stderr, "%ct<0,1,2,3> - Intent (0=Perceptual, 1=Colorimetric, 2=Saturation, 3=Absolute)\n", SW);    
      fprintf(stderr, "\n");
+     fprintf(stderr, "%cc<0,1,2,3> - Precalculates transform (0=Off, 1=Normal, 2=Hi-res, 3=LoRes) [defaults to 1]\n", SW);     
+     fprintf(stderr, "\n");
 
      fprintf(stderr, "%cw - Wide output (generates 16 bps tiff)\n", SW);
      fprintf(stderr, "%ca - Handle channels > 4 as alpha\n", SW);
 
      fprintf(stderr, "%cn - Ignore embedded profile on input\n", SW);
      fprintf(stderr, "%ce - Embed destination profile\n", SW);
-     fprintf(stderr, "%cc<0,1,2,3> - Precalculates transform (0=Off, 1=Normal, 2=Hi-res, 3=LoRes) [defaults to 1]\n", SW);     
+     fprintf(stderr, "%cs<new profile> - Save embedded profile as <new profile>\n", SW);
      fprintf(stderr, "\n");
 
+     
      fprintf(stderr, "%cp<profile> - Soft proof profile\n", SW);
      fprintf(stderr, "%cm<0,1,2,3> - Soft proof intent\n", SW);
      fprintf(stderr, "%cg - Marks out-of-gamut colors on softproof\n", SW);
@@ -915,7 +1134,7 @@ void HandleSwitches(int argc, char *argv[])
 {
        int s;
       
-       while ((s=xgetopt(argc,argv,"aAeEbBwWnNvVGgh:H:i:I:o:O:P:p:t:T:c:C:l:L:M:m:K:k:")) != EOF) {
+       while ((s=xgetopt(argc,argv,"aAeEbBwWnNvVGgh:H:i:I:o:O:P:p:t:T:c:C:l:L:M:m:K:k:S:s:")) != EOF) {
 
        switch (s)
        {
@@ -1012,6 +1231,10 @@ void HandleSwitches(int argc, char *argv[])
                 break;
                 
 
+        case 's':
+        case 'S': SaveEmbedded = xoptarg;
+                  break;
+                  
         case 'H':
         case 'h':  {
 
@@ -1066,7 +1289,6 @@ int main(int argc, char* argv[])
 
       TIFFSetErrorHandler(ConsoleErrorHandler);
       TIFFSetWarningHandler(ConsoleWarningHandler);
-      cmsSetErrorHandler(MyErrorHandler);
 
       in = TIFFOpen(argv[xoptind], "r");
       if (in == NULL) FatalError("Unable to open '%s'", argv[xoptind]);

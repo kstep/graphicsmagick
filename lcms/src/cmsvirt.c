@@ -555,6 +555,43 @@ cmsHPROFILE LCMSEXPORT cmsCreateLabProfile(LPcmsCIExyY WhitePoint)
 }
 
 
+// Creates a fake Lab identity.
+cmsHPROFILE LCMSEXPORT cmsCreateLab4Profile(LPcmsCIExyY WhitePoint)
+{
+        cmsHPROFILE hProfile;        
+        LPLUT Lut;
+
+
+        hProfile = cmsCreateRGBProfile(WhitePoint == NULL ? cmsD50_xyY() : WhitePoint, NULL, NULL);
+
+        cmsSetProfileICCversion(hProfile, 0x4000000);
+
+        cmsSetDeviceClass(hProfile, icSigAbstractClass);
+        cmsSetColorSpace(hProfile,  icSigLabData);
+        cmsSetPCS(hProfile,         icSigLabData);
+
+        cmsAddTag(hProfile, icSigDeviceMfgDescTag,     (LPVOID) "(lcms internal)"); 
+        cmsAddTag(hProfile, icSigProfileDescriptionTag, (LPVOID) "lcms Lab identity v4");      
+        cmsAddTag(hProfile, icSigDeviceModelDescTag,    (LPVOID) "Lab v4 built-in");      
+
+
+       // An empty LUTs is all we need
+       Lut = Create3x3EmptyLUT();
+       if (Lut == NULL) return NULL;
+
+       Lut -> wFlags |= LUT_V4_INPUT_EMULATE_V2;
+       cmsAddTag(hProfile, icSigAToB0Tag,    (LPVOID) Lut);
+
+       Lut -> wFlags |= LUT_V4_OUTPUT_EMULATE_V2;
+       cmsAddTag(hProfile, icSigBToA0Tag,    (LPVOID) Lut);
+    
+       cmsFreeLUT(Lut);
+
+       return hProfile;
+}
+
+
+
 // Creates a fake XYZ identity
 cmsHPROFILE LCMSEXPORT cmsCreateXYZProfile(void)
 {
@@ -643,6 +680,7 @@ cmsHPROFILE LCMSEXPORT cmsCreate_sRGBProfile(void)
         
        return hsRGB;
 }
+
 
 
 
@@ -762,3 +800,41 @@ cmsHPROFILE LCMSEXPORT cmsCreateBCHSWabstractProfile(int nLUTPoints,
 }
 
 
+// Creates a fake NULL profile. This profile return 1 channel as always 0. 
+// Is useful only for gamut checking tricks
+
+cmsHPROFILE LCMSEXPORT cmsCreateNULLProfile(void)
+{
+        cmsHPROFILE hProfile;        
+        LPLUT Lut;
+        LPGAMMATABLE EmptyTab;
+
+        hProfile = _cmsCreateProfilePlaceholder();
+        if (!hProfile)                          // can't allocate
+                return NULL;
+      
+        cmsSetDeviceClass(hProfile, icSigOutputClass);
+        cmsSetColorSpace(hProfile,  icSigGrayData);
+        cmsSetPCS(hProfile,         icSigLabData);
+        
+
+       // An empty LUTs is all we need
+       Lut = cmsAllocLUT();
+       if (Lut == NULL) return NULL;
+
+       Lut -> InputChan = 3;
+       Lut -> OutputChan = 1;
+
+       EmptyTab = cmsAllocGamma(2);
+       EmptyTab ->GammaTable[0] = 0;
+       EmptyTab ->GammaTable[1] = 0;
+
+       cmsAllocLinearTable(Lut, &EmptyTab, 2);
+        
+       cmsAddTag(hProfile, icSigBToA0Tag,    (LPVOID) Lut);
+    
+       cmsFreeLUT(Lut);
+       cmsFreeGamma(EmptyTab);
+       
+       return hProfile;
+}

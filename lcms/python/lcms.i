@@ -23,7 +23,7 @@
 // LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
 // OF THIS SOFTWARE.
 //
-// Version 1.13
+// Version 1.14
 
 
 /* File lcms.i */
@@ -38,15 +38,12 @@
 %ignore USE_FLOAT;
 %ignore USE_C;
 %ignore USE_ASSEMBLER;
-%ignore USE_TRILINEAR;
-%ignore USE_TETRAHEDRAL;
 %ignore USE_INLINE;
 %ignore LCMS_DLL;
 %ignore LCMS_DLL_BUILD;
 %ignore USE_BIG_ENDIAN;
 %ignore USE_INT64;
 %ignore USE_CUSTOM_SWAB;
-%ignore USE_257_FOR_16_TO_8_CONVERSION;
 %ignore M_PI;
 %ignore LOGE;
 %ignore MAX_PATH;
@@ -529,7 +526,8 @@ class icTagSignature {
        int setDataFormat(int nSample, const char* Sample)  { return cmsIT8SetDataFormat(self -> hIT8, nSample, Sample); }
 
        const char* getPatchName(int nPatch)                { return  cmsIT8GetPatchName(self -> hIT8, nPatch, NULL); }
- 
+	   int         getDataFormat(const char* Patch)		   { return  cmsIT8GetDataFormat(self -> hIT8, Patch); }	
+
        PyObject* enumDataFormat() {
 
             char** DataFormat;
@@ -599,11 +597,15 @@ class icTagSignature {
            return TheList;
 	   }
 
-       PyObject* getCol(int n) {
+       PyObject* getCol(const char *Patch) {
 			
 	   	    PyObject* TheList;
             PyObject* OneProp;
             int i;
+			
+			int n  = cmsIT8GetDataFormat(self -> hIT8, Patch);
+			if (n < 0) return NULL;
+
             int ns = (int) cmsIT8GetPropertyDbl(self -> hIT8, "NUMBER_OF_SETS");
             if (ns <= 0) return NULL;
 

@@ -82,6 +82,8 @@ LCMSAPI BOOL            LCMSEXPORT cmsIT8SetDataDbl(LCMSHANDLE hIT8, const char*
 LCMSAPI BOOL            LCMSEXPORT cmsIT8SetDataFormat(LCMSHANDLE IT8, int n, const char *Sample);
 LCMSAPI int             LCMSEXPORT cmsIT8EnumDataFormat(LCMSHANDLE IT8, char ***SampleNames);
 
+LCMSAPI void            LCMSEXPORT cmsIT8DefineDblFormat(LCMSHANDLE IT8, const char* Formatter);
+
 LCMSAPI int             LCMSEXPORT cmsIT8SetTableByLabel(LCMSHANDLE hIT8, const char* cSet, 
                                                                           const char* cField, 
                                                                           const char* ExpectedType);
@@ -89,7 +91,8 @@ LCMSAPI int             LCMSEXPORT cmsIT8SetTableByLabel(LCMSHANDLE hIT8, const 
 // ------------------------------------------------------------- Implementation
 
 
-#define ALIGNLONG(x) (((x)+3) & ~(3))         // Aligns to DWORD boundary
+#define SIZEOFLONGMINUS1    (sizeof(long)-1)
+#define ALIGNLONG(x) (((x)+SIZEOFLONGMINUS1) & ~(SIZEOFLONGMINUS1))         
 
 // #define STRICT_CGATS  1
 
@@ -98,7 +101,7 @@ LCMSAPI int             LCMSEXPORT cmsIT8SetTableByLabel(LCMSHANDLE hIT8, const 
 #define MAXTABLES   255     // Max Number of tables in a single stream
 #define MAXINCLUDE   20     // Max number of nested includes
 
-#define DBL_FORMAT  "%.10g" // Double formatting
+#define DEFAULT_DBL_FORMAT  "%.10g" // Double formatting
 
 #include <ctype.h>
 #include <limits.h>
@@ -230,6 +233,7 @@ typedef struct {
         int            IncludeSP;             // Include Stack Pointer
         char*          MemoryBlock;           // The stream if holded in memory
 
+        char           DoubleFormatter[MAXID];   // Printf-like 'double' formatter
 
    } IT8, *LPIT8;
 
@@ -374,15 +378,6 @@ BOOL isseparator(int c)
         return (c == ' ' || c == '\t' || c == '\r');
 }
 
-// a replacement for strupr(), just for compatiblity sake
-
-static
-void xstrupr(char *cp)
-{
-        for (;*cp;cp++)
-                if (*cp >= 'a' && *cp <= 'z')
-                        *cp += 'A'-'a';
-}
 
 
 static
@@ -452,7 +447,7 @@ SYMBOL BinSrchKey(const char *id)
         while (r >= l)
         {
                 x = (l+r)/2;
-                res = strcmp(id, TabKeys[x-1].id);
+                res = stricmp(id, TabKeys[x-1].id);
                 if (res == 0) return TabKeys[x-1].sy;
                 if (res < 0) r = x - 1;
                 else l = x + 1;
@@ -565,7 +560,7 @@ void InSymbol(LPIT8 it8)
             } while (isidchar(it8->ch));
             
             *idptr = '\0';
-            xstrupr(it8->id);
+            
             
             key = BinSrchKey(it8->id);
             if (key == SNONE) it8->sy = SIDENT;
@@ -634,10 +629,9 @@ void InSymbol(LPIT8 it8)
                 }
                 
 
-                while (isdigit(it8->ch))
-                {
-                    if ((long) it8->inum * 10L > (long) INT_MAX)
-                    {
+                while (isdigit(it8->ch)) {
+
+                    if ((long) it8->inum * 10L > (long) INT_MAX) {
                         ReadReal(it8, it8->inum);
                         it8->sy = SDNUM;
                         it8->dnum *= sign;
@@ -657,6 +651,34 @@ void InSymbol(LPIT8 it8)
                 }
                 
                 it8 -> inum *= sign;
+
+                // Special case. Numbers followed by letters are taken as identifiers
+
+                if (isidchar(it8 ->ch)) {
+
+                    if (it8 ->sy == SINUM) {
+
+                        sprintf(it8->id, "%d", it8->inum);
+                    }
+                    else {
+
+                        sprintf(it8->id, it8 ->DoubleFormatter, it8->dnum);
+                    }
+
+                    k = strlen(it8 ->id);
+                    idptr = it8 ->id + k;
+                    do {
+                
+                        if (++k < MAXID) *idptr++ = (char) it8->ch;
+                
+                        NextCh(it8);
+                
+                    } while (isidchar(it8->ch));
+            
+                    *idptr = '\0';
+                    
+                    it8->sy = SIDENT;
+                }
                 return;
                 
             }
@@ -781,18 +803,18 @@ void SkipEOLN(LPIT8 it8)
 
 // Returns a string holding current value
 static
-BOOL GetVal(LPIT8 it8, char* Buffer)
+BOOL GetVal(LPIT8 it8, char* Buffer, const char* ErrorTitle)
 {
     switch (it8->sy) {
 
     case SIDENT:  strncpy(Buffer, it8->id, MAXID-1); break;
     case SINUM:   sprintf(Buffer, "%d", it8 -> inum); break;
-    case SDNUM:   sprintf(Buffer, DBL_FORMAT, it8 -> dnum); break;
+    case SDNUM:   sprintf(Buffer, it8->DoubleFormatter, it8 -> dnum); break;
     case SSTRING: strncpy(Buffer, it8->str, MAXSTR-1); break;
 
 
     default:
-         return SynError(it8, "Sample data expected");
+         return SynError(it8, ErrorTitle);
     }
 
      return TRUE;
@@ -1021,7 +1043,7 @@ int LCMSEXPORT cmsIT8SetTable(LCMSHANDLE IT8, int nTable)
              AllocTable(it8);
          }
          else {
-             cmsSignalError(LCMS_ERRC_ABORTED, "Table %d is out of sequence", nTable);
+             SynError(IT8, "Table %d is out of sequence", nTable);
              return -1;
          }
      }
@@ -1051,7 +1073,7 @@ LCMSHANDLE LCMSEXPORT cmsIT8Alloc(void)
     it8->IncludeSP   = 0;
     it8->MemorySink  = NULL;
     
-	it8 ->nTable = 0;
+    it8 ->nTable = 0;
 
     it8->Allocator.Used = 0;
     it8->Allocator.Block = NULL;
@@ -1068,6 +1090,7 @@ LCMSHANDLE LCMSEXPORT cmsIT8Alloc(void)
 
     it8 -> lineno = 1;
 
+    strcpy(it8->DoubleFormatter, DEFAULT_DBL_FORMAT);
     strcpy(it8->SheetType, "CGATS.17");
 
     // Initialize predefined properties & data
@@ -1126,9 +1149,9 @@ BOOL LCMSEXPORT cmsIT8SetPropertyStr(LCMSHANDLE hIT8, const char* Key, const cha
 BOOL LCMSEXPORT cmsIT8SetPropertyDbl(LCMSHANDLE hIT8, const char* cProp, double Val)
 {
     LPIT8 it8 = (LPIT8) hIT8;
-    char Buffer[256];
+    char Buffer[1024];
    
-    sprintf(Buffer, DBL_FORMAT, Val);
+    sprintf(Buffer, it8->DoubleFormatter, Val);
 
     return AddToList(it8, &GetTable(it8)->HeaderList, cProp, Buffer, WRITE_UNCOOKED);    
 }
@@ -1136,7 +1159,7 @@ BOOL LCMSEXPORT cmsIT8SetPropertyDbl(LCMSHANDLE hIT8, const char* cProp, double 
 BOOL LCMSEXPORT cmsIT8SetPropertyHex(LCMSHANDLE hIT8, const char* cProp, int Val)
 {
     LPIT8 it8 = (LPIT8) hIT8;
-    char Buffer[256];
+    char Buffer[1024];
    
     sprintf(Buffer, "%d", Val);
 
@@ -1187,7 +1210,7 @@ void AllocateDataFormat(LPIT8 it8)
 
     if (t -> nSamples <= 0) {
 
-        cmsSignalError(LCMS_ERRC_WARNING, "AllocateDataFormat: Unknown NUMBER_OF_FIELDS");
+        SynError(it8, "AllocateDataFormat: Unknown NUMBER_OF_FIELDS");
         t -> nSamples = 10;
         }
 
@@ -1215,13 +1238,16 @@ BOOL SetDataFormat(LPIT8 it8, int n, const char *label)
 {
     LPTABLE t = GetTable(it8);
 
-    if (n > t -> nSamples) return FALSE;
-
     if (!t->DataFormat)
         AllocateDataFormat(it8);
 
-    if (t->DataFormat) {
-                
+    if (n > t -> nSamples) {
+        SynError(it8, "More than NUMBER_OF_FIELDS fields.");
+        return FALSE;
+    }
+
+    
+    if (t->DataFormat) {                
         t->DataFormat[n] = AllocString(it8, label);
     }
 
@@ -1355,9 +1381,12 @@ void WriteHeader(LPIT8 it8, FILE *fp)
 
         if (!IsAvailableOnList(it8-> ValidKeywords, p->Keyword, NULL)) {
 
+#ifdef STRICT_CGATS
             WriteStr(fp, "KEYWORD\t\"");
             WriteStr(fp, p->Keyword);
             WriteStr(fp, "\"\n");
+#endif
+
             AddAvailableProperty(it8, p->Keyword);
 
         }
@@ -1492,33 +1521,25 @@ BOOL LCMSEXPORT cmsIT8SaveToFile(LCMSHANDLE hIT8, const char* cFileName)
 static
 BOOL DataFormatSection(LPIT8 it8)
 {
-    int iField = 0;
-    BOOL Ignoring = FALSE;
+    int iField = 0;    
     LPTABLE t = GetTable(it8);
 
     InSymbol(it8);   // Eats "BEGIN_DATA_FORMAT"
     CheckEOLN(it8);
 
     while (it8->sy != SEND_DATA_FORMAT &&
-           it8->sy != SEOLN &&
-               it8->sy != SEOF &&
-               it8->sy != SSYNERROR)
-    {
-
-          if (it8->sy != SIDENT) {
-
-                    return SynError(it8, "Sample type expected");                    
-                    }
-
-              if (!Ignoring && iField > t->nSamples) {
-                    cmsSignalError(LCMS_ERRC_WARNING, "More than NUMBER_OF_FIELDS fields. Extra is ignored\n");
-                    Ignoring = TRUE;
-                    }
-              else  {
-                     if (!SetDataFormat(it8, iField, it8->id)) return FALSE;
-                     iField++;
+        it8->sy != SEOLN &&
+        it8->sy != SEOF &&
+        it8->sy != SSYNERROR)  {
+        
+            if (it8->sy != SIDENT) {
+            
+                return SynError(it8, "Sample type expected");                    
             }
-
+        
+            if (!SetDataFormat(it8, iField, it8->id)) return FALSE;
+            iField++;
+                
             InSymbol(it8);
             SkipEOLN(it8);
        }
@@ -1526,6 +1547,13 @@ BOOL DataFormatSection(LPIT8 it8)
        SkipEOLN(it8);
        Skip(it8, SEND_DATA_FORMAT);
        SkipEOLN(it8);
+
+       if (iField < t ->nSamples) {
+		   SynError(it8, "Missing fields. NUMBER_OF_FIELDS was %d.\n", t ->nSamples);
+
+           
+       }
+
        return TRUE;
 }
 
@@ -1552,7 +1580,7 @@ BOOL DataSection (LPIT8 it8)
 
         if (it8->sy != SEND_DATA && it8->sy != SEOF) {
 
-            if (!GetVal(it8, Buffer))
+            if (!GetVal(it8, Buffer, "Sample data expected"))
                 return FALSE;
 
             if (!SetData(it8, iSet, iField, Buffer))
@@ -1568,11 +1596,13 @@ BOOL DataSection (LPIT8 it8)
     SkipEOLN(it8);
     Skip(it8, SEND_DATA);
     SkipEOLN(it8);
+ 
+    // Check for data completion
+    if ((iSet+1) < t -> nPatches)
+        return SynError(it8, "Missing data. NUMBER_OF_SETS was %d.\n", t ->nPatches);
+
     return TRUE;
 }
-
-
-
 
 
 
@@ -1592,8 +1622,8 @@ BOOL HeaderSection(LPIT8 it8)
 
         case SKEYWORD:
                 InSymbol(it8);
-                if (!Check(it8, SSTRING, "Keyword expected")) return FALSE;
-                if (!AddAvailableProperty(it8, it8 -> str)) return FALSE;
+                if (!GetVal(it8, Buffer, "Keyword expected")) return FALSE;                
+                if (!AddAvailableProperty(it8, Buffer)) return FALSE;
                 InSymbol(it8);
                 break;
 
@@ -1611,7 +1641,7 @@ BOOL HeaderSection(LPIT8 it8)
                 }
 
                 InSymbol(it8);
-                GetVal(it8, Buffer);
+                if (!GetVal(it8, Buffer, "Property data expected")) return FALSE;
 
                 AddToList(it8, &GetTable(it8)->HeaderList, VarName, Buffer, WRITE_UNCOOKED);                
                 InSymbol(it8);
@@ -1635,16 +1665,24 @@ BOOL HeaderSection(LPIT8 it8)
 static
 BOOL ParseIT8(LPIT8 it8)
 {
-    
-    InSymbol(it8);
+    char* SheetTypePtr;
 
-    if (it8->sy == SIDENT) {
-            
-            strncpy(it8->SheetType, it8->id, MAXSTR-1);
-            InSymbol(it8);
-           
+    // First line is a very special case.
+
+    while (isseparator(it8->ch))
+            NextCh(it8);
+    
+    SheetTypePtr = it8 ->SheetType;
+
+    while (it8->ch != '\r' && it8 ->ch != '\n' && it8 -> ch != -1) {
+
+        *SheetTypePtr++= (char) it8 ->ch;
+        NextCh(it8);
     }
 
+    *SheetTypePtr = 0;
+    InSymbol(it8);
+   
     SkipEOLN(it8);
 
     while (it8-> sy != SEOF &&
@@ -1681,48 +1719,6 @@ BOOL ParseIT8(LPIT8 it8)
 }
 
 
-static
-void CleanPatchName(char *cell)
-{
-       char cleaned[256], Buffer[256], ident[256];
-       char *orig = cell, *id;
-       int n, lOneNum;
-
-
-       id = ident;
-       while (*cell && isalpha(*cell))
-       {
-          *id++ = (char) toupper(*cell);
-              cell++;
-       }
-       *id = 0;
-       strcpy(cleaned, ident);
-
-
-       n = 0;
-       lOneNum = FALSE;
-       while (*cell && isdigit(*cell))
-       {
-              n = n * 10 + (*cell -'0');
-              cell++;
-              lOneNum = TRUE;
-       }
-
-       if (lOneNum) {
-
-              sprintf(Buffer, "%d", n);
-              strcat(cleaned, Buffer);              
-       }
-
-       if (strcmp(cleaned, "GS0") == 0)
-              strcpy(orig, "DMIN");
-       else
-       if (strcmp(cleaned, "GS23") == 0)
-              strcpy(orig, "DMAX");
-       else
-              strcpy(orig, cleaned);
-}
-
 
 // Init usefull pointers
 
@@ -1747,10 +1743,10 @@ void CookPointers(LPIT8 it8)
         if (!Fld) continue;
 
 
-        if (strcmp(Fld, "SAMPLE_ID") == 0) {
+        if (stricmp(Fld, "SAMPLE_ID") == 0) {
+
                     t -> SampleID = idField;
                 
-        
         for (i=0; i < t -> nPatches; i++) {
 
                 char *Data = GetData(it8, i, idField);
@@ -1758,8 +1754,7 @@ void CookPointers(LPIT8 it8)
                     char Buffer[256];
                 
                     strncpy(Buffer, Data, 255);
-                    CleanPatchName(Buffer);
-
+                                       
                     if (strlen(Buffer) <= strlen(Data))
                         strcpy(Data, Buffer);
                     else
@@ -1772,7 +1767,7 @@ void CookPointers(LPIT8 it8)
 
         // "LABEL" is an extension. It keeps references to forward tables
          
-        if ((strcmp(Fld, "LABEL") == 0) || Fld[0] == '$' ) {
+        if ((stricmp(Fld, "LABEL") == 0) || Fld[0] == '$' ) {
                                         
                     // Search for table references...
                     for (i=0; i < t -> nPatches; i++) {
@@ -1826,18 +1821,16 @@ static
 BOOL IsMyBlock(LPBYTE Buffer, size_t n)
 {
     size_t i;
-    
+
     if (n < 10) return FALSE;   // Too small
 
-    if (n > 32) 
-        n = 32;
-
-    if (!isidchar((int) Buffer[0])) return FALSE;
+    if (n > 132)
+        n = 132;
 
     for (i = 1; i < n; i++) {
 
         if (Buffer[i] == '\n' || Buffer[i] == '\r') return TRUE;
-        if (!isprint((int) Buffer[i])) return FALSE;
+        if (Buffer[i] < 32) return FALSE;
        
     }
 
@@ -1851,7 +1844,7 @@ BOOL IsMyFile(const char* FileName)
 {
    FILE *fp;
    size_t Size;
-   BYTE Ptr[33];
+   BYTE Ptr[133];
 
    fp = fopen(FileName, "rt");
    if (!fp) {
@@ -1859,7 +1852,7 @@ BOOL IsMyFile(const char* FileName)
        return FALSE;
    }
 
-   Size = fread(Ptr, 1, 32, fp);
+   Size = fread(Ptr, 1, 132, fp);
    fclose(fp);
 
    Ptr[Size] = '\0';
@@ -1938,7 +1931,7 @@ LCMSHANDLE LCMSEXPORT cmsIT8LoadFromFile(const char* cFileName)
     }
 
     CookPointers(it8);
-	it8 ->nTable = 0;
+    it8 ->nTable = 0;
 
     fclose(it8 ->Stream[0]);    
     return hIT8;
@@ -2001,6 +1994,7 @@ int LocatePatch(LPIT8 it8, const char* cPatch)
                 }
         }
 
+        // SynError(it8, "Couldn't find patch '%s'\n", cPatch);                               
         return -1;
 }
 
@@ -2038,8 +2032,19 @@ int LocateSample(LPIT8 it8, const char* cSample)
             return i;
     }
 
+
+    // SynError(it8, "Couldn't find data field %s\n", cSample);        
     return -1;
+
 }
+
+
+int LCMSEXPORT cmsIT8GetDataFormat(LCMSHANDLE hIT8, const char* cSample)
+{
+    LPIT8 it8 = (LPIT8) hIT8;
+    return LocateSample(it8, cSample);
+}
+
 
 
 const char* LCMSEXPORT cmsIT8GetDataRowCol(LCMSHANDLE hIT8, int row, int col)
@@ -2079,7 +2084,7 @@ BOOL LCMSEXPORT cmsIT8SetDataRowColDbl(LCMSHANDLE hIT8, int row, int col, double
     LPIT8 it8 = (LPIT8) hIT8;
     char Buff[256];
 
-    sprintf(Buff, DBL_FORMAT, Val);
+    sprintf(Buff, it8->DoubleFormatter, Val);
     
     return SetData(it8, row, col, Buff);        
 }
@@ -2117,8 +2122,10 @@ double LCMSEXPORT cmsIT8GetDataDbl(LCMSHANDLE it8, const char* cPatch, const cha
 
         return atof(Buffer);
         
-    } else
+    } else {
+        
         return 0;
+    }
 }
 
 
@@ -2134,10 +2141,9 @@ BOOL LCMSEXPORT cmsIT8SetData(LCMSHANDLE hIT8, const char* cPatch,
 
     iField = LocateSample(it8, cSample);
 
-    if (iField < 0) {
+    if (iField < 0) 
+        return FALSE;
     
-        return SynError(it8, "Couldn't find data field %s\n", cSample);        
-        }
 
 
         if (t-> nPatches == 0) {
@@ -2161,8 +2167,7 @@ BOOL LCMSEXPORT cmsIT8SetData(LCMSHANDLE hIT8, const char* cPatch,
         else {
                 iSet = LocatePatch(it8, cPatch);
                 if (iSet < 0) {
-
-                    return SynError(it8, "Couldn't find patch '%s'\n", cPatch);                    
+                    return FALSE;
             }
         }
 
@@ -2174,9 +2179,10 @@ BOOL LCMSEXPORT cmsIT8SetDataDbl(LCMSHANDLE hIT8, const char* cPatch,
                         const char* cSample,
                         double Val)
 {
-        char Buff[256];
+    LPIT8 it8 = (LPIT8) hIT8;
+    char Buff[256];
 
-        sprintf(Buff, DBL_FORMAT, Val);
+        sprintf(Buff, it8->DoubleFormatter, Val);
         return cmsIT8SetData(hIT8, cPatch, cSample, Buff);
 
 }
@@ -2211,6 +2217,9 @@ int LCMSEXPORT cmsIT8SetTableByLabel(LCMSHANDLE hIT8, const char* cSet, const ch
     char Type[256], Label[256];
     int nTable;
    
+	if (cField != NULL && *cField == 0)
+			cField = "LABEL";
+
     if (cField == NULL) 
             cField = "LABEL";
 
@@ -2220,6 +2229,9 @@ int LCMSEXPORT cmsIT8SetTableByLabel(LCMSHANDLE hIT8, const char* cSet, const ch
     if (sscanf(cLabelFld, "%s %d %s", Label, &nTable, Type) != 3)
             return -1;
     
+    if (ExpectedType != NULL && *ExpectedType == 0)
+		ExpectedType = NULL;
+
     if (ExpectedType) {
 
         if (stricmp(Type, ExpectedType) != 0) return -1;
@@ -2229,4 +2241,13 @@ int LCMSEXPORT cmsIT8SetTableByLabel(LCMSHANDLE hIT8, const char* cSet, const ch
 }
 
 
+void LCMSEXPORT cmsIT8DefineDblFormat(LCMSHANDLE hIT8, const char* Formatter)
+{
+    LPIT8 it8 = (LPIT8) hIT8;
+
+    if (Formatter == NULL)
+        strcpy(it8->DoubleFormatter, DEFAULT_DBL_FORMAT);
+    else
+        strcpy(it8->DoubleFormatter, Formatter);
+}
 

@@ -115,11 +115,11 @@ BOOL LCMSEXPORT cmsSample3DGrid(LPLUT Lut, _cmsSAMPLER Sampler, LPVOID Cargo, DW
         }
 
 
-        if (dwFlags & SAMPLER_INSPECT) {
+        // if (dwFlags & SAMPLER_INSPECT) {
 
              for (t=0; t < (int) Lut -> OutputChan; t++)
                         Out[t] = Lut->T[index + t];
-        }
+        // }
 
 
         if (!Sampler(In, Out, Cargo))
@@ -150,23 +150,21 @@ BOOL LCMSEXPORT cmsSample3DGrid(LPLUT Lut, _cmsSAMPLER Sampler, LPVOID Cargo, DW
 
 
 
-// Sampler implemented by another transform. This is a clean way to
-// precalculate the devicelink 3D CLUT for almost any transform
-
-static
-int XFormSampler(register WORD In[], register WORD Out[], register LPVOID Cargo)
-{
-        cmsDoTransform((cmsHTRANSFORM) Cargo, In, Out, 1);
-        return TRUE;
-}
 
 
 
 // choose reasonable resolution
 int _cmsReasonableGridpointsByColorspace(icColorSpaceSignature Colorspace, DWORD dwFlags)
 {
+    int nChannels;
 
-    int nChannels = _cmsChannelsOf(Colorspace);
+    // Already specified?
+    if (dwFlags & 0x00FF0000) {
+            // Yes, grab'em
+            return (dwFlags >> 16) & 0xFF;
+    }
+
+    nChannels = _cmsChannelsOf(Colorspace);
 
     // HighResPrecalc is maximum resolution
 
@@ -178,7 +176,7 @@ int _cmsReasonableGridpointsByColorspace(icColorSpaceSignature Colorspace, DWORD
         if (nChannels == 4)     // 23 for CMYK
                 return 23;
     
-        return 48;      // 48 for RGB and others        
+        return 49;      // 49 for RGB and others        
     }
 
 
@@ -207,6 +205,15 @@ int _cmsReasonableGridpointsByColorspace(icColorSpaceSignature Colorspace, DWORD
     
 }
 
+// Sampler implemented by another transform. This is a clean way to
+// precalculate the devicelink 3D CLUT for almost any transform
+
+static
+int XFormSampler(register WORD In[], register WORD Out[], register LPVOID Cargo)
+{
+        cmsDoTransform((cmsHTRANSFORM) Cargo, In, Out, 1);
+        return TRUE;
+}
 
 // This routine does compute the devicelink CLUT containing whole
 // transform. Handles any channel number.
@@ -218,25 +225,17 @@ LPLUT _cmsPrecalculateDeviceLink(cmsHTRANSFORM h, DWORD dwFlags)
        int nGridPoints;
        DWORD dwFormatIn, dwFormatOut;
        int ChannelsIn, ChannelsOut;
-    
-       
+       LPLUT SaveGamutLUT;
+
+       // Remove any gamut checking
+       SaveGamutLUT = p ->Gamut;
+       p ->Gamut = NULL;
+
        ChannelsIn   = _cmsChannelsOf(p -> EntryColorSpace);
        ChannelsOut  = _cmsChannelsOf(p -> ExitColorSpace);
-          
-
-       // Are gridpoints specified?
-
-       if (dwFlags & 0x00FF0000) {
-
-            // Yes, grab'em
-            nGridPoints = (dwFlags >> 16) & 0xFF;
-
-       } else {
-
-            // No, give a reasonable default
-            nGridPoints = _cmsReasonableGridpointsByColorspace(p -> EntryColorSpace, dwFlags);
-       }
-
+               
+       nGridPoints = _cmsReasonableGridpointsByColorspace(p -> EntryColorSpace, dwFlags);
+     
        Grid =  cmsAllocLUT();
        if (!Grid) return NULL;
 
@@ -250,11 +249,8 @@ LPLUT _cmsPrecalculateDeviceLink(cmsHTRANSFORM h, DWORD dwFlags)
        p -> ToOutput  = _cmsIdentifyOutputFormat(p, dwFormatOut);
 
        // Fix gamut & gamma possible mismatches. 
-       // Only operates on RGB to RGB!!
            
-       if (p ->EntryColorSpace == icSigRgbData && 
-           p ->ExitColorSpace  == icSigRgbData &&
-           !(dwFlags & cmsFLAGS_NOPRELINEARIZATION)) {
+       if (!(dwFlags & cmsFLAGS_NOPRELINEARIZATION)) {
 
            cmsHTRANSFORM hOne[1];
            hOne[0] = h;
@@ -274,6 +270,106 @@ LPLUT _cmsPrecalculateDeviceLink(cmsHTRANSFORM h, DWORD dwFlags)
        }
       
       
+       p ->Gamut = SaveGamutLUT;
        return Grid;
+}
+
+
+
+
+
+// Fix broken LUT. just to obtain other CMS compatibility
+
+static
+void PatchLUT(LPLUT Grid, WORD At[], WORD Value[],
+                     int nChannelsOut, int nChannelsIn)
+{
+       LPL16PARAMS p16  = &Grid -> CLut16params;
+       double     px, py, pz, pw;
+       int        x0, y0, z0, w0;
+       int        i, index;
+
+
+       if (Grid ->wFlags & LUT_HASTL1) return;  // There is a prelinearization
+
+       px = ((double) At[0] * (p16->Domain)) / 65535.0;
+       py = ((double) At[1] * (p16->Domain)) / 65535.0;
+       pz = ((double) At[2] * (p16->Domain)) / 65535.0;
+       pw = ((double) At[3] * (p16->Domain)) / 65535.0;
+
+       x0 = (int) floor(px);
+       y0 = (int) floor(py);
+       z0 = (int) floor(pz);
+       w0 = (int) floor(pw);
+
+       if (nChannelsIn == 4) {
+
+              if (((px - x0) != 0) ||
+                  ((py - y0) != 0) ||
+                  ((pz - z0) != 0) ||
+                  ((pw - w0) != 0)) return; // Not on exact node
+
+              index = p16 -> opta4 * x0 +
+                      p16 -> opta3 * y0 +
+                      p16 -> opta2 * z0 +
+                      p16 -> opta1 * w0;
+       }
+       else 
+	   if (nChannelsIn == 3) {
+
+              if (((px - x0) != 0) ||
+                  ((py - y0) != 0) ||
+                  ((pz - z0) != 0)) return;  // Not on exact node
+
+              index = p16 -> opta3 * x0 +
+                      p16 -> opta2 * y0 +
+                      p16 -> opta1 * z0;
+       }
+	   else 
+       if (nChannelsIn == 1) {
+
+		      if (((px - x0) != 0)) return;	// Not on exact node
+		                  
+			  index = p16 -> opta1 * x0;	
+	   }
+       else {
+           cmsSignalError(LCMS_ERRC_ABORTED, "(internal) %d Channels are not supported on PatchLUT", nChannelsIn);
+           return;
+       }
+
+       for (i=0; i < nChannelsOut; i++)
+              Grid -> T[index + i] = Value[i];
+
+}
+
+
+
+BOOL _cmsFixWhiteMisalignment(_LPcmsTRANSFORM p)
+{
+
+       WORD *WhitePointIn, *WhitePointOut, *BlackPointIn, *BlackPointOut;
+       int nOuts, nIns;
+
+
+       if (!p -> DeviceLink) return FALSE;
+       
+       if (p ->Intent == INTENT_ABSOLUTE_COLORIMETRIC) return FALSE;
+       if ((p ->PreviewProfile != NULL) && 
+           (p ->ProofIntent == INTENT_ABSOLUTE_COLORIMETRIC)) return FALSE;
+
+
+       if (!_cmsEndPointsBySpace(p -> EntryColorSpace,
+                                 &WhitePointIn, &BlackPointIn, &nIns)) return FALSE;
+       
+
+       if (!_cmsEndPointsBySpace(p -> ExitColorSpace,
+                                   &WhitePointOut, &BlackPointOut, &nOuts)) return FALSE;
+       
+       // Fix white only
+
+       PatchLUT(p -> DeviceLink, WhitePointIn, WhitePointOut, nOuts, nIns);
+       // PatchLUT(p -> DeviceLink, BlackPointIn, BlackPointOut, nOuts, nIns);
+
+       return TRUE;
 }
 
