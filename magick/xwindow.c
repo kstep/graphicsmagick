@@ -2804,7 +2804,7 @@ MagickExport void XGetPixelPacket(Display *display,
           red_gamma=1.0;
           green_gamma=1.0;
           blue_gamma=1.0;
-          count=sscanf(resource_info->display_gamma,"%lf,%lf,%lf",
+          count=sscanf(resource_info->display_gamma,"%lf%*[,/]%lf%*[,/]%lf",
             &red_gamma,&green_gamma,&blue_gamma);
           if (count == 1)
             {
