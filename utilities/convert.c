@@ -1461,7 +1461,9 @@ int main(int argc,char **argv)
                           if (argv[0] != (char *) NULL)
                             (void) printf("argv[0]: %.1024s\n",argv[0]);
                           path=GetMagickConfigurePath(TypeFilename,stdout);
-                          if (path == (char *) NULL)
+                          if (path != (char *) NULL)
+                            LiberateMemory((void **) &path);
+                          else
                             {
 #if defined(WIN32)
                               unsigned char
@@ -1476,8 +1478,6 @@ int main(int argc,char **argv)
                                 }
 #endif
                             }
-                          else
-                            LiberateMemory((void **) &path);
                           break;
                         }
                       MagickError(OptionError,"Invalid list type",option);

@@ -6278,27 +6278,21 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
     case GrayscaleType:
     {
       if ((image->colorspace == RGBColorspace) &&
-          (image->storage_class == PseudoClass) &&
           IsGrayImage(image,&image->exception))
+        break;
       if (image->colorspace != RGBColorspace)
         (void) RGBTransformImage(image,RGBColorspace);
-      GetQuantizeInfo(&quantize_info);
-      quantize_info.colorspace=GRAYColorspace;
-      quantize_info.tree_depth=8;
-      (void) QuantizeImage(&quantize_info,image);
+      (void) RGBTransformImage(image,GRAYColorspace);
       break;
     }
     case GrayscaleMatteType:
     {
       if ((image->colorspace == RGBColorspace) &&
-          (image->storage_class == PseudoClass) &&
           IsGrayImage(image,&image->exception) && image->matte)
+        break;
       if (image->colorspace != RGBColorspace)
         (void) RGBTransformImage(image,RGBColorspace);
-      GetQuantizeInfo(&quantize_info);
-      quantize_info.colorspace=GRAYColorspace;
-      quantize_info.tree_depth=8;
-      (void) QuantizeImage(&quantize_info,image);
+      (void) RGBTransformImage(image,GRAYColorspace);
       if (!image->matte)
         SetImageOpacity(image,OpaqueOpacity);
       break;
