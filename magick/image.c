@@ -2894,7 +2894,7 @@ MagickExport void GetPixelPacket(PixelPacket *pixel)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%     I s G e o m e t r y                                                     %
++     I s G e o m e t r y                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
