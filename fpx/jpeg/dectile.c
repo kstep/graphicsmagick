@@ -156,7 +156,7 @@ int *total_ntables)
 		if ((table->ident != 0) && (table->ident != 1)) {
 			/* Free only tables that are not assigned */
 			for (; i < ntables; i++, t = t->next) {
-				if(t->table)					// CHG_JPEG_MEM_FIX - added check & clear
+				if(t->table)					/* CHG_JPEG_MEM_FIX - added check & clear */
 					FPX_free(t->table);
 				t->table = NULL;
 			}
@@ -239,7 +239,7 @@ int method)
 			/* Free only tables that are not assigned */
 			for (; i < ntables; i++, t = t->next) {
 				FPX_free(t->table);
-				t->table = NULL;			// CHG_JPEG_MEM_FIX - added clear
+				t->table = NULL;			/* CHG_JPEG_MEM_FIX - added clear */
 			}
 			DP_Free_Table_Links(tlist);
 			return(ERROR_DATA);

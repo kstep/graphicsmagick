@@ -1053,7 +1053,8 @@ List* List::GetEndOfList()
 // if failed
 char* strrep(const char* s1, const char *t1, const char *t2, char *s2)
 {
-	char *ptr, *newstr; 
+	const char *ptr;
+        char *newstr; 
 	
 	// If the substring don't exist, return NULL
 	if ( !(ptr=strstr(s1, t1))) 	return NULL; 

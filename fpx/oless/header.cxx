@@ -114,7 +114,7 @@ SCODE CheckSignature(BYTE *pb)
 //
 //--------------------------------------------------------------------------
 
-SCODE CMSFHeader::Validate(VOID) const
+SCODE CMSFHeader::Validate() const
 {
     SCODE sc;
 

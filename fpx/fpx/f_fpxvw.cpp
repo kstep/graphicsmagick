@@ -596,7 +596,8 @@ Boolean PFileFlashPixView::Commit()
 }
 
 // This should probably go somewhere else
-#if 	defined(__GNUC__)
+// FIXME:
+#if 	defined(_UNIX)
 
 #define USERCLASSTYPE_APPNAME	0
 

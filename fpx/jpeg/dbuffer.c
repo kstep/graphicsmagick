@@ -802,7 +802,7 @@ DECODER_STRUCT *decoder
             if ((db_state->db_comps[i].mcu_buf = (int *) FPX_malloc(hsampling[i]*
                 vsampling[i]*64*sizeof(int))) == NULL) {
                 for (i--; i >= 0; i--) {
-                	if(db_state->db_comps[i].mcu_buf) {	// CHG_JPEG_MEM_FIX - added check & clear
+                	if(db_state->db_comps[i].mcu_buf) {	/* CHG_JPEG_MEM_FIX - added check & clear */
                    		 FPX_free(db_state->db_comps[i].mcu_buf);
                    	 	db_state->db_comps[i].mcu_buf = NULL;
                    	 }
@@ -828,7 +828,7 @@ DECODER_STRUCT *decoder
         if ((db_state->db_row_bufs = (unsigned char **) FPX_calloc(db_state->db_nrow_bufs,
             sizeof(unsigned char *))) == NULL) {
             for (i = 0; i < ncomps; i++)
-            	if(db_state->db_comps[i].mcu_buf) { // CHG_JPEG_MEM_FIX - added check & clear
+            	if(db_state->db_comps[i].mcu_buf) { /* CHG_JPEG_MEM_FIX - added check & clear */
             		FPX_free(db_state->db_comps[i].mcu_buf);
             		db_state->db_comps[i].mcu_buf = NULL;
             	}

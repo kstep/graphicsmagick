@@ -92,7 +92,7 @@ static void GetENETAddress(unsigned char *ENETaddress)
 //	External Functions
 //	----------------------------------------------------------------------------
 
-#if defined(macintosh) || defined(__unix)
+#if defined(macintosh) || defined(_UNIX)
 HRESULT GenGuid(CLSID *clsid)
 {
   timespec ts;
@@ -109,7 +109,10 @@ HRESULT GenGuid(CLSID *clsid)
   ts.tv_sec  = TickCount() * 60;
   ts.tv_nsec = ts.tv_sec   * 100000; 
 #else
-  // clock_gettime(CLOCK_REALTIME, &ts);
+#  ifdef _UNIX
+     // FIXME: need gettimeofday-based implementation
+     clock_gettime(CLOCK_REALTIME, &ts);
+#  endif
 #endif
 
 //  clock_gettime(CLOCK_REALTIME, &ts);

@@ -56,26 +56,23 @@
         typedef unsigned short unsigned16;
         typedef unsigned char  unsigned8;
     #else
-        #ifdef __GNUC__ // gnu compiler 
-            typedef signed long  int32;
-            typedef signed short int16;
-            typedef char  int8;
+        #ifdef _WINDOWS                                     // If IBM PC
+           typedef signed long     int32;
+           typedef signed short    int16;
+           typedef char            int8;
 
-            typedef unsigned long  unsigned32;
-            typedef unsigned short unsigned16;
-            typedef unsigned char  unsigned8;
+           typedef unsigned long  unsigned32;
+           typedef unsigned short unsigned16;
+           typedef unsigned char  unsigned8;
         #else
-            #ifdef _WINDOWS                                     // If IBM PC
-                typedef signed long     int32;
-                typedef signed short    int16;
-                typedef char            int8;
+	    // FIXME: Portability
+           typedef signed long  int32;
+           typedef signed short int16;
+           typedef char  int8;
 
-                typedef unsigned long  unsigned32;
-                typedef unsigned short unsigned16;
-                typedef unsigned char  unsigned8;
-            #else
-                // error
-            #endif
+           typedef unsigned long  unsigned32;
+           typedef unsigned short unsigned16;
+           typedef unsigned char  unsigned8;
         #endif
     #endif
 #endif

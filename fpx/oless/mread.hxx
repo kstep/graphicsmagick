@@ -152,7 +152,7 @@ Err:
 //---------------------------------------------------------------------------
 
 
-inline SCODE CMStream::SetSize(VOID)
+inline SCODE CMStream::SetSize()
 {
     SCODE sc = S_OK;
     ULONG ulSize;
@@ -194,7 +194,7 @@ Err:
 //---------------------------------------------------------------------------
 
 
-inline SCODE  CMStream::SetMiniSize(VOID)
+inline SCODE  CMStream::SetMiniSize()
 {
     SCODE sc;
     ULONG ulNewSize;

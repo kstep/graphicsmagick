@@ -104,7 +104,8 @@ inline VOID ByteSwap( DWORD *pdw )
 // LONGLONG Byte-Swap
 //
 
-#ifndef __GNUC__
+#ifndef _UNIX
+// FIXME: portability
 #define BYTE_MASK_A_C_E_G_  0xff00ff00ff00ff00
 #define BYTE_MASK__B_D_F_H  0x00ff00ff00ff00ff
 #define BYTE_MASK_AB__EF__  0xffff0000ffff0000

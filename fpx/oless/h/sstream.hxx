@@ -128,11 +128,11 @@ public:
                 BOOL const fCreate);
     ~CDirectStream();
 
-    void AddRef(VOID);
+    void AddRef();
     
-    inline void DecRef(VOID);
+    inline void DecRef();
     
-    void Release(VOID);
+    void Release();
 
 
     SCODE ReadAt( ULONG ulOffset,
@@ -195,7 +195,7 @@ inline CStmHandle *CDirectStream::GetHandle(void)
 //
 //----------------------------------------------------------------------------
 
-inline void CDirectStream::DecRef(void)
+inline void CDirectStream::DecRef()
 {
     AtomicDec(&_cReferences);
 }

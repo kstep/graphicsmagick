@@ -22,6 +22,12 @@
 #include "mread.hxx"
 #include "h/docfilep.hxx"
 
+#ifndef min
+#define min(a, b) ((a)<(b) ? (a) : (b))
+#endif
+#ifndef max
+#define max(a, b) ((a)>(b) ? (a) : (b))
+#endif
 
 #if DEVL == 1
 
@@ -212,7 +218,7 @@ CMStream::CMStream(
 //
 //--------------------------------------------------------------------------
 
-SCODE  CMStream::InitCommon(VOID)
+SCODE  CMStream::InitCommon()
 {
     msfDebugOut((DEB_ITRACE,"In CMStream InitCommon()\n"));
     SCODE sc = S_OK;
@@ -384,7 +390,7 @@ Err:
 //---------------------------------------------------------------------------
 
 
-SCODE  CMStream::Init(VOID)
+SCODE  CMStream::Init()
 {
     ULONG ulTemp;
     SCODE sc;
@@ -452,7 +458,7 @@ Err:
 //
 //---------------------------------------------------------------------------
 
-SCODE CMStream::InitNew(VOID)
+SCODE CMStream::InitNew()
 {
     SCODE sc;
 
@@ -555,7 +561,7 @@ Err:
 //
 //--------------------------------------------------------------------------
 
-SCODE CMStream::InitConvert(VOID)
+SCODE CMStream::InitConvert()
 {
     SCODE sc;
 

@@ -40,7 +40,7 @@ available_tags=" CXX"
 # Libtool was configured as follows, on host scooby:
 #
 # AR="" AR_FLAGS="" LTCC="gcc" CC="gcc" \
-# CFLAGS="-g -O2" CPPFLAGS="-D_UNIX " \
+# CFLAGS="-g -O2" CPPFLAGS="-D_UNIX -D_POSIX_C_SOURCE=3" \
 # MAGIC_CMD="" LD="/usr/ccs/bin/ld" LDFLAGS="-R/usr/local/lib" LIBS="" \
 # LN_S="ln -s" NM="/usr/ccs/bin/nm -p" RANLIB="ranlib" STRIP="strip" \
 # AS="" DLLTOOL="" OBJDUMP="" \
@@ -5344,7 +5344,7 @@ build_old_libs=no
 # Libtool was configured as follows, on host scooby:
 #
 # AR="" AR_FLAGS="" LTCC="g++" CC="g++" \
-# CFLAGS="-g -O2" CPPFLAGS="-D_UNIX " \
+# CFLAGS="-O0 -g -ansi" CPPFLAGS="-D_UNIX -D_POSIX_C_SOURCE=3" \
 # MAGIC_CMD="" LD="/usr/ccs/bin/ld" LDFLAGS="-R/usr/local/lib" LIBS="" \
 # LN_S="ln -s" NM="/usr/ccs/bin/nm -p" RANLIB="ranlib" STRIP="strip" \
 # AS="" DLLTOOL="" OBJDUMP="" \
@@ -5515,7 +5515,7 @@ striplib=""
 
 # Dependencies to place before the objects being linked to create a
 # shared library.
-predep_objects="/usr/local/lib/gcc-lib/sparc-sun-solaris2.6/2.95.2/crti.o /usr/ccs/lib/values-Xa.o /usr/local/lib/gcc-lib/sparc-sun-solaris2.6/2.95.2/crtbegin.o"
+predep_objects="/usr/local/lib/gcc-lib/sparc-sun-solaris2.6/2.95.2/crti.o /usr/ccs/lib/values-Xc.o /usr/local/lib/gcc-lib/sparc-sun-solaris2.6/2.95.2/crtbegin.o"
 
 # Dependencies to place after the objects being linked to create a
 # shared library.

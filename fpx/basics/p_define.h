@@ -102,28 +102,25 @@
         #define  newAllocAray
         #undef   ENABLE_FREE_NULL
         #define  USE_EXCEPTIONS
-   #else
-        #ifdef __GNUC__ // If gnu compiler 
-            #define DEFINE_INT32_FUNCTIONS
-            #define newAllocAray
-            #define ENABLE_FREE_NULL
-            #define USE_EXCEPTIONS
+    #else
+        #ifdef _WINDOWS                         // If IBM PC
+	   #if _MSC_VER < 1000			// If Visual C++ 2.x
+	      #define DEFINE_INT32_FUNCTIONS
+	      #undef  newAllocAray
+	      #undef  ENABLE_FREE_NULL
+	      #define USE_EXCEPTIONS
+	   #else
+	      #define DEFINE_INT32_FUNCTIONS
+	      #define  newAllocAray
+	      #undef  ENABLE_FREE_NULL
+	      #define USE_EXCEPTIONS
+	   #endif
         #else
-            #ifdef _WINDOWS                                     // If IBM PC
-				#if _MSC_VER < 1000								// If Visual C++ 2.x
-					#define DEFINE_INT32_FUNCTIONS
-					#undef  newAllocAray
-					#undef  ENABLE_FREE_NULL
-					#define USE_EXCEPTIONS
-				#else
-					#define DEFINE_INT32_FUNCTIONS
-					#define  newAllocAray
-					#undef  ENABLE_FREE_NULL
-					#define USE_EXCEPTIONS
-				#endif
-            #else
-                // error
-            #endif
+           // FIXME: portability
+           #define DEFINE_INT32_FUNCTIONS
+           #define newAllocAray
+           #define ENABLE_FREE_NULL
+           #define USE_EXCEPTIONS
         #endif
     #endif
 #endif
@@ -134,7 +131,7 @@
 #else
     #ifdef macintosh                                                // If MacIntosh
        #define __bigEndian
-   #else
+    #else
        #ifdef __alpha                                              // If DEC ALPHA
            #undef __bigEndian
        #else

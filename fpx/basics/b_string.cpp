@@ -335,7 +335,7 @@ void Chaine::PlaceParametre(const Chaine& replaceStr, short numParam )
 		toSearch[1] = '2';
 		
 	// Search
-	char * foundStr = strstr((const char*)Texte(), toSearch);
+	const char * foundStr = strstr((const char*)Texte(), toSearch);
 	
 	// If found, build the string with replacment
 	if (foundStr != NULL)

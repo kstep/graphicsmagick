@@ -69,19 +69,33 @@
 //
 // Define the facility codes
 //
+#undef FACILITY_WINDOWS
 #define FACILITY_WINDOWS                 8
+#undef FACILITY_STORAGE
 #define FACILITY_STORAGE                 3
+#undef FACILITY_SSPI
 #define FACILITY_SSPI                    9
+#undef FACILITY_SETUPAPI
 #define FACILITY_SETUPAPI                15
+#undef FACILITY_RPC
 #define FACILITY_RPC                     1
+#undef FACILITY_WIN32
 #define FACILITY_WIN32                   7
+#undef FACILITY_CONTROL
 #define FACILITY_CONTROL                 10
+#undef FACILITY_NULL
 #define FACILITY_NULL                    0
+#undef FACILITY_MSMQ
 #define FACILITY_MSMQ                    14
+#undef FACILITY_MEDIASERVER
 #define FACILITY_MEDIASERVER             13
+#undef FACILITY_INTERNET
 #define FACILITY_INTERNET                12
+#undef FACILITY_ITF
 #define FACILITY_ITF                     4
+#undef FACILITY_DISPATCH
 #define FACILITY_DISPATCH                2
+#undef FACILITY_CERT
 #define FACILITY_CERT                    11
 
 
@@ -7954,12 +7968,14 @@
 // indicate success).
 //
 
+#undef SUCCEEDED
 #define SUCCEEDED(Status) ((HRESULT)(Status) >= 0)
 
 //
 // and the inverse
 //
 
+#undef FAILED
 #define FAILED(Status) ((HRESULT)(Status)<0)
 
 
@@ -8087,6 +8103,7 @@
 //
 //  Ran out of memory
 //
+#undef E_OUTOFMEMORY
 #define E_OUTOFMEMORY                    _HRESULT_TYPEDEF_(0x8007000EL)
 
 //
@@ -8096,6 +8113,7 @@
 //
 //  One or more arguments are invalid
 //
+#undef E_INVALIDARG
 #define E_INVALIDARG                     _HRESULT_TYPEDEF_(0x80070057L)
 
 //
@@ -8105,6 +8123,7 @@
 //
 //  No such interface supported
 //
+#undef E_NOINTERFACE
 #define E_NOINTERFACE                    _HRESULT_TYPEDEF_(0x80004002L)
 
 //
@@ -8141,6 +8160,7 @@
 //
 //  Unspecified error
 //
+#undef E_FAIL
 #define E_FAIL                           _HRESULT_TYPEDEF_(0x80004005L)
 
 //
@@ -8169,6 +8189,7 @@
 //
 //  Ran out of memory
 //
+#undef E_OUTOFMEMORY
 #define E_OUTOFMEMORY                    _HRESULT_TYPEDEF_(0x80000002L)
 
 //
@@ -8178,6 +8199,7 @@
 //
 //  One or more arguments are invalid
 //
+#undef E_INVALIDARG
 #define E_INVALIDARG                     _HRESULT_TYPEDEF_(0x80000003L)
 
 //
@@ -8187,6 +8209,7 @@
 //
 //  No such interface supported
 //
+#undef E_NOINTERFACE
 #define E_NOINTERFACE                    _HRESULT_TYPEDEF_(0x80000004L)
 
 //
@@ -8214,6 +8237,7 @@
 //
 //  Operation aborted
 //
+#undef E_ABORT
 #define E_ABORT                          _HRESULT_TYPEDEF_(0x80000007L)
 
 //
@@ -8223,6 +8247,7 @@
 //
 //  Unspecified error
 //
+#undef E_FAIL
 #define E_FAIL                           _HRESULT_TYPEDEF_(0x80000008L)
 
 //
@@ -8232,6 +8257,7 @@
 //
 //  General access denied error
 //
+#undef E_ACCESSDENIED
 #define E_ACCESSDENIED                   _HRESULT_TYPEDEF_(0x80000009L)
 
 #endif //WIN32
@@ -8518,7 +8544,9 @@
 //
 // Success codes
 //
+#undef S_OK
 #define S_OK                                   ((HRESULT)0x00000000L)
+#undef S_FALSE
 #define S_FALSE                                ((HRESULT)0x00000001L)
 
 // ******************

@@ -20,7 +20,7 @@
 #include "jpegconf.h"
 #include "fpxmem.h"
 
-#include "ejpeg.h"			// CHG_JPEG_MEM_FIX - added this to get error code
+#include "ejpeg.h"			/* CHG_JPEG_MEM_FIX - added this to get error code */
 
 /*
 ** This routine strips color information from an opponent color stream.  Upon completion of
@@ -351,7 +351,7 @@ int RGBtoYCrCb_SubSample422(unsigned char*src, unsigned char*dst, int tileSize, 
 	int error;
 
 	dst0 = (unsigned char *)FPX_malloc((size_t)(tileSize * tileSize * bpp));
-	if(dst0 == NULL)						// CHG_JPEG_MEM_FIX - added check
+	if(dst0 == NULL)						/* CHG_JPEG_MEM_FIX - added check */
 		return EJPEG_ERROR_MEM;
 
 	RGBtoYCrCb(src, dst0, tileSize, bpp);

@@ -34,7 +34,7 @@ public:
     CDIFat(USHORT cbSector);
     inline ~CDIFat();
 
-    VOID Empty(VOID);
+    VOID Empty();
 
     
     SCODE   GetFatSect(const FSINDEX oSect, SECT *psect);

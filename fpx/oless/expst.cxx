@@ -16,6 +16,13 @@
 #include "expst.hxx"
 #include "logfile.hxx"
 
+#ifndef min
+#define min(a, b) ((a)<(b) ? (a) : (b))
+#endif
+#ifndef max
+#define max(a, b) ((a)>(b) ? (a) : (b))
+#endif
+
 // Maximum stream size supported by exposed streams
 // This is MAX_ULONG with one subtracted so that
 // the seek pointer has a spot to sit even at the

@@ -129,7 +129,7 @@ unsigned char *huffval)     /* huffman values - see JPEG doc */
 		/*      huff_elem[j].value   = -1; */
         if ((huff_tree =(HUFFMAN_TREE *)FPX_malloc(sizeof(HUFFMAN_TREE)))==NULL) {
             for (k = code; k < j; k++) {
-            	if(huff_elem[k].hufftree) {		// CHG_JPEG_MEM_FIX - added check & clear
+            	if(huff_elem[k].hufftree) {		/* CHG_JPEG_MEM_FIX - added check & clear */
                 	FPX_free(huff_elem[k].hufftree);
                 	huff_elem[k].hufftree = NULL;
                 }

@@ -623,7 +623,7 @@ Err:
 //----------------------------------------------------------------------------
 
 
-void CDirectStream::Release(VOID)
+void CDirectStream::Release()
 {
     msfDebugOut((DEB_TRACE,"In CDirectStream::Release()\n"));
     msfAssert(_cReferences > 0);

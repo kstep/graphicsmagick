@@ -17,7 +17,8 @@
 
 typedef double DATE;
 
-#if defined(__GNUC__)
+#if defined(_UNIX)
+// FIXME: portability
 typedef struct tagCY {
   #if BIGENDIAN
     long Hi;
@@ -42,7 +43,7 @@ typedef union tagCY {
     LONGLONG int64;             /* the above split is need to be compatiable */
                                 /* with the def of the union */
 } CY;
-#endif // (__GNUC__)
+#endif // (_UNIX)
 
 typedef OLECHAR *BSTR;
 typedef BSTR *LPBSTR;
@@ -355,7 +356,8 @@ struct  tagPROPVARIANT
         short iVal;
         USHORT uiVal;
         VARIANT_BOOL boolVal;
-#ifndef __GNUC__	    /* in GCC this obsolete member causes conflicts */
+#ifndef _UNIX	    /* in GCC this obsolete member causes conflicts */
+/* FIXME: investigate */
         _VARIANT_BOOL bool;
 #endif
         long lVal;
@@ -685,7 +687,7 @@ inline void PropVariantInit ( PROPVARIANT * pvar )
 #endif
 
 
-#if defined(__GNUC__)
+#if defined(_UNIX)
 
 typedef struct tagVARIANT VARIANT;
 typedef struct tagVARIANT VARIANTARG;
@@ -775,7 +777,7 @@ typedef struct tagVARIANT  {
 #define V_BSTR(X)	 V_UNION(X, bstrVal)
 #define V_ERROR(X)	 V_UNION(X, scode)
 
-#endif // __GNUC__
+#endif // _UNIX
 
 #endif /*#ifndef  _PROP_H_*/
 

@@ -56,10 +56,13 @@ private:
 #pragma warning(disable: 4200)    
     SECT _asectEntry[];
 #pragma warning(default: 4200)    
-#endif
-
-#ifdef __GNUC__
-    SECT _asectEntry[0];
+#else
+#  ifdef __GNUC__
+      SECT _asectEntry[0];
+#  else
+// FIXME: brain damage
+      SECT* _asectEntry;
+#  endif
 #endif
 };
 
@@ -268,7 +271,7 @@ public:
     CFat(SID sid, USHORT cbSector, USHORT uSectorShift);
     ~CFat();
 
-    VOID Empty(VOID);
+    VOID Empty();
     
     inline SCODE Allocate(ULONG ulSize, SECT *psectFirst);
     SCODE   GetNext(const SECT sect, SECT * psRet);
@@ -311,7 +314,7 @@ public:
             SECT sect,
             ULONG ulLength);
     
-    inline SCODE   Flush(VOID);
+    inline SCODE   Flush();
     
     inline void SetParent(CMStream *pms);
     
@@ -404,7 +407,7 @@ inline void CFat::SetParent(CMStream *pms)
 //
 //---------------------------------------------------------------------------
 
-inline SCODE CFat::Flush(VOID)
+inline SCODE CFat::Flush()
 {
     return _fv.Flush();
 }

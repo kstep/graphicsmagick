@@ -98,10 +98,13 @@ private:
 #pragma warning(disable: 4200)    
     BYTE _ab[0];
 #pragma warning(default: 4200)
-#endif
-
-#ifdef __GNUC__
-    BYTE _ab[0];
+#else
+#  ifdef __GNUC__
+      BYTE _ab[0];
+#  else
+      // FIXME: brain damage
+      BYTE* _ab;
+#  endif
 #endif
 };
 

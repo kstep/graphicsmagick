@@ -34,9 +34,9 @@ class CMSFIterator
         inline CMSFIterator(CDirectory *pdir, SID sidChild);
         SCODE GetNext(STATSTGW *pstat);
 	SCODE BufferGetNext(SIterBuffer *pib);
-        inline SCODE Rewind(VOID);
+        inline SCODE Rewind();
 
-        inline void  Release(VOID);
+        inline void  Release();
 
     private:
         CDirectory *_pdir;
@@ -66,7 +66,7 @@ inline CMSFIterator::CMSFIterator(CDirectory *pdir, SID sidChild)
 //
 //---------------------------------------------------------------------------
 
-inline SCODE CMSFIterator::Rewind(VOID)
+inline SCODE CMSFIterator::Rewind()
 {
     msfDebugOut((DEB_TRACE,"In CMSFIterator::Rewind()\n"));
     _dfnCurrent.Set((WORD)0, (BYTE *)NULL);
@@ -86,7 +86,7 @@ inline SCODE CMSFIterator::Rewind(VOID)
 //
 //--------------------------------------------------------------------------
 
-inline void CMSFIterator::Release(VOID)
+inline void CMSFIterator::Release()
 {
     delete this;
 }

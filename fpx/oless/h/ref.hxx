@@ -87,13 +87,14 @@ typedef LONG NTSTATUS, *PNTSTATUS;
 // NOTE: 
 // for other compilers some form of 64 bit integer support 
 // has to be provided
-#ifdef __GNUC__
-typedef long long int LONGLONG;
-typedef unsigned long long int ULONGLONG;
-#endif
 #ifdef _MSC_VER
 typedef __int64 LONGLONG;
 typedef unsigned __int64 ULONGLONG;
+#else
+// should work with most Unix compilers
+// FIXME: portability
+typedef long long int LONGLONG;
+typedef unsigned long long int ULONGLONG;
 #endif
 
 typedef void *LPVOID;
@@ -109,7 +110,7 @@ typedef const char *LPCSTR;
 #endif // _WIN32
 
 const ULONG MAX_ULONG = 0xFFFFFFFF;
-const USHORT USHRT_MAX = 0xFFFF;
+//const USHORT USHRT_MAX = 0xFFFF; // FIXME: Sun Forte 6.0 does not like!
 #define MAXULONG MAX_ULONG
 #define MAX_PATH _MAX_PATH
 
@@ -149,7 +150,8 @@ DECLARE_INTERFACE(IUnknown)
 
 #include "storage.h"
 
-#if !defined(__GNUC__) // All error stuff should be coming out of error.hxx
+#if !defined(_UNIX) // All error stuff should be coming out of error.hxx
+#undef S_OK
 #define S_OK 0L
 #define MAKE_SCODE(sev,fac,code) \
     ((SCODE) (((unsigned long)(sev)<<31) | ((unsigned long)(fac)<<16) | \
@@ -171,7 +173,7 @@ DECLARE_INTERFACE(IUnknown)
 #define S_TRUE 0L
 #define S_FALSE             MAKE_SCODE(SEVERITY_SUCCESS, FACILITY_NULL, 1)
 #define E_OUTOFMEMORY       MAKE_SCODE(SEVERITY_ERROR,   FACILITY_NULL, 2)
-#define E_INVALIDARG        MAKE_SCODE(SEVERITY_ERROR,   FACILITY_NULL, 3)   
+#define E_INVALIDARG        MAKE_SCODE(SEVERITY_ERROR,   FACILITY_NULL, 3)
 #define E_NOINTERFACE       MAKE_SCODE(SEVERITY_ERROR,   FACILITY_NULL, 4)
 #define E_FAIL              MAKE_SCODE(SEVERITY_ERROR,   FACILITY_NULL, 8)
 #define ERROR_DIR_NOT_EMPTY 145L
@@ -182,7 +184,7 @@ DECLARE_INTERFACE(IUnknown)
 //#define ResultFromScode(sc) ((HRESULT)((SCODE)(sc) & 0x800FFFFF))
 #define ResultFromScode(sc) ((HRESULT) (sc))
 #define GetScode(hr) ((SCODE) (hr))
-#endif // (__GNUC__)
+#endif // (_UNIX)
 
 /************** GUID's **************************************************/
 

@@ -60,46 +60,46 @@ public:
 
     CMSFHeader(USHORT uSectorShift);
     
-    SCODE Validate(VOID) const;
+    SCODE Validate() const;
     
-    inline USHORT GetMinorVersion(VOID) const;
-    inline USHORT GetDllVersion(VOID) const;
+    inline USHORT GetMinorVersion() const;
+    inline USHORT GetDllVersion() const;
 	
     inline SCODE SetFatLength(const FSINDEX cFatSect);
-    inline FSINDEX GetFatLength(VOID) const;
+    inline FSINDEX GetFatLength() const;
 
     inline SCODE SetMiniFatLength(const FSINDEX cFatSect);
-    inline FSINDEX GetMiniFatLength(VOID) const;
+    inline FSINDEX GetMiniFatLength() const;
 
     inline SCODE SetDirStart(const SECT sect);
-    inline SECT GetDirStart(VOID) const;
+    inline SECT GetDirStart() const;
 
     inline SCODE SetFatStart(const SECT sect);
-    inline SECT GetFatStart(VOID)  const;
+    inline SECT GetFatStart()  const;
 
     inline SCODE SetMiniFatStart(const SECT sect);
-    inline SECT GetMiniFatStart(VOID)  const;
+    inline SECT GetMiniFatStart()  const;
 
     inline SCODE SetDifStart(const SECT sect);
-    inline SECT  GetDifStart(VOID) const;
+    inline SECT  GetDifStart() const;
 
     inline SCODE SetDifLength(const FSINDEX cFatSect);
-    inline FSINDEX GetDifLength(VOID) const;
+    inline FSINDEX GetDifLength() const;
 
     inline SECT GetFatSect(const FSINDEX oSect) const;
     inline SCODE SetFatSect(const FSINDEX oSect, const SECT sect);
 
-    inline USHORT GetSectorShift(VOID) const;
-    inline USHORT GetMiniSectorShift(VOID) const;
+    inline USHORT GetSectorShift() const;
+    inline USHORT GetMiniSectorShift() const;
 
-    inline ULONG  GetMiniSectorCutoff(VOID) const;
+    inline ULONG  GetMiniSectorCutoff() const;
 
-    inline DFSIGNATURE GetCommitSig(VOID) const;
+    inline DFSIGNATURE GetCommitSig() const;
     inline void SetCommitSig(const DFSIGNATURE sig);
 
     // whether machine is using diff order from file format
-    inline BOOL DiffByteOrder(VOID) const;
-    inline void ByteSwap(VOID);
+    inline BOOL DiffByteOrder() const;
+    inline void ByteSwap();
 
 private:
     SECT	_sectFat[CSECTFAT];
@@ -116,7 +116,7 @@ inline SCODE CMSFHeader::SetFatLength(const FSINDEX cFatSect)
     return S_OK;
 }
 
-inline FSINDEX CMSFHeader::GetFatLength(VOID) const
+inline FSINDEX CMSFHeader::GetFatLength() const
 {
     return _csectFat;
 }
@@ -129,7 +129,7 @@ inline SCODE CMSFHeader::SetMiniFatLength(const FSINDEX cFatSect)
     return S_OK;
 }
 
-inline FSINDEX CMSFHeader::GetMiniFatLength(VOID) const
+inline FSINDEX CMSFHeader::GetMiniFatLength() const
 {
     return(_csectMiniFat);
 }
@@ -140,7 +140,7 @@ inline SCODE CMSFHeader::SetDirStart(const SECT sectNew)
     return S_OK;
 }
 
-inline SECT CMSFHeader::GetDirStart(VOID) const
+inline SECT CMSFHeader::GetDirStart() const
 {
     return _sectDirStart;
 }
@@ -151,7 +151,7 @@ inline SCODE CMSFHeader::SetFatStart(const SECT sectNew)
     return S_OK;
 }
 
-inline SECT CMSFHeader::GetFatStart(VOID) const
+inline SECT CMSFHeader::GetFatStart() const
 {
     return _sectFat[0];
 }
@@ -186,7 +186,7 @@ inline SCODE CMSFHeader::SetMiniFatStart(const SECT sectNew)
 //
 //--------------------------------------------------------------------------
 
-inline SECT CMSFHeader::GetMiniFatStart(VOID) const
+inline SECT CMSFHeader::GetMiniFatStart() const
 {
     return(_sectMiniFatStart);
 }
@@ -197,7 +197,7 @@ inline SCODE CMSFHeader::SetDifStart(const SECT sectNew)
     return S_OK;
 }
 
-inline SECT CMSFHeader::GetDifStart(VOID) const
+inline SECT CMSFHeader::GetDifStart() const
 {
     return _sectDifStart;
 }
@@ -222,19 +222,19 @@ inline SCODE CMSFHeader::SetDifLength(const FSINDEX cFatSect)
 }
 
 
-inline FSINDEX CMSFHeader::GetDifLength(VOID) const
+inline FSINDEX CMSFHeader::GetDifLength() const
 {
     return _csectDif;
 }
 
 
-inline USHORT CMSFHeader::GetSectorShift(VOID) const
+inline USHORT CMSFHeader::GetSectorShift() const
 {
     return _uSectorShift;
 }
 
 
-inline DFSIGNATURE CMSFHeader::GetCommitSig(VOID) const
+inline DFSIGNATURE CMSFHeader::GetCommitSig() const
 {
     return _signature;
 }
@@ -244,22 +244,22 @@ inline void CMSFHeader::SetCommitSig(const DFSIGNATURE sig)
     _signature = sig;
 }
 
-inline USHORT CMSFHeader::GetMiniSectorShift(VOID) const
+inline USHORT CMSFHeader::GetMiniSectorShift() const
 {
     return _uMiniSectorShift;
 }
 
-inline ULONG CMSFHeader::GetMiniSectorCutoff(VOID) const
+inline ULONG CMSFHeader::GetMiniSectorCutoff() const
 {
     return _ulMiniSectorCutoff;
 }
 
-inline USHORT CMSFHeader::GetMinorVersion(VOID) const
+inline USHORT CMSFHeader::GetMinorVersion() const
 {
     return _uMinorVersion;
 }
 
-inline USHORT CMSFHeader::GetDllVersion(VOID) const
+inline USHORT CMSFHeader::GetDllVersion() const
 {
     return _uDllVersion;
 }
@@ -268,7 +268,7 @@ inline USHORT CMSFHeader::GetDllVersion(VOID) const
 #define DISK_BYTE_ORDER 0xFFFE
 
 // whether machine is using diff order than file format
-inline BOOL CMSFHeader::DiffByteOrder(VOID) const
+inline BOOL CMSFHeader::DiffByteOrder() const
 {   
     // _uByteOrder stores what the machine will see
     // when it reads in a Little Endian 0xFFFE on disk
@@ -279,7 +279,7 @@ inline BOOL CMSFHeader::DiffByteOrder(VOID) const
 #endif
 }
 
-inline void CMSFHeader::ByteSwap(VOID) 
+inline void CMSFHeader::ByteSwap() 
 {
     if (DiffByteOrder())
     {

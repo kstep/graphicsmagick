@@ -183,11 +183,11 @@ public:
 
     ~CMStream();
 
-    SCODE  Init(VOID);
+    SCODE  Init();
 
-    SCODE InitNew(VOID);
+    SCODE InitNew();
     
-    SCODE InitConvert(VOID);
+    SCODE InitConvert();
 
 
     void Empty(void);
@@ -245,8 +245,8 @@ public:
 
     SCODE  GetIterator( SID const sidParent, CMSFIterator **pit);
 
-    inline SCODE  SetSize(VOID);
-    inline SCODE  SetMiniSize(VOID);
+    inline SCODE  SetSize();
+    inline SCODE  SetMiniSize();
 
 
     SCODE  MWrite( SID sid,
@@ -260,24 +260,24 @@ public:
 
     SCODE  GetName(SID const sid, CDfName *pdfn);
 
-    inline CMSFHeader *  GetHeader(VOID) const;
-    inline CFat *  GetFat(VOID) const;
-    inline CFat *  GetMiniFat(VOID) const;
-    inline CDIFat *  GetDIFat(VOID) const;
-    inline CDirectory *  GetDir(VOID) const;
-    inline CMSFPageTable *  GetPageTable(VOID) const;
+    inline CMSFHeader *  GetHeader() const;
+    inline CFat *  GetFat() const;
+    inline CFat *  GetMiniFat() const;
+    inline CDIFat *  GetDIFat() const;
+    inline CDirectory *  GetDir() const;
+    inline CMSFPageTable *  GetPageTable() const;
 
-    inline USHORT  GetSectorSize(VOID) const;
-    inline USHORT  GetSectorShift(VOID) const;
-    inline USHORT  GetSectorMask(VOID) const;
+    inline USHORT  GetSectorSize() const;
+    inline USHORT  GetSectorShift() const;
+    inline USHORT  GetSectorMask() const;
 
     SCODE  Flush(BOOL fFlushILB);
     
     SCODE  FlushHeader(USHORT uForce);
 
 
-    inline CDirectStream *  GetMiniStream(VOID) const;
-    inline ILockBytes *  GetILB(VOID) const;
+    inline CDirectStream *  GetMiniStream() const;
+    inline ILockBytes *  GetILB() const;
 
     inline SCODE GetSect(SID sid, SECT sect, SECT *psect);
     SCODE GetESect(SID sid, SECT sect, SECT *psect);
@@ -305,7 +305,7 @@ private:
     USHORT          _uSectorShift;
     USHORT          _uSectorMask;
 
-    SCODE  InitCommon(VOID);
+    SCODE  InitCommon();
 
     SECT  GetStart(SID sid) const;
 
@@ -336,7 +336,7 @@ private:
 //
 //--------------------------------------------------------------------------
 
-inline USHORT CMStream::GetSectorSize(VOID) const
+inline USHORT CMStream::GetSectorSize() const
 {
     return _uSectorSize;
 }
@@ -351,7 +351,7 @@ inline USHORT CMStream::GetSectorSize(VOID) const
 //
 //--------------------------------------------------------------------------
 
-inline USHORT CMStream::GetSectorShift(VOID) const
+inline USHORT CMStream::GetSectorShift() const
 {
     return _uSectorShift;
 }
@@ -365,7 +365,7 @@ inline USHORT CMStream::GetSectorShift(VOID) const
 //
 //--------------------------------------------------------------------------
 
-inline USHORT CMStream::GetSectorMask(VOID) const
+inline USHORT CMStream::GetSectorMask() const
 {
     return _uSectorMask;
 }
@@ -379,7 +379,7 @@ inline USHORT CMStream::GetSectorMask(VOID) const
 //
 //--------------------------------------------------------------------------
 
-inline CMSFHeader *  CMStream::GetHeader(VOID) const
+inline CMSFHeader *  CMStream::GetHeader() const
 {
     return (CMSFHeader *)(&_hdr);
 }
@@ -393,7 +393,7 @@ inline CMSFHeader *  CMStream::GetHeader(VOID) const
 //
 //--------------------------------------------------------------------------
 
-inline CFat *  CMStream::GetFat(VOID) const
+inline CFat *  CMStream::GetFat() const
 {
     return (CFat *)&_fat;
 }
@@ -406,7 +406,7 @@ inline CFat *  CMStream::GetFat(VOID) const
 //
 //--------------------------------------------------------------------------
 
-inline CFat *  CMStream::GetMiniFat(VOID) const
+inline CFat *  CMStream::GetMiniFat() const
 {
     return (CFat *)&_fatMini;
 }
@@ -419,7 +419,7 @@ inline CFat *  CMStream::GetMiniFat(VOID) const
 //
 //--------------------------------------------------------------------------
 
-inline CDIFat *  CMStream::GetDIFat(VOID) const
+inline CDIFat *  CMStream::GetDIFat() const
 {
     return (CDIFat *)&_fatDif;
 }
@@ -432,7 +432,7 @@ inline CDIFat *  CMStream::GetDIFat(VOID) const
 //
 //--------------------------------------------------------------------------
 
-inline CDirectory *  CMStream::GetDir(VOID) const
+inline CDirectory *  CMStream::GetDir() const
 {
     return (CDirectory *)&_dir;
 }
@@ -446,7 +446,7 @@ inline CDirectory *  CMStream::GetDir(VOID) const
 //
 //--------------------------------------------------------------------------
 
-inline CDirectStream *  CMStream::GetMiniStream(VOID) const
+inline CDirectStream *  CMStream::GetMiniStream() const
 {
     return(_pdsministream);
 }
@@ -459,7 +459,7 @@ inline CDirectStream *  CMStream::GetMiniStream(VOID) const
 //
 //--------------------------------------------------------------------------
 
-inline ILockBytes *  CMStream::GetILB(VOID) const
+inline ILockBytes *  CMStream::GetILB() const
 {
     return(*_pplstParent);
 }
@@ -473,7 +473,7 @@ inline ILockBytes *  CMStream::GetILB(VOID) const
 //
 //--------------------------------------------------------------------------
 
-inline CMSFPageTable *  CMStream::GetPageTable(VOID) const
+inline CMSFPageTable *  CMStream::GetPageTable() const
 {
     return _pmpt;
 }

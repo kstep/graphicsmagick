@@ -44,13 +44,13 @@
 	#include	<dispatch.h>
 #endif 
 
-#if defined(__GNUC__)
+#if defined(_UNIX)
  	// use the reference implementation header files
 	#include "exphead.cxx"
 	#include "msfhead.cxx"
 	#include "dfhead.cxx"
 	#include "props.h" // for VARIANT defenition 
-#endif // __GNUC__
+#endif // _UNIX
 	
 //	Constants
 //	---------
@@ -172,7 +172,7 @@ typedef struct
 
 	// The following comes from Microsoft's WINDEF.H
 	// I know I put this in here a long time ago but why?  What was I smoking?
-#if !defined(__GNUC__)
+#if !defined(_UNIX)
     #ifndef LOWORD
         #define LOWORD(l)           ((WORD)(l))
     #endif

@@ -254,7 +254,7 @@ JPEG_STRUCT *jpeg_struct)
 	nvMCU = (height)/8;
 	nhMCU = (width)/8;
 
-	block1 = block2 = NULL;					// CHG_JPEG_MEM_FIX - used for allocation checking
+	block1 = block2 = NULL;					/* CHG_JPEG_MEM_FIX - used for allocation checking */
 	block1 = (int *) FPX_malloc(64 * sizeof(int));
 	block2 = (int *) FPX_malloc(64 * sizeof(int));
 
@@ -346,12 +346,12 @@ JPEG_STRUCT *jpeg_struct)
 	int nvMCU, nhMCU;         /* number of FULL MCU vert. and hori. */
 	unsigned char *c1, *c2, *c3;
 
-	block1 = block2 = block3 = NULL;	// CHG_JPEG_MEM_FIX - used for allocation checking
+	block1 = block2 = block3 = NULL;	/* CHG_JPEG_MEM_FIX - used for allocation checking */
 	block1 = (int *) FPX_malloc(64 * sizeof(int));
 	block2 = (int *) FPX_malloc(64 * sizeof(int));
 	block3 = (int *) FPX_malloc(64 * sizeof(int));
 	
-	// CHG_JPEG_MEM_FIX - added the following allocation check
+	/* CHG_JPEG_MEM_FIX - added the following allocation check */
 	if ((block1 == 0) || (block2 == 0) || (block3 == 0)) {
 		if (block1)		FPX_free(block1);
 		if (block2)		FPX_free(block2);
@@ -459,13 +459,13 @@ JPEG_STRUCT *jpeg_struct)
 	int nvMCU, nhMCU;         /* number of FULL MCU vert. and hori. */
 	unsigned char *c1, *c2, *c3, *c4;
 
-	block1 = block2 = block3 = block4 = NULL;	// CHG_JPEG_MEM_FIX - for allocation checking
+	block1 = block2 = block3 = block4 = NULL;	/* CHG_JPEG_MEM_FIX - for allocation checking */
 	block1 = (int *) FPX_malloc(64 * sizeof(int));
 	block2 = (int *) FPX_malloc(64 * sizeof(int));
 	block3 = (int *) FPX_malloc(64 * sizeof(int));
 	block4 = (int *) FPX_malloc(64 * sizeof(int));
 	
-	// CHG_JPEG_MEM_FIX - added the following allocation check
+	/* CHG_JPEG_MEM_FIX - added the following allocation check */
 	if ((block1 == 0) || (block2 == 0) || (block3 == 0) || (block4 == 0)) {
 		if (block1)		FPX_free(block1);
 		if (block2)		FPX_free(block2);
@@ -597,7 +597,7 @@ JPEG_STRUCT *jpeg_struct)
 	int *p5, *p6, *p5_2, *p6_2;
 	unsigned char *c4_ptr;
 
-	block1 = block2 = block3 = block4 = NULL;		// CHG_JPEG_MEM_FIX - for allocation checking
+	block1 = block2 = block3 = block4 = NULL;		/* CHG_JPEG_MEM_FIX - for allocation checking */
 	block5 = block6 = NULL;							
 	block7 = block8 = block9 = block10 = NULL;	
 
@@ -607,13 +607,13 @@ JPEG_STRUCT *jpeg_struct)
 	block4 = (int *) FPX_malloc(64 * sizeof(int)); /* Luma block */
 
 	if ((block1 == 0) || (block2 == 0) || (block3 == 0) || (block4 == 0))
-		goto Exit;									// CHG_JPEG_MEM_FIX - Added allocation test
+		goto Exit;									/* CHG_JPEG_MEM_FIX - Added allocation test */
 
 	block5 = (int *) FPX_malloc(64 * sizeof(int)); /* 1rst-chroma block */
 	block6 = (int *) FPX_malloc(64 * sizeof(int)); /* 2nd-chroma block  */
 
 	if ((block5 == 0) || (block6 == 0))
-		goto Exit;									// CHG_JPEG_MEM_FIX - Added allocation test
+		goto Exit;									/* CHG_JPEG_MEM_FIX - Added allocation test */
 
 	block7  = (int *) FPX_malloc(64 * sizeof(int)); /* Alpha channel */
 	block8  = (int *) FPX_malloc(64 * sizeof(int)); /* Alpha channel */
@@ -621,7 +621,7 @@ JPEG_STRUCT *jpeg_struct)
 	block10 = (int *) FPX_malloc(64 * sizeof(int)); /* Alpha channel */
 
 	if ((block7 == 0) || (block8 == 0) || (block9 == 0) || (block10 == 0))
-		goto Exit;									// CHG_JPEG_MEM_FIX - Added allocation test
+		goto Exit;									/* CHG_JPEG_MEM_FIX - Added allocation test */
 
 	Clear_Last_DC(jpeg_struct);
 
@@ -762,7 +762,7 @@ JPEG_STRUCT *jpeg_struct)
 							*p2++ = *c1_ptr++ - SHIFT;
 							*p6++ = *c4_ptr++ - SHIFT;
 						} /* t-loop */
-						//buf_ptr = buf_ptr + skip;
+						/* buf_ptr = buf_ptr + skip; */
 					} /* k-loop */
 				}  /* end on l */
 				/* Fill-up the chroma 8x8 blocks */
@@ -844,13 +844,13 @@ JPEG_STRUCT *jpeg_struct)
 	int skip,skip2,skip_row_data, skip_row_data1,skip_row_data2;
 	int nvMCU, nhMCU;  /* number of FULL MCU vert. and hor. */
 
-	block1 = block2 = block3 = block4 = NULL;	// CHG_JPEG_MEM_FIX -  for allocation checking
+	block1 = block2 = block3 = block4 = NULL;	/* CHG_JPEG_MEM_FIX -  for allocation checking */
 	block1 = (int *) FPX_malloc(64 * sizeof(int));
 	block2 = (int *) FPX_malloc(64 * sizeof(int));
 	block3 = (int *) FPX_malloc(64 * sizeof(int));
 	block4 = (int *) FPX_malloc(64 * sizeof(int));
 	
-	// CHG_JPEG_MEM_FIX - added the following allocation check
+	/* CHG_JPEG_MEM_FIX - added the following allocation check */
 	if ((block1 == 0) || (block2 == 0) || (block3 == 0) || (block4 == 0)) {
 		if (block1)		FPX_free(block1);
 		if (block2)		FPX_free(block2);
@@ -988,7 +988,7 @@ JPEG_STRUCT *jpeg_struct)
 	int skip,skip2,skip_row_data, skip_row_data1,skip_row_data2;
 	int nvMCU, nhMCU;  /* number of FULL MCU vert. and hor. */
 
-	block1 = block2 = block3 = block4= block5 = block6 = NULL;	// CHG_JPEG_MEM_FIX - for allocation checking
+	block1 = block2 = block3 = block4= block5 = block6 = NULL;	/* CHG_JPEG_MEM_FIX - for allocation checking */
 	block1 = (int *) FPX_malloc(64 * sizeof(int));
 	block2 = (int *) FPX_malloc(64 * sizeof(int));
 	block3 = (int *) FPX_malloc(64 * sizeof(int));
@@ -998,7 +998,7 @@ JPEG_STRUCT *jpeg_struct)
 
 	if ((block1 == 0) || (block2 == 0) || (block3 == 0) || 
 		(block4 == 0) || (block5 == 0) || (block6 == 0))
-		goto Exit;										// CHG_JPEG_MEM_FIX - Added allocation test
+		goto Exit;										/* CHG_JPEG_MEM_FIX - Added allocation test */
 
 	Clear_Last_DC(jpeg_struct);
 
@@ -1119,7 +1119,7 @@ JPEG_STRUCT *jpeg_struct)
 			} /* end on j */
 		} /* end on i */
 	} /* end of non-interleaved data. */
-  Exit:									// CHG_JPEG_MEM_FIX - branch to here if mem alloc fails
+  Exit:									/* CHG_JPEG_MEM_FIX - branch to here if mem alloc fails */
 	FPX_free(block1);
 	FPX_free(block2);
 	FPX_free(block3);
@@ -1156,13 +1156,13 @@ JPEG_STRUCT *jpeg_struct)
 	int *p1_2, *p2_2;
 	int nvMCU, nhMCU;  /* number of FULL MCU vert. and hor. */
 
-	block1 = block2 = block3 = block4 = NULL;	// CHG_JPEG_MEM_FIX - for allocation checking
+	block1 = block2 = block3 = block4 = NULL;	/* CHG_JPEG_MEM_FIX - for allocation checking */
 	block1 = (int *) FPX_malloc(64 * sizeof(int));
 	block2 = (int *) FPX_malloc(64 * sizeof(int));
 	block3 = (int *) FPX_malloc(64 * sizeof(int));
 	block4 = (int *) FPX_malloc(64 * sizeof(int));
 	
-	// CHG_JPEG_MEM_FIX - added the following allocation check
+	/* CHG_JPEG_MEM_FIX - added the following allocation check */
 	if ((block1 == 0) || (block2 == 0) || (block3 == 0) || (block4 == 0)) {
 		if (block1)		FPX_free(block1);
 		if (block2)		FPX_free(block2);
@@ -1430,14 +1430,14 @@ long *header_bytes)
 			}
 
 			/* Read in Huffman Tables */
-			bits = huffval = NULL;			// CHG_JPEG_MEM_FIX - for allocation checking
-			hclass = ident = NULL;			// CHG_JPEG_MEM_FIX - for allocation checking
+			bits = huffval = NULL;			/* CHG_JPEG_MEM_FIX - for allocation checking */
+			hclass = ident = NULL;			/* CHG_JPEG_MEM_FIX - for allocation checking */
 			bits   =(unsigned char **) FPX_malloc(8 * sizeof(unsigned char *));
 			huffval=(unsigned char **) FPX_malloc(8 * sizeof(unsigned char *));
 			hclass =(unsigned char *) FPX_malloc(8 * sizeof(unsigned char));
 			ident  =(unsigned char *) FPX_malloc(8 * sizeof(unsigned char));
 	
-			// CHG_JPEG_MEM_FIX - added the following allocation check
+			/* CHG_JPEG_MEM_FIX - added the following allocation check */
 			if ((bits == 0) || (huffval == 0) || (hclass == 0) || (ident == 0)) {
 				if (bits)		FPX_free(bits);
 				if (huffval)	FPX_free(huffval);

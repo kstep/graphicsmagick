@@ -20,7 +20,7 @@
 #ifndef _DJPEG_H
 #define _DJPEG_H
 
-// CHG_FILE_ERR - unified JPEG error values by offsetting the values by 0x0300
+/* CHG_FILE_ERR - unified JPEG error values by offsetting the values by 0x0300 */
 /* System error */
 # define ERROR_MEM        0x0320  /* memory cannot be allocated */
 

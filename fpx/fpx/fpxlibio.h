@@ -22,7 +22,7 @@
 
 	#ifdef macintosh
 		#include "Compobj.h"
-	#elif defined(__GNUC__) 
+	#elif defined(_UNIX) 
 		// use the reference implementation header files
         	#include "exphead.cxx"
  		#include "msfhead.cxx"
@@ -64,7 +64,7 @@
 
 	// Copied from OAIDL.H
 			/* size is 4 */
-#if defined(macintosh) || defined(__GNUC__)
+#if defined(macintosh) || defined(_UNIX)
   #ifndef _tagCLIPDATA_DEFINED
     #define _tagCLIPDATA_DEFINED
     #define _CLIPDATA_DEFINED

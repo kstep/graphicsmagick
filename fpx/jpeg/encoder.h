@@ -191,7 +191,7 @@ JPEGEXPORT
 /* An internal routine called form eJPEG_Init() */
 int SetDefaultTables(void* encoder);
 
-// CHG_FILE_ERR - unified JPEG error values by offsetting the values by 0x0200
+/* CHG_FILE_ERR - unified JPEG error values by offsetting the values by 0x0200 */
 #define eJPEG_NO_ERROR						0
 #define eJPEG_SUBSAMPLING_NOT_SUPPORTED		0x0201
 #define eJPEG_INVALID_ENCODER				0x0202

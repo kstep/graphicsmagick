@@ -135,13 +135,6 @@ typedef DWORD DFSIGNATURE;
  (((ULONG) (BYTE) (c3)) << 16) | \
  (((ULONG) (BYTE) (c4)) << 24))
 
-#ifndef min
-#define min(a, b) ((a)<(b) ? (a) : (b))
-#endif
-#ifndef max
-#define max(a, b) ((a)>(b) ? (a) : (b))
-#endif
-
 #define DfAllocWC(cwc, ppwcs) (*ppwcs = new WCHAR[cwc], \
         (*ppwcs != NULL) ? S_OK: STG_E_INSUFFICIENTMEMORY)
 

@@ -50,7 +50,7 @@
 #define LEFT_NIBBLE(x) 		( (0x00F0 & x) >> 4)
 #define RIGHT_NIBBLE(x)		( (0x000F & x) )
 
-// CHG_FILE_ERR - unified JPEG error values by offsetting the values by 0x0400
+/* CHG_FILE_ERR - unified JPEG error values by offsetting the values by 0x0400 */
 /* error value */
 #define	DJPEG_NO_ERROR				0x0000
 #define DJPEG_ERR_ALLOC_DECODER		0x0402

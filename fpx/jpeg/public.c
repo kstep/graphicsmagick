@@ -75,7 +75,7 @@ int  eJPEG_Init(void **encoder)
 			    FPX_malloc(jpg->xPixels * jpg->yPixels * jpg->bytes);
 			
 			if(jpg->scratch == NULL)
-				return eJPEG_MEMORY_ERROR;	// CHG_JPEG_MEM_FIX - added test
+				return eJPEG_MEMORY_ERROR;	/* CHG_JPEG_MEM_FIX - added test */
 
 			jpg->subsampling = 0x11;    /* no subsampling */
 
@@ -344,7 +344,7 @@ int bytesPerPixel  /* how many bytes per pixel */
 			jpg->scratch = 
 			    (unsigned char *) FPX_malloc(hSize * vSize * bytesPerPixel);
 			
-			if (jpg->scratch == NULL)			// CHG_JPEG_MEM_FIX - added check
+			if (jpg->scratch == NULL)			/* CHG_JPEG_MEM_FIX - added check */
 				return (eJPEG_MEMORY_ERROR);
 
 			for(x = 0; x < jpg->bytes; x++)
@@ -608,14 +608,14 @@ int eJPEG_Shutdown(void* encoder)
 	{
 		if(jpg->header) {
 			FPX_free(jpg->header);
-			jpg->header = NULL;						// CHG_JPEG_MEM_FIX - clear ptr
+			jpg->header = NULL;						/* CHG_JPEG_MEM_FIX - clear ptr */
 		}
 		if(jpg->scratch) {
 			FPX_free(jpg->scratch);
-			jpg->scratch = NULL;					// CHG_JPEG_MEM_FIX - clear ptr
+			jpg->scratch = NULL;					/* CHG_JPEG_MEM_FIX - clear ptr */
 		}
 		FPX_free(jpg);
-		jpg = 0;									// CHG_JPEG_MEM_FIX - clear ptr
+		jpg = 0;									/* CHG_JPEG_MEM_FIX - clear ptr */
 
 		return(TRUE);
 	}

@@ -319,7 +319,7 @@ OLECustomLink::~OLECustomLink()
 
 Boolean OLECustomLink::GetCustomLinkPropertySet (OLEPropertySet* customLinkSet, FPXCustomLink* customLinkDescriptor)
 {
-#if	defined(__GNUC__)
+#if	defined(_UNIX)
  	// TODO: put moniker support into oless for UNIX (if needed??)
  	return false;
 #else
@@ -416,7 +416,7 @@ Boolean OLECustomLink::GetCustomLinkPropertySet (OLEPropertySet* customLinkSet, 
 
 HRESULT OLECustomLink::BindMonikerToStorage (IStream* lpStream, IStorage** pStg)
 {
-#if	defined(__GNUC__)
+#if	defined(_UNIX)
         return false;
         // TODO: put Moniker support in for UNIX (if needed??)
 #else 

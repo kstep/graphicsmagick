@@ -109,17 +109,17 @@ public:
 
     inline void  Init(MSENTRYFLAGS mse);
 
-    inline CDfName const *  GetName(VOID) const;
-    inline SECT  GetStart(VOID) const;
-    inline ULONG  GetSize(VOID) const;
-    inline SID  GetLeftSib(VOID) const;
-    inline SID  GetRightSib(VOID) const;
-    inline SID  GetChild(VOID) const;
-    inline MSENTRYFLAGS  GetFlags(VOID) const;
-    inline DECOLOR  GetColor(VOID) const;
+    inline CDfName const *  GetName() const;
+    inline SECT  GetStart() const;
+    inline ULONG  GetSize() const;
+    inline SID  GetLeftSib() const;
+    inline SID  GetRightSib() const;
+    inline SID  GetChild() const;
+    inline MSENTRYFLAGS  GetFlags() const;
+    inline DECOLOR  GetColor() const;
     inline TIME_T  GetTime(WHICHTIME tt) const;
-    inline GUID  GetClassId(VOID) const;
-    inline DWORD  GetUserFlags(VOID) const;
+    inline GUID  GetClassId() const;
+    inline DWORD  GetUserFlags() const;
 
     inline void  SetName(const CDfName *pdfn);
     inline void  SetStart(const SECT);
@@ -133,12 +133,12 @@ public:
     inline void  SetClassId(GUID cls);
     inline void  SetUserFlags(DWORD dwUserFlags, DWORD dwMask);
 
-    inline BOOL  IsFree(VOID) const;
+    inline BOOL  IsFree() const;
     inline BOOL  IsEntry(CDfName const *pdfn) const;
     inline void  ByteSwap(void);
 
 private:
-    inline BYTE  GetBitFlags(VOID) const;
+    inline BYTE  GetBitFlags() const;
     inline void  SetBitFlags(BYTE bValue, BYTE bMask);
 
     BYTE  _bpad[CBDIRPAD];
@@ -167,15 +167,16 @@ public:
     
 private:
 #ifdef _MSC_VER
-
 #pragma warning(disable: 4200)    
     CDirEntry _adeEntry[];
 #pragma warning(default: 4200)    
-
-#endif
-
-#ifdef __GNUC__
-    CDirEntry _adeEntry[0];
+#else
+#  ifdef __GNUC__
+     CDirEntry _adeEntry[0];
+#  else
+     // FIXME: braindamage
+     CDirEntry* _adeEntry;
+#  endif
 #endif
 
 };
@@ -248,7 +249,7 @@ public:
     CDirectory(USHORT cbSector);
     ~CDirectory() {}
 
-    VOID  Empty(VOID);
+    VOID  Empty();
 
 
     SCODE  Init(CMStream *pmsParent, DIRINDEX cSect);
@@ -315,7 +316,7 @@ public:
                              CDfName *pNextKey,
                              STATSTGW *pstatstg);
 
-    inline SCODE  Flush(VOID);
+    inline SCODE  Flush();
 
     inline void  SetParent(CMStream * pmsParent);
 

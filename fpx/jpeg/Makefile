@@ -37,10 +37,10 @@ pkgincludedir = $(includedir)/libfpx
 
 top_builddir = ..
 
-ACLOCAL = ${SHELL} /tmp/delegates/fpx/missing --run aclocal
-AUTOCONF = ${SHELL} /tmp/delegates/fpx/missing --run autoconf
-AUTOMAKE = ${SHELL} /tmp/delegates/fpx/missing --run automake
-AUTOHEADER = ${SHELL} /tmp/delegates/fpx/missing --run autoheader
+ACLOCAL = ${SHELL} /tmp/ImageMagick/fpx/missing --run aclocal
+AUTOCONF = ${SHELL} /tmp/ImageMagick/fpx/missing --run autoconf
+AUTOMAKE = ${SHELL} /tmp/ImageMagick/fpx/missing --run automake
+AUTOHEADER = ${SHELL} /tmp/ImageMagick/fpx/missing --run autoheader
 
 INSTALL = /usr/local/bin/install -c
 INSTALL_PROGRAM = ${INSTALL}
@@ -83,7 +83,7 @@ LIBSTDC_LDFLAGS =
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LN_S = ln -s
 MAJOR_VERSION = 1
-MAKEINFO = ${SHELL} /tmp/delegates/fpx/missing --run makeinfo
+MAKEINFO = ${SHELL} /tmp/ImageMagick/fpx/missing --run makeinfo
 MICRO_VERSION = 0
 MINOR_VERSION = 2
 OBJDUMP = @OBJDUMP@
@@ -131,7 +131,7 @@ LTLIBRARIES =  $(noinst_LTLIBRARIES)
 
 
 DEFS =  -DWORDS_BIGENDIAN=1  -I. -I$(srcdir)
-CPPFLAGS = -D_UNIX 
+CPPFLAGS = -D_UNIX -D_POSIX_C_SOURCE=3
 LDFLAGS = -R/usr/local/lib
 LIBS = 
 libJpeg_la_LDFLAGS = 

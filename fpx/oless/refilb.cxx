@@ -20,7 +20,12 @@
 #include <errno.h>
 #include "h/refilb.hxx"
 #include <stdio.h>
-#include <stdlib.h> 
+#ifdef __sun__
+//  FIXME: realpath, mapped via _fullpath macro, is not ANSI C
+//  This is here so we can still use g++'s -ansi
+  extern "C" { extern char *realpath(const char *, char *); }
+#endif
+#include <stdlib.h>
 
 #include <sys/stat.h>
 #include "time.hxx"

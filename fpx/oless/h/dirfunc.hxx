@@ -19,7 +19,7 @@
 #include "page.hxx"
 class CMStream;
 
-inline BOOL CDirEntry::IsFree(VOID) const
+inline BOOL CDirEntry::IsFree() const
 {
     return _mse == 0;
 }
@@ -98,57 +98,57 @@ inline void CDirEntry::SetUserFlags(DWORD dwUserFlags, DWORD dwMask)
     _dwUserFlags = (_dwUserFlags & ~dwMask) | (dwUserFlags & dwMask);
 }
 
-inline SID CDirEntry::GetLeftSib(VOID) const
+inline SID CDirEntry::GetLeftSib() const
 {
     return _sidLeftSib;
 }
 
-inline SID CDirEntry::GetRightSib(VOID) const
+inline SID CDirEntry::GetRightSib() const
 {
     return _sidRightSib;
 }
 
 
-inline SID CDirEntry::GetChild(VOID) const
+inline SID CDirEntry::GetChild() const
 {
     return _sidChild;
 }
 
-inline GUID CDirEntry::GetClassId(VOID) const
+inline GUID CDirEntry::GetClassId() const
 {
     msfAssert(STORAGELIKE(_mse));
     return _clsId;
 }
 
-inline CDfName const * CDirEntry::GetName(VOID) const
+inline CDfName const * CDirEntry::GetName() const
 {
     return &_dfn;
 }
 
-inline SECT CDirEntry::GetStart(VOID) const
+inline SECT CDirEntry::GetStart() const
 {
     msfAssert(STREAMLIKE(_mse));
     return _sectStart;
 }
 
-inline ULONG CDirEntry::GetSize(VOID) const
+inline ULONG CDirEntry::GetSize() const
 {
     msfAssert(STREAMLIKE(_mse));
     return _ulSize;
 }
 
 
-inline MSENTRYFLAGS CDirEntry::GetFlags(VOID) const
+inline MSENTRYFLAGS CDirEntry::GetFlags() const
 {
     return (MSENTRYFLAGS) _mse;
 }
 
-inline BYTE CDirEntry::GetBitFlags(VOID) const
+inline BYTE CDirEntry::GetBitFlags() const
 {
     return _bflags;
 }
 
-inline DECOLOR CDirEntry::GetColor(VOID) const
+inline DECOLOR CDirEntry::GetColor() const
 {
     return((DECOLOR) (GetBitFlags() & DECOLORBIT));
 }
@@ -159,7 +159,7 @@ inline TIME_T CDirEntry::GetTime(WHICHTIME tt) const
     return _time[tt];
 }
 
-inline DWORD CDirEntry::GetUserFlags(VOID) const
+inline DWORD CDirEntry::GetUserFlags() const
 {
     msfAssert(STORAGELIKE(_mse));
     return _dwUserFlags;
@@ -439,7 +439,7 @@ inline SCODE CDirectory::IsEntry(SID const sidParent,
 //
 //--------------------------------------------------------------------------
 
-inline SCODE CDirectory::Flush(VOID)
+inline SCODE CDirectory::Flush()
 {
     return _dv.Flush();
 }

@@ -198,7 +198,7 @@ Boolean PRectangle::IsEmpty()
 	return ((top >= bottom) || (left >= right));
 }
 
-#if defined(_WINDOWS) || defined(__GNUC__)
+#if defined(_WINDOWS) || defined(_UNIX)
 int operator ==(const PRectangle &r1, const PRectangle &r2)
 #else
 int operator ==(const PRectangle &const r1, const PRectangle &const r2)
@@ -209,7 +209,7 @@ int operator ==(const PRectangle &const r1, const PRectangle &const r2)
 			&& r1.top==r2.top && r1.bottom==r2.bottom);
 }
 
-#if defined(_WINDOWS) || defined(__GNUC__)
+#if defined(_WINDOWS) || defined(_UNIX)
 int operator !=(const PRectangle &r1, const PRectangle &r2)
 #else
 int operator !=(const PRectangle &const r1, const PRectangle &const r2)
@@ -239,7 +239,7 @@ PRectangle PRectangle::operator |=(const PRectangle& r)
 }
 
 // Union of two rectangles
-#if defined(_WINDOWS) || defined(__GNUC__)
+#if defined(_WINDOWS) || defined(_UNIX)
 PRectangle operator |(const PRectangle &r1, const PRectangle &r2)
 #else
 PRectangle operator |(const PRectangle& const r1, const PRectangle& const r2)
@@ -270,7 +270,7 @@ PRectangle PRectangle::operator &=(const PRectangle& r)
 }
 
 // Intersection of two rectangles
-#if defined(_WINDOWS) || defined(__GNUC__)
+#if defined(_WINDOWS) || defined(_UNIX)
 PRectangle operator &(const PRectangle &r1, const PRectangle &r2)
 #else
 PRectangle operator &(const PRectangle &const r1, const PRectangle &const r2)
