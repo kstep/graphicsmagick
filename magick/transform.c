@@ -1010,7 +1010,9 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
               alpha.red=XUpScale(q->red);
               alpha.green=XUpScale(q->green);
               alpha.blue=XUpScale(q->blue);
-              alpha.opacity=image->matte ? XUpScale(q->opacity) : OpaqueOpacity;
+              alpha.opacity=OpaqueOpacity;
+              if (image->matte || (image->colorspace == CMYKColorspace))
+                alpha.opacity=XUpScale(q->opacity);
               cmsDoTransform(transform,&alpha,&beta,1);
               q->red=XDownScale(beta.red);
               q->green=XDownScale(beta.green);
@@ -1024,6 +1026,10 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
           cmsDeleteTransform(transform);
           cmsCloseProfile(image_profile);
           cmsCloseProfile(transform_profile);     
+          if (profile_image->colorspace == CMYKColorspace)
+            image->colorspace=CMYKColorspace;
+          if (profile_image->colorspace == RGBColorspace)
+            image->colorspace=RGBColorspace;
 #endif
           LiberateMemory((void **) &image->color_profile.info);
         }
