@@ -32,7 +32,7 @@
 AUTOMAKE_OPTIONS = 1.6 foreign
 
 MAGICK_LIB	= ../magick/libMagick.la # libtool library name
-INCLUDES	= -I../ -I$(top_srcdir) $(INCLTDL) $(X_CFLAGS)
+INCLUDES	= -I../ -I$(top_srcdir)/magick $(INCLTDL) $(X_CFLAGS)
 
 STDMANPAGES = ImageMagick.1  composite.1 conjure.1 convert.1  identify.1 \
    miff.4 mogrify.1 montage.1 quantize.5
