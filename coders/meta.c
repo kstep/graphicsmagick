@@ -489,7 +489,7 @@ static char *super_fgets_w(char **b, int *blen, Image *file)
     *q;
 
   len=*blen;
-  //DebugString("META CODER super_fgets_w #1\n");
+  /* DebugString("META CODER super_fgets_w #1\n"); */
   for (q=(unsigned char *) (*b); ; q++)
   {
     c=ReadBlobLSBShort(file);
@@ -511,7 +511,7 @@ static char *super_fgets_w(char **b, int *blen, Image *file)
       }
     *q=(unsigned char) c;
   }
-  //DebugString("META CODER super_fgets_w #2\n");
+  /* DebugString("META CODER super_fgets_w #2\n"); */
   *blen=0;
   if ((*b) != (char *) NULL)
     {
@@ -524,7 +524,7 @@ static char *super_fgets_w(char **b, int *blen, Image *file)
       (*b)[tlen] = '\0';
       *blen=++tlen;
     }
-  //DebugString("META CODER super_fgets_w #3\n");
+  /* DebugString("META CODER super_fgets_w #3\n"); */
   return (*b);
 }
 
@@ -567,13 +567,13 @@ static long parse8BIMW(Image *ifile, Image *ofile)
   line = (char *) AcquireMemory(inputlen);
   name = token = (char *)NULL;
   savedpos = 0;
-  DebugString("META CODER Parse8BIM\n");
+  /* DebugString("META CODER Parse8BIM\n"); */
   while(super_fgets_w(&line,&inputlen,ifile)!=NULL)
   {
     state=0;
     next=0;
 
-    //DebugString("META CODER Parse8BIM: %s (%d)\n",line, inputlen);
+    /* DebugString("META CODER Parse8BIM: %s (%d)\n",line, inputlen); */
     token = (char *) AcquireMemory(inputlen);
     newstr = (char *) AcquireMemory(inputlen);
     while (Tokenizer(&token_info, 0, token, inputlen, line,
@@ -1063,7 +1063,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
       else if (LocaleCompare(image_info->magick,"8BIMWTEXT") == 0)
         {
           length=parse8BIMW(image, buff);
-          DebugString("META CODER Parse8BIMW returned: %ld\n",length);
+          /* DebugString("META CODER Parse8BIMW returned: %ld\n",length); */
           if (length & 1)
             WriteBlobByte(buff,0x0);
         }
@@ -1149,8 +1149,8 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
                 image)
             }
           AttachBlob(iptc->blob,pinfo->info,pinfo->length);
-          DebugString("META CODER APP1JPEG embed: 0x%08lx (%d)\n",
-            (unsigned long)pinfo->info, pinfo->length);
+          /* DebugString("META CODER APP1JPEG embed: 0x%08lx (%d)\n", */
+/*             (unsigned long)pinfo->info, pinfo->length); */
           result=jpeg_embed(image,buff,iptc);
           DetachBlob(iptc->blob);
           DestroyImage(iptc);

@@ -1,5 +1,7 @@
 2003-05-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/meta.c : Add or fix commenting of DebugString so that
+	module does not require Windows.
 	* lcms: Updated to release 1.10.
 
 2003-05-07  William Radcliffe  <billr@corbis.com>
