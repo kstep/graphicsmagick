@@ -183,7 +183,7 @@ QuantumDepth=16
 AC_ARG_ENABLE(16bit-pixel,
 	      [  --disable-16bit-pixel   disable 16 bit/quantum pixels (default enabled)],
 	      [with_16_bit_pixel=$enableval],
-	      [with_16_bit_pixel=$enableval='yes'])
+	      [with_16_bit_pixel='yes'])
 test "$with_16_bit_pixel" = 'no' && QuantumDepth=8
 AC_DEFINE_UNQUOTED(QuantumDepth,$QuantumDepth,[Number of bits in a pixel Quantum (8 or 16)])
 

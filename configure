@@ -13650,7 +13650,7 @@ if test "${enable_16bit_pixel+set}" = set; then
   enableval="$enable_16bit_pixel"
   with_16_bit_pixel=$enableval
 else
-  with_16_bit_pixel=$enableval='yes'
+  with_16_bit_pixel='yes'
 fi;
 test "$with_16_bit_pixel" = 'no' && QuantumDepth=8
 
