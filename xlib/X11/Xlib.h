@@ -58,9 +58,6 @@ in this Software without prior written authorization from the X Consortium.
 
 #ifdef __MWERKS__
 #   include <X.h>
-#   define Cursor XCursor
-#   define cursor xcursor
-#   define Region XRegion
 #else
 #   include <X11/X.h>
 #endif
