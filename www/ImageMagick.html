@@ -3,15 +3,15 @@
 <HTML>
 <HEAD>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <title>Open ImageMagick: Open ImageMagick - Image Processing and Display Package</title>
-   <meta name="description" content="Open ImageMagick is a robust collection of
+   <title>GraphicsMagick: GraphicsMagick - Image Processing and Display Package</title>
+   <meta name="description" content="GraphicsMagick is a robust collection of
    tools and libraries to read, write, and manipulate an image in any of the
    more popular image formats including GIF, JPEG, PNG, PDF, and Photo CD.
-   With Open ImageMagick you can create GIFs dynamically making it suitable for
+   With GraphicsMagick you can create GIFs dynamically making it suitable for
    Web applications.  You can also resize, rotate, sharpen, color reduce, or
    add special effects to an image and save your completed work in the same
    or  differing image format.">
-   <meta name="keywords" content="conjure, Open ImageMagick, Image Magick, Image Magic,
+   <meta name="keywords" content="conjure, GraphicsMagick, Image Magick, Image Magic,
    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,
    WebMagick, Web Magic, visualization, image processing, software development,
    simulation, image, software, AniMagick, Animagic, Magick++">
@@ -39,7 +39,7 @@ color="#FFFFFF"><font size="+1">
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
-Open ImageMagick - commandline utilities to create, edit, or convert images
+GraphicsMagick - commandline utilities to create, edit, or convert images
 <br>&nbsp;<br>
 </td></tr></table>
 <table BORDER=0 WIDTH="100%"> 
@@ -128,7 +128,7 @@ color="#FFFFFF"><font size="+1">
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
-<strong>Open ImageMagick</strong> provides a suite of commandline utilities for creating,
+<strong>GraphicsMagick</strong> provides a suite of commandline utilities for creating,
 converting, editing, and displaying images:
 <p>
 <a href="display.html"><strong>Display</strong></a>
@@ -170,7 +170,7 @@ composites images to create new images.
 interprets and executes scripts in
 the Magick Scripting Language (MSL).
 <p>
-The <strong>Open ImageMagick</strong> utilities recognize the following image formats:
+The <strong>GraphicsMagick</strong> utilities recognize the following image formats:
 <br>&nbsp;<br>
 <table border="0" cellspacing="0" cellpadding="2">
 <p>
@@ -248,7 +248,7 @@ The <strong>Open ImageMagick</strong> utilities recognize the following image fo
 <tr><td><dd><img SRC="../images/ball.png" ALT="*">JPG      </td><td>*rw-</td><td>Joint Photographic Experts Group</td></tr>
 <tr><td>          </td><td>    </td><td>JFIF format</td></tr>
 <tr><td><dd><img SRC="../images/ball.png" ALT="*">LABEL    </td><td>*r--</td><td>Text image format</td></tr>
-<tr><td><dd><img SRC="../images/ball.png" ALT="*">LOGO     </td><td>*rw-</td><td>Open ImageMagick Logo</td></tr>
+<tr><td><dd><img SRC="../images/ball.png" ALT="*">LOGO     </td><td>*rw-</td><td>GraphicsMagick Logo</td></tr>
 <tr><td><dd><img SRC="../images/ball.png" ALT="*">M2V      </td><td>*rw+</td><td>MPEG-2 Video Stream</td></tr>
 <tr><td><dd><img SRC="../images/ball.png" ALT="*">MAP      </td><td>*rw-</td><td>Colormap intensities (8 or 16 bits,</td></tr>
 <tr><td>          </td><td>    </td><td>depending on the image depth) and</td></tr>
@@ -368,11 +368,11 @@ Your installation might not support all of the formats in the list.  To get
 an up-to-date listing of the formats supported by your particular
 configuration, run <tt>"convert -list format"</tt>.
 <p>
-Raw images are expected to have one byte per pixel unless <strong>Open ImageMagick</strong>
+Raw images are expected to have one byte per pixel unless <strong>GraphicsMagick</strong>
 is compiled in the default 16-bit mode or in 32-bit mode. Here, the raw data
 is expected to be stored
 two bytes per pixel in most-significant-byte-first order.
-You can tell if <strong>Open ImageMagick</strong> was compiled in 16-bit mode by typing
+You can tell if <strong>GraphicsMagick</strong> was compiled in 16-bit mode by typing
 "convert" without any options, and looking for "Q:16" in the first line of
 output.
 </td></tr></table>
@@ -474,7 +474,7 @@ until the set is terminated by the appearance of any option or <strong>-noop</st
 Some options only affect the decoding of images and others only the encoding.
 The latter can appear after the final group of input images.
 <p>
-This is a combined list of the commandline options used by the Open ImageMagick
+This is a combined list of the commandline options used by the GraphicsMagick
 utilities (<em>animate, composite, convert, display, identify,
 import, mogrify</em> and <em>montage</em>).
 <br>&nbsp;<br>
@@ -1100,7 +1100,7 @@ For example, to log cache and blob events, use</font></td></tr></table>
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The "User" domain is normally empty, but developers can log "User" events
-in their private copy of Open ImageMagick.</font></td></tr></table>
+in their private copy of GraphicsMagick.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use <strong>+debug</strong> to turn off all logging.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
@@ -1717,8 +1717,8 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the image format type</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 This option will convert any image to the image format you specify.
-See <em>Open ImageMagick(1)</em> for a list of image format types supported by
-<strong>Open ImageMagick</strong>.
+See <em>GraphicsMagick(1)</em> for a list of image format types supported by
+<strong>GraphicsMagick</strong>.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 By default the file is written to its original name.  However, if the
@@ -2311,7 +2311,7 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, Map, or Memory resource limit</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The value is in Megabytes.  By default all are unlimited.
-When the limit is reached, Open ImageMagick will fail in some fashion, or
+When the limit is reached, GraphicsMagick will fail in some fashion, or
 take compensating actions if possible.
 For example, <tt>-limit memory 32 -limit map 64</tt> limits memory
 When the pixel cache reaches the memory limit it uses
@@ -2344,7 +2344,7 @@ Choices are: <strong>Delegate</strong>, <strong>Format</strong>, <strong>Magic</
 <strong>Module</strong>, or <strong>Type</strong>.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-This option lists entries from the Open ImageMagick configuration files.
+This option lists entries from the GraphicsMagick configuration files.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -3373,7 +3373,7 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>use shared memory</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 This option specifies whether the utility should attempt use shared memory
-for pixmaps.  Open ImageMagick must be compiled with shared memory support,
+for pixmaps.  GraphicsMagick must be compiled with shared memory support,
 and the display must support the <em>MIT-SHM</em> extension.  Otherwise, this
 option is ignored.  The default is <strong>True</strong>.
 </font></td></tr></table>
@@ -3916,7 +3916,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a name="details-version"></a>-version
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print Open ImageMagick version string</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print GraphicsMagick version string</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -4151,10 +4151,10 @@ color="#FFFFFF"><font size="+1">
 <em>
 John Cristy,
 <a href="mailto:magick-users@imagemagick.org">magick-users@imagemagick.org</a>,
-Open ImageMagick Studio LLC,<br>
+GraphicsMagick Group LLC,<br>
 Glenn Randers-Pehrson,
 <a href="mailto:randeg@alum.rpi.edu">randeg@alum.rpi.edu</a>,
-Open ImageMagick Studio LLC.
+GraphicsMagick Group LLC.
 </em>
 <br>&nbsp;<br>
 </td></tr></table>
@@ -4172,40 +4172,40 @@ color="#FFFFFF"><font size="+1">
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
-<strong>Copyright (C) 2002 Open ImageMagick Studio</strong>
+<strong>Copyright (C) 2002 GraphicsMagick Group</strong>
 <p>
 <strong>Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files ("Open ImageMagick"),
-to deal in Open ImageMagick without restriction, including without limitation
+a copy of this software and associated documentation files ("GraphicsMagick"),
+to deal in GraphicsMagick without restriction, including without limitation
 the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of Open ImageMagick, and to permit persons to whom the Open ImageMagick
+and/or sell copies of GraphicsMagick, and to permit persons to whom the GraphicsMagick
 is furnished to do so, subject to the following conditions:</strong>
 <p>
 <strong>The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of Open ImageMagick.</strong>
+in all copies or substantial portions of GraphicsMagick.</strong>
 <p>
 <strong>The software is provided "as is", without warranty of any kind, express
 or implied, including but not limited to the warranties of merchantability,
 fitness for a particular purpose and noninfringement.In no event shall
-Open ImageMagick Studio be liable for any claim, damages or other liability,
+GraphicsMagick Group be liable for any claim, damages or other liability,
 whether in an action of contract, tort or otherwise, arising from, out
-of or in connection with Open ImageMagick or the use or other dealings in
-Open ImageMagick.</strong>
+of or in connection with GraphicsMagick or the use or other dealings in
+GraphicsMagick.</strong>
 <p>
 <strong>Except as contained in this notice, the name of the
-Open ImageMagick Studio LLC shall not be used in advertising or otherwise to
-promote the sale, use or other dealings in Open ImageMagick without prior written
-authorization from the Open ImageMagick Studio.</strong>
+GraphicsMagick Group LLC shall not be used in advertising or otherwise to
+promote the sale, use or other dealings in GraphicsMagick without prior written
+authorization from the GraphicsMagick Group.</strong>
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 
 &nbsp;</p>
 <hr>
 <p><a href="../ImageMagick.html"><img SRC="../images/home.png"
-ALT="Open ImageMagick Home Page" BORDER=0 height=40 width=40
+ALT="GraphicsMagick Home Page" BORDER=0 height=40 width=40
 align=MIDDLE></a><a 
 href="mailto:webmaster@imagemagick.org"><img SRC="../images/mail.png"
-ALT="Open ImageMagick Home Page" BORDER=0 height=40 width=40
+ALT="GraphicsMagick Home Page" BORDER=0 height=40 width=40
 align=MIDDLE></a><font size="-2">
 Image manipulation software that works like magic.</font>
 </body></html>

@@ -3,9 +3,9 @@
 <HTML>
 <HEAD>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <title>Quantize: Open ImageMagick - Image Processing and Display Package</title>
-   <meta name="description" content="Open ImageMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With Open ImageMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
-   <meta name="keywords" content="Open ImageMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
+   <title>Quantize: GraphicsMagick - Image Processing and Display Package</title>
+   <meta name="description" content="GraphicsMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
+   <meta name="keywords" content="GraphicsMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
    <link rel="StyleSheet" href="magick.css" type="text/css">
 </head>
 <body bgcolor="#FFFFFF" text="#000000" link="#0085c0" vlink="#800080" alink="#0085c0" >
@@ -16,7 +16,7 @@
 <center><img SRC="../images/magick_small.png" alt="" width="114" height="118"></center>
 
 <p><br>
-<p>This document describes how <a href="../ImageMagick.html">Open ImageMagick</a>
+<p>This document describes how <a href="../ImageMagick.html">GraphicsMagick</a>
 performs color reduction on an image. To fully understand this document,
 you should have a knowledge of basic imaging techniques and the tree data
 structure and terminology.
@@ -39,7 +39,7 @@ represents an intensity which varies linearly from 0 to a maximum value,
 which corresponds to full saturation of that color. Color allocation is
 defined over a domain consisting of the cube in <b>RGB</b> space with opposite
 vertices at (0,0,0) and (<i>Cmax</i>,<i>Cmax</i>,<i>Cmax</i>).
-<b>Open ImageMagick</b>
+<b>GraphicsMagick</b>
 requires <i>Cmax</i>= <i>255</i>.
 <p>The algorithm maps this domain onto a tree in which each node represents
 a cube within that domain. In the following discussion, these cubes are
@@ -88,7 +88,7 @@ a leaf. This becomes <b>prohibitive</b> because the tree's:
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = 1 + 8.-----------
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 8 - 1
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = 19,173,961</pre>
-Therefore, to avoid building a fully populated tree, <b>Open ImageMagick</b>:
+Therefore, to avoid building a fully populated tree, <b>GraphicsMagick</b>:
 <ol>
 <li>
 Initializes data structures for nodes only as they are needed;</li>
@@ -229,9 +229,9 @@ the color reduction process are masked by the high frequencies in the image.</dd
 
 <p>To measure the difference between the original and color reduced
 images (the total color reduction error),
-<b>Open ImageMagick</b> sums over
+<b>GraphicsMagick</b> sums over
 all pixels in an image the distance squared in <b>RGB</b> space between
-each original pixel value and its color reduced value. <b>Open ImageMagick</b>
+each original pixel value and its color reduced value. <b>GraphicsMagick</b>
 prints several error measurements including the mean error per pixel, the
 normalized mean error, and the normalized maximum error.
 <p>The normalized error measurement can be used to compare images. In general,
@@ -282,7 +282,7 @@ in the image.</dd>
 </table>
 
 <dd>
-<i>John Cristy</i>, <a href="mailto:magick@wizards.dupont.com"><i>magick@wizards.dupont.com</i>,</a><b>Open ImageMagick
+<i>John Cristy</i>, <a href="mailto:magick@wizards.dupont.com"><i>magick@wizards.dupont.com</i>,</a><b>GraphicsMagick
 Studio</b>.</dd>
 </dl>
 
@@ -308,44 +308,44 @@ he wrote.</dd>
 </table>
 
 <dd>
-<b>Copyright (C) 2002 Open ImageMagick Studio</b></dd>
+<b>Copyright (C) 2002 GraphicsMagick Group</b></dd>
 <p>
 <dd>
 <b>Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files ("Open ImageMagick"),
-to deal in Open ImageMagick without restriction, including without limitation
+a copy of this software and associated documentation files ("GraphicsMagick"),
+to deal in GraphicsMagick without restriction, including without limitation
 the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of Open ImageMagick, and to permit persons to whom the Open ImageMagick
+and/or sell copies of GraphicsMagick, and to permit persons to whom the GraphicsMagick
 is furnished to do so, subject to the following conditions:</b></dd>
 <p>
 
 <dd>
 <b>The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of Open ImageMagick.</b></dd>
+in all copies or substantial portions of GraphicsMagick.</b></dd>
 <p>
 
 <dd>
 <b>The software is provided "as is", without warranty of any kind, express
 or implied, including but not limited to the warranties of merchantability,
 fitness for a particular purpose and noninfringement.In no event shall
-Open ImageMagick Studio be liable for any claim, damages or other liability,
+GraphicsMagick Group be liable for any claim, damages or other liability,
 whether in an action of contract, tort or otherwise, arising from, out
-of or in connection with Open ImageMagick or the use or other dealings in Open ImageMagick.</b></dd>
+of or in connection with GraphicsMagick or the use or other dealings in GraphicsMagick.</b></dd>
 
 <p>
 <dd>
 <b>Except as contained in this notice, the name of the
-Open ImageMagick Studio LLC shall not be used in advertising or otherwise to promote
-the sale, use or other dealings in Open ImageMagick without prior written authorization
-from the Open ImageMagick Studio.</b></dd>
+GraphicsMagick Group LLC shall not be used in advertising or otherwise to promote
+the sale, use or other dealings in GraphicsMagick without prior written authorization
+from the GraphicsMagick Group.</b></dd>
 </dl>
 
 <hr>
 <p><a href="../ImageMagick.html"><img SRC="../images/home.png"
-ALT="Open ImageMagick Home Page" BORDER=0 height=40 width=40
+ALT="GraphicsMagick Home Page" BORDER=0 height=40 width=40
 align=MIDDLE></a><a 
 href="mailto:webmaster@imagemagick.org"><img SRC="../images/mail.png"
-ALT="Open ImageMagick Home Page" BORDER=0 height=40 width=40
+ALT="GraphicsMagick Home Page" BORDER=0 height=40 width=40
 align=MIDDLE></a><font size="-2">
 Image manipulation software that works like magic.</font>
 </body>
