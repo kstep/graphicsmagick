@@ -1464,7 +1464,7 @@ static void GenerateBezier(PrimitiveInfo *primitive_info)
     weight;
 
   PointInfo
-    last,
+    end,
     point,
     *points;
 
@@ -1506,7 +1506,7 @@ static void GenerateBezier(PrimitiveInfo *primitive_info)
   /*
     Compute bezier points.
   */
-  last=primitive_info[primitive_info->coordinates-1].point;
+  end=primitive_info[primitive_info->coordinates-1].point;
   weight=0.0;
   for (i=0; i < primitive_info->coordinates; i++)
     coefficients[i]=Permutate(primitive_info->coordinates-1,i);
@@ -1536,7 +1536,7 @@ static void GenerateBezier(PrimitiveInfo *primitive_info)
     p->point=point;
     p++;
   }
-  p->point=last;
+  p->point=end;
   p++;
   primitive_info->coordinates=p-primitive_info;
   for (i=0; i < primitive_info->coordinates; i++)
@@ -1632,7 +1632,7 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
     attribute;
 
   PointInfo
-    last,
+    end,
     points[4],
     point,
     start;
@@ -1699,9 +1699,9 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         if (*p == ',')
           p++;
         y=strtod(p,&p);
-        last.x=attribute == 'A' ? x : point.x+x;
-        last.y=attribute == 'A' ? y : point.y+y;
-        GenerateArc(q,point,last,arc,angle,large_arc,sweep);
+        end.x=attribute == 'A' ? x : point.x+x;
+        end.y=attribute == 'A' ? y : point.y+y;
+        GenerateArc(q,point,end,arc,angle,large_arc,sweep);
         q+=q->coordinates;
         break;
       }
@@ -1722,15 +1722,16 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
             y=strtod(p,&p);
             if (*p == ',')
               p++;
-            last.x=attribute == 'C' ? x : point.x+x;
-            last.y=attribute == 'C' ? y : point.y+y;
-            points[i]=last;
+            end.x=attribute == 'C' ? x : point.x+x;
+            end.y=attribute == 'C' ? y : point.y+y;
+            points[i]=end;
           }
           for (i=0; i <= 3; i++)
             (q+i)->point=points[i];
           q->coordinates=4;
           GenerateBezier(q);
           q+=q->coordinates;
+          point=(q-1)->point;
         } while (IsGeometry(p));
         break;
       }
@@ -1800,15 +1801,16 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
             y=strtod(p,&p);
             if (*p == ',')
               p++;
-            last.x=attribute == 'Q' ? x : point.x+x;
-            last.y=attribute == 'Q' ? y : point.y+y;
-            points[i]=last;
+            end.x=attribute == 'Q' ? x : point.x+x;
+            end.y=attribute == 'Q' ? y : point.y+y;
+            points[i]=end;
           }
           for (i=0; i < 3; i++)
             (q+i)->point=points[i];
           q->coordinates=3;
           GenerateBezier(q);
           q+=q->coordinates;
+          point=(q-1)->point;
         } while (IsGeometry(p));
         break;
       }
@@ -1831,15 +1833,16 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
             y=strtod(p,&p);
             if (*p == ',')
               p++;
-            last.x=attribute == 'S' ? x : point.x+x;
-            last.y=attribute == 'S' ? y : point.y+y;
-            points[i]=last;
+            end.x=attribute == 'S' ? x : point.x+x;
+            end.y=attribute == 'S' ? y : point.y+y;
+            points[i]=end;
           }
           for (i=0; i <= 4; i++)
             (q+i)->point=points[i];
           q->coordinates=4;
           GenerateBezier(q);
           q+=q->coordinates;
+          point=(q-1)->point;
         } while (IsGeometry(p));
         break;
       }
@@ -1862,15 +1865,16 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
             y=strtod(p,&p);
             if (*p == ',')
               p++;
-            last.x=attribute == 'T' ? x : point.x+x;
-            last.y=attribute == 'T' ? y : point.y+y;
-            points[i]=last;
+            end.x=attribute == 'T' ? x : point.x+x;
+            end.y=attribute == 'T' ? y : point.y+y;
+            points[i]=end;
           }
           for (i=0; i < 3; i++)
             (q+i)->point=points[i];
           q->coordinates=3;
           GenerateBezier(q);
           q+=q->coordinates;
+          point=(q-1)->point;
         } while (IsGeometry(p));
         break;
       }
@@ -1886,8 +1890,7 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
       case 'z':
       case 'Z':
       {
-        point=start;
-        GeneratePoint(q,point);
+        GeneratePoint(q,start);
         q+=q->coordinates;
         primitive_info->coordinates=q-primitive_info;
         number_coordinates+=primitive_info->coordinates;

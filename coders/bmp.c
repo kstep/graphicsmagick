@@ -328,7 +328,9 @@ static unsigned int EncodeImage(const unsigned char *pixels,
   p=pixels;
   q=compressed_pixels;
   i=0;
-  bytes_per_line=number_columns+(number_columns % 2 ? 1 : 0);
+  bytes_per_line=number_columns;
+  while ((bytes_per_line & 3) != 0)
+    bytes_per_line++;
   for (y=0; y < (int) number_rows; y++)
   {
     for (x=0; x < (int) bytes_per_line; x+=i)
@@ -1027,7 +1029,6 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         image->storage_class=DirectClass;
         bmp_info.number_colors=0;
         bmp_info.bits_per_pixel=image->matte ? 32 : 24;
-        bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
       }
     else
       {
@@ -1035,16 +1036,15 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           Colormapped BMP raster.
         */
         bmp_info.bits_per_pixel=8;
-        bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
         if (IsMonochromeImage(image))
-          {
-            bmp_info.bits_per_pixel=1;
-            bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
-          }
+          bmp_info.bits_per_pixel=1;
         bmp_info.file_size+=4*(1 << bmp_info.bits_per_pixel);
         bmp_info.offset_bits+=4*(1 << bmp_info.bits_per_pixel);
         bmp_info.number_colors=1 << bmp_info.bits_per_pixel;
       }
+    bytes_per_line=image->columns;
+    while ((bytes_per_line & 3) != 0)
+      bytes_per_line++;
     bmp_info.reserved[0]=0;
     bmp_info.reserved[1]=0;
     bmp_info.size=40;
@@ -1190,8 +1190,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           /*
             Convert run-length encoded raster pixels.
           */
-          packets=(unsigned int)
-            ((bytes_per_line*(bmp_info.height+2)+1) << 1);
+          packets=(unsigned int) ((bytes_per_line*(bmp_info.height+2)+1) << 1);
           bmp_data=(unsigned char *) AcquireMemory(packets);
           if (pixels == (unsigned char *) NULL)
             {

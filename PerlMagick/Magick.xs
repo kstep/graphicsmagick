@@ -390,10 +390,13 @@ static struct
     { "Stereo", { {"image", ImageReference} } },
     { "Stegano", { {"image", ImageReference}, {"offset", IntegerReference} } },
     { "Deconstruct", },
-    { "GaussianBlur", { {"geom", StringReference}, {"width", DoubleReference},
+    { "GaussianBlur", { {"geom", StringReference}, {"radius", DoubleReference},
       {"sigma", DoubleReference} } },
     { "Convolve", { {"coefficients", ArrayReference} } },
     { "Profile", { {"filen", StringReference}, {"profile", ProfileTypes} } },
+    { "UnsharpMask", { {"geom", StringReference}, {"radius", DoubleReference},
+      {"sigma", DoubleReference}, {"sigma", DoubleReference},
+      {"threshold", DoubleReference} } },
   };
 
 /*
@@ -3682,6 +3685,8 @@ Mogrify(ref,...)
     ConvolveImage      = 134
     Profile            = 135
     ProfileImage       = 136
+    UnsharpMask        = 137
+    UnsharpMaskImage   = 138
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -5095,19 +5100,19 @@ Mogrify(ref,...)
         case 66:  /* GaussianBlur */
         {
           double
-            width,
+            radius,
             sigma;
 
-          width=3.0;
+          radius=3.0;
           sigma=1.0;
           if (attribute_flag[1])
-            width=argument_list[1].double_reference;
+            radius=argument_list[1].double_reference;
           if (attribute_flag[2])
             sigma=argument_list[2].double_reference;
           if (attribute_flag[0])
             (void) sscanf(argument_list[0].string_reference,"%lfx%lf",
-              &width,&sigma);
-          image=GaussianBlurImage(image,width,sigma,&exception);
+              &radius,&sigma);
+          image=GaussianBlurImage(image,radius,sigma,&exception);
           break;
         }
         case 67:  /* Convolve */
@@ -5142,6 +5147,33 @@ Mogrify(ref,...)
             argument_list[1].int_reference=UndefinedProfile;
           (void) ProfileImage(image,(ProfileType)
             argument_list[1].int_reference,argument_list[0].string_reference);
+        }
+        case 69:  /* UnsharpMask */
+        {
+          double
+            amount,
+            radius,
+            sigma,
+            threshold;
+
+          radius=3.0;
+          sigma=1.0;
+          amount=1.0;
+          threshold=0.5*MaxRGB;
+          if (attribute_flag[1])
+            radius=argument_list[1].double_reference;
+          if (attribute_flag[2])
+            sigma=argument_list[2].double_reference;
+          if (attribute_flag[3])
+            amount=argument_list[3].double_reference;
+          if (attribute_flag[4])
+            threshold=argument_list[4].double_reference;
+          if (attribute_flag[0])
+            (void) sscanf(argument_list[0].string_reference,"%lfx%lf",
+              &radius,&sigma);
+          image=
+            UnsharpMaskImage(image,radius,sigma,amount,threshold,&exception);
+          break;
         }
       }
       if (image == (Image *) NULL)

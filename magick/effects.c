@@ -486,8 +486,7 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
       q->red=(Quantum) ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
       q->green=(Quantum)
         ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
-      q->blue=(Quantum)
-        ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
+      q->blue=(Quantum) ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
       q->opacity=(Quantum)
         ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
       q++;
@@ -1095,316 +1094,78 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
 %    o sigma: The standard deviation of the gaussian, in pixels.
 %
 */
-#ifdef TWOPASS_METHOD
-MagickExport Image *GaussianBlurImage(Image *image,const double width,
+MagickExport Image *GaussianBlurImage(Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
-#define GaussianBlurImageText  "  Gaussian blur image...  "
-
   double
-    blue,
-    green,
     *kernel,
-    normalize,
-    red;
-
-  Image
-    *blur_image;
-
-  int
-    j,
-    k,
-    radius,
-    y;
-
-  PixelPacket
-    *scanline;
-
-  register int
-    i,
-    x;
-
-  register PixelPacket
-    *q;
-
-  /*
-    Initialize blurred image attributes.
-  */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  if ((image->columns < radius) || (image->rows < radius))
-    ThrowImageException(ResourceLimitWarning,"Unable to gaussian blur image",
-      "image is smaller than radius");
-  blur_image=CloneImage(image,image->columns,image->rows,False,exception);
-  if (blur_image == (Image *) NULL)
-    return((Image *) NULL);
-  blur_image->storage_class=DirectClass;
-  if (width < 0.0)
-    return(blur_image);
-  /*
-    Build convolution kernel.
-  */
-  radius=(int) ceil(width);
-  kernel=(double *) AcquireMemory((radius+1)*sizeof(double));
-  scanline=(PixelPacket *) AcquireMemory(radius*sizeof(PixelPacket));
-  if ((kernel == (double *) NULL) || (scanline == (PixelPacket *) NULL))
-    {
-      DestroyImage(blur_image);
-      ThrowImageException(ResourceLimitWarning,"Unable to gaussian blur image",
-        "Memory allocation failed");
-    }
-  for (i=0; i < (radius+1); i++)
-    kernel[i]=exp(-((double) i*i)/(2*sigma*sigma));
-  if (width < radius)
-    kernel[radius]*=(width-(double) radius+1.0); /* adjust partial pixels */
-  normalize=0.0;
-  for (i=0; i < (radius+1); i++)
-    normalize+=kernel[i];
-  for (i=1; i < (radius+1); i++)
-    normalize+=kernel[i];
-  for (i=0; i < (radius+1); i++)
-    kernel[i]/=normalize;
-  /*
-    Blur each row.
-  */
-  for (y=0; y < (int) blur_image->rows; y++)
-  {
-    q=GetImagePixels(blur_image,0,y,blur_image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    j=0;
-    memcpy(scanline,q,radius*sizeof(PixelPacket));
-    for (x=0; x < (int) blur_image->columns; x++)
-    {
-      /*
-        Convolve this pixel.
-      */
-      red=kernel[0]*q->red;
-      green=kernel[0]*q->green;
-      blue=kernel[0]*q->blue;
-      k=j-1;
-      if (k < 0)
-        k+=radius;
-      for (i=1; i < (radius+1); i++)
-      {
-        red+=kernel[i]*scanline[k].red;
-        green+=kernel[i]*scanline[k].green;
-        blue+=kernel[i]*scanline[k].blue;
-        k--;
-        if (k < 0)
-          k+=radius;
-      }
-      k=1;
-      for (i=1; i < (radius+1); i++)
-      {
-        if ((x+k) >= blur_image->columns)
-          k-=radius;
-        red+=kernel[i]*q[k].red;
-        green+=kernel[i]*q[k].green;
-        blue+=kernel[i]*q[k].blue;
-        k++;
-      }
-      scanline[j]=(*q);
-      j++;
-      if (j >= radius)
-        j-=radius;
-      q->red=(Quantum) (red+0.5);
-      q->green=(Quantum) (green+0.5);
-      q->blue=(Quantum) (blue+0.5);
-      q++;
-    }
-    if (!SyncImagePixels(blur_image))
-      break;
-    if (QuantumTick(y,blur_image->rows+blur_image->columns))
-      ProgressMonitor(GaussianBlurImageText,y,blur_image->rows+
-        blur_image->columns);
-  }
-  /*
-    Blur each column.
-  */
-  for (x=0; x < (int) blur_image->columns; x++)
-  {
-    q=GetImagePixels(blur_image,x,0,1,blur_image->rows);
-    if (q == (PixelPacket *) NULL)
-      break;
-    j=0;
-    memcpy(scanline,q,radius*sizeof(PixelPacket));
-    for (y=0; y < (int) blur_image->rows; y++)
-    {
-      /*
-        Convolve this pixel.
-      */
-      red=kernel[0]*q->red;
-      green=kernel[0]*q->green;
-      blue=kernel[0]*q->blue;
-      k=j-1;
-      if (k < 0)
-        k+=radius;
-      for (i=1; i < (radius+1); i++)
-      {
-        red+=kernel[i]*scanline[k].red;
-        green+=kernel[i]*scanline[k].green;
-        blue+=kernel[i]*scanline[k].blue;
-        k--;
-        if (k < 0)
-          k+=radius;
-      }
-      k=1;
-      for (i=1; i < (radius+1); i++)
-      {
-        if ((y+k) >= blur_image->rows)
-          k-=radius;
-        red+=kernel[i]*q[k].red;
-        green+=kernel[i]*q[k].green;
-        blue+=kernel[i]*q[k].blue;
-        k++;
-      }
-      scanline[j]=(*q);
-      j++;
-      if (j >= radius)
-        j-=radius;
-      q->red=(Quantum) (red+0.5);
-      q->green=(Quantum) (green+0.5);
-      q->blue=(Quantum) (blue+0.5);
-      q++;
-    }
-    if (!SyncImagePixels(blur_image))
-      break;
-    if (QuantumTick(blur_image->rows+x,blur_image->rows+blur_image->columns))
-      ProgressMonitor(GaussianBlurImageText,blur_image->rows+x,
-        blur_image->rows+blur_image->columns);
-  }
-  /*
-    Free resources.
-  */
-  LiberateMemory((void **) &kernel);
-  LiberateMemory((void **) &scanline);
-  return(blur_image);
-}
-#else
-MagickExport Image *GaussianBlurImage(Image *image,const double radius,
-  const double std_dev,ExceptionInfo *exception)
-{
-  double
     sum,
-    val,
-    *kernel;
+    value;
 
   Image
     *blur_image;
 
   int
-    i,
-    matrix_length;
+    length;
 
   register int
+    i,
     u,
     v;
 
-	/* go out 'radius' in each direction */
-  if (radius > 0.0)
-    {
-	    matrix_length = 2 * ceil(radius-0.5) + 1;
-	    if (matrix_length < 4)
-        matrix_length = 3;
-    }
-  else
-    {
-      matrix_length=0;
-      sum=0.0;
-      while(1)
-      {
-        val=exp(-(double)((matrix_length*matrix_length)/(std_dev*std_dev)));
-        sum+=val;
-#ifdef PRINT_KERNEL
-        fprintf(stdout,"%d) %f, %f, %f\n",matrix_length,val,sum,val/sum);
-#endif
-        if((val/sum) < (1.0/255.0))
-        {
-	        if (matrix_length < 4)
-            matrix_length=3;
-          else
-            matrix_length=(2*(matrix_length-1))-1;
-          break;
-        }
-        matrix_length++;
-      }
-    }
-#ifdef PRINT_KERNEL
-  fprintf(stdout,"length: %d\n",matrix_length);
-#endif
-
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if ((image->columns < matrix_length) || (image->rows < matrix_length))
+  if ((image->columns < length) || (image->rows < length))
     ThrowImageException(ResourceLimitWarning,"Unable to gaussian blur image",
       "image is smaller than radius");
-  kernel=(double *) AcquireMemory(matrix_length*matrix_length*sizeof(double));
+  if (radius > 0.0)
+    {
+      length=2.0*ceil(radius-0.5)+1.0;
+      if (length < 4)
+        length=3;
+    }
+  else
+    {
+      length=0;
+      sum=0.0;
+      for ( ; ; )
+      {
+        value= exp((double) (-length*length)/(sigma*sigma));
+        sum+=value;
+        if ((value/sum) < (1.0/MaxRGB))
+          {
+            if (length < 4)
+              length=3;
+            else
+              length=(2*(length-1))-1;
+            break;
+          }
+        length++;
+      }
+    }
+  kernel=(double *) AcquireMemory(length*length*sizeof(double));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to gaussian blur image",
       "Memory allocation failed");
   i=0;
   sum=0;
-  for (v=(-(int) matrix_length/2); v <= ((int) matrix_length/2); v++)
+  for (v=(-(int) length/2); v <= ((int) length/2); v++)
   {
-    for (u=(-(int) matrix_length/2); u <= ((int) matrix_length/2); u++)
+    for (u=(-(int) length/2); u <= ((int) length/2); u++)
     {
-      kernel[i]=exp(-(double)((v*v+u*u)/(std_dev*std_dev)));
+      kernel[i]=exp((double) (-v*v+u*u)/(sigma*sigma));
       sum+=kernel[i];
       i++;
     }
   }
-
-#ifdef PRINT_KERNEL
-  /* print out the raw unormalized kernel values */
-  i=0;
-  fprintf(stdout,"kernel:\n");
-  for (v=(-(int) matrix_length/2); v <= ((int) matrix_length/2); v++)
-  {
-    int first=True;
-    for (u=(-(int) matrix_length/2); u <= ((int) matrix_length/2); u++)
-    {
-      if (!first)
-        fprintf(stdout,",");
-      first=False;
-      fprintf(stdout,"%f",kernel[i]);
-      i++;
-    }
-    fprintf(stdout,"\n");
-  }
-#endif
-
-  for (i=0; i<matrix_length*matrix_length; i++)
-    kernel[i] = kernel[i] / sum;
-
-#ifdef PRINT_KERNEL
-  /* print out the scaled and normalized kernel values */
-  i=0;
-  fprintf(stdout,"kernel:\n");
-  for (v=(-(int) matrix_length/2); v <= ((int) matrix_length/2); v++)
-  {
-    int first=True;
-    for (u=(-(int) matrix_length/2); u <= ((int) matrix_length/2); u++)
-    {
-      if (!first)
-        fprintf(stdout,",");
-      first=False;
-      fprintf(stdout,"%03d",255-(int)(255.0 * kernel[i]));
-      i++;
-    }
-    fprintf(stdout,"\n");
-  }
-#endif
-
-  blur_image=ConvolveImage(image,matrix_length,kernel,exception);
+  for (i=0; i < (length*length); i++)
+    kernel[i]/=sum;
+  blur_image=ConvolveImage(image,length,kernel,exception);
   LiberateMemory((void **) &kernel);
   return(blur_image);
 }
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -3341,14 +3102,13 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
 %
 %  The format of the UnsharpMaskImage method is:
 %
-%    Image *UnsharpMaskImage(Image *image,
-%      const double radius,const double std_dev,
-%      const double amount,const double threshold,
+%    Image *UnsharpMaskImage(Image *image,const double radius,
+%      const double sigma, const double amount,const double threshold,
 %      ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o blur_image: Method UnsharpMaskImage returns a pointer to the image
+%    o unsharp_image: Method UnsharpMaskImage returns a pointer to the image
 %      after it is blurred.  A null image is returned if there is a memory
 %      shortage.
 %
@@ -3366,31 +3126,20 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
 %
 %
 */
-MagickExport Image *UnsharpMaskImage(Image *image,
-  const double radius,const double std_dev,
-  const double amount,const double threshold,
+MagickExport Image *UnsharpMaskImage(Image *image,const double radius,
+  const double sigma,const double amount,const double threshold,
   ExceptionInfo *exception)
 {
   Image
     *blurred_image;
 
-  blurred_image=GaussianBlurImage(image,radius,std_dev,&(image->exception));
-  if (blurred_image != (Image *) NULL)
-    {
-      blurred_image->geometry=(char *) AcquireMemory(MaxTextExtent);
-      if (blurred_image->geometry != (char *) NULL)
-        {
-          FormatString(blurred_image->geometry,"%.2fx%.2f",amount,threshold);
-          CompositeImage(image,ThresholdCompositeOp,blurred_image,0,0);
-          DestroyImage(blurred_image);
-        }
-      else
-        {
-          DestroyImage(blurred_image);
-          ThrowImageException(ResourceLimitWarning,"Unable to unsharp mask image",
-            "Memory allocation failed");
-        }
-    }
+  blurred_image=GaussianBlurImage(image,radius,sigma,&(image->exception));
+  if (blurred_image == (Image *) NULL)
+    return((Image *) NULL);
+  blurred_image->geometry=AllocateString("");
+  FormatString(blurred_image->geometry,"%.2fx%.2f",amount,threshold);
+  CompositeImage(image,ThresholdCompositeOp,blurred_image,0,0);
+  DestroyImage(blurred_image);
   return(image);
 }
 

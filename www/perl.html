@@ -656,10 +656,10 @@ inner=><i>integer</i>, outer=><i>integer</i>, color=><i>colorname</i></td>
 <tr>
 <td>GaussianBlur</td>
 
-<td>geometry=><i>geometry</i>, width=><i>double</i>, sigma=><i>double</i></td>
+<td>geometry=><i>geometry</i>, radius=><i>double</i>, sigma=><i>double</i></td>
 
 
-<td>blur the image with a gaussian operator of the given width and
+<td>blur the image with a gaussian operator of the given radius and
 standard deviation (sigma).</td>
 </tr>
 
@@ -966,6 +966,16 @@ Catrom, Mitchell, Lanczos, Bessel, Sinc}</td>
 <td></td>
 
 <td>remove edges that are the background color from the image</td>
+</tr>
+
+<tr>
+<td>UnsharpMask</td>
+
+<td>geometry=><i>geometry</i>, radius=><i>double</i>, sigma=><i>double</i>,
+  amount=><i>double</i>, threshold=><i>double</i> </td>
+
+
+<td>sharpen the image with the unsharp mask algorithm.</td>
 </tr>
 
 <tr>
