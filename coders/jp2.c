@@ -54,7 +54,6 @@
 */
 #include "magick.h"
 #include "defines.h"
-#define HasJP2
 #if defined(HasJP2)
 #define uchar unsigned int
 #include "jasper/jasper.h"
