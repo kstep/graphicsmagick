@@ -207,7 +207,7 @@ testFilterSignature('input.miff', 'Segment',
 testFilterSignature('input.miff', 'Sharpen',
   q/0.0x1.0/,
   'd3a7d755f27c6d7908b8b6d33077bb2a25d6ac8530432b0f925351a17074524d',
-  '09ac28321866e9c01e0767a763411ae29bf71c5979051549cd165de9f8aadc80');
+  'f4a88bdd450956a2e68cd654c6cdc7563a457d1ad1b633bc97469538fb85f362');
 
 ++$test;
 testFilterSignature('input.miff', 'Shave',
