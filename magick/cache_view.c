@@ -198,7 +198,7 @@ Export ViewInfo *OpenCacheView(Image *image)
     {
       ThrowException(&image->exception,CacheWarning,
         "Unable to allocate pixel cache",image->filename);
-      return((PixelPacket *) NULL);
+      return((ViewInfo *) NULL);
     }
   view=(ViewInfo *) AllocateMemory(sizeof(ViewInfo));
   if (view == (ViewInfo *) NULL)

@@ -2608,7 +2608,7 @@ Export Image *SteganoImage(Image *image,Image *watermark,
           for (y=0; y < (int) stegano_image->rows; y++)
           {
             q=GetPixelCache(stegano_image,0,y,stegano_image->columns,1);
-            if (q == (PixelPacket *) NULL);
+            if (q == (PixelPacket *) NULL)
               break;
             indexes=GetIndexes(stegano_image->cache);
             for (x=0; x < (int) stegano_image->columns; x++)
