@@ -456,7 +456,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
         new_number_colors++;
         if (opacity[i] != OpaqueOpacity)
           have_transparency=True;
-      } 
+      }
   if ((!have_transparency || (marker[0] && (opacity[0] == TransparentOpacity)))
       && (new_number_colors == number_colors))
     {
@@ -3196,11 +3196,13 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
 
         /* Check for a profile */
-        
+
         if (!memcmp(text[i].key, "Raw profile type ",17))
           {
+#if (PNG_LIBPNG_VER > 10008)
             png_read_raw_profile(image,image_info,ping,ping_info,text,i);
             png_free_data(ping,ping_info,PNG_FREE_TEXT, i);
+#endif
           }
         else
           {
@@ -4464,7 +4466,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
        or does not cover the entire frame.
      */
      if (image->matte || image->page.x > 0 || image->page.y > 0 ||
-         image->page.width && (image->page.width+image->page.x < page.width) || 
+         image->page.width && (image->page.width+image->page.x < page.width) ||
          image->page.height && (image->page.height+image->page.y < page.height))
        {
          WriteBlobMSBLong(image,6L);
