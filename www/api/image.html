@@ -32,6 +32,7 @@
 		<LI><A HREF="#CondenseImage">CondenseImage</A>
 		<LI><A HREF="#ContrastImage">ContrastImage</A>
 		<LI><A HREF="#CloneImage">CloneImage</A>
+		<LI><A HREF="#CloneImageInfo">CloneImageInfo</A>
 		<LI><A HREF="#CropImage">CropImage</A>
 		<LI><A HREF="#CycleColormapImage">CycleColormapImage</A>
 		<LI><A HREF="#DescribeImage">DescribeImage</A>
@@ -39,6 +40,7 @@
 		<LI><A HREF="#DestroyImage">DestroyImage</A>
 		<LI><A HREF="#DestroyImageInfo">DestroyImageInfo</A>
 		<LI><A HREF="#DestroyImages">DestroyImages</A>
+		<LI><A HREF="#DestroyMontageInfo">DestroyMontageInfo</A>
 		<LI><A HREF="#DrawImage">DrawImage</A>
 		<LI><A HREF="#EqualizeImage">EqualizeImage</A>
 		<LI><A HREF="#FlipImage">FlipImage</A>
@@ -126,6 +128,9 @@ chop_image=<STRONG>ChopImage</STRONG>(image,chop_info)
 clone_image=<STRONG>CloneImage</STRONG>(image,columns,rows,clone_pixels)
 
 <P>
+cloned_info=<STRONG>CloneImageInfo</STRONG>(image_info)
+
+<P>
 <STRONG>CloseImage</STRONG>(image)
 
 <P>
@@ -169,6 +174,9 @@ cropped_image=<STRONG>CropImage</STRONG>(image,crop_info)
 
 <P>
 <STRONG>DestroyImages</STRONG>(image)
+
+<P>
+<STRONG>DestroyMontageInfo</STRONG>(montage_info)
 
 <P>
 <STRONG>DrawImage</STRONG>(image,annotate_info)
@@ -805,6 +813,33 @@ Specifies whether the pixel data is copied. Must be either True or False;
 </DL></DL>
 <P>
 <HR>
+<H2><A NAME="CloneImageInfo">CloneImageInfo</A></H2>
+<P>
+Method CloneImageInfo makes a duplicate of the given image info, or if
+image info is NULL, a new one.
+
+<P>
+The format of the CloneImageInfo routine is:
+
+<P>
+<PRE>        cloned_info=CloneImageInfo(image_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>cloned_info:</STRONG><DD>
+<P>
+Method CloneImageInfo returns a duplicate of the given image info, or if
+image info is NULL a new one.
+
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+a structure of type info.
+
+</DL></DL>
+<P>
+<HR>
 <H2><A NAME="CropImage">CropImage</A></H2>
 <P>
 Method CropImage creates a new image that is a subregion of an existing
@@ -980,6 +1015,28 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="DestroyMontageInfo">DestroyMontageInfo</A></H2>
+<P>
+Method DestroyMontageInfo deallocates memory associated with an MontageInfo
+structure.
+
+<P>
+The format of the DestroyMontageInfo routine is:
+
+<P>
+<PRE>        DestroyMontageInfo(montage_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>montage_info:</STRONG><DD>
+<P>
+Specifies a pointer to an MontageInfo structure.
 
 </DL></DL>
 <P>
@@ -1878,8 +1935,10 @@ The address of a structure of type Image.
 <HR>
 <H2><A NAME="ParseImageGeometry">ParseImageGeometry</A></H2>
 <P>
-Method ParseImageGeometry parse a geometry specification and returns the
-width and height values.
+Method ParseImageGeometry parses a geometry specification and returns the
+width, height, x, and y values. It also returns flags that indicates which
+of the four values (width, height, xoffset, yoffset) were located in the
+string, and whether the x and y values are negative. In addition,
 
 <P>
 The format of the ParseImageGeometry routine is:
@@ -1894,8 +1953,7 @@ A description of each parameter follows:
 <DT><STRONG>flags:</STRONG><DD>
 <P>
 Method ParseImageGeometry returns a bitmask that indicates which of the
-four values (width, height, xoffset, and yoffset) were actually found in
-the string, and whether the x and y values are negative.
+four values were located in the geometry string.
 
 <DT><STRONG>image_geometry:</STRONG><DD>
 <P>

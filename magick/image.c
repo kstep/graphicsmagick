@@ -9208,7 +9208,7 @@ Export int ParseImageGeometry(const char *geometry,int *x,int *y,
       former_width=(*width);
       former_height=(*height);
     }
-  if (flags & AspectValue)
+  if (!(flags & AspectValue))
     {
       unsigned long
         scale_factor;

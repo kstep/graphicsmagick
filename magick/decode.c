@@ -4116,7 +4116,7 @@ Image *ReadICCImage(const ImageInfo *image_info)
     *q=(unsigned char) c;
   }
   image->color_profile.length=0;
-  if (image->color_profile.info == (unsigned char *) NULL)
+  if (image->color_profile.info != (unsigned char *) NULL)
     image->color_profile.length=q-image->color_profile.info;
   CloseImage(image);
   return(image);
@@ -4718,7 +4718,7 @@ Image *ReadIPTCImage(const ImageInfo *image_info)
     *q=(unsigned char) c;
   }
   image->iptc_profile.length=0;
-  if (image->iptc_profile.info == (unsigned char *) NULL)
+  if (image->iptc_profile.info != (unsigned char *) NULL)
     image->iptc_profile.length=q-image->iptc_profile.info;
   CloseImage(image);
   return(image);
@@ -13901,11 +13901,14 @@ extern "C" {
 #endif
 
 #if defined(ICC_SUPPORT)
-static boolean TIFFColorProfileHandler(char *text,long int length,Image *image)
+static unsigned int TIFFColorProfileHandler(char *text,long int length,
+  Image *image)
 {
   register unsigned char
     *p;
 
+  if (length <= 0)
+    return(False);
   p=(unsigned char *) text;
   if (image->color_profile.length != 0)
     {
@@ -13927,12 +13930,14 @@ static boolean TIFFColorProfileHandler(char *text,long int length,Image *image)
 #endif
 
 #if defined(IPTC_SUPPORT)
-static boolean TIFFNewsProfileHandler(char *text,long int length,Image *image,
-  int type)
+static unsigned int TIFFNewsProfileHandler(char *text,long int length,
+  Image *image,int type)
 {
   register unsigned char
     *p;
 
+  if (length <= 0)
+    return(False);
   p=(unsigned char *) text;
   if (image->iptc_profile.length != 0)
     {

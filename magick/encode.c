@@ -3283,7 +3283,7 @@ static void JPEGNewsProfileHandler(j_compress_ptr jpeg_info,Image *image)
   for (i=0; i < image->iptc_profile.length; i+=65507)
   {
     length=Min(image->iptc_profile.length-i,65507);
-    profile=(unsigned char *) AllocateMemory((length+26)*sizeof(unsigned char));
+    profile=(unsigned char *) AllocateMemory((length+27)*sizeof(unsigned char));
     if (profile == (unsigned char *) NULL)
       break;
     (void) memcpy((char *) profile,"Photoshop 3.0 8BIM\04\04\0\0\0\0",24);
@@ -3292,7 +3292,9 @@ static void JPEGNewsProfileHandler(j_compress_ptr jpeg_info,Image *image)
     profile[25]=length & 0xff;
     for (j=0; j < length; j++)
       profile[j+26]=image->iptc_profile.info[j];
-    jpeg_write_marker(jpeg_info,IPTC_MARKER,profile,(unsigned int) length+26);
+    profile[j+26]=0x001;
+    jpeg_write_marker(jpeg_info,IPTC_MARKER,profile,(unsigned int) length+
+      (length & 0x01 ? 1 : 0)+26);
     FreeMemory((char *) profile);
   }
 }
@@ -11147,7 +11149,7 @@ static void TIFFNewsProfileHandler(TIFF *tiff,int type,Image *image)
     Handle TIFFTAG_PHOTOSHOP tag.
   */
   length=image->iptc_profile.length;
-  profile=(unsigned char *) AllocateMemory((length+12)*sizeof(unsigned char));
+  profile=(unsigned char *) AllocateMemory((length+13)*sizeof(unsigned char));
   if ((length == 0) || (profile == (unsigned char *) NULL))
     return;
   (void) memcpy((char *) profile,"8BIM\04\04\0\0",8);
@@ -11157,7 +11159,9 @@ static void TIFFNewsProfileHandler(TIFF *tiff,int type,Image *image)
   profile[11]=length & 0xff;
   for (i=0; i < length; i++)
     profile[i+12]=image->iptc_profile.info[i];
-  TIFFSetField(tiff,type,(uint32) length+12,(void *) profile);
+  profile[i+12]=0x00;
+  TIFFSetField(tiff,type,(uint32) length+(length & 0x01 ? 1 : 0)+12,
+    (void *) profile);
   FreeMemory((char *) profile);
 }
 #endif

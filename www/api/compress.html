@@ -71,7 +71,7 @@ status=<STRONG>HuffmanDecodeImage</STRONG>(image)
 status=<STRONG>HuffmanEncodeImage</STRONG>(image_info,image)
 
 <P>
-status=<STRONG>LZWEncodeImage</STRONG>(file,pixels,number_pixels)
+status=<STRONG>LZWEncodeImage</STRONG>(file,number_pixels,pixels)
 
 <P>
 status=<STRONG>PCDDecodeImage</STRONG>(image,luma,chroma1,chroma2)
@@ -376,7 +376,7 @@ binary LZW bytes are encoded as ASCII base-85.
 The format of the LZWEncodeImage routine is:
 
 <P>
-<PRE>        status=LZWEncodeImage(file,pixels,number_pixels)
+<PRE>        status=LZWEncodeImage(file,number_pixels,pixels)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -392,14 +392,14 @@ error, otherwise False.
 The address of a structure of type FILE. LZW encoded pixels are written to
 this file.
 
+<DT><STRONG>number_pixels:</STRONG><DD>
+<P>
+An unsigned interger that specifies the number of pixels to compress.
+
 <DT><STRONG>pixels:</STRONG><DD>
 <P>
 The address of an unsigned array of characters containing the pixels to
 compress.
-
-<DT><STRONG>number_pixels:</STRONG><DD>
-<P>
-An unsigned interger that specifies the number of pixels to compress.
 
 </DL></DL>
 <P>

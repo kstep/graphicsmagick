@@ -740,7 +740,7 @@ Export int GetGeometry(const char *image_geometry,int *x,int *y,
     Remove whitespaces and % and ! characters from geometry specification.
   */
   (void) strcpy(geometry,image_geometry);
-  flags=AspectValue;
+  flags=NoValue;
   p=geometry;
   while (Extent(p) > 0)
   {
@@ -757,7 +757,7 @@ Export int GetGeometry(const char *image_geometry,int *x,int *y,
         }
         case '!':
         {
-          flags&=(~AspectValue);
+          flags|=AspectValue;
           (void) strcpy(p,p+1);
           break;
         }

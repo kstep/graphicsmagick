@@ -15,6 +15,7 @@
 	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
 	<UL>
 
+		<LI><A HREF="#AllocateString">AllocateString</A>
 		<LI><A HREF="#AppendImageFormat">AppendImageFormat</A>
 		<LI><A HREF="#BaseFilename">BaseFilename</A>
 		<LI><A HREF="#CloneString">CloneString</A>
@@ -22,6 +23,7 @@
 		<LI><A HREF="#ExpandFilename">ExpandFilename</A>
 		<LI><A HREF="#ExpandFilenames">ExpandFilenames</A>
 		<LI><A HREF="#FormatString">FormatString</A>
+		<LI><A HREF="#GetGeometry">GetGeometry</A>
 		<LI><A HREF="#GlobExpression">GlobExpression</A>
 		<LI><A HREF="#IsAccessible">IsAccessible</A>
 		<LI><A HREF="#IsDirectory">IsDirectory</A>
@@ -65,6 +67,9 @@ utility - ImageMagick Utility Methods
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
+allocated_string=<STRONG>AllocateString</STRONG>(source)
+
+<P>
 <STRONG>AppendImageFormat</STRONG>(format,filename)
 
 <P>
@@ -84,6 +89,9 @@ status=<STRONG>ExpandFilenames</STRONG>(argc,argv)
 
 <P>
 <STRONG>FormatString</STRONG>(string,format,...)
+
+<P>
+flags=<STRONG>GetGeometry</STRONG>(image_geometry,x,y,width,height)
 
 <P>
 <STRONG>GlobExpression</STRONG>(expression,pattern)
@@ -165,6 +173,32 @@ translated_text=<STRONG>TranslateText</STRONG>(image_info,image,formatted_text)
 <H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
 <P>
 <HR>
+<H2><A NAME="AllocateString">AllocateString</A></H2>
+<P>
+Method AllocateString allocates memory for a string and copies the source
+string to that memory location (and returns it).
+
+<P>
+The format of the AllocateString routine is:
+
+<P>
+<PRE>        allocated_string=AllocateString(source)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG><A NAME="item_o">allocated_string:</A></STRONG><DD>
+<P>
+Method AllocateString returns a copy of the source string.
+
+<DT><STRONG>source:</STRONG><DD>
+<P>
+A character string.
+
+</DL></DL>
+<P>
+<HR>
 <H2><A NAME="AppendImageFormat">AppendImageFormat</A></H2>
 <P>
 Method AppendImageFormat appends the image format type to the filename. If
@@ -180,7 +214,7 @@ The format of the AppendImageFormat routine is:
 A description of each parameter follows.
 
 <DL><DL>
-<DT><STRONG><A NAME="item_o">format:</A></STRONG><DD>
+<DT><STRONG>format:</STRONG><DD>
 <P>
 Specifies a pointer to an array of characters. This is the format of the
 image.
@@ -344,6 +378,45 @@ Method FormatString returns the formatted string in this character buffer.
 <DT><STRONG>format:</STRONG><DD>
 <P>
 A string describing the format to use to write the remaining arguments.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="GetGeometry">GetGeometry</A></H2>
+<P>
+Method GetGeometry parses a geometry specification and returns the width,
+height, x, and y values. It also returns flags that indicates which of the
+four values (width, height, xoffset, yoffset) were located in the string,
+and whether the x and y values are negative. In addition,
+
+<P>
+The format of the GetGeometry routine is:
+
+<P>
+<PRE>        flags=GetGeometry(image_geometry,x,y,width,height)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>flags:</STRONG><DD>
+<P>
+Method GetGeometry returns a bitmask that indicates which of the four
+values were located in the geometry string.
+
+<DT><STRONG>image_geometry:</STRONG><DD>
+<P>
+Specifies a character string representing the geometry specification.
+
+<DT><STRONG>x,y:</STRONG><DD>
+<P>
+A pointer to an integer. The x and y offset as determined by the geometry
+specification is returned here.
+
+<DT><STRONG>width,height:</STRONG><DD>
+<P>
+A pointer to an unsigned integer. The width and height as determined by the
+geometry specification is returned here.
 
 </DL></DL>
 <P>
