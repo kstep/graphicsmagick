@@ -1389,7 +1389,7 @@ static void DrawDashPolygon(const DrawInfo *draw_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Draw() allows you to draw a graphic primitive on your image.  The
+%  DrawImage() allows you to draw a graphic primitive on your image.  The
 %  primitive may be represented as a string or filename.  Precede the
 %  filename with an ampersand (@) and the contents of the file are drawn
 %  on the image.  image.   You can affect how text is drawn by setting one
@@ -1968,7 +1968,10 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               {
                 if (graphic_context[n]->clip_mask != 
                     graphic_context[n-1]->clip_mask)
-                  DestroyImage(graphic_context[n]->clip_mask);
+                  {
+                    DestroyImage(graphic_context[n]->clip_mask);
+                    SetImageClipMask(image,(Image *) NULL);
+                 }
                 DestroyDrawInfo(graphic_context[n]);
                 n--;
                 if (n < 0)
@@ -2527,6 +2530,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       if (point.y > graphic_context[n]->bounds.y2)
         graphic_context[n]->bounds.y2=point.y;
     }
+    if (graphic_context[n]->clip_mask != graphic_context[n-1]->clip_mask)
+      (void) DrawClipPath(image,graphic_context[n]);
     (void) DrawPrimitive(image,graphic_context[n],primitive_info);
     if (primitive_info->text != (char *) NULL)
       LiberateMemory((void **) &primitive_info->text);
@@ -3043,8 +3048,6 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
       (void) fprintf(stdout,"  begin draw-primitive\n");
     }
   status=True;
-  if (draw_info->clip_mask != (Image *) NULL)
-    (void) DrawClipPath(image,draw_info);
   x=(int) ceil(primitive_info->point.x-0.5);
   y=(int) ceil(primitive_info->point.y-0.5);
   switch (primitive_info->primitive)
@@ -3370,8 +3373,6 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
       break;
     }
   }
-  if (draw_info->clip_mask != (Image *) NULL)
-    SetImageClipMask(image,(Image *) NULL);
   if (draw_info->debug)
     (void) fprintf(stdout,"  end draw-primitive (%.2fu)\n",GetUserTime(&timer));
   return(status);
