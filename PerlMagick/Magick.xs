@@ -359,7 +359,7 @@ static struct
       {"translate", StringReference}, {"scale", StringReference},
       {"rotate", DoubleReference}, {"skewX", DoubleReference},
       {"skewY", DoubleReference}, {"tile", ImageReference},
-      {"pen", StringReference}, {"antialias", BooleanTypes} } },
+      {"pointsize", DoubleReference}, {"antialias", BooleanTypes} } },
     { "Equalize", },
     { "Gamma", { {"gamma", StringReference}, {"red", DoubleReference},
       {"green", DoubleReference}, {"blue", DoubleReference} } },
@@ -4880,8 +4880,7 @@ Mogrify(ref,...)
             draw_info->tile=
               CloneImage(argument_list[15].image_reference,0,0,True,&exception);
           if (attribute_flag[16])
-            (void) QueryColorDatabase(argument_list[16].string_reference,
-              &draw_info->fill);
+            draw_info->pointsize=argument_list[16].double_reference;
           if (attribute_flag[17])
             {
               draw_info->stroke_antialias=argument_list[17].int_reference;

@@ -6,7 +6,7 @@ use Image::Magick;
 
 $image=Image::Magick->new(size=>'300x120');
 $image->Read('xc:white');
-$image->Annotate(font=>'@Generic.ttf', pen=>'black',pointsize=>60,
+$image->Annotate(font=>'@Generic.ttf', fill=>'black',pointsize=>60,
   gravity=>'Center',text=>'Magick');
 $mask=$image->Clone();
 $mask->Negate();
