@@ -177,9 +177,9 @@ static int PhotoToMagick(
 	map[photoblock.offset[1]] = 'G';
 	map[photoblock.offset[2]] = 'B';
 	if (strcmp(MagickPackageName, "ImageMagick") == 0) {
-	    map[photoblock.offset[3]] = 'O';
-	} else {
 	    map[photoblock.offset[3]] = 'A';
+	} else {
+	    map[photoblock.offset[3]] = 'O';
 	}
 	break;
     default:

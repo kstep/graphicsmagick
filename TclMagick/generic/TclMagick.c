@@ -286,6 +286,18 @@ static PixelWand *findPixelWand(Tcl_Interp *interp, char *name)
 }
 
 /*----------------------------------------------------------------------
+ * encoding functions
+ *----------------------------------------------------------------------
+ */
+static void SetResultAsExternalString(Tcl_Interp *interp, char *ext) {
+    Tcl_DString extrep;
+    Tcl_ExternalToUtfDString(NULL, ext, -1, &extrep);
+    Tcl_DStringResult(interp, &extrep);
+    Tcl_DStringFree(&extrep);
+}
+
+
+/*----------------------------------------------------------------------
  * magick command
  *----------------------------------------------------------------------
  *
@@ -2203,12 +2215,16 @@ static int wandObjCmd(
 	    return TCL_ERROR;
 	}
 	if (objc > 2) { /* Set filename */
-	    filename = Tcl_GetString(objv[2]);
+	    Tcl_DString extrep;
+
+	    filename = Tcl_UtfToExternalDString (NULL, Tcl_GetString(objv[2]), -1, &extrep);
 	    MagickSetFilename(wandPtr, filename);
+
+	    Tcl_DStringFree (&extrep);
 	} else {    /* Get filename */
 	    filename = (char *)MagickGetFilename(wandPtr);
 	    if(filename != NULL) {
-		Tcl_SetResult(interp, filename, TCL_VOLATILE);
+		SetResultAsExternalString(interp, filename);
 		MagickRelinquishMemory(filename); /* Free TclMagick resource */
 	    }
 	}
@@ -2868,15 +2884,17 @@ static int wandObjCmd(
 	    return TCL_ERROR;
 	}
 	if (objc > 2) { /* Set filename */
-	    filename = Tcl_GetString(objv[2]);
+	    Tcl_DString extrep;
+	    filename = Tcl_UtfToExternalDString(NULL, Tcl_GetString(objv[2]), -1, &extrep);
 	    result = MagickSetImageFilename(wandPtr, filename);
+	    Tcl_DStringFree(&extrep);
 	    if (!result) {
 		return myMagickError(interp, wandPtr);
 	    }
 	} else {    /* Get filename */
 	    filename = (char *)MagickGetImageFilename(wandPtr);
 	    if(filename != NULL) {
-		Tcl_SetResult(interp, filename, TCL_VOLATILE);
+		SetResultAsExternalString(interp, filename);
 		MagickRelinquishMemory(filename); /* Free TclMagick resource */
 	    }
 	}
@@ -2991,7 +3009,7 @@ static int wandObjCmd(
     case TM_GET_INDEX:  /* GetIndex */
     case TM_SET_INDEX:  /* SetIndex index */
     {
-        unsigned long idx;
+	long idx;
 
 	if( ((enum subIndex)index == TM_INDEX) && (objc > 3) ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "?index?");
@@ -3012,7 +3030,7 @@ static int wandObjCmd(
 	    if (Tcl_GetLongFromObj(interp, objv[2], &idx) != TCL_OK) {
 	        return TCL_ERROR;
 	    }
-	    result = MagickSetImageIndex(wandPtr, idx);
+	    result = MagickSetImageIndex(wandPtr, (long) idx);
 	    if (!result) {
 		return myMagickError(interp, wandPtr);
 	    }
@@ -3930,11 +3948,15 @@ static int wandObjCmd(
     case TM_LABEL:        /* label str */
     case TM_LABEL_IMAGE:  /* LabelImage str */
     {
+	Tcl_DString extrep;
 	if( objc != 3 ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "str");
 	    return TCL_ERROR;
 	}
-	result = MagickLabelImage(wandPtr, Tcl_GetString(objv[2]));
+	result = MagickLabelImage(wandPtr, 
+	    Tcl_UtfToExternalDString(NULL, Tcl_GetString(objv[2]), -1, &extrep));
+
+	Tcl_DStringFree(&extrep);
 	if (!result) {
 	    return myMagickError(interp, wandPtr);
 	}
@@ -4042,7 +4064,7 @@ static int wandObjCmd(
     {
 	unsigned int	opacity;
 	long x = 0, y = 0;
-	double  fuzz=0.0;
+	double  fuzz = 0.0;
 	char	*name;
 	PixelWand	*borderPtr=NULL;
 
@@ -4548,13 +4570,15 @@ static int wandObjCmd(
     case TM_READ_IMAGE:    /* ReadImage filename */
     {
 	char *filename;
+	Tcl_DString extrep;
 
 	if (objc != 3) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "filename");
 	    return TCL_ERROR;
 	}
-	filename = Tcl_GetString(objv[2]);
+	filename = Tcl_UtfToExternalDString(NULL, Tcl_GetString(objv[2]), -1, &extrep);
 	result = MagickReadImage(wandPtr, filename);
+	Tcl_DStringFree(&extrep);
 	if (!result) {
 	    return myMagickError(interp, wandPtr);
 	}
@@ -5299,6 +5323,7 @@ static int wandObjCmd(
     {
 	char *filename;
 	unsigned int  adjoin=0;
+	Tcl_DString extrep;
 
 	if( ((enum subIndex)index == TM_WRITE_IMAGES) && ((objc < 3) || (objc > 4)) ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "filename ?adjoin=no?");
@@ -5308,7 +5333,7 @@ static int wandObjCmd(
 	    Tcl_WrongNumArgs(interp, 2, objv, "filename");
 	    return TCL_ERROR;
 	}
-	filename = Tcl_GetString(objv[2]);
+	filename = Tcl_UtfToExternalDString(NULL, Tcl_GetString(objv[2]), -1, &extrep);
 	if( (objc > 3) && ((stat = Tcl_GetBooleanFromObj(interp, objv[3], &adjoin)) != TCL_OK) ) {
 	    return stat;
 	}
@@ -5317,6 +5342,7 @@ static int wandObjCmd(
 	} else {
 	    result = MagickWriteImage(wandPtr, filename);
 	}
+	Tcl_DStringFree(&extrep);
 	if (!result) {
 	    return myMagickError(interp, wandPtr);
 	}

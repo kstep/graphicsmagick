@@ -1,3 +1,15 @@
+2005-01-08  David N. Welton  <davidw@dedasys.com>
+
+	* generic/TclMagick.c: Added patch from George Peter Staplin
+	dealing with UTF/External encoding issues.  There may be more work
+	to be done.
+
+	* generic/TkMagick.c (PhotoToMagick): Swapped A and O letters to
+	make alpha channel work here.  Argh!  Thanks to David Zolli for
+	writing code to point this out.
+
+	* configure.ac: Bumped version number.
+
 2004-12-21  David N. Welton  <davidw@dedasys.com>
 
 	* generic/TclMagick.c (wandObjCmd): Return errors on failure for
