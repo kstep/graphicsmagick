@@ -774,7 +774,7 @@ MagickExport PixelPacket InterpolateColor(const Image *image,
 %  Method Modulate modulates the hue, saturation, and brightness of an
 %  image.
 %
-%  The format of the ModulateImage method is:
+%  The format of the Modulate method is:
 %
 %      void Modulate(const double percent_hue,const double percent_saturation,
 %        const double percent_brightness,Quantum *red,Quantum *green,
