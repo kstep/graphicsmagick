@@ -2777,11 +2777,25 @@ Get(ref,...)
                 s=newSVpv(image->magick_filename,0);
               break;
             }
+          if (strEQcase(attribute,"base-height") ||
+              strEQcase(attribute,"base_height"))
+            {
+              if (image)
+                s=newSViv(image->magick_rows);
+              break;
+            }
           if (strEQcase(attribute,"base-row") ||
               strEQcase(attribute,"base_row"))
             {
               if (image)
                 s=newSViv(image->magick_rows);
+              break;
+            }
+          if (strEQcase(attribute,"base-width") ||
+              strEQcase(attribute,"base_width"))
+            {
+              if (image)
+                s=newSViv(image->magick_columns);
               break;
             }
           if (strEQcase(attribute,"blue-") || strEQcase(attribute,"blue_"))
