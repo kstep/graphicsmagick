@@ -6033,7 +6033,6 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
         (void) RGBTransformImage(image,RGBColorspace);
       GetQuantizeInfo(&quantize_info);
       quantize_info.number_colors=256;
-      quantize_info.tree_depth=8;
       (void) QuantizeImage(&quantize_info,image);
       break;
     }
