@@ -850,7 +850,7 @@ MagickExport unsigned int SpliceImageIntoList(Image **images,const long offset,
   const unsigned long length,Image *splices,ExceptionInfo *exception)
 {
   Image
-    *next;
+    *image;
 
 	register int
     i;
@@ -861,31 +861,34 @@ MagickExport unsigned int SpliceImageIntoList(Image **images,const long offset,
   if ((*images) == (Image *) NULL)
     return(False);
   assert((*images)->signature == MagickSignature);
-  for (next=(*images); next->previous != (Image *) NULL; next=next->previous);
-  for (i=0; next != (Image *) NULL; next=next->next)
+  image=(*images);
+  for ( ; image->previous != (Image *) NULL; image=image->previous);
+  for (i=0; image != (Image *) NULL; image=image->next)
     if (i++ == offset)
       break;
-  if (next == (Image *) NULL)
+  if (image == (Image *) NULL)
     return(False);
-  if ((next->previous != (Image *) NULL) && (next->next != (Image *) NULL))
+  if ((image->previous != (Image *) NULL) && (image->next != (Image *) NULL))
     *images=splices;
   else
     {
-      if (next->previous != (Image *) NULL)
+      if (image->previous != (Image *) NULL)
         {
-          next->previous->next=splices;
+          image->previous->next=splices;
           while (splices->previous != (Image *) NULL)
             splices=splices->previous;
-          splices->previous=next->previous;
+          splices->previous=image->previous;
         }
-      if (next->next != (Image *) NULL)
+      for (i=0; i < length; i++)
+        image=image->next;
+      if (image->next != (Image *) NULL)
         {
           while (splices->next != (Image *) NULL)
             splices=splices->next;
-          splices->next=next->next;
-          next->next->previous=splices;
+          splices->next=image->next;
+          image->next->previous=splices;
         }
     }
-  DestroyImage(next);
+  DestroyImage(image);
   return(True);
 }
