@@ -51,6 +51,12 @@
 #include "magick.h"
 #include "define.h"
 
+/* Auto coloring method, sorry this creates some artefact inside data
+MinReal+j*MaxComplex = red	MaxReal+j*MaxComplex = black
+MinReal+j*0 = white	        MaxReal+j*0 = black
+MinReal+j*MinComplex = blue	MaxReal+j*MinComplex = black
+*/
+
 
 typedef unsigned long DWORD;
 typedef unsigned short WORD;
@@ -93,7 +99,7 @@ register IndexPacket *indexes;
                 {
                 index=ValidateColormapIndex(image,*p);
                 indexes[x]=index;
-                *q++=image->colormap[(int) index];
+                *q++=image->colormap[index];
                 p++;
                 }
            if (!SyncImagePixels(image))
@@ -111,9 +117,9 @@ register IndexPacket *indexes;
 	     break;
            for (x=0; x < (long) image->columns; x++)
               {
-              q->red=XDownscale(*(WORD *) p);
-              q->green=XDownscale(*(WORD *) p);
-              q->blue=XDownscale(*(WORD *) p);
+              q->red=XDownScale(*(WORD *)p);
+              q->green=XDownScale(*(WORD *)p);
+              q->blue=XDownScale(*(WORD *)p);
 	      p+=2;
               q++;
               }
@@ -142,9 +148,9 @@ register PixelPacket *q;
    for (x=0; x < (long) image->columns; x++)
           {
 	  f=(double)MaxRGB* (*p-Min)/(Max-Min);
-          q->red=XDownscale((unsigned long) f);
-          q->green=XDownscale((unsigned long) f);
-          q->blue=XDownscale((unsigned long) f);
+          q->red=XDownScale(f);
+	  q->green=XDownScale(f);
+	  q->blue=XDownScale(f);
           p++;
           q++;
           }
@@ -157,62 +163,46 @@ register PixelPacket *q;
 }
 
 
-
-
-/*This procedure saves 2D data into MATLAB MAT file
-void MATPrint(const PosContainer3D & a,int x,int y,int z,FILE *f,int Header)
+static void InsertComplexFloatRow(double *p,int y,Image *image,double Min,double Max)
 {
-WORD iz,Pos3D;
-PosContainer2D Cont2D,OldCont2D;
-PosContainer2D_3DExtender *WData;
-char MATLAB_HDR[192];
+double f;
+int x;
+register PixelPacket *q;
 
-if(f==NULL) f=stdout;
+   if(Min==0) Min=-1;
+   if(Max==0) Max=1;
 
-if(Header)
-        {
-        for(iz=0;iz<sizeof(MATLAB_HDR);iz++)
-               MATLAB_HDR[iz]=0;
-        for(iz=0;iz<124;iz++)
-               MATLAB_HDR[iz]=' ';
-        strcpy(MATLAB_HDR,"MATLAB 5.0 MAT-file, Platform: LNX86, Created on: Tue May 16 22:35:06 2000");
-        MATLAB_HDR[0x7D]=1;
-        MATLAB_HDR[0x7E]='I';
-        MATLAB_HDR[0x7F]='M';
-        MATLAB_HDR[0x80]=0xE;
-        *(DWORD *)&(MATLAB_HDR[0x84])=(DWORD)x * (DWORD)y * (DWORD)z + 56l;
-        MATLAB_HDR[0x88]=0x6;
-        MATLAB_HDR[0x8C]=0x8;
-        MATLAB_HDR[0x90]=0x6;
-        MATLAB_HDR[0x98]=0x5;
-        MATLAB_HDR[0x9C]=0xC;
-        *(DWORD *)&(MATLAB_HDR[0xA0])=x;
-        *(DWORD *)&(MATLAB_HDR[0xA4])=y;
-        *(DWORD *)&(MATLAB_HDR[0xA8])=z;
-        MATLAB_HDR[0xB0]=1;
-        MATLAB_HDR[0xB2]=1;
-        MATLAB_HDR[0xB4]='M';
-        MATLAB_HDR[0xB8]=0x2;
-        *(DWORD *)&(MATLAB_HDR[0xBC])=(DWORD)x * (DWORD)y * (DWORD)z;
-        fwrite(MATLAB_HDR,1,sizeof(MATLAB_HDR),f);
-        }
-
-Pos3D=0;
-WData=a.data3D;
-for(iz=0;iz<z;iz++)
-        {
-        if(Pos3D<a.DataSize3D)
-          if(WData->Position3D<=iz)
-                {
-                OldCont2D=Cont2D;
-                schXOR(Cont2D,*WData,OldCont2D);
-                WData++;
-                Pos3D++;
-                }
-
-        MATPrint(Cont2D,x,y,f,0);
-        }
-}*/
+   q=SetImagePixels(image,0,y,image->columns,1);
+   if (q == (PixelPacket *) NULL)
+        return;
+   for (x=0; x < (long) image->columns; x++)
+          {
+	  if(*p>0)
+	    {
+	    f=(*p/Max)*(MaxRGB-q->red);
+	    if(f+q->red>MaxRGB) q->red=MaxRGB;
+	                   else q->red+=f;
+            if(f/2.0>q->green) q->green=q->blue=0;
+			   else q->green=q->blue-=f/2.0;		
+	    }
+	  if(*p<0)
+	    {
+	    f=(*p/Max)*(MaxRGB-q->blue);
+	    if(f+q->blue>MaxRGB) q->blue=MaxRGB;
+	                    else q->blue+=f;
+            if(f/2.0>q->green) q->green=q->red=0;
+			  else q->green=q->red-=f/2.0;		
+	    }
+	  p++;
+          q++;
+          }
+   if (!SyncImagePixels(image))
+              return;
+/*          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              MagickMonitor(LoadImageText,image->rows-y-1,image->rows);*/
+   return;	   
+}
 
 
 
@@ -252,8 +242,7 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image *image,*rotated_image;
   unsigned int status;
   MATHeader MATLAB_HDR;
-  DWORD size;
-  off_t filepos;
+  DWORD size,filepos;
   DWORD CellType;
   int i,x;
   long ldblk;
@@ -263,18 +252,28 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Open image file.
   */
-  assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
-  status=OpenBlob(image_info,image,ReadBinaryType,exception);
+  
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Read MATLAB image.
   */
-  (void) ReadBlob(image,sizeof(MATLAB_HDR),&MATLAB_HDR);
+  (void) ReadBlob(image,125,&MATLAB_HDR.identific);
+  (void) ReadBlob(image,3,&MATLAB_HDR.idx); 
+  MATLAB_HDR.unknown0=ReadBlobLSBLong(image);
+  MATLAB_HDR.ObjectSize=ReadBlobLSBLong(image);
+  MATLAB_HDR.unknown1=ReadBlobLSBLong(image);
+  MATLAB_HDR.unknown2=ReadBlobLSBLong(image);
+  MATLAB_HDR.StructureFlag=ReadBlobLSBLong(image);
+  MATLAB_HDR.unknown3=ReadBlobLSBLong(image);
+  MATLAB_HDR.unknown4=ReadBlobLSBLong(image);
+  MATLAB_HDR.DimFlag=ReadBlobLSBLong(image);
+  MATLAB_HDR.SizeX=ReadBlobLSBLong(image);
+  MATLAB_HDR.SizeY=ReadBlobLSBLong(image);
+  MATLAB_HDR.Flag1=ReadBlobLSBShort(image);
+  MATLAB_HDR.NameFlag=ReadBlobLSBShort(image);
 
   if (strncmp(MATLAB_HDR.identific,"MATLAB",6))
 MATLAB_KO:  ThrowReaderException(CorruptImageWarning,"Not a MATLAB image file!",image);
@@ -282,37 +281,46 @@ MATLAB_KO:  ThrowReaderException(CorruptImageWarning,"Not a MATLAB image file!",
   if(MATLAB_HDR.unknown0!=0x0E) goto MATLAB_KO;
   if(MATLAB_HDR.DimFlag!=8) 
             ThrowReaderException(CorruptImageWarning,"Multi-dimensional matrices are not supported!",image);
- 
-  if(MATLAB_HDR.StructureFlag!=6) goto MATLAB_KO;
 
-  if(MATLAB_HDR.NameFlag==1)
-        {
-        (void) ReadBlob(image,4,&size); /*Object name string*/
-        }
-   else if(MATLAB_HDR.NameFlag==0)
-        {
-        (void) ReadBlob(image,4,&size); /*Object name string*/
-        size=4*(long)((size+3+1)/4);
-        (void) SeekBlob(image,size,SEEK_CUR);
-        }
-   else goto MATLAB_KO;
+/*printf("MATLAB_HDR.StructureFlag %ld\n",MATLAB_HDR.StructureFlag);*/
+  if(MATLAB_HDR.StructureFlag!=6 && MATLAB_HDR.StructureFlag!=0x806) goto MATLAB_KO;
+
+  switch(MATLAB_HDR.NameFlag)
+    {
+    case 0:(void) ReadBlob(image,4,&size); /*Object name string*/
+           size=4*(long)((size+3+1)/4);
+           (void) SeekBlob(image,size,SEEK_CUR);
+	   break;
+    case 1:
+    case 2:
+    case 3:
+    case 4:(void) ReadBlob(image,4,&size); /*Object name string*/
+	   break;
+    default:goto MATLAB_KO;
+    }
 
    CellType=ReadBlobLSBLong(image);    /*Additional object type*/
 /*fprintf(stdout,"Cell type:%ld\n",CellType);*/
    (void) ReadBlob(image,4,&size);      /*data size*/
 
-   switch((int) CellType)
+   switch(CellType)
       {
       case 2:image->depth=8;		/*Byte type cell*/
-             ldblk=(long) MATLAB_HDR.SizeX;
+             ldblk=MATLAB_HDR.SizeX;
+ 	     if(MATLAB_HDR.StructureFlag==0x806) goto MATLAB_KO;    
              break;
       case 4:image->depth=16;    	/*Word type cell*/
-             ldblk=(long) (2*MATLAB_HDR.SizeX);break; 
-      case 9:image->depth=24;    	/*double type cell*/
-             if(sizeof(double)!=8) ThrowReaderException(CorruptImageWarning,"Incompatible size of double!",image)
-             ldblk=(long) (8*MATLAB_HDR.SizeX);
+             ldblk=2*MATLAB_HDR.SizeX;
+	     if(MATLAB_HDR.StructureFlag==0x806) goto MATLAB_KO;    
              break; 
-      default:ThrowReaderException(CorruptImageWarning,"Unsupported cell type in the matrix!",image)
+      case 9:image->depth=24;    	/*double type cell*/
+             if(sizeof(double)!=8) ThrowReaderException(CorruptImageWarning,"Incompatible size of double!",image);
+	     if(MATLAB_HDR.StructureFlag==0x806) 
+	        {			/*complex double type cell*/
+		}
+	     ldblk=8*MATLAB_HDR.SizeX;
+             break; 
+      default:ThrowReaderException(CorruptImageWarning,"Unsupported cell type in the matrix!",image);   
       }	  
 
    image->columns= MATLAB_HDR.SizeX;
@@ -334,9 +342,9 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
    
      for (i=0; i < (long)image->colors; i++)
            {
-           image->colormap[i].red=Upscale(i);
-           image->colormap[i].green=Upscale(i);
-           image->colormap[i].blue=Upscale(i);
+           image->colormap[i].red=UpScale(i);
+           image->colormap[i].green=UpScale(i);
+           image->colormap[i].blue=UpScale(i);
            }
      }	    
 
@@ -345,8 +353,7 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
    BImgBuff=(unsigned char *) malloc(ldblk);  /*Ldblk was set in the check phase*/
    if(BImgBuff==NULL) goto NoMemory;
 
-   Min=0;
-   Max=0;
+
    if(CellType==9) /*Find Min and Max Values for floats*/
      {
      filepos=TellBlob(image);
@@ -362,15 +369,49 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 	    dblrow++;            
 	    }
 	}       
-     (void) SeekBlob(image,filepos,SEEK_SET);
+     SeekBlob(image,filepos,SEEK_SET);
      }
-   
+     
+	/*Main loop for reading all scanlines*/
    for(i=0;i<(long) MATLAB_HDR.SizeY;i++)
         {
         (void) ReadBlob(image,ldblk,(char *)BImgBuff);
-	if(CellType==9) InsertFloatRow((double *)BImgBuff,i,image,Min,Max);
-	           else InsertRow(BImgBuff,i,image);
+	switch(CellType)
+	    {
+	    case 9:InsertFloatRow((double *)BImgBuff,i,image,Min,Max);
+		   break;
+	    default:InsertRow(BImgBuff,i,image);
+	    }	
         }
+	
+	/*Read complex part of numbers here*/
+  if(MATLAB_HDR.StructureFlag==0x806)
+	{
+	if(CellType==9) /*Find Min and Max Values for floats*/
+          {
+	  filepos=TellBlob(image);
+          for(i=0;i<(long) MATLAB_HDR.SizeY;i++)
+	    {
+            (void) ReadBlob(image,ldblk,(char *)BImgBuff);
+	    dblrow=(double *)BImgBuff;
+	    if(i==0) {Min=Max=*dblrow;}
+	    for(x=0;x<(long)MATLAB_HDR.SizeX;x++)
+                {
+	        if(Min>*dblrow) Min=*dblrow;
+		if(Max<*dblrow) Max=*dblrow;
+		dblrow++;            
+	        }
+	    }       
+          SeekBlob(image,filepos,SEEK_SET);
+	  
+	  for(i=0;i<(long) MATLAB_HDR.SizeY;i++)
+            {
+            (void) ReadBlob(image,ldblk,(char *)BImgBuff);
+	    InsertComplexFloatRow((double *)BImgBuff,i,image,Min,Max);
+	    }	
+          }
+        }
+	
 	
   if(BImgBuff!=NULL) {free(BImgBuff);BImgBuff=NULL;}
 		

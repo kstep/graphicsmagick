@@ -689,7 +689,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
               break;
             for (x=0; x < (long) image->columns; x++)
             {
-              *q++=Downscale(Intensity(*p));
+              *q++=Downscale(Intensity(p));
               p++;
             }
             if (image->previous == (Image *) NULL)
