@@ -1,3 +1,10 @@
+2003-03-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/module.c (FindMagickModule): Minor code cleanup and limit
+	directory and file name lengths to sensible values.
+	* magick/utility.c (IsAccessible): Log test failures along with
+	test failure reason [strerror(errno)]. Also log test success.
+
 2003-03-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/module.c (ExecuteModuleProcess): Updated to support locating

@@ -492,11 +492,28 @@ static unsigned int FindMagickModule(const char *filename,
   assert(path != (char *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   (void) strncpy(path,filename,MaxTextExtent-1);
+
+  switch (module_type)
+    {
+    case MagickCoderModule:
+    default:
+      (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+         "Searching for coder module file \"%s\" ...",filename);
+      break;
+    case MagickFilterModule:
+      (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+         "Searching for filter module file \"%s\" ...",filename);
+      break;
+    }
+
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
     "Searching for module file \"%s\" ...",filename);
 #if defined(UseInstalledImageMagick)
 #if defined(WIN32)
   {
+    /*
+      Locate path via registry key.
+    */
     char
       *key=NULL,
       *key_value;
@@ -512,13 +529,10 @@ static unsigned int FindMagickModule(const char *filename,
         break;
       }
 
-    /*
-      Locate path via registry key.
-    */
     key_value=NTRegistryKeyLookup(key);
     if (key_value != (char *) NULL)
       {
-        FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
+        FormatString(path,"%.512s%s%.256s",key_value,DirectorySeparator,
           filename);
         if (!IsAccessible(path))
           ThrowException(exception,ConfigureError,"UnableToAccessModuleFile",
@@ -529,6 +543,9 @@ static unsigned int FindMagickModule(const char *filename,
 #endif
 #if defined(MagickCoderModulesPath)
   {
+    /*
+      Search hard coded paths.
+    */
     char
       *module_directory=NULL;
 
@@ -543,10 +560,7 @@ static unsigned int FindMagickModule(const char *filename,
         break;
       }
 
-  /*
-    Search hard coded paths.
-  */
-  FormatString(path,"%.1024s%.1024s",module_directory,filename);
+  FormatString(path,"%.512s%.256s",module_directory,filename);
   if (!IsAccessible(path))
     ThrowException(exception,ConfigureError,"UnableToAccessModuleFile",path);
   return(True);
@@ -555,30 +569,31 @@ static unsigned int FindMagickModule(const char *filename,
 #else
   if (*SetClientPath((char *) NULL) != '\0')
     {
+      /*
+        Search based on executable directory if directory is known.
+      */
 #if defined(POSIX)
       char
-        *format=NULL,
+        *module_subdir=NULL,
         prefix[MaxTextExtent];
-      
+
       switch (module_type)
         {
         case MagickCoderModule:
         default:
-          format="%.1024s/lib/%s/modules-Q%d/coders/%.1024s";
+          module_subdir="coders";
           break;
         case MagickFilterModule:
-          format="%.1024s/lib/%s/modules-Q%d/filters/%.1024s";
+          module_subdir="filters";
           break;
         }
 
-      /*
-        Search based on executable directory if directory is known.
-      */
       (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
       ChopPathComponents(prefix,1);
-      FormatString(path,format,prefix,MagickLibSubdir,QuantumDepth,filename);
+      FormatString(path,"%.512s/lib/%s/modules-Q%d/%s/%.256s",prefix,
+        MagickLibSubdir,QuantumDepth,module_subdir,filename);
 #else
-      FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
+      FormatString(path,"%.512s%s%.256s",SetClientPath((char *) NULL),
         DirectorySeparator,filename);
 #endif
       if (IsAccessible(path))
@@ -604,10 +619,10 @@ static unsigned int FindMagickModule(const char *filename,
           break;
         }
 
-      FormatString(path,"%.1024s/lib/%s/%.1024s",getenv("MAGICK_HOME"),
+      FormatString(path,"%.512s/lib/%s/%.256s",getenv("MAGICK_HOME"),
         subdir,filename);
 #else
-      FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_HOME"),
+      FormatString(path,"%.512s%s%.256s",getenv("MAGICK_HOME"),
         DirectorySeparator,filename);
 #endif
       if (IsAccessible(path))
@@ -618,7 +633,7 @@ static unsigned int FindMagickModule(const char *filename,
       /*
         Search $HOME/.magick.
       */
-      FormatString(path,"%.1024s%s%s%.1024s",getenv("HOME"),
+      FormatString(path,"%.512s%s%s%.256s",getenv("HOME"),
         *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator,filename);
       if (IsAccessible(path))
         return(True);

@@ -2106,8 +2106,8 @@ MagickExport int GlobExpression(const char *expression,const char *pattern)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsAccessible() returns True if the file as defined by filename is
-%  accessible.
+%  IsAccessible() returns True if the file as defined by filename exists
+%  and is a regular file.
 %
 %  The format of the IsAccessible method is:
 %
@@ -2115,11 +2115,10 @@ MagickExport int GlobExpression(const char *expression,const char *pattern)
 %
 %  A description of each parameter follows.
 %
-%    o status:  Method IsAccessible returns True is the file as defined by
-%      filename is accessible, otherwise False is returned.
+%    o status:  Method IsAccessible returns True if the file as defined by
+%      filename exists and is a regular file, otherwise False is returned.
 %
-%    o filename:  Specifies a pointer to an array of characters.  The unique
-%      file name is returned in this array.
+%    o filename:  A pointer to an array of characters containing the filename.
 %
 %
 */
@@ -2134,13 +2133,22 @@ MagickExport unsigned int IsAccessible(const char *filename)
   if ((filename == (const char *) NULL) || (*filename == '\0'))
     return(False);
   status=stat(filename,&file_info);
-  if (status != 0)
-    return(False);
-  if (errno)
-    (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),"%.1024s [%.1024s]",
-    filename,strerror(errno));
+  if ((status != 0))
+    {
+      /* Stat failed, log with errno */
+      (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+        "Tried: %.1024s [%.1024s]",filename,strerror(errno));
+      return(False);
+    }
+
+  /* Stat succeeded, log without errno and return access flags */
+  if (S_ISREG(file_info.st_mode))
+    (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+      "Found: %.1024s",filename);
   else
-    (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),"%.1024s",filename);
+    (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+      "Tried: %.1024s [not a regular file]",filename);
+
   return(S_ISREG(file_info.st_mode));
 }
 

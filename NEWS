@@ -23,10 +23,11 @@ Major changes associated with GraphicsMagick 1.0.0
     * Script Magick-config renamed to GraphicsMagick-config.
     * Script Magick++-config renamed to GraphicsMagick++-config.
     * Headers installed under ${PREFIX}/include/GraphicsMagick.
-    * PerlMagick namespace renamed from "Image::Magick" to
-    "Graphics::Magick".
+    * PerlMagick namespace renamed from "Image::Magick" to "Graphics::Magick".
     * Pkgconfig files GraphicsMagick.pc and GraphicsMagick++.pc are
     installed in $libdir/pkgconfig to assist pkg-config users.
+    * Coder modules installed to lib/GraphicsMagick-1.0.0/modules-Q8/coders.
+    * Filter modules installed to lib/GraphicsMagick-1.0.0/modules-Q8/filters.
 
   Many performance enhancements:
     * Default QuantumDepth is 8 since this is adequate for most purposes
@@ -51,6 +52,8 @@ Major changes associated with GraphicsMagick 1.0.0
 
   Feature enhancements:
     * Module loader always enabled for shared builds to allow extension.
+    * Loading of arbitrary filter modules (via -process option) supported
+    under Unix as well as Windows.
     * SVG coder allows specifying size and initial background color.
     * JPEG-2000 coder (JP2) updated to work with Jasper 1.7.
     * HWB and HSL image colorspace translation support.

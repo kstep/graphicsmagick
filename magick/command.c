@@ -5603,7 +5603,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       /*
         If color reduction is requested, and the image is DirectClass,
         or the image is PseudoClass and the number of colors exceeds
-        the number requesed, then quantize the image colors. Otherwise
+        the number requested, then quantize the image colors. Otherwise
         compress an existing colormap.
       */
 
