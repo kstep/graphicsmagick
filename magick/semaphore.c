@@ -241,6 +241,7 @@ MagickExport void DestroySemaphore(void)
 {
 #if defined(HasPTHREADS)
   (void) pthread_mutex_destroy(&semaphore_mutex);
+  semaphore_mutex=PTHREAD_MUTEX_INITIALIZER;
 #endif
 #if defined(WIN32)
   if (active_critical_section)
