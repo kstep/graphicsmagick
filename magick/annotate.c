@@ -1500,8 +1500,9 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
         annotate_info.degrees=(180.0/MagickPI)*
           atan2(draw_info->affine.rx,draw_info->affine.sx);
     }
-  FormatString(annotate_info.geometry,"%ux%u+%g+%g",width,height,
-    offset->x,offset->y-metrics->ascent-metrics->descent-1.0);
+  FormatString(annotate_info.geometry,"%ux%u+%d+%d",width,height,
+    (int) ceil(offset->x-0.5),
+		(int) ceil(offset->y-metrics->ascent-metrics->descent-0.5));
   pixel.pen_color.red=XUpscale(draw_info->fill.red);
   pixel.pen_color.green=XUpscale(draw_info->fill.green);
   pixel.pen_color.blue=XUpscale(draw_info->fill.blue);
