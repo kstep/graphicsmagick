@@ -696,7 +696,6 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         image);
   if (image_info->ping)
     {
-      (void) jpeg_finish_decompress(&jpeg_info);
       jpeg_destroy_decompress(&jpeg_info);
       CloseBlob(image);
       return(image);
