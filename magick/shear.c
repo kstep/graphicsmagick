@@ -128,8 +128,7 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
   else
     rotate_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (rotate_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to rotate image",
-      "Memory allocation failed");
+    return((Image *) NULL);
   /*
     Integral rotate the image.
   */

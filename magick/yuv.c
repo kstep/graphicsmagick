@@ -187,8 +187,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     chroma_image=
       CloneImage(image,image->columns/2,image->rows/2,True,exception);
     if (chroma_image == (Image *) NULL)
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-	image);
+      return((Image *) NULL);
     for (y=0; y < (int) chroma_image->rows; y++)
     {
       (void) ReadBlob(image,chroma_image->columns,scanline);

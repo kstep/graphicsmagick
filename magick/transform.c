@@ -150,8 +150,7 @@ Export Image *ChopImage(Image *image,const RectangleInfo *chop_info,
   chop_image=CloneImage(image,image->columns-clone_info.width,
     image->rows-clone_info.height,False,exception);
   if (chop_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to chop image",
-      "Memory allocation failed");
+    return((Image *) NULL);
   /*
     Extract chop image.
   */
@@ -270,8 +269,7 @@ Export Image *CoalesceImages(Image *image,ExceptionInfo *exception)
     if (coalesce_image->next == (Image *) NULL)
       {
         DestroyImages(coalesce_image);
-        ThrowImageException(ResourceLimitWarning,"Unable to coalesce image",
-          "Memory allocation failed for cloned next");
+        return((Image *) NULL);
       }
     coalesce_image->next->previous=coalesce_image;
     coalesce_image=coalesce_image->next;
@@ -364,17 +362,17 @@ Export Image *CropImage(Image *image,const RectangleInfo *crop_info,
   if ((page.width != 0) || (page.height != 0))
     {
       if ((page.x+(int) page.width) > (int) image->columns)
-        page.width=(unsigned int) ((int) image->columns-page.x);
+        page.width=image->columns-page.x;
       if ((page.y+(int) page.height) > (int) image->rows)
-        page.height=(unsigned int) ((int) image->rows-page.y);
+        page.height=image->rows-page.y;
       if (page.x < 0)
         {
-          page.width-=(unsigned int) (-page.x);
+          page.width-=(-page.x);
           page.x=0;
         }
       if (page.y < 0)
         {
-          page.height-=(unsigned int) (-page.y);
+          page.height-=(-page.y);
           page.y=0;
         }
     }
@@ -469,17 +467,15 @@ Export Image *CropImage(Image *image,const RectangleInfo *crop_info,
   if ((page.width == 0) || (page.height == 0))
     ThrowImageException(OptionWarning,"Unable to crop image",
       "geometry dimensions are zero");
-  if ((page.width == image->columns) &&
-      (page.height == image->rows) && (page.x == 0) &&
-      (page.y == 0))
+  if ((page.width == image->columns) && (page.height == image->rows) &&
+      (page.x == 0) && (page.y == 0))
     return((Image *) NULL);
   /*
     Initialize crop image attributes.
   */
   crop_image=CloneImage(image,page.width,page.height,False,exception);
   if (crop_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to crop image",
-      "Memory allocation failed");
+    return((Image *) NULL);
   /*
     Extract crop image.
   */
@@ -501,7 +497,7 @@ Export Image *CropImage(Image *image,const RectangleInfo *crop_info,
     if (QuantumTick(y,crop_image->rows))
       ProgressMonitor(CropImageText,y,crop_image->rows-1);
   }
-  if (y != (int) crop_image->rows)
+  if (y < (int) crop_image->rows)
     {
       DestroyImage(crop_image);
       return((Image *) NULL);
@@ -749,8 +745,7 @@ Export Image *FlipImage(Image *image,ExceptionInfo *exception)
   assert(image != (Image *) NULL);
   flip_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (flip_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to flip image",
-      "Memory allocation failed");
+    return((Image *) NULL);
   /*
     Flip each row.
   */
@@ -841,8 +836,7 @@ Export Image *FlopImage(Image *image,ExceptionInfo *exception)
   assert(image != (Image *) NULL);
   flop_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (flop_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to flop image",
-      "Memory allocation failed");
+    return((Image *) NULL);
   /*
     Flop each row.
   */
@@ -940,8 +934,7 @@ Export Image *RollImage(Image *image,const int x_offset,const int y_offset,
   assert(image != (Image *) NULL);
   roll_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (roll_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to roll image",
-      "Memory allocation failed");
+    return((Image *) NULL);
   /*
     Roll image.
   */

@@ -210,8 +210,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image->next == (Image *) NULL)
       {
         DestroyAnnotateInfo(annotate_info);
-        ThrowReaderException(ResourceLimitWarning,"Unable to annotate image",
-          image);
+        return((Image *) NULL);
       }
     (void) strcpy(image->next->filename,filename);
     image->next->blob=image->blob;

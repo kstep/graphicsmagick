@@ -327,8 +327,7 @@ Export Image *MagnifyImage(Image *image,ExceptionInfo *exception)
   magnify_image=
     CloneImage(image,image->columns << 1,image->rows << 1,False,exception);
   if (magnify_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to magnify image",
-      "Memory allocation failed");
+    return((Image *) NULL);
   magnify_image->class=DirectClass;
   /*
     Allocate image buffer and scanline buffer for 4 rows of the image.
@@ -526,8 +525,7 @@ Export Image *MinifyImage(Image *image,ExceptionInfo *exception)
   minify_image=
     CloneImage(image,image->columns >> 1,image->rows >> 1,False,exception);
   if (minify_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to minify image",
-      "Memory allocation failed");
+    return((Image *) NULL);
   minify_image->class=DirectClass;
   /*
     Reduce each row.
@@ -654,8 +652,7 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
     return(CloneImage(image,columns,rows,False,exception));
   sample_image=CloneImage(image,columns,rows,False,exception);
   if (sample_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to sample image",
-      "Memory allocation failed");
+    return((Image *) NULL);
   /*
     Allocate scan line buffer and column offset buffers.
   */
@@ -830,8 +827,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
     return((Image *) NULL);
   scale_image=CloneImage(image,columns,rows,False,exception);
   if (scale_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to scale image",
-      "Memory allocation failed");
+    return((Image *) NULL);
   scale_image->class=DirectClass;
   /*
     Allocate memory.
@@ -1552,8 +1548,7 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
     return(CloneImage(image,columns,rows,False,exception));
   zoom_image=CloneImage(image,columns,rows,False,exception);
   if (zoom_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to zoom image",
-      "Memory allocation failed");
+    return((Image *) NULL);
   if (zoom_image->rows >= image->rows)
     source_image=
       CloneImage(image,zoom_image->columns,image->rows,True,exception);
@@ -1563,8 +1558,7 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
   if (source_image == (Image *) NULL)
     {
       DestroyImage(zoom_image);
-      ThrowImageException(ResourceLimitWarning,"Unable to zoom image",
-        "Memory allocation failed");
+      return((Image *) NULL);
     }
   /*
     Allocate filter info list.

@@ -146,32 +146,33 @@ format.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Image
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *image,
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *scaled_image;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *zoom_image;
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ImageInfo
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; image_info;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *image_info;
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Initialize the image info structure and read an image.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GetImageInfo(&amp;image_info);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; image_info=CloneImageInfo((ImageInfo *) NULL)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void) strcpy(image_info.filename,"image.jpg");
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; image=ReadImage(&amp;image_info,&exception);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; image=ReadImage(&amp;image_info,&amp;exception);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (image == (Image *) NULL)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MagickError(exception.severity,exception.message,exception.qualifier);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Turn the image into a thumbnail.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; scaled_image=ZoomImage(image,106,80,exception);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (scaled_image == (Image *) NULL)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; zoom_image=ZoomImage(image,106,80,&amp;exception);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (zoom_image == (Image *) NULL)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MagickError(exception.severity,exception.message,exception.qualifier);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DestroyImage(image);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; image=scaled_image;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; image=zoom_image;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Write the image as PNG and destroy it.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void) strcpy(image->filename,"image.png");
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WriteImage(&amp;image_info,image);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WriteImage(image_info,image);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DestroyImageInfo(image_info);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DestroyImage(image);
 &nbsp;&nbsp;&nbsp; }</pre>
 Now we need to compile. On Unix, the command would look something like

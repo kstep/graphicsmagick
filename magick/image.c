@@ -455,8 +455,7 @@ Export Image *AppendImages(Image *image,const unsigned int stack,
   else
     append_image=CloneImage(image,image->columns,height,True,exception);
   if (append_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to append image sequence",
-      "Memory allocation failed");
+    return((Image *) NULL);
   scene=0;
   if ((image->columns != image->next->columns) || !stack)
     {
@@ -624,8 +623,7 @@ Export Image *AverageImages(Image *image,ExceptionInfo *exception)
   if (average_image == (Image *) NULL)
     {
       FreeMemory(sum);
-      ThrowImageException(ResourceLimitWarning,
-        "Unable to average image sequence","Memory allocation failed");
+      return((Image *) NULL);
     }
   average_image->class=DirectClass;
   /*
@@ -5678,14 +5676,10 @@ Export Image *ReadImage(ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Clone this subimage.
             */
-            clone_image=CloneImage(next,next->columns,
-              next->rows,True,exception);
+            clone_image=
+              CloneImage(next,next->columns,next->rows,True,exception);
             if (clone_image == (Image *) NULL)
-              {
-                ThrowException(exception,MissingDelegateWarning,
-                  "Memory allocation failed",image_info->filename);
-                break;
-              }
+              break;
             if (subimages == (Image *) NULL)
               {
                 subimages=clone_image;

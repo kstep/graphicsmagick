@@ -1376,8 +1376,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
           {
             FreeMemory(global_colormap);
             FreeMemory(colormap);
-            ThrowWriterException(ResourceLimitWarning,
-              "Memory allocation failed",image);
+            return(False);
           }
         i=0;
         for (pass=0; pass < 4; pass++)

@@ -86,7 +86,8 @@
 %
 %
 */
-static Image *ReadTILEImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadTILEImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   Image
     *clone_image,
@@ -122,8 +123,7 @@ static Image *ReadTILEImage(const ImageInfo *image_info,ExceptionInfo *exception
     CloneImage(tiled_image,image->columns,image->rows,True,exception);
   DestroyImage(image);
   if (clone_image == (Image *) NULL)
-    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-      tiled_image);
+    return((Image *) NULL);
   image=clone_image;
   (void) strcpy(image->filename,image_info->filename);
   /*

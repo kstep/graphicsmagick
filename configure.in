@@ -45,6 +45,8 @@ fi
 
 # Check for programs
 AC_PROG_CC
+AM_PROG_LD
+AC_SUBST(LD)
 AC_PROG_CPP
 AM_PROG_CC_STDC
 AC_PROG_INSTALL
@@ -59,7 +61,7 @@ AC_EXEEXT
 AC_OBJEXT
 # Declare that the library is prepared to build a DLL
 # Must also pass -no-undefined to libtool in Makefile
-# AC_LIBTOOL_WIN32_DLL
+AC_LIBTOOL_WIN32_DLL
 
 #
 # Configure libtool and ltdl
@@ -70,6 +72,7 @@ AC_SUBST(INCLTDL)
 AC_SUBST(LIBLTDL)
 # Check for dlopen support
 AC_LIBTOOL_DLOPEN
+AC_LIBTOOL_SETUP
 # Configure libtool
 AM_ENABLE_SHARED(no)
 AM_ENABLE_STATIC(yes)

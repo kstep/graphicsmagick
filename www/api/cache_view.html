@@ -23,7 +23,7 @@
 		<LI><A HREF="#closecacheview">CloseCacheView</A></LI>
 		<LI><A HREF="#getcacheview">GetCacheView</A></LI>
 		<LI><A HREF="#getcacheviewindexes">GetCacheViewIndexes</A></LI>
-		<LI><A HREF="#getpixels">GetPixels</A></LI>
+		<LI><A HREF="#getcacheviewpixels">GetCacheViewPixels</A></LI>
 		<LI><A HREF="#opencacheview">OpenCacheView</A></LI>
 		<LI><A HREF="#setcacheview">SetCacheView</A></LI>
 		<LI><A HREF="#synccacheview">SyncCacheView</A></LI>
@@ -45,6 +45,7 @@
 <P>void  <STRONG>CloseCacheView</STRONG>( ViewInfo *view );</P>
 <P>PixelPacket * <STRONG>GetCacheView</STRONG>( ViewInfo *view, const int x, const int y, const unsigned int columns, const unsigned int rows );</P>
 <P>IndexPacket * <STRONG>GetCacheViewIndexes</STRONG>( const ViewInfo *view );</P>
+<P>PixelPacket * <STRONG>GetCacheViewPixels</STRONG>( const ViewInfo *view );</P>
 <P>ViewInfo * <STRONG>OpenCacheView</STRONG>( Image *image );</P>
 <P>PixelPacket * <STRONG>SetCacheView</STRONG>( ViewInfo *view, const int x, const int y, const unsigned int columns, const unsigned int rows );</P>
 <P>unsigned int  <STRONG>SyncCacheView</STRONG>( ViewInfo *view );</P>
@@ -56,7 +57,7 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="closecacheview">CloseCacheView</A></H2>
-<P>Method CloseCacheView closes a view associated with the pixel cache.</P>
+<P>Method CloseCacheView closes the specified view returned by a previous call to <CODE>OpenCacheView</CODE></P>
 <P>The format of the CloseCacheView method is:</P>
 <blockquote>void CloseCacheView ( <A HREF="types/ViewInfo.html">ViewInfo</A> *view ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
@@ -74,10 +75,9 @@ The address of a structure of type ViewInfo.
 <blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetCacheView ( <A HREF="types/ViewInfo.html">ViewInfo</A> *view, const int x, const int y, const unsigned int columns, const unsigned int rows ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_pixels%3A">pixels:</A></STRONG><BR>
 <DD>
-Method GetCacheView returns a pointer to the pixels is returned if the pixels are transferred, otherwise a 
-<FONT SIZE=-1>NULL</FONT> is returned.
+Method GetCacheView returns a null pointer if an error occurs, otherwise a pointer to the view pixels.
 <P></P>
 <p><dt><STRONG>view:</STRONG><BR>
 <DD>
@@ -89,31 +89,29 @@ These values define the perimeter of a region of pixels.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getcacheviewindexes">GetCacheViewIndexes</A></H2>
-<P>Method GetCacheViewIndexes returns the colormap indexes associated with the last call to the <CODE>OpenCacheView</CODE></P>
+<P>Method GetCacheViewIndexes returns the colormap indexes associated with the specified view.</P>
 <P>The format of the GetCacheViewIndexes method is:</P>
 <blockquote>IndexPacket *GetCacheViewIndexes ( const <A HREF="types/ViewInfo.html">ViewInfo</A> *view ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_indexes%3A">indexes:</A></STRONG><BR>
 <DD>
-Method GetCacheViewIndexes returns the indexes associated the last call to the <CODE>OpenCacheView</CODE>
+Method GetCacheViewIndexes returns the colormap indexes associated with the specified view.
 <P></P>
 <p><dt><STRONG>view:</STRONG><BR>
 <DD>
 The address of a structure of type ViewInfo.
 <P></P></DL></DL>
 <P>
-<H2><A NAME="getpixels">GetPixels</A></H2>
-<P>Method GetCacheViewPixels returns the pixels associated with the last call to the <CODE>OpenCacheView</CODE></P>
+<H2><A NAME="getcacheviewpixels">GetCacheViewPixels</A></H2>
+<P>Method GetCacheViewPixels returns the pixels associated with the specified specified view.</P>
 <P>The format of the GetCacheViewPixels method is:</P>
-<PRE>
-    PixelPacket *GetCacheViewPixels(const ViewInfo *view)</PRE>
-<P>
+<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetCacheViewPixels ( const <A HREF="types/ViewInfo.html">ViewInfo</A> *view ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_pixels%3A">pixels:</A></STRONG><BR>
+<p><dt><STRONG>pixels:</STRONG><BR>
 <DD>
-Method GetCacheViewPixels returns the pixels associated with the last call to the <CODE>OpenCacheView</CODE>
+Method GetCacheViewPixels returns the pixels associated with the specified view.
 <P></P>
 <p><dt><STRONG>view:</STRONG><BR>
 <DD>
@@ -121,7 +119,7 @@ The address of a structure of type ViewInfo.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="opencacheview">OpenCacheView</A></H2>
-<P>Method OpenCacheView opens a view associated with the pixel cache.</P>
+<P>Method OpenCacheView opens a view into the pixel cache.</P>
 <P>The format of the OpenCacheView method is:</P>
 <blockquote><A HREF="types/ViewInfo.html">ViewInfo</A> *OpenCacheView ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
@@ -139,10 +137,9 @@ The address of a structure of type Image.
 <blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *SetCacheView ( <A HREF="types/ViewInfo.html">ViewInfo</A> *view, const int x, const int y, const unsigned int columns, const unsigned int rows ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>status:</STRONG><BR>
+<p><dt><STRONG>pixels:</STRONG><BR>
 <DD>
-Method SetCacheView returns a pointer to the pixels is returned if the pixels are transferred, otherwise a 
-<FONT SIZE=-1>NULL</FONT> is returned.
+Method SetCacheView returns a null pointer if an error occurs, otherwise a pointer to the view pixels.
 <P></P>
 <p><dt><STRONG>view:</STRONG><BR>
 <DD>
@@ -154,17 +151,14 @@ These values define the perimeter of a region of pixels.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="synccacheview">SyncCacheView</A></H2>
-<P>Method SyncCacheView gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters.  
-<FONT SIZE=-1>A</FONT> pointer to the pixels is returned if the pixels are transferred, otherwise a 
-<FONT SIZE=-1>NULL</FONT> is returned.</P>
+<P>Method SyncCacheView saves the view pixels to the in-memory or disk cache.  The method returns True if the pixel region is synced, otherwise False.</P>
 <P>The format of the SyncCacheView method is:</P>
 <blockquote>unsigned int SyncCacheView ( <A HREF="types/ViewInfo.html">ViewInfo</A> *view ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>status:</STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
 <DD>
-Method SyncCacheView returns a pointer to the pixels is returned if the pixels are transferred, otherwise a 
-<FONT SIZE=-1>NULL</FONT> is returned.
+Method SyncCacheView returns True if the view pixels are transferred to the in-memory or disk cache otherwise False.
 <P></P>
 <p><dt><STRONG>view:</STRONG><BR>
 <DD>

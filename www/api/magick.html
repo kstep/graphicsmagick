@@ -21,7 +21,7 @@
 	<UL>
 
 		<LI><A HREF="#destroymagickinfo">DestroyMagickInfo</A></LI>
-		<LI><A HREF="#getmagicklist">GetMagickList</A></LI>
+		<LI><A HREF="#getmagickinfo">GetMagickInfo</A></LI>
 		<LI><A HREF="#listmagickinfo">ListMagickInfo</A></LI>
 		<LI><A HREF="#registermagickinfo">RegisterMagickInfo</A></LI>
 		<LI><A HREF="#setmagickinfo">SetMagickInfo</A></LI>
@@ -42,6 +42,7 @@
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>void  <STRONG>DestroyMagickInfo</STRONG>( );</P>
+<P>MagickInfo * <STRONG>GetMagickInfo</STRONG>( const char *tag );</P>
 <P>void  <STRONG>ListMagickInfo</STRONG>( 
 <FONT SIZE=-1>FILE</FONT> *file );</P>
 <P>MagickInfo * <STRONG>RegisterMagickInfo</STRONG>( MagickInfo *entry );</P>
@@ -58,13 +59,11 @@
 <P>Method DestroyMagickInfo deallocates memory associated MagickInfo list.</P>
 <P>The format of the DestroyMagickInfo method is:</P>
 <blockquote>void DestroyMagickInfo ( ); </blockquote><P>
-<H2><A NAME="getmagicklist">GetMagickList</A></H2>
+<H2><A NAME="getmagickinfo">GetMagickInfo</A></H2>
 <P>Method GetMagickInfo returns a pointer MagickInfo structure that matches the specified tag.  If tag is 
 <FONT SIZE=-1>NULL,</FONT> the head of the image format list is returned.</P>
 <P>The format of the GetMagickInfo method is:</P>
-<PRE>
-    MagickInfo *GetMagickInfo(const char *tag)</PRE>
-<P>
+<blockquote><A HREF="types/MagickInfo.html">MagickInfo</A> *GetMagickInfo ( const char *tag ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_magick_info%3A">magick_info:</A></STRONG><BR>
