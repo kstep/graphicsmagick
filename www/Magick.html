@@ -873,16 +873,15 @@ opacity, use a format like MIFF, TIFF, or PNG as you output image format.</dd>
 <a NAME="C29"></a><b>29. Why are my GIF images so HUGE???</b></dt>
 
 <dd>
-Portions of the LZW compression algorithm used by the GIF image format
-are <a href="http://burnallgifs.org/">patented by Unisys</a>. To avoid
-infringing on the Unisys patent, ImageMagick creates non-LZW GIF images
-by default. These images may still be read by standard GIF decoders, but
-are much larger. We encourage you to consider using unrestricted formats
-such as PNG or JPEG instead of GIF. If you should choose to use the GIF
-format (and pay royalty fees to Unisys), you may enable LZW compression
-in ImageMagick by specifying the <tt>--enable-lzw</tt> option to the Unix
-configure script, or define <tt>HasLZW</tt> in <tt>&lt;magick/magick.h></tt>,
-prior to building ImageMagick.</dd>
+<a href="http://burnallgifs.org/">Unisys</a> claims a patent on
+portions of the GIF LZW compression algorithm.  To avoid possible
+infringement, ImageMagick creates uncompressed GIF images by default.
+These images can be read by standard GIF decoders, but are generally
+much larger. We encourage the use of patent-free image formats
+such as PNG or JPEG instead of GIF. If you require LZW compressed GIF
+images, set the <tt>--enable-lzw</tt> option when you execute the
+<tt>configure</tt> script, or define <tt>HasLZW</tt> in
+<tt>&lt;magick/magick.h></tt>, before you compile ImageMagick.</dd>
 </dl>
 
 <hr>
