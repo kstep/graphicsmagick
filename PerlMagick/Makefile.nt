@@ -47,7 +47,7 @@ WriteMakefile(
 sub MY::postamble
 {
         '
-Image-Magick.tar.gz: ppd pure_all htmlifypods manifypods
+Image-Magick.tar.gz: ppd pure_all #htmlifypods manifypods
 	if exist Image-Magick.tar.gz del Image-Magick.tar.gz
 	if exist Image-Magick.tar del Image-Magick.tar
         $(TAR) $(TARFLAGS) Image-Magick.tar blib
