@@ -90,15 +90,15 @@ noinst_HEADERS = animate.h stash.h defines.h display.h mac.h mng.h modules.h\
 EXTRA_DIST = $(ALLMANPAGES) Imakefile Magick-config.in Make.com mac.c \
   modules.mgk nt.c vms.c $(MAGICK_BASE_SRCS)
 
-# Architecture-independent data files
-pkgdata_DATA = modules.mgk
-
 #
 # Libtool Modules
 #
 
 # Where modules are installed
-pkgdir            = $(libdir)/ImageMagick/modules/coders
+pkgdir = $(libdir)/ImageMagick/modules/coders
+
+# Architecture-dependent data files installed with modules
+pkg_DATA = modules.mgk
 
 # Modules which are to be built
 if WITH_MODULES

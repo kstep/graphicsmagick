@@ -257,15 +257,15 @@ EXTRA_DIST = $(ALLMANPAGES) Imakefile Magick-config.in Make.com mac.c \
   modules.mgk nt.c vms.c $(MAGICK_BASE_SRCS)
 
 
-# Architecture-independent data files
-pkgdata_DATA = modules.mgk
-
 #
 # Libtool Modules
 #
 
 # Where modules are installed
 pkgdir = $(libdir)/ImageMagick/modules/coders
+
+# Architecture-dependent data files installed with modules
+pkg_DATA = modules.mgk
 @WITH_MODULES_TRUE@pkg_LTLIBRARIES = @WITH_MODULES_TRUE@avs.la bmp.la cache.la cmyk.la dcm.la dps.la ept.la \
 @WITH_MODULES_TRUE@  fax.la fpx.la fits.la gif.la gray.la gradation.la hdf.la histogram.la \
 @WITH_MODULES_TRUE@  html.la icc.la icon.la iptc.la jbig.la jpeg.la label.la logo.la map.la \
@@ -925,11 +925,11 @@ $(txt_la_SOURCES) $(uil_la_SOURCES) $(uyvy_la_SOURCES) \
 $(vicar_la_SOURCES) $(vid_la_SOURCES) $(viff_la_SOURCES) \
 $(wbmp_la_SOURCES) $(x_la_SOURCES) $(xbm_la_SOURCES) $(xc_la_SOURCES) \
 $(xpm_la_SOURCES) $(xwd_la_SOURCES) $(yuv_la_SOURCES)
-DATA =  $(pkgdata_DATA)
+DATA =  $(pkg_DATA)
 
 HEADERS =  $(include_HEADERS) $(noinst_HEADERS)
 
-DIST_COMMON =  $(include_HEADERS) $(noinst_HEADERS) $(pkgdata_DATA) \
+DIST_COMMON =  $(include_HEADERS) $(noinst_HEADERS) $(pkg_DATA) \
 ./stamp-h.in Magick-config.in Makefile.am Makefile.in config.h.in
 
 
@@ -1334,22 +1334,22 @@ uninstall-binSCRIPTS:
 	  rm -f $(DESTDIR)$(bindir)/$$f; \
 	done
 
-install-pkgdataDATA: $(pkgdata_DATA)
+install-pkgDATA: $(pkg_DATA)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)
-	@list='$(pkgdata_DATA)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(pkgdir)
+	@list='$(pkg_DATA)'; for p in $$list; do \
 	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
 	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(pkgdatadir)/$$f"; \
-	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(pkgdatadir)/$$f; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(pkgdir)/$$f"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(pkgdir)/$$f; \
 	done
 
-uninstall-pkgdataDATA:
+uninstall-pkgDATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(pkgdata_DATA)'; for p in $$list; do \
+	@list='$(pkg_DATA)'; for p in $$list; do \
 	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " rm -f $(DESTDIR)$(pkgdatadir)/$$f"; \
-	  rm -f $(DESTDIR)$(pkgdatadir)/$$f; \
+	  echo " rm -f $(DESTDIR)$(pkgdir)/$$f"; \
+	  rm -f $(DESTDIR)$(pkgdir)/$$f; \
 	done
 
 install-includeHEADERS: $(include_HEADERS)
@@ -1568,7 +1568,7 @@ all-recursive-am: config.h
 install-exec-am: install-libLTLIBRARIES install-binSCRIPTS
 install-exec: install-exec-am
 
-install-data-am: install-pkgLTLIBRARIES install-pkgdataDATA \
+install-data-am: install-pkgLTLIBRARIES install-pkgDATA \
 		install-includeHEADERS
 install-data: install-data-am
 
@@ -1576,7 +1576,7 @@ install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
 uninstall-am: uninstall-libLTLIBRARIES uninstall-pkgLTLIBRARIES \
-		uninstall-binSCRIPTS uninstall-pkgdataDATA \
+		uninstall-binSCRIPTS uninstall-pkgDATA \
 		uninstall-includeHEADERS
 uninstall: uninstall-am
 all-am: Makefile $(LTLIBRARIES) $(SCRIPTS) $(DATA) $(HEADERS) config.h
@@ -1585,7 +1585,7 @@ install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
 installdirs:
 	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(pkgdir) \
-		$(DESTDIR)$(bindir) $(DESTDIR)$(pkgdatadir) \
+		$(DESTDIR)$(bindir) $(DESTDIR)$(pkgdir) \
 		$(DESTDIR)$(includedir)
 
 
@@ -1641,7 +1641,7 @@ uninstall-pkgLTLIBRARIES install-pkgLTLIBRARIES mostlyclean-compile \
 distclean-compile clean-compile maintainer-clean-compile \
 mostlyclean-libtool distclean-libtool clean-libtool \
 maintainer-clean-libtool uninstall-binSCRIPTS install-binSCRIPTS \
-uninstall-pkgdataDATA install-pkgdataDATA uninstall-includeHEADERS \
+uninstall-pkgDATA install-pkgDATA uninstall-includeHEADERS \
 install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
 maintainer-clean-tags distdir mostlyclean-depend distclean-depend \
 clean-depend maintainer-clean-depend info-am info dvi-am dvi check \

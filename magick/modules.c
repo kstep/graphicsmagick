@@ -69,7 +69,7 @@ static ModuleAliases
   *module_aliases = (ModuleAliases *) NULL;
 /* Module search path */
 static char
-  *module_path = (char*) NULL;
+  **module_path = (char**) NULL;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -130,6 +130,9 @@ Export void DestroyModuleInfo()
 */
 Export void ExitModules(void)
 {
+  int
+    i;
+
   register ModuleInfo
     *p;
 
@@ -152,7 +155,9 @@ Export void ExitModules(void)
     }
   module_aliases=(ModuleAliases*)NULL;
 
-  /* Free module search path */
+  /* Free memory associated with module directory search list */
+  for( i=0; module_path[i]; ++i )
+    FreeMemory((void**)&module_path[i]);
   FreeMemory((void**)&module_path);
 
   /* Shut down libltdl */
@@ -223,10 +228,11 @@ Export ModuleInfo *GetModuleInfo(const char *tag)
 %      void InitializeModules()
 %
 */
-Export void InitializeModules(void)
+static void InitializeModuleAliases(void)
 {
-  static int
-    initialized = 0;
+  int
+    i,
+    match;
 
   char
     aliases[MaxTextExtent],
@@ -240,6 +246,140 @@ Export void InitializeModules(void)
   FILE*
     file;
 
+  p=(ModuleAliases*) NULL;
+  for( i=0; module_path[i]; ++i)
+    {
+      strcpy(aliases, module_path[i]);
+      strcat(aliases, DirectorySeparator);
+      strcat(aliases, "modules.mgk");
+
+      file = fopen(aliases, "r");
+      if(file != (FILE*) NULL)
+	{
+	  while(!feof(file))
+	    {
+	      if(fscanf(file, "%s %s", alias, module) == 2)
+		{
+		  /* Append to list if alias is not already present */
+		  match=False;
+		  if(module_aliases != (ModuleAliases*) NULL)
+		    {
+		      for(entry=module_aliases;entry!=(ModuleAliases*)NULL;
+			  entry=entry->next)
+			{
+			  if(Latin1Compare(entry->alias,alias) == 0)
+			    {
+			      match=True;
+			      break;
+			    };
+			}
+		    }
+		  if(match == False)
+		    {
+		      entry = (ModuleAliases*)AllocateMemory(sizeof(ModuleAliases));
+		      if(entry != (ModuleAliases*) NULL)
+			{
+			  entry->alias = AllocateString(alias);
+			  entry->module = AllocateString(module);
+			  entry->next = (ModuleAliases*) NULL;
+			      
+			  if (module_aliases != (ModuleAliases*) NULL)
+			    {
+			      p->next = entry;
+			      p=p->next;
+			    }
+			  else
+			    {
+			      module_aliases = entry;
+			      p=module_aliases;
+			    }
+			}
+		    }
+		}
+	    }
+	  fclose(file);
+	}
+    }
+}
+static void InitializeModuleSearchPath(void)
+{
+  int
+    max_path_elements = 31,
+    path_index = 0;
+
+  char
+    scratch[MaxTextExtent];
+
+  module_path=(char**)AllocateMemory((max_path_elements+1)*sizeof(char*));
+  if(module_path != (char**)NULL)
+    {
+      char
+	*path,
+	*path_end;
+
+      int
+	i;
+	
+      /* Add user specified path */
+      if((path=getenv("MAGICK_MODULE_PATH")) != NULL)
+	{
+	  while(path_index<max_path_elements)
+	    {
+	      path_end=strchr(path,DirectoryListSeparator);
+	      if (path_end == (char *) NULL)
+		{
+		  module_path[path_index]=AllocateString(path);
+		  ++path_index;
+		  break;
+		}
+	      else
+		{
+		  i=(int) (path_end-path);
+		  (void) strncpy(scratch,path,i);
+		  scratch[i]='\0';
+		  module_path[path_index]=AllocateString(scratch);
+		  ++path_index;
+		  path=path_end+1;
+		}
+	    }
+	}
+      /* Add HOME/.magick if it exists */
+      if ((path_index<max_path_elements) &&
+	  ((path=getenv("HOME")) != NULL))
+	{
+	  strcpy(scratch,path);
+	  strcat(scratch,"/.magick");
+	  if(access(scratch,R_OK) == 0)
+	    {
+	      module_path[path_index]=AllocateString(scratch);
+	      ++path_index;
+	    }
+	}
+      /* Add default module installation directory */
+      if (path_index<max_path_elements)
+	{
+	  module_path[path_index]=AllocateString(CoderModuleDirectory);
+	  ++path_index;
+	}
+      /* Terminate list */
+      module_path[path_index]=(char*) NULL;
+
+      /* Tell ltdl about search path */
+      *scratch='\0';
+      for( i=0; module_path[i]; ++i)
+	{
+	  if(i != 0)
+	    strcat(scratch,":");
+	  strcat(scratch,module_path[i]);
+	}
+      lt_dlsetsearchpath(scratch);
+    }
+}
+Export void InitializeModules(void)
+{
+  static int
+    initialized = 0;
+
   if (!initialized)
     {
       /* Initialize ltdl */
@@ -250,74 +390,11 @@ Export void InitializeModules(void)
 	  exit(1);
 	}
       
-      /* Set ltdl module search path */
-      module_path=(char*)AllocateMemory(MaxTextExtent);
-      if(module_path != (char*)NULL)
-	{
-	  char *path;
-	  char scratch[MaxTextExtent];
-	  *module_path='\0';
-	  /* Add user specified path */
-	  if((path=getenv("MAGICK_MODULE_PATH")) != NULL)
-	    {
-	      strcpy(module_path, path);
-	    }
-	  /* Add HOME/.magick if it exists */
-	  if((path=getenv("HOME")) != NULL)
-	    {
-	      strcpy(scratch,path);
-	      strcat(scratch,"/.magick");
-	      if(access(scratch,R_OK) == 0)
-		{
-		  if(*module_path != '\0')
-		    strcat(module_path,":");
-		  strcat(module_path,scratch);
-		}
-	    }
-	  /* Add default module installation directory */
-	  if(*module_path != '\0')
-	    strcat(module_path,":");
-	  strcat(module_path,CoderModuleDirectory);
-	  /* Tell ltdl about search path */
-	  lt_dlsetsearchpath(module_path);
-	}
+      /* Determine and set module search path */
+      InitializeModuleSearchPath();
 
       /* Load module aliases */
-      strcpy(aliases, DelegatePath);
-      strcat(aliases, DirectorySeparator);
-      strcat(aliases, "modules.mgk");
-
-      file = fopen(aliases, "r");
-      if(file != (FILE*) NULL)
-	{
-	  p=(ModuleAliases*) NULL;
-	  while(!feof(file))
-	    {
-	      if(fscanf(file, "%s %s", alias, module) == 2)
-		{
-		  entry = (ModuleAliases*)AllocateMemory(sizeof(ModuleAliases));
-		  if(entry != (ModuleAliases*) NULL)
-		    {
-		      entry->alias = AllocateString(alias);
-		      entry->module = AllocateString(module);
-		      entry->next = (ModuleAliases*) NULL;
-
-		      if (module_aliases != (ModuleAliases*) NULL)
-			{
-			  p->next = entry;
-			  p=p->next;
-			}
-		      else
-			{
-			  module_aliases = entry;
-			  p=module_aliases;
-			}
-		    }
-		}
-	    }
-	  fclose(file);
-	}
-      /*module_aliases*/
+      InitializeModuleAliases();
     }
 }
 
@@ -358,9 +435,8 @@ Export int LoadAllModules(void)
     LoadModule(*p++);
 
   /* Free list memory */
-  i=0;
-  while(module_list[i])
-    FreeMemory((void**)&module_list[i++]);
+  for( i=0; module_list[i]; ++i)
+    FreeMemory((void**)&module_list[i]);
   FreeMemory((void **) &module_list);
 
   return True;
