@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<locale name="iso8859-1">
+<locale name="C">
   <Cache>
     <Error>
       <Message name="PixelCacheIsNotOpen">

@@ -87,5 +87,5 @@
 <!-- % -->
 <!-- */ -->
 <localemap>
-  <include locale="iso8859-1" file="iso8859-1.mgk" />
+  <include locale="C" file="C.mgk" />
 </localemap>

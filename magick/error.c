@@ -618,6 +618,6 @@ MagickExport void ThrowException(ExceptionInfo *exception,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   exception->severity=(ExceptionType) severity;
-  (void) CloneString(&exception->reason,reason);
-  (void) CloneString(&exception->description,description);
+  (void) CloneString(&exception->reason,GetLocaleMessage(reason));
+  (void) CloneString(&exception->description,GetLocaleMessage(description));
 }
