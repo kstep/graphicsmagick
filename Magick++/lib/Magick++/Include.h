@@ -188,7 +188,40 @@ namespace Magick
   using MagickLib::FloodfillMethod;
   using MagickLib::FillToBorderMethod;
   using MagickLib::ResetMethod;
-  
+
+  // Preview types.  Not currently used by Magick++
+  using MagickLib::PreviewType;
+  using MagickLib::UndefinedPreview;
+  using MagickLib::RotatePreview;
+  using MagickLib::ShearPreview;
+  using MagickLib::RollPreview;
+  using MagickLib::HuePreview;
+  using MagickLib::SaturationPreview;
+  using MagickLib::BrightnessPreview;
+  using MagickLib::GammaPreview;
+  using MagickLib::SpiffPreview;
+  using MagickLib::DullPreview;
+  using MagickLib::GrayscalePreview;
+  using MagickLib::QuantizePreview;
+  using MagickLib::DespecklePreview;
+  using MagickLib::ReduceNoisePreview;
+  using MagickLib::AddNoisePreview;
+  using MagickLib::SharpenPreview;
+  using MagickLib::BlurPreview;
+  using MagickLib::ThresholdPreview;
+  using MagickLib::EdgeDetectPreview;
+  using MagickLib::SpreadPreview;
+  using MagickLib::SolarizePreview;
+  using MagickLib::ShadePreview;
+  using MagickLib::RaisePreview;
+  using MagickLib::SegmentPreview;
+  using MagickLib::SwirlPreview;
+  using MagickLib::ImplodePreview;
+  using MagickLib::WavePreview;
+  using MagickLib::OilPaintPreview;
+  using MagickLib::CharcoalDrawingPreview;
+  using MagickLib::JPEGPreview;
+
   // Rendering intents
   using MagickLib::RenderingIntent;
   using MagickLib::UndefinedIntent;
