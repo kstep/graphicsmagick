@@ -732,6 +732,7 @@ extern MagickExport unsigned int
   AllocateImageColormap(Image *,const unsigned long),
   AnimateImages(const ImageInfo *image_info,Image *image),
   ChannelImage(Image *,const ChannelType),
+  ClipImage(Image *),
   CompositeImage(Image *,const CompositeOperator,const Image *,const long,
     const long),
   ContrastImage(Image *,const unsigned int),

@@ -395,6 +395,7 @@ static struct
       {"height", IntegerReference} } },
     { "Level", { {"level", StringReference}, {"black-point", DoubleReference},
       {"mid-point", DoubleReference}, {"white-point", DoubleReference} } },
+    { "Clip", },
   };
 
 /*
@@ -3929,6 +3930,8 @@ Mogrify(ref,...)
     ShaveImage         = 144
     Level              = 145
     LevelImage         = 146
+    Clip               = 147
+    ClipImage          = 148
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -5549,6 +5552,11 @@ Mogrify(ref,...)
                 }
             }
           LevelImage(image,argument_list[0].string_reference);
+          break;
+        }
+        case 74:  /* Clip */
+        {
+          (void) ClipImage(image);
           break;
         }
       }

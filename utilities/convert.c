@@ -67,6 +67,7 @@
 %    -channel type        extract a particular color channel from image
 %    -charcoal radius     simulate a charcoal drawing
 %    -chop geometry       remove pixels from the image interior
+%    -clip                apply clipping path if the image has one
 %    -coalesce            merge a sequence of images
 %    -colorize value      colorize the image with the fill color
 %    -colors value        preferred number of colors in the image
@@ -479,6 +480,7 @@ static void Usage(void)
       "-channel type        extract a particular color channel from image",
       "-charcoal radius     simulate a charcoal drawing",
       "-chop geometry       remove pixels from the image interior",
+      "-clip                apply clipping path if the image has one",
       "-coalesce            merge a sequence of images",
       "-colorize value      colorize the image with the fill color",
       "-colors value        preferred number of colors in the image",
@@ -885,6 +887,8 @@ int main(int argc,char **argv)
                 }
               break;
             }
+          if (LocaleCompare("clip",option+1) == 0)
+            break;
           if (LocaleCompare("coalesce",option+1) == 0)
             {
               option_info.coalesce=(*option == '-');

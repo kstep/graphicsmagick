@@ -818,6 +818,54 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C l i p I m a g e                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ClipImage() sets the image clip mask based any clipping path information if
+%  it exists.
+%
+%  The format of the ClipImage method is:
+%
+%      unsigned int ClipImage(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport unsigned int ClipImage(Image *image)
+{
+  const ImageAttribute
+    *attribute;
+
+  Image
+    *clip_mask;
+
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  attribute=GetImageAttribute(image,"8BIM:1999,2998");
+  if (attribute == (const ImageAttribute *) NULL)
+    return(False);
+  image_info=CloneImageInfo((ImageInfo *) NULL);
+  clip_mask=BlobToImage(image_info,attribute->value,strlen(attribute->value),
+    &image->exception);
+  DestroyImageInfo(image_info);
+  if (mask == (Image *) NULL)
+    return(False);
+  (void) SetImageClipMask(*image,clip_mask);
+  DestroyImage(clip_mask);
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   C l o n e I m a g e                                                       %
 %                                                                             %
 %                                                                             %
@@ -3531,6 +3579,16 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               break;
             DestroyImage(*image);
             *image=charcoal_image;
+            continue;
+          }
+        if (LocaleCompare("clip",option+1) == 0)
+          {
+            if (*option == '+')
+              {
+                (void) SetImageClipMask(*image,(Image *) NULL);
+                continue;
+              }
+            (void) ClipImage(*image);
             continue;
           }
         if (LocaleCompare("-colorize",option) == 0)
