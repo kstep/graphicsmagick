@@ -138,7 +138,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   if (watermark == (Image *) NULL)
     return((Image *) NULL);
   watermark->depth=QuantumDepth;
-  if (!AllocateImageColormap(image,MaxRGB+1))
+  if (!AllocateImageColormap(image,MaxColormapSize))
     ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   if (image_info->ping)
     {

@@ -581,12 +581,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
             else
               {
-                pixel.red=(*p++) << 8;
-                pixel.red|=(*p++);
-                pixel.green=(*p++) << 8;
-                pixel.green|=(*p++);
-                pixel.blue=(*p++) << 8;
-                pixel.blue|=(*p++);
+                pixel.red=(*p << 8) | *(p+1);
+                p+=2;
+                pixel.green=(*p << 8) | *(p+1);
+                p+=2;
+                pixel.blue=(*p << 8) | *(p+1);
+                p+=2;
               }
             if (scale != (unsigned long *) NULL)
               {
@@ -842,7 +842,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             if (IsMonochromeImage(image,&image->exception))
               format=4;
           }
-    if ((image_info->compression == NoCompression) || (image->depth > 8))
+    if (image_info->compression == NoCompression)
       format-=3;
     if (LocaleCompare(image_info->magick,"P7") != 0)
       FormatString(buffer,"P%d\n",format);
@@ -1046,8 +1046,10 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PGM image.
         */
-        FormatString(buffer,"%u\n",ScaleQuantumToChar(MaxRGB));
-        (void) WriteBlobString(image,buffer);
+        if (image->depth <= 8)
+          (void) WriteBlobString(image,"255\n");
+        else
+          (void) WriteBlobString(image,"65535\n");
         for (y=0; y < (long) image->rows; y++)
         {
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
@@ -1055,8 +1057,12 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             break;
           for (x=0; x < (long) image->columns; x++)
           {
-            index=ScaleQuantumToChar(PixelIntensityToQuantum(p));
-            (void) WriteBlobByte(image,index);
+            if (image->depth <= 8)
+              (void) WriteBlobByte(image,
+                ScaleQuantumToChar(PixelIntensityToQuantum(p)));
+	    else
+              (void) WriteBlobMSBShort(image,
+                ScaleQuantumToShort(PixelIntensityToQuantum(p)));
             p++;
           }
           if (image->previous == (Image *) NULL)
@@ -1071,7 +1077,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           *q;
 
         size_t
-          length;
+          packets;
 
         unsigned char
           *pixels;
@@ -1079,16 +1085,18 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Allocate memory for pixels.
         */
-        length=image->columns*sizeof(PixelPacket);
-        pixels=(unsigned char *) AcquireMemory(length);
+        packets=3*image->depth/8;
+        pixels=(unsigned char *) AcquireMemory(packets*image->columns);
         if (pixels == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitError,"Memory allocation failed",
             image);
         /*
           Convert image to a PNM image.
         */
-        FormatString(buffer,"%u\n",ScaleQuantumToChar(MaxRGB));
-        (void) WriteBlobString(image,buffer);
+        if (image->depth <= 8)
+          (void) WriteBlobString(image,"255\n");
+        else
+          (void) WriteBlobString(image,"65535\n");
         for (y=0; y < (long) image->rows; y++)
         {
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
@@ -1097,9 +1105,21 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           q=pixels;
           for (x=0; x < (long) image->columns; x++)
           {
-            *q++=ScaleQuantumToChar(p->red);
-            *q++=ScaleQuantumToChar(p->green);
-            *q++=ScaleQuantumToChar(p->blue);
+            if (image->depth <= 8)
+              {
+                *q++=ScaleQuantumToChar(p->red);
+                *q++=ScaleQuantumToChar(p->green);
+                *q++=ScaleQuantumToChar(p->blue);
+              }
+	    else
+              {
+                *q++=(unsigned char) (ScaleQuantumToShort(p->red) >> 8);
+                *q++=(unsigned char) ScaleQuantumToShort(p->red);
+                *q++=(unsigned char) (ScaleQuantumToShort(p->green) >> 8);
+                *q++=(unsigned char) ScaleQuantumToShort(p->green);
+                *q++=(unsigned char) (ScaleQuantumToShort(p->blue) >> 8);
+                *q++=(unsigned char) ScaleQuantumToShort(p->blue);
+              }
             p++;
           }
           (void) WriteBlob(image,q-pixels,(char *) pixels);

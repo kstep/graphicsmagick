@@ -168,7 +168,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
       case 'i':
       case 'I':
       {
-        if (!AllocateImageColormap(image,MaxRGB+1))
+        if (!AllocateImageColormap(image,MaxColormapSize))
           ThrowImageException(ResourceLimitError,"Unable to constitute image",
             "Memory allocation failed");
         break;
