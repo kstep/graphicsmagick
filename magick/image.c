@@ -1433,6 +1433,12 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
         case InCompositeOp:
         {
+          if ((source.opacity == TransparentOpacity) &&
+              (destination.opacity == TransparentOpacity))
+            {
+					    destination=source;
+              break;
+            }
           opacity=(double)
             (MaxRGB-source.opacity)*(MaxRGB-destination.opacity)/MaxRGB;
           destination.red=(Quantum) ((double) (MaxRGB-source.opacity)*
@@ -1446,18 +1452,30 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
         case OutCompositeOp:
         {
+          if ((source.opacity == TransparentOpacity) &&
+              (destination.opacity == OpaqueOpacity))
+            {
+					    destination=source;
+              break;
+            }
           opacity=(double) (MaxRGB-source.opacity)*destination.opacity/MaxRGB;
           destination.red=(Quantum) ((double) (MaxRGB-source.opacity)*
-            destination.opacity*source.red/MaxRGB/MaxRGB+0.5);
+            destination.opacity*source.red/MaxRGB/opacity+0.5);
           destination.green=(Quantum) ((double) (MaxRGB-source.opacity)*
-            destination.opacity*source.green/MaxRGB/MaxRGB+0.5);
+            destination.opacity*source.green/MaxRGB/opacity+0.5);
           destination.blue=(Quantum) ((double) (MaxRGB-source.opacity)*
-            destination.opacity*source.blue/MaxRGB/MaxRGB+0.5);
+            destination.opacity*source.blue/MaxRGB/opacity+0.5);
           destination.opacity=(Quantum) (MaxRGB-opacity+0.5);
           break;
         }
         case AtopCompositeOp:
         {
+          if ((source.opacity == TransparentOpacity) &&
+              (destination.opacity == TransparentOpacity))
+            {
+					    destination=source;
+              break;
+            }
           opacity=((double)(MaxRGB-source.opacity)*(MaxRGB-destination.opacity)+
             (double) source.opacity*(MaxRGB-destination.opacity))/MaxRGB;
           red=((double) (MaxRGB-source.opacity)*(MaxRGB-destination.opacity)*
@@ -1478,19 +1496,25 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
         case XorCompositeOp:
         {
+          if ((source.opacity == OpaqueOpacity) &&
+              (destination.opacity == TransparentOpacity))
+            {
+					    destination=source;
+              break;
+            }
           opacity=((double) (MaxRGB-destination.opacity)*source.opacity/MaxRGB+
             (MaxRGB-source.opacity)*destination.opacity/MaxRGB)/MaxRGB;
           red=((double) (MaxRGB-destination.opacity)*source.red/MaxRGB+
-            (MaxRGB-source.opacity)*destination.red/MaxRGB)/MaxRGB;
+            (MaxRGB-source.opacity)*destination.red/MaxRGB)/opacity;
           destination.red=(Quantum) (red > MaxRGB ? MaxRGB : red+0.5);
           green=((double) (MaxRGB-destination.opacity)*source.green/MaxRGB+
-            (MaxRGB-source.opacity)*destination.green/MaxRGB)/MaxRGB;
+            (MaxRGB-source.opacity)*destination.green/MaxRGB)/opacity;
           destination.green=(Quantum) (green > MaxRGB ? MaxRGB : green+0.5);
           green=((double) (MaxRGB-destination.opacity)*source.green/MaxRGB+
-            (MaxRGB-source.opacity)*destination.green/MaxRGB)/MaxRGB;
+            (MaxRGB-source.opacity)*destination.green/MaxRGB)/opacity;
           destination.green=(Quantum) (green > MaxRGB ? MaxRGB : green+0.5);
           opacity=((double) (MaxRGB-destination.opacity)*source.opacity/MaxRGB+
-            (MaxRGB-source.opacity)*destination.opacity/MaxRGB)/MaxRGB;
+            (MaxRGB-source.opacity)*destination.opacity/MaxRGB)/opacity;
           destination.opacity=(Quantum)
             (MaxRGB-(opacity > MaxRGB ? MaxRGB : opacity)+0.5);
           break;
