@@ -1006,7 +1006,7 @@ Export void CompressColormap(Image *image)
 %
 %  The format of the DestroyList method is:
 %
-%      unsigned long GetNumberColors(const Image *image,FILE *file)
+%      void DestroyList(const NodeInfo *node_info)
 %
 %  A description of each parameter follows.
 %
@@ -1311,6 +1311,97 @@ static NodeInfo *InitializeNode(CubeInfo *color_cube,const unsigned int level)
   node_info->number_unique=0;
   node_info->list=(ColorPacket *) NULL;
   return(node_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%     I s G r a y I m a g e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsGrayImage returns True if the image is grayscale otherwise
+%  False is returned.  If the image is DirectClass and grayscale, it is demoted
+%  to PseudoClass.
+%
+%  The format of the IsGrayImage method is:
+%
+%      unsigned int IsGrayImage(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method IsGrayImage returns True if the image is grayscale
+%      otherwise False is returned.
+%
+%    o image: The address of a structure of type Image;  returned from
+%      ReadImage.
+%
+%
+*/
+Export unsigned int IsGrayImage(Image *image)
+{
+  register int
+    i;
+
+  unsigned int
+    gray_scale;
+
+  /*
+    Determine if image is grayscale.
+  */
+  assert(image != (Image *) NULL);
+  if (image->matte)
+    return(False);
+  if (image->colorspace == CMYKColorspace)
+    return(False);
+  gray_scale=True;
+  switch (image->class)
+  {
+    case DirectClass:
+    default:
+    {
+      register RunlengthPacket
+        *p;
+
+      if (image->matte)
+        return(False);
+      p=image->pixels;
+      for (i=0; i < (int) image->packets; i++)
+      {
+        if (!IsGray(*p))
+          {
+            gray_scale=False;
+            break;
+          }
+        p++;
+      }
+      if (gray_scale)
+        {
+          QuantizeInfo
+            quantize_info;
+
+          GetQuantizeInfo(&quantize_info);
+          quantize_info.colorspace=GRAYColorspace;
+          (void) QuantizeImage(&quantize_info,image);
+          SyncImage(image);
+        }
+      break;
+    }
+    case PseudoClass:
+    {
+      for (i=0; i < (int) image->colors; i++)
+        if (!IsGray(image->colormap[i]))
+          {
+            gray_scale=False;
+            break;
+          }
+      break;
+    }
+  }
+  return(gray_scale);
 }
 
 /*
