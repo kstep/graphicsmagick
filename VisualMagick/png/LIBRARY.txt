@@ -1,0 +1,10 @@
+#ECF - this file contains additional configuration info.
+DEFINE = _PNGLIB_
+DEFINE = __WIN32DLL__
+DEFINE = __WIN32__
+DEFINE = __FLAT__
+DEFINE = PNG_USE_PNGVCRD
+DEFINEDLL = PNG_BUILD_DLL
+DEFINE = PNG_NO_MODULEDEF
+EXCLUDE = example.c
+EXCLUDE = pngtest.c

@@ -161,6 +161,15 @@
 #endif
 
 /* Compile with -DZLIB_DLL for Windows DLL support */
+
+#if defined (_VISUALC_)
+#if defined(_MT) && defined(_DLL) && !defined(_LIB)
+#  define ZLIB_DLL
+#else
+#  define ZLIB_LIB
+#endif
+#endif
+
 #if defined(ZLIB_DLL)
 #  if defined(_WINDOWS) || defined(WINDOWS)
 #    ifdef FAR
