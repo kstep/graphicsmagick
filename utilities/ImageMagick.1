@@ -1873,7 +1873,8 @@ image file.  Use +profile "*" to remove all profiles.
 .B "-quality \fI<value>"\fP
 \fRJPEG/MIFF/PNG compression level
 
-For the JPEG image format, quality is 0 (lowest image quality and highest
+For the JPEG and MPEG image formats, quality is 0 (lowest image quality
+and highest
 compression) to 100 (best quality but least effective compression). The default
 quality is 75.  Use the \fB-sampling_factor\fP option to specify the factors
 for chroma downsampling.
@@ -2006,11 +2007,12 @@ the \fB-gravity\fP option has no effect.
 
 .TP
 .B "-sampling_factor \fI<horizontal_factor>x<vertical_factor> "\fP
-\fRsampling factors used by JPEG encoder and YUV decoder/encoder.
+\fRsampling factors used by JPEG or MPEG-2 encoder and YUV decoder/encoder.
 
 This option specifies the sampling factors to be used by the JPEG encoder for
 chroma downsampling.  If this option is omitted, the JPEG library
-will use its own default values.  When reading or writing the YUV format, use
+will use its own default values.  When reading or writing the YUV format
+and when writing the M2V (MPEG-2) format, use
 \fB-sampling_factor 2x1\fPto specify the 4:2:2 downsampling method
 .TP
 .B "-scale \fI<geometry>"\fP
