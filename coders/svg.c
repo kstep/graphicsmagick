@@ -462,8 +462,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Render graphic primitive.
         */
-        if ((LocaleCompare(primitive,"rectangle") == 0) &&
-            (element.major != 0.0))
+        if ((LocaleCompare(primitive,"rect") == 0) && (element.major != 0.0))
           CloneString(&primitive,"roundRectangle");
         length=strlen(primitive)+MaxTextExtent;
         if (vertices != (char *) NULL)
@@ -502,7 +501,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) strcat(command,vertices);
         if (LocaleCompare(primitive,"polygon") == 0)
           (void) strcat(command,vertices);
-        if (LocaleCompare(primitive,"rectangle") == 0)
+        if (LocaleCompare(primitive,"rect") == 0)
           {
             FormatString(points,"%d,%d %d,%d",page.x,page.y,
               page.x+page.width,page.y+page.height);
