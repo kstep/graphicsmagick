@@ -395,6 +395,7 @@ namespace Magick
   using MagickLib::AcquireCacheView;
   using MagickLib::AcquireImagePixels;
   using MagickLib::AcquireMemory;
+  using MagickLib::AdaptiveThresholdImage;
   using MagickLib::AddNoiseImage;
   using MagickLib::AffineMatrix;
   using MagickLib::AllocateImage;
