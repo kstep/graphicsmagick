@@ -2037,7 +2037,7 @@ MagickExport PixelPacket *SetImagePixels(Image *image,const long x,const long y,
 %
 %  The format of the SetNexus() method is:
 %
-%      PixelPacket SetNexus(Image *image,const RectangleInfo *region,
+%      PixelPacket SetNexus(const Image *image,const RectangleInfo *region,
 %        const unsigned long id)
 %
 %  A description of each parameter follows:
