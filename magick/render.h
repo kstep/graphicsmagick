@@ -219,7 +219,7 @@ extern MagickExport const TypeInfo
 extern MagickExport DrawInfo
   *CloneDrawInfo(const ImageInfo *,const DrawInfo *);
 
-extern MagickExport inline PixelPacket AlphaComposite(const PixelPacket *,
+extern MagickExport PixelPacket AlphaComposite(const PixelPacket *,
   const double,const PixelPacket *,const double);
 
 extern MagickExport unsigned int
