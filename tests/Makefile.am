@@ -235,6 +235,9 @@ CHECK_SIZED_FILE_FORMATS = \
 	YUV
 
 CHECK_CONSTITUTE_MAPS = \
+	bgr \
+	bgro \
+	bgrp \
 	rgb \
 	rgba \
 	rgbt \

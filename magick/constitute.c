@@ -499,7 +499,7 @@ MagickExport void DestroyConstitute(void)
 %
 %
 */
-MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
+MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset,
   const long y_offset,const unsigned long columns,const unsigned long rows,
   const char *map,const StorageType type,void *pixels,ExceptionInfo *exception)
 {
@@ -522,8 +522,146 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
   size_t
     length;
 
+  MagickPassFail
+    status=MagickPass;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+
+  /*
+    Handle a few common special cases in order to improve performance.
+  */
+  if (type == CharPixel)
+    {
+      typedef enum {
+        UndefinedDispatchType,
+        BGRDispatchType,
+        BGRODispatchType,
+        BGRPDispatchType,
+        RGBDispatchType,
+        RGBODispatchType,
+        IDispatchType
+      } DispatchType;
+
+      DispatchType
+        dispatch_type=UndefinedDispatchType;
+
+      if (LocaleCompare(map,"BGR") == 0)
+        dispatch_type=BGRDispatchType;
+      else if (LocaleCompare(map,"BGRO") == 0)
+        dispatch_type=BGRODispatchType;
+      else if (LocaleCompare(map,"BGRP") == 0)
+        dispatch_type=BGRPDispatchType;
+      else if (LocaleCompare(map,"RGB") == 0)
+        dispatch_type=RGBDispatchType;
+      else if (LocaleCompare(map,"RGBO") == 0)
+        dispatch_type=RGBODispatchType;
+      else if (LocaleCompare(map,"I") == 0)
+        dispatch_type=IDispatchType;
+
+      if (dispatch_type != UndefinedDispatchType)
+        {
+          register unsigned char
+            *q=pixels;
+          
+          for (y=0; y < (long) rows; y++)
+            {
+              p=AcquireImagePixels(image,x_offset,y_offset+y,columns,1,exception);
+              if (p == (const PixelPacket *) NULL)
+                {
+                  status=MagickFail;
+                  break;
+                }
+              
+              switch (dispatch_type)
+                {
+                case BGRDispatchType:
+                  {
+                    for (x=(long) columns; x != 0; x--)
+                      {
+                        *q++=ScaleQuantumToChar(p->blue);
+                        *q++=ScaleQuantumToChar(p->green);
+                        *q++=ScaleQuantumToChar(p->red);
+                        p++;
+                      }
+                    break;
+                  }
+                case BGRODispatchType:
+                  {
+                    for (x=(long) columns; x != 0; x--)
+                      {
+                        *q++=ScaleQuantumToChar(p->blue);
+                        *q++=ScaleQuantumToChar(p->green);
+                        *q++=ScaleQuantumToChar(p->red);
+                        *q++=ScaleQuantumToChar(MaxRGB-p->opacity);
+                        p++;
+                      }
+                    break;
+                  }
+                case BGRPDispatchType:
+                  {
+                    for (x=(long) columns; x != 0; x--)
+                      {
+                        *q++=ScaleQuantumToChar(p->blue);
+                        *q++=ScaleQuantumToChar(p->green);
+                        *q++=ScaleQuantumToChar(p->red);
+                        *q++=0;
+                        p++;
+                      }
+                    break;
+                  }
+                case RGBDispatchType:
+                  {
+                    for (x=(long) columns; x != 0; x--)
+                      {
+                        *q++=ScaleQuantumToChar(p->red);
+                        *q++=ScaleQuantumToChar(p->green);
+                        *q++=ScaleQuantumToChar(p->blue);
+                        p++;
+                      }
+                    break;
+                  }
+                case RGBODispatchType:
+                  {
+                    for (x=(long) columns; x != 0; x--)
+                      {
+                        *q++=ScaleQuantumToChar(p->red);
+                        *q++=ScaleQuantumToChar(p->green);
+                        *q++=ScaleQuantumToChar(p->blue);
+                        *q++=ScaleQuantumToChar(MaxRGB-p->opacity);
+                        p++;
+                      }
+                    break;
+                  }
+                case IDispatchType:
+                  {
+                    if (image->is_grayscale)
+                      {
+                        for (x=(long) columns; x != 0; x--)
+                          {
+                            *q++=ScaleQuantumToChar(p->red);
+                            p++;
+                          }
+                      }
+                    else
+                      {
+                        for (x=(long) columns; x != 0; x--)
+                          {
+                            *q++=ScaleQuantumToChar(PixelIntensity(p));
+                            p++;
+                          }
+                      }
+                    break;
+                  }
+                case UndefinedDispatchType:
+                  {
+                  }
+                }
+            }
+          return (status);
+        }
+    }
+
   length=strlen(map);
   length=Min(length,sizeof(switch_map)/sizeof(MapQuantumType));
 
@@ -561,7 +699,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
             if (image->colorspace == CMYKColorspace)
               break;
             ThrowException(exception,OptionError,ColorSeparatedImageRequired,map);
-            return(False);
+            return(MagickFail);
           }
         case 'M':
           {
@@ -569,7 +707,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
             if (image->colorspace == CMYKColorspace)
               break;
             ThrowException(exception,OptionError,ColorSeparatedImageRequired,map);
-            return(False);
+            return(MagickFail);
           }
         case 'Y':
           {
@@ -577,7 +715,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
             if (image->colorspace == CMYKColorspace)
               break;
             ThrowException(exception,OptionError,ColorSeparatedImageRequired,map);
-            return(False);
+            return(MagickFail);
           }
         case 'K':
           {
@@ -585,7 +723,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
             if (image->colorspace == CMYKColorspace)
               break;
             ThrowException(exception,OptionError,ColorSeparatedImageRequired,map);
-            return(False);
+            return(MagickFail);
           }
         case 'I':
           {
@@ -605,7 +743,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
         default:
           {
             ThrowException(exception,OptionError,UnrecognizedPixelMap,map);
-            return(False);
+            return(MagickFail);
           }
         }
     }
@@ -614,7 +752,10 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
     {
       p=AcquireImagePixels(image,x_offset,y_offset+y,columns,1,exception);
       if (p == (const PixelPacket *) NULL)
-        break;
+        {
+          status=MagickFail;
+          break;
+        }
       for (x=0; x < (long) columns; x++)
         {
           for (i=0; i < (long) length; i++)
@@ -725,7 +866,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
           p++;
         }
     }
-  return(True);
+  return(status);
 }
 
 /*
