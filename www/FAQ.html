@@ -2,13 +2,13 @@
 <HTML>
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
-	<TITLE>ImageMagick FAQ</TITLE>
+	<TITLE>Open ImageMagick FAQ</TITLE>
 	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020821;20445100">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
 	<META NAME="CHANGED" CONTENT="20020821;22185300">
-	<META NAME="DESCRIPTION" CONTENT="ImageMagick is a robust collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats including GIF, JPEG, PNG, PDF, and Photo CD.  With ImageMagick you can create GIFs dynamically making it suitable for Web applications.  You can also resize, rotate, sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
-	<META NAME="KEYWORDS" CONTENT="ImageMagick FAQ">
+	<META NAME="DESCRIPTION" CONTENT="Open ImageMagick is a robust collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats including GIF, JPEG, PNG, PDF, and Photo CD.  With Open ImageMagick you can create GIFs dynamically making it suitable for Web applications.  You can also resize, rotate, sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
+	<META NAME="KEYWORDS" CONTENT="Open ImageMagick FAQ">
 	<STYLE>
 	<!--
 		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
@@ -121,7 +121,7 @@
 	a GIF or PNG image with Web safe colors?</A> 
 	</P>
 	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C27">How come Adobe
-	Acrobat 2.1 can't read ImageMagick's PDF format?</A> 
+	Acrobat 2.1 can't read Open ImageMagick's PDF format?</A> 
 	</P>
 	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C28">How can I add a
 	matte layer to my image?</A> 
@@ -145,7 +145,7 @@
 	What does it mean?</B> 
 	</DT></DL>
 <DD STYLE="margin-left: 0in">
-<B>ImageMagick</B> uses several freely available packages to perform
+<B>Open ImageMagick</B> uses several freely available packages to perform
 the translation of certain image formats (<I>PostScript</I>, <I>MPEG</I>,
 etc.). Make sure these packages are available as described in the
 <A HREF="install.html">README</A> file. Also verify that you have
@@ -296,14 +296,14 @@ in <I>magick/image.h</I> and recompile.
 	<I>Memory allocation error</I>. What can I do?</B> 
 	</DT></DL>
 <DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-Memory allocation is a complex topic in ImageMagick and image
-processing requires a lot of memory. ImageMagick tries to take best
+Memory allocation is a complex topic in Open ImageMagick and image
+processing requires a lot of memory. Open ImageMagick tries to take best
 advantage of the resources available by optimizing its use of <I>virtual</I>
 memory. Virtual memory is normally the amount of RAM (Random Access
 Memory) available to the process plus the amount of free space in the
 system paging area (known as &quot;swap&quot; under Unix, or a &quot;page
 file&quot; under Windows). In addition to the RAM and the paging
-area, ImageMagick is able to expand the amount of virtual memory
+area, Open ImageMagick is able to expand the amount of virtual memory
 available by using memory-mapped files which cause the file to be
 treated as extra memory. A piece of hardware known as the Memory
 Management Unit (MMU) performs the magic which allows the system
@@ -315,10 +315,10 @@ fragmented badly enough that there is no large-enough block of memory
 available to satisfy the request. In some cases the operating system
 may artificially limit the memory available to the program.</DD><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
 Failures of small memory allocations are generally considered fatal
-by ImageMagick. If it is impossible to allocate even a little bit of
+by Open ImageMagick. If it is impossible to allocate even a little bit of
 memory, then there is no point in continuing. When large memory
 allocations associated with allocating memory for image pixels fail,
-ImageMagick uses that as a key to know that it should start using
+Open ImageMagick uses that as a key to know that it should start using
 memory-mapped temporary files to increase virtual memory. Under Unix
 and other POSIX-compliant systems, these memory-mapped temporary
 files are created in either the system default location (e.g.
@@ -326,11 +326,11 @@ files are created in either the system default location (e.g.
 Under Windows, temporary files are created in the directory set by
 the TEMP or TMP environment variable.</DD><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
 If the temporary file directory is too small, or is itself mapped to
-the system's paging area (no win!), then ImageMagick will fail to
+the system's paging area (no win!), then Open ImageMagick will fail to
 allocate more virtual memory via the temporary file and will return
 an error.</DD><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
 The single biggest factor in how much memory is required by
-ImageMagick is the QuantumDepth setting when it was compiled. The
+Open ImageMagick is the QuantumDepth setting when it was compiled. The
 amount of memory (in bytes) required to store a single image in
 memory is may be calculated via the equation
 (QuantumDepth*Rows*Columns*5)/8. As a means of example, the following
@@ -384,7 +384,7 @@ using the supported QuantumDepth settings:</DD><DL>
 image processing operation may require that several images be in
 memory at one time. In the case of animations, hundreds of images may
 be in memory at one time.</DD><P>
-<B>ImageMagick</B> is designed to be general purpose. It can display
+<B>Open ImageMagick</B> is designed to be general purpose. It can display
 many image storage formats (<I>Monochrome</I>, <I>PseudoColor</I>, or
 <I>TrueColor</I>) on many different types of <I>X visuals</I>
 (<I>StaticGray, StaticColor, PseudoColor, GrayScale, DirectColor,</I>
@@ -393,16 +393,16 @@ storage formats and X visuals, extra memory is required.
 Additionally, <A HREF="animate.html">animate</A> and <A HREF="montage.html">montage</A>
 store an entire image sequence in memory.</P>
 <DD STYLE="margin-left: 0in; margin-bottom: 0.2in">It is recommended
-that systems used to run <B>ImageMagick</B> have at least 96MB of RAM
+that systems used to run <B>Open ImageMagick</B> have at least 96MB of RAM
 and 140MB free in their paging area. Systems used to process large
 images (do the math!) may require considerably more memory to operate
 efficiently. RAM is typically 1000 times faster than disk, so it is
 important to keep as much data in RAM as possible (buy lots of RAM).
 The temporary file area should have plenty of free space. The size of
 the temporary file area is usually the deciding factor as to whether
-ImageMagick is able to complete an operation. With sufficient free
-disk space, ImageMagick is primarily limited by your CPU and
-operating system's ability to address memory. ImageMagick has been
+Open ImageMagick is able to complete an operation. With sufficient free
+disk space, Open ImageMagick is primarily limited by your CPU and
+operating system's ability to address memory. Open ImageMagick has been
 used to process images 20K by 20K pixels in size!</DD><HR SIZE=5>
 <DL>
 	<DT STYLE="margin-bottom: 0.2in"><A NAME="C10"></A><B>10. How do I
@@ -465,7 +465,7 @@ use <B>+adjoin</B>:
 	like to display the entire page, including any white space.</B> 
 	</DT></DL>
 <DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-<B>ImageMagick</B> automatically trims any <I>PostScript</I> image as
+<B>Open ImageMagick</B> automatically trims any <I>PostScript</I> image as
 defined by the bounding box. To preempt this behavior, remove the
 bounding box statement from the Postscrpt or explicitly set the page
 size. For example, 
@@ -547,7 +547,7 @@ You can then use the returned window ID with <A HREF="import.html">import</A>:
 	</DT></DL>
 <DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
 A blank image generally means that the image is either corrupt or it
-has a matte channel and the matte values are all zero. <B>ImageMagick</B>
+has a matte channel and the matte values are all zero. <B>Open ImageMagick</B>
 treats a matte value of zero as completely transparent. To determine
 if this is the problem, try 
 </DD><PRE STYLE="margin-bottom: 0.2in"> display +matte image.miff</PRE>
@@ -558,10 +558,10 @@ if this is the problem, try
 	What does it mean?</B> 
 	</DT></DL>
 <DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-<B>ImageMagick</B> requires source libraries not included with the
+<B>Open ImageMagick</B> requires source libraries not included with the
 distribution to view or convert certain image formats such as JPEG or
 TIFF. The above message means you did not compile the required
-library and link with the <B>ImageMagick</B> utilities. See <A HREF="install.html">README</A>
+library and link with the <B>Open ImageMagick</B> utilities. See <A HREF="install.html">README</A>
 for the location of these libraries and compiling instructions.</DD><HR SIZE=5>
 <DL>
 	<DT STYLE="margin-bottom: 0.2in"><A NAME="C18"></A><B>18. I want to
@@ -581,20 +581,20 @@ height. Type:
 		</DT></DL>
 <DD STYLE="margin-left: 0in">
 You have inadvertently run the Microsoft Windows program called
-convert.exe, rather than the ImageMagick program of the same name.
+convert.exe, rather than the Open ImageMagick program of the same name.
 The Windows convert.exe program is used to convert a system boot disk
 from MS-DOS &quot;FAT&quot; format to NTFS format. As such it can
 only be used one time in the life of a system.</DD><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
 You can 
 </DD>
 <UL><LI><DD>
-	rename either the MS convert.exe or the ImageMagick convert.exe 
+	rename either the MS convert.exe or the Open ImageMagick convert.exe 
 	</DD><LI><DD>
-	revise your PATH to put ImageMagick's convert.exe ahead of MS
+	revise your PATH to put Open ImageMagick's convert.exe ahead of MS
 	convert.exe 
 	</DD><LI><DD STYLE="margin-bottom: 0.2in">
 	edit your Windows Registry as explained in
-	<A HREF="http://savage.net.au/ImageMagick/html/install-convert.html">http://savage.net.au/ImageMagick/html/install-convert.html</A>
+	<A HREF="http://savage.net.au/Open ImageMagick/html/install-convert.html">http://savage.net.au/Open ImageMagick/html/install-convert.html</A>
 		</DD></UL>
 <HR SIZE=5>
 <DL>
@@ -603,7 +603,7 @@ You can
 		</DT></DL>
 <DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
 There are four types of ornamental borders you can add to your image
-with ImageMagick. Each is listed below with the procedure to use them
+with Open ImageMagick. Each is listed below with the procedure to use them
 with your image. 
 </DD>
 <UL><LI><P>
@@ -690,7 +690,7 @@ must be specified. Here is one example where we annotate an image
 with large <I>Helvetica</I> text: 
 </DD><PRE> convert -font '-*-helvetica-*-*-*--300-300-*-*-*-*-iso8859-1' \
  -fill green -draw 'text 50,300 Magick' image.gif annotated.gif</PRE><P>
-If you have the FreeType support built into ImageMagick, just
+If you have the FreeType support built into Open ImageMagick, just
 increase your pointsize and/or density: 
 </P>
 <PRE STYLE="margin-bottom: 0.2in"> convert -font Helvetica -pointsize 100 -density 300 ...</PRE>
@@ -720,7 +720,7 @@ command:
 </DD><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
 GIF allows for a page offset relative to some background. The page
 offset information may have been in your GIF image already or it
-could have been introduced by ImageMagick. Either way, <TT>+page</TT>
+could have been introduced by Open ImageMagick. Either way, <TT>+page</TT>
 removes the unwanted page offset and Netscape should behave as
 expected. 
 </DD><HR SIZE=5>
@@ -741,7 +741,7 @@ fidelity.
 </DD><HR SIZE=5>
 <DL>
 	<DT STYLE="margin-bottom: 0.2in"><A NAME="C27"></A><B>27. How come
-	Adobe Acrobat 2.1 can't read ImageMagick's PDF format?</B> 
+	Adobe Acrobat 2.1 can't read Open ImageMagick's PDF format?</B> 
 	</DT></DL>
 <DD STYLE="margin-left: 0in">
 The default PDF compression is <I>Zip</I>. You need Acrobat 3.0 and
@@ -790,7 +790,7 @@ c:\text.gif</TT>
 	</DT></DL>
 <DD STYLE="margin-left: 0in">
 LZW compression is disabled by default for GIF (also TIFF) formats,
-because of the UniSys patent. You can rebuild ImageMagick with it
+because of the UniSys patent. You can rebuild Open ImageMagick with it
 enabled, after you have obtained a license from UniSys. Or you can
 use a third-party commercial UniSys-licensed application to
 recompress them. 
@@ -816,11 +816,11 @@ Will extract the first image (scene 0) from a GIF animation.  Be sure
 to surround the file specification with quotation marks, to prevent
 the shell from interpreting the square brackets.
 </DD><HR>
-<p><a href="../ImageMagick.html"><img SRC="../images/home.png"
-ALT="ImageMagick Home Page" BORDER=0 height=40 width=40
+<p><a href="../Open ImageMagick.html"><img SRC="../images/home.png"
+ALT="Open ImageMagick Home Page" BORDER=0 height=40 width=40
 align=MIDDLE></a><a 
 href="mailto:webmaster@imagemagick.org"><img SRC="../images/mail.png"
-ALT="ImageMagick Home Page" BORDER=0 height=40 width=40
+ALT="Open ImageMagick Home Page" BORDER=0 height=40 width=40
 align=MIDDLE></a><font size="-2">
 Image manipulation software that works like magic.</font>
 </body>

@@ -3,10 +3,10 @@
 <HTML>
 <HEAD>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="description" content="ImageMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With ImageMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
-   <meta name="keywords" content="ImageMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
+   <meta name="description" content="Open ImageMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With Open ImageMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
+   <meta name="keywords" content="Open ImageMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
    <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
-   <title>ImageMagick - Image Processing and Display Package</title>
+   <title>Open ImageMagick - Image Processing and Display Package</title>
 <link rev="made" href="mailto:magick@wizards.dupont.com">
 </head>
 <body text="#000000" bgcolor="#FFFFFF" link="#1F00FF" vlink="#9900DD" alink="#FF0000">
@@ -17,7 +17,7 @@
 <tr>
 <td BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" height=14 width=15>
 <b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Recent
-ImageMagick Changes</font></font></font></b></td>
+Open ImageMagick Changes</font></font></font></b></td>
 </tr>
 </table>
 <dl>
@@ -115,10 +115,10 @@ ImageMagick Changes</font></font></font></b></td>
   * Added PS-Adobe preamble to PS3 encoder.
 
 2002-10-14  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
-  * ImageMagick 5.5.1 released.
+  * Open ImageMagick 5.5.1 released.
 
 2002-10-12  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;
-  * Use ImageMagick release number to allow multiple ImageMagick releases
+  * Use Open ImageMagick release number to allow multiple Open ImageMagick releases
     to co-exist without interference on the same machine.
 
 2002-10-09  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;
@@ -141,7 +141,7 @@ ImageMagick Changes</font></font></font></b></td>
 
 2002-09-29  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;
   * Under Windows, a DllMain function which automatically initializes
-    ImageMagick (when ImageMagick is built using DLLs) may be added by
+    Open ImageMagick (when Open ImageMagick is built using DLLs) may be added by
     defining ProvideDllMain in magick_config.h
 
 2002-09-28  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
@@ -158,7 +158,7 @@ ImageMagick Changes</font></font></font></b></td>
     in the PNG and PCD codecs.
 
 2002-09-21  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
-  * Added 'exception' parameter to the ImageMagick progress monitor API.
+  * Added 'exception' parameter to the Open ImageMagick progress monitor API.
   * Added enumerated types for the dispose member of the Image structure.
   * Added -version option to commandline utilities.
 
@@ -178,7 +178,7 @@ ImageMagick Changes</font></font></font></b></td>
   * new PerlMagick virtual-pixel image attribute.
 
 2002-08-07  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
-  * ImageMagick 5.4.9 released.
+  * Open ImageMagick 5.4.9 released.
 
 2002-09-06  Leonard Rosenthol &lt;leonardr@lazerware.com&gt;
   * Fixed some bugs in the Clipboard coder
@@ -192,7 +192,7 @@ ImageMagick Changes</font></font></font></b></td>
   * QuantizeImage() did not always produce proper bilevel images.
 
 2002-08-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
-  * Apply prefix/suffix transformations to ImageMagick program names
+  * Apply prefix/suffix transformations to Open ImageMagick program names
     which are substituted into delegates.mgk.  This fix was requested
     by Glenn Randers-Pehrson.
 
@@ -205,22 +205,22 @@ ImageMagick Changes</font></font></font></b></td>
 
 2002-08-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
   * Added --disable-installed option to configure to support building
-    an ImageMagick which is not installed via hard-coded paths. This
+    an Open ImageMagick which is not installed via hard-coded paths. This
     is intended to be used for the ad-hoc binary distributions built by
-    ImageMagick Studio.
-  * The UseInstalledImageMagick define is to be used by builds formally
+    Open ImageMagick Studio.
+  * The UseInstalledOpen ImageMagick define is to be used by builds formally
     installed under a prefix, or via the Windows registry.
   * Replaced GetMagickConfigurePath() with the three functions
     FindConfigurationFile(), FindFontFile(), and FindModuleFile().
   * Re-implemented InitializeMagick() to try harder at finding the
-    uninstalled ImageMagick without the help of MAGICK_HOME.  In the future,
+    uninstalled Open ImageMagick without the help of MAGICK_HOME.  In the future,
     it can try even harder.
   * Unix binaries packages (built with --disable-installed) should now
     work using the same file layout as the distribution file.  There is
     no longer a need to put all files in the same directory.
 
 2002-08-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
-  * Under Windows, define UseInstalledImageMagick to locate components
+  * Under Windows, define UseInstalledOpen ImageMagick to locate components
     using the registry rather than scanning the filesystem.
 
 2002-08-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
@@ -255,7 +255,7 @@ ImageMagick Changes</font></font></font></b></td>
 
 2002-08-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
   * Fixed a libtool bug in order to allow passing -m64 to allow building
-    64-bit ImageMagick using gcc 3.1 or later under SPARC Solaris.
+    64-bit Open ImageMagick using gcc 3.1 or later under SPARC Solaris.
 
 2002-08-04  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * Added experimental 32-bit QuantumDepth pixel support.
@@ -268,7 +268,7 @@ ImageMagick Changes</font></font></font></b></td>
 2002-08-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
   * Changed configure argument --disable-16bit-pixel to
     --with-quantum-depth in order to make its usage more straightforward
-    and generic.  Build ImageMagick using an eight-bit quantum via
+    and generic.  Build Open ImageMagick using an eight-bit quantum via
     --with-quantum-depth=8.
   * Magick++ library builds as a DLL under Windows now.
 
@@ -297,13 +297,13 @@ ImageMagick Changes</font></font></font></b></td>
 
 2002-07-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
   * Created Windows "setup.exe" style installation package for
-    ImageMagick.
+    Open ImageMagick.
   * Include PerlMagick Perl extension for ActiveState ActivePerl as
     checkmark install option in Windows installation package.
-  * Include ImageMagickObject OLE Object for WSH and Visual Basic (not
+  * Include Open ImageMagickObject OLE Object for WSH and Visual Basic (not
     IIS!!!) as checkmark install option in Windows installation package.
   * Windows installation package establishes file extension associations
-    for ImageMagick.
+    for Open ImageMagick.
 
 2002-07-17  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
   * PPM files were being written in P4 or P5 format if all pixels
@@ -321,11 +321,11 @@ ImageMagick Changes</font></font></font></b></td>
   * $image-&gt;Get('clip-mask') now returns the clipping image.
 
 2002-07-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
-  * Added NTRegistryKeyLookup() to nt.c in order to look up ImageMagick
+  * Added NTRegistryKeyLookup() to nt.c in order to look up Open ImageMagick
     installation parameters from the Windows Registry.
   * Updated GetMagickConfigurePath() in magick.c to use installation
     path data from the Windows Registry (if available).
-  * Updated VisualMagick/ImageMagick.iss so that Windows Registry is
+  * Updated VisualMagick/Open ImageMagick.iss so that Windows Registry is
     updated by install package.
 
 2002-07-03  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
@@ -334,7 +334,7 @@ ImageMagick Changes</font></font></font></b></td>
   * The antialias member of the ImageInfo structure was not being cloned.
 
 2002-07-01  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
-  * ImageMagick 5.4.7 released.
+  * Open ImageMagick 5.4.7 released.
 
 2002-06-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
   * magick/nt.c (readdir): Make readdir re-entrant for each instance
@@ -365,16 +365,16 @@ ImageMagick Changes</font></font></font></b></td>
   * Added CatchException() method to magick/error.c.
 
 2002-06-06  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
-  * ImageMagick, version 5.4.6-1 released.
+  * Open ImageMagick, version 5.4.6-1 released.
 
 2002-06-05  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * Added -encoding option to command line utilities.
 
 2002-06-02  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
-  * ImageMagick, version 5.4.6 released.
+  * Open ImageMagick, version 5.4.6 released.
 
 2002-05-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
-  * ImageMagick may now be built (static build only) using the
+  * Open ImageMagick may now be built (static build only) using the
     free MinGW development package from http://www.mingw.org.  Leonard's
     "clipboard" coder is included in the build.
 
@@ -428,14 +428,14 @@ ImageMagick Changes</font></font></font></b></td>
   * Added mingw patches provided by Derry Bryson.
 
 2002-05-05  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
-  * ImageMagick, version 5.4.5-1 released.
+  * Open ImageMagick, version 5.4.5-1 released.
 
 2002-04-30  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * Subimage specification did not work for TIFF (e.g.
     convert 'image.tiff[1]' image.png).
 
 2002-04-30  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
-  * ImageMagick, version 5.4.5 released.
+  * Open ImageMagick, version 5.4.5 released.
 
 2002-04-20  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * Added magic string detection for the FPX format (patch provided by
@@ -449,8 +449,8 @@ ImageMagick Changes</font></font></font></b></td>
 
 2002-04-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
   * configure.ac (libtool_build_static_libs): Added
-    --enable-delegate-build option to suuport building ImageMagick
-    using delegate libraries in subdirectories of the ImageMagick source
+    --enable-delegate-build option to suuport building Open ImageMagick
+    using delegate libraries in subdirectories of the Open ImageMagick source
     directory.
 
 2002-04-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
@@ -504,7 +504,7 @@ ImageMagick Changes</font></font></font></b></td>
     Bob Friesenhahn).
 
 2002-03-27  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
-  * ImageMagick, version 5.4.4, released.
+  * Open ImageMagick, version 5.4.4, released.
 
 2002-03-26  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;
   * Added preliminary version of C API for vector drawing commands
@@ -536,7 +536,7 @@ ImageMagick Changes</font></font></font></b></td>
 
 2002-03-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
   * coders/null.c (WriteNULLImage): Support writing "null:" image type
-    for use when profiling or testing ImageMagick.
+    for use when profiling or testing Open ImageMagick.
 
 2002-03-08 Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;
   * Update to Autoconf 2.53 (new release)
@@ -658,7 +658,7 @@ ImageMagick Changes</font></font></font></b></td>
 
 2002-01-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
   * configure.ac : Renamed configure option --with-ttf-fontpath to
-    --with-fontpath since ImageMagick loads more than TrueType fonts.
+    --with-fontpath since Open ImageMagick loads more than TrueType fonts.
   * ChangeLog : Renamed Changelog.txt to ChangeLog in order to conform
     to GNU and open-source standards.
 
@@ -767,10 +767,10 @@ ImageMagick Changes</font></font></font></b></td>
     compile time.
 
 2001-11-12  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
-  * Previously ImageMagick did not write 8-bit ASCII PPM/PGM files
+  * Previously Open ImageMagick did not write 8-bit ASCII PPM/PGM files
     when QuantumDepth == 16.
   * Added 'id' as an image attribute in PerlMagick (returns
-    ImageMagick registry ID).
+    Open ImageMagick registry ID).
 
 2001-11-10  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * Added SVG pattern support.
@@ -788,7 +788,7 @@ ImageMagick Changes</font></font></font></b></td>
 
 2001-11-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
   * PerlMagick/Makefile.PL.in: Install PerlMagick using
-    ImageMagick's configure prefix.
+    Open ImageMagick's configure prefix.
 
 2001-11-02  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * Typecast offset to unsigned long in coders/pdf.c.
@@ -805,7 +805,7 @@ ImageMagick Changes</font></font></font></b></td>
     files (contributed by Lawrence Livermore National Laboratory (LLNL)).
 
 2001-10-29  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
-  * ImageMagick now has a registry for storing image blobs.
+  * Open ImageMagick now has a registry for storing image blobs.
 
 2001-10-26  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * Added VMS patches (thanks to Jouk Jansen).
@@ -876,7 +876,7 @@ ImageMagick Changes</font></font></font></b></td>
 
 2001-09-21  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * Replaced TemporaryFilename() with UniqueImageFilename().
-  * ImageMagick CORE API is now 64-bit clean.
+  * Open ImageMagick CORE API is now 64-bit clean.
 
 2001-09-20  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * Fixed svg.c to accept a viewbox with a negative offset.
@@ -902,7 +902,7 @@ ImageMagick Changes</font></font></font></b></td>
     algorithm.
 
 2001-09-08  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
-  * ImageMagick defaults to 16-bit quantum.  Set QuantumMagick
+  * Open ImageMagick defaults to 16-bit quantum.  Set QuantumMagick
     for 8-bit.
   * Changed image-&gt;blob from BlobInfo to BlobInfo* so the Image
     structure size is not dependent on the large-file preprocessor
@@ -923,7 +923,7 @@ ImageMagick Changes</font></font></font></b></td>
 <br>&nbsp;
 <p>
 <hr>
-<p><a href="../ImageMagick.html"><img SRC="../images/home.png" ALT="Home Page" BORDER=0 height=40 width=40 align=MIDDLE></a><font size="-2">
+<p><a href="../Open ImageMagick.html"><img SRC="../images/home.png" ALT="Home Page" BORDER=0 height=40 width=40 align=MIDDLE></a><font size="-2">
 Image manipulation software that works like magic.</font>
 </body>
 </html>

@@ -3,9 +3,9 @@
 <HTML>
 <HEAD>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-  <title>Perl API: ImageMagick - Image Processing and Display Package</title>
-  <meta name="description" content="ImageMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With ImageMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate, sharpen, color reduce, or add special effects to an image and save your completed work in the same or differing image format.">
-  <meta name="keywords" content="ImageMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
+  <title>Perl API: Open ImageMagick - Image Processing and Display Package</title>
+  <meta name="description" content="Open ImageMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With Open ImageMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate, sharpen, color reduce, or add special effects to an image and save your completed work in the same or differing image format.">
+  <meta name="keywords" content="Open ImageMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
    <link rel="StyleSheet" href="magick.css" type="text/css">
 </head>
 <body bgcolor="#FFFFFF" text="#000000" link="#0085c0" vlink="#800080" alink="#0085c0" >
@@ -74,10 +74,10 @@ Introduction</font></font></font></b></td>
 </table>
 <dd> <a href="archives.html">PerlMagick</a> is an objected-oriented
 <a href="http://www.perl.com/perl/">Perl</a>
-interface to <a href="../ImageMagick.html">ImageMagick</a>. Use
+interface to <a href="../Open ImageMagick.html">Open ImageMagick</a>. Use
 the module to read, manipulate, or write an image or image sequence from
 within a Perl script. This makes it very suitable for Web CGI scripts. You
-must have <b>ImageMagick</b> 5.4.3 or above and Perl version 5.005_02 or greater
+must have <b>Open ImageMagick</b> 5.4.3 or above and Perl version 5.005_02 or greater
 installed on your system for either of these utilities to work.
 </dd>
 <p>
@@ -88,7 +88,7 @@ L-systems</a> to create images of plants using mathematical constructs, and
 finally navigate through collections of thumbnail images and select the image
 to view with the <a href="archives.html">WebMagick Image Navigator</a>. </dd>
     <dd>You can try <b>PerlMagick</b> from your Web browser at the <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">
-ImageMagick Studio</a>. Or, you can see <a href="../images/examples.jpg">
+Open ImageMagick Studio</a>. Or, you can see <a href="../images/examples.jpg">
 examples</a> of select <b>PerlMagick</b> functions.</p>
     </dl>
  <i><a href="#contents">Back to Contents</a></i> <br>
@@ -111,25 +111,25 @@ Installation</font></font></font></b></td>
         <dl>
         <i>The following instructions for Unix apply only to the unbundled
 PerlMagick as obtained from CPAN. PerlMagick is included as a subdirectory
-(PerlMagick) of the ImageMagick source distribution, and may be configured
-and built using the instructions provided in the ImageMagick distribution's
+(PerlMagick) of the Open ImageMagick source distribution, and may be configured
+and built using the instructions provided in the Open ImageMagick distribution's
 README.txt file. It is usually most convenient to install PerlMagick as part
-of the ImageMagick distribution.</i>
-        <p>ImageMagick must already be installed on your system. Next,
+of the Open ImageMagick distribution.</i>
+        <p>Open ImageMagick must already be installed on your system. Next,
 get the <a href="archives.html">PerlMagick</a> distribution corresponding
-to the installed ImageMagick distribution (e.g. PerlMagick 5.39 for ImageMagick
+to the installed Open ImageMagick distribution (e.g. PerlMagick 5.39 for Open ImageMagick
 5.3.0) and unpack it as shown below: <pre>&nbsp;&nbsp;&nbsp; gunzip -c PerlMagick-5.39.tar.gz | tar -xvf -<br>&nbsp;&nbsp;&nbsp; cd PerlMagick</pre>
  Next, edit <tt>Makefile.PL</tt> and change LIBS and INC to include the appropriate
 path information to the required <tt>libMagick</tt> library. You will also
 need paths to JPEG, PNG, TIFF, etc. delegates if they were included with
-your installed version of <b>ImageMagick</b>. Build and install it like this:
+your installed version of <b>Open ImageMagick</b>. Build and install it like this:
         <pre>&nbsp;&nbsp;&nbsp; perl Makefile.PL<br>&nbsp;&nbsp;&nbsp; make<br>&nbsp;&nbsp;&nbsp; make install</pre>
  For Unix, you typically need to be <tt>root</tt> to install the software.
 There are ways around this. Consult the Perl manual pages for more information.
         </p>
         <p><b>Windows XP / Windows 2000</b> </p>
-        <p>ImageMagick must already be installed on your system. Also, the
-ImageMagick source distribution for <a href="archives.html">Windows 2000</a>
+        <p>Open ImageMagick must already be installed on your system. Also, the
+Open ImageMagick source distribution for <a href="archives.html">Windows 2000</a>
  is required. You must also have the <tt>nmake</tt> from the Visual C++ or
 J++ development environment. Copy <tt>\bin\IMagick.dll</tt> and <tt>\bin\X11.dll</tt>
  to a directory in your dynamic load path such as <tt>c:\perl\site\5.00502</tt>
@@ -1279,7 +1279,7 @@ In addition to all the attributes listed in <a href="#seta">Set an Image Attribu
   <tr>
  <td>id</td>
   <td><i>integer</i></td>
-  <td>ImageMagick registry id</td>
+  <td>Open ImageMagick registry id</td>
  </tr>
   <tr>
  <td>label</td>
@@ -1745,7 +1745,7 @@ Below is a list of error and warning codes:
   <tr>
  <td>315</td>
   <td>DelegateWarning</td>
-  <td>an ImageMagick <i>delegate</i> returned a warning</td>
+  <td>an Open ImageMagick <i>delegate</i> returned a warning</td>
  </tr>
   <tr>
  <td>320</td>
@@ -1836,7 +1836,7 @@ Delegate</i> is missing</td>
   <tr>
  <td>415</td>
   <td>DelegateError</td>
-  <td>an ImageMagick <i>delegate</i> returned a warning</td>
+  <td>an Open ImageMagick <i>delegate</i> returned a warning</td>
  </tr>
   <tr>
  <td>420</td>
@@ -1934,7 +1934,7 @@ Copyright</font></font></font></b></td>
                                                     </tbody>
                                                   </table>
                                                   <dd> <b>Copyright (C) 2002
-ImageMagick Studio</b></dd>
+Open ImageMagick Studio</b></dd>
                                                     <p> </p>
                                                     <dd> <b>Permission is
 hereby granted, free of charge, to any person obtaining a copy of this software
@@ -1951,24 +1951,24 @@ portions of PerlMagick.</b></dd>
                                                         <dd> <b>The software
 is provided "as is", without warranty of any kind, express or implied, including
 but not limited to the warranties of merchantability, fitness for a particular
-purpose and noninfringement.In no event shall ImageMagick Studio be liable
+purpose and noninfringement.In no event shall Open ImageMagick Studio be liable
 for any claim, damages or other liability, whether in an action of contract,
 tort or otherwise, arising from, out of or in connection with PerlMagick
 or the use or other dealings in PerlMagick.</b></dd>
                                                           <p> </p>
                                                           <dd> <b>Except
-as contained in this notice, the name of the ImageMagick Studio LLC
+as contained in this notice, the name of the Open ImageMagick Studio LLC
 shall not be used in advertising or otherwise to promote the sale,
 use or other dealings in PerlMagick without prior written authorization from
-the ImageMagick Studio.</b></dd>
+the Open ImageMagick Studio.</b></dd>
                                                             </dl>
  <a href="#contents">Back to Contents</a>
                                                             <hr>
-<p><a href="../ImageMagick.html"><img SRC="../images/home.png"
-ALT="ImageMagick Home Page" BORDER=0 height=40 width=40
+<p><a href="../Open ImageMagick.html"><img SRC="../images/home.png"
+ALT="Open ImageMagick Home Page" BORDER=0 height=40 width=40
 align=MIDDLE></a><a 
 href="mailto:webmaster@imagemagick.org"><img SRC="../images/mail.png"
-ALT="ImageMagick Home Page" BORDER=0 height=40 width=40
+ALT="Open ImageMagick Home Page" BORDER=0 height=40 width=40
 align=MIDDLE></a><font size="-2">
 Image manipulation software that works like magic.</font>
 </body>
