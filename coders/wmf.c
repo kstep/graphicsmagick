@@ -178,6 +178,7 @@ static float magick_font_stringwidth(wmfAPI* API, wmfFont* font, char* str);
 
 static const Image* magick_get_registry(wmfAPI * API, const long id);
 static double       magick_font_pointsize( wmfAPI* API, wmfFont* font, char* str, double font_height);
+static double       magick_font_weight( const char* font );
 static int          magick_mvg_printf(wmfAPI * API, char *format, ...);
 static int          wmf_magick_read(void* context);
 static int          wmf_magick_seek(void* context,long position);
@@ -1049,6 +1050,7 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
     angle = 0,			/* text rotation angle */
     bbox_height,		/* bounding box height */
     bbox_width,			/* bounding box width */
+    font_weight,		/* Font weight, 100 - 900 */
     pointsize = 0;		/* pointsize to output font with desired height */
 
   TypeMetric
@@ -1104,6 +1106,11 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
 
   /* Convert font_height to equivalent pointsize */
   pointsize = magick_font_pointsize( API, font, draw_text->str, draw_text->font_height);
+
+  if( WMF_FONT_WEIGHT(font) == 0 )
+    font_weight = magick_font_weight(WMF_FONT_NAME(font));
+  else
+    font_weight = WMF_FONT_WEIGHT(font);
 
   /* Save graphic context */
   magick_mvg_printf(API, "push graphic-context\n");
@@ -1253,7 +1260,7 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
 
         line_height =
           Max(((double) 1 / (ddata->scale_x)),
-              ((double) AbsoluteValue(metrics.descent)) * 0.5);
+              ((double) AbsoluteValue(metrics.ascent)) * 0.13 * font_weight/900);
         ulTL.x = 0;
         ulTL.y = AbsoluteValue(metrics.descent) - line_height;
         ulBR.x = metrics.width;
@@ -1275,7 +1282,7 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
 
         line_height =
           Max(((double) 1 / (ddata->scale_x)),
-              ((double) AbsoluteValue(metrics.descent)) * 0.5);
+              ((double) AbsoluteValue(metrics.ascent)) * 0.13 * font_weight/900);
         ulTL.x = 0;
         ulTL.y = -(((double) metrics.ascent) / 2 + line_height / 2);
         ulBR.x = metrics.width;
@@ -1741,6 +1748,36 @@ static double magick_font_pointsize( wmfAPI* API, wmfFont* font, char* str, doub
   return pointsize;
 }
 
+/* Estimate weight based on font name */
+static double magick_font_weight( const char* font )
+{
+  double
+    weight;
+
+  weight = 400;
+  if((strstr(font,"Normal") || strstr(font,"Regular")))
+    weight = 400;
+  else if( strstr(font,"Bold") )
+    {
+      weight = 700;
+      if((strstr(font,"Semi") || strstr(font,"Demi")))
+        weight = 600;
+      if( (strstr(font,"Extra") || strstr(font,"Ultra")))
+        weight = 800;
+    }
+  else if( strstr(font,"Light") )
+    {
+      weight = 300;
+      if( (strstr(font,"Extra") || strstr(font,"Ultra")))
+        weight = 200;
+    }
+  else if((strstr(font,"Heavy") || strstr(font,"Black")))
+    weight = 900;
+  else if( strstr(font,"Thin") )
+    weight = 100;
+  return weight;
+}
+
 #if defined(HasWMFlite)
 /*
  * Returns width of string in points, assuming (unstretched) font size of 1pt
@@ -1812,7 +1849,7 @@ static float magick_font_stringwidth( wmfAPI* API, wmfFont* font, char* str)
 
 /* Map font (similar to wmf_ipa_font_map) */
 
-/* Mappings to Ghostscript fonts: family, normal, italic, bold, bolditalic */
+/* Mappings to Postscript fonts: family, normal, italic, bold, bolditalic */
 static wmfFontMap WMFFontMap[] = {
   { "Courier",            "Courier",     "Courier-Oblique",   "Courier-Bold",   "Courier-BoldOblique"   },
   { "Helvetica",          "Helvetica",   "Helvetica-Oblique", "Helvetica-Bold", "Helvetica-BoldOblique" },
@@ -1838,36 +1875,6 @@ static wmfMapping SubFontMap[] = {
   { "Wingdings",	"Symbol"    },
   {  NULL,	         NULL       }
 };
-
-/* Estimate weight based on font name */
-static double font_weight( const char* font )
-{
-  double
-    weight;
-
-  weight = 400;
-  if((strstr(font,"Normal") || strstr(font,"Regular")))
-    weight = 400;
-  else if( strstr(font,"Bold") )
-    {
-      weight = 700;
-      if((strstr(font,"Semi") || strstr(font,"Demi")))
-        weight = 600;
-      if( (strstr(font,"Extra") || strstr(font,"Ultra")))
-        weight = 800;
-    }
-  else if( strstr(font,"Light") )
-    {
-      weight = 300;
-      if( (strstr(font,"Extra") || strstr(font,"Ultra")))
-        weight = 200;
-    }
-  else if((strstr(font,"Heavy") || strstr(font,"Black")))
-    weight = 900;
-  else if( strstr(font,"Thin") )
-    weight = 100;
-  return weight;
-}
 
 static void magick_font_map( wmfAPI* API, wmfFont* font)
 {
@@ -1909,8 +1916,12 @@ static void magick_font_map( wmfAPI* API, wmfFont* font)
       return;
     }
 
-  /* Certain short-hand font names are not the proper names and should
-     be promoted to the proper names */
+  /* Certain short-hand font names are not the proper Windows names
+     and should be promoted to the proper names */
+  if(LocaleCompare(wmf_font_name,"Times") == 0)
+    wmf_font_name = "Times New Roman";
+  else if(LocaleCompare(wmf_font_name,"Courier") == 0)
+    wmf_font_name = "Courier New";
 
   /* Look for a family-based best-match */
   if(!magick_font->ps_name)
@@ -1938,7 +1949,7 @@ static void magick_font_map( wmfAPI* API, wmfFont* font)
                                              strstr(type_info->description,"Oblique")) )
                 continue;
 
-              weight = font_weight( type_info->description );
+              weight = magick_font_weight( type_info->description );
               /* printf("Estimated weight =  %.10g\n", weight); */
 
               if( abs(weight - target_weight) < abs(best_weight - target_weight) )
