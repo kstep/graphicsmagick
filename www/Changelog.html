@@ -23,6 +23,12 @@ ImageMagick Changes</font></font></font></b></td>
 <dl>
 <dd>
 <pre>
+2001-09-30  Cristy  <cristy@mystic.es.dupont.com>
+	* switched strcpy to strncpy to help protect against buffer
+	  overflow.
+	* ltdl.c passed int reference but a long was needed;
+	  caused a fault on Solaris 64-bit compiles.
+
 2001-09-25  Cristy  <cristy@mystic.es.dupont.com>
 	* Removed most lint complaints from the source.
 	* strtod() returns different results on Linux and Solaris for 0x13.
@@ -30,7 +36,7 @@ ImageMagick Changes</font></font></font></b></td>
 
 2001-09-21  Cristy  <cristy@mystic.es.dupont.com>
 	* Replaced TemporaryFilename() with UniqueImageFilename().
-	* ImageMagick CORE API is not 64-bit clean.
+	* ImageMagick CORE API is now 64-bit clean.
 
 2001-09-20  Cristy  <cristy@mystic.es.dupont.com>
 	* Fixed svg.c to accept a viewbox with a negative offset.
