@@ -348,7 +348,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   /*
     Copy image to temporary file.
   */
-  (void) strcpy(filename,image_info->filename);
+  (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
   TemporaryFilename((char *) image_info->filename);
   file=fopen(image_info->filename,WriteBinaryType);
   if (file == (FILE *) NULL)
@@ -360,7 +360,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     c=ReadBlobByte(image);
   }
   (void) fclose(file);
-  (void) strcpy(image->filename,image_info->filename);
+  (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
   tiff_exception=exception;
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
@@ -880,7 +880,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   (void) remove(image->filename);
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  (void) strcpy(image->filename,filename);
+  (void) strncpy(image->filename,filename,MaxTextExtent-1);
   CloseBlob(image);
   return(image);
 }
@@ -1241,7 +1241,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   tiff_exception=(&image->exception);
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
-  (void) strcpy(filename,image->filename);
+  (void) strncpy(filename,image->filename,MaxTextExtent-1);
   if ((image->file == stdout) || image->pipet ||
       (image->blob->data != (unsigned char *) NULL))
     TemporaryFilename(filename);

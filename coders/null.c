@@ -102,7 +102,7 @@ static Image *ReadNULLImage(const ImageInfo *image_info,
     image->columns=1;
   if (image->rows == 0)
     image->rows=1;
-  (void) strcpy(image->filename,image_info->filename);
+  (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
   (void) QueryColorDatabase((char *) image_info->filename,
     &image->background_color);
   if (!AllocateImageColormap(image,1))

@@ -1053,7 +1053,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
     Add a ICM, IPTC, or generic profile to the image.
   */
   image_info=CloneImageInfo((ImageInfo *) NULL);
-  (void) strcpy(image_info->filename,filename);
+  (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
   profile_image=ReadImage(image_info,&exception);
   if (exception.severity != UndefinedException)
     MagickWarning(exception.severity,exception.reason,exception.description);

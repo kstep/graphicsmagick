@@ -1785,7 +1785,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
           {
             GetToken(q,&q,token);
             if (draw_info->font != (char *) NULL)
-              (void) strcpy(token,draw_info->font);
+              (void) strncpy(token,draw_info->font,MaxTextExtent-1);
             (void) CloneString(&graphic_context[n]->font,token);
             break;
           }
@@ -3390,7 +3390,7 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
       if (primitive_info->text == (char *) NULL)
         break;
       clone_info=CloneImageInfo((ImageInfo *) NULL);
-      (void) strcpy(clone_info->filename,primitive_info->text);
+      (void) strncpy(clone_info->filename,primitive_info->text,MaxTextExtent-1);
       composite_image=ReadImage(clone_info,&exception);
       if (exception.severity != UndefinedException)
         MagickWarning(exception.severity,exception.reason,

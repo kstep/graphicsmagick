@@ -726,7 +726,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       /*
         User specified image format.
       */
-      (void) strcpy(magic,p+1);
+      (void) strncpy(magic,p+1,MaxTextExtent-1);
       for (q=magic; *q != '\0'; q++)
         if (*q == '.')
           {
@@ -740,7 +740,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       if (((LocaleNCompare(image_info->magick,"SGI",3) != 0) ||
           (LocaleCompare(magic,"RGB") != 0)) &&
           (LocaleCompare(magic,"TMP") != 0))
-        (void) strcpy(image_info->magick,magic);
+        (void) strncpy(image_info->magick,magic,MaxTextExtent-1);
     }
   /*
     Look for explicit 'format:image' in filename.
@@ -772,11 +772,11 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
             Strip off image format prefix.
           */
           p++;
-          (void) strcpy(image_info->filename,p);
-          (void) strcpy(magic,format);
+          (void) strncpy(image_info->filename,p,MaxTextExtent-1);
+          (void) strncpy(magic,format,MaxTextExtent-1);
           if (LocaleCompare(magic,"IMPLICIT") != 0)
             {
-              (void) strcpy(image_info->magick,magic);
+              (void) strncpy(image_info->magick,magic,MaxTextExtent-1);
               if (LocaleCompare(magic,"TMP") != 0)
                 affirm=True;
               else
@@ -815,7 +815,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   /*
     Determine the image format from the first few bytes of the file.
   */
-  (void) strcpy(image->filename,image_info->filename);
+  (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     {
@@ -862,7 +862,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   magic_info=GetMagicInfo(magick,2*MaxTextExtent,exception);
   if ((magic_info != (MagicInfo *) NULL) && (magic_info->name != (char *) NULL))
     {
-      (void) strcpy(image_info->magick,magic_info->name);
+      (void) strncpy(image_info->magick,magic_info->name,MaxTextExtent-1);
       return(True);
     }
   /*
@@ -871,7 +871,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   p=GetImageMagick(magick,2*MaxTextExtent);
   if (p != (char *) NULL)
     {
-      (void) strcpy(image_info->magick,p);
+      (void) strncpy(image_info->magick,p,MaxTextExtent-1);
       return(True);
     }
   return(False);

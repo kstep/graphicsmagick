@@ -482,7 +482,7 @@ int main(int argc,char **argv)
   global_colormap=False;
   image=(Image *) NULL;
   image_info=CloneImageInfo((ImageInfo *) NULL);
-  (void) strcpy(image_info->filename,argv[argc-1]);
+  (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
   (void) SetImageInfo(image_info,True,&exception);
   ping=False;
   option=(char *) NULL;
@@ -501,7 +501,7 @@ int main(int argc,char **argv)
           Read input image.
         */
         filename=argv[i];
-        (void) strcpy(image_info->filename,filename);
+        (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
         if (ping)
           next_image=PingImage(image_info,&exception);
         else
@@ -2033,10 +2033,10 @@ int main(int argc,char **argv)
   /*
     Write converted image.
   */
-  (void) strcpy(image_info->filename,argv[i]);
+  (void) strncpy(image_info->filename,argv[i],MaxTextExtent-1);
   for (p=image; p != (Image *) NULL; p=p->next)
   {
-    (void) strcpy(p->filename,argv[i]);
+    (void) strncpy(p->filename,argv[i],MaxTextExtent-1);
     p->scene=scene++;
   }
   (void) SetImageInfo(image_info,True,&image->exception);

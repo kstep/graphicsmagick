@@ -123,7 +123,7 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
   if (clone_image == (Image *) NULL)
     return((Image *) NULL);
   image=clone_image;
-  (void) strcpy(image->filename,image_info->filename);
+  (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
   /*
     Tile texture onto image.
   */

@@ -1881,7 +1881,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     return(ReadImages(image_info,exception));
   clone_info=CloneImageInfo(image_info);
   (void) SetImageInfo(clone_info,False,exception);
-  (void) strcpy(filename,clone_info->filename);
+  (void) strncpy(filename,clone_info->filename,MaxTextExtent-1);
   /*
     Call appropriate image reader based on image type.
   */
@@ -1924,7 +1924,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           DestroyImageInfo(clone_info);
           return((Image *) NULL);
         }
-      (void) strcpy(image->filename,clone_info->filename);
+      (void) strncpy(image->filename,clone_info->filename,MaxTextExtent-1);
       TemporaryFilename(clone_info->filename);
       status=InvokeDelegate(clone_info,image,clone_info->magick,(char *) NULL);
       ThrowException(exception,image->exception.severity,
@@ -1959,7 +1959,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       (void) remove(clone_info->filename);
       clone_info->temporary=False;
       if (image != (Image *) NULL)
-        (void) strcpy(image->filename,filename);
+        (void) strncpy(image->filename,filename,MaxTextExtent-1);
     }
   if (image == (Image *) NULL)
     {
@@ -2085,9 +2085,9 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   for (next=image; next; next=next->next)
   {
     next->taint=False;
-    (void) strcpy(next->magick_filename,clone_info->filename);
+    (void) strncpy(next->magick_filename,clone_info->filename,MaxTextExtent-1);
     if (image->temporary)
-      (void) strcpy(next->filename,clone_info->filename);
+      (void) strncpy(next->filename,clone_info->filename,MaxTextExtent-1);
     if (next->magick_columns == 0)
       next->magick_columns=next->columns;
     if (next->magick_rows == 0)
@@ -2171,7 +2171,7 @@ static Image *ReadImages(const ImageInfo *image_info,ExceptionInfo *exception)
   clone_info=CloneImageInfo(image_info);
   for (i=1; i < number_images; i++)
   {
-    (void) strcpy(clone_info->filename,images[i]);
+    (void) strncpy(clone_info->filename,images[i],MaxTextExtent-1);
     next=ReadImage(clone_info,exception);
     if (next == (Image *) NULL)
       continue;
@@ -2246,10 +2246,10 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   clone_info=CloneImageInfo(image_info);
-  (void) strcpy(clone_info->filename,image->filename);
-  (void) strcpy(clone_info->magick,image->magick);
+  (void) strncpy(clone_info->filename,image->filename,MaxTextExtent-1);
+  (void) strncpy(clone_info->magick,image->magick,MaxTextExtent-1);
   (void) SetImageInfo(clone_info,True,&image->exception);
-  (void) strcpy(image->filename,clone_info->filename);
+  (void) strncpy(image->filename,clone_info->filename,MaxTextExtent-1);
   if (((image->next == (Image *) NULL) || clone_info->adjoin) &&
       (image->previous == (Image *) NULL) &&
       (clone_info->page == (char *) NULL) &&
@@ -2263,7 +2263,8 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
           /*
             Let our bi-modal delegate process the image.
           */
-          (void) strcpy(image->filename,image->magick_filename);
+          (void) strncpy(image->filename,image->magick_filename,
+            MaxTextExtent-1);
           status=InvokeDelegate(clone_info,image,image->magick,
             clone_info->magick);
           DestroyImageInfo(clone_info);
@@ -2324,7 +2325,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
       if (!magick_info->thread_support)
         LiberateSemaphoreInfo(&constitute_semaphore);
     }
-  (void) strcpy(image->magick,clone_info->magick);
+  (void) strncpy(image->magick,clone_info->magick,MaxTextExtent-1);
   DestroyImageInfo(clone_info);
   if (image->status)
     ThrowBinaryException(CorruptImageWarning,

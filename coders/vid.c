@@ -132,7 +132,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   list[0]=(char *) AcquireMemory(strlen(image_info->filename)+1);
   if (list[0] == (char *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
-  (void) strcpy(list[0],image_info->filename);
+  (void) strncpy(list[0],image_info->filename,MaxTextExtent-1);
   number_files=1;
   filelist=list;
   status=ExpandFilenames(&number_files,&filelist);
@@ -148,7 +148,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   for (i=0; i < number_files; i++)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
-    (void) strcpy(clone_info->filename,filelist[i]);
+    (void) strncpy(clone_info->filename,filelist[i],MaxTextExtent-1);
     next_image=ReadImage(clone_info,exception);
     LiberateMemory((void **) &filelist[i]);
     if (next_image != (Image *) NULL)

@@ -271,7 +271,7 @@ int main(int argc,char **argv)
   gravity=NorthWestGravity;
   image=(Image *) NULL;
   image_info=CloneImageInfo((ImageInfo *) NULL);
-  (void) strcpy(image_info->filename,argv[argc-1]);
+  (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
   (void) SetImageInfo(image_info,True,&exception);
   mask_image=(Image *) NULL;
   stegano=0;
@@ -293,7 +293,7 @@ int main(int argc,char **argv)
           Read input images.
         */
         filename=argv[i];
-        (void) strcpy(image_info->filename,filename);
+        (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
         if (composite_image == (Image *) NULL)
           {
             composite_image=ReadImage(image_info,&exception);
@@ -1080,7 +1080,7 @@ int main(int argc,char **argv)
   /*
     Write image.
   */
-  (void) strcpy(combine_image->filename,write_filename);
+  (void) strncpy(combine_image->filename,write_filename,MaxTextExtent-1);
   (void) SetImageInfo(image_info,True,&combine_image->exception);
   status=WriteImage(image_info,combine_image);
   if (status == False)

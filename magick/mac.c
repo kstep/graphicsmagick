@@ -360,7 +360,7 @@ MagickExport void pascal FilenameToFSSpec(const char *filename,FSSpec *fsspec)
     name;
 
   assert(filename != (char *) NULL);
-  (void) strcpy((char *) name,filename);
+  (void) strncpy((char *) name,filename,,MaxTextExtent-1);
   c2pstr((char *) name);
   FSMakeFSSpec(0,0,name,fsspec);
 }
@@ -887,7 +887,8 @@ MagickExport DIR *opendir(const char *path)
   search_info.hFileInfo.ioNamePtr=0;
   if ((path != (char *) NULL) || (*path != '\0'))
     if ((path[0] != '.') || (path[1] != '\0'))
-      search_info.hFileInfo.ioNamePtr=c2pstr(strcpy(pathname,path));
+      search_info.hFileInfo.ioNamePtr=
+        c2pstr(strncpy(pathname,path,MaxTextExtent-1));
   search_info.hFileInfo.ioCompletion=0;
   search_info.hFileInfo.ioVRefNum=0;
   search_info.hFileInfo.ioFDirIndex=0;
@@ -1001,7 +1002,8 @@ MagickExport struct dirent *readdir(DIR *entry)
       return((struct dirent *) NULL);
     }
   entry->d_index++;
-  (void) strcpy(dir_entry.d_name,p2cstr(search_info.hFileInfo.ioNamePtr));
+  (void) strncpy(dir_entry.d_name,p2cstr(search_info.hFileInfo.ioNamePtr),
+    MaxTextExtent-1);
   dir_entry.d_namlen=strlen(dir_entry.d_name);
   return(&dir_entry);
 }
@@ -1403,7 +1405,7 @@ MagickExport void SetApplicationType(const char *filename,const char *magick,
   assert(filename != (char *) NULL);
   filetype='    ';
   (void) strncpy((char *) &filetype,magick,Min(strlen(magick),4));
-  (void) strcpy((char *) name,filename);
+  (void) strncpy((char *) name,filename,,MaxTextExtent-1);
   c2pstr((char *) name);
   FSMakeFSSpec(0,0,name,&file_specification);
   FSpCreate(&file_specification,application,filetype,smSystemScript);

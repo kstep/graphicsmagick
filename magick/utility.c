@@ -161,7 +161,7 @@ MagickExport void AppendImageFormat(const char *format,char *filename)
         message[MaxTextExtent];
 
       FormatString(message,"%.1024s:%.1024s",format,filename);
-      (void) strcpy(filename,message);
+      (void) strncpy(filename,message,MaxTextExtent-1);
       return;
     }
   GetPathComponent(filename,RootPath,root);
@@ -368,7 +368,7 @@ MagickExport void ExpandFilename(char *filename)
     return;
   if (*filename != '~')
     return;
-  (void) strcpy(expanded_filename,filename);
+  (void) strncpy(expanded_filename,filename,MaxTextExtent-1);
   if (*(filename+1) == '/')
     {
       /*
@@ -377,8 +377,8 @@ MagickExport void ExpandFilename(char *filename)
       p=(char *) getenv("HOME");
       if (p == (char *) NULL)
         p=(char *) ".";
-      (void) strcpy(expanded_filename,p);
-      (void) strcat(expanded_filename,filename+1);
+      (void) strncpy(expanded_filename,p,MaxTextExtent-1);
+      (void) strncat(expanded_filename,filename+1,MaxTextExtent-1);
     }
   else
     {
@@ -392,22 +392,22 @@ MagickExport void ExpandFilename(char *filename)
       /*
         Substitute ~ with home directory from password file.
       */
-      (void) strcpy(username,filename+1);
+      (void) strncpy(username,filename+1,MaxTextExtent-1);
       p=strchr(username,'/');
       if (p != (char *) NULL)
         *p='\0';
       entry=getpwnam(username);
       if (entry == (struct passwd *) NULL)
         return;
-      (void) strcpy(expanded_filename,entry->pw_dir);
+      (void) strncpy(expanded_filename,entry->pw_dir,MaxTextExtent-1);
       if (p != (char *) NULL)
         {
           (void) strcat(expanded_filename,"/");
-          (void) strcat(expanded_filename,p+1);
+          (void) strncat(expanded_filename,p+1,MaxTextExtent-1);
         }
 #endif
     }
-  (void) strcpy(filename,expanded_filename);
+  (void) strncpy(filename,expanded_filename,MaxTextExtent-1);
 }
 
 /*
@@ -484,7 +484,7 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
       continue;
     if ((*option == '"') || (*option == '\''))
       continue;
-    (void) strcpy(path,option);
+    (void) strncpy(path,option,MaxTextExtent-1);
     ExpandFilename(path);
     if (!IsGlob(path))
       {
@@ -685,44 +685,44 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
   /*
     Remove whitespaces and % and ! characters from geometry specification.
   */
-  (void) strcpy(geometry,image_geometry);
+  (void) strncpy(geometry,image_geometry,MaxTextExtent-1);
   flags=NoValue;
   p=geometry;
   while (strlen(p) != 0)
   {
     if (isspace((int) (*p)))
-      (void) strcpy(p,p+1);
+      (void) strncpy(p,p+1,MaxTextExtent-1);
     else
       switch (*p)
       {
         case '%':
         {
           flags|=PercentValue;
-          (void) strcpy(p,p+1);
+          (void) strncpy(p,p+1,MaxTextExtent-1);
           break;
         }
         case '!':
         {
           flags|=AspectValue;
-          (void) strcpy(p,p+1);
+          (void) strncpy(p,p+1,MaxTextExtent-1);
           break;
         }
         case '<':
         {
           flags|=LessValue;
-          (void) strcpy(p,p+1);
+          (void) strncpy(p,p+1,MaxTextExtent-1);
           break;
         }
         case '>':
         {
           flags|=GreaterValue;
-          (void) strcpy(p,p+1);
+          (void) strncpy(p,p+1,MaxTextExtent-1);
           break;
         }
         case '@':
         {
           flags|=AreaValue;
-          (void) strcpy(p,p+1);
+          (void) strncpy(p,p+1,MaxTextExtent-1);
           break;
         }
         default:
@@ -775,7 +775,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
   */
   assert(path != (const char *) NULL);
   assert(component != (const char *) NULL);
-  (void) strcpy(component,path);
+  (void) strncpy(component,path,MaxTextExtent-1);
   if (*path == '\0')
     return;
   for (p=component+(strlen(component)-1); p > component; p--)
@@ -800,13 +800,13 @@ MagickExport void GetPathComponent(const char *path,PathType type,
     case TailPath:
     {
       if (IsBasenameSeparator(*p))
-        (void) strcpy(component,p+1);
+        (void) strncpy(component,p+1,MaxTextExtent-1);
       break;
     }
     case BasePath:
     {
       if (IsBasenameSeparator(*p))
-        (void) strcpy(component,p+1);
+        (void) strncpy(component,p+1,MaxTextExtent-1);
       for (p=component+(strlen(component)-1); p > component; p--)
         if (*p == '.')
           {
@@ -818,13 +818,13 @@ MagickExport void GetPathComponent(const char *path,PathType type,
     case ExtensionPath:
     {
       if (IsBasenameSeparator(*p))
-        (void) strcpy(component,p+1);
+        (void) strncpy(component,p+1,MaxTextExtent-1);
       for (p=component+(strlen(component)-1); p > component; p--)
         if (*p == '.')
           break;
       *component='\0';
       if (*p == '.')
-        (void) strcpy(component,p+1);
+        (void) strncpy(component,p+1,MaxTextExtent-1);
       break;
     }
   }
@@ -942,7 +942,7 @@ MagickExport void GetToken(const char *start,char **end,char *token)
   if (LocaleNCompare(token,"url(#",5) == 0)
     {
       i=strlen(token);
-      (void) strcpy(token,token+5);
+      (void) strncpy(token,token+5,MaxTextExtent-1);
       token[i-6]='\0';
     }
   if (end != (char **) NULL)
@@ -1001,7 +1001,7 @@ MagickExport int GlobExpression(const char *expression,const char *pattern)
         Determine if pattern is a subimage, i.e. img0001.pcd[2].
       */
       image_info=CloneImageInfo((ImageInfo *) NULL);
-      (void) strcpy(image_info->filename,pattern);
+      (void) strncpy(image_info->filename,pattern,MaxTextExtent-1);
       (void) SetImageInfo(image_info,True,&exception);
       exempt=(LocaleCompare(image_info->magick,"VID") == 0) ||
         (image_info->subimage &&
@@ -1440,7 +1440,7 @@ MagickExport char **ListFiles(const char *directory,const char *pattern,
           AcquireMemory(strlen(entry->d_name)+MaxTextExtent);
         if (filelist[*number_entries] == (char *) NULL)
           break;
-        (void) strcpy(filelist[*number_entries],entry->d_name);
+        (void) strncpy(filelist[*number_entries],entry->d_name,MaxTextExtent-1);
         if (IsDirectory(entry->d_name) > 0)
           (void) strcat(filelist[*number_entries],DirectorySeparator);
         (*number_entries)++;
@@ -1971,7 +1971,7 @@ MagickExport char *PostscriptGeometry(const char *page)
   /*
     Comparison is case insensitive.
   */
-  (void) strcpy(geometry,page);
+  (void) strncpy(geometry,page,MaxTextExtent-1);
   if (!isdigit((int) (*geometry)))
     for (p=geometry; *p != '\0'; p++)
     {
@@ -1988,8 +1988,8 @@ MagickExport char *PostscriptGeometry(const char *page)
         /*
           Replace mneumonic with the equivalent size in dots-per-inch.
         */
-        (void) strcpy(geometry,PageSizes[i][1]);
-        (void) strcat(geometry,page+strlen(PageSizes[i][0]));
+        (void) strncpy(geometry,PageSizes[i][1],MaxTextExtent-1);
+        (void) strncat(geometry,page+strlen(PageSizes[i][0]),MaxTextExtent-1);
         break;
       }
   return(geometry);
@@ -2028,7 +2028,7 @@ MagickExport char *SetClientName(const char *name)
 
   if (name == (char *) NULL)
     return(client_name);
-  (void) strcpy(client_name,name);
+  (void) strncpy(client_name,name,MaxTextExtent-1);
   return(client_name);
 }
 
@@ -2065,7 +2065,7 @@ MagickExport char *SetClientPath(const char *path)
 
   if (path == (char *) NULL)
     return(client_path);
-  (void) strcpy(client_path,path);
+  (void) strncpy(client_path,path,MaxTextExtent-1);
   return(client_path);
 }
 
@@ -2280,7 +2280,7 @@ MagickExport char **StringToList(const char *text)
         for (j=1; j <= (long) Min(strlen(p),0x14); j++)
         {
           FormatString(hex_string,"%02lx",*(p+j));
-          (void) strcpy(q,hex_string);
+          (void) strncpy(q,hex_string,MaxTextExtent-1);
           q+=2;
           if ((j % 0x04) == 0)
             *q++=' ';
@@ -2447,7 +2447,7 @@ MagickExport void TemporaryFilename(char *filename)
     if (name == (char *) NULL)
       MagickError(ResourceLimitError,
         "Unable to create a name for a temporary file",(char *) NULL);
-    (void) strcpy(filename,name);
+    (void) strncpy(filename,name,MaxTextExtent-1);
     LiberateMemory((void **) &name);
   }
 #else
@@ -2937,7 +2937,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         attribute=GetImageAttribute(image,"comment");
         if (attribute == (ImageAttribute *) NULL)
           break;
-        (void) strcpy(q,attribute->value);
+        (void) strncpy(q,attribute->value,MaxTextExtent-1);
         q+=strlen(attribute->value);
         break;
       }
@@ -2956,28 +2956,28 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
           case 'd':
           {
             GetPathComponent(image->magick_filename,HeadPath,filename);
-            (void) strcpy(q,filename);
+            (void) strncpy(q,filename,MaxTextExtent-1);
             q+=strlen(filename);
             break;
           }
           case 'e':
           {
             GetPathComponent(image->magick_filename,ExtensionPath,filename);
-            (void) strcpy(q,filename);
+            (void) strncpy(q,filename,MaxTextExtent-1);
             q+=strlen(filename);
             break;
           }
           case 'f':
           {
             GetPathComponent(image->magick_filename,TailPath,filename);
-            (void) strcpy(q,filename);
+            (void) strncpy(q,filename,MaxTextExtent-1);
             q+=strlen(filename);
             break;
           }
           case 't':
           {
             GetPathComponent(image->magick_filename,BasePath,filename);
-            (void) strcpy(q,filename);
+            (void) strncpy(q,filename,MaxTextExtent-1);
             q+=strlen(filename);
             break;
           }
@@ -2998,7 +2998,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'i':
       {
-        (void) strcpy(q,image->filename);
+        (void) strncpy(q,image->filename,MaxTextExtent-1);
         q+=strlen(image->filename);
         break;
       }
@@ -3017,13 +3017,13 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         attribute=GetImageAttribute(image,"label");
         if (attribute == (ImageAttribute *) NULL)
           break;
-        (void) strcpy(q,attribute->value);
+        (void) strncpy(q,attribute->value,MaxTextExtent-1);
         q+=strlen(attribute->value);
         break;
       }
       case 'm':
       {
-        (void) strcpy(q,image->magick);
+        (void) strncpy(q,image->magick,MaxTextExtent-1);
         q+=strlen(image->magick);
         break;
       }
@@ -3035,7 +3035,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'o':
       {
-        (void) strcpy(q,clone_info->filename);
+        (void) strncpy(q,clone_info->filename,MaxTextExtent-1);
         q+=strlen(clone_info->filename);
         break;
       }
@@ -3070,10 +3070,10 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'u':
       {
-        (void) strcpy(filename,clone_info->unique);
+        (void) strncpy(filename,clone_info->unique,MaxTextExtent-1);
         if (*filename == '\0')
           TemporaryFilename(filename);
-        (void) strcpy(q,filename);
+        (void) strncpy(q,filename,MaxTextExtent-1);
         q+=strlen(filename);
         break;
       }
@@ -3098,10 +3098,10 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'z':
       {
-        (void) strcpy(filename,clone_info->zero);
+        (void) strncpy(filename,clone_info->zero,MaxTextExtent-1);
         if (*filename == '\0')
           TemporaryFilename(filename);
-        (void) strcpy(q,filename);
+        (void) strncpy(q,filename,MaxTextExtent-1);
         q+=strlen(filename);
         break;
       }

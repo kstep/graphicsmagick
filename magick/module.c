@@ -277,7 +277,7 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image *image,
       LiberateMemory((void **) &module_name);
       return(status);
     }
-  (void) strcpy(module_name,tag);
+  (void) strncpy(module_name,tag,MaxTextExtent-1);
   (void) strcat(module_name,"Image");
   method=(unsigned int (*)(Image *,const int,char **))
     lt_dlsym(handle,module_name);
@@ -477,7 +477,7 @@ static char **GetModuleList(void)
     LocaleUpper(modules[i]);
     if (LocaleNCompare("IM_MOD_",modules[i],7) == 0)
       {
-        (void) strcpy(modules[i],modules[i]+10);
+        (void) strncpy(modules[i],modules[i]+10,MaxTextExtent-1);
         modules[i][strlen(modules[i])-1]='\0';
       }
     i++;
@@ -641,13 +641,13 @@ MagickExport unsigned int OpenModule(const char *module,
     Assign module name from alias.
   */
   assert(module != (const char *) NULL);
-  (void) strcpy(module_name,module);
+  (void) strncpy(module_name,module,MaxTextExtent-1);
   if (module_aliases != (ModuleAlias *) NULL)
     {
       for (p=module_aliases; p != (ModuleAlias *) NULL; p=p->next)
         if (LocaleCompare(p->alias,module) == 0)
           {
-            (void) strcpy(module_name,p->name);
+            (void) strncpy(module_name,p->name,MaxTextExtent-1);
             break;
           }
     }
@@ -1093,7 +1093,7 @@ static char *TagToModule(const char *tag)
   (void) LocaleLower(module_name);
 #else
   if (LocaleNCompare("IM_MOD_",tag,7) == 0)
-    (void) strcpy(module_name,tag);
+    (void) strncpy(module_name,tag,MaxTextExtent-1);
   else
     {
 #if defined(_DEBUG)

@@ -171,7 +171,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
       clone_info=CloneImageInfo(image_info);
       DetachBlob(clone_info->blob);
-      (void) strcpy(clone_info->filename,image_info->texture);
+      (void) strncpy(clone_info->filename,image_info->texture,MaxTextExtent-1);
       texture=ReadImage(clone_info,exception);
       if (texture != (Image *) NULL)
         TextureImage(image,texture);
@@ -182,7 +182,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   SetImage(image,OpaqueOpacity);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  (void) strcpy(filename,image_info->filename);
+  (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
   offset=0;
   for ( ; ; )
   {
@@ -216,7 +216,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->next->columns=image->columns;
     image->next->rows=image->rows;
     image=image->next;
-    (void) strcpy(image->filename,filename);
+    (void) strncpy(image->filename,filename,MaxTextExtent-1);
     SetImage(image,OpaqueOpacity);
     MagickMonitor(LoadImagesText,TellBlob(image),SizeBlob(image));
     /*

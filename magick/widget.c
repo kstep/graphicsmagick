@@ -1866,8 +1866,8 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
             /*
               Reply is a single color name-- exit.
             */
-            (void) strcpy(reply,glob_pattern);
-            (void) strcpy(glob_pattern,reset_pattern);
+            (void) strncpy(reply,glob_pattern,MaxTextExtent-1);
+            (void) strncpy(glob_pattern,reset_pattern,MaxTextExtent-1);
             action_info.raised=False;
             XDrawBeveledButton(display,&windows->widget,&action_info);
             break;
@@ -1878,7 +1878,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
         checklist=GetColorList(glob_pattern,&number_colors);
         if (number_colors == 0)
           {
-            (void) strcpy(glob_pattern,reset_pattern);
+            (void) strncpy(glob_pattern,reset_pattern,MaxTextExtent-1);
             (void) XBell(display,0);
           }
         else
@@ -2106,7 +2106,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
               selection_info.height;
             if ((int) id >= colors)
               break;
-            (void) strcpy(reply_info.text,colorlist[id]);
+            (void) strncpy(reply_info.text,colorlist[id],MaxTextExtent-1);
             reply_info.highlight=False;
             reply_info.marker=reply_info.text;
             reply_info.cursor=reply_info.text+Extent(reply_info.text);
@@ -2114,7 +2114,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
             state|=RedrawActionState;
             if ((int) id == list_info.id)
               {
-                (void) strcpy(glob_pattern,reply_info.text);
+                (void) strncpy(glob_pattern,reply_info.text,MaxTextExtent-1);
                 state|=UpdateListState;
               }
             selection_info.id=(~0);
@@ -2145,8 +2145,8 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
             /*
               User pressed mode button.
             */
-            (void) strcpy(reply_info.text,mode_info.text);
-            (void) strcpy(primary_selection,reply_info.text);
+            (void) strncpy(reply_info.text,mode_info.text,MaxTextExtent-1);
+            (void) strncpy(primary_selection,reply_info.text,MaxTextExtent-1);
             (void) XSetSelectionOwner(display,XA_PRIMARY,windows->widget.id,
               event.xbutton.time);
             reply_info.highlight=XGetSelectionOwner(display,XA_PRIMARY) ==
@@ -2196,7 +2196,8 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
                 /*
                   Become the XA_PRIMARY selection owner.
                 */
-                (void) strcpy(primary_selection,reply_info.text);
+                (void) strncpy(primary_selection,reply_info.text,
+                  MaxTextExtent-1);
                 (void) XSetSelectionOwner(display,XA_PRIMARY,windows->widget.id,
                   event.xbutton.time);
                 reply_info.highlight=XGetSelectionOwner(display,XA_PRIMARY) ==
@@ -2265,7 +2266,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
             if (event.xbutton.window == windows->widget.id)
               if (MatteIsActive(reset_info,event.xbutton))
                 {
-                  (void) strcpy(glob_pattern,reset_pattern);
+                  (void) strncpy(glob_pattern,reset_pattern,MaxTextExtent-1);
                   state|=UpdateListState;
                 }
             reset_info.raised=True;
@@ -2430,7 +2431,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
             */
             if (*reply_info.text == '\0')
               break;
-            (void) strcpy(glob_pattern,reply_info.text);
+            (void) strncpy(glob_pattern,reply_info.text,MaxTextExtent-1);
             state|=UpdateListState;
             break;
           }
@@ -3276,7 +3277,7 @@ MagickExport int XConfirmWidget(Display *display,XWindows *windows,
             char
               question[MaxTextExtent];
 
-            (void) strcpy(question,description);
+            (void) strncpy(question,description,MaxTextExtent-1);
             (void) strcat(question,"?");
             width=XTextWidth(font_info,question,Extent(question));
             x=(windows->widget.width >> 1)-(width >> 1);
@@ -3776,7 +3777,8 @@ MagickExport int XDialogWidget(Display *display,XWindows *windows,
                 /*
                   Become the XA_PRIMARY selection owner.
                 */
-                (void) strcpy(primary_selection,reply_info.text);
+                (void) strncpy(primary_selection,reply_info.text,
+                  MaxTextExtent-1);
                 (void) XSetSelectionOwner(display,XA_PRIMARY,windows->widget.id,
                   event.xbutton.time);
                 reply_info.highlight=XGetSelectionOwner(display,XA_PRIMARY) ==
@@ -4253,7 +4255,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
   (void) getcwd(home_directory,MaxTextExtent-1);
-  (void) strcpy(working_directory,home_directory);
+  (void) strncpy(working_directory,home_directory,MaxTextExtent-1);
   filelist=ListFiles(working_directory,glob_pattern,&files);
   if (filelist == (char **) NULL)
     {
@@ -4369,7 +4371,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
             while ((p > (reply+1)) && (*(p-1) != '.'))
               p--;
             if ((p > (reply+1)) && (*(p-1) == '.'))
-              (void) strcpy(format,p);
+              (void) strncpy(format,p,MaxTextExtent-1);
           }
         XGetWidgetInfo(UpButtonText,&up_info);
         up_info.width=width;
@@ -4718,14 +4720,15 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
               selection_info.height;
             if ((int) id >= files)
               break;
-            (void) strcpy(reply_info.text,filelist[id]);
+            (void) strncpy(reply_info.text,filelist[id],MaxTextExtent-1);
             reply_info.highlight=False;
             reply_info.marker=reply_info.text;
             reply_info.cursor=reply_info.text+Extent(reply_info.text);
             XDrawMatteText(display,&windows->widget,&reply_info);
             if ((int) id == list_info.id)
               {
-                (void) strcpy(working_directory,reply_info.text);
+                (void) strncpy(working_directory,reply_info.text,
+                  MaxTextExtent-1);
                 state|=UpdateListState;
               }
             selection_info.id=(~0);
@@ -4800,7 +4803,8 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
                 /*
                   Become the XA_PRIMARY selection owner.
                 */
-                (void) strcpy(primary_selection,reply_info.text);
+                (void) strncpy(primary_selection,reply_info.text,
+                  MaxTextExtent-1);
                 (void) XSetSelectionOwner(display,XA_PRIMARY,windows->widget.id,
                   event.xbutton.time);
                 reply_info.highlight=XGetSelectionOwner(display,XA_PRIMARY) ==
@@ -4863,7 +4867,8 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
             if (event.xbutton.window == windows->widget.id)
               if (MatteIsActive(home_info,event.xbutton))
                 {
-                  (void) strcpy(working_directory,home_directory);
+                  (void) strncpy(working_directory,home_directory,
+                    MaxTextExtent-1);
                   state|=UpdateListState;
                 }
             home_info.raised=True;
@@ -5060,10 +5065,11 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
             if (*reply_info.text == '\0')
               break;
             if (IsGlob(reply_info.text))
-              (void) strcpy(glob_pattern,reply_info.text);
+              (void) strncpy(glob_pattern,reply_info.text,MaxTextExtent-1);
             else
               {
-                (void) strcpy(working_directory,reply_info.text);
+                (void) strncpy(working_directory,reply_info.text,
+                  MaxTextExtent-1);
                 if (*working_directory == '~')
                   ExpandFilename(working_directory);
               }
@@ -5437,7 +5443,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
   assert(reply != (char *) NULL);
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
-  (void) strcpy(back_pattern,glob_pattern);
+  (void) strncpy(back_pattern,glob_pattern,MaxTextExtent-1);
   (void) strcpy(reset_pattern,"*");
   fontlist=XListFonts(display,glob_pattern,32767,&fonts);
   if (fonts == 0)
@@ -5705,13 +5711,13 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
                 /*
                   Might be a scaleable font-- exit.
                 */
-                (void) strcpy(reply,glob_pattern);
-                (void) strcpy(glob_pattern,back_pattern);
+                (void) strncpy(reply,glob_pattern,MaxTextExtent-1);
+                (void) strncpy(glob_pattern,back_pattern,MaxTextExtent-1);
                 action_info.raised=False;
                 XDrawBeveledButton(display,&windows->widget,&action_info);
                 break;
               }
-            (void) strcpy(glob_pattern,back_pattern);
+            (void) strncpy(glob_pattern,back_pattern,MaxTextExtent-1);
             (void) XBell(display,0);
           }
         else
@@ -5720,8 +5726,8 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
               /*
                 Reply is a single font name-- exit.
               */
-              (void) strcpy(reply,checklist[0]);
-              (void) strcpy(glob_pattern,back_pattern);
+              (void) strncpy(reply,checklist[0],MaxTextExtent-1);
+              (void) strncpy(glob_pattern,back_pattern,MaxTextExtent-1);
               (void) XFreeFontNames(checklist);
               action_info.raised=False;
               XDrawBeveledButton(display,&windows->widget,&action_info);
@@ -5965,7 +5971,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
               selection_info.height;
             if ((int) id >= fonts)
               break;
-            (void) strcpy(reply_info.text,fontlist[id]);
+            (void) strncpy(reply_info.text,fontlist[id],MaxTextExtent-1);
             reply_info.highlight=False;
             reply_info.marker=reply_info.text;
             reply_info.cursor=reply_info.text+Extent(reply_info.text);
@@ -5973,7 +5979,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
             state|=RedrawActionState;
             if ((int) id == list_info.id)
               {
-                (void) strcpy(glob_pattern,reply_info.text);
+                (void) strncpy(glob_pattern,reply_info.text,MaxTextExtent-1);
                 state|=UpdateListState;
               }
             selection_info.id=(~0);
@@ -6039,7 +6045,8 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
                 /*
                   Become the XA_PRIMARY selection owner.
                 */
-                (void) strcpy(primary_selection,reply_info.text);
+                (void) strncpy(primary_selection,reply_info.text,
+                  MaxTextExtent-1);
                 (void) XSetSelectionOwner(display,XA_PRIMARY,windows->widget.id,
                   event.xbutton.time);
                 reply_info.highlight=XGetSelectionOwner(display,XA_PRIMARY) ==
@@ -6091,7 +6098,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
             if (event.xbutton.window == windows->widget.id)
               if (MatteIsActive(back_info,event.xbutton))
                 {
-                  (void) strcpy(glob_pattern,back_pattern);
+                  (void) strncpy(glob_pattern,back_pattern,MaxTextExtent-1);
                   state|=UpdateListState;
                 }
             back_info.raised=True;
@@ -6102,8 +6109,8 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
             if (event.xbutton.window == windows->widget.id)
               if (MatteIsActive(reset_info,event.xbutton))
                 {
-                  (void) strcpy(back_pattern,glob_pattern);
-                  (void) strcpy(glob_pattern,reset_pattern);
+                  (void) strncpy(back_pattern,glob_pattern,MaxTextExtent-1);
+                  (void) strncpy(glob_pattern,reset_pattern,MaxTextExtent-1);
                   state|=UpdateListState;
                 }
             reset_info.raised=True;
@@ -6266,8 +6273,8 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
             */
             if (*reply_info.text == '\0')
               break;
-            (void) strcpy(back_pattern,glob_pattern);
-            (void) strcpy(glob_pattern,reply_info.text);
+            (void) strncpy(back_pattern,glob_pattern,MaxTextExtent-1);
+            (void) strncpy(glob_pattern,reply_info.text,MaxTextExtent-1);
             state|=UpdateListState;
             break;
           }
@@ -7021,7 +7028,7 @@ MagickExport void XListBrowserWidget(Display *display,XWindows *windows,
               selection_info.height;
             if ((int) id >= entries)
               break;
-            (void) strcpy(reply_info.text,list[id]);
+            (void) strncpy(reply_info.text,list[id],MaxTextExtent-1);
             reply_info.highlight=False;
             reply_info.marker=reply_info.text;
             reply_info.cursor=reply_info.text+Extent(reply_info.text);
@@ -7077,7 +7084,8 @@ MagickExport void XListBrowserWidget(Display *display,XWindows *windows,
                 /*
                   Become the XA_PRIMARY selection owner.
                 */
-                (void) strcpy(primary_selection,reply_info.text);
+                (void) strncpy(primary_selection,reply_info.text,
+                  MaxTextExtent-1);
                 (void) XSetSelectionOwner(display,XA_PRIMARY,window_info->id,
                   event.xbutton.time);
                 reply_info.highlight=XGetSelectionOwner(display,XA_PRIMARY) ==
@@ -7911,7 +7919,7 @@ MagickExport int XMenuWidget(Display *display,XWindows *windows,
     }
   if ((selection_info.id < 0) || (selection_info.id >= (int) number_selections))
     return(~0);
-  (void) strcpy(item,selections[selection_info.id]);
+  (void) strncpy(item,selections[selection_info.id],MaxTextExtent-1);
   return(selection_info.id);
 }
 
@@ -8877,7 +8885,7 @@ MagickExport void XTextViewWidget(Display *display,
   /*
     Map Text View widget.
   */
-  (void) strcpy(windows->widget.name,title);
+  (void) strncpy(windows->widget.name,title,MaxTextExtent-1);
   status=XStringListToTextProperty(&windows->widget.name,1,&window_name);
   if (status != 0)
     {
@@ -9174,7 +9182,8 @@ MagickExport void XTextViewWidget(Display *display,
             /*
               Become the XA_PRIMARY selection owner.
             */
-            (void) strcpy(primary_selection,textlist[list_info.id]);
+            (void) strncpy(primary_selection,textlist[list_info.id],
+              MaxTextExtent-1);
             (void) XSetSelectionOwner(display,XA_PRIMARY,windows->widget.id,
               event.xbutton.time);
             if (XGetSelectionOwner(display,XA_PRIMARY) != windows->widget.id)

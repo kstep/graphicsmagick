@@ -890,7 +890,7 @@ int main(int argc,char **argv)
     Read image from X server.
   */
   if (target_window != (char *) NULL)
-    (void) strcpy(image_info->filename,target_window);
+    (void) strncpy(image_info->filename,target_window,MaxTextExtent-1);
   (void) sleep(resource_info.pause);
   image_info->colorspace=quantize_info->colorspace;
   image_info->dither=quantize_info->dither;
@@ -900,7 +900,7 @@ int main(int argc,char **argv)
     next_image=XImportImage(image_info,&ximage_info);
     if (next_image == (Image *) NULL)
       continue;
-    (void) strcpy(next_image->filename,filename);
+    (void) strncpy(next_image->filename,filename,MaxTextExtent-1);
     (void) strcpy(next_image->magick,"PS");
     next_image->scene=i;
     next_image->previous=image;

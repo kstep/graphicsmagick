@@ -3583,7 +3583,7 @@ MagickExport unsigned int XGetWindowColor(Display *display,char *name)
         (green == (int) XDownScale(color.green)) &&
         (blue == (int) XDownScale(color.blue)))
       {
-        (void) strcpy(name,colorname);
+        (void) strncpy(name,colorname,MaxTextExtent-1);
         break;
       }
   }
@@ -4664,7 +4664,7 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
       image_info->filename);
   else
     {
-      (void) strcpy(image->filename,image_info->filename);
+      (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
       if ((crop_info.width != 0) && (crop_info.height != 0))
         {
           Image
@@ -7704,7 +7704,7 @@ MagickExport void XMakeWindow(Display *display,Window parent,char **argv,
       */
       FormatString(default_geometry,"%dx%d",size_hints->width,
         size_hints->height);
-      (void) strcpy(geometry,window_info->geometry);
+      (void) strncpy(geometry,window_info->geometry,MaxTextExtent-1);
       p=geometry;
       while (strlen(p) != 0)
       {
@@ -8720,7 +8720,7 @@ MagickExport void XWarning(const ExceptionType warning,const char *reason,
 
   if (reason == (char *) NULL)
     return;
-  (void) strcpy(text,reason);
+  (void) strncpy(text,reason,MaxTextExtent-1);
   (void) strcat(text,":");
   windows=XSetWindows((XWindows *) ~0);
   XNoticeWidget(windows->display,windows,text,(char *) description);

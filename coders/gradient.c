@@ -124,7 +124,7 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
     Initialize Image structure.
   */
   image=AllocateImage(image_info);
-  (void) strcpy(image->filename,image_info->filename);
+  (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
   if (image->columns == 0)
     image->columns=512;
   if (image->rows == 0)
@@ -132,17 +132,18 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   /*
     Determine (Hue, Saturation, Brightness) gradient.
   */
-  (void) strcpy(colorname,image_info->filename);
+  (void) strncpy(colorname,image_info->filename,MaxTextExtent-1);
   (void) sscanf(image_info->filename,"%[^-]",colorname);
   (void) QueryColorDatabase(colorname,&color);
-  (void) TransformHSL(color.red,color.green,color.blue,&hue,&saturation,&brightness);
+  (void) TransformHSL(color.red,color.green,color.blue,&hue,&saturation,
+    &brightness);
   (void) strcpy(colorname,"white");
   if (Intensity(color) > (0.5*MaxRGB))
     (void) strcpy(colorname,"black");
   (void) sscanf(image_info->filename,"%*[^-]-%s",colorname);
   (void) QueryColorDatabase(colorname,&color);
-  (void) TransformHSL(color.red,color.green,color.blue,&hue_step,&saturation_step,
-    &brightness_step);
+  (void) TransformHSL(color.red,color.green,color.blue,&hue_step,
+    &saturation_step,&brightness_step);
   number_pixels=image->columns*image->rows;
   hue_step=(hue_step-hue)/number_pixels;
   saturation_step=(saturation_step-saturation)/number_pixels;

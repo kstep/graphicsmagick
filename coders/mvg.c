@@ -109,7 +109,7 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Initialize Image structure.
   */
   image=AllocateImage(image_info);
-  (void) strcpy(image->filename,image_info->filename);
+  (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
   if ((image->columns == 0) || (image->rows == 0))
     {
       char

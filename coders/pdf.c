@@ -301,7 +301,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->subrange != 0)
     FormatString(options,"-dFirstPage=%u -dLastPage=%u",
       image_info->subimage+1,image_info->subimage+image_info->subrange);
-  (void) strcpy(filename,image_info->filename);
+  (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
   TemporaryFilename((char *) image_info->filename);
   FormatString(command,delegate_info->commands,image_info->antialias ? 4 : 1,
     image_info->antialias ? 4 : 1,geometry,density,options,image_info->filename,
@@ -325,11 +325,11 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image == (Image *) NULL)
     ThrowReaderException(CorruptImageWarning,
       "Portable Document delegate failed",image);
-  (void) strcpy((char *) image_info->filename,filename);
+  (void) strncpy((char *) image_info->filename,filename,MaxTextExtent-1);
   do
   {
     (void) strcpy(image->magick,"PDF");
-    (void) strcpy(filename,image_info->filename);
+    (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
     if (!portrait)
       {
         Image
@@ -727,7 +727,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     y=text_size;
     FormatString(geometry,"%lux%lu",image->columns,image->rows);
     if (image_info->page != (char *) NULL)
-      (void) strcpy(geometry,image_info->page);
+      (void) strncpy(geometry,image_info->page,MaxTextExtent-1);
     else
       if ((image->page.width != 0) && (image->page.height != 0))
         (void) FormatString(geometry,"%ux%u%+d%+d",image->page.width,

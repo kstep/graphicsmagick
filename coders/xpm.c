@@ -356,7 +356,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         while (!isspace((int) (*q)) && (*q != '\0'))
           q++;
-        (void) strcpy(target,q);
+        (void) strncpy(target,q,MaxTextExtent-1);
         q=ParseColor(target);
         if (q != (char *) NULL)
           *q='\0';

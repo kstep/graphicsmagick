@@ -253,7 +253,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   y=text_size;
   FormatString(geometry,"%lux%lu",image->columns,image->rows);
   if (image_info->page != (char *) NULL)
-    (void) strcpy(geometry,image_info->page);
+    (void) strncpy(geometry,image_info->page,MaxTextExtent-1);
   else
     if ((image->page.width != 0) && (image->page.height != 0))
       (void) FormatString(geometry,"%ux%u%+d%+d",image->page.width,

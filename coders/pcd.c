@@ -413,7 +413,7 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image,
     Create the PCD Overview image.
   */
   montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
-  (void) strcpy(montage_info->filename,image_info->filename);
+  (void) strncpy(montage_info->filename,image_info->filename,MaxTextExtent-1);
   montage_image=MontageImages(image,montage_info,exception);
   DestroyMontageInfo(montage_info);
   if (montage_image == (Image *) NULL)

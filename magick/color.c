@@ -334,7 +334,7 @@ MagickExport ColorInfo *GetColorInfo(const char *name,ExceptionInfo *exception)
   {
     if (*q != ' ')
       continue;
-    (void) strcpy(q,q+1);
+    (void) strncpy(q,q+1,MaxTextExtent-1);
     q--;
   }
   for (p=color_list; p != (ColorInfo *) NULL; p=p->next)
@@ -1377,7 +1377,7 @@ MagickExport unsigned int QueryColorname(Image *image,const PixelPacket *color,
         distance_squared+=distance*distance;
         if (distance_squared != 0.0)
           continue;
-        (void) strcpy(name,p->name);
+        (void) strncpy(name,p->name,MaxTextExtent-1);
         return(True);
       }
     }

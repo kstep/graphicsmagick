@@ -323,9 +323,9 @@ void *lt_dlopen(char *filename)
     q=strchr(p,DirectoryListSeparator);
     if (q == (char *) NULL)
       {
-        (void) strcpy(buffer,p);
+        (void) strncpy(buffer,p,MaxTextExtent-1);
         (void) strcat(buffer,"\\");
-        (void) strcat(buffer,filename);
+        (void) strncat(buffer,filename,MaxTextExtent-1);
         handle=(void *) LoadLibrary(buffer);
         break;
       }
@@ -333,7 +333,7 @@ void *lt_dlopen(char *filename)
     (void) strncpy(buffer,p,i);
     buffer[i]='\0';
     (void) strcat(buffer,"\\");
-    (void) strcat(buffer,filename);
+    (void) strncat(buffer,filename,MaxTextExtent-1);
     handle=(void *) LoadLibrary(buffer);
     if (handle)
       break;
@@ -790,7 +790,7 @@ MagickExport unsigned char *NTResourceToBlob(const char *id)
 MagickExport int NTSystemCommand(const char *command)
 {
   char
-    local_command[2048];
+    local_command[MaxTextExtent];
 
   DWORD
     child_status;
@@ -812,7 +812,7 @@ MagickExport int NTSystemCommand(const char *command)
   GetStartupInfo(&startup_info);
   startup_info.dwFlags=STARTF_USESHOWWINDOW;
   startup_info.wShowWindow=SW_SHOWMINNOACTIVE;
-  (void) strcpy(local_command,command);
+  (void) strncpy(local_command,command,MaxTextExtent-1);
   background_process=command[strlen(command)-1] == '&';
   if (background_process)
     local_command[strlen(command)-1]='\0';
@@ -974,13 +974,13 @@ MagickExport void NTWarningHandler(const ExceptionType warning,
 MagickExport DIR *opendir(char *path)
 {
   char
-    file_specification[1536];
+    file_specification[MaxTextExtent];
 
   DIR
     *entry;
 
   assert(path != (char *) NULL);
-  (void) strcpy(file_specification,path);
+  (void) strncpy(file_specification,path,MaxTextExtent-1);
   (void) strcat(file_specification,DirectorySeparator);
   entry=(DIR *) AcquireMemory(sizeof(DIR));
   if (entry != (DIR *) NULL)
@@ -1043,7 +1043,8 @@ MagickExport struct dirent *readdir(DIR *entry)
         return((struct dirent *) NULL);
     }
   entry->firsttime=FALSE;
-  (void) strcpy(file_info.d_name,entry->Win32FindData.cFileName);
+  (void) strncpy(file_info.d_name,entry->Win32FindData.cFileName,
+    MaxTextExtent-1);
   file_info.d_namlen=strlen(file_info.d_name);
   return(&file_info);
 }

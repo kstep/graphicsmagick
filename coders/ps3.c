@@ -295,7 +295,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     y=text_size;
     FormatString(geometry,"%ux%u",image->columns,image->rows);
     if (image_info->page != (char *) NULL)
-      (void) strcpy(geometry,image_info->page);
+      (void) strncpy(geometry,image_info->page,MaxTextExtent-1);
     else
       if ((image->page.width != 0) && (image->page.height != 0))
         (void) FormatString(geometry,"%ux%u%+d%+d",image->page.width,
@@ -338,7 +338,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         (void) WriteBlobString(image,buffer);
         timer=time((time_t *) NULL);
         (void) localtime(&timer);
-        (void) strcpy(date,ctime(&timer));
+        (void) strncpy(date,ctime(&timer),MaxTextExtent-1);
         date[strlen(date)-1]='\0';
         FormatString(buffer,"%%%%CreationDate: (%.1024s)\n",date);
         (void) WriteBlobString(image,buffer);

@@ -578,7 +578,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   }
   for (i=0; i < (long) number_components; i++)
     jas_matrix_destroy(pixels[i]);
-  (void) strcpy(magick,image_info->magick);
+  (void) strncpy(magick,image_info->magick,MaxTextExtent-1);
   LocaleLower(magick);
   format=jas_image_strtofmt(magick);
   FormatString(options,"rate=%lf",(double) image_info->quality/100.0);

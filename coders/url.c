@@ -139,7 +139,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       DestroyImageInfo(clone_info);
       ThrowReaderException(FileOpenWarning,"Unable to open file",image)
     }
-  (void) strcpy(filename,image_info->magick);
+  (void) strncpy(filename,image_info->magick,MaxTextExtent-1);
   (void) strcat(filename,":");
   LocaleLower(filename);
   (void) strcat(filename,image_info->filename);

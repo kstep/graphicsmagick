@@ -160,7 +160,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   FormatString(clone_info->filename,"mvg:%.1024s",filename);
   image=ReadImage(clone_info,exception);
   if (image != (Image *) NULL)
-    (void) strcpy(image->filename,image_info->filename);
+    (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
   (void) remove(filename);
   DestroyImageInfo(clone_info);
   return(image);

@@ -595,9 +595,9 @@ static unsigned int RenderType(Image *image,const DrawInfo *draw_info,
   image_info=CloneImageInfo((ImageInfo *) NULL);
   type_info=GetTypeInfo(draw_info->font,&image->exception);
   if ((type_info != (TypeInfo *) NULL) && (type_info->glyphs != (char *) NULL))
-    (void) strcpy(image_info->filename,type_info->glyphs);
+    (void) strncpy(image_info->filename,type_info->glyphs,MaxTextExtent-1);
   else
-    (void) strcpy(image_info->filename,draw_info->font);
+    (void) strncpy(image_info->filename,draw_info->font,MaxTextExtent-1);
   (void) strcpy(image_info->magick,"PS");
   if (*image_info->filename == '@')
     (void) strcpy(image_info->magick,"TTF");
@@ -1083,7 +1083,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
         */
         q=strchr(p,DirectoryListSeparator);
         if (q == (char *) NULL)
-          (void) strcpy(filename,p);
+          (void) strncpy(filename,p,MaxTextExtent-1);
         else
           {
             (void) strncpy(filename,p,q-p);
@@ -1092,7 +1092,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
         i=strlen(filename);
         if ((i > 0) && (filename[i-1] != *DirectorySeparator))
           (void) strcat(filename,DirectorySeparator);
-        (void) strcat(filename,draw_info->font);
+        (void) strncat(filename,draw_info->font,MaxTextExtent-1);
         status=FT_New_Face(library,filename,0,&face);
         if (!status || (q == (char *) NULL) || (*q == '\0'))
           break;
@@ -1103,7 +1103,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
     if (status)
       ThrowBinaryException(DelegateWarning,"Unable to read font",
         draw_info->font);
-    (void) strcpy(font,draw_info->font);
+    (void) strncpy(font,draw_info->font,MaxTextExtent-1);
   }
   /*
     Set text size.

@@ -325,7 +325,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->subrange != 0)
     FormatString(options,"-dFirstPage=%u -dLastPage=%u",image_info->subimage+1,
       image_info->subimage+image_info->subrange);
-  (void) strcpy(filename,image_info->filename);
+  (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
   TemporaryFilename((char *) image_info->filename);
   FormatString(command,delegate_info->commands,image_info->antialias ? 4 : 1,
     image_info->antialias ? 4 : 1,geometry,density,options,image_info->filename,
@@ -366,11 +366,11 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image == (Image *) NULL)
     ThrowReaderException(CorruptImageWarning,"Postscript delegate failed",
       image);
-  (void) strcpy((char *) image_info->filename,filename);
+  (void) strncpy((char *) image_info->filename,filename,MaxTextExtent-1);
   do
   {
     (void) strcpy(image->magick,"PS");
-    (void) strcpy(image->filename,image_info->filename);
+    (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
     next_image=image->next;
     if (next_image != (Image *) NULL)
       image=next_image;
@@ -873,7 +873,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     y=text_size;
     FormatString(geometry,"%lux%lu",image->columns,image->rows);
     if (image_info->page != (char *) NULL)
-      (void) strcpy(geometry,image_info->page);
+      (void) strncpy(geometry,image_info->page,MaxTextExtent-1);
     else
       if ((image->page.width != 0) && (image->page.height != 0))
         (void) FormatString(geometry,"%ux%u%+d%+d",image->page.width,
@@ -917,7 +917,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobString(image,buffer);
         timer=time((time_t *) NULL);
         (void) localtime(&timer);
-        (void) strcpy(date,ctime(&timer));
+        (void) strncpy(date,ctime(&timer),MaxTextExtent-1);
         date[strlen(date)-1]='\0';
         FormatString(buffer,"%%%%CreationDate: (%.1024s)\n",date);
         (void) WriteBlobString(image,buffer);

@@ -1064,7 +1064,7 @@ ImageAttribute *GetImageInfoAttribute(const ImageInfo *image_info,Image *image,
       if (LocaleNCompare("base",key,2) == 0)
         {
           GetPathComponent(image->magick_filename,BasePath,filename);
-          (void) strcpy(attribute,filename);
+          (void) strncpy(attribute,filename,MaxTextExtent-1);
           break;
         }
       break;
@@ -1079,7 +1079,7 @@ ImageAttribute *GetImageInfoAttribute(const ImageInfo *image_info,Image *image,
       if (LocaleNCompare("directory",key,2) == 0)
         {
           GetPathComponent(image->magick_filename,HeadPath,filename);
-          (void) strcpy(attribute,filename);
+          (void) strncpy(attribute,filename,MaxTextExtent-1);
           break;
         }
       break;
@@ -1089,7 +1089,7 @@ ImageAttribute *GetImageInfoAttribute(const ImageInfo *image_info,Image *image,
       if (LocaleNCompare("extension",key,2) == 0)
         {
           GetPathComponent(image->magick_filename,ExtensionPath,filename);
-          (void) strcpy(attribute,filename);
+          (void) strncpy(attribute,filename,MaxTextExtent-1);
           break;
         }
       break;
@@ -1117,7 +1117,7 @@ ImageAttribute *GetImageInfoAttribute(const ImageInfo *image_info,Image *image,
     {
       if (LocaleNCompare("input",key,2) == 0)
         {
-          (void) strcpy(attribute,image->filename);
+          (void) strncpy(attribute,image->filename,MaxTextExtent-1);
           break;
         }
       break;
@@ -1126,7 +1126,7 @@ ImageAttribute *GetImageInfoAttribute(const ImageInfo *image_info,Image *image,
     {
       if (LocaleNCompare("magick",key,2) == 0)
         {
-          (void) strcpy(attribute,image->magick);
+          (void) strncpy(attribute,image->magick,MaxTextExtent-1);
           break;
         }
       break;
@@ -1135,7 +1135,7 @@ ImageAttribute *GetImageInfoAttribute(const ImageInfo *image_info,Image *image,
     {
       if (LocaleNCompare("name",key,2) == 0)
         {
-          (void) strcpy(attribute,filename);
+          (void) strncpy(attribute,filename,MaxTextExtent-1);
           break;
         }
      break;
@@ -1174,7 +1174,7 @@ ImageAttribute *GetImageInfoAttribute(const ImageInfo *image_info,Image *image,
     {
       if (LocaleNCompare("output",key,2) == 0)
         {
-          (void) strcpy(attribute,image_info->filename);
+          (void) strncpy(attribute,image_info->filename,MaxTextExtent-1);
           break;
         }
      break;
@@ -1201,10 +1201,10 @@ ImageAttribute *GetImageInfoAttribute(const ImageInfo *image_info,Image *image,
     {
       if (LocaleNCompare("unique",key,2) == 0)
         {
-          (void) strcpy(filename,image_info->unique);
+          (void) strncpy(filename,image_info->unique,MaxTextExtent-1);
           if (*filename == '\0')
             TemporaryFilename(filename);
-          (void) strcpy(attribute,filename);
+          (void) strncpy(attribute,filename,MaxTextExtent-1);
           break;
         }
       break;
@@ -1241,10 +1241,10 @@ ImageAttribute *GetImageInfoAttribute(const ImageInfo *image_info,Image *image,
     {
       if (LocaleNCompare("zero",key,2) == 0)
         {
-          (void) strcpy(filename,image_info->zero);
+          (void) strncpy(filename,image_info->zero,MaxTextExtent-1);
           if (*filename == '\0')
             TemporaryFilename(filename);
-          (void) strcpy(attribute,filename);
+          (void) strncpy(attribute,filename,MaxTextExtent-1);
           break;
         }
       break;

@@ -255,22 +255,22 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       if (p)
         {
           p++;
-          (void) strcpy(url,image_info->magick);
+          (void) strncpy(url,image_info->magick,MaxTextExtent-1);
           (void) strcat(url,":");
           url[strlen(url)+p-image->filename]='\0';
           (void) strncat(url,image->filename,p-image->filename);
-          (void) strcpy(image->filename,p);
+          (void) strncpy(image->filename,p,MaxTextExtent-1);
         }
     }
   /*
     Refer to image map file.
   */
-  (void) strcpy(filename,image->filename);
+  (void) strncpy(filename,image->filename,MaxTextExtent-1);
   AppendImageFormat("map",filename);
   GetPathComponent(filename,BasePath,basename);
-  (void) strcpy(mapname,basename);
-  (void) strcpy(image->filename,image_info->filename);
-  (void) strcpy(filename,image->filename);
+  (void) strncpy(mapname,basename,MaxTextExtent-1);
+  (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
+  (void) strncpy(filename,image->filename,MaxTextExtent-1);
   clone_info=CloneImageInfo(image_info);
   if (clone_info == (ImageInfo *) NULL)
     ThrowWriterException(FileOpenWarning,"Unable to allocate memory",image);
@@ -307,7 +307,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       FormatString(buffer,"<h1>%.1024s</h1>\n",image->filename);
       (void) WriteBlobString(image,buffer);
       (void) WriteBlobString(image,"<br><br>\n");
-      (void) strcpy(filename,image->filename);
+      (void) strncpy(filename,image->filename,MaxTextExtent-1);
       AppendImageFormat("gif",filename);
       FormatString(buffer,
         "<img ismap usemap=#%.1024s src=\"%.1024s\" border=0>\n",
@@ -359,7 +359,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlobString(image,"</map>\n");
       if (image->montage != (char *) NULL)
         (void) TransparentImage(image,GetOnePixel(image,0,0),TransparentOpacity);
-      (void) strcpy(filename,image->filename);
+      (void) strncpy(filename,image->filename,MaxTextExtent-1);
       (void) WriteBlobString(image,"</center>\n");
       (void) WriteBlobString(image,"</body>\n");
       (void) WriteBlobString(image,"</html>\n");
@@ -367,7 +367,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       /*
         Write the image as transparent GIF.
       */
-      (void) strcpy(image->filename,filename);
+      (void) strncpy(image->filename,filename,MaxTextExtent-1);
       AppendImageFormat("gif",image->filename);
       next=image->next;
       image->next=(Image *) NULL;
@@ -377,7 +377,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       /*
         Determine image map filename.
       */
-      (void) strcpy(image->filename,filename);
+      (void) strncpy(image->filename,filename,MaxTextExtent-1);
       for (p=filename+strlen(filename)-1; p > (filename+1); p--)
         if (*p == '.')
           {
@@ -439,6 +439,6 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
         }
   (void) WriteBlobString(image,"</map>\n");
   CloseBlob(image);
-  (void) strcpy(image->filename,filename);
+  (void) strncpy(image->filename,filename,MaxTextExtent-1);
   return(status);
 }

@@ -350,7 +350,7 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  (void) strcpy(filename,image->filename);
+  (void) strncpy(filename,image->filename,MaxTextExtent-1);
   delegate_info=GetDelegateInfo(decode,encode,&image->exception);
   if (delegate_info == (DelegateInfo *) NULL)
     ThrowBinaryException(MissingDelegateWarning,"no tag found",
@@ -394,10 +394,10 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
               decode ? decode : encode)
           }
         LocaleUpper(magick);
-        (void) strcpy((char *) clone_info->magick,magick);
-        (void) strcpy(image->magick,magick);
+        (void) strncpy((char *) clone_info->magick,magick,MaxTextExtent-1);
+        (void) strncpy(image->magick,magick,MaxTextExtent-1);
         LiberateMemory((void **) &magick);
-        (void) strcpy(filename,image->filename);
+        (void) strncpy(filename,image->filename,MaxTextExtent-1);
         FormatString(clone_info->filename,"%.1024s:",delegate_info->decode);
         (void) SetImageInfo(clone_info,True,&image->exception);
         for (p=image; p != (Image *) NULL; p=p->next)
@@ -418,7 +418,7 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
   /*
     Invoke delegate.
   */
-  (void) strcpy(image->filename,filename);
+  (void) strncpy(image->filename,filename,MaxTextExtent-1);
   commands=StringToList(delegate_info->commands);
   if (commands == (char **) NULL)
     {
@@ -769,8 +769,8 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
   delegate=(DelegateInfo *) AcquireMemory(sizeof(DelegateInfo));
   if (delegate == (DelegateInfo *) NULL)
     return(delegate_list);
-  (void) strcpy(delegate->decode,delegate_info->decode);
-  (void) strcpy(delegate->encode,delegate_info->encode);
+  (void) strncpy(delegate->decode,delegate_info->decode,MaxTextExtent-1);
+  (void) strncpy(delegate->encode,delegate_info->encode,MaxTextExtent-1);
   delegate->mode=delegate_info->mode;
   delegate->commands=(char *) NULL;
   if (delegate_info->commands != (char *) NULL)

@@ -614,7 +614,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   clone_info=CloneImageInfo(image_info);
-  (void) strcpy(clone_info->magick,image->magick);
+  (void) strncpy(clone_info->magick,image->magick,MaxTextExtent-1);
   GetExceptionInfo(exception);
   magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick,exception);
   if (magick_info == (MagickInfo *) NULL)
@@ -660,7 +660,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
     Write file to disk in blob image format.
   */
   DetachBlob(clone_info->blob);
-  (void) strcpy(filename,image->filename);
+  (void) strncpy(filename,image->filename,MaxTextExtent-1);
   TemporaryFilename(unique);
   FormatString(image->filename,"%.1024s:%.1024s",image->magick,unique);
   status=WriteImage(clone_info,image);
@@ -678,7 +678,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   if (file == -1)
     {
       (void) remove(image->filename);
-      (void) strcpy(image->filename,filename);
+      (void) strncpy(image->filename,filename,MaxTextExtent-1);
       ThrowException(exception,BlobWarning,"Unable to read file",
         image->filename);
       return((void *) NULL);
@@ -688,7 +688,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   if (blob == (unsigned char *) NULL)
     {
       (void) remove(image->filename);
-      (void) strcpy(image->filename,filename);
+      (void) strncpy(image->filename,filename,MaxTextExtent-1);
       ThrowException(exception,BlobWarning,"Unable to create blob",
         "Memory allocation failed");
       return((void *) NULL);
@@ -696,7 +696,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   count=read(file,blob,*length);
   (void) close(file);
   (void) remove(image->filename);
-  (void) strcpy(image->filename,filename);
+  (void) strncpy(image->filename,filename,MaxTextExtent-1);
   if ((size_t) count != *length)
     {
       ThrowException(exception,BlobWarning,"Unable to read file",filename);
@@ -949,7 +949,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
       image->exempt=True;
       return(True);
     }
-  (void) strcpy(filename,image->filename);
+  (void) strncpy(filename,image->filename,MaxTextExtent-1);
   p=(char *) NULL;
   if (*filename != '|')
     {
@@ -1006,7 +1006,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
       char
         *command;
 
-      (void) strcpy(filename,p);
+      (void) strncpy(filename,p,MaxTextExtent-1);
       command=p;
       LiberateMemory((void **) &command);
     }
@@ -1059,9 +1059,10 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                     FormatString(filename,"%.1024s.%u",image->filename,
                       image->scene);
                   if (image->next != (Image *) NULL)
-                    (void) strcpy(image->next->magick,image->magick);
+                    (void) strncpy(image->next->magick,image->magick,
+                      MaxTextExtent-1);
                 }
-            (void) strcpy(image->filename,filename);
+            (void) strncpy(image->filename,filename,MaxTextExtent-1);
           }
 #if defined(macintosh)
         if (*type == 'w')

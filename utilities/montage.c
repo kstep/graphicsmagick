@@ -321,7 +321,7 @@ int main(int argc,char **argv)
   image=(Image *) NULL;
   last_scene=0;
   image_info=CloneImageInfo((ImageInfo *) NULL);
-  (void) strcpy(image_info->filename,argv[argc-1]);
+  (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
   (void) SetImageInfo(image_info,True,&exception);
   montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
   GetQuantizeInfo(&quantize_info);
@@ -1189,7 +1189,7 @@ int main(int argc,char **argv)
         /*
           Option is a file name: begin by reading image from specified file.
         */
-        (void) strcpy(image_info->filename,argv[i]);
+        (void) strncpy(image_info->filename,argv[i],MaxTextExtent-1);
         if (first_scene != last_scene)
           {
             char
@@ -1201,7 +1201,7 @@ int main(int argc,char **argv)
             FormatString(filename,image_info->filename,scene);
             if (LocaleCompare(filename,image_info->filename) == 0)
               FormatString(filename,"%.1024s.%u",image_info->filename,scene);
-            (void) strcpy(image_info->filename,filename);
+            (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
           }
         (void) CloneString(&image_info->font,montage_info->font);
         image_info->colorspace=quantize_info.colorspace;
@@ -1237,7 +1237,7 @@ int main(int argc,char **argv)
   /*
     Create composite image.
   */
-  (void) strcpy(montage_info->filename,argv[argc-1]);
+  (void) strncpy(montage_info->filename,argv[argc-1],MaxTextExtent-1);
   montage_image=MontageImages(image,montage_info,&exception);
   if (montage_image == (Image *) NULL)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
@@ -1245,7 +1245,7 @@ int main(int argc,char **argv)
   /*
     Write image.
   */
-  (void) strcpy(image_info->filename,argv[argc-1]);
+  (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
   for (p=montage_image; p != (Image *) NULL; p=p->next)
   {
     if (transparent_color != (char *) NULL)
@@ -1270,7 +1270,7 @@ int main(int argc,char **argv)
           (void) QuantizationError(p);
         SyncImage(p);
       }
-    (void) strcpy(p->filename,argv[argc-1]);
+    (void) strncpy(p->filename,argv[argc-1],MaxTextExtent-1);
   }
   (void) SetImageInfo(image_info,True,&image->exception);
   for (p=montage_image; p != (Image *) NULL; p=p->next)
@@ -1281,7 +1281,7 @@ int main(int argc,char **argv)
     if (image_info->adjoin)
       break;
   }
-  (void) strcpy(montage_image->magick_filename,argv[argc-1]);
+  (void) strncpy(montage_image->magick_filename,argv[argc-1],MaxTextExtent-1);
   if (image_info->verbose)
     DescribeImage(montage_image,stderr,False);
   DestroyImages(montage_image);

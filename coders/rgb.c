@@ -351,7 +351,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 scanline);
           }
         if (image_info->interlace == PartitionInterlace)
-          (void) strcpy(image->filename,image_info->filename);
+          (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
         break;
       }
     }
@@ -652,7 +652,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
             }
           }
         if (image_info->interlace == PartitionInterlace)
-          (void) strcpy(image->filename,image_info->filename);
+          (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
         MagickMonitor(SaveImageText,400,400);
         break;
       }

@@ -320,7 +320,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->subrange != 0)
     FormatString(options,"-dFirstPage=%lu -dLastPage=%lu",
       image_info->subimage+1,image_info->subimage+image_info->subrange);
-  (void) strcpy(filename,image_info->filename);
+  (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
   TemporaryFilename((char *) image_info->filename);
   FormatString(command,delegate_info->commands,image_info->antialias ? 4 : 1,
     image_info->antialias ? 4 : 1,geometry,density,options,image_info->filename,
@@ -361,11 +361,11 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image == (Image *) NULL)
     ThrowReaderException(CorruptImageWarning,"Postscript delegate failed",
       image);
-  (void) strcpy((char *) image_info->filename,filename);
+  (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
   do
   {
     (void) strcpy(image->magick,"PS");
-    (void) strcpy(image->filename,image_info->filename);
+    (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
     next_image=image->next;
     if (next_image != (Image *) NULL)
       image=next_image;
@@ -482,8 +482,8 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
   unsigned int
     status;
 
-  (void) strcpy(filename,image->filename);
-  (void) strcpy(ps_filename,image->magick_filename);
+  (void) strncpy(filename,image->filename,MaxTextExtent-1);
+  (void) strncpy(ps_filename,image->magick_filename,MaxTextExtent-1);
   if (LocaleCompare(image_info->magick,"EPS") != 0)
     {
       /*
@@ -498,12 +498,12 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
   */
   TemporaryFilename(tiff_filename);
   FormatString(image->filename,"tiff:%.1024s",tiff_filename);
-  (void) strcpy(image->filename,tiff_filename);
+  (void) strncpy(image->filename,tiff_filename,MaxTextExtent-1);
   (void) WriteImage(image_info,image);
   /*
     Write EPT image.
   */
-  (void) strcpy(image->filename,filename);
+  (void) strncpy(image->filename,filename,MaxTextExtent-1);
   status=OpenBlob(image_info,image,WriteBinaryType);
   ps_file=fopen(ps_filename,ReadBinaryType);
   status&=ps_file != (FILE *) NULL;

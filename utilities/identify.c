@@ -337,7 +337,7 @@ int main(int argc,char **argv)
     /*
       Identify image.
     */
-    (void) strcpy(image_info->filename,argv[i]);
+    (void) strncpy(image_info->filename,argv[i],MaxTextExtent-1);
     if (image_info->verbose)
       image=ReadImage(image_info,&exception);
     else

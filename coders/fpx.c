@@ -189,7 +189,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     c=ReadBlobByte(image);
   }
   (void) fclose(file);
-  (void) strcpy(image->filename,image_info->filename);
+  (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
   CloseBlob(image);
   /*
     Initialize FPX toolkit.
@@ -813,7 +813,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   compression=NONE;
   if (image_info->compression == JPEGCompression)
     compression=JPEG_UNSPECIFIED;
-  (void) strcpy(filename,image->filename);
+  (void) strncpy(filename,image->filename,MaxTextExtent-1);
   if ((image->file == stdout) || image->pipet ||
       (image->blob->data != (unsigned char *) NULL))
     TemporaryFilename(filename);
@@ -876,7 +876,8 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       summary_info.title.ptr=(unsigned char *)
         AcquireMemory(strlen(label->value)+1);
       if (summary_info.title.ptr != (unsigned char *) NULL)
-        (void) strcpy((char *) summary_info.title.ptr,label->value);
+        (void) strncpy((char *) summary_info.title.ptr,label->value,
+          MaxTextExtent-1);
       else
         ThrowWriterException(DelegateWarning,"Unable to set image title",
           image);

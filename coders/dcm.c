@@ -2788,11 +2788,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if ((group == dicom_info[i].group) &&
           (element == dicom_info[i].element))
         break;
-    (void) strcpy(implicit_vr,dicom_info[i].vr);
+    (void) strncpy(implicit_vr,dicom_info[i].vr,MaxTextExtent-1);
     count=ReadBlob(image,2,(char *) explicit_vr);
     if (strcmp(implicit_vr,"xs") == 0)
       if (isupper((int) *explicit_vr) && isupper((int) *(explicit_vr+1)))
-        (void) strcpy(implicit_vr,explicit_vr);
+        (void) strncpy(implicit_vr,explicit_vr,MaxTextExtent-1);
     if (strcmp(implicit_vr,explicit_vr) == 0)
       {
         quantum=2;
@@ -2932,7 +2932,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Transfer Syntax.
             */
-            (void) strcpy(transfer_syntax,(char *) data);
+            (void) strncpy(transfer_syntax,(char *) data,MaxTextExtent-1);
             if (strcmp(transfer_syntax,"1.2.840.10008.1.2.2") == 0)
               ThrowReaderException(CorruptImageWarning,
                 "big endian byte order not supported",image);

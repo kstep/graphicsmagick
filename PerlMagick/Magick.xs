@@ -1358,7 +1358,8 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                   info->image_info->filename);
               else
                 for ( ; image; image=image->next)
-                  (void) strcpy(image->magick,info->image_info->magick);
+                  (void) strncpy(image->magick,info->image_info->magick,
+                    MaxTextExtent-1);
             }
           return;
         }
@@ -2164,7 +2165,7 @@ Average(ref)
     info=GetPackageInfo((void *) av,info);
     FormatString(info->image_info->filename,"average-%.*s",MaxTextExtent-9,
       ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
-    (void) strcpy(image->filename,info->image_info->filename);
+    (void) strncpy(image->filename,info->image_info->filename,MaxTextExtent-1);
     SetImageInfo(info->image_info,False,&image->exception);
     SvREFCNT_dec(error_list);
     error_jump=NULL;
@@ -2409,7 +2410,7 @@ Coalesce(ref)
     info=GetPackageInfo((void *) av,info);
     FormatString(info->image_info->filename,"average-%.*s",MaxTextExtent-9,
       ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
-    (void) strcpy(image->filename,info->image_info->filename);
+    (void) strncpy(image->filename,info->image_info->filename,MaxTextExtent-1);
     SetImageInfo(info->image_info,False,&image->exception);
     SvREFCNT_dec(error_list);
     error_jump=NULL;
@@ -2768,7 +2769,7 @@ Flatten(ref)
     info=GetPackageInfo((void *) av,info);
     FormatString(info->image_info->filename,"average-%.*s",MaxTextExtent-9,
       ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
-    (void) strcpy(image->filename,info->image_info->filename);
+    (void) strncpy(image->filename,info->image_info->filename,MaxTextExtent-1);
     SetImageInfo(info->image_info,False,&image->exception);
     SvREFCNT_dec(error_list);
     error_jump=NULL;
@@ -3744,11 +3745,11 @@ ImageToBlob(ref,...)
     package_info=ClonePackageInfo(info);
     for (i=2; i < items; i+=2)
       SetAttribute(package_info,image,SvPV(ST(i-1),na),ST(i));
-    (void) strcpy(filename,package_info->image_info->filename);
+    (void) strncpy(filename,package_info->image_info->filename,MaxTextExtent-1);
     scene=0;
     for (next=image; next; next=next->next)
     {
-      (void) strcpy(next->filename,filename);
+      (void) strncpy(next->filename,filename,MaxTextExtent-1);
       next->scene=scene++;
     }
     SetImageInfo(package_info->image_info,True,&image->exception);
@@ -4850,7 +4851,8 @@ Mogrify(ref,...)
             y=argument_list[4].int_reference;
           FormatString(geometry,"%+d%+d\n",x,y);
           if (attribute_flag[2])
-            (void) strcpy(geometry,argument_list[2].string_reference);
+            (void) strncpy(geometry,argument_list[2].string_reference,
+              MaxTextExtent-1);
           flags=ParseGeometry(geometry,&x,&y,&width,&height);
           if ((flags & XNegative) != 0)
             x+=image->columns;
@@ -6190,7 +6192,7 @@ Mosaic(ref)
     av_push(av,sv_bless(rv,hv));
     SvREFCNT_dec(sv);
     info=GetPackageInfo((void *) av,info);
-    (void) strcpy(image->filename,info->image_info->filename);
+    (void) strncpy(image->filename,info->image_info->filename,MaxTextExtent-1);
     SetImageInfo(info->image_info,False,&image->exception);
     SvREFCNT_dec(error_list);
     error_jump=NULL;
@@ -6260,7 +6262,8 @@ Ping(ref,...)
     count=0;
     for (i=1; i < items; i++)
     {
-      (void) strcpy(info->image_info->filename,(char *) SvPV(ST(i),na));
+      (void) strncpy(info->image_info->filename,(char *) SvPV(ST(i),na),
+        MaxTextExtent-1);
       if ((items >= 3) && strEQcase(info->image_info->filename,"filename"))
         continue;
       if ((items >= 3) && strEQcase(info->image_info->filename,"file"))
@@ -6838,7 +6841,7 @@ QueryFormat(ref,...)
               PUSHs(&sv_undef);
               continue;
             }
-          (void) strcpy(message,p->name);
+          (void) strncpy(message,p->name,MaxTextExtent-1);
           LocaleLower(message);
           PUSHs(sv_2mortal(newSVpv(message,0)));
         }
@@ -7358,11 +7361,11 @@ Write(ref,...)
       if (items > 2)
         for (i=2; i < items; i+=2)
           SetAttribute(package_info,image,SvPV(ST(i-1),na),ST(i));
-    (void) strcpy(filename,package_info->image_info->filename);
+    (void) strncpy(filename,package_info->image_info->filename,MaxTextExtent-1);
     scene=0;
     for (next=image; next; next=next->next)
     {
-      (void) strcpy(next->filename,filename);
+      (void) strncpy(next->filename,filename,MaxTextExtent-1);
       next->scene=scene++;
     }
     SetImageInfo(package_info->image_info,True,&image->exception);

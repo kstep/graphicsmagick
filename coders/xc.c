@@ -100,7 +100,7 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->columns=1;
   if (image->rows == 0)
     image->rows=1;
-  (void) strcpy(image->filename,image_info->filename);
+  (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
   (void) QueryColorDatabase((char *) image_info->filename,
     &image->background_color);
   if (image->background_color.opacity == OpaqueOpacity)

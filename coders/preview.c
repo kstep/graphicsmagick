@@ -523,7 +523,8 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
             Image
               *quality_image;
 
-            (void) strcpy(clone_info->filename,images[i]->filename);
+            (void) strncpy(clone_info->filename,images[i]->filename,
+              MaxTextExtent-1);
             quality_image=ReadImage(clone_info,&error);
             (void) remove(images[i]->filename);
             if (quality_image != (Image *) NULL)
@@ -565,7 +566,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
     images[i-1]->next=images[i];
   }
   montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
-  (void) strcpy(montage_info->filename,image->filename);
+  (void) strncpy(montage_info->filename,image->filename,MaxTextExtent-1);
   montage_info->shadow=True;
   (void) CloneString(&montage_info->tile,"3x3");
   (void) CloneString(&montage_info->geometry,DefaultPreviewGeometry);

@@ -2353,7 +2353,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       DestroyImageInfo(clone_info);
       if (image != (Image *) NULL)
         {
-          (void) strcpy(image->filename,image_info->filename);
+          (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
           if (svg_info.comment != (char *) NULL)
             (void) SetImageAttribute(image,"comment",svg_info.comment);
           if (svg_info.title != (char *) NULL)

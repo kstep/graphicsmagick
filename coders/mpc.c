@@ -184,7 +184,8 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   values=AllocateString((char *) NULL);
   GetCacheInfo(&image->cache);
   cache_info=(CacheInfo *) image->cache;
-  (void) strcpy(cache_info->meta_filename,image_info->filename);
+  (void) strncpy(cache_info->meta_filename,image_info->filename,
+    MaxTextExtent-1);
   quantum_depth=QuantumDepth;
   image->depth=8;
   image->compression=NoCompression;
@@ -300,7 +301,8 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               if (LocaleCompare(keyword,"cache") == 0)
                 {
-                  (void) strcpy(cache_info->cache_filename,values);
+                  (void) strncpy(cache_info->cache_filename,values,
+                    MaxTextExtent-1);
                   break;
                 }
               if (LocaleCompare(keyword,"class") == 0)
@@ -422,7 +424,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               if (LocaleCompare(keyword,"id") == 0)
                 {
-                  (void) strcpy(id,values);
+                  (void) strncpy(id,values,MaxTextExtent-1);
                   break;
                 }
               if (LocaleCompare(keyword,"iterations") == 0)
@@ -929,8 +931,8 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
   cache_info->colorspace=image->colorspace;
   cache_info->type=DiskCache;
   cache_info->persist=True;
-  (void) strcpy(cache_info->meta_filename,image->filename);
-  (void) strcpy(cache_info->cache_filename,image->filename);
+  (void) strncpy(cache_info->meta_filename,image->filename,MaxTextExtent-1);
+  (void) strncpy(cache_info->cache_filename,image->filename,MaxTextExtent-1);
   AppendImageFormat("cache",cache_info->cache_filename);
   status=OpenCache(clone_image);
   if (status == False)

@@ -332,7 +332,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   /*
     Write Histogram image as MIFF.
   */
-  (void) strcpy(filename,histogram_image->filename);
+  (void) strncpy(filename,histogram_image->filename,MaxTextExtent-1);
   (void) FormatString(histogram_image->filename,"miff:%.1024s",filename);
   status=WriteImage(image_info,histogram_image);
   DestroyImage(histogram_image);

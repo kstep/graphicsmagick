@@ -286,7 +286,7 @@ static unsigned int WriteFAXImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  (void) strcpy((char *) image_info->magick,"FAX");
+  (void) strcpy(image_info->magick,"FAX");
   scene=0;
   do
   {

@@ -1092,7 +1092,7 @@ static void WmfDrawText(CSTRUCT *cstruct, char *str, RECT *arect,
   {
     if(LocaleCompare(facename,FontList[i].face) == 0)
       {
-        strcpy(fontspec,FontList[i].fontspec);
+        strncpy(fontspec,FontList[i].fontspec,MaxTextExtent-1);
         break;
       }
   }
@@ -1145,7 +1145,7 @@ static void WmfDrawText(CSTRUCT *cstruct, char *str, RECT *arect,
             }
         }
       if(candidate!=NULL)
-        strcpy(fontspec,candidate);
+        strncpy(fontspec,candidate,MaxTextExtent-1);
     }
   /* Last resort */
   if( *fontspec == '\0' )
@@ -1647,7 +1647,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   IMG_PTR=image;
 
   /* Open metafile */
-  strcpy(filename,image_info->filename);
+  strncpy(filename,image_info->filename,MaxTextExtent-1);
   {
     /* Implement the function of FileIsPlaceable() because it has file
        descriptor leak */
@@ -1745,8 +1745,8 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
 
   /* Restore original filename and magick */
-  strcpy(image->filename,image_info->filename);
-  strcpy(image->magick,image_info->magick);
+  strncpy(image->filename,image_info->filename,MaxTextExtent-1);
+  strncpy(image->magick,image_info->magick,MaxTextExtent-1);
   image->rows=cstruct->realheight;
   image->columns=cstruct->realwidth;
 

@@ -827,7 +827,7 @@ int main(int argc,char **argv)
                   if (i == argc)
                     MagickError(OptionError,"Missing image type",option);
                   (void) CloneString(&format,argv[i]);
-                  (void) strcpy(image_info->filename,format);
+                  (void) strncpy(image_info->filename,format,MaxTextExtent-1);
                   (void) strcat(image_info->filename,":");
                   (void) SetImageInfo(image_info,False,&exception);
                   if (*image_info->magick == '\0')
@@ -1630,7 +1630,7 @@ int main(int argc,char **argv)
         /*
           Option is a file name: begin by reading image from specified file.
         */
-        (void) strcpy(image_info->filename,argv[i]);
+        (void) strncpy(image_info->filename,argv[i],MaxTextExtent-1);
         image=ReadImage(image_info,&exception);
         if (exception.severity != UndefinedException)
           MagickWarning(exception.severity,exception.reason,
@@ -1652,12 +1652,13 @@ int main(int argc,char **argv)
               p--;
             p++;
             if (LocaleCompare(p,image->magick) == 0)
-              (void) strcpy(p,format);
+              (void) strncpy(p,format,MaxTextExtent-1);
             else
               {
                 FormatString(image_info->filename,"%.1024s:%.1024s",format,
                   image->filename);
-                (void) strcpy(image->filename,image_info->filename);
+                (void) strncpy(image->filename,image_info->filename,
+                  MaxTextExtent-1);
               }
           }
         /*
@@ -1676,7 +1677,7 @@ int main(int argc,char **argv)
         else
           if (LocaleCompare(image_info->filename,"-") != 0)
             {
-              (void) strcpy(filename,image->filename);
+              (void) strncpy(filename,image->filename,MaxTextExtent-1);
               AppendImageFormat("mgk",image->filename);
               if (IsAccessible(image->filename))
                 {
@@ -1688,7 +1689,7 @@ int main(int argc,char **argv)
             }
         for (p=image; p != (Image *) NULL; p=p->next)
         {
-          (void) strcpy(p->filename,image->filename);
+          (void) strncpy(p->filename,image->filename,MaxTextExtent-1);
           p->scene=scene++;
         }
         (void) SetImageInfo(image_info,True,&image->exception);

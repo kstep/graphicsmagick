@@ -1335,7 +1335,7 @@ int main(int argc,char **argv)
           /*
             Read image.
           */
-          (void) strcpy(image_info->filename,option);
+          (void) strncpy(image_info->filename,option,MaxTextExtent-1);
           if (first_scene != last_scene)
             {
               char
@@ -1347,7 +1347,7 @@ int main(int argc,char **argv)
               FormatString(filename,image_info->filename,scene);
               if (LocaleCompare(filename,image_info->filename) == 0)
                 FormatString(filename,"%.1024s.%u",image_info->filename,scene);
-              (void) strcpy(image_info->filename,filename);
+              (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
             }
           (void) strcpy(image_info->magick,"MIFF");
           image_info->colorspace=quantize_info->colorspace;
@@ -1432,7 +1432,8 @@ int main(int argc,char **argv)
                 /*
                   Write image.
                 */
-                (void) strcpy(image->filename,resource_info.write_filename);
+                (void) strncpy(image->filename,resource_info.write_filename,
+                  MaxTextExtent-1);
                 (void) SetImageInfo(image_info,True,&image->exception);
                 status=WriteImage(image_info,image);
                 if (status == False)

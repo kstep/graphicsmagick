@@ -148,9 +148,10 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
     Transfer image info.
   */
   allocate_image->exempt=image_info->file != (FILE *) NULL;
-  (void) strcpy(allocate_image->filename,image_info->filename);
-  (void) strcpy(allocate_image->magick_filename,image_info->filename);
-  (void) strcpy(allocate_image->magick,image_info->magick);
+  (void) strncpy(allocate_image->filename,image_info->filename,MaxTextExtent-1);
+  (void) strncpy(allocate_image->magick_filename,image_info->filename,
+    MaxTextExtent-1);
+  (void) strncpy(allocate_image->magick,image_info->magick,MaxTextExtent-1);
   if (image_info->size != (char *) NULL)
     {
       long
@@ -315,9 +316,9 @@ MagickExport void AllocateNextImage(const ImageInfo *image_info,Image *image)
   image->next=AllocateImage(image_info);
   if (image->next == (Image *) NULL)
     return;
-  (void) strcpy(image->next->filename,image->filename);
+  (void) strncpy(image->next->filename,image->filename,MaxTextExtent-1);
   if (image_info != (ImageInfo *) NULL)
-    (void) strcpy(image->next->filename,image_info->filename);
+    (void) strncpy(image->next->filename,image_info->filename,MaxTextExtent-1);
   *image->next->blob=(*image->blob);
   image->next->file=image->file;
   image->next->scene=image->scene+1;
@@ -3053,8 +3054,8 @@ MagickExport unsigned int IsImageTainted(const Image *image)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  (void) strcpy(magick,image->magick);
-  (void) strcpy(filename,image->filename);
+  (void) strncpy(magick,image->magick,MaxTextExtent-1);
+  (void) strncpy(filename,image->filename,MaxTextExtent-1);
   for (p=image; p != (Image *) NULL; p=p->next)
   {
     if (p->taint)
@@ -4091,7 +4092,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Transform image colors to match this set of colors.
             */
-            (void) strcpy(clone_info->filename,argv[++i]);
+            (void) strncpy(clone_info->filename,argv[++i],MaxTextExtent-1);
             map_image=ReadImage(clone_info,&exception);
             if (exception.severity != UndefinedException)
               MagickWarning(exception.severity,exception.reason,
@@ -4666,7 +4667,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             Image
               *tile_image;
 
-            (void) strcpy(clone_info->filename,argv[++i]);
+            (void) strncpy(clone_info->filename,argv[++i],MaxTextExtent-1);
             tile_image=ReadImage(clone_info,&exception);
             if (tile_image == (Image *) NULL)
               continue;

@@ -218,9 +218,9 @@ struct dirent *readdir(DIR *directory)
   *p='\0';
   p=strchr(buffer,']');
   if (p)
-    (void) strcpy(directory->entry.d_name,p+1);
+    (void) strncpy(directory->entry.d_name,p+1,MaxTextExtent-1);
   else
-    (void) strcpy(directory->entry.d_name,buffer);
+    (void) strncpy(directory->entry.d_name,buffer,MaxTextExtent-1);
   directory->entry.d_namlen=strlen(directory->entry.d_name);
   return(&directory->entry);
 }

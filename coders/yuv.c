@@ -261,7 +261,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     DestroyImage(resize_image);
     (void) TransformRGBImage(image,YCbCrColorspace);
     if (image_info->interlace == PartitionInterlace)
-      (void) strcpy(image->filename,image_info->filename);
+      (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
     if (EOFBlob(image))
       ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
     /*
@@ -515,7 +515,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     }
     DestroyImage(chroma_image);
     if (image_info->interlace == PartitionInterlace)
-      (void) strcpy(image->filename,image_info->filename);
+      (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
