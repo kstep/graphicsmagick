@@ -317,30 +317,6 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
   /*
     Search hard coded paths.
   */
-  FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
-  if (IsAccessible(path))
-    {
-      LiberateMemory((void **) &search_path);
-      return(path);
-    }
-  ConcatenateString(&search_path,"; MagickLibPath:");
-  ConcatenateString(&search_path,path);
-  FormatString(path,"%.1024s%.1024s",MagickModulesPath,filename);
-  if (IsAccessible(path))
-    {
-      LiberateMemory((void **) &search_path);
-      return(path);
-    }
-  ConcatenateString(&search_path,"; MagickModulesPath:");
-  ConcatenateString(&search_path,path);
-  FormatString(path,"%.1024s%.1024s",MagickSharePath,filename);
-  if (IsAccessible(path))
-    {
-      LiberateMemory((void **) &search_path);
-      return(path);
-    }
-  ConcatenateString(&search_path,"; MagickSharePath:");
-  ConcatenateString(&search_path,path);
 #if defined(WIN32)
   {
     char
@@ -382,6 +358,9 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
       ConcatenateString(&search_path,"]:");
       ConcatenateString(&search_path,path);
     }
+    /*
+      Look for a named resource
+    */
     FormatString(path,"%.1024s",filename);
     blob=NTResourceToBlob(path);
     if (blob != (unsigned char *) NULL)
@@ -394,6 +373,31 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
     ConcatenateString(&search_path,path);
   }
 #endif
+  FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
+  if (IsAccessible(path))
+    {
+      LiberateMemory((void **) &search_path);
+      return(path);
+    }
+  ConcatenateString(&search_path,"; MagickLibPath:");
+  ConcatenateString(&search_path,path);
+  FormatString(path,"%.1024s%.1024s",MagickModulesPath,filename);
+  if (IsAccessible(path))
+    {
+      LiberateMemory((void **) &search_path);
+      return(path);
+    }
+  ConcatenateString(&search_path,"; MagickModulesPath:");
+  ConcatenateString(&search_path,path);
+  FormatString(path,"%.1024s%.1024s",MagickSharePath,filename);
+  if (IsAccessible(path))
+    {
+      LiberateMemory((void **) &search_path);
+      return(path);
+    }
+  ConcatenateString(&search_path,"; MagickSharePath:");
+  ConcatenateString(&search_path,path);
+
   ThrowException(exception,ConfigurationError,
     "Unable to open configuration file",search_path);
   LiberateMemory((void **) &search_path);
