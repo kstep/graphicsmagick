@@ -26,6 +26,7 @@
 		<LI><A HREF="#ismatteimage">IsMatteImage</A></LI>
 		<LI><A HREF="#ismonochromeimage">IsMonochromeImage</A></LI>
 		<LI><A HREF="#ispseudoclass">IsPseudoClass</A></LI>
+		<LI><A HREF="#listcolors">ListColors</A></LI>
 		<LI><A HREF="#querycolordatabase">QueryColorDatabase</A></LI>
 		<LI><A HREF="#querycolorname">QueryColorName</A></LI>
 	</UL>
@@ -48,6 +49,7 @@
 <P>unsigned int  <STRONG>IsMatteImage</STRONG>( Image *image );</P>
 <P>status= <STRONG>IsMonochromeImage</STRONG>( image );</P>
 <P>unsigned int  <STRONG>IsPseudoClass</STRONG>( Image *image );</P>
+<P>filelist= <STRONG>ListColors</STRONG>( pattern, number_colors );</P>
 <P>unsigned int  <STRONG>QueryColorDatabase</STRONG>( const char *target, PixelPacket *color );</P>
 <P>unsigned int  <STRONG>QueryColorName</STRONG>( const PixelPacket *color, char *name );</P>
 <P>
@@ -145,6 +147,27 @@ Method IsPseudoClass returns True is the image is PseudoClass or has 256 color o
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The address of a byte (8 bits) array of run-length encoded pixel data of your source image.  The sum of the run-length counts in the source image must be equal to or exceed the number of pixels.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="listcolors">ListColors</A></H2>
+<P>Method ListColors reads the 
+<FONT SIZE=-1>X</FONT> client color database and returns a list of colors contained in the database sorted in ascending alphabetic order.</P>
+<P>The format of the ListColors function is:</P>
+<blockquote>filelist=ListColors ( pattern, number_colors ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_filelist%3A">filelist:</A></STRONG><BR>
+<DD>
+Method ListColors returns a list of colors contained in the database.  If the database cannot be read, a 
+<FONT SIZE=-1>NULL</FONT> list is returned.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_pattern%3A">pattern:</A></STRONG><BR>
+<DD>
+Specifies a pointer to a text string containing a pattern.
+<P></P>
+<p><dt><STRONG>number_colors:</STRONG><BR>
+<DD>
+This integer returns the number of colors in the list.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="querycolordatabase">QueryColorDatabase</A></H2>

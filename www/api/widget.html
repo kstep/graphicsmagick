@@ -49,7 +49,7 @@
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>void  <STRONG>XColorBrowserWidget</STRONG>( Display *display, XWindows *windows, const char *action, char *reply );</P>
 <P>int  <STRONG>XCommandWidget</STRONG>( Display *display, XWindows *windows, const char ** selections, XEvent *event );</P>
-<P>int  <STRONG>XConfirmWidget</STRONG>( Display *display, XWindows *windows, const char *message, const char *qualifier );</P>
+<P>int  <STRONG>XConfirmWidget</STRONG>( Display *display, XWindows *windows, const char *reason, const char *description );</P>
 <P>int  <STRONG>XDialogWidget</STRONG>( Display *display, XWindows *windows, const char *action, const char *query, char *reply );</P>
 <P>void  <STRONG>XFileBrowserWidget</STRONG>( Display *display, XWindows *windows, const char *action, char *reply );</P>
 <P>void  <STRONG>XFontBrowserWidget</STRONG>( Display *display, XWindows *windows, const char *action, char *reply );</P>
@@ -57,7 +57,7 @@
 <P>void  <STRONG>XListBrowserWidget</STRONG>( Display *display, XWindows *windows, XWindowInfo *window_info, char const ** list, const char *action, const char *query, char *reply );</P>
 <P>int  <STRONG>XMenuWidget</STRONG>( Display *display, XWindows *windows, const char *title, const char ** selections, char *item );</P>
 <P>void  <STRONG>XMonitorWidget</STRONG>( Display *display, XWindows *windows, const char *task, const off_t quantum, const off_t span );</P>
-<P>void  <STRONG>XNoticeWidget</STRONG>( Display *display, XWindows *windows, const char *message, const char *qualifier );</P>
+<P>void  <STRONG>XNoticeWidget</STRONG>( Display *display, XWindows *windows, const char *reason, const char *description );</P>
 <P>unsigned int  <STRONG>XPreferencesWidget</STRONG>( Display *display, XResourceInfo *resource_info, XWindows *windows );</P>
 <P>void  <STRONG>XTextViewWidget</STRONG>( Display *display, const XResourceInfo *resource_info, XWindows *windows, const unsigned int mono, const char *title, char const ** textlist );</P>
 <P>
@@ -122,7 +122,7 @@ Specifies a pointer to a
 <H2><A NAME="xconfirmwidget">XConfirmWidget</A></H2>
 <P>Method XConfirmWidget displays a Confirm widget with a notice to the user.  The function returns -1 if Dismiss is pressed, 0 for Cancel, and 1 for Yes.</P>
 <P>The format of the XConfirmWidget method is:</P>
-<blockquote>int XConfirmWidget ( Display *display, XWindows *windows, const char *message, const char *qualifier ); </blockquote><P>
+<blockquote>int XConfirmWidget ( Display *display, XWindows *windows, const char *reason, const char *description ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
@@ -138,13 +138,13 @@ Specifies a connection to an
 <DD>
 Specifies a pointer to a XWindows structure.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_message%3A">message:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_reason%3A">reason:</A></STRONG><BR>
 <DD>
 Specifies the message to display before terminating the program.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_qualifier%3A">qualifier:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_description%3A">description:</A></STRONG><BR>
 <DD>
-Specifies any qualifier to the message.
+Specifies any description to the message.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="xdialogwidget">XDialogWidget</A></H2>
@@ -339,7 +339,7 @@ Specifies the span relative to completing a task.
 <H2><A NAME="xnoticewidget">XNoticeWidget</A></H2>
 <P>Method XNoticeWidget displays a Notice widget with a notice to the user.  The function returns when the user presses the ``Dismiss'' button.</P>
 <P>The format of the XNoticeWidget method is:</P>
-<blockquote>void XNoticeWidget ( Display *display, XWindows *windows, const char *message, const char *qualifier ); </blockquote><P>
+<blockquote>void XNoticeWidget ( Display *display, XWindows *windows, const char *reason, const char *description ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>display:</STRONG><BR>
@@ -351,13 +351,13 @@ Specifies a connection to an
 <DD>
 Specifies a pointer to a XWindows structure.
 <P></P>
-<p><dt><STRONG>message:</STRONG><BR>
+<p><dt><STRONG>reason:</STRONG><BR>
 <DD>
 Specifies the message to display before terminating the program.
 <P></P>
-<p><dt><STRONG>qualifier:</STRONG><BR>
+<p><dt><STRONG>description:</STRONG><BR>
 <DD>
-Specifies any qualifier to the message.
+Specifies any description to the message.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="xpreferenceswidget">XPreferencesWidget</A></H2>

@@ -44,7 +44,7 @@
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>void  <STRONG>DestroyMagickInfo</STRONG>( void );</P>
-<P>char * <STRONG>GetImageMagick</STRONG>( const unsigned char *magick );</P>
+<P>char * <STRONG>GetImageMagick</STRONG>( const unsigned char *magick, const unsigned int length );</P>
 <P>char * <STRONG>GetMagickConfigurePath</STRONG>( const char *filename );</P>
 <P>MagickInfo * <STRONG>GetMagickInfo</STRONG>( const char *tag );</P>
 <P>void  <STRONG>ListMagickInfo</STRONG>( 
@@ -67,7 +67,7 @@
 <P>Method GetImageMagick searches for an image format that matches the specified magick string.  If one is found the tag is returned otherwise 
 <FONT SIZE=-1>NULL.</FONT></P>
 <P>The format of the GetImageMagick method is:</P>
-<blockquote>char *GetImageMagick ( const unsigned char *magick ); </blockquote><P>
+<blockquote>char *GetImageMagick ( const unsigned char *magick, const unsigned int length ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_tag%3A">tag:</A></STRONG><BR>
@@ -77,6 +77,10 @@ Method GetImageMagick returns a tag that matches the specified magick string.
 <p><dt><STRONG><A NAME="item_o_magick%3A">magick:</A></STRONG><BR>
 <DD>
 a character string that represents the image format we are looking for.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_length%3A">length:</A></STRONG><BR>
+<DD>
+The length of the binary string.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getmagickconfigurepath">GetMagickConfigurePath</A></H2>
