@@ -176,7 +176,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     index;
 
   int
-    c;
+    c,
+    quantum;
 
   long
     exponent,
@@ -184,7 +185,6 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     k,
     l,
     packet_size,
-    quantum,
     scene,
     y;
 
