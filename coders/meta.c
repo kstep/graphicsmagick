@@ -691,8 +691,10 @@ static int jpeg_embed(Image *ifile, Image *ofile, Image *iptc)
 
         if (iptc != (Image *)NULL)
           {
-            //fstat(fileno(iptc),&sb);
-            //len = sb.st_size;
+#if 0
+            fstat(fileno(iptc),&sb);
+            len = sb.st_size;
+#endif
             len=GetBlobSize(iptc);
             if (len & 1)
               len++; /* make the length even */
@@ -701,7 +703,9 @@ static int jpeg_embed(Image *ifile, Image *ofile, Image *iptc)
             for (inx = 0; inx < 18; inx++)
               WriteBlobByte(ofile,psheader[inx]);
             jpeg_read_remaining(iptc, ofile);
-            //len = sb.st_size;
+#if 0
+            len = sb.st_size;
+#endif
             len=GetBlobSize(iptc);
             if (len & 1)
               WriteBlobByte(ofile,0);
@@ -723,7 +727,9 @@ static int jpeg_embed(Image *ifile, Image *ofile, Image *iptc)
 }
 
 /* handle writing iptc info into JPEG */
-// jpeg_embed(ifile, ofile, xfile);
+#if 0
+ jpeg_embed(ifile, ofile, xfile);
+#endif
 
 /* handle stripping the APP13 data out of a JPEG */
 static void jpeg_strip(Image *ifile, Image *ofile)
@@ -1828,7 +1834,9 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
                read side instead since it was easier to figure out how to access it
                at that point
              */
-            //if (p[0]!=0xff || p[1]!=M_SOI || p[2]!=0xff)
+#if 0
+            if (p[0]!=0xff || p[1]!=M_SOI || p[2]!=0xff)
+#endif
             if (1)
               {
                 (void) WriteBlob(image,(int) image->generic_profile[i].length,
