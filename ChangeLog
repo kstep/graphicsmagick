@@ -22,6 +22,8 @@
 	code, and improve coding style.	
 	* coders/logo.c, Copyright.txt, www/Copyright.html: Acknowledge
 	and respect the XFig copyright.
+	* VisualMagick/installer/inc/files-documentation.isx: QuickStart.txt
+	is no longer distributed so it is removed.
 
 2003-05-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
