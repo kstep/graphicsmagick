@@ -602,9 +602,11 @@ static double GenerateCircle(PrimitiveInfo *primitive_info,PointInfo start,
 }
 
 static void GenerateEllipse(PrimitiveInfo *primitive_info,PointInfo start,
-  PointInfo end,PointInfo degrees)
+  PointInfo end,PointInfo degrees,double angle)
 {
   double
+    cose,
+    sine,
     i;
 
   PointInfo
@@ -625,10 +627,15 @@ static void GenerateEllipse(PrimitiveInfo *primitive_info,PointInfo start,
       (fmod(degrees.y-degrees.x,360.0) != 0.0))
     primitive_info->coordinates++;
   p=primitive_info;
+  cose=cos(DegreesToRadians(fmod(angle,360.0)));
+  sine=sin(DegreesToRadians(fmod(angle,360.0)));
   for (i=(degrees.x+1.0); i <= degrees.y; i+=1.0)
   {
-    pixel.x=cos(DegreesToRadians(fmod(i,360.0)))*end.x+start.x;
-    pixel.y=sin(DegreesToRadians(fmod(i,360.0)))*end.y+start.y;
+
+    pixel.x=cos(DegreesToRadians(fmod(i,360.0)))*cose*end.x+
+      sin(DegreesToRadians(fmod(i,360.0)))*sine*end.y+start.x;
+    pixel.y=(-cos(DegreesToRadians(fmod(i,360.0)))*sine*end.x+
+      sin(DegreesToRadians(fmod(i,360.0)))*cose*end.y+start.y);
     if ((p > primitive_info) && ((int) pixel.x == (int) (p-1)->pixel.x) &&
         ((int) pixel.y == (int) (p-1)->pixel.y))
       continue;
@@ -705,7 +712,7 @@ static void GenerateRoundRectangle(PrimitiveInfo *primitive_info,
   v.y=2.0*arc.y;
   degrees.x=270.0;
   degrees.y=360.0;
-  GenerateEllipse(p,u,v,degrees);
+  GenerateEllipse(p,u,v,degrees,0.0);
   p+=p->coordinates;
   p->primitive=primitive_info->primitive;
   u.x=end.x;
@@ -721,7 +728,7 @@ static void GenerateRoundRectangle(PrimitiveInfo *primitive_info,
   v.y=2.0*arc.y;
   degrees.x=0.0;
   degrees.y=90.0;
-  GenerateEllipse(p,u,v,degrees);
+  GenerateEllipse(p,u,v,degrees,0.0);
   p+=p->coordinates;
   p->primitive=primitive_info->primitive;
   u.x=end.x-arc.x;
@@ -735,7 +742,7 @@ static void GenerateRoundRectangle(PrimitiveInfo *primitive_info,
   v.y=2.0*arc.y;
   degrees.x=90.0;
   degrees.y=180.0;
-  GenerateEllipse(p,u,v,degrees);
+  GenerateEllipse(p,u,v,degrees,0.0);
   p+=p->coordinates;
   p->primitive=primitive_info->primitive;
   u.x=start.x;
@@ -751,7 +758,7 @@ static void GenerateRoundRectangle(PrimitiveInfo *primitive_info,
   v.y=2.0*arc.y;
   degrees.x=180.0;
   degrees.y=270.0;
-  GenerateEllipse(p,u,v,degrees);
+  GenerateEllipse(p,u,v,degrees,0.0);
   p+=p->coordinates;
   p->primitive=primitive_info->primitive;
   u.x=start.x+arc.x;
@@ -907,12 +914,12 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   /*
     Parse the primitive attributes.
   */
+  bounds.x1=image->columns-1.0;
+  bounds.y1=image->rows-1.0;
+  bounds.x2=0.0;
+  bounds.y2=0.0;
   primitive_type=UndefinedPrimitive;
   radius=0.0;
-  bounds.x1=image->columns-1;
-  bounds.y1=image->rows-1;
-  bounds.x2=0;
-  bounds.y2=0;
   i=0;
   for (p=primitive; *p != '\0'; )
   {
@@ -1102,7 +1109,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (primitive_type == FillEllipsePrimitive)
           primitive_info[j].primitive=FillPolygonPrimitive;
         GenerateEllipse(primitive_info+j,primitive_info[j].pixel,
-          primitive_info[j+1].pixel,primitive_info[j+2].pixel);
+          primitive_info[j+1].pixel,primitive_info[j+2].pixel,draw_info->angle);
         i=j+primitive_info[j].coordinates;
         break;
       }
@@ -1176,6 +1183,14 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                   primitive_info[j].method=ResetMethod;
                 else
                   primitive_type=UndefinedPrimitive;
+        if ((primitive_info[j].method == ReplaceMethod) ||
+            (primitive_info[j].method == ResetMethod))
+          {
+            bounds.x1=0.0;
+            bounds.y1=0.0;
+            bounds.x2=image->columns-1.0;
+            bounds.y2=image->rows-1.0;
+          }
         while (isspace((int) (*p)))
           p++;
         break;
@@ -1291,29 +1306,19 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     if (pixel.y > bounds.y2)
       bounds.y2=pixel.y;
   }
-  for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
-    if ((primitive_info[i].method == ReplaceMethod) ||
-        (primitive_info[i].method == ResetMethod))
-      {
-        /*
-          Replace and reset methods affect the entire image.
-        */
-        bounds.x1=0;
-        bounds.y1=0;
-        bounds.x2=image->columns-1;
-        bounds.y2=image->rows-1;
-      }
-  /*
-    Account for linewidth/radius.
-  */
-  mid=radius+clone_info->linewidth/2.0;
-  if ((bounds.x1 != bounds.x2) || (bounds.y1 != bounds.y2))
-    {
-      bounds.x1=Max(bounds.x1-mid,0);
-      bounds.y1=Max(bounds.y1-mid,0);
-      bounds.x2=Min(bounds.x2+ceil(mid),image->columns-1);
-      bounds.y2=Min(bounds.y2+ceil(mid),image->rows-1);
-    }
+  mid=ceil(radius+clone_info->linewidth/2.0);
+  bounds.x1-=mid;
+  if (bounds.x1 < 0.0)
+    bounds.x1=0.0;
+  bounds.y1-=mid;
+  if (bounds.y1 < 0.0)
+    bounds.y1=0.0;
+  bounds.x2+=mid;
+  if (bounds.x2 >= image->columns)
+    bounds.x2=image->columns-1.0;
+  bounds.y2+=mid;
+  if (bounds.y2 >= image->rows)
+    bounds.y2=image->rows-1.0;
   /*
     Draw the primitive on the image.
   */

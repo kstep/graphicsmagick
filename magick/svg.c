@@ -474,8 +474,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (Latin1Compare(graphic_context[n].fill,"none") != 0)
               (void) strncpy(command,"fill",4);
             FormatString(points,"%g,%g %g,%g 0,360",ellipse.cx,ellipse.cy,
-              ellipse.angle == 0 ? ellipse.major: ellipse.minor,
-              ellipse.angle == 0 ? ellipse.minor: ellipse.major);
+              ellipse.major,ellipse.minor);
             (void) strcat(command,points);
           }
         if (Latin1Compare(primitive,"line") == 0)
