@@ -580,11 +580,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         bmp_info.colors_important=ReadBlobLSBLong(image);
         profile_data=0;
         profile_size=0;
-        for (i=0; i < (long) (bmp_info.size-40); i++)
-          (void) ReadBlobByte(image);
         if ((bmp_info.compression == BI_BITFIELDS) &&
             ((bmp_info.bits_per_pixel == 16) ||
-            (bmp_info.bits_per_pixel == 32)))
+             (bmp_info.bits_per_pixel == 32)))
           {
             bmp_info.red_mask=ReadBlobLSBLong(image);
             bmp_info.green_mask=ReadBlobLSBLong(image);
@@ -674,15 +672,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 profile_size=profile_size;
                 ReadBlobLSBLong(image); /* Reserved byte */
               }
-            if (bmp_info.size > 124)
-              {
-                /*
-                  Skip future BMP Version information.
-                */
-                for (i=124; i < (long) bmp_info.size; i++)
-                  ReadBlobByte(image);
-              }
-            }
+          }
       }
     switch (bmp_info.compression)
     {
@@ -734,6 +724,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           packet_size=3;
         else
           packet_size=4;
+        (void) SeekBlob(image,start_position+14+bmp_info.size,SEEK_SET);
         (void) ReadBlob(image,packet_size*image->colors,(char *) bmp_colormap);
         p=bmp_colormap;
         for (i=0; i < (long) image->colors; i++)
