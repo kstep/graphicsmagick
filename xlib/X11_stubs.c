@@ -39,7 +39,7 @@ in this Software without prior written authorization from the X Consortium.
 #include <unistd.h>
 #else
 #if defined(_VISUALC_)
-#	if defined(_MT) && defined(_DLL)
+#	if defined(_MT) && defined(_DLL) && !defined(_LIB)
 #		define Export __declspec(dllexport)
 #	else
 #		define Export
