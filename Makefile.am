@@ -69,6 +69,28 @@ dist-hook:
 	  ) \
 	)
 
+#
+# Additional install rules
+#
+
+# Install HTML files
+pkgdocdir = $(DESTDIR)$(pkgdatadir)
+DOCDIRS = images www www/api www/api/types
+install-data-html:
+	$(mkinstalldirs) $(pkgdocdir)
+	$(INSTALL_DATA) $(srcdir)/ImageMagick.html $(pkgdocdir)
+	for dir in $(DOCDIRS) ; do \
+	  $(mkinstalldirs) $(pkgdocdir)/$$dir && \
+	  $(INSTALL_DATA) $(srcdir)/$$dir/*.* $(pkgdocdir)/$$dir ; \
+	done
+
+# Uninstall HTML files
+uninstall-data-html:
+	rm -f $(pkgdocdir)/ImageMagick.html
+	for dir in $(DOCDIRS) ; do \
+	  rm -rf $(pkgdocdir)/$$dir ; \
+	done
+
 if WITH_PERL
 
 PERLMAGICK=PerlMagick
@@ -139,6 +161,12 @@ endif # WITH_PERL
 
 # Install PerlMagick
 install-exec-local: install-exec-perl
+
+# Install arch-independent package data
+install-data-local: install-data-html
+
+# Uninstall arch-independent package data
+uninstall-local: uninstall-data-html
 
 # Do a make clean in PerlMagick directory 
 clean-local: clean-perl
