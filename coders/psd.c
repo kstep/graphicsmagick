@@ -15,6 +15,7 @@
 %                                                                             %
 %                              Software Design                                %
 %                                John Cristy                                  %
+%                              Leonard Rosenthol                              %
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
