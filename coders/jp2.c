@@ -621,9 +621,46 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
     component_info[i].prec=(unsigned int) image->depth <= 8 ? 8 : 16;
   }
   jp2_image=jas_image_create((short) number_components,component_info,
-    number_components == 1 ? JAS_IMAGE_CS_GRAY : JAS_IMAGE_CS_RGB);
+                             JAS_CLRSPC_UNKNOWN);
   if (jp2_image == (jas_image_t *) NULL)
     ThrowWriterException(DelegateError,"UnableToCreateImage",image);
+
+  if (number_components == 1)
+    {
+#if defined(JAS_CLRSPC_SGRAY)
+      /* FIXME: If image has an attached ICC profile, then the profile
+         should be transferred and the image colorspace set to
+         JAS_CLRSPC_GENGRAY */
+      /* sRGB Grayscale */
+      jas_image_setclrspc(jp2_image, JAS_CLRSPC_SGRAY);
+#else
+      jas_image_setcolorspace(jp2_image, JAS_IMAGE_CS_GRAY);
+#endif
+      jas_image_setcmpttype(jp2_image, 0,
+                            JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_GRAY_Y));
+    }
+  else
+    {
+      /* FIXME: If image has an attached ICC profile, then the profile
+         should be transferred and the image colorspace set to
+         JAS_CLRSPC_GENRGB */
+
+      /* sRGB */
+#if defined(JAS_CLRSPC_SRGB)
+      jas_image_setclrspc(jp2_image, JAS_CLRSPC_SRGB);
+#else
+      jas_image_setcolorspace(jp2_image, JAS_IMAGE_CS_RGB);
+#endif
+      jas_image_setcmpttype(jp2_image, 0,
+                            JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_R));
+      jas_image_setcmpttype(jp2_image, 1,
+                            JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_G));
+      jas_image_setcmpttype(jp2_image, 2,
+                            JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_B));
+      if (number_components == 4 )
+        jas_image_setcmpttype(jp2_image, 3,
+                              JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_OPACITY));
+    }
   /*
     Convert to JPEG 2000 pixels.
   */
@@ -660,8 +697,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
         p++;
       }
     else
-      if (image->depth <= 16)
-        for (x=0; x < (long) image->columns; x++)
+      for (x=0; x < (long) image->columns; x++)
         {
           if (number_components == 1)
             jas_matrix_setv(pixels[0],x,
@@ -673,22 +709,6 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
               jas_matrix_setv(pixels[2],x,ScaleQuantumToShort(p->blue));
               if (number_components > 3)
                 jas_matrix_setv(pixels[3],x,ScaleQuantumToShort(p->opacity));
-            }
-          p++;
-        }
-      else
-        for (x=0; x < (long) image->columns; x++)
-        {
-          if (number_components == 1)
-            jas_matrix_setv(pixels[0],x,
-              ScaleQuantumToLong(PixelIntensityToQuantum(p)));
-          else
-            {
-              jas_matrix_setv(pixels[0],x,ScaleQuantumToLong(p->red));
-              jas_matrix_setv(pixels[1],x,ScaleQuantumToLong(p->green));
-              jas_matrix_setv(pixels[2],x,ScaleQuantumToLong(p->blue));
-              if (number_components > 3)
-                jas_matrix_setv(pixels[3],x,ScaleQuantumToLong(p->opacity));
             }
           p++;
         }

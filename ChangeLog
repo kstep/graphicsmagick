@@ -1,3 +1,9 @@
+2003-02-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jp2.c (WriteJP2Image): Port to Jasper 1.7.
+	For Q:32, don't write 32-bit pixels rather than the
+	16-bit pixels we told Jasper we would write.
+
 2003-02-18  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* coders/modules.mgk: Added JNG entry.
