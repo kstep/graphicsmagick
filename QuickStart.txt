@@ -51,8 +51,8 @@ Unix/Linux/Cygwin Install:
 
   Alternatively, download the appropriate binary from
   ftp://ftp.simplesystems.org/pub/ImageMagick/binaries.  The Unix
-  binaries must be installed in the /usr/local heirarchy.  If you require
-  a different install directory, follow the steps below.  In our example
+  binaries must be installed in the /usr/local.  If you require a
+  different install directory, follow the steps below.  In our example
   we use /home/cristy/ImageMagick as our install directory:
 
       gunzip -c ImageMagick-*.tar.gz | tar xvf -
