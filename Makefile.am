@@ -97,17 +97,14 @@ PERLMAKEFILE=$(PERLMAGICK)/Makefile
 
 # If source files missing, see if they can be obtained via VPATH
 perl-sources:
-	cd $(PERLMAGICK) && \
-	( \
-	  if test -n "$(VPATH)" ; then \
-	    for file in "$(VPATH)/$(PERLMAGICK)/"* ; do \
-	      base=`basename $$file` ; \
-	      if test ! -r $$base ; then \
-	        @LN_S@ $$file . ; \
-	      fi \
+	if test -n "$(VPATH)" ; then \
+	  perlmagick=`(cd $(VPATH)/$(PERLMAGICK); pwd)` && \
+	  ( cd $(PERLMAGICK) && \
+	    for file in "$$perlmagick/"* ; do \
+	      @LN_S@ $$file . ; \
 	    done \
-	  fi ; \
-	)
+	  ) \
+	fi
 	touch perl-sources
 
 if WITH_PERL_DYNAMIC
