@@ -513,6 +513,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
     keyword[MaxTextExtent],
     *path,
     *q,
+	*scratch,
     *token,
     *xml;
 
@@ -523,6 +524,8 @@ static unsigned int ReadConfigurationFile(const char *basename,
   NTGhostscriptFonts(gsfonts,sizeof(gsfonts));
   strcat(gsfonts,DirectorySeparator);
 #endif /* WIN32 */
+
+  scratch=(char*) NULL;
 
   /*
     Read the type configuration file.
@@ -651,10 +654,11 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"glyphs") == 0)
           {
-            type_list->glyphs=AcquireString(token);
+			CloneString(&scratch,token);
 #if defined(WIN32)
-            SubstituteString(&type_list->glyphs,"@ghostscript_font_dir@",gsfonts);
+            SubstituteString(&scratch,"@ghostscript_font_dir@",gsfonts);
 #endif /* WIN32 */
+            type_list->glyphs=scratch;
             break;
           }
         break;
@@ -664,10 +668,11 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"metrics") == 0)
           {
-            type_list->metrics=AcquireString(token);
+            CloneString(&scratch,token);
 #if defined(WIN32)
-            SubstituteString(&type_list->glyphs,"@ghostscript_font_dir@",gsfonts);
+            SubstituteString(&scratch,"@ghostscript_font_dir@",gsfonts);
 #endif /* WIN32 */
+			type_list->metrics=scratch;
             break;
           }
         break;
