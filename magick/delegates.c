@@ -293,12 +293,12 @@ Export unsigned int GetDelegateInfo(char *tag,unsigned int decode,
         The delegate list is empty, read delegates from the configuration file.
       */
       *delegate_info.decode_tag='\0';
-      delegate_info.commands=(char *) NULL;
-      *delegate_info.encode_tag='\0';
       delegate_info.direction=0;
+      *delegate_info.encode_tag='\0';
+      delegate_info.commands=(char *) NULL;
       (void) SetDelegateInfo(&delegate_info);
-      (void) ReadDelegates(DelegatePath,"/ImageMagick/");
-      (void) ReadDelegates((char *) getenv("DELEGATE_PATH"),(char *) NULL);
+      (void) ReadDelegates(DelegatePath,(char *) NULL);
+      (void) ReadDelegates((char *) getenv("DELEGATE_PATH"),"/");
       (void) ReadDelegates((char *) getenv("HOME"),"/.magick/");
       (void) ReadDelegates((char *) NULL,(char *) NULL);
       delegates=SetDelegateInfo((DelegateInfo *) NULL);

@@ -85,6 +85,13 @@ You can <a href="www/magick-list.html">subscribe</a> to the mailing list.
 Here you can ask questions and get advice from other <b>ImageMagick</b> users
 and see announcements of bug fixes, enhancements, and new releases.
 <p>
+Because <b>ImageMagick</b> is freeware I am unwilling to certify that
+it is Y2K Compliant.  However I am confident that it is.
+<b>ImageMagick</b> uses <tt>localtime</tt> to produce time-stamps for
+encoding PDF and Postscript output.  It also uses system routines such
+as <tt>select</tt> to produce suitable sub-second delays when animating an
+image sequence.
+<p>
 For further information about <b>ImageMagick</b>, select from these sources:
 <dl>
 <dd> <img alt="*" src="images/ball.gif" width=14 height=14>

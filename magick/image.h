@@ -720,6 +720,7 @@ extern Export Image
   **ListToGroupImage(Image *,unsigned int *),
   *MagnifyImage(Image *),
   *MinifyImage(Image *),
+  *MorphImages(Image *,unsigned int),
   *OilPaintImage(Image *,const unsigned int),
   *ReadImage(ImageInfo *),
   *ReadPICTImage(ImageInfo *),

@@ -1808,7 +1808,7 @@ Export void XColorBrowserWidget(Display *display,XWindows *windows,char *action,
         y=text_info.y+((text_info.height-height) >> 1)+font_info->ascent;
         XDrawString(display,windows->widget.id,windows->widget.annotate_context,
           x,y,ColorPatternText,Extent(ColorPatternText));
-        (void) sprintf(text_info.text,"%s",glob_pattern);
+        FormatString(text_info.text,"%s",glob_pattern);
         XDrawWidgetText(display,&windows->widget,&text_info);
         XDrawBeveledButton(display,&windows->widget,&grab_info);
         XDrawBeveledButton(display,&windows->widget,&reset_info);
@@ -1890,7 +1890,7 @@ Export void XColorBrowserWidget(Display *display,XWindows *windows,char *action,
         */
         *reply_info.text='\0';
         reply_info.cursor=reply_info.text;
-        (void) sprintf(text_info.text,"%s",glob_pattern);
+        FormatString(text_info.text,"%s",glob_pattern);
         XDrawWidgetText(display,&windows->widget,&text_info);
         XDrawMatteText(display,&windows->widget,&reply_info);
         XDrawBeveledMatte(display,&windows->widget,&scroll_info);
@@ -1985,7 +1985,7 @@ Export void XColorBrowserWidget(Display *display,XWindows *windows,char *action,
           (unsigned int) windows->widget.visual_info->colormap_size,
           &windows->widget.pixel_info->matte_color);
         mode_info.text=colorname;
-        (void) sprintf(mode_info.text,"#%02x%02x%02x",
+        FormatString(mode_info.text,"#%02x%02x%02x",
           XDownScale(windows->widget.pixel_info->matte_color.red),
           XDownScale(windows->widget.pixel_info->matte_color.green),
           XDownScale(windows->widget.pixel_info->matte_color.blue));
@@ -4438,7 +4438,7 @@ Export void XFileBrowserWidget(Display *display,XWindows *windows,char *action,
         y=text_info.y+((text_info.height-height) >> 1)+font_info->ascent;
         XDrawString(display,windows->widget.id,windows->widget.annotate_context,
           x,y,DirectoryText,Extent(DirectoryText));
-        (void) sprintf(text_info.text,"%s%s%s",working_directory,
+        FormatString(text_info.text,"%s%s%s",working_directory,
           DirectorySeparator,glob_pattern);
         XDrawWidgetText(display,&windows->widget,&text_info);
         XDrawBeveledButton(display,&windows->widget,&up_info);
@@ -4512,7 +4512,7 @@ Export void XFileBrowserWidget(Display *display,XWindows *windows,char *action,
             *reply_info.text='\0';
             reply_info.cursor=reply_info.text;
           }
-        (void) sprintf(text_info.text,"%s%s%s",working_directory,
+        FormatString(text_info.text,"%s%s%s",working_directory,
           DirectorySeparator,glob_pattern);
         XDrawWidgetText(display,&windows->widget,&text_info);
         XDrawMatteText(display,&windows->widget,&reply_info);
@@ -5616,7 +5616,7 @@ Export void XFontBrowserWidget(Display *display,XWindows *windows,char *action,
         y=text_info.y+((text_info.height-height) >> 1)+font_info->ascent;
         XDrawString(display,windows->widget.id,windows->widget.annotate_context,
           x,y,FontPatternText,Extent(FontPatternText));
-        (void) sprintf(text_info.text,"%s",glob_pattern);
+        FormatString(text_info.text,"%s",glob_pattern);
         XDrawWidgetText(display,&windows->widget,&text_info);
         XDrawBeveledButton(display,&windows->widget,&back_info);
         XDrawBeveledButton(display,&windows->widget,&reset_info);
@@ -5720,7 +5720,7 @@ Export void XFontBrowserWidget(Display *display,XWindows *windows,char *action,
         */
         *reply_info.text='\0';
         reply_info.cursor=reply_info.text;
-        (void) sprintf(text_info.text,"%s",glob_pattern);
+        FormatString(text_info.text,"%s",glob_pattern);
         XDrawWidgetText(display,&windows->widget,&text_info);
         XDrawMatteText(display,&windows->widget,&reply_info);
         XDrawBeveledMatte(display,&windows->widget,&scroll_info);
@@ -8419,7 +8419,7 @@ Export unsigned int XPreferencesWidget(Display *display,
         preferences_info[4].raised=!resource_info->quantize_info.dither;
         preferences_info[5].raised=resource_info->colormap != SharedColormap;
         preferences_info[6].raised=!resource_info->use_pixmap;
-        (void) sprintf(cache,CacheButtonText,resource_info->undo_cache);
+        FormatString(cache,CacheButtonText,resource_info->undo_cache);
         XGetWidgetInfo(cache,&cache_info);
         cache_info.bevel_width--;
         cache_info.width=QuantumMargin >> 1;
@@ -8490,7 +8490,7 @@ Export unsigned int XPreferencesWidget(Display *display,
             resource_info->undo_cache<<=1;
             if (resource_info->undo_cache > 256)
               resource_info->undo_cache=1;
-            (void) sprintf(cache,CacheButtonText,resource_info->undo_cache);
+            FormatString(cache,CacheButtonText,resource_info->undo_cache);
             cache_info.raised=False;
             XDrawTriangleEast(display,&windows->widget,&cache_info);
             break;

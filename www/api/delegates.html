@@ -15,6 +15,7 @@
 	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
 	<UL>
 
+		<LI><A HREF="#DestroyDelegates">DestroyDelegates</A>
 		<LI><A HREF="#GetDelegateInfo">GetDelegateInfo</A>
 		<LI><A HREF="#GetDelegateCommand">GetDelegateCommand</A>
 		<LI><A HREF="#InvokeDelegate">InvokeDelegate</A>
@@ -34,6 +35,9 @@ delegates -
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
+<STRONG>DestroyDelegates</STRONG>(image_info)
+
+<P>
 command=<STRONG>GetDelegateCommand</STRONG>(image_info,image,tag,decode)
 
 <P>
@@ -48,6 +52,28 @@ delegate_info=<STRONG>SetDelegateInfo</STRONG>(delegate_info)
 <P>
 <HR>
 <H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<P>
+<HR>
+<H2><A NAME="DestroyDelegates">DestroyDelegates</A></H2>
+<P>
+Method DestroyDelegates deallocates memory associated with the delegates
+list.
+
+<P>
+The format of the DestroyDelegates routine is:
+
+<P>
+<PRE>        DestroyDelegates(image_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG><A NAME="item_o">image_info:</A></STRONG><DD>
+<P>
+Specifies a pointer to a Delegates structure.
+
+</DL></DL>
 <P>
 <HR>
 <H2><A NAME="GetDelegateInfo">GetDelegateInfo</A></H2>
@@ -65,7 +91,7 @@ The format of the GetDelegateInfo routine is:
 A description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG><A NAME="item_o">status:</A></STRONG><DD>
+<DT><STRONG>status:</STRONG><DD>
 <P>
 Method GetDelegateInfo returns True if a delegate is found, otherwise
 False.

@@ -825,7 +825,7 @@ int main(int argc,char **argv)
             /*
               Stretch composite to the same size as the image.
             */
-            (void) sprintf(geometry,"%ux%u+0+0",image->columns,image->rows);
+            FormatString(geometry,"%ux%u+0+0",image->columns,image->rows);
             TransformImage(&composite_image,(char *) NULL,geometry);
             break;
           }

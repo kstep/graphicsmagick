@@ -107,6 +107,7 @@ extern Export void
   AppendImageFormat(const char *,char *),
   DestroyPostscriptGeometry(char *),
   ExpandFilename(char *),
+  FormatString(char *,const char *,...),
   LocaleFilename(char *),
   LSBFirstWriteLong(const unsigned long,FILE *),
   LSBFirstWriteShort(const unsigned int,FILE *),

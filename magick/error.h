@@ -12,7 +12,11 @@ typedef enum
   UndefinedError,
   ResourceLimitError = 400,
   XServerError = 405,
-  OptionError = 410
+  OptionError = 410,
+  DelegateError = 415,
+  MissingDelegateError = 420,
+  CorruptImageError = 425,
+  FileOpenError = 430
 } ErrorType;
 
 typedef enum
@@ -22,9 +26,7 @@ typedef enum
   XServerWarning = 305,
   OptionWarning = 310,
   DelegateWarning = 315,
-  PluginWarning = 315,
   MissingDelegateWarning = 320,
-  MissingPluginWarning = 320,
   CorruptImageWarning = 325,
   FileOpenWarning = 330
 } WarningType;

@@ -470,11 +470,9 @@ MAGICK DELEGATES
           http://www.linpro.no/lwp/
 
       to read images specified with a World Wide Web (WWW) uniform
-      resource locator (URL).  GET(1) must be in /usr/local/bin.
-      See WWWcommand in magick/magick.h to change its location.  If
-      you do not have a HTTP server, you can use xtp(1), available
-      in the ImageMagick distribution, for URL's whose protocol is
-      FTP.
+      resource locator (URL).  If you do not have a HTTP server, you
+      can use xtp(1), available in the ImageMagick distribution, for
+      URL's whose protocol is FTP.
 
     o ImageMagick requires SOCKS version 5 available via the Web at
 
@@ -610,6 +608,8 @@ VMS COMPILATION
 
   Type
 
+      unzip ImageMagick-4.1.3.zip
+      set default [.imagemagick]
       @make
       set display/create/node=node_name::
 

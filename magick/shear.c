@@ -171,7 +171,7 @@ static void CropShearImage(Image **image,const double x_shear,
   /*
     Crop image and return.
   */
-  (void) sprintf(geometry,"%ux%u%+d%+d",crop_info.width,crop_info.height,
+  FormatString(geometry,"%ux%u%+d%+d",crop_info.width,crop_info.height,
     crop_info.x,crop_info.y);
   TransformImage(image,geometry,(char *) NULL);
 }

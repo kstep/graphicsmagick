@@ -360,7 +360,7 @@ The default is \fBCenter\fP.  See \fB-draw\fP or
 for further details.
 .TP
 .B "-append
-append a set of images.  
+append an image sequence.  
 
 All the input images must have the same width or height.  Images of the
 same width are stacked top-to-bottom.  Images of the same height are
@@ -368,7 +368,7 @@ stacked left-to-right.  Use \fB+append\fP to stack rectangular images
 left-to-right.
 .TP
 .B "-average
-averages a set of images.
+averages an image sequence.
 .TP
 .B "-blur \fIfactor\fP"
 blurs an image.  Specify \fIfactor\fP as the percent enhancement
@@ -822,6 +822,12 @@ use: \fB-modulate 20/-10\fP.
 .TP
 .B "-monochrome"
 transform the image to black and white.
+.TP
+.B "-morph"
+morphs an image sequence.
+
+Both the image pixels and size are linearly interpolated to give the
+appearance of a meta-morphosis from one image to the next.
 .TP
 .B "-negate"
 apply color inversion to image.

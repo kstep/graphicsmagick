@@ -7,12 +7,20 @@
 /*
   Delegate define definitions.
 */
-#if !defined(WIN32)
+#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
 #if !defined(DelegatePath)
-#define DelegatePath  "/usr/local/share"
+#define DelegatePath  "/usr/local/share/ImageMagick/"
 #endif
 #else
-#define DelegatePath  "c:"
+#if defined(vms)
+#define DelegatePath  "sys$login:"
+#endif
+#if defined(macintosh)
+#define DelegatePath  ""
+#endif
+#if defined(WIN32)
+#define DelegatePath  "c:/ImageMagick/"
+#endif
 #endif
 #define DelegateFilename  "delegates.mgk"
 

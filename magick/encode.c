@@ -1127,9 +1127,9 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   (void) strncpy(fits_header+80,buffer,Extent(buffer));
   (void) strcpy(buffer,"NAXIS   =                    2");
   (void) strncpy(fits_header+160,buffer,Extent(buffer));
-  (void) sprintf(buffer,"NAXIS1  =           %10u",image->columns);
+  FormatString(buffer,"NAXIS1  =           %10u",image->columns);
   (void) strncpy(fits_header+240,buffer,Extent(buffer));
-  (void) sprintf(buffer,"NAXIS2  =           %10u",image->rows);
+  FormatString(buffer,"NAXIS2  =           %10u",image->rows);
   (void) strncpy(fits_header+320,buffer,Extent(buffer));
   (void) strcpy(buffer,"HISTORY Created by ImageMagick.");
   (void) strncpy(fits_header+400,buffer,Extent(buffer));
@@ -2750,7 +2750,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
         (void) fprintf(file,"%s\n",image->comments);
       NumberColors(image,file);
       (void) fclose(file);
-      (void) sprintf(command,"@%s",filename);
+      FormatString(command,"@%s",filename);
       CommentImage(histogram_image,command);
       (void) remove(filename);
     }
@@ -2919,7 +2919,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
           /*
             Make montage background transparent.
           */
-          (void) sprintf(color,HexColorFormat,
+          FormatString(color,HexColorFormat,
             (unsigned int) image->pixels[0].red,
             (unsigned int) image->pixels[0].green,
             (unsigned int) image->pixels[0].blue);
@@ -3312,6 +3312,15 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   OpenImage(image_info,image,WriteBinaryType);
   if (image->file == (FILE *) NULL)
     PrematureExit(FileOpenWarning,"Unable to open file",image);
+  CondenseImage(image);
+  if (image->class == DirectClass)
+    {
+      if (image->packets >= ((3*image->columns*image->rows) >> 2))
+        image->compression=NoCompression;
+    }
+  else
+    if (image->packets >= ((image->columns*image->rows) >> 1))
+      image->compression=NoCompression;
   /*
     Initialize JPEG parameters.
   */
@@ -3351,11 +3360,12 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     jpeg_info.density_unit=1;
   if (image->units == PixelsPerCentimeterResolution)
     jpeg_info.density_unit=2;
-  for (i=0; i < MAX_COMPONENTS; i++)
-  {
-    jpeg_info.comp_info[i].h_samp_factor=1;
-    jpeg_info.comp_info[i].v_samp_factor=1;
-  }
+  if (image->compression != NoCompression)
+    for (i=0; i < MAX_COMPONENTS; i++)
+    {
+      jpeg_info.comp_info[i].h_samp_factor=1;
+      jpeg_info.comp_info[i].v_samp_factor=1;
+    }
   jpeg_set_quality(&jpeg_info,image_info->quality,True);
   jpeg_info.optimize_coding=True;
 #if (JPEG_LIB_VERSION >= 61)
@@ -5288,7 +5298,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 for (c=fgetc(image->ps_file); c != EOF; c=fgetc(image->ps_file))
                   (void) putc(c,file);
                 (void) fclose(file);
-                (void) sprintf(command,delegate_info.commands,image->filename,
+                FormatString(command,delegate_info.commands,image->filename,
                   filename);
                 status=SystemCommand(image_info->verbose,command);
                 (void) remove(filename);
@@ -5404,7 +5414,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     height=image->rows;
     x=0;
     y=text_size;
-    (void) sprintf(geometry,"%ux%u",image->columns,image->rows);
+    FormatString(geometry,"%ux%u",image->columns,image->rows);
     if (Latin1Compare(image_info->magick,"PDF") == 0)
       if (image_info->page != (char *) NULL)
         {
@@ -7113,7 +7123,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         char
           scene[MaxTextExtent];
 
-        (void) sprintf(scene,"%u",image->scene);
+        FormatString(scene,"%u",image->scene);
         PNGTextChunk(image_info,ping_info,"Scene",scene);
       }
     if (image->delay != 0)
@@ -7121,7 +7131,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         char
           delay[MaxTextExtent];
 
-        (void) sprintf(delay,"%u",image->delay);
+        FormatString(delay,"%u",image->delay);
         PNGTextChunk(image_info,ping_info,"Delay",delay);
       }
     if (image->label != (char *) NULL)
@@ -7768,8 +7778,8 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
     {
       case RotatePreview:
       {
-        (void) sprintf(factor,"%.1f",degrees+=45.0);
-        (void) sprintf(label,"rotate %s",factor);
+        FormatString(factor,"%.1f",degrees+=45.0);
+        FormatString(label,"rotate %s",factor);
         commands[argc++]="-rotate";
         commands[argc++]=factor;
         commands[argc++]="-crop";
@@ -7779,8 +7789,8 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       case ShearPreview:
       {
         degrees+=10.0;
-        (void) sprintf(factor,"%.1fx%.1f",degrees,2.0*degrees);
-        (void) sprintf(label,"shear %s",factor);
+        FormatString(factor,"%.1fx%.1f",degrees,2.0*degrees);
+        FormatString(label,"shear %s",factor);
         commands[argc++]="-shear";
         commands[argc++]=factor;
         commands[argc++]="-crop";
@@ -7791,40 +7801,40 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       {
         x+=preview_image->columns/NumberTiles;
         y+=preview_image->rows/NumberTiles;
-        (void) sprintf(factor,"%+d%+d",x,y);
-        (void) sprintf(label,"roll %s",factor);
+        FormatString(factor,"%+d%+d",x,y);
+        FormatString(label,"roll %s",factor);
         commands[argc++]="-roll";
         commands[argc++]=factor;
         break;
       }
       case HuePreview:
       {
-        (void) sprintf(factor,"0,0,%.1f",percentage);
-        (void) sprintf(label,"modulate %s",factor);
+        FormatString(factor,"0,0,%.1f",percentage);
+        FormatString(label,"modulate %s",factor);
         commands[argc++]="-modulate";
         commands[argc++]=factor;
         break;
       }
       case SaturationPreview:
       {
-        (void) sprintf(factor,"0,%.1f",percentage);
-        (void) sprintf(label,"modulate %s",factor);
+        FormatString(factor,"0,%.1f",percentage);
+        FormatString(label,"modulate %s",factor);
         commands[argc++]="-modulate";
         commands[argc++]=factor;
         break;
       }
       case BrightnessPreview:
       {
-        (void) sprintf(factor,"%.1f",percentage);
-        (void) sprintf(label,"modulate %s",factor);
+        FormatString(factor,"%.1f",percentage);
+        FormatString(label,"modulate %s",factor);
         commands[argc++]="-modulate";
         commands[argc++]=factor;
         break;
       }
       case GammaPreview:
       {
-        (void) sprintf(factor,"%.1f",gamma+=(float) 0.4);
-        (void) sprintf(label,"gamma %s",factor);
+        FormatString(factor,"%.1f",gamma+=(float) 0.4);
+        FormatString(label,"gamma %s",factor);
         commands[argc++]="-gamma";
         commands[argc++]=factor;
         break;
@@ -7833,21 +7843,21 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       {
         for (x=0; x < i; x++)
           commands[argc++]="-contrast";
-        (void) sprintf(label,"-contast %d",i+1);
+        FormatString(label,"-contast %d",i+1);
         break;
       }
       case DullPreview:
       {
         for (x=0; x < i; x++)
           commands[argc++]="+contrast";
-        (void) sprintf(label,"+contast %d",i+1);
+        FormatString(label,"+contast %d",i+1);
         break;
       }
       case GrayscalePreview:
       {
-        (void) sprintf(factor,"%u",colors);
+        FormatString(factor,"%u",colors);
         colors<<=1;
-        (void) sprintf(label,"colors %s",factor);
+        FormatString(label,"colors %s",factor);
         commands[argc++]="-colorspace";
         commands[argc++]="gray";
         commands[argc++]="-colors";
@@ -7856,8 +7866,8 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       }
       case QuantizePreview:
       {
-        (void) sprintf(factor,"%u",colors<<=1);
-        (void) sprintf(label,"colors %s",factor);
+        FormatString(factor,"%u",colors<<=1);
+        FormatString(label,"colors %s",factor);
         commands[argc++]="-colors";
         commands[argc++]=factor;
         break;
@@ -7866,14 +7876,14 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       {
         for (x=0; x < i; x++)
           commands[argc++]="-despeckle";
-        (void) sprintf(label,"despeckle %d",i+1);
+        FormatString(label,"despeckle %d",i+1);
         break;
       }
       case ReduceNoisePreview:
       {
         for (x=0; x < i; x++)
           commands[argc++]="-noise";
-        (void) sprintf(label,"noise %d",i+1);
+        FormatString(label,"noise %d",i+1);
         break;
       }
       case AddNoisePreview:
@@ -7889,55 +7899,55 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
           default: (void) strcpy(images[i]->magick,"NULL"); break;
         }
         x++;
-        (void) sprintf(label,"+noise %s",factor);
+        FormatString(label,"+noise %s",factor);
         commands[argc++]="+noise";
         commands[argc++]=factor;
         break;
       }
       case SharpenPreview:
       {
-        (void) sprintf(factor,"%.1f",percentage);
-        (void) sprintf(label,"sharpen %s",factor);
+        FormatString(factor,"%.1f",percentage);
+        FormatString(label,"sharpen %s",factor);
         commands[argc++]="-sharpen";
         commands[argc++]=factor;
         break;
       }
       case BlurPreview:
       {
-        (void) sprintf(factor,"%.1f",percentage);
-        (void) sprintf(label,"+sharpen %s",factor);
+        FormatString(factor,"%.1f",percentage);
+        FormatString(label,"+sharpen %s",factor);
         commands[argc++]="+sharpen";
         commands[argc++]=factor;
         break;
       }
       case ThresholdPreview:
       {
-        (void) sprintf(factor,"%d",(int) ((percentage*(MaxRGB+1))/100));
-        (void) sprintf(label,"threshold %s",factor);
+        FormatString(factor,"%d",(int) ((percentage*(MaxRGB+1))/100));
+        FormatString(label,"threshold %s",factor);
         commands[argc++]="-threshold";
         commands[argc++]=factor;
         break;
       }
       case EdgeDetectPreview:
       {
-        (void) sprintf(factor,"%.1f",percentage);
-        (void) sprintf(label,"edge %s",factor);
+        FormatString(factor,"%.1f",percentage);
+        FormatString(label,"edge %s",factor);
         commands[argc++]="-edge";
         commands[argc++]=factor;
         break;
       }
       case SpreadPreview:
       {
-        (void) sprintf(factor,"%d",i+1);
-        (void) sprintf(label,"spread %s",factor);
+        FormatString(factor,"%d",i+1);
+        FormatString(label,"spread %s",factor);
         commands[argc++]="-spread";
         commands[argc++]=factor;
         break;
       }
       case SolarizePreview:
       {
-        (void) sprintf(factor,"%.1f",percentage);
-        (void) sprintf(label,"solarize %s",factor);
+        FormatString(factor,"%.1f",percentage);
+        FormatString(label,"solarize %s",factor);
         commands[argc++]="-solarize";
         commands[argc++]=factor;
         break;
@@ -7951,40 +7961,40 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
             break;
           }
         degrees+=10.0;
-        (void) sprintf(factor,"%.1fx%.1f",degrees,degrees);
-        (void) sprintf(label,"shade %s",factor);
+        FormatString(factor,"%.1fx%.1f",degrees,degrees);
+        FormatString(label,"shade %s",factor);
         commands[argc++]="-shade";
         commands[argc++]=factor;
         break;
       }
       case RaisePreview:
       {
-        (void) sprintf(factor,"%d",i+1);
-        (void) sprintf(label,"raise %s",factor);
+        FormatString(factor,"%d",i+1);
+        FormatString(label,"raise %s",factor);
         commands[argc++]="-raise";
         commands[argc++]=factor;
         break;
       }
       case SegmentPreview:
       {
-        (void) sprintf(factor,"1.5x%.1f",threshold+=(float) 0.4);
-        (void) sprintf(label,"segment %s",factor);
+        FormatString(factor,"1.5x%.1f",threshold+=(float) 0.4);
+        FormatString(label,"segment %s",factor);
         commands[argc++]="-colors";
         commands[argc++]=factor;
         break;
       }
       case SwirlPreview:
       {
-        (void) sprintf(factor,"%.1f",degrees+=45.0);
-        (void) sprintf(label,"swirl %s",factor);
+        FormatString(factor,"%.1f",degrees+=45.0);
+        FormatString(label,"swirl %s",factor);
         commands[argc++]="-swirl";
         commands[argc++]=factor;
         break;
       }
       case ImplodePreview:
       {
-        (void) sprintf(factor,"%.1f",percentage);
-        (void) sprintf(label,"implode %s",factor);
+        FormatString(factor,"%.1f",percentage);
+        FormatString(label,"implode %s",factor);
         commands[argc++]="-implode";
         commands[argc++]=factor;
         break;
@@ -7992,24 +8002,24 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       case WavePreview:
       {
         degrees+=5.0;
-        (void) sprintf(factor,"%.1fx%.1f",degrees,degrees);
-        (void) sprintf(label,"wave %s",factor);
+        FormatString(factor,"%.1fx%.1f",degrees,degrees);
+        FormatString(label,"wave %s",factor);
         commands[argc++]="-implode";
         commands[argc++]=factor;
         break;
       }
       case OilPaintPreview:
       {
-        (void) sprintf(factor,"%i",i+1);
-        (void) sprintf(label,"paint %s",factor);
+        FormatString(factor,"%i",i+1);
+        FormatString(label,"paint %s",factor);
         commands[argc++]="-paint";
         commands[argc++]=factor;
         break;
       }
       case CharcoalDrawingPreview:
       {
-        (void) sprintf(factor,"%.1f",percentage);
-        (void) sprintf(label,"charcoal %s",factor);
+        FormatString(factor,"%.1f",percentage);
+        FormatString(label,"charcoal %s",factor);
         commands[argc++]="-charcoal";
         commands[argc++]=factor;
         break;
@@ -8018,7 +8028,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       default:
       {
         local_info.quality=(unsigned int) percentage+13.0;
-        (void) sprintf(factor,"%u",local_info.quality);
+        FormatString(factor,"%u",local_info.quality);
         TemporaryFilename(images[i]->filename);
         status=WriteJPEGImage(&local_info,images[i]);
         if (status != False)
@@ -8035,13 +8045,13 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
                 images[i]=quality_image;
               }
           }
-        (void) sprintf(label,"quality %s\n%ldb ",factor,images[i]->filesize);
+        FormatString(label,"quality %s\n%ldb ",factor,images[i]->filesize);
         if (images[i]->filesize >= (1 << 24))
-          (void) sprintf(label,"quality %s\n%ldmb ",factor,
+          FormatString(label,"quality %s\n%ldmb ",factor,
             images[i]->filesize/1024/1024);
         else
           if (images[i]->filesize >= (1 << 14))
-            (void) sprintf(label,"quality %s\n%ldkb ",factor,
+            FormatString(label,"quality %s\n%ldkb ",factor,
               images[i]->filesize/1024);
         break;
       }
@@ -8486,7 +8496,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 for (c=fgetc(image->ps_file); c != EOF; c=fgetc(image->ps_file))
                   (void) putc(c,file);
                 (void) fclose(file);
-                (void) sprintf(command,delegate_info.commands,image->filename,
+                FormatString(command,delegate_info.commands,image->filename,
                   filename);
                 status=SystemCommand(image_info->verbose,command);
                 (void) remove(filename);
@@ -12062,19 +12072,19 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
   /*
     Make a header.
   */
-  (void) sprintf(header,"LBLSIZE=            FORMAT='BYTE'  TYPE='IMAGE'");
-  (void) sprintf(header+Extent(header),"  BUFSIZE=20000  DIM=2  EOL=0");
-  (void) sprintf(header+Extent(header),
+  FormatString(header,"LBLSIZE=            FORMAT='BYTE'  TYPE='IMAGE'");
+  FormatString(header+Extent(header),"  BUFSIZE=20000  DIM=2  EOL=0");
+  FormatString(header+Extent(header),
     "  RECSIZE=%u  ORG='BSQ'  NL=%u  NS=%u  NB=1",image->columns,image->rows,
     image->columns);
-  (void) sprintf(header+Extent(header),
+  FormatString(header+Extent(header),
     "  N1=0  N2=0  N3=0  N4=0  NBB=0  NLB=0");
-  (void) sprintf(header+Extent(header),"  TASK='ImageMagick'");
+  FormatString(header+Extent(header),"  TASK='ImageMagick'");
   /*
     Compute the size of the label.
   */
   label_size=(Extent(header)+image->columns-1)/image->columns*image->columns;
-  (void) sprintf(label,"%d",label_size);
+  FormatString(label,"%d",label_size);
   for (i=0 ; i < Extent(label); i++)
     header[i+8]=label[i];
   /*
@@ -12606,9 +12616,9 @@ static unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
   p=image->filename+Extent(image->filename)-1;
   while ((p > image->filename) && (*(p-1) != *BasenameSeparator))
     p--;
-  (void) sprintf(window_info.name,"%s[%u]",p,image->scene);
+  FormatString(window_info.name,"%s[%u]",p,image->scene);
   if (image->scene == 0)
-    (void) sprintf(window_info.name,"%s",p);
+    FormatString(window_info.name,"%s",p);
   window_info.width=image->columns;
   window_info.height=image->rows;
   window_info.attributes.event_mask=ButtonPressMask | ExposureMask;
@@ -13020,7 +13030,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
       Define XPM color.
     */
     p=image->colormap+i;
-    (void) sprintf(name,HexColorFormat,(unsigned int) p->red,
+    FormatString(name,HexColorFormat,(unsigned int) p->red,
       (unsigned int) p->green,(unsigned int) p->blue);
     min_distance=3.0*65536.0*65536.0;
     for (q=XPMColorlist; q->name != (char *) NULL; q++)
@@ -13648,7 +13658,8 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
           break;
         }
       if ((Latin1Compare(image_info->magick,"JPG") == 0) ||
-          (Latin1Compare(image_info->magick,"JPEG") == 0))
+          (Latin1Compare(image_info->magick,"JPEG") == 0) ||
+          (Latin1Compare(image_info->magick,"JPEG24") == 0))
         {
           status=WriteJPEGImage(image_info,image);
           break;
@@ -13864,7 +13875,8 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
           break;
         }
       if ((Latin1Compare(image_info->magick,"TIF") == 0) ||
-          (Latin1Compare(image_info->magick,"TIFF") == 0))
+          (Latin1Compare(image_info->magick,"TIFF") == 0) ||
+          (Latin1Compare(image_info->magick,"TIFF24") == 0))
         {
           status=WriteTIFFImage(image_info,image);
           break;

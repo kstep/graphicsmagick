@@ -243,12 +243,12 @@ Export void NTErrorHandler(const char *message,const char *qualifier)
 
   if (message == (char *) NULL)
     Exit(0);
-  (void) sprintf(buffer,"%s: %s",SetClientName((char *) NULL),message);
+  FormatString(buffer,"%s: %s",SetClientName((char *) NULL),message);
   if (qualifier != (char *) NULL)
-    (void) sprintf(buffer,"%s (%s)",buffer,qualifier);
+    FormatString(buffer,"%s (%s)",buffer,qualifier);
   if (errno)
-    (void) sprintf(buffer,"%s [%s]",buffer,strerror(errno));
-  (void) sprintf(buffer,"%s.\n",buffer);
+    FormatString(buffer,"%s [%s]",buffer,strerror(errno));
+  FormatString(buffer,"%s.\n",buffer);
   (void) MessageBox(NULL,buffer,"ImageMagick Error",MB_OK | MB_TASKMODAL |
     MB_SETFOREGROUND | MB_ICONEXCLAMATION);
   Exit(0);
@@ -402,10 +402,10 @@ Export void NTWarningHandler(const char *message,const char *qualifier)
 
   if (message == (char *) NULL)
     return;
-  (void) sprintf(buffer,"%s: %s",SetClientName((char *) NULL),message);
+  FormatString(buffer,"%s: %s",SetClientName((char *) NULL),message);
   if (qualifier != (char *) NULL)
-    (void) sprintf(buffer,"%s (%s)",buffer,qualifier);
-  (void) sprintf(buffer,"%s.\n",buffer);
+    FormatString(buffer,"%s (%s)",buffer,qualifier);
+  FormatString(buffer,"%s.\n",buffer);
   (void) MessageBox(NULL,buffer,"ImageMagick Warning",MB_OK | MB_TASKMODAL |
     MB_SETFOREGROUND | MB_ICONINFORMATION);
 }

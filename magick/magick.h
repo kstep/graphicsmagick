@@ -21,6 +21,7 @@ extern "C" {
 */
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #if defined(_VISUALC_)
 #include <direct.h>
 #else

@@ -111,13 +111,6 @@ fig=>
 ftp=>
 	@WWWDecodeDelegate@ %m:%i > %o 2>&1
 
-# Gnuplot format (rendered as EPS)
-# Add additional gnuplot commands to the input file to adjust output.
-gplt=>
-	@EchoDelegate@ "set terminal postscript eps color solid; set output '%o'; load '%i'" > %u
-	@GnuplotDecodeDelegate@ %u
-	@RMDelegate@ -f %u
-
 gs-color=>
 	@PSDelegate@ -sDEVICE=@GSColorDevice@ -q -dNOPAUSE -dSAFER \
 	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s \

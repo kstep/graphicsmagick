@@ -1327,7 +1327,7 @@ int main(int argc,char **argv)
               (void) strcpy(p,format);
             else
               {
-                (void) sprintf(image_info.filename,"%s:%s",format,
+                FormatString(image_info.filename,"%s:%s",format,
                   image->filename);
                 (void) strcpy(image->filename,image_info.filename);
               }

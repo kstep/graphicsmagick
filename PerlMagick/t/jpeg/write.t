@@ -20,7 +20,7 @@ chdir 't/jpeg' || die 'Cd failed';
 testReadWrite( 'input.jpg',
 	       'output_tmp.jpg',
 	       q/quality=>80, interlace=>'None'/,
-	       'b0473fc1f82228368d9bd9522c33af1b' );
+	       'f6288189c96505670be06ed9f4ec708a' );
 
 #
 # 2) Test with plane-interlaced image
@@ -28,6 +28,6 @@ testReadWrite( 'input.jpg',
 ++$test;
 testReadWrite( 'input_plane.jpg', 'output_plane_tmp.jpg',
 	       q/quality=>80, interlace=>'Plane'/,
-	       'b0473fc1f82228368d9bd9522c33af1b' );
+	       'f6288189c96505670be06ed9f4ec708a' );
 
 

@@ -5,7 +5,7 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     'NAME'	=> 'Image::Magick',
     'VERSION_FROM' => 'Magick.pm', # finds $VERSION
-    'LIBS'	=> ['-L/usr/local/bin -L/usr/openwin/lib -R/usr/openwin/lib -L/lib -L/usr/local/lib -lMagick  -lX11 -lsocket -lnsl -lXext -lXt -ldpstk -ldps -lm'],
+    'LIBS'	=> ['-L/usr/local/bin -L/usr/openwin/lib -R/usr/openwin/lib -L/pathos/home/cristy/Archive/ImageMagick/ImageMagick/magick -lMagick  -lX11 -lsocket -lnsl -lXext -lXt -ldpstk -ldps -lm'],
     'DEFINE'	=> '',     # e.g., '-DHAVE_SOMETHING' 
     'INC'	=> '-I../magick -I/usr/local/include/magick -I/usr/openwin/include -I/usr/openwin/include/X11',
 );

@@ -424,7 +424,7 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
     /*
       Set alias color to pixel color at annotation location.
     */
-    (void) sprintf(annotate_info->image_info->filename,"label:%s",textlist[i]);
+    FormatString(annotate_info->image_info->filename,"label:%s",textlist[i]);
     annotate_image=ReadImage(annotate_info->image_info);
     if (annotate_info->alignment == CenterAlignment)
       for (j=(Extent(textlist[i])-1) >> 1; j >= 0; j--)
@@ -437,7 +437,7 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
         (void) strcpy(text,textlist[i]);
         (void) strcpy(text+j,"...");
         (void) strcat(text,textlist[i]+Extent(textlist[i])-j-1);
-        (void) sprintf(annotate_info->image_info->filename,"label:%s",text);
+        FormatString(annotate_info->image_info->filename,"label:%s",text);
         annotate_image=ReadImage(annotate_info->image_info);
       }
     if (annotate_image == (Image *) NULL)
@@ -474,8 +474,8 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
         */
         local_info=(*annotate_info->image_info);
         local_info.size=size;
-        (void) sprintf(local_info.filename,"xc:%s",local_info.box);
-        (void) sprintf(local_info.size,"%ux%u",annotate_image->columns,
+        FormatString(local_info.filename,"xc:%s",local_info.box);
+        FormatString(local_info.size,"%ux%u",annotate_image->columns,
           annotate_image->rows);
         box_image=ReadImage(&local_info);
         if (box_image != (Image *) NULL)
@@ -530,9 +530,12 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
 */
 Export Image *AppendImages(Image *images,unsigned int stack)
 {
+#define AppendImageText  "  Appending image sequence...  "
+
   Image
     *appended_image,
-    *next_image;
+    *image;
+
 
   register int
     i;
@@ -544,6 +547,7 @@ Export Image *AppendImages(Image *images,unsigned int stack)
   unsigned int
     height,
     max_packets,
+    scene,
     width;
 
   /*
@@ -556,26 +560,22 @@ Export Image *AppendImages(Image *images,unsigned int stack)
         "image sequence required");
       return((Image *) NULL);
     }
-  for (next_image=images->next; next_image != (Image *) NULL; )
-  {
-    if ((next_image->columns != images->columns) &&
-        (next_image->rows != images->rows))
+  for (image=images->next; image != (Image *) NULL; image=image->next)
+    if ((image->columns != images->columns) &&
+        (image->rows != images->rows))
       {
         MagickWarning(OptionWarning,"Unable to append image",
           "image widths or heights differ");
         return((Image *) NULL);
       }
-    next_image=next_image->next;
-  }
   width=images->columns;
   height=images->rows;
   max_packets=images->packets;
-  for (next_image=images->next; next_image != (Image *) NULL; )
+  for (image=images->next; image != (Image *) NULL; image=image->next)
   {
-    width+=next_image->columns;
-    height+=next_image->rows;
-    max_packets+=next_image->packets;
-    next_image=next_image->next;
+    width+=image->columns;
+    height+=image->rows;
+    max_packets+=image->packets;
   }
   /*
     Initialize append image attributes.
@@ -592,8 +592,13 @@ Export Image *AppendImages(Image *images,unsigned int stack)
         "Memory allocation failed");
       return((Image *) NULL);
     }
+  scene=0;
+  SetNumberScenes(images);
   if ((images->columns != images->next->columns) || !stack)
     {
+      MonitorHandler
+        handler;
+
       register int
         x;
 
@@ -601,13 +606,16 @@ Export Image *AppendImages(Image *images,unsigned int stack)
         Stack left-to-right.
       */
       x=0;
-      for (next_image=images; next_image != (Image *) NULL; )
+      for (image=images; image != (Image *) NULL; image=image->next)
       {
-        if (next_image->class == DirectClass)
+        if (image->class == DirectClass)
           appended_image->class=DirectClass;
-        CompositeImage(appended_image,ReplaceCompositeOp,next_image,x,0);
-        x+=next_image->columns;
-        next_image=next_image->next;
+        handler=SetMonitorHandler((MonitorHandler) NULL);
+        CompositeImage(appended_image,ReplaceCompositeOp,image,x,0);
+        (void) SetMonitorHandler(handler);
+        x+=image->columns;
+        ProgressMonitor(AppendImageText,scene,images->number_scenes);
+        scene++;
       }
     }
   else
@@ -627,18 +635,19 @@ Export Image *AppendImages(Image *images,unsigned int stack)
           return((Image *) NULL);
         }
       q=appended_image->pixels;
-      for (next_image=images; next_image != (Image *) NULL; )
+      for (image=images; image != (Image *) NULL; image=image->next)
       {
-        if (next_image->class == DirectClass)
+        if (image->class == DirectClass)
           appended_image->class=DirectClass;
-        p=next_image->pixels;
-        for (i=0; i < next_image->packets; i++)
+        p=image->pixels;
+        for (i=0; i < image->packets; i++)
         {
           *q=(*p);
           p++;
           q++;
         }
-        next_image=next_image->next;
+        ProgressMonitor(AppendImageText,scene,images->number_scenes);
+        scene++;
       }
     }
   if (appended_image->class == PseudoClass)
@@ -650,17 +659,16 @@ Export Image *AppendImages(Image *images,unsigned int stack)
         Determine if the sequence of images has the identical colormap.
       */
       global_colormap=True;
-      next_image=images;
-      for ( ; next_image != (Image *) NULL; next_image=next_image->next)
+      for (image=images; image != (Image *) NULL; image=image->next)
       {
-        if ((next_image->class == DirectClass) ||
-            (next_image->colors != images->colors))
+        if ((image->class == DirectClass) ||
+            (image->colors != images->colors))
           {
             global_colormap=False;
             break;
           }
         for (i=0; i < images->colors; i++)
-          if (!ColorMatch(next_image->colormap[i],images->colormap[i],0))
+          if (!ColorMatch(image->colormap[i],images->colormap[i],0))
             {
               global_colormap=False;
               break;
@@ -687,9 +695,12 @@ Export Image *AppendImages(Image *images,unsigned int stack)
 %
 %  The format of the AverageImage routine is:
 %
-%      AverageImages(images)
+%      averaged_image=AverageImages(images)
 %
 %  A description of each parameter follows:
+%
+%    o averaged_image: Method AverageImages returns the mean pixel value
+%      for an image sequence.
 %
 %    o images: The address of a structure of type Image;  returned from
 %      ReadImage.
@@ -698,41 +709,48 @@ Export Image *AppendImages(Image *images,unsigned int stack)
 */
 Export Image *AverageImages(Image *images)
 {
+#define AverageImageText  "  Average image sequence...  "
+
   Image
     *averaged_image,
-    *next_image;
+    *image;
 
   long
     blue,
     green,
-    red;
-
-  unsigned short
+    red,
     index;
 
   register int
     i;
 
+  register long
+    count;
+
   register RunlengthPacket
     *q;
 
+  assert(images != (Image *) NULL);
+  if (images->next == (Image *) NULL)
+    {
+      MagickWarning(OptionWarning,"Unable to average image",
+        "image sequence required");
+      return((Image *) NULL);
+    }
   /*
     Ensure the images are uncompressed.
   */
-  assert(images != (Image *) NULL);
-  next_image=images;
-  while (next_image != (Image *) NULL)
+  for (image=images; image != (Image *) NULL; image=image->next)
   {
-    if ((next_image->columns != images->columns) ||
-        (next_image->rows != images->rows))
+    if ((image->columns != images->columns) ||
+        (image->rows != images->rows))
       {
         MagickWarning(OptionWarning,"Unable to average image",
           "images are not the same size");
         return((Image *) NULL);
       }
-    if (!UncondenseImage(next_image))
+    if (!UncondenseImage(image))
       return((Image *) NULL);
-    next_image=next_image->next;
   }
   /*
     Initialize average image attributes.
@@ -754,24 +772,26 @@ Export Image *AverageImages(Image *images)
     green=0;
     blue=0;
     index=0;
-    next_image=images;
-    while (next_image != (Image *) NULL)
+    count=0;
+    for (image=images; image != (Image *) NULL; image=image->next)
     {
-      if (i < next_image->packets)
+      if (i < image->packets)
         {
-          red+=next_image->pixels[i].red;
-          green+=next_image->pixels[i].green;
-          blue+=next_image->pixels[i].blue;
-          index++;
+          red+=image->pixels[i].red;
+          green+=image->pixels[i].green;
+          blue+=image->pixels[i].blue;
+          index+=image->pixels[i].index;
+          count++;
         }
-      next_image=next_image->next;
     }
-    q->red=(Quantum) ((red+(long) (index >> 1))/(long) index);
-    q->green=(Quantum) ((green+(long) (index >> 1))/(long) index);
-    q->blue=(Quantum) ((blue+(long) (index >> 1))/(long) index);
-    q->index=0;
+    q->red=(Quantum) ((red+(long) (count >> 1))/(long) count);
+    q->green=(Quantum) ((green+(long) (count >> 1))/(long) count);
+    q->blue=(Quantum) ((blue+(long) (count >> 1))/(long) count);
+    q->blue=(unsigned short) ((index+(long) (count >> 1))/(long) count);
     q->length=0;
     q++;
+    if (QuantumTick(i,averaged_image->packets))
+      ProgressMonitor(AverageImageText,i,averaged_image->packets);
   }
   return(averaged_image);
 }
@@ -4924,7 +4944,8 @@ Export unsigned int IsSubimage(char *geometry,unsigned int pedantic)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method IsTainted returns True if the image has been altered since it
-%  was first read.
+%  was first read or if any image in the sequence has a difference magic or
+%  filename.
 %
 %  The format of the IsTainted routine is:
 %
@@ -4942,14 +4963,22 @@ Export unsigned int IsSubimage(char *geometry,unsigned int pedantic)
 Export unsigned int IsTainted(Image *image)
 {
   char
+    magick[MaxTextExtent],
+    filename[MaxTextExtent],
     signature[MaxTextExtent];
 
   register Image
     *p;
 
   assert(image != (Image *) NULL);
+  (void) strcpy(magick,image->magick);
+  (void) strcpy(filename,image->filename);
   for (p=image; p != (Image *) NULL; p=p->next)
   {
+    if (Latin1Compare(p->magick,magick) != 0)
+      return(True);
+    if (Latin1Compare(p->filename,filename) != 0)
+      return(True);
     if (p->signature == (char *) NULL)
       return(True);
     (void) strcpy(signature,p->signature);
@@ -6953,6 +6982,169 @@ Export void MogrifyImages(ImageInfo *image_info,int argc,char **argv,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%     M o r p h I m a g e s                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MorphImages morphs a set of images.  both the image pixels and size
+%  are linearly interpolated to give the appearance of a meta-morphosis from
+%  one image to the next.
+%
+%  The format of the MorphImage routine is:
+%
+%      morphed_image=MorphImages(images,number_frames)
+%
+%  A description of each parameter follows:
+%
+%    o morphed_image: Method MorphImages returns an image sequence that
+%      has linearly interpolated pixels and size between two input images.
+%
+%    o images: The address of a structure of type Image;  returned from
+%      ReadImage.
+%
+%    o number_frames:  This unsigned integer reflects the number of in-between
+%      images to generate.  The more in-between frames, the smoother
+%      the morph.
+%
+%
+*/
+Export Image *MorphImages(Image *images,unsigned int number_frames)
+{
+#define MorphImageText  "  Morphing image sequence...  "
+
+  double
+    alpha,
+    beta;
+
+  Image
+    *image,
+    *morphed_image,
+    *morphed_images;
+
+  MonitorHandler
+    handler;
+
+  register int
+    i,
+    j;
+
+  register RunlengthPacket
+    *p,
+    *q;
+
+  unsigned int
+    scene;
+
+  assert(images != (Image *) NULL);
+  if (images->next == (Image *) NULL)
+    {
+      MagickWarning(OptionWarning,"Unable to morph image",
+        "image sequence required");
+      return((Image *) NULL);
+    }
+  /*
+    Clone first frame in sequence.
+  */
+  images->orphan=True;
+  morphed_images=CloneImage(images,images->columns,images->rows,True);
+  images->orphan=False;
+  if (morphed_images == (Image *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to morph image seqeunce",
+        "Memory allocation failed");
+      return((Image *) NULL);
+    }
+  /*
+    Morph image.
+  */
+  scene=0;
+  SetNumberScenes(images);
+  for (image=images; image->next != (Image *) NULL; image=image->next)
+  {
+    handler=SetMonitorHandler((MonitorHandler) NULL);
+    for (i=0; i < number_frames; i++)
+    {
+      beta=(double) (i+1.0)/(number_frames+1.0);
+      alpha=1.0-beta;
+      image->orphan=True;
+      morphed_images->next=ZoomImage(image,
+        (unsigned int) (alpha*image->columns+beta*image->next->columns+0.5),
+        (unsigned int) (alpha*image->rows+beta*image->next->rows+0.5));
+      image->orphan=False;
+      if (morphed_images->next == (Image *) NULL)
+        {
+          MagickWarning(ResourceLimitWarning,"Unable to morph image seqeunce",
+            "Memory allocation failed");
+          break;
+        }
+      morphed_images->next->previous=morphed_images;
+      morphed_images=morphed_images->next;
+      image->next->orphan=True;
+      morphed_image=ZoomImage(image->next,morphed_images->columns,
+        morphed_images->rows);
+      image->next->orphan=False;
+      if (morphed_image == (Image *) NULL)
+        {
+          MagickWarning(ResourceLimitWarning,"Unable to morph image seqeunce",
+            "Memory allocation failed");
+          break;
+        }
+      if (!UncondenseImage(morphed_images) || !UncondenseImage(morphed_image))
+        {
+          MagickWarning(ResourceLimitWarning,"Unable to morph image seqeunce",
+            "Memory allocation failed");
+          break;
+        }
+      morphed_images->class=DirectClass;
+      p=morphed_image->pixels;
+      q=morphed_images->pixels;
+      for (j=0; j < morphed_images->packets; j++)
+      {
+        q->red=(Quantum) (alpha*q->red+beta*p->red+0.5);
+        q->green=(Quantum) (alpha*q->green+beta*p->green+0.5);
+        q->blue=(Quantum) (alpha*q->blue+beta*p->blue+0.5);
+        q->index=(unsigned short) (alpha*q->index+beta*p->index+0.5);
+        p++;
+        q++;
+      }
+      DestroyImage(morphed_image);
+      CondenseImage(morphed_images);
+    }
+    /*
+      Clone last frame in sequence.
+    */
+    image->next->orphan=True;
+    morphed_images->next=
+      CloneImage(image->next,image->next->columns,image->next->rows,True);
+    image->next->orphan=False;
+    if (morphed_images->next == (Image *) NULL)
+      {
+        MagickWarning(ResourceLimitWarning,"Unable to morph image seqeunce",
+          "Memory allocation failed");
+        break;
+      }
+    morphed_images->next->previous=morphed_images;
+    morphed_images=morphed_images->next;
+    (void) SetMonitorHandler(handler);
+    ProgressMonitor(MorphImageText,scene,images->number_scenes);
+    scene++;
+  }
+  while (morphed_images->previous != (Image *) NULL)
+    morphed_images=morphed_images->previous;
+  if (image->next != (Image *) NULL)
+    {
+      DestroyImages(morphed_images);
+      return((Image *) NULL);
+    }
+  return(morphed_images);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
 %     N e g a t e I m a g e                                                   %
 %                                                                             %
 %                                                                             %
@@ -7435,14 +7627,14 @@ Export void OpenImage(const ImageInfo *image_info,Image *image,const char *type)
             /*
               Form filename for multi-part images.
             */
-            (void) sprintf(filename,image->filename,image->scene);
+            FormatString(filename,image->filename,image->scene);
             if (!image_info->adjoin)
               if ((image->previous != (Image *) NULL) ||
                   (image->next != (Image *) NULL))
                 {
                   if ((Latin1Compare(filename,image->filename) == 0) ||
                       (strchr(filename,'%') != (char *) NULL))
-                    (void) sprintf(filename,"%s.%u",filename,image->scene);
+                    FormatString(filename,"%s.%u",filename,image->scene);
                   if (image->next != (Image *) NULL)
                     (void) strcpy(image->next->magick,image->magick);
                 }
@@ -8064,8 +8256,8 @@ Export void RGBTransformImage(Image *image,const unsigned int colorspace)
         Initialize YIQ tables:
 
           Y = 0.29900*R+0.58700*G+0.11400*B
-          I = 0.50000*R-0.23000*G-0.27000*B
-          Q = 0.20200*R-0.50000*G+0.29800*B
+          I = 0.59600*R-0.27400*G-0.32200*B
+          Q = 0.21100*R-0.52300*G+0.31200*B
 
         I and Q, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
@@ -8077,12 +8269,12 @@ Export void RGBTransformImage(Image *image,const unsigned int colorspace)
         x[i+X]=UpShifted(0.29900)*i;
         y[i+X]=UpShifted(0.58700)*i;
         z[i+X]=UpShifted(0.11400)*i;
-        x[i+Y]=UpShifted(0.50000)*i;
-        y[i+Y]=(-UpShifted(0.23000))*i;
-        z[i+Y]=(-UpShifted(0.27000))*i;
-        x[i+Z]=UpShifted(0.20200)*i;
-        y[i+Z]=(-UpShifted(0.50000))*i;
-        z[i+Z]=UpShifted(0.29800)*i;
+        x[i+Y]=UpShifted(0.59600)*i;
+        y[i+Y]=(-UpShifted(0.27400))*i;
+        z[i+Y]=(-UpShifted(0.32200))*i;
+        x[i+Z]=UpShifted(0.21100)*i;
+        y[i+Z]=(-UpShifted(0.52300))*i;
+        z[i+Z]=UpShifted(0.31200)*i;
       }
       break;
     }
@@ -9073,10 +9265,10 @@ Export void SetImageInfo(ImageInfo *image_info,unsigned int rectify)
           (void) strcpy(image_info->filename,p);
           if (Latin1Compare(magick,"IMPLICIT") != 0)
             (void) strcpy(image_info->magick,magick);
+          if ((Latin1Compare(magick,"IMPLICIT") != 0) &&
+              (Latin1Compare(magick,"TMP") != 0))
+            image_info->affirm=True;
         }
-      if ((Latin1Compare(magick,"IMPLICIT") != 0) &&
-          (Latin1Compare(magick,"TMP") != 0))
-        image_info->affirm=True;
     }
   if (rectify)
     {
@@ -9086,7 +9278,7 @@ Export void SetImageInfo(ImageInfo *image_info,unsigned int rectify)
       /*
         Rectify multi-image file support.
       */
-      (void) sprintf(filename,image_info->filename,0);
+      FormatString(filename,image_info->filename,0);
       if ((Latin1Compare(filename,image_info->filename) != 0) &&
           (strchr(filename,'%') == (char *) NULL))
         image_info->adjoin=False;
@@ -10152,24 +10344,24 @@ Export void TransformRGBImage(Image *image,const unsigned int colorspace)
       /*
         Initialize YIQ tables:
 
-          R = 0.97087*Y+1.17782*I+0.59800*Q
-          G = 0.97087*Y-0.28626*I-0.72851*Q
-          B = 0.97087*Y-1.27870*I+1.72801*Q
+          R = Y+0.95620*I+0.62140*Q
+          G = Y-0.27270*I-0.64680*Q
+          B = Y-1.10370*I+1.70060*Q
 
         I and Q, normally -0.5 through 0.5, must be normalized to the range 0
         through MaxRGB.
       */
       for (i=0; i <= MaxRGB; i++)
       {
-        red[i+R]=UpShifted(0.97087)*i;
-        green[i+R]=UpShifted(1.17782*0.5)*((i << 1)-MaxRGB);
-        blue[i+R]=UpShifted(0.59800*0.5)*((i << 1)-MaxRGB);
-        red[i+G]=UpShifted(0.97087)*i;
-        green[i+G]=(-UpShifted(0.28626*0.5))*((i << 1)-MaxRGB);
-        blue[i+G]=(-UpShifted(0.72851*0.5))*((i << 1)-MaxRGB);
-        red[i+B]=UpShifted(0.97087)*i;
-        green[i+B]=(-UpShifted(1.27870*0.5))*((i << 1)-MaxRGB);
-        blue[i+B]=UpShifted(1.72801*0.5)*((i << 1)-MaxRGB);
+        red[i+R]=UpShifted(1.00000)*i;
+        green[i+R]=UpShifted(0.95620*0.5)*((i << 1)-MaxRGB);
+        blue[i+R]=UpShifted(0.62140*0.5)*((i << 1)-MaxRGB);
+        red[i+G]=UpShifted(1.00000)*i;
+        green[i+G]=(-UpShifted(0.27270*0.5))*((i << 1)-MaxRGB);
+        blue[i+G]=(-UpShifted(0.64680*0.5))*((i << 1)-MaxRGB);
+        red[i+B]=UpShifted(1.00000)*i;
+        green[i+B]=(-UpShifted(1.10370*0.5))*((i << 1)-MaxRGB);
+        blue[i+B]=UpShifted(1.70060*0.5)*((i << 1)-MaxRGB);
       }
       break;
     }

@@ -26,7 +26,9 @@
 		<LI><A HREF="#MacGSQuitApplication">MacGSQuitApplication</A>
 		<LI><A HREF="#MacGSSetWorkingFolder">MacGSSetWorkingFolder</A>
 		<LI><A HREF="#MACSystemCommand">MACSystemCommand</A>
+		<LI><A HREF="#MACWarningHandler">MACWarningHandler</A>
 		<LI><A HREF="#opendir">opendir</A>
+		<LI><A HREF="#ProcessPendingEventsi">ProcessPendingEventsi</A>
 		<LI><A HREF="#readdir">readdir</A>
 		<LI><A HREF="#ReadPICTImage">ReadPICTImage</A>
 		<LI><A HREF="#SearchForFile">SearchForFile</A>
@@ -247,6 +249,15 @@ This string is the command to execute.
 </DL></DL>
 <P>
 <HR>
+<H2><A NAME="MACWarningHandler">MACWarningHandler</A></H2>
+<P>
+Method MACWarningHandler displays a warning message.
+
+<P>
+The format of the MACWarningHandler routine is:
+
+<P>
+<HR>
 <H2><A NAME="opendir">opendir</A></H2>
 <P>
 Method opendir opens the directory named by filename and associates a
@@ -265,6 +276,28 @@ A description of each parameter follows:
 <DT><STRONG>entry:</STRONG><DD>
 <P>
 Specifies a pointer to a DIR structure.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ProcessPendingEventsi">ProcessPendingEventsi</A></H2>
+<P>
+Method ProcessPendingEvents processes any pending events. This prevents
+ImageMagick from monopolizing the processor.
+
+<P>
+The format of the ProcessPendingEvents routine is:
+
+<P>
+<PRE>    ProcessPendingEvents(text)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>text:</STRONG><DD>
+<P>
+A character string representing the current process.
 
 </DL></DL>
 <P>

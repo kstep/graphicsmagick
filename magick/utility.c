@@ -97,7 +97,7 @@ Export void AppendImageFormat(const char *format,char *filename)
     return;
   if (Latin1Compare(filename,"-") == 0)
     {
-      (void) sprintf(staging,"%s:%s",format,filename);
+      FormatString(staging,"%s:%s",format,filename);
       (void) strcpy(filename,staging);
       return;
     }
@@ -528,7 +528,7 @@ Export unsigned int ExpandFilenames(int *argc,char ***argv)
           FreeMemory((char *) filelist);
           return(False);
         }
-      (void) sprintf(vector[count],"%.*s%s",(int) (p-option),option,
+      FormatString(vector[count],"%.*s%s",(int) (p-option),option,
         filelist[j]);
       FreeMemory((char *) filelist[j]);
       count++;
@@ -544,6 +544,47 @@ Export unsigned int ExpandFilenames(int *argc,char ***argv)
   *argc=count;
   *argv=vector;
   return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  F o r m a t S t r i n g                                                    %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method FormatString prints formatted output of a variable argument list.
+%
+%  The format of the FormatString routine is:
+%
+%       FormatString(string,format,...)
+%
+%  A description of each parameter follows.
+%
+%   o  string:  Method FormatString returns the formatted string in this
+%      character buffer.
+%
+%   o  format:  A string describing the format to use to write the remaining
+%      arguments.
+%
+%
+*/
+Export void FormatString(char *string,const char *format,...)
+{
+  va_list
+    operands;
+
+  va_start(operands,format);
+#if !defined(HAVE_VSNPRINTF)
+  (void) vsprintf(string,format,operands);
+#else
+  (void) vsnprintf(string,MaxTextExtent,format,operands);
+  va_end(operands);
+#endif
 }
 
 /*
@@ -2195,11 +2236,11 @@ Export char **StringToList(char *text)
               "Memory allocation failed");
             return((char **) NULL);
           }
-        (void) sprintf(textlist[i],"0x%08x: ",(unsigned int) (i*0x14));
+        FormatString(textlist[i],"0x%08x: ",(unsigned int) (i*0x14));
         q=textlist[i]+Extent(textlist[i]);
         for (j=1; j <= Min(Extent(p),0x14); j++)
         {
-          (void) sprintf(hex_string,"%02x",(unsigned int) (*(p+j)));
+          FormatString(hex_string,"%02x",(unsigned int) (*(p+j)));
           (void) strcpy(q,hex_string);
           q+=2;
           if ((j % 0x04) == 0)
@@ -2534,12 +2575,12 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,char *text)
         if (image == (Image *) NULL)
           break;
         if (image->filesize >= (1 << 24))
-          (void) sprintf(q,"%ldmb",image->filesize/1024/1024);
+          FormatString(q,"%ldmb",image->filesize/1024/1024);
         else
           if (image->filesize >= (1 << 14))
-            (void) sprintf(q,"%ldkb",image->filesize/1024);
+            FormatString(q,"%ldkb",image->filesize/1024);
           else
-            (void) sprintf(q,"%ldb",image->filesize);
+            FormatString(q,"%ldb",image->filesize);
         q=translated_text+Extent(translated_text);
         break;
       }
@@ -2606,7 +2647,7 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,char *text)
       {
         if (image_info == (ImageInfo *) NULL)
           break;
-        (void) sprintf(q,"0x%lx",image_info->group);
+        FormatString(q,"0x%lx",image_info->group);
         q=translated_text+Extent(translated_text);
         break;
       }
@@ -2614,7 +2655,7 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,char *text)
       {
         if (image == (Image *) NULL)
           break;
-        (void) sprintf(q,"%u",image->magick_rows);
+        FormatString(q,"%u",image->magick_rows);
         q=translated_text+Extent(translated_text);
         break;
       }
@@ -2671,7 +2712,7 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,char *text)
         p=image;
         for (page=1; p->previous != (Image *) NULL; page++)
           p=p->previous;
-        (void) sprintf(q,"%u",page);
+        FormatString(q,"%u",page);
         q=translated_text+Extent(translated_text);
         break;
       }
@@ -2679,7 +2720,7 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,char *text)
       {
         if (image == (Image *) NULL)
           break;
-        (void) sprintf(q,"%u",image->scene);
+        FormatString(q,"%u",image->scene);
         q=translated_text+Extent(translated_text);
         break;
       }
@@ -2695,7 +2736,7 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,char *text)
       {
         if (image == (Image *) NULL)
           break;
-        (void) sprintf(q,"%u",image->magick_columns);
+        FormatString(q,"%u",image->magick_columns);
         q=translated_text+Extent(translated_text);
         break;
       }
@@ -2703,7 +2744,7 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,char *text)
       {
         if (image == (Image *) NULL)
           break;
-        (void) sprintf(q,"%u",(unsigned int) image->x_resolution);
+        FormatString(q,"%u",(unsigned int) image->x_resolution);
         q=translated_text+Extent(translated_text);
         break;
       }
@@ -2711,7 +2752,7 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,char *text)
       {
         if (image == (Image *) NULL)
           break;
-        (void) sprintf(q,"%u",(unsigned int) image->y_resolution);
+        FormatString(q,"%u",(unsigned int) image->y_resolution);
         q=translated_text+Extent(translated_text);
         break;
       }

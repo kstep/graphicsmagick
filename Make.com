@@ -176,6 +176,7 @@ $
 $combine:==$'f$environment("default")'combine
 $write sys$output "..symbol COMBINE defined."
 $SkipCombine:
+copy [.delegates]vms.mgk sys$login:delegates.mgk
 $type sys$input
 
 Use this command to specify which X server to contact:

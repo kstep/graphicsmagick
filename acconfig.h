@@ -23,6 +23,12 @@
 /* Define to `unsigned' if <sys/types.h> doesn't define.  */
 #undef size_t
 
+/* Define if you have the snprintf function.  */
+#undef HAVE_SNPRINTF
+
+/* Define if you have the vsnprintf function.  */
+#undef HAVE_VSNPRINTF
+
 /* Define if you have the ANSI C header files.  */
 #undef STDC_HEADERS
 
@@ -40,7 +46,6 @@
 
 /* Package version */
 #undef VERSION
-
 
 /* Include patented LZW compression */
 #undef HasLZW

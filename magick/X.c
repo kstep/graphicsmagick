@@ -444,7 +444,7 @@ Export unsigned int XAnnotateImage(Display *display,
       /*
         Scale image.
       */
-      (void) sprintf(image_geometry,"%ux%u",width,height);
+      FormatString(image_geometry,"%ux%u",width,height);
       TransformImage(&annotate_image,(char *) NULL,image_geometry);
     }
   if (annotate_info->degrees != 0.0)
@@ -1108,7 +1108,7 @@ Export XVisualInfo *XBestVisualInfo(Display *display,
           /*
             User specified Standard Colormap.
           */
-          (void) sprintf((char *) map_name,"RGB_%s_MAP",map_type);
+          FormatString((char *) map_name,"RGB_%s_MAP",map_type);
           Latin1Upper(map_name);
           map_property=XInternAtom(display,(char *) map_name,True);
           if (map_property != (Atom) NULL)
@@ -1706,28 +1706,28 @@ Export void XDisplayImageInfo(Display *display,
   /*
     Display info about the X server.
   */
-  (void) sprintf(title," Image Info: %s",image->filename);
+  FormatString(title," Image Info: %s",image->filename);
   if (resource_info->gamma_correct)
     if (resource_info->display_gamma != (char *) NULL)
-      (void) sprintf(text,"%sDisplay\n  gamma: %s\n\n",text,
+      FormatString(text,"%sDisplay\n  gamma: %s\n\n",text,
         resource_info->display_gamma);
   /*
     Display info about the X image.
   */
-  (void) sprintf(text,"%sX\n  visual: %s\n",text,
+  FormatString(text,"%sX\n  visual: %s\n",text,
     XVisualClassName(windows->image.class));
-  (void) sprintf(text,"%s  depth: %d\n",text,windows->image.ximage->depth);
+  FormatString(text,"%s  depth: %d\n",text,windows->image.ximage->depth);
   if (windows->visual_info->colormap_size != 0)
-    (void) sprintf(text,"%s  colormap size: %d\n",text,
+    FormatString(text,"%s  colormap size: %d\n",text,
       windows->visual_info->colormap_size);
   if (resource_info->colormap== SharedColormap)
     (void) strcat(text,"  colormap type: Shared\n");
   else
     (void) strcat(text,"  colormap type: Private\n");
-  (void) sprintf(text,"%s  geometry: %dx%d\n",text,
+  FormatString(text,"%s  geometry: %dx%d\n",text,
     windows->image.ximage->width,windows->image.ximage->height);
   if (windows->image.crop_geometry != (char *) NULL)
-    (void) sprintf(text,"%s  crop geometry: %s\n",text,
+    FormatString(text,"%s  crop geometry: %s\n",text,
       windows->image.crop_geometry);
   if (windows->image.pixmap == (Pixmap) NULL)
     (void) strcat(text,"  type: X Image\n");
@@ -1751,13 +1751,13 @@ Export void XDisplayImageInfo(Display *display,
     bytes+=undo_image->list->packets*sizeof(RunlengthPacket);
     undo_image=undo_image->previous;
   }
-  (void) sprintf(text,"%sUndo Edit Cache\n  levels: %u\n",text,levels);
-  (void) sprintf(text,"%s  bytes: %umb\n",text,(bytes+(1 << 19)) >> 20);
-  (void) sprintf(text,"%s  limit: %umb\n\n",text,resource_info->undo_cache);
+  FormatString(text,"%sUndo Edit Cache\n  levels: %u\n",text,levels);
+  FormatString(text,"%s  bytes: %umb\n",text,(bytes+(1 << 19)) >> 20);
+  FormatString(text,"%s  limit: %umb\n\n",text,resource_info->undo_cache);
   /*
     Display info about the image.
   */
-  (void) sprintf(text,"%sImage\n  file: %s\n",text,image->filename);
+  FormatString(text,"%sImage\n  file: %s\n",text,image->filename);
   if (IsMonochromeImage(image))
     (void) strcat(text,"  type: bilevel\n");
   else
@@ -1790,36 +1790,36 @@ Export void XDisplayImageInfo(Display *display,
         Display image colormap.
       */
       if (image->total_colors <= image->colors)
-        (void) sprintf(text,"%s  colors: %u\n",text,image->colors);
+        FormatString(text,"%s  colors: %u\n",text,image->colors);
       else
-        (void) sprintf(text,"%s  colors: %lu=>%u\n",text,image->total_colors,
+        FormatString(text,"%s  colors: %lu=>%u\n",text,image->total_colors,
           image->colors);
       p=image->colormap;
       for (i=0; i < image->colors; i++)
       {
-        (void) sprintf(text,"%s    %d: (%3d,%3d,%3d)  "HexColorFormat,text,i,
+        FormatString(text,"%s    %d: (%3d,%3d,%3d)  "HexColorFormat,text,i,
           p->red,p->green,p->blue,(unsigned int) p->red,
           (unsigned int) p->green,(unsigned int) p->blue);
         for (q=Colorlist; q->name != (char *) NULL; q++)
           if ((DownScale(p->red) == q->red) &&
               (DownScale(p->green) == q->green) &&
               (DownScale(p->blue) == q->blue))
-            (void) sprintf(text,"%s  %s",text,q->name);
+            FormatString(text,"%s  %s",text,q->name);
         (void) strcat(text,"\n");
         p++;
       }
     }
   if (image->mean_error_per_pixel != 0)
-    (void) sprintf(text,"%s  mean error per pixel: %d\n",text,
+    FormatString(text,"%s  mean error per pixel: %d\n",text,
       image->mean_error_per_pixel);
   if (image->normalized_mean_error != 0)
-    (void) sprintf(text,"%s  normalized mean error: %.6f\n",text,
+    FormatString(text,"%s  normalized mean error: %.6f\n",text,
       image->normalized_mean_error);
   if (image->normalized_maximum_error != 0)
-    (void) sprintf(text,"%s  normalized maximum error: %.6f\n",text,
+    FormatString(text,"%s  normalized maximum error: %.6f\n",text,
       image->normalized_maximum_error);
   if (image->signature != (char *) NULL)
-    (void) sprintf(text,"%s  signature: %s\n",text,image->signature);
+    FormatString(text,"%s  signature: %s\n",text,image->signature);
   if (image->matte)
     (void) strcat(text,"  matte: True\n");
   else
@@ -1836,38 +1836,38 @@ Export void XDisplayImageInfo(Display *display,
       if (image->rendering_intent == RelativeIntent)
         (void) strcat(text,"  rendering-intent: relative\n");
   if (image->gamma != 0.0)
-    (void) sprintf(text,"%s  gamma: %g\n",text,image->gamma);
+    FormatString(text,"%s  gamma: %g\n",text,image->gamma);
   if (image->chromaticity.white_point.x != 0.0)
     {
       /*
         Display image chromaticity.
       */
       (void) strcat(text,"  chromaticity:\n");
-      (void) sprintf(text,"%s    red primary: (%g,%g)\n",text,
+      FormatString(text,"%s    red primary: (%g,%g)\n",text,
         image->chromaticity.red_primary.x,image->chromaticity.red_primary.y);
-      (void) sprintf(text,"%s    green primary: (%g,%g)\n",text,
+      FormatString(text,"%s    green primary: (%g,%g)\n",text,
         image->chromaticity.green_primary.x,
         image->chromaticity.green_primary.y);
-      (void) sprintf(text,"%s    blue primary: (%g,%g)\n",text,
+      FormatString(text,"%s    blue primary: (%g,%g)\n",text,
         image->chromaticity.blue_primary.x,image->chromaticity.blue_primary.y);
-      (void) sprintf(text,"%s    white point: (%g,%g)\n",text,
+      FormatString(text,"%s    white point: (%g,%g)\n",text,
         image->chromaticity.white_point.x,image->chromaticity.white_point.y);
     }
   if (image->color_profile.length > 0)
-    (void) sprintf(text,"%s  color profile: %u bytes\n",text,
+    FormatString(text,"%s  color profile: %u bytes\n",text,
       image->color_profile.length);
   if (image->packets < (image->columns*image->rows))
-    (void) sprintf(text,"%s  runlength packets: %lu of %u\n",text,
+    FormatString(text,"%s  runlength packets: %lu of %u\n",text,
       image->packets,image->columns*image->rows);
   if ((image->magick_columns != 0) || (image->magick_rows != 0))
     if ((image->magick_columns != image->columns) ||
         (image->magick_rows != image->rows))
-      (void) sprintf(text,"%s  base geometry: %ux%u\n",text,
+      FormatString(text,"%s  base geometry: %ux%u\n",text,
         image->magick_columns,image->magick_rows);
-  (void) sprintf(text,"%s  geometry: %ux%u\n",text,
+  FormatString(text,"%s  geometry: %ux%u\n",text,
     image->columns,image->rows);
   if ((image->tile_info.width*image->tile_info.height) != 0)
-      (void) sprintf(text,"%s  tile geometry: %ux%u%+d%+d\n",text,
+      FormatString(text,"%s  tile geometry: %ux%u%+d%+d\n",text,
         image->tile_info.width,image->tile_info.height,image->tile_info.x,
         image->tile_info.y);
   if ((image->x_resolution != 0.0) && (image->y_resolution != 0.0))
@@ -1875,29 +1875,29 @@ Export void XDisplayImageInfo(Display *display,
       /*
         Display image resolution.
       */
-      (void) sprintf(text,"%s  resolution: %gx%g",text,
+      FormatString(text,"%s  resolution: %gx%g",text,
         image->x_resolution,image->y_resolution);
       if (image->units == UndefinedResolution)
-        (void) sprintf(text,"%s pixels\n",text);
+        FormatString(text,"%s pixels\n",text);
       else
         if (image->units == PixelsPerInchResolution)
-          (void) sprintf(text,"%s pixels/inch\n",text);
+          FormatString(text,"%s pixels/inch\n",text);
         else
           if (image->units == PixelsPerCentimeterResolution)
-            (void) sprintf(text,"%s pixels/centimeter\n",text);
+            FormatString(text,"%s pixels/centimeter\n",text);
           else
-            (void) sprintf(text,"%s\n",text);
+            FormatString(text,"%s\n",text);
     }
-  (void) sprintf(text,"%s  depth: %u\n",text,image->depth);
+  FormatString(text,"%s  depth: %u\n",text,image->depth);
   if (image->filesize != 0)
     if (image->filesize >= (1 << 24))
-      (void) sprintf(text,"%s  filesize: %ldmb\n",text,
+      FormatString(text,"%s  filesize: %ldmb\n",text,
         image->filesize/1024/1024);
     else
       if (image->filesize >= (1 << 14))
-        (void) sprintf(text,"%s  filesize: %ldkb\n",text,image->filesize/1024);
+        FormatString(text,"%s  filesize: %ldkb\n",text,image->filesize/1024);
       else
-        (void) sprintf(text,"%s  filesize: %ldb\n",text,image->filesize);
+        FormatString(text,"%s  filesize: %ldb\n",text,image->filesize);
   if (image->interlace == NoInterlace)
     (void) strcat(text,"  interlace: None\n");
   else
@@ -1910,26 +1910,26 @@ Export void XDisplayImageInfo(Display *display,
       if (image->interlace == PartitionInterlace)
         (void) strcat(text,"  interlace: Partition\n");
   if (image->page != (char *) NULL)
-    (void) sprintf(text,"%s  page geometry: %s\n",text,image->page);
+    FormatString(text,"%s  page geometry: %s\n",text,image->page);
   if (image->dispose != 0)
-    (void) sprintf(text,"%s  dispose method: %d\n",text,image->dispose);
+    FormatString(text,"%s  dispose method: %d\n",text,image->dispose);
   if (image->delay != 0)
-    (void) sprintf(text,"%s  delay: %d\n",text,image->delay);
+    FormatString(text,"%s  delay: %d\n",text,image->delay);
   if (image->iterations != 1)
-    (void) sprintf(text,"%s  iterations: %d\n",text,image->iterations);
-  (void) sprintf(text,"%s  format: %s\n",text,image->magick);
+    FormatString(text,"%s  iterations: %d\n",text,image->iterations);
+  FormatString(text,"%s  format: %s\n",text,image->magick);
   p=image;
   while (p->previous != (Image *) NULL)
     p=p->previous;
   for (count=1; p->next != (Image *) NULL; count++)
     p=p->next;
   if (count > 1)
-    (void) sprintf(text,"%s  scene: %u of %u\n",text,image->scene,count);
+    FormatString(text,"%s  scene: %u of %u\n",text,image->scene,count);
   else
     if (image->scene != 0)
-      (void) sprintf(text,"%s  scene: %u\n",text,image->scene);
+      FormatString(text,"%s  scene: %u\n",text,image->scene);
   if (image->label != (char *) NULL)
-    (void) sprintf(text,"%s  label: %s\n",text,image->label);
+    FormatString(text,"%s  label: %s\n",text,image->label);
   (void) strcat(text,"  compression: ");
   if (image->compression == ZipCompression)
     (void) strcat(text,"Zip\n");
@@ -1952,32 +1952,32 @@ Export void XDisplayImageInfo(Display *display,
       /*
         Display image comment.
       */
-      (void) sprintf(text,"%s  comments:\n",text);
+      FormatString(text,"%s  comments:\n",text);
       textlist=StringToList(image->comments);
       if (textlist != (char **) NULL)
         {
           for (i=0; textlist[i] != (char *) NULL; i++)
           {
-            (void) sprintf(text,"%s  %s\n",text,textlist[i]);
+            FormatString(text,"%s  %s\n",text,textlist[i]);
             FreeMemory(textlist[i]);
           }
           FreeMemory((char *) textlist);
         }
     }
   if (image->montage != (char *) NULL)
-    (void) sprintf(text,"%s  montage: %s\n",text,image->montage);
+    FormatString(text,"%s  montage: %s\n",text,image->montage);
   if (image->directory != (char *) NULL)
     {
       /*
         Display image directory.
       */
-      (void) sprintf(text,"%s  directory:\n",text);
+      FormatString(text,"%s  directory:\n",text);
       textlist=StringToList(image->directory);
       if (textlist != (char **) NULL)
         {
           for (i=0; textlist[i] != (char *) NULL; i++)
           {
-            (void) sprintf(text,"%s    %s\n",text,textlist[i]);
+            FormatString(text,"%s    %s\n",text,textlist[i]);
             FreeMemory(textlist[i]);
           }
           FreeMemory((char *) textlist);
@@ -2428,7 +2428,7 @@ Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel_info,
       /*
         Scale image.
       */
-      (void) sprintf(image_geometry,"%ux%u",width,height);
+      FormatString(image_geometry,"%ux%u",width,height);
       TransformImage(&draw_image,(char *) NULL,image_geometry);
     }
   if (draw_info->degrees != 0.0)
@@ -3260,7 +3260,7 @@ Export char *XGetResourceClass(XrmDatabase database,const char *client_name,
       /*
         Initialize resource keyword and class.
       */
-      (void) sprintf(resource_name,"%s.%s",client_name,keyword);
+      FormatString(resource_name,"%s.%s",client_name,keyword);
       c=(*client_name);
       if ((c >= XK_a) && (c <= XK_z))
         c-=(XK_a-XK_A);
@@ -3279,7 +3279,7 @@ Export char *XGetResourceClass(XrmDatabase database,const char *client_name,
         else
           if ((k >= XK_oslash) && (k <= XK_thorn))
             k-=(XK_oslash-XK_Ooblique);
-      (void) sprintf(resource_class,"%c%s.%c%s",c,client_name+1,k,keyword+1);
+      FormatString(resource_class,"%c%s.%c%s",c,client_name+1,k,keyword+1);
     }
   status=XrmGetResource(database,resource_name,resource_class,&resource_type,
     &resource_value);
@@ -3366,7 +3366,7 @@ Export XrmDatabase XGetResourceDatabase(Display *display,char *client_name)
     else
       if ((c >= XK_oslash) && (c <= XK_thorn))
         c-=(XK_oslash-XK_Ooblique);
-  (void) sprintf(filename,"%s%c%s",ApplicationDefaults,c,client_name+1);
+  FormatString(filename,"%s%c%s",ApplicationDefaults,c,client_name+1);
   XrmCombineFileDatabase(filename,&resource_database,False);
   if (XResourceManagerString(display) != (char *) NULL)
     {
@@ -3379,7 +3379,7 @@ Export XrmDatabase XGetResourceDatabase(Display *display,char *client_name)
   /*
     Merge user preferences database.
   */
-  (void) sprintf(filename,"%s%src",PreferencesDefaults,client_name);
+  FormatString(filename,"%s%src",PreferencesDefaults,client_name);
   ExpandFilename(filename);
   XrmCombineFileDatabase(filename,&resource_database,False);
   return(resource_database);
@@ -3644,7 +3644,7 @@ Export char *XGetResourceInstance(XrmDatabase database,const char *client_name,
     return(resource_default);
   *resource_name='\0';
   if (keyword != (char *) NULL)
-    (void) sprintf(resource_name,"%s.%s",client_name,keyword);
+    FormatString(resource_name,"%s.%s",client_name,keyword);
   status=XrmGetResource(database,resource_name,"ImageMagick",&resource_type,
     &resource_value);
   if (status == False)
@@ -3710,7 +3710,7 @@ Export char *XGetScreenDensity(Display *display)
   x=0;
   y=0;
   (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
-  (void) sprintf(density,"%d",(int) (Min(x_density,y_density)*
+  FormatString(density,"%d",(int) (Min(x_density,y_density)*
     (XDisplayHeight(display,XDefaultScreen(display))-40)/(double) height));
   return(PostscriptGeometry(density));
 }
@@ -3889,7 +3889,7 @@ Export unsigned int XGetWindowColor(Display *display,char *name)
     Query X server for pixel color.
   */
   XQueryColor(display,window_attributes.colormap,&color);
-  (void) sprintf(name,"#%04x%04x%04x",color.red,color.green,color.blue);
+  FormatString(name,"#%04x%04x%04x",color.red,color.green,color.blue);
   database=fopen(RGBColorDatabase,"r");
   if (database != (FILE *) NULL)
     {
@@ -6619,7 +6619,7 @@ Export void XMakeMagnifyImage(Display *display,XWindows *windows)
       i=0;
       while ((1 << i) <= magnify)
         i++;
-      (void) sprintf(windows->magnify.name,"Magnify %uX",i);
+      FormatString(windows->magnify.name,"Magnify %uX",i);
       status=XStringListToTextProperty(&windows->magnify.name,1,&window_name);
       if (status != 0)
         {
@@ -6933,11 +6933,11 @@ Export void XMakeMagnifyImage(Display *display,XWindows *windows)
     XGetPixel(windows->image.ximage,windows->magnify.x,windows->magnify.y);
   XQueryColor(display,windows->map_info->colormap,&color);
   if (windows->magnify.depth > 12)
-    (void) sprintf(text," %+d%+d  (%3u,%3u,%3u) ",
+    FormatString(text," %+d%+d  (%3u,%3u,%3u) ",
       windows->magnify.x,windows->magnify.y,XDownScale(color.red),
       XDownScale(color.green),XDownScale(color.blue));
   else
-    (void) sprintf(text," %+d%+d  (%3u,%3u,%3u) %lu ",
+    FormatString(text," %+d%+d  (%3u,%3u,%3u) %lu ",
       windows->magnify.x,windows->magnify.y,XDownScale(color.red),
       XDownScale(color.green),XDownScale(color.blue),color.pixel);
   height=windows->magnify.font_info->ascent+windows->magnify.font_info->descent;
@@ -6945,7 +6945,7 @@ Export void XMakeMagnifyImage(Display *display,XWindows *windows)
   y=windows->magnify.font_info->ascent+(height >> 2);
   XDrawImageString(display,windows->magnify.pixmap,
     windows->magnify.annotate_context,x,y,text,Extent(text));
-  (void) sprintf(text," #%04x%04x%04x ",color.red,color.green,color.blue);
+  FormatString(text," #%04x%04x%04x ",color.red,color.green,color.blue);
   y+=height;
   XDrawImageString(display,windows->magnify.pixmap,
     windows->magnify.annotate_context,x,y,text,Extent(text));
@@ -7834,7 +7834,7 @@ Export void XMakeWindow(Display *display,Window parent,char **argv,int argc,
       /*
         User specified geometry.
       */
-      (void) sprintf(default_geometry,"%dx%d",size_hints->width,
+      FormatString(default_geometry,"%dx%d",size_hints->width,
         size_hints->height);
       (void) strcpy(geometry,window_info->geometry);
       p=geometry;
@@ -8367,7 +8367,7 @@ Export Image *XMontageImages(const XResourceInfo *resource_info,
           }
         x_offset=0;
         y_offset=title_offset;
-        (void) sprintf(montage_image->montage,"%dx%d%+d%+d",
+        FormatString(montage_image->montage,"%dx%d%+d%+d",
           (int) (tile_info.width+(tile_info.x+border_width)*2),
           (int) (tile_info.height+(tile_info.y+border_width)*2+(font_height+4)*
           number_lines+(montage_info->shadow ? 4 : 0)),x_offset,y_offset);
@@ -8399,7 +8399,7 @@ Export Image *XMontageImages(const XResourceInfo *resource_info,
         /*
           Annotate composite image with title.
         */
-        (void) sprintf(annotate_info.geometry,"%ux%u%+d%+d",
+        FormatString(annotate_info.geometry,"%ux%u%+d%+d",
           montage_image->columns,font_height << 1,0,tile_info.y+4);
         annotate_info.text=resource_info->title;
         AnnotateImage(montage_image,&annotate_info);
@@ -8585,7 +8585,7 @@ Export Image *XMontageImages(const XResourceInfo *resource_info,
               /*
                 Annotate composite image tile with label.
               */
-              (void) sprintf(annotate_info.geometry,"%ux%u%+d%+d",
+              FormatString(annotate_info.geometry,"%ux%u%+d%+d",
                 (montage_info->frame ? image->columns : width)-
                 (border_width << 1),font_height,(int) (x_offset+border_width),
                 (int) (montage_info->frame ? y_offset+height+
@@ -9477,31 +9477,31 @@ Export void XUserPreferences(XResourceInfo *resource_info)
   assert(resource_info != (XResourceInfo *) NULL);
   client_name=SetClientName((char *) NULL);
   preferences_database=XrmGetStringDatabase("");
-  (void) sprintf(specifier,"%s.backdrop",client_name);
+  FormatString(specifier,"%s.backdrop",client_name);
   value=resource_info->backdrop ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,value);
-  (void) sprintf(specifier,"%s.colormap",client_name);
+  FormatString(specifier,"%s.colormap",client_name);
   value=resource_info->colormap == SharedColormap ? "Shared" : "Private";
   XrmPutStringResource(&preferences_database,specifier,value);
-  (void) sprintf(specifier,"%s.confirmExit",client_name);
+  FormatString(specifier,"%s.confirmExit",client_name);
   value=resource_info->confirm_exit ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,value);
-  (void) sprintf(specifier,"%s.displayWarnings",client_name);
+  FormatString(specifier,"%s.displayWarnings",client_name);
   value=resource_info->display_warnings ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,value);
-  (void) sprintf(specifier,"%s.dither",client_name);
+  FormatString(specifier,"%s.dither",client_name);
   value=resource_info->quantize_info.dither ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,value);
-  (void) sprintf(specifier,"%s.gammaCorrect",client_name);
+  FormatString(specifier,"%s.gammaCorrect",client_name);
   value=resource_info->gamma_correct ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,value);
-  (void) sprintf(specifier,"%s.undoCache",client_name);
-  (void) sprintf(cache,"%u",resource_info->undo_cache);
+  FormatString(specifier,"%s.undoCache",client_name);
+  FormatString(cache,"%u",resource_info->undo_cache);
   XrmPutStringResource(&preferences_database,specifier,cache);
-  (void) sprintf(specifier,"%s.usePixmap",client_name);
+  FormatString(specifier,"%s.usePixmap",client_name);
   value=resource_info->use_pixmap ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,value);
-  (void) sprintf(filename,"%s%src",PreferencesDefaults,client_name);
+  FormatString(filename,"%s%src",PreferencesDefaults,client_name);
   ExpandFilename(filename);
   XrmPutFileDatabase(preferences_database,filename);
 }

@@ -206,7 +206,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Window name is the base of the filename.
       */
-      (void) sprintf(windows->image.name,"ImageMagick: %s",
+      FormatString(windows->image.name,"ImageMagick: %s",
         BaseFilename((*image)->filename));
       if (resource_info->title != (char *) NULL)
         (void) strcpy(windows->image.name,(*image)->label);
@@ -306,7 +306,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           /*
             Display documentation using Netscape remote control.
           */
-          (void) sprintf(command,"openURL(%s,new-window,noraise)",
+          FormatString(command,"openURL(%s,new-window,noraise)",
             DocumentationURL);
           mozilla_atom=XInternAtom(display,"_MOZILLA_COMMAND",False);
           XChangeProperty(display,mozilla_window,mozilla_atom,XA_STRING,8,
@@ -421,6 +421,7 @@ Export void XAnimateBackgroundImage(Display *display,
     window_info;
 
   Image
+    *displayed_image,
     **images;
 
   int
@@ -482,7 +483,7 @@ Export void XAnimateBackgroundImage(Display *display,
   (void) strcpy(visual_type,"default");
   status=XGetWindowAttributes(display,window_info.id,&window_attributes);
   if (status != False)
-    (void) sprintf(visual_type,"0x%lx",
+    FormatString(visual_type,"0x%lx",
       XVisualIDFromVisual(window_attributes.visual));
   if (visual_info == (XVisualInfo *) NULL)
     {
@@ -569,7 +570,22 @@ Export void XAnimateBackgroundImage(Display *display,
     Initialize Standard Colormap.
   */
   resources.colormap=SharedColormap;
-  XMakeStandardColormap(display,visual_info,&resources,images[0],map_info,
+  displayed_image=images[0];
+  for (scene=0; scene < number_scenes; scene++)
+  {
+    if ((resource_info->map_type != (char *) NULL) ||
+        (visual_info->class == TrueColor) ||
+        (visual_info->class == DirectColor))
+      images[scene]->class=DirectClass;
+    if ((displayed_image->columns < images[scene]->columns) &&
+        (displayed_image->rows < images[scene]->rows))
+      displayed_image=images[scene];
+  }
+  if ((resource_info->map_type != (char *) NULL) ||
+      (visual_info->class == TrueColor) ||
+      (visual_info->class == DirectColor))
+    displayed_image->class=DirectClass;
+  XMakeStandardColormap(display,visual_info,&resources,displayed_image,map_info,
     &pixel_info);
   /*
     Graphic context superclass.
@@ -590,7 +606,7 @@ Export void XAnimateBackgroundImage(Display *display,
   */
   window_info.width=images[0]->columns;
   window_info.height=images[0]->rows;
-  (void) sprintf(geometry,"%ux%u+0+0>",window_attributes.width,
+  FormatString(geometry,"%ux%u+0+0>",window_attributes.width,
     window_attributes.height);
   (void) ParseImageGeometry(geometry,&window_info.x,&window_info.y,
     &window_info.width,&window_info.height);
@@ -645,7 +661,7 @@ Export void XAnimateBackgroundImage(Display *display,
         MagickError(ResourceLimitError,"Unable to display on window",
           "Memory allocation failed");
       size_hints->flags=(long) NULL;
-      (void) sprintf(default_geometry,"%ux%u",width,height);
+      FormatString(default_geometry,"%ux%u",width,height);
       flags=XWMGeometry(display,visual_info->screen,resources.image_geometry,
         default_geometry,window_info.border_width,size_hints,&window_info.x,
         &window_info.y,(int *) &width,(int *) &height,&gravity);
@@ -995,7 +1011,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
   monitor_handler=(MonitorHandler) NULL;
   warning_handler=(ErrorHandler) NULL;
   windows=XSetWindows((XWindows *) ~0);
-  if ((windows != (XWindows *) NULL) && !resource_info->immutable)
+  if (windows != (XWindows *) NULL)
     {
       (void) chdir(working_directory);
       monitor_handler=SetMonitorHandler(XProgressMonitor);
@@ -1013,8 +1029,15 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
         Initialize window structure.
       */
       for (p=image; p != (Image *) NULL; p=p->next)
+      {
+        if (p->class == DirectClass)
+          {
+            resource_info->colors=0;
+            break;
+          }
         if (p->colors > resource_info->colors)
           resource_info->colors=p->colors;
+      }
       windows=XSetWindows(XInitializeWindows(display,resource_info));
       if (windows == (XWindows *) NULL)
         MagickError(XServerError,"Unable to create X windows",
@@ -1108,7 +1131,17 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
     Initialize Standard Colormap.
   */
   loaded_image=(Image *) NULL;
-  displayed_image=image;
+  displayed_image=images[0];
+  for (scene=0; scene < number_scenes; scene++)
+  {
+    if ((resource_info->map_type != (char *) NULL) ||
+        (visual_info->class == TrueColor) ||
+        (visual_info->class == DirectColor))
+      images[scene]->class=DirectClass;
+    if ((displayed_image->columns < images[scene]->columns) &&
+        (displayed_image->rows < images[scene]->rows))
+      displayed_image=images[scene];
+  }
   if (resource_info->debug)
     {
       (void) fprintf(stderr,"Image: %s[%u] %ux%u ",displayed_image->filename,
@@ -1227,7 +1260,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
       p=displayed_image->filename+Extent(displayed_image->filename)-1;
       while ((p > displayed_image->filename) && (*(p-1) != *BasenameSeparator))
         p--;
-      (void) sprintf(windows->image.name,"ImageMagick: %s[%u of %u]",p,
+      FormatString(windows->image.name,"ImageMagick: %s[%u of %u]",p,
         displayed_image->scene,number_scenes);
       (void) strcpy(windows->image.icon_name,p);
     }
@@ -1359,7 +1392,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
     resource_info,&windows->command);
   windows->command.data=MagickMenus;
   (void) XCommandWidget(display,windows,CommandMenu,(XEvent *) NULL);
-  (void) sprintf(resource_name,"%s.command",resource_info->client_name);
+  FormatString(resource_name,"%s.command",resource_info->client_name);
   windows->command.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
   windows->command.name=MagickTitle;
@@ -1387,7 +1420,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
     FreeMemory((char *) windows->widget.name);
   XGetWindowInfo(display,visual_info,map_info,pixel_info,font_info,
     resource_info,&windows->widget);
-  (void) sprintf(resource_name,"%s.widget",resource_info->client_name);
+  FormatString(resource_name,"%s.widget",resource_info->client_name);
   windows->widget.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
   windows->widget.name=(char *) AllocateMemory(MaxTextExtent*sizeof(char));
@@ -1524,7 +1557,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
         p=images[scene]->filename+Extent(images[scene]->filename)-1;
         while ((p > images[scene]->filename) && (*(p-1) != '/'))
           p--;
-        (void) sprintf(windows->image.name,"ImageMagick: %s[%u of %u]",p,
+        FormatString(windows->image.name,"ImageMagick: %s[%u of %u]",p,
           scene,number_scenes);
       }
     status=XStringListToTextProperty(&windows->image.name,1,&window_name);
@@ -1615,7 +1648,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
               p=images[scene]->filename+Extent(images[scene]->filename)-1;
               while ((p > images[scene]->filename) && (*(p-1) != '/'))
                 p--;
-              (void) sprintf(windows->image.name,"ImageMagick: %s[%u of %u]",p,
+              FormatString(windows->image.name,"ImageMagick: %s[%u of %u]",p,
                 scene,number_scenes);
               if (resource_info->title != (char *) NULL)
                 (void) strcpy(windows->image.name,image->label);

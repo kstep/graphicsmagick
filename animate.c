@@ -887,9 +887,9 @@ int main(int argc,char **argv)
               /*
                 Form filename for multi-part images.
               */
-              (void) sprintf(filename,image_info->filename,scene);
+              FormatString(filename,image_info->filename,scene);
               if (Latin1Compare(filename,image_info->filename) == 0)
-                (void) sprintf(filename,"%s[%u]",image_info->filename,scene);
+                FormatString(filename,"%s[%u]",image_info->filename,scene);
               (void) strcpy(image_info->filename,filename);
             }
           (void) strcpy(image_info->magick,"MIFF");

@@ -44,6 +44,7 @@
 		<LI><A HREF="#StringToArgv">StringToArgv</A>
 		<LI><A HREF="#StringToList">StringToList</A>
 		<LI><A HREF="#Strip">Strip</A>
+		<LI><A HREF="#SystemCommand">SystemCommand</A>
 		<LI><A HREF="#TemporaryFilename">TemporaryFilename</A>
 		<LI><A HREF="#TranslateText">TranslateText</A>
 	</UL>
@@ -137,6 +138,9 @@ list=<STRONG>StringToList</STRONG>(text)
 
 <P>
 <STRONG>Strip</STRONG>(data)
+
+<P>
+status=<STRONG>SystemCommand</STRONG>(verbose,command)
 
 <P>
 <STRONG>TemporaryFilename</STRONG>(filename)
@@ -937,6 +941,37 @@ A description of each parameter follows:
 <DT><STRONG>data:</STRONG><DD>
 <P>
 Specifies an array of characters.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="SystemCommand">SystemCommand</A></H2>
+<P>
+Method SystemCommand executes the specified command and waits until it
+terminates. The returned value is the exit status of the command.
+
+<P>
+The format of the SystemCommand routine is:
+
+<P>
+<PRE>        status=SystemCommand(verbose,command)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method SystemCommand returns False if the command is executed successfully.
+
+<DT><STRONG>verbose:</STRONG><DD>
+<P>
+An unsigned integer other than 0 prints the executed command before it is
+invoked.
+
+<DT><STRONG>command:</STRONG><DD>
+<P>
+This string is the command to execute.
 
 </DL></DL>
 <P>

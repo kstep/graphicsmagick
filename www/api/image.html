@@ -60,6 +60,7 @@
 		<LI><A HREF="#ModulateImage">ModulateImage</A>
 		<LI><A HREF="#MogrifyImage">MogrifyImage</A>
 		<LI><A HREF="#MogrifyImages">MogrifyImages</A>
+		<LI><A HREF="#MorphImages">MorphImages</A>
 		<LI><A HREF="#NegateImage">NegateImage</A>
 		<LI><A HREF="#NormalizeImage">NormalizeImage</A>
 		<LI><A HREF="#OpagueImage">OpagueImage</A>
@@ -103,10 +104,10 @@ allocated_image=<STRONG>AllocateImage</STRONG>(image_info)
 <STRONG>AnnotateImage</STRONG>(image,annotate_info)
 
 <P>
-<STRONG>AppendImages</STRONG>(images)
+<STRONG>AppendImages</STRONG>(images,stack)
 
 <P>
-<STRONG>AverageImages</STRONG>(images)
+averaged_image=<STRONG>AverageImages</STRONG>(images)
 
 <P>
 bordered_image=<STRONG>BorderImage</STRONG>(image,border_info)
@@ -221,6 +222,9 @@ minified_image=<STRONG>MinifyImage</STRONG>(image)
 
 <P>
 <STRONG>MogrifyImages</STRONG>(image_info,argc,argv,images)
+
+<P>
+morphed_image=<STRONG>MorphImages</STRONG>(images,number_frames)
 
 <P>
 <STRONG>NegateImage</STRONG>(image,grayscale)
@@ -370,13 +374,16 @@ The address of a AnnotateInfo structure.
 <H2><A NAME="AppendImages">AppendImages</A></H2>
 <P>
 Method AppendImages appends a set of images. All the input images must have
-the same column width.
+the same width or height. Images of the same width are stacked
+top-to-bottom. Images of the same height are stacked left-to-right. If the
+stack is false, rectangular images are stacked left-to-right otherwise
+top-to-bottom.
 
 <P>
 The format of the AppendImage routine is:
 
 <P>
-<PRE>        AppendImages(images)
+<PRE>        AppendImages(images,stack)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -385,6 +392,11 @@ A description of each parameter follows:
 <DT><STRONG>images:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
+
+<DT><STRONG>stack:</STRONG><DD>
+<P>
+An unsigned value other than stacks rectangular images top-to-bottom
+otherwise left-to-right.
 
 </DL></DL>
 <P>
@@ -398,12 +410,16 @@ the same size in pixels.
 The format of the AverageImage routine is:
 
 <P>
-<PRE>        AverageImages(images)
+<PRE>        averaged_image=AverageImages(images)
 </PRE>
 <P>
 A description of each parameter follows:
 
 <DL><DL>
+<DT><STRONG>averaged_image:</STRONG><DD>
+<P>
+Method AverageImages returns the mean pixel value for an image sequence.
+
 <DT><STRONG>images:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
@@ -1241,7 +1257,8 @@ valid specification (e.g. [1], [1-4], [4-1]).
 <H2><A NAME="IsTainted">IsTainted</A></H2>
 <P>
 Method IsTainted returns True if the image has been altered since it was
-first read.
+first read or if any image in the sequence has a difference magic or
+filename.
 
 <P>
 The format of the IsTainted routine is:
@@ -1569,6 +1586,39 @@ Specifies a pointer to a text array containing the command line arguments.
 <DT><STRONG>images:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="MorphImages">MorphImages</A></H2>
+<P>
+Method MorphImages morphs a set of images. both the image pixels and size
+are linearly interpolated to give the appearance of a meta-morphosis from
+one image to the next.
+
+<P>
+The format of the MorphImage routine is:
+
+<P>
+<PRE>        morphed_image=MorphImages(images,number_frames)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>morphed_image:</STRONG><DD>
+<P>
+Method MorphImages returns an image sequence that has linearly interpolated
+pixels and size between two input images.
+
+<DT><STRONG>images:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+<DT><STRONG>number_frames:</STRONG><DD>
+<P>
+This unsigned integer reflects the number of in-between images to generate.
+The more in-between frames, the smoother the morph.
 
 </DL></DL>
 <P>

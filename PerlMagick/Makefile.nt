@@ -4,7 +4,7 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     'NAME'      => 'Image::Magick',
     'VERSION_FROM' => 'Magick.pm', # finds $VERSION
-    'LIBS'      => ['-Le:\DevStudio\VC\lib -L..\magick -lIMagick.dll -L..\xlib\lib -lX11'],
+    'LIBS'      => ['-Le:\DevStudio\VC\lib -L..\magick -lIMagick -L..\xlib\lib -lX11'],
     'DEFINE'    => '-D_VISUALC_ -D_WINDOWS',     # e.g., '-DHAVE_SOMETHING' 
     'INC'       => '-I..\magick -I..\xlib\include',
 );

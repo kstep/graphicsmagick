@@ -523,8 +523,7 @@ Ghostscript (see below).
 </H3>
 <DD><B>ImageMagick</B> requires <B>GET</B> 
 to read images specified with a World Wide Web (WWW) uniform
-resource locator (URL).  <B>Get(1)</B> must be in <tt>/usr/local/bin</tt>.
-See <tt>WWWcommand</tt> in <tt>magick/magick.h</tt> to change its location.
+resource locator (URL).  
 <EM> Note: do not confuse this get program with SCCS get program</EM>.
 If you do not have a <B>HTTP server</B>, you can use 
 <A HREF="../www/xtp.html">xtp</A>, available
@@ -838,6 +837,8 @@ your local requirements.  Next, type.
 <p>
 <DD>Type
 <PRE>
+      unzip ImageMagick-4.1.3.zip
+      set default [.imagemagick]
       @make
       set display/create/node=node_name::
 </PRE>

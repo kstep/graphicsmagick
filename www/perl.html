@@ -1392,15 +1392,17 @@ a more detailed description of these attributes.
 <a name="misc">Miscellaneous Methods
 <dt>
 </h2>
-<dd>The <tt>Append</tt> method append a set of images.  For example, 
+<dd>The <tt>Append</tt> method append a set of images.  For example,
 <p>
 <pre>
-    $x = $image-&gt;Append();
+    $x = $image-&gt;Append(stack=&gt;{true,false});
 </pre>
 <p>
-appends all the images associated with object <tt>$q</tt>.  All the input
+appends all the images associated with object <tt>$image</tt>.  All the input
 images must have the same width or height.  Images of the same width are
 stacked top-to-bottom.  Images of the same height are stacked left-to-right.
+If the stack parameter is false, rectangular images are stacked left-to-right
+otherwise top-to-bottom.
 <p>
 <dd>The <tt>Average</tt> method averages a set of images.  For example, 
 <p>
@@ -1408,7 +1410,18 @@ stacked top-to-bottom.  Images of the same height are stacked left-to-right.
     $x = $image-&gt;Average();
 </pre>
 <p>
-averages all the images associated with object <tt>$q</tt>.
+averages all the images associated with object <tt>$image</tt>.
+<p>
+<dd>The <tt>Morph</tt> method morphs a set of images.  Both the image pixels
+and size are linearly interpolated to give the appearance of a meta-morphosis
+from one image to the next:
+<p>
+<pre>
+    $x = $image-&gt;Morph(frames=&gt;<i>integer</i>);
+</pre>
+<p>
+where <i>frames</i> is the number of in-between images to generate.  The
+default is 1.
 <p>
 Method <tt>Mogrify</tt> is a single entry point for the image
 manipulation methods (<A HREF="#mani">Manipulate an Image</A>).  The
@@ -1428,7 +1441,6 @@ of your image at location (40, 50):
 <pre>
     $image-&gt;MogrifyRegion('100x100+40+50', 'modulate', brightness=&gt;50);
 </pre>
-<p>
 <p>
 <dd>The <tt>Clone</tt> method copies a set of images.  For example, 
 <p>
@@ -1596,6 +1608,27 @@ Error and Warning Codes
   <td>410</td>
   <td>OptionError</td>
   <td>a command-line option was malformed</td>
+</tr>
+<tr>
+  <td>415</td>
+  <td>DelegateError</td>
+  <td>an ImageMagick <em>delegate</em> returned a warning</td>
+</tr>
+<tr>
+  <td>420</td>
+  <td>MissingDelegateError</td>
+  <td>the image type can not be read or written because the appropriate 
+      <em>Delegate</em> is missing</td>
+</tr>
+<tr>
+  <td>425</td>
+  <td>CorruptImageError</td>
+  <td>the image file may be corrupt</td>
+</tr>
+<tr>
+  <td>430</td>
+  <td>FileOpenError</td>
+  <td>the image file could not be opened</td>
 </tr>
 </table>
 <p>

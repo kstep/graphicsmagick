@@ -845,7 +845,7 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
           annotate_info->text[r-p->text]='\0';
           if (p->primitive == TextPrimitive)
             {
-              (void) sprintf(annotate_info->geometry,"%+d%+d",p->x,p->y);
+              FormatString(annotate_info->geometry,"%+d%+d",p->x,p->y);
               AnnotateImage(image,annotate_info);
             }
           else

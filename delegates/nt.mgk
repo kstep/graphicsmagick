@@ -135,12 +135,12 @@ launch=>pnm
 
 mpg=>
 	mpeg2decode -q -b %i -f -r -o3 %o%%d
-	convert %o*.ppm %o
+	convert -concatenate %o*.ppm %o
 	del %o*.ppm
 
 m2v=>
 	mpeg2decode -q -b %i -f -r -o3 %o%%d
-	convert %o*.ppm %o
+	convert -concatenate %o*.ppm %o
 	del %o*.ppm
 
 pgp=>

@@ -1551,16 +1551,9 @@ Export unsigned int MapImages(Image *images,Image *map_image,
       /*
         Create a global colormap for an image sequence.
       */
-      if (images->class == PseudoClass)
-        quantize_info.number_colors=images->colors;
       for (image=images; image != (Image *) NULL; image=image->next)
-      {
         if (image->matte)
           quantize_info.colorspace=TransparentColorspace;
-        if (image->class == PseudoClass)
-          if (image->colors > quantize_info.number_colors)
-            quantize_info.number_colors=image->colors;
-      }
       status=QuantizeImages(&quantize_info,images);
       return(status);
     }

@@ -211,7 +211,7 @@ static unsigned int XAnnotateEditImage(Display *display,
         /*
           Display pointer position.
         */
-        (void) sprintf(text," %+d%+d ",x+windows->image.x,y+windows->image.y);
+        FormatString(text," %+d%+d ",x+windows->image.x,y+windows->image.y);
         XInfoWidget(display,windows,text);
       }
     /*
@@ -977,7 +977,7 @@ static unsigned int XAnnotateEditImage(Display *display,
       width*(annotate_info->x+windows->image.x)/windows->image.ximage->width;
     annotate_info->y=height*(annotate_info->y-font_info->ascent+
       windows->image.y)/windows->image.ximage->height;
-    (void) sprintf(annotate_info->geometry,"%ux%u%+d%+d",
+    FormatString(annotate_info->geometry,"%ux%u%+d%+d",
       width*annotate_info->width/windows->image.ximage->width,
       height*annotate_info->height/windows->image.ximage->height,
       annotate_info->x+x,annotate_info->y+y);
@@ -1195,7 +1195,7 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
         /*
           Display pointer position.
         */
-        (void) sprintf(text," %+d%+d ",x+windows->image.x,y+windows->image.y);
+        FormatString(text," %+d%+d ",x+windows->image.x,y+windows->image.y);
         XInfoWidget(display,windows,text);
       }
     /*
@@ -1363,7 +1363,7 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
         */
         if (!windows->info.mapped)
           XMapWindow(display,windows->info.id);
-        (void) sprintf(text," %ux%u%+d%+d",chop_info.width,chop_info.height,
+        FormatString(text," %ux%u%+d%+d",chop_info.width,chop_info.height,
           chop_info.x,chop_info.y);
         XInfoWidget(display,windows,text);
         XHighlightLine(display,windows->image.id,
@@ -1626,7 +1626,7 @@ static unsigned int XColorEditImage(Display *display,
         /*
           Display pointer position.
         */
-        (void) sprintf(text," %+d%+d ",x+windows->image.x,y+windows->image.y);
+        FormatString(text," %+d%+d ",x+windows->image.x,y+windows->image.y);
         XInfoWidget(display,windows,text);
       }
     /*
@@ -2188,7 +2188,7 @@ static unsigned int XCompositeImage(Display *display,
           GetImageInfo(&image_info);
           (void) strcpy(image_info.filename,filename);
           image_info.size=size;
-          (void) sprintf(image_info.size,"%ux%u",composite_image->columns,
+          FormatString(image_info.size,"%ux%u",composite_image->columns,
             composite_image->rows);
           mask_image=ReadImage(&image_info);
           DestroyImageInfo(&image_info);
@@ -2233,7 +2233,7 @@ static unsigned int XCompositeImage(Display *display,
         /*
           Display pointer position.
         */
-        (void) sprintf(text," %+d%+d ",composite_info.x,composite_info.y);
+        FormatString(text," %+d%+d ",composite_info.x,composite_info.y);
         XInfoWidget(display,windows,text);
       }
     highlight_info=composite_info;
@@ -2652,7 +2652,7 @@ static unsigned int XConfigureImage(Display *display,
   /*
     Notify window manager of the new configuration.
   */
-  (void) sprintf(geometry,"%ux%u+0+0>!",
+  FormatString(geometry,"%ux%u+0+0>!",
     XDisplayWidth(display,windows->image.screen),
     XDisplayHeight(display,windows->image.screen));
   (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
@@ -2880,7 +2880,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
         /*
           Display pointer position.
         */
-        (void) sprintf(text," %+d%+d ",crop_info.x,crop_info.y);
+        FormatString(text," %+d%+d ",crop_info.x,crop_info.y);
         XInfoWidget(display,windows,text);
       }
     /*
@@ -3070,7 +3070,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
           */
           if (!windows->info.mapped)
             XMapWindow(display,windows->info.id);
-          (void) sprintf(text," %ux%u%+d%+d",crop_info.width,crop_info.height,
+          FormatString(text," %ux%u%+d%+d",crop_info.width,crop_info.height,
             crop_info.x,crop_info.y);
           XInfoWidget(display,windows,text);
           XHighlightRectangle(display,windows->image.id,
@@ -3163,7 +3163,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
           /*
             Display pointer position.
           */
-          (void) sprintf(text," %ux%u%+d%+d",crop_info.width,crop_info.height,
+          FormatString(text," %ux%u%+d%+d",crop_info.width,crop_info.height,
             crop_info.x,crop_info.y);
           XInfoWidget(display,windows,text);
         }
@@ -3641,7 +3641,7 @@ static unsigned int XDrawEditImage(Display *display,
           /*
             Display pointer position.
           */
-          (void) sprintf(text," %+d%+d ",x+windows->image.x,y+windows->image.y);
+          FormatString(text," %+d%+d ",x+windows->image.x,y+windows->image.y);
           XInfoWidget(display,windows,text);
         }
       /*
@@ -4009,7 +4009,7 @@ static unsigned int XDrawEditImage(Display *display,
               XDrawLines(display,windows->image.id,
                 windows->image.highlight_context,coordinate_info,
                 number_coordinates,CoordModeOrigin);
-              (void) sprintf(text," %+d%+d",
+              FormatString(text," %+d%+d",
                 coordinate_info[number_coordinates-1].x,
                 coordinate_info[number_coordinates-1].y);
               XInfoWidget(display,windows,text);
@@ -4025,7 +4025,7 @@ static unsigned int XDrawEditImage(Display *display,
               */
               degrees=RadiansToDegrees(-atan2((double) (line_info.y2-
                 line_info.y1),(double) (line_info.x2-line_info.x1)));
-              (void) sprintf(text," %.2f",degrees);
+              FormatString(text," %.2f",degrees);
               XInfoWidget(display,windows,text);
               XHighlightLine(display,windows->image.id,
                 windows->image.highlight_context,&line_info);
@@ -4043,7 +4043,7 @@ static unsigned int XDrawEditImage(Display *display,
               /*
                 Display info and draw drawing rectangle.
               */
-              (void) sprintf(text," %ux%u%+d%+d",rectangle_info.width,
+              FormatString(text," %ux%u%+d%+d",rectangle_info.width,
                 rectangle_info.height,rectangle_info.x,rectangle_info.y);
               XInfoWidget(display,windows,text);
               XHighlightRectangle(display,windows->image.id,
@@ -4064,7 +4064,7 @@ static unsigned int XDrawEditImage(Display *display,
               /*
                 Display info and draw drawing rectangle.
               */
-              (void) sprintf(text," %ux%u%+d%+d",rectangle_info.width,
+              FormatString(text," %ux%u%+d%+d",rectangle_info.width,
                 rectangle_info.height,rectangle_info.x,rectangle_info.y);
               XInfoWidget(display,windows,text);
               XHighlightEllipse(display,windows->image.id,
@@ -4089,7 +4089,7 @@ static unsigned int XDrawEditImage(Display *display,
               */
               degrees=RadiansToDegrees(-atan2((double) (line_info.y2-
                 line_info.y1),(double) (line_info.x2-line_info.x1)));
-              (void) sprintf(text," %.2f",degrees);
+              FormatString(text," %.2f",degrees);
               XInfoWidget(display,windows,text);
               XHighlightLine(display,windows->image.id,
                 windows->image.highlight_context,&line_info);
@@ -4331,7 +4331,7 @@ static unsigned int XDrawEditImage(Display *display,
     draw_info.height=rectangle_info.height+(line_width << 1);
     if (draw_info.height > (*image)->rows)
       draw_info.height=(*image)->rows;
-    (void) sprintf(draw_info.geometry,"%ux%u%+d%+d",
+    FormatString(draw_info.geometry,"%ux%u%+d%+d",
       width*draw_info.width/windows->image.ximage->width,
       height*draw_info.height/windows->image.ximage->height,
       draw_info.x+x,draw_info.y+y);
@@ -5283,7 +5283,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Create canvas.
       */
-      (void) sprintf(image_info.filename,"%s:%s",format,color);
+      FormatString(image_info.filename,"%s:%s",format,color);
       image_info.size=geometry;
       loaded_image=ReadImage(&image_info);
       DestroyImageInfo(&image_info);
@@ -5393,7 +5393,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       height=windows->image.ximage->height;
       x=0;
       y=0;
-      (void) sprintf(geometry,"%ux%u+0+0",width,height);
+      FormatString(geometry,"%ux%u+0+0",width,height);
       status=XDialogWidget(display,windows,"Resize",
         "Enter resize geometry (e.g. 640x480, 200%):",geometry);
       if (*geometry == '\0')
@@ -5424,7 +5424,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Crop and/or scale displayed image.
       */
-      (void) sprintf(image_geometry,"%dx%d!",windows->image.ximage->width,
+      FormatString(image_geometry,"%dx%d!",windows->image.ximage->width,
         windows->image.ximage->height);
       TransformImage(image,windows->image.crop_geometry,image_geometry);
       if (windows->image.crop_geometry != (char *) NULL)
@@ -5520,7 +5520,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           height=(*image)->rows;
           (void) XParseGeometry(windows->image.crop_geometry,&x,&y,
             &width,&height);
-          (void) sprintf(windows->image.crop_geometry,"%ux%u%+d%+d",width,
+          FormatString(windows->image.crop_geometry,"%ux%u%+d%+d",width,
             height,(int) (*image)->columns-(int) width-x,y);
         }
       if (windows->image.orphan)
@@ -5547,7 +5547,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           height=(*image)->rows;
           (void) XParseGeometry(windows->image.crop_geometry,&x,&y,
             &width,&height);
-          (void) sprintf(windows->image.crop_geometry,"%ux%u%+d%+d",width,
+          FormatString(windows->image.crop_geometry,"%ux%u%+d%+d",width,
             height,x,(int) (*image)->rows-(int) height-y);
         }
       if (windows->image.orphan)
@@ -6568,7 +6568,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           char
             command[MaxTextExtent];
 
-          (void) sprintf(command,"@%s",image_info.filename);
+          FormatString(command,"@%s",image_info.filename);
           CommentImage(*image,command);
         }
       (void) remove(image_info.filename);
@@ -6792,7 +6792,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           /*
             Display documentation using Netscape remote control.
           */
-          (void) sprintf(command,"openURL(%s,new-window,noraise)",
+          FormatString(command,"openURL(%s,new-window,noraise)",
             DocumentationURL);
           mozilla_atom=XInternAtom(display,"_MOZILLA_COMMAND",False);
           XChangeProperty(display,mozilla_window,mozilla_atom,XA_STRING,8,
@@ -6897,7 +6897,7 @@ static void XMagnifyImage(Display *display,XWindows *windows,XEvent *event)
         /*
           Display pointer position.
         */
-        (void) sprintf(text," %+d%+d ",windows->magnify.x,windows->magnify.y);
+        FormatString(text," %+d%+d ",windows->magnify.x,windows->magnify.y);
         XInfoWidget(display,windows,text);
       }
     /*
@@ -7250,7 +7250,7 @@ static unsigned int XMatteEditImage(Display *display,
         /*
           Display pointer position.
         */
-        (void) sprintf(text," %+d%+d ",x+windows->image.x,y+windows->image.y);
+        FormatString(text," %+d%+d ",x+windows->image.x,y+windows->image.y);
         XInfoWidget(display,windows,text);
       }
     /*
@@ -7827,7 +7827,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
           register int
             i;
 
-          (void) sprintf(title,"Unknown format: %s",filename);
+          FormatString(title,"Unknown format: %s",filename);
           XTextViewWidget(display,resource_info,windows,True,title,textlist);
           for (i=0; textlist[i] != (char *) NULL; i++)
             FreeMemory((char *) textlist[i]);
@@ -7968,7 +7968,7 @@ static void XPanImage(Display *display,XWindows *windows,XEvent *event)
             */
             windows->image.x=pan_info.x;
             windows->image.y=pan_info.y;
-            (void) sprintf(text," %ux%u%+d%+d ",windows->image.width,
+            FormatString(text," %ux%u%+d%+d ",windows->image.width,
               windows->image.height,windows->image.x,windows->image.y);
             XInfoWidget(display,windows,text);
             /*
@@ -8118,7 +8118,7 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
         /*
           Display pointer position.
         */
-        (void) sprintf(text," %+d%+d ",paste_info.x,paste_info.y);
+        FormatString(text," %+d%+d ",paste_info.x,paste_info.y);
         XInfoWidget(display,windows,text);
       }
     highlight_info=paste_info;
@@ -8423,7 +8423,7 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
     Request Postscript page geometry from user.
   */
   image_info=resource_info->image_info;
-  (void) sprintf(geometry,DefaultPageSize);
+  FormatString(geometry,DefaultPageSize);
   if (image_info.page != (char *) NULL)
     (void) strcpy(geometry,image_info.page);
   XListBrowserWidget(display,windows,&windows->widget,PageSizes,"Select",
@@ -8441,7 +8441,7 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
   image->orphan=False;
   if (print_image == (Image *) NULL)
     return(False);
-  (void) sprintf(geometry,"%dx%d!",windows->image.ximage->width,
+  FormatString(geometry,"%dx%d!",windows->image.ximage->width,
     windows->image.ximage->height);
   TransformImage(&print_image,windows->image.crop_geometry,geometry);
   if (resource_info->quantize_info.number_colors != 0)
@@ -8775,7 +8775,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
         /*
           Display pointer position.
         */
-        (void) sprintf(text," %+d%+d ",roi_info.x,roi_info.y);
+        FormatString(text," %+d%+d ",roi_info.x,roi_info.y);
         XInfoWidget(display,windows,text);
       }
     /*
@@ -8930,7 +8930,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
           */
           if (!windows->info.mapped)
             XMapWindow(display,windows->info.id);
-          (void) sprintf(text," %ux%u%+d%+d",roi_info.width,roi_info.height,
+          FormatString(text," %ux%u%+d%+d",roi_info.width,roi_info.height,
             roi_info.x,roi_info.y);
           XInfoWidget(display,windows,text);
           XHighlightRectangle(display,windows->image.id,
@@ -9023,7 +9023,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
           /*
             Display pointer position.
           */
-          (void) sprintf(text," %ux%u%+d%+d",roi_info.width,roi_info.height,
+          FormatString(text," %ux%u%+d%+d",roi_info.width,roi_info.height,
             roi_info.x,roi_info.y);
           XInfoWidget(display,windows,text);
         }
@@ -9685,7 +9685,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
             */
             if (!windows->info.mapped)
               XMapWindow(display,windows->info.id);
-            (void) sprintf(text," %.2f",
+            FormatString(text," %.2f",
               direction == VerticalRotateCommand ? degrees-90.0 : degrees);
             XInfoWidget(display,windows,text);
             XHighlightLine(display,windows->image.id,
@@ -9801,7 +9801,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
           /*
             Rotate 90 degrees.
           */
-          (void) sprintf(windows->image.crop_geometry,"%ux%u%+d%+d",
+          FormatString(windows->image.crop_geometry,"%ux%u%+d%+d",
             height,width,(int) (*image)->columns-(int) height-y,x);
           break;
         }
@@ -9810,7 +9810,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
           /*
             Rotate 180 degrees.
           */
-          (void) sprintf(windows->image.crop_geometry,"%ux%u%+d%+d",
+          FormatString(windows->image.crop_geometry,"%ux%u%+d%+d",
             width,height,(int) width-x,(int) height-y);
           break;
         }
@@ -9819,7 +9819,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
           /*
             Rotate 270 degrees.
           */
-          (void) sprintf(windows->image.crop_geometry,"%ux%u%+d%+d",
+          FormatString(windows->image.crop_geometry,"%ux%u%+d%+d",
             height,width,y,(int) (*image)->rows-(int) width-x);
           break;
         }
@@ -9956,7 +9956,7 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
       /*
         Request JPEG quality from user.
       */
-      (void) sprintf(quality,"%u",image_info.quality);
+      FormatString(quality,"%u",image_info.quality);
       status=XDialogWidget(display,windows,"Save","Enter JPEG quality:",
         quality);
       if (*quality == '\0')
@@ -9975,9 +9975,9 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
       /*
         Request page geometry from user.
       */
-      (void) sprintf(geometry,PSPageGeometry);
+      FormatString(geometry,PSPageGeometry);
       if (Latin1Compare(image_info.magick,"PDF") == 0)
-        (void) sprintf(geometry,PDFPageGeometry);
+        FormatString(geometry,PDFPageGeometry);
       if (image_info.page != (char *) NULL)
         (void) strcpy(geometry,image_info.page);
       XListBrowserWidget(display,windows,&windows->widget,PageSizes,"Select",
@@ -9995,7 +9995,7 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
   image->orphan=False;
   if (save_image == (Image *) NULL)
     return(False);
-  (void) sprintf(geometry,"%dx%d!",windows->image.ximage->width,
+  FormatString(geometry,"%dx%d!",windows->image.ximage->width,
     windows->image.ximage->height);
   TransformImage(&save_image,windows->image.crop_geometry,geometry);
   if (resource_info->quantize_info.number_colors != 0)
@@ -10340,7 +10340,7 @@ static void XSetCropGeometry(Display *display,XWindows *windows,
       /*
         Display info on cropping rectangle.
       */
-      (void) sprintf(text," %ux%u%+d%+d",crop_info->width,crop_info->height,
+      FormatString(text," %ux%u%+d%+d",crop_info->width,crop_info->height,
         crop_info->x,crop_info->y);
       XInfoWidget(display,windows,text);
     }
@@ -10379,7 +10379,7 @@ static void XSetCropGeometry(Display *display,XWindows *windows,
   height=DownShift(crop_info->height*scale_factor);
   if (height == 0)
     height=1;
-  (void) sprintf(windows->image.crop_geometry,"%ux%u%+d%+d",width,height,x,y);
+  FormatString(windows->image.crop_geometry,"%ux%u%+d%+d",width,height,x,y);
 }
 
 /*
@@ -10761,7 +10761,7 @@ static void XTranslateImage(Display *display,XWindows *windows,
   /*
     Refresh Image window.
   */
-  (void) sprintf(text," %ux%u%+d%+d ",windows->image.width,
+  FormatString(text," %ux%u%+d%+d ",windows->image.width,
     windows->image.height,windows->image.x,windows->image.y);
   XInfoWidget(display,windows,text);
   XCheckRefreshWindows(display,windows);
@@ -11044,7 +11044,7 @@ static Image *XVisualDirectoryImage(Display *display,
   */
   background_resources=(*resource_info);
   background_resources.window_id=window_id;
-  (void) sprintf(background_resources.window_id,"0x%lx",windows->image.id);
+  FormatString(background_resources.window_id,"0x%lx",windows->image.id);
   background_resources.backdrop=True;
   /*
     Read each image and convert them to a tile.
@@ -11215,7 +11215,7 @@ Export unsigned int XDisplayBackgroundImage(Display *display,
   (void) strcpy(visual_type,"default");
   status=XGetWindowAttributes(display,window_info.id,&window_attributes);
   if (status != False)
-    (void) sprintf(visual_type,"0x%lx",
+    FormatString(visual_type,"0x%lx",
       XVisualIDFromVisual(window_attributes.visual));
   if (visual_info == (XVisualInfo *) NULL)
     {
@@ -11275,7 +11275,7 @@ Export unsigned int XDisplayBackgroundImage(Display *display,
   */
   window_info.width=image->columns;
   window_info.height=image->rows;
-  (void) sprintf(geometry,"%ux%u+0+0>",window_attributes.width,
+  FormatString(geometry,"%ux%u+0+0>",window_attributes.width,
     window_attributes.height);
   (void) ParseImageGeometry(geometry,&window_info.x,&window_info.y,
     &window_info.width,&window_info.height);
@@ -11330,7 +11330,7 @@ Export unsigned int XDisplayBackgroundImage(Display *display,
         MagickError(ResourceLimitError,"Unable to display on window",
           "Memory allocation failed");
       size_hints->flags=(long) NULL;
-      (void) sprintf(default_geometry,"%ux%u",width,height);
+      FormatString(default_geometry,"%ux%u",width,height);
       flags=XWMGeometry(display,visual_info->screen,resources.image_geometry,
         default_geometry,window_info.border_width,size_hints,&window_info.x,
         &window_info.y,(int *) &width,(int *) &height,&gravity);
@@ -12031,19 +12031,19 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       p=displayed_image->filename+Extent(displayed_image->filename)-1;
       while ((p > displayed_image->filename) && (*(p-1) != *BasenameSeparator))
         p--;
-      (void) sprintf(windows->image.name,"ImageMagick: %s[%u]",p,
+      FormatString(windows->image.name,"ImageMagick: %s[%u]",p,
         displayed_image->scene);
       q=displayed_image;
       while (q->previous != (Image *) NULL)
         q=q->previous;
       for (count=1; q->next != (Image *) NULL; count++)
         q=q->next;
-      (void) sprintf(windows->image.name,"ImageMagick: %s[%u of %u]",p,
+      FormatString(windows->image.name,"ImageMagick: %s[%u of %u]",p,
         displayed_image->scene,count);
       if ((displayed_image->previous == (Image *) NULL) &&
           (displayed_image->next == (Image *) NULL) &&
           (displayed_image->scene == 0))
-        (void) sprintf(windows->image.name,"ImageMagick: %s",p);
+        FormatString(windows->image.name,"ImageMagick: %s",p);
       (void) strcpy(windows->image.icon_name,p);
     }
   if (resource_info->immutable)
@@ -12052,7 +12052,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   windows->image.geometry=resource_info->image_geometry;
   windows->image.width=displayed_image->columns;
   windows->image.height=displayed_image->rows;
-  (void) sprintf(geometry,"%ux%u+0+0>!",
+  FormatString(geometry,"%ux%u+0+0>!",
     XDisplayWidth(display,visual_info->screen),
     XDisplayHeight(display,visual_info->screen));
   (void) ParseImageGeometry(geometry,&windows->image.x,&windows->image.y,
@@ -12175,7 +12175,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     resource_info,&windows->command);
   windows->command.data=MagickMenus;
   (void) XCommandWidget(display,windows,CommandMenu,(XEvent *) NULL);
-  (void) sprintf(resource_name,"%s.command",resource_info->client_name);
+  FormatString(resource_name,"%s.command",resource_info->client_name);
   windows->command.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
   windows->command.name=MagickTitle;
@@ -12205,7 +12205,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     FreeMemory((char *) windows->widget.name);
   XGetWindowInfo(display,visual_info,map_info,pixel_info,font_info,
     resource_info,&windows->widget);
-  (void) sprintf(resource_name,"%s.widget",resource_info->client_name);
+  FormatString(resource_name,"%s.widget",resource_info->client_name);
   windows->widget.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
   windows->widget.name=(char *) AllocateMemory(MaxTextExtent*sizeof(char));
@@ -12272,14 +12272,14 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   XGetWindowInfo(display,visual_info,map_info,pixel_info,font_info,
     resource_info,&windows->magnify);
   windows->magnify.shared_memory=resource_info->use_shared_memory;
-  (void) sprintf(resource_name,"%s.magnify",resource_info->client_name);
+  FormatString(resource_name,"%s.magnify",resource_info->client_name);
   windows->magnify.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
   windows->magnify.name=(char *) AllocateMemory(MaxTextExtent*sizeof(char));
   if (windows->magnify.name == NULL)
     MagickError(ResourceLimitError,"Unable to create Magnify window",
       "Memory allocation failed");
-  (void) sprintf(windows->magnify.name,"Magnify %uX",resource_info->magnify);
+  FormatString(windows->magnify.name,"Magnify %uX",resource_info->magnify);
   windows->magnify.cursor=XMakeCursor(display,windows->image.id,
     map_info->colormap,resource_info->background_color,
     resource_info->foreground_color);
@@ -12315,7 +12315,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   windows->pan.name="Pan Icon";
   windows->pan.width=windows->icon.width;
   windows->pan.height=windows->icon.height;
-  (void) sprintf(resource_name,"%s.pan",resource_info->client_name);
+  FormatString(resource_name,"%s.pan",resource_info->client_name);
   windows->pan.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
   (void) ParseImageGeometry(windows->pan.geometry,&windows->pan.x,

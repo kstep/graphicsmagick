@@ -3114,7 +3114,7 @@ static Image *ReadGIFImage(ImageInfo *image_info)
     (void) ReadData((char *) &flag,1,1,image->file);
     image->interlace=BitSet(flag,0x40) ? PlaneInterlace : NoInterlace;
     image->colors=!BitSet(flag,0x80) ? global_colors : 1 << ((flag & 0x07)+1);
-    (void) sprintf(geometry,"%ux%u%+d%+d",page_info.width,page_info.height,
+    FormatString(geometry,"%ux%u%+d%+d",page_info.width,page_info.height,
       page_info.x,page_info.y);
     if (image_info->page == (char *) NULL)
       image->page=PostscriptGeometry(geometry);
@@ -5481,7 +5481,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
           annotate_info.text=text;
           annotate_info.width=XTextWidth(font_info,text,Extent(text));
           annotate_info.height=font_info->ascent+font_info->descent;
-          (void) sprintf(annotate_info.geometry,"%ux%u+0+0",
+          FormatString(annotate_info.geometry,"%ux%u+0+0",
             annotate_info.width,annotate_info.height);
           cache_info=local_info;
           /*
@@ -5518,7 +5518,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
   */
   local_info.density=(char *) NULL;
   local_info.page=page;
-  (void) sprintf(local_info.page,"%ux%u+0+0!",
+  FormatString(local_info.page,"%ux%u+0+0!",
     local_info.pointsize*Extent(text),local_info.pointsize << 1);
   TemporaryFilename(filename);
   file=fopen(filename,WriteBinaryType);
@@ -5572,9 +5572,10 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
     }
   }
   crop_info.width++;
-  (void) sprintf(geometry,"%ux%u%+d%+d",crop_info.width,crop_info.height,
+  FormatString(geometry,"%ux%u%+d%+d",crop_info.width,crop_info.height,
     crop_info.x,crop_info.y);
   TransformImage(&image,geometry,(char *) NULL);
+  image->class=DirectClass;
   image->matte=True;
   q=image->pixels;
   for (i=0; i < image->packets; i++)
@@ -6967,8 +6968,8 @@ static Image *ReadPCDImage(const ImageInfo *image_info)
       for (j=1; j <= number_images; j++)
       {
         handler=SetMonitorHandler((MonitorHandler) NULL);
-        (void) sprintf(image->filename,"images/img%04d.pcd",j);
-        (void) sprintf(image->magick_filename,"images/img%04d.pcd",j);
+        FormatString(image->filename,"images/img%04d.pcd",j);
+        FormatString(image->magick_filename,"images/img%04d.pcd",j);
         image->scene=j;
         image->columns=width;
         image->rows=height;
@@ -7843,7 +7844,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info)
       if (count != 2)
         image->y_resolution=image->x_resolution;
     }
-  (void) sprintf(density,"%gx%g",image->x_resolution,image->y_resolution);
+  FormatString(density,"%gx%g",image->x_resolution,image->y_resolution);
   bounding_box.width=612;
   bounding_box.height=792;
   bounding_box.x=0;
@@ -7898,7 +7899,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info)
   if (image_info->page != (char *) NULL)
     (void) ParseImageGeometry(image_info->page,&bounding_box.x,&bounding_box.y,
       &bounding_box.width,&bounding_box.height);
-  (void) sprintf(geometry,"%ux%u",(unsigned int) (((bounding_box.width*
+  FormatString(geometry,"%ux%u",(unsigned int) (((bounding_box.width*
     image->x_resolution)/dx_resolution)+0.5),(unsigned int)
     (((bounding_box.height*image->y_resolution)/dy_resolution)+0.5));
   if (ferror(file))
@@ -7917,7 +7918,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info)
   */
   *options='\0';
   if (image_info->subrange != 0)
-    (void) sprintf(options,"-dFirstPage=%u -dLastPage=%u",
+    FormatString(options,"-dFirstPage=%u -dLastPage=%u",
       image_info->subimage+1,image_info->subimage+image_info->subrange);
   (void) strcpy(filename,image_info->filename);
   for (i=0; i < 50; i++)
@@ -7930,7 +7931,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info)
       break;
   }
   alias_bits=image_info->dither && !image_info->monochrome ? 4 : 1;
-  (void) sprintf(command,delegate_info.commands,alias_bits,alias_bits,geometry,
+  FormatString(command,delegate_info.commands,alias_bits,alias_bits,geometry,
     density,options,image_info->filename,postscript_filename);
   ProgressMonitor(RenderPostscriptText,0,8);
   status=SystemCommand(image_info->verbose,command);
@@ -8421,7 +8422,7 @@ Export Image *ReadPICTImage(ImageInfo *image_info)
           if (tiled_image->class == PseudoClass)
             SyncImage(tiled_image);
           (void) FreeMemory((char *) pixels);
-          (void) sprintf(geometry,"%ux%u",
+          FormatString(geometry,"%ux%u",
             Max(image->columns,tiled_image->columns)+destination.left,
             Max(image->rows,tiled_image->rows)+destination.top);
           TransformImage(&image,(char *) NULL,geometry);
@@ -8502,7 +8503,7 @@ Export Image *ReadPICTImage(ImageInfo *image_info)
         (void) remove(local_info.filename);
         if (tiled_image == (Image *) NULL)
           continue;
-        (void) sprintf(geometry,"%ux%u",
+        FormatString(geometry,"%ux%u",
           Max(image->columns,tiled_image->columns),
           Max(image->rows,tiled_image->rows));
         TransformImage(&image,(char *) NULL,geometry);
@@ -10203,7 +10204,7 @@ static Image *ReadPSImage(const ImageInfo *image_info)
   file=fopen(postscript_filename,WriteBinaryType);
   if (file == (FILE *) NULL)
     PrematureExit(FileOpenWarning,"Unable to write file",image);
-  (void) sprintf(translate_geometry,"%f %f translate\n              ",0.0,0.0);
+  FormatString(translate_geometry,"%f %f translate\n              ",0.0,0.0);
   (void) fputs(translate_geometry,file);
   /*
     Set the page geometry.
@@ -10217,7 +10218,7 @@ static Image *ReadPSImage(const ImageInfo *image_info)
       if (count != 2)
         image->y_resolution=image->x_resolution;
     }
-  (void) sprintf(density,"%gx%g",image->x_resolution,image->y_resolution);
+  FormatString(density,"%gx%g",image->x_resolution,image->y_resolution);
   bounding_box.width=612;
   bounding_box.height=792;
   bounding_box.x=0;
@@ -10279,7 +10280,7 @@ static Image *ReadPSImage(const ImageInfo *image_info)
     /*
       Set Postscript render geometry.
     */
-    (void) sprintf(translate_geometry,"%f %f translate\n",-lower.x,-lower.y);
+    FormatString(translate_geometry,"%f %f translate\n",-lower.x,-lower.y);
     width=(unsigned int) (upper.x-lower.x+1);
     if ((float) ((int) upper.x) != upper.x)
       width++;
@@ -10297,7 +10298,7 @@ static Image *ReadPSImage(const ImageInfo *image_info)
   if (image_info->page != (char *) NULL)
     (void) ParseImageGeometry(image_info->page,&bounding_box.x,&bounding_box.y,
       &bounding_box.width,&bounding_box.height);
-  (void) sprintf(geometry,"%ux%u",(unsigned int) (((bounding_box.width*
+  FormatString(geometry,"%ux%u",(unsigned int) (((bounding_box.width*
     image->x_resolution)/dx_resolution)+0.5),(unsigned int)
     (((bounding_box.height*image->y_resolution)/dy_resolution)+0.5));
   if (ferror(file))
@@ -10318,7 +10319,7 @@ static Image *ReadPSImage(const ImageInfo *image_info)
   */
   *options='\0';
   if (image_info->subrange != 0)
-    (void) sprintf(options,"-dFirstPage=%u -dLastPage=%u",
+    FormatString(options,"-dFirstPage=%u -dLastPage=%u",
       image_info->subimage+1,image_info->subimage+image_info->subrange);
   (void) strcpy(filename,image_info->filename);
   for (i=0; i < 50; i++)
@@ -10331,7 +10332,7 @@ static Image *ReadPSImage(const ImageInfo *image_info)
       break;
   }
   alias_bits=image_info->dither && !image_info->monochrome ? 4 : 1;
-  (void) sprintf(command,delegate_info.commands,alias_bits,alias_bits,geometry,
+  FormatString(command,delegate_info.commands,alias_bits,alias_bits,geometry,
     density,options,image_info->filename,postscript_filename);
   ProgressMonitor(RenderPostscriptText,0,8);
   status=SystemCommand(image_info->verbose,command);
@@ -13338,7 +13339,7 @@ static Image *ReadTEXTImage(const ImageInfo *image_info)
     handler=SetMonitorHandler((MonitorHandler) NULL);
     if (Extent(text) > 0)
       text[Extent(text)-1]='\0';
-    (void) sprintf(annotate_info.geometry,"%+d%+d",bounding_box.x,
+    FormatString(annotate_info.geometry,"%+d%+d",bounding_box.x,
       bounding_box.y+offset);
     AnnotateImage(image,&annotate_info);
     offset+=annotate_info.height;
@@ -13457,10 +13458,10 @@ static void TIFFWarningMessage(const char *module,const char *format,
   p=message;
   if (module != (char *) NULL)
     {
-      (void) sprintf(p,"%s: ",module);
+      FormatString(p,"%s: ",module);
       p+=Extent(message);
     }
-  (void) vsprintf(p,format,warning);
+  FormatString(p,format,warning);
   (void) strcat(p,".");
   MagickWarning(DelegateWarning,message,(char *) NULL);
 }
@@ -14575,7 +14576,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info)
   local_info.pen="black";
   local_info.pointsize=18;
   local_info.font=font;
-  (void) sprintf(local_info.font,"@%s",image_info->filename);
+  FormatString(local_info.font,"@%s",image_info->filename);
   GetAnnotateInfo(&annotate_info);
   annotate_info.image_info=(ImageInfo *) &local_info;
   annotate_info.geometry=geometry;
@@ -14590,28 +14591,28 @@ static Image *ReadTTFImage(const ImageInfo *image_info)
   */
   y=10;
   (void) strcpy(annotate_info.text,"abcdefghijklmnopqrstuvwxyz");
-  (void) sprintf(annotate_info.geometry,"+10%+d",y);
+  FormatString(annotate_info.geometry,"+10%+d",y);
   AnnotateImage(image,&annotate_info);
   y+=20;
   (void) strcpy(annotate_info.text,"ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-  (void) sprintf(annotate_info.geometry,"+10%+d",y);
+  FormatString(annotate_info.geometry,"+10%+d",y);
   AnnotateImage(image,&annotate_info);
   y+=20;
   (void) strcpy(annotate_info.text,"1234567890.:,;(:*!?')");
-  (void) sprintf(annotate_info.geometry,"+10%+d",y);
+  FormatString(annotate_info.geometry,"+10%+d",y);
   AnnotateImage(image,&annotate_info);
   y+=20;
   for (i=12; i <= 72; i+=6)
   {
     y+=i+6;
     local_info.pointsize=18;
-    (void) sprintf(annotate_info.text,"%d",i);
-    (void) sprintf(annotate_info.geometry,"+10%+d",y);
+    FormatString(annotate_info.text,"%d",i);
+    FormatString(annotate_info.geometry,"+10%+d",y);
     AnnotateImage(image,&annotate_info);
     local_info.pointsize=i;
     (void) strcpy(annotate_info.text,
       "That which does not kill us, makes us stronger");
-    (void) sprintf(annotate_info.geometry,"+40%+d",y);
+    FormatString(annotate_info.geometry,"+40%+d",y);
     AnnotateImage(image,&annotate_info);
     if (i >= 24)
       i+=6;

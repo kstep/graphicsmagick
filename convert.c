@@ -56,8 +56,8 @@
 %  Where options include:
 %    -adjoin              join images into a single multi-image file
 %    -align type          Left, Center, Right
-%    -append              append a set of images
-%    -average             average a set of images
+%    -append              append an image sequence
+%    -average             average an image sequence
 %    -blur factor         apply a filter to blur the image
 %    -border geometry     surround image with a border of color
 %    -box color           color for annotation bounding box
@@ -98,6 +98,7 @@
 %    -matte               store matte channel if the image has one
 %    -modulate value      vary the brightness, saturation and hue
 %    -monochrome          transform image to black and white
+%    -morph value         morph an image sequence
 %    -negate              apply color inversion to image
 %    -noise               add or reduce noise in an image
 %    -normalize           transform image to span the full range of colors
@@ -244,6 +245,66 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
+%  Method ConcatentateImages reads each file in sequence and writes it to a
+%  single file.  It is required by the delegates subsystem.
+%
+%  The format of the ConcatentateImages routine is:
+%
+%      ConcatentateImages(argc,argv)
+%
+%  A description of each parameter follows:
+%
+%    o argc: Specifies a pointer to an integer describing the number of
+%      elements in the argument vector.
+%
+%    o argv: Specifies a pointer to a text array containing the command line
+%      arguments.
+%
+%
+*/
+static void ConcatenateImages(int argc,char **argv)
+{
+  FILE
+    *input,
+    *output;
+
+  register int
+    c,
+    i;
+
+  /*
+    Open output file.
+  */
+  output=fopen(argv[argc-1],WriteBinaryType);
+  if (output == (FILE *) NULL)
+    MagickError(FileOpenError,"Unable to open file",argv[argc-1]);
+  for (i=2; i < (argc-1); i++)
+  {
+    input=fopen(argv[i],ReadBinaryType);
+    if (input == (FILE *) NULL)
+      {
+        MagickWarning(FileOpenWarning,"Unable to open file",argv[i]);
+        continue;
+      }
+    for (c=fgetc(input); c != EOF; c=fgetc(input))
+      (void) fputc((char) c,output);
+    (void) fclose(input);
+  }
+  (void) fclose(output);
+  Exit(0);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U s a g e                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
 %  Procedure Usage displays the program usage;
 %
 %  The format of the Usage routine is:
@@ -353,8 +414,8 @@ static void Usage(const char *client_name)
     {
       "-adjoin              join images into a single multi-image file",
       "-align type          Left, Center, Right",
-      "-append              append a set of images",
-      "-average             average a set of images",
+      "-append              append an image sequence",
+      "-average             average an image sequence",
       "-blur factor         apply a filter to blur the image",
       "-border geometry     surround image with a border of color",
       "-box color           color for annotation bounding box",
@@ -396,6 +457,7 @@ static void Usage(const char *client_name)
       "-matte               store matte channel if the image has one",
       "-modulate value      vary the brightness, saturation, and hue",
       "-monochrome          transform image to black and white",
+      "-morph value         morph an image sequence",
       "-negate              apply color inversion to image",
       "-noise               add or reduce noise in an image",
       "-normalize           transform image to span the full range of colors",
@@ -493,6 +555,7 @@ int main(int argc,char **argv)
 
   unsigned int
     average,
+    morph,
     global_colormap,
     scene;
 
@@ -505,6 +568,7 @@ int main(int argc,char **argv)
     Usage(client_name);
   append=0;
   average=False;
+  morph=0;
   filename=(char *) NULL;
   image=(Image *) NULL;
   global_colormap=False;
@@ -514,6 +578,8 @@ int main(int argc,char **argv)
     Parse command-line arguments.
   */
   (void) ExpandFilenames(&argc,&argv);
+  if ((argc > 2) && (strcmp("-concatenate",argv[1]) == 0))
+    ConcatenateImages(argc,argv);
   for (i=1; i < (argc-1); i++)
   {
     option=argv[i];
@@ -1115,6 +1181,18 @@ int main(int argc,char **argv)
                 }
               break;
             }
+          if (strncmp("morph",option+1,3) == 0)
+            {
+              morph=0;
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                    MagickError(OptionError,"Missing frames",option);
+                  morph=atoi(argv[i]);
+                }
+              break;
+            }
           if (strncmp("monochrome",option+1,4) == 0)
             {
               image_info.monochrome=(*option == '-');
@@ -1589,7 +1667,7 @@ int main(int argc,char **argv)
         *appended_image;
 
       /*
-        Append a set of images.
+        Append an image sequence.
       */
       appended_image=AppendImages(image,append == 1);
       if (appended_image != (Image *) NULL)
@@ -1604,7 +1682,7 @@ int main(int argc,char **argv)
         *averaged_image;
 
       /*
-        Average a set of images.
+        Average an image sequence.
       */
       averaged_image=AverageImages(image);
       if (averaged_image != (Image *) NULL)
@@ -1613,10 +1691,25 @@ int main(int argc,char **argv)
           image=averaged_image;
         }
     }
+  if (morph != 0)
+    {
+      Image
+        *morphed_image;
+
+      /*
+        Morph an image sequence.
+      */
+      morphed_image=MorphImages(image,morph);
+      if (morphed_image != (Image *) NULL)
+        {
+          DestroyImages(image);
+          image=morphed_image;
+        }
+    }
   if (global_colormap)
     (void) MapImages(image,(Image *) NULL,image_info.dither);
   /*
-    Transmogrify image as defined by the image processing options.
+    Write converted image.
   */
   (void) strcpy(image_info.filename,argv[i]);
   for (p=image; p != (Image *) NULL; p=p->next)

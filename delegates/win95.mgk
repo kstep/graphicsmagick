@@ -82,7 +82,7 @@
 	|gzip -cf > %o
 
 bmp<=win
-	mspaint %i
+	c:\Program Files\Accessories\mspaint %i
 
 browse=>
 	start http://www.wizards.dupont.com/cristy/ImageMagick.html &
@@ -135,12 +135,12 @@ launch=>bmp
 
 mpg=>
 	mpeg2decode -q -b %i -f -r -o3 %o%%d
-	convert %o*.ppm %o
+	convert -concatenate %o*.ppm %o
 	del %o*.ppm
 
 m2v=>
 	mpeg2decode -q -b %i -f -r -o3 %o%%d
-	convert %o*.ppm %o
+	convert -concatenate %o*.ppm %o
 	del %o*.ppm
 
 pgp=>
