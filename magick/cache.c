@@ -2003,7 +2003,7 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   P o p I m a g e P i x e l s                                               %
+%   P o p I m a g e P i x e l s                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2679,7 +2679,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   P u s h I m a g e P i x e l s                                             %
+%   P u s h I m a g e P i x e l s                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %

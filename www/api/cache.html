@@ -29,6 +29,8 @@
 		<LI><A HREF="#getonepixel">GetOnePixel</A>
 		<LI><A HREF="#getpixels">GetPixels</A>
 		<LI><A HREF="#modifycache">ModifyCache</A>
+		<LI><A HREF="#popimagepixels">PopImagePixels</A>
+		<LI><A HREF="#pushimagepixels">PushImagePixels</A>
 		<LI><A HREF="#referencecache">ReferenceCache</A>
 		<LI><A HREF="#setimagepixels">SetImagePixels</A>
 		<LI><A HREF="#setimagevirtualpixeltype">SetImageVirtualPixelType</A>
@@ -56,6 +58,8 @@
 <P>PixelPacket * <STRONG>GetOnePixel</STRONG>( const Image image, const long x, const long y );</P>
 <P>PixelPacket * <STRONG>GetPixels</STRONG>( const Image image );</P>
 <P>unsigned int  <STRONG>ModifyCache</STRONG>( Image *image );</P>
+<P>unsigned int  <STRONG>PopImagePixels</STRONG>( const Image *, const QuantumType quantum, unsigned char *destination );</P>
+<P>unsigned int  <STRONG>PushImagePixels</STRONG>( Image *image, const QuantumType quantum, const unsigned char *source );</P>
 <P>Cache  <STRONG>ReferenceCache</STRONG>( Cache cache_info );</P>
 <P>PixelPacket * <STRONG>SetImagePixels</STRONG>( Image *image, const long x, const long y, const unsigned long columns, const unsigned long rows );</P>
 <P><STRONG>SetImageVirtualPixelType</STRONG>( Image *image, const VirtualPixelType type, const PixelPacket *pixel );</P>
@@ -192,6 +196,54 @@ The image.
 <dd><p></p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="popimagepixels">PopImagePixels</A></H2>
+<blockquote>PopImagePixels() transfers one or more pixel components from the image pixel cache to a user supplied buffer. True is returned if the pixels are successfully transferred, otherwise False. </blockquote><P>The format of the PopImagePixels method is:</P>
+<blockquote>unsigned int PopImagePixels ( const <A HREF="types/Image.html">Image</A> *, const QuantumType quantum, unsigned char *destination ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>status:</STRONG><BR>
+<DD>
+Method PopImagePixels returns True if the pixels are successfully transferred, otherwise False.
+<P></P>
+<dd><p></p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The image.
+<P></P>
+<dd><p></p><dt><STRONG><A NAME="item_o_quantum%3A">quantum:</A></STRONG><BR>
+<DD>
+Declare which pixel components to transfer 
+<FONT SIZE=-1>(RGB,</FONT> 
+<FONT SIZE=-1>RGBA,</FONT> etc).
+<P></P>
+<dd><p></p><dt><STRONG><A NAME="item_o_destination%3A">destination:</A></STRONG><BR>
+<DD>
+The components are transferred to this buffer.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="pushimagepixels">PushImagePixels</A></H2>
+<blockquote>PushImagePixels() transfers one or more pixel components from a user supplied buffer into the image pixel cache of an image. It returns True if the pixels are successfully transferred, otherwise False. </blockquote><P>The format of the PushImagePixels method is:</P>
+<blockquote>unsigned int PushImagePixels ( <A HREF="types/Image.html">Image</A> *image, const QuantumType quantum, const unsigned char *source ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>status:</STRONG><BR>
+<DD>
+Method PushImagePixels returns True if the pixels are successfully transferred, otherwise False.
+<P></P>
+<dd><p></p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The image.
+<P></P>
+<dd><p></p><dt><STRONG>quantum:</STRONG><BR>
+<DD>
+Declare which pixel components to transfer (red, green, blue, opacity, 
+<FONT SIZE=-1>RGB,</FONT> or 
+<FONT SIZE=-1>RGBA).</FONT>
+<P></P>
+<dd><p></p><dt><STRONG><A NAME="item_o_source%3A">source:</A></STRONG><BR>
+<DD>
+The pixel components are transferred from this buffer.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="referencecache">ReferenceCache</A></H2>
