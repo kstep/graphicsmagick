@@ -208,22 +208,22 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     Initialize 3D effects color.
   */
   matte=image->matte_color;
-  accentuate.red=(Quantum) (((double) matte.red*(MaxRGB-
-    AccentuateModulate)+(double) MaxRGB*AccentuateModulate)/MaxRGB+0.5);
-  accentuate.green=(Quantum) (((double) matte.green*(MaxRGB-
-    AccentuateModulate)+(double) MaxRGB*AccentuateModulate)/MaxRGB+0.5);
-  accentuate.blue=(Quantum) (((double) matte.blue*(MaxRGB-
-    AccentuateModulate)+(double) MaxRGB*AccentuateModulate)/MaxRGB+0.5);
-  accentuate.opacity=(Quantum) (((double) matte.opacity*(MaxRGB-
-    AccentuateModulate)+(double) MaxRGB*AccentuateModulate)/MaxRGB+0.5);
-  highlight.red=(Quantum) (((double) matte.red*(MaxRGB-
-    HighlightModulate)+(double) MaxRGB*HighlightModulate)/MaxRGB+0.5);
-  highlight.green=(Quantum) (((double) matte.green*(MaxRGB-
-    HighlightModulate)+(double) MaxRGB*HighlightModulate)/MaxRGB+0.5);
-  highlight.blue=(Quantum) (((double) matte.blue*(MaxRGB-
-    HighlightModulate)+(double) MaxRGB*HighlightModulate)/MaxRGB+0.5);
-  highlight.opacity=(Quantum) (((double) matte.opacity*(MaxRGB-
-    HighlightModulate)+(double) MaxRGB*HighlightModulate)/MaxRGB+0.5);
+  accentuate.red=(Quantum) ((((double) MaxRGB-AccentuateModulate)*
+    matte.red+((double) MaxRGB*AccentuateModulate))/MaxRGB+0.5);
+  accentuate.green=(Quantum) ((((double) MaxRGB-AccentuateModulate)*
+    matte.green+((double) MaxRGB*AccentuateModulate))/MaxRGB+0.5);
+  accentuate.blue=(Quantum) ((((double) MaxRGB-AccentuateModulate)*
+    matte.blue+((double) MaxRGB*AccentuateModulate))/MaxRGB+0.5);
+  accentuate.opacity=(Quantum) ((((double) MaxRGB-AccentuateModulate)*
+    matte.opacity+((double) MaxRGB*AccentuateModulate))/MaxRGB+0.5);
+  highlight.red=(Quantum) ((((double) MaxRGB-HighlightModulate)*
+    matte.red+((double) MaxRGB*HighlightModulate))/MaxRGB+0.5);
+  highlight.green=(Quantum) ((((double) MaxRGB-HighlightModulate)*
+    matte.green+((double) MaxRGB*HighlightModulate))/MaxRGB+0.5);
+  highlight.blue=(Quantum) ((((double) MaxRGB-HighlightModulate)*
+    matte.blue+((double) MaxRGB*HighlightModulate))/MaxRGB+0.5);
+  highlight.opacity=(Quantum) ((((double) MaxRGB-HighlightModulate)*
+    matte.opacity+((double) MaxRGB*HighlightModulate))/MaxRGB+0.5);
   shadow.red=(Quantum) (((double) matte.red*ShadowModulate)/MaxRGB+0.5);
   shadow.green=(Quantum) (((double) matte.green*ShadowModulate)/MaxRGB+0.5);
   shadow.blue=(Quantum) (((double) matte.blue*ShadowModulate)/MaxRGB+0.5);
