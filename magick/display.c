@@ -9556,8 +9556,6 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
     {
       RotateColorCommand,
       RotateDirectionCommand,
-      RotateCropCommand,
-      RotateSharpenCommand,
       RotateHelpCommand,
       RotateDismissCommand
     };
@@ -9606,7 +9604,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
         Map Command widget.
       */
       windows->command.name="Rotate";
-      windows->command.data=4;
+      windows->command.data=2;
       (void) XCommandWidget(display,windows,RotateMenu,(XEvent *) NULL);
       XMapRaised(display,windows->command.id);
       XClientMessage(display,windows->image.id,windows->im_protocols,
