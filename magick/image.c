@@ -993,8 +993,8 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
     }
   clone_image->page.width=columns;
   clone_image->page.height=rows;
-  clone_image->page.x*=(int) ((double) columns/clone_image->columns);
-  clone_image->page.y*=(int) ((double) rows/clone_image->rows);
+  clone_image->page.x*=(long) ((double) columns/clone_image->columns);
+  clone_image->page.y*=(long) ((double) rows/clone_image->rows);
   clone_image->columns=columns;
   clone_image->rows=rows;
   return(clone_image);
@@ -1289,8 +1289,8 @@ MagickExport unsigned int CompositeImage(Image *image,
     pixels=p;
     if (x_offset < 0)
       p-=x_offset;
-    composite_indexes=GetIndexes(composite_image);
     indexes=GetIndexes(image);
+    composite_indexes=GetIndexes(composite_image);
     for (x=0; x < (long) image->columns; x++)
     {
       if (x < x_offset)
@@ -5821,7 +5821,7 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
     indexes=GetIndexes(image);
     for (x=0; x < (long) image->columns; x++)
     {
-      if (image->storage_class == PseudoClass)
+      if (indexes != (IndexPacket *) NULL)
         indexes[x]=0;
       *q++=background_color;
     }

@@ -854,7 +854,8 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
         blue+=contribution[i].weight*(p+j)->blue;
         opacity+=contribution[i].weight*(p+j)->opacity;
       }
-      if (indexes != (IndexPacket *) NULL)
+      if ((indexes != (IndexPacket *) NULL) &&
+          (source_indexes != (IndexPacket *) NULL))
         {
           i=Min(Max((long) (center+0.5),start),stop-1);
           j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
@@ -975,7 +976,8 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
         blue+=contribution[i].weight*(p+j)->blue;
         opacity+=contribution[i].weight*(p+j)->opacity;
       }
-      if (indexes != (IndexPacket *) NULL)
+      if ((indexes != (IndexPacket *) NULL) &&
+          (source_indexes != (IndexPacket *) NULL))
         {
           i=Min(Max((long) (center+0.5),start),stop-1);
           j=(long) (contribution[i-start].pixel-contribution[0].pixel)*
@@ -1182,7 +1184,8 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
     *p;
 
   register IndexPacket
-    *indexes;
+    *indexes,
+    *sample_indexes;
 
   register long
     x;
@@ -1250,10 +1253,12 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
     */
     for (x=0; x < (long) sample_image->columns; x++)
       *q++=pixels[(long) x_offset[x]];
-    indexes=GetIndexes(sample_image);
-    if (indexes != (IndexPacket *) NULL)
+    indexes=GetIndexes(image);
+    sample_indexes=GetIndexes(sample_image);
+    if ((indexes != (IndexPacket *) NULL) &&
+        (sample_indexes != (IndexPacket *) NULL))
       for (x=0; x < (long) sample_image->columns; x++)
-        indexes[x]=(GetIndexes(image))[(long) x_offset[x]];
+        sample_indexes[x]=indexes[(long) x_offset[x]];
     if (!SyncImagePixels(sample_image))
       break;
     if (QuantumTick(y,sample_image->rows))

@@ -174,7 +174,8 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
     {
       if ((x < clone_info.x) || (x >= (long) (clone_info.x+clone_info.width)))
         {
-          if (indexes != (IndexPacket *) NULL)
+          if ((indexes != (IndexPacket *) NULL) &&
+              (chop_indexes != (IndexPacket *) NULL))
             *chop_indexes++=indexes[x];
           *q=(*p);
           q++;
@@ -202,7 +203,8 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
     {
       if ((x < clone_info.x) || (x >= (long) (clone_info.x+clone_info.width)))
         {
-          if (indexes != (IndexPacket *) NULL)
+          if ((indexes != (IndexPacket *) NULL) &&
+              (chop_indexes != (IndexPacket *) NULL))
             *chop_indexes++=indexes[x];
           *q=(*p);
           q++;
@@ -342,6 +344,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
     *p;
 
   register IndexPacket
+    *crop_indexes,
     *indexes;
 
   register PixelPacket
@@ -425,9 +428,11 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
       break;
     (void) memcpy(q,p,crop_image->columns*sizeof(PixelPacket));
     indexes=GetIndexes(image);
-    if (indexes != (IndexPacket *) NULL)
-      (void) memcpy(GetIndexes(crop_image),indexes,
-        crop_image->columns*sizeof(IndexPacket));
+    crop_indexes=GetIndexes(crop_image);
+    if ((indexes != (IndexPacket *) NULL) &&
+        (crop_indexes != (IndexPacket *) NULL))
+      (void) memcpy(crop_indexes,indexes,crop_image->columns*
+        sizeof(IndexPacket));
     if (!SyncImagePixels(crop_image))
       break;
     if (QuantumTick(y,crop_image->rows))
@@ -730,6 +735,7 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
     *p;
 
   register IndexPacket
+    *flip_indexes,
     *indexes;
 
   register PixelPacket
@@ -754,15 +760,16 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
   for (y=0; y < (long) flip_image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-    q=SetImagePixels(flip_image,0,(long) (flip_image->rows-y-1),
+    q=GetImagePixels(flip_image,0,(long) (flip_image->rows-y-1),
       flip_image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     (void) memcpy(q,p,flip_image->columns*sizeof(PixelPacket));
     indexes=GetIndexes(image);
-    if (indexes != (IndexPacket *) NULL)
-      (void) memcpy(GetIndexes(flip_image),indexes,
-        image->columns*sizeof(IndexPacket));
+    flip_indexes=GetIndexes(flip_image);
+    if ((indexes != (IndexPacket *) NULL) &&
+        (flip_indexes != (IndexPacket *) NULL))
+      (void) memcpy(flip_indexes,indexes,image->columns*sizeof(IndexPacket));
     status=SyncImagePixels(flip_image);
     if (status == False)
       break;
@@ -848,7 +855,8 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
     q+=flop_image->columns;
     for (x=0; x < (long) flop_image->columns; x++)
     {
-      if (flop_image->storage_class == PseudoClass)
+      if ((indexes != (IndexPacket *) NULL) &&
+          (flop_indexes != (IndexPacket *) NULL))
         flop_indexes[flop_image->columns-x-1]=indexes[x];
       q--;
       *q=(*p);
@@ -1293,7 +1301,8 @@ MagickExport Image *RollImage(const Image *image,const long x_offset,
       if (q == (PixelPacket *) NULL)
         break;
       roll_indexes=GetIndexes(roll_image);
-      if (image->storage_class == PseudoClass)
+      if ((indexes != (IndexPacket *) NULL) &&
+          (roll_indexes != (IndexPacket *) NULL))
         *roll_indexes=indexes[x];
       *q=(*p);
       p++;

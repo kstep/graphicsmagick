@@ -200,7 +200,8 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
     page;
 
   register IndexPacket
-    *indexes;
+    *indexes,
+    *rotate_indexes;
 
   register const PixelPacket
     *p;
@@ -241,9 +242,11 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
           break;
         (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
         indexes=GetIndexes(image);
-        if (indexes != (IndexPacket *) NULL)
-          (void) memcpy(GetIndexes(rotate_image),indexes,
-            image->columns*sizeof(IndexPacket));
+        rotate_indexes=GetIndexes(rotate_image);
+        if ((indexes != (IndexPacket *) NULL) &&
+            (rotate_indexes != (IndexPacket *) NULL))
+          (void) memcpy(rotate_indexes,indexes,image->columns*
+            sizeof(IndexPacket));
         if (!SyncImagePixels(rotate_image))
           break;
         if (QuantumTick(y,image->rows))
@@ -265,9 +268,11 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
           break;
         (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
         indexes=GetIndexes(image);
-        if (indexes != (IndexPacket *) NULL)
-          (void) memcpy(GetIndexes(rotate_image),indexes,
-            image->columns*sizeof(IndexPacket));
+        rotate_indexes=GetIndexes(rotate_image);
+        if ((indexes != (IndexPacket *) NULL) &&
+            (rotate_indexes != (IndexPacket *) NULL))
+          (void) memcpy(rotate_indexes,indexes,image->columns*
+            sizeof(IndexPacket));
         if (!SyncImagePixels(rotate_image))
           break;
         if (QuantumTick(y,image->rows))
@@ -291,10 +296,12 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         q+=image->columns;
-        indexes=GetIndexes(rotate_image);
-        if (indexes != (IndexPacket *) NULL)
+        indexes=GetIndexes(image);
+        rotate_indexes=GetIndexes(rotate_image);
+        if ((indexes != (IndexPacket *) NULL) &&
+            (rotate_indexes != (IndexPacket *) NULL))
           for (x=0; x < (long) image->columns; x++)
-            indexes[image->columns-x-1]=(GetIndexes(image))[x];
+            rotate_indexes[image->columns-x-1]=indexes[x];
         for (x=0; x < (long) image->columns; x++)
           *--q=(*p++);
         if (!SyncImagePixels(rotate_image))
@@ -320,10 +327,12 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         q+=image->columns;
         for (x=0; x < (long) image->columns; x++)
           *--q=(*p++);
-        indexes=GetIndexes(rotate_image);
-        if (indexes != (IndexPacket *) NULL)
+        indexes=GetIndexes(image);
+        rotate_indexes=GetIndexes(rotate_image);
+        if ((indexes != (IndexPacket *) NULL) &&
+            (rotate_indexes != (IndexPacket *) NULL))
           for (x=0; x < (long) image->columns; x++)
-            indexes[image->columns-x-1]=(GetIndexes(image))[x];
+            rotate_indexes[image->columns-x-1]=indexes[x];
         if (!SyncImagePixels(rotate_image))
           break;
         if (QuantumTick(y,image->rows))
@@ -493,12 +502,11 @@ static void XShearImage(Image *image,const double degrees,
         q=p-step;
         for (i=0; i < (long) width; i++)
         {
-if (0)
           if ((x_offset+i) < step)
             {
               p++;
               q++;
-          pixel=(*p);
+              pixel=(*p);
               continue;
             }
           red=(double) (pixel.red*(MaxRGB-alpha)+p->red*alpha)/MaxRGB;
