@@ -145,7 +145,7 @@ typedef enum
   BlobError = 435,
   CacheError = 440,
   StreamError = 445,
-  RegistryError = 445
+  RegistryError = 450
 } ExceptionType;
 
 typedef enum

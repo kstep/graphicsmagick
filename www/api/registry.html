@@ -1,0 +1,87 @@
+<HTML>
+<HEAD>
+<TITLE>NAME</TITLE>
+<LINK REV="made" HREF="mailto:ActivePerl@ActiveState.com">
+</HEAD>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"  vlink="#9900DD">
+
+<A NAME="__index__"></A>
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#name">
+<FONT SIZE=-1>NAME</FONT></A></LI>
+	<LI><A HREF="#synopsis">
+<FONT SIZE=-1>SYNOPSIS</FONT></A></LI>
+	<LI><A HREF="#function descriptions">
+<FONT SIZE=-1>FUNCTION</FONT> 
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></LI>
+	<UL>
+
+		<LI><A HREF="#deletemagickregistry">DeleteMagickRegistry</A></LI>
+		<LI><A HREF="#destroymagickregistry">DestroyMagickRegistry</A></LI>
+		<LI><A HREF="#getmagickregistry">GetMagickRegistry</A></LI>
+		<LI><A HREF="#setmagickregistry">SetMagickRegistry</A></LI>
+	</UL>
+
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="name">
+<FONT SIZE=-1>NAME</FONT></A></H1>
+<P>registry -</P>
+<P>
+<HR>
+<H1><A NAME="synopsis">
+<FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
+<P>unsigned int void  <STRONG>DeleteMagickRegistry</STRONG>( const long id );</P>
+<P><STRONG>DestroyMagickRegistry</STRONG>( )deallocates memory associated the magick registry.;</P>
+<P>const void * <STRONG>GetMagickRegistry</STRONG>( const long id, RegistryType *type, size_t *length );</P>
+<P>long  <STRONG>SetMagickRegistry</STRONG>( const void *blob, const size_t length, ExceptionInfo *exception );</P>
+<P>
+<HR>
+<H1><A NAME="function descriptions">
+<FONT SIZE=-1>FUNCTION</FONT> 
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
+<P>
+<H2><A NAME="deletemagickregistry">DeleteMagickRegistry</A></H2>
+<blockquote>DeleteMagickRegistry ( ) deletes an entry as defined by the id from theregistry. It returns True if the entry is deleted otherwise False.; </blockquote><blockquote>unsigned int void DeleteMagickRegistry ( const long id ); </blockquote><P>The format of the DeleteMagickRegistry method is:</P>
+<P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows: o id: The registry id.</P>
+<P>
+<H2><A NAME="destroymagickregistry">DestroyMagickRegistry</A></H2>
+<blockquote>DestroyMagickRegistry ( ) deallocates memory associated the magick registry.; </blockquote><P>The format of the DestroyMagickRegistry method is: void <CODE>DestroyMagickInfo(void)</CODE></P>
+<P>
+<H2><A NAME="getmagickregistry">GetMagickRegistry</A></H2>
+<blockquote>GetMagickRegistry ( ) gets a blob from the magick registry as defined by theid. If blob that matches the id is found, NULL is returned.; </blockquote><blockquote>const void *GetMagickRegistry ( const long id, RegistryType *type, size_t *length ); </blockquote><P>The format of the getMagickRegistry method is: 
+<FONT SIZE=-1>A</FONT> description of each parameter follows: o id: The registry id.</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_type%3A">type:</A></STRONG><BR>
+<DD>
+The type of registry entry.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_length%3A">length:</A></STRONG><BR>
+<DD>
+This size_t integer reflects the length in bytes of the blob.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="setmagickregistry">SetMagickRegistry</A></H2>
+<blockquote>SetMagickRegistry ( ) sets a blob into the registry and returns a unique ID.If an error occurs, an ID of -1 is returned.; </blockquote><blockquote>long SetMagickRegistry ( const void *blob, const size_t length, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>The format of the SetMagickRegistry method is: 
+<FONT SIZE=-1>A</FONT> description of each parameter follows: o blob: The address of a Binary Large OBject.</P>
+<DL><DL>
+<p><dt><STRONG>length:</STRONG><BR>
+<DD>
+This size_t integer reflects the length in bytes of the blob.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
+</DL></DL>
+
+</BODY>
+
+</HTML>

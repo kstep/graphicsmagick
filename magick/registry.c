@@ -56,265 +56,123 @@
 #include "define.h"
 
 /*
-  Global declarations.
-*/
-static long
-  id = 0;
-
-static RegistryInfo
-  *registry_list = (RegistryInfo *) NULL;
-
-static SemaphoreInfo
-  *registry_semaphore = (SemaphoreInfo *) NULL;
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                               %
-%                                                                               %
-%                                                                               %
-%   D e l e t e M a g i c k R e g i s t r y                                     %
-%                                                                               %
-%                                                                               %
-%                                                                               %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%  
-%  DeleteMagickRegistry() deletes an entry as defined by the id from the
-%  registry.  It returns True if the entry is deleted otherwise False.
-%  
-%  The format of the DeleteMagickRegistry method is:
-%      
-%      unsigned int void DeleteMagickRegistry(const long id)
-%  
-%  A description of each parameter follows:
-%    
-%    o id: The registry id.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e a d R E G I S T R Y I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
+%  Method ReadREGISTRYImage reads an image as a blob from memory.  It allocates
+%  the memory necessary for the new Image structure and returns a pointer to
+%  the new image.
 %
-*/
-MagickExport unsigned int DeleteMagickRegistry(const long id)
-{
-  RegistryInfo
-    *registry_info;
-
-  register RegistryInfo
-    *p;
-
-  unsigned int
-    delete;
-
-  delete=False;
-  AcquireSemaphoreInfo(&registry_semaphore);
-  for (p=registry_list; p != (RegistryInfo *) NULL; p=p->next)
-  {
-    if (p->id == id)
-      {
-        registry_info=p;
-        switch (p->type)
-        {
-          case ImageRegistryType:
-          {
-            DestroyImage((Image *) registry_info->blob);
-            break;
-          }
-          default:
-          {
-            LiberateMemory((void **) &registry_info->blob);
-            break;
-          }
-        }
-        if (registry_info->previous != (RegistryInfo *) NULL)
-          registry_info->previous->next=registry_info->next;
-        if (registry_info->next != (RegistryInfo *) NULL)
-          registry_info->next->previous=registry_info->previous;
-        LiberateMemory((void **) &registry_info);
-        registry_info=(RegistryInfo *) NULL;
-        delete=True;
-        break;
-      }
-  }
-  DestroySemaphoreInfo(registry_semaphore);
-  return(delete);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                               %
-%                                                                               %
-%                                                                               %
-%   D e s t r o y M a g i c k R e g i s t r y                                   %
-%                                                                               %
-%                                                                               %
-%                                                                               %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%  
-%  DestroyMagickRegistry() deallocates memory associated the magick registry.
-%  
-%  The format of the DestroyMagickRegistry method is:
-%      
-%       void DestroyMagickInfo(void)
-%  
+%  The format of the ReadREGISTRYImage method is:
 %
-*/
-MagickExport void DestroyMagickRegistry(void)
-{
-  RegistryInfo
-    *registry_info;
-
-  register RegistryInfo
-    *p;
-
-  AcquireSemaphoreInfo(&registry_semaphore);
-  for (p=registry_list; p != (RegistryInfo *) NULL; )
-  {
-    switch (p->type)
-    {
-      case ImageRegistryType:
-      {
-        DestroyImage((Image *) p->blob);
-        break;
-      }
-      default:
-      {
-        LiberateMemory((void **) &p->blob);
-        break;
-      }
-    }
-    registry_info=p;
-    p=p->next;
-    LiberateMemory((void **) &registry_info);
-  }
-  registry_info=(RegistryInfo *) NULL;
-  DestroySemaphoreInfo(registry_semaphore);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                               %
-%                                                                               %
-%                                                                               %
-%   G e t M a g i c k R e g i s t r y                                           %
-%                                                                               %
-%                                                                               %
-%                                                                               %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%  
-%  GetMagickRegistry() gets a blob from the magick registry as defined by the
-%  id.  If blob that matches the id is found, NULL is returned.
-%  
-%  The format of the getMagickRegistry method is:
-%      
-%      const void *GetMagickRegistry(const long id,RegistryType *type,
-%        size_t *length)
-%  
-%  A description of each parameter follows:
-%    
-%    o id: The registry id.
-%
-%    o type: The type of registry entry.
-%
-%    o length: This size_t integer reflects the length in bytes of the blob.
-%
-%
-*/
-MagickExport const void *GetMagickRegistry(const long id,RegistryType *type,
-  size_t *length)
-{
-  RegistryInfo
-    *registry_info;
-
-  register RegistryInfo
-    *p;
-
-  registry_info=(RegistryInfo *) NULL;
-  AcquireSemaphoreInfo(&registry_semaphore);
-  for (p=registry_list; p != (RegistryInfo *) NULL; )
-  {
-    if (p->id == id)
-      {
-        registry_info=p;
-        break;
-      }
-  }
-  DestroySemaphoreInfo(registry_semaphore);
-  if (registry_info == (RegistryInfo *) NULL)
-    return((RegistryInfo *) NULL);
-  *type=registry_info->type;
-  *length=registry_info->length;
-  return(registry_info->blob);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                               %
-%                                                                               %
-%                                                                               %
-%   S e t M a g i c k R e g i s t r y                                           %
-%                                                                               %
-%                                                                               %
-%                                                                               %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%  
-%  SetMagickRegistry() sets a blob into the registry and returns a unique ID.
-%  If an error occurs, an ID of -1 is returned.
-%  
-%  The format of the SetMagickRegistry method is:
-%      
-%      long SetMagickRegistry(const void *blob,const size_t length,
+%      Image *ReadREGISTRYImage(const ImageInfo *image_info,
 %        ExceptionInfo *exception)
-%  
+%
 %  A description of each parameter follows:
-%    
-%    o blob: The address of a Binary Large OBject.
 %
-%    o length: This size_t integer reflects the length in bytes of the blob.
+%    o image:  Method ReadREGISTRYImage returns a pointer to the image after
+%      reading.  A null image is returned if there is a memory shortage or
+%      if the image cannot be read.
 %
-%    o exception: Return any errors or warnings in this structure.
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
-  const size_t length,ExceptionInfo *exception)
+static Image *ReadREGISTRYImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
-  RegistryInfo
-    *registry_info;
+  char
+    *p;
 
-  registry_info=(RegistryInfo *) AcquireMemory(sizeof(RegistryInfo));
-  if (registry_info == (RegistryInfo *) NULL)
-    MagickError(ResourceLimitError,"Unable to allocate registry",
-      "Memory allocation failed");
-  (void) memset(registry_info,0,sizeof(RegistryInfo));
-  switch (type)
-  {
-    case ImageRegistryType:
-    {
-      registry_info->blob=(void *)
-        CloneImage((const Image *) blob,0,0,True,exception);
-      if (registry_info->blob == (void *) NULL)
-        return(-1);
-      break;
-    }
-    default:
-    {
-      registry_info->blob=(void *) AcquireMemory(length);
-      if (registry_info->blob == (void *) NULL)
-        return(-1);
-      (void) memcpy(registry_info->blob,blob,length);
-      registry_info->length=length;
-    }
-  }
-  AcquireSemaphoreInfo(&registry_semaphore);
-  registry_info->id=id++;
-  if (registry_list == (RegistryInfo *) NULL)
-    registry_list=registry_info;
-  else
-    {
-      register RegistryInfo
-        *p;
+  Image
+    *image;
 
-      for (p=registry_list; p->next != (RegistryInfo *) NULL; p=p->next);
-      registry_info->previous=p;
-      p->next=registry_info;
-    }
-  DestroySemaphoreInfo(registry_semaphore);
-  return(registry_info->id);
+  long
+    id;
+
+  RegistryType
+    type;
+
+  size_t
+    length;
+
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  id=strtol(image_info->filename,&p,0);
+  image=(Image *) GetMagickRegistry(id,&type,&length);
+  if ((image == (Image *) NULL) || (type != ImageRegistryType))
+    ThrowReaderException(RegistryWarning,"Image not found in registry",image);
+  return(CloneImage(image,0,0,True,exception));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r R E G I S T R Y I m a g e                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterREGISTRYImage adds attributes for the REGISTRY image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterREGISTRYImage method is:
+%
+%      RegisterREGISTRYImage(void)
+%
+*/
+ModuleExport void RegisterREGISTRYImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("REGISTRY");
+  entry->decoder=ReadREGISTRYImage;
+  entry->adjoin=False;
+  entry->stealth=True;
+  entry->description=AllocateString("Image from Magick Registry");
+  entry->module=AllocateString("REGISTRY");
+  (void) RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n r e g i s t e r R E G I S T R Y I m a g e                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterREGISTRYImage removes format registrations made by the
+%  REGISTRY module from the list of supported formats.
+%
+%  The format of the UnregisterREGISTRYImage method is:
+%
+%      UnregisterREGISTRYImage(void)
+%
+*/
+ModuleExport void UnregisterREGISTRYImage(void)
+{
+  (void) UnregisterMagickInfo("REGISTRY");
 }

@@ -59,6 +59,7 @@ void OpenStaticModules(void)
   RegisterPS3Image();
   RegisterPSDImage();
   RegisterPWPImage();
+  RegisterREGISTRYImage();
   RegisterRGBImage();
   RegisterRLAImage();
   RegisterRLEImage();
