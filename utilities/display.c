@@ -669,11 +669,13 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("delay",option+1,3) == 0)
             {
+              resource_info.delay=0;
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing seconds",option);
+                  resource_info.delay=atoi(argv[i]);
                 }
               break;
             }

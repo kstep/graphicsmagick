@@ -12532,7 +12532,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     /*
       Handle a window event.
     */
-    if (windows->image.mapped && display_image->delay)
+    if (windows->image.mapped && resource_info->delay)
       {
         if (timer < time((time_t *) NULL))
           {

@@ -5017,6 +5017,12 @@ MagickExport unsigned int RGBTransformImage(Image *image,
     return(True);
   if (colorspace == CMYKColorspace)
     {
+      int
+        black,
+        cyan,
+        magenta,
+        yellow;
+
       /*
         Convert RGB to CMYK colorspace.
       */
@@ -5028,9 +5034,16 @@ MagickExport unsigned int RGBTransformImage(Image *image,
           break;
         for (x=0; x < (int) image->columns; x++)
         {
-          q->red=MaxRGB-q->red;
-          q->green=MaxRGB-q->green;
-          q->blue=MaxRGB-q->blue;
+          cyan=MaxRGB-red;
+          magenta=MaxRGB-green;
+          yellow=MaxRGB-blue;
+          black=cyan < magenta ? Min(cyan,yellow) : Min(magenta,yellow);
+          q->red=(Quantum) (cyan < 0 ? 0 : cyan >= MaxRGB ? MaxRGB : cyan);
+          q->green=(Quantum)
+            (magenta < 0 ? 0 : magenta >= MaxRGB ? MaxRGB : magenta);
+          q->blue=(Quantum)
+            (yellow < 0 ? 0 : yellow >= MaxRGB ? MaxRGB : yellow);
+          q->opacity=(Quantum) black;
           q++;
         }
         if (!SyncImagePixels(image))
@@ -6387,9 +6400,6 @@ MagickExport unsigned int TransformRGBImage(Image *image,
   assert(image->signature == MagickSignature);
   if ((image->colorspace == CMYKColorspace) && (colorspace == RGBColorspace))
     {
-      Quantum
-        white;
-
       /*
         Transform image from CMYK to RGB.
       */
@@ -6401,10 +6411,10 @@ MagickExport unsigned int TransformRGBImage(Image *image,
           break;
         for (x=0; x < (int) image->columns; x++)
         {
-          white=MaxRGB-q->opacity;
-          q->red=(q->red > white ? 0 : white-q->red);
-          q->green=(q->green > white ? 0 : white-q->green);
-          q->blue=(q->blue > white ? 0 : white-q->blue);
+          q->red=(unsigned long) ((MaxRGB-q->red)*(MaxRGB-q->opacity))/MaxRGB;
+          q->green=(unsigned long)
+            ((MaxRGB-q->green)*(MaxRGB-q->opacity))/MaxRGB;
+          q->blue=(unsigned long) ((MaxRGB-q->blue)*(MaxRGB-q->opacity))/MaxRGB;
           q->opacity=OpaqueOpacity;
           q++;
         }
