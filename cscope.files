@@ -114,8 +114,6 @@ magick/compress.c
 magick/compress.h
 magick/constitute.c
 magick/constitute.h
-magick/crap.c
-magick/crap.h
 magick/decorate.c
 magick/decorate.h
 magick/delegate.c
@@ -189,7 +187,6 @@ magick/stream.h
 magick/studio.h
 magick/tempfile.c
 magick/tempfile.h
-magick/temporary.h
 magick/timer.c
 magick/timer.h
 magick/transform.c
