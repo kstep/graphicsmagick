@@ -191,15 +191,13 @@ typedef struct _ExceptionInfo
 
 typedef struct _FrameInfo
 {
-  int
-    x,
-    y;
-
   unsigned int
     width,
     height;
 
   int
+    x,
+    y,
     inner_bevel,
     outer_bevel;
 } FrameInfo;
@@ -257,11 +255,11 @@ typedef struct _MontageInfo
 
 typedef struct _ProfileInfo
 {
-  char
-    *name;
-
   unsigned int
     length;
+
+  char
+    *name;
 
   unsigned char
     *info;
@@ -497,6 +495,9 @@ typedef struct _DrawInfo
   Image
     *tile;
 
+  unsigned int
+    verbose;
+
   unsigned long
     signature;
 } DrawInfo;
@@ -624,9 +625,6 @@ typedef struct _ImageInfo
 
 typedef struct _MagickInfo
 {
-  char
-    *tag;
-
   Image
     *(*decoder)(const ImageInfo *,ExceptionInfo *);
 
@@ -638,6 +636,7 @@ typedef struct _MagickInfo
     raw;
 
   char
+    *tag,
     *description,
     *module;
 

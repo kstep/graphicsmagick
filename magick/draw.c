@@ -79,11 +79,11 @@
 */
 typedef struct _PrimitiveInfo
 {
-  PrimitiveType
-    primitive;
-
   PointInfo
     point;
+
+  PrimitiveType
+    primitive;
 
   unsigned int
     coordinates;
@@ -1251,7 +1251,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       if (point.y > bounds.y2)
         bounds.y2=point.y;
     }
-    mid=ceil(radius+clone_info->linewidth/2.0);
+    mid=ceil(radius+clone_info->linewidth/2.0)+0.5;
     bounds.x1-=mid;
     if (bounds.x1 < 0.0)
       bounds.x1=0.0;
@@ -1264,9 +1264,13 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     bounds.y2+=mid;
     if (bounds.y2 >= image->rows)
       bounds.y2=image->rows-1.0;
+    if (clone_info->verbose)
+      (void) fprintf(stdout,"%s(%d): %d,%d %d,%d\n",keyword,
+        primitive_info->coordinates,(int) (bounds.x1+0.5),(int) (bounds.y1+0.5),
+        (int) (bounds.x2+0.5),(int) (bounds.y2+0.5));
     alpha=1.0/MaxRGB;
     image->storage_class=DirectClass;
-    for (y=(int) bounds.y1; y <= (int) bounds.y2; y++)
+    for (y=(int) (bounds.y1+0.5); y <= (int) (bounds.y2+0.5); y++)
     {
       /*
         Fill the primitive on the image.
@@ -1276,9 +1280,10 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       q=GetImagePixels(image,(int) bounds.x1,y,n,1);
       if (q == (PixelPacket *) NULL)
         break;
-      for (x=(int) bounds.x1; x <= (int) bounds.x2; x++)
+      for (x=(int) (bounds.x1-0.5); x <= (int) (bounds.x2+0.5); x++)
       {
         target.x=x;
+        opacity=TransparentOpacity;
         switch (primitive_info->primitive)
         {
           case ArcPrimitive:
@@ -1315,6 +1320,11 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           default:
             break;
         }
+        if (opacity == OpaqueOpacity)
+          {
+            q++;
+            continue;
+          }
         color=clone_info->stroke;
         opacity=0.01*(MaxRGB-color.opacity)*clone_info->opacity*
           IntersectPrimitive(primitive_info,clone_info,&target,False,image);
@@ -2071,6 +2081,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->border_color=image_info->border_color;
   draw_info->decorate=NoDecoration;
   draw_info->tile=(Image *) NULL;
+  draw_info->verbose=image_info->verbose;
   draw_info->signature=MagickSignature;
 }
 
