@@ -1388,7 +1388,8 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           byte=0;
           for (x=0; x < (long) image->columns; x++)
           {
-            byte=(byte << 1) | indexes[x];
+            byte<<=1;
+            byte|=indexes[x] ? 0x01 : 0x00;
             bit++;
             if (bit == 8)
               {

@@ -958,16 +958,11 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
     {
       register unsigned char
         bit,
-        byte,
-        polarity;
+        byte;
 
       /*
         Convert PseudoClass image to a DIB monochrome image.
       */
-      polarity=Intensity(&image->colormap[0]) < (MaxRGB >> 1);
-      if (image->colors == 2)
-        polarity=
-          Intensity(&image->colormap[0]) < Intensity(&image->colormap[1]);
       for (y=0; y < (long) image->rows; y++)
       {
         p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
@@ -980,8 +975,7 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
         for (x=0; x < (long) image->columns; x++)
         {
           byte<<=1;
-          if (indexes[x] == polarity)
-            byte|=0x01;
+          byte|=indexes[x] ? 0x01 : 0x00;
           bit++;
           if (bit == 8)
             {
