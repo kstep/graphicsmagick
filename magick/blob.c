@@ -436,6 +436,15 @@ Export void *ImageToBlob(const ImageInfo *image_info,Image *image,
   MagickInfo
     *magick_info;
 
+  off_t
+    offset;
+
+  register int
+    i;
+
+  size_t
+    count;
+
   unsigned int
     status;
 
@@ -514,7 +523,14 @@ Export void *ImageToBlob(const ImageInfo *image_info,Image *image,
         "Memory allocation failed");
       return((char *) NULL);
     }
-  (void) fread((char *) blob,1,*length,file);
+  offset=0;
+  for (i=(*length); i > 0; i-=count)
+  {
+    count=fread((char *) blob+offset,1,i,file);
+    if (count <= 0)
+      break;
+    offset+=count;
+  }
   (void) fclose(file);
   return(blob);
 }
