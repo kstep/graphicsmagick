@@ -8168,7 +8168,7 @@ Export void XProgressMonitor(char *task,const unsigned int quantum,
 %
 %
 */
-Export unsigned int XQueryColorDatabase(char *target,XColor *color)
+Export unsigned int XQueryColorDatabase(const char *target,XColor *color)
 {
   char
     colorname[MaxTextExtent],

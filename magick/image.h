@@ -11,6 +11,8 @@ extern "C" {
 /*
   Image define declarations.
 */
+#define Alphabet  "`-=[]\\;',./~!@#$%^&*()_+{}|:\"<>?" \
+  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 #define ColorMatch(color,target,delta) \
   ((((int) ((color).red)-delta) <= (int) ((target).red)) && \
     ((int) ((target).red) <= ((int) ((color).red)+delta)) && \
@@ -547,6 +549,7 @@ typedef struct _AnnotateInfo
     *density,
     *border_color,
     *font,
+    *font_name,
     *pen;
 
   unsigned int
@@ -916,8 +919,8 @@ extern Export void
   AnnotateImage(Image *,AnnotateInfo *),
   CloseImage(Image *),
   CoalesceImages(Image *),
-  ColorFloodfillImage(Image *,const RunlengthPacket *,const ColorPacket *,int x,
-    int y,const PaintMethod),
+  ColorFloodfillImage(Image *,const RunlengthPacket *,const char *,int x,int y,
+    const PaintMethod),
   ColorizeImage(Image *,char *,char *),
   CommentImage(Image *,char *),
   CompositeImage(Image *,const CompositeOperator,Image *,const int,const int),

@@ -18,7 +18,7 @@ AUTHOR
     USA
 
   I'm also interested in receiving coins from around the world for
-  my collection.  
+  my collection.
 
 
 AVAILABILITY
@@ -93,20 +93,20 @@ UNIX COMPILATION
   There are currently two mechanisms available to create makefiles to
   build ImageMagick: 1) GNU configure;  2: X11 imake.  Each is described
   in the following paragraphs.
-  
+
   * * *
 
   GNU configure:
-  
+
     This option is easiest to use and is recommended when ImageMagick
     is to be installed outside of the X11 distribution or working imake
     configuration files are not available.  Use of 'configure' enables
     automated configuration, building, and installation of PerlMagick.
 
     If you are willing to accept configure's default options, type:
-    
+
         ./configure
-  
+
     and watch the configure script output to verify that it finds
     everything that you think it should. If it does not, then adjust
     your environment so that it does.
@@ -118,7 +118,7 @@ UNIX COMPILATION
     this:
 
         CC=c89 CFLAGS=-O2 LIBS=-lposix ./configure
- 
+
     Or on systems that have the `env' program, you can do it like this:
 
         env CPPFLAGS=-I/usr/local/include LDFLAGS=-s ./configure
@@ -291,21 +291,21 @@ UNIX COMPILATION
 
     Edit Magick.tmpl and set the variables to suit your local
     environment.  Now type:
-    
+
         ./configure
         xmkmf
         make Makefiles
-        
+
     or just
-      
+
         ./configure
         xmkmf -a
-        
-    if you are using X11R6 imake.  Here, GNU configure is used to 
+
+    if you are using X11R6 imake.  Here, GNU configure is used to
     initialize the delegates/delegates.mgk file.
 
   * * *
-  
+
   To confirm your build of the ImageMagick distribution was
   successful, type:
 
@@ -429,7 +429,7 @@ MAGICK DELEGATES
           ftp://ftp.uu.net/graphics/jpeg/jpegsrc.v6b.tar.gz
 
       to read the JPEG image format.  ImageMagick creates progressive
-      JPEG images by default.  
+      JPEG images by default.
 
       Concerning iterative JPEG compression:  see Kinoshita and
       Yamamuro, Journal of Imaging Science and Technology, "Image
@@ -513,7 +513,7 @@ MAGICK DELEGATES
       properly.  There is a free X server available for Windows and
       Macintosh at
 
-	  http://www.microimages.com/freestuf/mix/
+        http://www.microimages.com/freestuf/mix/
 
 
 HOW TO COMPILE
@@ -530,7 +530,7 @@ HOW TO COMPILE
   flags are required on your system to generate PIC code. In the case
   of gcc, this usually means that -fPIC must be added to the compiler
   options (i.e. CFLAGS) when building each delegate library.
-  
+
   To display images in the HDF, JBIG, JPEG, PNG, TIFF, or TTF
   format, get the respective archives and build ImageMagick as follows:
 
@@ -812,8 +812,8 @@ ACKNOWLEDGEMENT
 
       Bob Friesenhahn <bfriesen@simple.dallas.tx.us>:  Configure scripts,
         regression tests, and Gperf magic handling routine.
-      Rick Mabry" <rmabry@server1.softdisk.com>:  Numerous bug alerts
-        and fixes
+      Rick Mabry" <rmabry@server1.softdisk.com>:  tiled drawing pens and
+        numerous bug alerts and fixes
       Bill Radcliffe <BillR@corbis.com>:  FlashPix support
 
   And thanks to the hundreds of people that have sent e-mail with bug
@@ -822,25 +822,25 @@ ACKNOWLEDGEMENT
 
 COPYRIGHT
 
-  Permission is hereby granted, free of charge, to any person obtaining a    
-  copy of this software and associated documentation files ("ImageMagick"),  
-  to deal in ImageMagick without restriction, including without limitation   
-  the rights to use, copy, modify, merge, publish, distribute, sublicense,   
-  and/or sell copies of ImageMagick, and to permit persons to whom the       
-  ImageMagick is furnished to do so, subject to the following conditions:    
-                                                                             
-  The above copyright notice and this permission notice shall be included in 
-  all copies or substantial portions of ImageMagick.                         
-                                                                             
-  The software is provided "as is", without warranty of any kind, express or 
-  implied, including but not limited to the warranties of merchantability,   
-  fitness for a particular purpose and noninfringement.  In no event shall   
-  E. I. du Pont de Nemours and Company be liable for any claim, damages or   
-  other liability, whether in an action of contract, tort or otherwise,      
-  arising from, out of or in connection with ImageMagick or the use or other 
-  dealings in ImageMagick.                                                   
-                                                                             
-  Except as contained in this notice, the name of the E. I. du Pont de       
-  Nemours and Company shall not be used in advertising or otherwise to       
-  promote the sale, use or other dealings in ImageMagick without prior       
-  written authorization from the E. I. du Pont de Nemours and Company.       
+  Permission is hereby granted, free of charge, to any person obtaining a
+  copy of this software and associated documentation files ("ImageMagick"),
+  to deal in ImageMagick without restriction, including without limitation
+  the rights to use, copy, modify, merge, publish, distribute, sublicense,
+  and/or sell copies of ImageMagick, and to permit persons to whom the
+  ImageMagick is furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of ImageMagick.
+
+  The software is provided "as is", without warranty of any kind, express or
+  implied, including but not limited to the warranties of merchantability,
+  fitness for a particular purpose and noninfringement.  In no event shall
+  E. I. du Pont de Nemours and Company be liable for any claim, damages or
+  other liability, whether in an action of contract, tort or otherwise,
+  arising from, out of or in connection with ImageMagick or the use or other
+  dealings in ImageMagick.
+
+  Except as contained in this notice, the name of the E. I. du Pont de
+  Nemours and Company shall not be used in advertising or otherwise to
+  promote the sale, use or other dealings in ImageMagick without prior
+  written authorization from the E. I. du Pont de Nemours and Company.

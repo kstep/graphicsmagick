@@ -710,15 +710,8 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
               ColorPacket
                 color;
 
-              XColor
-                pen_color;
-
               if ((p->x != x) || (p->y != y))
                 break;
-              (void) XQueryColorDatabase(annotate_info->pen,&pen_color);
-              color.red=XDownScale(pen_color.red);
-              color.green=XDownScale(pen_color.green);
-              color.blue=XDownScale(pen_color.blue);
               target=image->pixels[y*image->columns+x];
               if (p->method == FillToBorderMethod)
                 {
@@ -728,7 +721,8 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
                   target.green=XDownScale(border_color.green);
                   target.blue=XDownScale(border_color.blue);
                 }
-              ColorFloodfillImage(image,&target,&color,x,y,p->method);
+              ColorFloodfillImage(image,&target,annotate_info->pen,x,y,
+                p->method);
               break;
             }
             case ResetMethod:

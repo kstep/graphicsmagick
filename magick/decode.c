@@ -5370,6 +5370,9 @@ static void GetFontInfo(TT_Face face,TT_Face_Properties *face_properties,
   char
     *name;
 
+  const static unsigned short
+    ids[] = { 4, 5, 0, 7 };
+
   register char
     *p;
 
@@ -5389,26 +5392,26 @@ static void GetFontInfo(TT_Face face,TT_Face_Properties *face_properties,
   */
   if (face_properties->num_Names == 0)
     return;
-  image->comments=(char *)
+  image->label=(char *)
     AllocateMemory((face_properties->num_Names*MaxTextExtent)*sizeof(char));
-  if (image->comments == (char *) NULL)
+  if (image->label == (char *) NULL)
     return;
-  *image->comments='\0';
-  for (i=0; i < (int) face_properties->num_Names; i++)
+  *image->label='\0';
+  for (i=0; i < (sizeof(ids)/sizeof(unsigned short)); i++)
   {
-    TT_Get_Name_ID(face,(unsigned short) i,&platform,&encoding,&language,&id);
+    TT_Get_Name_ID(face,ids[i],&platform,&encoding,&language,&id);
     if (((platform != 0) || (language != 0)) &&
         ((platform != 3) || (encoding > 1) || ((language & 0x3FF) != 0x009)))
       continue;
-    TT_Get_Name_String(face,(unsigned short) i,&name,&length);
-    p=image->comments+strlen(image->comments);
+    TT_Get_Name_String(face,ids[i],&name,&length);
+    p=image->label+strlen(image->label);
     for (j=1; j < (int) Min(length,MaxTextExtent); j+=2)
       *p++=name[j];
-    *p++='\n';
     *p='\0';
+    break;
   }
-  image->comments=(char *) ReallocateMemory((char *)
-    image->comments,(strlen(image->comments)+1)*sizeof(char));
+  image->label=(char *) ReallocateMemory((char *)
+    image->label,(strlen(image->label)+1)*sizeof(char));
 }
 
 static void RenderGlyph(TT_Raster_Map *canvas,TT_Raster_Map *character,
@@ -5593,7 +5596,8 @@ Image *ReadLABELImage(const ImageInfo *image_info)
           return(image);
         }
       TT_Get_Face_Properties(face,&face_properties);
-      GetFontInfo(face,&face_properties,image);
+      if (strcmp(text,Alphabet) == 0)
+        GetFontInfo(face,&face_properties,image);
       error=TT_New_Instance(face,&instance);
       if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
         {
@@ -14964,7 +14968,7 @@ Image *ReadTTFImage(const ImageInfo *image_info)
   */
   y=0;
   local_info=(*image_info);
-  local_info.size="800x480";
+  local_info.size="800x520";
   local_info.pen="black";
   local_info.pointsize=18;
   local_info.font=font;
@@ -14985,10 +14989,21 @@ Image *ReadTTFImage(const ImageInfo *image_info)
   if (image == (Image *) NULL)
     return((Image *) NULL);
   (void) strcpy(image->filename,image_info->filename);
+  if (annotate_info.font_name != (char *) NULL)
+    CloneString(&image->label,annotate_info.font_name);
   /*
     Annotate canvas with text rendered with font at different point sizes.
   */
   y=10;
+  if (annotate_info.font_name != (char *) NULL)
+    {
+      annotate_info.pointsize=30;
+      (void) strcpy(annotate_info.text,annotate_info.font_name);
+      FormatString(annotate_info.geometry,"+10%+d",y);
+      AnnotateImage(image,&annotate_info);
+      y+=42;
+    }
+  annotate_info.pointsize=18;
   (void) strcpy(annotate_info.text,"abcdefghijklmnopqrstuvwxyz");
   FormatString(annotate_info.geometry,"+10%+d",y);
   AnnotateImage(image,&annotate_info);

@@ -556,7 +556,7 @@ extern Export unsigned int
   XMakeImage(Display *,const XResourceInfo *,XWindowInfo *,Image *,
     unsigned int,unsigned int),
   XMakePixmap(Display *,const XResourceInfo *,XWindowInfo *),
-  XQueryColorDatabase(char *,XColor *);
+  XQueryColorDatabase(const char *,XColor *);
 
 extern Export void
   XAnimateBackgroundImage(Display *,XResourceInfo *,Image *),

@@ -4053,11 +4053,11 @@ Mogrify(ref,...)
         }
         case 34:  /* ColorFloodfill */
         {
-          ColorPacket
-             color;
+          char
+            *pen = "black";
 
           RunlengthPacket
-             target;
+            target;
 
           if (first)
             {
@@ -4070,8 +4070,7 @@ Mogrify(ref,...)
               if (attribute_flag[2])
                  rectangle_info.y=argument_list[2].int_reference;
               if (attribute_flag[3])
-                XQueryColorDatabase(argument_list[3].string_reference,
-                  &pen_color);
+                pen=argument_list[3].string_reference;
               if (attribute_flag[4])
                 XQueryColorDatabase(argument_list[4].string_reference,
                   &border_color);
@@ -4085,11 +4084,8 @@ Mogrify(ref,...)
               target.red=XDownScale(border_color.red);
               target.green=XDownScale(border_color.green);
               target.blue=XDownScale(border_color.blue);
-           }
-          color.red=XDownScale(pen_color.red);
-          color.green=XDownScale(pen_color.green);
-          color.blue=XDownScale(pen_color.blue);
-          ColorFloodfillImage(image,&target,&color,rectangle_info.x,
+            }
+          ColorFloodfillImage(image,&target,pen,rectangle_info.x,
             rectangle_info.y,attribute_flag[4] ? FillToBorderMethod :
             FloodfillMethod);
           break;

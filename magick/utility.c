@@ -2483,7 +2483,7 @@ Export void Strip(char *data)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method SystemCommand returns False if the command is 
+%    o status: Method SystemCommand returns False if the command is
 %      executed successfully.
 %
 %    o verbose: An unsigned integer other than 0 prints the executed

@@ -1220,7 +1220,7 @@ Export void CoalesceImages(Image *image)
 %
 %  The format of the ColorFloodfillImage routine is:
 %
-%      ColorFloodfillImage(image,target,color,x,y,method)
+%      ColorFloodfillImage(image,target,pen,x,y,method)
 %
 %  A description of each parameter follows:
 %
@@ -1229,8 +1229,7 @@ Export void CoalesceImages(Image *image)
 %    o target: A RunlengthPacket structure.  This is the RGB value of the target
 %      color.
 %
-%    o color: A ColorPacket structure.  This is the RGB value of the replacement
-%      color.
+%    o pen: A character string representing the pen color.
 %
 %    o x,y: Unsigned integers representing the current location of the pen.
 %
@@ -1240,8 +1239,14 @@ Export void CoalesceImages(Image *image)
 %
 */
 Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
-  const ColorPacket *color,int x,int y,const PaintMethod method)
+  const char *pen, int x,int y,const PaintMethod method)
 {
+  ColorPacket
+    color;
+
+  Image
+    *tiled_image;
+
   int
     offset,
     skip,
@@ -1258,27 +1263,89 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
   XSegment
     *segment_stack;
 
+  unsigned char
+    *markers;
+
   /*
     Check boundary conditions.
   */
   assert(image != (Image *) NULL);
-  assert(color != (ColorPacket *) NULL);
   if ((y < 0) || (y >= (int) image->rows))
     return;
   if ((x < 0) || (x >= (int) image->columns))
     return;
-  if (ColorMatch(*color,*target,image->fuzz))
-    return;
   if (!UncondenseImage(image))
     return;
+  /*
+    Set floodfill color.
+  */
+  color.red=0;
+  color.green=0;
+  color.blue=0;
+  tiled_image=(Image *) NULL;
+  markers=(unsigned char *) NULL;
+  if ((pen == (char *) NULL) || (*pen != '@'))
+    {
+      XColor
+        pen_color;
+
+      (void) XQueryColorDatabase(pen,&pen_color);
+      color.red=XDownScale(pen_color.red);
+      color.green=XDownScale(pen_color.green);
+      color.blue=XDownScale(pen_color.blue);
+    }
+  else
+    {
+      ImageInfo
+        local_info;
+
+      register int
+        i;
+
+      /*
+        Read tiled pen.
+      */
+      GetImageInfo(&local_info);
+      (void) strcpy(local_info.filename,pen+1);
+      tiled_image=ReadImage(&local_info);
+      if (tiled_image == (Image *) NULL)
+        return;
+      if (!UncondenseImage(tiled_image))
+        {
+          DestroyImage(tiled_image);
+          return;
+        }
+      markers=(unsigned char *)
+        AllocateMemory(image->rows*image->columns*sizeof(unsigned char));
+      if (markers == (unsigned char *) NULL)
+        {
+          MagickWarning(ResourceLimitWarning,"Unable to floodfill image",
+            "Memory allocation failed");
+          DestroyImage(tiled_image);
+          return;
+        }
+      for (i=0; i < (image->rows*image->columns); i++)
+        markers[i]=False;
+      if (ColorMatch(color,*target,image->fuzz))
+        {
+          color.red=MaxRGB;
+          color.green=MaxRGB;
+          color.blue=MaxRGB;
+        }
+    }
   /*
     Allocate segment stack.
   */
   segment_stack=(XSegment *) AllocateMemory(MaxStacksize*sizeof(XSegment));
   if (segment_stack == (XSegment *) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to recolor image",
+      MagickWarning(ResourceLimitWarning,"Unable to floodfill image",
         "Memory allocation failed");
+      if (tiled_image != (Image *) NULL)
+        {
+          FreeMemory((char *) markers);
+          DestroyImage(tiled_image);
+        }
       return;
     }
   /*
@@ -1312,11 +1379,13 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
         }
       else
         if (ColorMatch(*pixel,*target,image->fuzz) ||
-            ColorMatch(*pixel,*color,image->fuzz))
+            ColorMatch(*pixel,color,image->fuzz))
           break;
-      pixel->red=color->red;
-      pixel->green=color->green;
-      pixel->blue=color->blue;
+      pixel->red=color.red;
+      pixel->green=color.green;
+      pixel->blue=color.blue;
+      if (markers != (unsigned char *) NULL)
+        markers[y*image->columns+x]=True;
       pixel--;
     }
     skip=x >= x1;
@@ -1341,11 +1410,13 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
               }
             else
               if (ColorMatch(*pixel,*target,image->fuzz) ||
-                  ColorMatch(*pixel,*color,image->fuzz))
+                  ColorMatch(*pixel,color,image->fuzz))
                 break;
-            pixel->red=color->red;
-            pixel->green=color->green;
-            pixel->blue=color->blue;
+            pixel->red=color.red;
+            pixel->green=color.green;
+            pixel->blue=color.blue;
+            if (markers != (unsigned char *) NULL)
+              markers[y*image->columns+x]=True;
             pixel++;
           }
           Push(y,start,x-1,offset);
@@ -1354,7 +1425,7 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
         }
       skip=False;
       pixel=image->pixels+(y*image->columns+x);
-      for (x++; x <= x2 ; x++)
+      for (x++; x <= x2; x++)
       {
         pixel++;
         if (method == FloodfillMethod)
@@ -1364,12 +1435,61 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
           }
         else
           if (!ColorMatch(*pixel,*target,image->fuzz) &&
-              !ColorMatch(*pixel,*color,image->fuzz))
+              !ColorMatch(*pixel,color,image->fuzz))
             break;
       }
       start=x;
     } while (x <= x2);
   }
+  if (markers != (unsigned char *) NULL)
+    {
+      register RunlengthPacket
+        *q;
+
+      register unsigned char
+        *p;
+
+      RunlengthPacket
+        pixel;
+
+      /*
+        Tile image onto floodplane.
+      */
+      p=markers;
+      q=image->pixels;
+      for (y=0; y < image->rows; y++)
+      {
+        for (x=0; x < image->columns; x++)
+        {
+          if (*p)
+            {
+              pixel=tiled_image->pixels[(y % tiled_image->rows)*
+                tiled_image->columns+(x % tiled_image->columns)];
+              if (!tiled_image->matte)
+                {
+                  q->red=pixel.red;
+                  q->green=pixel.green;
+                  q->blue=pixel.blue;
+                }
+              else
+                {
+                  q->red=(Quantum) ((long) (pixel.red*pixel.index+q->red*
+                    (Opaque-pixel.index))/Opaque);
+                  q->green=(Quantum) ((long) (pixel.green*pixel.index+q->green*
+                    (Opaque-pixel.index))/Opaque);
+                  q->blue=(Quantum) ((long) (pixel.blue*pixel.index+q->blue*
+                    (Opaque-pixel.index))/Opaque);
+                  q->index=(Quantum) ((long) (pixel.index*pixel.index+q->index*
+                    (Opaque-pixel.index))/Opaque);
+                }
+            }
+          p++;
+          q++;
+        }
+      }
+      FreeMemory((char *) markers);
+      DestroyImage(tiled_image);
+    }
   FreeMemory((char *) segment_stack);
 }
 
@@ -3464,6 +3584,9 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
     keyword[MaxTextExtent],
     *primitive;
 
+  Image
+    *tiled_image;
+
   int
     j,
     mid,
@@ -3510,6 +3633,26 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
     return;
   if (!UncondenseImage(image))
     return;
+  tiled_image=(Image *) NULL;
+  if ((annotate_info->pen != (char *) NULL) && (*annotate_info->pen == '@'))
+    {
+      ImageInfo
+        local_info;
+
+      /*
+        Read tiled pen.
+      */
+      GetImageInfo(&local_info);
+      (void) strcpy(local_info.filename,annotate_info->pen+1);
+      tiled_image=ReadImage(&local_info);
+      if (tiled_image == (Image *) NULL)
+        return;
+      if (!UncondenseImage(tiled_image))
+        {
+          DestroyImage(tiled_image);
+          return;
+        }
+    }
   primitive=annotate_info->primitive;
   indirection=(*primitive == '@');
   if (indirection)
@@ -3582,7 +3725,8 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
   /*
     Parse the primitive attributes.
   */
-  (void) XQueryColorDatabase(annotate_info->pen,&pen_color);
+  if ((annotate_info->pen == (char *) NULL) || (*annotate_info->pen != '@'))
+    (void) XQueryColorDatabase(annotate_info->pen,&pen_color);
   primitive_type=UndefinedPrimitive;
   p=primitive;
   bounds.x1=image->columns-1;
@@ -3822,6 +3966,8 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
     {
       MagickWarning(OptionWarning,
         "Non-conforming drawing primitive definition",p);
+      if (tiled_image != (Image *)NULL)
+        DestroyImage(tiled_image);
       FreeMemory((char *) primitive_info);
       if (indirection)
         FreeMemory((char *) primitive);
@@ -3853,15 +3999,48 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
     {
       if (InsidePrimitive(primitive_info,annotate_info,x,y,image))
         {
-          q->red=XDownScale(pen_color.red);
-          q->green=XDownScale(pen_color.green);
-          q->blue=XDownScale(pen_color.blue);
+          if (tiled_image == (Image *) NULL)
+            {
+              q->red=XDownScale(pen_color.red);
+              q->green=XDownScale(pen_color.green);
+              q->blue=XDownScale(pen_color.blue);
+            }
+          else
+            {
+              RunlengthPacket
+                pixel;
+
+              pixel=tiled_image->pixels[(y % tiled_image->rows)*
+                tiled_image->columns+(x % tiled_image->columns)];
+              if (!tiled_image->matte)
+                {
+                  q->red=pixel.red;
+                  q->green=pixel.green;
+                  q->blue=pixel.blue;
+                }
+              else
+                {
+                  q->red=(Quantum) ((long) (pixel.red*pixel.index+q->red*
+                    (Opaque-pixel.index))/Opaque);
+                  q->green=(Quantum) ((long) (pixel.green*pixel.index+q->green*
+                    (Opaque-pixel.index))/Opaque);
+                  q->blue=(Quantum) ((long) (pixel.blue*pixel.index+q->blue*
+                    (Opaque-pixel.index))/Opaque);
+                  q->index=(Quantum) ((long) (pixel.index*pixel.index+q->index*
+                    (Opaque-pixel.index))/Opaque);
+                }
+            }
         }
       q++;
     }
     if (QuantumTick(y,image->rows))
       ProgressMonitor(DrawImageText,y,image->rows);
   }
+  /*
+    Free resources.
+  */
+  if (tiled_image != (Image *)NULL)
+    DestroyImage(tiled_image);
   FreeMemory((char *) primitive_info);
   if (indirection)
     FreeMemory((char *) primitive);
@@ -4646,9 +4825,6 @@ Export void GammaImage(Image *image,char *gamma)
 */
 Export void GetAnnotateInfo(ImageInfo *image_info,AnnotateInfo *annotate_info)
 {
-#define Alphabet  "`-=[]\\;',./~!@#$%^&*()_+{}|:\"<>?" \
-  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
   Image
     *annotate_image;
 
@@ -4661,6 +4837,7 @@ Export void GetAnnotateInfo(ImageInfo *image_info,AnnotateInfo *annotate_info)
   annotate_info->density=image_info->density;
   annotate_info->pointsize=image_info->pointsize;
   annotate_info->font=image_info->font;
+  annotate_info->font_name=(char *) NULL;
   annotate_info->pen=image_info->pen;
   annotate_info->border_color=image_info->border_color;
   annotate_info->geometry=(char *) NULL;
@@ -4683,6 +4860,7 @@ Export void GetAnnotateInfo(ImageInfo *image_info,AnnotateInfo *annotate_info)
   annotate_image=ReadLABELImage(&local_info);
   if (annotate_image == (Image *) NULL)
     return;
+  CloneString(&annotate_info->font_name,annotate_image->label);
   annotate_info->bounds.width=
     (annotate_image->columns+(strlen(Alphabet) >> 1))/strlen(Alphabet);
   annotate_info->bounds.height=annotate_image->rows;
@@ -7371,7 +7549,7 @@ Export Image *MontageImages(Image *image,MontageInfo *montage_info)
     **images,
     **masterlist,
     *montage_image,
-    *tile_image;
+    *tiled_image;
 
   ImageInfo
     local_info;
@@ -7443,18 +7621,18 @@ Export Image *MontageImages(Image *image,MontageInfo *montage_info)
     sharpen=((width*height) << 1) <
       (images[tile]->columns*images[tile]->rows);
     images[tile]->orphan=True;
-    tile_image=ZoomImage(images[tile],width,height);
+    tiled_image=ZoomImage(images[tile],width,height);
     images[tile]->orphan=False;
-    if (tile_image == (Image *) NULL)
+    if (tiled_image == (Image *) NULL)
       {
         for (i=0; i < (int) tile; i++)
           DestroyImage(images[i]);
         (void) SetMonitorHandler(handler);
         return((Image *) NULL);
       }
-    images[tile]=tile_image;
+    images[tile]=tiled_image;
     if (sharpen)
-      if ((tile_image->columns > 3) && (tile_image->rows > 3))
+      if ((tiled_image->columns > 3) && (tiled_image->rows > 3))
         {
           Image
             *sharpened_image;

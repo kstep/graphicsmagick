@@ -12,7 +12,7 @@ $image->Read('xc:white');
 #
 # Draw shapes.
 #
-$image->Draw(pen=>'#fffacd',primitive=>'FillPolygon',
+$image->Draw(pen=>'@tile.gif',primitive=>'FillPolygon',
   points=>'30,30 100,10 190,290 30,290');
 $image->Draw(pen=>'red',primitive=>'FillEllipse',
   points=>'100,100 100,150 0,360');
@@ -33,7 +33,9 @@ $image->Annotate(pen=>'black',geometry=>'+20+280',font=>'@Generic.ttf',
   pointsize=>10,text=>"I'm climbing the wall!");
 $image->Rotate(-90);
 #
-# Make transparent and display.
+# Write image.
 #
-$image->Draw(primitive=>'Matte',method=>'replace',points=>'+0+0');
-$image->Display();
+print "Write image...\n";
+$image->Write('shapes.gif');
+print "Display image...\n";
+$image->display();

@@ -2021,8 +2021,8 @@ static unsigned int XColorEditImage(Display *display,
                 target.green=XDownScale(border_color.green);
                 target.blue=XDownScale(border_color.blue);
               }
-            ColorFloodfillImage(*image,&target,&pen_color,x_offset,y_offset,
-              method);
+            ColorFloodfillImage(*image,&target,
+              resource_info->pen_colors[pen_id],x_offset,y_offset,method);
             break;
           }
           case ResetMethod:

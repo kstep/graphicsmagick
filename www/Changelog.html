@@ -24,8 +24,16 @@
 <ul>
 <li> Odd size widths or height now work properly when encoding MPEG.
 <p>
-<li> Montage was sometimes freeing the wrong location causing a memory fault.
+<li> Montage was sometimes freeing the wrong memory location causing a memory
+fault.
 <p>
+<li> Added @filename to <tt>-pen</tt>.  Use with <tt>-draw</tt>, for example,
+<p>
+<pre>
+convert -pen @brush.gif -fuzz 20 -draw "color 300,200 floodfill" image.jpg draw.png
+</pre>
+<p>
+(source patches by <a href="mailto:rmabry@server1.softdisk.com">Rick Mabry</a>).
 <p>
 <li> Improved ImplodeImage, WaveImage, and SwirlImage methods
 (source patches by <a href="mailto:rmabry@server1.softdisk.com">Rick Mabry</a>).
