@@ -1250,7 +1250,8 @@ static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,unsigned long row,
   long
     bytes_per_pixel,
     j,
-    k;
+    k,
+    l;
 
   register long
     i;
@@ -1305,15 +1306,16 @@ static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,unsigned long row,
           bytes_per_pixel);
         q=tile_pixels+(j*(TIFFTileSize(tiff)/image->tile_info.height)+k*
           bytes_per_pixel);
-        (void) memcpy(q,p,bytes_per_pixel);
+        for (l=0; l < bytes_per_pixel; l++)
+          *q++=(*p++);
       }
-      status=TIFFWriteTile(tiff,tile_pixels,(uint32) (i*image->tile_info.width),
-        (uint32) ((row/image->tile_info.height)*image->tile_info.height),0,
-        sample);
-      if (status < 0)
-        break;
+    status=TIFFWriteTile(tiff,tile_pixels,(uint32) (i*image->tile_info.width),
+      (uint32) ((row/image->tile_info.height)*image->tile_info.height),0,
+      sample);
+    if (status < 0)
+      break;
   }
-  if ((unsigned long) row == (image->rows-1))
+  if (row == (image->rows-1))
     {
       /*
         Free memory resources.
