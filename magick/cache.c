@@ -1361,6 +1361,12 @@ static PixelPacket *SetPixelCache(Image *image,const int x,const int y,
       status=OpenCache(image->cache,image->class,image->columns,image->rows);
       if (status == False)
         {
+          SetCacheThreshold((image->columns*image->rows-1)/1024/1024);
+          status=
+            OpenCache(image->cache,image->class,image->columns,image->rows);
+        }
+      if (status == False)
+        {
           ThrowException(&image->exception,CacheWarning,
             "Unable to open pixel cache",image->filename);
           return((PixelPacket *) NULL);

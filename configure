@@ -3046,7 +3046,7 @@ if test "${with_cache+set}" = set; then
   withval="$with_cache"
   with_cache=$withval
 else
-  with_cache=80
+  with_cache=2000
 fi
 #
 

@@ -484,7 +484,7 @@ MAGICK DELEGATES
     o ImageMagick requires rawtorle from the Utah Raster Toolkit
       available via anonymous FTP as
 
-          ftp://ftp.cs.utah.edu/pub/urt-3.1b.tar.Z
+          ftp://ftp.cs.utah.edu/pub/dept/OLD/pub/urt-3.1b.tar.Z
 
       to write the RLE image format (may not compile under linux).
 
