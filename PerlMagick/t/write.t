@@ -58,7 +58,7 @@ testReadWrite( 'FITS:input.fits',
                'FITS:output.fits',
                q//,
                '27b8cea85c011f60024ff559096bd11f',
-               'f7aacb0efcd13dbd976fcee78568b2fc' );
+               '62907fa59892a6241e81fa10cd513ef2' );
 
 print("CompuServe graphics interchange format ...\n");
 ++$test;

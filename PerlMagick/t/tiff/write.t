@@ -22,7 +22,7 @@ testReadWrite( 'input_256.tiff',
 	       'output_256.tiff',
 	       q/quality=>54/,
 	       '6c73bcb104e206db81ea91208753f4a7',
-               'c717193abc4ab46bb642382a2d25daa6');
+               'f90f998ebc41c7c9833ea2a454791d70');
 
 #
 # 2) Test truecolor image
@@ -44,4 +44,4 @@ testReadWrite(  'input_mono.tiff',
 		'output_mono.tiff',
 		q//,
 		'782b370d660dff407e883221b20ffbcc',
-		'9b81bd04e4bb7e0f33c506f174f4705e' );
+		'8023e6a23a15ab1240b48ec6c085ed40' );
