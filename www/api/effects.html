@@ -78,7 +78,7 @@
 <P>Image * <STRONG>ReduceNoiseImage</STRONG>( Image *image, const double, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ShadeImage</STRONG>( Image *image, const unsigned int color_shading, double azimuth, double elevation, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>SharpenImage</STRONG>( Image *image, const double radius, const double sigma, ExceptionInfo *exception );</P>
-<P>void  <STRONG>SolarizeImage</STRONG>( Image *image, const double factor );</P>
+<P>void  <STRONG>SolarizeImage</STRONG>( Image *image, const double threshold );</P>
 <P>Image * <STRONG>SpreadImage</STRONG>( Image *image, const unsigned int amount, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>SteganoImage</STRONG>( Image *image, Image *watermark, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>StereoImage</STRONG>( Image *image, Image *offset_image, ExceptionInfo *exception );</P>
@@ -556,14 +556,14 @@ return any errors or warnings in this structure.
 <H2><A NAME="solarizeimage">SolarizeImage</A></H2>
 <P>Method SolarizeImage produces a 'solarization' effect seen when exposing a photographic film to light during the development process.</P>
 <P>The format of the SolarizeImage method is:</P>
-<blockquote>void SolarizeImage ( <A HREF="types/Image.html">Image</A> *image, const double factor ); </blockquote><P>
+<blockquote>void SolarizeImage ( <A HREF="types/Image.html">Image</A> *image, const double threshold ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The address of a structure of type Image; returned from ReadImage.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_factor%3A">factor:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_threshold%3A">threshold:</A></STRONG><BR>
 <DD>
 An double value that defines the extent of the solarization.
 <P></P></DL></DL>
@@ -674,7 +674,7 @@ return any errors or warnings in this structure.
 <DD>
 The address of a structure of type Image; returned from ReadImage.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_threshold%3A">threshold:</A></STRONG><BR>
+<p><dt><STRONG>threshold:</STRONG><BR>
 <DD>
 
 <FONT SIZE=-1>A</FONT> double indicating the threshold value.
