@@ -1351,7 +1351,7 @@ MagickExport void DrawComposite(DrawContext context,
       break;
     }
 
-  media_type = MagickToMime( clone_image->magick );
+  media_type = MagickToMime( image->magick );
 
   if( media_type != NULL )
     {
