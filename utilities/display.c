@@ -402,7 +402,7 @@ int main(int argc,char **argv)
         server_name=argv[i];
         break;
       }
-    if (LocaleNCompare("help",option+1,2) == 0)
+    if (LocaleCompare("help",option+1) == 0)
       Usage();
   }
   /*
@@ -466,13 +466,13 @@ int main(int argc,char **argv)
       {
         case 'b':
         {
-          if (LocaleNCompare("backdrop",option+1,5) == 0)
+          if (LocaleCompare("backdrop",option+1) == 0)
             {
               resource_info.backdrop=(*option == '-');
               break;
             }
-          if ((LocaleNCompare("background",option+1,5) == 0) ||
-              (LocaleNCompare("bg",option+1,2) == 0))
+          if ((LocaleCompare("background",option+1) == 0) ||
+              (LocaleCompare("bg",option+1) == 0))
             {
               if (*option == '-')
                 {
@@ -495,7 +495,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("bordercolor",option+1,7) == 0)
+          if (LocaleCompare("bordercolor",option+1) == 0)
             {
               if (*option == '-')
                 {
@@ -507,7 +507,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("borderwidth",option+1,7) == 0)
+          if (LocaleCompare("borderwidth",option+1) == 0)
             {
               resource_info.border_width=0;
               if (*option == '-')
@@ -524,7 +524,7 @@ int main(int argc,char **argv)
         }
         case 'c':
         {
-          if (LocaleNCompare("cache",option+1,3) == 0)
+          if (LocaleCompare("cache",option+1) == 0)
             {
               SetCacheThreshold(0);
               if (*option == '-')
@@ -536,7 +536,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("colormap",option+1,6) == 0)
+          if (LocaleCompare("colormap",option+1) == 0)
             {
               resource_info.colormap=PrivateColormap;
               if (*option == '-')
@@ -555,7 +555,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("colors",option+1,7) == 0)
+          if (LocaleCompare("colors",option+1) == 0)
             {
               quantize_info->number_colors=0;
               if (*option == '-')
@@ -567,7 +567,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("colorspace",option+1,7) == 0)
+          if (LocaleCompare("colorspace",option+1) == 0)
             {
               quantize_info->colorspace=RGBColorspace;
               if (*option == '-')
@@ -610,7 +610,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("comment",option+1,4) == 0)
+          if (LocaleCompare("comment",option+1) == 0)
             {
               if (*option == '-')
                 {
@@ -620,7 +620,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("compress",option+1,5) == 0)
+          if (LocaleCompare("compress",option+1) == 0)
             {
               image_info->compression=NoCompression;
               if (*option == '-')
@@ -653,9 +653,9 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("contrast",option+1,3) == 0)
+          if (LocaleCompare("contrast",option+1) == 0)
             break;
-          if (LocaleNCompare("crop",option+1,2) == 0)
+          if (LocaleCompare("crop",option+1) == 0)
             {
               if (*option == '-')
                 {
@@ -670,12 +670,12 @@ int main(int argc,char **argv)
         }
         case 'd':
         {
-          if (LocaleNCompare("debug",option+1,3) == 0)
+          if (LocaleCompare("debug",option+1) == 0)
             {
               resource_info.debug=(*option == '-');
               break;
             }
-          if (LocaleNCompare("delay",option+1,3) == 0)
+          if (LocaleCompare("delay",option+1) == 0)
             {
               resource_info.delay=0;
               if (*option == '-')
@@ -687,7 +687,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("density",option+1,3) == 0)
+          if (LocaleCompare("density",option+1) == 0)
             {
               (void) CloneString(&image_info->density,(char *) NULL);
               if (*option == '-')
@@ -699,7 +699,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("depth",option+1,3) == 0)
+          if (LocaleCompare("depth",option+1) == 0)
             {
               image_info->depth=QuantumDepth;
               if (*option == '-')
@@ -711,7 +711,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("despeckle",option+1,3) == 0)
+          if (LocaleCompare("despeckle",option+1) == 0)
             break;
           if (LocaleCompare("display",option+1) == 0)
             {
@@ -725,7 +725,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("dispose",option+1,5) == 0)
+          if (LocaleCompare("dispose",option+1) == 0)
             {
               if (*option == '-')
                 {
@@ -735,7 +735,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("dither",option+1,3) == 0)
+          if (LocaleCompare("dither",option+1) == 0)
             {
               quantize_info->dither=(*option == '-');
               break;
@@ -745,7 +745,7 @@ int main(int argc,char **argv)
         }
         case 'e':
         {
-          if (LocaleNCompare("edge",option+1,2) == 0)
+          if (LocaleCompare("edge",option+1) == 0)
             {
               if (*option == '-')
                 {
@@ -755,14 +755,14 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("enhance",option+1,2) == 0)
+          if (LocaleCompare("enhance",option+1) == 0)
             break;
           MagickError(OptionError,"Unrecognized option",option);
           break;
         }
         case 'f':
         {
-          if (LocaleNCompare("filter",option+1,3) == 0)
+          if (LocaleCompare("filter",option+1) == 0)
             {
               if (*option == '-')
                 {
@@ -809,11 +809,11 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("flip",option+1,3) == 0)
+          if (LocaleCompare("flip",option+1) == 0)
             break;
-          if (LocaleNCompare("flop",option+1,3) == 0)
+          if (LocaleCompare("flop",option+1) == 0)
             break;
-          if (LocaleNCompare("font",option+1,3) == 0)
+          if (LocaleCompare("font",option+1) == 0)
             {
               (void) CloneString(&image_info->font,(char *) NULL);
               if (*option == '-')
@@ -828,8 +828,8 @@ int main(int argc,char **argv)
                 resource_info.font=AllocateString(image_info->font);
               break;
             }
-          if ((LocaleNCompare("foreground",option+1,3) == 0) ||
-              (LocaleNCompare("fg",option+1,2) == 0))
+          if ((LocaleCompare("foreground",option+1) == 0) ||
+              (LocaleCompare("fg",option+1) == 0))
            {
              if (*option == '-')
                {
@@ -840,7 +840,7 @@ int main(int argc,char **argv)
                }
               break;
            }
-          if (LocaleNCompare("frame",option+1,2) == 0)
+          if (LocaleCompare("frame",option+1) == 0)
             {
               if (*option == '-')
                 {
@@ -855,14 +855,14 @@ int main(int argc,char **argv)
         }
         case 'g':
         {
-          if (LocaleNCompare("gamma",option+1,3) == 0)
+          if (LocaleCompare("gamma",option+1) == 0)
             {
               i++;
               if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                 MagickError(OptionError,"Missing value",option);
               break;
             }
-          if (LocaleNCompare("geometry",option+1,2) == 0)
+          if (LocaleCompare("geometry",option+1) == 0)
             {
               resource_info.image_geometry=(char *) NULL;
               if (*option == '-')
@@ -879,14 +879,14 @@ int main(int argc,char **argv)
         }
         case 'h':
         {
-          if (LocaleNCompare("help",option+1,2) == 0)
+          if (LocaleCompare("help",option+1) == 0)
             Usage();
           MagickError(OptionError,"Unrecognized option",option);
           break;
         }
         case 'i':
         {
-          if (LocaleNCompare("iconGeometry",option+1,5) == 0)
+          if (LocaleCompare("iconGeometry",option+1) == 0)
             {
               resource_info.icon_geometry=(char *) NULL;
               if (*option == '-')
@@ -898,17 +898,17 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("iconic",option+1,5) == 0)
+          if (LocaleCompare("iconic",option+1) == 0)
             {
               resource_info.iconic=(*option == '-');
               break;
             }
-          if (LocaleNCompare("immutable",option+1,5) == 0)
+          if (LocaleCompare("immutable",option+1) == 0)
             {
               resource_info.immutable=(*option == '-');
               break;
             }
-          if (LocaleNCompare("interlace",option+1,5) == 0)
+          if (LocaleCompare("interlace",option+1) == 0)
             {
               image_info->interlace=NoInterlace;
               if (*option == '-')
@@ -936,7 +936,7 @@ int main(int argc,char **argv)
         }
         case 'l':
         {
-          if (LocaleNCompare("label",option+1,3) == 0)
+          if (LocaleCompare("label",option+1) == 0)
             {
               if (*option == '-')
                 {
@@ -951,7 +951,7 @@ int main(int argc,char **argv)
         }
         case 'm':
         {
-          if (LocaleNCompare("magnify",option+1,3) == 0)
+          if (LocaleCompare("magnify",option+1) == 0)
             {
               resource_info.magnify=2;
               if (*option == '-')
@@ -963,7 +963,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("map",option+1,3) == 0)
+          if (LocaleCompare("map",option+1) == 0)
             {
               argv[i]=(char *) "+sans";
               resource_info.map_type=(char *) NULL;
@@ -979,7 +979,7 @@ int main(int argc,char **argv)
             }
           if (LocaleCompare("matte",option+1) == 0)
             break;
-          if (LocaleNCompare("mattecolor",option+1,6) == 0)
+          if (LocaleCompare("mattecolor",option+1) == 0)
             {
               if (*option == '-')
                 {
@@ -991,7 +991,8 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("monochrome",option+1,3) == 0)
+          if ((LocaleCompare("mono",option+1) == 0) ||
+              (LocaleCompare("monochrome",option+1) == 0))
             {
               image_info->monochrome=(*option == '-');
               if (image_info->monochrome)
@@ -1007,7 +1008,7 @@ int main(int argc,char **argv)
         }
         case 'n':
         {
-          if (LocaleNCompare("name",option+1,2) == 0)
+          if (LocaleCompare("name",option+1) == 0)
             {
               resource_info.name=(char *) NULL;
               if (*option == '-')
@@ -1019,14 +1020,14 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("negate",option+1,2) == 0)
+          if (LocaleCompare("negate",option+1) == 0)
             break;
           MagickError(OptionError,"Unrecognized option",option);
           break;
         }
         case 'p':
         {
-          if (LocaleNCompare("page",option+1,3) == 0)
+          if (LocaleCompare("page",option+1) == 0)
             {
               (void) CloneString(&image_info->page,(char *) NULL);
               if (*option == '-')
@@ -1043,7 +1044,7 @@ int main(int argc,char **argv)
         }
         case 'q':
         {
-          if (LocaleNCompare("quality",option+1,2) == 0)
+          if (LocaleCompare("quality",option+1) == 0)
             {
               image_info->quality=75;
               if (*option == '-')
@@ -1060,14 +1061,14 @@ int main(int argc,char **argv)
         }
         case 'r':
         {
-          if (LocaleNCompare("raise",option+1,2) == 0)
+          if (LocaleCompare("raise",option+1) == 0)
             {
               i++;
               if ((i == argc) || !sscanf(argv[i],"%d",&x))
                 MagickError(OptionError,"Missing bevel width",option);
               break;
             }
-          if (LocaleNCompare("remote",option+1,3) == 0)
+          if (LocaleCompare("remote",option+1) == 0)
             {
               i++;
               if (i == argc)
@@ -1075,7 +1076,7 @@ int main(int argc,char **argv)
               XRemoteCommand(display,resource_info.window_id,argv[i]);
               Exit(0);
             }
-          if (LocaleNCompare("roll",option+1,3) == 0)
+          if (LocaleCompare("roll",option+1) == 0)
             {
               if (*option == '-')
                 {
@@ -1085,7 +1086,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("rotate",option+1,3) == 0)
+          if (LocaleCompare("rotate",option+1) == 0)
             {
               if (*option == '-')
                 {
@@ -1100,7 +1101,7 @@ int main(int argc,char **argv)
         }
         case 's':
         {
-          if (LocaleNCompare("sample",option+1,2) == 0)
+          if (LocaleCompare("sample",option+1) == 0)
             {
               if (*option == '-')
                 {
@@ -1110,7 +1111,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("scene",option+1,3) == 0)
+          if (LocaleCompare("scene",option+1) == 0)
             {
               first_scene=0;
               last_scene=0;
@@ -1125,7 +1126,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("segment",option+1,3) == 0)
+          if (LocaleCompare("segment",option+1) == 0)
             {
               if (*option == '-')
                 {
@@ -1135,7 +1136,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("sharpen",option+1,5) == 0)
+          if (LocaleCompare("sharpen",option+1) == 0)
             {
               if (*option == '-')
                 {
@@ -1145,12 +1146,12 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("shared_memory",option+1,5) == 0)
+          if (LocaleCompare("shared_memory",option+1) == 0)
             {
               resource_info.use_shared_memory=(*option == '-');
               break;
             }
-          if (LocaleNCompare("size",option+1,2) == 0)
+          if (LocaleCompare("size",option+1) == 0)
             {
               (void) CloneString(&image_info->size,(char *) NULL);
               if (*option == '-')
@@ -1167,7 +1168,7 @@ int main(int argc,char **argv)
         }
         case 't':
         {
-          if (LocaleNCompare("text_font",option+1,5) == 0)
+          if (LocaleCompare("text_font",option+1) == 0)
             {
               resource_info.text_font=(char *) NULL;
               if (*option == '-')
@@ -1179,7 +1180,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("texture",option+1,5) == 0)
+          if (LocaleCompare("texture",option+1) == 0)
             {
               (void) CloneString(&image_info->texture,(char *) NULL);
               if (*option == '-')
@@ -1191,7 +1192,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("title",option+1,4) == 0)
+          if (LocaleCompare("title",option+1) == 0)
             {
               resource_info.title=(char *) NULL;
               if (*option == '-')
@@ -1203,7 +1204,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("treedepth",option+1,3) == 0)
+          if (LocaleCompare("treedepth",option+1) == 0)
             {
               quantize_info->tree_depth=0;
               if (*option == '-')
@@ -1220,7 +1221,7 @@ int main(int argc,char **argv)
         }
         case 'u':
         {
-          if (LocaleNCompare("update",option+1,2) == 0)
+          if (LocaleCompare("update",option+1) == 0)
             {
               resource_info.update=(*option == '-');
               if (*option == '-')
@@ -1232,7 +1233,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("use_pixmap",option+1,2) == 0)
+          if (LocaleCompare("use_pixmap",option+1) == 0)
             {
               resource_info.use_pixmap=(*option == '-');
               break;
@@ -1242,12 +1243,12 @@ int main(int argc,char **argv)
         }
         case 'v':
         {
-          if (LocaleNCompare("verbose",option+1,4) == 0)
+          if (LocaleCompare("verbose",option+1) == 0)
             {
               image_info->verbose=(*option == '-');
               break;
             }
-          if (LocaleNCompare("visual",option+1,3) == 0)
+          if (LocaleCompare("visual",option+1) == 0)
             {
               resource_info.visual_type=(char *) NULL;
               if (*option == '-')
@@ -1277,7 +1278,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("window_group",option+1,7) == 0)
+          if (LocaleCompare("window_group",option+1) == 0)
             {
               resource_info.window_group=(char *) NULL;
               if (*option == '-')
@@ -1290,7 +1291,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("write",option+1,2) == 0)
+          if (LocaleCompare("write",option+1) == 0)
             {
               resource_info.write_filename=(char *) NULL;
               if (*option == '-')

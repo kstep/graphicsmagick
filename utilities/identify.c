@@ -179,7 +179,7 @@ int main(int argc,char **argv)
   for (i=1; i < argc; i++)
   {
     option=argv[i];
-    if (LocaleNCompare("-format",argv[i],2) == 0)
+    if (LocaleCompare("-format",argv[i]) == 0)
       {
         i++;
         if (i == argc)
@@ -214,7 +214,7 @@ int main(int argc,char **argv)
         {
           case 'c':
           {
-            if (LocaleNCompare("cache",option+1,3) == 0)
+            if (LocaleCompare("cache",option+1) == 0)
               {
                 SetCacheThreshold(0);
                 if (*option == '-')
@@ -231,12 +231,12 @@ int main(int argc,char **argv)
           }
           case 'd':
           {
-            if (LocaleNCompare("debug",option+1,3) == 0)
+            if (LocaleCompare("debug",option+1) == 0)
               {
                 image_info->debug=(*option == '-');
                 break;
               }
-            if (LocaleNCompare("density",option+1,3) == 0)
+            if (LocaleCompare("density",option+1) == 0)
               {
                 (void) CloneString(&image_info->density,(char *) NULL);
                 if (*option == '-')
@@ -248,7 +248,7 @@ int main(int argc,char **argv)
                   }
                 break;
               }
-            if (LocaleNCompare("depth",option+1,3) == 0)
+            if (LocaleCompare("depth",option+1) == 0)
               {
                 image_info->depth=QuantumDepth;
                 if (*option == '-')
@@ -265,7 +265,7 @@ int main(int argc,char **argv)
           }
           case 'f':
           {
-            if (LocaleNCompare("format",option+1,2) == 0)
+            if (LocaleCompare("format",option+1) == 0)
               {
                 if (*option == '-')
                   {
@@ -280,7 +280,7 @@ int main(int argc,char **argv)
           }
           case 'h':
           {
-            if (LocaleNCompare("help",option+1,2) == 0)
+            if (LocaleCompare("help",option+1) == 0)
               {
                 Usage();
                 break;
@@ -290,14 +290,14 @@ int main(int argc,char **argv)
           }
           case 'p':
           {
-            if (LocaleNCompare("ping",option+1,2) == 0)
+            if (LocaleCompare("ping",option+1) == 0)
               break;  /* default is ping; silently ignore */
             MagickError(OptionError,"Unrecognized option",option);
             break;
           }
           case 's':
           {
-            if (LocaleNCompare("size",option+1,2) == 0)
+            if (LocaleCompare("size",option+1) == 0)
               {
                 (void) CloneString(&image_info->size,(char *) NULL);
                 if (*option == '-')
@@ -314,7 +314,7 @@ int main(int argc,char **argv)
           }
           case 'v':
           {
-            if (LocaleNCompare("verbose",option+1,4) == 0)
+            if (LocaleCompare("verbose",option+1) == 0)
               {
                 image_info->verbose=(*option == '-');
                 break;
