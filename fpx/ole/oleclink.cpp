@@ -483,7 +483,7 @@ Boolean OLECustomLink::ResolveLink (OLEStorage* initialStorage, const FPXCustomL
     if (customLinkDescriptor.relativeFilePathIsValid) {
     
       // Create a relative file path conform to the platform constraints
-      char* namePtr;
+      char* namePtr = 0;
       
 #ifdef _WINDOWS 
       // Convert the wide string into a normal char string
@@ -529,7 +529,7 @@ Boolean OLECustomLink::ResolveLink (OLEStorage* initialStorage, const FPXCustomL
 
       // Extract the volume name (or equivalent)
       if (customLinkDescriptor.physicalVolumeNameIsValid) {
-        char* namePtr;
+        char* namePtr = 0;
 #ifdef _WINDOWS 
         // Convert the wide string into a normal char string
         WideCharToMultiByte(CP_ACP, 0, (WCHAR *)(customLinkDescriptor.physicalVolumeName.ptr), -1, namePtr, 128, NULL, NULL);
@@ -540,7 +540,7 @@ Boolean OLECustomLink::ResolveLink (OLEStorage* initialStorage, const FPXCustomL
         NormalizeFileName (namePtr,volumeName);
         delete [] namePtr;
       } else if (customLinkDescriptor.virtualVolumeNameIsValid) {
-        char* namePtr;
+        char* namePtr = 0;
 #ifdef _WINDOWS 
         // Convert the wide string into a normal char string
         WideCharToMultiByte(CP_ACP, 0, (WCHAR *)(customLinkDescriptor.virtualVolumeName.ptr), -1, namePtr, 128, NULL, NULL);
@@ -556,7 +556,7 @@ Boolean OLECustomLink::ResolveLink (OLEStorage* initialStorage, const FPXCustomL
       }
       
       // Create the absolute file path conform to the platform constraints
-      char* namePtr;
+      char* namePtr = 0;
 #ifdef _WINDOWS 
       // Convert the wide string into a normal char string
       WideCharToMultiByte(CP_ACP, 0, (WCHAR *)(customLinkDescriptor.absoluteFilePath.ptr), -1, namePtr, 128, NULL, NULL);
@@ -606,7 +606,7 @@ OLEStorage* OLECustomLink::ParseStoragePath (OLEStorage* initialStorage, const F
   unsigned long   length  = customLinkDescriptor.absoluteStoragePath.length;
 
   // Convert to 8 bits character set first
-  char* fullName;
+  char* fullName = 0;
 #ifdef _WINDOWS 
   // Convert the wide string into a normal char string
   WideCharToMultiByte(CP_ACP, 0, (WCHAR *)(customLinkDescriptor.absoluteStoragePath.ptr), -1, fullName, 128, NULL, NULL);
