@@ -54,9 +54,9 @@ commands.
 </table>
 
 <p>The members of the DrawInfo structure are shown in the following table.
-Many of these members are most easily set by initializing the equivalent
-members of ImageInfo, and then initializing the entire structure using
-GetDrawInfo().
+The structure is initialized to reasonable defaults by first initializing
+the equivalent members of <a href="ImageInfo.html">ImageInfo</a>, and then
+initializing the entire structure using <a href="../draw.html#GetDrawInfo">GetDrawInfo().</a>
 <br>&nbsp;
 <table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
 <caption><b>DrawInfo Structure Members Supporting DrawImage()</b></caption>
@@ -203,7 +203,10 @@ Primitives</a> for the available drawing primitives.</td>
 <h3>
 <a NAME="DrawingPrimitives"></a>Drawing Primitives</h3>
 The drawing primitives shown in the following table may be supplied as
-a space or new-line deliminted list to the primitive member:
+a space or new-line deliminted list to the primitive member. Primitives
+which set drawing options effect the results from subsequent drawing operations.
+See the 'push graphic-context' and 'pop graphic-context'&nbsp; primitives
+for a way to control the propogation of drawing options.
 <br>&nbsp;
 <table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
 <caption><b>Drawing Primitives</b></caption>
@@ -423,8 +426,8 @@ revert to those in effect prior to pushing the graphic context.</td>
 
 <td>angle</td>
 
-<td>Subsequent objects are drawn at specified angle (entire coordinate
-space is rotated).</td>
+<td>Specify coordiante space rotation. Subsequent objects are drawn with
+coordate space rotated by specified angle.&nbsp;</td>
 </tr>
 
 <tr>
@@ -488,7 +491,7 @@ space is rotated).</td>
 
 <td>text_antialias (0 or 1)</td>
 
-<td>Specify if rendered text is to be antialized (blend edges).</td>
+<td>Specify if rendered text is to be antialiased (blend edges).</td>
 </tr>
 
 <tr>
