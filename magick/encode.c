@@ -903,7 +903,6 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
     filename[MaxTextExtent];
 
   FILE
-    *eps_file,
     *tiff_file;
 
   int
@@ -919,17 +918,14 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
     eps_length,
     tiff_length;
 
-  eps_file=(FILE *) NULL;
-  if (Latin1Compare(image->magick,"PS") == 0)
-    eps_file=fopen(image->magick_filename,ReadBinaryType);
-  if (eps_file != (FILE *) NULL)
+  if (image->ps_file != (FILE *) NULL)
     {
       /*
         Read existing Encapsulated Postscript.
       */
-      (void) fseek(eps_file,0L,SEEK_END);
-      eps_length=ftell(eps_file);
-      (void) fseek(eps_file,0L,SEEK_SET);
+      (void) fseek(image->ps_file,0L,SEEK_END);
+      eps_length=ftell(image->ps_file);
+      (void) fseek(image->ps_file,0L,SEEK_SET);
     }
   else
     {
@@ -946,7 +942,7 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
         PrematureExit(FileOpenWarning,"Unable to open file",image);
       (void) remove(image->filename);
       eps_length=image->filesize;
-      eps_file=image->file;
+      image->ps_file=image->file;
       image->file=(FILE *) NULL;
     }
   /*
@@ -978,21 +974,10 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
   LSBFirstWriteLong(eps_length+30,image->file);
   LSBFirstWriteLong(tiff_length,image->file);
   LSBFirstWriteShort(0xffff,image->file);
-  for (i=0; ; i++)
-  {
-    c=fgetc(eps_file);
-    if (c < 0)
-      break;
+  for (c=fgetc(image->ps_file); c != EOF; c=fgetc(image->ps_file))
     (void) fputc((char) c,image->file);
-  }
-  (void) fclose(eps_file);
-  for (i=0; ; i++)
-  {
-    c=fgetc(tiff_file);
-    if (c < 0)
-      break;
+  for (c=fgetc(tiff_file); c != EOF; c=fgetc(tiff_file))
     (void) fputc((char) c,image->file);
-  }
   (void) fclose(tiff_file);
   CloseImage(image);
   return(True);
@@ -1543,7 +1528,8 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       if (summary_info.title.ptr != (unsigned char *) NULL)
         (void) strcpy((char *) summary_info.title.ptr,image->label);
       else
-        MagickWarning(DelegateWarning,"Unable to set image title",(char *) NULL);
+        MagickWarning(DelegateWarning,"Unable to set image title",
+          (char *) NULL);
     }
   if (image->comments != (char *) NULL)
     {
@@ -1775,12 +1761,8 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       file=fopen(image->filename,ReadBinaryType);
       if (file == (FILE *) NULL)
         PrematureExit(FileOpenWarning,"Unable to open file",image);
-      c=fgetc(file);
-      while (c != EOF)
-      {
+      for (c=fgetc(file); c != EOF; c=fgetc(file))
         (void) putc(c,fpx_image.file);
-        c=fgetc(file);
-      }
       (void) fclose(file);
       (void) remove(image->filename);
       image->temporary=False;
@@ -5284,22 +5266,38 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     number_packets,
     *xref;
 
-  if ((Latin1Compare(image->magick,"EPS") == 0) ||
-      (Latin1Compare(image->magick,"PS") == 0))
-    if (GetDelegateInfo("gs",False,&delegate_info) && !IsTainted(image))
-      {
-        char
-          command[MaxTextExtent];
+  if ((image->ps_file != (FILE *) NULL) && image_info->adjoin)
+    if ((image->previous == (Image *) NULL) && !IsTainted(image))
+      if (GetDelegateInfo("gs",False,&delegate_info))
+        {
+          char
+            command[MaxTextExtent],
+            filename[MaxTextExtent];
 
-        /*
-          Use Ghostscript's PDF writer.
-        */
-        (void) sprintf(command,delegate_info.commands,"pdfwrite",
-          image->filename,image->magick_filename);
-        status=SystemCommand(command);
-        if (status == False)
-          return(True);
-      }
+          FILE
+            *file;
+
+          TemporaryFilename(filename);
+          file=fopen(filename,WriteBinaryType);
+          if (file != (FILE *) NULL)
+            {
+              int
+                c;
+
+              /*
+                Use Ghostscript's PDF writer.
+              */
+              for (c=fgetc(image->ps_file); c != EOF; c=fgetc(image->ps_file))
+                (void) putc(c,file);
+              (void) fclose(file);
+              (void) sprintf(command,delegate_info.commands,"pdfwrite",
+                image->filename,filename);
+              status=SystemCommand(image_info->verbose,command);
+              (void) remove(filename);
+              if (status == False)
+                return(True);
+            }
+        }
   /*
     Open output image file.
   */
@@ -6232,12 +6230,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       file=fopen(image->filename,ReadBinaryType);
       if (file == (FILE *) NULL)
         PrematureExit(FileOpenWarning,"Unable to open file",image);
-      c=fgetc(file);
-      while (c != EOF)
-      {
+      for (c=fgetc(file); c != EOF; c=fgetc(file))
         (void) putc(c,encode_image.file);
-        c=fgetc(file);
-      }
       (void) fclose(file);
       (void) remove(image->filename);
       image->temporary=False;
@@ -6596,7 +6590,8 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
 */
 static unsigned int WritePIXImage(const ImageInfo *image_info,Image *image)
 {
-  MagickWarning(MissingDelegateWarning,"Cannot write PIX images",image->filename);
+  MagickWarning(MissingDelegateWarning,"Cannot write PIX images",
+    image->filename);
   return(False);
 }
 
@@ -8463,27 +8458,42 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
   XSegment
     bounding_box;
 
-  if ((Latin1Compare(image->magick,"EPS") == 0) ||
-      (Latin1Compare(image->magick,"PDF") == 0) ||
-      (Latin1Compare(image->magick,"PS") == 0))
-    if (GetDelegateInfo("gs",False,&delegate_info) && !IsTainted(image))
-      {
-        char
-          command[MaxTextExtent];
+  if ((image->ps_file != (FILE *) NULL) && image_info->adjoin)
+    if ((image->previous == (Image *) NULL) && !IsTainted(image))
+      if (GetDelegateInfo("gs",False,&delegate_info))
+        {
+          char
+            command[MaxTextExtent],
+            filename[MaxTextExtent];
 
-        unsigned int
-          status;
+          FILE
+            *file;
 
-        /*
-          Use Ghostscript's PS writer.
-        */
-        (void) sprintf(command,delegate_info.commands,
-          Latin1Compare(image_info->magick,"PS") == 0 ? "pswrite" : "epswrite",
-          image->filename,image->magick_filename);
-        status=SystemCommand(command);
-        if (status == False)
-          return(True);
-      }
+          TemporaryFilename(filename);
+          file=fopen(filename,WriteBinaryType);
+          if (file != (FILE *) NULL)
+            {
+              int
+                c;
+
+              unsigned int
+                status;
+
+              /*
+                Use Ghostscript's PDF writer.
+              */
+              for (c=fgetc(image->ps_file); c != EOF; c=fgetc(image->ps_file))
+                (void) putc(c,file);
+              (void) fclose(file);
+              (void) sprintf(command,delegate_info.commands,
+                Latin1Compare(image_info->magick,"PS") == 0 ? "pswrite" :
+                "epswrite",image->filename,filename);
+              status=SystemCommand(image_info->verbose,command);
+              (void) remove(filename);
+              if (status == False)
+                return(True);
+            }
+        }
   /*
     Open output image file.
   */
@@ -11579,12 +11589,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       file=fopen(image->filename,ReadBinaryType);
       if (file == (FILE *) NULL)
         PrematureExit(FileOpenWarning,"Unable to open file",image);
-      c=fgetc(file);
-      while (c != EOF)
-      {
+      for (c=fgetc(file); c != EOF; c=fgetc(file))
         (void) putc(c,encode_image.file);
-        c=fgetc(file);
-      }
       (void) fclose(file);
       (void) remove(image->filename);
       image->temporary=False;

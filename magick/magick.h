@@ -30,6 +30,7 @@ extern "C" {
 #include <string.h>
 #include <signal.h>
 #include <time.h>
+#include <errno.h>
 #include <math.h>
 #include <assert.h>
 #if !defined(__MWERKS__)

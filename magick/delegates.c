@@ -600,10 +600,7 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,Image *image,
     /*
       Execute delegate.
     */
-    if (image_info != (ImageInfo *) NULL)
-      if (image_info->verbose)
-        (void) puts(command);
-    status=SystemCommand(command);
+    status=SystemCommand(image_info->verbose,command);
     FreeMemory((char *) command);
     if (status != False)
       break;

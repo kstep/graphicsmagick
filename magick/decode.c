@@ -7929,7 +7929,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info)
   (void) sprintf(command,delegate_info.commands,device,alias_bits,alias_bits,
     geometry,density,options,image_info->filename,postscript_filename);
   ProgressMonitor(RenderPostscriptText,0,8);
-  status=SystemCommand(command);
+  status=SystemCommand(image_info->verbose,command);
   if (status)
     {
       /*
@@ -7939,7 +7939,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info)
       (void) sprintf(command,delegate_info.commands,device,alias_bits,
         alias_bits,geometry,density,options,image_info->filename,
         postscript_filename);
-      status=SystemCommand(command);
+      status=SystemCommand(image_info->verbose,command);
     }
   ProgressMonitor(RenderPostscriptText,7,8);
   if (status)
@@ -7960,6 +7960,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info)
       return((Image *) NULL);
     }
   (void) strcpy((char *) image_info->filename,filename);
+  image->ps_file=fopen(image_info->filename,ReadBinaryType);
   do
   {
     (void) strcpy(image->magick,"PDF");
@@ -10326,7 +10327,7 @@ static Image *ReadPSImage(const ImageInfo *image_info)
   (void) sprintf(command,delegate_info.commands,device,alias_bits,alias_bits,
     geometry,density,options,image_info->filename,postscript_filename);
   ProgressMonitor(RenderPostscriptText,0,8);
-  status=SystemCommand(command);
+  status=SystemCommand(image_info->verbose,command);
   if (status)
     {
       /*
@@ -10336,7 +10337,7 @@ static Image *ReadPSImage(const ImageInfo *image_info)
       (void) sprintf(command,delegate_info.commands,device,alias_bits,
         alias_bits,geometry,density,options,image_info->filename,
         postscript_filename);
-      status=SystemCommand(command);
+      status=SystemCommand(image_info->verbose,command);
     }
   if (!IsAccessible(image_info->filename))
     {
@@ -10348,7 +10349,7 @@ static Image *ReadPSImage(const ImageInfo *image_info)
         PrematureExit(FileOpenWarning,"Unable to write file",image);
       (void) fputs("showpage\n",file);
       (void) fclose(file);
-      status=SystemCommand(command);
+      status=SystemCommand(image_info->verbose,command);
     }
   (void) remove(postscript_filename);
   ProgressMonitor(RenderPostscriptText,7,8);
@@ -10375,6 +10376,7 @@ static Image *ReadPSImage(const ImageInfo *image_info)
       return((Image *) NULL);
     }
   (void) strcpy((char *) image_info->filename,filename);
+  image->ps_file=fopen(image_info->filename,ReadBinaryType);
   do
   {
     (void) strcpy(image->magick,"PS");
@@ -10757,7 +10759,21 @@ static Image *ReadPSDImage(const ImageInfo *image_info)
             }
           }
         if (psd_header.mode == CMYKMode)
-          TransformRGBImage(layer_info[i].image,CMYKColorspace);
+          {
+            /*
+              Correct CMYK levels.
+            */
+            q=layer_info[i].image->pixels;
+            for (i=0; i < layer_info[i].image->packets; i++)
+            {
+              q->red=MaxRGB-q->red;
+              q->green=MaxRGB-q->green;
+              q->blue=MaxRGB-q->blue;
+              q->index=MaxRGB-q->index;
+              q++;
+            }
+            TransformRGBImage(layer_info[i].image,CMYKColorspace);
+          }
         layer_info[i].image->file=(FILE *) NULL;
       }
       for (i=0; i < 4; i++)
@@ -10826,7 +10842,21 @@ static Image *ReadPSDImage(const ImageInfo *image_info)
   if (image->class == PseudoClass)
     SyncImage(image);
   if (psd_header.mode == CMYKMode)
-    TransformRGBImage(image,CMYKColorspace);
+    {
+      /*
+        Correct CMYK levels.
+      */
+      q=image->pixels;
+      for (i=0; i < image->packets; i++)
+      {
+        q->red=MaxRGB-q->red;
+        q->green=MaxRGB-q->green;
+        q->blue=MaxRGB-q->blue;
+        q->index=MaxRGB-q->index;
+        q++;
+      }
+      TransformRGBImage(image,CMYKColorspace);
+    }
   CondenseImage(image);
   for (i=0; i < number_layers; i++)
   {

@@ -54,7 +54,6 @@
   Include declarations.
 */
 #include "magick.h"
-#include <errno.h>
 
 /*
   Define declarations.

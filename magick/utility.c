@@ -2285,6 +2285,60 @@ Export void Strip(char *data)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   S y s t e m C o m m a n d                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SystemCommand executes the specified command and waits until it
+%  terminates.  The returned value is the exit status of the command.
+%
+%  The format of the SystemCommand routine is:
+%
+%      status=SystemCommand(verbose,command)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method SystemCommand returns False if the command is 
+%      executed successfully.
+%
+%    o verbose: An unsigned integer other than 0 prints the executed
+%      command before it is invoked.
+%
+%    o command: This string is the command to execute.
+%
+%
+*/
+Export int SystemCommand(unsigned int verbose,char *command)
+{
+  int
+    status;
+
+#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+  status=system(command);
+#else
+#if defined(vms)
+  status=!system(command);
+#endif
+#if defined(macintosh)
+  status=MACSystemCommand(command);
+#endif
+#if defined(WIN32)
+  status=NTSystemCommand(command);
+#endif
+#endif
+  if (verbose)
+    MagickWarning(UndefinedWarning,command,
+      status ? strerror(errno) : (char *) NULL);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %  T e m p o r a r y F i l e n a m e                                          %
 %                                                                             %
 %                                                                             %

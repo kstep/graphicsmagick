@@ -110,6 +110,7 @@ Export Image *AllocateImage(const ImageInfo *image_info)
     Initialize Image structure.
   */
   allocated_image->file=(FILE *) NULL;
+  allocated_image->ps_file=(FILE *) NULL;
   allocated_image->exempt=False;
   allocated_image->status=False;
   allocated_image->temporary=False;
@@ -1090,12 +1091,8 @@ Export void CloseImage(Image *image)
       (void) fclose(image->file);
   image->file=(FILE *) NULL;
   if (!image->orphan)
-    do
-    {
+    for ( ; image != (Image *) NULL; image=image->next)
       image->file=(FILE *) NULL;
-      image=image->next;
-    }
-    while (image != (Image *) NULL);
 }
 
 /*
@@ -3200,6 +3197,16 @@ Export void DestroyImage(Image *image)
       CloseImage(image);
       if (image->temporary)
         (void) remove(image->filename);
+    }
+  if (image->ps_file != (FILE *) NULL)
+    {
+      register Image
+        *p;
+
+      (void) fclose(image->file);
+      if (!image->orphan)
+        for (p=image; p != (Image *) NULL; p=p->next)
+          p->ps_file=(FILE *) NULL;
     }
   /*
     Deallocate the image comments.
@@ -6945,6 +6952,7 @@ Export void NegateImage(Image *image,unsigned int grayscale)
         p->red=(~p->red);
         p->green=(~p->green);
         p->blue=(~p->blue);
+        p->index=(~p->index);
         p++;
         if (QuantumTick(i,image->packets))
           ProgressMonitor(NegateImageText,i,image->packets);

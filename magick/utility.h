@@ -53,23 +53,19 @@
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
 #define BasenameSeparator  "/"
 #define DirectorySeparator  "/"
-#define SystemCommand(command)  system(command)
 #define TemporaryTemplate  "magick"
 #else
 #if defined(vms)
 #define BasenameSeparator  "]"
 #define DirectorySeparator  ""
-#define SystemCommand(command)  (!system(command))
 #endif
 #if defined(macintosh)
 #define BasenameSeparator  ":"
 #define DirectorySeparator  ":"
-#define SystemCommand(command)  MACSystemCommand(command)
 #endif
 #if defined(WIN32)
 #define BasenameSeparator  "/"
 #define DirectorySeparator  "/"
-#define SystemCommand(command)  NTSystemCommand(command)
 #endif
 #endif
 
@@ -89,7 +85,8 @@ extern Export char
 extern Export int
   GlobExpression(char *,const char *),
   MultilineCensus(const char *),
-  ReadDataBlock(char *,FILE *);
+  ReadDataBlock(char *,FILE *),
+  SystemCommand(unsigned int,char *);
 
 extern Export unsigned int
   ExpandFilenames(int *,char ***),
