@@ -1,5 +1,5 @@
 # Note that this is NOT a relocatable package
-%define ver      2.2.11
+%define ver      2.3.4
 %define prefix   /usr
 
 Summary: Library providing XML and HTML support
@@ -110,8 +110,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %doc AUTHORS ChangeLog NEWS README COPYING COPYING.LIB TODO
 %doc /usr/man/man1/xmllint.1*
-%doc /usr/man/man1/xml-config.1*
+%doc /usr/man/man1/xml2-config.1*
 %doc /usr/man/man4/libxml.4*
+%doc doc/*.html doc/html
 
 %{prefix}/lib/lib*.so.*
 %{prefix}/bin/xmllint
@@ -123,4 +124,4 @@ rm -rf $RPM_BUILD_ROOT
 %{prefix}/lib/*a
 %{prefix}/lib/*.sh
 %{prefix}/include/*
-%{prefix}/bin/xml-config
+%{prefix}/bin/xml2-config

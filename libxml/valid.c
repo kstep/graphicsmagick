@@ -26,6 +26,7 @@
 #include <libxml/parser.h>
 #include <libxml/parserInternals.h>
 #include <libxml/xmlerror.h>
+#include <libxml/list.h>
 
 /*
  * Generic function for accessing stacks in the Validity Context
@@ -138,8 +139,12 @@ void xmlValidDebug(xmlNodePtr cur, xmlElementContentPtr cont) {
 }
 
 #define DEBUG_VALID_STATE(n,c) xmlValidDebug(n,c);
+#define DEBUG_VALID_MSG(m)					\
+    xmlGenericError(xmlGenericErrorContext, "%s\n", m);
+        
 #else
 #define DEBUG_VALID_STATE(n,c)
+#define DEBUG_VALID_MSG(m)
 #endif
 
 /* TODO: use hash table for accesses to elem and attribute dedinitions */
@@ -316,7 +321,7 @@ xmlFreeElementContent(xmlElementContentPtr cur) {
     if (cur->c1 != NULL) xmlFreeElementContent(cur->c1);
     if (cur->c2 != NULL) xmlFreeElementContent(cur->c2);
     if (cur->name != NULL) xmlFree((xmlChar *) cur->name);
-    memset(cur, -1, sizeof(xmlElementContent));
+    MEM_CLEANUP(cur, sizeof(xmlElementContent));
     xmlFree(cur);
 }
 
@@ -481,7 +486,7 @@ xmlFreeElement(xmlElementPtr elem) {
 	xmlFree((xmlChar *) elem->name);
     if (elem->prefix != NULL)
 	xmlFree((xmlChar *) elem->prefix);
-    memset(elem, -1, sizeof(xmlElement));
+    MEM_CLEANUP(elem, sizeof(xmlElement));
     xmlFree(elem);
 }
 
@@ -776,7 +781,7 @@ xmlFreeEnumeration(xmlEnumerationPtr cur) {
     if (cur->next != NULL) xmlFreeEnumeration(cur->next);
 
     if (cur->name != NULL) xmlFree((xmlChar *) cur->name);
-    memset(cur, -1, sizeof(xmlEnumeration));
+    MEM_CLEANUP(cur, sizeof(xmlEnumeration));
     xmlFree(cur);
 }
 
@@ -936,7 +941,7 @@ xmlFreeAttribute(xmlAttributePtr attr) {
 	xmlFree((xmlChar *) attr->defaultValue);
     if (attr->prefix != NULL)
 	xmlFree((xmlChar *) attr->prefix);
-    memset(attr, -1, sizeof(xmlAttribute));
+    MEM_CLEANUP(attr, sizeof(xmlAttribute));
     xmlFree(attr);
 }
 
@@ -1284,7 +1289,7 @@ xmlFreeNotation(xmlNotationPtr nota) {
 	xmlFree((xmlChar *) nota->PublicID);
     if (nota->SystemID != NULL)
 	xmlFree((xmlChar *) nota->SystemID);
-    memset(nota, -1, sizeof(xmlNotation));
+    MEM_CLEANUP(nota, sizeof(xmlNotation));
     xmlFree(nota);
 }
 
@@ -1488,7 +1493,7 @@ xmlFreeID(xmlIDPtr id) {
     if (id == NULL) return;
     if (id->value != NULL)
 	xmlFree((xmlChar *) id->value);
-    memset(id, -1, sizeof(xmlID));
+    MEM_CLEANUP(id, sizeof(xmlID));
     xmlFree(id);
 }
 
@@ -1685,6 +1690,22 @@ xmlGetID(xmlDocPtr doc, const xmlChar *ID) {
  *				Refs					*
  *									*
  ************************************************************************/
+typedef struct xmlRemoveMemo_t 
+{
+	xmlListPtr l;
+	xmlAttrPtr ap;
+} xmlRemoveMemo;
+
+typedef xmlRemoveMemo *xmlRemoveMemoPtr;
+
+typedef struct xmlValidateMemo_t 
+{
+    xmlValidCtxtPtr ctxt;
+    const xmlChar *name;
+} xmlValidateMemo;
+
+typedef xmlValidateMemo *xmlValidateMemoPtr;
+
 /**
  * xmlCreateRefTable:
  *
@@ -1700,17 +1721,51 @@ xmlCreateRefTable(void) {
 
 /**
  * xmlFreeRef:
- * @ref:  A ref
+ * @lk:  A list link
  *
- * Deallocate the memory used by an ref definition
+ * Deallocate the memory used by a ref definition
  */
-void
-xmlFreeRef(xmlRefPtr ref) {
-    if (ref == NULL) return;
-    if (ref->value != NULL)
-	xmlFree((xmlChar *) ref->value);
-    memset(ref, -1, sizeof(xmlRef));
-    xmlFree(ref);
+static void
+xmlFreeRef(xmlLinkPtr lk) {
+	xmlRefPtr ref = (xmlRefPtr)xmlLinkGetData(lk);
+	if (ref == NULL) return;
+	if (ref->value != NULL)
+		xmlFree((xmlChar *)ref->value);
+	MEM_CLEANUP(ref, sizeof(xmlRef));
+	xmlFree(ref);
+}
+
+/**
+ * xmlFreeRefList:
+ * @list_ref:  A list of references.
+ *
+ * Deallocate the memory used by a list of references
+ */
+static void
+xmlFreeRefList(xmlListPtr list_ref) {
+	if (list_ref == NULL) return;
+	xmlListDelete(list_ref);
+}
+
+/**
+ * xmlWalkRemoveRef:
+ * @data:  Contents of current link
+ * @user:  Value supplied by the user
+ *
+ * Return 0 to abort the walk or 1 to continue
+ */
+static int
+xmlWalkRemoveRef(const void *data, const void *user)
+{
+	xmlAttrPtr attr0 = ((xmlRefPtr)data)->attr;
+	xmlAttrPtr attr1 = ((xmlRemoveMemoPtr)user)->ap;
+	xmlListPtr ref_list = ((xmlRemoveMemoPtr)user)->l;
+
+	if (attr0 == attr1) { /* Matched: remove and terminate walk */
+		xmlListRemoveFirst(ref_list, (void *)data);
+		return 0;
+	}
+	return 1;
 }
 
 /**
@@ -1726,59 +1781,74 @@ xmlFreeRef(xmlRefPtr ref) {
  */
 xmlRefPtr 
 xmlAddRef(xmlValidCtxtPtr ctxt, xmlDocPtr doc, const xmlChar *value,
-         xmlAttrPtr attr) {
-    xmlRefPtr ret;
-    xmlRefTablePtr table;
+    xmlAttrPtr attr) {
+	xmlRefPtr ret;
+	xmlRefTablePtr table;
+	xmlListPtr ref_list;
 
-    if (doc == NULL) {
-        xmlGenericError(xmlGenericErrorContext,
-		"xmlAddRefDecl: doc == NULL\n");
-	return(NULL);
-    }
-    if (value == NULL) {
-        xmlGenericError(xmlGenericErrorContext,
-		"xmlAddRefDecl: value == NULL\n");
-	return(NULL);
-    }
-    if (attr == NULL) {
-        xmlGenericError(xmlGenericErrorContext,
-		"xmlAddRefDecl: attr == NULL\n");
-	return(NULL);
-    }
+	if (doc == NULL) {
+		xmlGenericError(xmlGenericErrorContext,
+		    "xmlAddRefDecl: doc == NULL\n");
+		return(NULL);
+	}
+	if (value == NULL) {
+		xmlGenericError(xmlGenericErrorContext,
+		    "xmlAddRefDecl: value == NULL\n");
+		return(NULL);
+	}
+	if (attr == NULL) {
+		xmlGenericError(xmlGenericErrorContext,
+		    "xmlAddRefDecl: attr == NULL\n");
+		return(NULL);
+	}
 
-    /*
+	/*
      * Create the Ref table if needed.
      */
-    table = (xmlRefTablePtr) doc->refs;
-    if (table == NULL) 
-        doc->refs = table = xmlCreateRefTable();
-    if (table == NULL) {
-	xmlGenericError(xmlGenericErrorContext,
-		"xmlAddRef: Table creation failed!\n");
-        return(NULL);
-    }
+	table = (xmlRefTablePtr) doc->refs;
+	if (table == NULL) 
+		doc->refs = table = xmlCreateRefTable();
+	if (table == NULL) {
+		xmlGenericError(xmlGenericErrorContext,
+		    "xmlAddRef: Table creation failed!\n");
+		return(NULL);
+	}
 
-    ret = (xmlRefPtr) xmlMalloc(sizeof(xmlRef));
-    if (ret == NULL) {
-	xmlGenericError(xmlGenericErrorContext,
-		"xmlAddRef: out of memory\n");
-	return(NULL);
-    }
+	ret = (xmlRefPtr) xmlMalloc(sizeof(xmlRef));
+	if (ret == NULL) {
+		xmlGenericError(xmlGenericErrorContext,
+		    "xmlAddRef: out of memory\n");
+		return(NULL);
+	}
 
-    /*
+	/*
      * fill the structure.
      */
-    ret->value = xmlStrdup(value);
-    ret->attr = attr;
+ 	ret->value = xmlStrdup(value);
+	ret->attr = attr;
 
-    /*
-     * !!! Should we keep track of all refs ? and use xmlHashAddEntry2 ?
-     */
-    if (xmlHashAddEntry(table, value, ret) < 0) {
-	xmlFreeRef(ret);
-	return(NULL);
-    }
-    return(ret);
+	/* To add a reference :-
+	 * References are maintained as a list of references,
+	 * Lookup the entry, if no entry create new nodelist
+	 * Add the owning node to the NodeList
+	 * Return the ref
+	 */
+
+	if(NULL == (ref_list = xmlHashLookup(table, value))) {
+		if(NULL == (ref_list = xmlListCreate(xmlFreeRef, NULL))) {
+			xmlGenericError(xmlGenericErrorContext,
+			    "xmlAddRef: Reference list creation failed!\n");
+			return(NULL);
+		}
+		if (xmlHashAddEntry(table, value, ref_list) < 0) {
+			xmlListDelete(ref_list);
+			xmlGenericError(xmlGenericErrorContext,
+			    "xmlAddRef: Reference list insertion failed!\n");
+			return(NULL);
+		}
+	}
+	xmlListInsert(ref_list, ret);
+	return(ret);
 }
 
 /**
@@ -1789,7 +1859,7 @@ xmlAddRef(xmlValidCtxtPtr ctxt, xmlDocPtr doc, const xmlChar *value,
  */
 void
 xmlFreeRefTable(xmlRefTablePtr table) {
-    xmlHashFree(table, (xmlHashDeallocator) xmlFreeRef);
+	xmlHashFree(table, (xmlHashDeallocator) xmlFreeRefList);
 }
 
 /**
@@ -1806,23 +1876,23 @@ xmlFreeRefTable(xmlRefTablePtr table) {
  */
 int
 xmlIsRef(xmlDocPtr doc, xmlNodePtr elem, xmlAttrPtr attr) {
-    if ((doc->intSubset == NULL) && (doc->extSubset == NULL)) {
-        return(0);
-    } else if (doc->type == XML_HTML_DOCUMENT_NODE) {
-	/* TODO @@@ */
-	return(0);    
-    } else {
-	xmlAttributePtr attrDecl;
+	if ((doc->intSubset == NULL) && (doc->extSubset == NULL)) {
+		return(0);
+	} else if (doc->type == XML_HTML_DOCUMENT_NODE) {
+		/* TODO @@@ */
+		return(0);    
+	} else {
+		xmlAttributePtr attrDecl;
 
-	attrDecl = xmlGetDtdAttrDesc(doc->intSubset, elem->name, attr->name);
-	if ((attrDecl == NULL) && (doc->extSubset != NULL))
-	    attrDecl = xmlGetDtdAttrDesc(doc->extSubset, elem->name,
-	                                 attr->name);
+		attrDecl = xmlGetDtdAttrDesc(doc->intSubset, elem->name, attr->name);
+		if ((attrDecl == NULL) && (doc->extSubset != NULL))
+			attrDecl = xmlGetDtdAttrDesc(doc->extSubset, elem->name,
+			    attr->name);
 
-        if ((attrDecl != NULL) && (attrDecl->atype == XML_ATTRIBUTE_IDREF))
-	    return(1);
-    }
-    return(0);
+		if ((attrDecl != NULL) && (attrDecl->atype == XML_ATTRIBUTE_IDREF))
+			return(1);
+	}
+	return(0);
 }
 
 /**
@@ -1836,59 +1906,80 @@ xmlIsRef(xmlDocPtr doc, xmlNodePtr elem, xmlAttrPtr attr) {
  */
 int
 xmlRemoveRef(xmlDocPtr doc, xmlAttrPtr attr) {
-    xmlAttrPtr cur;
-    xmlRefTablePtr table;
-    xmlChar *ID;
+	xmlListPtr ref_list;
+	xmlRefTablePtr table;
+	xmlChar *ID;
+	xmlRemoveMemo target;
 
-    if (doc == NULL) return(-1);
-    if (attr == NULL) return(-1);
-    table = (xmlRefTablePtr) doc->refs;
-    if (table == NULL) 
-        return(-1);
+	if (doc == NULL) return(-1);
+	if (attr == NULL) return(-1);
+	table = (xmlRefTablePtr) doc->refs;
+	if (table == NULL) 
+		return(-1);
 
-    if (attr == NULL)
-	return(-1);
-    ID = xmlNodeListGetString(doc, attr->children, 1);
-    if (ID == NULL)
-	return(-1);
-    cur = xmlHashLookup(table, ID);
-    if (cur != attr) {
+	if (attr == NULL)
+		return(-1);
+	ID = xmlNodeListGetString(doc, attr->children, 1);
+	if (ID == NULL)
+		return(-1);
+	ref_list = xmlHashLookup(table, ID);
+
+	if(ref_list == NULL) {
+		xmlFree(ID);
+		return (-1);
+	}
+	/* At this point, ref_list refers to a list of references which
+	 * have the same key as the supplied attr. Our list of references
+	 * is ordered by reference address and we don't have that information
+	 * here to use when removing. We'll have to walk the list and
+	 * check for a matching attribute, when we find one stop the walk
+	 * and remove the entry.
+	 * The list is ordered by reference, so that means we don't have the
+	 * key. Passing the list and the reference to the walker means we
+	 * will have enough data to be able to remove the entry.
+	 */
+	target.l = ref_list;
+	target.ap = attr;
+	
+	/* Remove the supplied attr from our list */
+	xmlListWalk(ref_list, xmlWalkRemoveRef, &target);
+
+	/*If the list is empty then remove the list entry in the hash */
+	if (xmlListEmpty(ref_list))
+	    xmlHashUpdateEntry(table, ID, NULL, (xmlHashDeallocator)
+	    xmlFreeRefList);
 	xmlFree(ID);
-	return(-1);
-    }
-    xmlHashUpdateEntry(table, ID, NULL, (xmlHashDeallocator) xmlFreeRef);
-    xmlFree(ID);
-    return(0);
+	return(0);
 }
 
 /**
- * xmlGetRef:
+ * xmlGetRefs:
  * @doc:  pointer to the document
- * @Ref:  the Ref value
+ * @ID:  the ID value
  *
- * Search the next attribute declaring the given Ref
+ * Find the set of references for the supplied ID. 
  *
- * Returns NULL if not found, otherwise the xmlAttrPtr defining the Ref
+ * Returns NULL if not found, otherwise node set for the ID.
  */
-xmlAttrPtr 
-xmlGetRef(xmlDocPtr doc, const xmlChar *Ref) {
-    xmlRefTablePtr table;
+xmlListPtr 
+xmlGetRefs(xmlDocPtr doc, const xmlChar *ID) {
+	xmlRefTablePtr table;
 
-    if (doc == NULL) {
-        xmlGenericError(xmlGenericErrorContext, "xmlGetRef: doc == NULL\n");
-	return(NULL);
-    }
+	if (doc == NULL) {
+		xmlGenericError(xmlGenericErrorContext, "xmlGetRef: doc == NULL\n");
+		return(NULL);
+	}
 
-    if (Ref == NULL) {
-        xmlGenericError(xmlGenericErrorContext, "xmlGetRef: Ref == NULL\n");
-	return(NULL);
-    }
+	if (ID == NULL) {
+		xmlGenericError(xmlGenericErrorContext, "xmlGetRef: ID == NULL\n");
+		return(NULL);
+	}
 
-    table = (xmlRefTablePtr) doc->refs;
-    if (table == NULL) 
-        return(NULL);
+	table = (xmlRefTablePtr) doc->refs;
+	if (table == NULL) 
+		return(NULL);
 
-    return(xmlHashLookup(table, Ref));
+	return (xmlHashLookup(table, ID));
 }
 
 /************************************************************************
@@ -2831,12 +2922,14 @@ xmlValidateOneAttribute(xmlValidCtxtPtr ctxt, xmlDocPtr doc,
 
     /* Validity Constraint: ID uniqueness */
     if (attrDecl->atype == XML_ATTRIBUTE_ID) {
-        xmlAddID(ctxt, doc, value, attr);
+        if (xmlAddID(ctxt, doc, value, attr) == NULL)
+	    ret = 0;
     }
 
     if ((attrDecl->atype == XML_ATTRIBUTE_IDREF) ||
 	(attrDecl->atype == XML_ATTRIBUTE_IDREFS)) {
-        xmlAddRef(ctxt, doc, value, attr);
+        if (xmlAddRef(ctxt, doc, value, attr) == NULL)
+	    ret = 0;
     }
 
     /* Validity Constraint: Notation Attributes */
@@ -2908,44 +3001,53 @@ static int
 xmlValidateFindNextElement(xmlValidCtxtPtr ctxt, xmlNodePtr *child,
                            xmlElementContentPtr cont)
 {
-  while (*child && (*child)->type != XML_ELEMENT_NODE) {
-    switch ((*child)->type) {
-      /*
-       * If there is an entity declared and it's not empty
-       * Push the current node on the stack and process with the
-       * entity content.
-       */
-      case XML_ENTITY_REF_NODE:
-        if (((*child)->children != NULL) &&
-            ((*child)->children->children != NULL)) {
-          nodeVPush(ctxt, *child);
-          *child = (*child)->children->children;
-          continue;
-        }
-        break;
+    DEBUG_VALID_MSG("skipping to next element");
+    while (*child && (*child)->type != XML_ELEMENT_NODE) {
+	switch ((*child)->type) {
+	    /*
+	     * If there is an entity declared and it's not empty
+	     * Push the current node on the stack and process with the
+	     * entity content.
+	     */
+	    case XML_ENTITY_REF_NODE:
+		if (((*child)->children != NULL) &&
+		    ((*child)->children->children != NULL)) {
+		    nodeVPush(ctxt, *child);
+		    *child = (*child)->children->children;
+		    continue;
+		}
+		break;
 
-      /* These things are ignored (skipped) during validation.  */
-      case XML_PI_NODE:
-      case XML_COMMENT_NODE:
-      case XML_XINCLUDE_START:
-      case XML_XINCLUDE_END:
-        break;
+	    /* These things are ignored (skipped) during validation.  */
+	    case XML_PI_NODE:
+	    case XML_COMMENT_NODE:
+	    case XML_XINCLUDE_START:
+	    case XML_XINCLUDE_END:
+		break;
 
-      case XML_TEXT_NODE:
-        if (xmlIsBlankNode(*child)
-            && (cont->type == XML_ELEMENT_CONTENT_ELEMENT
-                || cont->type == XML_ELEMENT_CONTENT_SEQ
-                || cont->type == XML_ELEMENT_CONTENT_OR))
-          break;
-        return -1;
+	    case XML_TEXT_NODE:
+		if (xmlIsBlankNode(*child)
+		    && (cont->type == XML_ELEMENT_CONTENT_ELEMENT
+		    || cont->type == XML_ELEMENT_CONTENT_SEQ
+		    || cont->type == XML_ELEMENT_CONTENT_OR))
+		    break;
+		DEBUG_VALID_MSG("failed non-blank");
+		return(-1);
 
-      default:
-        return -1;
+	    default:
+		DEBUG_VALID_MSG("failed unknown type");
+		return(-1);
+	}
+	*child = (*child)->next;
     }
-    *child = (*child)->next;
-  }
+#ifdef DEBUG_VALID_ALGO
+    if (*child != NULL) {
+	DEBUG_VALID_MSG((*child)->name);
+    }
+    DEBUG_VALID_MSG("found ...");
+#endif
 
-  return 1;
+    return(1);
 }
 
 int xmlValidateElementTypeElement(xmlValidCtxtPtr ctxt, xmlNodePtr *child,
@@ -2979,12 +3081,16 @@ xmlValidateElementTypeExpr(xmlValidCtxtPtr ctxt, xmlNodePtr *child,
     switch (cont->type) {
 	case XML_ELEMENT_CONTENT_PCDATA:
 	    if (*child == NULL) return(0);
-	    if ((*child)->type == XML_TEXT_NODE) return(1);
+	    if ((*child)->type == XML_TEXT_NODE) {
+		DEBUG_VALID_MSG("pcdata found");
+		return(1);
+	    }
 	    return(0);
 	case XML_ELEMENT_CONTENT_ELEMENT:
 	    if (*child == NULL) return(0);
 	    ret = (xmlStrEqual((*child)->name, cont->name));
 	    if (ret == 1) {
+		DEBUG_VALID_MSG("element found, skip to next");
 		while ((*child)->next == NULL) {
                     if (((*child)->parent != NULL) &&
 			((*child)->parent->type == XML_ENTITY_DECL)) {
@@ -3000,22 +3106,26 @@ xmlValidateElementTypeExpr(xmlValidCtxtPtr ctxt, xmlNodePtr *child,
 	    ret = xmlValidateElementTypeElement(ctxt, child, cont->c1);
 	    if (ret == -1) return(-1);
 	    if (ret == 1) {
-		 return(1);
+		DEBUG_VALID_MSG("or succeeded first branch");
+		return(1);
 	    }
 	    /* rollback and retry the other path */
 	    *child = cur;
 	    ret = xmlValidateElementTypeElement(ctxt, child, cont->c2);
 	    if (ret == -1) return(-1);
 	    if (ret == 0) {
+		DEBUG_VALID_MSG("or failed both branches");
 		*child = cur;
 		return(0);
 	    }
+	    DEBUG_VALID_MSG("or succeeded second branch");
 	    return(1);
 	case XML_ELEMENT_CONTENT_SEQ:
 	    cur = *child;
 	    ret = xmlValidateElementTypeElement(ctxt, child, cont->c1);
 	    if (ret == -1) return(-1);
 	    if (ret == 0) {
+		DEBUG_VALID_MSG("sequence failed");
 		*child = cur;
 		return(0);
 	    }
@@ -3025,6 +3135,7 @@ xmlValidateElementTypeExpr(xmlValidCtxtPtr ctxt, xmlNodePtr *child,
 		*child = cur;
 		return(0);
 	    }
+	    DEBUG_VALID_MSG("sequence succeeded");
 	    return(1);
     }
     return(ret);
@@ -3062,6 +3173,7 @@ xmlValidateElementTypeElement(xmlValidCtxtPtr ctxt, xmlNodePtr *child,
     switch (cont->ocur) {
 	case XML_ELEMENT_CONTENT_ONCE:
 	    if (ret == 1) {
+		DEBUG_VALID_MSG("once found, skip to next");
 		/* skip ignorable elems */
 		while ((*child != NULL) &&
 		       ((*child)->type == XML_PI_NODE
@@ -3086,6 +3198,25 @@ xmlValidateElementTypeElement(xmlValidCtxtPtr ctxt, xmlNodePtr *child,
 		*child = cur;
 	        return(1);
 	    }
+	    if (ret == 1) {
+		DEBUG_VALID_MSG("optional found, skip to next");
+		/* skip ignorable elems */
+		while ((*child != NULL) &&
+		       ((*child)->type == XML_PI_NODE
+                        || (*child)->type == XML_COMMENT_NODE
+                        || (*child)->type == XML_XINCLUDE_START
+                        || (*child)->type == XML_XINCLUDE_END)) {
+		    while ((*child)->next == NULL) {
+			if (((*child)->parent != NULL) &&
+			    ((*child)->parent->type == XML_ENTITY_REF_NODE)) {
+			    *child = (*child)->parent;
+			} else
+			    break;
+		    }
+		    *child = (*child)->next;
+		}
+		return(1);
+	    }
 	    break;
 	case XML_ELEMENT_CONTENT_MULT:
 	    if (ret == 0) {
@@ -3098,6 +3229,7 @@ xmlValidateElementTypeElement(xmlValidCtxtPtr ctxt, xmlNodePtr *child,
 		*child = cur;
 	        return(0);
 	    }
+	    DEBUG_VALID_MSG("mult/plus found");
 	    if (ret == -1) return(-1);
 	    cur = *child;
 	    do {
@@ -3116,8 +3248,9 @@ xmlValidateElementTypeElement(xmlValidCtxtPtr ctxt, xmlNodePtr *child,
 	    *child = cur;
 	    break;
     }
+    if (ret == -1) return(-1);
 
-    return xmlValidateFindNextElement(ctxt, child, cont);
+    return(xmlValidateFindNextElement(ctxt, child, cont));
 }
 
 /**
@@ -3588,9 +3721,15 @@ xmlValidateElement(xmlValidCtxtPtr ctxt, xmlDocPtr doc, xmlNodePtr elem) {
     return(ret);
 }
 
-
+/**
+ * xmlValidateRef:
+ * @ref:   A reference to be validated
+ * @ctxt:  Validation context
+ * @name:  Name of ID we are searching for
+ *
+ */
 void
-xmlValidateCheckRefCallback(xmlRefPtr ref, xmlValidCtxtPtr ctxt,
+xmlValidateRef(xmlRefPtr ref, xmlValidCtxtPtr ctxt,
 	                   const xmlChar *name) {
     xmlAttrPtr id;
     xmlAttrPtr attr;
@@ -3636,6 +3775,42 @@ xmlValidateCheckRefCallback(xmlRefPtr ref, xmlValidCtxtPtr ctxt,
 	}
 	xmlFree(dup);
     }
+}
+
+/**
+ * xmlWalkValidateList:
+ * @data:  Contents of current link
+ * @user:  Value supplied by the user
+ *
+ * Return 0 to abort the walk or 1 to continue
+ */
+static int
+xmlWalkValidateList(const void *data, const void *user)
+{
+	xmlValidateMemoPtr memo = (xmlValidateMemoPtr)user;
+	xmlValidateRef((xmlRefPtr)data, memo->ctxt, memo->name);
+	return 1;
+}
+
+/**
+ * xmlValidateCheckRefCallback:
+ * @ref_list:  List of references
+ * @ctxt:  Validation context
+ * @name:  Name of ID we are searching for
+ *
+ */
+static void
+xmlValidateCheckRefCallback(xmlListPtr ref_list, xmlValidCtxtPtr ctxt,
+	                   const xmlChar *name) {
+    xmlValidateMemo memo;
+
+    if (ref_list == NULL)
+	return;
+    memo.ctxt = ctxt;
+    memo.name = name;
+
+    xmlListWalk(ref_list, xmlWalkValidateList, &memo);
+    
 }
 
 /**
@@ -3705,6 +3880,14 @@ xmlValidateDtd(xmlValidCtxtPtr ctxt, xmlDocPtr doc, xmlDtdPtr dtd) {
     if (ret == 0) {
 	doc->extSubset = oldExt;
 	return(ret);
+    }
+    if (doc->ids != NULL) {
+          xmlFreeIDTable(doc->ids);
+          doc->ids = NULL;
+    }
+    if (doc->refs != NULL) {
+          xmlFreeRefTable(doc->refs);
+          doc->refs = NULL;
     }
     root = xmlDocGetRootElement(doc);
     ret = xmlValidateElement(ctxt, doc, root);
@@ -3825,6 +4008,14 @@ xmlValidateDocument(xmlValidCtxtPtr ctxt, xmlDocPtr doc) {
 	}
     }
 
+    if (doc->ids != NULL) {
+          xmlFreeIDTable(doc->ids);
+          doc->ids = NULL;
+    }
+    if (doc->refs != NULL) {
+          xmlFreeRefTable(doc->refs);
+          doc->refs = NULL;
+    }
     ret = xmlValidateDtdFinal(ctxt, doc);
     if (!xmlValidateRoot(ctxt, doc)) return(0);
 

@@ -20,6 +20,9 @@
 extern "C" {
 #endif
 
+#define XML_XML_NAMESPACE \
+    (const xmlChar *) "http://www.w3.org/XML/1998/namespace"
+
 /*
  * The different element types carried by an XML tree
  *
@@ -384,7 +387,8 @@ LIBXML_DLL_IMPORT extern xmlNsPtr baseDTD;
 LIBXML_DLL_IMPORT extern int oldXMLWDcompatibility;/* maintain compatibility with old WD */
 LIBXML_DLL_IMPORT extern int xmlIndentTreeOutput;  /* try to indent the tree dumps */
 LIBXML_DLL_IMPORT extern xmlBufferAllocationScheme xmlBufferAllocScheme; /* alloc scheme to use */
-LIBXML_DLL_IMPORT extern int xmlSaveNoEmptyTags;   /* save empty tags as <empty></empty> */
+LIBXML_DLL_IMPORT extern int xmlSaveNoEmptyTags; /* save empty tags as <empty></empty> */
+LIBXML_DLL_IMPORT extern int xmlDefaultBufferSize; /* default buffer size */
 
 /*
  * Handling Buffers.
@@ -570,6 +574,10 @@ xmlChar *	xmlGetProp		(xmlNodePtr node,
 					 const xmlChar *name);
 xmlAttrPtr	xmlHasProp		(xmlNodePtr node,
 					 const xmlChar *name);
+xmlAttrPtr	xmlSetNsProp		(xmlNodePtr node,
+					 xmlNsPtr ns,
+					 const xmlChar *name,
+					 const xmlChar *value);
 xmlChar *	xmlGetNsProp		(xmlNodePtr node,
 					 const xmlChar *name,
 					 const xmlChar *nameSpace);

@@ -56,6 +56,21 @@ extern "C" {
     if ((ctxt->value != NULL) && (ctxt->value->type != XPATH_BOOLEAN))	\
         xmlXPathBooleanFunction(ctxt, 1);
 
+/*
+ * Varibale Lookup forwarding
+ */
+typedef xmlXPathObjectPtr
+	(*xmlXPathVariableLookupFunc)	(void *ctxt,
+					 const xmlChar *name,
+					 const xmlChar *ns_uri);
+
+void	xmlXPathRegisterVariableLookup	(xmlXPathContextPtr ctxt,
+					 xmlXPathVariableLookupFunc f,
+					 void *varCtxt);
+
+/*
+ * Error reporting
+ */
 void		xmlXPatherror	(xmlXPathParserContextPtr ctxt,
 				 const char *file,
 				 int line,
@@ -68,6 +83,7 @@ void		xmlXPathDebugDumpObject	(FILE *output,
 /**
  * Extending a context
  */
+
 int		   xmlXPathRegisterNs		(xmlXPathContextPtr ctxt,
 						 const xmlChar *prefix,
 						 const xmlChar *ns_uri);
@@ -110,6 +126,7 @@ xmlXPathParserContextPtr
 			  			 xmlXPathContextPtr ctxt);
 void		  xmlXPathFreeParserContext	(xmlXPathParserContextPtr ctxt);
 
+/* TODO: remap to xmlXPathValuePop and Push */
 xmlXPathObjectPtr valuePop			(xmlXPathParserContextPtr ctxt);
 int		  valuePush			(xmlXPathParserContextPtr ctxt,
 					 	xmlXPathObjectPtr value);
@@ -119,6 +136,7 @@ xmlXPathObjectPtr xmlXPathNewCString		(const char *val);
 xmlXPathObjectPtr xmlXPathNewFloat		(double val);
 xmlXPathObjectPtr xmlXPathNewBoolean		(int val);
 xmlXPathObjectPtr xmlXPathNewNodeSet		(xmlNodePtr val);
+xmlXPathObjectPtr xmlXPathNewValueTree		(xmlNodePtr val);
 void		  xmlXPathNodeSetAdd		(xmlNodeSetPtr cur,
 						 xmlNodePtr val);
 
@@ -175,6 +193,13 @@ void xmlXPathMultValues(xmlXPathParserContextPtr ctxt);
 void xmlXPathDivValues(xmlXPathParserContextPtr ctxt);
 void xmlXPathModValues(xmlXPathParserContextPtr ctxt);
 
+
+/*
+ * Some of the axis navigation routines
+ */
+xmlNodePtr xmlXPathNextPreceding(xmlXPathParserContextPtr ctxt, xmlNodePtr cur);
+xmlNodePtr xmlXPathNextAncestor(xmlXPathParserContextPtr ctxt, xmlNodePtr cur);
+xmlNodePtr xmlXPathNextPrecedingSibling(xmlXPathParserContextPtr ctxt, xmlNodePtr cur);
 /*
  * The official core of XPath functions
  */
@@ -204,6 +229,7 @@ void xmlXPathSumFunction(xmlXPathParserContextPtr ctxt, int nargs);
 void xmlXPathFloorFunction(xmlXPathParserContextPtr ctxt, int nargs);
 void xmlXPathCeilingFunction(xmlXPathParserContextPtr ctxt, int nargs);
 void xmlXPathRoundFunction(xmlXPathParserContextPtr ctxt, int nargs);
+void xmlXPathBooleanFunction(xmlXPathParserContextPtr ctxt, int nargs);
 #ifdef __cplusplus
 }
 #endif

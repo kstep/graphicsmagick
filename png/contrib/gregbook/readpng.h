@@ -4,7 +4,7 @@
 
   ---------------------------------------------------------------------------
 
-      Copyright (c) 1998-1999 Greg Roelofs.  All rights reserved.
+      Copyright (c) 1998-2000 Greg Roelofs.  All rights reserved.
 
       This software is provided "as is," without warranty of any kind,
       express or implied.  In no event shall the author or contributors
@@ -54,7 +54,7 @@ typedef unsigned long   ulg;
 
 void readpng_version_info(void);
 
-int readpng_init(FILE *infile, long *pWidth, long *pHeight);
+int readpng_init(FILE *infile, ulg *pWidth, ulg *pHeight);
 
 int readpng_get_bgcolor(uch *bg_red, uch *bg_green, uch *bg_blue);
 

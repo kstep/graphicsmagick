@@ -82,7 +82,8 @@ typedef enum {
     XPATH_POINT = 5,
     XPATH_RANGE = 6,
     XPATH_LOCATIONSET = 7,
-    XPATH_USERS = 8
+    XPATH_USERS = 8,
+    XPATH_XSLT_TREE = 9  /* An XSLT value tree, non modifiable */
 } xmlXPathObjectType;
 
 typedef struct _xmlXPathObject xmlXPathObject;
@@ -212,6 +213,11 @@ struct _xmlXPathContext {
 
     /* the set of namespace declarations in scope for the expression */
     xmlHashTablePtr nsHash;		/* The namespaces hash table */
+    void *varLookupFunc;		/* variable lookup func */
+    void *varLookupData;		/* variable lookup data */
+
+    /* Possibility to link in an extra item */
+    void *extra;                        /* needed for XSLT */
 };
 
 /*
@@ -262,6 +268,8 @@ xmlNodeSetPtr	   xmlXPathNodeSetCreate	(xmlNodePtr val);
 void		   xmlXPathFreeNodeSetList	(xmlXPathObjectPtr obj);
 void		   xmlXPathFreeNodeSet		(xmlNodeSetPtr obj);
 xmlXPathObjectPtr  xmlXPathObjectCopy		(xmlXPathObjectPtr val);
+int		   xmlXPathCmpNodes		(xmlNodePtr node1,
+						 xmlNodePtr node2);
 
 
 #ifdef __cplusplus

@@ -74,6 +74,18 @@ int			xmlHashUpdateEntry3(xmlHashTablePtr table,
 		                         const xmlChar *name3,
 		                         void *userdata,
 					 xmlHashDeallocator f);
+
+/*
+ * Remove an entry from the hash table
+ */
+int     xmlHashRemoveEntry(xmlHashTablePtr table, const xmlChar *name,
+                           xmlHashDeallocator f);
+int     xmlHashRemoveEntry2(xmlHashTablePtr table, const xmlChar *name,
+                            const xmlChar *name2, xmlHashDeallocator f);
+int     xmlHashRemoveEntry3(xmlHashTablePtr table, const xmlChar *name,
+                            const xmlChar *name2, const xmlChar *name3,
+                            xmlHashDeallocator f);
+
 /*
  * Retrieve the userdata
  */
@@ -92,6 +104,7 @@ void *			xmlHashLookup3	(xmlHashTablePtr table,
  */
 xmlHashTablePtr		xmlHashCopy	(xmlHashTablePtr table,
 					 xmlHashCopier f);
+int			xmlHashSize	(xmlHashTablePtr);
 void			xmlHashScan	(xmlHashTablePtr table,
 					 xmlHashScanner f,
 					 void *data);

@@ -32,6 +32,7 @@
 #include <libxml/entities.h>
 #include <libxml/valid.h>
 #include <libxml/xmlerror.h>
+#include <libxml/parserInternals.h>
 
 /************************************************************************
  *									*
@@ -460,17 +461,22 @@ htmlNodeDump(xmlBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur) {
     }
     if (cur->type == HTML_TEXT_NODE) {
 	if (cur->content != NULL) {
-            xmlChar *buffer;
+	    if ((cur->name == xmlStringText) ||
+		(cur->name != xmlStringTextNoenc)) {
+		xmlChar *buffer;
 
 #ifndef XML_USE_BUFFER_CONTENT
-            buffer = xmlEncodeEntitiesReentrant(doc, cur->content);
+		buffer = xmlEncodeEntitiesReentrant(doc, cur->content);
 #else
-            buffer = xmlEncodeEntitiesReentrant(doc, 
-                                                xmlBufferContent(cur->content));
+		buffer = xmlEncodeEntitiesReentrant(doc, 
+					    xmlBufferContent(cur->content));
 #endif 
-	    if (buffer != NULL) {
-		xmlBufferWriteCHAR(buf, buffer);
-		xmlFree(buffer);
+		if (buffer != NULL) {
+		    xmlBufferWriteCHAR(buf, buffer);
+		    xmlFree(buffer);
+		}
+	    } else {
+		xmlBufferWriteCHAR(buf, cur->content);
 	    }
 	}
 	return;
@@ -559,6 +565,17 @@ htmlNodeDump(xmlBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur) {
 	xmlBufferWriteCHAR(buf, cur->name);
 	xmlBufferWriteChar(buf, ">");
     }
+#if 0
+    if (!htmlIsAutoClosed(doc, cur)) {
+	xmlBufferWriteChar(buf, "</");
+	xmlBufferWriteCHAR(buf, cur->name);
+	xmlBufferWriteChar(buf, ">");
+    }
+#else
+    xmlBufferWriteChar(buf, "</");
+    xmlBufferWriteCHAR(buf, cur->name);
+    xmlBufferWriteChar(buf, ">");
+#endif
     if (cur->next != NULL) {
         if ((cur->next->type != HTML_TEXT_NODE) &&
 	    (cur->next->type != HTML_ENTITY_REF_NODE))
@@ -646,7 +663,7 @@ htmlDocDumpMemory(xmlDocPtr cur, xmlChar**mem, int *size) {
     htmlDocContentDump(buf, cur);
     *mem = buf->content;
     *size = buf->use;
-    memset(buf, -1, sizeof(xmlBuffer));
+    MEM_CLEANUP(buf, sizeof(xmlBuffer));
     xmlFree(buf);
 }
 
@@ -657,13 +674,11 @@ htmlDocDumpMemory(xmlDocPtr cur, xmlChar**mem, int *size) {
  *									*
  ************************************************************************/
 
-static void
-htmlDocContentDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr cur, const char *encoding);
-
 /**
  * htmlDtdDump:
  * @buf:  the HTML buffer output
  * @doc:  the document
+ * @encoding:  the encoding string
  * 
  * Dump the HTML document DTD, if any.
  */
@@ -697,6 +712,7 @@ htmlDtdDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, const char *encoding) {
  * @buf:  the HTML buffer output
  * @doc:  the document
  * @cur:  the attribute pointer
+ * @encoding:  the encoding string
  *
  * Dump an HTML attribute
  */
@@ -728,6 +744,7 @@ htmlAttrDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlAttrPtr cur, const 
  * @buf:  the HTML buffer output
  * @doc:  the document
  * @cur:  the first attribute pointer
+ * @encoding:  the encoding string
  *
  * Dump a list of HTML attributes
  */
@@ -753,6 +770,7 @@ void htmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
  * @buf:  the HTML buffer output
  * @doc:  the document
  * @cur:  the first node
+ * @encoding:  the encoding string
  *
  * Dump an HTML node list, recursive behaviour,children are printed too.
  */
@@ -770,10 +788,11 @@ htmlNodeListDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, co
 }
 
 /**
- * htmlNodeDump:
+ * htmlNodeDumpOutput:
  * @buf:  the HTML buffer output
  * @doc:  the document
  * @cur:  the current node
+ * @encoding:  the encoding string
  *
  * Dump an HTML node, recursive behaviour,children are printed too.
  */
@@ -797,17 +816,22 @@ htmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, const 
     }
     if (cur->type == HTML_TEXT_NODE) {
 	if (cur->content != NULL) {
-            xmlChar *buffer;
+	    if ((cur->name == xmlStringText) ||
+		(cur->name != xmlStringTextNoenc)) {
+		xmlChar *buffer;
 
 #ifndef XML_USE_BUFFER_CONTENT
-            buffer = xmlEncodeEntitiesReentrant(doc, cur->content);
+		buffer = xmlEncodeEntitiesReentrant(doc, cur->content);
 #else
-            buffer = xmlEncodeEntitiesReentrant(doc, 
-                                                xmlBufferContent(cur->content));
+		buffer = xmlEncodeEntitiesReentrant(doc, 
+					    xmlBufferContent(cur->content));
 #endif 
-	    if (buffer != NULL) {
-		xmlOutputBufferWriteString(buf, (const char *)buffer);
-		xmlFree(buffer);
+		if (buffer != NULL) {
+		    xmlOutputBufferWriteString(buf, (const char *)buffer);
+		    xmlFree(buffer);
+		}
+	    } else {
+		xmlOutputBufferWriteString(buf, (const char *)cur->content);
 	    }
 	}
 	return;
@@ -863,7 +887,7 @@ htmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, const 
 	return;
     }
     if ((cur->content == NULL) && (cur->children == NULL)) {
-        if ((info != NULL) && (info->endTag != 0) &&
+        if ((info != NULL) && (info->saveEndTag != 0) &&
 	    (strcmp(info->name, "html")) && (strcmp(info->name, "body"))) {
 	    xmlOutputBufferWriteString(buf, ">");
 	} else {
@@ -880,20 +904,6 @@ htmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, const 
     }
     xmlOutputBufferWriteString(buf, ">");
     if (cur->content != NULL) {
-#if 0
-	xmlChar *buffer;
-
-#ifndef XML_USE_BUFFER_CONTENT
-    buffer = xmlEncodeEntitiesReentrant(doc, cur->content);
-#else
-    buffer = xmlEncodeEntitiesReentrant(doc, 
-                                        xmlBufferContent(cur->content));
-#endif
-	if (buffer != NULL) {
-	    xmlOutputBufferWriteString(buf, buffer);
-	    xmlFree(buffer);
-	}
-#else
 	    /*
 	     * Uses the OutputBuffer property to automatically convert
 	     * invalids to charrefs
@@ -904,7 +914,6 @@ htmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, const 
 #else
             xmlOutputBufferWriteString(buf, 
 		           (const char *) xmlBufferContent(cur->content));
-#endif 
 #endif 
     }
     if (cur->children != NULL) {
@@ -918,11 +927,17 @@ htmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, const 
 	    (cur->children != cur->last))
 	    xmlOutputBufferWriteString(buf, "\n");
     }
+#if 0
     if (!htmlIsAutoClosed(doc, cur)) {
 	xmlOutputBufferWriteString(buf, "</");
 	xmlOutputBufferWriteString(buf, (const char *)cur->name);
 	xmlOutputBufferWriteString(buf, ">");
     }
+#else
+    xmlOutputBufferWriteString(buf, "</");
+    xmlOutputBufferWriteString(buf, (const char *)cur->name);
+    xmlOutputBufferWriteString(buf, ">");
+#endif
     if (cur->next != NULL) {
         if ((cur->next->type != HTML_TEXT_NODE) &&
 	    (cur->next->type != HTML_ENTITY_REF_NODE))
@@ -934,10 +949,11 @@ htmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, const 
  * htmlDocContentDump:
  * @buf:  the HTML buffer output
  * @cur:  the document
+ * @encoding:  the encoding string
  *
  * Dump an HTML document.
  */
-static void
+void
 htmlDocContentDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr cur, const char *encoding) {
     int type;
 
@@ -950,7 +966,7 @@ htmlDocContentDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr cur, const char *enco
         htmlDtdDumpOutput(buf, cur, NULL);
     else {
 	/* Default to HTML-4.0 transitionnal @@@@ */
-	xmlOutputBufferWriteString(buf, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\" \"http://www.w3.org/TR/REC-html40/loose.dtd\">");
+	xmlOutputBufferWriteString(buf, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\" \"http://www.w3.org/TR/REC-html40/loose.dtd\">\n");
 
     }
     if (cur->children != NULL) {

@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = include doc
+SUBDIRS = . include doc example
 
 INCLUDES = -I@srcdir@/include -I./include @Z_CFLAGS@ @CORBA_CFLAGS@ 
 
@@ -8,14 +8,14 @@ noinst_PROGRAMS=testSAX testHTML testXPath testURI
 
 bin_PROGRAMS = xmllint
 
-bin_SCRIPTS=xml-config
+bin_SCRIPTS=xml2-config
 
-lib_LTLIBRARIES = libxml.la
-libxml_la_LIBADD = @Z_LIBS@
+lib_LTLIBRARIES = libxml2.la
+libxml2_la_LIBADD = @Z_LIBS@ -lm
 
-libxml_la_LDFLAGS = -version-info @LIBXML_VERSION_INFO@
+libxml2_la_LDFLAGS = -version-info @LIBXML_VERSION_INFO@
 
-libxml_la_SOURCES = \
+libxml2_la_SOURCES = \
 		SAX.c \
 		entities.c \
 		encoding.c \
@@ -24,6 +24,7 @@ libxml_la_SOURCES = \
 		parser.c \
 		tree.c \
 		hash.c \
+		list.c \
 		xmlIO.c \
 		xmlmemory.c \
 		uri.c \
@@ -38,10 +39,10 @@ libxml_la_SOURCES = \
 		nanohttp.c \
 		nanoftp.c
 
-DEPS = $(top_builddir)/libxml.la
-LDADDS = $(top_builddir)/libxml.la @Z_LIBS@ @M_LIBS@
+DEPS = $(top_builddir)/libxml2.la
+LDADDS = $(top_builddir)/libxml2.la @Z_LIBS@ -lm
 
-man_MANS = xmllint.1 xml-config.1 libxml.4
+man_MANS = xmllint.1 xml2-config.1 libxml.4
 
 m4datadir = $(datadir)/aclocal
 m4data_DATA = libxml.m4
@@ -79,7 +80,7 @@ $(srcdir)/libxml:
 
 install-data: $(srcdir)/libxml
 
-$(libxml_la_SOURCES): $(srcdir)/libxml
+$(libxml2_la_SOURCES): $(srcdir)/libxml
 
 testall : tests SVGtests SAXtests
 
@@ -95,14 +96,14 @@ HTMLtests : testHTML
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/HTML/$$name ] ; then \
 	      echo New test file $$name ; \
-	      testHTML $$i > $(srcdir)/result/HTML/$$name 2>$(srcdir)/result/HTML/$$name.err ; \
+	      $(top_builddir)/testHTML $$i > $(srcdir)/result/HTML/$$name 2>$(srcdir)/result/HTML/$$name.err ; \
 	  else \
 	      echo Testing $$name ; \
-	      testHTML $$i > result.$$name 2> error.$$name ; \
+	      $(top_builddir)/testHTML $$i > result.$$name 2> error.$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/HTML/$$name result.$$name ; \
 	      diff -b $(srcdir)/result/HTML/$$name.err error.$$name ; \
-	      testHTML result.$$name > result2.$$name 2>error.$$name ; \
+	      $(top_builddir)/testHTML result.$$name > result2.$$name 2>error.$$name ; \
 	      diff result.$$name result2.$$name ; \
 	      rm result.$$name result2.$$name error.$$name ; \
 	  fi ; fi ; done)
@@ -114,16 +115,16 @@ HTMLtests : testHTML
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/HTML/$$name ] ; then \
 	      echo New test file $$name ; \
-	      testHTML $$i > $(srcdir)/result/HTML/$$name 2>$(srcdir)/result/HTML/$$name.err ; \
+	      $(top_builddir)/testHTML $$i > $(srcdir)/result/HTML/$$name 2>$(srcdir)/result/HTML/$$name.err ; \
 	  else \
 	      echo Testing $$name ; \
-	      testHTML --push $$i > result.$$name 2> error.$$name ; \
+	      $(top_builddir)/testHTML --push $$i > result.$$name 2> error.$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/HTML/$$name result.$$name ; \
 	      cut -b 1-15 $(srcdir)/result/HTML/$$name.err > errorcut.$$name; \
 	      cut -b 1-15 error.$$name > errorcut2.$$name; \
 	      diff -b errorcut.$$name errorcut2.$$name ; \
-	      testHTML --push result.$$name > result2.$$name 2>error.$$name ; \
+	      $(top_builddir)/testHTML --push result.$$name > result2.$$name 2>error.$$name ; \
 	      diff result.$$name result2.$$name ; \
 	      rm result.$$name result2.$$name error.$$name errorcut.$$name errorcut2.$$name ; \
 	  fi ; fi ; done)
@@ -135,10 +136,10 @@ HTMLtests : testHTML
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/HTML/$$name.sax ] ; then \
 	      echo New test file $$name ; \
-	      testHTML --sax $$i > $(srcdir)/result/HTML/$$name.sax ; \
+	      $(top_builddir)/testHTML --sax $$i > $(srcdir)/result/HTML/$$name.sax ; \
 	  else \
 	      echo Testing $$name ; \
-	      testHTML --sax $$i > result.$$name.sax ; \
+	      $(top_builddir)/testHTML --sax $$i > result.$$name.sax ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/HTML/$$name.sax result.$$name.sax ; \
 	      rm result.$$name.sax ; \
@@ -151,10 +152,10 @@ HTMLtests : testHTML
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/HTML/$$name ] ; then \
 	      echo New test file $$name ; \
-	      testHTML --sax $$i > $(srcdir)/result/HTML/$$name.sax ; \
+	      $(top_builddir)/testHTML --sax $$i > $(srcdir)/result/HTML/$$name.sax ; \
 	  else \
 	      echo Testing $$name ; \
-	      testHTML --push --sax $$i > result.$$name.sax ; \
+	      $(top_builddir)/testHTML --push --sax $$i > result.$$name.sax ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/HTML/$$name.sax result.$$name.sax ; \
 	      rm result.$$name.sax ; \
@@ -162,6 +163,7 @@ HTMLtests : testHTML
 
 
 XMLtests : xmllint
+	@(rm -f .memdump ; touch .memdump)
 	@echo "##"
 	@echo "## XML regression tests"
 	@echo "##"
@@ -199,6 +201,7 @@ XMLtests : xmllint
 	  fi ; fi ; done)
 
 XMLenttests : xmllint
+	@(rm -f .memdump ; touch .memdump)
 	@echo "##"
 	@echo "## XML entity subst regression tests"
 	@echo "##"
@@ -231,6 +234,19 @@ URItests : testURI
 	  else \
 	      echo Testing $$name ; \
 	      $(top_builddir)/testURI -base 'http://foo.com/path/to/index.html?orig#help' < $$i > result.$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
+	      diff $(srcdir)/result/URI/$$name result.$$name ; \
+	      rm result.$$name ; \
+	  fi ; fi ; done)
+	@(for i in $(srcdir)/test/URI/*.uri ; do \
+	  name=`basename $$i`; \
+	  if [ ! -d $$i ] ; then \
+	  if [ ! -f $(srcdir)/result/URI/$$name ] ; then \
+	      echo New test file $$name ; \
+	      $(top_builddir)/testURI < $$i > $(srcdir)/result/URI/$$name ; \
+	  else \
+	      echo Testing $$name ; \
+	      $(top_builddir)/testURI < $$i > result.$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/URI/$$name result.$$name ; \
 	      rm result.$$name ; \
@@ -384,35 +400,39 @@ dist-hook: libxml.spec
 	-cp libxml.spec $(distdir)
 	(cd $(srcdir) ; tar -cf - --exclude CVS test result SAXresult ) | (cd $(distdir); tar xf -)
 
-rpm: $(distdir).tar.gz
+cleantar:
+	@(rm -f libxslt*.tar.gz)
+
+rpm: cleantar distcheck
 	rpm -ta $(distdir).tar.gz
 
-## We create xmlConf.sh here and not from configure because we want
+## We create xml2Conf.sh here and not from configure because we want
 ## to get the paths expanded correctly.  Macros like srcdir are given
 ## the value NONE in configure if the user doesn't specify them (this
 ## is an autoconf feature, not a bug).
 
 confexecdir=$(libdir)
-confexec_DATA = xmlConf.sh
+confexec_DATA = xml2Conf.sh
 
-CLEANFILES=xmlConf.sh
+CLEANFILES=xml2Conf.sh
 
 confexecdir=$(libdir)
-confexec_DATA = xmlConf.sh
-EXTRA_DIST = xmlConf.sh.in libxml.spec.in libxml.spec libxml.m4 \
+confexec_DATA = xml2Conf.sh
+EXTRA_DIST = xml2Conf.sh.in libxml.spec.in libxml.spec libxml.m4 \
              example/Makefile.am example/gjobread.c example/gjobs.xml \
 	     $(man_MANS) libxml-2.0.pc.in xmlversion.h.in \
-	     win32/README.MSDev win32/Makefile.mingw win32/libxml2/libxml2.dsp \
-	     vms/build_libxml.com vms/config.vms
+	     win32/README.MSDev win32/Makefile.mingw \
+	     win32/libxml2/libxml2.dsp win32/libxml2/libxml2_so.dsp \
+	     win32/libxml2/libxml2_a.dsp vms/build_libxml.com vms/config.vms
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libxml-2.0.pc
 
-xmlConf.sh: xmlConf.sh.in Makefile
-## Use sed and then mv to avoid problems if the user interrupts.
-	sed -e 's?\@XML_LIBDIR\@?$(XML_LIBDIR)?g' \
-	    -e 's?\@XML_INCLUDEDIR\@?$(XML_INCLUDEDIR)?g' \
-	    -e 's?\@XML_LIBS\@?$(XML_LIBS)?g' \
-	    -e 's?\@VERSION\@?$(VERSION)?g' \
-	      < $(srcdir)/xmlConf.sh.in > xmlConf.tmp \
-	  && mv xmlConf.tmp xmlConf.sh
+#xml2Conf.sh: xml2Conf.sh.in Makefile
+### Use sed and then mv to avoid problems if the user interrupts.
+#	sed -e 's?\@XML_LIBDIR\@?$(XML_LIBDIR)?g' \
+#	    -e 's?\@XML_INCLUDEDIR\@?$(XML_INCLUDEDIR)?g' \
+#	    -e 's?\@XML_LIBS\@?$(XML_LIBS)?g' \
+#	    -e 's?\@VERSION\@?$(VERSION)?g' \
+#	      < $(srcdir)/xml2Conf.sh.in > xml2Conf.tmp \
+#	  && mv xml2Conf.tmp xml2Conf.sh

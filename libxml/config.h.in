@@ -16,6 +16,9 @@
 #undef HAVE_LIBREADLINE
 #undef SOCKLEN_T
 
+/* Define if you have the _stat function.  */
+#undef HAVE__STAT
+
 /* Define if you have the class function.  */
 #undef HAVE_CLASS
 
@@ -28,9 +31,6 @@
 /* Define if you have the fpclass function.  */
 #undef HAVE_FPCLASS
 
-/* Define if you have the iconv function.  */
-#undef HAVE_ICONV
-
 /* Define if you have the isnand function.  */
 #undef HAVE_ISNAND
 
@@ -39,6 +39,9 @@
 
 /* Define if you have the snprintf function.  */
 #undef HAVE_SNPRINTF
+
+/* Define if you have the stat function.  */
+#undef HAVE_STAT
 
 /* Define if you have the strdup function.  */
 #undef HAVE_STRDUP
@@ -135,6 +138,9 @@
 
 /* Define if you have the <zlib.h> header file.  */
 #undef HAVE_ZLIB_H
+
+/* Define if you have the iconv library (-liconv).  */
+#undef HAVE_LIBICONV
 
 /* Define if you have the inet library (-linet).  */
 #undef HAVE_LIBINET

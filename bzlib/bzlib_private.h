@@ -76,7 +76,7 @@
 
 /*-- General stuff. --*/
 
-#define BZ_VERSION  "1.0.0, 16-May-2000"
+#define BZ_VERSION  "1.0.1, 23-June-2000"
 
 typedef char            Char;
 typedef unsigned char   Bool;

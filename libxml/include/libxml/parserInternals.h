@@ -42,8 +42,8 @@ extern "C" {
  * any Unicode character, excluding the surrogate blocks, FFFE, and FFFF.
  */
 #define IS_CHAR(c)							\
-    (((c) == 0x09) || ((c) == 0x0A) || ((c) == 0x0D) ||			\
-     (((c) >= 0x20) && ((c) <= 0xD7FF)) ||				\
+    ((((c) >= 0x20) && ((c) <= 0xD7FF)) ||				\
+     ((c) == 0x09) || ((c) == 0x0A) || ((c) == 0x0D) ||			\
      (((c) >= 0xE000) && ((c) <= 0xFFFD)) ||				\
      (((c) >= 0x10000) && ((c) <= 0x10FFFF)))
 
@@ -110,8 +110,12 @@ LIBXML_DLL_IMPORT extern int xmlGetWarningsDefaultValue;
 LIBXML_DLL_IMPORT extern int xmlParserDebugEntities;
 LIBXML_DLL_IMPORT extern int xmlSubstituteEntitiesDefaultValue;
 LIBXML_DLL_IMPORT extern int xmlDoValidityCheckingDefaultValue;
+LIBXML_DLL_IMPORT extern int xmlLoadExtDtdDefaultValue;
 LIBXML_DLL_IMPORT extern int xmlPedanticParserDefaultValue;
 LIBXML_DLL_IMPORT extern int xmlKeepBlanksDefaultValue;
+LIBXML_DLL_IMPORT extern xmlChar xmlStringText[];
+LIBXML_DLL_IMPORT extern xmlChar xmlStringTextNoenc[];
+LIBXML_DLL_IMPORT extern xmlChar xmlStringComment[];
 
 /*
  * Function to finish teh work of the macros where needed

@@ -83,6 +83,7 @@ xmlCheckVersion(int version) {
 
 const char *xmlFeaturesList[] = {
     "validate",
+    "load subset",
     "keep blanks",
     "disable SAX",
     "fetch external entities",
@@ -174,7 +175,7 @@ xmlGetFeature(xmlParserCtxtPtr ctxt, const char *name, void *result) {
     } else if (!strcmp(name, "disable SAX")) {
 	*((int *) result) = ctxt->disableSAX;
     } else if (!strcmp(name, "fetch external entities")) {
-	*((int *) result) = ctxt->validate;
+	*((int *) result) = ctxt->loadsubset;
     } else if (!strcmp(name, "substitute entities")) {
 	*((int *) result) = ctxt->replaceEntities;
     } else if (!strcmp(name, "gather line info")) {
@@ -269,14 +270,8 @@ xmlSetFeature(xmlParserCtxtPtr ctxt, const char *name, void *value) {
 	return(-1);
 
     if (!strcmp(name, "validate")) {
-        ctxt->validate = *((int *) value);
-    } else if (!strcmp(name, "keep blanks")) {
-        ctxt->keepBlanks = *((int *) value);
-    } else if (!strcmp(name, "disable SAX")) {
-        ctxt->disableSAX = *((int *) value);
-    } else if (!strcmp(name, "fetch external entities")) {
-	int newvalid = *((int *) value);
-	if ((!ctxt->validate) && (newvalid != 0)) {
+	int newvalidate = *((int *) value);
+	if ((!ctxt->validate) && (newvalidate != 0)) {
 	    if (ctxt->vctxt.warning == NULL)
 		ctxt->vctxt.warning = xmlParserValidityWarning;
 	    if (ctxt->vctxt.error == NULL)
@@ -293,7 +288,13 @@ xmlSetFeature(xmlParserCtxtPtr ctxt, const char *name, void *value) {
 	    ctxt->vctxt.nodeMax = 4;
 	    ctxt->vctxt.node = NULL;
 	}
-	ctxt->validate = newvalid;
+        ctxt->validate = newvalidate;
+    } else if (!strcmp(name, "keep blanks")) {
+        ctxt->keepBlanks = *((int *) value);
+    } else if (!strcmp(name, "disable SAX")) {
+        ctxt->disableSAX = *((int *) value);
+    } else if (!strcmp(name, "fetch external entities")) {
+	ctxt->loadsubset = *((int *) value);
     } else if (!strcmp(name, "substitute entities")) {
         ctxt->replaceEntities = *((int *) value);
     } else if (!strcmp(name, "gather line info")) {
@@ -428,15 +429,30 @@ xmlIsBlank(int c) {
  *
  * Returns 0 if not, non-zero otherwise
  */
+static int xmlBaseArray[] = {
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, /* 0x0000 - 0x000F */
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, /* 0x0010 - 0x001F */
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, /* 0x0020 - 0x002F */
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, /* 0x0030 - 0x003F */
+  0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, /* 0x0040 - 0x004F */
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, /* 0x0050 - 0x005F */
+  0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, /* 0x0060 - 0x006F */
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, /* 0x0070 - 0x007F */
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, /* 0x0080 - 0x008F */
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, /* 0x0090 - 0x009F */
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, /* 0x00A0 - 0x00AF */
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, /* 0x00B0 - 0x00BF */
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, /* 0x00C0 - 0x00CF */
+  1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, /* 0x00D0 - 0x00DF */
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, /* 0x00E0 - 0x00EF */
+  1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, /* 0x00F0 - 0x00FF */
+};
+
 int
 xmlIsBaseChar(int c) {
     return(
-      (((c) >= 0x0041) && ((c) <= 0x005A)) ||
-      (((c) >= 0x0061) && ((c) <= 0x007A)) ||
-      (((c) >= 0x00C0) && ((c) <= 0x00D6)) ||
-      (((c) >= 0x00D8) && ((c) <= 0x00F6)) ||
-      (((c) >= 0x00F8) && ((c) <= 0x00FF)) ||
-     (((c) >= 0x100) && (	/* accelerator */
+      (((c) < 0x0100) ? xmlBaseArray[c] :
+      (	/* accelerator */
       (((c) >= 0x0100) && ((c) <= 0x0131)) ||
       (((c) >= 0x0134) && ((c) <= 0x013E)) ||
       (((c) >= 0x0141) && ((c) <= 0x0148)) ||
@@ -794,13 +810,16 @@ xmlIsCombining(int c) {
  */
 int
 xmlIsExtender(int c) {
-    return(
-     ((c) == 0xb7) || ((c) == 0x2d0) || ((c) == 0x2d1) ||
-     ((c) == 0x387) || ((c) == 0x640) || ((c) == 0xe46) ||
-     ((c) == 0xec6) || ((c) == 0x3005) ||
-     (((c) >= 0x3031) && ((c) <= 0x3035)) ||
-     (((c) >= 0x309b) && ((c) <= 0x309e)) ||
-     (((c) >= 0x30fc) && ((c) <= 0x30fe)));
+    switch (c) {
+    case 0x00B7: case 0x02D0: case 0x02D1: case 0x0387:
+    case 0x0640: case 0x0E46: case 0x0EC6: case 0x3005:
+    case 0x3031: case 0x3032: case 0x3033: case 0x3034:
+    case 0x3035: case 0x309D: case 0x309E: case 0x30FC:
+    case 0x30FE:
+	return 1;
+    default:
+	return 0;
+    }
 }
 
 /**
@@ -814,7 +833,7 @@ xmlIsExtender(int c) {
  */
 int
 xmlIsIdeographic(int c) {
-    return(
+    return(((c) < 0x0100) ? 0 :
      (((c) >= 0x4e00) && ((c) <= 0x9fa5)) ||
      (((c) >= 0xf900) && ((c) <= 0xfa2d)) ||
      (((c) >= 0x3021) && ((c) <= 0x3029)) ||
@@ -941,6 +960,7 @@ xmlParserInputRead(xmlParserInputPtr in, int len) {
 	in->base = in->buf->buffer->content;
 	in->cur = &in->buf->buffer->content[index];
     }
+    in->end = &in->buf->buffer->content[in->buf->buffer->use];
 
     CHECK_BUFFER(in);
 
@@ -986,7 +1006,7 @@ xmlParserInputGrow(xmlParserInputPtr in, int len) {
         return(0);
 
     /*
-     * NOTE : in->base may be a "dandling" i.e. freed pointer in this
+     * NOTE : in->base may be a "dangling" i.e. freed pointer in this
      *        block, but we use it really as an integer to do some
      *        pointer arithmetic. Insure will raise it as a bug but in
      *        that specific case, that's not !
@@ -999,6 +1019,7 @@ xmlParserInputGrow(xmlParserInputPtr in, int len) {
 	in->base = in->buf->buffer->content;
 	in->cur = &in->buf->buffer->content[index];
     }
+    in->end = &in->buf->buffer->content[in->buf->buffer->use];
 
     CHECK_BUFFER(in);
 
@@ -1040,6 +1061,7 @@ xmlParserInputShrink(xmlParserInputPtr in) {
 	    in->cur -= ret;
 	    in->consumed += ret;
 	}
+	in->end = &in->buf->buffer->content[in->buf->buffer->use];
     }
 
     CHECK_BUFFER(in);
@@ -1056,6 +1078,7 @@ xmlParserInputShrink(xmlParserInputPtr in) {
 	in->base = in->buf->buffer->content;
 	in->cur = &in->buf->buffer->content[index];
     }
+    in->end = &in->buf->buffer->content[in->buf->buffer->use];
 
     CHECK_BUFFER(in);
 }
@@ -1237,6 +1260,10 @@ xmlCurrentChar(xmlParserCtxtPtr ctxt, int *len) {
 	*len = 0;
 	return(ctxt->token);
     }	
+    if ((*ctxt->input->cur >= 0x20) && (*ctxt->input->cur <= 0x7F)) {
+	    *len = 1;
+	    return((int) *ctxt->input->cur);
+    }
     if (ctxt->charset == XML_CHAR_ENCODING_UTF8) {
 	/*
 	 * We are supposed to handle UTF8, check it's valid
@@ -1746,6 +1773,8 @@ xmlSwitchToEncoding(xmlParserCtxtPtr ctxt, xmlCharEncodingHandlerPtr handler)
 		    }
 		    ctxt->input->base =
 		    ctxt->input->cur = ctxt->input->buf->buffer->content;
+		    ctxt->input->end =
+			&ctxt->input->base[ctxt->input->buf->buffer->use];
 
 		}
 		return(0);
@@ -1794,6 +1823,8 @@ xmlSwitchToEncoding(xmlParserCtxtPtr ctxt, xmlCharEncodingHandlerPtr handler)
 			ctxt->input->free((xmlChar *) ctxt->input->base);
 		    ctxt->input->base =
 		    ctxt->input->cur = ctxt->input->buf->buffer->content;
+		    ctxt->input->end =
+			&ctxt->input->base[ctxt->input->buf->buffer->use];
 		}
 	    }
 	} else {
@@ -1836,7 +1867,7 @@ xmlFreeInputStream(xmlParserInputPtr input) {
         input->free((xmlChar *) input->base);
     if (input->buf != NULL) 
         xmlFreeParserInputBuffer(input->buf);
-    memset(input, -1, sizeof(xmlParserInput));
+    MEM_CLEANUP(input, sizeof(xmlParserInput));
     xmlFree(input);
 }
 
@@ -1895,6 +1926,7 @@ xmlNewIOInputStream(xmlParserCtxtPtr ctxt, xmlParserInputBufferPtr input,
     inputStream->buf = input;
     inputStream->base = inputStream->buf->buffer->content;
     inputStream->cur = inputStream->buf->buffer->content;
+    inputStream->end = &inputStream->base[inputStream->buf->buffer->use];
     if (enc != XML_CHAR_ENCODING_NONE) {
         xmlSwitchEncoding(ctxt, enc);
     }
@@ -1966,6 +1998,7 @@ xmlNewEntityInputStream(xmlParserCtxtPtr ctxt, xmlEntityPtr entity) {
     input->base = entity->content;
     input->cur = entity->content;
     input->length = entity->length;
+    input->end = &entity->content[input->length];
     return(input);
 }
 
@@ -1998,6 +2031,7 @@ xmlNewStringInputStream(xmlParserCtxtPtr ctxt, const xmlChar *buffer) {
     input->base = buffer;
     input->cur = buffer;
     input->length = xmlStrlen(buffer);
+    input->end = &buffer[input->length];
     return(input);
 }
 
@@ -2041,6 +2075,7 @@ xmlNewInputFromFile(xmlParserCtxtPtr ctxt, const char *filename) {
 
     inputStream->base = inputStream->buf->buffer->content;
     inputStream->cur = inputStream->buf->buffer->content;
+    inputStream->end = &inputStream->base[inputStream->buf->buffer->use];
     if ((ctxt->directory == NULL) && (directory != NULL))
         ctxt->directory = (char *) xmlStrdup((const xmlChar *) directory);
     return(inputStream);
@@ -2161,16 +2196,14 @@ xmlInitParserCtxt(xmlParserCtxtPtr ctxt)
     ctxt->spaceTab[0] = -1;
     ctxt->space = &ctxt->spaceTab[0];
 
-    if (sax == NULL) {
-	ctxt->sax = &xmlDefaultSAXHandler;
-    } else {
-        ctxt->sax = sax;
-	memcpy(sax, &xmlDefaultSAXHandler, sizeof(xmlSAXHandler));
-    }
+    ctxt->sax = sax;
+    memcpy(sax, &xmlDefaultSAXHandler, sizeof(xmlSAXHandler));
+
     ctxt->userData = ctxt;
     ctxt->myDoc = NULL;
     ctxt->wellFormed = 1;
     ctxt->valid = 1;
+    ctxt->loadsubset = xmlLoadExtDtdDefaultValue;
     ctxt->validate = xmlDoValidityCheckingDefaultValue;
     ctxt->pedantic = xmlPedanticParserDefaultValue;
     ctxt->keepBlanks = xmlKeepBlanksDefaultValue;

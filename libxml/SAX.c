@@ -200,7 +200,8 @@ externalSubset(void *ctx, const xmlChar *name,
             name, ExternalID, SystemID);
 #endif
     if (((ExternalID != NULL) || (SystemID != NULL)) &&
-        (ctxt->validate && ctxt->wellFormed && ctxt->myDoc)) {
+        (((ctxt->validate) || (ctxt->loadsubset)) &&
+	 (ctxt->wellFormed && ctxt->myDoc))) {
 	/*
 	 * Try to fetch and parse the external subset.
 	 */
@@ -770,20 +771,22 @@ attribute(void *ctx, const xmlChar *fullname, const xmlChar *value)
     if ((!ctxt->html) && (ns == NULL) &&
         (name[0] == 'x') && (name[1] == 'm') && (name[2] == 'l') &&
         (name[3] == 'n') && (name[4] == 's') && (name[5] == 0)) {
-	xmlURIPtr uri;
+	if (value[0] != 0) {
+	    xmlURIPtr uri;
 
-	uri = xmlParseURI((const char *)value);
-	if (uri == NULL) {
-	    if ((ctxt->sax != NULL) && (ctxt->sax->warning != NULL))
-		ctxt->sax->warning(ctxt->userData, 
-		     "nmlns: %s not a valid URI\n", value);
-	} else {
-	    if (uri->scheme == NULL) {
+	    uri = xmlParseURI((const char *)value);
+	    if (uri == NULL) {
 		if ((ctxt->sax != NULL) && (ctxt->sax->warning != NULL))
 		    ctxt->sax->warning(ctxt->userData, 
-			 "nmlns: URI %s is not absolute\n", value);
+			 "nmlns: %s not a valid URI\n", value);
+	    } else {
+		if (uri->scheme == NULL) {
+		    if ((ctxt->sax != NULL) && (ctxt->sax->warning != NULL))
+			ctxt->sax->warning(ctxt->userData, 
+			     "nmlns: URI %s is not absolute\n", value);
+		}
+		xmlFreeURI(uri);
 	    }
-	    xmlFreeURI(uri);
 	}
 
 	/* a default namespace definition */
@@ -1186,7 +1189,8 @@ characters(void *ctx, const xmlChar *ch, int len)
 	}
 #endif
     } else {
-	if ((xmlNodeIsText(lastChild)) && (ctxt->nodemem != 0)) {
+	int isText = xmlNodeIsText(lastChild);
+	if ((isText) && (ctxt->nodemem != 0)) {
 #ifndef XML_USE_BUFFER_CONTENT
 	    /*
 	     * The whole point of maintaining nodelen and nodemem,
@@ -1217,6 +1221,12 @@ characters(void *ctx, const xmlChar *ch, int len)
 #else
 	    xmlTextConcat(lastChild, ch, len);
 #endif
+	} else if (isText) {
+	    xmlTextConcat(lastChild, ch, len);
+	    if (ctxt->node->children != NULL) {
+		ctxt->nodelen = xmlStrlen(lastChild->content);
+		ctxt->nodemem = ctxt->nodelen + 1;
+	    }
 	} else {
 	    /* Mixed content, first time */
 	    lastChild = xmlNewTextLen(ch, len);

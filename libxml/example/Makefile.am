@@ -4,11 +4,5 @@ INCLUDES =					\
 	-I$(top_builddir) -I$(top_srcdir)	\
 	-I@srcdir@
 
-LDADD = $(top_builddir)/libxml.la @Z_LIBS@
+LDADD = $(top_builddir)/libxml2.la @Z_LIBS@ -lm
 
-$(srcdir)/libxml:
-	-$(RM) $(srcdir)/libxml
-	ln -s $(srcdir)/. $(srcdir)/libxml
-
-$(top_builddir)/libxml.la: $(srcdir)/libxml
-	(cd .. ; $(MAKE))

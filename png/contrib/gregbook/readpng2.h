@@ -4,7 +4,7 @@
 
   ---------------------------------------------------------------------------
 
-      Copyright (c) 1998-1999 Greg Roelofs.  All rights reserved.
+      Copyright (c) 1998-2001 Greg Roelofs.  All rights reserved.
 
       This software is provided "as is," without warranty of any kind,
       express or implied.  In no event shall the author or contributors
@@ -61,10 +61,16 @@ typedef struct _mainprog_info {
     uch *image_data;
     uch **row_pointers;
     jmp_buf jmpbuf;
-    int passes;			/* not used */
+    int passes;              /* not used */
+    int pass;
     int rowbytes;
     int channels;
     int need_bgcolor;
+#if (defined(__i386__) || defined(_M_IX86))
+    int nommxfilters;
+    int nommxcombine;
+    int nommxinterlace;
+#endif
     int done;
     uch bg_red;
     uch bg_green;

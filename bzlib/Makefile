@@ -93,7 +93,7 @@ bzip2.o: bzip2.c
 bzip2recover.o: bzip2recover.c
 	$(CC) $(CFLAGS) -c bzip2recover.c
 
-DISTNAME=bzip2-1.0.0
+DISTNAME=bzip2-1.0.1
 tarfile:
 	rm -f $(DISTNAME)
 	ln -sf . $(DISTNAME)

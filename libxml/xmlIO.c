@@ -16,6 +16,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <errno.h>
 
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
@@ -34,6 +35,32 @@
 #endif
 #ifdef HAVE_ZLIB_H
 #include <zlib.h>
+#endif
+
+/* Figure a portable way to know if a file is a directory. */
+#ifndef HAVE_STAT
+#  ifdef HAVE__STAT
+#    define stat(x,y) _stat(x,y)
+#    define HAVE_STAT
+#  endif
+#endif
+#ifdef HAVE_STAT
+#  ifndef S_ISDIR
+#    ifdef _S_ISDIR
+#      define S_ISDIR(x) _S_ISDIR(x)
+#    else
+#      ifdef S_IFDIR
+#        ifndef S_IFMT
+#          ifdef _S_IFMT
+#            define S_IFMT _S_IFMT
+#          endif
+#        endif
+#        ifdef S_IFMT
+#          define S_ISDIR(m) (((m) & S_IFMT) == S_IFDIR)
+#        endif
+#      endif
+#    endif
+#  endif
 #endif
 
 #include <libxml/xmlmemory.h>
@@ -97,6 +124,41 @@ int xmlOutputCallbackInitialized = 0;
  *									*
  ************************************************************************/
 
+/**
+ * xmlCheckFilename
+ * @path:  the path to check
+ *
+ * function checks to see if @path is a valid source
+ * (file, socket...) for XML.
+ *
+ * if stat is not available on the target machine,
+ * returns 1.  if stat fails, returns 0 (if calling
+ * stat on the filename fails, it can't be right).
+ * if stat succeeds and the file is a directory,
+ * sets errno to EISDIR and returns 0.  otherwise
+ * returns 1.
+ */
+
+static int
+xmlCheckFilename (const char *path)
+{
+#ifdef HAVE_STAT
+#ifdef S_ISDIR
+    struct stat stat_buffer;
+
+    if (stat(path, &stat_buffer) == -1)
+        return 0;
+
+    if (S_ISDIR(stat_buffer.st_mode)) {
+        errno = EISDIR;
+        return 0;
+    }
+
+#endif
+#endif
+    return 1;
+}
+
 int
 xmlNop(void) {
     return(0);
@@ -144,9 +206,9 @@ xmlFdOpen (const char *filename) {
 	return(NULL);
 
 #ifdef WIN32
-    fd = _open (filename, O_RDONLY | _O_BINARY);
+    fd = _open (path, O_RDONLY | _O_BINARY);
 #else
-    fd = open (filename, O_RDONLY);
+    fd = open (path, O_RDONLY);
 #endif
 
     return((void *) fd);
@@ -180,7 +242,7 @@ xmlFdOpenW (const char *filename) {
     if (path == NULL)
 	return(NULL);
 
-    fd = open (filename, O_WRONLY);
+    fd = open (path, O_WRONLY);
 
     return((void *) fd);
 }
@@ -264,8 +326,11 @@ xmlFileOpen (const char *filename) {
 	path = &filename[8];
     else 
 	path = filename;
+
     if (path == NULL)
 	return(NULL);
+    if (!xmlCheckFilename(path))
+        return(NULL);
 
 #ifdef WIN32
     fd = fopen(path, "rb");
@@ -300,6 +365,7 @@ xmlFileOpenW (const char *filename) {
 	path = &filename[8];
     else 
 	path = filename;
+
     if (path == NULL)
 	return(NULL);
 
@@ -400,11 +466,16 @@ xmlGzfileOpen (const char *filename) {
     if (!strncmp(filename, "file://localhost", 16))
 	path = &filename[16];
     else if (!strncmp(filename, "file:///", 8))
-	path = &filename[8];
+	path = &filename[7];
     else 
 	path = filename;
 
-    fd = gzopen(filename, "rb");
+    if (path == NULL)
+	return(NULL);
+    if (!xmlCheckFilename(path))
+        return(NULL);
+
+    fd = gzopen(path, "rb");
     return((void *) fd);
 }
 
@@ -437,7 +508,10 @@ xmlGzfileOpenW (const char *filename, int compression) {
     else 
 	path = filename;
 
-    fd = gzopen(filename, mode);
+    if (path == NULL)
+	return(NULL);
+
+    fd = gzopen(path, mode);
     return((void *) fd);
 }
 
@@ -834,7 +908,7 @@ xmlFreeParserInputBuffer(xmlParserInputBufferPtr in) {
 	in->buffer = NULL;
     }
 
-    memset(in, 0xbe, (size_t) sizeof(xmlParserInputBuffer));
+    MEM_CLEANUP(in, (size_t) sizeof(xmlParserInputBuffer));
     xmlFree(in);
 }
 
@@ -871,7 +945,7 @@ xmlOutputBufferClose(xmlOutputBufferPtr out) {
 	out->buffer = NULL;
     }
 
-    memset(out, 0xbe, (size_t) sizeof(xmlOutputBuffer));
+    MEM_CLEANUP(out, (size_t) sizeof(xmlOutputBuffer));
     xmlFree(out);
     return(written);
 }
