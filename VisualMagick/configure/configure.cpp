@@ -645,6 +645,8 @@ void CConfigureApp::process_utility(ofstream &dsw,
   string basename = filename;
   string name = LocalGetField(basename,'.',0);
   string extn = LocalGetField(basename,'.',1);
+  if(extn.length() > 3)
+    return;
   string prefix = "UTIL_";
   string staging = root;
   int levels;
@@ -803,6 +805,8 @@ void CConfigureApp::process_library(ofstream &dsw,
   string basename = filename;
   string name = LocalGetField(basename,'.',0);
   string extn = LocalGetField(basename,'.',1);
+  if(extn.length() > 3)
+    return;
   string prefix = "CORE_";
   string staging = root;
   int levels;
@@ -1055,6 +1059,8 @@ void CConfigureApp::process_module(ofstream &dsw,
   string basename = filename;
   string name = LocalGetField(basename,'.',0);
   string extn = LocalGetField(basename,'.',1);
+  if(extn.length() > 3)
+    return;
   string prefix;
   string staging = root;
   int i,levels;
