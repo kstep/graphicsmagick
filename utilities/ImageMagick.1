@@ -993,7 +993,7 @@ The primitives include
 \fBLine\fP requires a start and end coordinate, while
 \fBrectangle\fP
 expects an upper left and lower right coordinate.
-\fBroundRectangle\fP has a center coordinate, a width and
+\fBRoundRectangle\fP has a center coordinate, a width and
 height, and the width and height of the corners.
 \fBCircle\fP has a center coordinate and a coordinate for
 the outer edge.  Use \fBArc\fP to circumscribe an arc within
@@ -1186,7 +1186,7 @@ section of \fIX(1)\fP.
 \fRthe image format type
 
 This option will convert any image to the image format you specify.
-See \fBconvert(1)\fP for a list of image format types supported by
+See \fIImageMagick(1)\fP for a list of image format types supported by
 \fBImageMagick\fP.
 
 
@@ -1867,11 +1867,11 @@ quality is 75.  If the quality is an odd number, 2x2 chroma downsampling is
 used.  If it is even, 1x1 chroma sampling is used.
 
 
-For the MIFF image format, quality is the zlib compression level, which
+For the MIFF image format, quality/10 is the zlib compression level, which
 is 0 (worst but fastest compression) to 9 (best but slowest).  It has no
 effect on the image appearance, since the compression is always lossless.
 
-For the MNG and PNG image format, the quality value sets the zlib compression
+For the MNG and PNG image formats, the quality value sets the zlib compression
 level (quality / 10) and filter-type (quality % 10). Compression levels
 range from 0 (fastest compression) to 100 (best but slowest). For compression
 level 0, the Huffman-only strategy is used, which is fastest but not
