@@ -1,3 +1,8 @@
+2002-01-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/wmf.c (wmf_magick_device_begin): Fix non-opaque fills.
+  	Now properly fills with texture image.
+
 2002-01-05  Glenn Randers-Pehrson  <randeg@alum.rpi.edu>
         * Fixed an out-of-bounds memset() and two other memory overruns
           when decoding 1-bit AVI, BMP, and DIB images.

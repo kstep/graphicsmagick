@@ -538,25 +538,72 @@ static void wmf_magick_device_begin(wmfAPI * API)
   if(ddata->image_info->texture == NULL)
     {
       /* Draw rectangle in background color */
-      magick_mvg_printf(API,"fill-opacity %.10g\n",
-                        (double)(TransparentOpacity-ddata->image->background_color.opacity)/TransparentOpacity);
-      
-      magick_mvg_printf(API,
+      if(ddata->image->background_color.opacity == OpaqueOpacity)
+        magick_mvg_printf(API,
 #if QuantumDepth == 8
-                        "fill #%02x%02x%02x\n",
+                          "fill #%02x%02x%02x\n",
 #elif QuantumDepth == 16
-                        "fill #%04x%04x%04x\n",
+                          "fill #%04x%04x%04x\n",
 #endif
-                        ddata->image->background_color.red,
-                        ddata->image->background_color.green,
-                        ddata->image->background_color.blue);
+                          ddata->image->background_color.red,
+                          ddata->image->background_color.green,
+                          ddata->image->background_color.blue);
+      else
+        magick_mvg_printf(API,
+#if QuantumDepth == 8
+                          "fill #%02x%02x%02x%02x\n",
+#elif QuantumDepth == 16
+                          "fill #%04x%04x%04x%04x\n",
+#endif
+                          ddata->image->background_color.red,
+                          ddata->image->background_color.green,
+                          ddata->image->background_color.blue,
+                          ddata->image->background_color.opacity);
       magick_mvg_printf(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
                         XC(ddata->bbox.TL.x),YC(ddata->bbox.TL.y),
                         XC(ddata->bbox.BR.x),YC(ddata->bbox.BR.y));
     }
   else
     {
-      /* FIXME: Draw rectangle with texture image the SVG way */
+      /* Draw rectangle with texture image the SVG way */
+      Image
+        *image;
+
+      ImageInfo
+        *image_info;
+      
+      ExceptionInfo
+        exception;
+      
+      long
+        id;
+
+      GetExceptionInfo(&exception);
+
+      image_info = CloneImageInfo((ImageInfo *) 0);
+      strcpy(image_info->filename, ddata->image_info->texture);
+      image = ReadImage(image_info,&exception);
+      DestroyImageInfo(image_info);
+      if(image)
+        {
+          id = magick_add_registry(API, image, &exception);
+          if( id > -1 )
+            {
+              magick_mvg_printf(API, "push pattern fill_%lu 0,0, %lu,%lu\n",
+                                ddata->pattern_id, image->columns, image->rows);
+              magick_mvg_printf(API, "image Copy 0,0 %lu,%lu 'mpr:%li'\n",
+                                image->columns, image->rows, id);
+              magick_mvg_printf(API, "pop pattern\n");
+              magick_mvg_printf(API, "fill url(#fill_%lu)\n", ddata->pattern_id);
+              ++ddata->pattern_id;
+
+              magick_mvg_printf(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
+                                XC(ddata->bbox.TL.x),YC(ddata->bbox.TL.y),
+                                XC(ddata->bbox.BR.x),YC(ddata->bbox.BR.y));
+            }
+        }
+      ThrowException(&ddata->image->exception,exception.severity,
+                     exception.reason,exception.description);
     }
 
   magick_mvg_printf(API, "fill-opacity 1\n");
@@ -1316,10 +1363,10 @@ static void magick_brush(wmfAPI * API, wmfDC * dc)
       }
     case BS_SOLID:
       {
+#if 0
 	/* Set fill opacity 
 	 * FIXME: this is probably totally bogus.
 	 */
-#if 0
 	if (fill_opaque)
           {
             magick_mvg_printf(API, "fill-opacity 1.0\n");
@@ -1329,20 +1376,15 @@ static void magick_brush(wmfAPI * API, wmfDC * dc)
             magick_mvg_printf(API, "fill-opacity 0.5\n"); */	/* semi-transparent?? */
           }
 #endif
-
         magick_mvg_printf(API, "fill #%02x%02x%02x\n",
                           (int) brush_color->r,
                           (int) brush_color->g, (int) brush_color->b);
+
 	break;
       }
     case BS_HATCHED:
       {
-	char
-          pattern_id[30];
-
-	sprintf(pattern_id, "fill_%lu", ddata->pattern_id);
-
-	magick_mvg_printf(API, "push pattern %s 0,0 8,8\n", pattern_id);
+	magick_mvg_printf(API, "push pattern fill_%lu 0,0 8,8\n", ddata->pattern_id);
 	magick_mvg_printf(API, "push graphic-context\n");
 
 	if (fill_opaque)
@@ -1400,7 +1442,7 @@ static void magick_brush(wmfAPI * API, wmfDC * dc)
           }
 	magick_mvg_printf(API, "pop graphic-context\n");
 	magick_mvg_printf(API, "pop pattern\n");
-	magick_mvg_printf(API, "fill 'url(#%s)'\n", pattern_id);
+	magick_mvg_printf(API, "fill 'url(#fill_%lu)'\n", ddata->pattern_id);
 	++ddata->pattern_id;
 	break;
       }
@@ -2279,8 +2321,14 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
     }
 
 #if 0
-  printf("\nSize in metafile units:      %.10gx%.10g\n", wmf_width, wmf_height);
+  printf("\nPlaceable metafile:          ");
+  if ((API)->File->placeable)
+    printf("Yes\n");
+  else
+    printf("No\n");
+  printf("Size in metafile units:      %.10gx%.10g\n", wmf_width, wmf_height);
   printf("Metafile units/inch:         %.10g\n", units_per_inch);
+  printf("Size in inches:              %.10gx%.10g\n",image_width_inch,image_height_inch);
   printf("Bounding Box:                %.10g,%.10g %.10g,%.10g\n",
          bbox.TL.x, bbox.TL.y, bbox.BR.x, bbox.BR.y);
   printf("Bounding width x height:     %.10gx%.10g\n", bounding_width, bounding_height);
