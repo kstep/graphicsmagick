@@ -117,15 +117,15 @@ BOOL CIMDisplayDoc::DoReadImage( void )
     // Image is not usable
     catch(Magick::Error error)
     {
-        m_pImage.isValid(false);
 	DoDisplayError("DoReadImage",error.what());
+        m_pImage.isValid(false);
 	return FALSE;
     }
 
-    catch(exception &e)
+    catch(exception e)
     {
-        m_pImage.isValid(false);
 	DoDisplayError("DoReadImage",e.what());
+        m_pImage.isValid(false);
 	return FALSE;
     }
 

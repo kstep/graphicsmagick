@@ -755,7 +755,7 @@ void CIMDisplayView::SetupUndo()
     CIMDisplayDoc* pDoc = GetDocument();
     ASSERT_VALID(pDoc);
 
-    mUndoImage = Image( pDoc->GetImage() );   
+    mUndoImage = pDoc->GetImage();   
 }
 
 //-----------------------------------------------------------------------
@@ -809,7 +809,7 @@ void CIMDisplayView::DoDisplayImage( Image &inImage, CDC* pDC )
 	    mBMI = bmi;	// keep it for clipboard use...
 
       // Extract the pixels from Magick++ image object and convert to a DIB section
-      PixelPacket *pPixels = inImage.getPixels(0,0,inImage.columns(),inImage.rows());
+      const PixelPacket *pPixels = inImage.getConstPixels(0,0,inImage.columns(),inImage.rows());
 
 
       RGBQUAD *prgbaDIB = 0;
