@@ -122,7 +122,7 @@ MagickExport PixelPacket AlphaComposite(const CompositeOperator compose,
           color.green=q->green;
           color.blue=q->blue;
           color.opacity=q->opacity;
-          break;
+          return(color);
         }
         case OpaqueOpacity:
         {
@@ -130,27 +130,27 @@ MagickExport PixelPacket AlphaComposite(const CompositeOperator compose,
           color.green=p->green;
           color.blue=p->blue;
           color.opacity=p->opacity;
-          break;
+          return(color);
         }
         default:
         {
           double
             gamma;
 
-          gamma=1.0/((MaxRGB-beta)+(MaxRGB-alpha)-
-            (MaxRGB-beta)*(MaxRGB-alpha)/MaxRGB);
-          color.red=(Quantum) (gamma*((MaxRGB-beta)*q->red+(MaxRGB-alpha)*
-            (p->red-(MaxRGB-beta)*q->red/MaxRGB))+0.5);
-          color.green=(Quantum) (gamma*((MaxRGB-beta)*q->green+(MaxRGB-alpha)*
-            (p->green-(MaxRGB-beta)*q->green/MaxRGB))+0.5);
-          color.blue=(Quantum) (gamma*((MaxRGB-beta)*q->blue+(MaxRGB-alpha)*
-            (p->blue-(MaxRGB-beta)*q->blue/MaxRGB))+0.5);
-          color.opacity=(Quantum) (gamma*((MaxRGB-beta)*alpha+(MaxRGB-alpha)*
-            (alpha-(MaxRGB-beta)*beta/MaxRGB))+0.5);
-          break;
+          gamma=((MaxRGB-beta)+(MaxRGB-alpha)-(MaxRGB-beta)*(MaxRGB-alpha)/
+            MaxRGB);
+          color.red=(Quantum) (((MaxRGB-beta)*(q->red)+(MaxRGB-alpha)*
+            ((p->red)-(MaxRGB-beta)*(q->red)/MaxRGB))/gamma);
+          color.green=(Quantum) (((MaxRGB-beta)*(q->green)+(MaxRGB-alpha)*
+            ((p->green)-(MaxRGB-beta)*(q->green)/MaxRGB))/gamma);
+          color.blue=(Quantum) (((MaxRGB-beta)*(q->blue)+(MaxRGB-alpha)*
+            ((p->blue)-(MaxRGB-beta)*(q->blue)/MaxRGB))/gamma);
+          color.opacity=(Quantum) (((MaxRGB-beta)*(q->opacity)+(MaxRGB-alpha)*
+            ((p->opacity)-(MaxRGB-beta)*(q->opacity)/MaxRGB))/gamma);
+          return(color);
         }
       }
-      return(color);
+      break;
     }
     case InCompositeOp:
     {
