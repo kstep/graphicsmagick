@@ -837,14 +837,6 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     image->exception.description);
   return(image);
 }
-#else
-static Image *ReadJPEGImage(const ImageInfo *image_info,
-  ExceptionInfo *exception)
-{
-  ThrowException(exception,MissingDelegateError,
-    "JPEG library is not available",image_info->filename);
-  return((Image *) NULL);
-}
 #endif
 
 /*
@@ -876,8 +868,10 @@ ModuleExport void RegisterJPEGImage(void)
     *entry;
 
   entry=SetMagickInfo("JPEG");
+#if defined(HasJPEG)
   entry->decoder=ReadJPEGImage;
   entry->encoder=WriteJPEGImage;
+#endif
   entry->magick=IsJPEG;
   entry->adjoin=False;
   entry->description=
@@ -894,8 +888,10 @@ ModuleExport void RegisterJPEGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("JPG");
   entry->thread_support=False;
+#if defined(HasJPEG)
   entry->decoder=ReadJPEGImage;
   entry->encoder=WriteJPEGImage;
+#endif
   entry->adjoin=False;
   entry->description=
     AcquireString("Joint Photographic Experts Group JFIF format");
@@ -1463,11 +1459,5 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   LiberateMemory((void **) &jpeg_pixels);
   CloseBlob(image);
   return(True);
-}
-#else
-static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
-{
-  ThrowBinaryException(MissingDelegateError,"JPEG library is not available",
-    image->filename);
 }
 #endif
