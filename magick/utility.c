@@ -1978,14 +1978,28 @@ MagickExport void GetPathComponent(const char *path,PathType type,
     {
       /* this returns the filename and extension only */
       if (IsBasenameSeparator(*p))
-        (void) CloneMemory(component,p+1,strlen(p+1)+1);
+        {
+          char
+            scratch[MaxTextExtent];
+
+          (void) strncpy(scratch,p+1,MaxTextExtent-1);
+          scratch[MaxTextExtent-1]='\0';
+          (void) strcpy(component,scratch);
+        }
       break;
     }
     case BasePath:
     {
       /* this returns just the filename with no extension */
       if (IsBasenameSeparator(*p))
-        (void) strncpy(component,p+1,MaxTextExtent-1);
+        {
+          char
+            scratch[MaxTextExtent];
+
+          (void) strncpy(scratch,p+1,MaxTextExtent-1);
+          scratch[MaxTextExtent-1]='\0';
+          (void) strcpy(component,scratch);
+        }
       for (p=component+strlen(component); p > component; p--)
         if (*p == '.')
           {
@@ -1998,13 +2012,27 @@ MagickExport void GetPathComponent(const char *path,PathType type,
     {
       /* this returns the file extension only */
       if (IsBasenameSeparator(*p))
-        (void) strncpy(component,p+1,MaxTextExtent-1);
+        {
+          char
+            scratch[MaxTextExtent];
+
+          (void) strncpy(scratch,p+1,MaxTextExtent-1);
+          scratch[MaxTextExtent-1]='\0';
+          (void) strcpy(component,scratch);
+        }
       for (p=component+strlen(component); p > component; p--)
         if (*p == '.')
           break;
       *component='\0';
       if (*p == '.')
-        (void) strncpy(component,p+1,MaxTextExtent-1);
+        {
+          char
+            scratch[MaxTextExtent];
+
+          (void) strncpy(scratch,p+1,MaxTextExtent-1);
+          scratch[MaxTextExtent-1]='\0';
+          (void) strcpy(component,scratch);
+        }
       break;
     }
   }
