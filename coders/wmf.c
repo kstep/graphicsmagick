@@ -2395,6 +2395,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   /*
    * Set solid background color
    */
+{
   unsigned long
     column,
     row;
@@ -2418,7 +2419,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
       if (!SyncImagePixels(image))
         break;
     }
-
+}
   /*
    * Play file to generate MVG drawing commands
    *
