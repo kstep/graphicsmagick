@@ -590,7 +590,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
         packet_size=4;
-        if (bmp_info.size == 12)
+        if ((bmp_info.size == 12) || (bmp_info.size == 64))
           packet_size=3;
         (void) ReadBlob(image,packet_size*image->colors,(char *) bmp_colormap);
         p=bmp_colormap;
