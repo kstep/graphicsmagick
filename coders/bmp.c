@@ -498,9 +498,6 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     bmp_header.reserved[1]=LSBFirstReadShort(image);
     bmp_header.offset_bits=LSBFirstReadLong(image);
     bmp_header.size=LSBFirstReadLong(image);
-    if (image->filesize)
-      if ((int) (bmp_header.file_size-bmp_header.size) > image->filesize)
-        ThrowReaderException(CorruptImageWarning,"Not a BMP image file",image);
     if (bmp_header.size == 12)
       {
         /*
