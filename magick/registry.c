@@ -159,7 +159,7 @@ MagickExport unsigned int DeleteMagickRegistry(const long id)
 %
 %  The format of the DestroyMagickRegistry method is:
 %
-%       void DestroyMagickInfo(void)
+%       void DestroyMagickRegistry(void)
 %
 %
 */
