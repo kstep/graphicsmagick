@@ -87,7 +87,7 @@ const char
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   A l l o c a t e I m a g e                                                 %
+%   A l l o c a t e I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -270,7 +270,7 @@ Export Image *AllocateImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   A l l o c a t e N e x t I m a g e                                         %
+%   A l l o c a t e N e x t I m a g e                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %

@@ -1175,7 +1175,7 @@ Export int Latin1Compare(const char *p,const char *q)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   L a t i n 1 U p p e r                                                     %
+%   L a t i n 1 U p p e r                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %

@@ -90,7 +90,7 @@ Export void CloseCacheView(ViewInfo *view)
 
   assert(view != (ViewInfo *) NULL);
   image=view->image;
-  DestroyCacheVista(image->cache,view->id);
+  DestroyCacheNexus(image->cache,view->id);
   FreeMemory(view);
 }
 
@@ -192,7 +192,7 @@ Export IndexPacket *GetCacheViewIndexes(const ViewInfo *view)
 
   assert(view != (ViewInfo *) NULL);
   image=view->image;
-  return(GetVistaIndexes(image->cache,view->id));
+  return(GetNexusIndexes(image->cache,view->id));
 }
 
 /*
@@ -229,7 +229,7 @@ Export PixelPacket *GetCacheViewPixels(const ViewInfo *view)
 
   assert(view != (ViewInfo *) NULL);
   image=view->image;
-  return(GetVistaPixels(image->cache,view->id));
+  return(GetNexusPixels(image->cache,view->id));
 }
 
 /*
@@ -282,7 +282,7 @@ Export ViewInfo *OpenCacheView(Image *image)
   if (view == (ViewInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate cache view",
       "Memory allocation failed");
-  view->id=GetCacheVista(image->cache);
+  view->id=GetCacheNexus(image->cache);
   view->image=image;
   if (view->id == 0)
     {
@@ -352,7 +352,7 @@ Export PixelPacket *SetCacheView(ViewInfo *view,const int x,const int y,
   region.y=y;
   region.width=columns;
   region.height=rows;
-  return(SetCacheVista(image->cache,view->id,&region));
+  return(SetCacheNexus(image->cache,view->id,&region));
 }
 
 /*

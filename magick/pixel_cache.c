@@ -92,7 +92,7 @@
 Export IndexPacket *GetIndexes(const Image *image)
 {
   assert(image != (Image *) NULL);
-  return(GetVistaIndexes(image->cache,0));
+  return(GetNexusIndexes(image->cache,0));
 }
 
 /*
@@ -185,7 +185,7 @@ Export PixelPacket *GetPixelCache(Image *image,const int x,const int y,
 Export PixelPacket *GetPixels(const Image *image)
 {
   assert(image != (Image *) NULL);
-  return(GetVistaPixels(image->cache,0));
+  return(GetNexusPixels(image->cache,0));
 }
 
 /*
@@ -242,8 +242,8 @@ Export unsigned int ReadPixelCache(const Image *image,
   assert(image != (Image *) NULL);
   assert(source != (const unsigned char *) NULL);
   p=source;
-  q=GetVistaPixels(image->cache,0);
-  indexes=GetVistaIndexes(image->cache,0);
+  q=GetNexusPixels(image->cache,0);
+  indexes=GetNexusIndexes(image->cache,0);
   switch (quantum)
   {
     case IndexQuantum:
@@ -551,7 +551,7 @@ Export PixelPacket *SetPixelCache(Image *image,const int x,const int y,
   region.y=y;
   region.width=columns;
   region.height=rows;
-  return(SetCacheVista(image->cache,0,&region));
+  return(SetCacheNexus(image->cache,0,&region));
 }
 
 /*
@@ -654,8 +654,8 @@ Export unsigned int WritePixelCache(const Image *image,
 
   assert(image != (Image *) NULL);
   assert(destination != (unsigned char *) NULL);
-  p=GetVistaPixels(image->cache,0);
-  indexes=GetVistaIndexes(image->cache,0);
+  p=GetNexusPixels(image->cache,0);
+  indexes=GetNexusIndexes(image->cache,0);
   q=destination;
   switch (quantum)
   {

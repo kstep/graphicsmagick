@@ -94,7 +94,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *pixels,
     pixel;
 
   register int
-    j;
+    i;
 
   register unsigned char
     *p;
@@ -106,13 +106,13 @@ static unsigned int DecodeImage(Image *image,unsigned char *pixels,
     if (pixel <= 0x80)
       {
         count=pixel+1;
-        for (j=0; j < count; j++)
+        for (i=0; i < count; i++)
           *p++=ReadByte(image);
         continue;
       }
     count=pixel+1-0x80;
     pixel=ReadByte(image);
-    for (j=0; j < count; j++)
+    for (i=0; i < count; i++)
       *p++=pixel;
   }
   return(True);

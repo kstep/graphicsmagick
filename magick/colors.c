@@ -1229,7 +1229,7 @@ static void Histogram(CubeInfo *color_cube,const NodeInfo *node_info,FILE *file)
 %
 %  The format of the InitializeNode method is:
 %
-+      node_info=InitializeNode(color_cube,level)
+%      node_info=InitializeNode(color_cube,level)
 %
 %  A description of each parameter follows.
 %
