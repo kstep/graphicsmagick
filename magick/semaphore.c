@@ -114,7 +114,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
   if (semaphore_info == (SemaphoreInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate semaphore_info info",
       "Memory allocation failed");
-#if defined(_VISUALC_) && !defined(_MT)
+#if defined(_VISUALC_) && defined(_MT)
   {
     SECURITY_ATTRIBUTES
       security;
@@ -170,7 +170,7 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo *semaphore_info)
 {
   if (semaphore_info == (SemaphoreInfo *) NULL)
     return;
-#if defined(_VISUALC_) && !defined(_MT)
+#if defined(_VISUALC_) && defined(_MT)
   CloseHandle(semaphore_info->id);
 #endif
 #if defined(HasPTHREADS)
@@ -207,7 +207,7 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo *semaphore_info)
 */
 MagickExport int LockSemaphore(SemaphoreInfo *semaphore_info)
 {
-#if defined(_VISUALC_) && !defined(_MT)
+#if defined(_VISUALC_) && defined(_MT)
   if (WaitForSingleObject(semaphore_info->id,INFINITE) == WAIT_FAILED)
     return(False);
 #endif
@@ -246,7 +246,7 @@ MagickExport int LockSemaphore(SemaphoreInfo *semaphore_info)
 */
 MagickExport int UnlockSemaphore(SemaphoreInfo *semaphore_info)
 {
-#if defined(_VISUALC_) && !defined(_MT)
+#if defined(_VISUALC_) && defined(_MT)
   if (ReleaseSemaphore(semaphore_info->id,1,NULL) == FALSE)
     return(False);
 #endif
