@@ -2984,31 +2984,7 @@ static unsigned int DrawPrimitive(const DrawInfo *draw_info,
             primitive_info[1].point.y);
           TransformImage(&composite_image,(char *) NULL,geometry);
         }
-      if ((draw_info->affine.rx == 0.0) && (draw_info->affine.ry == 0.0))
-        {
-          if ((draw_info->affine.sx != 1.0) || (draw_info->affine.sx != 1.0))
-            {
-              Image
-                *scale_image;
-
-              unsigned int
-                height,
-                width;
-
-              width=(unsigned int)
-                (draw_info->affine.sx*composite_image->columns);
-              height=(unsigned int)
-                (draw_info->affine.sy*composite_image->rows);
-              scale_image=ZoomImage(composite_image,width,height,
-                &image->exception);
-              if (scale_image != (Image *) NULL)
-                {
-                  DestroyImage(composite_image);
-                  composite_image=scale_image;
-                }
-            }
-        }
-      else
+      if ((draw_info->affine.rx != 0.0) || (draw_info->affine.ry != 0.0))
         {
           if (((draw_info->affine.sx-draw_info->affine.sy) == 0.0) &&
               ((draw_info->affine.rx+draw_info->affine.ry) == 0.0))

@@ -1214,8 +1214,11 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         point_transform=image_info->quality % 20;  /* range 0-15 */
         jpeg_simple_lossless(&jpeg_info,predictor,point_transform);
       }
+#else
+    jpeg_set_quality(&jpeg_info,100,True);
+  else
 #endif
-  jpeg_set_quality(&jpeg_info,image_info->quality,True);
+    jpeg_set_quality(&jpeg_info,image_info->quality,True);
   jpeg_start_compress(&jpeg_info,True);
   /*
     Write JPEG profiles.
