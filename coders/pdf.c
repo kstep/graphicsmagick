@@ -121,8 +121,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
     *clone_info;
 
   long
-    count,
-    j;
+    count;
 
   register long
     i;
@@ -192,13 +191,15 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&fillorder);
   for (i=0; i < (long) TIFFNumberOfStrips(tiff); i++)
   {
-    Ascii85Initialize(image);
+    // Ascii85Initialize(image);
     count=TIFFReadRawStrip(tiff,(uint32) i,buffer,(long) byte_count[i]);
     if (fillorder == FILLORDER_LSB2MSB)
       TIFFReverseBits(buffer,count);
+/*
     for (j=0; j < count; j++)
       Ascii85Encode(image,(unsigned long) buffer[j]);
     Ascii85Flush(image);
+*/
   }
   LiberateMemory((void **) &buffer);
   TIFFClose(tiff);
@@ -803,6 +804,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     time_meridian->tm_min,time_meridian->tm_sec);
   FormatString(buffer,"/CreationDate (%.1024s)\n",date);
   (void) WriteBlobString(image,buffer);
+  FormatString(buffer,"/ModDate (%.1024s)\n",date);
+  (void) WriteBlobString(image,buffer);
   FormatString(buffer,"/Producer (%.1024s)\n",
     EscapeParenthesis(GetMagickVersion((unsigned long *) NULL)));
   (void) WriteBlobString(image,buffer);
@@ -1046,7 +1049,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       case ZipCompression: FormatString(buffer,CFormat,"FlateDecode"); break;
       case FaxCompression:
       {
-        (void) strcpy(buffer,"/Filter [ /ASCII85Decode /CCITTFaxDecode ]\n");
+        // (void) strcpy(buffer,"/Filter [ /ASCII85Decode /CCITTFaxDecode ]\n");
+        (void) strcpy(buffer,"/Filter [ /CCITTFaxDecode ]\n");
         (void) WriteBlobString(image,buffer);
         FormatString(buffer,
           "/DecodeParms [ << >> << /K %.1024s /Columns %ld /Rows %ld >> ]\n",
@@ -1447,7 +1451,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       case ZipCompression: FormatString(buffer,CFormat,"FlateDecode"); break;
       case FaxCompression:
       {
-        (void) strcpy(buffer,"/Filter [ /ASCII85Decode /CCITTFaxDecode ]\n");
+        // (void) strcpy(buffer,"/Filter [ /ASCII85Decode /CCITTFaxDecode ]\n");
+        (void) strcpy(buffer,"/Filter [ /CCITTFaxDecode ]\n");
         (void) WriteBlobString(image,buffer);
         FormatString(buffer,
           "/DecodeParms [ << >> << /K %.1024s /Columns %lu /Rows %lu >> ]\n",
