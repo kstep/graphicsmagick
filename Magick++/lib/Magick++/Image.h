@@ -58,8 +58,17 @@ namespace Magick
     Image ( const Blob &blob_ );
 
     // Construct Image of specified size from in-memory BLOB
-    Image ( const Geometry &size_, const Blob &blob_ );
-    
+    Image ( const Blob &blob_, const Geometry &size_ );
+
+    // Construct Image of specified size and depth from in-memory BLOB
+    Image ( const Blob &blob_, const Geometry &size, unsigned short depth );
+
+    // Construct Image of specified size, depth, and format from in-memory BLOB
+    Image ( const Blob &blob_, const Geometry &size, unsigned short depth_,
+	    const std::string &magick_ );
+    // Construct Image of specified size, and format from in-memory BLOB
+    Image ( const Blob &blob_, const Geometry &size, const std::string &magick_ );
+
     // Default constructor
     Image( void );
     
@@ -284,12 +293,28 @@ namespace Magick
 			   const std::string &imageSpec_ );
 
     // Read image from in-memory BLOB
-    void            read ( const Blob &blob_ );
+    void            read ( const Blob     &blob_ );
 
     // Read image of specified size from in-memory BLOB
-    void            read ( const Geometry &size_,
-			   const Blob &blob_ );
-    
+    void            read ( const Blob     &blob_,
+			   const Geometry &size_ );
+
+    // Read image of specified size and depth from in-memory BLOB
+    void            read ( const Blob     &blob_,
+			   const Geometry &size_,
+			   unsigned short depth_ );
+
+    // Read image of specified size, depth, and format from in-memory BLOB
+    void            read ( const Blob     &blob_,
+			   const Geometry &size_,
+			   unsigned short depth_,
+			   const std::string   &magick_ );
+
+    // Read Image of specified size, and format from in-memory BLOB
+    void            read ( const Blob     &blob_,
+			   const Geometry &size_,
+			   const std::string   &magick_ );
+
     // Reduce noise in image using a noise peak elimination filter
     void            reduceNoise ( void );
     
@@ -372,6 +397,13 @@ namespace Magick
     // avoid overhead associated with reallocation of memory if the output
     // size can be estimated in advance.
     void            write ( Blob *blob_,
+			    size_t lengthEstimate_ = 1664 );
+    void            write ( Blob *blob_,
+			    std::string &magick_,
+			    size_t lengthEstimate_ = 1664 );
+    void            write ( Blob *blob_,
+			    std::string &magick_,
+			    unsigned short depth_,
 			    size_t lengthEstimate_ = 1664 );
     
     // Zoom image to specified size.

@@ -81,7 +81,7 @@ int main( int /*argc*/, char ** /*argv*/)
 
       {
 	// Construct with image geometry and blob data
-	Image image( Geometry(148,99), blob );
+	Image image(  blob, Geometry(148,99));
 	if ( image.signature() != signature )
 	  {
 	    ++failures;
@@ -112,7 +112,7 @@ int main( int /*argc*/, char ** /*argv*/)
 	// Construct default image, and then read in blob data with
 	// image geometry
 	Image image;
-	image.read( Geometry(148,99), blob );
+	image.read( blob, Geometry(148,99) );
 	if ( image.signature() != signature )
 	  {
 	    ++failures;

@@ -1,6 +1,8 @@
 This file records noteworthy changes.
 
 (0.9.1)
+  * Added additional constructors, read, and write methods for BLOBs
+    to make BLOBs easier to use.
   * Added the medianFilter() method to Image.
   * Renamed transformColorSpace() to colorSpace() and added a
     colorSpace() accessor method.

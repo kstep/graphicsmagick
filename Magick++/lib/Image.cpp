@@ -96,12 +96,47 @@ Magick::Image::Image ( const Blob &blob_ )
 }
 
 // Construct Image of specified size from in-memory BLOB
-Magick::Image::Image ( const Geometry &size_, const Blob &blob_ )
+Magick::Image::Image ( const Blob &blob_,
+		       const Geometry &size_ )
   : _imgRef(new ImageRef),
     _lastError(LastError::instance())
 {
-  // Initialize, Allocate and Read images
-  read( size_, blob_ );
+  // Read from Blob
+  read( blob_, size_ );
+}
+
+// Construct Image of specified size and depth from in-memory BLOB
+Magick::Image::Image ( const Blob &blob_,
+		       const Geometry &size_,
+		       unsigned short depth_ )
+  : _imgRef(new ImageRef),
+    _lastError(LastError::instance())
+{
+  // Read from Blob
+  read( blob_, size_, depth_ );
+}
+
+// Construct Image of specified size, depth, and format from in-memory BLOB
+Magick::Image::Image ( const Blob &blob_,
+		       const Geometry &size_,
+		       unsigned short depth_,
+		       const std::string &magick_ )
+  : _imgRef(new ImageRef),
+    _lastError(LastError::instance())
+{
+  // Read from Blob
+  read( blob_, size_, depth_, magick_ );
+}
+
+// Construct Image of specified size, and format from in-memory BLOB
+Magick::Image::Image ( const Blob &blob_,
+		       const Geometry &size_,
+		       const std::string &magick_ )
+  : _imgRef(new ImageRef),
+    _lastError(LastError::instance())
+{
+  // Read from Blob
+  read( blob_, size_, magick_ );
 }
 
 // Default constructor
@@ -881,17 +916,62 @@ void Magick::Image::read ( const Geometry &size_,
 // Read image from in-memory BLOB
 void Magick::Image::read ( const Blob &blob_ )
 {
-  MagickLib::Image *image = MagickLib::BlobToImage( imageInfo(),
-					static_cast<const char *>(blob_.data()),
-					blob_.length() );
+  MagickLib::Image *image =
+    MagickLib::BlobToImage( imageInfo(),
+			    static_cast<const char *>(blob_.data()),
+			    blob_.length() );
   replaceImage( image );
 }
 
 // Read image of specified size from in-memory BLOB
-void  Magick::Image::read ( const Geometry &size_,
-			    const Blob &blob_ )
+void  Magick::Image::read ( const Blob &blob_,
+			    const Geometry &size_ )
 {
+  // Set image size
   size( size_ );
+  // Read from Blob
+  read( blob_ );
+}
+
+// Read image of specified size and depth from in-memory BLOB
+void Magick::Image::read ( const Blob &blob_,
+			   const Geometry &size_,
+			   unsigned short depth_ )
+{
+  // Set image size
+  size( size_ );
+  // Set image depth
+  depth( depth_ );
+  // Read from Blob
+  read( blob_ );
+}
+
+// Read image of specified size, depth, and format from in-memory BLOB
+void Magick::Image::read ( const Blob &blob_,
+			   const Geometry &size_,
+			   unsigned short depth_,
+			   const std::string &magick_ )
+{
+  // Set image size
+  size( size_ );
+  // Set image depth
+  depth( depth_ );
+  // Set image magick
+  magick( magick_ );
+  // Read from Blob
+  read( blob_ );
+}
+
+// Read image of specified size, and format from in-memory BLOB
+void Magick::Image::read ( const Blob &blob_,
+			   const Geometry &size_,
+			   const std::string &magick_ )
+{
+  // Set image size
+  size( size_ );
+  // Set image magick
+  magick( magick_ );
+  // Read from Blob
   read( blob_ );
 }
 
@@ -1104,6 +1184,32 @@ void Magick::Image::write( const std::string &imageSpec_ )
 void Magick::Image::write ( Blob *blob_,
 			    size_t lengthEstimate_ )
 {
+  size_t length = lengthEstimate_;
+  void* data = MagickLib::ImageToBlob( imageInfo(),
+				       image(),
+				       &length );
+  blob_->updateNoCopy( data, length );
+  throwMagickError();
+}
+void Magick::Image::write ( Blob *blob_,
+			    std::string &magick_,
+			    size_t lengthEstimate_ = 1664 )
+{
+  magick(magick_);
+  size_t length = lengthEstimate_;
+  void* data = MagickLib::ImageToBlob( imageInfo(),
+				       image(),
+				       &length );
+  blob_->updateNoCopy( data, length );
+  throwMagickError();
+}
+void Magick::Image::write ( Blob *blob_,
+			    std::string &magick_,
+			    unsigned short depth_,
+			    size_t lengthEstimate_ = 1664 )
+{
+  magick(magick_);
+  depth(depth_);
   size_t length = lengthEstimate_;
   void* data = MagickLib::ImageToBlob( imageInfo(),
 				       image(),

@@ -201,7 +201,8 @@ The available Image constructors are shown in the following table:
 <td><font size=-1>const std::string &amp;imageSpec_</font></td>
 
 <td><font size=-1>Construct Image by reading from file or URL specified
-by <i>imageSpec_</i>.</font></td>
+by <i>imageSpec_</i>. Use array notation (e.g. filename[9]) to select a
+specific scene from a multi-frame image.</font></td>
 </tr>
 
 <tr>
@@ -212,25 +213,38 @@ by <i>imageSpec_</i>.</font></td>
 color</font></td>
 </tr>
 
-<tr>
+<tr NOSAVE>
 <td><a NAME="constructor_blob"></a><font size=-1>const <a href="Blob.html">Blob</a>
 &amp;blob_</font></td>
 
-<td><font size=-1>Construct Image by reading from encoded image data contained
-in an in-memory <a href="Blob.html">BLOB</a>.</font></td>
+<td ROWSPAN="5" NOSAVE><font size=-1>Construct Image by reading from encoded
+image data contained in an in-memory <a href="Blob.html">BLOB</a>. Depending
+on the constructor arguments, the Blob size, depth, and format may also
+be specified. Some image formats require that size be specified. The default
+ImageMagick uses for depth depends on the Quantum size (8 or 16).&nbsp;
+If ImageMagick's Quantum size does not match that of the image, the depth
+may need to be specified. ImageMagick can usually automatically detect
+the image's format. When a format can't be automatically detected, the
+format must be specified.</font></td>
 </tr>
 
 <tr>
-<td><font size=-1>const <a href="Geometry.html">Geometry</a> &amp;size_,
-const <a href="Blob.html">Blob</a> &amp;blob_</font></td>
+<td><font size=-1>const Blob &amp;blob_, const Geometry &amp;size_</font></td>
+</tr>
 
-<td><font size=-1>Construct Image of specified size from encoded image
-data contained in an in-memory <a href="Blob.html">BLOB</a>. This form
-is useful for images that do not specifiy their size or to specify a size
-hint for decoding an image. For example, when reading a Photo CD, JBIG,
-or JPEG image, a size request causes the library to return an image which
-is the next resolution greater or equal to the specified size. This may
-result in memory and time savings.</font></td>
+<tr>
+<td><font size=-1>const Blob &amp;blob_, const Geometry &amp;size, unsigned
+short depth</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>const Blob &amp;blob_, const Geometry &amp;size, unsigned
+short depth_, const string &amp;magick_</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>const Blob &amp;blob_, const Geometry &amp;size, const
+string &amp;magick_</font></td>
 </tr>
 </table>
 
@@ -824,7 +838,7 @@ to give a 3-D raised or lowered effect)</font></td>
 </tr>
 
 <tr NOSAVE>
-<td ROWSPAN="4" NOSAVE>
+<td ROWSPAN="7" NOSAVE>
 <center><a NAME="read"></a><font size=-1>read</font></center>
 </td>
 
@@ -845,28 +859,42 @@ which is the next resolution greater or equal to the specified size. This
 may result in memory and time savings.</font></td>
 </tr>
 
-<tr>
+<tr NOSAVE>
 <td><font size=-1>const <a href="Blob.html">Blob</a> &amp;blob_</font></td>
 
-<td><font size=-1>Read encoded image contained in an in-memory <a href="Blob.html">BLOB</a>
-into current object</font></td>
+<td ROWSPAN="5" NOSAVE><font size=-1>Read encoded image of specified size
+from an in-memory
+<a href="Blob.html">BLOB</a> into current object. Depending
+on the method arguments, the Blob size, depth, and format may also be specified.
+Some image formats require that size be specified. The default ImageMagick
+uses for depth depends on its Quantum size (8 or 16).&nbsp; If ImageMagick's
+Quantum size does not match that of the image, the depth may need to be
+specified. ImageMagick can usually automatically detect the image's format.
+When a format can't be automatically detected, the format must be specified.</font></td>
+</tr>
 
-<td></td>
+<tr NOSAVE>
+<td><font size=-1>const <a href="Blob.html">Blob</a> &amp;blob_, const
+<a href="Geometry.html">Geometry</a>
+&amp;size_</font></td>
 </tr>
 
 <tr>
-<td><font size=-1>const Geometry &amp;size_, const <a href="Blob.html">Blob</a>
-&amp;blob_</font></td>
+<td><font size=-1>const <a href="Blob.html">Blob</a> &amp;blob_, const
+<a href="Geometry.html">Geometry</a>
+&amp;size_, unsigned short depth_</font></td>
+</tr>
 
-<td><font size=-1>Read encoded image of specified size from an in-memory
-<a href="Blob.html">BLOB</a>
-into current object. This form is useful for images that do not specifiy
-their size or to specify a size hint for decoding an image. For example,
-when reading a Photo CD, JBIG, or JPEG image, a size request causes the
-library to return an image which is the next resolution greater or equal
-to the specified size. This may result in memory and time savings.</font></td>
+<tr>
+<td><font size=-1>const <a href="Blob.html">Blob</a> &amp;blob_, const
+<a href="Geometry.html">Geometry</a>
+&amp;size_, unsigned short depth_, const string &amp;magick_&nbsp;</font></td>
+</tr>
 
-<td></td>
+<tr>
+<td><font size=-1>const <a href="Blob.html">Blob</a> &amp;blob_, const
+<a href="Geometry.html">Geometry</a>
+&amp;size_, const string &amp;magick_</font></td>
 </tr>
 
 <tr>
@@ -1107,7 +1135,7 @@ to transparent.</font></td>
 </tr>
 
 <tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<td ROWSPAN="4" NOSAVE>
 <center><a NAME="write"></a><font size=-1>write</font></center>
 </td>
 
@@ -1120,18 +1148,31 @@ original image or quantization has been requested, the original image will
 be quantized to fewer colors. Use a copy of the original if this is a problem.</font></td>
 </tr>
 
-<tr>
+<tr NOSAVE>
 <td><font size=-1><a href="Blob.html">Blob</a> *blob_, size_t lengthEstimate_
 = 1664</font></td>
 
-<td><font size=-1>Write image to a in-memory <a href="Blob.html">BLOB</a>
-stored in <i>blob_</i>. The optional parameter <i>lengthEstimate_</i> may
-be specified in order to improve performance by avoiding excessive memory
-reallocations.</font>
+<td ROWSPAN="3" NOSAVE><font size=-1>Write image to a in-memory <a href="Blob.html">BLOB</a>
+stored in <i>blob_</i>. The <i>magick</i>_ parameter specifies the image
+format to write (defaults to <a href="#magick">magick</a> ). The depth_
+parameter species the image depth (defaults to <a href="#depth">depth</a>).
+The optional parameter
+<i>lengthEstimate_</i> may be specified in order
+to improve performance by avoiding excessive memory reallocations.</font>
 <br><font size=-1><b><font color="#FF0000">Caution: </font></b>if an image
 format is selected which is capable of supporting fewer colors than the
 original image or quantization has been requested, the original image will
 be quantized to fewer colors. Use a copy of the original if this is a problem.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1><a href="Blob.html">Blob</a> *blob_, std::string &amp;magick_,
+size_t lengthEstimate_ = 1664</font></td>
+</tr>
+
+<tr>
+<td><font size=-1><a href="Blob.html">Blob</a> *blob_, std::string &amp;magick_,
+unsigned short depth_, size_t lengthEstimate_ = 1664</font></td>
 </tr>
 
 <tr>

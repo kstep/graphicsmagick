@@ -1,3 +1,12 @@
+1999-12-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp
+	(write): Additional overloaded methods for BLOBs.
+	(read):  Additional overloaded methods for BLOBs. Re-ordered
+ 	         parameters for one existing method.
+	(Image): Additional overloaded methods for BLOBs.  Re-ordered
+ 	         parameters for one existing method.
+
 1999-12-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (floodFillTexture): Changed coordinates to unsigned.
