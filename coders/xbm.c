@@ -143,7 +143,7 @@ static int XBMInteger(Image *image,short int *hex_digits)
   flag=0;
   for ( ; ; )
   {
-    c=ReadByte(image);
+    c=ReadBlobByte(image);
     if (c == EOF)
       {
         value=(-1);
@@ -212,12 +212,12 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read X bitmap header.
   */
-  while (GetStringBlob(image,buffer) != (char *) NULL)
+  while (ReadBlobString(image,buffer) != (char *) NULL)
     if (sscanf(buffer,"#define %s %u",name,&image->columns) == 2)
       if ((Extent(name) >= 6) &&
           (LocaleCompare(name+Extent(name)-6,"_width") == 0))
           break;
-  while (GetStringBlob(image,buffer) != (char *) NULL)
+  while (ReadBlobString(image,buffer) != (char *) NULL)
     if (sscanf(buffer,"#define %s %u",name,&image->rows) == 2)
       if ((Extent(name) >= 7) &&
           (LocaleCompare(name+Extent(name)-7,"_height") == 0))
@@ -234,7 +234,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Scan until hex digits.
   */
   version=11;
-  while (GetStringBlob(image,buffer) != (char *) NULL)
+  while (ReadBlobString(image,buffer) != (char *) NULL)
   {
     if (sscanf(buffer,"static short %s = {",name) == 1)
       version=10;

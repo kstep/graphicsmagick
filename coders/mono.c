@@ -128,7 +128,7 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   for (i=0; i < image->offset; i++)
-    (void) ReadByte(image);
+    (void) ReadBlobByte(image);
   /*
     Initialize image colormap.
   */
@@ -148,7 +148,7 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
     for (x=0; x < (int) image->columns; x++)
     {
       if (bit == 0)
-        byte=ReadByte(image);
+        byte=ReadBlobByte(image);
       indexes[x]=(byte & 0x01) ? 0 : 1;
       bit++;
       if (bit == 8)
@@ -318,13 +318,13 @@ static unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
       bit++;
       if (bit == 8)
         {
-          (void) WriteByteBlob(image,byte);
+          (void) WriteBlobByte(image,byte);
           bit=0;
           byte=0;
         }
     }
     if (bit != 0)
-      (void) WriteByteBlob(image,byte >> (8-bit));
+      (void) WriteBlobByte(image,byte >> (8-bit));
     if (QuantumTick(y,image->rows))
       MagickMonitor(SaveImageText,y,image->rows);
   }

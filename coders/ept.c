@@ -238,11 +238,11 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Determine page geometry from the Postscript bounding box.
   */
-  (void) LSBFirstReadLong(image);
-  count=LSBFirstReadLong(image);
-  filesize=LSBFirstReadLong(image);
+  (void) ReadBlobLSBLong(image);
+  count=ReadBlobLSBLong(image);
+  filesize=ReadBlobLSBLong(image);
   for (i=0; i < (count-12); i++)
-    (void) ReadByte(image);
+    (void) ReadBlobByte(image);
   /*
     Copy Postscript to temporary file.
   */
@@ -253,7 +253,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   p=command;
   for (i=0; i < filesize; i++)
   {
-    c=ReadByte(image);
+    c=ReadBlobByte(image);
     if (c == EOF)
       break;
     (void) fputc(c,file);
@@ -529,21 +529,21 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
       /*
         Write EPT image.
       */
-      LSBFirstWriteLong(image,0xc6d3d0c5ul);
-      LSBFirstWriteLong(image,30);
+      WriteBlobLSBLong(image,0xc6d3d0c5ul);
+      WriteBlobLSBLong(image,30);
       attributes.st_size=0;
       (void) fstat(fileno(ps_file),&attributes);
-      LSBFirstWriteLong(image,attributes.st_size);
-      LSBFirstWriteLong(image,0);
-      LSBFirstWriteLong(image,0);
-      LSBFirstWriteLong(image,attributes.st_size+30);
+      WriteBlobLSBLong(image,attributes.st_size);
+      WriteBlobLSBLong(image,0);
+      WriteBlobLSBLong(image,0);
+      WriteBlobLSBLong(image,attributes.st_size+30);
       (void) fstat(fileno(tiff_file),&attributes);
-      LSBFirstWriteLong(image,attributes.st_size);
-      LSBFirstWriteShort(image,0xffff);
+      WriteBlobLSBLong(image,attributes.st_size);
+      WriteBlobLSBShort(image,0xffff);
       for (c=fgetc(ps_file); c != EOF; c=fgetc(ps_file))
-        (void) WriteByteBlob(image,c);
+        (void) WriteBlobByte(image,c);
       for (c=fgetc(tiff_file); c != EOF; c=fgetc(tiff_file))
-        (void) WriteByteBlob(image,c);
+        (void) WriteBlobByte(image,c);
       CloseBlob(image);
     }
   (void) fclose(ps_file);

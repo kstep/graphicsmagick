@@ -124,7 +124,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (status == False)
         ThrowReaderException(FileOpenWarning,"Unable to open file",image);
       for (i=0; i < image->offset; i++)
-        (void) ReadByte(image);
+        (void) ReadBlobByte(image);
     }
   /*
     Allocate memory for a scanline.

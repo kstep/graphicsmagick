@@ -359,11 +359,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           LiberateSemaphore(tiff_semaphore);
           ThrowReaderException(FileOpenWarning,"Unable to write file",image);
         }
-      c=ReadByte(image);
+      c=ReadBlobByte(image);
       while (c != EOF)
       {
         (void) fputc(c,file);
-        c=ReadByte(image);
+        c=ReadBlobByte(image);
       }
       (void) fclose(file);
       (void) strcpy(image->filename,image_info->filename);
@@ -645,7 +645,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               */
               lsb_first=1;
               if (*(char *) &lsb_first)
-                MSBFirstOrderShort((char *) scanline,
+                MSBOrderShort((char *) scanline,
                   (TIFFScanlineSize(tiff) << 1)+4);
             }
           p=scanline;
@@ -773,7 +773,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               */
               lsb_first=1;
               if (*(char *) &lsb_first)
-                MSBFirstOrderShort((char *) scanline,
+                MSBOrderShort((char *) scanline,
                   (TIFFScanlineSize(tiff) << 1)+4);
             }
           if (bits_per_sample == 4)

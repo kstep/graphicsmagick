@@ -102,7 +102,7 @@ static unsigned int WBMPReadInteger(Image *image,unsigned int *value)
   *value=0;
   do
   {
-    byte=ReadByte(image);
+    byte=ReadBlobByte(image);
     if (byte == EOF)
       return(False);
     *value<<=7;
@@ -160,7 +160,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
   if (WBMPReadInteger(image,&image->rows) == False) 
     ThrowReaderException(CorruptImageWarning,"Corrupt WBMP image",image);
   for (i=0; i < image->offset; i++)
-    (void) ReadByte(image);
+    (void) ReadBlobByte(image);
   /*
     Initialize image structure.
   */
@@ -181,7 +181,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
     {
       if (bit == 0)
         {
-          byte=ReadByte(image);
+          byte=ReadBlobByte(image);
           if (byte == EOF)
             ThrowReaderException(CorruptImageWarning,"Corrupt WBMP image",
               image);
@@ -372,7 +372,7 @@ static unsigned int WriteWBMPImage(const ImageInfo *image_info,Image *image)
   polarity=Intensity(image->colormap[0]) > (0.5*MaxRGB);
   if (image->colors == 2)
     polarity=Intensity(image->colormap[0]) < Intensity(image->colormap[1]);
-  MSBFirstWriteShort(image,0);
+  WriteBlobMSBShort(image,0);
   WBMPWriteInteger(image,image->columns);
   WBMPWriteInteger(image,image->rows);
   for (y=0; y < (int) image->rows; y++)
@@ -390,13 +390,13 @@ static unsigned int WriteWBMPImage(const ImageInfo *image_info,Image *image)
       bit++;
       if (bit == 8)
         {
-          (void) WriteByteBlob(image,byte);
+          (void) WriteBlobByte(image,byte);
           bit=0;
           byte=0;
         }
     }
     if (bit != 0)
-      (void) WriteByteBlob(image,byte);
+      (void) WriteBlobByte(image,byte);
     if (QuantumTick(y,image->rows))
       MagickMonitor(SaveImageText,y,image->rows);
   }

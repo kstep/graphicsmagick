@@ -146,7 +146,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Determine if this is a TIM file.
   */
-  tim_info.id=LSBFirstReadLong(image);
+  tim_info.id=ReadBlobLSBLong(image);
   do
   {
     /*
@@ -154,7 +154,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     if (tim_info.id != 0x00000010)
       ThrowReaderException(CorruptImageWarning,"Not a TIM image file",image);
-    tim_info.flag=LSBFirstReadLong(image);
+    tim_info.flag=ReadBlobLSBLong(image);
     has_clut=!!(tim_info.flag & (1 << 3));
     pixel_mode=tim_info.flag & 0x07;
     switch (pixel_mode)
@@ -173,11 +173,11 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Read TIM raster colormap.
         */
-        (void)LSBFirstReadLong(image);
-        (void)LSBFirstReadShort(image);
-        (void)LSBFirstReadShort(image);
-        width=LSBFirstReadShort(image);
-        height=LSBFirstReadShort(image);
+        (void)ReadBlobLSBLong(image);
+        (void)ReadBlobLSBShort(image);
+        (void)ReadBlobLSBShort(image);
+        width=ReadBlobLSBShort(image);
+        height=ReadBlobLSBShort(image);
         if (!AllocateImageColormap(image,pixel_mode == 1 ? 256 : 16))
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
@@ -200,11 +200,11 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Read image data.
     */
-    (void) LSBFirstReadLong(image);
-    (void) LSBFirstReadShort(image);
-    (void) LSBFirstReadShort(image);
-    width=LSBFirstReadShort(image);
-    height=LSBFirstReadShort(image);
+    (void) ReadBlobLSBLong(image);
+    (void) ReadBlobLSBShort(image);
+    (void) ReadBlobLSBShort(image);
+    width=ReadBlobLSBShort(image);
+    height=ReadBlobLSBShort(image);
     image_size=2*width*height;
     bytes_per_line=width*2;
     width=(width*16)/bits_per_pixel;
@@ -335,7 +335,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Proceed to next image.
     */
-    tim_info.id=LSBFirstReadLong(image);
+    tim_info.id=ReadBlobLSBLong(image);
     if (tim_info.id == 0x00000010)
       {
         /*

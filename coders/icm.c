@@ -126,7 +126,7 @@ static Image *ReadICMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->color_profile.info=(unsigned char *) AcquireMemory(length);
   for (q=image->color_profile.info; ; q++)
   {
-    c=ReadByte(image);
+    c=ReadBlobByte(image);
     if (c == EOF)
       break;
     if ((q-image->color_profile.info+1) >= (int) length)

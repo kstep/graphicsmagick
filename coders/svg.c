@@ -2100,7 +2100,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   SAXHandler=(&SAXHandlerStruct);
   svg_info.parser=xmlCreatePushParserCtxt(SAXHandler,&svg_info,(char *) NULL,0,
     image->filename);
-  while (GetStringBlob(image,buffer) != (char *) NULL)
+  while (ReadBlobString(image,buffer) != (char *) NULL)
   {
     n=Extent(buffer);
     if (n == 0)
@@ -2376,7 +2376,7 @@ static void AffineToTransform(Image *image,AffineMatrix *affine)
             }
           FormatString(transform,"\" transform=\"scale(%g %g)\">\n",
             affine->sx,affine->sy);
-          (void) WriteStringBlob(image,transform);
+          (void) WriteBlobString(image,transform);
           return;
         }
       else
@@ -2391,7 +2391,7 @@ static void AffineToTransform(Image *image,AffineMatrix *affine)
 
               theta=(180.0/M_PI)*atan2(affine->rx,affine->sx);
               FormatString(transform,"\" transform=\"rotate(%g)\">\n",theta);
-              (void) WriteStringBlob(image,transform);
+              (void) WriteBlobString(image,transform);
               return;
             }
         }
@@ -2405,13 +2405,13 @@ static void AffineToTransform(Image *image,AffineMatrix *affine)
         {
           FormatString(transform,"\" transform=\"translate(%g %g)\">\n",
             affine->tx,affine->ty);
-          (void) WriteStringBlob(image,transform);
+          (void) WriteBlobString(image,transform);
           return;
         }
     }
   FormatString(transform,"\" transform=\"matrix(%g,%g,%g,%g,%g,%g)\">\n",
     affine->sx,affine->rx,affine->ry,affine->sy,affine->tx,affine->ty);
-  (void) WriteStringBlob(image,transform);
+  (void) WriteBlobString(image,transform);
 }
 
 static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
@@ -2469,14 +2469,14 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  (void) WriteStringBlob(image,"<?xml version=\"1.0\" standalone=\"no\"?>\n");
-  (void) WriteStringBlob(image,
+  (void) WriteBlobString(image,"<?xml version=\"1.0\" standalone=\"no\"?>\n");
+  (void) WriteBlobString(image,
     "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20000802//EN\"\n");
-  (void) WriteStringBlob(image,
+  (void) WriteBlobString(image,
     "  \"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd\">\n");
   (void) FormatString(buffer,"<svg width=\"%u\" height=\"%u\">\n",
     image->columns,image->rows);
-  (void) WriteStringBlob(image,buffer);
+  (void) WriteBlobString(image,buffer);
   attribute=GetImageAttribute(image,"[MVG]");
   if ((attribute == (ImageAttribute *) NULL) ||
       (attribute->value == (char *) NULL))
@@ -2514,14 +2514,14 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
         /*
           Comment.
         */
-        WriteStringBlob(image,"\">\n");
-        WriteStringBlob(image,"<desc>");
+        WriteBlobString(image,"\">\n");
+        WriteBlobString(image,"<desc>\n  ");
         while ((*q != '\n') && (*q != '\0'))
         {
-          WriteByteBlob(image,*q);
+          WriteBlobByte(image,*q);
           q++;
         }
-        WriteStringBlob(image,"</desc>\n");
+        WriteBlobString(image,"\n</desc>\n");
         continue;
       }
     /*
@@ -2665,7 +2665,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             if (graphic_context[n]->fill.opacity != TransparentOpacity)
               graphic_context[n]->fill.opacity=graphic_context[n]->opacity;
             FormatString(buffer,"fill:%s;",value);
-            WriteStringBlob(image,buffer);
+            WriteBlobString(image,buffer);
             break;
           }
         if (LocaleCompare("fill-rule",keyword) == 0)
@@ -2854,7 +2854,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
                   ThrowWriterException(CorruptImageWarning,
                     "unbalanced graphic context push/pop",image);
               }
-            (void) WriteStringBlob(image,"</g>\n");
+            (void) WriteBlobString(image,"</g>\n");
             break;
           }
         if (LocaleCompare("push",keyword) == 0)
@@ -2881,7 +2881,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
                     "Memory allocation failed");
                 graphic_context[n]=
                   CloneDrawInfo((ImageInfo *) NULL,graphic_context[n-1]);
-                (void) WriteStringBlob(image,"<g style=\"");
+                (void) WriteBlobString(image,"<g style=\"");
               }
             break;
           }
@@ -2949,7 +2949,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             if (graphic_context[n]->stroke.opacity != TransparentOpacity)
               graphic_context[n]->stroke.opacity=graphic_context[n]->opacity;
             FormatString(buffer,"stroke:%s;",value);
-            WriteStringBlob(image,buffer);
+            WriteBlobString(image,buffer);
             break;
           }
         if (LocaleCompare("stroke-antialias",keyword) == 0)
@@ -3038,7 +3038,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             graphic_context[n]->stroke_width=strtod(q,&q);
             FormatString(buffer,"stroke-width:%g;",
               graphic_context[n]->stroke_width);
-            WriteStringBlob(image,buffer);
+            WriteBlobString(image,buffer);
             continue;
           }
         status=False;
@@ -3162,7 +3162,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
     primitive_info[j].coordinates=x;
     primitive_info[j].method=FloodfillMethod;
     primitive_info[j].text=(char *) NULL;
-    WriteStringBlob(image,"\">\n");
+    WriteBlobString(image,"\">\n");
     switch (primitive_type)
     {
       case PointPrimitive:
@@ -3186,7 +3186,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           "  <line x1=\"%g\" y1=\"%g\" x2=\"%g\" y2=\"%g\"/>\n",
           primitive_info[j].point.x,primitive_info[j].point.y,
           primitive_info[j+1].point.x,primitive_info[j+1].point.y);
-        (void) WriteStringBlob(image,buffer);
+        (void) WriteBlobString(image,buffer);
         break;
       }
       case RectanglePrimitive:
@@ -3201,7 +3201,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           primitive_info[j].point.x,primitive_info[j].point.y,
           primitive_info[j+1].point.x-primitive_info[j].point.x,
           primitive_info[j+1].point.y-primitive_info[j].point.y);
-        (void) WriteStringBlob(image,buffer);
+        (void) WriteBlobString(image,buffer);
         break;
       }
       case RoundRectanglePrimitive:
@@ -3217,7 +3217,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           primitive_info[j+1].point.x-primitive_info[j].point.x,
           primitive_info[j+1].point.y-primitive_info[j].point.y,
           primitive_info[j+2].point.x,primitive_info[j+2].point.y);
-        (void) WriteStringBlob(image,buffer);
+        (void) WriteBlobString(image,buffer);
         break;
       }
       case ArcPrimitive:
@@ -3238,7 +3238,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         (void) FormatString(buffer,"  <ellipse rx=\"%g\" ry=\"%g\"/>\n",
           primitive_info[j+1].point.x,primitive_info[j+1].point.y);
-        (void) WriteStringBlob(image,buffer);
+        (void) WriteBlobString(image,buffer);
         break;
       }
       case CirclePrimitive:
@@ -3257,7 +3257,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
         (void) FormatString(buffer,"  <circle cx=\"%g\" cy=\"%g\" r=\"%g\"/>\n",
           primitive_info[j].point.x,primitive_info[j].point.y,
           sqrt(alpha*alpha+beta*beta));
-        (void) WriteStringBlob(image,buffer);
+        (void) WriteBlobString(image,buffer);
         break;
       }
       case PolylinePrimitive:
@@ -3267,18 +3267,18 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             status=False;
             break;
           }
-        (void) WriteStringBlob(image,"  <polyline points=\"");
+        (void) WriteBlobString(image,"  <polyline points=\"");
         for ( ; j < i; j++)
         {
           if ((j % 8) != 0)
-            (void) WriteByteBlob(image,' ');
+            (void) WriteBlobByte(image,' ');
           else
-            (void) WriteStringBlob(image,"\n    ");
+            (void) WriteBlobString(image,"\n    ");
           FormatString(buffer,"%g,%g",primitive_info[j].point.x,
             primitive_info[j].point.y);
-          (void) WriteStringBlob(image,buffer);
+          (void) WriteBlobString(image,buffer);
         }
-        (void) WriteStringBlob(image,"\"/>\n");
+        (void) WriteBlobString(image,"\"/>\n");
         break;
       }
       case PolygonPrimitive:
@@ -3292,18 +3292,18 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
         primitive_info[i].coordinates=0;
         primitive_info[j].coordinates++;
         i++;
-        (void) WriteStringBlob(image,"  <polygon points=\"");
+        (void) WriteBlobString(image,"  <polygon points=\"");
         for ( ; j < i; j++)
         {
           if ((j % 8) != 0)
-            (void) WriteByteBlob(image,' ');
+            (void) WriteBlobByte(image,' ');
           else
-            (void) WriteStringBlob(image,"\n    ");
+            (void) WriteBlobString(image,"\n    ");
           FormatString(buffer,"%g,%g",primitive_info[j].point.x,
             primitive_info[j].point.y);
-          (void) WriteStringBlob(image,buffer);
+          (void) WriteBlobString(image,buffer);
         }
-        (void) WriteStringBlob(image,"\"/>\n");
+        (void) WriteBlobString(image,"\"/>\n");
         break;
       }
       case BezierPrimitive:
@@ -3451,9 +3451,9 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         (void) FormatString(buffer,"  <text x=\"%g\" y=\"%g\"/>\n    ",
           primitive_info[j+1].point.x,primitive_info[j+1].point.y);
-        (void) WriteStringBlob(image,buffer);
-        (void) WriteStringBlob(image,primitive_info[j].text);
-        (void) WriteStringBlob(image,"\n  </text>\n");
+        (void) WriteBlobString(image,buffer);
+        (void) WriteBlobString(image,primitive_info[j].text);
+        (void) WriteBlobString(image,"\n  </text>\n");
         break;
       }
       case ImagePrimitive:
@@ -3515,7 +3515,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   }
   if (graphic_context[n]->debug)
     (void) fprintf(stdout,"end vector-graphics\n");
-  (void) WriteStringBlob(image,"</svg>\n");
+  (void) WriteBlobString(image,"</svg>\n");
   /*
     Free resources.
   */

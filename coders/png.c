@@ -1243,7 +1243,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         type[0]='\0';
         strcat(type,"errr");
-        length=MSBFirstReadLong(image);
+        length=ReadBlobMSBLong(image);
         status=ReadBlob(image,4,type);
         if (length > PNG_MAX_UINT)
           status=False;
@@ -1272,10 +1272,10 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               ThrowReaderException(ResourceLimitWarning,
                "Unable to allocate memory for chunk data",image);
             for (i=0; i < (int) length; i++)
-              chunk[i]=ReadByte(image);
+              chunk[i]=ReadBlobByte(image);
             p=chunk;
           }
-        (void) MSBFirstReadLong(image);  /* read crc word */
+        (void) ReadBlobMSBLong(image);  /* read crc word */
         if (!memcmp(type,mng_MEND,4))
           break;
         if (skip_to_iend)
@@ -3436,7 +3436,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         Write the MNG version 0.96 signature and MHDR chunk.
      */
      (void) WriteBlob(image,8,"\212MNG\r\n\032\n");
-     MSBFirstWriteLong(image,28L);  /* chunk data length = 28 */
+     WriteBlobMSBLong(image,28L);  /* chunk data length = 28 */
      PNGType(chunk,mng_MHDR);
      PNGLong(chunk+4,page.width);
      PNGLong(chunk+8,page.height);
@@ -3459,14 +3459,14 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
            PNGLong(chunk+28,1L);    /* simplicity = VLC, no transparency */
        }
      (void) WriteBlob(image,32,(char *) chunk);
-     MSBFirstWriteLong(image,crc32(0,chunk,32));
+     WriteBlobMSBLong(image,crc32(0,chunk,32));
      if ((image->previous == (Image *) NULL) &&
          (image->next != (Image *) NULL) && (image->iterations != 1))
        {
          /*
            Write MNG TERM chunk
          */
-         MSBFirstWriteLong(image,10L);  /* data length = 10 */
+         WriteBlobMSBLong(image,10L);  /* data length = 10 */
          PNGType(chunk,mng_TERM);
          chunk[4]=3;  /* repeat animation */
          chunk[5]=0;  /* show last frame when done */
@@ -3476,7 +3476,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
          else
            PNGLong(chunk+10,(png_uint_32) image->iterations);
          (void) WriteBlob(image,14,(char *) chunk);
-         MSBFirstWriteLong(image,crc32(0,chunk,14));
+         WriteBlobMSBLong(image,crc32(0,chunk,14));
        }
      /*
        To do: check for cHRM+gAMA == sRGB, and write sRGB instead.
@@ -3487,11 +3487,11 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
          /*
            Write MNG sRGB chunk
          */
-         MSBFirstWriteLong(image,1L);
+         WriteBlobMSBLong(image,1L);
          PNGType(chunk,mng_sRGB);
          chunk[4]=image->rendering_intent+1;
          (void) WriteBlob(image,5,(char *) chunk);
-         MSBFirstWriteLong(image,crc32(0,chunk,5));
+         WriteBlobMSBLong(image,crc32(0,chunk,5));
          have_write_global_srgb=True;
        }
      else
@@ -3501,11 +3501,11 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
              /*
                 Write MNG gAMA chunk
              */
-             MSBFirstWriteLong(image,4L);
+             WriteBlobMSBLong(image,4L);
              PNGType(chunk,mng_gAMA);
              PNGLong(chunk+4,(unsigned long) (100000*image->gamma+0.5));
              (void) WriteBlob(image,8,(char *) chunk);
-             MSBFirstWriteLong(image,crc32(0,chunk,8));
+             WriteBlobMSBLong(image,crc32(0,chunk,8));
              have_write_global_gama=True;
            }
          if (equal_chrms)
@@ -3513,7 +3513,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
              /*
                 Write MNG cHRM chunk
              */
-             MSBFirstWriteLong(image,32L);
+             WriteBlobMSBLong(image,32L);
              PNGType(chunk,mng_cHRM);
              PNGLong(chunk+4,(unsigned long)
                (100000*image->chromaticity.white_point.x+0.5));
@@ -3532,7 +3532,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
              PNGLong(chunk+32,(unsigned long)
                (100000*image->chromaticity.blue_primary.y+0.5));
              (void) WriteBlob(image,36,(char *) chunk);
-             MSBFirstWriteLong(image,crc32(0,chunk,36));
+             WriteBlobMSBLong(image,crc32(0,chunk,36));
              have_write_global_chrm=True;
            }
        }
@@ -3541,7 +3541,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
          /*
             Write MNG pHYs chunk
          */
-         MSBFirstWriteLong(image,9L);
+         WriteBlobMSBLong(image,9L);
          PNGType(chunk,mng_pHYs);
          if (image->units == PixelsPerInchResolution)
            {
@@ -3569,7 +3569,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                }
            }
          (void) WriteBlob(image,13,(char *) chunk);
-         MSBFirstWriteLong(image,crc32(0,chunk,13));
+         WriteBlobMSBLong(image,crc32(0,chunk,13));
        }
      /*
        Write MNG BACK chunk and global bKGD chunk, if the image is transparent
@@ -3579,7 +3579,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
          image->page.width && (image->page.width+image->page.x < page.width) || 
          image->page.height && (image->page.height+image->page.y < page.height))
        {
-         MSBFirstWriteLong(image,6L);
+         WriteBlobMSBLong(image,6L);
          PNGType(chunk,mng_BACK);
          red=UpScale(image->background_color.red);
          green=UpScale(image->background_color.green);
@@ -3588,13 +3588,13 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
          PNGShort(chunk+6,green);
          PNGShort(chunk+8,blue);
          (void) WriteBlob(image,10,(char *) chunk);
-         MSBFirstWriteLong(image,crc32(0,chunk,10));
+         WriteBlobMSBLong(image,crc32(0,chunk,10));
          if (equal_backgrounds)
            {
-             MSBFirstWriteLong(image,6L);
+             WriteBlobMSBLong(image,6L);
              PNGType(chunk,mng_bKGD);
              (void) WriteBlob(image,10,(char *) chunk);
-             MSBFirstWriteLong(image,crc32(0,chunk,10));
+             WriteBlobMSBLong(image,crc32(0,chunk,10));
            }
        }
 
@@ -3607,7 +3607,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
            Write MNG PLTE chunk
          */
          data_length=3*image->colors;
-         MSBFirstWriteLong(image,data_length);
+         WriteBlobMSBLong(image,data_length);
          PNGType(chunk,mng_PLTE);
          for (i=0; i < (int) image->colors; i++)
          {
@@ -3616,7 +3616,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
            chunk[6+i*3]= DownScale(image->colormap[i].blue) & 0xff;
          }
          (void) WriteBlob(image,data_length+4,(char *) chunk);
-         MSBFirstWriteLong(image,crc32(0,chunk,data_length+4));
+         WriteBlobMSBLong(image,crc32(0,chunk,data_length+4));
          have_write_global_plte=True;
        }
     }
@@ -3650,7 +3650,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                   data_length;
 
                 data_length=3*image->colors;
-                MSBFirstWriteLong(image,data_length);
+                WriteBlobMSBLong(image,data_length);
                 PNGType(chunk,mng_PLTE);
                 for (i=0; i < (int) image->colors; i++)
                 {
@@ -3659,7 +3659,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                   chunk[6+i*3]=DownScale(image->colormap[i].blue) & 0xff;
                 }
                 (void) WriteBlob(image,data_length+4,(char *) chunk);
-                MSBFirstWriteLong(image,crc32(0,chunk,data_length+4));
+                WriteBlobMSBLong(image,crc32(0,chunk,data_length+4));
                 have_write_global_plte=True;
               }
           }
@@ -3685,7 +3685,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         page=image->page;
         if ((page.x !=  previous_x) || (page.y != previous_y))
           {
-             MSBFirstWriteLong(image,12L);  /* data length = 12 */
+             WriteBlobMSBLong(image,12L);  /* data length = 12 */
              PNGType(chunk,mng_DEFI);
              chunk[4]=0; /* object 0 MSB */
              chunk[5]=0; /* object 0 LSB */
@@ -3694,7 +3694,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
              PNGLong(chunk+8,page.x);
              PNGLong(chunk+12,page.y);
              (void) WriteBlob(image,16,(char *) chunk);
-             MSBFirstWriteLong(image,crc32(0,chunk,16));
+             WriteBlobMSBLong(image,crc32(0,chunk,16));
           }
       }
     /*
@@ -4138,18 +4138,18 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             /*
               Write a MNG FRAM chunk with the new framing mode.
             */
-            MSBFirstWriteLong(image,1L);  /* data length = 1 */
+            WriteBlobMSBLong(image,1L);  /* data length = 1 */
             PNGType(chunk,mng_FRAM);
             chunk[4]=framing_mode;
             (void) WriteBlob(image,5,(char *) chunk);
-            MSBFirstWriteLong(image,crc32(0,chunk,5));
+            WriteBlobMSBLong(image,crc32(0,chunk,5));
           }
         else
           {
             /*
               Write a MNG FRAM chunk with the delay.
             */
-            MSBFirstWriteLong(image,10L);  /* data length = 10 */
+            WriteBlobMSBLong(image,10L);  /* data length = 10 */
             PNGType(chunk,mng_FRAM);
             chunk[4]=framing_mode;
             chunk[5]=0;  /* frame name separator (no name) */
@@ -4160,7 +4160,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             PNGLong(chunk+10,(png_uint_32)
               ((ticks_per_second*image->delay)/100));
             (void) WriteBlob(image,14,(char *) chunk);
-            MSBFirstWriteLong(image,crc32(0,chunk,14));
+            WriteBlobMSBLong(image,crc32(0,chunk,14));
             delay=image->delay;
           }
         old_framing_mode=framing_mode;
@@ -4327,7 +4327,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             /*
               Write FRAM 4 with clipping boundaries followed by FRAM 1.
             */
-            MSBFirstWriteLong(image,27L);  /* data length = 27 */
+            WriteBlobMSBLong(image,27L);  /* data length = 27 */
             PNGType(chunk,mng_FRAM);
             chunk[4]=4;
             chunk[5]=0;  /* frame name separator (no name) */
@@ -4342,7 +4342,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             PNGLong(chunk+23,(png_uint_32) (page.y)); /* top cb */
             PNGLong(chunk+27,(png_uint_32) (page.y + ping_info->height));
             (void) WriteBlob(image,31,(char *) chunk);
-            MSBFirstWriteLong(image,crc32(0,chunk,31));
+            WriteBlobMSBLong(image,crc32(0,chunk,31));
             old_framing_mode=4;
             framing_mode=1;
           }
@@ -4377,10 +4377,10 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       /*
         Write the MEND chunk.
       */
-      MSBFirstWriteLong(image,0x00000000L);
+      WriteBlobMSBLong(image,0x00000000L);
       PNGType(chunk,mng_MEND);
       (void) WriteBlob(image,4,(char *) chunk);
-      MSBFirstWriteLong(image,crc32(0,chunk,4));
+      WriteBlobMSBLong(image,crc32(0,chunk,4));
     }
   /*
     Free memory.

@@ -184,11 +184,11 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       file=fopen(image_info->filename,WriteBinaryType);
       if (file == (FILE *) NULL)
         ThrowReaderException(FileOpenWarning,"Unable to write file",image);
-      c=ReadByte(image);
+      c=ReadBlobByte(image);
       while (c != EOF)
       {
         (void) fputc(c,file);
-        c=ReadByte(image);
+        c=ReadBlobByte(image);
       }
       (void) fclose(file);
       (void) strcpy(image->filename,image_info->filename);

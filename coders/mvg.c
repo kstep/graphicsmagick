@@ -127,7 +127,7 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       status=OpenBlob(image_info,image,ReadBinaryType);
       if (status == False)
         ThrowReaderException(FileOpenWarning,"Unable to open file",image);
-      while (GetStringBlob(image,primitive) != (char *) NULL)
+      while (ReadBlobString(image,primitive) != (char *) NULL)
       {
         if (LocaleNCompare(BoundingBox,primitive,Extent(BoundingBox)) != 0)
           continue;

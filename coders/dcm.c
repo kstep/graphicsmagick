@@ -2772,8 +2772,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Read a group.
     */
     image->offset=TellBlob(image);
-    group=LSBFirstReadShort(image);
-    element=LSBFirstReadShort(image);
+    group=ReadBlobLSBShort(image);
+    element=ReadBlobLSBShort(image);
     quantum=0;
     /*
       Find corresponding VR for this group and element.
@@ -2794,7 +2794,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (strcmp(explicit_vr,"UN") == 0) ||
             (strcmp(explicit_vr,"OW") == 0) || (strcmp(explicit_vr,"SQ") == 0))
           {
-            (void) LSBFirstReadShort(image);
+            (void) ReadBlobLSBShort(image);
             quantum=4;
           }
       }
@@ -2816,10 +2816,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     datum=0;
     if (quantum == 4)
-      datum=LSBFirstReadLong(image);
+      datum=ReadBlobLSBLong(image);
     else
       if (quantum == 2)
-        datum=LSBFirstReadShort(image);
+        datum=ReadBlobLSBShort(image);
     quantum=0;
     length=1;
     if (datum != 0)
@@ -2897,13 +2897,13 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     data=(unsigned char *) NULL;
     if ((length == 1) && (quantum == 1))
-      datum=ReadByte(image);
+      datum=ReadBlobByte(image);
     else
       if ((length == 1) && (quantum == 2))
-        datum=LSBFirstReadShort(image);
+        datum=ReadBlobLSBShort(image);
       else
         if ((length == 1) && (quantum == 4))
-          datum=LSBFirstReadLong(image);
+          datum=ReadBlobLSBLong(image);
         else
           if ((quantum != 0) && (length > 0))
             {
@@ -3144,12 +3144,12 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (strcmp(transfer_syntax,"1.2.840.10008.1.2.4.70") == 0)
         c+=48;
       for (i=0; i < c; i++)
-        (void) ReadByte(image);
-      c=ReadByte(image);
+        (void) ReadBlobByte(image);
+      c=ReadBlobByte(image);
       while (c != EOF)
       {
         (void) fputc(c,file);
-        c=ReadByte(image);
+        c=ReadBlobByte(image);
       }
       (void) fclose(file);
       DestroyImage(image);
@@ -3206,10 +3206,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               switch (i)
               {
-                case 0: q->red=ReadByte(image); break;
-                case 1: q->green=ReadByte(image); break;
-                case 2: q->blue=ReadByte(image); break;
-                case 3: q->opacity=MaxRGB-ReadByte(image); break;
+                case 0: q->red=ReadBlobByte(image); break;
+                case 1: q->green=ReadBlobByte(image); break;
+                case 2: q->blue=ReadBlobByte(image); break;
+                case 3: q->opacity=MaxRGB-ReadBlobByte(image); break;
                 default: break;
               }
               q++;
@@ -3246,25 +3246,25 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (samples_per_pixel == 1)
               {
                 if (bytes_per_pixel == 1)
-                  index=ReadByte(image);
+                  index=ReadBlobByte(image);
                 else
                   if (bits_allocated != 12)
                     {
                       if (msb_first)
-                        index=MSBFirstReadShort(image);
+                        index=ReadBlobMSBShort(image);
                       else
-                        index=LSBFirstReadShort(image);
+                        index=ReadBlobLSBShort(image);
                     }
                   else
                     {
                       if (i & 0x01)
-                        index=(ReadByte(image) << 8) | byte;
+                        index=(ReadBlobByte(image) << 8) | byte;
                       else
                         {
                           if (msb_first)
-                            index=MSBFirstReadShort(image);
+                            index=ReadBlobMSBShort(image);
                           else
-                            index=LSBFirstReadShort(image);
+                            index=ReadBlobLSBShort(image);
                           byte=index & 0x0f;
                           index>>=4;
                         }
@@ -3285,23 +3285,23 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 if (bytes_per_pixel == 1)
                   {
-                    red=ReadByte(image);
-                    green=ReadByte(image);
-                    blue=ReadByte(image);
+                    red=ReadBlobByte(image);
+                    green=ReadBlobByte(image);
+                    blue=ReadBlobByte(image);
                   }
                 else
                   {
                     if (msb_first)
                       {
-                        red=MSBFirstReadShort(image);
-                        green=MSBFirstReadShort(image);
-                        blue=MSBFirstReadShort(image);
+                        red=ReadBlobMSBShort(image);
+                        green=ReadBlobMSBShort(image);
+                        blue=ReadBlobMSBShort(image);
                       }
                     else
                       {
-                        red=LSBFirstReadShort(image);
-                        green=LSBFirstReadShort(image);
-                        blue=LSBFirstReadShort(image);
+                        red=ReadBlobLSBShort(image);
+                        green=ReadBlobLSBShort(image);
+                        blue=ReadBlobLSBShort(image);
                       }
                   }
                 if (scale != (Quantum *) NULL)

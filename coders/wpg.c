@@ -96,20 +96,20 @@ static void Rd_WP_DWORD(Image *image,unsigned long *d)
   unsigned char
     b;
 
-  b=ReadByte(image);
+  b=ReadBlobByte(image);
   *d=b;
   if (b < 0xFF)
     return;
-  b=ReadByte(image);
+  b=ReadBlobByte(image);
   *d=(unsigned long) b;
-  b=ReadByte(image);
+  b=ReadBlobByte(image);
   *d+=(unsigned long) b*256l;
   if (*d < 0x8000)
     return;
   *d=(*d & 0x7FFF) << 16;
-  b=ReadByte(image);
+  b=ReadBlobByte(image);
   *d+=(unsigned long) b;
-  b=ReadByte(image);
+  b=ReadBlobByte(image);
   *d+=(unsigned long) b*256l;
   return;
 }
@@ -296,7 +296,7 @@ long ldblk;
 
  while(y<image->rows)
      {
-     bbuf=ReadByte(image);
+     bbuf=ReadBlobByte(image);
 
 /*     if not readed byte ??????	{
 	delete Raster;
@@ -309,11 +309,11 @@ long ldblk;
 	{
 	if(RunCount)	/* repeat next byte runcount * */
 		{
-		bbuf=ReadByte(image);
+		bbuf=ReadBlobByte(image);
 		for(i=0;i<RunCount;i++) InsertByte(bbuf);
 		}
 	   else {	/* read next byte as RunCount; repeat 0xFF runcount* */
-		RunCount=ReadByte(image);
+		RunCount=ReadBlobByte(image);
 		for(i=0;i<RunCount;i++) InsertByte(0xFF);
 		}
 	}
@@ -322,12 +322,12 @@ long ldblk;
 		{
 		for(i=0;i<RunCount;i++)
 			{
-			bbuf=ReadByte(image);
+			bbuf=ReadBlobByte(image);
 			InsertByte(bbuf);
 			}
 		}
 	   else {	/* repeat previous line runcount* */
-		RunCount=ReadByte(image);
+		RunCount=ReadBlobByte(image);
 		if(x) {              /* attempt to duplicate row from x position: */
 		      free(BImgBuff);/* I do not know what to do here */
 		      return(-3);
@@ -366,12 +366,12 @@ long ldblk;
  BImgBuff=(unsigned char *) malloc(ldblk);
  if(BImgBuff==NULL) return(-2);
 
- ReadByte(image);
- ReadByte(image);
+ ReadBlobByte(image);
+ ReadBlobByte(image);
 
  while(y<image->rows)
      {
-     bbuf=ReadByte(image);
+     bbuf=ReadBlobByte(image);
 
 
      RunCount=bbuf & 0x7F;
@@ -379,11 +379,11 @@ long ldblk;
 	{
 	if(RunCount!=0x7F)	/* repeat next byte runcount */
 		{
-		bbuf=ReadByte(image);
+		bbuf=ReadBlobByte(image);
 		for(i=0;i<=RunCount;i++) InsertRByte(bbuf);
 		}
 	   else {	/*read next byte as RunCount; repeat 0xFF runcount*/
-		RunCount=ReadByte(image);
+		RunCount=ReadBlobByte(image);
 		for(i=0;i<=RunCount;i++) InsertRByte(0xFF);
 		}
 	}
@@ -392,12 +392,12 @@ long ldblk;
 		{
 		for(i=0;i<=RunCount;i++)
 			{
-			bbuf=ReadByte(image);
+			bbuf=ReadBlobByte(image);
 			InsertRByte(bbuf);
 			}
 		}
 	   else {
-		RunCount=ReadByte(image);
+		RunCount=ReadBlobByte(image);
 		if(x) {		/*read next byte as RunCount; repeat 0 runcount*/
 		      for(i=0;i<=RunCount;i++)
 				 InsertRByte(0);
@@ -439,7 +439,7 @@ if( (f=fopen(clone_info->filename,"wb"))==NULL) goto FINISH;
 SeekBlob(image,PS_Offset,SEEK_SET);
 while(PS_Size-->0)
     {
-    fputc(ReadByte(image),f);
+    fputc(ReadBlobByte(image),f);
     }
 fclose(f);    
 
@@ -583,14 +583,14 @@ typedef struct {
   /*
     Read WPG image.
   */
-   Header.FileId=LSBFirstReadLong(image);
-   Header.DataOffset=LSBFirstReadLong(image);
-   Header.ProductType=LSBFirstReadShort(image);
-   Header.FileType=LSBFirstReadShort(image);
-   Header.MajorVersion=ReadByte(image);
-   Header.MinorVersion=ReadByte(image);
-   Header.EncryptKey=LSBFirstReadShort(image);
-   Header.Reserved=LSBFirstReadShort(image);
+   Header.FileId=ReadBlobLSBLong(image);
+   Header.DataOffset=ReadBlobLSBLong(image);
+   Header.ProductType=ReadBlobLSBShort(image);
+   Header.FileType=ReadBlobLSBShort(image);
+   Header.MajorVersion=ReadBlobByte(image);
+   Header.MinorVersion=ReadBlobByte(image);
+   Header.EncryptKey=ReadBlobLSBShort(image);
+   Header.Reserved=ReadBlobLSBShort(image);
 
   if (Header.FileId!=0x435057FF || (Header.ProductType>>8)!=0x16 )
       ThrowReaderException(CorruptImageWarning,"Not a WPG image file",image);
@@ -607,7 +607,7 @@ typedef struct {
        SeekBlob(image,Header.DataOffset,SEEK_SET);
        if(EOFBlob(image)) break;
 
-       Rec.RecType=(i=ReadByte(image));
+       Rec.RecType=(i=ReadBlobByte(image));
        if(i==EOF) break;
        Rd_WP_DWORD(image,&Rec.RecordLength);
        if(EOFBlob(image)) break;
@@ -618,11 +618,11 @@ typedef struct {
        switch(Rec.RecType)
 	 {
 	 case 0x0B: /* bitmap type 1 */
-		 BitmapHeader1.Width=LSBFirstReadShort(image);
-		 BitmapHeader1.Heigth=LSBFirstReadShort(image);
-		 BitmapHeader1.Depth=LSBFirstReadShort(image);
-		 BitmapHeader1.HorzRes=LSBFirstReadShort(image);
-		 BitmapHeader1.VertRes=LSBFirstReadShort(image);
+		 BitmapHeader1.Width=ReadBlobLSBShort(image);
+		 BitmapHeader1.Heigth=ReadBlobLSBShort(image);
+		 BitmapHeader1.Depth=ReadBlobLSBShort(image);
+		 BitmapHeader1.HorzRes=ReadBlobLSBShort(image);
+		 BitmapHeader1.VertRes=ReadBlobLSBShort(image);
 
 		 if(BitmapHeader1.HorzRes && BitmapHeader1.VertRes)
 		   {
@@ -637,17 +637,17 @@ typedef struct {
 		 goto UnpackRaster;
 
 	 case 0x0E:	/*Color palette */
-		 WPG_Palette.StartIndex=LSBFirstReadShort(image);
-		 WPG_Palette.NumOfEntries=LSBFirstReadShort(image);
+		 WPG_Palette.StartIndex=ReadBlobLSBShort(image);
+		 WPG_Palette.NumOfEntries=ReadBlobLSBShort(image);
 
 		 image->colors=WPG_Palette.NumOfEntries;
 		 if (!AllocateImageColormap(image,image->colors))
 			goto NoMemory;
 		 for (i=WPG_Palette.StartIndex; i < (int)WPG_Palette.NumOfEntries; i++)
 		   {
-		   image->colormap[i].red=UpScale(ReadByte(image));
-		   image->colormap[i].green=UpScale(ReadByte(image));
-		   image->colormap[i].blue=UpScale(ReadByte(image));
+		   image->colormap[i].red=UpScale(ReadBlobByte(image));
+		   image->colormap[i].green=UpScale(ReadBlobByte(image));
+		   image->colormap[i].blue=UpScale(ReadBlobByte(image));
 		   }
 		 break;
 		 
@@ -659,16 +659,16 @@ typedef struct {
 		   break;		 
 
 	 case 0x14:  /* bitmap type 2 */
-		 BitmapHeader2.RotAngle=LSBFirstReadShort(image);
-		 BitmapHeader2.LowLeftX=LSBFirstReadShort(image);
-		 BitmapHeader2.LowLeftY=LSBFirstReadShort(image);
-		 BitmapHeader2.UpRightX=LSBFirstReadShort(image);
-		 BitmapHeader2.UpRightY=LSBFirstReadShort(image);
-		 BitmapHeader2.Width=LSBFirstReadShort(image);
-		 BitmapHeader2.Heigth=LSBFirstReadShort(image);
-		 BitmapHeader2.Depth=LSBFirstReadShort(image);
-		 BitmapHeader2.HorzRes=LSBFirstReadShort(image);
-		 BitmapHeader2.VertRes=LSBFirstReadShort(image);
+		 BitmapHeader2.RotAngle=ReadBlobLSBShort(image);
+		 BitmapHeader2.LowLeftX=ReadBlobLSBShort(image);
+		 BitmapHeader2.LowLeftY=ReadBlobLSBShort(image);
+		 BitmapHeader2.UpRightX=ReadBlobLSBShort(image);
+		 BitmapHeader2.UpRightY=ReadBlobLSBShort(image);
+		 BitmapHeader2.Width=ReadBlobLSBShort(image);
+		 BitmapHeader2.Heigth=ReadBlobLSBShort(image);
+		 BitmapHeader2.Depth=ReadBlobLSBShort(image);
+		 BitmapHeader2.HorzRes=ReadBlobLSBShort(image);
+		 BitmapHeader2.VertRes=ReadBlobLSBShort(image);
 
 		 image->units=PixelsPerCentimeterResolution;
 		 image->page.width=(unsigned int)
@@ -742,9 +742,9 @@ DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompres
        SeekBlob(image,Header.DataOffset,SEEK_SET);
        if(EOFBlob(image)) break;
 
-       Rec2.RecLeader=(i=ReadByte(image));
+       Rec2.RecLeader=(i=ReadBlobByte(image));
        if(i==EOF) break;
-       Rec2.RecType=LSBFirstReadShort(image);
+       Rec2.RecType=ReadBlobLSBShort(image);
        Rd_WP_DWORD(image,&Rec2.RecordLength);
        if(EOFBlob(image)) break;
 
@@ -753,8 +753,8 @@ DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompres
        switch(Rec2.RecType)
 	 {
 	 case 0x0C:  	/*Color palette */
-	     WPG_Palette.StartIndex=LSBFirstReadShort(image);
-	     WPG_Palette.NumOfEntries=LSBFirstReadShort(image);
+	     WPG_Palette.StartIndex=ReadBlobLSBShort(image);
+	     WPG_Palette.NumOfEntries=ReadBlobLSBShort(image);
 
 	     image->colors=WPG_Palette.NumOfEntries;
 	     if (!AllocateImageColormap(image,image->colors))
@@ -762,17 +762,17 @@ DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompres
 					 image);
 	     for (i=WPG_Palette.StartIndex; i < (int)WPG_Palette.NumOfEntries; i++)
 		   {
-		   image->colormap[i].red=UpScale(ReadByte(image));
-		   image->colormap[i].green=UpScale(ReadByte(image));
-		   image->colormap[i].blue=UpScale(ReadByte(image));
-		   ReadByte(image);   /*Opacity??*/
+		   image->colormap[i].red=UpScale(ReadBlobByte(image));
+		   image->colormap[i].green=UpScale(ReadBlobByte(image));
+		   image->colormap[i].blue=UpScale(ReadBlobByte(image));
+		   ReadBlobByte(image);   /*Opacity??*/
 		   }
 	     break;
 	 case 0x0E:
-	     Bitmap2Header1.Width=LSBFirstReadShort(image);
-	     Bitmap2Header1.Heigth=LSBFirstReadShort(image);
-	     Bitmap2Header1.Depth=ReadByte(image);
-	     Bitmap2Header1.Compression=ReadByte(image);
+	     Bitmap2Header1.Width=ReadBlobLSBShort(image);
+	     Bitmap2Header1.Heigth=ReadBlobLSBShort(image);
+	     Bitmap2Header1.Depth=ReadBlobByte(image);
+	     Bitmap2Header1.Compression=ReadBlobByte(image);
 
 	     if(Bitmap2Header1.Compression>1) continue; /*Unknown compression method */
 	     switch(Bitmap2Header1.Depth)

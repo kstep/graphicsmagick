@@ -201,7 +201,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   lsb_first=1;
   if (*(char *) &lsb_first)
-    MSBFirstOrderLong((char *) &header,sz_XWDheader);
+    MSBOrderLong((char *) &header,sz_XWDheader);
   /*
     Check to see if the dump file is in the proper format.
   */
@@ -279,8 +279,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (*(char *) &lsb_first)
         for (i=0; i < (int) header.ncolors; i++)
         {
-          MSBFirstOrderLong((char *) &colors[i].pixel,sizeof(unsigned long));
-          MSBFirstOrderShort((char *) &colors[i].red,3*sizeof(unsigned short));
+          MSBOrderLong((char *) &colors[i].pixel,sizeof(unsigned long));
+          MSBOrderShort((char *) &colors[i].red,3*sizeof(unsigned short));
         }
     }
   /*
@@ -636,7 +636,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   */
   lsb_first=1;
   if (*(char *) &lsb_first)
-    MSBFirstOrderLong((char *) &xwd_info,sizeof(xwd_info));
+    MSBOrderLong((char *) &xwd_info,sizeof(xwd_info));
   (void) WriteBlob(image,sz_XWDheader,(char *) &xwd_info);
   (void) WriteBlob(image,Extent(image->filename)+1,(char *) image->filename);
   if (image->storage_class == PseudoClass)
@@ -664,8 +664,8 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
         colors[i].pad=0;
         if (*(char *) &lsb_first)
           {
-            MSBFirstOrderLong((char *) &colors[i].pixel,sizeof(long));
-            MSBFirstOrderShort((char *) &colors[i].red,3*sizeof(short));
+            MSBOrderLong((char *) &colors[i].pixel,sizeof(long));
+            MSBOrderShort((char *) &colors[i].red,3*sizeof(short));
           }
       }
       for (i=0; i < (int) image->colors; i++)

@@ -191,21 +191,21 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Read image header.
     */
-    (void) LSBFirstReadShort(image);
-    (void) LSBFirstReadShort(image);
-    image->columns=LSBFirstReadShort(image);
-    image->rows=LSBFirstReadShort(image);
+    (void) ReadBlobLSBShort(image);
+    (void) ReadBlobLSBShort(image);
+    image->columns=ReadBlobLSBShort(image);
+    image->rows=ReadBlobLSBShort(image);
     if (image_info->ping)
       {
         CloseBlob(image);
         return(image);
       }
-    flags=ReadByte(image);
+    flags=ReadBlobByte(image);
     image->matte=flags & 0x04;
-    number_planes=ReadByte(image);
-    bits_per_pixel=ReadByte(image);
-    number_colormaps=ReadByte(image);
-    map_length=1 << ReadByte(image);
+    number_planes=ReadBlobByte(image);
+    bits_per_pixel=ReadBlobByte(image);
+    number_colormaps=ReadBlobByte(image);
+    map_length=1 << ReadBlobByte(image);
     if ((number_planes == 0) || (number_planes == 2) || (bits_per_pixel != 8) ||
         (image->columns == 0))
       ThrowReaderException(CorruptImageWarning,"Unsupported RLE image file",
@@ -217,7 +217,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         for (i=0; i < (int) number_planes; i++)
           background_color[i]=0;
-        (void) ReadByte(image);
+        (void) ReadBlobByte(image);
       }
     else
       {
@@ -226,10 +226,10 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         p=background_color;
         for (i=0; i < (int) number_planes; i++)
-          *p++=ReadByte(image);
+          *p++=ReadBlobByte(image);
       }
     if ((number_planes & 0x01) == 0)
-      (void) ReadByte(image);
+      (void) ReadBlobByte(image);
     colormap=(unsigned char *) NULL;
     if (number_colormaps != 0)
       {
@@ -243,7 +243,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         p=colormap;
         for (i=0; i < (int) number_colormaps; i++)
           for (x=0; x < (int) map_length; x++)
-            *p++=XDownScale(LSBFirstReadShort(image));
+            *p++=XDownScale(ReadBlobLSBShort(image));
       }
     if (flags & 0x08)
       {
@@ -256,7 +256,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Read image comment.
         */
-        length=LSBFirstReadShort(image);
+        length=ReadBlobLSBShort(image);
         comment=(char *) AcquireMemory(length);
         if (comment == (char *) NULL)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
@@ -266,7 +266,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) SetImageAttribute(image,"Comment",comment);
         LiberateMemory((void **) &comment);
         if ((length & 0x01) == 0)
-          (void) ReadByte(image);
+          (void) ReadBlobByte(image);
       }
     /*
       Allocate RLE pixels.
@@ -303,23 +303,23 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     plane=0;
     x=0;
     y=0;
-    opcode=ReadByte(image);
+    opcode=ReadBlobByte(image);
     do
     {
       switch (opcode & 0x3f)
       {
         case SkipLinesOp:
         {
-          operand=ReadByte(image);
+          operand=ReadBlobByte(image);
           if (opcode & 0x40)
-            operand=LSBFirstReadShort(image);
+            operand=ReadBlobLSBShort(image);
           x=0;
           y+=operand;
           break;
         }
         case SetColorOp:
         {
-          operand=ReadByte(image);
+          operand=ReadBlobByte(image);
           plane=(unsigned char) operand;
           if (plane == 255)
             plane=number_planes-1;
@@ -328,39 +328,39 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         case SkipPixelsOp:
         {
-          operand=ReadByte(image);
+          operand=ReadBlobByte(image);
           if (opcode & 0x40)
-            operand=LSBFirstReadShort(image);
+            operand=ReadBlobLSBShort(image);
           x+=operand;
           break;
         }
         case ByteDataOp:
         {
-          operand=ReadByte(image);
+          operand=ReadBlobByte(image);
           if (opcode & 0x40)
-            operand=LSBFirstReadShort(image);
+            operand=ReadBlobLSBShort(image);
           p=rle_pixels+((image->rows-y-1)*image->columns*number_planes)+
             x*number_planes+plane;
           operand++;
           for (i=0; i < operand; i++)
           {
-            pixel=ReadByte(image);
+            pixel=ReadBlobByte(image);
             if ((y < (int) image->rows) && ((x+i) < (int) image->columns))
               *p=pixel;
             p+=number_planes;
           }
           if (operand & 0x01)
-            (void) ReadByte(image);
+            (void) ReadBlobByte(image);
           x+=operand;
           break;
         }
         case RunDataOp:
         {
-          operand=ReadByte(image);
+          operand=ReadBlobByte(image);
           if (opcode & 0x40)
-            operand=LSBFirstReadShort(image);
-          pixel=ReadByte(image);
-          (void) ReadByte(image);
+            operand=ReadBlobLSBShort(image);
+          pixel=ReadBlobByte(image);
+          (void) ReadBlobByte(image);
           operand++;
           p=rle_pixels+((image->rows-y-1)*image->columns*number_planes)+
             x*number_planes+plane;
@@ -376,7 +376,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         default:
           break;
       }
-      opcode=ReadByte(image);
+      opcode=ReadBlobByte(image);
     } while (((opcode & 0x3f) != EOFOp) && (opcode != EOF));
     if (number_colormaps != 0)
       {
@@ -524,7 +524,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    (void) ReadByte(image);
+    (void) ReadBlobByte(image);
     status=ReadBlob(image,2,(char *) magick);
     if ((status == True) && (memcmp(magick,"\122\314",2) == 0))
       {

@@ -178,7 +178,7 @@ static Image *ReadIPTCImage(const ImageInfo *image_info,
   q+=tag_length;
   while (1)
   {
-    c=ReadByte(image);
+    c=ReadBlobByte(image);
     if (c == EOF)
       break;
     if ((q-data+1) >= (int) length)

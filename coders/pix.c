@@ -130,11 +130,11 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read PIX image.
   */
-  width=MSBFirstReadShort(image);
-  height=MSBFirstReadShort(image);
-  (void) MSBFirstReadShort(image);  /* x-offset */
-  (void) MSBFirstReadShort(image);  /* y-offset */
-  bits_per_pixel=MSBFirstReadShort(image);
+  width=ReadBlobMSBShort(image);
+  height=ReadBlobMSBShort(image);
+  (void) ReadBlobMSBShort(image);  /* x-offset */
+  (void) ReadBlobMSBShort(image);  /* y-offset */
+  bits_per_pixel=ReadBlobMSBShort(image);
   if ((width == (unsigned long) ~0) || (height == (unsigned long) ~0) ||
       ((bits_per_pixel != 8) && (bits_per_pixel != 24)))
     ThrowReaderException(CorruptImageWarning,"Not a PIX image file",image);
@@ -172,14 +172,14 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         if (length == 0)
           {
-            length=ReadByte(image);
+            length=ReadBlobByte(image);
             if (bits_per_pixel == 8)
-              index=UpScale(ReadByte(image));
+              index=UpScale(ReadBlobByte(image));
             else
               {
-                blue=UpScale(ReadByte(image));
-                green=UpScale(ReadByte(image));
-                red=UpScale(ReadByte(image));
+                blue=UpScale(ReadBlobByte(image));
+                green=UpScale(ReadBlobByte(image));
+                red=UpScale(ReadBlobByte(image));
               }
           }
         if (image->storage_class == PseudoClass)
@@ -203,11 +203,11 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    width=MSBFirstReadLong(image);
-    height=MSBFirstReadLong(image);
-    (void) MSBFirstReadShort(image);
-    (void) MSBFirstReadShort(image);
-    bits_per_pixel=MSBFirstReadShort(image);
+    width=ReadBlobMSBLong(image);
+    height=ReadBlobMSBLong(image);
+    (void) ReadBlobMSBShort(image);
+    (void) ReadBlobMSBShort(image);
+    bits_per_pixel=ReadBlobMSBShort(image);
     status=(width != (unsigned long) ~0) && (height == (unsigned long) ~0) &&
       ((bits_per_pixel == 8) || (bits_per_pixel == 24));
     if (status == True)

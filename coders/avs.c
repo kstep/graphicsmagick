@@ -129,8 +129,8 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read AVS image.
   */
-  width=MSBFirstReadLong(image);
-  height=MSBFirstReadLong(image);
+  width=ReadBlobMSBLong(image);
+  height=ReadBlobMSBLong(image);
   if ((width == (unsigned long) ~0) || (height == (unsigned long) ~0))
     ThrowReaderException(CorruptImageWarning,"Not a AVS image file",image);
   do
@@ -185,8 +185,8 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    width=MSBFirstReadLong(image);
-    height=MSBFirstReadLong(image);
+    width=ReadBlobMSBLong(image);
+    height=ReadBlobMSBLong(image);
     if ((width != (unsigned long) ~0) && (height != (unsigned long) ~0))
       {
         /*
@@ -329,8 +329,8 @@ static unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
       Write AVS header.
     */
     TransformRGBImage(image,RGBColorspace);
-    MSBFirstWriteLong(image,image->columns);
-    MSBFirstWriteLong(image,image->rows);
+    WriteBlobMSBLong(image,image->columns);
+    WriteBlobMSBLong(image,image->rows);
     /*
       Allocate memory for pixels.
     */

@@ -231,7 +231,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   /*
     Decode image header.
   */
-  c=ReadByte(image);
+  c=ReadBlobByte(image);
   count=1;
   if (c == EOF)
     {
@@ -242,7 +242,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   {
     if (!isalnum(c))
       {
-        c=ReadByte(image);
+        c=ReadBlobByte(image);
         count++;
       }
     else
@@ -258,7 +258,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         {
           if ((p-keyword) < (MaxTextExtent-1))
             *p++=c;
-          c=ReadByte(image);
+          c=ReadBlobByte(image);
           count++;
         } while (isalnum(c) || (c == '_'));
         *p='\0';
@@ -269,7 +269,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         {
           if (c == '=')
             value_expected=True;
-          c=ReadByte(image);
+          c=ReadBlobByte(image);
           count++;
         }
         if (value_expected == False)
@@ -279,7 +279,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         {
           if ((p-value) < (MaxTextExtent-1))
             *p++=c;
-          c=ReadByte(image);
+          c=ReadBlobByte(image);
           count++;
         }
         *p='\0';
@@ -309,14 +309,14 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       }
     while (isspace(c))
     {
-      c=ReadByte(image);
+      c=ReadBlobByte(image);
       count++;
     }
   }
   while (count > 2880)
     count-=2880;
   for ( ; count < 2880; count++)
-    (void) ReadByte(image);
+    (void) ReadBlobByte(image);
   /*
     Verify that required image information is defined.
   */

@@ -264,7 +264,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Read the DCX page table.
       */
-      magic=LSBFirstReadLong(image);
+      magic=ReadBlobLSBLong(image);
       if (magic != 987654321)
         ThrowReaderException(CorruptImageWarning,"Not a DCX image file",image);
       page_table=(unsigned long *) AcquireMemory(1024*sizeof(unsigned long));
@@ -273,7 +273,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image);
       for (id=0; id < 1024; id++)
       {
-        page_table[id]=LSBFirstReadLong(image);
+        page_table[id]=ReadBlobLSBLong(image);
         if (page_table[id] == 0)
           break;
       }
@@ -286,19 +286,19 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Verify PCX identifier.
     */
-    pcx_info.version=ReadByte(image);
+    pcx_info.version=ReadBlobByte(image);
     if ((status == False) || (pcx_info.identifier != 0x0a) ||
         ((pcx_info.version != 2) && (pcx_info.version != 3) &&
          (pcx_info.version != 5)))
       ThrowReaderException(CorruptImageWarning,"Not a PCX image file",image);
-    pcx_info.encoding=ReadByte(image);
-    pcx_info.bits_per_pixel=ReadByte(image);
-    pcx_info.left=LSBFirstReadShort(image);
-    pcx_info.top=LSBFirstReadShort(image);
-    pcx_info.right=LSBFirstReadShort(image);
-    pcx_info.bottom=LSBFirstReadShort(image);
-    pcx_info.horizontal_resolution=LSBFirstReadShort(image);
-    pcx_info.vertical_resolution=LSBFirstReadShort(image);
+    pcx_info.encoding=ReadBlobByte(image);
+    pcx_info.bits_per_pixel=ReadBlobByte(image);
+    pcx_info.left=ReadBlobLSBShort(image);
+    pcx_info.top=ReadBlobLSBShort(image);
+    pcx_info.right=ReadBlobLSBShort(image);
+    pcx_info.bottom=ReadBlobLSBShort(image);
+    pcx_info.horizontal_resolution=ReadBlobLSBShort(image);
+    pcx_info.vertical_resolution=ReadBlobLSBShort(image);
     /*
       Read PCX raster colormap.
     */
@@ -314,8 +314,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
     (void) ReadBlob(image,3*image->colors,(char *) pcx_colormap);
-    pcx_info.reserved=ReadByte(image);
-    pcx_info.planes=ReadByte(image);
+    pcx_info.reserved=ReadBlobByte(image);
+    pcx_info.planes=ReadBlobByte(image);
     if ((pcx_info.bits_per_pixel != 8) || (pcx_info.planes == 1))
       if ((pcx_info.version == 3) || (pcx_info.version == 5) ||
           ((pcx_info.bits_per_pixel*pcx_info.planes) == 1))
@@ -340,10 +340,10 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->colormap[i].green=UpScale(*p++);
       image->colormap[i].blue=UpScale(*p++);
     }
-    pcx_info.bytes_per_line=LSBFirstReadShort(image);
-    pcx_info.palette_info=LSBFirstReadShort(image);
+    pcx_info.bytes_per_line=ReadBlobLSBShort(image);
+    pcx_info.palette_info=ReadBlobLSBShort(image);
     for (i=0; i < 58; i++)
-      (void) ReadByte(image);
+      (void) ReadBlobByte(image);
     /*
       Read image data.
     */
@@ -360,7 +360,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     p=pcx_pixels;
     while (pcx_packets > 0)
     {
-      packet=ReadByte(image);
+      packet=ReadBlobByte(image);
       if ((packet & 0xc0) != 0xc0)
         {
           *p++=packet;
@@ -368,7 +368,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           continue;
         }
       count=packet & 0x3f;
-      for (packet=ReadByte(image); count > 0; count--)
+      for (packet=ReadBlobByte(image); count > 0; count--)
       {
         *p++=packet;
         pcx_packets--;
@@ -406,7 +406,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 /*
                   256 color images have their color map at the end of the file.
                 */
-                pcx_info.colormap_signature=ReadByte(image);
+                pcx_info.colormap_signature=ReadBlobByte(image);
                 (void) ReadBlob(image,3*image->colors,(char *) pcx_colormap);
                 p=pcx_colormap;
                 for (i=0; i < (int) image->colors; i++)
@@ -754,13 +754,13 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       /*
         Write the DCX page table.
       */
-      LSBFirstWriteLong(image,0x3ADE68B1L);
+      WriteBlobLSBLong(image,0x3ADE68B1L);
       page_table=(unsigned long *) AcquireMemory(1024*sizeof(unsigned long));
       if (page_table == (unsigned long *) NULL)
         ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
           image);
       for (scene=0; scene < 1024; scene++)
-        LSBFirstWriteLong(image,0x00000000L);
+        WriteBlobLSBLong(image,0x00000000L);
     }
   scene=0;
   do
@@ -806,16 +806,16 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     /*
       Write PCX header.
     */
-    (void) WriteByteBlob(image,pcx_info.identifier);
-    (void) WriteByteBlob(image,pcx_info.version);
-    (void) WriteByteBlob(image,pcx_info.encoding);
-    (void) WriteByteBlob(image,pcx_info.bits_per_pixel);
-    LSBFirstWriteShort(image,(unsigned int) pcx_info.left);
-    LSBFirstWriteShort(image,(unsigned int) pcx_info.top);
-    LSBFirstWriteShort(image,(unsigned int) pcx_info.right);
-    LSBFirstWriteShort(image,(unsigned int) pcx_info.bottom);
-    LSBFirstWriteShort(image,(unsigned int) pcx_info.horizontal_resolution);
-    LSBFirstWriteShort(image,(unsigned int) pcx_info.vertical_resolution);
+    (void) WriteBlobByte(image,pcx_info.identifier);
+    (void) WriteBlobByte(image,pcx_info.version);
+    (void) WriteBlobByte(image,pcx_info.encoding);
+    (void) WriteBlobByte(image,pcx_info.bits_per_pixel);
+    WriteBlobLSBShort(image,(unsigned int) pcx_info.left);
+    WriteBlobLSBShort(image,(unsigned int) pcx_info.top);
+    WriteBlobLSBShort(image,(unsigned int) pcx_info.right);
+    WriteBlobLSBShort(image,(unsigned int) pcx_info.bottom);
+    WriteBlobLSBShort(image,(unsigned int) pcx_info.horizontal_resolution);
+    WriteBlobLSBShort(image,(unsigned int) pcx_info.vertical_resolution);
     /*
       Dump colormap to file.
     */
@@ -834,12 +834,12 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
         *q++=DownScale(image->colormap[i].blue);
       }
     (void) WriteBlob(image,3*16,(char *) pcx_colormap);
-    (void) WriteByteBlob(image,pcx_info.reserved);
-    (void) WriteByteBlob(image,pcx_info.planes);
-    LSBFirstWriteShort(image,(unsigned int) pcx_info.bytes_per_line);
-    LSBFirstWriteShort(image,(unsigned int) pcx_info.palette_info);
+    (void) WriteBlobByte(image,pcx_info.reserved);
+    (void) WriteBlobByte(image,pcx_info.planes);
+    WriteBlobLSBShort(image,(unsigned int) pcx_info.bytes_per_line);
+    WriteBlobLSBShort(image,(unsigned int) pcx_info.palette_info);
     for (i=0; i < 58; i++)
-      (void) WriteByteBlob(image,'\0');
+      (void) WriteBlobByte(image,'\0');
     packets=image->rows*pcx_info.bytes_per_line*pcx_info.planes;
     pcx_pixels=(unsigned char *) AcquireMemory(packets);
     if (pcx_pixels == (unsigned char *) NULL)
@@ -972,23 +972,23 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
           if ((count > 1) || ((previous & 0xc0) == 0xc0))
             {
               count|=0xc0;
-              (void) WriteByteBlob(image,count);
+              (void) WriteBlobByte(image,count);
             }
-          (void) WriteByteBlob(image,previous);
+          (void) WriteBlobByte(image,previous);
           previous=packet;
           count=1;
         }
         if ((count > 1) || ((previous & 0xc0) == 0xc0))
           {
             count|=0xc0;
-            (void) WriteByteBlob(image,count);
+            (void) WriteBlobByte(image,count);
           }
-        (void) WriteByteBlob(image,previous);
+        (void) WriteBlobByte(image,previous);
         if (QuantumTick(y,image->rows))
           MagickMonitor(SaveImageText,y,image->rows);
       }
     }
-    (void) WriteByteBlob(image,pcx_info.colormap_signature);
+    (void) WriteBlobByte(image,pcx_info.colormap_signature);
     (void) WriteBlob(image,3*256,(char *) pcx_colormap);
     LiberateMemory((void **) &pcx_pixels);
     LiberateMemory((void **) &pcx_colormap);
@@ -1009,9 +1009,9 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       */
       page_table[scene+1]=0;
       (void) SeekBlob(image,0L,SEEK_SET);
-      LSBFirstWriteLong(image,0x3ADE68B1L);
+      WriteBlobLSBLong(image,0x3ADE68B1L);
       for (i=0; i <= (int) scene; i++)
-        LSBFirstWriteLong(image,page_table[i]);
+        WriteBlobLSBLong(image,page_table[i]);
       LiberateMemory((void **) &page_table);
     }
   CloseBlob(image);

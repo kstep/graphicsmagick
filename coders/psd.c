@@ -116,14 +116,14 @@ static unsigned int DecodeImage(Image *image,const int channel)
   length=image->columns*image->rows;
   while (length > 0)
   {
-    count=ReadByte(image);
+    count=ReadBlobByte(image);
     if (count >= 128)
       count-=256;
     if (count < 0)
       {
         if (count == -128)
           continue;
-        pixel=ReadByte(image);
+        pixel=ReadBlobByte(image);
         for (count=(-count+1); count > 0; count--)
         {
           q=SetImagePixels(image,x % image->columns,x/image->columns,1,1);
@@ -172,7 +172,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
     count++;
     for (i=count; i > 0; i--)
     {
-      pixel=ReadByte(image);
+      pixel=ReadBlobByte(image);
       q=SetImagePixels(image,x % image->columns,x/image->columns,1,1);
       if (q == (PixelPacket *) NULL)
         break;
@@ -416,17 +416,17 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read image header.
   */
   status=ReadBlob(image,4,(char *) psd_info.signature);
-  psd_info.version=MSBFirstReadShort(image);
+  psd_info.version=ReadBlobMSBShort(image);
   if ((status == False) ||
       (LocaleNCompare(psd_info.signature,"8BPS",4) != 0) ||
       (psd_info.version != 1))
     ThrowReaderException(CorruptImageWarning,"Not a PSD image file",image);
   (void) ReadBlob(image,6,(char *) psd_info.reserved);
-  psd_info.channels=MSBFirstReadShort(image);
-  psd_info.rows=MSBFirstReadLong(image);
-  psd_info.columns=MSBFirstReadLong(image);
-  psd_info.depth=MSBFirstReadShort(image);
-  psd_info.mode=MSBFirstReadShort(image);
+  psd_info.channels=ReadBlobMSBShort(image);
+  psd_info.rows=ReadBlobMSBLong(image);
+  psd_info.columns=ReadBlobMSBLong(image);
+  psd_info.depth=ReadBlobMSBShort(image);
+  psd_info.mode=ReadBlobMSBShort(image);
   /*
     Initialize image.
   */
@@ -437,7 +437,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->columns=psd_info.columns;
   image->rows=psd_info.rows;
   image->depth=psd_info.depth <= 8 ? 8 : QuantumDepth;
-  length=MSBFirstReadLong(image);
+  length=ReadBlobMSBLong(image);
   if ((psd_info.mode == BitmapMode) || (psd_info.mode == GrayscaleMode) ||
       (psd_info.mode == IndexedMode) || (length > 0))
     {
@@ -453,14 +453,14 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             Read PSD raster colormap.
           */
           for (i=0; i < (int) image->colors; i++)
-            image->colormap[i].red=UpScale(ReadByte(image));
+            image->colormap[i].red=UpScale(ReadBlobByte(image));
           for (i=0; i < (int) image->colors; i++)
-            image->colormap[i].green=UpScale(ReadByte(image));
+            image->colormap[i].green=UpScale(ReadBlobByte(image));
           for (i=0; i < (int) image->colors; i++)
-            image->colormap[i].blue=UpScale(ReadByte(image));
+            image->colormap[i].blue=UpScale(ReadBlobByte(image));
         }
     }
-  length=MSBFirstReadLong(image);
+  length=ReadBlobMSBLong(image);
   if (length > 0)
     {
       unsigned char
@@ -483,14 +483,14 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   layer_info=(LayerInfo *) NULL;
   number_layers=0;
-  length=MSBFirstReadLong(image);
+  length=ReadBlobMSBLong(image);
   if (length > 0)
     {
       /*
         Read layer and mask block.
       */
-      size=MSBFirstReadLong(image);
-      number_layers=MSBFirstReadShort(image);
+      size=ReadBlobMSBLong(image);
+      number_layers=ReadBlobMSBShort(image);
       number_layers=AbsoluteValue(number_layers);
       layer_info=(LayerInfo *) AcquireMemory(number_layers*sizeof(LayerInfo));
       if (layer_info == (LayerInfo *) NULL)
@@ -498,31 +498,31 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image);
       for (i=0; i < number_layers; i++)
       {
-        layer_info[i].y=MSBFirstReadLong(image);
-        layer_info[i].x=MSBFirstReadLong(image);
-        layer_info[i].height=MSBFirstReadLong(image)-layer_info[i].y;
-        layer_info[i].width=MSBFirstReadLong(image)-layer_info[i].x;
-        layer_info[i].channels=MSBFirstReadShort(image);
+        layer_info[i].y=ReadBlobMSBLong(image);
+        layer_info[i].x=ReadBlobMSBLong(image);
+        layer_info[i].height=ReadBlobMSBLong(image)-layer_info[i].y;
+        layer_info[i].width=ReadBlobMSBLong(image)-layer_info[i].x;
+        layer_info[i].channels=ReadBlobMSBShort(image);
         if (layer_info[i].channels > 24)
           ThrowReaderException(CorruptImageWarning,"Not a PSD image file",
             image);
         for (j=0; j < (int) layer_info[i].channels; j++)
         {
-          layer_info[i].channel_info[j].type=MSBFirstReadShort(image);
-          layer_info[i].channel_info[j].size=MSBFirstReadLong(image);
+          layer_info[i].channel_info[j].type=ReadBlobMSBShort(image);
+          layer_info[i].channel_info[j].size=ReadBlobMSBLong(image);
         }
         status=ReadBlob(image,4,(char *) type);
         if ((status == False) || (LocaleNCompare(type,"8BIM",4) != 0))
           ThrowReaderException(CorruptImageWarning,"Not a PSD image file",
             image);
         (void) ReadBlob(image,4,(char *) layer_info[i].blendkey);
-        layer_info[i].opacity=MaxRGB-UpScale(ReadByte(image));
-        layer_info[i].clipping=ReadByte(image);
-        layer_info[i].flags=ReadByte(image);
-        (void) ReadByte(image);  /* filler */
-        size=MSBFirstReadLong(image);
+        layer_info[i].opacity=MaxRGB-UpScale(ReadBlobByte(image));
+        layer_info[i].clipping=ReadBlobByte(image);
+        layer_info[i].flags=ReadBlobByte(image);
+        (void) ReadBlobByte(image);  /* filler */
+        size=ReadBlobMSBLong(image);
         for (j=0; j < size; j++)
-          (void) ReadByte(image);
+          (void) ReadBlobByte(image);
         /*
           Allocate layered image.
         */
@@ -549,11 +549,11 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         layer_info[i].image->blob=image->blob;
         for (j=0; j < (int) layer_info[i].channels; j++)
         {
-          compression=MSBFirstReadShort(layer_info[i].image);
+          compression=ReadBlobMSBShort(layer_info[i].image);
           if (compression != 0)
             {
               for (y=0; y < (int) layer_info[i].image->rows; y++)
-                (void) MSBFirstReadShort(layer_info[i].image);
+                (void) ReadBlobMSBShort(layer_info[i].image);
               (void) DecodeImage(layer_info[i].image,
                 layer_info[i].channel_info[j].type);
             }
@@ -676,9 +676,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         layer_info[i].image->file=(FILE *) NULL;
       }
       for (i=0; i < 4; i++)
-        (void) ReadByte(image);
+        (void) ReadBlobByte(image);
     }
-  compression=MSBFirstReadShort(image);
+  compression=ReadBlobMSBShort(image);
   SetImage(image,OpaqueOpacity);
   if (compression != 0)
     {
@@ -686,7 +686,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Read Packbit encoded pixel data as separate planes.
       */
       for (i=0; i < (int) (image->rows*psd_info.channels); i++)
-        (void) MSBFirstReadShort(image);
+        (void) ReadBlobMSBShort(image);
       for (i=0; i < (int) psd_info.channels; i++)
         (void) DecodeImage(image,image->matte ? i-1 : i);
     }
@@ -915,53 +915,53 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   if (pixels == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   (void) WriteBlob(image,4,"8BPS");
-  MSBFirstWriteShort(image,1);  /* version */
+  WriteBlobMSBShort(image,1);  /* version */
   (void) WriteBlob(image,6,"      ");  /* reserved */
   if (image->storage_class == PseudoClass)
-    MSBFirstWriteShort(image,1);
+    WriteBlobMSBShort(image,1);
   else
-    MSBFirstWriteShort(image,image->matte ? 4 : 3);
-  MSBFirstWriteLong(image,image->rows);
-  MSBFirstWriteLong(image,image->columns);
-  MSBFirstWriteShort(image,
+    WriteBlobMSBShort(image,image->matte ? 4 : 3);
+  WriteBlobMSBLong(image,image->rows);
+  WriteBlobMSBLong(image,image->columns);
+  WriteBlobMSBShort(image,
     image->storage_class == PseudoClass ? 8 : image->depth);
   if (((image_info->colorspace != UndefinedColorspace) ||
        (image->colorspace != CMYKColorspace)) &&
        (image_info->colorspace != CMYKColorspace))
     {
       TransformRGBImage(image,RGBColorspace);
-      MSBFirstWriteShort(image,image->storage_class == PseudoClass ? 2 : 3);
+      WriteBlobMSBShort(image,image->storage_class == PseudoClass ? 2 : 3);
     }
   else
     {
       if (image->colorspace != CMYKColorspace)
         RGBTransformImage(image,CMYKColorspace);
-      MSBFirstWriteShort(image,4);
+      WriteBlobMSBShort(image,4);
     }
   if ((image->storage_class == DirectClass) || (image->colors > 256))
-    MSBFirstWriteLong(image,0);
+    WriteBlobMSBLong(image,0);
   else
     {
       /*
         Write PSD raster colormap.
       */
-      MSBFirstWriteLong(image,768);
+      WriteBlobMSBLong(image,768);
       for (i=0; i < (int) image->colors; i++)
-        (void) WriteByteBlob(image,DownScale(image->colormap[i].red));
+        (void) WriteBlobByte(image,DownScale(image->colormap[i].red));
       for ( ; i < 256; i++)
-        (void) WriteByteBlob(image,0);
+        (void) WriteBlobByte(image,0);
       for (i=0; i < (int) image->colors; i++)
-        (void) WriteByteBlob(image,DownScale(image->colormap[i].green));
+        (void) WriteBlobByte(image,DownScale(image->colormap[i].green));
       for ( ; i < 256; i++)
-        (void) WriteByteBlob(image,0);
+        (void) WriteBlobByte(image,0);
       for (i=0; i < (int) image->colors; i++)
-        (void) WriteByteBlob(image,DownScale(image->colormap[i].blue));
+        (void) WriteBlobByte(image,DownScale(image->colormap[i].blue));
       for ( ; i < 256; i++)
-        (void) WriteByteBlob(image,0);
+        (void) WriteBlobByte(image,0);
     }
-  MSBFirstWriteLong(image,0);  /* image resource block */
-  MSBFirstWriteLong(image,0);  /* layer and mask block */
-  MSBFirstWriteShort(image,0);  /* compression */
+  WriteBlobMSBLong(image,0);  /* image resource block */
+  WriteBlobMSBLong(image,0);  /* layer and mask block */
+  WriteBlobMSBShort(image,0);  /* compression */
   /*
     Write uncompressed pixel data as separate planes.
   */

@@ -102,16 +102,16 @@ static unsigned int DecodeImage(Image *image,unsigned char *pixels,
   p=pixels;
   while (p < (pixels+number_bytes))
   {
-    pixel=ReadByte(image);
+    pixel=ReadBlobByte(image);
     if (pixel <= 0x80)
       {
         count=pixel+1;
         for (i=0; i < count; i++)
-          *p++=ReadByte(image);
+          *p++=ReadBlobByte(image);
         continue;
       }
     count=pixel+1-0x80;
-    pixel=ReadByte(image);
+    pixel=ReadBlobByte(image);
     for (i=0; i < count; i++)
       *p++=(unsigned char) pixel;
   }
@@ -293,66 +293,66 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Determine if this is a PDB image file.
   */
   status=ReadBlob(image,32,pdb_info.name);
-  pdb_info.flags=MSBFirstReadShort(image);
-  pdb_info.version=MSBFirstReadShort(image);
-  pdb_info.create_time=MSBFirstReadLong(image);
-  pdb_info.modify_time=MSBFirstReadLong(image);
-  pdb_info.archive_time=MSBFirstReadLong(image);
-  pdb_info.modify_number=MSBFirstReadLong(image);
-  pdb_info.application_info=MSBFirstReadLong(image);
-  pdb_info.sort_info=MSBFirstReadLong(image);
-  pdb_info.type=MSBFirstReadLong(image);
-  pdb_info.id=MSBFirstReadLong(image);
-  pdb_info.seed=MSBFirstReadLong(image);
-  pdb_info.next_record=MSBFirstReadLong(image);
-  pdb_info.number_records=MSBFirstReadShort(image);
+  pdb_info.flags=ReadBlobMSBShort(image);
+  pdb_info.version=ReadBlobMSBShort(image);
+  pdb_info.create_time=ReadBlobMSBLong(image);
+  pdb_info.modify_time=ReadBlobMSBLong(image);
+  pdb_info.archive_time=ReadBlobMSBLong(image);
+  pdb_info.modify_number=ReadBlobMSBLong(image);
+  pdb_info.application_info=ReadBlobMSBLong(image);
+  pdb_info.sort_info=ReadBlobMSBLong(image);
+  pdb_info.type=ReadBlobMSBLong(image);
+  pdb_info.id=ReadBlobMSBLong(image);
+  pdb_info.seed=ReadBlobMSBLong(image);
+  pdb_info.next_record=ReadBlobMSBLong(image);
+  pdb_info.number_records=ReadBlobMSBShort(image);
   if ((status == False) || (memcmp((char *) &pdb_info.type,"vIMG",4) != 0) ||
       (memcmp((char *) &pdb_info.id,"View",4) != 0))
     ThrowReaderException(CorruptImageWarning,"Not a PDB image file",image);
   /*
     Read record header.
   */
-  offset=MSBFirstReadLong(image);
+  offset=ReadBlobMSBLong(image);
   (void) ReadBlob(image,3,tag);
-  record_type=ReadByte(image);
+  record_type=ReadBlobByte(image);
   if (((record_type != 0x00) && (record_type != 0x01)) ||
       (memcmp(tag,"\x40\x6f\x80",3) != 0))
     ThrowReaderException(CorruptImageWarning,"Corrupt PDB image file",image);
   if ((offset-TellBlob(image)) == 6)
     {
-      (void) ReadByte(image);
-      (void) ReadByte(image);
+      (void) ReadBlobByte(image);
+      (void) ReadBlobByte(image);
     }
   if (pdb_info.number_records > 1)
     {
-      offset=MSBFirstReadLong(image);
+      offset=ReadBlobMSBLong(image);
       (void) ReadBlob(image,3,tag);
-      record_type=ReadByte(image);
+      record_type=ReadBlobByte(image);
       if (((record_type != 0x00) && (record_type != 0x01)) ||
           (memcmp(tag,"\x40\x6f\x80",3) != 0))
         ThrowReaderException(CorruptImageWarning,"Corrupt PDB image file",
           image);
       if ((offset-TellBlob(image)) == 6)
         {
-          (void) ReadByte(image);
-          (void) ReadByte(image);
+          (void) ReadBlobByte(image);
+          (void) ReadBlobByte(image);
         }
     }
   /*
     Read image header.
   */
   (void) ReadBlob(image,32,pdb_image.name);
-  pdb_image.version=ReadByte(image);
-  pdb_image.type=ReadByte(image);
-  pdb_image.reserved_1=MSBFirstReadLong(image);
-  pdb_image.note=MSBFirstReadLong(image);
-  pdb_image.x_last=MSBFirstReadShort(image);
-  pdb_image.y_last=MSBFirstReadShort(image);
-  pdb_image.reserved_2=MSBFirstReadLong(image);
-  pdb_image.x_anchor=MSBFirstReadShort(image);
-  pdb_image.y_anchor=MSBFirstReadShort(image);
-  pdb_image.width=MSBFirstReadShort(image);
-  pdb_image.height=MSBFirstReadShort(image);
+  pdb_image.version=ReadBlobByte(image);
+  pdb_image.type=ReadBlobByte(image);
+  pdb_image.reserved_1=ReadBlobMSBLong(image);
+  pdb_image.note=ReadBlobMSBLong(image);
+  pdb_image.x_last=ReadBlobMSBShort(image);
+  pdb_image.y_last=ReadBlobMSBShort(image);
+  pdb_image.reserved_2=ReadBlobMSBLong(image);
+  pdb_image.x_anchor=ReadBlobMSBShort(image);
+  pdb_image.y_anchor=ReadBlobMSBShort(image);
+  pdb_image.width=ReadBlobMSBShort(image);
+  pdb_image.height=ReadBlobMSBShort(image);
   /*
     Initialize image structure.
   */
@@ -493,7 +493,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Read comment.
       */
-      c=ReadByte(image);
+      c=ReadBlobByte(image);
       length=MaxTextExtent;
       comment=(char *) AcquireMemory(length+1);
       p=comment;
@@ -509,7 +509,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               p=comment+Extent(comment);
             }
-          c=ReadByte(image);
+          c=ReadBlobByte(image);
           *p=c;
           *(p+1)='\0';
         }

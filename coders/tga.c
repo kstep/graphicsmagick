@@ -175,22 +175,22 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read TGA header information.
   */
   status=ReadBlob(image,1,(char *) &tga_info.id_length);
-  tga_info.colormap_type=ReadByte(image);
-  tga_info.image_type=ReadByte(image);
+  tga_info.colormap_type=ReadBlobByte(image);
+  tga_info.image_type=ReadBlobByte(image);
   do
   {
     if ((status == False) || (tga_info.image_type == 0) ||
         (tga_info.image_type > 11))
       ThrowReaderException(CorruptImageWarning,"Not a TGA image file",image);
-    tga_info.colormap_index=LSBFirstReadShort(image);
-    tga_info.colormap_length=LSBFirstReadShort(image);
-    tga_info.colormap_size=ReadByte(image);
-    tga_info.x_origin=LSBFirstReadShort(image);
-    tga_info.y_origin=LSBFirstReadShort(image);
-    tga_info.width=LSBFirstReadShort(image);
-    tga_info.height=LSBFirstReadShort(image);
-    tga_info.bits_per_pixel=ReadByte(image);
-    tga_info.attributes=ReadByte(image);
+    tga_info.colormap_index=ReadBlobLSBShort(image);
+    tga_info.colormap_length=ReadBlobLSBShort(image);
+    tga_info.colormap_size=ReadBlobByte(image);
+    tga_info.x_origin=ReadBlobLSBShort(image);
+    tga_info.y_origin=ReadBlobLSBShort(image);
+    tga_info.width=ReadBlobLSBShort(image);
+    tga_info.height=ReadBlobLSBShort(image);
+    tga_info.bits_per_pixel=ReadBlobByte(image);
+    tga_info.attributes=ReadBlobByte(image);
     /*
       Initialize image structure.
     */
@@ -246,7 +246,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               /*
                 Gray scale.
               */
-              pixel.red=UpScale(ReadByte(image));
+              pixel.red=UpScale(ReadBlobByte(image));
               pixel.green=pixel.red;
               pixel.blue=pixel.red;
               break;
@@ -257,8 +257,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               /*
                 5 bits each of red green and blue.
               */
-              j=ReadByte(image);
-              k=ReadByte(image);
+              j=ReadBlobByte(image);
+              k=ReadBlobByte(image);
               pixel.red=(unsigned long) (MaxRGB*((int) (k & 0x7c) >> 2))/31;
               pixel.green=(unsigned long)
                 (MaxRGB*(((int) (k & 0x03) << 3)+((int) (j & 0xe0) >> 5)))/31;
@@ -271,9 +271,9 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               /*
                 8 bits each of blue, green and red.
               */
-              pixel.blue=UpScale(ReadByte(image));
-              pixel.green=UpScale(ReadByte(image));
-              pixel.red=UpScale(ReadByte(image));
+              pixel.blue=UpScale(ReadBlobByte(image));
+              pixel.green=UpScale(ReadBlobByte(image));
+              pixel.red=UpScale(ReadBlobByte(image));
               break;
             }
           }
@@ -331,7 +331,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               /*
                 Gray scale.
               */
-              index=ReadByte(image);
+              index=ReadBlobByte(image);
               if (tga_info.colormap_type != 0)
                 pixel=image->colormap[index];
               else
@@ -348,8 +348,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               /*
                 5 bits each of red green and blue.
               */
-              j=ReadByte(image);
-              k=ReadByte(image);
+              j=ReadBlobByte(image);
+              k=ReadBlobByte(image);
               pixel.red=(Quantum) ((MaxRGB*((int) (k & 0x7c) >> 2))/31);
               pixel.green=(Quantum)
                 ((MaxRGB*(((int) (k & 0x03) << 3)+((int) (j & 0xe0) >> 5)))/31);
@@ -363,11 +363,11 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               /*
                 8 bits each of blue green and red.
               */
-              pixel.blue=UpScale(ReadByte(image));
-              pixel.green=UpScale(ReadByte(image));
-              pixel.red=UpScale(ReadByte(image));
+              pixel.blue=UpScale(ReadBlobByte(image));
+              pixel.green=UpScale(ReadBlobByte(image));
+              pixel.red=UpScale(ReadBlobByte(image));
               if (tga_info.bits_per_pixel == 32)
-                pixel.opacity=MaxRGB-UpScale(ReadByte(image));
+                pixel.opacity=MaxRGB-UpScale(ReadBlobByte(image));
               break;
             }
           }
@@ -406,8 +406,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
     status=ReadBlob(image,1,(char *) &tga_info.id_length);
-    tga_info.colormap_type=ReadByte(image);
-    tga_info.image_type=ReadByte(image);
+    tga_info.colormap_type=ReadBlobByte(image);
+    tga_info.image_type=ReadBlobByte(image);
     status&=((tga_info.image_type != 0) && (tga_info.image_type <= 11));
     if (status == True)
       {
@@ -654,18 +654,18 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
     /*
       Write TGA header.
     */
-    (void) WriteByteBlob(image,targa_info.id_length);
-    (void) WriteByteBlob(image,targa_info.colormap_type);
-    (void) WriteByteBlob(image,targa_info.image_type);
-    LSBFirstWriteShort(image,targa_info.colormap_index);
-    LSBFirstWriteShort(image,targa_info.colormap_length);
-    (void) WriteByteBlob(image,targa_info.colormap_size);
-    LSBFirstWriteShort(image,targa_info.x_origin);
-    LSBFirstWriteShort(image,targa_info.y_origin);
-    LSBFirstWriteShort(image,targa_info.width);
-    LSBFirstWriteShort(image,targa_info.height);
-    (void) WriteByteBlob(image,targa_info.bits_per_pixel);
-    (void) WriteByteBlob(image,targa_info.attributes);
+    (void) WriteBlobByte(image,targa_info.id_length);
+    (void) WriteBlobByte(image,targa_info.colormap_type);
+    (void) WriteBlobByte(image,targa_info.image_type);
+    WriteBlobLSBShort(image,targa_info.colormap_index);
+    WriteBlobLSBShort(image,targa_info.colormap_length);
+    (void) WriteBlobByte(image,targa_info.colormap_size);
+    WriteBlobLSBShort(image,targa_info.x_origin);
+    WriteBlobLSBShort(image,targa_info.y_origin);
+    WriteBlobLSBShort(image,targa_info.width);
+    WriteBlobLSBShort(image,targa_info.height);
+    (void) WriteBlobByte(image,targa_info.bits_per_pixel);
+    (void) WriteBlobByte(image,targa_info.attributes);
     if (targa_info.id_length != 0)
       (void) WriteBlob(image,targa_info.id_length,attribute->value);
     if (IsPseudoClass(image))

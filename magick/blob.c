@@ -345,59 +345,6 @@ MagickExport void GetBlobInfo(BlobInfo *blob)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   G e t S t r i n g B l o b                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method GetStringBlob reads characters from a blob or file until a newline
-%  character is read or an end-of-file  condition is encountered.
-%  from a blob or file.
-%
-%  The format of the GetStringBlob method is:
-%
-%      char *GetStringBlob(Image *image,char *string)
-%
-%  A description of each parameter follows:
-%
-%    o status:  Method GetStringBlob returns the string on success, otherwise,
-%      a null is returned.
-%
-%    o image: The address of a structure of type Image.
-%
-%    o string: The address of a character buffer.
-%
-%
-*/
-MagickExport char *GetStringBlob(Image *image,char *string)
-{
-  int
-    c;
-
-  register int
-    i;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  for (i=0; i < (MaxTextExtent-1); i++)
-  {
-    c=ReadByte(image);
-    if (c == EOF)
-      return((char *) NULL);
-    string[i]=c;
-    if ((string[i] == '\n') || (string[i] == '\r'))
-      break;
-  }
-  string[i]='\0';
-  return(string);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   I m a g e T o B l o b                                                     %
 %                                                                             %
 %                                                                             %
@@ -561,182 +508,6 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+  L S B F i r s t R e a d L o n g                                            %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method LSBFirstReadLong reads a long value as a 32 bit quantity in
-%  least-significant byte first order.
-%
-%  The format of the LSBFirstReadLong method is:
-%
-%      unsigned long LSBFirstReadLong(Image *image)
-%
-%  A description of each parameter follows.
-%
-%    o value:  Method LSBFirstReadLong returns an unsigned long read from
-%      the file.
-%
-%    o image: The address of a structure of type Image.
-%
-%
-*/
-MagickExport unsigned long LSBFirstReadLong(Image *image)
-{
-  unsigned char
-    buffer[4];
-
-  unsigned long
-    value;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  value=ReadBlob(image,4,(char *) buffer);
-  if (value == 0)
-    return((unsigned long) ~0);
-  value=buffer[3] << 24;
-  value|=buffer[2] << 16;
-  value|=buffer[1] << 8;
-  value|=buffer[0];
-  return(value);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+  L S B F i r s t R e a d S h o r t                                          %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method LSBFirstReadShort reads a short value as a 16 bit quantity in
-%  least-significant byte first order.
-%
-%  The format of the LSBFirstReadShort method is:
-%
-%      unsigned short LSBFirstReadShort(Image *image)
-%
-%  A description of each parameter follows.
-%
-%    o value:  Method LSBFirstReadShort returns an unsigned short read from
-%      the file.
-%
-%    o image: The address of a structure of type Image.
-%
-%
-*/
-MagickExport unsigned short LSBFirstReadShort(Image *image)
-{
-  unsigned char
-    buffer[2];
-
-  unsigned short
-    value;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  value=ReadBlob(image,2,(char *) buffer);
-  if (value == 0)
-    return((unsigned short) ~0);
-  value=buffer[1] << 8;
-  value|=buffer[0];
-  return(value);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+  L S B F i r s t W r i t e L o n g                                          %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method LSBFirstWriteLong writes a long value as a 32 bit quantity in
-%  least-significant byte first order.
-%
-%  The format of the LSBFirstWriteLong method is:
-%
-%      size_t LSBFirstWriteLong(Image *image,const unsigned long value)
-%
-%  A description of each parameter follows.
-%
-%    o count: Method LSBFirstWriteLong returns the number of unsigned longs
-%      written.
-%
-%    o image: The address of a structure of type Image.
-%
-%    o value: Specifies the value to write.
-%
-%
-*/
-MagickExport size_t LSBFirstWriteLong(Image *image,const unsigned long value)
-{
-  unsigned char
-    buffer[4];
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  buffer[0]=value;
-  buffer[1]=value >> 8;
-  buffer[2]=value >> 16;
-  buffer[3]=value >> 24;
-  return(WriteBlob(image,4,buffer));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+  L S B F i r s t W r i t e S h o r t                                        %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method LSBFirstWriteShort writes a long value as a 16 bit quantity in
-%  least-significant byte first order.
-%
-%  The format of the LSBFirstWriteShort method is:
-%
-%      size_t LSBFirstWriteShort(Image *image,const unsigned int value)
-%
-%  A description of each parameter follows.
-%
-%    o count: Method LSBFirstWriteShort returns the number of unsigned longs
-%      written.
-%
-%    o image: The address of a structure of type Image.
-%
-%    o value:  Specifies the value to write.
-%
-%
-*/
-MagickExport size_t LSBFirstWriteShort(Image *image,const unsigned int value)
-{
-  unsigned char
-    buffer[2];
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  buffer[0]=value;
-  buffer[1]=(value) >> 8;
-  return(WriteBlob(image,2,buffer));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +  M a p B l o b                                                              %
 %                                                                             %
 %                                                                             %
@@ -815,18 +586,18 @@ MagickExport void *MapBlob(int file,const MapMode mode,size_t *length)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+  M S B F i r s t O r d e r L o n g                                          %
++  M S B O r d e r L o n g                                                    %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method MSBFirstOrderLong converts a least-significant byte first buffer
+%  Method MSBOrderLong converts a least-significant byte first buffer
 %  of integers to most-significant byte first.
 %
-%  The format of the MSBFirstOrderLong method is:
+%  The format of the MSBOrderLong method is:
 %
-%      void MSBFirstOrderLong(register char *p,const unsigned int length)
+%      void MSBOrderLong(register char *p,const unsigned int length)
 %
 %  A description of each parameter follows.
 %
@@ -836,7 +607,7 @@ MagickExport void *MapBlob(int file,const MapMode mode,size_t *length)
 %
 %
 */
-MagickExport void MSBFirstOrderLong(register char *p,const size_t length)
+MagickExport void MSBOrderLong(register char *p,const size_t length)
 {
   register char
     c,
@@ -864,18 +635,18 @@ MagickExport void MSBFirstOrderLong(register char *p,const size_t length)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+  M S B F i r s t O r d e r S h o r t                                        %
++  M S B O r d e r S h o r t                                                  %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method MSBFirstOrderShort converts a least-significant byte first buffer
-%  of integers to most-significant byte first.
+%  Method MSBOrderShort converts a least-significant byte first buffer of
+%  integers to most-significant byte first.
 %
-%  The format of the MSBFirstOrderShort method is:
+%  The format of the MSBOrderShort method is:
 %
-%      void MSBFirstOrderShort(register char *p,const size_t length)
+%      void MSBOrderShort(register char *p,const size_t length)
 %
 %  A description of each parameter follows.
 %
@@ -885,7 +656,7 @@ MagickExport void MSBFirstOrderLong(register char *p,const size_t length)
 %
 %
 */
-MagickExport void MSBFirstOrderShort(register char *p,const size_t length)
+MagickExport void MSBOrderShort(register char *p,const size_t length)
 {
   register char
     c,
@@ -900,180 +671,6 @@ MagickExport void MSBFirstOrderShort(register char *p,const size_t length)
     p++;
     *p++=c;
   }
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+  M S B F i r s t R e a d S h o r t                                          %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method MSBFirstReadShort reads a short value as a 16 bit quantity in
-%  most-significant byte first order.
-%
-%  The format of the MSBFirstReadShort method is:
-%
-%      unsigned short MSBFirstReadShort(Image *image)
-%
-%  A description of each parameter follows.
-%
-%    o value:  Method MSBFirstReadShort returns an unsigned short read from
-%      the file.
-%
-%    o image: The address of a structure of type Image.
-%
-%
-*/
-MagickExport unsigned short MSBFirstReadShort(Image *image)
-{
-  unsigned char
-    buffer[2];
-
-  unsigned short
-    value;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  value=ReadBlob(image,2,(char *) buffer);
-  if (value == 0)
-    return((unsigned short) ~0);
-  value=buffer[0] << 8;
-  value|=buffer[1];
-  return(value);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+  M S B F i r s t R e a d L o n g                                            %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method MSBFirstReadLong reads a long value as a 32 bit quantity in
-%  most-significant byte first order.
-%
-%  The format of the MSBFirstReadLong method is:
-%
-%      unsigned long MSBFirstReadLong(Image *image)
-%
-%  A description of each parameter follows.
-%
-%    o value:  Method MSBFirstReadLong returns an unsigned long read from
-%      the file.
-%
-%    o image: The address of a structure of type Image.
-%
-%
-%
-*/
-MagickExport unsigned long MSBFirstReadLong(Image *image)
-{
-  unsigned char
-    buffer[4];
-
-  unsigned long
-    value;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  value=ReadBlob(image,4,(char *) buffer);
-  if (value == 0)
-    return((unsigned long) ~0);
-  value=buffer[0] << 24;
-  value|=buffer[1] << 16;
-  value|=buffer[2] << 8;
-  value|=buffer[3];
-  return(value);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+  M S B F i r s t W r i t e L o n g                                          %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method MSBFirstWriteLong writes a long value as a 32 bit quantity in
-%  most-significant byte first order.
-%
-%  The format of the MSBFirstWriteLong method is:
-%
-%      size_t MSBFirstWriteLong(Image *image,const unsigned long value)
-%
-%  A description of each parameter follows.
-%
-%    o count: Method MSBFirstWriteLong returns the number of unsigned longs
-%      written.
-%
-%    o value:  Specifies the value to write.
-%
-%    o image: The address of a structure of type Image.
-%
-%
-*/
-MagickExport size_t MSBFirstWriteLong(Image *image,const unsigned long value)
-{
-  unsigned char
-    buffer[4];
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  buffer[0]=value >> 24;
-  buffer[1]=value >> 16;
-  buffer[2]=value >> 8;
-  buffer[3]=value;
-  return(WriteBlob(image,4,buffer));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+  M S B F i r s t W r i t e S h o r t                                        %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method MSBFirstWriteShort writes a long value as a 16 bit quantity in
-%  most-significant byte first order.
-%
-%  The format of the MSBFirstWriteShort method is:
-%
-%      size_t MSBFirstWriteShort(Image *image,const unsigned short value)
-%
-%  A description of each parameter follows.
-%
-%   o  value:  Specifies the value to write.
-%
-%   o  file:  Specifies the file to write the data to.
-%
-%
-*/
-MagickExport size_t MSBFirstWriteShort(Image *image,const unsigned int value)
-{
-  unsigned char
-    buffer[2];
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  buffer[0]=(value) >> 8;
-  buffer[1]=value;
-  return(WriteBlob(image,2,buffer));
 }
 
 /*
@@ -1369,48 +966,7 @@ MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+  R e a d B y t e                                                            %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ReadByte reads a single byte from the image file and returns it.
-%
-%  The format of the ReadByte method is:
-%
-%      int ReadByte(Image *image)
-%
-%  A description of each parameter follows.
-%
-%    o value: Method ReadByte returns an integer read from the file.
-%
-%    o image: The address of a structure of type Image.
-%
-%
-*/
-MagickExport int ReadByte(Image *image)
-{
-  int
-    count;
-
-  unsigned char
-    value;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  count=ReadBlob(image,1,(char *) &value);
-  if (count == 0)
-    return(EOF);
-  return(value);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+  R e a d D a t a B l o c k                                                  %
++  R e a d B l o b B l o c k                                                  %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1451,6 +1007,284 @@ MagickExport size_t ReadBlobBlock(Image *image,char *data)
     return(0);
   count=ReadBlob(image,(size_t) block_count,data);
   return(count);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  R e a d B l o b B y t e                                                    %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadBlobByte reads a single byte from the image file and returns it.
+%
+%  The format of the ReadBlobByte method is:
+%
+%      int ReadBlobByte(Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o value: Method ReadBlobByte returns an integer read from the file.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+MagickExport int ReadBlobByte(Image *image)
+{
+  int
+    count;
+
+  unsigned char
+    value;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  count=ReadBlob(image,1,(char *) &value);
+  if (count == 0)
+    return(EOF);
+  return(value);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  R e a d B l o b L S B L o n g                                              %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadBlobLSBLong reads a long value as a 32 bit quantity in
+%  least-significant byte first order.
+%
+%  The format of the ReadBlobLSBLong method is:
+%
+%      unsigned long ReadBlobLSBLong(Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o value:  Method ReadBlobLSBLong returns an unsigned long read from
+%      the file.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+MagickExport unsigned long ReadBlobLSBLong(Image *image)
+{
+  unsigned char
+    buffer[4];
+
+  unsigned long
+    value;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  value=ReadBlob(image,4,(char *) buffer);
+  if (value == 0)
+    return((unsigned long) ~0);
+  value=buffer[3] << 24;
+  value|=buffer[2] << 16;
+  value|=buffer[1] << 8;
+  value|=buffer[0];
+  return(value);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  R e a d B l o b L S B S h o r t                                            %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadBlobLSBShort reads a short value as a 16 bit quantity in
+%  least-significant byte first order.
+%
+%  The format of the ReadBlobLSBShort method is:
+%
+%      unsigned short ReadBlobLSBShort(Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o value:  Method ReadBlobLSBShort returns an unsigned short read from
+%      the file.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+MagickExport unsigned short ReadBlobLSBShort(Image *image)
+{
+  unsigned char
+    buffer[2];
+
+  unsigned short
+    value;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  value=ReadBlob(image,2,(char *) buffer);
+  if (value == 0)
+    return((unsigned short) ~0);
+  value=buffer[1] << 8;
+  value|=buffer[0];
+  return(value);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  R e a d B l o b M S B L o n g                                              %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadBlobMSBLong reads a long value as a 32 bit quantity in
+%  most-significant byte first order.
+%
+%  The format of the ReadBlobMSBLong method is:
+%
+%      unsigned long ReadBlobMSBLong(Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o value:  Method ReadBlobMSBLong returns an unsigned long read from
+%      the file.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+%
+*/
+MagickExport unsigned long ReadBlobMSBLong(Image *image)
+{
+  unsigned char
+    buffer[4];
+
+  unsigned long
+    value;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  value=ReadBlob(image,4,(char *) buffer);
+  if (value == 0)
+    return((unsigned long) ~0);
+  value=buffer[0] << 24;
+  value|=buffer[1] << 16;
+  value|=buffer[2] << 8;
+  value|=buffer[3];
+  return(value);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  R e a d B l o b M S B S h o r t                                            %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadBlobMSBShort reads a short value as a 16 bit quantity in
+%  most-significant byte first order.
+%
+%  The format of the ReadBlobMSBShort method is:
+%
+%      unsigned short ReadBlobMSBShort(Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o value:  Method ReadBlobMSBShort returns an unsigned short read from
+%      the file.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+MagickExport unsigned short ReadBlobMSBShort(Image *image)
+{
+  unsigned char
+    buffer[2];
+
+  unsigned short
+    value;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  value=ReadBlob(image,2,(char *) buffer);
+  if (value == 0)
+    return((unsigned short) ~0);
+  value=buffer[0] << 8;
+  value|=buffer[1];
+  return(value);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   R e a d B l o b S t r i n g                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadBlobString reads characters from a blob or file until a newline
+%  character is read or an end-of-file condition is encountered.
+%
+%  The format of the ReadBlobString method is:
+%
+%      char *ReadBlobString(Image *image,char *string)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method ReadBlobString returns the string on success, otherwise,
+%      a null is returned.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o string: The address of a character buffer.
+%
+%
+*/
+MagickExport char *ReadBlobString(Image *image,char *string)
+{
+  int
+    c;
+
+  register int
+    i;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  for (i=0; i < (MaxTextExtent-1); i++)
+  {
+    c=ReadBlobByte(image);
+    if (c == EOF)
+      return((char *) NULL);
+    string[i]=c;
+    if ((string[i] == '\n') || (string[i] == '\r'))
+      break;
+  }
+  string[i]='\0';
+  return(string);
 }
 
 /*
@@ -1796,22 +1630,22 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+  W r i t e B y t e B l o b                                                  %
++  W r i t e B l o b B y t e                                                  %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteByteBlob write an integer to a blob.  It returns the number of
+%  Method WriteBlobByte write an integer to a blob.  It returns the number of
 %  bytes written (either 0 or 1);
 %
-%  The format of the WriteByteBlob method is:
+%  The format of the WriteBlobByte method is:
 %
-%      size_t WriteByteBlob(Image *image,const int value)
+%      size_t WriteBlobByte(Image *image,const int value)
 %
 %  A description of each parameter follows.
 %
-%    o count:  Method WriteByteBlob returns the number of bytes written.
+%    o count:  Method WriteBlobByte returns the number of bytes written.
 %
 %    o image: The address of a structure of type Image.
 %
@@ -1819,7 +1653,7 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
 %
 %
 */
-MagickExport size_t WriteByteBlob(Image *image,const int value)
+MagickExport size_t WriteBlobByte(Image *image,const int value)
 {
   char
     c;
@@ -1839,22 +1673,187 @@ MagickExport size_t WriteByteBlob(Image *image,const int value)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+  W r i t e S t r i n g B l o b                                              %
++  W r i t e B l o b L S B L o n g                                            %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteStringBlob write a string to a blob.  It returns the number of
-%  characters written.
+%  Method WriteBlobLSBLong writes a long value as a 32 bit quantity in
+%  least-significant byte first order.
 %
-%  The format of the WriteStringBlob method is:
+%  The format of the WriteBlobLSBLong method is:
 %
-%      size_t WriteStringBlob(Image *image,const char *string)
+%      size_t WriteBlobLSBLong(Image *image,const unsigned long value)
 %
 %  A description of each parameter follows.
 %
-%    o count:  Method WriteStringBlob returns the number of characters written.
+%    o count: Method WriteBlobLSBLong returns the number of unsigned longs
+%      written.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o value: Specifies the value to write.
+%
+%
+*/
+MagickExport size_t WriteBlobLSBLong(Image *image,const unsigned long value)
+{
+  unsigned char
+    buffer[4];
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  buffer[0]=value;
+  buffer[1]=value >> 8;
+  buffer[2]=value >> 16;
+  buffer[3]=value >> 24;
+  return(WriteBlob(image,4,buffer));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   W r i t e B l o b L S B S h o r t                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method WriteBlobLSBShort writes a long value as a 16 bit quantity in
+%  least-significant byte first order.
+%
+%  The format of the WriteBlobLSBShort method is:
+%
+%      size_t WriteBlobLSBShort(Image *image,const unsigned int value)
+%
+%  A description of each parameter follows.
+%
+%    o count: Method WriteBlobLSBShort returns the number of unsigned longs
+%      written.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o value:  Specifies the value to write.
+%
+%
+*/
+MagickExport size_t WriteBlobLSBShort(Image *image,const unsigned int value)
+{
+  unsigned char
+    buffer[2];
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  buffer[0]=value;
+  buffer[1]=(value) >> 8;
+  return(WriteBlob(image,2,buffer));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  W r i t e B l o b M S B L o n g                                            %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method WriteBlobMSBLong writes a long value as a 32 bit quantity in
+%  most-significant byte first order.
+%
+%  The format of the WriteBlobMSBLong method is:
+%
+%      size_t WriteBlobMSBLong(Image *image,const unsigned long value)
+%
+%  A description of each parameter follows.
+%
+%    o count: Method WriteBlobMSBLong returns the number of unsigned longs
+%      written.
+%
+%    o value:  Specifies the value to write.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+MagickExport size_t WriteBlobMSBLong(Image *image,const unsigned long value)
+{
+  unsigned char
+    buffer[4];
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  buffer[0]=value >> 24;
+  buffer[1]=value >> 16;
+  buffer[2]=value >> 8;
+  buffer[3]=value;
+  return(WriteBlob(image,4,buffer));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  W r i t e B l o b M S B S h o r t                                          %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method WriteBlobMSBShort writes a long value as a 16 bit quantity in
+%  most-significant byte first order.
+%
+%  The format of the WriteBlobMSBShort method is:
+%
+%      size_t WriteBlobMSBShort(Image *image,const unsigned short value)
+%
+%  A description of each parameter follows.
+%
+%   o  value:  Specifies the value to write.
+%
+%   o  file:  Specifies the file to write the data to.
+%
+%
+*/
+MagickExport size_t WriteBlobMSBShort(Image *image,const unsigned int value)
+{
+  unsigned char
+    buffer[2];
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  buffer[0]=(value) >> 8;
+  buffer[1]=value;
+  return(WriteBlob(image,2,buffer));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  W r i t e B l o b S t r i n g                                              %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method WriteBlobString write a string to a blob.  It returns the number of
+%  characters written.
+%
+%  The format of the WriteBlobString method is:
+%
+%      size_t WriteBlobString(Image *image,const char *string)
+%
+%  A description of each parameter follows.
+%
+%    o count:  Method WriteBlobString returns the number of characters written.
 %
 %    o image: The address of a structure of type Image.
 %
@@ -1862,7 +1861,7 @@ MagickExport size_t WriteByteBlob(Image *image,const int value)
 %
 %
 */
-MagickExport size_t WriteStringBlob(Image *image,const char *string)
+MagickExport size_t WriteBlobString(Image *image,const char *string)
 {
   size_t
     count;

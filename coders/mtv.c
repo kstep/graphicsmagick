@@ -131,7 +131,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read MTV image.
   */
-  (void) GetStringBlob(image,buffer);
+  (void) ReadBlobString(image,buffer);
   count=sscanf(buffer,"%u %u\n",&columns,&rows);
   if (count == 0)
     ThrowReaderException(CorruptImageWarning,"Not a MTV image file",image);
@@ -186,7 +186,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
     *buffer='\0';
-    (void) GetStringBlob(image,buffer);
+    (void) ReadBlobString(image,buffer);
     count=sscanf(buffer,"%u %u\n",&columns,&rows);
     if (count > 0)
       {
@@ -345,7 +345,7 @@ static unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
       Initialize raster file header.
     */
     FormatString(buffer,"%u %u\n",image->columns,image->rows);
-    (void) WriteStringBlob(image,buffer);
+    (void) WriteBlobString(image,buffer);
     for (y=0; y < (int) image->rows; y++)
     {
       p=GetImagePixels(image,0,y,image->columns,1);

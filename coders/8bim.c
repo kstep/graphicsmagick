@@ -167,7 +167,7 @@ static Image *Read8BIMImage(const ImageInfo *image_info,
   image->iptc_profile.info=(unsigned char *) AcquireMemory(length+2);
   for (q=image->iptc_profile.info; image->iptc_profile.info; q++)
   {
-    c=ReadByte(image);
+    c=ReadBlobByte(image);
     if (c == EOF)
       break;
     if ((q-image->iptc_profile.info+1) >= (int) length)

@@ -174,7 +174,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=(Image *) NULL;
   for ( ; ; )
   {
-    for (c=ReadByte(pwp_image); c != EOF; c=ReadByte(pwp_image))
+    for (c=ReadBlobByte(pwp_image); c != EOF; c=ReadBlobByte(pwp_image))
     {
       for (i=0; i < 17; i++)
         magick[i]=magick[i+1];
@@ -197,7 +197,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     filesize=65535L*magick[2]+256L*magick[1]+magick[0];
     for (i=0; i < filesize; i++)
     {
-      c=ReadByte(pwp_image);
+      c=ReadBlobByte(pwp_image);
       (void) fputc(c,file);
     }
     (void) fclose(file);

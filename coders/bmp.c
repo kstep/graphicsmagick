@@ -162,7 +162,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
   q=pixels;
   for (y=0; y < (int) image->rows; )
   {
-    count=ReadByte(image);
+    count=ReadBlobByte(image);
     if (count == EOF)
       break;
     if (count != 0)
@@ -170,7 +170,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
         /*
           Encoded mode.
         */
-        byte=ReadByte(image);
+        byte=ReadBlobByte(image);
         for (i=0; i < count; i++)
         {
           if (compression == 1)
@@ -185,7 +185,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
         /*
           Escape mode.
         */
-        count=ReadByte(image);
+        count=ReadBlobByte(image);
         if (count == 0x01)
           return(True);
         switch (count)
@@ -205,8 +205,8 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
             /*
               Delta mode.
             */
-            x+=ReadByte(image);
-            y+=ReadByte(image);
+            x+=ReadBlobByte(image);
+            y+=ReadBlobByte(image);
             q=pixels+y*image->columns+x;
             break;
           }
@@ -218,11 +218,11 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
             for (i=0; i < count; i++)
             {
               if (compression == 1)
-                *q++=ReadByte(image);
+                *q++=ReadBlobByte(image);
               else
                 {
                   if ((i & 0x01) == 0)
-                    byte=ReadByte(image);
+                    byte=ReadBlobByte(image);
                   *q++=(i & 0x01) ? (byte & 0x0f) : ((byte >> 4) & 0x0f);
                 }
               x++;
@@ -233,11 +233,11 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
             if (compression == 1)
               {
                 if (count & 0x01)
-                  (void) ReadByte(image);
+                  (void) ReadBlobByte(image);
               }
             else
               if (((count & 0x03) == 1) || ((count & 0x03) == 2))
-                (void) ReadByte(image);
+                (void) ReadBlobByte(image);
             break;
           }
         }
@@ -245,8 +245,8 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
     if (QuantumTick(y,image->rows))
       MagickMonitor(LoadImageText,y,image->rows);
   }
-  (void) ReadByte(image);  /* end of line */
-  (void) ReadByte(image);
+  (void) ReadBlobByte(image);  /* end of line */
+  (void) ReadBlobByte(image);
   return(True);
 }
 
@@ -482,28 +482,28 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     bmp_info.ba_offset=0;
     while (LocaleNCompare((char *) magick,"BA",2) == 0)
     {
-      bmp_info.file_size=LSBFirstReadLong(image);
-      bmp_info.ba_offset=LSBFirstReadLong(image);
-      bmp_info.offset_bits=LSBFirstReadLong(image);
+      bmp_info.file_size=ReadBlobLSBLong(image);
+      bmp_info.ba_offset=ReadBlobLSBLong(image);
+      bmp_info.offset_bits=ReadBlobLSBLong(image);
       status=ReadBlob(image,2,(char *) magick);
     }
     if ((status == False) || 
         ((LocaleNCompare((char *) magick,"BM",2) != 0) &&
          (LocaleNCompare((char *) magick,"CI",2) != 0)))
       ThrowReaderException(CorruptImageWarning,"Not a BMP image file",image);
-    bmp_info.file_size=LSBFirstReadLong(image);
-    (void) LSBFirstReadLong(image);
-    bmp_info.offset_bits=LSBFirstReadLong(image);
-    bmp_info.size=LSBFirstReadLong(image);
+    bmp_info.file_size=ReadBlobLSBLong(image);
+    (void) ReadBlobLSBLong(image);
+    bmp_info.offset_bits=ReadBlobLSBLong(image);
+    bmp_info.size=ReadBlobLSBLong(image);
     if (bmp_info.size == 12)
       {
         /*
           OS/2 BMP image file.
         */
-        bmp_info.width=LSBFirstReadShort(image);
-        bmp_info.height=LSBFirstReadShort(image);
-        bmp_info.planes=LSBFirstReadShort(image);
-        bmp_info.bits_per_pixel=LSBFirstReadShort(image);
+        bmp_info.width=ReadBlobLSBShort(image);
+        bmp_info.height=ReadBlobLSBShort(image);
+        bmp_info.planes=ReadBlobLSBShort(image);
+        bmp_info.bits_per_pixel=ReadBlobLSBShort(image);
         bmp_info.x_pixels=0;
         bmp_info.y_pixels=0;
         bmp_info.number_colors=0;
@@ -515,43 +515,43 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Microsoft Windows BMP image file.
         */
-        bmp_info.width=LSBFirstReadLong(image);
-        bmp_info.height=LSBFirstReadLong(image);
-        bmp_info.planes=LSBFirstReadShort(image);
-        bmp_info.bits_per_pixel=LSBFirstReadShort(image);
-        bmp_info.compression=LSBFirstReadLong(image);
-        bmp_info.image_size=LSBFirstReadLong(image);
-        bmp_info.x_pixels=LSBFirstReadLong(image);
-        bmp_info.y_pixels=LSBFirstReadLong(image);
-        bmp_info.number_colors=LSBFirstReadLong(image);
-        bmp_info.colors_important=LSBFirstReadLong(image);
+        bmp_info.width=ReadBlobLSBLong(image);
+        bmp_info.height=ReadBlobLSBLong(image);
+        bmp_info.planes=ReadBlobLSBShort(image);
+        bmp_info.bits_per_pixel=ReadBlobLSBShort(image);
+        bmp_info.compression=ReadBlobLSBLong(image);
+        bmp_info.image_size=ReadBlobLSBLong(image);
+        bmp_info.x_pixels=ReadBlobLSBLong(image);
+        bmp_info.y_pixels=ReadBlobLSBLong(image);
+        bmp_info.number_colors=ReadBlobLSBLong(image);
+        bmp_info.colors_important=ReadBlobLSBLong(image);
         for (i=0; i < ((int) bmp_info.size-40); i++)
-          (void) ReadByte(image);
+          (void) ReadBlobByte(image);
         if ((bmp_info.compression == 3) && ((bmp_info.bits_per_pixel == 16) ||
             (bmp_info.bits_per_pixel == 32)))
           {
-            bmp_info.red_mask=LSBFirstReadShort(image);
-            bmp_info.green_mask=LSBFirstReadShort(image);
-            bmp_info.blue_mask=LSBFirstReadShort(image);
+            bmp_info.red_mask=ReadBlobLSBShort(image);
+            bmp_info.green_mask=ReadBlobLSBShort(image);
+            bmp_info.blue_mask=ReadBlobLSBShort(image);
             if (bmp_info.size > 40)
               {
                 /*
                   Read color management information.
                 */
-                bmp_info.alpha_mask=LSBFirstReadShort(image);
-                bmp_info.colorspace=LSBFirstReadLong(image);
-                bmp_info.red_primary.x=LSBFirstReadLong(image);
-                bmp_info.red_primary.y=LSBFirstReadLong(image);
-                bmp_info.red_primary.z=LSBFirstReadLong(image);
-                bmp_info.green_primary.x=LSBFirstReadLong(image);
-                bmp_info.green_primary.y=LSBFirstReadLong(image);
-                bmp_info.green_primary.z=LSBFirstReadLong(image);
-                bmp_info.blue_primary.x=LSBFirstReadLong(image);
-                bmp_info.blue_primary.y=LSBFirstReadLong(image);
-                bmp_info.blue_primary.z=LSBFirstReadLong(image);
-                bmp_info.gamma_scale.x=LSBFirstReadShort(image);
-                bmp_info.gamma_scale.y=LSBFirstReadShort(image);
-                bmp_info.gamma_scale.z=LSBFirstReadShort(image);
+                bmp_info.alpha_mask=ReadBlobLSBShort(image);
+                bmp_info.colorspace=ReadBlobLSBLong(image);
+                bmp_info.red_primary.x=ReadBlobLSBLong(image);
+                bmp_info.red_primary.y=ReadBlobLSBLong(image);
+                bmp_info.red_primary.z=ReadBlobLSBLong(image);
+                bmp_info.green_primary.x=ReadBlobLSBLong(image);
+                bmp_info.green_primary.y=ReadBlobLSBLong(image);
+                bmp_info.green_primary.z=ReadBlobLSBLong(image);
+                bmp_info.blue_primary.x=ReadBlobLSBLong(image);
+                bmp_info.blue_primary.y=ReadBlobLSBLong(image);
+                bmp_info.blue_primary.z=ReadBlobLSBLong(image);
+                bmp_info.gamma_scale.x=ReadBlobLSBShort(image);
+                bmp_info.gamma_scale.y=ReadBlobLSBShort(image);
+                bmp_info.gamma_scale.z=ReadBlobLSBShort(image);
               }
           }
       }
@@ -605,7 +605,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         LiberateMemory((void **) &bmp_colormap);
       }
     while (TellBlob(image) < (int) (start_position+bmp_info.offset_bits))
-      (void) ReadByte(image);
+      (void) ReadBlobByte(image);
     /*
       Read image data.
     */
@@ -1196,20 +1196,20 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
       Write BMP header.
     */
     (void) WriteBlob(image,2,"BM");
-    (void) LSBFirstWriteLong(image,bmp_info.file_size);
-    (void) LSBFirstWriteLong(image,bmp_info.ba_offset);
-    (void) LSBFirstWriteLong(image,bmp_info.offset_bits);
-    (void) LSBFirstWriteLong(image,bmp_info.size);
-    (void) LSBFirstWriteLong(image,bmp_info.width);
-    (void) LSBFirstWriteLong(image,bmp_info.height);
-    (void) LSBFirstWriteShort(image,bmp_info.planes);
-    (void) LSBFirstWriteShort(image,bmp_info.bits_per_pixel);
-    (void) LSBFirstWriteLong(image,bmp_info.compression);
-    (void) LSBFirstWriteLong(image,bmp_info.image_size);
-    (void) LSBFirstWriteLong(image,bmp_info.x_pixels);
-    (void) LSBFirstWriteLong(image,bmp_info.y_pixels);
-    (void) LSBFirstWriteLong(image,bmp_info.number_colors);
-    (void) LSBFirstWriteLong(image,bmp_info.colors_important);
+    (void) WriteBlobLSBLong(image,bmp_info.file_size);
+    (void) WriteBlobLSBLong(image,bmp_info.ba_offset);
+    (void) WriteBlobLSBLong(image,bmp_info.offset_bits);
+    (void) WriteBlobLSBLong(image,bmp_info.size);
+    (void) WriteBlobLSBLong(image,bmp_info.width);
+    (void) WriteBlobLSBLong(image,bmp_info.height);
+    (void) WriteBlobLSBShort(image,bmp_info.planes);
+    (void) WriteBlobLSBShort(image,bmp_info.bits_per_pixel);
+    (void) WriteBlobLSBLong(image,bmp_info.compression);
+    (void) WriteBlobLSBLong(image,bmp_info.image_size);
+    (void) WriteBlobLSBLong(image,bmp_info.x_pixels);
+    (void) WriteBlobLSBLong(image,bmp_info.y_pixels);
+    (void) WriteBlobLSBLong(image,bmp_info.number_colors);
+    (void) WriteBlobLSBLong(image,bmp_info.colors_important);
     if (image->storage_class == PseudoClass)
       {
         unsigned char

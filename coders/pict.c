@@ -60,26 +60,26 @@
 */
 #define ReadPixmap(pixmap) \
 { \
-  pixmap.version=MSBFirstReadShort(image); \
-  pixmap.pack_type=MSBFirstReadShort(image); \
-  pixmap.pack_size=MSBFirstReadLong(image); \
-  pixmap.horizontal_resolution=MSBFirstReadLong(image); \
-  pixmap.vertical_resolution=MSBFirstReadLong(image); \
-  pixmap.pixel_type=MSBFirstReadShort(image); \
-  pixmap.bits_per_pixel=MSBFirstReadShort(image); \
-  pixmap.component_count=MSBFirstReadShort(image); \
-  pixmap.component_size=MSBFirstReadShort(image); \
-  pixmap.plane_bytes=MSBFirstReadLong(image); \
-  pixmap.table=MSBFirstReadLong(image); \
-  pixmap.reserved=MSBFirstReadLong(image); \
+  pixmap.version=ReadBlobMSBShort(image); \
+  pixmap.pack_type=ReadBlobMSBShort(image); \
+  pixmap.pack_size=ReadBlobMSBLong(image); \
+  pixmap.horizontal_resolution=ReadBlobMSBLong(image); \
+  pixmap.vertical_resolution=ReadBlobMSBLong(image); \
+  pixmap.pixel_type=ReadBlobMSBShort(image); \
+  pixmap.bits_per_pixel=ReadBlobMSBShort(image); \
+  pixmap.component_count=ReadBlobMSBShort(image); \
+  pixmap.component_size=ReadBlobMSBShort(image); \
+  pixmap.plane_bytes=ReadBlobMSBLong(image); \
+  pixmap.table=ReadBlobMSBLong(image); \
+  pixmap.reserved=ReadBlobMSBLong(image); \
 }
 
 #define ReadRectangle(rectangle) \
 { \
-  rectangle.top=MSBFirstReadShort(image); \
-  rectangle.left=MSBFirstReadShort(image); \
-  rectangle.bottom=MSBFirstReadShort(image); \
-  rectangle.right=MSBFirstReadShort(image); \
+  rectangle.top=ReadBlobMSBShort(image); \
+  rectangle.left=ReadBlobMSBShort(image); \
+  rectangle.bottom=ReadBlobMSBShort(image); \
+  rectangle.right=ReadBlobMSBShort(image); \
 }
 
 typedef struct _PICTCode
@@ -482,9 +482,9 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *image,
   {
     q=pixels+y*width;
     if ((bytes_per_line > 250) || (bits_per_pixel > 8))
-      scanline_length=MSBFirstReadShort(image);
+      scanline_length=ReadBlobMSBShort(image);
     else
-      scanline_length=ReadByte(image);
+      scanline_length=ReadBlobByte(image);
     (void) ReadBlob(image,scanline_length,(char *) scanline);
     for (x=0; x < scanline_length; )
       if ((scanline[x] & 0x80) == 0)
@@ -656,18 +656,18 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
   packets=(int) (q-pixels);
   if (bytes_per_line > 250)
     {
-      MSBFirstWriteShort(image,(unsigned short) packets);
+      WriteBlobMSBShort(image,(unsigned short) packets);
       packets+=2;
     }
   else
     {
-      (void) WriteByteBlob(image,packets);
+      (void) WriteBlobByte(image,packets);
       packets++;
     }
   while (q != pixels)
   {
     q--;
-    (void) WriteByteBlob(image,*q);
+    (void) WriteBlobByte(image,*q);
   }
   return(packets);
 }
@@ -757,16 +757,16 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
     Read PICT header.
   */
   for (i=0; i < 512; i++)
-    (void) ReadByte(image);  /* skip header */
-  (void) MSBFirstReadShort(image);  /* skip picture size */
+    (void) ReadBlobByte(image);  /* skip header */
+  (void) ReadBlobMSBShort(image);  /* skip picture size */
   ReadRectangle(frame);
-  while ((c=ReadByte(image)) == 0);
+  while ((c=ReadBlobByte(image)) == 0);
   if (c != 0x11)
     ThrowReaderException(CorruptImageWarning,"Not a PICT image file",image);
-  version=ReadByte(image);
+  version=ReadBlobByte(image);
   if (version == 2)
     {
-      c=ReadByte(image);
+      c=ReadBlobByte(image);
       if (c != 0xff)
         ThrowReaderException(CorruptImageWarning,"Not a PICT image file",image);
     }
@@ -791,9 +791,9 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   for ( ; ; )
   {
     if ((version == 1) || ((TellBlob(image) % 2) != 0))
-      code=ReadByte(image);
+      code=ReadBlobByte(image);
     if (version == 2)
-      code=MSBFirstReadShort(image);
+      code=ReadBlobMSBShort(image);
     if ((code == 0xff) || (code == 0xffff))
       break;
     if (code > 0xa1)
@@ -813,11 +813,11 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             /*
               Clipping rectangle.
             */
-            length=MSBFirstReadShort(image);
+            length=ReadBlobMSBShort(image);
             if (length != 0x000a)
               {
                 for (i=0; i < (length-2); i++)
-                  (void) ReadByte(image);
+                  (void) ReadBlobByte(image);
                 break;
               }
             ReadRectangle(frame);
@@ -842,26 +842,26 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             /*
               Skip pattern definition.
             */
-            pattern=MSBFirstReadShort(image);
+            pattern=ReadBlobMSBShort(image);
             for (i=0; i < 8; i++)
-              (void) ReadByte(image);
+              (void) ReadBlobByte(image);
             if (pattern == 2)
               {
                 for (i=0; i < 5; i++)
-                  (void) ReadByte(image);
+                  (void) ReadBlobByte(image);
                 break;
               }
             if (pattern != 1)
               ThrowReaderException(CorruptImageWarning,"Unknown pattern type",
                 image);
-            length=MSBFirstReadShort(image);
+            length=ReadBlobMSBShort(image);
             ReadRectangle(frame);
             ReadPixmap(pixmap);
-            (void) MSBFirstReadLong(image);
-            flags=MSBFirstReadShort(image);
-            length=MSBFirstReadShort(image);
+            (void) ReadBlobMSBLong(image);
+            flags=ReadBlobMSBShort(image);
+            length=ReadBlobMSBShort(image);
             for (i=0; i <= length; i++)
-              (void) MSBFirstReadLong(image);
+              (void) ReadBlobMSBLong(image);
             width=frame.bottom-frame.top;
             height=frame.right-frame.left;
             image->depth=pixmap.bits_per_pixel <= 8 ? 8 : QuantumDepth;
@@ -876,16 +876,16 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             if (length < 8)
               {
                 for (i=0; i < (int) (length*height); i++)
-                  (void) ReadByte(image);
+                  (void) ReadBlobByte(image);
               }
             else
               for (i=0; i < (int) height; i++)
                 if (length > 250)
-                  for (i=0; i < (int) MSBFirstReadShort(image); i++)
-                    (void) ReadByte(image);
+                  for (i=0; i < (int) ReadBlobMSBShort(image); i++)
+                    (void) ReadBlobByte(image);
                 else
-                  for (i=0; i < ReadByte(image); i++)
-                    (void) ReadByte(image);
+                  for (i=0; i < ReadBlobByte(image); i++)
+                    (void) ReadBlobByte(image);
             break;
           }
           case 0x1b:
@@ -893,9 +893,9 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             /*
               Initialize image background color.
             */
-            image->background_color.red=XDownScale(MSBFirstReadShort(image));
-            image->background_color.green=XDownScale(MSBFirstReadShort(image));
-            image->background_color.blue=XDownScale(MSBFirstReadShort(image));
+            image->background_color.red=XDownScale(ReadBlobMSBShort(image));
+            image->background_color.green=XDownScale(ReadBlobMSBShort(image));
+            image->background_color.blue=XDownScale(ReadBlobMSBShort(image));
             break;
           }
           case 0x70:
@@ -910,9 +910,9 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             /*
               Skip polygon or region.
             */
-            length=MSBFirstReadShort(image);
+            length=ReadBlobMSBShort(image);
             for (i=0; i < (length-2); i++)
-              (void) ReadByte(image);
+              (void) ReadBlobByte(image);
             break;
           }
           case 0x90:
@@ -943,12 +943,12 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             */
             bytes_per_line=0;
             if ((code != 0x9a) && (code != 0x9b))
-              bytes_per_line=MSBFirstReadShort(image);
+              bytes_per_line=ReadBlobMSBShort(image);
             else
               {
-                (void) MSBFirstReadShort(image);
-                (void) MSBFirstReadShort(image);
-                (void) MSBFirstReadShort(image);
+                (void) ReadBlobMSBShort(image);
+                (void) ReadBlobMSBShort(image);
+                (void) ReadBlobMSBShort(image);
               }
             ReadRectangle(frame);
             /*
@@ -975,9 +975,9 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 tile_image->colors=2;
                 if (bytes_per_line & 0x8000)
                   {
-                    (void) MSBFirstReadLong(image);
-                    flags=MSBFirstReadShort(image);
-                    tile_image->colors=MSBFirstReadShort(image)+1;
+                    (void) ReadBlobMSBLong(image);
+                    flags=ReadBlobMSBShort(image);
+                    tile_image->colors=ReadBlobMSBShort(image)+1;
                   }
                 if (!AllocateImageColormap(tile_image,tile_image->colors))
                   {
@@ -989,15 +989,15 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                   {
                     for (i=0; i < (int) tile_image->colors; i++)
                     {
-                      j=MSBFirstReadShort(image) % tile_image->colors;
+                      j=ReadBlobMSBShort(image) % tile_image->colors;
                       if (flags & 0x8000)
                         j=i;
                       tile_image->colormap[j].red=
-                        XDownScale(MSBFirstReadShort(image));
+                        XDownScale(ReadBlobMSBShort(image));
                       tile_image->colormap[j].green=
-                        XDownScale(MSBFirstReadShort(image));
+                        XDownScale(ReadBlobMSBShort(image));
                       tile_image->colormap[j].blue=
-                        XDownScale(MSBFirstReadShort(image));
+                        XDownScale(ReadBlobMSBShort(image));
                     }
                   }
                 else
@@ -1015,15 +1015,15 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               }
             ReadRectangle(destination);
             ReadRectangle(destination);
-            (void) MSBFirstReadShort(image);
+            (void) ReadBlobMSBShort(image);
             if ((code == 0x91) || (code == 0x99) || (code == 0x9b))
               {
                 /*
                   Skip region.
                 */
-                length=MSBFirstReadShort(image);
+                length=ReadBlobMSBShort(image);
                 for (i=0; i < (length-2); i++)
-                  (void) ReadByte(image);
+                  (void) ReadBlobByte(image);
               }
             if ((code != 0x9a) && (code != 0x9b) &&
                 (bytes_per_line & 0x8000) == 0)
@@ -1113,15 +1113,15 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             /*
               Comment.
             */
-            (void) MSBFirstReadShort(image);
-            length=MSBFirstReadShort(image);
+            (void) ReadBlobMSBShort(image);
+            length=ReadBlobMSBShort(image);
             if (length == 0)
               break;
             comment=(char *) AcquireMemory(length+1);
             if (comment == (char *) NULL)
               break;
             for (i=0; i < length; i++)
-              comment[i]=ReadByte(image);
+              comment[i]=ReadBlobByte(image);
             comment[i]='\0';
             (void) SetImageAttribute(image,"Comment",comment);
             LiberateMemory((void **) &comment);
@@ -1133,10 +1133,10 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               Skip to next op code.
             */
             if (codes[code].length == -1)
-              (void) MSBFirstReadShort(image);
+              (void) ReadBlobMSBShort(image);
             else
               for (i=0; i < codes[code].length; i++)
-                (void) ReadByte(image);
+                (void) ReadBlobByte(image);
           }
         }
       }
@@ -1146,7 +1146,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
           Skip header.
         */
         for (i=0; i < 24; i++)
-          (void) ReadByte(image);
+          (void) ReadBlobByte(image);
         continue;
       }
     if (((code >= 0xb0) && (code <= 0xcf)) ||
@@ -1174,15 +1174,15 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         file=fopen(clone_info->filename,WriteBinaryType);
         if (file == (FILE *) NULL)
           ThrowReaderException(FileOpenWarning,"Unable to write file",image);
-        length=MSBFirstReadLong(image);
+        length=ReadBlobMSBLong(image);
         for (i=0; i < 6; i++)
-          (void) MSBFirstReadLong(image);
+          (void) ReadBlobMSBLong(image);
         ReadRectangle(frame);
         for (i=0; i < 122; i++)
-          (void) ReadByte(image);
+          (void) ReadBlobByte(image);
         for (i=0; i < (length-154); i++)
         {
-          c=ReadByte(image);
+          c=ReadBlobByte(image);
           (void) fputc(c,file);
         }
         (void) fclose(file);
@@ -1205,9 +1205,9 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         /*
           Skip reserved.
         */
-        length=MSBFirstReadShort(image);
+        length=ReadBlobMSBShort(image);
         for (i=0; i < length; i++)
-          (void) ReadByte(image);
+          (void) ReadBlobByte(image);
         continue;
       }
     if ((code >= 0x100) && (code <= 0x7fff))
@@ -1217,7 +1217,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         */
         length=(code >> 7) & 0xff;
         for (i=0; i < length; i++)
-          (void) ReadByte(image);
+          (void) ReadBlobByte(image);
         continue;
       }
   }
@@ -1458,68 +1458,68 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   for (i=0; i < PictInfoSize; i++)
     buffer[i]=0;
   (void) WriteBlob(image,PictInfoSize,buffer);
-  MSBFirstWriteShort(image,0);
-  MSBFirstWriteShort(image,size_rectangle.top);
-  MSBFirstWriteShort(image,size_rectangle.left);
-  MSBFirstWriteShort(image,size_rectangle.right);
-  MSBFirstWriteShort(image,size_rectangle.bottom);
-  MSBFirstWriteShort(image,PictVersion);
-  MSBFirstWriteShort(image,0x02ff);
-  MSBFirstWriteShort(image,PictInfoOp);
+  WriteBlobMSBShort(image,0);
+  WriteBlobMSBShort(image,size_rectangle.top);
+  WriteBlobMSBShort(image,size_rectangle.left);
+  WriteBlobMSBShort(image,size_rectangle.right);
+  WriteBlobMSBShort(image,size_rectangle.bottom);
+  WriteBlobMSBShort(image,PictVersion);
+  WriteBlobMSBShort(image,0x02ff);
+  WriteBlobMSBShort(image,PictInfoOp);
   /*
     Write full size of the file, resolution, frame bounding box, and reserved.
   */
-  MSBFirstWriteLong(image,0xFFFE0000UL);
-  MSBFirstWriteLong(image,horizontal_resolution);
-  MSBFirstWriteLong(image,vertical_resolution);
-  MSBFirstWriteShort(image,frame_rectangle.top);
-  MSBFirstWriteShort(image,frame_rectangle.left);
-  MSBFirstWriteShort(image,frame_rectangle.right);
-  MSBFirstWriteShort(image,frame_rectangle.bottom);
-  MSBFirstWriteLong(image,0x00000000L);
+  WriteBlobMSBLong(image,0xFFFE0000UL);
+  WriteBlobMSBLong(image,horizontal_resolution);
+  WriteBlobMSBLong(image,vertical_resolution);
+  WriteBlobMSBShort(image,frame_rectangle.top);
+  WriteBlobMSBShort(image,frame_rectangle.left);
+  WriteBlobMSBShort(image,frame_rectangle.right);
+  WriteBlobMSBShort(image,frame_rectangle.bottom);
+  WriteBlobMSBLong(image,0x00000000L);
   /*
     Write crop region opcode and crop bounding box.
   */
-  MSBFirstWriteShort(image,PictCropRegionOp);
-  MSBFirstWriteShort(image,0xa);
-  MSBFirstWriteShort(image,crop_rectangle.top);
-  MSBFirstWriteShort(image,crop_rectangle.left);
-  MSBFirstWriteShort(image,crop_rectangle.right);
-  MSBFirstWriteShort(image,crop_rectangle.bottom);
+  WriteBlobMSBShort(image,PictCropRegionOp);
+  WriteBlobMSBShort(image,0xa);
+  WriteBlobMSBShort(image,crop_rectangle.top);
+  WriteBlobMSBShort(image,crop_rectangle.left);
+  WriteBlobMSBShort(image,crop_rectangle.right);
+  WriteBlobMSBShort(image,crop_rectangle.bottom);
   /*
     Write picture opcode, row bytes, and picture bounding box, and version.
   */
   if ((LocaleCompare(image_info->magick,"PICT24") != 0) &&
       (image->storage_class == PseudoClass))
-    MSBFirstWriteShort(image,PictPICTOp);
+    WriteBlobMSBShort(image,PictPICTOp);
   else
     {
-      MSBFirstWriteShort(image,PictPixmapOp);
-      MSBFirstWriteLong(image,(unsigned long) base_address);
+      WriteBlobMSBShort(image,PictPixmapOp);
+      WriteBlobMSBLong(image,(unsigned long) base_address);
     }
-  MSBFirstWriteShort(image,row_bytes | 0x8000);
-  MSBFirstWriteShort(image,bounds.top);
-  MSBFirstWriteShort(image,bounds.left);
-  MSBFirstWriteShort(image,bounds.right);
-  MSBFirstWriteShort(image,bounds.bottom);
+  WriteBlobMSBShort(image,row_bytes | 0x8000);
+  WriteBlobMSBShort(image,bounds.top);
+  WriteBlobMSBShort(image,bounds.left);
+  WriteBlobMSBShort(image,bounds.right);
+  WriteBlobMSBShort(image,bounds.bottom);
   /*
     Write pack type, pack size, resolution, pixel type, and pixel size.
   */
-  MSBFirstWriteShort(image,pixmap.version);
-  MSBFirstWriteShort(image,pixmap.pack_type);
-  MSBFirstWriteLong(image,pixmap.pack_size);
-  MSBFirstWriteLong(image,pixmap.horizontal_resolution);
-  MSBFirstWriteLong(image,pixmap.vertical_resolution);
-  MSBFirstWriteShort(image,pixmap.pixel_type);
-  MSBFirstWriteShort(image,pixmap.bits_per_pixel);
+  WriteBlobMSBShort(image,pixmap.version);
+  WriteBlobMSBShort(image,pixmap.pack_type);
+  WriteBlobMSBLong(image,pixmap.pack_size);
+  WriteBlobMSBLong(image,pixmap.horizontal_resolution);
+  WriteBlobMSBLong(image,pixmap.vertical_resolution);
+  WriteBlobMSBShort(image,pixmap.pixel_type);
+  WriteBlobMSBShort(image,pixmap.bits_per_pixel);
   /*
     Write component count, size, plane bytes, table size, and reserved.
   */
-  MSBFirstWriteShort(image,pixmap.component_count);
-  MSBFirstWriteShort(image,pixmap.component_size);
-  MSBFirstWriteLong(image,(unsigned long) pixmap.plane_bytes);
-  MSBFirstWriteLong(image,(unsigned long) pixmap.table);
-  MSBFirstWriteLong(image,(unsigned long) pixmap.reserved);
+  WriteBlobMSBShort(image,pixmap.component_count);
+  WriteBlobMSBShort(image,pixmap.component_size);
+  WriteBlobMSBLong(image,(unsigned long) pixmap.plane_bytes);
+  WriteBlobMSBLong(image,(unsigned long) pixmap.table);
+  WriteBlobMSBLong(image,(unsigned long) pixmap.reserved);
   if ((LocaleCompare(image_info->magick,"PICT24") != 0) &&
       (image->storage_class == PseudoClass))
     {
@@ -1531,32 +1531,32 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       /*
         Write image colormap.
       */
-      MSBFirstWriteLong(image,0x00000000L);  /* color seed */
-      MSBFirstWriteShort(image,0L);  /* color flags */
-      MSBFirstWriteShort(image,(unsigned short) Max(image->colors-1,1));
+      WriteBlobMSBLong(image,0x00000000L);  /* color seed */
+      WriteBlobMSBShort(image,0L);  /* color flags */
+      WriteBlobMSBShort(image,(unsigned short) Max(image->colors-1,1));
       for (i=0; i < (int) image->colors; i++)
       {
         red=((unsigned long) (image->colormap[i].red*65535L)/MaxRGB);
         green=((unsigned long) (image->colormap[i].green*65535L)/MaxRGB);
         blue=((unsigned long) (image->colormap[i].blue*65535L)/MaxRGB);
-        MSBFirstWriteShort(image,(unsigned int) i);
-        MSBFirstWriteShort(image,red);
-        MSBFirstWriteShort(image,green);
-        MSBFirstWriteShort(image,blue);
+        WriteBlobMSBShort(image,(unsigned int) i);
+        WriteBlobMSBShort(image,red);
+        WriteBlobMSBShort(image,green);
+        WriteBlobMSBShort(image,blue);
       }
     }
   /*
     Write source and destination rectangle.
   */
-  MSBFirstWriteShort(image,source_rectangle.top);
-  MSBFirstWriteShort(image,source_rectangle.left);
-  MSBFirstWriteShort(image,source_rectangle.right);
-  MSBFirstWriteShort(image,source_rectangle.bottom);
-  MSBFirstWriteShort(image,destination_rectangle.top);
-  MSBFirstWriteShort(image,destination_rectangle.left);
-  MSBFirstWriteShort(image,destination_rectangle.right);
-  MSBFirstWriteShort(image,destination_rectangle.bottom);
-  MSBFirstWriteShort(image,transfer_mode);
+  WriteBlobMSBShort(image,source_rectangle.top);
+  WriteBlobMSBShort(image,source_rectangle.left);
+  WriteBlobMSBShort(image,source_rectangle.right);
+  WriteBlobMSBShort(image,source_rectangle.bottom);
+  WriteBlobMSBShort(image,destination_rectangle.top);
+  WriteBlobMSBShort(image,destination_rectangle.left);
+  WriteBlobMSBShort(image,destination_rectangle.right);
+  WriteBlobMSBShort(image,destination_rectangle.bottom);
+  WriteBlobMSBShort(image,transfer_mode);
   /*
     Write picture data.
   */
@@ -1617,8 +1617,8 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       }
     }
   if (count & 0x1)
-    (void) WriteByteBlob(image,'\0');
-  MSBFirstWriteShort(image,PictEndOfPictureOp);
+    (void) WriteBlobByte(image,'\0');
+  WriteBlobMSBShort(image,PictEndOfPictureOp);
   LiberateMemory((void **) &scanline);
   LiberateMemory((void **) &packed_scanline);
   LiberateMemory((void **) &buffer);

@@ -268,7 +268,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read SGI raster header.
   */
-  iris_info.magic=MSBFirstReadShort(image);
+  iris_info.magic=ReadBlobMSBShort(image);
   do
   {
     /*
@@ -276,12 +276,12 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     if (iris_info.magic != 0x01DA)
       ThrowReaderException(CorruptImageWarning,"Not a SGI RGB image",image);
-    iris_info.storage=ReadByte(image);
-    iris_info.bytes_per_pixel=ReadByte(image);
-    iris_info.dimension=MSBFirstReadShort(image);
-    iris_info.columns=MSBFirstReadShort(image);
-    iris_info.rows=MSBFirstReadShort(image);
-    iris_info.depth=MSBFirstReadShort(image);
+    iris_info.storage=ReadBlobByte(image);
+    iris_info.bytes_per_pixel=ReadBlobByte(image);
+    iris_info.dimension=ReadBlobMSBShort(image);
+    iris_info.columns=ReadBlobMSBShort(image);
+    iris_info.rows=ReadBlobMSBShort(image);
+    iris_info.depth=ReadBlobMSBShort(image);
     image->columns=iris_info.columns;
     image->rows=iris_info.rows;
     image->depth=iris_info.depth <= 8 ? 8 : QuantumDepth;
@@ -295,8 +295,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         CloseBlob(image);
         return(image);
       }
-    iris_info.minimum_value=MSBFirstReadLong(image);
-    iris_info.maximum_value=MSBFirstReadLong(image);
+    iris_info.minimum_value=ReadBlobMSBLong(image);
+    iris_info.maximum_value=ReadBlobMSBLong(image);
     (void) ReadBlob(image,(unsigned int) sizeof(iris_info.filler),
       (char *) iris_info.filler);
     /*
@@ -372,9 +372,9 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
         for (i=0; i < (int) (iris_info.rows*iris_info.depth); i++)
-          offsets[i]=MSBFirstReadLong(image);
+          offsets[i]=ReadBlobMSBLong(image);
         for (i=0; i < (int) (iris_info.rows*iris_info.depth); i++)
-          runlength[i]=MSBFirstReadLong(image);
+          runlength[i]=ReadBlobMSBLong(image);
         /*
           Check data order.
         */
@@ -556,7 +556,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    iris_info.magic=MSBFirstReadShort(image);
+    iris_info.magic=ReadBlobMSBShort(image);
     if (iris_info.magic == 0x01DA)
       {
         /*
@@ -784,15 +784,15 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
     /*
       Write SGI header.
     */
-    MSBFirstWriteShort(image,iris_info.magic);
-    (void) WriteByteBlob(image,iris_info.storage);
-    (void) WriteByteBlob(image,iris_info.bytes_per_pixel);
-    MSBFirstWriteShort(image,iris_info.dimension);
-    MSBFirstWriteShort(image,iris_info.columns);
-    MSBFirstWriteShort(image,iris_info.rows);
-    MSBFirstWriteShort(image,iris_info.depth);
-    MSBFirstWriteLong(image,iris_info.minimum_value);
-    MSBFirstWriteLong(image,iris_info.maximum_value);
+    WriteBlobMSBShort(image,iris_info.magic);
+    (void) WriteBlobByte(image,iris_info.storage);
+    (void) WriteBlobByte(image,iris_info.bytes_per_pixel);
+    WriteBlobMSBShort(image,iris_info.dimension);
+    WriteBlobMSBShort(image,iris_info.columns);
+    WriteBlobMSBShort(image,iris_info.rows);
+    WriteBlobMSBShort(image,iris_info.depth);
+    WriteBlobMSBLong(image,iris_info.minimum_value);
+    WriteBlobMSBLong(image,iris_info.maximum_value);
     (void) WriteBlob(image,sizeof(iris_info.filler),
       (char *) iris_info.filler);
     /*
@@ -893,9 +893,9 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
           Write out line start and length tables and runlength-encoded pixels.
         */
         for (i=0; i < (int) (iris_info.rows*iris_info.depth); i++)
-          MSBFirstWriteLong(image,offsets[i]);
+          WriteBlobMSBLong(image,offsets[i]);
         for (i=0; i < (int) (iris_info.rows*iris_info.depth); i++)
-          MSBFirstWriteLong(image,runlength[i]);
+          WriteBlobMSBLong(image,runlength[i]);
         (void) WriteBlob(image,number_packets,(char *) packets);
         /*
           Free memory.

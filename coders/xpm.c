@@ -224,7 +224,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   xpm_buffer=(char *) AcquireMemory(length);
   p=xpm_buffer;
   if (xpm_buffer != (char *) NULL)
-    while (GetStringBlob(image,p) != (char *) NULL)
+    while (ReadBlobString(image,p) != (char *) NULL)
     {
       if (*p == '#')
         if ((p == xpm_buffer) || (*(p-1) == '\n'))
@@ -625,12 +625,12 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   /*
     XPM header.
   */
-  (void) WriteStringBlob(image,"/* XPM */\n");
-  (void) WriteStringBlob(image,"static char *magick[] = {\n");
-  (void) WriteStringBlob(image,"/* columns rows colors chars-per-pixel */\n");
+  (void) WriteBlobString(image,"/* XPM */\n");
+  (void) WriteBlobString(image,"static char *magick[] = {\n");
+  (void) WriteBlobString(image,"/* columns rows colors chars-per-pixel */\n");
   FormatString(buffer,"\"%u %u %u %d\",\n",image->columns,
     image->rows,colors,characters_per_pixel);
-  (void) WriteStringBlob(image,buffer);
+  (void) WriteBlobString(image,buffer);
   for (i=0; i < (int) colors; i++)
   {
     /*
@@ -652,19 +652,19 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     }
     symbol[j]='\0';
     FormatString(buffer,"\"%.1024s c %.1024s\",\n",symbol,name);
-    (void) WriteStringBlob(image,buffer);
+    (void) WriteBlobString(image,buffer);
   }
   /*
     Define XPM pixels.
   */
-  (void) WriteStringBlob(image,"/* pixels */\n");
+  (void) WriteBlobString(image,"/* pixels */\n");
   for (y=0; y < (int) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    (void) WriteStringBlob(image,"\"");
+    (void) WriteBlobString(image,"\"");
     for (x=0; x < (int) image->columns; x++)
     {
       k=indexes[x] % MaxCixels;
@@ -676,16 +676,16 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
       }
       symbol[j]='\0';
       FormatString(buffer,"%.1024s",symbol);
-      (void) WriteStringBlob(image,buffer);
+      (void) WriteBlobString(image,buffer);
       p++;
     }
     FormatString(buffer,"\"%.1024s\n",
       (y == (int) (image->rows-1) ? "" : ","));
-    (void) WriteStringBlob(image,buffer);
+    (void) WriteBlobString(image,buffer);
     if (QuantumTick(y,image->rows))
       MagickMonitor(SaveImageText,y,image->rows);
   }
-  (void) WriteStringBlob(image,"};\n");
+  (void) WriteBlobString(image,"};\n");
   CloseBlob(image);
   return(True);
 }

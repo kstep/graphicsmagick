@@ -169,7 +169,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Decode image header;  header terminates one character beyond a ':'.
   */
-  c=ReadByte(image);
+  c=ReadBlobByte(image);
   if (c == EOF)
     {
       DestroyImage(image);
@@ -204,7 +204,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         p=comment;
         for ( ; comment != (char *) NULL; p++)
         {
-          c=ReadByte(image);
+          c=ReadBlobByte(image);
           if ((c == EOF) || (c == '}'))
             break;
           if ((p-comment+1) >= (int) length)
@@ -224,7 +224,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         *p='\0';
         (void) SetImageAttribute(image,"Comment",comment);
         LiberateMemory((void **) &comment);
-        c=ReadByte(image);
+        c=ReadBlobByte(image);
       }
     else
       if (isalnum(c))
@@ -237,11 +237,11 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             if ((p-keyword) < (MaxTextExtent-1))
               *p++=c;
-            c=ReadByte(image);
+            c=ReadBlobByte(image);
           } while (isalnum(c) || (c == '-'));
           *p='\0';
           while (isspace(c) || (c == '='))
-            c=ReadByte(image);
+            c=ReadBlobByte(image);
           p=values;
           while ((c != '}') && (c != EOF))
           {
@@ -258,7 +258,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               ThrowReaderException(ResourceLimitWarning,
                 "Memory allocation failed",image);
             *p++=c;
-            c=ReadByte(image);
+            c=ReadBlobByte(image);
             if (*values != '{')
               if (isspace(c))
                 break;
@@ -584,12 +584,12 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         }
       else
-        c=ReadByte(image);
+        c=ReadBlobByte(image);
     while (isspace(c))
-      c=ReadByte(image);
+      c=ReadBlobByte(image);
   }
   LiberateMemory((void **) &values);
-  (void) ReadByte(image);
+  (void) ReadBlobByte(image);
   /*
     Verify that required image information is defined.
   */
@@ -633,7 +633,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 "Unable to read image data",image);
             p=image->directory+Extent(image->directory);
           }
-        c=ReadByte(image);
+        c=ReadBlobByte(image);
         *p++=c;
       } while (c != '\0');
     }

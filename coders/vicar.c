@@ -183,7 +183,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,ExceptionInfo *exceptio
   /*
     Decode image header.
   */
-  c=ReadByte(image);
+  c=ReadBlobByte(image);
   count=1;
   if (c == EOF)
     {
@@ -195,7 +195,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,ExceptionInfo *exceptio
   {
     if (!isalnum(c))
       {
-        c=ReadByte(image);
+        c=ReadBlobByte(image);
         count++;
       }
     else
@@ -211,7 +211,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,ExceptionInfo *exceptio
         {
           if ((p-keyword) < (MaxTextExtent-1))
             *p++=c;
-          c=ReadByte(image);
+          c=ReadBlobByte(image);
           count++;
         } while (isalnum(c) || (c == '_'));
         *p='\0';
@@ -220,7 +220,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,ExceptionInfo *exceptio
         {
           if (c == '=')
             value_expected=True;
-          c=ReadByte(image);
+          c=ReadBlobByte(image);
           count++;
         }
         if (value_expected == False)
@@ -230,7 +230,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,ExceptionInfo *exceptio
         {
           if ((p-value) < (MaxTextExtent-1))
             *p++=c;
-          c=ReadByte(image);
+          c=ReadBlobByte(image);
           count++;
         }
         *p='\0';
@@ -252,7 +252,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,ExceptionInfo *exceptio
       }
     while (isspace(c))
     {
-      c=ReadByte(image);
+      c=ReadBlobByte(image);
       count++;
     }
   }
@@ -269,7 +269,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,ExceptionInfo *exceptio
   */
   while (count < (int) header_length)
   {
-    c=ReadByte(image);
+    c=ReadBlobByte(image);
     count++;
   }
   /*
@@ -475,7 +475,7 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
     Print the header and enough spaces to pad to label size.
   */
   FormatString(buffer, "%-*s",label_size,header);
-  (void) WriteStringBlob(image,buffer);
+  (void) WriteBlobString(image,buffer);
   /*
     Allocate memory for pixels.
   */

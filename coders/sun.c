@@ -278,7 +278,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read SUN raster header.
   */
-  sun_info.magic=MSBFirstReadLong(image);
+  sun_info.magic=ReadBlobMSBLong(image);
   do
   {
     /*
@@ -286,13 +286,13 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     if (sun_info.magic != 0x59a66a95)
       ThrowReaderException(CorruptImageWarning,"Not a SUN raster image",image);
-    sun_info.width=MSBFirstReadLong(image);
-    sun_info.height=MSBFirstReadLong(image);
-    sun_info.depth=MSBFirstReadLong(image);
-    sun_info.length=MSBFirstReadLong(image);
-    sun_info.type=MSBFirstReadLong(image);
-    sun_info.maptype=MSBFirstReadLong(image);
-    sun_info.maplength=MSBFirstReadLong(image);
+    sun_info.width=ReadBlobMSBLong(image);
+    sun_info.height=ReadBlobMSBLong(image);
+    sun_info.depth=ReadBlobMSBLong(image);
+    sun_info.length=ReadBlobMSBLong(image);
+    sun_info.type=ReadBlobMSBLong(image);
+    sun_info.maptype=ReadBlobMSBLong(image);
+    sun_info.maplength=ReadBlobMSBLong(image);
     image->columns=(unsigned int) sun_info.width;
     image->rows=(unsigned int) sun_info.height;
     image->depth=sun_info.depth <= 8 ? 8 : QuantumDepth;
@@ -501,7 +501,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    sun_info.magic=MSBFirstReadLong(image);
+    sun_info.magic=ReadBlobMSBLong(image);
     if (sun_info.magic == 0x59a66a95)
       {
         /*
@@ -714,14 +714,14 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
     /*
       Write SUN header.
     */
-    MSBFirstWriteLong(image,sun_info.magic);
-    MSBFirstWriteLong(image,sun_info.width);
-    MSBFirstWriteLong(image,sun_info.height);
-    MSBFirstWriteLong(image,sun_info.depth);
-    MSBFirstWriteLong(image,sun_info.length);
-    MSBFirstWriteLong(image,sun_info.type);
-    MSBFirstWriteLong(image,sun_info.maptype);
-    MSBFirstWriteLong(image,sun_info.maplength);
+    WriteBlobMSBLong(image,sun_info.magic);
+    WriteBlobMSBLong(image,sun_info.width);
+    WriteBlobMSBLong(image,sun_info.height);
+    WriteBlobMSBLong(image,sun_info.depth);
+    WriteBlobMSBLong(image,sun_info.length);
+    WriteBlobMSBLong(image,sun_info.type);
+    WriteBlobMSBLong(image,sun_info.maptype);
+    WriteBlobMSBLong(image,sun_info.maplength);
     /*
       Convert MIFF to SUN raster pixels.
     */
@@ -801,17 +801,17 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
               bit++;
               if (bit == 8)
                 {
-                  (void) WriteByteBlob(image,byte);
+                  (void) WriteBlobByte(image,byte);
                   bit=0;
                   byte=0;
                 }
               p++;
             }
             if (bit != 0)
-              (void) WriteByteBlob(image,byte << (8-bit));
+              (void) WriteBlobByte(image,byte << (8-bit));
             if ((((image->columns/8)+
                 (image->columns % 8 ? 1 : 0)) % 2) != 0)
-              (void) WriteByteBlob(image,0);  /* pad scanline */
+              (void) WriteBlobByte(image,0);  /* pad scanline */
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
                 MagickMonitor(SaveImageText,y,image->rows);
@@ -823,11 +823,11 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
             Dump colormap to file.
           */
           for (i=0; i < (int) image->colors; i++)
-            (void) WriteByteBlob(image,DownScale(image->colormap[i].red));
+            (void) WriteBlobByte(image,DownScale(image->colormap[i].red));
           for (i=0; i < (int) image->colors; i++)
-            (void) WriteByteBlob(image,DownScale(image->colormap[i].green));
+            (void) WriteBlobByte(image,DownScale(image->colormap[i].green));
           for (i=0; i < (int) image->colors; i++)
-            (void) WriteByteBlob(image,DownScale(image->colormap[i].blue));
+            (void) WriteBlobByte(image,DownScale(image->colormap[i].blue));
           /*
             Convert PseudoClass packet to SUN colormapped pixel.
           */
@@ -839,11 +839,11 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
             indexes=GetIndexes(image);
             for (x=0; x < (int) image->columns; x++)
             {
-              (void) WriteByteBlob(image,indexes[x]);
+              (void) WriteBlobByte(image,indexes[x]);
               p++;
             }
             if (image->columns & 0x01)
-              (void) WriteByteBlob(image,0);  /* pad scanline */
+              (void) WriteBlobByte(image,0);  /* pad scanline */
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
                 MagickMonitor(SaveImageText,y,image->rows);

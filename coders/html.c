@@ -291,8 +291,8 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       /*
         Write the HTML image file.
       */
-      (void) WriteStringBlob(image,"<html version=\"2.0\">\n");
-      (void) WriteStringBlob(image,"<head>\n");
+      (void) WriteBlobString(image,"<html version=\"2.0\">\n");
+      (void) WriteBlobString(image,"<head>\n");
       attribute=GetImageAttribute(image,"Label");
       if (attribute != (ImageAttribute *) NULL)
         FormatString(buffer,"<title>%.1024s</title>\n",attribute->value);
@@ -302,19 +302,19 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
           FormatString(buffer,"<title>%.1024s</title>\n",basename);
           LiberateMemory((void **) &basename);
         }
-      (void) WriteStringBlob(image,buffer);
-      (void) WriteStringBlob(image,"</head>\n");
-      (void) WriteStringBlob(image,"<body>\n");
-      (void) WriteStringBlob(image,"<center>\n");
+      (void) WriteBlobString(image,buffer);
+      (void) WriteBlobString(image,"</head>\n");
+      (void) WriteBlobString(image,"<body>\n");
+      (void) WriteBlobString(image,"<center>\n");
       FormatString(buffer,"<h1>%.1024s</h1>\n",image->filename);
-      (void) WriteStringBlob(image,buffer);
-      (void) WriteStringBlob(image,"<br><br>\n");
+      (void) WriteBlobString(image,buffer);
+      (void) WriteBlobString(image,"<br><br>\n");
       (void) strcpy(filename,image->filename);
       AppendImageFormat("gif",filename);
       FormatString(buffer,
         "<img ismap usemap=#%.1024s src=\"%.1024s\" border=0>\n",
         mapname,filename);
-      (void) WriteStringBlob(image,buffer);
+      (void) WriteBlobString(image,buffer);
       /*
         Determine the size and location of each image tile.
       */
@@ -328,28 +328,28 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
         Write an image map.
       */
       FormatString(buffer,"<map name=\"%.1024s\">\n",mapname);
-      (void) WriteStringBlob(image,buffer);
+      (void) WriteBlobString(image,buffer);
       FormatString(buffer,"  <area href=\"%.1024s",url);
-      (void) WriteStringBlob(image,buffer);
+      (void) WriteBlobString(image,buffer);
       if (image->directory == (char *) NULL)
         {
           FormatString(buffer,"%.1024s\" shape=rect coords=0,0,%u,%u>\n",
             image->filename,width-1,height-1);
-          (void) WriteStringBlob(image,buffer);
+          (void) WriteBlobString(image,buffer);
         }
       else
         for (p=image->directory; *p != '\0'; p++)
           if (*p != '\n')
-            (void) WriteByteBlob(image,*p);
+            (void) WriteBlobByte(image,*p);
           else
             {
               FormatString(buffer,"\" shape=rect coords=%d,%d,%d,%d>\n",
                 x,y,x+(int) width-1,y+(int) height-1);
-              (void) WriteStringBlob(image,buffer);
+              (void) WriteBlobString(image,buffer);
               if (*(p+1) != '\0')
                 {
                   FormatString(buffer,"  <area href=%.1024s\"",url);
-                  (void) WriteStringBlob(image,buffer);
+                  (void) WriteBlobString(image,buffer);
                 }
               x+=width;
               if (x >= (int) image->columns)
@@ -358,13 +358,13 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
                   y+=height;
                 }
             }
-      (void) WriteStringBlob(image,"</map>\n");
+      (void) WriteBlobString(image,"</map>\n");
       if (image->montage != (char *) NULL)
         TransparentImage(image,GetOnePixel(image,0,0));
       (void) strcpy(filename,image->filename);
-      (void) WriteStringBlob(image,"</center>\n");
-      (void) WriteStringBlob(image,"</body>\n");
-      status=WriteStringBlob(image,"</html>\n");
+      (void) WriteBlobString(image,"</center>\n");
+      (void) WriteBlobString(image,"</body>\n");
+      status=WriteBlobString(image,"</html>\n");
       CloseBlob(image);
       /*
         Write the image as transparent GIF.
@@ -409,28 +409,28 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
     Write an image map.
   */
   FormatString(buffer,"<map name=\"%.1024s\">\n",mapname);
-  (void) WriteStringBlob(image,buffer);
+  (void) WriteBlobString(image,buffer);
   FormatString(buffer,"  <area href=%.1024s",url);
-  (void) WriteStringBlob(image,buffer);
+  (void) WriteBlobString(image,buffer);
   if (image->directory == (char *) NULL)
     {
       FormatString(buffer,"%.1024s\" shape=rect coords=0,0,%u,%u>\n",
         image->filename,width-1,height-1);
-      (void) WriteStringBlob(image,buffer);
+      (void) WriteBlobString(image,buffer);
     }
   else
     for (p=image->directory; *p != '\0'; p++)
       if (*p != '\n')
-        (void) WriteByteBlob(image,*p);
+        (void) WriteBlobByte(image,*p);
       else
         {
           FormatString(buffer," shape=rect coords=%d,%d,%d,%d>\n",x,y,
             x+(int) width-1,y+(int) height-1);
-          (void) WriteStringBlob(image,buffer);
+          (void) WriteBlobString(image,buffer);
           if (*(p+1) != '\0')
             {
               FormatString(buffer,"  <area href=%.1024s\"",url);
-              (void) WriteStringBlob(image,buffer);
+              (void) WriteBlobString(image,buffer);
             }
           x+=width;
           if (x >= (int) image->columns)
@@ -439,7 +439,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
               y+=height;
             }
         }
-  (void) WriteStringBlob(image,"</map>\n");
+  (void) WriteBlobString(image,"</map>\n");
   CloseBlob(image);
   (void) strcpy(image->filename,filename);
   return(status);

@@ -204,7 +204,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
   /*
     Decode image header;  header terminates one character beyond a ':'.
   */
-  c=ReadByte(image);
+  c=ReadBlobByte(image);
   if (c == EOF)
     {
       DestroyImage(image);
@@ -241,7 +241,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           p=comment;
           for ( ; comment != (char *) NULL; p++)
           {
-            c=ReadByte(image);
+            c=ReadBlobByte(image);
             if ((c == EOF) || (c == '}'))
               break;
             if ((p-comment+1) >= (int) length)
@@ -261,7 +261,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           *p='\0';
           (void) SetImageAttribute(image,"Comment",comment);
           LiberateMemory((void **) &comment);
-          c=ReadByte(image);
+          c=ReadBlobByte(image);
         }
       else
         if (isalnum(c))
@@ -274,11 +274,11 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             {
               if ((p-keyword) < (MaxTextExtent-1))
                 *p++=c;
-              c=ReadByte(image);
+              c=ReadBlobByte(image);
             } while (isalnum(c) || (c == '-'));
             *p='\0';
             while (isspace(c) || (c == '='))
-              c=ReadByte(image);
+              c=ReadBlobByte(image);
             p=values;
             while ((c != '}') && (c != EOF))
             {
@@ -295,7 +295,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 ThrowReaderException(ResourceLimitWarning,
                   "Memory allocation failed",image);
               *p++=c;
-              c=ReadByte(image);
+              c=ReadBlobByte(image);
               if (*values != '{')
                 if (isspace(c))
                   break;
@@ -603,12 +603,12 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             }
           }
         else
-          c=ReadByte(image);
+          c=ReadBlobByte(image);
       while (isspace(c))
-        c=ReadByte(image);
+        c=ReadBlobByte(image);
     }
     LiberateMemory((void **) &values);
-    (void) ReadByte(image);
+    (void) ReadBlobByte(image);
     /*
       Verify that required image information is defined.
     */
@@ -651,7 +651,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   "Unable to read image data",image);
               p=image->directory+Extent(image->directory);
             }
-          c=ReadByte(image);
+          c=ReadBlobByte(image);
           *p++=c;
         } while (c != '\0');
       }
@@ -879,9 +879,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 if (image->storage_class != DirectClass)
                   {
-                    index=ReadByte(image);
+                    index=ReadBlobByte(image);
                     if (image->depth > 8)
-                      index=(index << 8)+ReadByte(image);
+                      index=(index << 8)+ReadBlobByte(image);
                     if (index >= image->colors)
                       ThrowReaderException(CorruptImageWarning,
                         "invalid colormap index",image);
@@ -891,28 +891,28 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   {
                     if (image->depth <= 8)
                       {
-                        pixel.red=UpScale(ReadByte(image));
-                        pixel.green=UpScale(ReadByte(image));
-                        pixel.blue=UpScale(ReadByte(image));
+                        pixel.red=UpScale(ReadBlobByte(image));
+                        pixel.green=UpScale(ReadBlobByte(image));
+                        pixel.blue=UpScale(ReadBlobByte(image));
                         if (image->matte ||
                             (image->colorspace == CMYKColorspace))
-                          pixel.opacity=MaxRGB-UpScale(ReadByte(image));
+                          pixel.opacity=MaxRGB-UpScale(ReadBlobByte(image));
                       }
                     else
                       {
-                        pixel.red=MSBFirstReadShort(image) >>
+                        pixel.red=ReadBlobMSBShort(image) >>
                           (image->depth-QuantumDepth);
-                        pixel.green=MSBFirstReadShort(image) >>
+                        pixel.green=ReadBlobMSBShort(image) >>
                           (image->depth-QuantumDepth);
-                        pixel.blue=MSBFirstReadShort(image) >>
+                        pixel.blue=ReadBlobMSBShort(image) >>
                           (image->depth-QuantumDepth);
                         if (image->matte ||
                             (image->colorspace == CMYKColorspace))
-                          pixel.opacity=MaxRGB-(MSBFirstReadShort(image) >>
+                          pixel.opacity=MaxRGB-(ReadBlobMSBShort(image) >>
                             (image->depth-QuantumDepth));
                       }
                   }
-                length=ReadByte(image)+1;
+                length=ReadBlobByte(image)+1;
               }
             length--;
             if (image->storage_class == PseudoClass)
@@ -938,7 +938,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         break;
     do
     {
-      c=ReadByte(image);
+      c=ReadBlobByte(image);
     } while (!isgraph(c) && (c != EOF));
     if (c != EOF)
       {
@@ -1154,7 +1154,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     else
       if (image->colorspace != CMYKColorspace)
         RGBTransformImage(image,CMYKColorspace);
-    (void) WriteStringBlob(image,"Id=ImageMagick\n");
+    (void) WriteBlobString(image,"Id=ImageMagick\n");
     if (image->storage_class == PseudoClass)
       FormatString(buffer,"Class=PseudoClass  Colors=%u  Matte=%s\n",
         image->colors,image->matte ? "True" : "False");
@@ -1164,7 +1164,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           image->matte ? "True" : "False");
       else
         (void) strcpy(buffer,"Class=DirectClass  Colorspace=CMYK\n");
-    (void) WriteStringBlob(image,buffer);
+    (void) WriteBlobString(image,buffer);
     *buffer='\0';
     if (compression == RunlengthEncodedCompression)
       FormatString(buffer,"Compression=RunlengthEncoded\n");
@@ -1175,10 +1175,10 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         if (compression == ZipCompression)
           FormatString(buffer,"Compression=Zip\n");
     if (*buffer != '\0')
-      (void) WriteStringBlob(image,buffer);
+      (void) WriteBlobString(image,buffer);
     FormatString(buffer,"Columns=%u  Rows=%u  Depth=%u\n",image->columns,
       image->rows,image->depth);
-    (void) WriteStringBlob(image,buffer);
+    (void) WriteBlobString(image,buffer);
     if ((image->x_resolution != 0) && (image->y_resolution != 0))
       {
         char
@@ -1194,50 +1194,50 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           (void) strcpy(units,"pixels-per-centimeter");
         FormatString(buffer,"Resolution=%gx%g  units=%.1024s\n",
           image->x_resolution,image->y_resolution,units);
-        (void) WriteStringBlob(image,buffer);
+        (void) WriteBlobString(image,buffer);
       }
     if ((image->page.width != 0) && (image->page.height != 0))
       {
         FormatString(buffer,"Page=%ux%u%+d%+d\n",image->page.width,
           image->page.height,image->page.x,image->page.y);
-        (void) WriteStringBlob(image,buffer);
+        (void) WriteBlobString(image,buffer);
       }
     (void) QueryColorName(&image->background_color,color);
     FormatString(buffer,"Background-color=%.1024s  ",color);
-    (void) WriteStringBlob(image,buffer);
+    (void) WriteBlobString(image,buffer);
     (void) QueryColorName(&image->border_color,color);
     FormatString(buffer,"Border-color=%.1024s  ",color);
-    (void) WriteStringBlob(image,buffer);
+    (void) WriteBlobString(image,buffer);
     (void) QueryColorName(&image->matte_color,color);
     FormatString(buffer,"Matte-color=%.1024s\n",color);
-    (void) WriteStringBlob(image,buffer);
+    (void) WriteBlobString(image,buffer);
     if ((image->next != (Image *) NULL) || (image->previous != (Image *) NULL))
       {
         FormatString(buffer,"Scene=%u  Iterations=%u  Delay=%u  Dispose=%u\n",
           image->scene,image->iterations,image->delay,image->dispose);
-        (void) WriteStringBlob(image,buffer);
+        (void) WriteBlobString(image,buffer);
       }
     else
       {
         if (image->scene != 0)
           {
             FormatString(buffer,"Scene=%u\n",image->scene);
-            (void) WriteStringBlob(image,buffer);
+            (void) WriteBlobString(image,buffer);
           }
         if (image->iterations != 1)
           {
             FormatString(buffer,"Iterations=%u\n",image->iterations);
-            (void) WriteStringBlob(image,buffer);
+            (void) WriteBlobString(image,buffer);
           }
         if (image->delay != 0)
           {
             FormatString(buffer,"Delay=%u\n",image->delay);
-            (void) WriteStringBlob(image,buffer);
+            (void) WriteBlobString(image,buffer);
           }
         if (image->dispose != 0)
           {
             FormatString(buffer,"Dispose=%u\n",image->dispose);
-            (void) WriteStringBlob(image,buffer);
+            (void) WriteBlobString(image,buffer);
           }
       }
     if (image->rendering_intent != UndefinedIntent)
@@ -1252,12 +1252,12 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
               (void) strcpy(buffer,"Rendering-intent=absolute\n");
             else
               (void) strcpy(buffer,"Rendering-intent=relative\n");
-        (void) WriteStringBlob(image,buffer);
+        (void) WriteBlobString(image,buffer);
       }
     if (image->gamma != 0.0)
       {
         FormatString(buffer,"Gamma=%g\n",image->gamma);
-        (void) WriteStringBlob(image,buffer);
+        (void) WriteBlobString(image,buffer);
       }
     if (image->chromaticity.white_point.x != 0.0)
       {
@@ -1271,20 +1271,20 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           image->chromaticity.green_primary.y,
           image->chromaticity.blue_primary.x,
           image->chromaticity.blue_primary.y);
-        (void) WriteStringBlob(image,buffer);
+        (void) WriteBlobString(image,buffer);
         FormatString(buffer,"White-point=%g,%g\n",
           image->chromaticity.white_point.x,image->chromaticity.white_point.y);
-        (void) WriteStringBlob(image,buffer);
+        (void) WriteBlobString(image,buffer);
       }
     if (image->color_profile.length > 0)
       {
         FormatString(buffer,"Profile-icc=%u\n",image->color_profile.length);
-        (void) WriteStringBlob(image,buffer);
+        (void) WriteBlobString(image,buffer);
       }
     if (image->iptc_profile.length > 0)
       {
         FormatString(buffer,"Profile-iptc=%u\n",image->iptc_profile.length);
-        (void) WriteStringBlob(image,buffer);
+        (void) WriteBlobString(image,buffer);
       }
     if (image->generic_profiles != 0)
       {
@@ -1296,13 +1296,13 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           FormatString(buffer,"Profile-%s=%u\n",
             image->generic_profile[i].name == (char *) NULL ? "generic" :
             image->generic_profile[i].name,image->generic_profile[i].length);
-          (void) WriteStringBlob(image,buffer);
+          (void) WriteBlobString(image,buffer);
         }
       }
     if (image->montage != (char *) NULL)
       {
         FormatString(buffer,"Montage=%.1024s\n",image->montage);
-        (void) WriteStringBlob(image,buffer);
+        (void) WriteBlobString(image,buffer);
       }
     SignatureImage(image);
     attribute=GetImageAttribute(image,(char *) NULL);
@@ -1311,18 +1311,18 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       if (*attribute->key == '[')
         continue;
       FormatString(buffer,"%.1024s=",attribute->key);
-      (void) WriteStringBlob(image,buffer);
+      (void) WriteBlobString(image,buffer);
       for (i=0; i < strlen(attribute->value); i++)
         if (isspace((int) attribute->value[i]))
           break;
       if (i < strlen(attribute->value))
-        (void) WriteByteBlob(image,'{');
+        (void) WriteBlobByte(image,'{');
       (void) WriteBlob(image,strlen(attribute->value),attribute->value);
       if (i < strlen(attribute->value))
-        (void) WriteByteBlob(image,'}');
-      (void) WriteByteBlob(image,'\n');
+        (void) WriteBlobByte(image,'}');
+      (void) WriteBlobByte(image,'\n');
     }
-    (void) WriteStringBlob(image,"\f\n:\032");
+    (void) WriteBlobString(image,"\f\n:\032");
     if (image->montage != (char *) NULL)
       {
         /*
@@ -1330,7 +1330,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         */
         if (image->directory != (char *) NULL)
           (void) WriteBlob(image,strlen(image->directory),image->directory);
-        (void) WriteByteBlob(image,'\0');
+        (void) WriteBlobByte(image,'\0');
       }
     if (image->color_profile.length > 0)
       (void) WriteBlob(image,(int) image->color_profile.length,

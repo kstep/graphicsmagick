@@ -129,7 +129,7 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image)
   for (i=0; i < image->offset; i++)
-    (void) ReadByte(image);
+    (void) ReadBlobByte(image);
   /*
     Accumulate UYVY, then unpack into two pixels.
   */
@@ -141,10 +141,10 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
       break;
     for (x=0; x < (int) (image->columns >> 1); x++)
     {
-      u=ReadByte(image);
-      y1=ReadByte(image);
-      v=ReadByte(image);
-      y2=ReadByte(image);
+      u=ReadBlobByte(image);
+      y1=ReadBlobByte(image);
+      v=ReadBlobByte(image);
+      y2=ReadBlobByte(image);
       q->red=UpScale(y1);
       q->green=UpScale(u);
       q->blue=UpScale(v);
@@ -311,10 +311,10 @@ static unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
     {
       if (full)
         {
-          (void) WriteByteBlob(image,DownScale((u+p->green) >> 1));
-          (void) WriteByteBlob(image,DownScale(y1));
-          (void) WriteByteBlob(image,DownScale((v+p->blue) >> 1));
-          (void) WriteByteBlob(image,DownScale(p->red));
+          (void) WriteBlobByte(image,DownScale((u+p->green) >> 1));
+          (void) WriteBlobByte(image,DownScale(y1));
+          (void) WriteBlobByte(image,DownScale((v+p->blue) >> 1));
+          (void) WriteBlobByte(image,DownScale(p->red));
           full=False;
         }
       else

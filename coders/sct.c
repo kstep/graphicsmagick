@@ -198,43 +198,43 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      q->red=MaxRGB-UpScale(ReadByte(image));
+      q->red=MaxRGB-UpScale(ReadBlobByte(image));
       q++;
     }
     if ((image->columns % 2) != 0)
-      (void) ReadByte(image);  /* pad */
+      (void) ReadBlobByte(image);  /* pad */
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      q->green=MaxRGB-UpScale(ReadByte(image));
+      q->green=MaxRGB-UpScale(ReadBlobByte(image));
       q++;
     }
     if ((image->columns % 2) != 0)
-      (void) ReadByte(image);  /* pad */
+      (void) ReadBlobByte(image);  /* pad */
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      q->blue=MaxRGB-UpScale(ReadByte(image));
+      q->blue=MaxRGB-UpScale(ReadBlobByte(image));
       q++;
     }
     if ((image->columns % 2) != 0)
-      (void) ReadByte(image);  /* pad */
+      (void) ReadBlobByte(image);  /* pad */
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      q->opacity=UpScale(ReadByte(image));
+      q->opacity=UpScale(ReadBlobByte(image));
       q++;
     }
     if (!SyncImagePixels(image))
       break;
     if ((image->columns % 2) != 0)
-      (void) ReadByte(image);  /* pad */
+      (void) ReadBlobByte(image);  /* pad */
     if (QuantumTick(y,image->rows))
       MagickMonitor(LoadImageText,y,image->rows);
   }

@@ -136,7 +136,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (status == False)
         ThrowReaderException(FileOpenWarning,"Unable to open file",image);
       for (i=0; i < image->offset; i++)
-        (void) ReadByte(image);
+        (void) ReadBlobByte(image);
     }
   /*
     Allocate memory for a scanline.
@@ -441,7 +441,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
         break;
       for (x=0; x < (int) yuv_image->columns; x++)
       {
-        (void) WriteByteBlob(image,DownScale(p->red));
+        (void) WriteBlobByte(image,DownScale(p->red));
         p++;
       }
       if (image->previous == (Image *) NULL)
@@ -476,7 +476,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
         break;
       for (x=0; x < (int) chroma_image->columns; x++)
       {
-        (void) WriteByteBlob(image,DownScale(p->green));
+        (void) WriteBlobByte(image,DownScale(p->green));
         p++;
       }
     }
@@ -498,7 +498,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
         break;
       for (x=0; x < (int) chroma_image->columns; x++)
       {
-        (void) WriteByteBlob(image,DownScale(p->blue));
+        (void) WriteBlobByte(image,DownScale(p->blue));
         p++;
       }
     }

@@ -177,22 +177,22 @@ static Image *ReadIconImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
-  icon_file.reserved=LSBFirstReadShort(image);
-  icon_file.resource_type=LSBFirstReadShort(image);
-  icon_file.count=LSBFirstReadShort(image);
+  icon_file.reserved=ReadBlobLSBShort(image);
+  icon_file.resource_type=ReadBlobLSBShort(image);
+  icon_file.count=ReadBlobLSBShort(image);
   if ((icon_file.reserved != 0) || (icon_file.resource_type != 1) ||
       (icon_file.count > MaxIcons))
     ThrowReaderException(CorruptImageWarning,"Not a ICO image file",image);
   for (i=0; i < icon_file.count; i++)
   {
-    icon_file.directory[i].width=ReadByte(image);
-    icon_file.directory[i].height=ReadByte(image);
-    icon_file.directory[i].colors=ReadByte(image);
-    icon_file.directory[i].reserved=ReadByte(image);
-    icon_file.directory[i].planes=LSBFirstReadShort(image);
-    icon_file.directory[i].bits_per_pixel=LSBFirstReadShort(image);
-    icon_file.directory[i].size=LSBFirstReadLong(image);
-    icon_file.directory[i].offset=LSBFirstReadLong(image);
+    icon_file.directory[i].width=ReadBlobByte(image);
+    icon_file.directory[i].height=ReadBlobByte(image);
+    icon_file.directory[i].colors=ReadBlobByte(image);
+    icon_file.directory[i].reserved=ReadBlobByte(image);
+    icon_file.directory[i].planes=ReadBlobLSBShort(image);
+    icon_file.directory[i].bits_per_pixel=ReadBlobLSBShort(image);
+    icon_file.directory[i].size=ReadBlobLSBLong(image);
+    icon_file.directory[i].offset=ReadBlobLSBLong(image);
   }
   for (i=0; i < icon_file.count; i++)
   {
@@ -200,17 +200,17 @@ static Image *ReadIconImage(const ImageInfo *image_info,
       Verify Icon identifier.
     */
     (void) SeekBlob(image,icon_file.directory[i].offset,SEEK_SET);
-    icon_info.size=LSBFirstReadLong(image);
-    icon_info.width=LSBFirstReadLong(image);
-    icon_info.height=LSBFirstReadLong(image);
-    icon_info.planes=LSBFirstReadShort(image);
-    icon_info.bits_per_pixel=LSBFirstReadShort(image);
-    icon_info.compression=LSBFirstReadLong(image);
-    icon_info.image_size=LSBFirstReadLong(image);
-    icon_info.x_pixels=LSBFirstReadLong(image);
-    icon_info.y_pixels=LSBFirstReadLong(image);
-    icon_info.number_colors=LSBFirstReadLong(image);
-    icon_info.colors_important=LSBFirstReadLong(image);
+    icon_info.size=ReadBlobLSBLong(image);
+    icon_info.width=ReadBlobLSBLong(image);
+    icon_info.height=ReadBlobLSBLong(image);
+    icon_info.planes=ReadBlobLSBShort(image);
+    icon_info.bits_per_pixel=ReadBlobLSBShort(image);
+    icon_info.compression=ReadBlobLSBLong(image);
+    icon_info.image_size=ReadBlobLSBLong(image);
+    icon_info.x_pixels=ReadBlobLSBLong(image);
+    icon_info.y_pixels=ReadBlobLSBLong(image);
+    icon_info.number_colors=ReadBlobLSBLong(image);
+    icon_info.colors_important=ReadBlobLSBLong(image);
     image->matte=icon_info.bits_per_pixel == 32;
     image->columns=(unsigned int) icon_info.width;
     image->rows=(unsigned int) icon_info.height;
@@ -273,13 +273,13 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           indexes=GetIndexes(image);
           for (x=0; x < ((int) image->columns-7); x+=8)
           {
-            byte=ReadByte(image);
+            byte=ReadBlobByte(image);
             for (bit=0; bit < 8; bit++)
               indexes[x+bit]=(byte & (0x80 >> bit) ? 0x01 : 0x00);
           }
           if ((image->columns % 8) != 0)
             {
-              byte=ReadByte(image);
+              byte=ReadBlobByte(image);
               for (bit=0; bit < (int) (image->columns % 8); bit++)
                 indexes[x+bit]=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
             }
@@ -304,13 +304,13 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           indexes=GetIndexes(image);
           for (x=0; x < ((int) image->columns-1); x+=2)
           {
-            byte=ReadByte(image);
+            byte=ReadBlobByte(image);
             indexes[x]=(byte >> 4) & 0xf;
             indexes[x+1]=(byte) & 0xf;
           }
           if ((image->columns % 2) != 0)
             {
-              byte=ReadByte(image);
+              byte=ReadBlobByte(image);
               indexes[x]=(byte >> 4) & 0xf;
             }
           if (!SyncImagePixels(image))
@@ -334,7 +334,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           indexes=GetIndexes(image);
           for (x=0; x < (int) image->columns; x++)
           {
-            byte=ReadByte(image);
+            byte=ReadBlobByte(image);
             indexes[x]=(IndexPacket) byte;
           }
           if (!SyncImagePixels(image))
@@ -358,9 +358,9 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           indexes=GetIndexes(image);
           for (x=0; x < (int) image->columns; x++)
           {
-            byte=ReadByte(image);
+            byte=ReadBlobByte(image);
             indexes[x]=(IndexPacket) byte;
-            byte=ReadByte(image);
+            byte=ReadBlobByte(image);
             indexes[x]|=byte << 8;
           }
           if (!SyncImagePixels(image))
@@ -384,11 +384,11 @@ static Image *ReadIconImage(const ImageInfo *image_info,
             break;
           for (x=0; x < (int) image->columns; x++)
           {
-            q->blue=ReadByte(image);
-            q->green=ReadByte(image);
-            q->red=ReadByte(image);
+            q->blue=ReadBlobByte(image);
+            q->green=ReadBlobByte(image);
+            q->red=ReadBlobByte(image);
             if (image->matte)
-              q->opacity=ReadByte(image);
+              q->opacity=ReadBlobByte(image);
             q++;
           }
           if (!SyncImagePixels(image))
@@ -415,14 +415,14 @@ static Image *ReadIconImage(const ImageInfo *image_info,
         break;
       for (x=0; x < ((int) image->columns-7); x+=8)
       {
-        byte=ReadByte(image);
+        byte=ReadBlobByte(image);
         for (bit=0; bit < 8; bit++)
           q[x+bit].opacity=
             (byte & (0x80 >> bit) ? TransparentOpacity : OpaqueOpacity);
       }
       if ((image->columns % 8) != 0)
         {
-          byte=ReadByte(image);
+          byte=ReadBlobByte(image);
           for (bit=0; bit < (int) (image->columns % 8); bit++)
             q[x+bit].opacity=
               (byte & (0x80 >> bit) ? TransparentOpacity : OpaqueOpacity);

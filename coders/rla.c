@@ -194,29 +194,29 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
-  rla_info.window.left=MSBFirstReadShort(image);
-  rla_info.window.right=MSBFirstReadShort(image);
-  rla_info.window.bottom=MSBFirstReadShort(image);
-  rla_info.window.top=MSBFirstReadShort(image);
-  rla_info.active_window.left=MSBFirstReadShort(image);
-  rla_info.active_window.right=MSBFirstReadShort(image);
-  rla_info.active_window.bottom=MSBFirstReadShort(image);
-  rla_info.active_window.top=MSBFirstReadShort(image);
-  rla_info.frame=MSBFirstReadShort(image);
-  rla_info.storage_type=MSBFirstReadShort(image);
-  rla_info.number_channels=MSBFirstReadShort(image);
-  rla_info.number_matte_channels=MSBFirstReadShort(image);
+  rla_info.window.left=ReadBlobMSBShort(image);
+  rla_info.window.right=ReadBlobMSBShort(image);
+  rla_info.window.bottom=ReadBlobMSBShort(image);
+  rla_info.window.top=ReadBlobMSBShort(image);
+  rla_info.active_window.left=ReadBlobMSBShort(image);
+  rla_info.active_window.right=ReadBlobMSBShort(image);
+  rla_info.active_window.bottom=ReadBlobMSBShort(image);
+  rla_info.active_window.top=ReadBlobMSBShort(image);
+  rla_info.frame=ReadBlobMSBShort(image);
+  rla_info.storage_type=ReadBlobMSBShort(image);
+  rla_info.number_channels=ReadBlobMSBShort(image);
+  rla_info.number_matte_channels=ReadBlobMSBShort(image);
   if (rla_info.number_channels == 0)
     rla_info.number_channels=3;
   rla_info.number_channels+=rla_info.number_matte_channels;
-  rla_info.number_auxiliary_channels=MSBFirstReadShort(image);
-  rla_info.revision=MSBFirstReadShort(image);
+  rla_info.number_auxiliary_channels=ReadBlobMSBShort(image);
+  rla_info.revision=ReadBlobMSBShort(image);
   (void) ReadBlob(image,16,(char *) rla_info.gamma);
   (void) ReadBlob(image,24,(char *) rla_info.red_primary);
   (void) ReadBlob(image,24,(char *) rla_info.green_primary);
   (void) ReadBlob(image,24,(char *) rla_info.blue_primary);
   (void) ReadBlob(image,24,(char *) rla_info.white_point);
-  rla_info.job_number=(long) MSBFirstReadLong(image);
+  rla_info.job_number=(long) ReadBlobMSBLong(image);
   (void) ReadBlob(image,128,(char *) rla_info.name);
   (void) ReadBlob(image,128,(char *) rla_info.description);
   (void) ReadBlob(image,64,(char *) rla_info.program);
@@ -226,17 +226,17 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ReadBlob(image,24,(char *) rla_info.aspect);
   (void) ReadBlob(image,8,(char *) rla_info.aspect_ratio);
   (void) ReadBlob(image,32,(char *) rla_info.chan);
-  rla_info.field=MSBFirstReadShort(image);
+  rla_info.field=ReadBlobMSBShort(image);
   (void) ReadBlob(image,12,(char *) rla_info.time);
   (void) ReadBlob(image,32,(char *) rla_info.filter);
-  rla_info.bits_per_channel=MSBFirstReadShort(image);
-  rla_info.matte_type=MSBFirstReadShort(image);
-  rla_info.matte_bits=MSBFirstReadShort(image);
-  rla_info.auxiliary_type=MSBFirstReadShort(image);
-  rla_info.auxiliary_bits=MSBFirstReadShort(image);
+  rla_info.bits_per_channel=ReadBlobMSBShort(image);
+  rla_info.matte_type=ReadBlobMSBShort(image);
+  rla_info.matte_bits=ReadBlobMSBShort(image);
+  rla_info.auxiliary_type=ReadBlobMSBShort(image);
+  rla_info.auxiliary_bits=ReadBlobMSBShort(image);
   (void) ReadBlob(image,32,(char *) rla_info.auxiliary);
   (void) ReadBlob(image,36,(char *) rla_info.space);
-  rla_info.next=(long) MSBFirstReadLong(image);
+  rla_info.next=(long) ReadBlobMSBLong(image);
   /*
     Initialize image structure.
   */
@@ -257,7 +257,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read offsets to each scanline data.
   */
   for (i=0; i < (int) image->rows; i++)
-    scanlines[i]=(long) MSBFirstReadLong(image);
+    scanlines[i]=(long) ReadBlobMSBLong(image);
   /*
     Read image data.
   */
@@ -267,10 +267,10 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) SeekBlob(image,scanlines[image->rows-y-1],SEEK_SET);
     for (channel=0; channel < (int) rla_info.number_channels; channel++)
     {
-      length=MSBFirstReadShort(image);
+      length=ReadBlobMSBShort(image);
       while (length > 0)
       {
-        byte=ReadByte(image);
+        byte=ReadBlobByte(image);
         runlength=byte;
         if (byte > 127)
           runlength=byte-256;
@@ -285,7 +285,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             indexes=GetIndexes(image);
             while (runlength < 0)
             {
-              byte=ReadByte(image);
+              byte=ReadBlobByte(image);
               length--;
               switch (channel)
               {
@@ -319,7 +319,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
             continue;
           }
-        byte=ReadByte(image);
+        byte=ReadBlobByte(image);
         length--;
         runlength++;
         do

@@ -182,7 +182,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
   q=pixels;
   for (y=0; y < (int) number_rows; )
   {
-    count=ReadByte(image);
+    count=ReadBlobByte(image);
     if (count == EOF)
       break;
     if (count != 0)
@@ -190,7 +190,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
         /*
           Encoded mode.
         */
-        byte=ReadByte(image);
+        byte=ReadBlobByte(image);
         for (i=0; i < count; i++)
         {
           if (compression == 1)
@@ -205,7 +205,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
         /*
           Escape mode.
         */
-        count=ReadByte(image);
+        count=ReadBlobByte(image);
         if (count == 0x01)
           return(True);
         switch (count)
@@ -225,8 +225,8 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
             /*
               Delta mode.
             */
-            x+=ReadByte(image);
-            y+=ReadByte(image);
+            x+=ReadBlobByte(image);
+            y+=ReadBlobByte(image);
             q=pixels+y*number_columns+x;
             break;
           }
@@ -238,11 +238,11 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
             for (i=0; i < count; i++)
             {
               if (compression == 1)
-                *q++=ReadByte(image);
+                *q++=ReadBlobByte(image);
               else
                 {
                   if ((i & 0x01) == 0)
-                    byte=ReadByte(image);
+                    byte=ReadBlobByte(image);
                   *q++=(i & 0x01) ? (byte & 0x0f) : ((byte >> 4) & 0x0f);
                 }
               x++;
@@ -253,11 +253,11 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
             if (compression == 1)
               {
                 if (count & 0x01)
-                  (void) ReadByte(image);
+                  (void) ReadBlobByte(image);
               }
             else
               if (((count & 0x03) == 1) || ((count & 0x03) == 2))
-                (void) ReadByte(image);
+                (void) ReadBlobByte(image);
             break;
           }
         }
@@ -265,8 +265,8 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
     if (QuantumTick(y,number_rows))
       MagickMonitor(LoadImageText,y,number_rows);
   }
-  (void) ReadByte(image);  /* end of line */
-  (void) ReadByte(image);
+  (void) ReadBlobByte(image);  /* end of line */
+  (void) ReadBlobByte(image);
   return(True);
 }
 
@@ -411,7 +411,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (count == 0)
       break;
     id[4]='\0';
-    chunk_size=LSBFirstReadLong(image);
+    chunk_size=ReadBlobLSBLong(image);
     if (chunk_size & 0x01)
       chunk_size++;
     if (image_info->verbose)
@@ -646,32 +646,32 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if (image_info->verbose)
           (void) fprintf(stdout,"  AVI header\n");
-        avi_info.delay=LSBFirstReadLong(image);
-        avi_info.max_data_rate=LSBFirstReadLong(image);
-        avi_info.pad_granularity=LSBFirstReadLong(image);
-        avi_info.flags=LSBFirstReadLong(image);
-        avi_info.total_frames=LSBFirstReadLong(image);
-        avi_info.initial_frames=LSBFirstReadLong(image);
-        avi_info.number_streams=LSBFirstReadLong(image);
-        avi_info.buffer_size=LSBFirstReadLong(image);
-        avi_info.width=LSBFirstReadLong(image);
-        avi_info.height=LSBFirstReadLong(image);
-        avi_info.time_scale=LSBFirstReadLong(image);
-        avi_info.data_rate=LSBFirstReadLong(image);
-        avi_info.start_time=LSBFirstReadLong(image);
-        avi_info.data_length=LSBFirstReadLong(image);
+        avi_info.delay=ReadBlobLSBLong(image);
+        avi_info.max_data_rate=ReadBlobLSBLong(image);
+        avi_info.pad_granularity=ReadBlobLSBLong(image);
+        avi_info.flags=ReadBlobLSBLong(image);
+        avi_info.total_frames=ReadBlobLSBLong(image);
+        avi_info.initial_frames=ReadBlobLSBLong(image);
+        avi_info.number_streams=ReadBlobLSBLong(image);
+        avi_info.buffer_size=ReadBlobLSBLong(image);
+        avi_info.width=ReadBlobLSBLong(image);
+        avi_info.height=ReadBlobLSBLong(image);
+        avi_info.time_scale=ReadBlobLSBLong(image);
+        avi_info.data_rate=ReadBlobLSBLong(image);
+        avi_info.start_time=ReadBlobLSBLong(image);
+        avi_info.data_length=ReadBlobLSBLong(image);
         continue;
       }
     if (LocaleCompare(id,"idx1") == 0)
       {
         for ( ; chunk_size > 0; chunk_size--)
-          (void) ReadByte(image);
+          (void) ReadBlobByte(image);
         continue;
       }
     if (LocaleCompare(id,"JUNK") == 0)
       {
         for ( ; chunk_size > 0; chunk_size--)
-          (void) ReadByte(image);
+          (void) ReadBlobByte(image);
         continue;
       }
     if (LocaleCompare(id,"LIST") == 0)
@@ -715,18 +715,18 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         if (LocaleCompare(stream_info.data_type,"vids") == 0)
           {
-            bmp_info.size=LSBFirstReadLong(image);
-            bmp_info.width=LSBFirstReadLong(image);
-            bmp_info.height=LSBFirstReadLong(image);
-            bmp_info.planes=LSBFirstReadShort(image);
-            bmp_info.bits_per_pixel=LSBFirstReadShort(image);
+            bmp_info.size=ReadBlobLSBLong(image);
+            bmp_info.width=ReadBlobLSBLong(image);
+            bmp_info.height=ReadBlobLSBLong(image);
+            bmp_info.planes=ReadBlobLSBShort(image);
+            bmp_info.bits_per_pixel=ReadBlobLSBShort(image);
             (void) ReadBlob(image,4,bmp_info.compression);
             bmp_info.compression[4]='\0';
-            bmp_info.image_size=LSBFirstReadLong(image);
-            bmp_info.x_pixels=LSBFirstReadLong(image);
-            bmp_info.y_pixels=LSBFirstReadLong(image);
-            bmp_info.number_colors=LSBFirstReadLong(image);
-            bmp_info.important_colors=LSBFirstReadLong(image);
+            bmp_info.image_size=ReadBlobLSBLong(image);
+            bmp_info.x_pixels=ReadBlobLSBLong(image);
+            bmp_info.y_pixels=ReadBlobLSBLong(image);
+            bmp_info.number_colors=ReadBlobLSBLong(image);
+            bmp_info.important_colors=ReadBlobLSBLong(image);
             chunk_size-=40;
             number_colors=bmp_info.number_colors;
             if ((number_colors == 0) && (bmp_info.bits_per_pixel <= 8))
@@ -740,15 +740,15 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     "Memory allocation failed",image);
                 for (i=0; i < number_colors; i++)
                 {
-                  colormap[i].blue=ReadByte(image);
-                  colormap[i].green=ReadByte(image);
-                  colormap[i].red=ReadByte(image);
-                  (void) ReadByte(image);
+                  colormap[i].blue=ReadBlobByte(image);
+                  colormap[i].green=ReadBlobByte(image);
+                  colormap[i].red=ReadBlobByte(image);
+                  (void) ReadBlobByte(image);
                   chunk_size-=4;
                 }
               }
             for ( ; chunk_size > 0; chunk_size--)
-              (void) ReadByte(image);
+              (void) ReadBlobByte(image);
             if (image_info->verbose)
               (void) fprintf(stdout,"Video compression: %s\n",
                 bmp_info.compression);
@@ -764,20 +764,20 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         stream_info.data_type[4]='\0';
         (void) ReadBlob(image,4,stream_info.data_handler);
         stream_info.data_handler[4]='\0';
-        stream_info.flags=LSBFirstReadLong(image);
-        stream_info.priority=LSBFirstReadLong(image);
-        stream_info.initial_frames=LSBFirstReadLong(image);
-        stream_info.time_scale=LSBFirstReadLong(image);
-        stream_info.data_rate=LSBFirstReadLong(image);
-        stream_info.start_time=LSBFirstReadLong(image);
-        stream_info.data_length=LSBFirstReadLong(image);
-        stream_info.buffer_size=LSBFirstReadLong(image);
-        stream_info.quality=LSBFirstReadLong(image);
-        stream_info.sample_size=LSBFirstReadLong(image);
+        stream_info.flags=ReadBlobLSBLong(image);
+        stream_info.priority=ReadBlobLSBLong(image);
+        stream_info.initial_frames=ReadBlobLSBLong(image);
+        stream_info.time_scale=ReadBlobLSBLong(image);
+        stream_info.data_rate=ReadBlobLSBLong(image);
+        stream_info.start_time=ReadBlobLSBLong(image);
+        stream_info.data_length=ReadBlobLSBLong(image);
+        stream_info.buffer_size=ReadBlobLSBLong(image);
+        stream_info.quality=ReadBlobLSBLong(image);
+        stream_info.sample_size=ReadBlobLSBLong(image);
         if (chunk_size & 0x01)
           chunk_size++;
         for (chunk_size-=48; chunk_size > 0; chunk_size--)
-          (void) ReadByte(image);
+          (void) ReadBlobByte(image);
         if (image_info->verbose)
           (void) fprintf(stdout,"AVI Test handler: %s\n",
             stream_info.data_handler);
@@ -786,7 +786,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (LocaleCompare(id,"vedt") == 0)
       {
         for ( ; chunk_size > 0; chunk_size--)
-          (void) ReadByte(image);
+          (void) ReadBlobByte(image);
         continue;
       }
     FormatString(message,"AVI support for chunk %.1024s not yet available",id);

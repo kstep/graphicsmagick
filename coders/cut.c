@@ -316,16 +316,16 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read CUT image.
   */
-   Header.Width=LSBFirstReadShort(image);
-   Header.Height=LSBFirstReadShort(image);
-   Header.Reserved=LSBFirstReadShort(image);
+   Header.Width=ReadBlobLSBShort(image);
+   Header.Height=ReadBlobLSBShort(image);
+   Header.Reserved=ReadBlobLSBShort(image);
 
    if (Header.Width==0 || Header.Height==0 || Header.Reserved!=0)
 CUT_KO:  ThrowReaderException(CorruptImageWarning,"Not a CUT image file",image);
 
 /*---This code checks first line of image---*/
-  EncodedByte=LSBFirstReadShort(image);
-  RunCount=ReadByte(image);
+  EncodedByte=ReadBlobLSBShort(image);
+  RunCount=ReadBlobByte(image);
   RunCountMasked=RunCount & 0x7F;
   ldblk=0;
   while(RunCountMasked>0)	/*end of line?*/
@@ -337,7 +337,7 @@ CUT_KO:  ThrowReaderException(CorruptImageWarning,"Not a CUT image file",image);
 	EncodedByte-=i+1;
 	ldblk+=RunCountMasked;
 
-	RunCount=ReadByte(image);
+	RunCount=ReadBlobByte(image);
 	if(EOFBlob(image))  goto CUT_KO;	/*wrong data: unexpected eof in line*/
 	RunCountMasked=RunCount & 0x7F;
 	}
@@ -405,16 +405,16 @@ ErasePalette:
    {
    ReadBlob(palette,2,PalHeader.FileId);
    if(strncmp(PalHeader.FileId,"AH",2)) goto ErasePalette;
-   PalHeader.Version=LSBFirstReadShort(palette);
-   PalHeader.Size=LSBFirstReadShort(palette);
-   PalHeader.FileType=ReadByte(palette);
-   PalHeader.SubType=ReadByte(palette);
-   PalHeader.BoardID=LSBFirstReadShort(palette);
-   PalHeader.GraphicsMode=LSBFirstReadShort(palette);
-   PalHeader.MaxIndex=LSBFirstReadShort(palette);
-   PalHeader.MaxRed=LSBFirstReadShort(palette);
-   PalHeader.MaxGreen=LSBFirstReadShort(palette);
-   PalHeader.MaxBlue=LSBFirstReadShort(palette);
+   PalHeader.Version=ReadBlobLSBShort(palette);
+   PalHeader.Size=ReadBlobLSBShort(palette);
+   PalHeader.FileType=ReadBlobByte(palette);
+   PalHeader.SubType=ReadBlobByte(palette);
+   PalHeader.BoardID=ReadBlobLSBShort(palette);
+   PalHeader.GraphicsMode=ReadBlobLSBShort(palette);
+   PalHeader.MaxIndex=ReadBlobLSBShort(palette);
+   PalHeader.MaxRed=ReadBlobLSBShort(palette);
+   PalHeader.MaxGreen=ReadBlobLSBShort(palette);
+   PalHeader.MaxBlue=ReadBlobLSBShort(palette);
    ReadBlob(palette,20,PalHeader.PaletteId);
    
    if(PalHeader.MaxIndex<1) goto ErasePalette;
@@ -433,19 +433,19 @@ ErasePalette:
 	       j=((j / 512)+1)*512;
 	       SeekBlob(palette,j,SEEK_SET);
 	       }
-	   image->colormap[i].red=LSBFirstReadShort(palette);
+	   image->colormap[i].red=ReadBlobLSBShort(palette);
 	   if(MaxRGB!=PalHeader.MaxRed) 
 	       {
 	       image->colormap[i].red=(Quantum)
 	         (((unsigned long)image->colormap[i].red*MaxRGB+(PalHeader.MaxRed>>1))/PalHeader.MaxRed);
 	       }
-	   image->colormap[i].green=LSBFirstReadShort(palette);
+	   image->colormap[i].green=ReadBlobLSBShort(palette);
 	   if(MaxRGB!=PalHeader.MaxGreen) 
 	       {
 	       image->colormap[i].green=(Quantum)
 	         (((unsigned long)image->colormap[i].green*MaxRGB+(PalHeader.MaxGreen>>1))/PalHeader.MaxGreen);
 	       }
-	   image->colormap[i].blue=LSBFirstReadShort(palette);       
+	   image->colormap[i].blue=ReadBlobLSBShort(palette);       
 	   if(MaxRGB!=PalHeader.MaxBlue)  
 	       {
 	       image->colormap[i].blue=(Quantum)
@@ -484,12 +484,12 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
  SeekBlob(image,6 /*sizeof(Header)*/,SEEK_SET);
  for(i=0;i<Header.Height;i++)
       {
-      EncodedByte=LSBFirstReadShort(image);
+      EncodedByte=ReadBlobLSBShort(image);
 
       ptrB=BImgBuff;
       j=ldblk;
 
-      RunCount=ReadByte(image);
+      RunCount=ReadBlobByte(image);
       RunCountMasked=RunCount & 0x7F;
 
       while(RunCountMasked>0)  	
@@ -505,7 +505,7 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 
 		if(RunCount>0x80)
 			{
-			RunValue=ReadByte(image);
+			RunValue=ReadBlobByte(image);
 			memset(ptrB,RunValue,RunCountMasked);
 			}
 		else {
@@ -516,7 +516,7 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 		j-=RunCountMasked;     
     
 		if(EOFBlob(image)) goto Finish;	/* wrong data: unexpected eof in line */
-		RunCount=ReadByte(image);
+		RunCount=ReadBlobByte(image);
 		RunCountMasked=RunCount & 0x7F;
     		}
 

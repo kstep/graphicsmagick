@@ -266,10 +266,10 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
   /*
     UIL header.
   */
-  (void) WriteStringBlob(image,"/* UIL */\n");
+  (void) WriteBlobString(image,"/* UIL */\n");
   FormatString(buffer,"value\n  %.1024s_ct : color_table(\n",
     BaseFilename(image->filename));
-  (void) WriteStringBlob(image,buffer);
+  (void) WriteBlobString(image,buffer);
   for (i=0; i < (int) colors; i++)
   {
     /*
@@ -296,9 +296,9 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
       FormatString(buffer,"    color('%.1024s',%.1024s) = '%.1024s'",
         name,Intensity(*p) < (0.5*(MaxRGB+1)) ? "background" : "foreground",
         symbol);
-    (void) WriteStringBlob(image,buffer);
+    (void) WriteBlobString(image,buffer);
     FormatString(buffer,"%.1024s",(i == (int) (colors-1) ? ");\n" : ",\n"));
-    (void) WriteStringBlob(image,buffer);
+    (void) WriteBlobString(image,buffer);
   }
   /*
     Define UIL pixels.
@@ -306,14 +306,14 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
   FormatString(buffer,
     "  %.1024s_icon : icon(color_table = %.1024s_ct,\n",
     BaseFilename(image->filename),BaseFilename(image->filename));
-  (void) WriteStringBlob(image,buffer);
+  (void) WriteBlobString(image,buffer);
   for (y=0; y < (int) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    (void) WriteStringBlob(image,"    \"");
+    (void) WriteBlobString(image,"    \"");
     for (x=0; x < (int) image->columns; x++)
     {
       k=indexes[x] % MaxCixels;
@@ -325,12 +325,12 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
       }
       symbol[j]='\0';
       FormatString(buffer,"%.1024s",symbol);
-      (void) WriteStringBlob(image,buffer);
+      (void) WriteBlobString(image,buffer);
       p++;
     }
     FormatString(buffer,"\"%.1024s\n",
       (y == (int) (image->rows-1) ? ");" : ","));
-    (void) WriteStringBlob(image,buffer);
+    (void) WriteBlobString(image,buffer);
     if (QuantumTick(y,image->rows))
       MagickMonitor(SaveImageText,y,image->rows);
   }

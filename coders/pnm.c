@@ -147,7 +147,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
   */
   do
   {
-    c=ReadByte(image);
+    c=ReadBlobByte(image);
     if (c == EOF)
       return(0);
     if (c == '#')
@@ -182,7 +182,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
                   break;
                 p=comment+Extent(comment);
               }
-            c=ReadByte(image);
+            c=ReadBlobByte(image);
             *p=c;
             *(p+1)='\0';
           }
@@ -206,7 +206,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
   {
     value*=10;
     value+=c-'0';
-    c=ReadByte(image);
+    c=ReadBlobByte(image);
     if (c == EOF)
       return(0);
   }
@@ -279,7 +279,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Initialize image structure.
     */
-    format=ReadByte(image);
+    format=ReadBlobByte(image);
     if (format == '7')
       (void) PNMInteger(image,10);
     image->columns=PNMInteger(image,10);
@@ -451,7 +451,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (x=0; x < (int) image->columns; x++)
           {
             if (bit == 0)
-              byte=ReadByte(image);
+              byte=ReadBlobByte(image);
             index=(byte & 0x80) ? 0 : 1;
             indexes[x]=index;
             *q++=image->colormap[index];
@@ -846,7 +846,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
       }
     else
       FormatString(buffer,"P%c\n",format);
-    (void) WriteStringBlob(image,buffer);
+    (void) WriteBlobString(image,buffer);
     attribute=GetImageAttribute(image,"Comment");
     if (attribute != (ImageAttribute *) NULL)
       {
@@ -856,19 +856,19 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Write comments to file.
         */
-        (void) WriteByteBlob(image,'#');
+        (void) WriteBlobByte(image,'#');
         for (p=attribute->value; *p != '\0'; p++)
         {
-          (void) WriteByteBlob(image,*p);
+          (void) WriteBlobByte(image,*p);
           if ((*p == '\n') && (*(p+1) != '\0'))
-            (void) WriteByteBlob(image,'#');
+            (void) WriteBlobByte(image,'#');
         }
-        (void) WriteByteBlob(image,'\n');
+        (void) WriteBlobByte(image,'\n');
       }
     if (format != '7')
       {
         FormatString(buffer,"%u %u\n",image->columns,image->rows);
-        (void) WriteStringBlob(image,buffer);
+        (void) WriteBlobString(image,buffer);
       }
     /*
       Convert runlength encoded to PNM raster pixels.
@@ -897,11 +897,11 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (int) image->columns; x++)
           {
             FormatString(buffer,"%d ",(int) (indexes[x] == polarity));
-            (void) WriteStringBlob(image,buffer);
+            (void) WriteBlobString(image,buffer);
             i++;
             if (i == 36)
               {
-                (void) WriteByteBlob(image,'\n');
+                (void) WriteBlobByte(image,'\n');
                 i=0;
               }
           }
@@ -917,7 +917,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           Convert image to a PGM image.
         */
         FormatString(buffer,"%ld\n",MaxRGB);
-        (void) WriteStringBlob(image,buffer);
+        (void) WriteBlobString(image,buffer);
         i=0;
         for (y=0; y < (int) image->rows; y++)
         {
@@ -928,11 +928,11 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           {
             index=(short unsigned int) Intensity(*p);
             FormatString(buffer,"%d ",index);
-            (void) WriteStringBlob(image,buffer);
+            (void) WriteBlobString(image,buffer);
             i++;
             if (i == 12)
               {
-                (void) WriteByteBlob(image,'\n');
+                (void) WriteBlobByte(image,'\n');
                 i=0;
               }
             p++;
@@ -949,7 +949,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           Convert image to a PNM image.
         */
         FormatString(buffer,"%ld\n",MaxRGB);
-        (void) WriteStringBlob(image,buffer);
+        (void) WriteBlobString(image,buffer);
         i=0;
         for (y=0; y < (int) image->rows; y++)
         {
@@ -959,11 +959,11 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (int) image->columns; x++)
           {
             FormatString(buffer,"%d %d %d ",p->red,p->green,p->blue);
-            (void) WriteStringBlob(image,buffer);
+            (void) WriteBlobString(image,buffer);
             i++;
             if (i == 4)
               {
-                (void) WriteByteBlob(image,'\n');
+                (void) WriteBlobByte(image,'\n');
                 i=0;
               }
             p++;
@@ -1004,14 +1004,14 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             bit++;
             if (bit == 8)
               {
-                (void) WriteByteBlob(image,byte);
+                (void) WriteBlobByte(image,byte);
                 bit=0;
                 byte=0;
               }
             p++;
           }
           if (bit != 0)
-            (void) WriteByteBlob(image,byte << (8-bit));
+            (void) WriteBlobByte(image,byte << (8-bit));
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               MagickMonitor(SaveImageText,y,image->rows);
@@ -1024,7 +1024,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           Convert image to a PGM image.
         */
         FormatString(buffer,"%lu\n",DownScale(MaxRGB));
-        (void) WriteStringBlob(image,buffer);
+        (void) WriteBlobString(image,buffer);
         for (y=0; y < (int) image->rows; y++)
         {
           p=GetImagePixels(image,0,y,image->columns,1);
@@ -1033,7 +1033,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (int) image->columns; x++)
           {
             index=(short unsigned int) DownScale(Intensity(*p)+0.5);
-            (void) WriteByteBlob(image,index);
+            (void) WriteBlobByte(image,index);
             p++;
           }
           if (image->previous == (Image *) NULL)
@@ -1062,7 +1062,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           Convert image to a PNM image.
         */
         FormatString(buffer,"%lu\n",DownScale(MaxRGB));
-        (void) WriteStringBlob(image,buffer);
+        (void) WriteBlobString(image,buffer);
         for (y=0; y < (int) image->rows; y++)
         {
           p=GetImagePixels(image,0,y,image->columns,1);
@@ -1161,9 +1161,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a P7 image.
         */
-        (void) WriteStringBlob(image,"#END_OF_COMMENTS\n");
+        (void) WriteBlobString(image,"#END_OF_COMMENTS\n");
         FormatString(buffer,"%u %u 255\n",image->columns,image->rows);
-        (void) WriteStringBlob(image,buffer);
+        (void) WriteBlobString(image,buffer);
         i=0;
         j=0;
         for (y=0; y < (int) image->rows; y++)
@@ -1181,7 +1181,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
               pixel=((red_map[i][j][DownScale(p->red)] & 0xe0) |
                 ((green_map[i][j][DownScale(p->green)] & 0xe0) >> 3) |
                 ((blue_map[i][j][DownScale(p->blue)] & 0xc0) >> 6));
-            (void) WriteByteBlob(image,pixel);
+            (void) WriteBlobByte(image,pixel);
             p++;
             j++;
             if (j == 16)
