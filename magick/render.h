@@ -196,6 +196,9 @@ typedef struct _DrawInfo
   double
     stroke_width;
 
+  GradientInfo
+    gradient;
+
   Image
     *fill_pattern,
     *tile,
