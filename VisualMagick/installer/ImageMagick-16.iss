@@ -849,7 +849,7 @@ Source: "..\..\Magick++\lib\Magick++\TypeMetric.h"; DestDir: "{app}\include\Magi
 ; Magick++ demos
 Source: "Magick++_Demo\*.dsw"; DestDir: "{app}\Magick++_Demo"; CopyMode: alwaysoverwrite
 Source: "Magick++_Demo\*.dsp"; DestDir: "{app}\Magick++_Demo"; CopyMode: alwaysoverwrite
-Source: "..\..\Magick++\demo\*.bat"; DestDir: "{app}\Magick++_Demo"; CopyMode: alwaysoverwrite
+Source: "Magick++_Demo\*.bat"; DestDir: "{app}\Magick++_Demo"; CopyMode: alwaysoverwrite
 Source: "..\..\Magick++\demo\*.cpp"; DestDir: "{app}\Magick++_Demo"; CopyMode: alwaysoverwrite
 Source: "..\..\Magick++\demo\*.miff"; DestDir: "{app}\Magick++_Demo"; CopyMode: alwaysoverwrite
 

@@ -15,3 +15,8 @@ For your convenience, the full content of the ImageMagick web site has been
 installed on your computer. This is available from the Windows start menu via
 "ImageMagick 5.4.9" -> "ImageMagick Web Pages".
 
+For C and C++ developers who would like to be able to use the DLLs provided
+with this package, link libraries and header files are provide in the 'lib'
+and 'include' subdirectories of the installation directory. Demonstration
+project files and source files for Magick++ may be found in the Magick++_Demo
+subdirectory. Build these via the Magick++_Demo.dsw workspace file.
