@@ -229,7 +229,6 @@ static int MvgPrintf(DrawContext context, const char *format, ...)
         *(context->mvg + context->mvg_length) = 0;
         context->mvg_width = context->indent_depth;
       }
-
     va_start(argp, format);
 #if !defined(HAVE_VSNPRINTF)
     str_length = vsprintf(context->mvg + context->mvg_length, format, argp);
@@ -1030,7 +1029,7 @@ MagickExport void DrawComposite(DrawContext context,
 
   size_t
     blob_length = 2048,
-    encode_length = 0;
+    encoded_length = 0;
 
   assert(context != (DrawContext)NULL);
   assert(image != (Image *) NULL);
@@ -1054,7 +1053,7 @@ MagickExport void DrawComposite(DrawContext context,
   if(!blob)
     return;
 
-  base64 = Base64Encode(blob,blob_length,&encode_length);
+  base64 = Base64Encode(blob,blob_length,&encoded_length);
   LiberateMemory((void**)&blob);
   if(!base64)
     {
@@ -1178,7 +1177,7 @@ MagickExport void DrawComposite(DrawContext context,
       MvgPrintf(context, "image %s %.4g,%.4g %.4g,%.4g 'data:%s;base64,\n",
                 mode, x, y, width, height, media_type);
 
-      remaining = strlen(base64);
+      remaining = encoded_length;
       for( str = base64; remaining > 0; )
         {
           MvgPrintf(context,"%.76s", str);
