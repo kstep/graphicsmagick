@@ -914,7 +914,7 @@ MagickExport unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   /*
     Write image as CCITTFax4 TIFF image to a temporary file.
   */
-  assert(image_info != (ImageInfo *) NULL);
+  assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -987,9 +987,11 @@ MagickExport unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   return(True);
 }
 #else
-MagickExport unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
+MagickExport unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   Image *image)
 {
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   ThrowBinaryException(MissingDelegateWarning,"TIFF library is not available",

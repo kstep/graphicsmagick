@@ -369,7 +369,7 @@ MagickExport unsigned int AnimateImages(const ImageInfo *image_info,
   XResourceInfo
     resource;
 
-  assert(image_info != (ImageInfo *) NULL);
+  assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -390,7 +390,7 @@ MagickExport unsigned int AnimateImages(const ImageInfo *image_info,
 MagickExport unsigned int AnimateImages(const ImageInfo *image_info,
   Image *image)
 {
-  assert(image_info != (ImageInfo *) NULL);
+  assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -864,7 +864,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned long columns,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  clone_image=AllocateImage((const ImageInfo *) NULL);
+  clone_image=AllocateImage((ImageInfo *) NULL);
   *clone_image=(*image);
   clone_image->reference_count=1;
   clone_image->montage=(char *) NULL;
@@ -2459,7 +2459,7 @@ MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
   XResourceInfo
     resource;
 
-  assert(image_info != (ImageInfo *) NULL);
+  assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2486,7 +2486,7 @@ MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
 MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
   Image *image)
 {
-  assert(image_info != (ImageInfo *) NULL);
+  assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -3315,7 +3315,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
   /*
     Verify option length.
   */
-  assert(image_info != (ImageInfo *) NULL);
+  assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(image != (Image **) NULL);
   assert((*image)->signature == MagickSignature);
@@ -4899,7 +4899,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
     number_images,
     status;
 
-  assert(image_info != (ImageInfo *) NULL);
+  assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(images != (Image **) NULL);
   assert((*images)->signature == MagickSignature);
