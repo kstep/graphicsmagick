@@ -12,6 +12,10 @@
 	* PerlMagick/Makefile.PL.in: Perform substitutions
 	on generated Makefile to ensure that the proper
 	-lGraphicsMagick is used for a static build.
+	* ttf: Updated to FreeType 2.1.4.  Now stored in
+	CVS as delegates/freetype2 rather than delegates/ttf
+	so be sure to re-checkout the ttf directory so that
+	the correct files are used.
 
 2003-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

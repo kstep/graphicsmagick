@@ -92,7 +92,7 @@ FT_BEGIN_HEADER
   /*         file "ftconfig.h" either statically, or through Autoconf      */
   /*         on platforms that support it.                                 */
   /*                                                                       */
-#undef  FT_CONFIG_OPTION_FORCE_INT64
+#define  FT_CONFIG_OPTION_FORCE_INT64
 
 
   /*************************************************************************/
@@ -108,7 +108,7 @@ FT_BEGIN_HEADER
   /*   this will however force you to link the zlib to any program that    */
   /*   also uses FreeType.                                                 */
   /*                                                                       */
-#define FT_CONFIG_OPTION_USE_ZLIB
+/* #define FT_CONFIG_OPTION_USE_ZLIB */
 
 
   /*************************************************************************/
@@ -170,6 +170,43 @@ FT_BEGIN_HEADER
 /* #define  FT_EXPORT(x)       extern x */
 /* #define  FT_EXPORT_DEF(x)   x */
 
+#undef FT_EXPORT
+#undef FT_EXPORT_DEF
+
+#if defined(_VISUALC_)
+#ifndef  FT_EXPORT_DEF
+#       if defined(_MT) && defined(_DLL) && !defined(_TTFDLL_) && !defined(_LIB)
+#               define _TTFDLL_
+#       endif
+#       if defined(_TTFDLL_)
+#               pragma warning( disable: 4273 ) /* Disable the stupid dll linkage warnings */
+#               if !defined(_TTFLIB_)
+#     define FT_EXPORT_DEF( x ) __declspec(dllimport) x
+#     define FT_EXPORT( x ) __declspec(dllimport) x
+#               else
+#     define FT_EXPORT_DEF( x ) __declspec(dllexport) x
+#     define FT_EXPORT( x ) __declspec(dllexport) x
+#               endif
+#       else
+#   define FT_EXPORT_DEF( x ) extern x
+#   define FT_EXPORT( x ) extern x
+#       endif
+
+#pragma warning(disable : 4018)
+#pragma warning(disable : 4244)
+#pragma warning(disable : 4142)
+#endif
+
+#else
+#ifndef  FT_EXPORT_DEF
+#define  FT_EXPORT_DEF( x )   extern  x
+#endif
+
+#ifndef  FT_EXPORT_FUNC
+#define  FT_EXPORT_FUNC( x )  extern  x
+#endif
+
+#endif
 
   /*************************************************************************/
   /*                                                                       */
@@ -378,7 +415,7 @@ FT_BEGIN_HEADER
   /*   do not #undef this macro here, since the build system might         */
   /*   define for certain configurations                                   */
   /*                                                                       */
-/* #define  TT_CONFIG_OPTION_BYTECODE_INTERPRETER */
+#define TT_CONFIG_OPTION_BYTECODE_INTERPRETER
 
 
   /*************************************************************************/
