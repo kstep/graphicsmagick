@@ -5392,7 +5392,9 @@ Mogrify(ref,...)
         {
           if (attribute_flag[0])
             image->fuzz=argument_list[0].double_reference;
-          TransformImage(&image,"0x0",(char *) NULL);
+          flags=GetGeometry("0x0",&geometry.x,&geometry.y,
+            &geometry.width,&geometry.height);
+          image=CropImage(image,&geometry,exception);
           break;
         }
         case 60:  /* Wave */
