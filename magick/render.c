@@ -4452,7 +4452,8 @@ static void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
 
   PointInfo
     center,
-    points[3];
+    points[3],
+    radii;
 
   register double
     cosine,
@@ -4467,15 +4468,17 @@ static void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
   unsigned long
     arc_segments;
 
-  primitive_info->coordinates=0;
-  if ((arc.x == 0.0) || (arc.y == 0.0))
-    return;
+  radii=arc;
+  if (radii.x == 0.0)
+    radii.x=MagickEpsilon;
+  if (radii.y == 0.0)
+    radii.y=MagickEpsilon;
   cosine=cos(DegreesToRadians(angle));
   sine=sin(DegreesToRadians(angle));
-  points[0].x=cosine*start.x/arc.x+sine*start.y/arc.x;
-  points[0].y=cosine*start.y/arc.y-sine*start.x/arc.y;
-  points[1].x=cosine*end.x/arc.x+sine*end.y/arc.x;
-  points[1].y=cosine*end.y/arc.y-sine*end.x/arc.y;
+  points[0].x=cosine*start.x/radii.x+sine*start.y/radii.x;
+  points[0].y=cosine*start.y/radii.y-sine*start.x/radii.y;
+  points[1].x=cosine*end.x/radii.x+sine*end.y/radii.x;
+  points[1].y=cosine*end.y/radii.y-sine*end.x/radii.y;
   alpha=points[1].x-points[0].x;
   beta=points[1].y-points[0].y;
   factor=1.0/(alpha*alpha+beta*beta)-0.25;
@@ -4513,12 +4516,12 @@ static void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
     points[1].y=points[2].y-gamma*cos((alpha+(i+1)*theta/arc_segments));
     p->point.x=(p == primitive_info) ? start.x : (p-1)->point.x;
     p->point.y=(p == primitive_info) ? start.y : (p-1)->point.y;
-    (p+1)->point.x=cosine*arc.x*points[0].x-sine*arc.y*points[0].y;
-    (p+1)->point.y=sine*arc.x*points[0].x+cosine*arc.y*points[0].y;
-    (p+2)->point.x=cosine*arc.x*points[1].x-sine*arc.y*points[1].y;
-    (p+2)->point.y=sine*arc.x*points[1].x+cosine*arc.y*points[1].y;
-    (p+3)->point.x=cosine*arc.x*points[2].x-sine*arc.y*points[2].y;
-    (p+3)->point.y=sine*arc.x*points[2].x+cosine*arc.y*points[2].y;
+    (p+1)->point.x=cosine*radii.x*points[0].x-sine*radii.y*points[0].y;
+    (p+1)->point.y=sine*radii.x*points[0].x+cosine*radii.y*points[0].y;
+    (p+2)->point.x=cosine*radii.x*points[1].x-sine*radii.y*points[1].y;
+    (p+2)->point.y=sine*radii.x*points[1].x+cosine*radii.y*points[1].y;
+    (p+3)->point.x=cosine*radii.x*points[2].x-sine*radii.y*points[2].y;
+    (p+3)->point.y=sine*radii.x*points[2].x+cosine*radii.y*points[2].y;
     if (i == (long) (arc_segments-1))
       (p+3)->point=end;
     TraceBezier(p,4);
