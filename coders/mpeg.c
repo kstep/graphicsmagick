@@ -685,8 +685,6 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
     Free resources.
   */
   count=0;
-  if (!logging)
-  {
   for (p=coalesce_image; p != (Image *) NULL; p=p->next)
   {
     for (i=0; i < (long) Max((p->delay+1)/3,1); i++)
