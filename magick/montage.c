@@ -455,8 +455,8 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
   clone_info->border_color=montage_info->border_color;
   annotate_info=CloneAnnotateInfo(clone_info,(AnnotateInfo *) NULL);
   annotate_info->gravity=NorthGravity;
-  (void) GetFontMetrics(annotate_info,&font_info);
-  font_height=(font_info.y2-font_info.y1+1.0);
+  font_height=AffineExpansion(&annotate_info->affine)*
+    annotate_info->pointsize;
   texture=(Image *) NULL;
   if (montage_info->texture != (char *) NULL)
     {
@@ -466,6 +466,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
   /*
     Determine the number of lines in an next label.
   */
+  title=TranslateText(clone_info,image,montage_info->title);
   title_offset=0;
   if (montage_info->title != (char *) NULL)
     title_offset=2*font_height*MultilineCensus(title)+2*tile_info.y;
@@ -798,7 +799,6 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
   if (texture != (Image *) NULL)
     LiberateMemory((void **) &texture);
   LiberateMemory((void **) &master_list);
-  LiberateMemory((void **) &title);
   DestroyAnnotateInfo(annotate_info);
   DestroyImageInfo(clone_info);
   while (montage_next->previous != (Image *) NULL)
