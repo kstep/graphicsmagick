@@ -247,8 +247,15 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
   register PixelPacket
     *q;
 
+  register unsigned char
+    *p;
+
+  unsigned char
+    *pixels;
+
   unsigned int
     max_value,
+    packets,
     status;
 
   /*
@@ -478,17 +485,28 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
         /*
           Convert PGM raw image to pixel packets.
         */
+        packets=max_value <= MaxRawValue ? 1 : 2;
+        pixels=(unsigned char *) AllocateMemory(packets*image->columns);
+        if (pixels == (unsigned char *) NULL)
+          ReaderExit(CorruptImageWarning,"Unable to allocate memory",image);
         for (y=0; y < (int) image->rows; y++)
         {
+          status=ReadBlob(image,packets*image->columns,pixels);
+          if (status == False)
+            ReaderExit(CorruptImageWarning,"Unable to read image data",image);
+          p=pixels;
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           for (x=0; x < (int) image->columns; x++)
           {
             if (max_value <= MaxRawValue)
-              index=ReadByte(image);
+              index=(*p++);
             else
-              index=LSBFirstReadShort(image);
+              {
+                index=(*p++) << 8;
+                index|=(*p++);
+              }
             if (index >= image->colors)
               ReaderExit(CorruptImageWarning,"invalid colormap index",image);
             image->indexes[x]=index;
@@ -500,6 +518,7 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
         }
+        FreeMemory(pixels);
         break;
       }
       case '6':
@@ -507,8 +526,16 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
         /*
           Convert PNM raster image to pixel packets.
         */
+        packets=max_value <= MaxRawValue ? 3 : 6;
+        pixels=(unsigned char *) AllocateMemory(packets*image->columns);
+        if (pixels == (unsigned char *) NULL)
+          ReaderExit(CorruptImageWarning,"Unable to allocate memory",image);
         for (y=0; y < (int) image->rows; y++)
         {
+          status=ReadBlob(image,packets*image->columns,pixels);
+          if (status == False)
+            ReaderExit(CorruptImageWarning,"Unable to read image data",image);
+          p=pixels;
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
@@ -516,15 +543,18 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
           {
             if (max_value <= MaxRawValue)
               {
-                red=ReadByte(image);
-                green=ReadByte(image);
-                blue=ReadByte(image);
+                red=(*p++);
+                green=(*p++);
+                blue=(*p++);
               }
             else
               {
-                red=LSBFirstReadShort(image);
-                green=LSBFirstReadShort(image);
-                blue=LSBFirstReadShort(image);
+                red=(*p++) << 8;
+                red|=(*p++);
+                green=(*p++) << 8;
+                green|=(*p++);
+                blue=(*p++) << 8;
+                blue|=(*p++);
               }
             if (scale != (Quantum *) NULL)
               {
@@ -543,6 +573,7 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
         }
+        FreeMemory(pixels);
         handler=SetMonitorHandler((MonitorHandler) NULL);
         (void) SetMonitorHandler(handler);
         break;

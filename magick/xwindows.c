@@ -1649,7 +1649,7 @@ Export void XDisplayImageInfo(Display *display,
   /*
     Read the information from the file to a string.
   */
-  (void) fseek(file,0L,SEEK_SET);
+  (void) rewind(file);
   length=MaxTextExtent;
   text=(char *) AllocateMemory(length);
   for (p=text; text != (char *) NULL; p++)

@@ -330,7 +330,7 @@ Export Image *ReadPSImage(const ImageInfo *image_info)
       (void) fclose(file);
       return((Image *) NULL);
     }
-  (void) fseek(file,0L,SEEK_SET);
+  (void) rewind(file);
   (void) fputs(translate_geometry,file);
   (void) fclose(file);
   CloseBlob(image);

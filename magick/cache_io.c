@@ -74,8 +74,8 @@ typedef struct _CacheInfo
   char
     filename[MaxTextExtent];
 
-  FILE
-    *file;
+  int
+    file;
 
   ClassType
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -154,6 +154,9 @@ Export unsigned int AllocateCache(Cache cache,const ClassType type,
   CacheInfo
     *cache_info;
 
+  char
+    zero = 0;
+
   int
     status;
 
@@ -208,34 +211,25 @@ Export unsigned int AllocateCache(Cache cache,const ClassType type,
             Create pixel cache on disk.
           */
           TemporaryFilename(filename);
-          cache_info->file=fopen(filename,"wb+");
-          if (cache_info->file != (FILE *) NULL)
+          cache_info->file=open(filename,O_RDWR | O_CREAT | O_EXCL,0644);
+          if (cache_info->file == -1)
+            return(False);
+          offset=lseek(cache_info->file,length-1,SEEK_SET);
+          (void) write(cache_info->file,&zero,1);
+          (void) close(cache_info->file);
+          cache_info->file=(-1);
+          if (offset == -1)
+            return(False);
+          (void) strcpy(cache_info->filename,filename);
+          cache_info->class=type;
+          cache_info->pixels=(PixelPacket *)
+            MapBlob(cache_info->filename,IOMode,&sans);
+          if (cache_info->pixels != (PixelPacket *) NULL)
             {
-              status=fseek(cache_info->file,length-1,SEEK_SET);
-              if (status != 0)
-                return(False);
-              cache_info->class=DirectClass;
-              (void) strcpy(cache_info->filename,filename);
-              (void) fputc(0,cache_info->file);
-              (void) fclose(cache_info->file);
-              cache_info->file=(FILE *) NULL;
-              cache_info->pixels=(PixelPacket *)
-                MapBlob(cache_info->filename,IOMode,&sans);
-              if (cache_info->pixels == (PixelPacket *) NULL)
-                {
-                  if (type == PseudoClass)
-                    SetCacheClassType(cache,PseudoClass);
-                }
-              else
-                {
-                  cache_info->mapped=True;
-                  if (type == PseudoClass)
-                    {
-                      SetCacheClassType(cache,PseudoClass);
-                      cache_info->indexes=(IndexPacket *)
-                        (cache_info->pixels+cache_info->number_pixels);
-                    }
-                }
+              cache_info->mapped=True;
+              if (type == PseudoClass)
+                cache_info->indexes=(IndexPacket *)
+                  (cache_info->pixels+cache_info->number_pixels);
             }
         }
     }
@@ -252,7 +246,7 @@ Export unsigned int AllocateCache(Cache cache,const ClassType type,
                 AllocateMemory(cache_info->number_pixels*sizeof(IndexPacket));
               if (cache_info->indexes != (IndexPacket *) NULL)
                 {
-                  SetCacheClassType(cache,PseudoClass);
+                  cache_info->class=PseudoClass;
                   offset=cache_info->number_pixels*sizeof(IndexPacket);
                   (void) GetCacheMemory(-offset);
                 }
@@ -262,31 +256,30 @@ Export unsigned int AllocateCache(Cache cache,const ClassType type,
               /*
                 Create colormap index cache on disk.
               */
-              if (cache_info->file == (FILE *) NULL)
-                cache_info->file=fopen(cache_info->filename,"rb+");
-              if (cache_info->file != (FILE *) NULL)
+              if (cache_info->file == -1)
+                cache_info->file=open(cache_info->filename,O_RDWR);
+              if (cache_info->file == -1)
+                return(False);
+              length=cache_info->number_pixels*sizeof(PixelPacket)+
+                cache_info->number_pixels*sizeof(IndexPacket);
+              offset=lseek(cache_info->file,length-1,SEEK_SET);
+              (void) write(cache_info->file,&zero,1);
+              (void) close(cache_info->file);
+              cache_info->file=(-1);
+              if (offset == -1)
+                return(False);
+              cache_info->class=type;
+              if (cache_info->mapped)
                 {
-                  length=cache_info->number_pixels*sizeof(PixelPacket)+
-                    cache_info->number_pixels*sizeof(IndexPacket);
-                  status=fseek(cache_info->file,length-1,SEEK_SET);
-                  if (status == 0)
-                    {
-                      SetCacheClassType(cache,PseudoClass);
-                      (void) fputc(0,cache_info->file);
-                      (void) fclose(cache_info->file);
-                      cache_info->file=(FILE *) NULL;
-                      offset=cache_info->number_pixels*sizeof(PixelPacket);
-                      if (cache_info->mapped)
-                        (void) UnmapBlob(cache_info->pixels,offset);
-                      cache_info->pixels=(PixelPacket *)
-                        MapBlob(cache_info->filename,IOMode,&sans);
-                      cache_info->mapped=
-                        cache_info->pixels != (PixelPacket *) NULL;
-                      if (cache_info->mapped)
-                        cache_info->indexes=(IndexPacket *)
-                          (cache_info->pixels+cache_info->number_pixels);
-                    }
+                  offset=cache_info->number_pixels*sizeof(PixelPacket);
+                  (void) UnmapBlob(cache_info->pixels,offset);
                 }
+              cache_info->pixels=(PixelPacket *)
+                MapBlob(cache_info->filename,IOMode,&sans);
+              cache_info->mapped=cache_info->pixels != (PixelPacket *) NULL;
+              if (cache_info->mapped)
+                cache_info->indexes=(IndexPacket *)
+                  (cache_info->pixels+cache_info->number_pixels);
             }
         }
       if (cache_info->class != PseudoClass)
@@ -325,9 +318,9 @@ Export void CloseCache(Cache cache)
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
-  if (cache_info->file != (FILE *) NULL)
-    (void) fclose(cache_info->file);
-  cache_info->file=(FILE *) NULL;
+  if (cache_info->file != -1)
+    (void) close(cache_info->file);
+  cache_info->file=(-1);
 }
 
 /*
@@ -500,7 +493,7 @@ Export void GetCacheInfo(Cache *cache)
   assert(cache != (Cache *) NULL);
   cache_info=(CacheInfo *) AllocateMemory(sizeof(CacheInfo));
   *cache_info->filename='\0';
-  cache_info->file=(FILE *) NULL;
+  cache_info->file=(-1);
   cache_info->class=UndefinedClass;
   cache_info->mapped=False;
   cache_info->pixels=(PixelPacket *) NULL;
@@ -716,10 +709,8 @@ Export unsigned int ReadCacheIndexes(Cache cache,
   CacheInfo
     *cache_info;
 
-  long
-    count;
-
   off_t
+    count,
     offset;
 
   register int
@@ -730,28 +721,38 @@ Export unsigned int ReadCacheIndexes(Cache cache,
   offset=region_info->y*cache_info->columns+region_info->x;
   if (indexes == (cache_info->indexes+offset))
     return(True);
+  if (cache_info->pixels != (PixelPacket *) NULL)
+    {
+      /*
+        Read pixels from blob.
+      */
+      for (y=0; y < (int) region_info->height; y++)
+      {
+        (void) memcpy(indexes,cache_info->indexes+offset,
+          region_info->width*sizeof(IndexPacket));
+        indexes+=region_info->width;
+        offset+=cache_info->columns;
+      }
+      return(True);
+    }
+  /*
+    Read pixels from disk.
+  */
+  if (cache_info->file == -1)
+    {
+      cache_info->file=open(cache_info->filename,O_RDWR);
+      if (cache_info->file == -1)
+        return(False);
+    }
   for (y=0; y < (int) region_info->height; y++)
   {
-    if (cache_info->indexes != (IndexPacket *) NULL)
-      (void) memcpy(indexes,cache_info->indexes+offset,
-        region_info->width*sizeof(IndexPacket));
-    else
-      {
-        if (cache_info->file == (FILE *) NULL)
-          {
-            cache_info->file=fopen(cache_info->filename,"rb+");
-            if (cache_info->file == (FILE *) NULL)
-              return(False);
-          }
-        count=fseek(cache_info->file,cache_info->number_pixels*
-          sizeof(PixelPacket)+offset*sizeof(IndexPacket),SEEK_SET);
-        if (count != 0)
-          return(False);
-        count=fread(indexes,sizeof(IndexPacket),region_info->width,
-          cache_info->file);
-        if (count != region_info->width)
-          return(False);
-      }
+    count=lseek(cache_info->file,cache_info->number_pixels*sizeof(PixelPacket)+
+      offset*sizeof(IndexPacket),SEEK_SET);
+    if (count == -1)
+      return(False);
+    count=read(cache_info->file,indexes,region_info->width*sizeof(IndexPacket));
+    if (count != (region_info->width*sizeof(IndexPacket)))
+      return(False);
     indexes+=region_info->width;
     offset+=cache_info->columns;
   }
@@ -798,10 +799,8 @@ Export unsigned int ReadCachePixels(Cache cache,
   CacheInfo
     *cache_info;
 
-  long
-    count;
-
   off_t
+    count,
     offset;
 
   register int
@@ -812,27 +811,37 @@ Export unsigned int ReadCachePixels(Cache cache,
   offset=region_info->y*cache_info->columns+region_info->x;
   if (pixels == (cache_info->pixels+offset))
     return(True);
+  if (cache_info->pixels != (PixelPacket *) NULL)
+    {
+      /*
+        Read pixels from blob.
+      */
+      for (y=0; y < (int) region_info->height; y++)
+      {
+        (void) memcpy(pixels,cache_info->pixels+offset,
+          region_info->width*sizeof(PixelPacket));
+        pixels+=region_info->width;
+        offset+=cache_info->columns;
+      }
+      return(True);
+    }
+  /*
+    Read pixels from disk.
+  */
+  if (cache_info->file == -1)
+    {
+      cache_info->file=open(cache_info->filename,O_RDWR);
+      if (cache_info->file == -1)
+        return(False);
+    }
   for (y=0; y < (int) region_info->height; y++)
   {
-    if (cache_info->pixels != (PixelPacket *) NULL)
-      (void) memcpy(pixels,cache_info->pixels+offset,
-        region_info->width*sizeof(PixelPacket));
-    else
-      {
-        if (cache_info->file == (FILE *) NULL)
-          {
-            cache_info->file=fopen(cache_info->filename,"rb+");
-            if (cache_info->file == (FILE *) NULL)
-              return(False);
-          }
-        count=fseek(cache_info->file,offset*sizeof(PixelPacket),SEEK_SET);
-        if (count != 0)
-          return(False);
-        count=
-          fread(pixels,sizeof(PixelPacket),region_info->width,cache_info->file);
-        if (count != region_info->width)
-          return(False);
-      }
+    count=lseek(cache_info->file,offset*sizeof(PixelPacket),SEEK_SET);
+    if (count == -1)
+      return(False);
+    count=read(cache_info->file,pixels,region_info->width*sizeof(PixelPacket));
+    if (count != (region_info->width*sizeof(PixelPacket)))
+      return(False);
     pixels+=region_info->width;
     offset+=cache_info->columns;
   }
@@ -950,10 +959,8 @@ Export unsigned int WriteCacheIndexes(Cache cache,
   CacheInfo
     *cache_info;
 
-  long
-    count;
-
   off_t
+    count,
     offset;
 
   register int
@@ -964,28 +971,39 @@ Export unsigned int WriteCacheIndexes(Cache cache,
   offset=region_info->y*cache_info->columns+region_info->x;
   if (indexes == (cache_info->indexes+offset))
     return(True);
+  if (cache_info->pixels != (PixelPacket *) NULL)
+    {
+      /*
+        Write indexes to blob.
+      */
+      for (y=0; y < (int) region_info->height; y++)
+      {
+        (void) memcpy(cache_info->indexes+offset,indexes,
+          region_info->width*sizeof(IndexPacket));
+        indexes+=region_info->width;
+        offset+=cache_info->columns;
+      }
+      return(True);
+    }
+  /*
+    Write indexes to disk.
+  */
+  if (cache_info->file == -1)
+    {
+      cache_info->file=open(cache_info->filename,O_RDWR);
+      if (cache_info->file == -1)
+        return(False);
+    }
   for (y=0; y < (int) region_info->height; y++)
   {
-    if (cache_info->indexes != (IndexPacket *) NULL)
-      (void) memcpy(cache_info->indexes+offset,indexes,
-        region_info->width*sizeof(IndexPacket));
-    else
-      {
-        if (cache_info->file == (FILE *) NULL)
-          {
-            cache_info->file=fopen(cache_info->filename,"rb+");
-            if (cache_info->file == (FILE *) NULL)
-              return(False);
-          }
-        count=fseek(cache_info->file,cache_info->number_pixels*
-          sizeof(PixelPacket)+offset*sizeof(IndexPacket),SEEK_SET);
-        if (count != 0)
-          return(False);
-        count=fwrite(indexes,sizeof(IndexPacket),region_info->width,
-          cache_info->file);
-        if (count != region_info->width)
-          return(False);
-      }
+    count=lseek(cache_info->file,cache_info->number_pixels*sizeof(PixelPacket)+
+      offset*sizeof(IndexPacket),SEEK_SET);
+    if (count == -1)
+      return(False);
+    count=
+      write(cache_info->file,indexes,region_info->width*sizeof(IndexPacket));
+    if (count != (region_info->width*sizeof(IndexPacket)))
+      return(False);
     indexes+=region_info->width;
     offset+=cache_info->columns;
   }
@@ -1032,10 +1050,8 @@ Export unsigned int WriteCachePixels(Cache cache,
   CacheInfo
     *cache_info;
 
-  long
-    count;
-
   off_t
+    count,
     offset;
 
   register int
@@ -1046,27 +1062,37 @@ Export unsigned int WriteCachePixels(Cache cache,
   offset=region_info->y*cache_info->columns+region_info->x;
   if (pixels == (cache_info->pixels+offset))
     return(True);
+  if (cache_info->pixels != (PixelPacket *) NULL)
+    {
+      /*
+        Write pixels to blob.
+      */
+      for (y=0; y < (int) region_info->height; y++)
+      {
+        (void) memcpy(cache_info->pixels+offset,pixels,
+          region_info->width*sizeof(PixelPacket));
+        pixels+=region_info->width;
+        offset+=cache_info->columns;
+      }
+      return(True);
+    }
+  /*
+    Write pixels to disk.
+  */
+  if (cache_info->file == -1)
+    {
+      cache_info->file=open(cache_info->filename,O_RDWR);
+      if (cache_info->file == -1)
+        return(False);
+    }
   for (y=0; y < (int) region_info->height; y++)
   {
-    if (cache_info->pixels != (PixelPacket *) NULL)
-      (void) memcpy(cache_info->pixels+offset,pixels,
-        region_info->width*sizeof(PixelPacket));
-    else
-      {
-        if (cache_info->file == (FILE *) NULL)
-          {
-            cache_info->file=fopen(cache_info->filename,"rb+");
-            if (cache_info->file == (FILE *) NULL)
-              return(False);
-          }
-        count=fseek(cache_info->file,offset*sizeof(PixelPacket),SEEK_SET);
-        if (count != 0)
-          return(False);
-        count=fwrite(pixels,sizeof(PixelPacket),region_info->width,
-          cache_info->file);
-        if (count != region_info->width)
-          return(False);
-      }
+    count=lseek(cache_info->file,offset*sizeof(PixelPacket),SEEK_SET);
+    if (count == -1)
+      return(False);
+    count=write(cache_info->file,pixels,region_info->width*sizeof(PixelPacket));
+    if (count != (region_info->width*sizeof(PixelPacket)))
+      return(False);
     pixels+=region_info->width;
     offset+=cache_info->columns;
   }

@@ -102,6 +102,12 @@ Export Image *ReadMTVImage(const ImageInfo *image_info)
   register PixelPacket
     *q;
 
+  register unsigned char
+    *p;
+
+  unsigned char
+    *pixels;
+
   unsigned int
     columns,
     rows,
@@ -141,16 +147,23 @@ Export Image *ReadMTVImage(const ImageInfo *image_info)
     /*
       Convert MTV raster image to pixel packets.
     */
+    pixels=(unsigned char *) AllocateMemory(3*image->columns);
+    if (pixels == (unsigned char *) NULL)
+      ReaderExit(CorruptImageWarning,"Unable to allocate memory",image);
     for (y=0; y < (int) image->rows; y++)
     {
+      status=ReadBlob(image,3*image->columns,pixels);
+      if (status == False)
+        ReaderExit(CorruptImageWarning,"Unable to read image data",image);
+      p=pixels;
       q=SetPixelCache(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
       for (x=0; x < (int) image->columns; x++)
       {
-        q->red=UpScale(ReadByte(image));
-        q->green=UpScale(ReadByte(image));
-        q->blue=UpScale(ReadByte(image));
+        q->red=UpScale(*p++);
+        q->green=UpScale(*p++);
+        q->blue=UpScale(*p++);
         q++;
       }
       if (!SyncPixelCache(image))
@@ -159,6 +172,7 @@ Export Image *ReadMTVImage(const ImageInfo *image_info)
         if (QuantumTick(y,image->rows))
           ProgressMonitor(LoadImageText,y,image->rows);
     }
+    FreeMemory(pixels);
     /*
       Proceed to next image.
     */

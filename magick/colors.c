@@ -1827,7 +1827,7 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
       database=fopen(RGBColorDatabase,"r");
     if (database != (FILE *) NULL)
       {
-        (void) fseek(database,0L,SEEK_SET);
+        (void) rewind(database);
         while (fgets(text,MaxTextExtent,database) != (char *) NULL)
         {
           count=sscanf(text,"%d %d %d %[^\n]\n",&red,&green,&blue,colorname);
@@ -1843,9 +1843,9 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
             }
         }
       }
+    return(False);
   }
 #endif
-  return(False);
 }
 
 /*

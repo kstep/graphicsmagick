@@ -218,12 +218,12 @@ Export int IsWindows95()
 %  The format of the mmap method is:
 %
 %    Export void *mmap(char *address,size_t length,int protection,int access,
-%      int descriptor,off_t offset)
+%      int file,off_t offset)
 %
 %
 */
 Export void *mmap(char *address,size_t length,int protection,int access,
-  int descriptor,off_t offset)
+  int file,off_t offset)
 {
   void
     *map;
@@ -238,7 +238,7 @@ Export void *mmap(char *address,size_t length,int protection,int access,
     case PROT_READ:
     default:
     {
-      handle=CreateFileMapping((HANDLE) _get_osfhandle(descriptor),0,
+      handle=CreateFileMapping((HANDLE) _get_osfhandle(file),0,
         PAGE_READONLY,0,length,0);
       if (!handle)
         break;
@@ -248,7 +248,7 @@ Export void *mmap(char *address,size_t length,int protection,int access,
     }
     case PROT_WRITE:
     {
-      handle=CreateFileMapping((HANDLE) _get_osfhandle(descriptor),0,
+      handle=CreateFileMapping((HANDLE) _get_osfhandle(file),0,
         PAGE_READWRITE,0,length,0);
       if (!handle)
         break;
@@ -258,7 +258,7 @@ Export void *mmap(char *address,size_t length,int protection,int access,
     }
     case PROT_READWRITE:
     {
-      handle=CreateFileMapping((HANDLE) _get_osfhandle(descriptor),0,
+      handle=CreateFileMapping((HANDLE) _get_osfhandle(file),0,
         PAGE_READWRITE,0,length,0);
       if (!handle)
         break;

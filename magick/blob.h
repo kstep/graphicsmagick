@@ -24,11 +24,12 @@ extern Export Image
 extern Export int
   EOFBlob(const Image *),
   ReadByte(Image *),
-  SeekBlob(Image *,const off_t,const int),
   SyncBlob(const Image *);
 
 extern Export off_t
-  TellBlob(const Image *image);
+  SeekBlob(Image *,const off_t,const int),
+  SizeBlob(Image *image),
+  TellBlob(Image *image);
 
 extern Export size_t
   LSBFirstWriteLong(Image *,const unsigned long),

@@ -88,26 +88,26 @@
 %    o blob: The address of a character stream in one of the image formats
 %      understood by ImageMagick.
 %
-%    o length: This unsigned integer reflects the length in bytes of the blob.
+%    o length: This size_t integer reflects the length in bytes of the blob.
 %
 %
 */
 Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
   const size_t length)
 {
-  FILE
-    *file;
-
   Image
     *image;
 
   ImageInfo
     *local_info;
 
+  int
+    file;
+
   MagickInfo
     *magick_info;
 
-  size_t
+  off_t
     count;
 
   local_info=CloneImageInfo(image_info);
@@ -144,16 +144,16 @@ Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
     Write blob to a temporary file on disk.
   */
   TemporaryFilename(local_info->filename);
-  file=fopen(local_info->filename,WriteBinaryType);
-  if (file == (FILE *) NULL)
+  file=open(local_info->filename,O_WRONLY | O_CREAT,0644);
+  if (file == -1)
     {
       MagickWarning(BlobWarning,"Unable to convert blob to an image",
         local_info->filename);
       DestroyImageInfo(local_info);
       return((Image *) NULL);
     }
-  count=fwrite(blob,1,length,file);
-  (void) fclose(file);
+  count=write(file,blob,length);
+  (void) close(file);
   if (count != length)
     {
       MagickWarning(BlobWarning,"Unable to convert blob to an image",
@@ -197,20 +197,17 @@ Export void CloseBlob(Image *image)
     Close image file.
   */
   assert(image != (Image *) NULL);
-  image->tainted=False;
   CloseCache(image->cache);
+  image->tainted=False;
+  image->filesize=SizeBlob(image);
   if (image->blob_info.data != (char *) NULL)
     {
-      image->filesize=image->blob_info.length;
       image->blob_info.extent=image->blob_info.length;
       return;
     }
   if (image->file == (FILE *) NULL)
     return;
-  (void) SyncBlob(image);
   image->status=ferror(image->file);
-  (void) SeekBlob(image,0L,SEEK_END);
-  image->filesize=TellBlob(image);
   errno=0;
   if (image->exempt)
     return;
@@ -370,8 +367,6 @@ Export char *GetStringBlob(Image *image,char *string)
     i;
 
   assert(image != (Image *) NULL);
-  if (image->blob_info.data == (char *) NULL)
-    return(fgets((char *) string,MaxTextExtent,image->file));
   for (i=0; i < (MaxTextExtent-1); i++)
   {
     c=ReadByte(image);
@@ -403,7 +398,7 @@ Export char *GetStringBlob(Image *image,char *string)
 %  The format of the ImageToBlob method is:
 %
 %      char *ImageToBlob(const ImageInfo *image_info,Image *image,
-%        unsigned long *length)
+%        size_t *length)
 %
 %  A description of each parameter follows:
 %
@@ -415,7 +410,7 @@ Export char *GetStringBlob(Image *image,char *string)
 %
 %    o image: The address of a structure of type Image.
 %
-%    o length: This pointer to an unsigned int sets the initial length of the
+%    o length: This pointer to a size_t integer sets the initial length of the
 %      blob.  On return, it reflects the actual length of the blob.
 %
 %
@@ -427,23 +422,24 @@ Export void *ImageToBlob(const ImageInfo *image_info,Image *image,
     *blob,
     filename[MaxTextExtent];
 
-  FILE
-    *file;
-
   ImageInfo
     *local_info;
+
+  int
+    file;
 
   MagickInfo
     *magick_info;
 
   off_t
+    count,
     offset;
 
   register int
     i;
 
-  size_t
-    count;
+  struct stat
+    attributes;
 
   unsigned int
     status;
@@ -504,18 +500,16 @@ Export void *ImageToBlob(const ImageInfo *image_info,Image *image,
   /*
     Read image from disk as blob.
   */
-  file=fopen(image->filename,"rb");
+  file=open(image->filename,O_RDONLY);
   DestroyImageInfo(local_info);
-  if (file == (FILE *) NULL)
+  if (file == -1)
     {
       (void) remove(image->filename);
       (void) strcpy(image->filename,filename);
       MagickWarning(BlobWarning,"Unable to create blob",image->filename);
       return((char *) NULL);
     }
-  (void) fseek(file,0L,SEEK_END);
-  *length=ftell(file);
-  (void) fseek(file,0L,SEEK_SET);
+  *length=fstat(file,&attributes) < 0 ? 0 : attributes.st_size;
   blob=(char *) AllocateMemory(*length*sizeof(char));
   if (blob == (char *) NULL)
     {
@@ -525,17 +519,15 @@ Export void *ImageToBlob(const ImageInfo *image_info,Image *image,
         "Memory allocation failed");
       return((char *) NULL);
     }
-  offset=0;
-  for (i=(*length); i > 0; i-=count)
-  {
-    count=fread((char *) blob+offset,1,i,file);
-    if (count <= 0)
-      break;
-    offset+=count;
-  }
-  (void) fclose(file);
+  count=read(file,blob,*length);
+  (void) close(file);
   (void) remove(image->filename);
   (void) strcpy(image->filename,filename);
+  if (count != *length)
+    {
+      MagickWarning(BlobWarning,"Unable to read blob",(char *) NULL);
+      return((char *) NULL);
+    }
   return(blob);
 }
 
@@ -745,10 +737,10 @@ Export void *MapBlob(const char *filename,const MapMode mode,size_t *length)
 {
 #if defined(HAVE_MMAP) || defined(WIN32)
   int
-    descriptor;
+    file;
 
   struct stat
-    status;
+    attributes;
 
   void
     *map;
@@ -761,21 +753,21 @@ Export void *MapBlob(const char *filename,const MapMode mode,size_t *length)
   switch (mode)
   {
     default:
-    case ReadMode: descriptor=open(filename,O_RDONLY); break;
-    case WriteMode: descriptor=open(filename,O_WRONLY); break;
-    case IOMode: descriptor=open(filename,O_RDWR); break;
+    case ReadMode: file=open(filename,O_RDONLY); break;
+    case WriteMode: file=open(filename,O_WRONLY); break;
+    case IOMode: file=open(filename,O_RDWR); break;
   }
-  if (descriptor == -1)
+  if (file == -1)
     return((void *) NULL);
-  if (fstat(descriptor,&status) == -1)
+  if (fstat(file,&attributes) == -1)
     {
-      (void) close(descriptor);
+      (void) close(file);
       return((void *) NULL);
     }
-  *length=status.st_size;
-  if (*length != status.st_size)
+  *length=attributes.st_size;
+  if (*length != attributes.st_size)
     {
-      (void) close(descriptor);
+      (void) close(file);
       return((void *) NULL);
     }
   /*
@@ -786,22 +778,21 @@ Export void *MapBlob(const char *filename,const MapMode mode,size_t *length)
     case ReadMode:
     default:
     {
-      map=mmap((char *) NULL,*length,PROT_READ,MAP_PRIVATE,descriptor,0);
+      map=mmap((char *) NULL,*length,PROT_READ,MAP_PRIVATE,file,0);
       break;
     }
     case WriteMode:
     {
-      map=mmap((char *) NULL,*length,PROT_WRITE,MAP_SHARED,descriptor,0);
+      map=mmap((char *) NULL,*length,PROT_WRITE,MAP_SHARED,file,0);
       break;
     }
     case IOMode:
     {
-      map=mmap((char *) NULL,*length,PROT_READ | PROT_WRITE,MAP_SHARED,
-        descriptor,0);
+      map=mmap((char *) NULL,*length,PROT_READ | PROT_WRITE,MAP_SHARED,file,0);
       break;
     }
   }
-  (void) close(descriptor);
+  (void) close(file);
   if (map == MAP_FAILED)
     {
       MagickWarning(FileOpenWarning,"Unable to map file",filename);
@@ -1267,7 +1258,6 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                     image->blob_info.length=0;
                     image->blob_info.data=(char *)
                       MapBlob(filename,ReadMode,&image->blob_info.length);
-                    image->filesize=image->blob_info.length;
                     image->blob_info.mapped=
                       image->blob_info.data != (void *) NULL;
                   }
@@ -1275,12 +1265,7 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
           }
         if (!image->blob_info.mapped)
           image->file=(FILE *) fopen(filename,type);
-	if (image->file != (FILE *) NULL)
-	  {
-            (void) SeekBlob(image,0L,SEEK_END);
-            image->filesize=TellBlob(image);
-            (void) SeekBlob(image,0L,SEEK_SET);
-	  }
+        image->filesize=SizeBlob(image);
       }
   image->status=False;
   if (*type == 'r')
@@ -1307,15 +1292,15 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
 %
 %  The format of the ReadBlob method is:
 %
-%      size_t ReadBlob(Image *image,const size_t number_bytes,char *data)
+%      size_t ReadBlob(Image *image,const size_t length,char *data)
 %
 %  A description of each parameter follows:
 %
-%    o count:  Method ReadBlob returns the number of items read.
+%    o count:  Method ReadBlob returns the number of bytes read.
 %
 %    o image: The address of a structure of type Image.
 %
-%    o number_bytes:  Specifies an integer representing the number of bytes
+%    o length:  Specifies an integer representing the number of bytes
 %      to read from the file.
 %
 %    o data:  Specifies an area to place the information requested from
@@ -1323,16 +1308,13 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
 %
 %
 */
-Export size_t ReadBlob(Image *image,const size_t number_bytes,void *data)
+Export size_t ReadBlob(Image *image,const size_t length,void *data)
 {
   off_t
-    offset;
+    count;
 
   register int
     i;
-
-  size_t
-    count;
 
   assert(image != (Image *) NULL);
   assert(data != (char *) NULL);
@@ -1341,26 +1323,17 @@ Export size_t ReadBlob(Image *image,const size_t number_bytes,void *data)
       /*
         Read bytes from blob.
       */
-      offset=Min(number_bytes,(unsigned long)
-        (image->blob_info.length-image->blob_info.offset));
-      if (offset > 0)
-        (void) memcpy(data,image->blob_info.data+image->blob_info.offset,
-          offset);
-      image->blob_info.offset+=offset;
-      return(offset);
+      count=Min(length,image->blob_info.length-image->blob_info.offset);
+      if (count > 0)
+        (void) memcpy(data,image->blob_info.data+image->blob_info.offset,count);
+      image->blob_info.offset+=count;
+      return(count);
     }
   /*
-    Read bytes from a file handle.
+    Read bytes from a file.
   */
-  offset=0;
-  for (i=number_bytes; i > 0; i-=count)
-  {
-    count=fread((char *) data+offset,1,i,image->file);
-    if (count <= 0)
-      break;
-    offset+=count;
-  }
-  return(offset);
+  count=fread(data,1,length,image->file);
+  return(count);
 }
 
 /*
@@ -1462,16 +1435,16 @@ Export size_t ReadBlobBlock(Image *image,char *data)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method SeekBlob sets the offset in bytes from the beginning of a blob or
-%  file.
+%  file and returns the resulting offset.
 %
 %  The format of the SeekBlob method is:
 %
-%      int SeekBlob(Image *image,const off_t offset,const int whence)
+%      off_t SeekBlob(Image *image,const off_t offset,const int whence)
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method SeekBlob returns 0 on success; otherwise,  it
-%      returned -1 and set errno to indicate the error.
+%    o offset:  Method SeekBlob returns the offset from the beginning
+%      of the file or blob.
 %
 %    o image: The address of a structure of type Image.
 %
@@ -1486,11 +1459,19 @@ Export size_t ReadBlobBlock(Image *image,char *data)
 %
 %
 */
-Export int SeekBlob(Image *image,const off_t offset,const int whence)
+Export off_t SeekBlob(Image *image,const off_t offset,const int whence)
 {
+  int
+    status;
+
   assert(image != (Image *) NULL);
   if (image->blob_info.data == (char *) NULL)
-    return(fseek(image->file,offset,whence));
+    {
+      status=fseek(image->file,offset,whence);
+      if (status == -1)
+        return(status);
+      return(TellBlob(image));
+    }
   switch (whence)
   {
     case SEEK_SET:
@@ -1528,7 +1509,7 @@ Export int SeekBlob(Image *image,const off_t offset,const int whence)
         }
       image->blob_info.extent=image->blob_info.length;
     }
-  return(0);
+  return(image->blob_info.offset);
 }
 
 /*
@@ -1569,6 +1550,44 @@ Export void SetBlobQuantum(BlobInfo *blob_info,const size_t quantum)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++  S i z e B l o b                                                            %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SizeBlob returns the current length of the image file or blob.
+%
+%  The format of the SizeBlob method is:
+%
+%      off_t SizeBlob(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o size:  Method SizeBlob returns the current length of the image file
+%      or blob.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+Export off_t SizeBlob(Image *image)
+{
+  struct stat
+    attributes;
+
+  assert(image != (Image *) NULL);
+  if (image->file == (FILE *) NULL)
+    return(image->blob_info.length);
+  SyncBlob(image);
+  return(fstat(fileno(image->file),&attributes) < 0 ? 0 : attributes.st_size);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +  S y n c B l o b                                                            %
 %                                                                             %
 %                                                                             %
@@ -1593,7 +1612,7 @@ Export void SetBlobQuantum(BlobInfo *blob_info,const size_t quantum)
 Export int SyncBlob(const Image *image)
 {
   assert(image != (Image *) NULL);
-  if (image->blob_info.data == (char *) NULL)
+  if (image->file != (FILE *) NULL)
     return(fflush(image->file));
   return(0);
 }
@@ -1617,7 +1636,7 @@ Export int SyncBlob(const Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method TellBlob returns the current value of the blob or
+%    o offset:  Method TellBlob returns the current value of the blob or
 %      file position success; otherwise, it returns -1 and sets errno to
 %      indicate the error.
 %
@@ -1625,7 +1644,7 @@ Export int SyncBlob(const Image *image)
 %
 %
 */
-Export off_t TellBlob(const Image *image)
+Export off_t TellBlob(Image *image)
 {
   assert(image != (Image *) NULL);
   if (image->file != (FILE *) NULL)
@@ -1689,44 +1708,41 @@ Export unsigned int UnmapBlob(void *map,const size_t length)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method WriteBlob writes data to a blob or image file.  It returns the
-%  number of items written.
+%  number of bytes written.
 %
 %  The format of the WriteBlob method is:
 %
-%      size_t WriteBlob(Image *image,const size_t number_bytes,const void *data)
+%      size_t WriteBlob(Image *image,const size_t length,const void *data)
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method WriteBlob returns True if all the data requested
-%      is obtained without error, otherwise False.
+%    o count:  Method WriteBlob returns the number of bytes written to the
+%      blob.
 %
 %    o image: The address of a structure of type Image.
 %
-%    o size:  Specifies an integer representing the length of an
-%      individual item to be written to the file.
-%
-%    o number_items:  Specifies an integer representing the number of items
-%      to write to the file.
+%    o length:  Specifies an integer representing the number of bytes to
+%      write to the file.
 %
 %    o data:  The address of the data to write to the blob or file.
 %
 %
 */
-Export size_t WriteBlob(Image *image,const size_t number_bytes,const void *data)
+Export size_t WriteBlob(Image *image,const size_t length,const void *data)
 {
-  size_t
+  off_t
     count;
 
   assert(image != (Image *) NULL);
   assert(data != (const char *) NULL);
   if (image->blob_info.data == (char *) NULL)
     {
-      count=fwrite((char *) data,1,number_bytes,image->file);
+      count=fwrite((char *) data,1,length,image->file);
       return(count);
     }
-  if (number_bytes > (image->blob_info.extent-image->blob_info.offset))
+  if (length > (image->blob_info.extent-image->blob_info.offset))
     {
-      image->blob_info.extent+=number_bytes+image->blob_info.quantum;
+      image->blob_info.extent+=length+image->blob_info.quantum;
       image->blob_info.data=(char *)
         ReallocateMemory(image->blob_info.data,image->blob_info.extent);
       if (image->blob_info.data == (char *) NULL)
@@ -1735,12 +1751,11 @@ Export size_t WriteBlob(Image *image,const size_t number_bytes,const void *data)
           return(0);
         }
     }
-  (void) memcpy(image->blob_info.data+image->blob_info.offset,data,
-    number_bytes);
-  image->blob_info.offset+=number_bytes;
+  (void) memcpy(image->blob_info.data+image->blob_info.offset,data,length);
+  image->blob_info.offset+=length;
   if (image->blob_info.offset > image->blob_info.length)
     image->blob_info.length=image->blob_info.offset;
-  return(number_bytes);
+  return(length);
 }
 
 /*

@@ -48,8 +48,7 @@ void  <STRONG>GetBlobInfo</STRONG>( BlobInfo <CODE>*blob_info</CODE> );
 
 </P>
 <P>
-char * <STRONG>ImageToBlob</STRONG>( const ImageInfo *image_info, Image *image, unsigned long
-<CODE>*length</CODE> );
+char * <STRONG>ImageToBlob</STRONG>( const ImageInfo *image_info, Image *image, size_t <CODE>*length</CODE> );
 
 </P>
 <P>
@@ -99,7 +98,7 @@ ImageMagick.
 </P>
 <p><dt><STRONG>length:</STRONG><DD>
 <P>
-This unsigned integer reflects the length in bytes of the blob.
+This size_t integer reflects the length in bytes of the blob.
 
 </P>
 </DL></DL>
@@ -169,7 +168,7 @@ Method ImageToBlob implements direct to memory image formats. It returns the ima
 The format of the ImageToBlob method is:
 
 </P>
-<blockquote>char *ImageToBlob ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image, unsigned long *length ); </blockquote>
+<blockquote>char *ImageToBlob ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image, size_t *length ); </blockquote>
 
 <P>
 
@@ -198,7 +197,7 @@ The address of a structure of type Image.
 </P>
 <p><dt><STRONG>length:</STRONG><DD>
 <P>
-This pointer to an unsigned int sets the initial length of the blob. On
+This pointer to a size_t integer sets the initial length of the blob. On
 return, it reflects the actual length of the blob.
 
 </P>

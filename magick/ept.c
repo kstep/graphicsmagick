@@ -148,12 +148,14 @@ Export unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
     ps_file=fopen(image->magick_filename,ReadBinaryType);
   if (ps_file != (FILE *) NULL)
     {
+      struct stat
+        attributes;
+
       /*
         Read existing Encapsulated Postscript.
       */
-      (void) fseek(ps_file,0L,SEEK_END);
-      eps_length=ftell(ps_file);
-      (void) fseek(ps_file,0L,SEEK_SET);
+      eps_length=
+        fstat(fileno(ps_file),&attributes) < 0 ? 0 : attributes.st_size;
     }
   else
     {

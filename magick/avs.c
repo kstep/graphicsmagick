@@ -89,12 +89,20 @@ Export Image *ReadAVSImage(const ImageInfo *image_info)
   Image
     *image;
 
-  register int
-    x,
+  int
     y;
+
+  register int
+    x;
 
   register PixelPacket
     *q;
+
+  register unsigned char
+    *p;
+
+  unsigned char
+    *pixels;
 
   unsigned int
     status;
@@ -137,17 +145,24 @@ Export Image *ReadAVSImage(const ImageInfo *image_info)
     /*
       Convert AVS raster image to pixel packets.
     */
+    pixels=(unsigned char *) AllocateMemory(4*image->columns);
+    if (pixels == (unsigned char *) NULL)
+      ReaderExit(CorruptImageWarning,"Unable to allocate memory",image);
     for (y=0; y < (int) image->rows; y++)
     {
+      status=ReadBlob(image,4*image->columns,pixels);
+      if (status == False)
+        ReaderExit(CorruptImageWarning,"Unable to read image data",image);
+      p=pixels;
       q=SetPixelCache(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
       for (x=0; x < (int) image->columns; x++)
       {
-        q->opacity=UpScale(ReadByte(image));
-        q->red=UpScale(ReadByte(image));
-        q->green=UpScale(ReadByte(image));
-        q->blue=UpScale(ReadByte(image));
+        q->opacity=UpScale(*p++);
+        q->red=UpScale(*p++);
+        q->green=UpScale(*p++);
+        q->blue=UpScale(*p++);
         image->matte|=q->opacity != Opaque;
         q++;
       }
@@ -157,6 +172,7 @@ Export Image *ReadAVSImage(const ImageInfo *image_info)
         if (QuantumTick(y,image->rows))
           ProgressMonitor(LoadImageText,y,image->rows);
     }
+    FreeMemory(pixels);
     /*
       Proceed to next image.
     */

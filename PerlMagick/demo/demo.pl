@@ -206,32 +206,17 @@ $example->Label('Zoom');
 $example->Zoom('50%');
 push(@$images,$example);
 #
-# Create title.
-#
-print "Annotate image...\n";
-$background=Image::Magick->new;
-$background->Set(size=>'550x90');
-$x=$background->ReadImage('gradation:#20a0ff-#ffff00');
-warn "$x" if "$x";
-$title=Image::Magick->new;
-$title->Set(size=>'550x90');
-$x=$title->ReadImage('xc:black');
-warn "$x" if "$x";
-$title->Annotate(text=>'PerlMagick',geometry=>"+1+1",font=>'@Generic.ttf',
-  pointsize=>18,density=>'300x300',pen=>'white',gravity=>'center');
-$title->Draw(primitive=>'Matte',points=>'+0+0',method=>'Replace',pen=>'black');
-$title->Composite(image=>$background,compose=>'Add');
-#
 # Create image montage.
 #
 print "Montage image...\n";
 $montage=$images->Montage(filename=>'PerlMagick',geometry=>'130x194+10+5>',
   gravity=>'Center',bordercolor=>'green',borderwidth=>1,tile=>'5x1000',
-  compose=>'over',texture=>'granite:',font=>'@Generic.ttf',pen=>'#600');
-$montage->Composite(image=>$title,geometry=>'+90+50',compose=>'Over');
-$montage->Annotate(text=>'Every thing you see on this page was created ' .
-  'with the PerlMagick and ImageMagick toolkits.',geometry=>"+20+175",
-  font=>'@Generic.ttf',pointsize=>11,pen=>'#600');
+  compose=>'over',background=>'#ffffff',font=>'@Generic.ttf',pen=>'#600');
+$logo=Image::Magick->new();
+$logo->Read('logo:');
+$logo->Crop('300x275+175+100');
+$logo->Zoom('80%');
+$montage->Composite(image=>$logo,geometry=>'+245+0',compose=>'Over');
 print "Write image...\n";
 $montage->Set(matte=>'false');
 $montage->Write('demo.jpg');
