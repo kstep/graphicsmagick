@@ -5030,8 +5030,12 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
     *option;
 
   Image
+		*copy_images,
     *image,
     *mogrify_images;
+
+  ImageInfo
+    *clone_info;
 
   MonitorHandler
     handler;
@@ -5052,14 +5056,30 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
   assert((*images)->signature == MagickSignature);
   if ((argc <= 0) || (*argv == (char *) NULL))
     return(True);
+  copy_images=(Image *) NULL;
   scene=False;
   for (i=0; i < argc; i++)
   {
     option=argv[i];
     if ((strlen(option) <= 1) || ((*option != '-') && (*option != '+')))
       continue;
-    if (LocaleCompare("-scene",option) == 0)
-      scene=True;
+    switch (*(option+1))
+    {
+      case 'c':
+      {
+        if (LocaleCompare("-copy",option) == 0)
+          copy_images=CloneImageList(*images,&(*images)->exception);
+        break;
+      }
+      case 's':
+      {
+        if (LocaleCompare("-scene",option) == 0)
+          scene=True;
+        break;
+      }
+      default:
+        break;
+    }
   }
   /*
     Apply options to individual each image in the list.
@@ -5137,6 +5157,16 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
                 DestroyImageList(mogrify_images);
                 mogrify_images=coalesce_image;
               }
+            break;
+          }
+        if (LocaleCompare("-copy",option) == 0)
+          {
+            clone_info=CloneImageInfo(image_info);
+            status&=WriteImages(clone_info,mogrify_images,argv[++i],
+              &mogrify_images->exception);
+            DestroyImageInfo(clone_info);
+            DestroyImageList(mogrify_images);
+            mogrify_images=copy_images;
             break;
           }
         break;
@@ -5258,6 +5288,18 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
               }
             LiberateMemory((void **) &token);
             continue;
+          }
+        break;
+      }
+      case 'r':
+      {
+        if (LocaleCompare("-replace",option) == 0)
+          {
+            clone_info=CloneImageInfo(image_info);
+            status&=WriteImages(clone_info,mogrify_images,argv[++i],
+              &mogrify_images->exception);
+            DestroyImageInfo(clone_info);
+            break;
           }
         break;
       }
