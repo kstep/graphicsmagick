@@ -139,6 +139,8 @@ static void ImportUsage(void)
       "-trim                trim image edges",
       "-type type           image type",
       "-verbose             print detailed information about the image",
+      "-virtual_pixel method",
+      "                     Constant, Edge, Mirror, or Tile",
       "-window id           select window with this id or name",
       (char *) NULL
     };

@@ -136,6 +136,8 @@ static void CompositeUsage(void)
       "-units type          PixelsPerInch, PixelsPerCentimeter, or Undefined",
       "-unsharp geometry    sharpen the image",
       "-verbose             print detailed information about the image",
+      "-virtual_pixel method",
+      "                     Constant, Edge, Mirror, or Tile",
       "-watermark geometry  percent brightness and saturation of a watermark",
       "-write filename      write images to this file",
       (char *) NULL

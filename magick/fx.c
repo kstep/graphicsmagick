@@ -1299,6 +1299,9 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
   register PixelPacket
     *q;
 
+  VirtualPixelMethod
+    virtual_pixel_method;
+
   /*
     Initialize wave image attributes.
   */
@@ -1327,6 +1330,9 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
   /*
     Wave image.
   */
+  virtual_pixel_method=GetImageVirtualPixelMethod(image);
+  if (virtual_pixel_method == UndefinedVirtualPixelMethod)
+    SetImageVirtualPixelMethod(image,ConstantVirtualPixelMethod);
   for (y=0; y < (long) wave_image->rows; y++)
   {
     q=SetImagePixels(wave_image,0,y,wave_image->columns,1);
@@ -1342,6 +1348,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
     if (QuantumTick(y,wave_image->rows))
       MagickMonitor(WaveImageText,y,wave_image->rows);
   }
+  SetImageVirtualPixelMethod(image,virtual_pixel_method);
   LiberateMemory((void **) &sine_map);
   return(wave_image);
 }

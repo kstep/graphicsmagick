@@ -529,11 +529,12 @@ typedef enum
 
 typedef enum
 {
-  ConstantVPType,
-  EdgeVPType,
-  TileVPType,
-  MirrorVPType
-} VirtualPixelType;
+  UndefinedVirtualPixelMethod,
+  ConstantVirtualPixelMethod,
+  EdgeVirtualPixelMethod,
+  MirrorVirtualPixelMethod,
+  TileVirtualPixelMethod
+} VirtualPixelMethod;
 
 typedef enum
 {

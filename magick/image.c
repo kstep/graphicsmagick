@@ -4617,6 +4617,29 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             quantize_info.measure_error=(*option == '-');
             continue;
           }
+        if (LocaleCompare("vpm",option+1) == 0)
+          {
+            VirtualPixelMethod
+              virtual_pixel_method;
+
+            if (*option == '+')
+              {
+                SetImageVirtualPixelMethod(image,UndefinedVirtualPixelMethod);
+                continue;
+              }
+            option=argv[++i];
+            virtual_pixel_method=UndefinedVirtualPixelMethod;
+            if (LocaleCompare("Constant",option) == 0)
+              virtual_pixel_method=ConstantVirtualPixelMethod;
+            if (LocaleCompare("Edge",option) == 0)
+              virtual_pixel_method=EdgeVirtualPixelMethod;
+            if (LocaleCompare("Mirror",option) == 0)
+              virtual_pixel_method=MirrorVirtualPixelMethod;
+            if (LocaleCompare("Tile",option) == 0)
+              virtual_pixel_method=TileVirtualPixelMethod;
+            SetImageVirtualPixelMethod(image,virtual_pixel_method);
+            continue;
+          }
         break;
       }
       case 'w':

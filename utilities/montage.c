@@ -145,6 +145,8 @@ static void MontageUsage(void)
       "-trim                trim image edges",
       "-type type           image type",
       "-verbose             print detailed information about the image",
+      "-virtual_pixel method",
+      "                     Constant, Edge, Mirror, or Tile",
       (char *) NULL
     };
 

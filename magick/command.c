@@ -1175,6 +1175,33 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             image_info->verbose=(*option == '-');
             break;
           }
+        if (LocaleCompare("virtual_pixel",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                VirtualPixelMethod
+                  virtual_pixel_method;
+
+                i++;
+                if (i == argc)
+                  ThrowCompositeException(OptionError,
+                    "Missing virtual pixel method",option);
+                option=argv[i];
+                virtual_pixel_method=UndefinedVirtualPixelMethod;
+                if (LocaleCompare("Constant",option) == 0)
+                  virtual_pixel_method=ConstantVirtualPixelMethod;
+                if (LocaleCompare("Edge",option) == 0)
+                  virtual_pixel_method=EdgeVirtualPixelMethod;
+                if (LocaleCompare("Mirror",option) == 0)
+                  virtual_pixel_method=MirrorVirtualPixelMethod;
+                if (LocaleCompare("Tile",option) == 0)
+                  virtual_pixel_method=TileVirtualPixelMethod;
+                if (virtual_pixel_method == UndefinedVirtualPixelMethod)
+                  ThrowCompositeException(OptionError,
+                    "Invalid virtual pixel method",option);
+              }
+            break;
+          }
         ThrowCompositeException(OptionError,"Unrecognized option",option);
       }
       case 'w':
@@ -1834,7 +1861,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowConvertException(OptionError,"Missing radius",option);
               }
             break;
@@ -2894,6 +2921,33 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("virtual_pixel",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                VirtualPixelMethod
+                  virtual_pixel_method;
+
+                i++;
+                if (i == argc)
+                  ThrowConvertException(OptionError,
+                    "Missing virtual pixel method",option);
+                option=argv[i];
+                virtual_pixel_method=UndefinedVirtualPixelMethod;
+                if (LocaleCompare("Constant",option) == 0)
+                  virtual_pixel_method=ConstantVirtualPixelMethod;
+                if (LocaleCompare("Edge",option) == 0)
+                  virtual_pixel_method=EdgeVirtualPixelMethod;
+                if (LocaleCompare("Mirror",option) == 0)
+                  virtual_pixel_method=MirrorVirtualPixelMethod;
+                if (LocaleCompare("Tile",option) == 0)
+                  virtual_pixel_method=TileVirtualPixelMethod;
+                if (virtual_pixel_method == UndefinedVirtualPixelMethod)
+                  ThrowConvertException(OptionError,
+                    "Invalid virtual pixel method",option);
+              }
+            break;
+          }
         ThrowConvertException(OptionError,"Unrecognized option",option);
       }
       case 'w':
@@ -3256,6 +3310,33 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
         if (LocaleCompare("verbose",option+1) == 0)
           {
             image_info->verbose=(*option == '-');
+            break;
+          }
+        if (LocaleCompare("virtual_pixel",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                VirtualPixelMethod
+                  virtual_pixel_method;
+
+                i++;
+                if (i == argc)
+                  ThrowIdentifyException(OptionError,
+                    "Missing virtual pixel method",option);
+                option=argv[i];
+                virtual_pixel_method=UndefinedVirtualPixelMethod;
+                if (LocaleCompare("Constant",option) == 0)
+                  virtual_pixel_method=ConstantVirtualPixelMethod;
+                if (LocaleCompare("Edge",option) == 0)
+                  virtual_pixel_method=EdgeVirtualPixelMethod;
+                if (LocaleCompare("Mirror",option) == 0)
+                  virtual_pixel_method=MirrorVirtualPixelMethod;
+                if (LocaleCompare("Tile",option) == 0)
+                  virtual_pixel_method=TileVirtualPixelMethod;
+                if (virtual_pixel_method == UndefinedVirtualPixelMethod)
+                  ThrowIdentifyException(OptionError,
+                    "Invalid virtual pixel method",option);
+              }
             break;
           }
         ThrowIdentifyException(OptionError,"Unrecognized option",option);
@@ -3832,7 +3913,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowMogrifyException(OptionWarning,"Missing radius",option);
               }
             break;
@@ -4797,6 +4878,33 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("virtual_pixel",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                VirtualPixelMethod
+                  virtual_pixel_method;
+
+                i++;
+                if (i == argc)
+                  ThrowMogrifyException(OptionError,
+                    "Missing virtual pixel method",option);
+                option=argv[i];
+                virtual_pixel_method=UndefinedVirtualPixelMethod;
+                if (LocaleCompare("Constant",option) == 0)
+                  virtual_pixel_method=ConstantVirtualPixelMethod;
+                if (LocaleCompare("Edge",option) == 0)
+                  virtual_pixel_method=EdgeVirtualPixelMethod;
+                if (LocaleCompare("Mirror",option) == 0)
+                  virtual_pixel_method=MirrorVirtualPixelMethod;
+                if (LocaleCompare("Tile",option) == 0)
+                  virtual_pixel_method=TileVirtualPixelMethod;
+                if (virtual_pixel_method == UndefinedVirtualPixelMethod)
+                  ThrowMogrifyException(OptionError,
+                    "Invalid virtual pixel method",option);
+              }
+            break;
+					}
         ThrowMogrifyException(OptionWarning,"Unrecognized option",option);
       }
       case 'w':
@@ -5924,6 +6032,33 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
         if (LocaleCompare("verbose",option+1) == 0)
           {
             image_info->verbose=(*option == '-');
+            break;
+          }
+        if (LocaleCompare("virtual_pixel",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                VirtualPixelMethod
+                  virtual_pixel_method;
+
+                i++;
+                if (i == argc)
+                  ThrowMontageException(OptionError,
+                    "Missing virtual pixel method",option);
+                option=argv[i];
+                virtual_pixel_method=UndefinedVirtualPixelMethod;
+                if (LocaleCompare("Constant",option) == 0)
+                  virtual_pixel_method=ConstantVirtualPixelMethod;
+                if (LocaleCompare("Edge",option) == 0)
+                  virtual_pixel_method=EdgeVirtualPixelMethod;
+                if (LocaleCompare("Mirror",option) == 0)
+                  virtual_pixel_method=MirrorVirtualPixelMethod;
+                if (LocaleCompare("Tile",option) == 0)
+                  virtual_pixel_method=TileVirtualPixelMethod;
+                if (virtual_pixel_method == UndefinedVirtualPixelMethod)
+                  ThrowMontageException(OptionError,
+                    "Invalid virtual pixel method",option);
+              }
             break;
           }
         ThrowMontageException(OptionError,"Unrecognized option",option);

@@ -130,8 +130,8 @@ typedef struct _CacheInfo
   IndexPacket
     *indexes;
 
-  VirtualPixelType
-    virtual_type;
+  VirtualPixelMethod
+    virtual_pixel_method;
 
   PixelPacket
     virtual_pixel;
@@ -164,6 +164,9 @@ extern MagickExport ClassType
 extern MagickExport ColorspaceType
   GetCacheColorspace(const Cache);
 
+extern MagickExport const VirtualPixelMethod
+  GetImageVirtualPixelMethod(const Image *);
+
 extern MagickExport const PixelPacket
   *AcquireCacheNexus(const Image *,const long,const long,const unsigned long,
     const unsigned long,const unsigned long,ExceptionInfo *);
@@ -195,6 +198,7 @@ extern MagickExport void
   DestroyCacheNexus(Cache,const unsigned long),
   GetCacheInfo(Cache *),
   SetCacheThreshold(const off_t),
+  SetImageVirtualPixelMethod(const Image *,const VirtualPixelMethod),
   SetPixelCacheMethods(Cache,AcquirePixelHandler,GetPixelHandler,
     SetPixelHandler,SyncPixelHandler,GetPixelsFromHandler,GetIndexesFromHandler,
     AcquireOnePixelFromHandler,GetOnePixelFromHandler,DestroyPixelHandler);

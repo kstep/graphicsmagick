@@ -294,7 +294,7 @@ static char
   },
   *VirtualPixelMethods[] =
   {
-    "Undefined", "", "Constant", "Edge", "Mirror", "Tile"
+    "Undefined", "", "Constant", "Edge", "Mirror", "Tile",
     (char *) NULL
   };
 

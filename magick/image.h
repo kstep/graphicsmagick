@@ -745,7 +745,6 @@ extern MagickExport void
   SetImage(Image *,const Quantum),
   SetImageOpacity(Image *,const unsigned int),
   SetImageType(Image *,const ImageType),
-  SetImageVirtualPixelType(Image *,const VirtualPixelType),
   SolarizeImage(Image *,const double),
   SyncImage(Image *),
   TextureImage(Image *,const Image *),

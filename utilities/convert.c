@@ -206,6 +206,8 @@ static void ConvertUsage(void)
       "-unsharp geometry    sharpen the image",
       "-verbose             print detailed information about the image",
       "-view                FlashPix viewing transforms",
+      "-virtual_pixel method",
+      "                     Constant, Edge, Mirror, or Tile",
       "-wave geometry       alter an image along a sine wave",
       "-write filename      write images to this file",
       (char *) NULL

@@ -102,6 +102,8 @@ static void IdentifyUsage(void)
       "-sampling_factor geometry",
       "                     horizontal and vertical sampling factor",
       "-verbose             print detailed information about the image",
+      "-virtual_pixel method",
+      "                     Constant, Edge, Mirror, or Tile",
       (char *) NULL
     };
 

@@ -168,6 +168,8 @@ static void DisplayUsage(void)
       "-update seconds      detect when image file is modified and redisplay",
       "-verbose             print detailed information about the image",
       "-visual type         display image using this visual type",
+      "-virtual_pixel method",
+      "                     Constant, Edge, Mirror, or Tile",
       "-window id           display image to background of this window",
       "-window_group id     exit program when this window id is destroyed",
       "-write filename      write image to a file",
@@ -1436,6 +1438,33 @@ int main(int argc,char **argv)
                   MagickFatalError(OptionFatalError,"Missing visual class",
                     option);
                 resource_info.visual_type=argv[i];
+              }
+            break;
+  				}
+        if (LocaleCompare("virtual_pixel",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                VirtualPixelMethod
+                  virtual_pixel_method;
+
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,
+                    "Missing virtual pixel method",option);
+                option=argv[i];
+                virtual_pixel_method=UndefinedVirtualPixelMethod;
+                if (LocaleCompare("Constant",option) == 0)
+                  virtual_pixel_method=ConstantVirtualPixelMethod;
+                if (LocaleCompare("Edge",option) == 0)
+                  virtual_pixel_method=EdgeVirtualPixelMethod;
+                if (LocaleCompare("Mirror",option) == 0)
+                  virtual_pixel_method=MirrorVirtualPixelMethod;
+                if (LocaleCompare("Tile",option) == 0)
+                  virtual_pixel_method=TileVirtualPixelMethod;
+                if (virtual_pixel_method == UndefinedVirtualPixelMethod)
+                  MagickFatalError(OptionFatalError,
+                    "Invalid virtual pixel method",option);
               }
             break;
           }

@@ -218,7 +218,6 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
   if ((offset >= 0) && ((offset+span) < (off_t) number_pixels))
     if ((x >= 0) && (y >= 0) && ((x+columns) <= cache_info->columns) &&
         ((y+rows) <= cache_info->rows))
-      
       {
         unsigned int
           status;
@@ -265,32 +264,32 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
             Transfer a single pixel.
           */
           span=1;
-          switch (cache_info->virtual_type)
+          switch (cache_info->virtual_pixel_method)
           {
-            case ConstantVPType:
-            default:
+            case ConstantVirtualPixelMethod:
             {
               (void) AcquireCacheNexus(image,EdgeX(x+u),EdgeY(y+v),1,1,
                 image_nexus,exception);
               p=(&cache_info->virtual_pixel);
               break;
             }
-            case EdgeVPType:
+            case EdgeVirtualPixelMethod:
+            default:
             {
               p=AcquireCacheNexus(image,EdgeX(x+u),EdgeY(y+v),1,1,image_nexus,
                 exception);
               break;
             }
-            case TileVPType:
-            {
-              p=AcquireCacheNexus(image,TileX(x+u),TileY(y+v),1,1,image_nexus,
-                exception);
-              break;
-            }
-            case MirrorVPType:
+            case MirrorVirtualPixelMethod:
             {
               p=AcquireCacheNexus(image,MirrorX(x+u),MirrorY(y+v),1,1,
                 image_nexus,exception);
+              break;
+            }
+            case TileVirtualPixelMethod:
+            {
+              p=AcquireCacheNexus(image,TileX(x+u),TileY(y+v),1,1,image_nexus,
+                exception);
               break;
             }
           }
@@ -1135,6 +1134,45 @@ MagickExport PixelPacket *GetImagePixels(Image *image,const long x,const long y,
   if (cache_info->methods.get_pixel_handler == (GetPixelHandler) NULL)
     return((PixelPacket *) NULL);
   return(cache_info->methods.get_pixel_handler(image,x,y,columns,rows));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t I m a g e V i r t u a l P i x e l M e t h o d                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImageVirtualPixelMethod() gets the "virtual pixels" method for the
+%  image.  A virtual pixel is any pixel access that is outside the boundaries
+%  of the image cache.
+%
+%  The format of the GetImageVirtualPixelMethod() method is:
+%
+%      const VirtualPixelMethod GetImageVirtualPixelMethod(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport const VirtualPixelMethod GetImageVirtualPixelMethod(
+  const Image *image)
+{
+  CacheInfo
+    *cache_info;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(image->cache != (Cache) NULL);
+  cache_info=(CacheInfo *) image->cache;
+  assert(cache_info->signature == MagickSignature);
+  return(cache_info->virtual_pixel_method);
 }
 
 /*
@@ -2528,28 +2566,26 @@ MagickExport PixelPacket *SetImagePixels(Image *image,const long x,const long y,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S e t I m a g e V i r t u a l P i x e l T y p e                           %
+%   S e t I m a g e V i r t u a l P i x e l M e t h o d                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetImageVirtualPixelType() sets the type of "virtual" pixels for the image.
-%  A virtual pixel is any pixel access that is outside the boundaries of the
-%  image cache.
+%  SetImageVirtualPixelMethod() sets the "virtual pixels" method for the
+%  image.  A virtual pixel is any pixel access that is outside the boundaries
+%  of the image cache.
 %
-%  The format of the SetImageVirtualPixelType() method is:
+%  The format of the SetImageVirtualPixelMethod() method is:
 %
-%      SetImageVirtualPixelType(Image *image,const VirtualPixelType type)
+%      SetImageVirtualPixelMethod(const Image *image,
+%        const VirtualPixelMethod method)
 %
 %  A description of each parameter follows:
 %
 %    o image: The image.
 %
 %    o type: choose from these access types:
-%
-%        ConstantVPType:  every value outside the image is a constant as
-%        defines by the pixel parameter.
 %
 %        EdgeVPType:  the edge pixels of the image extend infinitely.
 %        Any pixel outside the image is assigned the same value as the
@@ -2560,10 +2596,13 @@ MagickExport PixelPacket *SetImagePixels(Image *image,const long x,const long y,
 %
 %        MirrorVPType:  mirror the image at the boundaries.
 %
+%        ConstantVPType:  every value outside the image is a constant as
+%        defines by the pixel parameter.
+%
 %
 */
-MagickExport void SetImageVirtualPixelType(Image *image,
-  const VirtualPixelType type)
+MagickExport void SetImageVirtualPixelMethod(const Image *image,
+  const VirtualPixelMethod method)
 {
   CacheInfo
     *cache_info;
@@ -2573,7 +2612,7 @@ MagickExport void SetImageVirtualPixelType(Image *image,
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
-  cache_info->virtual_type=type;
+  cache_info->virtual_pixel_method=method;
 }
 
 /*
