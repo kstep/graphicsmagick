@@ -2711,6 +2711,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     bytes_per_pixel,
     height,
     high_bit,
+    msb_first,
     number_scenes,
     quantum,
     samples_per_pixel,
@@ -2754,6 +2755,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   group=0;
   height=0;
   high_bit=0;
+  msb_first=False;
   number_scenes=1;
   samples_per_pixel=1;
   significant_bits=0;
@@ -3014,6 +3016,14 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             high_bit=datum;
             break;
           }
+          case 0x0103:
+          {
+            /*
+              Pixel representation.
+            */
+            msb_first=datum;
+            break;
+          }
           case 0x1200:
           case 0x3006:
           {
@@ -3212,9 +3222,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert DCM Medical image to pixel packets.
         */
-	red=0;
-	green=0;
-	blue=0;
+        red=0;
+        green=0;
+        blue=0;
         i=0;
         byte=0;
         for (y=0; y < (int) image->rows; y++)
@@ -3231,14 +3241,22 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   index=ReadByte(image);
                 else
                   if (bits_allocated != 12)
-                    index=LSBFirstReadShort(image);
+                    {
+                      if (msb_first)
+                        index=MSBFirstReadShort(image);
+                      else
+                        index=LSBFirstReadShort(image);
+                    }
                   else
                     {
                       if (i & 0x01)
                         index=(ReadByte(image) << 8) | byte;
                       else
                         {
-                          index=LSBFirstReadShort(image);
+                          if (msb_first)
+                            index=MSBFirstReadShort(image);
+                          else
+                            index=LSBFirstReadShort(image);
                           byte=index & 0x0f;
                           index>>=4;
                         }
@@ -3265,9 +3283,18 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 else
                   {
-                    red=LSBFirstReadShort(image);
-                    green=LSBFirstReadShort(image);
-                    blue=LSBFirstReadShort(image);
+                    if (msb_first)
+                      {
+                        red=MSBFirstReadShort(image);
+                        green=MSBFirstReadShort(image);
+                        blue=MSBFirstReadShort(image);
+                      }
+                    else
+                      {
+                        red=LSBFirstReadShort(image);
+                        green=LSBFirstReadShort(image);
+                        blue=LSBFirstReadShort(image);
+                      }
                   }
                 if (scale != (Quantum *) NULL)
                   {
