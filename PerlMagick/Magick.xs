@@ -5981,7 +5981,7 @@ Mogrify(ref,...)
 
           radius=0.0;
           sigma=1.0;
-          offset=1.0;
+          offset=0.0;
           if (attribute_flag[1])
             radius=argument_list[1].double_reference;
           if (attribute_flag[2])
@@ -5989,8 +5989,12 @@ Mogrify(ref,...)
           if (attribute_flag[3])
             offset=argument_list[3].double_reference;
           if (attribute_flag[0])
-            (void) sscanf(argument_list[0].string_reference,"%lfx%lf%lf",
-              &radius,&sigma,&offset);
+            {
+              (void) sscanf(argument_list[0].string_reference,"%lfx%lf%lf",
+                &radius,&sigma,&offset);
+               if (strchr(argument_list[0].string_reference,'%') != (char *) NULL)
+                 offset*=(double) MaxRGB/100.0;
+            }
           image=AdaptiveThresholdImage(image,radius,sigma,offset,&exception);
           break;
         }
