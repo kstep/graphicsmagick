@@ -128,9 +128,24 @@ Export void ExitModules(void)
   register ModuleInfo
     *p;
 
+  ModuleAliases
+    *alias,
+    *entry;
+
   /* Unload and de-register all loaded modules */
   while((p=GetModuleInfo((char *)NULL))!=(ModuleInfo*)NULL)
     UnloadModule(p->tag);
+
+  /* Free memory associated with ModuleAliases list */
+  for(alias=module_aliases; alias != (ModuleAliases*)NULL; )
+    {
+      entry=alias;
+      alias=alias->next;
+      FreeMemory((void**)&entry->alias);
+      FreeMemory((void**)&entry->module);
+      FreeMemory((void**)&entry);
+    }
+  module_aliases=(ModuleAliases*)NULL;
 
   /* Shut down libltdl */
  /*  lt_dlexit(void); */
