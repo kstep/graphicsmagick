@@ -109,6 +109,7 @@ $call Make vicar.c
 $call Make vid.c
 $call Make viff.c
 $call Make vms.c
+$call Make wbmp.c
 $call Make widget.c
 $call Make x.c
 $call Make xbm.c
@@ -133,7 +134,7 @@ $library/create libmagick.olb PreRvIcccm.obj,animate.obj,annotate.obj, -
   rgb.obj,rla.obj,rle.obj,segment.obj,sct.obj,sfw.obj,sgi.obj,shear.obj, -
   signature.obj,stegano.obj,sun.obj,tga.obj,tiff.obj,tile.obj, -
   tim.obj,timer.obj,transform.obj,ttf.obj,txt.obj,uil.obj,utility.obj, -
-  uyvy.obj,vicar.obj,vid.obj,viff.obj,vms.obj,widget.obj,x.obj, -
+  uyvy.obj,vicar.obj,vid.obj,viff.obj,vms.obj,wbmp.obj,widget.obj,x.obj, -
   xbm.obj,xc.obj,xpm.obj,xwd.obj,xwindows.obj,yuv.obj,zoom.obj,8bim.obj
 $exit
 $

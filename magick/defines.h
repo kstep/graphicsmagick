@@ -19,6 +19,7 @@ extern "C" {
 #define ApplicationDefaults  "/usr/lib/X11/app-defaults/"
 #endif
 #endif
+
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
 #if !defined(ApplicationDefaults)
 #define ApplicationDefaults  "/usr/X11R6/lib/X11/app-defaults/"
@@ -46,7 +47,8 @@ extern "C" {
 #endif
 #define SetNotifyHandlers
 #define TemporaryTemplate  "magick"
-#else /* specific platforms */
+#else
+
 #if defined(vms)
 #define ApplicationDefaults  "decw$system_defaults:"
 #define DelegatePath  "sys$login:"
@@ -68,7 +70,8 @@ extern "C" {
 #define RGBColorDatabase  "sys$common:[sysmgr]decw$rgb.dat"
 #endif
 #define SetNotifyHandlers
-#endif /* vms */
+#endif
+
 #if defined(macintosh)
 #define ApplicationDefaults  "/usr/lib/X11/app-defaults/"
 #define DelegatePath  ""
@@ -92,7 +95,8 @@ extern "C" {
 #define SetNotifyHandlers \
   SetErrorHandler(MACErrorHandler); \
   SetWarningHandler(MACWarningHandler)
-#endif /* macintosh */
+#endif
+
 #if defined(WIN32)
 #define ApplicationDefaults  "c:\\ImageMagick\\"
 #define DelegatePath  "c:\\ImageMagick\\"
@@ -122,8 +126,9 @@ extern "C" {
 #undef sleep
 #define sleep(seconds)  Sleep(seconds*1000)
 #define HAVE_TIFFCONF_H
-#endif /* WIN32 */
-#endif /* end of platform specific definitions */
+#endif
+
+#endif
 
 /*
   Define declarations.
@@ -178,13 +183,20 @@ extern "C" {
   CloseBlob(image); \
   return(False); \
 }
-
+
+/*
+  Define system symbols if not already defined.
+*/
 #if !defined(STDIN_FILENO)
-#define STDIN_FILENO  0
+#define STDIN_FILENO  0x00
 #endif
 
 #if !defined(O_BINARY)
-#define O_BINARY  0
+#define O_BINARY  0x00
+#endif
+
+#if !defined(MAP_FAILED)
+#define MAP_FAILED      ((void *) -1)
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)

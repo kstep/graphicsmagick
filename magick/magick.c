@@ -773,6 +773,12 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->encoder=WriteTGAImage;
       entry->description=AllocateString("Truevision Targa image");
       RegisterMagickInfo(entry);
+      entry=SetMagickInfo("WBMP");
+      entry->decoder=ReadWBMPImage;
+      entry->encoder=WriteWBMPImage;
+      entry->adjoin=False;
+      entry->description=AllocateString("Wireless Bitmap (level 0) image");
+      RegisterMagickInfo(entry);
 #if defined(HasX11)
       entry=SetMagickInfo("X");
       entry->decoder=ReadXImage;

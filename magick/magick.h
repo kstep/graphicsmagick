@@ -41,23 +41,30 @@
 #include <locale.h>
 #include <errno.h>
 #include <math.h>
+#include <limits.h>
 #include <assert.h>
 
-#if !defined(__OPENNT)
-# include <time.h>
-#else
-# include <sys/time.h>
-#endif
-
-#if !defined(__MWERKS__)
+#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+# include <sys/times.h>
 # include <sys/types.h>
 # include <sys/stat.h>
+# include <sys/time.h>
+#if defined(HAVE_MMAP)
+# include <sys/mman.h>
+#endif
+# include "magick/api.h"
 #else
+# include <times.h>
+# include <types.h>
+# include <stat.h>
+# include <time.h>
+# include "api.h"
+#endif
+
+#if defined(__MWERKS__)
 # include <SIOUX.h>
 # include <console.h>
 # include <unix.h>
-# include <types.h>
-# include <stat.h>
 #endif
 
 /*
@@ -72,6 +79,16 @@
 #define HasZLIB
 #endif
 
+#if defined(VMS)
+#define HasJPEG
+#define HasLZW
+#define HasPNG
+#define HasTIFF
+#define HasTTF
+#define HasX11
+#define HasZLIB
+#endif
+
 #if defined(WIN32)
 #define HasJBIG
 #define HasJPEG
@@ -83,22 +100,7 @@
 #define HasZLIB
 #define HasBZLIB
 #define HasHDF
-#endif
-
-#if defined(VMS)
-#define HasJPEG
-#define HasLZW
-#define HasPNG
-#define HasTIFF
-#define HasTTF
-#define HasX11
-#define HasZLIB
-#endif
-
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-#include "magick/api.h"
-#else
-#include "api.h"
+#define HAVE_MMAP
 #endif
 
 #undef index

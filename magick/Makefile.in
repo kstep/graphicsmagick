@@ -173,7 +173,7 @@ INCLUDES = -I$(top_srcdir)
 libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
 
 # Library sources
-libMagick_la_SOURCES = PreRvIcccm.c animate.c annotate.c avs.c blob.c bmp.c   cache.c cache_io.c cmyk.c colors.c compress.c dcm.c decorate.c delegates.c   display.c dps.c draw.c effects.c enhance.c ept.c error.c fax.c fits.c fpx.c   gems.c gif.c gradation.c gray.c hdf.c histogram.c html.c icc.c icon.c   image.c iptc.c jbig.c jpeg.c label.c logo.c magick.c map.c matte.c memory.c   miff.c monitor.c mono.c montage.c mtv.c null.c pcd.c pcl.c pcx.c   pdf.c pict.c pix.c plasma.c png.c pnm.c preview.c ps.c ps2.c ps3.c   psd.c pwp.c quantize.c rgb.c rla.c rle.c segment.c sct.c sfw.c sgi.c shear.c   signature.c stegano.c sun.c tga.c tiff.c tile.c tim.c timer.c transform.c   ttf.c txt.c uil.c utility.c uyvy.c vicar.c vid.c viff.c widget.c x.c   xbm.c xc.c xpm.c xwd.c xwindows.c yuv.c zoom.c 8bim.c
+libMagick_la_SOURCES = PreRvIcccm.c animate.c annotate.c avs.c blob.c bmp.c   cache.c cache_io.c cmyk.c colors.c compress.c dcm.c decorate.c delegates.c   display.c dps.c draw.c effects.c enhance.c ept.c error.c fax.c fits.c fpx.c   gems.c gif.c gradation.c gray.c hdf.c histogram.c html.c icc.c icon.c   image.c iptc.c jbig.c jpeg.c label.c logo.c magick.c map.c matte.c memory.c   miff.c monitor.c mono.c montage.c mtv.c null.c pcd.c pcl.c pcx.c   pdf.c pict.c pix.c plasma.c png.c pnm.c preview.c ps.c ps2.c ps3.c   psd.c pwp.c quantize.c rgb.c rla.c rle.c segment.c sct.c sfw.c sgi.c shear.c   signature.c stegano.c sun.c tga.c tiff.c tile.c tim.c timer.c transform.c   ttf.c txt.c uil.c utility.c uyvy.c vicar.c vid.c viff.c widget.c wbmp.c x.c   xbm.c xc.c xpm.c xwd.c xwindows.c yuv.c zoom.c 8bim.c
 
 
 # Source files not used for Unix library but which are distributed
@@ -212,7 +212,7 @@ pcd.lo pcl.lo pcx.lo pdf.lo pict.lo pix.lo plasma.lo png.lo pnm.lo \
 preview.lo ps.lo ps2.lo ps3.lo psd.lo pwp.lo quantize.lo rgb.lo rla.lo \
 rle.lo segment.lo sct.lo sfw.lo sgi.lo shear.lo signature.lo stegano.lo \
 sun.lo tga.lo tiff.lo tile.lo tim.lo timer.lo transform.lo ttf.lo \
-txt.lo uil.lo utility.lo uyvy.lo vicar.lo vid.lo viff.lo widget.lo x.lo \
+txt.lo uil.lo utility.lo uyvy.lo vicar.lo vid.lo viff.lo wbmp.lo widget.lo x.lo \
 xbm.lo xc.lo xpm.lo xwd.lo xwindows.lo yuv.lo zoom.lo 8bim.lo
 SCRIPTS =  $(bin_SCRIPTS)
 

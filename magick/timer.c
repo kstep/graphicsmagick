@@ -56,10 +56,6 @@
 #include "magick.h"
 #include "defines.h"
 
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-#include <sys/times.h>
-#include <limits.h>
-#endif
 #if defined(macintosh)
 #define CLK_TCK  CLOCKS_PER_SEC
 #endif
@@ -136,15 +132,11 @@ static double ElapsedTime(void)
     timer;
 
   return((double) times(&timer)/CLK_TCK);
-#endif
-#if defined(vms)
-  return((double) clock()/CLK_TCK);
-#endif
-#if defined(macintosh)
-  return((double) clock()/CLK_TCK);
-#endif
+#else
 #if defined(WIN32)
   return(NTElapsedTime());
+#endif
+  return((double) clock()/CLK_TCK);
 #endif
 }
 
@@ -382,14 +374,10 @@ static double UserTime(void)
 
   times(&timer);
   return((double) (timer.tms_utime+timer.tms_stime)/CLK_TCK);
-#endif
-#if defined(vms)
-  return((double) clock()/CLK_TCK);
-#endif
-#if defined(macintosh)
-  return((double) clock()/CLK_TCK);
-#endif
+#else
 #if defined(WIN32)
   return(NTUserTime());
+#endif
+  return((double) clock()/CLK_TCK);
 #endif
 }

@@ -64,7 +64,7 @@ LINTSRCS = display.c magick/PreRvIcccm.c magick/animate.c magick/annotate.c \
   magick/tga.c magick/tiff.c magick/tile.c magick/tim.c magick/timer.c \
   magick/transform.c magick/ttf.c magick/txt.c magick/uil.c \
   magick/utility.c magick/uyvy.c magick/vicar.c magick/vid.c \
-  magick/viff.c magick/vms.c magick/widget.c magick/x.c magick/xbm.c \
+  magick/viff.c magick/vms.c magick/wbmp.c magick/widget.c magick/x.c magick/xbm.c \
   magick/xc.c magick/xpm.c magick/xwd.c magick/xwindows.c magick/yuv.c \
   magick/zoom.c
 

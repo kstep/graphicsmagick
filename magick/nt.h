@@ -24,7 +24,6 @@ extern "C" {
 #define PROT_READWRITE  3
 #define MAP_SHARED  1
 #define MAP_PRIVATE  2
-#define MAP_FAILED  ((void*) 0xffffffff)
 /*
   Typedef declarations.
 */

@@ -64,7 +64,7 @@ SRCS = PreRvIcccm.c animate.c annotate.c avs.c blob.c bmp.c cache.c cache_io.c \
   pdf.c pict.c pix.c plasma.c png.c pnm.c preview.c ps.c ps2.c ps3.c \
   psd.c pwp.c quantize.c rgb.c rla.c rle.c segment.c sct.c sfw.c sgi.c shear.c \
   signature.c stegano.c sun.c tga.c tiff.c tile.c tim.c timer.c transform.c \
-  ttf.c txt.c uil.c utility.c uyvy.c vicar.c vid.c viff.c widget.c x.c \
+  ttf.c txt.c uil.c utility.c uyvy.c vicar.c vid.c viff.c wbmp.c widget.c x.c \
   xbm.c xc.c xpm.c xwd.c xwindows.c yuv.c zoom.c 8bim.c
 
 OBJS = PreRvIcccm.o animate.o annotate.o avs.o blob.o bmp.o cache.o cache_io.o \
@@ -76,7 +76,7 @@ OBJS = PreRvIcccm.o animate.o annotate.o avs.o blob.o bmp.o cache.o cache_io.o \
   pdf.o pict.o pix.o plasma.o png.o pnm.o preview.o ps.o ps2.o ps3.o \
   psd.o pwp.o quantize.o rgb.o rla.o rle.o segment.o sct.o sfw.o sgi.o shear.o \
   signature.o stegano.o sun.o tga.o tiff.o tile.o tim.o timer.o transform.o \
-  ttf.o txt.o uil.o utility.o uyvy.o vicar.o vid.o viff.o widget.o x.o \
+  ttf.o txt.o uil.o utility.o uyvy.o vicar.o vid.o viff.o wbmp.o widget.o x.o \
   xbm.o xc.o xpm.o xwd.o xwindows.o yuv.o zoom.o 8bim.o
 
 #ifdef HPArchitecture

@@ -214,8 +214,8 @@ $montage=$images->Montage(filename=>'PerlMagick',geometry=>'130x194+10+5>',
   compose=>'over',background=>'#ffffff',font=>'@Generic.ttf',pen=>'#600');
 $logo=Image::Magick->new();
 $logo->Read('logo:');
-$logo->Crop('300x275+175+100');
-$logo->Zoom('80%');
+$logo->Crop('461x455+98+0');
+$logo->Zoom('45%');
 $montage->Composite(image=>$logo,geometry=>'+245+0',compose=>'Over');
 print "Write image...\n";
 $montage->Set(matte=>'false');

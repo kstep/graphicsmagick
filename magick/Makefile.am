@@ -50,7 +50,7 @@ libMagick_la_SOURCES = PreRvIcccm.c animate.c annotate.c avs.c blob.c bmp.c \
   pdf.c pict.c pix.c plasma.c png.c pnm.c preview.c ps.c ps2.c ps3.c \
   psd.c pwp.c quantize.c rgb.c rla.c rle.c segment.c sct.c sfw.c sgi.c shear.c \
   signature.c stegano.c sun.c tga.c tiff.c tile.c tim.c timer.c transform.c \
-  ttf.c txt.c uil.c utility.c uyvy.c vicar.c vid.c viff.c widget.c x.c \
+  ttf.c txt.c uil.c utility.c uyvy.c vicar.c vid.c viff.c wbmp.c widget.c x.c \
   xbm.c xc.c xpm.c xwd.c xwindows.c yuv.c zoom.c 8bim.c
 
 # Source files not used for Unix library but which are distributed

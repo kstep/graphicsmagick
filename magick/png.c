@@ -3776,7 +3776,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               png_set_PLTE(ping, ping_info, NULL, 0);
             else
               {
-#if (PNG_LIBPNG_VER > 10005)
+#if (PNG_LIBPNG_VER >= 10005)
                 CompressColormapTransFirst(image);
 #endif
                 num_palette=image->colors;

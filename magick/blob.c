@@ -731,7 +731,7 @@ Export size_t LSBFirstWriteShort(Image *image,const unsigned int value)
 */
 Export void *MapBlob(int file,const MapMode mode,size_t *length)
 {
-#if defined(HAVE_MMAP) || defined(WIN32)
+#if defined(HAVE_MMAP)
   struct stat
     attributes;
 
@@ -1659,7 +1659,7 @@ Export off_t TellBlob(Image *image)
 */
 Export unsigned int UnmapBlob(void *map,const size_t length)
 {
-#if defined(HAVE_MMAP) || defined(WIN32)
+#if defined(HAVE_MMAP)
   int
     status;
 

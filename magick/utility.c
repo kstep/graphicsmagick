@@ -565,13 +565,7 @@ Export unsigned int ExpandFilenames(int *argc,char ***argv)
     ExpandFilename(filename);
     if (!IsGlob(filename))
       {
-        /*
-          Silently skip directories.
-        */
-        if (IsDirectory(filename))
-          count--;
-        else
-          expanded=True;
+        expanded=True;
         continue;
       }
     /*
@@ -1107,8 +1101,7 @@ Export unsigned int IsAccessible(const char *filename)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method IsDirectory returns True if the file as defined by filename is
-%  a directory.  Once MetroWerks write a stat(2) function, we can remove the
-%  chdir(2) function.
+%  a directory.
 %
 %  The format of the IsAccessible method is:
 %
@@ -1129,7 +1122,6 @@ Export unsigned int IsDirectory(const char *filename)
   int
     status;
 
-#if !defined(WIN32)
   struct stat
     file_info;
 
@@ -1140,19 +1132,6 @@ Export unsigned int IsDirectory(const char *filename)
   if (status != 0)
     return(False);
   return(S_ISDIR(file_info.st_mode));
-#else
-  char
-    current_directory[MaxTextExtent];
-
-  assert(filename != (const char *) NULL);
-  if (*filename == '\0')
-    return(False);
-  (void) getcwd(current_directory,MaxTextExtent-1);
-  status=chdir(filename);
-  if (status == 0)
-    (void) chdir(current_directory);
-  return(status == 0);
-#endif
 }
 
 /*
@@ -2355,8 +2334,8 @@ Export int SystemCommand(const unsigned int verbose,const char *command)
   status=NTSystemCommand(command);
 #endif
   if (verbose)
-    MagickWarning(UndefinedWarning,command,
-      status ? strerror(errno) : (char *) NULL);
+    MagickWarning(UndefinedWarning,command,status ? strerror(errno) :
+      (char *) NULL);
   return(status);
 }
 
