@@ -5028,10 +5028,9 @@ MagickExport unsigned int RGBTransformImage(Image *image,
           break;
         for (x=0; x < (int) image->columns; x++)
         {
-          q->opacity=Min(Min(MaxRGB-q->red,MaxRGB-q->green),MaxRGB-q->blue);
-          q->red=MaxRGB-q->red-q->opacity;
-          q->green=MaxRGB-q->green-q->opacity;
-          q->blue=MaxRGB-q->blue-q->opacity;
+          q->red=MaxRGB-q->red;
+          q->green=MaxRGB-q->green;
+          q->blue=MaxRGB-q->blue;
           q++;
         }
         if (!SyncImagePixels(image))
@@ -6388,10 +6387,8 @@ MagickExport unsigned int TransformRGBImage(Image *image,
   assert(image->signature == MagickSignature);
   if ((image->colorspace == CMYKColorspace) && (colorspace == RGBColorspace))
     {
-      double
-        blue,
-        green,
-        red;
+      Quantum
+        white;
 
       /*
         Transform image from CMYK to RGB.
@@ -6404,14 +6401,10 @@ MagickExport unsigned int TransformRGBImage(Image *image,
           break;
         for (x=0; x < (int) image->columns; x++)
         {
-          red=MaxRGB-(double) (q->red+q->opacity);
-          green=MaxRGB-(double) (q->green+q->opacity);
-          blue=MaxRGB-(double) (q->blue+q->opacity);
-          q->red=(Quantum) ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
-          q->green=(Quantum)
-            ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
-          q->blue=(Quantum)
-            ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
+          white=MaxRGB-q->opacity;
+          q->red=(q->red > white ? 0 : white-q->red);
+          q->green=(q->green > white ? 0 : white-q->green);
+          q->blue=(q->blue > white ? 0 : white-q->blue);
           q->opacity=OpaqueOpacity;
           q++;
         }
