@@ -6660,7 +6660,7 @@ QueryFontMetrics(ref,...)
           if (LocaleCompare(attribute,"scale") == 0)
             {
               (void) sscanf(SvPV(ST(i),na),"%lf%*[, ]%lf",&affine.sx,
-                affine.sy);
+                &affine.sy);
               break;
             }
           if (LocaleCompare(attribute,"skew") == 0)
