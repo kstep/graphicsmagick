@@ -199,8 +199,8 @@ MagickExport IndexPacket ConstrainColormapIndex(Image *image,
   assert(image->signature == MagickSignature);
   if (index < image->colors)
     return((IndexPacket) index);
-  ThrowException(&image->exception,CorruptImageError,
-    "invalid colormap index",image->filename);
+  ThrowException(&image->exception,CorruptImageError,"invalid colormap index",
+    image->filename);
   return(0);
 }
 

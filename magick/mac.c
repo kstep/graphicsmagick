@@ -1105,16 +1105,14 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
   picture_handle=(PicHandle)
     NewHandle(Max(GetBlobSize(image)-PICTHeaderSize,PICTHeaderSize));
   if (picture_handle == nil)
-    ThrowReaderException(ResourceLimitError,"Unable to allocate memory",
-      image);
+    ThrowReaderException(ResourceLimitError,"Unable to allocate memory",image);
   HLock((Handle) picture_handle);
   (void) ReadBlob(image,PICTHeaderSize,*(char **) picture_handle);
   status=ReadBlob(image,GetBlobSize(image)-PICTHeaderSize,*(char **) picture_handle);
   if (status == False)
     {
       DisposeHandle((Handle) picture_handle);
-      ThrowReaderException(CorruptImageError,"Unable to read image data",
-        image);
+      ThrowReaderException(CorruptImageError,"Unable to read image data",image);
     }
   GetGWorld(&port,&device);
   theErr=NewGWorld(&graphic_world,0,&(**picture_handle).picFrame,nil,nil,
@@ -1132,8 +1130,7 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
     {
       DisposeGWorld(graphic_world);
       DisposeHandle((Handle) picture_handle);
-      ThrowReaderException(CorruptImageError,"Unable to read image data",
-        image);
+      ThrowReaderException(CorruptImageError,"Unable to read image data",image);
     }
   BottleneckTest(picture_handle,&codec,&depth,&colormap_id);
   switch (codec)

@@ -2744,8 +2744,7 @@ MagickExport unsigned int SyncCacheNexus(Image *image,const unsigned long nexus)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->cache == (Cache) NULL)
-    ThrowBinaryException(CacheError,"pixel cache is not open",
-      image->filename);
+    ThrowBinaryException(CacheError,"pixel cache is not open",image->filename);
   image->taint=True;
   if (IsNexusInCore(image->cache,nexus))
     return(True);

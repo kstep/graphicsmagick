@@ -1035,8 +1035,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
   if (status != 0)
     {
       (void) FT_Done_FreeType(library);
-      ThrowBinaryException(DelegateError,"Unable to read font",
-        draw_info->font)
+      ThrowBinaryException(DelegateError,"Unable to read font",draw_info->font)
     }
   (void) strncpy(font,draw_info->font,MaxTextExtent-1);
   if (face->num_charmaps != 0)
@@ -1296,8 +1295,8 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
 static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
   const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
 {
-  ThrowBinaryException(MissingDelegateError,
-    "FreeType library is not available",draw_info->font);
+  ThrowBinaryException(MissingDelegateError,"FreeType library is not available",
+    draw_info->font);
 }
 #endif
 
