@@ -1,3 +1,6 @@
+2001-09-11  Cristy  <cristy@mystic.es.dupont.com>
+	* Fixed uninitialized pointer in pixel cache subsystem.
+
 2001-09-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* magick/image.h: Rename QuantumLeap define to QuantumDepth.
 	  QuantumDepth is set to the values 8 or 16, depending on user
