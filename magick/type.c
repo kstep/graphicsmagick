@@ -216,7 +216,7 @@ MagickExport TypeInfo *GetTypeInfo(const char *name,ExceptionInfo *exception)
 */
 MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
 {
-  register int
+  register size_t
     i;
 
   register TypeInfo
