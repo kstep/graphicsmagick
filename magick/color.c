@@ -650,7 +650,6 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
   }
   if (file != (FILE *) NULL)
     {
-      (void) fputs("\n",file);
       Histogram(image,cube_info,cube_info->root,file);
       (void) fflush(file);
     }
