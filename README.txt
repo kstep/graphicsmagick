@@ -347,39 +347,56 @@ UNIX/Cygwin COMPILATION
     why) so the failure you are observing can be identified and
     resolved.
 
-  To confirm your build of the ImageMagick distribution was successful,
-  type:
+  Compilation:
 
-      ./utilities/display
+    Now that ImageMagick is configured, type
 
-  If the program faults, ensure that you have not inadvertently linked
-  to an older version of the libMagick library or used header files
-  from a different release. To ensure this is not the case type
+       make
 
-      cd ImageMagick/magick
-      make install
-      cd ..
-      make clean
-      make
+    to build the package.
 
-  If the image colors are not correct use this command:
+  Verifying The Build:
 
-      ./utilities/display -visual default
+    To confirm your build of the ImageMagick distribution was successful,
+    type:
+  
+        ./utilities/display
 
-  Be sure to read the manual pages for the display(1), animate(1),
-  montage(1), import(1), mogrify(1), identify(1), combine(1), and
-  convert(1) utilities. Also read the ImageMagick frequently asked
-  questions in the file www/Magick.html. This is required reading. Most
-  of the questions I get via electronic mail are answered in this
-  document.
+    The ImageMagick logo is displayed.
+  
+    If the image colors are not correct use this command:
+  
+        ./utilities/display -visual default
+  
+    For a more serious test, you may run the ImageMagick test suite by
+    typing
+  
+        make check
 
-  Place display(1) X application defaults in
-  /usr/lib/X11/app-defaults/Display.  Use the appropriate name for
-  other clients (e.g. Animate, Montage, etc).  To execute display(1)
-  from as a menu item of any window manager (olwm, mwm, twm, etc), use
+    Note that due to differences between the developer's environment and
+    your own it is possible that some tests may be indicated as failed
+    even though the results are ok. Differences between the developer's
+    environment environment and your own may include the compiler, the
+    CPU type, and the library versions used. The ImageMagick developers
+    use the current release of all dependent libraries.
 
-      logo:Untitled
+  Documentation:
 
+    Be sure to read the manual pages for the display(1), animate(1),
+    montage(1), import(1), mogrify(1), identify(1), combine(1), and
+    convert(1) utilities. Also read the ImageMagick frequently asked
+    questions in the file www/Magick.html. This is required reading.
+    Most of the questions I get via electronic mail are answered in this
+    document.
+
+  X11 Resources:
+
+    Place display(1) X application defaults in
+    /usr/lib/X11/app-defaults/Display. Use the appropriate name for
+    other clients (e.g. Animate, Montage, etc). To execute display(1)
+    from as a menu item of any window manager (olwm, mwm, twm, etc), use
+
+       logo:Untitled
 
 MAGICK DELEGATES
 
