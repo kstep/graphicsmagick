@@ -612,7 +612,8 @@ Export unsigned int GIFDecodeImage(Image *image)
     *q;
 
   register unsigned char
-    *c;
+    *c,
+    *p;
 
   register unsigned int
     datum;
@@ -624,6 +625,7 @@ Export unsigned int GIFDecodeImage(Image *image)
     data_size,
     first,
     *packet,
+    *pixels,
     *pixel_stack,
     *suffix,
     *top_stack;
@@ -639,16 +641,23 @@ Export unsigned int GIFDecodeImage(Image *image)
     Allocate decoder tables.
   */
   assert(image != (Image *) NULL);
+  pixels=(unsigned char *)
+    AllocateMemory(image->columns*image->rows*sizeof(unsigned char));
   packet=(unsigned char *) AllocateMemory(256*sizeof(unsigned char));
   prefix=(short *) AllocateMemory(MaxStackSize*sizeof(short));
   suffix=(unsigned char *) AllocateMemory(MaxStackSize*sizeof(unsigned char));
   pixel_stack=(unsigned char *)
     AllocateMemory((MaxStackSize+1)*sizeof(unsigned char));
-  if ((packet == (unsigned char *) NULL) ||
+  if ((pixels == (unsigned char *) NULL) ||
+      (packet == (unsigned char *) NULL) ||
       (prefix == (short *) NULL) ||
       (suffix == (unsigned char *) NULL) ||
       (pixel_stack == (unsigned char *) NULL))
-    return(False);
+    {
+      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
+        image->filename);
+      return(False);
+    }
   /*
     Initialize GIF data stream decoder.
   */
@@ -662,7 +671,7 @@ Export unsigned int GIFDecodeImage(Image *image)
   for (code=0; code < clear; code++)
   {
     prefix[code]=0;
-    suffix[code]=(unsigned char) code;
+    suffix[code]=code;
   }
   /*
     Decode GIF pixel stream.
@@ -673,12 +682,7 @@ Export unsigned int GIFDecodeImage(Image *image)
   count=0;
   first=0;
   top_stack=pixel_stack;
-  packets=0;
-  max_packets=image->packets;
-  image->packets=0;
-  q=image->pixels;
-  q->length=MaxRunlength;
-  q->length=0;
+  p=pixels;
   for (i=0; i < (image->columns*image->rows); )
   {
     if (top_stack == pixel_stack)
@@ -730,7 +734,7 @@ Export unsigned int GIFDecodeImage(Image *image)
           {
             *top_stack++=suffix[code];
             old_code=code;
-            first=(unsigned char) code;
+            first=code;
             continue;
           }
         in_code=code;
@@ -765,36 +769,15 @@ Export unsigned int GIFDecodeImage(Image *image)
       Pop a pixel off the pixel stack.
     */
     top_stack--;
-    index=(unsigned short) (*top_stack);
-    if ((index == q->index) && ((int) q->length < MaxRunlength))
-      q->length++;
-    else
-      {
-        if (packets != 0)
-          q++;
-        packets++;
-        if (packets == max_packets)
-          {
-            max_packets<<=1;
-            image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-              image->pixels,max_packets*sizeof(RunlengthPacket));
-            if (image->pixels == (RunlengthPacket *) NULL)
-              {
-                MagickWarning(ResourceLimitWarning,
-                  "Memory allocation failed",(char *) NULL);
-                return(False);
-              }
-            q=image->pixels+packets-1;
-          }
-        q->index=index;
-        q->length=0;
-      }
+    *p=(*top_stack);
+    p++;
     i++;
-    if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-      ProgressMonitor(LoadImageText,i,image->packets);
   }
-  image->packets=packets;
-  SyncImage(image);
+  if (i < (image->columns*image->rows))
+    {
+      MagickWarning(CorruptImageWarning,"Corrupt GIF image",image->filename);
+      return(False);
+    }
   /*
     Free decoder memory.
   */
@@ -802,7 +785,106 @@ Export unsigned int GIFDecodeImage(Image *image)
   FreeMemory((char *) suffix);
   FreeMemory((char *) prefix);
   FreeMemory((char *) packet);
-  return(i == (image->columns*image->rows));
+  if (image->interlace != NoInterlace)
+    {
+      int
+        pass,
+        y;
+
+      register int
+        x;
+
+      register unsigned char
+        *q;
+
+      static int
+        interlace_rate[4] = { 8, 8, 4, 2 },
+        interlace_start[4] = { 0, 4, 2, 1 };
+
+      unsigned char
+        *interlaced_pixels;
+
+      /*
+        Interlace image.
+      */
+      interlaced_pixels=pixels;
+      pixels=(unsigned char *)
+        AllocateMemory(image->columns*image->rows*sizeof(unsigned char));
+      if (pixels == (unsigned char *) NULL)
+        {
+          FreeMemory(interlaced_pixels);
+          MagickWarning(ResourceLimitWarning,"Memory allocation failed",
+            image->filename);
+          return(False);
+        }
+      p=interlaced_pixels;
+      q=pixels;
+      for (pass=0; pass < 4; pass++)
+      {
+        y=interlace_start[pass];
+        while (y < image->rows)
+        {
+          q=pixels+(y*image->columns);
+          for (x=0; x < image->columns; x++)
+          {
+            *q=(*p);
+            p++;
+            q++;
+          }
+          y+=interlace_rate[pass];
+        }
+      }
+      FreeMemory(interlaced_pixels);
+    }
+  /*
+    Convert GIF pixels to runlength-encoded packets.
+  */
+  packets=0;
+  max_packets=Max((image->columns*image->rows+2) >> 2,1);
+  image->pixels=(RunlengthPacket *)
+    AllocateMemory(max_packets*sizeof(RunlengthPacket));
+  if (image->pixels == (RunlengthPacket *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
+        image->filename);
+      return(False);
+    }
+  p=pixels;
+  q=image->pixels;
+  SetRunlengthEncoder(q);
+  for (i=0; i < (image->columns*image->rows); i++)
+  {
+    index=(*p++);
+    if ((index == q->index) && ((int) q->length < MaxRunlength))
+       q->length++;
+     else
+       {
+         if (packets != 0)
+           q++;
+         packets++;
+         if (packets == max_packets)
+           {
+             max_packets<<=1;
+             image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
+               image->pixels,max_packets*sizeof(RunlengthPacket));
+             if (image->pixels == (RunlengthPacket *) NULL)
+               {
+                 MagickWarning(ResourceLimitWarning,"Memory allocation failed",
+                   image->filename);
+                 break;
+               }
+             q=image->pixels+packets-1;
+           }
+         q->index=index;
+         q->length=0;
+       }
+    if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
+      ProgressMonitor(LoadImageText,i,image->columns*image->rows);
+  }
+  SetRunlengthPackets(image,packets);
+  SyncImage(image);
+  FreeMemory(pixels);
+  return(True);
 }
 
 /*
@@ -1190,8 +1272,7 @@ Export unsigned int HuffmanDecodeImage(Image *image)
   max_packets=image->packets;
   image->packets=0;
   q=image->pixels;
-  q->length=MaxRunlength;
-  q->length=0;
+  SetRunlengthEncoder(q);
   for (y=0; ((y < image->rows) && (null_lines < 3)); )
   {
     /*
@@ -3226,6 +3307,70 @@ Export unsigned int RunlengthEncodeImage(Image *image)
         return(0);
       }
   return((unsigned int) packets);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t R u n l e n g t h E n c o d e r                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SetRunlengthEncoder initializes the runlength encoder.
+%
+%  The format of the SetRunlengthEncoder function is:
+%
+%      SetRunlengthEncoder(packet)
+%
+%  A description of each parameter follows:
+%
+%    o packet: Specifies a RunlengthPacket type.
+%
+%
+*/
+Export void SetRunlengthEncoder(RunlengthPacket *packet)
+{
+  packet->red=0;
+  packet->green=0;
+  packet->blue=0;
+  packet->index=0;
+  packet->length=MaxRunlength;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t R u n l e n g t h P a c k e t s                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SetRunlengthPackets initializes the runlength encoder.
+%
+%  The format of the SetRunlengthPackets function is:
+%
+%      SetRunlengthPackets(image,packets)
+%
+%  A description of each parameter follows:
+%
+%    o image: The address of a structure of type Image.
+%
+%    o packets: The number of runlength packets.
+%
+%
+*/
+Export void SetRunlengthPackets(Image *image,unsigned long packets)
+{
+  image->packets=packets;
+  image->pixels=(RunlengthPacket *) ReallocateMemory((char *) image->pixels,
+    image->packets*sizeof(RunlengthPacket));
 }
 
 /*

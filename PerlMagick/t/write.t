@@ -149,7 +149,7 @@ testReadWrite( 'PCX:input.pcx',
 testReadWrite( 'PGM:input_p2.pgm',
                'PGM:output_p2.pgm',
                q/compress=>'None'/,
-               'a3bec36f28fc5e83c2ddfaa4486f4f00' );
+               '4d21ec5c0ed543eeb6d478515c66ff14' );
 
 #
 # Apple Macintosh QuickDraw/PICT file
@@ -176,7 +176,7 @@ testReadWrite( 'PPM:input_p3.ppm',
 testReadWrite( 'PGM:input_p5.pgm',
                'PGM:output_p5.pgm',
                q//,
-               'a3bec36f28fc5e83c2ddfaa4486f4f00' );
+               '4d21ec5c0ed543eeb6d478515c66ff14' );
 
 #
 # Portable pixmap format (color), binary format

@@ -20,7 +20,7 @@ chdir 't/png' || die 'Cd failed';
 testReadWrite( 'input_256.png',
 	       'output_256.png',
 	       q/quality=>54/,
-	       '0bff574507334dc2678601f6b00865d9' );
+	       '0acbc70bac502726c1b72d3c3ff4d0fe' );
 
 #
 # 2) Test truecolor image
@@ -37,7 +37,7 @@ testReadWrite( 'input_truecolor.png',
 ++$test;
 testReadWrite( 'input_mono.png',
 	       'output_mono.png', '',
-	       'ff45c6b9e156dea13be885c1005c4247' );
+	       '8d63ef0e910116f485da5a8b6a3cc7a9' );
 
 #
 # 4) Test Multiple-image Network Graphics

@@ -2532,9 +2532,7 @@ Export void CondenseImage(Image *image)
           q->length=0;
         }
     }
-  image->packets=packets;
-  image->pixels=(RunlengthPacket *) ReallocateMemory((char *) image->pixels,
-    image->packets*sizeof(RunlengthPacket));
+  SetRunlengthPackets(image,packets);
 }
 
 /*
@@ -3028,11 +3026,7 @@ Export Image *CropImage(Image *image,RectangleInfo *crop_info)
   */
   max_packets=0;
   q=cropped_image->pixels;
-  q->red=0;
-  q->green=0;
-  q->blue=0;
-  q->index=0;
-  q->length=MaxRunlength;
+  SetRunlengthEncoder(q);
   for (y=0; y < (cropped_image->rows-1); y++)
   {
     /*
@@ -4034,7 +4028,7 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
               if (Latin1Compare("reset",keyword) == 0)
                 primitive_info[j].method=ResetMethod;
               else
-                primitive=UndefinedPrimitive;
+                primitive_type=UndefinedPrimitive;
         while (isspace((int) (*p)))
           p++;
       }
@@ -4070,7 +4064,7 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
         */
         x=primitive_info[1].x-primitive_info[0].x;
         y=primitive_info[1].y-primitive_info[0].y;
-        radius=sqrt(x*x+y*y)+annotate_info->linewidth/2.0+0.5;
+        radius=sqrt((double) (x*x+y*y))+annotate_info->linewidth/2.0+0.5;
         point.x=Max(primitive_info[0].x-radius,0);
         point.y=Max(primitive_info[0].y-radius,0);
         if (point.x < bounds.x1)
@@ -4114,10 +4108,10 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
   */
   image->class=DirectClass;
   mid=(annotate_info->linewidth+0.5)/2.0;
-  for (y=Max(bounds.y1-mid,0); y <= Min(bounds.y2+mid,image->rows-1); y++)
+  for (y=bounds.y1-mid; y <= (bounds.y2+mid); y++)
   {
-    q=image->pixels+y*image->columns+bounds.x1;
-    for (x=Max(bounds.x1-mid,0); x <= Min(bounds.x2+mid,image->columns-1); x++)
+    q=image->pixels+y*image->columns+bounds.x1-mid;
+    for (x=bounds.x1-mid; x <= (bounds.x2+mid); x++)
     {
       if (InsidePrimitive(primitive_info,annotate_info,x,y,image))
         {
@@ -6094,11 +6088,7 @@ Export Image *MinifyImage(Image *image)
   p=image->pixels;
   runlength=p->length+1;
   q=minified_image->pixels;
-  q->red=0;
-  q->green=0;
-  q->blue=0;
-  q->index=0;
-  q->length=MaxRunlength;
+  SetRunlengthEncoder(q);
   for (y=0; y < (image->rows-1); y+=2)
   {
     /*
@@ -9109,11 +9099,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
   p=image->pixels;
   runlength=p->length+1;
   q=scaled_image->pixels;
-  q->red=0;
-  q->green=0;
-  q->blue=0;
-  q->index=0;
-  q->length=MaxRunlength;
+  SetRunlengthEncoder(q);
   for (y=0; y < scaled_image->rows; y++)
   {
     if (scaled_image->rows == image->rows)
@@ -10782,7 +10768,7 @@ Export void TransparentImage(Image *image,char *color)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method UncondenseImage uncompresses runlength-encoded pixels max_packets to
+%  Method UncondenseImage uncompresses runlength-encoded pixels packets to
 %  a rectangular array of pixels.
 %
 %  The format of the UncondenseImage routine is:

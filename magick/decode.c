@@ -177,8 +177,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info)
       Convert AVS raster image to runlength-encoded packets.
     */
     q=image->pixels;
-    q->length=MaxRunlength;
-    q->length=0;
+    SetRunlengthEncoder(q);
     for (y=0; y < image->rows; y++)
     {
       for (x=0; x < image->columns; x++)
@@ -216,7 +215,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info)
       if (image->previous == (Image *) NULL)
         ProgressMonitor(LoadImageText,y,image->rows);
     }
-    image->packets=packets;
+    SetRunlengthPackets(image,packets);
     /*
       Proceed to next image.
     */
@@ -1161,9 +1160,6 @@ static Image *ReadCMYKImage(const ImageInfo *image_info)
 %  it.  It allocates the memory necessary for the new Image structure and
 %  returns a pointer to the new image.
 %
-%  This routine is strongly based on a similiar routine written by
-%  George J. Grevera.
-%
 %  The format of the ReadDICOMImage routine is:
 %
 %      image=ReadDICOMImage(image_info)
@@ -1180,19 +1176,18 @@ static Image *ReadCMYKImage(const ImageInfo *image_info)
 */
 static Image *ReadDICOMImage(const ImageInfo *image_info)
 {
-  char
-    *data,
-    *info;
+#include "dicom.h"
+
+  unsigned char
+    *data;
 
   Image
     *image;
 
   int
-    datum,
     element,
     group,
-    length,
-    remaining;
+    length;
 
   Quantum
     *scale;
@@ -1213,10 +1208,12 @@ static Image *ReadDICOMImage(const ImageInfo *image_info)
     significant_bits;
 
   unsigned long
+    datum,
     max_packets,
     max_value;
 
   unsigned short
+    *graymap,
     index;
 
   /*
@@ -1236,6 +1233,7 @@ static Image *ReadDICOMImage(const ImageInfo *image_info)
   */
   bytes_per_pixel=1;
   first_one=True;
+  graymap=(unsigned short *) NULL;
   photometric_type=0;
   significant_bits=0;
   for ( ; ; )
@@ -1243,180 +1241,28 @@ static Image *ReadDICOMImage(const ImageInfo *image_info)
     /*
       Read a group.
     */
-    info=(char *) NULL;
     image->offset=ftell(image->file);
     group=LSBFirstReadShort(image->file);
     element=LSBFirstReadShort(image->file);
     length=LSBFirstReadLong(image->file);
-    remaining=length;
+    datum=0;
     switch (group)
     {
-      case 0x0002:
-      {
-        switch (element)
-        {
-          case 0x00: info="file meta elements group length"; break;
-          case 0x01: info="file meta info version"; break;
-          case 0x02: info="media storage SOP class uid"; break;
-          case 0x03: info="media storage SOP inst uid"; break;
-          case 0x10: info="transfer syntax uid"; break;
-          case 0x12: info="implementation class uid"; break;
-          case 0x13: info="implementation version name"; break;
-          case 0x16: info="source app entity title"; break;
-          case 0x100: info="private info creator uid"; break;
-          case 0x102: info="private info"; break;
-        }
-        break;
-      }
-      case 0x0008:
-      {
-        switch (element)
-        {
-          case 0x00: info="identifying group"; break;
-          case 0x01: info="length to end"; break;
-          case 0x05: info="specific character set"; break;
-          case 0x08: info="image type"; break;
-          case 0x10: info="recognition code"; break;
-          case 0x16: info="SOP Class UID"; break;
-          case 0x18: info="SOP Instance UID"; break;
-          case 0x20: info="study date"; break;
-          case 0x21: info="series date"; break;
-          case 0x22: info="acquisition date"; break;
-          case 0x23: info="image date"; break;
-          case 0x30: info="study time"; break;
-          case 0x31: info="series time"; break;
-          case 0x32: info="acquisition time"; break;
-          case 0x33: info="image time"; break;
-          case 0x40: info="data set type"; break;
-          case 0x41: info="data set subtype"; break;
-          case 0x50: info="accession number"; break;
-          case 0x60: info="modality"; break;
-          case 0x70: info="manufacturer"; break;
-          case 0x80: info="institution name"; break;
-          case 0x90: info="referring physician's name"; break;
-          case 0x1010: info="station name"; break;
-          case 0x103e: info="series description"; break;
-          case 0x1030: info="study description"; break;
-          case 0x1040: info="institutional dept. name"; break;
-          case 0x1050: info="performing physician's name"; break;
-          case 0x1060: info="name phys(s) read stdy"; break;
-          case 0x1070: info="operator's name"; break;
-          case 0x1080: info="admitting diagnoses description"; break;
-          case 0x1090: info="manufacturer's model name"; break;
-          case 0x1140: info="referenced image sequence"; break;
-        }
-        break;
-      }
-      case 0x0010:
-      {
-        switch (element)
-        {
-          case 0x00: info="patient group"; break;
-          case 0x10: info="patient name"; break;
-          case 0x20: info="patient ID"; break;
-          case 0x30: info="patient birthdate"; break;
-          case 0x40: info="patient sex"; break;
-          case 0x1010: info="patient age";  break;
-          case 0x1030: info="patient weight";  break;
-          case 0x21b0: info="additional patient history"; break;
-        }
-        break;
-      }
-      case 0x0018:
-      {
-        switch (element)
-        {
-          case 0x00: info="acquisition group"; break;
-          case 0x10: info="contrast/bolus agent"; break;
-          case 0x20: info="scanning sequence"; break;
-          case 0x21: info="Sequence Variant"; break;
-          case 0x22: info="Scan Options"; break;
-          case 0x23: info="MR Acquisition Type"; break;
-          case 0x24: info="Sequence Name"; break;
-          case 0x25: info="Angio Flag"; break;
-          case 0x30: info="radionuclide"; break;
-          case 0x50: info="slice thickness"; break;
-          case 0x60: info="kvp"; break;
-          case 0x80: info="repetition time"; break;
-          case 0x81: info="echo time"; break;
-          case 0x82: info="inversion time"; break;
-          case 0x83: info="Number of Averages"; break;
-          case 0x84: info="Imaging Frequency"; break;
-          case 0x85: info="Imaged Nucleus"; break;
-          case 0x86: info="Echo Number"; break;
-          case 0x87: info="Magnetic Field Strength"; break;
-          case 0x88: info="Spacing Between Slices"; break;
-          case 0x91: info="Echo Train Length"; break;
-          case 0x93: info="Percent Sampling"; break;
-          case 0x94: info="Percent Phase Field of View"; break;
-          case 0x95: info="Pixel Bandwidth"; break;
-          case 0x1020: info="software version(s)"; break;
-          case 0x1030: info="protocol name"; break;
-          case 0x1040: info="Contrast/Bolus Route"; break;
-          case 0x1062: info="Nominal Interval"; break;
-          case 0x1088: info="Heart Rate"; break;
-          case 0x1090: info="Cardiac Number of Images"; break;
-          case 0x1094: info="Trigger Window"; break;
-          case 0x1100: info="Reconstruction Diameter"; break;
-          case 0x1120: info="gantry/detector tilt"; break;
-          case 0x1150: info="exposure time"; break;
-          case 0x1151: info="x-ray tube current"; break;
-          case 0x1210: info="convolution kernel"; break;
-          case 0x1250: info="Receiving Coil"; break;
-          case 0x1251: info="Transmitting Coil"; break;
-          case 0x1310: info="Acquisition Matrix"; break;
-          case 0x1314: info="Flip Angle"; break;
-          case 0x1315: info="Variable Flip Angle Flag"; break;
-          case 0x1316: info="SAR"; break;
-          case 0x5100: info="Patient Position"; break;
-        }
-        break;
-      }
-      case 0x0020:
-      {
-        switch (element)
-        {
-          case 0x00: info="relationship group"; break;
-          case 0x0d: info="Study Instance UID"; break;
-          case 0x0e: info="Series Instance UID"; break;
-          case 0x10: info="study id"; break;
-          case 0x11: info="series number"; break;
-          case 0x12: info="acquisition number"; break;
-          case 0x13: info="image number"; break;
-          case 0x20: info="patient orientation"; break;
-          case 0x30: info="image position (ret)"; break;
-          case 0x32: info="Image Position (Patient)"; break;
-          case 0x35: info="image orientation (ret)"; break;
-          case 0x37: info="Image Orientation (Patient)"; break;
-          case 0x50: info="location (ret)"; break;
-          case 0x52: info="Frame of Reference UID"; break;
-          case 0x60: info="Laterality"; break;
-          case 0x1002: info="images in acquisition"; break;
-          case 0x1040: info="position reference"; break;
-          case 0x1041: info="slice location"; break;
-          case 0x3401: info="modifying device id"; break;
-          case 0x3402: info="modified image id"; break;
-          case 0x3403: info="modified image date"; break;
-          case 0x3404: info="modifying device mfg."; break;
-          case 0x3405: info="modified image time"; break;
-          case 0x3406: info="modified image desc."; break;
-          case 0x4000: info="image comments"; break;
-          case 0x5000: info="original image id"; break;
-        }
-        break;
-      }
       case 0x0028:
       {
         switch (element)
         {
-          case 0x00: info="image presentation group"; break;
-          case 0x02: info="samples per pixel"; break;
           case 0x04:
           {
+            char
+              *data;
+
             long
               location;
 
-            info="photometric interpretation";
+            /*
+              Photometric interpretation.
+            */
             data=(char *) AllocateMemory((length+1)*sizeof(char));
             if (data == (char *) NULL)
               PrematureExit(ResourceLimitWarning,"Memory allocation failed",
@@ -1433,52 +1279,45 @@ static Image *ReadDICOMImage(const ImageInfo *image_info)
             FreeMemory(data);
             break;
           }
-          case 0x05: info="image dimensions (ret)"; break;
-          case 0x06: info="planar configuration"; break;
-          case 0x08: info="number of frames";  break;
-          case 0x09: info="frame increment pointer"; break;
           case 0x10:
           {
-            info="rows";
+            /*
+              Image rows.
+            */
             image->rows=LSBFirstReadShort(image->file);
             datum=image->rows;
-            remaining = 0;
             break;
           }
           case 0x11:
           {
-            info="columns";
+            /*
+              Image columns.
+            */
             image->columns=LSBFirstReadShort(image->file);
             datum=image->columns;
-            remaining=0;
             break;
           }
-          case 0x30: info="pixel spacing"; break;
-          case 0x31: info="zoom factor"; break;
-          case 0x32: info="zoom center"; break;
-          case 0x34: info="pixel aspect ratio"; break;
-          case 0x40: info="image format (ret)"; break;
-          case 0x50: info="manipulated image (ret)"; break;
-          case 0x51: info="corrected image"; break;
-          case 0x60: info="compression code (ret)"; break;
           case 0x0100:
           {
-            info="bits allocated";
+            /*
+              Bits allocated.
+            */
             datum=LSBFirstReadShort(image->file);
-            if (datum == 8)
+            if (datum <= 8)
               bytes_per_pixel=1;
             else
-              if (datum == 16)
+              if (datum <= 16)
                 bytes_per_pixel=2;
               else
                 PrematureExit(CorruptImageWarning,"unsupported bit depth",
                   image);
-            remaining=0;
             break;
           }
           case 0x0101:
           {
-            info="bits stored";
+            /*
+              Bits stored.
+            */
             significant_bits=LSBFirstReadShort(image->file);
             datum=significant_bits;
             if (datum <= 8)
@@ -1489,97 +1328,66 @@ static Image *ReadDICOMImage(const ImageInfo *image_info)
               else
                 PrematureExit(CorruptImageWarning,"unsupported bit depth",
                   image);
-            remaining=0;
             break;
           }
           case 0x0102:
           {
-            info="high bit";
+            /*
+              High bit.
+            */
             datum=LSBFirstReadShort(image->file);
-            remaining=0;
             break;
           }
-          case 0x0103: info="pixel representation"; break;
-          case 0x0200: info="image location (ret)"; break;
-          case 0x1050: info="window center"; break;
-          case 0x1051: info="window width"; break;
-          case 0x1052: info="rescale intercept"; break;
-          case 0x1053: info="rescale slope"; break;
-          case 0x1100: info="gray lookup table desc (ret)";  break;
           case 0x1200:
-            info="gray lookup table data (ret)";
           case 0x1201:
-            if (info == (char *) NULL)
-              info="red table";
           case 0x1202:
-            if (info == (char *) NULL)
-              info="green table";
           case 0x1203:
+          case 0x3006:
           {
+            unsigned int
+              colors;
+
             /*
               Populate image colormap.
             */
-            if (info == (char *) NULL)
-              info="blue table";
-            if (image->colormap == (ColorPacket *) NULL)
-              image->colormap=(ColorPacket *)
-                AllocateMemory(length*sizeof(ColorPacket));
-            else
-              image->colormap=(ColorPacket *)
-                ReallocateMemory((char *) length,sizeof(ColorPacket));
-            if (image->colormap == (ColorPacket *) NULL)
-              PrematureExit(ResourceLimitWarning,"Memory allocation failed",
-                image);
-            image->colors=length;
-            for (i=0; i < image->colors; i++)
-            {
-              index=LSBFirstReadShort(image->file);
-              if ((element == 0x1200) || (element == 0x1201))
-                image->colormap[i].red=(Quantum) index;
-              if ((element == 0x1200) || (element == 0x1202))
-                image->colormap[i].green=(Quantum) index;
-              if ((element == 0x1200) || (element == 0x1203))
-                image->colormap[i].blue=(Quantum) index;
-            }
-            remaining=0;
+            colors=length/bytes_per_pixel;
+            datum=colors;
+            graymap=(unsigned short *)
+              AllocateMemory(colors*sizeof(unsigned short));
+            if (graymap == (unsigned short *) NULL)
+              {
+                MagickWarning(ResourceLimitWarning,"Unable to create graymap",
+                 "Memory allocation failed");
+                break;
+              }
+            for (i=0; i < colors; i++)
+              if (bytes_per_pixel == 1)
+                graymap[i]=fgetc(image->file);
+              else
+                graymap[i]=LSBFirstReadShort(image->file);
             break;
           }
           break;
         }
         break;
       }
-      case 0x4000: info="text"; break;
-      case 0x7FE0:
-      {
-        switch (element)
-        {
-          case 0x00: info="pixel data"; break;
-          case 0x10: info="pixel data"; break;
-        }
-        break;
-      }
       default :
-      {
-        if ((group >= 0x6000) && (group <= 0x601e) && ((group & 1) == 0))
-          info="overlay";
-        if (element == 0x0000)
-          info="group length";
-        if (element == 0x4000)
-          info="comments";
         break;
-      }
     }
     if (image_info->verbose)
       {
         /*
-          Display group header.
+          Display Dicom info.
         */
-        (void) fprintf(stdout,"%04lx: (%04x,%04x)",image->offset,group,element);
-        if (info != NULL)
-          (void) fprintf(stdout," %26s",info);
-        else
-          (void) fprintf(stdout," unrecognized");
-        (void) fprintf(stdout,": %4d ",length);
+        for (i=0; dicom_info[i].description != (char *) NULL; i++)
+          if ((group == dicom_info[i].group) &&
+              (element == dicom_info[i].element))
+            break;
+        (void) fprintf(stdout,"0x%04lx %4d (0x%04x,0x%04x)",image->offset,
+          length,group,element);
+        if (dicom_info[i].description != (char *) NULL)
+          (void) fprintf(stdout," %s",dicom_info[i].description);
+        (void) fprintf(stdout,": ");
       }
     if ((group == 0x7FE0) && (element == 0x10))
       {
@@ -1593,51 +1401,42 @@ static Image *ReadDICOMImage(const ImageInfo *image_info)
           (void) fprintf(stdout,"\n");
         continue;
       }
-    if (remaining == 0)
+    if (datum != 0)
       {
         if (image_info->verbose)
-          (void) fprintf(stdout,"%d\n",datum);
+          (void) fprintf(stdout,"%lu\n",datum);
         continue;
       }
     /*
       Read group data.
     */
-    data=(char *) AllocateMemory(length*sizeof(char));
-    if (data == (char *) NULL)
+    data=(unsigned char *) AllocateMemory(length*sizeof(unsigned char));
+    if (data == (unsigned char *) NULL)
       PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-    (void) ReadData(data,1,length,image->file);
+    (void) ReadData((char *) data,1,length,image->file);
     if (image_info->verbose)
       {
         /*
           Display group data.
         */
-        for (i=0; i < length; i++)
-          if (isprint(data[i]))
-            (void) fprintf(stdout,"%c",data[i]);
-          else
-            (void) fprintf(stdout,"%c",'.');
-        switch (length)
-        {
-          case 1:
+        for (i=0; i < Max(length,4); i++)
+          if (!isprint(data[i]))
+            break;
+        if ((i != length) && (length <= 4))
           {
-            (void) fprintf(stdout," (%d)",*data);
-            break;
+            datum=0;
+            for (i=length-1; i >= 0; i--)
+              datum=256*datum+data[i];
+            (void) fprintf(stdout,"%lu",datum);
           }
-          case 2 :
+        else
+          for (i=0; i < length; i++)
           {
-            i=data[0]+(data[1] << 8);
-            (void) fprintf(stdout," (%d)",i);
-            break;
+            if (isprint(data[i]))
+              (void) fprintf(stdout,"%c",(char) data[i]);
+            else
+              (void) fprintf(stdout,"%c",'.');
           }
-          case 4 :
-          {
-            i=data[0]+(data[1] << 8)+(data[2] << 16)+(data[3] << 24);
-            (void) fprintf(stdout," (%d)",i);
-            break;
-          }
-          default:
-            break;
-        }
         (void) fprintf(stdout,"\n");
       }
     FreeMemory(data);
@@ -1649,24 +1448,21 @@ static Image *ReadDICOMImage(const ImageInfo *image_info)
   max_value=1 << (8*bytes_per_pixel);
   if (photometric_type == 1)
     max_value=1 << significant_bits;
+  /*
+    Allocate image colormap.
+  */
+  image->colors=Min(max_value,MaxRGB)+1;
+  image->colormap=(ColorPacket *)
+    AllocateMemory(image->colors*sizeof(ColorPacket));
   if (image->colormap == (ColorPacket *) NULL)
-    {
-      /*
-        Allocate image colormap.
-      */
-      image->colors=Min(max_value,MaxRGB)+1;
-      image->colormap=(ColorPacket *)
-        AllocateMemory(image->colors*sizeof(ColorPacket));
-      if (image->colormap == (ColorPacket *) NULL)
-        PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-      for (i=0; i < image->colors; i++)
-      {
-        image->colormap[i].red=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
-        image->colormap[i].green=(Quantum)
-          ((long) (MaxRGB*i)/(image->colors-1));
-        image->colormap[i].blue=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
-      }
-    }
+    PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
+  for (i=0; i < image->colors; i++)
+  {
+    image->colormap[i].red=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
+    image->colormap[i].green=(Quantum)
+      ((long) (MaxRGB*i)/(image->colors-1));
+    image->colormap[i].blue=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
+  }
   packets=0;
   max_packets=Max((image->columns*image->rows+4) >> 3,1);
   image->pixels=(RunlengthPacket *)
@@ -1694,14 +1490,15 @@ static Image *ReadDICOMImage(const ImageInfo *image_info)
     Convert DICOM Medical image to runlength-encoded packets.
   */
   q=image->pixels;
-  q->length=MaxRunlength;
-  q->length=0;
+  SetRunlengthEncoder(q);
   for (i=0; i < (image->columns*image->rows); i++)
   {
     if (bytes_per_pixel == 1)
       index=fgetc(image->file);
     else
       index=LSBFirstReadShort(image->file);
+    if (graymap != (unsigned short *) NULL)
+      index=graymap[index];
     if (photometric_type == 1)
       index=max_value-index;
     if (scale != (Quantum *) NULL)
@@ -1731,10 +1528,13 @@ static Image *ReadDICOMImage(const ImageInfo *image_info)
         q->length=0;
       }
     if (QuantumTick(i,image))
-      ProgressMonitor(LoadImageText,i,image->packets);
+      ProgressMonitor(LoadImageText,i,image->columns*image->rows);
   }
-  image->packets=packets;
+  SetRunlengthPackets(image,packets);
   SyncImage(image);
+  /*
+    Free scale resource.
+  */
   if (scale != (Quantum *) NULL)
     FreeMemory((char *) scale);
   CloseImage(image);
@@ -2628,7 +2428,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info)
       pixel=(double) quantum;
       if (fits_header.bits_per_pixel == 16)
         if (pixel > 32767)
-          pixel-=65546;
+          pixel-=65536;
       if (fits_header.bits_per_pixel == -32)
         pixel=(double) (*((float *) &quantum));
       if (fits_header.bits_per_pixel == -64)
@@ -2647,7 +2447,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info)
         pixel=(double) quantum;
         if (fits_header.bits_per_pixel == 16)
           if (pixel > 32767)
-            pixel-=65546;
+            pixel-=65536;
         if (fits_header.bits_per_pixel == -32)
           pixel=(double) (*((float *) &quantum));
         if (fits_header.bits_per_pixel == -64)
@@ -2682,7 +2482,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info)
       pixel=(double) quantum;
       if (fits_header.bits_per_pixel == 16)
         if (pixel > 32767)
-          pixel-=65546;
+          pixel-=65536;
       if (fits_header.bits_per_pixel == -32)
         pixel=(double) (*((float *) &quantum));
       if (fits_header.bits_per_pixel == -64)
@@ -3037,8 +2837,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info)
   blue=0;
   index=0;
   q=image->pixels;
-  q->length=MaxRunlength;
-  q->length=0;
+  SetRunlengthEncoder(q);
   for (y=0; y < image->rows; y++)
   {
     if ((y % tile_height) == 0)
@@ -3123,8 +2922,8 @@ static Image *ReadFPXImage(const ImageInfo *image_info)
     }
     ProgressMonitor(LoadImageText,y,image->rows);
   }
+  SetRunlengthPackets(image,packets);
   FreeMemory((char *) scanline);
-  image->packets=packets;
   (void) FPX_CloseImage(flashpix);
   FPX_ClearSystem();
   if (image->temporary)
@@ -3308,7 +3107,7 @@ static Image *ReadGIFImage(ImageInfo *image_info)
               if (image->comments != (char *) NULL)
                 {
                   image->comments=(char *) ReallocateMemory((char *)
-                    image->comments,(Extent(image->comments)+length+2)*
+                    image->comments,(Extent(image->comments)+length+1)*
                     sizeof(char));
                 }
               else
@@ -3364,7 +3163,6 @@ static Image *ReadGIFImage(ImageInfo *image_info)
       Read image attributes.
     */
     image->class=PseudoClass;
-    image->compression=LZWCompression;
     page_info.x=LSBFirstReadShort(image->file);
     page_info.y=LSBFirstReadShort(image->file);
     image->columns=LSBFirstReadShort(image->file);
@@ -3391,18 +3189,11 @@ static Image *ReadGIFImage(ImageInfo *image_info)
     if ((image->columns == 0) || (image->rows == 0))
       PrematureExit(CorruptImageWarning,"image size is 0",image);
     /*
-      Allocate image.
+      Inititialize colormap.
     */
     if (image->pixels != (RunlengthPacket *) NULL)
       FreeMemory((char *) image->pixels);
-    image->packets=Max((image->columns*image->rows+2) >> 2,1);
-    image->pixels=(RunlengthPacket *)
-      AllocateMemory(image->packets*sizeof(RunlengthPacket));
-    if (image->pixels == (RunlengthPacket *) NULL)
-      PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-    /*
-      Inititialize colormap.
-    */
+    image->pixels=(RunlengthPacket *) NULL;
     image->colormap=(ColorPacket *)
       AllocateMemory(image->colors*sizeof(ColorPacket));
     if (image->colormap == (ColorPacket *) NULL)
@@ -3448,57 +3239,6 @@ static Image *ReadGIFImage(ImageInfo *image_info)
       Decode image.
     */
     status=GIFDecodeImage(image);
-    if (status == False)
-      {
-        MagickWarning(CorruptImageWarning,"not enough pixels",image->filename);
-        break;
-      }
-    if (image->interlace != NoInterlace)
-      {
-        Image
-          *interlaced_image;
-
-        int
-          pass;
-
-        register RunlengthPacket
-          *p;
-
-        static int
-          interlace_rate[4] = { 8, 8, 4, 2 },
-          interlace_start[4] = { 0, 4, 2, 1 };
-
-        /*
-          Interlace image.
-        */
-        if (!UncondenseImage(image))
-          PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-        image_info->interlace=LineInterlace;
-        image->orphan=True;
-        interlaced_image=CloneImage(image,image->columns,image->rows,True);
-        image->orphan=False;
-        if (interlaced_image == (Image *) NULL)
-          PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-        p=interlaced_image->pixels;
-        q=image->pixels;
-        for (pass=0; pass < 4; pass++)
-        {
-          y=interlace_start[pass];
-          while (y < image->rows)
-          {
-            q=image->pixels+(y*image->columns);
-            for (x=0; x < image->columns; x++)
-            {
-              *q=(*p);
-              p++;
-              q++;
-            }
-            y+=interlace_rate[pass];
-          }
-        }
-        DestroyImage(interlaced_image);
-        CondenseImage(image);
-      }
     if (transparency_index >= 0)
       {
         /*
@@ -3516,6 +3256,11 @@ static Image *ReadGIFImage(ImageInfo *image_info)
         transparency_index=(-1);
         image->class=DirectClass;
         image->matte=True;
+      }
+    if (status == False)
+      {
+        MagickWarning(CorruptImageWarning,"Corrupt GIF image",image->filename);
+        break;
       }
     if (image_info->subrange != 0)
       if (image->scene < image_info->subimage)
@@ -3801,8 +3546,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info)
       (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
         image->file);
     q=image->pixels;
-    q->length=MaxRunlength;
-    q->length=0;
+    SetRunlengthEncoder(q);
     for (y=0; y < image->rows; y++)
     {
       if ((y > 0) || (image->previous == (Image *) NULL))
@@ -3843,17 +3587,16 @@ static Image *ReadGRAYImage(const ImageInfo *image_info)
     for (y=0; y < count; y++)
       (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
         image->file);
-    image->packets=packets;
-    SyncImage(image);
-    CondenseImage(image);
     if (feof(image->file))
       MagickWarning(CorruptImageWarning,"not enough pixels",image->filename);
-    if (image_info->subrange != 0)
-      if (image->scene >= (image_info->subimage+image_info->subrange-1))
-        break;
+    SetRunlengthPackets(image,packets);
+    SyncImage(image);
     /*
       Proceed to next image.
     */
+    if (image_info->subrange != 0)
+      if (image->scene >= (image_info->subimage+image_info->subrange-1))
+        break;
     count=ReadData((char *) scanline,packet_size,image->tile_info.width,
       image->file);
     if (count > 0)
@@ -4518,8 +4261,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info)
   byte=0;
   p=jbg_dec_getimage(&jbig_info,0);
   q=image->pixels;
-  q->length=MaxRunlength;
-  q->length=0;
+  SetRunlengthEncoder(q);
   for (y=0; y < image->rows; y++)
   {
     bit=0;
@@ -4559,10 +4301,13 @@ static Image *ReadJBIGImage(const ImageInfo *image_info)
     }
     ProgressMonitor(LoadImageText,y,image->rows);
   }
-  image->packets=packets;
+  SetRunlengthPackets(image,packets);
+  SyncImage(image);
+  /*
+    Free scale resource.
+  */
   jbg_dec_free(&jbig_info);
   FreeMemory((char *) buffer);
-  SyncImage(image);
   CloseImage(image);
   return(image);
 }
@@ -4915,8 +4660,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info)
   index=0;
   scanline[0]=(JSAMPROW) jpeg_pixels;
   q=image->pixels;
-  q->length=MaxRunlength;
-  q->length=0;
+  SetRunlengthEncoder(q);
   for (y=0; y < image->rows; y++)
   {
     (void) jpeg_read_scanlines(&jpeg_info,scanline,1);
@@ -4998,13 +4742,13 @@ static Image *ReadJPEGImage(const ImageInfo *image_info)
     }
     ProgressMonitor(LoadImageText,y,image->rows);
   }
-  image->packets=packets;
+  SetRunlengthPackets(image,packets);
   if (image->class == PseudoClass)
     SyncImage(image);
-  (void) jpeg_finish_decompress(&jpeg_info);
   /*
-    Free memory.
+    Free jpeg resources..
   */
+  (void) jpeg_finish_decompress(&jpeg_info);
   jpeg_destroy_decompress(&jpeg_info);
   FreeMemory((char *) jpeg_pixels);
   CloseImage(image);
@@ -6899,8 +6643,7 @@ static Image *ReadMONOImage(const ImageInfo *image_info)
     (void) fgetc(image->file);
   byte=0;
   q=image->pixels;
-  q->length=MaxRunlength;
-  q->length=0;
+  SetRunlengthEncoder(q);
   for (y=0; y < image->rows; y++)
   {
     bit=0;
@@ -6938,7 +6681,7 @@ static Image *ReadMONOImage(const ImageInfo *image_info)
     }
     ProgressMonitor(LoadImageText,y,image->rows);
   }
-  image->packets=packets;
+  SetRunlengthPackets(image,packets);
   SyncImage(image);
   CloseImage(image);
   return(image);
@@ -7141,8 +6884,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info)
       Convert MTV raster image to runlength-encoded packets.
     */
     q=image->pixels;
-    q->length=MaxRunlength;
-    q->length=0;
+    SetRunlengthEncoder(q);
     for (y=0; y < image->rows; y++)
     {
       for (x=0; x < image->columns; x++)
@@ -7178,7 +6920,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info)
       if (image->previous == (Image *) NULL)
         ProgressMonitor(LoadImageText,y,image->rows);
     }
-    image->packets=packets;
+    SetRunlengthPackets(image,packets);
     /*
       Proceed to next image.
     */
@@ -7648,7 +7390,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info)
     p->length=0;
     p++;
     if (QuantumTick(i,image))
-      ProgressMonitor(LoadImageText,i,image->packets);
+      ProgressMonitor(LoadImageText,i,image->columns*image->rows);
   }
   FreeMemory(chroma2);
   FreeMemory(chroma1);
@@ -8040,8 +7782,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info)
     blue=0;
     index=0;
     q=image->pixels;
-    q->length=MaxRunlength;
-    q->length=0;
+    SetRunlengthEncoder(q);
     for (y=0; y < image->rows; y++)
     {
       p=pcx_pixels+(y*pcx_header.bytes_per_line*pcx_header.planes);
@@ -8207,11 +7948,11 @@ static Image *ReadPCXImage(const ImageInfo *image_info)
       if (image->previous == (Image *) NULL)
         ProgressMonitor(LoadImageText,y,image->rows);
     }
-    FreeMemory((char *) scanline);
-    FreeMemory((char *) pcx_pixels);
-    image->packets=packets;
+    SetRunlengthPackets(image,packets);
     if (image->class == PseudoClass)
       SyncImage(image);
+    FreeMemory((char *) scanline);
+    FreeMemory((char *) pcx_pixels);
     /*
       Proceed to next image.
     */
@@ -8633,7 +8374,7 @@ Export Image *ReadPICTImage(ImageInfo *image_info)
     q->green=0;
     q->blue=0;
     q->index=0;
-    q->length=MaxRunlength;
+    SetRunlengthEncoder(q);
     q++;
   }
   q--;
@@ -8897,8 +8638,7 @@ Export Image *ReadPICTImage(ImageInfo *image_info)
           index=0;
           p=pixels;
           q=tiled_image->pixels;
-          q->length=MaxRunlength;
-          q->length=0;
+          SetRunlengthEncoder(q);
           for (y=0; y < tiled_image->rows; y++)
           {
             for (x=0; x < tiled_image->columns; x++)
@@ -8949,7 +8689,7 @@ Export Image *ReadPICTImage(ImageInfo *image_info)
               p+=(pixmap.component_count-1)*tiled_image->columns;
             ProgressMonitor(LoadImageText,y,tiled_image->rows);
           }
-          tiled_image->packets=packets;
+          SetRunlengthPackets(tiled_image,packets);
           if (tiled_image->class == PseudoClass)
             SyncImage(tiled_image);
           (void) FreeMemory((char *) pixels);
@@ -9217,7 +8957,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info)
       if (image->previous == (Image *) NULL)
         ProgressMonitor(LoadImageText,number_pixels,image->columns*image->rows);
     } while (number_pixels < (image->columns*image->rows));
-    image->packets=packets;
+    SetRunlengthPackets(image,packets);
     if (image->class == PseudoClass)
       SyncImage(image);
     /*
@@ -9718,8 +9458,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info)
       Convert PNG pixels to runlength-encoded packets.
     */
     q=image->pixels;
-    q->length=MaxRunlength;
-    q->length=0;
+    SetRunlengthEncoder(q);
     if (image->class == DirectClass)
       {
         Quantum
@@ -9787,7 +9526,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info)
           if (image->previous == (Image *) NULL)
             ProgressMonitor(LoadImageText,y,image->rows);
         }
-        image->packets=packets;
+        SetRunlengthPackets(image,packets);
       }
     else
       {
@@ -9912,7 +9651,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info)
             ProgressMonitor(LoadImageText,y,image->rows);
         }
         FreeMemory((char *) quantum_scanline);
-        image->packets=packets;
+        SetRunlengthPackets(image,packets);
         if (image->class == PseudoClass)
           SyncImage(image);
         if (ping_info->valid & PNG_INFO_tRNS)
@@ -10224,17 +9963,16 @@ static Image *ReadPNMImage(const ImageInfo *image_info)
           AllocateMemory(image->colors*sizeof(ColorPacket));
         if (image->colormap == (ColorPacket *) NULL)
           PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-        if (format != '7')
-          for (i=0; i < image->colors; i++)
-          {
-            image->colormap[i].red=(Quantum)
-              ((long) (MaxRGB*i)/(image->colors-1));
-            image->colormap[i].green=(Quantum)
-              ((long) (MaxRGB*i)/(image->colors-1));
-            image->colormap[i].blue=(Quantum)
-              ((long) (MaxRGB*i)/(image->colors-1));
-          }
-        else
+        for (i=0; i < image->colors; i++)
+        {
+          image->colormap[i].red=(Quantum)
+            ((long) (MaxRGB*i)/(image->colors-1));
+          image->colormap[i].green=(Quantum)
+            ((long) (MaxRGB*i)/(image->colors-1));
+          image->colormap[i].blue=(Quantum)
+            ((long) (MaxRGB*i)/(image->colors-1));
+        }
+        if (format == '7')
           {
             /*
               Initialize 332 colormap.
@@ -10266,8 +10004,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info)
       Convert PNM pixels to runlength-encoded MIFF packets.
     */
     q=image->pixels;
-    q->length=MaxRunlength;
-    q->length=0;
+    SetRunlengthEncoder(q);
     switch (format)
     {
       case '1':
@@ -10560,15 +10297,15 @@ static Image *ReadPNMImage(const ImageInfo *image_info)
       default:
         PrematureExit(CorruptImageWarning,"Not a PNM image file",image);
     }
-    image->packets=packets;
     if (scale != (Quantum *) NULL)
       FreeMemory((char *) scale);
+    if (feof(image->file))
+      MagickWarning(CorruptImageWarning,"not enough pixels",image->filename);
+    SetRunlengthPackets(image,packets);
     if (image->class == PseudoClass)
       SyncImage(image);
     else
       (void) IsPseudoClass(image);
-    if (feof(image->file))
-      MagickWarning(CorruptImageWarning,"not enough pixels",image->filename);
     /*
       Proceed to next image.
     */
@@ -11799,14 +11536,14 @@ static Image *ReadRGBImage(const ImageInfo *image_info)
       }
     }
     CondenseImage(image);
-    if (image_info->subrange != 0)
-      if (image->scene >= (image_info->subimage+image_info->subrange-1))
-        break;
     if (feof(image->file))
       MagickWarning(CorruptImageWarning,"not enough pixels",image->filename);
     /*
       Proceed to next image.
     */
+    if (image_info->subrange != 0)
+      if (image->scene >= (image_info->subimage+image_info->subrange-1))
+        break;
     count=ReadData((char *) scanline,packet_size,image->columns,image->file);
     if (count > 0)
       {
@@ -14350,8 +14087,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info)
     if (range < 0)
       range=max_sample_value;
     q=image->pixels;
-    q->length=MaxRunlength;
-    q->length=0;
+    SetRunlengthEncoder(q);
     method=0;
     if ((samples_per_pixel > 1) || TIFFIsTiled(tiff))
       {
@@ -14721,7 +14457,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info)
         break;
       }
     }
-    image->packets=packets;
+    SetRunlengthPackets(image,packets);
     if (image->class == PseudoClass)
       SyncImage(image);
     else
@@ -15394,7 +15130,7 @@ static Image *ReadUYVYImage(const ImageInfo *image_info)
     q++;
     p+=4;
     if (QuantumTick(i,image))
-      ProgressMonitor(LoadImageText,i,image->packets >> 1);
+      ProgressMonitor(LoadImageText,i,image->columns*image->rows >> 1);
   }
   FreeMemory((char *) uyvy_pixels);
   TransformRGBImage(image,YCbCrColorspace);
@@ -17075,10 +16811,10 @@ static Image *ReadXCImage(const ImageInfo *image_info)
   for (i=0; i < image->packets; i++)
   {
     q->index=0;
-    q->length=MaxRunlength;
+    SetRunlengthEncoder(q);
     q++;
     if (QuantumTick(i,image))
-      ProgressMonitor(LoadImageText,i,image->packets);
+      ProgressMonitor(LoadImageText,i,image->columns*image->rows);
   }
   q--;
   q->length=image->columns*image->rows-(MaxRunlength+1)*(image->packets-1)-1;
@@ -17604,8 +17340,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info)
   if (image->pixels == (RunlengthPacket *) NULL)
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
   q=image->pixels;
-  q->length=MaxRunlength;
-  q->length=0;
+  SetRunlengthEncoder(q);
   switch (image->class)
   {
     case DirectClass:
@@ -17781,7 +17516,9 @@ static Image *ReadXWDImage(const ImageInfo *image_info)
       break;
     }
   }
-  image->packets=packets;
+  SetRunlengthPackets(image,packets);
+  if (image->class == PseudoClass)
+    SyncImage(image);
   /*
     Free image and colormap.
   */
@@ -17789,8 +17526,6 @@ static Image *ReadXWDImage(const ImageInfo *image_info)
     FreeMemory((char *) colors);
   FreeMemory(ximage->data);
   FreeMemory(ximage);
-  if (image->class == PseudoClass)
-    SyncImage(image);
   CloseImage(image);
   return(image);
 }
@@ -17984,12 +17719,12 @@ static Image *ReadYUVImage(const ImageInfo *image_info)
     CondenseImage(image);
     if (image_info->interlace == PartitionInterlace)
       (void) strcpy(image->filename,image_info->filename);
-    if (image_info->subrange != 0)
-      if (image->scene >= (image_info->subimage+image_info->subrange-1))
-        break;
     /*
       Proceed to next image.
     */
+    if (image_info->subrange != 0)
+      if (image->scene >= (image_info->subimage+image_info->subrange-1))
+        break;
     count=ReadData((char *) scanline,1,image->columns,image->file);
     if (count > 0)
       {

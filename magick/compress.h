@@ -29,4 +29,6 @@ extern Export void
   Ascii85Encode(const unsigned int,FILE *),
   Ascii85Flush(FILE *),
   Ascii85Initialize(void),
-  PackbitsDecodeImage(Image *,int);
+  PackbitsDecodeImage(Image *,int),
+  SetRunlengthEncoder(RunlengthPacket *),
+  SetRunlengthPackets(Image *,unsigned long);

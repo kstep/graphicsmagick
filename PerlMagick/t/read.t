@@ -129,7 +129,7 @@ testRead( 'input_p1.pbm', '61ed9c1e08dac993e5f020de8195e009' );
 # Portable bitmap format (black and white), binary format
 #
 ++$test;
-testRead( 'input_p4.pbm', '2ba72a7ec57497fb320e860d3e9d1310' );
+testRead( 'input_p4.pbm', '61ed9c1e08dac993e5f020de8195e009' );
 
 #
 # ZSoft IBM PC Paintbrush file

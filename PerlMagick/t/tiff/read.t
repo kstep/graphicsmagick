@@ -17,7 +17,7 @@ chdir 't/tiff' || die 'Cd failed';
 #
 # 1) Test Reading Monochrome
 # 
-testRead ( 'input_mono.tiff', 'bc5c3b39a5e6758ba156279988c79836' );
+testRead ( 'input_mono.tiff', 'f194ead12be5179c3930fa7a59e9af45' );
 
 #
 # 2) Test reading PseudoColor
