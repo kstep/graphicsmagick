@@ -133,6 +133,9 @@ typedef struct _SVGInfo
   BoundingBox
     page;
 
+  PointInfo
+    radius;
+
   char
     *text,
     *vertices,
@@ -773,12 +776,12 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
       if (LocaleCompare(keyword,"rx") == 0)
         {
-          svg_info->element.major=atof(value)*UnitOfMeasure(value);
+          svg_info->radius.x=atof(value)*UnitOfMeasure(value);
           continue;
         }
       if (LocaleCompare(keyword,"ry") == 0)
         {
-          svg_info->element.minor=atof(value)*UnitOfMeasure(value);
+          svg_info->radius.y=atof(value)*UnitOfMeasure(value);
           continue;
         }
       if (LocaleCompare(keyword,"style") == 0)
@@ -1172,15 +1175,23 @@ static void SVGEndElement(void *context,const xmlChar *name)
     }
   if (LocaleCompare((char *) name,"rect") == 0)
     {
-      if (svg_info->element.major == 0.0)
-        (void) fprintf(svg_info->file,"rectangle %g,%g %g,%g\n",
-          svg_info->page.x,svg_info->page.y,svg_info->page.x+
-          svg_info->page.width,svg_info->page.y+svg_info->page.height);
-      else
-        (void) fprintf(svg_info->file,"roundRectangle %g,%g %g,%g %g,%g\n",
-          svg_info->page.x+svg_info->page.width/2.0,svg_info->page.y+
-          svg_info->page.height/2.0,svg_info->page.width,svg_info->page.height,
-          svg_info->element.major/2.0,svg_info->element.minor/2.0);
+      if ((svg_info->radius.x == 0.0) && (svg_info->radius.y == 0.0))
+        {
+          (void) fprintf(svg_info->file,"rectangle %g,%g %g,%g\n",
+            svg_info->page.x,svg_info->page.y,svg_info->page.x+
+            svg_info->page.width,svg_info->page.y+svg_info->page.height);
+          return;
+        }
+      if (svg_info->radius.x == 0.0)
+        svg_info->radius.x=svg_info->radius.y;
+      if (svg_info->radius.y == 0.0)
+        svg_info->radius.y=svg_info->radius.x;
+      (void) fprintf(svg_info->file,"roundRectangle %g,%g %g,%g %g,%g\n",
+        svg_info->page.x+svg_info->page.width/2.0,svg_info->page.y+
+        svg_info->page.height/2.0,svg_info->page.width,svg_info->page.height,
+        svg_info->radius.x,svg_info->radius.y);
+      svg_info->radius.x=0.0;
+      svg_info->radius.y=0.0;
       return;
     }
   if (LocaleCompare((char *) name,"text") == 0)

@@ -1891,7 +1891,7 @@ static void GenerateRoundRectangle(PrimitiveInfo *primitive_info,
   GenerateLine(p,u,v);
   p+=p->coordinates;
   p->primitive=primitive_info->primitive;
-  u.x= end.x-arc.x;
+  u.x=end.x-arc.x;
   u.y=start.y+arc.y;
   v.x=2.0*arc.x;
   v.y=2.0*arc.y;
