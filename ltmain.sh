@@ -56,7 +56,7 @@ modename="$progname"
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=1.4c
-TIMESTAMP=" (1.1060 2001/09/21 19:49:29)"
+TIMESTAMP=" (1.1065 2001/09/22 16:43:43)"
 
 default_mode=
 help="Try \`$progname --help' for more information."
@@ -496,7 +496,7 @@ if test -z "$show_help"; then
     # Only attempt this if the compiler in the base compile
     # command doesn't match the default compiler.
     if test -n "$available_tags" && test -z "$tagname"; then
-      case $base_compile in
+      case "$base_compile " in
       "$CC "*) ;;
       # Blanks in the command may have been stripped by the calling shell,
       # but not from the CC environment variable when ltconfig was run.
@@ -506,7 +506,7 @@ if test -z "$show_help"; then
 	  if grep "^# ### BEGIN LIBTOOL TAG CONFIG: $z$" < "$0" > /dev/null; then
 	    # Evaluate the configuration.
 	    eval "`sed -n -e '/^# ### BEGIN LIBTOOL TAG CONFIG: '$z'$/,/^# ### END LIBTOOL TAG CONFIG: '$z'$/p' < $0`"
-	    case $base_compile in
+	    case "$base_compile " in
 	    "$CC "*)
 	      # The compiler in the base compile command matches
 	      # the one in the tagged configuration.

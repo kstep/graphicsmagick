@@ -41,31 +41,8 @@ END_MESSAGE_MAP()
 
 CNtMagickView::CNtMagickView()
 {
-
-  CString szDir;
-
   // Init local objects
   m_pImage = NULL;
-
-#ifdef MANIPULATE_ENVVARS
-  // Get the current working directory
-  GetCurrentDirectory(MAX_PATH, szDir.GetBuffer(MAX_PATH + 1));
-
-  // Dynamically set the ImageMagick environment
-  if (getenv("MAGICK_MODULE_PATH") == NULL)
-  {
-    CString s;
-    s.Format("MAGICK_MODULE_PATH=%s",szDir);
-    putenv(s);
-  }
-
-  if (getenv("MAGICK_DELEGATE_PATH") == NULL)
-  {
-    CString s;
-    s.Format("MAGICK_DELEGATE_PATH=%s",szDir);
-    putenv(s);
-  }
-#endif
 }
 
 CNtMagickView::~CNtMagickView()
@@ -237,17 +214,17 @@ void CNtMagickView::DoDisplayImage()
 
       // Set up the Windows bitmap header
       BITMAPINFOHEADER bmi;
-      bmi.biSize = sizeof(BITMAPINFOHEADER);
-      bmi.biWidth = m_pImage->columns();
-      bmi.biHeight = (-1)*m_pImage->rows();
-      bmi.biPlanes = 1;
-      bmi.biBitCount = 32;
-      bmi.biCompression = BI_RGB;
-      bmi.biSizeImage = 0;
-      bmi.biXPelsPerMeter = 0;
-      bmi.biYPelsPerMeter = 0;
-      bmi.biClrUsed = 0;
-      bmi.biClrImportant = 0;
+      bmi.biSize = sizeof(BITMAPINFOHEADER);	// Size of structure
+      bmi.biWidth = m_pImage->columns();	// Bitmaps width in pixels
+      bmi.biHeight = (-1)*m_pImage->rows();	// Bitmaps height n pixels
+      bmi.biPlanes = 1;				// Number of planes in the image
+      bmi.biBitCount = 32;			// The number of bits per pixel
+      bmi.biCompression = BI_RGB;		// The type of compression used
+      bmi.biSizeImage = 0;			// The size of the image in bytes
+      bmi.biXPelsPerMeter = 0;			// Horizontal resolution
+      bmi.biYPelsPerMeter = 0;			// Veritical resolution
+      bmi.biClrUsed = 0;			// Number of colors actually used
+      bmi.biClrImportant = 0;			// Colors most important
 
 #if QuantumDepth == 8
       // Determine the size of the scaled image
@@ -311,6 +288,10 @@ void CNtMagickView::DoDisplayImage()
           ++pDestPixel;
           ++pPixels;
         }
+
+      // Need to write bitmap to device.  Could use SetDIBitsToDevice,
+      // BitBlt, or DrawDibDraw
+
 #endif
 
     }

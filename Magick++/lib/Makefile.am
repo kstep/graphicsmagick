@@ -20,7 +20,7 @@ MINOR_VERSION      = @MINOR_VERSION@
 MICRO_VERSION      = @MICRO_VERSION@
 
 libMagick___la_SOURCES = \
-	Blob.cpp Coder.cpp Color.cpp Drawable.cpp Exception.cpp \
+	Blob.cpp CoderInfo.cpp Color.cpp Drawable.cpp Exception.cpp \
 	Functions.cpp Geometry.cpp Image.cpp Montage.cpp Options.cpp \
 	Pixels.cpp Thread.cpp TypeMetric.cpp
 

@@ -188,7 +188,7 @@ INCLUDES = -I../.. -I$(top_srcdir)
 lib_LTLIBRARIES = libMagick++.la
 
 libMagick___la_SOURCES = \
-	Blob.cpp Coder.cpp Color.cpp Drawable.cpp Exception.cpp \
+	Blob.cpp CoderInfo.cpp Color.cpp Drawable.cpp Exception.cpp \
 	Functions.cpp Geometry.cpp Image.cpp Montage.cpp Options.cpp \
 	Pixels.cpp Thread.cpp TypeMetric.cpp
 
@@ -207,7 +207,7 @@ CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libMagick___la_LIBADD =
-am_libMagick___la_OBJECTS = Blob.lo Coder.lo Color.lo Drawable.lo \
+am_libMagick___la_OBJECTS = Blob.lo CoderInfo.lo Color.lo Drawable.lo \
 	Exception.lo Functions.lo Geometry.lo Image.lo Montage.lo \
 	Options.lo Pixels.lo Thread.lo TypeMetric.lo
 libMagick___la_OBJECTS = $(am_libMagick___la_OBJECTS)
@@ -217,7 +217,7 @@ DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)/magick
 CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
-@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/Blob.Plo $(DEPDIR)/Coder.Plo \
+@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/Blob.Plo $(DEPDIR)/CoderInfo.Plo \
 @AMDEP_TRUE@	$(DEPDIR)/Color.Plo $(DEPDIR)/Drawable.Plo \
 @AMDEP_TRUE@	$(DEPDIR)/Exception.Plo $(DEPDIR)/Functions.Plo \
 @AMDEP_TRUE@	$(DEPDIR)/Geometry.Plo $(DEPDIR)/Image.Plo \
@@ -294,7 +294,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/Blob.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/Coder.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CoderInfo.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/Color.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/Drawable.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/Exception.Plo@am__quote@

@@ -219,8 +219,8 @@ libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VE
 
 # Library base sources
 MAGICK_BASE_SRCS = PreRvIcccm.c animate.c annotate.c attribute.c blob.c \
-  cache.c cache_view.c color.c compress.c constitute.c decorate.c delegate.c \
-  display.c draw.c effect.c enhance.c error.c gem.c image.c  \
+  cache.c cache_view.c color.c compress.c constitute.c decorate.c \
+  delegate.c display.c draw.c effect.c enhance.c error.c gem.c image.c \
   magic.c magick.c memory.c module.c monitor.c montage.c quantize.c \
   segment.c semaphore.c shear.c signature.c static.c stream.c timer.c \
   transform.c type.c utility.c widget.c xwindow.c zoom.c
@@ -284,23 +284,23 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 @WITH_MODULES_TRUE@	cache_view.lo color.lo compress.lo \
 @WITH_MODULES_TRUE@	constitute.lo decorate.lo delegate.lo \
 @WITH_MODULES_TRUE@	display.lo draw.lo effect.lo enhance.lo \
-@WITH_MODULES_TRUE@	error.lo gem.lo image.lo semaphore.lo \
-@WITH_MODULES_TRUE@	magic.lo magick.lo memory.lo module.lo \
-@WITH_MODULES_TRUE@	monitor.lo montage.lo quantize.lo segment.lo \
-@WITH_MODULES_TRUE@	shear.lo signature.lo static.lo stream.lo \
-@WITH_MODULES_TRUE@	timer.lo transform.lo type.lo utility.lo \
-@WITH_MODULES_TRUE@	widget.lo xwindow.lo zoom.lo
+@WITH_MODULES_TRUE@	error.lo gem.lo image.lo magic.lo magick.lo \
+@WITH_MODULES_TRUE@	memory.lo module.lo monitor.lo montage.lo \
+@WITH_MODULES_TRUE@	quantize.lo segment.lo semaphore.lo shear.lo \
+@WITH_MODULES_TRUE@	signature.lo static.lo stream.lo timer.lo \
+@WITH_MODULES_TRUE@	transform.lo type.lo utility.lo widget.lo \
+@WITH_MODULES_TRUE@	xwindow.lo zoom.lo
 @WITH_MODULES_FALSE@am_libMagick_la_OBJECTS = PreRvIcccm.lo animate.lo \
 @WITH_MODULES_FALSE@	annotate.lo attribute.lo blob.lo cache.lo \
 @WITH_MODULES_FALSE@	cache_view.lo color.lo compress.lo \
 @WITH_MODULES_FALSE@	constitute.lo decorate.lo delegate.lo \
 @WITH_MODULES_FALSE@	display.lo draw.lo effect.lo enhance.lo \
-@WITH_MODULES_FALSE@	error.lo gem.lo image.lo semaphore.lo \
-@WITH_MODULES_FALSE@	magic.lo magick.lo memory.lo module.lo \
-@WITH_MODULES_FALSE@	monitor.lo montage.lo quantize.lo \
-@WITH_MODULES_FALSE@	segment.lo shear.lo signature.lo static.lo \
-@WITH_MODULES_FALSE@	stream.lo timer.lo transform.lo type.lo \
-@WITH_MODULES_FALSE@	utility.lo widget.lo xwindow.lo zoom.lo
+@WITH_MODULES_FALSE@	error.lo gem.lo image.lo magic.lo magick.lo \
+@WITH_MODULES_FALSE@	memory.lo module.lo monitor.lo montage.lo \
+@WITH_MODULES_FALSE@	quantize.lo segment.lo semaphore.lo \
+@WITH_MODULES_FALSE@	shear.lo signature.lo static.lo stream.lo \
+@WITH_MODULES_FALSE@	timer.lo transform.lo type.lo utility.lo \
+@WITH_MODULES_FALSE@	widget.lo xwindow.lo zoom.lo
 libMagick_la_OBJECTS = $(am_libMagick_la_OBJECTS)
 SCRIPTS = $(bin_SCRIPTS)
 
