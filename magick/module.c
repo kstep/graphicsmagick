@@ -65,7 +65,7 @@ typedef void *ModuleHandle;
 /*
   Define declarations.
 */
-#define ModuleFilename  "module.mgk"
+#define ModuleFilename  "modules.mgk"
 #if !defined(WIN32)
 # if !defined(CoderModuleDirectory)
 #  define CoderModuleDirectory  ""

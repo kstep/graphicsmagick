@@ -251,7 +251,7 @@ include_HEADERS = PreRvIcccm.h api.h attribute.h blob.h cache.h cache_view.h \
 noinst_HEADERS = animate.h define.h display.h mac.h magic.h nt.h vms.h
 
 # Additional files to distribute
-EXTRA_DIST = $(ALLMANPAGES) color.mgk magic.mgk Magick-config.in \
+EXTRA_DIST = $(ALLMANPAGES) colors.mgk magic.mgk Magick-config.in \
   Magick-config.in Make.com mac.c nt.c vms.c $(MAGICK_BASE_SRCS)
 
 
@@ -262,7 +262,7 @@ pkgdir = $(libdir)/ImageMagick/modules/coders
 pkg_DATA = 
 
 # Architecture independent data files installed in the package's data directory
-pkgdata_DATA = color.mgk magic.mgk
+pkgdata_DATA = colors.mgk magic.mgk
 
 # Manual pages to install
 man_MANS = $(ALLMANPAGES)

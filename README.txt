@@ -251,7 +251,7 @@ UNIX/Cygwin COMPILATION
 
     o --without-frozenpaths: By default, the configure script will
       determine the location of all delegates (external programs) and
-      incorporate the full paths within the delegate.mgk file. This is
+      incorporate the full paths within the delegates.mgk file. This is
       the default because it is assumed that the installer's
       environment is appropriately configured and that the operation of
       ImageMagick should not be subject to the end-user's environment.
@@ -259,7 +259,7 @@ UNIX/Cygwin COMPILATION
       their own environment or possible that the end user's environment
       does not match the installer's environment (e.g. for binary
       distributions), --without-frozenpaths may be specified so that
-      only the delegate's name is included in the delegate.mgk file.
+      only the delegate's name is included in the delegates.mgk file.
 
     o --without-threads: By default, the ImageMagick library is compiled
       with multi-thread support.  If this is undesireable, then specify
@@ -599,7 +599,7 @@ MAGICK DELEGATES
 VMS COMPILATION
 
   You might want to check the values of certain program definitions
-  before compiling.  Verify the definitions in delegate.mgk to suit
+  before compiling.  Verify the definitions in delegates.mgk to suit
   your local requirements.  Next, type.
 
   Type
@@ -791,12 +791,12 @@ Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
   The C:\ImageMagick folder should contain the following files:
 
       1) magic.mgk
-      2) delegate.mgk (derived from nt.mgk)
-      3) module.mgk
+      2) delegates.mgk (derived from nt.mgk)
+      3) modules.mgk
       4) rgb.txt
 
   The "bin" folder should contains all EXE's and DLL's as well as the
-  very important "module.mgk" file.
+  very important "modules.mgk" file.
 
   With this default setup, you can use any of the command line tools
   and run scripts as normal. You can actually get by quite nicely this
@@ -853,7 +853,7 @@ Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
       D:\\ImageMagick\coders
 
    This is also the place were ImageMagick expects to find the all
-   important "module.mgk" file.
+   important "modules.mgk" file.
 
    One cool thing about 5.2 is that you can now leave out file formats
    and lighten you load. If all you ever need is GIF and JPEG, then

@@ -224,7 +224,7 @@ MICRO_VERSION = @MICRO_VERSION@
 @WITH_MODULES_FALSE@libCoders_la_SOURCES = @WITH_MODULES_FALSE@$(MAGICK_CODER_SRCS)
 
 # Additional files to distribute
-EXTRA_DIST = module.mgk delegate.mgk.in type.mgk.in
+EXTRA_DIST = modules.mgk delegates.mgk.in type.mgk.in
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = 
@@ -233,7 +233,7 @@ noinst_HEADERS =
 @WITH_MODULES_TRUE@pkgdir = @WITH_MODULES_TRUE@$(libdir)/ImageMagick/modules/coders
 
 # Architecture-dependent data files installed with modules
-@WITH_MODULES_TRUE@pkg_DATA = @WITH_MODULES_TRUE@module.mgk
+@WITH_MODULES_TRUE@pkg_DATA = @WITH_MODULES_TRUE@modules.mgk
 
 # Architecture independent data files installed in the package's data directory
 @WITH_MODULES_TRUE@pkgdata_DATA = 
@@ -662,7 +662,7 @@ DEFS = @DEFS@ -I../
 subdir = coders
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../magick/config.h
-CONFIG_CLEAN_FILES =  delegate.mgk type.mgk
+CONFIG_CLEAN_FILES =  delegates.mgk type.mgk
 LTLIBRARIES =  $(noinst_LTLIBRARIES) $(pkg_LTLIBRARIES)
 
 CPPFLAGS = @CPPFLAGS@
@@ -997,7 +997,7 @@ $(DEPDIR)/viff.Plo $(DEPDIR)/wbmp.Plo $(DEPDIR)/wmf.Plo \
 $(DEPDIR)/wpg.Plo $(DEPDIR)/x.Plo $(DEPDIR)/xbm.Plo $(DEPDIR)/xc.Plo \
 $(DEPDIR)/xpm.Plo $(DEPDIR)/xwd.Plo $(DEPDIR)/yuv.Plo
 DIST_COMMON =  $(noinst_HEADERS) Makefile.am Makefile.in \
-delegate.mgk.in type.mgk.in
+delegates.mgk.in type.mgk.in
 
 
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -1016,7 +1016,7 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-delegate.mgk: $(top_builddir)/config.status delegate.mgk.in
+delegates.mgk: $(top_builddir)/config.status delegates.mgk.in
 	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 type.mgk: $(top_builddir)/config.status type.mgk.in
 	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
@@ -1614,12 +1614,12 @@ mostlyclean distclean maintainer-clean
 # Install delegates files
 install-data-delegates: 
 	$(mkinstalldirs) $(DESTDIR)$(pkglibdir)
-	$(INSTALL_DATA) delegate.mgk $(DESTDIR)$(pkglibdir)
+	$(INSTALL_DATA) delegates.mgk $(DESTDIR)$(pkglibdir)
 	$(INSTALL_DATA) type.mgk $(DESTDIR)$(pkglibdir)
 
 # Uninstall delegates files
 uninstall-data-delegates:
-	rm -f $(DESTDIR)$(pkglibdir)/delegate.mgk
+	rm -f $(DESTDIR)$(pkglibdir)/delegates.mgk
 	rm -f $(DESTDIR)$(pkglibdir)/type.mgk
 
 install-exec-local: install-data-delegates

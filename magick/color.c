@@ -57,7 +57,7 @@
 /*  
   Define declarations.
 */
-#define ColorFilename  "color.mgk"
+#define ColorFilename  "colors.mgk"
 
 /*
   Declare color map.

@@ -52,7 +52,7 @@ libCoders_la_SOURCES = $(MAGICK_CODER_SRCS)
 endif # WITH_MODULES
 
 # Additional files to distribute
-EXTRA_DIST = module.mgk delegate.mgk.in type.mgk.in
+EXTRA_DIST = modules.mgk delegates.mgk.in type.mgk.in
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = 
@@ -62,7 +62,7 @@ if WITH_MODULES
 pkgdir = $(libdir)/ImageMagick/modules/coders
 
 # Architecture-dependent data files installed with modules
-pkg_DATA = module.mgk
+pkg_DATA = modules.mgk
 
 # Architecture independent data files installed in the package's data directory
 pkgdata_DATA = 
@@ -496,12 +496,12 @@ DEFS = @DEFS@ -I../
 # Install delegates files
 install-data-delegates: 
 	$(mkinstalldirs) $(DESTDIR)$(pkglibdir)
-	$(INSTALL_DATA) delegate.mgk $(DESTDIR)$(pkglibdir)
+	$(INSTALL_DATA) delegates.mgk $(DESTDIR)$(pkglibdir)
 	$(INSTALL_DATA) type.mgk $(DESTDIR)$(pkglibdir)
 
 # Uninstall delegates files
 uninstall-data-delegates:
-	rm -f $(DESTDIR)$(pkglibdir)/delegate.mgk
+	rm -f $(DESTDIR)$(pkglibdir)/delegates.mgk
 	rm -f $(DESTDIR)$(pkglibdir)/type.mgk
 
 install-exec-local: install-data-delegates

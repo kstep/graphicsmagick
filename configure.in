@@ -1226,7 +1226,7 @@ fi
 # Configure Delegates
 #
 
-# Directory where configured ImageMagick/delegate.mgk lives
+# Directory where configured ImageMagick/delegates.mgk lives
 # (default /usr/local/lib/ImageMagick).
 eval MagickLibPath="${LIB_DIR}/ImageMagick/"
 AC_DEFINE_UNQUOTED(MagickLibPath,"$MagickLibPath",Directory where architecture-dependent files live.)
@@ -1623,7 +1623,7 @@ AC_SUBST(X_CFLAGS)
 #AC_SUBST(X_LIBS)
 #AC_SUBST(X_EXTRA_LIBS)
 
-AC_OUTPUT(Makefile magick/Makefile coders/delegate.mgk coders/Makefile \
+AC_OUTPUT(Makefile magick/Makefile coders/delegates.mgk coders/Makefile \
   utilities/Makefile tests/Makefile coders/type.mgk magick/Magick-config \
   Magick++/bin/Makefile Magick++/bin/Magick++-config Magick++/Makefile \
   Magick++/lib/Makefile Magick++/lib/Magick++/Makefile  Magick++/demo/Makefile \

@@ -64,7 +64,7 @@
 /*
   Define declarations.
 */
-#define DelegateFilename  "delegate.mgk"
+#define DelegateFilename  "delegates.mgk"
 
 /*
   Declare delegate map.
