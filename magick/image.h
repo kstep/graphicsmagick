@@ -104,11 +104,19 @@ typedef struct _PixelPacket
     blue,
     opacity;
 #else
+#if defined(WIN32)
   Quantum
     blue,
     green,
     red,
     opacity;
+#else
+  Quantum
+    opacity,
+    red,
+    green,
+    blue;
+#endif
 #endif
 } PixelPacket;
 
