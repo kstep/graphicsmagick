@@ -82,7 +82,7 @@ install-data-html:
 uninstall-data-html:
 	rm -f $(DESTDIR)$(pkgdocdir)/index.html
 	for dir in $(DOCDIRS) ; do \
-	  rm -rf $(DESTDIR)$(pkgdocdir)$$dir ; \
+	  rm -f -r $(DESTDIR)$(pkgdocdir)/$$dir ; \
 	done
 
 # Ensure that version.h at $(srcdir)/magick/version.h is kept up to date.
@@ -147,14 +147,16 @@ $(PERLMAGICK)/$(PERLSTATICNAME): $(PERLMAKEFILE) magick/libGraphicsMagick.la
 all-perl: $(PERLMAGICK)/$(PERLSTATICNAME)
 
 install-exec-perl: $(PERLMAGICK)/$(PERLSTATICNAME)
+	rm -f "$(DESTDIR)$(BIN_DIR)/$(PERLSTATICNAME)"
 	( cd $(PERLMAGICK) && \
-	$(MAKE) -f Makefile.aperl CC='@CC@' inst_perl MAP_TARGET=$(PERLSTATICNAME) )
+	$(MAKE) -f Makefile.aperl CC='@CC@' inst_perl MAP_TARGET=$(PERLSTATICNAME) \
+	  INSTALLBIN="$(DESTDIR)$(BIN_DIR)" )
 
 uninstall-exec-perl:
-	rm -f '@BIN_DIR@/$(PERLSTATICNAME)'
+	rm -f '$(BIN_DIR)/$(PERLSTATICNAME)'
 
 check-perl: $(PERLMAGICK)/$(PERLSTATICNAME)
-	cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl CC='@CC@' test
+	-cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl CC='@CC@' test
 
 endif # WITH_PERL_STATIC
 endif # WTIH_PERL_DYNAMIC

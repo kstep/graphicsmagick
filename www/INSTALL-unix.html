@@ -209,11 +209,8 @@ UNIX/Cygwin/MinGW COMPILATION
    --with-modules          enable support for dynamically loadable modules
    --with-cache            set pixel cache threshhold (defaults to available memory)
    --without-threads       disable threads support
-</PRE>
-<p>
-   --without-frozenpaths   disable frozen delegate paths
+   --with-frozenpaths      enable frozen delegate paths
    --without-magick-plus-plus disable build/install of Magick++
-<PRE>
    --without-perl          disable build/install of PerlMagick
         or
    --with-perl=PERL        use specified Perl binary to configure PerlMagick
@@ -403,10 +400,12 @@ UNIX/Cygwin/MinGW COMPILATION
       normally be rejected by configure tests so specifying this option
       should only be necessary if Magick++ fails to compile.
 
-    o --without-frozenpaths: Normally full paths to external programs
-      (based on searching the PATH set when configure is run) will be
-      saved to the delegates.mgk file. Specify this option to disable
-      saving full paths to programs.
+    o --with-frozenpaths: Normally external program names are substituted
+      into the delegates.mgk file without full paths. Specify this option
+      to enable saving full paths to programs using locations determined
+      by configure. This is useful for environments where programs are
+      stored under multiple paths, and users may use different PATH
+      settings than the person who builds GraphicsMagick.
 
     o --without-threads: By default, the GraphicsMagick library is compiled
       with multi-thread support.  If this is undesireable, then specify

@@ -37,7 +37,7 @@ host_triplet = @host@
 target_triplet = @target@
 pkgdatadir = $(datadir)/Magick++
 pkglibdir = $(libdir)/Magick++
-pkgincludedir = $(includedir)/GraphicsMagick/Magick++
+pkgincludedir = $(includedir)/Magick++
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
@@ -330,7 +330,7 @@ host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
 
-includedir = ${prefix}/include
+includedir = @includedir@/GraphicsMagick
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@

@@ -1,3 +1,8 @@
+2003-12-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Makefile.am (pkglibdir): Improve header file
+	install location logic.
+
 2003-12-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* demo/analyze.cpp (main): New program to demonstrate using the

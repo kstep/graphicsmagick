@@ -49,7 +49,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-pkgincludedir = $(includedir)/GraphicsMagick/magick
+pkgincludedir = $(includedir)/magick
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
@@ -343,7 +343,7 @@ host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
 
-includedir = ${prefix}/include
+includedir = @includedir@/GraphicsMagick
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@

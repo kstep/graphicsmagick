@@ -11,14 +11,9 @@
 #
 # Written by Bob Friesenhahn <bfriesen@simple.dallas.tx.us> December 2003
 #
-top_srcdir=`(cd @top_srcdir@ && pwd)`
-top_builddir=`dirname $0`
-top_builddir=`(cd $top_builddir && pwd)`
+top_srcdir=@abs_top_srcdir@
+top_builddir=@abs_top_builddir@
 echo "$@"
-MAGICK_MODULE_PATH="${top_builddir}/coders/.libs"
-MAGICK_CONFIGURE_PATH="${top_srcdir}/config:${top_builddir}/config"
-PATH="${top_builddir}/utilities:${PATH}"
-export MAGICK_MODULE_PATH MAGICK_CONFIGURE_PATH PATH
 env \
   MAGICK_MODULE_PATH="${top_builddir}/coders/.libs" \
   MAGICK_CONFIGURE_PATH="${top_srcdir}/config:${top_builddir}/config" \

@@ -455,19 +455,11 @@ then
   AC_DEFINE_UNQUOTED(PixelCacheThreshold,$with_cache,[Pixel cache threshold in MB (defaults to available memory)])
 fi
 
-# Disable/Enable support for full delegate paths
-if test "$native_win32_build" = 'yes'
-then
-  AC_ARG_WITH(frozenpaths,
-	      [  --with-frozenpaths      enable frozen delegate paths],
-	      [with_frozenpaths=$withval],
-	      [with_frozenpaths='no'])
-else
-  AC_ARG_WITH(frozenpaths,
-	      [  --without-frozenpaths   disable frozen delegate paths],
-	      [with_frozenpaths=$withval],
-	      [with_frozenpaths='yes'])
-fi
+# Disable/Enable support for full delegate paths in delegates.mgk
+AC_ARG_WITH(frozenpaths,
+              [  --with-frozenpaths      enable frozen delegate paths],
+              [with_frozenpaths=$withval],
+              [with_frozenpaths='no'])
 
 # Enable build/install of Magick++
 AC_ARG_WITH(magick-plus-plus,
@@ -1025,9 +1017,6 @@ fi
 #LDFLAGS="$LDFLAGS -L$LIB_DIR"
 #CPPFLAGS="$CPPFLAGS -I$INCLUDE_DIR"
 MAGICK_API_CPPFLAGS="-I$INCLUDE_DIR/GraphicsMagick $MAGICK_API_CPPFLAGS"
-
-# Extend includedir to include magick subdirectory offset
-includedir="$includedir/magick"
 
 #
 # Find the X11 RGB database
@@ -2048,7 +2037,6 @@ BZIPDelegateDefault='bzip2'
 BrowseDelegateDefault='netscape'
 CGMDecodeDelegateDefault='ralcgm'
 CatDelegateDefault='cat'
-### ConvertDelegateDefault=`echo convert | sed ${configure_transform_name}`
 DCRAWDecodeDelegateDefault='dcraw'
 DOTDecodeDelegateDefault='dot'
 DVIDecodeDelegateDefault='dvips'
@@ -2070,7 +2058,6 @@ MANDelegateDefault='groff'
 MPEGDecodeDelegateDefault='mpeg2decode'
 MPEGEncodeDelegateDefault='mpeg2encode'
 MVDelegateDefault='mv'
-### MogrifyDelegateDefault=`echo mogrify | sed ${configure_transform_name}`
 PGPDecodeDelegateDefault='pgpv'
 POVDelegateDefault='povray'
 if test "$native_win32_build" = 'yes' ; then
@@ -2082,7 +2069,6 @@ RADDecodeDelegateDefault='ra_ppm'
 RLEEncodeDelegateDefault='rawtorle'
 RMDelegateDefault='rm'
 SCANDecodeDelegateDefault='scanimage'
-### ShowImageDelegateDefault=`echo display | sed ${configure_transform_name}`
 TXTDelegateDefault='enscript'
 WMFDecodeDelegateDefault='wmf2eps'
 WWWDecodeDelegateDefault='wget'
@@ -2138,9 +2124,6 @@ AC_SUBST(PrintDelegate)
 
 # Installed GraphicsMagick utiltity paths
 GMDelegate="${BIN_DIR}/${GMDelegateDefault}"
-### ConvertDelegate="${BIN_DIR}/${ConvertDelegateDefault}"
-### ShowImageDelegate="${BIN_DIR}/${ShowImageDelegateDefault}"
-### MogrifyDelegate="${BIN_DIR}/${MogrifyDelegateDefault}"
 
 # Set delegate booleans
 have_fig2dev='no' ; if test "$FIGDecodeDelegate" != "$FIGDecodeDelegateDefault" ; then have_fig2dev='yes' ; fi
@@ -2249,6 +2232,7 @@ then
   EchoDelegate="$EchoDelegateDefault"
   EditorDelegate="$EditorDelegateDefault"
   FIGDecodeDelegate="$FIGDecodeDelegateDefault"
+  GMDelegate="${GMDelegateDefault}"
   GnuplotDecodeDelegate="$GnuplotDecodeDelegateDefault"
   HPGLDecodeDelegate="$HPGLDecodeDelegateDefault"
   HTMLDecodeDelegate="$HTMLDecodeDelegatDefault"
@@ -2531,9 +2515,9 @@ fi
 #
 if test "$with_modules" != 'no'
 then
-  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_THREAD"
+  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_THREAD $LIBS_INITIAL"
 else
-  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_THREAD"
+  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_THREAD $LIBS_INITIAL"
 fi
 AC_SUBST(MAGICK_DEP_LIBS)
 

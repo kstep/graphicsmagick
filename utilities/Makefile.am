@@ -44,7 +44,7 @@ man_MANS = $(MANPAGES)
 EXTRA_DIST = $(ALLMANPAGES)
 
 clean-local:
-	$(RMDelegate) -f *_out.miff demo.miff gm.core core
+	rm -f *_out.miff demo.miff gm.core core
 
 RUNENV = $(SHELL) $(top_builddir)/rungm.sh
 
@@ -55,7 +55,7 @@ SMILE_MIFF=$(top_srcdir)/Magick++/demo/smile.miff
 GENERIC_TTF=$(top_srcdir)/PerlMagick/demo/Generic.ttf
 
 check:
-	$(RM) demo.miff *_out.miff
+	rm -f demo.miff *_out.miff
 	${GM} convert $(MODEL_MIFF) +noise Laplacian              -label AddNoise AddNoise_out.miff
 	${GM} convert $(MODEL_MIFF) -fill gold \
 	        -pointsize 14 -font $(GENERIC_TTF) \

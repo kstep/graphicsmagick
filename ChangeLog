@@ -1,3 +1,19 @@
+2003-12-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am (uninstall-data-html): Pathnames were computed
+	incorrectly so documentation directories were being left behind.
+	* configure.ac: --without-frozenpaths is now the default.  This
+	helps 'make distcheck' work and makes the package more portable.
+	Path to gm was being incorrectly frozen when --without-frozenpaths
+	was specified.
+	* magick/delegate.c (ReadConfigureFile): Validate delegate paths
+	prior to substitution.
+	* rungm.sh.in (top_builddir): Use a more reliable scheme for
+	computing location of source and build directories.
+	* magick/Makefile.am: Improve include directory computation logic.
+	* configure.ac: Don't override includedir.  Pass user-supplied LIBS
+	to the linker.
+
 2003-12-08  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* coders/jpeg.c: store JPEG quality as "[jpeg_quality]" attribute.

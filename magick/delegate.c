@@ -787,6 +787,20 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
 %
 %
 */
+#if defined(WIN32)
+static void CatDelegatePath(char *path,
+                               const char *binpath,
+                               const char *command)
+{
+  strcpy(path,binpath);
+  strcat(path,command);
+  if (IsAccessibleNoLogging(path))
+    return;
+
+  strcpy(path,command);
+  return;
+}
+#endif /* defined(WIN32) */
 static unsigned int ReadConfigureFile(const char *basename,
   const unsigned long depth,ExceptionInfo *exception)
 {
@@ -950,36 +964,31 @@ static unsigned int ReadConfigureFile(const char *basename,
                       strcat(BinPath,DirectorySeparator);
 
                     /* Substitute @GMDelegate@ with path to gm.exe */
-                    strcpy(path,BinPath);
-                    strcat(path,"gm.exe");
+                    CatDelegatePath(path,BinPath,"gm.exe");
                     SubstituteString((char **) &delegate_list->commands,
                                      "@GMDelegate@",path);
 
                     /* Substitute @GMDisplayDelegate@ with path to
                        gmdisplay.exe */
-                    strcpy(path,BinPath);
-                    strcat(path,"gmdisplay.exe");
+                    CatDelegatePath(path,BinPath,"gmdisplay.exe");
                     SubstituteString((char **) &delegate_list->commands,
                                      "@GMDisplayDelegate@",path);
 
                     /* Substitute @MPEGDecodeDelegate@ with path to
                        mpeg2dec.exe */
-                    strcpy(path,BinPath);
-                    strcat(path,"mpeg2dec.exe");
+                    CatDelegatePath(path,BinPath,"mpeg2dec.exe");
                     SubstituteString((char **) &delegate_list->commands,
                                      "@MPEGDecodeDelegate@",path);
 
                     /* Substitute @MPEGEncodeDelegate@ with path to
                        mpeg2enc.exe */
-                    strcpy(path,BinPath);
-                    strcat(path,"mpeg2enc.exe");
+                    CatDelegatePath(path,BinPath,"mpeg2enc.exe");
                     SubstituteString((char **) &delegate_list->commands,
                                      "@MPEGEncodeDelegate@",path);
 
                     /* Substitute @HPGLDecodeDelegate@ with path to
                        hp2xx.exe */
-                    strcpy(path,BinPath);
-                    strcat(path,"hp2xx.exe");
+                    CatDelegatePath(path,BinPath,"hp2xx.exe");
                     SubstituteString((char **) &delegate_list->commands,
                                      "@HPGLDecodeDelegate@",path);
                   }

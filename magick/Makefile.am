@@ -13,8 +13,8 @@
 # Don't require all the GNU mandated files
 AUTOMAKE_OPTIONS = 1.7 foreign
 
-includedir = ${prefix}/include
-pkgincludedir = $(includedir)/GraphicsMagick/magick
+includedir = @includedir@/GraphicsMagick
+pkgincludedir = $(includedir)/magick
 
 # Shared libraries built in this directory
 lib_LTLIBRARIES = libGraphicsMagick.la
