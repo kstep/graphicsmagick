@@ -524,13 +524,22 @@ MagickExport unsigned int SignatureImage(Image *image)
       *q++=XUpScale(p->green);
       *q++=XUpScale(p->blue) >> 8;
       *q++=XUpScale(p->blue);
-      *q++=XUpScale(p->opacity) >> 8;
-      *q++=XUpScale(p->opacity);
       if (image->colorspace == CMYKColorspace)
         {
-          *q++=XUpScale(indexes[x]) >> 8;
-          *q++=XUpScale(indexes[x]);
+          *q++=XUpScale(p->opacity) >> 8;
+          *q++=XUpScale(p->opacity);
+          if (image->matte)
+            {
+              *q++=XUpScale(indexes[x]) >> 8;
+              *q++=XUpScale(indexes[x]);
+            }
         }
+      else
+        if (image->matte)
+          {
+            *q++=XUpScale(p->opacity) >> 8;
+            *q++=XUpScale(p->opacity);
+          }
       p++;
     }
     UpdateMessageDigest(&message_digest,message,q-message);
