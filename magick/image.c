@@ -1268,12 +1268,19 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
   height=Min(composite_image->rows,image->rows-y_offset);
   for (y=0; y < height; y++)
   {
+    if ((y+y_offset) < 0)
+      continue;
     p=GetPixelCache(composite_image,0,y,width,1);
-    q=GetPixelCache(image,x_offset,y+y_offset,width,1);
+    q=GetPixelCache(image,Max(x_offset,0),y+y_offset,width,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     for (x=0; x < width; x++)
     {
+      if ((x+x_offset) < 0)
+        {  
+          p++;
+          continue;
+        }
       switch (compose)
       {
         case AnnotateCompositeOp:

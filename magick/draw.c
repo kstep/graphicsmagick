@@ -789,7 +789,6 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
         break;
       }
       case TextPrimitive:
-      case ImagePrimitive:
       {
         if (primitive_info[j].coordinates != 1)
           {
@@ -819,6 +818,52 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
             if (*p != '\0')
               p++;
           }
+        break;
+      }
+      case ImagePrimitive:
+      {
+        Image
+          *composite_image;
+
+        ImageInfo
+          composite_info;
+
+        if (primitive_info[j].coordinates != 1)
+          {
+            primitive_type=UndefinedPrimitive;
+            break;
+          }
+        if (*p != '\0')
+          {
+            primitive_info[j].text=p;
+            if (*p == '"')
+              {
+                for (p++; *p != '\0'; p++)
+                  if ((*p == '"') && (*(p-1) != '\\'))
+                    break;
+              }
+            else
+              if (*p == '\'')
+                {
+                  for (p++; *p != '\0'; p++)
+                    if ((*p == '\'') && (*(p-1) != '\\'))
+                      break;
+                }
+              else
+                for (p++;  *p != '\0'; p++)
+                  if (isspace((int) *p) && (*(p-1) != '\\'))
+                    break;
+            if (*p != '\0')
+              p++;
+          }
+        GetImageInfo(&composite_info);
+        (void) strcpy(composite_info.filename,primitive_info[j].text);
+        composite_image=ReadImage(&composite_info);
+        if (composite_image == (Image *) NULL)
+          break;
+        CompositeImage(image,ReplaceCompositeOp,composite_image,
+          (int) point.x,(int) point.y);
+        DestroyImage(composite_image);
         break;
       }
     }
@@ -1372,7 +1417,6 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
         break;
       }
       case TextPrimitive:
-      case ImagePrimitive:
       {
         register char
           *r;
@@ -1403,32 +1447,12 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
                 break;
         (void) strncpy(annotate_info->text,p->text,r-p->text);
         annotate_info->text[r-p->text]='\0';
-        if (p->primitive == TextPrimitive)
-          {
-            FormatString(annotate_info->geometry,"%+d%+d",(int) p->x,
-              (int) p->y);
-            AnnotateImage(image,annotate_info);
-          }
-        else
-          {
-            Image
-              *composite_image;
-
-            ImageInfo
-              composite_info;
-
-            GetImageInfo(&composite_info);
-            (void) strcpy(composite_info.filename,annotate_info->text);
-            composite_image=ReadImage(&composite_info);
-            if (composite_image != (Image *) NULL)
-              {
-                CompositeImage(image,ReplaceCompositeOp,composite_image,
-                  (int) p->x,(int) p->y);
-                DestroyImage(composite_image);
-              }
-          }
+        FormatString(annotate_info->geometry,"%+d%+d",(int) p->x,(int) p->y);
+        AnnotateImage(image,annotate_info);
         break;
       }
+      case ImagePrimitive:
+        break;
     }
     if (opacity == Opaque)
       return(opacity);

@@ -17,4 +17,4 @@ chdir 't/bzlib' || die 'Cd failed';
 #
 # Test reading BZip compressed MIFF
 # 
-testRead( 'input.miff', '7785d161ea66bd39394bb74ef704a0aa' );
+testRead( 'input.miff', '7785d161ea66bd39394bb74ef704a0aa', 'same' );
