@@ -416,6 +416,7 @@ MagickExport void CloseBlob(Image *image)
     case StandardStream:
     {
       (void) fclose(image->blob->file);
+      break;
     }
     case ZipStream:
     {
