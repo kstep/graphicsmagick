@@ -55,9 +55,6 @@
   Include declarations.
 */
 #include "studio.h"
-#if defined(WIN32) || defined(__CYGWIN__)
-# include "nt_feature.h"
-#endif
 #include "blob.h"
 #include "cache.h"
 #include "constitute.h"
@@ -132,7 +129,7 @@ static inline size_t ReadBlobStream(Image *image,const size_t length,void **data
   size_t
     available;
 
-  *((unsigned char *)data)=*(image->blob->data+image->blob->offset);
+  *data=(void *)(image->blob->data+image->blob->offset);
   available=Min(length,image->blob->length-image->blob->offset);
   image->blob->offset+=available;
   if (available < length)
@@ -162,7 +159,7 @@ static inline size_t ReadBlobStream(Image *image,const size_t length,void **data
 %    o blob_info: Specifies a pointer to a BlobInfo structure.
 %
 %    o blob: The address of a character stream in one of the image formats
-%      understood by GraphicsMagick.
+%      understood by ImageMagick.
 %
 %    o length: This size_t integer reflects the length in bytes of the blob.
 %
@@ -276,7 +273,7 @@ MagickExport unsigned int BlobToFile(const char *filename,const void *blob,
 %    o image_info: The image info.
 %
 %    o blob: The address of a character stream in one of the image formats
-%      understood by GraphicsMagick.
+%      understood by ImageMagick.
 %
 %    o length: This size_t integer reflects the length in bytes of the blob.
 %
@@ -2011,7 +2008,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
 %    o image_info: The image info.
 %
 %    o blob: The address of a character stream in one of the image formats
-%      understood by GraphicsMagick.
+%      understood by ImageMagick.
 %
 %    o length: This size_t integer reflects the length in bytes of the blob.
 %
@@ -2156,20 +2153,20 @@ MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
       break;
     case BlobStream:
     {
-      unsigned char
+      void
         *source;
 
-      count=ReadBlobStream(image,length,(void *)&source);
+      count=ReadBlobStream(image,length,&source);
       if (count <= 10)
         {
           register size_t
             i;
 
           for(i=count; i > 0; i--)
-            *(((unsigned char*)data)++)=*source++;
+            *((unsigned char*)data)++=*((const unsigned char*)source)++;
         }
       else 
-        (void) memcpy(data,(void *)source,count);
+        (void) memcpy(data,source,count);
       break;
     }
   }
@@ -3018,7 +3015,7 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
             i;
 
           for(i=length; i > 0; i--)
-            *(((unsigned char*)dest)++)=*(((const unsigned char*)data)++);
+            *((unsigned char*)dest)++=*((const unsigned char*)data)++;
         }
       else
         {
