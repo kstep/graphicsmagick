@@ -1392,9 +1392,7 @@ MagickExport unsigned int GetImageQuantizationError(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   image->total_colors=GetNumberColors(image,(FILE *) NULL,&image->exception);
-  image->mean_error_per_pixel=0.0;
-  image->normalized_mean_error=0.0;
-  image->normalized_maximum_error=0.0;
+  memset(&image->error,0,sizeof(ErrorInfo));
   if (image->storage_class == DirectClass)
     return(True);
   /*
@@ -1429,9 +1427,10 @@ MagickExport unsigned int GetImageQuantizationError(Image *image)
     Compute final error statistics.
   */
   normalize=3.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0);
-  image->mean_error_per_pixel=total_error/image->columns/image->rows;
-  image->normalized_mean_error=image->mean_error_per_pixel/normalize;
-  image->normalized_maximum_error=maximum_error_per_pixel/normalize;
+  image->error.mean_error_per_pixel=total_error/image->columns/image->rows;
+  image->error.normalized_mean_error=
+    image->error.mean_error_per_pixel/normalize;
+  image->error.normalized_maximum_error=maximum_error_per_pixel/normalize;
   return(True);
 }
 

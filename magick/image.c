@@ -1027,9 +1027,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->delay=image->delay;
   clone_image->iterations=image->iterations;
   clone_image->total_colors=image->total_colors;
-  clone_image->mean_error_per_pixel=image->mean_error_per_pixel;
-  clone_image->normalized_mean_error=image->normalized_mean_error;
-  clone_image->normalized_maximum_error=image->normalized_maximum_error;
+  clone_image->error=image->error;
   clone_image->semaphore=(SemaphoreInfo *) NULL;
   clone_image->timer=image->timer;
   GetExceptionInfo(&clone_image->exception);
@@ -1354,8 +1352,9 @@ MagickExport void DescribeImage(Image *image,FILE *file,
             (void) fprintf(file,"PseudoClass %lu=>%luc ",image->total_colors,
               image->colors);
             (void) fprintf(file,"%ld/%.6f/%.6fe ",
-              (long) image->mean_error_per_pixel,image->normalized_mean_error,
-              image->normalized_maximum_error);
+              (long) image->error.mean_error_per_pixel,
+              image->error.normalized_mean_error,
+              image->error.normalized_maximum_error);
           }
       (void) fprintf(file,"%lu-bit ",image->depth);
       if (GetBlobSize(image) != 0)
@@ -1490,15 +1489,15 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         p++;
       }
     }
-  if (image->mean_error_per_pixel != 0.0)
+  if (image->error.mean_error_per_pixel != 0.0)
     (void) fprintf(file,"  Mean Exception Per Pixel: %ld\n",
-      (long) image->mean_error_per_pixel);
-  if (image->normalized_mean_error != 0.0)
+      (long) image->error.mean_error_per_pixel);
+  if (image->error.normalized_mean_error != 0.0)
     (void) fprintf(file,"  Normalized Mean Exception: %g\n",
-      image->normalized_mean_error);
-  if (image->normalized_maximum_error != 0.0)
+      image->error.normalized_mean_error);
+  if (image->error.normalized_maximum_error != 0.0)
     (void) fprintf(file,"  Normalized Maximum Exception: %gn",
-      image->normalized_maximum_error);
+      image->error.normalized_maximum_error);
   if (image->rendering_intent == SaturationIntent)
     (void) fprintf(file,"  Rendering-Intent: saturation\n");
   else
@@ -2721,7 +2720,7 @@ MagickExport unsigned int IsImagesEqual(const Image *image,
   if (image->matte)
     normalize=4.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0);
   error->mean_error_per_pixel=total_error/image->columns/image->rows;
-  error->normalized_mean_error=image->mean_error_per_pixel/normalize;
+  error->normalized_mean_error=error->mean_error_per_pixel/normalize;
   error->normalized_maximum_error=maximum_error_per_pixel/normalize;
   return(error->normalized_mean_error == 0.0);
 }

@@ -393,7 +393,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 if (LocaleCompare(keyword,"error") == 0)
                   {
-                    image->mean_error_per_pixel=atof(values);
+                    image->error.mean_error_per_pixel=atof(values);
                     break;
                   }
                 (void) SetImageAttribute(image,keyword,
@@ -453,12 +453,12 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 if (LocaleCompare(keyword,"maximum-error") == 0)
                   {
-                    image->normalized_maximum_error=atof(values);
+                    image->error.normalized_maximum_error=atof(values);
                     break;
                   }
                 if (LocaleCompare(keyword,"mean-error") == 0)
                   {
-                    image->normalized_mean_error=atof(values);
+                    image->error.normalized_mean_error=atof(values);
                     break;
                   }
                 if (LocaleCompare(keyword,"montage") == 0)
@@ -1079,11 +1079,11 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
             (void) WriteBlobString(image,buffer);
           }
       }
-    if (image->mean_error_per_pixel != 0.0)
+    if (image->error.mean_error_per_pixel != 0.0)
       {
         FormatString(buffer,"error=%g  mean-error=%g  maximum-error=%g\n",
-          image->mean_error_per_pixel,image->normalized_mean_error,
-          image->normalized_maximum_error);
+          image->error.mean_error_per_pixel,image->error.normalized_mean_error,
+          image->error.normalized_maximum_error);
         (void) WriteBlobString(image,buffer);
       }
     if (image->rendering_intent != UndefinedIntent)

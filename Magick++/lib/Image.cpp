@@ -2520,7 +2520,7 @@ Magick::Color Magick::Image::matteColor ( void ) const
 
 double Magick::Image::meanErrorPerPixel ( void ) const
 {
-  return(constImage()->mean_error_per_pixel);
+  return(constImage()->error.mean_error_per_pixel);
 }
 
 void Magick::Image::monochrome ( const bool monochromeFlag_ )
@@ -2546,12 +2546,12 @@ Magick::Geometry Magick::Image::montageGeometry ( void ) const
 
 double Magick::Image::normalizedMaxError ( void ) const
 {
-  return(constImage()->normalized_maximum_error);
+  return(constImage()->error.normalized_maximum_error);
 }
 
 double Magick::Image::normalizedMeanError ( void ) const
 {
-  return constImage()->normalized_mean_error;
+  return constImage()->error.normalized_mean_error;
 }
 
 void Magick::Image::penColor ( const Color &penColor_ )

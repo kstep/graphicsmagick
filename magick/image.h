@@ -365,10 +365,8 @@ typedef struct _Image
   long
     start_loop;
 
-  double
-    mean_error_per_pixel,
-    normalized_mean_error,
-    normalized_maximum_error;
+  ErrorInfo
+    error;
 
   TimerInfo
     timer;

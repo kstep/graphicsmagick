@@ -3287,7 +3287,7 @@ Get(ref,...)
           if (LocaleCompare(attribute,"error") == 0)
             {
               if (image)
-                s=newSVnv(image->mean_error_per_pixel);
+                s=newSVnv(image->error.mean_error_per_pixel);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
@@ -3545,14 +3545,14 @@ Get(ref,...)
           if (LocaleCompare(attribute,"maximum-error") == 0)
             {
               if (image)
-                s=newSVnv(image->normalized_maximum_error);
+                s=newSVnv(image->error.normalized_maximum_error);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
           if (LocaleCompare(attribute,"mean-error") == 0)
             {
               if (image)
-                s=newSVnv(image->normalized_mean_error);
+                s=newSVnv(image->error.normalized_mean_error);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
@@ -5872,19 +5872,13 @@ Mogrify(ref,...)
         }
         case 76:  /* Compare */
         {
-          ErrorInfo
-            error_info;
-
           if (!attribute_flag[0])
             {
               MagickError(OptionError,"Missing image to compare",NULL);
               goto ReturnIt;
             }
           (void) IsImagesEqual(image,argument_list[0].image_reference,
-            &error_info,&exception);
-          image->mean_error_per_pixel=error_info.mean_error_per_pixel;
-          image->normalized_mean_error=error_info.normalized_mean_error;
-          image->normalized_maximum_error=error_info.normalized_maximum_error;
+            &image->error,&exception);
           break;
         }
       }
