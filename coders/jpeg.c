@@ -763,7 +763,6 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
         for (x=0; x < (int) image->columns; x++)
         {
           q->red=MaxRGB-q->red;
@@ -1302,7 +1301,6 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
             p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image);
             q=jpeg_pixels;
             for (x=0; x < (int) image->columns; x++)
             {
@@ -1363,7 +1361,6 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
           p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
           q=jpeg_pixels;
           for (x=0; x < (int) image->columns; x++)
           {
