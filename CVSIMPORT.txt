@@ -13,8 +13,8 @@ bzlib:
 
 FreeType:
 cvs -d :pserver:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import freetype 2.1.2' delegates/ttf \
-    FREETYPE2 FREETYPE_2_1_2
+    import -m 'Import freetype 2.1.4' delegates/freetype2 \
+    FREETYPE2 FREETYPE_2_1_4
 
 jasper
   cvs -d :pserver:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \

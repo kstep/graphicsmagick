@@ -1,5 +1,7 @@
 2003-04-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* PerlMagick/t/ttf/read.t: Updated signatures and
+	reference image for FreeType 2.1.4.
 	* (PerlMagick/t/write.t, PerlMagick/t/montage.t,
 	PerlMagick/t/rad/read.t, PerlMagick/t/rad/write.t):
 	Fix signatures which were thrown off by previous
