@@ -662,7 +662,7 @@ MagickExport unsigned int SetImageList(Image **images,const Image *image,
       return(*images != (Image *) NULL);
     }
   assert((*images)->signature == MagickSignature);
-  for (next=(*images); next->next != (Image *) NULL; next=next->next);
+  for (next=(*images); next->previous != (Image *) NULL; next=next->previous);
   for (i=0; next != (Image *) NULL; next=next->next)
     if (i++ == (long) offset)
       break;

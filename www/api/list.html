@@ -54,9 +54,9 @@
 <P>unsigned int  <STRONG>DeleteImageList</STRONG>( Image *images, const unsigned long offset );</P>
 <P>void  <STRONG>DestroyImageList</STRONG>( Image *image );</P>
 <P>Image * <STRONG>GetImageList</STRONG>( const Image *images, const unsigned long offset, ExceptionInfo *exception );</P>
-<P>size_t  <STRONG>GetImageListIndex</STRONG>( const Image *images );</P>
+<P>off_t  <STRONG>GetImageListIndex</STRONG>( const Image *images );</P>
 <P>size_t  <STRONG>GetImageListSize</STRONG>( const Image *images );</P>
-<P>Image * <STRONG>GetNextImage</STRONG>( Image *images );</P>
+<P>Image * <STRONG>GetNextImage</STRONG>( const Image *images );</P>
 <P>Image **  <STRONG>ImageListToArray</STRONG>( const Image *images, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>NewImageList</STRONG>( void );</P>
 <P>Image * <STRONG>PopImageList</STRONG>( Image ** images );</P>
@@ -130,7 +130,7 @@ Return any errors or warnings in this structure.
 <P>
 <H2><A NAME="getimagelistindex">GetImageListIndex</A></H2>
 <blockquote>GetImageListIndex() returns the position in the list of the specified image. </blockquote><P>The format of the GetImageListIndex method is:</P>
-<blockquote>size_t GetImageListIndex ( const <A HREF="types/Image.html">Image</A> *images ); </blockquote><P>
+<blockquote>off_t GetImageListIndex ( const <A HREF="types/Image.html">Image</A> *images ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG>images:</STRONG><BR>
@@ -150,7 +150,7 @@ The image list.
 <P>
 <H2><A NAME="getnextimage">GetNextImage</A></H2>
 <blockquote>GetNextImage() returns the next image in a list. </blockquote><P>The format of the GetNextImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *GetNextImage ( <A HREF="types/Image.html">Image</A> *images ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *GetNextImage ( const <A HREF="types/Image.html">Image</A> *images ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG>images:</STRONG><BR>
