@@ -76,10 +76,10 @@ int main( int /*argc*/, char **argv)
     {
       const char * colorStrings[] =
       {
-	{ "#ABC" },
-	{ "#AABBCC" },
-	{ "#AAAABBBBCCCC" },
-	{ NULL }
+	"#ABC",
+	"#AABBCC",
+	"#AAAABBBBCCCC",
+	NULL
       };
 
       string expectedString;

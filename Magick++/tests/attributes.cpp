@@ -7,8 +7,6 @@
 
 #include <string>
 #include <iostream>
-#include <list>
-#include <vector>
 
 #include <Magick++.h>
 
