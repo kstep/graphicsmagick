@@ -544,8 +544,10 @@ argz_insert (pargz, pargz_len, before, entry)
 
   /* Either PARGZ/PARGZ_LEN is empty and BEFORE is NULL,
      or BEFORE points into an address within the ARGZ vector.  */
-/*  assert ((!*pargz && !*pargz_len && !before)
-	  || ((*pargz <= before) && (before < (*pargz + *pargz_len))));*/
+#if 0  /* This assertion fails under Cygwin */
+  assert ((!*pargz && !*pargz_len && !before)
+	  || ((*pargz <= before) && (before < (*pargz + *pargz_len))));
+#endif
 
   /* No BEFORE address indicates ENTRY should be inserted after the
      current last element.  */
@@ -2195,7 +2197,9 @@ foreach_dirinpath (search_path, base_name, func, data1, data2)
 	    goto cleanup;
 	}
 
-	strncpy (filename, dir_name, lendir);
+	assert (filenamesize > lendir);
+	strcpy (filename, dir_name);
+
 	if (base_name && *base_name)
 	  {
 	    if (filename[lendir -1] != '/')
@@ -2871,7 +2875,10 @@ try_dlopen (phandle, filename)
 #endif
 		   )))
 	{
-	  tryall_dlopen (&newhandle, filename);
+          if (tryall_dlopen (&newhandle, filename) != 0)
+            {
+              newhandle = NULL;
+            }
 	}
 
       if (!newhandle)
