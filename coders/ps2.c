@@ -699,7 +699,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           }
         for (q=PostscriptEpilog; *q; q++)
           {
-            FormatString(buffer,"%.255s\n",*q);
+            FormatString(buffer,"%.1024s\n",*q);
             (void) WriteBlobString(image,buffer);
           }
         if (LocaleCompare(image_info->magick,"PS2") == 0)

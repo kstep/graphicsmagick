@@ -747,7 +747,7 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobMSBLong(image,pdb_info.seed);
   (void) WriteBlobMSBLong(image,pdb_info.next_record);
   (void) WriteBlobMSBShort(image,pdb_info.number_records);
-  (void) strncpy(pdb_image.name, pdb_info.name, 32);
+  (void) strncpy(pdb_image.name,pdb_info.name,32);
   pdb_image.version=1;  /* RLE Compressed */
   switch(bits_per_pixel)
   {

@@ -273,7 +273,7 @@ Status XSetWMProtocols(Display *display,Window window,Atom *protocols,
 
   wm_protocols=XInternAtom(display,"WM_PROTOCOLS",False);
   XChangeProperty(display,window,wm_protocols,XA_ATOM,32,PropModeReplace,
-    (unsigned char *) protocols, count);
+    (unsigned char *) protocols,count);
   return(True);
 }
 

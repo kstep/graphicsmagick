@@ -626,7 +626,8 @@ MagickExport char *EscapeString(const char *source,const char escape)
   *destination='\0';
   if (source != (char *) NULL)
     {
-      for (p=source, q=destination; *p; p++)
+      q=destination;
+      for (p=source; *p; p++)
       {
         if ((*p == '\\') || (*p == escape))
           *q++= '\\';

@@ -1151,7 +1151,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         */
         for (q=PostscriptProlog; *q; q++)
         {
-          FormatString(buffer,"%.255s\n",*q);
+          FormatString(buffer,"%.1024s\n",*q);
           (void) WriteBlobString(image,buffer);
         }
         attribute=GetImageAttribute(image,"label");
@@ -1166,7 +1166,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           }
         for (q=PostscriptEpilog; *q; q++)
         {
-          FormatString(buffer,"%.255s\n",*q);
+          FormatString(buffer,"%.1024s\n",*q);
           (void) WriteBlobString(image,buffer);
         }
         if (LocaleCompare(image_info->magick,"PS") == 0)

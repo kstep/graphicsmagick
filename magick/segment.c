@@ -430,7 +430,7 @@ static unsigned int Classify(Image *image,short **extrema,
       */
       (void) fprintf(stderr,
         "\n\n\nCluster Extents:        (Vector Size: %d)\n",MaxDimension);
-      (void) fprintf(stderr, "================");
+      (void) fprintf(stderr,"================");
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
       {
         (void) fprintf(stderr,"\n\nCluster #%d\n\n",cluster->id);
@@ -444,7 +444,7 @@ static unsigned int Classify(Image *image,short **extrema,
       */
       (void) fprintf(stderr,
         "\n\n\nCluster Center Values:        (Vector Size: %d)\n",MaxDimension);
-      (void) fprintf(stderr, "=====================");
+      (void) fprintf(stderr,"=====================");
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
       {
         (void) fprintf(stderr,"\n\nCluster #%d\n\n",cluster->id);
