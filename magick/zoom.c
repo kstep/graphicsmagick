@@ -1073,7 +1073,8 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   if (support < filters[filter].support)
     support=filters[filter].support;
   contribution=(ContributionInfo *)
-    AcquireMemory((int) (2*Max(support,0.5)+3)*sizeof(ContributionInfo));
+    AcquireMemory((size_t) ceil(2.0*Max(support,0.5))*sizeof(ContributionInfo));
+printf("%d\n",(int) ceil(2.0*Max(support,0.5)));
   if (contribution == (ContributionInfo *) NULL)
     {
       DestroyImage(resize_image);
