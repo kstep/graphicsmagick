@@ -1,3 +1,17 @@
+2000-01-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp : Added locking to reference counting to ensure
+ 	thread (pthread) safety.
+
+	* lib/Blob.cpp : Added locking to reference counting to ensure
+ 	thread (pthread) safety.
+
+	* lib/LastError.cpp: Added support for thread specific data
+ 	(pthreads) so that error reporting is thread safe.
+
+	* lib/Magick++/Thread.h: Added thread wrapper class to provide
+ 	thread-safe locking (pthreads) to Magick++.
+
 2000-01-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp: Added methods getPixels, setPixels, syncPixels,

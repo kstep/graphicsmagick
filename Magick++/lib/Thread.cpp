@@ -17,7 +17,9 @@ Magick::MutexLock::MutexLock(void)
   ::pthread_mutexattr_t attr;
   int sysError = 0;
   if ( (sysError = ::pthread_mutexattr_init( &attr )) == 0 )
+#if defined(PTHREAD_PROCESS_PRIVATE)
     if ( (sysError = ::pthread_mutexattr_setpshared( &attr, PTHREAD_PROCESS_PRIVATE )) == 0 )
+#endif // PTHREAD_PROCESS_PRIVATE
       if ( (sysError = ::pthread_mutex_init( &_mutex, &attr )) == 0 )
 	return;
   throw Magick::ErrorOption( "mutex initialization failed" );

@@ -1,6 +1,7 @@
 This file records noteworthy changes.
 
 (0.9.2)
+  * Should be thread-safe when used with POSIX threads (pthreads).
   * Added methods getPixels, setPixels, syncPixels, readPixels, and
     writePixels, in order to provide low-level access to Image pixels.
   * Bugfix: size method was setting Options size, but not Image rows
