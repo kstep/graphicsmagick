@@ -2039,7 +2039,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 image->page.width=subframe_width;
                 image->page.height=subframe_height;
                 image->page.x=clip.left;
-                image->page.y=clip.bottom;
+                image->page.y=clip.top;
                 image->background_color=mng_background_color;
                 image->matte=False;
                 image->delay=0;
@@ -2543,7 +2543,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image->page.width=subframe_width;
             image->page.height=subframe_height;
             image->page.x=clip.left;
-            image->page.y=clip.bottom;
+            image->page.y=clip.top;
             image->background_color=mng_background_color;
             image->matte=False;
             SetImage(image,OpaqueOpacity);
