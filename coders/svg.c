@@ -990,12 +990,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 metrics;
 
               if (strchr(svg_info->text,'\'') == (char *) NULL)
-                (void) fprintf(svg_info->file,"text %g,%g '%s'\n",
-                  svg_info->bounds.x,svg_info->bounds.y,svg_info->text);
+                (void) fprintf(svg_info->file,"text 0,0 '%s'\n",svg_info->text);
               else
                 {
-                  (void) fprintf(svg_info->file,"text %g,%g \"%s\"\n",
-                    svg_info->bounds.x,svg_info->bounds.y,svg_info->text);
+                  (void) fprintf(svg_info->file,"text 0,0 \"%s\"\n",
+                    svg_info->text);
                   (void) fprintf(svg_info->file,"pop graphic-context\n");
                   break;
                 }
@@ -1383,7 +1382,12 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 angle;
 
               angle=GetUserSpaceCoordinateValue(svg_info,value);
-              (void) fprintf(svg_info->file,"rotate %g\n",angle);
+              (void) fprintf(svg_info->file,"affine %g %g %g %g %g %g\n",
+                cos(DegreesToRadians(fmod(angle,360.0))),
+                sin(DegreesToRadians(fmod(angle,360.0))),
+                -sin(DegreesToRadians(fmod(angle,360.0))),
+                cos(DegreesToRadians(fmod(angle,360.0))),
+                svg_info->bounds.x,svg_info->bounds.y);
               break;
             }
           if (LocaleCompare(keyword,"rx") == 0)
@@ -2259,12 +2263,11 @@ static void SVGEndElement(void *context,const xmlChar *name)
                 metrics;
 
               if (strchr(svg_info->text,'\'') == (char *) NULL)
-                (void) fprintf(svg_info->file,"text %g,%g '%s'\n",
-                  svg_info->bounds.x,svg_info->bounds.y,svg_info->text);
+                (void) fprintf(svg_info->file,"text 0,0 '%s'\n",svg_info->text);
               else
                 {
-                  (void) fprintf(svg_info->file,"text %g,%g \"%s\"\n",
-                    svg_info->bounds.x,svg_info->bounds.y,svg_info->text);
+                  (void) fprintf(svg_info->file,"text 0,0 \"%s\"\n",
+                    svg_info->text);
                   (void) fprintf(svg_info->file,"pop graphic-context\n");
                 }
               draw_info=CloneDrawInfo(svg_info->image_info,(DrawInfo *) NULL);
