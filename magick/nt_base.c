@@ -1429,11 +1429,10 @@ MagickExport int NTGhostscriptFonts(char *path, int path_length)
           length=seperator-start;
         else
           length=end-start;
-        if (length > MaxTextExtent-1)
-          length = MaxTextExtent;
-        strlcpy(font_dir,start,length);
-        font_dir[length]='\0';
-        FormatString(font_dir_file,"%.1024s%sfonts.dir",font_dir,DirectorySeparator);
+        strlcpy(font_dir,start,Min(length+1,MaxTextExtent));
+        strlcpy(font_dir_file,font_dir,MaxTextExtent);
+        strlcat(font_dir_file,DirectorySeparator,MaxTextExtent);
+        strlcat(font_dir_file,"fonts.dir",MaxTextExtent);
         if (IsAccessible(font_dir_file))
           {
             strlcpy(path,font_dir,path_length);
