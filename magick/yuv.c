@@ -152,7 +152,7 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
     for (y=0; y < (int) image->rows; y++)
     {
       if ((y > 0) || (image->previous == (Image *) NULL))
-        (void) ReadBlob(image,image->columns,(char *) scanline);
+        (void) ReadBlob(image,image->columns,scanline);
       p=scanline;
       q=SetPixelCache(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
@@ -160,6 +160,8 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
       for (x=0; x < (int) image->columns; x++)
       {
         q->red=UpScale(*p++);
+        q->green=0;
+        q->blue=0;
         q++;
       }
       if (!SyncPixelCache(image))
@@ -175,19 +177,21 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
         if (status == False)
           ReaderExit(FileOpenWarning,"Unable to open file",image);
       }
-    chroma_image=CloneImage(image,image->columns >> 1,image->rows >> 1,True);
+    chroma_image=CloneImage(image,image->columns/2,image->rows/2,True);
     if (chroma_image == (Image *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     for (y=0; y < (int) chroma_image->rows; y++)
     {
-      (void) ReadBlob(image,chroma_image->columns,(char *) scanline);
+      (void) ReadBlob(image,chroma_image->columns,scanline);
       p=scanline;
-      q=GetPixelCache(chroma_image,0,y,chroma_image->columns,1);
+      q=SetPixelCache(chroma_image,0,y,chroma_image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
       for (x=0; x < (int) chroma_image->columns; x++)
       {
+        q->red=0;
         q->green=UpScale(*p++);
+        q->blue=0;
         q++;
       }
       if (!SyncPixelCache(chroma_image))
@@ -203,7 +207,7 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
       }
     for (y=0; y < (int) chroma_image->rows; y++)
     {
-      (void) ReadBlob(image,chroma_image->columns,(char *) scanline);
+      (void) ReadBlob(image,chroma_image->columns,scanline);
       p=scanline;
       q=GetPixelCache(chroma_image,0,y,chroma_image->columns,1);
       if (q == (PixelPacket *) NULL)
@@ -219,7 +223,7 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
     /*
       Scale image.
     */
-    zoom_image=ZoomImage(chroma_image,image->columns,image->rows);
+    zoom_image=SampleImage(chroma_image,image->columns,image->rows);
     DestroyImage(chroma_image);
     if (zoom_image == (Image *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
@@ -344,12 +348,12 @@ Export unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
   do
   {
     /*
-      Zoom image to an even width and height.
+      Sample image to an even width and height.
     */
     TransformRGBImage(image,RGBColorspace);
     width=image->columns+(image->columns & 0x01);
     height=image->rows+(image->rows & 0x01);
-    yuv_image=ZoomImage(image,width,height);
+    yuv_image=SampleImage(image,width,height);
     if (yuv_image == (Image *) NULL)
       WriterExit(ResourceLimitWarning,"Unable to zoom image",image);
     RGBTransformImage(yuv_image,YCbCrColorspace);
@@ -374,7 +378,7 @@ Export unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     /*
       Downsample image.
     */
-    chroma_image=ZoomImage(image,width >> 1,height >> 1);
+    chroma_image=SampleImage(image,width/2,height/2);
     if (chroma_image == (Image *) NULL)
       WriterExit(ResourceLimitWarning,"Unable to zoom image",image);
     RGBTransformImage(chroma_image,YCbCrColorspace);
@@ -418,7 +422,7 @@ Export unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
         break;
       for (x=0; x < (int) chroma_image->columns; x++)
       {
-        (void) WriteByte(image,DownScale(p->blue));
+	(void) WriteByte(image,DownScale(p->blue));
         p++;
       }
     }
