@@ -42,16 +42,23 @@ EXTRA_DIST = \
 
 CLEANFILES = testmagick_anim_out.miff
 
+if WIN32
+SRCDIR='$(shell @WinPathScript@ $(srcdir)/)'
+else
+SRCDIR='$(srcdir)/'
+endif
+
+# FIXME: MinGW needs Windows path form of srcdir here (or pass as command argument)
 check:
-	env srcdir=$(srcdir) ./exceptions
-	env srcdir=$(srcdir) ./attributes
-	env srcdir=$(srcdir) ./appendImages
-	env srcdir=$(srcdir) ./averageImages
-	env srcdir=$(srcdir) ./coalesceImages
-	env srcdir=$(srcdir) ./coderInfo
-	env srcdir=$(srcdir) ./color
-	env srcdir=$(srcdir) ./montageImages
-	env srcdir=$(srcdir) ./morphImages
-	env srcdir=$(srcdir) ./readWriteBlob
-	env srcdir=$(srcdir) ./readWriteImages
+	-env SRCDIR=$(SRCDIR) ./exceptions
+	-env SRCDIR=$(SRCDIR) ./attributes
+	-env SRCDIR=$(SRCDIR) ./appendImages
+	-env SRCDIR=$(SRCDIR) ./averageImages
+	-env SRCDIR=$(SRCDIR) ./coalesceImages
+	-env SRCDIR=$(SRCDIR) ./coderInfo
+	-env SRCDIR=$(SRCDIR) ./color
+	-env SRCDIR=$(SRCDIR) ./montageImages
+	-env SRCDIR=$(SRCDIR) ./morphImages
+	-env SRCDIR=$(SRCDIR) ./readWriteBlob
+	-env SRCDIR=$(SRCDIR) ./readWriteImages
 

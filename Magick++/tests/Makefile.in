@@ -190,6 +190,7 @@ TXTDelegate = @TXTDelegate@
 VERSION = @VERSION@
 WMFDecodeDelegate = @WMFDecodeDelegate@
 WWWDecodeDelegate = @WWWDecodeDelegate@
+WinPathScript = @WinPathScript@
 X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_LIBS = @X_LIBS@
@@ -249,6 +250,9 @@ EXTRA_DIST = \
 
 
 CLEANFILES = testmagick_anim_out.miff
+
+@WIN32_TRUE@SRCDIR = '$(shell @WinPathScript@ $(srcdir)/)'
+@WIN32_FALSE@SRCDIR = '$(srcdir)/'
 subdir = Magick++/tests
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/magick/magick_config.h
@@ -585,18 +589,19 @@ uninstall-am: uninstall-info-am
 	tags uninstall uninstall-am uninstall-info-am
 
 
+# FIXME: MinGW needs Windows path form of srcdir here (or pass as command argument)
 check:
-	env srcdir=$(srcdir) ./exceptions
-	env srcdir=$(srcdir) ./attributes
-	env srcdir=$(srcdir) ./appendImages
-	env srcdir=$(srcdir) ./averageImages
-	env srcdir=$(srcdir) ./coalesceImages
-	env srcdir=$(srcdir) ./coderInfo
-	env srcdir=$(srcdir) ./color
-	env srcdir=$(srcdir) ./montageImages
-	env srcdir=$(srcdir) ./morphImages
-	env srcdir=$(srcdir) ./readWriteBlob
-	env srcdir=$(srcdir) ./readWriteImages
+	-env SRCDIR=$(SRCDIR) ./exceptions
+	-env SRCDIR=$(SRCDIR) ./attributes
+	-env SRCDIR=$(SRCDIR) ./appendImages
+	-env SRCDIR=$(SRCDIR) ./averageImages
+	-env SRCDIR=$(SRCDIR) ./coalesceImages
+	-env SRCDIR=$(SRCDIR) ./coderInfo
+	-env SRCDIR=$(SRCDIR) ./color
+	-env SRCDIR=$(SRCDIR) ./montageImages
+	-env SRCDIR=$(SRCDIR) ./morphImages
+	-env SRCDIR=$(SRCDIR) ./readWriteBlob
+	-env SRCDIR=$(SRCDIR) ./readWriteImages
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

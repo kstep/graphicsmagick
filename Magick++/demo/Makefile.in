@@ -190,6 +190,7 @@ TXTDelegate = @TXTDelegate@
 VERSION = @VERSION@
 WMFDecodeDelegate = @WMFDecodeDelegate@
 WWWDecodeDelegate = @WWWDecodeDelegate@
+WinPathScript = @WinPathScript@
 X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_LIBS = @X_LIBS@
@@ -234,6 +235,9 @@ ZOOM_FILTERS = point box triangle hermite hanning hamming blackman gaussian \
 	       quadratic cubic catrom mitchell lanczos bessel sinc
 
 ZOOM_GEOMETRY = 600x600
+
+@WIN32_TRUE@SRCDIR = '$(shell @WinPathScript@ $(srcdir)/)'
+@WIN32_FALSE@SRCDIR = '$(srcdir)/'
 subdir = Magick++/demo
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/magick/magick_config.h
@@ -533,16 +537,17 @@ uninstall-am: uninstall-info-am
 	tags uninstall uninstall-am uninstall-info-am
 
 
+# FIXME: MinGW needs Windows path form of srcdir here (or pass as command argument)
 check:
-	env srcdir=$(srcdir) ./button
-	env srcdir=$(srcdir) ./demo
-	env srcdir=$(srcdir) ./flip
-	env srcdir=$(srcdir) ./gravity
-	env srcdir=$(srcdir) ./piddle
-	env srcdir=$(srcdir) ./shapes
-	for filter in $(ZOOM_FILTERS) ; do  \
+	-env SRCDIR=$(SRCDIR) ./button
+	-env SRCDIR=$(SRCDIR) ./demo
+	-env SRCDIR=$(SRCDIR) ./flip
+	-env SRCDIR=$(SRCDIR) ./gravity
+	-env SRCDIR=$(SRCDIR) ./piddle
+	-env SRCDIR=$(SRCDIR) ./shapes
+	-for filter in $(ZOOM_FILTERS) ; do  \
 	  echo "$$filter ..." ; \
-	  env srcdir=$(srcdir) ./zoom $$filter $(ZOOM_GEOMETRY) $(srcdir)/model.miff zoom_$${filter}_out.miff ; \
+	  env SRCDIR=$(SRCDIR) ./zoom $$filter $(ZOOM_GEOMETRY) '$(srcdir)/model.miff' zoom_$${filter}_out.miff ; \
 	done
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -89,6 +89,7 @@ srcdirfull=`cd $srcdir && pwd`
 builddir=`pwd`
 
 WinPathScript="${srcdirfull}/winpath.sh"
+AC_SUBST(WinPathScript)
 
 # Check for programs
 AC_PROG_CC

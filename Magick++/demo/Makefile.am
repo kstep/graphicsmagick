@@ -28,15 +28,22 @@ ZOOM_FILTERS = point box triangle hermite hanning hamming blackman gaussian \
 	       quadratic cubic catrom mitchell lanczos bessel sinc
 ZOOM_GEOMETRY = 600x600
 
+if WIN32
+SRCDIR='$(shell @WinPathScript@ $(srcdir)/)'
+else
+SRCDIR='$(srcdir)/'
+endif
+
+# FIXME: MinGW needs Windows path form of srcdir here (or pass as command argument)
 check:
-	env srcdir=$(srcdir) ./button
-	env srcdir=$(srcdir) ./demo
-	env srcdir=$(srcdir) ./flip
-	env srcdir=$(srcdir) ./gravity
-	env srcdir=$(srcdir) ./piddle
-	env srcdir=$(srcdir) ./shapes
-	for filter in $(ZOOM_FILTERS) ; do  \
+	-env SRCDIR=$(SRCDIR) ./button
+	-env SRCDIR=$(SRCDIR) ./demo
+	-env SRCDIR=$(SRCDIR) ./flip
+	-env SRCDIR=$(SRCDIR) ./gravity
+	-env SRCDIR=$(SRCDIR) ./piddle
+	-env SRCDIR=$(SRCDIR) ./shapes
+	-for filter in $(ZOOM_FILTERS) ; do  \
 	  echo "$$filter ..." ; \
-	  env srcdir=$(srcdir) ./zoom $$filter $(ZOOM_GEOMETRY) $(srcdir)/model.miff zoom_$${filter}_out.miff ; \
+	  env SRCDIR=$(SRCDIR) ./zoom $$filter $(ZOOM_GEOMETRY) '$(srcdir)/model.miff' zoom_$${filter}_out.miff ; \
 	done
 

@@ -29,8 +29,8 @@ int main( int /*argc*/, char ** argv)
   try {
     
     string srcdir("");
-    if(getenv("srcdir") != 0)
-      srcdir = getenv("srcdir") + string("/");
+    if(getenv("SRCDIR") != 0)
+      srcdir = getenv("SRCDIR");
     
     // Common font to use.
     string font = "Helvetica";
