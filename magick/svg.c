@@ -179,7 +179,7 @@ static unsigned int GetToken(Image *image,char **token,int *c,
         break;
       }
     p--;
-    if (!isalnum(*p) && (*p != '-') && (*p != '>'))
+    if (!isalnum((int) *p) && (*p != '-') && (*p != '>'))
       break;
     p++;
     if (!isalnum(*c) && (*c != '-') && (*c != '>'))
@@ -190,7 +190,7 @@ static unsigned int GetToken(Image *image,char **token,int *c,
   return(True);
 }
 
-ModuleExport char **StringToTokens(const char *text,int *number_tokens)
+Export char **StringToTokens(const char *text,int *number_tokens)
 {
   char
     **tokens;
@@ -1075,7 +1075,7 @@ puts(filename); if (0)
 %      RegisterSVGImage(void)
 %
 */
-ModuleExport void RegisterSVGImage(void)
+Export void RegisterSVGImage(void)
 {
   MagickInfo
     *entry;
@@ -1113,7 +1113,7 @@ ModuleExport void RegisterSVGImage(void)
 %      UnregisterSVGImage(void)
 %
 */
-ModuleExport void UnregisterSVGImage(void)
+Export void UnregisterSVGImage(void)
 {
   UnregisterMagickInfo("SVG");
 }
