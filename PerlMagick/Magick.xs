@@ -1613,7 +1613,6 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           SetMagickResourceLimit(MemoryResource,SvIV(sval));
           return;
         }
-      if (LocaleCompare(attribute,"mattecolor") == 0)
       if (LocaleCompare(attribute,"monochrome") == 0)
         {
           sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,na)) : SvIV(sval);
