@@ -112,8 +112,7 @@ then
     DLLDFLAGS=-export-dynamic
     AC_SUBST(DLLDFLAGS)
   fi
-
-  eval "eval im_cv_x_coder_modules=${exec_prefix}/lib/ImageMagick/modules/coders"
+   eval "eval im_cv_x_coder_modules=${libdir}/ImageMagick/modules/coders"
   AC_DEFINE_UNQUOTED(CoderModuleDirectory,"$im_cv_x_coder_modules",Location of coder modules)
 fi
 
