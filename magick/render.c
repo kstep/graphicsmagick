@@ -1033,6 +1033,8 @@ MagickExport unsigned int DrawAffineImage(Image *image,const Image *composite,
     inverse_affine;
 
   long
+    start,
+    stop,
     y;
 
   PixelPacket
@@ -1096,25 +1098,37 @@ MagickExport unsigned int DrawAffineImage(Image *image,const Image *composite,
   */
   SetImageType(image,TrueColorType);
   edge.x1=min.x;
+  edge.y1=min.y;
   edge.x2=max.x;
+  edge.y2=max.y;
   inverse_affine=InverseAffineMatrix(affine);
-  for (y=(long) Max(min.y,0); y < (long) Min(max.y,image->rows); y++)
+  if (edge.y1 < 0)
+    edge.y1=0.0;
+  if (edge.y2 >= image->rows)
+    edge.y2=image->rows-1;
+  for (y=(long) ceil(edge.y1-0.5); y <= (long) floor(edge.y2+0.5); y++)
   {
     inverse_edge=AffineEdge(composite,&inverse_affine,y,&edge);
     if (inverse_edge.x2 < inverse_edge.x1)
       continue;
-    q=GetImagePixels(image,(long) inverse_edge.x1,y,(unsigned long)
-      (inverse_edge.x2-inverse_edge.x1+1),1);
-    if (q == (const PixelPacket *) NULL)
+    if (inverse_edge.x1 < 0)
+      inverse_edge.x1=0.0;
+    if (inverse_edge.x2 >= image->columns)
+      inverse_edge.x2=image->columns-1;
+    start=(long) ceil(inverse_edge.x1-0.5);
+    stop=(long) floor(inverse_edge.x2+0.5);
+    x=start;
+    q=GetImagePixels(image,x,y,stop-x+1,1);
+    if (q == (PixelPacket *) NULL)
       break;
-    for (x=(long) inverse_edge.x1; x < (long) inverse_edge.x2; x++)
+    for ( ; x <= stop; x++)
     {
       point.x=(x+0.5)*inverse_affine.sx+(y+0.5)*inverse_affine.ry+
         inverse_affine.tx;
       point.y=(x+0.5)*inverse_affine.rx+(y+0.5)*inverse_affine.sy+
         inverse_affine.ty;
-      pixel=AcquireOnePixel(composite,(long) floor(point.x),
-        (long) floor(point.y),&image->exception);
+      pixel=AcquireOnePixel(composite,(long) ceil(point.x-0.5),
+        (long) ceil(point.y-0.5),&image->exception);
       *q=AlphaComposite(&pixel,pixel.opacity,q,q->opacity);
       q++;
     }

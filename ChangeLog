@@ -1,3 +1,6 @@
+2003-03-14  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+	* magick/render.c Ported Cristy's bugfix to DrawAffineImage().
+
 2003-03-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.c (DestroyImage): Comment out new assertions until
