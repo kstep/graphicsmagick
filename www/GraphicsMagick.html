@@ -1289,21 +1289,49 @@ the alpha channel. Files with "associated" alpha appear as if they were
 alpha composited on a black background when the matte channel is
 disabled. If the unassociated alpha type is selected, then the alpha
 channel is saved without altering the pixels. Photoshop recognizes
-associated alpha as transparency information, if the file is saves with
+associated alpha as transparency information, if the file is saved with
 unassociated alpha, the alpha information is loaded as an independent
 channel.  Note that for many years, ImageMagick and GraphicsMagick marked
 TIFF files as using associated alpha, without properly pre-multiplying
 the pixels.
+</dd>
+<dt>tiff:sample-format={unsigned|ieeefp}</dt>
+<dd>
+If the tiff:sample-format key is defined, GraphicsMagick will use it to
+determine the sample format used while writing TIFF files. The default is
+"unsigned". Specifify "ieeefp" in order to write floating-point TIFF
+files with float (32-bit) or double (64-bit) values. Use the
+tiff:bits-per-sample define to determine the type of floating-point value
+to use.
+</dd>
+<dt>tiff:max-sample-value=&lt;value&gt;</dt>
+<dd>
+If the tiff:max-sample-value key is defined, GraphicsMagick will use the
+assigned value as the maximum floating point value while reading or
+writing IEEE floating point TIFFs. Otherwise the maximum value is 1.0 or
+the value obtained from the file's SMaxSampleValue tag (if present). The
+floating point data is currently not scanned in advance to determine a
+best maximum sample value so if the range is not 1.0, or the
+SMaxSampleValue tag is not present, it may be necessary to
+(intelligently) use this parameter to properly read a file.
+</dd>
+<dt>tiff:min-sample-value=&lt;value&gt;</dt>
+<dd>
+If the tiff:min-sample-value key is defined, GraphicsMagick will use the
+assigned value as the minimum floating point value while reading or
+writing IEEE floating point TIFFs. Otherwise the minimum value is 0.0 or
+the value obtained from the file's SMinSampleValue tag (if present).
 </dd>
 <dt>tiff:bits-per-sample=&lt;value&gt;</dt>
 <dd>
 If the tiff:bits-per-sample key is defined, GraphicsMagick will write
 TIFF images using unsigned integral samples with the specified bits per
 sample, overriding any value stored in the image. The range of the value
-is 1 to 32. Please note that the baseline TIFF 6.0 specification only
-requires readers to handle certain powers of two, and the values to be
-handled depend on the nature of the image (e.g. colormapped, grayscale,
-RGB, CMYK).
+is 1 to 32 when the default 'unsigned' format is written, or 32/64 if
+IEEEFP format is written. Please note that the baseline TIFF 6.0
+specification only requires readers to handle certain powers of two, and
+the values to be handled depend on the nature of the image (e.g.
+colormapped, grayscale, RGB, CMYK).
 </dd>
 <dt>tiff:samples-per-pixel=&lt;value&gt;</dt>
 <dd>

@@ -834,7 +834,7 @@ Image type.
 <P>
 </P>
 <h2><a name="textureimage">TextureImage</a></h2>
-<blockquote>TextureImage() repeatedly tiles the texture image across and down the image canvas. False is returned if an error is encountered. </blockquote><P>The format of the TextureImage method is:</P>
+<blockquote>TextureImage() repeatedly tiles the texture image across and down the image canvas. If the image canvas includes a matte channel, then the tile is alpha-composited "under" the image. MagickFail is returned if an error is encountered. </blockquote><P>The format of the TextureImage method is:</P>
 <blockquote>unsigned int TextureImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#Image">Image</A> *texture ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>image:</strong><br />

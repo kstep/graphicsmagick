@@ -48,7 +48,7 @@
 <P>unsigned int  <strong>IsGrayImage</strong>( const Image *image, ExceptionInfo *exception );</P>
 <P>unsigned int  <strong>IsMonochromeImage</strong>( const Image *image, ExceptionInfo *exception );</P>
 <P>unsigned int  <strong>IsOpaqueImage</strong>( const Image *image, ExceptionInfo *exception );</P>
-<P>unsigned int  <strong>IsPaletteImage</strong>( const Image *image, ExceptionInfo *exception );</P>
+<P>MagickBool  <strong>IsPaletteImage</strong>( const Image *image, ExceptionInfo *exception );</P>
 <P>unsigned int  <strong>ListColorInfo</strong>( FILE *file, ExceptionInfo *exception );</P>
 <P>unsigned int  <strong>QueryColorDatabase</strong>( const char *name, PixelPacket *color, ExceptionInfo *exception );</P>
 <P>unsigned int  <strong>QueryColorname</strong>( const Image *image, const PixelPacket *color, const ComplianceType compliance, char *name, ExceptionInfo *exception );</P>
@@ -216,7 +216,7 @@ Return any errors or warnings in this structure.
 <h2><a name="ispaletteimage">IsPaletteImage</a></h2>
 <P>Method IsPaletteImage returns True if the image is PseudoClass and has 256 unique colors or less.</P>
 <P>The format of the IsPaletteImage method is:</P>
-<blockquote>unsigned int IsPaletteImage ( const <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows.</P>
+<blockquote>MagickBool IsPaletteImage ( const <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows.</P>
 <dl>
 <dt><strong>status:</strong><br />
 </dt>

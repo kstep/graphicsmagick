@@ -21,7 +21,9 @@
 		<li><a href="#destroyconstitute">DestroyConstitute</a></li>
 		<li><a href="#dispatchimage">DispatchImage</a></li>
 		<li><a href="#exportimagepixelarea">ExportImagePixelArea</a></li>
+		<li><a href="#exportpixelareaoptionsinit">ExportPixelAreaOptionsInit</a></li>
 		<li><a href="#importimagepixelarea">ImportImagePixelArea</a></li>
+		<li><a href="#importpixelareaoptionsinit">ImportPixelAreaOptionsInit</a></li>
 		<li><a href="#pingimage">PingImage</a></li>
 		<li><a href="#readimage">ReadImage</a></li>
 		<li><a href="#readinlineimage">ReadInlineImage</a></li>
@@ -44,8 +46,10 @@
 <P>Image * <strong>ConstituteImage</strong>( const unsigned long width, const unsigned long height, const char *map, const StorageType type, const void *pixels, ExceptionInfo *exception );</P>
 <P><strong>DestroyConstitute</strong>( void );</P>
 <P>unsigned int  <strong>DispatchImage</strong>( const Image *image, const long x_offset, const long y_offset, const unsigned long columns, const unsigned long rows, const char *map, const StorageType type, void *pixels, ExceptionInfo *exception );</P>
-<P>MagickPassFail  <strong>ExportImagePixelArea</strong>( const Image *image, const QuantumType quantum_type, unsigned int quantum_size, unsigned char *destination );</P>
-<P>MagickPassFail  <strong>ImportImagePixelArea</strong>( Image *image, const QuantumType quantum_type, unsigned int quantum_size, const unsigned char *source );</P>
+<P>MagickPassFail  <strong>ExportImagePixelArea</strong>( const Image *image, const QuantumType quantum_type, unsigned int quantum_size, unsigned char *destination, const ExportPixelAreaOptions *options );</P>
+<P>void  <strong>ExportPixelAreaOptionsInit</strong>( ExportPixelAreaOptions *options );</P>
+<P>MagickPassFail  <strong>ImportImagePixelArea</strong>( Image *image, const QuantumType quantum_type, const unsigned int quantum_size, const unsigned char *source, const ImportPixelAreaOptions *options );</P>
+<P>void  <strong>ImportPixelAreaOptionsInit</strong>( ImportPixelAreaOptions *options );</P>
 <P>Image * <strong>PingImage</strong>( const ImageInfo *image_info, ExceptionInfo *exception );</P>
 <P>Image * <strong>ReadImage</strong>( const ImageInfo *image_info, ExceptionInfo *exception );</P>
 <P>Image * <strong>ReadInlineImage</strong>( const ImageInfo *image_info, const char *content, ExceptionInfo *exception );</P>
@@ -151,8 +155,8 @@ Return any errors or warnings in this structure.
 <P>
 </P>
 <h2><a name="exportimagepixelarea">ExportImagePixelArea</a></h2>
-<blockquote>ExportImagePixelArea() transfers one or more pixel components from the image pixel cache to a user supplied buffer. MagickPass is returned if the pixels are successfully transferred, otherwise MagickFail. </blockquote><P>The format of the ExportImagePixelArea method is:</P>
-<blockquote>MagickPassFail ExportImagePixelArea ( const <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#QuantumType">QuantumType</A> quantum_type, unsigned int quantum_size, unsigned char *destination ); </blockquote><P>A description of each parameter follows:</P>
+<blockquote>ExportImagePixelArea() transfers one or more pixel components from the image pixel cache to a user supplied buffer. Unsigned values are written in network ( big-endian ) byte/bit order, while floating point values are written in the native order. MagickPass is returned if the pixels are successfully transferred, otherwise MagickFail. </blockquote><P>The format of the ExportImagePixelArea method is:</P>
+<blockquote>MagickPassFail ExportImagePixelArea ( const <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#QuantumType">QuantumType</A> quantum_type, unsigned int quantum_size, unsigned char *destination, const ExportPixelAreaOptions *options ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong><a name="item_o_status_3a">status:</a></strong><br />
 </dt>
@@ -183,12 +187,30 @@ Bits per quantum sample.
 <DD>
 The components are transferred to this buffer.
 </dd>
+<P></P>
+<dt><strong><a name="item_o_options_3a">options:</a></strong><br />
+</dt>
+<DD>
+Additional options specific to quantum_type (may be NULL).
+</dd>
+<P></P></dl>
+<P>
+</P>
+<h2><a name="exportpixelareaoptionsinit">ExportPixelAreaOptionsInit</a></h2>
+<blockquote>ExportPixelAreaOptionsInit() initializes the options structure which is optionally passed to ExportPixelArea ( ) </blockquote><P>The format of the ExportPixelAreaOptionsInit method is:</P>
+<blockquote>void ExportPixelAreaOptionsInit ( ExportPixelAreaOptions *options ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>options:</strong><br />
+</dt>
+<DD>
+Options structure to initialize.
+</dd>
 <P></P></dl>
 <P>
 </P>
 <h2><a name="importimagepixelarea">ImportImagePixelArea</a></h2>
-<blockquote>ImportImagePixelArea() transfers one or more pixel components from a user supplied buffer into the image pixel cache of an image. The pixels are read in network ( big-endian ) byte order. It returns MagickPass if the pixels are successfully transferred, otherwise MagickFail. </blockquote><P>The format of the ImportImagePixelArea method is:</P>
-<blockquote>MagickPassFail ImportImagePixelArea ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#QuantumType">QuantumType</A> quantum_type, unsigned int quantum_size, const unsigned char *source ); </blockquote><P>A description of each parameter follows:</P>
+<blockquote>ImportImagePixelArea() transfers one or more pixel components from a user supplied buffer into the image pixel cache of an image. Unsigned values are read in network ( big-endian ) byte/bit order, while floating point values are read in the native order. MagickPass is returned if the pixels are successfully transferred, otherwise MagickFail. </blockquote><P>The format of the ImportImagePixelArea method is:</P>
+<blockquote>MagickPassFail ImportImagePixelArea ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#QuantumType">QuantumType</A> quantum_type, const unsigned int quantum_size, const unsigned char *source, const ImportPixelAreaOptions *options ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>status:</strong><br />
 </dt>
@@ -218,6 +240,24 @@ Bits per quantum sample (range 1-31)
 </dt>
 <DD>
 The pixel components are transferred from this buffer.
+</dd>
+<P></P>
+<dt><strong>options:</strong><br />
+</dt>
+<DD>
+Additional options specific to quantum_type (may be NULL).
+</dd>
+<P></P></dl>
+<P>
+</P>
+<h2><a name="importpixelareaoptionsinit">ImportPixelAreaOptionsInit</a></h2>
+<blockquote>ImportPixelAreaOptionsInit() initializes the options structure which is optionally passed to ImportPixelArea ( ) </blockquote><P>The format of the ImportPixelAreaOptionsInit method is:</P>
+<blockquote>void ImportPixelAreaOptionsInit ( ImportPixelAreaOptions *options ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>options:</strong><br />
+</dt>
+<DD>
+Options structure to initialize.
 </dd>
 <P></P></dl>
 <P>

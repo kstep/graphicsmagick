@@ -18,7 +18,7 @@ extern "C" {
 /*
   Quantum import/export types as used by ImportImagePixelArea() and
   ExportImagePixelArea(). Values are imported or exported in network
-  byte order.
+  byte order ("big endian").
 */
 typedef enum
 {
@@ -42,6 +42,16 @@ typedef enum
 } QuantumType;
 
 /*
+  Quantum sample type for when exporting/importing a pixel area.
+*/
+typedef enum
+{
+  UndefinedQuantumSampleType, /* Not specified */
+  UnsignedQuantumSampleType,  /* Unsigned integral type (1 to 32 bits) */
+  FloatQuantumSampleType      /* Floating point type (16, 32, or 64 bit) */
+} QuantumSampleType;
+
+/*
   Quantum size types as used by ConstituteImage() and DispatchImage()/
 */
 typedef enum
@@ -59,14 +69,18 @@ typedef enum
 */
 typedef struct _ExportPixelAreaOptions
 {
-  AlphaType
-    alpha_type;         /* Alpha channel handling */
+  QuantumSampleType
+    sample_type;          /* Quantum sample type */
+
+  double
+    double_minvalue,      /* Minimum value for floating point samples */
+    double_maxvalue;      /* Maximum value for floating point samples */
 
   MagickBool
-    grayscale_inverted; /* Grayscale is inverted (minimum value is white) */
+    grayscale_miniswhite; /* Grayscale minimum value is white rather than black */
 
   unsigned long
-  signature;
+    signature;
 } ExportPixelAreaOptions;
 
 /*
@@ -74,8 +88,15 @@ typedef struct _ExportPixelAreaOptions
 */
 typedef struct _ImportPixelAreaOptions
 {
+  QuantumSampleType
+    sample_type;          /* Quantum sample type */
+
+  double
+    double_minvalue,      /* Minimum value for floating point samples */
+    double_maxvalue;      /* Maximum value for floating point samples */
+
   MagickBool
-    grayscale_inverted; /* Grayscale is inverted (minimum value is white) */
+    grayscale_miniswhite; /* Grayscale minimum value is white rather than black */
 
   unsigned long
     signature;

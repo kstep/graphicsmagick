@@ -416,7 +416,7 @@ static tsize_t TIFFWriteBlob(thandle_t image,tdata_t data,tsize_t size)
 */
 #if !defined(WORDS_BIGENDIAN)
 static void SwabDataToBigEndian(const uint16 bits_per_sample, tdata_t data,
-                         const tsize_t size)
+                                const tsize_t size)
 {
   if (bits_per_sample == 64U)
     {
@@ -441,7 +441,7 @@ static void SwabDataToBigEndian(const uint16 bits_per_sample, tdata_t data,
 */
 #if !defined(WORDS_BIGENDIAN)
 static void SwabDataToNativeEndian(const uint16 bits_per_sample, tdata_t data,
-                            const tsize_t size)
+                                   const tsize_t size)
 {
   if (bits_per_sample == 64)
     {
@@ -639,7 +639,8 @@ static MagickPassFail QuantumTransferMode(const Image *image,
   *quantum_type=UndefinedQuantum;
   *quantum_samples=0;
   if ((sample_format == SAMPLEFORMAT_UINT) ||
-      (sample_format == SAMPLEFORMAT_VOID))
+      (sample_format == SAMPLEFORMAT_VOID) ||
+      (sample_format == SAMPLEFORMAT_IEEEFP))
     {
       switch (photometric)
         {
@@ -1058,9 +1059,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                                 "Max sample value: %u",max_sample_value);
           if (sample_format == SAMPLEFORMAT_IEEEFP)
             {
+              
               double
                 value;
-
+              
               if (TIFFGetField(tiff,TIFFTAG_SMINSAMPLEVALUE,&value))
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                       "Special min sample value: %g", value);
@@ -1311,11 +1313,13 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       if (TIFFGetField(tiff,TIFFTAG_SOFTWARE,&text) == 1)
         (void) SetImageAttribute(image,"software",text);
 
+#if 0
       if (TIFFGetField(tiff,33423,&text) == 1)
         (void) SetImageAttribute(image,"kodak-33423",text);
 
       if (TIFFGetField(tiff,36867,&text) == 1)
         (void) SetImageAttribute(image,"kodak-36867",text);
+#endif
 
       /*
         Quit if in "ping" mode and we are outside of requested range.
@@ -1381,7 +1385,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             else if ((TIFFStripSize(tiff)) < (1024*64))
               method=StrippedMethod;
             if (photometric == PHOTOMETRIC_MINISWHITE)
-              import_options.grayscale_inverted=MagickTrue;
+              import_options.grayscale_miniswhite=MagickTrue;
           }
         else
           {
@@ -1392,6 +1396,32 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           }
       }
 
+      /*
+        Set extra import options for floating point.
+      */
+      if (sample_format == SAMPLEFORMAT_IEEEFP)
+        {
+          double
+            value;
+
+          const char *
+            definition_value;
+          
+          import_options.sample_type=FloatQuantumSampleType;
+          if (TIFFGetField(tiff,TIFFTAG_SMINSAMPLEVALUE,&value) == 1)
+            import_options.double_minvalue=value;
+          if (TIFFGetField(tiff,TIFFTAG_SMAXSAMPLEVALUE,&value) == 1)
+            import_options.double_maxvalue=value;
+          if ((definition_value=AccessDefinition(image_info,"tiff","min-sample-value")))
+            import_options.double_minvalue=strtod(definition_value,(char **)NULL);
+          if ((definition_value=AccessDefinition(image_info,"tiff","max-sample-value")))
+            import_options.double_maxvalue=strtod(definition_value,(char **)NULL);
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "Using min sample value %g, max sample value %g",
+                                import_options.double_minvalue,
+                                import_options.double_maxvalue);
+        }
+      
       switch (method)
         {
         case ScanLineMethod:
@@ -1461,7 +1491,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                         break;
                       }
 #if !defined(WORDS_BIGENDIAN)
-                    SwabDataToBigEndian(bits_per_sample,scanline,scanline_size);
+                    if (sample_format != SAMPLEFORMAT_IEEEFP)
+                      SwabDataToBigEndian(bits_per_sample,scanline,scanline_size);
 #endif
                     /*
                       Determine quantum parse method.
@@ -1620,7 +1651,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                             break;
                           }
 #if !defined(WORDS_BIGENDIAN)
-                        SwabDataToBigEndian(bits_per_sample,strip,strip_size);
+                        if (sample_format != SAMPLEFORMAT_IEEEFP)
+                          SwabDataToBigEndian(bits_per_sample,strip,strip_size);
 #endif
                         rows_remaining=rows_per_strip;
                         if (y+rows_per_strip > image->rows)
@@ -1815,7 +1847,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                             break;
                           }
 #if !defined(WORDS_BIGENDIAN)
-                        SwabDataToBigEndian(bits_per_sample,tile,tile_size);
+                        if (sample_format != SAMPLEFORMAT_IEEEFP)
+                          SwabDataToBigEndian(bits_per_sample,tile,tile_size);
 #endif
                         p=tile;
                         for (yy=y; yy < (long) y+tile_set_rows; yy++)
@@ -2868,7 +2901,6 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
               else if (LocaleCompare(attribute->value,"unassociated") == 0)
                 alpha_type=UnassociatedAlpha;
             }
-          export_options.alpha_type=alpha_type;
 
           samples_per_pixel += 1;
           extra_samples=1;
@@ -2904,8 +2936,19 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           value;
 
         unsigned int
-          new_value,
           old_value;
+
+        /*
+          Sample format
+        */
+        value=AccessDefinition(image_info,"tiff","sample-format");
+        if (value)
+          {
+            if (LocaleCompare(value,"unsigned") == 0)
+              sample_format=SAMPLEFORMAT_UINT;
+            else if (LocaleCompare(value,"ieeefp") == 0)
+              sample_format=SAMPLEFORMAT_IEEEFP;
+          }
 
         /*
           Bits per sample
@@ -2914,9 +2957,22 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
         if (value)
           {
             old_value=bits_per_sample;
-            new_value=atoi(value);
-            /* Clamp maximum bits per sample to 32 bits */
-            bits_per_sample=Min(new_value,sizeof(unsigned int)*8);
+            bits_per_sample=atoi(value);
+            if (sample_format == SAMPLEFORMAT_IEEEFP)
+              {
+                /*
+                  If floating point is selected, ensure that valid
+                  bits-per-sample values are specified.
+                */
+                
+                if ((bits_per_sample != 32) && (bits_per_sample != 64))
+                  bits_per_sample=32;
+              }
+            else
+              {
+                /* Clamp maximum unsigned bits per sample to 32 bits */
+                bits_per_sample=Min(bits_per_sample,sizeof(unsigned int)*8);
+              }
             if (logging)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                     "User override (bits-per-sample): %u bits per sample (was %u)",
@@ -2936,17 +2992,23 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                                     "User override (samples-per-pixel): %u samples per pixel (was %u)",
                                     (unsigned int) samples_per_pixel, old_value);
           }
+
+
       }
 
       (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,samples_per_pixel);
       (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,bits_per_sample);
+      (void) TIFFSetField(tiff,TIFFTAG_SAMPLEFORMAT,sample_format);
 
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                              "Using %s photometric, %u samples per pixel, %u bits per sample",
+                              "Using %s photometric, %u samples per pixel, %u bits per sample, format %s",
                               PhotometricTagToString(photometric),
                               (unsigned int) samples_per_pixel,
-                              (unsigned int) bits_per_sample);
+                              (unsigned int) bits_per_sample,
+                              sample_format == SAMPLEFORMAT_UINT ? "Unsigned" :
+                              sample_format == SAMPLEFORMAT_IEEEFP ? "IEEEFP" :
+                              "unknown");
 
       (void) TIFFSetField(tiff,TIFFTAG_PHOTOMETRIC,photometric);
       (void) TIFFSetField(tiff,TIFFTAG_COMPRESSION,compress_tag);
@@ -3184,14 +3246,6 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
       (void) TIFFSetField(tiff,TIFFTAG_SOFTWARE,
                           GetMagickVersion((unsigned long *) NULL));
 
-      attribute=GetImageAttribute(image,"kodak-33423");
-      if (attribute != (const ImageAttribute *) NULL)
-        (void) TIFFSetField(tiff,33423,attribute->value);
-
-      attribute=GetImageAttribute(image,"kodak-36867");
-      if (attribute != (const ImageAttribute *) NULL)
-        (void) TIFFSetField(tiff,36867,attribute->value);
-
       if (photometric == PHOTOMETRIC_PALETTE)
         {
           uint16
@@ -3227,10 +3281,36 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           MagickFreeMemory(green);
           MagickFreeMemory(blue);
         }
-
+      /*
+        Set extra export options for grayscale.
+      */
       if (photometric == PHOTOMETRIC_MINISWHITE)
-        export_options.grayscale_inverted=MagickTrue;
+        export_options.grayscale_miniswhite=MagickTrue;
+      /*
+        Set extra export options for floating point.
+      */
+      if (sample_format == SAMPLEFORMAT_IEEEFP)
+        {
+          const char *
+            definition_value;
 
+          export_options.sample_type=FloatQuantumSampleType;
+          if ((definition_value=AccessDefinition(image_info,"tiff","min-sample-value")))
+            export_options.double_minvalue=strtod(definition_value,(char **)NULL);
+          if ((definition_value=AccessDefinition(image_info,"tiff","max-sample-value")))
+            export_options.double_maxvalue=strtod(definition_value,(char **)NULL);
+          (void) TIFFSetField(tiff,TIFFTAG_SMINSAMPLEVALUE,
+                              export_options.double_minvalue);
+          (void) TIFFSetField(tiff,TIFFTAG_SMAXSAMPLEVALUE,
+                              export_options.double_maxvalue);
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "Using min sample value %g, max sample value %g",
+                                export_options.double_minvalue,
+                                export_options.double_maxvalue);
+        }
+      /*
+        Export pixels to TIFF.
+      */
       switch (method)
         {
         default:
@@ -3324,7 +3404,8 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                       Write scanline.
                     */
 #if !defined(WORDS_BIGENDIAN)
-                    SwabDataToNativeEndian(bits_per_sample,scanline,scanline_size);
+                    if (sample_format != SAMPLEFORMAT_IEEEFP)
+                      SwabDataToNativeEndian(bits_per_sample,scanline,scanline_size);
 #endif
                     if (TIFFWriteScanline(tiff, scanline,y,sample) < 0)
                       {
@@ -3550,7 +3631,8 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                           Write tile.
                         */
 #if !defined(WORDS_BIGENDIAN)
-                        SwabDataToNativeEndian(bits_per_sample,tile,tile_size_max);
+                        if (sample_format != SAMPLEFORMAT_IEEEFP)
+                          SwabDataToNativeEndian(bits_per_sample,tile,tile_size_max);
 #endif
                         if ((tile_size=TIFFWriteTile(tiff,tile,x,y,0,sample)) < 0)
                           {
