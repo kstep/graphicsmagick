@@ -77,6 +77,62 @@ static char
 static int
     modules_initialized = False;
 
+static char *TagToModule(const char *tag)
+{
+  char
+    *module_name;
+
+  assert(tag != (char *) NULL);
+  module_name=(char *) AllocateMemory(MaxTextExtent);
+  if (module_name == (char *) NULL)
+    MagickError(ResourceLimitError,"Unable to get module name",
+      "Memory allocation failed");
+#if !defined(_VISUALC_)
+  (void) strcpy(module_name,tag);
+  (void) strcat(module_name, ".la");
+#else
+#if defined(_DEBUG)
+  (void) strcpy(module_name, "IM_MOD_DB_");
+#else
+  (void) strcpy(module_name, "IM_MOD_RL_");
+#endif
+  (void) strcat(module_name, tag);
+  (void) strcat(module_name, "_.dll");
+#endif
+  return(module_name);
+}
+
+unsigned int CallImageFilter(const char *tag,
+  Image *image, const char *options)
+{
+  ModuleHandle
+    handle;
+
+  char
+    *module_name;
+
+  unsigned int
+    (*register_func)(Image *image, const char *options),
+    results;
+
+  results=False;
+  module_name=TagToModule(tag);
+  if( ( handle=lt_dlopen( module_name ) ) == 0)
+    printf("WARNING: failed to load module \"%s\": %s\n",
+             "filter module", lt_dlerror());
+  else
+    {
+      strcpy(module_name, tag);
+      strcat(module_name, "Image");
+      register_func=(unsigned int (*)(Image *image, const char *options))
+            lt_dlsym(handle, module_name);
+      if (register_func != NULL)
+        results = (*register_func)(image, options);
+      lt_dlclose(handle);
+    }
+  FreeMemory((void **) &module_name);
+  return results;
+}
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -392,10 +448,6 @@ static void InitializeModuleSearchPath(void)
               strcat(scratch,temp);
 #endif
             }
-#if defined(_VISUALC_)
-          //strcat(module_path[i],"\\");
-          //strcat(module_path[i],ModuleSearchSpec);
-#endif
           strcat(scratch,module_path[i]);
         }
       lt_dlsetsearchpath(scratch);

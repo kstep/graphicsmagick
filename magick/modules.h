@@ -78,6 +78,9 @@ extern Export ModuleInfo
   *RegisterModuleInfo(ModuleInfo *),
   *SetModuleInfo(const char *);
 
+extern Export unsigned int CallImageFilter(const char *,
+  Image *, const char *);
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
