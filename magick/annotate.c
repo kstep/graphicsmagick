@@ -77,27 +77,6 @@
 #endif
 
 /*
-  Typedef declarations.
-*/
-typedef struct _FontInfo
-{  
-  char
-    *format,
-    *metrics,
-    *glyphs,
-    *name,
-    *family,
-    *weight,
-    *description,
-    *version,
-    *alias;
-
-  struct _FontInfo
-    *previous,
-    *next;
-} FontInfo;
-
-/*
   Constant declaractions.
 */
 const char

@@ -29,6 +29,28 @@ typedef struct _EdgeInfo
     highwater;
 } EdgeInfo;
 
+typedef struct _FontInfo
+{  
+  char
+    *format,
+    *metrics,
+    *glyphs,
+    *name,
+    *family,
+    *weight,
+    *description,
+    *version,
+    *alias;
+
+  unsigned long
+    signature;
+
+  struct _FontInfo
+    *previous,
+    *next;
+} FontInfo;
+
+
 typedef struct _PolygonInfo
 {
   EdgeInfo

@@ -21,7 +21,7 @@ typedef struct _DelegateInfo
   int
     direction;
 
-  unsigned int
+  unsigned long
     signature;
 
   struct _DelegateInfo
