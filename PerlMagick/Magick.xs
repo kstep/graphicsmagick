@@ -347,7 +347,7 @@ static struct
     { "Composite", { {"image", ImageReference}, {"compos", CompositeTypes},
       {"geom", StringReference}, {"x", IntegerReference},
       {"y", IntegerReference}, {"grav", GravityTypes},
-      {"opacity", StringReference}, {"tile", BooleanTypes} } },
+      {"opacity", DoubleReference}, {"tile", BooleanTypes} } },
     { "Contrast", { {"sharp", BooleanTypes} } },
     { "CycleColormap", { {"amount", IntegerReference} } },
     { "Draw", { {"prim", PrimitiveTypes}, {"points", StringReference},
@@ -4562,17 +4562,28 @@ Mogrify(ref,...)
         }
         case 35:  /* Composite */
         {
+          char
+            geometry[MaxTextExtent];
+          
           Image
             *composite_image;
           
           CompositeOperator
             compose;
 
+          double
+            opacity;
+
           int
-            tile,
+            status,
             x,
             y;
-        
+
+          unsigned int
+            height,
+            matte,
+            width;
+
           compose=OverCompositeOp;
           if (attribute_flag[0])
             composite_image=argument_list[0].image_reference;
@@ -4583,51 +4594,58 @@ Mogrify(ref,...)
             }
           if (attribute_flag[1])
             compose=(CompositeOperator) argument_list[1].int_reference;
-          if (!attribute_flag[3])
-            argument_list[3].int_reference=0;
-          if (!attribute_flag[4])
-            argument_list[4].int_reference=0;
-          rectangle_info.x=argument_list[3].int_reference;
-          rectangle_info.y=argument_list[4].int_reference;
-          if (attribute_flag[2])
+          if (attribute_flag[7] && argument_list[7].int_reference)
             {
-              CloneString(&composite_image->geometry,
-                argument_list[2].string_reference);
-              flags=ParseImageGeometry(argument_list[2].string_reference,
-                &rectangle_info.x,&rectangle_info.y,&rectangle_info.width,
-                &rectangle_info.height);
-              if (!(flags & HeightValue))
-                rectangle_info.height=rectangle_info.width;
+              /*
+                Tile image on background.
+              */
+              for (y=0; y < (int) image->rows; y+=composite_image->rows)
+                for (x=0; x < (int) image->columns; x+=composite_image->columns)
+                {
+                  status=CompositeImage(image,compose,composite_image,x,y);
+                  if (status == False)
+                    CatchImageException(image);
+                }
+              break;
             }
-          tile=attribute_flag[7] ? argument_list[7].int_reference : False;
-          if (attribute_flag[5] && !tile)
+          width=image->columns;
+          height=image->rows;
+          x=0;
+          y=0;
+          if (attribute_flag[3])
+            x=argument_list[3].int_reference;
+          if (attribute_flag[4])
+            y=argument_list[4].int_reference;
+          FormatString(geometry,"%+d%+d\n",x,y);
+          if (attribute_flag[2])
+            (void) strcpy(geometry,argument_list[2].string_reference);
+          flags=ParseGeometry(geometry,&x,&y,&width,&height);
+          if ((flags & XNegative) != 0)
+            x+=image->columns;
+          if ((flags & WidthValue) == 0)
+            width-=2*x > width ? width : 2*x;
+          if ((flags & YNegative) != 0)
+            y+=image->rows;
+          if ((flags & HeightValue) == 0)
+            height-=2*y > height ? height : 2*y;
+          if (attribute_flag[5])
             switch (argument_list[5].int_reference)
             {
               case NorthWestGravity:
-              {
-                rectangle_info.x=0;
-                rectangle_info.y=0;
                 break;
-              }
               case NorthGravity:
               {
-                rectangle_info.x=(image->columns-
-                  argument_list[0].image_reference->columns) >> 1;
-                rectangle_info.y=0;
+                x+=0.5*width-composite_image->columns/2;
                 break;
               }
               case NorthEastGravity:
               {
-                rectangle_info.x=image->columns-
-                  argument_list[0].image_reference->columns;
-                rectangle_info.y=0;
+                x+=width-composite_image->columns;
                 break;
               }
               case WestGravity:
               {
-                rectangle_info.x=0;
-                rectangle_info.y=(image->rows-
-                  argument_list[0].image_reference->rows) >> 1;
+                y+=0.5*height-composite_image->rows/2;
                 break;
               }
               case ForgetGravity:
@@ -4635,90 +4653,65 @@ Mogrify(ref,...)
               case CenterGravity:
               default:
               {
-                rectangle_info.x=(image->columns-
-                  argument_list[0].image_reference->columns) >> 1;
-                rectangle_info.y=(image->rows-
-                  argument_list[0].image_reference->rows) >> 1;
+                x+=0.5*width-composite_image->columns/2;
+                y+=0.5*height-composite_image->rows/2;
                 break;
               }
               case EastGravity:
               {
-                rectangle_info.x=image->columns-
-                  argument_list[0].image_reference->columns;
-                rectangle_info.y=(image->rows-
-                  argument_list[0].image_reference->rows) >> 1;
+                x+=width-composite_image->columns;
+                y+=0.5*height-composite_image->rows/2;
                 break;
               }
               case SouthWestGravity:
               {
-                rectangle_info.x=0;
-                rectangle_info.y=image->rows-
-                  argument_list[0].image_reference->rows;
+                y+=height-composite_image->rows;
                 break;
               }
               case SouthGravity:
               {
-                rectangle_info.x=(image->columns-
-                  argument_list[0].image_reference->columns) >> 1;
-                rectangle_info.y=image->rows-
-                  argument_list[0].image_reference->rows;
+                x+=0.5*width-composite_image->columns/2;
+                y+=height-composite_image->rows;
                 break;
               }
               case SouthEastGravity:
               {
-                rectangle_info.x=image->columns-
-                  argument_list[0].image_reference->columns;
-                rectangle_info.y=image->rows-
-                  argument_list[0].image_reference->rows;
+                x+=width-composite_image->columns;
+                y+=height-composite_image->rows;
                 break;
               }
             }
-          if (!attribute_flag[6])
-            argument_list[6].string_reference="0.0";
+          opacity=OpaqueOpacity;
+          if (attribute_flag[6])
+            opacity=argument_list[6].double_reference;
+          if (opacity != OpaqueOpacity)
+            SetImageOpacity(composite_image,opacity);
           if (compose == DissolveCompositeOp)
             {
               register PixelPacket 
                 *q;
 
-              double 
-                blend;
-
-              blend=atof(argument_list[6].string_reference);
               for (y=0; y < (int) composite_image->rows; y++)
               {
-                q=GetImagePixels(composite_image,0,y,composite_image->columns,1);
+                q=GetImagePixels(composite_image,0,y,
+                  composite_image->columns,1);
                 if (q == (PixelPacket *) NULL)
                   break;
                 for (x=0; x < (int) composite_image->columns; x++)
                 {
                   if (composite_image->matte)
-                    q->opacity=((MaxRGB-q->opacity)*blend)/100;
+                    q->opacity=((MaxRGB-q->opacity)*opacity)/100;
                   else
-                    q->opacity=(MaxRGB*blend)/100;
+                    q->opacity=(MaxRGB*opacity)/100;
                   q++;
                 }
                 if (!SyncImagePixels(composite_image))
                   break;
               }
-              composite_image->storage_class=DirectClass;
-              composite_image->matte=True;
             }
-          if (!tile)
-            {
-              CompositeImage(image,compose,composite_image,
-                rectangle_info.x,rectangle_info.y);
-              break;
-            }
-          for (y=0; y < (int) image->rows; y+=(int) composite_image->rows)
-            for (x=0; x < (int) image->columns; x+=(int) composite_image->columns)
-            {
-              int
-                status;
-
-              status=CompositeImage(image,compose,composite_image,x,y);
-              if (status == False)
-                CatchImageException(image);
-            }
+          matte=image->matte;
+          CompositeImage(image,compose,composite_image,x,y);
+          image->matte=matte;
           break;
         }
         case 36:  /* Contrast */
