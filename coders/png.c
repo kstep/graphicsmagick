@@ -1277,23 +1277,38 @@ png_read_raw_profile(Image *image, const ImageInfo *image_info,
       sp++;
    /* allocate space */
    if (length == 0)
-     ThrowBinaryException((ExceptionType)  DelegateWarning,
+   {
+     ThrowException(&image->exception,(ExceptionType) DelegateWarning,
         "Unable to copy profile", "invalid profile length");
+     return (False);
+   }
    info=(unsigned char *) AcquireMemory(length);
    if (info == (unsigned char *) NULL)
-     ThrowBinaryException((ExceptionType) ResourceLimitWarning,
+   {
+     ThrowException(&image->exception,(ExceptionType) ResourceLimitWarning,
         "Unable to copy profile", "Memory allocation failed");
+     return (False);
+   }
    /* copy profile, skipping white space and column 1 "=" signs */
    dp=info;
    nibbles=length*2;
    for (i=0; i < (long) nibbles; i++)
    {
      while (*sp < '0' || (*sp > '9' && *sp < 'a') || *sp > 'f')
-        sp++;
+     {
+       if (*sp == '\0')
+         {
+           ThrowException(&image->exception,(ExceptionType) DelegateWarning,
+              "Unable to copy profile", "Ran out of data");
+           LiberateMemory((void **) &info);
+           return (False);
+         }
+       sp++;
+     }
      if (i%2 == 0)
-        *dp=16*unhex[(int) *sp++];
+       *dp=16*unhex[(int) *sp++];
      else
-        (*dp++)+=unhex[(int) *sp++];
+       (*dp++)+=unhex[(int) *sp++];
    }
 
    /* We have already read "Raw profile type " */
@@ -4437,8 +4452,8 @@ png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
    text[0].compression=image_info->compression == NoCompression ||
      (image_info->compression == UndefinedCompression &&
      text[0].text_length < 128) ? -1 : 0;
-   assert(text[0].text_length <= allocated_length);
-   png_set_text(ping,ping_info,text,1);
+   if (text[0].text_length <= allocated_length);
+     png_set_text(ping,ping_info,text,1);
    png_free(ping,text[0].text);
    png_free(ping,text[0].key);
    png_free(ping,text);
