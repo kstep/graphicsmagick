@@ -277,6 +277,8 @@ Export void CoalesceImages(Image *images)
       (void) ParseGeometry(image->previous->page,&x,&y,&sans,&sans);
     previous_box.x1=x;
     previous_box.y1=y;
+    previous_box.x2=0;
+    previous_box.y2=0;
     x=0;
     y=0;
     if (image->page != (char *) NULL)

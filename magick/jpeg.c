@@ -60,18 +60,17 @@
 #define ICC_MARKER  (JPEG_APP0+2)
 #define IPTC_MARKER  (JPEG_APP0+13)
 
-/*
-  Static declarations.
-*/
+#if defined(HasJPEG)
+#include <setjmp.h>
+#include "jpeglib.h"
+#include "jerror.h"
+
 static Image
   *image;
 
 static jmp_buf
   error_recovery;
 
-#if defined(HasJPEG)
-#include "jpeglib.h"
-#include "jerror.h"
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %

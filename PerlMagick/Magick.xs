@@ -2057,12 +2057,16 @@ Blob(ref,...)
       *data,
       filename[MaxTextExtent];
 
+    FILE
+      *file;
+
     Image
       *clone,
       *image,
       *next;
 
     int
+      filesize,
       scene;
 
     register int
@@ -2118,23 +2122,22 @@ Blob(ref,...)
           PUSHs(&sv_undef);
           continue;
         }
-      clone->file=fopen(filename,"rb");
+      DestroyImage(clone);
+      file=fopen(filename,"rb");
       remove(filename);
-      if (clone->file == (FILE *) NULL)
+      if (file == (FILE *) NULL)
         {
-          DestroyImage(clone);
           PUSHs(&sv_undef);
           continue;
         }
-      (void) fseek(clone->file,0L,SEEK_END);
-      clone->filesize=ftell(clone->file);
-      (void) fseek(clone->file,0L,SEEK_SET);
-      data=(char *) safemalloc(clone->filesize);
-      ReadData(data,1,clone->filesize,clone->file);
-      (void) fclose(clone->file);
-      PUSHs(sv_2mortal(newSVpv(data,clone->filesize)));
+      (void) fseek(file,0L,SEEK_END);
+      filesize=ftell(file);
+      (void) fseek(file,0L,SEEK_SET);
+      data=(char *) safemalloc(filesize);
+      ReadData(data,1,filesize,file);
+      (void) fclose(file);
+      PUSHs(sv_2mortal(newSVpv(data,filesize)));
       safefree((char *) data);
-      DestroyImage(clone);
     }
 
   MethodError:
