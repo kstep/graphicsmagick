@@ -12,7 +12,6 @@
   <magic name="DCM" offset="128" target="DICM" />
   <magic name="DCX" offset="0" target="\261\150\336\72" />
   <magic name="DIB" offset="0" target="\050\000" />
-  <magic name="DIB" offset="0" target="\014\000" />
   <magic name="DOT" offset="0" target="digraph" />
   <magic name="EMF" offset="40" target="\040\105\115\106\000\000\001\000" />
   <magic name="EPT" offset="0" target="\305\320\323\306" />
