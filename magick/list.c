@@ -237,7 +237,6 @@ MagickExport void DestroyImageList(Image *images)
 %    o exception: Return any errors or warnings in this structure.
 %
 %
-%
 */
 MagickExport Image *GetImageList(const Image *images,const long offset,
   ExceptionInfo *exception)
@@ -739,7 +738,6 @@ MagickExport Image *ShiftImageList(Image **images)
 %    o splice: Replace the removed image list with this list.
 %
 %    o exception: Return any errors or warnings in this structure.
-%
 %
 %
 */
