@@ -46,10 +46,6 @@ undef $image;
 # 3) Test rendering using a Postscript font
 #
 ++$test;
-# Ensure that we don't obtain font from X11
-$SAVED_DISPLAY=$ENV{'DISPLAY'};
-$ENV{'DISPLAY'}='';
-
 $font   = 'helvetica';
 
 $image=Image::Magick->new;
@@ -75,5 +71,3 @@ if( "$x" ) {
   }
 }
 undef $image;
-
-$ENV{'DISPLAY'}=$SAVED_DISPLAY;

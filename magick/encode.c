@@ -8142,7 +8142,6 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
         (void) sprintf(label,"threshold %s",factor);
         commands[argc++]="-threshold";
         commands[argc++]=factor;
-        percentage;
         break;
       }
       case EdgeDetectPreview:

@@ -159,7 +159,7 @@ include_HEADERS = PreRvIcccm.h X.h compress.h config.h error.h gems.h image.h \
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = Colorlist.h animate.h display.h formats.h logo.h mac.h \
-	nt.h pict.h dicom.h version.h vms.h plug-ins.h
+	nt.h vms.h dicom.h pict.h version.h plug-ins.h
 
 # Additional files to distribute
 EXTRA_DIST = Imakefile Make.com

@@ -15,9 +15,9 @@ sub testRead {
   my($image);
   
   $image=Image::Magick->new;
-  $x=$image->ReadImage("$infile");
-  if( "$x" ) {
-    print "ReadImage $infile: $x";
+  $status=$image->ReadImage("$infile");
+  if( "$status" ) {
+    print "ReadImage $infile: $status";
     print "not ok $test\n";
   } else {
     $signature=$image->Get('signature');
@@ -82,32 +82,32 @@ sub testReadWrite {
   my($image);
 
   $image=Image::Magick->new;
-  $x=$image->ReadImage("$infile");
+  $status=$image->ReadImage("$infile");
 	$signature=$image->Get('signature');
-  if( "$x" ) {
-    print "ReadImage $infile: $x\n";
+  if( "$status" ) {
+    print "ReadImage $infile: $status\n";
     print "not ok $test\n";
   } else {
     # Write image to file
     my $options = 'filename=>"$outfile", ' . "$writeoptions";
     #print "Using options: $options\n";
-    eval "\$x=\$image->WriteImage( $options ) ;";
+    eval "\$status=\$image->WriteImage( $options ) ;";
     if( $@ ) {
       print "$@\n";
       print "not ok $test\n";
       exit 1;
     }
-    if( "$x" ) {
-      print "WriteImage $outfile: $x\n";
+    if( "$status" ) {
+      print "WriteImage $outfile: $status\n";
       print "not ok $test\n";
     } else {
       my($image);
 
       # Read image just written
       $image=Image::Magick->new;
-      $x=$image->ReadImage("$outfile");
-      if( "$x" ) {
-	print "ReadImage $outfile: $x\n";
+      $status=$image->ReadImage("$outfile");
+      if( "$status" ) {
+	print "ReadImage $outfile: $status\n";
 	print "not ok $test\n";
       } else {
 	# Check signature
@@ -146,31 +146,31 @@ sub testReadWriteNoVerify {
   my($image, $images);
   
   $image=Image::Magick->new;
-  $x=$image->ReadImage("$infile");
-  if( "$x" ) {
-    print "$x\n";
+  $status=$image->ReadImage("$infile");
+  if( "$status" ) {
+    print "$status\n";
     print "ReadImage $infile: not ok $test\n";
   } else {
     # Write image to file
     my $options = 'filename=>"$outfile", ' . $writeoptions;
     #print "Using options: $options\n";
-    eval "\$x=\$image->WriteImage( $options ) ;";
+    eval "\$status=\$image->WriteImage( $options ) ;";
     if( $@ ) {
       print "$@";
       print "not ok $test\n";
       exit 1;
     }
-    if( "$x" ) {
-      print "WriteImage $outfile: $x\n";
+    if( "$status" ) {
+      print "WriteImage $outfile: $status\n";
       print "not ok $test\n";
     } else {
       my($image);
 
       # Read image just written
       $image=Image::Magick->new;
-      $x=$image->ReadImage("$outfile");
-      if( "$x" ) {
-	print "ReadImage $outfile: $x\n";
+      $status=$image->ReadImage("$outfile");
+      if( "$status" ) {
+	print "ReadImage $outfile: $status\n";
 	print "not ok $test\n";
       } else {
 	print "ok $test\n";
@@ -206,23 +206,23 @@ sub testReadWriteSized {
   $status=$image->SetAttribute(size=>"$size");
   warn "$status" if "$status";
 
-  $x=$image->ReadImage("$infile");
+  $status=$image->ReadImage("$infile");
 
-  if( "$x" ) {
-    print "ReadImage $infile: $x\n";
+  if( "$status" ) {
+    print "ReadImage $infile: $status\n";
     print "not ok $test\n";
   } else {
     # Write image to file
     my $options = 'filename=>"$outfile", ' . "$writeoptions";
     #print "Using options: $options\n";
-    eval "\$x=\$image->WriteImage( $options ) ;";
+    eval "\$status=\$image->WriteImage( $options ) ;";
     if( $@ ) {
       print "$@\n";
       print "not ok $test\n";
       exit 1;
     }
-    if( "$x" ) {
-      print "WriteImage $outfile: $x\n";
+    if( "$status" ) {
+      print "WriteImage $outfile: $status\n";
       print "not ok $test\n";
     } else {
        my($image);
@@ -234,9 +234,9 @@ sub testReadWriteSized {
       warn "$status" if "$status";
 
       # Read image just written
-      $x=$image->ReadImage("$outfile");
-      if( "$x" ) {
-	print "ReadImage $outfile: $x\n";
+      $status=$image->ReadImage("$outfile");
+      if( "$status" ) {
+	print "ReadImage $outfile: $status\n";
 	print "not ok $test\n";
       } else {
 	# Check signature
@@ -407,6 +407,10 @@ sub testMontage {
     if ( defined( $signature ) ) {
       if ( $signature ne $md5 ) {
 	print "Test $test Computed: $signature, expected: $md5\n";
+
+        $status = $montage->Write("test_${test}_out.miff");
+        warn "Write: $status" if "$status";
+
 	print "not ok $test\n";
       } else {
 	print "ok $test\n";

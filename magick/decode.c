@@ -1178,8 +1178,8 @@ static Image *ReadDICOMImage(const ImageInfo *image_info)
 {
 #include "dicom.h"
 
-  unsigned char
-    *data;
+  char
+    photometric[MaxTextExtent];
 
   Image
     *image;
@@ -1190,6 +1190,9 @@ static Image *ReadDICOMImage(const ImageInfo *image_info)
     length;
 
   Quantum
+    blue,
+    green,
+    red,
     *scale;
 
   register int
@@ -1201,10 +1204,12 @@ static Image *ReadDICOMImage(const ImageInfo *image_info)
   register long
     packets;
 
+  unsigned char
+    *data;
+
   unsigned int
     bytes_per_pixel,
-    first_one,
-    photometric_type,
+    samples_per_pixel,
     significant_bits;
 
   unsigned long
@@ -1232,9 +1237,9 @@ static Image *ReadDICOMImage(const ImageInfo *image_info)
     Read DICOM Medical image.
   */
   bytes_per_pixel=1;
-  first_one=True;
   graymap=(unsigned short *) NULL;
-  photometric_type=0;
+  (void) strcpy(photometric,"MONOCHROME1 ");
+  samples_per_pixel=1;
   significant_bits=0;
   for ( ; ; )
   {
@@ -1252,34 +1257,26 @@ static Image *ReadDICOMImage(const ImageInfo *image_info)
       {
         switch (element)
         {
-          case 0x04:
+          case 0x0002:
           {
-            char
-              *data;
-
-            long
-              location;
-
+            /*
+              Samples per pixel.
+            */
+            samples_per_pixel=LSBFirstReadShort(image->file);
+            datum=samples_per_pixel;
+            break;
+          }
+          case 0x0004:
+          {
             /*
               Photometric interpretation.
             */
-            data=(char *) AllocateMemory((length+1)*sizeof(char));
-            if (data == (char *) NULL)
-              PrematureExit(ResourceLimitWarning,"Memory allocation failed",
-                image);
-            location=ftell(image->file);
-            (void) ReadData(data,1,length,image->file);
-            (void) fseek(image->file,location,0);
-            data[length]='\0';
-            if (strncmp(data,"MONOCHROME1",strlen("MONOCHROME1")) == 0)
-              photometric_type=1;
-            else
-              if (strncmp(data,"MONOCHROME2",strlen("MONOCHROME2")) == 0)
-                photometric_type=2;
-            FreeMemory(data);
+            (void) ReadData(photometric,1,length,image->file);
+            photometric[length]='\0';
+            datum=(unsigned long) photometric;
             break;
           }
-          case 0x10:
+          case 0x0010:
           {
             /*
               Image rows.
@@ -1288,7 +1285,7 @@ static Image *ReadDICOMImage(const ImageInfo *image_info)
             datum=image->rows;
             break;
           }
-          case 0x11:
+          case 0x0011:
           {
             /*
               Image columns.
@@ -1339,9 +1336,6 @@ static Image *ReadDICOMImage(const ImageInfo *image_info)
             break;
           }
           case 0x1200:
-          case 0x1201:
-          case 0x1202:
-          case 0x1203:
           case 0x3006:
           {
             unsigned int
@@ -1366,6 +1360,36 @@ static Image *ReadDICOMImage(const ImageInfo *image_info)
               else
                 graymap[i]=LSBFirstReadShort(image->file);
             break;
+          }
+          case 0x1201:
+          case 0x1202:
+          case 0x1203:
+          {
+            /*
+              Initialize colormap.
+            */
+            image->class=PseudoClass;
+            image->colors=length >> 1;
+            datum=image->colors;
+            if (image->colormap == (ColorPacket *) NULL)
+              image->colormap=(ColorPacket *)
+                AllocateMemory(image->colors*sizeof(ColorPacket));
+            if (image->colormap == (ColorPacket *) NULL)
+              {
+                MagickWarning(ResourceLimitWarning,"Unable to create colormap",
+                 "Memory allocation failed");
+                break;
+              }
+            for (i=0; i < image->colors; i++)
+            {
+              index=LSBFirstReadShort(image->file);
+              if (element == 0x1201)
+                image->colormap[i].red=(Quantum) XDownScale(index);
+              if (element == 0x1202)
+                image->colormap[i].green=(Quantum) XDownScale(index);
+              if (element == 0x1203)
+                image->colormap[i].blue=(Quantum) XDownScale(index);
+            }
           }
           break;
         }
@@ -1444,25 +1468,28 @@ static Image *ReadDICOMImage(const ImageInfo *image_info)
   /*
     Initialize image structure.
   */
-  image->class=PseudoClass;
   max_value=1 << (8*bytes_per_pixel);
-  if (photometric_type == 1)
+  if (strcmp(photometric,"MONOCHROME1 ") == 0)
     max_value=1 << significant_bits;
-  /*
-    Allocate image colormap.
-  */
-  image->colors=Min(max_value,MaxRGB)+1;
-  image->colormap=(ColorPacket *)
-    AllocateMemory(image->colors*sizeof(ColorPacket));
-  if (image->colormap == (ColorPacket *) NULL)
-    PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-  for (i=0; i < image->colors; i++)
-  {
-    image->colormap[i].red=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
-    image->colormap[i].green=(Quantum)
-      ((long) (MaxRGB*i)/(image->colors-1));
-    image->colormap[i].blue=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
-  }
+  if ((image->colormap == (ColorPacket *) NULL) && (samples_per_pixel == 1))
+    {
+      /*
+        Allocate image colormap.
+      */
+      image->class=PseudoClass;
+      image->colors=Min(max_value,MaxRGB)+1;
+      image->colormap=(ColorPacket *)
+        AllocateMemory(image->colors*sizeof(ColorPacket));
+      if (image->colormap == (ColorPacket *) NULL)
+        PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
+      for (i=0; i < image->colors; i++)
+      {
+        image->colormap[i].red=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
+        image->colormap[i].green=(Quantum)
+          ((long) (MaxRGB*i)/(image->colors-1));
+        image->colormap[i].blue=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
+      }
+    }
   packets=0;
   max_packets=Max((image->columns*image->rows+4) >> 3,1);
   image->pixels=(RunlengthPacket *)
@@ -1489,21 +1516,47 @@ static Image *ReadDICOMImage(const ImageInfo *image_info)
   /*
     Convert DICOM Medical image to runlength-encoded packets.
   */
+  red=0;
+  green=0;
+  blue=0;
+  index=0;
   q=image->pixels;
   SetRunlengthEncoder(q);
   for (i=0; i < (image->columns*image->rows); i++)
   {
-    if (bytes_per_pixel == 1)
-      index=fgetc(image->file);
+    if (samples_per_pixel == 1)
+      {
+        if (bytes_per_pixel == 1)
+          index=fgetc(image->file);
+        else
+          index=LSBFirstReadShort(image->file);
+        if (strcmp(photometric,"MONOCHROME1") == 0)
+          index=max_value-index;
+        if (graymap != (unsigned short *) NULL)
+          index=graymap[index];
+      }
     else
-      index=LSBFirstReadShort(image->file);
-    if (graymap != (unsigned short *) NULL)
-      index=graymap[index];
-    if (photometric_type == 1)
-      index=max_value-index;
+      if (bytes_per_pixel == 1)
+        {
+          red=fgetc(image->file);
+          green=fgetc(image->file);
+          blue=fgetc(image->file);
+        }
+      else
+        {
+          red=LSBFirstReadShort(image->file);
+          green=LSBFirstReadShort(image->file);
+          blue=LSBFirstReadShort(image->file);
+        }
     if (scale != (Quantum *) NULL)
-      index=scale[index];
-    if ((index == q->index) && ((int) q->length < MaxRunlength))
+      {
+        red=scale[red];
+        green=scale[green];
+        blue=scale[blue];
+        index=scale[index];
+      }
+    if ((red == q->red) && (green == q->green) && (blue == q->blue) &&
+        (index == q->index) && ((int) q->length < MaxRunlength))
       q->length++;
     else
       {
@@ -2983,9 +3036,7 @@ static Image *ReadGIFImage(ImageInfo *image_info)
     *image;
 
   int
-    status,
-    x,
-    y;
+    status;
 
   RectangleInfo
     page_info;
@@ -5214,6 +5265,53 @@ static char *EscapeParenthesis(char *text)
 }
 
 #if defined(HasTTF)
+static void GetFontInfo(TT_Face face,TT_Face_Properties *face_properties,
+  Image *image)
+{
+  char
+    *name;
+
+  register char
+    *p;
+
+  register int
+    i,
+    j;
+
+  unsigned short
+    encoding,
+    id,
+    language,
+    length,
+    platform;
+
+  /*
+    Note font info as image comment.
+  */
+  if (face_properties->num_Names == 0)
+    return;
+  image->comments=(char *)
+    AllocateMemory((face_properties->num_Names*MaxTextExtent)*sizeof(char));
+  if (image->comments == (char *) NULL)
+    return;
+  *image->comments='\0';
+  for (i=0; i < (int) face_properties->num_Names; i++)
+  {
+    TT_Get_Name_ID(face,(unsigned short) i,&platform,&encoding,&language,&id);
+    if (((platform != 0) || (language != 0)) &&
+        ((platform != 3) || (encoding > 1) || ((language & 0x3FF) != 0x009)))
+      continue;
+    TT_Get_Name_String(face,(unsigned short) i,&name,&length);
+    p=image->comments+strlen(image->comments);
+    for (j=1; j < Min(length,MaxTextExtent); j+=2)
+      *p++=name[j];
+    *p++='\n';
+    *p='\0';
+  }
+  image->comments=(char *) ReallocateMemory((char *)
+    image->comments,(strlen(image->comments)+1)*sizeof(char));
+}
+
 static void RenderGlyph(TT_Raster_Map *canvas,TT_Raster_Map *character,
   TT_Glyph glyph,int x_off,int y_off,TT_Glyph_Metrics *glyph_metrics)
 {
@@ -5389,6 +5487,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
       if (error)
         PrematureExit(PluginWarning,"Unable to open TTF font",image);
       TT_Get_Face_Properties(face,&face_properties);
+      GetFontInfo(face,&face_properties,image);
       error=TT_New_Instance(face,&instance);
       if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
         {
