@@ -1067,9 +1067,6 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   register unsigned char
     *p;
 
-  SegmentInfo
-    extent;
-
   size_t
     length;
 
@@ -1173,10 +1170,6 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   last_glyph.id=0;
   origin.x=0;
   origin.y=0;
-  extent.x1=32000;
-  extent.x2=(-32000);
-  extent.y1=32000;
-  extent.y2=(-32000);
   affine.xx=(FT_Fixed) (65536.0*draw_info->affine.sx);
   affine.yx=(FT_Fixed) (-65536.0*draw_info->affine.rx);
   affine.xy=(FT_Fixed) (-65536.0*draw_info->affine.ry);
@@ -1287,14 +1280,6 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
           }
       }
     FT_Glyph_Get_CBox(glyph.image,ft_glyph_bbox_pixels,&bounding_box);
-    if (bounding_box.xMin < extent.x1)
-      extent.x1=bounding_box.xMin;
-    if (bounding_box.xMax > extent.x2)
-      extent.x2=bounding_box.xMax;
-    if (bounding_box.yMin < extent.y1)
-      extent.y1=bounding_box.yMin;
-    if (bounding_box.yMax > extent.y2)
-      extent.y2=bounding_box.yMax;
     origin.x+=face->glyph->advance.x;
     if (last_glyph.id != 0)
       FT_Done_Glyph(last_glyph.image);
@@ -1317,7 +1302,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   metrics->pixels_per_em.y=face->size->metrics.y_ppem;
   metrics->ascent=face->size->metrics.ascender >> 6;
   metrics->descent=face->size->metrics.descender >> 6;
-  metrics->width=(unsigned int) Max(origin.x >> 6,extent.x2);
+  metrics->width=origin.x >> 6;
   metrics->height=face->size->metrics.height >> 6;
   metrics->max_advance=face->size->metrics.max_advance >> 6;
   /*
