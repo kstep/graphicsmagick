@@ -190,7 +190,7 @@ AC_ARG_WITH(cache,
 AC_DEFINE_UNQUOTED(PixelCacheThreshold,$with_cache,Pixel cache threshold (default 2047MB))
 
 # Enable support for threads
-AC_ARG_WITH(with_threads,
+AC_ARG_WITH(threads,
 	      [  --with-threads          enable threads support],
 	      [with_threads=$withval],
 	      [with_threads='no'])
@@ -333,6 +333,8 @@ AC_PROG_GCC_TRADITIONAL
 LIB_LF=''
 if test "$with_largefiles" = 'yes'
 then
+#  AC_SYS_LARGEFILE
+
   AC_MSG_CHECKING(whether large file support needs explicit enabling)
   result='no'
   getconf='getconf LFS_CFLAGS'
@@ -357,50 +359,6 @@ then
   AC_MSG_RESULT($result)
 fi
 AC_SUBST(LIB_LF)
-
-
-#
-# C++ Support Tests (For Magick++)
-#
-if test "$with_magick_plus_plus" = 'yes'
-then
- with_magick_plus_plus='no'
- AC_PROG_CXX
- AC_LANG_CPLUSPLUS
- AC_CXX_BOOL
- AC_CXX_CONST_CAST
- AC_CXX_DEFAULT_TEMPLATE_PARAMETERS
- AC_CXX_EXCEPTIONS
- AC_CXX_EXPLICIT
- AC_CXX_HAVE_STD
- AC_CXX_HAVE_STL
- AC_CXX_MUTABLE
- AC_CXX_NAMESPACES
- AC_CXX_NEW_FOR_SCOPING
- AC_CXX_STATIC_CAST
- AC_CXX_TEMPLATES
-
- AC_MSG_CHECKING(whether C++ compiler is sufficient for Magick++)
- if test \
-  $ac_cv_cxx_bool = 'yes' -a \
-  $ac_cv_cxx_const_cast = 'yes' -a \
-  $ac_cv_cxx_default_template_parameters = 'yes' -a \
-  $ac_cv_cxx_exceptions = 'yes' -a \
-  $ac_cv_cxx_explicit = 'yes' -a \
-  $ac_cv_cxx_have_std = 'yes' -a \
-  $ac_cv_cxx_have_stl = 'yes' -a \
-  $ac_cv_cxx_mutable = 'yes' -a \
-  $ac_cv_cxx_namespaces = 'yes' -a \
-  $ac_cv_cxx_new_for_scoping = 'yes' -a \
-  $ac_cv_cxx_static_cast = 'yes' -a \
-  $ac_cv_cxx_templates = 'yes'
- then
-  with_magick_plus_plus='yes'
- fi
- AC_MSG_RESULT($with_magick_plus_plus)
-fi
-AM_CONDITIONAL(WITH_MAGICK_PLUS_PLUS, test "$with_magick_plus_plus" != 'no')
-
 
 # Check for delegate sub-directories and add -I & -L options as required.
 # This presumes that delegates are installed as detailed in the ImageMagick
@@ -541,6 +499,12 @@ AC_SUBST(LIB_MATH)
 LIB_THREAD=''
 if test "$with_threads" != 'no'
 then
+#  ACX_PTHREAD([AC_DEFINE(HasPTHREADS,,Define if you have Posix thread methods.)
+#     LIB_THREAD="$PTHREAD_LIBS"
+#     DEF_THREAD="-D_REENTRANT"
+#     LIBS="$LIB_THREAD $LIBS"
+#     CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
+#     CC="$PTHREAD_CC"])
   AC_CHECK_LIB(pthread,pthread_attr_init,
     [AC_DEFINE(HasPTHREADS,,Define if you have Posix thread methods.)
      LIB_THREAD="-lpthread"
@@ -1457,6 +1421,49 @@ then
   CFLAGS="-ftest-coverage -fprofile-arcs  $CFLAGS"
   LDFLAGS="-ftest-coverage -fprofile-arcs $LDFLAGS"
 fi
+
+#
+# C++ Support Tests (For Magick++)
+#
+if test "$with_magick_plus_plus" = 'yes'
+then
+ with_magick_plus_plus='no'
+ AC_PROG_CXX
+ AC_LANG_CPLUSPLUS
+ AC_CXX_BOOL
+ AC_CXX_CONST_CAST
+ AC_CXX_DEFAULT_TEMPLATE_PARAMETERS
+ AC_CXX_EXCEPTIONS
+ AC_CXX_EXPLICIT
+ AC_CXX_HAVE_STD
+ AC_CXX_HAVE_STL
+ AC_CXX_MUTABLE
+ AC_CXX_NAMESPACES
+ AC_CXX_NEW_FOR_SCOPING
+ AC_CXX_STATIC_CAST
+ AC_CXX_TEMPLATES
+
+ AC_MSG_CHECKING(whether C++ compiler is sufficient for Magick++)
+ if test \
+  $ac_cv_cxx_bool = 'yes' -a \
+  $ac_cv_cxx_const_cast = 'yes' -a \
+  $ac_cv_cxx_default_template_parameters = 'yes' -a \
+  $ac_cv_cxx_exceptions = 'yes' -a \
+  $ac_cv_cxx_explicit = 'yes' -a \
+  $ac_cv_cxx_have_std = 'yes' -a \
+  $ac_cv_cxx_have_stl = 'yes' -a \
+  $ac_cv_cxx_mutable = 'yes' -a \
+  $ac_cv_cxx_namespaces = 'yes' -a \
+  $ac_cv_cxx_new_for_scoping = 'yes' -a \
+  $ac_cv_cxx_static_cast = 'yes' -a \
+  $ac_cv_cxx_templates = 'yes'
+ then
+  with_magick_plus_plus='yes'
+ fi
+ AC_MSG_RESULT($with_magick_plus_plus)
+fi
+AM_CONDITIONAL(WITH_MAGICK_PLUS_PLUS, test "$with_magick_plus_plus" != 'no')
+
 
 #
 # Remove extraneous spaces from output variables (asthetic)
