@@ -1485,14 +1485,22 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
       bmp_info.file_size+=28;
     bmp_info.offset_bits=bmp_info.file_size;
     bmp_info.compression=BI_RGB;
+    if ((image->storage_class != DirectClass) && (image->colors > 256))
+      SetImageType(image,TrueColorType);
     if (image->storage_class != DirectClass)
       {
         /*
           Colormapped BMP raster.
         */
         bmp_info.bits_per_pixel=8;
-        if (IsMonochromeImage(image,&image->exception))
+        /* FIXME: Do bilevel BMPs *really* have to be black/white?  Windows
+           XP will use the color values in a 2-color colormap */
+        if (image->colors <= 2 && IsMonochromeImage(image,&image->exception))
           bmp_info.bits_per_pixel=1;
+        else if (image->colors <= 16)
+          bmp_info.bits_per_pixel=4;
+        else if (image->colors <= 256)
+          bmp_info.bits_per_pixel=8;
         bmp_info.number_colors=1 << bmp_info.bits_per_pixel;
         if (image->matte)
           SetImageType(image,TrueColorMatteType);
@@ -1598,10 +1606,48 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
                 bit=0;
                 byte=0;
               }
-             p++;
            }
          if (bit != 0)
            *q++=byte << (8-bit);
+         if (image->previous == (Image *) NULL)
+           if (QuantumTick(y,image->rows))
+             if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+               break;
+        }
+        break;
+      }
+      case 4:
+      {
+        register unsigned char
+          nibble,
+          byte;
+
+        /*
+          Convert PseudoClass image to a BMP monochrome image.
+        */
+        for (y=0; y < (long) image->rows; y++)
+        {
+          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+          if (p == (const PixelPacket *) NULL)
+            break;
+          indexes=GetIndexes(image);
+          q=pixels+(image->rows-y-1)*bytes_per_line;
+          nibble=0;
+          byte=0;
+          for (x=0; x < (long) image->columns; x++)
+          {
+            byte<<=4;
+            byte|=(indexes[x] & 0x0f);
+            nibble++;
+            if (nibble == 2)
+              {
+                *q++=byte;
+                nibble=0;
+                byte=0;
+              }
+           }
+         if (nibble != 0)
+           *q++=byte << 4;
          if (image->previous == (Image *) NULL)
            if (QuantumTick(y,image->rows))
              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
@@ -1622,10 +1668,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           indexes=GetIndexes(image);
           q=pixels+(image->rows-y-1)*bytes_per_line;
           for (x=0; x < (long) image->columns; x++)
-          {
             *q++=indexes[x];
-            p++;
-          }
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))

@@ -1,5 +1,10 @@
 2003-02-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/bmp.c (WriteBMPImage): Added support for
+	bits_per_pixel==4.
+	(WriteBMPImage): Convert PseudoClass images with more than 256
+	colors to DirectClass.
+
 	* images: Updated logo images to GraphicsMagick
 
 2002-02-08  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
