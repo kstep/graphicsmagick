@@ -261,7 +261,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
     ThrowReaderException(CorruptImageError,"image size is zero",image);
   image->depth=8;
   if (!AllocateImageColormap(image,256))
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   if (image_info->ping)
     {
       CloseBlob(image);
@@ -429,7 +429,7 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
   */
   scanline=(unsigned char *) AcquireMemory(image->columns);
   if (scanline == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowWriterException(ResourceLimitError,"Memory allocation failed",image);
   /*
     Write VICAR scanline.
   */

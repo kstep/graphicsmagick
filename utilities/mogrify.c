@@ -137,7 +137,6 @@ static void MogrifyUsage(void)
       "-interlace type      None, Line, Plane, or Partition",
       "-help                print program options",
       "-label name          assign a label to an image",
-      "-lat geometry        local adaptive thresholding",
       "-level value         adjust the level of image contrast",
       "-limit type value    Disk, Map, or Memory resource limit",
       "-list type           Color, Delegate, Format, Magic, Module, or Type",

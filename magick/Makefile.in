@@ -378,10 +378,10 @@ MAGICK_BASE_SRCS = memory.c blob.c cache.c locale.c error.c monitor.c \
 
 # Platform specific source files that may appear in the library
 EXTRA_libMagick_la_SOURCES = nt_base.c nt_feature.c
+@CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@MAGICK_PLATFORM_SRCS = nt_feature.c
 
 @WIN32_NATIVE_BUILD_TRUE@MAGICK_PLATFORM_SRCS = nt_base.c nt_feature.c
 @CYGWIN_BUILD_FALSE@@WIN32_NATIVE_BUILD_FALSE@MAGICK_PLATFORM_SRCS = 
-@CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@MAGICK_PLATFORM_SRCS = nt_feature.c
 @WITH_MODULES_FALSE@libMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
 
 # Library sources

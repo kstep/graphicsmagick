@@ -418,12 +418,12 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         }
         image->colors=viff_info.map_columns;
         if (!AllocateImageColormap(image,image->colors))
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
             image);
         viff_colormap=(unsigned char *)
           AcquireMemory(bytes_per_pixel*image->colors*viff_info.map_rows);
         if (viff_colormap == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
             image);
         /*
           Read VIFF raster colormap.
@@ -512,7 +512,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     viff_pixels=(unsigned char *)
       AcquireMemory(bytes_per_pixel*max_packets*sizeof(Quantum));
     if (viff_pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+        image);
     (void) ReadBlob(image,bytes_per_pixel*max_packets,(char *) viff_pixels);
     lsb_first=1;
     if (*(char *) &lsb_first &&
@@ -1053,7 +1054,8 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
     */
     viff_pixels=(unsigned char *) AcquireMemory(packets);
     if (viff_pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowWriterException(ResourceLimitError,"Memory allocation failed",
+        image);
     q=viff_pixels;
     if (image->storage_class == DirectClass)
       {

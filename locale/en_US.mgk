@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<locale name="en_US">
+<locale name="en_us">
   <Blob>
     <Error>
       <Message name="UnableToCreateBlob">
@@ -73,20 +73,11 @@
   <Resource>
     <Limit>
       <Error>
-        <Message name="CacheResourcesExhausted">
-          Cache resources exhausted
-        </Message>
-        <Message name="NoPixelsDefinedInCache">
-          No pixels defined in cache
-        </Message>
-        <Message name="PixelCacheAllocationFailed">
-          Pixel cache allocation failed
-        </Message>
         <Message name="MemoryAllocationFailed">
           Memory allocation failed
         </Message>
-        <Message name="UnableToManageColor">
-          Unable to manage color
+        <Message name="UnableToCloneImage">
+          Unable to clone image
         </Message>
       </Error>
     </Limit>

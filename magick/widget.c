@@ -2885,8 +2885,8 @@ MagickExport int XCommandWidget(Display *display,XWindows *windows,
         AcquireMemory(number_selections*sizeof(XWidgetInfo));
       if (selection_info == (XWidgetInfo *) NULL)
         {
-          MagickError(ResourceLimitError,"MemoryAllocationFailed",
-            "Unable to create Command Widget");
+          MagickError(ResourceLimitError,"Unable to create Command Widget",
+            "Memory allocation failed");
           return(id);
         }
       state|=UpdateConfigurationState | RedrawWidgetState;

@@ -3721,8 +3721,8 @@ static unsigned int XDrawEditImage(Display *display,
   coordinate_info=(XPoint *) AcquireMemory(max_coordinates*sizeof(XPoint));
   if (coordinate_info == (XPoint *) NULL)
     {
-      MagickError(ResourceLimitError,"MemoryAllocationFailed",
-        "Unable to draw on image");
+      MagickError(ResourceLimitError,"Unable to draw on image",
+        "Memory allocation failed");
       return(False);
     }
   /*
@@ -4330,8 +4330,8 @@ static unsigned int XDrawEditImage(Display *display,
           ReacquireMemory((void **) &coordinate_info,
             max_coordinates*sizeof(XPoint));
           if (coordinate_info == (XPoint *) NULL)
-            MagickError(ResourceLimitError,"MemoryAllocationFailed",
-              "Unable to draw on image");
+            MagickError(ResourceLimitError,"Unable to draw on image",
+              "Memory allocation failed");
           break;
         }
         case Expose:
@@ -4357,8 +4357,8 @@ static unsigned int XDrawEditImage(Display *display,
           ReacquireMemory((void **) &coordinate_info,
             max_coordinates*sizeof(XPoint));
           if (coordinate_info == (XPoint *) NULL)
-            MagickError(ResourceLimitError,"MemoryAllocationFailed",
-              "Unable to draw on image");
+            MagickError(ResourceLimitError,"Unable to draw on image",
+              "Memory allocation failed");
           break;
         }
         default:
@@ -7958,8 +7958,8 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
       filelist=(char **) AcquireMemory(count*sizeof(char *));
       if (filelist == (char **) NULL)
         {
-          MagickError(ResourceLimitError,"MemoryAllocationFailed",
-            "Unable to select image");
+          MagickError(ResourceLimitError,"Unable to select image",
+            "Memory allocation failed");
           (void) XFreeStringList(files);
           return((Image *) NULL);
         }
@@ -11222,7 +11222,7 @@ static Image *XVisualDirectoryImage(Display *display,
   filelist=(char **) AcquireMemory(sizeof(char *));
   if (filelist == (char **) NULL)
     {
-      MagickError(ResourceLimitError,"MemoryAllocationFailed",
+      MagickError(ResourceLimitError,"Memory allocation failed",
         (char *) NULL);
       return((Image *) NULL);
     }
@@ -11234,7 +11234,7 @@ static Image *XVisualDirectoryImage(Display *display,
       if (number_files == 0)
         MagickError(OptionError,"No image files were found",filenames);
       else
-        MagickError(ResourceLimitError,"MemoryAllocationFailed",
+        MagickError(ResourceLimitError,"Memory allocation failed",
           filenames);
       return((Image *) NULL);
     }

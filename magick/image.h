@@ -905,8 +905,6 @@ extern MagickExport const PixelPacket
     const unsigned long,ExceptionInfo *);
 
 extern MagickExport Image
-  *AdaptiveThresholdImage(const Image *,const double,const double,const double,
-    ExceptionInfo *),
   *AddNoiseImage(const Image *,const NoiseType,ExceptionInfo *),
   *AffineTransformImage(const Image *,const AffineMatrix *,ExceptionInfo *),
   *AllocateImage(const ImageInfo *),

@@ -267,7 +267,8 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (fpx_status == FPX_LOW_MEMORY_ERROR)
     {
       FPX_ClearSystem();
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+        image);
     }
   if (fpx_status != FPX_OK)
     {
@@ -376,7 +377,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (!AllocateImageColormap(image,MaxColormapSize))
         {
           FPX_ClearSystem();
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
             image);
         }
     }
@@ -396,7 +397,8 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       FPX_ClearSystem();
       (void) FPX_CloseImage(flashpix);
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+        image);
     }
   /*
     Initialize FlashPix image description.
@@ -971,7 +973,8 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     {
       (void) FPX_CloseImage(flashpix);
       FPX_ClearSystem();
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowWriterException(ResourceLimitError,"Memory allocation failed",
+        image);
     }
   /*
     Initialize FlashPix image description.

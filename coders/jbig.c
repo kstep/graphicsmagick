@@ -169,7 +169,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   */
   buffer=(unsigned char *) AcquireMemory(MaxBufferSize);
   if (buffer == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   status=JBG_EAGAIN;
   do
   {
@@ -193,7 +193,8 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   if (!AllocateImageColormap(image,2))
     {
       LiberateMemory((void **) &buffer);
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image)
+      ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+        image)
     }
   image->colormap[0].red=0;
   image->colormap[0].green=0;
@@ -437,7 +438,8 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     number_packets=((image->columns+7) >> 3)*image->rows;
     pixels=(unsigned char *) AcquireMemory(number_packets);
     if (pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowWriterException(ResourceLimitError,"Memory allocation failed",
+        image);
     /*
       Convert pixels to a bitmap.
     */

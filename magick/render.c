@@ -1829,8 +1829,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   if (graphic_context == (DrawInfo **) NULL)
     {
       LiberateMemory((void **) &primitive);
-      ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
-        "Unable to draw image");
+      ThrowBinaryException(ResourceLimitError,"Unable to draw image",
+        "Memory allocation failed")
     }
   number_points=2047;
   primitive_info=(PrimitiveInfo *)
@@ -1841,8 +1841,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       for ( ; n >= 0; n--)
         DestroyDrawInfo(graphic_context[n]);
       LiberateMemory((void **) &graphic_context);
-      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-        "Unable to draw image");
+      ThrowBinaryException(ResourceLimitError,"Unable to draw image",
+        "Memory allocation failed")
     }
   graphic_context[n]=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   token=AllocateString(primitive);
@@ -2570,7 +2570,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 if (graphic_context == (DrawInfo **) NULL)
                   {
                     ThrowException(&image->exception,ResourceLimitError,
-											"MemoryAllocationFailed","Unable to draw image");
+                      "Unable to draw image","Memory allocation failed");
                     break;
                   }
                 graphic_context[n]=
@@ -2694,7 +2694,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 if (graphic_context[n]->dash_pattern == (double *) NULL)
                   {
                     ThrowException(&image->exception,ResourceLimitError,
-											"MemoryAllocationFailed","Unable to draw image");
+                      "Unable to draw image","Memory allocation failed");
                     break;
                   }
                 for (j=0; j < x; j++)
@@ -2921,7 +2921,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       if (primitive_info == (PrimitiveInfo *) NULL)
         {
           ThrowException(&image->exception,ResourceLimitError,
-						"MemoryAllocationFailed","Unable to draw image");
+            "Unable to draw image","Memory allocation failed");
           break;
         }
     }
@@ -2960,7 +2960,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (primitive_info == (PrimitiveInfo *) NULL)
           {
             ThrowException(&image->exception,ResourceLimitError,
-							"MemoryAllocationFailed","Unable to draw image");
+              "Unable to draw image","Memory allocation failed");
             break;
           }
       }
@@ -3110,7 +3110,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             if (primitive_info == (PrimitiveInfo *) NULL)
               {
                 ThrowException(&image->exception,ResourceLimitError,
-									"MemoryAllocationFailed","Unable to draw path");
+                  "Unable to draw path","Memory allocation failed");
                 break;
               }
           }
@@ -4824,8 +4824,8 @@ MagickExport void TraceBezier(PrimitiveInfo *primitive_info,
   coefficients=(double *) AcquireMemory(number_coordinates*sizeof(double));
   points=(PointInfo *) AcquireMemory(control_points*sizeof(PointInfo));
   if ((coefficients == (double *) NULL) || (points == (PointInfo *) NULL))
-    MagickFatalError(ResourceLimitError,"MemoryAllocationFailed",
-      "Unable to draw image");
+    MagickFatalError(ResourceLimitError,"Unable to draw image",
+      "Memory allocation failed");
   /*
     Compute bezier points.
   */

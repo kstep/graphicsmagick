@@ -255,7 +255,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       p=xpm_buffer+strlen(xpm_buffer);
     }
   if (xpm_buffer == (char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   /*
     Remove comments.
   */
@@ -293,7 +293,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   textlist=StringToList(xpm_buffer);
   LiberateMemory((void **) &xpm_buffer);
   if (textlist == (char **) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   /*
     Initialize image structure.
   */
@@ -303,7 +303,8 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (i=0; textlist[i] != (char *) NULL; i++)
         LiberateMemory((void **) &textlist[i]);
       LiberateMemory((void **) &textlist);
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image)
+      ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+        image)
     }
   /*
     Read image colormap.
@@ -322,7 +323,8 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           LiberateMemory((void **) &textlist[i]);
         LiberateMemory((void **) &textlist);
         LiberateMemory((void **) &keys);
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image)
+        ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+          image)
       }
     keys[j][width]='\0';
     (void) strncpy(keys[j],p,width);

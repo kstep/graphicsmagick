@@ -329,8 +329,8 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   if (scanline == (PixelPacket *) NULL)
     {
       DestroyImage(magnify_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "Unable to magnify image");
+      ThrowImageException(ResourceLimitError,"Unable to magnify image",
+        "Memory allocation failed")
     }
   /*
     Initialize magnify image pixels.
@@ -1085,8 +1085,8 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   if (contribution == (ContributionInfo *) NULL)
     {
       DestroyImage(resize_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "Unable to resize image");
+      ThrowImageException(ResourceLimitError,"Unable to resize image",
+        "Memory allocation failed")
     }
   /*
     Resize image.
@@ -1226,8 +1226,8 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
       (y_offset == (double *) NULL))
     {
       DestroyImage(sample_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "Unable to sample image");
+      ThrowImageException(ResourceLimitError,"Unable to sample image",
+        "Memory allocation failed")
     }
   /*
     Initialize pixel offsets.
@@ -1393,8 +1393,8 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
       (x_vector == (ScalePacket *) NULL) || (y_vector == (ScalePacket *) NULL))
     {
       DestroyImage(scale_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "Unable to scale image");
+      ThrowImageException(ResourceLimitError,"Unable to scale image",
+        "Memory allocation failed")
     }
   /*
     Scale image.

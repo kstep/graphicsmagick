@@ -56,7 +56,7 @@ modename="$progname"
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=1.4e
-TIMESTAMP=" (1.1137 2002/10/15 22:50:58)"
+TIMESTAMP=" (1.1134 2002/10/04 15:34:50)"
 
 default_mode=
 help="Try \`$progname --help' for more information."
@@ -1223,19 +1223,6 @@ EOF
 	continue
 	;;
 
-      # Pass -m32 and -m64 to gcc for SPARC Solaris targets to
-      # control 32/64 bit linkage.
-      -m32 | -m64)
-        case $with_gcc/$host in
-        yes/sparc-sun-solaris2*)
-          compile_command="$compile_command $arg"
-          finalize_command="$finalize_command $arg"
-          compiler_flags="$compiler_flags $arg"
-          ;;
-        esac
-        continue
-        ;;
-
       -module)
 	module=yes
 	continue
@@ -2133,7 +2120,7 @@ EOF
 	    elif test -n "$soname_spec"; then
 	      # bleh windows
 	      case $host in
-	      *cygwin* | mingw*)
+	      *cygwin*)
 		major=`expr $current - $age`
 		versuffix="-$major"
 		;;
@@ -4488,7 +4475,7 @@ fi\
 	  # place dlname in correct position for cygwin
 	  tdlname=$dlname
 	  case $host,$output,$installed,$module,$dlname in
-	    *cygwin*,*lai,yes,no,*.dll | *mingw*,*lai,yes,no,*.dll) tdlname=../bin/$dlname ;;
+	    *cygwin*,*lai,yes,no,*.dll) tdlname=../bin/$dlname ;;
 	  esac
 	  $echo > $output "\
 # $outputname - a libtool library file

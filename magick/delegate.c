@@ -204,13 +204,13 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
   commands=StringToList(delegate_info->commands);
   if (commands == (char **) NULL)
     {
-      ThrowException(exception,ResourceLimitError,"MemoryAllocationFailed",
+      ThrowException(exception,ResourceLimitError,"Memory allocation failed",
         decode ? decode : encode);
       return((char *) NULL);
     }
   command=TranslateText(image_info,image,commands[0]);
   if (command == (char *) NULL)
-    ThrowException(exception,ResourceLimitError,"MemoryAllocationFailed",
+    ThrowException(exception,ResourceLimitError,"Memory allocation failed",
       commands[0]);
   /*
     Free resources.
@@ -440,7 +440,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
   commands=StringToList(delegate_info->commands);
   if (commands == (char **) NULL)
     {
-      ThrowException(exception,ResourceLimitError,"MemoryAllocationFailed",
+      ThrowException(exception,ResourceLimitError,"Memory allocation failed",
         decode ? decode : encode);
       return(False);
     }

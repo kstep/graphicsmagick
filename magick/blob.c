@@ -304,8 +304,8 @@ MagickExport BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
 
   clone_info=(BlobInfo *) AcquireMemory(sizeof(BlobInfo));
   if (clone_info == (BlobInfo *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "Unable to clone blob info");
+    MagickFatalError(ResourceLimitFatalError,"Unable to clone blob info",
+      "Memory allocation failed");
   GetBlobInfo(clone_info);
   if (blob_info == (BlobInfo *) NULL)
     return(clone_info);

@@ -320,7 +320,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Create colormap.
         */
         if (!AllocateImageColormap(image,image->colors))
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
             image);
         if (format == '7')
           {
@@ -350,7 +350,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         scale=(unsigned long *)
           AcquireMemory((max_value+1)*sizeof(unsigned long));
         if (scale == (unsigned long *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
             image);
         for (i=0; i <= (long) max_value; i++)
           scale[i]=(unsigned long) (((double) MaxRGB*i)/max_value);
@@ -518,7 +518,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         packets=image->depth <= 8 ? 1 : 2;
         pixels=(unsigned char *) AcquireMemory(packets*image->columns);
         if (pixels == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,"Unable to allocate memory",
             image);
         for (y=0; y < (long) image->rows; y++)
         {
@@ -579,7 +579,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         packets=image->depth <= 8 ? 3 : 6;
         pixels=(unsigned char *) AcquireMemory(packets*image->columns);
         if (pixels == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,"Unable to allocate memory",
             image);
         for (y=0; y < (long) image->rows; y++)
         {
@@ -1127,7 +1127,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         packets=image->depth <= 8 ? 3 : 6;
         pixels=(unsigned char *) AcquireMemory(packets*image->columns);
         if (pixels == (unsigned char *) NULL)
-          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowWriterException(ResourceLimitError,"Memory allocation failed",
             image);
         /*
           Convert image to a PNM image.

@@ -146,14 +146,14 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   image->storage_class=PseudoClass;
   if (!AllocateImageColormap(image,image->offset ? image->offset : 256))
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   packet_size=image->depth > 8 ? 2 : 1;
   pixels=(unsigned char *) AcquireMemory(packet_size*image->columns);
   packet_size=image->colors > 256 ? 6 : 3;
   colormap=(unsigned char *) AcquireMemory(packet_size*image->colors);
   if ((pixels == (unsigned char *) NULL) ||
       (colormap == (unsigned char *) NULL))
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   /*
     Read image colormap.
   */
@@ -354,7 +354,7 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
   colormap=(unsigned char *) AcquireMemory(packet_size*image->colors);
   if ((pixels == (unsigned char *) NULL) ||
       (colormap == (unsigned char *) NULL))
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowWriterException(ResourceLimitError,"Memory allocation failed",image);
   /*
     Write colormap to file.
   */

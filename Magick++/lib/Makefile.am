@@ -3,13 +3,13 @@
 #
 # Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
 #
-AUTOMAKE_OPTIONS = 1.7 nostdinc
+AUTOMAKE_OPTIONS = 1.7
 
 SUBDIRS = Magick++
 
-INCLUDES = -I$(srcdir) -I../.. -I$(top_srcdir)
+INCLUDES = -I../.. -I$(top_srcdir)
 
-includedir = $(prefix)/include
+includedir = ${prefix}/include
 pkgdatadir = $(datadir)/Magick++
 pkglibdir = $(libdir)/Magick++
 pkgincludedir = $(includedir)/Magick++

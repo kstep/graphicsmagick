@@ -1351,8 +1351,8 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
 
       text=TranslateText(image_info,image,format);
       if (text == (char *) NULL)
-        ThrowCompositeException(ResourceLimitError,"MemoryAllocationFailed",
-          "Unable to format image metadata");
+        ThrowCompositeException(ResourceLimitError,
+          "Unable to format image metadata","Memory allocation failed");
       (void) ConcatenateString(&(*metadata),text);
       (void) ConcatenateString(&(*metadata),"\n");
     }
@@ -2288,16 +2288,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               }
             break;
           }
-        if (LocaleCompare("lat",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                  ThrowConvertException(OptionError,"Missing geometry",option);
-              }
-            break;
-          }
         if (LocaleCompare("level",option+1) == 0)
           {
             i++;
@@ -3197,8 +3187,8 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
 
       text=TranslateText(image_info,image_list,format);
       if (text == (char *) NULL)
-        ThrowConvertException(ResourceLimitError,"MemoryAllocationFailed",
-          "Unable to format image metadata");
+        ThrowConvertException(ResourceLimitError,
+          "Unable to format image metadata","Memory allocation failed");
       (void) ConcatenateString(&(*metadata),text);
       (void) ConcatenateString(&(*metadata),"\n");
     }
@@ -3343,7 +3333,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
               text=TranslateText(image_info,p,format);
               if (text == (char *) NULL)
                 ThrowIdentifyException(ResourceLimitError,
-                  "MemoryAllocationFailed","Unable to format image metadata");
+                  "Unable to format image metadata","Memory allocation failed");
               (void) ConcatenateString(&(*metadata),text);
               (void) ConcatenateString(&(*metadata),"\n");
             }
@@ -4420,16 +4410,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   ThrowMogrifyException(OptionWarning,"Missing label name",
                     option);
-              }
-            break;
-          }
-        if (LocaleCompare("lat",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                  ThrowMogrifyException(OptionError,"Missing geometry",option);
               }
             break;
           }
@@ -6478,8 +6458,8 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
 
       text=TranslateText(image_info,montage_image,format);
       if (text == (char *) NULL)
-        ThrowMontageException(ResourceLimitError,"MemoryAllocationFailed",
-          "Unable to format image metadata");
+        ThrowMontageException(ResourceLimitError,
+          "Unable to format image metadata","Memory allocation failed");
       (void) ConcatenateString(&(*metadata),text);
       (void) ConcatenateString(&(*metadata),"\n");
     }

@@ -234,7 +234,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     length=MaxTextExtent;
     values=(char *) AcquireMemory(length);
     if (values == (char *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowReaderException(ResourceLimitError,"Unable to allocate memory",
+        image);
     colors=0;
     image->depth=8;
     image->compression=NoCompression;
@@ -743,7 +744,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           Create image colormap.
         */
         if (!AllocateImageColormap(image,colors != 0 ? colors : 256))
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
             image);
         if (colors != 0)
           {
@@ -822,7 +823,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       AcquireMemory((size_t) (1.01*packet_size*image->columns+600));
     if ((pixels == (unsigned char *) NULL) ||
         (compress_pixels == (unsigned char *) NULL))
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowWriterException(ResourceLimitError,"Memory allocation failed",
+        image);
     /*
       Read image pixels.
     */
@@ -1396,7 +1398,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     compress_pixels=(unsigned char *) AcquireMemory(length);
     if ((pixels == (unsigned char *) NULL) ||
         (compress_pixels == (unsigned char *) NULL))
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowWriterException(ResourceLimitError,"Memory allocation failed",image);
     /*
       Write MIFF header.
     */
@@ -1619,7 +1621,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         packet_size=3*image->depth/8;
         colormap=(unsigned char *) AcquireMemory(packet_size*image->colors);
         if (colormap == (unsigned char *) NULL)
-          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowWriterException(ResourceLimitError,"Memory allocation failed",
             image);
         /*
           Write colormap to file.

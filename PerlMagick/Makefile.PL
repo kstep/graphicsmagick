@@ -37,7 +37,7 @@ use Config;
 # Compute test specification
 my $delegate_tests='t/*.t';
 my $delegate;
-foreach $delegate (qw/ bzlib fpx jp2 jpeg lcms mpeg png ps tiff ttf x xfig zlib/) {
+foreach $delegate (qw/ bzlib jp2 jpeg lcms mpeg png ps tiff ttf x xfig zlib/) {
   if( -d "t/$delegate" ) {
     $delegate_tests .= " t/$delegate/*.t";
   }

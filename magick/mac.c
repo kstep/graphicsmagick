@@ -1108,11 +1108,10 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
   picture_handle=(PicHandle)
     NewHandle(Max(GetBlobSize(image)-PICTHeaderSize,PICTHeaderSize));
   if (picture_handle == nil)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,"Unable to allocate memory",image);
   HLock((Handle) picture_handle);
   (void) ReadBlob(image,PICTHeaderSize,*(char **) picture_handle);
-  status=
-    ReadBlob(image,GetBlobSize(image)-PICTHeaderSize,*(char **) picture_handle);
+  status=ReadBlob(image,GetBlobSize(image)-PICTHeaderSize,*(char **) picture_handle);
   if (status == False)
     {
       DisposeHandle((Handle) picture_handle);
@@ -1124,7 +1123,8 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
   if ((theErr != noErr) && (graphic_world == nil))
     {
       DisposeHandle((Handle) picture_handle);
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowReaderException(ResourceLimitError,"Unable to allocate memory",
+        image);
     }
   HUnlock((Handle) picture_handle);
   SetGWorld(graphic_world,nil);
@@ -1180,7 +1180,7 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
             DisposeHandle((Handle) picture_info.theColorTable);
           DisposeGWorld(graphic_world);
           DisposeHandle((Handle) picture_handle);
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,"Unable to allocate memory",
             image);
         }
       for (x=0; x < image->colors; x++)

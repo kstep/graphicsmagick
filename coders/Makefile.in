@@ -352,9 +352,9 @@ xml2_config = @xml2_config@
 AUTOMAKE_OPTIONS = 1.7 foreign
 
 INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/magick
-@HasWINGDI32_FALSE@MAGICK_GDI32_MODULES = 
 
 @HasWINGDI32_TRUE@MAGICK_GDI32_MODULES = clipboard.la emf.la
+@HasWINGDI32_FALSE@MAGICK_GDI32_MODULES = 
 
 MAGICK_CODER_SRCS = \
   art.c avi.c avs.c bmp.c caption.c clipboard.c cmyk.c cut.c dcm.c \
