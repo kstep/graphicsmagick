@@ -99,8 +99,8 @@ push(@$images,$example);
 
 $example=$model->Clone();
 $example->Label('Draw');
-$example->Draw(stroke=>'gold',primitive=>'circle',points=>'60,90 60,120',
-  strokewidth=>2);
+$example->Draw(fill=>'none',stroke=>'gold',primitive=>'circle',
+  points=>'60,90 60,120',strokewidth=>2);
 push(@$images,$example);
 
 $example=$model->Clone();
