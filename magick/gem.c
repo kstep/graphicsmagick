@@ -330,7 +330,6 @@ MagickExport int GetOptimalKernelWidth1D(const double radius,const double sigma)
       break;
     width+=2;
   }
-printf("%d\n",width-2);
   return(width-2);
 }
 
