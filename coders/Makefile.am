@@ -490,14 +490,14 @@ DEFS = @DEFS@ -I../
 
 # Install delegates files
 install-data-delegates: 
-	$(mkinstalldirs) $(pkglibdir)
-	$(INSTALL_DATA) delegates.mgk $(pkglibdir)
-	$(INSTALL_DATA) fonts.mgk $(pkglibdir)
+	$(mkinstalldirs) $(DESTDIR)$(pkglibdir)
+	$(INSTALL_DATA) delegates.mgk $(DESTDIR)$(pkglibdir)
+	$(INSTALL_DATA) fonts.mgk $(DESTDIR)$(pkglibdir)
 
 # Uninstall delegates files
 uninstall-data-delegates:
-	rm -f $(pkglibdir)/delegates.mgk
-	rm -f $(pkglibdir)/fonts.mgk
+	rm -f $(DESTDIR)$(pkglibdir)/delegates.mgk
+	rm -f $(DESTDIR)$(pkglibdir)/fonts.mgk
 
 install-exec-local: install-data-delegates
 

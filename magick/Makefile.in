@@ -249,7 +249,6 @@ include_HEADERS = PreRvIcccm.h api.h attributes.h blob.h cache.h cache_view.h \
 # Headers which are not installed but which are distributed
 noinst_HEADERS = animate.h defines.h display.h mac.h magic.h nt.h vms.h
 
-
 # Additional files to distribute
 EXTRA_DIST = $(ALLMANPAGES) colors.mgk magic.mgk Magick-config.in \
   Magick-config.in Make.com mac.c nt.c vms.c $(MAGICK_BASE_SRCS)
