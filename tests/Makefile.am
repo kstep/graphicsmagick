@@ -108,13 +108,12 @@ else
 XWD=
 endif
 
-# Formats that currently don't work: EPDF EPT $(HDF) $(FPX)
+# Formats that currently don't work: DPX EPDF EPT $(HDF) $(FPX)
 CHECK_BLOB_FORMATS = \
 	AVS \
 	BMP \
 	CMYK \
 	DIB \
-	DPX \
 	FAX \
 	G3 \
 	FITS \
@@ -159,13 +158,12 @@ CHECK_BLOB_FORMATS = \
 	$(XWD) \
 	YUV
 
-# Formats that currently don't work: EPDF $(HDF) $(FPX)
+# Formats that currently don't work: DPX EPDF $(HDF) $(FPX)
 CHECK_FILE_FORMATS = \
 	AVS \
 	BMP \
 	CMYK \
 	DIB \
-	DPX \
 	EPSF \
 	EPSI \
 	EPI \
