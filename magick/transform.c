@@ -980,11 +980,23 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
             default: intent=INTENT_PERCEPTUAL; break;
           }
           if (image->colorspace == CMYKColorspace)
-            transform=cmsCreateTransform(image_profile,TYPE_CMYK_16,
-              transform_profile,TYPE_CMYK_16,intent,0);
+            {
+              if (profile_image->colorspace == CMYKColorspace)
+                transform=cmsCreateTransform(image_profile,TYPE_CMYK_16,
+                  transform_profile,TYPE_CMYK_16,intent,0);
+              else
+                transform=cmsCreateTransform(image_profile,TYPE_CMYK_16,
+                  transform_profile,TYPE_RGBA_16,intent,0);
+            }
           else
-            transform=cmsCreateTransform(image_profile,TYPE_RGBA_16,
-              transform_profile,TYPE_RGBA_16,intent,0);
+            {
+              if (profile_image->colorspace == CMYKColorspace)
+                transform=cmsCreateTransform(image_profile,TYPE_RGBA_16,
+                  transform_profile,TYPE_CMYK_16,intent,0);
+              else
+                transform=cmsCreateTransform(image_profile,TYPE_RGBA_16,
+                  transform_profile,TYPE_RGBA_16,intent,0);
+            }
           if (transform == (cmsHTRANSFORM) NULL)
             ThrowBinaryException(ResourceLimitWarning,"Unable to manage color",
               "failed to create color transform");
