@@ -99,7 +99,6 @@ static unsigned int
   ReadCachePixels(const Cache,const unsigned long),
   SyncCache(Image *),
   SyncPixelCache(Image *),
-  WriteCacheInfo(Image *),
   WriteCacheIndexes(Cache,const unsigned long),
   WriteCachePixels(Cache,const unsigned long);
 
