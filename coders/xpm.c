@@ -296,8 +296,8 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   count=sscanf(textlist[0],"%u %u %u %u",&image->columns,&image->rows,
     &image->colors,&width);
-  if ((count != 4) || (width > 2) ||
-      ((image->columns*image->rows*image->colors) == 0))
+  if ((count != 4) || (width > 2) || (image->columns == 0) ||
+      (image->rows == 0) || (image->colors == 0))
     {
       for (i=0; textlist[i] != (char *) NULL; i++)
         LiberateMemory((void **) &textlist[i]);

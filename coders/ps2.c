@@ -670,12 +670,15 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             register unsigned char
               *q;
 
+            size_t
+              length;
+
             /*
               Allocate pixel array.
             */
-            number_pixels=(image->colorspace == CMYKColorspace ? 4 : 3)*
-              image->columns*image->rows;
-            pixels=(unsigned char *) AcquireMemory(number_pixels);
+            number_pixels=image->columns*image->rows;
+            length=(image->colorspace == CMYKColorspace ? 4 : 3)*number_pixels;
+            pixels=(unsigned char *) AcquireMemory(length);
             if (pixels == (unsigned char *) NULL)
               ThrowWriterException(ResourceLimitWarning,
                 "Memory allocation failed",image);

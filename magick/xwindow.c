@@ -1538,13 +1538,13 @@ MagickExport void XDisplayImageInfo(Display *display,
     i;
 
   size_t
+    bytes,
     length;
 
   unsigned int
     levels;
 
   unsigned long
-    bytes,
     number_pixels;
 
   /*

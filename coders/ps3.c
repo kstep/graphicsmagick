@@ -457,8 +457,8 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         /*
           Allocate pixel array.
         */
-        number_pixels=4*image->columns*image->rows;
-        pixels=(unsigned char *) AcquireMemory(number_pixels);
+        number_pixels=image->columns*image->rows;
+        pixels=(unsigned char *) AcquireMemory(4*number_pixels);
         if (pixels == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
             image);

@@ -178,7 +178,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   length=0;
   image->columns=0;
   image->rows=0;
-  while (isgraph(c) && ((image->columns*image->rows) == 0))
+  while (isgraph(c) && ((image->columns == 0) || (image->rows == 0)))
   {
     if (!isalnum(c))
       {
@@ -248,7 +248,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
     c=ReadBlobByte(image);
     count++;
   }
-  if ((image->columns*image->rows) == 0)
+  if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(CorruptImageWarning,"image size is zero",image);
   image->depth=8;
   if (!AllocateImageColormap(image,256))

@@ -199,6 +199,9 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   register unsigned char
     *p;
 
+  size_t
+    number_pixels;
+
   unsigned char
     *fits_pixels;
 
@@ -318,9 +321,9 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   /*
     Verify that required image information is defined.
   */
+  number_pixels=fits_info.columns*fits_info.rows;
   if ((!fits_info.simple) || (fits_info.number_axes < 1) ||
-      (fits_info.number_axes > 4) ||
-      (fits_info.columns*fits_info.rows) == 0)
+      (fits_info.number_axes > 4) || (number_pixels == 0))
     ThrowReaderException(CorruptImageWarning,"image type not supported",image);
   for (scene=0; scene < fits_info.number_scenes; scene++)
   {
@@ -340,15 +343,15 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     packet_size=fits_info.bits_per_pixel/8;
     if (packet_size < 0)
       packet_size=(-packet_size);
-    fits_pixels=(unsigned char *)
-      AcquireMemory(packet_size*image->columns*image->rows);
+    number_pixels=image->columns*image->rows;
+    fits_pixels=(unsigned char *) AcquireMemory(packet_size*number_pixels);
     if (fits_pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
     /*
       Convert FITS pixels to pixel packets.
     */
-    status=ReadBlob(image,packet_size*image->columns*image->rows,fits_pixels);
+    status=ReadBlob(image,packet_size*number_pixels,fits_pixels);
     if (status == False)
       ThrowReaderException(CorruptImageWarning,
         "Insufficient image data in file",image);
@@ -375,7 +378,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           pixel=(double) (*((double *) long_quantum));
         fits_info.min_data=pixel*fits_info.scale-fits_info.zero;
         fits_info.max_data=pixel*fits_info.scale-fits_info.zero;
-        for (i=1; i < (int) (image->columns*image->rows); i++)
+        for (i=1; i < (int) number_pixels; i++)
         {
           long_quantum[0]=(*p);
           quantum=(*p++);

@@ -4706,7 +4706,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       Image
         *previous_image;
 
-      off_t
+      size_t
         bytes;
 
       bytes=((*image)->columns*(*image)->rows*sizeof(PixelPacket));

@@ -109,12 +109,12 @@ static unsigned int DecodeImage(Image *image,const int channel)
   register PixelPacket
     *q;
 
-  size_t
-    length;
+  long
+    number_pixels;
 
   x=0;
-  length=image->columns*image->rows;
-  while (length > 0)
+  number_pixels=image->columns*image->rows;
+  while (number_pixels > 0)
   {
     count=ReadBlobByte(image);
     if (count >= 128)
@@ -177,7 +177,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
           if (!SyncImagePixels(image))
             break;
           x++;
-          length--;
+          number_pixels--;
         }
         continue;
       }
@@ -236,17 +236,17 @@ static unsigned int DecodeImage(Image *image,const int channel)
       if (!SyncImagePixels(image))
         break;
       x++;
-      length--;
+      number_pixels--;
     }
   }
   /*
     Guarentee the correct number of pixel packets.
   */
-  if (length > 0)
+  if (number_pixels > 0)
     ThrowBinaryException(CorruptImageWarning,
       "insufficient image data in file",image->filename)
   else
-    if (length < 0)
+    if (number_pixels < 0)
       ThrowBinaryException(CorruptImageWarning,"too much image data in file",
         image->filename);
   return(True);

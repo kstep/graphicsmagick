@@ -645,6 +645,9 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
   register PixelPacket
     *p;
 
+  size_t
+    number_pixels;
+
   SUNInfo
     sun_info;
 
@@ -668,16 +671,18 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
     sun_info.magic=0x59a66a95;
     sun_info.width=image->columns;
     sun_info.height=image->rows;
-    sun_info.type=(image->storage_class == DirectClass ? RT_FORMAT_RGB : RT_STANDARD);
+    sun_info.type=
+      (image->storage_class == DirectClass ? RT_FORMAT_RGB : RT_STANDARD);
     sun_info.maptype=RMT_NONE;
     sun_info.maplength=0;
+    number_pixels=image->columns*image->rows;
     if (image->storage_class == DirectClass)
       {
         /*
           Full color SUN raster.
         */
         sun_info.depth=(image->matte ? 32 : 24);
-        sun_info.length=image->columns*image->rows*(image->matte ? 4 : 3);
+        sun_info.length=(image->matte ? 4 : 3)*number_pixels;
         sun_info.length+=image->columns & 0x01 ? image->rows : 0;
       }
     else
@@ -697,7 +702,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
             Colormapped SUN raster.
           */
           sun_info.depth=8;
-          sun_info.length=image->columns*image->rows;
+          sun_info.length=number_pixels;
           sun_info.length+=image->columns & 0x01 ? image->rows : 0;
           sun_info.maptype=RMT_EQUAL_RGB;
           sun_info.maplength=image->colors*3;
@@ -723,14 +728,17 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
         register unsigned char
           *q;
 
+        size_t
+          length;
+
         unsigned char
           *pixels;
 
         /*
           Allocate memory for pixels.
         */
-        pixels=(unsigned char *)
-          AcquireMemory(image->columns*sizeof(PixelPacket));
+        length=image->columns*sizeof(PixelPacket);
+        pixels=(unsigned char *) AcquireMemory(length);
         if (pixels == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
             image);

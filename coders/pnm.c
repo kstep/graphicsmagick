@@ -249,6 +249,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register unsigned char
     *p;
 
+  size_t
+    number_pixels;
+
   unsigned char
     *pixels;
 
@@ -293,7 +296,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->storage_class=PseudoClass;
         image->colors=max_value+1;
       }
-    if ((image->columns*image->rows) == 0)
+    number_pixels=image->columns*image->rows;
+    if (number_pixels == 0)
       ThrowReaderException(CorruptImageWarning,
         "Unable to read image: image dimensions are zero",image);
     scale=(Quantum *) NULL;
@@ -1037,14 +1041,17 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         register unsigned char
           *q;
 
+        size_t
+          length;
+
         unsigned char
           *pixels;
 
         /*
           Allocate memory for pixels.
         */
-        pixels=(unsigned char *)
-          AcquireMemory(image->columns*sizeof(PixelPacket));
+        length=image->columns*sizeof(PixelPacket);
+        pixels=(unsigned char *) AcquireMemory(length);
         if (pixels == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
             image);

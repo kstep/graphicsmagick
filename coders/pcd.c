@@ -487,7 +487,8 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Determine resolution by subimage specification.
   */
-  if ((image->columns*image->rows) == 0)
+  number_pixels=image->columns*image->rows;
+  if (number_pixels == 0)
     subimage=3;
   else
     {

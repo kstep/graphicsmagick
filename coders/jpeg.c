@@ -582,6 +582,9 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   register PixelPacket
     *q;
 
+  size_t
+    number_pixels;
+
   unsigned int
     status;
 
@@ -607,7 +610,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       jpeg_destroy_decompress(&jpeg_info);
       *exception=image->exception;
       GetExceptionInfo(&image->exception);
-      if ((image->columns*image->rows) != 0)
+      number_pixels=image->columns*image->rows;
+      if (number_pixels != 0)
         return(image);
       DestroyImage(image);
       return((Image *) NULL);
@@ -638,7 +642,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
             image->units=PixelsPerCentimeterResolution;
         }
     }
-  if ((image->columns*image->rows) != 0)
+  number_pixels=image->columns*image->rows;
+  if (number_pixels != 0)
     {
       double
         scale_factor;

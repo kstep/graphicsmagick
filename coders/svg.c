@@ -2521,6 +2521,9 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   register int
     i;
 
+  size_t
+    number_pixels;
+
   unsigned int
     number_planes,
     point,
@@ -2540,8 +2543,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   bitmap.np=number_planes;
   bitmap.dimensions.width=image->columns;
   bitmap.dimensions.height=image->rows;
-  bitmap.bitmap=(unsigned char *)
-    AcquireMemory(number_planes*image->columns*image->rows);
+  number_pixels=image->columns*image->rows;
+  bitmap.bitmap=(unsigned char *) AcquireMemory(number_planes*number_pixels);
   if (bitmap.bitmap == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
       image);

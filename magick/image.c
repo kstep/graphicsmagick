@@ -637,13 +637,7 @@ MagickExport Image *AverageImages(Image *image,ExceptionInfo *exception)
   if (sum == (SumPacket *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to average image sequence",
       "Memory allocation failed");
-  for (i=0; i < (int) (image->columns*image->rows); i++)
-  {
-    sum[i].red=0.0;
-    sum[i].green=0.0;
-    sum[i].blue=0.0;
-    sum[i].opacity=0.0;
-  }
+  memset(sum,0,number_pixels*sizeof(SumPacket));
   /*
     Initialize average next attributes.
   */

@@ -949,6 +949,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
     viff_info.map_subrows=0;
     viff_info.map_enable=1;  /* no colormap */
     viff_info.maps_per_cycle=0;
+    number_pixels=image->columns*image->rows;
     if (image->storage_class == DirectClass)
       {
         /*
@@ -957,14 +958,14 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
         viff_info.number_data_bands=image->matte ? 4 : 3;
         viff_info.color_space_model=VFF_CM_genericRGB;
         viff_info.data_storage_type=VFF_TYP_1_BYTE;
-        packets=image->columns*image->rows*viff_info.number_data_bands;
+        packets=viff_info.number_data_bands*number_pixels;
       }
     else
       {
         viff_info.number_data_bands=1;
         viff_info.color_space_model=VFF_CM_NONE;
         viff_info.data_storage_type=VFF_TYP_1_BYTE;
-        packets=image->columns*image->rows;
+        packets=number_pixels;
         if (!IsGrayImage(image))
           {
             /*
@@ -1033,13 +1034,10 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
     q=viff_pixels;
     if (image->storage_class == DirectClass)
       {
-        unsigned long
-          offset;
-
         /*
           Convert DirectClass packet to VIFF RGB pixel.
         */
-        offset=image->columns*image->rows;
+        number_pixels=image->columns*image->rows;
         for (y=0; y < (int) image->rows; y++)
         {
           p=GetImagePixels(image,0,y,image->columns,1);
@@ -1048,10 +1046,10 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (int) image->columns; x++)
           {
             *q=DownScale(p->red);
-            *(q+offset)=DownScale(p->green);
-            *(q+offset*2)=DownScale(p->blue);
+            *(q+number_pixels)=DownScale(p->green);
+            *(q+number_pixels*2)=DownScale(p->blue);
             if (image->matte)
-              *(q+offset*3)=MaxRGB-DownScale(p->opacity);
+              *(q+number_pixels*3)=MaxRGB-DownScale(p->opacity);
             p++;
             q++;
           }
