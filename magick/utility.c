@@ -2912,6 +2912,133 @@ MagickExport void Strip(char *message)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   S u b s t i t u t e S t r i n g                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SubstituteString performs string substitution on a buffer, replacing
+%  the buffer with the substituted version. Buffer must be allocated from the
+%  heap.
+%
+%  The format of the SubstituteString method is:
+%
+%      void SubstituteString(char **buffer, const char* search, const char *replace)
+%
+%  A description of each parameter follows:
+%
+%    o buffer: The buffer to perform replacements on. Replaced with new
+%              allocation if a replacement is made.
+%
+%    o search: String to search for.
+%
+%    o replace: Replacement string.
+%
+*/
+MagickExport int SubstituteString(char** buffer, const char* search, const char *replace)
+{
+  size_t
+    allocated_length,
+    copy_length,
+    result_length,
+    replace_length,
+    search_length;
+
+  char
+    *dest,
+    *result;
+
+  const char
+    *match,
+    *source;
+
+  source=*buffer;
+  match = strstr(source, search);
+  if (match == (char *) NULL)
+    return False;
+  allocated_length=strlen(source)+MaxTextExtent;
+  result=(char*)AcquireMemory(allocated_length);
+  if (result == (char *) NULL)
+    MagickFatalError(ResourceLimitFatalError,"Unable to allocate string",
+                     "Memory allocation failed");
+  *result='\0';
+  result_length=0;
+  replace_length=strlen(replace);
+  search_length=strlen(search);
+  dest=result;
+
+  while (match != (char*) NULL)
+    {
+      /*
+        copy portion before match
+      */
+      copy_length=match-source;
+
+      if (copy_length!=0)
+        {
+          result_length+=copy_length;
+          if (result_length>=allocated_length)
+            {
+              allocated_length+=copy_length+MaxTextExtent;
+              ReacquireMemory((void**)&result, allocated_length);
+              if (result == (char *) NULL)
+                MagickFatalError(ResourceLimitFatalError,"Unable to reallocate string",
+                                 "Memory allocation failed");
+            }
+          strncpy(dest,source,copy_length);
+          dest+=copy_length;
+          *dest='\0';
+        }
+
+      /*
+        copy replacement
+      */
+      result_length+=replace_length;
+      if (result_length>=allocated_length)
+        {
+          allocated_length+=replace_length+MaxTextExtent;
+          ReacquireMemory((void**)&result, allocated_length);
+          if (result == (char *) NULL)
+            MagickFatalError(ResourceLimitFatalError,"Unable to reallocate string",
+                             "Memory allocation failed");
+        }
+      strcat(dest,replace);
+      dest+=replace_length;
+
+      /*
+        find next match
+      */
+      source=match;
+      source+=search_length;
+      match=strstr(source, search);
+    }
+
+  /*
+    copy remaining string
+  */
+  copy_length=strlen(source);
+  result_length+=copy_length;
+  if (result_length>=allocated_length)
+    {
+      allocated_length+=copy_length+MaxTextExtent;
+      ReacquireMemory((void**)&result, allocated_length);
+      if (result == (char *) NULL)
+        MagickFatalError(ResourceLimitFatalError,"Unable to reallocate string",
+                         "Memory allocation failed");
+    }
+  strcat(dest,source);
+
+  LiberateMemory((void **)buffer);
+  *buffer=result;
+  return True;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   S y s t e m C o m m a n d                                                 %
 %                                                                             %
 %                                                                             %

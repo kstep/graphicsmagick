@@ -6,11 +6,12 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020718;12063600">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20020727;14504100">
+	<META NAME="CHANGED" CONTENT="20020727;15434300">
 	<META NAME="CLASSIFICATION" CONTENT="Describes ImageMagick features which are peculiar to Microsoft Windows">
 	<META NAME="KEYWORDS" CONTENT="ImageMagick, Image Magick, Image Magic, PerlMagick, Perl Magick, Perl Magic, WebMagick, Web Magic, visualization, image processing, software development, image, software, Magick++">
 	<STYLE>
 	<!--
+		@page { size: 8.5in 11in }
 		TD P { color: #000000 }
 		TD P.western { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
 		TD P.cjk { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
@@ -23,7 +24,10 @@
 		H3 { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif }
 		BLOCKQUOTE { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
 		DD { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
-		DT { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		DT { margin-left: 0.4in; background: transparent; color: #000000 }
+		DT.western { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt; font-weight: bold }
+		DT.cjk { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		DT.ctl { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
 		P.text-body-indent-western { margin-left: 0.2in; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
 		P.text-body-indent-cjk { margin-left: 0.2in; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
 		P.text-body-indent-ctl { margin-left: 0.2in; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
@@ -46,9 +50,7 @@ installation guide</A>.</I></BLOCKQUOTE>
 <H3>Normal Installation</H3>
 <DL>
 	<DL>
-		<DL>
-			<DT><B>Prerequisites</B></DT></DL>
-		<DD>
+		<DT CLASS="western">Prerequisites</DT><DD>
 		While multiple versions of ImageMagick may be installed at one
 		time, if your intention is to replace a prior installation of
 		ImageMagick with a newer version, then it may be wise to uninstall
@@ -72,48 +74,48 @@ fonts.</P>
 		to use this extension, then you must install <A HREF="http://www.activestate.com/Products/ActivePerl/Download.html">ActiveState
 		ActivePerl</A> prior to commencing with installation of
 		ImageMagick.</DD><DL>
-			<DT>
+			<DT CLASS="western" STYLE="margin-left: 0in">
 			<BR>
-			</DT><DT>
-			<B>Retrieve Install Package</B></DT></DL>
-		<DD>
+			</DT></DL>
+		<DT CLASS="western">
+		Retrieve Install Package</DT><DD>
 		Retrieve the ImageMagick Windows binary install package from a one
 		of the ftp sites listed at the <A HREF="http://www.imagemagick.org/www/archives.html">ImageMagick
 		Download Sites</A> page. The file will be named similar to
 		ImageMagick-5.4.8-win2k.exe and should be found in the 'binaries'
 		subdirectory of the ftp site.</DD><DL>
-			<DT>
+			<DT CLASS="western" STYLE="margin-left: 0in">
 			<BR>
-			</DT><DT>
-			<B>Start Installation Wizard</B></DT></DL>
-		<DD>
+			</DT></DL>
+		<DT CLASS="western">
+		Start Installation Wizard</DT><DD>
 		Execute the downloaded file from your browser or by double-clicking
 		on the filename from within Windows Explorer. The ImageMagick Setup
 		Wizard will appear. Click on &ldquo;Next&gt;&rdquo; to continue.</DD><DL>
-			<DT>
+			<DT CLASS="western" STYLE="margin-left: 0in">
 			<BR>
-			</DT><DT>
-			<B>Select Destination Directory</B></DT></DL>
-		<DD>
+			</DT></DL>
+		<DT CLASS="western">
+		Select Destination Directory</DT><DD>
 		Specify what drive and directory to install ImageMagick into.
 		Approximately 13MB of free disk space is required to install
 		ImageMagick. The default installation directory is similar to
 		&ldquo;C:\Program Files\ImageMagick-5.4.8-Q16&rdquo;. Once you have
 		entered the desired installation directory, then select &ldquo;Next&gt;&rdquo;
 		to continue.</DD><DL>
-			<DT>
+			<DT CLASS="western" STYLE="margin-left: 0in">
 			<BR>
-			</DT><DT>
-			<B>Select Start Menu Folder</B></DT></DL>
-		<DD>
+			</DT></DL>
+		<DT CLASS="western">
+		Select Start Menu Folder</DT><DD>
 		Select the folder where you would like the program's shortcuts to
 		appear. The default should normally be satisfactory.  Click on
 		&ldquo;Next&gt;&rdquo; to continue.</DD><DL>
-			<DT>
+			<DT CLASS="western" STYLE="margin-left: 0in">
 			<BR>
-			</DT><DT>
-			<B>Select Additional Tasks</B></DT></DL>
-		<DD>
+			</DT></DL>
+		<DT CLASS="western">
+		Select Additional Tasks</DT><DD>
 		A screen is displayed which provides the option to create a desktop
 		shortcut icon to the imdisplay program and to update the executable
 		search path so that ImageMagick is available without</DD><DD>
@@ -121,28 +123,26 @@ fonts.</P>
 		both of these. Once you have made your selections, click on &ldquo;Next&gt;&rdquo;
 		to continue.</DD><DD>
 		<BR>
-		</DD><DL>
-			<DT>
-			<B>Ready to Install</B></DT></DL>
-		<DD>
+		</DD><DT CLASS="western">
+		Ready to Install</DT><DD>
 		A screen is displayed which displays the selected options. If you
 		are not satisfied with a selected option, then click on &ldquo;&lt;Back&rdquo;
 		to go back to a previous screen so that the option may be adjusted.
 		If you are<SPAN LANG="en-US"> satisfied </SPAN>with the options and
 		are ready to install, then select &ldquo;Install&rdquo;. To abort
 		the installation entirely, select &ldquo;Cancel&rdquo;.</DD><DL>
-			<DT>
+			<DT CLASS="western" STYLE="margin-left: 0in">
 			<BR>
-			</DT><DT>
-			<B>Installation Progress</B></DT></DL>
-		<DD>
+			</DT></DL>
+		<DT CLASS="western">
+		Installation Progress</DT><DD>
 		While the install program is performing the installation, it will
 		display what it is doing in an installation progress window.</DD><DL>
-			<DT>
+			<DT CLASS="western" STYLE="margin-left: 0in">
 			<BR>
-			</DT><DT>
-			<B>Finishing Up</B></DT></DL>
-		<DD>
+			</DT></DL>
+		<DT CLASS="western">
+		Finishing Up</DT><DD>
 		By default &ldquo;View ImageMagick.html&rdquo; is check-marked.
 		This causes the ImageMagick web pages to be displayed in a browser
 		when &ldquo;Finish&rdquo; is selected. If you do not want to view
@@ -153,11 +153,11 @@ fonts.</P>
 		Under Windows '95 and Windows '98 it will be necessary to reboot
 		the system in order for some settings to take effect (such as
 		executable search path) since these are set in autoexec.bat.</DD><DL>
-			<DT>
+			<DT CLASS="western" STYLE="margin-left: 0in">
 			<BR>
-			</DT><DT>
-			<B>Testing The Installation</B></DT></DL>
-		<DD>
+			</DT></DL>
+		<DT CLASS="western">
+		Testing The Installation</DT><DD>
 		Select &ldquo;Command Prompt&rdquo; from the Windows Start menu.
 		Within the window type</DD><DD>
 		<BR>
@@ -184,7 +184,7 @@ program.
 <DL>
 	<DL>
 		<DL>
-			<DT>/SP</DT></DL>
+			<DT CLASS="western" STYLE="margin-left: 0in">/SP</DT></DL>
 		<DD>
 		Disables the &ldquo;This will install... Do you wish to continue?&rdquo;
 		prompt at the beginning of Setup. Of course, this will have no
@@ -193,7 +193,7 @@ program.
 		</DD><DD>
 		<BR>
 		</DD><DL>
-			<DT>
+			<DT CLASS="western" STYLE="margin-left: 0in">
 			/SILENT, /VERYSILENT</DT></DL>
 		<DD>
 		Instructs Setup to be silent or very silent. When Setup is silent
@@ -213,14 +213,14 @@ program.
 		</DD><DD>
 		<BR>
 		</DD><DL>
-			<DT>
+			<DT CLASS="western" STYLE="margin-left: 0in">
 			/NORESTART</DT></DL>
 		<DD>
 		Instructs Setup not to reboot even if it's necessary. 
 		</DD><DD>
 		<BR>
 		</DD><DL>
-			<DT>
+			<DT CLASS="western" STYLE="margin-left: 0in">
 			/LOADINF=&quot;filename&quot;</DT></DL>
 		<DD>
 		Instructs Setup to load the settings from the specified file after
@@ -229,14 +229,14 @@ program.
 		quotes if the filename contains spaces.</DD><DD>
 		<BR>
 		</DD><DL>
-			<DT>
+			<DT CLASS="western" STYLE="margin-left: 0in">
 			/SAVEINF=&quot;filename&quot;</DT></DL>
 		<DD>
 		Instructs Setup to save installation settings to the specified
 		file.  Don't forget to use quotes if the filename contains spaces.</DD><DD>
 		<BR>
 		</DD><DL>
-			<DT>
+			<DT CLASS="western" STYLE="margin-left: 0in">
 			/DIR=&ldquo;x:\dirname&rdquo;</DT></DL>
 		<DD>
 		Overrides the default directory name displayed on the Select
@@ -246,7 +246,7 @@ program.
 		</DD><DD>
 		<BR>
 		</DD><DL>
-			<DT>
+			<DT CLASS="western" STYLE="margin-left: 0in">
 			/GROUP=&quot;folder name&quot;</DT></DL>
 		<DD>
 		Overrides the default folder name displayed on the Select Start
@@ -255,14 +255,14 @@ program.
 		is ignored.</DD><DD>
 		<BR>
 		</DD><DL>
-			<DT>
+			<DT CLASS="western" STYLE="margin-left: 0in">
 			/NOICONS</DT></DL>
 		<DD>
 		Instructs Setup to initially disable the Don't create any icons
 		check box on the Select Start Menu Folder wizard page.</DD><DD>
 		<BR>
 		</DD><DL>
-			<DT>
+			<DT CLASS="western" STYLE="margin-left: 0in">
 			/COMPONENTS=&quot;comma separated list of component names&quot;</DT></DL>
 		<DD>
 		Overrides the default components settings. Using this command line
@@ -273,8 +273,9 @@ program.
 Configure Environment</H2>
 <P CLASS="western" STYLE="margin-left: 0.79in">If you have installed
 Ghostscript, then you should add the directory containing the
-gswin32c.exe executable to the systems executable search path so that
-it is found when ImageMagick executes it.</P>
+gswin32c.exe executable to the system's executable search path (the
+default Ghostscript install puts it in C:\gs\gs7.04\bin) so that it
+is found when ImageMagick executes it.</P>
 <P CLASS="western" STYLE="margin-left: 0.79in">Windows '95 &amp;
 Windows '98 users must edit C:\autoexec.bat using notepad (or another
 text editor) and extend the existing path statement. Users of more

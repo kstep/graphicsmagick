@@ -574,6 +574,9 @@ static unsigned int ReadConfigurationFile(const char *basename,
 {
   char
     filename[MaxTextExtent],
+#if defined(WIN32)
+    gsexe[MaxTextExtent],
+#endif /* WIN32 */
     keyword[MaxTextExtent],
     *path,
     *q,
@@ -582,6 +585,10 @@ static unsigned int ReadConfigurationFile(const char *basename,
 
   size_t
     length;
+
+#if defined(WIN32)
+  NTGhostscriptEXE(gsexe,sizeof(gsexe));
+#endif /* WIN32 */
 
   /*
     Read the delegates configuration file.
@@ -676,6 +683,9 @@ static unsigned int ReadConfigurationFile(const char *basename,
         if (LocaleCompare((char *) keyword,"command") == 0)
           {
             delegate_list->commands=AcquireString(token);
+#if defined(WIN32)
+            SubstituteString(&delegate_list->commands,"@PSDelegate@",gsexe);
+#endif /* WIN32 */
             break;
           }
         break;

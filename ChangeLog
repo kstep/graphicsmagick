@@ -1,3 +1,8 @@
+2002-07-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * Added SubstituteString to utility.c for performing substitions
+    on strings.
+  * Added support for performing Ghostscript-related substitutions
+    while reading delegates.mgk and type.mgk files.
 2002-07-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Added the Windows utility functions NTGhostscriptDLL(),
     NTGhostscriptEXE(), and NTGhostscriptFonts(), to find the

@@ -58,6 +58,7 @@ extern MagickExport int
   GetMagickGeometry(const char *,long *,long *,unsigned long *,unsigned long *),
   ParseImageGeometry(const char *,long *,long *,unsigned long *,
     unsigned long *),
+  SubstituteString(char**, const char*, const char *),
   SystemCommand(const unsigned int,const char *),
   Tokenizer(TokenInfo *,unsigned,char *,size_t,char *,char *,char *,char *,
     char,char *,int *,char *);

@@ -1070,6 +1070,7 @@ MagickExport int NTGhostscriptDLL(char *path, int path_length)
   char
     buf[256];
 
+  *path='\0';
   gsver = NTGetLatestGhostscript();
   if ((gsver == FALSE) || (gsver < GS_MINIMUM_VERSION))
     return FALSE;
@@ -1115,6 +1116,7 @@ MagickExport int NTGhostscriptEXE(char *path, int path_length)
     buf[256],
     *p;
 
+  *path='\0';
   gsver = NTGetLatestGhostscript();
   if ((gsver == FALSE) || (gsver < GS_MINIMUM_VERSION))
     return FALSE;
@@ -1161,13 +1163,14 @@ MagickExport int NTGhostscriptEXE(char *path, int path_length)
 */
 MagickExport int NTGhostscriptFonts(char *path, int path_length)
 {
-    int
+  int
     gsver;
 
   char
     buf[256],
     *p;
 
+  *path='\0';
   gsver = NTGetLatestGhostscript();
   if ((gsver == FALSE) || (gsver < GS_MINIMUM_VERSION))
     return FALSE;
@@ -1175,7 +1178,7 @@ MagickExport int NTGhostscriptFonts(char *path, int path_length)
   if (!NTGhostscriptGetString(gsver, "GS_LIB", buf, sizeof(buf)))
     return FALSE;
 
- p = strrchr(buf, ';');
+  p = strrchr(buf, ';');
   if (p) {
     p++;
     strncpy(path,p,path_length-1);
