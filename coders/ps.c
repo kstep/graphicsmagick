@@ -235,7 +235,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   page.height=792;
   page.x=0;
   page.y=0;
-  (void) ParseGeometry(PSPageGeometry,&page.x,&page.y,&page.width,&page.height);
+  (void) ParseImageGeometry(PSPageGeometry,&page.x,&page.y,&page.width,
+    &page.height);
   /*
     Determine page geometry from the Postscript bounding box.
   */
@@ -309,7 +310,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (eps_level != 0)
     (void) fputs("showpage\n",file);
   if (image_info->page != (char *) NULL)
-    (void) ParseGeometry(image_info->page,&page.x,&page.y,
+    (void) ParseImageGeometry(image_info->page,&page.x,&page.y,
       &page.width,&page.height);
   FormatString(geometry,"%ux%u",
     (unsigned int) ceil(page.width*image->x_resolution/dx_resolution-0.5),
@@ -883,7 +884,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
       else
         if (LocaleCompare(image_info->magick,"PS") == 0)
           (void) strcpy(geometry,PSPageGeometry);
-    (void) ParseGeometry(geometry,&x,&y,&width,&height);
+    (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
     /*
       Scale relative to dots-per-inch.
     */

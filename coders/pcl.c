@@ -260,7 +260,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
     else
       if (LocaleCompare(image_info->magick,"PCL") == 0)
         (void) strcpy(geometry,PSPageGeometry);
-  (void) ParseGeometry(geometry,&x,&y,&width,&height);
+  (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
   (void) GetGeometry(geometry,&media_info.x,&media_info.y,
     &media_info.width,&media_info.height);
   page_size=2;
@@ -284,10 +284,10 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,buffer);
   density=72;
   if (image_info->density != (char *) NULL)
-    (void) ParseGeometry(image_info->density,&sans_offset,&sans_offset,
+    (void) ParseImageGeometry(image_info->density,&sans_offset,&sans_offset,
       &density,&density);
   else
-    (void) ParseGeometry("75x75",&sans_offset,&sans_offset,&density,&density);
+    (void) ParseImageGeometry("75x75",&sans_offset,&sans_offset,&density,&density);
   FormatString(buffer,"\033*p%dx%dY",x,y);
   (void) WriteBlobString(image,buffer);
   attribute=GetImageAttribute(image,"Label");

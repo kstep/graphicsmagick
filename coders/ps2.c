@@ -429,7 +429,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
       else
         if (LocaleCompare(image_info->magick,"PS2") == 0)
           (void) strcpy(geometry,PSPageGeometry);
-    (void) ParseGeometry(geometry,&x,&y,&width,&height);
+    (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
     /*
       Scale relative to dots-per-inch.
     */

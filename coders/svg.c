@@ -1638,7 +1638,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
               p=strchr(geometry,'>');
               if (p != (char *) NULL)
                 *p='\0';
-              (void) ParseGeometry(geometry,&page.x,&page.y,
+              (void) ParseImageGeometry(geometry,&page.x,&page.y,
                 &page.width,&page.height);
               DestroyPostscriptGeometry(geometry);
             }

@@ -321,7 +321,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       x=0;
       y=0;
       if (image->montage != (char *) NULL)
-        (void) ParseGeometry(image->montage,&x,&y,&width,&height);
+        (void) ParseImageGeometry(image->montage,&x,&y,&width,&height);
       /*
         Write an image map.
       */
@@ -402,7 +402,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   x=0;
   y=0;
   if (image->montage != (char *) NULL)
-    (void) ParseGeometry(image->montage,&x,&y,&width,&height);
+    (void) ParseImageGeometry(image->montage,&x,&y,&width,&height);
   /*
     Write an image map.
   */

@@ -150,10 +150,10 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   page.height=792;
   page.x=0;
   page.y=0;
-  (void) ParseGeometry("612x792+43+43",&page.x,&page.y,
+  (void) ParseImageGeometry("612x792+43+43",&page.x,&page.y,
     &page.width,&page.height);
   if (image_info->page != (char *) NULL)
-    (void) ParseGeometry(image_info->page,&page.x,&page.y,
+    (void) ParseImageGeometry(image_info->page,&page.x,&page.y,
       &page.width,&page.height);
   /*
     Initialize Image structure.

@@ -471,7 +471,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               if (LocaleCompare(keyword,"page") == 0)
                 {
-                  ParseGeometry(PostscriptGeometry(values),&image->page.x,
+                  ParseImageGeometry(PostscriptGeometry(values),&image->page.x,
                     &image->page.y,&image->page.width,&image->page.height);
                   break;
                 }
