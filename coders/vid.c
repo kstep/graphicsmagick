@@ -144,8 +144,6 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   image=(Image *) NULL;
   clone_info=CloneImageInfo(image_info);
-  if (clone_info == (ImageInfo *) NULL)
-    return((Image *) NULL);
   (void) CloneString(&clone_info->size,DefaultTileGeometry);
   for (i=0; i < number_files; i++)
   {
@@ -286,12 +284,17 @@ static unsigned int WriteVIDImage(const ImageInfo *image_info,Image *image)
   MontageInfo
     *montage_info;
 
+  register Image
+    *p;
+
   unsigned int
     status;
 
   /*
     Create the visual image directory.
   */
+  for (p=image; p != (Image *) NULL; p=p->next)
+    (void) SetImageAttribute(p,"Label",DefaultTileLabel);
   montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
   montage_image=MontageImages(image,montage_info,&image->exception);
   if (montage_image == (Image *) NULL)

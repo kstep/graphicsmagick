@@ -392,8 +392,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
     y=0;
     (void) ParseImageGeometry(montage_info->geometry,&x,&y,&width,&height);
     next_list[tile]->orphan=True;
-    tiled_next=ResizeImage(next_list[tile],width,height,LanczosFilter,1.0,
-      exception);
+    tiled_next=ZoomImage(next_list[tile],width,height,exception);
     if (tiled_next == (Image *) NULL)
       {
         for (i=0; i < (int) tile; i++)
@@ -839,7 +838,8 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
             number_lines+(montage_info->shadow ? 4 : 0);
           max_height=0;
         }
-      DestroyImage(next);
+      if (next != next_list[tile])
+        DestroyImage(next);
       (void) SetMonitorHandler(handler);
       ProgressMonitor(MontageImageText,tiles,total_tiles);
       tiles++;

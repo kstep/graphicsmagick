@@ -195,7 +195,8 @@ static unsigned int EmitMessage(j_common_ptr jpeg_info,int level)
     {
       if ((jpeg_info->err->num_warnings == 0) ||
           (jpeg_info->err->trace_level >= 3))
-        ThrowBinaryException(DelegateWarning,(char *) message,image->filename);
+        ThrowBinaryException(CorruptImageWarning,(char *) message,
+          image->filename);
       jpeg_info->err->num_warnings++;
     }
   else

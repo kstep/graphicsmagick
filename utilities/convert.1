@@ -369,7 +369,7 @@ left-to-right.
 averages an image sequence.
 .TP
 .B "-blur \fI<radius>x<sigma>\fP"
-blur the image with a gaussian operator of the given radius and
+blur the image with a Gaussian operator of the given radius and
 standard deviation (sigma).
 .TP
 .B "-border \fI<width>x<height>\fP"
@@ -676,11 +676,12 @@ You can set the primitive color, font color, and font bounding box color with
 processed in command line order so be sure to use \fB-fill\fP
 \fIbefore\fP the \fB-draw\fP option.
 .TP
-.B "-edge \fIradius\fP"
-detect edges with an image.
+.B "-edge \fI<radius>\fP"
+enhance the edges of the image with a convolution filter of the given radius.
 .TP
-.B "-emboss \fIradius\fP"
-emboss the image.
+.B "-emboss \fI<radius>x<sigma>\fP"
+emboss the image with a convolution kernel of the given radius
+and standard deviation (sigma).
 .TP
 .B "-enhance"
 apply a digital filter to enhance a noisy image.
@@ -769,7 +770,7 @@ the image pixels.  This option is useful if the image is of a known
 gamma but not set as an image attribute (e.g. PNG images).
 .TP
 .B "-gaussian \fI<radius>x<sigma>\fP"
-blur the image with a gaussian operator of the given radius and
+blur the image with a Gaussian operator of the given radius and
 standard deviation (sigma).
 .TP
 .B "-geometry \fI<width>x<height>{\+-}<x offset>{\+-}<y offset>{%}{!}{<}{>}\fP"
@@ -1168,7 +1169,7 @@ Specify \fIazimuth\fP and \fIelevation\fP as the position of the light source.
 Use \fB+shade\fP to return the shading results as a grayscale image.
 .TP
 .B "-sharpen \fI<radius>x<sigma>\fP"
-sharpen the image with a gaussian operator of the given radius and
+sharpen the image with a Laplacian operator of the given radius and
 standard deviation (sigma).
 .TP
 .B "-shear \fI<x degrees>x<y degrees>\fP"

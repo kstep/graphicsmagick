@@ -710,7 +710,7 @@ extern MagickExport Image
   *DeconstructImages(Image *,ExceptionInfo *),
   *DespeckleImage(Image *,ExceptionInfo *),
   *EdgeImage(Image *,const double,ExceptionInfo *),
-  *EmbossImage(Image *,const double,ExceptionInfo *),
+  *EmbossImage(Image *,const double,const double,ExceptionInfo *),
   *EnhanceImage(Image *,ExceptionInfo *),
   *FlipImage(Image *,ExceptionInfo *),
   *FlopImage(Image *,ExceptionInfo *),

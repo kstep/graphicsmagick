@@ -213,8 +213,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
   y=0;
   (void) ParseImageGeometry(DefaultPreviewGeometry,&x,&y,&width,&height);
   image->orphan=True;
-  preview_image=ResizeImage(image,width,height,MitchellFilter,1.0,
-    &image->exception);
+  preview_image=ZoomImage(image,width,height,&image->exception);
   if (preview_image == (Image *) NULL)
     return(False);
   preview_image->exempt=True;

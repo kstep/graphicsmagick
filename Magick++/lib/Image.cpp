@@ -555,7 +555,7 @@ void Magick::Image::emboss ( unsigned int order_ )
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
-    EmbossImage( image(), order_, &exceptionInfo );
+    EmbossImage( image(), order_, 1.5, &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
 }

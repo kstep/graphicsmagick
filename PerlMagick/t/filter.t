@@ -73,7 +73,7 @@ testFilter('input.miff', 'Edge',
 ++$test;
 testFilter('input.miff', 'Emboss',
   q/3/,
-  '08f4ee64dcf16fb7ce9be112d535379c',
+  '7c09db11b97f69c397aaee276d367131',
   'e8e5eb03ca6563f34db3692747a8d9f8');
 
 ++$test;
@@ -215,7 +215,7 @@ testFilter('input.miff', 'Shade',
 ++$test;
 testFilter('input.miff', 'Sharpen',
   q/0.0x1.5/,
-  '5ea5f0c03bbe84f9640e808d3f8dd325',
+  '57de7911c47d77e8cac507eb42d93ae0',
   'd2a0063811738be757a6d427499a6187');
 
 ++$test;

@@ -294,8 +294,9 @@ static struct
       {"height", IntegerReference}, {"x", IntegerReference},
       {"y", IntegerReference} } },
     { "Despeckle", },
-    { "Edge", { {"radius", DoubleReference} } },
-    { "Emboss", { {"radius", DoubleReference} } },
+    { "Edge", { {"geom", StringReference}, {"radius", DoubleReference} } },
+    { "Emboss", { {"geom", StringReference}, {"radius", DoubleReference},
+      {"sigma", DoubleReference} } },
     { "Enhance", },
     { "Flip", },
     { "Flop", },
@@ -4067,16 +4068,33 @@ Mogrify(ref,...)
         }
         case 10:  /* Edge */
         {
-          if (!attribute_flag[0])
-            argument_list[0].double_reference=0.0;
-          image=EdgeImage(image,argument_list[0].double_reference,&exception);
+          double
+            radius;
+
+          radius=0.0;
+          if (attribute_flag[1])
+            radius=argument_list[1].double_reference;
+          if (attribute_flag[0])
+            (void) sscanf(argument_list[0].string_reference,"%lf",&radius);
+          image=EdgeImage(image,radius,&exception);
           break;
         }
         case 11:  /* Emboss */
         {
-          if (!attribute_flag[0])
-            argument_list[0].double_reference=0.0;
-          image=EmbossImage(image,argument_list[0].double_reference,&exception);
+          double
+            radius,
+            sigma;
+
+          radius=0.0;
+          sigma=1.5;
+          if (attribute_flag[1])
+            radius=argument_list[1].double_reference;
+          if (attribute_flag[2])
+            sigma=argument_list[2].double_reference;
+          if (attribute_flag[0])
+            (void) sscanf(argument_list[0].string_reference,"%lfx%lf",
+              &radius,&sigma);
+          image=EmbossImage(image,radius,sigma,&exception);
           break;
         }
         case 12:  /* Enhance */
@@ -5063,7 +5081,7 @@ Mogrify(ref,...)
         case 58:  /* Charcoal */
         {
           if (!attribute_flag[0])
-            argument_list[0].string_reference="1";
+            argument_list[0].string_reference="0";
           commands[0]=client_name;
           commands[1]="-charcoal";
           commands[2]=argument_list[0].string_reference;

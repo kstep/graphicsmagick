@@ -5119,11 +5119,11 @@ MagickExport unsigned int XMakeImage(Display *display,
               SampleImage(transform_image,width,height,&image->exception);
           else
             if ((width <= 160) && (height <= 160))
-              resize_image=
-                ScaleImage(transform_image,width,height,&image->exception);
+              resize_image=ScaleImage(transform_image,width,height,
+                &image->exception);
             else
-              resize_image=ResizeImage(transform_image,width,height,
-                LanczosFilter,1.0,&image->exception);
+              resize_image=ZoomImage(transform_image,width,height,
+                &image->exception);
           if (resize_image != (Image *) NULL)
             {
               if (transform_image != image)

@@ -897,8 +897,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
   if ((height % 2) != 0)
     height--;
   image->orphan=True;
-  tile_image=ResizeImage(image,width,height,MitchellFilter,1.0,
-    &image->exception);
+  tile_image=ZoomImage(image,width,height,&image->exception);
   if (tile_image == (Image *) NULL)
     return(False);
   (void) sscanf(geometry,"%ux%u",&width,&height);
@@ -923,8 +922,8 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
     }
   TransformImage(&tile_image,(char *) NULL,tile_geometry);
   RGBTransformImage(tile_image,YCCColorspace);
-  downsampled_image=ResizeImage(tile_image,tile_image->columns/2,
-    tile_image->rows/2,MitchellFilter,1.0,&image->exception);
+  downsampled_image=ZoomImage(tile_image,tile_image->columns/2,
+    tile_image->rows/2,&image->exception);
   if (downsampled_image == (Image *) NULL)
     return(False);
   /*

@@ -156,7 +156,7 @@ MagickExport Image *AddNoiseImage(Image *image,const NoiseType noise_type,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method BlurImage creates a blurred copy of the input image.  We
-%  convolve the image with a gaussian operator of the given width and
+%  convolve the image with a Gaussian operator of the given width and
 %  standard deviation (sigma).
 %
 %  Each output pixel is set to a value that is the weighted average of the
@@ -164,18 +164,18 @@ MagickExport Image *AddNoiseImage(Image *image,const NoiseType noise_type,
 %  determines how large the area is.  Each pixel in the area is weighted
 %  in the average according to its distance from the center, and the
 %  standard deviation, sigma. The actual weight is calculated according to
-%  the gaussian distribution (also called normal distribution), which
+%  the Gaussian distribution (also called normal distribution), which
 %  looks like a Bell Curve centered on a pixel.  The standard deviation
 %  controls how 'pointy' the curve is.  The pixels near the center of the
 %  curve (closer to the center of the area we are averaging) contribute
 %  more than the distant pixels.
 %
 %  In general, the width should be wide enough to include most of the
-%  total weight under the gaussian for the standard deviation you choose.
+%  total weight under the Gaussian for the standard deviation you choose.
 %  As a guideline about 90% of the weight lies within two standard
 %  deviations, and 98% of the weight within 3 standard deviations. Since
 %  the width parameter to the function specifies the radius of the
-%  gaussian convolution mask in pixels, not counting the centre pixel, the
+%  Gaussian convolution mask in pixels, not counting the centre pixel, the
 %  width parameter should be chosen larger than the standard deviation,
 %  perhaps about twice as large to three times as large. A width of 1 will
 %  give a (standard) 3x3 convolution mask, a width of 2 gives a 5 by 5
@@ -188,10 +188,10 @@ MagickExport Image *AddNoiseImage(Image *image,const NoiseType noise_type,
 %  those neighbours they do have. Thus pixels at the edge of images are
 %  typically less blur.
 %
-%  Since a 2d gaussian is seperable, we perform the Gaussian blur by
-%  convolving with two 1d gaussians, first in the x, then in the y
-%  direction. For an n by n image and gaussian width w this requires 2wn^2
-%  multiplications, while convolving with a 2d gaussian requres w^2n^2
+%  Since a 2d Gaussian is seperable, we perform the Gaussian blur by
+%  convolving with two 1d Gaussians, first in the x, then in the y
+%  direction. For an n by n image and Gaussian width w this requires 2wn^2
+%  multiplications, while convolving with a 2d Gaussian requres w^2n^2
 %  mults.
 %
 %  We blur the image into a copy, and the original is left untouched.
@@ -216,10 +216,10 @@ MagickExport Image *AddNoiseImage(Image *image,const NoiseType noise_type,
 %      after it is blur.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o radius: The radius of the gaussian, in pixels, not counting the center
+%    o radius: The radius of the Gaussian, in pixels, not counting the center
 %      pixel.
 %
-%    o sigma: The standard deviation of the gaussian, in pixels.
+%    o sigma: The standard deviation of the Gaussian, in pixels.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -289,7 +289,7 @@ MagickExport Image *BlurImage(Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   width=GetKernelWidth(radius,sigma);
   if ((image->columns < width) || (image->rows < width))
-    ThrowImageException(ResourceLimitWarning,"Unable to blur image",
+    ThrowImageException(OptionWarning,"Unable to blur image",
       "image is smaller than radius");
   blur_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (blur_image == (Image *) NULL)
@@ -628,10 +628,10 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
   assert(exception->signature == MagickSignature);
   width=order;
   if ((width % 2) == 0)
-    ThrowImageException(ResourceLimitWarning,"Unable to convolve image",
+    ThrowImageException(OptionWarning,"Unable to convolve image",
       "kernel width must be an odd number");
   if ((image->columns < width) || (image->rows < width))
-    ThrowImageException(ResourceLimitWarning,"Unable to convolve image",
+    ThrowImageException(OptionWarning,"Unable to convolve image",
       "image smaller than kernel width");
   convolve_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (convolve_image == (Image *) NULL)
@@ -923,7 +923,7 @@ MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method EdgeImage creates a new image that is a copy of an existing
-%  one with the edges highlighted.  It allocates the memory necessary for the
+%  one with the edges enhanced.  It allocates the memory necessary for the
 %  new Image structure and returns a pointer to the new image.
 %
 %  The format of the EdgeImage method is:
@@ -966,13 +966,16 @@ MagickExport Image *EdgeImage(Image *image,const double radius,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=GetKernelWidth(radius,0.5);
+  if ((image->columns < width) || (image->rows < width))
+    ThrowImageException(OptionWarning,"Unable to edgeen image",
+      "image is smaller than radius");
   kernel=(double *) AcquireMemory(width*width*sizeof(double));
   if (kernel == (double *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to detect edges",
+    ThrowImageException(ResourceLimitWarning,"Unable to edgeen image",
       "Memory allocation failed");
   for (i=0; i < (width*width); i++)
     kernel[i]=(-1.0);
-  kernel[i/2]=width*width-1;
+  kernel[i/2]=width*width-1.0;
   edge_image=ConvolveImage(image,width,kernel,exception);
   LiberateMemory((void **) &kernel);
   return(edge_image);
@@ -995,7 +998,7 @@ MagickExport Image *EdgeImage(Image *image,const double radius,
 %  The format of the EmbossImage method is:
 %
 %      Image *EmbossImage(Image *image,const double radius,
-%        ExceptionInfo *exception)
+%        const double sigma,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1008,12 +1011,14 @@ MagickExport Image *EdgeImage(Image *image,const double radius,
 %
 %    o radius: the radius of the pixel neighborhood.
 %
+%    o sigma: The standard deviation of the Gaussian, in pixels.
+%
 %    o exception: return any errors or warnings in this structure.
 %
 %
 */
 MagickExport Image *EmbossImage(Image *image,const double radius,
-  ExceptionInfo *exception)
+  const double sigma,ExceptionInfo *exception)
 {
   double
     *kernel;
@@ -1045,7 +1050,8 @@ MagickExport Image *EmbossImage(Image *image,const double radius,
   {
     for (u=(-width/2); u <= (width/2); u++)
     {
-      kernel[i]=(int) ((u < 0 || v < 0 ? -8.0 : 8.0)*exp((double) -(u*u+v*v)));
+      kernel[i]=(u < 0 || v < 0 ? -8.0 : 8.0)*
+        exp((double) -(u*u+v*v)/(sigma*sigma));
       if (u == j)
         kernel[i]=0.0;
       i++;
@@ -1250,10 +1256,10 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
 %      after it is blur.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o radius: the radius of the gaussian, in pixels, not counting the center
+%    o radius: the radius of the Gaussian, in pixels, not counting the center
 %      pixel.
 %
-%    o sigma: the standard deviation of the gaussian, in pixels.
+%    o sigma: the standard deviation of the Gaussian, in pixels.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -1283,11 +1289,11 @@ MagickExport Image *GaussianBlurImage(Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   width=GetKernelWidth(radius,sigma);
   if ((image->columns < width) || (image->rows < width))
-    ThrowImageException(ResourceLimitWarning,"Unable to gaussian blur image",
+    ThrowImageException(OptionWarning,"Unable to Gaussian blur image",
       "image is smaller than radius");
   kernel=(double *) AcquireMemory(width*width*sizeof(double));
   if (kernel == (double *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to gaussian blur image",
+    ThrowImageException(ResourceLimitWarning,"Unable to Gaussian blur image",
       "Memory allocation failed");
   i=0;
   normalize=0.0;
@@ -1560,7 +1566,7 @@ MagickExport Image *MedianFilterImage(Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   width=GetKernelWidth(radius,0.5);
   if ((image->columns < width) || (image->rows < width))
-    ThrowImageException(ResourceLimitWarning,"Unable to median filter image",
+    ThrowImageException(OptionWarning,"Unable to median filter image",
       "image smaller than kernel radius");
   median_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (median_image == (Image *) NULL)
@@ -1712,10 +1718,9 @@ MagickExport Image *MorphImages(Image *image,const unsigned int number_frames,
       beta=(double) (i+1.0)/(number_frames+1.0);
       alpha=1.0-beta;
       next->orphan=True;
-      morph_images->next=ResizeImage(next,
+      morph_images->next=ZoomImage(next,
         (unsigned int) (alpha*next->columns+beta*next->next->columns+0.5),
-        (unsigned int) (alpha*next->rows+beta*next->next->rows+0.5),
-        LanczosFilter,1.0,exception);
+        (unsigned int) (alpha*next->rows+beta*next->next->rows+0.5),exception);
       if (morph_images->next == (Image *) NULL)
         {
           DestroyImages(morph_images);
@@ -1724,8 +1729,8 @@ MagickExport Image *MorphImages(Image *image,const unsigned int number_frames,
       morph_images->next->previous=morph_images;
       morph_images=morph_images->next;
       next->next->orphan=True;
-      morph_image=ResizeImage(next->next,morph_images->columns,
-        morph_images->rows,LanczosFilter,1.0,exception);
+      morph_image=ZoomImage(next->next,morph_images->columns,morph_images->rows,
+        exception);
       if (morph_image == (Image *) NULL)
         {
           DestroyImages(morph_images);
@@ -1848,7 +1853,7 @@ MagickExport Image *OilPaintImage(Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   width=GetKernelWidth(radius,0.5);
   if ((image->columns < width) || (image->rows < width))
-    ThrowImageException(ResourceLimitWarning,"Unable to oil paint",
+    ThrowImageException(OptionWarning,"Unable to oil paint",
       "image smaller than radius");
   paint_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (paint_image == (Image *) NULL)
@@ -2210,7 +2215,7 @@ MagickExport Image *ReduceNoiseImage(Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   width=GetKernelWidth(radius,0.5);
   if ((image->columns < width) || (image->rows < width))
-    ThrowImageException(ResourceLimitWarning,"Unable to noise filter image",
+    ThrowImageException(OptionWarning,"Unable to noise filter image",
       "image smaller than kernel radius");
   noise_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (noise_image == (Image *) NULL)
@@ -2501,7 +2506,7 @@ MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method SharpenImage creates a new image that is sharpened version of
-%  the original image using the unsharp mask algorithm.
+%  the original image using a Laplacian convolution kernel.
 %
 %  The format of the SharpenImage method is:
 %
@@ -2510,14 +2515,14 @@ MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
 %
 %  A description of each parameter follows:
 %
-%    o unsharp_image: Method SharpenImage returns a pointer to the image
-%      after it is blur.  A null image is returned if there is a memory
+%    o sharp_image: Method SharpenImage returns a pointer to the image
+%      after it is sharp.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o radius: The radius of the gaussian, in pixels, not counting the center
+%    o radius: The radius of the Gaussian, in pixels, not counting the center
 %      pixel.
 %
-%    o sigma: The standard deviation of the gaussian, in pixels.
+%    o sigma: The standard deviation of the Laplacian, in pixels.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -2526,7 +2531,48 @@ MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
 MagickExport Image *SharpenImage(Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
-  return(UnsharpMaskImage(image,radius,sigma,1.0,0.05,exception));
+  double
+    *kernel,
+    normalize;
+
+  Image
+    *sharp_image;
+
+  int
+    width;
+
+  register int
+    i,
+    u,
+    v;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  width=GetKernelWidth(radius,sigma);
+  if ((image->columns < width) || (image->rows < width))
+    ThrowImageException(OptionWarning,"Unable to sharpen image",
+      "image is smaller than radius");
+  kernel=(double *) AcquireMemory(width*width*sizeof(double));
+  if (kernel == (double *) NULL)
+    ThrowImageException(ResourceLimitWarning,"Unable to sharpen image",
+      "Memory allocation failed");
+  i=0;
+  normalize=0.0;
+  for (v=(-width/2); v <= (width/2); v++)
+  {
+    for (u=(-width/2); u <= (width/2); u++)
+    {
+      kernel[i]=exp((double) -(u*u+v*v)/(sigma*sigma));
+      normalize+=kernel[i];
+      i++;
+    }
+  }
+  kernel[i/2]=(-2.0)*normalize;
+  sharp_image=ConvolveImage(image,width,kernel,exception);
+  LiberateMemory((void **) &kernel);
+  return(sharp_image);
 }
 
 /*
@@ -3204,10 +3250,10 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
 %      after it is blur.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o radius: The radius of the gaussian, in pixels, not counting the center
+%    o radius: The radius of the Gaussian, in pixels, not counting the center
 %      pixel.
 %
-%    o sigma: The standard deviation of the gaussian, in pixels.
+%    o sigma: The standard deviation of the Gaussian, in pixels.
 %
 %    o amount: The percentage of the difference between the original and the
 %      blur image that is added back into the original.

@@ -69,7 +69,7 @@ const char
   *BorderColor = "#dfdfdf",  /* gray */
   *DefaultPointSize = "12",
   *DefaultTileFrame = "15x15+3+3",
-  *DefaultTileGeometry = "106x106+4+3>",
+  *DefaultTileGeometry = "120x120+4+3>",
   *DefaultTileLabel = "%f\n%wx%h\n%b",
   *ForegroundColor = "#000000",  /* black */
   *LoadImageText = "  Loading image...  ",
@@ -3270,9 +3270,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
   DrawInfo
     *draw_info;
 
-  FilterTypes
-    filter;
-
   Image
     *map_image,
     *region_image;
@@ -3314,7 +3311,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
   */
   clone_info=CloneImageInfo(image_info);
   draw_info=CloneDrawInfo(clone_info,(DrawInfo *) NULL);
-  filter=LanczosFilter;
   GetQuantizeInfo(&quantize_info);
   geometry=(char *) NULL;
   map_image=(Image *) NULL;
@@ -3631,17 +3627,17 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       }
     if (LocaleNCompare("-edge",option,3) == 0)
       {
+        double
+          radius;
+
         Image
           *edge_image;
 
-        unsigned int
-          order;
-
         /*
-          Detect edges in the image.
+          Enhance edges in the image.
         */
-        order=atoi(argv[++i]);
-        edge_image=EdgeImage(*image,order,&(*image)->exception);
+        radius=atof(argv[++i]);
+        edge_image=EdgeImage(*image,radius,&(*image)->exception);
         if (edge_image == (Image *) NULL)
           break;
         DestroyImage(*image);
@@ -3650,17 +3646,21 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       }
     if (LocaleNCompare("-emboss",option,3) == 0)
       {
+        double
+          radius,
+          sigma;
+
         Image
           *emboss_image;
-
-        unsigned int
-          order;
 
         /*
           Emboss the image.
         */
-        order=atoi(argv[++i]);
-        emboss_image=EmbossImage(*image,order,&(*image)->exception);
+        radius=0.0;
+        sigma=1.5;
+        if (*option == '-')
+          (void) sscanf(argv[++i],"%lfx%lf",&radius,&sigma);
+        emboss_image=EmbossImage(*image,radius,sigma,&(*image)->exception);
         if (emboss_image == (Image *) NULL)
           break;
         DestroyImage(*image);
@@ -3700,6 +3700,9 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       {
         if (*option == '-')
           {
+            FilterTypes
+              filter;
+
             option=argv[++i];
             filter=LanczosFilter;
             if (LocaleCompare("Point",option) == 0)
@@ -3858,8 +3861,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         y=0;
         (void) CloneString(&geometry,argv[++i]);
         (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
-        resize_image=ResizeImage(*image,width,height,filter,1.0,
-          &(*image)->exception);
+        resize_image=ZoomImage(*image,width,height,&(*image)->exception);
         if (resize_image == (Image *) NULL)
           break;
         DestroyImage(*image);
