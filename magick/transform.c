@@ -1129,10 +1129,16 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
                             "Profile1: %ld bytes, Profile2: %ld bytes",
                             (long)length,(long)image->color_profile.length);
-      /* check for missing or identical input and output profile */
-      if ((length != 0) && (image->color_profile.length != 0) &&
-        (image->color_profile.length != length) &&
-          (memcmp(image->color_profile.info,profile,length) != 0))
+
+      /* Check for identical input and output profiles. Return on identity. */
+      if ((length != 0) && (length == image->color_profile.length) &&
+          (memcmp(image->color_profile.info,profile,length) == 0))
+        {
+          return(True);
+        }
+
+      /* Convert to new colors if we have both an old and a new profile. */
+      if ((image->color_profile.length != 0) && (length != 0))
         {
 #if defined(HasLCMS)
 
@@ -1453,20 +1459,35 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
             }
           image->colorspace=target_colorspace;
           /*
-            We can't be sure black and white stays black and white
-            and gray colors transform to gray colors.
+            We can't be sure black and white stays exactly black and white
+            and that gray colors transform to gray colors.
           */
           image->is_grayscale=(target_colorspace == GRAYColorspace);
           image->is_monochrome=False; 
-
           cmsDeleteTransform(transform);
+
+          /*
+            Throw away the old profile after conversion before we
+            assign a new one.
+          */
+          MagickFreeMemory(image->color_profile.info);
+          image->color_profile.info=(unsigned char *) NULL;
+          image->color_profile.length=0;
 #else
           ThrowBinaryException(MissingDelegateError,LCMSLibraryIsNotAvailable,
             image->filename);
 #endif
-          MagickFreeMemory(image->color_profile.info);
-          image->color_profile.info=(unsigned char *) NULL;
         }
+
+      /*
+        TODO: If the image *did not* already have a color profile,
+        verify that the colorspace of the new profile is valid for the
+        colorspace of the image. If LCMS is not available we should
+        refuse to assign a new profile (just like we're refusing a
+        conversion above) as we can't be sure the assigment is valid.
+        We might be trying to assign a CMYK profile to an RGB image,
+        for instance.
+      */
       if (clone)
         {
           image->color_profile.info=MagickAllocateMemory(unsigned char *,length);
