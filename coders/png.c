@@ -2980,6 +2980,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         mng_height=ping_info->height;
         frame=image_box;
         clip=image_box;
+      }
+    else
+      {
        /* Correct image->page.y for SouthWest gravity. */
        image->page.y=(long) image->page.height-mng_info->y_off[object_id]
          -(long) ping_info->height;
