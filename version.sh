@@ -9,11 +9,11 @@ PACKAGE_NAME='GraphicsMagick'
 #
 # Package version.  This is is the numeric version suffix applied to
 # PACKAGE_NAME (e.g. "1.0").
-PACKAGE_VERSION='1.0'
+PACKAGE_VERSION='1.0.1'
 
 #
 # Formal Package release date
-PACKAGE_RELEASE_DATE="05/05/03"
+PACKAGE_RELEASE_DATE="05/19/03"
 
 #
 # Package version addendum.  This is an arbitrary suffix (if any)
@@ -46,6 +46,6 @@ PACKAGE_VERSION_ADDENDUM=''
 #  6. If any interfaces have been removed since the last public release,
 #     then set age to 0.
 LIBRARY_CURRENT=0
-LIBRARY_REVISION=2
+LIBRARY_REVISION=3
 LIBRARY_AGE=0
 

@@ -1,5 +1,7 @@
 2003-05-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* GraphicsMagick 1.0.1 released.
+	* version.sh (PACKAGE_RELEASE_DATE): Update for 1.0.1 release.
 	* index.html: Adjust width setting for magick.png.
 	* coders/logo.c: Update to use temporary frog logo image
 	until official logo image is available.
