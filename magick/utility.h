@@ -37,6 +37,9 @@ extern "C" {
 #include "nt.h"
 #endif
 #endif
+#if defined(WITH_DMALLOC)
+#include <dmalloc.h>
+#endif
 
 #if !defined(S_ISDIR)
 #define S_ISDIR(mode) (((mode) & S_IFMT) == S_IFDIR)
@@ -95,13 +98,16 @@ extern MagickExport unsigned short
   *ConvertTextToUnicode(const char *,int *);
 
 extern MagickExport void
+  *AllocateMemory(const size_t),
   AppendImageFormat(const char *,char *),
   DestroyPostscriptGeometry(char *),
   ExpandFilename(char *),
+  FreeMemory(void **),
   FormatString(char *,const char *,...),
   LocaleLower(char *),
   LocaleUpper(char *),
   LocaleFilename(char *),
+  *ReallocateMemory(void *,const size_t),
   Strip(char *),
   TemporaryFilename(char *);
 
