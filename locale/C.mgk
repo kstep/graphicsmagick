@@ -793,6 +793,9 @@
         <Message name="JPEGLibraryIsNotAvailable">
           JPEG compression library is not available
         </Message>
+        <Message name="LCMSLibraryIsNotAvailable">
+          LCMS encoding not enabled
+        </Message>
         <Message name="LZWEncodingNotEnabled">
           LZW encoding not enabled
         </Message>
