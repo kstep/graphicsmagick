@@ -556,9 +556,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       (void) SetImageAttribute(image,"label",text);
     if (TIFFGetField(tiff,TIFFTAG_IMAGEDESCRIPTION,&text) == 1)
       (void) SetImageAttribute(image,"comment",text);
-    /* the following is redundant with code from below, but serves to
-       correctly report the type of image when using the ping function
-     */
     if (image->storage_class == DirectClass)
       {
         (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
@@ -1578,22 +1575,29 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     switch (compress_tag)
     {
       case COMPRESSION_JPEG:
-        (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,strip_size+
-          (8-(strip_size % 8)));
+      {
+        (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,
+          strip_size+(8-(strip_size % 8)));
         break;
+      }
       case COMPRESSION_ADOBE_DEFLATE:
+			{
         (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
         (void) TIFFSetField(tiff,TIFFTAG_PREDICTOR,2);
         (void) TIFFSetField(tiff,TIFFTAG_ZIPQUALITY,9);
         break;
+			}
       case COMPRESSION_CCITTFAX4:
+			{
         (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
         break;
+			}
       default:
+			{
         (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,strip_size);
         break;
+			}
     }
-
     if ((image->x_resolution != 0) && (image->y_resolution != 0))
       {
         unsigned short
