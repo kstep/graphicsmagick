@@ -56,6 +56,7 @@
 %
 %  Where options include:
 %    -cache threshold  megabytes of memory available to the pixel cache
+%    -format "string"  output formated image characteristics
 %    -ping             efficiently determine image characteristics
 %    -size geometry    width and height of image
 %    -verbose          print detailed information about the image
@@ -100,6 +101,7 @@ static void Usage(const char *client_name)
     *options[]=
     {
       "-cache threshold  megabytes of memory available to the pixel cache",
+      "-format \"string\"  output formated image characteristics",
       "-ping             efficiently determine image characteristics",
       "-size geometry    width and height of image",
       "-verbose          print detailed information about the image",
@@ -132,6 +134,7 @@ int main(int argc,char **argv)
 {
   char
     *client_name,
+    *format,
     *option;
 
   double
@@ -173,6 +176,7 @@ int main(int argc,char **argv)
   count=0;
   image_info=CloneImageInfo((ImageInfo *) NULL);
   number_images=0;
+  format=(char *) NULL;
   /*
     Identify an image.
   */
@@ -183,6 +187,20 @@ int main(int argc,char **argv)
       {
         switch(*(option+1))
         {
+          case 'f':
+            if (strncmp("format",option+1,2) == 0)
+              {
+                if (*option == '-')
+                  {
+                    i++;
+                    if (i == argc)
+                      MagickError(OptionError,"Missing format string",option);
+                    format=argv[i];
+                  }
+                break;
+              }
+            MagickError(OptionError,"Unrecognized option",option);
+            break;
           case 'c':
           {
             if (strncmp("cache",option+1,3) == 0)
@@ -265,8 +283,29 @@ int main(int argc,char **argv)
     (void) strcpy(image_info->filename,argv[i]);
     if (image_info->ping)
       {
-        image_info->verbose=True;
-        image=PingImage(image_info,&exception);
+        /* in this case we want the first frame only */
+        image_info->verbose=False;
+        image_info->subimage=0;
+        image_info->subrange=0;
+        image=ReadImage(image_info,&exception);
+        if (image == (Image *) NULL)
+          MagickError(exception.severity,exception.message,exception.qualifier);
+        if (format != NULL)
+          {
+            char
+              *text;
+
+            text=TranslateText((ImageInfo *) NULL,image,format);
+            if (text == (char *) NULL)
+              {
+                ThrowBinaryException(ResourceLimitWarning,"Unable to format image data",
+                  "Memory allocation failed");
+              }
+            else
+              fputs(text,stdout);
+          }
+        else
+          DescribeImage(image,stdout,False);
         number_images++;
         continue;
       }
@@ -277,7 +316,22 @@ int main(int argc,char **argv)
     {
       if (p->scene == 0)
         p->scene=count++;
-      DescribeImage(p,stdout,image_info->verbose);
+      if (format != NULL)
+        {
+          char
+            *text;
+
+          text=TranslateText((ImageInfo *) NULL,image,format);
+          if (text == (char *) NULL)
+            {
+              ThrowBinaryException(ResourceLimitWarning,"Unable to format image data",
+                "Memory allocation failed");
+            }
+          else
+            fputs(text,stdout);
+        }
+      else
+          DescribeImage(p,stdout,image_info->verbose);
     }
     DestroyImages(image);
     number_images++;
