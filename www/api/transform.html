@@ -26,6 +26,7 @@
 		<LI><A HREF="#deconstructimages">DeconstructImages</A></LI>
 		<LI><A HREF="#flipimage">FlipImage</A></LI>
 		<LI><A HREF="#flopimage">FlopImage</A></LI>
+		<LI><A HREF="#profileimage">ProfileImage</A></LI>
 		<LI><A HREF="#rollimage">RollImage</A></LI>
 		<LI><A HREF="#transformimage">TransformImage</A></LI>
 	</UL>
@@ -48,6 +49,7 @@
 <P>Image * <STRONG>DeconstructImages</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>FlipImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>FlopImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
+<P>unsigned int  <STRONG>ProfileImage</STRONG>( Image *image, const ProfileType type, const char *filename );</P>
 <P>Image * <STRONG>RollImage</STRONG>( Image *image, const int x_offset, const int y_offset, ExceptionInfo *exception );</P>
 <P>void  <STRONG>TransformImage</STRONG>( Image ** image, const char *crop_geometry, const char *image_geometry );</P>
 <P>
@@ -178,6 +180,33 @@ The address of a structure of type Image.
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="profileimage">ProfileImage</A></H2>
+<P>Method ProfileImage removes or adds a 
+<FONT SIZE=-1>ICC</FONT> or 
+<FONT SIZE=-1>IPTC</FONT> profile to an image.</P>
+<P>The format of the ProfileImage method is:</P>
+<blockquote>unsigned int ProfileImage ( <A HREF="types/Image.html">Image</A> *image, const ProfileType type, const char *filename ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
+<DD>
+Method ProfileImage returns True if the profile is successfully added or removed from the image, otherwise False.
+<P></P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The address of a structure of type Image.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_type%3A">type:</A></STRONG><BR>
+<DD>
+Specifies the type of profile to add or remove.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_filename%3A">filename:</A></STRONG><BR>
+<DD>
+Specifies the filename of the 
+<FONT SIZE=-1>ICC</FONT> or 
+<FONT SIZE=-1>IPTC</FONT> profile.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="rollimage">RollImage</A></H2>

@@ -7115,7 +7115,8 @@ MagickExport void XMakeStandardColormap(Display *display,
         }
       return;
     }
-  if ((visual_info->color_class != DirectColor) && (visual_info->color_class != TrueColor))
+  if ((visual_info->color_class != DirectColor) &&
+      (visual_info->color_class != TrueColor))
     if ((image->color_class == DirectClass) ||
         ((int) image->colors > visual_info->colormap_size))
       {

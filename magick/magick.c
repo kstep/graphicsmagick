@@ -198,6 +198,7 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
       InitializeModules();
 #else
       Register8BIMImage();
+      RegisterAVIImage();
       RegisterAVSImage();
       RegisterBMPImage();
       RegisterCACHEImage();

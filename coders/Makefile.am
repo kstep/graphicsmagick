@@ -32,13 +32,13 @@ AUTOMAKE_OPTIONS = 1.4 foreign
 
 INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/magick
 
-MAGICK_CODER_SRCS = avs.c 8bim.c bmp.c cache.c cmyk.c dcm.c dps.c ept.c fax.c \
-  fits.c fpx.c gif.c gradation.c gray.c hdf.c histogram.c html.c icm.c icon.c \
-  iptc.c jbig.c jpeg.c label.c logo.c map.c matte.c miff.c mono.c mtv.c mvg.c \
-  pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c png.c plasma.c pnm.c preview.c \
-  ps.c ps2.c ps3.c psd.c pwp.c rgb.c rla.c rle.c sct.c sfw.c sgi.c stegano.c \
-  sun.c svg.c tga.c tiff.c tile.c tim.c ttf.c txt.c uil.c uyvy.c vicar.c \
-  vid.c viff.c wbmp.c wpg.c x.c xbm.c xc.c xpm.c xwd.c yuv.c
+MAGICK_CODER_SRCS = avi.c avs.c 8bim.c bmp.c cache.c cmyk.c dcm.c dps.c ept.c \
+  fax.c fits.c fpx.c gif.c gradation.c gray.c hdf.c histogram.c html.c icm.c \
+  icon.c iptc.c jbig.c jpeg.c label.c logo.c map.c matte.c miff.c mono.c mtv.c \
+  mvg.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c png.c plasma.c pnm.c \
+  preview.c ps.c ps2.c ps3.c psd.c pwp.c rgb.c rla.c rle.c sct.c sfw.c sgi.c \
+  stegano.c sun.c svg.c tga.c tiff.c tile.c tim.c ttf.c txt.c uil.c uyvy.c \
+  vicar.c vid.c viff.c wbmp.c wpg.c x.c xbm.c xc.c xpm.c xwd.c yuv.c
 
 MAJOR_VERSION=@MAJOR_VERSION@
 MINOR_VERSION=@MINOR_VERSION@
@@ -96,7 +96,7 @@ if HasX11
 X_LA=x.la
 XWD_LA=xwd.la
 endif # HasX11
-pkg_LTLIBRARIES   = 8bim.la avs.la bmp.la cache.la cmyk.la dcm.la \
+pkg_LTLIBRARIES   = 8bim.la avi.la avs.la bmp.la cache.la cmyk.la dcm.la \
   $(DSP_LA) ept.la $(FAX_LA) $(FPX_LA) fits.la gif.la gray.la gradation.la \
   $(HDF_LA) histogram.la html.la icm.la icon.la iptc.la $(JBIG_LA) \
   $(JPEG_LA) label.la logo.la map.la matte.la miff.la mono.la mtv.la mvg.la \
@@ -108,6 +108,11 @@ pkg_LTLIBRARIES   = 8bim.la avs.la bmp.la cache.la cmyk.la dcm.la \
 else
 pkg_LTLIBRARIES   =
 endif # WITH_MODULES
+
+# AVI module
+avi_la_SOURCES      = avi.c
+avi_la_LDFLAGS      = -no-undefined -module -avoid-version
+avi_la_LIBADD       = ../magick/libMagick.la
 
 # AVS module
 avs_la_SOURCES      = avs.c
