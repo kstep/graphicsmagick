@@ -18,15 +18,9 @@ PACKAGE_RELEASE_DATE="05/05/03"
 #
 # Package version addendum.  This is an arbitrary suffix (if any)
 # appended to the package version. (e.g. "beta1")
-
-# `echo -snapshot-``date '+%g%m%d'`
-CHANGE_DATE=`find ${srcdir}/ChangeLog -printf '%Ty%Tm%Td%\n' 2> /dev/null`
-if test -n "$CHANGE_DATE"
-then
-  PACKAGE_VERSION_ADDENDUM="-${CHANGE_DATE}"
-else
-  PACKAGE_VERSION_ADDENDUM="-snapshot"
-fi
+# Extract the most recent update date from the ChangeLog
+CHANGE_DATE=`awk '/^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/ { print substr($1,1,4) substr($1,6,2) substr($1,9,2); exit; }' ${srcdir}/ChangeLog`
+PACKAGE_VERSION_ADDENDUM="-${CHANGE_DATE}"
 
 # To hardcode the version addendum, uncomment the following line
 PACKAGE_VERSION_ADDENDUM=''

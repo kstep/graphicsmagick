@@ -1,3 +1,10 @@
+2003-05-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* version.sh (CHANGE_DATE): Update to reliable awk-based technique
+	to extract the latest change date from the ChangeLog file.
+	* Makefile.am (EXTRA_DIST): QuickStart.txt and QuickStart.html
+	have not been updated, and are misleading, so they are removed.
+
 2003-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/msl.c (MSLStartElement): Don't reset gravity if the
