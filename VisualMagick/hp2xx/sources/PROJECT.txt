@@ -2,7 +2,6 @@
 DEFINE = _NO_VCL
 DEFINE = NORINT
 EXCLUDE = png.c
-EXCLUDE = std_main.c 
 EXCLUDE = to_amiga.c
 EXCLUDE = to_atari.c
 EXCLUDE = to_dj_gr.c
