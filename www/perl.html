@@ -15,6 +15,7 @@
 <p><br>
 <br>
 <br>
+<br>
 <p><a NAME="contents"></a>
 <table BORDER=0 WIDTH="100%" >
 <tr>
@@ -80,11 +81,11 @@ This makes it very suitable for Web CGI scripts. You must have <b>ImageMagick</b
 for either of these utilities to work. Perl version 5.005_02 or greater
 is required for <b>PerlMagick</b> to work on an NT system.</dd>
 
-<br>&nbsp;
-<p>&nbsp;
-<br>&nbsp;
-<br>&nbsp;
-<p>There are a number of useful scripts available to show you the value
+<dl>
+<dd>
+</dd>
+
+<br>There are a number of useful scripts available to show you the value
 of
 <b>PerlMagick</b>. You can do Web based image manipulation and conversion
 with
@@ -99,11 +100,9 @@ Image Navigator</a>.
 <p>You can try <b>PerlMagick</b> from your Web browser at the <a href="http://magick.imagemagick.org/cristy/MagickStudio/scripts/MagickStudio.cgi/">ImageMagick
 Studio</a>. Or, you can see
 <a href="../images/examples.jpg">examples</a>
-of select <b>PerlMagick</b> functions.
-<p>An object-oriented Python interface to <b>ImageMagick</b> is also available,
-see <a href="http://starship.skyport.net/crew/zack/pymagick/">PythonMagick</a>.</dl>
+of select <b>PerlMagick</b> functions.</dl>
+</dl>
 <i><a href="#contents">Back to Contents</a></i>
-<br>&nbsp;
 <br>&nbsp;
 <dl><a NAME="inst"></a>
 <table BORDER=0 WIDTH="100%" >
@@ -125,8 +124,9 @@ part of the ImageMagick distribution.</i>
 <p>&nbsp;ImageMagick must already be installed on your system. Next, get
 the
 <a href="ftp://ftp.simplesystems.org/pub/ImageMagick/perl">PerlMagick</a>
-distribution and unpack it as shown below:
-<pre>&nbsp;&nbsp;&nbsp; gunzip -c PerlMagick-5.23.tar.gz | tar -xvf -
+distribution corresponding to the installed ImageMagick distribution (e.g.
+PerlMagick 5.27 for ImageMagick 5.2.7) and unpack it as shown below:
+<pre>&nbsp;&nbsp;&nbsp; gunzip -c PerlMagick-5.27.tar.gz | tar -xvf -
 &nbsp;&nbsp;&nbsp; cd PerlMagick</pre>
 Next, edit <tt>Makefile.PL</tt> and change LIBS and INC to include the
 appropriate path information to the required <tt>libMagick</tt> library.
@@ -1024,6 +1024,8 @@ and whose width is 512 and height is 480.</dd>
 
 <br>&nbsp;
 <p>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
 <p>You can optionally add <tt>Image</tt> to any method name. For example,
 <tt>TrimImage</tt>
 is an alias for method <tt>Trim</tt>.
