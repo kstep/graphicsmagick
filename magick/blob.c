@@ -1080,7 +1080,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
 
               q=p+1;
               if (*q == '0')
-                (void) strtod(q,&q,10);
+                (void) strtod(q,&q);
               if (*q == 'd')
                 {
                   char
