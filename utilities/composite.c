@@ -104,7 +104,7 @@
 /*
   Typedef declarations.
 */
-typedef struct _OptionInfo
+typedef struct _CompositeOptionInfo
 {
   char
     *displace_geometry,
@@ -127,7 +127,7 @@ typedef struct _OptionInfo
   unsigned int
     stereo,
     tile;
-} OptionInfo;
+} CompositeOptionInfo;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -146,7 +146,7 @@ typedef struct _OptionInfo
 %  The format of the CompositeImages method is:
 %
 %      unsigned int CompositeImages(const ImageInfo *image_info,
-%        OptionInfo *option_info,const int argc,char **argv,
+%        CompositeOptionInfo *option_info,const int argc,char **argv,
 %        Image *composite_image,Image *mask_image,Image **image)
 %
 %  A description of each parameter follows:
@@ -168,7 +168,7 @@ typedef struct _OptionInfo
 %
 */
 static unsigned int CompositeImages(ImageInfo *image_info,
-  OptionInfo *option_info,const int argc,char **argv,Image *composite_image,
+  CompositeOptionInfo *option_info,const int argc,char **argv,Image *composite_image,
   Image *mask_image,Image **image)
 {
   long
@@ -390,7 +390,8 @@ static unsigned int CompositeImages(ImageInfo *image_info,
     DescribeImage(*image,stderr,False);
   return(status);
 }
-/*
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -515,7 +516,7 @@ int main(int argc,char **argv)
   long
     x;
 
-  OptionInfo
+  CompositeOptionInfo
     option_info;
 
   register int
@@ -549,7 +550,7 @@ int main(int argc,char **argv)
   /*
     Set default.
   */
-  memset(&option_info,0,sizeof(OptionInfo));
+  memset(&option_info,0,sizeof(CompositeOptionInfo));
   option_info.dissolve=0.0;
   option_info.compose=OverCompositeOp;
   composite_image=(Image *) NULL;
@@ -580,6 +581,7 @@ int main(int argc,char **argv)
       {
         int
           k;
+
         /*
           Read input images.
         */
@@ -799,6 +801,37 @@ int main(int argc,char **argv)
                     image_info->compression=ZipCompression;
                   if (image_info->compression == UndefinedCompression)
                     MagickError(OptionError,"Invalid compression type",option);
+                }
+              break;
+            }
+          if (LocaleCompare("copy",option+1) == 0)
+            {
+              if (*option == '-')
+                {
+                  Image
+                    *clone_image;
+
+                  ImageInfo
+                    *clone_info;
+
+                  i++;
+                  if (i == argc)
+                    MagickError(OptionError,"Missing output filename",
+                      option);
+                  if (image == (Image *) NULL)
+                    MagickError(OptionError,"Missing source image",
+                      (char *) NULL);
+                  clone_info=CloneImageInfo(image_info);
+                  clone_image=CloneImage(image,0,0,False,
+                    &(image->exception));
+                  if (clone_image == (Image *) NULL)
+                    MagickError(OptionError,"Missing an image file name",
+                      (char *) NULL);
+                  status=CompositeImages(clone_info,&option_info,i-j+2,
+                    argv+j-1,composite_image,mask_image,&clone_image);
+                  DestroyImages(clone_image);
+                  DestroyImageInfo(clone_info);
+                  j=i+1;
                 }
               break;
             }
@@ -1090,6 +1123,16 @@ int main(int argc,char **argv)
                 }
               break;
             }
+          if (LocaleCompare("process",option+1) == 0)
+            {
+              if (*option == '-')
+                {
+                  i++;
+                  if (i == argc)
+                    MagickError(OptionError,"Missing argument",option);
+                }
+              break;
+            }
           if (LocaleCompare("profile",option+1) == 0)
             {
               i++;
@@ -1126,6 +1169,23 @@ int main(int argc,char **argv)
                 MagickError(OptionError,"Missing degrees",option);
               break;
             }
+          if (LocaleCompare("replace",option+1) == 0)
+            {
+              i++;
+              if (*option == '-')
+                {
+                  if (i == argc)
+                    MagickError(OptionError,"Missing output filename",
+                      option);
+                  if (image == (Image *) NULL)
+                    MagickError(OptionError,"Missing source image",
+                      (char *) NULL);
+                  status=CompositeImages(image_info,&option_info,i-j+2,
+                    argv+j-1,composite_image,mask_image,&image);
+                  j=i+1;
+                }
+              break;
+            }
           MagickError(OptionError,"Unrecognized option",option);
           break;
         }
@@ -1151,57 +1211,6 @@ int main(int argc,char **argv)
                     MagickError(OptionError,"Missing geometry",option);
                   (void) CloneString(&image_info->size,argv[i]);
                 }
-              break;
-            }
-          if (LocaleCompare("stack",option+1) == 0)
-            {
-              if (LocaleCompare("stackdrop",option+1) == 0)
-                {
-                  if (*option == '-')
-                    {
-                      Image
-                        *clone_image;
-
-                      ImageInfo
-                        *clone_info;
-
-                      i++;
-                      if (i == argc)
-                        MagickError(OptionError,"Missing output filename",
-                          option);
-                      if (image == (Image *) NULL)
-                        MagickError(OptionError,"Missing source image",
-                          (char *) NULL);
-                      clone_info=CloneImageInfo(image_info);
-                      clone_image=
-                        CloneImage(image,0,0,True,&(image->exception));
-                      if (clone_image == (Image *) NULL)
-                        MagickError(OptionError,"Missing an image file name",
-                          (char *) NULL);
-                      status=CompositeImages(clone_info,&option_info,i-j+2,
-                        argv+j-1,composite_image,mask_image,&clone_image);
-                      DestroyImages(clone_image);
-                      DestroyImageInfo(clone_info);
-                      j=i+1;
-                    }
-                }
-              else
-                if (LocaleCompare("stackreplace",option+1) == 0)
-                  {
-                    if (*option == '-')
-                      {
-                        i++;
-                        if (i == argc)
-                          MagickError(OptionError,"Missing output filename",
-                            option);
-                        if (image == (Image *) NULL)
-                          MagickError(OptionError,"Missing source image",
-                            (char *) NULL);
-                        status=CompositeImages(image_info,&option_info,i-j+2,
-                          argv+j-1,composite_image,mask_image,&image);
-                        j=i+1;
-                      }
-                  }
               break;
             }
           if (LocaleCompare("stegano",option+1) == 0)
