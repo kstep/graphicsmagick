@@ -844,6 +844,27 @@ static unsigned int RenderType(Image *image,const DrawInfo *draw_info,
 %
 */
 
+static inline PixelPacket AlphaComposite(const PixelPacket *p,
+  const double alpha,const PixelPacket *q,const double beta)
+{
+  register double
+    scale;
+
+  PixelPacket
+    composite;
+
+  scale=1.0/MaxRGB;
+  composite.red=(Quantum)
+    (scale*((MaxRGB-alpha)*p->red+scale*alpha*(MaxRGB-beta)*q->red)+0.5);
+  composite.green=(Quantum)
+    (scale*((MaxRGB-alpha)*p->green+scale*alpha*(MaxRGB-beta)*q->green)+0.5);
+  composite.blue=(Quantum)
+    (scale*((MaxRGB-alpha)*p->blue+scale*alpha*(MaxRGB-beta)*q->blue)+0.5);
+  composite.opacity=(Quantum)
+    (MaxRGB-((MaxRGB-alpha)+scale*alpha*(MaxRGB-beta))+0.5);
+  return(composite);
+}
+
 #if defined(HasTTF)
 static int TraceCubicBezier(FT_Vector *p,FT_Vector *q,FT_Vector *to,
   DrawInfo *draw_info)

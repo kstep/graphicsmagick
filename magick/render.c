@@ -309,6 +309,28 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
 %
 %
 */
+
+static inline PixelPacket AlphaComposite(const PixelPacket *p,
+  const double alpha,const PixelPacket *q,const double beta)
+{
+  register double
+    scale;
+
+  PixelPacket
+    composite;
+
+  scale=1.0/MaxRGB;
+  composite.red=(Quantum)
+    (scale*((MaxRGB-alpha)*p->red+scale*alpha*(MaxRGB-beta)*q->red)+0.5);
+  composite.green=(Quantum)
+    (scale*((MaxRGB-alpha)*p->green+scale*alpha*(MaxRGB-beta)*q->green)+0.5);
+  composite.blue=(Quantum)
+    (scale*((MaxRGB-alpha)*p->blue+scale*alpha*(MaxRGB-beta)*q->blue)+0.5);
+  composite.opacity=(Quantum)
+    (MaxRGB-((MaxRGB-alpha)+scale*alpha*(MaxRGB-beta))+0.5);
+  return(composite);
+}
+
 MagickExport unsigned int ColorFloodfillImage(Image *image,
   const DrawInfo *draw_info,const PixelPacket target,const long x_offset,
   const long y_offset,const PaintMethod method)

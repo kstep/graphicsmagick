@@ -21,8 +21,6 @@ extern MagickExport int
   GetOptimalKernelWidth2D(const double,const double);
 
 extern MagickExport PixelPacket
-  AlphaComposite(const PixelPacket *,const double,const PixelPacket *,
-    const double),
   InterpolateColor(const Image *,const double,const double,ExceptionInfo *);
 
 extern MagickExport Quantum
