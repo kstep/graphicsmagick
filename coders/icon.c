@@ -250,9 +250,9 @@ static Image *ReadIconImage(const ImageInfo *image_info,
       p=icon_colormap;
       for (i=0; i < (long) image->colors; i++)
       {
-        image->colormap[i].blue=UpScale(*p++);
-        image->colormap[i].green=UpScale(*p++);
-        image->colormap[i].red=UpScale(*p++);
+        image->colormap[i].blue=(Quantum) UpScale(*p++);
+        image->colormap[i].green=(Quantum) UpScale(*p++);
+        image->colormap[i].red=(Quantum) UpScale(*p++);
         p++;
       }
       LiberateMemory((void **) &icon_colormap);
@@ -391,11 +391,11 @@ static Image *ReadIconImage(const ImageInfo *image_info,
             break;
           for (x=0; x < (long) image->columns; x++)
           {
-            q->blue=UpScale(ReadBlobByte(image));
-            q->green=UpScale(ReadBlobByte(image));
-            q->red=UpScale(ReadBlobByte(image));
+            q->blue=(Quantum) UpScale(ReadBlobByte(image));
+            q->green=(Quantum) UpScale(ReadBlobByte(image));
+            q->red=(Quantum) UpScale(ReadBlobByte(image));
             if (image->matte)
-              q->opacity=UpScale(ReadBlobByte(image));
+              q->opacity=(Quantum) UpScale(ReadBlobByte(image));
             q++;
           }
           if (!SyncImagePixels(image))
@@ -424,14 +424,14 @@ static Image *ReadIconImage(const ImageInfo *image_info,
       {
         byte=ReadBlobByte(image);
         for (bit=0; bit < 8; bit++)
-          q[x+bit].opacity=
+          q[x+bit].opacity=(Quantum) 
             (byte & (0x80 >> bit) ? TransparentOpacity : OpaqueOpacity);
       }
       if ((image->columns % 8) != 0)
         {
           byte=ReadBlobByte(image);
           for (bit=0; bit < (long) (image->columns % 8); bit++)
-            q[x+bit].opacity=
+            q[x+bit].opacity=(Quantum) 
               (byte & (0x80 >> bit) ? TransparentOpacity : OpaqueOpacity);
         }
       if (!SyncImagePixels(image))

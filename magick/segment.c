@@ -275,7 +275,7 @@ static unsigned int Classify(Image *image,short **extrema,
   register PixelPacket
     *q;
 
-  unsigned int
+  unsigned long
     number_clusters;
 
   /*
@@ -417,7 +417,7 @@ static unsigned int Classify(Image *image,short **extrema,
       */
       (void) fprintf(stderr,"Fuzzy c-Means Statistics\n");
       (void) fprintf(stderr,"===================\n\n");
-      (void) fprintf(stderr,"\tTotal Number of Clusters = %u\n\n",
+      (void) fprintf(stderr,"\tTotal Number of Clusters = %lu\n\n",
         number_clusters);
       /*
         Print the total number of points per cluster.
@@ -485,9 +485,9 @@ static unsigned int Classify(Image *image,short **extrema,
   i=0;
   for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
   {
-    image->colormap[i].red=UpScale(cluster->red.center);
-    image->colormap[i].green=UpScale(cluster->green.center);
-    image->colormap[i].blue=UpScale(cluster->blue.center);
+    image->colormap[i].red=(Quantum) UpScale(cluster->red.center);
+    image->colormap[i].green=(Quantum) UpScale(cluster->green.center);
+    image->colormap[i].blue=(Quantum) UpScale(cluster->blue.center);
     i++;
   }
   /*

@@ -747,9 +747,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             if (image->depth <= 8)
               for (i=0; i < (long) image->colors; i++)
               {
-                image->colormap[i].red=UpScale(*p++);
-                image->colormap[i].green=UpScale(*p++);
-                image->colormap[i].blue=UpScale(*p++);
+                image->colormap[i].red=(Quantum) UpScale(*p++);
+                image->colormap[i].green=(Quantum) UpScale(*p++);
+                image->colormap[i].blue=(Quantum) UpScale(*p++);
               }
             else
               for (i=0; i < (long) image->colors; i++)
@@ -914,18 +914,18 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   {
                     if (image->depth <= 8)
                       {
-                        pixel.red=UpScale(ReadBlobByte(image));
-                        pixel.green=UpScale(ReadBlobByte(image));
-                        pixel.blue=UpScale(ReadBlobByte(image));
+                        pixel.red=(Quantum) UpScale(ReadBlobByte(image));
+                        pixel.green=(Quantum) UpScale(ReadBlobByte(image));
+                        pixel.blue=(Quantum) UpScale(ReadBlobByte(image));
                         if (image->colorspace == CMYKColorspace)
                           {
-                            pixel.opacity=UpScale(ReadBlobByte(image));
+                            pixel.opacity=(Quantum) UpScale(ReadBlobByte(image));
                             if (image->matte)
-                              index=UpScale(ReadBlobByte(image));
+                              index=(Quantum) UpScale(ReadBlobByte(image));
                           }
                         else
                           if (image->matte)
-                            pixel.opacity=UpScale(ReadBlobByte(image));
+                            pixel.opacity=(Quantum) UpScale(ReadBlobByte(image));
                       }
                     else
                       {

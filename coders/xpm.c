@@ -407,7 +407,8 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (image->storage_class == PseudoClass)
           indexes[x]=(IndexPacket) j;
         *r=image->colormap[j];
-        r->opacity=j == (long) none ? TransparentOpacity : OpaqueOpacity;
+        r->opacity=(Quantum)
+          (j == (long) none ? TransparentOpacity : OpaqueOpacity);
         r++;
         p+=width;
       }
@@ -732,7 +733,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
         for (x=0; x < (long) image->columns; x++)
         {
           if (q->opacity == TransparentOpacity)
-            indexes[x]=image->colors;
+            indexes[x]=(IndexPacket) image->colors;
           q++;
         }
         if (!SyncImagePixels(image))

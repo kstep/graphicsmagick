@@ -255,7 +255,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
             for (x=0; x < (long) image->columns; x++)
             {
               if (matte_image[i])
-                indexes[x]=image->colors;
+                indexes[x]=(IndexPacket) image->colors;
               p++;
             }
           }

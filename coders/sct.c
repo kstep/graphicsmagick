@@ -201,7 +201,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      q->red=MaxRGB-UpScale(ReadBlobByte(image));
+      q->red=(Quantum) (MaxRGB-UpScale(ReadBlobByte(image)));
       q++;
     }
     if ((image->columns % 2) != 0)
@@ -211,7 +211,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      q->green=MaxRGB-UpScale(ReadBlobByte(image));
+      q->green=(Quantum) (MaxRGB-UpScale(ReadBlobByte(image)));
       q++;
     }
     if ((image->columns % 2) != 0)
@@ -221,7 +221,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      q->blue=MaxRGB-UpScale(ReadBlobByte(image));
+      q->blue=(Quantum) (MaxRGB-UpScale(ReadBlobByte(image)));
       q++;
     }
     if ((image->columns % 2) != 0)
@@ -231,7 +231,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      q->opacity=MaxRGB-UpScale(ReadBlobByte(image));
+      q->opacity=(Quantum) (MaxRGB-UpScale(ReadBlobByte(image)));
       q++;
     }
     if (!SyncImagePixels(image))

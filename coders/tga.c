@@ -168,7 +168,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     offset,
     real,
     skip;
-    
+
   /*
     Open image file.
   */
@@ -251,7 +251,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               /*
                 Gray scale.
               */
-              pixel.red=UpScale(ReadBlobByte(image));
+              pixel.red=(Quantum) UpScale(ReadBlobByte(image));
               pixel.green=pixel.red;
               pixel.blue=pixel.red;
               break;
@@ -264,10 +264,12 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               */
               j=ReadBlobByte(image);
               k=ReadBlobByte(image);
-              pixel.red=(unsigned long) (MaxRGB*((int) (k & 0x7c) >> 2))/31;
-              pixel.green=(unsigned long)
-                (MaxRGB*(((int) (k & 0x03) << 3)+((int) (j & 0xe0) >> 5)))/31;
-              pixel.blue=(unsigned long) (MaxRGB*((int) (j & 0x1f)))/31;
+              pixel.red=(Quantum)
+                ((unsigned long) (MaxRGB*((int) (k & 0x7c) >> 2))/31);
+              pixel.green=(Quantum) ((unsigned long)
+                (MaxRGB*(((int) (k & 0x03) << 3)+((int) (j & 0xe0) >> 5)))/31);
+              pixel.blue=(Quantum)
+                ((unsigned long) (MaxRGB*((int) (j & 0x1f)))/31);
               break;
             }
             case 24:
@@ -276,9 +278,9 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               /*
                 8 bits each of blue, green and red.
               */
-              pixel.blue=UpScale(ReadBlobByte(image));
-              pixel.green=UpScale(ReadBlobByte(image));
-              pixel.red=UpScale(ReadBlobByte(image));
+              pixel.blue=(Quantum) UpScale(ReadBlobByte(image));
+              pixel.green=(Quantum) UpScale(ReadBlobByte(image));
+              pixel.red=(Quantum) UpScale(ReadBlobByte(image));
               break;
             }
           }
@@ -371,11 +373,11 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               /*
                 8 bits each of blue green and red.
               */
-              pixel.blue=UpScale(ReadBlobByte(image));
-              pixel.green=UpScale(ReadBlobByte(image));
-              pixel.red=UpScale(ReadBlobByte(image));
+              pixel.blue=(Quantum) UpScale(ReadBlobByte(image));
+              pixel.green=(Quantum) UpScale(ReadBlobByte(image));
+              pixel.red=(Quantum) UpScale(ReadBlobByte(image));
               if (tga_info.bits_per_pixel == 32)
-                pixel.opacity=MaxRGB-UpScale(ReadBlobByte(image));
+                pixel.opacity=(Quantum) (MaxRGB-UpScale(ReadBlobByte(image)));
               break;
             }
           }

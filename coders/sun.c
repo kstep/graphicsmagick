@@ -344,13 +344,13 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image);
         (void) ReadBlob(image,image->colors,(char *) sun_colormap);
         for (i=0; i < (long) image->colors; i++)
-          image->colormap[i].red=UpScale(sun_colormap[i]);
+          image->colormap[i].red=(Quantum) UpScale(sun_colormap[i]);
         (void) ReadBlob(image,image->colors,(char *) sun_colormap);
         for (i=0; i < (long) image->colors; i++)
-          image->colormap[i].green=UpScale(sun_colormap[i]);
+          image->colormap[i].green=(Quantum) UpScale(sun_colormap[i]);
         (void) ReadBlob(image,image->colors,(char *) sun_colormap);
         for (i=0; i < (long) image->colors; i++)
-          image->colormap[i].blue=UpScale(sun_colormap[i]);
+          image->colormap[i].blue=(Quantum) UpScale(sun_colormap[i]);
         LiberateMemory((void **) &sun_colormap);
         break;
       }
@@ -466,18 +466,18 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (x=0; x < (long) image->columns; x++)
           {
             if (image->matte)
-              q->opacity=MaxRGB-UpScale(*p++);
+              q->opacity=(Quantum) (MaxRGB-UpScale(*p++));
             if (sun_info.type == RT_STANDARD)
               {
-                q->blue=UpScale(*p++);
-                q->green=UpScale(*p++);
-                q->red=UpScale(*p++);
+                q->blue=(Quantum) UpScale(*p++);
+                q->green=(Quantum) UpScale(*p++);
+                q->red=(Quantum) UpScale(*p++);
               }
             else
               {
-                q->red=UpScale(*p++);
-                q->green=UpScale(*p++);
-                q->blue=UpScale(*p++);
+                q->red=(Quantum) UpScale(*p++);
+                q->green=(Quantum) UpScale(*p++);
+                q->blue=(Quantum) UpScale(*p++);
               }
             if (image->colors != 0)
               {

@@ -263,9 +263,9 @@ register IndexPacket *indexes;
 	    break;
           for (x=0; x < (long) image->columns; x++)
              {
-             q->red=UpScale(*p++);
-             q->green=UpScale(*p++);
-             q->blue=UpScale(*p++);
+             q->red=(Quantum) UpScale(*p++);
+             q->green=(Quantum) UpScale(*p++);
+             q->blue=(Quantum) UpScale(*p++);
              q++;
              }
           if (!SyncImagePixels(image))
@@ -649,9 +649,9 @@ typedef struct {
 			goto NoMemory;
 		 for (i=WPG_Palette.StartIndex; i < (int)WPG_Palette.NumOfEntries; i++)
 		   {
-		   image->colormap[i].red=UpScale(ReadBlobByte(image));
-		   image->colormap[i].green=UpScale(ReadBlobByte(image));
-		   image->colormap[i].blue=UpScale(ReadBlobByte(image));
+		   image->colormap[i].red=(Quantum) UpScale(ReadBlobByte(image));
+		   image->colormap[i].green=(Quantum) UpScale(ReadBlobByte(image));
+		   image->colormap[i].blue=(Quantum) UpScale(ReadBlobByte(image));
 		   }
 		 break;
 		 
@@ -767,9 +767,9 @@ DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompres
 					 image);
 	     for (i=WPG_Palette.StartIndex; i < (int)WPG_Palette.NumOfEntries; i++)
 		   {
-		   image->colormap[i].red=UpScale(ReadBlobByte(image));
-		   image->colormap[i].green=UpScale(ReadBlobByte(image));
-		   image->colormap[i].blue=UpScale(ReadBlobByte(image));
+		   image->colormap[i].red=(Quantum) UpScale(ReadBlobByte(image));
+		   image->colormap[i].green=(Quantum) UpScale(ReadBlobByte(image));
+		   image->colormap[i].blue=(Quantum) UpScale(ReadBlobByte(image));
 		   (void) ReadBlobByte(image);   /*Opacity??*/
 		   }
 	     break;

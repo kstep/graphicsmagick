@@ -883,8 +883,8 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
           break;
         for (x=0; x < (long) annotate_image->columns; x++)
         {
-          q->opacity=MaxRGB-((unsigned long) ((MaxRGB-Intensity(*q))*
-            (MaxRGB-fill_color.opacity))/MaxRGB);
+          q->opacity=(Quantum) (MaxRGB-((unsigned long) ((MaxRGB-Intensity(*q))*
+            (MaxRGB-fill_color.opacity))/MaxRGB));
           q->red=fill_color.red;
           q->green=fill_color.green;
           q->blue=fill_color.blue;
@@ -1228,7 +1228,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
           q=GetImagePixels(image,(int) ceil(point.x-0.5),
             (int) ceil(point.y+y-0.5),bitmap->bitmap.width,1);
           active=q != (PixelPacket *) NULL;
-          for (x=0; x < (long)bitmap->bitmap.width; x++)
+          for (x=0; x < (long) bitmap->bitmap.width; x++)
           {
             if ((ceil(point.x+x-0.5) < 0) || (*p == 0) ||
                 (ceil(point.x+x-0.5) >= image->columns))
@@ -1238,10 +1238,11 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
                 continue;
               }
             if (draw_info->text_antialias)
-              opacity=UpScale(*p);
+              opacity=(Quantum) UpScale(*p);
             else
-              opacity=(*p) >= 64 ? TransparentOpacity : OpaqueOpacity;
-            opacity=((unsigned long) ((MaxRGB-opacity)*
+              opacity=(Quantum)
+                ((*p) >= 64 ? TransparentOpacity : OpaqueOpacity);
+            opacity=(Quantum) ((unsigned long) ((MaxRGB-opacity)*
               (MaxRGB-draw_info->fill.opacity))/MaxRGB);
             if (!active)
               q=GetImagePixels(image,(int) ceil(point.x+x-0.5),

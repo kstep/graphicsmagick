@@ -334,9 +334,9 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     p=pcx_colormap;
     for (i=0; i < (long) image->colors; i++)
     {
-      image->colormap[i].red=UpScale(*p++);
-      image->colormap[i].green=UpScale(*p++);
-      image->colormap[i].blue=UpScale(*p++);
+      image->colormap[i].red=(Quantum) UpScale(*p++);
+      image->colormap[i].green=(Quantum) UpScale(*p++);
+      image->colormap[i].blue=(Quantum) UpScale(*p++);
     }
     pcx_info.bytes_per_line=ReadBlobLSBShort(image);
     pcx_info.palette_info=ReadBlobLSBShort(image);
@@ -412,9 +412,9 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 p=pcx_colormap;
                 for (i=0; i < (long) image->colors; i++)
                 {
-                  image->colormap[i].red=UpScale(*p++);
-                  image->colormap[i].green=UpScale(*p++);
-                  image->colormap[i].blue=UpScale(*p++);
+                  image->colormap[i].red=(Quantum) UpScale(*p++);
+                  image->colormap[i].green=(Quantum) UpScale(*p++);
+                  image->colormap[i].blue=(Quantum) UpScale(*p++);
                 }
             }
           LiberateMemory((void **) &pcx_colormap);
@@ -440,23 +440,23 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               case 0:
               {
-                *r=UpScale(*p++);
+                *r=(Quantum) UpScale(*p++);
                 break;
               }
               case 1:
               {
-                *r=UpScale(*p++);
+                *r=(Quantum) UpScale(*p++);
                 break;
               }
               case 2:
               {
-                *r=UpScale(*p++);
+                *r=(Quantum) UpScale(*p++);
                 break;
               }
               case 3:
               default:
               {
-                *r=UpScale(*p++);
+                *r=(Quantum) UpScale(*p++);
                 break;
               }
             }
@@ -553,11 +553,11 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           indexes[x]=(*r++);
         else
           {
-            q->red=UpScale(*r++);
-            q->green=UpScale(*r++);
-            q->blue=UpScale(*r++);
+            q->red=(Quantum) UpScale(*r++);
+            q->green=(Quantum) UpScale(*r++);
+            q->blue=(Quantum) UpScale(*r++);
             if (image->matte)
-              q->opacity=MaxRGB-UpScale(*r++);
+              q->opacity=(Quantum) (MaxRGB-UpScale(*r++));
           }
         q++;
       }

@@ -332,10 +332,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               for (green=0; green < 8; green++)
                 for (blue=0; blue < 4; blue++)
                 {
-                  image->colormap[i].red=((unsigned long) (MaxRGB*red)/0x07);
-                  image->colormap[i].green=
+                  image->colormap[i].red=(Quantum)
+                    ((unsigned long) (MaxRGB*red)/0x07);
+                  image->colormap[i].green=(Quantum)
                     ((unsigned long) (green*MaxRGB)/0x07);
-                  image->colormap[i].blue=((unsigned long) (MaxRGB*blue)/0x03);
+                  image->colormap[i].blue=(Quantum)
+                    ((unsigned long) (MaxRGB*blue)/0x03);
                   i++;
                 }
           }
@@ -1185,11 +1187,11 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (long) image->columns; x++)
           {
             if (!image_info->dither)
-              pixel=((DownScale(p->red) & 0xe0) |
+              pixel=(Quantum) ((DownScale(p->red) & 0xe0) |
                 ((DownScale(p->green) & 0xe0) >> 3) |
                 ((DownScale(p->blue) & 0xc0) >> 6));
             else
-              pixel=((red_map[i][j][DownScale(p->red)] & 0xe0) |
+              pixel=(Quantum) ((red_map[i][j][DownScale(p->red)] & 0xe0) |
                 ((green_map[i][j][DownScale(p->green)] & 0xe0) >> 3) |
                 ((blue_map[i][j][DownScale(p->blue)] & 0xc0) >> 6));
             (void) WriteBlobByte(image,pixel);

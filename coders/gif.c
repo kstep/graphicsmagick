@@ -279,7 +279,8 @@ static unsigned int DecodeImage(Image *image,const long opacity)
       index=ValidateColormapIndex(image,*top_stack);
       indexes[x]=index;
       *q=image->colormap[index];
-      q->opacity=index == opacity ? TransparentOpacity : OpaqueOpacity;
+      q->opacity=(Quantum)
+        (index == opacity ? TransparentOpacity : OpaqueOpacity);
       x++;
       q++;
     }
@@ -925,9 +926,9 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         p=global_colormap;
         for (i=0; i < (long) image->colors; i++)
         {
-          image->colormap[i].red=UpScale(*p++);
-          image->colormap[i].green=UpScale(*p++);
-          image->colormap[i].blue=UpScale(*p++);
+          image->colormap[i].red=(Quantum) UpScale(*p++);
+          image->colormap[i].green=(Quantum) UpScale(*p++);
+          image->colormap[i].blue=(Quantum) UpScale(*p++);
         }
         image->background_color=
           image->colormap[Min(background,image->colors-1)];
@@ -948,9 +949,9 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         p=colormap;
         for (i=0; i < (long) image->colors; i++)
         {
-          image->colormap[i].red=UpScale(*p++);
-          image->colormap[i].green=UpScale(*p++);
-          image->colormap[i].blue=UpScale(*p++);
+          image->colormap[i].red=(Quantum) UpScale(*p++);
+          image->colormap[i].green=(Quantum) UpScale(*p++);
+          image->colormap[i].blue=(Quantum) UpScale(*p++);
         }
         LiberateMemory((void **) &colormap);
       }

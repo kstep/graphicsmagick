@@ -176,12 +176,12 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             length=ReadBlobByte(image);
             if (bits_per_pixel == 8)
-              index=UpScale(ReadBlobByte(image));
+              index=(Quantum) UpScale(ReadBlobByte(image));
             else
               {
-                blue=UpScale(ReadBlobByte(image));
-                green=UpScale(ReadBlobByte(image));
-                red=UpScale(ReadBlobByte(image));
+                blue=(Quantum) UpScale(ReadBlobByte(image));
+                green=(Quantum) UpScale(ReadBlobByte(image));
+                red=(Quantum) UpScale(ReadBlobByte(image));
               }
           }
         if (image->storage_class == PseudoClass)

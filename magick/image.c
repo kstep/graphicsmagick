@@ -264,9 +264,12 @@ MagickExport unsigned int AllocateImageColormap(Image *image,
     return(False);
   for (i=0; i < (long) image->colors; i++)
   {
-    image->colormap[i].red=((unsigned long) (MaxRGB*i)/Max(colors-1,1));
-    image->colormap[i].green=((unsigned long) (MaxRGB*i)/Max(colors-1,1));
-    image->colormap[i].blue=((unsigned long) (MaxRGB*i)/Max(colors-1,1));
+    image->colormap[i].red=(Quantum)
+      ((unsigned long) (MaxRGB*i)/Max(colors-1,1));
+    image->colormap[i].green=(Quantum)
+      ((unsigned long) (MaxRGB*i)/Max(colors-1,1));
+    image->colormap[i].blue=(Quantum)
+      ((unsigned long) (MaxRGB*i)/Max(colors-1,1));
     image->colormap[i].opacity=OpaqueOpacity;
   }
   return(True);
@@ -1209,7 +1212,7 @@ MagickExport unsigned int CompositeImage(Image *image,
           y_displace=x_displace;
           if (composite_image->matte)
             y_displace=(vertical_scale*((double) p->opacity-
-              ((MaxRGB+1)/2)))/((MaxRGB+1)/2);
+              ((double) (MaxRGB+1)/2.0)))/((double) (MaxRGB+1)/2.0);
           *r=InterpolateColor(image,x_offset+x+x_displace,y_offset+y+y_displace,
             &image->exception);
           p++;
@@ -1477,10 +1480,12 @@ MagickExport unsigned int CompositeImage(Image *image,
             }
             case MultiplyCompositeOp:
             {
-              q->red=(unsigned long) (pixel.red*q->red/MaxRGB);
-              q->green=(unsigned long) (pixel.green*q->green/MaxRGB);
-              q->blue=(unsigned long) (pixel.blue*q->blue/MaxRGB);
-              q->opacity=(unsigned long) (pixel.opacity*q->opacity/MaxRGB+0.5);
+              q->red=(Quantum) ((unsigned long) (pixel.red*q->red/MaxRGB));
+              q->green=(Quantum)
+                ((unsigned long) (pixel.green*q->green/MaxRGB));
+              q->blue=(Quantum) ((unsigned long) (pixel.blue*q->blue/MaxRGB));
+              q->opacity=(Quantum)
+                ((unsigned long) (pixel.opacity*q->opacity/MaxRGB+0.5));
               break;
             }
             case DifferenceCompositeOp:
@@ -1494,10 +1499,14 @@ MagickExport unsigned int CompositeImage(Image *image,
             }
             case BumpmapCompositeOp:
             {
-              q->red=(unsigned long) ((Intensity(pixel)*q->red)/MaxRGB);
-              q->green=(unsigned long) ((Intensity(pixel)*q->green)/MaxRGB);
-              q->blue=(unsigned long) ((Intensity(pixel)*q->blue)/MaxRGB);
-              q->opacity=(unsigned long) (Intensity(pixel)*q->opacity/MaxRGB);
+              q->red=(Quantum)
+                ((unsigned long) ((Intensity(pixel)*q->red)/MaxRGB));
+              q->green=(Quantum)
+                ((unsigned long) ((Intensity(pixel)*q->green)/MaxRGB));
+              q->blue=(Quantum)
+                ((unsigned long) ((Intensity(pixel)*q->blue)/MaxRGB));
+              q->opacity=(Quantum)
+                ((unsigned long) (Intensity(pixel)*q->opacity/MaxRGB));
               break;
             }
             case CopyCompositeOp:
@@ -1532,12 +1541,12 @@ MagickExport unsigned int CompositeImage(Image *image,
             }
             case DissolveCompositeOp:
             {
-              q->red=(unsigned long) ((pixel.opacity*pixel.red+
-                (MaxRGB-q->opacity)*q->red)/MaxRGB);
-              q->green=(unsigned long) ((pixel.opacity*pixel.green+
-                (MaxRGB-q->opacity)*q->green)/MaxRGB);
-              q->blue=(unsigned long) ((pixel.opacity*pixel.blue+
-                (MaxRGB-q->opacity)*q->blue)/MaxRGB);
+              q->red=(Quantum) ((unsigned long) ((pixel.opacity*pixel.red+
+                (MaxRGB-q->opacity)*q->red)/MaxRGB));
+              q->green=(Quantum) ((unsigned long) ((pixel.opacity*pixel.green+
+                (MaxRGB-q->opacity)*q->green)/MaxRGB));
+              q->blue=(Quantum) ((unsigned long) ((pixel.opacity*pixel.blue+
+                (MaxRGB-q->opacity)*q->blue)/MaxRGB));
               q->opacity=OpaqueOpacity;
               break;
             }
@@ -2647,14 +2656,14 @@ MagickExport unsigned long GetImageDepth(const Image *image,
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      if (p->red != UpScale(DownScale(p->red)))
+      if (p->red != (Quantum) UpScale(DownScale(p->red)))
         return(QuantumDepth);
-      if (p->green != UpScale(DownScale(p->green)))
+      if (p->green != (Quantum) UpScale(DownScale(p->green)))
         return(QuantumDepth);
-      if (p->blue != UpScale(DownScale(p->blue)))
+      if (p->blue != (Quantum) UpScale(DownScale(p->blue)))
         return(QuantumDepth);
       if (image->matte)
-        if (p->opacity != UpScale(DownScale(p->opacity)))
+        if (p->opacity != (Quantum) UpScale(DownScale(p->opacity)))
           return(QuantumDepth);
       p++;
     }
@@ -5839,10 +5848,10 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned long depth)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      q->red=UpScale(DownScale(q->red));
-      q->green=UpScale(DownScale(q->green));
-      q->blue=UpScale(DownScale(q->blue));
-      q->opacity=UpScale(DownScale(q->opacity));
+      q->red=(Quantum) UpScale(DownScale(q->red));
+      q->green=(Quantum) UpScale(DownScale(q->green));
+      q->blue=(Quantum) UpScale(DownScale(q->blue));
+      q->opacity=(Quantum) UpScale(DownScale(q->opacity));
       q++;
     }
     if (!SyncImagePixels(image))
@@ -5856,10 +5865,10 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned long depth)
       q=image->colormap;
       for (i=0; i < (long) image->colors; i++)
       {
-        q->red=UpScale(DownScale(q->red));
-        q->green=UpScale(DownScale(q->green));
-        q->blue=UpScale(DownScale(q->blue));
-        q->opacity=UpScale(DownScale(q->opacity));
+        q->red=(Quantum) UpScale(DownScale(q->red));
+        q->green=(Quantum) UpScale(DownScale(q->green));
+        q->blue=(Quantum) UpScale(DownScale(q->blue));
+        q->opacity=(Quantum) UpScale(DownScale(q->opacity));
         q++;
       }
     }
@@ -5922,10 +5931,12 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
         {
           if (image->colorspace == CMYKColorspace)
             {
-              indexes[x]=((unsigned long) (opacity*indexes[x])/MaxRGB);
+              indexes[x]=(IndexPacket)
+                ((unsigned long) (opacity*indexes[x])/MaxRGB);
               continue;
             }
-          q->opacity=((unsigned long) (opacity*q->opacity)/MaxRGB);
+          q->opacity=(Quantum)
+            ((unsigned long) (opacity*q->opacity)/MaxRGB);
           q++;
         }
         if (!SyncImagePixels(image))
@@ -6561,10 +6572,12 @@ MagickExport unsigned int TransformRGBImage(Image *image,
         indexes=GetIndexes(image);
         for (x=0; x < (long) image->columns; x++)
         {
-          q->red=(unsigned long) ((MaxRGB-q->red)*(MaxRGB-q->opacity))/MaxRGB;
-          q->green=(unsigned long)
-            ((MaxRGB-q->green)*(MaxRGB-q->opacity))/MaxRGB;
-          q->blue=(unsigned long) ((MaxRGB-q->blue)*(MaxRGB-q->opacity))/MaxRGB;
+          q->red=(Quantum)
+            ((unsigned long) ((MaxRGB-q->red)*(MaxRGB-q->opacity))/MaxRGB);
+          q->green=(Quantum) ((unsigned long)
+            ((MaxRGB-q->green)*(MaxRGB-q->opacity))/MaxRGB);
+          q->blue=(Quantum)
+            ((unsigned long) ((MaxRGB-q->blue)*(MaxRGB-q->opacity))/MaxRGB);
           q->opacity=image->matte ? indexes[x] : OpaqueOpacity;
           q++;
         }

@@ -599,9 +599,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         p=bmp_colormap;
         for (i=0; i < (long) image->colors; i++)
         {
-          image->colormap[i].blue=UpScale(*p++);
-          image->colormap[i].green=UpScale(*p++);
-          image->colormap[i].red=UpScale(*p++);
+          image->colormap[i].blue=(Quantum) UpScale(*p++);
+          image->colormap[i].green=(Quantum) UpScale(*p++);
+          image->colormap[i].red=(Quantum) UpScale(*p++);
           if (packet_size == 4)
             p++;
         }
@@ -775,15 +775,15 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             word|=(*p++ << 8);
             if (bmp_info.red_mask == 0)
               {
-                q->red=UpScale(ScaleColor5to8((word >> 10) & 0x1f));
-                q->green=UpScale(ScaleColor5to8((word >> 5) & 0x1f));
-                q->blue=UpScale(ScaleColor5to8(word & 0x1f));
+                q->red=(Quantum) UpScale(ScaleColor5to8((word >> 10) & 0x1f));
+                q->green=(Quantum) UpScale(ScaleColor5to8((word >> 5) & 0x1f));
+                q->blue=(Quantum) UpScale(ScaleColor5to8(word & 0x1f));
               }
             else
               {
-                q->red=UpScale(ScaleColor5to8((word >> 11) & 0x1f));
-                q->green=UpScale(ScaleColor6to8((word >> 5) & 0x3f));
-                q->blue=UpScale(ScaleColor5to8(word & 0x1f));
+                q->red=(Quantum) UpScale(ScaleColor5to8((word >> 11) & 0x1f));
+                q->green=(Quantum) UpScale(ScaleColor6to8((word >> 5) & 0x3f));
+                q->blue=(Quantum) UpScale(ScaleColor5to8(word & 0x1f));
               }
             q++;
           }
@@ -809,11 +809,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (long) image->columns; x++)
           {
-            q->blue=UpScale(*p++);
-            q->green=UpScale(*p++);
-            q->red=UpScale(*p++);
+            q->blue=(Quantum) UpScale(*p++);
+            q->green=(Quantum) UpScale(*p++);
+            q->red=(Quantum) UpScale(*p++);
             if (image->matte)
-              q->opacity=UpScale(*p++);
+              q->opacity=(Quantum) UpScale(*p++);
             q++;
           }
           if (!SyncImagePixels(image))

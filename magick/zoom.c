@@ -533,10 +533,10 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
       Minify(7L); Minify(15L); Minify(15L); Minify(7L);
       r=p+3*image->columns;
       Minify(3L); Minify(7L);  Minify(7L);  Minify(3L);
-      q->red=((total_red+63L) >> 7L);
-      q->green=((total_green+63L) >> 7L);
-      q->blue=((total_blue+63L) >> 7L);
-      q->opacity=((total_opacity+63L) >> 7L);
+      q->red=(Quantum) ((total_red+63L) >> 7L);
+      q->green=(Quantum) ((total_green+63L) >> 7L);
+      q->blue=(Quantum) ((total_blue+63L) >> 7L);
+      q->opacity=(Quantum) ((total_opacity+63L) >> 7L);
       p+=2;
       q++;
     }

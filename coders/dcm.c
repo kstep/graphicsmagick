@@ -3197,7 +3197,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
           image);
       for (i=0; i <= (long) max_value; i++)
-        scale[i]=((unsigned long) (MaxRGB*i)/max_value);
+        scale[i]=(Quantum) ((unsigned long) (MaxRGB*i)/max_value);
     }
   for (scene=0; scene < (long) number_scenes; scene++)
   {
@@ -3228,10 +3228,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               switch ((int) i)
               {
-                case 0: q->red=UpScale(ReadBlobByte(image)); break;
-                case 1: q->green=UpScale(ReadBlobByte(image)); break;
-                case 2: q->blue=UpScale(ReadBlobByte(image)); break;
-                case 3: q->opacity=MaxRGB-UpScale(ReadBlobByte(image)); break;
+                case 0: q->red=(Quantum) UpScale(ReadBlobByte(image)); break;
+                case 1: q->green=(Quantum) UpScale(ReadBlobByte(image)); break;
+                case 2: q->blue=(Quantum) UpScale(ReadBlobByte(image)); break;
+                case 3: q->opacity=(Quantum)
+                  (MaxRGB-UpScale(ReadBlobByte(image))); break;
                 default: break;
               }
               q++;

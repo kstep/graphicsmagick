@@ -452,7 +452,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
     {
       marker[(int) indexes[x]]=True;
       opacity[(int) indexes[x]]=p->opacity;
-      if (indexes[x] > top_used)
+      if (indexes[x] > (IndexPacket) top_used)
          top_used=indexes[x];
       if (p->opacity != OpaqueOpacity)
          transparent_pixels++;
@@ -2847,9 +2847,10 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #if (QuantumDepth == 16)
         image->background_color=mng_global_bkgd;
 #else
-        image->background_color.red=XDownScale(mng_global_bkgd.red);
-        image->background_color.green=XDownScale(mng_global_bkgd.green);
-        image->background_color.blue=XDownScale(mng_global_bkgd.blue);
+        image->background_color.red=(Quantum) XDownScale(mng_global_bkgd.red);
+        image->background_color.green=(Quantum)
+          XDownScale(mng_global_bkgd.green);
+        image->background_color.blue=(Quantum) XDownScale(mng_global_bkgd.blue);
 #endif
       }
     if (ping_info->valid & PNG_INFO_bKGD)
@@ -2865,10 +2866,12 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         else
           {
-            image->background_color.red=XDownScale(ping_info->background.red);
-            image->background_color.green=
+            image->background_color.red=(Quantum)
+              XDownScale(ping_info->background.red);
+            image->background_color.green=(Quantum)
               XDownScale(ping_info->background.green);
-            image->background_color.blue=XDownScale(ping_info->background.blue);
+            image->background_color.blue=(Quantum)
+              XDownScale(ping_info->background.blue);
           }
       }
 #endif
@@ -2877,7 +2880,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         int
           scale;
 
-        scale=(int) MaxRGB/((int) ((1<<ping_info->bit_depth)-1));
+        scale=(int) (MaxRGB/((1L<<ping_info->bit_depth)-1L));
         if (scale < 1)
            scale=1;
         /*
@@ -2962,9 +2965,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) png_get_PLTE(ping,ping_info,&palette,&number_colors);
             for (i=0; i < (long) image->colors; i++)
             {
-              image->colormap[i].red=UpScale(palette[i].red);
-              image->colormap[i].green=UpScale(palette[i].green);
-              image->colormap[i].blue=UpScale(palette[i].blue);
+              image->colormap[i].red=(Quantum) UpScale(palette[i].red);
+              image->colormap[i].green=(Quantum) UpScale(palette[i].green);
+              image->colormap[i].blue=(Quantum) UpScale(palette[i].blue);
             }
           }
         else
@@ -3215,7 +3218,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                      * In a PNG datastream, Opaque is MaxRGB
                      * and Transparent is 0.
                      */
-                    q->opacity=UpScale(255-(*p++));
+                    q->opacity=(Quantum) UpScale(255-(*p++));
                     q++;
                   }
               }
@@ -3296,7 +3299,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
                   {
                     if (index < ping_info->num_trans)
-                      q->opacity=UpScale(255-ping_info->trans[index]);
+                      q->opacity=(Quantum) UpScale(255-ping_info->trans[index]);
                   }
                 else if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
                   {
@@ -4736,9 +4739,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
        {
          (void) WriteBlobMSBLong(image,6L);
          PNGType(chunk,mng_BACK);
-         red=UpScale(image->background_color.red);
-         green=UpScale(image->background_color.green);
-         blue=UpScale(image->background_color.blue);
+         red=(Quantum) UpScale(image->background_color.red);
+         green=(Quantum) UpScale(image->background_color.green);
+         blue=(Quantum) UpScale(image->background_color.blue);
          PNGShort(chunk+4,red);
          PNGShort(chunk+6,green);
          PNGShort(chunk+8,blue);
@@ -5150,7 +5153,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                 for (i=0; i<(long) image->colors; i++)
                 {
                    int
-                     intensity=DownScale(image->colormap[i].red);
+                     intensity=(Quantum) DownScale(image->colormap[i].red);
 
                    if ((intensity & 0x0f) != ((intensity & 0xf0)>>4))
                      depth_4_ok=depth_2_ok=depth_1_ok=False;
@@ -5240,7 +5243,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                       index;
 
                     index=indexes[x];
-                    assert(index < number_colors);
+                    assert(index < (IndexPacket) number_colors);
                     ping_info->trans[index]=(png_byte) (255-
 #if (QuantumDepth == 8)
                        p->opacity);

@@ -605,9 +605,9 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (long) image->columns; x++)
           {
-            q->red=UpScale(*yy++);
-            q->green=UpScale(*c1++);
-            q->blue=UpScale(*c2++);
+            q->red=(Quantum) UpScale(*yy++);
+            q->green=(Quantum) UpScale(*c1++);
+            q->blue=(Quantum) UpScale(*c2++);
             q++;
           }
           if (!SyncImagePixels(image))
@@ -709,9 +709,9 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      q->red=UpScale(*yy++);
-      q->green=UpScale(*c1++);
-      q->blue=UpScale(*c2++);
+      q->red=(Quantum) UpScale(*yy++);
+      q->green=(Quantum) UpScale(*c1++);
+      q->blue=(Quantum) UpScale(*c2++);
       q++;
     }
     if (!SyncImagePixels(image))

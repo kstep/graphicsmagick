@@ -252,9 +252,9 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (is_palette)
           for (i=0; i < 256; i++)
           {
-            image->colormap[i].red=UpScale(*p++);
-            image->colormap[i].green=UpScale(*p++);
-            image->colormap[i].blue=UpScale(*p++);
+            image->colormap[i].red=(Quantum) UpScale(*p++);
+            image->colormap[i].green=(Quantum) UpScale(*p++);
+            image->colormap[i].blue=(Quantum) UpScale(*p++);
           }
         else
           for (i=0; i < (long) image->colors; i++)
@@ -297,9 +297,9 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (long) image->columns; x++)
           {
-            q->red=UpScale(*p++);
-            q->green=UpScale(*p++);
-            q->blue=UpScale(*p++);
+            q->red=(Quantum) UpScale(*p++);
+            q->green=(Quantum) UpScale(*p++);
+            q->blue=(Quantum) UpScale(*p++);
             q++;
           }
           if (!SyncImagePixels(image))

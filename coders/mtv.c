@@ -169,9 +169,9 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       for (x=0; x < (long) image->columns; x++)
       {
-        q->red=UpScale(*p++);
-        q->green=UpScale(*p++);
-        q->blue=UpScale(*p++);
+        q->red=(Quantum) UpScale(*p++);
+        q->green=(Quantum) UpScale(*p++);
+        q->blue=(Quantum) UpScale(*p++);
         q++;
       }
       if (!SyncImagePixels(image))

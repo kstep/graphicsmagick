@@ -214,15 +214,15 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (x=0; x < (long) ((image->columns*image->rows)/3); x++)
       {
         pixel=ReadBlobMSBLong(image);
-        q->red=MaxRGB*((pixel >> 0) & 0x3ff)/1023;
+        q->red=(Quantum) (MaxRGB*((pixel >> 0) & 0x3ff)/1023);
         q->green=q->red;
         q->blue=q->red;
         q++;
-        q->red=MaxRGB*((pixel >> 10) & 0x3ff)/1023;
+        q->red=(Quantum) (MaxRGB*((pixel >> 10) & 0x3ff)/1023);
         q->green=q->red;
         q->blue=q->red;
         q++;
-        q->red=MaxRGB*((pixel >> 20) & 0x3ff)/1023;
+        q->red=(Quantum) (MaxRGB*((pixel >> 20) & 0x3ff)/1023);
         q->green=q->red;
         q->blue=q->red;
         q++;
@@ -239,9 +239,9 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < (long) image->columns; x++)
         {
           pixel=ReadBlobMSBLong(image);
-          q->red=MaxRGB*((pixel >> 22) & 0x3ff)/1023;
-          q->green=MaxRGB*((pixel >> 12) & 0x3ff)/1023;
-          q->blue=MaxRGB*((pixel >> 2) & 0x3ff)/1023;     
+          q->red=(Quantum) (MaxRGB*((pixel >> 22) & 0x3ff)/1023);
+          q->green=(Quantum) (MaxRGB*((pixel >> 12) & 0x3ff)/1023);
+          q->blue=(Quantum) (MaxRGB*((pixel >> 2) & 0x3ff)/1023);
           q++;
         }
         if (!SyncImagePixels(image))

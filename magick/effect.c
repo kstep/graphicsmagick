@@ -2672,9 +2672,9 @@ MagickExport Image *ShadeImage(const Image *image,
         }
       else
         {
-          q->red=((unsigned long) (shade*s1->red)/MaxRGB);
-          q->green=((unsigned long) (shade*s1->green)/MaxRGB);
-          q->blue=((unsigned long) (shade*s1->blue)/MaxRGB);
+          q->red=(Quantum) ((unsigned long) (shade*s1->red)/MaxRGB);
+          q->green=(Quantum) ((unsigned long) (shade*s1->green)/MaxRGB);
+          q->blue=(Quantum) ((unsigned long) (shade*s1->blue)/MaxRGB);
         }
       q->opacity=s1->opacity;
       s0++;
@@ -2828,9 +2828,10 @@ MagickExport void SolarizeImage(Image *image,const double threshold)
           break;
         for (x=0; x < (long) image->columns; x++)
         {
-          q->red=q->red > threshold ? MaxRGB-q->red : q->red;
-          q->green=q->green > threshold ? MaxRGB-q->green : q->green;
-          q->blue=q->blue > threshold ? MaxRGB-q->blue : q->blue;
+          q->red=(Quantum) (q->red > threshold ? MaxRGB-q->red : q->red);
+          q->green=(Quantum)
+            (q->green > threshold ? MaxRGB-q->green : q->green);
+          q->blue=(Quantum) (q->blue > threshold ? MaxRGB-q->blue : q->blue);
           q++;
         }
         if (!SyncImagePixels(image))
@@ -2847,12 +2848,12 @@ MagickExport void SolarizeImage(Image *image,const double threshold)
       */
       for (i=0; i < (long) image->colors; i++)
       {
-        image->colormap[i].red=image->colormap[i].red > threshold ?
-          MaxRGB-image->colormap[i].red : image->colormap[i].red;
-        image->colormap[i].green=image->colormap[i].green > threshold ?
-          MaxRGB-image->colormap[i].green : image->colormap[i].green;
-        image->colormap[i].blue=image->colormap[i].blue > threshold ?
-          MaxRGB-image->colormap[i].blue : image->colormap[i].blue;
+        image->colormap[i].red=(Quantum) (image->colormap[i].red > threshold ?
+          MaxRGB-image->colormap[i].red : image->colormap[i].red);
+        image->colormap[i].green=(Quantum) (image->colormap[i].green > threshold ?
+          MaxRGB-image->colormap[i].green : image->colormap[i].green);
+        image->colormap[i].blue=(Quantum) (image->colormap[i].blue > threshold ?
+          MaxRGB-image->colormap[i].blue : image->colormap[i].blue);
       }
       SyncImage(image);
       break;
@@ -2984,7 +2985,8 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   ExceptionInfo *exception)
 {
 #define GetBit(a,i) (((a) >> (i)) & 1L)
-#define SetBit(a,i,set) a=(set) ? (a) | (1L << (i)) : (a) & ~(1L << (i))
+#define SetBit(a,i,set) \
+  a=(Quantum) ((set) ? (a) | (1L << (i)) : (a) & ~(1L << (i)))
 #define SteganoImageText  "  Hide image...  "
 
   Image

@@ -417,9 +417,9 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
         node_info=cube_info->root;
         for (index=MaxTreeDepth-1; (int) index > 0; index--)
         {
-          id=((DownScale(q->red) >> index) & 0x01) << 2 |
+          id=(unsigned int) (((DownScale(q->red) >> index) & 0x01) << 2 |
              ((DownScale(q->green) >> index) & 0x01) << 1 |
-             ((DownScale(q->blue) >> index) & 0x01);
+             ((DownScale(q->blue) >> index) & 0x01));
           if ((node_info->census & (1 << id)) == 0)
             break;
           node_info=node_info->child[id];
@@ -432,7 +432,7 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
         cube_info->color.blue=q->blue;
         cube_info->distance=3.0*(MaxRGB+1)*(MaxRGB+1);
         ClosestColor(cube_info,node_info->parent);
-        index=cube_info->color_number;
+        index=(unsigned int) cube_info->color_number;
         for (i=0; i < count; i++)
         {
           if (image->storage_class == PseudoClass)
@@ -594,7 +594,7 @@ static unsigned int Classification(CubeInfo *cube_info,const Image *image,
         if (!ColorMatch(*p,*(p+count),0))
           break;
       index=MaxTreeDepth-1;
-      bisect=(MaxRGB+1.0)/2.0;
+      bisect=(MaxRGB+1)/2.0;
       mid_red=MaxRGB/2.0;
       mid_green=MaxRGB/2.0;
       mid_blue=MaxRGB/2.0;
@@ -602,9 +602,9 @@ static unsigned int Classification(CubeInfo *cube_info,const Image *image,
       for (level=1; level <= cube_info->depth; level++)
       {
         bisect*=0.5;
-        id=((DownScale(p->red) >> index) & 0x01) << 2 |
+        id=(unsigned int) (((DownScale(p->red) >> index) & 0x01) << 2 |
            ((DownScale(p->green) >> index) & 0x01) << 1 |
-           ((DownScale(p->blue) >> index) & 0x01);
+           ((DownScale(p->blue) >> index) & 0x01));
         mid_red+=id & 4 ? bisect : -bisect;
         mid_green+=id & 2 ? bisect : -bisect;
         mid_blue+=id & 1 ? bisect : -bisect;
@@ -1037,9 +1037,9 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
           node_info=p->root;
           for (index=MaxTreeDepth-1; (int) index > 0; index--)
           {
-            id=((DownScale(red) >> index) & 0x01) << 2 |
+            id=(unsigned int) (((DownScale(red) >> index) & 0x01) << 2 |
                ((DownScale(green) >> index) & 0x01) << 1 |
-               ((DownScale(blue) >> index) & 0x01);
+               ((DownScale(blue) >> index) & 0x01));
             if ((node_info->census & (1 << id)) == 0)
               break;
             node_info=node_info->child[id];
@@ -1057,7 +1057,7 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
       /*
         Assign pixel to closest colormap entry.
       */
-      index=p->cache[i];
+      index=(IndexPacket) p->cache[i];
       if (image->storage_class == PseudoClass)
         *indexes=index;
       if (!cube_info->quantize_info->measure_error)
@@ -1236,7 +1236,7 @@ static CubeInfo *GetCubeInfo(const QuantizeInfo *quantize_info,
   for (i=0; i < ExceptionQueueLength; i++)
   {
     cube_info->weights[ExceptionQueueLength-i-1]=1.0/weight;
-    weight*=exp(log((double) MaxRGB+1.0)/(ExceptionQueueLength-1.0));
+    weight*=exp(log((double) (MaxRGB+1))/(ExceptionQueueLength-1.0));
   }
   /*
     Normalize the weighting factors.
@@ -1718,7 +1718,7 @@ MagickExport unsigned int OrderedDitherImage(Image *image)
     indexes=GetIndexes(image);
     for (x=0; x < (long) image->columns; x++)
     {
-      index=Intensity(*q) > DitherMatrix[y & 0x07][x & 0x07] ? 1 : 0;
+      index=(Quantum) Intensity(*q) > DitherMatrix[y & 0x07][x & 0x07] ? 1 : 0;
       indexes[x]=index;
       q->red=image->colormap[index].red;
       q->green=image->colormap[index].green;

@@ -422,13 +422,13 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       if (fpx_info.numberOfComponents > 2)
         {
-          q->red=UpScale(*r);
-          q->green=UpScale(*g);
-          q->blue=UpScale(*b);
+          q->red=(Quantum) UpScale(*r);
+          q->green=(Quantum) UpScale(*g);
+          q->blue=(Quantum) UpScale(*b);
         }
       else
         {
-          index=UpScale(*r);
+          index=(Quantum) UpScale(*r);
           indexes[x]=index;
           q->red=index;
           q->green=index;

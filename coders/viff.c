@@ -459,17 +459,17 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           }
           if (i < (long) image->colors)
             {
-              image->colormap[i].red=UpScale((unsigned int) value);
-              image->colormap[i].green=UpScale((unsigned int) value);
-              image->colormap[i].blue=UpScale((unsigned int) value);
+              image->colormap[i].red=(Quantum) UpScale((unsigned int) value);
+              image->colormap[i].green=(Quantum) UpScale((unsigned int) value);
+              image->colormap[i].blue=(Quantum) UpScale((unsigned int) value);
             }
           else
             if (i < (long) (2*image->colors))
-              image->colormap[i % image->colors].green=
+              image->colormap[i % image->colors].green=(Quantum)
                 UpScale((unsigned int) value);
             else
               if (i < (long) (3*image->colors))
-                image->colormap[i % image->colors].blue=
+                image->colormap[i % image->colors].blue=(Quantum)
                   UpScale((unsigned int) value);
         }
         LiberateMemory((void **) &viff_colormap);
@@ -676,16 +676,16 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
               break;
             for (x=0; x < (long) image->columns; x++)
             {
-              q->red=UpScale(*p);
-              q->green=UpScale(*(p+number_pixels));
-              q->blue=UpScale(*(p+2*number_pixels));
+              q->red=(Quantum) UpScale(*p);
+              q->green=(Quantum) UpScale(*(p+number_pixels));
+              q->blue=(Quantum) UpScale(*(p+2*number_pixels));
               if (image->colors != 0)
                 {
                   q->red=image->colormap[q->red].red;
                   q->green=image->colormap[q->green].green;
                   q->blue=image->colormap[q->blue].blue;
                 }
-              q->opacity=UpScale(image->matte ?
+              q->opacity=(Quantum) UpScale(image->matte ?
                 MaxRGB-(*(p+number_pixels*3)) : OpaqueOpacity);
               p++;
               q++;

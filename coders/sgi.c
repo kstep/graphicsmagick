@@ -461,10 +461,11 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                q->red=XDownScale((*(p+0) << 8) | (*(p+1)));
-                q->green=XDownScale((*(p+2) << 8) | (*(p+3)));
-                q->blue=XDownScale((*(p+4) << 8) | (*(p+5)));
-                q->opacity=MaxRGB-XDownScale((*(p+6) << 8) | (*(p+7)));
+                q->red=(Quantum) XDownScale((*(p+0) << 8) | (*(p+1)));
+                q->green=(Quantum) XDownScale((*(p+2) << 8) | (*(p+3)));
+                q->blue=(Quantum) XDownScale((*(p+4) << 8) | (*(p+5)));
+                q->opacity=(Quantum)
+                  (MaxRGB-XDownScale((*(p+6) << 8) | (*(p+7))));
                 p+=8;
                 q++;
               }
@@ -484,10 +485,10 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             for (x=0; x < (long) image->columns; x++)
             {
-              q->red=UpScale(*p);
-              q->green=UpScale(*(p+1));
-              q->blue=UpScale(*(p+2));
-              q->opacity=MaxRGB-UpScale(*(p+3));
+              q->red=(Quantum) UpScale(*p);
+              q->green=(Quantum) UpScale(*(p+1));
+              q->blue=(Quantum) UpScale(*(p+2));
+              q->opacity=(Quantum) (MaxRGB-UpScale(*(p+3)));
               p+=4;
               q++;
             }
