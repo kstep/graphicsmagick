@@ -141,7 +141,7 @@ static void MogrifyUsage(void)
       "-modulate value      vary the brightness, saturation, and hue",
       "-monochrome          transform image to black and white",
       "-negate              replace every pixel with its complementary color ",
-      "-new                 instantiate an image object",
+      "-noop                do not apply options to image"
       "-noise radius        add or reduce noise in an image.",
       "-normalize           transform image to span the full range of colors",
       "-opaque color        change this color to the fill color",
@@ -1163,9 +1163,7 @@ static unsigned int MogrifyUtility(int argc,char **argv)
       {
         if (LocaleCompare("negate",option+1) == 0)
           break;
-        if (LocaleCompare("new",option+1) == 0)
-          break;
-       if (LocaleCompare("noise",option+1) == 0)
+        if (LocaleCompare("noise",option+1) == 0)
           {
             if (*option == '-')
               {
@@ -1189,6 +1187,8 @@ static unsigned int MogrifyUtility(int argc,char **argv)
               }
             break;
           }
+        if (LocaleCompare("noop",option+1) == 0)
+          break;
         if (LocaleCompare("normalize",option+1) == 0)
           break;
         MagickError(OptionError,"Unrecognized option",option);

@@ -215,7 +215,7 @@ static void ConvertUsage(void)
       "-morph value         morph an image sequence",
       "-mosaic              create an mosaic from an image sequence",
       "-negate              replace every pixel with its complementary color ",
-      "-new                 instantiate an image object",
+      "-noop                do not apply options to image",
       "-noise radius        add or reduce noise in an image",
       "-normalize           transform image to span the full range of colors",
       "-opaque color        change this color to the fill color",
@@ -1273,8 +1273,6 @@ static unsigned int ConvertUtility(int argc,char **argv)
       case 'n':
       {
         if (LocaleCompare("negate",option+1) == 0)
-          break;
-        if (LocaleCompare("new",option+1) == 0)
           break;
         if (LocaleCompare("noise",option+1) == 0)
           {
