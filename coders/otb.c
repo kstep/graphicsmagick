@@ -71,11 +71,9 @@ static unsigned int
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadOTBImage reads a OTB (level 0) image file and returns it.  It
+%  Method ReadOTBImage reads a on-the-air (level 0) bitmap and returns it.  It
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
-%
-%  ReadOTBImage was contributed by Milan Votava <votava@mageo.cz>.
 %
 %  The format of the ReadOTBImage method is:
 %
@@ -93,24 +91,6 @@ static unsigned int
 %
 %
 */
-
-static unsigned int OTBReadInteger(Image *image,unsigned long *value)
-{
-  int
-    byte;
-
-  *value=0;
-  do
-  {
-    byte=ReadBlobByte(image);
-    if (byte == EOF)
-      return(False);
-    *value<<=7;
-    *value|=(unsigned int) (byte & 0x7f);
-  } while (byte & 0x80);
-  return(True);
-}
-
 static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
@@ -280,10 +260,8 @@ ModuleExport void UnregisterOTBImage(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteOTBImage writes an image to a file in the Wireless Bitmap
+%  Method WriteOTBImage writes an image to a file in the On-the-air Bitmap
 %  (level 0) image format.
-%
-%  WriteOTBImage was contributed by Milan Votava <votava@mageo.cz>.
 %
 %  The format of the WriteOTBImage method is:
 %
@@ -301,38 +279,6 @@ ModuleExport void UnregisterOTBImage(void)
 %
 %
 */
-
-static void OTBWriteInteger(Image *image,const unsigned long value)
-{
-  int
-    bits,
-    flag,
-    n;
-
-  register int
-    i;
-
-  unsigned char
-    buffer[5],
-    octet;
-
-  n=1;
-  bits=28;
-  flag=False;
-  for(i=4; i >= 0; i--)
-  {
-    octet=((value >> bits) & 0x7f);
-    if (!flag && octet)
-      {
-        flag=True;
-        n=i+1;
-      }
-    buffer[4-i]=octet | (i && (flag || octet))*(0x01 << 7);
-    bits-=7;
-  }
-  (void) WriteBlob(image,n,(char *) buffer+5-n);
-}
-
 static unsigned int WriteOTBImage(const ImageInfo *image_info,Image *image)
 {
   long
@@ -384,8 +330,8 @@ static unsigned int WriteOTBImage(const ImageInfo *image_info,Image *image)
   if (image->colors == 2)
     polarity=Intensity(image->colormap[0]) < Intensity(image->colormap[1]);
   (void) WriteBlobMSBShort(image,0);
-  OTBWriteInteger(image,image->columns);
-  OTBWriteInteger(image,image->rows);
+  (void) WriteBlobMSBShort(image,image->columns);
+  (void) WriteBlobMSBShort(image,image->rows);
   (void) WriteBlobMSBShort(image,1);  /* depth */
   for (y=0; y < (long) image->rows; y++)
   {
