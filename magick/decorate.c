@@ -411,12 +411,12 @@ MagickExport unsigned int RaiseImage(Image *image,
 #define RaiseImageText  "  Raise image...  "
 #define TroughFactor  Upscale(135)
 
-  long
-    y;
-
   Quantum
     foreground,
     background;
+
+  long
+		y;
 
   register long
     i,
@@ -439,11 +439,10 @@ MagickExport unsigned int RaiseImage(Image *image,
       foreground=0;
       background=MaxRGB;
     }
-  i=0;
   SetImageType(image,TrueColorType);
   for (y=0; y < (long) raise_info->height; y++)
   {
-    q=GetImagePixels(image,0,i++,image->columns,1);
+    q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < y; x++)
@@ -456,7 +455,7 @@ MagickExport unsigned int RaiseImage(Image *image,
         (MaxRGB-HighlightFactor))/MaxRGB);
       q++;
     }
-    for (x=0; x < (long) (image->columns-2*y); x++)
+    for ( ; x < (long) (image->columns-y); x++)
     {
       q->red=(Quantum) ((unsigned long) (q->red*AccentuateFactor+foreground*
         (MaxRGB-AccentuateFactor))/MaxRGB);
@@ -466,7 +465,7 @@ MagickExport unsigned int RaiseImage(Image *image,
         (MaxRGB-AccentuateFactor))/MaxRGB);
       q++;
     }
-    for (x=0; x < y; x++)
+    for ( ; x < (long) image->columns; x++)
     {
       q->red=(Quantum) ((unsigned long) (q->red*ShadowFactor+background*
         (MaxRGB-ShadowFactor))/MaxRGB);
@@ -478,12 +477,12 @@ MagickExport unsigned int RaiseImage(Image *image,
     }
     if (!SyncImagePixels(image))
       break;
-    if (QuantumTick(i,image->rows))
-      MagickMonitor(RaiseImageText,i,image->rows);
+    if (QuantumTick(y,image->rows))
+      MagickMonitor(RaiseImageText,y,image->rows);
   }
-  for (y=0; y < (long) (image->rows-2*raise_info->height); y++)
+  for ( ; y < (long) (image->rows-raise_info->height); y++)
   {
-    q=GetImagePixels(image,0,i++,image->columns,1);
+    q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (long) raise_info->width; x++)
@@ -496,9 +495,9 @@ MagickExport unsigned int RaiseImage(Image *image,
         (MaxRGB-HighlightFactor))/MaxRGB);
       q++;
     }
-    for (x=0; x < (long) (image->columns-2*raise_info->width); x++)
+    for ( ; x < (long) (image->columns-raise_info->width); x++)
       q++;
-    for (x=0; x < (long) raise_info->width; x++)
+    for ( ; x < (long) image->columns; x++)
     {
       q->red=(Quantum) ((unsigned long) (q->red*ShadowFactor+background*
         (MaxRGB-ShadowFactor))/MaxRGB);
@@ -510,15 +509,15 @@ MagickExport unsigned int RaiseImage(Image *image,
     }
     if (!SyncImagePixels(image))
       break;
-    if (QuantumTick(i,image->rows))
-      MagickMonitor(RaiseImageText,i,image->rows);
+    if (QuantumTick(y,image->rows))
+      MagickMonitor(RaiseImageText,y,image->rows);
   }
-  for (y=0; y < (long) raise_info->height; y++)
+  for ( ; y < (long) image->rows; y++)
   {
-    q=GetImagePixels(image,0,i++,image->columns,1);
+    q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (long) (raise_info->width-y); x++)
+    for (x=0; x < (long) (image->rows-y); x++)
     {
       q->red=(Quantum) ((unsigned long) (q->red*HighlightFactor+foreground*
         (MaxRGB-HighlightFactor))/MaxRGB);
@@ -528,7 +527,7 @@ MagickExport unsigned int RaiseImage(Image *image,
         (MaxRGB-HighlightFactor))/MaxRGB);
       q++;
     }
-    for (x=0; x < (long) (image->columns-2*(raise_info->width-y)); x++)
+    for ( ; x < (long) (image->columns-(image->rows-y)); x++)
     {
       q->red=(Quantum) ((unsigned long) (q->red*TroughFactor+background*
         (MaxRGB-TroughFactor))/MaxRGB);
@@ -538,7 +537,7 @@ MagickExport unsigned int RaiseImage(Image *image,
         (MaxRGB-TroughFactor))/MaxRGB);
       q++;
     }
-    for (x=0; x < (long) (raise_info->width-y); x++)
+    for ( ; x < (long) image->columns; x++)
     {
       q->red=(Quantum) ((unsigned long) (q->red*ShadowFactor+background*
         (MaxRGB-ShadowFactor))/MaxRGB);
@@ -550,8 +549,8 @@ MagickExport unsigned int RaiseImage(Image *image,
     }
     if (!SyncImagePixels(image))
       break;
-    if (QuantumTick(i,image->rows))
-      MagickMonitor(RaiseImageText,i,image->rows);
+    if (QuantumTick(y,image->rows))
+      MagickMonitor(RaiseImageText,y,image->rows);
   }
   return(True);
 }
