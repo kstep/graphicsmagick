@@ -152,7 +152,7 @@ MagickExport PixelPacket *GetCacheView(ViewInfo *view,const int x,const int y,
     return(pixels);
   status=ReadCachePixels(image->cache,view->id);
   if ((image->storage_class == PseudoClass) ||
-      (image->colorspace != RGBColorspace))
+      (image->colorspace == CMYKColorspace))
     status|=ReadCacheIndexes(image->cache,view->id);
   if (status == False)
     {
@@ -416,7 +416,7 @@ MagickExport unsigned int SyncCacheView(ViewInfo *view)
     return(True);
   status=WriteCachePixels(image->cache,view->id);
   if ((image->storage_class == PseudoClass) ||
-      (image->colorspace != RGBColorspace))
+      (image->colorspace == CMYKColorspace))
     status|=WriteCacheIndexes(image->cache,view->id);
   if (status == False)
     ThrowBinaryException(CacheWarning,"Unable to sync pixel cache",

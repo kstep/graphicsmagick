@@ -467,7 +467,7 @@ static PixelPacket *SetPixelStream(Image *image,const int x,const int y,
   number_pixels=stream_info->columns*stream_info->rows;
   length=number_pixels*sizeof(PixelPacket);
   if ((image->storage_class == PseudoClass) ||
-      (image->colorspace != RGBColorspace))
+      (image->colorspace == CMYKColorspace))
     length+=number_pixels*sizeof(IndexPacket);
   if (stream_info->pixels == (PixelPacket *) NULL)
     stream_info->pixels=(PixelPacket *) AcquireMemory(length);

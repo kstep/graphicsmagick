@@ -260,7 +260,7 @@ static unsigned int CompressCache(Cache cache)
   }
   if (y == cache_info->rows)
     if ((cache_info->storage_class == PseudoClass) ||
-        (cache_info->colorspace != RGBColorspace))
+        (cache_info->colorspace == CMYKColorspace))
       for (y=0; y < (int) cache_info->rows; y++)
       {
         count=read(cache_info->file,pixels,
@@ -324,7 +324,7 @@ static void DestroyCacheInfo(Cache cache)
     {
       LiberateMemory((void **) &cache_info->pixels);
       if ((cache_info->storage_class == PseudoClass) ||
-          (cache_info->colorspace != RGBColorspace))
+          (cache_info->colorspace == CMYKColorspace))
         (void) GetCacheMemory(number_pixels*sizeof(IndexPacket));
       (void) GetCacheMemory(number_pixels*sizeof(PixelPacket));
       break;
@@ -339,7 +339,7 @@ static void DestroyCacheInfo(Cache cache)
       */
       length=number_pixels*sizeof(PixelPacket);
       if ((cache_info->storage_class == PseudoClass) ||
-          (cache_info->colorspace != RGBColorspace))
+          (cache_info->colorspace == CMYKColorspace))
         length+=number_pixels*sizeof(IndexPacket);
       (void) UnmapBlob(cache_info->pixels,length);
     }
@@ -868,7 +868,7 @@ static PixelPacket *GetPixelCache(Image *image,const int x,const int y,
     return(pixels);
   status=ReadCachePixels(image->cache,0);
   if ((image->storage_class == PseudoClass) ||
-      (image->colorspace != RGBColorspace))
+      (image->colorspace == CMYKColorspace))
     status|=ReadCacheIndexes(image->cache,0);
   if (status == False)
     {
@@ -1039,7 +1039,7 @@ MagickExport unsigned int OpenCache(Image *image)
   number_pixels=cache_info->columns*cache_info->rows;
   length=number_pixels*sizeof(PixelPacket);
   if ((cache_info->storage_class == PseudoClass) ||
-      (cache_info->colorspace != RGBColorspace))
+      (cache_info->colorspace == CMYKColorspace))
     length+=number_pixels*sizeof(IndexPacket);
   if (cache_info->storage_class != UndefinedClass)
     {
@@ -1083,7 +1083,7 @@ MagickExport unsigned int OpenCache(Image *image)
     }
   length=number_pixels*sizeof(PixelPacket);
   if ((image->storage_class == PseudoClass) ||
-      (image->colorspace != RGBColorspace))
+      (image->colorspace == CMYKColorspace))
     length+=number_pixels*sizeof(IndexPacket);
   if ((cache_info->type == MemoryCache) ||
       ((cache_info->type == UndefinedCache) && (length <= GetCacheMemory(0))))
@@ -1108,7 +1108,7 @@ MagickExport unsigned int OpenCache(Image *image)
           cache_info->type=MemoryCache;
           cache_info->pixels=(PixelPacket *) allocation;
           if ((cache_info->storage_class == PseudoClass) ||
-              (cache_info->colorspace != RGBColorspace))
+              (cache_info->colorspace == CMYKColorspace))
             cache_info->indexes=(IndexPacket *)
               (cache_info->pixels+number_pixels);
           return(True);
@@ -1151,7 +1151,7 @@ else
           cache_info->type=MemoryMappedCache;
           cache_info->pixels=(PixelPacket *) allocation;
           if ((cache_info->storage_class == PseudoClass) ||
-              (cache_info->colorspace != RGBColorspace))
+              (cache_info->colorspace == CMYKColorspace))
             cache_info->indexes=(IndexPacket *)
               (cache_info->pixels+number_pixels);
           CloseCache(image->cache);
@@ -1212,7 +1212,7 @@ MagickExport unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
   if ((cache_info->storage_class != PseudoClass) &&
-      (cache_info->colorspace == RGBColorspace))
+      (cache_info->colorspace != CMYKColorspace))
     return(False);
   nexus=cache_info->nexus+id;
   offset=nexus->y*cache_info->columns+nexus->x;
@@ -1459,7 +1459,7 @@ MagickExport PixelPacket *SetCacheNexus(Cache cache,const unsigned int id,
         nexus->pixels=cache_info->pixels+nexus->y*cache_info->columns+nexus->x;
         nexus->indexes=(IndexPacket *) NULL;
         if ((cache_info->storage_class == PseudoClass) ||
-            (cache_info->colorspace != RGBColorspace))
+            (cache_info->colorspace == CMYKColorspace))
           nexus->indexes=
             cache_info->indexes+nexus->y*cache_info->columns+nexus->x;
         return(nexus->pixels);
@@ -1470,7 +1470,7 @@ MagickExport PixelPacket *SetCacheNexus(Cache cache,const unsigned int id,
   number_pixels=nexus->columns*nexus->rows;
   length=number_pixels*sizeof(PixelPacket);
   if ((cache_info->storage_class == PseudoClass) ||
-      (cache_info->colorspace != RGBColorspace))
+      (cache_info->colorspace == CMYKColorspace))
     length+=number_pixels*sizeof(IndexPacket);
   if (nexus->line == (void *) NULL)
     nexus->line=AcquireMemory(length);
@@ -1635,7 +1635,7 @@ static unsigned int SyncPixelCache(Image *image)
     return(True);
   status=WriteCachePixels(image->cache,0);
   if ((image->storage_class == PseudoClass) ||
-      (image->colorspace != RGBColorspace))
+      (image->colorspace == CMYKColorspace))
     status|=WriteCacheIndexes(image->cache,0);
   if (status == False)
     ThrowBinaryException(CacheWarning,"Unable to sync pixel cache",
@@ -1717,7 +1717,7 @@ static unsigned int UncompressCache(Cache cache)
   }
   if (y == cache_info->rows)
     if ((cache_info->storage_class == PseudoClass) ||
-        (cache_info->colorspace != RGBColorspace))
+        (cache_info->colorspace == CMYKColorspace))
       for (y=0; y < (int) cache_info->rows; y++)
       {
         count=gzread(file,pixels,cache_info->columns*sizeof(IndexPacket));
@@ -1785,7 +1785,7 @@ MagickExport unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
   if ((cache_info->storage_class != PseudoClass) &&
-      (cache_info->colorspace == RGBColorspace))
+      (cache_info->colorspace != CMYKColorspace))
     return(False);
   nexus=cache_info->nexus+id;
   indexes=nexus->indexes;
