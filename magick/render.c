@@ -4887,15 +4887,13 @@ MagickExport void TraceEllipse(PrimitiveInfo *primitive_info,
   /*
     Ellipses are just short segmented polys.
   */
-  while (degrees.y < degrees.x)
-    degrees.y+=360.0;
-  step=2/stop.y;
-  if (stop.x > stop.y)
-    step=2/stop.x;
-  if (step > MagickPI/8.0)
+  step=2/Max(stop.x,stop.y);
+  if (step > (MagickPI/8.0))
     step=MagickPI/8.0;
   else
     step=MagickPI/(4*ceil(MagickPI/step/2));
+  while (degrees.y < degrees.x)
+    degrees.y+=360.0;
   angle.x=DegreesToRadians(degrees.x);
   angle.y=DegreesToRadians(degrees.y);
   p=primitive_info;
