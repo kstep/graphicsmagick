@@ -24,6 +24,10 @@ PACKAGE_VERSION_ADDENDUM="-${CHANGE_DATE}"
 
 # To hardcode the version addendum, uncomment the following line
 PACKAGE_VERSION_ADDENDUM=''
+#
+# CVS branch that this release is on.
+#
+CVS_BRANCH_TAG=GraphicsMagick-1_0
 
 #
 # Libtool library revision control info

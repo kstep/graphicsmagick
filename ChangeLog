@@ -1,3 +1,8 @@
+2004-08-05  Glenn Randers-Pehrson <glennrp@glennrp.com>
+
+	* coders/png.c: Fixes for CERT security alert TA04-217A described
+	at "http://www.us-cert.gov/cas/techalerts/TA04-217A.html".
+
 2004-05-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* ltmain.sh: Fix to allow exe wrapper to work under MinGW.
