@@ -10073,6 +10073,7 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
         path[MaxTextExtent];
 
       GetPathComponent(image->filename,HeadPath,path);
+      GetPathComponent(image->filename,TailPath,filename);
       (void) chdir(path);
     }
   XFileBrowserWidget(display,windows,"Save",filename);
