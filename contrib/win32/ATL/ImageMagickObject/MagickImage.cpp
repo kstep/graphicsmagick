@@ -8,6 +8,7 @@ const LCID lcidDefault = 0;
 const DWORD dwErrorBase = 5000;
 
 /* #define DO_DEBUG 1 */
+#define DO_DEBUG 1
 
 /////////////////////////////////////////////////////////////////////////////
 // CMagickImage
@@ -523,7 +524,7 @@ STDMETHODIMP CMagickImage::Convert(SAFEARRAY **pArrayVar, VARIANT *pVar)
 
   EmptyArgs();
   AddArgs(L"-convert");
-  hr = Perform(CompositeImageCommand,pArrayVar,pVar);
+  hr = Perform(ConvertImageCommand,pArrayVar,pVar);
 	if (FAILED(hr))
     {
       hr = MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,dwErrorBase+1001);
@@ -610,7 +611,7 @@ HRESULT CMagickImage::Perform(unsigned int (*func)(ImageInfo *image_info,
   HRESULT hr = E_INVALIDARG;
 
 #ifdef _DEBUG
-  //_DbgBreak();
+  _DbgBreak();
 #endif
 
 #ifdef DO_DEBUG
