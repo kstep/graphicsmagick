@@ -99,6 +99,7 @@ CatDelegate = @CatDelegate@
 ConvertDelegate = @ConvertDelegate@
 DELEGATES = @DELEGATES@
 DVIDecodeDelegate = @DVIDecodeDelegate@
+EchoDelegate = @EchoDelegate@
 EditorDelegate = @EditorDelegate@
 FIGDecodeDelegate = @FIGDecodeDelegate@
 GSColorDevice = @GSColorDevice@
@@ -106,6 +107,7 @@ GSEPSDevice = @GSEPSDevice@
 GSMonoDevice = @GSMonoDevice@
 GSPDFDevice = @GSPDFDevice@
 GSPSDevice = @GSPSDevice@
+GnuplotDecodeDelegate = @GnuplotDecodeDelegate@
 HPGLDecodeDelegate = @HPGLDecodeDelegate@
 HTMLDecodeDelegate = @HTMLDecodeDelegate@
 LD = @LD@
@@ -170,9 +172,9 @@ all: Makefile $(DATA)
 
 .SUFFIXES:
 $(srcdir)/Makefile.in: @MAINT@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4)
-	cd $(top_srcdir) && $(AUTOMAKE) --foreign --include-deps delegates/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --foreign delegates/Makefile
 
-Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
@@ -206,6 +208,11 @@ distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 subdir = delegates
 
 distdir: $(DISTFILES)
+	here=`cd $(top_builddir) && pwd`; \
+	top_distdir=`cd $(top_distdir) && pwd`; \
+	distdir=`cd $(distdir) && pwd`; \
+	cd $(top_srcdir) \
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --foreign delegates/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  test -f $(distdir)/$$file \
