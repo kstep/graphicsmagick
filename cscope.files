@@ -91,6 +91,7 @@ coders/xpm.c
 coders/xtrn.c
 coders/xwd.c
 coders/yuv.c
+filters/analyze.c
 magick/animate.c
 magick/animate.h
 magick/annotate.c
@@ -133,7 +134,6 @@ magick/fx.c
 magick/fx.h
 magick/gem.c
 magick/gem.h
-magick/image-5_4_7.c
 magick/image.c
 magick/image.h
 magick/list.c
@@ -162,10 +162,9 @@ magick/paint.c
 magick/paint.h
 magick/PreRvIcccm.c
 magick/PreRvIcccm.h
-magick/quantize-5_4_7.c
 magick/quantize.c
 magick/quantize.h
-magick/quantize-play.c
+magick/quantize-ref.c
 magick/random.c
 magick/random.h
 magick/registry.c

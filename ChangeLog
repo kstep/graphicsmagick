@@ -1,3 +1,10 @@
+2003-01-06  Albert Chin-A-Young  <china@thewrittenword.com>
+	* ltdl/Makefile.am, ltdl/ltdl.c: Fix compilation problem
+	under Tru64 UNIX 5.1.  The GraphicsMagick random.h was being
+	included when the system random.h was needed.
+	* configure.ac: Improve robustness of POSIX thread API tests
+	by including pthread.h when building the test program.
+
 2003-01-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* magick/image.c: In IsImagesEqual() only use type 'long double'
 	for error summation if QuantumDepth > 16 and 'long double' has
@@ -5,6 +12,7 @@
 	* magick/quantize.c: In QuantizeImage() only use type 'long
 	double' for error summation if QuantumDepth > 16 and 'long
 	double' has more range than 'double'.
+	* Replaced redundant code with macros.
 	* Optimize mapping to monochrome.
 	* utilities/conjure.c: Had missed removing this file earlier.
 

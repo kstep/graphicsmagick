@@ -27,7 +27,7 @@
 # ImageMagick Studio.
 #
 
-AUTOMAKE_OPTIONS = 1.6.2 foreign
+AUTOMAKE_OPTIONS = 1.6.2 foreign nostdinc
 
 if WITH_LTDL
 
@@ -45,6 +45,7 @@ endif
 endif # WITH_LTDL
 
 EXTRA_DIST = ltdl.h
+INCLUDES = -I. -I$(top_builddir)
 
 ## Make sure these will be cleaned even when they're not built by
 ## default.

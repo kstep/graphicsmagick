@@ -202,6 +202,15 @@
 #define CacheShift  (QuantumDepth-6)
 #define ExceptionQueueLength  16
 #define MaxNodes  266817
+
+#define ColorToNodeId(red,green,blue,index) ((unsigned long) \
+            (((ScaleQuantumToChar(red) >> index) & 0x01) << 2 | \
+             ((ScaleQuantumToChar(green) >> index) & 0x01) << 1 | \
+             ((ScaleQuantumToChar(blue) >> index) & 0x01)))
+
+/* Convert signed type to Quantum */
+#define RoundSignedToQuantum(value) ((Quantum) (value < 0 ? 0 : \
+            (value > MaxRGB) ? MaxRGB : value + 0.5))
 
 /*
   Typedef declarations.
@@ -420,10 +429,7 @@ static unsigned int AssignImageColors(CubeInfo *cube_info,Image *image)
         node_info=cube_info->root;
         for (index=MaxTreeDepth-1; (long) index > 0; index--)
         {
-          id=(unsigned long)
-            (((ScaleQuantumToChar(q->red) >> index) & 0x01) << 2 |
-             ((ScaleQuantumToChar(q->green) >> index) & 0x01) << 1 |
-             ((ScaleQuantumToChar(q->blue) >> index) & 0x01));
+          id=ColorToNodeId(q->red,q->green,q->blue,index);
           if ((node_info->census & (1 << id)) == 0)
             break;
           node_info=node_info->child[id];
@@ -546,6 +552,7 @@ static unsigned int AssignImageColors(CubeInfo *cube_info,Image *image)
 %
 %
 */
+
 static unsigned int ClassifyImageColors(CubeInfo *cube_info,const Image *image,
   ExceptionInfo *exception)
 {
@@ -608,11 +615,8 @@ static unsigned int ClassifyImageColors(CubeInfo *cube_info,const Image *image,
       node_info=cube_info->root;
       for (level=1; level <= 8; level++)
       {
-        bisect*=0.5;
-        id=(unsigned long)
-          (((ScaleQuantumToChar(p->red) >> index) & 0x01) << 2 |
-           ((ScaleQuantumToChar(p->green) >> index) & 0x01) << 1 |
-           ((ScaleQuantumToChar(p->blue) >> index) & 0x01));
+        bisect/=2;
+        id=ColorToNodeId(p->red,p->green,p->blue,index);
         mid.red+=id & 4 ? bisect : -bisect;
         mid.green+=id & 2 ? bisect : -bisect;
         mid.blue+=id & 1 ? bisect : -bisect;
@@ -689,11 +693,8 @@ static unsigned int ClassifyImageColors(CubeInfo *cube_info,const Image *image,
       node_info=cube_info->root;
       for (level=1; level <= cube_info->depth; level++)
       {
-        bisect*=0.5;
-        id=(unsigned long)
-          (((ScaleQuantumToChar(p->red) >> index) & 0x01) << 2 |
-           ((ScaleQuantumToChar(p->green) >> index) & 0x01) << 1 |
-           ((ScaleQuantumToChar(p->blue) >> index) & 0x01));
+        bisect/=2;
+        id=ColorToNodeId(p->red,p->green,p->blue,index);
         mid.red+=id & 4 ? bisect : -bisect;
         mid.green+=id & 2 ? bisect : -bisect;
         mid.blue+=id & 1 ? bisect : -bisect;
@@ -1110,12 +1111,11 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
         error.green+=p->error[i].green*p->weights[i];
         error.blue+=p->error[i].blue*p->weights[i];
       }
-      pixel.red=(Quantum) ((error.red < 0) ? 0 :
-        (error.red > MaxRGB) ? MaxRGB : error.red+0.5);
-      pixel.green=(Quantum) ((error.green < 0) ? 0 :
-        (error.green > MaxRGB) ? MaxRGB : error.green+0.5);
-      pixel.blue=(Quantum) ((error.blue < 0) ? 0 :
-        (error.blue > MaxRGB) ? MaxRGB : error.blue+0.5);
+
+      pixel.red=RoundSignedToQuantum(error.red);
+      pixel.green=RoundSignedToQuantum(error.green);
+      pixel.blue=RoundSignedToQuantum(error.blue);
+
       i=(pixel.blue >> CacheShift) << 12 | (pixel.green >> CacheShift) << 6 |
         (pixel.red >> CacheShift);
       if (p->cache[i] < 0)
@@ -1132,10 +1132,7 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
           node_info=p->root;
           for (index=MaxTreeDepth-1; (long) index > 0; index--)
           {
-            id=(unsigned long)
-              (((ScaleQuantumToChar(pixel.red) >> index) & 0x01) << 2 |
-               ((ScaleQuantumToChar(pixel.green) >> index) & 0x01) << 1 |
-               ((ScaleQuantumToChar(pixel.blue) >> index) & 0x01));
+            id=ColorToNodeId(pixel.red,pixel.green,pixel.blue,index);
             if ((node_info->census & (1 << id)) == 0)
               break;
             node_info=node_info->child[id];

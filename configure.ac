@@ -856,14 +856,18 @@ AC_SUBST(LIB_MATH)
 LIB_THREAD=''
 if test "$with_threads" != 'no'
 then
-  AC_CHECK_LIB(pthread,pthread_attr_init,
-    [AC_DEFINE(HasPTHREADS,1,Define if you have Posix thread methods.)
-     LIB_THREAD="-lpthread"
-     DEF_THREAD="-D_REENTRANT"],,)
-  LIBS="$LIB_THREAD $LIBS"
-  CPPFLAGS="$DEF_THREAD $CPPFLAGS"
-else
-  CFLAGS="${CFLAGS} -Wall"
+AC_MSG_CHECKING([for POSIX thread support])
+OLIBS=$LIBS
+LIBS="$LIBS -lpthread"
+AC_TRY_LINK([#include <pthread.h>],[(void)pthread_create(0,0,0,0);],[
+  AC_MSG_RESULT([yes])
+  AC_DEFINE(HasPTHREADS, 1, [Define if you have Posix thread methods.])
+  LIB_THREAD="-lpthread"
+  DEF_THREAD="-D_REENTRANT"
+  LIBS="$LIBS $LIB_THREAD"
+  CPPFLAGS="$CPPFLAGS $DEF_THREAD"],[
+  AC_MSG_RESULT([no])
+  LIBS=$OLIBS])
 fi
 AC_SUBST(LIB_THREAD)
 
