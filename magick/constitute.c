@@ -2466,7 +2466,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
         {
           DestroyImageInfo(clone_info);
           ThrowBinaryException(MissingDelegateWarning,
-            "no encode delegate for this image format",clone_info->magick)
+            "no encode delegate for this image format",image->filename)
         }
       if (!magick_info->thread_support)
         AcquireSemaphoreInfo(&constitute_semaphore);
