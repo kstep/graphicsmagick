@@ -1,0 +1,272 @@
+<HTML>
+<HEAD>
+<TITLE>cache - ImageMagick Pixel Cache Methods</TITLE>
+<LINK REV="made" HREF="mailto:tkevans@fantasia.es.dupont.com">
+</HEAD>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"  vlink="#9900DD">
+
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#NAME">NAME</A></LI>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A></LI>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></LI>
+	<UL>
+
+		<LI><A HREF="#GetPixelCache">GetPixelCache</A></LI>
+		<LI><A HREF="#ReadPixelCache">ReadPixelCache</A></LI>
+		<LI><A HREF="#SetPixelCache">SetPixelCache</A></LI>
+		<LI><A HREF="#SyncPixelCache">SyncPixelCache</A></LI>
+		<LI><A HREF="#WritePixelCache">WritePixelCache</A></LI>
+	</UL>
+
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="NAME">NAME</A></H1>
+<P>
+cache - ImageMagick Pixel Cache Methods
+
+</P>
+<P>
+<HR>
+<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
+PixelPacket * <STRONG>GetPixelCache</STRONG>( Image *image, const int x, const int y, const unsigned int columns, const
+unsigned int rows );
+
+</P>
+<P>
+unsigned int  <STRONG>ReadPixelCache</STRONG>( Image *image, const QuantumTypes quantum, const unsigned char
+<CODE>*source</CODE> );
+
+</P>
+<P>
+PixelPacket * <STRONG>SetPixelCache</STRONG>( Image *image, const int x, const int y, const unsigned int columns, const
+unsigned int rows );
+
+</P>
+<P>
+unsigned int  <STRONG>SyncPixelCache</STRONG>( Image <CODE>*image</CODE> );
+
+</P>
+<P>
+unsigned int  <STRONG>WritePixelCache</STRONG>( Image *, const QuantumTypes quantum, unsigned char
+<CODE>*destination</CODE> );
+
+</P>
+<P>
+<HR>
+<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<P>
+<HR>
+<H2><A NAME="GetPixelCache">GetPixelCache</A></H2>
+<P>
+Method GetPixelCache gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters. 
+<FONT SIZE=-1>A</FONT> pointer to the pixels is returned if the pixels are transferred, otherwise a 
+<FONT SIZE=-1>NULL</FONT> is returned.
+
+
+</P>
+<P>
+The format of the GetPixelCache method is:
+
+</P>
+<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetPixelCache ( <A HREF="types/Image.html">Image</A> *image, const int x, const int y, const unsigned int columns, const unsigned int rows ); </blockquote>
+
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
+
+</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o">status:</A></STRONG><DD>
+<P>
+Method GetPixelCache returns a pointer to the pixels is returned if the pixels are transferred, otherwise a 
+<FONT SIZE=-1>NULL</FONT> is returned.
+
+
+</P>
+<p><dt><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</P>
+<p><dt><STRONG>x,y,columns,rows:</STRONG><DD>
+<P>
+These values define the perimeter of a region of pixels.
+
+</P>
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ReadPixelCache">ReadPixelCache</A></H2>
+<P>
+Method ReadPixelCache transfers one or more pixel components from a buffer
+or file into the image pixel buffer of an image. It returns True if the
+pixels are successfully transferred, otherwise False.
+
+</P>
+<P>
+The format of the ReadPixelCache method is:
+
+</P>
+<blockquote>unsigned int ReadPixelCache ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#QuantumTypes">QuantumTypes</A> quantum, const unsigned char *source ); </blockquote>
+
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
+
+</P>
+<DL><DL>
+<p><dt><STRONG>status:</STRONG><DD>
+<P>
+Method ReadPixelCache returns True if the pixels are successfully
+transferred, otherwise False.
+
+</P>
+<p><dt><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</P>
+<p><dt><STRONG>quantum:</STRONG><DD>
+<P>
+Declare which pixel components to transfer (red, green, blue, opacity, 
+<FONT SIZE=-1>RGB,</FONT> or 
+<FONT SIZE=-1>RGBA).</FONT>
+
+
+</P>
+<p><dt><STRONG>source:</STRONG><DD>
+<P>
+The pixel components are transferred from this buffer.
+
+</P>
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="SetPixelCache">SetPixelCache</A></H2>
+<P>
+Method SetPixelCache allocates an area to store image pixels as defined by the region rectangle and returns a pointer to the area. This area is subsequently transferred from the pixel cache with the SyncPixelCache. 
+<FONT SIZE=-1>A</FONT> pointer to the pixels is returned if the pixels are transferred, otherwise a 
+<FONT SIZE=-1>NULL</FONT> is returned.
+
+
+</P>
+<P>
+The format of the SetPixelCache method is:
+
+</P>
+<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *SetPixelCache ( <A HREF="types/Image.html">Image</A> *image, const int x, const int y, const unsigned int columns, const unsigned int rows ); </blockquote>
+
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
+
+</P>
+<DL><DL>
+<p><dt><STRONG>status:</STRONG><DD>
+<P>
+Method SetPixelCache returns a pointer to the pixels is returned if the pixels are transferred, otherwise a 
+<FONT SIZE=-1>NULL</FONT> is returned.
+
+
+</P>
+<p><dt><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</P>
+<p><dt><STRONG>x,y,columns,rows:</STRONG><DD>
+<P>
+These values define the perimeter of a region of pixels.
+
+</P>
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="SyncPixelCache">SyncPixelCache</A></H2>
+<P>
+Method SyncPixelCache saves the image pixels to the in-memory or disk
+cache. The method returns True if the pixel region is set, otherwise False.
+
+</P>
+<P>
+The format of the SyncPixelCache method is:
+
+</P>
+<blockquote>unsigned int SyncPixelCache ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
+
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
+
+</P>
+<DL><DL>
+<p><dt><STRONG>status:</STRONG><DD>
+<P>
+Method SyncPixelCache returns True if the image pixels are transferred to
+the in-memory or disk cache otherwise False.
+
+</P>
+<p><dt><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</P>
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="WritePixelCache">WritePixelCache</A></H2>
+<P>
+Method WritePixelCache transfers one or more pixel components from the
+image pixel buffer to a buffer or file. It returns True if the pixels are
+successfully transferred, otherwise False.
+
+</P>
+<P>
+The format of the WritePixelCache method is:
+
+</P>
+<blockquote>unsigned int WritePixelCache ( <A HREF="types/Image.html">Image</A> *, const <A HREF="types/Enumerations.html#QuantumTypes">QuantumTypes</A> quantum, unsigned char *destination ); </blockquote>
+
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
+
+</P>
+<DL><DL>
+<p><dt><STRONG>status:</STRONG><DD>
+<P>
+Method WritePixelCache returns True if the pixels are successfully
+transferred, otherwise False.
+
+</P>
+<p><dt><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</P>
+<p><dt><STRONG>quantum:</STRONG><DD>
+<P>
+Declare which pixel components to transfer (red, green, blue, opacity, 
+<FONT SIZE=-1>RGB,</FONT> or 
+<FONT SIZE=-1>RGBA).</FONT>
+
+
+</P>
+<p><dt><STRONG>destination:</STRONG><DD>
+<P>
+The components are transferred to this buffer.
+
+</P>
+</DL></DL>
+
+</BODY>
+
+</HTML>

@@ -1,0 +1,136 @@
+<HTML>
+<HEAD>
+<TITLE>montage - Methods to Create a Montage.</TITLE>
+<LINK REV="made" HREF="mailto:tkevans@fantasia.es.dupont.com">
+</HEAD>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"  vlink="#9900DD">
+
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#NAME">NAME</A></LI>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A></LI>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></LI>
+	<UL>
+
+		<LI><A HREF="#DestroyMontageInfo">DestroyMontageInfo</A></LI>
+		<LI><A HREF="#GetMontageInfo">GetMontageInfo</A></LI>
+		<LI><A HREF="#MontageImages">MontageImages</A></LI>
+	</UL>
+
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="NAME">NAME</A></H1>
+<P>
+montage - Methods to Create a Montage.
+
+</P>
+<P>
+<HR>
+<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
+void  <STRONG>DestroyMontageInfo</STRONG>( MontageInfo <CODE>*montage_info</CODE> );
+
+</P>
+<P>
+void  <STRONG>GetMontageInfo</STRONG>( MontageInfo <CODE>*montage_info</CODE> );
+
+</P>
+<P>
+Image * <STRONG>MontageImages</STRONG>( const Image *images, const MontageInfo <CODE>*montage_info</CODE> );
+
+</P>
+<P>
+<HR>
+<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<P>
+<HR>
+<H2><A NAME="DestroyMontageInfo">DestroyMontageInfo</A></H2>
+<P>
+Method DestroyMontageInfo deallocates memory associated with an MontageInfo
+structure.
+
+</P>
+<P>
+The format of the DestroyMontageInfo method is:
+
+</P>
+<blockquote>void DestroyMontageInfo ( MontageInfo *montage_info ); </blockquote>
+
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
+
+</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o">montage_info:</A></STRONG><DD>
+<P>
+Specifies a pointer to an MontageInfo structure.
+
+</P>
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="GetMontageInfo">GetMontageInfo</A></H2>
+<P>
+Method GetMontageInfo initializes the MontageInfo structure.
+
+</P>
+<P>
+The format of the GetMontageInfo method is:
+
+</P>
+<blockquote>void GetMontageInfo ( MontageInfo *montage_info ); </blockquote>
+
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
+
+</P>
+<DL><DL>
+<p><dt><STRONG>montage_info:</STRONG><DD>
+<P>
+Specifies a pointer to a MontageInfo structure.
+
+</P>
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="MontageImages">MontageImages</A></H2>
+<P>
+Method MontageImages creates a composite image by combining several
+separate images.
+
+</P>
+<P>
+The format of the MontageImages method is:
+
+</P>
+<blockquote><A HREF="types/Image.html">Image</A> *MontageImages ( const <A HREF="types/Image.html">Image</A> *images, const MontageInfo *montage_info ); </blockquote>
+
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
+
+</P>
+<DL><DL>
+<p><dt><STRONG>images:</STRONG><DD>
+<P>
+Specifies a pointer to an array of Image structures.
+
+</P>
+<p><dt><STRONG>montage_info:</STRONG><DD>
+<P>
+Specifies a pointer to a MontageInfo structure.
+
+</P>
+</DL></DL>
+
+</BODY>
+
+</HTML>

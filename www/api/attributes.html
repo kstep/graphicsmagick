@@ -1,0 +1,154 @@
+<HTML>
+<HEAD>
+<TITLE>attributes - Image Text Attributes Methods</TITLE>
+<LINK REV="made" HREF="mailto:tkevans@fantasia.es.dupont.com">
+</HEAD>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"  vlink="#9900DD">
+
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#NAME">NAME</A></LI>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A></LI>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></LI>
+	<UL>
+
+		<LI><A HREF="#DestroyImageAttributes">DestroyImageAttributes</A></LI>
+		<LI><A HREF="#GetImageAttributes">GetImageAttributes</A></LI>
+		<LI><A HREF="#SetImageAttributes">SetImageAttributes</A></LI>
+	</UL>
+
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="NAME">NAME</A></H1>
+<P>
+attributes - Image Text Attributes Methods
+
+</P>
+<P>
+<HR>
+<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
+<STRONG>DestroyImageAttributes</STRONG>( Image <CODE>*image</CODE> );
+
+</P>
+<P>
+<HR>
+<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<P>
+<HR>
+<H2><A NAME="DestroyImageAttributes">DestroyImageAttributes</A></H2>
+<P>
+Method DestroyImageAttributes deallocates memory associated with the image
+attribute list.
+
+</P>
+<P>
+The format of the DestroyImageAttributes method is:
+
+</P>
+<blockquote>DestroyImageAttributes ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
+
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
+
+</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o">image:</A></STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</P>
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="GetImageAttributes">GetImageAttributes</A></H2>
+<P>
+Method GetImageAttribute searches the list of image attributes and returns a pointer to attribute if it exists otherwise 
+<FONT SIZE=-1>NULL.</FONT>
+
+
+</P>
+<P>
+The format of the GetImageAttribute method is:
+
+</P>
+<P>
+<PRE>    ImageAttribute *GetImageAttribute(Image *image,const char *key)
+</PRE>
+</P>
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
+
+</P>
+<DL><DL>
+<p><dt><STRONG>attribute:</STRONG><DD>
+<P>
+Method GetImageAttribute returns the attribute if it exists otherwise 
+<FONT SIZE=-1>NULL.</FONT>
+
+</P>
+<p><dt><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</P>
+<p><dt><STRONG>key:</STRONG><DD>
+<P>
+These character strings are the name of an image attribute to return.
+
+</P>
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="SetImageAttributes">SetImageAttributes</A></H2>
+<P>
+Method SetImageAttribute searches the list of image attributes and replaces the attribute value. If it is not found in the list, the attribute name and value is added to the list. SetImageAttribute returns True if the attribute is successfully replaced or added to the list, otherwise False. If the value is 
+<FONT SIZE=-1>NULL,</FONT> the matching key is deleted from the list.
+
+
+</P>
+<P>
+The format of the SetImageAttribute method is:
+
+</P>
+<P>
+<PRE>    unsigned int SetImageAttribute(Image *image,const char *key,
+      const char *value)
+</PRE>
+</P>
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
+
+</P>
+<DL><DL>
+<p><dt><STRONG>status:</STRONG><DD>
+<P>
+Method SetImageAttribute returns True if the attribute is successfully
+replaced or added to the list, otherwise False.
+
+</P>
+<p><dt><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</P>
+<p><dt><STRONG>key,value:</STRONG><DD>
+<P>
+These character strings are the name and value of an image attribute to
+replace or add to the list.
+
+</P>
+</DL></DL>
+
+</BODY>
+
+</HTML>
