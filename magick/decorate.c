@@ -190,14 +190,20 @@ MagickExport Image *FrameImage(Image *image,const FrameInfo *frame_info,
   assert(image->signature == MagickSignature);
   assert(frame_info != (FrameInfo *) NULL);
   if ((frame_info->outer_bevel < 0) || (frame_info->inner_bevel < 0))
-    ThrowImageException(OptionWarning,"Unable to frame image",
-      "bevel width is negative");
+    {
+      ThrowException(exception,OptionWarning,"Unable to frame image",
+        "bevel width is negative");
+      return((Image *) NULL);
+    }
   bevel_width=frame_info->outer_bevel+frame_info->inner_bevel;
   width=(int) frame_info->width-frame_info->x-bevel_width;
   height=(int) frame_info->height-frame_info->y-bevel_width;
   if ((width < (int) image->columns) || (height < (int) image->rows))
-    ThrowImageException(OptionWarning,"Unable to frame image",
-      "frame is less than image size");
+    {
+      ThrowException(exception,OptionWarning,"Unable to frame image",
+        "frame is less than image size");
+      return((Image *) NULL);
+    }
   /*
     Initialize framed image attributes.
   */
