@@ -101,7 +101,7 @@ const char *GetLocaleMessage(const char *tag)
    tp = locale;
    p = locale + strlen(locale);
    np = tag;
-  if (LocaleCompare(locale, "C", 9) || p - tp != 1)
+  if (LocaleNCompare(locale, "C", 9) || p - tp != 1)
     return tag;
   else
     switch (*NEXT_FIELD)
