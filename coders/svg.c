@@ -2367,7 +2367,9 @@ static void SVGComment(void *context,const xmlChar *value)
   svg_info=(SVGInfo *) context;
   if (svg_info->debug)
     (void) fprintf(stdout,"  SAX.comment(%.1024s)\n",value);
-  (void) CloneString(&svg_info->comment,(char *) value);
+  if (svg_info->comment != (char *) NULL)
+    (void) ConcatenateString(&svg_info->comment,"\n");
+  (void) ConcatenateString(&svg_info->comment,(char *) value);
 }
 
 static void SVGWarning(void *context,const char *format,...)

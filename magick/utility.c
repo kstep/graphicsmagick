@@ -544,6 +544,8 @@ MagickExport unsigned int ConcatenateString(char **destination,
   assert(destination != (char **) NULL);
   if (source == (const char *) NULL)
     return(True);
+  if (*destination == (char *) NULL)
+    return(CloneString(destination,source));
   ReacquireMemory((void **) &(*destination),
     strlen(*destination)+strlen(source)+MaxTextExtent);
   if (*destination == (char *) NULL)
