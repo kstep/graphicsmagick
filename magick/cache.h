@@ -181,6 +181,9 @@ typedef struct _CacheInfo
 extern MagickExport Cache
   ReferenceCache(Cache);
 
+extern MagickExport CacheThreshold
+  GetCacheThreshold(const off_t);
+
 extern MagickExport ClassType
   GetCacheClass(const Cache);
 

@@ -81,9 +81,6 @@ static SemaphoreInfo
 /*
   Declare pixel cache interfaces.
 */
-static CacheThreshold
-  GetCacheThreshold(const off_t);
-
 static const PixelPacket
   *AcquirePixelCache(const Image *,const long,const long,const unsigned long,
     const unsigned long,ExceptionInfo *);
@@ -1072,7 +1069,7 @@ MagickExport PixelPacket *GetCacheNexus(Image *image,const long x,const long y,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   G e t C a c h e T h r e s h o l d                                         %
+%   G e t C a c h e T h r e s h o l d                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1093,7 +1090,7 @@ MagickExport PixelPacket *GetCacheNexus(Image *image,const long x,const long y,
 %
 %
 */
-static CacheThreshold GetCacheThreshold(const off_t memory)
+MagickExport CacheThreshold GetCacheThreshold(const off_t memory)
 {
   AcquireSemaphoreInfo(&cache_semaphore);
   if (cache_threshold.minimum != ~0)
