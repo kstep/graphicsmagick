@@ -576,27 +576,32 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
   assert(entry != (MagickInfo *) NULL);
   assert(entry->signature == MagickSignature);
   UnregisterMagickInfo(entry->tag);
+  entry->previous=(MagickInfo *) NULL;
+  entry->next=(MagickInfo *) NULL;
   if (magick_list == (MagickInfo *) NULL)
     {
-      entry->previous=(MagickInfo *) NULL;
-      entry->next=(MagickInfo *) NULL;
       magick_list=entry;
       return(entry);
     }
   for (p=magick_list; p->next != (MagickInfo *) NULL; p=p->next)
-  {
-    /*
-      Position new tag in alphabetical order.
-    */
-    if (LocaleCompare(p->next->tag,entry->tag) < 0)
-      continue;
-    break;
-  }
-  entry->previous=p;
-  entry->next=p->next;
-  if (p->next != (MagickInfo *) NULL)
-    p->next->previous=entry;
-  p->next=entry;
+    if (LocaleCompare(p->tag,entry->tag) >= 0)
+      break;
+  if (LocaleCompare(p->tag,entry->tag) < 0)
+    {
+      entry->next=p->next;
+      p->next=entry;
+      entry->previous=p;
+      if (entry->next != (MagickInfo *) NULL)
+        entry->next->previous=entry;
+      return(entry);
+    }
+  entry->next=p;
+  entry->previous=p->previous;
+  p->previous=entry;
+  if (entry->previous != (MagickInfo *) NULL)
+    entry->previous->next=entry;
+  if (p == magick_list)
+    magick_list=entry;
   return(entry);
 }
 
