@@ -3285,7 +3285,6 @@ esac
 ])
 file_magic_cmd=$lt_cv_file_magic_cmd
 deplibs_check_method=$lt_cv_deplibs_check_method
-deplibs_check_method=pass_all
 test -z "$deplibs_check_method" && deplibs_check_method=unknown
 ])# AC_DEPLIBS_CHECK_METHOD
 

@@ -5,7 +5,6 @@
 
       #include <stdio.h>
       #include <time.h>
-      #include <sys/types.h>
       #include <magick/api.h>
 
 */
@@ -25,6 +24,18 @@ extern "C" {
 #  include "magick_config.h"
 # endif
 #endif
+
+#if defined(HAVE_SYS_TYPES_H)
+# include <sys/types.h>
+#endif
+
+#if defined(macintosh)
+#  include <stat.mac.h>  /* Needed for off_t */
+#endif
+
+#if defined(__BORLANDC__)
+# include <vcl.h> /* Borland C++ Builder 4.0 requirement */
+#endif // defined(__BORLANDC__)
 
 #if defined(__cplusplus) || defined(c_plusplus)
 #define storage_class  c_class

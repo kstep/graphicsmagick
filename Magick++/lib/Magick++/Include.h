@@ -7,33 +7,10 @@
 #ifndef Magick_Include_header
 #define Magick_Include_header
 
-// Have standard <iosfwd>
-#define HAVE_IOSFWD 1
-
-// Have <sys/types.h>
-#if defined(WIN32)
-# define HAVE_SYS_TYPES_H 1
-#endif
-
-//
-// Include ImageMagick headers into namespace "MagickLib". If
-// MAGICK_IMPLEMENTATION is defined, include ImageMagick development
-// headers.  This scheme minimizes the possibility of conflict with
-// user code.
-//
-
-#if defined(__BORLANDC__)
-//
-// The following includes need to be specified to compile with Borland
-// C++ Builder 4.0.
-//
-#include <vcl.h>
-#endif // defined(__BORLANDC__)
-
+// Machine specific options
 #if defined(macintosh)
-#  undef HAVE_SYS_TYPES_H
-#  include <stat.mac.h>  // Needed for off_t
-#endif // defined(macintosh)
+#  define HAVE_IOSFWD 1
+#endif
 
 // Needed for stdio FILE
 #include <stdio.h>
@@ -41,10 +18,19 @@
 // Needed for time_t
 #include <time.h>
 
-// Needed for off_t on Unix and Windows
-#if defined(HAVE_SYS_TYPES_H)
-# include <sys/types.h>
-#endif
+//
+// Include ImageMagick headers into namespace "MagickLib". If
+// MAGICK_IMPLEMENTATION is defined, include ImageMagick development
+// headers.  This scheme minimizes the possibility of conflict with
+// user code.
+//
+namespace MagickLib
+{
+#include <magick/api.h>
+#undef inline // Remove possible definition from config.h
+
+#undef class
+}
 
 // Forward declarations for iostream classes
 #if defined(HAVE_IOSFWD)
@@ -60,14 +46,6 @@ class std::ifstream;
 class std::ofstream;
 class std::fstream;
 #endif // HAVE_IOSFWD
-
-namespace MagickLib
-{
-#include <magick/api.h>
-#undef inline // Remove possible definition from config.h
-
-#undef class
-}
 
 //
 // Import ImageMagick symbols and types which are used as part of the

@@ -1754,6 +1754,10 @@ if test "$with_magick_plus_plus" = 'yes'
 then
  OLIBS="$LIBS"
  LIBS=''
+ AC_LANG_PUSH(C++)
+ AC_CHECK_HEADERS(algorithm cctype cerrno cmath cstdio cstdlib cstring \
+   ctime exception functional iomanip iosfwd iostream iterator list string \
+   strstream utility)
  AC_LANG_CPLUSPLUS
  AC_PROG_CXX
  AC_CXX_BOOL
@@ -1768,6 +1772,7 @@ then
  AC_CXX_NEW_FOR_SCOPING
  AC_CXX_STATIC_CAST
  AC_CXX_TEMPLATES
+ AC_LANG_POP
 
  AC_MSG_CHECKING(whether C++ compiler is sufficient for Magick++)
  if test \

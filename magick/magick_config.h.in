@@ -1,10 +1,34 @@
 /* magick/magick_config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Define to 1 if you have the <algorithm> header file. */
+#undef HAVE_ALGORITHM
+
 /* define if bool is a built-in type */
 #undef HAVE_BOOL
 
+/* Define to 1 if you have the <cctype> header file. */
+#undef HAVE_CCTYPE
+
+/* Define to 1 if you have the <cerrno> header file. */
+#undef HAVE_CERRNO
+
+/* Define to 1 if you have the <cmath> header file. */
+#undef HAVE_CMATH
+
 /* define if the compiler supports const_cast<> */
 #undef HAVE_CONST_CAST
+
+/* Define to 1 if you have the <cstdio> header file. */
+#undef HAVE_CSTDIO
+
+/* Define to 1 if you have the <cstdlib> header file. */
+#undef HAVE_CSTDLIB
+
+/* Define to 1 if you have the <cstring> header file. */
+#undef HAVE_CSTRING
+
+/* Define to 1 if you have the <ctime> header file. */
+#undef HAVE_CTIME
 
 /* define if the compiler supports default template parameters */
 #undef HAVE_DEFAULT_TEMPLATE_PARAMETERS
@@ -22,6 +46,9 @@
 /* Define to 1 if you have the <errno.h> header file. */
 #undef HAVE_ERRNO_H
 
+/* Define to 1 if you have the <exception> header file. */
+#undef HAVE_EXCEPTION
+
 /* define if the compiler supports exceptions */
 #undef HAVE_EXCEPTIONS
 
@@ -33,6 +60,9 @@
 
 /* Define to 1 if you have the <freetype/freetype.h> header file. */
 #undef HAVE_FREETYPE_FREETYPE_H
+
+/* Define to 1 if you have the <functional> header file. */
+#undef HAVE_FUNCTIONAL
 
 /* Define to 1 if you have the `getcwd' function. */
 #undef HAVE_GETCWD
@@ -55,6 +85,18 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
+/* Define to 1 if you have the <iomanip> header file. */
+#undef HAVE_IOMANIP
+
+/* Define to 1 if you have the <iosfwd> header file. */
+#undef HAVE_IOSFWD
+
+/* Define to 1 if you have the <iostream> header file. */
+#undef HAVE_IOSTREAM
+
+/* Define to 1 if you have the <iterator> header file. */
+#undef HAVE_ITERATOR
+
 /* Define to 1 if you have the <jp2conf.h> header file. */
 #undef HAVE_JP2CONF_H
 
@@ -63,6 +105,9 @@
 
 /* Define if you have the <lcms/lcms.h> header file. */
 #undef HAVE_LCMS_LCMS_H
+
+/* Define to 1 if you have the <list> header file. */
+#undef HAVE_LIST
 
 /* Define to 1 if you have the <malloc.h> header file. */
 #undef HAVE_MALLOC_H
@@ -130,11 +175,17 @@
 /* Define to 1 if you have the `strerror' function. */
 #undef HAVE_STRERROR
 
+/* Define to 1 if you have the <string> header file. */
+#undef HAVE_STRING
+
 /* Define to 1 if you have the <strings.h> header file. */
 #undef HAVE_STRINGS_H
 
 /* Define to 1 if you have the <string.h> header file. */
 #undef HAVE_STRING_H
+
+/* Define to 1 if you have the <strstream> header file. */
+#undef HAVE_STRSTREAM
 
 /* Define to 1 if you have the `strtol' function. */
 #undef HAVE_STRTOL
@@ -176,6 +227,9 @@
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
+
+/* Define to 1 if you have the <utility> header file. */
+#undef HAVE_UTILITY
 
 /* Define to 1 if you have the <varargs.h> header file. */
 #undef HAVE_VARARGS_H
