@@ -56,6 +56,7 @@
 #include "attribute.h"
 #include "blob.h"
 #include "log.h"
+#include "signature.h"
 #include "utility.h"
 /*
   Static declarations.

@@ -54,114 +54,20 @@
 */
 #include "studio.h"
 #include "attribute.h"
+#include "signature.h"
 #include "utility.h"
 
 /*
   Define declarations.
 */
-#define SignatureSize  64
 #define Trunc32(x)  ((x) & 0xffffffffUL)
 
 /*
-  Typedef declarations.
-*/
-typedef struct _SignatureInfo
-{
-  unsigned long
-    digest[8],
-    low_order,
-    high_order;
-
-  long
-    offset;
-
-  unsigned char
-    message[SignatureSize];
-} SignatureInfo;
-
-/*
-  Global declarations.
-*/
-SignatureInfo
-  *reservoir = (SignatureInfo *) NULL;
-
-static unsigned long
-  *roulette = (unsigned long *) NULL;
-
-/*
-  Forward declarations.
-*/
-static void
-  FinalizeSignature(SignatureInfo *),
-  GetSignatureInfo(SignatureInfo *),
-  TransformSignature(SignatureInfo *),
-  UpdateSignature(SignatureInfo *,const unsigned char *,const size_t);
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D i s t i l l R a n d o m E v e n t                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  DistillRandomEvent() distills randomness from an event and stores in
-%  in the reservoir.  This method must be called before GetRandomKey()
-%  and it should be called a number of times using different random events
-%  (e.g. thread completion time, fine grained time-of-day clock in a
-%  tight loop, keystroke timing, etc.) to build up sufficient randomness
-%  in the reservoir.
-%
-%  The format of the DistillRandomEvent method is:
-%
-%      DistillRandomEvent(const unsigned char *event,const size_t length,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o event: A random event.
-%
-%    o length: The length of the event.
-%
-%    o exception: Return any errors or warnings in this structure.
-%
-%
-*/
-MagickExport void DistillRandomEvent(const unsigned char *event,
-  const size_t length,ExceptionInfo *exception)
-{
-  SignatureInfo
-    digest_info;
-
-  /*
-    Distill a random event.
-  */
-  assert(event != (const unsigned char *) NULL);
-  if (reservoir == (SignatureInfo *) NULL)
-    reservoir=(SignatureInfo *) AcquireMemory(sizeof(SignatureInfo));
-  if (roulette == (unsigned long *) NULL)
-    roulette=(unsigned long *) AcquireMemory(sizeof(unsigned long));
-  if ((reservoir == (SignatureInfo *) NULL) ||
-      (roulette == (unsigned long *) NULL))
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToDistillRandomEvent");
-  GetSignatureInfo(&digest_info);
-  UpdateSignature(&digest_info,(unsigned char *) reservoir->digest,
-    sizeof(reservoir->digest));
-  UpdateSignature(&digest_info,event,length);
-  FinalizeSignature(&digest_info);
-  memcpy(reservoir->digest,digest_info.digest,sizeof(reservoir->digest));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   F i n a l i z e S i g n a t u r e                                         %
+%   F i n a l i z e S i g n a t u r e                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -179,7 +85,7 @@ MagickExport void DistillRandomEvent(const unsigned char *event,
 %
 %
 */
-static void FinalizeSignature(SignatureInfo *signature_info)
+MagickExport void FinalizeSignature(SignatureInfo *signature_info)
 {
   long
     count;
@@ -219,86 +125,7 @@ static void FinalizeSignature(SignatureInfo *signature_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t R a n d o m K e y                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetRandomKey() gets a random key from the reservoir.
-%
-%  The format of the GetRandomKey method is:
-%
-%      unsigned int GetRandomKey(unsigned char *key,const size_t length,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o key: The key.
-%
-%    o length: The key length.
-%
-%    o exception: Return any errors or warnings in this structure.
-%
-*/
-MagickExport unsigned int GetRandomKey(unsigned char *key,const size_t length,
-  ExceptionInfo *exception)
-{
-  SignatureInfo
-    digest_info;
-
-  long
-    n;
-
-  assert(key != (unsigned char *) NULL);
-  if ((roulette == (unsigned long *) NULL) ||
-      (reservoir == (SignatureInfo *) NULL))
-    {
-      char
-        filename[MaxTextExtent];
-
-      pid_t
-        pid;
-
-      time_t
-        seconds;
-
-      /*
-        Initialize random reservoir.
-      */
-      (void) strcpy(filename,"magic");
-      (void) tmpnam(filename);
-      DistillRandomEvent((const unsigned char *) filename,MaxTextExtent,
-        exception);
-      seconds=time(0);
-      DistillRandomEvent((const unsigned char *) &seconds,sizeof(time_t),
-        exception);
-      pid=getpid();
-      DistillRandomEvent((const unsigned char *) &pid,sizeof(pid_t),exception);
-    }
-  n=length;
-  while (n > 0)
-  {
-    GetSignatureInfo(&digest_info);
-    UpdateSignature(&digest_info,(unsigned char *) reservoir->digest,
-      sizeof(reservoir->digest));
-    UpdateSignature(&digest_info,(unsigned char *) roulette,sizeof(roulette));
-    FinalizeSignature(&digest_info);
-    (*roulette)++;
-    memcpy(key,digest_info.digest,
-      n < (long) sizeof(reservoir->digest) ? n : sizeof(reservoir->digest));
-    n-=sizeof(reservoir->digest);
-    key+=sizeof(reservoir->digest);
-  }
-  return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   G e t S i g n a t u r e I n f o                                           %
+%   G e t S i g n a t u r e I n f o                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -316,7 +143,7 @@ MagickExport unsigned int GetRandomKey(unsigned char *key,const size_t length,
 %
 %
 */
-static void GetSignatureInfo(SignatureInfo *signature_info)
+MagickExport void GetSignatureInfo(SignatureInfo *signature_info)
 {
   (void) memset(signature_info,0,sizeof(SignatureInfo));
   signature_info->digest[0]=0x6a09e667UL;
@@ -476,13 +303,13 @@ MagickExport unsigned int SignatureImage(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   T r a n s f o r m S i g n a t u r e                                       %
+%   T r a n s f o r m S i g n a t u r e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method TransformSignature transforms the SHA message digest.
+%  TransformSignature() transforms the SHA message digest.
 %
 %  The format of the TransformSignature method is:
 %
@@ -494,7 +321,7 @@ MagickExport unsigned int SignatureImage(Image *image)
 %
 %
 */
-static void TransformSignature(SignatureInfo *signature_info)
+MagickExport void TransformSignature(SignatureInfo *signature_info)
 {
 #define Ch(x,y,z)  (((x) & (y))^(~(x) & (z)))
 #define Maj(x,y,z)  (((x) & (y))^((x) & (z))^((y) & (z)))
@@ -628,13 +455,13 @@ static void TransformSignature(SignatureInfo *signature_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   U p d a t e S i g n a t u r e                                             %
+%   U p d a t e S i g n a t u r e                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method UpdateSignature updates the SHA message digest.
+%  UpdateSignature() updates the SHA message digest.
 %
 %  The format of the UpdateSignature method is:
 %
@@ -651,7 +478,7 @@ static void TransformSignature(SignatureInfo *signature_info)
 %
 %
 */
-static void UpdateSignature(SignatureInfo *signature_info,
+MagickExport void UpdateSignature(SignatureInfo *signature_info,
   const unsigned char *message,const size_t length)
 {
   register long

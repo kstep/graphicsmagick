@@ -61,6 +61,7 @@
 #include "magic.h"
 #include "magick.h"
 #include "module.h"
+#include "random.h"
 #include "registry.h"
 #include "resource.h"
 #include "render.h"
