@@ -52,9 +52,9 @@
   Include declarations.
 */
 #include "studio.h"
-/* 
+/*
   Forward declarations.
-*/     
+*/
 static unsigned int
   WriteLOCALEImage(const ImageInfo *,Image *);
 
@@ -97,37 +97,33 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
 {
   char
     keyword[MaxTextExtent],
+    locale[MaxTextExtent],
+    message[MaxTextExtent],
+    name[MaxTextExtent],
     path[MaxTextExtent],
     *q,
     *token,
     *xml;
 
+  register char
+    *p;
+
   size_t
     length;
 
+  unsigned long
+    level;
+
   /*
-    Read the color configure file.
+    Read the locale configure file.
   */
   (void) strcpy(path,basename);
-  if (depth != 0)
-    {
-      xml=(char *) FileToBlob(basename,&length,exception);
-      (void) SetImageAttribute(image,"[Locale]",xml);
-    }
-  else
-    {
-      const ImageAttribute
-        *attribute;
-
-      attribute=GetImageAttribute(image,basename);
-      if (attribute == (const ImageAttribute *) NULL)
-        ThrowBinaryException(ConfigureError,"No [Locale] image attribute",
-          basename);
-      xml=AllocateString(attribute->value);
-      (void) SetImageAttribute(image,"[Locale]",(char *) NULL);
-    }
+  xml=(char *) FileToBlob(basename,&length,exception);
   if (xml == (char *) NULL)
     return(False);
+  *locale='\0';
+  *name='\0';
+  level=0;
   token=AllocateString(xml);
   for (q=xml; *q != '\0'; )
   {
@@ -141,7 +137,7 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
     if (LocaleCompare(keyword,"<!") == 0)
       {
         /*
-          Comment.
+          Comment element.
         */
         while ((*token != '>') && (*q != '\0'))
           GetToken(q,&q,token);
@@ -150,7 +146,7 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
     if (LocaleCompare(keyword,"<include") == 0)
       {
         /*
-          Include.
+          Include element.
         */
         while ((*token != '>') && (*q != '\0'))
         {
@@ -165,32 +161,108 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
                 ThrowException(exception,ConfigureError,
                   "<include /> nested too deeply",path);
               else
-                if (IsAccessible(token))
-                  (void) ReadConfigureFile(image,token,depth+1,exception);
-                else
-                  {
-                    char
-                      filename[MaxTextExtent];
-  
-                    GetPathComponent(path,HeadPath,filename);
+                {
+                  char
+                    filename[MaxTextExtent];
+
+                  GetPathComponent(path,HeadPath,filename);
+                  if (*filename != '\0')
                     (void) strcat(filename,DirectorySeparator);
-                    (void) strncat(filename,token,MaxTextExtent-
-                      strlen(filename)-1);
-                    (void) ReadConfigureFile(image,filename,depth+1,exception);
-                  }
+                  (void) strncat(filename,token,MaxTextExtent-
+                    strlen(filename)-1);
+                  (void) ReadConfigureFile(image,filename,depth+1,exception);
+                }
             }
         }
         continue;
       }
+    if (LocaleCompare(keyword,"<locale") == 0)
+      {
+        /*
+          Locale element.
+        */
+        while ((*token != '>') && (*q != '\0'))
+        {
+          (void) strncpy(keyword,token,MaxTextExtent-1);
+          GetToken(q,&q,token);
+          if (*token != '=')
+            continue;
+          GetToken(q,&q,token);
+          if (LocaleCompare(keyword,"name") == 0)
+            {
+              (void) strncpy(name,token,MaxTextExtent-2);
+              (void) strcat(locale,"/");
+            }
+        }
+        continue;
+      }
+    if (LocaleCompare(keyword,"</locale>") == 0)
+      continue;
+    if (LocaleCompare(keyword,"<localemap>") == 0)
+      continue;
+    if (LocaleCompare(keyword,"</localemap>") == 0)
+      continue;
+    if (LocaleCompare(keyword,"<message") == 0)
+      {
+        /*
+          Message element.
+        */
+        while ((*token != '>') && (*q != '\0'))
+        {
+          (void) strncpy(keyword,token,MaxTextExtent-1);
+          GetToken(q,&q,token);
+          if (*token != '=')
+            continue;
+          GetToken(q,&q,token);
+          if (LocaleCompare(keyword,"name") == 0)
+            {
+              (void) strncat(locale,token,MaxTextExtent-strlen(locale)-2);
+              (void) strcat(locale,"/");
+            }
+        }
+        for (p=q; (*q != '<') && (*q != '\0'); q++);
+        {
+          (void) strncpy(message,p,q-p);
+          message[q-p]='\0';
+          Strip(message);
+          (void) strcat(message,"\n");
+          SetImageAttribute(image,"[Locale]",name);
+          SetImageAttribute(image,"[Locale]",locale);
+          SetImageAttribute(image,"[Locale]",message);
+        }
+        continue;
+      }
+    if (LocaleCompare(keyword,"</message>") == 0)
+      continue;
+    if (*keyword == '<')
+      {
+        /*
+          Subpath element.
+        */
+        if (*(keyword+1) == '?')
+          continue;
+        if (*(keyword+1) == '/')
+          {
+            level--;
+            if (level == 0)
+              *message='\0';
+            continue;
+          }
+        token[strlen(token)-1]='\0';
+        (void) strcpy(token,token+1);
+        (void) strncat(message,token,MaxTextExtent-strlen(message)-2);
+        (void) strcat(message,"/");
+        level++;
+        continue;
+      }
+    if (*keyword == '<')
+      continue;
     GetToken(q,(char **) NULL,token);
     if (*token != '=')
       continue;
-    GetToken(q,&q,token);
-    GetToken(q,&q,token);
   }
   LiberateMemory((void **) &token);
-  if (depth != 0)
-    LiberateMemory((void **) &xml);
+  LiberateMemory((void **) &xml);
   return(True);
 }
 
@@ -233,13 +305,6 @@ static Image *ReadLOCALEImage(const ImageInfo *image_info,
   Image
     *image;
 
-  size_t
-    count,
-    length;
-
-  unsigned char
-    *xml;
-
   unsigned int
     status;
 
@@ -251,28 +316,15 @@ static Image *ReadLOCALEImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,ReadBlobMode,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,"Unable to open file",image);
+  if (status == False)
+    {
+      DestroyImage(image);
+      return((Image *) NULL);
+    }
   image->columns=1;
   image->rows=1;
   SetImage(image,OpaqueOpacity);
-  length=GetBlobSize(image);
-  xml=(unsigned char *) AcquireMemory(length+1);
-  if (xml == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
-  count=ReadBlob(image,length,xml);
-  if (count != length)
-    {
-      LiberateMemory((void **) &xml);
-      ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
-    }
-  xml[length]='\0';
-  if (LocaleNCompare((const char *) xml,"<?xml",5) != 0)
-    {
-      LiberateMemory((void **) &xml);
-      ThrowReaderException(CorruptImageError,"Not a LOCALE file",image);
-    }
-  if (SetImageAttribute(image,"[Locale]",xml) == False)
-    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
-  (void) ReadConfigureFile(image,"[Locale]",0,&image->exception);
+  status=ReadConfigureFile(image,image->filename,0,exception);
   return(image);
 }
 
@@ -386,7 +438,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
   attribute=GetImageAttribute(image,"[Locale]");
   if (attribute == (const ImageAttribute *) NULL)
     ThrowWriterException(FileOpenError,"No [LOCALE] image attribute",image);
-puts(attribute->value);
+  (void) puts(attribute->value);
   CloseBlob(image);
   return(False);
 }
