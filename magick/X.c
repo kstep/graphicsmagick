@@ -2764,6 +2764,9 @@ Export void XGetAnnotateInfo(XAnnotateInfo *annotate_info)
   *annotate_info->geometry='\0';
   annotate_info->previous=(XAnnotateInfo *) NULL;
   annotate_info->next=(XAnnotateInfo *) NULL;
+  setlocale(LC_ALL,"");
+  XSupportsLocale();
+  XSetLocaleModifiers("");
 }
 
 /*

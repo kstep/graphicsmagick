@@ -464,6 +464,7 @@ then
 
     AC_CHECK_LIB(Xext,XShmAttach,LIB_XEXT='-lXext',,)
     AC_CHECK_LIB(Xext,XShmAttach,AC_DEFINE(HasSharedMemory),,)
+    AC_CHECK_LIB(Xext,XShapeCombineMask,LIB_XEXT='-lXext',,)
     AC_CHECK_LIB(Xext,XShapeCombineMask,AC_DEFINE(HasShape),,)
 
     AC_CHECK_LIB(Xt,XtSetEventDispatcher,LIB_XT='-lXt',,)

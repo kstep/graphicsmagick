@@ -14,6 +14,7 @@
 #include <X11/Xresource.h>
 #include <X11/Xproto.h>
 #include <X11/Xatom.h>
+#include <X11/Xlocale.h>
 #include <X11/cursorfont.h>
 #include <X11/keysym.h>
 #if !defined(vms)

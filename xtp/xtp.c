@@ -782,18 +782,6 @@ static void ProcessRequest(char *system_type,unsigned int prune,
     maximum_files,
     number_files;
 
-  if (*system_type == '\0')
-    {
-      /*
-        Determine system type.
-      */
-      (void) strcpy(system_type,"UNIX");
-      (void) strcpy(command,"quote syst\n");
-      (void) write(master,command,strlen(command));
-      while (response=Wait())
-        if (status == 2)
-          (void) strcpy(system_type,response+4);
-    }
   /*
     Ask remote server for a file listing.
   */
@@ -1642,6 +1630,18 @@ int main(int argc,char **argv)
   free((char *) account_expression);
   if (timeout != 0)
     (void) alarm(timeout);  /* enable session timer. */
+  if (*system_type == '\0')
+    {
+      /*
+        Determine system type.
+      */
+      (void) strcpy(system_type,"UNIX");
+      (void) strcpy(command,"quote syst\n");
+      (void) write(master,command,strlen(command));
+      while (response=Wait())
+        if (status == 2)
+          (void) strcpy(system_type,response+4);
+    }
   if (*directory != '\0')
     {
       /*
@@ -1685,19 +1685,25 @@ int main(int argc,char **argv)
       */
       (void) sprintf(command,"mget %s\n",get_expression);
       if (!IsGlob(get_expression) && (localname != (char *) NULL))
-        (void) sprintf(command,"get %s %s~\n",get_expression,localname);
+        if ((strncmp("UNIX",system_type,4) != 0) &&
+            (strncmp("Windows_NT",system_type,10) != 0))
+          (void) sprintf(command,"get %s %s\n",get_expression,localname);
+        else
+          (void) sprintf(command,"get %s %s~\n",get_expression,localname);
       (void) write(master,command,strlen(command));
       while (response=Wait())
         if ((status == 5) || verbose)
           (void) fprintf(stderr,"%s\n",response);
       if (!IsGlob(get_expression) && (localname != (char *) NULL))
-        {
-          (void) sprintf(command,"rename %s~ %s\n",localname,localname);
-          (void) write(master,command,strlen(command));
-          while (response=Wait())
-            if ((status == 5) || verbose)
-              (void) fprintf(stderr,"%s\n",response);
-        }
+        if ((strncmp("UNIX",system_type,4) == 0) ||
+            (strncmp("Windows_NT",system_type,10) == 0))
+          {
+            (void) sprintf(command,"rename %s~ %s\n",localname,localname);
+            (void) write(master,command,strlen(command));
+            while (response=Wait())
+              if ((status == 5) || verbose)
+                (void) fprintf(stderr,"%s\n",response);
+          }
     }
   else
     if (put_expression != (char *) NULL)
@@ -1712,19 +1718,26 @@ int main(int argc,char **argv)
             (void) fprintf(stderr,"%s\n",response);
         (void) sprintf(command,"mput %s\n",put_expression);
         if (!IsGlob(put_expression) && (remotename != (char *) NULL))
-          (void) sprintf(command,"put %s %s~\n",put_expression,remotename);
+          if ((strncmp("UNIX",system_type,4) != 0) &&
+              (strncmp("Windows_NT",system_type,10) != 0))
+            (void) sprintf(command,"put %s %s\n",put_expression,remotename);
+          else
+            (void) sprintf(command,"put %s %s~\n",put_expression,remotename);
         (void) write(master,command,strlen(command));
         while (response=Wait())
           if ((status == 5) || verbose)
             (void) fprintf(stderr,"%s\n",response);
         if (!IsGlob(put_expression) && (remotename != (char *) NULL))
-          {
-            (void) sprintf(command,"rename %s~ %s\n",remotename,remotename);
-            (void) write(master,command,strlen(command));
-            while (response=Wait())
-              if ((status == 5) || verbose)
-                (void) fprintf(stderr,"%s\n",response);
-          }
+          if ((strncmp("UNIX",system_type,4) == 0) ||
+              (strncmp("Windows_NT",system_type,10) == 0))
+            {
+              (void) sprintf(command,"rename %s~ %s\n",remotename,
+                remotename);
+              (void) write(master,command,strlen(command));
+              while (response=Wait())
+                if ((status == 5) || verbose)
+                  (void) fprintf(stderr,"%s\n",response);
+            }
       }
     else
       ProcessRequest(system_type,prune,verbose);

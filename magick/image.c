@@ -4756,6 +4756,7 @@ Export void GetAnnotateInfo(ImageInfo *image_info,AnnotateInfo *annotate_info)
   annotate_info->bounds.height=annotate_info->pointsize;
   annotate_info->bounds.x=0;
   annotate_info->bounds.y=0;
+  setlocale(LC_ALL,"");
   if (annotate_info->font == (char *) NULL)
     return;
   /*

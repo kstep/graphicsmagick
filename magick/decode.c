@@ -1161,7 +1161,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info)
     element,
     group,
     length,
+    scene,
     y;
+
+  long
+    datum;
 
   Quantum
     blue,
@@ -1187,14 +1191,16 @@ static Image *ReadDCMImage(const ImageInfo *image_info)
 
   unsigned int
     bytes_per_pixel,
+    height,
     high_bit,
+    number_scenes,
     quantum,
     samples_per_pixel,
     significant_bits,
-    status;
+    status,
+    width;
 
   unsigned long
-    datum,
     max_packets,
     max_value;
 
@@ -1230,9 +1236,13 @@ static Image *ReadDCMImage(const ImageInfo *image_info)
   element=0;
   graymap=(unsigned short *) NULL;
   group=0;
+  height=0;
   high_bit=0;
+  number_scenes=1;
   samples_per_pixel=1;
   significant_bits=0;
+  vr[2]='\0';
+  width=0;
   while ((group != 0x7FE0) || (element != 0x0010))
   {
     /*
@@ -1250,7 +1260,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info)
         break;
     quantum=0;
     ReadData((char *) vr,1,2,image->file);
-    vr[2]='\0';
     if (strcmp(dicom_info[i].vr,vr) == 0)
       {
         quantum=2;
@@ -1266,56 +1275,59 @@ static Image *ReadDCMImage(const ImageInfo *image_info)
         if (strcmp(dicom_info[i].vr,"xs") != 0)
           (void) fseek(image->file,(off_t) -2,SEEK_CUR);
         else
-          {
-            if ((strcmp(vr,"SS") == 0) || (strcmp(vr,"US") == 0))
-              quantum=2;
-            else
-              (void) fseek(image->file,(off_t) -2,SEEK_CUR);
-          }
+          if ((strcmp(vr,"SS") == 0) || (strcmp(vr,"US") == 0))
+            quantum=2;
+          else
+            (void) fseek(image->file,(off_t) -2,SEEK_CUR);
         if (strcmp(dicom_info[i].vr,"SQ") != 0)
           quantum=4;
-       }
-     datum=0;
-     if (quantum == 4)
-       datum=LSBFirstReadLong(image->file);
-     else
-       if (quantum == 2)
-         datum=LSBFirstReadShort(image->file);
+      }
+    datum=0;
+    if (quantum == 4)
+      datum=LSBFirstReadLong(image->file);
+    else
+      if (quantum == 2)
+        datum=LSBFirstReadShort(image->file);
     quantum=0;
     length=1;
-    if ((strcmp(dicom_info[i].vr,"SS") == 0) ||
-        (strcmp(dicom_info[i].vr,"US") == 0))
-      switch (datum)
-      {
-        case 2:  
-        default:
+    if (datum != 0)
+      if ((strcmp(dicom_info[i].vr,"SS") == 0) ||
+          (strcmp(dicom_info[i].vr,"US") == 0))
+        switch (datum)
         {
-          quantum=2;  
-          break;
+          case 2:  
+          default:
+          {
+            quantum=2;  
+            break;
+          }
+          case 4:  
+          {
+            quantum=4;  
+            break;
+          }
+          case 8:  
+          {
+            quantum=2;  
+            length=4;
+            break;
+          }
         }
-        case 4:  
-        {
-          quantum=4;  
-          break;
-        }
-        case 8:  
-        {
-          quantum=2;  
-          length=4;
-          break;
-        }
-      }
-    else
-      if ((strcmp(dicom_info[i].vr,"UL") == 0) ||
-          (strcmp(dicom_info[i].vr,"SL") == 0) ||
-          (strcmp(dicom_info[i].vr,"FL") == 0)) 
-        quantum=4;
       else
-        if (strcmp(dicom_info[i].vr,"FD") == 0)
+        if ((strcmp(dicom_info[i].vr,"UL") == 0) ||
+            (strcmp(dicom_info[i].vr,"SL") == 0) ||
+            (strcmp(dicom_info[i].vr,"FL") == 0)) 
           quantum=4;
         else
-          if (strcmp(dicom_info[i].vr,"xs") == 0)
-            {
+          if (strcmp(dicom_info[i].vr,"FD") == 0)
+            quantum=4;
+          else
+            if (strcmp(dicom_info[i].vr,"xs") != 0)
+              {
+                quantum=1;
+                length=datum;
+              }
+            else
               if ((strcmp(vr,"SS") == 0) || (strcmp(vr,"US") == 0))
                 quantum=2;
               else
@@ -1324,30 +1336,49 @@ static Image *ReadDCMImage(const ImageInfo *image_info)
                   datum=datum/2; 
                   length=datum;
                 }
-             }
-           else
-             {
-               quantum=1;
-               length=datum;
-             }
+    if (image_info->verbose)
+      {
+        /*
+          Display Dicom info.
+        */
+        for (i=0; dicom_info[i].description != (char *) NULL; i++)
+          if ((group == dicom_info[i].group) &&
+              (element == dicom_info[i].element))
+            break;
+        (void) fprintf(stdout,"0x%04x %4d (0x%04x,0x%04x)",image->offset,
+          length,group,element);
+        if (dicom_info[i].description != (char *) NULL)
+          (void) fprintf(stdout," %.128s",dicom_info[i].description);
+        (void) fprintf(stdout,": ");
+      }
+    if ((group == 0x7FE0) && (element == 0x0010))
+      {
+        if (image_info->verbose)
+          (void) fprintf(stdout,"\n");
+        break;
+      }
     /*
       Allocate space and read an array.
     */
     data=(unsigned char *) NULL;
-    if ((length == 1) && (quantum == 2))
-      datum=LSBFirstReadShort(image->file);
+    if ((length == 1) && (quantum == 1))
+      datum=fgetc(image->file);
     else
-      if ((length == 1) && (quantum == 4))
-        datum=LSBFirstReadLong(image->file);
+      if ((length == 1) && (quantum == 2))
+        datum=LSBFirstReadShort(image->file);
       else
-        {
-          data=AllocateMemory(quantum*(length+1)*sizeof(unsigned char));
-          if (data == (unsigned char *) NULL)
-            PrematureExit(ResourceLimitWarning,"Memory allocation failed",
-              image);
-          (void) ReadData((char *) data,length,quantum,image->file);
-          data[length*quantum]=0;
-        }
+        if ((length == 1) && (quantum == 4))
+          datum=LSBFirstReadLong(image->file);
+        else
+          {
+            data=(unsigned char *)
+              AllocateMemory(quantum*(length+1)*sizeof(unsigned char));
+            if (data == (unsigned char *) NULL)
+              PrematureExit(ResourceLimitWarning,"Memory allocation failed",
+                image);
+            (void) ReadData((char *) data,quantum,length,image->file);
+            data[length*quantum]=0;
+          }
     switch (group)
     {
       case 0x0028:
@@ -1372,12 +1403,20 @@ static Image *ReadDCMImage(const ImageInfo *image_info)
             photometric[i]='\0';
             break;
           }
+          case 0x0008:
+          {
+            /*
+              Number of frames.
+            */
+            number_scenes=atoi((char *) data);
+            break;
+          }
           case 0x0010:
           {
             /*
               Image rows.
             */
-            image->rows=datum;
+            height=datum;
             break;
           }
           case 0x0011:
@@ -1385,7 +1424,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info)
             /*
               Image columns.
             */
-            image->columns=datum;
+            width=datum;
             break;
           }
           case 0x0100:
@@ -1452,7 +1491,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info)
             */
             image->class=PseudoClass;
             image->colors=length >> 1;
-            datum=image->colors;
             if (image->colormap == (ColorPacket *) NULL)
               image->colormap=(ColorPacket *)
                 AllocateMemory(image->colors*sizeof(ColorPacket));
@@ -1483,27 +1521,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info)
         break;
     }
     if (image_info->verbose)
-      {
-        /*
-          Display Dicom info.
-        */
-        for (i=0; dicom_info[i].description != (char *) NULL; i++)
-          if ((group == dicom_info[i].group) &&
-              (element == dicom_info[i].element))
-            break;
-        (void) fprintf(stdout,"0x%04x %4d (0x%04x,0x%04x)",image->offset,
-          length,group,element);
-        if (dicom_info[i].description != (char *) NULL)
-          (void) fprintf(stdout," %.128s",dicom_info[i].description);
-        (void) fprintf(stdout,": ");
-      }
-    if ((group == 0x7FE0) && (element == 0x0010))
-      {
-        if (image_info->verbose)
-          (void) fprintf(stdout,"\n");
-        break;
-      }
-    if (image_info->verbose)
       if (data == (unsigned char *) NULL)
         (void) fprintf(stdout,"%d\n",datum);
       else
@@ -1531,42 +1548,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info)
         }
     FreeMemory(data);
   }
-  /*
-    Initialize image structure.
-  */
+  if ((width == 0) || (height == 0))
+    PrematureExit(CorruptImageWarning,"Not a DCM image file",image);
   max_value=(1 << (8*bytes_per_pixel))-1;
   if (strncmp(photometric,"MONOCHROME",10) == 0)
     max_value=(1 << significant_bits)-1;
-  if ((image->colormap == (ColorPacket *) NULL) && (samples_per_pixel == 1))
-    {
-      /*
-        Allocate image colormap.
-      */
-      image->class=PseudoClass;
-      image->colors=Min(max_value,MaxRGB)+1;
-      image->colormap=(ColorPacket *)
-        AllocateMemory(image->colors*sizeof(ColorPacket));
-      if (image->colormap == (ColorPacket *) NULL)
-        PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-      for (i=0; i < image->colors; i++)
-      {
-        image->colormap[i].red=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
-        image->colormap[i].green=(Quantum)
-          ((long) (MaxRGB*i)/(image->colors-1));
-        image->colormap[i].blue=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
-      }
-    }
-  packets=0;
-  max_packets=Max((image->columns*image->rows+4) >> 3,1);
-  image->pixels=(RunlengthPacket *)
-    AllocateMemory(max_packets*sizeof(RunlengthPacket));
-  if (image->pixels == (RunlengthPacket *) NULL)
-    PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-  if (image_info->ping)
-    {
-      CloseImage(image);
-      return(image);
-    }
   scale=(Quantum *) NULL;
   if (max_value != MaxRGB)
     {
@@ -1579,95 +1565,150 @@ static Image *ReadDCMImage(const ImageInfo *image_info)
       for (i=0; i <= max_value; i++)
         scale[i]=(Quantum) ((i*MaxRGB+(max_value >> 1))/max_value);
     }
-  /*
-    Convert DCM Medical image to runlength-encoded packets.
-  */
-  red=0;
-  green=0;
-  blue=0;
-  index=0;
-  p=data;
-  q=image->pixels;
-  SetRunlengthEncoder(q);
-  for (y=0; y < image->rows; y++)
+  for (scene=0; scene < number_scenes; scene++)
   {
-    for (x=0; x < image->columns; x++)
-    {
-      if (samples_per_pixel == 1)
+    /*
+      Initialize image structure.
+    */
+    image->columns=width;
+    image->rows=height;
+    if ((image->colormap == (ColorPacket *) NULL) && (samples_per_pixel == 1))
+      {
+        /*
+          Allocate image colormap.
+        */
+        image->class=PseudoClass;
+        image->colors=Min(max_value,MaxRGB)+1;
+        image->colormap=(ColorPacket *)
+          AllocateMemory(image->colors*sizeof(ColorPacket));
+        if (image->colormap == (ColorPacket *) NULL)
+          PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
+        for (i=0; i < image->colors; i++)
         {
-          if (bytes_per_pixel == 1)
-            index=(*p++);
-          else
-            {
-              index=(*p++);
-              index|=(*p++) << 8;
-            }
-          if (index > max_value)
-            index=max_value;
-          if (graymap != (unsigned short *) NULL)
-            index=graymap[index];
+          image->colormap[i].red=(Quantum)
+            ((long) (MaxRGB*i)/(image->colors-1));
+          image->colormap[i].green=(Quantum)
+            ((long) (MaxRGB*i)/(image->colors-1));
+          image->colormap[i].blue=(Quantum)
+            ((long) (MaxRGB*i)/(image->colors-1));
         }
-      else
-        if (bytes_per_pixel == 1)
+      }
+    packets=0;
+    max_packets=Max((image->columns*image->rows+4) >> 3,1);
+    image->pixels=(RunlengthPacket *)
+      AllocateMemory(max_packets*sizeof(RunlengthPacket));
+    if (image->pixels == (RunlengthPacket *) NULL)
+      PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
+    if (image_info->ping)
+      {
+        CloseImage(image);
+        return(image);
+      }
+    /*
+      Convert DCM Medical image to runlength-encoded packets.
+    */
+    red=0;
+    green=0;
+    blue=0;
+    index=0;
+    q=image->pixels;
+    SetRunlengthEncoder(q);
+    for (y=0; y < image->rows; y++)
+    {
+      for (x=0; x < image->columns; x++)
+      {
+        if (samples_per_pixel == 1)
           {
-            red=(*p++);
-            green=(*p++);
-            blue=(*p++);
+            if (bytes_per_pixel == 1)
+              index=fgetc(image->file);
+            else
+              index=LSBFirstReadShort(image->file);
+            if (index > max_value)
+              index=max_value;
+            if (graymap != (unsigned short *) NULL)
+              index=graymap[index];
           }
         else
-          {
-            red=(*p++);
-            red|=(*p++) << 8;
-            green=(*p++);
-            green|=(*p++) << 8;
-            blue=(*p++);
-            blue|=(*p++) << 8;
-          }
-      if (scale != (Quantum *) NULL)
-        {
-          red=scale[red];
-          green=scale[green];
-          blue=scale[blue];
-          index=scale[index];
-        }
-      if ((red == q->red) && (green == q->green) && (blue == q->blue) &&
-          (index == q->index) && ((int) q->length < MaxRunlength))
-        q->length++;
-      else
-        {
-          if (packets != 0)
-            q++;
-          packets++;
-          if (packets == max_packets)
+          if (bytes_per_pixel == 1)
             {
-              max_packets<<=1;
-              image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-                image->pixels,max_packets*sizeof(RunlengthPacket));
-              if (image->pixels == (RunlengthPacket *) NULL)
-                {
-                  if (scale != (Quantum *) NULL)
-                    FreeMemory((char *) scale);
-                  PrematureExit(ResourceLimitWarning,"Memory allocation failed",
-                    image);
-                }
-              q=image->pixels+packets-1;
+              red=fgetc(image->file);
+              green=fgetc(image->file);
+              blue=fgetc(image->file);
             }
-          q->index=index;
-          q->length=0;
-        }
+          else
+            {
+              red=LSBFirstReadShort(image->file);
+              green=LSBFirstReadShort(image->file);
+              blue=LSBFirstReadShort(image->file);
+            }
+        if (scale != (Quantum *) NULL)
+          {
+            red=scale[red];
+            green=scale[green];
+            blue=scale[blue];
+            index=scale[index];
+          }
+        if ((red == q->red) && (green == q->green) && (blue == q->blue) &&
+            (index == q->index) && ((int) q->length < MaxRunlength))
+          q->length++;
+        else
+          {
+            if (packets != 0)
+              q++;
+            packets++;
+            if (packets == max_packets)
+              {
+                max_packets<<=1;
+                image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
+                  image->pixels,max_packets*sizeof(RunlengthPacket));
+                if (image->pixels == (RunlengthPacket *) NULL)
+                  {
+                    if (scale != (Quantum *) NULL)
+                      FreeMemory((char *) scale);
+                    PrematureExit(ResourceLimitWarning,
+                      "Memory allocation failed",image);
+                  }
+                q=image->pixels+packets-1;
+              }
+            q->index=index;
+            q->length=0;
+          }
+      }
+      if (image->previous == (Image *) NULL)
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(LoadImageText,y,image->rows);
     }
-    if (image->previous == (Image *) NULL)
-      if (QuantumTick(y,image->rows))
-        ProgressMonitor(LoadImageText,y,image->rows);
+    SetRunlengthPackets(image,packets);
+    SyncImage(image);
+    /*
+      Proceed to next image.
+    */
+    if (image_info->subrange != 0)
+      if (image->scene >= (image_info->subimage+image_info->subrange-1))
+        break;
+    if (scene < (number_scenes-1))
+      {
+        /*
+          Allocate next image structure.
+        */
+        AllocateNextImage(image_info,image);
+        if (image->next == (Image *) NULL)
+          {
+            DestroyImages(image);
+            return((Image *) NULL);
+          }
+        image=image->next;
+        ProgressMonitor(LoadImagesText,(unsigned int) ftell(image->file),
+          (unsigned int) image->filesize);
+      }
   }
-  SetRunlengthPackets(image,packets);
-  SyncImage(image);
   /*
     Free scale resource.
   */
-  FreeMemory(data);
   if (scale != (Quantum *) NULL)
     FreeMemory((char *) scale);
+  while (image->previous != (Image *) NULL)
+    image=image->previous;
   CloseImage(image);
   return(image);
 }
