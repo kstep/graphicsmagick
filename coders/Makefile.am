@@ -33,7 +33,7 @@ AUTOMAKE_OPTIONS = 1.4 foreign
 INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/magick
 
 MAGICK_CODER_SRCS = avi.c avs.c 8bim.c bmp.c cache.c cmyk.c dcm.c dps.c ept.c \
-  fax.c fits.c fpx.c gif.c gradation.c gray.c hdf.c histogram.c html.c icm.c \
+  fax.c fits.c fpx.c gif.c gradient.c gray.c hdf.c histogram.c html.c icm.c \
   icon.c iptc.c jbig.c jpeg.c label.c logo.c map.c matte.c miff.c mono.c mtv.c \
   mvg.c null.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c png.c plasma.c pnm.c \
   preview.c ps.c ps2.c ps3.c psd.c pwp.c rgb.c rla.c rle.c sct.c sfw.c sgi.c \
@@ -68,7 +68,7 @@ pkgdata_DATA =
 
 # Modules which are to be built
 pkg_LTLIBRARIES   = 8bim.la avi.la avs.la bmp.la cache.la cmyk.la dcm.la \
-  dps.la ept.la fax.la fpx.la fits.la gif.la gray.la gradation.la \
+  dps.la ept.la fax.la fpx.la fits.la gif.la gray.la gradient.la \
   hdf.la histogram.la html.la icm.la icon.la iptc.la jbig.la \
   jpeg.la label.la logo.la map.la matte.la miff.la mono.la mtv.la mvg.la \
   null.la pcd.la pcl.la pcx.la pdb.la pdf.la pict.la png.la pix.la \
@@ -150,10 +150,10 @@ gray_la_SOURCES     = gray.c
 gray_la_LDFLAGS     = -no-undefined -module -avoid-version
 gray_la_LIBADD      = ../magick/libMagick.la
 
-# GRADATION module
-gradation_la_SOURCES = gradation.c
-gradation_la_LDFLAGS = -no-undefined -module -avoid-version
-gradation_la_LIBADD  = ../magick/libMagick.la
+# GRADIENT module
+gradient_la_SOURCES = gradient.c
+gradient_la_LDFLAGS = -no-undefined -module -avoid-version
+gradient_la_LIBADD  = ../magick/libMagick.la
 
 # HDF module
 hdf_la_SOURCES      = hdf.c

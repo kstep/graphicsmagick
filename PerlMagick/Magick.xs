@@ -4728,8 +4728,12 @@ Mogrify(ref,...)
           if (attribute_flag[1])
             {
               (void) strcat(draw_info->primitive," ");
+              if (argument_list[0].int_reference == (int) PathPrimitive);
+                (void) strcat(draw_info->primitive,"'");
               (void) strcat(draw_info->primitive,
                 argument_list[1].string_reference);
+              if (argument_list[0].int_reference == (int) PathPrimitive);
+                (void) strcat(draw_info->primitive,"'");
             }
           if (attribute_flag[2])
             {

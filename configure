@@ -4426,7 +4426,8 @@ rm -f conftest*
 echo "$ECHO_T""no" >&6
 	X_LIBS="$X_LIBS -R$x_libraries"
       else
-	LIBS="$ac_xsave_LIBS -R $x_libraries"
+	X_LIBS="$X_LIBS -R$x_libraries"
+#	LIBS="$ac_xsave_LIBS -R $x_libraries"
 	cat >conftest.$ac_ext <<EOF
 
 EOF

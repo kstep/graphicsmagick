@@ -116,6 +116,8 @@ typedef struct _SVGInfo
     height;
 
   char
+    *title,
+    *description,
     *comment;
 
   int
@@ -520,7 +522,6 @@ void SVGAttributeDeclaration(void *context,const xmlChar *element,
     xmlFree(prefix);
   if (fullname != NULL)
     xmlFree(fullname);
-
 }
 
 static void SVGElementDeclaration(void *context,const xmlChar *name,int type,
@@ -1147,6 +1148,13 @@ static void SVGEndElement(void *context,const xmlChar *name)
         svg_info->element.cy+svg_info->element.minor);
       return;
     }
+  if (LocaleCompare((char *) name,"desc") == 0)
+    {
+      Strip(svg_info->text);
+      CloneString(&svg_info->description,svg_info->text);
+      *svg_info->text='\0';
+      return;
+    }
   if (LocaleCompare((char *) name,"ellipse") == 0)
     {
       angle=svg_info->element.angle;
@@ -1213,7 +1221,13 @@ static void SVGEndElement(void *context,const xmlChar *name)
       *svg_info->text='\0';
       return;
     }
-
+  if (LocaleCompare((char *) name,"title") == 0)
+    {
+      Strip(svg_info->text);
+      CloneString(&svg_info->title,svg_info->text);
+      *svg_info->text='\0';
+      return;
+    }
   if (svg_info->text != (char *) NULL)
     *svg_info->text='\0';
 }
@@ -1579,10 +1593,18 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) strcpy(image->filename,image_info->filename);
       if (svg_info.comment != (char *) NULL)
         (void) SetImageAttribute(image,"Comment",svg_info.comment);
+      if (svg_info.description != (char *) NULL)
+        (void) SetImageAttribute(image,"Description",svg_info.description);
+      if (svg_info.title != (char *) NULL)
+        (void) SetImageAttribute(image,"Title",svg_info.title);
     }
   /*
     Free resources.
   */
+  if (svg_info.title != (char *) NULL)
+    LiberateMemory((void **) &svg_info.title);
+  if (svg_info.description != (char *) NULL)
+    LiberateMemory((void **) &svg_info.description);
   if (svg_info.comment != (char *) NULL)
     LiberateMemory((void **) &svg_info.comment);
   return(image);

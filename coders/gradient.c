@@ -1,18 +1,21 @@
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
-%                            M   M  V   V   GGGG                              %
-%                            MM MM  V   V  G                                  %
-%                            M M M  V   V  G GG                               %
-%                            M   M   V V   G   G                              %
-%                            M   M    V     GGG                               %
+%                                                                             %
+%                                                                             %
+%            GGGG  RRRR    AAA   DDDD   IIIII  EEEEE  N   N  TTTTT            %
+%           G      R   R  A   A  D   D    I    E      NN  N    T              %
+%           G  GG  RRRR   AAAAA  D   D    I    EEE    N N N    T              %
+%           G   G  R R    A   A  D   D    I    E      N  NN    T              %
+%            GGG   R  R   A   A  DDDD   IIIII  EEEEE  N   N    T              %
+%                                                                             %
 %                                                                             %
 %                    Read/Write ImageMagick Image Format.                     %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
 %                                John Cristy                                  %
-%                                 April 2000                                  %
+%                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
 %  Copyright (C) 2000 ImageMagick Studio, a non-profit organization dedicated %
@@ -57,24 +60,25 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d M V G I m a g e                                                   %
+%   R e a d G R A D I E N T I m a g e                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadMVGImage creates a gradient image and initializes it to
+%  Method ReadGRADIENTImage creates a gradient image and initializes it to
 %  the X server color range as specified by the filename.  It allocates the
 %  memory necessary for the new Image structure and returns a pointer to the
 %  new image.
 %
-%  The format of the ReadMVGImage method is:
+%  The format of the ReadGRADIENTImage method is:
 %
-%      Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadGRADIENTImage(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o image:  Method ReadMVGImage returns a pointer to the image after
+%    o image:  Method ReadGRADIENTImage returns a pointer to the image after
 %      creating it. A null image is returned if there is a memory shortage
 %      or if the image cannot be read.
 %
@@ -84,16 +88,34 @@
 %
 %
 */
-static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadGRADIENTImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent];
+    colorname[MaxTextExtent];
 
-  DrawInfo
-    *draw_info;
+  PixelPacket
+    color;
+
+  double
+    brightness,
+    brightness_step,
+    hue,
+    hue_step,
+    saturation,
+    saturation_step;
 
   Image
     *image;
+
+  int
+    y;
+
+  register int
+    x;
+
+  register PixelPacket
+    *q;
 
   /*
     Initialize Image structure.
@@ -101,16 +123,49 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   (void) strcpy(image->filename,image_info->filename);
   if (image->columns == 0)
-    image->columns=640;
+    image->columns=512;
   if (image->rows == 0)
-    image->rows=480;
-  SetImage(image,OpaqueOpacity);
-  draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  (void) strcpy(filename,"@");
-  (void) strcat(filename,image_info->filename);
-  (void) CloneString(&draw_info->primitive,filename);
-  (void) DrawImage(image,draw_info);
-  DestroyDrawInfo(draw_info);
+    image->rows=512;
+  /*
+    Determine (Hue, Saturation, Brightness) gradient.
+  */
+  (void) strcpy(colorname,image_info->filename);
+  (void) sscanf(image_info->filename,"%[^-]",colorname);
+  (void) QueryColorDatabase(colorname,&color);
+  TransformHSL(color.red,color.green,color.blue,&hue,&saturation,&brightness);
+  (void) strcpy(colorname,"white");
+  if (Intensity(color) > (0.5*MaxRGB))
+    (void) strcpy(colorname,"black");
+  (void) sscanf(image_info->filename,"%*[^-]-%s",colorname);
+  (void) QueryColorDatabase(colorname,&color);
+  TransformHSL(color.red,color.green,color.blue,&hue_step,&saturation_step,
+    &brightness_step);
+  hue_step=(hue_step-hue)/(double) (image->columns*image->rows);
+  saturation_step=
+    (saturation_step-saturation)/(double) (image->columns*image->rows);
+  brightness_step=
+    (brightness_step-brightness)/(double) (image->columns*image->rows);
+  /*
+    Initialize image pixels.
+  */
+  for (y=0; y < (int) image->rows; y++)
+  {
+    q=SetImagePixels(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      HSLTransform(hue,saturation,brightness,&q->red,&q->green,&q->blue);
+      q++;
+      hue+=hue_step;
+      saturation+=saturation_step;
+      brightness+=brightness_step;
+    }
+    if (!SyncImagePixels(image))
+      break;
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(LoadImageText,y,image->rows);
+  }
   return(image);
 }
 
@@ -119,34 +174,35 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e g i s t e r M V G I m a g e                                           %
+%   R e g i s t e r G R A D I E N T I m a g e                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method RegisterMVGImage adds attributes for the MVG image format
+%  Method RegisterGRADIENTImage adds attributes for the GRADIENT image format
 %  to the list of supported formats.  The attributes include the image format
 %  tag, a method to read and/or write the format, whether the format
 %  supports the saving of more than one frame to the same file or blob,
 %  whether the format supports native in-memory I/O, and a brief
 %  description of the format.
 %
-%  The format of the RegisterMVGImage method is:
+%  The format of the RegisterGRADIENTImage method is:
 %
-%      RegisterMVGImage(void)
+%      RegisterGRADIENTImage(void)
 %
 */
-ModuleExport void RegisterMVGImage(void)
+ModuleExport void RegisterGRADIENTImage(void)
 {
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("MVG");
-  entry->decoder=ReadMVGImage;
+  entry=SetMagickInfo("GRADIENT");
+  entry->decoder=ReadGRADIENTImage;
   entry->adjoin=False;
-  entry->description=AllocateString("Magick Vector Graphics");
-  entry->module=AllocateString("MVG");
+  entry->description=
+    AllocateString("Gradual passing from one shade to another");
+  entry->module=AllocateString("GRADIENT");
   RegisterMagickInfo(entry);
 }
 
@@ -155,21 +211,21 @@ ModuleExport void RegisterMVGImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r M V G I m a g e                                       %
+%   U n r e g i s t e r G R A D I E N T I m a g e                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method UnregisterMVGImage removes format registrations made by the
-%  MVG module from the list of supported formats.
+%  Method UnregisterGRADIENTImage removes format registrations made by the
+%  GRADIENT module from the list of supported formats.
 %
-%  The format of the UnregisterMVGImage method is:
+%  The format of the UnregisterGRADIENTImage method is:
 %
-%      UnregisterMVGImage(void)
+%      UnregisterGRADIENTImage(void)
 %
 */
-ModuleExport void UnregisterMVGImage(void)
+ModuleExport void UnregisterGRADIENTImage(void)
 {
-  UnregisterMagickInfo("MVG");
+  UnregisterMagickInfo("GRADIENT");
 }

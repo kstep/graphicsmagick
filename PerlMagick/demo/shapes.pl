@@ -17,7 +17,7 @@ $tile->Read('tile.gif');
 $image->Draw(primitive=>'Polygon',tile=>$tile,
   points=>'30,30 100,10 190,290 30,290');
 $image->Draw(stroke=>'red',primitive=>'Ellipse',stroke=>'black',fill=>'red',
-  linewidth=>5,points=>'100,100 100,150 0,360');
+  linewidth=>5,points=>'100,100 50,75 0,360');
 $image->Draw(primitive=>'Polygon',stroke=>'black',linewidth=>5,
   points=>'30,30 100,10 190,290 30,290');
 $image->Set(fuzz=>80);

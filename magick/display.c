@@ -5370,7 +5370,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case NewCommand:
     {
       static char
-        *format = "gradation",
+        *format = "gradient",
         color[MaxTextExtent] = "gray",
         geometry[MaxTextExtent] = "640x480";
 

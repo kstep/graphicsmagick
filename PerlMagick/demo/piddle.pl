@@ -20,9 +20,9 @@ for ($i=0; $i < 300; $i+=10)
 # Draw rounded rectangle.
 #
 $image->Draw(primitve=>'RoundRectangle',fill=>blue,stroke=>'red',
-  points=>'65,65 70,70 10,10');
+  points=>'15,15 70,70 10,10');
 $image->Draw(primitve=>'roundRectangle',stroke=>maroon,linewidth=>4,
-  points=>'65,65 70,70 10,10');
+  points=>'15,15 70,70 10,10');
 #
 # Draw curve.
 #
@@ -37,8 +37,8 @@ $image->Draw(primitive=>'line',points=>"10,200 20,190",stroke=>red);
 #
 $image->Draw(primitive=>'circle',stroke=>'black',fill=>'yellow',linewidth=>4,
   points=>"160,70 200,70");
-$image->Draw(primitve=>'Arc',stroke=>'black',fill=>'blue',linewidth=>4,
-  points=>'120,30 200,100 45,90');
+$image->Draw(primitve=>'Path',stroke=>'black',fill=>'blue',linewidth=>4,
+  points=>'M160,70 v-40 a40,40 0 0,0 -40,40 z');
 #
 # Draw pentogram.
 #
@@ -52,10 +52,11 @@ $image->Draw(primitve=>'rectangle',points=>'200,200 260,260',stroke=>yellow,
   linewidth=>5);
 $image->Draw(primitve=>'line',points=>'200,260 260,260',stroke=>green,
   linewidth=>5);
-$image->Draw(primitve=>'line',points=>'260,200 260,260',stroke=>red,linewidth=>5);
+$image->Draw(primitve=>'line',points=>'260,200 260,260',stroke=>red,
+  linewidth=>5);
 #
 # Draw text.
 #
 $image->Annotate(text=>'This is a test!',geometry=>'+30+140',
-  font=>'@Generic.ttf',fill=>'green',pointsize=>24,rotate=>45.0);
+  font=>'@Generic.ttf',fill=>'green',pointsize=>24,rotate=>-45.0);
 $image->Display();
