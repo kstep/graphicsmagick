@@ -194,7 +194,6 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   allocate_image->background_color=image_info->background_color;
   allocate_image->border_color=image_info->border_color;
   allocate_image->matte_color=image_info->matte_color;
-  allocate_image->scene=image_info->subimage;
   allocate_image->client_data=image_info->client_data;
   return(allocate_image);
 }

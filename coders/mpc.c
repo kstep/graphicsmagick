@@ -756,14 +756,14 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Read image colormap from file.
             */
-            packet_size=image->colors > 256 ? 6 : 3;
+            packet_size=image->depth > 8 ? 6 : 3;
             colormap=(unsigned char *) AcquireMemory(packet_size*image->colors);
             if (colormap == (unsigned char *) NULL)
               ThrowReaderException(ResourceLimitError,
                 "Memory allocation failed",image);
             (void) ReadBlob(image,packet_size*image->colors,colormap);
             p=colormap;
-            if (image->colors <= 256)
+            if (image->depth <= 8)
               for (i=0; i < (long) image->colors; i++)
               {
                 image->colormap[i].red=Upscale(*p++);
@@ -1045,9 +1045,13 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
       }
     if ((image->next != (Image *) NULL) || (image->previous != (Image *) NULL))
       {
-        FormatString(buffer,
-          "scene=%lu  iterations=%lu  delay=%lu  Dispose=%lu\n",
-          image->scene,image->iterations,image->delay,image->dispose);
+        if (image->scene == 0)
+          FormatString(buffer,"iterations=%lu  delay=%lu  Dispose=%lu\n",
+            image->iterations,image->delay,image->dispose);
+				else
+          FormatString(buffer,
+            "scene=%lu  iterations=%lu  delay=%lu  Dispose=%lu\n",
+            image->scene,image->iterations,image->delay,image->dispose);
         (void) WriteBlobString(image,buffer);
       }
     else
@@ -1210,7 +1214,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
         /*
           Allocate colormap.
         */
-        packet_size=image->colors > 256 ? 6 : 3;
+        packet_size=image->depth > 8 ? 6 : 3;
         colormap=(unsigned char *) AcquireMemory(packet_size*image->colors);
         if (colormap == (unsigned char *) NULL)
           return(False);
@@ -1218,7 +1222,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
           Write colormap to file.
         */
         q=colormap;
-        if (image->colors <= 256)
+        if (image->depth <= 8)
           for (i=0; i < (long) image->colors; i++)
           {
             *q++=image->colormap[i].red;

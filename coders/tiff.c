@@ -1599,8 +1599,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     if (image_info->adjoin && (GetImageListSize(image) > 1))
       {
         (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
-        (void) TIFFSetField(tiff,TIFFTAG_PAGENUMBER,(unsigned short)
-          image->scene,GetImageListSize(image));
+        if (image->scene != 0)
+          (void) TIFFSetField(tiff,TIFFTAG_PAGENUMBER,(unsigned short)
+            image->scene,GetImageListSize(image));
       }
     attribute=GetImageAttribute(image,"artist");
     if (attribute != (const ImageAttribute *) NULL)

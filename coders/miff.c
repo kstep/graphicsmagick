@@ -1346,9 +1346,13 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       }
     if ((image->next != (Image *) NULL) || (image->previous != (Image *) NULL))
       {
-        FormatString(buffer,
-          "scene=%lu  iterations=%lu  delay=%lu  dispose=%lu\n",
-          image->scene,image->iterations,image->delay,image->dispose);
+        if (image->scene == 0)
+          FormatString(buffer,"iterations=%lu  delay=%lu  dispose=%lu\n",
+            image->iterations,image->delay,image->dispose);
+        else
+          FormatString(buffer,
+            "scene=%lu  iterations=%lu  delay=%lu  dispose=%lu\n",
+            image->scene,image->iterations,image->delay,image->dispose);
         (void) WriteBlobString(image,buffer);
       }
     else

@@ -1261,7 +1261,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       for (x=0; x < (long) image->columns; x++)
       {
-        *q++=(*indexes++) >> 8;
+        *q++=(*indexes) >> 8;
         *q++=(*indexes++);
       }
       break;
