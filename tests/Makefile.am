@@ -108,13 +108,16 @@ else
 XWD=
 endif
 
-# Formats that currently don't work: DPX EPDF EPT $(FPX) PICON
 CHECK_BLOB_FORMATS = \
 	AVS \
 	BMP \
 	CMYK \
 	DIB \
+	DPX \
+	EPDF \
+	EPT \
 	FAX \
+	$(FPX) \
 	G3 \
 	FITS \
 	GIF \
@@ -135,6 +138,7 @@ CHECK_BLOB_FORMATS = \
 	PCDS \
 	PCX \
 	PGM \
+	PICON \
 	PICT \
 	$(PNG) \
 	PNM \
@@ -158,12 +162,13 @@ CHECK_BLOB_FORMATS = \
 	$(XWD) \
 	YUV
 
-# Formats that currently don't work: DPX EPDF $(FPX) PICON
 CHECK_FILE_FORMATS = \
 	AVS \
 	BMP \
 	CMYK \
 	DIB \
+	DPX \
+	EPDF \
 	EPSF \
 	EPSI \
 	EPI \
@@ -171,6 +176,7 @@ CHECK_FILE_FORMATS = \
 	EPT \
 	FAX \
 	FITS \
+	$(FPX) \
 	GIF \
 	GRAY \
 	$(HDF) \
@@ -189,6 +195,7 @@ CHECK_FILE_FORMATS = \
 	PCDS \
 	PCX \
 	PGM \
+	PICON \
 	PICT \
 	$(PNG) \
 	PNM \
