@@ -14,7 +14,7 @@ extern "C" {
 #define MagickCopyright  "Copyright (C) 2002 ImageMagick Studio LLC"
 #define MagickLibVersion  0x0551
 #define MagickLibVersionText  "5.5.1"
-#define MagickLibVersionNumber  5,5,1,1
+#define MagickLibVersionNumber  5,5,1,2
 #if (QuantumDepth == 8)
 #define MagickQuantumDepth  "Q8"
 #elif (QuantumDepth == 16)
@@ -24,7 +24,7 @@ extern "C" {
 #else
 #define MagickQuantumDepth  "Q?"
 #endif
-#define MagickReleaseDate  "10/15/02"
+#define MagickReleaseDate  "10/16/02"
 #define MagickVersion "ImageMagick " MagickLibVersionText " " \
   MagickReleaseDate " " MagickQuantumDepth " " MagickWebSite
 #define MagickWebSite  "http://www.imagemagick.org"
