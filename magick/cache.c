@@ -78,21 +78,23 @@ static const PixelPacket
 static IndexPacket
   *GetIndexesFromCache(const Image *);
 
+static inline unsigned int
+  IsNexusInCore(const Cache,const unsigned long);
+
 static off_t
   GetCacheMemory(const off_t);
 
 static PixelPacket
   AcquireOnePixelFromCache(const Image *,const long,const long,ExceptionInfo *),
   GetOnePixelFromCache(Image *,const long,const long),
-  *SetNexus(const Image *,const RectangleInfo *,const unsigned long),
   *GetPixelsFromCache(const Image *),
   *GetPixelCache(Image *,const long,const long,const unsigned long,
     const unsigned long),
+  *SetNexus(const Image *,const RectangleInfo *,const unsigned long),
   *SetPixelCache(Image *,const long,const long,const unsigned long,
     const unsigned long);
 
 static unsigned int
-  IsNexusInCore(const Cache,const unsigned long),
   ReadCacheIndexes(const Cache,const unsigned long),
   ReadCachePixels(const Cache,const unsigned long),
   SyncCache(Image *),
@@ -1460,7 +1462,8 @@ static PixelPacket *GetPixelsFromCache(const Image *image)
 %
 %
 */
-static unsigned int IsNexusInCore(const Cache cache,const unsigned long nexus)
+static inline unsigned int IsNexusInCore(const Cache cache,
+  const unsigned long nexus)
 {
   CacheInfo
     *cache_info;
@@ -1557,15 +1560,15 @@ static unsigned int ModifyCache(Image *image)
     indexes=GetIndexes(image);
     if ((clone_indexes != (IndexPacket *) NULL) &&
         (indexes != (IndexPacket *) NULL))
-      (void) CloneMemory(indexes,clone_indexes,image->columns*sizeof(IndexPacket));
+      (void) CloneMemory(indexes,clone_indexes,
+        image->columns*sizeof(IndexPacket));
     if (!SyncImagePixels(image))
       break;
   }
   LiberateMemory((void **) &clone_image);
   LiberateSemaphoreInfo(&cache_info->semaphore);
   if (y < (long) image->rows)
-    ThrowBinaryException(CacheWarning,"Unable to clone cache",
-      image->filename);
+    ThrowBinaryException(CacheWarning,"Unable to clone cache",image->filename);
   return(True);
 }
 
