@@ -420,10 +420,9 @@ ModuleExport void RegisterPALMImage(void)
   entry->decoder=ReadPALMImage;
   entry->encoder=WritePALMImage;
   entry->adjoin=False;
-  entry->description=
-    AllocateString("Internal picture format for the Palm organizer.");
+  entry->description=AllocateString("Palm pixmap");
   entry->module=AllocateString("PALM");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*

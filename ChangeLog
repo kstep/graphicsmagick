@@ -1,3 +1,6 @@
+2002-01-24  Cristy  <cristy@mystic.es.dupont.com>
+  * Palm pixmap supported contributed by Christopher R. Hawks.
+
 2002-01-21  Cristy  <cristy@mystic.es.dupont.com>
   * Fixed occasional small memory leak associated with exceptions.
   * Persistent cache is no longer updated (MPC coder).
