@@ -71,7 +71,7 @@ typedef struct _SignatureInfo
     low_order,
     high_order;
 
-  off_t
+  long
     offset;
 
   unsigned char

@@ -2890,9 +2890,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if ((group == dicom_info[i].group) &&
               (element == dicom_info[i].element))
             break;
-        (void) fprintf(stdout,"0x%04lx %4lu %.1024s-%.1024s (0x%04x,0x%04x)",
-          image->offset,(unsigned long) length,implicit_vr,explicit_vr,group,
-          element);
+        (void) fprintf(stdout,"0x%04lux %4lu %.1024s-%.1024s (0x%04x,0x%04x)",
+          image->offset,(unsigned long) length,implicit_vr,
+          explicit_vr,group, element);
         if (dicom_info[i].description != (char *) NULL)
           (void) fprintf(stdout," %.1024s",dicom_info[i].description);
         (void) fprintf(stdout,": ");

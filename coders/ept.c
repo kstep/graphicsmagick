@@ -246,6 +246,9 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     c,
     status;
 
+  off_t
+    filesize;
+
   RectangleInfo
     box,
     page;
@@ -263,7 +266,6 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     count;
 
   unsigned long
-    filesize,
     height,
     width;
 
@@ -609,10 +611,10 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlobLSBLong(image,30);
       attributes.st_size=0;
       (void) fstat(fileno(ps_file),&attributes);
-      (void) WriteBlobLSBLong(image,attributes.st_size);
+      (void) WriteBlobLSBLong(image,(unsigned long) attributes.st_size);
       (void) WriteBlobLSBLong(image,0);
       (void) WriteBlobLSBLong(image,0);
-      (void) WriteBlobLSBLong(image,attributes.st_size+30);
+      (void) WriteBlobLSBLong(image,(unsigned long) attributes.st_size+30);
       (void) fstat(fileno(tiff_file),&attributes);
       (void) WriteBlobLSBLong(image,attributes.st_size);
       (void) WriteBlobLSBShort(image,0xffff);

@@ -245,8 +245,10 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned int
     status;
 
+  off_t
+    *page_table;
+
   unsigned long
-    *page_table,
     pcx_packets;
 
   /*
@@ -263,7 +265,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Determine if this is a PCX file.
   */
-  page_table=(unsigned long *) NULL;
+  page_table=(off_t *) NULL;
   if (LocaleCompare(image_info->magick,"DCX") == 0)
     {
       unsigned long
@@ -275,19 +277,19 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       magic=ReadBlobLSBLong(image);
       if (magic != 987654321)
         ThrowReaderException(CorruptImageWarning,"Not a DCX image file",image);
-      page_table=(unsigned long *) AcquireMemory(1024*sizeof(unsigned long));
-      if (page_table == (unsigned long *) NULL)
+      page_table=(off_t *) AcquireMemory(1024*sizeof(off_t));
+      if (page_table == (off_t *) NULL)
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
           image);
       for (id=0; id < 1024; id++)
       {
-        page_table[id]=ReadBlobLSBLong(image);
+        page_table[id]=(off_t) ReadBlobLSBLong(image);
         if (page_table[id] == 0)
           break;
       }
     }
-  if (page_table != (unsigned long *) NULL)
-    (void) SeekBlob(image,page_table[0],SEEK_SET);
+  if (page_table != (off_t *) NULL)
+    (void) SeekBlob(image,(off_t) page_table[0],SEEK_SET);
   count=ReadBlob(image,1,(char *) &pcx_info.identifier);
   for (id=1; id < 1024; id++)
   {
@@ -579,11 +581,11 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    if (page_table == (unsigned long *) NULL)
+    if (page_table == (off_t *) NULL)
       break;
     if (page_table[id] == 0)
       break;
-    (void) SeekBlob(image,page_table[id],SEEK_SET);
+    (void) SeekBlob(image,(off_t) page_table[id],SEEK_SET);
     count=ReadBlob(image,1,(char *) &pcx_info.identifier);
     if ((count != 0) && (pcx_info.identifier == 0x0a))
       {
@@ -600,7 +602,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         MagickMonitor(LoadImagesText,TellBlob(image),SizeBlob(image));
       }
   }
-  if (page_table != (unsigned long *) NULL)
+  if (page_table != (off_t *) NULL)
     LiberateMemory((void **) &page_table);
   while (image->previous != (Image *) NULL)
     image=image->previous;
@@ -742,8 +744,10 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
   unsigned int
     status;
 
+  off_t
+    *page_table;
+
   unsigned long
-    *page_table,
     scene;
 
   /*
@@ -757,15 +761,15 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   (void) TransformRGBImage(image,RGBColorspace);
-  page_table=(unsigned long *) NULL;
+  page_table=(off_t *) NULL;
   if (image_info->adjoin)
     {
       /*
         Write the DCX page table.
       */
       (void) WriteBlobLSBLong(image,0x3ADE68B1L);
-      page_table=(unsigned long *) AcquireMemory(1024*sizeof(unsigned long));
-      if (page_table == (unsigned long *) NULL)
+      page_table=(off_t *) AcquireMemory(1024*sizeof(off_t));
+      if (page_table == (off_t *) NULL)
         ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
           image);
       for (scene=0; scene < 1024; scene++)
@@ -774,7 +778,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
   scene=0;
   do
   {
-    if (page_table != (unsigned long *) NULL)
+    if (page_table != (off_t *) NULL)
       page_table[scene]=TellBlob(image);
     /*
       Initialize PCX raster file header.
@@ -1013,7 +1017,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;
-  if (page_table != (unsigned long *) NULL)
+  if (page_table != (off_t *) NULL)
     {
       /*
         Write the DCX page table.
@@ -1022,9 +1026,11 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       (void) SeekBlob(image,0L,SEEK_SET);
       (void) WriteBlobLSBLong(image,0x3ADE68B1L);
       for (i=0; i <= (long) scene; i++)
-        (void) WriteBlobLSBLong(image,page_table[i]);
+        (void) WriteBlobLSBLong(image,(unsigned long) page_table[i]);
       LiberateMemory((void **) &page_table);
     }
+  if (status == False)
+    ThrowWriterException(FileOpenWarning,"Unable to write file",image);
   CloseBlob(image);
   return(True);
 }

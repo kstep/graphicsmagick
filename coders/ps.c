@@ -266,8 +266,10 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   unsigned long
     height,
-    filesize,
     width;
+
+  off_t
+    filesize;
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
@@ -331,7 +333,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       (void) ReadBlobLSBLong(image);
       count=ReadBlobLSBLong(image);
-      filesize=ReadBlobLSBLong(image);
+      filesize=(off_t) ReadBlobLSBLong(image);
       for (i=0; i < (long) (count-12); i++)
         (void) ReadBlobByte(image);
     }

@@ -422,7 +422,7 @@ char SampleSize=1;
 
 
 static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
-  long PS_Offset,long PS_Size)
+  off_t PS_Offset,long PS_Size)
 {
 /*char Filename[MaxTextExtent];*/
 FILE *f;
@@ -502,7 +502,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 typedef struct
 	{
 	unsigned long FileId;
-	unsigned long DataOffset;
+	off_t DataOffset;
 	unsigned int ProductType;
 	unsigned int FileType;
 	unsigned char MajorVersion;
@@ -588,7 +588,7 @@ typedef struct {
     Read WPG image.
   */
    Header.FileId=ReadBlobLSBLong(image);
-   Header.DataOffset=ReadBlobLSBLong(image);
+   Header.DataOffset=(off_t) ReadBlobLSBLong(image);
    Header.ProductType=ReadBlobLSBShort(image);
    Header.FileType=ReadBlobLSBShort(image);
    Header.MajorVersion=ReadBlobByte(image);
@@ -658,8 +658,8 @@ typedef struct {
          case 0x11:  /* Start PS l1 */
 		   if(Rec.RecordLength>8)
 		      image=ExtractPostscript(image,image_info,
-		               TellBlob(image)+8,   /*skip PS header in the wpg*/
-			       Rec.RecordLength-8);
+	               TellBlob(image)+8,   /*skip PS header in the wpg*/
+		       (long) Rec.RecordLength-8);
 		   break;		 
 
 	 case 0x14:  /* bitmap type 2 */
@@ -731,11 +731,11 @@ DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompres
 		 break;
 
 	 case 0x1B:  /*Postscript l2*/
-		 if(Rec.RecordLength>0x3C)
-		      image=ExtractPostscript(image,image_info,
-			       TellBlob(image)+0x3C,   /*skip PS l2 header in the wpg*/
-			       Rec.RecordLength-0x3C);
-		 break;
+	   if(Rec.RecordLength>0x3C)
+	      image=ExtractPostscript(image,image_info,
+	        TellBlob(image)+0x3C,   /*skip PS l2 header in the wpg*/
+	        (long) Rec.RecordLength-0x3C);
+           break;
 	 }
       }
       break;
@@ -842,7 +842,7 @@ DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompres
 			       Rec2.RecordLength-0x12);
 	     break;
 	     
-/*	 default:printf("Record type %d; size %ld; offset %lX\n",Rec2.RecType,Rec2.RecordLength,Header.DataOffset-Rec2.RecordLength); */     
+/*	 default:printf("Record type %d; size %ld; offset %lX\n",Rec2.RecType,Rec2.RecordLength,(unsigned long) Header.DataOffset-Rec2.RecordLength); */     
 	 }
        }
 

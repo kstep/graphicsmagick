@@ -787,7 +787,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     pages_id,
     root_id,
     height,
-    width,
+    width;
+
+  off_t
     *xref;
 
   /*
@@ -850,8 +852,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   /*
     Allocate X ref memory.
   */
-  xref=(unsigned long *) AcquireMemory(2048*sizeof(unsigned long));
-  if (xref == (unsigned long *) NULL)
+  xref=(off_t *) AcquireMemory(2048*sizeof(off_t));
+  if (xref == (off_t *) NULL)
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   /*
     Write Info object.
@@ -914,8 +916,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobString(image,buffer);
         kid_image=kid_image->next;
       }
-      ReacquireMemory((void **) &xref,(count+2048)*sizeof(unsigned long));
-      if (xref == (unsigned long *) NULL)
+      ReacquireMemory((void **) &xref,(count+2048)*sizeof(off_t));
+      if (xref == (off_t *) NULL)
         ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
           image);
     }
@@ -1730,7 +1732,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,"0000000000 65535 f \n");
   for (i=0; i < (long) object; i++)
   {
-    FormatString(buffer,"%010lu 00000 n \n",xref[i]);
+    if (xref[i] > (off_t) 0xffffffffL)
+      ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    FormatString(buffer,"%010lu 00000 n \n",(unsigned long) xref[i]);
     (void) WriteBlobString(image,buffer);
   }
   (void) WriteBlobString(image,"trailer\n");

@@ -3037,7 +3037,7 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
       {
         pixel=AcquireOnePixel(watermark,x,y,exception);
         q=GetImagePixels(stegano_image,k % (long) stegano_image->columns,
-        k/(long) stegano_image->columns,1,1);
+          k/(long) stegano_image->columns,1,1);
         if (q == (PixelPacket *) NULL)
           break;
         switch ((int) c)

@@ -252,7 +252,8 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image *image,*rotated_image;
   unsigned int status;
   MATHeader MATLAB_HDR;
-  DWORD size,filepos;
+  DWORD size;
+  off_t filepos;
   DWORD CellType;
   int i,x;
   long ldblk;

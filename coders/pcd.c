@@ -428,6 +428,9 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   long
     x;
 
+  off_t
+    offset;
+
   register long
     y;
 
@@ -458,7 +461,6 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   unsigned long
     height,
-    offset,
     number_images,
     number_pixels,
     subimage,

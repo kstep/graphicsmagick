@@ -430,8 +430,10 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   long
     bit,
-    start_position,
     y;
+
+  off_t
+    start_position;
 
   register IndexPacket
     *indexes;
