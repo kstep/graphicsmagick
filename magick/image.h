@@ -411,9 +411,6 @@ typedef struct _Image
   ExceptionInfo
     exception;
 
-  jmp_buf
-    error_recovery;
-
   void
     *client_data;
 
