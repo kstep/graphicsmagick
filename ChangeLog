@@ -1,10 +1,11 @@
 2002-01-11  Leonard Rosenthol  <leonardr@lazerware.com>
-	* PSD now supports writing layered images and IPTC data
-	* Fixed some bugs in XCF
+  * PSD now supports writing layered images and IPTC data.
+  * Fixed some bugs in XCF.
 
 2002-01-11  Cristy  <cristy@mystic.es.dupont.com>
   * Added image list methods to the API: CloneImageList(), GetImageList(),
-    NewImageList(), PopImageList(), PushImageList(), and SetImageList().
+    GetImageListSize(), NewImageList(), PopImageList(), PushImageList(),
+    and SetImageList().
 
 2002-01-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * configure.ac : Renamed configure option --with-ttf-fontpath to
