@@ -641,6 +641,8 @@ MagickExport Image *MontageImages(const Image *images,
               DestroyImage(image);
               image=frame_image;
             }
+          x=0;
+          y=0;
         }
       if (LocaleCompare(image->magick,"NULL") != 0)
         {
