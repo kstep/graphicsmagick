@@ -292,7 +292,7 @@ static unsigned int
 
 static void
   DefineImageColormap(Image *,NodeInfo *),
-  HilbertCurve(CubeInfo *,Image *,const long,const unsigned int),
+  HilbertCurve(CubeInfo *,Image *,const unsigned long,const unsigned int),
   PruneLevel(CubeInfo *,const NodeInfo *),
   ReduceImageColors(CubeInfo *,const unsigned long);
 
@@ -1486,8 +1486,8 @@ MagickExport void GetQuantizeInfo(QuantizeInfo *quantize_info)
 %
 %  The format of the HilbertCurve method is:
 %
-%      void HilbertCurve(CubeInfo *cube_info,Image *image,const long level,
-%        const unsigned int direction)
+%      void HilbertCurve(CubeInfo *cube_info,Image *image,
+%        const unsigned long level,const unsigned int direction)
 %
 %  A description of each parameter follows.
 %
@@ -1501,8 +1501,8 @@ MagickExport void GetQuantizeInfo(QuantizeInfo *quantize_info)
 %
 %
 */
-static void HilbertCurve(CubeInfo *cube_info,Image *image,const long level,
-  const unsigned int direction)
+static void HilbertCurve(CubeInfo *cube_info,Image *image,
+  const unsigned long level,const unsigned int direction)
 {
   if (level == 1)
     {
