@@ -817,9 +817,9 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
                  {
                    if ((hashval > hash[i]) || (sum > sums[i]))
                      LogMagickEvent(CoderEvent,
-                       "   JPEG Quality: %d (approximate)",i+1);
+                       "   JPEG Quality: %ld (approximate)",i+1);
                    else
-                     LogMagickEvent(CoderEvent,"   JPEG Quality: %d",i+1);
+                     LogMagickEvent(CoderEvent,"   JPEG Quality: %ld",i+1);
                    break;
                  }
              }
@@ -861,9 +861,9 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
                  {
                    if ((hashval > bwhash[i]) || (sum > bwsum[i]))
                      LogMagickEvent(CoderEvent,
-                       "   JPEG Quality: %d (approximate)\n",i+1);
+                       "   JPEG Quality: %ld (approximate)",i+1);
                    else
-                     LogMagickEvent(CoderEvent,"   JPEG Quality: %d\n",i+1);
+                     LogMagickEvent(CoderEvent,"   JPEG Quality: %ld",i+1);
                    break;
                  }
              }
