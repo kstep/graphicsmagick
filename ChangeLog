@@ -8,6 +8,8 @@
 
 2003-03-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* configure.ac (LIB_TIFF): Check for TIFFReadRGBATile and TIFFReadRGBAStrip
+	in libtiff before deciding to use it.
 	* magick/blob.c (WriteBlob): Move pointer increment into
 	paranthesis.
 	(ReadBlob): Move pointer increment into paranthesis.
@@ -15,6 +17,7 @@
 	(TransformHSL): Removed inline statement.
 	* magick/random.[c|h]: Removed files from CVS.
 	* magick/command.c: Don't include random.h.
+	* PerlMagick/t/reference/jng: Update reference files to current output.
 
 2003-03-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

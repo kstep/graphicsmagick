@@ -13,9 +13,20 @@
 </tr>
 </table>
 <p>
+2003-03-19  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> coders/meta.c: #ifdef'ed out some dead code.
+  <LI> magick/annotate.c: #ifdef'ed out some code that is only
+        used when HasTTF is defined.
+
+</UL>
+<p>
 2003-03-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> configure.ac (LIB_TIFF): Check for TIFFReadRGBATile and TIFFReadRGBAStrip
+        in libtiff before deciding to use it.
   <LI> magick/blob.c (WriteBlob): Move pointer increment into
         paranthesis.<BR>
         (ReadBlob): Move pointer increment into paranthesis.
@@ -23,6 +34,7 @@
         (TransformHSL): Removed inline statement.
   <LI> magick/random.[c|h]: Removed files from CVS.
   <LI> magick/command.c: Don't include random.h.
+  <LI> PerlMagick/t/reference/jng: Update reference files to current output.
 
 </UL>
 <p>
@@ -30,37 +42,51 @@
 
 <UL>
   <LI> configure.ac: Added tests for pread and pwrite functions.
-  <LI> magick/image.c (GrayscalePseudoClassImage): Properly invoke SyncImagePixels.
-  <LI> magick/cache.c (SyncCacheNexus): Add back in is_monochrome and is_grayscale
-        flag resetting which was lost by copying over ImageMagick's cache.c.
-        (FilePositionRead): Inline wrapper for reading a chunk of data at an offset.
+  <LI> magick/image.c (GrayscalePseudoClassImage): Properly invoke
+        SyncImagePixels.<BR>
+  <LI> magick/cache.c (SyncCacheNexus): Add back in is_monochrome and
+        is_grayscale flag resetting which was lost by copying over
+        ImageMagick's cache.c.<BR>
+        (FilePositionRead): Inline wrapper for reading a chunk of data at
+        an offset.<BR>
         Cleans up some messy code, and makes it easy to use pread().
-        (FilePositionWrite): Inline wrapper for writing a chunk of data at an offset.
-        Cleans up some messy code, and makes it easy to use pwite().
-        Cache now uses pread() and pwrite() to access the cache if these calls are
-        available.<BR>
-  <LI> magick/resource.c (InitializeMagickResources): Support setting resource
-        limits via the environment variables MAGICK_LIMIT_DISK, MAGICK_LIMIT_FILES,
-        MAGICK_LIMIT_MEMORY, and MAGICK_LIMIT_MAP.
+        (FilePositionWrite): Inline wrapper for writing a chunk of data at
+        an offset.<BR>
+        Cleans up some messy code, and makes it easy to use pwrite().
+        Cache now uses pread() and pwrite() to access the cache if these
+        calls are available.<BR>
+  <LI> magick/resource.c (InitializeMagickResources): Support setting
+        resource limits via the environment variables MAGICK_LIMIT_DISK,
+        MAGICK_LIMIT_FILES, MAGICK_LIMIT_MEMORY, and MAGICK_LIMIT_MAP.
 
 </UL>
 <p>
 2003-03-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
-  <LI> magick/stream.c (AcquirePixelStream): Store total pixels in 64-bit type.
+  <LI> magick/stream.c (AcquirePixelStream): Store total pixels in
+        64-bit type.<BR>
         (SetPixelStream): Store total pixels in 64-bit type.
-  <LI> coders/tiff.c (WriteTIFFImage): CoderError should be MissingDelegateError.
-  <LI> coders/ps3.c (Huffman2DEncodeImage): CoderError should be MissingDelegateError.
+  <LI> coders/tiff.c (WriteTIFFImage): CoderError should be
+        MissingDelegateError.<BR>
+  <LI> coders/ps3.c (Huffman2DEncodeImage): CoderError should be
+        MissingDelegateError.<BR>
         (WritePS3Image): CoderError should be MissingDelegateError.
-  <LI> coders/ps2.c (Huffman2DEncodeImage): CoderError should be MissingDelegateError.
-  <LI> coders/pdf.c (Huffman2DEncodeImage): CoderError should be MissingDelegateError.
-  <LI> coders/fpx.c (ReadFPXImage): CoderError should be MissingDelegateError.
+  <LI> coders/ps2.c (Huffman2DEncodeImage): CoderError should be
+        MissingDelegateError.<BR>
+  <LI> coders/pdf.c (Huffman2DEncodeImage): CoderError should be
+        MissingDelegateError.<BR>
+  <LI> coders/fpx.c (ReadFPXImage): CoderError should be
+        MissingDelegateError.<BR>
         (WriteFPXImage): CoderError should be MissingDelegateError.
-  <LI> coders/dps.c (ReadDPSImage): CoderError should be MissingDelegateError.
-  <LI> magick/image.c (AnimateImages): DelegateError should be MissingDelegateError.
-  <LI> magick/annotate.c (RenderX11): DelegateError should be MissingDelegateError.
-  <LI> magick/image.c (DisplayImages): DelegateError should be MissingDelegateError.
+  <LI> coders/dps.c (ReadDPSImage): CoderError should be
+        MissingDelegateError.<BR>
+  <LI> magick/image.c (AnimateImages): DelegateError should be
+        MissingDelegateError.<BR>
+  <LI> magick/annotate.c (RenderX11): DelegateError should be
+        MissingDelegateError.<BR>
+  <LI> magick/image.c (DisplayImages): DelegateError should be
+        MissingDelegateError.
 
 </UL>
 <p>

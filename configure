@@ -34188,6 +34188,126 @@ else
   failed=`expr $failed + 1`
 fi
 
+    echo "$as_me:$LINENO: checking for TIFFReadRGBATile in -ltiff" >&5
+echo $ECHO_N "checking for TIFFReadRGBATile in -ltiff... $ECHO_C" >&6
+if test "${ac_cv_lib_tiff_TIFFReadRGBATile+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-ltiff  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char TIFFReadRGBATile ();
+int
+main ()
+{
+TIFFReadRGBATile ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_lib_tiff_TIFFReadRGBATile=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_lib_tiff_TIFFReadRGBATile=no
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+echo "$as_me:$LINENO: result: $ac_cv_lib_tiff_TIFFReadRGBATile" >&5
+echo "${ECHO_T}$ac_cv_lib_tiff_TIFFReadRGBATile" >&6
+if test $ac_cv_lib_tiff_TIFFReadRGBATile = yes; then
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+    echo "$as_me:$LINENO: checking for TIFFReadRGBAStrip in -ltiff" >&5
+echo $ECHO_N "checking for TIFFReadRGBAStrip in -ltiff... $ECHO_C" >&6
+if test "${ac_cv_lib_tiff_TIFFReadRGBAStrip+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-ltiff  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char TIFFReadRGBAStrip ();
+int
+main ()
+{
+TIFFReadRGBAStrip ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_lib_tiff_TIFFReadRGBAStrip=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_lib_tiff_TIFFReadRGBAStrip=no
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+echo "$as_me:$LINENO: result: $ac_cv_lib_tiff_TIFFReadRGBAStrip" >&5
+echo "${ECHO_T}$ac_cv_lib_tiff_TIFFReadRGBAStrip" >&6
+if test $ac_cv_lib_tiff_TIFFReadRGBAStrip = yes; then
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
     echo "$as_me:$LINENO: checking if TIFF package is complete" >&5
 echo $ECHO_N "checking if TIFF package is complete... $ECHO_C" >&6
     if test $passed -gt 0
