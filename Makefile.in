@@ -74,7 +74,6 @@ BrowseDelegate = @BrowseDelegate@
 CC = @CC@
 CGMDecodeDelegate = @CGMDecodeDelegate@
 CPP = @CPP@
-CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CatDelegate = @CatDelegate@
@@ -156,10 +155,6 @@ VERSION = @VERSION@
 WMFDecodeDelegate = @WMFDecodeDelegate@
 WWWDecodeDelegate = @WWWDecodeDelegate@
 XCFDecodeDelegate = @XCFDecodeDelegate@
-X_CFLAGS = @X_CFLAGS@
-X_EXTRA_LIBS = @X_EXTRA_LIBS@
-X_LIBS = @X_LIBS@
-X_PRE_LIBS = @X_PRE_LIBS@
 ZipDelegate = @ZipDelegate@
 install_sh = @install_sh@
 
@@ -231,10 +226,8 @@ identify_SOURCES = identify.c
 combine_SOURCES = combine.c
 @WITH_MODULES_TRUE@LDADD = @WITH_MODULES_TRUE@$(MAGICK_LIB) $(top_builddir)/ltdl/libltdlc.la
 @WITH_MODULES_FALSE@LDADD = @WITH_MODULES_FALSE@$(MAGICK_LIB)
-#DEPENDENCIES     = $(LIBLTDL) $(MAGICK_LIB)
-@WITH_MODULES_TRUE@LDFLAGS = @WITH_MODULES_TRUE@@DLLDFLAGS@
-#DEPENDENCIES     = 
-#LDFLAGS          = 
+@WITH_MODULES_TRUE@LDFLAGS = @WITH_MODULES_TRUE@@LDFLAGS@ @DLLDFLAGS@
+@WITH_MODULES_FALSE@LDFLAGS = @WITH_MODULES_FALSE@@LDFLAGS@
 
 # Manual pages to install
 man_MANS = $(MANPAGES)
@@ -267,7 +260,12 @@ PROGRAMS =  $(bin_PROGRAMS)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I./magick
+CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
+X_CFLAGS = @X_CFLAGS@
+X_LIBS = @X_LIBS@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
+X_PRE_LIBS = @X_PRE_LIBS@
 am_animate_OBJECTS =  animate.$(OBJEXT)
 animate_OBJECTS =  $(am_animate_OBJECTS)
 animate_LDADD = $(LDADD)

@@ -39,6 +39,7 @@ typedef struct _ModuleInfo
   struct _ModuleInfo
     *previous,
     *next;
+
 } ModuleInfo;
 
   /* Magick to module translation */
@@ -50,6 +51,7 @@ typedef struct _ModuleAliases
 
   struct _ModuleAliases
     *next;
+
 } ModuleAliases;
 
   /*

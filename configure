@@ -9970,12 +9970,12 @@ else
   LIBS=`echo "" | sed -e 's/  */ /g'`
 fi
 
-
+#AC_SUBST(CPPFLAGS)
 
 #AC_SUBST(LDFLAGS)
-
-
-
+#AC_SUBST(X_PRE_LIBS)
+#AC_SUBST(X_LIBS)
+#AC_SUBST(X_EXTRA_LIBS)
 
 trap '' 1 2 15
 cat >confcache <<\EOF

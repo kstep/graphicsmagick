@@ -126,7 +126,7 @@ Export void DestroyModuleInfo()
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ExitModules de-initialize modules subsystem and prepares for exit.
+%  Method ExitModules de-initializes modules subsystem and prepares for exit.
 %  list.
 %
 %  The format of the ExitModules method is:

@@ -64,7 +64,7 @@ extern Export void
   ExitMagic(void);
 
 extern Export unsigned int
-  GetImageMagic(unsigned char* magic,const unsigned char *magick,
+  GetImageMagic(char* magic,const unsigned char *magick,
                 const unsigned int magick_length);
 
 #if defined(__cplusplus) || defined(c_plusplus)

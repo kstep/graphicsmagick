@@ -74,7 +74,6 @@ BrowseDelegate = @BrowseDelegate@
 CC = @CC@
 CGMDecodeDelegate = @CGMDecodeDelegate@
 CPP = @CPP@
-CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CatDelegate = @CatDelegate@
@@ -156,10 +155,6 @@ VERSION = @VERSION@
 WMFDecodeDelegate = @WMFDecodeDelegate@
 WWWDecodeDelegate = @WWWDecodeDelegate@
 XCFDecodeDelegate = @XCFDecodeDelegate@
-X_CFLAGS = @X_CFLAGS@
-X_EXTRA_LIBS = @X_EXTRA_LIBS@
-X_LIBS = @X_LIBS@
-X_PRE_LIBS = @X_PRE_LIBS@
 ZipDelegate = @ZipDelegate@
 install_sh = @install_sh@
 
@@ -204,6 +199,7 @@ INCLUDES = -I../ -I$(top_srcdir)
 check_PROGRAMS = rwblob rwfile
 
 LDADD = ../magick/libMagick.la
+LDFLAGS = @LDFLAGS@
 
 rwblob_SOURCES = rwblob.c
 
@@ -285,8 +281,12 @@ CONFIG_CLEAN_FILES =
 check_PROGRAMS =  rwblob$(EXEEXT) rwfile$(EXEEXT)
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../magick
-LDFLAGS = @LDFLAGS@
+CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
+X_CFLAGS = @X_CFLAGS@
+X_LIBS = @X_LIBS@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
+X_PRE_LIBS = @X_PRE_LIBS@
 am_rwblob_OBJECTS =  rwblob.$(OBJEXT)
 rwblob_OBJECTS =  $(am_rwblob_OBJECTS)
 rwblob_LDADD = $(LDADD)

@@ -38,7 +38,7 @@ INCLUDES = -I../ -I$(top_srcdir)
 check_PROGRAMS = rwblob rwfile
 
 LDADD = ../magick/libMagick.la
-
+LDFLAGS	= @LDFLAGS@
 
 rwblob_SOURCES = rwblob.c
 

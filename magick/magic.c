@@ -72,7 +72,7 @@ static void IntializeImageMagic(void);
   based on image header data provided in magick,
   with length magick_length.
 */
-Export unsigned int GetImageMagic(unsigned char* magic,
+Export unsigned int GetImageMagic(char* magic,
                                   const unsigned char *magick,
                                   const unsigned int magick_length)
 {
