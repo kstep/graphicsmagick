@@ -334,7 +334,7 @@ MagickExport Image *MontageImages(const Image *images,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
 	number_images=GetImageListSize(images);
-  master_list=ImageListToGroup(images,exception);
+  master_list=ImageListToArray(images,exception);
   if (master_list == (Image **) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to create montage",
       "Memory allocation failed")
