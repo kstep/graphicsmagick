@@ -590,11 +590,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             colors=image->colors;
             for (i=0; i < image->colors; i++)
             {
-              image->colormap[colors-i-1].red=
+              image->colormap[i].red=MaxRGB-
                 ((unsigned long) (MaxRGB*i)/Max(image->colors-1,1));
-              image->colormap[colors-i-1].green=
+              image->colormap[i].green=MaxRGB-
                 ((unsigned long) (MaxRGB*i)/Max(image->colors-1,1));
-              image->colormap[colors-i-1].blue=
+              image->colormap[i].blue=MaxRGB-
                 ((unsigned long) (MaxRGB*i)/Max(image->colors-1,1));
             }
             break;

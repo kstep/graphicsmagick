@@ -4776,10 +4776,9 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             sigma=1.0;
             threshold=0.05;
             if (*option == '-')
-              (void) sscanf(argv[++i],"%lfx%lfx%lfx%lf",
-                &radius,&sigma,&amount,&threshold);
-            unsharp_image=UnsharpMaskImage(*image,
-              radius,sigma,amount,threshold,
+              (void) sscanf(argv[++i],"%lfx%lf%+lf%+lf",&radius,&sigma,&amount,
+                &threshold);
+            unsharp_image=UnsharpMaskImage(*image,radius,sigma,amount,threshold,
               &(*image)->exception);
             if (unsharp_image == (Image *) NULL)
               break;
