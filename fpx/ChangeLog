@@ -1,6 +1,12 @@
 2003-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* oless/h/vect.hxx: Don't include <malloc.h>
+	* configure.ac: Add checks for sys/statfs.h, sys/param.h,
+	and sys/mount.h, where a definition for 'struct statfs'
+	may be hiding.
+	* basics/a_file.cpp: Find struct statfs for FreeBSD.
+	* basics/filename.cpp: Find struct statfs for FreeBSD.
+	* oless/h/vect.hxx: Don't include <malloc.h> since it
+	is replaced by <stdlib.h> according to the ANSI C standard.
 
 2003-03-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

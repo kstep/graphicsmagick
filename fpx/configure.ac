@@ -17,6 +17,11 @@ AM_SANITY_CHECK
 
 AM_INIT_AUTOMAKE(libfpx,$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION.$PATCH_VERSION, ' ')
 
+# Add configure option --enable-maintainer-mode which enables dependency
+# checking and generation useful to package maintainers.  This is made an
+# option to avoid confusing end users.
+AM_MAINTAINER_MODE
+
 #
 # Specify path to shared libstdc++ if not in normal location
 #
@@ -52,7 +57,7 @@ AC_C_CONST
 AC_C_INLINE
 AC_C_BIGENDIAN
 
-AC_CHECK_HEADERS(wchar.h,sys/statfs.h)
+AC_CHECK_HEADERS(wchar.h sys/statfs.h sys/param.h sys/mount.h)
 
 #
 # Configure libtool

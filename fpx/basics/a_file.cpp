@@ -28,7 +28,14 @@
 #ifdef _UNIX
 #  include <sys/types.h>
 #  include <sys/stat.h>
-#  include <sys/statfs.h>
+#  if defined(HAVE_SYS_STATFS_H)
+#    /* System V & Linux */
+#    include <sys/statfs.h>
+#  elif defined(HAVE_SYS_PARAM_H) && defined(HAVE_SYS_MOUNT_H)
+     /* FreeBSD 5.0 */
+#    include <sys/param.h>
+#    include <sys/mount.h>
+#  endif
 #  include <sys/ioctl.h>
 #  include <fcntl.h>
 #  include <unistd.h>

@@ -1,5 +1,7 @@
 2003-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* FlashPIX: FlashPIX library now compiles under
+	FreeBSD 5.0.
 	* magick/deprecate.c (ValidateColormapIndex): Remove
 	non-interface deprecated function.
 	* magick/tempfile.c (AcquireTemporaryFileDescriptor):

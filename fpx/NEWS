@@ -1,4 +1,10 @@
-FlashPIX library ported to Unix.
+FlashPIX library ported to compile under various Unix systems:
+
+  Linux
+  Solaris
+  FreeBSD 5.0
+
+Updated to use standard C++ iostreams.
 
 See ChangeLog for more ...
 
