@@ -555,7 +555,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         */
         packet_size=bits_per_sample > 8 ? 2 : 1;
         quantum_scanline=(unsigned char *) AcquireMemory(packet_size*width);
-        scanline=(unsigned char *) AcquireMemory(2*TIFFScanlineSize(tiff)+4);
+        scanline=(unsigned char *) AcquireMemory(8*TIFFScanlineSize(tiff));
         if ((quantum_scanline == (unsigned char *) NULL) ||
             (scanline == (unsigned char *) NULL))
           {
@@ -1545,7 +1545,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     /*
       Write image scanlines.
     */
-    scanline=(unsigned char *) AcquireMemory(2*TIFFScanlineSize(tiff)+4);
+    scanline=(unsigned char *) AcquireMemory(8*TIFFScanlineSize(tiff));
     if (scanline == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
         image);

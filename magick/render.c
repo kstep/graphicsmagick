@@ -1721,7 +1721,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
               Create clip mask.
             */
             GetToken(q,&q,token);
-            graphic_context[n]->clip_path=AllocateString(token);
+            (void) CloneString(&graphic_context[n]->clip_path,token);
             (void) DrawClipPath(image,graphic_context[n],
               graphic_context[n]->clip_path);
             break;

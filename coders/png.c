@@ -4183,7 +4183,7 @@ ModuleExport void RegisterPNGImage(void)
   *version='\0';
 #if defined(PNG_LIBPNG_VER_STRING)
   (void) strncpy(version,AllocateString(PNG_LIBPNG_VER_STRING),MaxTextExtent-2);
- PNG_LIBPNG_VER > 10005
+#if (PNG_LIBPNG_VER > 10005)
   if (LocaleCompare(PNG_LIBPNG_VER_STRING,png_get_header_ver(NULL)) != 0)
     {
       (void) strcat(version,",");
