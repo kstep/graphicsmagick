@@ -167,7 +167,7 @@ static int GenerateIPTCAttribute(Image *image,const char *key)
       continue;
     length=image->iptc_profile.info[i+3] << 8;
     length|=image->iptc_profile.info[i+4];
-    attribute=(char *) AcquireMemory(length+1);
+    attribute=(char *) AcquireMemory(length+MaxTextExtent);
     if (attribute == (char *) NULL)
       continue;
     (void) strncpy(attribute,(char *) image->iptc_profile.info+i+5,length);
@@ -353,90 +353,88 @@ static int Generate8BIMAttribute(Image *image,const char *key)
 {
   char
     *attribute,
-    *PString;
+    *string;
 
   int
-    count,
-    foundit,
+    found,
     i,
     id,
-    idstart,
-    idend;
+    start,
+    stop;
+
+  long
+    count;
+
+  unsigned char
+    c,
+    *info;
 
   unsigned int
     length;
 
-  long
-    Size;
-
-  unsigned char
-    c,
-    plen,
-    *string;
-
   if (image->iptc_profile.length == 0)
     return(False);
-  count=sscanf(key,"8BIM:%d,%d",&idstart,&idend);
+  count=sscanf(key,"8BIM:%d,%d",&start,&stop);
   if (count != 2)
     return(False);
-  foundit=False;
+  found=False;
   length=image->iptc_profile.length;
-  string=image->iptc_profile.info;
+  info=image->iptc_profile.info;
   while (length > 0)
   {
-    if (readByteFromBuffer((char **) &string,&length) != '8')
+    if (readByteFromBuffer((char **) &info,&length) != '8')
       continue;
-    if (readByteFromBuffer((char **) &string,&length) != 'B')
+    if (readByteFromBuffer((char **) &info,&length) != 'B')
       continue;
-    if (readByteFromBuffer((char **) &string,&length) != 'I')
+    if (readByteFromBuffer((char **) &info,&length) != 'I')
       continue;
-    if (readByteFromBuffer((char **) &string,&length) != 'M')
+    if (readByteFromBuffer((char **) &info,&length) != 'M')
       continue;
-    id=readWordFromBuffer((char **) &string,&length);
-    if (id < idstart)
+    id=readWordFromBuffer((char **) &info,&length);
+    if (id < start)
       continue;
-    if (id > idend)
+    if (id > stop)
       continue;
-    plen = readByteFromBuffer((char **) &string,&length);
-    PString=(char *) NULL;
-    if ((plen > 0) && (plen <= length))
+    count=readByteFromBuffer((char **) &info,&length);
+    string=(char *) NULL;
+    if ((count > 0) && (count <= length))
       {
-        PString=(char *) AcquireMemory(plen+1);
-        if (PString != (char *) NULL)
+        string=(char *) AcquireMemory(count+MaxTextExtent);
+        if (string != (char *) NULL)
           {
-            for (i=0; i < plen; i++)
-              PString[i]=(char) readByteFromBuffer((char **) &string,&length);
-            PString[plen]=0;
-            LiberateMemory((void **) &PString);
+            for (i=0; i < count; i++)
+              string[i]=(char) readByteFromBuffer((char **) &info,&length);
+            string[count]=0;
+            LiberateMemory((void **) &string);
           }
       }
-    if (!(plen&1))
-      c=readByteFromBuffer((char **) &string,&length);
-    Size=readLongFromBuffer((char **) &string,&length);
-    attribute=(char *) AcquireMemory(Size+1);
+    if (!(count & 0x01))
+      c=readByteFromBuffer((char **) &info,&length);
+    count=readLongFromBuffer((char **) &info,&length);
+    attribute=(char *) AcquireMemory(count+MaxTextExtent);
     if (attribute != (char *) NULL)
       {
-        (void) memcpy(attribute,(char *) string,Size);
-        attribute[Size]='\0';
-        string+=Size;
-        length-=Size;
+        (void) memcpy(attribute,(char *) info,count);
+        attribute[count]='\0';
+        info+=count;
+        length-=count;
         if ((id > 1999) && (id < 2999))
           {
             char
               *text;
 
-            text=GenerateClippingPath(attribute,Size,
-              image->columns,image->rows);
+            text=GenerateClippingPath(attribute,count,image->columns,
+              image->rows);
             SetImageAttribute(image,key,(const char *) text);
             LiberateMemory((void **) &text);
           }
         else
           SetImageAttribute(image,key,(const char *) attribute);
         LiberateMemory((void **) &attribute);
-        foundit=True;
+        found=True;
       }
   }
-  return(foundit);
+  return(found);
 }
 
 MagickExport ImageAttribute *GetImageAttribute(const Image *image,
