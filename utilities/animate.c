@@ -66,7 +66,7 @@
 /*
   Include declarations.
 */
-#include "magick/magick.h"
+#include "magick/studio.h"
 #include "magick/xwindow.h"
 
 /*
