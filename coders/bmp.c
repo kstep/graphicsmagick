@@ -1683,6 +1683,12 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
               *q++=ScaleQuantumToChar(p->opacity);
             p++;
           }
+          if (bmp_info.bits_per_pixel == 24)
+            {
+              /* initialize padding bytes */
+              for (x=3*image->columns; x < (long) bytes_per_line; x++)
+                *q++=0x00;
+            }
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
@@ -1891,10 +1897,13 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  Colormap: %ld entries",image->colors);
         bmp_colormap=MagickAllocateMemory(unsigned char *,
-          (size_t) (4*(1 << bmp_info.bits_per_pixel)));
+          (size_t) (4*(1L << bmp_info.bits_per_pixel)));
         if (bmp_colormap == (unsigned char *) NULL)
-          ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
-            image);
+          {
+            MagickFreeMemory(pixels);
+            ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
+              image);
+          }
         q=bmp_colormap;
         for (i=0; i < (long) image->colors; i++)
         {
@@ -1913,10 +1922,10 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
             *q++=(Quantum) 0x0;
         }
         if (type == 2)
-          (void) WriteBlob(image,3*(1 << bmp_info.bits_per_pixel),
+          (void) WriteBlob(image,3*(1L << bmp_info.bits_per_pixel),
              (char *) bmp_colormap);
           else
-            (void) WriteBlob(image,4*(1 << bmp_info.bits_per_pixel),
+            (void) WriteBlob(image,4*(1L << bmp_info.bits_per_pixel),
               (char *) bmp_colormap);
         MagickFreeMemory(bmp_colormap);
       }
