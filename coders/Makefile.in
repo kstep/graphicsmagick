@@ -670,7 +670,7 @@ yuv_la_LIBADD = ../magick/libMagick.la
 DEFS = @DEFS@ -I../
 subdir = coders
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = $(top_builddir)/magick/config.h
+CONFIG_HEADER = $(top_builddir)/magick/magick_config.h
 CONFIG_CLEAN_FILES = delegates.mgk type.mgk
 LTLIBRARIES = $(noinst_LTLIBRARIES) $(pkg_LTLIBRARIES)
 

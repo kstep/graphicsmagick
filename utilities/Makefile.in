@@ -273,7 +273,7 @@ man_MANS = $(MANPAGES)
 EXTRA_DIST = $(ALLMANPAGES)
 subdir = utilities
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = $(top_builddir)/magick/config.h
+CONFIG_HEADER = $(top_builddir)/magick/magick_config.h
 CONFIG_CLEAN_FILES =
 @HasX11_TRUE@bin_PROGRAMS = composite$(EXEEXT) convert$(EXEEXT) \
 @HasX11_TRUE@	identify$(EXEEXT) mogrify$(EXEEXT) \

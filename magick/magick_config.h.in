@@ -1,4 +1,4 @@
-/* magick/config.h.in.  Generated automatically from configure.ac by autoheader.  */
+/* magick/magick_config.h.in.  Generated automatically from configure.ac by autoheader.  */
 
 /* define if bool is a built-in type */
 #undef HAVE_BOOL

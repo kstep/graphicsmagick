@@ -208,7 +208,7 @@ ZOOM_FILTERS = point box triangle hermite hanning hamming blackman gaussian \
 ZOOM_GEOMETRY = 600x600
 subdir = Magick++/demo
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = $(top_builddir)/magick/config.h
+CONFIG_HEADER = $(top_builddir)/magick/magick_config.h
 CONFIG_CLEAN_FILES =
 check_PROGRAMS = button$(EXEEXT) demo$(EXEEXT) detrans$(EXEEXT) \
 	flip$(EXEEXT) gravity$(EXEEXT) piddle$(EXEEXT) shapes$(EXEEXT) \

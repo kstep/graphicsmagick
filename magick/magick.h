@@ -16,9 +16,9 @@ extern "C" {
 
 #define _MAGICK_CONFIG_H
 #if !defined(vms) && !defined(macintosh)
-#include "magick/config.h"
+#include "magick/magick_config.h"
 #else
-#include "config.h"
+#include "magick_config.h"
 #endif
 
 #include <stdio.h>

@@ -1349,7 +1349,7 @@ echo "${ECHO_T}yes" >&6
 
 # Generate configure header.
 
-		    		    		    ac_config_headers="$ac_config_headers magick/config.h"
+		    		    		    ac_config_headers="$ac_config_headers magick/magick_config.h"
 
 # Find a good install program.  We prefer a C program (faster),
 # so one script is as good as another.  But avoid the broken or
@@ -24624,7 +24624,7 @@ do
   "Magick++/tests/Makefile" ) CONFIG_FILES="$CONFIG_FILES Magick++/tests/Makefile" ;;
   "PerlMagick/Makefile.PL" ) CONFIG_FILES="$CONFIG_FILES PerlMagick/Makefile.PL" ;;
   "default-1" ) CONFIG_COMMANDS="$CONFIG_COMMANDS default-1" ;;
-  "magick/config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS magick/config.h" ;;
+  "magick/magick_config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS magick/magick_config.h" ;;
   *) { { echo "$as_me:24628: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
    { (exit 1); exit 1; }; };;
@@ -25284,7 +25284,7 @@ done; }
   fi
   # Run the commands associated with the file.
   case $ac_file in
-    magick/config.h ) # update the timestamp
+    magick/magick_config.h ) # update the timestamp
 echo timestamp >"magick/stamp-h1"
  ;;
   esac

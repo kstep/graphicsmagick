@@ -268,7 +268,7 @@ man_MANS = $(ALLMANPAGES)
 DEFS = @DEFS@ -I../
 subdir = magick
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = config.h
+CONFIG_HEADER = magick_config.h
 CONFIG_CLEAN_FILES = Magick-config
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
@@ -342,10 +342,10 @@ DATA = $(pkg_DATA) $(pkgdata_DATA)
 HEADERS = $(include_HEADERS) $(noinst_HEADERS)
 
 DIST_COMMON = $(include_HEADERS) $(noinst_HEADERS) ./stamp-h.in \
-	Magick-config.in Makefile.am Makefile.in config.h.in
+	Magick-config.in Makefile.am Makefile.in magick_config.h.in
 SOURCES = $(libMagick_la_SOURCES)
 
-all: $(BUILT_SOURCES) config.h
+all: $(BUILT_SOURCES) magick_config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
@@ -366,19 +366,19 @@ Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.s
 	cd $(top_builddir) && \
 	  CONFIG_HEADERS= CONFIG_LINKS= \
 	  CONFIG_FILES=$(subdir)/$@ $(SHELL) ./config.status
-config.h: stamp-h
+magick_config.h: stamp-h
 	@if test ! -f $@; then \
 		rm -f stamp-h; \
 		$(MAKE) stamp-h; \
 	else :; fi
-stamp-h: $(srcdir)/config.h.in $(top_builddir)/config.status
+stamp-h: $(srcdir)/magick_config.h.in $(top_builddir)/config.status
 	@rm -f stamp-h stamp-hT
 	@echo timestamp > stamp-hT 2> /dev/null
 	cd $(top_builddir) \
-	  && CONFIG_FILES= CONFIG_HEADERS=magick/config.h \
+	  && CONFIG_FILES= CONFIG_HEADERS=magick/magick_config.h \
 	     $(SHELL) ./config.status
 	@mv stamp-hT stamp-h
-$(srcdir)/config.h.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/./stamp-h.in
+$(srcdir)/magick_config.h.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/./stamp-h.in
 	@if test ! -f $@; then \
 		rm -f $(srcdir)/./stamp-h.in; \
 		$(MAKE) $(srcdir)/./stamp-h.in; \
@@ -390,7 +390,7 @@ $(srcdir)/./stamp-h.in: $(top_srcdir)/configure.ac $(ACLOCAL_M4)
 	@mv $(srcdir)/./stamp-h.inT $(srcdir)/./stamp-h.in
 
 distclean-hdr:
-	-rm -f config.h
+	-rm -f magick_config.h
 Magick-config: $(top_builddir)/config.status Magick-config.in
 	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= CONFIG_LINKS= $(SHELL) ./config.status
 install-libLTLIBRARIES: $(lib_LTLIBRARIES)
@@ -606,7 +606,7 @@ ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	       END { for (i in files) print i; }'`; \
 	mkid -fID $$unique $(LISP)
 
-TAGS:  $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES) \
+TAGS:  $(HEADERS) $(SOURCES) magick_config.h.in $(TAGS_DEPENDENCIES) \
 		$(TAGS_FILES) $(LISP)
 	tags=; \
 	here=`pwd`; \
@@ -616,8 +616,8 @@ TAGS:  $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES) \
 	  done | \
 	  $(AWK) '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
-	test -z "$(ETAGS_ARGS)config.h.in$$unique$(LISP)$$tags" \
-	  || etags $(ETAGS_ARGS) $$tags config.h.in $$unique $(LISP)
+	test -z "$(ETAGS_ARGS)magick_config.h.in$$unique$(LISP)$$tags" \
+	  || etags $(ETAGS_ARGS) $$tags magick_config.h.in $$unique $(LISP)
 
 GTAGS:
 	here=`CDPATH=: && cd $(top_builddir) && pwd` \
@@ -654,7 +654,7 @@ distdir: $(DISTFILES)
 check-am: all-am
 check: check-am
 all-am: Makefile $(LTLIBRARIES) $(SCRIPTS) $(MANS) $(DATA) $(HEADERS) \
-		config.h
+		magick_config.h
 
 installdirs:
 	$(mkinstalldirs) $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) $(DESTDIR)$(man1dir) $(DESTDIR)$(pkgdir) $(DESTDIR)$(pkgdatadir) $(DESTDIR)$(includedir)

@@ -24,7 +24,7 @@ AC_SUBST(MICRO_VERSION)dnl
 AM_SANITY_CHECK
 
 # Generate configure header.
-AM_CONFIG_HEADER(magick/config.h)
+AM_CONFIG_HEADER(magick/magick_config.h)
 
 AM_INIT_AUTOMAKE(ImageMagick,$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION, ' ')
 

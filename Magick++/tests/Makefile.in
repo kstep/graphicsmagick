@@ -221,7 +221,7 @@ EXTRA_DIST = \
 CLEANFILES = testmagick_anim_out.miff
 subdir = Magick++/tests
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = $(top_builddir)/magick/config.h
+CONFIG_HEADER = $(top_builddir)/magick/magick_config.h
 CONFIG_CLEAN_FILES =
 check_PROGRAMS = appendImages$(EXEEXT) attributes$(EXEEXT) \
 	averageImages$(EXEEXT) coalesceImages$(EXEEXT) \

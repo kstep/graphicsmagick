@@ -205,7 +205,7 @@ EXTRA_DIST =
 LDFLAGS = @LDFLAGS@ $(LIBSTDC_LDFLAGS)
 subdir = Magick++/lib
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = $(top_builddir)/magick/config.h
+CONFIG_HEADER = $(top_builddir)/magick/magick_config.h
 CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
