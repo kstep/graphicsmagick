@@ -173,8 +173,8 @@ static SyncPixelHandler
 %
 */
 MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
-  const long x,const long y,const unsigned long columns,
-	const unsigned long rows,const unsigned long nexus,ExceptionInfo *exception)
+  const long x,const long y,const unsigned long columns,const unsigned long rows,
+  const unsigned long nexus,ExceptionInfo *exception)
 {
 #define Cx(x) ((x) < 0 ? 0 : (x) >= (long) cache_info->columns ? \
   (long) cache_info->columns-1 : (x))
@@ -295,7 +295,6 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
       if (p == (const PixelPacket *) NULL)
         break;
       (void) memcpy(q,p,span*sizeof(PixelPacket));
-      q+=span;
       nexus_indexes=GetNexusIndexes(image->cache,image_nexus);
       if ((nexus_indexes != (IndexPacket *) NULL) &&
           (indexes != (IndexPacket *) NULL))
@@ -303,6 +302,7 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
           (void) memcpy(indexes,nexus_indexes,span*sizeof(IndexPacket));
           indexes+=span;
         }
+      q+=span;
     }
   }
   DestroyCacheNexus(image->cache,image_nexus);
