@@ -2238,11 +2238,8 @@ static void SVGEndElement(void *context,const xmlChar *name)
                 (void) fprintf(svg_info->file,"text %g,%g '%s'\n",
                   svg_info->bounds.x,svg_info->bounds.y,svg_info->text);
               else
-                {
-                  (void) fprintf(svg_info->file,"text %g,%g \"%s\"\n",
-                    svg_info->bounds.x,svg_info->bounds.y,svg_info->text);
-                  (void) fprintf(svg_info->file,"pop graphic-context\n");
-                }
+                (void) fprintf(svg_info->file,"text %g,%g \"%s\"\n",
+                  svg_info->bounds.x,svg_info->bounds.y,svg_info->text);
               *svg_info->text='\0';
             }
           (void) fprintf(svg_info->file,"pop graphic-context\n");
