@@ -1903,11 +1903,9 @@ LIBS_INITIAL=$LIBS
 
 # Set native_win32_build to 'yes' if building under MinGW
 native_win32_build='no'
-dirsep='/'
 case "${host_os}" in
   mingw* )
     native_win32_build='yes'
-    dirsep='\\'
     ;;
 esac
 
@@ -1928,7 +1926,8 @@ if test "x$prefix" = xNONE
 then
   if test "$native_win32_build" = 'yes'
   then
-    prefix='c:\\ImageMagick\\'
+    # Use Unix prefix convention, but default to drive C:
+    prefix="/c${ac_default_prefix}"
   else
     prefix=$ac_default_prefix
   fi
@@ -3319,7 +3318,8 @@ fi
 #
 # Configure libtool and ltdl
 #
-#AC_LIBTOOL_WIN32_DLL
+
+
 # Check whether --enable-shared or --disable-shared was given.
 if test "${enable_shared+set}" = set; then
   enableval="$enable_shared"
@@ -3344,6 +3344,25 @@ else
   enable_shared=no
 fi;
 
+
+  case $enable_ltdl_convenience in
+  no) { { echo "$as_me:$LINENO: error: this package needs a convenience libltdl" >&5
+echo "$as_me: error: this package needs a convenience libltdl" >&2;}
+   { (exit 1); exit 1; }; } ;;
+  "") enable_ltdl_convenience=yes
+      ac_configure_args="$ac_configure_args --enable-ltdl-convenience" ;;
+  esac
+  LIBLTDL='${top_builddir}/''libltdl'/libltdlc.la
+  LTDLINCL='-I${top_srcdir}/''libltdl'
+  # For backwards non-gettext consistent compatibility...
+  INCLTDL="$LTDLINCL"
+
+# Substitute INCLTDL and LIBLTDL in the Makefiles
+
+
+# Check for dlopen support
+
+
 # Check whether --enable-static or --disable-static was given.
 if test "${enable_static+set}" = set; then
   enableval="$enable_static"
@@ -3367,24 +3386,6 @@ if test "${enable_static+set}" = set; then
 else
   enable_static=yes
 fi;
-
-  case $enable_ltdl_convenience in
-  no) { { echo "$as_me:$LINENO: error: this package needs a convenience libltdl" >&5
-echo "$as_me: error: this package needs a convenience libltdl" >&2;}
-   { (exit 1); exit 1; }; } ;;
-  "") enable_ltdl_convenience=yes
-      ac_configure_args="$ac_configure_args --enable-ltdl-convenience" ;;
-  esac
-  LIBLTDL='${top_builddir}/''libltdl'/libltdlc.la
-  LTDLINCL='-I${top_srcdir}/''libltdl'
-  # For backwards non-gettext consistent compatibility...
-  INCLTDL="$LTDLINCL"
-
-# Substitute INCLTDL and LIBLTDL in the Makefiles
-
-
-# Check for dlopen support
-
 
 # Check whether --enable-fast-install or --disable-fast-install was given.
 if test "${enable_fast_install+set}" = set; then
@@ -3758,7 +3759,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 3761 "configure"' > conftest.$ac_ext
+  echo '#line 3762 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -5996,7 +5997,7 @@ EOF
       # If the export-symbols file already is a .def file (1st line
       # is EXPORTS), use it as is.
       # If DATA tags from a recent dlltool are present, honour them!
-      archive_expsym_cmds='if test "x`sed 1q $export_symbols`" = xEXPORTS; then
+      archive_expsym_cmds='if test "x`head -1 $export_symbols`" = xEXPORTS; then
 	  cp $export_symbols $output_objdir/$soname-def;
 	else
 	  echo EXPORTS > $output_objdir/$soname-def;
@@ -7664,7 +7665,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7667 "configure"
+#line 7668 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -7762,7 +7763,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7765 "configure"
+#line 7766 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -10909,7 +10910,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 10912 "configure"
+#line 10913 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11007,7 +11008,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 11010 "configure"
+#line 11011 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -12001,7 +12002,7 @@ EOF
       # If the export-symbols file already is a .def file (1st line
       # is EXPORTS), use it as is.
       # If DATA tags from a recent dlltool are present, honour them!
-      archive_expsym_cmds_GCJ='if test "x`sed 1q $export_symbols`" = xEXPORTS; then
+      archive_expsym_cmds_GCJ='if test "x`head -1 $export_symbols`" = xEXPORTS; then
 	  cp $export_symbols $output_objdir/$soname-def;
 	else
 	  echo EXPORTS > $output_objdir/$soname-def;
@@ -13669,7 +13670,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 13672 "configure"
+#line 13673 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13767,7 +13768,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 13770 "configure"
+#line 13771 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -14759,15 +14760,15 @@ _ACEOF
     DLLDFLAGS=-export-dynamic
 
   fi
+  im_cv_x_coder_modules="${LIB_DIR}/ImageMagick/modules/coders/"
+  MagickModulesPath="${im_cv_x_coder_modules}"
   if test "$native_win32_build" = 'yes'
   then
-    im_cv_x_coder_modules="${prefix}lib${dirsep}ImageMagick${dirsep}modules${dirsep}coders${dirsep}"
-  else
-    im_cv_x_coder_modules="${LIB_DIR}/ImageMagick/modules/coders/"
+    MagickModulesPath=`echo "${MagickModulesPath}" | sed -e 's:^/::;s/./&:/;s:/:\\\\\\\\:g'`
   fi
 
 cat >>confdefs.h <<_ACEOF
-#define MagickModulesPath "$im_cv_x_coder_modules"
+#define MagickModulesPath "$MagickModulesPath"
 _ACEOF
 
 fi
@@ -15293,8 +15294,10 @@ fi
 #
 # Set defines required to build DLLs and modules using MinGW
 #
-# libMagick: _DLL _MAGICK_MOD_ _MAGICKLIB_
-# module:    _DLL
+# These options are set for multi-thread DLL module build
+#  libMagick:           _DLL _MAGICKMOD_ _MAGICKLIB_
+#  module:              _DLL
+#  executable/Magick++: _DLL _MAGICKMOD_
 MODULE_EXTRA_CPPFLAGS=''
 LIBRARY_EXTRA_CPPFLAGS=''
 if test "$native_win32_build" = 'yes'
@@ -15302,11 +15305,13 @@ then
   if test "$libtool_build_shared_libs" = 'yes'
   then
     CPPFLAGS="$CPPFLAGS -D_DLL"
-    LIBRARY_EXTRA_CPPFLAGS='-D_MAGICKLIB_'
-  fi
-  if test "$with_modules" = 'yes'
-  then
-    LIBRARY_EXTRA_CPPFLAGS="$LIBRARY_EXTRA_CPPFLAGS -D_MAGICK_MOD_"
+    LIBRARY_EXTRA_CPPFLAGS="$LIBRARY_EXTRA_CPPFLAGS -D_MAGICKLIB_"
+
+    if test "$with_modules" = 'yes'
+    then
+      LIBRARY_EXTRA_CPPFLAGS="$LIBRARY_EXTRA_CPPFLAGS -D_MAGICKMOD_"
+    fi
+
   fi
   if test "$with_threads" = 'yes'
   then
@@ -20329,9 +20334,14 @@ else
 fi
 echo "$as_me:$LINENO: result: $im_cv_x_configure" >&5
 echo "${ECHO_T}$im_cv_x_configure" >&6
+X11ConfigurePath="$im_cv_x_configure"
+if test "$native_win32_build" = 'yes'
+then
+  X11ConfigurePath=`echo $X11ConfigurePath|sed -e 's:^/::;s/./&:/;s:/:\\\\\\\\:g'`
+fi
 
 cat >>confdefs.h <<_ACEOF
-#define X11ConfigurePath "$im_cv_x_configure"
+#define X11ConfigurePath "X11ConfigurePath"
 _ACEOF
 
 
@@ -27340,11 +27350,11 @@ fi
 
 # Directory where configured ImageMagick/delegates.mgk lives
 # (default /usr/local/lib/ImageMagick).
+
+MagickLibPath="${LIB_DIR}/ImageMagick/"
 if test "$native_win32_build" = 'yes'
 then
-  MagickLibPath="${prefix}lib${dirsep}ImageMagick${dirsep}"
-else
-  MagickLibPath="${LIB_DIR}/ImageMagick/"
+  MagickLibPath=`echo "${MagickLibPath}" | sed -e 's:^/::;s/./&:/;s:/:\\\\\\\\:g'`
 fi
 
 cat >>confdefs.h <<_ACEOF
@@ -27357,18 +27367,18 @@ _ACEOF
 # Check whether --with-share-path or --without-share-path was given.
 if test "${with_share_path+set}" = set; then
   withval="$with_share_path"
-  MagickSharePath="${with_share_path}${dirsep}"
+  MagickSharePath="${with_share_path}/"
 else
-  if test "$native_win32_build" = 'yes'
+  MagickSharePath="${DATA_DIR}/ImageMagick/"
+   MagickSharePathDefine="$MagickSharePath"
+ if test "$native_win32_build" = 'yes'
  then
-   MagickSharePath="${prefix}share${dirsep}ImageMagick${dirsep}"
- else
-   MagickSharePath="${DATA_DIR}/ImageMagick/"
+   MagickSharePathDefine=`echo "${MagickSharePathDefine}" | sed -e 's:^/::;s/./&:/;s:/:\\\\\\\\:g'`
  fi
 fi;
 
 cat >>confdefs.h <<_ACEOF
-#define MagickSharePath "$MagickSharePath"
+#define MagickSharePath "$MagickSharePathDefine"
 _ACEOF
 
 
@@ -28414,7 +28424,50 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "gs", so it can be a program name with args.
+if test "$native_win32_build" = 'yes'
+then
+  # Extract the first word of "gswin32c", so it can be a program name with args.
+set dummy gswin32c; ac_word=$2
+echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
+if test "${ac_cv_path_PSDelegate+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  case $PSDelegate in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_PSDelegate="$PSDelegate" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_PSDelegate="$as_dir/$ac_word$ac_exec_ext"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+
+  test -z "$ac_cv_path_PSDelegate" && ac_cv_path_PSDelegate="gswin32c"
+  ;;
+esac
+fi
+PSDelegate=$ac_cv_path_PSDelegate
+
+if test -n "$PSDelegate"; then
+  echo "$as_me:$LINENO: result: $PSDelegate" >&5
+echo "${ECHO_T}$PSDelegate" >&6
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
+else
+  # Extract the first word of "gs", so it can be a program name with args.
 set dummy gs; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
@@ -28454,6 +28507,7 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
+fi
 # Extract the first word of "ra_ppm", so it can be a program name with args.
 set dummy ra_ppm; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
@@ -28791,7 +28845,7 @@ MogrifyDelegate=$BIN_DIR/mogrify
 
 # Set delegate booleans
 have_fig2dev='no' ; if test "$FIGDecodeDelegate" != 'fig2dev' ; then have_fig2dev='yes' ; fi
-have_gs='no'      ; if test "$PSDelegate" != 'gs' ; then have_gs='yes' ; fi
+have_gs='no'      ; if test "$PSDelegate" != 'gs' -a "$PSDelegate" != 'gswin32c' ; then have_gs='yes' ; fi
 have_hp2xx='no'   ; if test "$HPGLDecodeDelegate" != 'hp2xx' ; then have_hp2xx='yes' ; fi
 have_ilbmtoppm='no' ; if test "$ILBMDecodeDelegate" != 'ilbmtoppm' ; then have_ilbmtoppm='yes' ; fi
 have_ppmtoilbm='no' ; if test "$ILBMEncodeDelegate" != 'ppmtoilbm' ; then have_ppmtoilbm='yes' ; fi
@@ -28864,7 +28918,7 @@ echo $ECHO_N "checking for windows font directory... $ECHO_C" >&6
 windows_font_dir=''
 if test "$with_windows_font_dir" != "yes" && test -n "$with_windows_font_dir"
 then
-   windows_font_dir="${with_windows_font_dir}${dirsep}"
+   windows_font_dir="${with_windows_font_dir}/"
 else
   case $host_os in
     cygwin* )
@@ -28880,9 +28934,10 @@ else
       do
         for sysdir in windows winnt
         do
-          if test -f "/${drive}/${sysdir}/fonts/times.ttf"
+	  windows_font_dir="/${drive}/${sysdir}/fonts/"
+          if test -f "${windows_font_dir}times.ttf"
           then
-            windows_font_dir="${drive}:\\${sysdir}\\fonts\\"
+            windows_font_dir=`echo "$windows_font_dir" | sed -e 's:^/::;s/./&:/;s:/:\\\\:g'`
             break 2
           fi
         done
@@ -28907,17 +28962,29 @@ esac
 # Ghostscript
 if test "$with_gs_font_dir" != 'default'
 then
-  ghostscript_font_dir="$with_gs_font_dir${dirsep}"
+  ghostscript_font_dir="$with_gs_font_dir/"
 else
-  ghostscript_font_dir="$prefix${dirsep}share${dirsep}ghostscript${dirsep}fonts${dirsep}"
-  if test "$PSDelegate" != 'gs'
+  if test "$native_win32_build" = 'yes'
   then
-    ghostscript_font_dir=`echo "$PSDelegate" | sed -e 's:/bin/gs:/share/ghostscript/fonts:'`
-    ghostscript_font_dir="${ghostscript_font_dir}${dirsep}"
+    ghostscript_font_dir="c:\\gs\\fonts\\"
+    if test "$PSDelegate" != 'gswin32c'
+    then
+      ghostscript_font_dir=`echo "$PSDelegate" | sed -e 's:/gs/.*:/gs:;s:^/::;s/./&:/;s:/:\\\\:g'`"\\fonts\\"
+    fi
+  else
+    ghostscript_font_dir="$prefix$/share/ghostscript/fonts/"
+    if test "$PSDelegate" != 'gs'
+    then
+      ghostscript_font_dir=`echo "$PSDelegate" | sed -e 's:/bin/gs:/share/ghostscript/fonts:'`"/"
+    fi
   fi
 fi
 type_include_files="$type_include_files "'file="type-ghostscript.mgk"'
 
+if test "$native_win32_build" = 'yes'
+then
+  PSDelegate=`echo "$PSDelegate" | sed -e 's:^/::;s/./&:/;s:/:\\\\:g'`
+fi
 
 
 

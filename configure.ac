@@ -34,11 +34,9 @@ LIBS_INITIAL=$LIBS
 
 # Set native_win32_build to 'yes' if building under MinGW
 native_win32_build='no'
-dirsep='/'
 case "${host_os}" in
   mingw* )
     native_win32_build='yes'
-    dirsep='\\'
     ;;
 esac
 AM_CONDITIONAL(WIN32, test "$native_win32_build" != 'no')
@@ -50,7 +48,8 @@ if test "x$prefix" = xNONE
 then
   if test "$native_win32_build" = 'yes'
   then
-    prefix='c:\\ImageMagick\\'
+    # Use Unix prefix convention, but default to drive C:
+    prefix="/c${ac_default_prefix}"
   else
     prefix=$ac_default_prefix
   fi
@@ -129,9 +128,8 @@ fi
 #
 # Configure libtool and ltdl
 #
-#AC_LIBTOOL_WIN32_DLL
-AC_ENABLE_SHARED(no)
-AC_ENABLE_STATIC(yes)
+AC_LIBTOOL_WIN32_DLL
+AC_DISABLE_SHARED
 AC_LIBLTDL_CONVENIENCE
 # Substitute INCLTDL and LIBLTDL in the Makefiles
 AC_SUBST(INCLTDL)
@@ -179,13 +177,13 @@ then
     DLLDFLAGS=-export-dynamic
     AC_SUBST(DLLDFLAGS)
   fi
+  im_cv_x_coder_modules="${LIB_DIR}/ImageMagick/modules/coders/"
+  MagickModulesPath="${im_cv_x_coder_modules}"
   if test "$native_win32_build" = 'yes'
   then
-    im_cv_x_coder_modules="${prefix}lib${dirsep}ImageMagick${dirsep}modules${dirsep}coders${dirsep}"
-  else
-    im_cv_x_coder_modules="${LIB_DIR}/ImageMagick/modules/coders/"
+    MagickModulesPath=`echo "${MagickModulesPath}" | sed -e 's:^/::;s/./&:/;s:/:\\\\\\\\:g'`
   fi
-  AC_DEFINE_UNQUOTED(MagickModulesPath,"$im_cv_x_coder_modules",Location of coder modules)
+  AC_DEFINE_UNQUOTED(MagickModulesPath,"$MagickModulesPath",Location of coder modules)
 fi
 
 
@@ -466,8 +464,10 @@ AC_PROG_GCC_TRADITIONAL
 #
 # Set defines required to build DLLs and modules using MinGW
 #
-# libMagick: _DLL _MAGICK_MOD_ _MAGICKLIB_
-# module:    _DLL 
+# These options are set for multi-thread DLL module build
+#  libMagick:           _DLL _MAGICKMOD_ _MAGICKLIB_
+#  module:              _DLL 
+#  executable/Magick++: _DLL _MAGICKMOD_
 MODULE_EXTRA_CPPFLAGS=''
 LIBRARY_EXTRA_CPPFLAGS=''
 if test "$native_win32_build" = 'yes'
@@ -476,10 +476,12 @@ then
   then
     CPPFLAGS="$CPPFLAGS -D_DLL"
     LIBRARY_EXTRA_CPPFLAGS="$LIBRARY_EXTRA_CPPFLAGS -D_MAGICKLIB_"
-  fi
-  if test "$with_modules" = 'yes'
-  then
-    LIBRARY_EXTRA_CPPFLAGS="$LIBRARY_EXTRA_CPPFLAGS -D_MAGICK_MOD_"  
+
+    if test "$with_modules" = 'yes'
+    then
+      LIBRARY_EXTRA_CPPFLAGS="$LIBRARY_EXTRA_CPPFLAGS -D_MAGICKMOD_"  
+    fi
+
   fi
   if test "$with_threads" = 'yes'
   then
@@ -742,7 +744,12 @@ AC_CACHE_CHECK(for X11 configure files,im_cv_x_configure,
     fi
 
   done])
-AC_DEFINE_UNQUOTED(X11ConfigurePath,"$im_cv_x_configure",Location of X11 configure files)
+X11ConfigurePath="$im_cv_x_configure"
+if test "$native_win32_build" = 'yes'
+then
+  X11ConfigurePath=`echo $X11ConfigurePath|sed -e 's:^/::;s/./&:/;s:/:\\\\\\\\:g'` 
+fi
+AC_DEFINE_UNQUOTED(X11ConfigurePath,"X11ConfigurePath",Location of X11 configure files)
 
 #
 # Add support for ccmalloc memory debugging library if requested
@@ -1549,11 +1556,11 @@ AC_SUBST(LIB_WMF_DEPS)
 
 # Directory where configured ImageMagick/delegates.mgk lives
 # (default /usr/local/lib/ImageMagick).
+
+MagickLibPath="${LIB_DIR}/ImageMagick/"
 if test "$native_win32_build" = 'yes'
 then
-  MagickLibPath="${prefix}lib${dirsep}ImageMagick${dirsep}"
-else
-  MagickLibPath="${LIB_DIR}/ImageMagick/"
+  MagickLibPath=`echo "${MagickLibPath}" | sed -e 's:^/::;s/./&:/;s:/:\\\\\\\\:g'`
 fi
 AC_DEFINE_UNQUOTED(MagickLibPath,"$MagickLibPath",Directory where architecture-dependent files live.)
 
@@ -1561,14 +1568,14 @@ AC_DEFINE_UNQUOTED(MagickLibPath,"$MagickLibPath",Directory where architecture-d
 AC_ARG_WITH(share-path,
 [  --with-share-path=DIR   Alternate path to share directory
                           (default share/ImageMagick)],
- MagickSharePath="${with_share_path}${dirsep}",
+ MagickSharePath="${with_share_path}/",
+   MagickSharePath="${DATA_DIR}/ImageMagick/"
+   MagickSharePathDefine="$MagickSharePath"
  if test "$native_win32_build" = 'yes'
  then
-   MagickSharePath="${prefix}share${dirsep}ImageMagick${dirsep}"
- else
-   MagickSharePath="${DATA_DIR}/ImageMagick/"
+   MagickSharePathDefine=`echo "${MagickSharePathDefine}" | sed -e 's:^/::;s/./&:/;s:/:\\\\\\\\:g'`
  fi)
-AC_DEFINE_UNQUOTED(MagickSharePath,"$MagickSharePath",Directory where architecture-independent files live.)
+AC_DEFINE_UNQUOTED(MagickSharePath,"$MagickSharePathDefine",Directory where architecture-independent files live.)
 AC_SUBST(MagickSharePath)
 
 # Locate delegates
@@ -1598,7 +1605,12 @@ AC_PATH_PROG(MPEGEncodeDelegate, mpeg2encode, mpeg2encode)
 AC_PATH_PROG(MVDelegate, mv, mv)
 AC_PATH_PROG(PGPDecodeDelegate, pgpv, pgpv)
 AC_PATH_PROG(POVDelegate, povray, povray)
-AC_PATH_PROG(PSDelegate, gs, gs)
+if test "$native_win32_build" = 'yes'
+then
+  AC_PATH_PROG(PSDelegate, gswin32c, gswin32c)
+else
+  AC_PATH_PROG(PSDelegate, gs, gs)
+fi
 AC_PATH_PROG(RADDecodeDelegate, ra_ppm, ra_ppm)
 AC_PATH_PROG(RLEEncodeDelegate, rawtorle, rawtorle)
 AC_PATH_PROG(RMDelegate, rm, rm)
@@ -1624,7 +1636,7 @@ MogrifyDelegate=$BIN_DIR/mogrify
 
 # Set delegate booleans
 have_fig2dev='no' ; if test "$FIGDecodeDelegate" != 'fig2dev' ; then have_fig2dev='yes' ; fi
-have_gs='no'      ; if test "$PSDelegate" != 'gs' ; then have_gs='yes' ; fi
+have_gs='no'      ; if test "$PSDelegate" != 'gs' -a "$PSDelegate" != 'gswin32c' ; then have_gs='yes' ; fi
 have_hp2xx='no'   ; if test "$HPGLDecodeDelegate" != 'hp2xx' ; then have_hp2xx='yes' ; fi
 have_ilbmtoppm='no' ; if test "$ILBMDecodeDelegate" != 'ilbmtoppm' ; then have_ilbmtoppm='yes' ; fi
 have_ppmtoilbm='no' ; if test "$ILBMEncodeDelegate" != 'ppmtoilbm' ; then have_ppmtoilbm='yes' ; fi
@@ -1648,7 +1660,7 @@ AC_MSG_CHECKING(for windows font directory)
 windows_font_dir=''
 if test "$with_windows_font_dir" != "yes" && test -n "$with_windows_font_dir"
 then
-   windows_font_dir="${with_windows_font_dir}${dirsep}"
+   windows_font_dir="${with_windows_font_dir}/"
 else
   case $host_os in
     cygwin* )
@@ -1664,9 +1676,10 @@ else
       do
         for sysdir in windows winnt
         do
-          if test -f "/${drive}/${sysdir}/fonts/times.ttf"
+	  windows_font_dir="/${drive}/${sysdir}/fonts/"
+          if test -f "${windows_font_dir}times.ttf"
           then
-            windows_font_dir="${drive}:\\${sysdir}\\fonts\\"
+            windows_font_dir=`echo "$windows_font_dir" | sed -e 's:^/::;s/./&:/;s:/:\\\\:g'`
             break 2
           fi
         done
@@ -1690,17 +1703,29 @@ esac
 # Ghostscript
 if test "$with_gs_font_dir" != 'default'
 then
-  ghostscript_font_dir="$with_gs_font_dir${dirsep}"
+  ghostscript_font_dir="$with_gs_font_dir/"
 else
-  ghostscript_font_dir="$prefix${dirsep}share${dirsep}ghostscript${dirsep}fonts${dirsep}"
-  if test "$PSDelegate" != 'gs'
+  if test "$native_win32_build" = 'yes'
   then
-    ghostscript_font_dir=`echo "$PSDelegate" | sed -e 's:/bin/gs:/share/ghostscript/fonts:'`
-    ghostscript_font_dir="${ghostscript_font_dir}${dirsep}"
+    ghostscript_font_dir="c:\\gs\\fonts\\"
+    if test "$PSDelegate" != 'gswin32c'
+    then
+      ghostscript_font_dir=`echo "$PSDelegate" | sed -e 's:/gs/.*:/gs:;s:^/::;s/./&:/;s:/:\\\\:g'`"\\fonts\\"
+    fi
+  else
+    ghostscript_font_dir="$prefix$/share/ghostscript/fonts/"
+    if test "$PSDelegate" != 'gs'
+    then
+      ghostscript_font_dir=`echo "$PSDelegate" | sed -e 's:/bin/gs:/share/ghostscript/fonts:'`"/"
+    fi
   fi
 fi
 type_include_files="$type_include_files "'file="type-ghostscript.mgk"'
 AC_SUBST(ghostscript_font_dir)
+if test "$native_win32_build" = 'yes'
+then
+  PSDelegate=`echo "$PSDelegate" | sed -e 's:^/::;s/./&:/;s:/:\\\\:g'`
+fi
 
 AC_SUBST(type_include_files)
 
