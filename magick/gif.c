@@ -1231,7 +1231,15 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
       Write the image header.
     */
     if ((image->page_info.width != 0) && (image->page_info.height != 0))
-      page_info=image->page_info;
+      {
+        page_info=image->page_info;
+        if ((image->previous == (Image *) NULL) &&
+            (image->next == (Image *) NULL))
+          {
+            page_info.x=0;
+            page_info.y=0;
+          }
+      }
     LSBFirstWriteShort(image,page_info.x);
     LSBFirstWriteShort(image,page_info.y);
     LSBFirstWriteShort(image,image->columns);
