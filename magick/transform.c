@@ -1015,9 +1015,6 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
           cmsHTRANSFORM
             transform;
 
-          icColorSpaceSignature
-            profilespace;
-
           int
             intent,
             y;
@@ -1044,15 +1041,14 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
               (transform_profile == (cmsHPROFILE) NULL))
             ThrowBinaryException(ResourceLimitWarning,"Unable to manage color",
               "failed to open color profiles");
-
-          profilespace = cmsGetColorSpace(transform_profile);
-          switch (profilespace)
+          switch (cmsGetColorSpace(transform_profile))
           {
-            case icSigCmykData:profile_image->colorspace = CMYKColorspace; break;
-            case icSigYCbCrData:profile_image->colorspace = YCbCrColorspace; break;
-            case icSigLuvData:profile_image->colorspace = YUVColorspace; break;
-            case icSigGrayData:profile_image->colorspace = GRAYColorspace; break;
-            case icSigRgbData:profile_image->colorspace = RGBColorspace; break;
+            case icSigCmykData: profile_image->colorspace=CMYKColorspace; break;
+            case icSigYCbCrData:
+              profile_image->colorspace=YCbCrColorspace; break;
+            case icSigLuvData: profile_image->colorspace=YUVColorspace; break;
+            case icSigGrayData: profile_image->colorspace=GRAYColorspace; break;
+            case icSigRgbData: profile_image->colorspace=RGBColorspace; break;
             case icSigCmyData:
             case icSigXYZData:
             case icSigLabData:
@@ -1060,7 +1056,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
             case icSigHsvData:
             case icSigHlsData:
             case icSigYxyData:
-            default:profile_image->colorspace = RGBColorspace; break;
+            default: profile_image->colorspace=RGBColorspace; break;
           }
           switch (image->rendering_intent)
           {
