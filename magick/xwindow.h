@@ -8,6 +8,8 @@
 extern "C" {
 #endif
 
+#if defined(HasX11)
+
 #undef False
 #undef True
 #define XLIB_ILLEGAL_ACCESS  1
@@ -627,6 +629,8 @@ extern MagickExport XWindows
 #define PRE_R4_ICCCM
 #endif
 #include "widget.h"
+
+#endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
