@@ -90,8 +90,6 @@ Export void *AllocateMemory(const size_t size)
 
   assert(size > 0);
   allocation=malloc(size);
-  if (allocation != (void *) NULL)
-    (void) memset(allocation,0,size);
   return(allocation);
 }
 

@@ -485,9 +485,9 @@ static unsigned int Classify(Image *image,short **extrema,
   i=0;
   for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
   {
-    image->colormap[i].red=(Quantum) UpScale(cluster->red.center);
-    image->colormap[i].green=(Quantum) UpScale(cluster->green.center);
-    image->colormap[i].blue=(Quantum) UpScale(cluster->blue.center);
+    image->colormap[i].red=UpScale(cluster->red.center);
+    image->colormap[i].green=UpScale(cluster->green.center);
+    image->colormap[i].blue=UpScale(cluster->blue.center);
     i++;
   }
   /*
@@ -529,7 +529,7 @@ static unsigned int Classify(Image *image,short **extrema,
               squares[(int) DownScale(q->green)-(int) DownScale(p->green)]+
               squares[(int) DownScale(q->blue)-(int) DownScale(p->blue)];
             numerator=sqrt(distance_squared);
-            for (k=j+1; k < (int) image->colors; k++)
+            for (k=0; k < (int) image->colors; k++)
             {
               p=image->colormap+k;
               distance_squared=

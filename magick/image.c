@@ -176,13 +176,16 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->color_profile.info=(unsigned char *) NULL;
   allocated_image->iptc_profile.length=0;
   allocated_image->iptc_profile.info=(unsigned char *) NULL;
-  GetCacheInfo(&(allocated_image->cache_handle));
+  GetCacheInfo(&allocated_image->cache_handle);
   allocated_image->cache_info.x=0;
   allocated_image->cache_info.y=0;
   allocated_image->cache_info.width=0;
   allocated_image->cache_info.height=0;
   allocated_image->pixels=(PixelPacket *) NULL;
   allocated_image->indexes=(IndexPacket *) NULL;
+  (void) QueryColorDatabase(BackgroundColor,&allocated_image->background_color);
+  (void) QueryColorDatabase(BorderColor,&allocated_image->border_color);
+  (void) QueryColorDatabase(MatteColor,&allocated_image->matte_color);
   allocated_image->geometry=(char *) NULL;
   GetPageInfo(&allocated_image->page_info);
   allocated_image->dispose=0;
@@ -191,9 +194,7 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->fuzz=0;
   allocated_image->filter=LanczosFilter;
   allocated_image->blur=1.0;
-  (void) QueryColorDatabase(BackgroundColor,&allocated_image->background_color);
-  (void) QueryColorDatabase(BorderColor,&allocated_image->border_color);
-  (void) QueryColorDatabase(MatteColor,&allocated_image->matte_color);
+  allocated_image->total_colors=0;
   allocated_image->normalized_mean_error=0.0;
   allocated_image->normalized_maximum_error=0.0;
   allocated_image->mean_error_per_pixel=0;
@@ -1275,13 +1276,14 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
       break;
     for (x=0; x < width; x++)
     {
+      opacity=q->opacity;
       switch (compose)
       {
         case AnnotateCompositeOp:
         case OverCompositeOp:
         default:
         {
-          if (p->opacity == Transparent)
+          if (composite_image->matte && (p->opacity == Transparent))
             {
               red=q->red;
               green=q->green;
@@ -1289,7 +1291,7 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
               opacity=q->opacity;
             }
           else
-            if (p->opacity == Opaque)
+            if (composite_image->matte && (p->opacity == Opaque))
               {
                 red=p->red;
                 green=p->green;
@@ -1304,8 +1306,9 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
                   (p->green*p->opacity+q->green*(Opaque-p->opacity))/Opaque;
                 blue=(unsigned long)
                   (p->blue*p->opacity+q->blue*(Opaque-p->opacity))/Opaque;
-                opacity=(unsigned long) (p->opacity*p->opacity+
-                  q->opacity*(Opaque-p->opacity))/Opaque;
+                if (composite_image->matte)
+                  opacity=(unsigned long) (p->opacity*p->opacity+
+                    q->opacity*(Opaque-p->opacity))/Opaque;
               }
           break;
         }
@@ -1314,7 +1317,8 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
           red=(unsigned long) (p->red*q->opacity)/Opaque;
           green=(unsigned long) (p->green*q->opacity)/Opaque;
           blue=(unsigned long) (p->blue*q->opacity)/Opaque;
-          opacity=(unsigned long) (p->opacity*q->opacity)/Opaque;
+          if (composite_image->matte)
+            opacity=(unsigned long) (p->opacity*q->opacity)/Opaque;
           break;
         }
         case OutCompositeOp:
@@ -1322,7 +1326,8 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
           red=(unsigned long) (p->red*(Opaque-q->opacity))/Opaque;
           green=(unsigned long) (p->green*(Opaque-q->opacity))/Opaque;
           blue=(unsigned long) (p->blue*(Opaque-q->opacity))/Opaque;
-          opacity=(unsigned long) (p->opacity*(Opaque-q->opacity))/Opaque;
+          if (composite_image->matte)
+            opacity=(unsigned long) (p->opacity*(Opaque-q->opacity))/Opaque;
           break;
         }
         case AtopCompositeOp:
@@ -1333,8 +1338,9 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
             (p->green*q->opacity+q->green*(Opaque-p->opacity))/Opaque;
           blue=(unsigned long)
             (p->blue*q->opacity+q->blue*(Opaque-p->opacity))/Opaque;
-          opacity=(unsigned long)
-            (p->opacity*q->opacity+q->opacity*(Opaque-p->opacity))/Opaque;
+          if (composite_image->matte)
+            opacity=(unsigned long)
+              (p->opacity*q->opacity+q->opacity*(Opaque-p->opacity))/Opaque;
           break;
         }
         case XorCompositeOp:
@@ -1345,8 +1351,9 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
             (p->green*(Opaque-q->opacity)+q->green*(Opaque-p->opacity))/Opaque;
           blue=(unsigned long)
             (p->blue*(Opaque-q->opacity)+q->blue*(Opaque-p->opacity))/Opaque;
-          opacity=(unsigned long) (p->opacity*(Opaque-q->opacity)+
-            q->opacity*(Opaque-p->opacity))/Opaque;
+          if (composite_image->matte)
+            opacity=(unsigned long) (p->opacity*(Opaque-q->opacity)+
+              q->opacity*(Opaque-p->opacity))/Opaque;
           break;
         }
         case PlusCompositeOp:
@@ -1354,7 +1361,8 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
           red=p->red+q->red;
           green=p->green+q->green;
           blue=p->blue+q->blue;
-          opacity=p->opacity+q->opacity;
+          if (composite_image->matte)
+            opacity=p->opacity+q->opacity;
           break;
         }
         case MinusCompositeOp:
@@ -1376,9 +1384,12 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
           blue=p->blue+q->blue;
           if (blue > MaxRGB)
             blue-=(MaxRGB+1);
-          opacity=p->opacity+q->opacity;
-          if (opacity > Opaque)
-            opacity-=(Opaque+1);
+          if (composite_image->matte)
+            {
+              opacity=p->opacity+q->opacity;
+              if (opacity > Opaque)
+                opacity-=(Opaque+1);
+            }
           break;
         }
         case SubtractCompositeOp:
@@ -1392,9 +1403,12 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
           blue=p->blue-(int) q->blue;
           if (blue < 0)
             blue+=(MaxRGB+1);
-          opacity=p->opacity-(int) q->opacity;
-          if (opacity < 0)
-            opacity+=(MaxRGB+1);
+          if (composite_image->matte)
+            {
+              opacity=p->opacity-(int) q->opacity;
+              if (opacity < 0)
+                opacity+=(MaxRGB+1);
+            }
           break;
         }
         case DifferenceCompositeOp:
@@ -1402,7 +1416,8 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
           red=AbsoluteValue(p->red-(int) q->red);
           green=AbsoluteValue(p->green-(int) q->green);
           blue=AbsoluteValue(p->blue-(int) q->blue);
-          opacity=AbsoluteValue(p->opacity-(int) q->opacity);
+          if (composite_image->matte)
+            opacity=AbsoluteValue(p->opacity-(int) q->opacity);
           break;
         }
         case BumpmapCompositeOp:
@@ -1419,7 +1434,8 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
           red=p->red;
           green=p->green;
           blue=p->blue;
-          opacity=p->opacity;
+          if (composite_image->matte)
+            opacity=p->opacity;
           break;
         }
         case ReplaceRedCompositeOp:
@@ -1427,7 +1443,6 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
           red=DownScale(Intensity(*p));
           green=q->green;
           blue=q->blue;
-          opacity=q->opacity;
           break;
         }
         case ReplaceGreenCompositeOp:
@@ -1435,7 +1450,6 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
           red=q->red;
           green=DownScale(Intensity(*p));
           blue=q->blue;
-          opacity=q->opacity;
           break;
         }
         case ReplaceBlueCompositeOp:
@@ -1443,7 +1457,6 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
           red=q->red;
           green=q->green;
           blue=DownScale(Intensity(*p));
-          opacity=q->opacity;
           break;
         }
         case ReplaceMatteCompositeOp:
@@ -1470,7 +1483,8 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
           red=p->red;
           green=p->green;
           blue=p->blue;
-          opacity=p->opacity;
+          if (composite_image->matte)
+            opacity=p->opacity;
           break;
         }
         case ModulateCompositeOp:
@@ -1499,13 +1513,11 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
               red=color.red;
               green=color.green;
               blue=color.blue;
-              opacity=q->opacity;
               break;
             }
           red=q->red;
           green=q->green;
           blue=q->blue;
-          opacity=q->opacity;
           break;
         }
       }
