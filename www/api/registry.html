@@ -22,7 +22,6 @@
 
 		<LI><A HREF="#deletemagickregistry">DeleteMagickRegistry</A></LI>
 		<LI><A HREF="#destroymagickregistry">DestroyMagickRegistry</A></LI>
-		<LI><A HREF="#getmagickregistry">GetMagickRegistry</A></LI>
 		<LI><A HREF="#setmagickregistry">SetMagickRegistry</A></LI>
 	</UL>
 
@@ -49,33 +48,53 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="deletemagickregistry">DeleteMagickRegistry</A></H2>
-<blockquote>DeleteMagickRegistry ( ) deletes an entry as defined by the id from theregistry. It returns True if the entry is deleted otherwise False.; </blockquote><blockquote>unsigned int void DeleteMagickRegistry ( const long id ); </blockquote><P>The format of the DeleteMagickRegistry method is:</P>
-<P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows: o id: The registry id.</P>
+<blockquote>DeleteMagickRegistry ( ) deletes an entry in the registry as defined by the id.It returns True if the entry is deleted otherwise False if no entry is foundin the registry that matches the id.; </blockquote><P>The format of the DeleteMagickRegistry method is:</P>
+<blockquote>unsigned int void DeleteMagickRegistry ( const long id ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_id%3A">id:</A></STRONG><BR>
+<DD>
+The registry id.
+<P></P></DL></DL>
 <P>
 <H2><A NAME="destroymagickregistry">DestroyMagickRegistry</A></H2>
-<blockquote>DestroyMagickRegistry ( ) deallocates memory associated the magick registry.; </blockquote><P>The format of the DestroyMagickRegistry method is: void <CODE>DestroyMagickInfo(void)</CODE></P>
-<P>
-<H2><A NAME="getmagickregistry">GetMagickRegistry</A></H2>
-<blockquote>GetMagickRegistry ( ) gets a blob from the magick registry as defined by theid. If blob that matches the id is found, NULL is returned.; </blockquote><blockquote>const void *GetMagickRegistry ( const long id, RegistryType *type, size_t *length ); </blockquote><P>The format of the getMagickRegistry method is: 
-<FONT SIZE=-1>A</FONT> description of each parameter follows: o id: The registry id.</P>
+<blockquote>DestroyMagickRegistry ( ) deallocates memory associated the magick registry.; </blockquote><P>The format of the DestroyMagickRegistry method is:</P>
+<PRE>
+     void DestroyMagickInfo(void)
+=head2 GetMagickRegistry</PRE>
+<blockquote>GetMagickRegistry ( ) gets a blob from the registry as defined by the id. Ifthe blob that matches the id is not found, NULL is returned.; </blockquote><P>The format of the getMagickRegistry method is:</P>
+<blockquote>const void *GetMagickRegistry ( const long id, RegistryType *type, size_t *length ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
+<p><dt><STRONG>id:</STRONG><BR>
+<DD>
+The registry id.
+<P></P>
 <p><dt><STRONG><A NAME="item_o_type%3A">type:</A></STRONG><BR>
 <DD>
-The type of registry entry.
+The registry type.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_length%3A">length:</A></STRONG><BR>
 <DD>
-This size_t integer reflects the length in bytes of the blob.
+The blob length in number of bytes.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setmagickregistry">SetMagickRegistry</A></H2>
-<blockquote>SetMagickRegistry ( ) sets a blob into the registry and returns a unique ID.If an error occurs, an ID of -1 is returned.; </blockquote><blockquote>long SetMagickRegistry ( const void *blob, const size_t length, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>The format of the SetMagickRegistry method is: 
-<FONT SIZE=-1>A</FONT> description of each parameter follows: o blob: The address of a Binary Large OBject.</P>
+<blockquote>SetMagickRegistry ( ) sets a blob into the registry and returns a unique ID.If an error occurs, an ID of -1 is returned.; </blockquote><P>The format of the SetMagickRegistry method is:</P>
+<blockquote>long SetMagickRegistry ( const void *blob, const size_t length, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
+<p><dt><STRONG>type:</STRONG><BR>
+<DD>
+The registry type.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_blob%3A">blob:</A></STRONG><BR>
+<DD>
+The address of a Binary Large OBject.
+<P></P>
 <p><dt><STRONG>length:</STRONG><BR>
 <DD>
-This size_t integer reflects the length in bytes of the blob.
+The blob length in number of bytes.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
 <DD>

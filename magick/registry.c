@@ -10,7 +10,7 @@
 %           R  R    EEEEE    GGG   IIIII  SSSSS    T    R  R     Y            %
 %                                                                             %
 %                                                                             %
-%                    Read/Write ImageMagick Image Format.                     %
+%                            ImageMagick Registry.                            %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -78,8 +78,9 @@ static SemaphoreInfo
 %                                                                               %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DeleteMagickRegistry() deletes an entry as defined by the id from the
-%  registry.  It returns True if the entry is deleted otherwise False.
+%  DeleteMagickRegistry() deletes an entry in the registry as defined by the id.
+%  It returns True if the entry is deleted otherwise False if no entry is found
+%  in the registry that matches the id.
 %
 %  The format of the DeleteMagickRegistry method is:
 %
@@ -198,8 +199,8 @@ MagickExport void DestroyMagickRegistry(void)
 %                                                                               %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetMagickRegistry() gets a blob from the magick registry as defined by the
-%  id.  If blob that matches the id is found, NULL is returned.
+%  GetMagickRegistry() gets a blob from the registry as defined by the id.  If
+%  the blob that matches the id is not found, NULL is returned.
 %
 %  The format of the getMagickRegistry method is:
 %
@@ -210,9 +211,9 @@ MagickExport void DestroyMagickRegistry(void)
 %
 %    o id: The registry id.
 %
-%    o type: The type of registry entry.
+%    o type: The registry type.
 %
-%    o length: This size_t integer reflects the length in bytes of the blob.
+%    o length: The blob length in number of bytes.
 %
 %
 */
@@ -264,9 +265,11 @@ MagickExport const void *GetMagickRegistry(const long id,RegistryType *type,
 %
 %  A description of each parameter follows:
 %
+%    o type: The registry type.
+%
 %    o blob: The address of a Binary Large OBject.
 %
-%    o length: This size_t integer reflects the length in bytes of the blob.
+%    o length: The blob length in number of bytes.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -308,9 +311,10 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
       if (registry_info->blob == (void *) NULL)
         return(-1);
       (void) memcpy(registry_info->blob,blob,length);
-      registry_info->length=length;
     }
   }
+  registry_info->length=length;
+  registry_info->type=type;
   AcquireSemaphoreInfo(&registry_semaphore);
   registry_info->id=id++;
   if (registry_list == (RegistryInfo *) NULL)

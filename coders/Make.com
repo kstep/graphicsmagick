@@ -19,8 +19,6 @@ $endif
 $
 $
 $write sys$output "Making Coders..."
-$call Make 8bim.c
-$call Make app1.c
 $call Make art.c
 $call Make avi.c
 $call Make avs.c
@@ -40,21 +38,18 @@ $call Make gray.c
 $call Make hdf.c
 $call Make histogram.c
 $call Make html.c
-$call Make icm.c
 $call Make icon.c
-$call Make iptc.c
 $call Make jbig.c
-$call Make jp2.c
 $call Make jpeg.c
 $call Make label.c
 $call Make logo.c
 $call Make map.c
 $call Make mat.c
 $call Make matte.c
+$call Make meta.c
 $call Make miff.c
-$call Make mono.c
 $call Make mpc.c
-$call Make mpeg.c
+$call Make mono.c
 $call Make mtv.c
 $call Make mvg.c
 $call Make null.c
@@ -74,7 +69,6 @@ $call Make ps2.c
 $call Make ps3.c
 $call Make psd.c
 $call Make pwp.c
-$call Make registry.c
 $call Make rgb.c
 $call Make rla.c
 $call Make rle.c
@@ -105,13 +99,12 @@ $call Make xc.c
 $call Make xpm.c
 $call Make xwd.c
 $call Make yuv.c
-$library/create libCoders.olb 8bim,app1,art,avi,avs,bmp,cmyk,cut,dcm,dps,dpx, -
-  ept,fax,fits,fpx,gif,gradient,gray,hdf,histogram,html,icm,icon,iptc,jbig, -
-  jp2,jpeg,label,logo,map,mat,matte,miff,mono,mpc,mpeg,mtv,mvg,null,pcd,pcl, -
-  pcx,pdb,pdf,pict,pix,plasma,png,pnm,preview,ps,ps2,ps3,psd,pwp,rgb, -
-  rla,rle,sct,sfw,sgi,stegano,sun,svg,tga,tiff,tile,tim,ttf, -
-  txt,uil,url,uyvy,vicar,vid,viff,wbmp,wmf,wpg,x,xbm,xc,xpm,xwd,yuv, -
-  [-.magick]compress,[-.magick]prervicccm
+$library/create libCoders.olb art,avi,avs,bmp,cmyk,cut,dcm,dps,dpx,ept,fax, -
+  fits,fpx,gif,gradient,gray,hdf,histogram,html,icon,jbig,jpeg,label,logo,map, -
+  mat,matte,meta,miff,mpc,mono,mtv,mvg,null,pcd,pcl,pcx,pdb,pdf,pict,pix, -
+  plasma,png,pnm,preview,ps,ps2,ps3,psd,pwp,rgb,rla,rle,sct,sfw,sgi,stegano, -
+  sun,svg,tga,tiff,tile,tim,ttf,txt,uil,url,uyvy,vicar,vid,viff,wbmp,wmf,wpg, -
+  x,xbm,xc,xpm,xwd,yuv,[-.magick]compress,[-.magick]prervicccm
 $exit
 $
 $Make: subroutine
