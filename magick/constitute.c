@@ -1581,16 +1581,29 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           clone_info->temporary=True;
         SetImageInfo(clone_info,False);
         magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick);
-        if ((magick_info != (MagickInfo *) NULL) &&
-            (magick_info->decoder !=
+        if ((magick_info == (MagickInfo *) NULL) ||
+            (magick_info->decoder ==
               (Image *(*)(const ImageInfo *,ExceptionInfo *)) NULL))
-          image=(magick_info->decoder)(clone_info,exception);
-        else
           {
             ThrowException(exception,MissingDelegateWarning,
               "no delegate for this image format",clone_info->filename);
             DestroyImageInfo(clone_info);
             return((Image *) NULL);
+          }
+        if (magick_info->thread_safe)
+          image=(magick_info->decoder)(clone_info,exception);
+        else
+          {
+#if defined(HasPTHREADS)
+            static pthread_mutex_t
+              write_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+            pthread_mutex_lock(&write_mutex);
+#endif
+            image=(magick_info->decoder)(clone_info,exception);
+#if defined(HasPTHREADS)
+            pthread_mutex_unlock(&write_mutex);
+#endif
           }
       }
   if (clone_info->temporary)
@@ -1950,13 +1963,26 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
     if (!GetDelegateInfo((char *) NULL,clone_info->magick,&delegate_info))
       {
         magick_info=(MagickInfo *) GetMagickInfo(image->magick);
-        if ((magick_info != (MagickInfo *) NULL) &&
-            (magick_info->encoder !=
+        if ((magick_info == (MagickInfo *) NULL) ||
+            (magick_info->encoder ==
               (unsigned int (*)(const ImageInfo *,Image *)) NULL))
-          status=(magick_info->encoder)(clone_info,image);
-        else
           ThrowBinaryException(MissingDelegateWarning,
             "no encode delegate for this image format",clone_info->magick);
+        if (magick_info->thread_safe)
+          status=(magick_info->encoder)(clone_info,image);
+        else
+          {
+#if defined(HasPTHREADS)
+            static pthread_mutex_t
+              write_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+            pthread_mutex_lock(&write_mutex);
+#endif
+            status=(magick_info->encoder)(clone_info,image);
+#if defined(HasPTHREADS)
+            pthread_mutex_unlock(&write_mutex);
+#endif
+          }
       }
     else
       {

@@ -249,7 +249,7 @@ ModuleExport void RegisterAVSImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r A V S I m a g e                                        %
+%   U n r e g i s t e r A V S I m a g e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %

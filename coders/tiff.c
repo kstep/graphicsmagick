@@ -682,13 +682,18 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             }
             case 16:
             {
-              for (x=0; x < (int) image->columns; x++)
-              {
-                *r=(*p++ << 8);
-                *r|=(*p++);
-                *r>>=(bits_per_sample-QuantumDepth);
-                r++;
-              }
+              if (image->depth <= 8)
+                for (x=0; x < (int) width; x++)
+                {
+                  *r++=(*p++);
+                  p++;
+                }
+              else
+                for (x=0; x < (int) image->columns; x++)
+                {
+                  *r++=(*p++);
+                  *r++=(*p++);
+                }
               break;
             }
             default:
@@ -911,6 +916,7 @@ ModuleExport void RegisterTIFFImage(void)
   entry->decoder=ReadTIFFImage;
   entry->encoder=WriteTIFFImage;
   entry->blob_support=False;
+  entry->thread_safe=False;
   entry->description=AllocateString("Pyramid encoded TIFF");
   entry->module=AllocateString("TIFF");
   RegisterMagickInfo(entry);
@@ -918,6 +924,7 @@ ModuleExport void RegisterTIFFImage(void)
   entry->decoder=ReadTIFFImage;
   entry->encoder=WriteTIFFImage;
   entry->blob_support=False;
+  entry->thread_safe=False;
   entry->description=AllocateString("Tagged Image File Format");
   entry->module=AllocateString("TIFF");
   RegisterMagickInfo(entry);
@@ -926,6 +933,7 @@ ModuleExport void RegisterTIFFImage(void)
   entry->encoder=WriteTIFFImage;
   entry->magick=IsTIFF;
   entry->blob_support=False;
+  entry->thread_safe=False;
   entry->description=AllocateString("Tagged Image File Format");
   entry->module=AllocateString("TIFF");
   RegisterMagickInfo(entry);
@@ -933,6 +941,7 @@ ModuleExport void RegisterTIFFImage(void)
   entry->decoder=ReadTIFFImage;
   entry->encoder=WriteTIFFImage;
   entry->blob_support=False;
+  entry->thread_safe=False;
   entry->description=AllocateString("24-bit Tagged Image File Format");
   entry->module=AllocateString("TIFF");
   RegisterMagickInfo(entry);
@@ -1259,6 +1268,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       image->temporary=True;
     }
   CloseBlob(image);
+  TIFFSetErrorHandler((TIFFErrorHandler) TIFFWarningHandler);
+  TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarningHandler);
   tiff=TIFFOpen(image->filename,WriteBinaryType);
   if (tiff == (TIFF *) NULL)
     return(False);

@@ -275,6 +275,10 @@ sub testReadWriteSized {
 
       $image=Image::Magick->new;
 
+      if ( $readdepth != 0 ) {
+        $status=$image->SetAttribute(depth=>$readdepth);
+        warn "$status" if "$status";
+      }
       # Set image size attribute
       $status=$image->SetAttribute(size=>"$size");
       warn "$status" if "$status";

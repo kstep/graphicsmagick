@@ -441,16 +441,14 @@ static off_t GetCacheMemory(const off_t memory)
     free_memory = PixelCacheThreshold*1024*1024;
 
 #if defined(HasPTHREADS)
-  {
-    static pthread_mutex_t
-      memory_mutex = PTHREAD_MUTEX_INITIALIZER;
+  static pthread_mutex_t
+    memory_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-    pthread_mutex_lock(&memory_mutex);
-    free_memory+=memory;
-    pthread_mutex_unlock(&memory_mutex);
-  }
-#else
+  pthread_mutex_lock(&memory_mutex);
+#endif
   free_memory+=memory;
+#if defined(HasPTHREADS)
+  pthread_mutex_unlock(&memory_mutex);
 #endif
   return(free_memory);
 }

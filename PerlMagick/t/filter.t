@@ -16,7 +16,7 @@ chdir 't' || die 'Cd failed';
 testFilter('input.miff', 'Blur',
   q/3/,
   '741ee7b9f9f31a4dd2daaf6197692617',
-  'b96d206387adfbd8a3a9d6b0f7fc109c');
+  '6046acf8622ed1bdf5628416cf26ea88');
 
 ++$test;
 testFilter('input.miff', 'Border',
@@ -45,13 +45,13 @@ testFilter('input.miff', 'Colorize',
 testFilter('input.miff', 'Contrast',
   q/1/,
   'ade6d7be494f4d3437c7f9a3fa008adc',
-  'e4d90d8d2af844650864c4e193acb270');
+  'e4dc79d4309f1c7cded302a52b57614c');
 
 ++$test;
 testFilter('input.miff', 'Convolve',
   [1, 2, 1, 2, 4, 2, 1, 2, 1],
   '7b8a78e07c46b64396a2dc9955996c82',
-  'e4d90d8d2af844650864c4e193acb270');
+  '78da2d7c584ffd74b41137ea23460abb');
 
 ++$test;
 testFilter('input.miff', 'Crop',
@@ -74,7 +74,7 @@ testFilter('input.miff', 'Edge',
 testFilter('input.miff', 'Emboss',
   q/3/,
   '08f4ee64dcf16fb7ce9be112d535379c',
-  '9d45e8fce500ab54db41d2d48ebfe1a6');
+  '817529f3213a24f68989c3a327cb82a7');
 
 ++$test;
 testFilter('input.miff', 'Equalize',
@@ -182,7 +182,7 @@ testFilter('input.miff', 'Roll',
 testFilter('input.miff', 'Rotate',
   q/45/,
   '1beb08b2ee50740ec51ecbf919926ac3',
-  'cf2cf4a4502d0c9147373d1c4db35907');
+  'c31868569301db9e41f46bc690107c36');
 
 ++$test;
 testFilter('input.miff', 'Sample',
@@ -193,7 +193,7 @@ testFilter('input.miff', 'Sample',
 testFilter('input.miff', 'Scale',
   q/50%/,
   'fd9f86e0fb31bc2fd67aa43084e64e24',
-  '8e5e4720a90d15b24c0f28e15c93a94c');
+  'f37f5d4ca4ac9e243cedb3abf35758ac');
 
 ++$test;
 testFilter('input.miff', 'Segment',
@@ -210,13 +210,13 @@ testFilter('input.miff', 'Shade',
 testFilter('input.miff', 'Sharpen',
   q/3/,
   '087e8130210a07139b7fcb9d0b7d5eff',
-  'b96d206387adfbd8a3a9d6b0f7fc109c');
+  'd2a0063811738be757a6d427499a6187');
 
 ++$test;
 testFilter('input.miff', 'Shear',
   q/45x45/,
   '5f88bff0dccf6533796750f024aa7222',
-  '791f8a7ea64989e01c9e5e27375574a2');
+  '7dbbe302b5a4daeef1105766c40baf48');
 
 ++$test;
 testFilter('input.miff', 'Solarize',

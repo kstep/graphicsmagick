@@ -48,8 +48,8 @@ MAGICK_BASE_SRCS=PreRvIcccm.c animate.c annotate.c attributes.c blob.c \
   cache.c cache_view.c colors.c compress.c constitute.c decorate.c delegates.c \
   display.c draw.c effects.c enhance.c error.c gems.c image.c magic.c \
   magick.c memory.c modules.c monitor.c montage.c quantize.c segment.c \
-  shear.c signature.c stream.c timer.c transform.c utility.c widget.c \
-  xwindows.c zoom.c
+  shear.c signature.c stream.c timer.c transform.c utility.c \
+  widget.c xwindows.c zoom.c
 
 # Library sources
 if WITH_MODULES
@@ -71,7 +71,8 @@ bin_SCRIPTS = Magick-config
 # Headers which are installed
 include_HEADERS = PreRvIcccm.h api.h attributes.h blob.h cache.h cache_view.h \
   classify.h compress.h config.h delegates.h error.h gems.h image.h magick.h \
-  memory.h monitor.h quantize.h timer.h utility.h version.h widget.h xwindows.h
+  memory.h monitor.h quantize.h timer.h utility.h version.h widget.h \
+  xwindows.h
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = animate.h defines.h display.h mac.h magic.h \

@@ -60,12 +60,6 @@
 #include "defines.h"
 
 /*
-  Static declarations.
-*/
-static Image
-  *image;
-
-/*
   Forward declarations.
 */
 static unsigned int
@@ -192,7 +186,11 @@ static unsigned int EmitMessage(j_common_ptr jpeg_info,int level)
   char
     message[JMSG_LENGTH_MAX];
 
+  Image
+    *image;
+
   (jpeg_info->err->format_message)(jpeg_info,message);
+  image=jpeg_info->client_data;
   if (level < 0)
     {
       if ((jpeg_info->err->num_warnings == 0) ||
@@ -256,6 +254,9 @@ static boolean ReadColorProfile(j_decompress_ptr jpeg_info)
   char
     magick[12];
 
+  Image
+    *image;
+
   long int
     length;
 
@@ -285,6 +286,7 @@ static boolean ReadColorProfile(j_decompress_ptr jpeg_info)
   (void) GetCharacter(jpeg_info);  /* id */
   (void) GetCharacter(jpeg_info);  /* markers */
   length-=14;
+  image=jpeg_info->client_data;
   if (image->color_profile.length == 0)
     image->color_profile.info=(unsigned char *) AllocateMemory(length);
   else
@@ -307,6 +309,9 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
 {
   char
     *comment;
+
+  Image
+    *image;
 
   long int
     length;
@@ -331,6 +336,7 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   while (--length >= 0)
     *p++=GetCharacter(jpeg_info);
   *p='\0';
+  image=jpeg_info->client_data;
   (void) SetImageAttribute(image,"Comment",comment);
   FreeMemory((void **) &comment);
   return(True);
@@ -338,9 +344,12 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
 
 static boolean ReadNewsProfile(j_decompress_ptr jpeg_info)
 {
+  Image
+    *image;
+
   long int
-    taglen,
-    length;
+    length,
+    tag_length;
 
   register unsigned char
     *p;
@@ -374,7 +383,7 @@ static boolean ReadNewsProfile(j_decompress_ptr jpeg_info)
     if ((*tag == 0x1c) && (*(tag+1) == 0x02))
       break;
   }
-  taglen=2;
+  tag_length=2;
 #else
   /*
     Validate that this was written as a Photoshop resource format slug.
@@ -398,16 +407,18 @@ static boolean ReadNewsProfile(j_decompress_ptr jpeg_info)
   for (i=0; i < 4; i++)
     (void) GetCharacter(jpeg_info);
   length-=4;
-  taglen=0;
+  tag_length=0;
 #endif
   if (length <= 0)
     return(True);
+  image=jpeg_info->client_data;
   if (image->iptc_profile.length != 0)
     image->iptc_profile.info=(unsigned char *)
-      ReallocateMemory((char *) image->iptc_profile.info,length+taglen);
+      ReallocateMemory((char *) image->iptc_profile.info,length+tag_length);
   else
     {
-      image->iptc_profile.info=(unsigned char *) AllocateMemory(length+taglen);
+      image->iptc_profile.info=(unsigned char *)
+        AllocateMemory(length+tag_length);
       if (image->iptc_profile.info != (unsigned char *) NULL)
         image->iptc_profile.length=0;
     }
@@ -418,7 +429,7 @@ static boolean ReadNewsProfile(j_decompress_ptr jpeg_info)
     Read the payload of this binary data.
   */
   p=image->iptc_profile.info;
-  image->iptc_profile.length=length+taglen;
+  image->iptc_profile.length=length+tag_length;
 #ifdef GET_ONLY_IPTC_DATA
   *p++=0x1c;
   *p++=0x02;
@@ -476,6 +487,9 @@ static void JPEGSourceManager(j_decompress_ptr cinfo,Image *image)
 static Image *ReadJPEGImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
+  Image
+    *image;
+
   IndexPacket
     index;
 
@@ -520,6 +534,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   /*
     Initialize image structure.
   */
+  jpeg_info.client_data=(void *) image;
   jpeg_info.err=jpeg_std_error(&jpeg_error);
   jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) EmitMessage;
   jpeg_info.err->error_exit=(void (*)(j_common_ptr)) JPEGErrorHandler;
@@ -856,7 +871,11 @@ static unsigned int JPEGWarningHandler(j_common_ptr jpeg_info,int level)
   char
     message[JMSG_LENGTH_MAX];
 
+  Image
+    *image;
+
   (jpeg_info->err->format_message)(jpeg_info,message);
+  image=jpeg_info->client_data;
   if (level < 0)
     {
       if ((jpeg_info->err->num_warnings == 0) ||
@@ -933,22 +952,22 @@ static void WriteNewsProfile(j_compress_ptr jpeg_info,Image *image)
     *profile;
 
   unsigned int
-    taglen,
-    length;
+    length,
+    tag_length;
 
   /*
     Save binary Photoshop resource data using an APP marker.
   */
 #ifdef GET_ONLY_IPTC_DATA
-  taglen=26;
+  tag_length=26;
 #else
-  taglen=14;
+  tag_length=14;
 #endif
   for (i=0; i < (int) image->iptc_profile.length; i+=65500)
   {
     length=Min(image->iptc_profile.length-i,65500);
     roundup=(length & 0x01); /* round up for Photoshop */
-    profile=(unsigned char *) AllocateMemory(length+roundup+taglen);
+    profile=(unsigned char *) AllocateMemory(length+roundup+tag_length);
     if (profile == (unsigned char *) NULL)
       break;
 #ifdef GET_ONLY_IPTC_DATA
@@ -960,11 +979,11 @@ static void WriteNewsProfile(j_compress_ptr jpeg_info,Image *image)
     memcpy(profile,"Photoshop 3.0 ",14);
     profile[13]=0x00;
 #endif
-    memcpy(&(profile[taglen]),&(image->iptc_profile.info[i]),length);
+    memcpy(&(profile[tag_length]),&(image->iptc_profile.info[i]),length);
     if (roundup)
-      profile[length+taglen]=0;
+      profile[length+tag_length]=0;
     jpeg_write_marker(jpeg_info,IPTC_MARKER,profile,(unsigned int)
-      length+roundup+taglen);
+      length+roundup+tag_length);
     FreeMemory((void **) &profile);
   }
 }

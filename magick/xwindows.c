@@ -2720,15 +2720,15 @@ MagickExport void XGetPixelPacket(Display *display,
   /*
     Set highlight color.
   */
-  pixel->highlight_color.red=((unsigned long)
-    (pixel->matte_color.red*HighlightModulate+(MaxRGB-HighlightModulate)*
-    65535L)/MaxRGB);
-  pixel->highlight_color.green=((unsigned long)
-    (pixel->matte_color.green*HighlightModulate+(MaxRGB-HighlightModulate)*
-    65535L)/MaxRGB);
-  pixel->highlight_color.blue=((unsigned long)
-    (pixel->matte_color.blue*HighlightModulate+(MaxRGB-HighlightModulate)*
-    65535L)/MaxRGB);
+  pixel->highlight_color.red=
+    ((unsigned long) (pixel->matte_color.red*HighlightModulate+
+    (unsigned long) (MaxRGB-HighlightModulate)*65535L)/MaxRGB);
+  pixel->highlight_color.green=
+    ((unsigned long) (pixel->matte_color.green*HighlightModulate+
+    (unsigned long) (MaxRGB-HighlightModulate)*65535L)/MaxRGB);
+  pixel->highlight_color.blue=
+    ((unsigned long) (pixel->matte_color.blue*HighlightModulate+
+    (unsigned long) (MaxRGB-HighlightModulate)*65535L)/MaxRGB);
   pixel->highlight_color.pixel=
     XStandardPixel(map_info,pixel->highlight_color,16);
   pixel->highlight_color.flags=DoRed | DoGreen | DoBlue;

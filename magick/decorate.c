@@ -209,22 +209,22 @@ MagickExport Image *FrameImage(Image *image,const FrameInfo *frame_info,
     Initialize 3D effects color.
   */
   matte=image->matte_color;
-  accentuate.red=((unsigned long)
-    (matte.red*AccentuateModulate+(MaxRGB-AccentuateModulate)*MaxRGB)/MaxRGB);
-  accentuate.green=((unsigned long)
-    (matte.green*AccentuateModulate+(MaxRGB-AccentuateModulate)*MaxRGB)/MaxRGB);
-  accentuate.blue=((unsigned long)
-    (matte.blue*AccentuateModulate+(MaxRGB-AccentuateModulate)*MaxRGB)/MaxRGB);
-  accentuate.opacity=((unsigned long) (matte.opacity*
-    AccentuateModulate+(MaxRGB-AccentuateModulate)*MaxRGB)/MaxRGB);
-  highlight.red=((unsigned long)
-    (matte.red*HighlightModulate+(MaxRGB-HighlightModulate)*MaxRGB)/MaxRGB);
-  highlight.green=((unsigned long)
-    (matte.green*HighlightModulate+(MaxRGB-HighlightModulate)*MaxRGB)/MaxRGB);
-  highlight.blue=((unsigned long)
-    (matte.blue*HighlightModulate+(MaxRGB-HighlightModulate)*MaxRGB)/MaxRGB);
-  highlight.opacity=((unsigned long)
-    (matte.opacity*HighlightModulate+(MaxRGB-HighlightModulate)*MaxRGB)/MaxRGB);
+  accentuate.red=((unsigned long) (matte.red*AccentuateModulate+
+    (unsigned long) (MaxRGB-AccentuateModulate)*MaxRGB)/MaxRGB);
+  accentuate.green=((unsigned long) (matte.green*AccentuateModulate+
+    (unsigned long) (MaxRGB-AccentuateModulate)*MaxRGB)/MaxRGB);
+  accentuate.blue=((unsigned long) (matte.blue*AccentuateModulate+
+    (unsigned long) (MaxRGB-AccentuateModulate)*MaxRGB)/MaxRGB);
+  accentuate.opacity=((unsigned long) (matte.opacity*AccentuateModulate+
+    (unsigned long) (MaxRGB-AccentuateModulate)*MaxRGB)/MaxRGB);
+  highlight.red=((unsigned long) (matte.red*HighlightModulate+
+    (unsigned long) (MaxRGB-HighlightModulate)*MaxRGB)/MaxRGB);
+  highlight.green=((unsigned long) (matte.green*HighlightModulate+
+    (unsigned long) (MaxRGB-HighlightModulate)*MaxRGB)/MaxRGB);
+  highlight.blue=((unsigned long) (matte.blue*HighlightModulate+
+    (unsigned long) (MaxRGB-HighlightModulate)*MaxRGB)/MaxRGB);
+  highlight.opacity=((unsigned long) (matte.opacity*HighlightModulate+
+    (unsigned long) (MaxRGB-HighlightModulate)*MaxRGB)/MaxRGB);
   shadow.red=((unsigned long) (matte.red*ShadowModulate)/MaxRGB);
   shadow.green=((unsigned long) (matte.green*ShadowModulate)/MaxRGB);
   shadow.blue=((unsigned long) (matte.blue*ShadowModulate)/MaxRGB);

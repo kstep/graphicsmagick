@@ -12,26 +12,26 @@ extern "C" {
 /*
   Color quantum is [0..65535].
 */
-#define DownScale(quantum)  (((unsigned long) (quantum)) >> 8)
+#define DownScale(quantum)  ((quantum)/256)
 #define HexColorFormat "#%04x%04x%04x"
 #define MaxRGB  65535L
 #define QuantumDepth  16
-#define UpScale(quantum)  (257*((unsigned long) (quantum)))
-#define XDownScale(color)  ((unsigned long) (color))
-#define XUpScale(color)  ((unsigned long) (color))
+#define UpScale(quantum)  (257*(quantum))
+#define XDownScale(color)  (color)
+#define XUpScale(color)  (color)
 
 typedef unsigned short Quantum;
 #else
 /*
   Color quantum is [0..255].
 */
-#define DownScale(quantum)  ((unsigned long) (quantum))
+#define DownScale(quantum)  (quantum)
 #define HexColorFormat "#%02x%02x%02x"
 #define MaxRGB  255L
 #define QuantumDepth  8
-#define UpScale(quantum)  ((unsigned long) (quantum))
-#define XDownScale(color)  (((unsigned long) (color)) >> 8)
-#define XUpScale(color)  (257*((unsigned long) (color)))
+#define UpScale(quantum)  (quantum)
+#define XDownScale(color)  ((color)/256)
+#define XUpScale(color)  (257*(color))
 
 typedef unsigned char Quantum;
 #endif
@@ -598,7 +598,8 @@ typedef struct _MagickInfo
     (*magick)(const unsigned char *,const unsigned int),
     adjoin,
     blob_support,
-    raw;
+    raw,
+    thread_safe;
 
   char
     *description,

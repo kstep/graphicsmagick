@@ -1222,7 +1222,7 @@ static double Lanczos(double x)
   if (x < 0)
     x=(-x);
   if (x < 3.0)
-   return(Sinc(x)*Sinc(x/3.000000000001));
+    return(Sinc(x)*Sinc(x/3.000000000001));
   return(0.0);
 }
 

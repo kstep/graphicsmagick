@@ -222,4 +222,4 @@ testReadSized( 'input_70x46.uyvy',
 	       '70x46',
 	       0,
 	       '0088a910bc01fb37d659251f55f89570',
-	       '450c2d572452f553ab0d707840082e4d' );
+	       '7ddde0b3f0b4df199973e851b4493d16' );
