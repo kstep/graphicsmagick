@@ -17,7 +17,11 @@
 	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
 	<ul>
 
+		<li><a href="#finalizesignature">FinalizeSignature</a></li>
+		<li><a href="#getsignatureinfo">GetSignatureInfo</a></li>
 		<li><a href="#signatureimage">SignatureImage</a></li>
+		<li><a href="#transformsignature">TransformSignature</a></li>
+		<li><a href="#updatesignature">UpdateSignature</a></li>
 	</ul>
 
 </ul>
@@ -32,11 +36,41 @@
 </p>
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
+<p><strong>FinalizeSignature</strong>( SignatureInfo *signature_info );</p>
+<p><strong>GetSignatureInfo</strong>( SignatureInfo *signature_info );</p>
 <p>unsigned int  <strong>SignatureImage</strong>( Image *image );</p>
+<p><strong>TransformSignature</strong>( SignatureInfo *signature_info );</p>
+<p><strong>UpdateSignature</strong>( SignatureInfo *signature_info, const unsigned char *message, const size_t length );</p>
 <p>
 </p>
 <hr />
 <h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
+<p>
+</p>
+<h2><a name="finalizesignature">FinalizeSignature</a></h2>
+<p>Method FinalizeSignature finalizes the SHA message digest computation.</p>
+<p>The format of the FinalizeSignature method is:</p>
+<blockquote>FinalizeSignature ( SignatureInfo *signature_info ); </blockquote><p>A description of each parameter follows:</p>
+<dl>
+<dt><strong><a name="item_o_signature_info%3a">o signature_info:</a></strong><br />
+</dt>
+<dd>
+The address of a structure of type SignatureInfo.
+</dd>
+<p></p></dl>
+<p>
+</p>
+<h2><a name="getsignatureinfo">GetSignatureInfo</a></h2>
+<p>Method GetSignatureInfo initializes the SHA message digest structure.</p>
+<p>The format of the GetSignatureInfo method is:</p>
+<blockquote>GetSignatureInfo ( SignatureInfo *signature_info ); </blockquote><p>A description of each parameter follows:</p>
+<dl>
+<dt><strong>o signature_info:</strong><br />
+</dt>
+<dd>
+The address of a structure of type SignatureInfo.
+</dd>
+<p></p></dl>
 <p>
 </p>
 <h2><a name="signatureimage">SignatureImage</a></h2>
@@ -47,6 +81,42 @@
 </dt>
 <dd>
 The image.
+</dd>
+<p></p></dl>
+<p>
+</p>
+<h2><a name="transformsignature">TransformSignature</a></h2>
+<blockquote>TransformSignature() transforms the SHA message digest. </blockquote><p>The format of the TransformSignature method is:</p>
+<blockquote>TransformSignature ( SignatureInfo *signature_info ); </blockquote><p>A description of each parameter follows:</p>
+<dl>
+<dt><strong>o signature_info:</strong><br />
+</dt>
+<dd>
+The address of a structure of type SignatureInfo.
+</dd>
+<p></p></dl>
+<p>
+</p>
+<h2><a name="updatesignature">UpdateSignature</a></h2>
+<blockquote>UpdateSignature() updates the SHA message digest. </blockquote><p>The format of the UpdateSignature method is:</p>
+<blockquote>UpdateSignature ( SignatureInfo *signature_info, const unsigned char *message, const size_t length ); </blockquote><p>A description of each parameter follows:</p>
+<dl>
+<dt><strong>o signature_info:</strong><br />
+</dt>
+<dd>
+The address of a structure of type SignatureInfo.
+</dd>
+<p></p>
+<dt><strong><a name="item_o_message%3a">o message:</a></strong><br />
+</dt>
+<dd>
+the message
+</dd>
+<p></p>
+<dt><strong><a name="item_o_length%3a">o length:</a></strong><br />
+</dt>
+<dd>
+The length of the message.
 </dd>
 </dl>
 

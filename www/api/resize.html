@@ -22,6 +22,7 @@
 		<li><a href="#resizeimage">ResizeImage</a></li>
 		<li><a href="#sampleimage">SampleImage</a></li>
 		<li><a href="#scaleimage">ScaleImage</a></li>
+		<li><a href="#thumbnailimage">ThumbnailImage</a></li>
 	</ul>
 
 </ul>
@@ -41,6 +42,7 @@
 <p>Image * <strong>ResizeImage</strong>( Image *image, const unsigned long columns, const unsigned long rows, const FilterTypes filter, const double blur, ExceptionInfo *exception );</p>
 <p>Image * <strong>SampleImage</strong>( const Image *image, const unsigned long columns, const unsigned long rows, ExceptionInfo *exception );</p>
 <p>Image * <strong>ScaleImage</strong>( const Image *image, const unsigned long columns, const unsigned long rows, ExceptionInfo *exception );</p>
+<p>Image * <strong>ThumbnailImage</strong>( const Image *image, const unsigned long columns, const unsigned long rows, ExceptionInfo *exception );</p>
 <p>
 </p>
 <hr />
@@ -165,6 +167,36 @@ Return any errors or warnings in this structure.
 <h2><a name="scaleimage">ScaleImage</a></h2>
 <blockquote>ScaleImage() changes the size of an image to the given dimensions. </blockquote><p>The format of the ScaleImage method is:</p>
 <blockquote><A HREF="types/Image.html">Image</A> *ScaleImage ( const <A HREF="types/Image.html">Image</A> *image, const unsigned long columns, const unsigned long rows, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
+<dl>
+<dt><strong>o image:</strong><br />
+</dt>
+<dd>
+The image.
+</dd>
+<p></p>
+<dt><strong>o columns:</strong><br />
+</dt>
+<dd>
+The number of columns in the scaled image.
+</dd>
+<p></p>
+<dt><strong>o rows:</strong><br />
+</dt>
+<dd>
+The number of rows in the scaled image.
+</dd>
+<p></p>
+<dt><strong>o exception:</strong><br />
+</dt>
+<dd>
+Return any errors or warnings in this structure.
+</dd>
+<p></p></dl>
+<p>
+</p>
+<h2><a name="thumbnailimage">ThumbnailImage</a></h2>
+<blockquote>ThumbnailImage() changes the size of an image to the given dimensions. This method was designed by Bob Friesenhahn as a low cost thumbnail generator. </blockquote><p>The format of the ThumbnailImage method is:</p>
+<blockquote><A HREF="types/Image.html">Image</A> *ThumbnailImage ( const <A HREF="types/Image.html">Image</A> *image, const unsigned long columns, const unsigned long rows, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o image:</strong><br />
 </dt>
