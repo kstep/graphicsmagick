@@ -108,33 +108,6 @@ static unsigned int
   ReadConfigurationFile(const char *,ExceptionInfo *);
 
 /*
-  Module stubs.
-*/
-#if !defined(HasMODULES)
-#if !defined(_VISUALC_)
-int lt_dlinit(void)
-{
-  return(0);
-}
-void *lt_dlopen(char *filename)
-{
-  return((void *) NULL);
-}
-void lt_dlclose(void *handle)
-{
-}
-const char *lt_dlerror(void)
-{
-  return((const char *) NULL);
-}
-void *lt_dlsym(void *handle,char *symbol)
-{
-  return((void *) NULL);
-}
-#endif
-#endif
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -239,6 +212,31 @@ MagickExport void DestroyModuleInfo(void)
 %      arguments.
 %
 */
+
+#if !defined(HasMODULES)
+#if !defined(_VISUALC_)
+int lt_dlinit(void)
+{
+  return(0);
+}
+void *lt_dlopen(char *filename)
+{
+  return((void *) NULL);
+}
+void lt_dlclose(void *handle)
+{
+}
+const char *lt_dlerror(void)
+{
+  return((const char *) NULL);
+}
+void *lt_dlsym(void *handle,char *symbol)
+{
+  return((void *) NULL);
+}
+#endif
+#endif
+
 MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image *image,
   const int argc,char **argv)
 {
