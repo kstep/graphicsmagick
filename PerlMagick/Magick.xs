@@ -7205,7 +7205,7 @@ QueryFontMetrics(ref,...)
         {
           if (LocaleCompare(attribute,"scale") == 0)
             {
-              (void) sscanf(SvPV(ST(i),na),"%lf%*[, /%lf",&affine.sx,
+              (void) sscanf(SvPV(ST(i),na),"%lf%*[,/]%lf",&affine.sx,
                 &affine.sy);
               break;
             }
