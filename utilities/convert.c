@@ -738,7 +738,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing matrix",option);
                 }
               break;
