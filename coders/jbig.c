@@ -277,32 +277,41 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
 */
 ModuleExport void RegisterJBIGImage(void)
 {
+#define JBIGDescription  "Joint Bi-level Image experts Group interchange format"
+
+  char
+	  version[MaxTextExtent];
+
   MagickInfo
     *entry;
 
+  *version='\0';
+#if defined(JBG_VERSION)
+  (void) strncpy(version,JBG_VERSION,MaxTextExtent-1);
+#endif
   entry=SetMagickInfo("BIE");
   entry->decoder=ReadJBIGImage;
   entry->encoder=WriteJBIGImage;
   entry->adjoin=False;
-  entry->description=
-    AcquireString("Joint Bi-level Image experts Group interchange format");
+  entry->description=AcquireString(JBIGDescription);
+  if (*version != '\0')
+    entry->version=AcquireString(version);
   entry->module=AcquireString("JBIG");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("JBG");
   entry->decoder=ReadJBIGImage;
   entry->encoder=WriteJBIGImage;
-  entry->description=
-    AcquireString("Joint Bi-level Image experts Group interchange format");
+  entry->description=AcquireString(JBIGDescription);
+  if (*version != '\0')
+    entry->version=AcquireString(version);
   entry->module=AcquireString("JBIG");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("JBIG");
   entry->decoder=ReadJBIGImage;
   entry->encoder=WriteJBIGImage;
-  entry->description=
-    AcquireString("Joint Bi-level Image experts Group interchange format");
-#if defined(JBG_VERSION)
-  entry->version=AcquireString(JBG_VERSION);
-#endif
+  entry->description=AcquireString(JBIGDescription);
+  if (*version != '\0')
+    entry->version=AcquireString(version);
   entry->module=AcquireString("JBIG");
   (void) RegisterMagickInfo(entry);
 }

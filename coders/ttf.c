@@ -250,37 +250,42 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 */
 ModuleExport void RegisterTTFImage(void)
 {
+#define TTFDescription  "TrueType font"
+  char
+    version[MaxTextExtent];
+
   MagickInfo
     *entry;
 
+  *version='\0';
+#if defined(FREETYPE_MAJOR) && defined(FREETYPE_MINOR)
+  FormatString(version,"%d.%d",FREETYPE_MAJOR,FREETYPE_MINOR);
+#endif
   entry=SetMagickInfo("TTF");
   entry->decoder=ReadTTFImage;
   entry->magick=IsTTF;
   entry->adjoin=False;
-  entry->description=AcquireString("TrueType font");
-#if defined(FREETYPE_MAJOR) && defined(FREETYPE_MINOR)
-  {
-    char
-      version[MaxTextExtent];
-
-    FormatString(version,"%d.%d",FREETYPE_MAJOR,FREETYPE_MINOR);
+  entry->description=AcquireString(TTFDescription);
+  if (*version != '\0')
     entry->version=AcquireString(version);
-  }
-#endif
   entry->module=AcquireString("TTF");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PFA");
   entry->decoder=ReadTTFImage;
   entry->magick=IsPFA;
   entry->adjoin=False;
-  entry->description=AcquireString("TrueType font");
+  entry->description=AcquireString(TTFDescription);
+  if (*version != '\0')
+    entry->version=AcquireString(version);
   entry->module=AcquireString("TTF");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PFB");
   entry->decoder=ReadTTFImage;
   entry->magick=IsPFA;
   entry->adjoin=False;
-  entry->description=AcquireString("TrueType font");
+  entry->description=AcquireString(TTFDescription);
+  if (*version != '\0')
+    entry->version=AcquireString(version);
   entry->module=AcquireString("TTF");
   (void) RegisterMagickInfo(entry);
 }
