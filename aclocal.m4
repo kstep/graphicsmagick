@@ -10,37 +10,6 @@ dnl but WITHOUT ANY WARRANTY, to the extent permitted by law; without
 dnl even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 dnl PARTICULAR PURPOSE.
 
-# RSSH_CHECK_SUNPROC_C([ACTION-IF-YES], [ACTION-IF-NOT])
-# ------------------------------------------------------
-# check : are we using SUN workshop C compiler.
-#  Corresponding cache value: rssh_cv_check_sunpro_c is set to yes or no
-#
-#@author  Ruslan Shevchenko <Ruslan@Shevchenko.Kiev.UA>, 1998, 2000
-#@version $Id$
-#
-#  RSSH_CHECK_SUNPRO_C([ACTION-IF-YES],[ACTION-IF-NOT])
-#
-AC_DEFUN([RSSH_CHECK_SUNPRO_C],
-[AC_CACHE_CHECK([whether using Sun Worckshop C compiler],
-                [rssh_cv_check_sunpro_c],
-
-[AC_LANG_SAVE
- AC_LANG_C
- AC_TRY_COMPILE([],
-[#ifndef __SUNPRO_C
-# include "error: this is not Sun Workshop."
-#endif
-],
-               rssh_cv_check_sunpro_c=yes,
-                rssh_cv_check_sunpro_c=no)
-AC_LANG_RESTORE])
-if test ${rssh_cv_check_sunpro_c} = yes
-then
-  $2
-else 
-  $3
-fi
-])# RSSH_CHECK_SUNPROC_C
 
 # RSSH_CHECK_SUNPROC_CC([ACTION-IF-YES], [ACTION-IF-NOT])
 # ------------------------------------------------------
@@ -53,7 +22,7 @@ fi
 #  RSSH_CHECK_SUNPRO_CC([ACTION-IF-YES],[ACTION-IF-NOT])
 #
 AC_DEFUN([RSSH_CHECK_SUNPRO_CC],
-[AC_CACHE_CHECK([whether using Sun Worckshop C++ compiler],
+[AC_CACHE_CHECK([whether using Sun Workshop C++ compiler],
                 [rssh_cv_check_sunpro_cc],
 
 [AC_LANG_SAVE
