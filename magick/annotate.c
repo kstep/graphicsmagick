@@ -863,7 +863,6 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
   metrics->bounds.y2=metrics->ascent+metrics->descent;
   metrics->underline_position=(-2.0);
   metrics->underline_thickness=1.0;
-  /*
   if (!render)
     {
       DestroyImage(annotate_image);

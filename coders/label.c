@@ -124,7 +124,6 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       /*
         Fit label to canvas size.
       */
-      /* first size text up until it no longer fits into the canvas */
       for ( ; GetTypeMetrics(image,draw_info,&metrics); draw_info->pointsize*=2)
       {
         width=(unsigned long) floor(metrics.width+metrics.max_advance+0.5);
