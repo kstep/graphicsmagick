@@ -178,13 +178,10 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
         unsigned long
           final_height,
-          final_width,
-          sampled_height,
-          sampled_width;
+          final_width;
 
-        const double
-          oversample=3,
-          oversample_threshold=2;
+        Image
+          *thumbnail;
 
         LogMagickEvent(CoderEvent,"(ReadVIDImage) original size %ldx%ld",
                        next_image->columns, next_image->rows);
@@ -194,28 +191,17 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         final_height=next_image->rows;
         GetMagickGeometry(clone_info->size,&x,&y,&final_width,&final_height);
 
-        sampled_width=(long)final_width*oversample;
-        sampled_height=(long)final_height*oversample;
-
-        if ( (next_image->columns > (sampled_width*oversample_threshold)) ||
-             (next_image->rows > (sampled_height*oversample_threshold)) )
-          {
-            Image
-              *sample_image;
-
-            LogMagickEvent(CoderEvent,"(ReadVIDImage) sampling to %ldx%ld",
-                           (long)sampled_width, (long)sampled_height);
-            sample_image=SampleImage(next_image,(long)sampled_width,
-                                     (long)sampled_height,exception);
-            if (sample_image != (Image *) NULL)
-              {
-                DestroyImage(next_image);
-                next_image=sample_image;
-              }
-          }
+        next_image->filter=BoxFilter;
         LogMagickEvent(CoderEvent,"(ReadVIDImage) zooming to %ldx%ld",
                        (long)final_width,(long)final_height);
-        (void) TransformImage(&next_image,(char *) NULL, clone_info->size);
+
+        thumbnail=ResizeImage(next_image,final_width,final_height,BoxFilter,1.0,exception);
+        if (thumbnail != (Image *) NULL)
+          {
+            DestroyImage(next_image);
+            next_image=thumbnail;
+          }
+        
         if (image == (Image *) NULL)
           image=next_image;
         else
