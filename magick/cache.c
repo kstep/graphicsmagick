@@ -2326,17 +2326,20 @@ static unsigned int WriteCacheImage(const ImageInfo *image_info,Image *image)
     attribute=GetImageAttribute(image,(char *) NULL);
     while (attribute != (ImageAttribute *) NULL)
     {
-      FormatString(buffer,"%.1024s=",attribute->key);
-      (void) WriteBlob(image,strlen(buffer),buffer);
-      for (i=0; i < strlen(attribute->value); i++)
-        if (isspace((int) attribute->value[i]))
-          break;
-      if (i < strlen(attribute->value))
-        (void) WriteByte(image,'{');
-      (void) WriteBlob(image,strlen(attribute->value),attribute->value);
-      if (i < strlen(attribute->value))
-        (void) WriteByte(image,'}');
-      (void) WriteByte(image,'\n');
+      if (attribute->value != NULL)
+        {
+          FormatString(buffer,"%.1024s=",attribute->key);
+          (void) WriteBlob(image,strlen(buffer),buffer);
+          for (i=0; i < strlen(attribute->value); i++)
+            if (isspace((int) attribute->value[i]))
+              break;
+          if (i < strlen(attribute->value))
+            (void) WriteByte(image,'{');
+          (void) WriteBlob(image,strlen(attribute->value),attribute->value);
+          if (i < strlen(attribute->value))
+            (void) WriteByte(image,'}');
+          (void) WriteByte(image,'\n');
+        }
       attribute=attribute->next;
     }
     (void) strcpy(buffer,"\f\n:\032");

@@ -368,9 +368,6 @@ Export AnnotateInfo *CloneAnnotateInfo(const ImageInfo *image_info,
   AnnotateInfo
     *cloned_info;
 
-  ExceptionInfo
-    exception;
-
   cloned_info=(AnnotateInfo *) AllocateMemory(sizeof(AnnotateInfo));
   if (cloned_info == (AnnotateInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to clone annotate info",
