@@ -829,39 +829,39 @@ typedef struct _ImageInfo
     compression;             /* Image compression to use while decoding */
 
   unsigned int
-    temporary,               /* Filename refers to a temporary file to remove */
+    temporary,               /* Remove file "filename" once it has been read. */
     adjoin,                  /* If True, join multiple frames into one file */
-    affirm,
+    affirm,                  /* Private, when true do not intuit image format */
     antialias;               /* If True, antialias while rendering */
 
   unsigned long
-    subimage,
-    subrange,
+    subimage,                /* Starting image scene ID to select */
+    subrange,                /* Span of image scene IDs (from starting scene) to select */
     depth;                   /* Number of quantum bits to preserve while encoding */
 
   char
     *size,                   /* Desired/known dimensions to use when decoding image */
-    *tile,
-    *page;
+    *tile,                   /* Deprecated, name of image to tile on background */
+    *page;                   /* Output page size & offset */
 
   InterlaceType
     interlace;               /* Interlace scheme to use when decoding image */
 
   EndianType
-    endian;
+    endian;                  /* Select MSB/LSB endian output for TIFF format */
 
   ResolutionType
-    units;
+    units;                   /* Units to apply when evaluating the density option */
 
   unsigned long
-    quality;
+    quality;                 /* Compression quality factor (format specific) */
 
   char
-    *sampling_factor,
-    *server_name,
-    *font,
-    *texture,
-    *density;
+    *sampling_factor,        /* JPEG, MPEG, and YUV chroma downsample factor */
+    *server_name,            /* X11 server display specification */
+    *font,                   /* Font name to use for text annotations */
+    *texture,                /* Name of texture image to use for background fills */
+    *density;                /* Image resolution (also see units) */
 
   double
     pointsize;               /* Font pointsize */
@@ -871,32 +871,32 @@ typedef struct _ImageInfo
 
   PixelPacket
     pen,                     /* Stroke or fill color while drawing */
-    background_color,
-    border_color,
-    matte_color;
+    background_color,        /* Background color */
+    border_color,            /* Border color (color surrounding frame) */
+    matte_color;             /* Matte color (frame color) */
 
   unsigned int
     dither,                  /* If true, dither image while writing */
     monochrome;              /* If true, use monochrome format */
 
   ColorspaceType
-    colorspace;
+    colorspace;              /* Colorspace representations of image pixels */
 
   ImageType
-    type;
+    type;                    /* Desired image type (used while writing) */
 
   PreviewType
     preview_type;            /* Private, used by PreviewImage */
 
   long
-    group;
+    group;                   /* X11 window group ID */
 
   unsigned int
     ping,                    /* Private, if true, read file header only */
     verbose;                 /* If true, display high-level processing */
 
   char
-    *view,
+    *view,                   /* FlashPIX view specification */
     *authenticate;           /* Password used to decrypt file */
 
   Image
@@ -906,24 +906,24 @@ typedef struct _ImageInfo
     *client_data;            /* User-specified data to pass to coder */
 
   void
-    *cache;
+    *cache;                  /* Private. Used to pass image via open cache */
 
   StreamHandler
-    stream;
+    stream;                  /* Pass in open blob stream handler for read/write */
 
   FILE
-  *file;                     /* If not null, stdio FILE to read image from */
+    *file;                   /* If not null, stdio FILE to read image from */
 
   void
     *blob;                   /* Private, used to pass in open blob */
 
   size_t
-    length;
+    length;                  /* Private, used to pass in open blob length */
 
   char
     magick[MaxTextExtent],   /* File format to read. Overrides file extension */
-    unique[MaxTextExtent],   /* Private, passes temporary to TranslateText */
-    zero[MaxTextExtent],     /* Private, passes temporary to TranslateText */
+    unique[MaxTextExtent],   /* Private, passes temporary filename to TranslateText */
+    zero[MaxTextExtent],     /* Private, passes temporary filename to TranslateText */
     filename[MaxTextExtent]; /* File name to read */
 
   unsigned long
