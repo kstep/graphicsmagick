@@ -1421,14 +1421,17 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
       encoding=EncodeSJIS(draw_info->text,&length);
       break;
     }
+    default:
+    {
+      if (!draw_info->unicode)
+        {
+          encoding=EncodeText(draw_info->text,&length);
+          break;
+        }
+    }
     case ft_encoding_unicode:
     {
       encoding=EncodeUnicode(draw_info->text,&length);
-      break;
-    }
-    default:
-    {
-      encoding=EncodeText(draw_info->text,&length);
       break;
     }
   }

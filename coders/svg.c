@@ -1943,6 +1943,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
     }
   if (LocaleCompare((char *) name,"svg") == 0)
     {
+      (void) fprintf(svg_info->file,"encoding UTF-8\n");
       if (attributes != (const xmlChar **) NULL)
         {
           char

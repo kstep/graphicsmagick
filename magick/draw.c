@@ -1888,6 +1888,16 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
             primitive_type=EllipsePrimitive;
             break;
           }
+        if (LocaleCompare("encoding",keyword) == 0)
+          {
+            GetToken(q,&q,token);
+            if (LocaleCompare("UTF-8",token) == 0)
+              {
+                graphic_context[n]->unicode=True;
+                break;
+              }
+            break;
+          }
         status=False;
         break;
       }
