@@ -167,6 +167,10 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   *clone_info=(*draw_info);
   if (draw_info->primitive != (char *) NULL)
     clone_info->primitive=AllocateString(draw_info->primitive);
+  if (draw_info->text != (char *) NULL)
+    clone_info->text=AllocateString(draw_info->text);
+  if (draw_info->geometry != (char *) NULL)
+    clone_info->geometry=AllocateString(draw_info->geometry);
   if (draw_info->dash_pattern != (unsigned int *) NULL)
     {
       register int
@@ -506,6 +510,10 @@ MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
   assert(draw_info->signature == MagickSignature);
   if (draw_info->primitive != (char *) NULL)
     LiberateMemory((void **) &draw_info->primitive);
+  if (draw_info->text != (char *) NULL)
+    LiberateMemory((void **) &draw_info->text);
+  if (draw_info->geometry != (char *) NULL)
+    LiberateMemory((void **) &draw_info->geometry);
   if (draw_info->font != (char *) NULL)
     LiberateMemory((void **) &draw_info->font);
   if (draw_info->density != (char *) NULL)
@@ -2907,49 +2915,21 @@ static unsigned int DrawPrimitive(const DrawInfo *draw_info,
     }
     case TextPrimitive:
     {
-      AnnotateInfo
-        *annotate;
+      char
+        geometry[MaxTextExtent];
 
-      ImageInfo
+      DrawInfo
         *clone_info;
 
       if (primitive_info->text == (char *) NULL)
         break;
-      clone_info=CloneImageInfo((ImageInfo *) NULL);
-      if (draw_info->font != (char *) NULL)
-        clone_info->font=AllocateString(draw_info->font);
-      clone_info->antialias=draw_info->text_antialias;
-      clone_info->pointsize=draw_info->pointsize;
-      if (draw_info->density != (char *) NULL)
-        clone_info->density=AllocateString(draw_info->density);
-      clone_info->affine=draw_info->affine;
-      if (draw_info->server_name != (char *) NULL)
-        clone_info->server_name=AllocateString(draw_info->server_name);
-      annotate=CloneAnnotateInfo(clone_info,(AnnotateInfo *) NULL);
-      DestroyImageInfo(clone_info);
-      annotate->stroke_width=draw_info->stroke_width;
-      annotate->pointsize=draw_info->pointsize;
-      annotate->gravity=draw_info->gravity;
-      annotate->decorate=draw_info->decorate;
-      annotate->geometry=AllocateString((char *) NULL);
-      annotate->fill=draw_info->fill;
-      annotate->stroke=draw_info->stroke;
-      annotate->box=draw_info->box;
-      CloneString(&annotate->text,primitive_info->text);
-      FormatString(annotate->geometry,"%+g%+g",primitive_info->point.x,
+      clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+      CloneString(&clone_info->text,primitive_info->text);
+      FormatString(geometry,"%+g%+g",primitive_info->point.x,
         primitive_info->point.y);
-      if (draw_info->clip_path.number_edges != 0)
-        {
-          annotate->clip_path.edges=(EdgeInfo *)
-            AcquireMemory(draw_info->clip_path.number_edges*sizeof(EdgeInfo));
-          if (annotate->clip_path.edges == (EdgeInfo *) NULL)
-            MagickError(ResourceLimitWarning,"Unable to clone clip path",
-              "Memory allocation failed");
-          memcpy(annotate->clip_path.edges,draw_info->clip_path.edges,
-            draw_info->clip_path.number_edges*sizeof(EdgeInfo));
-        }
-      status=AnnotateImage(image,annotate);
-      DestroyAnnotateInfo(annotate);
+      CloneString(&clone_info->geometry,geometry);
+      status=AnnotateImage(image,clone_info);
+      DestroyDrawInfo(clone_info);
       break;
     }
     case ImagePrimitive:

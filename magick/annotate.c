@@ -70,13 +70,13 @@
   Forward declarations.
 */
 static unsigned int
-  RenderFont(Image *,const AnnotateInfo *,const PointInfo *,
+  RenderFont(Image *,const DrawInfo *,const PointInfo *,
     const unsigned int,FontMetrics *),
-  RenderPostscript(Image *,const AnnotateInfo *,const PointInfo *,
+  RenderPostscript(Image *,const DrawInfo *,const PointInfo *,
     const unsigned int,FontMetrics *),
-  RenderTruetype(Image *,const AnnotateInfo *,const PointInfo *,
+  RenderTruetype(Image *,const DrawInfo *,const PointInfo *,
     const unsigned int,FontMetrics *),
-  RenderX11(Image *,const AnnotateInfo *,const PointInfo *,const unsigned int,
+  RenderX11(Image *,const DrawInfo *,const PointInfo *,const unsigned int,
     FontMetrics *);
 
 /*
@@ -96,7 +96,7 @@ static unsigned int
 %
 %  The format of the AnnotateImage method is:
 %
-%      unsigned int AnnotateImage(Image *image,AnnotateInfo *annotate_info)
+%      unsigned int AnnotateImage(Image *image,DrawInfo *draw_info)
 %
 %  A description of each parameter follows:
 %
@@ -105,26 +105,20 @@ static unsigned int
 %
 %    o image: The address of a structure of type Image.
 %
-%    o annotate_info: The address of a AnnotateInfo structure.
+%    o draw_info: The address of a DrawInfo structure.
 %
 %
 */
-MagickExport unsigned int AnnotateImage(Image *image,
-  const AnnotateInfo *annotate_info)
+MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
 {
-  AffineMatrix
-    affine;
-
-  AnnotateInfo
-    *clone_info;
-
   char
     primitive[MaxTextExtent],
     *text,
     **textlist;
 
   DrawInfo
-    *draw_info;
+    *annotate,
+    *clone_info;
 
   FontMetrics
     metrics;
@@ -152,13 +146,13 @@ MagickExport unsigned int AnnotateImage(Image *image,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  assert(annotate_info != (AnnotateInfo *) NULL);
-  assert(annotate_info->signature == MagickSignature);
-  if (annotate_info->text == (char *) NULL)
+  assert(draw_info != (DrawInfo *) NULL);
+  assert(draw_info->signature == MagickSignature);
+  if (draw_info->text == (char *) NULL)
     return(False);
-  if (*annotate_info->text == '\0')
+  if (*draw_info->text == '\0')
     return(False);
-  text=TranslateText((ImageInfo *) NULL,image,annotate_info->text);
+  text=TranslateText((ImageInfo *) NULL,image,draw_info->text);
   if (text == (char *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to annotate image",
       "Memory allocation failed");
@@ -179,7 +173,7 @@ MagickExport unsigned int AnnotateImage(Image *image,
   height=image->rows;
   x=0;
   y=0;
-  if (annotate_info->geometry != (char *) NULL)
+  if (draw_info->geometry != (char *) NULL)
     {
       unsigned int
         flags;
@@ -187,7 +181,7 @@ MagickExport unsigned int AnnotateImage(Image *image,
       /*
         User specified annotation geometry.
       */
-      flags=ParseGeometry(annotate_info->geometry,&x,&y,&width,&height);
+      flags=ParseGeometry(draw_info->geometry,&x,&y,&width,&height);
       if ((flags & XNegative) != 0)
         x+=image->columns;
       if ((flags & WidthValue) == 0)
@@ -197,14 +191,12 @@ MagickExport unsigned int AnnotateImage(Image *image,
       if ((flags & HeightValue) == 0)
         height-=2*y > height ? height : 2*y;
     }
-  clone_info=CloneAnnotateInfo((ImageInfo *) NULL,annotate_info);
-  if ((clone_info->fill.opacity == TransparentOpacity) &&
-      (clone_info->stroke.opacity == TransparentOpacity))
-    QueryColorDatabase("black",&clone_info->fill);
-  affine=annotate_info->affine;
-  draw_info=CloneDrawInfo((ImageInfo *) NULL,(DrawInfo *) NULL);
-  draw_info->primitive=AllocateString(primitive);
-  draw_info->affine=affine;
+  annotate=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+  if ((annotate->fill.opacity == TransparentOpacity) &&
+      (annotate->stroke.opacity == TransparentOpacity))
+    QueryColorDatabase("black",&annotate->fill);
+  clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+  clone_info->primitive=AllocateString(primitive);
   matte=image->matte;
   status=True;
   for (i=0; textlist[i] != (char *) NULL; i++)
@@ -214,37 +206,40 @@ MagickExport unsigned int AnnotateImage(Image *image,
     /*
       Position text relative to image.
     */
-    (void) CloneString(&clone_info->text,textlist[i]);
-    status=GetFontMetrics(image,clone_info,&metrics);
+    (void) CloneString(&annotate->text,textlist[i]);
+    status=GetFontMetrics(image,annotate,&metrics);
     if (status == False)
       break;
-    switch (clone_info->gravity)
+    switch (annotate->gravity)
     {
       case NorthWestGravity:
       {
-        offset.x=x+i*affine.ry*metrics.height;
-        offset.y=y+i*affine.sy*metrics.height;
+        offset.x=x+i*draw_info->affine.ry*metrics.height;
+        offset.y=y+i*draw_info->affine.sy*metrics.height;
         break;
       }
       case NorthGravity:
       {
-        offset.x=x+0.5*width+i*affine.ry*metrics.height-affine.sx*
-          metrics.width/2;
-        offset.y=y+i*affine.sy*metrics.height-affine.rx*metrics.width/2;
+        offset.x=x+0.5*width+i*draw_info->affine.ry*metrics.height-
+          draw_info->affine.sx*metrics.width/2;
+        offset.y=y+i*draw_info->affine.sy*metrics.height-
+          draw_info->affine.rx*metrics.width/2;
         break;
       }
       case NorthEastGravity:
       {
-        offset.x=x+width+i*affine.ry*metrics.height-affine.sx*metrics.width+1;
-        offset.y=y+i*affine.sy*metrics.height-affine.rx*metrics.width;
+        offset.x=x+width+i*draw_info->affine.ry*metrics.height-
+          draw_info->affine.sx*metrics.width+1;
+        offset.y=y+i*draw_info->affine.sy*metrics.height-
+          draw_info->affine.rx*metrics.width;
         break;
       }
       case WestGravity:
       {
-        offset.x=x+i*affine.ry*metrics.height+
-          affine.ry*(metrics.ascent+metrics.descent)/2;
-        offset.y=y+0.5*height+i*affine.sy*metrics.height+
-          affine.sy*(metrics.ascent+metrics.descent)/2+1;
+        offset.x=x+i*draw_info->affine.ry*metrics.height+
+          draw_info->affine.ry*(metrics.ascent+metrics.descent)/2;
+        offset.y=y+0.5*height+i*draw_info->affine.sy*metrics.height+
+          draw_info->affine.sy*(metrics.ascent+metrics.descent)/2+1;
         break;
       }
       case ForgetGravity:
@@ -252,272 +247,115 @@ MagickExport unsigned int AnnotateImage(Image *image,
       case CenterGravity:
       default:
       {
-        offset.x=x+0.5*width+i*affine.ry*metrics.height-affine.sx*
-          metrics.width/2+affine.ry*(metrics.ascent+metrics.descent)/2;
-        offset.y=y+0.5*height+i*affine.sy*metrics.height-affine.rx*
-          metrics.width/2+affine.sy*(metrics.ascent+metrics.descent)/2+1;
+        offset.x=x+0.5*width+i*draw_info->affine.ry*metrics.height-
+          draw_info->affine.sx*metrics.width/2+draw_info->affine.ry*
+          (metrics.ascent+metrics.descent)/2;
+        offset.y=y+0.5*height+i*draw_info->affine.sy*metrics.height-
+          draw_info->affine.rx*metrics.width/2+draw_info->affine.sy*
+          (metrics.ascent+metrics.descent)/2+1;
         break;
       }
       case EastGravity:
       {
-        offset.x=x+width+i*affine.ry*metrics.height-affine.sx*
-          metrics.width+affine.ry*(metrics.ascent+metrics.descent)/2+1;
-        offset.y=y+0.5*height+i*affine.sy*metrics.height-affine.rx*
-          metrics.width+affine.sy*(metrics.ascent+metrics.descent)/2+1;
+        offset.x=x+width+i*draw_info->affine.ry*metrics.height-
+          draw_info->affine.sx*metrics.width+draw_info->affine.ry*
+          (metrics.ascent+metrics.descent)/2+1;
+        offset.y=y+0.5*height+i*draw_info->affine.sy*metrics.height-
+          draw_info->affine.rx*metrics.width+draw_info->affine.sy*
+          (metrics.ascent+metrics.descent)/2+1;
         break;
       }
       case SouthWestGravity:
       {
-        offset.x=x+i*affine.ry*metrics.height+
-          affine.ry*(metrics.ascent+metrics.descent);
-        offset.y=y+height+i*affine.sy*metrics.height+
-          affine.sy*(metrics.ascent+metrics.descent)+1;
+        offset.x=x+i*draw_info->affine.ry*metrics.height+
+          draw_info->affine.ry*(metrics.ascent+metrics.descent);
+        offset.y=y+height+i*draw_info->affine.sy*metrics.height+
+          draw_info->affine.sy*(metrics.ascent+metrics.descent)+1;
         break;
       }
       case SouthGravity:
       {
-        offset.x=x+0.5*width+i*affine.ry*metrics.height-affine.sx*
-          metrics.width/2+affine.ry*(metrics.ascent+metrics.descent);
-        offset.y=y+height+i*affine.sy*metrics.height-affine.rx*
-          metrics.width/2+affine.sy*(metrics.ascent+metrics.descent)+1;
+        offset.x=x+0.5*width+i*draw_info->affine.ry*metrics.height-
+          draw_info->affine.sx*metrics.width/2+draw_info->affine.ry*
+          (metrics.ascent+metrics.descent);
+        offset.y=y+height+i*draw_info->affine.sy*metrics.height-
+          draw_info->affine.rx*metrics.width/2+draw_info->affine.sy*
+          (metrics.ascent+metrics.descent)+1;
         break;
       }
       case SouthEastGravity:
       {
-        offset.x=x+width+i*affine.ry*metrics.height-affine.sx*metrics.width+
-          affine.ry*(metrics.ascent+metrics.descent)+1;
-        offset.y=y+height+i*affine.sy*metrics.height-affine.rx*metrics.width+
-          affine.sy*(metrics.ascent+metrics.descent)+1;
+        offset.x=x+width+i*draw_info->affine.ry*metrics.height-
+          draw_info->affine.sx*metrics.width+draw_info->affine.ry*
+          (metrics.ascent+metrics.descent)+1;
+        offset.y=y+height+i*draw_info->affine.sy*metrics.height-
+          draw_info->affine.rx*metrics.width+draw_info->affine.sy*
+          (metrics.ascent+metrics.descent)+1;
         break;
       }
     }
-    if (annotate_info->box.opacity != TransparentOpacity)
+    if (draw_info->box.opacity != TransparentOpacity)
       {
-
         /*
           Text box.
         */
-        draw_info->fill=annotate_info->box;
-        draw_info->affine.tx=offset.x-affine.ry*metrics.ascent;
-        draw_info->affine.ty=offset.y-affine.sy*metrics.ascent;
-        FormatString(draw_info->primitive,"rect 0,0 %d,%d",(int) metrics.width,
+        clone_info->fill=draw_info->box;
+        clone_info->affine.tx=offset.x-draw_info->affine.ry*metrics.ascent;
+        clone_info->affine.ty=offset.y-draw_info->affine.sy*metrics.ascent;
+        FormatString(primitive,"rect 0,0 %d,%d",(int) metrics.width,
           (int) metrics.height);
-        DrawImage(image,draw_info);
+        CloneString(&clone_info->primitive,primitive);
+        DrawImage(image,clone_info);
       }
     /*
       Annotate image with text.
     */
-    status=RenderFont(image,clone_info,&offset,True,&metrics);
+    status=RenderFont(image,annotate,&offset,True,&metrics);
     if (status == False)
       break;
-    if (clone_info->decorate == NoDecoration)
+    if (annotate->decorate == NoDecoration)
       continue;
     /*
       Decorate text.
     */
-    draw_info->affine.tx=offset.x;
-    draw_info->affine.ty=offset.y;
-    if (clone_info->decorate == OverlineDecoration)
+    clone_info->affine.tx=offset.x;
+    clone_info->affine.ty=offset.y;
+    if (annotate->decorate == OverlineDecoration)
       {
-        draw_info->affine.tx-=affine.ry*(metrics.ascent+metrics.descent)+1;
-        draw_info->affine.ty-=affine.sy*(metrics.ascent+metrics.descent)+1;
+        clone_info->affine.tx-=draw_info->affine.ry*
+          (metrics.ascent+metrics.descent)+1;
+        clone_info->affine.ty-=draw_info->affine.sy*
+          (metrics.ascent+metrics.descent)+1;
       }
     else
-      if (clone_info->decorate == UnderlineDecoration)
+      if (annotate->decorate == UnderlineDecoration)
         {
-          draw_info->affine.tx++;
-          draw_info->affine.ty++;
+          clone_info->affine.tx++;
+          clone_info->affine.ty++;
         }
       else
         {
-          draw_info->affine.tx-=affine.ry*(metrics.ascent+metrics.descent)/2;
-          draw_info->affine.ty-=affine.sy*(metrics.ascent+metrics.descent)/2;
+          clone_info->affine.tx-=draw_info->affine.ry*
+            (metrics.ascent+metrics.descent)/2;
+          clone_info->affine.ty-=draw_info->affine.sy*
+            (metrics.ascent+metrics.descent)/2;
         }
-    draw_info->fill=annotate_info->fill;
-    FormatString(draw_info->primitive,"line 0,0 %d,0",(int) metrics.width);
-    DrawImage(image,draw_info);
+    clone_info->fill=draw_info->fill;
+    FormatString(primitive,"line 0,0 %d,0",(int) metrics.width);
+    CloneString(&clone_info->primitive,primitive);
+    DrawImage(image,clone_info);
   }
   image->matte=matte;
   /*
     Free resources.
   */
-  DestroyDrawInfo(draw_info);
-  DestroyAnnotateInfo(clone_info);
+  DestroyDrawInfo(clone_info);
+  DestroyDrawInfo(annotate);
   LiberateMemory((void **) &text);
   for (i=0; textlist[i] != (char *) NULL; i++)
     LiberateMemory((void **) &textlist[i]);
   LiberateMemory((void **) &textlist);
   return(status);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   C l o n e A n n o t a t e I n f o                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method CloneAnnotateInfo makes a duplicate of the given annotate info, or if
-%  annotate info is NULL, a new one.
-%
-%  The format of the CloneAnnotateInfo method is:
-%
-%      AnnotateInfo *CloneAnnotateInfo(const ImageInfo *image_info,
-%        const AnnotateInfo *annotate_info)
-%
-%  A description of each parameter follows:
-%
-%    o clone_info: Method CloneAnnotateInfo returns a duplicate of the given
-%      annotate info, or if annotate info is NULL a new one.
-%
-%    o image_info: a structure of type info.
-%
-%    o annotate_info: a structure of type info.
-%
-%
-*/
-MagickExport AnnotateInfo *CloneAnnotateInfo(const ImageInfo *image_info,
-  const AnnotateInfo *annotate_info)
-{
-  AnnotateInfo
-    *clone_info;
-
-  clone_info=(AnnotateInfo *) AcquireMemory(sizeof(AnnotateInfo));
-  if (clone_info == (AnnotateInfo *) NULL)
-    MagickError(ResourceLimitError,"Unable to clone annotate info",
-      "Memory allocation failed");
-  if (annotate_info == (AnnotateInfo *) NULL)
-    {
-      GetAnnotateInfo(image_info,clone_info);
-      return(clone_info);
-    }
-  *clone_info=(*annotate_info);
-  if (annotate_info->geometry != (char *) NULL)
-    clone_info->geometry=AllocateString(annotate_info->geometry);
-  if (annotate_info->text != (char *) NULL)
-    clone_info->text=AllocateString(annotate_info->text);
-  if (annotate_info->font != (char *) NULL)
-    clone_info->font=AllocateString(annotate_info->font);
-  if (annotate_info->density != (char *) NULL)
-    clone_info->density=AllocateString(annotate_info->density);
-  if (annotate_info->server_name != (char *) NULL)
-    clone_info->server_name=AllocateString(annotate_info->server_name);
-  if (annotate_info->clip_path.number_edges != 0)
-    {
-      clone_info->clip_path.edges=(EdgeInfo *)
-        AcquireMemory(annotate_info->clip_path.number_edges*sizeof(EdgeInfo));
-      if (clone_info->clip_path.edges == (EdgeInfo *) NULL)
-        MagickError(ResourceLimitWarning,"Unable to clone annotate info",
-          "Memory allocation failed");
-      memcpy(clone_info->clip_path.edges,annotate_info->clip_path.edges,
-        annotate_info->clip_path.number_edges*sizeof(EdgeInfo));
-    }
-  return(clone_info);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   D e s t r o y A n n o t a t e I n f o                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method DestroyAnnotateInfo deallocates memory associated with an
-%  AnnotateInfo structure.
-%
-%  The format of the DestroyAnnotateInfo method is:
-%
-%      void DestroyAnnotateInfo(AnnotateInfo *annotate_info)
-%
-%  A description of each parameter follows:
-%
-%    o annotate_info: Specifies a pointer to an AnnotateInfo structure.
-%
-%
-*/
-MagickExport void DestroyAnnotateInfo(AnnotateInfo *annotate_info)
-{
-  assert(annotate_info != (AnnotateInfo *) NULL);
-  assert(annotate_info->signature == MagickSignature);
-  if (annotate_info->geometry != (char *) NULL)
-    LiberateMemory((void **) &annotate_info->geometry);
-  if (annotate_info->text != (char *) NULL)
-    LiberateMemory((void **) &annotate_info->text);
-  if (annotate_info->font != (char *) NULL)
-    LiberateMemory((void **) &annotate_info->font);
-  if (annotate_info->density != (char *) NULL)
-    LiberateMemory((void **) &annotate_info->density);
-  if (annotate_info->server_name != (char *) NULL)
-    LiberateMemory((void **) &annotate_info->server_name);
-  if (annotate_info->clip_path.edges != (EdgeInfo *) NULL)
-    LiberateMemory((void **) &annotate_info->clip_path.edges);
-  LiberateMemory((void **) &annotate_info);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t A n n o t a t e I n f o                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method GetAnnotateInfo initializes the AnnotateInfo structure.
-%
-%  The format of the GetAnnotateInfo method is:
-%
-%      void GetAnnotateInfo(const ImageInfo *image_info,
-%        AnnotateInfo *annotate_info)
-%
-%  A description of each parameter follows:
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o annotate_info: Specifies a pointer to a AnnotateInfo structure.
-%
-%
-*/
-MagickExport void GetAnnotateInfo(const ImageInfo *image_info,
-  AnnotateInfo *annotate_info)
-{
-  ImageInfo
-    *clone_info;
-
-  /*
-    Initialize annotate attributes;
-  */
-  assert(annotate_info != (AnnotateInfo *) NULL);
-  clone_info=CloneImageInfo(image_info);
-  memset(annotate_info,0,sizeof(AnnotateInfo));
-  annotate_info->text=AllocateString(clone_info->filename);
-  if (clone_info->font != (char *) NULL)
-    annotate_info->font=AllocateString(clone_info->font);
-  if (clone_info->density != (char *) NULL)
-    annotate_info->density=AllocateString(clone_info->density);
-  annotate_info->antialias=clone_info->antialias;
-  annotate_info->gravity=(GravityType) NorthWestGravity;
-  annotate_info->stroke_width=1.0;
-  annotate_info->pointsize=clone_info->pointsize;
-  annotate_info->affine=clone_info->affine;
-  annotate_info->fill=clone_info->fill;
-  annotate_info->stroke=clone_info->stroke;
-  (void) QueryColorDatabase("none",&annotate_info->box);
-  annotate_info->decorate=NoDecoration;
-  if (clone_info->server_name != (char *) NULL)
-    annotate_info->server_name=AllocateString(clone_info->server_name);
-  annotate_info->signature=MagickSignature;
-  DestroyImageInfo(clone_info);
 }
 
 /*
@@ -545,7 +383,7 @@ MagickExport void GetAnnotateInfo(const ImageInfo *image_info,
 %  The format of the GetFontMetrics method is:
 %
 %      unsigned int GetFontMetrics(Image *image,
-%        const AnnotateInfo *annotate_info,FontInfo metrics)
+%        const DrawInfo *draw_info,FontInfo metrics)
 %
 %  A description of each parameter follows:
 %
@@ -554,14 +392,14 @@ MagickExport void GetAnnotateInfo(const ImageInfo *image_info,
 %
 %    o image: The address of a structure of type Image.
 %
-%    o annotate_info: Specifies a pointer to a AnnotateInfo structure.
+%    o draw_info: Specifies a pointer to a DrawInfo structure.
 %
 %    o metrics: Method GetFontMetrics returns the font metrics.
 %
 %
 */
 MagickExport unsigned int GetFontMetrics(Image *image,
-  const AnnotateInfo *annotate_info,FontMetrics *metrics)
+  const DrawInfo *draw_info,FontMetrics *metrics)
 {
   PointInfo
     offset;
@@ -569,12 +407,12 @@ MagickExport unsigned int GetFontMetrics(Image *image,
   unsigned int
     status;
 
-  assert(annotate_info != (AnnotateInfo *) NULL);
-  assert(annotate_info->text != (char *) NULL);
-  assert(annotate_info->signature == MagickSignature);
+  assert(draw_info != (DrawInfo *) NULL);
+  assert(draw_info->text != (char *) NULL);
+  assert(draw_info->signature == MagickSignature);
   offset.x=0.0;
   offset.y=0.0;
-  status=RenderFont(image,annotate_info,&offset,False,metrics);
+  status=RenderFont(image,draw_info,&offset,False,metrics);
   return(status);
 }
 
@@ -594,7 +432,7 @@ MagickExport unsigned int GetFontMetrics(Image *image,
 %
 %  The format of the RenderFont method is:
 %
-%      unsigned int RenderFont(Image *image,AnnotateInfo *annotate_info,
+%      unsigned int RenderFont(Image *image,DrawInfo *draw_info,
 %        const PointInfo *offset,const unsigned int render,FontMetrics *metrics)
 %
 %  A description of each parameter follows:
@@ -604,7 +442,7 @@ MagickExport unsigned int GetFontMetrics(Image *image,
 %
 %    o image: The address of a structure of type Image.
 %
-%    o annotate_info: The address of a AnnotateInfo structure.
+%    o draw_info: The address of a DrawInfo structure.
 %
 %    o offset: (x,y) location of text relative to image.
 %
@@ -615,10 +453,10 @@ MagickExport unsigned int GetFontMetrics(Image *image,
 %
 %
 */
-static unsigned int RenderFont(Image *image,const AnnotateInfo *annotate_info,
+static unsigned int RenderFont(Image *image,const DrawInfo *draw_info,
   const PointInfo *offset,const unsigned int render,FontMetrics *metrics)
 {
-  AnnotateInfo
+  DrawInfo
     *clone_info;
 
   ImageInfo
@@ -627,17 +465,17 @@ static unsigned int RenderFont(Image *image,const AnnotateInfo *annotate_info,
   unsigned int
     status;
 
-  if (annotate_info->font == (char *) NULL)
-    return(RenderPostscript(image,annotate_info,offset,render,metrics));
+  if (draw_info->font == (char *) NULL)
+    return(RenderPostscript(image,draw_info,offset,render,metrics));
   image_info=CloneImageInfo((ImageInfo *) NULL);
-  (void) strcpy(image_info->filename,annotate_info->font);
+  (void) strcpy(image_info->filename,draw_info->font);
   (void) strcpy(image_info->magick,"PS");
   if (*image_info->filename == '@')
     (void) strcpy(image_info->magick,"TTF");
   if (*image_info->filename == '-')
     (void) strcpy(image_info->magick,"X");
   (void) SetImageInfo(image_info,False);
-  clone_info=CloneAnnotateInfo(image_info,annotate_info);
+  clone_info=CloneDrawInfo(image_info,draw_info);
   if (*image_info->filename != '@')
     CloneString(&clone_info->font,image_info->filename);
   else
@@ -652,7 +490,7 @@ static unsigned int RenderFont(Image *image,const AnnotateInfo *annotate_info,
         status=RenderX11(image,clone_info,offset,render,metrics);
       else
         status=RenderPostscript(image,clone_info,offset,render,metrics);
-  DestroyAnnotateInfo(clone_info);
+  DestroyDrawInfo(clone_info);
   DestroyImageInfo(image_info);
   return(status);
 }
@@ -673,7 +511,7 @@ static unsigned int RenderFont(Image *image,const AnnotateInfo *annotate_info,
 %
 %  The format of the RenderPostscript method is:
 %
-%      unsigned int RenderPostscript(Image *image,AnnotateInfo *annotate_info,
+%      unsigned int RenderPostscript(Image *image,DrawInfo *draw_info,
 %        const PointInfo *offset,const unsigned int render,FontMetrics *metrics)
 %
 %  A description of each parameter follows:
@@ -683,7 +521,7 @@ static unsigned int RenderFont(Image *image,const AnnotateInfo *annotate_info,
 %
 %    o image: The address of a structure of type Image.
 %
-%    o annotate_info: The address of a AnnotateInfo structure.
+%    o draw_info: The address of a DrawInfo structure.
 %
 %    o offset: (x,y) location of text relative to image.
 %
@@ -724,9 +562,8 @@ static char *EscapeParenthesis(const char *text)
   return(buffer);
 }
 
-static unsigned int RenderPostscript(Image *image,
-  const AnnotateInfo *annotate_info,const PointInfo *offset,
-  const unsigned int render,FontMetrics *metrics)
+static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
+  const PointInfo *offset,const unsigned int render,FontMetrics *metrics)
 {
   char
     filename[MaxTextExtent],
@@ -781,16 +618,16 @@ static unsigned int RenderPostscript(Image *image,
   /*
     Sample to compute bounding box.
   */
-  identity=(annotate_info->affine.sx == annotate_info->affine.sy) &&
-    (annotate_info->affine.rx == 0.0) && (annotate_info->affine.ry == 0.0);
+  identity=(draw_info->affine.sx == draw_info->affine.sy) &&
+    (draw_info->affine.rx == 0.0) && (draw_info->affine.ry == 0.0);
   extent.x=0.0;
   extent.y=0.0;
-  for (i=0; i <= (Extent(annotate_info->text)+2); i++)
+  for (i=0; i <= (Extent(draw_info->text)+2); i++)
   {
-    point.x=fabs(annotate_info->affine.sx*i*annotate_info->pointsize+
-      annotate_info->affine.ry*2.0*annotate_info->pointsize);
-    point.y=fabs(annotate_info->affine.rx*i*annotate_info->pointsize+
-      annotate_info->affine.sy*2.0*annotate_info->pointsize);
+    point.x=fabs(draw_info->affine.sx*i*draw_info->pointsize+
+      draw_info->affine.ry*2.0*draw_info->pointsize);
+    point.y=fabs(draw_info->affine.rx*i*draw_info->pointsize+
+      draw_info->affine.sy*2.0*draw_info->pointsize);
     if (point.x > extent.x)
       extent.x=point.x;
     if (point.y > extent.y)
@@ -798,23 +635,23 @@ static unsigned int RenderPostscript(Image *image,
   }
   (void) fprintf(file,"%g %g moveto\n",identity ? 0.0 : extent.x/2.0,
     extent.y/2.0);
-  (void) fprintf(file,"%g %g scale\n",annotate_info->pointsize,
-    annotate_info->pointsize);
-  if ((annotate_info->font == (char *) NULL) || (*annotate_info->font == '\0'))
+  (void) fprintf(file,"%g %g scale\n",draw_info->pointsize,
+    draw_info->pointsize);
+  if ((draw_info->font == (char *) NULL) || (*draw_info->font == '\0'))
     (void) fprintf(file,
       "/Times-ISO dup /Times ReencodeFont findfont setfont\n");
   else
     (void) fprintf(file,
       "/%.1024s-ISO dup /%.1024s ReencodeFont findfont setfont\n",
-      annotate_info->font,annotate_info->font);
-  (void) fprintf(file,"[%g %g %g %g 0 0] concat\n",annotate_info->affine.sx,
-    -annotate_info->affine.rx,-annotate_info->affine.ry,
-    annotate_info->affine.sy);
+      draw_info->font,draw_info->font);
+  (void) fprintf(file,"[%g %g %g %g 0 0] concat\n",draw_info->affine.sx,
+    -draw_info->affine.rx,-draw_info->affine.ry,
+    draw_info->affine.sy);
   if (!identity)
     (void) fprintf(file,"(%.1024s) stringwidth pop -0.5 mul -0.5 rmoveto\n",
-      EscapeParenthesis(annotate_info->text));
+      EscapeParenthesis(draw_info->text));
   (void) fprintf(file,"(%.1024s) show\n",
-    EscapeParenthesis(annotate_info->text));
+    EscapeParenthesis(draw_info->text));
   (void) fprintf(file,"showpage\n");
   (void) fclose(file);
   FormatString(geometry,"%dx%d+0+0!",(int) ceil(extent.x-0.5),
@@ -822,8 +659,8 @@ static unsigned int RenderPostscript(Image *image,
   clone_info=CloneImageInfo((ImageInfo *) NULL);
   (void) FormatString(clone_info->filename,"ps:%.1024s",filename);
   (void) CloneString(&clone_info->page,geometry);
-  if (annotate_info->density != (char *) NULL)
-    (void) CloneString(&clone_info->density,annotate_info->density);
+  if (draw_info->density != (char *) NULL)
+    (void) CloneString(&clone_info->density,draw_info->density);
   GetExceptionInfo(&exception);
   annotate_image=ReadImage(clone_info,&exception);
   DestroyImageInfo(clone_info);
@@ -833,12 +670,12 @@ static unsigned int RenderPostscript(Image *image,
     return(False);
   resolution.x=72.0;
   resolution.y=72.0;
-  if (annotate_info->density != (char *) NULL)
+  if (draw_info->density != (char *) NULL)
     {
       int
         count;
 
-      count=sscanf(annotate_info->density,"%lfx%lf",&resolution.x,
+      count=sscanf(draw_info->density,"%lfx%lf",&resolution.x,
         &resolution.y);
       if (count != 2)
         resolution.y=resolution.x;
@@ -852,18 +689,18 @@ static unsigned int RenderPostscript(Image *image,
 
       crop_info=GetImageBoundingBox(annotate_image);
       crop_info.height=(unsigned int) ceil((resolution.y/72.0)*
-        ExpandAffine(&annotate_info->affine)*annotate_info->pointsize-0.5);
+        ExpandAffine(&draw_info->affine)*draw_info->pointsize-0.5);
       crop_info.y=(int) ceil((resolution.y/72.0)*extent.y/8.0-0.5);
       (void) FormatString(geometry,"%ux%u%+d%+d",crop_info.width,
         crop_info.height,crop_info.x,crop_info.y);
       TransformImage(&annotate_image,geometry,(char *) NULL);
     }
   metrics->pixels_per_em.x=(resolution.y/72.0)*
-    ExpandAffine(&annotate_info->affine)*annotate_info->pointsize;
+    ExpandAffine(&draw_info->affine)*draw_info->pointsize;
   metrics->pixels_per_em.y=metrics->pixels_per_em.x;
   metrics->ascent=metrics->pixels_per_em.x;
   metrics->descent=(int) metrics->pixels_per_em.y/-5;
-  metrics->width=annotate_image->columns/ExpandAffine(&annotate_info->affine);
+  metrics->width=annotate_image->columns/ExpandAffine(&draw_info->affine);
   metrics->height=1.152*metrics->pixels_per_em.x;
   metrics->max_advance=metrics->pixels_per_em.x;
   if (!render)
@@ -871,7 +708,7 @@ static unsigned int RenderPostscript(Image *image,
       DestroyImage(annotate_image);
       return(True);
     }
-  if (annotate_info->fill.opacity != TransparentOpacity)
+  if (draw_info->fill.opacity != TransparentOpacity)
     {
       PixelPacket
         fill_color;
@@ -880,7 +717,7 @@ static unsigned int RenderPostscript(Image *image,
         Render fill color.
       */
       annotate_image->matte=True;
-      fill_color=annotate_info->fill;
+      fill_color=draw_info->fill;
       for (y=0; y < (int) annotate_image->rows; y++)
       {
         q=GetImagePixels(annotate_image,0,y,annotate_image->columns,1);
@@ -922,7 +759,7 @@ static unsigned int RenderPostscript(Image *image,
 %
 %  The format of the RenderTruetype method is:
 %
-%      unsigned int RenderTruetype(Image *image,AnnotateInfo *annotate_info,
+%      unsigned int RenderTruetype(Image *image,DrawInfo *draw_info,
 %        const PointInfo *offset,const unsigned int render,FontMetrics *metrics)
 %
 %  A description of each parameter follows:
@@ -932,7 +769,7 @@ static unsigned int RenderPostscript(Image *image,
 %
 %    o image: The address of a structure of type Image.
 %
-%    o annotate_info: The address of a AnnotateInfo structure.
+%    o draw_info: The address of a DrawInfo structure.
 %
 %    o offset: (x,y) location of text relative to image.
 %
@@ -990,9 +827,8 @@ static int QuadraticBezier(FT_Vector *control,FT_Vector *to,
   return(0);
 }
 
-static unsigned int RenderTruetype(Image *image,
-  const AnnotateInfo *annotate_info,const PointInfo *offset,
-  const unsigned int render,FontMetrics *metrics)
+static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
+  const PointInfo *offset,const unsigned int render,FontMetrics *metrics)
 {
   typedef struct TGlyph_
   {
@@ -1010,7 +846,7 @@ static unsigned int RenderTruetype(Image *image,
     filename[MaxTextExtent];
 
   DrawInfo
-    *draw_info;
+    *clone_info;
 
   FT_BBox
     bounding_box;
@@ -1093,10 +929,10 @@ static unsigned int RenderTruetype(Image *image,
       status=FT_Init_FreeType(&library);
       if (status)
         ThrowBinaryException(DelegateWarning,"Unable to open freetype library",
-          annotate_info->font);
+          draw_info->font);
     }
   if ((face == (FT_Face) NULL) ||
-      (LocaleCompare(annotate_info->font,font) != 0))
+      (LocaleCompare(draw_info->font,font) != 0))
     {
       register char
         *p,
@@ -1130,37 +966,37 @@ static unsigned int RenderTruetype(Image *image,
           i=strlen(filename);
           if ((i > 0) && (!IsBasenameSeparator(filename[i-1])))
             (void) strcat(filename,DirectorySeparator);
-          (void) strcat(filename,annotate_info->font);
+          (void) strcat(filename,draw_info->font);
           status=FT_New_Face(library,filename,0,&face);
           if (!status || (q == (char *) NULL) || (*q == '\0'))
             break;
           p=q+1;
         }
       if (status)
-        status=FT_New_Face(library,annotate_info->font,0,&face);
+        status=FT_New_Face(library,draw_info->font,0,&face);
       if (status)
         ThrowBinaryException(DelegateWarning,"Unable to read font",
-          annotate_info->font);
+          draw_info->font);
     }
   resolution.x=72.0;
   resolution.y=72.0;
-  if (annotate_info->density != (char *) NULL)
+  if (draw_info->density != (char *) NULL)
     {
       int
         count;
 
-      count=sscanf(annotate_info->density,"%lfx%lf",&resolution.x,
+      count=sscanf(draw_info->density,"%lfx%lf",&resolution.x,
         &resolution.y);
       if (count != 2)
         resolution.y=resolution.x;
     }
-  (void) FT_Set_Char_Size(face,(long int) (64.0*annotate_info->pointsize),
-    (long int) (64.0*annotate_info->pointsize),(unsigned int) resolution.x,
+  (void) FT_Set_Char_Size(face,(long int) (64.0*draw_info->pointsize),
+    (long int) (64.0*draw_info->pointsize),(unsigned int) resolution.x,
     (unsigned int) resolution.y);
   /*
     Convert to Unicode.
   */
-  unicode=ConvertTextToUnicode(annotate_info->text,&length);
+  unicode=ConvertTextToUnicode(draw_info->text,&length);
   glyphs=(TGlyph *) AcquireMemory((length+1)*sizeof(TGlyph));
   if ((unicode == (unsigned short *) NULL) || (glyphs == (TGlyph *) NULL))
     {
@@ -1177,10 +1013,10 @@ static unsigned int RenderTruetype(Image *image,
   extent.x2=(-32000);
   extent.y1=32000;
   extent.y2=(-32000);
-  affine.xx=(FT_Fixed) (65536.0*annotate_info->affine.sx);
-  affine.yx=(FT_Fixed) (-65536.0*annotate_info->affine.rx);
-  affine.xy=(FT_Fixed) (-65536.0*annotate_info->affine.ry);
-  affine.yy=(FT_Fixed) (65536.0*annotate_info->affine.sy);
+  affine.xx=(FT_Fixed) (65536.0*draw_info->affine.sx);
+  affine.yx=(FT_Fixed) (-65536.0*draw_info->affine.rx);
+  affine.xy=(FT_Fixed) (-65536.0*draw_info->affine.ry);
+  affine.yy=(FT_Fixed) (65536.0*draw_info->affine.sy);
   glyph=glyphs;
   for (i=0; i < length; i++)
   {
@@ -1230,10 +1066,11 @@ static unsigned int RenderTruetype(Image *image,
   /*
     Render text.
   */
+  clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   origin.x=0;
   origin.y=0;
   image->storage_class=DirectClass;
-  fill_color=annotate_info->fill;
+  fill_color=draw_info->fill;
   for (glyph=glyphs; glyph->id != 0; glyph++)
   {
     if (glyph->image == (FT_Glyph) NULL)
@@ -1245,7 +1082,7 @@ static unsigned int RenderTruetype(Image *image,
     bitmap=(FT_BitmapGlyph) glyph->image;
     point.x=offset->x+bitmap->left;
     point.y=offset->y-bitmap->top;
-    if ((annotate_info->fill.opacity != TransparentOpacity) &&
+    if ((draw_info->fill.opacity != TransparentOpacity) &&
         (bitmap->bitmap.width != 0) && (bitmap->bitmap.rows != 0))
       {
         p=bitmap->bitmap.buffer;
@@ -1287,7 +1124,7 @@ static unsigned int RenderTruetype(Image *image,
           }
         }
       }
-    if (annotate_info->stroke.opacity == TransparentOpacity)
+    if (draw_info->stroke.opacity == TransparentOpacity)
       continue;
     if ((glyph > glyphs) && glyph->id && FT_HAS_KERNING(face))
       {
@@ -1303,25 +1140,24 @@ static unsigned int RenderTruetype(Image *image,
       continue;
     if (glyph->image->format != ft_glyph_format_outline)
      continue;
-    draw_info=CloneDrawInfo((ImageInfo *) NULL,(DrawInfo *) NULL);
-    draw_info->affine.tx=offset->x+(origin.x >> 6);
+    clone_info->affine.tx=offset->x+(origin.x >> 6);
     origin.x+=face->glyph->advance.x;
-    draw_info->affine.ty=offset->y;
-    draw_info->stroke=annotate_info->stroke;
-    draw_info->stroke_width=annotate_info->stroke_width;
-    draw_info->primitive=AllocateString("path '");
+    clone_info->affine.ty=offset->y;
+    clone_info->stroke=draw_info->stroke;
+    clone_info->stroke_width=draw_info->stroke_width;
+    CloneString(&clone_info->primitive,"path '");
     outline=(FT_OutlineGlyph) glyph->image;
-    status=FT_Outline_Decompose(&outline->outline,&OutlineMethods,draw_info);
+    status=FT_Outline_Decompose(&outline->outline,&OutlineMethods,clone_info);
     if (status != False)
       continue;
-    ConcatenateString(&draw_info->primitive,"'");
+    ConcatenateString(&clone_info->primitive,"'");
     if (!status)
-      DrawImage(image,draw_info);
-    DestroyDrawInfo(draw_info);
+      DrawImage(image,clone_info);
   }
   /*
     Free resources.
   */
+  DestroyDrawInfo(clone_info);
   for (glyph=glyphs; glyph->id != 0; glyph++)
     FT_Done_Glyph(glyph->image);
   LiberateMemory((void **) &glyphs);
@@ -1329,11 +1165,11 @@ static unsigned int RenderTruetype(Image *image,
 }
 #else
 static unsigned int RenderTruetype(Image *image,
-  const AnnotateInfo *annotate_info,const PointInfo *offset,
+  const DrawInfo *draw_info,const PointInfo *offset,
   const unsigned int render,FontMetrics *metrics)
 {
   ThrowBinaryException(MissingDelegateWarning,
-    "FreeType library is not available",annotate_info->font);
+    "FreeType library is not available",draw_info->font);
 }
 #endif
 
@@ -1353,7 +1189,7 @@ static unsigned int RenderTruetype(Image *image,
 %
 %  The format of the RenderX11 method is:
 %
-%      unsigned int RenderX11(Image *image,AnnotateInfo *annotate_info,
+%      unsigned int RenderX11(Image *image,DrawInfo *draw_info,
 %        const PointInfo *offset,const unsigned int render,FontMetrics *metrics)
 %
 %  A description of each parameter follows:
@@ -1363,7 +1199,7 @@ static unsigned int RenderTruetype(Image *image,
 %
 %    o image: The address of a structure of type Image.
 %
-%    o annotate_info: The address of a AnnotateInfo structure.
+%    o draw_info: The address of a DrawInfo structure.
 %
 %    o offset: (x,y) location of text relative to image.
 %
@@ -1375,7 +1211,7 @@ static unsigned int RenderTruetype(Image *image,
 %
 */
 #if defined(HasX11)
-static unsigned int RenderX11(Image *image,const AnnotateInfo *annotate_info,
+static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
   const PointInfo *offset,const unsigned int render,FontMetrics *metrics)
 {
   int
@@ -1387,14 +1223,14 @@ static unsigned int RenderX11(Image *image,const AnnotateInfo *annotate_info,
   register PixelPacket
     *q;
 
-  static AnnotateInfo
+  static DrawInfo
     cache_info;
 
   static Display
     *display = (Display *) NULL;
 
   static XAnnotateInfo
-    xannotate_info;
+    xdraw_info;
 
   static XFontStruct
     *font_info;
@@ -1427,10 +1263,10 @@ static unsigned int RenderX11(Image *image,const AnnotateInfo *annotate_info,
       /*
         Open X server connection.
       */
-      display=XOpenDisplay(annotate_info->server_name);
+      display=XOpenDisplay(draw_info->server_name);
       if (display == (Display *) NULL)
         ThrowBinaryException(XServerWarning,"Unable to open X server",
-          annotate_info->server_name);
+          draw_info->server_name);
       /*
         Get user defaults from X resource database.
       */
@@ -1440,7 +1276,7 @@ static unsigned int RenderX11(Image *image,const AnnotateInfo *annotate_info,
       XGetResourceInfo(resource_database,client_name,&resource_info);
       resource_info.close_server=False;
       resource_info.colormap=PrivateColormap;
-      resource_info.font=AllocateString(annotate_info->font);
+      resource_info.font=AllocateString(draw_info->font);
       resource_info.background_color=AllocateString("white");
       resource_info.foreground_color=AllocateString("black");
       map_info=XAllocStandardColormap();
@@ -1453,7 +1289,7 @@ static unsigned int RenderX11(Image *image,const AnnotateInfo *annotate_info,
       visual_info=XBestVisualInfo(display,map_info,&resource_info);
       if (visual_info == (XVisualInfo *) NULL)
         ThrowBinaryException(XServerWarning,"Unable to get visual",
-          annotate_info->server_name);
+          draw_info->server_name);
       map_info->colormap=(Colormap) NULL;
       pixel.pixels=(unsigned long *) NULL;
       pixel.gamma_map=(XColor *) NULL;
@@ -1471,7 +1307,7 @@ static unsigned int RenderX11(Image *image,const AnnotateInfo *annotate_info,
       font_info=XBestFont(display,&resource_info,False);
       if (font_info == (XFontStruct *) NULL)
         ThrowBinaryException(XServerWarning,"Unable to load font",
-          annotate_info->font);
+          draw_info->font);
       if ((map_info == (XStandardColormap *) NULL) ||
           (visual_info == (XVisualInfo *) NULL) ||
           (font_info == (XFontStruct *) NULL))
@@ -1479,64 +1315,64 @@ static unsigned int RenderX11(Image *image,const AnnotateInfo *annotate_info,
           XFreeResources(display,visual_info,map_info,&pixel,font_info,
             &resource_info,(XWindowInfo *) NULL);
           ThrowBinaryException(XServerWarning,"Unable to get X server font",
-            annotate_info->server_name);
+            draw_info->server_name);
         }
-      cache_info=(*annotate_info);
+      cache_info=(*draw_info);
     }
   /*
     Initialize annotate info.
   */
-  XGetAnnotateInfo(&xannotate_info);
-  xannotate_info.stencil=OpaqueStencil;
-  if (cache_info.font != annotate_info->font)
+  XGetAnnotateInfo(&xdraw_info);
+  xdraw_info.stencil=OpaqueStencil;
+  if (cache_info.font != draw_info->font)
     {
       /*
         Font name has changed.
       */
       XFreeFont(display,font_info);
-      (void) CloneString(&resource_info.font,annotate_info->font);
+      (void) CloneString(&resource_info.font,draw_info->font);
       font_info=XBestFont(display,&resource_info,False);
       if (font_info == (XFontStruct *) NULL)
         ThrowBinaryException(ResourceLimitWarning,"Unable to load font",
-          annotate_info->font);
+          draw_info->font);
     }
-  cache_info=(*annotate_info);
-  xannotate_info.font_info=font_info;
-  xannotate_info.text=(char *) annotate_info->text;
-  xannotate_info.width=XTextWidth(font_info,annotate_info->text,
-    Extent(annotate_info->text));
-  xannotate_info.height=font_info->ascent+font_info->descent;
+  cache_info=(*draw_info);
+  xdraw_info.font_info=font_info;
+  xdraw_info.text=(char *) draw_info->text;
+  xdraw_info.width=XTextWidth(font_info,draw_info->text,
+    Extent(draw_info->text));
+  xdraw_info.height=font_info->ascent+font_info->descent;
   metrics->pixels_per_em.x=font_info->max_bounds.width;
   metrics->pixels_per_em.y=font_info->max_bounds.width;
   metrics->ascent=font_info->ascent;
   metrics->descent=(-font_info->descent);
-  metrics->width=xannotate_info.width/ExpandAffine(&annotate_info->affine);
+  metrics->width=xdraw_info.width/ExpandAffine(&draw_info->affine);
   metrics->height=metrics->pixels_per_em.x+4;
   metrics->max_advance=font_info->max_bounds.width;
   if (!render)
     return(True);
-  if (annotate_info->fill.opacity != TransparentOpacity)
+  if (draw_info->fill.opacity != TransparentOpacity)
     {
       /*
         Render fill color.
       */
-      width=xannotate_info.width;
-      height=xannotate_info.height;
-      if ((annotate_info->affine.rx != 0.0) ||
-          (annotate_info->affine.ry != 0.0))
+      width=xdraw_info.width;
+      height=xdraw_info.height;
+      if ((draw_info->affine.rx != 0.0) ||
+          (draw_info->affine.ry != 0.0))
         {
-          if (((annotate_info->affine.sx-annotate_info->affine.sy) == 0.0) &&
-              ((annotate_info->affine.rx+annotate_info->affine.ry) == 0.0))
-            xannotate_info.degrees=(180.0/M_PI)*
-              atan2(annotate_info->affine.rx,annotate_info->affine.sx);
+          if (((draw_info->affine.sx-draw_info->affine.sy) == 0.0) &&
+              ((draw_info->affine.rx+draw_info->affine.ry) == 0.0))
+            xdraw_info.degrees=(180.0/M_PI)*
+              atan2(draw_info->affine.rx,draw_info->affine.sx);
         }
-      FormatString(xannotate_info.geometry,"%ux%u+%d+%d",width,height,
+      FormatString(xdraw_info.geometry,"%ux%u+%d+%d",width,height,
         (int) ceil(offset->x-0.5),(int) ceil(offset->y-metrics->ascent-
         metrics->descent-1.5));
-      pixel.pen_color.red=XUpScale(annotate_info->fill.red);
-      pixel.pen_color.green=XUpScale(annotate_info->fill.green);
-      pixel.pen_color.blue=XUpScale(annotate_info->fill.blue);
-      status=XAnnotateImage(display,&pixel,&xannotate_info,image);
+      pixel.pen_color.red=XUpScale(draw_info->fill.red);
+      pixel.pen_color.green=XUpScale(draw_info->fill.green);
+      pixel.pen_color.blue=XUpScale(draw_info->fill.blue);
+      status=XAnnotateImage(display,&pixel,&xdraw_info,image);
       if (status == 0)
         ThrowBinaryException(ResourceLimitWarning,"Unable to annotate image",
           "Memory allocation failed");
@@ -1544,10 +1380,10 @@ static unsigned int RenderX11(Image *image,const AnnotateInfo *annotate_info,
   return(True);
 }
 #else
-static unsigned int RenderX11(Image *image,const AnnotateInfo *annotate_info,
+static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
   const PointInfo *offset,const unsigned int render,FontMetrics *metrics)
 {
   ThrowBinaryException(MissingDelegateWarning,
-    "X11 library is not available",annotate_info->font);
+    "X11 library is not available",draw_info->font);
 }
 #endif

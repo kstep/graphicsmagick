@@ -94,9 +94,6 @@ static unsigned int
 */
 static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  AnnotateInfo
-    *annotate_info;
-
   char
     filename[MaxTextExtent],
     geometry[MaxTextExtent],
@@ -105,6 +102,9 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   double
     dx_resolution,
     dy_resolution;
+
+  DrawInfo
+    *draw_info;
 
   Image
     *image,
@@ -182,8 +182,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Annotate the text image.
   */
   SetImage(image,OpaqueOpacity);
-  annotate_info=
-    CloneAnnotateInfo((ImageInfo *) image_info,(AnnotateInfo *) NULL);
+  draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   (void) strcpy(filename,image_info->filename);
   offset=0;
   for ( ; ; )
@@ -194,12 +193,12 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     p=GetStringBlob(image,text);
     if (p == (char *) NULL)
       break;
-    (void) CloneString(&annotate_info->text,text);
+    (void) CloneString(&draw_info->text,text);
     FormatString(geometry,"%+d%+d",page.x,page.y+offset);
-    (void) CloneString(&annotate_info->geometry,geometry);
-    AnnotateImage(image,annotate_info);
-    height=(unsigned int) (annotate_info->pointsize*
-      AbsoluteValue(Max(annotate_info->affine.sx,annotate_info->affine.rx)));
+    (void) CloneString(&draw_info->geometry,geometry);
+    AnnotateImage(image,draw_info);
+    height=(unsigned int) (draw_info->pointsize*
+      AbsoluteValue(Max(draw_info->affine.sx,draw_info->affine.rx)));
     offset+=height;
     if (image->previous == (Image *) NULL)
       if (QuantumTick(page.y+offset,image->rows))
@@ -212,7 +211,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->next=CloneImage(image,image->columns,image->rows,True,exception);
     if (image->next == (Image *) NULL)
       {
-        DestroyAnnotateInfo(annotate_info);
+        DestroyDrawInfo(draw_info);
         return((Image *) NULL);
       }
     (void) strcpy(image->next->filename,filename);
@@ -240,7 +239,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   if (texture != (Image *) NULL)
     DestroyImage(texture);
-  DestroyAnnotateInfo(annotate_info);
+  DestroyDrawInfo(draw_info);
   (void) IsPseudoClass(image);
   while (image->previous != (Image *) NULL)
     image=image->previous;

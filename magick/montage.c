@@ -261,12 +261,12 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
 #define MontageImageText  "  Create visual next directory...  "
 #define TileImageText  "  Create image tiles...  "
 
-  AnnotateInfo
-    *annotate_info;
-
   char
     geometry[MaxTextExtent],
     *title;
+
+  DrawInfo
+    *draw_info;
 
   FrameInfo
     frame_info;
@@ -457,9 +457,9 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
   clone_info->fill=montage_info->fill;
   clone_info->background_color=montage_info->background_color;
   clone_info->border_color=montage_info->border_color;
-  annotate_info=CloneAnnotateInfo(clone_info,(AnnotateInfo *) NULL);
-  annotate_info->gravity=CenterGravity;
-  font_height=ExpandAffine(&annotate_info->affine)*annotate_info->pointsize;
+  draw_info=CloneDrawInfo(clone_info,(DrawInfo *) NULL);
+  draw_info->gravity=CenterGravity;
+  font_height=ExpandAffine(&draw_info->affine)*draw_info->pointsize;
   texture=(Image *) NULL;
   if (montage_info->texture != (char *) NULL)
     {
@@ -564,9 +564,9 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
         */
         FormatString(geometry,"%ux%u%+d%+d",montage_next->columns,
           font_height << 1,0,font_height+tile_info.y+4);
-        (void) CloneString(&annotate_info->geometry,geometry);
-        (void) CloneString(&annotate_info->text,title);
-        AnnotateImage(montage_next,annotate_info);
+        (void) CloneString(&draw_info->geometry,geometry);
+        (void) CloneString(&draw_info->text,title);
+        AnnotateImage(montage_next,draw_info);
       }
     (void) SetMonitorHandler(handler);
     /*
@@ -764,9 +764,9 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
                 (int) (montage_info->frame ? y_offset+height+
                 2*border_width-bevel_width-2 : y_offset+tile_info.height+
                 2*border_width+(montage_info->shadow ? 4 : 0)));
-              (void) CloneString(&annotate_info->geometry,geometry);
-              (void) CloneString(&annotate_info->text,attribute->value);
-              AnnotateImage(montage_next,annotate_info);
+              (void) CloneString(&draw_info->geometry,geometry);
+              (void) CloneString(&draw_info->text,attribute->value);
+              AnnotateImage(montage_next,draw_info);
             }
         }
       x_offset+=width+(tile_info.x+border_width)*2;
@@ -802,7 +802,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
   if (texture != (Image *) NULL)
     LiberateMemory((void **) &texture);
   LiberateMemory((void **) &master_list);
-  DestroyAnnotateInfo(annotate_info);
+  DestroyDrawInfo(draw_info);
   DestroyImageInfo(clone_info);
   while (montage_next->previous != (Image *) NULL)
     montage_next=montage_next->previous;

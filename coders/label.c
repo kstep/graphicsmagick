@@ -90,8 +90,8 @@
 static Image *ReadLABELImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-  AnnotateInfo
-    *annotate_info;
+  DrawInfo
+    *draw_info;
 
   FontMetrics
     metrics;
@@ -106,17 +106,17 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
     Initialize Image structure.
   */
   image=AllocateImage(image_info);
-  annotate_info=CloneAnnotateInfo(image_info,(AnnotateInfo *) NULL);
-  annotate_info->gravity=WestGravity;
-  annotate_info->text=AllocateString(image_info->filename);
-  status=GetFontMetrics(image,annotate_info,&metrics);
+  draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
+  draw_info->gravity=WestGravity;
+  draw_info->text=AllocateString(image_info->filename);
+  status=GetFontMetrics(image,draw_info,&metrics);
   if (status == False)
     ThrowReaderException(DelegateWarning,"Unable to get font metrics",image);
   image->columns=metrics.width;
   image->rows=metrics.height;
   SetImage(image,TransparentOpacity);
-  (void) AnnotateImage(image,annotate_info);
-  DestroyAnnotateInfo(annotate_info);
+  (void) AnnotateImage(image,draw_info);
+  DestroyDrawInfo(draw_info);
   return(image);
 }
 

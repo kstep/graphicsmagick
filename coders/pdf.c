@@ -138,7 +138,7 @@ static unsigned int IsPDF(const unsigned char *magick,const unsigned int length)
 */
 static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-#define MediaBox  "/MediaBox ["
+#define MediaBox  "/MediaBox["
 
   char
     density[MaxTextExtent],
@@ -255,12 +255,14 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       portrait=False;
     if (LocaleNCompare(MediaBox,command,Extent(MediaBox)) != 0)
       continue;
-    count=sscanf(command,"/MediaBox [%lf %lf %lf %lf",&bounds.x1,
-      &bounds.y1,&bounds.x2,&bounds.y2);
+    count=sscanf(command,"/MediaBox [%lf %lf %lf %lf",&bounds.x1,&bounds.y1,
+      &bounds.x2,&bounds.y2);
+    if (count != 4)
+      count=sscanf(command,"/MediaBox[%lf %lf %lf %lf",&bounds.x1,&bounds.y1,
+        &bounds.x2,&bounds.y2);
     if (count != 4)
       continue;
-    if ((bounds.x1 > bounds.x2) ||
-        (bounds.y1 > bounds.y2))
+    if ((bounds.x1 > bounds.x2) || (bounds.y1 > bounds.y2))
       continue;
     /*
       Set Postscript render geometry.
@@ -454,6 +456,36 @@ ModuleExport void UnregisterPDFImage(void)
 %
 %
 */
+
+static char *EscapeParenthesis(const char *text)
+{
+  int
+    escapes;
+
+  register char
+    *p;
+
+  register int
+    i;
+
+  static char
+    buffer[MaxTextExtent];
+
+  escapes=0;
+  p=buffer;
+  for (i=0; i < Min((int) strlen(text),(MaxTextExtent-escapes-1)); i++)
+  {
+    if ((text[i] == '(') || (text[i] == ')'))
+      {
+        *p++='\\';
+        escapes++;
+      }
+    *p++=text[i];
+  }
+  *p='\0';
+  return(buffer);
+}
+
 static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
 {
 #define CFormat  "/Filter [ /ASCII85Decode /%.1024s ]\n"
@@ -571,7 +603,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   date[Extent(date)-1]='\0';
   FormatString(buffer,"/CreationDate (%.1024s)\n",date);
   (void) WriteBlob(image,strlen(buffer),buffer);
-  FormatString(buffer,"/Producer (%.1024s)\n",MagickVersion);
+  FormatString(buffer,"/Producer (%.1024s)\n",EscapeParenthesis(MagickVersion));
   (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,">>\n");
   (void) WriteBlob(image,strlen(buffer),buffer);

@@ -4400,33 +4400,33 @@ Mogrify(ref,...)
         }
         case 33:  /* Annotate */
         {
-          AnnotateInfo
-            *annotate_info;
+          DrawInfo
+            *draw_info;
 
-          annotate_info=CloneAnnotateInfo(info ? info->image_info :
-            (ImageInfo *) NULL,(AnnotateInfo *) NULL);
+          draw_info=CloneDrawInfo(info ? info->image_info :
+            (ImageInfo *) NULL,(DrawInfo *) NULL);
           if (attribute_flag[1])
-            (void) CloneString(&annotate_info->font,
+            (void) CloneString(&draw_info->font,
               argument_list[1].string_reference);
           if (attribute_flag[2])
-            annotate_info->pointsize=argument_list[2].double_reference;
+            draw_info->pointsize=argument_list[2].double_reference;
           if (attribute_flag[3])
-            (void) CloneString(&annotate_info->density,
+            (void) CloneString(&draw_info->density,
               argument_list[3].string_reference);
           if (attribute_flag[0])
-            (void) CloneString(&annotate_info->text,
+            (void) CloneString(&draw_info->text,
               argument_list[0].string_reference);
           if (attribute_flag[4])
             (void) QueryColorDatabase(argument_list[4].string_reference,
-              &annotate_info->box);
+              &draw_info->box);
           if (attribute_flag[5])
             (void) QueryColorDatabase(argument_list[5].string_reference,
-              &annotate_info->stroke);
+              &draw_info->stroke);
           if (attribute_flag[6])
             (void) QueryColorDatabase(argument_list[6].string_reference,
-              &annotate_info->fill);
+              &draw_info->fill);
           if (attribute_flag[7])
-            (void) CloneString(&annotate_info->geometry,
+            (void) CloneString(&draw_info->geometry,
               argument_list[7].string_reference);
           if (attribute_flag[9] || attribute_flag[10])
             {
@@ -4436,18 +4436,17 @@ Mogrify(ref,...)
                 argument_list[10].int_reference=0;
               FormatString(message,"%+d%+d",argument_list[9].int_reference,
                 argument_list[10].int_reference);
-              (void) CloneString(&annotate_info->geometry,message);
+              (void) CloneString(&draw_info->geometry,message);
             }
           if (attribute_flag[11])
-            annotate_info->gravity=(GravityType)
-              argument_list[11].int_reference;
+            draw_info->gravity=(GravityType) argument_list[11].int_reference;
           for (j=12; j < 17; j++)
           {
             if (!attribute_flag[j])
               continue;
             value=argument_list[j].string_reference;
             angle=argument_list[j].double_reference;
-            current=annotate_info->affine;
+            current=draw_info->affine;
             IdentityAffine(&affine);
             switch (j)
             {
@@ -4505,19 +4504,19 @@ Mogrify(ref,...)
                 break;
               }
             }
-            annotate_info->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
-            annotate_info->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
-            annotate_info->affine.ry=current.sx*affine.ry+current.ry*affine.sy;
-            annotate_info->affine.sy=current.rx*affine.ry+current.sy*affine.sy;
-            annotate_info->affine.tx=current.sx*affine.tx+current.ry*affine.ty+
+            draw_info->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
+            draw_info->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
+            draw_info->affine.ry=current.sx*affine.ry+current.ry*affine.sy;
+            draw_info->affine.sy=current.rx*affine.ry+current.sy*affine.sy;
+            draw_info->affine.tx=current.sx*affine.tx+current.ry*affine.ty+
               current.tx;
-            annotate_info->affine.ty=current.rx*affine.tx+current.sy*affine.ty+
+            draw_info->affine.ty=current.rx*affine.tx+current.sy*affine.ty+
               current.ty;
           }
           if (attribute_flag[17])
-            annotate_info->stroke_width=argument_list[17].int_reference;
-          AnnotateImage(image,annotate_info);
-          DestroyAnnotateInfo(annotate_info);
+            draw_info->stroke_width=argument_list[17].int_reference;
+          AnnotateImage(image,draw_info);
+          DestroyDrawInfo(draw_info);
           break;
         }
         case 34:  /* ColorFloodfill */
@@ -6099,9 +6098,6 @@ QueryFontMetrics(ref,...)
       affine,
       current;
 
-    AnnotateInfo
-      *annotate_info;
-
     AV
       *av;
 
@@ -6112,6 +6108,9 @@ QueryFontMetrics(ref,...)
     double
       x,
       y;
+
+    DrawInfo
+      *draw_info;
 
     FontMetrics
       metrics;
@@ -6142,9 +6141,9 @@ QueryFontMetrics(ref,...)
         MagickWarning(OptionWarning,"No images to animate",NULL);
         goto MethodException;
       }
-    annotate_info=CloneAnnotateInfo(info->image_info,(AnnotateInfo *) NULL);
-    CloneString(&annotate_info->text,"");
-    current=annotate_info->affine;
+    draw_info=CloneDrawInfo(info->image_info,(DrawInfo *) NULL);
+    CloneString(&draw_info->text,"");
+    current=draw_info->affine;
     IdentityAffine(&affine);
     x=0.0;
     y=0.0;
@@ -6158,7 +6157,7 @@ QueryFontMetrics(ref,...)
         {
           if (strEQcase(attribute,"density"))
             {
-              CloneString(&annotate_info->density,SvPV(ST(i),na));
+              CloneString(&draw_info->density,SvPV(ST(i),na));
               break;
             }
           break;
@@ -6168,7 +6167,7 @@ QueryFontMetrics(ref,...)
         {
           if (strEQcase(attribute,"font"))
             {
-              CloneString(&annotate_info->font,SvPV(ST(i),na));
+              CloneString(&draw_info->font,SvPV(ST(i),na));
               break;
             }
           break;
@@ -6178,12 +6177,12 @@ QueryFontMetrics(ref,...)
         {
           if (strEQcase(attribute,"geometry"))
             {
-              CloneString(&annotate_info->geometry,SvPV(ST(i),na));
+              CloneString(&draw_info->geometry,SvPV(ST(i),na));
               break;
             }
           if (strEQcase(attribute,"gravity"))
             {
-              annotate_info->gravity=(GravityType)
+              draw_info->gravity=(GravityType)
                 LookupStr(GravityTypes,SvPV(ST(i),na));
               break;
             }
@@ -6194,7 +6193,7 @@ QueryFontMetrics(ref,...)
         {
           if (strEQcase(attribute,"pointsize"))
             {
-              (void) sscanf(SvPV(ST(i),na),"%lf",&annotate_info->pointsize);
+              (void) sscanf(SvPV(ST(i),na),"%lf",&draw_info->pointsize);
               break;
             }
           break;
@@ -6237,7 +6236,7 @@ QueryFontMetrics(ref,...)
         {
           if (strEQcase(attribute,"text"))
             {
-              CloneString(&annotate_info->text,SvPV(ST(i),na));
+              CloneString(&draw_info->text,SvPV(ST(i),na));
               break;
             }
           if (strEQcase(attribute,"translate"))
@@ -6271,20 +6270,18 @@ QueryFontMetrics(ref,...)
           break;
       }
     }
-    annotate_info->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
-    annotate_info->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
-    annotate_info->affine.ry=current.sx*affine.ry+current.ry*affine.sy;
-    annotate_info->affine.sy=current.rx*affine.ry+current.sy*affine.sy;
-    annotate_info->affine.tx=current.sx*affine.tx+current.ry*affine.ty+
-      current.tx;
-    annotate_info->affine.ty=current.rx*affine.tx+current.sy*affine.ty+
-      current.ty;
-    if (annotate_info->geometry == (char *) NULL)
+    draw_info->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
+    draw_info->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
+    draw_info->affine.ry=current.sx*affine.ry+current.ry*affine.sy;
+    draw_info->affine.sy=current.rx*affine.ry+current.sy*affine.sy;
+    draw_info->affine.tx=current.sx*affine.tx+current.ry*affine.ty+current.tx;
+    draw_info->affine.ty=current.rx*affine.tx+current.sy*affine.ty+current.ty;
+    if (draw_info->geometry == (char *) NULL)
       {
-        annotate_info->geometry=AllocateString((char *) NULL);
-        FormatString(annotate_info->geometry,"%f,%f",x,y);
+        draw_info->geometry=AllocateString((char *) NULL);
+        FormatString(draw_info->geometry,"%f,%f",x,y);
       }
-    status=GetFontMetrics(image,annotate_info,&metrics);
+    status=GetFontMetrics(image,draw_info,&metrics);
     if (status != False)
       {
         FormatString(message,"%g,%g,%d,%d,%d,%d,%d",metrics.pixels_per_em.x,
@@ -6293,7 +6290,7 @@ QueryFontMetrics(ref,...)
         s=sv_2mortal(newSVpv(message,0));
         PUSHs(s);
       }
-    DestroyAnnotateInfo(annotate_info);
+    DestroyDrawInfo(draw_info);
   MethodException:
     SvREFCNT_dec(error_list);
     error_list=NULL;
