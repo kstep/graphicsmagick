@@ -815,7 +815,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     window_info.matte_pixmaps[scene]=window_info.matte_pixmap;
     if (images[scene]->matte)
       XClearWindow(display,window_info.id);
-    XDelay(display,(unsigned long) resources.delay*image->delay*10);
+    XDelay(display,(unsigned long) resources.delay*10*Max(image->delay,1));
   }
   window_info.pixel_info=(&pixel);
   /*
@@ -838,7 +838,8 @@ MagickExport void XAnimateBackgroundImage(Display *display,
       XSetWindowBackgroundPixmap(display,window_info.id,window_info.pixmap);
       XClearWindow(display,window_info.id);
       XSync(display,False);
-      XDelay(display,(unsigned long) 10*resources.delay*images[scene]->delay);
+      XDelay(display,(unsigned long) resources.delay*10*
+        Max(images[scene]->delay,1));
     }
   } while (event.type != DestroyNotify);
   XSync(display,False);
@@ -1744,7 +1745,7 @@ MagickExport Image *XAnimateImages(Display *display,
             Copy X pixmap to Image window.
           */
           XGetPixelPacket(display,visual_info,map_info,resource_info,
-          images[scene],&scene_info);
+            images[scene],&scene_info);
           windows->image.pixel_info=(&scene_info);
           windows->image.ximage->width=image->columns;
           windows->image.ximage->height=image->rows;
@@ -1757,7 +1758,8 @@ MagickExport Image *XAnimateImages(Display *display,
           XRefreshWindow(display,&windows->image,&event);
           XSync(display,False);
           state&=(~StepAnimationState);
-          XDelay(display,(unsigned long) 10*resource_info->delay*image->delay);
+          XDelay(display,(unsigned long) resource_info->delay*10*
+            Max(image->delay,1));
           continue;
         }
     /*
