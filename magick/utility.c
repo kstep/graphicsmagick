@@ -1412,9 +1412,9 @@ MagickExport char **ListFiles(const char *directory,const char *pattern,
 %
 %  A description of each parameter follows:
 %
-%    o p: A pointer to the string to convert to Locale string.
+%    o p: A pointer to a character string.
 %
-%    o q: A pointer to the string to convert to Locale string.
+%    o q: A pointer to a character string to compare to p.
 %
 %
 */
@@ -1514,11 +1514,11 @@ MagickExport void LocaleLower(char *string)
 %
 %  A description of each parameter follows:
 %
-%    o p: A pointer to the string to convert to Locale string.
+%    o p: A pointer to a character string.
 %
-%    o q: A pointer to the string to convert to Locale string.
+%    o q: A pointer to a character string to compare to p.
 %
-%    o n: A pointer to the string to convert to Locale string.
+%    o n: The number of characters to compare in strings p & q.
 %
 %
 */
