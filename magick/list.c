@@ -15,7 +15,7 @@
 %                                                                             %
 %                              Software Design                                %
 %                                John Cristy                                  %
-%                                January 2003                                 %
+%                                January 2002                                 %
 %                                                                             %
 %                                                                             %
 %  Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated %
