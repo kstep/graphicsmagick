@@ -248,7 +248,6 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     status;
 
   RectangleInfo
-    box,
     page;
 
   register char
@@ -333,8 +332,6 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (i=0; i < (long) (count-12); i++)
         (void) ReadBlobByte(image);
     }
-  box.width=0;
-  box.height=0;
   p=command;
   for (i=0; (LocaleCompare(image_info->magick,"EPT") != 0) ||
     (i < (long) filesize); i++)
@@ -375,11 +372,10 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     height=(unsigned int) (bounds.y2-bounds.y1);
     if ((float) ((int) bounds.y2) != bounds.y2)
       height++;
-    if ((width <= box.width) && (height <= box.height))
-      continue;
-    page.width=width;
-    page.height=height;
-    box=page;
+    if (width > page.width)
+      page.width=width;
+    if (height > page.height)
+      page.height=height;
   }
   if (image_info->page != (char *) NULL)
     (void) GetGeometry(image_info->page,&page.x,&page.y,&page.width,

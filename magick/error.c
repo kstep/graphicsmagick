@@ -567,8 +567,6 @@ MagickExport void ThrowException(ExceptionInfo *exception,
   const ExceptionType severity,const char *reason,const char *description)
 {
   assert(exception != (ExceptionInfo *) NULL);
-  if (severity < exception->severity)
-    return;
   exception->severity=(ExceptionType) severity;
   (void) CloneString(&exception->reason,reason);
   (void) CloneString(&exception->description,description);
