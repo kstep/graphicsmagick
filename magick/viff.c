@@ -408,11 +408,11 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
               image->colormap[i].blue=UpScale((unsigned int) value);
             }
           else
-            if (i < (int) 2*image->colors)
+            if (i < (int) (2*image->colors))
               image->colormap[i % image->colors].green=
                 UpScale((unsigned int) value);
             else
-              if (i < (int) 3*image->colors)
+              if (i < (int) (3*image->colors))
                 image->colormap[i % image->colors].blue=
                   UpScale((unsigned int) value);
         }

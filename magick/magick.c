@@ -156,7 +156,7 @@ static const MagickInfo
     { "MIFF", ReadMIFFImage, WriteMIFFImage, True, True,
       "Magick image format" },
 #if defined(HasPNG)
-    { "MNG", ReadPNGImage, WritePNGImage, True, False,
+    { "MNG", ReadPNGImage, WritePNGImage, True, True,
       "Multiple-image Network Graphics" },
 #endif
     { "MONO", ReadMONOImage, WriteMONOImage, False, True,
@@ -193,13 +193,13 @@ static const MagickInfo
       "Portable graymap format (gray scale)" },
     { "PM", ReadXPMImage, WriteXPMImage, False, True,
       "X Windows system pixmap (color)" },
+#if defined(HasPNG)
+    { "PNG", ReadPNGImage, WritePNGImage, True, True,
+      "Portable Network Graphics" },
+#endif
     { "PNM", ReadPNMImage, WritePNMImage, True, True, "Portable anymap" },
     { "PPM", ReadPNMImage, WritePNMImage, True, True,
       "Portable pixmap format (color)" },
-#if defined(HasPNG)
-    { "PNG", ReadPNGImage, WritePNGImage, False, False,
-      "Portable Network Graphics" },
-#endif
     { "PREVIEW", (Image *(*)(const ImageInfo *)) NULL, WritePREVIEWImage,
       False, True, "Show a preview an image enhancement effect, or f/x" },
     { "PS", ReadPSImage, WritePSImage, True, True, "Adobe PostScript" },

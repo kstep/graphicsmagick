@@ -412,7 +412,7 @@ Export char *ImageToBlob(const ImageInfo *image_info,Image *image,
       /*
         Native blob support for this image format.
       */
-      local_info->blob.data=AllocateMemory(MaxTextExtent);
+      local_info->blob.data=(char *) AllocateMemory(MaxTextExtent);
       local_info->blob.offset=0;
       local_info->blob.length=0;
       status=WriteImage(local_info,image);
@@ -703,7 +703,8 @@ Export unsigned long ReadBlob(Image *image,const unsigned long number_bytes,
       /*
         Read bytes from blob.
       */
-      offset=Min(number_bytes,image->blob.length-image->blob.offset);
+      offset=Min(number_bytes,(unsigned long)
+	(image->blob.length-image->blob.offset));
       if (number_bytes > 0)
         (void) memcpy(data,image->blob.data+image->blob.offset,offset);
       image->blob.offset+=offset;
@@ -863,7 +864,7 @@ Export int TellBlob(const Image *image)
 %    o number_items:  Specifies an integer representing the number of items
 %      to write to the file.
 %
-%    o data:  Specifies an data to write to the file.
+%    o data:  The address of the data to write to the blob or file.
 %
 %
 */
@@ -880,10 +881,10 @@ Export unsigned long WriteBlob(Image *image,const unsigned long number_bytes,
       count=(long) fwrite((char *) data,1,number_bytes,image->file);
       return(count);
     }
-  if (number_bytes > (image->blob.extent-image->blob.offset))
+  if (number_bytes > (unsigned long) (image->blob.extent-image->blob.offset))
     {
       image->blob.extent+=number_bytes+MaxBlobExtent;
-      image->blob.data=
+      image->blob.data=(char *)
         ReallocateMemory(image->blob.data,image->blob.extent);
       if (image->blob.data == (char *) NULL)
         {

@@ -16,8 +16,13 @@
 	<UL>
 
 		<LI><A HREF="#BlobToImage">BlobToImage</A>
+		<LI><A HREF="#CloseBlob">CloseBlob</A>
+		<LI><A HREF="#EOFBlob">EOFBlob</A>
+		<LI><A HREF="#FlushBlob">FlushBlob</A>
 		<LI><A HREF="#GetBlobInfo">GetBlobInfo</A>
+		<LI><A HREF="#GetStringBlob">GetStringBlob</A>
 		<LI><A HREF="#ImageToBlob">ImageToBlob</A>
+		<LI><A HREF="#OpenBlob">OpenBlob</A>
 		<LI><A HREF="#ReadBlob">ReadBlob</A>
 		<LI><A HREF="#SeekBlob">SeekBlob</A>
 		<LI><A HREF="#TellBlob">TellBlob</A>
@@ -40,13 +45,28 @@ blob -
 image=<STRONG>BlobToImage</STRONG>(blob,length)
 
 <P>
+<STRONG>CloseBlob</STRONG>(image)
+
+<P>
+status=<STRONG>EOFBlob</STRONG>(image)
+
+<P>
+status=<STRONG>FlushBlob</STRONG>(image)
+
+<P>
 <STRONG>GetBlobInfo</STRONG>(blob_info)
+
+<P>
+status=<STRONG>GetStringBlob</STRONG>(image,string)
 
 <P>
 blob=<STRONG>ImageToBlob</STRONG>(image_info,image,length)
 
 <P>
-count=<STRONG>ReadBlob</STRONG>(image,size,number_items,data);
+status=<STRONG>OpenBlob</STRONG>(image_info,image,type)
+
+<P>
+count=<STRONG>ReadBlob</STRONG>(image,number_bytes,data);
 
 <P>
 status=<STRONG>SeekBlob</STRONG>(image,offset,whence)
@@ -98,6 +118,81 @@ This unsigned integer reflects the length in bytes of the blob.
 </DL></DL>
 <P>
 <HR>
+<H2><A NAME="CloseBlob">CloseBlob</A></H2>
+<P>
+Method CloseBlob closes a file associated with the image. If the filename
+prefix is '|', the file is a pipe and is closed with PipeClose.
+
+<P>
+The format of the CloseBlob routine is:
+
+<P>
+<PRE>        CloseBlob(image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="EOFBlob">EOFBlob</A></H2>
+<P>
+Method EOFBlob returns a non-zero value when EOF has been detected reading
+from a blob or file.
+
+<P>
+The format of the EOFBlob routine is:
+
+<P>
+<PRE>        status=EOFBlob(image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method EOFBlob returns 0 on success; otherwise, it returns -1 and set errno
+to indicate the error.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="FlushBlob">FlushBlob</A></H2>
+<P>
+Method FlushBlob flushes the datastream if it is a file.
+
+<P>
+The format of the FlushBlob routine is:
+
+<P>
+<PRE>        status=FlushBlob(image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method FlushBlob returns 0 on success; otherwise, it returns -1 and set
+errno to indicate the error.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</DL></DL>
+<P>
+<HR>
 <H2><A NAME="GetBlobInfo">GetBlobInfo</A></H2>
 <P>
 Method GetBlobInfo initializes the BlobInfo structure.
@@ -115,6 +210,38 @@ A description of each parameter follows:
 <DT><STRONG>blob_info:</STRONG><DD>
 <P>
 Specifies a pointer to a BlobInfo structure.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="GetStringBlob">GetStringBlob</A></H2>
+<P>
+Method GetStringBlob reads characters from a blob or file until a newline
+character is read or an end-of-file condition is encountered. from a blob
+or file.
+
+<P>
+The format of the GetStringBlob routine is:
+
+<P>
+<PRE>        status=GetStringBlob(image,string)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method GetStringBlob returns the string on success, otherwise, a null is
+returned.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<DT><STRONG>string:</STRONG><DD>
+<P>
+The address of a character buffer.
 
 </DL></DL>
 <P>
@@ -154,16 +281,54 @@ This pointer to an unsigned int is set to the length of the image blob.
 </DL></DL>
 <P>
 <HR>
+<H2><A NAME="OpenBlob">OpenBlob</A></H2>
+<P>
+Method OpenBlob open a file associated with the image. A file name of '-'
+sets the file to stdin for type 'r' and stdout for type 'w'. If the
+filename suffix is '.gz' or '.Z', the image is decompressed for type 'r'
+and compressed for type 'w'. If the filename prefix is '|', it is piped to
+or from a system command.
+
+<P>
+The format of the OpenBlob routine is:
+
+<P>
+<PRE>        status=OpenBlob(image_info,image,type)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method OpenBlob returns True if the file is successfully opened otherwise
+False.
+
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+Specifies a pointer to an ImageInfo structure.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<DT><STRONG>type:</STRONG><DD>
+<P>
+'r' for reading; 'w' for writing.
+
+</DL></DL>
+<P>
+<HR>
 <H2><A NAME="ReadBlob">ReadBlob</A></H2>
 <P>
 Method ReadBlob reads data from the blob or image file and returns it. It
-returns the number of items read.
+returns the number of bytes read.
 
 <P>
 The format of the ReadBlob routine is:
 
 <P>
-<PRE>        count=ReadBlob(image,size,number_items,data);
+<PRE>        count=ReadBlob(image,number_bytes,data);
 </PRE>
 <P>
 A description of each parameter follows:
@@ -177,14 +342,9 @@ Method ReadBlob returns the number of items read.
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>size:</STRONG><DD>
+<DT><STRONG>number_bytes:</STRONG><DD>
 <P>
-Specifies an integer representing the length of an individual item to be
-read from the file.
-
-<DT><STRONG>number_items:</STRONG><DD>
-<P>
-Specifies an integer representing the number of items to read from the
+Specifies an integer representing the number of bytes to read from the
 file.
 
 <DT><STRONG>data:</STRONG><DD>

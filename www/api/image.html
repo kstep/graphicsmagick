@@ -22,7 +22,6 @@
 		<LI><A HREF="#AverageImages">AverageImages</A>
 		<LI><A HREF="#CloneImage">CloneImage</A>
 		<LI><A HREF="#CloneImageInfo">CloneImageInfo</A>
-		<LI><A HREF="#CloseImage">CloseImage</A>
 		<LI><A HREF="#CommentImage">CommentImage</A>
 		<LI><A HREF="#CompressColormap">CompressColormap</A>
 		<LI><A HREF="#CompositeImage">CompositeImage</A>
@@ -49,7 +48,6 @@
 		<LI><A HREF="#MatteImage">MatteImage</A>
 		<LI><A HREF="#MogrifyImage">MogrifyImage</A>
 		<LI><A HREF="#MogrifyImages">MogrifyImages</A>
-		<LI><A HREF="#OpenImage">OpenImage</A>
 		<LI><A HREF="#ParseImageGeometry">ParseImageGeometry</A>
 		<LI><A HREF="#PingImage">PingImage</A>
 		<LI><A HREF="#ReadImage">ReadImage</A>
@@ -99,9 +97,6 @@ clone_image=<STRONG>CloneImage</STRONG>(image,columns,rows,clone_pixels)
 
 <P>
 cloned_info=<STRONG>CloneImageInfo</STRONG>(image_info)
-
-<P>
-<STRONG>CloseImage</STRONG>(image)
 
 <P>
 <STRONG>CommentImage</STRONG>(image,comments)
@@ -180,9 +175,6 @@ images=<STRONG>ListToGroupImage</STRONG>(images,number_images)
 
 <P>
 <STRONG>MogrifyImages</STRONG>(image_info,argc,argv,images)
-
-<P>
-<STRONG>OpenImage</STRONG>(image_info,image,type)
 
 <P>
 flags=<STRONG>ParseImageGeometry</STRONG>(image_geometry,x,y,width,height)
@@ -432,28 +424,6 @@ image info is NULL a new one.
 <DT><STRONG>image_info:</STRONG><DD>
 <P>
 a structure of type info.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="CloseImage">CloseImage</A></H2>
-<P>
-Method CloseImage closes a file associated with the image. If the filename
-prefix is '|', the file is a pipe and is closed with PipeClose.
-
-<P>
-The format of the CloseImage routine is:
-
-<P>
-<PRE>        CloseImage(image)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
 
 </DL></DL>
 <P>
@@ -1174,39 +1144,6 @@ Specifies a pointer to a text array containing the command line arguments.
 <DT><STRONG>images:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="OpenImage">OpenImage</A></H2>
-<P>
-Method OpenImage open a file associated with the image. A file name of '-'
-sets the file to stdin for type 'r' and stdout for type 'w'. If the
-filename suffix is '.gz' or '.Z', the image is decompressed for type 'r'
-and compressed for type 'w'. If the filename prefix is '|', it is piped to
-or from a system command.
-
-<P>
-The format of the OpenImage routine is:
-
-<P>
-<PRE>        OpenImage(image_info,image,type)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>image_info:</STRONG><DD>
-<P>
-Specifies a pointer to an ImageInfo structure.
-
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-<DT><STRONG>type:</STRONG><DD>
-<P>
-'r' for reading; 'w' for writing.
 
 </DL></DL>
 <P>

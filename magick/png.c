@@ -396,7 +396,7 @@ png_get_data(png_structp png_ptr, png_bytep data, png_size_t length)
   if (length)
     {
       png_size_t check;
-      check = (png_size_t)ReadBlob(image,length,(char *)data);
+      check = (png_size_t)ReadBlob(image,(unsigned long) length,(char *)data);
       if (check != length)
           png_error(png_ptr, "Read Error");
     }
@@ -429,7 +429,7 @@ mng_get_data(png_structp png_ptr, png_bytep data, png_size_t length)
 #endif
   if (length)
     {
-      check = (png_size_t)ReadBlob(image,length,(char *)data);
+      check = (png_size_t)ReadBlob(image,(unsigned long) length,(char *)data);
       if (check != length)
         png_error(png_ptr,"Read Error");
 #ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
@@ -437,7 +437,8 @@ mng_get_data(png_structp png_ptr, png_bytep data, png_size_t length)
         {
           if (data[0]==0 && data[1]==0 && data[2]==0 && data[3]==0)
             {
-              check = (png_size_t)ReadBlob(image,length,(char *)m->read_buffer);
+              check = (png_size_t)ReadBlob(image,(unsigned long) length,
+                  (char *)m->read_buffer);
               m->read_buffer[4]=0;
               m->bytes_in_read_buffer = 4;
               if (!png_memcmp(m->read_buffer, mng_PLTE, 4))
@@ -450,16 +451,18 @@ mng_get_data(png_structp png_ptr, png_bytep data, png_size_t length)
             }
           if (data[0]==0 && data[1]==0 && data[2]==0 && data[3]==1)
             {
-              check = (png_size_t)ReadBlob(image,length,(char *)m->read_buffer);
+              check = (png_size_t)ReadBlob(image, (unsigned long) length,
+                  (char *)m->read_buffer);
               m->read_buffer[4]=0;
               m->bytes_in_read_buffer = 4;
               if (!png_memcmp(m->read_buffer, mng_bKGD, 4))
                 if(m->found_empty_plte)
                   {
                     /* skip the bKGD data byte and CRC */
-                    check = (png_size_t)ReadBlob(image,5,(char *)m->read_buffer);
+                    check = (png_size_t)ReadBlob(image,5L,(char *)m->read_buffer);
                     /* read the next length */
-                    check = (png_size_t)ReadBlob(image,length,(char *)m->read_buffer);
+                    check = (png_size_t)ReadBlob(image, (unsigned long) length,
+                       (char *)m->read_buffer);
                     m->saved_bkgd_index = m->read_buffer[0];
                     m->have_saved_bkgd_index=True;
                     m->bytes_in_read_buffer = 0;
@@ -481,7 +484,7 @@ png_put_data(png_structp png_ptr, png_bytep data, png_size_t length)
   if (length)
     {
       png_size_t check;
-      check = (png_size_t)WriteBlob(image,length, (char *)data);
+      check = (png_size_t)WriteBlob(image,(unsigned long) length, (char *) data);
       if (check != length)
           png_error(png_ptr, "Write Error");
     }
@@ -1999,12 +2002,12 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
       Prepare PNG for reading.
     */
     image_found++;
-    png_init_io(ping,image->file);
     if (Latin1Compare(image_info->magick,"MNG") == 0)
       {
         png_set_sig_bytes(ping,8);
 #ifdef PNG_READ_EMPTY_PLTE_SUPPORTED
         png_permit_empty_plte(ping, True);
+        png_set_read_fn(ping, image, png_get_data);
 #else
         png_set_read_fn(ping, m, mng_get_data);
         m->bytes_in_read_buffer=0;
@@ -3485,7 +3488,6 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         png_destroy_write_struct(&ping,(png_info **) NULL);
         WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
       }
-    png_init_io(ping,image->file);
     png_set_write_fn(ping, image, png_put_data, png_flush_data);
     png_pixels=(unsigned char *) NULL;
     scanlines=(unsigned char **) NULL;

@@ -237,9 +237,9 @@ Export Image *ReadPDFImage(const ImageInfo *image_info)
   if (image_info->page != (char *) NULL)
     (void) ParseImageGeometry(image_info->page,&page_info.x,&page_info.y,
       &page_info.width,&page_info.height);
-  FormatString(geometry,"%ux%u",(unsigned int) ((page_info.width*
-    image->x_resolution)/dx_resolution),(unsigned int)
-    ((page_info.height*image->y_resolution)/dy_resolution));
+  FormatString(geometry,"%ux%u",
+    (unsigned int) ((page_info.width*image->x_resolution+0.5)/dx_resolution),
+    (unsigned int) ((page_info.height*image->y_resolution+0.5)/dy_resolution));
   if (ferror(file))
     {
       MagickWarning(FileOpenWarning,"An error has occurred writing to file",
@@ -574,9 +574,9 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           y_resolution=x_resolution;
       }
     x_scale=(width*dx_resolution)/x_resolution;
-    width=(unsigned int) x_scale;
+    width=(unsigned int) (x_scale+0.5);
     y_scale=(height*dy_resolution)/y_resolution;
-    height=(unsigned int) y_scale;
+    height=(unsigned int) (y_scale+0.5);
     /*
       Write Page object.
     */
