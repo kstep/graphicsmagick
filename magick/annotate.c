@@ -230,6 +230,7 @@ MagickExport unsigned int AnnotateImage(Image *image,
     /*
       Composite text onto the image.
     */
+    y+=annotate_image->bounding_box.y2/2.0;
     switch (clone_info->gravity)
     {
       case NorthWestGravity:
@@ -299,9 +300,9 @@ MagickExport unsigned int AnnotateImage(Image *image,
         SetImage(annotate_image,OpaqueOpacity);
       }
     CompositeImage(image,AnnotateCompositeOp,annotate_image,
-      clone_info->bounds.x,clone_info->bounds.y-
-      annotate_image->bounding_box.y2/2.0);
+      clone_info->bounds.x,clone_info->bounds.y);
     DestroyImage(annotate_image);
+    y-=annotate_image->bounding_box.y2/2.0;
   }
   image->matte=matte;
   DestroyImageInfo(image_info);
@@ -487,7 +488,7 @@ MagickExport void GetAnnotateInfo(const ImageInfo *image_info,
   DestroyImageInfo(clone_info);
   if (annotate_image == (Image *) NULL)
     return;
-  attribute=GetImageAttribute(annotate_image,"label");
+  attribute=GetImageAttribute(annotate_image,"Label");
   if (attribute != (ImageAttribute *) NULL)
     annotate_info->font_name=AllocateString(attribute->value);
   annotate_info->bounds.width=
