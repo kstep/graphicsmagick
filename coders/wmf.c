@@ -569,7 +569,6 @@ static void ipa_device_open(wmfAPI * API)
     *draw_info;
 
   draw_info = CloneDrawInfo((ImageInfo*)NULL,(DrawInfo*)NULL);
-  draw_info->debug = ddata->image_info->debug;
 
   ddata->pattern_id = 0;
   ddata->clipping = False;
