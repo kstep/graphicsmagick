@@ -184,7 +184,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
   {
     case CharPixel:
     {
-      register char
+      register unsigned char
         *p;
 
       p=(char *) pixels;
