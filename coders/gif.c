@@ -809,6 +809,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+
   /*
     Determine if this is a GIF file.
   */
