@@ -366,7 +366,7 @@ The color is specified using the format described in the "Color Names"
 section of \fIX(1)\fP.
 .TP
 .B "-blur \fI<radius>x<sigma>"\fP
-\fRblur the image with a gaussian operator
+\fRblur the image with a Gaussian operator
 
 Blur with the given radius and
 standard deviation (sigma).
@@ -542,7 +542,7 @@ special format characters:
      %b   file size
      %c   comment
      %d   directory
-     %e   filename extention
+     %e   filename extension
      %f   filename
      %h   height
      %i   input filename
@@ -1291,7 +1291,7 @@ or other image attributes by embedding special format characters:
      %b   file size
      %c   comment
      %d   directory
-     %e   filename extention
+     %e   filename extension
      %f   filename
      %h   height
      %i   input filename
@@ -1373,8 +1373,8 @@ the image pixels. This option is useful if the image is of a known gamma
 but not set as an image attribute (e.g. PNG images).
 
 .TP
-.B "-gaussian \fI<radius>x<sigma>"\fP
-\fRblur the image with a gaussian operator
+.B "-Gaussian \fI<radius>x<sigma>"\fP
+\fRblur the image with a Gaussian operator
 
 Use the given radius and standard deviation (sigma).
 
@@ -2185,7 +2185,7 @@ option is ignored.  The default is \fBTrue\fP.
 .B "-sharpen \fI<radius>x<sigma>"\fP
 \fRsharpen the image
 
-Use a gaussian operator of the given radius and
+Use a Gaussian operator of the given radius and
 standard deviation (sigma).
 
 .TP
@@ -2348,7 +2348,7 @@ other image attribute by embedding special format characters:
      %b   file size
      %c   comment
      %d   directory
-     %e   filename extention
+     %e   filename extension
      %f   filename
      %h   height
      %i   input filename
