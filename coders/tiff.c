@@ -248,6 +248,16 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
 }
 #endif
 
+static int TIFFCloseBlob(thandle_t context)
+{
+  Image
+    *image;
+
+  image=(Image *) context;
+  CloseBlob(image);
+  return(0);
+}
+
 static unsigned int TIFFErrors(const char *module,const char *format,
   va_list warning)
 {
@@ -258,6 +268,42 @@ static unsigned int TIFFErrors(const char *module,const char *format,
   (void) strcat(message,".");
   ThrowException(tiff_exception,DelegateError,message,module);
   return(True);
+}
+
+static int TIFFMapBlob(thandle_t context,tdata_t *base,toff_t *size)
+{
+  return(0);
+}
+
+static tsize_t TIFFReadBlob(thandle_t context,tdata_t data,tsize_t size)
+{
+  Image
+    *image;
+
+  image=(Image *) context;
+  return(ReadBlob(image,size,data));
+}
+
+static toff_t TIFFSeekBlob(thandle_t context,toff_t offset,int whence)
+{
+  Image
+    *image;
+
+  image=(Image *) context;
+  return(SeekBlob(image,offset,whence));
+}
+
+static toff_t TIFFSizeBlob(thandle_t context)
+{
+  Image
+    *image;
+
+  image=(Image *) context;
+  return(SizeBlob(image));
+}
+
+static void TIFFUnmapBlob(thandle_t context,tdata_t base,toff_t size)
+{
 }
 
 static unsigned int TIFFWarnings(const char *module,const char *format,
@@ -272,15 +318,20 @@ static unsigned int TIFFWarnings(const char *module,const char *format,
   return(True);
 }
 
-static Image *ReadTIFFImage(const ImageInfo *image_info,
-  ExceptionInfo *exception)
+static tsize_t TIFFWriteBlob(thandle_t context,tdata_t data,tsize_t size)
+{
+  Image
+    *image;
+
+  image=(Image *) context;
+  return(WriteBlob(image,size,data));
+}
+
+static Image *ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
     filename[MaxTextExtent],
     *text;
-
-  FILE
-    *file;
 
   float
     *chromaticity,
@@ -291,7 +342,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     *image;
 
   int
-    c,
     range;
 
   long
@@ -345,26 +395,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
-  /*
-    Copy image to temporary file.
-  */
-  (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
-  TemporaryFilename((char *) image_info->filename);
-  file=fopen(image_info->filename,WriteBinaryType);
-  if (file == (FILE *) NULL)
-    ThrowReaderException(FileOpenWarning,"Unable to write file",image);
-  c=ReadBlobByte(image);
-  while (c != EOF)
-  {
-    (void) fputc(c,file);
-    c=ReadBlobByte(image);
-  }
-  (void) fclose(file);
-  (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
   tiff_exception=exception;
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
-  tiff=TIFFOpen(image->filename,ReadBinaryUnbufferedType);
+  tiff=TIFFClientOpen(image->filename,ReadBinaryUnbufferedType,image,
+    TIFFReadBlob,TIFFWriteBlob,TIFFSeekBlob,TIFFCloseBlob,TIFFSizeBlob,
+    TIFFMapBlob,TIFFUnmapBlob);
   if (tiff == (TIFF *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   if (image_info->subrange != 0)
@@ -877,7 +913,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       }
   } while (status == True);
   TIFFClose(tiff);
-  (void) remove(image->filename);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   (void) strncpy(image->filename,filename,MaxTextExtent-1);
@@ -1245,21 +1280,18 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
   (void) strncpy(filename,image->filename,MaxTextExtent-1);
-  if ((image->file == stdout) || image->pipet ||
-      (image->blob->data != (unsigned char *) NULL))
-    TemporaryFilename(filename);
-  else
-    CloseBlob(image);
-  tiff=TIFFOpen(filename,WriteBinaryType);
+  tiff=TIFFClientOpen(image->filename,WriteBinaryType,image,
+    TIFFReadBlob,TIFFWriteBlob,TIFFSeekBlob,TIFFCloseBlob,TIFFSizeBlob,
+    TIFFMapBlob,TIFFUnmapBlob);
   if (tiff == (TIFF *) NULL)
     return(False);
-  image->status=0;
   scene=0;
   do
   {
     /*
       Initialize TIFF fields.
     */
+printf("%x\n",image->file);
     if (LocaleCompare(image_info->magick,"PTIF") == 0)
       if (image->previous != (Image *) NULL)
         (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_REDUCEDIMAGE);
@@ -1392,7 +1424,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         (void) TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_SEPARATE);
     strip_size=Max(TIFFDefaultStripSize(tiff,-1),1);
     if (compress_tag == COMPRESSION_JPEG)
-      (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,strip_size+(8-(strip_size % 8)));
+      (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,strip_size+
+        (8-(strip_size % 8)));
     else
       if ((compress_tag == COMPRESSION_CCITTFAX4) ||
           (compress_tag == COMPRESSION_ADOBE_DEFLATE))
@@ -1505,7 +1538,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           {
             for (y=0; y < (long) image->rows; y++)
             {
-              if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
+              p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+              if (p == (const PixelPacket *) NULL)
                 break;
               if (!image->matte)
                 (void) PopImagePixels(image,RGBQuantum,scanline);
@@ -1527,7 +1561,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             */
             for (y=0; y < (long) image->rows; y++)
             {
-              if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
+              p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+              if (p == (const PixelPacket *) NULL)
                 break;
               (void) PopImagePixels(image,RedQuantum,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
@@ -1536,7 +1571,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             MagickMonitor(SaveImageText,100,400);
             for (y=0; y < (long) image->rows; y++)
             {
-              if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
+              p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+              if (p == (const PixelPacket *) NULL)
                 break;
               (void) PopImagePixels(image,GreenQuantum,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,1,image) < 0)
@@ -1545,7 +1581,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             MagickMonitor(SaveImageText,200,400);
             for (y=0; y < (long) image->rows; y++)
             {
-              if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
+              p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+              if (p == (const PixelPacket *) NULL)
                 break;
               (void) PopImagePixels(image,BlueQuantum,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,2,image) < 0)
@@ -1555,7 +1592,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             if (image->matte)
               for (y=0; y < (long) image->rows; y++)
               {
-                if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
+                p=AcquireImagePixels(image,0,y,image->columns,1,
+                  &image->exception);
+                if (p == (const PixelPacket *) NULL)
                   break;
                 (void) PopImagePixels(image,AlphaQuantum,scanline);
                 if (TIFFWritePixels(tiff,(char *) scanline,y,3,image) < 0)
@@ -1576,7 +1615,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           (void) RGBTransformImage(image,CMYKColorspace);
         for (y=0; y < (long) image->rows; y++)
         {
-          if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
+          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+          if (p == (const PixelPacket *) NULL)
             break;
           if (!image->matte)
             (void) PopImagePixels(image,CMYKQuantum,scanline);
@@ -1722,27 +1762,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   while (image->previous != (Image *) NULL)
     image=image->previous;
   TIFFClose(tiff);
-  if ((image->file == stdout) || image->pipet ||
-      (image->blob->data != (unsigned char *) NULL))
-    {
-      FILE
-        *file;
-
-      int
-        c;
-
-      /*
-        Copy temporary file to image blob->
-      */
-      file=fopen(filename,ReadBinaryType);
-      if (file == (FILE *) NULL)
-        ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-      for (c=fgetc(file); c != EOF; c=fgetc(file))
-        (void) WriteBlobByte(image,c);
-      (void) fclose(file);
-      (void) remove(filename);
-      CloseBlob(image);
-    }
+  image->status=False;
   if (LocaleCompare(image_info->magick,"PTIF") == 0)
     DestroyImages(image);
   return(True);
