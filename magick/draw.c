@@ -499,22 +499,11 @@ static void MvgAppendColor(DrawContext context, const PixelPacket *color)
     }
   else
     {
-      MvgPrintf(context,
-#if QuantumDepth == 8
-                "#%02X%02X%02X",
-#elif QuantumDepth == 16
-                "#%04X%04X%04X",
-#endif
-                color->red, color->green, color->blue);
+      char
+        tuple[MaxTextExtent];
 
-      if (color->opacity != OpaqueOpacity)
-        MvgPrintf(context,
-#if QuantumDepth == 8
-                  "%02X",
-#elif QuantumDepth == 16
-                  "%04X",
-#endif
-                  color->opacity);
+      GetColorTuple(context->image,&color,True,tuple);
+      MvgPrintf(context,"%.1024s",tuple);
     }
 }
 
