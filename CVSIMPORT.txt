@@ -11,10 +11,14 @@ bzlib:
     import -m 'Import bzip2 1.0.2' delegates/bzlib \
     INITIAL BZIP2_1_0_2
 
+cvs -d :pserver:bfriesen@studio.imagemagick.org:/pathos/cvs \
+    import -m 'Import freetype 2.1.2' delegates/ttf \
+    FREETYPE2 FREETYPE_2_1_2
+
 jasper
   cvs -d :pserver:bfriesen@studio.imagemagick.org:/pathos/cvs \
-    import -m 'Import jasper 1.500.4' delegates/jp2 \
-    JASPER_DIST JASPER_1_500_4
+    import -m 'Import jasper 1.600.0' delegates/jp2 \
+    JASPER_DIST JASPER_1_600_0
 
 jbig:
 
