@@ -331,6 +331,20 @@ MagickExport unsigned int IsEventLogging(void)
     status;
 
   if (log_info == (LogInfo *) NULL)
+    {
+      AcquireSemaphoreInfo(&log_semaphore);
+      if (log_info == (LogInfo *) NULL)
+        {
+          ExceptionInfo
+            exception;
+
+          GetExceptionInfo(&exception);
+          (void) ReadConfigureFile(LogFilename,0,&exception);
+          DestroyExceptionInfo(&exception);
+        }
+      LiberateSemaphoreInfo(&log_semaphore);
+		}
+  if (log_info == (LogInfo *) NULL)
     return(False);
   status=log_info->events != NoEvents;
   return(status);
@@ -537,21 +551,7 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
   va_list
     operands;
 
-  if (log_info == (LogInfo *) NULL)
-    {
-      AcquireSemaphoreInfo(&log_semaphore);
-      if (log_info == (LogInfo *) NULL)
-        {
-          ExceptionInfo
-            exception;
-
-          GetExceptionInfo(&exception);
-          (void) ReadConfigureFile(LogFilename,0,&exception);
-          DestroyExceptionInfo(&exception);
-        }
-      LiberateSemaphoreInfo(&log_semaphore);
-    }
-  if (log_info == (LogInfo *) NULL)
+  if (!IsEventLogging())
     return(False);
   if (!(log_info->events & type))
     return(True);

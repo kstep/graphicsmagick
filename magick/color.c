@@ -431,10 +431,13 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
   register volatile ColorInfo
     *p;
 
-  AcquireSemaphoreInfo(&color_semaphore);
   if (color_list == (ColorInfo *) NULL)
-    (void) ReadConfigureFile(ColorFilename,0,exception);
-  LiberateSemaphoreInfo(&color_semaphore);
+    {
+      AcquireSemaphoreInfo(&color_semaphore);
+      if (color_list == (ColorInfo *) NULL)
+        (void) ReadConfigureFile(ColorFilename,0,exception);
+      LiberateSemaphoreInfo(&color_semaphore);
+    }
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     return((const ColorInfo *) color_list);
   /*
@@ -484,13 +487,17 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetColorList() returns any colors that match the specified pattern.
+%  Method GetColorList returns any colors that match the specified pattern
+%  and color standard.
 %
 %  The format of the GetColorList function is:
 %
-%      char **GetColorList(const char *pattern,unsigned long *number_colors)
+%      filelist=GetColorList(const char *pattern,unsigned long *number_colors)
 %
 %  A description of each parameter follows:
+%
+%    o filelist: Method GetColorList returns a list of colors that match the
+%      specified pattern and color standard.
 %
 %    o pattern: Specifies a pointer to a text string containing a pattern.
 %
@@ -517,7 +524,7 @@ MagickExport char **GetColorList(const char *pattern,
     Allocate color list.
   */
   assert(pattern != (char *) NULL);
-  assert(number_colors != (int *) NULL);
+  assert(number_colors != (unsigned long *) NULL);
   *number_colors=0;
   GetExceptionInfo(&exception);
   p=GetColorInfo("*",&exception);

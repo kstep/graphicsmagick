@@ -178,34 +178,37 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
   register volatile TypeInfo
     *p;
 
-  AcquireSemaphoreInfo(&type_semaphore);
   if (type_list == (TypeInfo *) NULL)
     {
-      (void) ReadConfigureFile(TypeFilename,0,exception);
+      AcquireSemaphoreInfo(&type_semaphore);
+      if (type_list == (TypeInfo *) NULL)
+        {
+          (void) ReadConfigureFile(TypeFilename,0,exception);
 #if defined(WIN32) || defined(__CYGWIN__)
-      {
-        TypeInfo
-          *type_info;
-
-        type_info=NTGetTypeList();
-        if (type_info != (TypeInfo *) NULL)
           {
-            if (type_list == (TypeInfo *) NULL)
-              type_list=type_info;
-            else
+            TypeInfo
+              *type_info;
+
+            type_info=NTGetTypeList();
+            if (type_info != (TypeInfo *) NULL)
               {
-                while (type_list->next != (TypeInfo *) NULL)
-                  type_list=type_list->next;
-                type_list->next=type_info;
-                type_info->previous=type_list;
-                while (type_list->previous != (TypeInfo *) NULL)
-                  type_list=type_list->previous;
+                if (type_list == (TypeInfo *) NULL)
+                  type_list=type_info;
+                else
+                  {
+                    while (type_list->next != (TypeInfo *) NULL)
+                      type_list=type_list->next;
+                    type_list->next=type_info;
+                    type_info->previous=type_list;
+                    while (type_list->previous != (TypeInfo *) NULL)
+                      type_list=type_list->previous;
+                  }
               }
           }
-      }
 #endif
+        }
+      LiberateSemaphoreInfo(&type_semaphore);
     }
-  LiberateSemaphoreInfo(&type_semaphore);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     return((const TypeInfo *) type_list);
   /*
@@ -455,7 +458,7 @@ MagickExport char **GetTypeList(const char *pattern,unsigned long *number_types)
     Allocate type list.
   */
   assert(pattern != (char *) NULL);
-  assert(number_types != (int *) NULL);
+  assert(number_types != (unsigned long *) NULL);
   *number_types=0;
   GetExceptionInfo(&exception);
   p=GetTypeInfo("*",&exception);

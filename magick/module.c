@@ -494,19 +494,22 @@ MagickExport const ModuleInfo *GetModuleInfo(const char *name,
   register volatile ModuleInfo
     *p;
 
-  AcquireSemaphoreInfo(&module_semaphore);
   if (module_list == (const ModuleInfo *) NULL)
     {
-      /*
-        Read modules.
-      */
-      if (lt_dlinit() != 0)
-        MagickFatalError(DelegateFatalError,
-          "Unable to initialize module loader",lt_dlerror());
-      RegisterStaticModules();
-      (void) ReadConfigureFile(ModuleFilename,0,exception);
+      AcquireSemaphoreInfo(&module_semaphore);
+      if (module_list == (const ModuleInfo *) NULL)
+        {
+          /*
+            Read modules.
+          */
+          if (lt_dlinit() != 0)
+            MagickFatalError(DelegateFatalError,
+              "Unable to initialize module loader",lt_dlerror());
+          RegisterStaticModules();
+          (void) ReadConfigureFile(ModuleFilename,0,exception);
+        }
+      LiberateSemaphoreInfo(&module_semaphore);
     }
-  LiberateSemaphoreInfo(&module_semaphore);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     return((const ModuleInfo *) module_list);
   AcquireSemaphoreInfo(&module_semaphore);

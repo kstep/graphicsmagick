@@ -172,10 +172,13 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
   register volatile MagicInfo
     *p;
 
-  AcquireSemaphoreInfo(&magic_semaphore);
   if (magic_list == (MagicInfo *) NULL)
-    (void) ReadConfigureFile(MagicFilename,0,exception);
-  LiberateSemaphoreInfo(&magic_semaphore);
+    {
+      AcquireSemaphoreInfo(&magic_semaphore);
+      if (magic_list == (MagicInfo *) NULL)
+        (void) ReadConfigureFile(MagicFilename,0,exception);
+      LiberateSemaphoreInfo(&magic_semaphore);
+    }
   if ((magic == (const unsigned char *) NULL) || (length == 0))
     return((const MagicInfo *) magic_list);
   /*
