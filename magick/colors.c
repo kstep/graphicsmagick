@@ -60,6 +60,25 @@
 #define ColorFilename  "colors.mgk"
 
 /*
+  Declare color map.
+*/
+static char
+  *ColorMap =
+    "<?xml version=\"1.0\"?>"
+    "<colormap>"
+    "  <color name=\"none\" red=\"0\" green=\"0\" blue=\"0\" opacity=\"255\" />"
+    "  <color name=\"white\" red=\"255\" green=\"255\" blue=\"255\" />"
+    "  <color name=\"red\" red=\"255\" green=\"0\" blue=\"0\" />"
+    "  <color name=\"green\" red=\"0\" green=\"255\" blue=\"0\" />"
+    "  <color name=\"gray\" red=\"190\" green=\"190\" blue=\"190\" />"
+    "  <color name=\"blue\" red=\"0\" green=\"0\" blue=\"255\" />"
+    "  <color name=\"cyan\" red=\"0\" green=\"255\" blue=\"255\" />"
+    "  <color name=\"magenta\" red=\"255\" green=\"0\" blue=\"255\" />"
+    "  <color name=\"yellow\" red=\"255\" green=\"255\" blue=\"0\" />"
+    "  <color name=\"black\" red=\"0\" green=\"0\" blue=\"0\" />"
+    "</colormap>";
+
+/*
   Structures.
 */
 typedef struct _ColorPacket
@@ -1436,7 +1455,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
   LiberateMemory((void **) &path);
   xml=(char *) FileToBlob(filename,&length,exception);
   if (xml == (char *) NULL)
-    return(False);
+    xml=ColorMap;
   token=AllocateString(xml);
   for (q=xml; *q != '\0'; )
   {

@@ -61,6 +61,7 @@ typedef lt_dlhandle ModuleHandle;
 #else
 typedef void *ModuleHandle;
 #endif
+
 /*
   Define declarations.
 */
@@ -76,6 +77,16 @@ typedef void *ModuleHandle;
 #  define ModuleGlobExpression "IM_MOD_RL_*.dll"
 # endif
 #endif
+
+/*
+  Declare module map.
+*/
+static char
+  *ModuleMap =
+    "<?xml version=\"1.0\"?>"
+    "<modulemap>"
+    "  <module />"
+    "</modulemap>";
 
 /*
   Global declarations.
@@ -810,7 +821,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
     }
   xml=(char *) FileToBlob(filename,&length,exception);
   if (xml == (char *) NULL)
-    return(False);
+    xml=ModuleMap;
   token=AllocateString(xml);
   for (q=xml; *q != '\0'; )
   {

@@ -60,6 +60,16 @@
 #define MagicFilename  "magic.mgk"
 
 /*
+  Declare color map.
+*/
+static char
+  *MagicMap =
+    "<?xml version=\"1.0\"?>"
+    "<magicmap>"
+    "  <magic />"
+    "</magicmap>";
+
+/*
   Static declarations.
 */
 static MagicInfo
@@ -286,7 +296,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
     }
   xml=(char *) FileToBlob(filename,&length,exception);
   if (xml == (char *) NULL)
-    return(False);
+    xml=MagicMap;
   token=AllocateString(xml);
   for (q=xml; *q != '\0'; )
   {

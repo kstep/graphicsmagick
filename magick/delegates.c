@@ -67,6 +67,16 @@
 #define DelegateFilename  "delegates.mgk"
 
 /*
+  Declare delegate map.
+*/
+static char
+  *DelegateMap =
+    "<?xml version=\"1.0\"?>"
+    "<delegatemap>"
+    "  <delgate />"
+    "</delegatemap>";
+
+/*
   Global declaractions.
 */
 static DelegateInfo
@@ -628,7 +638,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
     }
   xml=(char *) FileToBlob(filename,&length,exception);
   if (xml == (char *) NULL)
-    return(False);
+    xml=DelegateMap;
   token=AllocateString(xml);
   for (q=xml; *q != '\0'; )
   {

@@ -61,6 +61,16 @@
 #define FontFilename  "fonts.mgk"
 
 /*
+  Declare font map.
+*/
+static char
+  *FontMap =
+    "<?xml version=\"1.0\"?>"
+    "<fontmap>"
+    "  <font />"
+    "</fontmap>";
+
+/*
   Static declarations.
 */
 static FontInfo
@@ -292,7 +302,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
     }
   xml=(char *) FileToBlob(filename,&length,exception);
   if (xml == (char *) NULL)
-    return(False);
+    xml=FontMap;
   token=AllocateString(xml);
   for (q=xml; *q != '\0'; )
   {
