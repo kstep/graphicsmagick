@@ -1,3 +1,8 @@
+2001-10-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/STL.h (coderInfoList): Fixed compilation problem
+ 	when compiling with Visual C++.
+
 2001-10-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Color.h (scaleQuantumToDouble): Add polymorphic
