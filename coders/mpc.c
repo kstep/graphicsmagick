@@ -797,10 +797,12 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     cache_info->colorspace=image->colorspace;
     cache_info->type=DiskCache;
     cache_info->persist=True;
+    cache_info->offset=TellBlob(image);
     status=OpenCache(image);
     if (status == False)
       ThrowReaderException(CacheWarning,"Unable to open peristent cache",image);
     (void) ReferenceCache(image->cache);
+    (void) SeekBlob(image,cache_info->length,SEEK_CUR);
     /*
       Proceed to next image.
     */
@@ -978,7 +980,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,"id=MagickCache\n");
     GetPathComponent(image->filename,BasePath,basename);
     (void) FormatString(cache_filename,"%.1024s-%lu.mpc",basename,scene);
-    FormatString(buffer,"cache=%.1024s  quantum-depth=%d\n",cache_filename,
+    FormatString(buffer,"cache=%.1024s  quantum-depth=%d\n",image->filename,
       QuantumDepth);
     (void) WriteBlobString(image,buffer);
     if (image->storage_class == PseudoClass)
@@ -1276,8 +1278,8 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     cache_info->colorspace=image->colorspace;
     cache_info->type=DiskCache;
     cache_info->persist=True;
-    (void) strncpy(cache_info->meta_filename,image->filename,MaxTextExtent-1);
-    (void) strncpy(cache_info->cache_filename,cache_filename,MaxTextExtent-1);
+    cache_info->offset=TellBlob(image);
+    (void) strncpy(cache_info->cache_filename,image->filename,MaxTextExtent-1);
     status=OpenCache(clone_image);
     if (status == False)
       ThrowWriterException(CacheWarning,"Unable to open pixel cache",image);
@@ -1299,6 +1301,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     if (y < (long) image->rows)
       ThrowWriterException(CacheWarning,"Unable to clone image",image);
     DestroyImage(clone_image);
+    (void) SeekBlob(image,cache_info->length,SEEK_CUR);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);

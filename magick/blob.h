@@ -63,7 +63,7 @@ extern MagickExport void
   *FileToBlob(const char *,size_t *,ExceptionInfo *),
   GetBlobInfo(BlobInfo *),
   *ImageToBlob(const ImageInfo *,Image *,size_t *,ExceptionInfo *),
-  *MapBlob(int,const MapMode,size_t *),
+  *MapBlob(int,const MapMode,size_t,size_t *),
   MSBOrderLong(char *,const size_t),
   MSBOrderShort(char *,const size_t);
 

@@ -1729,29 +1729,16 @@ MagickExport unsigned int OpenCache(Image *image)
     file=open(cache_info->cache_filename,O_RDWR | O_CREAT | O_BINARY,0777);
   if (file == -1)
     ThrowBinaryException(CacheWarning,"Unable to open cache",image->filename);
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-  if (ftruncate(file,length) == -1)
-    {
-      (void) close(file);
-      ThrowBinaryException(CacheWarning,"Unable to truncate cache",
-        image->filename)
-    }
-#else
-  if (lseek(file,length,SEEK_SET) == -1)
+  if (lseek(file,cache_info->offset+length,SEEK_SET) == -1)
     {
       (void) close(file);
       ThrowBinaryException(CacheWarning,"Unable to seek cache",image->filename)
     }
-  if (write(file,&offset,sizeof(size_t)) == -1)
-    {
-      (void) close(file);
-      ThrowBinaryException(CacheWarning,"Unable to write cache",image->filename)
-    }
-#endif
   cache_info->storage_class=image->storage_class;
   cache_info->colorspace=image->colorspace;
   cache_info->type=DiskCache;
-  pixels=(PixelPacket *) MapBlob(file,IOMode,&offset);
+  cache_info->length=length;
+  pixels=(PixelPacket *) MapBlob(file,IOMode,cache_info->offset,&offset);
   if (pixels != (PixelPacket *) NULL)
     {
       /*
@@ -1855,7 +1842,7 @@ static unsigned int ReadCacheIndexes(const Cache cache,
   number_pixels=cache_info->columns*cache_info->rows;
   for (y=0; y < (long) nexus_info->rows; y++)
   {
-    count=lseek(file,number_pixels*sizeof(PixelPacket)+offset*
+    count=lseek(file,cache_info->offset+number_pixels*sizeof(PixelPacket)+offset*
       sizeof(IndexPacket),SEEK_SET);
     if (count == -1)
       return(False);
@@ -1949,7 +1936,7 @@ static unsigned int ReadCachePixels(const Cache cache,const unsigned long nexus)
     return(False);
   for (y=0; y < (long) nexus_info->rows; y++)
   {
-    count=lseek(file,offset*sizeof(PixelPacket),SEEK_SET);
+    count=lseek(file,cache_info->offset+offset*sizeof(PixelPacket),SEEK_SET);
     if (count == -1)
       return(False);
     count=read(file,(char *) pixels,nexus_info->columns*sizeof(PixelPacket));
@@ -2640,7 +2627,7 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned long nexus)
   number_pixels=cache_info->columns*cache_info->rows;
   for (y=0; y < (long) nexus_info->rows; y++)
   {
-    count=lseek(file,number_pixels*sizeof(PixelPacket)+offset*
+    count=lseek(file,cache_info->offset+number_pixels*sizeof(PixelPacket)+offset*
       sizeof(IndexPacket),SEEK_SET);
     if (count == -1)
       return(False);
@@ -2734,7 +2721,7 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned long nexus)
     return(False);
   for (y=0; y < (long) nexus_info->rows; y++)
   {
-    count=lseek(file,offset*sizeof(PixelPacket),SEEK_SET);
+    count=lseek(file,cache_info->offset+offset*sizeof(PixelPacket),SEEK_SET);
     if (count == -1)
       return(False);
     count=write(file,(char *) pixels,nexus_info->columns*sizeof(PixelPacket));

@@ -761,7 +761,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
 %
 %  The format of the MapBlob method is:
 %
-%      void *MapBlob(int file,const MapMode mode,size_t *length)
+%      void *MapBlob(int file,const MapMode mode,size_t offset,size_t *length,)
 %
 %  A description of each parameter follows:
 %
@@ -776,7 +776,8 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
 %
 %
 */
-MagickExport void *MapBlob(int file,const MapMode mode,size_t *length)
+MagickExport void *MapBlob(int file,const MapMode mode,size_t offset,
+  size_t *length)
 {
 #if defined(HAVE_MMAP)
   struct stat
@@ -801,18 +802,20 @@ MagickExport void *MapBlob(int file,const MapMode mode,size_t *length)
     case ReadMode:
     default:
     {
-      map=(void *) mmap((char *) NULL,*length,PROT_READ,MAP_PRIVATE,file,0);
+      map=(void *) mmap((char *) NULL,*length,PROT_READ,MAP_PRIVATE,file,
+        offset);
       break;
     }
     case WriteMode:
     {
-      map=(void *) mmap((char *) NULL,*length,PROT_WRITE,MAP_SHARED,file,0);
+      map=(void *) mmap((char *) NULL,*length,PROT_WRITE,MAP_SHARED,file,
+        offset);
       break;
     }
     case IOMode:
     {
       map=(void *) mmap((char *) NULL,*length,PROT_READ | PROT_WRITE,MAP_SHARED,
-        file,0);
+        file,offset);
       break;
     }
   }
@@ -1144,7 +1147,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                     /*
                       Format supports blobs-- try memory-mapped I/O.
                     */
-                    blob=MapBlob(fileno(image->file),ReadMode,&length);
+                    blob=MapBlob(fileno(image->file),ReadMode,0,&length);
                     if (blob != (void *) NULL)
                       {
                         if (image_info->file != (FILE *) NULL)

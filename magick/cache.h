@@ -67,6 +67,7 @@ typedef struct _CacheInfo
     rows;
 
   off_t
+    offset,
     length;
 
   PixelPacket
@@ -76,8 +77,7 @@ typedef struct _CacheInfo
     *indexes;
 
   char
-    cache_filename[MaxTextExtent],
-    meta_filename[MaxTextExtent];
+    cache_filename[MaxTextExtent];
 
   unsigned long
     signature;
