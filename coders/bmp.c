@@ -598,6 +598,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             bmp_info.blue_mask=ReadBlobLSBLong(image);
             if (bmp_info.size > 40)
               {
+                double
+                  sum;
+
                 /*
                   Read color management information.
                 */
@@ -624,9 +627,22 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   ReadBlobLSBLong(image)/0x3ffffff;
                 bmp_info.blue_primary.z=(double)
                   ReadBlobLSBLong(image)/0x3ffffff;
-                image->chromaticity.red_primary=bmp_info.red_primary;
-                image->chromaticity.green_primary=bmp_info.green_primary;
-                image->chromaticity.blue_primary=bmp_info.blue_primary;
+
+                sum=bmp_info.red_primary.x+bmp_info.red_primary.x
+                    +bmp_info.red_primary.z;
+                image->chromaticity.red_primary.x/=sum;
+                image->chromaticity.red_primary.y/=sum;
+
+                sum=bmp_info.green_primary.x+bmp_info.green_primary.x
+                    +bmp_info.green_primary.z;
+                image->chromaticity.green_primary.x/=sum;
+                image->chromaticity.green_primary.y/=sum;
+
+                sum=bmp_info.blue_primary.x+bmp_info.blue_primary.x
+                    +bmp_info.blue_primary.z;
+                image->chromaticity.blue_primary.x/=sum;
+                image->chromaticity.blue_primary.y/=sum;
+
                 /*
                   Decode 16^16 fixed point formatted gamma_scales.
                 */
@@ -1602,19 +1618,22 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobLSBLong(image,
           (long) image->chromaticity.red_primary.y*0x3ffffff);
         (void) WriteBlobLSBLong(image,
-          (long) image->chromaticity.red_primary.z*0x3ffffff);
+          (long) (1.000f-(image->chromaticity.red_primary.x
+          +image->chromaticity.red_primary.y)*0x3ffffff));
         (void) WriteBlobLSBLong(image,
           (long) image->chromaticity.green_primary.x*0x3ffffff);
         (void) WriteBlobLSBLong(image,
           (long) image->chromaticity.green_primary.y*0x3ffffff);
         (void) WriteBlobLSBLong(image,
-          (long) image->chromaticity.green_primary.z*0x3ffffff);
+          (long) (1.000f-(image->chromaticity.green_primary.x
+          +image->chromaticity.green_primary.y)*0x3ffffff));
         (void) WriteBlobLSBLong(image,
           (long) image->chromaticity.blue_primary.x*0x3ffffff);
         (void) WriteBlobLSBLong(image,
           (long) image->chromaticity.blue_primary.y*0x3ffffff);
         (void) WriteBlobLSBLong(image,
-          (long) image->chromaticity.blue_primary.z*0x3ffffff);
+          (long) (1.000f-(image->chromaticity.blue_primary.x
+          +image->chromaticity.blue_primary.y)*0x3ffffff));
         (void) WriteBlobLSBLong(image,(long) bmp_info.gamma_scale.x*0xffff);
         (void) WriteBlobLSBLong(image,(long) bmp_info.gamma_scale.y*0xffff);
         (void) WriteBlobLSBLong(image,(long) bmp_info.gamma_scale.z*0xffff);
