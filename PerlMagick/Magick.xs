@@ -5307,6 +5307,9 @@ Montage(ref,...)
     MontageInfo
       *montage_info;
 
+    PixelPacket
+      transparent_color;
+
     register int
       i;
 
@@ -5355,6 +5358,7 @@ Montage(ref,...)
     FormatString(montage_info->filename,"montage-%.*s",MaxTextExtent-9,
       ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
     concatenate=0;
+    (void) QueryColorDatabase("none",&transparent_color);
     for (i=2; i < items; i+=2)
     {
       attribute=(char *) SvPV(ST(i-1),na);
@@ -5618,9 +5622,6 @@ Montage(ref,...)
             }
           if (strEQcase(attribute,"trans"))
             {
-              PixelPacket
-                transparent_color;
-
               transparent_color=GetOnePixel(image,0,0);
               QueryColorDatabase(SvPV(ST(i),na),&transparent_color);
               for (next=image; next; next=next->next)
@@ -5640,6 +5641,9 @@ Montage(ref,...)
         MagickWarning(exception.severity,exception.message,exception.qualifier);
         goto MethodException;
       }
+    if (transparent_color.opacity != TransparentOpacity)
+      for (next=image; next; next=next->next)
+        TransparentImage(next,transparent_color);
     (void) strcpy(info->image_info->filename,montage_info->filename);
     (void) SetImageInfo(info->image_info,False);
     for (next=image; next; next=next->next)
