@@ -44,7 +44,7 @@ man_MANS = $(MANPAGES)
 EXTRA_DIST = $(ALLMANPAGES)
 
 clean-local:
-	$(RM) -f *_out.miff gm.core core
+	$(RMDelegate) -f *_out.miff gm.core core
 
 GM=./gm
 MODEL_MIFF=$(top_srcdir)/Magick++/demo/model.miff
@@ -52,7 +52,7 @@ SMILE_MIFF=$(top_srcdir)/Magick++/demo/smile.miff
 GENERIC_TTF=$(top_srcdir)/PerlMagick/demo/Generic.ttf
 
 check:
-	$(RM) -f *_out.miff
+	$(RMDelegate) -f *_out.miff
 	${GM} convert $(MODEL_MIFF) +noise Laplacian              -label AddNoise AddNoise_out.miff
 	${GM} convert $(MODEL_MIFF) -fill gold \
 	        -pointsize 14 -font $(GENERIC_TTF) \
@@ -110,9 +110,13 @@ check:
 	${GM} convert $(MODEL_MIFF) -unsharp 0.0x1.0              -label UnsharpMask Unsharp_out.miff
 	${GM} convert $(MODEL_MIFF) -background "#000000FF" \
 	        -wave 25x150                             -label Wave Wave_out.miff
+	${GM} convert $(MODEL_MIFF) -equalize -ordered-dither intensity 2x2 -label Ordered2x2 Ordered2_out.miff
+	${GM} convert $(MODEL_MIFF) -equalize -ordered-dither intensity 3x3 -label Ordered3x3 Ordered3_out.miff
+	${GM} convert $(MODEL_MIFF) -equalize -ordered-dither intensity 4x4 -label Ordered4x4 Ordered4_out.miff
+	${GM} convert $(MODEL_MIFF) -equalize -random-threshold intensity 10% -label Random10% Random10_out.miff
 	${GM} montage -geometry '130x194+10+5>' -gravity 'Center' \
 	  -bordercolor 'green' -borderwidth 1x1 -tile '5x1000' -compose 'over' \
 	  -background '#ffffff' -font $(GENERIC_TTF) -pointsize 18 -fill '#600' \
 	  -stroke 'none' null: null: null: null: null: [A-Z]*_out.miff montage_out.miff
 	${GM} convert logo: -resize 40% logo.miff
-	${GM} composite logo.miff -gravity north gm montage_out.miff demo_out.miff
+	${GM} composite logo.miff -gravity north montage_out.miff demo_out.miff
