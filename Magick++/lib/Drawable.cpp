@@ -81,12 +81,18 @@ void Magick::DrawableAffine::print (std::ostream& stream_) const
           << ","
           << _ty;
 }
-
-// Angle (text drawing angle)
-void Magick::DrawableAngle::print (std::ostream& stream_) const
+void Magick::DrawableAffine::operator()( MagickLib::DrawContext context_ ) const
 {
-  stream_ << "angle "
-          << _angle;
+  AffineMatrix
+    affine;
+
+  affine.sx = _sx;
+  affine.rx = _rx;
+  affine.ry = _ry;
+  affine.sy = _sy;
+  affine.rx = _tx;
+  affine.ty = _ty;
+  DrawSetAffine( context_, &affine );
 }
 
 // Arc
@@ -96,6 +102,10 @@ void Magick::DrawableArc::print (std::ostream& stream_) const
           << " " << Magick::Coordinate(_startX,_startY)
           << " " << Magick::Coordinate(_endX,_endY)
           << " " << Magick::Coordinate(_startDegrees,_endDegrees);
+}
+void Magick::DrawableArc::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawArc( context_, _startX, _startY, _endX, _endY, _startDegrees, _endDegrees );
 }
 
 // Bezier curve (Coordinate list must contain at least three members)
@@ -111,6 +121,21 @@ void Magick::DrawableBezier::print (std::ostream& stream_) const
       p++;
     }
 }
+void Magick::DrawableBezier::operator()( MagickLib::DrawContext context_ ) const
+{
+  size_t num_coords=_coordinates.size();
+  PointInfo *coordinates = new PointInfo[num_coords];
+  
+  std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
+  for( unsigned int i=0; p != _coordinates.end(); p++ )
+    {
+      coordinates[i].x = p->x();
+      coordinates[i].y = p->y();
+    }
+
+  DrawBezier( context_, num_coords, coordinates );
+  delete [] coordinates;
+}
 
 // Circle
 void Magick::DrawableCircle::print (std::ostream& stream_) const
@@ -119,6 +144,10 @@ void Magick::DrawableCircle::print (std::ostream& stream_) const
           << Magick::Coordinate( _originX, _originY )
           << " "
           << Magick::Coordinate( _perimX, _perimY );
+}
+void Magick::DrawableCircle::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawCircle( context_, _originX, _originY, _perimX, _perimY );
 }
 
 // Colorize at point using PaintMethod
@@ -151,6 +180,10 @@ void Magick::DrawableColor::print (std::ostream& stream_) const
       }
     }
 }
+void Magick::DrawableColor::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawColor( context_, _x, _y, _paintMethod );
+}
 
 // Drawable Path
 void Magick::DrawablePath::print (std::ostream& stream_) const
@@ -164,6 +197,20 @@ void Magick::DrawablePath::print (std::ostream& stream_) const
       p++;
     }
   stream_ << "'";
+}
+void Magick::DrawablePath::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawPathStart( context_ );
+
+  // for_each ( _path.begin(), _path.end(), ??? );
+
+  // FIXME
+//   for( std::list<Magick::VPath>::const_iterator p = _path.begin();
+//        p != _path.end();
+//        p++ )
+//     p->operator()( context_ );
+
+  DrawPathFinish( context_ );
 }
 
 // Decoration (text decoration)
@@ -191,6 +238,10 @@ void Magick::DrawableTextDecoration::print (std::ostream& stream_) const
       }
     }
 }
+void Magick::DrawableTextDecoration::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawSetTextDecoration( context_, _decoration );
+}
 
 // Ellipse
 void Magick::DrawableEllipse::print (std::ostream& stream_) const
@@ -200,12 +251,21 @@ void Magick::DrawableEllipse::print (std::ostream& stream_) const
 	  << " " << _radiusX << "," << _radiusY
 	  << " " << _arcStart << "," << _arcEnd;
 }
+void Magick::DrawableEllipse::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawEllipse( context_, _originX, _originY, _radiusX, _radiusY, _arcStart, _arcEnd );
+}
 
 // Specify drawing fill color
 void Magick::DrawableFillColor::print (std::ostream& stream_) const
 {
   stream_ << "fill "
           << string(_color);
+}
+void Magick::DrawableFillColor::operator()( MagickLib::DrawContext context_ ) const
+{
+  PixelPacket color = static_cast<PixelPacket>(_color);
+  DrawSetFillColor( context_, &color );
 }
 
 // Specify drawing fill fule
@@ -231,12 +291,20 @@ void Magick::DrawableFillRule::print (std::ostream& stream_) const
       }
     }
 }
+void Magick::DrawableFillRule::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawSetFillRule( context_, _fillRule );
+}
 
 // Specify drawing fill opacity
 void Magick::DrawableFillOpacity::print (std::ostream& stream_) const
 {
   stream_ << "fill-opacity "
           << _opacity;
+}
+void Magick::DrawableFillOpacity::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawSetFillOpacity( context_, _opacity );
 }
 
 // Specify text font
@@ -340,6 +408,29 @@ void Magick::DrawableFont::print (std::ostream& stream_) const
       stream_ << "'";
     }
 }
+void Magick::DrawableFont::operator()( MagickLib::DrawContext context_ ) const
+{
+  // font
+  if(_font.length())
+    {
+      DrawSetFont( context_, _font.c_str() );
+    }
+
+  if(_family.length())
+    {
+      // font-family
+      DrawSetFontFamily( context_, _family.c_str() );
+
+      // font-style
+      DrawSetFontStyle( context_, _style );
+
+      // font-weight
+      DrawSetFontWeight( context_, _weight );
+
+      // font-stretch
+      DrawSetFontStretch( context_, _stretch );
+    }
+}
 
 // Specify text positioning gravity
 void Magick::DrawableGravity::print (std::ostream& stream_) const
@@ -408,6 +499,10 @@ void Magick::DrawableGravity::print (std::ostream& stream_) const
         stream_ << "Forget";
       }
     }
+}
+void Magick::DrawableGravity::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawSetGravity( context_, _gravity );
 }
 
 // Draw image at point
@@ -644,6 +739,10 @@ void Magick::DrawableCompositeImage::print (std::ostream& stream_) const
   LiberateMemory(reinterpret_cast<void **>(&media_type));
   LiberateMemory(reinterpret_cast<void **>(&base64));
 }
+void Magick::DrawableCompositeImage::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawComposite( context_, _composition, _x, _y, _width, _height, _image->constImage() );
+}
 
 // Line
 void Magick::DrawableLine::print (std::ostream& stream_) const
@@ -652,6 +751,10 @@ void Magick::DrawableLine::print (std::ostream& stream_) const
           << Magick::Coordinate( _startX, _startY )
           << " "
           << Magick::Coordinate( _endX, _endY );
+}
+void Magick::DrawableLine::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawLine( context_, _startX, _startY, _endX, _endY );
 }
 
 // Change pixel matte value to transparent using PaintMethod
@@ -684,6 +787,10 @@ void Magick::DrawableMatte::print (std::ostream& stream_) const
       }
     }
 }
+void Magick::DrawableMatte::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawMatte( context_, _x, _y, _paintMethod );
+}
 
 // Point
 void Magick::DrawablePoint::print (std::ostream& stream_) const
@@ -691,12 +798,20 @@ void Magick::DrawablePoint::print (std::ostream& stream_) const
   stream_ << "point "
           << Magick::Coordinate( _x, _y );
 }
+void Magick::DrawablePoint::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawPoint( context_, _x, _y );
+}
 
 // Text pointsize
 void Magick::DrawablePointSize::print (std::ostream& stream_) const
 {
   stream_ << "font-size "
           << _pointSize;
+}
+void Magick::DrawablePointSize::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawSetFontSize( context_, _pointSize );
 }
 
 // Polygon (Coordinate list must contain at least three members)
@@ -712,6 +827,21 @@ void Magick::DrawablePolygon::print (std::ostream& stream_) const
       p++;
     }
 }
+void Magick::DrawablePolygon::operator()( MagickLib::DrawContext context_ ) const
+{
+  size_t num_coords=_coordinates.size();
+  PointInfo *coordinates = new PointInfo[num_coords];
+  
+  std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
+  for( unsigned int i=0; p != _coordinates.end(); p++ )
+    {
+      coordinates[i].x = p->x();
+      coordinates[i].y = p->y();
+    }
+
+  DrawPolygon( context_, num_coords, coordinates );
+  delete [] coordinates;
+}
 
 // Polyline (Coordinate list must contain at least three members)
 void Magick::DrawablePolyline::print (std::ostream& stream_) const
@@ -726,11 +856,30 @@ void Magick::DrawablePolyline::print (std::ostream& stream_) const
       p++;
     }
 }
+void Magick::DrawablePolyline::operator()( MagickLib::DrawContext context_ ) const
+{
+  size_t num_coords=_coordinates.size();
+  PointInfo *coordinates = new PointInfo[num_coords];
+  
+  std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
+  for( unsigned int i=0; p != _coordinates.end(); p++ )
+    {
+      coordinates[i].x = p->x();
+      coordinates[i].y = p->y();
+    }
+
+  DrawPolyline( context_, num_coords, coordinates );
+  delete [] coordinates;
+}
 
 // Pop Graphic Context
 void Magick::DrawablePopGraphicContext::print (std::ostream& stream_) const
 {
   stream_ << "pop graphic-context";
+}
+void Magick::DrawablePopGraphicContext::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawPopGraphicContext( context_ );
 }
 
 // Push Graphic Context
@@ -738,11 +887,19 @@ void Magick::DrawablePushGraphicContext::print (std::ostream& stream_) const
 {
   stream_ << "push graphic-context";
 }
+void Magick::DrawablePushGraphicContext::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawPushGraphicContext( context_ );
+}
 
 // Pop (terminate) Pattern definition
 void Magick::DrawablePopPattern::print (std::ostream& stream_) const
 {
   stream_ << "pop pattern";
+}
+void Magick::DrawablePopPattern::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawPopPattern( context_ );
 }
 
 // Push Pattern definition
@@ -755,6 +912,10 @@ void Magick::DrawablePushPattern::print (std::ostream& stream_) const
           << " "
           << _width << "," << _height;
 }
+void Magick::DrawablePushPattern::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawPushPattern( context_, _id.c_str(), _x, _y, _width, _height );
+}
 
 // Rectangle
 void Magick::DrawableRectangle::print (std::ostream& stream_) const
@@ -764,11 +925,19 @@ void Magick::DrawableRectangle::print (std::ostream& stream_) const
           << " "
           << Magick::Coordinate( _lowerRightX, _lowerRightY );
 }
+void Magick::DrawableRectangle::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawRectangle( context_, _upperLeftX, _upperLeftY, _lowerRightX, _lowerRightY );
+}
 
 // Apply Rotation
 void Magick::DrawableRotation::print (std::ostream& stream_) const
 {
   stream_ << "rotate " << _angle;
+}
+void Magick::DrawableRotation::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawSetRotate( context_, _angle );
 }
 
 // Round Rectangle
@@ -779,11 +948,20 @@ void Magick::DrawableRoundRectangle::print (std::ostream& stream_) const
           << " " << Magick::Coordinate(_width,_hight)
           << " " << Magick::Coordinate(_cornerWidth,_cornerHeight);
 }
+void Magick::DrawableRoundRectangle::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawRoundRectangle( context_, _centerX,_centerY, _width,_hight,
+                      _cornerWidth, _cornerHeight);
+}
 
 // Apply Scaling
 void Magick::DrawableScaling::print (std::ostream& stream_) const
 {
   stream_ << "scale "  << _x << " " << _y;
+}
+void Magick::DrawableScaling::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawSetScale( context_, _x, _y );
 }
 
 // Apply Skew in the X direction
@@ -791,11 +969,19 @@ void Magick::DrawableSkewX::print (std::ostream& stream_) const
 {
   stream_ << "skewX " << _angle;
 }
+void Magick::DrawableSkewX::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawSetSkewX( context_, _angle );
+}
 
 // Apply Skew in the Y direction
 void Magick::DrawableSkewY::print (std::ostream& stream_) const
 {
   stream_ << "skewY " << _angle;
+}
+void Magick::DrawableSkewY::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawSetSkewY( context_, _angle );
 }
 
 // Stroke dasharray
@@ -895,11 +1081,19 @@ void Magick::DrawableDashArray::print (std::ostream& stream_) const
       stream_ << "none";
     }
 }
+void Magick::DrawableDashArray::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawSetStrokeDashArray( context_, _dasharray );
+}
 
 // Stroke dashoffset
 void Magick::DrawableDashOffset::print (std::ostream& stream_) const
 {
   stream_ << "stroke-dashoffset " << _offset;
+}
+void Magick::DrawableDashOffset::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawSetStrokeDashOffset( context_, _offset );
 }
 
 // Stroke linecap
@@ -927,6 +1121,10 @@ void Magick::DrawableStrokeLineCap::print (std::ostream& stream_) const
       }
     }
 }
+void Magick::DrawableStrokeLineCap::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawSetStrokeLineCap( context_, _linecap );
+}
 
 // Stroke linejoin
 void Magick::DrawableStrokeLineJoin::print (std::ostream& stream_) const
@@ -953,11 +1151,19 @@ void Magick::DrawableStrokeLineJoin::print (std::ostream& stream_) const
       }
     }
 }
+void Magick::DrawableStrokeLineJoin::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawSetStrokeLineJoin( context_, _linejoin );
+}
 
 // Stroke miterlimit
 void Magick::DrawableMiterLimit::print (std::ostream& stream_) const
 {
   stream_ << "stroke-miterlimit " << _miterlimit;
+}
+void Magick::DrawableMiterLimit::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawSetStrokeMiterLimit( context_, _miterlimit );
 }
 
 // Stroke color
@@ -965,6 +1171,11 @@ void Magick::DrawableStrokeColor::print (std::ostream& stream_) const
 {
   stream_ << "stroke "
           << string(_color);
+}
+void Magick::DrawableStrokeColor::operator()( MagickLib::DrawContext context_ ) const
+{
+  PixelPacket color = static_cast<PixelPacket>(_color);
+  DrawSetStrokeColor( context_, &color );
 }
 
 // Stroke antialias
@@ -976,6 +1187,10 @@ void Magick::DrawableStrokeAntialias::print (std::ostream& stream_) const
   else
     stream_ << "0";
 }
+void Magick::DrawableStrokeAntialias::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawSetStrokeAntialias( context_, static_cast<int>(_flag) );
+}
 
 // Stroke opacity
 void Magick::DrawableStrokeOpacity::print (std::ostream& stream_) const
@@ -983,12 +1198,20 @@ void Magick::DrawableStrokeOpacity::print (std::ostream& stream_) const
   stream_ << "stroke-opacity "
           << _opacity;
 }
+void Magick::DrawableStrokeOpacity::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawSetStrokeOpacity( context_, _opacity );
+}
 
 // Stroke width
 void Magick::DrawableStrokeWidth::print (std::ostream& stream_) const
 {
   stream_ << "stroke-width "
           << _width;
+}
+void Magick::DrawableStrokeWidth::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawSetStrokeWidth( context_, _width );
 }
 
 // Draw text at point
@@ -1007,11 +1230,19 @@ void Magick::DrawableText::print (std::ostream& stream_) const
     }
   stream_ << "\'";
 }
+void Magick::DrawableText::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawAnnotation( context_, _x, _y, reinterpret_cast<const unsigned char*>(_text.c_str()) );
+}
 
 // Apply Translation
 void Magick::DrawableTranslation::print (std::ostream& stream_) const
 {
   stream_ << "translate " << _x << "," << _y;
+}
+void Magick::DrawableTranslation::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawSetTranslate( context_, _x, _y );
 }
 
 // Text antialias
@@ -1023,6 +1254,10 @@ void Magick::DrawableTextAntialias::print (std::ostream& stream_) const
   else
     stream_ << "0";
 }
+void Magick::DrawableTextAntialias::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawSetTextAntialias( context_, static_cast<int>(_flag) );
+}
 
 // Set the size of the viewbox
 void Magick::DrawableViewbox::print (std::ostream& stream_) const
@@ -1032,6 +1267,10 @@ void Magick::DrawableViewbox::print (std::ostream& stream_) const
           << _y1 << " "
           << _x2 << " "
           << _y2;
+}
+void Magick::DrawableViewbox::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawSetViewbox( context_, _x1, _y1, _x2, _y2 );
 }
 
 //
@@ -1080,6 +1319,17 @@ void Magick::PathArcAbs::print (std::ostream& stream_) const
       p++;
     }
 }
+// PathEllipticArc absolute
+void Magick::PathArcAbs::operator()( MagickLib::DrawContext context_ ) const
+{
+  for( std::list<Magick::PathArcArgs>::const_iterator p = _coordinates.begin();
+       p != _coordinates.end(); p++ )
+    {
+      DrawPathEllipticArcAbsolute( context_, p->radiusX(), p->radiusY(),
+                                   p->xAxisRotation(), p->largeArcFlag(),
+                                   p->sweepFlag(), p->x(), p->y() );
+    }
+}
 void Magick::PathArcRel::print (std::ostream& stream_) const
 {
   std::list<Magick::PathArcArgs>::const_iterator p = _coordinates.begin();
@@ -1091,6 +1341,17 @@ void Magick::PathArcRel::print (std::ostream& stream_) const
       p++;
     }
 }
+// PathEllipticArc relative
+void Magick::PathArcRel::operator()( MagickLib::DrawContext context_ ) const
+{
+  for( std::list<Magick::PathArcArgs>::const_iterator p = _coordinates.begin();
+       p != _coordinates.end(); p++ )
+    {
+      DrawPathEllipticArcRelative( context_, p->radiusX(), p->radiusY(),
+                                   p->xAxisRotation(), p->largeArcFlag(),
+                                   p->sweepFlag(), p->x(), p->y() );
+    }
+}
 
 //
 // Path Closepath
@@ -1099,6 +1360,10 @@ void Magick::PathArcRel::print (std::ostream& stream_) const
 void Magick::PathClosePath::print (std::ostream& stream_) const
 {
   stream_ << "z ";
+}
+void Magick::PathClosePath::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawPathClose( context_ );
 }
 
 //
@@ -1133,6 +1398,15 @@ void Magick::PathCurvetoAbs::print (std::ostream& stream_) const
       p++;
     }
 }
+void Magick::PathCurvetoAbs::operator()( MagickLib::DrawContext context_ ) const
+{
+  for( std::list<Magick::PathCurvetoArgs>::const_iterator p = _args.begin();
+       p != _args.end(); p++ )
+    {
+      DrawPathCurveToAbsolute( context_, p->x1(), p->y1(), p->x2(), p->y2(),
+                               p->x(), p->y() );
+    }
+}
 void Magick::PathCurvetoRel::print (std::ostream& stream_) const
 {
   std::list<Magick::PathCurvetoArgs>::const_iterator p = _args.begin();
@@ -1142,6 +1416,15 @@ void Magick::PathCurvetoRel::print (std::ostream& stream_) const
     {
       stream_ << *p << " ";
       p++;
+    }
+}
+void Magick::PathCurvetoRel::operator()( MagickLib::DrawContext context_ ) const
+{
+  for( std::list<Magick::PathCurvetoArgs>::const_iterator p = _args.begin();
+       p != _args.end(); p++ )
+    {
+      DrawPathCurveToRelative( context_, p->x1(), p->y1(), p->x2(), p->y2(),
+                               p->x(), p->y() );
     }
 }
 // Support a polymorphic print-to-stream operator
@@ -1156,6 +1439,18 @@ void Magick::PathSmoothCurvetoAbs::print (std::ostream& stream_) const
       p++;
     }
 }
+void Magick::PathSmoothCurvetoAbs::operator()( MagickLib::DrawContext context_ ) const
+{
+  for( std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
+       p != _coordinates.end(); p++ )
+    {
+      double x2 = p->x();
+      double y2 = p->y();
+      p++;
+      if(p != _coordinates.end() )
+        DrawPathCurveToSmoothAbsolute( context_, x2, y2, p->x(), p->y() );
+    }
+}
 void Magick::PathSmoothCurvetoRel::print (std::ostream& stream_) const
 {
   std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
@@ -1167,7 +1462,18 @@ void Magick::PathSmoothCurvetoRel::print (std::ostream& stream_) const
       p++;
     }
 }
-
+void Magick::PathSmoothCurvetoRel::operator()( MagickLib::DrawContext context_ ) const
+{
+  for( std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
+       p != _coordinates.end(); p++ )
+    {
+      double x2 = p->x();
+      double y2 = p->y();
+      p++;
+      if(p != _coordinates.end() )
+        DrawPathCurveToSmoothRelative( context_, x2, y2, p->x(), p->y() );
+    }
+}
 
 //
 // Quadratic Curveto (Quadratic Bezier)
@@ -1197,6 +1503,14 @@ void Magick::PathQuadraticCurvetoAbs::print (std::ostream& stream_) const
       p++;
     }
 }
+void Magick::PathQuadraticCurvetoAbs::operator()( MagickLib::DrawContext context_ ) const
+{
+  for( std::list<Magick::PathQuadraticCurvetoArgs>::const_iterator p = _args.begin();
+       p != _args.end(); p++ )
+    {
+      DrawPathCurveToQuadraticBezierAbsolute( context_, p->x1(), p->y1(), p->x(), p->y() );
+    }
+}
 void Magick::PathQuadraticCurvetoRel::print (std::ostream& stream_) const
 {
   std::list<Magick::PathQuadraticCurvetoArgs>::const_iterator p = _args.begin();
@@ -1206,6 +1520,14 @@ void Magick::PathQuadraticCurvetoRel::print (std::ostream& stream_) const
     {
       stream_ << *p << " ";
       p++;
+    }
+}
+void Magick::PathQuadraticCurvetoRel::operator()( MagickLib::DrawContext context_ ) const
+{
+  for( std::list<Magick::PathQuadraticCurvetoArgs>::const_iterator p = _args.begin();
+       p != _args.end(); p++ )
+    {
+      DrawPathCurveToQuadraticBezierRelative( context_, p->x1(), p->y1(), p->x(), p->y() );
     }
 }
 void Magick::PathSmoothQuadraticCurvetoAbs::print (std::ostream& stream_) const
@@ -1219,6 +1541,14 @@ void Magick::PathSmoothQuadraticCurvetoAbs::print (std::ostream& stream_) const
       p++;
     }
 }
+void Magick::PathSmoothQuadraticCurvetoAbs::operator()( MagickLib::DrawContext context_ ) const
+{
+  for( std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
+       p != _coordinates.end(); p++ )
+    {
+      DrawPathCurveToQuadraticBezierSmoothAbsolute( context_, p->x(), p->y() );
+    }
+}
 void Magick::PathSmoothQuadraticCurvetoRel::print (std::ostream& stream_) const
 {
   std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
@@ -1228,6 +1558,14 @@ void Magick::PathSmoothQuadraticCurvetoRel::print (std::ostream& stream_) const
     {
       stream_ << *p << " ";
       p++;
+    }
+}
+void Magick::PathSmoothQuadraticCurvetoRel::operator()( MagickLib::DrawContext context_ ) const
+{
+  for( std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
+       p != _coordinates.end(); p++ )
+    {
+      DrawPathCurveToQuadraticBezierSmoothRelative( context_, p->x(), p->y() );
     }
 }
 
@@ -1247,6 +1585,14 @@ void Magick::PathLinetoAbs::print (std::ostream& stream_) const
       p++;
     }
 }
+void Magick::PathLinetoAbs::operator()( MagickLib::DrawContext context_ ) const
+{
+  for( std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
+       p != _coordinates.end(); p++ )
+    {
+      DrawPathLineToAbsolute( context_, p->x(), p->y() );
+    }
+}
 void Magick::PathLinetoRel::print (std::ostream& stream_) const
 {
   std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
@@ -1256,6 +1602,14 @@ void Magick::PathLinetoRel::print (std::ostream& stream_) const
     {
       stream_ << *p << " ";
       p++;
+    }
+}
+void Magick::PathLinetoRel::operator()( MagickLib::DrawContext context_ ) const
+{
+  for( std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
+       p != _coordinates.end(); p++ )
+    {
+      DrawPathLineToRelative( context_, p->x(), p->y() );
     }
 }
 
@@ -1268,9 +1622,17 @@ void Magick::PathLinetoHorizontalAbs::print (std::ostream& stream_) const
 {
   stream_ << "H" << _x << " ";
 }
+void Magick::PathLinetoHorizontalAbs::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawPathLineToHorizontalAbsolute( context_, _x );
+}
 void Magick::PathLinetoHorizontalRel::print (std::ostream& stream_) const
 {
   stream_ << "h" << _x << " ";
+}
+void Magick::PathLinetoHorizontalRel::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawPathLineToHorizontalRelative( context_, _x );
 }
 
 //
@@ -1282,9 +1644,17 @@ void Magick::PathLinetoVerticalAbs::print (std::ostream& stream_) const
 {
   stream_ << "V" << _y << " ";
 }
+void Magick::PathLinetoVerticalAbs::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawPathLineToVerticalAbsolute( context_, _y );
+}
 void Magick::PathLinetoVerticalRel::print (std::ostream& stream_) const
 {
   stream_ << "v" << _y << " ";
+}
+void Magick::PathLinetoVerticalRel::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawPathLineToVerticalRelative( context_, _y );
 }
 
 //
@@ -1303,6 +1673,14 @@ void Magick::PathMovetoAbs::print (std::ostream& stream_) const
       p++;
     }
 }
+void Magick::PathMovetoAbs::operator()( MagickLib::DrawContext context_ ) const
+{
+  for( std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
+       p != _coordinates.end(); p++ )
+    {
+      DrawPathMoveToAbsolute( context_, p->x(), p->y() );
+    }
+}
 void Magick::PathMovetoRel::print (std::ostream& stream_) const
 {
   std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
@@ -1312,5 +1690,13 @@ void Magick::PathMovetoRel::print (std::ostream& stream_) const
     {
       stream_ << *p << " ";
       p++;
+    }
+}
+void Magick::PathMovetoRel::operator()( MagickLib::DrawContext context_ ) const
+{
+  for( std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
+       p != _coordinates.end(); p++ )
+    {
+      DrawPathMoveToRelative( context_, p->x(), p->y() );
     }
 }

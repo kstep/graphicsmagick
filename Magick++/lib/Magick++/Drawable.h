@@ -64,7 +64,7 @@ namespace Magick
   //
   // Base class for all drawable objects
   //
-  class DrawableBase: public std::unary_function<const MagickLib::DrawContext,void>
+  class DrawableBase: public std::unary_function<MagickLib::DrawContext,void>
   {
   public:
     // Constructor
@@ -77,6 +77,9 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     virtual void print (std::ostream& stream_) const = 0;
+
+    // Operator to invoke equivalent draw API call
+    virtual void operator()( MagickLib::DrawContext ) const = 0;
 
     // Return polymorphic copy of object
     virtual DrawableBase* copy() const = 0;
@@ -147,6 +150,9 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     virtual void print (std::ostream& stream_) const = 0;
+
+    // Operator to invoke equivalent draw API call
+    virtual void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     virtual VPathBase* copy() const = 0;
@@ -220,6 +226,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/
     DrawableBase* copy() const
@@ -290,37 +299,6 @@ namespace Magick
     double _ty;
   };
 
-  // Angle (drawing angle)
-  class DrawableAngle  : public DrawableBase
-  {
-  public:
-    DrawableAngle ( double angle_ )
-      : _angle(angle_)
-      { }
-
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
-    // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableAngle(*this);
-      }
-
-    void angle( double angle_ )
-      {
-        _angle = angle_;
-      }
-    double angle( void ) const
-      {
-        return _angle;
-      }
-  
-  private:
-    double _angle;
-  };
-
   // Arc
   class DrawableArc : public DrawableBase
   {
@@ -338,6 +316,9 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Operator to invoke equivalent draw API call
+    void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/ DrawableBase* copy() const
@@ -420,6 +401,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/ DrawableBase* copy() const
       {
@@ -445,7 +429,10 @@ namespace Magick
     
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
-    
+
+    // Operator to invoke equivalent draw API call
+    void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/
     DrawableBase* copy() const
@@ -509,6 +496,9 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Operator to invoke equivalent draw API call
+    void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/
@@ -590,7 +580,10 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
-    
+
+    // Operator to invoke equivalent draw API call
+    void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/
     DrawableBase* copy() const
@@ -673,6 +666,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/
     DrawableBase* copy() const
@@ -710,6 +706,9 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Operator to invoke equivalent draw API call
+    void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/
@@ -792,6 +791,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/ DrawableBase* copy() const
       {
@@ -822,6 +824,9 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/
@@ -854,6 +859,9 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/
@@ -902,6 +910,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/
     DrawableBase* copy() const
@@ -938,6 +949,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/
     DrawableBase* copy() const
@@ -972,6 +986,9 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/ DrawableBase* copy() const
@@ -1036,6 +1053,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/
     DrawableBase* copy() const
@@ -1087,6 +1107,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/
     DrawableBase* copy() const
@@ -1109,6 +1132,9 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/
@@ -1151,6 +1177,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/
     DrawableBase* copy() const
@@ -1182,6 +1211,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/
     DrawableBase* copy() const
@@ -1204,6 +1236,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/
     DrawableBase* copy() const
@@ -1225,6 +1260,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/ DrawableBase* copy() const
       {
@@ -1244,6 +1282,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/ DrawableBase* copy() const
       {
@@ -1262,6 +1303,9 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/ DrawableBase* copy() const
@@ -1287,6 +1331,9 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/ DrawableBase* copy() const
@@ -1316,6 +1363,9 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/
@@ -1378,6 +1428,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/
     DrawableBase* copy() const
@@ -1415,6 +1468,9 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/
@@ -1498,6 +1554,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/
     DrawableBase* copy() const
@@ -1539,6 +1598,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/
     DrawableBase* copy() const
@@ -1570,6 +1632,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/
     DrawableBase* copy() const
@@ -1600,6 +1665,9 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/
@@ -1633,6 +1701,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/
     DrawableBase* copy() const
@@ -1663,6 +1734,9 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/
@@ -1695,6 +1769,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/
     DrawableBase* copy() const
@@ -1725,6 +1802,9 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/
@@ -1758,6 +1838,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/
     DrawableBase* copy() const
@@ -1788,6 +1871,9 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/
@@ -1821,6 +1907,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/
     DrawableBase* copy() const
@@ -1851,6 +1940,9 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/
@@ -1885,6 +1977,9 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/
@@ -1938,6 +2033,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/
     DrawableBase* copy() const
@@ -1978,6 +2076,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/
     DrawableBase* copy() const
@@ -2011,6 +2112,9 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/
@@ -2146,8 +2250,8 @@ namespace Magick
     double	_radiusX;	// X radius
     double	_radiusY;	// Y radius
     double	_xAxisRotation;	// Rotation relative to X axis
-    bool          _largeArcFlag;	// Draw longer of the two matching arcs
-    bool          _sweepFlag;	// Draw arc matching clock-wise rotation
+    bool        _largeArcFlag;	// Draw longer of the two matching arcs
+    bool        _sweepFlag;	// Draw arc matching clock-wise rotation
     double	_x;		// End-point X
     double	_y;		// End-point Y
   };
@@ -2166,6 +2270,9 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/
@@ -2191,6 +2298,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/ VPathBase* copy() const {
       return new PathArcRel(*this);
@@ -2209,6 +2319,9 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/ VPathBase* copy() const {
@@ -2313,6 +2426,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/ 
     VPathBase* copy() const
@@ -2336,6 +2452,9 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/ 
@@ -2361,6 +2480,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/ 
     VPathBase* copy() const
@@ -2384,6 +2506,9 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/ 
@@ -2467,6 +2592,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/ 
     VPathBase* copy() const
@@ -2490,6 +2618,9 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/ 
@@ -2515,6 +2646,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/ 
     VPathBase* copy() const
@@ -2538,6 +2672,9 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/ 
@@ -2567,6 +2704,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/ VPathBase* copy() const {
       return new PathLinetoAbs(*this);
@@ -2589,6 +2729,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/ VPathBase* copy() const {
       return new PathLinetoRel(*this);
@@ -2607,6 +2750,9 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/ VPathBase* copy() const {
@@ -2633,6 +2779,9 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/ VPathBase* copy() const {
@@ -2662,6 +2811,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/ VPathBase* copy() const {
       return new PathLinetoVerticalAbs(*this);
@@ -2687,6 +2839,9 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/ VPathBase* copy() const {
@@ -2721,6 +2876,9 @@ namespace Magick
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
     // Return polymorphic copy of object
     /*virtual*/ VPathBase* copy() const {
       return new PathMovetoAbs(*this);
@@ -2742,6 +2900,9 @@ namespace Magick
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/ VPathBase* copy() const {
