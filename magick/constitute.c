@@ -2712,6 +2712,8 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
             i++;
           }
         }
+        if (*p == '\0')
+          break;
       }
       if (subimages == (Image *) NULL)
         ThrowException(exception,OptionError,
