@@ -65,4 +65,4 @@ print( "MNG with 24-bit Truecolor PNGs ...\n" );
 testReadWrite( 'input.mng',
   'output.mng',
   q/quality=>55/,
-  'e3224a33eb05532dd5be635a45976a760c6e0f7501bda47bab18e25b36179f6b' );
+  '12a3ae445661ce5dee78d0650d33362dec29c4f82af05e7e57fb595bbbacf0ca' );
