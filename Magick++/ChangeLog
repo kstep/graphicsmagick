@@ -1,10 +1,10 @@
 2001-09-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (fontTypeMetrics): New method to support
- 	retrieving font metrics. Still needs documentation.
+ 	retrieving font metrics.
 
 	* lib/TypeMetric.cpp : New class to support font metrics
- 	information. Still needs documentation.
+ 	information.
 
 2001-09-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

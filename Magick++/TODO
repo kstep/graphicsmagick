@@ -40,15 +40,6 @@ Items large and small which remain to be worked on.
 
 * Support options stack similar to graphic-context.
 
-* Provide interface to obtain font metrics for fonts handled by
-  FreeType.  Would use the GetTypeMetrics() API:
-
-    TypeMetric metric;
-    MagickLib::GetTypeMetrics(
-        image.image(),
-        image.options()->drawInfo(),
-        &metric );
-
 * Add support for new drawing primitives:
   - clip-path %s  (%s is the name of the clip path
   - pop clip-path
