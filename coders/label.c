@@ -455,8 +455,8 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   }
   image->columns=(unsigned int) (bounds.x2-bounds.x1+1.0);
   image->rows=(unsigned int) (bounds.y2-bounds.y1+1.0);
-  if ((image_info->affine[0] != 0.0) && (image_info->affine[1] != 0.0) &&
-      (image_info->affine[2] != 0.0) && (image_info->affine[4] != 0.0))
+  if ((image_info->affine[0] != 0.0) && (image_info->affine[4] != 0.0) ||
+      (image_info->affine[1] != 0.0) && (image_info->affine[2] != 0.0))
     {
       image->columns+=3;
       image->rows+=3;
