@@ -2673,7 +2673,7 @@ MagickExport unsigned long GetImageDepth(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageInfo() initializes the ImageInfo structure to default values.
+%  GetImageInfo() initializes image_info to default values.
 %
 %  The format of the GetImageInfo method is:
 %

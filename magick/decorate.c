@@ -67,9 +67,10 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method BorderImage takes an image and puts a border around it of a
-%  particular color.  It allocates the memory necessary for the new Image
-%  structure and returns a pointer to the new image.
+%  BorderImage() surrounds the image with a border of the color defined by
+%  the bordercolor member of the image structure.  The width and height
+%  of the border are defined by the corresponding members of the border_info
+%  structure.
 %
 %  The format of the BorderImage method is:
 %
@@ -78,13 +79,9 @@
 %
 %  A description of each parameter follows:
 %
-%    o border_image: Method BorderImage returns a pointer to the border
-%      image.  A null image is returned if there is a memory shortage.
-%
 %    o image: The image.
 %
-%    o border_info: Specifies a pointer to a structure of type Rectangle which
-%      defines the border region.
+%    o border_info:  Define the width and height of the border.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -129,9 +126,11 @@ MagickExport Image *BorderImage(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method FrameImage takes an image and puts a frame around it of a
-%  particular color.  It allocates the memory necessary for the new Image
-%  structure and returns a pointer to the new image.
+%  FrameImage() adds a simulated three-dimensional border around the image.
+%  The color of the border is defined by the matte_color member of image.
+%  Members width and height of frame_info specify the border width of the
+%  vertical and horizontal sides of the frame.  Members inner and outer
+%  indicate the width of the inner and outer shadows of the frame.
 %
 %  The format of the FrameImage method is:
 %
@@ -140,13 +139,9 @@ MagickExport Image *BorderImage(const Image *image,
 %
 %  A description of each parameter follows:
 %
-%    o frame_image: Method FrameImage returns a pointer to the framed
-%      image.  A null image is returned if there is a memory shortage.
-%
 %    o image: The image.
 %
-%    o frame_info: Specifies a pointer to a FrameInfo structure which
-%      defines the framed region.
+%    o frame_info: Define the width and height of the frame and its bevels.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -382,8 +377,10 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method RaiseImage lightens and darkens the edges of an image to give a
-%  3-D raised or lower effect.
+%  RaiseImage() creates a simulated three-dimensional button-like effect
+%  by lightening and darkening the edges of the image.  Members width and
+%  height of raise_info define the width of the vertical and horizontal
+%  edge of the effect.
 %
 %  The format of the RaiseImage method is:
 %
@@ -394,11 +391,10 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
 %
 %    o image: The image.
 %
-%    o raise_info: Specifies a pointer to a XRectangle which defines the
-%      raised region.
+%    o raise_info: Define the width and height of the raised area.
 %
-%    o raised: A value other than zero causes the image to have a 3-D raised
-%      effect, otherwise it has a lowered effect.
+%    o raised: A value other than zero creates a 3-D raised effect,
+%      otherwise it has a lowered effect.
 %
 %
 */

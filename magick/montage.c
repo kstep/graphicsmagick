@@ -67,8 +67,9 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CloneMontageInfo makes a duplicate of the given montage info, or if
-%  montage info is NULL, a new one.
+%  CloneMontageInfo() makes a copy of the given montage info structure.  If
+%  NULL is specified, a new image info structure is created initialized to
+%  default values.
 %
 %  The format of the CloneMontageInfo method is:
 %
@@ -77,12 +78,9 @@
 %
 %  A description of each parameter follows:
 %
-%    o clone_info: Method CloneMontageInfo returns a duplicate of the given
-%      annotate info, or if annotate info is NULL a new one.
+%    o image_info: The image info.
 %
-%    o image_info: a structure of type ImageInfo.
-%
-%    o montage_info: a structure of type MontageInfo.
+%    o montage_info: The montage info.
 %
 %
 */
@@ -126,8 +124,7 @@ MagickExport MontageInfo *CloneMontageInfo(const ImageInfo *image_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroyMontageInfo deallocates memory associated with an MontageInfo
-%  structure.
+%  DestroyMontageInfo() deallocates memory associated with montage_info.
 %
 %  The format of the DestroyMontageInfo method is:
 %
@@ -169,7 +166,7 @@ MagickExport void DestroyMontageInfo(MontageInfo *montage_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetMontageInfo initializes the MontageInfo structure.
+%  GetMontageInfo() initializes montage_info to default values.
 %
 %  The format of the GetMontageInfo method is:
 %
@@ -217,8 +214,8 @@ MagickExport void GetMontageInfo(const ImageInfo *image_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method MontageImages creates a composite image by combining several
-%  separate images.
+%  Montageimages() is a layout manager that lets you tile one or more
+%  thumbnails across an image canvas.
 %
 %  The format of the MontageImages method is:
 %

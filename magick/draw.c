@@ -3614,7 +3614,7 @@ static unsigned int DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetDrawInfo initializes the DrawInfo structure.
+%  Method GetDrawInfo initializes draw_info to default values.
 %
 %  The format of the GetDrawInfo method is:
 %
