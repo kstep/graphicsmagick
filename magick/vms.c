@@ -87,7 +87,7 @@ void closedir(DIR *directory)
 {
   assert(directory != (DIR *) NULL);
   FreeMemory((void **) &directory->pattern);
-  FreeMemory((void **) ^directory);
+  FreeMemory((void **) &directory);
 }
 
 /*

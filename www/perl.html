@@ -414,7 +414,9 @@ density=><i>geometry</i>, stroke=><i>colorname</i>, fill=><i>colorname</i>,
 box=><i>colorname</i>, geometry=><i>geometry</i>, server=>{<i>string</i>,
 @<i>filename</i>}, gravity=>{NorthWest, North, NorthEast, West, Center, East,
 SouthWest, South, SouthEast}, x=><i>integer</i>, y=><i>integer</i>,
-degrees=><i>double</i></td>
+translate=><i>float, float</i>, scale=><i>float, float</i>,
+rotate=><i>float</i>.  skewX=><i>float</i>, skewY=><i>float</i>
+</td>
 
 <td>annotate an image with text.</td>
 </tr>
@@ -575,7 +577,10 @@ bezier, color, matte, text, image, @<i>filename</i>}, points=><i>string</i>,
 method=<i>{Point, Replace, Floodfill, FillToBorder, Reset}</i>,
 stroke=><i>colorname</i>, fill=><i>colorname</i>, tile=><i>image-handle</i>,
 linewidth=><i>float</i>, bordercolor=><i>colorname</i>, server=><i>string</i>,
-x=><i>float</i>, y=><i>float</i>, rotate=><i>float</i></td>
+x=><i>float</i>, y=><i>float</i>, translate=><i>float, float</i>,
+scale=><i>float, float</i>, rotate=><i>float</i>.  skewX=><i>float</i>,
+skewY=><i>float</i>
+</td>
 
 <td>annotate an image with one or more graphic primitives</td>
 </tr>

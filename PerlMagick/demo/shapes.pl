@@ -26,11 +26,11 @@ $image->ColorFloodfill(geometry=>'+132+62',fill=>'blue');
 # Draw text.
 #
 $image->Annotate(fill=>'red',geometry=>'+150+10',font=>'@Generic.ttf',
-  pointsize=>12,text=>'Hello world!');
+  pointsize=>18,text=>'Hello world!');
 $image->Annotate(fill=>'blue',geometry=>'+150+28',font=>'@Generic.ttf',
-  pointsize=>10,text=>'Goodbye cruel world!');
-$image->Annotate(fill=>'black',geometry=>'+280+150',font=>'@Generic.ttf',
-  pointsize=>10,text=>"I'm climbing the wall!",degrees=>90.0);
+  pointsize=>14,text=>'Goodbye cruel world!');
+$image->Annotate(fill=>'black',geometry=>'+280+250',font=>'@Generic.ttf',
+  pointsize=>14,text=>"I'm climbing the wall!",rotate=>90.0);
 #
 # Write image.
 #

@@ -76,6 +76,7 @@ extern "C" {
 #include "perl.h"
 #include "XSUB.h"
 #include <magick/api.h>
+#define DegreesToRadians(x) ((x)*M_PI/180.0)
 #define False 0
 #define True 1
 #undef tainted
@@ -99,7 +100,7 @@ extern "C" {
 #define EndOf(array)  (&array[NumberOf(array)])
 #define ImageReference  (char **) 3
 #define IntegerReference  (char **) 1
-#define MaxArguments  14
+#define MaxArguments  20
 #define NumberOf(array)  (sizeof(array)/sizeof(*array))
 #define PackageName   "Image::Magick"
 #define StringReference  (char **) 0
@@ -326,7 +327,9 @@ static struct
       {"fill", StringReference}, {"geom", StringReference},
       {"server", StringReference}, {"x", IntegerReference},
       {"y", IntegerReference}, {"grav", GravityTypes},
-      {"degree", DoubleReference}, {"pen", StringReference} } },
+      {"translate", StringReference}, {"scale", StringReference},
+      {"rotate", DoubleReference}, {"skewX", DoubleReference},
+      {"skewY", DoubleReference}, {"pen", StringReference} } },
     { "ColorFloodfill", { {"geom", StringReference}, {"x", IntegerReference},
       {"y", IntegerReference}, {"fill", StringReference},
       {"bordercolor", StringReference} } },
@@ -340,7 +343,9 @@ static struct
       {"fill", StringReference}, {"linew", DoubleReference},
       {"server", StringReference}, {"borderc", StringReference},
       {"x", DoubleReference}, {"y", DoubleReference},
-      {"rotate", DoubleReference}, {"tile", ImageReference} } },
+      {"translate", StringReference}, {"scale", StringReference},
+      {"rotate", DoubleReference}, {"skewX", DoubleReference},
+      {"skewY", DoubleReference}, {"tile", ImageReference} } },
     { "Equalize", },
     { "Gamma", { {"gamma", StringReference}, {"red", DoubleReference},
       {"green", DoubleReference}, {"blue", DoubleReference} } },
@@ -3588,7 +3593,13 @@ Mogrify(ref,...)
       *attribute,
       attribute_flag[MaxArguments],
       *commands[10],
-      message[MaxTextExtent];
+      message[MaxTextExtent],
+      *value;
+
+    double
+      angle,
+      current[6],
+      transform[6];
 
     ExceptionInfo
       exception;
@@ -3618,7 +3629,9 @@ Mogrify(ref,...)
       region_info;
 
     register int
-      i;
+      i,
+      j,
+      k;
 
     struct PackageInfo
       *info;
@@ -4217,10 +4230,92 @@ Mogrify(ref,...)
             }
           if (attribute_flag[11])
             annotate_info->gravity=argument_list[11].int_reference;
-          if (attribute_flag[12])
-            annotate_info->degrees=argument_list[12].double_reference;
-          if (attribute_flag[13])
-            (void) QueryColorDatabase(argument_list[13].string_reference,
+          for (j=12; j < 17; j++)
+          {
+            if (!attribute_flag[j])
+              continue;
+            value=argument_list[j].string_reference;
+            angle=argument_list[j].double_reference;
+            for (k=0; k < 6; k++)
+            {
+              current[k]=annotate_info->transform[k];
+              transform[k]=0.0;
+            }
+            transform[0]=1.0;
+            transform[3]=1.0;
+            switch (j)
+            {
+              case 12:
+              {
+                /*
+                  Translate.
+                */
+                transform[0]=1.0;
+                transform[3]=1.0;
+                k=sscanf(value,"%lf%lf",&transform[4],&transform[5]);
+                k=sscanf(value,"%lf,%lf",&transform[4],&transform[5]);
+                if (k == 1)
+                  transform[5]=transform[4];
+                break;
+              }
+              case 13:
+              {
+                /*
+                  Scale.
+                */
+                k=sscanf(value,"%lf%lf",&transform[0],&transform[3]);
+                k=sscanf(value,"%lf,%lf",&transform[0],&transform[3]);
+                if (k == 1)
+                  transform[3]=transform[0];
+                break;
+              }
+              case 14:
+              {
+                /*
+                  Rotate.
+                */
+                transform[0]=cos(DegreesToRadians(fmod(angle,360.0)));
+                transform[1]=sin(DegreesToRadians(fmod(angle,360.0)));
+                transform[2]=(-sin(DegreesToRadians(fmod(angle,360.0))));
+                transform[3]=cos(DegreesToRadians(fmod(angle,360.0)));
+                break;
+              }
+              case 15:
+              {
+                /*
+                  SkewX.
+                */
+                transform[0]=1.0;
+                transform[2]=tan(DegreesToRadians(fmod(angle,360.0)));
+                transform[3]=1.0;
+                break;
+              }
+              case 16:
+              {
+                /*
+                  SkewY.
+                */
+                transform[0]=1.0;
+                transform[1]=tan(DegreesToRadians(fmod(angle,360.0)));
+                transform[3]=1.0;
+                break;
+              }
+            }
+            annotate_info->transform[0]=
+              current[0]*transform[0]+current[2]*transform[1];
+            annotate_info->transform[1]=
+              current[1]*transform[0]+current[3]*transform[1];
+            annotate_info->transform[2]=
+              current[0]*transform[2]+current[2]*transform[3];
+            annotate_info->transform[3]=
+              current[1]*transform[2]+current[3]*transform[3];
+            annotate_info->transform[4]=
+              current[0]*transform[4]+current[2]*transform[5]+current[4];
+            annotate_info->transform[5]=
+              current[1]*transform[4]+current[3]*transform[5]+current[5];
+          }
+          if (attribute_flag[17])
+            (void) QueryColorDatabase(argument_list[17].string_reference,
               &annotate_info->fill);
           AnnotateImage(image,annotate_info);
           DestroyAnnotateInfo(annotate_info);
@@ -4412,10 +4507,92 @@ Mogrify(ref,...)
               &draw_info->fill);
           if (attribute_flag[5])
             draw_info->linewidth=argument_list[5].double_reference;
-          if (attribute_flag[10])
-            draw_info->angle=argument_list[10].double_reference;
-          if (attribute_flag[11])
-            draw_info->tile=argument_list[11].image_reference;
+          for (j=10; j < 15; j++)
+          {
+            if (!attribute_flag[j])
+              continue;
+            value=argument_list[j].string_reference;
+            angle=argument_list[j].double_reference;
+            for (k=0; k < 6; k++)
+            {
+              current[k]=draw_info->transform[k];
+              transform[k]=0.0;
+            }
+            transform[0]=1.0;
+            transform[3]=1.0;
+            switch (j)
+            {
+              case 10:
+              {
+                /*
+                  Translate.
+                */
+                transform[0]=1.0;
+                transform[3]=1.0;
+                k=sscanf(value,"%lf%lf",&transform[4],&transform[5]);
+                k=sscanf(value,"%lf,%lf",&transform[4],&transform[5]);
+                if (k == 1)
+                  transform[5]=transform[4];
+                break;
+              }
+              case 11:
+              {
+                /*
+                  Scale.
+                */
+                k=sscanf(value,"%lf%lf",&transform[0],&transform[3]);
+                k=sscanf(value,"%lf,%lf",&transform[0],&transform[3]);
+                if (k == 1)
+                  transform[3]=transform[0];
+                break;
+              }
+              case 12:
+              {
+                /*
+                  Rotate.
+                */
+                transform[0]=cos(DegreesToRadians(fmod(angle,360.0)));
+                transform[1]=sin(DegreesToRadians(fmod(angle,360.0)));
+                transform[2]=(-sin(DegreesToRadians(fmod(angle,360.0))));
+                transform[3]=cos(DegreesToRadians(fmod(angle,360.0)));
+                break;
+              }
+              case 13:
+              {
+                /*
+                  SkewX.
+                */
+                transform[0]=1.0;
+                transform[2]=tan(DegreesToRadians(fmod(angle,360.0)));
+                transform[3]=1.0;
+                break;
+              }
+              case 14:
+              {
+                /*
+                  SkewY.
+                */
+                transform[0]=1.0;
+                transform[1]=tan(DegreesToRadians(fmod(angle,360.0)));
+                transform[3]=1.0;
+                break;
+              }
+            }
+            draw_info->transform[0]=
+              current[0]*transform[0]+current[2]*transform[1];
+            draw_info->transform[1]=
+              current[1]*transform[0]+current[3]*transform[1];
+            draw_info->transform[2]=
+              current[0]*transform[2]+current[2]*transform[3];
+            draw_info->transform[3]=
+              current[1]*transform[2]+current[3]*transform[3];
+            draw_info->transform[4]=
+              current[0]*transform[4]+current[2]*transform[5]+current[4];
+            draw_info->transform[5]=
+              current[1]*transform[4]+current[3]*transform[5]+current[5];
+          }
+          if (attribute_flag[15])
+            draw_info->tile=argument_list[15].image_reference;
           DrawImage(image,draw_info);
           draw_info->tile=(Image *) NULL;
           DestroyDrawInfo(draw_info);
@@ -4787,9 +4964,6 @@ Mogrify(ref,...)
 
           double
             *kernel;
-
-          register int
-            j;
 
           unsigned int
             order;

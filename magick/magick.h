@@ -83,6 +83,7 @@
 #define HasTIFF
 #define HasTTF
 #define HasZLIB
+#define HAVE_STRERROR
 #endif
 
 #if defined(VMS)

@@ -267,6 +267,7 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     filename[MaxTextExtent];
 
   FT_BBox
+    bounding_box,
     box;
 
   FT_Bitmap
@@ -284,10 +285,14 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   FT_Library
     library;
 
+  FT_Matrix
+    transform;
+
   FT_Raster_Funcs
     std_raster;
 
   FT_Vector
+    bitmap_origin,
     kern,
     origin;
 
@@ -412,6 +417,15 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   origin.y=0;
   descent=0;
   image->rows=0;
+  bounding_box.xMin=32000;
+  bounding_box.xMax=(-32000);
+  bounding_box.yMin=32000;
+  bounding_box.yMax=(-32000);
+  transform.xx=65536.0*image_info->transform[0];
+  transform.yx=(-65536.0*image_info->transform[1]);
+  transform.xy=(-65536.0*image_info->transform[2]);
+  transform.yy=65536.0*image_info->transform[3];
+  FT_Set_Transform(face,&transform,0);
   for (i=0; i < length; i++)
   {
     glyphs[i].id=FT_Get_Char_Index(face,unicode[i]);
@@ -422,25 +436,40 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
         kern.x=(kern.x+32) & -64;
         origin.x+=kern.x;
       }
+    bitmap_origin=origin;
+    bitmap_origin.y=0;
+    FT_Vector_Transform(&bitmap_origin,&transform);
     status=FT_Get_Glyph_Bitmap(face,glyphs[i].id,FT_LOAD_DEFAULT,
-      image_info->antialias ? NumberGrays : 0,&origin,(FT_BitmapGlyph *)
+      image_info->antialias ? NumberGrays : 0,&bitmap_origin,(FT_BitmapGlyph *)
       &glyphs[i].image);
     if (status)
       continue;
-    glyphs[i].origin=origin;
+    glyphs[i].origin=bitmap_origin;
     origin.x+=glyphs[i].image->advance;
     FT_Glyph_Get_Box(glyphs[i].image,&box);
-    if (box.yMax > image->rows)
-      image->rows=box.yMax;
-    if (box.yMin < descent)
-      descent=box.yMin;
+    x=glyphs[i].origin.x >> 6;
+    y=glyphs[i].origin.y >> 6;
+    box.xMin+=x;
+    box.yMin+=y;
+    box.xMax+=x;
+    box.yMax+=y;
+    if (box.xMin < bounding_box.xMin)
+      bounding_box.xMin=box.xMin;
+    if (box.xMax > bounding_box.xMax)
+      bounding_box.xMax=box.xMax;
+    if (box.yMin < bounding_box.yMin)
+      bounding_box.yMin=box.yMin;
+    if (box.yMax > bounding_box.yMax)
+      bounding_box.yMax=box.yMax;
   }
   /*
     Render label.
   */
-  image->columns=(origin.x/64+3) & -4;
-  image->rows-=descent;
+  image->columns=bounding_box.xMax-bounding_box.xMin+3;
+  image->rows=bounding_box.yMax-bounding_box.yMin+3;
   SetImage(image,TransparentOpacity);
+  image->translate.x=bounding_box.xMin;
+  image->translate.y=bounding_box.yMin;
   for (i=0; i < length; i++)
   {
     if (glyphs[i].image == (FT_Glyph) NULL)
@@ -449,8 +478,8 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     glyph=(&bitmap->bitmap);
     if ((glyph->width == 0) || (glyph->rows == 0))
       continue;
-    x=bitmap->left+glyphs[i].origin.x/64;
-    y=image->rows-bitmap->top-glyphs[i].origin.y/64+descent;
+    x=bitmap->left+(glyphs[i].origin.x/64)-bounding_box.xMin;
+    y=image->rows-bitmap->top-(glyphs[i].origin.y/64)+descent+bounding_box.yMin;
     q=GetImagePixels(image,x,y,glyph->width,glyph->rows);
     if (q == (PixelPacket *) NULL)
       break;

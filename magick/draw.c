@@ -1592,7 +1592,7 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
       {
         n=0;
         (void) sscanf(p+1,"%lf%lf%n",&point.x,&point.y,&n);
-        if (n = 0)
+        if (n == 0)
           (void) sscanf(p+1,"%lf,%lf%n",&point.x,&point.y,&n);
         if (n == 0)
           break;
