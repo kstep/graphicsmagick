@@ -158,7 +158,7 @@ Export Image *BlobToImage(const ImageInfo *image_info,const void *blob,
         clone_info->filename);
       return((Image *) NULL);
     }
-  count=write(file,blob,length);
+  count=write(file,(const char *) blob,length);
   (void) close(file);
   if (count != length)
     {

@@ -11,7 +11,6 @@ extern "C" {
 #include <locale.h>
 #include <stat.h>
 #include <errno.h>
-#include <Exceptions.h>
 
 /*
   Define declarations.
@@ -46,21 +45,24 @@ struct dirent
 /*
   Macintosh utilities routines.
 */
-extern DIR
+extern Export DIR
   *opendir(char *);
 
-extern int
+Export Image
+  *ReadPICTImage(const ImageInfo *,ExceptionInfo *);
+ 
+extern Export int
   Exit(int),
   ImageFormatConflict(const char *),
   MACSystemCommand(const char *);
 
-extern long
+extern Export long
   telldir(DIR *);
 
-extern struct dirent
+extern Export struct dirent
   *readdir(DIR *);
- 
-extern void
+
+extern Export void
   closedir(DIR *),
   MACErrorHandler(const ExceptionType,const char *,const char *),
   MACWarningHandler(const ExceptionType,const char *,const char *),

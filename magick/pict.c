@@ -690,7 +690,8 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
 %
 %  The format of the ReadPICTImage method is:
 %
-%      Image *ReadPICTImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadPICTImage(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -704,7 +705,8 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
 %
 %
 */
-static Image *ReadPICTImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadPICTImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   char
     geometry[MaxTextExtent];

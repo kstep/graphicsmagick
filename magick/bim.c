@@ -240,10 +240,10 @@ Export void Register8BIMImage(void)
 %
 %  The format of the UnregisterBIMImage method is:
 %
-%      UnregisterBIMImage(void)
+%      Unregister8BIMImage(void)
 %
 */
-Export void UnregisterBIMImage(void)
+Export void Unregister8BIMImage(void)
 {
   UnregisterMagickInfo("8BIM");
 }

@@ -300,7 +300,7 @@ static short BottleneckTest(PicHandle picture,CodecType *codec,int *depth,
 Export void closedir(DIR *entry)
 {
   assert(entry != (DIR *) NULL);
-  FreeMemory((void **) &(void *) entry);
+  FreeMemory((void **) &entry);
 }
 
 /*
@@ -1006,7 +1006,7 @@ Export struct dirent *readdir(DIR *entry)
 %
 %
 */
-static Image *ReadPICTImage(const ImageInfo *image_info,
+Export Image *ReadPICTImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
 #define LoadImageText  "  Loading image...  "
