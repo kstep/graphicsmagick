@@ -82,6 +82,10 @@ GNU libltdl
   This library is used to support dynamically loadable modules on
   Unix-like systems. Its license may be found in the file "ltdl.txt".
 
+  Note that while libltdl uses the GNU Lesser General Public License
+  there is a special exception for programs which are built using
+  GNU libtool.  See ltdl-except.txt for details.
+
 libpng
   This library is used to support the PNG file format. Its license may
   be found in the file "png.txt".
