@@ -287,7 +287,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Set background color.
         */
         p=rle_pixels;
-        for (i=0; i < number_pixels; i++)
+        for (i=0; i < (int) number_pixels; i++)
         {
           if (!image->matte)
             for (x=0; x < (int) number_planes; x++)
@@ -392,14 +392,14 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         mask=(map_length-1);
         p=rle_pixels;
         if (number_colormaps == 1)
-          for (i=0; i < number_pixels; i++)
+          for (i=0; i < (int) number_pixels; i++)
           {
             *p=colormap[*p & mask];
             p++;
           }
         else
           if ((number_planes >= 3) && (number_colormaps >= 3))
-            for (i=0; i < number_pixels; i++)
+            for (i=0; i < (int) number_pixels; i++)
               for (x=0; x < (int) number_planes; x++)
               {
                 *p=colormap[x*map_length+(*p & mask)];

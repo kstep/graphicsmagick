@@ -358,7 +358,7 @@ static unsigned char *ExpandBuffer(unsigned char *pixels,size_t *bytes_per_line,
       return(pixels);
     case 4:
     {
-      for (i=0; i < *bytes_per_line; i++)
+      for (i=0; i < (int) *bytes_per_line; i++)
       {
         *q++=(*p >> 4) & 0xff;
         *q++=(*p & 15);
@@ -369,7 +369,7 @@ static unsigned char *ExpandBuffer(unsigned char *pixels,size_t *bytes_per_line,
     }
     case 2:
     {
-      for (i=0; i < *bytes_per_line; i++)
+      for (i=0; i < (int) *bytes_per_line; i++)
       {
         *q++=(*p >> 6) & 0x03;
         *q++=(*p >> 4) & 0x03;
@@ -382,7 +382,7 @@ static unsigned char *ExpandBuffer(unsigned char *pixels,size_t *bytes_per_line,
     }
     case 1:
     {
-      for (i=0; i < *bytes_per_line; i++)
+      for (i=0; i < (int) *bytes_per_line; i++)
       {
         *q++=(*p >> 7) & 0x01;
         *q++=(*p >> 6) & 0x01;
@@ -502,7 +502,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
           length=((scanline[x] ^ 0xff) & 0xff)+2;
           number_pixels=bytes_per_pixel;
           p=ExpandBuffer(scanline+x+1,&number_pixels,bits_per_pixel);
-          for (i=0; i < length; i++)
+          for (i=0; i < (int) length; i++)
           {
             memcpy(q,p,number_pixels);
             q+=number_pixels;
