@@ -1428,9 +1428,13 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         {
           jpeg_info.input_components=4;
           jpeg_info.in_color_space=JCS_CMYK;
+          break;
         }
       if (image->colorspace == YCbCrColorspace)
-        jpeg_info.in_color_space=JCS_YCbCr;
+        {
+          jpeg_info.in_color_space=JCS_YCbCr;
+          break;
+        }
       if (image->colorspace != RGBColorspace)
         (void) TransformRGBImage(image,RGBColorspace);
       break;

@@ -256,16 +256,16 @@ MagickExport unsigned int EqualizeImage(Image *image)
   {
     if (high.red != low.red)
       equalize_map[i].red=ScaleMapToQuantum(
-        (MaxMap*(map[i].red-low.red))/(high.red-low.red)+0.5);
+        (MaxMap*(map[i].red-low.red))/(high.red-low.red));
     if (high.green != low.green)
       equalize_map[i].green=ScaleMapToQuantum(
-        (MaxMap*(map[i].green-low.green))/(high.green-low.green)+0.5);
+        (MaxMap*(map[i].green-low.green))/(high.green-low.green));
     if (high.blue != low.blue)
       equalize_map[i].blue=ScaleMapToQuantum(
-        (MaxMap*(map[i].blue-low.blue))/(high.blue-low.blue)+0.5);
+        (MaxMap*(map[i].blue-low.blue))/(high.blue-low.blue));
     if (high.opacity != low.opacity)
       equalize_map[i].opacity=ScaleMapToQuantum(
-        (MaxMap*(map[i].opacity-low.opacity))/(high.opacity-low.opacity)+0.5);
+        (MaxMap*(map[i].opacity-low.opacity))/(high.opacity-low.opacity));
   }
   LiberateMemory((void **) &histogram);
   LiberateMemory((void **) &map);
@@ -410,13 +410,13 @@ MagickExport unsigned int GammaImage(Image *image,const char *level)
   {
     if (gamma.red != 0.0)
       gamma_map[i].red=
-        ScaleMapToQuantum((MaxMap*pow((double) i/MaxMap,1.0/gamma.red))+0.5);
+        ScaleMapToQuantum(MaxMap*pow((double) i/MaxMap,1.0/gamma.red));
     if (gamma.green != 0.0)
       gamma_map[i].green=
-       ScaleMapToQuantum((MaxMap*pow((double) i/MaxMap,1.0/gamma.green))+0.5);
+       ScaleMapToQuantum(MaxMap*pow((double) i/MaxMap,1.0/gamma.green));
     if (gamma.blue != 0.0)
       gamma_map[i].blue=
-        ScaleMapToQuantum((MaxMap*pow((double) i/MaxMap,1.0/gamma.blue))+0.5);
+        ScaleMapToQuantum(MaxMap*pow((double) i/MaxMap,1.0/gamma.blue));
   }
   switch (image->storage_class)
   {
@@ -1240,7 +1240,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
       else
         if (low.red != high.red)
           normalize_map[i].red=
-            ScaleMapToQuantum((MaxMap*(i-low.red))/(high.red-low.red)+0.5);
+            ScaleMapToQuantum((MaxMap*(i-low.red))/(high.red-low.red));
     if (i < (long) low.green)
       normalize_map[i].green=0;
     else
@@ -1249,7 +1249,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
       else
         if (low.green != high.green)
           normalize_map[i].green=ScaleMapToQuantum((MaxMap*(i-low.green))/
-            (high.green-low.green)+0.5);
+            (high.green-low.green));
     if (i < (long) low.blue)
       normalize_map[i].blue=0;
     else
@@ -1258,7 +1258,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
       else
         if (low.blue != high.blue)
           normalize_map[i].blue=
-            ScaleMapToQuantum((MaxMap*(i-low.blue))/(high.blue-low.blue)+0.5);
+            ScaleMapToQuantum((MaxMap*(i-low.blue))/(high.blue-low.blue));
     if (i < (long) low.opacity)
       normalize_map[i].opacity=0;
     else
@@ -1267,7 +1267,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
       else
         if (low.opacity != high.opacity)
           normalize_map[i].opacity=ScaleMapToQuantum(
-            (MaxMap*(i-low.opacity))/(high.opacity-low.opacity)+0.5);
+            (MaxMap*(i-low.opacity))/(high.opacity-low.opacity));
   }
   /*
     Normalize the image.

@@ -129,7 +129,7 @@ testFilterCompare('input.miff', "fuzz=>$fuzz", 'reference/filter/Opaque.miff', '
 ++$test;
 if ( $QuantumDepth < 32 ) {
   testFilterCompare('input.miff', q//, 'reference/filter/Quantize.miff', 'Quantize',
-                    q/colors=>128/, 0.0007, 0.026);
+                    q/colors=>128/, 0.0007, 0.025);
 } else {
   print("Quantize test skipped since it takes too long ...\n");
   print("ok $test\n");
@@ -185,7 +185,7 @@ testFilterCompare('input.miff', q//, 'reference/filter/Solarize.miff', 'Solarize
 
 ++$test;
 testFilterCompare('input.miff', q//, 'reference/filter/Swirl.miff', 'Swirl',
-  q/degrees=>60/, 5.9e-06, 1.6e-05);
+  q/degrees=>60/, 6e-06, 1.6e-05);
 
 ++$test;
 testFilterCompare('input.miff', q//, 'reference/filter/Threshold.miff', 'Threshold',

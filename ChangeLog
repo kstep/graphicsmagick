@@ -1,3 +1,17 @@
+2002-12-16  Cristy  <cristy@mystic.es.dupont.com>
+	* coders/jpeg.c: Add missing break statements to fix
+	colorspace handling when image colorspace is CMYKColorspace
+	or YCbCrColorspace.
+	* magick/decorate.c: Cast to double in calculation.
+	* magick/enhance.c: Tweaks to equalization map calculation to
+	(hopefully) provide more consistent results.
+	* magick/resize.c: Use type double rather than long for minify
+	weighting constants.
+
+2002-12-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/image.h: AdaptiveThresholdImage offset must be
+	a signed type.
+
 2002-12-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* Re-wrote PerlMagick filter.t tests so that they all compare
 	results with reference images rather than compare signatures.
