@@ -110,7 +110,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
   /*
     Allocate semaphore.
   */
-  semaphore_info=(SemaphoreInfo *) AllocateMemory(sizeof(*semaphore_info));
+  semaphore_info=(SemaphoreInfo *) AllocateMemory(sizeof(semaphore_info));
   if (semaphore_info == (SemaphoreInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate semaphore_info info",
       "Memory allocation failed");
@@ -132,6 +132,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
         return((SemaphoreInfo *) NULL);
       }
     }
+#endif
 #if defined(HasPTHREADS)
     if (pthread_mutex_init(&semaphore_info->id,NULL) != 0)
       {
@@ -165,7 +166,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
 %
 %
 */
-void DestroySemaphoreInfo(SemaphoreInfo *semaphore_info)
+MagickExport void DestroySemaphoreInfo(SemaphoreInfo *semaphore_info)
 {
   if (semaphore_info == (SemaphoreInfo *) NULL)
     return;
