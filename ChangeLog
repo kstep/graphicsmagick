@@ -1,3 +1,8 @@
+2003-05-09  William Radcliffe  <billr@corbis.com>
+
+	* VisualMagick\configure : Further refinements that support both
+	the new "big" library and the normal dynamic DLL buidling styles.
+
 2003-05-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/logo.c (ReadLOGOImage): Added a "TRANSPARENT:" pattern
