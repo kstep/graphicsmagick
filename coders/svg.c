@@ -56,6 +56,7 @@
 #include "studio.h"
 #include "attribute.h"
 #include "blob.h"
+#include "color.h"
 #include "constitute.h"
 #include "gem.h"
 #include "log.h"
@@ -1984,6 +1985,22 @@ static void SVGStartElement(void *context,const xmlChar *name,
             svg_info->view_box=svg_info->bounds;
           MVGPrintf(svg_info->file,"viewbox 0 0 %g %g\n",
             svg_info->view_box.width,svg_info->view_box.height);
+
+          /* Set initial canvas background color to user specified value */
+          {
+            char
+              tuple[MaxTextExtent];
+
+            GetColorTuple(&svg_info->image_info->background_color,8,True,True,
+                          tuple);
+
+            MVGPrintf(svg_info->file,"push graphic-context\n");
+            MVGPrintf(svg_info->file,"fill %s\n", tuple);
+            MVGPrintf(svg_info->file,"rectangle 0,0 %g,%g\n",
+                      svg_info->view_box.width,svg_info->view_box.height);
+            MVGPrintf(svg_info->file,"pop graphic-context\n");
+          }
+
           svg_info->width=(unsigned long) svg_info->bounds.width;
           svg_info->height=(unsigned long) svg_info->bounds.height;
           MVGPrintf(svg_info->file,"affine %g 0 0 %g %g %g\n",

@@ -1,3 +1,8 @@
+2003-01-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* magick/svg.c: Allow the user to specify the initial background
+	color via the -background option.  This is only useful if the SVG
+	doesn't draw its own background rectangle.
+
 2003-01-06  Albert Chin-A-Young  <china@thewrittenword.com>
 	* ltdl/Makefile.am, ltdl/ltdl.c: Fix compilation problem
 	under Tru64 UNIX 5.1.  The GraphicsMagick random.h was being
