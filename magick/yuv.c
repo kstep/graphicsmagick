@@ -135,8 +135,7 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
   /*
     Allocate memory for a scanline.
   */
-  scanline=(unsigned char *)
-    AllocateMemory(image->columns*sizeof(unsigned char));
+  scanline=(unsigned char *) AllocateMemory(image->columns);
   if (scanline == (unsigned char *) NULL)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
   do

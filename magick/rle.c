@@ -215,7 +215,7 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
           No background color-- initialize to black.
         */
         for (i=0; i < (int) number_planes; i++)
-          background_color[i]=(unsigned char) 0;
+          background_color[i]=0;
         (void) ReadByte(image);
       }
     else
@@ -225,7 +225,7 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
         */
         p=background_color;
         for (i=0; i < (int) number_planes; i++)
-          *p++=(unsigned char) ReadByte(image);
+          *p++=ReadByte(image);
       }
     if ((number_planes & 0x01) == 0)
       (void) ReadByte(image);
@@ -235,8 +235,7 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
         /*
           Read image colormaps.
         */
-        colormap=(unsigned char *)
-          AllocateMemory(number_colormaps*map_length*sizeof(unsigned char));
+        colormap=(unsigned char *) AllocateMemory(number_colormaps*map_length);
         if (colormap == (unsigned char *) NULL)
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
         p=colormap;
@@ -246,6 +245,9 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
       }
     if (flags & 0x08)
       {
+        char
+          *comment;
+
         unsigned int
           length;
 
@@ -253,11 +255,13 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
           Read image comment.
         */
         length=LSBFirstReadShort(image);
-        image->comments=(char *) AllocateMemory(length*sizeof(char));
-        if (image->comments == (char *) NULL)
+        comment=(char *) AllocateMemory(length);
+        if (comment == (char *) NULL)
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-        (void) ReadBlob(image,length-1,(char *) image->comments);
-        image->comments[length-1]='\0';
+        (void) ReadBlob(image,length-1,comment);
+        comment[length-1]='\0';
+        (void) SetImageAttribute(image,"Comment",comment);
+        FreeMemory(comment);
         if ((length & 0x01) == 0)
           (void) ReadByte(image);
       }
@@ -266,8 +270,8 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
     */
     if (image->matte)
       number_planes++;
-    rle_pixels=(unsigned char *) AllocateMemory(
-      image->columns*image->rows*number_planes*sizeof(unsigned char));
+    rle_pixels=(unsigned char *)
+      AllocateMemory(image->columns*image->rows*number_planes);
     if (rle_pixels == (unsigned char *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     if ((flags & 0x01) && !(flags & 0x02))
@@ -312,7 +316,7 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
         case SetColorOp:
         {
           operand=ReadByte(image);
-          plane=(unsigned char) operand;
+          plane=operand;
           if (plane == 255)
             plane=number_planes-1;
           x=0;
@@ -383,7 +387,7 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
         if (number_colormaps == 1)
           for (i=0; i < (int) (image->columns*image->rows); i++)
           {
-            *p=(unsigned char) colormap[*p & mask];
+            *p=colormap[*p & mask];
             p++;
           }
         else
@@ -391,7 +395,7 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
             for (i=0; i < (int) (image->columns*image->rows); i++)
               for (x=0; x < (int) number_planes; x++)
               {
-                *p=(unsigned char) colormap[x*map_length+(*p & mask)];
+                *p=colormap[x*map_length+(*p & mask)];
                 p++;
               }
       }

@@ -929,7 +929,7 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               for (x=0; x < (int) preview_image->columns; x++)
               {
                 byte<<=1;
-                if (image->indexes[x] == polarity)
+                if (preview_image->indexes[x] == polarity)
                   byte|=0x01;
                 bit++;
                 if (bit == 8)

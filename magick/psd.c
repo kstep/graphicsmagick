@@ -463,8 +463,7 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
       unsigned char
         *data;
 
-      data=(unsigned char *)
-        AllocateMemory(length*sizeof(unsigned char));
+      data=(unsigned char *) AllocateMemory(length);
       if (data == (unsigned char *) NULL)
         ReaderExit(ResourceLimitWarning,
           "8BIM resource memory allocation failed",image);
@@ -540,7 +539,7 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
       for (i=0; i < number_layers; i++)
       {
         layer_info[i].image->file=image->file;
-        layer_info[i].image->blob_info=image->blob_info;
+        layer_info[i].image->blob=image->blob;
         for (j=0; j < (int) layer_info[i].channels; j++)
         {
           compression=MSBFirstReadShort(layer_info[i].image);
@@ -565,8 +564,8 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
               else
                 if (layer_info[i].image->depth > 8)
                   packet_size++;
-              scanline=(unsigned char *) AllocateMemory((packet_size*
-                layer_info[i].image->columns+1)*sizeof(unsigned char));
+              scanline=(unsigned char *)
+                AllocateMemory(packet_size*layer_info[i].image->columns+1);
               if (scanline == (unsigned char *) NULL)
                 ReaderExit(ResourceLimitWarning,"Memory allocation failed",
                   image);
@@ -617,7 +616,7 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
             }
         }
         image->file=layer_info[i].image->file;
-        image->blob_info=layer_info[i].image->blob_info;
+        image->blob=layer_info[i].image->blob;
         if (layer_info[i].image->colorspace == CMYKColorspace)
           {
             /*
@@ -701,8 +700,7 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
           packet_size++;
       for (i=0; i < psd_header.channels; i++)
         channel_map[i]=!image->matte ? i : i-1;
-      scanline=(unsigned char *)
-        AllocateMemory(packet_size*image->columns*sizeof(unsigned char));
+      scanline=(unsigned char *) AllocateMemory(packet_size*image->columns);
       if (scanline == (unsigned char *) NULL)
         ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
       for (i=0; i < (int) psd_header.channels; i++)

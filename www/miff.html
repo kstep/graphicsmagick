@@ -2,7 +2,7 @@
 <html>
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="description" content="ImageMagick, version 5.1.1, is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With ImageMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
+   <meta name="description" content="ImageMagick, version 5.2.0, is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With ImageMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
    <meta name="keywords" content="ImageMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
    <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <title>ImageMagick - Image Processing and Display Package</title>
@@ -178,7 +178,7 @@ allow programs like
 the number of times an image sequence loops before stopping.</dd>
 
 <dt>
-<b>label</b>="<i>value</i>"</dt>
+<b>label</b>={<i>value</i>}</dt>
 
 <dd>
 this optional keyword defines a short title or caption for the image. If
@@ -295,17 +295,15 @@ pixel contents. RSA's Data Security MD5 Digest Algorithm is recommended.</dd>
 image resolution units.</dd>
 </dl>
 </dl>
-The following is a sample <b>MIFF</b> header. In this example, &lt;FF>
-is a formfeed character:
+Other key value pairs are permitted.  If a value contains whitespace it
+must be enclosed with braces as illustrated here:
 <pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; id=ImageMagick
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; class=PseudoClass&nbsp; colors=256
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; compression=RunlengthEncoded&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; columns=1280&nbsp; rows=1024
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; scene=1
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; signature=d79e1c308aa5bbcdeea8ed63df412da9
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rendered via Dore by Sandi Tennyson.
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; copyright={Copyright (c) 2000 ImageMagick Studio}
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;FF>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :</pre>
 Note that <i>keyword</i>=<i>value</i> combinations may be separated by

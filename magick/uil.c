@@ -194,7 +194,7 @@ Export unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
             Map all the transparent pixels.
           */
           matte_image=(unsigned char *)
-            AllocateMemory(image->columns*image->rows*sizeof(unsigned char));
+            AllocateMemory(image->columns*image->rows);
           if (matte_image == (unsigned char *) NULL)
             WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
           for (y=0; y < (int) image->rows; y++)
@@ -260,12 +260,12 @@ Export unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     p=image->colormap+i;
     for (q=XPMColorlist; q->name != (char *) NULL; q++)
     {
-      mean=(DownScale(p->red)+q->red)/2;
-      distance=DownScale(p->red)-(int) q->red;
+      mean=(p->red+q->red)/2;
+      distance=p->red-(int) q->red;
       distance_squared=(2.0*256.0+mean)*distance*distance/256.0;
-      distance=DownScale(p->green)-(int) q->green;
+      distance=p->green-(int) q->green;
       distance_squared+=4.0*distance*distance;
-      distance=DownScale(p->blue)-(int) q->blue;
+      distance=p->blue-(int) q->blue;
       distance_squared+=(3.0*256.0-1.0-mean)*distance*distance/256.0;
       if ((q == XPMColorlist) || (distance_squared <= min_distance))
         {

@@ -102,6 +102,143 @@ Export unsigned int IsTIFF(const unsigned char *magick,
     return(True);
   return(False);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   H u f f m a n 2 D E n c o d e I m a g e                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method Huffman2DEncodeImage compresses an image via two-dimensional
+%  Huffman-coding.
+%
+%  The format of the Huffman2DEncodeImage method is:
+%
+%      unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method Huffman2DEncodeImage returns True if all the pixels are
+%      compressed without error, otherwise False.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%    o image: The address of a structure of type Image.
+%
+*/
+Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
+{
+  char
+    filename[MaxTextExtent];
+
+  Image
+    *huffman_image;
+
+  ImageInfo
+    *local_info;
+
+  int
+    count;
+
+  register int
+    i,
+    j;
+
+  TIFF
+    *tiff;
+
+  uint16
+    fillorder;
+
+  unsigned char
+    *buffer;
+
+  unsigned int
+    *byte_count,
+    status,
+    strip_size;
+
+  /*
+    Write image as CCITTFax4 TIFF image to a temporary file.
+  */
+  assert(image_info != (ImageInfo *) NULL);
+  assert(image != (Image *) NULL);
+  huffman_image=CloneImage(image,image->columns,image->rows,True);
+  if (huffman_image == (Image *) NULL)
+    return(False);
+  if (!IsMonochromeImage(huffman_image))
+    {
+      QuantizeInfo
+        quantize_info;
+
+      /*
+        Convert image to monochrome.
+      */
+      GetQuantizeInfo(&quantize_info);
+      quantize_info.number_colors=2;
+      quantize_info.dither=image_info->dither;
+      quantize_info.colorspace=GRAYColorspace;
+      (void) QuantizeImage(&quantize_info,huffman_image);
+    }
+  TemporaryFilename(filename);
+  (void) strcpy(huffman_image->filename,filename);
+  (void) strcpy(huffman_image->magick,"TIFF");
+  local_info=CloneImageInfo(image_info);
+  local_info->compression=Group4Compression;
+  status=WriteImage(local_info,huffman_image);
+  DestroyImageInfo(local_info);
+  DestroyImage(huffman_image);
+  if (status == False)
+    return(False);
+  tiff=TIFFOpen(filename,ReadBinaryType);
+  if (tiff == (TIFF *) NULL)
+    {
+      MagickWarning(FileOpenWarning,"Unable to open file",image_info->filename);
+      (void) remove(filename);
+      return(False);
+    }
+  /*
+    Allocate raw strip buffer.
+  */
+  TIFFGetField(tiff,TIFFTAG_STRIPBYTECOUNTS,&byte_count);
+  strip_size=byte_count[0];
+  for (i=1; i < (int) TIFFNumberOfStrips(tiff); i++)
+    if (byte_count[i] > strip_size)
+      strip_size=byte_count[i];
+  buffer=(unsigned char *) AllocateMemory(strip_size);
+  if (buffer == (unsigned char *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
+        (char *) NULL);
+      TIFFClose(tiff);
+      (void) remove(filename);
+      return(False);
+    }
+  /*
+    Compress runlength encoded to 2D Huffman pixels.
+  */
+  TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&fillorder);
+  for (i=0; i < (int) TIFFNumberOfStrips(tiff); i++)
+  {
+    Ascii85Initialize();
+    count=TIFFReadRawStrip(tiff,i,buffer,byte_count[i]);
+    if (fillorder == FILLORDER_LSB2MSB)
+      TIFFReverseBits(buffer,count);
+    for (j=0; j < count; j++)
+      Ascii85Encode(image,(unsigned int) buffer[j]);
+    Ascii85Flush(image);
+  }
+  FreeMemory(buffer);
+  TIFFClose(tiff);
+  (void) remove(filename);
+  return(True);
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -150,8 +287,7 @@ static unsigned int ReadColorProfile(char *text,long int length,Image *image)
       FreeMemory(image->color_profile.info);
       image->color_profile.length=0;
     }
-  image->color_profile.info=(unsigned char *)
-    AllocateMemory((unsigned int) length*sizeof(unsigned char));
+  image->color_profile.info=(unsigned char *) AllocateMemory(length);
   if (image->color_profile.info == (unsigned char *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Memory allocation failed",
@@ -186,8 +322,7 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
         Handle IPTC tag.
       */
       length*=4;
-      image->iptc_profile.info=(unsigned char *)
-        AllocateMemory((unsigned int) length*sizeof(unsigned char));
+      image->iptc_profile.info=(unsigned char *) AllocateMemory(length);
       if (image->iptc_profile.info == (unsigned char *) NULL)
         {
           MagickWarning(ResourceLimitWarning,"Memory allocation failed",
@@ -232,8 +367,7 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
   length=(p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3];
   p+=4;
 #endif
-  image->iptc_profile.info=(unsigned char *)
-    AllocateMemory((unsigned int) length*sizeof(unsigned char));
+  image->iptc_profile.info=(unsigned char *) AllocateMemory(length);
   if (image->iptc_profile.info == (unsigned char *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Memory allocation failed",
@@ -493,11 +627,11 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
     text=(char *) NULL;
     TIFFGetField(tiff,TIFFTAG_PAGENAME,&text);
     if (text != (char *) NULL)
-      (void) CloneString(&image->label,text);
+      (void) SetImageAttribute(image,"Label",text);
     text=(char *) NULL;
     TIFFGetField(tiff,TIFFTAG_IMAGEDESCRIPTION,&text);
     if (text != (char *) NULL)
-      (void) CloneString(&image->comments,text);
+      (void) SetImageAttribute(image,"Comment",text);
     if (range < 0)
       range=max_sample_value;
     method=0;
@@ -927,8 +1061,7 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
       */
       length=image->iptc_profile.length;
       roundup=4-(length & 0x03); /* round up for long word alignment */
-      profile=(unsigned char *)
-        AllocateMemory((length+roundup)*sizeof(unsigned char));
+      profile=(unsigned char *) AllocateMemory(length+roundup);
       if ((length == 0) || (profile == (unsigned char *) NULL))
         return;
       (void) memcpy((char *) profile,image->iptc_profile.info,length);
@@ -947,8 +1080,7 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
 #if defined(GET_ONLY_IPTC_DATA)
   length=image->iptc_profile.length;
   roundup=(length & 0x01); /* round up for Photoshop */
-  profile=(unsigned char *)
-    AllocateMemory((length+roundup+12)*sizeof(unsigned char));
+  profile=(unsigned char *) AllocateMemory(length+roundup+12);
   if ((length == 0) || (profile == (unsigned char *) NULL))
     (void) memcpy((char *) profile,"8BIM\04\04\0\0",8);
   profile[8]=(length >> 24) & 0xff;
@@ -965,8 +1097,7 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
   if (length == 0)
     return;
   roundup=(length & 0x01); /* round up for Photoshop */
-  profile=(unsigned char *)
-    AllocateMemory((length+roundup)*sizeof(unsigned char));
+  profile=(unsigned char *) AllocateMemory(length+roundup);
   if (profile == (unsigned char *) NULL)
     return;
   (void) memcpy((char *) profile,image->iptc_profile.info,length);
@@ -1066,6 +1197,9 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 
   Image
     encode_image;
+
+  ImageAttribute
+    *attribute;
 
   int
     y;
@@ -1362,10 +1496,12 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         TIFFSetField(tiff,TIFFTAG_PAGENUMBER,(unsigned short) image->scene,
           GetNumberScenes(image));
       }
-    if (image->label != (char *) NULL)
-      TIFFSetField(tiff,TIFFTAG_PAGENAME,image->label);
-    if (image->comments != (char *) NULL)
-      TIFFSetField(tiff,TIFFTAG_IMAGEDESCRIPTION,image->comments);
+    attribute=GetImageAttribute(image,"Label");
+    if (attribute != (ImageAttribute *) NULL)
+      TIFFSetField(tiff,TIFFTAG_PAGENAME,attribute->value);
+    attribute=GetImageAttribute(image,"Comment");
+    if (attribute != (ImageAttribute *) NULL)
+      TIFFSetField(tiff,TIFFTAG_IMAGEDESCRIPTION,attribute->value);
     /*
       Write image scanlines.
     */

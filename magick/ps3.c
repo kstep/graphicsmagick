@@ -113,6 +113,9 @@ Export unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     y_resolution,
     y_scale;
 
+  ImageAttribute
+    *attribute;
+
   int
     count,
     status,
@@ -160,8 +163,9 @@ Export unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
       Scale image to size of Postscript page.
     */
     text_size=0;
-    if (image->label != (char *) NULL)
-      text_size=MultilineCensus(image->label)*image_info->pointsize+12;
+    attribute=GetImageAttribute(image,"Label");
+    if (attribute != (ImageAttribute *) NULL)
+      text_size=MultilineCensus(attribute->value)*image_info->pointsize+12;
     width=image->columns;
     height=image->rows;
     x=0;
@@ -170,9 +174,9 @@ Export unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     if (image_info->page != (char *) NULL)
       (void) strcpy(geometry,image_info->page);
     else
-      if ((image->page_info.width != 0) && (image->page_info.height != 0))
-        (void) FormatString(geometry,"%ux%u%+d%+d",image->page_info.width,
-	  image->page_info.height,image->page_info.x,image->page_info.y);
+      if ((image->page.width != 0) && (image->page.height != 0))
+        (void) FormatString(geometry,"%ux%u%+d%+d",image->page.width,
+	  image->page.height,image->page.x,image->page.y);
       else
         if (Latin1Compare(image_info->magick,"PDF") == 0)
           (void) strcpy(geometry,PSPageGeometry);
@@ -224,7 +228,8 @@ Export unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
           (void) sprintf(buffer,"%%%%BoundingBox: %g %g %g %g\n",
             bounding_box.x1,bounding_box.y1,bounding_box.x2,bounding_box.y2);
         (void) WriteBlob(image,strlen(buffer),buffer);
-        if (image->label != (char *) NULL)
+        attribute=GetImageAttribute(image,"Label");
+        if (attribute != (ImageAttribute *) NULL)
           {
             (void) strcpy(buffer,
               "%%%%DocumentNeededResources: font Helvetica\n");
@@ -254,7 +259,8 @@ Export unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
       bounding_box.x2=x+width-1;
     if ((y+(int) (height+text_size)-1) > bounding_box.y2)
       bounding_box.y2=y+(height+text_size)-1;
-    if (image->label != (char *) NULL)
+    attribute=GetImageAttribute(image,"Label");
+    if (attribute != (ImageAttribute *) NULL)
       {
         (void) strcpy(buffer,"%%PageResources: font Helvetica\n");
         (void) WriteBlob(image,strlen(buffer),buffer);
@@ -326,8 +332,7 @@ Export unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
           Allocate pixel array.
         */
         number_packets=4*image->columns*image->rows;
-        pixels=(unsigned char *)
-          AllocateMemory(number_packets*sizeof(unsigned char));
+        pixels=(unsigned char *) AllocateMemory(number_packets);
         if (pixels == (unsigned char *) NULL)
           WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
         /*

@@ -242,8 +242,7 @@ Export Image *ReadSFWImage(const ImageInfo *image_info)
   /*
     Read image into a buffer.
   */
-  buffer=(unsigned char *)
-    AllocateMemory(image->filesize*sizeof(unsigned char));
+  buffer=(unsigned char *) AllocateMemory(image->filesize);
   if (buffer == (unsigned char *) NULL)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
   status=ReadBlob(image,image->filesize,(char *) buffer);

@@ -181,7 +181,7 @@ Export Image *ReadPWPImage(const ImageInfo *image_info)
     {
       for (i=0; i < 17; i++)
         magick[i]=magick[i+1];
-      magick[17]=(unsigned char) c;
+      magick[17]=c;
       if (strncmp((char *) (magick+12),"SFW94A",6) == 0)
         break;
     }

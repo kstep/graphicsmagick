@@ -107,7 +107,7 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
     offset;
 
   RectangleInfo
-    page_info;
+    page;
 
   register char
     *p;
@@ -142,22 +142,22 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
       if (count != 2)
         image->y_resolution=image->x_resolution;
     }
-  page_info.width=612;
-  page_info.height=792;
-  page_info.x=0;
-  page_info.y=0;
-  (void) ParseImageGeometry("612x792+43+43",&page_info.x,&page_info.y,
-    &page_info.width,&page_info.height);
+  page.width=612;
+  page.height=792;
+  page.x=0;
+  page.y=0;
+  (void) ParseImageGeometry("612x792+43+43",&page.x,&page.y,
+    &page.width,&page.height);
   if (image_info->page != (char *) NULL)
-    (void) ParseImageGeometry(image_info->page,&page_info.x,&page_info.y,
-      &page_info.width,&page_info.height);
+    (void) ParseImageGeometry(image_info->page,&page.x,&page.y,
+      &page.width,&page.height);
   /*
     Initialize Image structure.
   */
   image->columns=(unsigned int)
-    (((page_info.width*image->x_resolution)/dx_resolution)+0.5);
+    (((page.width*image->x_resolution)/dx_resolution)+0.5);
   image->rows=(unsigned int)
-    (((page_info.height*image->y_resolution)/dy_resolution)+0.5);
+    (((page.height*image->y_resolution)/dy_resolution)+0.5);
   (void) QueryColorDatabase("#c0c0c0",&image->background_color);
   texture=(Image *) NULL;
   if (image_info->texture != (char *) NULL)
@@ -191,14 +191,14 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
     if (p == (char *) NULL)
       break;
     (void) CloneString(&annotate_info->text,text);
-    FormatString(geometry,"%+d%+d",page_info.x,page_info.y+offset);
+    FormatString(geometry,"%+d%+d",page.x,page.y+offset);
     (void) CloneString(&annotate_info->geometry,geometry);
     AnnotateImage(image,annotate_info);
     offset+=annotate_info->bounds.height;
     if (image->previous == (Image *) NULL)
-      if (QuantumTick(page_info.y+offset,image->rows))
-        ProgressMonitor(LoadImageText,page_info.y+offset,image->rows);
-    if (((2*page_info.y)+offset+annotate_info->bounds.height) < image->rows)
+      if (QuantumTick(page.y+offset,image->rows))
+        ProgressMonitor(LoadImageText,page.y+offset,image->rows);
+    if (((2*page.y)+offset+annotate_info->bounds.height) < image->rows)
       continue;
     /*
       Page is full-- allocate next image structure.
@@ -212,7 +212,7 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
         break;
       }
     (void) strcpy(image->next->filename,filename);
-    image->next->blob_info=image->blob_info;
+    image->next->blob=image->blob;
     image->next->file=image->file;
     image->next->filesize=image->filesize;
     image->next->scene=image->scene+1;

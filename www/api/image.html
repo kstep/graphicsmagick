@@ -20,7 +20,6 @@
 		<LI><A HREF="#AverageImages">AverageImages</A></LI>
 		<LI><A HREF="#CloneImage">CloneImage</A></LI>
 		<LI><A HREF="#CloneImageInfo">CloneImageInfo</A></LI>
-		<LI><A HREF="#CommentImage">CommentImage</A></LI>
 		<LI><A HREF="#CompositeImage">CompositeImage</A></LI>
 		<LI><A HREF="#CreateImage">CreateImage</A></LI>
 		<LI><A HREF="#CycleColormapImage">CycleColormapImage</A></LI>
@@ -39,7 +38,6 @@
 		<LI><A HREF="#IsGeometry">IsGeometry</A></LI>
 		<LI><A HREF="#IsSubimage">IsSubimage</A></LI>
 		<LI><A HREF="#IsTainted">IsTainted</A></LI>
-		<LI><A HREF="#LabelImage">LabelImage</A></LI>
 		<LI><A HREF="#LayerImage">LayerImage</A></LI>
 		<LI><A HREF="#ListToGroupImage">ListToGroupImage</A></LI>
 		<LI><A HREF="#MatteImage">MatteImage</A></LI>
@@ -92,10 +90,6 @@ unsigned int orphan );
 </P>
 <P>
 ImageInfo * <STRONG>CloneImageInfo</STRONG>( const ImageInfo <CODE>*image_info</CODE> );
-
-</P>
-<P>
-void  <STRONG>CommentImage</STRONG>( Image *image, const char <CODE>*comments</CODE> );
 
 </P>
 <P>
@@ -173,10 +167,6 @@ unsigned int  <STRONG>IsSubimage</STRONG>( const char *geometry, const unsigned 
 </P>
 <P>
 unsigned int  <STRONG>IsTainted</STRONG>( const Image <CODE>*image</CODE> );
-
-</P>
-<P>
-void  <STRONG>LabelImage</STRONG>( Image *image, const char <CODE>*label</CODE> );
 
 </P>
 <P>
@@ -438,38 +428,6 @@ Method CloneImageInfo returns a duplicate of the given image info, or if image i
 <p><dt><STRONG>image_info:</STRONG><DD>
 <P>
 a structure of type info.
-
-</P>
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="CommentImage">CommentImage</A></H2>
-<P>
-Method CommentImage initializes an image comment. Optionally the comment
-can include the image filename, type, width, height, or scene number by
-embedding special format characters.
-
-</P>
-<P>
-The format of the CommentImage method is:
-
-</P>
-<blockquote>void CommentImage ( <A HREF="types/Image.html">Image</A> *image, const char *comments ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
-<DL><DL>
-<p><dt><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-</P>
-<p><dt><STRONG>comments:</STRONG><DD>
-<P>
-The address of a character string containing the comment format.
 
 </P>
 </DL></DL>
@@ -1105,38 +1063,6 @@ first read.
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
-
-</P>
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="LabelImage">LabelImage</A></H2>
-<P>
-Method LabelImage initializes an image label. Optionally the label can
-include the image filename, type, width, height, or scene number by
-embedding special format characters.
-
-</P>
-<P>
-The format of the LabelImage method is:
-
-</P>
-<blockquote>void LabelImage ( <A HREF="types/Image.html">Image</A> *image, const char *label ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
-<DL><DL>
-<p><dt><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-</P>
-<p><dt><STRONG>label:</STRONG><DD>
-<P>
-The address of a character string containing the label format.
 
 </P>
 </DL></DL>

@@ -255,8 +255,8 @@ Export Image *ReadSGIImage(const ImageInfo *image_info)
     /*
       Allocate SGI pixels.
     */
-    iris_pixels=(unsigned char *) AllocateMemory(4*iris_header.columns*
-      iris_header.rows*sizeof(unsigned char));
+    iris_pixels=(unsigned char *)
+      AllocateMemory(4*iris_header.columns*iris_header.rows);
     if (iris_pixels == (unsigned char *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     if (iris_header.storage != 0x01)
@@ -267,8 +267,7 @@ Export Image *ReadSGIImage(const ImageInfo *image_info)
         /*
           Read standard image format.
         */
-        scanline=(unsigned char *)
-          AllocateMemory(iris_header.columns*sizeof(unsigned char));
+        scanline=(unsigned char *) AllocateMemory(iris_header.columns);
         if (scanline == (unsigned char *) NULL)
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
         for (z=0; z < (int) iris_header.depth; z++)
@@ -304,8 +303,7 @@ Export Image *ReadSGIImage(const ImageInfo *image_info)
         */
         offsets=(unsigned long *) AllocateMemory(iris_header.rows*
           iris_header.depth*sizeof(unsigned long));
-        max_packets=(unsigned char *)
-          AllocateMemory(((iris_header.columns << 1)+10)*sizeof(unsigned char));
+        max_packets=(unsigned char *) AllocateMemory(2*iris_header.columns+10);
         runlength=(unsigned long *) AllocateMemory(iris_header.rows*
           iris_header.depth*sizeof(unsigned long));
         if ((offsets == (unsigned long *) NULL) ||
@@ -552,7 +550,7 @@ static int SGIEncode(unsigned char *pixels,int count,
     {
       runlength=(short) (count > 126 ? 126 : count);
       count-=runlength;
-      *q++=(unsigned char) runlength;
+      *q++=runlength;
       *q++=(*mark);
     }
   }
@@ -659,12 +657,11 @@ Export unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
     /*
       Allocate SGI pixels.
     */
-    iris_pixels=(unsigned char *)
-      AllocateMemory(4*image->columns*image->rows*sizeof(unsigned char));
+    iris_pixels=(unsigned char *) AllocateMemory(4*image->columns*image->rows);
     if (iris_pixels == (unsigned char *) NULL)
       WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
     /*
-      Convert pixel packets to uncompressed SGI pixels.
+      Convert image pixels to uncompressed SGI pixels.
     */
     for (y=0; y < (int) image->rows; y++)
     {
@@ -677,7 +674,7 @@ Export unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
         *q++=DownScale(p->red);
         *q++=DownScale(p->green);
         *q++=DownScale(p->blue);
-        *q++=(unsigned char) p->opacity;
+        *q++=p->opacity;
         p++;
       }
       if (image->previous == (Image *) NULL)
@@ -692,8 +689,7 @@ Export unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
         /*
           Write uncompressed SGI pixels.
         */
-        scanline=(unsigned char *)
-          AllocateMemory(iris_header.columns*sizeof(unsigned char));
+        scanline=(unsigned char *) AllocateMemory(iris_header.columns);
         if (scanline == (unsigned char *) NULL)
           WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
         for (z=0; z < (int) iris_header.depth; z++)
@@ -721,12 +717,12 @@ Export unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
           *runlength;
 
         /*
-          Convert SGI uncompressed pixels to runlength-encoded pixels.
+          Convert SGI uncompressed pixels.
         */
         offsets=(unsigned long *) AllocateMemory(iris_header.rows*
           iris_header.depth*sizeof(unsigned long));
-        packets=(unsigned char *) AllocateMemory(4*((iris_header.columns << 1)+
-          10)*image->rows*sizeof(unsigned char));
+        packets=(unsigned char *)
+	  AllocateMemory(4*(2*iris_header.columns+10)*image->rows);
         runlength=(unsigned long *) AllocateMemory(iris_header.rows*
           iris_header.depth*sizeof(unsigned long));
         if ((offsets == (unsigned long *) NULL) ||

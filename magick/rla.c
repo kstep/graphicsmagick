@@ -252,16 +252,7 @@ Export Image *ReadRLAImage(const ImageInfo *image_info)
   if (scanlines == (long *) NULL)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
   if (*rla_header.description != '\0')
-    {
-      /*
-        RLA image comment.
-      */
-      image->comments=(char *)
-        AllocateMemory((Extent(rla_header.description)+1)*sizeof(char));
-      if (image->comments == (char *) NULL)
-        ReaderExit(ResourceLimitWarning,"Memory allocation failed",image)
-      (void) strcpy(image->comments,rla_header.description);
-    }
+    (void) SetImageAttribute(image,"Comment",rla_header.description);
   /*
     Read offsets to each scanline data.
   */

@@ -162,7 +162,7 @@ Export Image *ReadTTFImage(const ImageInfo *image_info)
     }
   (void) strcpy(image->filename,image_info->filename);
   if (annotate_info->font_name != (char *) NULL)
-    (void) CloneString(&image->label,annotate_info->font_name);
+    (void) SetImageAttribute(image,"Label",annotate_info->font_name);
   /*
     Annotate canvas with text rendered with font at different point sizes.
   */

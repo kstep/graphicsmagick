@@ -796,8 +796,6 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
     *scale_image;
 
   int
-    next_column,
-    next_row,
     number_rows,
     y;
 
@@ -818,6 +816,10 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
     *scanline,
     *x_vector,
     *y_vector;
+
+  unsigned int
+    next_column,
+    next_row;
 
   assert(image != (Image *) NULL);
   if ((columns == 0) || (rows == 0))

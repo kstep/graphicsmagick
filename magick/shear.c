@@ -102,7 +102,7 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations)
     y;
 
   RectangleInfo
-    page_info;
+    page;
 
   register int
     x;
@@ -115,7 +115,7 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations)
     Initialize rotated image attributes.
   */
   assert(image != (Image *) NULL);
-  page_info=image->page_info;
+  page=image->page;
   rotations%=4;
   if ((rotations == 1) || (rotations == 3))
     rotate_image=CloneImage(image,image->rows,image->columns,False);
@@ -174,9 +174,9 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations)
         if (QuantumTick(y,image->rows))
           ProgressMonitor(RotateImageText,y,image->rows);
       }
-      Swap(page_info.width,page_info.height);
-      Swap(page_info.x,page_info.y);
-      page_info.x=page_info.width-rotate_image->columns-page_info.x;
+      Swap(page.width,page.height);
+      Swap(page.x,page.y);
+      page.x=page.width-rotate_image->columns-page.x;
       break;
     }
     case 2:
@@ -201,8 +201,8 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations)
         if (QuantumTick(y,image->rows))
           ProgressMonitor(RotateImageText,y,image->rows);
       }
-      page_info.x=page_info.width-rotate_image->columns-page_info.x;
-      page_info.y=page_info.height-rotate_image->rows-page_info.y;
+      page.x=page.width-rotate_image->columns-page.x;
+      page.y=page.height-rotate_image->rows-page.y;
       break;
     }
     case 3:
@@ -227,13 +227,13 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations)
         if (QuantumTick(y,image->rows))
           ProgressMonitor(RotateImageText,y,image->rows);
       }
-      Swap(page_info.width,page_info.height);
-      Swap(page_info.x,page_info.y);
-      page_info.y=page_info.height-rotate_image->rows-page_info.y;
+      Swap(page.width,page.height);
+      Swap(page.x,page.y);
+      page.y=page.height-rotate_image->rows-page.y;
       break;
     }
   }
-  rotate_image->page_info=page_info;
+  rotate_image->page=page;
   return(rotate_image);
 }
 
@@ -857,7 +857,7 @@ Export Image *RotateImage(Image *image,const double degrees)
   XShearImage(rotate_image,shear.x,y_width,rotate_image->rows,
     (rotate_image->columns-y_width+1)/2,0,range_limit);
   TransformImage(&rotate_image,"0x0",(char *) NULL);
-  GetPageInfo(&rotate_image->page_info);
+  GetPageInfo(&rotate_image->page);
   FreeMemory(range_table);
   return(rotate_image);
 }
@@ -999,7 +999,7 @@ Export Image *ShearImage(Image *image,const double x_shear,const double y_shear)
   YShearImage(shear_image,shear.y,y_width,image->rows,
     (shear_image->columns-y_width+1)/2,y_offset,range_limit);
   TransformImage(&shear_image,"0x0",(char *) NULL);
-  GetPageInfo(&shear_image->page_info);
+  GetPageInfo(&shear_image->page);
   FreeMemory(range_table);
   return(shear_image);
 }

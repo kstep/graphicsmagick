@@ -206,15 +206,19 @@ Export Image *ReadTGAImage(const ImageInfo *image_info)
       }
     if (tga_header.id_length != 0)
       {
+        char
+          *comment;
+
         /*
           TGA image comment.
         */
-        image->comments=(char *)
-          AllocateMemory((tga_header.id_length+1)*sizeof(char));
-        if (image->comments == (char *) NULL)
+        comment=(char *) AllocateMemory(tga_header.id_length+1);
+        if (comment == (char *) NULL)
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-        (void) ReadBlob(image,tga_header.id_length,image->comments);
-        image->comments[tga_header.id_length]='\0';
+        (void) ReadBlob(image,tga_header.id_length,comment);
+        comment[tga_header.id_length]='\0';
+        (void) SetImageAttribute(image,"Comment",comment);
+        FreeMemory(comment);
       }
     GetPixelPacket(&pixel);
     if (tga_header.colormap_type != 0)
@@ -482,6 +486,9 @@ Export unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
       attributes;
   } TargaHeader;
 
+  ImageAttribute
+    *attribute;
+
   int
     count,
     y;
@@ -520,8 +527,9 @@ Export unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
     */
     TransformRGBImage(image,RGBColorspace);
     targa_header.id_length=0;
-    if (image->comments != (char *) NULL)
-      targa_header.id_length=Min(Extent(image->comments),255);
+    attribute=GetImageAttribute(image,"Comment");
+    if (attribute != (ImageAttribute *) NULL)
+      targa_header.id_length=Min(Extent(attribute->value),255);
     targa_header.colormap_type=0;
     targa_header.colormap_index=0;
     targa_header.colormap_length=0;
@@ -554,20 +562,20 @@ Export unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
     /*
       Write TGA header.
     */
-    (void) WriteByte(image,(char) targa_header.id_length);
-    (void) WriteByte(image,(char) targa_header.colormap_type);
-    (void) WriteByte(image,(char) targa_header.image_type);
+    (void) WriteByte(image,targa_header.id_length);
+    (void) WriteByte(image,targa_header.colormap_type);
+    (void) WriteByte(image,targa_header.image_type);
     LSBFirstWriteShort(image,targa_header.colormap_index);
     LSBFirstWriteShort(image,targa_header.colormap_length);
-    (void) WriteByte(image,(char) targa_header.colormap_size);
+    (void) WriteByte(image,targa_header.colormap_size);
     LSBFirstWriteShort(image,targa_header.x_origin);
     LSBFirstWriteShort(image,targa_header.y_origin);
     LSBFirstWriteShort(image,targa_header.width);
     LSBFirstWriteShort(image,targa_header.height);
-    (void) WriteByte(image,(char) targa_header.bits_per_pixel);
-    (void) WriteByte(image,(char) targa_header.attributes);
+    (void) WriteByte(image,targa_header.bits_per_pixel);
+    (void) WriteByte(image,targa_header.attributes);
     if (targa_header.id_length != 0)
-      (void) WriteBlob(image,targa_header.id_length,(char *) image->comments);
+      (void) WriteBlob(image,targa_header.id_length,attribute->value);
     if (IsPseudoClass(image))
       {
         unsigned char
@@ -576,8 +584,8 @@ Export unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
         /*
           Dump colormap to file (blue, green, red byte order).
         */
-        targa_colormap=(unsigned char *) AllocateMemory(3*
-          targa_header.colormap_length*sizeof(unsigned char));
+        targa_colormap=(unsigned char *)
+          AllocateMemory(3*targa_header.colormap_length);
         if (targa_colormap == (unsigned char *) NULL)
           WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
         q=targa_colormap;
@@ -595,7 +603,7 @@ Export unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
       Convert MIFF to TGA raster pixels.
     */
     count=(unsigned int) (targa_header.bits_per_pixel*targa_header.width) >> 3;
-    targa_pixels=(unsigned char *) AllocateMemory(count*sizeof(unsigned char));
+    targa_pixels=(unsigned char *) AllocateMemory(count);
     if (targa_pixels == (unsigned char *) NULL)
       WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
     for (y=(int) (image->rows-1); y >= 0; y--)

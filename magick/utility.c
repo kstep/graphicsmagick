@@ -89,8 +89,7 @@ Export char *AllocateString(const char *source)
 
   if (source == (char *) NULL)
     return((char *) NULL);
-  destination=(char *)
-    AllocateMemory(Max(Extent(source)+1,MaxTextExtent)*sizeof(char));
+  destination=(char *) AllocateMemory(Max(Extent(source)+1,MaxTextExtent));
   if (destination == (char *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to allocate string",
@@ -269,7 +268,7 @@ Export unsigned int CloneString(char **destination,const char *source)
   if (source == (const char *) NULL)
     return(True);
   *destination=(char *)
-    AllocateMemory(Max(Extent(source)+1,MaxTextExtent)*sizeof(char));
+    AllocateMemory(Max(Extent(source)+1,MaxTextExtent));
   if (*destination == (char *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to allocate string",
@@ -2415,7 +2414,7 @@ Export void TemporaryFilename(char *filename)
 %
 %  The format of the TranslateText method is:
 %
-%      char *TranslateText(const ImageInfo *image_info,const Image *image,
+%      char *TranslateText(const ImageInfo *image_info,Image *image,
 %        const char *formatted_text)
 %
 %  A description of each parameter follows:
@@ -2432,7 +2431,7 @@ Export void TemporaryFilename(char *filename)
 %
 %
 */
-Export char *TranslateText(const ImageInfo *image_info,const Image *image,
+Export char *TranslateText(const ImageInfo *image_info,Image *image,
   const char *formatted_text)
 {
   char
@@ -2447,57 +2446,53 @@ Export char *TranslateText(const ImageInfo *image_info,const Image *image,
     *local_info;
 
   unsigned int
-    indirection,
     length;
 
   assert(image != (Image *) NULL);
   if ((formatted_text == (const char *) NULL) || (*formatted_text == '\0'))
     return((char *) NULL);
   text=(char *) formatted_text;
-  indirection=(*text == '@');
-  if (indirection)
+  if (*text == '@')
     {
       FILE
         *file;
 
-      int
-        c;
-
-      /*
-        Read text from a file.
-      */
       file=(FILE *) fopen(text+1,"r");
-      if (file == (FILE *) NULL)
+      if (file != (FILE *) NULL)
         {
-          MagickWarning(FileOpenWarning,"Unable to read text file",text+1);
-          return((char *) NULL);
-        }
-      length=MaxTextExtent;
-      text=(char *) AllocateMemory(length);
-      for (q=text; text != (char *) NULL; q++)
-      {
-        c=fgetc(file);
-        if (c == EOF)
-          break;
-        if ((q-text+1) >= (int) length)
+          int
+            c;
+
+          /*
+            Read text from a file.
+          */
+          length=MaxTextExtent;
+          text=(char *) AllocateMemory(length);
+          for (q=text; text != (char *) NULL; q++)
           {
-            *q='\0';
-            length<<=1;
-            text=(char *) ReallocateMemory((char *) text,length);
-            if (text == (char *) NULL)
+            c=fgetc(file);
+            if (c == EOF)
               break;
-            q=text+Extent(text);
+            if ((q-text+1) >= (int) length)
+              {
+                *q='\0';
+                length<<=1;
+                text=(char *) ReallocateMemory((char *) text,length);
+                if (text == (char *) NULL)
+                  break;
+                q=text+Extent(text);
+              }
+            *q=(unsigned char) c;
           }
-        *q=(unsigned char) c;
-      }
-      (void) fclose(file);
-      if (text == (char *) NULL)
-        {
-          MagickWarning(ResourceLimitWarning,"Unable to translate text",
-            "Memory allocation failed");
-          return((char *) NULL);
+          (void) fclose(file);
+          if (text == (char *) NULL)
+            {
+              MagickWarning(ResourceLimitWarning,"Unable to translate text",
+                "Memory allocation failed");
+              return((char *) NULL);
+            }
+          *q='\0';
         }
-      *q='\0';
     }
   /*
     Allocate and initialize image text.
@@ -2508,7 +2503,7 @@ Export char *TranslateText(const ImageInfo *image_info,const Image *image,
     {
       MagickWarning(ResourceLimitWarning,"Unable to translate text",
         "Memory allocation failed");
-      if (indirection)
+      if (text != (char *) formatted_text)
         FreeMemory(text);
       return((char *) NULL);
     }
@@ -2517,7 +2512,7 @@ Export char *TranslateText(const ImageInfo *image_info,const Image *image,
     {
       MagickWarning(ResourceLimitWarning,"Unable to translate text",
         "Memory allocation failed");
-      if (indirection)
+      if (text != (char *) formatted_text)
         FreeMemory(text);
       FreeMemory(translated_text);
       return((char *) NULL);
@@ -2649,10 +2644,14 @@ Export char *TranslateText(const ImageInfo *image_info,const Image *image,
       }
       case 'l':
       {
-        if (image->label == (char *) NULL)
+        ImageAttribute
+          *attribute;
+
+        attribute=GetImageAttribute(image,"Label");
+        if (attribute == (ImageAttribute *) NULL)
           break;
-        (void) strcpy(q,image->label);
-        q+=Extent(image->label);
+        (void) strcpy(q,attribute->value);
+        q+=Extent(attribute->value);
         break;
       }
       case 'm':
@@ -2748,7 +2747,7 @@ Export char *TranslateText(const ImageInfo *image_info,const Image *image,
   }
   *q='\0';
   DestroyImageInfo(local_info);
-  if (indirection)
+  if (text != (char *) formatted_text)
     FreeMemory(text);
   return(translated_text);
 }

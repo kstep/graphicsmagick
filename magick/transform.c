@@ -257,7 +257,7 @@ Export Image *CoalesceImages(Image *images)
   coalesce_image=CloneImage(images,images->columns,images->rows,True);
   if (coalesce_image == (Image *) NULL)
     return((Image *) NULL);
-  GetPageInfo(&coalesce_image->page_info);
+  GetPageInfo(&coalesce_image->page);
   /*
     Coalesce images.
   */
@@ -275,8 +275,8 @@ Export Image *CoalesceImages(Image *images)
     coalesce_image->next->previous=coalesce_image;
     coalesce_image=coalesce_image->next;
     CompositeImage(coalesce_image,image->matte ? OverCompositeOp :
-      ReplaceCompositeOp,image,image->page_info.x,image->page_info.y);
-    GetPageInfo(&coalesce_image->page_info);
+      ReplaceCompositeOp,image,image->page.x,image->page.y);
+    GetPageInfo(&coalesce_image->page);
   }
   while (coalesce_image->previous != (Image *) NULL)
     coalesce_image=coalesce_image->previous;
@@ -328,7 +328,7 @@ Export Image *CropImage(Image *image,const RectangleInfo *crop_info)
     y;
 
   RectangleInfo
-    page_info;
+    page;
 
   register int
     x;
@@ -354,22 +354,22 @@ Export Image *CropImage(Image *image,const RectangleInfo *crop_info)
           return((Image *) NULL);
         }
     }
-  page_info=(*crop_info);
-  if ((page_info.width != 0) || (page_info.height != 0))
+  page=(*crop_info);
+  if ((page.width != 0) || (page.height != 0))
     {
-      if ((page_info.x+(int) page_info.width) > (int) image->columns)
-        page_info.width=(unsigned int) ((int) image->columns-page_info.x);
-      if ((page_info.y+(int) page_info.height) > (int) image->rows)
-        page_info.height=(unsigned int) ((int) image->rows-page_info.y);
-      if (page_info.x < 0)
+      if ((page.x+(int) page.width) > (int) image->columns)
+        page.width=(unsigned int) ((int) image->columns-page.x);
+      if ((page.y+(int) page.height) > (int) image->rows)
+        page.height=(unsigned int) ((int) image->rows-page.y);
+      if (page.x < 0)
         {
-          page_info.width-=(unsigned int) (-page_info.x);
-          page_info.x=0;
+          page.width-=(unsigned int) (-page.x);
+          page.x=0;
         }
-      if (page_info.y < 0)
+      if (page.y < 0)
         {
-          page_info.height-=(unsigned int) (-page_info.y);
-          page_info.y=0;
+          page.height-=(unsigned int) (-page.y);
+          page.y=0;
         }
     }
   else
@@ -384,12 +384,12 @@ Export Image *CropImage(Image *image,const RectangleInfo *crop_info)
       /*
         Set bounding box to the image dimensions.
       */
-      x_border=page_info.x;
-      y_border=page_info.y;
-      page_info.width=0;
-      page_info.height=0;
-      page_info.x=image->columns;
-      page_info.y=image->rows;
+      x_border=page.x;
+      y_border=page.y;
+      page.width=0;
+      page.height=0;
+      page.x=image->columns;
+      page.y=image->rows;
       p=GetPixelCache(image,0,0,1,1);
       if (p == (PixelPacket *) NULL)
         return((Image *) NULL);
@@ -411,72 +411,72 @@ Export Image *CropImage(Image *image,const RectangleInfo *crop_info)
           for (x=0; x < (int) image->columns; x++)
           {
             if (p->opacity != corners[0].opacity)
-              if (x < page_info.x)
-                page_info.x=x;
+              if (x < page.x)
+                page.x=x;
             if (p->opacity != corners[1].opacity)
-              if (x > (int) page_info.width)
-                page_info.width=x;
+              if (x > (int) page.width)
+                page.width=x;
             if (p->opacity != corners[0].opacity)
-              if (y < page_info.y)
-                page_info.y=y;
+              if (y < page.y)
+                page.y=y;
             if (p->opacity != corners[2].opacity)
-              if (y > (int) page_info.height)
-                page_info.height=y;
+              if (y > (int) page.height)
+                page.height=y;
             p++;
           }
         else
           for (x=0; x < (int) image->columns; x++)
           {
             if (!ColorMatch(*p,corners[0],image->fuzz))
-              if (x < page_info.x)
-                page_info.x=x;
+              if (x < page.x)
+                page.x=x;
             if (!ColorMatch(*p,corners[1],image->fuzz))
-              if (x > (int) page_info.width)
-                page_info.width=x;
+              if (x > (int) page.width)
+                page.width=x;
             if (!ColorMatch(*p,corners[0],image->fuzz))
-              if (y < page_info.y)
-                page_info.y=y;
+              if (y < page.y)
+                page.y=y;
             if (!ColorMatch(*p,corners[2],image->fuzz))
-              if (y > (int) page_info.height)
-                page_info.height=y;
+              if (y > (int) page.height)
+                page.height=y;
             p++;
           }
       }
-      if ((page_info.width != 0) || (page_info.height != 0))
+      if ((page.width != 0) || (page.height != 0))
         {
-          page_info.width-=page_info.x-1;
-          page_info.height-=page_info.y-1;
+          page.width-=page.x-1;
+          page.height-=page.y-1;
         }
-      page_info.width+=x_border*2;
-      page_info.height+=y_border*2;
-      page_info.x-=x_border;
-      if (page_info.x < 0)
-        page_info.x=0;
-      page_info.y-=y_border;
-      if (page_info.y < 0)
-        page_info.y=0;
-      if ((((int) page_info.width+page_info.x) > (int) image->columns) ||
-          (((int) page_info.height+page_info.y) > (int) image->rows))
+      page.width+=x_border*2;
+      page.height+=y_border*2;
+      page.x-=x_border;
+      if (page.x < 0)
+        page.x=0;
+      page.y-=y_border;
+      if (page.y < 0)
+        page.y=0;
+      if ((((int) page.width+page.x) > (int) image->columns) ||
+          (((int) page.height+page.y) > (int) image->rows))
         {
           MagickWarning(OptionWarning,"Unable to crop image",
             "geometry does not contain image");
           return((Image *) NULL);
         }
     }
-  if ((page_info.width == 0) || (page_info.height == 0))
+  if ((page.width == 0) || (page.height == 0))
     {
       MagickWarning(OptionWarning,"Unable to crop image",
         "geometry dimensions are zero");
       return((Image *) NULL);
     }
-  if ((page_info.width == image->columns) &&
-      (page_info.height == image->rows) && (page_info.x == 0) &&
-      (page_info.y == 0))
+  if ((page.width == image->columns) &&
+      (page.height == image->rows) && (page.x == 0) &&
+      (page.y == 0))
     return((Image *) NULL);
   /*
     Initialize crop image attributes.
   */
-  crop_image=CloneImage(image,page_info.width,page_info.height,False);
+  crop_image=CloneImage(image,page.width,page.height,False);
   if (crop_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to crop image",
@@ -486,10 +486,10 @@ Export Image *CropImage(Image *image,const RectangleInfo *crop_info)
   /*
     Extract crop image.
   */
-  crop_image->page_info=page_info;
+  crop_image->page=page;
   for (y=0; y < (int) crop_image->rows; y++)
   {
-    p=GetPixelCache(image,page_info.x,page_info.y+y,crop_image->columns,1);
+    p=GetPixelCache(image,page.x,page.y+y,crop_image->columns,1);
     q=SetPixelCache(crop_image,0,y,crop_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;

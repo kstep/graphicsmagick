@@ -205,7 +205,7 @@ Export Image *ReadVICARImage(const ImageInfo *image_info)
         do
         {
           if ((p-keyword) < (MaxTextExtent-1))
-            *p++=(char) c;
+            *p++=c;
           c=ReadByte(image);
           count++;
         } while (isalnum(c) || (c == '_'));
@@ -224,7 +224,7 @@ Export Image *ReadVICARImage(const ImageInfo *image_info)
         while (isalnum(c))
         {
           if ((p-value) < (MaxTextExtent-1))
-            *p++=(char) c;
+            *p++=c;
           c=ReadByte(image);
           count++;
         }
@@ -288,8 +288,7 @@ Export Image *ReadVICARImage(const ImageInfo *image_info)
   /*
     Initialize image structure.
   */
-  vicar_pixels=(unsigned char *)
-    AllocateMemory(image->columns*image->rows*sizeof(unsigned char));
+  vicar_pixels=(unsigned char *) AllocateMemory(image->columns*image->rows);
   if (vicar_pixels == (unsigned char *) NULL)
     ReaderExit(CorruptImageWarning,"Unable to read image data",image);
   /*

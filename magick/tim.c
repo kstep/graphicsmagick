@@ -184,8 +184,7 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
         image->colors=(unsigned int) pixel_mode == 1 ? 256 : 16;
         image->colormap=(PixelPacket *)
           AllocateMemory(image->colors*sizeof(PixelPacket));
-        tim_colormap=(unsigned char *)
-          AllocateMemory(image->colors*2*sizeof(unsigned char));
+        tim_colormap=(unsigned char *) AllocateMemory(image->colors*2);
         if ((image->colormap == (PixelPacket *) NULL) ||
             (tim_colormap == (unsigned char *) NULL))
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
@@ -212,7 +211,7 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
     image_size=2*width*height;
     bytes_per_line=width*2;
     width=(width*16)/bits_per_pixel;
-    tim_data=(unsigned char *) AllocateMemory(image_size*sizeof(unsigned char));
+    tim_data=(unsigned char *) AllocateMemory(image_size);
     if (tim_data == (unsigned char *) NULL)
       ReaderExit(ResourceLimitWarning,"Unable to allocate memory",image);
     (void) ReadBlob(image,image_size,(char *) tim_data);
@@ -230,7 +229,7 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
       case 4:
       {
         /*
-          Convert PseudoColor scanline to runlength-encoded color packets.
+          Convert PseudoColor scanline.
         */
         for (y=image->rows-1; y >= 0; y--)
         {
@@ -258,7 +257,7 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
       case 8:
       {
         /*
-          Convert PseudoColor scanline to runlength-encoded color packets.
+          Convert PseudoColor scanline.
         */
         for (y=image->rows-1; y >= 0; y--)
         {
@@ -277,7 +276,7 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
       case 16:
       {
         /*
-          Convert DirectColor scanline to runlength-encoded color packets.
+          Convert DirectColor scanline.
         */
         for (y=image->rows-1; y >= 0; y--)
         {
@@ -304,7 +303,7 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
       case 24:
       {
         /*
-          Convert DirectColor scanline to runlength-encoded color packets.
+          Convert DirectColor scanline.
         */
         for (y=image->rows-1; y >= 0; y--)
         {

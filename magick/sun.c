@@ -336,8 +336,7 @@ Export Image *ReadSUNImage(const ImageInfo *image_info)
         */
         image->colormap=(PixelPacket *)
           AllocateMemory(image->colors*sizeof(PixelPacket));
-        sun_colormap=(unsigned char *)
-          AllocateMemory(image->colors*sizeof(unsigned char));
+        sun_colormap=(unsigned char *) AllocateMemory(image->colors);
         if ((image->colormap == (PixelPacket *) NULL) ||
             (sun_colormap == (unsigned char *) NULL))
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
@@ -361,8 +360,7 @@ Export Image *ReadSUNImage(const ImageInfo *image_info)
         /*
           Read SUN raster colormap.
         */
-        sun_colormap=(unsigned char *)
-          AllocateMemory(sun_header.maplength*sizeof(unsigned char));
+        sun_colormap=(unsigned char *) AllocateMemory(sun_header.maplength);
         if (sun_colormap == (unsigned char *) NULL)
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
         (void) ReadBlob(image,(unsigned int) sun_header.maplength,
@@ -373,8 +371,7 @@ Export Image *ReadSUNImage(const ImageInfo *image_info)
       default:
         ReaderExit(CorruptImageWarning,"Colormap type is not supported",image);
     }
-    sun_data=(unsigned char *)
-      AllocateMemory(sun_header.length*sizeof(unsigned char));
+    sun_data=(unsigned char *) AllocateMemory(sun_header.length);
     if (sun_data == (unsigned char *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     status=ReadBlob(image,(unsigned int) sun_header.length,(char *) sun_data);
@@ -391,8 +388,7 @@ Export Image *ReadSUNImage(const ImageInfo *image_info)
         */
         height=(unsigned int) sun_header.height;
         bytes_per_line=(2*sun_header.width*sun_header.depth+15)/16;
-        sun_pixels=(unsigned char *)
-          AllocateMemory(bytes_per_line*height*sizeof(unsigned char));
+        sun_pixels=(unsigned char *) AllocateMemory(bytes_per_line*height);
         if (sun_pixels == (unsigned char *) NULL)
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
         (void) DecodeImage(sun_data,bytes_per_line,height,sun_pixels);

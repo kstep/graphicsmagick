@@ -262,7 +262,7 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
     (void) ReadBlob(image,512,(char *) viff_header.comment);
     viff_header.comment[511]='\0';
     if (Extent(viff_header.comment) > 4)
-      (void) CloneString(&image->comments,viff_header.comment);
+      (void) SetImageAttribute(image,"Comment",viff_header.comment);
     if ((viff_header.machine_dependency == VFF_DEP_DECORDER) ||
         (viff_header.machine_dependency == VFF_DEP_NSORDER))
       {
@@ -398,8 +398,8 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
         image->colors=(unsigned int) viff_header.map_columns;
         image->colormap=(PixelPacket *)
           AllocateMemory(image->colors*sizeof(PixelPacket));
-        viff_colormap=(unsigned char *) AllocateMemory(bytes_per_pixel*
-          image->colors*viff_header.map_rows*sizeof(unsigned char));
+        viff_colormap=(unsigned char *)
+          AllocateMemory(bytes_per_pixel*image->colors*viff_header.map_rows);
         if ((image->colormap == (PixelPacket *) NULL) ||
             (viff_colormap == (unsigned char *) NULL))
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
@@ -599,7 +599,7 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
           polarity;
 
         /*
-          Convert bitmap scanline to runlength-encoded color packets.
+          Convert bitmap scanline.
         */
         polarity=0;
         if (image->colors >= 2)
@@ -650,7 +650,7 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
             offset;
 
           /*
-            Convert DirectColor scanline to runlength-encoded color packets.
+            Convert DirectColor scanline.
           */
           offset=image->columns*image->rows;
           for (y=0; y < (int) image->rows; y++)
@@ -795,6 +795,9 @@ Export unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
       color_space_model;
   } ViffHeader;
 
+  ImageAttribute
+    *attribute;
+
   int
     y;
 
@@ -835,17 +838,18 @@ Export unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
       Initialize VIFF image structure.
     */
     TransformRGBImage(image,RGBColorspace);
-    viff_header.identifier=(char) 0xab;
+    viff_header.identifier=0xab;
     viff_header.file_type=1;
     viff_header.release=1;
     viff_header.version=3;
     viff_header.machine_dependency=VFF_DEP_IEEEORDER;  /* IEEE byte ordering */
     *viff_header.comment='\0';
-    if (image->comments != (char *) NULL)
+    attribute=GetImageAttribute(image,"Comment");
+    if (attribute != (ImageAttribute *) NULL)
       {
-        (void) strncpy(viff_header.comment,image->comments,
-          Min(Extent(image->comments),511));
-        viff_header.comment[Min(Extent(image->comments),511)]='\0';
+        (void) strncpy(viff_header.comment,attribute->value,
+          Min(Extent(attribute->value),511));
+        viff_header.comment[Min(Extent(attribute->value),511)]='\0';
       }
     viff_header.rows=image->columns;
     viff_header.columns=image->rows;
@@ -942,7 +946,7 @@ Export unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
     /*
       Convert MIFF to VIFF raster pixels.
     */
-    viff_pixels=(unsigned char *) AllocateMemory(packets*sizeof(unsigned char));
+    viff_pixels=(unsigned char *) AllocateMemory(packets);
     if (viff_pixels == (unsigned char *) NULL)
       WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
     q=viff_pixels;
@@ -984,8 +988,7 @@ Export unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
           /*
             Dump colormap to file.
           */
-          viff_colormap=(unsigned char *)
-            AllocateMemory(image->colors*3*sizeof(unsigned char));
+          viff_colormap=(unsigned char *) AllocateMemory(3*image->colors);
           if (viff_colormap == (unsigned char *) NULL)
             WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
           q=viff_colormap;

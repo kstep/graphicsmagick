@@ -54,7 +54,7 @@ extern Export char
   *SetClientName(const char *),
   **StringToArgv(const char *,int *),
   **StringToList(const char *),
-  *TranslateText(const ImageInfo *,const Image *,const char *);
+  *TranslateText(const ImageInfo *,Image *,const char *);
 
 extern Export int
   GetGeometry(const char *,int *,int *,unsigned int *,unsigned int *),

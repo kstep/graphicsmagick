@@ -137,7 +137,7 @@ static void ComputeMessageDigest(MessageDigest *message_digest)
   padding_length=(number_bytes < 56) ? (56-number_bytes) : (120-number_bytes);
   padding[0]=0x80;
   for (i=1; i < padding_length; i++)
-    padding[i]=(char) 0;
+    padding[i]=0;
   UpdateMessageDigest(message_digest,padding,padding_length);
   /*
     Append length in bits and transform.
@@ -157,10 +157,10 @@ static void ComputeMessageDigest(MessageDigest *message_digest)
   p=message_digest->digest;
   for (i=0; i < 4; i++)
   {
-    *p++=(unsigned char) (message_digest->accumulator[i] & 0xff);
-    *p++=(unsigned char) ((message_digest->accumulator[i] >> 8) & 0xff);
-    *p++=(unsigned char) ((message_digest->accumulator[i] >> 16) & 0xff);
-    *p++=(unsigned char) ((message_digest->accumulator[i] >> 24) & 0xff);
+    *p++=message_digest->accumulator[i] & 0xff;
+    *p++=(message_digest->accumulator[i] >> 8) & 0xff;
+    *p++=(message_digest->accumulator[i] >> 16) & 0xff;
+    *p++=(message_digest->accumulator[i] >> 24) & 0xff;
   }
 }
 
@@ -467,6 +467,9 @@ Export void SignatureImage(Image *image)
   const char
     hex[] = "0123456789abcdef";
 
+  char
+    *signature;
+
   int
     y;
 
@@ -490,13 +493,9 @@ Export void SignatureImage(Image *image)
   /*
     Allocate memory for digital signature.
   */
-  if (image->signature != (char *) NULL)
-    FreeMemory(image->signature);
-  image->signature=(char *) AllocateMemory(33*sizeof(char));
-  message=(unsigned char *)
-    AllocateMemory(8*image->columns*sizeof(unsigned char));
-  if ((image->signature == (char *) NULL) ||
-      (message == (unsigned char *) NULL))
+  signature=(char *) AllocateMemory(33);
+  message=(unsigned char *) AllocateMemory(8*image->columns);
+  if ((signature == (char *) NULL) || (message == (unsigned char *) NULL))
     {
       MagickWarning(ResourceLimitWarning,"Unable to compute digital signature",
         "Memory allocation failed");
@@ -534,16 +533,18 @@ Export void SignatureImage(Image *image)
     }
     UpdateMessageDigest(&message_digest,message,8*image->columns);
   }
-  FreeMemory(message);
   /*
     Convert digital signature to a 32 character hex string.
   */
   ComputeMessageDigest(&message_digest);
-  q=(unsigned char *) image->signature;
+  q=(unsigned char *) signature;
   for (i=0; i < 16; i++)
   {
     *q++=hex[(message_digest.digest[i] >> 4) & 0xf];
     *q++=hex[message_digest.digest[i] & 0xf];
   }
   *q='\0';
+  (void) SetImageAttribute(image,"Signature",signature);
+  FreeMemory(signature);
+  FreeMemory(message);
 }

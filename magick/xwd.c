@@ -129,6 +129,9 @@ Export unsigned int IsXWD(const unsigned char *magick,const unsigned int length)
 */
 Export Image *ReadXWDImage(const ImageInfo *image_info)
 {
+  char
+    *comment;
+
   Image
     *image;
 
@@ -197,11 +200,13 @@ Export Image *ReadXWDImage(const ImageInfo *image_info)
   if (header.header_size < sz_XWDheader)
     ReaderExit(CorruptImageWarning,"XWD header size is too small",image);
   length=header.header_size-sz_XWDheader;
-  image->comments=(char *) AllocateMemory((length+1)*sizeof(char));
-  if (image->comments == (char *) NULL)
+  comment=(char *) AllocateMemory(length+1);
+  if (comment == (char *) NULL)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-  status=ReadBlob(image,length,(char *) image->comments);
-  image->comments[length]='\0';
+  status=ReadBlob(image,length,comment);
+  comment[length]='\0';
+  (void) SetImageAttribute(image,"Comment",comment);
+  FreeMemory(comment);
   if (status == False)
     ReaderExit(CorruptImageWarning,"Unable to read window name from dump file",
       image);
@@ -272,7 +277,7 @@ Export Image *ReadXWDImage(const ImageInfo *image_info)
     length=ximage->bytes_per_line*ximage->height;
   else
     length=ximage->bytes_per_line*ximage->height*ximage->depth;
-  ximage->data=(char *) AllocateMemory(length*sizeof(unsigned char));
+  ximage->data=(char *) AllocateMemory(length);
   if (ximage->data == (char *) NULL)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
   status=ReadBlob(image,length,ximage->data);

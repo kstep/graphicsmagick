@@ -474,7 +474,7 @@ static char **FontToList(char *font)
     for (q=p; *q != '\0'; q++)
       if ((*q == ':') || (*q == ';') || (*q == ','))
         break;
-    fontlist[i]=(char *) AllocateMemory((q-p+1)*sizeof(char));
+    fontlist[i]=(char *) AllocateMemory(q-p+1);
     if (fontlist[i] == (char *) NULL)
       {
         MagickWarning(ResourceLimitWarning,"Unable to convert font",
@@ -1660,7 +1660,7 @@ Export void XDisplayImageInfo(Display *display,
           break;
         p=text+Extent(text);
       }
-    *p=(unsigned char) c;
+    *p=c;
   }
   (void) fclose(file);
   (void) remove(filename);
@@ -5300,7 +5300,7 @@ Export unsigned int XMakeImage(Display *display,
     }
   window->stasis=False;
   /*
-    Convert runlength-encoded pixels to X image data.
+    Convert pixels to X image data.
   */
   if (transformed_image != (Image *) NULL)
     {
