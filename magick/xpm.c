@@ -438,6 +438,9 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *p,
     *q;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
     x;
@@ -630,6 +633,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     r=SetPixelCache(image,0,y,image->columns,1);
     if (r == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     for (x=0; x < (int) image->columns; x++)
     {
       (void) strncpy(key,p,width);
@@ -638,7 +642,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (strcmp(key,keys[j]) == 0)
             break;
       if (image->class == PseudoClass)
-        image->indexes[x]=(IndexPacket) j;
+        indexes[x]=j;
       *r=image->colormap[j];
       r->opacity=j == none ? Transparent : Opaque;
       r++;
@@ -746,6 +750,8 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     symbol[MaxTextExtent];
 
   double
+    distance,
+    distance_squared,
     min_distance;
 
   int
@@ -756,11 +762,10 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   long
     mean;
 
-  register double
-    distance_squared;
+  register IndexPacket
+    *indexes;
 
   register int
-    distance,
     i,
     x;
 
@@ -827,10 +832,11 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
             p=GetPixelCache(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
+            indexes=GetIndexesCache(image);
             for (x=0; x < (int) image->columns; x++)
             {
               if (p->opacity)
-                image->indexes[x]=image->colors;
+                indexes[x]=image->colors;
               p++;
             }
             if (!SyncPixelCache(image))
@@ -911,15 +917,16 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     p=GetPixelCache(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     (void) strcpy(buffer,"\"");
     (void) WriteBlob(image,strlen(buffer),buffer);
     for (x=0; x < (int) image->columns; x++)
     {
-      k=image->indexes[x] % MaxCixels;
+      k=indexes[x] % MaxCixels;
       symbol[0]=Cixel[k];
       for (j=1; j < (int) characters_per_pixel; j++)
       {
-        k=(((int) image->indexes[x]-k)/MaxCixels) % MaxCixels;
+        k=(((int) indexes[x]-k)/MaxCixels) % MaxCixels;
         symbol[j]=Cixel[k];
       }
       symbol[j]='\0';

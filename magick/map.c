@@ -103,6 +103,9 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   int
     y;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
     x;
@@ -178,6 +181,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     q=SetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     (void) ReadBlob(image,packet_size*image->columns,(char *) pixels);
     for (x=0; x < (int) image->columns; x++)
     {
@@ -187,7 +191,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (index >= image->colors)
         ThrowReaderException(CorruptImageWarning,"invalid colormap index",
           image);
-      image->indexes[x]=index;
+      indexes[x]=index;
       *q++=image->colormap[index];
     }
     if (!SyncPixelCache(image))
@@ -270,9 +274,15 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
   int
     y;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
     x;
+
+  register PixelPacket
+    *p;
 
   register unsigned char
     *q;
@@ -343,14 +353,16 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
   */
   for (y=0; y < (int) image->rows; y++)
   {
-    if (!GetPixelCache(image,0,y,image->columns,1))
+    p=GetPixelCache(image,0,y,image->columns,1);
+    if (p == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     q=pixels;
     for (x=0; x < (int) image->columns; x++)
     {
       if (image->colors > 256)
-        *q++=image->indexes[x] >> 8;
-      *q++=image->indexes[x];
+        *q++=indexes[x] >> 8;
+      *q++=indexes[x];
     }
     status=WriteBlob(image,q-pixels,(char *) pixels);
   }

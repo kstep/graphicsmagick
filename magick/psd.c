@@ -100,6 +100,9 @@ static unsigned int DecodeImage(Image *image,const int channel)
   long
     length;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
     x;
@@ -124,6 +127,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
           q=SetPixelCache(image,x % image->columns,x/image->columns,1,1);
           if (q == (PixelPacket *) NULL)
             break;
+          indexes=GetIndexesCache(image);
           switch (channel)
           {
             case 0:
@@ -131,7 +135,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
               q->red=pixel;
               if (image->class == PseudoClass)
                 {
-                  *image->indexes=pixel;
+                  *indexes=pixel;
                   *q=image->colormap[pixel];
                 }
               break;
@@ -167,6 +171,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
       q=SetPixelCache(image,x % image->columns,x/image->columns,1,1);
       if (q == (PixelPacket *) NULL)
         break;
+      indexes=GetIndexesCache(image);
       switch (channel)
       {
         case 0:
@@ -174,7 +179,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
           q->red=pixel;
           if (image->class == PseudoClass)
             {
-              *image->indexes=pixel;
+              *indexes=pixel;
               *q=image->colormap[pixel];
             }
           break;

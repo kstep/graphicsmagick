@@ -168,6 +168,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
   PixelPacket
     pixel;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
     x;
@@ -575,37 +578,38 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
       q=SetPixelCache(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
+      indexes=GetIndexesCache(image);
 #if defined(HasZLIB)
-        if (image->compression == ZipCompression)
-          {
-            if (y == 0)
-              {
-                zip_info.zalloc=NULL;
-                zip_info.zfree=NULL;
-                zip_info.opaque=NULL;
-                (void) inflateInit(&zip_info);
-                zip_info.avail_in=0;
-              }
-            zip_info.next_out=pixels;
-            zip_info.avail_out=packet_size*image->columns;
-            do
+      if (image->compression == ZipCompression)
+        {
+          if (y == 0)
             {
-              if (zip_info.avail_in == 0)
-                {
-                  zip_info.next_in=compressed_pixels;
-                  length=1.01*packet_size*image->columns+12;
-                  zip_info.avail_in=ReadBlob(image,length,zip_info.next_in);
-                }
-              if (inflate(&zip_info,Z_NO_FLUSH) == Z_STREAM_END)
-                break;
-            } while (zip_info.avail_out > 0);
-            if (y == (int) (image->rows-1))
+              zip_info.zalloc=NULL;
+              zip_info.zfree=NULL;
+              zip_info.opaque=NULL;
+              (void) inflateInit(&zip_info);
+              zip_info.avail_in=0;
+            }
+          zip_info.next_out=pixels;
+          zip_info.avail_out=packet_size*image->columns;
+          do
+          {
+            if (zip_info.avail_in == 0)
               {
-                (void) SeekBlob(image,-((off_t) zip_info.avail_in),SEEK_CUR);
-                status=!inflateEnd(&zip_info);
+                zip_info.next_in=compressed_pixels;
+                length=1.01*packet_size*image->columns+12;
+                zip_info.avail_in=ReadBlob(image,length,zip_info.next_in);
               }
-          }
-        else
+            if (inflate(&zip_info,Z_NO_FLUSH) == Z_STREAM_END)
+              break;
+          } while (zip_info.avail_out > 0);
+          if (y == (int) (image->rows-1))
+            {
+              (void) SeekBlob(image,-((off_t) zip_info.avail_in),SEEK_CUR);
+              status=!inflateEnd(&zip_info);
+            }
+        }
+      else
 #endif
 #if defined(HasBZLIB)
         if (image->compression == BZipCompression)
@@ -707,7 +711,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
               }
             length--;
             if (image->class == PseudoClass)
-              image->indexes[x]=index;
+              indexes[x]=index;
             *q++=pixel;
           }
         }
@@ -847,6 +851,9 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
 
   PixelPacket
     pixel;
+
+  register IndexPacket
+    *indexes;
 
   register PixelPacket
     *p;
@@ -1131,6 +1138,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       p=GetPixelCache(image,0,y,image->columns,1);
       if (p == (PixelPacket *) NULL)
         break;
+      indexes=GetIndexesCache(image);
       q=pixels;
       if (compression != RunlengthEncodedCompression)
         {
@@ -1155,7 +1163,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           pixel=(*p);
           index=0;
           if (image->class == PseudoClass)
-            index=(*image->indexes);
+            index=(*indexes);
           length=0;
           for (x=0; x < (int) image->columns; x++)
           {
@@ -1214,7 +1222,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
                 length=0;
               }
             if (image->class == PseudoClass)
-              index=image->indexes[x];
+              index=indexes[x];
             pixel=(*p);
             p++;
           }

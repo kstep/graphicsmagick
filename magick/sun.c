@@ -244,6 +244,9 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     bit,
     y;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
     x;
@@ -417,18 +420,20 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (sun_header.depth == 1)
       for (y=0; y < (int) image->rows; y++)
       {
-        if (!SetPixelCache(image,0,y,image->columns,1))
+        q=SetPixelCache(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
           break;
+        indexes=GetIndexesCache(image);
         for (x=0; x < ((int) image->columns-7); x+=8)
         {
           for (bit=7; bit >= 0; bit--)
-            image->indexes[x+7-bit]=((*p) & (0x01 << bit) ? 0x00 : 0x01);
+            indexes[x+7-bit]=((*p) & (0x01 << bit) ? 0x00 : 0x01);
           p++;
         }
         if ((image->columns % 8) != 0)
           {
             for (bit=7; bit >= (int) (8-(image->columns % 8)); bit--)
-              image->indexes[x+7-bit]=((*p) & (0x01 << bit) ? 0x00 : 0x01);
+              indexes[x+7-bit]=((*p) & (0x01 << bit) ? 0x00 : 0x01);
             p++;
           }
         if ((((image->columns/8)+(image->columns % 8 ? 1 : 0)) % 2) != 0)
@@ -443,10 +448,12 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->class == PseudoClass)
         for (y=0; y < (int) image->rows; y++)
         {
-          if (!SetPixelCache(image,0,y,image->columns,1))
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
             break;
+          indexes=GetIndexesCache(image);
           for (x=0; x < (int) image->columns; x++)
-            image->indexes[x]=(*p++);
+            indexes[x]=(*p++);
           if ((image->columns % 2) != 0)
             p++;
           if (!SyncPixelCache(image))
@@ -618,6 +625,9 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
   int
     y;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
     x;
@@ -758,14 +768,16 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
               Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
           for (y=0; y < (int) image->rows; y++)
           {
-            if (!GetPixelCache(image,0,y,image->columns,1))
+            p=GetPixelCache(image,0,y,image->columns,1);
+            if (p == (PixelPacket *) NULL)
               break;
+            indexes=GetIndexesCache(image);
             bit=0;
             byte=0;
             for (x=0; x < (int) image->columns; x++)
             {
               byte<<=1;
-              if (image->indexes[x] == polarity)
+              if (indexes[x] == polarity)
                 byte|=0x01;
               bit++;
               if (bit == 8)
@@ -802,11 +814,13 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
           */
           for (y=0; y < (int) image->rows; y++)
           {
-            if (!GetPixelCache(image,0,y,image->columns,1))
+            p=GetPixelCache(image,0,y,image->columns,1);
+            if (p == (PixelPacket *) NULL)
               break;
+            indexes=GetIndexesCache(image);
             for (x=0; x < (int) image->columns; x++)
             {
-              (void) WriteByte(image,image->indexes[x]);
+              (void) WriteByte(image,indexes[x]);
               p++;
             }
             if (image->columns & 0x01)

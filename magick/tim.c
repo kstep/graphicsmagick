@@ -115,6 +115,9 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     has_clut,
     pixel_mode;
 
+  register IndexPacket
+    *indexes;
+
   register PixelPacket
     *q;
 
@@ -231,18 +234,20 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         for (y=image->rows-1; y >= 0; y--)
         {
-          if (!SetPixelCache(image,0,y,image->columns,1))
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
             break;
+          indexes=GetIndexesCache(image);
           p=tim_pixels+y*bytes_per_line;
           for (x=0; x < ((int) image->columns-1); x+=2)
           {
-            image->indexes[x]=(*p) & 0xf;
-            image->indexes[x+1]=(*p >> 4) & 0xf;
+            indexes[x]=(*p) & 0xf;
+            indexes[x+1]=(*p >> 4) & 0xf;
             p++;
           }
           if ((image->columns % 2) != 0)
             {
-              image->indexes[x]=(*p >> 4) & 0xf;
+              indexes[x]=(*p >> 4) & 0xf;
               p++;
             }
           if (!SyncPixelCache(image))
@@ -259,11 +264,13 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         for (y=image->rows-1; y >= 0; y--)
         {
-          if (!SetPixelCache(image,0,y,image->columns,1))
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
             break;
+          indexes=GetIndexesCache(image);
           p=tim_pixels+y*bytes_per_line;
           for (x=0; x < (int) image->columns; x++)
-            image->indexes[x]=(*p++);
+            indexes[x]=(*p++);
           if (!SyncPixelCache(image))
             break;
           if (QuantumTick(y,image->rows))

@@ -1469,6 +1469,9 @@ Export unsigned int IsPseudoClass(Image *image)
   Nodes
     *nodes;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
     x;
@@ -1480,12 +1483,10 @@ Export unsigned int IsPseudoClass(Image *image)
     *p,
     *q;
 
-  register unsigned int
+  unsigned int
+    id,
     index,
     level;
-
-  unsigned int
-    id;
 
   assert(image != (Image *) NULL);
   if ((image->class == PseudoClass) && (image->colors <= 256))
@@ -1580,6 +1581,7 @@ Export unsigned int IsPseudoClass(Image *image)
         q=GetPixelCache(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
+        indexes=GetIndexesCache(image);
         for (x=0; x < (int) image->columns; x++)
         {
           /*
@@ -1599,7 +1601,7 @@ Export unsigned int IsPseudoClass(Image *image)
             if (ColorMatch(*q,node_info->list[i],0))
               break;
           index=node_info->list[i].index;
-          image->indexes[x]=index;
+          indexes[x]=index;
           image->colormap[index].red=node_info->list[i].red;
           image->colormap[index].green=node_info->list[i].green;
           image->colormap[index].blue=node_info->list[i].blue;

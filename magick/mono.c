@@ -92,7 +92,8 @@ static unsigned int
 %
 %
 */
-static Image *ReadMONOImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadMONOImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   Image
     *image;
@@ -100,9 +101,15 @@ static Image *ReadMONOImage(const ImageInfo *image_info,ExceptionInfo *exception
   int
     y;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
     x;
+
+  register PixelPacket
+    *q;
 
   unsigned char
     bit,
@@ -142,15 +149,17 @@ static Image *ReadMONOImage(const ImageInfo *image_info,ExceptionInfo *exception
   */
   for (y=0; y < (int) image->rows; y++)
   {
-    if (!SetPixelCache(image,0,y,image->columns,1))
+    q=SetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     bit=0;
     byte=0;
     for (x=0; x < (int) image->columns; x++)
     {
       if (bit == 0)
         byte=ReadByte(image);
-      image->indexes[x]=(byte & 0x01) ? 0 : 1;
+      indexes[x]=(byte & 0x01) ? 0 : 1;
       bit++;
       if (bit == 8)
         bit=0;
@@ -237,13 +246,19 @@ static unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
   int
     y;
 
-  register unsigned char
-    bit,
-    byte,
-    polarity;
+  register IndexPacket
+    *indexes;
 
   register int
     x;
+
+  register PixelPacket
+    *p;
+
+  unsigned char
+    bit,
+    byte,
+    polarity;
 
   unsigned int
     status;
@@ -274,14 +289,16 @@ static unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
     polarity=Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
   for (y=0; y < (int) image->rows; y++)
   {
-    if (!GetPixelCache(image,0,y,image->columns,1))
+    p=GetPixelCache(image,0,y,image->columns,1);
+    if (p == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     bit=0;
     byte=0;
     for (x=0; x < (int) image->columns; x++)
     {
       byte>>=1;
-      if (image->indexes[x] == polarity)
+      if (indexes[x] == polarity)
         byte|=0x80;
       bit++;
       if (bit == 8)

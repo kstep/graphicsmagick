@@ -111,7 +111,8 @@ static unsigned int WBMPReadInteger(Image *image,unsigned int *value)
   return(True);
 }
 
-static Image *ReadWBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadWBMPImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   Image
     *image;
@@ -120,9 +121,15 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,ExceptionInfo *exception
     y,
     byte;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
     x;
+
+  register PixelPacket
+    *q;
 
   unsigned char
     bit;
@@ -174,8 +181,10 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,ExceptionInfo *exception
   */
   for (y=0; y < (int) image->rows; y++)
   {
-    if (!SetPixelCache(image,0,y,image->columns,1))
+    q=SetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     bit=0;
     byte=0;
     for (x=0; x < (int) image->columns; x++)
@@ -187,7 +196,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,ExceptionInfo *exception
             ThrowReaderException(CorruptImageWarning,"Corrupt WBMP image",
               image);
         }
-      image->indexes[x]=(byte & (0x01 << (7-bit))) ? 1 : 0;
+      indexes[x]=(byte & (0x01 << (7-bit))) ? 1 : 0;
       bit++;
       if (bit == 8)
         bit=0;
@@ -307,6 +316,9 @@ static unsigned int WriteWBMPImage(const ImageInfo *image_info,Image *image)
   int
     y;
 
+  register IndexPacket
+    *indexes;
+
   register int
     x;
 
@@ -353,11 +365,12 @@ static unsigned int WriteWBMPImage(const ImageInfo *image_info,Image *image)
     p=GetPixelCache(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     bit=0;
     byte=0;
     for (x=0; x < (int) image->columns; x++)
     {
-      if (image->indexes[x] == polarity)
+      if (indexes[x] == polarity)
         byte|=0x1 << (7-bit);
       bit++;
       if (bit == 8)

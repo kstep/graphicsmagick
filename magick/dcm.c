@@ -2697,9 +2697,12 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Quantum
     *scale;
 
+  register IndexPacket
+    *indexes;
+
   register int
-    x,
-    i;
+    i,
+    x;
 
   register PixelPacket
     *q;
@@ -3241,6 +3244,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
+          indexes=GetIndexesCache(image);
           for (x=0; x < (int) image->columns; x++)
           {
             if (samples_per_pixel == 1)
@@ -3266,7 +3270,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   index=max_value;
                 if (graymap != (unsigned short *) NULL)
                   index=graymap[index];
-                image->indexes[x]=index;
+                indexes[x]=index;
                 *q=image->colormap[index];
               }
             else

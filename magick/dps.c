@@ -111,6 +111,9 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Pixmap
     pixmap;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i;
 
@@ -417,10 +420,12 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       for (y=0; y < (int) image->rows; y++)
       {
-        if (!SetPixelCache(image,0,y,image->columns,1))
+        q=SetPixelCache(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
           break;
+        indexes=GetIndexesCache(image);
         for (x=0; x < (int) image->columns; x++)
-          image->indexes[x]=(unsigned short) XGetPixel(dps_image,x,y);
+          indexes[x]=(unsigned short) XGetPixel(dps_image,x,y);
         if (!SyncPixelCache(image))
           break;
         if (QuantumTick(y,image->rows))

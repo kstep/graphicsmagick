@@ -411,6 +411,9 @@ Export unsigned int HuffmanDecodeImage(Image *image)
     runlength,
     y;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
     x;
@@ -579,10 +582,11 @@ Export unsigned int HuffmanDecodeImage(Image *image)
     q=SetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     for (x=0; x < (int) image->columns; x++)
     {
       index=(unsigned short) (*p++);
-      image->indexes[x]=index;
+      indexes[x]=index;
       *q++=image->colormap[index];
     }
     if (!SyncPixelCache(image))
@@ -662,15 +666,18 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
 
   int
     k,
+    n,
     runlength,
     y;
 
   Image
     *huffman_image;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
-    n,
     x;
 
   register PixelPacket
@@ -750,10 +757,10 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
     p=GetPixelCache(huffman_image,0,y,huffman_image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(huffman_image);
     for (x=0; x < (int) huffman_image->columns; x++)
     {
-      *q=(huffman_image->indexes[x] == polarity ?
-        (int) polarity : (int) !polarity);
+      *q=(indexes[x] == polarity ? (int) polarity : (int) !polarity);
       q++;
     }
     /*

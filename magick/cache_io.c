@@ -745,7 +745,7 @@ Export CacheType GetCacheType(Cache cache)
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method ReadCacheIndexes returns True if the colormap indexes
+%    o status: Method ReadCacheIndexes returns True if the colormap indexes
 %      are successfully read from the pixel cache, otherwise False.
 %
 %    o cache_info: Specifies a pointer to a CacheInfo structure.
@@ -837,7 +837,7 @@ Export unsigned int ReadCacheIndexes(Cache cache,IndexPacket *indexes)
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method ReadCachePixels returns True if the pixels are
+%    o status: Method ReadCachePixels returns True if the pixels are
 %      successfully read from the pixel cache, otherwise False.
 %
 %    o cache_info: Specifies a pointer to a CacheInfo structure.
@@ -1042,7 +1042,7 @@ Export void SetCacheView(Cache cache,const unsigned int id,
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method WriteCachePixels returns True if the colormap indexes
+%    o status: Method WriteCachePixels returns True if the colormap indexes
 %      are successfully written to the pixel cache, otherwise False.
 %
 %    o cache_info: Specifies a pointer to a CacheInfo structure.
@@ -1134,7 +1134,7 @@ Export unsigned int WriteCacheIndexes(Cache cache,const IndexPacket *indexes)
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method WriteCachePixels returns True if the pixels are
+%    o status: Method WriteCachePixels returns True if the pixels are
 %      successfully written to the cache, otherwise False.
 %
 %    o cache_info: Specifies a pointer to a CacheInfo structure.

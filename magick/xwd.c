@@ -152,6 +152,9 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     status,
     y;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
     x;
@@ -421,10 +424,11 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=SetPixelCache(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
+        indexes=GetIndexesCache(image);
         for (x=0; x < (int) image->columns; x++)
         {
           index=XGetPixel(ximage,x,y);
-          image->indexes[x]=index;
+          indexes[x]=index;
           if (index >= image->colors)
             ThrowReaderException(CorruptImageWarning,"invalid colormap index",
               image);
@@ -531,6 +535,9 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
 {
   int
     y;
+
+  register IndexPacket
+    *indexes;
 
   register int
     i,
@@ -663,11 +670,12 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
     p=GetPixelCache(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     q=pixels;
     for (x=0; x < (int) image->columns; x++)
     {
       if (image->class == PseudoClass)
-        *q++=image->indexes[x];
+        *q++=indexes[x];
       else
         {
           *q++=DownScale(p->red);

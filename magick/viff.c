@@ -212,6 +212,9 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
     bit,
     y;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
     x;
@@ -618,20 +621,20 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
             Intensity(image->colormap[1]);
         for (y=0; y < (int) image->rows; y++)
         {
-          if (!SetPixelCache(image,0,y,image->columns,1))
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
             break;
+          indexes=GetIndexesCache(image);
           for (x=0; x < (int) (image->columns-7); x+=8)
           {
             for (bit=0; bit < 8; bit++)
-              image->indexes[x+bit]=
-                ((*p) & (0x01 << bit) ? (int) !polarity : (int) polarity);
+              indexes[x+bit]=(*p) & (0x01 << bit) ? !polarity : polarity;
             p++;
           }
           if ((image->columns % 8) != 0)
             {
               for (bit=0; bit < (int) (image->columns % 8); bit++)
-                image->indexes[x+bit]=
-                  ((*p) & (0x01 << bit) ? (int) !polarity : (int) polarity);
+                indexes[x+bit]=(*p) & (0x01 << bit) ? !polarity : polarity;
               p++;
             }
           if (!SyncPixelCache(image))
@@ -645,10 +648,12 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
       if (image->class == PseudoClass)
         for (y=0; y < (int) image->rows; y++)
         {
-          if (!SetPixelCache(image,0,y,image->columns,1))
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
             break;
+          indexes=GetIndexesCache(image);
           for (x=0; x < (int) image->columns; x++)
-            image->indexes[x]=(*p++);
+            indexes[x]=(*p++);
           if (!SyncPixelCache(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -853,6 +858,9 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
   int
     y;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
     x;
@@ -890,7 +898,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
       Initialize VIFF image structure.
     */
     TransformRGBImage(image,RGBColorspace);
-    viff_header.identifier=0xab;
+    viff_header.identifier=(char) 0xab;
     viff_header.file_type=1;
     viff_header.release=1;
     viff_header.version=3;
@@ -1060,10 +1068,12 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
           q=viff_pixels;
           for (y=0; y < (int) image->rows; y++)
           {
-            if (!GetPixelCache(image,0,y,image->columns,1))
+            p=GetPixelCache(image,0,y,image->columns,1);
+            if (p == (PixelPacket *) NULL)
               break;
+            indexes=GetIndexesCache(image);
             for (x=0; x < (int) image->columns; x++)
-              *q++=image->indexes[x];
+              *q++=indexes[x];
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
                 ProgressMonitor(SaveImageText,y,image->rows);
@@ -1090,14 +1100,16 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
                 Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
             for (y=0; y < (int) image->rows; y++)
             {
-              if (!GetPixelCache(image,0,y,image->columns,1))
+              p=GetPixelCache(image,0,y,image->columns,1);
+              if (p == (PixelPacket *) NULL)
                 break;
+              indexes=GetIndexesCache(image);
               bit=0;
               byte=0;
               for (x=0; x < (int) image->columns; x++)
               {
                 byte>>=1;
-                if (image->indexes[x] == polarity)
+                if (indexes[x] == polarity)
                   byte|=0x80;
                 bit++;
                 if (bit == 8)

@@ -263,6 +263,9 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   PDBImage
     pdb_image;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
     x;
@@ -400,12 +403,13 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=SetPixelCache(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
+        indexes=GetIndexesCache(image);
         for (x=0; x < ((int) image->columns-7); x+=8)
         {
           for (bit=0; bit < 8; bit++)
           {
             index=(*p & (0x80 >> bit) ? 0x00 : 0x01);
-            image->indexes[x+bit]=index;
+            indexes[x+bit]=index;
             *q++=image->colormap[index];
           }
           p++;
@@ -427,19 +431,20 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=SetPixelCache(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
+        indexes=GetIndexesCache(image);
         for (x=0; x < image->columns; x+=4)
         {
           index=3-((*p >> 6) & 0x03);
-          image->indexes[x]=index;
+          indexes[x]=index;
           *q++=image->colormap[index];
           index=3-((*p >> 4) & 0x03);
-          image->indexes[x+1]=index;
+          indexes[x+1]=index;
           *q++=image->colormap[index];
           index=3-((*p >> 2) & 0x03);
-          image->indexes[x+2]=index;
+          indexes[x+2]=index;
           *q++=image->colormap[index];
           index=3-((*p) & 0x03);
-          image->indexes[x+3]=index;
+          indexes[x+3]=index;
           *q++=image->colormap[index];
           p++;
         }
@@ -460,13 +465,14 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=SetPixelCache(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
+        indexes=GetIndexesCache(image);
         for (x=0; x < image->columns; x+=2)
         {
           index=15-((*p >> 4) & 0x0f);
-          image->indexes[x]=index;
+          indexes[x]=index;
           *q++=image->colormap[index];
           index=15-((*p) & 0x0f);
-          image->indexes[x+1]=index;
+          indexes[x+1]=index;
           *q++=image->colormap[index];
           p++;
         }

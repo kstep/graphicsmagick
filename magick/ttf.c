@@ -244,10 +244,10 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 */
 Export void RegisterTTFImage(void)
 {
+#if defined(HasTTF)
   MagickInfo
     *entry;
 
-#if defined(HasTTF)
   entry=SetMagickInfo("TTF");
   entry->decoder=ReadTTFImage;
   entry->adjoin=False;

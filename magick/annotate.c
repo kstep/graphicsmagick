@@ -169,7 +169,7 @@ Export unsigned int AnnotateImage(Image *image,
   y=0;
   if (clone_info->geometry != (char *) NULL)
     {
-      int
+      unsigned int
         flags;
 
       /*

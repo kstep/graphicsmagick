@@ -106,6 +106,10 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
   RectangleInfo
     page;
 
+  register IndexPacket
+    *indexes,
+    *rotate_indexes;
+
   register int
     x;
 
@@ -142,8 +146,10 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
         q=SetPixelCache(rotate_image,0,y,rotate_image->columns,1);
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
+        indexes=GetIndexesCache(image);
+        rotate_indexes=GetIndexesCache(rotate_image);
         if (image->class == PseudoClass)
-          (void) memcpy(rotate_image->indexes,image->indexes,
+          (void) memcpy(rotate_indexes,indexes,
             image->columns*sizeof(IndexPacket));
         (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
         if (!SyncPixelCache(rotate_image))
@@ -164,8 +170,10 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
         q=SetPixelCache(rotate_image,image->rows-y-1,0,1,rotate_image->rows);
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
+        indexes=GetIndexesCache(image);
+        rotate_indexes=GetIndexesCache(rotate_image);
         if (image->class == PseudoClass)
-          (void) memcpy(rotate_image->indexes,image->indexes,
+          (void) memcpy(rotate_indexes,indexes,
             image->columns*sizeof(IndexPacket));
         (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
         if (!SyncPixelCache(rotate_image))
@@ -190,11 +198,13 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         q+=image->columns;
-        for (x=0; x < (int) image->columns; x++)
-          *--q=(*p++);
+        indexes=GetIndexesCache(image);
+        rotate_indexes=GetIndexesCache(rotate_image);
         if (image->class == PseudoClass)
           for (x=0; x < (int) image->columns; x++)
-            rotate_image->indexes[image->columns-x-1]=image->indexes[x];
+            rotate_indexes[image->columns-x-1]=indexes[x];
+        for (x=0; x < (int) image->columns; x++)
+          *--q=(*p++);
         if (!SyncPixelCache(rotate_image))
           break;
         if (QuantumTick(y,image->rows))
@@ -216,11 +226,13 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         q+=image->columns;
+        indexes=GetIndexesCache(image);
+        rotate_indexes=GetIndexesCache(rotate_image);
         for (x=0; x < (int) image->columns; x++)
           *--q=(*p++);
         if (image->class == PseudoClass)
           for (x=0; x < (int) image->columns; x++)
-            rotate_image->indexes[image->columns-x-1]=image->indexes[x];
+            rotate_indexes[image->columns-x-1]=indexes[x];
         if (!SyncPixelCache(rotate_image))
           break;
         if (QuantumTick(y,image->rows))
@@ -785,9 +797,6 @@ Export Image *RotateImage(Image *image,const double degrees,
   RectangleInfo
     border_info;
 
-  register int
-    i;
-
   unsigned int
     height,
     rotations,
@@ -917,9 +926,6 @@ Export Image *ShearImage(Image *image,const double x_shear,const double y_shear,
 
   RectangleInfo
     border_info;
-
-  register int
-    i;
 
   unsigned int
     y_width;

@@ -153,6 +153,9 @@ static Image *ReadVICARImage(const ImageInfo *image_info,ExceptionInfo *exceptio
   long
     count;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
     x;
@@ -310,10 +313,11 @@ static Image *ReadVICARImage(const ImageInfo *image_info,ExceptionInfo *exceptio
     q=SetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     for (x=0; x < (int) image->columns; x++)
     {
       index=(*p++);
-      image->indexes[x]=index;
+      indexes[x]=index;
       *q++=image->colormap[index];
     }
     if (!SyncPixelCache(image))

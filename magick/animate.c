@@ -669,10 +669,8 @@ Export void XAnimateBackgroundImage(Display *display,
       /*
         Center image on window.
       */
-      window_info.x=(window_attributes.width >> 1)-
-        (window_info.ximage->width >> 1);
-      window_info.y=(window_attributes.height >> 1)-
-        (window_info.ximage->height >> 1);
+      window_info.x=(window_attributes.width/2)-(window_info.ximage->width/2);
+      window_info.y=(window_attributes.height/2)-(window_info.ximage->height/2);
       width=window_attributes.width;
       height=window_attributes.height;
     }
@@ -682,11 +680,13 @@ Export void XAnimateBackgroundImage(Display *display,
         default_geometry[MaxTextExtent];
 
       int
-        flags,
         gravity;
 
       XSizeHints
         *size_hints;
+
+      unsigned int
+        flags;
 
       /*
         User specified geometry.
@@ -1378,10 +1378,10 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
         Position image in the center the backdrop.
       */
       windows->image.flags|=USPosition;
-      windows->image.x=(XDisplayWidth(display,visual_info->screen) >> 1)-
-        (windows->image.width >> 1);
-      windows->image.y=(XDisplayHeight(display,visual_info->screen) >> 1)-
-        (windows->image.height >> 1);
+      windows->image.x=(XDisplayWidth(display,visual_info->screen)/2)-
+        (windows->image.width/2);
+      windows->image.y=(XDisplayHeight(display,visual_info->screen)/2)-
+        (windows->image.height/2);
     }
   if (resource_info->name == (char *) NULL)
     class_hints->res_name=resource_info->client_name;
@@ -1397,7 +1397,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
       /*
         Follow the leader.
       */
-      manager_hints->flags|=WindowGroupHint;
+      manager_hints->flags|=(unsigned int) WindowGroupHint;
       manager_hints->window_group=windows->group_leader.id;
       XSelectInput(display,windows->group_leader.id,StructureNotifyMask);
       if (resource_info->debug)

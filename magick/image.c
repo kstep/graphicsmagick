@@ -803,6 +803,10 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
       int
         y;
 
+      register IndexPacket
+        *clone_indexes,
+        *indexes;
+
       register PixelPacket
         *p,
         *q;
@@ -816,10 +820,12 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
         q=SetPixelCache(clone_image,0,y,clone_image->columns,1);
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
-        if (image->class == PseudoClass)
-          (void) memcpy(clone_image->indexes,image->indexes,
-            image->columns*sizeof(IndexPacket));
         (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
+        indexes=GetIndexesCache(image);
+        clone_indexes=GetIndexesCache(clone_image);
+        if (image->class == PseudoClass)
+          (void) memcpy(clone_indexes,indexes,
+            image->columns*sizeof(IndexPacket));
         if (!SyncPixelCache(clone_image))
           break;
       }
@@ -982,6 +988,10 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
   Quantum
     midpoint,
     shade;
+
+  register IndexPacket
+    *composite_indexes,
+    *indexes;
 
   register int
     x;
@@ -1226,6 +1236,8 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
       q=GetPixelCache(image,x,y,1,1);
       if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         break;
+      composite_indexes=GetIndexesCache(composite_image);
+      indexes=GetIndexesCache(image);
       opacity=q->opacity;
       switch (compose)
       {
@@ -1473,7 +1485,7 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
       }
       if (image->class == PseudoClass)
         if (image->class == composite_image->class)
-          *image->indexes=(*composite_image->indexes);
+          indexes[x]=composite_indexes[x];
       q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red;
       q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green;
       q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue;
@@ -1958,13 +1970,18 @@ Export void CycleColormapImage(Image *image,const int amount)
 {
 #define CycleColormapImageText  "  Cycling image...  "
 
-
   int
     index,
     y;
 
+  register IndexPacket
+    *indexes;
+
   register int
     x;
+
+  register PixelPacket
+    *q;
 
   assert(image != (Image *) NULL);
   if (image->class == DirectClass)
@@ -1978,19 +1995,24 @@ Export void CycleColormapImage(Image *image,const int amount)
     }
   for (y=0; y < (int) image->rows; y++)
   {
-    if (!GetPixelCache(image,0,y,image->columns,1))
+    q=GetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     for (x=0; x < (int) image->columns; x++)
     {
-      index=((int) image->indexes[x]+amount) % image->colors;
+      index=((int) indexes[x]+amount) % image->colors;
       if (index < 0)
         index+=image->colors;
-      image->indexes[x]=(IndexPacket) index;
+      indexes[x]=(IndexPacket) index;
+      q->red=image->colormap[index].red;
+      q->green=image->colormap[index].green;
+      q->blue=image->colormap[index].blue;
+      q++;
     }
     if (!SyncPixelCache(image))
       break;
   }
-  SyncImage(image);
 }
 
 /*
@@ -2785,9 +2807,6 @@ Export unsigned int DisplayImages(const ImageInfo *image_info,Image *image)
 
   Image
     *next;
-
-  unsigned int
-    status;
 
   unsigned long
     state;
@@ -6377,6 +6396,9 @@ Export void SetImage(Image *image,Quantum opacity)
   PixelPacket
     background_color;
 
+  register IndexPacket
+    *indexes;
+
   register int
     x;
 
@@ -6391,10 +6413,11 @@ Export void SetImage(Image *image,Quantum opacity)
     q=SetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     for (x=0; x < (int) image->columns; x++)
     {
       if (image->class == PseudoClass)
-        image->indexes[x]=0;
+        indexes[x]=0;
       *q++=background_color;
     }
     if (!SyncPixelCache(image))
@@ -6707,6 +6730,9 @@ static int IntensityCompare(const void *x,const void *y)
 
 Export unsigned int SortColormapByIntensity(Image *image)
 {
+  IndexPacket
+    index;
+
   int
     y;
 
@@ -6714,11 +6740,11 @@ Export unsigned int SortColormapByIntensity(Image *image)
     i,
     x;
 
+  register IndexPacket
+    *indexes;
+
   register PixelPacket
     *q;
-
-  register unsigned short
-    index;
 
   unsigned short
     *pixels;
@@ -6754,10 +6780,11 @@ Export unsigned int SortColormapByIntensity(Image *image)
     q=GetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     for (x=0; x < (int) image->columns; x++)
     {
-      index=pixels[image->indexes[x]];
-      image->indexes[x]=index;
+      index=pixels[indexes[x]];
+      indexes[x]=index;
       *q++=image->colormap[index];
     }
   }
@@ -6797,6 +6824,9 @@ Export void SyncImage(Image *image)
   int
     y;
 
+  register IndexPacket
+    *indexes;
+
   register int
     x;
 
@@ -6811,9 +6841,10 @@ Export void SyncImage(Image *image)
     q=GetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     for (x=0; x < (int) image->columns; x++)
     {
-      index=image->indexes[x];
+      index=indexes[x];
       q->red=image->colormap[index].red;
       q->green=image->colormap[index].green;
       q->blue=image->colormap[index].blue;

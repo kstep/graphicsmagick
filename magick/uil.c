@@ -140,6 +140,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     symbol[MaxTextExtent];
 
   double
+    distance_squared,
     min_distance;
 
   int
@@ -151,8 +152,8 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
   long
     mean;
 
-  register double
-    distance_squared;
+  register IndexPacket
+    *indexes;
 
   register int
     i,
@@ -227,12 +228,14 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
           colors++;
           for (y=0; y < (int) image->rows; y++)
           {
-            if (!GetPixelCache(image,0,y,image->columns,1))
+            p=GetPixelCache(image,0,y,image->columns,1);
+            if (p == (PixelPacket *) NULL)
               break;
+            indexes=GetIndexesCache(image);
             for (x=0; x < (int) image->columns; x++)
             {
               if (matte_image[i])
-                image->indexes[x]=image->colors;
+                indexes[x]=image->colors;
               p++;
             }
           }
@@ -315,15 +318,16 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     p=GetPixelCache(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     (void) strcpy(buffer,"    \"");
     (void) WriteBlob(image,strlen(buffer),buffer);
     for (x=0; x < (int) image->columns; x++)
     {
-      k=image->indexes[x] % MaxCixels;
+      k=indexes[x] % MaxCixels;
       symbol[0]=Cixel[k];
       for (j=1; j < (int) characters_per_pixel; j++)
       {
-        k=(((int) image->indexes[x]-k)/MaxCixels) % MaxCixels;
+        k=(((int) indexes[x]-k)/MaxCixels) % MaxCixels;
         symbol[j]=Cixel[k];
       }
       symbol[j]='\0';

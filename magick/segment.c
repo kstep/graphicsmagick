@@ -251,16 +251,19 @@ static unsigned int Classify(Image *image,short **extrema,
 
   int
     count,
+    j,
+    k,
     y;
 
   register double
     distance_squared,
     *squares;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
-    j,
-    k,
     x;
 
   register PixelPacket
@@ -486,6 +489,7 @@ static unsigned int Classify(Image *image,short **extrema,
     q=GetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     for (x=0; x < (int) image->columns; x++)
     {
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
@@ -499,7 +503,7 @@ static unsigned int Classify(Image *image,short **extrema,
             /*
               Classify this pixel.
             */
-            image->indexes[x]=cluster->id;
+            indexes[x]=cluster->id;
             break;
           }
       if (cluster == (Cluster *) NULL)
@@ -533,7 +537,7 @@ static unsigned int Classify(Image *image,short **extrema,
                   Classify this pixel.
                 */
                 local_minima=1.0/sum;
-                image->indexes[x]=j;
+                indexes[x]=j;
               }
           }
         }

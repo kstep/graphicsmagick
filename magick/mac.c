@@ -1006,7 +1006,8 @@ Export struct dirent *readdir(DIR *entry)
 %
 %
 */
-static Image *ReadPICTImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadPICTImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
 #define LoadImageText  "  Loading image...  "
 #define PICTHeaderSize    512
@@ -1040,6 +1041,9 @@ static Image *ReadPICTImage(const ImageInfo *image_info,ExceptionInfo *exception
 
   Rect
     rectangle;
+
+  register IndexPacket
+    *indexes;
 
   register int
     x;
@@ -1172,6 +1176,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,ExceptionInfo *exception
     q=SetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     for (x=0; x < image->columns; x++)
     {
       GetCPixel(x,y,&Pixel);
@@ -1179,7 +1184,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,ExceptionInfo *exception
       q->green=UpScale(Pixel.green & 0xff);
       q->blue=UpScale(Pixel.blue & 0xff);
       if (image->class == PseudoClass)
-        image->indexes[x]=(unsigned short) Color2Index(&Pixel);
+        indexes[x]=(unsigned short) Color2Index(&Pixel);
       q++;
     }
     if (!SyncPixelCache(image))

@@ -77,7 +77,7 @@
 %
 %  A description of each parameter follows:
 %
-%    o noisy_image: Method AddNoiseImage returns a pointer to the image after
+%    o noise_image: Method AddNoiseImage returns a pointer to the image after
 %      the noise is minified.  A null image is returned if there is a memory
 %      shortage.
 %
@@ -97,7 +97,7 @@ Export Image *AddNoiseImage(Image *image,const NoiseType noise_type,
 #define AddNoiseImageText  "  Adding noise to the image...  "
 
   Image
-    *noisy_image;
+    *noise_image;
 
   int
     y;
@@ -110,20 +110,20 @@ Export Image *AddNoiseImage(Image *image,const NoiseType noise_type,
     *q;
 
   /*
-    Initialize noisy image attributes.
+    Initialize noise image attributes.
   */
   assert(image != (Image *) NULL);
-  noisy_image=CloneImage(image,image->columns,image->rows,False,exception);
-  if (noisy_image == (Image *) NULL)
+  noise_image=CloneImage(image,image->columns,image->rows,False,exception);
+  if (noise_image == (Image *) NULL)
     return((Image *) NULL);
-  noisy_image->class=DirectClass;
+  noise_image->class=DirectClass;
   /*
     Add noise in each row.
   */
   for (y=0; y < (int) image->rows; y++)
   {
     p=GetPixelCache(image,0,y,image->columns,1);
-    q=SetPixelCache(noisy_image,0,y,noisy_image->columns,1);
+    q=SetPixelCache(noise_image,0,y,noise_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     for (x=0; x < (int) image->columns; x++)
@@ -131,14 +131,15 @@ Export Image *AddNoiseImage(Image *image,const NoiseType noise_type,
       q->red=GenerateNoise(p->red,noise_type);
       q->green=GenerateNoise(p->green,noise_type);
       q->blue=GenerateNoise(p->blue,noise_type);
+      p++;
       q++;
     }
-    if (!SyncPixelCache(noisy_image))
+    if (!SyncPixelCache(noise_image))
       break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(AddNoiseImageText,y,image->rows);
   }
-  return(noisy_image);
+  return(noise_image);
 }
 
 /*
@@ -1260,7 +1261,7 @@ Export Image *MedianFilterImage(Image *image,const unsigned int radius,
   */
   assert(image != (Image *) NULL);
   if ((image->columns < (2*radius+1)) || (image->rows < (2*radius+1)))
-    ThrowImageException(ResourceLimitWarning,"Unable to median filter",
+    ThrowImageException(ResourceLimitWarning,"Unable to median filter image",
       "image smaller than radius");
   median_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (median_image == (Image *) NULL)
@@ -1875,7 +1876,7 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
 %
 %  A description of each parameter follows:
 %
-%    o noisy_image: Method ReduceNoiseImage returns a pointer to the image
+%    o noise_image: Method ReduceNoiseImage returns a pointer to the image
 %      after the noise is minified.  A null image is returned if there is a
 %      memory shortage.
 %
@@ -1903,7 +1904,7 @@ Export Image *ReduceNoiseImage(Image *image,ExceptionInfo *exception)
 #define ReduceNoiseImageText  "  Reducing the image noise...  "
 
   Image
-    *noisy_image;
+    *noise_image;
 
   int
     y;
@@ -1922,15 +1923,15 @@ Export Image *ReduceNoiseImage(Image *image,ExceptionInfo *exception)
     window[9];
 
   /*
-    Initialize noisy image attributes.
+    Initialize noise image attributes.
   */
   assert(image != (Image *) NULL);
   if ((image->columns < 3) || (image->rows < 3))
     return((Image *) NULL);
-  noisy_image=CloneImage(image,image->columns,image->rows,False,exception);
-  if (noisy_image == (Image *) NULL)
+  noise_image=CloneImage(image,image->columns,image->rows,False,exception);
+  if (noise_image == (Image *) NULL)
     return((Image *) NULL);
-  noisy_image->class=DirectClass;
+  noise_image->class=DirectClass;
   /*
     Reduce noise in image.
   */
@@ -1940,7 +1941,7 @@ Export Image *ReduceNoiseImage(Image *image,ExceptionInfo *exception)
       Read another scan line.
     */
     p=GetPixelCache(image,0,Min(Max(y-1,0),image->rows-3),image->columns,3);
-    q=SetPixelCache(noisy_image,0,y,noisy_image->columns,1);
+    q=SetPixelCache(noise_image,0,y,noise_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     /*
@@ -1998,7 +1999,7 @@ Export Image *ReduceNoiseImage(Image *image,ExceptionInfo *exception)
     if (QuantumTick(y,image->rows))
       ProgressMonitor(ReduceNoiseImageText,y,image->rows-1);
   }
-  return(noisy_image);
+  return(noise_image);
 }
 
 /*
@@ -2564,6 +2565,9 @@ Export Image *SteganoImage(Image *image,Image *watermark,
     shift,
     y;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
     x;
@@ -2603,10 +2607,12 @@ Export Image *SteganoImage(Image *image,Image *watermark,
             stegano_image->colormap[i]=stegano_image->colormap[i >> 1];
           for (y=0; y < (int) stegano_image->rows; y++)
           {
-            if (!GetPixelCache(stegano_image,0,y,stegano_image->columns,1))
+            q=GetPixelCache(stegano_image,0,y,stegano_image->columns,1);
+            if (q == (PixelPacket *) NULL);
               break;
+            indexes=GetIndexesCache(stegano_image);
             for (x=0; x < (int) stegano_image->columns; x++)
-              stegano_image->indexes[x]<<=1;
+              indexes[x]*=2;
             if (!SyncPixelCache(stegano_image))
               break;
           }
@@ -2628,8 +2634,9 @@ Export Image *SteganoImage(Image *image,Image *watermark,
         i/stegano_image->columns,1,1);
       if (p == (PixelPacket *) NULL)
         break;
+      indexes=GetIndexesCache(image);
       if (stegano_image->class == PseudoClass)
-        EmbedBit(*stegano_image->indexes)
+        EmbedBit(*indexes)
       else
         {
           EmbedBit(p->red);
@@ -2914,6 +2921,9 @@ Export unsigned int ThresholdImage(Image *image,const double threshold)
   PixelPacket
     *colormap;
 
+  register IndexPacket
+    *indexes;
+
   register int
     x;
 
@@ -2944,10 +2954,11 @@ Export unsigned int ThresholdImage(Image *image,const double threshold)
     q=GetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     for (x=0; x < (int) image->columns; x++)
     {
       index=Intensity(*q) < threshold ? 0 : 1;
-      image->indexes[x]=index;
+      indexes[x]=index;
       *q++=image->colormap[index];
     }
     if (!SyncPixelCache(image))

@@ -151,6 +151,9 @@ static Image *ReadICONImage(const ImageInfo *image_info,ExceptionInfo *exception
     bit,
     byte,
     y;
+ 
+  register IndexPacket
+    *indexes;
 
   register int
     i,
@@ -257,19 +260,21 @@ static Image *ReadICONImage(const ImageInfo *image_info,ExceptionInfo *exception
         */
         for (y=image->rows-1; y >= 0; y--)
         {
-          if (!SetPixelCache(image,0,y,image->columns,1))
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
             break;
+          indexes=GetIndexesCache(image);
           for (x=0; x < ((int) image->columns-7); x+=8)
           {
             byte=ReadByte(image);
             for (bit=0; bit < 8; bit++)
-              image->indexes[x+bit]=(byte & (0x80 >> bit) ? 0x01 : 0x00);
+              indexes[x+bit]=(byte & (0x80 >> bit) ? 0x01 : 0x00);
           }
           if ((image->columns % 8) != 0)
             {
               byte=ReadByte(image);
               for (bit=0; bit < (int) (image->columns % 8); bit++)
-                image->indexes[x+bit]=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
+                indexes[x+bit]=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
             }
           if (!SyncPixelCache(image))
             break;
@@ -286,18 +291,20 @@ static Image *ReadICONImage(const ImageInfo *image_info,ExceptionInfo *exception
         */
         for (y=image->rows-1; y >= 0; y--)
         {
-          if (!SetPixelCache(image,0,y,image->columns,1))
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
             break;
+          indexes=GetIndexesCache(image);
           for (x=0; x < ((int) image->columns-1); x+=2)
           {
             byte=ReadByte(image);
-            image->indexes[x]=(byte >> 4) & 0xf;
-            image->indexes[x+1]=(byte) & 0xf;
+            indexes[x]=(byte >> 4) & 0xf;
+            indexes[x+1]=(byte) & 0xf;
           }
           if ((image->columns % 2) != 0)
             {
               byte=ReadByte(image);
-              image->indexes[x]=(byte >> 4) & 0xf;
+              indexes[x]=(byte >> 4) & 0xf;
             }
           if (!SyncPixelCache(image))
             break;
@@ -314,12 +321,14 @@ static Image *ReadICONImage(const ImageInfo *image_info,ExceptionInfo *exception
         */
         for (y=image->rows-1; y >= 0; y--)
         {
-          if (!SetPixelCache(image,0,y,image->columns,1))
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
             break;
+          indexes=GetIndexesCache(image);
           for (x=0; x < (int) image->columns; x++)
           {
             byte=ReadByte(image);
-            image->indexes[x]=(IndexPacket) byte;
+            indexes[x]=(IndexPacket) byte;
           }
           if (!SyncPixelCache(image))
             break;
@@ -336,14 +345,16 @@ static Image *ReadICONImage(const ImageInfo *image_info,ExceptionInfo *exception
         */
         for (y=image->rows-1; y >= 0; y--)
         {
-          if (!SetPixelCache(image,0,y,image->columns,1))
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
             break;
+          indexes=GetIndexesCache(image);
           for (x=0; x < (int) image->columns; x++)
           {
             byte=ReadByte(image);
-            image->indexes[x]=(IndexPacket) byte;
+            indexes[x]=(IndexPacket) byte;
             byte=ReadByte(image);
-            image->indexes[x]|=byte << 8;
+            indexes[x]|=byte << 8;
           }
           if (!SyncPixelCache(image))
             break;

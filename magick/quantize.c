@@ -357,17 +357,20 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
 {
 #define AssignImageText  "  Assigning image colors...  "
 
+  IndexPacket
+    index;
+
   int
     y;
+
+  register IndexPacket
+    *indexes;
 
   register int
     x;
 
   register const NodeInfo
     *node_info;
-
-  register IndexPacket
-    index;
 
   register PixelPacket
     *q;
@@ -407,6 +410,7 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
       q=GetPixelCache(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
+      indexes=GetIndexesCache(image);
       for (x=0; x < (int) image->columns; x++)
       {
         /*
@@ -432,7 +436,7 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
         ClosestColor(cube_info,node_info->parent);
         index=cube_info->color_number;
         if (image->class == PseudoClass)
-          image->indexes[x]=index;
+          indexes[x]=index;
         if (!cube_info->quantize_info->measure_error)
           {
             q->red=image->colormap[index].red;
@@ -932,16 +936,19 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
     green_error,
     red_error;
 
+  IndexPacket
+    index;
+
   Quantum
     blue,
     green,
     red;
 
+  register IndexPacket
+    *indexes;
+
   register CubeInfo
     *p;
-
-  register IndexPacket
-    index;
 
   register int
     i;
@@ -959,6 +966,7 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
       q=GetPixelCache(image,p->x,p->y,1,1);
       if (q == (PixelPacket *) NULL)
         return(False);
+      indexes=GetIndexesCache(image);
       red_error=q->red;
       green_error=q->green;
       blue_error=q->blue;
@@ -1012,7 +1020,7 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
       */
       index=p->cache[i];
       if (image->class == PseudoClass)
-        *image->indexes=index;
+        *indexes=index;
       if (!cube_info->quantize_info->measure_error)
         {
           q->red=image->colormap[index].red;
@@ -1020,7 +1028,7 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
           q->blue=image->colormap[index].blue;
         }
       if (!SyncPixelCache(image))
-        return;
+        return(False);
       /*
         Propagate the error as the last entry of the error queue.
       */
@@ -1661,6 +1669,9 @@ static unsigned int OrderedDitherImage(Image *image)
   PixelPacket
     *colormap;
 
+  register IndexPacket
+    *indexes;
+
   register int
     x;
 
@@ -1694,10 +1705,11 @@ static unsigned int OrderedDitherImage(Image *image)
     q=GetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     for (x=0; x < (int) image->columns; x++)
     {
       index=Intensity(*q) > DitherMatrix[y & 0x07][x & 0x07] ? 1 : 0;
-      image->indexes[x]=index;
+      indexes[x]=index;
       q->red=image->colormap[index].red;
       q->green=image->colormap[index].green;
       q->blue=image->colormap[index].blue;
@@ -1856,7 +1868,9 @@ Export unsigned int QuantizationError(Image *image)
     cube_info;
 
   double
+    distance_squared,
     maximum_error_per_pixel,
+    *squares,
     total_error;
 
   IndexPacket
@@ -1865,9 +1879,8 @@ Export unsigned int QuantizationError(Image *image)
   int
     y;
 
-  register double
-    distance_squared,
-    *squares;
+  register IndexPacket
+    *indexes;
 
   register int
     i,
@@ -1904,9 +1917,10 @@ Export unsigned int QuantizationError(Image *image)
     p=GetPixelCache(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     for (x=0; x < (int) image->columns; x++)
     {
-      index=image->indexes[x];
+      index=indexes[x];
       distance_squared=squares[(int) (p->red-image->colormap[index].red)]+
         squares[(int) (p->green-image->colormap[index].green)]+
         squares[(int) (p->blue-image->colormap[index].blue)];

@@ -156,6 +156,9 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     length,
     width;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
     x;
@@ -257,10 +260,12 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         p=hdf_pixels;
         for (y=0; y < (int) image->rows; y++)
         {
-          if (!SetPixelCache(image,0,y,image->columns,1))
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
             break;
+          indexes=GetIndexesCache(image);
           for (x=0; x < (int) image->columns; x++)
-            image->indexes[x]=(*p++);
+            indexes[x]=(*p++);
           if (!SyncPixelCache(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -403,10 +408,10 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 */
 Export void RegisterHDFImage(void)
 {
+#if defined(HasHDF)
   MagickInfo
     *entry;
 
-#if defined(HasHDF)
   entry=SetMagickInfo("HDF");
   entry->decoder=ReadHDFImage;
   entry->encoder=WriteHDFImage;
@@ -456,6 +461,9 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
   int
     status,
     y;
+
+  register IndexPacket
+    *indexes;
 
   register int
     i,
@@ -666,11 +674,13 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
             q=hdf_pixels;
             for (y=0; y < (int) image->rows; y++)
             {
-              if (!GetPixelCache(image,0,y,image->columns,1))
+              p=GetPixelCache(image,0,y,image->columns,1);
+              if (p == (PixelPacket *) NULL)
                 break;
+              indexes=GetIndexesCache(image);
               for (x=0; x < (int) image->columns; x++)
               {
-                *q++=image->indexes[x];
+                *q++=indexes[x];
                 p++;
               }
               if (image->previous == (Image *) NULL)

@@ -488,6 +488,9 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   JSAMPROW
     scanline[1];
 
+  register IndexPacket
+    *indexes;
+
   register int
     i;
 
@@ -627,6 +630,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     q=SetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     (void) jpeg_read_scanlines(&jpeg_info,scanline,1);
     for (x=0; x < (int) image->columns; x++)
     {
@@ -635,7 +639,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
           if (jpeg_info.out_color_space == JCS_GRAYSCALE)
             {
               index=GETJSAMPLE(*p++) >> 4;
-              image->indexes[x]=index;
+              indexes[x]=index;
               *q=image->colormap[index];
             }
           else
@@ -651,7 +655,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         if (jpeg_info.out_color_space == JCS_GRAYSCALE)
           {
             index=GETJSAMPLE(*p++) >> 4;
-            image->indexes[x]=index;
+            indexes[x]=index;
             *q=image->colormap[index];
           }
         else

@@ -107,7 +107,8 @@ Export Image *ChopImage(Image *image,const RectangleInfo *chop_info,
     clone_info;
 
   register IndexPacket
-    *r;
+    *chop_indexes,
+    *indexes;
 
   register int
     i,
@@ -162,13 +163,14 @@ Export Image *ChopImage(Image *image,const RectangleInfo *chop_info,
     q=SetPixelCache(chop_image,0,j++,chop_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    r=chop_image->indexes;
+    indexes=GetIndexesCache(image);
+    chop_indexes=GetIndexesCache(chop_image);
     for (x=0; x < (int) image->columns; x++)
     {
       if ((x < clone_info.x) || (x >= (int) (clone_info.x+clone_info.width)))
         {
           if (image->class == PseudoClass)
-            *r++=image->indexes[x];
+            chop_indexes[x]=indexes[x];
           *q=(*p);
           q++;
         }
@@ -189,13 +191,14 @@ Export Image *ChopImage(Image *image,const RectangleInfo *chop_info,
     q=SetPixelCache(chop_image,0,j++,chop_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    r=chop_image->indexes;
+    indexes=GetIndexesCache(image);
+    chop_indexes=GetIndexesCache(chop_image);
     for (x=0; x < (int) image->columns; x++)
     {
       if ((x < clone_info.x) || (x >= (int) (clone_info.x+clone_info.width)))
         {
           if (image->class == PseudoClass)
-            *r++=image->indexes[x];
+            chop_indexes[x]=indexes[x];
           *q=(*p);
           q++;
         }
@@ -331,6 +334,10 @@ Export Image *CropImage(Image *image,const RectangleInfo *crop_info,
 
   RectangleInfo
     page;
+
+  register IndexPacket
+    *crop_indexes,
+    *indexes;
 
   register int
     x;
@@ -483,8 +490,10 @@ Export Image *CropImage(Image *image,const RectangleInfo *crop_info,
     q=SetPixelCache(crop_image,0,y,crop_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
+    indexes=GetIndexesCache(image);
+    crop_indexes=GetIndexesCache(crop_image);
     if (image->class == PseudoClass)
-      (void) memcpy(crop_image->indexes,image->indexes,
+      (void) memcpy(crop_indexes,indexes,
         crop_image->columns*sizeof(IndexPacket));
     (void) memcpy(q,p,crop_image->columns*sizeof(PixelPacket));
     if (!SyncPixelCache(crop_image))
@@ -720,6 +729,10 @@ Export Image *FlipImage(Image *image,ExceptionInfo *exception)
   int
     y;
 
+  register IndexPacket
+    *flip_indexes,
+    *indexes;
+
   register int
     x;
 
@@ -747,6 +760,8 @@ Export Image *FlipImage(Image *image,ExceptionInfo *exception)
     q=SetPixelCache(flip_image,0,flip_image->rows-y-1,flip_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
+    indexes=GetIndexesCache(image);
+    flip_indexes=GetIndexesCache(flip_image);
     for (x=0; x < (int) flip_image->columns; x++)
     {
       *q=(*p);
@@ -754,7 +769,7 @@ Export Image *FlipImage(Image *image,ExceptionInfo *exception)
       q++;
     }
     if (flip_image->class == PseudoClass)
-      (void) memcpy(flip_image->indexes,image->indexes,
+      (void) memcpy(flip_indexes,indexes,
         flip_image->columns*sizeof(IndexPacket));
     status=SyncPixelCache(flip_image);
     if (status == False)
@@ -806,6 +821,10 @@ Export Image *FlopImage(Image *image,ExceptionInfo *exception)
   int
     y;
 
+  register IndexPacket
+    *flop_indexes,
+    *indexes;
+
   register int
     x;
 
@@ -833,11 +852,13 @@ Export Image *FlopImage(Image *image,ExceptionInfo *exception)
     q=SetPixelCache(flop_image,0,y,flop_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
+    indexes=GetIndexesCache(image);
+    flop_indexes=GetIndexesCache(flop_image);
     q+=flop_image->columns;
     for (x=0; x < (int) flop_image->columns; x++)
     {
       if (flop_image->class == PseudoClass)
-        flop_image->indexes[flop_image->columns-x-1]=image->indexes[x];
+        flop_indexes[flop_image->columns-x-1]=indexes[x];
       q--;
       *q=(*p);
       p++;
@@ -899,6 +920,10 @@ Export Image *RollImage(Image *image,const int x_offset,const int y_offset,
   int
     y;
 
+  register IndexPacket
+    *indexes,
+    *roll_indexes;
+
   register int
     x;
 
@@ -934,14 +959,16 @@ Export Image *RollImage(Image *image,const int x_offset,const int y_offset,
     p=GetPixelCache(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     for (x=0; x < (int) image->columns; x++)
     {
       q=SetPixelCache(roll_image,((int) offset.x+x) % image->columns,
         ((int) offset.y+y) % image->rows,1,1);
       if (q == (PixelPacket *) NULL)
         break;
+      roll_indexes=GetIndexesCache(roll_image);
       if (image->class == PseudoClass)
-        *roll_image->indexes=image->indexes[x];
+        *roll_indexes=indexes[x];
       *q=(*p);
       p++;
       if (!SyncPixelCache(roll_image))

@@ -622,12 +622,16 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
     *sample_image;
 
   IndexPacket
-    *indexes;
+    *index;
 
   int
     j,
     k,
     y;
+
+  register IndexPacket
+    *indexes,
+    *sample_indexes;
 
   register int
     x;
@@ -657,11 +661,11 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
   */
   pixels=(PixelPacket *)
     AllocateMemory(image->columns*sizeof(PixelPacket));
-  indexes=(IndexPacket *)
+  index=(IndexPacket *)
     AllocateMemory(image->columns*sizeof(IndexPacket));
   x_offset=(double *) AllocateMemory(sample_image->columns*sizeof(double));
   y_offset=(double *) AllocateMemory(sample_image->rows*sizeof(double));
-  if ((pixels == (PixelPacket *) NULL) || (indexes == (IndexPacket *) NULL) ||
+  if ((pixels == (PixelPacket *) NULL) || (index == (IndexPacket *) NULL) ||
       (x_offset == (double *) NULL) || (y_offset == (double *) NULL))
     {
       DestroyImage(sample_image);
@@ -684,6 +688,7 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
     q=SetPixelCache(sample_image,0,y,sample_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
+    sample_indexes=GetIndexesCache(sample_image);
     if (j != y_offset[y])
       {
         /*
@@ -693,9 +698,9 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
         p=GetPixelCache(image,0,j,image->columns,1);
         if (p == (PixelPacket *) NULL)
           break;
+        indexes=GetIndexesCache(image);
         if (image->class == PseudoClass)
-          (void) memcpy(indexes,image->indexes,
-            image->columns*sizeof(IndexPacket));
+          (void) memcpy(index,indexes,image->columns*sizeof(IndexPacket));
         (void) memcpy(pixels,p,image->columns*sizeof(PixelPacket));
       }
     /*
@@ -705,7 +710,7 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
     {
       k=x_offset[x];
       if (sample_image->class == PseudoClass)
-        sample_image->indexes[x]=indexes[k];
+        sample_indexes[x]=index[k];
       *q++=pixels[k];
     }
     if (!SyncPixelCache(sample_image))
@@ -715,7 +720,7 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
   }
   FreeMemory(y_offset);
   FreeMemory(x_offset);
-  FreeMemory(indexes);
+  FreeMemory(index);
   FreeMemory(pixels);
   return(sample_image);
 }
@@ -1290,6 +1295,10 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
     start,
     y;
 
+  register IndexPacket
+    *destination_indexes,
+    *source_indexes;
+
   register int
     i,
     x;
@@ -1339,6 +1348,8 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
     q=SetPixelCache(destination,x,0,1,destination->rows);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
+    source_indexes=GetIndexesCache(source);
+    destination_indexes=GetIndexesCache(destination);
     for (y=0; y < (int) destination->rows; y++)
     {
       j=0;
@@ -1364,7 +1375,7 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
       q->opacity=(opacity_weight < 0) ? 0 :
         (opacity_weight > MaxRGB) ? MaxRGB : opacity_weight+0.5;
       if (destination->class == PseudoClass)
-        destination->indexes[y]=source->indexes[j];
+        destination_indexes[y]=source_indexes[j];
       q++;
     }
     if (!SyncPixelCache(destination))
@@ -1396,6 +1407,10 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
     n,
     start,
     y;
+
+  register IndexPacket
+    *destination_indexes,
+    *source_indexes;
 
   register int
     i,
@@ -1446,6 +1461,8 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
     q=SetPixelCache(destination,0,y,destination->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
+    source_indexes=GetIndexesCache(source);
+    destination_indexes=GetIndexesCache(destination);
     for (x=0; x < (int) destination->columns; x++)
     {
       j=0;
@@ -1470,7 +1487,7 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
       q->opacity=(opacity_weight < 0) ? 0 :
         (opacity_weight > MaxRGB) ? MaxRGB : opacity_weight+0.5;
       if (destination->class == PseudoClass)
-        destination->indexes[x]=source->indexes[j];
+        destination_indexes[x]=source_indexes[j];
       q++;
     }
     if (!SyncPixelCache(destination))
@@ -1496,9 +1513,6 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
   Image
     *source_image,
     *zoom_image;
-
-  register int
-     i;
 
   static const FilterInfo
     filters[SincFilter+1] =

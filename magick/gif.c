@@ -115,6 +115,9 @@ static unsigned int DecodeImage(Image *image,const int opacity,
     old_code,
     y;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
     x;
@@ -182,6 +185,7 @@ static unsigned int DecodeImage(Image *image,const int opacity,
     q=SetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     for (x=0; x < (int) image->columns; )
     {
       if (top_stack == pixel_stack)
@@ -269,9 +273,10 @@ static unsigned int DecodeImage(Image *image,const int opacity,
       */
       top_stack--;
       index=(*top_stack);
-      image->indexes[x++]=index;
+      indexes[x]=index;
       *q=image->colormap[index];
       q->opacity=index == opacity ? Transparent : Opaque;
+      x++;
       q++;
     }
     if (!SyncPixelCache(image))
@@ -300,6 +305,9 @@ static unsigned int DecodeImage(Image *image,const int opacity,
         pass,
         y;
 
+      register IndexPacket
+        *interlace_indexes;
+
       register PixelPacket
         *p,
         *q;
@@ -325,7 +333,9 @@ static unsigned int DecodeImage(Image *image,const int opacity,
           q=SetPixelCache(image,0,y,image->columns,1);
           if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
             break;
-          (void) memcpy(image->indexes,interlace_image->indexes,
+          indexes=GetIndexesCache(image);
+          interlace_indexes=GetIndexesCache(interlace_image);
+          (void) memcpy(indexes,interlace_indexes,
             image->columns*sizeof(IndexPacket));
           (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
           if (!SyncPixelCache(image))
@@ -428,6 +438,9 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
   long
     datum;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
     x;
@@ -484,14 +497,15 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
     p=GetPixelCache(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     if (y == 0)
-      waiting_code=(*image->indexes);
+      waiting_code=(*indexes);
     for (x=(y == 0) ? 1 : 0; x < (int) image->columns; x++)
     {
       /*
         Probe hash table.
       */
-      index=image->indexes[x] & 0xff;
+      index=indexes[x] & 0xff;
       p++;
       k=(int) ((int) index << (MaxGIFBits-8))+waiting_code;
       if (k >= MaxHashTable)
@@ -1050,6 +1064,9 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   RectangleInfo
     page;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
     x;
@@ -1163,10 +1180,11 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
               p=GetPixelCache(image,0,y,image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
+              indexes=GetIndexesCache(image);
               for (x=0; x < (int) image->columns; x++)
               {
                 if (p->opacity == Transparent)
-                  image->indexes[x]=opacity;
+                  indexes[x]=opacity;
                 p++;
               }
               if (!SyncPixelCache(image))
@@ -1185,11 +1203,12 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
             p=GetPixelCache(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
+            indexes=GetIndexesCache(image);
             for (x=0; x < (int) image->columns; x++)
             {
               if (p->opacity == Transparent)
                 {
-                  opacity=image->indexes[x];
+                  opacity=indexes[x];
                   break;
                 }
               p++;
@@ -1338,6 +1357,9 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         int
           pass;
 
+        register IndexPacket
+          *interlace_indexes;
+
         register PixelPacket
           *q;
 
@@ -1367,7 +1389,9 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
             q=SetPixelCache(interlace_image,0,i,interlace_image->columns,1);
             if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
               break;
-            (void) memcpy(interlace_image->indexes,image->indexes,
+            indexes=GetIndexesCache(image);
+            interlace_indexes=GetIndexesCache(interlace_image);
+            (void) memcpy(interlace_indexes,indexes,
               image->columns*sizeof(IndexPacket));
             (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
             if (!SyncPixelCache(interlace_image))

@@ -56,12 +56,6 @@
 #include "defines.h"
 
 /*
-  Forward declarations.
-*/
-static unsigned int
-  WriteXCImage(const ImageInfo *,Image *);
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -101,6 +95,9 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   int
     y;
 
+  register IndexPacket
+    *indexes;
+
   register int
     x;
 
@@ -131,9 +128,10 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     q=SetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     for (x=0; x < (int) image->columns; x++)
     {
-      image->indexes[x]=0;
+      indexes[x]=0;
       *q=image->colormap[0];
       q->opacity=image->colormap[0].opacity;
       q++;

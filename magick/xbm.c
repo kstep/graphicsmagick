@@ -175,9 +175,15 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     bit,
     y;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
     x;
+
+  register PixelPacket
+    *q;
 
   register unsigned char
     *p;
@@ -328,15 +334,17 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   p=data;
   for (y=0; y < (int) image->rows; y++)
   {
-    if (!SetPixelCache(image,0,y,image->columns,1))
+    q=SetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     bit=0;
     byte=0;
     for (x=0; x < (int) image->columns; x++)
     {
       if (bit == 0)
         byte=(*p++);
-      image->indexes[x]=byte & 0x01 ? 0 : 1;
+      indexes[x]=byte & 0x01 ? 0 : 1;
       bit++;
       byte>>=1;
       if (bit == 8)
@@ -435,10 +443,13 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
   register char
     *q;
 
+  register IndexPacket
+    *indexes;
+
   register PixelPacket
     *p;
 
-  register unsigned char
+  unsigned char
     bit,
     byte,
     polarity;
@@ -500,10 +511,11 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
     p=GetPixelCache(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     for (x=0; x < (int) image->columns; x++)
     {
       byte>>=1;
-      if (image->indexes[x] == polarity)
+      if (indexes[x] == polarity)
         byte|=0x80;
       bit++;
       if (bit == 8)

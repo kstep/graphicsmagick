@@ -784,6 +784,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
   PixelPacket
     pixel;
 
+  register IndexPacket
+    *indexes;
+
   register PixelPacket
     *p;
 
@@ -980,14 +983,16 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             count=0;
             for (y=0; y < (int) image->rows; y++)
             {
-              if (!GetPixelCache(preview_image,0,y,preview_image->columns,1))
+              p=GetPixelCache(preview_image,0,y,preview_image->columns,1);
+              if (p == (PixelPacket *) NULL)
                 break;
+              indexes=GetIndexesCache(preview_image);
               bit=0;
               byte=0;
               for (x=0; x < (int) preview_image->columns; x++)
               {
                 byte<<=1;
-                if (preview_image->indexes[x] == polarity)
+                if (indexes[x] == polarity)
                   byte|=0x01;
                 bit++;
                 if (bit == 8)
@@ -1134,11 +1139,12 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               p=GetPixelCache(image,0,y,image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
+              indexes=GetIndexesCache(image);
               if (y == 0)
                 {
                   pixel=(*p);
                   if (image->class == PseudoClass)
-                    index=(*image->indexes);
+                    index=(*indexes);
                 }
               for (x=0; x < (int) image->columns; x++)
               {
@@ -1261,14 +1267,16 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               count=0;
               for (y=0; y < (int) image->rows; y++)
               {
-                if (!GetPixelCache(image,0,y,image->columns,1))
+                p=GetPixelCache(image,0,y,image->columns,1);
+                if (p == (PixelPacket *) NULL)
                   break;
+                indexes=GetIndexesCache(image);
                 bit=0;
                 byte=0;
                 for (x=0; x < (int) image->columns; x++)
                 {
                   byte<<=1;
-                  if (image->indexes[x] == polarity)
+                  if (indexes[x] == polarity)
                     byte|=0x01;
                   bit++;
                   if (bit == 8)
@@ -1342,17 +1350,18 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 p=GetPixelCache(image,0,y,image->columns,1);
                 if (p == (PixelPacket *) NULL)
                   break;
+                indexes=GetIndexesCache(image);
                 if (y == 0)
                   {
                     pixel=(*p);
-                    index=(*image->indexes);
+                    index=(*indexes);
                   }
                 for (x=0; x < (int) image->columns; x++)
                 {
                   if ((x == (int) (image->columns-1)) &&
                       (y == (int) (image->rows-1)))
                     max_runlength=0;
-                  if ((index == image->indexes[x]) && (length < max_runlength))
+                  if ((index == indexes[x]) && (length < max_runlength))
                     length++;
                   else
                     {
@@ -1367,7 +1376,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                         }
                       length=0;
                     }
-                  index=image->indexes[x];
+                  index=indexes[x];
                   pixel=(*p++);
                 }
                 if (image->previous == (Image *) NULL)
@@ -1387,9 +1396,10 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 p=GetPixelCache(image,0,y,image->columns,1);
                 if (p == (PixelPacket *) NULL)
                   break;
+                indexes=GetIndexesCache(image);
                 for (x=0; x < (int) image->columns; x++)
                 {
-                  (void) sprintf(buffer,"%02x",image->indexes[x]);
+                  (void) sprintf(buffer,"%02x",indexes[x]);
                   (void) WriteBlob(image,strlen(buffer),buffer);
                   i++;
                   if (i == 36)

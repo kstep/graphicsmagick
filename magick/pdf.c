@@ -466,6 +466,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   RectangleInfo
     media_info;
 
+  register IndexPacket
+    *indexes;
+
   register PixelPacket
     *p;
 
@@ -995,7 +998,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     else
       if (IsFaxImage(image))
         {
-          register unsigned char
+          unsigned char
             bit,
             byte,
             polarity;
@@ -1023,14 +1026,16 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               Ascii85Initialize();
               for (y=0; y < (int) image->rows; y++)
               {
-                if (!GetPixelCache(image,0,y,image->columns,1))
+                p=GetPixelCache(image,0,y,image->columns,1);
+                if (p == (PixelPacket *) NULL)
                   break;
+                indexes=GetIndexesCache(image);
                 bit=0;
                 byte=0;
                 for (x=0; x < (int) image->columns; x++)
                 {
                   byte<<=1;
-                  if (image->indexes[x] == polarity)
+                  if (indexes[x] == polarity)
                     byte|=0x01;
                   bit++;
                   if (bit == 8)
@@ -1076,11 +1081,13 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               q=pixels;
               for (y=0; y < (int) image->rows; y++)
               {
-                if (!GetPixelCache(image,0,y,image->columns,1))
+                p=GetPixelCache(image,0,y,image->columns,1);
+                if (p == (PixelPacket *) NULL)
                   break;
+                indexes=GetIndexesCache(image);
                 for (x=0; x < (int) image->columns; x++)
                 {
-                  *q++=image->indexes[x];
+                  *q++=indexes[x];
                   p++;
                 }
                 if (image->previous == (Image *) NULL)
@@ -1111,11 +1118,13 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               Ascii85Initialize();
               for (y=0; y < (int) image->rows; y++)
               {
-                if (!GetPixelCache(image,0,y,image->columns,1))
+                p=GetPixelCache(image,0,y,image->columns,1);
+                if (p == (PixelPacket *) NULL)
                   break;
+                indexes=GetIndexesCache(image);
                 for (x=0; x < (int) image->columns; x++)
                 {
-                  Ascii85Encode(image,image->indexes[x]);
+                  Ascii85Encode(image,indexes[x]);
                   p++;
                 }
                 if (image->previous == (Image *) NULL)
@@ -1349,14 +1358,16 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               q=pixels;
               for (y=0; y < (int) tile_image->rows; y++)
               {
-                if (!GetPixelCache(tile_image,0,y,tile_image->columns,1))
+                p=GetPixelCache(tile_image,0,y,tile_image->columns,1);
+                if (p == (PixelPacket *) NULL)
                   break;
+                indexes=GetIndexesCache(tile_image);
                 bit=0;
                 byte=0;
                 for (x=0; x < (int) tile_image->columns; x++)
                 {
                   byte<<=1;
-                  if (tile_image->indexes[x] == polarity)
+                  if (indexes[x] == polarity)
                     byte|=0x01;
                   bit++;
                   if (bit == 8)
@@ -1397,14 +1408,16 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               Ascii85Initialize();
               for (y=0; y < (int) tile_image->rows; y++)
               {
-                if (!GetPixelCache(tile_image,0,y,tile_image->columns,1))
+                p=GetPixelCache(tile_image,0,y,tile_image->columns,1);
+                if (p == (PixelPacket *) NULL)
                   break;
+                indexes=GetIndexesCache(tile_image);
                 bit=0;
                 byte=0;
                 for (x=0; x < (int) tile_image->columns; x++)
                 {
                   byte<<=1;
-                  if (tile_image->indexes[x] == polarity)
+                  if (indexes[x] == polarity)
                     byte|=0x01;
                   bit++;
                   if (bit == 8)
@@ -1453,11 +1466,13 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               q=pixels;
               for (y=0; y < (int) tile_image->rows; y++)
               {
-                if (!GetPixelCache(tile_image,0,y,tile_image->columns,1))
+                p=GetPixelCache(tile_image,0,y,tile_image->columns,1);
+                if (p == (PixelPacket *) NULL)
                   break;
+                indexes=GetIndexesCache(tile_image);
                 for (x=0; x < (int) tile_image->columns; x++)
                 {
-                  *q++=tile_image->indexes[x];
+                  *q++=indexes[x];
                   p++;
                 }
               }
@@ -1485,11 +1500,13 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               Ascii85Initialize();
               for (y=0; y < (int) tile_image->rows; y++)
               {
-                if (!GetPixelCache(tile_image,0,y,tile_image->columns,1))
+                p=GetPixelCache(tile_image,0,y,tile_image->columns,1);
+                if (p == (PixelPacket *) NULL)
                   break;
+                indexes=GetIndexesCache(tile_image);
                 for (x=0; x < (int) tile_image->columns; x++)
                 {
-                  Ascii85Encode(image,tile_image->indexes[x]);
+                  Ascii85Encode(image,indexes[x]);
                   p++;
                 }
               }

@@ -134,7 +134,8 @@ static unsigned int IsFITS(const unsigned char *magick,
 %
 %
 */
-static Image *ReadFITSImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadFITSImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   typedef struct _FITSHeader
   {
@@ -185,6 +186,9 @@ static Image *ReadFITSImage(const ImageInfo *image_info,ExceptionInfo *exception
   long
     count,
     quantum;
+
+  register IndexPacket
+    *indexes;
 
   register int
     i,
@@ -422,6 +426,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,ExceptionInfo *exception
       q=SetPixelCache(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
+      indexes=GetIndexesCache(image);
       for (x=0; x < (int) image->columns; x++)
       {
         long_quantum[0]=(*p);
@@ -447,7 +452,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,ExceptionInfo *exception
           if (scaled_pixel > MaxRGB)
             scaled_pixel=MaxRGB;
         index=(IndexPacket) (scaled_pixel+0.5);
-        image->indexes[x]=index;
+        indexes[x]=index;
         *q++=image->colormap[index];
       }
       if (!SyncPixelCache(image))

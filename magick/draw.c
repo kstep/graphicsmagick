@@ -152,6 +152,9 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
     x2,
     y;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
     x;
@@ -187,7 +190,8 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
   segment_stack=(SegmentInfo *)
     AllocateMemory(MaxStacksize*sizeof(SegmentInfo));
   if (segment_stack == (SegmentInfo *) NULL)
-    return(False);
+    ThrowBinaryException(ResourceLimitWarning,"Unable to floodfill image",
+      image->filename);
   /*
     Track "hot" pixels with the image index packets.
   */
@@ -196,8 +200,9 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
   {
     if (!GetPixelCache(image,0,y,image->columns,1))
       break;
+    indexes=GetIndexesCache(image);
     for (x=0; x < (int) image->columns; x++)
-      image->indexes[x]=False;
+      indexes[x]=False;
     if (!SyncPixelCache(image))
       break;
   }
@@ -227,6 +232,7 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
     if (q == (PixelPacket *) NULL)
       break;
     q+=x1;
+    indexes=GetIndexesCache(image)+x1;
     for (x=x1; x >= 0 ; x--)
     {
       if (method == FloodfillMethod)
@@ -238,7 +244,7 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
         if (ColorMatch(*q,*target,image->fuzz) ||
             ColorMatch(*q,color,image->fuzz))
           break;
-      image->indexes[x]=True;
+      indexes[x]=True;
       *q=color;
       q--;
     }
@@ -261,6 +267,7 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
               q=GetPixelCache(image,x,y,image->columns-x,1);
               if (q == (PixelPacket *) NULL)
                 break;
+              indexes=GetIndexesCache(image);
               for (i=0; x < (int) image->columns; x++)
               {
                 if (method == FloodfillMethod)
@@ -272,7 +279,7 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
                   if (ColorMatch(*q,*target,image->fuzz) ||
                       ColorMatch(*q,color,image->fuzz))
                     break;
-                image->indexes[i++]=True;
+                indexes[i++]=True;
                 *q=color;
                 q++;
               }
@@ -315,9 +322,10 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
     q=GetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     for (x=0; x < (int) image->columns; x++)
     {
-      if (image->indexes[x])
+      if (indexes[x])
         {
           p=GetPixelCache(tile,x % tile->columns,y % tile->rows,1,1);
           if (p == (PixelPacket *) NULL)
@@ -1047,7 +1055,7 @@ static unsigned int PixelOnLine(const PointInfo *pixel,const PointInfo *p,
   if (distance <= (alpha*alpha))
     {
       alpha=sqrt(distance)-mid-0.5;
-      return(Max(opacity,Opaque*alpha*alpha));
+      return((unsigned int) Max(opacity,Opaque*alpha*alpha));
     }
   return(opacity);
 }
@@ -1528,7 +1536,8 @@ Export unsigned int MatteFloodfillImage(Image *image,const PixelPacket *target,
   segment_stack=(SegmentInfo *)
     AllocateMemory(MaxStacksize*sizeof(SegmentInfo));
   if (segment_stack == (SegmentInfo *) NULL)
-    return(False);
+    ThrowBinaryException(ResourceLimitWarning,"Unable to floodfill image",
+      image->filename);
   /*
     Push initial segment on stack.
   */

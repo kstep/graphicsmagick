@@ -138,6 +138,9 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   PixelPacket
     pixel;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
     x;
@@ -297,6 +300,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       q=SetPixelCache(image,0,real,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
+      indexes=GetIndexesCache(image);
       for (x=0; x < (int) image->columns; x++)
       {
         if ((tga_header.image_type == TGARLEColormap) ||
@@ -373,7 +377,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(CorruptImageWarning,"Unable to read image data",
             image);
         if (image->class == PseudoClass)
-          image->indexes[x]=index;
+          indexes[x]=index;
         *q++=pixel;
       }
       if (((unsigned char) (tga_header.attributes & 0xc0) >> 6) == 4)
@@ -549,6 +553,9 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
     count,
     y;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
     x;
@@ -670,10 +677,11 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
       if (p == (PixelPacket *) NULL)
         break;
       q=targa_pixels;
+      indexes=GetIndexesCache(image);
       for (x=0; x < (int) image->columns; x++)
       {
         if (image->class == PseudoClass)
-          *q++=image->indexes[x];
+          *q++=indexes[x];
         else
           {
             *q++=DownScale(p->blue);

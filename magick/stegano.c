@@ -86,13 +86,16 @@
 %
 %
 */
-static Image *ReadSTEGANOImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadSTEGANOImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
 #define UnembedBit(byte) \
 { \
-  if (!GetPixelCache(image,j % image->columns,j/image->columns,1,1)) \
+  q=GetPixelCache(image,j % image->columns,j/image->columns,1,1); \
+  if (q == (PixelPacket *) NULL) \
     break; \
-  (*image->indexes)|=((byte) & 0x01) << shift; \
+  indexes=GetIndexesCache(image); \
+  (*indexes)|=((byte) & 0x01) << shift; \
   (void) SyncPixelCache(image); \
   j++; \
   if (j == (image->columns*image->rows)) \
@@ -112,12 +115,17 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,ExceptionInfo *except
     shift,
     y;
 
+  register IndexPacket
+    *indexes,
+    *stegano_indexes;
+
   register int
     i,
     x;
 
   register PixelPacket
-    *p;
+    *p,
+    *q;
 
   Image
     *clone_image,
@@ -174,8 +182,9 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,ExceptionInfo *except
         i/stegano_image->columns,1,1);
       if (p == (PixelPacket *) NULL)
         break;
+      stegano_indexes=GetIndexesCache(stegano_image);
       if (stegano_image->class == PseudoClass)
-        UnembedBit(*stegano_image->indexes)
+        UnembedBit(*stegano_indexes)
       else
         {
           UnembedBit(p->red);

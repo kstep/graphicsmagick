@@ -732,6 +732,9 @@ static Image *ReadPICTImage(const ImageInfo *image_info,ExceptionInfo *exception
   PICTPixmap
     pixmap;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
     x;
@@ -1023,12 +1026,13 @@ static Image *ReadPICTImage(const ImageInfo *image_info,ExceptionInfo *exception
             q=SetPixelCache(tile_image,0,y,tile_image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
+            indexes=GetIndexesCache(tile_image);
             for (x=0; x < (int) tile_image->columns; x++)
             {
               if (tile_image->class == PseudoClass)
                 {
                   index=(*p);
-                  tile_image->indexes[x]=index;
+                  indexes[x]=index;
                   q->red=tile_image->colormap[index].red;
                   q->green=tile_image->colormap[index].green;
                   q->blue=tile_image->colormap[index].blue;
@@ -1298,8 +1302,8 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
     size_rectangle,
     source_rectangle;
 
-  size_t
-    count;
+  register IndexPacket
+    *indexes;
 
   register int
     i,
@@ -1307,6 +1311,9 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
 
   register PixelPacket
     *p;
+
+  size_t
+    count;
 
   unsigned char
     *buffer,
@@ -1502,10 +1509,12 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       (image->class == PseudoClass))
     for (y=0; y < (int) image->rows; y++)
     {
-      if (!GetPixelCache(image,0,y,image->columns,1))
+      p=GetPixelCache(image,0,y,image->columns,1);
+      if (p == (PixelPacket *) NULL)
         break;
+      indexes=GetIndexesCache(image);
       for (x=0; x < (int) image->columns; x++)
-        scanline[x]=image->indexes[x];
+        scanline[x]=indexes[x];
       count+=EncodeImage(image,scanline,row_bytes & 0x7FFF,packed_scanline);
       if (QuantumTick(y,image->rows))
         ProgressMonitor(SaveImageText,y,image->rows);

@@ -11,6 +11,9 @@ extern "C" {
 /*
   Exported pixel methods.
 */
+extern Export IndexPacket
+  *GetIndexesCache(Image *);
+
 extern Export PixelPacket
   *GetPixelCache(Image *,const int,const int,const unsigned int,
     const unsigned int),

@@ -238,6 +238,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Quantum
     *scale;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
     x;
@@ -367,10 +370,11 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
+          indexes=GetIndexesCache(image);
           for (x=0; x < (int) image->columns; x++)
           {
             index=!PNMInteger(image,2);
-            image->indexes[x]=index;
+            indexes[x]=index;
             *q++=image->colormap[index];
           }
           if (!SyncPixelCache(image))
@@ -391,10 +395,11 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
+          indexes=GetIndexesCache(image);
           for (x=0; x < (int) image->columns; x++)
           {
             index=PNMInteger(image,10);
-            image->indexes[x]=index;
+            indexes[x]=index;
             *q++=image->colormap[index];
           }
           if (!SyncPixelCache(image))
@@ -453,6 +458,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
+          indexes=GetIndexesCache(image);
           bit=0;
           byte=0;
           for (x=0; x < (int) image->columns; x++)
@@ -460,7 +466,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (bit == 0)
               byte=ReadByte(image);
             index=(byte & 0x80) ? 0 : 1;
-            image->indexes[x]=index;
+            indexes[x]=index;
             *q++=image->colormap[index];
             bit++;
             if (bit == 8)
@@ -496,6 +502,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
+          indexes=GetIndexesCache(image);
           for (x=0; x < (int) image->columns; x++)
           {
             if (image->depth <= 8)
@@ -508,7 +515,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (index >= image->colors)
               ThrowReaderException(CorruptImageWarning,"invalid colormap index",
                 image);
-            image->indexes[x]=index;
+            indexes[x]=index;
             *q++=image->colormap[index];
           }
           if (!SyncPixelCache(image))
@@ -720,11 +727,14 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
     *attribute;
 
   int
+    j,
     y;
+
+  register IndexPacket
+    *indexes;
 
   register int
     i,
-    j,
     x;
 
   register PixelPacket
@@ -860,11 +870,13 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         i=0;
         for (y=0; y < (int) image->rows; y++)
         {
-          if (!GetPixelCache(image,0,y,image->columns,1))
+          p=GetPixelCache(image,0,y,image->columns,1);
+          if (p == (PixelPacket *) NULL)
             break;
+          indexes=GetIndexesCache(image);
           for (x=0; x < (int) image->columns; x++)
           {
-            (void) sprintf(buffer,"%d ",(int) (image->indexes[x] == polarity));
+            (void) sprintf(buffer,"%d ",(int) (indexes[x] == polarity));
             (void) WriteBlob(image,strlen(buffer),buffer);
             i++;
             if (i == 36)
@@ -958,14 +970,16 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
         for (y=0; y < (int) image->rows; y++)
         {
-          if (!GetPixelCache(image,0,y,image->columns,1))
+          p=GetPixelCache(image,0,y,image->columns,1);
+          if (p == (PixelPacket *) NULL)
             break;
+          indexes=GetIndexesCache(image);
           bit=0;
           byte=0;
           for (x=0; x < (int) image->columns; x++)
           {
             byte<<=1;
-            if (image->indexes[x] == polarity)
+            if (indexes[x] == polarity)
               byte|=0x01;
             bit++;
             if (bit == 8)

@@ -190,20 +190,25 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  SGIHeader
-    iris_header;
+  int
+    y,
+    z;
+
+  register IndexPacket
+    *indexes;
 
   register int
     i,
-    x,
-    y,
-    z;
+    x;
 
   register PixelPacket
     *q;
 
   register unsigned char
     *p;
+
+  SGIHeader
+    iris_header;
 
   unsigned char
     *iris_pixels;
@@ -437,13 +442,15 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         for (y=0; y < (int) image->rows; y++)
         {
-          if (!SetPixelCache(image,0,y,image->columns,1))
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
             break;
+          indexes=GetIndexesCache(image);
           p=iris_pixels+((image->rows-1)-y)*(image->columns*4);
           for (x=0; x < (int) image->columns; x++)
           {
             index=(unsigned short) (*p);
-            image->indexes[x]=index;
+            indexes[x]=index;
             p+=4;
             q++;
           }

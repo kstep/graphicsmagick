@@ -128,12 +128,12 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   int
     y;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
     x;
-
-  register long
-    packets;
 
   register PixelPacket
     *q;
@@ -339,7 +339,6 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Allocate memory for the image and pixel buffer.
   */
-  packets=0;
   scanline=(unsigned char *) AllocateMemory(colorspace.numberOfComponents*
     image->columns*(tile_height+1));
   if (scanline == (unsigned char *) NULL)
@@ -382,6 +381,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     q=SetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     if ((y % tile_height) == 0)
       {
         /*
@@ -422,7 +422,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       else
         {
           index=UpScale(*r);
-          image->indexes[x]=index;
+          indexes[x]=index;
           q->red=index;
           q->green=index;
           q->blue=index;

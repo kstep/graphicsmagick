@@ -168,6 +168,9 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   long
     *scanlines;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
     x;
@@ -279,6 +282,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             q=GetPixelCache(image,x % image->columns,y/image->columns,1,1);
             if (q == (PixelPacket *) NULL)
               break;
+            indexes=GetIndexesCache(image);
             while (runlength < 0)
             {
               byte=ReadByte(image);
@@ -288,7 +292,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 case 0:
                 {
                   q->red=UpScale(byte);
-                  *image->indexes=0;
+                  *indexes=0;
                   break;
                 }
                 case 1:
@@ -328,7 +332,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             case 0:
             {
               q->red=UpScale(byte);
-              *image->indexes=0;
+              *indexes=0;
               break;
             }
             case 1:

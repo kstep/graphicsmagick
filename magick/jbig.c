@@ -111,6 +111,9 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,ExceptionInfo *exception
   long
     length;
 
+  register IndexPacket
+    *indexes;
+
   register int
     x;
 
@@ -209,6 +212,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,ExceptionInfo *exception
     q=SetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     bit=0;
     byte=0;
     for (x=0; x < (int) image->columns; x++)
@@ -220,7 +224,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,ExceptionInfo *exception
       byte<<=1;
       if (bit == 8)
         bit=0;
-      image->indexes[x]=index;
+      indexes[x]=index;
       *q++=image->colormap[index];
     }
     if (!SyncPixelCache(image))
@@ -343,17 +347,23 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     sans_offset,
     y;
 
+  register IndexPacket
+    *indexes;
+
   register int
     x;
 
+  register PixelPacket
+    *p;
+
   register unsigned char
-    bit,
     *q;
 
   struct jbg_enc_state
     jbig_info;
 
   unsigned char
+    bit,
     *pixels,
     polarity;
 
@@ -403,14 +413,16 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     q=pixels;
     for (y=0; y < (int) image->rows; y++)
     {
-      if (!GetPixelCache(image,0,y,image->columns,1))
+      p=GetPixelCache(image,0,y,image->columns,1);
+      if (p == (PixelPacket *) NULL)
         break;
+      indexes=GetIndexesCache(image);
       bit=0;
       byte=0;
       for (x=0; x < (int) image->columns; x++)
       {
         byte<<=1;
-        if (image->indexes[x] == polarity)
+        if (indexes[x] == polarity)
           byte|=0x01;
         bit++;
         if (bit == 8)

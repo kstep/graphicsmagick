@@ -1040,10 +1040,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 */
 Export void RegisterTIFFImage(void)
 {
+#if defined(HasTIFF)
   MagickInfo
     *entry;
 
-#if defined(HasTIFF)
   entry=SetMagickInfo("PTIF");
   entry->decoder=ReadTIFFImage;
   entry->encoder=WriteTIFFImage;
@@ -1266,9 +1266,15 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   int
     y;
 
+  register IndexPacket
+    *indexes;
+
   register int
     i,
     x;
+
+  register PixelPacket
+    *p;
 
   register unsigned char
     *q;
@@ -1753,15 +1759,17 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             }
         for (y=0; y < (int) image->rows; y++)
         {
-          if (!GetPixelCache(image,0,y,image->columns,1))
+          p=GetPixelCache(image,0,y,image->columns,1);
+          if (p == (PixelPacket *) NULL)
             break;
+          indexes=GetIndexesCache(image);
           bit=0;
           byte=0;
           q=scanline;
           for (x=0; x < (int) image->columns; x++)
           {
             byte<<=1;
-            if (image->indexes[x] == polarity)
+            if (indexes[x] == polarity)
               byte|=0x01;
             bit++;
             if (bit == 8)

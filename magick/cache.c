@@ -61,6 +61,39 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t I n d e x e s C a c h e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetIndexesCache returns the colormap indexes associated with the last
+%  GetPixelCache() or SetPixelCache() methods.
+%
+%  The format of the GetIndexesCache method is:
+%
+%      IndexPacket *GetIndexesCache(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o indexes: Method GetIndexesCache returns the indexes associated with the
+%      last GetPixelCache() or SetPixelCache() methods.
+%
+%    o image: Specifies a pointer to a Image structure.
+%
+%
+*/
+Export IndexPacket *GetIndexesCache(Image *image)
+{
+  assert(image != (Image *) NULL);
+  return(image->indexes);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t P i x e l C a c h e                                                 %
 %                                                                             %
 %                                                                             %
@@ -148,11 +181,14 @@ Export PixelPacket *GetPixelCache(Image *image,const int x,const int y,
 unsigned int ReadPixelCache(Image *image,const QuantumTypes quantum,
   const unsigned char *source)
 {
+  IndexPacket
+    index;
+
   register const unsigned char
     *p;
 
   register IndexPacket
-    index;
+    *indexes;
 
   register int
     x;
@@ -164,6 +200,7 @@ unsigned int ReadPixelCache(Image *image,const QuantumTypes quantum,
   assert(source != (const unsigned char *) NULL);
   p=source;
   q=image->pixels;
+  indexes=image->indexes;
   switch (quantum)
   {
     case IndexQuantum:
@@ -173,7 +210,7 @@ unsigned int ReadPixelCache(Image *image,const QuantumTypes quantum,
           for (x=0; x < (int) image->columns; x++)
           {
             index=(*p++);
-            image->indexes[x]=index;
+            indexes[x]=index;
             *q++=image->colormap[index];
           }
           break;
@@ -182,7 +219,7 @@ unsigned int ReadPixelCache(Image *image,const QuantumTypes quantum,
       {
         index=(*p++ << 8);
         index|=(*p++);
-        image->indexes[x]=index;
+        indexes[x]=index;
         *q++=image->colormap[index];
       }
       break;
@@ -194,7 +231,7 @@ unsigned int ReadPixelCache(Image *image,const QuantumTypes quantum,
           for (x=0; x < (int) image->columns; x++)
           {
             index=(*p++);
-            image->indexes[x]=index;
+            indexes[x]=index;
             *q=image->colormap[index];
             q->opacity=UpScale(*p++);
             q++;
@@ -205,7 +242,7 @@ unsigned int ReadPixelCache(Image *image,const QuantumTypes quantum,
       {
         index=(*p++ << 8);
         index|=(*p++);
-        image->indexes[x]=index;
+        indexes[x]=index;
         *q=image->colormap[index];
         q->opacity=(*p++ << 8);
         q->opacity|=(*p++);
@@ -220,7 +257,7 @@ unsigned int ReadPixelCache(Image *image,const QuantumTypes quantum,
           for (x=0; x < (int) image->columns; x++)
           {
             index=(*p++);
-            image->indexes[x]=index;
+            indexes[x]=index;
             *q++=image->colormap[index];
           }
           break;
@@ -229,7 +266,7 @@ unsigned int ReadPixelCache(Image *image,const QuantumTypes quantum,
       {
         index=(*p++ << 8);
         index|=(*p++);
-        image->indexes[x]=index;
+        indexes[x]=index;
         *q++=image->colormap[index];
       }
       break;
@@ -241,7 +278,7 @@ unsigned int ReadPixelCache(Image *image,const QuantumTypes quantum,
           for (x=0; x < (int) image->columns; x++)
           {
             index=(*p++);
-            image->indexes[x]=index;
+            indexes[x]=index;
             *q=image->colormap[index];
             q->opacity=(*p++);
             q++;
@@ -252,7 +289,7 @@ unsigned int ReadPixelCache(Image *image,const QuantumTypes quantum,
       {
         index=(*p++ << 8);
         index|=(*p++);
-        image->indexes[x]=index;
+        indexes[x]=index;
         *q=image->colormap[index];
         q->opacity=(*p++ << 8);
         q->opacity|=(*p++);
@@ -615,6 +652,9 @@ Export unsigned int SyncPixelCache(Image *image)
 unsigned int WritePixelCache(Image *image,const QuantumTypes quantum,
   unsigned char *destination)
 {
+  register IndexPacket
+    *indexes;
+
   register int
     x;
 
@@ -627,6 +667,7 @@ unsigned int WritePixelCache(Image *image,const QuantumTypes quantum,
   assert(image != (Image *) NULL);
   assert(destination != (unsigned char *) NULL);
   p=image->pixels;
+  indexes=image->indexes;
   q=destination;
   switch (quantum)
   {
@@ -635,13 +676,13 @@ unsigned int WritePixelCache(Image *image,const QuantumTypes quantum,
       if (image->colors <= 256)
         {
           for (x=0; x < (int) image->columns; x++)
-            *q++=image->indexes[x];
+            *q++=indexes[x];
           break;
         }
       for (x=0; x < (int) image->columns; x++)
       {
-        *q++=image->indexes[x] >> 8;
-        *q++=image->indexes[x];
+        *q++=indexes[x] >> 8;
+        *q++=indexes[x];
       }
       break;
     }
@@ -651,7 +692,7 @@ unsigned int WritePixelCache(Image *image,const QuantumTypes quantum,
         {
           for (x=0; x < (int) image->columns; x++)
           {
-            *q++=image->indexes[x];
+            *q++=indexes[x];
             *q++=p->opacity;
             p++;
           }
@@ -659,8 +700,8 @@ unsigned int WritePixelCache(Image *image,const QuantumTypes quantum,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-        *q++=image->indexes[x] >> 8;
-        *q++=image->indexes[x];
+        *q++=indexes[x] >> 8;
+        *q++=indexes[x];
         *q++=p->opacity >> 8;
         *q++=p->opacity;
         p++;

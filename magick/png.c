@@ -101,27 +101,33 @@ static unsigned int
 */
 Export unsigned int CompressColormapTransFirst(Image *image)
 {
+  IndexPacket
+    index;
+
   int
     number_colors,
+    j,
     y;
 
   PixelPacket
     *colormap;
 
   register IndexPacket
-    index;
+    *indexes;
 
   register int
     i,
-    j,
     x;
+
+  register PixelPacket
+    *p;
 
   unsigned char
     have_transparency,
     *marker;
 
   unsigned short
-    *link,
+    *map,
     *opacity;
 
   /*
@@ -147,41 +153,37 @@ Export unsigned int CompressColormapTransFirst(Image *image)
   */
   number_colors=image->colors;
   for (i=0; i < number_colors; i++)
-    {
-      marker[i]=False;
-      opacity[i]=Opaque;
-    }
+  {
+    marker[i]=False;
+    opacity[i]=Opaque;
+  }
   for (y=0; y < (int) image->rows; y++)
   {
-    register PixelPacket
-      *p;
-
     p=GetPixelCache(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     for (x=0; x < (int) image->columns; x++)
-      {
-         marker[image->indexes[x]]=True;
-         opacity[image->indexes[x]]=p->opacity;
-         p++;
-      }
+    {
+      marker[indexes[x]]=True;
+      opacity[indexes[x]]=p->opacity;
+      p++;
+    }
   }
   /*
     Unmark duplicates.
   */
   for (i=0; i < number_colors-1; i++)
-     if (marker[i])
-       {
+    if (marker[i])
+      {
         for (j=i+1; j<number_colors; j++)
-           if (marker[j] && (opacity[i]==opacity[j]) &&
-               (ColorMatch(image->colormap[i],image->colormap[j],0)))
-             {
-               marker[j]=False;
-             }
+          if (marker[j] && (opacity[i]==opacity[j]) &&
+              (ColorMatch(image->colormap[i],image->colormap[j],0)))
+            marker[j]=False;
        }
   /*
     Count colors that still remain.
-   */
+  */
   image->colors=0;
   have_transparency=False;
   for (i=0; i < number_colors; i++)
@@ -189,12 +191,14 @@ Export unsigned int CompressColormapTransFirst(Image *image)
       {
         image->colors++;
         if (opacity[i] != Opaque)
-           have_transparency=True;
+          have_transparency=True;
       }
-  if ((!have_transparency || opacity[0] == Transparent) &&
-     ((int) image->colors == number_colors))
+  if ((!have_transparency || (opacity[0] == Transparent)) &&
+      ((int) image->colors == number_colors))
     {
-      /* no duplicate or unused entries, and transparency-swap not needed */
+      /*
+        No duplicate or unused entries, and transparency-swap not needed
+      */
       FreeMemory(marker);
       FreeMemory(opacity);
       return(True);
@@ -214,9 +218,8 @@ Export unsigned int CompressColormapTransFirst(Image *image)
   /*
     Eliminate unused colormap entries.
   */
-  link=(unsigned short *) AllocateMemory(number_colors*sizeof(unsigned
-      short));
-  if (link == (unsigned short *) NULL)
+  map=(unsigned short *) AllocateMemory(number_colors*sizeof(unsigned short));
+  if (map == (unsigned short *) NULL)
     {
       FreeMemory(marker);
       FreeMemory(opacity);
@@ -227,27 +230,24 @@ Export unsigned int CompressColormapTransFirst(Image *image)
     }
   index=0;
   for (i=0; i < number_colors; i++)
-    {
-      if (marker[i])
-        {
-          link[i]=index;
-          index++;
-        }
-    }
-
+  {
+    if (marker[i])
+      {
+        map[i]=index;
+        index++;
+      }
+  }
   for (i=0; i < number_colors; i++)
   {
-     if (marker[i])
-       {
-         for (j=i+1; j<image->colors; j++)
-         {
-           if ((opacity[i]==opacity[j]) &&
-               (ColorMatch(image->colormap[i],image->colormap[j],0)))
-             {
-               link[j]=link[i];
-             }
-         }
-       }
+    if (marker[i])
+      {
+        for (j=i+1; j<image->colors; j++)
+        {
+          if ((opacity[i]==opacity[j]) &&
+              (ColorMatch(image->colormap[i],image->colormap[j],0)))
+            map[j]=map[i];
+        }
+      }
   }
   index=0;
   for (i=0; i < number_colors; i++)
@@ -263,25 +263,25 @@ Export unsigned int CompressColormapTransFirst(Image *image)
   if (have_transparency && opacity[0] != Transparent)
     {
       /*
-        Move the first transparent color to palette entry 0
+        Move the first transparent color to palette entry 0.
       */
       for (i=1; i < image->colors; i++)
       {
         if (opacity[i] == Transparent)
           {
             PixelPacket
-               temp_colormap;
+              temp_colormap;
 
             temp_colormap=colormap[0];
             colormap[0]=colormap[i];
             colormap[i]=temp_colormap;
-
             for (j=0; j < number_colors; j++)
             {
-              if (link[j] == 0)
-                 link[j]=i;
-              else if (link[j] == i)
-                 link[j]=0;
+              if (map[j] == 0)
+                map[j]=i;
+              else
+                if (map[j] == i)
+                  map[j]=0;
             }
             break;
           }
@@ -293,19 +293,19 @@ Export unsigned int CompressColormapTransFirst(Image *image)
   */
   for (y=0; y < (int) image->rows; y++)
   {
-    if (!GetPixelCache(image,0,y,image->columns,1))
+    p=GetPixelCache(image,0,y,image->columns,1);
+    if (p == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexesCache(image);
     for (x=0; x < (int) image->columns; x++)
     {
-      index=image->indexes[x];
-      assert (index < number_colors);
-      assert (link[index] < image->colors);
-      image->indexes[x]=link[index];
+      index=indexes[x];
+      indexes[x]=map[index];
     }
     if (!SyncPixelCache(image))
       break;
   }
-  FreeMemory(link);
+  FreeMemory(map);
   FreeMemory(image->colormap);
   image->colormap=colormap;
   return(True);
@@ -853,6 +853,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     frame,
     image_box,
     previous_fb;
+
+  register IndexPacket
+    *indexes;
 
   register int
     i,
@@ -2269,9 +2272,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert image to PseudoClass pixel packets.
         */
-        quantum_scanline=(Quantum *)
-          AllocateMemory((ping_info->color_type == 4 ? 2 : 1) * image->columns
-             *sizeof(Quantum));
+        quantum_scanline=(Quantum *) AllocateMemory((ping_info->color_type == 4
+          ? 2 : 1) * image->columns*sizeof(Quantum));
         if (quantum_scanline == (Quantum *) NULL)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
@@ -2280,6 +2282,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
+          indexes=GetIndexesCache(image);
           p=scanlines[y];
           r=quantum_scanline;
           switch (ping_info->bit_depth)
@@ -2364,7 +2367,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     q++;
                   }
 #else
-                image->indexes[x]=(unsigned short) (((*p) << 8) | (*(p+1)));
+                indexes[x]=(unsigned short) (((*p) << 8) | (*(p+1)));
                 *r++=(*p++);
                 p++;
                 if (ping_info->color_type == 4)
@@ -2377,7 +2380,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
               break;
             }
-
             default:
               break;
           }
@@ -2389,7 +2391,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (ping_info->bit_depth < 16)
 #endif
             for (x=0; x < (int) image->columns; x++)
-                image->indexes[x]=(*r++);
+              indexes[x]=(*r++);
           if (!SyncPixelCache(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -2398,61 +2400,63 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         FreeMemory(quantum_scanline);
       }
-        if (image->class == PseudoClass)
-          SyncImage(image);
-        if (ping_info->valid & PNG_INFO_tRNS)
-          {
-            ClassType
-              class;
-            /*
-              Image has a transparent background.
-            */
-            image->matte=True;
-            class=image->class;
-            for (y=0; y < (int) image->rows; y++)
-            {
-              image->class=class;
-              q=GetPixelCache(image,0,y,image->columns,1);
-              image->class=DirectClass;
-              if (q == (PixelPacket *) NULL)
-                break;
-              for (x=0; x < (int) image->columns; x++)
-              {
-                unsigned short
-                  index;
+      if (image->class == PseudoClass)
+        SyncImage(image);
+      if (ping_info->valid & PNG_INFO_tRNS)
+        {
+          ClassType
+            class;
 
-                q->opacity=Opaque;
-                if (class == PseudoClass)
-                  {
-                    index=image->indexes[x];
-                    if (ping_info->color_type != PNG_COLOR_TYPE_PALETTE)
-                      {
-                        q->red=image->colormap[index].red;
-                        q->green=image->colormap[index].green;
-                        q->blue=image->colormap[index].blue;
-                      }
-                    if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
-                      {
-                        if (index < ping_info->num_trans)
-                          q->opacity=(Quantum) UpScale(ping_info->trans[index]);
-                      }
+          /*
+            Image has a transparent background.
+          */
+          image->class=DirectClass;
+          image->matte=True;
+          class=image->class;
+          for (y=0; y < (int) image->rows; y++)
+          {
+            image->class=class;
+            q=GetPixelCache(image,0,y,image->columns,1);
+            if (q == (PixelPacket *) NULL)
+              break;
+            indexes=GetIndexesCache(image);
+            for (x=0; x < (int) image->columns; x++)
+            {
+              IndexPacket
+                index;
+
+              q->opacity=Opaque;
+              if (class == PseudoClass)
+                {
+                  index=indexes[x];
                   if (ping_info->color_type != PNG_COLOR_TYPE_PALETTE)
                     {
-                      if (q->red == transparent_color.opacity)
-                        q->opacity=Transparent;
+                      q->red=image->colormap[index].red;
+                      q->green=image->colormap[index].green;
+                      q->blue=image->colormap[index].blue;
                     }
+                  if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
+                    {
+                      if (index < ping_info->num_trans)
+                        q->opacity=(Quantum) UpScale(ping_info->trans[index]);
+                    }
+                if (ping_info->color_type != PNG_COLOR_TYPE_PALETTE)
+                  {
+                    if (q->red == transparent_color.opacity)
+                      q->opacity=Transparent;
                   }
-                else
-                  if (q->red == transparent_color.red &&
-                      q->green == transparent_color.green &&
-                      q->blue == transparent_color.blue)
-                     q->opacity=Transparent;
-                q++;
-              }
-              if (!SyncPixelCache(image))
-                break;
+                }
+              else
+                if (q->red == transparent_color.red &&
+                    q->green == transparent_color.green &&
+                    q->blue == transparent_color.blue)
+                   q->opacity=Transparent;
+              q++;
             }
+            if (!SyncPixelCache(image))
+              break;
           }
+        }
 #if (QuantumDepth == 8)
     if (image->depth > 8)
       image->depth = 8;
@@ -2766,10 +2770,10 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 */
 Export void RegisterPNGImage(void)
 {
+#if defined(HasPNG)
   MagickInfo
     *entry;
 
-#if defined(HasPNG)
   entry=SetMagickInfo("MNG");
   entry->decoder=ReadPNGImage;
   entry->encoder=WritePNGImage;
@@ -2924,6 +2928,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     save_image_depth,
     use_global_plte,
     y;
+
+  register IndexPacket
+    *indexes;
 
   register int
     i,
@@ -3725,14 +3732,15 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               p=GetPixelCache(image,0,y,image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
+              indexes=GetIndexesCache(image);
               for (x=0; x < (int) image->columns; x++)
               {
                 if (p->opacity != Opaque)
                   {
-                   unsigned short
+                    IndexPacket
                       index;
-                   index=image->indexes[x];
-                   assert(index < image->colors);
+
+                   index=indexes[x];
                    ping_info->trans[index]=(png_byte) DownScale(p->opacity);
                   }
                 p++;

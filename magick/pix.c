@@ -102,6 +102,9 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     green,
     red;
 
+  register IndexPacket
+    *indexes;
+
   register int
     x;
 
@@ -182,6 +185,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       q=SetPixelCache(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
+      indexes=GetIndexesCache(image);
       for (x=0; x < (int) image->columns; x++)
       {
         if (length == 0)
@@ -199,7 +203,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q->blue=blue;
         q->green=green;
         q->red=red;
-        image->indexes[x]=index;
+        indexes[x]=index;
         length--;
         q++;
       }
