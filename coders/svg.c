@@ -1639,8 +1639,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Open draw file.
   */
-  /* TemporaryFilename(filename); */
-  FormatString(filename,"C:\\Temp\\%s.mvg",image_info->filename);
+  TemporaryFilename(filename);
+  /* FormatString(filename,"C:\\Temp\\%s.mvg",image_info->filename); */
   file=fopen(filename,"w");
   if (file == (FILE *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
@@ -1684,7 +1684,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   CloneString(&clone_info->size,geometry);
   FormatString(clone_info->filename,"mvg:%.1024s",filename);
   image=ReadImage(clone_info,exception);
-  /* (void) remove(filename); */
+  (void) remove(filename);
   DestroyImageInfo(clone_info);
   if (image != (Image *) NULL)
     {
