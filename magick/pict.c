@@ -1026,7 +1026,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,ExceptionInfo *exception
             q=SetPixelCache(tile_image,0,y,tile_image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
-            indexes=GetIndexesCache(tile_image);
+            indexes=GetIndexes(tile_image);
             for (x=0; x < (int) tile_image->columns; x++)
             {
               if (tile_image->class == PseudoClass)
@@ -1512,7 +1512,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       p=GetPixelCache(image,0,y,image->columns,1);
       if (p == (PixelPacket *) NULL)
         break;
-      indexes=GetIndexesCache(image);
+      indexes=GetIndexes(image);
       for (x=0; x < (int) image->columns; x++)
         scanline[x]=indexes[x];
       count+=EncodeImage(image,scanline,row_bytes & 0x7FFF,packed_scanline);

@@ -3244,7 +3244,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexesCache(image);
+          indexes=GetIndexes(image);
           for (x=0; x < (int) image->columns; x++)
           {
             if (samples_per_pixel == 1)

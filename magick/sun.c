@@ -423,7 +423,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=SetPixelCache(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        indexes=GetIndexesCache(image);
+        indexes=GetIndexes(image);
         for (x=0; x < ((int) image->columns-7); x+=8)
         {
           for (bit=7; bit >= 0; bit--)
@@ -451,7 +451,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexesCache(image);
+          indexes=GetIndexes(image);
           for (x=0; x < (int) image->columns; x++)
             indexes[x]=(*p++);
           if ((image->columns % 2) != 0)
@@ -771,7 +771,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
             p=GetPixelCache(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
-            indexes=GetIndexesCache(image);
+            indexes=GetIndexes(image);
             bit=0;
             byte=0;
             for (x=0; x < (int) image->columns; x++)
@@ -817,7 +817,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
             p=GetPixelCache(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
-            indexes=GetIndexesCache(image);
+            indexes=GetIndexes(image);
             for (x=0; x < (int) image->columns; x++)
             {
               (void) WriteByte(image,indexes[x]);

@@ -282,7 +282,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             q=GetPixelCache(image,x % image->columns,y/image->columns,1,1);
             if (q == (PixelPacket *) NULL)
               break;
-            indexes=GetIndexesCache(image);
+            indexes=GetIndexes(image);
             while (runlength < 0)
             {
               byte=ReadByte(image);

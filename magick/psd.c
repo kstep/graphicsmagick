@@ -127,7 +127,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
           q=SetPixelCache(image,x % image->columns,x/image->columns,1,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexesCache(image);
+          indexes=GetIndexes(image);
           switch (channel)
           {
             case 0:
@@ -171,7 +171,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
       q=SetPixelCache(image,x % image->columns,x/image->columns,1,1);
       if (q == (PixelPacket *) NULL)
         break;
-      indexes=GetIndexesCache(image);
+      indexes=GetIndexes(image);
       switch (channel)
       {
         case 0:

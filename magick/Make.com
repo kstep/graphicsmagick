@@ -25,7 +25,7 @@ $call Make avs.c
 $call Make blob.c
 $call Make bmp.c
 $call Make cache.c
-$call Make cache_io.c
+$call Make cache_view.c
 $call Make cmyk.c
 $call Make colors.c
 $call Make compress.c
@@ -73,6 +73,7 @@ $call Make pcx.c
 $call Make pdf.c
 $call Make pict.c
 $call Make pix.c
+$call Make pixel_cache.c
 $call Make plasma.c
 $call Make png.c
 $call Make pnm.c
@@ -121,7 +122,7 @@ $call Make yuv.c
 $call Make zoom.c
 $call Make 8bim.c
 $library/create libmagick.olb PreRvIcccm.obj,animate.obj,annotate.obj, -
-  avs.obj,blob.obj,bmp.obj,cache.obj,cache_io.obj,cmyk.obj,colors.obj, -
+  avs.obj,blob.obj,bmp.obj,cache.obj,cache_view.obj,cmyk.obj,colors.obj, -
   compress.obj,dcm.obj,decorate.obj,delegates.obj,display.obj,dps.obj, -
   draw.obj,effects.obj,enhance.obj,ept.obj,error.obj,fax.obj,fits.obj, -
   fpx.obj,gems.obj,gif.obj,gradation.obj,gray.obj,hdf.obj, -
@@ -129,7 +130,7 @@ $library/create libmagick.olb PreRvIcccm.obj,animate.obj,annotate.obj, -
   jbig.obj,jpeg.obj,label.obj,logo.obj,magick.obj, -
   map.obj,matte.obj,memory.obj,miff.obj,monitor.obj,mono.obj, -
   montage.obj,mtv.obj,null.obj,pcd.obj,pcl.obj,pcx.obj, -
-  pdf.obj,pict.obj,pix.obj,plasma.obj,png.obj,pnm.obj, -
+  pdf.obj,pict.obj,pix.obj,pixel_cache.obj,plasma.obj,png.obj,pnm.obj, -
   preview.obj,ps.obj,ps2.obj,ps3.obj,psd.obj,pwp.obj,quantize.obj, -
   rgb.obj,rla.obj,rle.obj,segment.obj,sct.obj,sfw.obj,sgi.obj,shear.obj, -
   signature.obj,stegano.obj,sun.obj,tga.obj,tiff.obj,tile.obj, -

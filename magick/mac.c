@@ -1176,7 +1176,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
     q=SetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexesCache(image);
+    indexes=GetIndexes(image);
     for (x=0; x < image->columns; x++)
     {
       GetCPixel(x,y,&Pixel);

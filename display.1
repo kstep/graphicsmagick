@@ -1311,7 +1311,7 @@ ANNOTATION\fP for more details.
 .B printCommand (\fIclass\fP PrintCommand)
 This command is executed whenever \fBPrint\fP is issued (see \fBBUTTONS\fP.
 In general, it is the command to print Postscript to your printer.
-Default value: \fBlpr -r %s\fP.
+Default value: \fBlp -c -s %i\fP.
 .TP
 .B sharedMemory (\fIclass\fP SharedMemory)
 This resource specifies whether display should attempt use shared memory

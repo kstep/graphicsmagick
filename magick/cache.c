@@ -9,13 +9,13 @@
 %                     C      A   A  C      H   H  E                           %
 %                      CCCC  A   A   CCCC  H   H  EEEEE                       %
 %                                                                             %
-%                                                                             %
-%                      ImageMagick Pixel Cache Methods                        %
+%                         ImageMagick Cache Methods                           %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
+%                             William Radcliffe                               %
 %                                John Cristy                                  %
-%                                 July 1999                                   %
+%                               November 1999                                 %
 %                                                                             %
 %                                                                             %
 %  Copyright (C) 2000 ImageMagick Studio, a non-profit organization dedicated %
@@ -57,92 +57,233 @@
 #include "defines.h"
 
 /*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t I n d e x e s C a c h e                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method GetIndexesCache returns the colormap indexes associated with the last
-%  GetPixelCache() or SetPixelCache() methods.
-%
-%  The format of the GetIndexesCache method is:
-%
-%      IndexPacket *GetIndexesCache(Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o indexes: Method GetIndexesCache returns the indexes associated with the
-%      last GetPixelCache() or SetPixelCache() methods.
-%
-%    o image: Specifies a pointer to a Image structure.
-%
-%
+  Typedef declarations.
 */
-Export IndexPacket *GetIndexesCache(Image *image)
+typedef struct _ViewInfo
 {
-  assert(image != (Image *) NULL);
-  return(image->indexes);
-}
+  unsigned int
+    width,
+    height;
+
+  int
+    x,
+    y;
+
+  void
+    *stash;
+} ViewInfo;
+
+typedef struct _CacheInfo
+{
+  ClassType
+#if defined(__cplusplus) || defined(c_plusplus)
+    c_class;
+#else
+    class;
+#endif
+
+  CacheType
+    type;
+
+  off_t
+    number_pixels;
+
+  unsigned int
+    columns,
+    rows;
+
+  PixelPacket
+    *pixels;
+
+  IndexPacket
+    *indexes;
+
+  char
+    filename[MaxTextExtent];
+
+  int
+    file;
+
+  off_t
+    length;
+
+  int
+    id;
+
+  ViewInfo
+    *view;
+} CacheInfo;
+
+/*
+  Global declarations.
+*/
+static off_t
+  cache_threshold = PixelCacheThreshold;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t P i x e l C a c h e                                                 %
+%   A l l o c a t e C a c h e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetPixelCache gets pixels from the in-memory or disk pixel cache as
-%  defined by the geometry parameters.   A pointer to the pixels is returned if
-%  the pixels are transferred, otherwise a NULL is returned.
+%  Method AllocateCache initializes the pixel cache.  This includes defining
+%  the cache dimensions, allocating space for the image pixels and optionally
+%  the colormap indexes, and memory mapping the cache if it is disk based.
 %
-%  The format of the GetPixelCache method is:
+%  The format of the AllocateCache method is:
 %
-%      PixelPacket *GetPixelCache(Image *image,const int x,const int y,
+%      unsigned int AllocateCache(Cache cache,const ClassType class_type,
 %        const unsigned int columns,const unsigned int rows)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method GetPixelCache returns a pointer to the pixels is
-%      returned if the pixels are transferred, otherwise a NULL is returned.
+%    o status: Method AllocateCache returns True if the pixel cache is
+%      initialized successfully otherwise False.
 %
-%    o image: The address of a structure of type Image.
+%    o cache: Specifies a pointer to a Cache structure.
 %
-%    o x,y,columns,rows:  These values define the perimeter of a region of
-%      pixels.
+%    o class_type: DirectClass or PseudoClass.
+%
+%    o columns: This unsigned integer defines the number of columns in the
+%      pixel cache.
+%
+%    o rows: This unsigned integer defines the number of rows in the pixel
+%      cache.
 %
 %
 */
-Export PixelPacket *GetPixelCache(Image *image,const int x,const int y,
+Export unsigned int AllocateCache(Cache cache,const ClassType class_type,
   const unsigned int columns,const unsigned int rows)
 {
-  unsigned int
-    status;
+  CacheInfo
+    *cache_info;
 
-  /*
-    Transfer pixels from the cache.
-  */
-  assert(image != (Image *) NULL);
-  if (!SetPixelCache(image,x,y,columns,rows))
-    return((PixelPacket *) NULL);
-  status=ReadCachePixels(image->cache,image->pixels);
-  if (image->class == PseudoClass)
-    status|=ReadCacheIndexes(image->cache,image->indexes);
-  if (status == False)
+  char
+    null = 0;
+
+  off_t
+    length;
+
+  void
+    *allocation;
+
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
+  if (class_type == cache_info->class)
+    return(True);
+  length=cache_info->number_pixels*sizeof(PixelPacket);
+  if (cache_info->class == PseudoClass)
+    length+=cache_info->number_pixels*sizeof(IndexPacket);
+  cache_info->rows=rows;
+  cache_info->columns=columns;
+  cache_info->number_pixels=columns*rows;
+  if (cache_info->class != UndefinedClass)
     {
-      ThrowException(&image->exception,CacheWarning,
-        "Unable to read pixels from cache",(char *) NULL);
-      return((PixelPacket *) NULL);
+      /*
+        Free memory-based cache resources.
+      */
+      if (cache_info->type == MemoryCache)
+        (void) GetCacheMemory(length);
+      if (cache_info->type == MemoryMappedCache)
+        (void) UnmapBlob(cache_info->pixels,length);
     }
-  return(image->pixels);
+  else
+    {
+      register int
+        id;
+
+      /*
+        Allocate cache views.
+      */
+      cache_info->id=0;
+      cache_info->view=(ViewInfo *)
+        AllocateMemory(cache_info->rows*sizeof(ViewInfo));
+      if (cache_info->view == (ViewInfo *) NULL)
+        MagickError(ResourceLimitError,"Memory allocation failed",
+          "unable to allocate cache views");
+      for (id=0; id < cache_info->rows; id++)
+      {
+        cache_info->view[id].width=0;
+        cache_info->view[id].height=0;
+        cache_info->view[id].x=0;
+        cache_info->view[id].y=0;
+        cache_info->view[id].stash=(void *) NULL;
+      }
+    }
+  length=cache_info->number_pixels*sizeof(PixelPacket);
+  if (class_type == PseudoClass)
+    length+=cache_info->number_pixels*sizeof(IndexPacket);
+  if ((cache_info->type == MemoryCache) ||
+      ((cache_info->type == UndefinedCache) && (length <= GetCacheMemory(0))))
+    {
+      if (cache_info->class == UndefinedClass)
+        allocation=AllocateMemory(length);
+      else
+        {
+          allocation=ReallocateMemory(cache_info->pixels,length);
+          if (allocation == (void *) NULL)
+            return(False);
+        }
+      if (allocation != (void *) NULL)
+        {
+          /*
+            Create in-memory pixel cache.
+          */
+          (void) GetCacheMemory(-length);
+          cache_info->class=class_type;
+          cache_info->type=MemoryCache;
+          cache_info->pixels=(PixelPacket *) allocation;
+          if (cache_info->class == PseudoClass)
+            cache_info->indexes=(IndexPacket *)
+              (cache_info->pixels+cache_info->number_pixels);
+          return(True);
+        }
+    }
+  /*
+    Create pixel cache on disk.
+  */
+  if (cache_info->class == UndefinedClass)
+    TemporaryFilename(cache_info->filename);
+  if (cache_info->file == -1)
+    {
+      cache_info->file=
+        open(cache_info->filename,O_RDWR | O_CREAT | O_BINARY,0777);
+      if (cache_info->file == -1)
+        return(False);
+    }
+  if (lseek(cache_info->file,length,SEEK_SET) == -1)
+    return(False);
+  if (write(cache_info->file,&null,sizeof(null)) == -1)
+    return(False);
+#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+  (void) ftruncate(cache_info->file,length);
+#endif
+  cache_info->class=class_type;
+  if (cache_info->type != DiskCache)
+    {
+      size_t
+        offset;
+
+      cache_info->type=DiskCache;
+      allocation=MapBlob(cache_info->file,IOMode,&offset);
+      if (allocation != (void *) NULL)
+        {
+          /*
+            Create memory-mapped pixel cache.
+          */
+          cache_info->type=MemoryMappedCache;
+          cache_info->pixels=(PixelPacket *) allocation;
+          if (cache_info->class == PseudoClass)
+            cache_info->indexes=(IndexPacket *)
+              (cache_info->pixels+cache_info->number_pixels);
+        }
+    }
+  return(True);
 }
 
 /*
@@ -150,288 +291,521 @@ Export PixelPacket *GetPixelCache(Image *image,const int x,const int y,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d P i x e l C a c h e                                               %
+%   C l o s e C a c h e                                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadPixelCache transfers one or more pixel components from a buffer
-%  or file into the image pixel buffer of an image.  It returns True if the
-%  pixels are successfully transferred, otherwise False.
+%  Method CloseCache closes the file handle associated with a disk pixel cache.
 %
-%  The format of the ReadPixelCache method is:
+%  The format of the CloseCache method is:
 %
-%      unsigned int ReadPixelCache(Image *image,const QuantumTypes quantum,
-%        const unsigned char *source)
+%      void CloseCache(Cache cache)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method ReadPixelCache returns True if the pixels are
-%      successfully transferred, otherwise False.
+%    o cache: Specifies a pointer to a Cache structure.
 %
-%    o image: The address of a structure of type Image.
-%
-%    o quantum: Declare which pixel components to transfer (red, green, blue,
-%      opacity, RGB, or RGBA).
-%
-%    o source:  The pixel components are transferred from this buffer.
 %
 */
-unsigned int ReadPixelCache(Image *image,const QuantumTypes quantum,
-  const unsigned char *source)
+Export void CloseCache(Cache cache)
 {
-  IndexPacket
-    index;
+  CacheInfo
+    *cache_info;
 
-  register const unsigned char
-    *p;
-
-  register IndexPacket
-    *indexes;
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
+  if (cache_info->file != -1)
+    (void) close(cache_info->file);
+  cache_info->file=(-1);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D e s t r o y C a c h e I n f o                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DestroyCacheInfo deallocates memory associated with the pixel cache.
+%
+%  The format of the DestroyCacheInfo method is:
+%
+%      void DestroyCacheInfo(Cache cache)
+%
+%  A description of each parameter follows:
+%
+%    o cache: Specifies a pointer to a Cache structure.
+%
+%
+*/
+Export void DestroyCacheInfo(Cache cache)
+{
+  CacheInfo
+    *cache_info;
 
   register int
-    x;
+    id;
 
-  register PixelPacket
-    *q;
-
-  assert(image != (Image *) NULL);
-  assert(source != (const unsigned char *) NULL);
-  p=source;
-  q=image->pixels;
-  indexes=image->indexes;
-  switch (quantum)
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
+  switch (cache_info->type)
   {
-    case IndexQuantum:
+    case MemoryCache:
     {
-      if (image->colors <= 256)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            index=(*p++);
-            indexes[x]=index;
-            *q++=image->colormap[index];
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        index=(*p++ << 8);
-        index|=(*p++);
-        indexes[x]=index;
-        *q++=image->colormap[index];
-      }
+      FreeMemory(cache_info->pixels);
+      if (cache_info->class == PseudoClass)
+        (void) GetCacheMemory(cache_info->number_pixels*sizeof(IndexPacket));
+      (void) GetCacheMemory(cache_info->number_pixels*sizeof(PixelPacket));
       break;
     }
-    case IndexOpacityQuantum:
+    case MemoryMappedCache:
     {
-      if (image->colors <= 256)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            index=(*p++);
-            indexes[x]=index;
-            *q=image->colormap[index];
-            q->opacity=UpScale(*p++);
-            q++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        index=(*p++ << 8);
-        index|=(*p++);
-        indexes[x]=index;
-        *q=image->colormap[index];
-        q->opacity=(*p++ << 8);
-        q->opacity|=(*p++);
-        q++;
-      }
+      size_t
+        length;
+
+      /*
+        Unmap memory-mapped pixels and indexes.
+      */
+      length=cache_info->number_pixels*sizeof(PixelPacket);
+      if (cache_info->class == PseudoClass)
+        length+=cache_info->number_pixels*sizeof(IndexPacket);
+      (void) UnmapBlob(cache_info->pixels,length);
+    }
+    case DiskCache:
+    {
+      CloseCache(cache);
+      (void) remove(cache_info->filename);
       break;
     }
-    case GrayQuantum:
-    {
-      if (image->colors <= 256)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            index=(*p++);
-            indexes[x]=index;
-            *q++=image->colormap[index];
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        index=(*p++ << 8);
-        index|=(*p++);
-        indexes[x]=index;
-        *q++=image->colormap[index];
-      }
-      break;
-    }
-    case GrayOpacityQuantum:
-    {
-      if (image->colors <= 256)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            index=(*p++);
-            indexes[x]=index;
-            *q=image->colormap[index];
-            q->opacity=(*p++);
-            q++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        index=(*p++ << 8);
-        index|=(*p++);
-        indexes[x]=index;
-        *q=image->colormap[index];
-        q->opacity=(*p++ << 8);
-        q->opacity|=(*p++);
-        q++;
-      }
-      break;
-    }
-    case RedQuantum:
-    case CyanQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            q->red=UpScale(*p++);
-            q++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        q->red=(*p++ << 8);
-        q->red|=(*p++);
-        q++;
-      }
-      break;
-    }
-    case GreenQuantum:
-    case YellowQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            q->green=UpScale(*p++);
-            q++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        q->green=(*p++ << 8);
-        q->green|=(*p++);
-        q++;
-      }
-      break;
-    }
-    case BlueQuantum:
-    case MagentaQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            q->blue=UpScale(*p++);
-            q++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        q->blue=(*p++ << 8);
-        q->blue|=(*p++);
-        q++;
-      }
-      break;
-    }
-    case OpacityQuantum:
-    case BlackQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            q->opacity=UpScale(*p++);
-            q++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        q->opacity=(*p++ << 8);
-        q->opacity|=(*p++);
-        q++;
-      }
-      break;
-    }
-    case RGBQuantum:
     default:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            q->red=UpScale(*p++);
-            q->green=UpScale(*p++);
-            q->blue=UpScale(*p++);
-            q++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        q->red=(*p++ << 8);
-        q->red|=(*p++);
-        q->green=(*p++ << 8);
-        q->green|=(*p++);
-        q->blue=(*p++ << 8);
-        q->blue|=(*p++);
-        q++;
-      }
       break;
-    }
-    case RGBAQuantum:
-    case CMYKQuantum:
+  }
+  for (id=0; id < cache_info->rows; id++)
+    if (cache_info->view[id].stash != (void *) NULL)
+      FreeMemory(cache_info->view[id].stash);
+  FreeMemory(cache_info->view);
+  FreeMemory(cache_info);
+  cache=(void *) NULL;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t C a c h e C l a s s T y p e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetCacheClassType returns the class type of the pixel cache.
+%
+%  The format of the GetCacheClassType method is:
+%
+%      ClassType GetCacheClassType(Cache cache)
+%
+%  A description of each parameter follows:
+%
+%    o type: Method GetCacheClassType returns DirectClass or PseudoClass.
+%
+%    o cache: Specifies a pointer to a Cache structure.
+%
+%
+*/
+Export ClassType GetCacheClassType(Cache cache)
+{
+  CacheInfo
+    *cache_info;
+
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
+  return(cache_info->class);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t C a c h e I n d e x e s                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetCacheIndexes returns the address of the cache colormap index
+%  buffer.
+%
+%  The format of the GetCacheIndexes method is:
+%
+%      void *GetCacheIndexes(Cache cache,const unsigned int x,
+%        const unsigned int y)
+%
+%  A description of each parameter follows:
+%
+%    o cache: Specifies a pointer to a Cache structure.
+%
+%    o x,y: This unsigned integer defines the offset into the pixel buffer.
+%
+%
+*/
+Export IndexPacket *GetCacheIndexes(Cache cache,const unsigned int x,
+  const unsigned int y)
+{
+  CacheInfo
+    *cache_info;
+
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
+  if ((cache_info->class != PseudoClass) || (cache_info->type == DiskCache))
+    return((IndexPacket *) NULL);
+  return(cache_info->indexes+(y*cache_info->columns+x));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t C a c h e I n f o                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetCacheInfo initializes the Cache structure.
+%
+%  The format of the GetCacheInfo method is:
+%
+%      void GetCacheInfo(Cache *cache)
+%
+%  A description of each parameter follows:
+%
+%    o cache: Specifies a pointer to a Cache structure.
+%
+%
+*/
+Export void GetCacheInfo(Cache *cache)
+{
+  CacheInfo
+    *cache_info;
+
+  assert(cache != (Cache *) NULL);
+  cache_info=(CacheInfo *) AllocateMemory(sizeof(CacheInfo));
+  cache_info->class=UndefinedClass;
+  cache_info->type=UndefinedCache;
+  cache_info->number_pixels=0;
+  cache_info->rows=0;
+  cache_info->columns=0;
+  cache_info->pixels=(PixelPacket *) NULL;
+  cache_info->indexes=(IndexPacket *) NULL;
+  *cache_info->filename='\0';
+  cache_info->file=(-1);
+  cache_info->length=0;
+  cache_info->id=0;
+  cache_info->view=(ViewInfo *) NULL;
+  *cache=cache_info;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t C a c h e M e m o r y                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetCacheMemory adjusts the amount of free cache memory and then
+%  returns the resulting value.
+%
+%  The format of the GetCacheMemory method is:
+%
+%      off_t GetCacheMemory(const off_t memory)
+%
+%  A description of each parameter follows:
+%
+%    o memory: Specifies the adjustment to the cache memory.  Use 0 to
+%      return the current free memory in the cache.
+%
+%
+*/
+Export off_t GetCacheMemory(const off_t memory)
+{
+  static off_t
+    free_memory = PixelCacheThreshold*1024*1024;
+
+#if defined(HasPTHREADS)
+  {
+    static pthread_mutex_t
+      memory_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+    pthread_mutex_lock(&memory_mutex);
+    free_memory+=memory;
+    pthread_mutex_unlock(&memory_mutex);
+  }
+#else
+  free_memory+=memory;
+#endif
+  return(free_memory);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t C a c h e P i x e l s                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetCachePixels returns the address of the cache pixel buffer.
+%
+%  The format of the GetCachePixels method is:
+%
+%      void *GetCachePixels(Cache cache,const unsigned int x,
+%        const unsigned int y)
+%
+%  A description of each parameter follows:
+%
+%    o cache: Specifies a pointer to a Cache structure.
+%
+%    o x,y: This unsigned integer defines the offset into the pixel buffer.
+%
+%
+*/
+Export PixelPacket *GetCachePixels(Cache cache,const unsigned int x,
+  const unsigned int y)
+{
+  CacheInfo
+    *cache_info;
+
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
+  if (cache_info->type == DiskCache)
+    return((PixelPacket *) NULL);
+  return(cache_info->pixels+(y*cache_info->columns+x));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t C a c h e S t a s h                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetCacheStash allocates memory for the cache pixel buffer.
+%
+%  The format of the GetCacheStash method is:
+%
+%      void GetCacheStash(Cache *cache)
+%
+%  A description of each parameter follows:
+%
+%    o cache: Specifies a pointer to a Cache structure.
+%
+%
+*/
+Export void *GetCacheStash(Cache cache)
+{
+  CacheInfo
+    *cache_info;
+
+  off_t
+    length;
+
+  register int
+    id;
+
+  unsigned int
+    number_pixels;
+
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
+  id=cache_info->id;
+  number_pixels=cache_info->view[id].width*cache_info->view[id].height;
+  length=number_pixels*sizeof(PixelPacket);
+  if (cache_info->class == PseudoClass)
+    length+=number_pixels*sizeof(IndexPacket);
+  if (cache_info->view[id].stash == (void *) NULL)
+    cache_info->view[id].stash=AllocateMemory(length);
+  else
+    if (cache_info->length < length)
+      cache_info->view[id].stash=
+        ReallocateMemory(cache_info->view[id].stash,length);
+  cache_info->length=length;
+  return(cache_info->view[id].stash);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t C a c h e T h e s h o l d                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetCacheThreshold gets the amount of free memory allocated for the
+%  pixel cache.  Once this threshold is exceeded, all subsequent pixels cache
+%  operations are to/from disk.
+%
+%  The format of the GetCacheThreshold method is:
+%
+%      off_t GetCacheThreshold()
+%
+%  A description of each parameter follows:
+%
+%    o threshold: The number of megabytes of memory available to the pixel
+%      cache.
+%
+%
+*/
+Export off_t GetCacheThreshold()
+{
+  return(cache_threshold);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t C a c h e T y p e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetCacheType returns the class type of the pixel cache.
+%
+%  The format of the GetCacheType method is:
+%
+%      Type GetCacheType(Cache cache)
+%
+%  A description of each parameter follows:
+%
+%    o type: Method GetCacheType returns Direct or Pseudo.
+%
+%    o cache: Specifies a pointer to a Cache structure.
+%
+%
+*/
+Export CacheType GetCacheType(Cache cache)
+{
+  CacheInfo
+    *cache_info;
+
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
+  return(cache_info->type);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e a d C a c h e I n d e x e s                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadCacheIndexes reads colormap indexes from the specified region
+%  of the pixel cache.
+%
+%  The format of the ReadCacheIndexes method is:
+%
+%      unsigned int ReadCacheIndexes(Cache cache,IndexPacket *indexes)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method ReadCacheIndexes returns True if the colormap indexes
+%      are successfully read from the pixel cache, otherwise False.
+%
+%    o cache_info: Specifies a pointer to a CacheInfo structure.
+%
+%    o indexes: The colormap indexes are copied from this IndexPacket address
+%      to the pixel cache.
+%
+%
+*/
+Export unsigned int ReadCacheIndexes(Cache cache,IndexPacket *indexes)
+{
+  CacheInfo
+    *cache_info;
+
+  off_t
+    count,
+    offset;
+
+  register int
+    y;
+
+  register ViewInfo
+    *view;
+
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
+  if (cache_info->class != PseudoClass)
+    return(False);
+  view=cache_info->view+cache_info->id;
+  offset=view->y*cache_info->columns+view->x;
+  if (cache_info->type != DiskCache)
     {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            q->red=UpScale(*p++);
-            q->green=UpScale(*p++);
-            q->blue=UpScale(*p++);
-            q->opacity=UpScale(*p++);
-            q++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
+      /*
+        Read pixels from memory.
+      */
+      if (indexes == (cache_info->indexes+offset))
+        return(True);
+      for (y=0; y < (int) view->height; y++)
       {
-        q->red=(*p++ << 8);
-        q->red|=(*p++);
-        q->green=(*p++ << 8);
-        q->green|=(*p++);
-        q->blue=(*p++ << 8);
-        q->blue|=(*p++);
-        q->opacity=(*p++ << 8);
-        q->opacity|=(*p++);
-        q++;
+        (void) memcpy(indexes,cache_info->indexes+offset,
+          view->width*sizeof(IndexPacket));
+        indexes+=view->width;
+        offset+=cache_info->columns;
       }
-      break;
+      return(True);
     }
+  /*
+    Read pixels from disk.
+  */
+  if (cache_info->file == -1)
+    {
+      cache_info->file=open(cache_info->filename,O_RDWR | O_BINARY,0777);
+      if (cache_info->file == -1)
+        return(False);
+    }
+  for (y=0; y < (int) view->height; y++)
+  {
+    count=lseek(cache_info->file,cache_info->number_pixels*sizeof(PixelPacket)+
+      offset*sizeof(IndexPacket),SEEK_SET);
+    if (count == -1)
+      return(False);
+    count=
+      read(cache_info->file,(char *) indexes,view->width*sizeof(IndexPacket));
+    if (count != (view->width*sizeof(IndexPacket)))
+      return(False);
+    indexes+=view->width;
+    offset+=cache_info->columns;
   }
   return(True);
 }
@@ -441,177 +815,87 @@ unsigned int ReadPixelCache(Image *image,const QuantumTypes quantum,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S e t P i x e l C a c h e                                                 %
+%   R e a d C a c h e P i x e l s                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SetPixelCache allocates an area to store image pixels as defined
-%  by the region rectangle and returns a pointer to the area.  This area is
-%  subsequently transferred from the pixel cache with the SyncPixelCache.
-%  A pointer to the pixels is returned if the pixels are transferred,
-%  otherwise a NULL is returned.
+%  Method ReadCachePixels reads pixels from the specified region of the pixel
+%  cache.
 %
-%  The format of the SetPixelCache method is:
+%  The format of the ReadCachePixels method is:
 %
-%      PixelPacket *SetPixelCache(Image *image,const int x,const int y,
-%        const unsigned int columns,const unsigned int rows)
+%      unsigned int ReadCachePixels(Cache cache,IndexPacket *indexes)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method SetPixelCache returns a pointer to the pixels is
-%      returned if the pixels are transferred, otherwise a NULL is returned.
+%    o status: Method ReadCachePixels returns True if the pixels are
+%      successfully read from the pixel cache, otherwise False.
 %
-%    o image: The address of a structure of type Image.
+%    o cache_info: Specifies a pointer to a CacheInfo structure.
 %
-%    o x,y,columns,rows:  These values define the perimeter of a region of
-%      pixels.
+%    o pixels: The pixels are copied from this PixelPacket address to the
+%      pixel cache.
 %
 %
 */
-Export PixelPacket *SetPixelCache(Image *image,const int x,const int y,
-  const unsigned int columns,const unsigned int rows)
+Export unsigned int ReadCachePixels(Cache cache,PixelPacket *pixels)
 {
-  RectangleInfo
-    view;
+  CacheInfo
+    *cache_info;
 
-  unsigned int
-    status;
+  off_t
+    count,
+    offset;
 
-  /*
-    Validate pixel cache geometry.
-  */
-  assert(image != (Image *) NULL);
-  if ((x < 0) || (y < 0) || ((x+columns) > (int) image->columns) ||
-      ((y+rows) > (int) image->rows) || (columns == 0) || (rows == 0))
-    {
-      ThrowException(&image->exception,CacheWarning,"Unable to set pixel cache",
-        "image does not contain the cache geometry");
-      return((PixelPacket *) NULL);
-    }
-  /*
-    Allocate pixel cache.
-  */
-  status=AllocateCache(image->cache,image->class,image->columns,image->rows);
-  if (status == False)
-    {
-      ThrowException(&image->exception,CacheWarning,
-        "Unable to allocate pixel cache",(char *) NULL);
-      return((PixelPacket *) NULL);
-    }
-  view.x=x;
-  view.y=y;
-  view.width=columns;
-  view.height=rows;
-  SetCacheView(image->cache,image->view,&view);
-  if ((((x+columns) <= image->columns) && (rows == 1)) ||
-      ((x == 0) && ((columns % image->columns) == 0)))
+  register int
+    y;
+
+  register ViewInfo
+    *view;
+
+  assert(cache != (Cache *) NULL);
+  cache_info=(CacheInfo *) cache;
+  view=cache_info->view+cache_info->id;
+  offset=view->y*cache_info->columns+view->x;
+  if (cache_info->type != DiskCache)
     {
       /*
-        Direct access to the pixel cache-- no intermediate buffer.
+        Read pixels from memory.
       */
-      image->pixels=GetCachePixels(image->cache,x,y);
-      image->indexes=GetCacheIndexes(image->cache,x,y);
-      if (image->pixels != (PixelPacket *) NULL)
-        return(image->pixels);
+      if (pixels == (cache_info->pixels+offset))
+        return(True);
+      for (y=0; y < (int) view->height; y++)
+      {
+        (void) memcpy(pixels,cache_info->pixels+offset,
+          view->width*sizeof(PixelPacket));
+        pixels+=view->width;
+        offset+=cache_info->columns;
+      }
+      return(True);
     }
   /*
-    Allocate buffer to get/put pixels/indexes to/from the pixel cache.
+    Read pixels from disk.
   */
-  image->pixels=(PixelPacket *) GetCacheStash(image->cache);
-  if (image->pixels == (PixelPacket *) NULL)
+  if (cache_info->file == -1)
     {
-      ThrowException(&image->exception,CacheWarning,"Unable to set pixel cache",
-        "Memory allocation failed");
-      return((PixelPacket *) NULL);
+      cache_info->file=open(cache_info->filename,O_RDWR | O_BINARY,0777);
+      if (cache_info->file == -1)
+        return(False);
     }
-  image->indexes=(IndexPacket *) (image->pixels+columns*rows);
-  return(image->pixels);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   S e t P i x e l C a c h e V i e w                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method SetPixelCacheView sets the current cache view.
-%
-%  The format of the SetPixelCacheView method is:
-%
-%      void SetPixelCacheView(Cache cache,const unsigned int id,
-%        const RectangleInfo *view)
-%
-%  A description of each parameter follows:
-%
-%    o cache: Specifies a pointer to a Cache structure.
-%
-%    o id: Specifies the current cache view.
-%
-%
-*/
-Export void SetPixelCacheView(Image *image,const unsigned int id)
-{
-  assert(image != (Image *) NULL);
-  image->view=id % image->rows;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   S y n c P i x e l C a c h e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method SyncPixelCache saves the image pixels to the in-memory or disk cache.
-%  The method returns True if the pixel region is set, otherwise False.
-%
-%  The format of the SyncPixelCache method is:
-%
-%      unsigned int SyncPixelCache(Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o status: Method SyncPixelCache returns True if the image pixels are
-%      transferred to the in-memory or disk cache otherwise False.
-%
-%    o image: The address of a structure of type Image.
-%
-%
-*/
-Export unsigned int SyncPixelCache(Image *image)
-{
-  unsigned int
-    status;
-
-  /*
-    Allocate pixel cache.
-  */
-  assert(image != (Image *) NULL);
-  status=AllocateCache(image->cache,image->class,image->columns,image->rows);
-  if (status == False)
-    ThrowBinaryException(CacheWarning,"Unable to allocate pixel cache",
-      (char *) NULL);
-  /*
-    Transfer pixels to the cache.
-  */
-  status=WriteCachePixels(image->cache,image->pixels);
-  if (image->class == PseudoClass)
-    status|=WriteCacheIndexes(image->cache,image->indexes);
-  if (status == False)
-    ThrowBinaryException(CacheWarning,"Unable to sync pixel cache",
-      (char *) NULL);
-  image->tainted=True;
+  for (y=0; y < (int) view->height; y++)
+  {
+    count=lseek(cache_info->file,offset*sizeof(PixelPacket),SEEK_SET);
+    if (count == -1)
+      return(False);
+    count=
+      read(cache_info->file,(char *) pixels,view->width*sizeof(PixelPacket));
+    if (count != (view->width*sizeof(PixelPacket)))
+      return(False);
+    pixels+=view->width;
+    offset+=cache_info->columns;
+  }
   return(True);
 }
 
@@ -620,270 +904,294 @@ Export unsigned int SyncPixelCache(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   W r i t e P i x e l C a c h e                                             %
+%   S e t C a c h e T h e s h o l d                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WritePixelCache transfers one or more pixel components from the image
-%  pixel buffer to a buffer or file. It returns True if the pixels are
-%  successfully transferred, otherwise False.
+%  Method SetCacheThreshold sets the amount of free memory allocated for the
+%  pixel cache.  Once this threshold is exceeded, all subsequent pixels cache
+%  operations are to/from disk.
 %
-%  The format of the WritePixelCache method is:
+%  The format of the SetCacheThreshold method is:
 %
-%      unsigned int WritePixelCache(Image *,const QuantumTypes quantum,
-%        unsigned char *destination)
+%      void SetCacheThreshold(const off_t threshold)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method WritePixelCache returns True if the pixels are
-%      successfully transferred, otherwise False.
-%
-%    o image: The address of a structure of type Image.
-%
-%    o quantum: Declare which pixel components to transfer (red, green, blue,
-%      opacity, RGB, or RGBA).
-%
-%    o destination:  The components are transferred to this buffer.
+%    o threshold: The number of megabytes of memory available to the pixel
+%      cache.
 %
 %
 */
-unsigned int WritePixelCache(Image *image,const QuantumTypes quantum,
-  unsigned char *destination)
+Export void SetCacheThreshold(const off_t threshold)
 {
-  register IndexPacket
-    *indexes;
+  off_t
+    offset;
+
+  offset=1024*1024*(cache_threshold-threshold);
+  (void) GetCacheMemory(-offset);
+  cache_threshold=threshold;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t C a c h e T y p e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SetCacheType sets the cache type:  MemoryCache or DiskCache.
+%
+%  The format of the SetCacheType method is:
+%
+%      void SetCacheType(Cache cache,const CacheType type)
+%
+%  A description of each parameter follows:
+%
+%    o cache: Specifies a pointer to a Cache structure.
+%
+%    o type: The pixel cache type MemoryCache or DiskCache.
+%
+%
+*/
+Export void SetCacheType(Cache cache,const CacheType type)
+{
+  CacheInfo
+    *cache_info;
+
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
+  if (cache_info->type == UndefinedCache)
+    cache_info->type=type;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t C a c h e V i e w                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SetCacheView define the current cache view.
+%
+%  The format of the SetCacheView method is:
+%
+%      void SetCacheView(Cache cache,const unsigned int id,
+%        const RectangleInfo *view)
+%
+%  A description of each parameter follows:
+%
+%    o cache: Specifies a pointer to a Cache structure.
+%
+%    o id: Specifies the current cache view.
+%
+%    o view: A pointer to the RectangleInfo structure that defines the region
+%      of this particular cache view.
+%
+%
+*/
+Export void SetCacheView(Cache cache,const unsigned int id,
+  const RectangleInfo *view)
+{
+  CacheInfo
+    *cache_info;
+
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
+  cache_info->id=id;
+  cache_info->view[id].width=view->width;
+  cache_info->view[id].height=view->height;
+  cache_info->view[id].x=view->x;
+  cache_info->view[id].y=view->y;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e C a c h e I n d e x e s                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method WriteCachePixels writes the colormap indexes to the specified region
+%  of the pixel cache.
+%
+%  The format of the WriteCachePixels method is:
+%
+%      unsigned int WriteCachePixels(Cache cache,const IndexPacket *indexes)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method WriteCachePixels returns True if the colormap indexes
+%      are successfully written to the pixel cache, otherwise False.
+%
+%    o cache_info: Specifies a pointer to a CacheInfo structure.
+%
+%    o indexes: The colormap indexes are copied from the pixel cache to this
+%      IndexPacket address.
+%
+%
+*/
+Export unsigned int WriteCacheIndexes(Cache cache,const IndexPacket *indexes)
+{
+  CacheInfo
+    *cache_info;
+
+  off_t
+    count,
+    offset;
 
   register int
-    x;
+    y;
 
-  register PixelPacket
-    *p;
+  register ViewInfo
+    *view;
 
-  register unsigned char
-    *q;
-
-  assert(image != (Image *) NULL);
-  assert(destination != (unsigned char *) NULL);
-  p=image->pixels;
-  indexes=image->indexes;
-  q=destination;
-  switch (quantum)
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
+  if (cache_info->class != PseudoClass)
+    return(False);
+  view=cache_info->view+cache_info->id;
+  offset=view->y*cache_info->columns+view->x;
+  if (cache_info->type != DiskCache)
+    {
+      /*
+        Write indexes to memory.
+      */
+      if (indexes == (cache_info->indexes+offset))
+        return(True);
+      for (y=0; y < (int) view->height; y++)
+      {
+        (void) memcpy(cache_info->indexes+offset,indexes,
+          view->width*sizeof(IndexPacket));
+        indexes+=view->width;
+        offset+=cache_info->columns;
+      }
+      return(True);
+    }
+  /*
+    Write indexes to disk.
+  */
+  if (cache_info->file == -1)
+    {
+      cache_info->file=open(cache_info->filename,O_RDWR | O_BINARY,0777);
+      if (cache_info->file == -1)
+        return(False);
+    }
+  for (y=0; y < (int) view->height; y++)
   {
-    case IndexQuantum:
+    count=lseek(cache_info->file,cache_info->number_pixels*sizeof(PixelPacket)+
+      offset*sizeof(IndexPacket),SEEK_SET);
+    if (count == -1)
+      return(False);
+    count=
+      write(cache_info->file,(char *) indexes,view->width*sizeof(IndexPacket));
+    if (count != (view->width*sizeof(IndexPacket)))
+      return(False);
+    indexes+=view->width;
+    offset+=cache_info->columns;
+  }
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e C a c h e P i x e l s                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method WriteCachePixels writes image pixels to the specified region of the
+%  pixel cache.
+%
+%  The format of the WriteCachePixels method is:
+%
+%      unsigned int WriteCachePixels(Cache cache,const PixelPacket *pixels)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method WriteCachePixels returns True if the pixels are
+%      successfully written to the cache, otherwise False.
+%
+%    o cache_info: Specifies a pointer to a CacheInfo structure.
+%
+%    o pixels: The pixels are copied from the pixel cache to this PixelPacket
+%      address.
+%
+%
+*/
+Export unsigned int WriteCachePixels(Cache cache,const PixelPacket *pixels)
+{
+  CacheInfo
+    *cache_info;
+
+  off_t
+    count,
+    offset;
+
+  register int
+    y;
+
+  register ViewInfo
+    *view;
+
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
+  view=cache_info->view+cache_info->id;
+  offset=view->y*cache_info->columns+view->x;
+  if (cache_info->type != DiskCache)
     {
-      if (image->colors <= 256)
-        {
-          for (x=0; x < (int) image->columns; x++)
-            *q++=indexes[x];
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
+      /*
+        Write pixels to memory.
+      */
+      if (pixels == (cache_info->pixels+offset))
+        return(True);
+      for (y=0; y < (int) view->height; y++)
       {
-        *q++=indexes[x] >> 8;
-        *q++=indexes[x];
+        (void) memcpy(cache_info->pixels+offset,pixels,
+          view->width*sizeof(PixelPacket));
+        pixels+=view->width;
+        offset+=cache_info->columns;
       }
-      break;
+      return(True);
     }
-    case IndexOpacityQuantum:
+  /*
+    Write pixels to disk.
+  */
+  if (cache_info->file == -1)
     {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            *q++=indexes[x];
-            *q++=p->opacity;
-            p++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=indexes[x] >> 8;
-        *q++=indexes[x];
-        *q++=p->opacity >> 8;
-        *q++=p->opacity;
-        p++;
-      }
-      break;
+      cache_info->file=open(cache_info->filename,O_RDWR | O_BINARY,0777);
+      if (cache_info->file == -1)
+        return(False);
     }
-    case GrayQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            *q++=Intensity(*p);
-            p++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=Intensity(*p) >> 8;
-        *q++=Intensity(*p);
-        p++;
-      }
-      break;
-    }
-    case GrayOpacityQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            *q++=Intensity(*p);
-            *q++=p->opacity;
-            p++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=Intensity(*p) >> 8;
-        *q++=Intensity(*p);
-        *q++=p->opacity >> 8;
-        *q++=p->opacity;
-        p++;
-      }
-      break;
-    }
-    case RedQuantum:
-    case CyanQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            *q++=DownScale(p->red);
-            p++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=p->red >> 8;
-        *q++=p->red;
-        p++;
-      }
-      break;
-    }
-    case GreenQuantum:
-    case YellowQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            *q++=DownScale(p->green);
-            p++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=p->green >> 8;
-        *q++=p->green;
-        p++;
-      }
-      break;
-    }
-    case BlueQuantum:
-    case MagentaQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            *q++=DownScale(p->blue);
-            p++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=p->blue >> 8;
-        *q++=p->blue;
-        p++;
-      }
-      break;
-    }
-    case OpacityQuantum:
-    case BlackQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            *q++=DownScale(p->opacity);
-            p++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=p->opacity >> 8;
-        *q++=p->opacity;
-        p++;
-      }
-      break;
-    }
-    case RGBQuantum:
-    default:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            *q++=DownScale(p->red);
-            *q++=DownScale(p->green);
-            *q++=DownScale(p->blue);
-            p++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=p->red >> 8;
-        *q++=p->red;
-        *q++=p->green >> 8;
-        *q++=p->green;
-        *q++=p->blue >> 8;
-        *q++=p->blue;
-        p++;
-      }
-      break;
-    }
-    case RGBAQuantum:
-    case CMYKQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            *q++=DownScale(p->red);
-            *q++=DownScale(p->green);
-            *q++=DownScale(p->blue);
-            *q++=DownScale(p->opacity);
-            p++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=p->red >> 8;
-        *q++=p->red;
-        *q++=p->green >> 8;
-        *q++=p->green;
-        *q++=p->blue >> 8;
-        *q++=p->blue;
-        *q++=p->opacity >> 8;
-        *q++=p->opacity;
-        p++;
-      }
-      break;
-    }
+  for (y=0; y < (int) view->height; y++)
+  {
+    count=lseek(cache_info->file,offset*sizeof(PixelPacket),SEEK_SET);
+    if (count == -1)
+      return(False);
+    count=
+      write(cache_info->file,(char *) pixels,view->width*sizeof(PixelPacket));
+    if (count != (view->width*sizeof(PixelPacket)))
+      return(False);
+    pixels+=view->width;
+    offset+=cache_info->columns;
   }
   return(True);
 }

@@ -821,8 +821,8 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
-        indexes=GetIndexesCache(image);
-        clone_indexes=GetIndexesCache(clone_image);
+        indexes=GetIndexes(image);
+        clone_indexes=GetIndexes(clone_image);
         if (image->class == PseudoClass)
           (void) memcpy(clone_indexes,indexes,
             image->columns*sizeof(IndexPacket));
@@ -1236,8 +1236,8 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
       q=GetPixelCache(image,x,y,1,1);
       if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         break;
-      composite_indexes=GetIndexesCache(composite_image);
-      indexes=GetIndexesCache(image);
+      composite_indexes=GetIndexes(composite_image);
+      indexes=GetIndexes(image);
       opacity=q->opacity;
       switch (compose)
       {
@@ -1998,7 +1998,7 @@ Export void CycleColormapImage(Image *image,const int amount)
     q=GetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexesCache(image);
+    indexes=GetIndexes(image);
     for (x=0; x < (int) image->columns; x++)
     {
       index=((int) indexes[x]+amount) % image->colors;
@@ -3096,23 +3096,23 @@ Export void GetPageInfo(RectangleInfo *page)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t P i x e l s                                                         %
+%   G e t I m a g e P i x e l s                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetPixels is a convenience routine.  Use it to extract pixel data
-%  from an image and place it in a buffer you supply.  The data is saved
+%  Method GetImagePixels is a convenience routine.  Use it to extract pixel
+%  data from an image and place it in a buffer you supply.  The data is saved
 %  either as char, short int, integer, float or double format in the order
 %  specified by the type parameter.  For example, we want to extract
 %  scanline 1 of a 640x480 image as character data in red-green-blue order:
 %
-%      GetPixels(image,0,0,640,1,"RGB",0,pixels);
+%      GetImagePixels(image,0,0,640,1,"RGB",0,pixels);
 %
-%  The format of the GetPixels method is:
+%  The format of the GetImagePixels method is:
 %
-%      unsigned int GetPixels(Image *image,const int x,const int y,
+%      unsigned int GetImagePixels(Image *image,const int x,const int y,
 %        const unsigned int columns,const unsigned int rows,
 %        const char *map,const StorageType type,void *pixels)
 %
@@ -3140,7 +3140,7 @@ Export void GetPageInfo(RectangleInfo *page)
 %
 %
 */
-Export unsigned int GetPixels(Image *image,const int x,const int y,
+Export unsigned int GetImagePixels(Image *image,const int x,const int y,
   const unsigned int columns,const unsigned int rows,const char *map,
   const StorageType type,void *pixels)
 {
@@ -6413,7 +6413,7 @@ Export void SetImage(Image *image,Quantum opacity)
     q=SetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexesCache(image);
+    indexes=GetIndexes(image);
     for (x=0; x < (int) image->columns; x++)
     {
       if (image->class == PseudoClass)
@@ -6780,7 +6780,7 @@ Export unsigned int SortColormapByIntensity(Image *image)
     q=GetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexesCache(image);
+    indexes=GetIndexes(image);
     for (x=0; x < (int) image->columns; x++)
     {
       index=pixels[indexes[x]];
@@ -6841,7 +6841,7 @@ Export void SyncImage(Image *image)
     q=GetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexesCache(image);
+    indexes=GetIndexes(image);
     for (x=0; x < (int) image->columns; x++)
     {
       index=indexes[x];

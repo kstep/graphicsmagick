@@ -300,7 +300,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       q=SetPixelCache(image,0,real,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
-      indexes=GetIndexesCache(image);
+      indexes=GetIndexes(image);
       for (x=0; x < (int) image->columns; x++)
       {
         if ((tga_header.image_type == TGARLEColormap) ||
@@ -677,7 +677,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
       if (p == (PixelPacket *) NULL)
         break;
       q=targa_pixels;
-      indexes=GetIndexesCache(image);
+      indexes=GetIndexes(image);
       for (x=0; x < (int) image->columns; x++)
       {
         if (image->class == PseudoClass)

@@ -679,7 +679,7 @@ extern Export unsigned int
   EqualizeImage(Image *),
   GammaImage(Image *,const char *),
   GetNumberScenes(const Image *),
-  GetPixels(Image *,const int,const int,const unsigned int,const unsigned int,
+  GetImagePixels(Image *,const int,const int,const unsigned int,const unsigned int,
     const char *,const StorageType,void *),
   IsGeometry(const char *),
   IsGrayImage(Image *),

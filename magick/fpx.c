@@ -381,7 +381,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     q=SetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexesCache(image);
+    indexes=GetIndexes(image);
     if ((y % tile_height) == 0)
       {
         /*

@@ -146,8 +146,8 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
         q=SetPixelCache(rotate_image,0,y,rotate_image->columns,1);
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
-        indexes=GetIndexesCache(image);
-        rotate_indexes=GetIndexesCache(rotate_image);
+        indexes=GetIndexes(image);
+        rotate_indexes=GetIndexes(rotate_image);
         if (image->class == PseudoClass)
           (void) memcpy(rotate_indexes,indexes,
             image->columns*sizeof(IndexPacket));
@@ -170,8 +170,8 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
         q=SetPixelCache(rotate_image,image->rows-y-1,0,1,rotate_image->rows);
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
-        indexes=GetIndexesCache(image);
-        rotate_indexes=GetIndexesCache(rotate_image);
+        indexes=GetIndexes(image);
+        rotate_indexes=GetIndexes(rotate_image);
         if (image->class == PseudoClass)
           (void) memcpy(rotate_indexes,indexes,
             image->columns*sizeof(IndexPacket));
@@ -198,8 +198,8 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         q+=image->columns;
-        indexes=GetIndexesCache(image);
-        rotate_indexes=GetIndexesCache(rotate_image);
+        indexes=GetIndexes(image);
+        rotate_indexes=GetIndexes(rotate_image);
         if (image->class == PseudoClass)
           for (x=0; x < (int) image->columns; x++)
             rotate_indexes[image->columns-x-1]=indexes[x];
@@ -226,8 +226,8 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         q+=image->columns;
-        indexes=GetIndexesCache(image);
-        rotate_indexes=GetIndexesCache(rotate_image);
+        indexes=GetIndexes(image);
+        rotate_indexes=GetIndexes(rotate_image);
         for (x=0; x < (int) image->columns; x++)
           *--q=(*p++);
         if (image->class == PseudoClass)

@@ -410,7 +410,7 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
       q=GetPixelCache(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
-      indexes=GetIndexesCache(image);
+      indexes=GetIndexes(image);
       for (x=0; x < (int) image->columns; x++)
       {
         /*
@@ -966,7 +966,7 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
       q=GetPixelCache(image,p->x,p->y,1,1);
       if (q == (PixelPacket *) NULL)
         return(False);
-      indexes=GetIndexesCache(image);
+      indexes=GetIndexes(image);
       red_error=q->red;
       green_error=q->green;
       blue_error=q->blue;
@@ -1705,7 +1705,7 @@ static unsigned int OrderedDitherImage(Image *image)
     q=GetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexesCache(image);
+    indexes=GetIndexes(image);
     for (x=0; x < (int) image->columns; x++)
     {
       index=Intensity(*q) > DitherMatrix[y & 0x07][x & 0x07] ? 1 : 0;
@@ -1917,7 +1917,7 @@ Export unsigned int QuantizationError(Image *image)
     p=GetPixelCache(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexesCache(image);
+    indexes=GetIndexes(image);
     for (x=0; x < (int) image->columns; x++)
     {
       index=indexes[x];

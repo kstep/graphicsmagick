@@ -488,7 +488,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
               q=SetPixelCache(image,0,y,image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              indexes=GetIndexesCache(image);
+              indexes=GetIndexes(image);
               for (x=0; x < (int) image->columns; x++)
                 indexes[x]=(*p++);
               if (!SyncPixelCache(image))

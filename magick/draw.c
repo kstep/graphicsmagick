@@ -201,7 +201,7 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
     p=GetPixelCache(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexesCache(image);
+    indexes=GetIndexes(image);
     for (x=0; x < (int) image->columns; x++)
       indexes[x]=False;
     if (!SyncPixelCache(image))
@@ -233,7 +233,7 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
     if (q == (PixelPacket *) NULL)
       break;
     q+=x1;
-    indexes=GetIndexesCache(image);
+    indexes=GetIndexes(image);
     for (x=x1; x >= 0 ; x--)
     {
       if (method == FloodfillMethod)
@@ -268,7 +268,7 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
               q=GetPixelCache(image,x,y,image->columns-x,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              indexes=GetIndexesCache(image);
+              indexes=GetIndexes(image);
               for (i=0; x < (int) image->columns; x++)
               {
                 if (method == FloodfillMethod)
@@ -324,7 +324,7 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
     q=GetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexesCache(image);
+    indexes=GetIndexes(image);
     for (x=0; x < (int) image->columns; x++)
     {
       if (indexes[x])

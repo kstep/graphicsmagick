@@ -1,5 +1,5 @@
 /*
-  ImageMagick Pixel Methods.
+  ImageMagick Cache Methods.
 */
 #ifndef _CACHE_H
 #define _CACHE_H
@@ -7,26 +7,45 @@
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
+
+#if !defined(PixelCacheThreshold)
+#define PixelCacheThreshold  80  /* megabytes */
+#endif
 
 /*
-  Exported pixel methods.
+  Exported interfaces.
 */
+extern Export CacheType
+  GetCacheType(Cache);
+
+extern Export ClassType
+  GetCacheClassType(Cache);
+
 extern Export IndexPacket
-  *GetIndexesCache(Image *);
+  *GetCacheIndexes(Cache,const unsigned int,const unsigned int);
+
+extern Export off_t
+  GetCacheMemory(const off_t),
+  GetCacheThreshold(void);
 
 extern Export PixelPacket
-  *GetPixelCache(Image *,const int,const int,const unsigned int,
-    const unsigned int),
-  *SetPixelCache(Image *,const int,const int,const unsigned int,
-    const unsigned int);
+  *GetCachePixels(Cache,const unsigned int,const unsigned int);
 
 extern Export unsigned int
-  ReadPixelCache(Image *,const QuantumTypes,const unsigned char *),
-  SyncPixelCache(Image *),
-  WritePixelCache(Image *,const QuantumTypes,unsigned char *);
+  AllocateCache(Cache,const ClassType,const unsigned int,const unsigned int),
+  ReadCachePixels(Cache,PixelPacket *),
+  ReadCacheIndexes(Cache,IndexPacket *),
+  WriteCachePixels(Cache,const PixelPacket *),
+  WriteCacheIndexes(Cache,const IndexPacket *);
 
 extern Export void
-  SetPixelCacheView(Image *,const unsigned int);
+  CloseCache(Cache),
+  DestroyCacheInfo(Cache),
+  GetCacheInfo(Cache *),
+  *GetCacheStash(Cache),
+  SetCacheThreshold(const off_t),
+  SetCacheType(Cache,const CacheType),
+  SetCacheView(Cache,const unsigned int,const RectangleInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
