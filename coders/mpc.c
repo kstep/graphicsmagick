@@ -806,6 +806,18 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (status == False)
     ThrowReaderException(CacheWarning,"Unable to open peristent cache",image);
   CloseBlob(image);
+  if (LocaleCompare(image_info->magick,"MPROC") != 0)
+    {
+      Image
+        *clone_image;
+
+      clone_image=CloneImageList(image,exception);
+      if (clone_image != (Image *) NULL)
+        {
+          DestroyImage(image);
+          image=clone_image;
+        }
+    }
   return(image);
 }
 
@@ -846,6 +858,15 @@ ModuleExport void RegisterMPCImage(void)
   entry->description=AllocateString("Magick Persistent Cache image format");
   entry->module=AllocateString("MPC");
   (void) RegisterMagickInfo(entry);
+  entry=SetMagickInfo("MPROC");
+  entry->decoder=ReadMPCImage;
+  entry->magick=IsMPC;
+  entry->adjoin=False;
+  entry->blob_support=False;
+  entry->description=
+    AllocateString("Magick Persistent Read-only Cache image format");
+  entry->module=AllocateString("MPROC");
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -870,6 +891,7 @@ ModuleExport void RegisterMPCImage(void)
 ModuleExport void UnregisterMPCImage(void)
 {
   (void) UnregisterMagickInfo("MPC");
+  (void) UnregisterMagickInfo("MPROC");
 }
 
 /*
