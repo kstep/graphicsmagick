@@ -681,6 +681,11 @@ static void GenerateLine(PrimitiveInfo *primitive_info,PointInfo start,
   q->pixel=end;
 }
 
+static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
+{
+  puts(path);
+}
+
 static void GeneratePoint(PrimitiveInfo *primitive_info,PointInfo start)
 {
   primitive_info->coordinates=1;
@@ -1018,6 +1023,8 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       primitive_type=PolygonPrimitive;
     if (LocaleCompare("Bezier",keyword) == 0)
       primitive_type=BezierPrimitive;
+    if (LocaleCompare("Path",keyword) == 0)
+      primitive_type=PathPrimitive;
     if (LocaleCompare("Color",keyword) == 0)
       primitive_type=ColorPrimitive;
     if (LocaleCompare("Matte",keyword) == 0)
@@ -1208,6 +1215,36 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           }
         primitive_info[j].primitive=PolygonPrimitive;
         GenerateBezier(primitive_info+j);
+        i=j+primitive_info[j].coordinates;
+        break;
+      }
+      case PathPrimitive:
+      {
+        if (*p != '\0')
+          {
+            primitive_info[j].text=p;
+            if (*p == '"')
+              {
+                for (p++; *p != '\0'; p++)
+                  if ((*p == '"') && (*(p-1) != '\\'))
+                    break;
+              }
+            else
+              if (*p == '\'')
+                {
+                  for (p++; *p != '\0'; p++)
+                    if ((*p == '\'') && (*(p-1) != '\\'))
+                      break;
+                }
+              else
+                for (p++;  *p != '\0'; p++)
+                  if (isspace((int) *p) && (*(p-1) != '\\') && (*p != '\0'))
+                    break;
+            if (*p != '\0')
+              p++;
+          }
+        primitive_info[j].primitive=PolygonPrimitive;
+        GeneratePath(primitive_info+j,primitive_info[j].text);
         i=j+primitive_info[j].coordinates;
         break;
       }
