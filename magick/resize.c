@@ -333,7 +333,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   /*
     Initialize magnify image pixels.
   */
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (double) image->rows; y++)
   {
     pixels=AcquireImagePixels(image,0,y,image->columns,1,exception);
     q=SetImagePixels(magnify_image,0,y,magnify_image->columns,1);
@@ -346,14 +346,14 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   /*
     Magnify each row.
   */
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (double) image->rows; y++)
   {
-    p=GetImagePixels(magnify_image,0,(long) (image->rows-y-1),
+    p=GetImagePixels(magnify_image,0,(double) (image->rows-y-1),
       magnify_image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     (void) memcpy(scanline,p,magnify_image->columns*sizeof(PixelPacket));
-    q=GetImagePixels(magnify_image,0,(long) (2*(image->rows-y-1)),
+    q=GetImagePixels(magnify_image,0,(double) (2*(image->rows-y-1)),
       magnify_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
@@ -361,23 +361,23 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     q+=2*(image->columns-1);
     *q=(*p);
     *(q+1)=(*(p));
-    for (x=1; x < (long) image->columns; x++)
+    for (x=1; x < (double) image->columns; x++)
     {
       p--;
       q-=2;
       *q=(*p);
-      (q+1)->red=(Quantum) ((((long) p->red)+((long) (p+1)->red)+1)/2);
-      (q+1)->green=(Quantum) ((((long) p->green)+((long) (p+1)->green)+1)/2);
-      (q+1)->blue=(Quantum) ((((long) p->blue)+((long) (p+1)->blue)+1)/2);
+      (q+1)->red=(Quantum) (((double) p->red+(double) (p+1)->red)/2+0.5);
+      (q+1)->green=(Quantum) (((double) p->green+(double) (p+1)->green)/2+0.5);
+      (q+1)->blue=(Quantum) (((double) p->blue+(double) (p+1)->blue)/2+0.5);
       (q+1)->opacity=(Quantum)
-        ((((long) p->opacity)+((long) (p+1)->opacity)+1)/2);
+        (((double) p->opacity+(double) (p+1)->opacity)/2+0.5);
     }
     if (!SyncImagePixels(magnify_image))
       break;
   }
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (double) image->rows; y++)
   {
-    rows=(long) Min(image->rows-y,3);
+    rows=(double) Min(image->rows-y,3);
     p=GetImagePixels(magnify_image,0,2*y,magnify_image->columns,rows);
     if (p == (PixelPacket *) NULL)
       break;
@@ -387,45 +387,45 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     r=p;
     if (rows > 2)
       r=q+magnify_image->columns;
-    for (x=0; x < (long) (image->columns-1); x++)
+    for (x=0; x < (double) (image->columns-1); x++)
     {
-      q->red=(Quantum) ((((long) p->red)+((long) r->red)+1)/2);
-      q->green=(Quantum) ((((long) p->green)+((long) r->green)+1)/2);
-      q->blue=(Quantum) ((((long) p->blue)+((long) r->blue)+1)/2);
-      q->opacity=(Quantum) ((((long) p->opacity)+((long) r->opacity)+1)/2);
-      (q+1)->red=(Quantum) ((((long) p->red)+
-        ((long) (p+2)->red)+((long) r->red)+((long) (r+2)->red)+2) >> 2);
-      (q+1)->green=(Quantum) ((((long) p->green)+
-        ((long) (p+2)->green)+((long) r->green)+((long) (r+2)->green)+2) >> 2);
-      (q+1)->blue=(Quantum) ((((long) p->blue)+
-        ((long) (p+2)->blue)+((long) r->blue)+((long) (r+2)->blue)+2) >> 2);
-      (q+1)->opacity=(Quantum) ((((long) p->opacity)+((long) (p+2)->opacity)+
-        ((long) r->opacity)+((long) (r+2)->opacity)+2) >> 2);
+      q->red=(Quantum) (((double) p->red+(double) r->red)/2+0.5);
+      q->green=(Quantum) (((double) p->green+(double) r->green)/2+0.5);
+      q->blue=(Quantum) (((double) p->blue+(double) r->blue)/2+0.5);
+      q->opacity=(Quantum) (((double) p->opacity+(double) r->opacity)/2+0.5);
+      (q+1)->red=(Quantum) (((double) p->red+(double) (p+2)->red+
+        (double) r->red+(double) (r+2)->red)/4+0.5);
+      (q+1)->green=(Quantum) (((double) p->green+(double) (p+2)->green+
+        (double) r->green+(double) (r+2)->green)/4+0.5);
+      (q+1)->blue=(Quantum) (((double) p->blue+(double) (p+2)->blue+
+        (double) r->blue+(double) (r+2)->blue)/4+0.5);
+      (q+1)->opacity=(Quantum) (((double) p->opacity+(double) (p+2)->opacity+
+        (double) r->opacity+(double) (r+2)->opacity)/4+0.5);
       q+=2;
       p+=2;
       r+=2;
     }
-    q->red=(Quantum) ((((long) p->red)+((long) r->red)+1)/2);
-    q->green=(Quantum) ((((long) p->green)+((long) r->green)+1)/2);
-    q->blue=(Quantum) ((((long) p->blue)+((long) r->blue)+1)/2);
-    q->opacity=(Quantum) ((((long) p->opacity)+((long) r->opacity)+1)/2);
+    q->red=(Quantum) (((double) p->red+(double) r->red)/2+0.5);
+    q->green=(Quantum) (((double) p->green+(double) r->green)/2+0.5);
+    q->blue=(Quantum) (((double) p->blue+(double) r->blue)/2+0.5);
+    q->opacity=(Quantum) (((double) p->opacity+(double) r->opacity)/2+0.5);
     p++;
     q++;
     r++;
-    q->red=(Quantum) ((((long) p->red)+((long) r->red)+1)/2);
-    q->green=(Quantum) ((((long) p->green)+((long) r->green)+1)/2);
-    q->blue=(Quantum) ((((long) p->blue)+((long) r->blue)+1)/2);
-    q->opacity=(Quantum) ((((long) p->opacity)+((long) r->opacity)+1)/2);
+    q->red=(Quantum) (((double) p->red+(double) r->red)/2+0.5);
+    q->green=(Quantum) (((double) p->green+(double) r->green)/2+0.5);
+    q->blue=(Quantum) (((double) p->blue+(double) r->blue)/2+0.5);
+    q->opacity=(Quantum) (((double) p->opacity+(double) r->opacity)/2+0.5);
     if (!SyncImagePixels(magnify_image))
       break;
     if (QuantumTick(y,image->rows))
       MagickMonitor(MagnifyImageText,y,image->rows);
   }
-  p=GetImagePixels(magnify_image,0,(long) (2*image->rows-2),
+  p=GetImagePixels(magnify_image,0,(double) (2*image->rows-2),
     magnify_image->columns,1);
   if (p != (PixelPacket *) NULL)
     (void) memcpy(scanline,p,magnify_image->columns*sizeof(PixelPacket));
-  q=GetImagePixels(magnify_image,0,(long) (2*image->rows-1),
+  q=GetImagePixels(magnify_image,0,(double) (2*image->rows-1),
     magnify_image->columns,1);
   if (q != (PixelPacket *) NULL)
     (void) memcpy(q,scanline,magnify_image->columns*sizeof(PixelPacket));
