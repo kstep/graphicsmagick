@@ -233,7 +233,7 @@ static char *Ascii85Tuple(unsigned char *data)
   static char
     tuple[6];
 
-  register unsigned int
+  register unsigned long
     word,
     x;
 
@@ -247,15 +247,15 @@ static char *Ascii85Tuple(unsigned char *data)
       tuple[1]='\0';
       return(tuple);
     }
-  x=(unsigned int) (word/(85L*85*85*85));
+  x=(word/(85L*85*85*85));
   tuple[0]=x+'!';
   word-=x*(85L*85*85*85);
-  x=(unsigned int) (word/(85L*85*85));
+  x=(word/(85L*85*85));
   tuple[1]=x+'!';
   word-=x*(85L*85*85);
-  x=(unsigned int) (word/(85*85));
+  x=(word/(85*85));
   tuple[2]=x+'!';
-  y=(unsigned short) (word-x*(85L*85));
+  y=(word-x*(85L*85));
   tuple[3]=(y/85)+'!';
   tuple[4]=(y % 85)+'!';
   tuple[5]='\0';
@@ -892,12 +892,12 @@ MagickExport unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
   ImageInfo
     *clone_info;
 
-  int
-    count;
-
-  register int
-    i,
+  long
+    count,
     j;
+
+  register size_t
+    i;
 
   TIFF
     *tiff;
@@ -958,7 +958,7 @@ MagickExport unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
   */
   TIFFGetField(tiff,TIFFTAG_STRIPBYTECOUNTS,&byte_count);
   strip_size=byte_count[0];
-  for (i=1; i < (int) TIFFNumberOfStrips(tiff); i++)
+  for (i=1; i < TIFFNumberOfStrips(tiff); i++)
     if (byte_count[i] > strip_size)
       strip_size=byte_count[i];
   buffer=(unsigned char *) AcquireMemory(strip_size);
@@ -973,7 +973,7 @@ MagickExport unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
     Compress runlength encoded to 2D Huffman pixels.
   */
   TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&fillorder);
-  for (i=0; i < (int) TIFFNumberOfStrips(tiff); i++)
+  for (i=0; i < TIFFNumberOfStrips(tiff); i++)
   {
     Ascii85Initialize(image);
     count=TIFFReadRawStrip(tiff,i,buffer,byte_count[i]);
@@ -1062,7 +1062,7 @@ MagickExport unsigned int LZWEncodeImage(Image *image,
   int
     index;
 
-  register int
+  register size_t
     i;
 
   short
@@ -1213,8 +1213,10 @@ MagickExport unsigned int LZWEncodeImage(Image *image,
 MagickExport unsigned int PackbitsEncodeImage(Image *image,
   const size_t number_pixels,unsigned char *pixels)
 {
-  register int
-    count,
+  long
+    count;
+
+  register long
     i,
     j;
 
@@ -1281,7 +1283,7 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,
                 break;
             }
             i-=count;
-            WriteBlobByte(image,(256-count)+1);
+            WriteBlobByte(image,(int) ((256-count)+1));
             WriteBlobByte(image,*pixels);
             pixels+=count;
             break;
@@ -1295,7 +1297,7 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,
         {
           packbits[count+1]=pixels[count];
           count++;
-          if ((count >= (int) (i-3)) || (count >= 127))
+          if ((count >= (i-3)) || (count >= 127))
             break;
         }
         i-=count;
@@ -1356,7 +1358,7 @@ MagickExport unsigned int ZLIBEncodeImage(Image *image,
   int
     status;
 
-  register int
+  register size_t
     i;
 
   unsigned char
@@ -1376,9 +1378,9 @@ MagickExport unsigned int ZLIBEncodeImage(Image *image,
     ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
       (char *) NULL);
   stream.next_in=pixels;
-  stream.avail_in=number_pixels;
+  stream.avail_in=(unsigned int) number_pixels;
   stream.next_out=compressed_pixels;
-  stream.avail_out=compressed_packets;
+  stream.avail_out=(unsigned int) compressed_packets;
   stream.zalloc=(alloc_func) NULL;
   stream.zfree=(free_func) NULL;
   stream.opaque=(voidpf) NULL;
@@ -1396,7 +1398,7 @@ MagickExport unsigned int ZLIBEncodeImage(Image *image,
     ThrowBinaryException(DelegateWarning,"Unable to Zip compress image",
       (char *) NULL)
   else
-    for (i=0; i < (int) compressed_packets; i++)
+    for (i=0; i < compressed_packets; i++)
       WriteBlobByte(image,compressed_pixels[i]);
   LiberateMemory((void **) &compressed_pixels);
   return(!status);
