@@ -30,7 +30,7 @@ extern MagickExport off_t
 
 extern MagickExport size_t
   ReadBlob(Image *,const size_t,void *),
-  ReadBlobBlock(Image *,char *),
+  ReadBlobBlock(Image *,unsigned char *),
   WriteBlob(Image *,const size_t,const void *),
   WriteBlobByte(Image *,const int),
   WriteBlobLSBLong(Image *,const unsigned long),

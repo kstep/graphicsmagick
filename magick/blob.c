@@ -119,7 +119,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   assert(exception != (ExceptionInfo *) NULL);
   GetExceptionInfo(exception);
   clone_info=CloneImageInfo(image_info);
-  clone_info->blob.data=(char *) blob;
+  clone_info->blob.data=(unsigned char *) blob;
   clone_info->blob.offset=0;
   clone_info->blob.length=length;
   clone_info->blob.extent=length;
@@ -139,7 +139,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
         Native blob support for this image format.
       */
       *clone_info->filename='\0';
-      clone_info->blob.data=(char *) blob;
+      clone_info->blob.data=(unsigned char *) blob;
       clone_info->blob.length=length;
       clone_info->blob.extent=length;
       image=ReadImage(clone_info,exception);
@@ -209,7 +209,7 @@ MagickExport void CloseBlob(Image *image)
   CloseImagePixels(image);
   image->taint=False;
   image->filesize=SizeBlob(image);
-  if (image->blob.data != (char *) NULL)
+  if (image->blob.data != (unsigned char *) NULL)
     {
       image->blob.extent=image->blob.length;
       return;
@@ -305,7 +305,7 @@ MagickExport int EOFBlob(const Image *image)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->blob.data == (char *) NULL)
+  if (image->blob.data == (unsigned char *) NULL)
     return(feof(image->file));
   return(image->blob.offset > image->blob.length);
 }
@@ -431,8 +431,9 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
       */
       *image->filename='\0';
       clone_info->blob.extent=Max((int) *length,image->blob.quantum);
-      clone_info->blob.data=(char *) AcquireMemory(clone_info->blob.extent);
-      if (clone_info->blob.data == (char *) NULL)
+      clone_info->blob.data=(unsigned char *)
+        AcquireMemory(clone_info->blob.extent);
+      if (clone_info->blob.data == (unsigned char *) NULL)
         {
           DestroyImageInfo(clone_info);
           ThrowException(exception,BlobWarning,"Unable to create blob",
@@ -451,7 +452,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
           return((void *) NULL);
         }
       DestroyImageInfo(clone_info);
-      blob=(unsigned char *) null;
+      blob=(unsigned char *) NULL;
       for (p=image; p != (Image *) NULL; p=p->next)
       {
         *length=p->blob.length;
@@ -493,8 +494,8 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
       return((void *) NULL);
     }
   *length=fstat(file,&attributes) < 0 ? 0 : attributes.st_size;
-  blob=(char *) AcquireMemory(*length);
-  if (blob == (char *) NULL)
+  blob=(unsigned char *) AcquireMemory(*length);
+  if (blob == (unsigned char *) NULL)
     {
       (void) remove(image->filename);
       (void) strcpy(image->filename,filename);
@@ -734,7 +735,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(type != (char *) NULL);
-  if (image_info->blob.data != (char *) NULL)
+  if (image_info->blob.data != (unsigned char *) NULL)
     {
       image->blob=image_info->blob;
       return(True);
@@ -893,8 +894,8 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                       Format supports blobs-- try memory-mapped I/O.
                     */
                     image->blob.length=0;
-                    image->blob.data=(char *) MapBlob(fileno(image->file),
-                      ReadMode,&image->blob.length);
+                    image->blob.data=(unsigned char *)
+                      MapBlob(fileno(image->file),ReadMode,&image->blob.length);
                     image->blob.mapped=
                       image->blob.data != (void *) NULL;
                     if (image->blob.mapped)
@@ -955,8 +956,8 @@ MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  assert(data != (char *) NULL);
-  if (image->blob.data != (char *) NULL)
+  assert(data != (void *) NULL);
+  if (image->blob.data != (unsigned char *) NULL)
     {
       /*
         Read bytes from blob.
@@ -991,7 +992,7 @@ MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
 %
 %  The format of the ReadBlobBlock method is:
 %
-%      size_t ReadBlobBlock(Image *image,char *data)
+%      size_t ReadBlobBlock(Image *image,unsigned char *data)
 %
 %  A description of each parameter follows:
 %
@@ -1004,7 +1005,7 @@ MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
 %
 %
 */
-MagickExport size_t ReadBlobBlock(Image *image,char *data)
+MagickExport size_t ReadBlobBlock(Image *image,unsigned char *data)
 {
   size_t
     count;
@@ -1014,7 +1015,7 @@ MagickExport size_t ReadBlobBlock(Image *image,char *data)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  assert(data != (char *) NULL);
+  assert(data != (unsigned char *) NULL);
   count=ReadBlob(image,1,(char *) &block_count);
   if (count == 0)
     return(0);
@@ -1057,7 +1058,7 @@ MagickExport int ReadBlobByte(Image *image)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  count=ReadBlob(image,1,(char *) &value);
+  count=ReadBlob(image,1,(unsigned char *) &value);
   if (count == 0)
     return(EOF);
   return(value);
@@ -1100,7 +1101,7 @@ MagickExport unsigned long ReadBlobLSBLong(Image *image)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  value=ReadBlob(image,4,(char *) buffer);
+  value=ReadBlob(image,4,(unsigned char *) buffer);
   if (value == 0)
     return((unsigned long) ~0);
   value=buffer[3] << 24;
@@ -1147,7 +1148,7 @@ MagickExport unsigned short ReadBlobLSBShort(Image *image)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  value=ReadBlob(image,2,(char *) buffer);
+  value=ReadBlob(image,2,(unsigned char *) buffer);
   if (value == 0)
     return((unsigned short) ~0);
   value=buffer[1] << 8;
@@ -1193,7 +1194,7 @@ MagickExport unsigned long ReadBlobMSBLong(Image *image)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  value=ReadBlob(image,4,(char *) buffer);
+  value=ReadBlob(image,4,(unsigned char *) buffer);
   if (value == 0)
     return((unsigned long) ~0);
   value=buffer[0] << 24;
@@ -1240,7 +1241,7 @@ MagickExport unsigned short ReadBlobMSBShort(Image *image)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  value=ReadBlob(image,2,(char *) buffer);
+  value=ReadBlob(image,2,(unsigned char *) buffer);
   if (value == 0)
     return((unsigned short) ~0);
   value=buffer[0] << 8;
@@ -1343,7 +1344,7 @@ MagickExport off_t SeekBlob(Image *image,const off_t offset,const int whence)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->blob.data == (char *) NULL)
+  if (image->blob.data == (unsigned char *) NULL)
     {
       status=fseek(image->file,offset,whence);
       if (status == -1)
@@ -1379,7 +1380,7 @@ MagickExport off_t SeekBlob(Image *image,const off_t offset,const int whence)
     {
       image->blob.length=image->blob.offset;
       ReacquireMemory((void **) &image->blob.data,image->blob.length);
-      if (image->blob.data == (char *) NULL)
+      if (image->blob.data == (unsigned char *) NULL)
         {
           image->blob.length=0;
           return(-1);
@@ -1616,7 +1617,7 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
   assert(data != (const char *) NULL);
   if (image->fifo != (int (*)(const Image *,const void *,const size_t)) NULL)
     return(image->fifo(image,data,length));
-  if (image->blob.data == (char *) NULL)
+  if (image->blob.data == (unsigned char *) NULL)
     {
       count=fwrite((char *) data,1,length,image->file);
       return(count);
@@ -1625,7 +1626,7 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
     {
       image->blob.extent+=length+image->blob.quantum;
       ReacquireMemory((void **) &image->blob.data,image->blob.extent);
-      if (image->blob.data == (char *) NULL)
+      if (image->blob.data == (unsigned char *) NULL)
         {
           image->blob.extent=0;
           return(0);
