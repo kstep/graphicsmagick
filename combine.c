@@ -419,6 +419,8 @@ int main(int argc,char **argv)
                     image_info.compression=BZipCompression;
                   if (Latin1Compare("Fax",option) == 0)
                     image_info.compression=FaxCompression;
+                  if (Latin1Compare("Group4",option) == 0)
+                    image_info.compression=Group4Compression;
                   if (Latin1Compare("JPEG",option) == 0)
                     image_info.compression=JPEGCompression;
                   if (Latin1Compare("LZW",option) == 0)

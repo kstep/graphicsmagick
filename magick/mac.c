@@ -803,7 +803,7 @@ DIR *opendir(char *path)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   P r o c e s s P e n d i n g E v e n t s i                                  %
+%   P r o c e s s P e n d i n g E v e n t s                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %

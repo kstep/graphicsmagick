@@ -65,6 +65,7 @@ typedef enum
   NoCompression,
   BZipCompression,
   FaxCompression,
+  Group4Compression,
   JPEGCompression,
   LZWCompression,
   RunlengthEncodedCompression,

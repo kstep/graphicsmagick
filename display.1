@@ -212,8 +212,8 @@ If the first character of \fIstring\fP is \fB@\fP, the image comment is read
 from a file titled by the remaining characters in the string.
 .TP
 .B "-compress \fItype\fP"
-the type of image compression: \fINone\fP, \fIBZip\fP, \fIFax\fP, \fIJPEG\fP,
-\fILZW\fP, \fIRunlengthEncoded\fP, or \fIZip\fP.
+the type of image compression: \fINone\fP, \fIBZip\fP, \fIFax\fP, \fIGroup4\fP,
+\fIJPEG\fP, \fILZW\fP, \fIRunlengthEncoded\fP, or \fIZip\fP.
 
 Use this option with \fB-write\fP to specify the the type of image
 compression.  See \fBmiff(5)\fP for details.
@@ -1975,6 +1975,13 @@ options:
       yellow
       white
       Browser...
+    Fuzz
+      0
+      2
+      4
+      8
+      16
+      Dialog...
     Undo
     Help
     Dismiss

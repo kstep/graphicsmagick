@@ -14681,14 +14681,17 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
     /*
       Allocate memory for the image and pixel buffer.
     */
-    if (compress_tag == COMPRESSION_LZW)
-      image->compression=LZWCompression;
-    else
-      if (compress_tag == COMPRESSION_JPEG)
-        image->compression=JPEGCompression;
-      else
-        if (compress_tag == COMPRESSION_DEFLATE)
-          image->compression=ZipCompression;
+    switch (compress_tag)
+    {
+      case COMPRESSION_NONE: image->compression=NoCompression; break;
+      case COMPRESSION_CCITTFAX3: image->compression=FaxCompression; break;
+      case COMPRESSION_CCITTFAX4: image->compression=Group4Compression; break;
+      case COMPRESSION_JPEG: image->compression=JPEGCompression; break;
+      case COMPRESSION_OJPEG: image->compression=JPEGCompression; break;
+      case COMPRESSION_LZW: image->compression=LZWCompression; break;
+      case COMPRESSION_DEFLATE: image->compression=ZipCompression; break;
+      default: image->compression=RunlengthEncodedCompression; break;
+    }
     image->columns=width;
     image->rows=height;
     range=max_sample_value-min_sample_value;
@@ -18500,6 +18503,7 @@ Export Image *ReadImage(ImageInfo *image_info)
   if (*image_info->filename == '@')
     return(ReadImages(image_info));
   SetImageInfo(image_info,False);
+  (void) strcpy(filename,image_info->filename);
   /*
     Call appropriate image reader based on image type.
   */
@@ -18523,7 +18527,6 @@ Export Image *ReadImage(ImageInfo *image_info)
         image=AllocateImage(image_info);
         if (image == (Image *) NULL)
           return((Image *) NULL);
-        (void) strcpy(filename,image_info->filename);
         (void) strcpy(image->filename,image_info->filename);
         TemporaryFilename(image_info->filename);
         status=

@@ -1545,6 +1545,7 @@ static unsigned int XColorEditImage(Display *display,
       "Method",
       "Pixel Color",
       "Border Color",
+      "Fuzz",
       "Undo",
       "Help",
       "Dismiss",
@@ -1557,6 +1558,7 @@ static unsigned int XColorEditImage(Display *display,
       ColorEditMethodCommand,
       ColorEditColorCommand,
       ColorEditBorderCommand,
+      ColorEditFuzzCommand,
       ColorEditUndoCommand,
       ColorEditHelpCommand,
       ColorEditDismissCommand
@@ -1592,6 +1594,9 @@ static unsigned int XColorEditImage(Display *display,
   register RunlengthPacket
     *p;
 
+  static unsigned int
+    fuzz_factor = 0;
+
   unsigned int
     height,
     width;
@@ -1609,7 +1614,7 @@ static unsigned int XColorEditImage(Display *display,
     Map Command widget.
   */
   windows->command.name="Color Edit";
-  windows->command.data=3;
+  windows->command.data=4;
   (void) XCommandWidget(display,windows,ColorEditMenu,(XEvent *) NULL);
   XMapRaised(display,windows->command.id);
   XClientMessage(display,windows->image.id,windows->im_protocols,
@@ -1762,6 +1767,43 @@ static unsigned int XColorEditImage(Display *display,
             */
             (void) XParseColor(display,windows->map_info->colormap,
               resource_info->pen_colors[pen_number],&border_color);
+            break;
+          }
+          case ColorEditFuzzCommand:
+          {
+            static char
+              fuzz[MaxTextExtent] = "3";
+
+            static const char
+              *FuzzMenu[]=
+              {
+                "0",
+                "2",
+                "4",
+                "8",
+                "16",
+                (char *) NULL,
+                (char *) NULL,
+              };
+
+            /*
+              Select a command from the pop-up menu.
+            */
+            FuzzMenu[5]="Dialog...";
+            entry=XMenuWidget(display,windows,ColorEditMenu[id],FuzzMenu,
+              command);
+            if (entry < 0)
+              break;
+            if (entry != 5)
+              {
+                fuzz_factor=atoi(FuzzMenu[entry]);
+                break;
+              }
+            (void) XDialogWidget(display,windows,"Ok","Enter fuzz factor:",
+              fuzz);
+            if (*fuzz == '\0')
+              break;
+            fuzz_factor=atoi(fuzz);
             break;
           }
           case ColorEditUndoCommand:
@@ -2002,7 +2044,7 @@ static unsigned int XColorEditImage(Display *display,
               annotate_info;
 
             ImageInfo
-              image_info;
+              *image_info;
 
             RunlengthPacket
               target;
@@ -2020,14 +2062,15 @@ static unsigned int XColorEditImage(Display *display,
                 target.green=XDownScale(border_color.green);
                 target.blue=XDownScale(border_color.blue);
               }
-            GetImageInfo(&image_info);
-            (void) CloneString(&image_info.pen,
+            image_info=CloneImageInfo(resource_info->image_info);
+            (void) CloneString(&image_info->pen,
               resource_info->pen_colors[pen_id]);
-            GetAnnotateInfo(&image_info,&annotate_info);
+            (*image)->fuzz=fuzz_factor;
+            GetAnnotateInfo(image_info,&annotate_info);
             ColorFloodfillImage(*image,&target,annotate_info.tile,x_offset,
               y_offset,method);
             DestroyAnnotateInfo(&annotate_info);
-            DestroyImageInfo(&image_info);
+            DestroyImageInfo(image_info);
             break;
           }
           case ResetMethod:

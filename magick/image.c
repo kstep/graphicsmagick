@@ -3504,25 +3504,19 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
   if (image->label != (char *) NULL)
     (void) fprintf(file,"  label: %.1024s\n",image->label);
   (void) fprintf(file,"  compression: ");
-  if (image->compression == ZipCompression)
-    (void) fprintf(file,"Zip\n");
-  else
-    if (image->compression == RunlengthEncodedCompression)
-      (void) fprintf(file,"Runlength Encoded\n");
-    else
-      if (image->compression == LZWCompression)
-        (void) fprintf(file,"LZW\n");
-      else
-        if (image->compression == JPEGCompression)
-          (void) fprintf(file,"JPEG\n");
-        else
-          if (image->compression == FaxCompression)
-            (void) fprintf(file,"Fax\n");
-          else
-            if (image->compression == BZipCompression)
-              (void) fprintf(file,"BZip\n");
-            else
-              (void) fprintf(file,"None\n");
+  switch (image->compression)
+  {
+    case NoCompression: (void) fprintf(file,"None\n"); break;
+    case BZipCompression: (void) fprintf(file,"BZip\n"); break;
+    case FaxCompression: (void) fprintf(file,"Fax\n"); break;
+    case Group4Compression: (void) fprintf(file,"Group 4\n"); break;
+    case JPEGCompression: (void) fprintf(file,"JPEG\n"); break;
+    case LZWCompression: (void) fprintf(file,"LZW\n"); break;
+    case RunlengthEncodedCompression:
+      (void) fprintf(file,"Runlength Encoded\n"); break;
+    case ZipCompression: (void) fprintf(file,"Zip\n"); break;
+    default: break;
+  }
   if (image->packets < (image->columns*image->rows))
     (void) fprintf(file,"  runlength packets: %lu of %u\n",image->packets,
       image->columns*image->rows);

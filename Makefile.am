@@ -109,10 +109,10 @@ $(PERLMAKEFILE): perl-sources $(PERLMAKEMAKER)
 # since the link must be against installed libraries
 PERLALLTARGETS=config pm_to_blib subdirs Magick.o manifypods
 all-perl: $(PERLMAKEFILE)
-	cd $(PERLMAGICK) && $(MAKE) $(PERLALLTARGETS)
+	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' $(PERLALLTARGETS)
 
 install-exec-perl: all-perl
-	cd $(PERLMAGICK) && $(MAKE) install
+	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' install
 
 else
 if WITH_PERL_STATIC
@@ -123,19 +123,19 @@ $(PERLMAKEFILE): perl-sources $(PERLMAKEMAKER)
 	cd $(PERLMAGICK) && @PERL@ Makefile.PL MAP_TARGET=$(PERLSTATICNAME)
 
 all-perl: $(PERLMAKEFILE)
-	cd $(PERLMAGICK) && $(MAKE) $(PERLSTATICNAME)
+	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' $(PERLSTATICNAME)
 
 install-exec-perl: all-perl
-	cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl inst_perl
+	cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl CC='@CC@' inst_perl
 
 endif # WITH_PERL_STATIC
 endif # WTIH_PERL_DYNAMIC
 
 check-perl: $(PERLMAKEFILE)
-	cd $(PERLMAGICK) && $(MAKE) test
+	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' test
 
 clean-perl: $(PERLMAKEFILE)
-	cd $(PERLMAGICK) && $(MAKE) clean && $(RM) -f  Makefile.old PerlMagick
+	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' clean && $(RM) -f  Makefile.old PerlMagick
 	$(RM) -f perl-sources
 
 distclean-perl: clean-perl

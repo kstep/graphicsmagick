@@ -295,7 +295,7 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         image->class=DirectClass;
         bmp_header.number_colors=0;
         bmp_header.bit_count=image->matte ? 32 : 24;
-        bytes_per_line=((image->columns*bmp_header.bit_count+31)/32)*4;
+        bytes_per_line=4*((image->columns*bmp_header.bit_count+31)/32);
       }
     else
       {
@@ -303,13 +303,13 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           Colormapped BMP raster.
         */
         bmp_header.bit_count=8;
-        bytes_per_line=((image->columns*bmp_header.bit_count+31)/32)*4;
-        if (image_info->compression == NoCompression)
+        bytes_per_line=4*((image->columns*bmp_header.bit_count+31)/32);
+        if (image->compression == NoCompression)
           bytes_per_line=image->columns;
         if (IsMonochromeImage(image))
           {
             bmp_header.bit_count=1;
-            bytes_per_line=((image->columns*bmp_header.bit_count+31)/32)*4;
+            bytes_per_line=4*((image->columns*bmp_header.bit_count+31)/32);
           }
         bmp_header.file_size+=4*(1 << bmp_header.bit_count);
         bmp_header.offset_bits+=4*(1 << bmp_header.bit_count);
@@ -11427,9 +11427,8 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 photometric=PHOTOMETRIC_MINISWHITE;
               if (image->compression != NoCompression)
                 {
-                  if (image->compression == FaxCompression)
-                    compress_tag=COMPRESSION_CCITTFAX3;
-                  else
+                  compress_tag=COMPRESSION_CCITTFAX3;
+                  if (image->compression == Group4Compression)
                     compress_tag=COMPRESSION_CCITTFAX4;
                 }
               TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,1);

@@ -8,6 +8,7 @@
 extern "C" {
 #endif
 
+#undef TextWidth
 #include <locale.h>
 #include <stat.h>
 #include <errno.h>
@@ -63,7 +64,7 @@ extern void
   closedir(DIR *),
   MACErrorHandler(const unsigned int,const char *,const char *),
   MACWarningHandler(const unsigned int,const char *,const char *),
-  ProcessPendingEvents(char *),
+  ProcessPendingEvents(const char *),
   seekdir(DIR *,long),
   SetApplicationType(const char *,const char *,OSType);
 
