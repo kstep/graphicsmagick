@@ -1312,6 +1312,18 @@ void CConfigureApp::write_lib_dsp(
   CString dir;
   CString spec;
 
+void get_dir(
+{
+	dir = "..\\..\\";
+  dir += directory.c_str();
+  dir += "\\";
+  if (search.length() > 0)
+	  spec = search.c_str();
+  else
+	  spec = dspname.c_str();
+  spec += ".c";
+}
+
 	begin_group(dsp, "src");
 	dir = "..\\..\\";
   dir += directory.c_str();
