@@ -3976,6 +3976,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             y=0;
             (void) CloneString(&geometry,argv[++i]);
             (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
+            if ((width == (*image)->columns) && (height == (*image)->rows))
+              break;
             resize_image=ZoomImage(*image,width,height,&(*image)->exception);
             if (resize_image == (Image *) NULL)
               break;
