@@ -418,6 +418,9 @@ typedef struct _Image
   ImageAttribute
     *attributes;
 
+  struct _Image
+    *clip_mask;
+
   void
     *cache;
 
