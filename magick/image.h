@@ -527,7 +527,8 @@ typedef struct _MagickInfo
     (*encoder)(const ImageInfo *,Image *),
     (*magick)(const unsigned char *,const unsigned int),
     adjoin,
-    blob_support;
+    blob_support,
+    raw;
 
   char
     *description;
@@ -698,10 +699,8 @@ extern Export int
 
 extern Export MagickInfo
   *GetMagickInfo(const char *),
-  *RegisterMagickInfo(const char *,Image *(*)(const ImageInfo *),
-    unsigned int (*)(const ImageInfo *,Image *),
-    unsigned int (*)(const unsigned char *,const unsigned int),
-    const unsigned int,const unsigned int,const char *);
+  *RegisterMagickInfo(MagickInfo *),
+  *SetMagickInfo(const char *);
 
 extern Export unsigned int
   AnimateImages(const ImageInfo *image_info,Image *image),

@@ -105,7 +105,7 @@ Export void DestroyMagickInfo()
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t M a g i c k I n f o                                                 %
+%   G e t M a g i c k L i s t                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -136,351 +136,695 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 
   if (magick_info == (MagickInfo *) NULL)
     {
-      (void) RegisterMagickInfo("8BIM",Read8BIMImage,Write8BIMImage,Is8BIM,
-        False,True,"Photoshop resource format");
-      (void) RegisterMagickInfo("AVS",ReadAVSImage,WriteAVSImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"AVS X image");
+      MagickInfo
+        *entry;
+
+      entry=SetMagickInfo("8BIM");
+      entry->decoder=Read8BIMImage;
+      entry->encoder=Write8BIMImage;
+      entry->magick=Is8BIM;
+      entry->adjoin=False;
+      entry->description=AllocateString("Photoshop resource format");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("AVS");
+      entry->decoder=ReadAVSImage;
+      entry->encoder=WriteAVSImage;
+      entry->description=AllocateString("AVS X image");
+      RegisterMagickInfo(entry);
 #if defined(HasJBIG)
-      (void) RegisterMagickInfo("BIE",ReadJBIGImage,WriteJBIGImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"Joint Bi-level Image experts Group interchange format");
+      entry=SetMagickInfo("BIE");
+      entry->decoder=ReadJBIGImage;
+      entry->encoder=WriteJBIGImage;
+      entry->adjoin=False;
+      entry->description=
+	AllocateString("Joint Bi-level Image experts Group interchange format");
+      RegisterMagickInfo(entry);
 #endif
-      (void) RegisterMagickInfo("BMP",ReadBMPImage,WriteBMPImage,IsBMP,True,
-        True,"Microsoft Windows bitmap image");
-      (void) RegisterMagickInfo("BMP24",ReadBMPImage,WriteBMPImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"Microsoft Windows 24-bit bitmap image");
-      (void) RegisterMagickInfo("CMYK",ReadCMYKImage,WriteCMYKImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"Raw cyan, magenta, yellow, and black bytes");
-      (void) RegisterMagickInfo("DCM",ReadDCMImage,
-        (unsigned int (*)(const ImageInfo *,Image *)) NULL,IsDCM,False,True,
-        "Digital Imaging and Communications in Medicine image");
-      (void) RegisterMagickInfo("DCX",ReadPCXImage,WritePCXImage,IsDCX,True,
-        True,"ZSoft IBM PC multi-page Paintbrush");
-      (void) RegisterMagickInfo("DIB",ReadBMPImage,WriteBMPImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"Microsoft Windows bitmap image");
-      (void) RegisterMagickInfo("EPDF",ReadPDFImage,WritePDFImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"Encapsulated Portable Document Format");
-      (void) RegisterMagickInfo("EPI",ReadPSImage,
-        (unsigned int (*)(const ImageInfo *,Image *)) NULL,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"Adobe Encapsulated PostScript Interchange format");
-      (void) RegisterMagickInfo("EPS",ReadPSImage,WritePSImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"Adobe Encapsulated PostScript");
-      (void) RegisterMagickInfo("EPS2",ReadPSImage,WritePS2Image,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"Adobe Level II Encapsulated PostScript");
-      (void) RegisterMagickInfo("EPSF",ReadPSImage,WritePSImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"Adobe Encapsulated PostScript");
-      (void) RegisterMagickInfo("EPSI",ReadPSImage,WritePSImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"Adobe Encapsulated PostScript Interchange format");
-      (void) RegisterMagickInfo("EPT",ReadPSImage,WriteEPTImage,IsEPT,False,
-        True,"Adobe Encapsulated PostScript with TIFF preview");
-      (void) RegisterMagickInfo("FAX",ReadFAXImage,WriteFAXImage,IsFAX,True,
-        True,"Group 3 FAX");
-      (void) RegisterMagickInfo("FITS",ReadFITSImage,WriteFITSImage,IsFITS,
-        False,True,"Flexible Image Transport System");
+      entry=SetMagickInfo("BMP");
+      entry->decoder=ReadBMPImage;
+      entry->encoder=WriteBMPImage;
+      entry->magick=IsBMP;
+      entry->description=AllocateString("Microsoft Windows bitmap image");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("BMP24");
+      entry->decoder=ReadBMPImage;
+      entry->encoder=WriteBMPImage;
+      entry->description=
+	AllocateString("Microsoft Windows 24-bit bitmap image");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("CMYK");
+      entry->decoder=ReadCMYKImage;
+      entry->encoder=WriteCMYKImage;
+      entry->adjoin=False;
+      entry->raw=True;
+      entry->description=
+	AllocateString("Raw cyan, magenta, yellow, and black bytes");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("DCM");
+      entry->decoder=ReadDCMImage;
+      entry->magick=IsDCM;
+      entry->adjoin=False;
+      entry->description=
+	AllocateString("Digital Imaging and Communications in Medicine image");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("DCX");
+      entry->decoder=ReadPCXImage;
+      entry->encoder=WritePCXImage;
+      entry->magick=IsDCX;
+      entry->description=
+	AllocateString("ZSoft IBM PC multi-page Paintbrush");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("DIB");
+      entry->decoder=ReadBMPImage;
+      entry->encoder=WriteBMPImage;
+      entry->description=
+	AllocateString("Microsoft Windows bitmap image");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("EPDF");
+      entry->decoder=ReadPDFImage;
+      entry->encoder=WritePDFImage;
+      entry->adjoin=False;
+      entry->description=
+	AllocateString("Encapsulated Portable Document Format");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("EPI");
+      entry->decoder=ReadPSImage;
+      entry->adjoin=False;
+      entry->description=
+	AllocateString("Adobe Encapsulated PostScript Interchange format");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("EPS");
+      entry->decoder=ReadPSImage;
+      entry->encoder=WritePSImage;
+      entry->adjoin=False;
+      entry->description=AllocateString("Adobe Encapsulated PostScript");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("EPS2");
+      entry->decoder=ReadPSImage;
+      entry->encoder=WritePS2Image;
+      entry->adjoin=False;
+      entry->description=
+	AllocateString("Adobe Level II Encapsulated PostScript");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("EPSF");
+      entry->decoder=ReadPSImage;
+      entry->encoder=WritePSImage;
+      entry->adjoin=False;
+      entry->description=AllocateString("Adobe Encapsulated PostScript");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("EPSI");
+      entry->decoder=ReadPSImage;
+      entry->encoder=WritePSImage;
+      entry->adjoin=False;
+      entry->description=
+	AllocateString("Adobe Encapsulated PostScript Interchange format");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("EPT");
+      entry->decoder=ReadPSImage;
+      entry->encoder=WriteEPTImage;
+      entry->magick=IsEPT;
+      entry->adjoin=False;
+      entry->description=
+	AllocateString("Adobe Encapsulated PostScript with TIFF preview");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("FAX");
+      entry->decoder=ReadFAXImage;
+      entry->encoder=WriteFAXImage;
+      entry->magick=IsFAX;
+      entry->description=AllocateString("Group 3 FAX");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("FITS");
+      entry->decoder=ReadFITSImage;
+      entry->encoder=WriteFITSImage;
+      entry->magick=IsFITS;
+      entry->adjoin=False;
+      entry->description=
+	AllocateString("Flexible Image Transport System");
+      RegisterMagickInfo(entry);
 #if defined(HasFPX)
-      (void) RegisterMagickInfo("FPX",ReadFPXImage,WriteFPXImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"FlashPix Format");
+      entry=SetMagickInfo("FPX");
+      entry->decoder=ReadFPXImage;
+      entry->encoder=WriteFPXImage;
+      entry->adjoin=False;
+      entry->description=AllocateString("FlashPix Format");
+      RegisterMagickInfo(entry);
 #endif
-      (void) RegisterMagickInfo("G3",ReadFAXImage,
-        (unsigned int (*)(const ImageInfo *,Image *)) NULL,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"Group 3 FAX");
-      (void) RegisterMagickInfo("GIF",ReadGIFImage,WriteGIFImage,IsGIF,True,
-        True,"CompuServe graphics interchange format");
-      (void) RegisterMagickInfo("GIF87",ReadGIFImage,WriteGIFImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"CompuServe graphics interchange format (version 87a)");
-      (void) RegisterMagickInfo("GRADATION",ReadGRADATIONImage,
-        (unsigned int (*)(const ImageInfo *,Image *)) NULL,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"Gradual passing from one shade to another");
-      (void) RegisterMagickInfo("GRANITE",ReadLOGOImage,WriteLOGOImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"Granite texture");
-      (void) RegisterMagickInfo("GRAY",ReadGRAYImage,WriteGRAYImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"Raw gray bytes");
-      (void) RegisterMagickInfo("H",ReadLOGOImage,WriteLOGOImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"Internal format");
+      entry=SetMagickInfo("G3");
+      entry->decoder=ReadFAXImage;
+      entry->adjoin=False;
+      entry->description=AllocateString("Group 3 FAX");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("GIF");
+      entry->decoder=ReadGIFImage;
+      entry->encoder=WriteGIFImage;
+      entry->magick=IsGIF;
+      entry->description=
+	AllocateString("CompuServe graphics interchange format");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("GIF87");
+      entry->decoder=ReadGIFImage;
+      entry->encoder=WriteGIFImage;
+      entry->adjoin=False;
+      entry->description=
+	AllocateString("CompuServe graphics interchange format (version 87a)");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("GRADATION");
+      entry->decoder=ReadGRADATIONImage;
+      entry->adjoin=False;
+      entry->description=
+	AllocateString("Gradual passing from one shade to another");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("GRANITE");
+      entry->decoder=ReadLOGOImage;
+      entry->encoder=WriteLOGOImage;
+      entry->adjoin=False;
+      entry->description=AllocateString("Granite texture");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("GRAY");
+      entry->decoder=ReadGRAYImage;
+      entry->encoder=WriteGRAYImage;
+      entry->raw=True;
+      entry->description=AllocateString("Raw gray bytes");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("H");
+      entry->decoder=ReadLOGOImage;
+      entry->encoder=WriteLOGOImage;
+      entry->adjoin=False;
+      entry->description=AllocateString("Internal format");
+      RegisterMagickInfo(entry);
 #if defined(HasHDF)
-      (void) RegisterMagickInfo("HDF",ReadHDFImage,WriteHDFImage,IsHDF,True,
-        False,"Hierarchical Data Format");
+      entry=SetMagickInfo("HDF");
+      entry->decoder=ReadHDFImage;
+      entry->encoder=WriteHDFImage;
+      entry->magick=IsHDF;
+      entry->blob_support=False;
+      entry->description=AllocateString("Hierarchical Data Format");
+      RegisterMagickInfo(entry);
 #endif
-      (void) RegisterMagickInfo("HISTOGRAM",ReadHISTOGRAMImage,
-        WriteHISTOGRAMImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"Histogram of the image");
-      (void) RegisterMagickInfo("HTM",(Image *(*)(const ImageInfo *)) NULL,
-        WriteHTMLImage,IsHTML,False,True,
-        "Hypertext Markup Language with a client-side image map");
-      (void) RegisterMagickInfo("HTML",(Image *(*)(const ImageInfo *)) NULL,
-        WriteHTMLImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"Hypertext Markup Language with a client-side image map");
-      (void) RegisterMagickInfo("ICB",ReadTGAImage,WriteTGAImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"Truevision Targa image");
-      (void) RegisterMagickInfo("ICC",ReadICCImage,WriteICCImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"ICC Color Profile");
-      (void) RegisterMagickInfo("ICO",ReadICONImage,
-        (unsigned int (*)(const ImageInfo *,Image *)) NULL,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"Microsoft icon");
-      (void) RegisterMagickInfo("IMPLICIT",(Image *(*)(const ImageInfo *)) NULL,
-        (unsigned int (*)(const ImageInfo *,Image *)) NULL,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"Internal format");
-      (void) RegisterMagickInfo("IPTC",ReadIPTCImage,WriteIPTCImage,IsIPTC,
-        False,True,"IPTC Newsphoto");
+      entry=SetMagickInfo("HISTOGRAM");
+      entry->decoder=ReadHISTOGRAMImage;
+      entry->encoder=WriteHISTOGRAMImage;
+      entry->adjoin=False;
+      entry->description=AllocateString("Histogram of the image");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("HTM");
+      entry->encoder=WriteHTMLImage;
+      entry->magick=IsHTML;
+      entry->adjoin=False;
+      entry->description=
+	AllocateString("Hypertext Markup Language and a client-side image map");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("HTML");
+      entry->encoder=WriteHTMLImage;
+      entry->adjoin=False;
+      entry->description=
+	AllocateString("Hypertext Markup Language and a client-side image map");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("ICB");
+      entry->decoder=ReadTGAImage;
+      entry->encoder=WriteTGAImage;
+      entry->description=AllocateString("Truevision Targa image");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("ICC");
+      entry->decoder=ReadICCImage;
+      entry->encoder=WriteICCImage;
+      entry->adjoin=False;
+      entry->description=AllocateString("ICC Color Profile");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("ICO");
+      entry->decoder=ReadICONImage;
+      entry->adjoin=False;
+      entry->description=AllocateString("Microsoft icon");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("IMPLICIT");
+      entry->description=AllocateString("Internal format");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("IPTC");
+      entry->decoder=ReadIPTCImage;
+      entry->encoder=WriteIPTCImage;
+      entry->magick=IsIPTC;
+      entry->adjoin=False;
+      entry->description=AllocateString("IPTC Newsphoto");
+      RegisterMagickInfo(entry);
 #if defined(HasJBIG)
-      (void) RegisterMagickInfo("JBG",ReadJBIGImage,WriteJBIGImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"Joint Bi-level Image experts Group interchange format");
-      (void) RegisterMagickInfo("JBIG",ReadJBIGImage,WriteJBIGImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-         True,True,"Joint Bi-level Image experts Group interchange format");
+      entry=SetMagickInfo("JBG");
+      entry->decoder=ReadJBIGImage;
+      entry->encoder=WriteJBIGImage;
+      entry->description=
+	AllocateString("Joint Bi-level Image experts Group interchange format");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("JBIG");
+      entry->decoder=ReadJBIGImage;
+      entry->encoder=WriteJBIGImage;
+      entry->description=
+	AllocateString("Joint Bi-level Image experts Group interchange format");
+      RegisterMagickInfo(entry);
 #endif
 #if defined(HasJPEG)
-      (void) RegisterMagickInfo("JPG",ReadJPEGImage,WriteJPEGImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"Joint Photographic Experts Group JFIF format");
-      (void) RegisterMagickInfo("JPEG",ReadJPEGImage,WriteJPEGImage,IsJPEG,
-        False,True,"Joint Photographic Experts Group JFIF format");
-      (void) RegisterMagickInfo("JPEG24",ReadJPEGImage,WriteJPEGImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"Joint Photographic Experts Group JFIF format");
+      entry=SetMagickInfo("JPG");
+      entry->decoder=ReadJPEGImage;
+      entry->encoder=WriteJPEGImage;
+      entry->adjoin=False;
+      entry->description=
+	AllocateString("Joint Photographic Experts Group JFIF format");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("JPEG");
+      entry->decoder=ReadJPEGImage;
+      entry->encoder=WriteJPEGImage;
+      entry->magick=IsJPEG;
+      entry->adjoin=False;
+      entry->description=
+	AllocateString("Joint Photographic Experts Group JFIF format");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("JPEG24");
+      entry->decoder=ReadJPEGImage;
+      entry->encoder=WriteJPEGImage;
+      entry->adjoin=False;
+      entry->description=
+	AllocateString("Joint Photographic Experts Group JFIF format");
+      RegisterMagickInfo(entry);
 #endif
-      (void) RegisterMagickInfo("LABEL",ReadLABELImage,
-        (unsigned int (*)(const ImageInfo *,Image *)) NULL,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"Text image format");
-      (void) RegisterMagickInfo("LOGO",ReadLOGOImage,WriteLOGOImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"ImageMagick Logo");
-      (void) RegisterMagickInfo("MAP",ReadMAPImage,WriteMAPImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"Colormap intensities and indices");
-      (void) RegisterMagickInfo("MATTE",ReadMIFFImage,WriteMATTEImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"Matte format");
-      (void) RegisterMagickInfo("MIFF",ReadMIFFImage,WriteMIFFImage,IsMIFF,True,
-        True,"Magick image format");
+      entry=SetMagickInfo("LABEL");
+      entry->decoder=ReadLABELImage;
+      entry->adjoin=False;
+      entry->description=AllocateString("Text image format");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("LOGO");
+      entry->decoder=ReadLOGOImage;
+      entry->encoder=WriteLOGOImage;
+      entry->adjoin=False;
+      entry->description=AllocateString("ImageMagick Logo");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("MAP");
+      entry->decoder=ReadMAPImage;
+      entry->encoder=WriteMAPImage;
+      entry->adjoin=False;
+      entry->raw=True;
+      entry->description=
+	AllocateString("Colormap intensities and indices");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("MATTE");
+      entry->decoder=ReadMIFFImage;
+      entry->encoder=WriteMATTEImage;
+      entry->raw=True;
+      entry->description=AllocateString("Matte format");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("MIFF");
+      entry->decoder=ReadMIFFImage;
+      entry->encoder=WriteMIFFImage;
+      entry->magick=IsMIFF;
+      entry->description=AllocateString("Magick image format");
+      RegisterMagickInfo(entry);
 #if defined(HasPNG)
-      (void) RegisterMagickInfo("MNG",ReadPNGImage,WritePNGImage,IsMNG,True,
-        True,"Multiple-image Network Graphics");
+      entry=SetMagickInfo("MNG");
+      entry->decoder=ReadPNGImage;
+      entry->encoder=WritePNGImage;
+      entry->magick=IsMNG;
+      entry->description=AllocateString("Multiple-image Network Graphics");
+      RegisterMagickInfo(entry);
 #endif
-      (void) RegisterMagickInfo("MONO",ReadMONOImage,WriteMONOImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"Bi-level bitmap in least-significant-byte first order");
-      (void) RegisterMagickInfo("MTV",ReadMTVImage,WriteMTVImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"MTV Raytracing image format");
-      (void) RegisterMagickInfo("NETSCAPE",ReadLOGOImage,WriteLOGOImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"Netscape 216 color cube");
-      (void) RegisterMagickInfo("NULL",ReadNULLImage,
-        (unsigned int (*)(const ImageInfo *,Image *)) NULL,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"NULL image");
-      (void) RegisterMagickInfo("P7",ReadPNMImage,WritePNMImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"Xv thumbnail format");
-      (void) RegisterMagickInfo("PBM",ReadPNMImage,WritePNMImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"Portable bitmap format (black and white)");
-      (void) RegisterMagickInfo("PCD",ReadPCDImage,WritePCDImage,IsPCD,False,
-        True,"Photo CD");
-      (void) RegisterMagickInfo("PCDS",ReadPCDImage,WritePCDImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"Photo CD");
-      (void) RegisterMagickInfo("PCL",ReadPCLImage,WritePCLImage,IsPCL,False,
-        True,"Page Control Language");
-      (void) RegisterMagickInfo("PCT",
-        (Image *(*)(const ImageInfo *)) ReadPICTImage,WritePICTImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"Apple Macintosh QuickDraw/PICT");
-      (void) RegisterMagickInfo("PCX",ReadPCXImage,WritePCXImage,IsPCX,False,
-        True,"ZSoft IBM PC Paintbrush");
-      (void) RegisterMagickInfo("PDF",ReadPDFImage,WritePDFImage,IsPDF,True,
-        True,"Portable Document Format");
-      (void) RegisterMagickInfo("PIC",ReadPICTImage,WritePICTImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"Apple Macintosh QuickDraw/PICT");
-      (void) RegisterMagickInfo("PICT",ReadPICTImage,WritePICTImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"Apple Macintosh QuickDraw/PICT");
-      (void) RegisterMagickInfo("PICT24",ReadPICTImage,WritePICTImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"24-bit Apple Macintosh QuickDraw/PICT");
-      (void) RegisterMagickInfo("PIX",ReadPIXImage,
-        (unsigned int (*)(const ImageInfo *,Image *)) NULL,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"Alias/Wavefront RLE image format");
-      (void) RegisterMagickInfo("PLASMA",ReadPLASMAImage,
-        (unsigned int (*)(const ImageInfo *,Image *)) NULL,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"Plasma fractal image");
-      (void) RegisterMagickInfo("PGM",ReadPNMImage,WritePNMImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"Portable graymap format (gray scale)");
-      (void) RegisterMagickInfo("PM",ReadXPMImage,WriteXPMImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"X Windows system pixmap (color)");
+      entry=SetMagickInfo("MONO");
+      entry->decoder=ReadMONOImage;
+      entry->encoder=WriteMONOImage;
+      entry->adjoin=False;
+      entry->description=
+	AllocateString("Bi-level bitmap in least-significant-byte first order");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("MTV");
+      entry->decoder=ReadMTVImage;
+      entry->encoder=WriteMTVImage;
+      entry->description=AllocateString("MTV Raytracing image format");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("NETSCAPE");
+      entry->decoder=ReadLOGOImage;
+      entry->encoder=WriteLOGOImage;
+      entry->adjoin=False;
+      entry->description=AllocateString("Netscape 216 color cube");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("NULL");
+      entry->decoder=ReadNULLImage;
+      entry->adjoin=False;
+      entry->description=AllocateString("NULL image");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("P7");
+      entry->decoder=ReadPNMImage;
+      entry->encoder=WritePNMImage;
+      entry->description=AllocateString("Xv thumbnail format");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("PBM");
+      entry->decoder=ReadPNMImage;
+      entry->encoder=WritePNMImage;
+      entry->description=
+	AllocateString("Portable bitmap format (black and white)");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("PCD");
+      entry->decoder=ReadPCDImage;
+      entry->encoder=WritePCDImage;
+      entry->magick=IsPCD;
+      entry->adjoin=False;
+      entry->description=AllocateString("Photo CD");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("PCDS");
+      entry->decoder=ReadPCDImage;
+      entry->encoder=WritePCDImage;
+      entry->adjoin=False;
+      entry->description=AllocateString("Photo CD");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("PCL");
+      entry->decoder=ReadPCLImage;
+      entry->encoder=WritePCLImage;
+      entry->magick=IsPCL;
+      entry->adjoin=False;
+      entry->description=AllocateString("Page Control Language");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("PCT");
+      entry->encoder=WritePICTImage;
+      entry->adjoin=False;
+      entry->description=AllocateString("Apple Macintosh QuickDraw/PICT");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("PCX");
+      entry->decoder=ReadPCXImage;
+      entry->encoder=WritePCXImage;
+      entry->magick=IsPCX;
+      entry->adjoin=False;
+      entry->description=AllocateString("ZSoft IBM PC Paintbrush");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("PDF");
+      entry->decoder=ReadPDFImage;
+      entry->encoder=WritePDFImage;
+      entry->magick=IsPDF;
+      entry->description=AllocateString("Portable Document Format");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("PIC");
+      entry->decoder=ReadPICTImage;
+      entry->encoder=WritePICTImage;
+      entry->adjoin=False;
+      entry->description=AllocateString("Apple Macintosh QuickDraw/PICT");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("PICT");
+      entry->decoder=ReadPICTImage;
+      entry->encoder=WritePICTImage;
+      entry->adjoin=False;
+      entry->description=AllocateString("Apple Macintosh QuickDraw/PICT");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("PICT24");
+      entry->decoder=ReadPICTImage;
+      entry->encoder=WritePICTImage;
+      entry->adjoin=False;
+      entry->description=
+	AllocateString("24-bit Apple Macintosh QuickDraw/PICT");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("PIX");
+      entry->decoder=ReadPIXImage;
+      entry->description=
+	AllocateString("Alias/Wavefront RLE image format");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("PLASMA");
+      entry->decoder=ReadPLASMAImage;
+      entry->adjoin=False;
+      entry->description=AllocateString("Plasma fractal image");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("PGM");
+      entry->decoder=ReadPNMImage;
+      entry->encoder=WritePNMImage;
+      entry->description=
+	AllocateString("Portable graymap format (gray scale)");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("PM");
+      entry->decoder=ReadXPMImage;
+      entry->encoder=WriteXPMImage;
+      entry->adjoin=False;
+      entry->description=AllocateString("X Windows system pixmap (color)");
+      RegisterMagickInfo(entry);
 #if defined(HasPNG)
-      (void) RegisterMagickInfo("PNG",ReadPNGImage,WritePNGImage,IsPNG,False,
-        True,"Portable Network Graphics");
+      entry=SetMagickInfo("PNG");
+      entry->decoder=ReadPNGImage;
+      entry->encoder=WritePNGImage;
+      entry->magick=IsPNG;
+      entry->adjoin=False;
+      entry->description=AllocateString("Portable Network Graphics");
+      RegisterMagickInfo(entry);
 #endif
-      (void) RegisterMagickInfo("PNM",ReadPNMImage,WritePNMImage,IsPNM,True,
-        True,"Portable anymap");
-      (void) RegisterMagickInfo("PPM",ReadPNMImage,WritePNMImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"Portable pixmap format (color)");
-      (void) RegisterMagickInfo("PREVIEW",(Image *(*)(const ImageInfo *)) NULL,
-        WritePREVIEWImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"Show a preview an image enhancement, effect, or f/x");
-      (void) RegisterMagickInfo("PS",ReadPSImage,WritePSImage,IsPS,True,True,
-        "Adobe PostScript");
-      (void) RegisterMagickInfo("PS2",(Image *(*)(const ImageInfo *)) NULL,
-        WritePS2Image,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,True,
-        True,"Adobe Level II PostScript");
-      (void) RegisterMagickInfo("PS3",(Image *(*)(const ImageInfo *)) NULL,
-        WritePS3Image,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"Adobe Level III PostScript");
-      (void) RegisterMagickInfo("PSD",ReadPSDImage,WritePSDImage,IsPSD,False,
-        True,"Adobe Photoshop bitmap");
+      entry=SetMagickInfo("PNM");
+      entry->decoder=ReadPNMImage;
+      entry->encoder=WritePNMImage;
+      entry->magick=IsPNM;
+      entry->description=AllocateString("Portable anymap");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("PPM");
+      entry->decoder=ReadPNMImage;
+      entry->encoder=WritePNMImage;
+      entry->description=AllocateString("Portable pixmap format (color)");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("PREVIEW");
+      entry->encoder=WritePREVIEWImage;
+      entry->adjoin=False;
+      entry->description=
+	AllocateString("Show a preview an image enhancement, effect, or f/x");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("PS");
+      entry->decoder=ReadPSImage;
+      entry->encoder=WritePSImage;
+      entry->magick=IsPS;
+      entry->description=AllocateString("Adobe PostScript");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("PS2");
+      entry->encoder=WritePS2Image;
+      entry->description=AllocateString("Adobe Level II PostScript");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("PS3");
+      entry->encoder=WritePS3Image;
+      entry->description=AllocateString("Adobe Level III PostScript");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("PSD");
+      entry->decoder=ReadPSDImage;
+      entry->encoder=WritePSDImage;
+      entry->magick=IsPSD;
+      entry->adjoin=False;
+      entry->description=AllocateString("Adobe Photoshop bitmap");
+      RegisterMagickInfo(entry);
 #if defined(HasTIFF)
-      (void) RegisterMagickInfo("PTIF",ReadTIFFImage,WriteTIFFImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,False,"Pyramid encoded TIFF");
+      entry=SetMagickInfo("PTIF");
+      entry->decoder=ReadTIFFImage;
+      entry->encoder=WriteTIFFImage;
+      entry->blob_support=False;
+      entry->description=AllocateString("Pyramid encoded TIFF");
+      RegisterMagickInfo(entry);
 #endif
-      (void) RegisterMagickInfo("PWP",ReadPWPImage,
-        (unsigned int (*)(const ImageInfo *,Image *)) NULL,IsPWP,True,True,
-        "Seattle Film Works");
-      (void) RegisterMagickInfo("RAS",ReadSUNImage,WriteSUNImage,IsSUN,True,
-        True,"SUN Rasterfile");
-      (void) RegisterMagickInfo("RGB",ReadRGBImage,WriteRGBImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"Raw red, green, and blue bytes");
-      (void) RegisterMagickInfo("RGBA",ReadRGBImage,WriteRGBImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"Raw red, green, blue, and matte bytes");
-      (void) RegisterMagickInfo("RLA",ReadRLAImage,
-        (unsigned int (*)(const ImageInfo *,Image *)) NULL,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"Alias/Wavefront image");
-      (void) RegisterMagickInfo("RLE",ReadRLEImage,
-        (unsigned int (*)(const ImageInfo *,Image *)) NULL,IsRLE,False,True,
-        "Utah Run length encoded image");
-      (void) RegisterMagickInfo("SCT",ReadSCTImage,
-        (unsigned int (*)(const ImageInfo *,Image *)) NULL,IsSCT,False,True,
-        "Scitex HandShake");
-      (void) RegisterMagickInfo("SFW",ReadSFWImage,
-        (unsigned int (*)(const ImageInfo *,Image *)) NULL,IsSFW,False,True,
-        "Seattle Film Works");
-      (void) RegisterMagickInfo("SGI",ReadSGIImage,WriteSGIImage,IsSGI,True,
-        True,"Irix RGB image");
-      (void) RegisterMagickInfo("SHTML",(Image *(*)(const ImageInfo *)) NULL,
-        WriteHTMLImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,False,
-        True,"Hypertext Markup Language with a client-side image map");
-      (void) RegisterMagickInfo("STEGANO",ReadSTEGANOImage,
-        (unsigned int (*)(const ImageInfo *,Image *)) NULL,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"Steganographic image");
-      (void) RegisterMagickInfo("SUN",ReadSUNImage,WriteSUNImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"SUN Rasterfile");
-      (void) RegisterMagickInfo("TEXT",ReadTXTImage,WriteTXTImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"Raw text");
-      (void) RegisterMagickInfo("TGA",ReadTGAImage,WriteTGAImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"Truevision Targa image");
+      entry=SetMagickInfo("PWP");
+      entry->decoder=ReadPWPImage;
+      entry->magick=IsPWP;
+      entry->description=AllocateString("Seattle Film Works");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("RAS");
+      entry->decoder=ReadSUNImage;
+      entry->encoder=WriteSUNImage;
+      entry->magick=IsSUN;
+      entry->description=AllocateString("SUN Rasterfile");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("RGB");
+      entry->decoder=ReadRGBImage;
+      entry->encoder=WriteRGBImage;
+      entry->raw=True;
+      entry->description=AllocateString("Raw red, green, and blue bytes");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("RGBA");
+      entry->decoder=ReadRGBImage;
+      entry->encoder=WriteRGBImage;
+      entry->raw=True;
+      entry->description=
+	AllocateString("Raw red, green, blue, and matte bytes");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("RLA");
+      entry->decoder=ReadRLAImage;
+      entry->adjoin=False;
+      entry->description=AllocateString("Alias/Wavefront image");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("RLE");
+      entry->decoder=ReadRLEImage;
+      entry->magick=IsRLE;
+      entry->adjoin=False;
+      entry->description=AllocateString("Utah Run length encoded image");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("SCT");
+      entry->decoder=ReadSCTImage;
+      entry->magick=IsSCT;
+      entry->adjoin=False;
+      entry->description=AllocateString("Scitex HandShake");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("SFW");
+      entry->decoder=ReadSFWImage;
+      entry->magick=IsSFW;
+      entry->adjoin=False;
+      entry->description=AllocateString("Seattle Film Works");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("SGI");
+      entry->decoder=ReadSGIImage;
+      entry->encoder=WriteSGIImage;
+      entry->magick=IsSGI;
+      entry->description=AllocateString("Irix RGB image");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("SHTML");
+      entry->encoder=WriteHTMLImage;
+      entry->adjoin=False;
+      entry->description=
+	AllocateString("Hypertext Markup Language and a client-side image map");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("STEGANO");
+      entry->decoder=ReadSTEGANOImage;
+      entry->description=AllocateString("Steganographic image");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("SUN");
+      entry->decoder=ReadSUNImage;
+      entry->encoder=WriteSUNImage;
+      entry->description=AllocateString("SUN Rasterfile");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("TEXT");
+      entry->decoder=ReadTXTImage;
+      entry->encoder=WriteTXTImage;
+      entry->raw=True;
+      entry->description=AllocateString("Raw text");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("TGA");
+      entry->decoder=ReadTGAImage;
+      entry->encoder=WriteTGAImage;
+      entry->description=AllocateString("Truevision Targa image");
+      RegisterMagickInfo(entry);
 #if defined(HasTIFF)
-      (void) RegisterMagickInfo("TIF",ReadTIFFImage,WriteTIFFImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,False,"Tagged Image File Format");
-      (void) RegisterMagickInfo("TIFF",ReadTIFFImage,WriteTIFFImage,IsTIFF,
-        True,False,"Tagged Image File Format");
-      (void) RegisterMagickInfo("TIFF24",ReadTIFFImage,WriteTIFFImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,False,"24-bit Tagged Image File Format");
+      entry=SetMagickInfo("TIF");
+      entry->decoder=ReadTIFFImage;
+      entry->encoder=WriteTIFFImage;
+      entry->blob_support=False;
+      entry->description=AllocateString("Tagged Image File Format");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("TIFF");
+      entry->decoder=ReadTIFFImage;
+      entry->encoder=WriteTIFFImage;
+      entry->magick=IsTIFF;
+      entry->blob_support=False;
+      entry->description=AllocateString("Tagged Image File Format");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("TIFF24");
+      entry->decoder=ReadTIFFImage;
+      entry->encoder=WriteTIFFImage;
+      entry->blob_support=False;
+      entry->description=AllocateString("24-bit Tagged Image File Format");
+      RegisterMagickInfo(entry);
 #endif
-      (void) RegisterMagickInfo("TILE",ReadTILEImage,
-        (unsigned int (*)(const ImageInfo *,Image *)) NULL,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"Tile image with a texture");
-      (void) RegisterMagickInfo("TIM",ReadTIMImage,
-        (unsigned int (*)(const ImageInfo *,Image *)) NULL,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"PSX TIM");
+      entry=SetMagickInfo("TILE");
+      entry->decoder=ReadTILEImage;
+      entry->raw=True;
+      entry->description=AllocateString("Tile image with a texture");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("TIM");
+      entry->decoder=ReadTIMImage;
+      entry->description=AllocateString("PSX TIM");
+      RegisterMagickInfo(entry);
 #if defined(HasTTF)
-      (void) RegisterMagickInfo("TTF",ReadTTFImage,
-        (unsigned int (*)(const ImageInfo *,Image *)) NULL,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"TrueType font");
+      entry=SetMagickInfo("TTF");
+      entry->decoder=ReadTTFImage;
+      entry->adjoin=False;
+      entry->description=AllocateString("TrueType font");
+      RegisterMagickInfo(entry);
 #endif
-      (void) RegisterMagickInfo("TXT",ReadTXTImage,WriteTXTImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"Raw text");
-      (void) RegisterMagickInfo("UIL",ReadUILImage,WriteUILImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"X-Motif UIL table");
-      (void) RegisterMagickInfo("UYVY",ReadUYVYImage,WriteUYVYImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"16bit/pixel interleaved YUV");
-      (void) RegisterMagickInfo("VDA",ReadTGAImage,WriteTGAImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"Truevision Targa image");
-      (void) RegisterMagickInfo("VICAR",ReadVICARImage,WriteVICARImage,IsVICAR,
-        False,True,"VICAR rasterfile format");
-      (void) RegisterMagickInfo("VID",ReadVIDImage,WriteMIFFImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"Visual Image Directory");
-      (void) RegisterMagickInfo("VIFF",ReadVIFFImage,WriteVIFFImage,IsVIFF,True,
-        True,"Khoros Visualization image");
-      (void) RegisterMagickInfo("VST",ReadTGAImage,WriteTGAImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"Truevision Targa image");
+      entry=SetMagickInfo("TXT");
+      entry->decoder=ReadTXTImage;
+      entry->encoder=WriteTXTImage;
+      entry->description=AllocateString("Raw text");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("UIL");
+      entry->decoder=ReadUILImage;
+      entry->encoder=WriteUILImage;
+      entry->adjoin=False;
+      entry->description=AllocateString("X-Motif UIL table");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("UYVY");
+      entry->decoder=ReadUYVYImage;
+      entry->encoder=WriteUYVYImage;
+      entry->adjoin=False;
+      entry->raw=True;
+      entry->description=AllocateString("16bit/pixel interleaved YUV");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("VDA");
+      entry->decoder=ReadTGAImage;
+      entry->encoder=WriteTGAImage;
+      entry->description=AllocateString("Truevision Targa image");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("VICAR");
+      entry->decoder=ReadVICARImage;
+      entry->encoder=WriteVICARImage;
+      entry->magick=IsVICAR;
+      entry->adjoin=False;
+      entry->description=AllocateString("VICAR rasterfile format");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("VID");
+      entry->decoder=ReadVIDImage;
+      entry->encoder=WriteMIFFImage;
+      entry->description=AllocateString("Visual Image Directory");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("VIFF");
+      entry->decoder=ReadVIFFImage;
+      entry->encoder=WriteVIFFImage;
+      entry->magick=IsVIFF;
+      entry->description=AllocateString("Khoros Visualization image");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("VST");
+      entry->decoder=ReadTGAImage;
+      entry->encoder=WriteTGAImage;
+      entry->description=AllocateString("Truevision Targa image");
+      RegisterMagickInfo(entry);
 #if defined(HasX11)
-      (void) RegisterMagickInfo("X",ReadXImage,WriteXImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"X Image");
+      entry=SetMagickInfo("X");
+      entry->decoder=ReadXImage;
+      entry->encoder=WriteXImage;
+      entry->adjoin=False;
+      entry->description=AllocateString("X Image");
+      RegisterMagickInfo(entry);
 #endif
-      (void) RegisterMagickInfo("XBM",ReadXBMImage,WriteXBMImage,IsXBM,False,
-        True,"X Windows system bitmap (black and white)");
-      (void) RegisterMagickInfo("XC",ReadXCImage,
-        (unsigned int (*)(const ImageInfo *,Image *)) NULL,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"Constant image of X server color");
-      (void) RegisterMagickInfo("XPM",ReadXPMImage,WriteXPMImage,IsXPM,False,
-        True,"X Windows system pixmap (color)");
-      (void) RegisterMagickInfo("XV",ReadVIFFImage,WriteVIFFImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"Khoros Visualization image");
+      entry=SetMagickInfo("XBM");
+      entry->decoder=ReadXBMImage;
+      entry->encoder=WriteXBMImage;
+      entry->magick=IsXBM;
+      entry->adjoin=False;
+      entry->description=
+	AllocateString("X Windows system bitmap (black and white)");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("XC");
+      entry->decoder=ReadXCImage;
+      entry->adjoin=False;
+      entry->raw=True;
+      entry->description=
+	AllocateString("Constant image of X server color");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("XPM");
+      entry->decoder=ReadXPMImage;
+      entry->encoder=WriteXPMImage;
+      entry->magick=IsXPM;
+      entry->adjoin=False;
+      entry->description=AllocateString("X Windows system pixmap (color)");
+      RegisterMagickInfo(entry);
+      entry=SetMagickInfo("XV");
+      entry->decoder=ReadVIFFImage;
+      entry->encoder=WriteVIFFImage;
+      entry->description=AllocateString("Khoros Visualization image");
+      RegisterMagickInfo(entry);
 #if defined(HasX11)
-      (void) RegisterMagickInfo("XWD",ReadXWDImage,WriteXWDImage,IsXWD,False,
-        True,"X Windows system window dump (color)");
+      entry=SetMagickInfo("XWD");
+      entry->decoder=ReadXWDImage;
+      entry->encoder=WriteXWDImage;
+      entry->magick=IsXWD;
+      entry->adjoin=False;
+      entry->description=
+	AllocateString("X Windows system window dump (color)");
+      RegisterMagickInfo(entry);
 #endif
-      (void) RegisterMagickInfo("YUV",ReadYUVImage,WriteYUVImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,True,"CCIR 601 4:1:1");
+      entry=SetMagickInfo("YUV");
+      entry->decoder=ReadYUVImage;
+      entry->encoder=WriteYUVImage;
+      entry->adjoin=False;
+      entry->raw=True;
+      entry->description=AllocateString("CCIR 601 4:1:1");
+      RegisterMagickInfo(entry);
     }
   if (tag == (char *) NULL)
     return(magick_info);
@@ -527,7 +871,7 @@ Export void ListMagickInfo(FILE *file)
   (void) fprintf(file,"--------------------------------------------------------"
     "-----------------\n");
   for (p=GetMagickInfo((char *) NULL); p != (MagickInfo *) NULL; p=p->next)
-    (void) fprintf(file,"%10s%c  %c%c%c   %s\n",p->tag ? p->tag : "",
+    (void) fprintf(file,"%10s%c  %c%c%c  %s\n",p->tag ? p->tag : "",
       p->blob_support ? '*' : ' ',p->decoder ? 'r' : '-',p->encoder ? 'w' : '-',
       p->encoder && p->adjoin ? '+' : '-',p->description ? p->description : "");
   (void) fprintf(file,"\n* native blob support\n\n");
@@ -553,93 +897,35 @@ Export void ListMagickInfo(FILE *file)
 %
 %  The format of the RegisterMagickInfo method is:
 %
-%      MagickInfo *RegisterMagickInfo(const char *tag,
-%        Image *(*decoder)(const ImageInfo *),
-%        unsigned int (*encoder)(const ImageInfo *,Image *),
-%        unsigned int (*magick)(const unsigned char *,const unsigned int),
-%        const unsigned int adjoin,const unsigned int blob_support,
-%        const char *description)
+%      MagickInfo *RegisterMagickInfo(MagickInfo *entry)
 %
 %  A description of each parameter follows:
 %
 %    o magick_info: Method RegisterMagickInfo returns a pointer MagickInfo
 %      structure that contains the specified tag info.
 %
-%    o tag: a character string that represents the image format we are
-%      looking for.
-%
-%    o decoder: a method that is used to read the image format.
-%
-%    o encoder: a method that is used to write the image format.
-%
-%    o magick: this method returns True if the image format signature
-%      matches a subset of the first few bytes of the file or blob.
-%
-%    o adjoin: a value greater than 0 means the image format can save more
-%      than one frame to the file or blob.
-%
-%    o blob_support: a value greater than 0 means the format supports
-%      native in-memory I/O.
-%
-%    o description: a character string that describes the image format.
-%
+%    o entry: 
 %
 */
-Export MagickInfo *RegisterMagickInfo(const char *tag,
-  Image *(*decoder)(const ImageInfo *),
-  unsigned int (*encoder)(const ImageInfo *,Image *),
-  unsigned int (*magick)(const unsigned char *,const unsigned int),
-  const unsigned int adjoin,const unsigned int blob_support,
-  const char *description)
+Export MagickInfo *RegisterMagickInfo(MagickInfo *entry)
 {
-  MagickInfo
-    *entry;
-
   register MagickInfo
     *p;
 
+  /*
+    Add tag info to the image format list.
+  */
   p=(MagickInfo*) NULL;
   if (magick_info != (MagickInfo *) NULL)
     for (p=magick_info; p->next != (MagickInfo *) NULL; p=p->next)
     {
-      if (Latin1Compare(p->tag,tag) == 0)
+      if (Latin1Compare(p->tag,entry->tag) >= 0)
         {
-          /*
-            Tag already exists-- update it.
-          */
-          if (p->tag == (char *) NULL)
-            FreeMemory(p->tag);
-          p->tag=AllocateString(tag);
-          p->decoder=decoder;
-          p->encoder=encoder;
-          p->magick=magick;
-          p->adjoin=adjoin;
-          p->blob_support=blob_support;
-          if (p->description == (char *) NULL)
-            FreeMemory(p->description);
-          p->description=AllocateString(description);
-          return(p);
+          if (Latin1Compare(p->tag,entry->tag) == 0)
+            UnregisterMagickInfo(entry->tag);
+          break;
         }
-      if (Latin1Compare(p->tag,tag) > 0)
-        break;
     }
-  /*
-    Add tag info to the image format list.
-  */
-  entry=(MagickInfo *) AllocateMemory(sizeof(MagickInfo));
-  if (entry == (MagickInfo *) NULL)
-    MagickError(ResourceLimitWarning,"Unable to allocate image",
-      "Memory allocation failed");
-  entry->tag=AllocateString(tag);
-  entry->decoder=decoder;
-  entry->encoder=encoder;
-  entry->magick=magick;
-  entry->adjoin=adjoin;
-  entry->blob_support=blob_support;
-  entry->description=AllocateString(description);
-  entry->data=(void *) NULL;
-  entry->previous=(MagickInfo *) NULL;
-  entry->next=(MagickInfo *) NULL;
   if (magick_info == (MagickInfo *) NULL)
     {
       magick_info=entry;
@@ -648,6 +934,58 @@ Export MagickInfo *RegisterMagickInfo(const char *tag,
   entry->previous=p;
   entry->next=p->next;
   p->next=entry;
+  return(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t M a g i c k I n f o                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SetMagickInfo allocates a MagickInfo structure and initializes the
+%  members to default values.
+%
+%  The format of the SetMagickInfo method is:
+%
+%      MagickInfo *SetMagickInfo(const char *tag)
+%
+%  A description of each parameter follows:
+%
+%    o magick_info: Method SetMagickInfo returns the allocated and initialized
+%      MagickInfo structure.
+%
+%    o tag: a character string that represents the image format associated
+%      with the MagickInfo structure.
+%
+%
+*/
+Export MagickInfo *SetMagickInfo(const char *tag)
+{
+  MagickInfo
+    *entry;
+
+  entry=(MagickInfo *) AllocateMemory(sizeof(MagickInfo));
+  if (entry == (MagickInfo *) NULL)
+    MagickError(ResourceLimitWarning,"Unable to allocate image",
+      "Memory allocation failed");
+  entry->tag=AllocateString(tag);
+  entry->decoder=(Image *(*)(const ImageInfo *)) NULL;
+  entry->encoder=(unsigned int (*)(const ImageInfo *,Image *)) NULL;
+  entry->magick=
+    (unsigned int (*)(const unsigned char *,const unsigned int)) NULL;
+  entry->adjoin=True;
+  entry->blob_support=True;
+  entry->raw=False;
+  entry->description=(char *) NULL;
+  entry->data=(void *) NULL;
+  entry->previous=(MagickInfo *) NULL;
+  entry->next=(MagickInfo *) NULL;
   return(entry);
 }
 
@@ -692,7 +1030,7 @@ Export unsigned int UnregisterMagickInfo(const char *tag)
         if (p->description != (char *) NULL)
           FreeMemory(p->description);
         if (p->previous != (MagickInfo *) NULL)
-           p->previous->next=p->next;
+          p->previous->next=p->next;
         else
           {
             magick_info=p->next;
