@@ -451,8 +451,9 @@ static int Generate8BIMAttribute(Image *image,const char *key)
   return(status);
 }
 
+#define DE_STACK_SIZE 16
+#define EXIF_DELIMITER "\n"
 #define EXIF_NUM_FORMATS 12
-static int exiffmtbytes[] = {0,1,1,2,4,8,1,1,2,4,8,4,8};
 #define EXIF_FMT_BYTE       1
 #define EXIF_FMT_STRING     2
 #define EXIF_FMT_USHORT     3
@@ -465,13 +466,16 @@ static int exiffmtbytes[] = {0,1,1,2,4,8,1,1,2,4,8,4,8};
 #define EXIF_FMT_SRATIONAL 10
 #define EXIF_FMT_SINGLE    11
 #define EXIF_FMT_DOUBLE    12
-
 #define TAG_EXIF_OFFSET       0x8769
 #define TAG_INTEROP_OFFSET    0xa005
 
-static const struct {
-    unsigned short Tag;
-    char* Desc;
+static const struct
+{
+  unsigned short
+    Tag;
+
+  char
+    *Desc;
 } TagTable[] = {
   {  0x100,  "ImageWidth"},
   {  0x101,  "ImageLength"},
@@ -556,42 +560,53 @@ static const struct {
   {  0xA300,  "FileSource"},
   {  0xA301,  "SceneType"},
   {      0, NULL}
-} ;
+};
 
-static short Read16s(int morder, void *ishort)
+static int
+  exiffmtbytes[] = {0,1,1,2,4,8,1,1,2,4,8,4,8};
+
+static short Read16s(int morder,void *ishort)
 {
-    if (morder)
-      return (((unsigned char *)ishort)[0] << 8) | ((unsigned char *)ishort)[1];
-    else
-      return (((unsigned char *)ishort)[1] << 8) | ((unsigned char *)ishort)[0];
+  short
+    value;
+
+  if (morder)
+    value=(((unsigned char *) ishort)[0] << 8) | ((unsigned char *) ishort)[1];
+  else
+    value=(((unsigned char *) ishort)[1] << 8) | ((unsigned char *) ishort)[0];
+  return(value);
 }
 
-static unsigned short Read16u(int morder, void *ishort)
+static unsigned short Read16u(int morder,void *ishort)
 {
-    if (morder)
-      return (((unsigned char *)ishort)[0] << 8) | ((unsigned char *)ishort)[1];
-    else
-      return (((unsigned char *)ishort)[1] << 8) | ((unsigned char *)ishort)[0];
+  unsigned short
+    value;
+
+  if (morder)
+    value=(((unsigned char *) ishort)[0] << 8) | ((unsigned char *) ishort)[1];
+  else
+    value=(((unsigned char *) ishort)[1] << 8) | ((unsigned char *) ishort)[0];
+  return(value);
 }
 
-static long Read32s(int morder, void *ilong)
+static long Read32s(int morder,void *ilong)
 {
-    if (morder)
-      return  (((         char *)ilong)[0] << 24) | (((unsigned char *)ilong)[1] << 16)
-            | (((unsigned char *)ilong)[2] << 8 ) | (((unsigned char *)ilong)[3] << 0 );
-    else
-      return  (((         char *)ilong)[3] << 24) | (((unsigned char *)ilong)[2] << 16)
-            | (((unsigned char *)ilong)[1] << 8 ) | (((unsigned char *)ilong)[0] << 0 );
+  long
+    value;
+
+  if (morder)
+    value=(((char *) ilong)[0] << 24) | (((unsigned char *) ilong)[1] << 16) |
+      (((unsigned char *) ilong)[2] << 8) | (((unsigned char *) ilong)[3]);
+  else
+    value=(((char *) ilong)[3] << 24) | (((unsigned char *) ilong)[2] << 16) |
+      (((unsigned char *) ilong)[1] << 8 ) | (((unsigned char *) ilong)[0]);
+  return(value);
 }
 
 static unsigned long Read32u(int morder, void *ilong)
 {
   return(Read32s(morder,ilong) & 0xffffffff);
 }
-
-#define DE_STACK_SIZE 16
-
-#define EXIF_DELIMITER "\n"
 
 static int GenerateEXIFAttribute(Image *image,const char *spec)
 {
@@ -630,33 +645,38 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
     destack[DE_STACK_SIZE],
     nde;
 
+  /*
+    Determine if there is any EXIF data available in the image.
+  */
   value=(char *) NULL;
   final=AllocateString("");
-  /* first see if there is any EXIF data available in the image */
-  index=-1;
+  index=(-1);
   for (i=0; i < (long) image->generic_profiles; i++)
   {
     if ((LocaleCompare(image->generic_profile[i].name,"APP1") == 0) &&
-      (image->generic_profile[i].length != 0))
+        (image->generic_profile[i].length != 0))
       {
         index=i;
         break;
       }
   }
-  if (index<0)
+  if (index < 0)
     return(False);
-  /* if EXIF data exists, then try to parse the request for a tag */
+  /*
+    If EXIF data exists, then try to parse the request for a tag.
+  */
   key=(char *) &spec[5];
   if ((key == (char *) NULL) || (*key == '\0'))
     return(False);
   while (isspace((int) (*key)))
     key++;
-
-  all=0; /* default to showing a specific tag */
-  tag=-1;
+  all=0;
+  tag=(-1);
   switch(*key)
   {
-    /* Caller has asked for all the tags in the EXIF data */
+    /*
+      Caller has asked for all the tags in the EXIF data.
+    */
     case '*':
     {
       tag=0;
@@ -669,7 +689,9 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
       all=2; /* return the data in tageid=value format */
       break;
     }
-    /* Check for a hex based tag specification first */
+    /*
+      Check for a hex based tag specification first.
+    */
     case '#':
     {
       char
@@ -685,7 +707,9 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
         return(False);
       else
         {
-          /* Parse tag specification as a hex number. */
+          /*
+            Parse tag specification as a hex number.
+          */
           n/=4;
           do
           {
@@ -710,16 +734,18 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
     }
     default:
     {
-      /* try to match the text with a tag name instead */
-      for (i=0;;i++)
+      /*
+        Try to match the text with a tag name instead.
+      */
+      for (i=0; ; i++)
       {
-          if (TagTable[i].Tag == 0)
+        if (TagTable[i].Tag == 0)
+          break;
+        if (LocaleCompare(TagTable[i].Desc,key) == 0)
+          {
+            tag=TagTable[i].Tag;
             break;
-          if (LocaleCompare(TagTable[i].Desc,key) == 0)
-            {
-              tag=TagTable[i].Tag;
-              break;
-            }
+          }
       }
       break;
     }
@@ -749,36 +775,43 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
   tiffp=info;
   id=Read16u(0,tiffp);
   morder=0;
-  if (id == 0x4949) /* is it Intel byte order? */
+  if (id == 0x4949) /* LSB */
     morder=0;
-  else if (id == 0x4D4D) /* is it Moto byte order? */
-    morder=1;
   else
-    return(False);
-  /* The next values now have to obey the Intel - Motorola flag */
+    if (id == 0x4D4D) /* MSB */
+      morder=1;
+    else
+      return(False);
   if (Read16u(morder,tiffp+2) != 0x002a)
     return(False);
-  /* This is the offset to the first IFD. It will be 8 if the IFD
-     immediately follows the header */
+  /*
+    This is the offset to the first IFD.
+  */
   offset=Read32u(morder,tiffp+4);
   if (offset >= length)
     return(False);
-  /* set the pointer to the first IFD and follow it were it leads */
+  /*
+    Set the pointer to the first IFD and follow it were it leads.
+  */
   ifdp=tiffp+offset;
   level=0;
   de=0;
   do
   {
-    /* if there is anything on the stack then pop it off */
-    if (level>0)
-    {
-      level--;
-      ifdp=ifdstack[level];
-      de=destack[level];
-    }
-    /* Determine how many entries there are in the current IFD */
+    /*
+      If there is anything on the stack then pop it off.
+    */
+    if (level > 0)
+      {
+        level--;
+        ifdp=ifdstack[level];
+        de=destack[level];
+      }
+    /*
+      Determine how many entries there are in the current IFD.
+    */
     nde=Read16u(morder,ifdp);
-    for (;de<nde;de++)
+    for (; de < nde; de++)
     {
       long
         n,
@@ -791,31 +824,28 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
         *pval;
 
       pde=(char *) (ifdp+2+(12*de));
-
       t=Read16u(morder,pde); /* get tag value */
       f=Read16u(morder,pde+2); /* get the format */
       if ((f-1) >= EXIF_NUM_FORMATS)
         break;
       c=Read32u(morder,pde+4); /* get number of components */
       n=c*exiffmtbytes[f];
-      /* If its bigger than 4 bytes, the dir entry contains an offset. */
-      if (n > 4)
+      if (n <= 4)
+        pval=pde+8;
+      else
         {
           unsigned long
             oval;
 
+          /*
+            The directory entry contains an offset.
+          */
           oval=Read32u(morder,pde+8);
-          if (oval+n > length)
+          if ((oval+n) > length)
             continue;
           pval=(char *)(tiffp+oval);
         }
-      else
-        {
-          /* 4 bytes or less and value is in the dir entry itself */
-          pval=pde+8;
-        }
-
-      if (all || (tag==t))
+      if (all || (tag == t))
         {
           char
             s[MaxTextExtent];
@@ -823,45 +853,67 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
           switch (f)
           {
             case EXIF_FMT_SBYTE:
+            {
               FormatString(s,"%d",(int)(*(char *)pval));
               value=AllocateString(s);
               break;
+            }
             case EXIF_FMT_BYTE:
+            {
               FormatString(s,"%d",(int)(*(unsigned char *)pval));
               value=AllocateString(s);
               break;
+            }
             case EXIF_FMT_SSHORT:
+            {
               FormatString(s,"%hd",Read16u(morder,pval));
               value=AllocateString(s);
               break;
+            }
             case EXIF_FMT_USHORT:
+            {
               FormatString(s,"%hu",Read16s(morder,pval));
               value=AllocateString(s);
               break;
+            }
             case EXIF_FMT_ULONG:
+            {
               FormatString(s,"%lu",Read32u(morder,pval));
               value=AllocateString(s);
               break;
+            }
             case EXIF_FMT_SLONG:
+            {
               FormatString(s,"%ld",Read32s(morder,pval));
               value=AllocateString(s);
               break;
+            }
             case EXIF_FMT_URATIONAL:
-              FormatString(s,"%d/%d",Read32u(morder,pval),Read32u(morder,4+(char *)pval));
+            {
+              FormatString(s,"%d/%d",Read32u(morder,pval),
+                Read32u(morder,4+(char *)pval));
               value=AllocateString(s);
               break;
+            }
             case EXIF_FMT_SRATIONAL:
-              FormatString(s,"%d/%d",Read32s(morder,pval),Read32s(morder,4+(char *)pval));
+            {
+              FormatString(s,"%d/%d",Read32s(morder,pval),
+                Read32s(morder,4+(char *)pval));
               value=AllocateString(s);
               break;
+            }
             case EXIF_FMT_SINGLE:
+            {
               FormatString(s,"%f",(double)*(float *)pval);
               value=AllocateString(s);
               break;
+            }
             case EXIF_FMT_DOUBLE:
+            {
               FormatString(s,"%f",*(double *)pval);
               value=AllocateString(s);
               break;
+            }
             default:
             case EXIF_FMT_UNDEFINED:
             case EXIF_FMT_STRING:
@@ -873,12 +925,12 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
                     a;
 
                   value[n]='\0';
-                  for (a=0;a<n;a++)
+                  for (a=0; a < n; a++)
                   {
-                      if (isprint(pval[a]) || (pval[a]=='\0'))
-                        value[a]=pval[a];
-                      else
-                        value[a]='.';
+                    if (isprint(pval[a]) || (pval[a] == '\0'))
+                      value[a]=pval[a];
+                    else
+                      value[a]='.';
                   }
                   break;
                 }
@@ -901,7 +953,7 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
                 case 1:
                 {
                   desc="unknown";
-                  for (i=0;;i++)
+                  for (i=0; ; i++)
                   {
                     if (TagTable[i].Tag == 0)
                       break;
@@ -926,22 +978,24 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
               LiberateMemory((void **) &value);
             }
         }
-
-        if (t == TAG_EXIF_OFFSET || t == TAG_INTEROP_OFFSET)
+        if ((t == TAG_EXIF_OFFSET) || (t == TAG_INTEROP_OFFSET))
           {
             long
               offset;
 
             offset=Read32u(morder,pval);
-            if ((offset < (long) length) ||
-                (level < (DE_STACK_SIZE-2)))
+            if ((offset < (long) length) || (level < (DE_STACK_SIZE-2)))
               {
-                /* push our current directory state onto the stack */
+                /*
+                  Push our current directory state onto the stack.
+                */
                 ifdstack[level]=ifdp;
                 de++; /* bump to the next entry */
                 destack[level]=de;
                 level++;
-                /* push new state onto of stack to cause a jump */
+                /*
+                  Push new state onto of stack to cause a jump.
+                */
                 ifdstack[level]=tiffp+offset;
                 destack[level]=0;
                 level++;
@@ -949,7 +1003,7 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
             break; /* break out of the for loop */
           }
     }
-  } while (level>0);
+  } while (level > 0);
   if (strlen(final) == 0)
     (void) ConcatenateString(&final,"unknown");
   (void) SetImageAttribute(image,spec,(const char *) final);
