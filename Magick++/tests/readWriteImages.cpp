@@ -27,7 +27,7 @@ int main( int /*argc*/, char ** /*argv*/)
     //
       
     list<Image> first;
-    readImages( &first, "test_image_anim.gif" );
+    readImages( &first, "test_image_anim.miff" );
       
     if ( first.size() != 6 )
       {
@@ -38,10 +38,10 @@ int main( int /*argc*/, char ** /*argv*/)
 	     << " rather than 6 as expected." << endl;
       }
       
-    writeImages( first.begin(), first.end(), "testmagick_anim_out.gif" );
+    writeImages( first.begin(), first.end(), "testmagick_anim_out.miff" );
       
     list<Image> second;
-    readImages( &second, "testmagick_anim_out.gif" );
+    readImages( &second, "testmagick_anim_out.miff" );
       
     list<Image>::iterator firstIter = first.begin();
     list<Image>::iterator secondIter = second.begin();

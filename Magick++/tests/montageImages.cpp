@@ -27,7 +27,7 @@ int main( int /*argc*/, char ** /*argv*/)
     //
 
     list<Image> imageList;
-    readImages( &imageList, "test_image_anim.gif" );
+    readImages( &imageList, "test_image_anim.miff" );
 
     vector<Image> montage;
     MontageFramed montageOpts;

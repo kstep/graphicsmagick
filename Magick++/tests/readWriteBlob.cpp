@@ -7,8 +7,7 @@
 
 #include <string>
 #include <iostream>
-#include <list>
-#include <vector>
+#include <fstream>
 
 #include <Magick++.h>
 
@@ -16,204 +15,176 @@ using namespace std;
 
 using namespace Magick;
 
-int main( int argc, char **argv)
+// A derived Blob class to exercize updateNoCopy()
+class myBlob : public Blob
+{
+public:
+  // Construct from open binary stream
+  myBlob( std::ifstream &stream_ )
+    : Blob::Blob()
+    {
+      unsigned char* blobData = new unsigned char[100000];
+      stream_.read( (char*)blobData, 100000 );
+      size_t blobLen =  stream_.gcount();
+      // Insert data into blob
+      updateNoCopy( (void*)blobData, blobLen );
+    }
+};
+
+
+int main( int /*argc*/, char **/*argv*/)
 {
   int failures=0;
-
-  if ( argc != 3 )
-    {
-      cout << "Usage: " << argv[0] << " file format" << endl;
-      exit( 1 );
-    }
-
-  string infile = argv[1];
-  string format = argv[2];
-
-#include <magick/config.h>
 
   try {
     
     //
-    // Test reading and writing BLOBs
+    // Test reading BLOBs
     //
-
-    Image master;
-    Blob blob;
-    // Read image from file
-    master.read( infile );
-    Geometry size( master.columns(), master.rows() );
-
-#if !defined(HasHDF)
-    if ( format == "HDF" )
+    {
+      string signature("");
       {
-	cout << "HDF not supported in build" << endl;
-	return 0;
+	Image image("test_image.miff");
+	signature = image.signature();
       }
-#endif
 
-#if !defined(HasJBIG)
-    if ( format == "JBIG" || format == "JBG" || format == "BIE" )
-      {
-	cout << "JBIG not supported in build" << endl;
-	return 0;
-      }
-#endif
-
-#if !defined(HasJPEG)
-    if ( format == "JPEG" || format == "JPG" || format == "JPEG24")
-      {
-	cout << "JPEG not supported in build" << endl;
-	return 0;
-      }
-#endif
-
-#if !defined(HasPNG)
-    if ( format == "PNG" )
-      {
-	cout << "PNG not supported in build" << endl;
-	return 0;
-      }
-    if ( format == "MNG" )
-      {
-	cout << "MNG not supported in build" << endl;
-	return 0;
-      }
-#endif
-
-#if !defined(HasTIFF)
-    if ( format == "TIFF"  || format == "FAX" || format == "G3" ||
-	 format == "PTIFF" || format == "TIF" || format == "TIFF24" )
-      {
-	cout << "TIFF not supported in build" << endl;
-	return 0;
-      }
-#endif
-
-    try {
-
-      bool needSize = false;
-      if ( format == "CMYK" ||
-	   format == "GRAY" ||
-	   format == "MONO" ||
-	   format == "RGB"  ||
-	   format == "RGBA" ||
-	   format == "UYVY" ||
-	   format == "YUV"
-	   )
+      // Read raw data from file into BLOB
+      ifstream in( "test_image.miff", ios::in | ios::binary );
+      if( !in )
 	{
-	  needSize = true;
+	  cout << "Failed to open file for input!" << endl;
+	  exit(1);
 	}
+      unsigned char* blobData = new unsigned char[100000];
+      in.read( (char*)blobData, 100000 );
+      size_t blobLen =  in.gcount();
+      in.close();
 
-      cout << " write ..." << endl;
-      Image original = master;
+      // Construct Magick++ Blob
+      Blob blob((const void*)blobData, blobLen);
+      delete blobData;
 
-      // Write and read image initially to create repeatable image
-      original.quantizeDither( false );
-      original.magick( format );
-      original.animationDelay( 10 );
-      original.write( &blob );
+      // If construction of image fails, an exception should be thrown
+      {
+	// Construct with blob data only
+	Image image( blob );
+	if ( image.signature() != signature )
+	  {
+	    ++failures;
+	    cout << "Line: " << __LINE__
+		 << "  Image signature "
+		 << image.signature()
+		 << " != "
+		 << signature << endl;
+	  }
+      }
 
-      cout << " read ..." << endl;
-      original.quantizeDither( false );
-      original.magick( format );
-      if ( needSize )
-	original.size( size );
-      original.read( blob );
+      {
+	// Construct with image geometry and blob data
+	Image image( Geometry(148,99), blob );
+	if ( image.signature() != signature )
+	  {
+	    ++failures;
+	    cout << "Line: " << __LINE__
+		 << "  Image signature "
+		 << image.signature()
+		 << " != "
+		 << signature << endl;
+	  }
+      }
 
-      // Now test writing and reading image
-      cout << " write ..." << endl;
-      original.quantizeDither( false );
-      original.magick( format );
-      original.animationDelay( 10 );
-      original.write( &blob );
-	  
-      Image image;
-	  
-      // Read image from BLOB
-      cout << " read ..." << endl;
-      image.quantizeDither( false );
-      image.magick( format );
-      if ( needSize )
-	image.size( size );
-      image.read( blob );
+      {
+	// Construct default image, and then read in blob data
+	Image image;
+	image.read( blob );
+	if ( image.signature() != signature )
+	  {
+	    ++failures;
+	    cout << "Line: " << __LINE__
+		 << "  Image signature "
+		 << image.signature()
+		 << " != "
+		 << signature << endl;
+	  }
+      }
 
+      {
+	// Construct default image, and then read in blob data with
+	// image geometry
+	Image image;
+	image.read( Geometry(148,99), blob );
+	if ( image.signature() != signature )
+	  {
+	    ++failures;
+	    cout << "Line: " << __LINE__
+		 << "  Image signature "
+		 << image.signature()
+		 << " != "
+		 << signature << endl;
+	  }
+      }
 
-      if ( 
-	  format != "JPEG" &&
-	  format != "JPG" &&
-	  format != "JPEG24" &&
-	  format != "P7" &&
-	  format != "PCD" &&
-	  format != "PCDS" &&
-	  format != "PIC" &&
-	  format != "PICT" &&
-	  format != "UYVY" &&
-	  format != "VICAR" &&
-	  format != "YUV"
-	  )
-	{
-	  if ( image.signature(true) != original.signature() )
-	    {
-	      cout << "Line: " << __LINE__
-		   << " Format \"" << image.magick()
-		   << "\" BLOB signature " << image.signature() << " "
-		   << "does not match original "
-		   << original.signature()
-		   << endl;
-	      //Image errimage = image;
-	      image.display();
-	      image.write( string( "output." ) + format );
-	      ++failures;
-	    }
-	}
-      else
-	{
-	  // PhotoCD changes size to 768x512 by default
-	  if ( format == "PCD" ||
-	       format == "PCDS" )
-	    {
-	      if ( image.columns() != 768 || image.rows() != 512 )
-		{
-		  cout << "Line: " << __LINE__
-		       << " Format \"" << format
-		       << "\" Image size " << image.columns() << "x" << image.rows() << " "
-		       << "does not match expected 768x512"
-		       << endl;
-		}
-	    }
-	  else
-	    {
-	      // Lossy formats
-	      if ( image.columns()*image.rows() != master.columns()*master.rows() )
-		{
-		  cout << "Line: " << __LINE__
-		       << " Format \"" << format
-		       << "\" Image size " << image.columns() << "x" << image.rows() << " "
-		       << "does not match original "
-		       << master.columns() << "x" << master.rows()
-		       << endl;
-		  ++failures;
-		}
-	    }
-	}
-      image.write( string( "output." ) + format );
     }
-    catch( Exception error_ )
-      {
-	cout << "Line: " << __LINE__
-	     << " Format \"" << format << "\" "
-	     << "Caught exception: " << error_.what() << endl;
-	++failures;
-      }
-    catch( exception error_ )
-      {
-	cout << "Line: " << __LINE__
-	     << " Format \"" << format << "\" "
-	     << "Caught exception: " << error_.what() << endl;
-	++failures;
-      }
-  }
 
+    // Test writing BLOBs
+    {
+      Blob blob;
+      string signature("");
+      {
+	Image image("test_image.miff");
+	image.magick("MIFF");
+	image.write( &blob, 40000 );
+	signature = image.signature();
+      }
+      {
+	Image image(blob);
+	if ( image.signature() != signature )
+	  {
+	    ++failures;
+	    cout << "Line: " << __LINE__
+		 << "  Image signature "
+		 << image.signature()
+		 << " != "
+		 << signature << endl;
+	    image.display();
+	  }
+      }
+      
+    }
+
+    // Test constructing a BLOB from a derived class
+    {
+
+      string signature("");
+      {
+	Image image("test_image.miff");
+	signature = image.signature();
+      }
+
+      // Read raw data from file into BLOB
+      ifstream in( "test_image.miff", ios::in | ios::binary );
+      if( !in )
+	{
+	  cout << "Failed to open file for input!" << endl;
+	  exit(1);
+	}
+
+      myBlob blob( in );
+      in.close();
+
+      Image image( blob );
+      if ( image.signature() != signature )
+	{
+	  ++failures;
+	  cout << "Line: " << __LINE__
+	       << "  Image signature "
+	       << image.signature()
+	       << " != "
+	       << signature << endl;
+	}
+    }
+  }
+  
   catch( Exception error_ )
     {
       cout << "Caught exception: " << error_ << endl;
