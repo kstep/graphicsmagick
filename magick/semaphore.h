@@ -8,18 +8,9 @@
 extern "C" {
 #endif
 
-
-/*
-  Typedef declarations.
-*/
-struct SemaphoreInfo;
-
-typedef struct SemaphoreInfo SemaphoreInfo;
-
 /*
   Semaphore methods.
 */
-
 extern MagickExport SemaphoreInfo
   *AllocateSemaphoreInfo(void);
 

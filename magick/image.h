@@ -798,7 +798,7 @@ extern MagickExport void
   GetImageInfo(ImageInfo *),
   GetMontageInfo(const ImageInfo *,MontageInfo *),
   InitializeMagick(const char *),
-  ModifyImage(Image**, ExceptionInfo *),
+  ModifyImage(Image**,ExceptionInfo *),
   Register8BIMImage(void),
   RegisterARTImage(void),
   RegisterAVIImage(void),
