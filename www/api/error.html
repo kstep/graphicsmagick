@@ -67,6 +67,7 @@ DESCRIPTIONS</A>
 	<UL>
 
 		<LI><A HREF="#catchexception">CatchException</A>
+		<LI><A HREF="#copyexception">CopyException</A>
 		<LI><A HREF="#destroyexceptioninfo">DestroyExceptionInfo</A>
 		<LI><A HREF="#getexceptioninfo">GetExceptionInfo</A>
 		<LI><A HREF="#getlocaleexceptionmessage">GetLocaleExceptionMessage</A>
@@ -77,6 +78,7 @@ DESCRIPTIONS</A>
 		<LI><A HREF="#setfatalerrorhandler">SetFatalErrorHandler</A>
 		<LI><A HREF="#setwarninghandler">SetWarningHandler</A>
 		<LI><A HREF="#throwexception">ThrowException</A>
+		<LI><A HREF="#throwloggedexception">ThrowLoggedException</A>
 	</UL>
 
 </UL>
@@ -92,6 +94,7 @@ NAME</A></H2>
 <H2><A NAME="synopsis">
 SYNOPSIS</A></H2>
 <P><STRONG>CatchException</STRONG>( const ExceptionInfo *exception );</P>
+<P>void  <STRONG>CopyException</STRONG>( ExceptionInfo *copy, const ExceptionInfo *original );</P>
 <P>void  <STRONG>DestroyExceptionInfo</STRONG>( ExceptionInfo *exception );</P>
 <P><STRONG>GetExceptionInfo</STRONG>( ExceptionInfo *exception );</P>
 <P>const char * <STRONG>GetLocaleExceptionMessage</STRONG>( const ExceptionType severity, const char *tag );</P>
@@ -101,6 +104,7 @@ SYNOPSIS</A></H2>
 <P><STRONG>SetExceptionInfo</STRONG>( ExceptionInfo *exception, ExceptionType severity );</P>
 <P>ErrorHandler  <STRONG>SetWarningHandler</STRONG>( ErrorHandler handler );</P>
 <P>void  <STRONG>ThrowException</STRONG>( ExceptionInfo *exception, const ExceptionType severity, const char *reason, const char *description );</P>
+<P>void  <STRONG>ThrowLoggedException</STRONG>( ExceptionInfo *exception, const ExceptionType severity, const char *reason, const char *description, const char *module, const char *function, const unsigned long line;</P>
 <P>
 <HR>
 <H2><A NAME="function descriptions">
@@ -115,6 +119,20 @@ A description of each parameter follows:</P>
 <DD><P></P><DT><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
 <DD>
 The exception info.
+<P></P></DL></DL>
+<P>
+<H3><A NAME="copyexception">CopyException</A></H3>
+<blockquote>CopyException() copies exception data from one <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> structure to another. </blockquote><P>The format of the CopyException method is:</P>
+<blockquote>void CopyException ( <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *copy, const <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *original ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG><A NAME="item_o_copy%3A">copy:</A></STRONG><BR>
+<DD>
+The exception to copy to.
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_original%3A">original:</A></STRONG><BR>
+<DD>
+The exception to copy from.
 <P></P></DL></DL>
 <P>
 <H3><A NAME="destroyexceptioninfo">DestroyExceptionInfo</A></H3>
@@ -275,6 +293,42 @@ The reason of the exception.
 <DD><P></P><DT><STRONG>description:</STRONG><BR>
 <DD>
 The exception description.
+<P></P></DL></DL>
+<P>
+<H3><A NAME="throwloggedexception">ThrowLoggedException</A></H3>
+<blockquote>ThrowLoggedException() throws an exception with the specified severity code, reason, optional description, source filename, function name, and line number. If logging is enabled, the exception is also logged. </blockquote><P>The format of the ThrowLoggedException method is:</P>
+<PRE>
+ void ThrowLoggedException( ExceptionInfo *exception, const ExceptionType severity, const char *reason, const char *description, const char *module, const char *function, const unsigned long line;</PRE>
+<P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
+The exception.
+<P></P>
+<DD><P></P><DT><STRONG>severity:</STRONG><BR>
+<DD>
+The severity of the exception.
+<P></P>
+<DD><P></P><DT><STRONG>reason:</STRONG><BR>
+<DD>
+The reason of the exception.
+<P></P>
+<DD><P></P><DT><STRONG>description:</STRONG><BR>
+<DD>
+The exception description.
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_filename%3A">filename:</A></STRONG><BR>
+<DD>
+The source module filename.
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_function%3A">function:</A></STRONG><BR>
+<DD>
+The function name.
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_line%3A">line:</A></STRONG><BR>
+<DD>
+The line number of the source module.
 </DL></DL>
 
 </BODY>

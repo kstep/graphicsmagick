@@ -1097,8 +1097,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->semaphore=(SemaphoreInfo *) NULL;
   clone_image->timer=image->timer;
   GetExceptionInfo(&clone_image->exception);
-  ThrowException(&clone_image->exception,image->exception.severity,
-    image->exception.reason,image->exception.description);
+  CopyException(&clone_image->exception,&image->exception);
   clone_image->client_data=image->client_data;
   clone_image->start_loop=image->start_loop;
   clone_image->ascii85=0; /* Don't copy  ascii85 huffman support structure */

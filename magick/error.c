@@ -124,6 +124,54 @@ MagickExport void CatchException(const ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%  C o p y E x c e p t i o n                                                  %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CopyException() copies exception data from one ExceptionInfo structure
+%  to another.
+%
+%  The format of the CopyException method is:
+%
+%      void CopyException(ExceptionInfo *copy, const ExceptionInfo *original)
+%
+%  A description of each parameter follows:
+%
+%    o copy: The exception to copy to.
+%
+%    o original: The exception to copy from.
+%
+*/
+MagickExport void CopyException(ExceptionInfo *copy, const ExceptionInfo *original)
+{
+  assert(copy != (ExceptionInfo *) NULL);
+  assert(copy->signature == MagickSignature);
+  assert(original != (ExceptionInfo *) NULL);
+  assert(original->signature == MagickSignature);
+  copy->severity=original->severity;
+  MagickFreeMemory(copy->reason);
+  if (original->reason)
+    copy->reason=AcquireString(original->reason);
+  MagickFreeMemory(copy->description);
+  if (original->description)
+    copy->description=AcquireString(original->description);
+  MagickFreeMemory(copy->module);
+  if (original->module)
+    copy->module=AcquireString(original->module);
+  MagickFreeMemory(copy->function);
+  if (original->function)
+    copy->function=AcquireString(original->function);
+  copy->line=original->line;
+  return;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   D e f a u l t E r r o r H a n d l e r                                     %
 %                                                                             %
 %                                                                             %

@@ -437,6 +437,7 @@ namespace Magick
   using MagickLib::ConstituteImage;
   using MagickLib::ContrastImage;
   using MagickLib::ConvolveImage;
+  using MagickLib::CopyException;
   using MagickLib::CorruptImageError;
   using MagickLib::CorruptImageFatalError;
   using MagickLib::CorruptImageWarning;
