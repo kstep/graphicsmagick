@@ -4,17 +4,9 @@
 #ifndef _MAGICK_H
 #define _MAGICK_H
 
-#if defined(sun)
-#define __EXTENSIONS__  1
-#endif
-
-#if defined(__hpux)
-#define _HPUX_SOURCE  1
-#endif
-
-#if defined(vms)
 #define _POSIX_C_SOURCE  1
-#endif
+#define _XOPEN_SOURCE  1
+#define _GNU_SOURCE  1
 
 /*
   System include declarations.
@@ -31,15 +23,15 @@
 # include <string.h>
 #endif
 
+#if defined _FILE_OFFSET_BITS && _FILE_OFFSET_BITS == 64
+#define fseek  fseeko
+#define ftell  ftello
+#endif
+
 #if defined(_VISUALC_)
 # include <direct.h>
 #else
 # include <unistd.h>
-#endif
-
-#if defined _FILE_OFFSET_BITS && _FILE_OFFSET_BITS == 64
-#define fseek  fseeko
-#define ftell  ftello
 #endif
 
 #include <ctype.h>
