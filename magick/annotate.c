@@ -641,6 +641,7 @@ static unsigned int RenderType(Image *image,const DrawInfo *draw_info,
   else
     if ((LocaleCompare(image_info->magick,"TTF") == 0) ||
         (LocaleCompare(image_info->magick,"AFM") == 0) ||
+        (LocaleCompare(image_info->magick,"PFA") == 0) ||
         (LocaleCompare(image_info->magick,"PFB") == 0) ||
         (LocaleCompare(image_info->magick,"PFM") == 0))
       status=RenderTruetype(image,clone_info,offset,render,metrics);
