@@ -921,8 +921,10 @@ MagickExport unsigned int ClipPathImage(Image *image,const char *pathname,
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(pathname != NULL);
-  FormatString(key,"8BIM:1999,2998:%s",pathname);  attribute=GetImageAttribute(image,key);  if (attribute == (const ImageAttribute *) NULL)
-      return(False);
+  FormatString(key,"8BIM:1999,2998:%s",pathname);
+  attribute=GetImageAttribute(image,key);
+  if (attribute == (const ImageAttribute *) NULL)
+    return(False);
   image_info=CloneImageInfo((ImageInfo *) NULL);
   (void) QueryColorDatabase("#ffffffff",&image_info->background_color,
     &image->exception);

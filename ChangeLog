@@ -1,5 +1,8 @@
 2003-09-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/image.c (ClipPathImage): Remove MS-DOS line terminations
+	(actually, extra carriage returns) which somehow crept into
+	ClipPathImage.
 	* locale/C.mgk: Added message for "PNG library is too old".
 
 2003-09-04  Lars Ruben Skyum  <lars.skyum@stibo.com>
