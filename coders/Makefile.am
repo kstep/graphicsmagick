@@ -32,7 +32,7 @@ AUTOMAKE_OPTIONS = 1.4 foreign
 
 INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/magick
 
-MAGICK_CODER_SRCS = art.c avi.c avs.c bmp.c cmyk.c cut.c dcm.c \
+MAGICK_CODER_SRCS = art.c avi.c avs.c bmp.c cmyk.c cut.c dcm.c dib.c \
   dps.c dpx.c ept.c fax.c fits.c fpx.c gif.c gradient.c gray.c hdf.c \
   histogram.c html.c icon.c jbig.c jpeg.c jp2.c label.c logo.c map.c mat.c \
   matte.c meta.c miff.c mono.c mpc.c mpeg.c mtv.c mvg.c null.c otb.c pcd.c \
@@ -69,8 +69,8 @@ pkg_DATA = modules.mgk
 pkgdata_DATA = 
 
 # Modules which are to be built
-pkg_LTLIBRARIES   = art.la avi.la avs.la bmp.la cmyk.la cut.la \
-  dcm.la dps.la dpx.la ept.la fax.la fpx.la fits.la gif.la gray.la \
+pkg_LTLIBRARIES   = art.la avi.la avs.la bmp.la cmyk.la cut.la dcm.la \
+  dib.la dps.la dpx.la ept.la fax.la fpx.la fits.la gif.la gray.la \
   gradient.la hdf.la histogram.la html.la icon.la jbig.la jpeg.la jp2.la \
   label.la logo.la map.la mat.la matte.la meta.la miff.la mono.la mpc.la \
   mpeg.la mtv.la mvg.la null.la otb.la pcd.la pcl.la pcx.la pdb.la pdf.la \
@@ -117,6 +117,11 @@ cut_la_LIBADD      = ../magick/libMagick.la
 dcm_la_SOURCES      = dcm.c
 dcm_la_LDFLAGS      = -no-undefined -module -avoid-version
 dcm_la_LIBADD       = ../magick/libMagick.la
+
+# DIB module
+dib_la_SOURCES      = dib.c
+dib_la_LDFLAGS      = -no-undefined -module -avoid-version
+dib_la_LIBADD       = ../magick/libMagick.la
 
 # DPS module
 dps_la_SOURCES      = dps.c

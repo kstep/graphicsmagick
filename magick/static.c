@@ -12,6 +12,7 @@ void OpenStaticModules(void)
   RegisterCMYKImage();
   RegisterCUTImage();
   RegisterDCMImage();
+  RegisterDIBImage();
   RegisterDPXImage();
   RegisterEPTImage();
   RegisterFAXImage();
