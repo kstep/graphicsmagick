@@ -644,6 +644,7 @@ static void AddModuleTag(const char *filename, char *module)
           }
         else
           {
+            LocaleUpper(&p[1]);
             strcat(module,&p[1]);
             break;
           }
