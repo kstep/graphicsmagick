@@ -67,11 +67,12 @@ struct SemaphoreInfo
 {
 #if defined(HasPTHREADS)
   pthread_mutex_t
+    mutex;
 #endif
 #if defined(WIN32)
   CRITICAL_SECTION
-#endif
     mutex;
+#endif
 
   unsigned long
     signature;
