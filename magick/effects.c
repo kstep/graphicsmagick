@@ -1451,7 +1451,7 @@ MagickExport Image *ImplodeImage(Image *image,const double factor,
   implode_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (implode_image == (Image *) NULL)
     return((Image *) NULL);
-  implode_image->class=DirectClass;
+  implode_image->storage_class=DirectClass;
   /*
     Compute scaling factor.
   */
@@ -3160,7 +3160,7 @@ MagickExport Image *SwirlImage(Image *image,double degrees,
   swirl_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (swirl_image == (Image *) NULL)
     return((Image *) NULL);
-  swirl_image->class=DirectClass;
+  swirl_image->storage_class=DirectClass;
   /*
     Compute scaling factor.
   */
@@ -3469,7 +3469,7 @@ MagickExport Image *WaveImage(Image *image,const double amplitude,
     (int) (image->rows+2.0*fabs(amplitude)),False,exception);
   if (wave_image == (Image *) NULL)
     return((Image *) NULL);
-  wave_image->class=DirectClass;
+  wave_image->storage_class=DirectClass;
   /*
     Allocate sine map.
   */
