@@ -3299,15 +3299,19 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             status=False;
             break;
           }
-        (void) WriteBlobString(image,"  <polyline points=\"");
+        (void) strcpy(buffer,"  <polyline points=\"");
+        (void) WriteBlobString(image,buffer);
+        length=Extent(buffer);
         for ( ; j < i; j++)
         {
-          if ((j % 8) != 0)
-            (void) WriteBlobByte(image,' ');
-          else
-            (void) WriteBlobString(image,"\n    ");
-          FormatString(buffer,"%g,%g",primitive_info[j].point.x,
+          FormatString(buffer,"%g,%g ",primitive_info[j].point.x,
             primitive_info[j].point.y);
+          length+=Extent(buffer);
+          if (length >= 80)
+            {
+              (void) WriteBlobString(image,"\n    ");
+              length=Extent(buffer)+5;
+            }
           (void) WriteBlobString(image,buffer);
         }
         (void) WriteBlobString(image,"\"/>\n");
@@ -3324,15 +3328,19 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
         primitive_info[i].coordinates=0;
         primitive_info[j].coordinates++;
         i++;
-        (void) WriteBlobString(image,"  <polygon points=\"");
+        (void) strcpy(buffer,"  <polygon points=\"");
+        (void) WriteBlobString(image,buffer);
+        length=Extent(buffer);
         for ( ; j < i; j++)
         {
-          if ((j % 8) != 0)
-            (void) WriteBlobByte(image,' ');
-          else
-            (void) WriteBlobString(image,"\n    ");
-          FormatString(buffer,"%g,%g",primitive_info[j].point.x,
+          FormatString(buffer,"%g,%g ",primitive_info[j].point.x,
             primitive_info[j].point.y);
+          length+=Extent(buffer);
+          if (length >= 80)
+            {
+              (void) WriteBlobString(image,"\n    ");
+              length=Extent(buffer)+5;
+            }
           (void) WriteBlobString(image,buffer);
         }
         (void) WriteBlobString(image,"\"/>\n");

@@ -981,8 +981,8 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType storage_class,
     TemporaryFilename(cache_info->cache_filename);
   if (cache_info->file == -1)
     {
-      cache_info->file=open(cache_info->cache_filename,
-        O_RDWR | O_CREAT | O_BINARY,0777);
+      cache_info->file=open(cache_info->cache_filename,O_RDWR | O_CREAT |
+        O_BINARY,0777);
       if (cache_info->file == -1)
         return(False);
     }
@@ -1392,8 +1392,8 @@ static PixelPacket *SetPixelCache(Image *image,const int x,const int y,
       /*
         Allocate pixel cache.
       */
-      status=
-        OpenCache(image->cache,image->storage_class,image->columns,image->rows);
+      status=OpenCache(image->cache,image->storage_class,image->columns,
+        image->rows);
       if (status == False)
         {
           ThrowException(&image->exception,CacheWarning,
