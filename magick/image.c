@@ -5814,6 +5814,21 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned int depth)
     if (!SyncImagePixels(image))
       return(False);
   }
+  if (image->storage_class == PseudoClass)
+    {
+      register int
+        i;
+
+      p=image->colormap;
+      for (i=0; i < (int) image->colors; i++)
+      {
+        p->red=UpScale(DownScale(p->red));
+        p->green=UpScale(DownScale(p->green));
+        p->blue=UpScale(DownScale(p->blue));
+        p->opacity=UpScale(DownScale(p->opacity));
+        p++;
+      }
+    }
   return(True);
 }
 
