@@ -657,8 +657,8 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method MagickToMime returns the officially registered (or de facto) MIME
-%  mediatype corresponding to a magick string. If there is no registered
-%  mediatype, then the string "image/x-magick" (all lower case) is returned.
+%  media-type corresponding to a magick string. If there is no registered
+%  media-type, then the string "image/x-magick" (all lower case) is returned.
 %  The returned string must be deallocated by the user.
 %
 %  The format of the MagickToMime method is:
@@ -673,21 +673,21 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
 */
 MagickExport char *MagickToMime(const char *magick)
 {
-  typedef struct _MimeTypes
+  typedef struct _MediaTypes
   {
     const char
       *magick,
-      *media_type;
-  } MimeTypes;
+      *type;
+  } MediaTypes;
 
   char
     mime[MaxTextExtent];
 
-  MimeTypes
+  MediaTypes
     *entry;
 
-  static MimeTypes
-    MimeList[] =
+  static MediaTypes
+    MediaList[] =
     {
       { "avi",   "video/avi" },
       { "cgm",   "image/cgm;Version=4;ProfileId=WebCGM" }, /* W3 WebCGM */
@@ -719,9 +719,9 @@ MagickExport char *MagickToMime(const char *magick)
       { (char *) NULL, (char *) NULL }
     };
 
-  for (entry=MimeList; entry->magick != (char *) NULL; entry++)
+  for (entry=MediaList; entry->magick != (char *) NULL; entry++)
     if (LocaleCompare(entry->magick,magick) == 0)
-      return(AllocateString(entry->media_type));
+      return(AllocateString(entry->type));
   FormatString(mime,"image/x-%.1024s",magick);
   return(AllocateString(mime));
 }
