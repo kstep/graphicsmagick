@@ -223,7 +223,7 @@ MagickExport const char *GetImageMagick(const unsigned char *magick,
 %
 %
 */
-MagickExport char *GetMagickConfigurePath(const char *filename)
+MagickExport char *GetMagickConfigurePath(const char *filename,FILE *file)
 {
   char
     *path;
@@ -231,17 +231,29 @@ MagickExport char *GetMagickConfigurePath(const char *filename)
   path=AllocateString(filename);
   FormatString(path,"%.1024s",filename);
   if (IsAccessible(path))
-    return(path);
+    {
+      if (file != (const FILE *) NULL)
+        (void) fprintf(file,"no path: %.1024s\n",path);
+      return(path);
+    }
   FormatString(path,"%.1024s%.1024s%.1024s",SetClientPath((char *) NULL),
     DirectorySeparator,filename);
   if (IsAccessible(path))
-    return(path);
+    {
+      if (file != (const FILE *) NULL)
+        (void) fprintf(file,"client: %.1024s\n",path);
+      return(path);
+    }
   if (getenv("MAGICK_HOME") != (char *) NULL)
     {
       FormatString(path,"%.1024s%.1024s%.1024s",getenv("MAGICK_HOME"),
         DirectorySeparator,filename);
       if (IsAccessible(path))
-        return(path);
+        {
+          if (file != (const FILE *) NULL)
+            (void) fprintf(file,"MAGICK_HOME: %.1024s\n",path);
+          return(path);
+        }
     }
   if (getenv("HOME") != (char *) NULL)
     {
@@ -249,18 +261,36 @@ MagickExport char *GetMagickConfigurePath(const char *filename)
         *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator,
         DirectorySeparator,filename);
       if (IsAccessible(path))
-        return(path);
+        {
+          if (file != (const FILE *) NULL)
+            (void) fprintf(file,"HOME: %.1024s\n",path);
+          return(path);
+        }
     }
   FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
   if (IsAccessible(path))
-    return(path);
+    {
+      if (file != (const FILE *) NULL)
+        (void) fprintf(file,"MagickLibPath: %.1024s\n",path);
+      return(path);
+    }
   FormatString(path,"%.1024s%.1024s",MagickModulesPath,filename);
   if (IsAccessible(path))
-    return(path);
+    {
+      if (file != (const FILE *) NULL)
+        (void) fprintf(file,"MagickModulesPath: %.1024s\n",path);
+      return(path);
+    }
   FormatString(path,"%.1024s%.1024s",MagickSharePath,filename);
   if (IsAccessible(path))
-    return(path);
+    {
+      if (file != (const FILE *) NULL)
+        (void) fprintf(file,"MagickSharePath: %.1024s\n",path);
+      return(path);
+    }
   LiberateMemory((void **) &path);
+  if (file != (const FILE *) NULL)
+    (void) fprintf(file,"failed: NULL\n");
   return((char *) NULL);
 }
 

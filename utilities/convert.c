@@ -174,7 +174,7 @@
 /*
   Typedef declarations.
 */
-typedef struct _OptionInfo
+typedef struct _ConvertOptionInfo
 {
   int
     append;
@@ -190,7 +190,7 @@ typedef struct _OptionInfo
     global_colormap,
     flatten,
     mosaic;
-} OptionInfo;
+} ConvertOptionInfo;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -270,7 +270,7 @@ static void ConcatenateImages(int argc,char **argv)
 %  The format of the ConvertImages method is:
 %
 %      unsigned int ConvertImages(const ImageInfo *image_info,
-%        OptionInfo *option_info,const int argc,char **argv,Image **image)
+%        ConvertOptionInfo *option_info,const int argc,char **argv,Image **image)
 %
 %  A description of each parameter follows:
 %
@@ -286,7 +286,7 @@ static void ConcatenateImages(int argc,char **argv)
 %
 %
 */
-static unsigned int ConvertImages(ImageInfo *image_info,OptionInfo *option_info,
+static unsigned int ConvertImages(ImageInfo *image_info,ConvertOptionInfo *option_info,
   const int argc,char **argv,Image **image)
 {
   long
@@ -630,7 +630,7 @@ int main(int argc,char **argv)
     j,
     x;
 
-  OptionInfo
+  ConvertOptionInfo
     option_info;
 
   register Image
@@ -676,7 +676,7 @@ int main(int argc,char **argv)
   (void) SetImageInfo(image_info,True,&exception);
   ping=False;
   option=(char *) NULL;
-  memset(&option_info,0,sizeof(OptionInfo));
+  memset(&option_info,0,sizeof(ConvertOptionInfo));
   /*
     Parse command-line arguments.
   */
@@ -1445,6 +1445,39 @@ int main(int argc,char **argv)
                       if (LocaleCompare("Type",option) == 0)
                         {
                           (void) ListTypeInfo((FILE *) NULL,&exception);
+                          break;
+                        }
+                      MagickError(OptionError,"Invalid list type",option);
+                      break;
+                    }
+                    case 'X':
+                    case 'x':
+                    {
+                      if (LocaleCompare("Xtra",option) == 0)
+                        {
+                          char
+                            *path;
+
+                          if (argv[0] != (char *) NULL)
+                            (void) printf("argv[0]: %.1024s\n",argv[0]);
+                          path=GetMagickConfigurePath(TypeFilename,stdout);
+                          if (path == (char *) NULL)
+                            {
+#if defined(WIN32)
+                              unsigned char
+                                *blob;
+
+                              blob=NTResourceToBlob(TypeFilename);
+                              if (blob != (unsigned char *) NULL)
+                                {
+                                  (void) printf("windows resource: %.1024s\n",
+                                    TypeFilename);
+                                  LiberateMemory((void **) &blob);
+                                }
+#endif
+                            }
+                          else
+                            LiberateMemory((void **) &path);
                           break;
                         }
                       MagickError(OptionError,"Invalid list type",option);

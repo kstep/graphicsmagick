@@ -293,7 +293,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
     Read the type configuration file.
   */
   FormatString(filename,"%.1024s",basename);
-  path=GetMagickConfigurePath(filename);
+  path=GetMagickConfigurePath(filename,(FILE *) NULL);
   if (path != (char *) NULL)
     {
       FormatString(filename,"%.1024s",path);

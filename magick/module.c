@@ -452,7 +452,7 @@ static char **GetModuleList(void)
   if (modules == (char **) NULL)
     return((char **) NULL);
   *modules=(char *) NULL;
-  path=GetMagickConfigurePath(ModuleFilename);
+  path=GetMagickConfigurePath(ModuleFilename,(FILE *) NULL);
   if (path == (char *) NULL)
     return((char **) NULL);
   GetPathComponent(path,HeadPath,filename);
@@ -662,7 +662,7 @@ MagickExport unsigned int OpenModule(const char *module,
   */
   handle=(ModuleHandle) NULL;
   module_file=TagToModule(module_name);
-  path=GetMagickConfigurePath(module_file);
+  path=GetMagickConfigurePath(module_file,(FILE *) NULL);
   if (path != (char *) NULL)
     {
       handle=lt_dlopen(path);
@@ -807,7 +807,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
     Read the module configuration file.
   */
   FormatString(filename,"%.1024s",basename);
-  path=GetMagickConfigurePath(filename);
+  path=GetMagickConfigurePath(filename,(FILE *) NULL);
   if (path != (char *) NULL)
     {
       FormatString(filename,"%.1024s",path);

@@ -607,7 +607,7 @@ extern MagickExport const unsigned long
 */
 extern MagickExport char
   **GetColorList(const char *,int *),
-  *GetMagickConfigurePath(const char *);
+  *GetMagickConfigurePath(const char *,FILE *);
 
 extern MagickExport const char
   *GetImageMagick(const unsigned char *,const size_t),
