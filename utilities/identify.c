@@ -324,8 +324,8 @@ int main(int argc,char **argv)
           text=TranslateText((ImageInfo *) NULL,image,format);
           if (text == (char *) NULL)
             {
-              ThrowBinaryException(ResourceLimitWarning,"Unable to format image data",
-                "Memory allocation failed");
+              ThrowBinaryException(ResourceLimitWarning,
+                "Unable to format image data","Memory allocation failed");
             }
           else
             fputs(text,stdout);
@@ -336,7 +336,7 @@ int main(int argc,char **argv)
     DestroyImages(image);
     number_images++;
   }
-  if (number_images == 0)
+  if ((i != argc) || (number_images == 0))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   DestroyImageInfo(image_info);
   DestroyDelegateInfo();

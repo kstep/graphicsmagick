@@ -1165,8 +1165,8 @@ int main(int argc,char **argv)
             p->next=next_image;
           }
       }
-    }
-  if (image == (Image *) NULL)
+  }
+  if ((i != (argc-1)) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   while (image->previous != (Image *) NULL)
     image=image->previous;

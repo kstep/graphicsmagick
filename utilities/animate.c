@@ -932,8 +932,11 @@ int main(int argc,char **argv)
           image_info->dither=quantize_info->dither;
           next_image=ReadImage(image_info,&exception);
           if (next_image == (Image *) NULL)
-            MagickError(exception.severity,exception.message,
-              exception.qualifier);
+            {
+              MagickWarning(exception.severity,exception.message,
+                exception.qualifier);
+              continue;
+            }
           status=MogrifyImages(image_info,i,argv,&next_image);
           if (status == False)
             CatchImageException(next_image);
@@ -951,7 +954,7 @@ int main(int argc,char **argv)
         }
       }
   }
-  if (image == (Image *) NULL)
+  if ((i != argc) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   while (image->previous != (Image *) NULL)
     image=image->previous;

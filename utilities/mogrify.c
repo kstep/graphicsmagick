@@ -1450,7 +1450,11 @@ int main(int argc,char **argv)
         (void) strcpy(image_info->filename,argv[i]);
         image=ReadImage(image_info,&exception);
         if (image == (Image *) NULL)
-          MagickError(exception.severity,exception.message,exception.qualifier);
+          {
+            MagickWarning(exception.severity,exception.message,
+              exception.qualifier);
+            continue;
+          }
         if (scene != 0)
           image->scene=scene;
         if (format != (char *) NULL)
@@ -1519,8 +1523,8 @@ int main(int argc,char **argv)
             }
         DestroyImage(image);
       }
-    }
-  if (image == (Image *) NULL)
+  }
+  if ((i != argc) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   DestroyImageInfo(image_info);
   DestroyDelegateInfo();
