@@ -1041,6 +1041,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
         mode[1]='\0';
         image->file=(FILE *) popen(filename+1,mode);
         image->pipet=True;
+        image->exempt=True;
       }
     else
 #endif
