@@ -2059,22 +2059,26 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             }
             case 8:
             {
+#if (QuantumDepth == 8)
               memcpy(r,p,image->columns*sizeof(Quantum));
+#else
+              for (x=0; x < (int) image->columns; x++)
+                *r++=(*p++);
+#endif
               break;
             }
             case 16:
             {
+#if (QuantumDepth == 16)
+              memcpy(r,p,image->columns*sizeof(Quantum));
+#else
               for (x=0; x < (int) image->columns; x++)
               {
-#if (QuantumDepth == 16)
-                *r=((*p++) << 8);
-                *r++|=(*p++);
-#else
                 image->indexes[x]=(unsigned short) (((*p) << 8) | (*(p+1)));
                 *r++=(*p++);
                 p++;
-#endif
               }
+#endif
               break;
             }
             default:
