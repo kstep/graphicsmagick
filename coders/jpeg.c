@@ -721,7 +721,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
               q->green=(Quantum) (GETJSAMPLE(*p++)/16);
               q->blue=(Quantum) (GETJSAMPLE(*p++)/16);
               if (image->colorspace == CMYKColorspace)
-                q->opacity=(Quantum) (GETJSAMPLE(*p++)/16);
+                indexes[x]=(IndexPacket) (GETJSAMPLE(*p++)/16);
               q++;
             }
           }
@@ -744,7 +744,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
             q->green=(Quantum) UpScale(GETJSAMPLE(*p++));
             q->blue=(Quantum) UpScale(GETJSAMPLE(*p++));
             if (image->colorspace == CMYKColorspace)
-              q->opacity=(Quantum) UpScale(GETJSAMPLE(*p++));
+              indexes[x]=(IndexPacket) UpScale(GETJSAMPLE(*p++));
             q++;
           }
         }
@@ -763,12 +763,13 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
+        indexes=GetIndexes(image);
         for (x=0; x < (int) image->columns; x++)
         {
           q->red=MaxRGB-q->red;
           q->green=MaxRGB-q->green;
           q->blue=MaxRGB-q->blue;
-          q->opacity=MaxRGB-q->opacity;
+          indexes[x]=MaxRGB-indexes[x];
           q++;
         }
         if (!SyncImagePixels(image))
@@ -1073,6 +1074,9 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   ImageAttribute
     *attribute;
 
+  IndexPacket
+    *indexes;
+
   int
     y;
 
@@ -1298,6 +1302,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
             p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
+            indexes=GetIndexes(image);
             q=jpeg_pixels;
             for (x=0; x < (int) image->columns; x++)
             {
@@ -1307,7 +1312,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
               *q++=(JSAMPLE) (MaxRGB-(p->red/16));
               *q++=(JSAMPLE) (MaxRGB-(p->green/16));
               *q++=(JSAMPLE) (MaxRGB-(p->blue/16));
-              *q++=(JSAMPLE) (MaxRGB-(p->opacity/16));
+              *q++=(JSAMPLE) (MaxRGB-(indexes[x]/16));
               p++;
             }
             (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
@@ -1358,6 +1363,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
           p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
+          indexes=GetIndexes(image);
           q=jpeg_pixels;
           for (x=0; x < (int) image->columns; x++)
           {
@@ -1367,7 +1373,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
             *q++=(JSAMPLE) MaxRGB-DownScale(p->red);
             *q++=(JSAMPLE) MaxRGB-DownScale(p->green);
             *q++=(JSAMPLE) MaxRGB-DownScale(p->blue);
-            *q++=(JSAMPLE) MaxRGB-DownScale(p->opacity);
+            *q++=(JSAMPLE) MaxRGB-DownScale(indexes[x]);
             p++;
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);

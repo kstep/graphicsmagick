@@ -388,8 +388,7 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
   cube_info->colormap=image->colormap;
   cube_info->colors=0;
   DefineColormap(cube_info,cube_info->root);
-  if ((cube_info->quantize_info->colorspace != TransparentColorspace) &&
-      (image->colorspace != CMYKColorspace))
+  if (cube_info->quantize_info->colorspace != TransparentColorspace)
     image->storage_class=PseudoClass;
   image->colors=cube_info->colors;
   /*
@@ -1993,8 +1992,7 @@ MagickExport unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
   if (cube_info == (CubeInfo *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to quantize image",
       "Memory allocation failed");
-  if ((quantize_info->colorspace != RGBColorspace) &&
-      (quantize_info->colorspace != CMYKColorspace))
+  if (quantize_info->colorspace != RGBColorspace)
     RGBTransformImage(image,quantize_info->colorspace);
   status=Classification(cube_info,image);
   if (status != False)
@@ -2005,8 +2003,7 @@ MagickExport unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
       if (number_colors < cube_info->colors)
         Reduction(cube_info,number_colors);
       status=Assignment(cube_info,image);
-      if ((quantize_info->colorspace != RGBColorspace) &&
-          (quantize_info->colorspace != CMYKColorspace))
+      if (quantize_info->colorspace != RGBColorspace)
         TransformRGBImage(image,quantize_info->colorspace);
     }
   DestroyCubeInfo(cube_info);
@@ -2115,8 +2112,7 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
   image=images;
   for (i=0; image != (Image *) NULL; i++)
   {
-    if ((quantize_info->colorspace != RGBColorspace) &&
-        (quantize_info->colorspace != CMYKColorspace))
+    if (quantize_info->colorspace != RGBColorspace)
       RGBTransformImage(image,quantize_info->colorspace);
     image=image->next;
   }
@@ -2145,8 +2141,7 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
         status=Assignment(cube_info,image);
         if (status == False)
           break;
-        if ((quantize_info->colorspace != RGBColorspace) &&
-            (quantize_info->colorspace != CMYKColorspace))
+        if (quantize_info->colorspace != RGBColorspace)
           TransformRGBImage(image,quantize_info->colorspace);
         image=image->next;
         (void) SetMonitorHandler(handler);

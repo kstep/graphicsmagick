@@ -470,6 +470,9 @@ MagickExport unsigned int SignatureImage(Image *image)
   char
     *signature;
 
+  IndexPacket
+    *indexes;
+
   int
     y;
 
@@ -495,7 +498,7 @@ MagickExport unsigned int SignatureImage(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   signature=AllocateString((char *) NULL);
-  message=(unsigned char *) AcquireMemory(8*image->columns);
+  message=(unsigned char *) AcquireMemory(10*image->columns);
   if (message == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitWarning,
       "Unable to compute image signature","Memory allocation failed");
@@ -508,6 +511,7 @@ MagickExport unsigned int SignatureImage(Image *image)
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexes(image);
     q=message;
     for (x=0; x < image->columns; x++)
     {
@@ -517,19 +521,13 @@ MagickExport unsigned int SignatureImage(Image *image)
       *q++=XUpScale(p->green);
       *q++=XUpScale(p->blue) >> 8;
       *q++=XUpScale(p->blue);
-      if (image->matte || (image->colorspace == CMYKColorspace))
-        {
-          *q++=XUpScale(p->opacity) >> 8;
-          *q++=XUpScale(p->opacity);
-        }
-      else
-        {
-          *q++=XUpScale(MaxRGB) >> 8;
-          *q++=XUpScale(MaxRGB) & 0xff;
-        }
+      *q++=XUpScale(image->matte ? p->opacity : MaxRGB) >> 8;
+      *q++=XUpScale(image->matte ? p->opacity : MaxRGB);
+      *q++=XUpScale(image->colorspace == CMYKColorspace ? indexes[x] : 0) >> 8;
+      *q++=XUpScale(image->colorspace == CMYKColorspace ? indexes[x] : 0);
       p++;
     }
-    UpdateMessageDigest(&message_digest,message,8*image->columns);
+    UpdateMessageDigest(&message_digest,message,10*image->columns);
   }
   /*
     Convert digital signature to a 32 character hex string.

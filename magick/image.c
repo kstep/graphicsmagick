@@ -2443,7 +2443,7 @@ MagickExport unsigned int GetImageDepth(Image *image)
         return(image->depth);
       if (p->blue != UpScale(DownScale(p->blue)))
         return(image->depth);
-      if (image->matte || (image->colorspace == CMYKColorspace))
+      if (image->matte)
         if (p->opacity != UpScale(DownScale(p->opacity)))
           return(image->depth);
       p++;
@@ -2837,7 +2837,7 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
       red=(double) (p->red-q->red);
       green=(double) (p->green-q->green);
       blue=(double) (p->blue-q->blue);
-      if (image->matte || (image->colorspace == CMYKColorspace))
+      if (image->matte)
         opacity=(double) (p->opacity-q->opacity);
       distance=red*red+green*green+blue*blue+opacity*opacity;
       total_error+=distance;
@@ -2851,7 +2851,7 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
     Compute final error statistics.
   */
   normalize=3.0*(MaxRGB+1)*(MaxRGB+1);
-  if (image->matte || (image->colorspace == CMYKColorspace))
+  if (image->matte)
     normalize=4.0*(MaxRGB+1)*(MaxRGB+1);
   image->mean_error_per_pixel=(unsigned int)
     (total_error/(image->columns*image->rows));
@@ -5026,6 +5026,9 @@ MagickExport unsigned int RGBTransformImage(Image *image,
     return(True);
   if (colorspace == CMYKColorspace)
     {
+      IndexPacket
+        *indexes;
+
       int
         black,
         cyan,
@@ -5041,6 +5044,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
+        indexes=GetIndexes(image);
         for (x=0; x < (int) image->columns; x++)
         {
           cyan=MaxRGB-q->red;
@@ -5052,7 +5056,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
             (magenta < 0 ? 0 : magenta >= MaxRGB ? MaxRGB : magenta);
           q->blue=(Quantum)
             (yellow < 0 ? 0 : yellow >= MaxRGB ? MaxRGB : yellow);
-          q->opacity=(Quantum) black;
+          indexes[x]=(IndexPacket) black;
           q++;
         }
         if (!SyncImagePixels(image))
@@ -6409,27 +6413,31 @@ MagickExport unsigned int TransformRGBImage(Image *image,
   assert(image->signature == MagickSignature);
   if ((image->colorspace == CMYKColorspace) && (colorspace == RGBColorspace))
     {
+      IndexPacket
+        *indexes;
+
       /*
         Transform image from CMYK to RGB.
       */
-      image->colorspace=RGBColorspace;
       for (y=0; y < (int) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
+        indexes=GetIndexes(image);
         for (x=0; x < (int) image->columns; x++)
         {
-          q->red=(unsigned long) ((MaxRGB-q->red)*(MaxRGB-q->opacity))/MaxRGB;
+          q->red=(unsigned long) ((MaxRGB-q->red)*(MaxRGB-indexes[x]))/MaxRGB;
           q->green=(unsigned long)
-            ((MaxRGB-q->green)*(MaxRGB-q->opacity))/MaxRGB;
-          q->blue=(unsigned long) ((MaxRGB-q->blue)*(MaxRGB-q->opacity))/MaxRGB;
+            ((MaxRGB-q->green)*(MaxRGB-indexes[x]))/MaxRGB;
+          q->blue=(unsigned long) ((MaxRGB-q->blue)*(MaxRGB-indexes[x]))/MaxRGB;
           q->opacity=OpaqueOpacity;
           q++;
         }
         if (!SyncImagePixels(image))
           break;
       }
+      image->colorspace=RGBColorspace;
       return(True);
     }
   if ((colorspace == RGBColorspace) || (colorspace == GRAYColorspace) ||

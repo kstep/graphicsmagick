@@ -764,8 +764,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           }
         TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
           &sample_info);
-        if (image->colorspace != CMYKColorspace)
-          image->matte=extra_samples == 1;
+        image->matte=extra_samples == 1;
         for (y=0; y < (int) image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);

@@ -92,7 +92,8 @@ static unsigned int
 %
 %
 */
-static Image *ReadCMYKImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadCMYKImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   Image
     *image;
@@ -408,7 +409,7 @@ ModuleExport void RegisterCMYKImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r C M Y K I m a g e                                        %
+%   U n r e g i s t e r C M Y K I m a g e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %

@@ -134,6 +134,9 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
+  IndexPacket
+    *indexes;
+
   int
     y;
 
@@ -226,11 +229,9 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
+    indexes=GetIndexes(image);
     for (x=0; x < (int) image->columns; x++)
-    {
-      q->opacity=UpScale(ReadBlobByte(image));
-      q++;
-    }
+      indexes[x]=UpScale(ReadBlobByte(image));
     if (!SyncImagePixels(image))
       break;
     if ((image->columns % 2) != 0)
