@@ -13,24 +13,24 @@
 
 // Define to build an ImageMagick which uses registry settings to
 // locate installed components.
-// #define UseInstalledImageMagick
+// #undef UseInstalledImageMagick
 
 //
 // When building ImageMagick using DLLs, include a DllMain() function which
 // automatically invokes InitializeMagick(NULL), and DestroyMagick()
 // so that the user doesn't need to.
 //
-// #define ProvideDllMain
+// #undef ProvideDllMain
 
 //
 // Define Windows95 to avoid using functions which are not available
 // under Windows 95.  This reduces the maximum image size which may
 // be processed.
 //
-// #define Windows95
+// #undef Windows95
 
 // Define to use the autotrace library (obtain sources seperately)
-//#define HasAUTOTRACE
+// #undef HasAUTOTRACE
 
 // Define to support memory mapping files for improved performance
 #define HAVE_MMAP
@@ -57,7 +57,7 @@
 #define HasLCMS
 
 // Define to support patented LZW compression
-// #define HasLZW
+// #undef HasLZW
 
 // Define to use the PNG library
 #define HasPNG
