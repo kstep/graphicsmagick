@@ -496,7 +496,7 @@ MagickExport unsigned int AnimateImages(const ImageInfo *image_info,
 MagickExport Image *AppendImages(Image *image,const unsigned int stack,
   ExceptionInfo *exception)
 {
-#define AppendImageText  "  Appending image sequence...  "
+#define AppendImageText  "  Append image sequence...  "
 
   Image
     *append_image;
@@ -1261,17 +1261,15 @@ MagickExport unsigned int CompositeImage(Image *image,
     }
     case ThresholdCompositeOp:
     {
+      /*
+        Determine the amount and threshold.
+      */
       amount=0.5;
       threshold=0.05;
       if (composite_image->geometry != (char *) NULL)
-        {
-          /*
-            Determine the amount and threshold.
-          */
-          sscanf(composite_image->geometry,"%lfx%lf\n",
-            &amount,&threshold);
-        }
-      threshold*=255.0;
+        (void) sscanf(composite_image->geometry,"%lfx%lf\n",
+          &amount,&threshold);
+      threshold*=MaxRGB;
       break;
     }
     case ReplaceCompositeOp:
@@ -1676,7 +1674,7 @@ MagickExport unsigned int CompositeImage(Image *image,
 */
 MagickExport void CycleColormapImage(Image *image,const int amount)
 {
-#define CycleColormapImageText  "  Cycling image...  "
+#define CycleColormapImageText  "  Cycle image colormap...  "
 
   int
     index,
@@ -3040,7 +3038,7 @@ MagickExport unsigned int IsTainted(const Image *image)
 */
 MagickExport unsigned int LayerImage(Image *image,const LayerType layer)
 {
-#define LayerImageText  "  Extracting the layer from the image...  "
+#define LayerImageText  "  Extract a layer from the image...  "
 
   int
     y;
@@ -3380,8 +3378,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         /*
           Gaussian blur image.
         */
-        radius=3.0;
-        sigma=1.0;
+        radius=0.0;
+        sigma=1.5;
         if (*option == '-')
           (void) sscanf(argv[++i],"%lfx%lf",&radius,&sigma);
         blur_image=BlurImage(*image,radius,sigma,&(*image)->exception);
@@ -3834,8 +3832,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         /*
           Gaussian blur image.
         */
-        radius=3.0;
-        sigma=1.0;
+        radius=0.0;
+        sigma=1.5;
         if (*option == '-')
           (void) sscanf(argv[++i],"%lfx%lf",&radius,&sigma);
         blur_image=GaussianBlurImage(*image,radius,sigma,&(*image)->exception);
@@ -4393,20 +4391,20 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           sigma;
 
         Image
-          *blur_image;
+          *sharp_image;
 
         /*
           Gaussian sharpen image.
         */
-        radius=3.0;
-        sigma=1.0;
+        radius=0.0;
+        sigma=1.5;
         if (*option == '-')
           (void) sscanf(argv[++i],"%lfx%lf",&radius,&sigma);
-        blur_image=SharpenImage(*image,radius,sigma,&(*image)->exception);
-        if (blur_image == (Image *) NULL)
+        sharp_image=SharpenImage(*image,radius,sigma,&(*image)->exception);
+        if (sharp_image == (Image *) NULL)
           break;
         DestroyImage(*image);
-        *image=blur_image;
+        *image=sharp_image;
         continue;
       }
     if (LocaleNCompare("-shear",option,4) == 0)
@@ -4629,7 +4627,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
 MagickExport unsigned int MogrifyImages(const ImageInfo *next_info,
   const int argc,char **argv,Image **image)
 {
-#define MogrifyImageText  "  Transforming image...  "
+#define MogrifyImageText  "  Transform image...  "
 
   Image
     *mogrify_image;
@@ -4710,7 +4708,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *next_info,
 */
 MagickExport Image *MosaicImages(Image *image,ExceptionInfo *exception)
 {
-#define MosaicImageText  "  Creating an image mosaic...  "
+#define MosaicImageText  "  Create an image mosaic...  "
 
   Image
     *mosaic_image;
@@ -5008,7 +5006,7 @@ MagickExport int ParseImageGeometry(const char *geometry,int *x,int *y,
 MagickExport unsigned int RGBTransformImage(Image *image,
   const ColorspaceType colorspace)
 {
-#define RGBTransformImageText  "  Transforming image colors...  "
+#define RGBTransformImageText  "  Transform image colors...  "
 #define X 0
 #define Y (MaxRGB+1)
 #define Z (MaxRGB+1)*2
@@ -5949,7 +5947,7 @@ MagickExport void SyncImage(Image *image)
 */
 MagickExport void TextureImage(Image *image,Image *texture)
 {
-#define TextureImageText  "  Appling image texture...  "
+#define TextureImageText  "  Apply image texture...  "
 
   int
     x,
@@ -6007,7 +6005,7 @@ MagickExport unsigned int TransformRGBImage(Image *image,
 #define B (MaxRGB+1)*2
 #define G (MaxRGB+1)
 #define R 0
-#define TransformRGBImageText  "  Transforming image colors...  "
+#define TransformRGBImageText  "  Transform image colors...  "
 
   static const Quantum
     sRGBMap[351] =

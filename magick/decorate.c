@@ -156,7 +156,7 @@ MagickExport Image *BorderImage(Image *image,const RectangleInfo *border_info,
 MagickExport Image *FrameImage(Image *image,const FrameInfo *frame_info,
   ExceptionInfo *exception)
 {
-#define FrameImageText  "  Adding frame to image...  "
+#define FrameImageText  "  Add frame to image...  "
 
   Image
     *frame_image;
@@ -419,7 +419,7 @@ MagickExport unsigned int RaiseImage(Image *image,
 #define AccentuateFactor  UpScale(135)
 #define HighlightFactor  UpScale(190)
 #define ShadowFactor  UpScale(190)
-#define RaiseImageText  "  Raising image...  "
+#define RaiseImageText  "  Raise image...  "
 #define TroughFactor  UpScale(135)
 
   int

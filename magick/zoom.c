@@ -300,7 +300,7 @@ static double BesselOrderOne(double x)
 */
 MagickExport Image *MagnifyImage(Image *image,ExceptionInfo *exception)
 {
-#define MagnifyImageText  "  Magnifying the image...  "
+#define MagnifyImageText  "  Magnify image...  "
 
   Image
     *magnify_image;
@@ -497,7 +497,7 @@ MagickExport Image *MinifyImage(Image *image,ExceptionInfo *exception)
   total_blue+=(weight)*(s->blue); \
   total_opacity+=(weight)*(s->opacity); \
   s++;
-#define MinifyImageText  "  Minifying image...  "
+#define MinifyImageText  "  Minify image...  "
 
   Image
     *minify_image;
@@ -615,7 +615,7 @@ MagickExport Image *MinifyImage(Image *image,ExceptionInfo *exception)
 MagickExport Image *SampleImage(Image *image,const unsigned int columns,
   const unsigned int rows,ExceptionInfo *exception)
 {
-#define SampleImageText  "  Sampling image...  "
+#define SampleImageText  "  Sample image...  "
 
   double
     *x_offset,
@@ -785,7 +785,7 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
 MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
   const unsigned int rows,ExceptionInfo *exception)
 {
-#define ScaleImageText  "  Scaling image...  "
+#define ScaleImageText  "  Scale image...  "
 
   typedef struct ScaledPacket
   {
@@ -1147,7 +1147,7 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
 %
 */
 
-#define ZoomImageText  "  Zooming image...  "
+#define ZoomImageText  "  Zoom image...  "
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

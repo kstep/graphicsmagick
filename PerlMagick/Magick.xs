@@ -5184,7 +5184,7 @@ Mogrify(ref,...)
           radius=0.0;
           sigma=1.5;
           amount=1.0;
-          threshold=0.0;
+          threshold=0.05;
           if (attribute_flag[1])
             radius=argument_list[1].double_reference;
           if (attribute_flag[2])

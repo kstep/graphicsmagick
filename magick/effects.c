@@ -94,7 +94,7 @@
 MagickExport Image *AddNoiseImage(Image *image,const NoiseType noise_type,
   ExceptionInfo *exception)
 {
-#define AddNoiseImageText  "  Adding noise to the image...  "
+#define AddNoiseImageText  "  Add noise to the image...  "
 
   Image
     *noise_image;
@@ -260,7 +260,7 @@ MagickExport Image *BlurImage(Image *image,const double radius,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=2.0*ceil(radius-0.5)+1.0;
+  width=ceil(radius);
   if (radius <= 0.0)
     {
       double
@@ -277,10 +277,8 @@ MagickExport Image *BlurImage(Image *image,const double radius,
         if ((value/normalize) < (1.0/MaxRGB))
           break;
       }
-      width=(2*(width-1))-1;
+      width=2*(width-1)+1;
     }
-  if (width < 4)
-    width=3;
   if ((image->columns < width) || (image->rows < width))
     ThrowImageException(ResourceLimitWarning,"Unable to blur image",
       "image is smaller than radius");
@@ -298,8 +296,8 @@ MagickExport Image *BlurImage(Image *image,const double radius,
       "Memory allocation failed");
   for (i=0; i < (width+1); i++)
     kernel[i]=exp((double) (-i*i)/(sigma*sigma));
-  if ((radius != 0.0) && ((2.0*(radius-0.5)+1.0) < width))
-    kernel[width]*=((2.0*(radius-0.5)+1.0)-(double) width+1.0);
+  if ((radius > 0.0) && (radius < width))
+    kernel[width]*=(radius-width+1.0);
   normalize=0.0;
   for (i=0; i < (width+1); i++)
     normalize+=kernel[i];
@@ -462,7 +460,7 @@ MagickExport Image *BlurImage(Image *image,const double radius,
 MagickExport Image *ColorizeImage(Image *image,const char *opacity,
   const PixelPacket target,ExceptionInfo *exception)
 {
-#define ColorizeImageText  "  Colorizing the image...  "
+#define ColorizeImageText  "  Colorize the image...  "
 
   double
     blue,
@@ -575,7 +573,7 @@ MagickExport Image *ColorizeImage(Image *image,const char *opacity,
 MagickExport Image *ConvolveImage(Image *image,const unsigned int radius,
   const double *kernel,ExceptionInfo *exception)
 {
-#define ConvolveImageText  "  Convolving image...  "
+#define ConvolveImageText  "  Convolve image...  "
 #define Cx(x) \
   (x) < 0 ? (x)+image->columns : (x) >= image->columns ? (x)-image->columns : x
 #define Cy(y) \
@@ -620,7 +618,7 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int radius,
   assert(exception->signature == MagickSignature);
   if ((radius % 2) == 0)
     ThrowImageException(ResourceLimitWarning,"Unable to convolve image",
-      "kernel radius must be an odd number");
+      "kernel radius must be an odd");
   if ((image->columns < radius) || (image->rows < radius))
     ThrowImageException(ResourceLimitWarning,"Unable to convolve image",
       "image smaller than kernel radius");
@@ -666,7 +664,7 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int radius,
       else
         {
           if (p == (PixelPacket *) NULL)
-            p=GetImagePixels(image,0,y-(int) (0.5*radius),image->columns,radius);
+            p=GetImagePixels(image,0,y-(0.5*radius),image->columns,radius);
           s=p+x;
           for (v=(int) (-0.5*radius); v <= (int) (0.5*radius); v++)
           {
@@ -741,7 +739,7 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int radius,
 */
 MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
 {
-#define DespeckleImageText  "  Despeckling image...  "
+#define DespeckleImageText  "  Despeckle image...  "
 
   Image
     *despeckle_image;
@@ -1036,7 +1034,7 @@ MagickExport Image *EmbossImage(Image *image,const unsigned int radius,
   {
     for (u=(-(int) radius/2); u <= ((int) radius/2); u++)
     {
-      kernel[i]=(int) ((u < 0 || v < 0 ? -8.0 : 8.0)*exp((double) (u*u-v*v)));
+      kernel[i]=(int) ((u < 0 || v < 0 ? -8.0 : 8.0)*exp((double) -(u*u+v*v)));
       if (u == j)
         kernel[i]=0.0;
       i++;
@@ -1112,7 +1110,7 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
       total_weight+=(weight); \
     } \
   s++;
-#define EnhanceImageText  "  Enhancing image...  "
+#define EnhanceImageText  "  Enhance image...  "
 #define Threshold  2500
 
   double
@@ -1272,7 +1270,7 @@ MagickExport Image *GaussianBlurImage(Image *image,const double radius,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=2.0*ceil(radius-0.5)+1.0;
+  width=ceil(radius);
   if (radius <= 0.0)
     {
       double
@@ -1286,10 +1284,8 @@ MagickExport Image *GaussianBlurImage(Image *image,const double radius,
         if ((value/normalize) < (1.0/MaxRGB))
           break;
       }
-      width=(2*(width-1))-1;
+      width=2*(width-1)+1;
     }
-  if (width < 4)
-    width=3;
   if ((image->columns < width) || (image->rows < width))
     ThrowImageException(ResourceLimitWarning,"Unable to gaussian blur image",
       "image is smaller than radius");
@@ -1303,7 +1299,7 @@ MagickExport Image *GaussianBlurImage(Image *image,const double radius,
   {
     for (u=(int) (-0.5*width); u <= (int) (0.5*width); u++)
     {
-      kernel[i]=exp((double) -(v*v+u*u)/(sigma*sigma));
+      kernel[i]=exp((double) -(u*u+v*v)/(sigma*sigma));
       normalize+=kernel[i];
       i++;
     }
@@ -1353,7 +1349,7 @@ MagickExport Image *GaussianBlurImage(Image *image,const double radius,
 MagickExport Image *ImplodeImage(Image *image,const double factor,
   ExceptionInfo *exception)
 {
-#define ImplodeImageText  "  Imploding image...  "
+#define ImplodeImageText  "  Implode image...  "
 
   double
     amount,
@@ -1535,8 +1531,7 @@ static int RedCompare(const void *x,const void *y)
 MagickExport Image *MedianFilterImage(Image *image,const unsigned int radius,
   ExceptionInfo *exception)
 {
-#define MedianFilterImageText \
-  "  Filtering image with neighborhood ranking...  "
+#define MedianFilterImageText  "  Filter image with neighborhood ranking...  "
 
   Image
     *median_image;
@@ -1586,10 +1581,10 @@ MagickExport Image *MedianFilterImage(Image *image,const unsigned int radius,
   /*
     Median filter each image row.
   */
-  center=radius*radius/2;
+  center=0.5*radius*radius;
   for (y=0; y < (int) median_image->rows; y++)
   {
-    v=Min(Max(y-(int) radius/2,0),image->rows-radius);
+    v=Min(Max(y-0.5*radius,0),image->rows-radius);
     p=GetImagePixels(image,0,v,image->columns,radius);
     q=SetImagePixels(median_image,0,y,median_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
@@ -1597,7 +1592,7 @@ MagickExport Image *MedianFilterImage(Image *image,const unsigned int radius,
     for (x=0; x < (int) median_image->columns; x++)
     {
       w=window;
-      s=p+Min(Max(x-(int) radius/2,0),image->columns-radius);
+      s=p+Min(Max(x-radius/2,0),image->columns-radius);
       for (v=0; v < radius; v++)
       {
         for (u=0; u < radius; u++)
@@ -1664,7 +1659,7 @@ MagickExport Image *MedianFilterImage(Image *image,const unsigned int radius,
 MagickExport Image *MorphImages(Image *image,const unsigned int number_frames,
   ExceptionInfo *exception)
 {
-#define MorphImageText  "  Morphing next sequence...  "
+#define MorphImageText  "  Morph image sequence...  "
 
   double
     alpha,
@@ -1822,7 +1817,7 @@ MagickExport Image *MorphImages(Image *image,const unsigned int number_frames,
 MagickExport Image *OilPaintImage(Image *image,const unsigned int radius,
   ExceptionInfo *exception)
 {
-#define OilPaintImageText  "  Oil painting image...  "
+#define OilPaintImageText  "  Oil paint image...  "
 
   Image
     *paint_image;
@@ -2180,7 +2175,7 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
 MagickExport Image *ReduceNoiseImage(Image *image,const unsigned int radius,
   ExceptionInfo *exception)
 {
-#define ReduceNoiseImageText  "  Reducing the image noise...  "
+#define ReduceNoiseImageText  "  Reduce the image noise...  "
 
   Image
     *noise_image;
@@ -2378,7 +2373,7 @@ MagickExport Image *ReduceNoiseImage(Image *image,const unsigned int radius,
 MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
   double azimuth,double elevation,ExceptionInfo *exception)
 {
-#define ShadeImageText  "  Shading image...  "
+#define ShadeImageText  "  Shade image...  "
 
   double
     distance,
@@ -2529,7 +2524,7 @@ MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
 MagickExport Image *SharpenImage(Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
-  return(UnsharpMaskImage(image,radius,sigma,0.5,0.05,exception));
+  return(UnsharpMaskImage(image,radius,sigma,1.0,0.05,exception));
 }
 
 /*
@@ -2560,7 +2555,7 @@ MagickExport Image *SharpenImage(Image *image,const double radius,
 */
 MagickExport void SolarizeImage(Image *image,const double factor)
 {
-#define SolarizeImageText  "  Solarizing the image colors...  "
+#define SolarizeImageText  "  Solarize the image colors...  "
 
   int
     y;
@@ -2664,7 +2659,7 @@ MagickExport void SolarizeImage(Image *image,const double factor)
 MagickExport Image *SpreadImage(Image *image,const unsigned int amount,
   ExceptionInfo *exception)
 {
-#define SpreadImageText  "  Spreading image...  "
+#define SpreadImageText  "  Spread image...  "
 
   Image
     *spread_image;
@@ -2771,7 +2766,7 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
         break; \
     } \
 }
-#define SteganoImageText  "  Hiding image...  "
+#define SteganoImageText  "  Hide image...  "
 
   Image
     *stegano_image;
@@ -3015,7 +3010,7 @@ MagickExport Image *StereoImage(Image *image,Image *offset_image,
 MagickExport Image *SwirlImage(Image *image,double degrees,
   ExceptionInfo *exception)
 {
-#define SwirlImageText  "  Swirling image...  "
+#define SwirlImageText  "  Swirl image...  "
 
   double
     cosine,
@@ -3324,7 +3319,7 @@ MagickExport Image *UnsharpMaskImage(Image *image,const double radius,
 MagickExport Image *WaveImage(Image *image,const double amplitude,
   const double wave_length,ExceptionInfo *exception)
 {
-#define WaveImageText  "  Waving image...  "
+#define WaveImageText  "  Wave image...  "
 
   double
     *sine_map;

@@ -62,8 +62,8 @@
 /*
   Define declarations.
 */
-#define LoadImageText  "  Loading image...  "
-#define SaveImageText  "  Saving image...  "
+#define LoadImageText  "  Load image...  "
+#define SaveImageText  "  Save image...  "
 
 /*
   Typedef declarations.

@@ -1261,7 +1261,7 @@ static void DestroyList(const NodeInfo *node_info)
 */
 MagickExport unsigned long GetNumberColors(Image *image,FILE *file)
 {
-#define NumberColorsImageText  "  Computing image colors...  "
+#define NumberColorsImageText  "  Compute image colors...  "
 
   CubeInfo
     color_cube;
@@ -1418,7 +1418,7 @@ MagickExport unsigned long GetNumberColors(Image *image,FILE *file)
 */
 static void Histogram(CubeInfo *color_cube,const NodeInfo *node_info,FILE *file)
 {
-#define HistogramImageText  "  Computing image histogram...  "
+#define HistogramImageText  "  Compute image histogram...  "
 
   register unsigned int
     id;

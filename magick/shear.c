@@ -95,7 +95,7 @@
 static Image *IntegralRotateImage(Image *image,unsigned int rotations,
   ExceptionInfo *exception)
 {
-#define RotateImageText  "  Rotating image...  "
+#define RotateImageText  "  Rotate image...  "
 
   Image
     *rotate_image;

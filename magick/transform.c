@@ -97,7 +97,7 @@
 MagickExport Image *ChopImage(Image *image,const RectangleInfo *chop_info,
   ExceptionInfo *exception)
 {
-#define ChopImageText  "  Chopping image...  "
+#define ChopImageText  "  Chop image...  "
 
   Image
     *chop_image;
@@ -334,7 +334,7 @@ MagickExport Image *CoalesceImages(Image *image,ExceptionInfo *exception)
 MagickExport Image *CropImage(Image *image,const RectangleInfo *crop_info,
   ExceptionInfo *exception)
 {
-#define CropImageText  "  Cropping image...  "
+#define CropImageText  "  Crop image...  "
 
   Image
     *crop_image;
@@ -727,7 +727,7 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
 */
 MagickExport Image *FlipImage(Image *image,ExceptionInfo *exception)
 {
-#define FlipImageText  "  Flipping image...  "
+#define FlipImageText  "  Flip image...  "
 
   Image
     *flip_image;
@@ -820,7 +820,7 @@ MagickExport Image *FlipImage(Image *image,ExceptionInfo *exception)
 */
 MagickExport Image *FlopImage(Image *image,ExceptionInfo *exception)
 {
-#define FlopImageText  "  Flopping image...  "
+#define FlopImageText  "  Flop image...  "
 
   Image
     *flop_image;
@@ -1117,7 +1117,7 @@ MagickExport unsigned int ProfileImage(Image *image,const ProfileType type,
 MagickExport Image *RollImage(Image *image,const int x_offset,
   const int y_offset,ExceptionInfo *exception)
 {
-#define RollImageText  "  Rolling image...  "
+#define RollImageText  "  Roll image...  "
 
   Image
     *roll_image;

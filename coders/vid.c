@@ -54,6 +54,11 @@
 */
 #include "magick.h"
 #include "defines.h"
+/*
+  Forward declarations.
+*/
+static unsigned int
+  WriteVIDImage(const ImageInfo *,Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -214,6 +219,7 @@ ModuleExport void RegisterVIDImage(void)
 
   entry=SetMagickInfo("VID");
   entry->decoder=ReadVIDImage;
+  entry->encoder=WriteVIDImage;
   entry->description=AllocateString("Visual Image Directory");
   entry->module=AllocateString("VID");
   RegisterMagickInfo(entry);
@@ -241,4 +247,57 @@ ModuleExport void RegisterVIDImage(void)
 ModuleExport void UnregisterVIDImage(void)
 {
   UnregisterMagickInfo("VID");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e V I D I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method WriteVIDImage writes an image to a file in VID X image format.
+%
+%  The format of the WriteVIDImage method is:
+%
+%      unsigned int WriteVIDImage(const ImageInfo *image_info,Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o status: Method WriteVIDImage return True if the image is written.
+%      False is returned is there is a memory shortage or if the image file
+%      fails to write.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%    o image:  A pointer to a Image structure.
+%
+%
+*/
+static unsigned int WriteVIDImage(const ImageInfo *image_info,Image *image)
+{
+  Image
+    *montage_image;
+
+  MontageInfo
+    *montage_info;
+
+  unsigned int
+    status;
+
+  /*
+    Create the visual image directory.
+  */
+  montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
+  montage_image=MontageImages(image,montage_info,&image->exception);
+  if (montage_image == (Image *) NULL)
+    ThrowWriterException(CorruptImageWarning,"unable to write VID image",image);
+  FormatString(montage_image->filename,"miff:%s",image->filename);
+  status=WriteImage(image_info,montage_image);
+  DestroyImages(montage_image);
+  return(status);
 }
