@@ -1,3 +1,8 @@
+2005-03-31 Glenn Randers-Pehrson <glennrp@glennrp.com>
+
+	* coders/jpeg.c: revised EOF test.  It was rejecting good image
+	files.  Needs more work.
+
 2005-03-30 Glenn Randers-Pehrson <glennrp@glennrp.com>
 
 	* coders/pnm.c (ReadPNMImage): Throw a "Corrupt Image" exception

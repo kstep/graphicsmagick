@@ -1016,9 +1016,10 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   scanline[0]=(JSAMPROW) jpeg_pixels;
   for (y=0; y < (long) image->rows; y++)
   {
-    (void) jpeg_read_scanlines(&jpeg_info,scanline,1);
-    if (EOFBlob(image))
+    /* FIXME .... */
+    if (jpeg_read_scanlines(&jpeg_info,scanline,1) != 1)
       ThrowReaderException(CorruptImageError,CorruptImage,image);
+
     p=jpeg_pixels;
     q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
