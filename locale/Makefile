@@ -1,2 +1,2 @@
 all:
-	convert locale:locale.mgk locale:locale.c
+	convert -debug all locale:locale.mgk locale:locale.c

@@ -210,7 +210,6 @@
       <Message name="IncludeElementNestedTooDeeply">
         include element nested too deeply
       </Message>
-      </Message>
       <Message name="UnableToAccessConfigureFile">
         Unable to access configure file
       </Message>
@@ -298,7 +297,7 @@
 					Negative or zero image size
         </Message>
         <Message name="NonOS2HeaderSizeError">
-          Non OS/2 BMP header size < 40
+          Non OS/2 BMP header size less than 40
         </Message>
         <Message name="NotAnARTImageFile">
           Not an ART image file
