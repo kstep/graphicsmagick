@@ -72,8 +72,6 @@ static void PrintUsage(void)
 %
 %
 */
-
-
 int main(int argc,char **argv)
 {
   char
@@ -89,15 +87,19 @@ int main(int argc,char **argv)
     status=True;
 
   ReadCommandlLine(argc,&argv);
-  SetClientName(argv[0]);
+#if defined(WIN32)
+  InitializeMagick((char *) NULL);
+#else
+  InitializeMagick((*argv);
+#endif
+
+  SetClientName(*argv);
 
   if (argc < 2)
     {
       PrintUsage();
       Exit(1);
     }
-
-  InitializeMagick(*argv);
 
   argc--;
   argv++;

@@ -114,6 +114,10 @@ static void
 static unsigned int
   HelpCommand(ImageInfo *image_info,int argc,char **argv,
               char **metadata,ExceptionInfo *exception),
+#if defined(WIN32)
+  RegisterCommand(ImageInfo *image_info,int argc,char **argv,
+                 char **metadata,ExceptionInfo *exception),
+#endif
   VersionCommand(ImageInfo *image_info,int argc,char **argv,
                  char **metadata,ExceptionInfo *exception);
 
@@ -147,6 +151,10 @@ const static CommandInfo commands[] =
       MontageImageCommand, MontageUsage, 0 },
     { "version", "obtain release version",
       VersionCommand, 0, 0 },
+#if defined(WIN32)
+    { "register", "register this application as the source of messages",
+      RegisterCommand, 0, 0 },
+#endif
     { 0, 0, 0}
   };
 
@@ -227,7 +235,7 @@ MagickExport void AnimateUsage(void)
   (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
   (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
   (void) printf("Usage: %.1024s [options ...] file [ [options ...] file ...]\n",
-    SetClientName((char *) NULL));
+    GetClientName());
   (void) printf("\nWhere options include: \n");
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);
@@ -366,8 +374,8 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
   if (display == (Display *) NULL)
     MagickFatalError(XServerFatalError,"UnableToOpenXServer",
       XDisplayName(server_name));
- (void) XSetErrorHandler(XError);
-  client_name=SetClientName((char *) NULL);
+  (void) XSetErrorHandler(XError);
+  client_name=GetClientName();
   resource_database=XGetResourceDatabase(display,client_name);
   XGetResourceInfo(resource_database,client_name,&resource_info);
   image_info=resource_info.image_info;
@@ -2569,8 +2577,7 @@ MagickExport void CompositeUsage(void)
   (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
   (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
   (void) printf("Usage: %.1024s [options ...] image [options ...] composite\n"
-    "  [ [options ...] mask ] [options ...] composite\n",
-    SetClientName((char *) NULL));
+    "  [ [options ...] mask ] [options ...] composite\n",GetClientName());
   (void) printf("\nWhere options include:\n");
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);
@@ -4669,7 +4676,7 @@ MagickExport void ConvertUsage(void)
   (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
   (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
   (void) printf("Usage: %.1024s [options ...] file [ [options ...] "
-    "file ...] [options ...] file\n",SetClientName((char *) NULL));
+    "file ...] [options ...] file\n",GetClientName());
   (void) printf("\nWhere options include:\n");
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);
@@ -4721,7 +4728,7 @@ MagickExport void ConjureUsage(void)
   (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
   (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
   (void) printf("Usage: %.1024s [options ...] file [ [options ...] file ...]\n",
-    SetClientName((char *) NULL));
+    GetClientName());
   (void) printf("\nWhere options include:\n");
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);
@@ -4952,7 +4959,7 @@ MagickExport void DisplayUsage(void)
   (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
   (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
   (void) printf("Usage: %.1024s [options ...] file [ [options ...] file ...]\n",
-    SetClientName((char *) NULL));
+    GetClientName());
   (void) printf("\nWhere options include: \n");
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);
@@ -5097,7 +5104,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
     MagickFatalError(XServerFatalError,"UnableToOpenXServer",
       XDisplayName(server_name));
   (void) XSetErrorHandler(XError);
-  client_name=SetClientName((char *) NULL);
+  client_name=GetClientName();
   resource_database=XGetResourceDatabase(display,client_name);
   XGetResourceInfo(resource_database,client_name,&resource_info);
   image_info=resource_info.image_info;
@@ -6374,8 +6381,7 @@ static void GMUsage(void)
 
   (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
   (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
-  (void) printf("Usage: %.1024s command [options ...]\n",
-    SetClientName((char *) NULL));
+  (void) printf("Usage: %.1024s command [options ...]\n",GetClientName());
   (void) printf("\nWhere options include: \n");
       
   for (i=0; commands[i].command != 0; i++)
@@ -6876,7 +6882,7 @@ MagickExport void IdentifyUsage(void)
   (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
   (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
   (void) printf("Usage: %.1024s [options ...] file [ [options ...] "
-    "file ... ]\n",SetClientName((char *) NULL));
+    "file ... ]\n",GetClientName());
   (void) printf("\nWhere options include:\n");
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);
@@ -6974,7 +6980,7 @@ MagickExport unsigned int MagickCommand(ImageInfo *image_info,
           char
             client_name[MaxTextExtent];
 
-          FormatString(client_name,"%.1024s %s",SetClientName(0),
+          FormatString(client_name,"%.1024s %s",GetClientName(),
                        commands[i].command);
 
           SetClientName(client_name);
@@ -11303,7 +11309,7 @@ MagickExport void MogrifyUsage(void)
   (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
   (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
   (void) printf("Usage: %.1024s [options ...] file [ [options ...] file ...]\n",
-    SetClientName((char *) NULL));
+    GetClientName());
   (void) printf("\nWhere options include: \n");
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);
@@ -12704,7 +12710,7 @@ MagickExport void MontageUsage(void)
   (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
   (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
   (void) printf("Usage: %.1024s [options ...] file [ [options ...] file ...]\n",
-    SetClientName((char *) NULL));
+    GetClientName());
   (void) printf("\nWhere options include: \n");
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);
@@ -12864,7 +12870,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
     MagickFatalError(OptionFatalError,"UnableToOpenXServer",
       XDisplayName(server_name));
   (void) XSetErrorHandler(XError);
-  client_name=SetClientName((char *) NULL);
+  client_name=GetClientName();
   resource_database=XGetResourceDatabase(display,client_name);
   XGetImportInfo(&ximage_info);
   XGetResourceInfo(resource_database,client_name,&resource_info);
@@ -13733,8 +13739,7 @@ MagickExport void ImportUsage(void)
 
   (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
   (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
-  (void) printf("Usage: %.1024s [options ...] [ file ]\n",
-    SetClientName((char *) NULL));
+  (void) printf("Usage: %.1024s [options ...] [ file ]\n",GetClientName());
   (void) printf("\nWhere options include:\n");
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);
@@ -13827,3 +13832,97 @@ static unsigned int VersionCommand(ImageInfo *image_info,
 
   return True;
 }
+
+#if defined(WIN32)
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%    R e g i s t e r C o m m a n d                                            %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  RegisterCommand() registers this appplication as the source for messages
+%  compatible with the windows even logging system. All this does is to set
+%  a registry value to point to either an EXE or DLL that contains a special
+%  binary resource containing all the messages that can be used.
+%
+%  The format of the RegisterCommand method is:
+%
+%      unsigned int RegisterCommand(ImageInfo *image_info,const int argc,
+%        char **argv,char **metadata,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: The image info.
+%
+%    o argc: The number of elements in the argument vector.
+%
+%    o argv: A text array containing the command line arguments.
+%
+%    o metadata: any metadata is returned here.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+static unsigned int RegisterCommand(ImageInfo *image_info,
+  int argc,char **argv,char **metadata,ExceptionInfo *exception)
+{
+	char
+    *szRegPath = 
+		  "SYSTEM\\CurrentControlSet\\Services\\Eventlog\\Application\\";
+
+	char
+    szKey[_MAX_PATH*2];
+
+	DWORD
+    dwResult = 0;
+
+	HKEY
+    hKey = NULL;
+
+  LONG
+    lRet;
+
+	memset(szKey, 0, _MAX_PATH*2*sizeof(char));
+	strcpy(szKey, szRegPath);
+	strcat(szKey, "GraphicsMagick");
+
+	/* open the registry event source key */
+  lRet = RegCreateKeyEx(HKEY_LOCAL_MACHINE, szKey, 0, NULL,
+    REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hKey, &dwResult);
+	if (lRet == ERROR_SUCCESS)
+	{
+		char
+      szPathName[MaxTextExtent];
+
+    DWORD
+      dwSupportedTypes;
+
+    /* set a pointer to thsi appliation as the source for our messages */
+		memset(szPathName, 0, MaxTextExtent*sizeof(char));
+    FormatString(szPathName,"%.1024s%s%.1024s",
+      GetClientPath(),DirectorySeparator,GetClientName());
+		RegSetValueEx(hKey, "EventMessageFile", 0, REG_SZ,
+			(const BYTE *) szPathName, (strlen(szPathName) + 1)*sizeof(char));
+    (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+      "Registered path to messages as: %s",szPathName);
+
+		/* supports all types of messages */
+		dwSupportedTypes = EVENTLOG_ERROR_TYPE | EVENTLOG_WARNING_TYPE |
+								 EVENTLOG_INFORMATION_TYPE | EVENTLOG_AUDIT_SUCCESS |
+								 EVENTLOG_AUDIT_FAILURE;
+		RegSetValueEx(hKey, "TypesSupported", 0, REG_DWORD,
+			(const BYTE *) &dwSupportedTypes, sizeof(DWORD));
+
+		RegCloseKey(hKey);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+#endif
