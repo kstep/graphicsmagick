@@ -632,7 +632,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
     targa_info.height=image->rows;
     targa_info.bits_per_pixel=8;
     targa_info.attributes=0;
-    if (image->storage_class == DirectClass)
+    if ((image->storage_class == DirectClass) || (image->colors > 256))
       {
         /*
           Full color TGA raster.
@@ -668,7 +668,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobByte(image,targa_info.attributes);
     if (targa_info.id_length != 0)
       (void) WriteBlob(image,targa_info.id_length,attribute->value);
-    if (image->storage_class == PseudoClass)
+    if (targa_info.image_type == TargaColormap)
       {
         unsigned char
           *targa_colormap;
@@ -709,7 +709,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
       indexes=GetIndexes(image);
       for (x=0; x < (int) image->columns; x++)
       {
-        if (image->storage_class == PseudoClass)
+        if (targa_info.image_type == TargaColormap)
           *q++=indexes[x];
         else
           {
