@@ -1097,8 +1097,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     /*
       Transform points.
     */
-    clone_info->pointsize=clone_info->transform[0]*clone_info->pointsize+
-      clone_info->transform[2]*clone_info->pointsize;
     for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
     {
       pixel=primitive_info[i].pixel;
@@ -2019,6 +2017,9 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
     opacity,
     radius;
 
+  register int
+    i;
+
   register PrimitiveInfo
     *p,
     *q;
@@ -2366,6 +2367,8 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
         annotate->antialias=draw_info->antialias;
         annotate->pointsize=draw_info->pointsize;
         annotate->degrees=draw_info->angle;
+        for (i=0; i < 6; i++)
+          annotate->transform[i]=draw_info->transform[i];
         annotate->gravity=draw_info->gravity;
         annotate->text=AllocateString(p->text);
         annotate->geometry=AllocateString("                                  ");

@@ -2397,6 +2397,9 @@ MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
 */
 MagickExport void GetImageInfo(ImageInfo *image_info)
 {
+  register int
+    i;
+
   /*
     File and image dimension members.
   */
@@ -2432,6 +2435,10 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   image_info->density=(char *) NULL;
   image_info->antialias=True;
   image_info->pointsize=atof(DefaultPointSize);
+  for (i=0; i < 6; i++)
+    image_info->transform[i]=0.0;
+  image_info->transform[0]=1.0;
+  image_info->transform[3]=1.0;
   image_info->fuzz=0;
   (void) QueryColorDatabase("none",&image_info->stroke);
   (void) QueryColorDatabase("none",&image_info->fill);

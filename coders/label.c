@@ -392,8 +392,8 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     }
   (void) FT_Set_Char_Size(face,
     64.0*image_info->pointsize,64.0*image_info->pointsize,
-    image->x_resolution == 0.0 ? 96.0 : image->x_resolution,
-    image->y_resolution == 0.0 ? 96.0 : image->y_resolution);
+    image->x_resolution == 0.0 ? 72.0 : image->x_resolution,
+    image->y_resolution == 0.0 ? 72.0 : image->y_resolution);
   /*
     Convert to Unicode.
   */
@@ -630,8 +630,8 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   status=TT_New_Instance(face,&instance);
   if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
     {
-      image->x_resolution=96.0;
-      image->y_resolution=96.0;
+      image->x_resolution=72.0;
+      image->y_resolution=72.0;
     }
   status|=TT_Set_Instance_Resolutions(instance,(unsigned short)
     image->x_resolution,(unsigned short) image->y_resolution);
@@ -1102,7 +1102,7 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
 #endif
 }
 
-static void EscapeText(char *text, const char ec)
+static void EscapeText(char *text,const char escape)
 {
   register char
     *p;
@@ -1113,7 +1113,7 @@ static void EscapeText(char *text, const char ec)
   p=text;
   for (i=0; i < Extent(text); i++)
   {
-    if ((text[i] == ec) && (text[i+1] != ec))
+    if ((text[i] == escape) && (text[i+1] != escape))
       i++;
     *p++=text[i];
   }
@@ -1154,18 +1154,16 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
         length;
 
       ExceptionInfo
-        exception,
-        *yikes;
+        exception;
 
-      yikes=&exception;
       /*
         Read text from a file.
       */
       file=(FILE *) fopen(&(image_info->filename[1]),"r");
       if (file == (FILE *) NULL)
         {
-          ThrowException(yikes,FileOpenWarning,
-              "Unable to read label data from file",&(image_info->filename[1]));
+          ThrowException(&exception,FileOpenWarning,
+            "Unable to read label data from file",&(image_info->filename[1]));
           FreeMemory((void **) &label);
           return((Image *) NULL);
         }
@@ -1193,7 +1191,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       (void) fclose(file);
       if (s == (char *) NULL)
         {
-          ThrowException(yikes,FileOpenWarning,
+          ThrowException(&exception,FileOpenWarning,
               "Unable to read label data from file","Memory allocation failed");
           FreeMemory((void **) &label);
           return((Image *) NULL);
@@ -1202,19 +1200,15 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       label=s;
     }
   if (image_info->font == (char *) NULL)
-    {
-      image=RenderPostscript(image_info,label,exception);
-    }
-  else if (*image_info->font == '@')
-    {
-      image=RenderFreetype(image_info,label,exception);
-    }
-  else if (*image_info->font == '-')
-    {
-      image=RenderX11(image_info,label,exception);
-    }
-  else
     image=RenderPostscript(image_info,label,exception);
+  else
+    if (*image_info->font == '@')
+      image=RenderFreetype(image_info,label,exception);
+    else
+      if (*image_info->font == '-')
+        image=RenderX11(image_info,label,exception);
+      else
+        image=RenderPostscript(image_info,label,exception);
   FreeMemory((void **) &label);
   return(image);
 }

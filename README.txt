@@ -664,7 +664,7 @@ Windows NT/95 VISUAL C++ 6.0 COMPILATION
   of the programs you have added which will now be part of the entire
   build procedure.
 
-  You can also use this technique for your opwn development if you wish.
+  You can also use this technique for your own development if you wish.
   When creating a new application, simply grab one of the demo or test
   programs that is close to what you wish to do, rename it, and drop
   it into the demos or tests folder to get an appropriate project file.
