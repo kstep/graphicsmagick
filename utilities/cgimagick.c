@@ -4,7 +4,7 @@
 %                             C G I M A G I C K                               %
 %                                                                             %
 %                                                                             %
-%        A shim layer to give command line utilities a cgi interface.         %
+%        A shim layer to give command line utilities a CGI interface.         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -50,7 +50,6 @@
 */
 #include "magick/magick.h"
 #include "magick/defines.h"
-
 /*
   Include the convert mainline as a subroutine
 */
@@ -67,7 +66,36 @@
 #include "combine.c"
 #undef Usage
 #undef main
-
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  C G I F i f o                                                              %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CGIFifo is the default output stream handler for CGI usage. It is
+%  called by the stream subsystem whenever a buffer of data needs to be sent
+%  to the output.It receives a pointer to the image as well as the buffer
+%  of data and its length.
+%
+%  The format of the HttpUnescape method is:
+%
+%      int CGIFifo(const Image *image,const void *data,const size_t length)
+%
+%  A description of each parameter follows:
+%
+%    o image:  A pointer to the image being sent to the output stream.
+%
+%    o data: A pointer to the buffer of data to be sent.
+%
+%    o length: The length of the buffer of data to be sent.
+%
+*/
 int CGIFifo(const Image *image,const void *data,const size_t length)
 {
   fwrite(data,1,length,stdout);
@@ -79,132 +107,171 @@ int CGIFifo(const Image *image,const void *data,const size_t length)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  C G I T o A r g v                                                          %
+%  D e c o d e H e x                                                          %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CGIToArgv converts a text string passed as part of a CGI request
-%  into command line arguments.
+%  Method DecodeHex decodes a hexadecimal string. It stops after outmax
+%  characters or when an invalid hex character is reached. It also sets
+%  the input pointer to the first unprocessed character.  Returns the
+%  the result as a binary number.
 %
-%  The format of the CGIToArgv method is:
+%  The format of the HttpUnescape method is:
 %
-%      char **CGIToArgv(const char *text,int *argc)
+%      int DecodeHex(const char **input,size_t outmax)
 %
 %  A description of each parameter follows:
 %
-%    o argv:  Method CGIToArgv returns the string list unless an error
-%      occurs, otherwise NULL.
+%    o input:  Specifies the string to be converted.
 %
-%    o text:  Specifies the string to segment into a list.
-%
-%    o argc:  This integer pointer returns the number of arguments in the
-%      list.
-%
+%    o outmax: Specifies the maximum number of characters to process.
 %
 */
-
-/*  -------------------------------------------------------------------------
-    Function: decode_hex
-
-    Synopsis: Decodes a hexadecimal string.  Stops after outmax characters
-    or when an invalid hex character is reached.  Sets the input pointer
-    to the first unprocessed character.  Returns the result.
-    -------------------------------------------------------------------------*/
-
-int DecodeHex (const char **input,size_t outmax)
+int DecodeHex(const char **input,size_t outmax)
 {
-    static char
-        hex_to_bin [128] = {
-           -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,    /*            */
-           -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,    /*            */
-           -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,    /*            */
-            0, 1, 2, 3, 4, 5, 6, 7, 8, 9,-1,-1,-1,-1,-1,-1,    /*   0..9     */
-           -1,10,11,12,13,14,15,-1,-1,-1,-1,-1,-1,-1,-1,-1,    /*   A..F     */
-           -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,    /*            */
-           -1,10,11,12,13,14,15,-1,-1,-1,-1,-1,-1,-1,-1,-1,    /*   a..f     */
-           -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1 };  /*            */
-    int
-        nextch;
-    size_t
-        index,
-        result;
+  static char
+    hex_to_bin [128] = {
+      -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,    /*            */
+      -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,    /*            */
+      -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,    /*            */
+       0, 1, 2, 3, 4, 5, 6, 7, 8, 9,-1,-1,-1,-1,-1,-1,    /*   0..9     */
+      -1,10,11,12,13,14,15,-1,-1,-1,-1,-1,-1,-1,-1,-1,    /*   A..F     */
+      -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,    /*            */
+      -1,10,11,12,13,14,15,-1,-1,-1,-1,-1,-1,-1,-1,-1,    /*   a..f     */
+      -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1 };  /*            */
 
-    assert(input != (const char **) NULL);
-    assert((*input) != (const char *) NULL);
+  int
+    nextch;
 
-    index  = 0;
-    result = 0;
-    while (outmax == 0 || index < outmax)
-      {
-        nextch = (*input) [index] & 127;
-        if (nextch && hex_to_bin [nextch] != -1)
-          {
-            result = result * 16 + hex_to_bin [nextch];
-            index++;
-          }
-        else
-            break;
-      }
-    (*input) += index;
-    return (result);
+  size_t
+    index,
+    result;
+
+  assert(input != (const char **) NULL);
+  assert((*input) != (const char *) NULL);
+
+  index  = 0;
+  result = 0;
+  while (outmax == 0 || index < outmax)
+  {
+    nextch = (*input) [index] & 127;
+    if (nextch && hex_to_bin [nextch] != -1)
+    {
+      result = result * 16 + hex_to_bin [nextch];
+      index++;
+    }
+    else
+      break;
+  }
+  (*input) += index;
+  return (result);
 }
-
-/*  ---------------------------------------------------------------------[<]-
-    Function: HttpUnescape
-
-    Synopsis: Removes HTTP escaping from a string.  See http_escape() for
-    details of the escaping algorithm.  If the result string is NULL,
-    modifies the source string in place, else fills-in the result string.
-    Returns the resulting string.  End-of-line sequences (%0A%0D) are
-    stored as a single new-line character, i.e. carriage-returns (%0D) are
-    not stored.
-    ---------------------------------------------------------------------[>]-*/
-
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  H t t p U n e s c a p e                                                    %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method HttpUnescape removes HTTP escaping from a string. If the result
+%  string is NULL, it modifies the source string in place, else fills-in
+%  the result string. This method returns the resulting string. End-of-line
+%  sequences (%0A%0D) are stored as a single new-line character, i.e.
+%  carriage-returns (%0D) are not stored.
+%
+%  The format of the HttpUnescape method is:
+%
+%      char *HttpUnescape(char *string,char *result)
+%
+%  A description of each parameter follows:
+%
+%    o string:  Specifies the string to be converted.
+%
+%    o result:  Specifies the destination for the converted result. A NULL
+%               indicates that the conversion happens "in-place".
+%
+*/
 char *HttpUnescape(char *string,char *result)
 {
   char
-    *target;                          /*  Where we store the result        */
+    *target; /* Where we store the result */
 
   assert(string != (char *) NULL);
-  if (!result)                        /*  If result string is null,        */
-    result = string;                  /*    modify in place                */
+  if (!result) /* If result string is null, */
+    result = string; /* modify in place */
   target = result;
 
   while (*string)
   {
-    if (*string == '%'                /*  Unescape %xx sequence            */
+    if (*string == '%'  /* Unescape %xx sequence */
           && string [1] && string [2])
       {
         string++;
         *target = DecodeHex ((const char **) &string, 2);
         if (*target != '\r')
-          target++;                   /*  We do not store CRs              */
+          target++; /* We do not store CR's */
       }
     else
       {
-        if (*string == '+')           /*  Spaces are escaped as '+'        */
+        if (*string == '+') /* Spaces are escaped as '+' */
           *target++ = ' ';
         else
-          *target++ = *string;        /*  Otherwise just copy              */
+          *target++ = *string; /* Otherwise just copy */
 
         string++;
       }
   }
-  *target = '\0';                     /*  Terminate target string          */
+  *target = '\0'; /* Terminate target string */
   return (result);
 }
-
-/* Defines for input methods. */
-#define CGI_GET  0
-#define CGI_POST 1
-#define CGI_ANY  2
-
-char *cgi_get_input(int iMethod)
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  C G I G e t I n p u t                                                      %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CGIGetInput returns the result of a CGI GET or POST request to the
+%  caller as a simple string buffer.
+%
+%  The format of the CGIGetInput method is:
+%
+%      char *CGIGetInput(CGIAccessType method)
+%
+%  A description of each parameter follows:
+%
+%    o method:  Specifies the type of access to look for. This can be GET,
+%               POST, or both (the most typical).
+%
+*/
+typedef enum
 {
-  int iStdinLen = 0, iMethodWas = 0;
-  char *strHead, *strRetBuf;
+  CGI_GET,
+  CGI_POST,
+  CGI_ANY,
+} CGIAccessType;
+
+char *CGIGetInput(CGIAccessType iMethod)
+{
+  char
+    *strHead,
+    *strRetBuf;
+
+  int
+    iStdinLen = 0,
+    iMethodWas = 0;
 
   if (iMethod == CGI_POST || iMethod == CGI_ANY)
     {
@@ -242,7 +309,36 @@ char *cgi_get_input(int iMethod)
 
   return (*strHead? strHead: NULL);
 }
-
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  C G I T o A r g v                                                          %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CGIToArgv converts a text string passed as part of a CGI request
+%  into command line arguments.
+%
+%  The format of the CGIToArgv method is:
+%
+%      char **CGIToArgv(const char *text,int *argc,char ***argv)
+%
+%  A description of each parameter follows:
+%
+%    o text:  Specifies the string to segment into a list.
+%
+%    o argc:  This integer pointer returns the number of arguments in the
+%             list.
+%
+%    o argv:  This array of pointers returns the string list unless an error
+%             occurs, otherwise NULL.
+%
+*/
 #define IsCGIDelimiter(c)  (((c) == '&') || ((c) == '=') || ((c) == '\0'))
 
 unsigned int CGIToArgv(const char *text,int *argc,char ***argv)
@@ -351,7 +447,6 @@ unsigned int CGIToArgv(const char *text,int *argc,char ***argv)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%
 */
 int main(int argc,char **argv)
 {
@@ -384,7 +479,7 @@ int main(int argc,char **argv)
           char
             *query;
 
-          query=cgi_get_input(CGI_ANY);
+          query=CGIGetInput(CGI_ANY);
           status=CGIToArgv(query,&argc,&argv);
           LiberateMemory((void **) &query);
         }
