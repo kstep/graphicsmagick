@@ -93,7 +93,7 @@ MagickExport char *AllocateString(const char *source)
   length=MaxTextExtent;
   if (source != (char *) NULL)
     length+=Extent(source);
-  destination=(char *) AcquireMemory(length);
+  destination=(char *) AcquireMemory(length+MaxTextExtent);
   if (destination == (char *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate string",
       "Memory allocation failed");
@@ -307,7 +307,7 @@ MagickExport unsigned int ConcatenateString(char **destination,
   if (source == (const char *) NULL)
     return(True);
   ReacquireMemory((void **) &(*destination),
-    Extent(*destination)+Extent(source)+1);
+    Extent(*destination)+Extent(source)+MaxTextExtent);
   if (*destination == (char *) NULL)
     MagickError(ResourceLimitError,"Unable to concatenate string",
       "Memory allocation failed");
@@ -407,7 +407,7 @@ MagickExport unsigned short *ConvertTextToUnicode(const char *text,int *count)
   if ((text == (char *) NULL) || (*text == '\0'))
     return((unsigned short *) NULL);
   unicode=(unsigned short *)
-    AcquireMemory((Extent(text)+1)*sizeof(unsigned short));
+    AcquireMemory((Extent(text)+MaxTextExtent)*sizeof(unsigned short));
   if (unicode == (unsigned short *) NULL)
     MagickError(ResourceLimitError,"Unable to convert text to Unicode",
       "Memory allocation failed");
@@ -573,7 +573,7 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
   for (i=1; i < *argc; i++)
     if (Extent((*argv)[i]) > (MaxTextExtent/2-1))
       MagickError(ResourceLimitError,"Token length exceeds limit",(*argv)[i]);
-  vector=(char **) AcquireMemory((*argc+1)*sizeof(char *));
+  vector=(char **) AcquireMemory((*argc+MaxTextExtent)*sizeof(char *));
   if (vector == (char **) NULL)
     return(False);
   /*
@@ -1339,7 +1339,7 @@ MagickExport char **ListFiles(const char *directory,const char *pattern,
         }
 #endif
         filelist[*number_entries]=(char *)
-          AcquireMemory(Extent(entry->d_name)+2);
+          AcquireMemory(Extent(entry->d_name)+MaxTextExtent);
         if (filelist[*number_entries] == (char *) NULL)
           break;
         (void) strcpy(filelist[*number_entries],entry->d_name);
@@ -2100,7 +2100,7 @@ MagickExport char **StringToArgv(const char *text,int *argc)
       else
         while (!isspace((int) (*q)) && (*q != '\0'))
           q++;
-    argv[i]=(char *) AcquireMemory(q-p+1);
+    argv[i]=(char *) AcquireMemory(q-p+MaxTextExtent);
     if (argv[i] == (char *) NULL)
       MagickError(ResourceLimitError,"Unable to convert string to argv",
         "Memory allocation failed");
@@ -2174,7 +2174,7 @@ MagickExport char **StringToList(const char *text)
       for (p=text; *p != '\0'; p++)
         if (*p == '\n')
           lines++;
-      textlist=(char **) AcquireMemory((lines+1)*sizeof(char *));
+      textlist=(char **) AcquireMemory((lines+MaxTextExtent)*sizeof(char *));
       if (textlist == (char **) NULL)
         MagickError(ResourceLimitError,"Unable to convert text to list",
           "Memory allocation failed");
@@ -2184,7 +2184,7 @@ MagickExport char **StringToList(const char *text)
         for (q=(char *) p; *q != '\0'; q++)
           if ((*q == '\r') || (*q == '\n'))
             break;
-        textlist[i]=(char *) AcquireMemory(q-p+2);
+        textlist[i]=(char *) AcquireMemory(q-p+MaxTextExtent);
         if (textlist[i] == (char *) NULL)
           MagickError(ResourceLimitError,"Unable to convert text to list",
             "Memory allocation failed");
@@ -2207,14 +2207,14 @@ MagickExport char **StringToList(const char *text)
         Convert string to a HEX list.
       */
       lines=(Extent(text)/0x14)+1;
-      textlist=(char **) AcquireMemory((lines+1)*sizeof(char *));
+      textlist=(char **) AcquireMemory((lines+MaxTextExtent)*sizeof(char *));
       if (textlist == (char **) NULL)
         MagickError(ResourceLimitError,"Unable to convert text",
           "Memory allocation failed");
       p=text;
       for (i=0; i < (int) lines; i++)
       {
-        textlist[i]=(char *) AcquireMemory(900);
+        textlist[i]=(char *) AcquireMemory(MaxTextExtent);
         if (textlist[i] == (char *) NULL)
           MagickError(ResourceLimitError,"Unable to convert text",
             "Memory allocation failed");
