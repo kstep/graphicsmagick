@@ -422,7 +422,7 @@ MagickExport unsigned int AnimateImages(const ImageInfo *image_info,
 %    o image: The image sequence.
 %
 %    o stack: An unsigned value other than stacks rectangular image
-%      top-to-bottom otherwise left-to-right.
+%      left-to-right.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
