@@ -24,7 +24,8 @@ for details):
 
   o General:
 
-    - 
+    - WMF rendering is significantly improved. Fill patterns and
+      clip-masks are now supported. Text is properly centered.
 
       
   o Utilities enhancements/changes:
@@ -37,7 +38,19 @@ for details):
 
   o C++ API enhancements:
 
-    - 
+    - TypeMetrics class re-defined to properly present metrics as
+      returned by ImageMagick.
+
+    - Fixed possible stack corruption in Color class.
+
+    - DrawableCompositeImage can be constructed based on an Image
+      in memory (rather than by filename).
+
+    - Added DrawablePushPattern and DrawablePopPattern classes to
+      support fill and stroke pattern definition.
+
+    - Added Image strokePattern() and fillPattern() methods to support
+      supplying the image to use when stroking or filling objects.
 
 
 The ImageMagick WWW page is
