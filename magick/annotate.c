@@ -458,9 +458,7 @@ MagickExport void GetAnnotateInfo(const ImageInfo *image_info,
   annotate_info->pointsize=image_info->pointsize;
   annotate_info->degrees=0.0;
   for (i=0; i < 6; i++)
-    annotate_info->transform[i]=0.0;
-  annotate_info->transform[0]=1.0;
-  annotate_info->transform[3]=1.0;
+    annotate_info->transform[i]=(i == 0) || (i == 3) ? 1.0 : 0.0;
   annotate_info->fill=image_info->fill;
   annotate_info->stroke=image_info->stroke;
   (void) QueryColorDatabase("none",&annotate_info->box);

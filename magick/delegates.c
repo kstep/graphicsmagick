@@ -515,8 +515,11 @@ MagickExport unsigned int ListDelegateInfo(FILE *file)
     file=stdout;
   delegates=SetDelegateInfo((DelegateInfo *) NULL);
   if (delegates == (DelegateInfo *) NULL)
-    MagickWarning(DelegateWarning,"no delegates configuration file found",
-      DelegateFilename);
+    {
+      MagickWarning(DelegateWarning,"no delegates configuration file found",
+        DelegateFilename);
+      return(False);
+    }
   (void) fprintf(file,"\nImageMagick uses these delegates to read or write "
     "image formats it does not\ndirectly support:\n\n");
   (void) fprintf(file,"Decode-Tag   Encode-Tag  Delegate\n");

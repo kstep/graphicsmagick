@@ -430,8 +430,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->rows=psd_header.rows;
   image->depth=psd_header.depth <= 8 ? 8 : QuantumDepth;
   length=MSBFirstReadLong(image);
-  if ((psd_header.mode == BitmapMode) ||
-      (psd_header.mode == GrayscaleMode) ||
+  if ((psd_header.mode == BitmapMode) || (psd_header.mode == GrayscaleMode) ||
       (psd_header.mode == IndexedMode) || (length > 0))
     {
       /*
@@ -664,7 +663,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   break;
                 for (x=0; x < (int) layer_info[i].image->columns; x++)
                 {
-                  q->opacity=(int) (q->opacity*layer_info[i].opacity)/OpaqueOpacity;
+                  q->opacity=(unsigned long)
+                    (q->opacity*layer_info[i].opacity)/OpaqueOpacity;
                   q++;
                 }
                 if (!SyncImagePixels(layer_info[i].image))
