@@ -1,7 +1,9 @@
-2001-11-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2001-11-04  Cristy  <cristy@mystic.es.dupont.com>
+	* -shadow/-shade were not distiguished.
 
+2001-11-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* PerlMagick/Makefile.PL.in: Install PerlMagick using
- 	ImageMagick's configure prefix.
+	  ImageMagick's configure prefix.
 
 2001-11-02  Cristy  <cristy@mystic.es.dupont.com>
 	* Typecast offset to unsigned long in coders/pdf.c.
@@ -13,7 +15,7 @@
 	* Added support for On-the-air bitmap.
 
 2001-09-29  Glenn  <glennrp@home.kom>
-        * When the delay setting for an image is greater than 5cs,
+        * When the delay setting for an image is greater than 4cs,
           duplicate frames are inserted to achieve the desired delay
           while creating MPEG files (contributed by Lawrence Livermore
           National Laboratory (LLNL)).
