@@ -38,7 +38,7 @@ typedef unsigned short Quantum;
 #endif
 
 #define Intensity(color)  ((Quantum) \
-  ((9798*(color)->red+19235*(color)->green+3735*(color)->blue)/32768L))
+  ((9798L*(color)->red+19235L*(color)->green+3735L*(color)->blue)/32768L))
 #define MaxRGB  ((Quantum) ((1L << QuantumDepth)-1L))
 #define OpaqueOpacity  0
 #define TransparentOpacity  MaxRGB

@@ -278,9 +278,9 @@ MagickExport unsigned int XAnnotateImage(Display *display,
           /*
             Set this pixel to the background color.
           */
-          q->red=(Quantum) XDownscale(pixel->box_color.red);
-          q->green=(Quantum) XDownscale(pixel->box_color.green);
-          q->blue=(Quantum) XDownscale(pixel->box_color.blue);
+          q->red=XDownscale(pixel->box_color.red);
+          q->green=XDownscale(pixel->box_color.green);
+          q->blue=XDownscale(pixel->box_color.blue);
           if ((annotate_info->stencil == ForegroundStencil) ||
               (annotate_info->stencil == OpaqueStencil))
             q->opacity=TransparentOpacity;
@@ -290,9 +290,9 @@ MagickExport unsigned int XAnnotateImage(Display *display,
           /*
             Set this pixel to the pen color.
           */
-          q->red=(Quantum) XDownscale(pixel->pen_color.red);
-          q->green=(Quantum) XDownscale(pixel->pen_color.green);
-          q->blue=(Quantum) XDownscale(pixel->pen_color.blue);
+          q->red=XDownscale(pixel->pen_color.red);
+          q->green=XDownscale(pixel->pen_color.green);
+          q->blue=XDownscale(pixel->pen_color.blue);
           if (annotate_info->stencil == BackgroundStencil)
             q->opacity=TransparentOpacity;
         }
@@ -2058,9 +2058,9 @@ MagickExport unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
           /*
             Set this pixel to the pen color.
           */
-          q->red=(Quantum) XDownscale(pixel->pen_color.red);
-          q->green=(Quantum) XDownscale(pixel->pen_color.green);
-          q->blue=(Quantum) XDownscale(pixel->pen_color.blue);
+          q->red=XDownscale(pixel->pen_color.red);
+          q->green=XDownscale(pixel->pen_color.green);
+          q->blue=XDownscale(pixel->pen_color.blue);
           q->opacity=(Quantum) (draw_info->stencil == OpaqueStencil ?
             OpaqueOpacity : TransparentOpacity);
         }
@@ -4053,11 +4053,11 @@ MagickExport Image *XGetWindowImage(Display *display,const Window window,
                 {
                   pixel=XGetPixel(ximage,x,y);
                   index=(pixel >> red_shift) & red_mask;
-                  q->red=(Quantum) XDownscale(colors[index].red);
+                  q->red=XDownscale(colors[index].red);
                   index=(pixel >> green_shift) & green_mask;
-                  q->green=(Quantum) XDownscale(colors[index].green);
+                  q->green=XDownscale(colors[index].green);
                   index=(pixel >> blue_shift) & blue_mask;
-                  q->blue=(Quantum) XDownscale(colors[index].blue);
+                  q->blue=XDownscale(colors[index].blue);
                   q++;
                 }
                 if (!SyncImagePixels(composite_image))
@@ -4073,11 +4073,11 @@ MagickExport Image *XGetWindowImage(Display *display,const Window window,
                 {
                   pixel=XGetPixel(ximage,x,y);
                   color=(pixel >> red_shift) & red_mask;
-                  q->red=(Quantum) XDownscale((color*65535L)/red_mask);
+                  q->red=XDownscale((color*65535L)/red_mask);
                   color=(pixel >> green_shift) & green_mask;
-                  q->green=(Quantum) XDownscale((color*65535L)/green_mask);
+                  q->green=XDownscale((color*65535L)/green_mask);
                   color=(pixel >> blue_shift) & blue_mask;
-                  q->blue=(Quantum) XDownscale((color*65535L)/blue_mask);
+                  q->blue=XDownscale((color*65535L)/blue_mask);
                   q++;
                 }
                 if (!SyncImagePixels(composite_image))
@@ -4098,11 +4098,11 @@ MagickExport Image *XGetWindowImage(Display *display,const Window window,
               }
             for (i=0; i < (int) composite_image->colors; i++)
             {
-              composite_image->colormap[colors[i].pixel].red=(Quantum)
+              composite_image->colormap[colors[i].pixel].red=
                 XDownscale(colors[i].red);
-              composite_image->colormap[colors[i].pixel].green=(Quantum)
+              composite_image->colormap[colors[i].pixel].green=
                 XDownscale(colors[i].green);
-              composite_image->colormap[colors[i].pixel].blue=(Quantum)
+              composite_image->colormap[colors[i].pixel].blue=
                 XDownscale(colors[i].blue);
             }
             /*
