@@ -2654,13 +2654,15 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   xmlCleanupParser();
   (void) fclose(file);
   CloseBlob(image);
-  DestroyImage(image);
-  image=(Image *) NULL;
+  image->columns=svg_info.width;
+  image->rows=svg_info.height;
   if (!image_info->ping && (exception->severity == UndefinedException))
     {
       /*
         Draw image.
       */
+      DestroyImage(image);
+      image=(Image *) NULL;
       clone_info=CloneImageInfo(image_info);
       clone_info->blob=(void *) NULL;
       clone_info->length=0;
