@@ -315,14 +315,11 @@ void Magick::Image::colorize ( const Color &opaqueColor_,
 		      "Pen color argument is invalid");
     }
 
-  std::string opaque_str(opaqueColor_);
-  std::string pen_str(penColor_);
-
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
-    ColorizeImage ( image(), opaque_str.c_str(),
-		    pen_str.c_str(), &exceptionInfo );
+    ColorizeImage ( image(), std::string(opaqueColor_).c_str(),
+		    penColor_, &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
 }
@@ -645,7 +642,7 @@ void Magick::Image::floodFillTexture( unsigned int x_, unsigned int y_,
   Pixels pixels(*this);
   // Fill image
   ColorFloodfillImage ( image(),
-			pixels.getPixels(x_, y_, 1, 1 ),
+			pixels.get(x_, y_, 1, 1 ),
 			const_cast<Image &>(texture_).image(),
 			x_, y_, FloodfillMethod );
   throwImageException();
@@ -903,11 +900,8 @@ void Magick::Image::opaque ( const Color &opaqueColor_,
 		      "Pen color argument is invalid" );
     }
 
-  std::string opaque = opaqueColor_;
-  std::string pen = penColor_;
-
   modifyImage();
-  OpaqueImage ( image(), opaque.c_str(), pen.c_str() );
+  OpaqueImage ( image(), opaqueColor_, penColor_ );
   throwImageException();
 }
 
@@ -1302,7 +1296,7 @@ void Magick::Image::transparent ( const Color &color_ )
   std::string color = color_;
 
   modifyImage();
-  TransparentImage ( image(), color.c_str() );
+  TransparentImage ( image(), color_ );
   throwImageException();
 }
 
@@ -1616,6 +1610,7 @@ void Magick::Image::classType ( Magick::ClassType class_ )
       // color map and then set to DirectClass type.
       modifyImage();
       SyncImage( image() );
+      FreeMemory( (void**)&(image()->colormap) );
       image()->c_class = (MagickLib::ClassType)DirectClass;
       return;
     }
@@ -1646,59 +1641,47 @@ unsigned int Magick::Image::colorFuzz ( void ) const
 //   return constImage()->fuzz;
 }
 
+// Set color in colormap at index
 void Magick::Image::colorMap ( unsigned int index_,
 			       const Color &color_ )
 {
-  if ( color_.isValid() )
-    {
-      if ( image()->c_class == DirectClass )
-	{
-	  throwException( OptionError,
-			  "Image class does not support colormap");
-	}
-      
-      modifyImage();
+  if ( !color_.isValid() )
+    throwException( OptionError,
+		    "Color argument is invalid");
+  
+  if ( constImage()->c_class != PseudoClass )
+    throwException( OptionError,
+		    "Image class does not support colormap");
 
-      if ( index_ > image()->colors )
-	{
-	  throwException( OptionError,
-			  "Color index is greater than maximum image color index");
-	}
+  if ( index_ > constImage()->colors )
+    throwException( OptionError,
+		    "Color index is greater than maximum image color index");
 
-      if ( image()->colormap )
-	{
-	  // FIXME: verify that accessing colormap member this way is still valid.
-	  *(image()->colormap + index_) = color_;
-	  return;
-	}
+  if ( !constImage()->colormap )
+    throwException( OptionError,
+		    "Image does not contain colormap");
 
-      throwException( OptionError,
-		      "Image does not contain colormap");
-    }
+  modifyImage();
 
-  throwException( OptionError,
-		  "Color argument is invalid");
+  *(image()->colormap + index_) = color_;
 }
+// Return color in colormap at index
 Magick::Color Magick::Image::colorMap ( unsigned int index_ ) const
 {
-  if ( constImage()->colormap )
-    {
-      if ( index_ > constImage()->colors )
-	{
-	  throwException( OptionError,
-			  "Color index is greater than maximum image color index");
-	}
+  if ( constImage()->c_class != PseudoClass )
+    throwException( OptionError,
+		    "Image class does not support colormap");
 
-      // FIXME: verify that accessing colormap member this way is still valid.
-      PixelPacket *color = constImage()->colormap + index_;
+  if ( !constImage()->colormap )
+    throwException( CorruptImageError,
+		    "Image does not contain colormap");
 
-      return Magick::Color( color->red, color->green, color->blue );
-    }
+  if ( index_ > constImage()->colors )
+    throwException( OptionError,
+		    "Color index is greater than maximum image color index");
 
-  throwException( CorruptImageError,
-		  "Image does not contain colormap");
-
-  return Color();
+  PixelPacket *color = constImage()->colormap + index_;
+  return Magick::Color( color->red, color->green, color->blue );
 }
 
 // Image colorspace
@@ -2228,9 +2211,9 @@ void Magick::Image::pixelColor ( unsigned int x_, unsigned int y_,
       // Get pixel view
       Pixels pixels(*this);
       // Set pixel value
-      *(pixels.getPixels(x_, y_, 1, 1 )) = color_;
+      *(pixels.get(x_, y_, 1, 1 )) = color_;
       // Tell ImageMagick that pixels have been updated
-      pixels.syncPixels();
+      pixels.sync();
 
       return;
     }
@@ -2249,7 +2232,7 @@ Magick::Color Magick::Image::pixelColor ( unsigned int x_,
   // Get pixel view
   Pixels pixels(*this);
   // Return value
-  return Color( *(pixels.getPixels(x_, y_, 1, 1 )) );
+  return Color( *(pixels.get(x_, y_, 1, 1 )) );
 }
 
 // Preferred size and location of an image canvas.

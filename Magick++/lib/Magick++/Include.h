@@ -259,6 +259,9 @@ namespace Magick
   // PixelPacket structure
   using MagickLib::PixelPacket;
 
+  // IndexPacket type
+  using MagickLib::IndexPacket;
+
 #if defined(MAGICK_IMPLEMENTATION)
   //
   // ImageMagick symbols used in implementation code

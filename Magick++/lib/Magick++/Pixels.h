@@ -27,42 +27,62 @@ namespace Magick
     
     // Transfer pixels from the image to the pixel view as defined by
     // the specified region. Modified pixels may be subsequently
-    // transferred back to the image via syncPixels.
+    // transferred back to the image via sync.
     
-    PixelPacket* getPixels ( int x_, int y_,
-			     unsigned int columns_, unsigned int rows_ );
+    PixelPacket* get ( unsigned int x_, unsigned int y_,
+		       unsigned int columns_, unsigned int rows_ );
     
     // Transfers the image view pixels to the image.
-    void syncPixels ( void );
+    void sync ( void );
     
     // Allocate a pixel view region to store image pixels as defined
     // by the region rectangle.  This area is subsequently transferred
-    // from the pixel view to the image via syncPixels.
-    PixelPacket* setPixels ( int x_, int y_,
-			     unsigned int columns_, unsigned int rows_ );
+    // from the pixel view to the image via sync.
+    PixelPacket* set ( unsigned int x_, unsigned int y_,
+		       unsigned int columns_, unsigned int rows_ );
+
+    // Return pixel colormap index array
+    IndexPacket* indexes ( void );
+
+    // Left ordinate of view
+    unsigned int x ( void ) const;
+
+    // Top ordinate of view
+    unsigned int y ( void ) const;
+
+    // Width of view
+    unsigned int columns ( void ) const;
+
+    // Height of view
+    unsigned int rows ( void ) const;
+
 #if 0
     // Transfer one or more pixel components from a buffer or file
     // into the image pixel view of an image.  Used to support image
     // decoders.
-    void readPixel ( QuantumTypes quantum_,
-		     unsigned char *source_ )
+    void decode ( QuantumTypes quantum_,
+		  unsigned char *source_ )
       {
 	MagickLib::ReadPixelCache( _image.image(), quantum_, source_ );
       }
     
     // Transfer one or more pixel components from the image pixel
     // view to a buffer or file.  Used to support image encoders.
-    void writePixel ( QuantumTypes quantum_,
-		      unsigned char *destination_ )
+    void encode ( QuantumTypes quantum_,
+		  unsigned char *destination_ )
       {
 	MagickLib::WritePixelCache( _image.image(), quantum_, destination_ );
       }
 #endif
   private:
 
-    Magick::Image           _image;  // Image reference
-    MagickLib::ViewInfo*    _view;   // Image view handle
-    Magick::PixelPacket*    _pixels; // View pixels
+    Magick::Image          _image;   // Image reference
+    MagickLib::ViewInfo*   _view;    // Image view handle
+    Magick::PixelPacket*   _pixels;  // View pixels
+    unsigned int           _x;       // Left ordinate of view
+    unsigned int           _y;       // Top ordinate of view
+    unsigned int           _columns; // Width of view
+    unsigned int           _rows;    // Height of view
 
   }; // class Pixels
 
@@ -72,58 +92,28 @@ namespace Magick
 // Inline methods
 //
 
-// Construct pixel view using specified image.
-inline Magick::Pixels::Pixels( Magick::Image &image_ )
-  : _image(image_),
-    _view(MagickLib::OpenCacheView(image_.image())),
-    _pixels(0)
+// Left ordinate of view
+inline unsigned int Magick::Pixels::x ( void ) const
 {
-  if (!_view)
-    throwException( MagickLib::ResourceLimitError, "Out of pixel views" );
+  return _x;
 }
 
-// Destroy pixel view
-inline Magick::Pixels::~Pixels( void )
+// Top ordinate of view
+inline unsigned int Magick::Pixels::y ( void ) const
 {
-  if ( _view )
-    MagickLib::CloseCacheView( _view );
+  return _y;
 }
-    
-// Transfer pixels from the image to the pixel view as defined by
-// the specified region. Modified pixels may be subsequently
-// transferred back to the image via syncPixels.
-    
-inline Magick::PixelPacket* Magick::Pixels::getPixels ( int x_,
-					 int y_,
-					 unsigned int columns_,
-					 unsigned int rows_ )
+
+// Width of view
+inline unsigned int Magick::Pixels::columns ( void ) const
 {
-  _pixels = MagickLib::GetCacheView( _view, x_, y_,
-				     columns_, rows_ );
-  if ( _pixels == 0 )
-    throwException( MagickLib::OptionError, "Failed to get pixels" );
-  
-  return _pixels;
+  return _columns;
 }
-    
-    // Transfers the image view pixels to the image.
-inline void Magick::Pixels::syncPixels ( void )
+
+// Height of view
+inline unsigned int Magick::Pixels::rows ( void ) const
 {
-  MagickLib::SyncCacheView( _view );
-}
-    
-// Allocate a pixel view region to store image pixels as defined
-// by the region rectangle.  This area is subsequently transferred
-// from the pixel view to the image via syncPixels.
-inline Magick::PixelPacket* Magick::Pixels::setPixels ( int x_, int y_,
-					unsigned int columns_, unsigned int rows_ )
-{
-  _pixels = MagickLib::SetCacheView( _view, x_, y_,
-				     columns_, rows_ );
-  if (!_pixels )
-    throwException( MagickLib::OptionError, "Failed to set pixels" );
-  
-  return _pixels;
+  return _rows;
 }
 
 #endif // Pixels_header

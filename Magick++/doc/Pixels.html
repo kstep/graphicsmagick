@@ -1,0 +1,256 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Bob Friesenhahn">
+   <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <meta name="Description" content="Class to access raw image pixels.">
+   <meta name="Keywords" content="ImageMagick,Pixel,Magick++">
+   <title>Magick::Pixels Class</title>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" link="#0000FF" vlink="#FF0000" alink="#000088">
+
+<center>
+<h3>
+Magick::Pixels</h3></center>
+The <i>Pixels</i> class provides efficient access to raw image pixels.
+Image pixels (of type <i><a href="PixelPacket.html">PixelPacket</a></i>)
+may be accessed directly via the <i>Image Pixel Cache</i>.&nbsp; The image
+pixel cache is a rectangular window (a view) into the actual image pixels
+(which may be in memory, memory-mapped from a disk file, or entirely on
+disk). Obtain existing image pixels via <i>get()</i>. Create a new pixel
+region using <i>set().</i>
+<p>Depending on the capabilities of the operating system, and the relationship
+of the window to the image, the pixel cache may be a copy of the pixels
+in the selected window, or it may be the actual image pixels. In any case
+calling <i>sync()</i> insures that the base image is updated with the contents
+of the modified pixel cache. The method
+<i>decode() </i>supports copying
+foreign pixel data formats into the pixel cache according to the <i>QuantumTypes</i>.
+The method <i>encode()</i> supports copying the pixels in the cache to
+a foreign pixel representation according to the format specified by <i>QuantumTypes</i>.
+<p>The pixel view is a small image in which the pixels may be accessed,
+addressed, and updated, as shown in the following example, which produces
+an image similar to the one on the right (minus lines and text):
+<br>&nbsp;
+<table BORDER=0 WIDTH="100%" NOSAVE >
+<tr NOSAVE>
+<td NOSAVE><font face="Courier New,Courier"><font size=-1><font color="#000099">&nbsp;&nbsp;&nbsp;
+</font><font color="#FF0000">// Create base image</font></font></font>
+<br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;
+Image image(Geometry(254,218), "white");</font></font></font><font face="Courier New,Courier"><font color="#000099"><font size=-1></font></font></font>
+<p><font face="Courier New,Courier"><font size=-1><font color="#000099">&nbsp;&nbsp;&nbsp;
+</font><font color="#FF0000">// Set image pixels to DirectClass representation</font></font></font>
+<br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;
+image.classType( DirectClass );</font></font></font><font face="Courier New,Courier"><font color="#000099"><font size=-1></font></font></font>
+<p><font face="Courier New,Courier"><font size=-1><font color="#000099">&nbsp;&nbsp;&nbsp;
+</font><font color="#FF0000">// Allocate pixel view</font></font></font>
+<br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;
+Pixels view(image);</font></font></font><font face="Courier New,Courier"><font color="#000099"><font size=-1></font></font></font>
+<p><font face="Courier New,Courier"><font size=-1><font color="#000099">&nbsp;&nbsp;&nbsp;
+</font><font color="#FF0000">// Set all pixels in region anchored at 38x36,
+with size 160x230 to green.</font></font></font>
+<br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;
+unsigned int columns = 196; unsigned int rows = 162;</font></font></font>
+<br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;
+Color green("green");</font></font></font>
+<br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;
+PixelPacket *pixels = view.get(38,36,columns,rows);</font></font></font>
+<br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;
+for ( unsigned int row = 0; row &lt; rows ; ++row )</font></font></font>
+<br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+for ( unsigned int column = 0; column &lt; columns ; ++column )</font></font></font>
+<br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+*pixels++=green;</font></font></font>
+<br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;
+view.sync();</font></font></font><font face="Courier New,Courier"><font color="#000099"><font size=-1></font></font></font>
+<p><font face="Courier New,Courier"><font size=-1><font color="#000099">&nbsp;&nbsp;&nbsp;
+</font><font color="#FF0000">// Set all pixels in region anchored at 86x72,
+with size 108x67 to yellow.</font></font></font>
+<br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;
+columns = 108; rows = 67;</font></font></font>
+<br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;
+Color yellow("yellow");</font></font></font>
+<br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;
+pixels = view.get(86,72,columns,rows);</font></font></font>
+<br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;
+for ( unsigned int row = 0; row &lt; rows ; ++row )</font></font></font>
+<br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+for ( unsigned int column = 0; column &lt; columns ; ++column )</font></font></font>
+<br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+*pixels++=yellow;</font></font></font>
+<br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;
+view.sync();</font></font></font><font face="Courier New,Courier"><font color="#000099"><font size=-1></font></font></font>
+<p><font face="Courier New,Courier"><font size=-1><font color="#000099">&nbsp;&nbsp;&nbsp;
+</font><font color="#FF0000">// Set pixel at position 108,94 to red</font></font></font>
+<br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;
+*(view.get(108,94,1,1)) = Color("red");</font></font></font>
+<br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;
+view.sync();</font></font></font></td>
+
+<td><img SRC="Cache.png" height=218 width=254></td>
+</tr>
+</table>
+
+<p><i>Pixels</i> supports the following methods:
+<br>&nbsp;
+<table BORDER WIDTH="100%" NOSAVE >
+<caption><b>Pixel Cache Methods</b></caption>
+
+<tr>
+<td>
+<center><b>Method</b></center>
+</td>
+
+<td>
+<center><b>Returns</b></center>
+</td>
+
+<td>
+<center><b>Signature</b></center>
+</td>
+
+<td>
+<center><b>Description</b></center>
+</td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="get"></a><font size=-1>get</font></center>
+</td>
+
+<td><font size=-1><a href="PixelPacket.html">PixelPacket</a>*</font></td>
+
+<td><font size=-1>int x_, int y_, unsigned int columns_, unsigned int rows_</font></td>
+
+<td><font size=-1>Transfers pixels from the image to the pixel cache as
+defined by the specified rectangular region. Modified pixels may be subsequently
+transferred back to the image via <i>sync</i>.</font></td>
+</tr>
+
+<tr NOSAVE>
+<td>
+<center><a NAME="set"></a><font size=-1>set</font></center>
+</td>
+
+<td><font size=-1><a href="PixelPacket.html">PixelPacket</a>*</font></td>
+
+<td NOSAVE><font size=-1>int x_, int y_, unsigned int columns_, unsigned
+int rows_</font></td>
+
+<td><font size=-1>Allocates a pixel cache region to store image pixels
+as defined by the region rectangle.&nbsp; This area is subsequently transferred
+from the pixel cache to the image via <i>sync</i>.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="sync"></a><font size=-1>sync</font></center>
+</td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>Transfers the image cache pixels to the image.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="indexes"></a><font size=-1>indexes</font></center>
+</td>
+
+<td><font size=-1>IndexPacket*</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>Returns the PsuedoColor pixel indexes. Only valid for
+PseudoColor images. The pixel indexes (typically an array of type unsigned
+short) provide the colormap index (see <a href="Image.html#colorMap">colorMap</a>)
+for each pixel in the image.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="x"></a><font size=-1>x</font></center>
+</td>
+
+<td><font size=-1>unsigned int</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>Left ordinate of view</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="y"></a><font size=-1>y</font></center>
+</td>
+
+<td><font size=-1>unsigned int</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>Top ordinate of view</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="columns"></a><font size=-1>columns</font></center>
+</td>
+
+<td><font size=-1>unsigned int</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>Width of view</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="rows"></a><font size=-1>rows</font></center>
+</td>
+
+<td><font size=-1>unsigned int</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>Height of view</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="decode"></a><font size=-1>decode</font></center>
+</td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1><a href="Enumerations.html#QuantumTypes">QuantumTypes</a>
+quantum_, unsigned char *source_,</font></td>
+
+<td><font size=-1>Transfers one or more pixel components from a buffer
+or file into the image pixel cache of an image. <i>Decode</i> is typically
+used to support image decoders.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="encode"></a><font size=-1>encode</font></center>
+</td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1><a href="Enumerations.html#QuantumTypes">QuantumTypes</a>
+quantum_, unsigned char *destination_</font></td>
+
+<td><font size=-1>Transfers one or more pixel components from the image
+pixel cache to a buffer or file. <i>Encode</i> is typically used to support
+image encoders.</font></td>
+</tr>
+</table>
+
+<br>&nbsp;
+<br>&nbsp;
+</body>
+</html>
