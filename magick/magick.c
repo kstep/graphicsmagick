@@ -63,7 +63,7 @@
   Global declarations.
 */
 static MagickInfo
-  *magick_info_list = (MagickInfo *) NULL;
+  *magick_list = (MagickInfo *) NULL;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -91,7 +91,7 @@ Export void DestroyMagickInfo()
   register MagickInfo
     *p;
 
-  for (p=magick_info_list; p != (MagickInfo *) NULL; )
+  for (p=magick_list; p != (MagickInfo *) NULL; )
   {
     entry=p;
     p=p->next;
@@ -100,7 +100,7 @@ Export void DestroyMagickInfo()
     FreeMemory((void **) &entry->module);
     FreeMemory((void **) &entry);
   }
-  magick_info_list=(MagickInfo *) NULL;
+  magick_list=(MagickInfo *) NULL;
 }
 
 /*
@@ -134,11 +134,11 @@ Export void DestroyMagickInfo()
 */
 Export MagickInfo *GetMagickInfo(const char *tag)
 {
+  MagickInfo
+    *magick_info;
+
   register MagickInfo
     *p;
-
-  MagickInfo
-    *return_value = (MagickInfo *)NULL;
 
 #if defined(HasPTHREADS)
   static pthread_mutex_t
@@ -146,13 +146,12 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 
   pthread_mutex_lock(&magick_mutex);
 #endif
-
-  if (magick_info_list == (MagickInfo *) NULL)
+  if (magick_list == (MagickInfo *) NULL)
     {
-#if defined(HasLTDL) || defined(_MAGICKMOD_)
       /*
-        Initialize ltdl.
+        Register image formats.
       */
+#if defined(HasLTDL) || defined(_MAGICKMOD_)
       InitializeModules();
 #else
       Register8BIMImage();
@@ -226,45 +225,35 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       RegisterYUVImage();
 #endif
     }
-  /*
-    If tag is NULL, then return head of list
-  */
-  if (tag == (char *) NULL)
+  magick_info=magick_list;
+  if ((tag != (char *) NULL) && (*tag != '\0'))
     {
-      return_value = magick_info_list;
-      goto return_result;
-    }
-  /*
-    An empty tag is not worth looking up.
-  */
-  if (*tag == '\0')
-    goto return_result;
-  /*
-    Find tag in list
-  */
-  for (p=magick_info_list; p != (MagickInfo *) NULL; p=p->next)
-    if (LocaleCompare(p->tag,tag) == 0)
-      {
-        return_value = p;
-        goto return_result;
-      }
+      /*
+        Find tag in list
+      */
+      for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
+        if (LocaleCompare(p->tag,tag) == 0)
+          {
+            magick_info=p;
+            break;
+          }
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
-  /*
-    Try loading format module, and see if support is added to list.
-  */
-  if (LoadDynamicModule(tag))
-    for (p=magick_info_list; p != (MagickInfo *) NULL; p=p->next)
-      if (LocaleCompare(p->tag,tag) == 0)
-        {
-          return_value = p;
-          goto return_result;
-        }
+      /*
+        Try loading format module, and see if support is added to list.
+      */
+      if ((p == (MagickInfo *) NULL) && LoadDynamicModule(tag))
+        for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
+          if (LocaleCompare(p->tag,tag) == 0)
+            {
+              magick_info=p;
+              break;
+            }
 #endif
- return_result:
+    }
 #if defined(HasPTHREADS)
   pthread_mutex_unlock(&magick_mutex);
 #endif
-  return(return_value);
+  return(magick_info);
 }
 
 /*
@@ -356,8 +345,8 @@ Export MagickInfo *RegisterMagickInfo(MagickInfo *entry)
     Add tag info to the image format list.
   */
   p=(MagickInfo *) NULL;
-  if (magick_info_list != (MagickInfo *) NULL)
-    for (p=magick_info_list; p->next != (MagickInfo *) NULL; p=p->next)
+  if (magick_list != (MagickInfo *) NULL)
+    for (p=magick_list; p->next != (MagickInfo *) NULL; p=p->next)
     {
       if (LocaleCompare(p->tag,entry->tag) >= 0)
         {
@@ -369,9 +358,9 @@ Export MagickInfo *RegisterMagickInfo(MagickInfo *entry)
           break;
         }
     }
-  if (magick_info_list == (MagickInfo *) NULL)
+  if (magick_list == (MagickInfo *) NULL)
     {
-      magick_info_list=entry;
+      magick_list=entry;
       return(entry);
     }
   entry->previous=p;
@@ -467,7 +456,7 @@ Export unsigned int UnregisterMagickInfo(const char *tag)
   MagickInfo
     *p;
 
-  p=magick_info_list;
+  p=magick_list;
   while (p != (MagickInfo *) NULL)
   {
     if (LocaleCompare(p->tag,tag) == 0)
@@ -477,7 +466,7 @@ Export unsigned int UnregisterMagickInfo(const char *tag)
         if (p->previous != (MagickInfo *) NULL)
           p->previous->next=p->next;
         else
-          magick_info_list=p->next;
+          magick_list=p->next;
         FreeMemory((void **) &p->tag);
         FreeMemory((void **) &p->description);
         FreeMemory((void **) &p->module);
