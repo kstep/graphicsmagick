@@ -166,16 +166,6 @@ void ConcatenateImages(int argc,char **argv);
 /*
   Include declarations.
 */
-#if defined(CONVERT_MAIN)
-#if defined(IO_USING_BLOB)
-static int convert_main(int argc,char **argv,
-  char **blob_data,size_t *blob_length)
-#endif
-#if defined(IO_USING_STREAM)
-static int convert_main(int argc,char **argv,
-  int (*Fifo)(const Image *,const void *,const size_t), void *context)
-#endif
-#else
 #include "magick/magick.h"
 #include "magick/defines.h"
 
@@ -342,7 +332,6 @@ static void Usage(const char *client_name)
 %
 */
 int main(int argc,char **argv)
-#endif
 {
 #define NotInitialized  (unsigned int) (~0)
 
@@ -350,6 +339,10 @@ int main(int argc,char **argv)
     *client_name,
     *filename,
     *option;
+
+  void
+    *param1,
+    *param2;
 
   double
     sans;
@@ -389,19 +382,24 @@ int main(int argc,char **argv)
     Initialize command line arguments.
   */
   if (LocaleCompare("-convert",argv[0]) == 0)
-    mode=1; /* set mode to - called as a subroutine */
+    {
+      mode=1; /* set mode to - called as a subroutine */
+      client_name=SetClientName((char *) NULL);
+      if (argc < 3)
+        return(False);
+    }
   else
     {
       mode=0; /* set mode to - called as normal executable */
       ReadCommandlLine(argc,&argv);
       MagickIncarnate(*argv);
+      client_name=SetClientName((char *) NULL);
+      status=ExpandFilenames(&argc,&argv);
+      if (status == False)
+        MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);
+      if (argc < 3)
+        Usage(client_name);
     }
-  client_name=SetClientName((char *) NULL);
-  status=ExpandFilenames(&argc,&argv);
-  if (status == False)
-    MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);
-  if (argc < 3)
-    Usage(client_name);
   /*
     Set defaults.
   */
@@ -1700,6 +1698,51 @@ int main(int argc,char **argv)
           MagickError(OptionError,"Unrecognized option",option);
           break;
         }
+        case 'x':
+        {
+          if (LocaleCompare("xbdat",option+1) == 0)
+            {
+              i++;
+              if ((i == argc) && (mode>0))
+                MagickError(OptionError,"Missing blob buffer",option);
+              param1=(void *)argv[i];
+              argv[i]=AllocateString("");
+              mode=2;
+              break;
+            }
+          if (LocaleCompare("xblen",option+1) == 0)
+            {
+              i++;
+              if ((i == argc) && (mode>0))
+                MagickError(OptionError,"Missing blob length",option);
+              param2=(void *)argv[i];
+              argv[i]=AllocateString("");
+              mode=2;
+              break;
+            }
+          if (LocaleCompare("xfunc",option+1) == 0)
+            {
+              i++;
+              if ((i == argc) && (mode>0))
+                MagickError(OptionError,"Missing stream func",option);
+              param1=(void *)argv[i];
+              argv[i]=AllocateString("");
+              mode=3;
+              break;
+            }
+          if (LocaleCompare("xctxt",option+1) == 0)
+            {
+              i++;
+              if ((i == argc) && (mode>0))
+                MagickError(OptionError,"Missing stream context",option);
+              param2=(void *)argv[i];
+              argv[i]=AllocateString("");
+              mode=3;
+              break;
+            }
+          MagickError(OptionError,"Unrecognized option",option);
+          break;
+        }
         case '?':
         {
           Usage(client_name);
@@ -1829,7 +1872,7 @@ int main(int argc,char **argv)
   SetImageInfo(image_info,True);
   for (p=image; p != (Image *) NULL; p=p->next)
   {
-    if (!mode)
+    if (mode<2)
       {
         status=WriteImage(image_info,p);
         if (status == False)
@@ -1837,22 +1880,32 @@ int main(int argc,char **argv)
       }
     else
       {
-#if defined(IO_USING_BLOB)
-        ExceptionInfo exception;
+        if (mode==2)
+          {
+            ExceptionInfo exception;
+            char **blob_data;
+            size_t *blob_length;
 
-        (void) strcpy(p->magick,image_info->magick);
-        if (*blob_length == 0)
-          *blob_length = 8192;
-        *blob_data = ImageToBlob(image_info,p,blob_length,&exception);
-        if (*blob_data == NULL)
-          CatchImageException(p);
-#endif
-#if defined(IO_USING_STREAM)
-        p->client_data=context;
-        status=WriteStream(image_info,p,Fifo);
-        if (status == False)
-          CatchImageException(p);
-#endif
+            blob_data=(char **)param1;
+            blob_length=(size_t *)param2;
+
+            (void) strcpy(p->magick,image_info->magick);
+            if (*blob_length == 0)
+              *blob_length = 8192;
+            *blob_data = ImageToBlob(image_info,p,blob_length,&exception);
+            if (*blob_data == NULL)
+              CatchImageException(p);
+          }
+        if (mode==3)
+          {
+            int (*Fifo)(const Image *,const void *,const size_t);
+
+            Fifo=(int (*)(const Image *,const void *,const size_t))param1;
+            p->client_data=param2;
+            status=WriteStream(image_info,p,Fifo);
+            if (status == False)
+              CatchImageException(p);
+          }
       }
     if (image_info->adjoin)
       break;

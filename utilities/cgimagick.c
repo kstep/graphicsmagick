@@ -50,28 +50,29 @@
 */
 #include "magick/magick.h"
 #include "magick/defines.h"
-static void Usage(const char *client_name)
-{
-}
+
 /*
   Include the convert mainline as a subroutine
 */
-#define CONVERT_MAIN
-//#define IO_USING_BLOB
-#define IO_USING_STREAM
-#if defined(IO_USING_STREAM)
+#define Usage convert_Usage
+#define main convert_main
+#include "convert.c"
+#undef Usage
+#undef main
+/*
+  Include the combine mainline as a subroutine
+*/
+#define Usage combine_Usage
+#define main combine_main
+#include "combine.c"
+#undef Usage
+#undef main
+
 int CGIFifo(const Image *image,const void *data,const size_t length)
 {
   fwrite(data,1,length,stdout);
   return(length);
 }
-#endif
-#include "convert.c"
-/*
-  Include the combine mainline as a subroutine
-*/
-#define COMBINE_MAIN
-#include "combine.c"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -297,7 +298,7 @@ unsigned int CGIToArgv(const char *text,int *argc,char ***argv)
   /*
     Convert string to an ASCII list.
   */
-  vector[0]=AllocateString("cgimagick");
+  vector[0]=AllocateString("isapimagick");
   vector[count+1]=(char *) NULL;
   q=text;
   i=1;
@@ -391,31 +392,59 @@ int main(int argc,char **argv)
         {
           for (argc_hw=1; argc_hw < argc; argc_hw++)
           {
-#if defined(IO_USING_BLOB)
             char
               *blob_data;
 
             size_t
               blob_length;
-#endif
+
+            int
+              mode=0;
+
             argv_hw = &argv[argc_hw];
             if (LocaleNCompare("-convert",argv[argc_hw],8) == 0)
               {
                 for (i=argc_hw; i < argc; i++)
                 {
+                  if (LocaleNCompare("-xbdat",argv[i],6) == 0)
+                    {
+                      argv[i+1]=(char *)(&blob_data);
+                      mode=1;
+                    }
+                  if (LocaleNCompare("-xblen",argv[i],6) == 0)
+                    {
+                      argv[i+1]=(char *)(&blob_length);
+                      mode=1;
+                    }
+                  if (LocaleNCompare("-xfunc",argv[i],6) == 0)
+                    {
+                      argv[i+1]=(char *)CGIFifo;
+                      mode=2;
+                    }
+                  if (LocaleNCompare("-xctxt",argv[i],6) == 0)
+                    {
+                      argv[i+1]=(char *)NULL;
+                      mode=2;
+                    }
                   if (LocaleNCompare("convert-",argv[i],8) == 0)
                     break;
                 }
-#if defined(IO_USING_BLOB)
-                blob_length=8192;
-                convert_main(i-argc_hw,argv_hw,&blob_data,&blob_length);
-                fwrite(prefix,1,Extent(prefix),stdout);
-                fwrite(blob_data,1,blob_length,stdout);
-#endif
-#if defined(IO_USING_STREAM)
-                fwrite(prefix,1,Extent(prefix),stdout);
-                convert_main(i-argc_hw,argv_hw,CGIFifo,(void *)NULL);
-#endif
+                if (mode==0)
+                  {
+                    convert_main(i-argc_hw,argv_hw);
+                  }
+                else if (mode==1)
+                  {
+                    blob_length=8192;
+                    convert_main(i-argc_hw,argv_hw);
+                    fwrite(prefix,1,Extent(prefix),stdout);
+                    fwrite(blob_data,1,blob_length,stdout);
+                  }
+                else if (mode==2)
+                  {
+                    fwrite(prefix,1,Extent(prefix),stdout);
+                    convert_main(i-argc_hw,argv_hw);
+                  }
                 argc_hw = i+1;
                 argv_hw = &argv[argc_hw];
               }
@@ -423,19 +452,45 @@ int main(int argc,char **argv)
               {
                 for (i=argc_hw; i < argc; i++)
                 {
-                  if (LocaleNCompare("convert-",argv[i],8) == 0)
+                  if (LocaleNCompare("-xbdat",argv[i],6) == 0)
+                    {
+                      argv[i+1]=(char *)(&blob_data);
+                      mode=1;
+                    }
+                  else if (LocaleNCompare("-xblen",argv[i],6) == 0)
+                    {
+                      argv[i+1]=(char *)(&blob_length);
+                      mode=1;
+                    }
+                  else if (LocaleNCompare("-xfunc",argv[i],6) == 0)
+                    {
+                      argv[i+1]=(char *)CGIFifo;
+                      mode=2;
+                    }
+                  else if (LocaleNCompare("-xctxt",argv[i],6) == 0)
+                    {
+                      argv[i+1]=(char *)NULL;
+                      mode=2;
+                    }
+                  else if (LocaleNCompare("convert-",argv[i],8) == 0)
                     break;
                 }
-#if defined(IO_USING_BLOB)
-                blob_length=8192;
-                combine_main(i-argc_hw,argv_hw,&blob_data,&blob_length);
-                fwrite(prefix,1,Extent(prefix),stdout);
-                fwrite(blob_data,1,blob_length,stdout);
-#endif
-#if defined(IO_USING_STREAM)
-                fwrite(prefix,1,Extent(prefix),stdout);
-                combine_main(i-argc_hw,argv_hw,CGIFifo,(void *)NULL);
-#endif
+                if (mode==0)
+                  {
+                    combine_main(i-argc_hw,argv_hw);
+                  }
+                else if (mode==1)
+                  {
+                    blob_length=8192;
+                    combine_main(i-argc_hw,argv_hw);
+                    fwrite(prefix,1,Extent(prefix),stdout);
+                    fwrite(blob_data,1,blob_length,stdout);
+                  }
+                else if (mode==2)
+                  {
+                    fwrite(prefix,1,Extent(prefix),stdout);
+                    combine_main(i-argc_hw,argv_hw);
+                  }
                 argc_hw = i+1;
                 argv_hw = &argv[argc_hw];
               }
