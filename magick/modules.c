@@ -93,8 +93,13 @@ unsigned int CallImageFilter(const char *tag,
   results=False;
   module_name=TagToModule(tag);
   if( ( handle=lt_dlopen( module_name ) ) == 0)
-    printf("WARNING: failed to load module \"%s\": %s\n",
-             "filter module", lt_dlerror());
+    {
+      char
+        scratch[MaxTextExtent];
+
+      sprintf(scratch,"failed to load module \"%s\"", module_name);
+      MagickWarning(MissingDelegateWarning,scratch,lt_dlerror());
+    }
   else
     {
       strcpy(module_name, tag);
@@ -417,11 +422,8 @@ Export void InitializeModules(void)
     {
       /* Initialize ltdl */
       if(lt_dlinit() != 0)
-        {
-          const char *dlerror = lt_dlerror();
-          printf("ERROR: failed to initialise ltdl: %s\n", dlerror);
-          exit(1);
-        }
+        MagickError(DelegateError,"failed to initialise module loader",
+                    lt_dlerror());
       
       /* Determine and set module search path */
       InitializeModuleSearchPath();
@@ -690,13 +692,16 @@ Export int LoadDynamicModule(const char* module)
       strcat(module_load_path, module_file);
       /* 
          Only attempt to load module if module file exists
-       */
+      */
       if(access(module_load_path,F_OK) == 0)
         {
           if( ( handle=lt_dlopen( module_load_path ) ) == 0)
             {
-              printf("WARNING: failed to load module \"%s\": %s\n",
-                     module_load_path, lt_dlerror());
+              char
+                scratch[MaxTextExtent];
+
+              sprintf("failed to load module \"%s\"",module_load_path);
+              MagickWarning(MissingDelegateWarning,scratch,lt_dlerror());
               FreeMemory((void **) &module_file);
               return False;
             }
@@ -728,7 +733,8 @@ Export int LoadDynamicModule(const char* module)
   register_func=(void (*)(void))lt_dlsym(handle, func_name);
   if (register_func == NULL)
     {
-      printf("WARNING: failed to find symbol : %s\n", lt_dlerror());
+      MagickWarning(MissingDelegateWarning,"failed to find symbol",
+                    lt_dlerror());
       return False;
     }
   register_func();
@@ -1016,7 +1022,7 @@ Export int UnloadDynamicModule(const char* module)
       ModuleToTag(module, "Unregister%sImage", func_name);
       unregister_func=(void (*)(void))lt_dlsym(module_info->handle, func_name);
       if (unregister_func == NULL)
-        printf("WARNING: failed to find symbol : %s\n", lt_dlerror());
+        MagickWarning(DelegateWarning,"failed to find symbol",lt_dlerror());
       else
         unregister_func();
 
