@@ -917,7 +917,7 @@ MagickExport void TransformHSL(const Quantum red,const Quantum green,
   min=Min(r,Min(g,b));
   *hue=0.0;
   *saturation=0.0;
-  *luminosity=(0.5+MagickEpsilon)*(min+max);
+  *luminosity=(min+max)/2.0;
   delta=max-min;
   if (delta == 0.0)
     return;

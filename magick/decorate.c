@@ -541,9 +541,9 @@ MagickExport unsigned int RaiseImage(Image *image,
       q->red=(Quantum) ((q->red*ShadowModulate+
         background*(MaxRGB-ShadowModulate))/MaxRGB);
       q->green=(Quantum) ((q->green*ShadowModulate+
-        background* (MaxRGB-ShadowModulate))/MaxRGB);
+        background*(MaxRGB-ShadowModulate))/MaxRGB);
       q->blue=(Quantum) ((q->blue*ShadowModulate+
-        background* (MaxRGB-ShadowModulate))/MaxRGB);
+        background*(MaxRGB-ShadowModulate))/MaxRGB);
       q++;
     }
     if (!SyncImagePixels(image))
