@@ -395,6 +395,16 @@ extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
 #  define MagickTell(file) tell(file)
 #endif
 
+#if !defined(HAVE_POPEN) && defined(HAVE__POPEN)
+# define HAVE_POPEN 1
+# define popen _popen
+#endif
+
+#if !defined(HAVE_PCLOSE) && defined(HAVE__PCLOSE)
+# define HAVE_PCLOSE 1
+# define pclose _pclose
+#endif
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

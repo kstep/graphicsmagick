@@ -849,9 +849,10 @@ AC_SUBST(UINT64_T)
 #
 ########
 GM_FUNC_MMAP_FILEIO
-AC_CHECK_FUNCS([ftime getexecname getc_unlocked getpagesize mkstemp poll \
-  pread pwrite putc_unlocked raise select tempnam times sigemptyset sigaction \
-  strerror strlcpy sysconf vsprintf vsnprintf])
+AC_CHECK_FUNCS([ftime getexecname getc_unlocked getpagesize mkstemp \
+  _pclose pclose poll _popen popen pread pwrite putc_unlocked raise \
+  select tempnam times sigemptyset sigaction strerror strlcpy sysconf \
+  vsprintf vsnprintf])
 
 ########
 #

@@ -587,9 +587,9 @@ MagickExport void CloseBlob(Image *image)
     }
     case PipeStream:
     {
-#if !defined(vms) && !defined(macintosh)
+#if defined(HAVE_PCLOSE)
       status=pclose(image->blob->file);
-#endif
+#endif /* defined(HAVE_PCLOSE) */
       break;
     }
     case ZipStream:
@@ -1805,7 +1805,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
       image->blob->exempt=True;
     }
   else
-#if !defined(vms) && !defined(macintosh)
+#if defined(HAVE_POPEN)
     if (*filename == '|')
       {
         char
@@ -1830,7 +1830,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
         }
       }
     else
-#endif
+#endif /* defined(HAVE_POPEN) */
       {
         if (*type == 'w')
           {

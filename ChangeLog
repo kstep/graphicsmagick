@@ -1,3 +1,21 @@
+2003-10-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/resource.c (InitializeMagickResources): Some code is
+	conditional based on HAVE_POPEN.
+	* magick/utility.c (SystemCommand): Improved conditional
+	compilation logic.
+	* magick/blob.c (OpenBlob): Code depending on popen() is
+	conditionally compiled based on HAVE_POPEN.  Code depending on
+	pclose() is conditionally compiled based on HAVE_PCLOSE.
+	* configure.ac: Add test for _pclose(), pclose(), _popen(), and
+	popen().
+	* magick/locale.c (GetLocaleMessage): Add missing MagickExport.
+	(GetLocaleMessageFromID): Add missing MagickExport.
+	* VisualMagick/installer/inc/files-development.isx (Source):
+	Include all of the headers from the magick directory in the
+	development package.  Including them individually is too error
+	prone.
+
 2003-10-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* VisualMagick/magick/magick_config.h.in: Added

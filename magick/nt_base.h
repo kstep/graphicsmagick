@@ -68,7 +68,16 @@ extern "C" {
 #else
 #define SAFE_GLOBAL
 #endif
+
+/*
+  With Visual C++, Popen and pclose are available via _popen and _pclose.
+  These are documented to work for console applications only.
+*/
+#define HAVE_POPEN 1
+#define HAVE__POPEN 1
 #define popen  _popen
+#define HAVE_PCLOSE 1
+#define HAVE__PCLOSE 1
 #define pclose  _pclose
 /*
   Typedef declarations.

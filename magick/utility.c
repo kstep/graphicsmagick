@@ -3691,17 +3691,16 @@ MagickExport int SystemCommand(const unsigned int verbose,const char *command)
     status;
 
   errno=0;
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+#if defined(POSIX)
   status=system(command);
-#endif
-#if defined(vms)
+#elif defined(vms)
   status=!system(command);
-#endif
-#if defined(macintosh)
+#elif defined(macintosh)
   status=MACSystemCommand(command);
-#endif
-#if defined(WIN32)
+#elif defined(WIN32)
   status=NTSystemComman(command);
+#else
+#  error Do not know how to run system commands.
 #endif
   if (verbose)
     MagickError2(DelegateError,command,!status ? strerror(status) :

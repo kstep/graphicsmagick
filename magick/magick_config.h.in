@@ -185,8 +185,14 @@
 /* Define to 1 if you have the `opendir' function. */
 #undef HAVE_OPENDIR
 
+/* Define to 1 if you have the `pclose' function. */
+#undef HAVE_PCLOSE
+
 /* Define to 1 if you have the `poll' function. */
 #undef HAVE_POLL
+
+/* Define to 1 if you have the `popen' function. */
+#undef HAVE_POPEN
 
 /* Define to 1 if you have the `pread' function. */
 #undef HAVE_PREAD
@@ -312,6 +318,12 @@
 
 /* Define to 1 if you have the `vsprintf' function. */
 #undef HAVE_VSPRINTF
+
+/* Define to 1 if you have the `_pclose' function. */
+#undef HAVE__PCLOSE
+
+/* Define to 1 if you have the `_popen' function. */
+#undef HAVE__POPEN
 
 /* Define if you have the bzip2 library */
 #undef HasBZLIB

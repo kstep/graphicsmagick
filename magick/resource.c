@@ -333,7 +333,7 @@ MagickExport void InitializeMagickResources(void)
       "Total physical memory %ld MB (%ld pages and %ld bytes per page)",
         total_memory, pages, pagesize);
     }
-#  elif defined(MAGICK_PHYSICAL_MEMORY_COMMAND)
+#  elif defined(MAGICK_PHYSICAL_MEMORY_COMMAND) && defined(HAVE_POPEN)
     {
       double
         bytes=0;

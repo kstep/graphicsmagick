@@ -56,6 +56,10 @@
 Significant changes associated with GraphicsMagick 1.1 (Under development)
 
 <p>
+  We sincerly apologize for such an absurdly long list of fixes and
+  enhancements.
+
+<p>
   Bug fixes:<BR>
 <UL>
   <LI> Semaphore fix which is necessary for proper multi-threaded operation.
@@ -68,8 +72,6 @@ Significant changes associated with GraphicsMagick 1.1 (Under development)
   <LI> JNG encoder fix. Files were being written with incorrect
     alpha_sample_value in the header. These can be repaired by reading
     them into GM 1.1 and rewriting them.
-  <LI> BMP reader fix to avoid unnecessary rejection of some old
-    uncompressed Windows 2.X and OS/2 BMPs.
   <LI> XPM fix to module registration.
   <LI> PSD fix for index calculation when QuantumDepth&gt;8.
   <LI> Validate that geometry specifications only include allowed
@@ -86,8 +88,10 @@ Significant changes associated with GraphicsMagick 1.1 (Under development)
   <LI> Arc drawing is fixed.
   <LI> Command-line parsing bug under Linux due to Linux's sscanfs
     inability to parse strings like "0x1" as "%fx%f" is fixed.
-  <LI> Scaling of colors was slightly incorrect in BMP, AVI, DIB, and
-    TIM datastreams.
+  <LI> Scaling of 5 and 6-bit colors was slightly incorrect in BMP, AVI,
+    DIB, and TIM datastreams.<BR>
+  <LI> GM utility now reports an error rather than silently returning if
+    an unsupported sub-command is provided.
 
 </UL>
 <p>
@@ -126,11 +130,23 @@ Significant changes associated with GraphicsMagick 1.1 (Under development)
   <LI> The "PATTERN" coder now returns an image pattern tiled to size
     (equivalent results to TILE:IMAGE:pattern). This is for ImageMagick
     compatibility.<BR>
+  <LI> The CINEON coder now supports reading and writing images in CINEON
+    "CIN" linear gray and RGB formats. The read support is still very
+    weak, but it works for common images.
   <LI> Reading and writting compressed SVG (SVGZ) is now supported.
   <LI> The TXT coder now observes depth when writing.
-  <LI> The TIFF coder now outputs colormapped images with 1, 2, and 4
+  <LI> The TIFF coder now outputs colormapped images with 1, 2, 4, and 8
     bits per sample in order to provide much smaller file sizes for
     images with very few colors.<BR>
+  <LI> Many TIFF coder enhancements. Now reads colormapped and grayscale
+    images at arbitrary (even odd) bits-per-sample sizes. Now properly
+    supports an opacity channel (at any bits-per-sample value) for
+    grayscale images. Bilevel grayscale images are treated similar to any
+    other grayscale image unless CCITT FAX3/FAX4 compression is
+    requested. Now allows the user to specify an arbitrary
+    bits-per-sample value for grayscale images (even odd values) using
+    "-define tiff:samples-per-pixel=value". Now automatically stores the
+    image as TrueColor RGB pixels if the image compression is set to JPEG.
   <LI> The WPG coder now renders embedded WMFs.
   <LI> The PS3 coder is completely re-written to work much better and
     support more features (see ChangeLog).
@@ -199,6 +215,10 @@ Significant changes associated with GraphicsMagick 1.1 (Under development)
   <LI> GetColorHistogram() obtains a color histogram for the image.
   <LI> The semaphore.h header is no longer installed or included in the
     API headers since these functions are private interfaces.
+  <LI> Configure using --enable-symbol-prefix or define
+    PREFIX_MAGICK_SYMBOLS to use the C preprocessor to prefix all library
+    symbols with "Gm". This prevents library symbol conflicts with other
+    libraries.
 
 </UL>
 <p>
