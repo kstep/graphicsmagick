@@ -4,7 +4,7 @@
 #define HAVE_TIME_H
 #define HAVE_FCNTL_H
 
-#define LIBXML_VERSION "2.1.0"
+//#define LIBXML_VERSION "2.1.0"
 
 #include <io.h>
 

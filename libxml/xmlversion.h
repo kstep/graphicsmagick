@@ -51,7 +51,7 @@
 /*
  * Whether iconv support is available
  */
-#if 1
+#if 0
 #define LIBXML_ICONV_ENABLED
 #else
 #define LIBXML_ICONV_DISABLED
