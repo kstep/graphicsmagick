@@ -906,7 +906,7 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
     *integral_image,
     *rotate_image;
 
-  int
+  long
     x_offset,
     y_offset;
 
@@ -917,12 +917,12 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
     border_info;
 
   unsigned int
-    rotations,
-    y_width;
+    rotations;
 
   unsigned long
     height,
-    width;
+    width,
+    y_width;
 
   /*
     Adjust rotation angle.
@@ -960,9 +960,9 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
       width=image->rows;
       height=image->columns;
     }
-  y_width=(unsigned int) (width+ceil(height*fabs(shear.x)-0.5));
-  x_offset=(int) (width+2.0*ceil(height*fabs(shear.y)-0.5)-width);
-  y_offset=(int) (height+ceil(y_width*fabs(shear.y)-0.5)-height);
+  y_width=(unsigned long) (width+ceil(height*fabs(shear.x)-0.5));
+  x_offset=(long) (width+2.0*ceil(height*fabs(shear.y)-0.5)-width);
+  y_offset=(long) (height+ceil(y_width*fabs(shear.y)-0.5)-height);
   /*
     Surround image with a border.
   */
@@ -1040,7 +1040,7 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
     *integral_image,
     *shear_image;
 
-  int
+  long
     x_offset,
     y_offset;
 
@@ -1050,7 +1050,7 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   RectangleInfo
     border_info;
 
-  unsigned int
+  unsigned long
     y_width;
 
   assert(image != (Image *) NULL);
@@ -1076,10 +1076,10 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   /*
     Compute image size.
   */
-  y_width=(unsigned int) (image->columns+ceil(image->rows*fabs(shear.x)-0.5));
-  x_offset=(int)
+  y_width=(unsigned long) (image->columns+ceil(image->rows*fabs(shear.x)-0.5));
+  x_offset=(long)
     (image->columns+ceil(2*image->rows*fabs(shear.y)-0.5)-image->columns);
-  y_offset=(int) (image->rows+ceil(y_width*fabs(shear.y)-0.5)-image->rows);
+  y_offset=(long) (image->rows+ceil(y_width*fabs(shear.y)-0.5)-image->rows);
   /*
     Surround image with border.
   */
