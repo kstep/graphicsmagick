@@ -358,6 +358,8 @@ unsigned x,y,i;
 unsigned char bbuf,RunCount;
 unsigned char *BImgBuff;
 long ldblk;
+unsigned char SampleBuffer[8];
+char SampleSize=1;
 
 
  x=0;
@@ -366,60 +368,59 @@ long ldblk;
  BImgBuff=(unsigned char *) malloc(ldblk);
  if(BImgBuff==NULL) return(-2);
 
- ReadBlobByte(image);
- ReadBlobByte(image);
-
  while(y<image->rows)
      {
      bbuf=ReadBlobByte(image);
 
+     switch(bbuf)
+       {
+       case 0x7D:SampleSize=ReadBlobByte(image);	
+		 if(SampleSize>8) return(-2);
+		 if(SampleSize<1) return(-2);
+		 break;
+       case 0x7E:
+		 break;
+       case 0x7F:RunCount=ReadBlobByte(image);	
+		 for(i=0;i<SampleSize*((unsigned)RunCount+1);i++)
+			{
+			InsertRByte(0);
+			}
+		 break;
+       case 0xFD:
+		 break;
+       case 0xFE:
+		 break;
+       case 0xFF:RunCount=ReadBlobByte(image);
+		 for(i=0;i<SampleSize*((unsigned)RunCount+1);i++)
+			{
+			InsertRByte(0xFF);
+			}
+		 break;
+       default:
+	  RunCount=bbuf & 0x7F;
 
-     RunCount=bbuf & 0x7F;
-     if(bbuf & 0x80)
-	{
-	if(RunCount!=0x7F)	/* repeat next byte runcount */
-		{
-		bbuf=ReadBlobByte(image);
-		for(i=0;i<=RunCount;i++) InsertRByte(bbuf);
+	  if(bbuf & 0x80)
+		{	
+		for(i=0;i<SampleSize;i++)
+			SampleBuffer[i]=ReadBlobByte(image);
+		for(i=0;i<=(unsigned)RunCount;i++)
+		    for(bbuf=0;bbuf<SampleSize;bbuf++)
+			InsertRByte(SampleBuffer[bbuf]);
 		}
-	   else {	/*read next byte as RunCount; repeat 0xFF runcount*/
-		RunCount=ReadBlobByte(image);
-		for(i=0;i<=RunCount;i++) InsertRByte(0xFF);
-		}
-	}
-   else {
-	if(RunCount!=0x7F)   /* next runcount byte are readed directly */
-		{
-		for(i=0;i<=RunCount;i++)
+	   else {
+		for(i=0;i<SampleSize*((unsigned)RunCount+1);i++)
 			{
 			bbuf=ReadBlobByte(image);
 			InsertRByte(bbuf);
 			}
 		}
-	   else {
-		RunCount=ReadBlobByte(image);
-		if(x) {		/*read next byte as RunCount; repeat 0 runcount*/
-		      for(i=0;i<=RunCount;i++)
-				 InsertRByte(0);
-		      }
-		else for(i=0;i<=RunCount;i++) /* repeat previous line runcount*/
-			{
-			x=0;
-			y++;   /* Here I need to duplicate previous row RUNCOUNT* */
-			if(y<2) continue;
-			if(y>image->rows)
-				 {
-				 free(BImgBuff);
-				 return(-4);
-				 }
-			InsertRow(BImgBuff,image->rows-y-2,image);
-			}
-		}
-	}
-   }
+	  }
+
+     }
  free(BImgBuff);
  return(0);
 }
+
 
 static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   long PS_Offset,long PS_Size)
@@ -432,8 +433,6 @@ Image *image2;
 
 if ((clone_info=CloneImageInfo(image_info)) == NULL) return(image);
 TemporaryFilename((char *) clone_info->filename);
-
-/*printf("PS part %ld %ld %s\n",PS_Offset,PS_Size,clone_info->filename);*/
 
 if( (f=fopen(clone_info->filename,"wb"))==NULL) goto FINISH;
 SeekBlob(image,PS_Offset,SEEK_SET);
@@ -516,12 +515,13 @@ typedef struct
 	unsigned char	RecType;
 	unsigned long   RecordLength;
 	}WPGRecord;
-typedef struct 
+typedef struct
 	{
-	unsigned char	RecLeader;
-	unsigned int    RecType;
-	unsigned long   RecordLength;
-	} WPG2Record;
+	BYTE	Class;
+	BYTE    RecType;
+	DWORD   Extension;
+	DWORD   RecordLength;
+	}WPG2Record;
 typedef struct
 	{
 	unsigned int Width;
@@ -742,9 +742,9 @@ DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompres
        SeekBlob(image,Header.DataOffset,SEEK_SET);
        if(EOFBlob(image)) break;
 
-       Rec2.RecLeader=(i=ReadBlobByte(image));
-       if(i==EOF) break;
-       Rec2.RecType=ReadBlobLSBShort(image);
+       Rec2.Class=(i=ReadBlobByte(image)); if(i==EOF) break;
+       Rec2.RecType=(i=ReadBlobByte(image)); if(i==EOF) break;
+       Rd_WP_DWORD(image,&Rec2.Extension);
        Rd_WP_DWORD(image,&Rec2.RecordLength);
        if(EOFBlob(image)) break;
 
