@@ -24,8 +24,8 @@ it is fully reference counted just like the Image class.
 earlier versions of the object. Since assignment is via a pointer internally,
 Blob is efficient enough to be stored directly in an STL container or any
 other data structure which requires assignment. In particular, by storing
-a Blob in an <a href="http://www.sgi.com/Technology/STL/AssociativeContainer.html">associative
-container</a> (such as STL's '<i><a href="http://www.sgi.com/Technology/STL/Map.html">map</a></i>')
+a Blob in an <a href="http://www.sgi.com/tech/stl/AssociativeContainer.html">associative
+container</a> (such as STL's '<i><a href="http://www.sgi.com/tech/stl/Map.html">map</a></i>')
 it is possible to create simple indexed in-memory "database" of Blobs.
 <p>Magick++ currently uses Blob to contain encoded images (e.g. JPEG) as
 well as ICC and IPTC profiles. Since Blob is a general-purpose class, it
