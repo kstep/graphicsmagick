@@ -1346,7 +1346,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
           q=jpeg_pixels;
           for (x=0; x < (long) image->columns; x++)
           {
-            *q++=(JSAMPLE) (PixelIntensityToQuantum(p)/16);
+            *q++=(JSAMPLE) (ScaleQuantumToShort(PixelIntensityToQuantum(p))/16);
             p++;
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
@@ -1364,9 +1364,9 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
             q=jpeg_pixels;
             for (x=0; x < (long) image->columns; x++)
             {
-              *q++=(JSAMPLE) (p->red/16);
-              *q++=(JSAMPLE) (p->green/16);
-              *q++=(JSAMPLE) (p->blue/16);
+              *q++=(JSAMPLE) (ScaleQuantumToShort(p->red)/16);
+              *q++=(JSAMPLE) (ScaleQuantumToShort(p->green)/16);
+              *q++=(JSAMPLE) (ScaleQuantumToShort(p->blue)/16);
               p++;
             }
             (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
@@ -1385,10 +1385,10 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
               /*
                 Convert DirectClass packets to contiguous CMYK scanlines.
               */
-              *q++=(JSAMPLE) (MaxRGB-(p->red/16));
-              *q++=(JSAMPLE) (MaxRGB-(p->green/16));
-              *q++=(JSAMPLE) (MaxRGB-(p->blue/16));
-              *q++=(JSAMPLE) (MaxRGB-(p->opacity/16));
+              *q++=(JSAMPLE) (4095-ScaleQuantumToShort(p->red)/16);
+              *q++=(JSAMPLE) (4095-ScaleQuantumToShort(p->green)/16);
+              *q++=(JSAMPLE) (4095-ScaleQuantumToShort(p->blue)/16);
+              *q++=(JSAMPLE) (4095-ScaleQuantumToShort(p->opacity)/16);
               p++;
             }
             (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
