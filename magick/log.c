@@ -59,7 +59,7 @@ typedef enum
   XMLFileOutput = 0x0004,
   TXTFileOutput = 0x0008,
   Win32DebugOutput = 0x0010,
-  Win32EventlogOutput = 0x0020,
+  Win32EventlogOutput = 0x0020
 } LogOutputType;
 
 typedef struct _OutputInfo

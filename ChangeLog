@@ -1,5 +1,8 @@
 2003-09-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/log.c (Win32EventlogOutput): Remove spurious comma in enum.
+	* wand/drawing_wand.h: Remove junk comment marker that I forgot to
+	remove.
 	* magick/studio.h: Provide prototypes for strlcpy and vsnprintf if
 	the system doesn't provide them in the requested compilation
 	environment.

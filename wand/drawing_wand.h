@@ -121,8 +121,6 @@ extern "C" {
 #define DrawTranslate MagickDrawTranslate
 #define NewDrawingWand MagickNewDrawingWand
 
-  //#########################################33
-
 typedef struct _DrawingWand
 /*  *DrawContext, */
   DrawingWand;
