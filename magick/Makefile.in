@@ -211,7 +211,7 @@ fits.lo fpx.lo gems.lo gif.lo gradation.lo gray.lo hdf.lo histogram.lo \
 html.lo icc.lo icon.lo image.lo iptc.lo jbig.lo jpeg.lo label.lo \
 logo.lo magick.lo map.lo matte.lo memory.lo miff.lo monitor.lo mono.lo \
 montage.lo mtv.lo null.lo pcd.lo pcl.lo pcx.lo pdf.lo pict.lo pix.lo \
-plasma.lo png.lo pnm.lo preview.lo ps.lo ps2.lo psd.lo pwp.lo \
+plasma.lo png.lo pnm.lo preview.lo ps.lo ps2.lo ps3.lo psd.lo pwp.lo \
 quantize.lo rgb.lo rla.lo rle.lo segment.lo sfw.lo sgi.lo shear.lo \
 signature.lo stegano.lo sun.lo tga.lo tiff.lo tile.lo tim.lo \
 transform.lo ttf.lo txt.lo uil.lo utility.lo uyvy.lo vicar.lo vid.lo \

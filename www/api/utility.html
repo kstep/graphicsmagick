@@ -42,6 +42,7 @@
 		<LI><A HREF="#MSBFirstWriteLong">MSBFirstWriteLong</A>
 		<LI><A HREF="#MSBFirstWriteShort">MSBFirstWriteShort</A>
 		<LI><A HREF="#MultilineCensus">MultilineCensus</A>
+		<LI><A HREF="#ParseGeometry">ParseGeometry</A>
 		<LI><A HREF="#PostscriptGeometry">PostscriptGeometry</A>
 		<LI><A HREF="#ReadData">ReadData</A>
 		<LI><A HREF="#ReadDataBlock">ReadDataBlock</A>
@@ -905,6 +906,45 @@ A description of each parameter follows.
 <DT><STRONG>label:</STRONG><DD>
 <P>
 This character string is the label.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ParseGeometry">ParseGeometry</A></H2>
+<P>
+Method ParseImageGeometry parses a geometry specification and returns the
+width, height, x, and y values. It also returns flags that indicates which
+of the four values (width, height, xoffset, yoffset) were located in the
+string, and whether the x and y values are negative. In addition,
+
+<P>
+The format of the ParseImageGeometry routine is:
+
+<P>
+<PRE>    flags=ParseImageGeometry(image_geometry,x,y,width,height)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>flags:</STRONG><DD>
+<P>
+Method ParseImageGeometry returns a bitmask that indicates which of the
+four values were located in the geometry string.
+
+<DT><STRONG>image_geometry:</STRONG><DD>
+<P>
+Specifies a character string representing the geometry specification.
+
+<DT><STRONG>x,y:</STRONG><DD>
+<P>
+A pointer to an integer. The x and y offset as determined by the geometry
+specification is returned here.
+
+<DT><STRONG>width,height:</STRONG><DD>
+<P>
+A pointer to an unsigned integer. The width and height as determined by the
+geometry specification is returned here.
 
 </DL></DL>
 <P>

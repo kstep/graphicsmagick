@@ -117,6 +117,11 @@
 %        o  PAST
 %        o  BASI
 %
+%    Use the scene signature to discover when an identical scene is
+%    being reused, and just point to the original image->pixels instead
+%    of storing another set of pixels.  This is not specific to MNG
+%    but could be applied generally.
+%
 %    Upgrade to full MNG with Delta-PNG.
 %
 %    Decode and act on the iCCP chunk (wait for libpng implementation).
@@ -138,8 +143,9 @@
 #define MAX_MNG_OBJECTS 256
 
 /*
-  Feature under construction.  Define this to work on it.
+  Feature under construction.  Define these to work on them.
   #define MNG_OBJECT_BUFFERS
+  #define MNG_GLOBAL_COLORSPACE_SUPPORTED
 */
 
 /*
@@ -422,7 +428,7 @@ static void MNGCoalesce(Image *image)
   assert(p->next != (Image *) NULL);
   if (p->delay != 0)
     return;
-  delay=image->delay;
+  delay=(long)image->delay;
   CoalesceImages(p);
   p->file=(FILE *) NULL;
   p->orphan=False;
@@ -463,6 +469,8 @@ static void ReadTextChunk(png_info *ping_info,unsigned int i,char **value)
 static void PNGWarningHandler(png_struct *ping,png_const_charp message)
 {
   MagickWarning(DelegateWarning,message,(char *) NULL);
+  if(ping == (png_struct *)NULL)
+     return;
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -549,6 +557,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
     framing_mode=1,
     mandatory_back=0,
     mng_background_object=0,
+    mng_level=MNG_LEVEL,
     mng_type=0,   /* 0: PNG; 1: MNG; 2: MNG-LC; 3: MNG-VLC */
     simplicity=0;
 
@@ -638,7 +647,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
           m->ob[i]=(MngBuffer *)NULL;
 #endif
     }
-      if(MNG_LEVEL > 95)
+      if(mng_level > 95)
          m->exists[0]=True;
       for (i=0; i<256; i++)
         m->loop_active[i]=0;
@@ -720,7 +729,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                     chunk_name[i]=0x3f;   /* '?' */
                   }
               }
-            chunk_name[5]=0;
+            chunk_name[4]=0;
             printf("chunk %s, length=%lu\n",chunk_name,length);
           }
         if (status == False)
@@ -824,13 +833,13 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
               MagickWarning(DelegateWarning,
                 "Image dimensions are too large.", (char *) NULL);
 
-            FormatString(page_geometry,"%lux%lu%+ld%+ld",mng_width,
-               mng_height, 0, 0);
+            FormatString(page_geometry,"%lux%lu%+0+0",mng_width,
+               mng_height);
 
             frame.left = 0;
-            frame.right = mng_width;
+            frame.right = (long)mng_width;
             frame.top = 0;
-            frame.bottom = mng_height;
+            frame.bottom = (long)mng_height;
             clip = default_fb = previous_fb = frame;
             for (i=0; i<MAX_MNG_OBJECTS; i++)
                 m->object_clip[i] = frame;
@@ -850,13 +859,16 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                   repeat=p[0];
             if (repeat == 3)
               {
-                final_delay=(int)mng_get_long(&p[1]);
-                iterations=(int)mng_get_long(&p[5]);
+                final_delay=(int)mng_get_long(&p[2]);
+                iterations=(int)mng_get_long(&p[6]);
                 if(iterations == 0x7ffffffL)
                    iterations = 0;
                 if (image_info->iterations == (char *) NULL)
                     image->iterations=iterations;
                 term_chunk_found = True;
+                if (m->verbose)
+                   printf("TERM: final_delay=%d, iterations=%d\n",
+                      final_delay, iterations);
               }
             FreeMemory((char *) chunk);
             continue;
@@ -890,7 +902,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                     continue;
               }
               }
-            if (MNG_LEVEL > 95)
+            if (mng_level > 95)
             m->exists[object_id] = True;
             else
                m->exists[object_id] = False;  /* It doesn't exist until IHDR */
@@ -898,7 +910,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             if (length>2)
                   m->visible[object_id]=!p[2];
             else
-               if (MNG_LEVEL < 96)
+               if (mng_level < 96)
                   m->visible[object_id]=True;
             /*
               Extract object offset info.
@@ -914,7 +926,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 m->y_off[object_id]=pair.b;
               }
             else
-               if (MNG_LEVEL < 96)
+               if (mng_level < 96)
               {
                 m->x_off[object_id]=0;
                 m->y_off[object_id]=0;
@@ -926,7 +938,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             if (length>27)
                 m->object_clip[object_id]=mng_read_box(frame,0,&p[12]);
             else
-              if (MNG_LEVEL < 96)
+               if (mng_level < 96)
                 m->object_clip[object_id]=frame;
 
             if(m->verbose)
@@ -947,9 +959,12 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
           {
             if (length>5)
               {
-                mng_background_color.red   = XDownScale((p[0]<<8) | p[1]);
-                mng_background_color.green = XDownScale((p[2]<<8) | p[3]);
-                mng_background_color.blue  = XDownScale((p[4]<<8) | p[5]);
+                mng_background_color.red   = 
+                  (unsigned short)XDownScale((p[0]<<8) | p[1]);
+                mng_background_color.green = 
+                  (unsigned short)XDownScale((p[2]<<8) | p[3]);
+                mng_background_color.blue  = 
+                  (unsigned short)XDownScale((p[4]<<8) | p[5]);
               }
 
             if (length>6)
@@ -959,6 +974,14 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 
             if (length > 8)
                mng_background_object = p[7]<<8 | p[8];
+
+            if (m->verbose)
+              {
+               printf(" Background color= %d.3 %d.3 %d.3, background object=%d",
+                 mng_background_color.red, mng_background_color.green,
+                 mng_background_color.blue, mng_background_object);
+               printf(" (mandatory =%d)\n", mandatory_back);
+              }
 
             FreeMemory((char *) chunk);
             continue;
@@ -971,13 +994,13 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             /* read global PLTE */
 
             if(length < 769)
-              for (i=0; i<length/3; i+=3)
+              for (i=0; i<(int)length/3; i+=3)
                 {
                   m->global_plte[i].red=chunk[3*i+4];
                   m->global_plte[i].green=chunk[3*i+5];
                   m->global_plte[i].blue=chunk[3*i+6];
                 }
-            global_plte_length = length/3;
+            global_plte_length = (int)length/3;
 #ifdef MNG_LOOSE
             for (   ; i<256; i++)
               {
@@ -1006,7 +1029,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             for (   ; i<256; i++)
               m->global_trns[i]=255;
 #endif
-            global_trns_length=length;
+            global_trns_length=(int)length;
 
             FreeMemory((char *) chunk);
             continue;
@@ -1056,6 +1079,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                image->delay = frame_delay;
 
             frame_delay = default_frame_delay;
+            frame_timeout = default_frame_timeout;
 
             fb = default_fb;
 
@@ -1075,7 +1099,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                     int change_delay    = *p++;
                     int change_timeout  = *p++;
                     int change_clipping = *p++;
-                    int change_sync     = *p++;
+                    p++; /* change_sync */
 
                     if (change_delay)
                       {
@@ -1135,7 +1159,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                   image->restart_animation_here = True;
                   term_chunk_found=False;
                   if(m->verbose)
-                    printf("Setting restart_animation_here (1)\n");
+                    printf("Setting restart_animation_here\n");
                 }
 
               image->columns=subframe_width;
@@ -1388,7 +1412,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                when object_id is zero, in MNG-0.95.  For other object_id's,
                it remains in effect until reset by another DEFI chunk. */
 
-            if (object_id == 0 && MNG_LEVEL < 96)
+            if (object_id == 0 && mng_level < 96)
               m->visible[object_id]=True;
 
             if(!image_info->decode_all_MNG_objects)
@@ -1442,7 +1466,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                     image->restart_animation_here = True;
                     term_chunk_found=False;
                   if(m->verbose)
-                    printf("Setting restart_animation_here (2)\n");
+                    printf("Setting restart_animation_here\n");
                   }
 
                 delay = image->delay;
@@ -1514,7 +1538,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 SetImage(image);
             }
             first_mng_object=0;
-            if (MNG_LEVEL < 96)
+            if (mng_level < 96)
               m->exists[0]=False;
           }
 
@@ -1543,7 +1567,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                   image->restart_animation_here = True;
                   term_chunk_found=False;
             if(m->verbose)
-              printf("Setting restart_animation_here (3)\n");
+              printf("Setting restart_animation_here\n");
           }
 
           if(framing_mode == 1 || framing_mode == 3)
@@ -1649,13 +1673,13 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         /*
           Set image resolution.
         */
-        image->x_resolution=ping_info->x_pixels_per_unit;
-        image->y_resolution=ping_info->y_pixels_per_unit;
+        image->x_resolution=(float)ping_info->x_pixels_per_unit;
+        image->y_resolution=(float)ping_info->y_pixels_per_unit;
         if (ping_info->phys_unit_type == PNG_RESOLUTION_METER)
           {
             image->units=PixelsPerCentimeterResolution;
-            image->x_resolution=ping_info->x_pixels_per_unit/100.0;
-            image->y_resolution=ping_info->y_pixels_per_unit/100.0;
+            image->x_resolution=(float)ping_info->x_pixels_per_unit/100.0;
+            image->y_resolution=(float)ping_info->y_pixels_per_unit/100.0;
           }
       }
     if (ping_info->valid & PNG_INFO_bKGD)
@@ -1668,10 +1692,12 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         image->background_color.blue=ping_info->background.blue;
         if (ping_info->bit_depth > QuantumDepth)
           {
-            image->background_color.red=XDownScale(ping_info->background.red);
+            image->background_color.red=
+              (unsigned short)XDownScale(ping_info->background.red);
             image->background_color.green=
-              XDownScale(ping_info->background.green);
-            image->background_color.blue=XDownScale(ping_info->background.blue);
+              (unsigned short)XDownScale(ping_info->background.green);
+            image->background_color.blue=
+              (unsigned short)XDownScale(ping_info->background.blue);
           }
       }
     if (ping_info->valid & PNG_INFO_PLTE)
@@ -1721,10 +1747,14 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         transparent_color.index=ping_info->trans_values.gray;
         if (ping_info->bit_depth > QuantumDepth)
           {
-            transparent_color.red=XDownScale(ping_info->trans_values.red);
-            transparent_color.green=XDownScale(ping_info->trans_values.green);
-            transparent_color.blue=XDownScale(ping_info->trans_values.blue);
-            transparent_color.index=XDownScale(ping_info->trans_values.gray);
+            transparent_color.red=
+              (unsigned short)XDownScale(ping_info->trans_values.red);
+            transparent_color.green=
+              (unsigned short)XDownScale(ping_info->trans_values.green);
+            transparent_color.blue=
+              (unsigned short)XDownScale(ping_info->trans_values.blue);
+            transparent_color.index=
+              (unsigned short)XDownScale(ping_info->trans_values.gray);
           }
       }
     png_read_update_info(ping,ping_info);
@@ -1732,9 +1762,9 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
       Initialize image structure.
     */
     image_box.left = 0;
-    image_box.right = ping_info->width;
+    image_box.right = (long)ping_info->width;
     image_box.top = 0;
-    image_box.bottom = ping_info->height;
+    image_box.bottom = (long)ping_info->height;
     if(mng_type == 0)
       {
         mng_width=ping_info->width;
@@ -1798,9 +1828,12 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
           for (i=0; i < (int) image->colors; i++)
           {
-            image->colormap[i].red=UpScale(ping_info->palette[i].red);
-            image->colormap[i].green=UpScale(ping_info->palette[i].green);
-            image->colormap[i].blue=UpScale(ping_info->palette[i].blue);
+            image->colormap[i].red=
+               (unsigned short)UpScale(ping_info->palette[i].red);
+            image->colormap[i].green=
+               (unsigned short)UpScale(ping_info->palette[i].green);
+            image->colormap[i].blue=
+               (unsigned short)UpScale(ping_info->palette[i].blue);
           }
       }
     /*
@@ -2028,7 +2061,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
               if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
                 {
                   if (index < ping_info->num_trans)
-                    q->index=UpScale(ping_info->trans[index]);
+                    q->index=(unsigned short)UpScale(ping_info->trans[index]);
                 }
               else
                 if (index == transparent_color.index)
@@ -2381,6 +2414,9 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
      image->delay=100*final_delay/ticks_per_second;
   else
      image->delay=final_delay;
+  if(image_info->verbose)
+     printf("terminal delay=%d (final_delay=%d, tps=%d\n",image->delay,
+       final_delay, ticks_per_second);
   while (image->previous != (Image *) NULL)
     {
       image_count++;
@@ -2540,10 +2576,12 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     old_framing_mode,
     x,
     y,
-    have_global_srgb,
     have_global_plte,
+#ifdef MNG_GLOBAL_COLOR_SPACE_SUPPORTED
+    have_global_srgb,
     have_global_gamma,
     have_global_chrm,
+#endif
     need_defi,
     need_fram,
     need_iterations,
@@ -2608,10 +2646,12 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       page_info.height=0;
       page_info.x=0;
       page_info.y=0;
-      have_global_srgb=False;
       have_global_plte=False;
+#ifdef MNG_GLOBAL_COLOR_SPACE_SUPPORTED
+      have_global_srgb=False;
       have_global_gamma= False;
       have_global_chrm=False;
+#endif
       need_geom=True;
       need_defi=False;
       need_fram=False;
@@ -2658,14 +2698,25 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                need_defi=True;
           if (next_image->matte)
                need_matte=True;
-          if (next_image->dispose == 2)
+          if (next_image->dispose >= 2)
+             if(next_image->matte || page_info.x || page_info.y ||
+             (next_image->columns < page_info.width &&
+              next_image->rows < page_info.height))
                need_fram=True;
           if (next_image->iterations)
                need_iterations = True;
           final_delay = next_image->delay;
-          if(final_delay != initial_delay) need_fram=1;
+          if(final_delay != initial_delay)
+             need_fram=1;
           next_image=next_image->next;
        }
+
+       if(image_info->verbose)
+         {
+           printf("initial delay=%d, final delay=%d\n",
+             initial_delay, final_delay);
+           printf("need_defi=%d, need_fram=%d\n",need_defi, need_fram);
+         }
 
        if(!need_fram)
         {
@@ -2692,6 +2743,10 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           if(final_delay > 75) ticks_per_second = 1;
           if(final_delay > 125) need_fram=True;
 
+          if(image_info->verbose)
+            {
+              printf("final delay=%d, need_fram=%d\n",final_delay,need_fram);
+            }
           if(need_defi && final_delay > 2 && final_delay != 4 &&
              final_delay != 5 && final_delay != 10 && final_delay != 20 &&
              final_delay != 25 && final_delay != 50 && final_delay != 100)
@@ -2747,7 +2802,9 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           chunk[5]=0;  /* show last frame when done */
           PNGLong(chunk+6, (png_uint_32)(ticks_per_second*final_delay/100));
           if(image_info->verbose)
-             printf("Wrote MNG TERM chunk with final_delay=%d\n", final_delay);
+             printf(
+              "Wrote MNG TERM chunk with delay=%d (tps=%d, final_delay=%d)\n",
+               ticks_per_second*final_delay/100,ticks_per_second,final_delay);
           if(image->iterations == 0)
              PNGLong(chunk+10, 0x7fffffffL);
           else
@@ -2869,10 +2926,14 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           }
       }
     ping_info->valid|=PNG_INFO_bKGD;
-    ping_info->background.red=DownScale(image->background_color.red);
-    ping_info->background.green=DownScale(image->background_color.green);
-    ping_info->background.blue=DownScale(image->background_color.blue);
-    ping_info->background.gray=DownScale(Intensity(image->background_color));
+    ping_info->background.red=
+      (unsigned short)DownScale(image->background_color.red);
+    ping_info->background.green=
+      (unsigned short)DownScale(image->background_color.green);
+    ping_info->background.blue=
+      (unsigned short)DownScale(image->background_color.blue);
+    ping_info->background.gray=
+      (unsigned short)DownScale(Intensity(image->background_color));
     ping_info->background.index=ping_info->background.gray;
     matte=image->matte;
     if (matte)
@@ -2894,8 +2955,8 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         ping_info->trans_values.red=p->red;
         ping_info->trans_values.green=p->green;
         ping_info->trans_values.blue=p->blue;
-        ping_info->trans_values.gray=Intensity(*p);
-        ping_info->trans_values.index=DownScale(p->index);
+        ping_info->trans_values.gray=(unsigned short)Intensity(*p);
+        ping_info->trans_values.index=(unsigned short)DownScale(p->index);
         for ( ; i < (int) image->packets; i++)
         {
           if (!IsGray(*p))
@@ -2929,9 +2990,12 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               image);
           for (i=0; i < (int) image->colors; i++)
           {
-            ping_info->palette[i].red=DownScale(image->colormap[i].red);
-            ping_info->palette[i].green=DownScale(image->colormap[i].green);
-            ping_info->palette[i].blue=DownScale(image->colormap[i].blue);
+            ping_info->palette[i].red=
+              (unsigned short)DownScale(image->colormap[i].red);
+            ping_info->palette[i].green=
+              (unsigned short)DownScale(image->colormap[i].green);
+            ping_info->palette[i].blue=
+              (unsigned short)DownScale(image->colormap[i].blue);
           }
           ping_info->bit_depth=1;
           while ((1 << ping_info->bit_depth) < (int) image->colors)
@@ -3225,7 +3289,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       WriteTextChunk(image_info,ping_info,"Comment",image->comments);
     png_write_end(ping,ping_info);
 
-    if(image->dispose == 2)
+    if(need_fram && image->dispose == 2)
       {
         if(page_info.x || page_info.y || ping_info->width != page_info.width ||
            ping_info->height != page_info.height)
@@ -3254,7 +3318,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         else
             framing_mode = 3;
       }
-    if(image->dispose == 3)
+    if(need_fram && image->dispose == 3)
       {
         MagickWarning(DelegateWarning,
           "Cannot convert GIF with disposal method 3 to MNG-LC",(char *) NULL);

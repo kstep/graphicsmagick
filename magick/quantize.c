@@ -2021,14 +2021,11 @@ Export unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
 %
 %  The format of the QuantizeImages routine is:
 %
-%      status=QuantizeImages(quantize_info,number_images,images)
+%      status=QuantizeImages(quantize_info,images)
 %
 %  A description of each parameter follows:
 %
 %    o quantize_info: Specifies a pointer to an QuantizeInfo structure.
-%
-%    o number_images:  Specifies an unsigned integer representing the number
-%      images in the image set.
 %
 %    o images: Specifies a pointer to a list of Image structures.
 %

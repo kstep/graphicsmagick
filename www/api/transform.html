@@ -16,8 +16,9 @@
 	<UL>
 
 		<LI><A HREF="#ChopImage">ChopImage</A>
-		<LI><A HREF="#CoalesceImage">CoalesceImage</A>
+		<LI><A HREF="#CoalesceImages">CoalesceImages</A>
 		<LI><A HREF="#CropImage">CropImage</A>
+		<LI><A HREF="#DeconstructImages">DeconstructImages</A>
 		<LI><A HREF="#FlipImage">FlipImage</A>
 		<LI><A HREF="#FlopImage">FlopImage</A>
 		<LI><A HREF="#RollImage">RollImage</A>
@@ -39,7 +40,13 @@ transform - Methods to Transform an Image
 chop_image=<STRONG>ChopImage</STRONG>(image,chop_info)
 
 <P>
+<STRONG>CoalesceImages</STRONG>(images)
+
+<P>
 cropped_image=<STRONG>CropImage</STRONG>(image,crop_info)
+
+<P>
+<STRONG>DeconstructImages</STRONG>(images)
 
 <P>
 flipped_image=<STRONG>FlipImage</STRONG>(image)
@@ -89,7 +96,7 @@ image to crop.
 </DL></DL>
 <P>
 <HR>
-<H2><A NAME="CoalesceImage">CoalesceImage</A></H2>
+<H2><A NAME="CoalesceImages">CoalesceImages</A></H2>
 <P>
 Method CoalesceImages merges a sequence of images. This is useful for GIF
 and MNG animation sequences that have page offsets and disposal methods.
@@ -98,7 +105,7 @@ and MNG animation sequences that have page offsets and disposal methods.
 The format of the CoalesceImages routine is:
 
 <P>
-<PRE>    CoalesceImages(image)
+<PRE>        CoalesceImages(images)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -144,6 +151,28 @@ The address of a structure of type Image.
 <P>
 Specifies a pointer to a RectangleInfo which defines the region of the
 image to crop.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="DeconstructImages">DeconstructImages</A></H2>
+<P>
+Method DeconstructImages breaks down an image sequence into constituent
+
+<P>
+The format of the DeconstructImages routine is:
+
+<P>
+<PRE>        DeconstructImages(images)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>images:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage. It
+points to the first image in the group to be deconstructed.
 
 </DL></DL>
 <P>

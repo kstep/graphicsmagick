@@ -63,7 +63,7 @@ status=<STRONG>QuantizationError</STRONG>(image)
 status=<STRONG>QuantizeImage</STRONG>(quantize_info,image)
 
 <P>
-status=<STRONG>QuantizeImages</STRONG>(quantize_info,number_images,images)
+status=<STRONG>QuantizeImages</STRONG>(quantize_info,images)
 
 <P>
 <HR>
@@ -87,8 +87,8 @@ A description of each parameter follows:
 <DL><DL>
 <DT><STRONG><A NAME="item_o">cloned_info:</A></STRONG><DD>
 <P>
-Method CloneQuantizeInfo returns a duplicate of the given image info, or if
-image info is NULL a new one.
+Method CloneQuantizeInfo returns a duplicate of the given quantize info, or
+if image info is NULL a new one.
 
 <DT><STRONG>quantize_info:</STRONG><DD>
 <P>
@@ -311,7 +311,7 @@ while minimizing the processing time.
 The format of the QuantizeImages routine is:
 
 <P>
-<PRE>        status=QuantizeImages(quantize_info,number_images,images)
+<PRE>        status=QuantizeImages(quantize_info,images)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -320,11 +320,6 @@ A description of each parameter follows:
 <DT><STRONG>quantize_info:</STRONG><DD>
 <P>
 Specifies a pointer to an QuantizeInfo structure.
-
-<DT><STRONG>number_images:</STRONG><DD>
-<P>
-Specifies an unsigned integer representing the number images in the image
-set.
 
 <DT><STRONG>images:</STRONG><DD>
 <P>
