@@ -1983,8 +1983,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
             svg_info->view_box=svg_info->bounds;
           MVGPrintf(svg_info->file,"viewbox 0 0 %g %g\n",
             svg_info->view_box.width,svg_info->view_box.height);
-          svg_info->width=svg_info->bounds.width;
-          svg_info->height=svg_info->bounds.height;
+          svg_info->width=(unsigned long) svg_info->bounds.width;
+          svg_info->height=(unsigned long) svg_info->bounds.height;
           MVGPrintf(svg_info->file,"affine %g 0 0 %g %g %g\n",
             (double) svg_info->width/svg_info->view_box.width,
             (double) svg_info->height/svg_info->view_box.height,
