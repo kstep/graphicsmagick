@@ -1,3 +1,7 @@
+2003-02-12  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* coders/logo.c: updated logo.c to produce the GraphicsMagick logo.
+
 2003-02-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* INSTALL-unix.txt: Document that default quantum depth is now 8.
