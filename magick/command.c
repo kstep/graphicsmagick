@@ -511,7 +511,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("yuv",option) == 0)
                   image_info->colorspace=YUVColorspace;
                 if (image_info->colorspace == UndefinedColorspace)
-                  ThrowCompositeException(OptionError,"InvalidColorspace",
+                  ThrowCompositeException(OptionError,"UnrecognizedColorspace",
                     option);
               }
             break;
@@ -573,7 +573,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("Clear",option) == 0)
                   option_info.compose=ClearCompositeOp;
                 if (option_info.compose == UndefinedCompositeOp)
-                  ThrowCompositeException(OptionError,"InvalidComposeOperator",
+                  ThrowCompositeException(OptionError,"UnrecognizedComposeOperator",
                     option);
               }
             break;
@@ -607,7 +607,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("Zip",option) == 0)
                   image_info->compression=ZipCompression;
                 if (image_info->compression == UndefinedCompression)
-                  ThrowCompositeException(OptionError,"InvalidCompression",
+                  ThrowCompositeException(OptionError,"UnrecognizedCompression",
                     option);
               }
             break;
@@ -966,7 +966,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
                     if (LocaleCompare("memory",type) == 0)
                       SetMagickResourceLimit(MemoryResource,atol(argv[i]));
                     else
-                      ThrowCompositeException(OptionError,"InvalidResourceType",
+                      ThrowCompositeException(OptionError,"UnrecognizedResourceType",
                         type);
               }
             break;
@@ -1287,7 +1287,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
                   virtual_pixel_method=TileVirtualPixelMethod;
                 if (virtual_pixel_method == UndefinedVirtualPixelMethod)
                   ThrowCompositeException(OptionError,
-                    "InvalidVirtualPixelMethod",option);
+                    "UnrecognizedVirtualPixelMethod",option);
               }
             break;
           }
@@ -1701,7 +1701,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("Matte",option) == 0)
                   channel=MatteChannel;
                 if (channel == UndefinedChannel)
-                  ThrowConvertException(OptionError,"InvalidChannelType",
+                  ThrowConvertException(OptionError,"UnrecognizedChannelType",
                     option);
               }
             break;
@@ -1785,7 +1785,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("yuv",option) == 0)
                   image_info->colorspace=YUVColorspace;
                 if (image_info->colorspace == UndefinedColorspace)
-                  ThrowConvertException(OptionError,"InvalidColorspace",option);
+                  ThrowConvertException(OptionError,"UnrecognizedColorspace",option);
               }
             break;
           }
@@ -1828,7 +1828,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("Zip",option) == 0)
                   image_info->compression=ZipCompression;
                 if (image_info->compression == UndefinedCompression)
-                  ThrowConvertException(OptionError,"InvalidCompression",
+                  ThrowConvertException(OptionError,"UnrecognizedCompression",
                     option);
               }
             break;
@@ -2194,7 +2194,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("SouthEast",option) == 0)
                   gravity=SouthEastGravity;
                 if (gravity == ForgetGravity)
-                  ThrowConvertException(OptionError,"InvalidGravityType",
+                  ThrowConvertException(OptionError,"UnrecognizedGravityType",
                     option);
               }
             break;
@@ -2346,7 +2346,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                     if (LocaleCompare("memory",type) == 0)
                       SetMagickResourceLimit(MemoryResource,atol(argv[i]));
                     else
-                      ThrowConvertException(OptionError,"InvalidResourceType",
+                      ThrowConvertException(OptionError,"UnrecognizedResourceType",
                         type);
               }
             break;
@@ -3955,7 +3955,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("yuv",option) == 0)
                   image_info->colorspace=YUVColorspace;
                 if (image_info->colorspace == UndefinedColorspace)
-                  ThrowMogrifyException(OptionError,"InvalidColorspace",option);
+                  ThrowMogrifyException(OptionError,"UnrecognizedColorspace",option);
               }
             break;
           }
@@ -3998,7 +3998,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("Zip",option) == 0)
                   image_info->compression=ZipCompression;
                 if (image_info->compression == UndefinedCompression)
-                  ThrowMogrifyException(OptionError,"InvalidCompression",
+                  ThrowMogrifyException(OptionError,"UnrecognizedCompression",
                     option);
               }
             break;
@@ -4500,7 +4500,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                       SetMagickResourceLimit(MemoryResource,atol(argv[i]));
                     else
                       ThrowMogrifyException(OptionError,
-                        "InvalidResourceType",type);
+                        "UnrecognizedResourceType",type);
               }
             break;
           }
@@ -5203,7 +5203,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                   virtual_pixel_method=TileVirtualPixelMethod;
                 if (virtual_pixel_method == UndefinedVirtualPixelMethod)
                   ThrowMogrifyException(OptionError,
-                    "InvalidVirtualPixelMethod",option);
+                    "UnrecognizedVirtualPixelMethod",option);
               }
             break;
           }
@@ -5560,7 +5560,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("yuv",option) == 0)
                   quantize_info.colorspace=YUVColorspace;
                 if (quantize_info.colorspace == UndefinedColorspace)
-                  ThrowMontageException(OptionError,"InvalidColorspace",option);
+                  ThrowMontageException(OptionError,"UnrecognizedColorspace",option);
               }
             break;
           }
@@ -5603,7 +5603,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("Zip",option) == 0)
                   image_info->compression=ZipCompression;
                 if (image_info->compression == UndefinedCompression)
-                  ThrowMontageException(OptionError,"InvalidCompression",
+                  ThrowMontageException(OptionError,"UnrecognizedCompression",
                     option);
               }
             break;
@@ -5655,7 +5655,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("CopyOpacity",option) == 0)
                   compose=CopyOpacityCompositeOp;
                 if (compose == UndefinedCompositeOp)
-                  ThrowMontageException(OptionError,"InvalidComposeOperator",
+                  ThrowMontageException(OptionError,"UnrecognizedComposeOperator",
                     option);
               }
             break;

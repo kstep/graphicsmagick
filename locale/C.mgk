@@ -27,8 +27,8 @@
   </Blob>
   <Cache>
     <Error>
-      <Message name="InconsistentPeristentCacheDepth">
-        Inconsistent peristent cache depth
+      <Message name="InconsistentPersistentCacheDepth">
+        Inconsistent persistent cache depth
       </Message>
       <Message name="PixelCacheIsNotOpen">
         Pixel cache is not open
@@ -39,17 +39,14 @@
       <Message name="UnableToExtendCache">
         Unable to extend cache
       </Message>
-      <Message name="UnableToOpenCache">
-        Unable to open cache
-      </Message>
-      <Message name="UnableToSyncCache">
-        Unable to sync cache
-      </Message>
       <Message name="UnableToGetCacheNexus">
         Unable to get cache nexus
       </Message>
       <Message name="UnableToGetPixelsFromCache">
         Unable to get pixels from cache
+      </Message>
+      <Message name="UnableToOpenCache">
+        Unable to open cache
       </Message>
       <Message name="UnableToPersistCache">
         Unable to persist pixel cache
@@ -57,8 +54,14 @@
       <Message name="UnableToReadPixelCache">
         Unable to read pixel cache
       </Message>
+      <Message name="UnableToSyncCache">
+        Unable to sync cache
+      </Message>
     </Error>
     <FatalError>
+      <Message name="DiskAllocationFailed">
+        disk allocation failed
+      </Message>
       <Message name="UnableToExtendPixelCache">
         Unable to extend pixel cache
       </Message>
@@ -281,17 +284,8 @@
         <Message name="InsufficientImageDataInFile">
           Insufficient image data in file
         </Message>
-        <Message name="InvalidBitsPerPixel">
-					Invalid bits per pixel
-        </Message>
         <Message name="InvalidColormapIndex">
           Invalid colormap index
-        </Message>
-        <Message name="InvalidCompress">
-					Invalid compression
-        </Message>
-        <Message name="InvalidNumerOfColors">
-					Invalid number of colors
         </Message>
         <Message name="LengthAndFilesizeDoNotMatch">
 					Length and filesize do not match
@@ -470,8 +464,20 @@
         <Message name="UnknownPatternType">
           Unknown pattern type
         </Message>
+        <Message name="UnrecognizedBitsPerPixel">
+					Unrecognized bits per pixel
+        </Message>
+        <Message name="UnrecognizedCompress">
+					Unrecognized compression
+        </Message>
         <Message name="UnrecognizedCompressMethod">
           Unrecognized compression method
+        </Message>
+        <Message name="UnrecognizedNumerOfColors">
+					Unrecognized number of colors
+        </Message>
+        <Message name="UnrecognizedXWDHeader">
+					Unrecognized XWD header
         </Message>
       </Error>
       <FatalError>
@@ -764,18 +770,6 @@
       <Message name="ImageWidthsOrHeightsDiffer">
         image widths or heights differ
       </Message>
-      <Message name="InvalidColorspace">
-        Invalid image colorspace
-      </Message>
-      <Message name="InvalidComposeOperator">
-        Invalid compose operator
-      </Message>
-      <Message name="InvalidCompress">
-        Invalid image compression
-      </Message>
-      <Message name="InvalidPixelMap">
-        Invalid pixel map
-      </Message>
       <Message name="KernelRadiusIsTooSmall">
         kernel radius is too small
       </Message>
@@ -1019,11 +1013,20 @@
       <Message name="UnrecognizedAttribute">
         Unrecognized attribute
       </Message>
+      <Message name="UnrecognizedChannelType">
+        Unrecognized channel type
+      </Message>
       <Message name="UnrecognizedColor">
         Unrecognized color
       </Message>
-      <Message name="UnrecognizedChannelType">
-        Unrecognized channel type
+      <Message name="UnrecognizedColorspace">
+        Unrecognized image colorspace
+      </Message>
+      <Message name="UnrecognizedComposeOperator">
+        Unrecognized compose operator
+      </Message>
+      <Message name="UnrecognizedCompress">
+        Unrecognized image compression
       </Message>
       <Message name="UnrecognizedDisposeMethod">
         Unrecognized dispose method
@@ -1061,6 +1064,9 @@
       <Message name="UnrecognizedOption">
         Unrecognized option
       </Message>
+      <Message name="UnrecognizedPixelMap">
+        Unrecognized pixel map
+      </Message>
       <Message name="UnrecognizedResourceType">
         Unrecognized resource type
       </Message>
@@ -1069,23 +1075,23 @@
       </Message>
     </Error>
     </FatalError>
-      <Message name="InvalidColormapType">
-        Invalid colormap type
+      <Message name="UnrecognizedColormapType">
+        Unrecognized colormap type
       </Message>
-      <Message name="InvalidColorspaceType">
-        Invalid colorspace type
+      <Message name="UnrecognizedColorspaceType">
+        Unrecognized colorspace type
       </Message>
-      <Message name="InvalidEndianType">
-        Invalid endian type
+      <Message name="UnrecognizedEndianType">
+        Unrecognized endian type
       </Message>
-      <Message name="InvalidImageType">
-        Invalid image type
+      <Message name="UnrecognizedImageType">
+        Unrecognized image type
       </Message>
-      <Message name="InvalidInterlaceType">
-        Invalid interlace type
+      <Message name="UnrecognizedInterlaceType">
+        Unrecognized interlace type
       </Message>
-      <Message name="InvalidVirtualPixelMethod">
-        Invalid virtual pixel method
+      <Message name="UnrecognizedVirtualPixelMethod">
+        Unrecognized virtual pixel method
       </Message>
       <Message name="MissingAnImageFilename">
         Missing an image filename
@@ -1506,9 +1512,6 @@
       <Message name="ColorIsNotKnownToServer">
         Color is not known to server
       </Message>
-      <Message name="InvalidVisualSpecifier">
-        Invalid visual specifier
-      </Message>
       <Message name="NoWindowWithSpecifiedIDExists">
         No window with specified ID exists
       </Message>
@@ -1562,6 +1565,9 @@
       </Message>
       <Message name="UnrecognizedGravityType">
         Unrecognized gravity type
+      </Message>
+      <Message name="UnrecognizedVisualSpecifier">
+        Unrecognized visual specifier
       </Message>
     </Error>
     <FatalError>

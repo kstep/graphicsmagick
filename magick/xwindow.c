@@ -941,7 +941,7 @@ MagickExport XVisualInfo *XBestVisualInfo(Display *display,
                           strtol(visual_type,(char **) NULL,0);
                       }
                     else
-                      MagickError(XServerError,"InvalidVisualSpecifier",
+                      MagickError(XServerError,"UnrecognizedVisualSpecifier",
                         visual_type);
     }
   /*

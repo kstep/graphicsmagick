@@ -355,7 +355,7 @@ MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
         case 1:
         {
           /*
-            Invalid '=' character.
+            Unrecognized '=' character.
           */
           LiberateMemory((void **) &decode);
           return((unsigned char *) NULL);

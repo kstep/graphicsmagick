@@ -256,7 +256,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ximage->blue_mask=header.blue_mask;
   status=XInitImage(ximage);
   if (status == False)
-    ThrowReaderException(CorruptImageError,"Invalid XWD header",image);
+    ThrowReaderException(CorruptImageError,"UnrecognizedXWDHeader",image);
   /*
     Read colormap.
   */

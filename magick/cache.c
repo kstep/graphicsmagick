@@ -1810,7 +1810,7 @@ extern "C" {
 static void CacheSignalHandler(int status)
 {
   MagickFatalError(CacheFatalError,"UnableToExtendPixelCache",
-    "disk allocation failed");
+    "DiskAllocationFailed");
   DestroyMagick();
   Exit(status);
 }

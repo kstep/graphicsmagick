@@ -175,8 +175,8 @@ const char *GetLocaleMessage(const char *tag)
               return tag;
 
             case 'i':  case 'I':
-              if (p - tp == 31 && !LocaleNCompare(tp, "InconsistentPeristentCacheDepth", 31))
-                return *np ? tag : "Inconsistent peristent cache depth";
+              if (p - tp == 32 && !LocaleNCompare(tp, "InconsistentPersistentCacheDepth", 32))
+                return *np ? tag : "Inconsistent persistent cache depth";
               else
                 return tag;
 
@@ -218,10 +218,23 @@ const char *GetLocaleMessage(const char *tag)
 
         case 'f':  case 'F':
           if (p - tp == 10 && !LocaleNCompare(tp, "FatalError", 10))
-            if (LocaleNCompare(NEXT_FIELD, "UnableToExtendPixelCache", 24) || p - tp != 24)
+            switch (*NEXT_FIELD)
+            {
+            default:
               return tag;
-            else
-              return *np ? tag : "Unable to extend pixel cache";
+
+            case 'd':  case 'D':
+              if (p - tp == 20 && !LocaleNCompare(tp, "DiskAllocationFailed", 20))
+                return *np ? tag : "disk allocation failed";
+              else
+                return tag;
+
+            case 'u':  case 'U':
+              if (p - tp == 24 && !LocaleNCompare(tp, "UnableToExtendPixelCache", 24))
+                return *np ? tag : "Unable to extend pixel cache";
+              else
+                return tag;
+            }
           else
             return tag;
         }
@@ -537,17 +550,8 @@ const char *GetLocaleMessage(const char *tag)
                 if (p - tp == 27 && !LocaleNCompare(tp, "InsufficientImageDataInFile", 27))
                   return *np ? tag : "Insufficient image data in file";
                 else
-                if (p - tp == 19 && !LocaleNCompare(tp, "InvalidBitsPerPixel", 19))
-                  return *np ? tag : "Invalid bits per pixel";
-                else
                 if (p - tp == 20 && !LocaleNCompare(tp, "InvalidColormapIndex", 20))
                   return *np ? tag : "Invalid colormap index";
-                else
-                if (p - tp == 15 && !LocaleNCompare(tp, "InvalidCompress", 15))
-                  return *np ? tag : "Invalid compression";
-                else
-                if (p - tp == 20 && !LocaleNCompare(tp, "InvalidNumerOfColors", 20))
-                  return *np ? tag : "Invalid number of colors";
                 else
                   return tag;
 
@@ -741,8 +745,20 @@ const char *GetLocaleMessage(const char *tag)
                 if (p - tp == 18 && !LocaleNCompare(tp, "UnknownPatternType", 18))
                   return *np ? tag : "Unknown pattern type";
                 else
+                if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedBitsPerPixel", 24))
+                  return *np ? tag : "Unrecognized bits per pixel";
+                else
+                if (p - tp == 20 && !LocaleNCompare(tp, "UnrecognizedCompress", 20))
+                  return *np ? tag : "Unrecognized compression";
+                else
                 if (p - tp == 26 && !LocaleNCompare(tp, "UnrecognizedCompressMethod", 26))
                   return *np ? tag : "Unrecognized compression method";
+                else
+                if (p - tp == 25 && !LocaleNCompare(tp, "UnrecognizedNumerOfColors", 25))
+                  return *np ? tag : "Unrecognized number of colors";
+                else
+                if (p - tp == 21 && !LocaleNCompare(tp, "UnrecognizedXWDHeader", 21))
+                  return *np ? tag : "Unrecognized XWD header";
                 else
                   return tag;
               }
@@ -1045,24 +1061,6 @@ const char *GetLocaleMessage(const char *tag)
               return tag;
           }
       else
-      if (p - tp == 19 && !LocaleNCompare(tp, "InvalidColormapType", 19))
-        return *np ? tag : "Invalid colormap type";
-      else
-      if (p - tp == 21 && !LocaleNCompare(tp, "InvalidColorspaceType", 21))
-        return *np ? tag : "Invalid colorspace type";
-      else
-      if (p - tp == 17 && !LocaleNCompare(tp, "InvalidEndianType", 17))
-        return *np ? tag : "Invalid endian type";
-      else
-      if (p - tp == 16 && !LocaleNCompare(tp, "InvalidImageType", 16))
-        return *np ? tag : "Invalid image type";
-      else
-      if (p - tp == 20 && !LocaleNCompare(tp, "InvalidInterlaceType", 20))
-        return *np ? tag : "Invalid interlace type";
-      else
-      if (p - tp == 25 && !LocaleNCompare(tp, "InvalidVirtualPixelMethod", 25))
-        return *np ? tag : "Invalid virtual pixel method";
-      else
         return tag;
 
     case 'm':  case 'M':
@@ -1334,18 +1332,6 @@ const char *GetLocaleMessage(const char *tag)
             if (p - tp == 26 && !LocaleNCompare(tp, "ImageWidthsOrHeightsDiffer", 26))
               return *np ? tag : "image widths or heights differ";
             else
-            if (p - tp == 17 && !LocaleNCompare(tp, "InvalidColorspace", 17))
-              return *np ? tag : "Invalid image colorspace";
-            else
-            if (p - tp == 22 && !LocaleNCompare(tp, "InvalidComposeOperator", 22))
-              return *np ? tag : "Invalid compose operator";
-            else
-            if (p - tp == 15 && !LocaleNCompare(tp, "InvalidCompress", 15))
-              return *np ? tag : "Invalid image compression";
-            else
-            if (p - tp == 15 && !LocaleNCompare(tp, "InvalidPixelMap", 15))
-              return *np ? tag : "Invalid pixel map";
-            else
               return tag;
 
           case 'k':  case 'K':
@@ -1610,6 +1596,15 @@ const char *GetLocaleMessage(const char *tag)
             if (p - tp == 17 && !LocaleNCompare(tp, "UnrecognizedColor", 17))
               return *np ? tag : "Unrecognized color";
             else
+            if (p - tp == 22 && !LocaleNCompare(tp, "UnrecognizedColorspace", 22))
+              return *np ? tag : "Unrecognized image colorspace";
+            else
+            if (p - tp == 27 && !LocaleNCompare(tp, "UnrecognizedComposeOperator", 27))
+              return *np ? tag : "Unrecognized compose operator";
+            else
+            if (p - tp == 20 && !LocaleNCompare(tp, "UnrecognizedCompress", 20))
+              return *np ? tag : "Unrecognized image compression";
+            else
             if (p - tp == 25 && !LocaleNCompare(tp, "UnrecognizedDisposeMethod", 25))
               return *np ? tag : "Unrecognized dispose method";
             else
@@ -1642,6 +1637,9 @@ const char *GetLocaleMessage(const char *tag)
             else
             if (p - tp == 18 && !LocaleNCompare(tp, "UnrecognizedOption", 18))
               return *np ? tag : "Unrecognized option";
+            else
+            if (p - tp == 20 && !LocaleNCompare(tp, "UnrecognizedPixelMap", 20))
+              return *np ? tag : "Unrecognized pixel map";
             else
             if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedResourceType", 24))
               return *np ? tag : "Unrecognized resource type";
@@ -2042,14 +2040,29 @@ const char *GetLocaleMessage(const char *tag)
         return tag;
 
     case 'u':  case 'U':
+      if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedColormapType", 24))
+        return *np ? tag : "Unrecognized colormap type";
+      else
+      if (p - tp == 26 && !LocaleNCompare(tp, "UnrecognizedColorspaceType", 26))
+        return *np ? tag : "Unrecognized colorspace type";
+      else
       if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedCompressType", 24))
         return *np ? tag : "unrecognized compression type";
       else
       if (p - tp == 25 && !LocaleNCompare(tp, "UnrecognizedDisposeMethod", 25))
         return *np ? tag : "unrecognized dispose method";
       else
+      if (p - tp == 22 && !LocaleNCompare(tp, "UnrecognizedEndianType", 22))
+        return *np ? tag : "Unrecognized endian type";
+      else
       if (p - tp == 22 && !LocaleNCompare(tp, "UnrecognizedFilterType", 22))
         return *np ? tag : "Unrecognized filter type";
+      else
+      if (p - tp == 21 && !LocaleNCompare(tp, "UnrecognizedImageType", 21))
+        return *np ? tag : "Unrecognized image type";
+      else
+      if (p - tp == 25 && !LocaleNCompare(tp, "UnrecognizedInterlaceType", 25))
+        return *np ? tag : "Unrecognized interlace type";
       else
       if (p - tp == 18 && !LocaleNCompare(tp, "UnrecognizedOption", 18))
         return *np ? tag : "Unrecognized option";
@@ -2079,12 +2092,6 @@ const char *GetLocaleMessage(const char *tag)
             case 'c':  case 'C':
               if (p - tp == 23 && !LocaleNCompare(tp, "ColorIsNotKnownToServer", 23))
                 return *np ? tag : "Color is not known to server";
-              else
-                return tag;
-
-            case 'i':  case 'I':
-              if (p - tp == 22 && !LocaleNCompare(tp, "InvalidVisualSpecifier", 22))
-                return *np ? tag : "Invalid visual specifier";
               else
                 return tag;
 
@@ -2148,6 +2155,9 @@ const char *GetLocaleMessage(const char *tag)
               else
               if (p - tp == 23 && !LocaleNCompare(tp, "UnrecognizedGravityType", 23))
                 return *np ? tag : "Unrecognized gravity type";
+              else
+              if (p - tp == 27 && !LocaleNCompare(tp, "UnrecognizedVisualSpecifier", 27))
+                return *np ? tag : "Unrecognized visual specifier";
               else
                 return tag;
             }

@@ -670,7 +670,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (image->rows == 0))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader",image);
     if (quantum_depth != QuantumDepth)
-      ThrowReaderException(CacheError,"InconsistentPeristentCacheDepth",image);
+      ThrowReaderException(CacheError,"InconsistentPersistentCacheDepth",image);
     if (image->montage != (char *) NULL)
       {
         register char

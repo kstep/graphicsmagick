@@ -255,7 +255,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               default:
               {
                 DestroyImage(image);
-                ThrowImageException(OptionError,"InvalidPixelMap",map)
+                ThrowImageException(OptionError,"UnrecognizedPixelMap",map)
               }
             }
           }
@@ -327,7 +327,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               default:
               {
                 DestroyImage(image);
-                ThrowImageException(OptionError,"InvalidPixelMap",map)
+                ThrowImageException(OptionError,"UnrecognizedPixelMap",map)
               }
             }
           }
@@ -399,7 +399,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               default:
               {
                 DestroyImage(image);
-                ThrowImageException(OptionError,"InvalidPixelMap",map)
+                ThrowImageException(OptionError,"UnrecognizedPixelMap",map)
               }
             }
           }
@@ -471,7 +471,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               default:
               {
                 DestroyImage(image);
-                ThrowImageException(OptionError,"InvalidPixelMap",map)
+                ThrowImageException(OptionError,"UnrecognizedPixelMap",map)
               }
             }
           }
@@ -543,7 +543,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               default:
               {
                 DestroyImage(image);
-                ThrowImageException(OptionError,"InvalidPixelMap",map)
+                ThrowImageException(OptionError,"UnrecognizedPixelMap",map)
               }
             }
           }
@@ -615,7 +615,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               default:
               {
                 DestroyImage(image);
-                ThrowImageException(OptionError,"InvalidPixelMap",map)
+                ThrowImageException(OptionError,"UnrecognizedPixelMap",map)
               }
             }
           }
@@ -629,7 +629,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
     default:
     {
       DestroyImage(image);
-      ThrowImageException(OptionError,"InvalidPixelMap",map)
+      ThrowImageException(OptionError,"UnrecognizedPixelMap",map)
     }
   }
   return(image);
@@ -812,7 +812,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               }
               default:
               {
-                ThrowException(exception,OptionError,"InvalidPixelMap",map);
+                ThrowException(exception,OptionError,"UnrecognizedPixelMap",map);
                 return(False);
               }
             }
@@ -879,7 +879,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               }
               default:
               {
-                ThrowException(exception,OptionError,"InvalidPixelMap",map);
+                ThrowException(exception,OptionError,"UnrecognizedPixelMap",map);
                 return(False);
               }
             }
@@ -946,7 +946,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               }
               default:
               {
-                ThrowException(exception,OptionError,"InvalidPixelMap",map);
+                ThrowException(exception,OptionError,"UnrecognizedPixelMap",map);
                 return(False);
               }
             }
@@ -1013,7 +1013,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               }
               default:
               {
-                ThrowException(exception,OptionError,"InvalidPixelMap",map);
+                ThrowException(exception,OptionError,"UnrecognizedPixelMap",map);
                 return(False);
               }
             }
@@ -1080,7 +1080,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               }
               default:
               {
-                ThrowException(exception,OptionError,"InvalidPixelMap",map);
+                ThrowException(exception,OptionError,"UnrecognizedPixelMap",map);
                 return(False);
               }
             }
@@ -1147,7 +1147,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               }
               default:
               {
-                ThrowException(exception,OptionError,"InvalidPixelMap",map);
+                ThrowException(exception,OptionError,"UnrecognizedPixelMap",map);
                 return(False);
               }
             }
@@ -1159,7 +1159,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
     }
     default:
     {
-      ThrowException(exception,OptionError,"InvalidPixelMap",map);
+      ThrowException(exception,OptionError,"UnrecognizedPixelMap",map);
       return(False);
     }
   }

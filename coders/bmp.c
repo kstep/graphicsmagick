@@ -769,17 +769,17 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((bmp_info.bits_per_pixel != 1) && (bmp_info.bits_per_pixel != 4) &&
         (bmp_info.bits_per_pixel != 8) && (bmp_info.bits_per_pixel != 16) &&
         (bmp_info.bits_per_pixel != 24) && (bmp_info.bits_per_pixel != 32))
-      ThrowReaderException(CorruptImageWarning,"InvalidBitsPerPixel",image);
+      ThrowReaderException(CorruptImageWarning,"UnrecognizedBitsPerPixel",image);
     if (bmp_info.number_colors > (1UL << bmp_info.bits_per_pixel))
-      ThrowReaderException(CorruptImageWarning,"InvalidNumberOfColors",image);
+      ThrowReaderException(CorruptImageWarning,"UnrecognizedNumberOfColors",image);
     if (bmp_info.compression > 3)
-      ThrowReaderException(CorruptImageWarning,"InvalidCompression",image);
+      ThrowReaderException(CorruptImageWarning,"UnrecognizedCompression",image);
     if ((bmp_info.compression == 1) && (bmp_info.bits_per_pixel != 8))
-      ThrowReaderException(CorruptImageWarning,"InvalidBitsPerPixel",image);
+      ThrowReaderException(CorruptImageWarning,"UnrecognizedBitsPerPixel",image);
     if ((bmp_info.compression == 2) && (bmp_info.bits_per_pixel != 4))
-      ThrowReaderException(CorruptImageWarning,"InvalidBitsPerPixel",image);
+      ThrowReaderException(CorruptImageWarning,"UnrecognizedBitsPerPixel",image);
     if ((bmp_info.compression == 3) && (bmp_info.bits_per_pixel < 16))
-      ThrowReaderException(CorruptImageWarning,"InvalidBitsPerPixel",image);
+      ThrowReaderException(CorruptImageWarning,"UnrecognizedBitsPerPixel",image);
     switch (bmp_info.compression)
     {
       case BI_RGB:
@@ -1076,7 +1076,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if (bmp_info.compression != BI_RGB &&
             bmp_info.compression != BI_BITFIELDS)
-          ThrowReaderException(CorruptImageError,"InvalidCompression",image)
+          ThrowReaderException(CorruptImageError,"UnrecognizedCompression",image)
         bytes_per_line=2*(image->columns+image->columns%2);
         image->storage_class=DirectClass;
         for (y=(long) image->rows-1; y >= 0; y--)
@@ -1170,7 +1170,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if ((bmp_info.compression != BI_RGB) &&
             (bmp_info.compression != BI_BITFIELDS))
-          ThrowReaderException(CorruptImageError,"InvalidCompression",image)
+          ThrowReaderException(CorruptImageError,"UnrecognizedCompression",image)
         bytes_per_line=4*(image->columns);
         for (y=(long) image->rows-1; y >= 0; y--)
         {
