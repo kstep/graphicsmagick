@@ -1231,12 +1231,12 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlob(image,6,"GIF87a");
     else
       (void) WriteBlob(image,6,"GIF89a");
+  page.x=image->page.x;
+  page.y=image->page.y;
   if ((image->page.width != 0) && (image->page.height != 0))
     page=image->page;
   (void) WriteBlobLSBShort(image,page.width);
   (void) WriteBlobLSBShort(image,page.height);
-  page.x=0;
-  page.y=0;
   /*
     Write images to file.
   */
@@ -1414,16 +1414,10 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
     /*
       Write the image header.
     */
+    page.x=image->page.x;
+    page.y=image->page.y;
     if ((image->page.width != 0) && (image->page.height != 0))
-      {
-        page=image->page;
-        if ((image->previous == (Image *) NULL) &&
-            (image->next == (Image *) NULL))
-          {
-            page.x=0;
-            page.y=0;
-          }
-      }
+      page=image->page;
     (void) WriteBlobLSBShort(image,page.x);
     (void) WriteBlobLSBShort(image,page.y);
     (void) WriteBlobLSBShort(image,image->columns);
