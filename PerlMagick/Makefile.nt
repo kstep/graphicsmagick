@@ -17,7 +17,7 @@ WriteMakefile(
     'DEFINE'    => '-D_VISUALC_ -D_WINDOWS',     # e.g., '-DHAVE_SOMETHING' 
     'INC'       => '-I.. -I..\xlib\include',
     'BINARY_LOCATION'  => 'x86/Image-Magick.tar.gz',
-    'dist' => {ZIP => "zip.exe", ZIPFLAGS=>"-rP"},
+    'dist' => {ZIP => "zip.exe", ZIPFLAGS=>"-r"},
     ($Config{'archname'} =~ /-object$/i ? ('CAPI' => 'TRUE') : ()),
 );
 
@@ -39,13 +39,14 @@ sub MY::postamble
         '
 ppm: ppd pure_all htmlifypods manifypods
         if exist PerlMagick.zip del PerlMagick.zip
+	if exist Image-Magick.tar$(SUFFIX) del Image-Magick.tar$(SUFFIX)
         $(TAR) $(TARFLAGS) Image-Magick.tar blib
         $(COMPRESS) -q Image-Magick.tar
         if exist x86 del x86 /f /q
         if exist x86 rd x86
         md x86
         copy Image-Magick.tar$(SUFFIX) x86
-        del Image-Magick.tar$(SUFFIX)
+#        del Image-Magick.tar$(SUFFIX)
         if exist ppm-readme.txt copy ppm-readme.txt readme
         $(ZIP) $(ZIPFLAGS) PerlMagick.zip readme Image-Magick.ppd x86/Image-Magick.tar$(SUFFIX)
         del x86\Image-Magick.tar$(SUFFIX)
