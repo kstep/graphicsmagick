@@ -673,21 +673,21 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
 */
 MagickExport char *MagickToMime(const char *magick)
 {
-  typedef struct _MediaTypes
+  typedef struct _MediaType
   {
     const char
       *magick,
       *media;
-  } MediaTypes;
+  } MediaType;
 
   char
     media[MaxTextExtent];
 
-  MediaTypes
+  MediaType
     *entry;
 
-  static MediaTypes
-    MediaList[] =
+  static MediaType
+    MediaTypes[] =
     {
       { "avi",   "video/avi" },
       { "cgm",   "image/cgm;Version=4;ProfileId=WebCGM" }, /* W3 WebCGM */
@@ -719,7 +719,7 @@ MagickExport char *MagickToMime(const char *magick)
       { (char *) NULL, (char *) NULL }
     };
 
-  for (entry=MediaList; entry->magick != (char *) NULL; entry++)
+  for (entry=MediaTypes; entry->magick != (char *) NULL; entry++)
     if (LocaleCompare(entry->magick,magick) == 0)
       return(AllocateString(entry->media));
   FormatString(media,"image/x-%.1024s",magick);
