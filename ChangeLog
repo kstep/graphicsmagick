@@ -2,7 +2,7 @@
   * Added magic string detection for the FPX format (patch provided by
     Marc).
 
-2002-04-15  Cristy  <cristy@mystic.es.dupont.com>
+2002-04-18  Cristy  <cristy@mystic.es.dupont.com>
   * Added ExceptionInfo parameter to C API method, QueryColorDatabase().
 
 2002-04-17  Leonard Rosenthol  <leonardr@lazerware.com>
