@@ -128,7 +128,7 @@ extern MagickExport void
   DestroyCacheNexus(Cache,const unsigned long),
   GetCacheInfo(Cache *),
   ResetPixelCacheMethods(void),
-  SetCacheThreshold(const long),
+  SetCacheThreshold(const off_t),
   SetPixelCacheMethods(GetPixelHandler,SetPixelHandler,SyncPixelHandler,
     GetPixelsFromHandler,GetIndexesFromHandler,GetOnePixelFromHandler,
     ClosePixelHandler,DestroyPixelHandler);

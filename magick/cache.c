@@ -60,15 +60,10 @@
 #endif
 
 /*
-  Define declarations.
-*/
-#define DefaultCacheMemory  ((off_t) 1L << (8*sizeof(off_t)-1)-1)
-
-/*
   Global declarations.
 */
 static off_t
-  cache_memory = DefaultCacheMemory;
+  cache_memory = ~0;
 
 static SemaphoreInfo
   *cache_semaphore = (SemaphoreInfo *) NULL;
@@ -1285,7 +1280,7 @@ MagickExport unsigned int OpenCache(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (void *) NULL);
-  if (cache_memory == DefaultCacheMemory)
+  if (cache_memory == ~0)
     {
       char
         *threshold;
@@ -1293,13 +1288,13 @@ MagickExport unsigned int OpenCache(Image *image)
       /*
         Set cache memory threshold.
       */
+      SetCacheThreshold(1L << (8*sizeof(off_t)-1));
 #if defined(PixelCacheThreshold)
       SetCacheThreshold(PixelCacheThreshold);
 #endif
       threshold=getenv("MAGICK_CACHE_THRESHOLD");
       if (threshold != (char *) NULL)
         SetCacheThreshold(atol(threshold));
-      (void) GetCacheMemory(1);
     }
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
@@ -1757,7 +1752,7 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
 %
 %  The format of the SetCacheThreshold() method is:
 %
-%      void SetCacheThreshold(const long threshold)
+%      void SetCacheThreshold(const size_t threshold)
 %
 %  A description of each parameter follows:
 %
@@ -1766,7 +1761,7 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
 %
 %
 */
-MagickExport void SetCacheThreshold(const long threshold)
+MagickExport void SetCacheThreshold(const off_t threshold)
 {
   cache_memory=1024*1024*threshold;
 }
