@@ -425,7 +425,7 @@ static void Usage(void)
       "-geometry geometry  location of the composite image",
       "-gravity type       which direction to gravitate towards",
       "-interlace type     None, Line, Plane, or Partition",
-      "-label name         ssign a label to an image",
+      "-label name         assign a label to an image",
       "-matte              store matte channel if the image has one",
       "-monochrome         transform image to black and white",
       "-negate             replace every pixel with its complementary color ",
