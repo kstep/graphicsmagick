@@ -800,12 +800,13 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
       */
       buff=AllocateImage((ImageInfo *) NULL);
       if (buff == (Image *) NULL)
-        ThrowReaderException(FileOpenError,"MemoryAllocationFailed",image);
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
       blob=(unsigned char *) AcquireMemory(length);
       if (blob == (unsigned char *) NULL)
         {
           DestroyImage(buff);
-          ThrowReaderException(FileOpenError,"MemoryAllocationFailed",image)
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+            image)
         }
       AttachBlob(buff->blob,blob,length);
       if (LocaleCompare(image_info->magick,"8BIMTEXT") == 0)
@@ -927,12 +928,13 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
     {
       buff=AllocateImage((ImageInfo *) NULL);
       if (buff == (Image *) NULL)
-        ThrowReaderException(FileOpenError,"MemoryAllocationFailed",image);
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
       blob=(unsigned char *) AcquireMemory(length);
       if (blob == (unsigned char *) NULL)
         {
           DestroyImage(buff);
-          ThrowReaderException(FileOpenError,"MemoryAllocationFailed",image)
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+            image)
         }
       AttachBlob(buff->blob,blob,length);
       for ( ; ; )
@@ -951,12 +953,13 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
     {
       buff=AllocateImage((ImageInfo *) NULL);
       if (buff == (Image *) NULL)
-        ThrowReaderException(FileOpenError,"MemoryAllocationFailed",image);
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
       blob=(unsigned char *) AcquireMemory(length);
       if (blob == (unsigned char *) NULL)
         {
           DestroyImage(buff);
-          ThrowReaderException(FileOpenError,"MemoryAllocationFailed",image)
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+            image)
         }
       AttachBlob(buff->blob,blob,length);
       /* write out the header - length field patched below */
@@ -1772,13 +1775,13 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
         *info;
 
       if (image->iptc_profile.length == 0)
-        ThrowWriterException(FileOpenError,"NoIPTCProfileAvailable",image);
+        ThrowWriterException(CoderError,"NoIPTCProfileAvailable",image);
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       info=image->iptc_profile.info;
       length=image->iptc_profile.length;
       length=GetIPTCStream(&info,length);
       if (length == 0)
-        ThrowWriterException(FileOpenError,"NoIPTCInfoWasFound",image);
+        ThrowWriterException(CoderError,"NoIPTCInfoWasFound",image);
       (void) WriteBlob(image,length,info);
     }
   if (LocaleCompare(image_info->magick,"8BIMTEXT") == 0)
@@ -1787,7 +1790,7 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
         *buff;
 
       if (image->iptc_profile.length == 0)
-        ThrowWriterException(FileOpenError,"No8BIMDataIsAvailable",image);
+        ThrowWriterException(CoderError,"No8BIMDataIsAvailable",image);
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       if (status == False)
         ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
@@ -1897,7 +1900,7 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
             return(True);
           }
       }
-      ThrowWriterException(FileOpenError,"NoAPP1DataIsAvailable",image)
+      ThrowWriterException(CoderError,"NoAPP1DataIsAvailable",image)
     }
   if ((LocaleCompare(image_info->magick,"ICC") == 0) ||
       (LocaleCompare(image_info->magick,"ICM") == 0))
@@ -1906,7 +1909,7 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
         Write ICM image.
       */
       if (image->color_profile.length == 0)
-        ThrowWriterException(FileOpenError,"NoColorProfileAvailable",image);
+        ThrowWriterException(CoderError,"NoColorProfileAvailable",image);
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       if (status == False)
         ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
