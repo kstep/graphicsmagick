@@ -119,6 +119,55 @@ MagickExport void DestroyMagickInfo(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t I m a g e M a g i c k                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetImageMagick searches for an image format that matches the
+%  specified magick string.  If one is found the tag is returned otherwise
+%  NULL.
+%
+%  The format of the GetImageMagick method is:
+%
+%      char *GetImageMagick(const unsigned char *magick)
+%
+%  A description of each parameter follows:
+%
+%    o tag: Method GetImageMagick returns a tag that matches the
+%      specified magick string.
+%
+%    o magick: a character string that represents the image format we are
+%      looking for.
+%
+%
+*/
+MagickExport char *GetImageMagick(const unsigned char *magick)
+{
+  register MagickInfo
+    *p;
+
+#if defined(HasPTHREADS)
+  pthread_mutex_lock(&magick_mutex);
+#endif
+  for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
+    if (p->magick)
+      if (p->magick(magick,MaxTextExtent))
+        break;
+#if defined(HasPTHREADS)
+  pthread_mutex_unlock(&magick_mutex);
+#endif
+  if (p != (MagickInfo *) NULL)
+    return(p->tag);
+  return((char *) NULL);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t M a g i c k I n f o                                                 %
 %                                                                             %
 %                                                                             %
@@ -242,7 +291,7 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
 #endif
     }
   if ((tag == (char *) NULL) || (*tag == '\0'))
-    return(magick_list);
+    return((MagickInfo *) NULL);
   /*
     Find tag in list
   */

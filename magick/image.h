@@ -670,6 +670,9 @@ extern MagickExport const ColorlistInfo
 extern MagickExport AnnotateInfo
   *CloneAnnotateInfo(const ImageInfo *,const AnnotateInfo *);
 
+extern char 
+  *GetImageMagick(const unsigned char *);
+
 extern MagickExport DrawInfo
   *CloneDrawInfo(const ImageInfo *,const DrawInfo *);
 

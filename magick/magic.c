@@ -424,23 +424,22 @@ MagickExport unsigned int SetImageMagic(const unsigned char *magick,
   MagicInfoMember
     *member;
 
+  register char
+    *q;
+
   register int
     i;
-
-  register MagickInfo
-    *q;
 
   register StringMethodArgument
     *p;
 
   *magic='\0';
-  for (q=GetMagickInfo((char *) NULL); q != (MagickInfo *) NULL; q=q->next)
-    if (q->magick)
-      if (q->magick((unsigned char *) magick,MaxTextExtent))
-        {
-          (void) strcpy(magic,q->tag);
-          return(True);
-        }
+  q=GetImageMagick(magick);
+  if (q != (char *) NULL)
+    {
+      (void) strcpy(magic,q);
+      return(True);
+    }
   if (magic_list == (MagicInfo **) NULL)
     if (InitializeMagic() == False)
       {
