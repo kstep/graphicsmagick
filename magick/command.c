@@ -1185,9 +1185,9 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
       }
     }
   }
-  if (i != (argc-1))
-    return(False);
   if (image == (Image *) NULL)
+    return(False);
+  if (i != (argc-1))
     ThrowCompositeException(OptionError,"Missing an image file name",
       (char *) NULL);
   status&=MogrifyImages(image_info,i-j,argv+j,&image);
@@ -2874,9 +2874,9 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
       }
     }
   }
-  if (i != (argc-1))
-    return(False);
   if ((image == (Image *) NULL) && (image_list == (Image *) NULL))
+    return(False);
+  if (i != (argc-1))
     ThrowConvertException(OptionError,"Missing an image file name",
       (char *) NULL);
   if (image == (Image *) NULL)
@@ -5829,9 +5829,9 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
       }
     }
   }
-  if (i != (argc-1))
-    return(False);
   if ((image == (Image *) NULL) && (image_list == (Image *) NULL))
+    return(False);
+  if (i != (argc-1))
     ThrowMontageException(OptionError,"Missing an image file name",
       (char *) NULL);
   if (image != (Image *) NULL)
