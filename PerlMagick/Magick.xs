@@ -6408,7 +6408,7 @@ QueryColorname(ref,...)
 #
 #
 void
-QueryConfigration(ref,...)
+QueryConfiguration(ref,...)
   Image::Magick ref=NO_INIT
   ALIAS:
     queryconfiguration = 1
