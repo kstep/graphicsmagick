@@ -33,12 +33,14 @@ extern "C" {
 # include <unistd.h>
 #else
 # include <direct.h>
-# define HAVE_STRERROR
+# if !defined(HAVE_STRERROR)
+#  define HAVE_STRERROR
+# endif
 #endif
 
 #if defined(_FILE_OFFSET_BITS) && (_FILE_OFFSET_BITS == 64)
-#define fseek  fseeko
-#define ftell  ftello
+# define fseek  fseeko
+# define ftell  ftello
 #endif
 
 #include <string.h>
@@ -53,63 +55,63 @@ extern "C" {
 #include <assert.h>
 
 #if !defined(vms) && !defined(macintosh)
-#include <sys/types.h>
-#include <sys/stat.h>
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-#if defined(HAVE_SYS_NDIR_H) || defined(HAVE_SYS_DIR_H) || defined(HAVE_NDIR_H)
-#define dirent direct
-#define NAMLEN(dirent) (dirent)->d_namlen
-#if defined(HAVE_SYS_NDIR_H)
-#include <sys/ndir.h>
-#endif
-#if defined(HAVE_SYS_DIR_H)
-#include <sys/dir.h>
-#endif
-#if defined(HAVE_NDIR_H)
-#include <ndir.h>
-#endif
+# include <sys/types.h>
+# include <sys/stat.h>
+# if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+#  if defined(HAVE_SYS_NDIR_H) || defined(HAVE_SYS_DIR_H) || defined(HAVE_NDIR_H)
+#   define dirent direct
+#   define NAMLEN(dirent) (dirent)->d_namlen
+#   if defined(HAVE_SYS_NDIR_H)
+#    include <sys/ndir.h>
+#   endif
+#   if defined(HAVE_SYS_DIR_H)
+#    include <sys/dir.h>
+#   endif
+#   if defined(HAVE_NDIR_H)
+#    include <ndir.h>
+#   endif
+#  else
+#   include <dirent.h>
+#   define NAMLEN(dirent) strlen((dirent)->d_name)
+#  endif
+#  include <pwd.h>
+# endif
+# if !defined(S_ISDIR)
+#  define S_ISDIR(mode) (((mode) & S_IFMT) == S_IFDIR)
+# endif
+# include "magick/api.h"
+# if !defined(WIN32)
+#  include <sys/time.h>
+#  include <sys/times.h>
+# endif
 #else
-#include <dirent.h>
-#define NAMLEN(dirent) strlen((dirent)->d_name)
-#endif
-#include <pwd.h>
-#endif
-#if !defined(S_ISDIR)
-#define S_ISDIR(mode) (((mode) & S_IFMT) == S_IFDIR)
-#endif
-#include "magick/api.h"
-#if !defined(WIN32)
-#include <sys/time.h>
-#include <sys/times.h>
-#endif
-#else
-#include <types.h>
-#include <stat.h>
-#if defined(macintosh)
-#include <SIOUX.h>
-#include <console.h>
-#include <unix.h>
-#endif
-#include "api.h"
+# include <types.h>
+# include <stat.h>
+# if defined(macintosh)
+#  include <SIOUX.h>
+#  include <console.h>
+#  include <unix.h>
+# endif
+# include "api.h"
 #endif
 
 #if defined(WIN32)
-#include "nt.h"
+# include "nt.h"
 #endif
 #if defined(macintosh)
-#include "mac.h"
+# include "mac.h"
 #endif
 #if defined(vms)
-#include "vms.h"
+# include "vms.h"
 #endif
 #if defined(HAVE_MMAP) && !defined(WIN32)
-#include <sys/mman.h>
+# include <sys/mman.h>
 #endif
 #if defined(HasPTHREADS)
-#include <pthread.h>
+# include <pthread.h>
 #endif
 #if defined(HAVE_POLL)
-#include <sys/poll.h>
+# include <sys/poll.h>
 #endif
 
 #undef index
@@ -119,106 +121,112 @@ extern "C" {
   Review these platform specific definitions.
 */
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-#if !defined(ApplicationDefaults)
-#define ApplicationDefaults  "/usr/X11R6/lib/X11/app-defaults/"
-#endif
-#define DirectorySeparator  "/"
-#define DirectoryListSeparator  ':'
-#define EditorOptions  " -title \"Edit Image Comment\" -e vi"
-#define Exit  exit
-#define IsBasenameSeparator(c)  ((c) == '/')
-#define IsGlob(text) \
+# if !defined(ApplicationDefaults)
+#  define ApplicationDefaults  "/usr/X11R6/lib/X11/app-defaults/"
+# endif
+# define DirectorySeparator  "/"
+# define DirectoryListSeparator  ':'
+# define EditorOptions  " -title \"Edit Image Comment\" -e vi"
+# define Exit  exit
+# define IsBasenameSeparator(c)  ((c) == '/')
+# define IsGlob(text) \
   ((strchr(text,'*') != (char *) NULL) || \
    (strchr(text,'?') != (char *) NULL) || \
    (strchr(text,'{') != (char *) NULL) || \
    (strchr(text,'}') != (char *) NULL) || \
    (strchr(text,'[') != (char *) NULL) || \
    (strchr(text,']') != (char *) NULL))
-#if !defined(MagickLibPath)
-#define MagickLibPath  "/usr/local/lib/ImageMagick/"
-#endif
-#if !defined(MagickModulesPath)
-#define MagickModulesPath  "/usr/local/lib/ImageMagick/modules/"
-#endif
-#if !defined(MagickSharePath)
-#define MagickSharePath  "/usr/local/share/ImageMagick/"
-#endif
-#define PreferencesDefaults  "~/."
-#define ProcessPendingEvents(text)
-#define ReadCommandlLine(argc,argv)
-#define SetNotifyHandlers
+# if !defined(MagickLibPath)
+#  define MagickLibPath  "/usr/local/lib/ImageMagick/"
+# endif
+# if !defined(MagickModulesPath)
+#  define MagickModulesPath  "/usr/local/lib/ImageMagick/modules/"
+# endif
+# if !defined(MagickSharePath)
+#  define MagickSharePath  "/usr/local/share/ImageMagick/"
+# endif
+# define PreferencesDefaults  "~/."
+# define ProcessPendingEvents(text)
+# define ReadCommandlLine(argc,argv)
+# define SetNotifyHandlers
 #else
 
-#if defined(vms)
-#define ApplicationDefaults  "decw$system_defaults:"
-#define DirectorySeparator  ""
-#define DirectoryListSeparator  ';'
-#define EditorOptions  ""
-#define Exit  exit
-#define IsBasenameSeparator(c)  (((c) == ']') || ((c) == ':') || ((c) == '/'))
-#define IsGlob(text) \
+# if defined(vms)
+#  define ApplicationDefaults  "decw$system_defaults:"
+#  define DirectorySeparator  ""
+#  define DirectoryListSeparator  ';'
+#  define EditorOptions  ""
+#  define Exit  exit
+#  define IsBasenameSeparator(c)  (((c) == ']') || ((c) == ':') || ((c) == '/'))
+#  define IsGlob(text) \
   ((strchr(text,'*') != (char *) NULL) || \
    (strchr(text,'?') != (char *) NULL) || \
    (strchr(text,'{') != (char *) NULL) || \
    (strchr(text,'}') != (char *) NULL))
-#define MagickLibPath  "sys$login:"
-#define MagickModulesPath  "sys$login:"
-#define MagickSharePath  "sys$login:"
-#define PreferencesDefaults  "decw$user_defaults:"
-#define ProcessPendingEvents(text)
-#define ReadCommandlLine(argc,argv)
-#define SetNotifyHandlers
-#endif
+#  define MagickLibPath  "sys$login:"
+#  define MagickModulesPath  "sys$login:"
+#  define MagickSharePath  "sys$login:"
+#  define PreferencesDefaults  "decw$user_defaults:"
+#  define ProcessPendingEvents(text)
+#  define ReadCommandlLine(argc,argv)
+#  define SetNotifyHandlers
+# endif
 
-#if defined(macintosh)
-#define ApplicationDefaults  "/usr/lib/X11/app-defaults/"
-#define DirectorySeparator  ":"
-#define DirectoryListSeparator  ';'
-#define EditorOptions ""
-#define IsBasenameSeparator(c)  ((c) == ':')
-#define IsGlob(text) \
-  ((strchr(text,'*') != (char *) NULL) || \
-   (strchr(text,'?') != (char *) NULL) || \
-   (strchr(text,'{') != (char *) NULL) || \
-   (strchr(text,'}') != (char *) NULL) || \
-   (strchr(text,'[') != (char *) NULL) || \
-   (strchr(text,']') != (char *) NULL))
-#define MagickLibPath  ""
-#define MagickModulesPath  ""
-#define MagickSharePath  ""
-#define PreferencesDefaults  "~/."
-#define ReadCommandlLine(argc,argv)  argc=ccommand(argv); puts(MagickVersion);
-#define SetNotifyHandlers \
-  SetErrorHandler(MACErrorHandler); \
-  SetWarningHandler(MACWarningHandler)
-#endif
+# if defined(macintosh)
+#  define ApplicationDefaults  "/usr/lib/X11/app-defaults/"
+#  define DirectorySeparator  ":"
+#  define DirectoryListSeparator  ';'
+#  define EditorOptions ""
+#  define IsBasenameSeparator(c)  ((c) == ':')
+#  define IsGlob(text) \
+    ((strchr(text,'*') != (char *) NULL) || \
+     (strchr(text,'?') != (char *) NULL) || \
+     (strchr(text,'{') != (char *) NULL) || \
+     (strchr(text,'}') != (char *) NULL) || \
+     (strchr(text,'[') != (char *) NULL) || \
+     (strchr(text,']') != (char *) NULL))
+#  define MagickLibPath  ""
+#  define MagickModulesPath  ""
+#  define MagickSharePath  ""
+#  define PreferencesDefaults  "~/."
+#  define ReadCommandlLine(argc,argv)  argc=ccommand(argv); puts(MagickVersion);
+#  define SetNotifyHandlers \
+    SetErrorHandler(MACErrorHandler); \
+    SetWarningHandler(MACWarningHandler)
+# endif
 
-#if defined(WIN32)
-#define ApplicationDefaults  "c:\\ImageMagick\\"
-#define DirectorySeparator  "\\"
-#define DirectoryListSeparator  ';'
-#define EditorOptions ""
-#define IsBasenameSeparator(c)  (((c) == '/') || ((c) == '\\'))
-#define IsGlob(text) \
-  ((strchr(text,'*') != (char *) NULL) || \
-   (strchr(text,'?') != (char *) NULL) || \
-   (strchr(text,'{') != (char *) NULL) || \
-   (strchr(text,'}') != (char *) NULL) || \
-   (strchr(text,'[') != (char *) NULL) || \
-   (strchr(text,']') != (char *) NULL))
-#define MagickLibPath  "c:\\ImageMagick\\"
-#define MagickModulesPath  "c:\\ImageMagick\\"
-#define MagickSharePath  "c:\\ImageMagick\\"
-#define PreferencesDefaults  "~/."
-#define ProcessPendingEvents(text)
-#define ReadCommandlLine(argc,argv)
-#define SetNotifyHandlers \
-  SetErrorHandler(NTErrorHandler); \
-  SetWarningHandler(NTWarningHandler)
-#undef sleep
-#define sleep(seconds)  Sleep(seconds*1000)
-#define HAVE_TIFFCONF_H
-#endif
+# if defined(WIN32)
+#  define ApplicationDefaults  "c:\\ImageMagick\\"
+#  define DirectorySeparator  "\\"
+#  define DirectoryListSeparator  ';'
+#  define EditorOptions ""
+#  define IsBasenameSeparator(c)  (((c) == '/') || ((c) == '\\'))
+#  define IsGlob(text) \
+    ((strchr(text,'*') != (char *) NULL) || \
+     (strchr(text,'?') != (char *) NULL) || \
+     (strchr(text,'{') != (char *) NULL) || \
+     (strchr(text,'}') != (char *) NULL) || \
+     (strchr(text,'[') != (char *) NULL) || \
+     (strchr(text,']') != (char *) NULL))
+#  if !defined(MagickLibPath)
+#   define MagickLibPath  "c:\\ImageMagick\\"
+#  endif
+#  if !defined(MagickModulesPath)
+#   define MagickModulesPath  "c:\\ImageMagick\\"
+#  endif
+#  if !defined(MagickSharePath)
+#   define MagickSharePath  "c:\\ImageMagick\\"
+#  endif
+#  define PreferencesDefaults  "~/."
+#  define ProcessPendingEvents(text)
+#  define ReadCommandlLine(argc,argv)
+#  define SetNotifyHandlers \
+    SetErrorHandler(NTErrorHandler); \
+    SetWarningHandler(NTWarningHandler)
+#  undef sleep
+#  define sleep(seconds)  Sleep(seconds*1000)
+#  define HAVE_TIFFCONF_H
+# endif
 
 #endif
 
