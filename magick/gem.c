@@ -144,6 +144,8 @@ MagickExport double ExpandAffine(const AffineMatrix *affine)
 
   assert(affine != (const AffineMatrix *) NULL);
   expand=fabs(affine->sx*affine->sy)-fabs(affine->rx*affine->ry);
+  if (fabs(expand) < MagickEpsilon)
+    return(1.0);
   return(sqrt(fabs(expand)));
 }
 

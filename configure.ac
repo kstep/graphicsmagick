@@ -93,7 +93,7 @@ AC_PROG_MAKE_SET
 AC_PROG_LN_S
 
 # check for system services
-C_SYS_LONG_FILE_NAMES
+AC_SYS_LONG_FILE_NAMES
 
 #
 # Tests for Windows

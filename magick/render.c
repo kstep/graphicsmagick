@@ -2081,6 +2081,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           {
             GetToken(q,&q,token);
             (void) CloneString(&graphic_context[n]->font,token);
+            if (LocaleCompare("none",token) == 0)
+              LiberateMemory((void **) &graphic_context[n]->font);
             break;
           }
         if (LocaleCompare("font-family",keyword) == 0)
