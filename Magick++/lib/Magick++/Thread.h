@@ -10,6 +10,15 @@
 #if !defined (Thread_header)
 #define Thread_header
 
+#if defined(_MT) && defined(_VISUALC_)
+#include <windows.h>
+struct win32_mutex {
+	HANDLE id;
+};
+// This is a binary semphore -- increase for a counting semaphore
+#define MAXSEMLEN	1
+#endif
+
 #include "Magick++/Include.h"
 
 #if defined(HasPTHREADS)
@@ -44,6 +53,9 @@ namespace Magick
 
 #if defined(HasPTHREADS)
     pthread_mutex_t  _mutex;
+#endif
+#if defined(_MT) && defined(_VISUALC_)
+    win32_mutex  _mutex;
 #endif
   };
 
