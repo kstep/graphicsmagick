@@ -471,7 +471,7 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
 %
 %    o modulate: A character string indicating the percent change in brightness,
 %      saturation, and hue in floating point notation separated by commas
-%      (e.g. 10.1,0.0,3.1).
+%      (e.g. 110.1,100.0,83.1).
 %
 %
 */
