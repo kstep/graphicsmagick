@@ -24,7 +24,7 @@ testRead( 'input.bmp', 'eb4d6e084afe2835a1ad28ad7fc12ced');
 
 print("Microsoft Windows 24-bit bitmap image file ...\n");
 ++$test;
-testRead( 'bmp24:input.bmp24', 'eb4d6e084afe2835a1ad28ad7fc12ced');
+testRead( 'bmp:input.bmp24', 'eb4d6e084afe2835a1ad28ad7fc12ced');
 
 print("ZSoft IBM PC multi-page Paintbrush file ...\n");
 ++$test;
