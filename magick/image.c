@@ -1264,7 +1264,7 @@ MagickExport unsigned int CompositeImage(Image *image,
   /*
     Composite image.
   */
-  midpoint=MaxRGB/2;
+  midpoint=0x80;
   for (y=0; y < (long) image->rows; y++)
   {
     if (y < y_offset)
@@ -1343,7 +1343,8 @@ MagickExport unsigned int CompositeImage(Image *image,
           offset=(int) (Intensity(&pixel)-midpoint);
           if (offset == 0)
             break;
-          TransformHSL(q->red,q->green,q->blue,&hue,&saturation,&brightness);
+          TransformHSL(q->red,q->green,q->blue,&hue,&saturation,
+            &brightness);
           brightness+=(percent_brightness*offset)/midpoint;
           if (brightness < 0.0)
             brightness=0.0;
@@ -4633,6 +4634,42 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             DestroyImage(*image);
             SetImageType(shear_image,TrueColorType);
             *image=shear_image;
+            continue;
+          }
+        if (LocaleCompare("-size",option) == 0)
+          {
+            char
+              geometry[MaxTextExtent];
+
+            Image
+              *border_image;
+
+            RectangleInfo
+              border_info;
+
+            /*
+              Size image.
+            */
+            width=(*image)->columns;
+            height=(*image)->rows;
+            x=0;
+            y=0;
+            (void) ParseGeometry(argv[++i],&x,&y,&width,&height);
+            if ((width == (*image)->columns) && (height == (*image)->rows))
+              break;
+            FormatString(geometry,"%lux%lu%+ld%+ld",width,height,
+              (long) ((*image)->columns-width+1)/2,
+              (long) ((*image)->rows-height+1)/2);
+            TransformImage(image,geometry,(char *) NULL);
+            if ((width == (*image)->columns) && (height == (*image)->rows))
+              break;
+            border_info.width=(width-(*image)->columns+1)/2;
+            border_info.height=(height-(*image)->rows+1)/2;
+            border_image=BorderImage(*image,&border_info,&(*image)->exception);
+            if (border_image == (Image *) NULL)
+              break;
+            DestroyImage(*image);
+            *image=border_image;
             continue;
           }
         if (LocaleCompare("-solarize",option) == 0)
