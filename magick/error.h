@@ -11,7 +11,7 @@ extern "C" {
 /*
   Exception define definitions.
 */
-#if defined(sun) && !defined(SVR4)
+#if !defined(HAVE_STRERROR)
 #if !defined(strerror)
 #define strerror(n) \
   (((n) >= 0 && (n) < sys_nerr) ? sys_errlist[n] : "unknown error")
@@ -21,8 +21,8 @@ extern char
 
 extern int
   sys_nerr;
-#endif
-#endif
+#endif /* !defined(strerror) */
+#endif /* !defined(HAVE_STRERROR) */
 #define ThrowException(exception,code,reason,description) \
 { \
   if (code >= (exception)->severity) \
