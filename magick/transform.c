@@ -273,6 +273,7 @@ Export Image *CoalesceImages(Image *image,ExceptionInfo *exception)
       }
     coalesce_image->next->previous=coalesce_image;
     coalesce_image=coalesce_image->next;
+    coalesce_image->delay=image->delay;
     CompositeImage(coalesce_image,next->matte ? OverCompositeOp :
       ReplaceCompositeOp,next,next->page.x,next->page.y);
     GetPageInfo(&coalesce_image->page);

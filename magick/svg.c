@@ -280,6 +280,18 @@ Export char **StringToTokens(const char *text,int *number_tokens)
   return(tokens);
 }
 
+static double UnitOfMeasure(const char *value)
+{
+  assert(value != (const char *) NULL);
+  if (Extent(value) < 3)
+    return(1.0);
+  if (Latin1Compare(value+strlen(value)-2,"cm") == 0)
+    return(72.0/2.54);
+  if (Latin1Compare(value+strlen(value)-2,"in") == 0)
+    return(72.0);
+  return(1.0);
+}
+
 static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define MaxContexts  256
@@ -300,11 +312,13 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       *fill,
       *stroke;
 
+    unsigned int
+      antialias;
+
     double
-      opacity,
       linewidth,
       pointsize,
-      antialias;
+      opacity;
   } GraphicContext;
 
   char
@@ -612,10 +626,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (Latin1Compare(keyword,"height") == 0)
       {
         (void) sscanf(value,"%u",&page.height);
-        if (Latin1Compare(value+strlen(value)-2,"cm") == 0)
-          page.height=72*page.height/2.54;
-        if (Latin1Compare(value+strlen(value)-2,"in") == 0)
-          page.height=72*page.height;
+        page.height*=UnitOfMeasure(value);
         FormatString(geometry,"%ux%u!",canvas->columns,page.height);
         if ((canvas->columns < page.width) || (canvas->rows < page.height))
           TransformImage(&canvas,(char *) NULL,geometry);
@@ -688,7 +699,10 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (Latin1Compare(tokens[i],"stroke-opacity:") == 0)
             (void) sscanf(tokens[++i],"%lf",&graphic_context[n].opacity);
           if (Latin1Compare(tokens[i],"stroke-width:") == 0)
-            (void) sscanf(tokens[++i],"%lf",&graphic_context[n].linewidth);
+            {
+              (void) sscanf(tokens[++i],"%lf",&graphic_context[n].linewidth);
+              graphic_context[n].linewidth*=UnitOfMeasure(tokens[i]);
+            }
           if (Latin1Compare(tokens[i],"text-antialiasing:") == 0)
             graphic_context[n].antialias=Latin1Compare(tokens[++i],"true");
           FreeMemory((void *) &tokens[i]);
@@ -724,22 +738,25 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (Latin1Compare(keyword,"width") == 0)
       {
         (void) sscanf(value,"%u",&page.width);
-        if (Latin1Compare(value+strlen(value)-2,"cm") == 0)
-          page.width=72*page.width/2.54;
-        if (Latin1Compare(value+strlen(value)-2,"in") == 0)
-          page.width=72*page.width;
+        page.width*=UnitOfMeasure(value);
         FormatString(geometry,"%ux%u!",page.width,canvas->rows);
         if ((canvas->columns < page.width) || (canvas->rows < page.height))
           TransformImage(&canvas,(char *) NULL,geometry);
       }
     if (Latin1Compare(keyword,"x") == 0)
-      (void) sscanf(value,"%u",&page.x);
+      {
+        (void) sscanf(value,"%u",&page.x);
+        page.x*=UnitOfMeasure(value);
+      }
     if (Latin1Compare(keyword,"x1") == 0)
       (void) sscanf(value,"%lf",&segment.x1);
     if (Latin1Compare(keyword,"x2") == 0)
       (void) sscanf(value,"%lf",&segment.x2);
     if (Latin1Compare(keyword,"y") == 0)
-      (void) sscanf(value,"%u",&page.y);
+      {
+        (void) sscanf(value,"%u",&page.y);
+        page.y*=UnitOfMeasure(value);
+      }
     if (Latin1Compare(keyword,"y1") == 0)
       (void) sscanf(value,"%lf",&segment.y1);
     if (Latin1Compare(keyword,"y2") == 0)

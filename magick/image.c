@@ -3696,7 +3696,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
       }
     if (strncmp("-linewidth",option,3) == 0)
       {
-        draw_info->linewidth=atoi(argv[++i]);
+        draw_info->linewidth=atof(argv[++i]);
         continue;
       }
     if (Latin1Compare("-map",option) == 0)
