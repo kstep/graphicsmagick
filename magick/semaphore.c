@@ -113,9 +113,9 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
   /*
     Allocate semaphore.
   */
-  semaphore_info=(SemaphoreInfo *) AcquireMemory(sizeof(semaphore_info));
+  semaphore_info=(SemaphoreInfo *) AcquireMemory(sizeof(SemaphoreInfo));
   if (semaphore_info == (SemaphoreInfo *) NULL)
-    MagickError(ResourceLimitError,"Unable to allocate semaphore_info info",
+    MagickError(ResourceLimitError,"Unable to allocate semaphore info",
       "Memory allocation failed");
 #if defined(_VISUALC_) && defined(_MT)
   {

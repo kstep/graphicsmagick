@@ -63,9 +63,9 @@ MAILING LIST
 
     subscribe magick
 
-  to majordomo@wizards.dupont.com.  You will receive a welcome message
+  to majordomo@imagemagick.org.  You will receive a welcome message
   which tells you how to post messages to the list,
-  magick@wizards.dupont.com.
+  magick@imagemagick.org.
 
 
 UNIX/Cygwin COMPILATION

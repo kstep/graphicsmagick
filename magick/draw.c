@@ -59,7 +59,7 @@
 /*
   Define declarations.
 */
-#define BezierQuantum  4
+#define BezierQuantum  200
 #define MatteMatch(color,target,delta) \
   (ColorMatch(color,target,delta) && ((color).opacity == (target).opacity))
 #define MaxStacksize  (1 << 15)
@@ -99,19 +99,22 @@ typedef struct _PrimitiveInfo
   Forward declarations
 */
 static double
-  GenerateCircle(PrimitiveInfo *,PointInfo,PointInfo),
+  GenerateCircle(PrimitiveInfo *,const PointInfo,const PointInfo),
   IntersectPrimitive(PrimitiveInfo *,const DrawInfo *,const PointInfo *,
     const int,Image *);
 
 static void
-  GenerateArc(PrimitiveInfo *,PointInfo,PointInfo,PointInfo),
+  GenerateArc(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo,
+    const double,const unsigned int,const unsigned int),
   GenerateBezier(PrimitiveInfo *),
-  GenerateEllipse(PrimitiveInfo *,PointInfo,PointInfo,PointInfo),
-  GenerateLine(PrimitiveInfo *,PointInfo,PointInfo),
+  GenerateEllipse(PrimitiveInfo *,const PointInfo,const PointInfo,
+    const PointInfo),
+  GenerateLine(PrimitiveInfo *,const PointInfo,const PointInfo),
   GeneratePath(PrimitiveInfo *,const char *),
-  GeneratePoint(PrimitiveInfo *,PointInfo),
-  GenerateRectangle(PrimitiveInfo *,PointInfo,PointInfo),
-  GenerateRoundRectangle(PrimitiveInfo *,PointInfo,PointInfo,PointInfo);
+  GeneratePoint(PrimitiveInfo *,const PointInfo),
+  GenerateRectangle(PrimitiveInfo *,const PointInfo,const PointInfo),
+  GenerateRoundRectangle(PrimitiveInfo *,const PointInfo,const PointInfo,
+    PointInfo);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -826,7 +829,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       while ((isspace((int) (*p)) || (*p == ',')) && (*p != '\0'))
         p++;
       i++;
-      if (i < (int) (number_points-Max(BezierQuantum*BezierQuantum*x,360)-1))
+      if (i < (int) (number_points-Max(BezierQuantum*x,360)-1))
         continue;
       number_points<<=1;
       ReacquireMemory((void **) &primitive_info,
@@ -902,7 +905,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             break;
           }
         GenerateArc(primitive_info+j,primitive_info[j].pixel,
-          primitive_info[j+1].pixel,primitive_info[j+2].pixel);
+          primitive_info[j+1].pixel,primitive_info[j+2].pixel,0,False,False);
         i=j+primitive_info[j].coordinates;
         break;
       }
@@ -932,7 +935,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
       case PolylinePrimitive:
       {
-        if (primitive_info[j].coordinates < 3)
+        if (primitive_info[j].coordinates < 2)
           {
             primitive_type=UndefinedPrimitive;
             break;
@@ -989,9 +992,9 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (*p != '\0')
           p++;
         *p++='\0';
-        if (i < (number_points-BezierQuantum*BezierQuantum*Extent(path)-1))
+        if (i < (number_points-BezierQuantum*Extent(path)-1))
           {
-            number_points+=BezierQuantum*BezierQuantum*Extent(path);
+            number_points+=BezierQuantum*Extent(path);
             ReacquireMemory((void **) &primitive_info,
               number_points*sizeof(PrimitiveInfo));
             if (primitive_info == (PrimitiveInfo *) NULL)
@@ -1136,7 +1139,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         composite_image=ReadImage(composite_info,&image->exception);
         if (composite_image == (Image *) NULL)
           break;
-        if ((primitive_info[j+1].pixel.x != 0) && 
+        if ((primitive_info[j+1].pixel.x != 0) &&
             (primitive_info[j+1].pixel.y != 0))
           {
             /*
@@ -1351,47 +1354,87 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 %
 %
 */
-static void GenerateArc(PrimitiveInfo *primitive_info,PointInfo start,
-  PointInfo end,PointInfo arc)
+
+static void GenerateArc(PrimitiveInfo *primitive_info,const PointInfo start,
+  const PointInfo end,const PointInfo arc,const double angle,
+  const unsigned int large_arc,const unsigned int sweep)
 {
   double
-    angle,
-    x,
-    y;
+    alpha,
+    arc_angle,
+    beta,
+    cosine,
+    factor,
+    gamma,
+    sine;
+
+  int
+    number_segments;
 
   PointInfo
-    pixel,
-    scale;
+    center,
+    points[3];
+
+  register int
+    i;
 
   register PrimitiveInfo
     *p;
 
+  cosine=cos(DegreesToRadians(angle));
+  sine=sin(DegreesToRadians(angle));
+  points[0].x=cosine*start.x/arc.x+sine*start.y/arc.x;
+  points[0].y=cosine*start.y/arc.y-sine*start.x/arc.y;
+  points[1].x=cosine*end.x/arc.x+sine*end.y/arc.x;
+  points[1].y=cosine*end.y/arc.y-sine*end.x/arc.y;
+  alpha=points[1].x-points[0].x;
+  beta=points[1].y-points[0].y;
+  factor=1.0/(alpha*alpha+beta*beta)-0.25;
+  if (factor < 0.0)
+    factor=0.0;
+  factor=sqrt(factor);
+  if (sweep == large_arc)
+    factor=(-factor);
+  center.x=0.5*(points[0].x+points[1].x)-factor*beta;
+  center.y=0.5*(points[0].y+points[1].y)+factor*alpha;
+  alpha=atan2(points[0].y-center.y,points[0].x-center.x);
+  arc_angle=atan2(points[1].y-center.y,points[1].x-center.x)-alpha;
+  if ((arc_angle < 0.0) && sweep)
+    arc_angle+=2.0*M_PI;
+  else
+    if ((arc_angle > 0.0) && !sweep)
+      arc_angle-=2.0*M_PI;
+  number_segments=ceil(fabs(arc_angle/(0.5*M_PI+0.001)));
   p=primitive_info;
-  scale.x=0.5*fabs(end.x-start.x);
-  scale.y=0.5*fabs(end.y-start.y);
-  x=Min(start.x,end.x)+scale.x;
-  y=Min(start.y,end.y)+scale.y;
-  for (angle=(arc.x+1.0); angle <= arc.y; angle+=1.0)
+  for (i=0; i < number_segments; i++)
   {
-    pixel.x=x+scale.x*cos(DegreesToRadians(fmod(angle,360.0)));
-    pixel.y=y-scale.y*sin(DegreesToRadians(fmod(angle,360.0)));
+    beta=0.5*((alpha+(i+1)*arc_angle/number_segments)-
+      (alpha+i*arc_angle/number_segments));
+    gamma=(8.0/3.0)*sin(0.5*beta)*sin(0.5*beta)/sin(beta);
+    points[0].x=center.x+cos((alpha+i*arc_angle/number_segments))-
+      gamma*sin((alpha+i*arc_angle/number_segments));
+    points[0].y=center.y+sin((alpha+i*arc_angle/number_segments))+
+      gamma*cos((alpha+i*arc_angle/number_segments));
+    points[2].x=center.x+cos((alpha+(i+1)*arc_angle/number_segments));
+    points[2].y=center.y+sin((alpha+(i+1)*arc_angle/number_segments));
+    points[1].x=points[2].x+gamma*sin((alpha+(i+1)*arc_angle/number_segments));
+    points[1].y=points[2].y-gamma*cos((alpha+(i+1)*arc_angle/number_segments));
+    p->pixel=p == primitive_info ? start : (p-1)->pixel;
+    (p+1)->pixel.x=cosine*arc.x*points[0].x-sine*arc.y*points[0].y;
+    (p+1)->pixel.y=sine*arc.x*points[0].x+cosine*arc.y*points[0].y;
+    (p+2)->pixel.x=cosine*arc.x*points[1].x-sine*arc.y*points[1].y;
+    (p+2)->pixel.y=sine*arc.x*points[1].x+cosine*arc.y*points[1].y;
+    (p+3)->pixel.x=cosine*arc.x*points[2].x-sine*arc.y*points[2].y;
+    (p+3)->pixel.y=sine*arc.x*points[2].x+cosine*arc.y*points[2].y;
+    if (i == (number_segments-1))
+      (p+3)->pixel=end;
+    p->coordinates=4;
+    GenerateBezier(p);
+    p+=p->coordinates;
     p->primitive=primitive_info->primitive;
-    p->coordinates=0;
-    p->pixel=pixel;
-    p++;
-    primitive_info->coordinates++;
   }
-  pixel.x=(start.x+end.x)/2.0;
-  pixel.y=(start.y+end.y)/2.0;
-  p->primitive=primitive_info->primitive;
-  p->coordinates=0;
-  p->pixel=pixel;
-  p++;
-  primitive_info->coordinates++;
-  p->primitive=primitive_info->primitive;
-  p->coordinates=0;
-  p->pixel=primitive_info->pixel;
-  primitive_info->coordinates++;
+  primitive_info->primitive=PolygonPrimitive;
+  primitive_info->coordinates=p-primitive_info;
 }
 
 static void GenerateBezier(PrimitiveInfo *primitive_info)
@@ -1413,16 +1456,30 @@ static void GenerateBezier(PrimitiveInfo *primitive_info)
   register PrimitiveInfo
     *p;
 
-  unsigned
-    control_points;
+  unsigned int
+    control_points,
+    quantum;
 
   /*
     Allocate coeficients.
   */
-  p=primitive_info;
-  control_points=BezierQuantum*p->coordinates;
+  quantum=primitive_info->coordinates;
+  for (i=0; i < primitive_info->coordinates; i++)
+  {
+    for (j=i+1; j < primitive_info->coordinates; j++)
+    {
+      alpha=fabs(primitive_info[j].pixel.x-primitive_info[i].pixel.x);
+      if (alpha > quantum)
+        quantum=alpha;
+      alpha=fabs(primitive_info[j].pixel.y-primitive_info[i].pixel.y);
+      if (alpha > quantum)
+        quantum=alpha;
+    }
+  }
+  quantum=Min(quantum/primitive_info->coordinates,BezierQuantum);
+  control_points=quantum*primitive_info->coordinates;
   coefficients=(double *)
-    AcquireMemory(p->coordinates*sizeof(double));
+    AcquireMemory(primitive_info->coordinates*sizeof(double));
   points=(PointInfo *) AcquireMemory(control_points*sizeof(PointInfo));
   if ((coefficients == (double *) NULL) || (points == (PointInfo *) NULL))
     MagickError(ResourceLimitWarning,"Unable to draw image",
@@ -1432,8 +1489,8 @@ static void GenerateBezier(PrimitiveInfo *primitive_info)
   */
   last=primitive_info[primitive_info->coordinates-1].pixel;
   weight=0.0;
-  for (i=0; i < p->coordinates; i++)
-    coefficients[i]=Permutate(p->coordinates-1,i);
+  for (i=0; i < primitive_info->coordinates; i++)
+    coefficients[i]=Permutate(primitive_info->coordinates-1,i);
   for (i=0; i < (int) control_points; i++)
   {
     p=primitive_info;
@@ -1448,7 +1505,7 @@ static void GenerateBezier(PrimitiveInfo *primitive_info)
       p++;
     }
     points[i]=pixel;
-    weight+=1.0/BezierQuantum/primitive_info->coordinates;
+    weight+=1.0/quantum/primitive_info->coordinates;
   }
   /*
     Bezier curves are just short segmented polys.
@@ -1471,8 +1528,8 @@ static void GenerateBezier(PrimitiveInfo *primitive_info)
   LiberateMemory((void **) &coefficients);
 }
 
-static double GenerateCircle(PrimitiveInfo *primitive_info,PointInfo start,
-  PointInfo end)
+static double GenerateCircle(PrimitiveInfo *primitive_info,
+  const PointInfo start,const PointInfo end)
 {
   double
     alpha,
@@ -1493,8 +1550,8 @@ static double GenerateCircle(PrimitiveInfo *primitive_info,PointInfo start,
   return(sqrt(alpha*alpha+beta*beta));
 }
 
-static void GenerateEllipse(PrimitiveInfo *primitive_info,PointInfo start,
-  PointInfo end,PointInfo degrees)
+static void GenerateEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
+  const PointInfo end,const PointInfo degrees)
 {
   double
     angle;
@@ -1509,8 +1566,6 @@ static void GenerateEllipse(PrimitiveInfo *primitive_info,PointInfo start,
     Arc's are just short segmented polys.
   */
   p=primitive_info;
-  while (degrees.y < degrees.x)
-    degrees.y+=360.0;
   for (angle=(degrees.x+1.0); angle <= degrees.y; angle+=1.0)
   {
     pixel.x=cos(DegreesToRadians(fmod(angle,360.0)))*end.x+start.x;
@@ -1523,8 +1578,8 @@ static void GenerateEllipse(PrimitiveInfo *primitive_info,PointInfo start,
   }
 }
 
-static void GenerateLine(PrimitiveInfo *primitive_info,PointInfo start,
-  PointInfo end)
+static void GenerateLine(PrimitiveInfo *primitive_info,const PointInfo start,
+  const PointInfo end)
 {
   register PrimitiveInfo
     *p,
@@ -1555,7 +1610,6 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
     last,
     pixels[4],
     point,
-    reflected_pixels[4],
     start;
 
   register int
@@ -1581,8 +1635,8 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
       case 'A':
       {
         double
+          angle,
           large_arc,
-          rotate,
           sweep;
 
         PointInfo
@@ -1597,7 +1651,7 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         arc.y=strtod(p,&p);
         if (*p == ',')
           p++;
-        rotate=strtod(p,&p);
+        angle=strtod(p,&p);
         if (*p == ',')
           p++;
         large_arc=strtod(p,&p);
@@ -1612,8 +1666,10 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         y=strtod(p,&p);
         last.x=attribute == 'A' ? x : point.x+x;
         last.y=attribute == 'A' ? y : point.y+y;
-        GenerateArc(q,point,last,arc);
+        GenerateArc(q,point,last,arc,angle,large_arc,sweep);
         q+=q->coordinates;
+        q->primitive=primitive_info->primitive;
+        point=last;
         break;
       }
       case 'c':
@@ -1728,8 +1784,10 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         */
         do
         {
-          reflected_pixels[0]=pixels[3];
-          for (i=2; i < 4; i++)
+          pixels[0]=pixels[3];
+          pixels[1].x=2.0*pixels[3].x-pixels[2].x;
+          pixels[1].y=2.0*pixels[3].y-pixels[2].y;
+          for (i=2; i <= 3; i++)
           {
             x=strtod(p,&p);
             if (*p == ',')
@@ -1739,32 +1797,11 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
               p++;
             last.x=attribute == 'S' ? x : point.x+x;
             last.y=attribute == 'S' ? y : point.y+y;
-            reflected_pixels[i]=last;
+            pixels[i]=last;
           }
           point=last;
-          /*
-            Reflect the x control pixel.
-          */
-          reflect=pixels[3].x-pixels[0].x;
-          if (!reflect)
-            reflect=1.0;
-          reflect=(pixels[3].x-pixels[2].x)/reflect;
-          reflect=reflect*(reflected_pixels[3].x-pixels[3].x);
-          reflected_pixels[1].x=reflect+pixels[3].x;
-          /*
-            Reflect the y control pixel.
-          */
-          reflect=pixels[3].y-pixels[0].y;
-          if (!reflect)
-            reflect=1.0;
-          reflect=(pixels[3].y-pixels[2].y)/reflect;
-          reflect=reflect*(reflected_pixels[3].y-pixels[3].y);
-          reflected_pixels[1].y=reflect+pixels[3].y;
-          for (i=0; i < 4; i++)
-          {
-            pixels[i]=reflected_pixels[i];
+          for (i=0; i <= 4; i++)
             (q+i)->pixel=pixels[i];
-          }
           q->coordinates=4;
           GenerateBezier(q);
           q+=q->coordinates;
@@ -1780,7 +1817,9 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         */
         do
         {
-          reflected_pixels[0]=pixels[2];
+          pixels[0]=pixels[2];
+          pixels[1].x=2.0*pixels[2].x-pixels[1].x;
+          pixels[1].y=2.0*pixels[2].y-pixels[1].y;
           for (i=2; i < 3; i++)
           {
             x=strtod(p,&p);
@@ -1791,32 +1830,11 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
               p++;
             last.x=attribute == 'T' ? x : point.x+x;
             last.y=attribute == 'T' ? y : point.y+y;
-            reflected_pixels[i]=last;
+            pixels[i]=last;
           }
           point=last;
-          /*
-            Reflect the x control pixel.
-          */
-          reflect=pixels[2].x-pixels[0].x;
-          if (!reflect)
-            reflect=1.0;
-          reflect=(pixels[2].x-pixels[1].x)/reflect;
-          reflect=reflect*(reflected_pixels[2].x-pixels[2].x);
-          reflected_pixels[1].x=reflect+pixels[2].x;
-          /*
-            Reflect the y control pixel.
-          */
-          reflect=pixels[2].y-pixels[0].y;
-          if (!reflect)
-            reflect=1.0;
-          reflect=(pixels[2].y-pixels[1].y)/reflect;
-          reflect=reflect*(reflected_pixels[2].y-pixels[2].y);
-          reflected_pixels[1].y=reflect+pixels[2].y;
           for (i=0; i < 3; i++)
-          {
-            pixels[i]=reflected_pixels[i];
             (q+i)->pixel=pixels[i];
-          }
           q->coordinates=3;
           GenerateBezier(q);
           q+=q->coordinates;
@@ -1853,15 +1871,15 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
   primitive_info->coordinates=q-primitive_info;
 }
 
-static void GeneratePoint(PrimitiveInfo *primitive_info,PointInfo start)
+static void GeneratePoint(PrimitiveInfo *primitive_info,const PointInfo start)
 {
   primitive_info->primitive=PointPrimitive;
   primitive_info->coordinates=1;
   primitive_info->pixel=start;
 }
 
-static void GenerateRectangle(PrimitiveInfo *primitive_info,PointInfo start,
-  PointInfo end)
+static void GenerateRectangle(PrimitiveInfo *primitive_info,
+  const PointInfo start,const PointInfo end)
 {
   PointInfo
     point;
@@ -1889,7 +1907,7 @@ static void GenerateRectangle(PrimitiveInfo *primitive_info,PointInfo start,
 }
 
 static void GenerateRoundRectangle(PrimitiveInfo *primitive_info,
-  PointInfo start,PointInfo end,PointInfo arc)
+  const PointInfo start,const PointInfo end,PointInfo arc)
 {
   PointInfo
     degrees,
