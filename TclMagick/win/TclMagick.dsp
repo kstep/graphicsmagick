@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "TCLMAGICK_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I "c:\tcl\tcl84\include" /I "c:\opt\ImageMagick\include" /D "NDEBUG" /D "_USRDLL" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "TCLMAGICK_EXPORTS" /D "USE_TCL_STUBS" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I "c:\tcl\include" /I "c:\opt\GraphicsMagick\include" /D "NDEBUG" /D "_USRDLL" /D VERSION=\"0.44\" /D "TCLMAGICK_EXPORTS" /D "USE_TCL_STUBS" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x407 /d "NDEBUG"
@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 msvcrt.lib tclstub84.lib kernel32.lib CORE_RL_magick_.lib CORE_RL_wand_.lib /nologo /dll /incremental:yes /machine:I386 /nodefaultlib /libpath:"c:\tcl\tcl84\lib" /libpath:"c:\opt\ImageMagick\lib"
+# ADD LINK32 msvcrt.lib tclstub84.lib CORE_RL_magick_.lib CORE_RL_wand_.lib kernel32.lib /nologo /dll /incremental:yes /machine:I386 /nodefaultlib /libpath:"c:\tcl\lib" /libpath:"c:\opt\GraphicsMagick\lib"
 
 !ELSEIF  "$(CFG)" == "TclMagick - Win32 Debug"
 
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "TCLMAGICK_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MD /W3 /Gm /GX /Zi /Od /I "c:\tcl\tcl84\include" /I "c:\opt\ImageMagick\include" /D "_LIB" /D "NeedFunctionPrototypes" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "TCLMAGICK_EXPORTS" /D "USE_TCL_STUBS" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MD /W3 /Gm /GX /Zi /Od /I "c:\tcl\include" /I "c:\opt\GraphicsMagick\include" /D "_LIB" /D "NeedFunctionPrototypes" /D "_DEBUG" /D VERSION=\"0.44\" /D "TCLMAGICK_EXPORTS" /D "USE_TCL_STUBS" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /FR /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x407 /d "_DEBUG"
@@ -79,7 +79,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 msvcrtd.lib tclstub84.lib kernel32.lib CORE_RL_magick_.lib CORE_RL_wand_.lib /nologo /dll /incremental:no /debug /machine:I386 /nodefaultlib /pdbtype:sept /libpath:"c:\tcl\DevKit31\lib" /libpath:"c:\opt\ImageMagick\lib"
+# ADD LINK32 msvcrt.lib tclstub84.lib CORE_RL_magick_.lib CORE_RL_wand_.lib kernel32.lib /nologo /dll /incremental:no /debug /machine:I386 /nodefaultlib /pdbtype:sept /libpath:"c:\tcl\lib" /libpath:"c:\opt\GraphicsMagick\lib"
 # SUBTRACT LINK32 /pdb:none
 
 !ENDIF 

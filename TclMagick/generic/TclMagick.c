@@ -8158,6 +8158,8 @@ EXPORT(int, Tclmagick_Init)(Tcl_Interp *interp)
     /*
      * Create commands per interpreter
      */
+    Tcl_CreateObjCommand(interp, "magick",  magickCmd,  NULL, NULL);
+
     if ( Tcl_PkgProvide(interp,"TclMagick", VERSION) != TCL_OK ) {
         return TCL_ERROR;
     }
