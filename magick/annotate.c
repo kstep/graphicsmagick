@@ -1137,7 +1137,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
   /*
     Compute bounding box.
   */
-  (void) LogMagickEvent(AnnotateEvent,__MagickMethod,
+  (void) LogMagickEvent(GetMagickModule(AnnotateEvent),
     "Font %.1024s; font-encoding %.1024s; text-encoding %.1024s; pointsize %g",
     draw_info->font != (char *) NULL ? draw_info->font : "none",
     encoding != (char *) NULL ? encoding : "none",
@@ -1412,7 +1412,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
   /*
     Render label with a Postscript font.
   */
-  (void) LogMagickEvent(AnnotateEvent,__MagickMethod,
+  (void) LogMagickEvent(GetMagickModule(AnnotateEvent),
     "Font %.1024s; pointsize %g",draw_info->font != (char *) NULL ?
     draw_info->font : "none",draw_info->pointsize);
   TemporaryFilename(filename);
@@ -1720,7 +1720,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
       if (font_info == (XFontStruct *) NULL)
         ThrowBinaryException(XServerError,"UnableToLoadFont",draw_info->font);
     }
-  (void) LogMagickEvent(AnnotateEvent,__MagickMethod,
+  (void) LogMagickEvent(GetMagickModule(AnnotateEvent),
     "Font %.1024s; pointsize %g",draw_info->font != (char *) NULL ?
     draw_info->font : "none",draw_info->pointsize);
   cache_info=(*draw_info);

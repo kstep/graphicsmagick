@@ -750,7 +750,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
   assert(length != (size_t *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   (void) strncpy(path,filename,MaxTextExtent-1);
-  (void) LogMagickEvent(ConfigureEvent,__MagickMethod,
+  (void) LogMagickEvent(GetMagickModule(ConfigureEvent),
     "Searching for configure file \"%s\" ...",filename);
 #if defined(UseInstalledImageMagick)
 #if defined(WIN32)
@@ -878,7 +878,7 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
   assert(length != (size_t *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   (void) strncpy(path,filename,MaxTextExtent-1);
-  (void) LogMagickEvent(ConfigureEvent,__MagickMethod,
+  (void) LogMagickEvent(GetMagickModule(ConfigureEvent),
     "Searching for module file \"%s\" ...",filename);
 #if defined(UseInstalledImageMagick)
 #if defined(WIN32)
@@ -1007,7 +1007,7 @@ MagickExport void *GetTypeBlob(const char *filename,char *path,
   assert(length != (size_t *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   (void) strncpy(path,filename,MaxTextExtent-1);
-  (void) LogMagickEvent(ConfigureEvent,__MagickMethod,
+  (void) LogMagickEvent(GetMagickModule(ConfigureEvent),
     "Searching for type file \"%s\" ...",filename);
   if (getenv("MAGICK_FONT_PATH") != (char *) NULL)
     {

@@ -389,7 +389,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  logging=LogMagickEvent(CoderEvent,__MagickMethod,"enter ReadTIFFImage()");
+  logging=LogMagickEvent(GetMagickModule(CoderEvent),"enter ReadTIFFImage()");
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
@@ -418,7 +418,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       (void) fclose(file);
       tiff=TIFFOpen(filename,"rb");
       if (logging)
-        (void) LogMagickEvent(CoderEvent,__MagickMethod,"   Opened temporary file=%s",filename);
+        (void) LogMagickEvent(GetMagickModule(CoderEvent),"   Opened temporary file=%s",filename);
     }
   if (tiff == (TIFF *) NULL)
     {
@@ -457,47 +457,47 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_PHOTOMETRIC,&photometric);
     if (logging)
       {
-        (void) LogMagickEvent(CoderEvent,__MagickMethod,"  Geometry: %ux%u",(unsigned int) width,
+        (void) LogMagickEvent(GetMagickModule(CoderEvent),"  Geometry: %ux%u",(unsigned int) width,
           (unsigned int) height);
-        (void) LogMagickEvent(CoderEvent,__MagickMethod,"  Interlace: %u",interlace);
-        (void) LogMagickEvent(CoderEvent,__MagickMethod,"  Bits per sample: %u",bits_per_sample);
-        (void) LogMagickEvent(CoderEvent,__MagickMethod,"  Min sample value: %u",min_sample_value);
-        (void) LogMagickEvent(CoderEvent,__MagickMethod,"  Max sample value: %u",max_sample_value);
+        (void) LogMagickEvent(GetMagickModule(CoderEvent),"  Interlace: %u",interlace);
+        (void) LogMagickEvent(GetMagickModule(CoderEvent),"  Bits per sample: %u",bits_per_sample);
+        (void) LogMagickEvent(GetMagickModule(CoderEvent),"  Min sample value: %u",min_sample_value);
+        (void) LogMagickEvent(GetMagickModule(CoderEvent),"  Max sample value: %u",max_sample_value);
         switch (photometric)
         {
           case PHOTOMETRIC_MINISBLACK:
           {
-            (void) LogMagickEvent(CoderEvent,__MagickMethod,"  Photometric: MINISBLACK");
+            (void) LogMagickEvent(GetMagickModule(CoderEvent),"  Photometric: MINISBLACK");
             break;
           }
           case PHOTOMETRIC_MINISWHITE:
           {
-            (void) LogMagickEvent(CoderEvent,__MagickMethod,"  Photometric: MINISBLACK");
+            (void) LogMagickEvent(GetMagickModule(CoderEvent),"  Photometric: MINISBLACK");
             break;
           }
           case PHOTOMETRIC_PALETTE:
           {
-            (void) LogMagickEvent(CoderEvent,__MagickMethod,"  Photometric: PALETTE");
+            (void) LogMagickEvent(GetMagickModule(CoderEvent),"  Photometric: PALETTE");
             break;
           }
           case PHOTOMETRIC_RGB:
           {
-            (void) LogMagickEvent(CoderEvent,__MagickMethod,"  Photometric: RGB");
+            (void) LogMagickEvent(GetMagickModule(CoderEvent),"  Photometric: RGB");
             break;
           }
           case PHOTOMETRIC_CIELAB:
           {
-            (void) LogMagickEvent(CoderEvent,__MagickMethod,"  Photometric: CIELAB");
+            (void) LogMagickEvent(GetMagickModule(CoderEvent),"  Photometric: CIELAB");
             break;
           }
           case PHOTOMETRIC_SEPARATED:
           {
-            (void) LogMagickEvent(CoderEvent,__MagickMethod,"  Photometric: SEPARATED");
+            (void) LogMagickEvent(GetMagickModule(CoderEvent),"  Photometric: SEPARATED");
             break;
           }
           default:
           {
-            (void) LogMagickEvent(CoderEvent,__MagickMethod,"  Photometric interpretation: %u",
+            (void) LogMagickEvent(GetMagickModule(CoderEvent),"  Photometric interpretation: %u",
               photometric);
             break;
           }
@@ -573,7 +573,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     image->rows=height;
     image->depth=bits_per_sample <= 8 ? 8 : QuantumDepth;
     if (logging)
-      (void) LogMagickEvent(CoderEvent,__MagickMethod,"  Image depth: %lu",image->depth);
+      (void) LogMagickEvent(GetMagickModule(CoderEvent),"  Image depth: %lu",image->depth);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
       &sample_info);
     image->matte=((extra_samples == 1) &&
@@ -1015,7 +1015,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   while (image->previous != (Image *) NULL)
     image=image->previous;
   if (logging)
-    (void) LogMagickEvent(CoderEvent,__MagickMethod,"exit ReadTIFFImage()");
+    (void) LogMagickEvent(GetMagickModule(CoderEvent),"exit ReadTIFFImage()");
   return(image);
 }
 #else
@@ -1435,7 +1435,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  logging=LogMagickEvent(CoderEvent,__MagickMethod,"enter WriteTIFFImage()");
+  logging=LogMagickEvent(GetMagickModule(CoderEvent),"enter WriteTIFFImage()");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
@@ -2020,7 +2020,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       CloseBlob(image);
     }
   if (logging)
-    (void) LogMagickEvent(CoderEvent,__MagickMethod,"exit WriteTIFFImage()");
+    (void) LogMagickEvent(GetMagickModule(CoderEvent),"exit WriteTIFFImage()");
   return(True);
 }
 #else

@@ -511,21 +511,26 @@ static void *LogToBlob(const char *filename,size_t *length,
 %
 %  The format of the LogMagickEvent method is:
 %
-%      unsigned int LogMagickEvent(const LogEventType type,const char *method,
-%        const char *format,...)
+%      unsigned int LogMagickEvent(const LogEventType type,const char *module,
+%        const char *method,const unsigned long line,const char *format,...)
 %
 %  A description of each parameter follows:
 %
 %    o type: The event type.
 %
+%    o module: The source module name.
+%
 %    o method: The method.
+%
+%    o line: The line number of the source module.
 %
 %    o format: The output format.
 %
 %
 */
 MagickExport unsigned int LogMagickEvent(const LogEventType type,
-  const char *method,const char *format,...)
+  const char *module,const char *method,const unsigned long line,
+  const char *format,...)
 {
   char
     *domain,
@@ -578,11 +583,11 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
     {
       FormatString(timestamp,"%02d:%02d:%02d",
         time_meridian->tm_hour,time_meridian->tm_min,time_meridian->tm_sec);
-      (void) fprintf(log_info->file,
-        "%.1024s %0.3fu %ld:%02ld %.1024s %.1024s[%ld]:%c  %.1024s\n",timestamp,
-        user_time,(long) (elapsed_time/60.0),
-        (long) ceil(fmod(elapsed_time,60.0)),domain,method,(long) getpid(),
-        strlen(event) > 20 ? '\n' : ' ',event);
+      (void) fprintf(log_info->file,"%.1024s %0.3fu %ld:%02ld %.1024s "
+        "%.1024s:%.1024s:%lu[%ld]:%c  %.1024s\n",timestamp,user_time,
+        (long) (elapsed_time/60.0),(long) ceil(fmod(elapsed_time,60.0)),domain,
+        module,method,line,(long) getpid(),strlen(event) > 20 ? '\n' : ' ',
+        event);
     }
   else
     {
@@ -619,7 +624,9 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
         "  <elapsed-time>%ld:%02ld</elapsed-time>\n",
         (long) (elapsed_time/60.0),(long) ceil(fmod(elapsed_time,60.0)));
       (void) fprintf(log_info->file,"  <domain>%.1024s</domain>\n",domain);
+      (void) fprintf(log_info->file,"  <module>%.1024s</module>\n",module);
       (void) fprintf(log_info->file,"  <method>%.1024s</method>\n",method);
+      (void) fprintf(log_info->file,"  <line>%lu</line>\n",line);
       (void) fprintf(log_info->file,"  <id>%ld</id>\n",(long) getpid());
       (void) fprintf(log_info->file,"  <event>%.1024s</event>\n",event);
       (void) fprintf(log_info->file,"</record>\n");

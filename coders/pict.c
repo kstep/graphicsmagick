@@ -821,12 +821,12 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
     if (code > 0xa1)
       {
         if (IsEventLogging())
-          (void) LogMagickEvent(CoderEvent,__MagickMethod,"%04X:",code);
+          (void) LogMagickEvent(GetMagickModule(CoderEvent),"%04X:",code);
       }
     else
       {
         if (IsEventLogging())
-          (void) LogMagickEvent(CoderEvent,__MagickMethod,"  %04X %.1024s: %.1024s",code,
+          (void) LogMagickEvent(GetMagickModule(CoderEvent),"  %04X %.1024s: %.1024s",code,
             codes[code].name,codes[code].description);
         switch (code)
         {

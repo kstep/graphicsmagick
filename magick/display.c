@@ -2443,7 +2443,7 @@ static unsigned int XCompositeImage(Display *display,
       case ButtonPress:
       {
         if (IsEventLogging())
-          (void) LogMagickEvent(X11Event,__MagickMethod,
+          (void) LogMagickEvent(GetMagickModule(X11Event),
             "Button Press: 0x%lx %u +%d+%d",event.xbutton.window,
             event.xbutton.button,event.xbutton.x,event.xbutton.y);
         if (event.xbutton.button != Button1)
@@ -2463,7 +2463,7 @@ static unsigned int XCompositeImage(Display *display,
       case ButtonRelease:
       {
         if (IsEventLogging())
-          (void) LogMagickEvent(X11Event,__MagickMethod,
+          (void) LogMagickEvent(GetMagickModule(X11Event),
             "Button Release: 0x%lx %u +%d+%d",event.xbutton.window,
             event.xbutton.button,event.xbutton.x,event.xbutton.y);
         if (event.xbutton.button != Button1)
@@ -2503,7 +2503,7 @@ static unsigned int XCompositeImage(Display *display,
           &key_symbol,(XComposeStatus *) NULL);
         *(command+length)='\0';
         if (IsEventLogging())
-          (void) LogMagickEvent(X11Event,__MagickMethod,
+          (void) LogMagickEvent(GetMagickModule(X11Event),
             "Key press: 0x%lx (%.1024s)",key_symbol,command);
         switch ((int) key_symbol)
         {
@@ -2562,7 +2562,7 @@ static unsigned int XCompositeImage(Display *display,
       default:
       {
         if (IsEventLogging())
-          (void) LogMagickEvent(X11Event,__MagickMethod,"Event type: %d",
+          (void) LogMagickEvent(GetMagickModule(X11Event),"Event type: %d",
             event.type);
         break;
       }
@@ -2732,7 +2732,7 @@ static unsigned int XConfigureImage(Display *display,
   width=windows->image.window_changes.width;
   height=windows->image.window_changes.height;
   if (IsEventLogging())
-    (void) LogMagickEvent(X11Event,__MagickMethod,
+    (void) LogMagickEvent(GetMagickModule(X11Event),
       "Configure Image: %dx%d=>%lux%lu",windows->image.ximage->width,
       windows->image.ximage->height,width,height);
   if ((width*height) == 0)
@@ -8449,7 +8449,7 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
       case ButtonPress:
       {
         if (IsEventLogging())
-          (void) LogMagickEvent(X11Event,__MagickMethod,
+          (void) LogMagickEvent(GetMagickModule(X11Event),
             "Button Press: 0x%lx %u +%d+%d",event.xbutton.window,
             event.xbutton.button,event.xbutton.x,event.xbutton.y);
         if (event.xbutton.button != Button1)
@@ -8478,7 +8478,7 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
       case ButtonRelease:
       {
         if (IsEventLogging())
-          (void) LogMagickEvent(X11Event,__MagickMethod,
+          (void) LogMagickEvent(GetMagickModule(X11Event),
             "Button Release: 0x%lx %u +%d+%d",event.xbutton.window,
             event.xbutton.button,event.xbutton.x,event.xbutton.y);
         if (event.xbutton.button != Button1)
@@ -8518,7 +8518,7 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
           &key_symbol,(XComposeStatus *) NULL);
         *(command+length)='\0';
         if (IsEventLogging())
-          (void) LogMagickEvent(X11Event,__MagickMethod,
+          (void) LogMagickEvent(GetMagickModule(X11Event),
             "Key press: 0x%lx (%.1024s)",key_symbol,command);
         switch ((int) key_symbol)
         {
@@ -8577,7 +8577,7 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
       default:
       {
         if (IsEventLogging())
-          (void) LogMagickEvent(X11Event,__MagickMethod,"Event type: %d",
+          (void) LogMagickEvent(GetMagickModule(X11Event),"Event type: %d",
             event.type);
         break;
       }
@@ -11502,12 +11502,12 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
   window_info.y=0;
   if (IsEventLogging())
     {
-      (void) LogMagickEvent(X11Event,__MagickMethod,
+      (void) LogMagickEvent(GetMagickModule(X11Event),
         "Image: %.1024s[%lu] %lux%lu ",image->filename,image->scene,
         image->columns,image->rows);
       if (image->colors != 0)
-        (void) LogMagickEvent(X11Event,__MagickMethod,"%luc ",image->colors);
-      (void) LogMagickEvent(X11Event,__MagickMethod,"%.1024s",image->magick);
+        (void) LogMagickEvent(GetMagickModule(X11Event),"%luc ",image->colors);
+      (void) LogMagickEvent(GetMagickModule(X11Event),"%.1024s",image->magick);
     }
   /*
     Adjust image dimensions as specified by backdrop or geometry options.
@@ -12138,13 +12138,13 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   nexus=(Image *) NULL;
   if (IsEventLogging())
     {
-      (void) LogMagickEvent(X11Event,__MagickMethod,
+      (void) LogMagickEvent(GetMagickModule(X11Event),
         "Image: %.1024s[%lu] %lux%lu ",display_image->filename,
         display_image->scene,display_image->columns,display_image->rows);
       if (display_image->colors != 0)
-        (void) LogMagickEvent(X11Event,__MagickMethod,"%luc ",
+        (void) LogMagickEvent(GetMagickModule(X11Event),"%luc ",
           display_image->colors);
-      (void) LogMagickEvent(X11Event,__MagickMethod,"%.1024s",
+      (void) LogMagickEvent(GetMagickModule(X11Event),"%.1024s",
         display_image->magick);
     }
   XMakeStandardColormap(display,visual_info,resource_info,display_image,
@@ -12164,7 +12164,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   XMakeWindow(display,root_window,argv,argc,class_hints,manager_hints,
     &windows->context);
   if (IsEventLogging())
-    (void) LogMagickEvent(X11Event,__MagickMethod,"Window id: 0x%lx (context)",
+    (void) LogMagickEvent(GetMagickModule(X11Event),"Window id: 0x%lx (context)",
       windows->context.id);
   context_values.background=pixel->background_color.pixel;
   context_values.font=font_info->fid;
@@ -12215,7 +12215,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   XMakeWindow(display,root_window,argv,argc,class_hints,manager_hints,
     &windows->icon);
   if (IsEventLogging())
-    (void) LogMagickEvent(X11Event,__MagickMethod,"Window id: 0x%lx (icon)",
+    (void) LogMagickEvent(GetMagickModule(X11Event),"Window id: 0x%lx (icon)",
       windows->icon.id);
   /*
     Initialize graphic context for icon window.
@@ -12328,7 +12328,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       XMakeWindow(display,root_window,argv,argc,class_hints,manager_hints,
         &windows->backdrop);
       if (IsEventLogging())
-        (void) LogMagickEvent(X11Event,__MagickMethod,
+        (void) LogMagickEvent(GetMagickModule(X11Event),
           "Window id: 0x%lx (backdrop)",windows->backdrop.id);
       (void) XMapWindow(display,windows->backdrop.id);
       (void) XClearWindow(display,windows->backdrop.id);
@@ -12364,7 +12364,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       manager_hints->window_group=windows->group_leader.id;
       (void) XSelectInput(display,windows->group_leader.id,StructureNotifyMask);
       if (IsEventLogging())
-        (void) LogMagickEvent(X11Event,__MagickMethod,
+        (void) LogMagickEvent(GetMagickModule(X11Event),
           "Window id: 0x%lx (group leader)",windows->group_leader.id);
     }
   XMakeWindow(display,
@@ -12376,7 +12376,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     (void) XSetTransientForHint(display,windows->image.id,
       windows->group_leader.id);
   if (IsEventLogging())
-    (void) LogMagickEvent(X11Event,__MagickMethod,"Window id: 0x%lx (image)",
+    (void) LogMagickEvent(GetMagickModule(X11Event),"Window id: 0x%lx (image)",
       windows->image.id);
   /*
     Initialize Info widget.
@@ -12407,7 +12407,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   if (windows->image.mapped)
     (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
   if (IsEventLogging())
-    (void) LogMagickEvent(X11Event,__MagickMethod,"Window id: 0x%lx (info)",
+    (void) LogMagickEvent(GetMagickModule(X11Event),"Window id: 0x%lx (info)",
       windows->info.id);
   /*
     Initialize Command widget.
@@ -12438,7 +12438,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   if (windows->command.mapped)
     (void) XMapRaised(display,windows->command.id);
   if (IsEventLogging())
-    (void) LogMagickEvent(X11Event,__MagickMethod,"Window id: 0x%lx (command)",
+    (void) LogMagickEvent(GetMagickModule(X11Event),"Window id: 0x%lx (command)",
       windows->command.id);
   /*
     Initialize Widget window.
@@ -12471,7 +12471,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   windows->widget.shadow_stipple=windows->info.shadow_stipple;
   (void) XSetTransientForHint(display,windows->widget.id,windows->image.id);
   if (IsEventLogging())
-    (void) LogMagickEvent(X11Event,__MagickMethod,"Window id: 0x%lx (widget)",
+    (void) LogMagickEvent(GetMagickModule(X11Event),"Window id: 0x%lx (widget)",
       windows->widget.id);
   /*
     Initialize popup window.
@@ -12500,7 +12500,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   windows->popup.shadow_stipple=windows->info.shadow_stipple;
   (void) XSetTransientForHint(display,windows->popup.id,windows->image.id);
   if (IsEventLogging())
-    (void) LogMagickEvent(X11Event,__MagickMethod,"Window id: 0x%lx (pop up)",
+    (void) LogMagickEvent(GetMagickModule(X11Event),"Window id: 0x%lx (pop up)",
       windows->popup.id);
   /*
     Initialize Magnify window and cursor.
@@ -12540,7 +12540,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   XMakeWindow(display,root_window,argv,argc,class_hints,manager_hints,
     &windows->magnify);
   if (IsEventLogging())
-    (void) LogMagickEvent(X11Event,__MagickMethod,"Window id: 0x%lx (magnify)",
+    (void) LogMagickEvent(GetMagickModule(X11Event),"Window id: 0x%lx (magnify)",
       windows->magnify.id);
   (void) XSetTransientForHint(display,windows->magnify.id,windows->image.id);
   /*
@@ -12569,7 +12569,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   XMakeWindow(display,root_window,argv,argc,class_hints,manager_hints,
     &windows->pan);
   if (IsEventLogging())
-    (void) LogMagickEvent(X11Event,__MagickMethod,"Window id: 0x%lx (pan)",
+    (void) LogMagickEvent(GetMagickModule(X11Event),"Window id: 0x%lx (pan)",
       windows->pan.id);
   (void) XSetTransientForHint(display,windows->pan.id,windows->image.id);
   if (windows->info.mapped)
@@ -12723,7 +12723,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       case ButtonPress:
       {
         if (IsEventLogging())
-          (void) LogMagickEvent(X11Event,__MagickMethod,
+          (void) LogMagickEvent(GetMagickModule(X11Event),
             "Button Press: 0x%lx %u +%d+%d",event.xbutton.window,
             event.xbutton.button,event.xbutton.x,event.xbutton.y);
         if ((event.xbutton.button == Button3) &&
@@ -12876,7 +12876,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       case ButtonRelease:
       {
         if (IsEventLogging())
-          (void) LogMagickEvent(X11Event,__MagickMethod,
+          (void) LogMagickEvent(GetMagickModule(X11Event),
             "Button Release: 0x%lx %u +%d+%d",event.xbutton.window,
             event.xbutton.button,event.xbutton.x,event.xbutton.y);
         break;
@@ -12884,7 +12884,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       case ClientMessage:
       {
         if (IsEventLogging())
-          (void) LogMagickEvent(X11Event,__MagickMethod,
+          (void) LogMagickEvent(GetMagickModule(X11Event),
             "Client Message: 0x%lx 0x%lx %d 0x%lx",event.xclient.window,
             event.xclient.message_type,event.xclient.format,(unsigned long)
             event.xclient.data.l[0]);
@@ -13048,7 +13048,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       case ConfigureNotify:
       {
         if (IsEventLogging())
-          (void) LogMagickEvent(X11Event,__MagickMethod,
+          (void) LogMagickEvent(GetMagickModule(X11Event),
             "Configure Notify: 0x%lx %dx%d+%d+%d %d",event.xconfigure.window,
             event.xconfigure.width,event.xconfigure.height,event.xconfigure.x,
             event.xconfigure.y,event.xconfigure.send_event);
@@ -13215,7 +13215,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           Group leader has exited.
         */
         if (IsEventLogging())
-          (void) LogMagickEvent(X11Event,__MagickMethod,"Destroy Notify: 0x%lx",
+          (void) LogMagickEvent(GetMagickModule(X11Event),"Destroy Notify: 0x%lx",
             event.xdestroywindow.window);
         if (event.xdestroywindow.window == windows->group_leader.id)
           {
@@ -13237,7 +13237,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       case Expose:
       {
         if (IsEventLogging())
-          (void) LogMagickEvent(X11Event,__MagickMethod,
+          (void) LogMagickEvent(GetMagickModule(X11Event),
             "Expose: 0x%lx %dx%d+%d+%d",event.xexpose.window,
             event.xexpose.width,event.xexpose.height,event.xexpose.x,
             event.xexpose.y);
@@ -13284,7 +13284,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           &key_symbol,(XComposeStatus *) NULL);
         *(command+length)='\0';
         if (IsEventLogging())
-          (void) LogMagickEvent(X11Event,__MagickMethod,
+          (void) LogMagickEvent(GetMagickModule(X11Event),
             "Key press: %d 0x%lx (%.1024s)",event.xkey.state,key_symbol,
             command);
         if (event.xkey.window == windows->image.id)
@@ -13320,7 +13320,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         (void) XLookupString((XKeyEvent *) &event.xkey,command,sizeof(command),
           &key_symbol,(XComposeStatus *) NULL);
         if (IsEventLogging())
-          (void) LogMagickEvent(X11Event,__MagickMethod,
+          (void) LogMagickEvent(GetMagickModule(X11Event),
             "Key release: 0x%lx (%c)",key_symbol,*command);
         break;
       }
@@ -13337,7 +13337,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       case MapNotify:
       {
         if (IsEventLogging())
-          (void) LogMagickEvent(X11Event,__MagickMethod,"Map Notify: 0x%lx",
+          (void) LogMagickEvent(GetMagickModule(X11Event),"Map Notify: 0x%lx",
             event.xmap.window);
         if (event.xmap.window == windows->backdrop.id)
           {
@@ -13444,7 +13444,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           length;
 
         if (IsEventLogging())
-          (void) LogMagickEvent(X11Event,__MagickMethod,
+          (void) LogMagickEvent(GetMagickModule(X11Event),
             "Property Notify: 0x%lx 0x%lx %d",event.xproperty.window,
             event.xproperty.atom,event.xproperty.state);
         if (event.xproperty.atom != windows->im_remote_command)
@@ -13472,7 +13472,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       case ReparentNotify:
       {
         if (IsEventLogging())
-          (void) LogMagickEvent(X11Event,__MagickMethod,
+          (void) LogMagickEvent(GetMagickModule(X11Event),
             "Reparent Notify: 0x%lx=>0x%lx",event.xreparent.parent,
             event.xreparent.window);
         break;
@@ -13480,7 +13480,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       case UnmapNotify:
       {
         if (IsEventLogging())
-          (void) LogMagickEvent(X11Event,__MagickMethod,"Unmap Notify: 0x%lx",
+          (void) LogMagickEvent(GetMagickModule(X11Event),"Unmap Notify: 0x%lx",
             event.xunmap.window);
         if (event.xunmap.window == windows->backdrop.id)
           {
@@ -13543,7 +13543,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       default:
       {
         if (IsEventLogging())
-          (void) LogMagickEvent(X11Event,__MagickMethod,"Event type: %d",
+          (void) LogMagickEvent(GetMagickModule(X11Event),"Event type: %d",
             event.type);
         break;
       }
