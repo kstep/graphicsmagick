@@ -889,8 +889,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
       LiberateMemory((void **) &layer_info);
     }
-  if (EOFBlob(image))
-    ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
   CloseBlob(image);
   return(image);
 }
