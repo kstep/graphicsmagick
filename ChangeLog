@@ -1,3 +1,11 @@
+2004-04-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/blob.c (GetConfigureBlob): Enable logging the load of
+	log.mgk
+	* magick/log.c: Re-designed logging initialization in order to
+	avoid the "chicken and the egg" snafu.  This allows logging the
+	initialization of the logging subsystem.
+
 2004-04-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* VisualMagick/bin/log.mgk: Add comments to help document usage.

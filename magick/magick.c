@@ -768,16 +768,11 @@ MagickExport void InitializeMagick(const char *path)
   InitializeSemaphore();
 
   /*
-    Set logging flags using value of MAGICK_DEBUG if it is set in
+    Set logging flags using the value of MAGICK_DEBUG if it is set in
     the environment.
   */
-  {
-    const char
-      *magick_debug=getenv("MAGICK_DEBUG");
-    
-    if (magick_debug)
-      (void) SetLogEventMask(magick_debug);
-  }
+  if (getenv("MAGICK_DEBUG"))
+    (void) SetLogEventMask(getenv("MAGICK_DEBUG"));
 
   /*
     Establish the path, filename, and display name of the client app
@@ -789,6 +784,12 @@ MagickExport void InitializeMagick(const char *path)
   */
   if (GetClientName() == (const char *) NULL)
     DefineClientName(path);
+
+  /*
+    Set logging flags using the value of MAGICK_DEBUG if it is set in
+    the environment.
+  */
+  (void) SetLogEventMask(getenv("MAGICK_DEBUG"));
 
   /*
     Establish signal handlers for common signals

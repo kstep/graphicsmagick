@@ -108,28 +108,10 @@ typedef struct _EventInfo
 } EventInfo;
 
 /*
-  Declare color map.
-*/
-static const char
-  *MagickLog = (char *)
-    "<?xml version=\"1.0\"?>"
-    "<magicklog>"
-    "  <log events=\"None\" />"
-#if defined(WIN32)
-    "  <log output=\"win32eventlog\" />"
-#else
-    "  <log output=\"stdout\" />"
-#endif
-    "  <log filename=\"Magick-%d.log\" />"
-    "  <log generations=\"3\" />"
-    "  <log limit=\"2000\" />"
-    "  <log format=\"%t %r %u %p %m/%f/%l/%d/%s:\n  %e\" />"
-    "</magicklog>";
-
-/* This table maps between masks and the various event id's that can occur
-   This following id's are not represented in this table yet, since each of
-   them would require a bit in the bitmask and none of these are actually
-   used in the code at this point.
+  This table maps between masks and the various event id's that can occur
+  This following id's are not represented in this table yet, since each of
+  them would require a bit in the bitmask and none of these are actually
+  used in the code at this point.
 
      DelegateBase
      MissingDelegateBase
@@ -186,7 +168,7 @@ static const OutputInfo output_map[] =
   Static declarations.
 */
 static volatile unsigned int
-  log_initialize = True;
+  log_configured = False;
 
 static LogInfo
   *log_info = (LogInfo *) NULL;
@@ -197,12 +179,40 @@ static SemaphoreInfo
 /*
   Forward declarations.
 */
-static unsigned int
+static MagickPassFail
   ReadLogConfigureFile(const char *,const unsigned long,ExceptionInfo *);
-
-static void
-  *LogToBlob(const char *,size_t *,ExceptionInfo *);
 
+/*
+  Allocate LogInfo structure populated with default values
+*/
+static void AllocateLogInfo( void )
+{
+  AcquireSemaphoreInfo(&log_semaphore);
+  if (log_info == (LogInfo *) NULL)
+    {
+      log_info=MagickAllocateMemory(LogInfo *,sizeof(LogInfo));
+      if (log_info == (LogInfo *) NULL)
+        MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+                          UnableToAllocateLogInfo);
+      memset((void *) log_info,0,sizeof(LogInfo));
+      log_info->path=AcquireString("(default)");
+      log_info->filename=AcquireString("Magick-%d.log");
+      log_info->generations=3;
+      log_info->limit=2000;
+      log_info->format=AcquireString("%t %r %u %p %m/%f/%l/%d:\n  %e");
+      log_info->file=(FILE *) NULL;
+      log_info->generation=0;
+      log_info->count=0;
+      log_info->events=NoEventsMask;
+#if defined(WIN32)
+      log_info->output_type=Win32EventlogOutput;
+#else
+      log_info->output_type=StdoutOutput;
+#endif
+      GetTimerInfo(&log_info->timer);
+    }
+  LiberateSemaphoreInfo(&log_semaphore);
+}
 /*
   Parse an event specification string and return the equivalent bits.
 */
@@ -265,72 +275,15 @@ MagickExport void DestroyLogInfo(void)
             (void) fprintf(log_info->file,"</log>\n");
             (void) fclose(log_info->file);
           }
-      if (log_info->filename != (char *) NULL)
-        MagickFreeMemory(log_info->filename);
-      if (log_info->path != (char *) NULL)
-        MagickFreeMemory(log_info->path);
-      if (log_info->format != (char *) NULL)
-        MagickFreeMemory(log_info->format);
+      MagickFreeMemory(log_info->filename);
+      MagickFreeMemory(log_info->path);
+      MagickFreeMemory(log_info->format);
       MagickFreeMemory(log_info);
     }
   log_info=(LogInfo *) NULL;
-  log_initialize=True;
+  log_configured=False;
   LiberateSemaphoreInfo(&log_semaphore);
   DestroySemaphoreInfo(&log_semaphore);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   I n i t i a l i z e L o g I n f o                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method InitializeLogInfo initializes the structures required to support
-%  logging. It may be explicitly invoked before any other logging API is
-%  invoked, or it may be implicitly invoked (as required) by IsEventLogging(),
-%  LogMagickEvent(), or SetLogEventMask(). True is returned if initialization
-%  is successful.  False is returned if initialization fails, and detailed
-%  error info may be available (not currently assured) via the exception
-%  parameter. Since logging is not a critical function, failure to initialize
-%  the logging subsystem is not normally considered a fatal error.
-%
-%  The format of the InitializeLogInfo method is:
-%
-%      unsigned int InitializeLogInfo(ExceptionInfo *exception)
-%
-%  A description of each parameter follows.
-%
-%    o status: True on success.
-%
-%    o exception: May be filled with error information if there is
-%    an error.
-%
-*/
-MagickExport unsigned int InitializeLogInfo(ExceptionInfo *exception)
-{
-  unsigned int
-    initialize;
-
-  initialize=False;
-  if ((log_info == (LogInfo *) NULL) && (log_initialize == True))
-    {
-      AcquireSemaphoreInfo(&log_semaphore);
-      if ((log_info == (LogInfo *) NULL) && (log_initialize == True))
-        {
-          log_initialize=False;
-          initialize=True;
-        }
-      LiberateSemaphoreInfo(&log_semaphore);
-
-      if (initialize == True)
-        (void) ReadLogConfigureFile(MagickLogFilename,0,exception);
-    }
-  return(log_info != (LogInfo *) NULL);
 }
 
 /*
@@ -355,80 +308,7 @@ MagickExport unsigned int InitializeLogInfo(ExceptionInfo *exception)
 */
 MagickExport unsigned int IsEventLogging(void)
 {
-  if (log_initialize == True)
-    {
-      ExceptionInfo
-        exception;
-
-      GetExceptionInfo(&exception);
-      (void) InitializeLogInfo(&exception);
-      DestroyExceptionInfo(&exception);
-    }
-  return ((log_info != (LogInfo *) NULL) && (log_info->events != NoEventsMask));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   L o g T o B l o b                                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  LogToBlob() returns the contents of a file as a blob.  It returns the
-%  file as a blob and its length.  If an error occurs, NULL is returned.
-%
-%  The format of the LogToBlob method is:
-%
-%      void *LogToBlob(const char *filename,size_t *length,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o blob:  LogToBlob() returns the contents of a file as a blob.  If
-%      an error occurs NULL is returned.
-%
-%    o filename: The filename.
-%
-%    o length: This pointer to a size_t integer sets the initial length of the
-%      blob.  On return, it reflects the actual length of the blob.
-%
-%    o exception: Return any errors or warnings in this structure.
-%
-%
-*/
-static void *LogToBlob(const char *filename,size_t *length,
-  ExceptionInfo *exception)
-{
-  unsigned char
-    *blob=0;
-
-  FILE
-    *file;
-
-  *length=0;
-  SetExceptionInfo(exception,UndefinedException);
-  file=fopen(filename,"rb");
-  if (file )
-    {
-      (void) fseek(file,0L,SEEK_END);
-      *length=ftell(file);
-      if (*length > 0)
-        {
-          (void) fseek(file,0L,SEEK_SET);
-          blob=MagickAllocateMemory(unsigned char *,*length+1);
-          if (blob)
-            {
-              *length=fread((void  *)blob, 1, *length, file);
-              blob[*length]='\0';
-            }
-        }
-      (void) fclose(file);
-    }
-  return (blob);
+  return ((log_info) && (log_info->events != NoEventsMask));
 }
 
 /*
@@ -888,7 +768,7 @@ MagickExport unsigned int LogMagickEvent(const ExceptionType type,
 %
 %
 */
-static unsigned int ReadLogConfigureFile(const char *basename,
+static MagickPassFail ReadLogConfigureFile(const char *basename,
   const unsigned long depth,ExceptionInfo *exception)
 {
   char
@@ -901,16 +781,30 @@ static unsigned int ReadLogConfigureFile(const char *basename,
   size_t
     length=0;
 
+  MagickPassFail
+    status=MagickPass;
+
   /*
     Read the log configure file.
   */
   (void) strcpy(path,basename);
   if (depth == 0)
-    xml=(char *) GetConfigureBlob(basename,path,&length,exception);
+    {
+      /*
+        Load top configuration file based on configure search path.
+      */
+      xml=(char *) GetConfigureBlob(basename,path,&length,exception);
+    }
   else
-    xml=(char *) LogToBlob(basename,&length,exception);
+    {
+      /*
+        Load subordinate configuration file based on path specified
+        by parent configuration file.
+      */
+      xml=(char *) FileToBlob(basename,&length,exception);
+    }
   if (xml == (char *) NULL)
-    xml=AllocateString(MagickLog);
+    return MagickFail;
   token=AllocateString(xml);
   for (q=xml; *q != '\0'; )
   {
@@ -957,7 +851,13 @@ static unsigned int ReadLogConfigureFile(const char *basename,
                     (void) strcat(filename,DirectorySeparator);
                   (void) strncat(filename,token,MaxTextExtent-
                     strlen(filename)-1);
-                  (void) ReadLogConfigureFile(filename,depth+1,exception);
+                  status &= ReadLogConfigureFile(filename,depth+1,exception);
+                  if (status != MagickPass)
+                    {
+                      MagickFreeMemory(token);
+                      MagickFreeMemory(xml);
+                      return (status);
+                    }
                 }
             }
         }
@@ -965,16 +865,10 @@ static unsigned int ReadLogConfigureFile(const char *basename,
       }
     if (LocaleCompare(keyword,"<magicklog>") == 0)
       {
-        /*
-          Allocate memory for the log list.
-        */
-        log_info=MagickAllocateMemory(LogInfo *,sizeof(LogInfo));
         if (log_info == (LogInfo *) NULL)
           MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
             UnableToAllocateLogInfo);
-        (void) memset((void *) log_info,0,sizeof(LogInfo));
-        log_info->path=AcquireString(path);
-        GetTimerInfo((TimerInfo *) &log_info->timer);
+        CloneString(&log_info->path,path);
         continue;
       }
     if (log_info == (LogInfo *) NULL)
@@ -998,12 +892,12 @@ static unsigned int ReadLogConfigureFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"filename") == 0)
           {
-            log_info->filename=AcquireString(token);
+            CloneString(&log_info->filename,token);
             break;
           }
         if (LocaleCompare((char *) keyword,"format") == 0)
           {
-            log_info->format=AcquireString(token);
+            CloneString(&log_info->format,token);
             break;
           }
         break;
@@ -1057,9 +951,11 @@ static unsigned int ReadLogConfigureFile(const char *basename,
   }
   MagickFreeMemory(token);
   MagickFreeMemory(xml);
-  if (log_info == (LogInfo *) NULL)
-    return(False);
-  return(True);
+
+  if ((depth == 0) && (status == MagickPass))
+    log_configured=True;
+
+  return(status);
 }
 
 /*
@@ -1073,9 +969,9 @@ static unsigned int ReadLogConfigureFile(const char *basename,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetLogEventMask() accepts a list that determines which events to log.  All
-%  other events are ignored.  By default, no logging is enabled.  This method
-%  returns the previous log event mask.
+%  SetLogEventMask() accepts a comma-delimited list that determines which
+%  events to log.  All other events are ignored.  By default, no logging is
+%  enabled.  This method returns the updated log event mask.
 %
 %  The format of the AcquireString method is:
 %
@@ -1089,31 +985,40 @@ static unsigned int ReadLogConfigureFile(const char *basename,
 */
 MagickExport unsigned long SetLogEventMask(const char *events)
 {
+  LogEventType
+    event_flags=NoEventsMask;
 
-  if (log_initialize == True)
+  if (log_info == (LogInfo *) NULL)
+    AllocateLogInfo();
+
+  AcquireSemaphoreInfo(&log_semaphore);
+
+  if (events != NULL)
+    {
+      event_flags=ParseEvents(events);
+      log_info->events=event_flags;
+    }
+
+  if (log_configured == False)
     {
       ExceptionInfo
-            exception;
+        exception;
 
       GetExceptionInfo(&exception);
-      (void) InitializeLogInfo(&exception);
+      (void) ReadLogConfigureFile(MagickLogFilename,0,&exception);
       DestroyExceptionInfo(&exception);
     }
-  AcquireSemaphoreInfo(&log_semaphore);
-  if (log_info == (LogInfo *) NULL)
-    {
-      LiberateSemaphoreInfo(&log_semaphore);
-      return(NoEventsMask);
-    }
-  log_info->events=NoEventsMask;
-  if (events == (const char *) NULL)
-    {
-      LiberateSemaphoreInfo(&log_semaphore);
-      return(log_info->events);
-    }
-  log_info->events=ParseEvents(events);
+
+  /*
+    If events were specified, then override configuration file value.
+  */
+  if (events != NULL)
+    log_info->events=event_flags;
+
+  event_flags=log_info->events;
   LiberateSemaphoreInfo(&log_semaphore);
-  return(log_info->events);
+
+  return (event_flags);
 }
 
 /*
@@ -1142,9 +1047,24 @@ MagickExport unsigned long SetLogEventMask(const char *events)
 */
 MagickExport void SetLogFormat(const char *format)
 {
+  if (log_info == (LogInfo *) NULL)
+    AllocateLogInfo();
+
   AcquireSemaphoreInfo(&log_semaphore);
-  if (log_info->format != (char *) NULL)
-    MagickFreeMemory(log_info->format);
-  log_info->format=AcquireString(format);
+
+  if (log_configured == False)
+    {
+      LogEventType
+        event_flags;
+
+      ExceptionInfo
+        exception;
+
+      GetExceptionInfo(&exception);
+      (void) ReadLogConfigureFile(MagickLogFilename,0,&exception);
+      DestroyExceptionInfo(&exception);
+    }
+
+  CloneString(&log_info->format,format);
   LiberateSemaphoreInfo(&log_semaphore);
 }
