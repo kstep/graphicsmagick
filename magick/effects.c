@@ -1117,9 +1117,6 @@ MagickExport Image *GaussianBlurImage(Image *image,const double radius,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if ((image->columns < length) || (image->rows < length))
-    ThrowImageException(ResourceLimitWarning,"Unable to gaussian blur image",
-      "image is smaller than radius");
   if (radius > 0.0)
     {
       length=2.0*ceil(radius-0.5)+1.0;
@@ -1145,6 +1142,9 @@ MagickExport Image *GaussianBlurImage(Image *image,const double radius,
         length++;
       }
     }
+  if ((image->columns < length) || (image->rows < length))
+    ThrowImageException(ResourceLimitWarning,"Unable to gaussian blur image",
+      "image is smaller than radius");
   kernel=(double *) AcquireMemory(length*length*sizeof(double));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to gaussian blur image",
