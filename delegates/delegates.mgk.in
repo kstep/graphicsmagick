@@ -81,7 +81,7 @@
 	|@ZipDelegate@ -cf > "%o"
 
 browse=>
-	@BrowseDelegate@ http://www.simplesystems.org/ImageMagick/ &
+	@BrowseDelegate@ http://www.imagemagick.org/ImageMagick/ &
 
 bzip=>
 	|@BZIPDelegate@ -cd "%i"
@@ -106,12 +106,12 @@ emf=>
 	@WMFDecodeDelegate@ "%i" "%o"
 
 eps<=>pdf
-	@PSDelegate@ -dMaxBitmap=300000000 -sDEVICE=@GSPDFDevice@ -q -dNOPAUSE -dSAFER \
-	  -sOutputFile="%o" -- "%i" -c quit
+	@PSDelegate@ -dBATCH -dMaxBitmap=300000000 -sDEVICE=@GSPDFDevice@ \
+	  -q -dNOPAUSE -dSAFER -sOutputFile="%o" -- "%i" -c quit
 
 eps<=>ps
-	@PSDelegate@ -dMaxBitmap=300000000 -sDEVICE=@GSPSDevice@ -q -dNOPAUSE -dSAFER \
-	  -sOutputFile="%o" -- "%i" -c quit
+	@PSDelegate@ -dBATCH -dMaxBitmap=300000000 -sDEVICE=@GSPSDevice@ \
+	  -q -dNOPAUSE -dSAFER -sOutputFile="%o" -- "%i" -c quit
 
 fig=>
 	@FIGDecodeDelegate@ -L ps "%i" "%o"
@@ -123,14 +123,14 @@ gplt=>
 	@GnuplotDecodeDelegate@ %u
 
 gs-color=>
-	@PSDelegate@ -dMaxBitmap=300000000 -sDEVICE=@GSColorDevice@ -q -dNOPAUSE -dSAFER \
-	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g"%s" -r"%s" %s \
-	  -sOutputFile="%s" -- "%s" -c quit
+	@PSDelegate@ -dBATCH -dMaxBitmap=300000000 -sDEVICE=@GSColorDevice@ \
+	  -q -dNOPAUSE -dSAFER -dTextAlphaBits=%u -dGraphicsAlphaBits=%u \
+	  -g"%s" -r"%s" %s -sOutputFile="%s" -- "%s" -c quit
 
 gs-mono=>
-	@PSDelegate@ -dMaxBitmap=300000000 -sDEVICE=@GSMonoDevice@ -q -dNOPAUSE -dSAFER \
-	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g"%s" -r"%s" %s \
-	  -sOutputFile="%s" -- "%s" -c quit
+	@PSDelegate@ -dBATCH -dMaxBitmap=300000000 -sDEVICE=@GSMonoDevice@ \
+	  -q -dNOPAUSE -dSAFER -dTextAlphaBits=%u -dGraphicsAlphaBits=%u \
+	  -g"%s" -r"%s" %s -sOutputFile="%s" -- "%s" -c quit
 
 hpgl=>
 	@HPGLDecodeDelegate@ -q -m eps -f `basename "%o"` "%i"
@@ -161,12 +161,12 @@ m2v=>
 	@ConvertDelegate@ -concatenate "%o*.ppm" "%o"
 
 pdf<=>eps
-	@PSDelegate@ -dMaxBitmap=300000000 -sDEVICE=@GSEPSDevice@ -q -dNOPAUSE -dSAFER \
-	  -sOutputFile="%o" -- "%i" -c quit
+	@PSDelegate@ -dBATCH -dMaxBitmap=300000000 -sDEVICE=@GSEPSDevice@ \
+	  -q -dNOPAUSE -dSAFER -sOutputFile="%o" -- "%i" -c quit
 
 pdf<=>ps
-	@PSDelegate@ -dMaxBitmap=300000000 -sDEVICE=@GSPSDevice@ -q -dNOPAUSE -dSAFER \
-	  -sOutputFile="%o" -- "%i" -c quit
+	@PSDelegate@ -dBATCH -dMaxBitmap=300000000 -sDEVICE=@GSPSDevice@ \
+	  -q -dNOPAUSE -dSAFER -sOutputFile="%o" -- "%i" -c quit
 
 pgp=>
 	@PGPDecodeDelegate@ -fq "%i"
@@ -185,12 +185,12 @@ pov=>
 	@ConvertDelegate@ -concatenate "%o*.png" "%o"
 
 ps<=>eps
-	@PSDelegate@ -dMaxBitmap=300000000 -sDEVICE=@GSEPSDevice@ -q -dNOPAUSE -dSAFER \
-	  -sOutputFile="%o" -- "%i" -c quit
+	@PSDelegate@ -dBATCH -dMaxBitmap=300000000 -sDEVICE=@GSEPSDevice@ \
+	  -q -dNOPAUSE -dSAFER -sOutputFile="%o" -- "%i" -c quit
 
 ps<=>pdf
-	@PSDelegate@ -dMaxBitmap=300000000 -sDEVICE=@GSPDFDevice@ -q -dNOPAUSE -dSAFER \
-	  -sOutputFile="%o" -- "%i" -c quit
+	@PSDelegate@ -dBATCH -dMaxBitmap=300000000 -sDEVICE=@GSPDFDevice@ \
+	  -q -dNOPAUSE -dSAFER -sOutputFile="%o" -- "%i" -c quit
 
 ps<=print
 	@PrintDelegate@ "%i"
