@@ -95,9 +95,6 @@ typedef struct _CacheInfo
   CacheType
     type;
 
-  off_t
-    number_pixels;
-
   unsigned int
     columns,
     rows;
@@ -187,19 +184,23 @@ Export void DestroyCacheInfo(Cache cache)
   CacheInfo
     *cache_info;
 
+  off_t
+    number_pixels;
+
   register int
     id;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
+  number_pixels=cache_info->columns*cache_info->rows;
   switch (cache_info->type)
   {
     case MemoryCache:
     {
       FreeMemory(cache_info->pixels);
       if (cache_info->class == PseudoClass)
-        (void) GetCacheMemory(cache_info->number_pixels*sizeof(IndexPacket));
-      (void) GetCacheMemory(cache_info->number_pixels*sizeof(PixelPacket));
+        (void) GetCacheMemory(number_pixels*sizeof(IndexPacket));
+      (void) GetCacheMemory(number_pixels*sizeof(PixelPacket));
       break;
     }
     case MemoryMappedCache:
@@ -210,9 +211,9 @@ Export void DestroyCacheInfo(Cache cache)
       /*
         Unmap memory-mapped pixels and indexes.
       */
-      length=cache_info->number_pixels*sizeof(PixelPacket);
+      length=number_pixels*sizeof(PixelPacket);
       if (cache_info->class == PseudoClass)
-        length+=cache_info->number_pixels*sizeof(IndexPacket);
+        length+=number_pixels*sizeof(IndexPacket);
       (void) UnmapBlob(cache_info->pixels,length);
     }
     case DiskCache:
@@ -346,7 +347,6 @@ Export void GetCacheInfo(Cache *cache)
       "unable to allocate cache info");
   cache_info->class=UndefinedClass;
   cache_info->type=UndefinedCache;
-  cache_info->number_pixels=0;
   cache_info->rows=0;
   cache_info->columns=0;
   cache_info->pixels=(PixelPacket *) NULL;
@@ -703,19 +703,21 @@ Export unsigned int OpenCache(Cache cache,const ClassType class_type,
     null = 0;
 
   off_t
-    length;
+    length,
+    number_pixels;
 
   void
     *allocation;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
-  length=cache_info->number_pixels*sizeof(PixelPacket);
+  number_pixels=cache_info->columns*cache_info->rows;
+  length=number_pixels*sizeof(PixelPacket);
   if (cache_info->class == PseudoClass)
-    length+=cache_info->number_pixels*sizeof(IndexPacket);
+    length+=number_pixels*sizeof(IndexPacket);
   cache_info->rows=rows;
   cache_info->columns=columns;
-  cache_info->number_pixels=columns*rows;
+  number_pixels=cache_info->columns*cache_info->rows;
   if (cache_info->class != UndefinedClass)
     {
       /*
@@ -754,9 +756,9 @@ Export unsigned int OpenCache(Cache cache,const ClassType class_type,
       }
       cache_info->nexus[0].available=False;
     }
-  length=cache_info->number_pixels*sizeof(PixelPacket);
+  length=number_pixels*sizeof(PixelPacket);
   if (class_type == PseudoClass)
-    length+=cache_info->number_pixels*sizeof(IndexPacket);
+    length+=number_pixels*sizeof(IndexPacket);
   if ((cache_info->type == MemoryCache) ||
       ((cache_info->type == UndefinedCache) && (length <= GetCacheMemory(0))))
     {
@@ -779,7 +781,7 @@ Export unsigned int OpenCache(Cache cache,const ClassType class_type,
           cache_info->pixels=(PixelPacket *) allocation;
           if (cache_info->class == PseudoClass)
             cache_info->indexes=(IndexPacket *)
-              (cache_info->pixels+cache_info->number_pixels);
+              (cache_info->pixels+number_pixels);
           return(True);
         }
     }
@@ -819,7 +821,7 @@ Export unsigned int OpenCache(Cache cache,const ClassType class_type,
           cache_info->pixels=(PixelPacket *) allocation;
           if (cache_info->class == PseudoClass)
             cache_info->indexes=(IndexPacket *)
-              (cache_info->pixels+cache_info->number_pixels);
+              (cache_info->pixels+number_pixels);
         }
     }
   return(True);
@@ -861,6 +863,7 @@ Export unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
 
   off_t
     count,
+    number_pixels,
     offset;
 
   register NexusInfo
@@ -904,10 +907,11 @@ Export unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
       if (cache_info->file == -1)
         return(False);
     }
+  number_pixels=cache_info->columns*cache_info->rows;
   for (y=0; y < (int) nexus->rows; y++)
   {
-    count=lseek(cache_info->file,cache_info->number_pixels*sizeof(PixelPacket)+
-      offset*sizeof(IndexPacket),SEEK_SET);
+    count=lseek(cache_info->file,number_pixels*sizeof(PixelPacket)+offset*
+      sizeof(IndexPacket),SEEK_SET);
     if (count == -1)
       return(False);
     count=read(cache_info->file,(char *) indexes,
@@ -1124,13 +1128,11 @@ Export PixelPacket *SetCacheNexus(Cache cache,const unsigned int id,
     *cache_info;
 
   off_t
-    length;
+    length,
+    number_pixels;
 
   register NexusInfo
     *nexus;
-
-  unsigned int
-    number_pixels;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
@@ -1208,6 +1210,7 @@ Export unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
 
   off_t
     count,
+    number_pixels,
     offset;
 
   register NexusInfo
@@ -1251,10 +1254,11 @@ Export unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
       if (cache_info->file == -1)
         return(False);
     }
+  number_pixels=cache_info->columns*cache_info->rows;
   for (y=0; y < (int) nexus->rows; y++)
   {
-    count=lseek(cache_info->file,cache_info->number_pixels*sizeof(PixelPacket)+
-      offset*sizeof(IndexPacket),SEEK_SET);
+    count=lseek(cache_info->file,number_pixels*sizeof(PixelPacket)+offset*
+      sizeof(IndexPacket),SEEK_SET);
     if (count == -1)
       return(False);
     count=write(cache_info->file,(char *) indexes,
