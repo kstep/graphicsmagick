@@ -120,6 +120,10 @@ struct _wmf_magick_t
   char
     *mvg;
 
+  long
+    mvg_alloc,
+    mvg_length;
+
   /* ImageMagick image */
     Image
       *image;
@@ -212,7 +216,7 @@ static void wmf_magick_bmp_draw(wmfAPI * API, wmfBMP_Draw_t * bmp_draw)
     y;
 
   char
-    *imgspec;
+    imgspec[30];
 
   ExceptionInfo
     exception;
@@ -223,16 +227,14 @@ static void wmf_magick_bmp_draw(wmfAPI * API, wmfBMP_Draw_t * bmp_draw)
   if (bmp_draw->bmp.data == 0)
     return;
 
+  magick_mvg_printf(API, "# wmf_magick_bmp_draw\n");
+
   /* Save graphic context */
   magick_mvg_printf(API, "push graphic-context\n");
 
-  imgspec = (char *) AcquireMemory(MaxTextExtent * sizeof(char));
-  *imgspec = '\0';
-
   GetExceptionInfo(&exception);
-  id =
-    SetMagickRegistry(ImageRegistryType, bmp_draw->bmp.data, sizeof(Image),
-		      &exception);
+  id = SetMagickRegistry(ImageRegistryType, bmp_draw->bmp.data,
+                         sizeof(Image), &exception);
   (ddata->temp_images)[ddata->cur_temp_file_index] = id;
   ++ddata->cur_temp_file_index;
   if (ddata->cur_temp_file_index == ddata->max_temp_file_index)
@@ -376,13 +378,6 @@ static void wmf_magick_device_begin(wmfAPI * API)
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData(API);
 
-  ddata->mvg = AcquireMemory(MaxTextExtent);
-  if (!ddata->mvg)
-  {
-    API->err = wmf_E_DeviceError;
-    return;
-  }
-
   if ((ddata->bbox.BR.x <= ddata->bbox.TL.x) ||
       (ddata->bbox.BR.y <= ddata->bbox.TL.y))
   {
@@ -429,6 +424,8 @@ static void wmf_magick_flood_interior(wmfAPI * API, wmfFlood_t * flood)
   wmfRGB
     *rgb = &(flood->color);
 
+  magick_mvg_printf(API, "# wmf_magick_flood_interior\n");
+
   /* Save graphic context */
   magick_mvg_printf(API, "push graphic-context\n");
 
@@ -446,6 +443,8 @@ static void wmf_magick_flood_exterior(wmfAPI * API, wmfFlood_t * flood)
 {
   wmfRGB
     *rgb = &(flood->color);
+
+  magick_mvg_printf(API, "# wmf_magick_flood_exterior\n");
 
   /* Save graphic context */
   magick_mvg_printf(API, "push graphic-context\n");
@@ -468,6 +467,8 @@ static void wmf_magick_draw_pixel(wmfAPI * API, wmfDrawPixel_t * draw_pixel)
 {
   wmfRGB
     *rgb = &(draw_pixel->color);
+
+  magick_mvg_printf(API, "# wmf_magick_draw_pixel\n");
 
   /* Save graphic context */
   magick_mvg_printf(API, "push graphic-context\n");
@@ -526,6 +527,8 @@ static void magick_draw_arc(wmfAPI * API,
   double
     Rx,
     Ry;
+
+  magick_mvg_printf(API, "# magick_draw_arc\n");
 
   /* Save graphic context */
   magick_mvg_printf(API, "push graphic-context\n");
@@ -603,6 +606,8 @@ static void magick_draw_arc(wmfAPI * API,
 
 static void wmf_magick_draw_line(wmfAPI * API, wmfDrawLine_t * draw_line)
 {
+  magick_mvg_printf(API, "# wmf_magick_draw_line\n");
+
   /* Save graphic context */
   magick_mvg_printf(API, "push graphic-context\n");
 
@@ -622,6 +627,8 @@ static void wmf_magick_poly_line(wmfAPI * API, wmfPolyLine_t * poly_line)
 {
   U16
     i;
+
+  magick_mvg_printf(API, "# wmf_magick_poly_line\n");
 
   /* Save graphic context */
   magick_mvg_printf(API, "push graphic-context\n");
@@ -652,6 +659,8 @@ static void wmf_magick_draw_polygon(wmfAPI * API, wmfPolyLine_t * poly_line)
   U16
     i;
 
+  magick_mvg_printf(API, "# wmf_magick_draw_polygon\n");
+
   /* Save graphic context */
   magick_mvg_printf(API, "push graphic-context\n");
 
@@ -679,6 +688,8 @@ static void wmf_magick_draw_polygon(wmfAPI * API, wmfPolyLine_t * poly_line)
 
 static void wmf_magick_draw_rectangle(wmfAPI * API, wmfDrawRectangle_t * draw_rect)
 {
+  magick_mvg_printf(API, "# wmf_magick_draw_rectangle\n");
+
   /* Save graphic context */
   magick_mvg_printf(API, "push graphic-context\n");
 
@@ -704,6 +715,8 @@ static void wmf_magick_draw_rectangle(wmfAPI * API, wmfDrawRectangle_t * draw_re
 
 static void wmf_magick_region_frame(wmfAPI * API, wmfPolyRectangle_t * poly_rect)
 {
+  magick_mvg_printf(API, "# wmf_magick_region_frame\n");
+
   /* Save graphic context */
   magick_mvg_printf(API, "push graphic-context\n");
 
@@ -716,6 +729,8 @@ static void wmf_magick_region_frame(wmfAPI * API, wmfPolyRectangle_t * poly_rect
 
 static void wmf_magick_region_paint(wmfAPI * API, wmfPolyRectangle_t * poly_rect)
 {
+  magick_mvg_printf(API, "# wmf_magick_region_paint\n");
+
   /* Save graphic context */
   magick_mvg_printf(API, "push graphic-context\n");
 
@@ -728,6 +743,8 @@ static void wmf_magick_region_paint(wmfAPI * API, wmfPolyRectangle_t * poly_rect
 
 static void wmf_magick_region_clip(wmfAPI * API, wmfPolyRectangle_t * poly_rect)
 {
+  magick_mvg_printf(API, "# wmf_magick_region_clip\n");
+
   /* Save graphic context */
   magick_mvg_printf(API, "push graphic-context\n");
 
@@ -796,6 +813,8 @@ static void wmf_magick_function(wmfAPI * API)
   ddata->bbox.BR.x = 0;
   ddata->bbox.BR.y = 0;
   ddata->mvg = 0;
+  ddata->mvg_alloc = 0;
+  ddata->mvg_length = 0;
   ddata->image = 0;
 }
 
@@ -868,6 +887,8 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
      WMF_FONT_HEIGHT & WMF_FONT_WIDTH units to points */
   font_height_points = abs(WMF_FONT_HEIGHT(font) * draw_text->dc->pixel_height);
   font_width_points = abs(WMF_FONT_WIDTH(font) * draw_text->dc->pixel_width);
+
+  magick_mvg_printf(API, "# wmf_magick_draw_text\n");
 
   /* Save graphic context */
   magick_mvg_printf(API, "push graphic-context\n");
@@ -1115,6 +1136,8 @@ static void magick_brush(wmfAPI * API, wmfDC * dc)
     fill_opaque,
     fill_ROP;
 
+  magick_mvg_printf(API, "# magick_brush\n");
+
   fill_opaque = (unsigned int) WMF_DC_OPAQUE(dc);
   fill_ROP = (unsigned int) WMF_DC_ROP(dc);
 
@@ -1240,39 +1263,39 @@ static void magick_brush(wmfAPI * API, wmfDC * dc)
       }
     case BS_DIBPATTERN:
       {
-	char
-          *imgspec;
-
-	Image
-          *image;
-
-	ExceptionInfo
-          exception;
-
-	long
-          id;
-
 	wmfBMP
-          *brush_bmp = 0;
+          *brush_bmp = WMF_BRUSH_BITMAP(brush);
 
-	brush_bmp = WMF_BRUSH_BITMAP(brush);
-
-	if (brush_bmp->data != 0)
+	if (brush_bmp && brush_bmp->data != 0)
 	{
 	  char
             composition_mode[14],
+            imgspec[30],
 	    pattern_id[30];
 
-	  sprintf(pattern_id, "fill_%lu", ddata->pattern_id);
+          Image
+            *image;
+
+          ExceptionInfo
+            exception;
+
+          long
+            id;
 
 	  image = (Image *) brush_bmp->data;
-
-	  imgspec = (char *) AcquireMemory(MaxTextExtent * sizeof(char));
-	  *imgspec = '\0';
 
 	  GetExceptionInfo(&exception);
 	  id = SetMagickRegistry(ImageRegistryType, (void *) image,
                                  sizeof(Image), &exception);
+          if( id<0 || exception.severity != UndefinedException)
+            {
+              if (ddata->image->exception.severity < exception.severity)
+                ddata->image->exception = exception;
+              return;
+            }
+	  sprintf(imgspec, "mpr:%li", id);
+
+          /* Add to ID list */
 	  (ddata->temp_images)[ddata->cur_temp_file_index] = id;
 	  ++ddata->cur_temp_file_index;
 	  if (ddata->cur_temp_file_index == ddata->max_temp_file_index)
@@ -1281,7 +1304,8 @@ static void magick_brush(wmfAPI * API, wmfDC * dc)
 	    ReacquireMemory((void **) &ddata->temp_images,
 			    ddata->max_temp_file_index * sizeof(long));
 	  }
-	  sprintf(imgspec, "mpr:%li", id);
+
+	  sprintf(pattern_id, "fill_%lu", ddata->pattern_id);
 	  magick_mvg_printf(API, "push pattern %s 0,0, %lu,%lu\n",
 			    pattern_id, image->columns, image->rows);
 
@@ -1379,6 +1403,8 @@ static void magick_pen(wmfAPI * API, wmfDC * dc)
     pen_join,
     pen_style,
     pen_type;
+
+  magick_mvg_printf(API, "# magick_pen\n");
 
   pen = WMF_DC_PEN(dc);
 
@@ -1489,26 +1515,37 @@ static void magick_pen(wmfAPI * API, wmfDC * dc)
 static int magick_mvg_printf(wmfAPI * API, char *format, ...)
 {
   long
-    length;
-
-  char
-    buffer[MaxTextExtent];
+    str_length;
 
   va_list
     argp;
 
-  wmf_magick_t * ddata = WMF_MAGICK_GetData(API);
+  wmf_magick_t
+    *ddata = WMF_MAGICK_GetData(API);
 
+  /* Allocate initial memory */
+  if(ddata->mvg == 0)
+    {
+      ddata->mvg = AcquireMemory(MaxTextExtent);
+      ddata->mvg_alloc = MaxTextExtent;
+      ddata->mvg_length = 0;
+    }
+
+  /* Re-allocate additional MaxTextExtent memory if necessary */
+  if(ddata->mvg_alloc < (ddata->mvg_length+MaxTextExtent))
+    {
+      ReacquireMemory((void**)&ddata->mvg,ddata->mvg_length+MaxTextExtent);
+      ddata->mvg_alloc = ddata->mvg_length+MaxTextExtent;
+    }
+
+  /* Write to end of existing MVG string */
   va_start(argp, format);
-
-  length = vsnprintf(buffer, MaxTextExtent - 1, format, argp);
-
-  if (length > 0)
-    ConcatenateString(&ddata->mvg, buffer);
-
+  str_length = vsnprintf(ddata->mvg+ddata->mvg_length, MaxTextExtent - 1, format, argp);
+  /* printf("%s",ddata->mvg+ddata->mvg_length); */
+  ddata->mvg_length += str_length;
   va_end(argp);
 
-  return length;
+  return str_length;
 }
 
 /* Scribble MVG on image */
