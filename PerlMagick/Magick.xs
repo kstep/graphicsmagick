@@ -6763,7 +6763,7 @@ QueryFontMetrics(ref,...)
         draw_info->geometry=AllocateString((char *) NULL);
         FormatString(draw_info->geometry,"%f,%f",x,y);
       }
-    status=GetFontMetrics(image,draw_info,&metrics);
+    status=GetTypeMetrics(image,draw_info,&metrics);
     if (status == False)
       PUSHs(&sv_undef);
     else

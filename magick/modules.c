@@ -574,7 +574,7 @@ MagickExport unsigned int ListModuleAliases(FILE *file,ExceptionInfo *exception)
 %
 %  The format of the ModuleToTag method is:
 %
-%      int ModuleToTag(const char *filename, const char *format, char *module)
+%      ModuleToTag(const char *filename, const char *format, char *module)
 %
 %  A description of each parameter follows:
 %
@@ -585,7 +585,7 @@ MagickExport unsigned int ListModuleAliases(FILE *file,ExceptionInfo *exception)
 %    o module: pointer to a destination buffer for the formatted result.
 %
 */
-void ModuleToTag(const char *filename,const char *format,char *module)
+static void ModuleToTag(const char *filename,const char *format,char *module)
 {
   char
     *module_name;
