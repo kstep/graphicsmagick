@@ -17,6 +17,6 @@ using namespace std;
 // Clone C++ string as allocated C string, de-allocating any existing string
 void Magick::CloneString( char **destination_, const std::string &source_ )
 {
-  CloneString( destination_, source_.c_str() );
+  MagickLib::CloneString( destination_, source_.c_str() );
 }
 

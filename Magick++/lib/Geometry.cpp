@@ -18,6 +18,8 @@ using namespace std;
 
 #include "Magick++/Geometry.h"
 
+#define AbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
+
 int Magick::operator == ( const Magick::Geometry& left_,
 			  const Magick::Geometry& right_ )
 {
@@ -220,13 +222,13 @@ Magick::Geometry::operator = ( const std::string &geometry_ )
 
   if ( ( flags & XValue ) != 0 )
     {
-      _xOff = static_cast<unsigned int>(::abs(x));
+      _xOff = static_cast<unsigned int>(AbsoluteValue(x));
       isValid( true );
     }
 
   if ( ( flags & YValue ) != 0 )
     {
-      _yOff = static_cast<unsigned int>(::abs(y));
+      _yOff = static_cast<unsigned int>(AbsoluteValue(y));
       isValid( true );
     }
 
@@ -324,8 +326,8 @@ ostream& operator<<(ostream& stream_, const Magick::Geometry& geometry_)
 Magick::Geometry::Geometry ( const MagickLib::RectangleInfo &rectangle_ )
   : _width(static_cast<unsigned int>(rectangle_.width)),
     _height(static_cast<unsigned int>(rectangle_.height)),
-    _xOff(static_cast<unsigned int>(abs(rectangle_.x))),
-    _yOff(static_cast<unsigned int>(abs(rectangle_.y))),
+    _xOff(static_cast<unsigned int>(AbsoluteValue(rectangle_.x))),
+    _yOff(static_cast<unsigned int>(AbsoluteValue(rectangle_.y))),
     _xNegative(rectangle_.x < 0 ? true : false),
     _yNegative(rectangle_.y < 0 ? true : false),
     _isValid(true),

@@ -384,7 +384,6 @@ namespace Magick
   using MagickLib::CloneImage;
   using MagickLib::CloneImageInfo;
   using MagickLib::CloneQuantizeInfo;
-  using MagickLib::CloneString;
   using MagickLib::CloseCacheView;
   using MagickLib::ColorFloodfillImage;
   using MagickLib::ColorizeImage;
@@ -440,6 +439,7 @@ namespace Magick
   using MagickLib::GetImagePixels;
   using MagickLib::GetImageType;
   using MagickLib::GetIndexes;
+  using MagickLib::GetMagickGeometry;
   using MagickLib::GetMagickInfo;
   using MagickLib::GetMagickRegistry;
   using MagickLib::GetNumberColors;
@@ -479,7 +479,6 @@ namespace Magick
   using MagickLib::OpenCacheView;
   using MagickLib::OptionError;
   using MagickLib::OptionWarning;
-  using MagickLib::ParseImageGeometry;
   using MagickLib::PercentValue;
   using MagickLib::PingImage;
   using MagickLib::PopImagePixels;

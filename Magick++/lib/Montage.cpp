@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
 //
 // Implementation of Montage
 //
@@ -11,7 +11,6 @@
 
 #include "Magick++/Montage.h"
 #include "Magick++/Functions.h"
-#include "Magick++/Include.h"
 
 Magick::Montage::Montage ( void )
   : _backgroundColor("#ffffff"),

@@ -9,7 +9,6 @@
 
 #include "Magick++/CoderInfo.h"
 #include "Magick++/Exception.h"
-#include "Magick++/Include.h"
 
 using namespace std;
 

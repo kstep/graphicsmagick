@@ -346,7 +346,7 @@ int main( int /*argc*/, char ** argv)
     //
     {
       // Test default setting
-      float x, y;
+      double x, y;
       image.chromaBluePrimary( &x, &y );
       if ( x != 0 || y != 0 )
 	{
@@ -372,7 +372,7 @@ int main( int /*argc*/, char ** argv)
     //
     {
       // Test default setting
-      float x, y;
+      double x, y;
       image.chromaGreenPrimary( &x, &y );
       if ( x != 0 || y != 0 )
 	{
@@ -397,7 +397,7 @@ int main( int /*argc*/, char ** argv)
     //
     {
       // Test default setting
-      float x, y;
+      double x, y;
       image.chromaRedPrimary( &x, &y );
       if ( x != 0 || y != 0 )
 	{
@@ -422,7 +422,7 @@ int main( int /*argc*/, char ** argv)
     //
     {
       // Test default setting
-      float x, y;
+      double x, y;
       image.chromaWhitePoint( &x, &y );
       if ( x != 0 || y != 0 )
 	{

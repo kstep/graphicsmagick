@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 2001
+// Copyright Bob Friesenhahn, 2001, 2002
 //
 // TypeMetric Definition
 //
@@ -24,21 +24,21 @@ namespace Magick
 
     // Ascent, the distance in pixels from the text baseline to the
     // highest/upper grid coordinate used to place an outline point.
-    double         ascent ( void );
+    double         ascent ( void ) const;
 
     // Descent, the distance in pixels from the baseline to the lowest
     // grid coordinate used to place an outline point. Always a
     // negative value.
-    double         descent ( void );
+    double         descent ( void ) const;
 
     // Text width in pixels.
-    double         textWidth ( void );
+    double         textWidth ( void ) const;
 
     // Text height in pixels.
-    double         textHeight ( void );
+    double         textHeight ( void ) const;
 
     // Maximum horizontal advance in pixels.
-    double         maxHorizontalAdvance ( void );
+    double         maxHorizontalAdvance ( void ) const;
 
     //
     // Public methods below this point are for Magick++ use only.

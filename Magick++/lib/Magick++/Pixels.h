@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
 //
 // Representation of a pixel view.
 //
@@ -27,8 +27,8 @@ namespace Magick
     // the specified region. Modified pixels may be subsequently
     // transferred back to the image via sync.
     
-    PixelPacket* get ( unsigned int x_, unsigned int y_,
-		       unsigned int columns_, unsigned int rows_ );
+    PixelPacket* get ( const unsigned int x_, const unsigned int y_,
+		       const unsigned int columns_,const  unsigned int rows_ );
     
     // Transfers the image view pixels to the image.
     void sync ( void );
@@ -36,8 +36,8 @@ namespace Magick
     // Allocate a pixel view region to store image pixels as defined
     // by the region rectangle.  This area is subsequently transferred
     // from the pixel view to the image via sync.
-    PixelPacket* set ( unsigned int x_, unsigned int y_,
-		       unsigned int columns_, unsigned int rows_ );
+    PixelPacket* set ( const unsigned int x_, const unsigned int y_,
+		       const unsigned int columns_, const unsigned int rows_ );
 
     // Return pixel colormap index array
     IndexPacket* indexes ( void );
@@ -58,16 +58,16 @@ namespace Magick
     // Transfer one or more pixel components from a buffer or file
     // into the image pixel view of an image.  Used to support image
     // decoders.
-    void decode ( QuantumType quantum_,
-		  unsigned char *source_ )
+    void decode ( const QuantumType quantum_,
+		  const unsigned char *source_ )
       {
 	MagickLib::ReadPixelCache( _image.image(), quantum_, source_ );
       }
     
     // Transfer one or more pixel components from the image pixel
     // view to a buffer or file.  Used to support image encoders.
-    void encode ( QuantumType quantum_,
-		  unsigned char *destination_ )
+    void encode ( const QuantumType quantum_,
+		  const unsigned char *destination_ )
       {
 	MagickLib::WritePixelCache( _image.image(), quantum_, destination_ );
       }

@@ -42,10 +42,10 @@ Magick::Pixels::~Pixels( void )
 // the specified region. Modified pixels may be subsequently
 // transferred back to the image via sync.
     
-Magick::PixelPacket* Magick::Pixels::get ( unsigned int x_,
-					   unsigned int y_,
-					   unsigned int columns_,
-					   unsigned int rows_ )
+Magick::PixelPacket* Magick::Pixels::get ( const unsigned int x_,
+					   const unsigned int y_,
+					   const unsigned int columns_,
+					   const unsigned int rows_ )
 {
   if ( ( x_ + columns_ > _image.columns()) ||
        ( y_ + rows_ > _image.rows()) )
@@ -56,7 +56,7 @@ Magick::PixelPacket* Magick::Pixels::get ( unsigned int x_,
   _columns = columns_;
   _rows = rows_;
 
-  PixelPacket* pixels = GetCacheView( _view, x_, y_,
+  PixelPacket* pixels = GetCacheView( _view, static_cast<long>(x_), static_cast<long>(y_),
                                       columns_, rows_ );
   if ( pixels == 0 )
     throwExceptionExplicit( OptionError, "Failed to get pixels" );
@@ -74,10 +74,10 @@ void Magick::Pixels::sync ( void )
 // Allocate a pixel view region to store image pixels as defined
 // by the region rectangle.  This area is subsequently transferred
 // from the pixel view to the image via 'sync'.
-Magick::PixelPacket* Magick::Pixels::set ( unsigned int x_,
-					   unsigned int y_,
-					   unsigned int columns_,
-					   unsigned int rows_ )
+Magick::PixelPacket* Magick::Pixels::set ( const unsigned int x_,
+					   const unsigned int y_,
+					   const unsigned int columns_,
+					   const unsigned int rows_ )
 {
   if ( ( x_ + columns_ > _image.columns()) ||
        ( y_ + rows_ > _image.rows()) )
@@ -89,7 +89,7 @@ Magick::PixelPacket* Magick::Pixels::set ( unsigned int x_,
   _columns = columns_;
   _rows = rows_;
 
-  PixelPacket* pixels = SetCacheView( _view, x_, y_,
+  PixelPacket* pixels = SetCacheView( _view, static_cast<long>(x_), static_cast<long>(y_),
                                       columns_, rows_ );
   if ( !pixels )
     throwExceptionExplicit( OptionError, "Failed to set pixels" );
@@ -100,11 +100,11 @@ Magick::PixelPacket* Magick::Pixels::set ( unsigned int x_,
 // Return pixel colormap index array
 Magick::IndexPacket* Magick::Pixels::indexes ( void )
 {
-  IndexPacket* indexes = GetCacheViewIndexes( _view );
+  IndexPacket* pixel_indexes = GetCacheViewIndexes( _view );
 
-  if ( !indexes )
+  if ( !pixel_indexes )
     throwExceptionExplicit( OptionError,
 			    "Image does not contain index channel");
 
-  return indexes;
+  return pixel_indexes;
 }

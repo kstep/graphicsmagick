@@ -1777,11 +1777,11 @@ is a static method and the attribute it sets is shared by all Image objects.</fo
 <br><font size=-1>BluePrimary</font></center>
 </td>
 
-<td><font size=-1>float x &amp; y</font></td>
+<td><font size=-1>double x &amp; y</font></td>
 
-<td><font size=-1>float *x_, float *y_</font></td>
+<td><font size=-1>double *x_, double *y_</font></td>
 
-<td><font size=-1>float x_, float y_</font></td>
+<td><font size=-1>double x_, double y_</font></td>
 
 <td><font size=-1>Chromaticity blue primary point (e.g. x=0.15, y=0.06)</font></td>
 </tr>
@@ -1792,11 +1792,11 @@ is a static method and the attribute it sets is shared by all Image objects.</fo
 <br><font size=-1>GreenPrimary</font></center>
 </td>
 
-<td><font size=-1>float x &amp; y</font></td>
+<td><font size=-1>double x &amp; y</font></td>
 
-<td><font size=-1>float *x_, float *y_</font></td>
+<td><font size=-1>double *x_, double *y_</font></td>
 
-<td><font size=-1>float x_, float y_</font></td>
+<td><font size=-1>double x_, double y_</font></td>
 
 <td><font size=-1>Chromaticity green primary point (e.g. x=0.3, y=0.6)</font></td>
 </tr>
@@ -1807,11 +1807,11 @@ is a static method and the attribute it sets is shared by all Image objects.</fo
 <br><font size=-1>RedPrimary</font></center>
 </td>
 
-<td><font size=-1>float x &amp; y</font></td>
+<td><font size=-1>double x &amp; y</font></td>
 
-<td><font size=-1>float *x_, float *y_</font></td>
+<td><font size=-1>double *x_, double *y_</font></td>
 
-<td><font size=-1>float x_, float y_</font></td>
+<td><font size=-1>double x_, double y_</font></td>
 
 <td><font size=-1>Chromaticity red primary point (e.g. x=0.64, y=0.33)</font></td>
 </tr>
@@ -1822,11 +1822,11 @@ is a static method and the attribute it sets is shared by all Image objects.</fo
 <br><font size=-1>WhitePoint</font></center>
 </td>
 
-<td><font size=-1>float x &amp; y</font></td>
+<td><font size=-1>double x &amp; y</font></td>
 
-<td><font size=-1>float *x_, float *y_</font></td>
+<td><font size=-1>double*x_, double *y_</font></td>
 
-<td><font size=-1>float x_, float y_</font></td>
+<td><font size=-1>double x_, double y_</font></td>
 
 <td><font size=-1>Chromaticity white point (e.g. x=0.3127, y=0.329)</font></td>
 </tr>
@@ -3055,7 +3055,8 @@ Save updated pixel cache back to underlying image</font></font></font>
 
 <td><font size=-1>const <a href="PixelPacket.html">PixelPacket</a>*</font></td>
 
-<td><font size=-1>int x_, int y_, unsigned int columns_, unsigned int rows_</font></td>
+<td><font size=-1>unsigned int x_, unsigned int y_, unsigned int columns_,
+unsigned int rows_</font></td>
 
 <td><font size=-1>Transfers pixels from the image to the pixel cache as
 defined by the specified rectangular region.&nbsp;</font></td>
@@ -3105,7 +3106,8 @@ channel.</font></td>
 
 <td><font size=-1><a href="PixelPacket.html">PixelPacket</a>*</font></td>
 
-<td><font size=-1>int x_, int y_, unsigned int columns_, unsigned int rows_</font></td>
+<td><font size=-1>unsigned int x_, unsigned int y_, unsigned int columns_,
+unsigned int rows_</font></td>
 
 <td><font size=-1>Transfers pixels from the image to the pixel cache as
 defined by the specified rectangular region. Modified pixels may be subsequently
@@ -3119,7 +3121,8 @@ transferred back to the image via syncPixels.</font></td>
 
 <td><font size=-1><a href="PixelPacket.html">PixelPacket</a>*</font></td>
 
-<td><font size=-1>int x_, int y_, unsigned int columns_, unsigned int rows_</font></td>
+<td><font size=-1>unsigned int x_, unsigned int y_, unsigned int columns_,
+unsigned int rows_</font></td>
 
 <td><font size=-1>Allocates a pixel cache region to store image pixels
 as defined by the region rectangle.&nbsp; This area is subsequently transferred

@@ -20,7 +20,8 @@ using namespace std;
 #include "Magick++/Image.h"
 #include "Magick++/Functions.h"
 #include "Magick++/Pixels.h"
-#include "Magick++/Include.h"
+
+#define AbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
 
 const std::string Magick::borderGeometryDefault = "6x6+0+0";
 const std::string Magick::frameGeometryDefault  = "25x25+6+6";
@@ -75,7 +76,7 @@ Magick::Image::Image( const std::string &imageSpec_ )
       // Initialize, Allocate and Read images
       read( imageSpec_ );
     }
-  catch ( Warning &warning_ )
+  catch ( const Warning &warning_ )
     {
       cerr << warning_.what() << endl;
     }
@@ -98,7 +99,7 @@ Magick::Image::Image( const Geometry &size_,
       // Initialize, Allocate and Read images
       read( imageSpec );
     }
-  catch ( Warning &warning_ )
+  catch ( const Warning &warning_ )
     {
       cerr << warning_.what() << endl;
     }
@@ -113,7 +114,7 @@ Magick::Image::Image ( const Blob &blob_ )
       // Initialize, Allocate and Read images
       read( blob_ );
     }
-  catch ( Warning &warning_ )
+  catch ( const Warning &warning_ )
     {
       cerr << warning_.what() << endl;
     }
@@ -129,7 +130,7 @@ Magick::Image::Image ( const Blob &blob_,
       // Read from Blob
       read( blob_, size_ );
     }
-  catch ( Warning &warning_ )
+  catch ( const Warning &warning_ )
     {
       cerr << warning_.what() << endl;
     }
@@ -138,7 +139,7 @@ Magick::Image::Image ( const Blob &blob_,
 // Construct Image of specified size and depth from in-memory BLOB
 Magick::Image::Image ( const Blob &blob_,
 		       const Geometry &size_,
-		       unsigned int depth_ )
+		       const unsigned int depth_ )
   : _imgRef(new ImageRef)
 {
   try
@@ -146,7 +147,7 @@ Magick::Image::Image ( const Blob &blob_,
       // Read from Blob
       read( blob_, size_, depth_ );
     }
-  catch ( Warning &warning_ )
+  catch ( const Warning &warning_ )
     {
       cerr << warning_.what() << endl;
     }
@@ -155,7 +156,7 @@ Magick::Image::Image ( const Blob &blob_,
 // Construct Image of specified size, depth, and format from in-memory BLOB
 Magick::Image::Image ( const Blob &blob_,
 		       const Geometry &size_,
-		       unsigned int depth_,
+		       const unsigned int depth_,
 		       const std::string &magick_ )
   : _imgRef(new ImageRef)
 {
@@ -164,7 +165,7 @@ Magick::Image::Image ( const Blob &blob_,
       // Read from Blob
       read( blob_, size_, depth_, magick_ );
     }
-  catch ( Warning &warning_ )
+  catch ( const Warning &warning_ )
     {
       cerr << warning_.what() << endl;
     }
@@ -181,7 +182,7 @@ Magick::Image::Image ( const Blob &blob_,
       // Read from Blob
       read( blob_, size_, magick_ );
     }
-  catch ( Warning &warning_ )
+  catch ( const Warning &warning_ )
     {
       cerr << warning_.what() << endl;
     }
@@ -200,7 +201,7 @@ Magick::Image::Image ( const unsigned int width_,
     {
       read( width_, height_, map_.c_str(), type_, pixels_ );
     }
-  catch ( Warning &warning_ )
+  catch ( const Warning &warning_ )
     {
       cerr << warning_.what() << endl;
     }
@@ -226,12 +227,12 @@ Magick::Image::~Image()
   if ( doDelete )
     {
       delete _imgRef;
-      _imgRef = 0;
     }
+  _imgRef = 0;
 }
 
 // Add noise to image
-void Magick::Image::addNoise( NoiseType noiseType_ )
+void Magick::Image::addNoise( const NoiseType noiseType_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -247,21 +248,21 @@ void Magick::Image::addNoise( NoiseType noiseType_ )
 void Magick::Image::annotate ( const std::string &text_,
 			       const Geometry &location_ )
 {
-  annotate ( text_, location_,  NorthWestGravity, 0 );
+  annotate ( text_, location_,  NorthWestGravity, 0.0 );
 }
 // Annotate using specified text, bounding area, and placement gravity
 void Magick::Image::annotate ( const std::string &text_,
 			       const Geometry &boundingArea_,
-			       GravityType gravity_ )
+			       const GravityType gravity_ )
 {
-  annotate ( text_, boundingArea_, gravity_, 0 );
+  annotate ( text_, boundingArea_, gravity_, 0.0 );
 }
 // Annotate with text using specified text, bounding area, placement
 // gravity, and rotation.
 void Magick::Image::annotate ( const std::string &text_,
 			       const Geometry &boundingArea_,
-			       GravityType gravity_,
-			       double degrees_ )
+			       const GravityType gravity_,
+			       const double degrees_ )
 {
   modifyImage();
 
@@ -325,7 +326,7 @@ void Magick::Image::annotate ( const std::string &text_,
 }
 // Annotate with text (bounding area is entire image) and placement gravity.
 void Magick::Image::annotate ( const std::string &text_,
-			       GravityType gravity_ )
+			       const GravityType gravity_ )
 {
   modifyImage();
 
@@ -369,7 +370,7 @@ void Magick::Image::border( const Geometry &geometry_ )
 }
 
 // Extract channel from image
-void Magick::Image::channel ( ChannelType channel_ )
+void Magick::Image::channel ( const ChannelType channel_ )
 {
   modifyImage();
   ChannelImage ( image(), channel_ );
@@ -434,34 +435,24 @@ void Magick::Image::colorize ( const unsigned int opacity_,
 
 // Composite two images
 void Magick::Image::composite ( const Image &compositeImage_,
-				int xOffset_,
-				int yOffset_,
-				CompositeOperator compose_ )
+				const int xOffset_,
+				const int yOffset_,
+				const CompositeOperator compose_ )
 {
   // Image supplied as compositeImage is composited with current image and
   // results in updating current image.
   modifyImage();
 
-  long x = xOffset_;
-  long y = yOffset_;
-  unsigned long width = columns();
-  unsigned long height = rows();
-
-  Geometry offset( 0, 0, xOffset_, yOffset_ );
-
-  ParseImageGeometry ((static_cast<std::string>(offset)).c_str(),
-		      &x, &y,
-		      &width, &height );
-
   CompositeImage( image(),
 		  compose_,
 		  compositeImage_.constImage(),
-		  x, y );
+		  static_cast<const long>(xOffset_),
+                  static_cast<const long>(yOffset_) );
   throwImageException();
 }
 void Magick::Image::composite ( const Image &compositeImage_,
 				const Geometry &offset_,
-				CompositeOperator compose_ )
+				const CompositeOperator compose_ )
 {
   modifyImage();
 
@@ -470,7 +461,7 @@ void Magick::Image::composite ( const Image &compositeImage_,
   unsigned long width = columns();
   unsigned long height = rows();
 
-  ParseImageGeometry (static_cast<std::string>(offset_).c_str(),
+  GetMagickGeometry (static_cast<std::string>(offset_).c_str(),
 		      &x, &y,
 		      &width, &height );
 
@@ -481,13 +472,13 @@ void Magick::Image::composite ( const Image &compositeImage_,
   throwImageException();
 }
 void Magick::Image::composite ( const Image &compositeImage_,
-				GravityType gravity_,
-				CompositeOperator compose_ )
+				const GravityType gravity_,
+				const CompositeOperator compose_ )
 {
   modifyImage();
 
-  int x = 0;
-  int y = 0;
+  long x = 0;
+  long y = 0;
 
   switch (gravity_)
     {
@@ -505,7 +496,7 @@ void Magick::Image::composite ( const Image &compositeImage_,
       }
     case NorthEastGravity:
       {
-	x = columns() - compositeImage_.columns();
+	x = static_cast<long>(columns() - compositeImage_.columns());
 	y = 0;
 	break;
       }
@@ -526,26 +517,26 @@ void Magick::Image::composite ( const Image &compositeImage_,
       }
     case EastGravity:
       {
-	x = columns() - compositeImage_.columns();
+	x = static_cast<long>(columns() - compositeImage_.columns());
 	y = (rows() - compositeImage_.rows()) >> 1;
 	break;
       }
     case SouthWestGravity:
       {
 	x = 0;
-	y = rows() - compositeImage_.rows();
+	y = static_cast<long>(rows() - compositeImage_.rows());
 	break;
       }
     case SouthGravity:
       {
 	x =  (columns() - compositeImage_.columns()) >> 1;
-	y = rows() - compositeImage_.rows();
+	y = static_cast<long>(rows() - compositeImage_.rows());
 	break;
       }
     case SouthEastGravity:
       {
-	x = columns() - compositeImage_.columns();
-	y = rows() - compositeImage_.rows();
+	x = static_cast<long>(columns() - compositeImage_.columns());
+	y = static_cast<long>(rows() - compositeImage_.rows());
 	break;
       }
     }
@@ -558,7 +549,7 @@ void Magick::Image::composite ( const Image &compositeImage_,
 }
 
 // Contrast image
-void Magick::Image::contrast ( unsigned int sharpen_ )
+void Magick::Image::contrast ( const unsigned int sharpen_ )
 {
   modifyImage();
   ContrastImage ( image(), sharpen_ );
@@ -568,7 +559,7 @@ void Magick::Image::contrast ( unsigned int sharpen_ )
 // Convolve image.  Applies a general image convolution kernel to the image.
 //  order_ represents the number of columns and rows in the filter kernel.
 //  kernel_ is an array of doubles representing the convolution kernel.
-void Magick::Image::convolve ( unsigned int order_, const double *kernel_ )
+void Magick::Image::convolve ( const unsigned int order_, const double *kernel_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -594,7 +585,7 @@ void Magick::Image::crop ( const Geometry &geometry_ )
 }
 
 // Cycle Color Map
-void Magick::Image::cycleColormap ( int amount_ )
+void Magick::Image::cycleColormap ( const int amount_ )
 {
   modifyImage();
   CycleColormapImage( image(), amount_ );
@@ -665,7 +656,7 @@ void Magick::Image::draw ( const std::list<Magick::Drawable> &drawable_ )
 }
 
 // Hilight edges in image
-void Magick::Image::edge ( double radius_ )
+void Magick::Image::edge ( const double radius_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -727,57 +718,51 @@ void Magick::Image::flip ( void )
 // Flood-fill color across pixels that match the color of the
 // target pixel and are neighbors of the target pixel.
 // Uses current fuzz setting when determining color match.
-void Magick::Image::floodFillColor( unsigned int x_, unsigned int y_,
+void Magick::Image::floodFillColor( const unsigned int x_, const unsigned int y_,
 				    const Magick::Color &fillColor_ )
 {
-  Geometry size(1,1);
-  Image fillImage( size, fillColor_ );
-  floodFillTexture( x_, y_, fillImage );
+  floodFillTexture( x_, y_, Image( Geometry( 1, 1), fillColor_ ) );
 }
 void Magick::Image::floodFillColor( const Geometry &point_,
 				    const Magick::Color &fillColor_ )
 {
-  Geometry size(1,1);
-  Image fillImage( size, fillColor_ );
-  floodFillTexture( point_, fillImage );
+  floodFillTexture( point_, Image( Geometry( 1, 1), fillColor_) );
 }
 
 // Flood-fill color across pixels starting at target-pixel and
 // stopping at pixels matching specified border color.
 // Uses current fuzz setting when determining color match.
-void Magick::Image::floodFillColor( unsigned int x_, unsigned int y_,
+void Magick::Image::floodFillColor( const unsigned int x_, const unsigned int y_,
 				    const Magick::Color &fillColor_,
 				    const Magick::Color &borderColor_ )
 {
-  Geometry size(1,1);
-  Image fillImage( size, fillColor_ );
-  floodFillTexture( x_, y_, fillImage, borderColor_ );
+  floodFillTexture( x_, y_, Image( Geometry( 1, 1), fillColor_), borderColor_ );
 }
 void Magick::Image::floodFillColor( const Geometry &point_,
 				    const Magick::Color &fillColor_,
 				    const Magick::Color &borderColor_ )
 {
-  Geometry size(1,1);
-  Image fillImage( size, fillColor_ );
-  floodFillTexture( point_, fillImage, borderColor_ );
+  floodFillTexture( point_, Image( Geometry( 1, 1), fillColor_), borderColor_ );
 }
 
 // Floodfill pixels matching color (within fuzz factor) of target
 // pixel(x,y) with replacement opacity value using method.
-void Magick::Image::floodFillOpacity( const long x_, const long y_,
+void Magick::Image::floodFillOpacity( const unsigned int x_, const unsigned int y_,
                                       const unsigned int opacity_,
                                       const PaintMethod method_ )
 {
   modifyImage();
-  MatteFloodfillImage ( image(), pixelColor(x_,y_), opacity_,
-			x_, y_, method_ );
+  MatteFloodfillImage ( image(),
+                        static_cast<const PixelPacket>(pixelColor(x_,y_)),
+                        opacity_,
+			static_cast<const long>(x_), static_cast<const long>(y_), method_ );
   throwImageException();
 }
 
 // Flood-fill texture across pixels that match the color of the
 // target pixel and are neighbors of the target pixel.
 // Uses current fuzz setting when determining color match.
-void Magick::Image::floodFillTexture( unsigned int x_, unsigned int y_,
+void Magick::Image::floodFillTexture( const unsigned int x_, const unsigned int y_,
 				      const Magick::Image &texture_ )
 {
   modifyImage();
@@ -800,8 +785,8 @@ void Magick::Image::floodFillTexture( unsigned int x_, unsigned int y_,
     ColorFloodfillImage ( image(), // Image *image
                           options()->drawInfo(), // const DrawInfo *draw_info
                           *target, // const PixelPacket target
-                          x_, // const int x_offset
-                          y_, // const int y_offset
+                          static_cast<const long>(x_), // const long x_offset
+                          static_cast<const long>(y_), // const long y_offset
                           FloodfillMethod // const PaintMethod method
       );
 
@@ -816,7 +801,7 @@ void Magick::Image::floodFillTexture( const Magick::Geometry &point_,
 // Flood-fill texture across pixels starting at target-pixel and
 // stopping at pixels matching specified border color.
 // Uses current fuzz setting when determining color match.
-void Magick::Image::floodFillTexture( unsigned int x_, unsigned int y_,
+void Magick::Image::floodFillTexture( const unsigned int x_, const unsigned int y_,
 				      const Magick::Image &texture_,
 				      const Magick::Color &borderColor_ )
 {
@@ -825,12 +810,11 @@ void Magick::Image::floodFillTexture( unsigned int x_, unsigned int y_,
   // Set drawing fill pattern
   options()->fillPattern(texture_.constImage());
 
-  PixelPacket target = borderColor_;
   ColorFloodfillImage ( image(), // Image *image
                         options()->drawInfo(), // const DrawInfo *draw_info
-                        target, // const PixelPacket target
-                        x_, // const int x_offset
-                        y_, // const int y_offset
+                        static_cast<const PixelPacket>(borderColor_), // const PixelPacket target
+                        static_cast<const long>(x_), // const long x_offset
+                        static_cast<const long>(y_), // const long y_offset
                         FillToBorderMethod // const PaintMethod method
                         );
 
@@ -859,10 +843,10 @@ void Magick::Image::frame ( const Geometry &geometry_ )
 {
   FrameInfo info;
 
-  info.x           = geometry_.width();
-  info.y           = geometry_.height();
-  info.width       = columns() + ( info.x << 1 );
-  info.height      = rows() + ( info.y << 1 );
+  info.x           = static_cast<long>(geometry_.width());
+  info.y           = static_cast<long>(geometry_.height());
+  info.width       = columns() + ( static_cast<unsigned long>(info.x) << 1 );
+  info.height      = rows() + ( static_cast<unsigned long>(info.y) << 1 );
   info.outer_bevel = geometry_.xOff();
   info.inner_bevel = geometry_.yOff();
 
@@ -873,16 +857,16 @@ void Magick::Image::frame ( const Geometry &geometry_ )
   replaceImage( newImage );
   throwException( exceptionInfo );
 }
-void Magick::Image::frame ( unsigned int width_, unsigned int height_,
-			    int innerBevel_, int outerBevel_ )
+void Magick::Image::frame ( const unsigned int width_, const unsigned int height_,
+			    const int innerBevel_, const int outerBevel_ )
 {
   FrameInfo info;
-  info.x           = width_;
-  info.y           = height_;
-  info.width       = columns() + ( info.x << 1 );
-  info.height      = rows() + ( info.y << 1 );
-  info.outer_bevel = outerBevel_;
-  info.inner_bevel = innerBevel_;
+  info.x           = static_cast<long>(width_);
+  info.y           = static_cast<long>(height_);
+  info.width       = columns() + ( static_cast<unsigned long>(info.x) << 1 );
+  info.height      = rows() + ( static_cast<unsigned long>(info.y) << 1 );
+  info.outer_bevel = static_cast<long>(outerBevel_);
+  info.inner_bevel = static_cast<long>(innerBevel_);
 
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -893,7 +877,7 @@ void Magick::Image::frame ( unsigned int width_, unsigned int height_,
 }
 
 // Gamma correct image
-void Magick::Image::gamma ( double gamma_ )
+void Magick::Image::gamma ( const double gamma_ )
 {
   char gamma[MaxTextExtent + 1];
   FormatString( gamma, "%3.6f", gamma_);
@@ -901,9 +885,9 @@ void Magick::Image::gamma ( double gamma_ )
   modifyImage();
   GammaImage ( image(), gamma );
 }
-void Magick::Image::gamma ( double gammaRed_,
-			    double gammaGreen_,
-			    double gammaBlue_ )
+void Magick::Image::gamma ( const double gammaRed_,
+                            const double gammaGreen_,
+			    const double gammaBlue_ )
 {
   char gamma[MaxTextExtent + 1];
   FormatString( gamma, "%3.6f/%3.6f/%3.6f/",
@@ -918,7 +902,7 @@ void Magick::Image::gamma ( double gammaRed_,
 // The number of neighbor pixels to be included in the convolution
 // mask is specified by 'width_'. The standard deviation of the
 // gaussian bell curve is specified by 'sigma_'.
-void Magick::Image::gaussianBlur ( double width_, double sigma_ )
+void Magick::Image::gaussianBlur ( const double width_, const double sigma_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -929,7 +913,7 @@ void Magick::Image::gaussianBlur ( double width_, double sigma_ )
 }
 
 // Implode image
-void Magick::Image::implode ( double factor_ )
+void Magick::Image::implode ( const double factor_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -951,12 +935,12 @@ void Magick::Image::magnify ( void )
 }
 
 // Remap image colors with closest color from reference image
-void Magick::Image::map ( const Image &mapImage_ , bool dither_ )
+void Magick::Image::map ( const Image &mapImage_ , const bool dither_ )
 {
   modifyImage();
   MapImage ( image(),
              mapImage_.constImage(),
-             dither_ );
+             dither_ == true ? 1 : 0 );
   throwImageException();
 }
 // Floodfill designated area with replacement opacity value
@@ -1003,9 +987,9 @@ void Magick::Image::minify ( void )
 }
 
 // Modulate percent hue, saturation, and brightness of an image
-void Magick::Image::modulate ( double brightness_,
-			       double saturation_,
-			       double hue_ )
+void Magick::Image::modulate ( const double brightness_,
+			       const double saturation_,
+			       const double hue_ )
 {
   char modulate[MaxTextExtent + 1];
   FormatString( modulate, "%3.6f/%3.6f/%3.6f",
@@ -1018,10 +1002,10 @@ void Magick::Image::modulate ( double brightness_,
 
 // Negate image.  Set grayscale_ to true to effect grayscale values
 // only
-void Magick::Image::negate ( bool grayscale_ )
+void Magick::Image::negate ( const bool grayscale_ )
 {
   modifyImage();
-  NegateImage ( image(), grayscale_ );
+  NegateImage ( image(), grayscale_ == true ? 1 : 0 );
   throwImageException();
 }
 
@@ -1034,7 +1018,7 @@ void Magick::Image::normalize ( void )
 }
 
 // Oilpaint image
-void Magick::Image::oilPaint ( unsigned int radius_ )
+void Magick::Image::oilPaint ( const double radius_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -1050,7 +1034,7 @@ void Magick::Image::oilPaint ( unsigned int radius_ )
 // opacity_ ranges from 0 (completely opaque) to MaxRGB. The defines
 // OpaqueOpacity and TransparentOpacity are available to specify
 // completely opaque or completely transparent, respectively.
-void Magick::Image::opacity ( unsigned int opacity_ )
+void Magick::Image::opacity ( const unsigned int opacity_ )
 {
   modifyImage();
   SetImageOpacity( image(), opacity_ );
@@ -1093,7 +1077,7 @@ void Magick::Image::ping ( const std::string &imageSpec_ )
 
 // Quantize colors in image using current quantization settings
 // Set measureError_ to true in order to measure quantization error
-void Magick::Image::quantize ( bool measureError_  )
+void Magick::Image::quantize ( const bool measureError_  )
 {
   modifyImage();
 
@@ -1111,11 +1095,11 @@ void Magick::Image::quantize ( bool measureError_  )
 // Raise image (lighten or darken the edges of an image to give a 3-D
 // raised or lowered effect)
 void Magick::Image::raise ( const Geometry &geometry_ ,
-			    bool raisedFlag_ )
+			    const bool raisedFlag_ )
 {
   RectangleInfo raiseInfo = geometry_;
   modifyImage();
-  RaiseImage ( image(), &raiseInfo, raisedFlag_ );
+  RaiseImage ( image(), &raiseInfo, raisedFlag_ == true ? 1 : 0 );
   throwImageException();
 }
 
@@ -1199,7 +1183,7 @@ void  Magick::Image::read ( const Blob &blob_,
 // Read image of specified size and depth from in-memory BLOB
 void Magick::Image::read ( const Blob &blob_,
 			   const Geometry &size_,
-			   unsigned int depth_ )
+			   const unsigned int depth_ )
 {
   // Set image size
   size( size_ );
@@ -1212,7 +1196,7 @@ void Magick::Image::read ( const Blob &blob_,
 // Read image of specified size, depth, and format from in-memory BLOB
 void Magick::Image::read ( const Blob &blob_,
 			   const Geometry &size_,
-			   unsigned int depth_,
+			   const unsigned int depth_,
 			   const std::string &magick_ )
 {
   // Set image size
@@ -1256,7 +1240,7 @@ void Magick::Image::read ( const unsigned int width_,
 }
 
 // Reduce noise in image
-void Magick::Image::reduceNoise ( unsigned int order_ )
+void Magick::Image::reduceNoise ( const double order_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -1269,12 +1253,12 @@ void Magick::Image::reduceNoise ( unsigned int order_ )
 // Roll image
 void Magick::Image::roll ( const Geometry &roll_ )
 {
-  int xOff = roll_.xOff();
+  long xOff = roll_.xOff();
   if ( roll_.xNegative() )
-    xOff = - xOff;
-  int yOff = roll_.yOff();
+    xOff = 0 - xOff;
+  long yOff = roll_.yOff();
   if ( roll_.yNegative() )
-    yOff = - yOff;
+    yOff = 0 - yOff;
 
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -1283,18 +1267,20 @@ void Magick::Image::roll ( const Geometry &roll_ )
   replaceImage( newImage );
   throwException( exceptionInfo );
 }
-void Magick::Image::roll ( int columns_, int rows_ )
+void Magick::Image::roll ( const unsigned int columns_, const unsigned int rows_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
-    RollImage( image(), columns_, rows_, &exceptionInfo );
+    RollImage( image(),
+               static_cast<const long>(columns_),
+               static_cast<const long>(rows_), &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
 }
 
 // Rotate image
-void Magick::Image::rotate ( double degrees_ )
+void Magick::Image::rotate ( const double degrees_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -1312,7 +1298,7 @@ void Magick::Image::sample ( const Geometry &geometry_ )
   unsigned long width = columns();
   unsigned long height = rows();
 
-  ParseImageGeometry (static_cast<std::string>(geometry_).c_str(),
+  GetMagickGeometry (static_cast<std::string>(geometry_).c_str(),
 		      &x, &y,
 		      &width, &height );
 
@@ -1332,7 +1318,7 @@ void Magick::Image::scale ( const Geometry &geometry_ )
   unsigned long width = columns();
   unsigned long height = rows();
 
-  ParseImageGeometry (static_cast<std::string>(geometry_).c_str(),
+  GetMagickGeometry (static_cast<std::string>(geometry_).c_str(),
 		      &x, &y,
 		      &width, &height );
 
@@ -1347,8 +1333,8 @@ void Magick::Image::scale ( const Geometry &geometry_ )
 // Segment (coalesce similar image components) by analyzing the
 // histograms of the color components and identifying units that are
 // homogeneous with the fuzzy c-means technique.
-void Magick::Image::segment ( double clusterThreshold_, 
-			      double smoothingThreshold_ )
+void Magick::Image::segment ( const double clusterThreshold_, 
+			      const double smoothingThreshold_ )
 {
   modifyImage();
   SegmentImage ( image(),
@@ -1362,15 +1348,15 @@ void Magick::Image::segment ( double clusterThreshold_,
 }
 
 // Shade image using distant light source
-void Magick::Image::shade ( double azimuth_,
-			    double elevation_,
-			    bool   colorShading_ )
+void Magick::Image::shade ( const double azimuth_,
+			    const double elevation_,
+			    const bool   colorShading_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
     ShadeImage( image(),
-		colorShading_,
+		colorShading_ == true ? 1 : 0,
 		azimuth_,
 		elevation_,
 		&exceptionInfo);
@@ -1407,8 +1393,8 @@ void Magick::Image::shave ( const Geometry &geometry_ )
 }
 
 // Shear image
-void Magick::Image::shear ( double xShearAngle_,
-			    double yShearAngle_ )
+void Magick::Image::shear ( const double xShearAngle_,
+			    const double yShearAngle_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -1423,7 +1409,7 @@ void Magick::Image::shear ( double xShearAngle_,
 
 // Solarize image (similar to effect seen when exposing a photographic
 // film to light during the development process)
-void Magick::Image::solarize ( double factor_ )
+void Magick::Image::solarize ( const double factor_ )
 {
   modifyImage();
   SolarizeImage ( image(), factor_ );
@@ -1431,7 +1417,7 @@ void Magick::Image::solarize ( double factor_ )
 }
 
 // Spread pixels randomly within image by specified ammount
-void Magick::Image::spread ( unsigned int amount_ )
+void Magick::Image::spread ( const unsigned int amount_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -1470,7 +1456,7 @@ void Magick::Image::stereo ( const Image &rightImage_ )
 }
 
 // Swirl image
-void Magick::Image::swirl ( double degrees_ )
+void Magick::Image::swirl ( const double degrees_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -1490,7 +1476,7 @@ void Magick::Image::texture ( const Image &texture_ )
 }
 
 // Threshold image
-void Magick::Image::threshold ( double threshold_ )
+void Magick::Image::threshold ( const double threshold_ )
 {
   modifyImage();
   ThresholdImage( image(), threshold_ );
@@ -1551,10 +1537,10 @@ void Magick::Image::trim ( void )
 //    the blur image that is added back into the original.
 // threshold_
 //   the threshold in pixels needed to apply the diffence amount.
-void Magick::Image::unsharpmask ( double radius_,
-                                  double sigma_,
-                                  double amount_,
-                                  double threshold_ )
+void Magick::Image::unsharpmask ( const double radius_,
+                                  const double sigma_,
+                                  const double amount_,
+                                  const double threshold_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -1570,7 +1556,7 @@ void Magick::Image::unsharpmask ( double radius_,
 }
 
 // Map image pixels to a sine wave
-void Magick::Image::wave ( double amplitude_, double wavelength_ )
+void Magick::Image::wave ( const double amplitude_, const double wavelength_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -1625,7 +1611,7 @@ void Magick::Image::write ( Blob *blob_,
 }
 void Magick::Image::write ( Blob *blob_,
 			    const std::string &magick_,
-			    unsigned int depth_ )
+			    const unsigned int depth_ )
 {
   modifyImage();
   magick(magick_);
@@ -1670,7 +1656,7 @@ void Magick::Image::zoom( const Geometry &geometry_ )
   unsigned long width = columns();
   unsigned long height = rows();
 
-  ParseImageGeometry (static_cast<std::string>(geometry_).c_str(),
+  GetMagickGeometry (static_cast<std::string>(geometry_).c_str(),
 		      &x, &y,
 		      &width, &height );
 
@@ -1691,7 +1677,7 @@ void Magick::Image::zoom( const Geometry &geometry_ )
  */
 
 // Join images into a single multi-image file
-void Magick::Image::adjoin ( bool flag_ )
+void Magick::Image::adjoin ( const bool flag_ )
 {
   modifyImage();
   options()->adjoin( flag_ );
@@ -1702,7 +1688,7 @@ bool Magick::Image::adjoin ( void ) const
 }
 
 // Remove pixel aliasing
-void Magick::Image::antiAlias( bool flag_ )
+void Magick::Image::antiAlias( const bool flag_ )
 {
   modifyImage();
   options()->antiAlias( static_cast<unsigned int>(flag_) );
@@ -1713,7 +1699,7 @@ bool Magick::Image::antiAlias( void )
 }
 
 // Animation inter-frame delay
-void Magick::Image::animationDelay ( unsigned int delay_ )
+void Magick::Image::animationDelay ( const unsigned int delay_ )
 {
   modifyImage();
   image()->delay = delay_;
@@ -1724,7 +1710,7 @@ unsigned int Magick::Image::animationDelay ( void ) const
 }
 
 // Number of iterations to play animation
-void Magick::Image::animationIterations ( unsigned int iterations_ )
+void Magick::Image::animationIterations ( const unsigned int iterations_ )
 {
   modifyImage();
   image()->iterations = iterations_;
@@ -1840,61 +1826,61 @@ Magick::Color Magick::Image::boxColor ( void ) const
 // subsequent pixels cache operations are to/from disk.
 // This setting is shared by all Image objects.
 /* static */
-void Magick::Image::cacheThreshold ( unsigned int threshold_ )
+void Magick::Image::cacheThreshold ( const long threshold_ )
 {
   SetCacheThreshold( threshold_ );
 }
 
-void Magick::Image::chromaBluePrimary ( float x_, float y_ )
+void Magick::Image::chromaBluePrimary ( const double x_, const double y_ )
 {
   modifyImage();
   image()->chromaticity.blue_primary.x = x_;
   image()->chromaticity.blue_primary.y = y_;
 }
-void Magick::Image::chromaBluePrimary ( float *x_, float *y_ ) const
+void Magick::Image::chromaBluePrimary ( double *x_, double *y_ ) const
 {
   *x_ = constImage()->chromaticity.blue_primary.x;
   *y_ = constImage()->chromaticity.blue_primary.y;
 }
 
-void Magick::Image::chromaGreenPrimary ( float x_, float y_ )
+void Magick::Image::chromaGreenPrimary ( const double x_, const double y_ )
 {
   modifyImage();
   image()->chromaticity.green_primary.x = x_;
   image()->chromaticity.green_primary.y = y_;
 }
-void Magick::Image::chromaGreenPrimary ( float *x_, float *y_ ) const
+void Magick::Image::chromaGreenPrimary ( double *x_, double *y_ ) const
 {
   *x_ = constImage()->chromaticity.green_primary.x;
   *y_ = constImage()->chromaticity.green_primary.y;
 }
 
-void Magick::Image::chromaRedPrimary ( float x_, float y_ )
+void Magick::Image::chromaRedPrimary ( const double x_, const double y_ )
 {
   modifyImage();
   image()->chromaticity.red_primary.x = x_;
   image()->chromaticity.red_primary.y = y_;
 }
-void Magick::Image::chromaRedPrimary ( float *x_, float *y_ ) const
+void Magick::Image::chromaRedPrimary ( double *x_, double *y_ ) const
 {
   *x_ = constImage()->chromaticity.red_primary.x;
   *y_ = constImage()->chromaticity.red_primary.y;
 }
 
-void Magick::Image::chromaWhitePoint ( float x_, float y_ )
+void Magick::Image::chromaWhitePoint ( const double x_, const double y_ )
 {
   modifyImage();
   image()->chromaticity.white_point.x = x_;
   image()->chromaticity.white_point.y = y_;
 }
-void Magick::Image::chromaWhitePoint ( float *x_, float *y_ ) const
+void Magick::Image::chromaWhitePoint ( double *x_, double *y_ ) const
 {
   *x_ = constImage()->chromaticity.white_point.x;
   *y_ = constImage()->chromaticity.white_point.y;
 }
 
 // Set image storage class
-void Magick::Image::classType ( Magick::ClassType class_ )
+void Magick::Image::classType ( const ClassType class_ )
 {
   if ( classType() == PseudoClass && class_ == DirectClass )
     {
@@ -1935,6 +1921,7 @@ void Magick::Image::clipMask ( const Magick::Image & clipMask_ )
                     0, // rows
                     1, // orphan
                     &exceptionInfo);
+      throwException( exceptionInfo );
       SetImageClipMask( image(), clip_mask );
     }
   else
@@ -1954,10 +1941,11 @@ Magick::Image Magick::Image::clipMask ( void  ) const
                     1, // orphan
                     &exceptionInfo);
 
+      throwException( exceptionInfo );
       return Magick::Image( image, new Magick::Options());
 }
 
-void Magick::Image::colorFuzz ( double fuzz_ )
+void Magick::Image::colorFuzz ( const double fuzz_ )
 {
   modifyImage();
   image()->fuzz = fuzz_;
@@ -1969,7 +1957,7 @@ double Magick::Image::colorFuzz ( void ) const
 }
 
 // Set color in colormap at index
-void Magick::Image::colorMap ( unsigned int index_,
+void Magick::Image::colorMap ( const unsigned int index_,
 			       const Color &color_ )
 {
   MagickLib::Image* imageptr = image();
@@ -2014,7 +2002,7 @@ void Magick::Image::colorMap ( unsigned int index_,
   (imageptr->colormap)[index_] = color_;
 }
 // Return color in colormap at index
-Magick::Color Magick::Image::colorMap ( unsigned int index_ ) const
+Magick::Color Magick::Image::colorMap ( const unsigned int index_ ) const
 {
   const MagickLib::Image* imageptr = constImage();
 
@@ -2030,7 +2018,7 @@ Magick::Color Magick::Image::colorMap ( unsigned int index_ ) const
 }
 
 // Image colorspace
-void Magick::Image::colorSpace( ColorspaceType colorSpace_ )
+void Magick::Image::colorSpace( const ColorspaceType colorSpace_ )
 {
   // Nothing to do?
   if ( image()->colorspace == colorSpace_ )
@@ -2111,7 +2099,7 @@ std::string Magick::Image::comment ( void ) const
 }
 
 // Compression algorithm
-void Magick::Image::compressType ( Magick::CompressionType compressType_ )
+void Magick::Image::compressType ( const CompressionType compressType_ )
 {
   modifyImage();
   image()->compression = compressType_;
@@ -2123,7 +2111,7 @@ Magick::CompressionType Magick::Image::compressType ( void ) const
 }
 
 // Enable printing of debug messages from ImageMagick
-void Magick::Image::debug ( bool flag_ )
+void Magick::Image::debug ( const bool flag_ )
 {
   modifyImage();
   options()->debug( flag_ );
@@ -2142,9 +2130,13 @@ void Magick::Image::density ( const Geometry &density_ )
     {
       image()->x_resolution = density_.width();
       if ( density_.height() != 0 )
-	image()->y_resolution = density_.height();
+        {
+          image()->y_resolution = density_.height();
+        }
       else
-	image()->y_resolution = density_.width();
+        {
+          image()->y_resolution = density_.width();
+        }
     }
   else
     {
@@ -2159,7 +2151,7 @@ Magick::Geometry Magick::Image::density ( void ) const
 }
 
 // Image depth (8 or 16)
-void Magick::Image::depth ( unsigned int depth_ )
+void Magick::Image::depth ( const unsigned int depth_ )
 {
   modifyImage();
   SetImageDepth( image(), depth_ );
@@ -2169,7 +2161,9 @@ unsigned int Magick::Image::depth ( void ) const
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  return GetImageDepth( constImage(), &exceptionInfo );
+  unsigned int depth=GetImageDepth( constImage(), &exceptionInfo );
+  throwException( exceptionInfo );
+  return depth;
 }
 
 std::string Magick::Image::directory ( void ) const
@@ -2185,7 +2179,7 @@ std::string Magick::Image::directory ( void ) const
 
 // Endianness (little like Intel or big like SPARC) for image
 // formats which support endian-specific options.
-void Magick::Image::endian ( Magick::EndianType endian_ )
+void Magick::Image::endian ( const Magick::EndianType endian_ )
 {
   modifyImage();
   options()->endian( endian_ );
@@ -2274,7 +2268,7 @@ Magick::Image  Magick::Image::fillPattern ( void  ) const
 }
 
 // Filter used by zoom
-void Magick::Image::filterType ( Magick::FilterTypes filterType_ )
+void Magick::Image::filterType ( const Magick::FilterTypes filterType_ )
 {
   modifyImage();
   image()->filter = filterType_;
@@ -2296,7 +2290,7 @@ std::string Magick::Image::font ( void ) const
 }
 
 // Font point size
-void Magick::Image::fontPointsize ( double pointSize_ )
+void Magick::Image::fontPointsize ( const double pointSize_ )
 {
   modifyImage();
   options()->fontPointsize( pointSize_ );
@@ -2319,18 +2313,18 @@ void Magick::Image::fontTypeMetrics( const std::string &text_,
 // Image format string
 std::string Magick::Image::format ( void ) const
 {
-  ExceptionInfo exception;
-  GetExceptionInfo(&exception);
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   const MagickInfo * magick_info
-  = GetMagickInfo( constImage()->magick , &exception);
+    = GetMagickInfo( constImage()->magick, &exceptionInfo);
+  throwException( exceptionInfo );
 
   if (( magick_info != 0 ) && 
       ( *magick_info->description != '\0' ))
     return std::string(magick_info->description);
 
   throwExceptionExplicit( CorruptImageWarning,
-			  "Unrecognized image magick type");
-
+			  "Unrecognized image magick type" );
   return std::string();
 }
 
@@ -2353,7 +2347,7 @@ Magick::Geometry Magick::Image::geometry ( void ) const
   return Geometry();
 }
 
-void Magick::Image::gifDisposeMethod ( unsigned int disposeMethod_ )
+void Magick::Image::gifDisposeMethod ( const unsigned int disposeMethod_ )
 {
   modifyImage();
   image()->dispose = disposeMethod_;
@@ -2385,7 +2379,7 @@ Magick::Blob Magick::Image::iccColorProfile( void ) const
   return Blob( color_profile->info, color_profile->length );
 }
 
-void Magick::Image::interlaceType ( Magick::InterlaceType interlace_ )
+void Magick::Image::interlaceType ( const Magick::InterlaceType interlace_ )
 {
   modifyImage();
   image()->interlace = interlace_;
@@ -2419,22 +2413,19 @@ Magick::Blob Magick::Image::iptcProfile( void ) const
 }
 
 // Does object contain valid image?
-void Magick::Image::isValid ( bool isValid_ )
+void Magick::Image::isValid ( const bool isValid_ )
 {
-  if ( isValid_ == false )
+  if ( !isValid_ )
     {
       delete _imgRef;
       _imgRef = new ImageRef;
     }
-  else
+  else if ( !isValid() )
     {
-      if ( !isValid() )
-	{
-	  // Construct with single-pixel black image to make
-	  // image valid.  This is an obvious hack.
-	  size( Geometry(1,1) );
-	  read( "xc:#000000" );
-	}
+      // Construct with single-pixel black image to make
+      // image valid.  This is an obvious hack.
+      size( Geometry(1,1) );
+      read( "xc:#000000" );
     }
 }
 
@@ -2532,7 +2523,7 @@ double Magick::Image::meanErrorPerPixel ( void ) const
   return(constImage()->mean_error_per_pixel);
 }
 
-void Magick::Image::monochrome ( bool monochromeFlag_ )
+void Magick::Image::monochrome ( const bool monochromeFlag_ )
 {
   modifyImage();
   options()->monochrome( monochromeFlag_ );
@@ -2607,7 +2598,7 @@ Magick::Image  Magick::Image::penTexture ( void  ) const
 }
 
 // Set the color of a pixel.
-void Magick::Image::pixelColor ( unsigned int x_, unsigned int y_,
+void Magick::Image::pixelColor ( const unsigned int x_, const unsigned int y_,
 				 const Color &color_ )
 {
   if ( color_.isValid() )
@@ -2636,8 +2627,8 @@ void Magick::Image::pixelColor ( unsigned int x_, unsigned int y_,
 			  "Color argument is invalid" );
 }
 // Get the color of a pixel
-Magick::Color Magick::Image::pixelColor ( unsigned int x_,
-					  unsigned int y_ ) const
+Magick::Color Magick::Image::pixelColor ( const unsigned int x_,
+					  const unsigned int y_ ) const
 {
   ClassType storage_class;
   storage_class = classType();
@@ -2671,11 +2662,13 @@ Magick::Geometry Magick::Image::page ( void ) const
 {
   return Geometry( constImage()->page.width,
 		   constImage()->page.height,
-		   constImage()->page.x,
-		   constImage()->page.y );
+		   AbsoluteValue(constImage()->page.x),
+		   AbsoluteValue(constImage()->page.y),
+                   constImage()->page.x < 0 ? true : false,
+                   constImage()->page.y < 0 ? true : false);
 }
 
-void Magick::Image::quality ( unsigned int quality_ )
+void Magick::Image::quality ( const unsigned int quality_ )
 {
   modifyImage();
   options()->quality( quality_ );
@@ -2685,7 +2678,7 @@ unsigned int Magick::Image::quality ( void ) const
   return constOptions()->quality( );
 }
 
-void Magick::Image::quantizeColors ( unsigned int colors_ )
+void Magick::Image::quantizeColors ( const unsigned int colors_ )
 {
   modifyImage();
   options()->quantizeColors( colors_ );
@@ -2695,7 +2688,7 @@ unsigned int Magick::Image::quantizeColors ( void ) const
   return constOptions()->quantizeColors( );
 }
 
-void Magick::Image::quantizeColorSpace ( Magick::ColorspaceType colorSpace_ )
+void Magick::Image::quantizeColorSpace ( const Magick::ColorspaceType colorSpace_ )
 {
   modifyImage();
   options()->quantizeColorSpace( colorSpace_ );
@@ -2705,7 +2698,7 @@ Magick::ColorspaceType Magick::Image::quantizeColorSpace ( void ) const
   return constOptions()->quantizeColorSpace( );
 }
 
-void Magick::Image::quantizeDither ( bool ditherFlag_ )
+void Magick::Image::quantizeDither ( const bool ditherFlag_ )
 {
   modifyImage();
   options()->quantizeDither( ditherFlag_ );
@@ -2715,7 +2708,7 @@ bool Magick::Image::quantizeDither ( void ) const
   return constOptions()->quantizeDither( );
 }
 
-void Magick::Image::quantizeTreeDepth ( unsigned int treeDepth_ )
+void Magick::Image::quantizeTreeDepth ( const unsigned int treeDepth_ )
 {
   modifyImage();
   options()->quantizeTreeDepth( treeDepth_ );
@@ -2725,7 +2718,7 @@ unsigned int Magick::Image::quantizeTreeDepth ( void ) const
   return constOptions()->quantizeTreeDepth( );
 }
 
-void Magick::Image::renderingIntent ( Magick::RenderingIntent renderingIntent_ )
+void Magick::Image::renderingIntent ( const Magick::RenderingIntent renderingIntent_ )
 {
   modifyImage();
   image()->rendering_intent = renderingIntent_;
@@ -2735,7 +2728,7 @@ Magick::RenderingIntent Magick::Image::renderingIntent ( void ) const
   return static_cast<Magick::RenderingIntent>(constImage()->rendering_intent);
 }
 
-void Magick::Image::resolutionUnits ( Magick::ResolutionType resolutionUnits_ )
+void Magick::Image::resolutionUnits ( const Magick::ResolutionType resolutionUnits_ )
 {
   modifyImage();
   image()->units = resolutionUnits_;
@@ -2746,7 +2739,7 @@ Magick::ResolutionType Magick::Image::resolutionUnits ( void ) const
   return constOptions()->resolutionUnits( );
 }
 
-void Magick::Image::scene ( unsigned int scene_ )
+void Magick::Image::scene ( const unsigned int scene_ )
 {
   modifyImage();
   image()->scene = scene_;
@@ -2756,7 +2749,7 @@ unsigned int Magick::Image::scene ( void ) const
   return constImage()->scene;
 }
 
-std::string Magick::Image::signature ( bool force_ ) const
+std::string Magick::Image::signature ( const bool force_ ) const
 {
   // Unlike most operations that modify image attributes, this the
   // signature operation is not considered a modification of image
@@ -2790,7 +2783,7 @@ Magick::Geometry Magick::Image::size ( void ) const
 }
 
 // enabled/disable stroke anti-aliasing
-void Magick::Image::strokeAntiAlias ( bool flag_ )
+void Magick::Image::strokeAntiAlias ( const bool flag_ )
 {
   modifyImage();
   options()->strokeAntiAlias(flag_);
@@ -2824,7 +2817,7 @@ const double* Magick::Image::strokeDashArray ( void ) const
 }
 
 // dash offset for drawing vector objects (default one)
-void Magick::Image::strokeDashOffset ( double strokeDashOffset_ )
+void Magick::Image::strokeDashOffset ( const double strokeDashOffset_ )
 {
   modifyImage();
   options()->strokeDashOffset( strokeDashOffset_ );
@@ -2838,7 +2831,7 @@ double Magick::Image::strokeDashOffset ( void ) const
 // Specify the shape to be used at the end of open subpaths when they
 // are stroked. Values of LineCap are UndefinedCap, ButtCap, RoundCap,
 // and SquareCap.
-void Magick::Image::strokeLineCap ( Magick::LineCap lineCap_ )
+void Magick::Image::strokeLineCap ( const Magick::LineCap lineCap_ )
 {
   modifyImage();
   options()->strokeLineCap( lineCap_ );
@@ -2851,7 +2844,7 @@ Magick::LineCap Magick::Image::strokeLineCap ( void ) const
 // Specify the shape to be used at the corners of paths (or other
 // vector shapes) when they are stroked. Values of LineJoin are
 // UndefinedJoin, MiterJoin, RoundJoin, and BevelJoin.
-void Magick::Image::strokeLineJoin ( Magick::LineJoin lineJoin_ )
+void Magick::Image::strokeLineJoin ( const Magick::LineJoin lineJoin_ )
 {
   modifyImage();
   options()->strokeLineJoin( lineJoin_ );
@@ -2867,7 +2860,7 @@ Magick::LineJoin Magick::Image::strokeLineJoin ( void ) const
 // stroking the path. The miterLimit' imposes a limit on the ratio of
 // the miter length to the 'lineWidth'. The default value of this
 // parameter is 4.
-void Magick::Image::strokeMiterLimit ( unsigned int strokeMiterLimit_ )
+void Magick::Image::strokeMiterLimit ( const unsigned int strokeMiterLimit_ )
 {
   modifyImage();
   options()->strokeMiterLimit( strokeMiterLimit_ );
@@ -2903,14 +2896,14 @@ Magick::Image  Magick::Image::strokePattern ( void  ) const
                     0, // rows
                     1, // orphan
                     &exceptionInfo);
-      texture.replaceImage( image );
       throwException( exceptionInfo );
+      texture.replaceImage( image );
     }
   return texture;
 }
 
 // Stroke width for drawing lines, circles, ellipses, etc.
-void Magick::Image::strokeWidth ( double strokeWidth_ )
+void Magick::Image::strokeWidth ( const double strokeWidth_ )
 {
   modifyImage();
   options()->strokeWidth( strokeWidth_ );
@@ -2920,7 +2913,7 @@ double Magick::Image::strokeWidth ( void ) const
   return constOptions()->strokeWidth( );
 }
 
-void Magick::Image::subImage ( unsigned int subImage_ )
+void Magick::Image::subImage ( const unsigned int subImage_ )
 {
   modifyImage();
   options()->subImage( subImage_ );
@@ -2930,7 +2923,7 @@ unsigned int Magick::Image::subImage ( void ) const
   return constOptions()->subImage( );
 }
 
-void Magick::Image::subRange ( unsigned int subRange_ )
+void Magick::Image::subRange ( const unsigned int subRange_ )
 {
   modifyImage();
   options()->subRange( subRange_ );
@@ -2954,18 +2947,20 @@ unsigned long Magick::Image::totalColors ( void )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  return GetNumberColors( image(), 0, &exceptionInfo);
+  unsigned long colors = GetNumberColors( image(), 0, &exceptionInfo);
+  throwException( exceptionInfo );
+  return colors;
 }
 
 // Origin of coordinate system to use when annotating with text or drawing
-void Magick::Image::transformOrigin ( double x_, double y_ )
+void Magick::Image::transformOrigin ( const double x_, const double y_ )
 {
   modifyImage();
   options()->transformOrigin( x_, y_ );
 }
 
 // Rotation to use when annotating with text or drawing
-void Magick::Image::transformRotation ( double angle_ )
+void Magick::Image::transformRotation ( const double angle_ )
 {
   modifyImage();
   options()->transformRotation( angle_ );
@@ -2979,21 +2974,21 @@ void Magick::Image::transformReset ( void )
 }
 
 // Scale to use when annotating with text or drawing
-void Magick::Image::transformScale ( double sx_, double sy_ )
+void Magick::Image::transformScale ( const double sx_, const double sy_ )
 {
   modifyImage();
   options()->transformScale( sx_, sy_ );
 }
 
 // Skew to use in X axis when annotating with text or drawing
-void Magick::Image::transformSkewX ( double skewx_ )
+void Magick::Image::transformSkewX ( const double skewx_ )
 {
   modifyImage();
   options()->transformSkewX( skewx_ );
 }
 
 // Skew to use in Y axis when annotating with text or drawing
-void Magick::Image::transformSkewY ( double skewy_ )
+void Magick::Image::transformSkewY ( const double skewy_ )
 {
   modifyImage();
   options()->transformSkewY( skewy_ );
@@ -3005,16 +3000,17 @@ Magick::ImageType Magick::Image::type ( void ) const
 
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  return static_cast<Magick::ImageType>(GetImageType(constImage(),
-                                                     &exceptionInfo));
+  ImageType image_type = GetImageType(constImage(), &exceptionInfo);
+  throwException( exceptionInfo );
+  return image_type;
 }
-void Magick::Image::type ( Magick::ImageType type_)
+void Magick::Image::type ( const Magick::ImageType type_)
 {
   modifyImage();
   SetImageType( image(), type_ );
 }
 
-void Magick::Image::verbose ( bool verboseFlag_ )
+void Magick::Image::verbose ( const bool verboseFlag_ )
 {
   modifyImage();
   options()->verbose( verboseFlag_ );
@@ -3066,26 +3062,29 @@ Magick::Image::Image( const Image & image_ )
 // Assignment operator
 Magick::Image& Magick::Image::operator=( const Magick::Image &image_ )
 {
-  {
-    Lock( &image_._imgRef->_mutexLock );
-    ++image_._imgRef->_refCount;
-  }
-
-  bool doDelete = false;
-  {
-    Lock( &_imgRef->_mutexLock );
-    if ( --_imgRef->_refCount == 0 )
-      doDelete = true;
-  }
-
-  if ( doDelete )
+  if( this != &image_ )
     {
-      // Delete old image reference with associated image and options.
-      delete _imgRef;
-      _imgRef = 0;
+      {
+        Lock( &image_._imgRef->_mutexLock );
+        ++image_._imgRef->_refCount;
+      }
+
+      bool doDelete = false;
+      {
+        Lock( &_imgRef->_mutexLock );
+        if ( --_imgRef->_refCount == 0 )
+          doDelete = true;
+      }
+
+      if ( doDelete )
+        {
+          // Delete old image reference with associated image and options.
+          delete _imgRef;
+          _imgRef = 0;
+        }
+      // Use new image reference
+      _imgRef = image_._imgRef;
     }
-  // Use new image reference
-  _imgRef = image_._imgRef;
 
   return *this;
 }
@@ -3102,16 +3101,16 @@ Magick::Image& Magick::Image::operator=( const Magick::Image &image_ )
 
 // Transfers read-only pixels from the image to the pixel cache as
 // defined by the specified region
-const Magick::PixelPacket* Magick::Image::getConstPixels ( int x_, int y_,
-                                                           unsigned int columns_,
-                                                           unsigned int rows_ ) const
+const Magick::PixelPacket* Magick::Image::getConstPixels ( const unsigned int x_, const unsigned int y_,
+                                                           const unsigned int columns_,
+                                                           const unsigned int rows_ ) const
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  const Magick::PixelPacket* p = (*AcquireImagePixels)( constImage(),
-                                                        x_, y_,
-                                                        columns_, rows_,
-                                                        &exceptionInfo );
+  const PixelPacket* p = (*AcquireImagePixels)( constImage(),
+                                                x_, y_,
+                                                columns_, rows_,
+                                                &exceptionInfo );
   throwException( exceptionInfo );
   return p;
 }
@@ -3123,7 +3122,7 @@ const Magick::IndexPacket* Magick::Image::getConstIndexes ( void ) const
 }
 
 // Obtain image pixel indexes (valid for PseudoClass images)
-Magick::IndexPacket* Magick::Image::getIndexes ( void )
+Magick::IndexPacket* Magick::Image::getIndexes ( void ) const
 {
   return GetIndexes( constImage() );
 }
@@ -3131,14 +3130,14 @@ Magick::IndexPacket* Magick::Image::getIndexes ( void )
 // Transfers pixels from the image to the pixel cache as defined
 // by the specified region. Modified pixels may be subsequently
 // transferred back to the image via syncPixels.
-Magick::PixelPacket* Magick::Image::getPixels ( int x_, int y_,
-						unsigned int columns_,
-						unsigned int rows_ )
+Magick::PixelPacket* Magick::Image::getPixels ( const unsigned int x_, const unsigned int y_,
+						const unsigned int columns_,
+						const unsigned int rows_ )
 {
   modifyImage();
-  Magick::PixelPacket* p = (*GetImagePixels)( image(),
-                                           x_, y_,
-                                           columns_, rows_ );
+  PixelPacket* p = (*GetImagePixels)( image(),
+                                      x_, y_,
+                                      columns_, rows_ );
   throwImageException();
   return p;
 }
@@ -3146,14 +3145,14 @@ Magick::PixelPacket* Magick::Image::getPixels ( int x_, int y_,
 // Allocates a pixel cache region to store image pixels as defined
 // by the region rectangle.  This area is subsequently transferred
 // from the pixel cache to the image via syncPixels.
-Magick::PixelPacket* Magick::Image::setPixels ( int x_, int y_,
-						unsigned int columns_,
-						unsigned int rows_ )
+Magick::PixelPacket* Magick::Image::setPixels ( const unsigned int x_, const unsigned int y_,
+						const unsigned int columns_,
+						const unsigned int rows_ )
 {
   modifyImage();
-  Magick::PixelPacket* p = (*SetImagePixels)( image(),
-                                           x_, y_,
-                                           columns_, rows_ );
+  PixelPacket* p = (*SetImagePixels)( image(),
+                                      x_, y_,
+                                      columns_, rows_ );
   throwImageException();
   return p;
 }
@@ -3168,8 +3167,8 @@ void Magick::Image::syncPixels ( void )
 // Transfers one or more pixel components from a buffer or file
 // into the image pixel cache of an image.
 // Used to support image decoders.
-void Magick::Image::readPixels ( Magick::QuantumType quantum_,
-				 unsigned char *source_ )
+void Magick::Image::readPixels ( const Magick::QuantumType quantum_,
+                                 const  unsigned char *source_ )
 {
   PushImagePixels( image(), quantum_, source_ );
   throwImageException();
@@ -3178,8 +3177,8 @@ void Magick::Image::readPixels ( Magick::QuantumType quantum_,
 // Transfers one or more pixel components from the image pixel
 // cache to a buffer or file.
 // Used to support image encoders.
-void Magick::Image::writePixels ( Magick::QuantumType quantum_,
-				  unsigned char *destination_ )
+void Magick::Image::writePixels ( const Magick::QuantumType quantum_,
+                                  unsigned char *destination_ )
 {
   PopImagePixels( image(), quantum_, destination_ );
   throwImageException();
@@ -3195,7 +3194,8 @@ void Magick::Image::writePixels ( Magick::QuantumType quantum_,
 //
 // Construct using Image and Magick::Options
 //
-Magick::Image::Image ( MagickLib::Image* image_, Magick::Options* options_ )
+Magick::Image::Image ( MagickLib::Image* image_,
+                       const Magick::Options* options_ )
   : _imgRef(new ImageRef( image_, options_))
 {
 }
@@ -3294,8 +3294,7 @@ long Magick::Image::registerId( void )
       _imgRef->id(SetMagickRegistry(ImageRegistryType, image(),
                                     sizeof(MagickLib::Image),
 				    &exceptionInfo));
-      if( _imgRef->id() < 0 )
-        throwException( exceptionInfo );
+      throwException( exceptionInfo );
     }
   return _imgRef->id();
 }
@@ -3389,7 +3388,7 @@ void  Magick::ImageRef::options ( Magick::Options * options_ )
 }
 
 // Assign registration id to reference
-void Magick::ImageRef::id ( long id_ )
+void Magick::ImageRef::id ( const long id_ )
 {
   if( _id > -1 )
     DeleteMagickRegistry( _id );

@@ -1,3 +1,21 @@
+2002-04-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Drawable.cpp (DrawableDashArray::operator=): Added missing
+ 	assignment operator (fixes a bug).
+	(DrawableDashArray::DrawableDashArray): Added missing copy
+ 	constructor (fixes a bug).
+
+	* lib/Image.cpp (oilPaint): Changed argument type from unsigned
+ 	int to double.
+	(chromaBluePrimary): Changed argument type from float to double.
+	(chromaGreenPrimary): Changed argument type from float to double.
+	(chromaRedPrimary): Changed argument type from float to double.
+	(chromaWhitePoint): Changed argument type from float to double.
+	(getConstPixels): Changed argument type of x_ & _y from 'int' to
+ 	'unsigned int'.
+	(getPixels): Changed argument type of x_ & _y from 'int' to
+ 	'unsigned int'.
+
 2002-04-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (debug): Added method to set ImageMagick debug

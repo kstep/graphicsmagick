@@ -4,6 +4,8 @@ Magick++ release number increments even if there are no changes associated
 with Magick++ itself.
 
 (5.4.4)
+  * Fixed a bug in DrawableDashArray.
+  * Numerous consistency improvements based on findings from Gimpel lint.
   * Added endian method to Image, and endianImage class to STL.h in
     order to support setting endian option for formats which support
     the notion (e.g. TIFF).

@@ -4,12 +4,32 @@
 </HEAD>
 <BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000">
 <p>
+2002-04-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Drawable.cpp (DrawableDashArray::operator=): Added missing
+        assignment operator (fixes a bug).
+        (DrawableDashArray::DrawableDashArray): Added missing copy
+        constructor (fixes a bug).
+
+  <LI> lib/Image.cpp (oilPaint): Changed argument type from unsigned
+        int to double.<BR>
+        (chromaBluePrimary): Changed argument type from float to double.
+        (chromaGreenPrimary): Changed argument type from float to double.
+        (chromaRedPrimary): Changed argument type from float to double.
+        (chromaWhitePoint): Changed argument type from float to double.
+        (getConstPixels): Changed argument type of x_ &amp; _y from 'int' to
+        'unsigned int'.<BR>
+        (getPixels): Changed argument type of x_ &amp; _y from 'int' to
+        'unsigned int'.
+
+</UL>
+<p>
 2002-04-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
   <LI> lib/Image.cpp (debug): Added method to set ImageMagick debug
-        flag so that it prints debugging information while it runs.  Still
-        needs documentation.
+        flag so that it prints debugging information while it runs.
 
 </UL>
 <p>

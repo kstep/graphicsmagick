@@ -759,6 +759,19 @@ Magick::DrawableDashArray::DrawableDashArray( const unsigned int* dasharray_ )
 {
   dasharray( dasharray_ );
 }
+Magick::DrawableDashArray::DrawableDashArray(const Magick::DrawableDashArray& original_)
+  : _dasharray(0)
+{
+  dasharray( original_._dasharray );
+}
+Magick::DrawableDashArray& Magick::DrawableDashArray::operator=(const Magick::DrawableDashArray &original_)
+{
+  if( this != &original_ )
+    {
+      dasharray( original_._dasharray );
+    }
+  return *this;
+}
 void Magick::DrawableDashArray::dasharray( const unsigned int* dasharray_ )
 {
   LiberateMemory(reinterpret_cast<void**>(&_dasharray));

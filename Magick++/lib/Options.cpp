@@ -16,7 +16,6 @@
 #include "Magick++/Options.h"
 #include "Magick++/Functions.h"
 #include "Magick++/Exception.h"
-#include "Magick++/Include.h"
 
 #define DegreesToRadians(x) ((x)*3.14159265358979323846/180.0)
 
@@ -62,12 +61,15 @@ Magick::Options::~Options()
 {
   // Destroy image info
   DestroyImageInfo( _imageInfo );
-  
+  _imageInfo=0;
+
   // Destroy quantization info
   DestroyQuantizeInfo( _quantizeInfo );
+  _quantizeInfo=0;
 
   // Destroy drawing info
   DestroyDrawInfo( _drawInfo );
+  _drawInfo=0;
 }
 
 /*
@@ -252,7 +254,7 @@ std::string Magick::Options::format ( void ) const
 
   const MagickInfo * magick_info = 0;
   GetExceptionInfo(&exception);
-  if ( _imageInfo->magick && ( *_imageInfo->magick != '\0' ))
+  if ( *_imageInfo->magick != '\0' )
     magick_info = GetMagickInfo( _imageInfo->magick , &exception);
   
   if (( magick_info != 0 ) && 
@@ -269,7 +271,7 @@ void Magick::Options::magick ( const std::string &magick_ )
   FormatString( _imageInfo->filename, "%.1024s:", magick_.c_str() );
   GetExceptionInfo(&exception);
   SetImageInfo( _imageInfo, 1, &exception);
-  if ( _imageInfo->magick == '\0' )
+  if ( *_imageInfo->magick == '\0' )
     throwExceptionExplicit( OptionWarning,
 			    "Unrecognized image format",
 			    magick_.c_str() );
@@ -348,7 +350,7 @@ void Magick::Options::strokeDashArray ( const double* strokeDashArray_ )
   if(strokeDashArray_)
     {
       // Count elements in dash array
-      int x;
+      unsigned int x;
       for (x=0; strokeDashArray_[x]; x++);
       // Allocate elements
       _drawInfo->dash_pattern =
@@ -562,5 +564,5 @@ std::string Magick::Options::x11Display ( void ) const
   if ( _imageInfo->server_name )
     return std::string( _imageInfo->server_name );
 
-    return std::string();
+  return std::string();
 }

@@ -36,7 +36,7 @@ namespace Magick
 
     // Remove pixel aliasing
     void            antiAlias( bool flag_ );
-    bool            antiAlias( void );
+    bool            antiAlias( void ) const;
     
     // Join images into a single multi-image file
     void            adjoin ( bool flag_ );
@@ -266,7 +266,7 @@ namespace Magick
   private:
     
     // Assignment not supported
-    Options operator= ( const Options& );
+    Options& operator= ( const Options& );
 
     MagickLib::ImageInfo*        _imageInfo;
     MagickLib::QuantizeInfo*     _quantizeInfo;
@@ -283,7 +283,7 @@ inline void Magick::Options::antiAlias( bool flag_ )
 {
   _drawInfo->text_antialias = static_cast<unsigned int>( flag_ );
 }
-inline bool Magick::Options::antiAlias( void )
+inline bool Magick::Options::antiAlias( void ) const
 {
   return static_cast<bool>(_drawInfo->text_antialias);
 }
@@ -409,11 +409,11 @@ inline unsigned int Magick::Options::quality ( void ) const
 
 inline void Magick::Options::strokeAntiAlias( bool flag_ )
 {
-  _drawInfo->stroke_antialias = flag_;
+  flag_ ? _drawInfo->stroke_antialias=1 : _drawInfo->stroke_antialias=0;
 }
 inline bool Magick::Options::strokeAntiAlias( void ) const
 {
-  return _drawInfo->stroke_antialias;
+  return (_drawInfo->stroke_antialias != 0 ? true : false);
 }
 
 // Specify the shape to be used at the end of open subpaths when they

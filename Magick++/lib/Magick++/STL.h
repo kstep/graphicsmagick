@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
 //
 // Definition and implementation of template functions for using
 // Magick::Image with STL containers.
@@ -830,7 +830,7 @@ namespace Magick
   class oilPaintImage : public std::unary_function<Image&,void>
   {
   public:
-    oilPaintImage( unsigned int radius_ = 3 )
+    oilPaintImage( const double radius_ = 3 )
       : _radius( radius_ ) { }
 
     void operator()( Image &image_ )
@@ -838,7 +838,7 @@ namespace Magick
 	image_.oilPaint( _radius );
       }
   private:
-    const unsigned int _radius;
+    const double _radius;
   };
 
   // Set or attenuate the image opacity channel. If the image pixels
@@ -1425,7 +1425,7 @@ namespace Magick
   class chromaBluePrimaryImage : public std::unary_function<Image&,void>
   {
   public:
-    chromaBluePrimaryImage( float x_, float y_ )
+    chromaBluePrimaryImage( const double x_, const double y_ )
       : _x( x_ ),
 	_y( y_ ) { }
 
@@ -1434,15 +1434,15 @@ namespace Magick
 	image_.chromaBluePrimary( _x, _y );
       }
   private:
-    const float _x;
-    const float _y;
+    const double _x;
+    const double _y;
   };
 
   // Chromaticity green primary point (e.g. x=0.3, y=0.6)
   class chromaGreenPrimaryImage : public std::unary_function<Image&,void>
   {
   public:
-    chromaGreenPrimaryImage( float x_, float y_ )
+    chromaGreenPrimaryImage( const double x_, const double y_ )
       : _x( x_ ),
 	_y( y_ ) { }
 
@@ -1451,15 +1451,15 @@ namespace Magick
 	image_.chromaGreenPrimary( _x, _y );
       }
   private:
-    const float _x;
-    const float _y;
+    const double _x;
+    const double _y;
   };
 
   // Chromaticity red primary point (e.g. x=0.64, y=0.33)
   class chromaRedPrimaryImage : public std::unary_function<Image&,void>
   {
   public:
-    chromaRedPrimaryImage( float x_, float y_ )
+    chromaRedPrimaryImage( const double x_, const double y_ )
       : _x( x_ ),
 	_y( y_ ) { }
 
@@ -1468,15 +1468,15 @@ namespace Magick
 	image_.chromaRedPrimary( _x, _y );
       }
   private:
-    const float _x;
-    const float _y;
+    const double _x;
+    const double _y;
   };
 
   // Chromaticity white point (e.g. x=0.3127, y=0.329)
   class chromaWhitePointImage : public std::unary_function<Image&,void>
   {
   public:
-    chromaWhitePointImage( float x_, float y_ )
+    chromaWhitePointImage( const double x_, const double y_ )
       : _x( x_ ),
 	_y( y_ ) { }
 
@@ -1485,8 +1485,8 @@ namespace Magick
 	image_.chromaWhitePoint( _x, _y );
       }
   private:
-    const float _x;
-    const float _y;
+    const double _x;
+    const double _y;
   };
 
   // Colors within this distance are considered equal

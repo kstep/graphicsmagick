@@ -21,33 +21,32 @@ Magick::TypeMetric::~TypeMetric ( void )
   // Nothing to do
 }
 
-
 // Ascent, expressed in pixels
-double Magick::TypeMetric::ascent ( void )
+double Magick::TypeMetric::ascent ( void ) const
 {
   return _typeMetric.ascent;
 }
 
 // Descent, expressed in pixels
-double Magick::TypeMetric::descent ( void )
+double Magick::TypeMetric::descent ( void ) const
 {
   return _typeMetric.descent;
 }
 
 // Text width, expressed in pixels
-double Magick::TypeMetric::textWidth ( void )
+double Magick::TypeMetric::textWidth ( void ) const
 {
   return _typeMetric.width;
 }
 
 // Text height, expressed in pixels
-double Magick::TypeMetric::textHeight ( void )
+double Magick::TypeMetric::textHeight ( void ) const
 {
   return _typeMetric.height;
 }
 
 // Maximum horizontal advance, expressed in pixels
-double Magick::TypeMetric::maxHorizontalAdvance ( void )
+double Magick::TypeMetric::maxHorizontalAdvance ( void ) const
 {
   return _typeMetric.max_advance;
 }

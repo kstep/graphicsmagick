@@ -1591,6 +1591,7 @@ class DrawableDashArray : public DrawableBase
 {
 public:
   DrawableDashArray ( const unsigned int* dasharray_ );
+  DrawableDashArray(const Magick::DrawableDashArray &original_);
 
   // Support a polymorphic print-to-stream operator
   /*virtual*/ void print (std::ostream& stream_) const;
@@ -1609,7 +1610,10 @@ public:
       return _dasharray;
     }
 
+  DrawableDashArray& operator=(const Magick::DrawableDashArray &original_);
+
 private:
+
   unsigned int* _dasharray;
 };
 

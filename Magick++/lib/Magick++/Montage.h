@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
 //
 // Definition of Montage class used to specify montage options.
 //
@@ -30,13 +30,13 @@ namespace Magick
     void              compose ( CompositeOperator compose_ );
     CompositeOperator compose ( void ) const;
     
-    void              fileName( std::string fileName_ );
+    void              fileName( const std::string &fileName_ );
     std::string       fileName( void ) const;
 
     void              fillColor ( const Color &fill_ );
     Color             fillColor ( void ) const;
 
-    void              font ( std::string font_ );
+    void              font ( const std::string &font_ );
     std::string       font ( void ) const;
     
     void              geometry ( const Geometry &geometry_ );
@@ -46,7 +46,7 @@ namespace Magick
     GravityType       gravity ( void ) const;
     
     // Apply as attribute to all images before montage
-    void              label( std::string label_ );
+    void              label( const std::string &label_ );
     std::string       label( void ) const;
 
     // Same as fill color
@@ -62,13 +62,13 @@ namespace Magick
     void              strokeColor ( const Color &stroke_ );
     Color             strokeColor ( void ) const;
 
-    void              texture ( std::string texture_ );
+    void              texture ( const std::string &texture_ );
     std::string       texture ( void ) const;
     
     void              tile ( const Geometry &tile_ );
     Geometry          tile ( void ) const;
     
-    void              title ( std::string title_ );
+    void              title ( const std::string &title_ );
     std::string       title ( void ) const;
     
     // Apply to montage with TransparentImage()
@@ -172,7 +172,7 @@ inline Magick::CompositeOperator Magick::Montage::compose ( void ) const
   return _compose;
 }
 
-inline void Magick::Montage::fileName( std::string fileName_ )
+inline void Magick::Montage::fileName( const std::string &fileName_ )
 {
   _fileName = fileName_;
 }
@@ -190,7 +190,7 @@ inline Magick::Color Magick::Montage::fillColor ( void ) const
   return _fill;
 }
 
-inline void Magick::Montage::font ( std::string font_ )
+inline void Magick::Montage::font ( const std::string &font_ )
 {
   _font = font_;
 }
@@ -218,7 +218,7 @@ inline Magick::GravityType Magick::Montage::gravity ( void ) const
 }
 
 // Apply as attribute to all images before doing montage
-inline void Magick::Montage::label( std::string label_ )
+inline void Magick::Montage::label( const std::string &label_ )
 {
   _label = label_;
 }
@@ -264,7 +264,7 @@ inline Magick::Color Magick::Montage::strokeColor ( void ) const
   return _stroke;
 }
 
-inline void Magick::Montage::texture ( std::string texture_ )
+inline void Magick::Montage::texture ( const std::string &texture_ )
 {
   _texture = texture_;
 }
@@ -282,7 +282,7 @@ inline Magick::Geometry Magick::Montage::tile ( void ) const
   return _tile;
 }
 
-inline void Magick::Montage::title ( std::string title_ )
+inline void Magick::Montage::title ( const std::string &title_ )
 {
   _title = title_;
 }
