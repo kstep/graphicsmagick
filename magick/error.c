@@ -80,50 +80,6 @@ static WarningHandler
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C a t c h I m a g e E x c e p t i o n                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  CatchImageException() returns if no exceptions are found in the image
-%  sequence, otherwise it determines the most severe exception and reports
-%  it as a warning or error depending on the severity.
-%
-%  The format of the CatchImageException method is:
-%
-%      ExceptionType CatchImageException(Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o image: An image sequence.
-%
-%
-*/
-MagickExport ExceptionType CatchImageException(Image *image)
-{
-  ExceptionInfo
-    exception;
-
-  assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
-  GetExceptionInfo(&exception);
-  GetImageException(image,&exception);
-  if (exception.severity != UndefinedException)
-    {
-      if (exception.severity >= FatalException)
-        MagickError(exception.severity,exception.reason,exception.description);
-      MagickWarning(exception.severity,exception.reason,exception.description);
-    }
-  DestroyExceptionInfo(&exception);
-  return(exception.severity);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   D e f a u l t E r r o r H a n d l e r                                     %
 %                                                                             %
 %                                                                             %
@@ -328,52 +284,6 @@ MagickExport void GetExceptionInfo(ExceptionInfo *exception)
   (void) memset(exception,0,sizeof(ExceptionInfo));
   SetExceptionInfo(exception,UndefinedException);
   exception->signature=MagickSignature;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t I m a g e E x c e p t i o n                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetImageException() traverses an image sequence and returns any
-%  error more severe than noted by the exception parameter.
-%
-%  The format of the GetImageException method is:
-%
-%      void GetImageException(Image *image,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: Specifies a pointer to a list of one or more images.
-%
-%    o exception: return the highest severity exception.
-%
-%
-*/
-MagickExport void GetImageException(Image *image,ExceptionInfo *exception)
-{
-  register Image
-    *next;
-
-  assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  for (next=image; next != (Image *) NULL; next=next->next)
-  {
-    if (next->exception.severity == UndefinedException)
-      continue;
-    if (next->exception.severity > exception->severity)
-      ThrowException(exception,next->exception.severity,
-        next->exception.reason,next->exception.description);
-    next->exception.severity=UndefinedException;
-  }
 }
 
 /*

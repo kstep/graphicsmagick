@@ -198,11 +198,11 @@ typedef struct _SegmentInfo
     y2;
 } SegmentInfo;
 
-typedef struct _Ascii85Info _Ascii85Info;
+typedef struct _Ascii85Info _Ascii85Info_;
 
-typedef struct _BlobInfo _BlobInfo;
+typedef struct _BlobInfo _BlobInfo_;
 
-typedef struct _ImageAttribute _ImageAttribute;
+typedef struct _ImageAttribute  _ImageAttribute_;
 
 typedef struct _Image
 {
@@ -291,9 +291,6 @@ typedef struct _Image
   CompositeOperator
     compose;
 
-  _ImageAttribute
-    *attributes;
-
   struct _Image
     *clip_mask;
 
@@ -318,13 +315,16 @@ typedef struct _Image
   void
     *client_data;
 
-  _Ascii85Info
-    *ascii85;
-
   void
     *cache;
 
-  _BlobInfo
+  _ImageAttribute_
+    *attributes;
+
+  _Ascii85Info_
+    *ascii85;
+
+  _BlobInfo_
     *blob;
 
   char
@@ -497,6 +497,9 @@ extern MagickExport const char
 
 extern MagickExport const ColorInfo
   *GetColorInfo(const char *,ExceptionInfo *);
+
+extern MagickExport ExceptionType
+  CatchImageException(Image *);
 
 extern MagickExport const PixelPacket
   *AcquireImagePixels(const Image *,const long,const long,const unsigned long,
@@ -673,6 +676,7 @@ extern MagickExport void
   DestroyMagick(void),
   DestroyMagickInfo(void),
   DestroyMontageInfo(MontageInfo *),
+	GetImageException(Image *,ExceptionInfo *),
   GetImageInfo(ImageInfo *),
   GetMontageInfo(const ImageInfo *,MontageInfo *),
   InitializeMagick(const char *),

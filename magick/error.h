@@ -63,8 +63,6 @@ typedef struct _ExceptionInfo
 /*
   Exception typedef declarations.
 */
-typedef struct _Image _Image;
-
 typedef void
   (*ErrorHandler)(const ExceptionType,const char *,const char *);
 
@@ -83,12 +81,8 @@ extern MagickExport ErrorHandler
 extern MagickExport FatalErrorHandler
   SetFatalErrorHandler(FatalErrorHandler);
 
-extern MagickExport ExceptionType
-  CatchImageException(_Image *);
-
 extern MagickExport void
   DestroyExceptionInfo(ExceptionInfo *),
-  GetImageException(_Image *,ExceptionInfo *),
   GetExceptionInfo(ExceptionInfo *),
   MagickError(const ExceptionType,const char *,const char *),
   MagickFatalError(const ExceptionType,const char *,const char *),
