@@ -67,24 +67,24 @@ typedef xmlEntitiesTable *xmlEntitiesTablePtr;
  */
 
 void		xmlInitializePredefinedEntities	(void);
-xmlEntityPtr		xmlAddDocEntity		(xmlDocPtr doc,
+LIBXML_DLL_IMPORT xmlEntityPtr		xmlAddDocEntity		(xmlDocPtr doc,
 						 const xmlChar *name,
 						 int type,
 						 const xmlChar *ExternalID,
 						 const xmlChar *SystemID,
 						 const xmlChar *content);
-xmlEntityPtr		xmlAddDtdEntity		(xmlDocPtr doc,
+LIBXML_DLL_IMPORT xmlEntityPtr		xmlAddDtdEntity		(xmlDocPtr doc,
 						 const xmlChar *name,
 						 int type,
 						 const xmlChar *ExternalID,
 						 const xmlChar *SystemID,
 						 const xmlChar *content);
 xmlEntityPtr		xmlGetPredefinedEntity	(const xmlChar *name);
-xmlEntityPtr		xmlGetDocEntity		(xmlDocPtr doc,
+LIBXML_DLL_IMPORT xmlEntityPtr		xmlGetDocEntity		(xmlDocPtr doc,
 						 const xmlChar *name);
 xmlEntityPtr		xmlGetDtdEntity		(xmlDocPtr doc,
 						 const xmlChar *name);
-xmlEntityPtr		xmlGetParameterEntity	(xmlDocPtr doc,
+LIBXML_DLL_IMPORT xmlEntityPtr		xmlGetParameterEntity	(xmlDocPtr doc,
 						 const xmlChar *name);
 const xmlChar *		xmlEncodeEntities	(xmlDocPtr doc,
 						 const xmlChar *input);

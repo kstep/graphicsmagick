@@ -561,11 +561,11 @@ int		xmlBufferLength		(const xmlBufferPtr buf);
 /*
  * Creating/freeing new structures.
  */
-xmlDtdPtr	xmlCreateIntSubset	(xmlDocPtr doc,
+LIBXML_DLL_IMPORT xmlDtdPtr	xmlCreateIntSubset	(xmlDocPtr doc,
 					 const xmlChar *name,
 					 const xmlChar *ExternalID,
 					 const xmlChar *SystemID);
-xmlDtdPtr	xmlNewDtd		(xmlDocPtr doc,
+LIBXML_DLL_IMPORT xmlDtdPtr	xmlNewDtd		(xmlDocPtr doc,
 					 const xmlChar *name,
 					 const xmlChar *ExternalID,
 					 const xmlChar *SystemID);
@@ -579,7 +579,7 @@ xmlNsPtr	xmlNewNs		(xmlNodePtr node,
 					 const xmlChar *prefix);
 void		xmlFreeNs		(xmlNsPtr cur);
 void		xmlFreeNsList		(xmlNsPtr cur);
-xmlDocPtr 	xmlNewDoc		(const xmlChar *version);
+LIBXML_DLL_IMPORT xmlDocPtr 	xmlNewDoc		(const xmlChar *version);
 void		xmlFreeDoc		(xmlDocPtr cur);
 xmlAttrPtr	xmlNewDocProp		(xmlDocPtr doc,
 					 const xmlChar *name,
@@ -635,12 +635,12 @@ xmlNodePtr	xmlNewTextLen		(const xmlChar *content,
 xmlNodePtr	xmlNewDocComment	(xmlDocPtr doc,
 					 const xmlChar *content);
 xmlNodePtr	xmlNewComment		(const xmlChar *content);
-xmlNodePtr	xmlNewCDataBlock	(xmlDocPtr doc,
+LIBXML_DLL_IMPORT xmlNodePtr	xmlNewCDataBlock	(xmlDocPtr doc,
 					 const xmlChar *content,
 					 int len);
-xmlNodePtr	xmlNewCharRef		(xmlDocPtr doc,
+LIBXML_DLL_IMPORT xmlNodePtr	xmlNewCharRef		(xmlDocPtr doc,
 					 const xmlChar *name);
-xmlNodePtr	xmlNewReference		(xmlDocPtr doc,
+LIBXML_DLL_IMPORT xmlNodePtr	xmlNewReference		(xmlDocPtr doc,
 					 const xmlChar *name);
 xmlNodePtr	xmlCopyNode		(const xmlNodePtr node,
 					 int recursive);
@@ -656,7 +656,7 @@ xmlNodePtr	xmlNewDocFragment	(xmlDocPtr doc);
 long		xmlGetLineNo		(xmlNodePtr node);
 xmlChar *	xmlGetNodePath		(xmlNodePtr node);
 xmlNodePtr	xmlDocGetRootElement	(xmlDocPtr doc);
-xmlNodePtr	xmlGetLastChild		(xmlNodePtr parent);
+LIBXML_DLL_IMPORT xmlNodePtr	xmlGetLastChild		(xmlNodePtr parent);
 int		xmlNodeIsText		(xmlNodePtr node);
 int		xmlIsBlankNode		(xmlNodePtr node);
 
@@ -667,7 +667,7 @@ xmlNodePtr	xmlDocSetRootElement	(xmlDocPtr doc,
 					 xmlNodePtr root);
 void		xmlNodeSetName		(xmlNodePtr cur,
 					 const xmlChar *name);
-xmlNodePtr	xmlAddChild		(xmlNodePtr parent,
+LIBXML_DLL_IMPORT xmlNodePtr	xmlAddChild		(xmlNodePtr parent,
 					 xmlNodePtr cur);
 xmlNodePtr	xmlAddChildList		(xmlNodePtr parent,
 					 xmlNodePtr cur);
@@ -682,7 +682,7 @@ xmlNodePtr	xmlAddNextSibling	(xmlNodePtr cur,
 void		xmlUnlinkNode		(xmlNodePtr cur);
 xmlNodePtr	xmlTextMerge		(xmlNodePtr first,
 					 xmlNodePtr second);
-void		xmlTextConcat		(xmlNodePtr node,
+LIBXML_DLL_IMPORT void		xmlTextConcat		(xmlNodePtr node,
 					 const xmlChar *content,
 					 int len);
 void		xmlFreeNodeList		(xmlNodePtr cur);

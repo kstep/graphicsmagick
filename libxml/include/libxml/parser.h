@@ -656,7 +656,7 @@ extern "C" {
  * Init/Cleanup
  */
 void		xmlInitParser		(void);
-void		xmlCleanupParser	(void);
+LIBXML_DLL_IMPORT void		xmlCleanupParser	(void);
 
 /*
  * Input functions
@@ -669,7 +669,7 @@ int		xmlParserInputGrow	(xmlParserInputPtr in,
 /*
  * xmlChar handling
  */
-xmlChar *	xmlStrdup		(const xmlChar *cur);
+LIBXML_DLL_IMPORT xmlChar *	xmlStrdup		(const xmlChar *cur);
 xmlChar *	xmlStrndup		(const xmlChar *cur,
 					 int len);
 xmlChar *	xmlCharStrndup		(const char *cur,
@@ -710,7 +710,7 @@ xmlDocPtr	xmlParseDoc		(xmlChar *cur);
 xmlDocPtr	xmlParseMemory		(const char *buffer,
 					 int size);
 xmlDocPtr	xmlParseFile		(const char *filename);
-int		xmlSubstituteEntitiesDefault(int val);
+LIBXML_DLL_IMPORT int		xmlSubstituteEntitiesDefault(int val);
 int		xmlKeepBlanksDefault	(int val);
 void		xmlStopParser		(xmlParserCtxtPtr ctxt);
 int		xmlPedanticParserDefault(int val);
@@ -784,7 +784,7 @@ int		xmlParseCtxtExternalEntity(xmlParserCtxtPtr ctx,
  */
 void		xmlInitParserCtxt	(xmlParserCtxtPtr ctxt);
 void		xmlClearParserCtxt	(xmlParserCtxtPtr ctxt);
-void		xmlFreeParserCtxt	(xmlParserCtxtPtr ctxt);
+LIBXML_DLL_IMPORT void		xmlFreeParserCtxt	(xmlParserCtxtPtr ctxt);
 void		xmlSetupParserForBuffer	(xmlParserCtxtPtr ctxt,
 					 const xmlChar* buffer,
 					 const char *filename);
@@ -806,12 +806,12 @@ int		xmlSetFeature		(xmlParserCtxtPtr ctxt,
 /*
  * Interfaces for the Push mode.
  */
-xmlParserCtxtPtr xmlCreatePushParserCtxt(xmlSAXHandlerPtr sax,
+LIBXML_DLL_IMPORT xmlParserCtxtPtr xmlCreatePushParserCtxt(xmlSAXHandlerPtr sax,
 					 void *user_data,
 					 const char *chunk,
 					 int size,
 					 const char *filename);
-int		 xmlParseChunk		(xmlParserCtxtPtr ctxt,
+LIBXML_DLL_IMPORT int		 xmlParseChunk		(xmlParserCtxtPtr ctxt,
 					 const char *chunk,
 					 int size,
 					 int terminate);
@@ -851,7 +851,7 @@ void		xmlParserAddNodeInfo	(xmlParserCtxtPtr ctxt,
 void		xmlSetExternalEntityLoader(xmlExternalEntityLoader f);
 xmlExternalEntityLoader
 		xmlGetExternalEntityLoader(void);
-xmlParserInputPtr
+LIBXML_DLL_IMPORT xmlParserInputPtr
 		xmlLoadExternalEntity	(const char *URL,
 					 const char *ID,
 					 xmlParserCtxtPtr ctxt);

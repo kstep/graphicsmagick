@@ -2608,7 +2608,7 @@ xmlGetExternalEntityLoader(void) {
  *
  * Returns the xmlParserInputPtr or NULL
  */
-xmlParserInputPtr
+LIBXML_DLL_IMPORT xmlParserInputPtr
 xmlLoadExternalEntity(const char *URL, const char *ID,
                       xmlParserCtxtPtr ctxt) {
     return(xmlCurrentExternalEntityLoader(URL, ID, ctxt));

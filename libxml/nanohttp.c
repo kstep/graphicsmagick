@@ -193,7 +193,7 @@ done:
  * Cleanup the HTTP protocol layer.
  */
 
-void
+LIBXML_DLL_IMPORT void
 xmlNanoHTTPCleanup(void) {
     if (proxy != NULL)
 	xmlFree(proxy);
@@ -956,7 +956,7 @@ xmlNanoHTTPConnectHost(const char *host, int port)
  *     The contentType, if provided must be freed by the caller
  */
 
-void*
+LIBXML_DLL_IMPORT void*
 xmlNanoHTTPOpen(const char *URL, char **contentType) {
     if (contentType != NULL) *contentType = NULL;
     return(xmlNanoHTTPMethod(URL, NULL, NULL, contentType, NULL, 0));
@@ -995,7 +995,7 @@ xmlNanoHTTPOpenRedir(const char *URL, char **contentType, char **redir) {
  * Returns the number of byte read. 0 is an indication of an end of connection.
  *         -1 indicates a parameter error.
  */
-int
+LIBXML_DLL_IMPORT int
 xmlNanoHTTPRead(void *ctx, void *dest, int len) {
     xmlNanoHTTPCtxtPtr ctxt = (xmlNanoHTTPCtxtPtr) ctx;
 
@@ -1020,7 +1020,7 @@ xmlNanoHTTPRead(void *ctx, void *dest, int len) {
  * This function closes an HTTP context, it ends up the connection and
  * free all data related to it.
  */
-void
+LIBXML_DLL_IMPORT void
 xmlNanoHTTPClose(void *ctx) {
     xmlNanoHTTPCtxtPtr ctxt = (xmlNanoHTTPCtxtPtr) ctx;
 

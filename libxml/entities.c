@@ -208,7 +208,7 @@ xmlGetPredefinedEntity(const xmlChar *name) {
  *
  * Returns a pointer to the entity or NULL in case of error
  */
-xmlEntityPtr
+LIBXML_DLL_IMPORT xmlEntityPtr
 xmlAddDtdEntity(xmlDocPtr doc, const xmlChar *name, int type,
 	        const xmlChar *ExternalID, const xmlChar *SystemID,
 		const xmlChar *content) {
@@ -257,7 +257,7 @@ xmlAddDtdEntity(xmlDocPtr doc, const xmlChar *name, int type,
  *
  * Returns a pointer to the entity or NULL in case of error
  */
-xmlEntityPtr
+LIBXML_DLL_IMPORT xmlEntityPtr
 xmlAddDocEntity(xmlDocPtr doc, const xmlChar *name, int type,
 	        const xmlChar *ExternalID, const xmlChar *SystemID,
 	        const xmlChar *content) {
@@ -319,7 +319,7 @@ xmlGetEntityFromTable(xmlEntitiesTablePtr table, const xmlChar *name) {
  * 
  * Returns A pointer to the entity structure or NULL if not found.
  */
-xmlEntityPtr
+LIBXML_DLL_IMPORT xmlEntityPtr
 xmlGetParameterEntity(xmlDocPtr doc, const xmlChar *name) {
     xmlEntitiesTablePtr table;
     xmlEntityPtr ret;
@@ -374,7 +374,7 @@ xmlGetDtdEntity(xmlDocPtr doc, const xmlChar *name) {
  * 
  * Returns A pointer to the entity structure or NULL if not found.
  */
-xmlEntityPtr
+LIBXML_DLL_IMPORT xmlEntityPtr
 xmlGetDocEntity(xmlDocPtr doc, const xmlChar *name) {
     xmlEntityPtr cur;
     xmlEntitiesTablePtr table;

@@ -1568,7 +1568,7 @@ xmlCopyChar(int len ATTRIBUTE_UNUSED, xmlChar *out, int val) {
  *
  * Returns 0 in case of success, -1 otherwise
  */
-int
+LIBXML_DLL_IMPORT int
 xmlSwitchEncoding(xmlParserCtxtPtr ctxt, xmlCharEncoding enc)
 {
     xmlCharEncodingHandlerPtr handler;
@@ -1914,7 +1914,7 @@ xmlSwitchToEncoding(xmlParserCtxtPtr ctxt, xmlCharEncodingHandlerPtr handler)
  *
  * Free up an input stream.
  */
-void
+LIBXML_DLL_IMPORT void
 xmlFreeInputStream(xmlParserInputPtr input) {
     if (input == NULL) return;
 
@@ -2305,7 +2305,7 @@ xmlInitParserCtxt(xmlParserCtxtPtr ctxt)
  * document in ctxt->myDoc is not freed.
  */
 
-void
+LIBXML_DLL_IMPORT void
 xmlFreeParserCtxt(xmlParserCtxtPtr ctxt)
 {
     xmlParserInputPtr input;
@@ -2595,7 +2595,7 @@ xmlLineNumbersDefault(int val) {
  * Returns the last value for 0 for no substitution, 1 for substitution.
  */
 
-int
+LIBXML_DLL_IMPORT int
 xmlSubstituteEntitiesDefault(int val) {
     int old = xmlSubstituteEntitiesDefaultValue;
 

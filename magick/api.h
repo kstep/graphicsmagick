@@ -46,25 +46,25 @@ extern "C" {
 #  if !defined(_MAGICKLIB_)
 #   define MagickExport  __declspec(dllimport)
 #   if defined(_VISUALC_)
-#    pragma message( "Compiling as dll import" )
+#    pragma message( "DLL import Magick API" )
 #   endif
 #  else
 #   define MagickExport  __declspec(dllexport)
 #   if defined(_VISUALC_)
-#    pragma message( "Compiling as dll export" )
+#    pragma message( "DLL export Magick API" )
 #   endif
 #  endif
 # else
 #  define MagickExport
 #  if defined(_VISUALC_)
-#   pragma message( "Compiling as simple library" )
+#   pragma message( "Non-DLL Magick API" )
 #  endif
 # endif
 
 # if defined(_DLL) && !defined(_LIB)
 #  define ModuleExport  __declspec(dllexport)
 #  if defined(_VISUALC_)
-#   pragma message( "Module compiled as DLL" ) 
+#   pragma message( "Module DLL export interface" ) 
 #  endif
 # else
 #  define ModuleExport

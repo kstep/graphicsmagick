@@ -16,7 +16,7 @@
 using namespace std;
 
 #if defined(EXPLICIT_TEMPLATE_INSTANTIATION)
-template class std::list <Magick::Coordinate>;
+// template class std::list <Magick::Coordinate>;
 // template class std::list<const Magick::Drawable>;
 // template class std::list<const Magick::PathArcArgs>;
 // template class std::list<const Magick::PathCurvetoArgs>;

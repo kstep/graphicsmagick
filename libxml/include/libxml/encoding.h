@@ -174,7 +174,7 @@ const char *
 /*
  * Interfaces directly used by the parsers.
  */
-xmlCharEncoding
+LIBXML_DLL_IMPORT xmlCharEncoding
 	xmlDetectCharEncoding		(const unsigned char *in,
 					 int len);
 
