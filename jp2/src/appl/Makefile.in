@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# Copyright (c) 2001-2002 Michael David Adams.
+# Copyright (c) 2001-2003 Michael David Adams.
 # All rights reserved. 
 
 # __START_OF_JASPER_LICENSE__
@@ -178,6 +178,7 @@ JAS_INTERFACE_AGE = @JAS_INTERFACE_AGE@
 JAS_MAJOR_VERSION = @JAS_MAJOR_VERSION@
 JAS_MICRO_VERSION = @JAS_MICRO_VERSION@
 JAS_MINOR_VERSION = @JAS_MINOR_VERSION@
+JAS_RPM_RELEASE = @JAS_RPM_RELEASE@
 JAS_VERSION = @JAS_VERSION@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
@@ -199,11 +200,12 @@ VERSION = @VERSION@
 @HAVE_OPENGL_FALSE@EXTRA_JIV = @HAVE_OPENGL_FALSE@jiv
 
 bin_PROGRAMS = jasper $(BIN_JIV) imgcmp imginfo
-EXTRA_PROGRAMS = $(EXTRA_JIV)
+EXTRA_PROGRAMS = $(EXTRA_JIV) dummy
 
 jasper_SOURCES = jasper.c
 imgcmp_SOURCES = imgcmp.c
 imginfo_SOURCES = imginfo.c
+dummy_SOURCES = dummy.c
 jiv_SOURCES = jiv.c
 
 INCLUDES = -I../libjasper/include
@@ -213,7 +215,9 @@ jasper_LDADD = $(MYLDFLAGS)
 imgcmp_LDADD = $(MYLDFLAGS)
 imginfo_LDADD = $(MYLDFLAGS)
 jiv_LDADD = $(MYLDFLAGS) $(OPENGL_LIBS)
+dummy_LDADD = $(MYLDFLAGS)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../../src/libjasper/include/jasper/jas_config.h
 CONFIG_CLEAN_FILES = 
 @HAVE_OPENGL_FALSE@bin_PROGRAMS =  jasper$(EXEEXT) imgcmp$(EXEEXT) \
 @HAVE_OPENGL_FALSE@imginfo$(EXEEXT)
@@ -222,7 +226,7 @@ CONFIG_CLEAN_FILES =
 PROGRAMS =  $(bin_PROGRAMS)
 
 
-DEFS = @DEFS@ -I. -I$(srcdir) 
+DEFS = @DEFS@ -I. -I$(srcdir) -I../../src/libjasper/include/jasper
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
@@ -233,6 +237,9 @@ X_PRE_LIBS = @X_PRE_LIBS@
 jiv_OBJECTS =  jiv.$(OBJEXT)
 jiv_DEPENDENCIES =  ../libjasper/libjasper.la
 jiv_LDFLAGS = 
+dummy_OBJECTS =  dummy.$(OBJEXT)
+dummy_DEPENDENCIES =  ../libjasper/libjasper.la
+dummy_LDFLAGS = 
 jasper_OBJECTS =  jasper.$(OBJEXT)
 jasper_DEPENDENCIES =  ../libjasper/libjasper.la
 jasper_LDFLAGS = 
@@ -254,8 +261,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(jiv_SOURCES) $(jasper_SOURCES) $(imgcmp_SOURCES) $(imginfo_SOURCES)
-OBJECTS = $(jiv_OBJECTS) $(jasper_OBJECTS) $(imgcmp_OBJECTS) $(imginfo_OBJECTS)
+SOURCES = $(jiv_SOURCES) $(dummy_SOURCES) $(jasper_SOURCES) $(imgcmp_SOURCES) $(imginfo_SOURCES)
+OBJECTS = $(jiv_OBJECTS) $(dummy_OBJECTS) $(jasper_OBJECTS) $(imgcmp_OBJECTS) $(imginfo_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -340,6 +347,10 @@ maintainer-clean-libtool:
 jiv$(EXEEXT): $(jiv_OBJECTS) $(jiv_DEPENDENCIES)
 	@rm -f jiv$(EXEEXT)
 	$(LINK) $(jiv_LDFLAGS) $(jiv_OBJECTS) $(jiv_LDADD) $(LIBS)
+
+dummy$(EXEEXT): $(dummy_OBJECTS) $(dummy_DEPENDENCIES)
+	@rm -f dummy$(EXEEXT)
+	$(LINK) $(dummy_LDFLAGS) $(dummy_OBJECTS) $(dummy_LDADD) $(LIBS)
 
 jasper$(EXEEXT): $(jasper_OBJECTS) $(jasper_DEPENDENCIES)
 	@rm -f jasper$(EXEEXT)

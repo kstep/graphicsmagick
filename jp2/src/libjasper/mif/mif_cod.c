@@ -154,7 +154,7 @@ static mif_hdr_t *mif_hdr_get(jas_stream_t *in);
 static int mif_process_cmpt(mif_hdr_t *hdr, char *buf);
 static int mif_hdr_put(mif_hdr_t *hdr, jas_stream_t *out);
 static int mif_hdr_addcmpt(mif_hdr_t *hdr, int cmptno, mif_cmpt_t *cmpt);
-static mif_cmpt_t *mif_cmpt_create();
+static mif_cmpt_t *mif_cmpt_create(void);
 static void mif_cmpt_destroy(mif_cmpt_t *cmpt);
 static char *mif_getline(jas_stream_t *jas_stream, char *buf, int bufsize);
 static int mif_getc(jas_stream_t *in);
@@ -202,6 +202,9 @@ jas_image_t *mif_decode(jas_stream_t *in, char *optstr)
 	int_fast32_t x;
 	int_fast32_t y;
 	int bias;
+
+	/* Avoid warnings about unused parameters. */
+	optstr = 0;
 
 	hdr = 0;
 	image = 0;

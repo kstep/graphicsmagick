@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# Copyright (c) 2001-2002 Michael David Adams.
+# Copyright (c) 2001-2003 Michael David Adams.
 # All rights reserved. 
 
 # __START_OF_JASPER_LICENSE__
@@ -178,6 +178,7 @@ JAS_INTERFACE_AGE = @JAS_INTERFACE_AGE@
 JAS_MAJOR_VERSION = @JAS_MAJOR_VERSION@
 JAS_MICRO_VERSION = @JAS_MICRO_VERSION@
 JAS_MINOR_VERSION = @JAS_MINOR_VERSION@
+JAS_RPM_RELEASE = @JAS_RPM_RELEASE@
 JAS_VERSION = @JAS_VERSION@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
@@ -199,17 +200,18 @@ libpgx_la_SOURCES = \
 	pgx_cod.h \
 	pgx_enc.h \
 	pgx_cod.c \
-	pgx_enc.c \
-	pgx_dec.c
+	pgx_dec.c \
+	pgx_enc.c
 
 
 INCLUDES = -I../include
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../../../src/libjasper/include/jasper/jas_config.h
 CONFIG_CLEAN_FILES = 
 LTLIBRARIES =  $(noinst_LTLIBRARIES)
 
 
-DEFS = @DEFS@ -I. -I$(srcdir) 
+DEFS = @DEFS@ -I. -I$(srcdir) -I../../../src/libjasper/include/jasper
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
@@ -219,7 +221,7 @@ X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
 libpgx_la_LDFLAGS = 
 libpgx_la_LIBADD = 
-libpgx_la_OBJECTS =  pgx_cod.lo pgx_enc.lo pgx_dec.lo
+libpgx_la_OBJECTS =  pgx_cod.lo pgx_dec.lo pgx_enc.lo
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -301,6 +301,7 @@ jpc_fix_t jpc_mct_getsynweight(int mctid, int cmptno)
 {
 	jpc_fix_t synweight;
 
+	synweight = JPC_FIX_ONE;
 	switch (mctid) {
 	case JPC_MCT_RCT:
 		switch (cmptno) {
@@ -328,9 +329,11 @@ jpc_fix_t jpc_mct_getsynweight(int mctid, int cmptno)
 			break;
 		}
 		break;
+#if 0
 	default:
 		synweight = JPC_FIX_ONE;
 		break;
+#endif
 	}
 
 	return synweight;

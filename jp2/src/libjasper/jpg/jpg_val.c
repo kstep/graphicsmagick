@@ -116,6 +116,7 @@
 #include <assert.h>
 
 #include "jasper/jas_stream.h"
+#include "jasper/jas_image.h"
 
 #include "jpg_cod.h"
 

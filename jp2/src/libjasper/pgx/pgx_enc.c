@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -118,6 +118,7 @@
 #include "jasper/jas_stream.h"
 #include "jasper/jas_image.h"
 #include "jasper/jas_string.h"
+#include "jasper/jas_debug.h"
 
 #include "pgx_cod.h"
 #include "pgx_enc.h"
@@ -148,10 +149,13 @@ int pgx_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 	pgx_enc_t encbuf;
 	pgx_enc_t *enc = &encbuf;
 
-	switch (jas_image_colorspace(image)) {
-	case JAS_IMAGE_CS_GRAY:
+	/* Avoid compiler warnings about unused parameters. */
+	optstr = 0;
+
+	switch (jas_clrspc_fam(jas_image_clrspc(image))) {
+	case JAS_CLRSPC_FAM_GRAY:
 		if ((enc->cmpt = jas_image_getcmptbytype(image,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_GRAY_Y))) < 0) {
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_GRAY_Y))) < 0) {
 			jas_eprintf("error: missing color component\n");
 			return -1;
 		}

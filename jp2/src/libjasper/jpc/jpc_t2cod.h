@@ -275,7 +275,7 @@ typedef struct {
 \******************************************************************************/
 
 /* Create a packet iterator. */
-jpc_pi_t *jpc_pi_create0();
+jpc_pi_t *jpc_pi_create0(void);
 
 /* Destroy a packet iterator. */
 void jpc_pi_destroy(jpc_pi_t *pi);
@@ -315,7 +315,7 @@ int jpc_pi_next(jpc_pi_t *pi);
 \******************************************************************************/
 
 /* Create a progression change list. */
-jpc_pchglist_t *jpc_pchglist_create();
+jpc_pchglist_t *jpc_pchglist_create(void);
 
 /* Destroy a progression change list. */
 void jpc_pchglist_destroy(jpc_pchglist_t *pchglist);

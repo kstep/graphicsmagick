@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -134,7 +134,7 @@
 *
 \******************************************************************************/
 
-static jpc_qmfb1d_t *jpc_qmfb1d_create();
+static jpc_qmfb1d_t *jpc_qmfb1d_create(void);
 
 static int jpc_ft_getnumchans(jpc_qmfb1d_t *qmfb);
 static int jpc_ft_getanalfilters(jpc_qmfb1d_t *qmfb, int len, jas_seq2d_t **filters);
@@ -439,11 +439,18 @@ static void jpc_qmfb1d_join(jpc_fix_t *startptr, int startind, int endind,
 
 static int jpc_ft_getnumchans(jpc_qmfb1d_t *qmfb)
 {
+	/* Avoid compiler warnings about unused parameters. */
+	qmfb = 0;
+
 	return 2;
 }
 
 static int jpc_ft_getanalfilters(jpc_qmfb1d_t *qmfb, int len, jas_seq2d_t **filters)
 {
+	/* Avoid compiler warnings about unused parameters. */
+	qmfb = 0;
+	len = 0;
+	filters = 0;
 	abort();
 	return -1;
 }
@@ -452,6 +459,9 @@ static int jpc_ft_getsynfilters(jpc_qmfb1d_t *qmfb, int len, jas_seq2d_t **filte
 {
 	jas_seq_t *lf;
 	jas_seq_t *hf;
+
+	/* Avoid compiler warnings about unused parameters. */
+	qmfb = 0;
 
 	lf = 0;
 	hf = 0;
@@ -606,6 +616,9 @@ static void jpc_ft_analyze(jpc_qmfb1d_t *qmfb, int flags, jas_seq2d_t *x)
 	int intrastep;
 	int numseq;
 
+	/* Avoid compiler warnings about unused parameters. */
+	qmfb = 0;
+
 	if (flags & JPC_QMFB1D_VERT) {
 		interstep = 1;
 		intrastep = jas_seq2d_rowstep(x);
@@ -683,6 +696,9 @@ static void jpc_ft_synthesize(jpc_qmfb1d_t *qmfb, int flags, jas_seq2d_t *x)
 	int intrastep;
 	int numseq;
 
+	/* Avoid compiler warnings about unused parameters. */
+	qmfb = 0;
+
 	if (flags & JPC_QMFB1D_VERT) {
 		interstep = 1;
 		intrastep = jas_seq2d_rowstep(x);
@@ -751,11 +767,19 @@ static void jpc_ft_synthesize(jpc_qmfb1d_t *qmfb, int flags, jas_seq2d_t *x)
 
 static int jpc_ns_getnumchans(jpc_qmfb1d_t *qmfb)
 {
+	/* Avoid compiler warnings about unused parameters. */
+	qmfb = 0;
+
 	return 2;
 }
 
 static int jpc_ns_getanalfilters(jpc_qmfb1d_t *qmfb, int len, jas_seq2d_t **filters)
 {
+	/* Avoid compiler warnings about unused parameters. */
+	qmfb = 0;
+	len = 0;
+	filters = 0;
+
 	abort();
 	return -1;
 }
@@ -764,6 +788,9 @@ static int jpc_ns_getsynfilters(jpc_qmfb1d_t *qmfb, int len, jas_seq2d_t **filte
 {
 	jas_seq_t *lf;
 	jas_seq_t *hf;
+
+	/* Avoid compiler warnings about unused parameters. */
+	qmfb = 0;
 
 	lf = 0;
 	hf = 0;
@@ -892,6 +919,9 @@ static void jpc_ns_analyze(jpc_qmfb1d_t *qmfb, int flags, jas_seq2d_t *x)
 	int intrastep;
 	int numseq;
 
+	/* Avoid compiler warnings about unused parameters. */
+	qmfb = 0;
+
 	if (flags & JPC_QMFB1D_VERT) {
 		interstep = 1;
 		intrastep = jas_seq2d_rowstep(x);
@@ -964,6 +994,9 @@ static void jpc_ns_synthesize(jpc_qmfb1d_t *qmfb, int flags, jas_seq2d_t *x)
 	int interstep;
 	int intrastep;
 	int numseq;
+
+	/* Avoid compiler warnings about unused parameters. */
+	qmfb = 0;
 
 	if (flags & JPC_QMFB1D_VERT) {
 		interstep = 1;
@@ -1084,6 +1117,9 @@ void jpc_qmfb1d_getbands(jpc_qmfb1d_t *qmfb, int flags, uint_fast32_t xstart,
 {
 	int start;
 	int end;
+
+	assert(maxbands >= 2);
+
 	if (flags & JPC_QMFB1D_VERT) {
 		start = ystart;
 		end = yend;

@@ -111,6 +111,8 @@
 #ifndef JAS_INIT_H
 #define JAS_INIT_H
 
+#include <jasper/jas_config.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -120,6 +122,8 @@ extern "C" {
 \******************************************************************************/
 
 int jas_init(void);
+
+void jas_cleanup(void);
 
 #ifdef __cplusplus
 }

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -226,7 +226,7 @@ void jpc_mqdec_setctxs(jpc_mqdec_t *dec, int numctxs, jpc_mqctx_t *ctxs);
 \******************************************************************************/
 
 /* Dump the MQ decoder state for debugging. */
-void mqdec_dump(jpc_mqdec_t *dec, FILE *out);
+void jpc_mqdec_dump(jpc_mqdec_t *dec, FILE *out);
 
 /******************************************************************************\
 * EVERYTHING BELOW THIS POINT IS IMPLEMENTATION SPECIFIC AND NOT PART OF THE

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -161,8 +161,8 @@ double pae(jas_matrix_t *x, jas_matrix_t *y);
 double msen(jas_matrix_t *x, jas_matrix_t *y, int n);
 double psnr(jas_matrix_t *x, jas_matrix_t *y, int depth);
 jas_image_t *makediffimage(jas_matrix_t *origdata, jas_matrix_t *recondata);
-void usage();
-void cmdinfo();
+void usage(void);
+void cmdinfo(void);
 
 /******************************************************************************\
 *
@@ -550,7 +550,7 @@ jas_image_t *makediffimage(jas_matrix_t *origdata, jas_matrix_t *recondata)
 		compparms[i].prec = 8;
 		compparms[i].sgnd = false;
 	}
-	if (!(diffimage = jas_image_create(3, compparms, JAS_IMAGE_CS_RGB))) {
+	if (!(diffimage = jas_image_create(3, compparms, JAS_CLRSPC_SRGB))) {
 		abort();
 	}
 

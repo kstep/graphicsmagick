@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -137,8 +137,8 @@
 #define	bandnotovind(tsfbnode, x)	((x) / (tsfbnode)->numhchans)
 #define	bandnotohind(tsfbnode, x)	((x) % (tsfbnode)->numhchans)
 
-static jpc_tsfb_t *jpc_tsfb_create();
-static jpc_tsfbnode_t *jpc_tsfbnode_create();
+static jpc_tsfb_t *jpc_tsfb_create(void);
+static jpc_tsfbnode_t *jpc_tsfbnode_create(void);
 static void jpc_tsfbnode_destroy(jpc_tsfbnode_t *node);
 static void jpc_tsfbnode_synthesize(jpc_tsfbnode_t *node, int flags, jas_seq2d_t *x);
 static void jpc_tsfbnode_analyze(jpc_tsfbnode_t *node, int flags, jas_seq2d_t *x);
@@ -512,6 +512,7 @@ static void qmfb2d_getbands(jpc_qmfb1d_t *hqmfb, jpc_qmfb1d_t *vqmfb,
 		vbands[0].locend = yend;
 	}
 	numbands = numhbands * numvbands;
+	assert(numbands <= maxbands);
 	*numbandsptr = numbands;
 	for (bandno = 0, band = bands; bandno < numbands; ++bandno, ++band) {
 		hbandno = bandno % numhbands;

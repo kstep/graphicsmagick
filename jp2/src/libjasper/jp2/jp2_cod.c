@@ -125,6 +125,7 @@
 
 #include "jasper/jas_stream.h"
 #include "jasper/jas_malloc.h"
+#include "jasper/jas_debug.h"
 
 #include "jp2_cod.h"
 
@@ -223,7 +224,7 @@ jp2_boxinfo_t jp2_boxinfos[] = {
 };
 
 jp2_boxinfo_t jp2_boxinfo_unk = {
-	0, "Unknown", 0, {0, 0, 0, 0}
+	0, "Unknown", 0, {0, 0, 0, 0, 0}
 };
 
 /******************************************************************************\
@@ -335,7 +336,9 @@ jp2_box_t *jp2_box_get(jas_stream_t *in)
 		jas_stream_close(tmpstream);
 	}
 
+#if 0
 	jp2_box_dump(box, stderr);
+#endif
 
 	return box;
 	abort();
@@ -376,7 +379,7 @@ static int jp2_jp_getdata(jp2_box_t *box, jas_stream_t *in)
 static int jp2_ftyp_getdata(jp2_box_t *box, jas_stream_t *in)
 {
 	jp2_ftyp_t *ftyp = &box->data.ftyp;
-	int i;
+	unsigned int i;
 	if (jp2_getuint32(in, &ftyp->majver) || jp2_getuint32(in, &ftyp->minver)) {
 		return -1;
 	}
@@ -407,7 +410,7 @@ static int jp2_ihdr_getdata(jp2_box_t *box, jas_stream_t *in)
 static int jp2_bpcc_getdata(jp2_box_t *box, jas_stream_t *in)
 {
 	jp2_bpcc_t *bpcc = &box->data.bpcc;
-	int i;
+	unsigned int i;
 	bpcc->numcmpts = box->len - JP2_BOX_HDRLEN;
 	if (!(bpcc->bpcs = jas_malloc(bpcc->numcmpts * sizeof(uint_fast8_t)))) {
 		return -1;
@@ -467,7 +470,7 @@ static int jp2_colr_getdata(jp2_box_t *box, jas_stream_t *in)
 static void jp2_cdef_dumpdata(jp2_box_t *box, FILE *out)
 {
 	jp2_cdef_t *cdef = &box->data.cdef;
-	int i;
+	unsigned int i;
 	for (i = 0; i < cdef->numchans; ++i) {
 		fprintf(out, "channo=%d; type=%d; assoc=%d\n",
 		  cdef->ents[i].channo, cdef->ents[i].type, cdef->ents[i].assoc);
@@ -478,7 +481,7 @@ static void jp2_colr_destroy(jp2_box_t *box)
 {
 	jp2_colr_t *colr = &box->data.colr;
 	if (colr->iccp) {
-		free(colr->iccp);
+		jas_free(colr->iccp);
 	}
 }
 
@@ -486,7 +489,7 @@ static int jp2_cdef_getdata(jp2_box_t *box, jas_stream_t *in)
 {
 	jp2_cdef_t *cdef = &box->data.cdef;
 	jp2_cdefchan_t *chan;
-	int channo;
+	unsigned int channo;
 	if (jp2_getuint16(in, &cdef->numchans)) {
 		return -1;
 	}
@@ -570,7 +573,7 @@ static int jp2_jp_putdata(jp2_box_t *box, jas_stream_t *out)
 static int jp2_ftyp_putdata(jp2_box_t *box, jas_stream_t *out)
 {
 	jp2_ftyp_t *ftyp = &box->data.ftyp;
-	int i;
+	unsigned int i;
 	if (jp2_putuint32(out, ftyp->majver) || jp2_putuint32(out, ftyp->minver)) {
 		return -1;
 	}
@@ -597,7 +600,7 @@ static int jp2_ihdr_putdata(jp2_box_t *box, jas_stream_t *out)
 static int jp2_bpcc_putdata(jp2_box_t *box, jas_stream_t *out)
 {
 	jp2_bpcc_t *bpcc = &box->data.bpcc;
-	int i;
+	unsigned int i;
 	for (i = 0; i < bpcc->numcmpts; ++i) {
 		if (jp2_putuint8(out, bpcc->bpcs[i])) {
 			return -1;
@@ -620,8 +623,9 @@ static int jp2_colr_putdata(jp2_box_t *box, jas_stream_t *out)
 		}
 		break;
 	case JP2_COLR_ICC:
-		/* XXX - not implemented */
-		abort();
+		if (jas_stream_write(out, colr->iccp,
+		  JAS_CAST(int, colr->iccplen)) != JAS_CAST(int, colr->iccplen))
+			return -1;
 		break;
 	}
 	return 0;
@@ -630,7 +634,7 @@ static int jp2_colr_putdata(jp2_box_t *box, jas_stream_t *out)
 static int jp2_cdef_putdata(jp2_box_t *box, jas_stream_t *out)
 {
 	jp2_cdef_t *cdef = &box->data.cdef;
-	int i;
+	unsigned int i;
 	jp2_cdefchan_t *ent;
 
 	if (jp2_putuint16(out, cdef->numchans)) {
@@ -710,6 +714,8 @@ static int jp2_getuint32(jas_stream_t *in, uint_fast32_t *val)
 
 static int jp2_getuint64(jas_stream_t *in, uint_fast64_t *val)
 {
+	in = 0;
+	val = 0;
 	abort();
 }
 
@@ -785,7 +791,7 @@ static int jp2_cmap_getdata(jp2_box_t *box, jas_stream_t *in)
 {
 	jp2_cmap_t *cmap = &box->data.cmap;
 	jp2_cmapent_t *ent;
-	int i;
+	unsigned int i;
 
 	cmap->numchans = (box->len - JP2_BOX_HDRLEN) / 4;
 	if (!(cmap->ents = jas_malloc(cmap->numchans * sizeof(jp2_cmapent_t)))) {
@@ -805,18 +811,22 @@ static int jp2_cmap_getdata(jp2_box_t *box, jas_stream_t *in)
 
 static int jp2_cmap_putdata(jp2_box_t *box, jas_stream_t *out)
 {
+	/* Eliminate compiler warning about unused variables. */
+	box = 0;
+	out = 0;
+
 	return -1;
 }
 
 static void jp2_cmap_dumpdata(jp2_box_t *box, FILE *out)
 {
 	jp2_cmap_t *cmap = &box->data.cmap;
-	int i;
+	unsigned int i;
 	jp2_cmapent_t *ent;
-	fprintf(stderr, "numchans = %d\n", (int) cmap->numchans);
+	fprintf(out, "numchans = %d\n", (int) cmap->numchans);
 	for (i = 0; i < cmap->numchans; ++i) {
 		ent = &cmap->ents[i];
-		fprintf(stderr, "cmptno=%d; map=%d; pcol=%d\n",
+		fprintf(out, "cmptno=%d; map=%d; pcol=%d\n",
 		  (int) ent->cmptno, (int) ent->map, (int) ent->pcol);
 	}
 }
@@ -827,14 +837,16 @@ static void jp2_pclr_destroy(jp2_box_t *box)
 	if (pclr->lutdata) {
 		jas_free(pclr->lutdata);
 	}
+	if (pclr->bpc)
+		jas_free(pclr->bpc);
 }
 
 static int jp2_pclr_getdata(jp2_box_t *box, jas_stream_t *in)
 {
 	jp2_pclr_t *pclr = &box->data.pclr;
 	int lutsize;
-	int i;
-	int j;
+	unsigned int i;
+	unsigned int j;
 	int_fast32_t x;
 
 	pclr->lutdata = 0;
@@ -869,14 +881,19 @@ static int jp2_pclr_getdata(jp2_box_t *box, jas_stream_t *in)
 
 static int jp2_pclr_putdata(jp2_box_t *box, jas_stream_t *out)
 {
+#if 0
 	jp2_pclr_t *pclr = &box->data.pclr;
+#endif
+/* Eliminate warning about unused variable. */
+box = 0;
+out = 0;
 	return -1;
 }
 
 static void jp2_pclr_dumpdata(jp2_box_t *box, FILE *out)
 {
 	jp2_pclr_t *pclr = &box->data.pclr;
-	int i;
+	unsigned int i;
 	int j;
 	fprintf(out, "numents=%d; numchans=%d\n", (int) pclr->numlutents,
 	  (int) pclr->numchans);
@@ -920,11 +937,11 @@ static int jp2_getint(jas_stream_t *in, int s, int n, int_fast32_t *val)
 
 jp2_cdefchan_t *jp2_cdef_lookup(jp2_cdef_t *cdef, int channo)
 {
-	int i;
+	unsigned int i;
 	jp2_cdefchan_t *cdefent;
 	for (i = 0; i < cdef->numchans; ++i) {
 		cdefent = &cdef->ents[i];
-		if (cdefent->channo == channo) {
+		if (cdefent->channo == JAS_CAST(unsigned int, channo)) {
 			return cdefent;
 		}
 	}

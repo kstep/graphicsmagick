@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002 Michael David Adams.
+ * Copyright (c) 2002-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -121,11 +121,6 @@
 *
 \******************************************************************************/
 
-#if 0
-/* Disable this functionality to keep WG1 happy. */
-#define JIV_PARTIAL_COLOR_SUPPORT
-#endif
-
 #define MAXCMPTS	256
 #define BIGPAN		0.90
 #define SMALLPAN	0.05
@@ -152,6 +147,8 @@ typedef struct {
 	/* Loop indefinitely over all images. */
 	int loop;
 
+	int verbose;
+
 } cmdopts_t;
 
 typedef struct {
@@ -171,11 +168,7 @@ typedef struct {
 
 	/* The image. */
 	jas_image_t *image;
-
-	/* The image sample data. */
-	jas_matrix_t *cmpts[MAXCMPTS];
-
-	int cmptlut[MAXCMPTS];
+	jas_image_t *altimage;
 
 	/* The x-coordinate of viewport center. */
 	float vcx;
@@ -202,6 +195,8 @@ typedef struct {
 
 	int cmptno;
 
+	int dirty;
+
 } gs_t;
 
 /******************************************************************************\
@@ -214,21 +209,34 @@ static void keyboard(unsigned char key, int x, int y);
 static void special(int key, int x, int y);
 static void timer(int value);
 
-static void drawview(jas_image_t *image, float vtlx, float vtly,
-  float sx, float sy, pixmap_t *p);
 static void usage(void);
 static void nextimage(void);
 static void previmage(void);
+static void nextcmpt(void);
+static void prevcmpt(void);
 static int loadimage(void);
 static void unloadimage(void);
 static void adjust(void);
+static int jas_image_render2(jas_image_t *image, int cmptno, float vtlx, float vtly,
+  float vsx, float vsy, int vw, int vh, GLshort *vdata);
+static int jas_image_render(jas_image_t *image, float vtlx, float vtly,
+  float vsx, float vsy, int vw, int vh, GLshort *vdata);
+
+static void dumpstate(void);
+static int pixmap_resize(pixmap_t *p, int w, int h);
+static void pixmap_clear(pixmap_t *p);
+static void cmdinfo(void);
+
+static void cleanupandexit(int);
+static void init(void);
 
 /******************************************************************************\
 *
 \******************************************************************************/
 
 jas_opt_t opts[] = {
-	{'v', "version", 0},
+	{'V', "version", 0},
+	{'v', "v", 0},
 	{'h', "help", 0},
 	{'w', "wait", JAS_OPT_HASARG},
 	{'l', "loop", 0},
@@ -248,6 +256,8 @@ jas_stream_t *streamin = 0;
 int main(int argc, char **argv)
 {
 	int c;
+
+	init();
 
 	/* Determine the base name of this command. */
 	if ((cmdname = strrchr(argv[0], '/'))) {
@@ -274,6 +284,7 @@ int main(int argc, char **argv)
 	cmdopts.title = 0;
 	cmdopts.tmout = 0;
 	cmdopts.loop = 0;
+	cmdopts.verbose = 0;
 
 	while ((c = jas_getopt(argc, argv, opts)) != EOF) {
 		switch (c) {
@@ -287,9 +298,12 @@ int main(int argc, char **argv)
 			cmdopts.title = jas_optarg;
 			break;
 		case 'v':
+			cmdopts.verbose = 1;
+			break;
+		case 'V':
 			printf("%s\n", JAS_VERSION);
 			fprintf(stderr, "libjasper %s\n", jas_getversion());
-			exit(EXIT_SUCCESS);
+			cleanupandexit(EXIT_SUCCESS);
 			break;
 		default:
 		case 'h':
@@ -310,12 +324,6 @@ int main(int argc, char **argv)
 		cmdopts.numfiles = 1;
 	}
 
-	gs.filenum = -1;
-	gs.image = 0;
-	gs.nexttmid = 0;
-	gs.vp.width = 0;
-	gs.vp.height = 0;
-	gs.vp.data = 0;
 	streamin = jas_stream_fdopen(0, "rb");
 
 	/* Load the next image. */
@@ -331,11 +339,11 @@ int main(int argc, char **argv)
 *
 \******************************************************************************/
 
-void cmdinfo()
+static void cmdinfo()
 {
 	fprintf(stderr, "JasPer Image Viewer (Version %s).\n",
 	  JAS_VERSION);
-	fprintf(stderr, "Copyright (c) 2002 Michael David Adams.\n"
+	fprintf(stderr, "Copyright (c) 2002-2003 Michael David Adams.\n"
 	  "All rights reserved.\n");
 	fprintf(stderr, "%s\n", JAS_NOTES);
 }
@@ -358,7 +366,7 @@ static void usage()
 	for (i = 0, s = helpinfo[i]; s; ++i, s = helpinfo[i]) {
 		fprintf(stderr, "%s", s);
 	}
-	exit(EXIT_FAILURE);
+	cleanupandexit(EXIT_FAILURE);
 }
 
 /******************************************************************************\
@@ -369,34 +377,67 @@ static void usage()
 
 static void display()
 {
-	int vtlx;
-	int vtly;
+	float vtlx;
+	float vtly;
 
-#if defined(DEBUG) && 0
-	fprintf(stderr, "display\n");
-	dumpstate();
-#endif
+	if (cmdopts.verbose) {
+		fprintf(stderr, "display()\n");
+		dumpstate();
+	}
+
+	if (!gs.dirty) {
+		glClear(GL_COLOR_BUFFER_BIT);
+		glDrawPixels(gs.vp.width, gs.vp.height, GL_RGBA,
+		  GL_UNSIGNED_SHORT, gs.vp.data);
+		glFlush();
+		return;
+	}
+
+	glClear(GL_COLOR_BUFFER_BIT);
+	pixmap_clear(&gs.vp);
+	glDrawPixels(gs.vp.width, gs.vp.height, GL_RGBA, GL_UNSIGNED_SHORT,
+	  gs.vp.data);
+	glFlush();
 
 	vtlx = gs.vcx - 0.5 * gs.sx * gs.vp.width;
 	vtly = gs.vcy - 0.5 * gs.sy * gs.vp.height;
-	drawview(gs.image, vtlx, vtly, gs.sx, gs.sy, &gs.vp);
+	if (cmdopts.verbose) {
+		fprintf(stderr, "vtlx=%f, vtly=%f, vsx=%f, vsy=%f\n",
+		  vtlx, vtly, gs.sx, gs.sy);
+	}
+	if (gs.monomode) {
+		if (cmdopts.verbose) {
+			fprintf(stderr, "component %d\n", gs.cmptno);
+		}
+		jas_image_render2(gs.image, gs.cmptno, vtlx, vtly,
+		  gs.sx, gs.sy, gs.vp.width, gs.vp.height, gs.vp.data);
+	} else {
+		if (cmdopts.verbose) {
+			fprintf(stderr, "color\n");
+		}
+		jas_image_render(gs.altimage, vtlx, vtly, gs.sx, gs.sy,
+		  gs.vp.width, gs.vp.height, gs.vp.data);
+	}
 	glClear(GL_COLOR_BUFFER_BIT);
 	glDrawPixels(gs.vp.width, gs.vp.height, GL_RGBA, GL_UNSIGNED_SHORT,
 	  gs.vp.data);
+	glFlush();
+	gs.dirty = 0;
 }
 
 /* Reshape callback function. */
 
 static void reshape(int w, int h)
 {
-#if defined(DEBUG) && 0
-	fprintf(stderr, "reshape(%d, %d)\n", w, h);
-	dumpstate();
-#endif
+	if (cmdopts.verbose) {
+		fprintf(stderr, "reshape(%d, %d)\n", w, h);
+		dumpstate();
+	}
 
 	if (pixmap_resize(&gs.vp, w, h)) {
-		exit(EXIT_FAILURE);
+		cleanupandexit(EXIT_FAILURE);
 	}
+	pixmap_clear(&gs.vp);
 	glViewport(0, 0, w, h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -412,12 +453,17 @@ static void reshape(int w, int h)
 	if (gs.vp.height > jas_image_height(gs.image) / gs.sy) {
 		gs.vcy = (jas_image_tly(gs.image) + jas_image_bry(gs.image)) / 2.0;
 	}
+	gs.dirty = 1;
 }
 
 /* Keyboard callback function. */
 
 static void keyboard(unsigned char key, int x, int y)
 {
+	if (cmdopts.verbose) {
+		fprintf(stderr, "keyboard(%d, %d, %d)\n", key, x, y);
+	}
+
 	switch (key) {
 	case ' ':
 		nextimage();
@@ -428,41 +474,37 @@ static void keyboard(unsigned char key, int x, int y)
 	case '>':
 		gs.sx /= BIGZOOM;
 		gs.sy /= BIGZOOM;
+		gs.dirty = 1;
 		glutPostRedisplay();
 		break;
 	case '.':
 		gs.sx /= SMALLZOOM;
 		gs.sy /= SMALLZOOM;
+		gs.dirty = 1;
 		glutPostRedisplay();
 		break;
 	case '<':
 		gs.sx *= BIGZOOM;
 		gs.sy *= BIGZOOM;
 		adjust();
+		gs.dirty = 1;
 		glutPostRedisplay();
 		break;
 	case ',':
 		gs.sx *= SMALLZOOM;
 		gs.sy *= SMALLZOOM;
+		gs.dirty = 1;
 		adjust();
 		glutPostRedisplay();
 		break;
 	case 'c':
-		if (!gs.monomode) {
-			gs.monomode = 1;
-			gs.cmptno = 0;
-		} else {
-			if (++gs.cmptno >= jas_image_numcmpts(gs.image)) {
-#if defined(JIV_PARTIAL_COLOR_SUPPORT)
-				gs.monomode = 0;
-#endif
-				gs.cmptno = 0;
-			}
-		}
-		glutPostRedisplay();
+		nextcmpt();
+		break;
+	case 'C':
+		prevcmpt();
 		break;
 	case 'q':
-		exit(EXIT_SUCCESS);
+		cleanupandexit(EXIT_SUCCESS);
 		break;
 	}
 }
@@ -471,6 +513,10 @@ static void keyboard(unsigned char key, int x, int y)
 
 static void special(int key, int x, int y)
 {
+	if (cmdopts.verbose) {
+		fprintf(stderr, "special(%d, %d, %d)\n", key, x, y);
+	}
+
 	switch (key) {
 	case GLUT_KEY_UP:
 		{
@@ -485,6 +531,7 @@ static void special(int key, int x, int y)
 				gs.vcy = max(gs.vcy - pan * vh, jas_image_tly(gs.image) +
 				  0.5 * vh);
 				if (gs.vcy != oldvcy) {
+					gs.dirty = 1;
 					glutPostRedisplay();
 				}
 			}
@@ -503,6 +550,7 @@ static void special(int key, int x, int y)
 				gs.vcy = min(gs.vcy + pan * vh, jas_image_bry(gs.image) -
 				  0.5 * vh);
 				if (gs.vcy != oldvcy) {
+					gs.dirty = 1;
 					glutPostRedisplay();
 				}
 			}
@@ -521,6 +569,7 @@ static void special(int key, int x, int y)
 				gs.vcx = max(gs.vcx - pan * vw, jas_image_tlx(gs.image) +
 				  0.5 * vw);
 				if (gs.vcx != oldvcx) {
+					gs.dirty = 1;
 					glutPostRedisplay();
 				}
 			}
@@ -539,6 +588,7 @@ static void special(int key, int x, int y)
 				gs.vcx = min(gs.vcx + pan * vw, jas_image_brx(gs.image) -
 				  0.5 * vw);
 				if (gs.vcx != oldvcx) {
+					gs.dirty = 1;
 					glutPostRedisplay();
 				}
 			}
@@ -553,6 +603,9 @@ static void special(int key, int x, int y)
 
 static void timer(int value)
 {
+	if (cmdopts.verbose) {
+		fprintf(stderr, "timer(%d)\n", value);
+	}
 	if (value == gs.activetmid) {
 		nextimage();
 	}
@@ -561,6 +614,42 @@ static void timer(int value)
 /******************************************************************************\
 *
 \******************************************************************************/
+
+static void nextcmpt()
+{
+	if (gs.monomode) {
+		if (gs.cmptno == jas_image_numcmpts(gs.image) - 1) {
+			if (gs.altimage) {
+				gs.monomode = 0;
+			} else {
+				gs.cmptno = 0;
+			}
+		} else {
+			++gs.cmptno;
+		}
+	} else {
+		gs.monomode = 1;
+		gs.cmptno = 0;
+	}
+	gs.dirty = 1;
+	glutPostRedisplay();
+}
+
+static void prevcmpt()
+{
+	if (gs.monomode) {
+		if (!gs.cmptno) {
+			gs.monomode = 0;
+		} else {
+			--gs.cmptno;
+		}
+	} else {
+		gs.monomode = 1;
+		gs.cmptno = jas_image_numcmpts(gs.image) - 1;
+	}
+	gs.dirty = 1;
+	glutPostRedisplay();
+}
 
 static void nextimage()
 {
@@ -572,14 +661,15 @@ static void nextimage()
 			if (cmdopts.loop) {
 				gs.filenum = 0;
 			} else {
-				exit(EXIT_SUCCESS);
+				cleanupandexit(EXIT_SUCCESS);
 			}
 		}
 		if (!loadimage()) {
 			return;
 		}
+		fprintf(stderr, "cannot load image\n");
 	}
-	exit(EXIT_SUCCESS);
+	cleanupandexit(EXIT_SUCCESS);
 }
 
 static void previmage()
@@ -592,14 +682,14 @@ static void previmage()
 			if (cmdopts.loop) {
 				gs.filenum = cmdopts.numfiles - 1;
 			} else {
-				exit(EXIT_SUCCESS);
+				cleanupandexit(EXIT_SUCCESS);
 			}
 		}
 		if (!loadimage()) {
 			return;
 		}
 	}
-	exit(EXIT_SUCCESS);
+	cleanupandexit(EXIT_SUCCESS);
 }
 
 static int loadimage()
@@ -610,15 +700,13 @@ static int loadimage()
 	float vh;
 	float vw;
 	char *pathname;
-	int i;
+	jas_cmprof_t *outprof;
 
 	assert(!gs.image);
-	assert(!gs.cmpts[0] && !gs.cmpts[1] && !gs.cmpts[2]);
+	assert(!gs.altimage);
 
 	gs.image = 0;
-	for (i = 0; i < MAXCMPTS; ++i) {
-		gs.cmpts[0] = 0;
-	}
+	gs.altimage = 0;
 
 	pathname = cmdopts.filenames[gs.filenum];
 
@@ -647,6 +735,11 @@ static int loadimage()
 		jas_stream_close(in);
 	}
 
+	if (!(outprof = jas_cmprof_createfromclrspc(JAS_CLRSPC_SRGB)))
+		goto error;
+	if (!(gs.altimage = jas_image_chclrspc(gs.image, outprof, JAS_CMXFORM_INTENT_PER)))
+		goto error;
+
 	if ((scrnwidth = glutGet(GLUT_SCREEN_WIDTH)) < 0) {
 		scrnwidth = 256;
 	}
@@ -657,59 +750,20 @@ static int loadimage()
 	vw = min(jas_image_width(gs.image), 0.95 * scrnwidth);
 	vh = min(jas_image_height(gs.image), 0.95 * scrnheight);
 
-	switch (jas_image_colorspace(gs.image)) {
-	case JAS_IMAGE_CS_RGB:
-		if ((gs.cmptlut[0] = jas_image_getcmptbytype(gs.image,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_R))) < 0 ||
-		  (gs.cmptlut[1] = jas_image_getcmptbytype(gs.image,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_G))) < 0 ||
-		  (gs.cmptlut[2] = jas_image_getcmptbytype(gs.image,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_B))) < 0) {
-			goto error;
-		}
-		break;
-	case JAS_IMAGE_CS_YCBCR:
-		if ((gs.cmptlut[0] = jas_image_getcmptbytype(gs.image,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_YCBCR_Y))) < 0 ||
-		  (gs.cmptlut[1] = jas_image_getcmptbytype(gs.image,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_YCBCR_CB))) < 0 ||
-		  (gs.cmptlut[2] = jas_image_getcmptbytype(gs.image,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_YCBCR_CR))) < 0) {
-			goto error;
-		}
-		break;
-	case JAS_IMAGE_CS_GRAY:
-		if ((gs.cmptlut[0] = jas_image_getcmptbytype(gs.image,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_GRAY_Y))) < 0) {
-			goto error;
-		}
-		break;
-	default:
-		goto error;
-		break;
-	}
-
-	for (i = 0; i < jas_image_numcmpts(gs.image); ++i) {
-		if (!(gs.cmpts[i] = jas_matrix_create(jas_image_cmptheight(gs.image,
-		  i), jas_image_cmptwidth(gs.image, i)))) {
-			goto error;
-		}
-		if (jas_image_readcmpt(gs.image, i, 0, 0, jas_image_cmptwidth(gs.image,
-		  i), jas_image_cmptheight(gs.image, i), gs.cmpts[i])) {
-			goto error;
-		}
-	}
-
 	gs.vcx = (jas_image_tlx(gs.image) + jas_image_brx(gs.image)) / 2.0;
 	gs.vcy = (jas_image_tly(gs.image) + jas_image_bry(gs.image)) / 2.0;
 	gs.sx = 1.0;
 	gs.sy = 1.0;
-#if defined(JIV_PARTIAL_COLOR_SUPPORT)
-	gs.monomode = 0;
-#else
-	gs.monomode = 1;
+	if (gs.altimage) {
+		gs.monomode = 0;
+	} else {
+		gs.monomode = 1;
+		gs.cmptno = 0;
+	}
+
+#if 1
+	fprintf(stderr, "num of components %d\n", jas_image_numcmpts(gs.image));
 #endif
-	gs.cmptno = 0;
 
 	if (vw < jas_image_width(gs.image)) {
 		gs.sx = jas_image_width(gs.image) / ((float) vw);
@@ -724,14 +778,17 @@ static int loadimage()
 	}
 	vw = jas_image_width(gs.image) / gs.sx;
 	vh = jas_image_height(gs.image) / gs.sy;
+	gs.dirty = 1;
 
 	glutReshapeWindow(vw, vh);
-	glutPostRedisplay();
 	if (cmdopts.title) {
 		glutSetWindowTitle(cmdopts.title);
 	} else {
 		glutSetWindowTitle((pathname && pathname[0] != '\0') ? pathname :
 		  "stdin");
+	}
+	if (!glutLayerGet(GLUT_NORMAL_DAMAGED)) {
+		glutPostRedisplay();
 	}
 
 	if (cmdopts.tmout != 0) {
@@ -743,33 +800,184 @@ static int loadimage()
 	return 0;
 
 error:
-	if (gs.image) {
-		jas_image_destroy(gs.image);
-		gs.image = 0;
-	}
-	for (i = 0; i < MAXCMPTS; ++i) {
-		if (gs.cmpts[i]) {
-			jas_matrix_destroy(gs.cmpts[i]);
-			gs.cmpts[i] = 0;
-		}
-	}
+	unloadimage();
 	return -1;
 }
 
-void unloadimage()
+static void unloadimage()
 {
-	int i;
 	if (gs.image) {
 		jas_image_destroy(gs.image);
 		gs.image = 0;
 	}
-	for (i = 0; i < MAXCMPTS; ++i) {
-		if (gs.cmpts[i]) {
-			jas_matrix_destroy(gs.cmpts[i]);
-			gs.cmpts[i] = 0;
-		}
+	if (gs.altimage) {
+		jas_image_destroy(gs.altimage);
+		gs.altimage = 0;
 	}
 }
+
+/******************************************************************************\
+*
+\******************************************************************************/
+
+static void adjust()
+{
+	if (gs.vp.width < jas_image_width(gs.image) / gs.sx) {
+		float mnx;
+		float mxx;
+		mnx = jas_image_tlx(gs.image) + 0.5 * gs.vp.width * gs.sx;
+		mxx = jas_image_brx(gs.image) - 0.5 * gs.vp.width * gs.sx;
+		if (gs.vcx < mnx) {
+			gs.vcx = mnx;
+		} else if (gs.vcx > mxx) {
+			gs.vcx = mxx;
+		}
+	} else {
+		gs.vcx = (jas_image_tlx(gs.image) + jas_image_brx(gs.image)) / 2.0;
+	}
+	if (gs.vp.height < jas_image_height(gs.image) / gs.sy) {
+		float mny;
+		float mxy;
+		mny = jas_image_tly(gs.image) + 0.5 * gs.vp.height * gs.sy;
+		mxy = jas_image_bry(gs.image) - 0.5 * gs.vp.height * gs.sy;
+		if (gs.vcy < mny) {
+			gs.vcy = mny;
+		} else if (gs.vcy > mxy) {
+			gs.vcy = mxy;
+		}
+	} else {
+		gs.vcy = (jas_image_tly(gs.image) + jas_image_bry(gs.image)) / 2.0;
+	}
+}
+
+static void pixmap_clear(pixmap_t *p)
+{
+	memset(p->data, 0, 4 * p->width * p->height * sizeof(GLshort));
+}
+
+static int pixmap_resize(pixmap_t *p, int w, int h)
+{
+	p->width = w;
+	p->height = h;
+	if (!(p->data = realloc(p->data, w * h * 4 * sizeof(GLshort)))) {
+		return -1;
+	}
+	return 0;
+}
+
+static void dumpstate()
+{
+	printf("vcx=%f vcy=%f sx=%f sy=%f dirty=%d\n", gs.vcx, gs.vcy, gs.sx, gs.sy, gs.dirty);
+}
+
+#define	vctocc(i, co, cs, vo, vs) \
+  (((vo) + (i) * (vs) - (co)) / (cs))
+
+static int jas_image_render(jas_image_t *image, float vtlx, float vtly,
+  float vsx, float vsy, int vw, int vh, GLshort *vdata)
+{
+	int i;
+	int j;
+	int k;
+	int x;
+	int y;
+	int v[3];
+	GLshort *vdatap;
+	int cmptlut[3];
+	int width;
+	int height;
+	int hs;
+	int vs;
+	int tlx;
+	int tly;
+
+	if ((cmptlut[0] = jas_image_getcmptbytype(image,
+	  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_R))) < 0 ||
+	  (cmptlut[1] = jas_image_getcmptbytype(image,
+	  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_G))) < 0 ||
+	  (cmptlut[2] = jas_image_getcmptbytype(image,
+	  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_B))) < 0)
+		goto error;
+	width = jas_image_cmptwidth(image, cmptlut[0]);
+	height = jas_image_cmptheight(image, cmptlut[0]);
+	tlx = jas_image_cmpttlx(image, cmptlut[0]);
+	tly = jas_image_cmpttly(image, cmptlut[0]);
+	vs = jas_image_cmptvstep(image, cmptlut[0]);
+	hs = jas_image_cmpthstep(image, cmptlut[0]);
+	for (i = 1; i < 3; ++i) {
+		if (jas_image_cmptwidth(image, cmptlut[i]) != width ||
+		  jas_image_cmptheight(image, cmptlut[i]) != height)
+			goto error;
+	}
+	for (i = 0; i < vh; ++i) {
+		vdatap = &vdata[(vh - 1 - i) * (4 * vw)];
+		for (j = 0; j < vw; ++j) {
+			x = vctocc(j, tlx, hs, vtlx, vsx);
+			y = vctocc(i, tly, vs, vtly, vsy);
+			if (x >= 0 && x < width && y >= 0 && y < height) {
+				for (k = 0; k < 3; ++k) {
+					v[k] = jas_image_readcmptsample(image, cmptlut[k], x, y);
+					v[k] <<= 16 - jas_image_cmptprec(image, cmptlut[k]);
+					if (v[k] < 0) {
+						v[k] = 0;
+					} else if (v[k] > 65535) {
+						v[k] = 65535;
+					}
+				}
+			} else {
+				v[0] = 0;
+				v[1] = 0;
+				v[2] = 0;
+			}	
+			*vdatap++ = v[0];
+			*vdatap++ = v[1];
+			*vdatap++ = v[2];
+			*vdatap++ = 0;
+		}
+	}
+	return 0;
+error:
+	return -1;
+}
+
+int jas_image_render2(jas_image_t *image, int cmptno, float vtlx, float vtly,
+  float vsx, float vsy, int vw, int vh, GLshort *vdata)
+{
+	int i;
+	int j;
+	int x;
+	int y;
+	int v;
+	GLshort *vdatap;
+
+	if (cmptno < 0 || cmptno >= image->numcmpts_) {
+		fprintf(stderr, "bad parameter\n");
+		goto error;
+	}
+	for (i = 0; i < vh; ++i) {
+		vdatap = &vdata[(vh - 1 - i) * (4 * vw)];
+		for (j = 0; j < vw; ++j) {
+			x = vctocc(j, jas_image_cmpttlx(image, cmptno), jas_image_cmpthstep(image, cmptno), vtlx, vsx);
+			y = vctocc(i, jas_image_cmpttly(image, cmptno), jas_image_cmptvstep(image, cmptno), vtly, vsy);
+			v = (x >= 0 && x < jas_image_cmptwidth(image, cmptno) && y >=0 && y < jas_image_cmptheight(image, cmptno)) ? jas_image_readcmptsample(image, cmptno, x, y) : 0;
+			v <<= 16 - jas_image_cmptprec(image, cmptno);
+			if (v < 0) {
+				v = 0;
+			} else if (v > 65535) {
+				v = 65535;
+			}
+			*vdatap++ = v;
+			*vdatap++ = v;
+			*vdatap++ = v;
+			*vdatap++ = 0;
+		}
+	}
+	return 0;
+error:
+	return -1;
+}
+
+#if 0
 
 #define	vctocc(i, co, cs, vo, vs) \
   (((vo) + (i) * (vs) - (co)) / (cs))
@@ -855,51 +1063,22 @@ for (k = 0; k < 3; ++k) {
 	}
 }
 
-/******************************************************************************\
-*
-\******************************************************************************/
+#endif
 
-static void adjust()
+static void cleanupandexit(int status)
 {
-	if (gs.vp.width < jas_image_width(gs.image) / gs.sx) {
-		float mnx;
-		float mxx;
-		mnx = jas_image_tlx(gs.image) + 0.5 * gs.vp.width * gs.sx;
-		mxx = jas_image_brx(gs.image) - 0.5 * gs.vp.width * gs.sx;
-		if (gs.vcx < mnx) {
-			gs.vcx = mnx;
-		} else if (gs.vcx > mxx) {
-			gs.vcx = mxx;
-		}
-	} else {
-		gs.vcx = (jas_image_tlx(gs.image) + jas_image_brx(gs.image)) / 2.0;
-	}
-	if (gs.vp.height < jas_image_height(gs.image) / gs.sy) {
-		float mny;
-		float mxy;
-		mny = jas_image_tly(gs.image) + 0.5 * gs.vp.height * gs.sy;
-		mxy = jas_image_bry(gs.image) - 0.5 * gs.vp.height * gs.sy;
-		if (gs.vcy < mny) {
-			gs.vcy = mny;
-		} else if (gs.vcy > mxy) {
-			gs.vcy = mxy;
-		}
-	} else {
-		gs.vcy = (jas_image_tly(gs.image) + jas_image_bry(gs.image)) / 2.0;
-	}
+	unloadimage();
+	exit(status);
 }
 
-int pixmap_resize(pixmap_t *p, int w, int h)
+static void init()
 {
-	p->width = w;
-	p->height = h;
-	if (!(p->data = realloc(p->data, w * h * 4 * sizeof(GLshort)))) {
-		return -1;
-	}
-	return 0;
-}
-
-int dumpstate()
-{
-	printf("vcx=%f vcy=%f sx=%f sy=%f\n", gs.vcx, gs.vcy, gs.sx, gs.sy);
+	gs.filenum = -1;
+	gs.image = 0;
+	gs.altimage = 0;
+	gs.nexttmid = 0;
+	gs.vp.width = 0;
+	gs.vp.height = 0;
+	gs.vp.data = 0;
+	gs.dirty = 1;
 }

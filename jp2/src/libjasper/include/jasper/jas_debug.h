@@ -123,7 +123,9 @@
 
 #include <stdio.h>
 
+#include <jasper/jas_config.h>
 #include "jasper/jas_types.h"
+#include "jasper/jas_debug.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -143,7 +145,7 @@ extern "C" {
 #endif
 
 /* Get the library debug level. */
-int jas_getdbglevel();
+int jas_getdbglevel(void);
 
 /* Set the library debug level. */
 int jas_setdbglevel(int dbglevel);

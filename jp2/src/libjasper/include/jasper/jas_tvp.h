@@ -121,6 +121,8 @@
 * Includes.
 \******************************************************************************/
 
+#include <jasper/jas_config.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif

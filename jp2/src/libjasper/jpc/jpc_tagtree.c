@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -133,7 +133,7 @@
 * Prototypes.
 \******************************************************************************/
 
-static jpc_tagtree_t *jpc_tagtree_alloc();
+static jpc_tagtree_t *jpc_tagtree_alloc(void);
 
 /******************************************************************************\
 * Code for creating and destroying tag trees.
@@ -287,9 +287,13 @@ void jpc_tagtree_reset(jpc_tagtree_t *tree)
 /* Set the value associated with the specified leaf node, updating
 the other nodes as necessary. */
 
-void jpc_tagtree_setvalue(jpc_tagtree_t *tree, jpc_tagtreenode_t *leaf, int value)
+void jpc_tagtree_setvalue(jpc_tagtree_t *tree, jpc_tagtreenode_t *leaf,
+  int value)
 {
 	jpc_tagtreenode_t *node;
+
+	/* Avoid compiler warnings about unused parameters. */
+	tree = 0;
 
 	assert(value >= 0);
 
@@ -309,13 +313,16 @@ jpc_tagtreenode_t *jpc_tagtree_getleaf(jpc_tagtree_t *tree, int n)
 
 /* Invoke the tag tree encoding procedure. */
 
-int jpc_tagtree_encode(jpc_tagtree_t *tree, jpc_tagtreenode_t *leaf, int threshold,
-  jpc_bitstream_t *out)
+int jpc_tagtree_encode(jpc_tagtree_t *tree, jpc_tagtreenode_t *leaf,
+  int threshold, jpc_bitstream_t *out)
 {
 	jpc_tagtreenode_t *stk[JPC_TAGTREE_MAXDEPTH - 1];
 	jpc_tagtreenode_t **stkptr;
 	jpc_tagtreenode_t *node;
 	int low;
+
+	/* Avoid compiler warnings about unused parameters. */
+	tree = 0;
 
 	assert(leaf);
 	assert(threshold >= 0);
@@ -366,14 +373,17 @@ int jpc_tagtree_encode(jpc_tagtree_t *tree, jpc_tagtreenode_t *leaf, int thresho
 
 /* Invoke the tag tree decoding procedure. */
 
-int jpc_tagtree_decode(jpc_tagtree_t *tree, jpc_tagtreenode_t *leaf, int threshold,
-  jpc_bitstream_t *in)
+int jpc_tagtree_decode(jpc_tagtree_t *tree, jpc_tagtreenode_t *leaf,
+  int threshold, jpc_bitstream_t *in)
 {
 	jpc_tagtreenode_t *stk[JPC_TAGTREE_MAXDEPTH - 1];
 	jpc_tagtreenode_t **stkptr;
 	jpc_tagtreenode_t *node;
 	int low;
 	int ret;
+
+	/* Avoid compiler warnings about unused parameters. */
+	tree = 0;
 
 	assert(threshold >= 0);
 

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -125,6 +125,7 @@
 
 #include "jasper/jas_stream.h"
 #include "jasper/jas_image.h"
+#include "jasper/jas_debug.h"
 
 #include "ras_cod.h"
 
@@ -133,7 +134,7 @@
 \******************************************************************************/
 
 static int ras_gethdr(jas_stream_t *in, ras_hdr_t *hdr);
-static int ras_getuint(jas_stream_t *in, uint_fast32_t *val);
+static int ras_getint(jas_stream_t *in, int_fast32_t *val);
 
 static int ras_getdata(jas_stream_t *in, ras_hdr_t *hdr, ras_cmap_t *cmap,
   jas_image_t *image);
@@ -152,7 +153,7 @@ jas_image_t *ras_decode(jas_stream_t *in, char *optstr)
 	jas_image_t *image;
 	jas_image_cmptparm_t cmptparms[3];
 	jas_image_cmptparm_t *cmptparm;
-	int colormodel;
+	int clrspc;
 	int numcmpts;
 	int i;
 
@@ -180,10 +181,10 @@ jas_image_t *ras_decode(jas_stream_t *in, char *optstr)
 	/* Calculate some quantities needed for creation of the image
 	object. */
 	if (RAS_ISRGB(&hdr)) {
-		colormodel = JAS_IMAGE_CS_RGB;
+		clrspc = JAS_CLRSPC_SRGB;
 		numcmpts = 3;
 	} else {
-		colormodel = JAS_IMAGE_CS_GRAY;
+		clrspc = JAS_CLRSPC_SGRAY;
 		numcmpts = 1;
 	}
 	for (i = 0, cmptparm = cmptparms; i < numcmpts; ++i, ++cmptparm) {
@@ -197,7 +198,7 @@ jas_image_t *ras_decode(jas_stream_t *in, char *optstr)
 		cmptparm->sgnd = false;
 	}
 	/* Create the image object. */
-	if (!(image = jas_image_create(numcmpts, cmptparms, JAS_IMAGE_CS_UNKNOWN))) {
+	if (!(image = jas_image_create(numcmpts, cmptparms, JAS_CLRSPC_UNKNOWN))) {
 		return 0;
 	}
 
@@ -213,18 +214,17 @@ jas_image_t *ras_decode(jas_stream_t *in, char *optstr)
 		return 0;
 	}
 
-	if (colormodel == JAS_IMAGE_CS_RGB) {
-		jas_image_setcolorspace(image, JAS_IMAGE_CS_RGB);
+	jas_image_setclrspc(image, clrspc);
+	if (clrspc == JAS_CLRSPC_SRGB) {
 		jas_image_setcmpttype(image, 0,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_R));
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_R));
 		jas_image_setcmpttype(image, 1,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_G));
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_G));
 		jas_image_setcmpttype(image, 2,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_B));
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_B));
 	} else {
-		jas_image_setcolorspace(image, JAS_IMAGE_CS_GRAY);
 		jas_image_setcmpttype(image, 0,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_GRAY_Y));
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_GRAY_Y));
 	}
 
 	return image;
@@ -303,6 +303,8 @@ static int ras_getdatastd(jas_stream_t *in, ras_hdr_t *hdr, ras_cmap_t *cmap,
 	jas_matrix_t *data[3];
 
 /* Note: This function does not properly handle images with a colormap. */
+	/* Avoid compiler warnings about unused parameters. */
+	cmap = 0;
 
 	for (i = 0; i < jas_image_numcmpts(image); ++i) {
 		data[i] = jas_matrix_create(1, jas_image_width(image));
@@ -371,7 +373,7 @@ static int ras_getcmap(jas_stream_t *in, ras_hdr_t *hdr, ras_cmap_t *cmap)
 		{
 fprintf(stderr, "warning: palettized images not fully supported\n");
 		numcolors = 1 << hdr->depth;
-		assert(numcolors <= sizeof(cmap->data));
+		assert(numcolors <= RAS_CMAP_MAXSIZ);
 		actualnumcolors = hdr->maplength / 3;
 		for (i = 0; i < numcolors; i++) {
 			cmap->data[i] = 0;
@@ -412,10 +414,10 @@ fprintf(stderr, "warning: palettized images not fully supported\n");
 
 static int ras_gethdr(jas_stream_t *in, ras_hdr_t *hdr)
 {
-	if (ras_getuint(in, &hdr->magic) || ras_getuint(in, &hdr->width) ||
-	  ras_getuint(in, &hdr->height) || ras_getuint(in, &hdr->depth) ||
-	  ras_getuint(in, &hdr->length) || ras_getuint(in, &hdr->type) ||
-	  ras_getuint(in, &hdr->maptype) || ras_getuint(in, &hdr->maplength)) {
+	if (ras_getint(in, &hdr->magic) || ras_getint(in, &hdr->width) ||
+	  ras_getint(in, &hdr->height) || ras_getint(in, &hdr->depth) ||
+	  ras_getint(in, &hdr->length) || ras_getint(in, &hdr->type) ||
+	  ras_getint(in, &hdr->maptype) || ras_getint(in, &hdr->maplength)) {
 		return -1;
 	}
 
@@ -426,7 +428,7 @@ static int ras_gethdr(jas_stream_t *in, ras_hdr_t *hdr)
 	return 0;
 }
 
-static int ras_getuint(jas_stream_t *in, uint_fast32_t *val)
+static int ras_getint(jas_stream_t *in, int_fast32_t *val)
 {
 	int x;
 	int c;

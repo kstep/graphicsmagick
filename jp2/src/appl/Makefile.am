@@ -1,4 +1,4 @@
-# Copyright (c) 2001-2002 Michael David Adams.
+# Copyright (c) 2001-2003 Michael David Adams.
 # All rights reserved. 
 
 # __START_OF_JASPER_LICENSE__
@@ -114,11 +114,12 @@ EXTRA_JIV = jiv
 endif
 
 bin_PROGRAMS = jasper $(BIN_JIV) imgcmp imginfo
-EXTRA_PROGRAMS = $(EXTRA_JIV)
+EXTRA_PROGRAMS = $(EXTRA_JIV) dummy
 
 jasper_SOURCES = jasper.c
 imgcmp_SOURCES = imgcmp.c
 imginfo_SOURCES = imginfo.c
+dummy_SOURCES = dummy.c
 jiv_SOURCES = jiv.c
 
 INCLUDES = -I../libjasper/include
@@ -128,3 +129,4 @@ jasper_LDADD = $(MYLDFLAGS)
 imgcmp_LDADD = $(MYLDFLAGS)
 imginfo_LDADD = $(MYLDFLAGS)
 jiv_LDADD = $(MYLDFLAGS) $(OPENGL_LIBS)
+dummy_LDADD = $(MYLDFLAGS)

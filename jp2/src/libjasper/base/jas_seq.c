@@ -446,6 +446,7 @@ void jas_matrix_setall(jas_matrix_t *matrix, jas_seqent_t val)
 	}
 }
 
+#if 0
 jas_matrix_t *jas_matrix_input(FILE *in)
 {
 	jas_matrix_t *matrix;
@@ -473,3 +474,4 @@ jas_matrix_t *jas_matrix_input(FILE *in)
 
 	return matrix;
 }
+#endif

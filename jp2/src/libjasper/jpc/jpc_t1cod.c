@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -155,7 +155,7 @@ jpc_mqctx_t jpc_mqctxs[JPC_NUMCTXS];
 *
 \******************************************************************************/
 
-void jpc_initmqctxs();
+void jpc_initmqctxs(void);
 
 /******************************************************************************\
 * Code.
@@ -184,6 +184,9 @@ int JPC_PASSTYPE(int passno)
 
 int JPC_NOMINALGAIN(int qmfbid, int numlvls, int lvlno, int orient)
 {
+	/* Avoid compiler warnings about unused parameters. */
+	numlvls = 0;
+
 if (qmfbid == JPC_COX_INS) {
 	return 0;
 }

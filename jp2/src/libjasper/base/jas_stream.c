@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -283,7 +283,7 @@ jas_stream_t *jas_stream_memopen(char *buf, int bufsize)
 jas_stream_t *jas_stream_fopen(const char *filename, const char *mode)
 {
 	jas_stream_t *stream;
-	int *obj;
+	jas_stream_fileobj_t *obj;
 	int openflags;
 
 	/* Allocate a stream object. */
@@ -316,17 +316,20 @@ jas_stream_t *jas_stream_fopen(const char *filename, const char *mode)
 	}
 
 	/* Allocate space for the underlying file stream object. */
-	if (!(obj = jas_malloc(sizeof(int)))) {
+	if (!(obj = jas_malloc(sizeof(jas_stream_fileobj_t)))) {
 		jas_stream_destroy(stream);
 		return 0;
 	}
+	obj->fd = -1;
+	obj->flags = 0;
+	obj->pathname[0] = '\0';
 	stream->obj_ = (void *) obj;
 
 	/* Select the operations for a file stream object. */
 	stream->ops_ = &jas_stream_fileops;
 
 	/* Open the underlying file. */
-	if ((*obj = open(filename, openflags, JAS_STREAM_PERMS)) < 0) {
+	if ((obj->fd = open(filename, openflags, JAS_STREAM_PERMS)) < 0) {
 		jas_stream_destroy(stream);
 		return 0;
 	}
@@ -341,6 +344,9 @@ jas_stream_t *jas_stream_freopen(const char *path, const char *mode, FILE *fp)
 {
 	jas_stream_t *stream;
 	int openflags;
+
+	/* Eliminate compiler warning about unused variable. */
+	path = 0;
 
 	/* Allocate a stream object. */
 	if (!(stream = jas_stream_create())) {
@@ -385,8 +391,7 @@ jas_stream_t *jas_stream_freopen(const char *path, const char *mode, FILE *fp)
 jas_stream_t *jas_stream_tmpfile()
 {
 	jas_stream_t *stream;
-	int *obj;
-	char filename[L_tmpnam + 1];
+	jas_stream_fileobj_t *obj;
 
 	if (!(stream = jas_stream_create())) {
 		return 0;
@@ -397,17 +402,20 @@ jas_stream_t *jas_stream_tmpfile()
 	stream->openmode_ = JAS_STREAM_READ | JAS_STREAM_WRITE | JAS_STREAM_BINARY;
 
 	/* Allocate memory for the underlying temporary file object. */
-	if (!(obj = jas_malloc(sizeof(int)))) {
+	if (!(obj = jas_malloc(sizeof(jas_stream_fileobj_t)))) {
 		jas_stream_destroy(stream);
 		return 0;
 	}
+	obj->fd = -1;
+	obj->flags = 0;
+	obj->pathname[0] = '\0';
 	stream->obj_ = obj;
 
 	/* Choose a file name. */
-	tmpnam(filename);
+	tmpnam(obj->pathname);
 
 	/* Open the underlying file. */
-	if ((*obj = open(filename, O_CREAT | O_EXCL | O_RDWR | O_TRUNC | O_BINARY,
+	if ((obj->fd = open(obj->pathname, O_CREAT | O_EXCL | O_RDWR | O_TRUNC | O_BINARY,
 	  JAS_STREAM_PERMS)) < 0) {
 		jas_stream_destroy(stream);
 		return 0;
@@ -416,11 +424,13 @@ jas_stream_t *jas_stream_tmpfile()
 	/* Unlink the file so that it will disappear if the program
 	terminates abnormally. */
 	/* Under UNIX, one can unlink an open file and continue to do I/O
-	on it.  This also appears to work under MS Windows.  If you use
-	some other operating system, this may not work. :-)  If this
-    functionality is not supported by the operating system, the unlink
-	operation must be deferred until the file is closed. */
-	unlink(filename);
+	on it.  Not all operating systems support this functionality, however.
+	For example, under Microsoft Windows the unlink operation will fail,
+	since the file is open. */
+	if (unlink(obj->pathname)) {
+		/* We will try unlinking the file again after it is closed. */
+		obj->flags |= JAS_STREAM_FILEOBJ_DELONCLOSE;
+	}
 
 	/* Use full buffering. */
 	jas_stream_initbuf(stream, JAS_STREAM_FULLBUF, 0, 0);
@@ -433,7 +443,7 @@ jas_stream_t *jas_stream_tmpfile()
 jas_stream_t *jas_stream_fdopen(int fd, const char *mode)
 {
 	jas_stream_t *stream;
-	int *obj;
+	jas_stream_fileobj_t *obj;
 
 	/* Allocate a stream object. */
 	if (!(stream = jas_stream_create())) {
@@ -461,21 +471,24 @@ jas_stream_t *jas_stream_fdopen(int fd, const char *mode)
 #endif
 
 	/* Allocate space for the underlying file stream object. */
-	if (!(obj = jas_malloc(sizeof(int)))) {
+	if (!(obj = jas_malloc(sizeof(jas_stream_fileobj_t)))) {
 		jas_stream_destroy(stream);
 		return 0;
 	}
+	obj->fd = fd;
+	obj->flags = 0;
+	obj->pathname[0] = '\0';
 	stream->obj_ = (void *) obj;
-	*obj = fd;
+
+	/* Do not close the underlying file descriptor when the stream is
+	closed. */
+	obj->flags |= JAS_STREAM_FILEOBJ_NOCLOSE;
 
 	/* By default, use full buffering for this type of stream. */
 	jas_stream_initbuf(stream, JAS_STREAM_FULLBUF, 0, 0);
 
 	/* Select the operations for a file stream object. */
 	stream->ops_ = &jas_stream_fileops;
-
-/* Do not close the underlying file descriptor when the stream is closed. */
-	stream->openmode_ |= JAS_STREAM_NOCLOSE;
 
 	return stream;
 }
@@ -497,9 +510,7 @@ int jas_stream_close(jas_stream_t *stream)
 	jas_stream_flush(stream);
 
 	/* Close the underlying stream object. */
-	if (!(stream->openmode_ & JAS_STREAM_NOCLOSE)) {
-		(*stream->ops_->close_)(stream->obj_);
-	}
+	(*stream->ops_->close_)(stream->obj_);
 
 	jas_stream_destroy(stream);
 
@@ -635,6 +646,17 @@ int jas_stream_gobble(jas_stream_t *stream, int n)
 		if (jas_stream_getc(stream) == EOF) {
 			return n - m;
 		}
+	}
+	return n;
+}
+
+int jas_stream_pad(jas_stream_t *stream, int n, int c)
+{
+	int m;
+	m = n;
+	for (m = n; m > 0; --m) {
+		if (jas_stream_putc(stream, c) == EOF)
+			return n - m;
 	}
 	return n;
 }
@@ -855,7 +877,7 @@ int jas_stream_flushbuf(jas_stream_t *stream, int c)
 
 	if (c != EOF) {
 		assert(stream->cnt_ > 0);
-		jas_stream_putc2(stream, c);
+		return jas_stream_putc2(stream, c);
 	}
 
 	return 0;
@@ -1114,31 +1136,32 @@ static int mem_close(jas_stream_obj_t *obj)
 
 static int file_read(jas_stream_obj_t *obj, char *buf, int cnt)
 {
-	int fd;
-	fd = *((int *)obj);
-	return read(fd, buf, cnt);
+	jas_stream_fileobj_t *fileobj = JAS_CAST(jas_stream_fileobj_t *, obj);
+	return read(fileobj->fd, buf, cnt);
 }
 
 static int file_write(jas_stream_obj_t *obj, char *buf, int cnt)
 {
-	int fd;
-	fd = *((int *)obj);
-	return write(fd, buf, cnt);
+	jas_stream_fileobj_t *fileobj = JAS_CAST(jas_stream_fileobj_t *, obj);
+	return write(fileobj->fd, buf, cnt);
 }
 
 static long file_seek(jas_stream_obj_t *obj, long offset, int origin)
 {
-	int fd;
-	fd = *((int *)obj);
-	return lseek(fd, offset, origin);
+	jas_stream_fileobj_t *fileobj = JAS_CAST(jas_stream_fileobj_t *, obj);
+	return lseek(fileobj->fd, offset, origin);
 }
 
 static int file_close(jas_stream_obj_t *obj)
 {
-	int fd;
-	fd = *((int *)obj);
-	jas_free(obj);
-	return close(fd);
+	jas_stream_fileobj_t *fileobj = JAS_CAST(jas_stream_fileobj_t *, obj);
+	int ret;
+	ret = close(fileobj->fd);
+	if (fileobj->flags & JAS_STREAM_FILEOBJ_DELONCLOSE) {
+		unlink(fileobj->pathname);
+	}
+	jas_free(fileobj);
+	return ret;
 }
 
 /******************************************************************************\

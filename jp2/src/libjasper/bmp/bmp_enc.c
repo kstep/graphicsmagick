@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -125,6 +125,7 @@
 #include "jasper/jas_types.h"
 #include "jasper/jas_stream.h"
 #include "jasper/jas_image.h"
+#include "jasper/jas_debug.h"
 
 #include "bmp_enc.h"
 #include "bmp_cod.h"
@@ -145,50 +146,64 @@ static int bmp_putint32(jas_stream_t *out, int_fast32_t val);
 
 int bmp_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 {
-	uint_fast32_t width;
-	uint_fast32_t height;
-	uint_fast16_t depth;
-	uint_fast16_t cmptno;
+	jas_image_coord_t width;
+	jas_image_coord_t height;
+	int depth;
+	int cmptno;
 	bmp_hdr_t hdr;
 	bmp_info_t *info;
 	int_fast32_t datalen;
 	int numpad;
-#if 0
-	uint_fast16_t numcmpts;
-#endif
 	bmp_enc_t encbuf;
 	bmp_enc_t *enc = &encbuf;
+	jas_clrspc_t clrspc;
 
 	if (optstr) {
 		fprintf(stderr, "warning: ignoring BMP encoder options\n");
 	}
 
-	if (jas_image_colorspace(image) == JAS_IMAGE_CS_RGB) {
-		enc->numcmpts = 3;
-		if ((enc->cmpts[0] = jas_image_getcmptbytype(image,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_R))) < 0 ||
-		  (enc->cmpts[1] = jas_image_getcmptbytype(image,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_G))) < 0 ||
-		  (enc->cmpts[2] = jas_image_getcmptbytype(image,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_B))) < 0) {
-			jas_eprintf("error: missing color component\n");
-			return -1;
-		}
-	} else if (jas_image_colorspace(image) == JAS_IMAGE_CS_GRAY) {
-		enc->numcmpts = 1;
-		if ((enc->cmpts[0] = jas_image_getcmptbytype(image,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_GRAY_Y))) < 0) {
-			jas_eprintf("error: missing color component\n");
-			return -1;
-		}
-	} else {
+	clrspc = jas_image_clrspc(image);
+	switch (jas_clrspc_fam(clrspc)) {
+	case JAS_CLRSPC_FAM_RGB:
+		if (clrspc != JAS_CLRSPC_SRGB)
+			jas_eprintf("warning: inaccurate color\n");
+		break;
+	case JAS_CLRSPC_FAM_GRAY:
+		if (clrspc != JAS_CLRSPC_SGRAY)
+			jas_eprintf("warning: inaccurate color\n");
+		break;
+	default:
 		jas_eprintf("error: BMP format does not support color space\n");
 		return -1;
+		break;
 	}
 
-#if 0
-	numcmpts = jas_image_numcmpts(image);
-#endif
+	switch (jas_clrspc_fam(clrspc)) {
+	case JAS_CLRSPC_FAM_RGB:
+		enc->numcmpts = 3;
+		if ((enc->cmpts[0] = jas_image_getcmptbytype(image,
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_R))) < 0 ||
+		  (enc->cmpts[1] = jas_image_getcmptbytype(image,
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_G))) < 0 ||
+		  (enc->cmpts[2] = jas_image_getcmptbytype(image,
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_B))) < 0) {
+			jas_eprintf("error: missing color component\n");
+			return -1;
+		}
+		break;
+	case JAS_CLRSPC_FAM_GRAY:
+		enc->numcmpts = 1;
+		if ((enc->cmpts[0] = jas_image_getcmptbytype(image,
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_GRAY_Y))) < 0) {
+			jas_eprintf("error: missing color component\n");
+			return -1;
+		}
+		break;
+	default:
+		abort();
+		break;
+	}
+
 	width = jas_image_cmptwidth(image, enc->cmpts[0]);
 	height = jas_image_cmptheight(image, enc->cmpts[0]);
 	depth = jas_image_cmptprec(image, enc->cmpts[0]);

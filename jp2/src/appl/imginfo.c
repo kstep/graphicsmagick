@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -141,8 +141,8 @@ typedef enum {
 *
 \******************************************************************************/
 
-void usage();
-void cmdinfo();
+static void usage(void);
+static void cmdinfo(void);
 
 /******************************************************************************\
 *
@@ -252,7 +252,7 @@ int main(int argc, char **argv)
 *
 \******************************************************************************/
 
-void cmdinfo()
+static void cmdinfo()
 {
 	fprintf(stderr, "Image Information Utility (Version %s).\n",
 	  JAS_VERSION);
@@ -262,7 +262,7 @@ void cmdinfo()
 	  );
 }
 
-void usage()
+static void usage()
 {
 	cmdinfo();
 	fprintf(stderr, "usage:\n");

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -136,7 +136,7 @@
 typedef struct {
 
 	/* The most probable symbol (MPS). */
-	bool mps;
+	int mps;
 
 	/* The state index. */
 	int_fast16_t ind;
@@ -153,7 +153,7 @@ typedef struct jpc_mqstate_s {
 	uint_fast16_t qeval;
 
 	/* The MPS. */
-	uint_fast16_t mps;
+	int mps;
 
 	/* The NMPS state. */
 	struct jpc_mqstate_s *nmps;

@@ -252,7 +252,7 @@ typedef struct {
 int bmp_numcmpts(bmp_info_t *info);
 /* Get the number of components. */
 
-bmp_info_t *bmp_info_create();
+bmp_info_t *bmp_info_create(void);
 /* Create BMP information. */
 
 void bmp_info_destroy(bmp_info_t *info);

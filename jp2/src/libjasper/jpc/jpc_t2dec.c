@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -238,6 +238,10 @@ static int jpc_dec_decodepkt(jpc_dec_t *dec, jas_stream_t *pkthdrstream, jas_str
 	int hdroffstart;
 	int hdroffend;
 
+	/* Avoid compiler warning about possible use of uninitialized
+	  variable. */
+	bodylen = 0;
+
 	discard = (lyrno >= dec->maxlyrs);
 
 	tile = dec->curtile;
@@ -449,7 +453,7 @@ fprintf(stderr, "lyrno=%02d, compno=%02d, lvlno=%02d, prcno=%02d, bandno=%02d, c
 			}
 		}
 	} else {
-		if (jas_stream_gobble(in, bodylen) != bodylen) {
+		if (jas_stream_gobble(in, bodylen) != JAS_CAST(int, bodylen)) {
 			return -1;
 		}
 	}

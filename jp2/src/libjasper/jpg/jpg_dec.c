@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -190,6 +190,9 @@ jas_image_t *jpg_decode(jas_stream_t *in, char *optstr)
 	int num_scanlines;
 	jas_image_t *image;
 
+	/* Avoid compiler warnings about unused parameters. */
+	optstr = 0;
+
 	image = 0;
 	input_file = 0;
 	if (!(input_file = tmpfile())) {
@@ -294,17 +297,17 @@ static jas_image_t *jpg_mkimage(j_decompress_ptr cinfo)
 	}
 
 	if (numcmpts == 3) {
-		jas_image_setcolorspace(image, JAS_IMAGE_CS_RGB);
+		jas_image_setclrspc(image, JAS_CLRSPC_SRGB);
 		jas_image_setcmpttype(image, 0,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_R));
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_R));
 		jas_image_setcmpttype(image, 1,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_G));
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_G));
 		jas_image_setcmpttype(image, 2,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_B));
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_B));
 	} else {
-		jas_image_setcolorspace(image, JAS_IMAGE_CS_GRAY);
+		jas_image_setclrspc(image, JAS_CLRSPC_SGRAY);
 		jas_image_setcmpttype(image, 0,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_GRAY_Y));
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_GRAY_Y));
 	}
 
 	return image;
@@ -341,6 +344,9 @@ static int jpg_copystreamtofile(FILE *out, jas_stream_t *in)
 
 static void jpg_start_output(j_decompress_ptr cinfo, jpg_dest_t *dinfo)
 {
+	/* Avoid compiler warnings about unused parameters. */
+	cinfo = 0;
+
 	dinfo->row = 0;
 }
 
@@ -375,4 +381,7 @@ static void jpg_put_pixel_rows(j_decompress_ptr cinfo, jpg_dest_t *dinfo,
 
 static void jpg_finish_output(j_decompress_ptr cinfo, jpg_dest_t *dinfo)
 {
+	/* Avoid compiler warnings about unused parameters. */
+	cinfo = 0;
+	dinfo = 0;
 }

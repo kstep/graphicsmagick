@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000, Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -134,7 +134,7 @@
 * Local function prototypes.
 \******************************************************************************/
 
-static jpc_bitstream_t *jpc_bitstream_alloc();
+static jpc_bitstream_t *jpc_bitstream_alloc(void);
 
 /******************************************************************************\
 * Code for opening and closing bit streams.
@@ -378,6 +378,8 @@ int jpc_bitstream_align(jpc_bitstream_t *bitstream)
 		ret = jpc_bitstream_inalign(bitstream, 0, 0);
 	} else if (bitstream->openmode_ & JPC_BITSTREAM_WRITE) {
 		ret = jpc_bitstream_outalign(bitstream, 0);
+	} else {
+		abort();
 	}
 	return ret;
 }

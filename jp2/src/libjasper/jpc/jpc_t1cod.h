@@ -322,7 +322,7 @@ jpc_fix_t jpc_refsignmsedec_func(jpc_fix_t x, int bitpos);
 }
 
 /* Initialize the lookup tables used by the codec. */
-void jpc_initluts();
+void jpc_initluts(void);
 
 /* Get the nominal gain associated with a particular band. */
 int JPC_NOMINALGAIN(int qmfbid, int numlvls, int lvlno, int orient);

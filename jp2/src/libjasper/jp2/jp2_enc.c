@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -120,11 +120,16 @@
 * Includes.
 \******************************************************************************/
 
+#include <assert.h>
 #include "jasper/jas_malloc.h"
 #include "jasper/jas_image.h"
 #include "jasper/jas_stream.h"
-
+#include "jasper/jas_cm.h"
+#include "jasper/jas_icc.h"
 #include "jp2_cod.h"
+
+static uint_fast32_t jp2_gettypeasoc(int colorspace, int ctype);
+static int clrspctojp2(jas_clrspc_t clrspc);
 
 /******************************************************************************\
 * Functions.
@@ -147,6 +152,10 @@ int jp2_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 	jp2_cdef_t *cdef;
 	int i;
 	uint_fast32_t typeasoc;
+jas_iccprof_t *iccprof;
+jas_stream_t *iccstream;
+int pos;
+int needcdef;
 
 	box = 0;
 	tmpstream = 0;
@@ -240,38 +249,74 @@ int jp2_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 		goto error;
 	}
 	colr = &box->data.colr;
-	colr->method = JP2_COLR_ENUM;
-	colr->pri = JP2_COLR_PRI;
-	colr->approx = 0;
-	colr->csid = (jas_image_colorspace(image) == JAS_IMAGE_CS_RGB) ? JP2_COLR_SRGB :
-	  JP2_COLR_SGRAY;
+	switch (jas_image_clrspc(image)) {
+	case JAS_CLRSPC_SRGB:
+	case JAS_CLRSPC_SYCBCR:
+	case JAS_CLRSPC_SGRAY:
+		colr->method = JP2_COLR_ENUM;
+		colr->csid = clrspctojp2(jas_image_clrspc(image));
+		colr->pri = JP2_COLR_PRI;
+		colr->approx = 0;
+		break;
+	default:
+		colr->method = JP2_COLR_ICC;
+		colr->pri = JP2_COLR_PRI;
+		colr->approx = 0;
+		iccprof = jas_iccprof_createfromcmprof(jas_image_cmprof(image));
+		assert(iccprof);
+		iccstream = jas_stream_memopen(0, 0);
+		assert(iccstream);
+		if (jas_iccprof_save(iccprof, iccstream))
+			abort();
+		if ((pos = jas_stream_tell(iccstream)) < 0)
+			abort();
+		colr->iccplen = pos;
+		colr->iccp = jas_malloc(pos);
+		assert(colr->iccp);
+		jas_stream_rewind(iccstream);
+		if (jas_stream_read(iccstream, colr->iccp, colr->iccplen) != colr->iccplen)
+			abort();
+		jas_stream_close(iccstream);
+		jas_iccprof_destroy(iccprof);
+		break;
+	}
 	if (jp2_box_put(box, tmpstream)) {
 		goto error;
 	}
 	jp2_box_destroy(box);
 	box = 0;
 
-	if (!(jas_image_colorspace(image) == JAS_IMAGE_CS_RGB &&
-	  jas_image_numcmpts(image) == 3 &&
-	  jas_image_getcmptbytype(image, 0) ==
-	  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_R) &&
-	  jas_image_getcmptbytype(image, 1) ==
-	  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_G) &&
-	  jas_image_getcmptbytype(image, 2) ==
-	  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_B)) &&
-	  !(jas_image_colorspace(image) == JAS_IMAGE_CS_YCBCR &&
-	  jas_image_numcmpts(image) != 3 &&
-	  jas_image_getcmptbytype(image, 0) ==
-	  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_YCBCR_Y) &&
-	  jas_image_getcmptbytype(image, 1) ==
-	  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_YCBCR_CB) &&
-	  jas_image_getcmptbytype(image, 2) ==
-	  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_YCBCR_CR)) &&
-	  !(jas_image_colorspace(image) == JAS_IMAGE_CS_GRAY &&
-	  jas_image_numcmpts(image) == 1 &&
-	  jas_image_getcmptbytype(image, 0) ==
-	  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_GRAY_Y))) {
+	needcdef = 1;
+	switch (jas_clrspc_fam(jas_image_clrspc(image))) {
+	case JAS_CLRSPC_FAM_RGB:
+		if (jas_image_cmpttype(image, 0) ==
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_R) &&
+		  jas_image_cmpttype(image, 1) ==
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_G) &&
+		  jas_image_cmpttype(image, 2) ==
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_B))
+			needcdef = 0;
+		break;
+	case JAS_CLRSPC_FAM_YCBCR:
+		if (jas_image_cmpttype(image, 0) ==
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_YCBCR_Y) &&
+		  jas_image_cmpttype(image, 1) ==
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_YCBCR_CB) &&
+		  jas_image_cmpttype(image, 2) ==
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_YCBCR_CR))
+			needcdef = 0;
+		break;
+	case JAS_CLRSPC_FAM_GRAY:
+		if (jas_image_cmpttype(image, 0) ==
+		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_GRAY_Y))
+			needcdef = 0;
+		break;
+	default:
+		abort();
+		break;
+	}
 
+	if (needcdef) {
 		if (!(box = jp2_box_create(JP2_BOX_CDEF))) {
 			goto error;
 		}
@@ -281,7 +326,7 @@ int jp2_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 		for (i = 0; i < jas_image_numcmpts(image); ++i) {
 			cdefchanent = &cdef->ents[i];
 			cdefchanent->channo = i;
-			typeasoc = jp2_gettypeasoc(jas_image_colorspace(image), jas_image_cmpttype(image, i));
+			typeasoc = jp2_gettypeasoc(jas_image_clrspc(image), jas_image_cmpttype(image, i));
 			cdefchanent->type = typeasoc >> 16;
 			cdefchanent->assoc = typeasoc & 0x7fff;
 		}
@@ -353,8 +398,7 @@ error:
 	return -1;
 }
 
-
-uint_fast32_t jp2_gettypeasoc(int colorspace, int ctype)
+static uint_fast32_t jp2_gettypeasoc(int colorspace, int ctype)
 {
 	int type;
 	int asoc;
@@ -367,8 +411,8 @@ uint_fast32_t jp2_gettypeasoc(int colorspace, int ctype)
 
 	type = JP2_CDEF_TYPE_UNSPEC;
 	asoc = JP2_CDEF_ASOC_NONE;
-	switch (colorspace) {
-	case JAS_IMAGE_CS_RGB:
+	switch (jas_clrspc_fam(colorspace)) {
+	case JAS_CLRSPC_FAM_RGB:
 		switch (JAS_IMAGE_CT_COLOR(ctype)) {
 		case JAS_IMAGE_CT_RGB_R:
 			type = JP2_CDEF_TYPE_COLOR;
@@ -384,7 +428,7 @@ uint_fast32_t jp2_gettypeasoc(int colorspace, int ctype)
 			break;
 		}
 		break;
-	case JAS_IMAGE_CS_YCBCR:
+	case JAS_CLRSPC_FAM_YCBCR:
 		switch (JAS_IMAGE_CT_COLOR(ctype)) {
 		case JAS_IMAGE_CT_YCBCR_Y:
 			type = JP2_CDEF_TYPE_COLOR;
@@ -400,7 +444,7 @@ uint_fast32_t jp2_gettypeasoc(int colorspace, int ctype)
 			break;
 		}
 		break;
-	case JAS_IMAGE_CS_GRAY:
+	case JAS_CLRSPC_FAM_GRAY:
 		type = JP2_CDEF_TYPE_COLOR;
 		asoc = JP2_CDEF_GRAY_Y;
 		break;
@@ -410,3 +454,17 @@ done:
 	return (type << 16) | asoc;
 }
 
+static int clrspctojp2(jas_clrspc_t clrspc)
+{
+	switch (clrspc) {
+	case JAS_CLRSPC_SRGB:
+		return JP2_COLR_SRGB;
+	case JAS_CLRSPC_SYCBCR:
+		return JP2_COLR_SYCC;
+	case JAS_CLRSPC_SGRAY:
+		return JP2_COLR_SGRAY;
+	default:
+		abort();
+		break;
+	}
+}

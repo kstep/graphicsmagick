@@ -1,4 +1,4 @@
-# Copyright (c) 2001-2002 Michael David Adams.
+# Copyright (c) 2001-2003 Michael David Adams.
 # All rights reserved. 
 
 # __START_OF_JASPER_LICENSE__
@@ -107,6 +107,22 @@
 
 AUTOMAKE_OPTIONS = foreign dist-zip dist-tarZ
 
-EXTRA_DIST = README INSTALL COPYRIGHT LICENSE NEWS ChangeLog doc images
+EXTRA_DIST = README INSTALL COPYRIGHT LICENSE NEWS ChangeLog data doc \
+  jasper.spec.in jasper.spec acconfig.h
+
+# Note: We need to put the derived file "jasper.spec" in the distribution
+# in order to facilitate RPM building.
 
 SUBDIRS = src
+
+rpm: dist
+	for i in BUILD RPMS SRPMS SOURCES SPECS; do \
+		j=$$PWD/RPMTOP/$$i; \
+		if ! -d $$j; then \
+			mkdir -p $$j || exit 1; \
+		fi \
+	done
+	rpmbuild  --rmsource --define "_topdir $$PWD/RPMTOP" \
+	  -ta $(PACKAGE)-$(JAS_VERSION).tar.gz
+	rm -rf $$PWD/RPMTOP/BUILD/$(PACKAGE)-$(JAS_VERSION)
+

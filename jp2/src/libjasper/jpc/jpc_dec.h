@@ -259,7 +259,7 @@ typedef struct {
 	uint_fast8_t csty;
 
 	/* The number of components. */
-	uint_fast16_t numcomps;
+	int numcomps;
 
 	/* The per-component coding parameters. */
 	jpc_dec_ccp_t *ccps;
@@ -512,7 +512,7 @@ typedef struct {
 	jas_matrix_t *data;
 
 	/* The number of resolution levels. */
-	uint_fast16_t numrlvls;
+	int numrlvls;
 
 	/* The per resolution level information. */
 	jpc_dec_rlvl_t *rlvls;
@@ -730,7 +730,7 @@ typedef struct {
 \******************************************************************************/
 
 /* Create a decoder segment object. */
-jpc_dec_seg_t *jpc_seg_alloc();
+jpc_dec_seg_t *jpc_seg_alloc(void);
 
 /* Destroy a decoder segment object. */
 void jpc_seg_destroy(jpc_dec_seg_t *seg);

@@ -127,6 +127,7 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include <jasper/jas_config.h>
 #include <jasper/jas_types.h>
 
 #ifdef __cplusplus

@@ -123,6 +123,8 @@
 * Includes.
 \******************************************************************************/
 
+#include <jasper/jas_config.h>
+
 #include <jasper/jas_stream.h>
 #include <jasper/jas_types.h>
 
@@ -278,6 +280,8 @@ void jas_matrix_setall(jas_matrix_t *matrix, jas_seqent_t val);
 
 /* Compare two matrices for equality. */
 int jas_matrix_cmp(jas_matrix_t *mat0, jas_matrix_t *mat1);
+
+jas_matrix_t *jas_matrix_copy(jas_matrix_t *x);
 
 /******************************************************************************\
 * Functions/macros for 2-D sequence class.

@@ -123,6 +123,7 @@
 * Includes.
 \******************************************************************************/
 
+#include <jasper/jas_config.h>
 #include <string.h>
 
 #ifdef __cplusplus

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -193,6 +193,11 @@ void jpc_enc_dump(jpc_enc_t *enc);
 * Local prototypes.
 \******************************************************************************/
 
+int dump_passes(jpc_enc_pass_t *passes, int numpasses, jpc_enc_cblk_t *cblk);
+void calcrdslopes(jpc_enc_cblk_t *cblk);
+void dump_layeringinfo(jpc_enc_t *enc);
+static int jpc_calcssexp(jpc_fix_t stepsize);
+static int jpc_calcssmant(jpc_fix_t stepsize);
 void quantize(jas_matrix_t *data, jpc_fix_t stepsize);
 static int jpc_enc_encodemainhdr(jpc_enc_t *enc);
 static int jpc_enc_encodemainbody(jpc_enc_t *enc);
@@ -206,8 +211,9 @@ int rateallocate(jpc_enc_t *enc, int numlyrs, uint_fast32_t *cumlens);
 int setins(int numvalues, jpc_flt_t *values, jpc_flt_t value);
 static jpc_enc_cp_t *cp_create(char *optstr, jas_image_t *image);
 void jpc_enc_cp_destroy(jpc_enc_cp_t *cp);
+static uint_fast32_t jpc_abstorelstepsize(jpc_fix_t absdelta, int scaleexpn);
 
-uint_fast32_t jpc_abstorelstepsize(jpc_fix_t absdelta, int scaleexpn)
+static uint_fast32_t jpc_abstorelstepsize(jpc_fix_t absdelta, int scaleexpn)
 {
 	int p;
 	uint_fast32_t mant;
@@ -394,7 +400,7 @@ static jpc_enc_cp_t *cp_create(char *optstr, jas_image_t *image)
 	jpc_enc_tcp_t *tcp;
 	jpc_enc_tccp_t *tccp;
 	jpc_enc_ccp_t *ccp;
-	uint_fast16_t cmptno;
+	int cmptno;
 	uint_fast16_t rlvlno;
 	uint_fast16_t prcwidthexpn;
 	uint_fast16_t prcheightexpn;
@@ -448,7 +454,7 @@ static jpc_enc_cp_t *cp_create(char *optstr, jas_image_t *image)
 	if (!(cp->ccps = jas_malloc(cp->numcmpts * sizeof(jpc_enc_ccp_t)))) {
 		goto error;
 	}
-	for (cmptno = 0, ccp = cp->ccps; cmptno < cp->numcmpts; ++cmptno,
+	for (cmptno = 0, ccp = cp->ccps; cmptno < JAS_CAST(int, cp->numcmpts); ++cmptno,
 	  ++ccp) {
 		ccp->sampgrdstepx = jas_image_cmpthstep(image, cmptno);
 		ccp->sampgrdstepy = jas_image_cmptvstep(image, cmptno);
@@ -653,10 +659,10 @@ static jpc_enc_cp_t *cp_create(char *optstr, jas_image_t *image)
 	} else {
 		mctvalid = false;
 	}
-	if (mctvalid && enablemct && jas_image_colorspace(image) != JAS_IMAGE_CS_RGB) {
-		fprintf(stderr, "warning: color model apparently not RGB\n");
+	if (mctvalid && enablemct && jas_clrspc_fam(jas_image_clrspc(image)) != JAS_CLRSPC_FAM_RGB) {
+		fprintf(stderr, "warning: color space apparently not RGB\n");
 	}
-	if (mctvalid && enablemct && jas_image_colorspace(image) == JAS_IMAGE_CS_RGB) {
+	if (mctvalid && enablemct && jas_clrspc_fam(jas_image_clrspc(image)) == JAS_CLRSPC_FAM_RGB) {
 		tcp->mctid = (tcp->intmode) ? (JPC_MCT_RCT) : (JPC_MCT_ICT);
 	} else {
 		tcp->mctid = JPC_MCT_NONE;
@@ -706,7 +712,7 @@ static jpc_enc_cp_t *cp_create(char *optstr, jas_image_t *image)
 		  sizeof(jpc_fix_t)))) {
 			goto error;
 		}
-		for (i = 0; i < tcp->numlyrs - 1; ++i) {
+		for (i = 0; i < JAS_CAST(int, tcp->numlyrs - 1); ++i) {
 			tcp->ilyrrates[i] = jpc_dbltofix(ilyrrates[i]);
 		}
 	}
@@ -910,7 +916,7 @@ void jpc_enc_destroy(jpc_enc_t *enc)
 * Code.
 \******************************************************************************/
 
-int jpc_calcssmant(jpc_fix_t stepsize)
+static int jpc_calcssmant(jpc_fix_t stepsize)
 {
 	int n;
 	int e;
@@ -926,7 +932,7 @@ int jpc_calcssmant(jpc_fix_t stepsize)
 	return m;
 }
 
-int jpc_calcssexp(jpc_fix_t stepsize)
+static int jpc_calcssexp(jpc_fix_t stepsize)
 {
 	return jpc_firstone(stepsize) - JPC_FIX_FRACBITS;
 }
@@ -988,7 +994,7 @@ startoff = jas_stream_getrwcount(enc->out);
 	siz->numcomps = cp->numcmpts;
 	siz->comps = jas_malloc(siz->numcomps * sizeof(jpc_sizcomp_t));
 	assert(siz->comps);
-	for (i = 0; i < cp->numcmpts; ++i) {
+	for (i = 0; i < JAS_CAST(int, cp->numcmpts); ++i) {
 		siz->comps[i].prec = cp->ccps[i].prec;
 		siz->comps[i].sgnd = cp->ccps[i].sgnd;
 		siz->comps[i].hsamp = cp->ccps[i].sampgrdstepx;
@@ -1164,8 +1170,8 @@ static int jpc_enc_encodemainbody(jpc_enc_t *enc)
 	jpc_enc_tile_t *tile;
 	jpc_enc_cp_t *cp;
 	double rho;
-	uint_fast16_t lyrno;
-	uint_fast16_t cmptno;
+	int lyrno;
+	int cmptno;
 	int samestepsizes;
 	jpc_enc_ccp_t *ccps;
 	jpc_enc_tccp_t *tccp;
@@ -1183,7 +1189,7 @@ int numgbits;
 	/* Avoid compile warnings. */
 	numbytes = 0;
 
-	for (tileno = 0; tileno < cp->numtiles; ++tileno) {
+	for (tileno = 0; tileno < JAS_CAST(int, cp->numtiles); ++tileno) {
 		tilex = tileno % cp->numhtiles;
 		tiley = tileno / cp->numhtiles;
 
@@ -1260,8 +1266,8 @@ assert(jas_image_numcmpts(enc->image) == 3);
 					}
 					actualnumbps = 0;
 					mxmag = 0;
-					for (y = 0; y < jas_matrix_numrows(band->data); ++y) {
-						for (x = 0; x < jas_matrix_numcols(band->data); ++x) {
+					for (y = 0; y < JAS_CAST(uint_fast32_t, jas_matrix_numrows(band->data)); ++y) {
+						for (x = 0; x < JAS_CAST(uint_fast32_t, jas_matrix_numcols(band->data)); ++x) {
 							mag = abs(jas_matrix_get(band->data, y, x));
 							if (mag > mxmag) {
 								mxmag = mag;
@@ -1309,15 +1315,15 @@ fprintf(stderr, "%d %d mag=%d actual=%d numgbits=%d\n", cp->ccps[cmptno].prec, b
 			} else {
 				jas_matrix_asl(comp->data, JPC_NUMEXTRABITS);
 			}
-		}
+
 #if 0
 fprintf(stderr, "mingbits %d\n", mingbits);
 #endif
-
-		if (mingbits > cp->tccp.numgbits) {
-			fprintf(stderr, "error: too few guard bits (need at least %d)\n",
-			  mingbits);
-			return -1;
+			if (mingbits > cp->tccp.numgbits) {
+				fprintf(stderr, "error: too few guard bits (need at least %d)\n",
+				  mingbits);
+				return -1;
+			}
 		}
 
 		if (!(enc->tmpstream = jas_stream_memopen(0, 0))) {
@@ -1346,7 +1352,7 @@ fprintf(stderr, "mingbits %d\n", mingbits);
 /************************************************************************/
 
 		tccp = &cp->tccp;
-		for (cmptno = 0; cmptno < cp->numcmpts; ++cmptno) {
+		for (cmptno = 0; cmptno < JAS_CAST(int, cp->numcmpts); ++cmptno) {
 			comp = &tile->tcmpts[cmptno];
 			if (comp->numrlvls != tccp->maxrlvls) {
 				if (!(enc->mrk = jpc_ms_create(JPC_MS_COD))) {
@@ -1377,11 +1383,11 @@ and other characteristics */
 			}
 		}
 
-		for (cmptno = 0, comp = tile->tcmpts; cmptno < cp->numcmpts; ++cmptno, ++comp) {
+		for (cmptno = 0, comp = tile->tcmpts; cmptno < JAS_CAST(int, cp->numcmpts); ++cmptno, ++comp) {
 			ccps = &cp->ccps[cmptno];
-			if (ccps->numstepsizes == comp->numstepsizes) {
+			if (JAS_CAST(int, ccps->numstepsizes) == comp->numstepsizes) {
 				samestepsizes = 1;
-				for (bandno = 0; bandno < ccps->numstepsizes; ++bandno) {
+				for (bandno = 0; bandno < JAS_CAST(int, ccps->numstepsizes); ++bandno) {
 					if (ccps->stepsizes[bandno] != comp->stepsizes[bandno]) {
 						samestepsizes = 0;
 						break;
@@ -1445,7 +1451,7 @@ if (jpc_enc_enccblks(enc)) {
 		  (rho * enc->mainbodysize) : UINT_FAST32_MAX;
 		for (lyrno = 0; lyrno < tile->numlyrs; ++lyrno) {
 			if (tile->lyrsizes[lyrno] != UINT_FAST32_MAX) {
-				if (tilehdrlen <= tile->lyrsizes[lyrno]) {
+				if (tilehdrlen <= JAS_CAST(long, tile->lyrsizes[lyrno])) {
 					tile->lyrsizes[lyrno] -= tilehdrlen;
 				} else {
 					tile->lyrsizes[lyrno] = 0;
@@ -1622,17 +1628,17 @@ void dump_layeringinfo(jpc_enc_t *enc)
 {
 
 	jpc_enc_tcmpt_t *tcmpt;
-	uint_fast16_t tcmptno;
+	int tcmptno;
 	jpc_enc_rlvl_t *rlvl;
-	uint_fast16_t rlvlno;
+	int rlvlno;
 	jpc_enc_band_t *band;
-	uint_fast16_t bandno;
+	int bandno;
 	jpc_enc_prc_t *prc;
-	uint_fast32_t prcno;
+	int prcno;
 	jpc_enc_cblk_t *cblk;
-	uint_fast16_t cblkno;
+	int cblkno;
 	jpc_enc_pass_t *pass;
-	uint_fast16_t passno;
+	int passno;
 	int lyrno;
 	jpc_enc_tile_t *tile;
 
@@ -1701,7 +1707,7 @@ int rateallocate(jpc_enc_t *enc, int numlyrs, uint_fast32_t *cumlens)
 	jpc_flt_t mnrdslope;
 	jpc_enc_tile_t *tile;
 	jpc_enc_prc_t *prc;
-	uint_fast32_t prcno;
+	int prcno;
 
 	tile = enc->curtile;
 

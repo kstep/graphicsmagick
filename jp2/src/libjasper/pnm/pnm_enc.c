@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -129,6 +129,7 @@
 #include "jasper/jas_tvp.h"
 #include "jasper/jas_image.h"
 #include "jasper/jas_stream.h"
+#include "jasper/jas_debug.h"
 
 #include "pnm_cod.h"
 #include "pnm_enc.h"
@@ -168,16 +169,13 @@ static int pnm_putuint16(jas_stream_t *out, uint_fast16_t val);
 
 int pnm_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 {
-	uint_fast32_t width;
-	uint_fast32_t height;
-	uint_fast16_t cmptno;
+	int width;
+	int height;
+	int cmptno;
 	pnm_hdr_t hdr;
 	pnm_encopts_t encopts;
-#if 0
-	uint_fast16_t numcmpts;
-#endif
 	int prec;
-	bool sgnd;
+	int sgnd;
 	pnm_enc_t encbuf;
 	pnm_enc_t *enc = &encbuf;
 
@@ -187,23 +185,27 @@ int pnm_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 		return -1;
 	}
 
-	switch (jas_image_colorspace(image)) {
-	case JAS_IMAGE_CS_RGB:
+	switch (jas_clrspc_fam(jas_image_clrspc(image))) {
+	case JAS_CLRSPC_FAM_RGB:
+		if (jas_image_clrspc(image) != JAS_CLRSPC_SRGB)
+			jas_eprintf("warning: inaccurate color\n");
 		enc->numcmpts = 3;
 		if ((enc->cmpts[0] = jas_image_getcmptbytype(image,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_R))) < 0 ||
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_R))) < 0 ||
 		  (enc->cmpts[1] = jas_image_getcmptbytype(image,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_G))) < 0 ||
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_G))) < 0 ||
 		  (enc->cmpts[2] = jas_image_getcmptbytype(image,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_B))) < 0) {
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_B))) < 0) {
 			jas_eprintf("error: missing color component\n");
 			return -1;
 		}
 		break;
-	case JAS_IMAGE_CS_GRAY:
+	case JAS_CLRSPC_FAM_GRAY:
+		if (jas_image_clrspc(image) != JAS_CLRSPC_SGRAY)
+			jas_eprintf("warning: inaccurate color\n");
 		enc->numcmpts = 1;
 		if ((enc->cmpts[0] = jas_image_getcmptbytype(image,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_GRAY_Y))) < 0) {
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_GRAY_Y))) < 0) {
 			jas_eprintf("error: missing color component\n");
 			return -1;
 		}
@@ -214,9 +216,6 @@ int pnm_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 		break;
 	}
 
-#if 0
-	numcmpts = jas_image_numcmpts(image);
-#endif
 
 	width = jas_image_cmptwidth(image, enc->cmpts[0]);
 	height = jas_image_cmptheight(image, enc->cmpts[0]);
@@ -364,13 +363,10 @@ static int pnm_puthdr(jas_stream_t *out, pnm_hdr_t *hdr)
 static int pnm_putdata(jas_stream_t *out, pnm_hdr_t *hdr, jas_image_t *image, int numcmpts, int *cmpts)
 {
 	int ret;
-	uint_fast16_t cmptno;
-	uint_fast32_t x;
-	uint_fast32_t y;
+	int cmptno;
+	int x;
+	int y;
 	jas_matrix_t *data[3];
-#if 0
-	int numcmpts;
-#endif
 	int fmt;
 	jas_seqent_t *d[3];
 	jas_seqent_t v;
@@ -385,9 +381,6 @@ static int pnm_putdata(jas_stream_t *out, pnm_hdr_t *hdr, jas_image_t *image, in
 	minval = -((int) hdr->maxval + 1);
 	depth = pnm_maxvaltodepth(hdr->maxval);
 
-#if 0
-	numcmpts = jas_image_numcmpts(image);
-#endif
 	data[0] = 0;
 	data[1] = 0;
 	data[2] = 0;
@@ -471,7 +464,9 @@ done:
 static int pnm_putsint(jas_stream_t *out, int wordsize, int_fast32_t *val)
 {
 	uint_fast32_t tmpval;
-	tmpval = (*val < 0) ? ((~((-(*val)) + 1)) & PNM_ONES(wordsize)) : (*val);
+	tmpval = (*val < 0) ?
+	  ((~(JAS_CAST(uint_fast32_t, -(*val)) + 1)) & PNM_ONES(wordsize)) :
+	  JAS_CAST(uint_fast32_t, (*val));
 	return pnm_putuint(out, wordsize, &tmpval);
 }
 

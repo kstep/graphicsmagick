@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -123,6 +123,8 @@
 * Includes.
 \******************************************************************************/
 
+#include <jasper/jas_config.h>
+
 #include <stdio.h>
 #include <fcntl.h>
 #include <string.h>
@@ -159,7 +161,6 @@ extern "C" {
 /* The stream should be created/truncated. */
 #define JAS_STREAM_CREATE	0x0010
 
-#define JAS_STREAM_NOCLOSE	0x0020
 
 /*
  * Stream buffering flags.
@@ -291,8 +292,17 @@ typedef struct {
  * Regular file object.
  */
 
-/* Note: This is simply a file descriptor. */
-typedef int jas_stream_fileobj_t;
+/*
+ * File descriptor file object.
+ */
+typedef struct {
+	int fd;
+	int flags;
+	char pathname[L_tmpnam + 1];
+} jas_stream_fileobj_t;
+
+#define	JAS_STREAM_FILEOBJ_DELONCLOSE	0x01
+#define JAS_STREAM_FILEOBJ_NOCLOSE	0x02
 
 /*
  * Memory file object.
@@ -337,7 +347,7 @@ jas_stream_t *jas_stream_fdopen(int fd, const char *mode);
 jas_stream_t *jas_stream_freopen(const char *path, const char *mode, FILE *fp);
 
 /* Open a temporary file as a stream. */
-jas_stream_t *jas_stream_tmpfile();
+jas_stream_t *jas_stream_tmpfile(void);
 
 /* Close a stream. */
 int jas_stream_close(jas_stream_t *stream);
@@ -449,6 +459,9 @@ int jas_stream_display(jas_stream_t *stream, FILE *fp, int n);
 
 /* Consume (i.e., discard) characters from stream. */
 int jas_stream_gobble(jas_stream_t *stream, int n);
+
+/* Write a character multiple times to a stream. */
+int jas_stream_pad(jas_stream_t *stream, int n, int c);
 
 /* Get the size of the file associated with the specified stream.
   The specified stream must be seekable. */

@@ -175,7 +175,7 @@
 typedef struct {
 
 	/* The number of components. */
-	int numcomps;
+	uint_fast16_t numcomps;
 
 } jpc_cstate_t;
 
@@ -756,7 +756,7 @@ typedef struct jpc_msops_s {
 \******************************************************************************/
 
 /* Create a code-stream state object. */
-jpc_cstate_t *jpc_cstate_create();
+jpc_cstate_t *jpc_cstate_create(void);
 
 /* Destroy a code-stream state object. */
 void jpc_cstate_destroy(jpc_cstate_t *cstate);

@@ -263,7 +263,7 @@ int jpc_bitstream_fillbuf(jpc_bitstream_t *bitstream);
 #define	jpc_bitstream_getbit_macro(bitstream) \
 	(assert((bitstream)->openmode_ & JPC_BITSTREAM_READ), \
 	  (--(bitstream)->cnt_ >= 0) ? \
-	  (((bitstream)->buf_ >> (bitstream)->cnt_) & 1) : \
+	  ((int)(((bitstream)->buf_ >> (bitstream)->cnt_) & 1)) : \
 	  jpc_bitstream_fillbuf(bitstream))
 
 #define jpc_bitstream_putbit_macro(bitstream, bit) \

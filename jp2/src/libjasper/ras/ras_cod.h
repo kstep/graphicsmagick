@@ -151,31 +151,33 @@
 /* Sun Rasterfile header. */
 typedef struct {
 
-	uint_fast32_t magic;
+	int_fast32_t magic;
 	/* signature */
 
-	uint_fast32_t width;
+	int_fast32_t width;
 	/* width of image (in pixels) */
 
-	uint_fast32_t height;
+	int_fast32_t height;
 	/* height of image (in pixels) */
 
-	uint_fast32_t depth;
+	int_fast32_t depth;
 	/* number of bits per pixel */
 
-	uint_fast32_t length;
+	int_fast32_t length;
 	/* length of image data (in bytes) */
 
-	uint_fast32_t type;
+	int_fast32_t type;
 	/* format of image data */
 
-	uint_fast32_t maptype;
+	int_fast32_t maptype;
 	/* colormap type */
 
-	uint_fast32_t maplength;
+	int_fast32_t maplength;
 	/* length of colormap data (in bytes) */
 
 } ras_hdr_t;
+
+#define	RAS_CMAP_MAXSIZ	256
 
 /* Color map. */
 typedef struct {
@@ -183,7 +185,7 @@ typedef struct {
 	int len;
 	/* The number of entries in the color map. */
 
-	int data[256];
+	int data[RAS_CMAP_MAXSIZ];
 	/* The color map data. */
 
 } ras_cmap_t;
@@ -206,6 +208,6 @@ typedef struct {
 	((hdr)->depth == 24 || (hdr)->depth == 32)
 
 #define	RAS_ONES(n) \
-	(((n) == 32) ? 0xffffffffU : ((1 << (n)) - 1))
+	(((n) == 32) ? 0xffffffffUL : ((1UL << (n)) - 1))
 
 #endif

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -117,6 +117,8 @@
 #ifndef JAS_VERSION_H
 #define JAS_VERSION_H
 
+#include <jasper/jas_config.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -128,19 +130,19 @@ extern "C" {
 #if !defined(JAS_VERSION)
 /* The version information below should match that specified in
   the "configure.in" file! */
-#define	JAS_VERSION		"1.600.0"
+#define	JAS_VERSION		"unknown"
 #endif
 
 #define	JAS_COPYRIGHT \
 	"Copyright (c) 1999-2000 Image Power, Inc. and the University of\n" \
 	"  British Columbia.\n" \
-	"Copyright (c) 2001-2002 Michael David Adams.\n" \
+	"Copyright (c) 2001-2003 Michael David Adams.\n" \
 	"All rights reserved.\n"
 
 #define	JAS_NOTES \
 	"For more information about this software, please visit the following\n" \
 	"web sites/pages:\n" \
-	"    http://www.ece.ubc.ca/~mdadams/jasper\n" \
+	"    http://www.ece.uvic.ca/~mdadams/jasper\n" \
 	"    http://www.jpeg.org/software\n" \
 	"To be added to the (moderated) JasPer software announcements\n" \
 	"mailing list, send an email to:\n" \
@@ -155,7 +157,7 @@ extern "C" {
 * Functions.
 \******************************************************************************/
 
-const char *jas_getversion();
+const char *jas_getversion(void);
 /* Get the version information for the JasPer library. */
 /* Note:  Since libjasper can be built as a shared library, the version
   returned by this function may not necessarily correspond to JAS_VERSION. */

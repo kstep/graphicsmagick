@@ -41,7 +41,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "libjasper___Win32_Release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /W3 /GX /O2 /I "..\libjasper\include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
+# ADD CPP /nologo /W3 /GX /O2 /I "..\libjasper\include" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "JAS_WIN_MSVC_BUILD" /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -64,7 +64,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "libjasper___Win32_Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /I "..\libjasper\include" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /I "..\libjasper\include" /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "JAS_WIN_MSVC_BUILD" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -97,11 +97,23 @@ SOURCE=..\libjasper\bmp\bmp_enc.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\libjasper\base\jas_cm.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\libjasper\base\jas_debug.c
 # End Source File
 # Begin Source File
 
 SOURCE=..\libjasper\base\jas_getopt.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjasper\base\jas_icc.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjasper\base\jas_iccdata.c
 # End Source File
 # Begin Source File
 
@@ -278,6 +290,14 @@ SOURCE=..\libjasper\ras\ras_enc.c
 # Begin Source File
 
 SOURCE=..\libjasper\bmp\bmp_cod.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjasper\include\jasper\jas_cm.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjasper\include\jasper\jas_icc.h
 # End Source File
 # Begin Source File
 

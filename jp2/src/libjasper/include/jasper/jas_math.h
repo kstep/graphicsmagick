@@ -123,6 +123,8 @@
 * Includes
 \******************************************************************************/
 
+#include <jasper/jas_config.h>
+
 #include	<assert.h>
 #include	<stdio.h>
 #include	<string.h>

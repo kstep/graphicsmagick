@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -140,12 +140,12 @@ static int pnm_getdata(jas_stream_t *in, pnm_hdr_t *hdr, jas_image_t *image);
 
 static int pnm_getsintstr(jas_stream_t *in, int_fast32_t *val);
 static int pnm_getuintstr(jas_stream_t *in, uint_fast32_t *val);
-static int pnm_getbitstr(jas_stream_t *in, int_fast32_t *val);
+static int pnm_getbitstr(jas_stream_t *in, int *val);
 static int pnm_getc(jas_stream_t *in);
 
 static int pnm_getsint(jas_stream_t *in, int wordsize, int_fast32_t *val);
 static int pnm_getuint(jas_stream_t *in, int wordsize, uint_fast32_t *val);
-static int pnm_getuint16(jas_stream_t *in, uint_fast16_t *val);
+static int pnm_getint16(jas_stream_t *in, int *val);
 #define	pnm_getuint32(in, val)	pnm_getuint(in, 32, val)
 
 /******************************************************************************\
@@ -165,8 +165,6 @@ jas_image_t *pnm_decode(jas_stream_t *in, char *opts)
 	jas_image_cmptparm_t cmptparms[3];
 	jas_image_cmptparm_t *cmptparm;
 	int i;
-	uint_fast16_t numcmpts;
-	int colormodel;
 
 	if (opts) {
 		fprintf(stderr, "warning: ignoring options\n");
@@ -177,28 +175,8 @@ jas_image_t *pnm_decode(jas_stream_t *in, char *opts)
 		return 0;
 	}
 
-	/* Determine the number of components and the color model. */
-	switch (pnm_type(hdr.magic)) {
-	case PNM_TYPE_PBM:
-	case PNM_TYPE_PGM:
-		numcmpts = 1;
-		colormodel = JAS_IMAGE_CS_GRAY;
-		break;
-	case PNM_TYPE_PPM:
-		numcmpts = 3;
-		colormodel = JAS_IMAGE_CS_RGB;
-		break;
-	default:
-		/* Prevent annoying compiler warnings about possibly
-		  uninitialized variables. */
-		numcmpts = 0;
-		colormodel = 0;
-		abort();
-		break;
-	}
-
 	/* Create an image of the correct size. */
-	for (i = 0, cmptparm = cmptparms; i < numcmpts; ++i, ++cmptparm) {
+	for (i = 0, cmptparm = cmptparms; i < hdr.numcmpts; ++i, ++cmptparm) {
 		cmptparm->tlx = 0;
 		cmptparm->tly = 0;
 		cmptparm->hstep = 1;
@@ -208,22 +186,22 @@ jas_image_t *pnm_decode(jas_stream_t *in, char *opts)
 		cmptparm->prec = pnm_maxvaltodepth(hdr.maxval);
 		cmptparm->sgnd = hdr.sgnd;
 	}
-	if (!(image = jas_image_create(numcmpts, cmptparms, JAS_IMAGE_CS_UNKNOWN))) {
+	if (!(image = jas_image_create(hdr.numcmpts, cmptparms, JAS_CLRSPC_UNKNOWN))) {
 		return 0;
 	}
 
-	if (numcmpts == 3) {
-		jas_image_setcolorspace(image, JAS_IMAGE_CS_RGB);
+	if (hdr.numcmpts == 3) {
+		jas_image_setclrspc(image, JAS_CLRSPC_SRGB);
 		jas_image_setcmpttype(image, 0,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_R));
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_R));
 		jas_image_setcmpttype(image, 1,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_G));
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_G));
 		jas_image_setcmpttype(image, 2,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_B));
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_B));
 	} else {
-		jas_image_setcolorspace(image, JAS_IMAGE_CS_GRAY);
+		jas_image_setclrspc(image, JAS_CLRSPC_SGRAY);
 		jas_image_setcmpttype(image, 0,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_GRAY_Y));
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_GRAY_Y));
 	}
 
 	/* Read image data from stream into image. */
@@ -275,7 +253,7 @@ int pnm_validate(jas_stream_t *in)
 static int pnm_gethdr(jas_stream_t *in, pnm_hdr_t *hdr)
 {
 	int_fast32_t maxval;
-	if (pnm_getuint16(in, &hdr->magic) || pnm_getsintstr(in, &hdr->width) ||
+	if (pnm_getint16(in, &hdr->magic) || pnm_getsintstr(in, &hdr->width) ||
 	  pnm_getsintstr(in, &hdr->height)) {
 		return -1;
 	}
@@ -293,6 +271,20 @@ static int pnm_gethdr(jas_stream_t *in, pnm_hdr_t *hdr)
 		hdr->maxval = maxval;
 		hdr->sgnd = false;
 	}
+
+	switch (pnm_type(hdr->magic)) {
+	case PNM_TYPE_PBM:
+	case PNM_TYPE_PGM:
+		hdr->numcmpts = 1;
+		break;
+	case PNM_TYPE_PPM:
+		hdr->numcmpts = 3;
+		break;
+	default:
+		abort();
+		break;
+	}
+
 	return 0;
 }
 
@@ -303,12 +295,14 @@ static int pnm_gethdr(jas_stream_t *in, pnm_hdr_t *hdr)
 static int pnm_getdata(jas_stream_t *in, pnm_hdr_t *hdr, jas_image_t *image)
 {
 	int ret;
+#if 0
 	int numcmpts;
-	uint_fast16_t cmptno;
+#endif
+	int cmptno;
 	int fmt;
 	jas_matrix_t *data[3];
-	uint_fast32_t x;
-	uint_fast32_t y;
+	int x;
+	int y;
 	int_fast64_t v;
 	int depth;
 	int type;
@@ -317,7 +311,9 @@ static int pnm_getdata(jas_stream_t *in, pnm_hdr_t *hdr, jas_image_t *image)
 
 	ret = -1;
 
+#if 0
 	numcmpts = jas_image_numcmpts(image);
+#endif
 	fmt = pnm_fmt(hdr->magic);
 	type = pnm_type(hdr->magic);
 	depth = pnm_maxvaltodepth(hdr->maxval);
@@ -325,7 +321,7 @@ static int pnm_getdata(jas_stream_t *in, pnm_hdr_t *hdr, jas_image_t *image)
 	data[0] = 0;
 	data[1] = 0;
 	data[2] = 0;
-	for (cmptno = 0; cmptno < numcmpts; ++cmptno) {
+	for (cmptno = 0; cmptno < hdr->numcmpts; ++cmptno) {
 		if (!(data[cmptno] = jas_matrix_create(1, hdr->width))) {
 			goto done;
 		}
@@ -348,7 +344,7 @@ static int pnm_getdata(jas_stream_t *in, pnm_hdr_t *hdr, jas_image_t *image)
 				}
 			} else {
 				for (x = 0; x < hdr->width; ++x) {
-					uint_fast32_t uv;
+					int uv;
 					if (pnm_getbitstr(in, &uv)) {
 						goto done;
 					}
@@ -357,7 +353,7 @@ static int pnm_getdata(jas_stream_t *in, pnm_hdr_t *hdr, jas_image_t *image)
 			}
 		} else {
 			for (x = 0; x < hdr->width; ++x) {
-				for (cmptno = 0; cmptno < numcmpts; ++cmptno) {
+				for (cmptno = 0; cmptno < hdr->numcmpts; ++cmptno) {
 					if (fmt == PNM_FMT_BIN) {
 						/* The sample data is in binary format. */
 						if (hdr->sgnd) {
@@ -409,7 +405,7 @@ static int pnm_getdata(jas_stream_t *in, pnm_hdr_t *hdr, jas_image_t *image)
 				}
 			}
 		}
-		for (cmptno = 0; cmptno < numcmpts; ++cmptno) {
+		for (cmptno = 0; cmptno < hdr->numcmpts; ++cmptno) {
 			if (jas_image_writecmpt(image, cmptno, 0, y, hdr->width, 1,
 			  data[cmptno])) {
 				goto done;
@@ -421,7 +417,7 @@ static int pnm_getdata(jas_stream_t *in, pnm_hdr_t *hdr, jas_image_t *image)
 
 done:
 
-	for (cmptno = 0; cmptno < numcmpts; ++cmptno) {
+	for (cmptno = 0; cmptno < hdr->numcmpts; ++cmptno) {
 		if (data[cmptno]) {
 			jas_matrix_destroy(data[cmptno]);
 		}
@@ -442,7 +438,7 @@ static int pnm_getsint(jas_stream_t *in, int wordsize, int_fast32_t *val)
 		return -1;
 	}
 	if (val) {
-		assert(tmpval & (1 << (wordsize - 1)) == 0);
+		assert((tmpval & (1 << (wordsize - 1))) == 0);
 		*val = tmpval;
 	}
 
@@ -471,7 +467,7 @@ static int pnm_getuint(jas_stream_t *in, int wordsize, uint_fast32_t *val)
 	return 0;
 }
 
-static int pnm_getbitstr(jas_stream_t *in, int_fast32_t *val)
+static int pnm_getbitstr(jas_stream_t *in, int *val)
 {
 	int c;
 	int_fast32_t v;
@@ -594,9 +590,9 @@ static int pnm_getc(jas_stream_t *in)
 	}
 }
 
-static int pnm_getuint16(jas_stream_t *in, uint_fast16_t *val)
+static int pnm_getint16(jas_stream_t *in, int *val)
 {
-	uint_fast16_t v;
+	int v;
 	int c;
 
 	if ((c = jas_stream_getc(in)) == EOF) {

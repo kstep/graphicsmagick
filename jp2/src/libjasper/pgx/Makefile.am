@@ -1,4 +1,4 @@
-# Copyright (c) 2001-2002 Michael David Adams.
+# Copyright (c) 2001-2003 Michael David Adams.
 # All rights reserved. 
 
 # __START_OF_JASPER_LICENSE__
@@ -110,7 +110,7 @@ libpgx_la_SOURCES = \
 	pgx_cod.h \
 	pgx_enc.h \
 	pgx_cod.c \
-	pgx_enc.c \
-	pgx_dec.c
+	pgx_dec.c \
+	pgx_enc.c
 
 INCLUDES = -I../include

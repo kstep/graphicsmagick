@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -131,6 +131,7 @@
 #include "jpc_fix.h"
 #include "jpc_cs.h"
 #include "jpc_flt.h"
+#include "jpc_util.h"
 
 /******************************************************************************\
 * Miscellaneous Functions

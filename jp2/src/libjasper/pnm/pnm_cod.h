@@ -136,6 +136,7 @@
 #define PNM_MAGIC_BINPBM	0x5034 /* Binary Portable BitMap (P4) */
 #define PNM_MAGIC_BINPGM	0x5035 /* Binary Portable GrayMap (P5) */
 #define PNM_MAGIC_BINPPM	0x5036 /* Binary Portable PixMap (P6) */
+#define	PNM_MAGIC_PAM		0x5037 /* PAM (P7) */
 
 /* Type of image data. */
 #define PNM_TYPE_PPM	0 /* PixMap */
@@ -148,6 +149,13 @@
 
 #define	PNM_MAXLINELEN	79
 
+#define	PNM_TUPLETYPE_UNKNOWN	0
+#define	PNM_TUPLETYPE_MONO	1
+#define	PNM_TUPLETYPE_GRAY	2
+#define	PNM_TUPLETYPE_GRAYA	3
+#define	PNM_TUPLETYPE_RGB	4
+#define	PNM_TUPLETYPE_RGBA	5
+
 /******************************************************************************\
 * Types.
 \******************************************************************************/
@@ -156,17 +164,23 @@
 
 typedef struct {
 
-	uint_fast16_t magic;
+	int magic;
 	/* The magic number. */
 
-	uint_fast32_t width;
+	int width;
 	/* The image width. */
 
-	uint_fast32_t height;
+	int height;
 	/* The image height. */
 
-	uint_fast32_t maxval;
+	int numcmpts;
+
+	int maxval;
 	/* The maximum allowable sample value. */
+
+#if 0
+	int tupletype;
+#endif
 
 	bool sgnd;
 	/* The sample data is signed. */
@@ -187,5 +201,5 @@ int pnm_maxvaltodepth(uint_fast32_t maxval);
 /* Determine depth (i.e., precision) from maximum value. */
 
 #define	PNM_ONES(n) \
-	(((n) < 32) ? ((1 << (n)) - 1) : 0xffffffffUL)
+	(((n) < 32) ? ((1UL << (n)) - 1) : 0xffffffffUL)
 #endif

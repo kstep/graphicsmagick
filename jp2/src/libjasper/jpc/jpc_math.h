@@ -122,18 +122,16 @@
 \******************************************************************************/
 
 /* Compute the floor of the quotient of two integers. */
-#define	JPC_FLOORDIV(x, y)	(assert(x >= 0 && y > 0), (x) / (y))
+#define	JPC_FLOORDIV(x, y)	((x) / (y))
 
 /* Compute the ceiling of the quotient of two integers. */
-#define	JPC_CEILDIV(x, y)	(assert(x >= 0 && y > 0), ((x) + (y) - 1) / (y))
+#define	JPC_CEILDIV(x, y)	(((x) + (y) - 1) / (y))
 
 /* Compute the floor of (x / 2^y). */
-#define	JPC_FLOORDIVPOW2(x, y) \
-	(assert(x >= 0 && y > 0), (x) >> (y))
+#define	JPC_FLOORDIVPOW2(x, y)	((x) >> (y))
 
 /* Compute the ceiling of (x / 2^y). */
-#define	JPC_CEILDIVPOW2(x, y) \
-	(assert(x >= 0 && y >= 0), ((x) + (1 << (y)) - 1) >> (y))
+#define	JPC_CEILDIVPOW2(x, y)	(((x) + (1 << (y)) - 1) >> (y))
 
 /******************************************************************************\
 * Functions.

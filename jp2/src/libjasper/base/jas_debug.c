@@ -169,8 +169,8 @@ int jas_eprintf(const char *fmt, ...)
 /* Dump memory to a stream. */
 int jas_memdump(FILE *out, void *data, size_t len)
 {
-	int i;
-	int j;
+	size_t i;
+	size_t j;
 	uchar *dp;
 	dp = data;
 	for (i = 0; i < len; i += 16) {

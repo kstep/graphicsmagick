@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -125,6 +125,7 @@
 
 #include "jasper/jas_image.h"
 #include "jasper/jas_stream.h"
+#include "jasper/jas_debug.h"
 
 #include "ras_cod.h"
 #include "ras_enc.h"
@@ -145,10 +146,10 @@ static int ras_putdatastd(jas_stream_t *out, ras_hdr_t *hdr, jas_image_t *image,
 
 int ras_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 {
-	uint_fast32_t width;
-	uint_fast32_t height;
-	uint_fast32_t depth;
-	uint_fast16_t cmptno;
+	int_fast32_t width;
+	int_fast32_t height;
+	int_fast32_t depth;
+	int cmptno;
 #if 0
 	uint_fast16_t numcmpts;
 #endif
@@ -162,23 +163,27 @@ int ras_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 		fprintf(stderr, "warning: ignoring RAS encoder options\n");
 	}
 
-	switch (jas_image_colorspace(image)) {
-	case JAS_IMAGE_CS_RGB:
+	switch (jas_clrspc_fam(jas_image_clrspc(image))) {
+	case JAS_CLRSPC_FAM_RGB:
+		if (jas_image_clrspc(image) != JAS_CLRSPC_SRGB)
+			jas_eprintf("warning: inaccurate color\n");
 		enc->numcmpts = 3;
 		if ((enc->cmpts[0] = jas_image_getcmptbytype(image,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_R))) < 0 ||
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_R))) < 0 ||
 		  (enc->cmpts[1] = jas_image_getcmptbytype(image,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_G))) < 0 ||
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_G))) < 0 ||
 		  (enc->cmpts[2] = jas_image_getcmptbytype(image,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_B))) < 0) {
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_B))) < 0) {
 			jas_eprintf("error: missing color component\n");
 			return -1;
 		}
 		break;
-	case JAS_IMAGE_CS_GRAY:
+	case JAS_CLRSPC_FAM_GRAY:
+		if (jas_image_clrspc(image) != JAS_CLRSPC_SGRAY)
+			jas_eprintf("warning: inaccurate color\n");
 		enc->numcmpts = 1;
 		if ((enc->cmpts[0] = jas_image_getcmptbytype(image,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_GRAY_Y))) < 0) {
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_GRAY_Y))) < 0) {
 			jas_eprintf("error: missing color component\n");
 			return -1;
 		}

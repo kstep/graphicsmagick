@@ -342,4 +342,7 @@ int jp2_box_put(jp2_box_t *box, jas_stream_t *out);
 #define ICC_CS_YCBCR	0x59436272
 #define ICC_CS_GRAY	0x47524159
 
+jp2_cdefchan_t *jp2_cdef_lookup(jp2_cdef_t *cdef, int channo);
+
+
 #endif

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -430,6 +430,9 @@ static int dec_sigpass(jpc_dec_t *dec, register jpc_mqdec_t *mqdec, int bitpos, 
 	jpc_fix_t *dvscanstart;
 	int k;
 
+	/* Avoid compiler warning about unused parameters. */
+	dec = 0;
+
 	width = jas_matrix_numcols(data);
 	height = jas_matrix_numrows(data);
 	frowstep = jas_matrix_rowstep(flags);
@@ -533,6 +536,9 @@ static int dec_rawsigpass(jpc_dec_t *dec, jpc_bitstream_t *in, int bitpos, int v
 	jpc_fix_t *dstripestart;
 	jpc_fix_t *dvscanstart;
 
+	/* Avoid compiler warning about unused parameters. */
+	dec = 0;
+
 	width = jas_matrix_numcols(data);
 	height = jas_matrix_numrows(data);
 	frowstep = jas_matrix_rowstep(flags);
@@ -632,6 +638,10 @@ static int dec_refpass(jpc_dec_t *dec, register jpc_mqdec_t *mqdec, int bitpos,
 	jpc_fix_t *dvscanstart;
 	int k;
 
+	/* Avoid compiler warning about unused parameters. */
+	dec = 0;
+	vcausalflag = 0;
+
 	width = jas_matrix_numcols(data);
 	height = jas_matrix_numrows(data);
 	frowstep = jas_matrix_rowstep(flags);
@@ -725,6 +735,10 @@ static int dec_rawrefpass(jpc_dec_t *dec, jpc_bitstream_t *in, int bitpos, int v
 	int dstripestep;
 	jpc_fix_t *dstripestart;
 	jpc_fix_t *dvscanstart;
+
+	/* Avoid compiler warning about unused parameters. */
+	dec = 0;
+	vcausalflag = 0;
 
 	width = jas_matrix_numcols(data);
 	height = jas_matrix_numrows(data);
@@ -834,6 +848,9 @@ static int dec_clnpass(jpc_dec_t *dec, register jpc_mqdec_t *mqdec, int bitpos, 
 	int dstripestep;
 	jpc_fix_t *dstripestart;
 	jpc_fix_t *dvscanstart;
+
+	/* Avoid compiler warning about unused parameters. */
+	dec = 0;
 
 	one = 1 << bitpos;
 	half = one >> 1;

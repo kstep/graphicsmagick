@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -111,14 +111,18 @@
 #ifndef JAS_JASPER_H
 #define JAS_JASPER_H
 
+#include <jasper/jas_config.h>
 #include <jasper/jas_types.h>
 #include <jasper/jas_version.h>
 
 #include <jasper/jas_init.h>
+#include <jasper/jas_cm.h>
+#include <jasper/jas_icc.h>
 #include <jasper/jas_fix.h>
 #include <jasper/jas_debug.h>
 #include <jasper/jas_getopt.h>
 #include <jasper/jas_image.h>
+#include <jasper/jas_icc.h>
 #include <jasper/jas_math.h>
 #include <jasper/jas_malloc.h>
 #include <jasper/jas_seq.h>

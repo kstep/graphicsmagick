@@ -178,6 +178,7 @@ JAS_INTERFACE_AGE = @JAS_INTERFACE_AGE@
 JAS_MAJOR_VERSION = @JAS_MAJOR_VERSION@
 JAS_MICRO_VERSION = @JAS_MICRO_VERSION@
 JAS_MINOR_VERSION = @JAS_MINOR_VERSION@
+JAS_RPM_RELEASE = @JAS_RPM_RELEASE@
 JAS_VERSION = @JAS_VERSION@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
@@ -205,11 +206,12 @@ libras_la_SOURCES = \
 
 INCLUDES = -I../include
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../../../src/libjasper/include/jasper/jas_config.h
 CONFIG_CLEAN_FILES = 
 LTLIBRARIES =  $(noinst_LTLIBRARIES)
 
 
-DEFS = @DEFS@ -I. -I$(srcdir) 
+DEFS = @DEFS@ -I. -I$(srcdir) -I../../../src/libjasper/include/jasper
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -215,25 +215,25 @@ jas_image_t *bmp_decode(jas_stream_t *in, char *optstr)
 	}
 
 	/* Create image object. */
-	if (!(image = jas_image_create(numcmpts, cmptparms, JAS_IMAGE_CS_UNKNOWN))) {
+	if (!(image = jas_image_create(numcmpts, cmptparms,
+	  JAS_CLRSPC_UNKNOWN))) {
 		bmp_info_destroy(info);
 		return 0;
 	}
 
 	if (numcmpts == 3) {
-		jas_image_setcolorspace(image, JAS_IMAGE_CS_RGB);
+		jas_image_setclrspc(image, JAS_CLRSPC_SRGB);
 		jas_image_setcmpttype(image, 0,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_R));
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_R));
 		jas_image_setcmpttype(image, 1,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_G));
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_G));
 		jas_image_setcmpttype(image, 2,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_B));
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_B));
 	} else {
-		jas_image_setcolorspace(image, JAS_IMAGE_CS_GRAY);
+		jas_image_setclrspc(image, JAS_CLRSPC_SGRAY);
 		jas_image_setcmpttype(image, 0,
-		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_GRAY_Y));
+		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_GRAY_Y));
 	}
-
 
 	/* Read the bitmap data. */
 	if (bmp_getdata(in, info, image)) {

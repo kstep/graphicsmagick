@@ -552,7 +552,7 @@ typedef struct jpc_enc_rlvl_s {
 typedef struct jpc_enc_tcmpt_s {
 
 	/* The number of resolution levels. */
-	uint_fast16_t numrlvls;
+	int numrlvls;
 
 	/* The per-resolution-level information. */
 	jpc_enc_rlvl_t *rlvls;
@@ -591,7 +591,7 @@ typedef struct jpc_enc_tcmpt_s {
 	int cblksty;
 
 	/* The number of quantizer step sizes. */
-	uint_fast16_t numstepsizes;
+	int numstepsizes;
 
 	/* The encoded quantizer step sizes. */
 	uint_fast16_t stepsizes[JPC_MAXBANDS];
@@ -631,7 +631,7 @@ typedef struct jpc_enc_tile_s {
 	uint_fast8_t prg;
 
 	/* The number of layers. */
-	uint_fast16_t numlyrs;
+	int numlyrs;
 
 	/* The MCT to employ (if any). */
 	uint_fast8_t mctid;

@@ -1,4 +1,4 @@
-# Copyright (c) 2001-2002 Michael David Adams.
+# Copyright (c) 2001-2003 Michael David Adams.
 # All rights reserved. 
 
 # __START_OF_JASPER_LICENSE__
@@ -107,9 +107,12 @@
 
 noinst_LTLIBRARIES = libbase.la
 libbase_la_SOURCES = \
+	jas_cm.c \
 	jas_debug.c \
 	jas_getopt.c  \
 	jas_image.c \
+	jas_icc.c \
+	jas_iccdata.c \
 	jas_init.c \
 	jas_malloc.c \
 	jas_seq.c \

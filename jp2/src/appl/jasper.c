@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -167,6 +167,8 @@ typedef struct {
 
 	int_fast32_t cmptno;
 
+	int srgb;
+
 } cmdopts_t;
 
 /******************************************************************************\
@@ -175,9 +177,9 @@ typedef struct {
 
 cmdopts_t *cmdopts_parse(int argc, char **argv);
 void cmdopts_destroy(cmdopts_t *cmdopts);
-void cmdusage();
-void badusage();
-void cmdinfo();
+void cmdusage(void);
+void badusage(void);
+void cmdinfo(void);
 int addopt(char *optstr, int maxlen, char *s);
 
 /******************************************************************************\
@@ -295,6 +297,23 @@ int main(int argc, char **argv)
 		}
 	}
 
+	if (cmdopts->srgb) {
+		jas_image_t *newimage;
+		jas_cmprof_t *outprof;
+		jas_eprintf("forcing conversion to sRGB\n");
+		if (!(outprof = jas_cmprof_createfromclrspc(JAS_CLRSPC_SRGB))) {
+			jas_eprintf("cannot create sRGB profile\n");
+			exit(EXIT_FAILURE);
+		}
+		if (!(newimage = jas_image_chclrspc(image, outprof, JAS_CMXFORM_INTENT_PER))) {
+			jas_eprintf("cannot convert to sRGB\n");
+			exit(EXIT_FAILURE);
+		}
+		jas_image_destroy(image);
+		jas_cmprof_destroy(outprof);
+		image = newimage;
+	}
+
 	/* Generate the output image data. */
 	startclk = clock();
 	if (jas_image_encode(image, out, cmdopts->outfmt, cmdopts->outopts)) {
@@ -343,7 +362,8 @@ cmdopts_t *cmdopts_parse(int argc, char **argv)
 		CMDOPT_OUTOPT,
 		CMDOPT_VERSION,
 		CMDOPT_DEBUG,
-		CMDOPT_CMPTNO
+		CMDOPT_CMPTNO,
+		CMDOPT_SRGB
 	} cmdoptid_t;
 
 	static jas_opt_t cmdoptions[] = {
@@ -364,6 +384,8 @@ cmdopts_t *cmdopts_parse(int argc, char **argv)
 		{CMDOPT_VERSION, "version", 0},
 		{CMDOPT_DEBUG, "debug-level", JAS_OPT_HASARG},
 		{CMDOPT_CMPTNO, "cmptno", JAS_OPT_HASARG},
+		{CMDOPT_SRGB, "force-srgb", 0},
+		{CMDOPT_SRGB, "S", 0},
 		{-1, 0, 0}
 	};
 
@@ -387,6 +409,7 @@ cmdopts_t *cmdopts_parse(int argc, char **argv)
 	cmdopts->version = 0;
 	cmdopts->cmptno = -1;
 	cmdopts->debug = 0;
+	cmdopts->srgb = 0;
 
 	while ((c = jas_getopt(argc, argv, cmdoptions)) != EOF) {
 		switch (c) {
@@ -431,6 +454,9 @@ cmdopts_t *cmdopts_parse(int argc, char **argv)
 			break;
 		case CMDOPT_CMPTNO:
 			cmdopts->cmptno = atoi(jas_optarg);
+			break;
+		case CMDOPT_SRGB:
+			cmdopts->srgb = 1;
 			break;
 		default:
 			badusage();
@@ -511,6 +537,7 @@ static char *helpinfo[] = {
 "    --output-format $fmt    Specify the format of the output image as $fmt.\n",
 "                            (See below for the list of supported formats.)\n",
 "    --output-option $opt    Provide the option $opt to the encoder.\n",
+"    --force-srgb            Force conversion to the sRGB color space.\n",
 "Some of the above option names can be abbreviated as follows:\n",
 "    --input = -f, --input-format = -t, --input-option = -o,\n",
 "    --output = -F, --output-format = -T, --output-option = -O\n",
@@ -546,3 +573,33 @@ void badusage()
 	fprintf(stderr, "    %s --help\n", cmdname);
 	exit(EXIT_FAILURE);
 }
+
+#if 0
+jas_image_t *converttosrgb(jas_image_t *inimage)
+{
+	jas_image_t *outimage;
+	jas_cmpixmap_t inpixmap;
+	jas_cmpixmap_t outpixmap;
+	jas_cmcmptfmt_t incmptfmts[16];
+	jas_cmcmptfmt_t outcmptfmts[16];
+
+	outprof = jas_cmprof_createfromclrspc(JAS_CLRSPC_SRGB);
+	assert(outprof);
+	xform = jas_cmxform_create(jas_image_cmprof(inimage), outprof, 0, JAS_CMXFORM_FWD, JAS_CMXFORM_INTENT_PER, 0);
+	assert(xform);
+
+	inpixmap.numcmpts = jas_image_numcmpts(oldimage);
+	outpixmap.numcmpts = 3;
+	for (i = 0; i < inpixmap.numcmpts; ++i) {
+		inpixmap.cmptfmts[i] = &incmptfmts[i];
+	}
+	for (i = 0; i < outpixmap.numcmpts; ++i)
+		outpixmap.cmptfmts[i] = &outcmptfmts[i];
+	if (jas_cmxform_apply(xform, &inpixmap, &outpixmap))
+		abort();
+
+	jas_xform_destroy(xform);
+	jas_cmprof_destroy(outprof);
+	return 0;
+}
+#endif

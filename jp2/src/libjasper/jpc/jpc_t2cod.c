@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001-2002 Michael David Adams.
+ * Copyright (c) 2001-2003 Michael David Adams.
  * All rights reserved.
  */
 
@@ -200,12 +200,12 @@ static int jpc_pi_nextlrcp(register jpc_pi_t *pi)
 	}
 
 	for (pi->lyrno = 0; pi->lyrno < pi->numlyrs && pi->lyrno <
-	  pchg->lyrnoend; ++pi->lyrno) {
+	  JAS_CAST(int, pchg->lyrnoend); ++pi->lyrno) {
 		for (pi->rlvlno = pchg->rlvlnostart; pi->rlvlno < pi->maxrlvls &&
 		  pi->rlvlno < pchg->rlvlnoend; ++pi->rlvlno) {
 			for (pi->compno = pchg->compnostart, pi->picomp =
 			  &pi->picomps[pi->compno]; pi->compno < pi->numcomps
-			  && pi->compno < pchg->compnoend; ++pi->compno,
+			  && pi->compno < JAS_CAST(int, pchg->compnoend); ++pi->compno,
 			  ++pi->picomp) {
 				if (pi->rlvlno >= pi->picomp->numrlvls) {
 					continue;
@@ -246,10 +246,10 @@ static int jpc_pi_nextrlcp(register jpc_pi_t *pi)
 	for (pi->rlvlno = pchg->rlvlnostart; pi->rlvlno < pi->maxrlvls &&
 	  pi->rlvlno < pchg->rlvlnoend; ++pi->rlvlno) {
 		for (pi->lyrno = 0; pi->lyrno < pi->numlyrs && pi->lyrno <
-		  pchg->lyrnoend; ++pi->lyrno) {
+		  JAS_CAST(int, pchg->lyrnoend); ++pi->lyrno) {
 			for (pi->compno = pchg->compnostart, pi->picomp =
 			  &pi->picomps[pi->compno]; pi->compno < pi->numcomps &&
-			  pi->compno < pchg->compnoend; ++pi->compno, ++pi->picomp) {
+			  pi->compno < JAS_CAST(int, pchg->compnoend); ++pi->compno, ++pi->picomp) {
 				if (pi->rlvlno >= pi->picomp->numrlvls) {
 					continue;
 				}
@@ -317,7 +317,7 @@ static int jpc_pi_nextrpcl(register jpc_pi_t *pi)
 			  pi->xstep - (pi->x % pi->xstep)) {
 				for (pi->compno = pchg->compnostart,
 				  pi->picomp = &pi->picomps[pi->compno];
-				  pi->compno < pchg->compnoend && pi->compno <
+				  pi->compno < JAS_CAST(int, pchg->compnoend) && pi->compno <
 				  pi->numcomps; ++pi->compno, ++pi->picomp) {
 					if (pi->rlvlno >= pi->picomp->numrlvls) {
 						continue;
@@ -345,7 +345,7 @@ static int jpc_pi_nextrpcl(register jpc_pi_t *pi)
 
 						assert(pi->prcno < pi->pirlvl->numprcs);
 						for (pi->lyrno = 0; pi->lyrno <
-						  pi->numlyrs && pi->lyrno < pchg->lyrnoend; ++pi->lyrno) {
+						  pi->numlyrs && pi->lyrno < JAS_CAST(int, pchg->lyrnoend); ++pi->lyrno) {
 							prclyrno = &pi->pirlvl->prclyrnos[pi->prcno];
 							if (pi->lyrno >= *prclyrno) {
 								++(*prclyrno);
@@ -411,7 +411,7 @@ static int jpc_pi_nextpcrl(register jpc_pi_t *pi)
 		  (pi->x % pi->xstep)) {
 			for (pi->compno = pchg->compnostart, pi->picomp =
 			  &pi->picomps[pi->compno]; pi->compno < pi->numcomps
-			  && pi->compno < pchg->compnoend; ++pi->compno,
+			  && pi->compno < JAS_CAST(int, pchg->compnoend); ++pi->compno,
 			  ++pi->picomp) {
 				for (pi->rlvlno = pchg->rlvlnostart,
 				  pi->pirlvl = &pi->picomp->pirlvls[pi->rlvlno];
@@ -439,7 +439,7 @@ static int jpc_pi_nextpcrl(register jpc_pi_t *pi)
 						pi->prcno = prcvind * pi->pirlvl->numhprcs + prchind;
 						assert(pi->prcno < pi->pirlvl->numprcs);
 						for (pi->lyrno = 0; pi->lyrno < pi->numlyrs &&
-						  pi->lyrno < pchg->lyrnoend; ++pi->lyrno) {
+						  pi->lyrno < JAS_CAST(int, pchg->lyrnoend); ++pi->lyrno) {
 							prclyrno = &pi->pirlvl->prclyrnos[pi->prcno];
 							if (pi->lyrno >= *prclyrno) {
 								++(*prclyrno);
@@ -478,7 +478,7 @@ static int jpc_pi_nextcprl(register jpc_pi_t *pi)
 	}
 
 	for (pi->compno = pchg->compnostart, pi->picomp =
-	  &pi->picomps[pi->compno]; pi->compno < pchg->compnoend; ++pi->compno,
+	  &pi->picomps[pi->compno]; pi->compno < JAS_CAST(int, pchg->compnoend); ++pi->compno,
 	  ++pi->picomp) {
 		pirlvl = pi->picomp->pirlvls;
 		pi->xstep = pi->picomp->hsamp * (1 << (pirlvl->prcwidthexpn +
@@ -526,7 +526,7 @@ static int jpc_pi_nextcprl(register jpc_pi_t *pi)
 						assert(pi->prcno <
 						  pi->pirlvl->numprcs);
 						for (pi->lyrno = 0; pi->lyrno <
-						  pi->numlyrs && pi->lyrno < pchg->lyrnoend; ++pi->lyrno) {
+						  pi->numlyrs && pi->lyrno < JAS_CAST(int, pchg->lyrnoend); ++pi->lyrno) {
 							prclyrno = &pi->pirlvl->prclyrnos[pi->prcno];
 							if (pi->lyrno >= *prclyrno) {
 								++(*prclyrno);

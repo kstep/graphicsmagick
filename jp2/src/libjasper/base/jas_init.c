@@ -114,6 +114,7 @@
 
 #include "jasper/jas_types.h"
 #include "jasper/jas_image.h"
+#include "jasper/jas_init.h"
 
 /******************************************************************************\
 * Code.
@@ -195,5 +196,16 @@ int jas_init()
 	++fmtid;
 #endif
 
+	/* We must not register the JasPer library exit handler until after
+	at least one memory allocation is performed.  This is desirable
+	as it ensures that the JasPer exit handler is called before the
+	debug memory allocator exit handler. */
+	atexit(jas_cleanup);
+
 	return 0;
+}
+
+void jas_cleanup()
+{
+	jas_image_clearfmts();
 }

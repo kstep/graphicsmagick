@@ -1,4 +1,4 @@
-# Copyright (c) 2001-2002 Michael David Adams.
+# Copyright (c) 2001-2003 Michael David Adams.
 # All rights reserved.
 
 # __START_OF_JASPER_LICENSE__
@@ -109,9 +109,13 @@ libjasperincludedir = $(includedir)/jasper
 
 libjasperinclude_HEADERS = \
 	jasper.h \
+	jas_config.h \
+	jas_config2.h \
+	jas_cm.h \
 	jas_fix.h \
 	jas_debug.h \
 	jas_getopt.h \
+	jas_icc.h \
 	jas_image.h \
 	jas_init.h \
 	jas_malloc.h \
