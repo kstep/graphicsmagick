@@ -2565,10 +2565,11 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
 %
 %  A description of each parameter follows:
 %
-%    o threshold: The number of megabytes of memory available to the pixel
-%      cache.
+%    o minimim: The number of megabytes of memory available to the pixel
+%      cache.  Once this threshold is exceeded the pixels are cached to disk.
 %
-%    o maximum:  A value other
+%    o maximum:  The maximum number of megabytes available to the pixel
+%      cache.  Once this threshild is exceeded an error is returned.
 %
 %
 */

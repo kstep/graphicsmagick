@@ -301,8 +301,8 @@ static void *GetLogBlob(const char *filename,char *path,size_t *length,
 #if defined(WIN32)
   return(NTResourceToBlob(filename));
 #endif
-  return((void *) NULL);
 #endif
+  return((void *) NULL);
 }
 
 /*
