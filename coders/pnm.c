@@ -225,6 +225,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   long
     y;
 
+  LongPixelPacket
+    pixel;
+
   MonitorHandler
     handler;
 
@@ -255,11 +258,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     status;
 
   unsigned long
-    blue,
-    green,
     max_value,
     packets,
-    red,
     *scale;
 
   /*
@@ -321,16 +321,16 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Initialize 332 colormap.
             */
             i=0;
-            for (red=0; red < 8; red++)
-              for (green=0; green < 8; green++)
-                for (blue=0; blue < 4; blue++)
+            for (pixel.red=0; pixel.red < 8; pixel.red++)
+              for (pixel.green=0; pixel.green < 8; pixel.green++)
+                for (pixel.blue=0; pixel.blue < 4; pixel.blue++)
                 {
                   image->colormap[i].red=(Quantum)
-                    ((unsigned long) (MaxRGB*red)/0x07);
+                    ((unsigned long) (MaxRGB*pixel.red)/0x07);
                   image->colormap[i].green=(Quantum)
-                    ((unsigned long) (MaxRGB*green)/0x07);
+                    ((unsigned long) (MaxRGB*pixel.green)/0x07);
                   image->colormap[i].blue=(Quantum)
-                    ((unsigned long) (MaxRGB*blue)/0x03);
+                    ((unsigned long) (MaxRGB*pixel.blue)/0x03);
                   i++;
                 }
           }
@@ -436,18 +436,18 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (long) image->columns; x++)
           {
-            red=PNMInteger(image,10);
-            green=PNMInteger(image,10);
-            blue=PNMInteger(image,10);
+            pixel.red=PNMInteger(image,10);
+            pixel.green=PNMInteger(image,10);
+            pixel.blue=PNMInteger(image,10);
             if (scale != (unsigned long *) NULL)
               {
-                red=scale[red];
-                green=scale[green];
-                blue=scale[blue];
+                pixel.red=scale[pixel.red];
+                pixel.green=scale[pixel.green];
+                pixel.blue=scale[pixel.blue];
               }
-            q->red=(Quantum) red;
-            q->green=(Quantum) green;
-            q->blue=(Quantum) blue;
+            q->red=(Quantum) pixel.red;
+            q->green=(Quantum) pixel.green;
+            q->blue=(Quantum) pixel.blue;
             q++;
           }
           if (!SyncImagePixels(image))
@@ -504,7 +504,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PGM raw image to pixel packets.
         */
-        packets=image->depth <= 8 ? 1 : 2;
+        packets=2*image->depth/8;
         pixels=(unsigned char *) AcquireMemory(packets*image->columns);
         if (pixels == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"Unable to allocate memory",
@@ -555,7 +555,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PNM raster image to pixel packets.
         */
-        packets=image->depth <= 8 ? 3 : 6;
+        packets=3*image->depth/8;
         pixels=(unsigned char *) AcquireMemory(packets*image->columns);
         if (pixels == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"Unable to allocate memory",
@@ -564,8 +564,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           count=ReadBlob(image,packets*image->columns,pixels);
           if (count == 0)
-            ThrowReaderException(CorruptImageError,
-              "Unable to read image data",image);
+            ThrowReaderException(CorruptImageError,"Unable to read image data",
+              image);
           p=pixels;
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
@@ -574,28 +574,28 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             if (image->depth <= 8)
               {
-                red=(*p++);
-                green=(*p++);
-                blue=(*p++);
+                pixel.red=(*p++);
+                pixel.green=(*p++);
+                pixel.blue=(*p++);
               }
             else
               {
-                red=(*p++) << 8;
-                red|=(*p++);
-                green=(*p++) << 8;
-                green|=(*p++);
-                blue=(*p++) << 8;
-                blue|=(*p++);
+                pixel.red=(*p++) << 8;
+                pixel.red|=(*p++);
+                pixel.green=(*p++) << 8;
+                pixel.green|=(*p++);
+                pixel.blue=(*p++) << 8;
+                pixel.blue|=(*p++);
               }
             if (scale != (unsigned long *) NULL)
               {
-                red=scale[red];
-                green=scale[green];
-                blue=scale[blue];
+                pixel.red=scale[pixel.red];
+                pixel.green=scale[pixel.green];
+                pixel.blue=scale[pixel.blue];
               }
-            q->red=(Quantum) red;
-            q->green=(Quantum) green;
-            q->blue=(Quantum) blue;
+            q->red=(Quantum) pixel.red;
+            q->green=(Quantum) pixel.green;
+            q->blue=(Quantum) pixel.blue;
             q++;
           }
           if (!SyncImagePixels(image))
@@ -922,8 +922,10 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PGM image.
         */
-        FormatString(buffer,"%lu\n",(unsigned long)
-          (image->depth > 8 ? MaxRGB : ScaleQuantum(MaxRGB)));
+        if (image->depth <= 8)
+          FormatString(buffer,"%u\n",ScaleQuantumToChar(MaxRGB));
+        else
+          FormatString(buffer,"%u\n",ScaleQuantumToShort(MaxRGB));
         (void) WriteBlobString(image,buffer);
         i=0;
         for (y=0; y < (long) image->rows; y++)
@@ -934,8 +936,10 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (long) image->columns; x++)
           {
             index=PixelIntensityToQuantum(p);
-            FormatString(buffer," %lu",(unsigned long)
-              (image->depth > 8 ? index : ScaleQuantum(index)));
+            if (image->depth <= 8)
+              FormatString(buffer," %u\n",ScaleQuantumToChar(index));
+            else
+              FormatString(buffer," %u\n",ScaleQuantumToShort(index));
             (void) WriteBlobString(image,buffer);
             i++;
             if (i == 12)
@@ -958,8 +962,10 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PNM image.
         */
-        FormatString(buffer,"%lu\n",(unsigned long)
-          (image->depth > 8 ? MaxRGB : ScaleQuantum(MaxRGB)));
+        if (image->depth <= 8)
+          FormatString(buffer,"%u\n",ScaleQuantumToChar(MaxRGB));
+        else
+          FormatString(buffer,"%u\n",ScaleQuantumToShort(MaxRGB));
         (void) WriteBlobString(image,buffer);
         i=0;
         for (y=0; y < (long) image->rows; y++)
@@ -969,10 +975,12 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             break;
           for (x=0; x < (long) image->columns; x++)
           {
-            FormatString(buffer," %lu %lu %lu", (unsigned long) (image->depth >
-              8 ? p->red : ScaleQuantum(p->red)),(unsigned long) (image->depth >
-              8 ? p->green : ScaleQuantum(p->green)),(unsigned long)
-              (image->depth > 8 ?  p->blue : ScaleQuantum(p->blue)));
+            if (image->depth <= 8)
+              FormatString(buffer,"%u %u %u\n",ScaleQuantumToChar(p->red),
+                ScaleQuantumToChar(p->green),ScaleQuantumToChar(p->blue));
+            else
+              FormatString(buffer,"%u %u %u\n",ScaleQuantumToShort(p->red),
+                ScaleQuantumToShort(p->green),ScaleQuantumToShort(p->blue));
             (void) WriteBlobString(image,buffer);
             i++;
             if (i == 4)
