@@ -569,8 +569,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           if (samples_per_pixel > 3)
             image->matte=True;
       }
-    if (image_info->ping)
-      break;
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;

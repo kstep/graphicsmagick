@@ -514,8 +514,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           count=ReadBlob(image,packets*image->columns,pixels);
           if (count == 0)
-            ThrowReaderException(CorruptImageError,"Unable to read image data",
-              image);
+            ThrowReaderException(CorruptImageError,
+              "Unable to read image data",image);
           p=pixels;
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
@@ -847,18 +847,23 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
       format=5;
     else
       if (LocaleCompare(image_info->magick,"PBM") == 0)
-        format=4;
+        {
+          format=4;
+          if ((image->storage_class == DirectClass) ||
+              !IsMonochromeImage(image,&image->exception))
+            SetImageType(image,BilevelType);
+        }
       else
         if ((LocaleCompare(image_info->magick,"PNM") == 0) &&
             (image_info->type != TrueColorType) &&
             IsGrayImage(image,&image->exception))
-          format=5;
-    if (IsMonochromeImage(image,&image->exception))
-      format=4;
+          {
+            format=5;
+            if (IsMonochromeImage(image,&image->exception))
+              format=4;
+          }
     if (image_info->compression == NoCompression)
       format-=3;
-    if ((format == 1) || (format == 4))
-      SetImageType(image,BilevelType);
     if (LocaleCompare(image_info->magick,"P7") != 0)
       FormatString(buffer,"P%d\n",format);
     else
@@ -903,9 +908,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PBM image.
         */
-        polarity=PixelIntensityToQuantum(&image->colormap[0]) < (0.5*MaxRGB);
+        polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
         if (image->colors == 2)
-          polarity=PixelIntensityToQuantum(&image->colormap[0]) <
+          polarity=PixelIntensityToQuantum(&image->colormap[0]) >
             PixelIntensityToQuantum(&image->colormap[1]);
         i=0;
         for (y=0; y < (long) image->rows; y++)
@@ -1022,7 +1027,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PBM image.
         */
-        polarity=PixelIntensityToQuantum(&image->colormap[0]) > (0.5*MaxRGB);
+        polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
         if (image->colors == 2)
           polarity=PixelIntensityToQuantum(&image->colormap[0]) >
             PixelIntensityToQuantum(&image->colormap[1]);

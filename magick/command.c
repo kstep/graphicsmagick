@@ -1186,7 +1186,12 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
     }
   }
   if (image == (Image *) NULL)
-    return(False);
+    {
+      if (exception->severity == UndefinedException)
+        ThrowCompositeException(OptionError,"Missing an image file name",
+          (char *) NULL);
+      return(False);
+    }
   if (i != (argc-1))
     ThrowCompositeException(OptionError,"Missing an image file name",
       (char *) NULL);
@@ -2875,7 +2880,12 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
     }
   }
   if ((image == (Image *) NULL) && (image_list == (Image *) NULL))
-    return(False);
+    {
+      if (exception->severity == UndefinedException)
+        ThrowConvertException(OptionError,"Missing an image file name",
+          (char *) NULL);
+      return(False);
+    }
   if (i != (argc-1))
     ThrowConvertException(OptionError,"Missing an image file name",
       (char *) NULL);
@@ -3207,7 +3217,12 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
     }
   }
   if (number_images == 0)
-    return(False);
+    {
+      if (exception->severity == UndefinedException)
+        ThrowIdentifyException(OptionError,"Missing an image file name",
+          (char *) NULL);
+      return(False);
+    }
   if (i != argc)
     ThrowIdentifyException(OptionError,"Missing an image file name",
       (char *) NULL);
@@ -5832,7 +5847,12 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
     }
   }
   if ((image == (Image *) NULL) && (image_list == (Image *) NULL))
-    return(False);
+    {
+      if (exception->severity == UndefinedException)
+        ThrowConvertException(OptionError,"Missing an image file name",
+          (char *) NULL);
+      return(False);
+    }
   if (i != (argc-1))
     ThrowMontageException(OptionError,"Missing an image file name",
       (char *) NULL);
