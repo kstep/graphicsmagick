@@ -2363,7 +2363,7 @@ Magick::Geometry Magick::Image::geometry ( void ) const
 void Magick::Image::gifDisposeMethod ( const unsigned int disposeMethod_ )
 {
   modifyImage();
-  image()->dispose = disposeMethod_;
+  image()->dispose = (DisposeType) disposeMethod_;
 }
 unsigned int Magick::Image::gifDisposeMethod ( void ) const
 {

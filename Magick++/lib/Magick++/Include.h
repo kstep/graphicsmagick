@@ -170,6 +170,12 @@ namespace Magick
   using MagickLib::RLECompression;
   using MagickLib::ZipCompression;
 
+  using MagickLib::DisposeType;
+  using MagickLib::UndefinedDispose;
+  using MagickLib::NoneDispose;
+  using MagickLib::BackgroundDispose;
+  using MagickLib::PreviousDispose;
+
   // Endian options
   using MagickLib::EndianType;
   using MagickLib::UndefinedEndian;
