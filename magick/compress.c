@@ -869,12 +869,12 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
   if (bit != 0x80)
     {
       if (Latin1Compare(image_info->magick,"FAX") == 0)
-        (void) WriteByte(huffman_image,byte);
+        (void) WriteByte(image,byte);
       else
-        Ascii85Encode(huffman_image,(unsigned int) byte);
+        Ascii85Encode(image,(unsigned int) byte);
     }
   if (Latin1Compare(image_info->magick,"FAX") != 0)
-    Ascii85Flush(huffman_image);
+    Ascii85Flush(image);
   if (huffman_image != image)
     DestroyImage(huffman_image);
   FreeMemory((char *) scanline);
