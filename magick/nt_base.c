@@ -56,13 +56,18 @@
 #include "studio.h"
 #include "utility.h"
 #include "version.h"
+#if defined(HasLTDL)
+#  include "ltdl.h"
+#endif /* defined(HasLTDL) */
 #include "nt_base.h"
 
 /*
   Static declarations.
 */
+#if !defined(HasLTDL)
 static char
   *lt_slsearchpath = (char *) NULL;
+#endif
 static void
   *gs_dll_handle = (void *)NULL;
 static GhostscriptVectors
@@ -401,6 +406,7 @@ MagickExport int IsWindows95()
   return(0);
 }
 
+#if !defined(HasLTDL)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -623,6 +629,7 @@ void *lt_dlsym(void *h,char *s)
     return((void *) NULL);
   return((void *) lpfnDllFunc1);
 }
+#endif /* !defined(HasLTDL) */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
