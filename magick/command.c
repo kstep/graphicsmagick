@@ -2952,6 +2952,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
   ThrowException(exception,code,reason,description); \
   return(False); \
 }
+
   char
     *format,
     *option,
