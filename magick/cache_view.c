@@ -364,7 +364,7 @@ MagickExport PixelPacket *SetCacheView(ViewInfo *view,const int x,const int y,
   region.y=y;
   region.width=columns;
   region.height=rows;
-  return(SetCacheNexus(image->cache,view->id,&region));
+  return(SetCacheNexus(image,view->id,&region));
 }
 
 /*

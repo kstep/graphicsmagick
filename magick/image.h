@@ -306,7 +306,7 @@ typedef struct _Image
     rows,
     depth;
 
-  int
+  size_t
     offset;
 
   RectangleInfo
@@ -744,6 +744,7 @@ extern MagickExport unsigned int
   ReadStream(const ImageInfo *,int (*)(const Image *,const void *,const size_t),
     ExceptionInfo *),
   RGBTransformImage(Image *,const ColorspaceType),
+  SetImageClipMask(Image *,Image *),
   SetImageDepth(Image *,const unsigned int),
   SetImageInfo(ImageInfo *,const unsigned int,ExceptionInfo *),
   SignatureImage(Image *),

@@ -125,129 +125,6 @@ static void
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C l i p I m a g e                                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ClipImage() copies pixels from the composite to the image as defined by a
-%  mask.
-%
-%  The format of the ClipImage method is:
-%
-%      ClipImage(Image *image,const DrawInfo *draw_info)
-%
-%  A description of each parameter follows:
-%
-%    o image: The image.
-%
-%    o draw_info: The draw info.
-%
-%
-*/
-static unsigned int ClipImage(Image *image,const DrawInfo *draw_info)
-{
-  char
-    name[MaxTextExtent];
-
-  DrawInfo
-    *clone_info;
-
-  Image
-    *composite,
-    *mask;
-
-  ImageAttribute
-    *attribute;
-
-  int
-    y;
-
-  register int
-    x;
-
-  register PixelPacket
-    *p,
-    *q,
-    *r;
-
-  TimerInfo
-    timer;
-
-  unsigned int
-    status;
-
-  /*
-    Allocate image mask.
-  */
-  assert(draw_info != (DrawInfo *) NULL);
-  assert(draw_info->signature == MagickSignature);
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  composite=draw_info->canvas;
-  if ((composite->columns != image->columns) ||
-      (composite->rows != image->rows))
-    ThrowBinaryException(OptionWarning,"Unable to clip image",
-      "images are not the same size");
-  if (draw_info->debug)
-    {
-      GetTimerInfo(&timer);
-      (void) fprintf(stdout,"  begin clip-image\n");
-    }
-  FormatString(name,"[%.1024s]",draw_info->clip_path);
-  attribute=GetImageAttribute(image,name);
-  if (attribute == (ImageAttribute *) NULL)
-    return(False);
-  mask=CloneImage(image,0,0,True,&image->exception);
-  if (mask == (Image *) NULL)
-    return(False);
-  SetImage(mask,TransparentOpacity);
-  /*
-    Draw clip path.
-  */
-  clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-  CloneString(&clone_info->primitive,attribute->value);
-  (void) QueryColorDatabase("black",&clone_info->fill);
-  status=DrawImage(mask,clone_info);
-  if (status == False)
-    {
-      DestroyImage(mask);
-      return(False);
-    }
-  /*
-    Transfer composite pixel to image if corresponding mask pixel is opaque.
-  */
-  for (y=0; y < (int) image->rows; y++)
-  {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    q=GetImagePixels(composite,0,y,composite->columns,1);
-    r=GetImagePixels(mask,0,y,mask->columns,1);
-    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL) ||
-        (r == (PixelPacket *) NULL))
-      break;
-    for (x=0; x < (int) image->columns; x++)
-    {
-      if (r->opacity != TransparentOpacity)
-        *p=(*q);
-      p++;
-      q++;
-      r++;
-    }
-    if (!SyncImagePixels(image))
-      break;
-  }
-  DestroyImage(mask);
-  if (draw_info->debug)
-    (void) fprintf(stdout,"  end clip-image (%.2fu)\n",GetUserTime(&timer));
-  return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   C l o n e D r a w I n f o                                                 %
 %                                                                             %
 %                                                                             %
@@ -316,7 +193,8 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
       memcpy(clone_info->dash_pattern,draw_info->dash_pattern,
         (x+1)*sizeof(unsigned int));
     }
-  clone_info->clip_path=(char *) NULL;
+  if (draw_info->clip_path != (char *) NULL)
+    clone_info->clip_path=AllocateString(draw_info->clip_path);
   return(clone_info);
 }
 
@@ -1067,7 +945,7 @@ MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
     DestroyImage(draw_info->tile);
   if (draw_info->server_name != (char *) NULL)
     LiberateMemory((void **) &draw_info->server_name);
-  if (draw_info->dash_pattern != (unsigned *) NULL)
+  if (draw_info->dash_pattern != (unsigned int *) NULL)
     LiberateMemory((void **) &draw_info->dash_pattern);
   if (draw_info->clip_path != (char *) NULL)
     LiberateMemory((void **) &draw_info->clip_path);
@@ -1279,6 +1157,67 @@ static void DrawBoundingRectangles(const DrawInfo *draw_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D r a w C l i p P a t h                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawClipPath() draws the clip path on the image mask.
+%
+%  The format of the DrawClipPath method is:
+%
+%      unsigned int DrawClipPath(Image *image,const DrawInfo *draw_info)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o draw_info: The draw info.
+%
+%
+*/
+static unsigned int DrawClipPath(Image *image,const DrawInfo *draw_info)
+{
+  char
+    clip_path[MaxTextExtent];
+
+  DrawInfo
+    *clone_info;
+
+  ImageAttribute
+    *attribute;
+
+  unsigned int
+    status;
+
+  assert(draw_info != (const DrawInfo *) NULL);
+  assert(draw_info->clip_mask != (Image *) NULL);
+  SetImage(draw_info->clip_mask,TransparentOpacity);
+  FormatString(clip_path,"[%.1024s]",draw_info->clip_path);
+  attribute=GetImageAttribute(image,clip_path);
+  if (attribute == (ImageAttribute *) NULL)
+    return(False);
+  clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+  CloneString(&clone_info->primitive,attribute->value);
+  (void) QueryColorDatabase("black",&clone_info->fill);
+  clone_info->clip_path=(char *) NULL;
+  clone_info->clip_mask=(Image *) NULL;
+  if (draw_info->debug)
+    (void) fprintf(stdout,"\nbegin clip-path %.1024s\n",draw_info->clip_path);
+  status=DrawImage(draw_info->clip_mask,clone_info);
+  if (draw_info->debug)
+    (void) fprintf(stdout,"end clip-path\n\n");
+  DestroyDrawInfo(clone_info);
+  SetImageClipMask(image,draw_info->clip_mask);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   D r a w D a s h P o l y g o n                                             %
 %                                                                             %
 %                                                                             %
@@ -1336,6 +1275,7 @@ static void DrawDashPolygon(const DrawInfo *draw_info,
   unsigned int
     number_vertices;
 
+  assert(draw_info != (const DrawInfo *) NULL);
   if (draw_info->debug)
     {
       GetTimerInfo(&timer);
@@ -1541,7 +1481,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       /*
         Read text from a file.
       */
-      text=(char *) FileToBlob(draw_info->primitive+1,&length,&image->exception);
+      text=(char *)
+        FileToBlob(draw_info->primitive+1,&length,&image->exception);
       if (text == (char *) NULL)
         return(False);
       primitive=TranslateText((ImageInfo *) NULL,image,text);
@@ -1572,7 +1513,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         "Memory allocation failed");
     }
   graphic_context[n]=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-  graphic_context[n]->canvas=image;
   token=AllocateString(primitive);
   status=True;
   for (q=primitive; *q != '\0'; )
@@ -1658,13 +1598,16 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (LocaleCompare("clip-path",keyword) == 0)
           {
+            /*
+              Create clip mask.
+            */
             GetToken(q,&q,token);
-            CloneString(&graphic_context[n]->clip_path,token);
-            graphic_context[n]->canvas=CloneImage(
-              graphic_context[n-1]->canvas,0,0,True,&image->exception);
-            if (graphic_context[n]->canvas == (Image *) NULL)
-              ThrowException(&image->exception,ResourceLimitWarning,
-                "Unable to draw image","Memory allocation failed");
+            graphic_context[n]->clip_path=AllocateString(token);
+            graphic_context[n]->clip_mask=
+              CloneImage(image,0,0,True,&image->exception);
+            if (graphic_context[n]->clip_mask != (Image *) NULL)
+              if (graphic_context[n]->clip_units != ObjectBoundingBox)
+                (void) DrawClipPath(image,graphic_context[n]);
             break;
           }
         if (LocaleCompare("clip-rule",keyword) == 0)
@@ -1696,6 +1639,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 affine.sy=draw_info->bounds.y2;
                 affine.tx=draw_info->bounds.x1;
                 affine.ty=draw_info->bounds.y1;
+                graphic_context[n]->clip_units=ObjectBoundingBox;
                 break;
               }
             break;
@@ -2031,10 +1975,11 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               break;
             if (LocaleCompare("graphic-context",token) == 0)
               {
-                if (graphic_context[n]->clip_path != (char *) NULL)
+                if (graphic_context[n]->clip_mask != 
+                    graphic_context[n-1]->clip_mask)
                   {
-                    ClipImage(graphic_context[n-1]->canvas,graphic_context[n]);
-                    DestroyImage(graphic_context[n]->canvas);
+                    DestroyImage(graphic_context[n]->clip_mask);
+                    SetImageClipMask(image,(Image *) NULL);
                   }
                 DestroyDrawInfo(graphic_context[n]);
                 n--;
@@ -2594,8 +2539,10 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       if (point.y > graphic_context[n]->bounds.y2)
         graphic_context[n]->bounds.y2=point.y;
     }
-    (void) DrawPrimitive(graphic_context[n]->canvas,
-      graphic_context[n],primitive_info);
+    if ((graphic_context[n]->clip_mask != (Image *) NULL) &&
+        (graphic_context[n]->clip_units == ObjectBoundingBox))
+      (void) DrawClipPath(image,graphic_context[n]);
+    (void) DrawPrimitive(image,graphic_context[n],primitive_info);
     if (primitive_info->text != (char *) NULL)
       LiberateMemory((void **) &primitive_info->text);
   }

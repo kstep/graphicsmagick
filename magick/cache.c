@@ -381,7 +381,7 @@ static void DestroyCacheInfo(Cache cache)
     {
       for (id=0; id <= (int) cache_info->rows; id++)
         DestroyCacheNexus(cache,id);
-      LiberateMemory((void **) &cache_info->nexus);
+      LiberateMemory((void **) &cache_info->nexus_info);
     }
   LiberateMemory((void **) &cache_info);
 }
@@ -417,16 +417,16 @@ MagickExport void DestroyCacheNexus(Cache cache,const unsigned int id)
     *cache_info;
 
   register NexusInfo
-    *nexus;
+    *nexus_info;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
-  nexus=cache_info->nexus+id;
-  nexus->available=True;
-  if (nexus->line != (void *) NULL)
-    LiberateMemory((void **) &nexus->line);
-  nexus->line=(void *) NULL;
+  nexus_info=cache_info->nexus_info+id;
+  nexus_info->available=True;
+  if (nexus_info->line != (void *) NULL)
+    LiberateMemory((void **) &nexus_info->line);
+  nexus_info->line=(void *) NULL;
 }
 
 /*
@@ -651,10 +651,10 @@ MagickExport unsigned int GetCacheNexus(Cache cache)
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
-  for (id=1; id <= cache_info->rows; id++)
-    if (cache_info->nexus[id].available)
+  for (id=1; id < (cache_info->rows+3); id++)
+    if (cache_info->nexus_info[id].available)
       {
-        cache_info->nexus[id].available=False;
+        cache_info->nexus_info[id].available=False;
         return(id);
       }
   return(0);
@@ -731,7 +731,7 @@ MagickExport IndexPacket *GetNexusIndexes(const Cache cache,
     *cache_info;
 
   register NexusInfo
-    *nexus;
+    *nexus_info;
 
   if (cache == (Cache) NULL)
     return((IndexPacket *) NULL);
@@ -739,8 +739,8 @@ MagickExport IndexPacket *GetNexusIndexes(const Cache cache,
   assert(cache_info->signature == MagickSignature);
   if (cache_info->storage_class == UndefinedClass)
     return((IndexPacket *) NULL);
-  nexus=cache_info->nexus+id;
-  return(nexus->indexes);
+  nexus_info=cache_info->nexus_info+id;
+  return(nexus_info->indexes);
 }
 
 /*
@@ -778,7 +778,7 @@ MagickExport PixelPacket *GetNexusPixels(const Cache cache,
     *cache_info;
 
   register NexusInfo
-    *nexus;
+    *nexus_info;
 
   if (cache == (Cache) NULL)
     return((PixelPacket *) NULL);
@@ -786,8 +786,8 @@ MagickExport PixelPacket *GetNexusPixels(const Cache cache,
   assert(cache_info->signature == MagickSignature);
   if (cache_info->storage_class == UndefinedClass)
     return((PixelPacket *) NULL);
-  nexus=cache_info->nexus+id;
-  return(nexus->pixels);
+  nexus_info=cache_info->nexus_info+id;
+  return(nexus_info->pixels);
 }
 
 /*
@@ -956,7 +956,6 @@ static PixelPacket *GetPixelsFromCache(const Image *image)
 %    o id: specifies which cache nexus to return the pixels.
 %
 %
-%
 */
 MagickExport unsigned int IsNexusInCore(const Cache cache,const unsigned int id)
 {
@@ -967,7 +966,7 @@ MagickExport unsigned int IsNexusInCore(const Cache cache,const unsigned int id)
     offset;
 
   register NexusInfo
-    *nexus;
+    *nexus_info;
 
   if (cache == (Cache) NULL)
     return(False);
@@ -975,10 +974,10 @@ MagickExport unsigned int IsNexusInCore(const Cache cache,const unsigned int id)
   assert(cache_info->signature == MagickSignature);
   if (cache_info->storage_class == UndefinedClass)
     return(False);
-  nexus=cache_info->nexus+id;
-  offset=nexus->y*cache_info->columns+nexus->x;
+  nexus_info=cache_info->nexus_info+id;
+  offset=nexus_info->y*cache_info->columns+nexus_info->x;
   if (cache_info->type != DiskCache)
-    if (nexus->pixels == (cache_info->pixels+offset))
+    if (nexus_info->pixels == (cache_info->pixels+offset))
       return(True);
   return(False);
 }
@@ -1070,7 +1069,7 @@ MagickExport unsigned int OpenCache(Image *image)
   cache_info->rows=image->rows;
   cache_info->columns=image->columns;
   number_pixels=cache_info->columns*cache_info->rows;
-  if (cache_info->nexus == (NexusInfo *) NULL)
+  if (cache_info->nexus_info == (NexusInfo *) NULL)
     {
       register int
         i;
@@ -1078,24 +1077,24 @@ MagickExport unsigned int OpenCache(Image *image)
       /*
         Allocate cache nexus.
       */
-      cache_info->nexus=(NexusInfo *)
-        AcquireMemory((cache_info->rows+1)*sizeof(NexusInfo));
-      if (cache_info->nexus == (NexusInfo *) NULL)
+      cache_info->nexus_info=(NexusInfo *)
+        AcquireMemory((cache_info->rows+3)*sizeof(NexusInfo));
+      if (cache_info->nexus_info == (NexusInfo *) NULL)
         MagickError(ResourceLimitError,"Memory allocation failed",
-          "unable to allocate cache nexus");
+          "unable to allocate cache nexus_info");
       for (i=0; i <= (int) cache_info->rows; i++)
       {
-        cache_info->nexus[i].available=True;
-        cache_info->nexus[i].columns=0;
-        cache_info->nexus[i].rows=0;
-        cache_info->nexus[i].x=0;
-        cache_info->nexus[i].y=0;
-        cache_info->nexus[i].length=0;
-        cache_info->nexus[i].line=(void *) NULL;
-        cache_info->nexus[i].pixels=(PixelPacket *) NULL;
-        cache_info->nexus[i].indexes=(IndexPacket *) NULL;
+        cache_info->nexus_info[i].available=True;
+        cache_info->nexus_info[i].columns=0;
+        cache_info->nexus_info[i].rows=0;
+        cache_info->nexus_info[i].x=0;
+        cache_info->nexus_info[i].y=0;
+        cache_info->nexus_info[i].length=0;
+        cache_info->nexus_info[i].line=(void *) NULL;
+        cache_info->nexus_info[i].pixels=(PixelPacket *) NULL;
+        cache_info->nexus_info[i].indexes=(IndexPacket *) NULL;
       }
-      cache_info->nexus[0].available=False;
+      cache_info->nexus_info[0].available=False;
     }
   length=number_pixels*sizeof(PixelPacket);
   if ((image->storage_class == PseudoClass) ||
@@ -1220,7 +1219,7 @@ MagickExport unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
     offset;
 
   register NexusInfo
-    *nexus;
+    *nexus_info;
 
   register IndexPacket
     *indexes;
@@ -1234,9 +1233,9 @@ MagickExport unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
   if ((cache_info->storage_class != PseudoClass) &&
       (cache_info->colorspace != CMYKColorspace))
     return(False);
-  nexus=cache_info->nexus+id;
-  offset=nexus->y*cache_info->columns+nexus->x;
-  indexes=nexus->indexes;
+  nexus_info=cache_info->nexus_info+id;
+  offset=nexus_info->y*cache_info->columns+nexus_info->x;
+  indexes=nexus_info->indexes;
   if (cache_info->type != DiskCache)
     {
       /*
@@ -1244,11 +1243,11 @@ MagickExport unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
       */
       if (indexes == (cache_info->indexes+offset))
         return(True);
-      for (y=0; y < (int) nexus->rows; y++)
+      for (y=0; y < (int) nexus_info->rows; y++)
       {
         memcpy(indexes,cache_info->indexes+offset,
-          nexus->columns*sizeof(IndexPacket));
-        indexes+=nexus->columns;
+          nexus_info->columns*sizeof(IndexPacket));
+        indexes+=nexus_info->columns;
         offset+=cache_info->columns;
       }
       return(True);
@@ -1265,17 +1264,17 @@ MagickExport unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
         return(False);
     }
   number_pixels=cache_info->columns*cache_info->rows;
-  for (y=0; y < (int) nexus->rows; y++)
+  for (y=0; y < (int) nexus_info->rows; y++)
   {
     count=lseek(cache_info->file,number_pixels*sizeof(PixelPacket)+offset*
       sizeof(IndexPacket),SEEK_SET);
     if (count == -1)
       return(False);
     count=read(cache_info->file,(char *) indexes,
-      nexus->columns*sizeof(IndexPacket));
-    if (count != (nexus->columns*sizeof(IndexPacket)))
+      nexus_info->columns*sizeof(IndexPacket));
+    if (count != (nexus_info->columns*sizeof(IndexPacket)))
       return(False);
-    indexes+=nexus->columns;
+    indexes+=nexus_info->columns;
     offset+=cache_info->columns;
   }
   return(True);
@@ -1320,7 +1319,7 @@ MagickExport unsigned int ReadCachePixels(Cache cache,const unsigned int id)
     offset;
 
   register NexusInfo
-    *nexus;
+    *nexus_info;
 
   register int
     y;
@@ -1331,9 +1330,9 @@ MagickExport unsigned int ReadCachePixels(Cache cache,const unsigned int id)
   assert(cache != (Cache *) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
-  nexus=cache_info->nexus+id;
-  offset=nexus->y*cache_info->columns+nexus->x;
-  pixels=nexus->pixels;
+  nexus_info=cache_info->nexus_info+id;
+  offset=nexus_info->y*cache_info->columns+nexus_info->x;
+  pixels=nexus_info->pixels;
   if (cache_info->type != DiskCache)
     {
       /*
@@ -1341,11 +1340,11 @@ MagickExport unsigned int ReadCachePixels(Cache cache,const unsigned int id)
       */
       if (pixels == (cache_info->pixels+offset))
         return(True);
-      for (y=0; y < (int) nexus->rows; y++)
+      for (y=0; y < (int) nexus_info->rows; y++)
       {
         memcpy(pixels,cache_info->pixels+offset,
-          nexus->columns*sizeof(PixelPacket));
-        pixels+=nexus->columns;
+          nexus_info->columns*sizeof(PixelPacket));
+        pixels+=nexus_info->columns;
         offset+=cache_info->columns;
       }
       return(True);
@@ -1361,16 +1360,16 @@ MagickExport unsigned int ReadCachePixels(Cache cache,const unsigned int id)
       if (cache_info->file == -1)
         return(False);
     }
-  for (y=0; y < (int) nexus->rows; y++)
+  for (y=0; y < (int) nexus_info->rows; y++)
   {
     count=lseek(cache_info->file,offset*sizeof(PixelPacket),SEEK_SET);
     if (count == -1)
       return(False);
     count=read(cache_info->file,(char *) pixels,
-      nexus->columns*sizeof(PixelPacket));
-    if (count != (nexus->columns*sizeof(PixelPacket)))
+      nexus_info->columns*sizeof(PixelPacket));
+    if (count != (nexus_info->columns*sizeof(PixelPacket)))
       return(False);
-    pixels+=nexus->columns;
+    pixels+=nexus_info->columns;
     offset+=cache_info->columns;
   }
   return(True);
@@ -1430,7 +1429,7 @@ MagickExport void SetCacheThreshold(const off_t threshold)
 %
 %  The format of the SetCacheNexus method is:
 %
-%      PixelPacket SetCacheNexus(Cache cache,const unsigned int id,
+%      PixelPacket SetCacheNexus(Image *image,const unsigned int id,
 %        const RectangleInfo *region)
 %
 %  A description of each parameter follows:
@@ -1438,7 +1437,7 @@ MagickExport void SetCacheThreshold(const off_t threshold)
 %    o pixels: Method SetCacheNexus returns a pointer to the pixels associated
 %      with the specified cache nexus.
 %
-%    o cache: Specifies a pointer to a Cache structure.
+%    o image: The image.
 %
 %    o id: specifies which cache nexus to set.
 %
@@ -1447,7 +1446,7 @@ MagickExport void SetCacheThreshold(const off_t threshold)
 %
 %
 */
-MagickExport PixelPacket *SetCacheNexus(Cache cache,const unsigned int id,
+MagickExport PixelPacket *SetCacheNexus(Image *image,const unsigned int id,
   const RectangleInfo *region)
 {
   CacheInfo
@@ -1457,58 +1456,60 @@ MagickExport PixelPacket *SetCacheNexus(Cache cache,const unsigned int id,
     number_pixels;
 
   register NexusInfo
-    *nexus;
+    *nexus_info;
 
   size_t
     length;
 
-  assert(cache != (Cache) NULL);
-  cache_info=(CacheInfo *) cache;
+  assert(image != (Image *) NULL);
+  cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
-  nexus=cache_info->nexus+id;
-  nexus->columns=region->width;
-  nexus->rows=region->height;
-  nexus->x=region->x;
-  nexus->y=region->y;
-  if (cache_info->type != DiskCache)
-    if ((((nexus->x+nexus->columns) <= cache_info->columns) &&
-        (nexus->rows == 1)) || ((nexus->x == 0) &&
-        ((nexus->columns % cache_info->columns) == 0)))
+  nexus_info=cache_info->nexus_info+id;
+  nexus_info->columns=region->width;
+  nexus_info->rows=region->height;
+  nexus_info->x=region->x;
+  nexus_info->y=region->y;
+  if ((cache_info->type != DiskCache) && (image->clip_mask == (Image *) NULL))
+    if ((((nexus_info->x+nexus_info->columns) <= cache_info->columns) &&
+        (nexus_info->rows == 1)) || ((nexus_info->x == 0) &&
+        ((nexus_info->columns % cache_info->columns) == 0)))
       {
         /*
           Pixels are accessed directly from memory.
         */
-        nexus->pixels=cache_info->pixels+nexus->y*cache_info->columns+nexus->x;
-        nexus->indexes=(IndexPacket *) NULL;
+        nexus_info->pixels=cache_info->pixels+
+          nexus_info->y*cache_info->columns+nexus_info->x;
+        nexus_info->indexes=(IndexPacket *) NULL;
         if ((cache_info->storage_class == PseudoClass) ||
             (cache_info->colorspace == CMYKColorspace))
-          nexus->indexes=cache_info->indexes+
-            nexus->y*cache_info->columns+nexus->x;
-        return(nexus->pixels);
+          nexus_info->indexes=cache_info->indexes+
+            nexus_info->y*cache_info->columns+nexus_info->x;
+        return(nexus_info->pixels);
       }
   /*
     Pixels are stored in a temporary buffer until they are synced to the cache.
   */
-  number_pixels=nexus->columns*nexus->rows;
+  number_pixels=nexus_info->columns*nexus_info->rows;
   length=number_pixels*sizeof(PixelPacket);
   if ((cache_info->storage_class == PseudoClass) ||
       (cache_info->colorspace == CMYKColorspace))
     length+=number_pixels*sizeof(IndexPacket);
-  if (nexus->line == (void *) NULL)
-    nexus->line=AcquireMemory(length);
+  if (nexus_info->line == (void *) NULL)
+    nexus_info->line=AcquireMemory(length);
   else
-    if (nexus->length != length)
-      ReacquireMemory((void **) &nexus->line,length);
-  if (nexus->line == (void *) NULL)
+    if (nexus_info->length != length)
+      ReacquireMemory((void **) &nexus_info->line,length);
+  if (nexus_info->line == (void *) NULL)
     MagickError(ResourceLimitError,"Memory allocation failed",
-      "unable to allocate cache nexus");
-  nexus->length=length;
-  nexus->pixels=(PixelPacket *) nexus->line;
-  nexus->indexes=(IndexPacket *) NULL;
+      "unable to allocate cache nexus_info");
+  nexus_info->length=length;
+  nexus_info->pixels=(PixelPacket *) nexus_info->line;
+  nexus_info->indexes=(IndexPacket *) NULL;
   if ((cache_info->storage_class == PseudoClass) ||
       (cache_info->colorspace == CMYKColorspace))
-    nexus->indexes=(IndexPacket *) (nexus->pixels+nexus->columns*nexus->rows);
-  return(nexus->pixels);
+    nexus_info->indexes=(IndexPacket *)
+      (nexus_info->pixels+nexus_info->columns*nexus_info->rows);
+  return(nexus_info->pixels);
 }
 
 /*
@@ -1594,7 +1595,7 @@ static PixelPacket *SetPixelCache(Image *image,const int x,const int y,
   region.y=y;
   region.width=columns;
   region.height=rows;
-  return(SetCacheNexus(image->cache,0,&region));
+  return(SetCacheNexus(image,0,&region));
 }
 
 /*
@@ -1671,6 +1672,57 @@ static unsigned int SyncPixelCache(Image *image)
   image->taint=True;
   if (IsNexusInCore(image->cache,0))
     return(True);
+  if (image->clip_mask != (Image *) NULL)
+    {
+      CacheInfo
+        *cache_info;
+
+      NexusInfo
+        *nexus_info;
+
+      register int
+        i;
+
+      register PixelPacket
+        *p,
+        *q;
+
+      ViewInfo
+        *image_view,
+        *mask_view;
+
+      image_view=OpenCacheView(image);
+      mask_view=OpenCacheView(image->clip_mask);
+      if ((image_view == (ViewInfo *) NULL) || (mask_view == (ViewInfo *) NULL))
+        ThrowBinaryException(CacheWarning,"Unable to open cache view",
+          image->filename);
+      cache_info=(CacheInfo *) image->cache;
+      nexus_info=cache_info->nexus_info;
+      p=GetCacheView(image_view,nexus_info->x,nexus_info->y,
+        nexus_info->columns,nexus_info->rows);
+      q=GetCacheView(mask_view,nexus_info->x,nexus_info->y,
+        nexus_info->columns,nexus_info->rows);
+      if ((p != (PixelPacket *) NULL) && (q != (PixelPacket *) NULL))
+        {
+          register PixelPacket
+            *r;
+
+          /*
+            Apply clip mask.
+          */
+          r=nexus_info->pixels;
+          for (i=0; i < (nexus_info->columns*nexus_info->rows); i++)
+          {
+            if (q->opacity == TransparentOpacity)
+              *r=(*p);
+            p++;
+            q++;
+            r++;
+          }
+        }
+      CloseCacheView(mask_view);
+      CloseCacheView(image_view);
+    }
   status=WriteCachePixels(image->cache,0);
   if ((image->storage_class == PseudoClass) ||
       (image->colorspace == CMYKColorspace))
@@ -1811,7 +1863,7 @@ MagickExport unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
     offset;
 
   register NexusInfo
-    *nexus;
+    *nexus_info;
 
   register IndexPacket
     *indexes;
@@ -1825,9 +1877,9 @@ MagickExport unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
   if ((cache_info->storage_class != PseudoClass) &&
       (cache_info->colorspace != CMYKColorspace))
     return(False);
-  nexus=cache_info->nexus+id;
-  indexes=nexus->indexes;
-  offset=nexus->y*cache_info->columns+nexus->x;
+  nexus_info=cache_info->nexus_info+id;
+  indexes=nexus_info->indexes;
+  offset=nexus_info->y*cache_info->columns+nexus_info->x;
   if (cache_info->type != DiskCache)
     {
       /*
@@ -1835,11 +1887,11 @@ MagickExport unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
       */
       if (indexes == (cache_info->indexes+offset))
         return(True);
-      for (y=0; y < (int) nexus->rows; y++)
+      for (y=0; y < (int) nexus_info->rows; y++)
       {
         memcpy(cache_info->indexes+offset,indexes,
-          nexus->columns*sizeof(IndexPacket));
-        indexes+=nexus->columns;
+          nexus_info->columns*sizeof(IndexPacket));
+        indexes+=nexus_info->columns;
         offset+=cache_info->columns;
       }
       return(True);
@@ -1856,17 +1908,17 @@ MagickExport unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
         return(False);
     }
   number_pixels=cache_info->columns*cache_info->rows;
-  for (y=0; y < (int) nexus->rows; y++)
+  for (y=0; y < (int) nexus_info->rows; y++)
   {
     count=lseek(cache_info->file,number_pixels*sizeof(PixelPacket)+offset*
       sizeof(IndexPacket),SEEK_SET);
     if (count == -1)
       return(False);
     count=write(cache_info->file,(char *) indexes,
-      nexus->columns*sizeof(IndexPacket));
-    if (count != (nexus->columns*sizeof(IndexPacket)))
+      nexus_info->columns*sizeof(IndexPacket));
+    if (count != (nexus_info->columns*sizeof(IndexPacket)))
       return(False);
-    indexes+=nexus->columns;
+    indexes+=nexus_info->columns;
     offset+=cache_info->columns;
   }
   return(True);
@@ -2162,7 +2214,7 @@ MagickExport unsigned int WriteCachePixels(Cache cache,const unsigned int id)
     offset;
 
   register NexusInfo
-    *nexus;
+    *nexus_info;
 
   register int
     y;
@@ -2173,9 +2225,9 @@ MagickExport unsigned int WriteCachePixels(Cache cache,const unsigned int id)
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
-  nexus=cache_info->nexus+id;
-  pixels=nexus->pixels;
-  offset=nexus->y*cache_info->columns+nexus->x;
+  nexus_info=cache_info->nexus_info+id;
+  pixels=nexus_info->pixels;
+  offset=nexus_info->y*cache_info->columns+nexus_info->x;
   if (cache_info->type != DiskCache)
     {
       /*
@@ -2183,11 +2235,11 @@ MagickExport unsigned int WriteCachePixels(Cache cache,const unsigned int id)
       */
       if (pixels == (cache_info->pixels+offset))
         return(True);
-      for (y=0; y < (int) nexus->rows; y++)
+      for (y=0; y < (int) nexus_info->rows; y++)
       {
         memcpy(cache_info->pixels+offset,pixels,
-          nexus->columns*sizeof(PixelPacket));
-        pixels+=nexus->columns;
+          nexus_info->columns*sizeof(PixelPacket));
+        pixels+=nexus_info->columns;
         offset+=cache_info->columns;
       }
       return(True);
@@ -2203,16 +2255,16 @@ MagickExport unsigned int WriteCachePixels(Cache cache,const unsigned int id)
       if (cache_info->file == -1)
         return(False);
     }
-  for (y=0; y < (int) nexus->rows; y++)
+  for (y=0; y < (int) nexus_info->rows; y++)
   {
     count=lseek(cache_info->file,offset*sizeof(PixelPacket),SEEK_SET);
     if (count == -1)
       return(False);
     count=write(cache_info->file,(char *) pixels,
-      nexus->columns*sizeof(PixelPacket));
-    if (count != (nexus->columns*sizeof(PixelPacket)))
+      nexus_info->columns*sizeof(PixelPacket));
+    if (count != (nexus_info->columns*sizeof(PixelPacket)))
       return(False);
-    pixels+=nexus->columns;
+    pixels+=nexus_info->columns;
     offset+=cache_info->columns;
   }
   return(True);

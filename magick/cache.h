@@ -73,7 +73,7 @@ typedef struct _CacheInfo
     persist;
 
   NexusInfo
-    *nexus;
+    *nexus_info;
 
   unsigned long
     signature;
@@ -93,7 +93,7 @@ extern MagickExport IndexPacket
 
 extern MagickExport PixelPacket
   *GetNexusPixels(const Cache,const unsigned int),
-  *SetCacheNexus(Cache,const unsigned int,const RectangleInfo *);
+  *SetCacheNexus(Image *,const unsigned int,const RectangleInfo *);
 
 extern MagickExport unsigned int
   GetCacheNexus(Cache),

@@ -621,7 +621,7 @@ MagickExport Image *AverageImages(Image *image,ExceptionInfo *exception)
   {
     if ((next->columns != image->columns) || (next->rows != image->rows))
       ThrowImageException(OptionWarning,"Unable to average image sequence",
-        "images are not the same size");
+        "image widths or heights differ");
   }
   /*
     Allocate sum accumulation buffer.
@@ -942,6 +942,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
       clone_image->page.y*=(int) ((double) rows/clone_image->rows);
       clone_image->columns=columns;
       clone_image->rows=rows;
+      clone_image->clip_mask=(Image *) NULL;
     }
   else
     {
@@ -5624,6 +5625,47 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
+%  SetImageClipMask() associates a clip mask with the image.  The clip mask
+%  must be the same dimensions as the image.
+%
+%  The format of the SetImageClipMask method is:
+%
+%      unsigned int SetImageClipMask(Image *image,Image *clip_mask)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o clip_mask: The image clip mask.
+%
+%
+*/
+MagickExport unsigned int SetImageClipMask(Image *image,Image *clip_mask)
+{
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  image->clip_mask=(Image *) NULL;
+  if (clip_mask == (Image *) NULL)
+    return(True);
+  if ((clip_mask->columns != image->columns) ||
+      (clip_mask->rows != image->rows))
+    ThrowBinaryException(OptionWarning,"Unable to associate clip mask",
+      "image widths or heights differ");
+  image->clip_mask=clip_mask;
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t I m a g e D e p t h                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
 %  SetImageDepth() sets the depth of the image, either 8 or 16.  Some image
 %  formats support both 8 and 16-bits per color component (e.g. PNG).  Use
 %  SetImageDepth() to specify your preference.  A value other than 0 is
@@ -5664,7 +5706,7 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned int depth)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
-      return(False);
+      break;
     for (x=0; x < (int) image->columns; x++)
     {
       p->red=UpScale(DownScale(p->red));
@@ -5674,7 +5716,7 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned int depth)
       p++;
     }
     if (!SyncImagePixels(image))
-      return(False);
+      break;
   }
   if (image->storage_class == PseudoClass)
     {

@@ -112,17 +112,17 @@ typedef struct _DrawInfo
   unsigned int
     *dash_pattern;
 
-  DrawUnits
-    clip_units;
-
   char
     *clip_path;
 
-  SegmentInfo
-    bounds;
+  DrawUnits
+    clip_units;
 
   Image
-    *canvas;
+    *clip_mask;
+
+  SegmentInfo
+    bounds;
 
   unsigned int
     debug;
