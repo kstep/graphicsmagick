@@ -1356,7 +1356,7 @@ void Magick::Image::write ( Blob *blob_ )
   size_t length = 2048; // Efficient size for small images
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  void* data = ImageToBlob( imageInfo(),
+  void* data = MagickLib::ImageToBlob( imageInfo(),
 			    image(),
 			    &length,
 			    &exceptionInfo);
@@ -1371,7 +1371,7 @@ void Magick::Image::write ( Blob *blob_,
   size_t length = 2048; // Efficient size for small images
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  void* data = ImageToBlob( imageInfo(),
+  void* data = MagickLib::ImageToBlob( imageInfo(),
 			    image(),
 			    &length,
 			    &exceptionInfo);
@@ -1388,7 +1388,7 @@ void Magick::Image::write ( Blob *blob_,
   size_t length = 2048; // Efficient size for small images
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  void* data = ImageToBlob( imageInfo(),
+  void* data = MagickLib::ImageToBlob( imageInfo(),
 			    image(),
 			    &length,
 			    &exceptionInfo);
@@ -2630,7 +2630,7 @@ MagickLib::Image * Magick::Image::replaceImage( MagickLib::Image* replacement_ )
 	{
 	  // We own the image.  Destroy existing image.
 	  if ( _imgRef->_image )
-	    DestroyImages( _imgRef->_image );
+	    MagickLib::DestroyImages( _imgRef->_image );
 	  
 	  // Set reference image pointer to new image
 	  _imgRef->image(replacement_);
@@ -2737,7 +2737,7 @@ Magick::ImageRef::~ImageRef( void )
 {
   if ( _image )
     {
-      DestroyImages( _image );
+      MagickLib::DestroyImages( _image );
       _image = (MagickLib::Image *)NULL;
     }
 

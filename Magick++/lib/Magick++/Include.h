@@ -278,6 +278,7 @@ namespace Magick
   using MagickLib::CacheWarning;
   using MagickLib::ChopImage;
   using MagickLib::CloneAnnotateInfo;
+  using MagickLib::CloneDrawInfo;
   using MagickLib::CloneImage;
   using MagickLib::CloneImageInfo;
   using MagickLib::CloneQuantizeInfo;
@@ -300,6 +301,7 @@ namespace Magick
   using MagickLib::DestroyMagickInfo;
   using MagickLib::DestroyPostscriptGeometry;
   using MagickLib::DestroyQuantizeInfo;
+  using MagickLib::DestroyDrawInfo;
   using MagickLib::DirectClass;
   using MagickLib::DisplayImages;
   using MagickLib::DrawImage;
@@ -322,6 +324,7 @@ namespace Magick
   using MagickLib::GammaImage;
   using MagickLib::GaussianBlurImage;
   using MagickLib::GetAnnotateInfo;
+  using MagickLib::GetDrawInfo;
   using MagickLib::GetExceptionInfo;
   using MagickLib::GetGeometry;
   using MagickLib::GetImageAttribute;
