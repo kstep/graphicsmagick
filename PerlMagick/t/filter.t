@@ -67,13 +67,13 @@ testFilter('input.miff', 'Despeckle',
 ++$test;
 testFilter('input.miff', 'Edge',
   q/3/,
-  '8ffcdf7f3cf7a1be3ccdc1784ee50f84',
+  '2fa7ec71a552d3c538433ca7150b50ed',
   '89457006d11b4d9ea348d90f2fa75ec7');
 
 ++$test;
 testFilter('input.miff', 'Emboss',
   q/3/,
-  'f283a4e53680cae33afd75f397103bfc',
+  'cf53137b4981534abcbdcf38faa01c25',
   '9d45e8fce500ab54db41d2d48ebfe1a6');
 
 ++$test;

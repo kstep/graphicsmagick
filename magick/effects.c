@@ -359,14 +359,15 @@ Export Image *ConvolveImage(Image *image,const unsigned int order,
   double
     blue,
     green,
+    normalize,
     opacity,
-    red,
-    weight;
+    red;
 
   Image
     *convolve_image;
 
   int
+    i,
     y;
 
   PixelPacket
@@ -401,13 +402,13 @@ Export Image *ConvolveImage(Image *image,const unsigned int order,
   /*
     Convolve image.
   */
-  weight=0.0;
-  for (v=0; v < (order*order); v++)
-    weight+=kernel[v];
+  normalize=0.0;
+  for (i=0; i < (order*order); i++)
+    normalize+=kernel[i];
   for (y=0; y < (int) convolve_image->rows; y++)
   {
-    v=Min(Max(y-(int) order/2,0),image->rows-order);
-    p=GetImagePixels(image,0,v,image->columns,order);
+    i=Min(Max(y-(int) order/2,0),image->rows-order);
+    p=GetImagePixels(image,0,i,image->columns,order);
     q=SetImagePixels(convolve_image,0,y,convolve_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
@@ -431,10 +432,13 @@ Export Image *ConvolveImage(Image *image,const unsigned int order,
         }
         s+=image->columns;
       }
-      red/=weight;
-      green/=weight;
-      blue/=weight;
-      opacity/=weight;
+      if ((normalize != 0.0) && (normalize != 1.0))
+        {
+          red/=normalize;
+          green/=normalize;
+          blue/=normalize;
+          opacity/=normalize;
+        }
       q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
       q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
       q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
@@ -2864,10 +2868,10 @@ Export Image *StereoImage(Image *image,Image *offset_image,
       break;
     for (x=0; x < (int) stereo_image->columns; x++)
     {
-      r->red=Intensity(*p);
-      r->green=0;
-      r->blue=Intensity(*q);
-      r->opacity=0;
+      r->red=p->red;
+      r->green=q->green;
+      r->blue=q->blue;
+      r->opacity=(p->opacity+q->opacity)/2;
       p++;
       q++;
       r++;
