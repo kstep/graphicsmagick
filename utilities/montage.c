@@ -1335,7 +1335,7 @@ int main(int argc,char **argv)
     Initialize command line arguments.
   */
   ReadCommandlLine(argc,&argv);
-  InitializeMagick((const char *) NULL);
+  InitializeMagick(*argv);
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
     MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);
