@@ -376,6 +376,9 @@
 /* define if the compiler accepts the new for scoping rules */
 #undef HAVE_NEW_FOR_SCOPING
 
+/* Define if you have the `poll' function. */
+#undef HAVE_POLL
+
 /* Define if you have the <pwd.h> header file. */
 #undef HAVE_PWD_H
 
