@@ -1723,7 +1723,7 @@ MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
     }
   clone_info=CloneImageInfo(image_info);
   clone_info->blob=(void *) blob;
-  clone_info->length=0;
+  clone_info->length=length;
   clone_info->ping=True;
   if (clone_info->size == (char *) NULL)
     clone_info->size=AllocateString(DefaultTileGeometry);
