@@ -613,7 +613,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "  Image is %ld x %ld with channels=%d, depth=%d, mode=%s",
               psd_info.columns, psd_info.rows, psd_info.channels,
-              psd_info.depth, ModeToString(psd_info.mode));
+              psd_info.depth, ModeToString((PSDImageType) psd_info.mode));
   }
   /*
     Initialize image.
