@@ -634,7 +634,7 @@ uninstall-am: uninstall-info-am
 #EXTRA_DIST = 
 
 clean-local:
-	rm -f *out_*
+	rm -f *out*.*
 
 check-rwblob:
 	@status=0 ; \

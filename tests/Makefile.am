@@ -51,7 +51,7 @@ drawtest_SOURCES = drawtest.c
 #EXTRA_DIST = 
 
 clean-local:
-	rm -f *out_*
+	rm -f *out*.*
 
 CHECK_FILES = \
 	'LOGO:' \
