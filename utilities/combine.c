@@ -290,7 +290,7 @@ int main(int argc,char **argv)
       {
         case 'b':
         {
-          if (strncmp("background",option+1,5) == 0)
+          if (LocaleNCompare("background",option+1,5) == 0)
             {
               if (*option == '-')
                 {
@@ -302,7 +302,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("blend",option+1,3) == 0)
+          if (LocaleNCompare("blend",option+1,3) == 0)
             {
               blend=0.0;
               if (*option == '-')
@@ -320,7 +320,7 @@ int main(int argc,char **argv)
         }
         case 'c':
         {
-          if (strncmp("cache",option+1,3) == 0)
+          if (LocaleNCompare("cache",option+1,3) == 0)
             {
               if (*option == '-')
                 {
@@ -331,7 +331,7 @@ int main(int argc,char **argv)
               SetCacheThreshold(atoi(argv[i]));
               break;
             }
-          if (strncmp("colors",option+1,7) == 0)
+          if (LocaleNCompare("colors",option+1,7) == 0)
             {
               if (*option == '-')
                 {
@@ -341,7 +341,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("colorspace",option+1,7) == 0)
+          if (LocaleNCompare("colorspace",option+1,7) == 0)
             {
               image_info->colorspace=RGBColorspace;
               if (*option == '-')
@@ -380,7 +380,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("comment",option+1,4) == 0)
+          if (LocaleNCompare("comment",option+1,4) == 0)
             {
               if (*option == '-')
                 {
@@ -390,7 +390,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("compose",option+1,5) == 0)
+          if (LocaleNCompare("compose",option+1,5) == 0)
             {
               compose=ReplaceCompositeOp;
               if (*option == '-')
@@ -437,7 +437,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("compress",option+1,5) == 0)
+          if (LocaleNCompare("compress",option+1,5) == 0)
             {
               image_info->compression=NoCompression;
               if (*option == '-')
@@ -473,7 +473,7 @@ int main(int argc,char **argv)
         }
         case 'd':
         {
-          if (strncmp("density",option+1,3) == 0)
+          if (LocaleNCompare("density",option+1,3) == 0)
             {
               image_info->density=(char *) NULL;
               if (*option == '-')
@@ -510,7 +510,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("dispose",option+1,5) == 0)
+          if (LocaleNCompare("dispose",option+1,5) == 0)
             {
               image_info->dispose=(char *) NULL;
               if (*option == '-')
@@ -522,7 +522,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("dither",option+1,3) == 0)
+          if (LocaleNCompare("dither",option+1,3) == 0)
             {
               image_info->dither=(*option == '-');
               break;
@@ -544,7 +544,7 @@ int main(int argc,char **argv)
         }
         case 'g':
         {
-          if (strncmp("geometry",option+1,2) == 0)
+          if (LocaleNCompare("geometry",option+1,2) == 0)
             {
               geometry=(char *) NULL;
               if (*option == '-')
@@ -556,7 +556,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("gravity",option+1,2) == 0)
+          if (LocaleNCompare("gravity",option+1,2) == 0)
             {
               gravity=ForgetGravity;
               if (*option == '-')
@@ -595,7 +595,7 @@ int main(int argc,char **argv)
         }
         case 'h':
         {
-          if (strncmp("help",option+1,2) == 0)
+          if (LocaleNCompare("help",option+1,2) == 0)
             {
               Usage(client_name);
               break;
@@ -605,7 +605,7 @@ int main(int argc,char **argv)
         }
         case 'i':
         {
-          if (strncmp("interlace",option+1,3) == 0)
+          if (LocaleNCompare("interlace",option+1,3) == 0)
             {
               image_info->interlace=NoInterlace;
               if (*option == '-')
@@ -633,7 +633,7 @@ int main(int argc,char **argv)
         }
         case 'l':
         {
-          if (strncmp("label",option+1,3) == 0)
+          if (LocaleNCompare("label",option+1,3) == 0)
             {
               if (*option == '-')
                 {
@@ -648,23 +648,23 @@ int main(int argc,char **argv)
         }
         case 'm':
         {
-          if (strncmp("matte",option+1,5) == 0)
+          if (LocaleNCompare("matte",option+1,5) == 0)
             break;
-          if (strncmp("monochrome",option+1,2) == 0)
+          if (LocaleNCompare("monochrome",option+1,2) == 0)
             break;
           MagickError(OptionError,"Unrecognized option",option);
           break;
         }
         case 'n':
         {
-          if (strncmp("negate",option+1,3) == 0)
+          if (LocaleNCompare("negate",option+1,3) == 0)
             break;
           MagickError(OptionError,"Unrecognized option",option);
           break;
         }
         case 'p':
         {
-          if (strncmp("page",option+1,3) == 0)
+          if (LocaleNCompare("page",option+1,3) == 0)
             {
               image_info->page=(char *) NULL;
               if (*option == '-')
@@ -681,7 +681,7 @@ int main(int argc,char **argv)
         }
         case 'q':
         {
-          if (strncmp("quality",option+1,2) == 0)
+          if (LocaleNCompare("quality",option+1,2) == 0)
             {
               image_info->quality=75;
               if (*option == '-')
@@ -698,7 +698,7 @@ int main(int argc,char **argv)
         }
         case 's':
         {
-          if (strncmp("scene",option+1,2) == 0)
+          if (LocaleNCompare("scene",option+1,2) == 0)
             {
               if (*option == '-')
                 {
@@ -708,7 +708,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("size",option+1,2) == 0)
+          if (LocaleNCompare("size",option+1,2) == 0)
             {
               image_info->size=(char *) NULL;
               if (*option == '-')
@@ -720,7 +720,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("stegano",option+1,4) == 0)
+          if (LocaleNCompare("stegano",option+1,4) == 0)
             {
               stegano=0;
               if (*option == '-')
@@ -732,7 +732,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("stereo",option+1,4) == 0)
+          if (LocaleNCompare("stereo",option+1,4) == 0)
             {
               stereo=(*option == '-');
               break;
@@ -742,13 +742,13 @@ int main(int argc,char **argv)
         }
         case 't':
         {
-          if (strncmp("tile",option+1,2) == 0)
+          if (LocaleNCompare("tile",option+1,2) == 0)
             {
               tile=(*option == '-');
               break;
             }
           MagickError(OptionError,"Unrecognized option",option);
-          if (strncmp("treedepth",option+1,3) == 0)
+          if (LocaleNCompare("treedepth",option+1,3) == 0)
             {
               if (*option == '-')
                 {
@@ -763,7 +763,7 @@ int main(int argc,char **argv)
         }
         case 'v':
         {
-          if (strncmp("verbose",option+1,2) == 0)
+          if (LocaleNCompare("verbose",option+1,2) == 0)
             {
               image_info->verbose=(*option == '-');
               break;

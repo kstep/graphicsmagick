@@ -100,7 +100,6 @@ typedef struct _AnnotateInfo
     *geometry,
     *text,
     *font,
-    *pen,
     *box;
 
   unsigned int
@@ -110,6 +109,10 @@ typedef struct _AnnotateInfo
   double
     pointsize,
     degrees;
+
+  PixelPacket
+    stroke,
+    fill;
 
   char
     *font_name;
@@ -205,8 +208,7 @@ typedef struct _MontageInfo
     *title,
     *frame,
     *texture,
-    *font,
-    *pen;
+    *font;
 
   double
     pointsize;
@@ -220,6 +222,8 @@ typedef struct _MontageInfo
     compose;
 
   PixelPacket
+    stroke,
+    fill,
     background_color,
     border_color,
     matte_color;
@@ -424,13 +428,11 @@ typedef struct _DrawInfo
   char
     *primitive,
     *font,
-    *pen,
     *box;
 
   unsigned int
     opacity,
     antialias,
-    fill,
     gravity;
 
   double
@@ -444,6 +446,8 @@ typedef struct _DrawInfo
     rotate;
 
   PixelPacket
+    stroke,
+    fill,
     border_color;
 
   Image
@@ -503,7 +507,6 @@ typedef struct _ImageInfo
   char
     *server_name,
     *font,
-    *pen,
     *texture,
     *density;
 
@@ -517,6 +520,8 @@ typedef struct _ImageInfo
     fuzz;
 
   PixelPacket
+    stroke,
+    fill,
     background_color,
     border_color,
     matte_color;
@@ -715,8 +720,8 @@ extern Export PixelPacket
 extern Export unsigned int
   AnimateImages(const ImageInfo *image_info,Image *image),
   AnnotateImage(Image *,const AnnotateInfo *),
-  ColorFloodfillImage(Image *,const PixelPacket,Image *,const int x,const int y,
-    const PaintMethod),
+  ColorFloodfillImage(Image *,const DrawInfo *,const PixelPacket,const int x,
+    const int y,const PaintMethod),
   CompositeImage(Image *,const CompositeOperator,Image *,const int,const int),
   ContrastImage(Image *,const unsigned int),
   DispatchImage(Image *,const int,const int,const unsigned int,

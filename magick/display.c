@@ -2057,9 +2057,6 @@ static unsigned int XColorEditImage(Display *display,
             DrawInfo
               *draw_info;
 
-            ImageInfo
-              *image_info;
-
             PixelPacket
               target;
 
@@ -2073,13 +2070,13 @@ static unsigned int XColorEditImage(Display *display,
                 target.green=XDownScale(border_color.green);
                 target.blue=XDownScale(border_color.blue);
               }
-            image_info=CloneImageInfo(resource_info->image_info);
-            (void) CloneString(&image_info->pen,
-              resource_info->pen_colors[pen_id]);
-            draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-            ColorFloodfillImage(*image,target,draw_info->tile,x_offset,y_offset,              method);
+            draw_info=
+              CloneDrawInfo(resource_info->image_info,(DrawInfo *) NULL);
+            QueryColorDatabase(resource_info->pen_colors[pen_id],
+              &draw_info->fill);
+            ColorFloodfillImage(*image,draw_info,target,x_offset,y_offset,
+              method);
             DestroyDrawInfo(draw_info);
-            DestroyImageInfo(image_info);
             break;
           }
           case ResetMethod:

@@ -102,7 +102,8 @@ static double
   GenerateCircle(PrimitiveInfo *,PointInfo,PointInfo);
 
 static Quantum
-  InsidePrimitive(PrimitiveInfo *,const DrawInfo *,const PointInfo *,Image *);
+  InsidePrimitive(PrimitiveInfo *,const DrawInfo *,const PointInfo *,const int,
+    Image *);
 
 static void
   GenerateArc(PrimitiveInfo *,PointInfo,PointInfo,PointInfo),
@@ -167,17 +168,8 @@ Export DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
     cloned_info->primitive=AllocateString(draw_info->primitive);
   if (draw_info->font != (char *) NULL)
     cloned_info->font=AllocateString(draw_info->font);
-  if (draw_info->pen != (char *) NULL)
-    cloned_info->pen=AllocateString(draw_info->pen);
   if (draw_info->box != (char *) NULL)
     cloned_info->box=AllocateString(draw_info->box);
-  if (draw_info->tile != (Image *) NULL)
-    {
-      cloned_info->tile=CloneImage(draw_info->tile,draw_info->tile->columns,
-        draw_info->tile->rows,False,&exception);
-      if (cloned_info->tile == (Image *) NULL)
-        MagickError(exception.severity,exception.message,exception.qualifier);
-    }
   return(cloned_info);
 }
 
@@ -198,18 +190,18 @@ Export DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
 %
 %  The format of the ColorFloodfillImage method is:
 %
-%      unsigned int ColorFloodfillImage(Image *image,const PixelPacket target,
-%        Image *tile,const int x_offset,const int y_offset,
+%      unsigned int ColorFloodfillImage(Image *image,const DrawInfo *draw_info,
+%        const PixelPacket target,const int x_offset,const int y_offset,
 %        const PaintMethod method)
 %
 %  A description of each parameter follows:
 %
 %    o image: The address of a structure of type Image.
 %
+%    o draw_info: a structure of type DrawInfo.
+%
 %    o target: A PixelPacket structure.  This is the RGB value of the target
 %      color.
-%
-%    o tile: An image representing the image to tile onto the floodplane.
 %
 %    o x,y: Unsigned integers representing the current location of the pen.
 %
@@ -218,11 +210,12 @@ Export DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
 %
 %
 */
-Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket target,
-  Image *tile,const int x_offset,const int y_offset,const PaintMethod method)
+Export unsigned int ColorFloodfillImage(Image *image,const DrawInfo *draw_info,
+  const PixelPacket target,const int x_offset,const int y_offset,
+  const PaintMethod method)
 {
-  PixelPacket
-    color;
+  double
+    alpha;
 
   int
     offset,
@@ -253,7 +246,7 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket target,
     Check boundary conditions.
   */
   assert(image != (Image *) NULL);
-  assert(tile != (Image *) NULL);
+  assert(draw_info != (DrawInfo *) NULL);
   if ((x_offset < 0) || (x_offset >= (int) image->columns))
     return(False);
   if ((y_offset < 0) || (y_offset >= (int) image->rows))
@@ -261,9 +254,7 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket target,
   /*
     Set floodfill color.
   */
-  (void) QueryColorDatabase("black",&color);
-  color=GetOnePixel(tile,0,0);
-  if (ColorMatch(color,target,image->fuzz))
+  if (ColorMatch(draw_info->fill,target,image->fuzz))
     return(False);
   segment_stack=(SegmentInfo *)
     AllocateMemory(MaxStacksize*sizeof(SegmentInfo));
@@ -273,6 +264,7 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket target,
   /*
     Track "hot" pixels with the image index packets.
   */
+  alpha=1.0/Opaque;
   image->class=PseudoClass;
   for (y=0; y < (int) image->rows; y++)
   {
@@ -321,10 +313,10 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket target,
         }
       else
         if (ColorMatch(*q,target,image->fuzz) ||
-            ColorMatch(*q,color,image->fuzz))
+            ColorMatch(*q,draw_info->fill,image->fuzz))
           break;
       indexes[x]=True;
-      *q=color;
+      *q=draw_info->fill;
       q--;
     }
     if (!SyncImagePixels(image))
@@ -356,10 +348,10 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket target,
                   }
                 else
                   if (ColorMatch(*q,target,image->fuzz) ||
-                      ColorMatch(*q,color,image->fuzz))
+                      ColorMatch(*q,draw_info->fill,image->fuzz))
                     break;
                 indexes[i]=True;
-                *q=color;
+                *q=draw_info->fill;
                 i++;
                 q++;
               }
@@ -386,7 +378,7 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket target,
               }
             else
               if (!ColorMatch(*q,target,image->fuzz) &&
-                  !ColorMatch(*q,color,image->fuzz))
+                  !ColorMatch(*q,draw_info->fill,image->fuzz))
                 break;
             q++;
           }
@@ -394,41 +386,62 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket target,
       start=x;
     } while (x <= x2);
   }
-  /*
-    Tile image onto floodplane.
-  */
-  for (y=0; y < (int) image->rows; y++)
-  {
-    q=GetImagePixels(image,0,y,image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    indexes=GetIndexes(image);
-    for (x=0; x < (int) image->columns; x++)
+  if (draw_info->tile == (Image *) NULL)
+    for (y=0; y < (int) image->rows; y++)
     {
-      if (indexes[x])
-        {
-          p=GetImagePixels(tile,x % tile->columns,y % tile->rows,1,1);
-          if (p == (PixelPacket *) NULL)
-            break;
-          if (!tile->matte)
-            *q=(*p);
-          else
-            {
-              q->red=((unsigned long) (p->red*p->opacity+
-                q->red*(Opaque-p->opacity))/Opaque);
-              q->green=((unsigned long) (p->green*p->opacity+
-                q->green*(Opaque-p->opacity))/Opaque);
-              q->blue=((unsigned long) (p->blue*p->opacity+
-                q->blue*(Opaque-p->opacity))/Opaque);
-              q->opacity=((unsigned long) (p->opacity*
-                p->opacity+q->opacity*(Opaque-p->opacity))/Opaque);
-            }
-        }
-      q++;
+      /*
+        Tile fill color onto floodplane.
+      */
+      q=GetImagePixels(image,0,y,image->columns,1);
+      if (q == (PixelPacket *) NULL)
+        break;
+      indexes=GetIndexes(image);
+      for (x=0; x < (int) image->columns; x++)
+      {
+        if (indexes[x])
+          *q=draw_info->fill;
+        q++;
+      }
+      if (!SyncImagePixels(image))
+        break;
     }
-    if (!SyncImagePixels(image))
-      break;
-  }
+  else
+    for (y=0; y < (int) image->rows; y++)
+    {
+      /*
+        Tile image onto floodplane.
+      */
+      q=GetImagePixels(image,0,y,image->columns,1);
+      if (q == (PixelPacket *) NULL)
+        break;
+      indexes=GetIndexes(image);
+      for (x=0; x < (int) image->columns; x++)
+      {
+        if (indexes[x])
+          {
+            p=GetImagePixels(draw_info->tile,x % draw_info->tile->columns,
+              y % draw_info->tile->rows,1,1);
+            if (p == (PixelPacket *) NULL)
+              break;
+            if (!draw_info->tile->matte)
+              *q=(*p);
+            else
+              {
+                q->red=alpha*(p->red*p->opacity+
+                  q->red*(Opaque-p->opacity));
+                q->green=alpha*(p->green*p->opacity+
+                  q->green*(Opaque-p->opacity));
+                q->blue=alpha*(p->blue*p->opacity+
+                  q->blue*(Opaque-p->opacity));
+                q->opacity=alpha*(p->opacity*
+                  p->opacity+q->opacity*(Opaque-p->opacity));
+              }
+          }
+        q++;
+      }
+      if (!SyncImagePixels(image))
+        break;
+    }
   image->class=DirectClass;
   FreeMemory((void **) &segment_stack);
   return(True);
@@ -465,8 +478,6 @@ Export void DestroyDrawInfo(DrawInfo *draw_info)
     FreeMemory((void **) &draw_info->primitive);
   if (draw_info->font != (char *) NULL)
     FreeMemory((void **) &draw_info->font);
-  if (draw_info->pen != (char *) NULL)
-    FreeMemory((void **) &draw_info->pen);
   if (draw_info->box != (char *) NULL)
     FreeMemory((void **) &draw_info->box);
   if (draw_info->tile != (Image *) NULL)
@@ -504,19 +515,17 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 {
 #define DrawImageText  "  Drawing on image...  "
 
-  DrawInfo
-    *clone_info;
-
   char
     keyword[MaxTextExtent],
     *primitive;
 
   double
+    alpha,
     mid,
     radius;
 
-  Image
-    *tile;
+  DrawInfo
+    *clone_info;
 
   int
     j,
@@ -563,7 +572,6 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   assert(image != (Image *) NULL);
   assert(draw_info != (DrawInfo *) NULL);
   assert(draw_info->primitive != (char *) NULL);
-  assert(draw_info->tile != (Image *) NULL);
   if (*draw_info->primitive == '\0')
     return(False);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
@@ -656,8 +664,10 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
     if (LocaleCompare("fill",keyword) == 0)
       {
-        (void) sscanf(p,"%u%n",&clone_info->fill,&n);
-        p+=n;
+        for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
+          keyword[x]=(*p++);
+        keyword[x]='\0';
+        (void) QueryColorDatabase(keyword,&clone_info->fill);
         continue;
       }
     if (LocaleCompare("linewidth",keyword) == 0)
@@ -672,17 +682,6 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         p+=n;
         continue;
       }
-    if (LocaleCompare("pen",keyword) == 0)
-      {
-        for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
-          keyword[x]=(*p++);
-        keyword[x]='\0';
-        CloneString(&clone_info->pen,keyword);
-        (void) QueryColorDatabase(clone_info->pen,
-          &clone_info->tile->background_color);
-        SetImage(clone_info->tile,(Quantum) (Opaque*clone_info->opacity/100.0));
-        continue;
-      }
     if (LocaleCompare("pointsize",keyword) == 0)
       {
         (void) sscanf(p,"%lf%n",&clone_info->pointsize,&n);
@@ -693,6 +692,14 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         (void) sscanf(p,"%lf%n",&clone_info->rotate,&n);
         p+=n;
+        continue;
+      }
+    if (LocaleCompare("stroke",keyword) == 0)
+      {
+        for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
+          keyword[x]=(*p++);
+        keyword[x]='\0';
+        (void) QueryColorDatabase(keyword,&clone_info->stroke);
         continue;
       }
     if (LocaleCompare("translate",keyword) == 0)
@@ -706,10 +713,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         continue;
       }
     if (LocaleNCompare("fill",keyword,4) == 0)
-      {
-        (void) strcpy(keyword,keyword+4);
-        clone_info->fill=True;
-      }
+      (void) strcpy(keyword,keyword+4);
     if (LocaleCompare("Point",keyword) == 0)
       primitive_type=PointPrimitive;
     if (LocaleCompare("Line",keyword) == 0)
@@ -751,7 +755,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     bounds.y2=0.0;
     radius=0.0;
     i=0;
-    j=i;
+    j=0;
     for (x=0; *p != '\0'; x++)
     {
       /*
@@ -1160,58 +1164,161 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     bounds.y2+=mid;
     if (bounds.y2 >= image->rows)
       bounds.y2=image->rows-1.0;
-    /*
-      Draw the primitive on the image.
-    */
-    color=GetOnePixel(clone_info->tile,0,0);
-    tile=clone_info->tile;
-    image->class=DirectClass;
-    for (y=(int) bounds.y1; y <= (int) bounds.y2; y++)
-    {
-      target.x=bounds.x2-bounds.x1+1.0;
-      target.y=y;
-      q=GetImagePixels(image,(int) bounds.x1,y,(int) target.x,1);
-      if (q == (PixelPacket *) NULL)
-        break;
-      for (x=(int) bounds.x1; x <= (int) bounds.x2; x++)
+    alpha=1.0/Opaque;
+    if (clone_info->tile != (Image *) NULL)
+      for (y=(int) bounds.y1; y <= (int) bounds.y2; y++)
       {
-        target.x=x;
-        opacity=InsidePrimitive(primitive_info,clone_info,&target,image);
-        if (!clone_info->antialias)
+        /*
+          Tile the primitive on the image.
+        */
+        target.x=bounds.x2-bounds.x1+1.0;
+        target.y=y;
+        q=GetImagePixels(image,(int) bounds.x1,y,(int) target.x,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=(int) bounds.x1; x <= (int) bounds.x2; x++)
+        {
+          target.x=x;
+          opacity=InsidePrimitive(primitive_info,clone_info,&target,True,image);
+          if (!clone_info->antialias)
+            if (opacity != Transparent)
+              opacity=Opaque;
           if (opacity != Transparent)
-            opacity=Opaque;
-        if (opacity != Transparent)
-          {
-            if ((tile->columns > 1) || (tile->rows > 1))
-              color=GetOnePixel(tile,x % tile->columns,y % tile->rows);
-            if (!clone_info->tile->matte)
-              {
-                q->red=((unsigned long)
-                  (color.red*opacity+q->red*(Opaque-opacity))/Opaque);
-                q->green=((unsigned long)
-                  (color.green*opacity+q->green*(Opaque-opacity))/Opaque);
-                q->blue=((unsigned long)
-                  (color.blue*opacity+q->blue*(Opaque-opacity))/Opaque);
-              }
-            else
-              {
-                q->red=((unsigned long) (color.red*color.opacity+q->red*
-                  (Opaque-color.opacity))/Opaque);
-                q->green=((unsigned long) (color.green*color.opacity+q->green*
-                  (Opaque-color.opacity))/Opaque);
-                q->blue=((unsigned long) (color.blue*color.opacity+q->blue*
-                  (Opaque-color.opacity))/Opaque);
-                q->opacity=((unsigned long) (color.opacity*color.opacity+
-                  q->opacity*(Opaque-color.opacity))/Opaque);
-              }
-          }
-        q++;
+            {
+              color=GetOnePixel(draw_info->tile,x % draw_info->tile->columns,
+                y % draw_info->tile->rows);
+              if (!clone_info->tile->matte)
+                {
+                  q->red=alpha*(color.red*opacity+q->red*(Opaque-opacity));
+                  q->green=
+                    alpha*(color.green*opacity+q->green*(Opaque-opacity));
+                  q->blue=alpha*(color.blue*opacity+q->blue*(Opaque-opacity));
+                }
+              else
+                {
+                  q->red=alpha*(color.red*color.opacity+
+                    q->red*(Opaque-color.opacity));
+                  q->green=alpha*(color.green*color.opacity+
+                    q->green*(Opaque-color.opacity));
+                  q->blue=alpha*(color.blue*color.opacity+
+                    q->blue*(Opaque-color.opacity));
+                  q->opacity=alpha*(color.opacity*color.opacity+
+                    q->opacity*(Opaque-color.opacity));
+                }
+            }
+          q++;
+        }
+        if (!SyncImagePixels(image))
+          break;
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(DrawImageText,y,image->rows);
       }
-      if (!SyncImagePixels(image))
-        break;
-      if (QuantumTick(y,image->rows))
-        ProgressMonitor(DrawImageText,y,image->rows);
-    }
+    else
+      if (draw_info->fill.opacity != Transparent)
+        {
+          color=clone_info->fill;
+          color.opacity=Opaque*clone_info->opacity/100;
+          for (y=(int) bounds.y1; y <= (int) bounds.y2; y++)
+          {
+            /*
+              Fill the primitive on the image.
+            */
+            target.x=bounds.x2-bounds.x1+1.0;
+            target.y=y;
+            q=GetImagePixels(image,(int) bounds.x1,y,(int) target.x,1);
+            if (q == (PixelPacket *) NULL)
+              break;
+            for (x=(int) bounds.x1; x <= (int) bounds.x2; x++)
+            {
+              target.x=x;
+              opacity=
+                InsidePrimitive(primitive_info,clone_info,&target,True,image);
+              if (!clone_info->antialias)
+                if (opacity != Transparent)
+                  opacity=Opaque;
+              if (opacity != Transparent)
+                {
+                  if (clone_info->opacity == 100)
+                    {
+                      q->red=alpha*(color.red*opacity+q->red*(Opaque-opacity));
+                      q->green=
+                        alpha*(color.green*opacity+q->green*(Opaque-opacity));
+                      q->blue=
+                        alpha*(color.blue*opacity+q->blue*(Opaque-opacity));
+                    }
+                  else
+                    {
+                      q->red=alpha*(color.red*color.opacity+
+                        q->red*(Opaque-color.opacity));
+                      q->green=alpha*(color.green*color.opacity+
+                        q->green*(Opaque-color.opacity));
+                      q->blue=alpha*(color.blue*color.opacity+
+                        q->blue*(Opaque-color.opacity));
+                      q->opacity=alpha*(color.opacity*color.opacity+
+                        q->opacity*(Opaque-color.opacity));
+                    }
+                }
+              q++;
+            }
+            if (!SyncImagePixels(image))
+              break;
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(DrawImageText,y,image->rows);
+          }
+        }
+      if (draw_info->stroke.opacity != Transparent)
+        {
+          color=clone_info->stroke;
+          color.opacity=Opaque*clone_info->opacity/100;
+          for (y=(int) bounds.y1; y <= (int) bounds.y2; y++)
+          {
+            /*
+              Stroke the primitive on the image.
+            */
+            target.x=bounds.x2-bounds.x1+1.0;
+            target.y=y;
+            q=GetImagePixels(image,(int) bounds.x1,y,(int) target.x,1);
+            if (q == (PixelPacket *) NULL)
+              break;
+            for (x=(int) bounds.x1; x <= (int) bounds.x2; x++)
+            {
+              target.x=x;
+              opacity=
+                InsidePrimitive(primitive_info,clone_info,&target,False,image);
+              if (!clone_info->antialias)
+                if (opacity != Transparent)
+                  opacity=Opaque;
+              if (opacity != Transparent)
+                {
+                  if (clone_info->opacity == 100)
+                    {
+                      q->red=alpha*(color.red*opacity+q->red*(Opaque-opacity));
+                      q->green=
+                        alpha*(color.green*opacity+q->green*(Opaque-opacity));
+                      q->blue=
+                        alpha*(color.blue*opacity+q->blue*(Opaque-opacity));
+                    }
+                  else
+                    {
+                      q->red=alpha*(color.red*color.opacity+
+                        q->red*(Opaque-color.opacity));
+                      q->green=alpha*(color.green*color.opacity+
+                        q->green*(Opaque-color.opacity));
+                      q->blue=alpha*(color.blue*color.opacity+
+                        q->blue*(Opaque-color.opacity));
+                      q->opacity=alpha*(color.opacity*color.opacity+
+                        q->opacity*(Opaque-color.opacity));
+                    }
+                }
+              q++;
+            }
+            if (!SyncImagePixels(image))
+              break;
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(DrawImageText,y,image->rows);
+          }
+        }
+    image->class=DirectClass;
   }
   /*
     Free resources.
@@ -1883,20 +1990,17 @@ Export void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   ExceptionInfo
     error;
 
-  ImageInfo
-    *clone_info;
-
   /*
     Initialize draw attributes.
   */
   assert(draw_info != (DrawInfo *) NULL);
   draw_info->primitive=(char *) NULL;
   draw_info->font=AllocateString(image_info->font);
-  draw_info->pen=AllocateString(image_info->pen);
   draw_info->box=(char *) NULL;
-  draw_info->opacity=Opaque;
+  draw_info->opacity=100;
   draw_info->antialias=image_info->antialias;
-  draw_info->fill=False;
+  draw_info->stroke=image_info->stroke;
+  draw_info->fill=image_info->fill;
   draw_info->gravity=NorthWestGravity;
   draw_info->linewidth=1.0;
   draw_info->pointsize=image_info->pointsize;
@@ -1904,19 +2008,7 @@ Export void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->translate.y=0.0;
   draw_info->rotate=0.0;
   draw_info->border_color=image_info->border_color;
-  /*
-    Get tile.
-  */
-  clone_info=CloneImageInfo(image_info);
-  if (draw_info->pen == (char *) NULL)
-    (void) strcpy(clone_info->filename,"xc:black");
-  else
-    if (*draw_info->pen == '@')
-      (void) strcpy(clone_info->filename,draw_info->pen+1);
-    else
-      (void) FormatString(clone_info->filename,"xc:%.1024s",draw_info->pen);
-  draw_info->tile=ReadImage(clone_info,&error);
-  DestroyImageInfo(clone_info);
+  draw_info->tile=(Image *) NULL;
 }
 
 /*
@@ -1941,7 +2033,8 @@ Export void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 %  The format of the InsidePrimitive method is:
 %
 %      unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
-%        const DrawInfo *draw_info,const PointInfo *pixel,Image *image)
+%        const DrawInfo *draw_info,const PointInfo *pixel,const int fill,
+%        Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -1953,6 +2046,9 @@ Export void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 %    o draw_info: Specifies a pointer to a DrawInfo structure.
 %
 %    o target: PointInfo representing the (x,y) location in the image.
+%
+%    o fill: A value other than zero means InsidePrimitive returns True for
+%      any point inside the primitive.
 %
 %    o image: The address of a structure of type Image.
 %
@@ -2010,7 +2106,7 @@ static Quantum PixelOnLine(const PointInfo *pixel,const PointInfo *p,
 }
 
 static Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
-  const DrawInfo *draw_info,const PointInfo *pixel,Image *image)
+  const DrawInfo *draw_info,const PointInfo *pixel,const int fill,Image *image)
 {
   PixelPacket
     border_color;
@@ -2058,7 +2154,7 @@ static Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
       }
       case RectanglePrimitive:
       {
-        if (draw_info->fill)
+        if (fill)
           {
             if ((pixel->x >= (int) (Min(p->pixel.x,q->pixel.x)+0.5)) &&
                 (pixel->x <= (int) (Max(p->pixel.x,q->pixel.x)+0.5)) &&
@@ -2080,7 +2176,7 @@ static Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
       }
       case CirclePrimitive:
       {
-        if (draw_info->fill)
+        if (fill)
           {
             alpha=p->pixel.x-pixel->x;
             beta=p->pixel.y-pixel->y;
@@ -2130,7 +2226,7 @@ static Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
         unsigned int
           poly_opacity;
 
-        if (!draw_info->fill)
+        if (!fill)
           {
             poly_opacity=Transparent;
             for ( ; (p < q) && (poly_opacity != Opaque); p++)
@@ -2252,7 +2348,7 @@ static Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
                 target.green=border_color.green;
                 target.blue=border_color.blue;
               }
-            (void) ColorFloodfillImage(image,target,draw_info->tile,
+            (void) ColorFloodfillImage(image,draw_info,target,
               (int) pixel->x,(int) pixel->y,p->method);
             break;
           }
@@ -2321,8 +2417,8 @@ static Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
                 target.green=border_color.green;
                 target.blue=border_color.blue;
               }
-            (void) MatteFloodfillImage(image,target,Transparent,(int) pixel->x,
-              (int) pixel->y,p->method);
+            (void) MatteFloodfillImage(image,target,Transparent,
+              (int) pixel->x,(int) pixel->y,p->method);
             break;
           }
           case ResetMethod:
@@ -2378,7 +2474,8 @@ static Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
         annotate=CloneAnnotateInfo(clone_info,(AnnotateInfo *) NULL);
         DestroyImageInfo(clone_info);
         annotate->font=AllocateString(draw_info->font);
-        annotate->pen=AllocateString(draw_info->pen);
+        annotate->stroke=draw_info->stroke;
+        annotate->fill=draw_info->fill;
         annotate->box=AllocateString(draw_info->box);
         annotate->antialias=draw_info->antialias;
         annotate->pointsize=draw_info->pointsize;

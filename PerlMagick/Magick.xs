@@ -99,7 +99,7 @@ extern "C" {
 #define EndOf(array)  (&array[NumberOf(array)])
 #define ImageReference  (char **) 3
 #define IntegerReference  (char **) 1
-#define MaxArguments  12
+#define MaxArguments  13
 #define NumberOf(array)  (sizeof(array)/sizeof(*array))
 #define PackageName   "Image::Magick"
 #define StringReference  (char **) 0
@@ -277,7 +277,7 @@ static struct
     { "Comment", { {"comment", StringReference} } },
     { "Label", { {"label", StringReference} } },
     { "AddNoise", { {"noise", NoiseTypes} } },
-    { "Colorize", { {"pen", StringReference}, {"opacity", StringReference} } },
+    { "Colorize", { {"fill", StringReference}, {"opacity", StringReference} } },
     { "Border", { {"geom", StringReference}, {"width", IntegerReference},
       {"height", IntegerReference}, {"color", StringReference} } },
     { "Blur", { {"order", IntegerReference} } },
@@ -322,12 +322,13 @@ static struct
     { "IsGrayImage", },
     { "Annotate", { {"text", StringReference}, {"font", StringReference},
       {"point", DoubleReference}, {"density", StringReference},
-      {"box", StringReference}, {"pen", StringReference},
-      {"geom", StringReference}, {"server", StringReference},
-      {"x", IntegerReference}, {"y", IntegerReference},
-      {"grav", GravityTypes}, {"degree", DoubleReference} } },
+      {"box", StringReference}, {"stroke", StringReference},
+      {"fill", StringReference}, {"geom", StringReference},
+      {"server", StringReference}, {"x", IntegerReference},
+      {"y", IntegerReference}, {"grav", GravityTypes},
+      {"degree", DoubleReference} } },
     { "ColorFloodfill", { {"geom", StringReference}, {"x", IntegerReference},
-      {"y", IntegerReference}, {"pen", StringReference},
+      {"y", IntegerReference}, {"fill", StringReference},
       {"bordercolor", StringReference} } },
     { "Composite", { {"compos", CompositeTypes}, {"image", ImageReference},
       {"geom", StringReference}, {"x", IntegerReference},
@@ -335,11 +336,11 @@ static struct
     { "Contrast", { {"sharp", BooleanTypes} } },
     { "CycleColormap", { {"amount", IntegerReference} } },
     { "Draw", { {"prim", PrimitiveTypes}, {"points", StringReference},
-      {"meth", MethodTypes}, {"pen", StringReference},
-      {"linew", DoubleReference}, {"server", StringReference},
-      {"borderc", StringReference}, {"x", DoubleReference},
-      {"y", DoubleReference}, {"rotate", DoubleReference},
-      {"fill", BooleanTypes} } },
+      {"meth", MethodTypes}, {"stroke", StringReference},
+      {"fill", StringReference}, {"linew", DoubleReference},
+      {"server", StringReference}, {"borderc", StringReference},
+      {"x", DoubleReference}, {"y", DoubleReference},
+      {"rotate", DoubleReference}, {"tile", ImageReference} } },
     { "Equalize", },
     { "Gamma", { {"gamma", StringReference}, {"red", DoubleReference},
       {"green", DoubleReference}, {"blue", DoubleReference} } },
@@ -352,7 +353,7 @@ static struct
     { "Negate", { {"gray", BooleanTypes} } },
     { "Normalize", },
     { "NumberColors", },
-    { "Opaque", { {"color", StringReference}, {"pen", StringReference} } },
+    { "Opaque", { {"color", StringReference}, {"fill", StringReference} } },
     { "Quantize", { {"colors", IntegerReference}, {"tree", IntegerReference},
       {"colorsp", ColorspaceTypes}, {"dither", BooleanTypes},
       {"measure", BooleanTypes}, {"global", BooleanTypes} } },
@@ -1168,6 +1169,12 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             info->image_info->file=IoIFP(sv_2io(sval));
           return;
         }
+      if (strEQcase(attribute,"fill"))
+        {
+          if (info)
+            (void) QueryColorDatabase(SvPV(sval,na),&info->image_info->fill);
+          return;
+        }
       if (strEQcase(attribute,"font"))
         {
           if (info)
@@ -1321,12 +1328,6 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
           DestroyPostscriptGeometry(p);
           return;
         }
-      if (strEQcase(attribute,"pen"))
-        {
-          if (info)
-            (void) CloneString(&info->image_info->pen,SvPV(sval,na));
-          return;
-        }
       if (strEQcase(attribute,"pixel"))
         {
           int
@@ -1460,6 +1461,12 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                 }
               (void) CloneString(&info->image_info->size,SvPV(sval,na));
             }
+          return;
+        }
+      if (strEQcase(attribute,"stroke"))
+        {
+          if (info)
+            (void) QueryColorDatabase(SvPV(sval,na),&info->image_info->stroke);
           return;
         }
       break;
@@ -2768,6 +2775,15 @@ Get(ref,...)
                   s=newSVpv(info->image_info->filename,0);
               break;
             }
+          if (strEQcase(attribute,"fill"))
+            {
+              if (info)
+                {
+                  (void) QueryColorName(&info->image_info->fill,color);
+                  s=newSVpv(color,0);
+                }
+              break;
+            }
           if (strEQcase(attribute,"filter"))
             {
               j=image->filter;
@@ -2993,12 +3009,6 @@ Get(ref,...)
                   }
               break;
             }
-          if (strEQcase(attribute,"pen"))
-            {
-              if (info && info->image_info->pen)
-                s=newSVpv(info->image_info->pen,0);
-              break;
-            }
           if (strEQcase(attribute,"pipe"))
             {
               if (image)
@@ -3137,6 +3147,15 @@ Get(ref,...)
               attribute=GetImageAttribute(image,"Signature");
               if (attribute != (ImageAttribute *) NULL)
                 s=newSVpv(attribute->value,0);
+              break;
+            }
+          if (strEQcase(attribute,"stroke"))
+            {
+              if (info)
+                {
+                  (void) QueryColorName(&info->image_info->stroke,color);
+                  s=newSVpv(color,0);
+                }
               break;
             }
           break;
@@ -4131,12 +4150,9 @@ Mogrify(ref,...)
           if (attribute_flag[3])
             (void) CloneString(&info->image_info->density,
               argument_list[3].string_reference);
-          if (attribute_flag[5])
-            (void) CloneString(&info->image_info->pen,
-              argument_list[5].string_reference);
-          if (attribute_flag[7])
+          if (attribute_flag[8])
             (void) CloneString(&info->image_info->server_name,
-              argument_list[7].string_reference);
+              argument_list[8].string_reference);
           annotate_info=CloneAnnotateInfo(info->image_info,
             (AnnotateInfo *) NULL);
           if (attribute_flag[0])
@@ -4145,23 +4161,29 @@ Mogrify(ref,...)
           if (attribute_flag[4])
             (void) CloneString(&annotate_info->box,
               argument_list[4].string_reference);
+          if (attribute_flag[5])
+            (void) QueryColorDatabase(argument_list[5].string_reference,
+              &annotate_info->stroke);
           if (attribute_flag[6])
+            (void) QueryColorDatabase(argument_list[6].string_reference,
+              &annotate_info->fill);
+          if (attribute_flag[7])
             (void) CloneString(&annotate_info->geometry,
-              argument_list[6].string_reference);
-          if (attribute_flag[8] || attribute_flag[9])
+              argument_list[7].string_reference);
+          if (attribute_flag[9] || attribute_flag[10])
             {
-              if (!attribute_flag[8])
-                argument_list[8].int_reference=0;
               if (!attribute_flag[9])
                 argument_list[9].int_reference=0;
-              FormatString(message,"%+d%+d",argument_list[8].int_reference,
-                argument_list[9].int_reference);
+              if (!attribute_flag[10])
+                argument_list[10].int_reference=0;
+              FormatString(message,"%+d%+d",argument_list[9].int_reference,
+                argument_list[10].int_reference);
               (void) CloneString(&annotate_info->geometry,message);
             }
-          if (attribute_flag[10])
-            annotate_info->gravity=argument_list[10].int_reference;
           if (attribute_flag[11])
-            annotate_info->degrees=argument_list[11].double_reference;
+            annotate_info->gravity=argument_list[11].int_reference;
+          if (attribute_flag[12])
+            annotate_info->degrees=argument_list[12].double_reference;
           AnnotateImage(image,annotate_info);
           DestroyAnnotateInfo(annotate_info);
           break;
@@ -4184,8 +4206,8 @@ Mogrify(ref,...)
           if (attribute_flag[2])
              rectangle_info.y=argument_list[2].int_reference;
           if (attribute_flag[3])
-            (void) CloneString(&info->image_info->pen,
-              argument_list[3].string_reference);
+            (void) QueryColorDatabase(argument_list[3].string_reference,
+              &info->image_info->fill);
           if (attribute_flag[4])
             QueryColorDatabase(argument_list[4].string_reference,&border_color);
           pixel=GetImagePixels(image,rectangle_info.x % image->columns,
@@ -4195,7 +4217,7 @@ Mogrify(ref,...)
           if (attribute_flag[4])
             target=border_color;
           draw_info=CloneDrawInfo(info->image_info,(DrawInfo *) NULL);
-          ColorFloodfillImage(image,target,draw_info->tile,rectangle_info.x,
+          ColorFloodfillImage(image,draw_info,target,rectangle_info.x,
             rectangle_info.y,attribute_flag[4] ? FillToBorderMethod :
             FloodfillMethod);
           DestroyDrawInfo(draw_info);
@@ -4321,14 +4343,11 @@ Mogrify(ref,...)
           DrawInfo
             *draw_info;
 
-          if (attribute_flag[3])
-            (void) CloneString(&info->image_info->pen,
-              argument_list[3].string_reference);
-          if (attribute_flag[5])
-            (void) CloneString(&info->image_info->server_name,
-              argument_list[5].string_reference);
           if (attribute_flag[6])
-            (void) QueryColorDatabase(argument_list[6].string_reference,
+            (void) CloneString(&info->image_info->server_name,
+              argument_list[6].string_reference);
+          if (attribute_flag[7])
+            (void) QueryColorDatabase(argument_list[7].string_reference,
               &info->image_info->border_color);
           draw_info=CloneDrawInfo(info->image_info,(DrawInfo *) NULL);
           (void) CloneString(&draw_info->primitive,"Point");
@@ -4347,17 +4366,24 @@ Mogrify(ref,...)
               (void) strcat(draw_info->primitive,
                 MethodTypes[argument_list[2].int_reference]);
             }
+          if (attribute_flag[3])
+            (void) QueryColorDatabase(argument_list[3].string_reference,
+              &draw_info->stroke);
           if (attribute_flag[4])
-            draw_info->linewidth=argument_list[4].double_reference;
-          if (attribute_flag[7])
-            draw_info->translate.x=argument_list[7].double_reference;
+            (void) QueryColorDatabase(argument_list[4].string_reference,
+              &draw_info->fill);
+          if (attribute_flag[5])
+            draw_info->linewidth=argument_list[5].double_reference;
           if (attribute_flag[8])
-            draw_info->translate.y=argument_list[8].double_reference;
+            draw_info->translate.x=argument_list[8].double_reference;
           if (attribute_flag[9])
-            draw_info->rotate=argument_list[9].double_reference;
+            draw_info->translate.y=argument_list[9].double_reference;
           if (attribute_flag[10])
-            draw_info->fill=argument_list[10].int_reference;
+            draw_info->rotate=argument_list[10].double_reference;
+          if (attribute_flag[11])
+            draw_info->tile=argument_list[11].image_reference;
           DrawImage(image,draw_info);
+          draw_info->tile=(Image *) NULL;
           DestroyDrawInfo(draw_info);
           break;
         }
@@ -4957,18 +4983,18 @@ Montage(ref,...)
                 MaxTextExtent);
               continue;
             }
+          if (strEQcase(attribute,"fill"))
+            {
+              if (info)
+                (void) QueryColorDatabase(SvPV(ST(i),na),
+                  &info->image_info->fill);
+              continue;
+            }
           if (strEQcase(attribute,"font"))
             {
               (void) CloneString(&montage_info->font,SvPV(ST(i),na));
               continue;
             }
-          if (strEQcase(attribute,"fore"))  /* anachronism */
-            {
-              if (info)
-                (void) CloneString(&info->image_info->pen,SvPV(ST(i),na));
-              (void) CloneString(&montage_info->pen,SvPV(ST(i),na));
-              continue;
-             }
           break;
         }
         case 'G':
@@ -5072,13 +5098,6 @@ Montage(ref,...)
         case 'P':
         case 'p':
         {
-          if (strEQcase(attribute,"pen"))
-            {
-              if (info)
-                (void) CloneString(&info->image_info->pen,SvPV(ST(i),na));
-              (void) CloneString(&montage_info->pen,SvPV(ST(i),na));
-              continue;
-             }
           if (strEQcase(attribute,"point"))
             {
               montage_info->pointsize=SvIV(ST(i));
@@ -5101,6 +5120,13 @@ Montage(ref,...)
                 }
              montage_info->shadow=sp;
              continue;
+            }
+          if (strEQcase(attribute,"stroke"))
+            {
+              if (info)
+                (void) QueryColorDatabase(SvPV(ST(i),na),
+                  &info->image_info->stroke);
+              continue;
             }
           break;
         }

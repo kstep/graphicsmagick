@@ -2003,6 +2003,14 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
         color->opacity=((unsigned long) (MaxRGB*opacity)/((1 << n)-1));
       return(True);
     }
+  if (LocaleCompare(target,"none") == 0)
+    {
+      color->red=0;
+      color->green=0;
+      color->blue=0;
+      color->opacity=Transparent;
+      return(True);
+    }
   if (LocaleNCompare(target,"rgb",3) == 0)
     {
       (void) sscanf(target,"%*[^(](%d,%d,%d",&red,&green,&blue);

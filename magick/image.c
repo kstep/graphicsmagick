@@ -908,8 +908,6 @@ Export ImageInfo *CloneImageInfo(const ImageInfo *image_info)
     clone_info->server_name=AllocateString(image_info->server_name);
   if (image_info->font != (char *) NULL)
     clone_info->font=AllocateString(image_info->font);
-  if (image_info->pen != (char *) NULL)
-    clone_info->pen=AllocateString(image_info->pen);
   if (image_info->texture != (char *) NULL)
     clone_info->texture=AllocateString(image_info->texture);
   if (image_info->density != (char *) NULL)
@@ -967,6 +965,7 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
     y;
 
   double
+    alpha,
     blue,
     green,
     midpoint,
@@ -1010,6 +1009,7 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
   /*
     Image must be uncompressed.
   */
+  alpha=1.0/Opaque;
   red=0.0;
   green=0.0;
   blue=0.0;
@@ -1252,60 +1252,52 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
               }
             else
               {
-                red=(unsigned long)
-                  (p->red*p->opacity+q->red*(Opaque-p->opacity))/Opaque;
-                green=(unsigned long)
-                  (p->green*p->opacity+q->green*(Opaque-p->opacity))/Opaque;
-                blue=(unsigned long)
-                  (p->blue*p->opacity+q->blue*(Opaque-p->opacity))/Opaque;
+                red=alpha*(p->red*p->opacity+q->red*(Opaque-p->opacity));
+                green=alpha*(p->green*p->opacity+q->green*(Opaque-p->opacity));
+                blue=alpha*(p->blue*p->opacity+q->blue*(Opaque-p->opacity));
                 if (composite_image->matte)
-                  opacity=(unsigned long) (p->opacity*p->opacity+
-                    q->opacity*(Opaque-p->opacity))/Opaque;
+                  opacity=alpha*(p->opacity*p->opacity+
+                    q->opacity*(Opaque-p->opacity));
               }
           break;
         }
         case InCompositeOp:
         {
-          red=(unsigned long) (p->red*q->opacity)/Opaque;
-          green=(unsigned long) (p->green*q->opacity)/Opaque;
-          blue=(unsigned long) (p->blue*q->opacity)/Opaque;
+          red=alpha*(p->red*q->opacity);
+          green=alpha*(p->green*q->opacity);
+          blue=alpha*(p->blue*q->opacity);
           if (composite_image->matte)
-            opacity=(unsigned long) (p->opacity*q->opacity)/Opaque;
+            opacity=alpha*(p->opacity*q->opacity);
           break;
         }
         case OutCompositeOp:
         {
-          red=(unsigned long) (p->red*(Opaque-q->opacity))/Opaque;
-          green=(unsigned long) (p->green*(Opaque-q->opacity))/Opaque;
-          blue=(unsigned long) (p->blue*(Opaque-q->opacity))/Opaque;
+          red=alpha*(p->red*(Opaque-q->opacity));
+          green=alpha*(p->green*(Opaque-q->opacity));
+          blue=alpha*(p->blue*(Opaque-q->opacity));
           if (composite_image->matte)
-            opacity=(unsigned long) (p->opacity*(Opaque-q->opacity))/Opaque;
+            opacity=alpha*(p->opacity*(Opaque-q->opacity));
           break;
         }
         case AtopCompositeOp:
         {
-          red=(unsigned long)
-            (p->red*q->opacity+q->red*(Opaque-p->opacity))/Opaque;
-          green=(unsigned long)
-            (p->green*q->opacity+q->green*(Opaque-p->opacity))/Opaque;
-          blue=(unsigned long)
-            (p->blue*q->opacity+q->blue*(Opaque-p->opacity))/Opaque;
+          red=alpha*(p->red*q->opacity+q->red*(Opaque-p->opacity));
+          green=alpha*(p->green*q->opacity+q->green*(Opaque-p->opacity));
+          blue=alpha*(p->blue*q->opacity+q->blue*(Opaque-p->opacity));
           if (composite_image->matte)
-            opacity=(unsigned long)
-              (p->opacity*q->opacity+q->opacity*(Opaque-p->opacity))/Opaque;
+            opacity=
+              alpha*(p->opacity*q->opacity+q->opacity*(Opaque-p->opacity));
           break;
         }
         case XorCompositeOp:
         {
-          red=(unsigned long)
-            (p->red*(Opaque-q->opacity)+q->red*(Opaque-p->opacity))/Opaque;
-          green=(unsigned long)
-            (p->green*(Opaque-q->opacity)+q->green*(Opaque-p->opacity))/Opaque;
-          blue=(unsigned long)
-            (p->blue*(Opaque-q->opacity)+q->blue*(Opaque-p->opacity))/Opaque;
+          red=alpha*(p->red*(Opaque-q->opacity)+q->red*(Opaque-p->opacity));
+          green=
+            alpha*(p->green*(Opaque-q->opacity)+q->green*(Opaque-p->opacity));
+          blue=alpha*(p->blue*(Opaque-q->opacity)+q->blue*(Opaque-p->opacity));
           if (composite_image->matte)
-            opacity=(unsigned long) (p->opacity*(Opaque-q->opacity)+
-              q->opacity*(Opaque-p->opacity))/Opaque;
+            opacity=alpha*(p->opacity*(Opaque-q->opacity)+
+              q->opacity*(Opaque-p->opacity));
           break;
         }
         case PlusCompositeOp:
@@ -1375,10 +1367,10 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
         case BumpmapCompositeOp:
         {
           shade=Intensity(*p);
-          red=((unsigned long) (q->red*shade)/Opaque);
-          green=((unsigned long) (q->green*shade)/Opaque);
-          blue=((unsigned long) (q->blue*shade)/Opaque);
-          opacity=((unsigned long) (q->opacity*shade)/Opaque);
+          red=alpha*(q->red*shade);
+          green=alpha*(q->green*shade);
+          blue=alpha*(q->blue*shade);
+          opacity=alpha*(q->opacity*shade);
           break;
         }
         case ReplaceCompositeOp:
@@ -1421,12 +1413,9 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
         }
         case BlendCompositeOp:
         {
-          red=((unsigned long)
-            (p->red*p->opacity+q->red*q->opacity)/Opaque);
-          green=((unsigned long)
-            (p->green*p->opacity+q->green*q->opacity)/Opaque);
-          blue=((unsigned long)
-            (p->blue*p->opacity+q->blue*q->opacity)/Opaque);
+          red=alpha*(p->red*p->opacity+q->red*q->opacity);
+          green=alpha*(p->green*p->opacity+q->green*q->opacity);
+          blue=alpha*(p->blue*p->opacity+q->blue*q->opacity);
           opacity=Opaque;
           break;
         }
@@ -2420,12 +2409,13 @@ Export void GetImageInfo(ImageInfo *image_info)
   */
   image_info->server_name=(char *) NULL;
   image_info->font=(char *) NULL;
-  image_info->pen=(char *) NULL;
   image_info->texture=(char *) NULL;
   image_info->density=(char *) NULL;
   image_info->antialias=True;
   image_info->pointsize=atof(DefaultPointSize);
   image_info->fuzz=0;
+  (void) QueryColorDatabase("none",&image_info->stroke);
+  (void) QueryColorDatabase("none",&image_info->fill);
   (void) QueryColorDatabase(BackgroundColor,&image_info->background_color);
   (void) QueryColorDatabase(BorderColor,&image_info->border_color);
   (void) QueryColorDatabase(MatteColor,&image_info->matte_color);
@@ -3217,16 +3207,11 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         Image
           *colorize_image;
 
-        PixelPacket
-          target;
-
         /*
           Colorize the image.
         */
-        target=GetOnePixel(*image,0,0);
-        (void) QueryColorDatabase(clone_info->pen,&target);
         colorize_image=
-          ColorizeImage(*image,argv[++i],target,&(*image)->exception);
+          ColorizeImage(*image,argv[++i],clone_info->fill,&(*image)->exception);
         if (colorize_image == (Image *) NULL)
           break;
         DestroyImage(*image);
@@ -3449,9 +3434,10 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         EqualizeImage(*image);
         continue;
       }
-    if (LocaleNCompare("fill",option+1,4) == 0)
+    if (LocaleCompare("-fill",option) == 0)
       {
-        draw_info->fill=(*option == '-');
+        (void) QueryColorDatabase(argv[++i],&clone_info->fill);
+        draw_info->fill=image_info->fill;
         continue;
       }
     if (LocaleNCompare("filter",option+1,4) == 0)
@@ -3808,14 +3794,11 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
     if (LocaleNCompare("-opaque",option,3) == 0)
       {
         PixelPacket
-          pen_color,
           target;
 
         target=GetOnePixel(*image,0,0);
         (void) QueryColorDatabase(argv[++i],&target);
-        pen_color=GetOnePixel(*image,0,0);
-        (void) QueryColorDatabase(clone_info->pen,&pen_color);
-        OpaqueImage(*image,target,pen_color);
+        OpaqueImage(*image,target,draw_info->fill);
         continue;
       }
     if (LocaleNCompare("-paint",option,4) == 0)
@@ -3831,15 +3814,6 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
           break;
         DestroyImage(*image);
         *image=paint_image;
-        continue;
-      }
-    if (LocaleCompare("-pen",option) == 0)
-      {
-        (void) CloneString(&clone_info->pen,argv[++i]);
-        (void) CloneString(&draw_info->pen,clone_info->pen);
-        (void) QueryColorDatabase(draw_info->pen,
-          &draw_info->tile->background_color);
-        SetImage(draw_info->tile,Opaque);
         continue;
       }
     if (LocaleNCompare("pointsize",option+1,2) == 0)
@@ -4174,6 +4148,12 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
           break;
         DestroyImage(*image);
         *image=spread_image;
+        continue;
+      }
+    if (LocaleCompare("-stroke",option) == 0)
+      {
+        (void) QueryColorDatabase(argv[++i],&clone_info->stroke);
+        draw_info->stroke=image_info->stroke;
         continue;
       }
     if (LocaleNCompare("-swirl",option,3) == 0)

@@ -245,9 +245,6 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
     text[MaxTextExtent],
     page[MaxTextExtent];
 
-  PixelPacket
-    pen_color;
-
   FILE
     *file;
 
@@ -281,9 +278,6 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
   if (clone_info->font == (char *) NULL)
     (void) CloneString(&clone_info->font,DefaultXFont);
   (void) strcpy(text,clone_info->filename);
-  (void) QueryColorDatabase("black",&pen_color);
-  if (clone_info->pen != (char *) NULL)
-    (void) QueryColorDatabase(clone_info->pen,&pen_color);
   if (*clone_info->font == '@')
     {
 #if defined(HasTTF)
@@ -537,9 +531,9 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
           break;
         for (x=0; x < (int) image->columns; x++)
         {
-          q->red=pen_color.red;
-          q->green=pen_color.green;
-          q->blue=pen_color.blue;
+          *q=image_info->fill;
+          if ((image_info->stroke.opacity != Transparent) && (*p == 1))
+            *q=image_info->stroke;
           if (clone_info->antialias)
             q->opacity=(int) (Opaque*Min(*p,4))/4;
           else
@@ -729,9 +723,9 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
         for (x=0; x < (int) image->columns; x++)
         {
           q->opacity=Intensity(*q);
-          q->red=pen_color.red;
-          q->green=pen_color.green;
-          q->blue=pen_color.blue;
+          q->red=image_info->fill.red;
+          q->green=image_info->fill.green;
+          q->blue=image_info->fill.blue;
           if (q->opacity == Transparent)
             {
               q->red=(~q->red);
@@ -825,9 +819,9 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
     for (x=0; x < (int) image->columns; x++)
     {
       q->opacity=Intensity(*q);
-      q->red=pen_color.red;
-      q->green=pen_color.green;
-      q->blue=pen_color.blue;
+      q->red=image_info->stroke.red;
+      q->green=image_info->stroke.green;
+      q->blue=image_info->stroke.blue;
       if (q->opacity == Transparent)
         {
           q->red=(~q->red);

@@ -87,7 +87,7 @@
 %    -emboss order        emboss an image
 %    -enhance             apply a digital filter to enhance a noisy image
 %    -equalize            perform histogram equalization to an image
-%    -fill                paint the interior of a drawing primitive
+%    -fill color          fill color for drawing or annotating
 %    -filter type         use this filter when resizing an image
 %    -flip                flip image in the vertical direction
 %    -flop                flop image in the horizontal direction
@@ -117,7 +117,6 @@
 %    -opaque color        change this color to the pen color
 %    -page geometry       size and location of an image canvas
 %    -paint radius        simulate an oil painting
-%    -pen color           color for annotating or changing opaque color
 %    -ping                efficiently determine image characteristics
 %    -pointsize value     pointsize of Postscript font
 %    -preview type        image preview type
@@ -136,8 +135,9 @@
 %    -sharpen order       apply a filter to sharpen the image
 %    -shear geometry      slide one edge of the image along the X or Y axis
 %    -size geometry       width and height of image
-%    -solarize threshold   negate all pixels above the threshold level
+%    -solarize threshold  negate all pixels above the threshold level
 %    -spread amount       displace image pixels by a random amount
+%    -stroke color        stoke color for drawing or annotating
 %    -swirl degrees       swirl image pixels about the center
 %    -texture filename    name of texture to tile onto the image background
 %    -threshold value     threshold the image
@@ -286,7 +286,7 @@ static void Usage(const char *client_name)
       "-emboss order        emboss an image",
       "-enhance             apply a digital filter to enhance a noisy image",
       "-equalize            perform histogram equalization to an image",
-      "-fill                paint the interior of a drawing primitive",
+      "-fill color          fill color for drawing or annotating",
       "-filter type         use this filter when resizing an image",
       "-flip                flip image in the vertical direction",
       "-flop                flop image in the horizontal direction",
@@ -317,7 +317,6 @@ static void Usage(const char *client_name)
       "-opaque color        change this color to the pen color",
       "-page geometry       size and location of an image canvas",
       "-paint radius        simulate an oil painting",
-      "-pen color           color for annotating or changing opaque color",
       "-ping                efficiently determine image characteristics",
       "-pointsize value     pointsize of Postscript font",
       "-preview type        image preview type",
@@ -336,8 +335,9 @@ static void Usage(const char *client_name)
       "-sharpen order       apply a filter to sharpen the image",
       "-shear geometry      slide one edge of the image along the X or Y axis",
       "-size geometry       width and height of image",
-      "-solarize threshold   negate all pixels above the threshold level",
+      "-solarize threshold  negate all pixels above the threshold level",
       "-spread amount       displace image pixels by a random amount",
+      "-stroke color        stroke color for drawing or annotating",
       "-swirl degrees       swirl image pixels about the center",
       "-texture filename    name of texture to tile onto the image background",
       "-threshold value     threshold the image",
@@ -454,7 +454,7 @@ int main(int argc,char **argv)
   /*
     Parse command-line arguments.
   */
-  if ((argc > 2) && (strcmp("-concatenate",argv[1]) == 0))
+  if ((argc > 2) && (LocaleCompare("-concatenate",argv[1]) == 0))
     ConcatenateImages(argc,argv);
   for (i=1; i < (argc-1); i++)
   {
@@ -489,22 +489,22 @@ int main(int argc,char **argv)
       {
         case 'a':
         {
-          if (strncmp("adjoin",option+1,2) == 0)
+          if (LocaleNCompare("adjoin",option+1,2) == 0)
             {
               image_info->adjoin=(*option == '-');
               break;
             }
-          if (strncmp("antialias",option+1,3) == 0)
+          if (LocaleNCompare("antialias",option+1,3) == 0)
             {
               image_info->antialias=(*option == '-');
               break;
             }
-          if (strncmp("append",option+1,2) == 0)
+          if (LocaleNCompare("append",option+1,2) == 0)
             {
               append=(*option) == '-' ? 1 : -1;
               break;
             }
-          if (strncmp("average",option+1,2) == 0)
+          if (LocaleNCompare("average",option+1,2) == 0)
             {
               average=(*option == '-');
               break;
@@ -514,7 +514,7 @@ int main(int argc,char **argv)
         }
         case 'b':
         {
-          if (strncmp("background",option+1,5) == 0)
+          if (LocaleNCompare("background",option+1,5) == 0)
             {
               if (*option == '-')
                 {
@@ -526,7 +526,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("blur",option+1,3) == 0)
+          if (LocaleNCompare("blur",option+1,3) == 0)
             {
               if (*option == '-')
                 {
@@ -536,7 +536,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("border",option+1,7) == 0)
+          if (LocaleNCompare("border",option+1,7) == 0)
             {
               if (*option == '-')
                 {
@@ -546,7 +546,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("bordercolor",option+1,7) == 0)
+          if (LocaleNCompare("bordercolor",option+1,7) == 0)
             {
               if (*option == '-')
                 {
@@ -557,7 +557,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("box",option+1,3) == 0)
+          if (LocaleNCompare("box",option+1,3) == 0)
             {
               if (*option == '-')
                 {
@@ -572,7 +572,7 @@ int main(int argc,char **argv)
         }
         case 'c':
         {
-          if (strncmp("cache",option+1,3) == 0)
+          if (LocaleNCompare("cache",option+1,3) == 0)
             {
               if (*option == '-')
                 {
@@ -583,7 +583,7 @@ int main(int argc,char **argv)
               SetCacheThreshold(atoi(argv[i]));
               break;
             }
-          if (strncmp("charcoal",option+1,2) == 0)
+          if (LocaleNCompare("charcoal",option+1,2) == 0)
             {
               if (*option == '-')
                 {
@@ -593,12 +593,12 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("coalesce",option+1,3) == 0)
+          if (LocaleNCompare("coalesce",option+1,3) == 0)
             {
               coalesce=(*option == '-');
               break;
             }
-          if (strncmp("colorize",option+1,7) == 0)
+          if (LocaleNCompare("colorize",option+1,7) == 0)
             {
               if (*option == '-')
                 {
@@ -608,7 +608,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("colors",option+1,7) == 0)
+          if (LocaleNCompare("colors",option+1,7) == 0)
             {
               if (*option == '-')
                 {
@@ -618,7 +618,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("colorspace",option+1,7) == 0)
+          if (LocaleNCompare("colorspace",option+1,7) == 0)
             {
               if (*option == '-')
                 {
@@ -656,7 +656,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("comment",option+1,4) == 0)
+          if (LocaleNCompare("comment",option+1,4) == 0)
             {
               if (*option == '-')
                 {
@@ -666,7 +666,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("compress",option+1,5) == 0)
+          if (LocaleNCompare("compress",option+1,5) == 0)
             {
               image_info->compression=NoCompression;
               if (*option == '-')
@@ -697,9 +697,9 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("contrast",option+1,3) == 0)
+          if (LocaleNCompare("contrast",option+1,3) == 0)
             break;
-          if (strncmp("crop",option+1,2) == 0)
+          if (LocaleNCompare("crop",option+1,2) == 0)
             {
               if (*option == '-')
                 {
@@ -709,7 +709,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("cycle",option+1,2) == 0)
+          if (LocaleNCompare("cycle",option+1,2) == 0)
             {
               if (*option == '-')
                 {
@@ -724,12 +724,12 @@ int main(int argc,char **argv)
         }
         case 'd':
         {
-          if (strncmp("deconstruct",option+1,3) == 0)
+          if (LocaleNCompare("deconstruct",option+1,3) == 0)
             {
               deconstruct=(*option == '-');
               break;
             }
-          if (strncmp("delay",option+1,3) == 0)
+          if (LocaleNCompare("delay",option+1,3) == 0)
             {
               image_info->delay=(char *) NULL;
               if (*option == '-')
@@ -741,7 +741,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("density",option+1,3) == 0)
+          if (LocaleNCompare("density",option+1,3) == 0)
             {
               image_info->density=(char *) NULL;
               if (*option == '-')
@@ -753,7 +753,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("depth",option+1,3) == 0)
+          if (LocaleNCompare("depth",option+1,3) == 0)
             {
               image_info->depth=QuantumDepth;
               if (*option == '-')
@@ -765,7 +765,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("despeckle",option+1,3) == 0)
+          if (LocaleNCompare("despeckle",option+1,3) == 0)
             break;
           if (LocaleCompare("display",option+1) == 0)
             {
@@ -779,7 +779,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("dispose",option+1,5) == 0)
+          if (LocaleNCompare("dispose",option+1,5) == 0)
             {
               image_info->dispose=(char *) NULL;
               if (*option == '-')
@@ -791,12 +791,12 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("dither",option+1,3) == 0)
+          if (LocaleNCompare("dither",option+1,3) == 0)
             {
               image_info->dither=(*option == '-');
               break;
             }
-          if (strncmp("draw",option+1,2) == 0)
+          if (LocaleNCompare("draw",option+1,2) == 0)
             {
               if (*option == '-')
                 {
@@ -811,7 +811,7 @@ int main(int argc,char **argv)
         }
         case 'e':
         {
-          if (strncmp("edge",option+1,2) == 0)
+          if (LocaleNCompare("edge",option+1,2) == 0)
             {
               if (*option == '-')
                 {
@@ -821,7 +821,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("emboss",option+1,2) == 0)
+          if (LocaleNCompare("emboss",option+1,2) == 0)
             {
               if (*option == '-')
                 {
@@ -831,18 +831,36 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("enhance",option+1,2) == 0)
+          if (LocaleNCompare("enhance",option+1,2) == 0)
             break;
-          if (strncmp("equalize",option+1,2) == 0)
+          if (LocaleNCompare("equalize",option+1,2) == 0)
             break;
           MagickError(OptionError,"Unrecognized option",option);
           break;
         }
         case 'f':
         {
-          if (strncmp("fill",option+1,4) == 0)
-            break;
-          if (strncmp("filter",option+1,4) == 0)
+          if (LocaleCompare("fill",option+1) == 0)
+            {
+              (void) QueryColorDatabase("none",&image_info->fill);
+              if (*option == '-')
+                {
+                  i++;
+                  if (i == argc)
+                    MagickError(OptionError,"Missing fill color",option);
+                  (void) QueryColorDatabase(argv[i],&image_info->fill);
+                }
+              break;
+            }
+          if (LocaleCompare("fill",option+1) == 0)
+            {
+              i++;
+              if (i == argc)
+                MagickError(OptionError,"Missing fill color",option);
+              QueryColorDatabase(argv[i],&image_info->fill);
+              break;
+            }
+          if (LocaleNCompare("filter",option+1,4) == 0)
             {
               if (*option == '-')
                 {
@@ -889,11 +907,11 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("flip",option+1,3) == 0)
+          if (LocaleNCompare("flip",option+1,3) == 0)
             break;
-          if (strncmp("flop",option+1,3) == 0)
+          if (LocaleNCompare("flop",option+1,3) == 0)
             break;
-          if (strncmp("font",option+1,2) == 0)
+          if (LocaleNCompare("font",option+1,2) == 0)
             {
               image_info->font=(char *) NULL;
               if (*option == '-')
@@ -905,7 +923,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("frame",option+1,2) == 0)
+          if (LocaleNCompare("frame",option+1,2) == 0)
             {
               if (*option == '-')
                 {
@@ -915,7 +933,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("fuzz",option+1,2) == 0)
+          if (LocaleNCompare("fuzz",option+1,2) == 0)
             {
               image_info->fuzz=0;
               if (*option == '-')
@@ -932,7 +950,7 @@ int main(int argc,char **argv)
         }
         case 'g':
         {
-          if (strncmp("gamma",option+1,3) == 0)
+          if (LocaleNCompare("gamma",option+1,3) == 0)
             {
               i++;
               if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
@@ -946,7 +964,7 @@ int main(int argc,char **argv)
                 MagickError(OptionError,"Missing width",option);
               break;
             }
-          if (strncmp("geometry",option+1,2) == 0)
+          if (LocaleNCompare("geometry",option+1,2) == 0)
             {
               if (*option == '-')
                 {
@@ -956,7 +974,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("gravity",option+1,2) == 0)
+          if (LocaleNCompare("gravity",option+1,2) == 0)
             {
               int
                 gravity;
@@ -996,7 +1014,7 @@ int main(int argc,char **argv)
         }
         case 'h':
         {
-          if (strncmp("help",option+1,2) == 0)
+          if (LocaleNCompare("help",option+1,2) == 0)
             {
               Usage(client_name);
               break;
@@ -1006,7 +1024,7 @@ int main(int argc,char **argv)
         }
         case 'i':
         {
-          if (strncmp("implode",option+1,2) == 0)
+          if (LocaleNCompare("implode",option+1,2) == 0)
             {
               if (*option == '-')
                 {
@@ -1016,7 +1034,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("interlace",option+1,3) == 0)
+          if (LocaleNCompare("interlace",option+1,3) == 0)
             {
               image_info->interlace=NoInterlace;
               if (*option == '-')
@@ -1043,7 +1061,7 @@ int main(int argc,char **argv)
         }
         case 'l':
         {
-          if (strncmp("label",option+1,3) == 0)
+          if (LocaleNCompare("label",option+1,3) == 0)
             {
               if (*option == '-')
                 {
@@ -1053,7 +1071,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("layer",option+1,3) == 0)
+          if (LocaleNCompare("layer",option+1,3) == 0)
             {
               if (*option == '-')
                 {
@@ -1078,7 +1096,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("linewidth",option+1,2) == 0)
+          if (LocaleNCompare("linewidth",option+1,2) == 0)
             {
               if (*option == '-')
                 {
@@ -1088,7 +1106,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("loop",option+1,2) == 0)
+          if (LocaleNCompare("loop",option+1,2) == 0)
             {
               image_info->iterations=(char *) NULL;
               if (*option == '-')
@@ -1105,7 +1123,7 @@ int main(int argc,char **argv)
         }
         case 'm':
         {
-          if (strncmp("map",option+1,3) == 0)
+          if (LocaleNCompare("map",option+1,3) == 0)
             {
               global_colormap=(*option == '+');
               if (*option == '-')
@@ -1118,7 +1136,7 @@ int main(int argc,char **argv)
             }
           if (LocaleCompare("matte",option+1) == 0)
             break;
-          if (strncmp("mattecolor",option+1,6) == 0)
+          if (LocaleNCompare("mattecolor",option+1,6) == 0)
             {
               if (*option == '-')
                 {
@@ -1129,7 +1147,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("median",option+1,3) == 0)
+          if (LocaleNCompare("median",option+1,3) == 0)
             {
               if (*option == '-')
                 {
@@ -1139,7 +1157,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("modulate",option+1,3) == 0)
+          if (LocaleNCompare("modulate",option+1,3) == 0)
             {
               if (*option == '-')
                 {
@@ -1149,12 +1167,12 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("monochrome",option+1,4) == 0)
+          if (LocaleNCompare("monochrome",option+1,4) == 0)
             {
               image_info->monochrome=(*option == '-');
               break;
             }
-          if (strncmp("morph",option+1,3) == 0)
+          if (LocaleNCompare("morph",option+1,3) == 0)
             {
               morph=0;
               if (*option == '-')
@@ -1166,7 +1184,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("mosaic",option+1,3) == 0)
+          if (LocaleNCompare("mosaic",option+1,3) == 0)
             {
               mosaic=(*option == '-');
               break;
@@ -1175,9 +1193,9 @@ int main(int argc,char **argv)
         }
         case 'n':
         {
-          if (strncmp("negate",option+1,3) == 0)
+          if (LocaleNCompare("negate",option+1,3) == 0)
             break;
-          if (strncmp("noise",option+1,3) == 0)
+          if (LocaleNCompare("noise",option+1,3) == 0)
             {
               if (*option == '-')
                 {
@@ -1201,14 +1219,14 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("normalize",option+1,3) == 0)
+          if (LocaleNCompare("normalize",option+1,3) == 0)
             break;
           MagickError(OptionError,"Unrecognized option",option);
           break;
         }
         case 'o':
         {
-          if (strncmp("opaque",option+1,2) == 0)
+          if (LocaleNCompare("opaque",option+1,2) == 0)
             {
               if (*option == '-')
                 {
@@ -1223,7 +1241,7 @@ int main(int argc,char **argv)
         }
         case 'p':
         {
-          if (strncmp("page",option+1,3) == 0)
+          if (LocaleNCompare("page",option+1,3) == 0)
             {
               image_info->page=(char *) NULL;
               if (*option == '-')
@@ -1235,7 +1253,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("paint",option+1,3) == 0)
+          if (LocaleNCompare("paint",option+1,3) == 0)
             {
               if (*option == '-')
                 {
@@ -1245,24 +1263,12 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("pen",option+1,2) == 0)
-            {
-              image_info->texture=(char *) NULL;
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing pen color",option);
-                  (void) CloneString(&image_info->pen,argv[i]);
-                }
-              break;
-            }
-          if (strncmp("ping",option+1,2) == 0)
+          if (LocaleNCompare("ping",option+1,2) == 0)
             {
               image_info->ping=(*option == '-');
               break;
             }
-          if (strncmp("pointsize",option+1,2) == 0)
+          if (LocaleNCompare("pointsize",option+1,2) == 0)
             {
               image_info->pointsize=12;
               if (*option == '-')
@@ -1274,7 +1280,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("preview",option+1,3) == 0)
+          if (LocaleNCompare("preview",option+1,3) == 0)
             {
               image_info->preview_type=UndefinedPreview;
               if (*option == '-')
@@ -1347,7 +1353,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("profile",option+1,4) == 0)
+          if (LocaleNCompare("profile",option+1,4) == 0)
             {
               if (*option == '-')
                 {
@@ -1361,7 +1367,7 @@ int main(int argc,char **argv)
         }
         case 'q':
         {
-          if (strncmp("quality",option+1,2) == 0)
+          if (LocaleNCompare("quality",option+1,2) == 0)
             {
               image_info->quality=75;
               if (*option == '-')
@@ -1378,14 +1384,14 @@ int main(int argc,char **argv)
         }
         case 'r':
         {
-          if (strncmp("raise",option+1,2) == 0)
+          if (LocaleNCompare("raise",option+1,2) == 0)
             {
               i++;
               if ((i == argc) || !sscanf(argv[i],"%d",&x))
                 MagickError(OptionError,"Missing bevel width",option);
               break;
             }
-          if (strncmp("region",option+1,3) == 0)
+          if (LocaleNCompare("region",option+1,3) == 0)
             {
               if (*option == '-')
                 {
@@ -1395,7 +1401,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("roll",option+1,3) == 0)
+          if (LocaleNCompare("roll",option+1,3) == 0)
             {
               if (*option == '-')
                 {
@@ -1405,7 +1411,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("rotate",option+1,3) == 0)
+          if (LocaleNCompare("rotate",option+1,3) == 0)
             {
               if (*option == '-')
                 {
@@ -1420,7 +1426,7 @@ int main(int argc,char **argv)
         }
         case 's':
         {
-          if (strncmp("sample",option+1,2) == 0)
+          if (LocaleNCompare("sample",option+1,2) == 0)
             {
               if (*option == '-')
                 {
@@ -1430,7 +1436,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("scale",option+1,3) == 0)
+          if (LocaleNCompare("scale",option+1,3) == 0)
             {
               if (*option == '-')
                 {
@@ -1440,7 +1446,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("scene",option+1,3) == 0)
+          if (LocaleNCompare("scene",option+1,3) == 0)
             {
               scene=0;
               if (*option == '-')
@@ -1452,7 +1458,7 @@ int main(int argc,char **argv)
               scene=atoi(argv[i]);
               break;
             }
-          if (strncmp("seed",option+1,3) == 0)
+          if (LocaleNCompare("seed",option+1,3) == 0)
             {
               if (*option == '-')
                 {
@@ -1463,7 +1469,7 @@ int main(int argc,char **argv)
               srand((unsigned int) atoi(argv[i]));
               break;
             }
-          if (strncmp("segment",option+1,3) == 0)
+          if (LocaleNCompare("segment",option+1,3) == 0)
             {
               if (*option == '-')
                 {
@@ -1473,14 +1479,14 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("shade",option+1,5) == 0)
+          if (LocaleNCompare("shade",option+1,5) == 0)
             {
               i++;
               if ((i == argc) || !sscanf(argv[i],"%d",&x))
                 MagickError(OptionError,"Missing azimuth",option);
               break;
             }
-          if (strncmp("sharpen",option+1,5) == 0)
+          if (LocaleNCompare("sharpen",option+1,5) == 0)
             {
               if (*option == '-')
                 {
@@ -1490,7 +1496,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("shear",option+1,3) == 0)
+          if (LocaleNCompare("shear",option+1,3) == 0)
             {
               if (*option == '-')
                 {
@@ -1500,7 +1506,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("size",option+1,2) == 0)
+          if (LocaleNCompare("size",option+1,2) == 0)
             {
               image_info->size=(char *) NULL;
               if (*option == '-')
@@ -1512,7 +1518,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("solarize",option+1,2) == 0)
+          if (LocaleNCompare("solarize",option+1,2) == 0)
             {
               if (*option == '-')
                 {
@@ -1522,7 +1528,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("spread",option+1,2) == 0)
+          if (LocaleNCompare("spread",option+1,2) == 0)
             {
               if (*option == '-')
                 {
@@ -1532,7 +1538,19 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("swirl",option+1,2) == 0)
+          if (LocaleCompare("stroke",option+1) == 0)
+            {
+              (void) QueryColorDatabase("none",&image_info->stroke);
+              if (*option == '-')
+                {
+                  i++;
+                  if (i == argc)
+                    MagickError(OptionError,"Missing stroke color",option);
+                  (void) QueryColorDatabase(argv[i],&image_info->stroke);
+                }
+              break;
+            }
+          if (LocaleNCompare("swirl",option+1,2) == 0)
             {
               if (*option == '-')
                 {
@@ -1547,7 +1565,7 @@ int main(int argc,char **argv)
         }
         case 't':
         {
-          if (strncmp("texture",option+1,5) == 0)
+          if (LocaleNCompare("texture",option+1,5) == 0)
             {
               image_info->texture=(char *) NULL;
               if (*option == '-')
@@ -1559,7 +1577,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("threshold",option+1,2) == 0)
+          if (LocaleNCompare("threshold",option+1,2) == 0)
             {
               if (*option == '-')
                 {
@@ -1569,7 +1587,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("transparent",option+1,3) == 0)
+          if (LocaleNCompare("transparent",option+1,3) == 0)
             {
               if (*option == '-')
                 {
@@ -1579,7 +1597,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("treedepth",option+1,3) == 0)
+          if (LocaleNCompare("treedepth",option+1,3) == 0)
             {
               if (*option == '-')
                 {
@@ -1594,7 +1612,7 @@ int main(int argc,char **argv)
         }
         case 'u':
         {
-          if (strncmp("units",option+1,3) == 0)
+          if (LocaleNCompare("units",option+1,3) == 0)
             {
               image_info->units=UndefinedResolution;
               if (*option == '-')
@@ -1616,12 +1634,12 @@ int main(int argc,char **argv)
         }
         case 'v':
         {
-          if (strncmp("verbose",option+1,2) == 0)
+          if (LocaleNCompare("verbose",option+1,2) == 0)
             {
               image_info->verbose=(*option == '-');
               break;
             }
-          if (strncmp("view",option+1,3) == 0)
+          if (LocaleNCompare("view",option+1,3) == 0)
             {
               image_info->view=(char *) NULL;
               if (*option == '-')

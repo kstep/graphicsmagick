@@ -188,7 +188,7 @@ int main(int argc,char **argv)
         switch(*(option+1))
         {
           case 'f':
-            if (strncmp("format",option+1,2) == 0)
+            if (LocaleNCompare("format",option+1,2) == 0)
               {
                 if (*option == '-')
                   {
@@ -203,7 +203,7 @@ int main(int argc,char **argv)
             break;
           case 'c':
           {
-            if (strncmp("cache",option+1,3) == 0)
+            if (LocaleNCompare("cache",option+1,3) == 0)
               {
                 if (*option == '-')
                   {
@@ -219,7 +219,7 @@ int main(int argc,char **argv)
           }
           case 'h':
           {
-            if (strncmp("help",option+1,2) == 0)
+            if (LocaleNCompare("help",option+1,2) == 0)
               {
                 Usage(client_name);
                 break;
@@ -229,7 +229,7 @@ int main(int argc,char **argv)
           }
           case 'p':
           {
-            if (strncmp("ping",option+1,2) == 0)
+            if (LocaleNCompare("ping",option+1,2) == 0)
               {
                 image_info->ping=(*option == '-');
                 break;
@@ -239,7 +239,7 @@ int main(int argc,char **argv)
           }
           case 's':
           {
-            if (strncmp("size",option+1,2) == 0)
+            if (LocaleNCompare("size",option+1,2) == 0)
               {
                 image_info->size=(char *) NULL;
                 if (*option == '-')
@@ -256,7 +256,7 @@ int main(int argc,char **argv)
           }
           case 'v':
           {
-            if (strncmp("verbose",option+1,2) == 0)
+            if (LocaleNCompare("verbose",option+1,2) == 0)
               {
                 image_info->verbose=(*option == '-');
                 break;

@@ -1550,49 +1550,47 @@ Export Image *ReadImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (Image *(*)(const ImageInfo *,ExceptionInfo *)) NULL))
     image=(magick_info->decoder)(clone_info,exception);
   else
-    {
-      if (!GetDelegateInfo(clone_info->magick,(char *) NULL,&delegate_info))
-        {
-          DestroyImageInfo(clone_info);
-          ThrowException(exception,MissingDelegateWarning,
-            "no delegate for this image format",image_info->filename)
-          return((Image *) NULL);
-        }
-      else
-        {
-          unsigned int
-            status;
+    if (!GetDelegateInfo(clone_info->magick,(char *) NULL,&delegate_info))
+      {
+        ThrowException(exception,MissingDelegateWarning,
+          "no delegate for this image format",clone_info->filename)
+        DestroyImageInfo(clone_info);
+        return((Image *) NULL);
+      }
+    else
+      {
+        unsigned int
+          status;
 
-          /*
-            Let our decoding delegate process the image.
-          */
-          image=AllocateImage(clone_info);
-          if (image == (Image *) NULL)
+        /*
+          Let our decoding delegate process the image.
+        */
+        image=AllocateImage(clone_info);
+        if (image == (Image *) NULL)
+          return((Image *) NULL);
+        (void) strcpy(image->filename,clone_info->filename);
+        TemporaryFilename(clone_info->filename);
+        status=
+          InvokeDelegate(clone_info,image,clone_info->magick,(char *) NULL);
+        *exception=image->exception;
+        DestroyImages(image);
+        image=(Image *) NULL;
+        if (status != False)
+          clone_info->temporary=True;
+        SetImageInfo(clone_info,False);
+        magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick);
+        if ((magick_info != (MagickInfo *) NULL) &&
+            (magick_info->decoder !=
+              (Image *(*)(const ImageInfo *,ExceptionInfo *)) NULL))
+          image=(magick_info->decoder)(clone_info,exception);
+        else
+          {
+            ThrowException(exception,MissingDelegateWarning,
+              "no delegate for this image format",clone_info->filename);
+            DestroyImageInfo(clone_info);
             return((Image *) NULL);
-          (void) strcpy(image->filename,clone_info->filename);
-          TemporaryFilename(clone_info->filename);
-          status=
-            InvokeDelegate(clone_info,image,clone_info->magick,(char *) NULL);
-          *exception=image->exception;
-          DestroyImages(image);
-          image=(Image *) NULL;
-          if (status != False)
-            clone_info->temporary=True;
-          SetImageInfo(clone_info,False);
-          magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick);
-          if ((magick_info != (MagickInfo *) NULL) &&
-              (magick_info->decoder !=
-                (Image *(*)(const ImageInfo *,ExceptionInfo *)) NULL))
-            image=(magick_info->decoder)(clone_info,exception);
-          else
-            {
-              DestroyImageInfo(clone_info);
-              ThrowException(exception,MissingDelegateWarning,
-                "no delegate for this image format",image_info->filename);
-              return((Image *) NULL);
-            }
-        }
-    }
+          }
+      }
   if (clone_info->temporary)
     {
       (void) remove(clone_info->filename);
@@ -1704,18 +1702,20 @@ Export Image *ReadImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         if (image == (Image *) NULL)
           {
-            DestroyImageInfo(clone_info);
             ThrowException(exception,OptionWarning,
               "Subimage specification returns no images",clone_info->filename);
+            DestroyImageInfo(clone_info);
+            return((Image *) NULL);
           }
         while (image->previous != (Image *) NULL)
           image=image->previous;
       }
   if (image->status)
     {
-      DestroyImageInfo(clone_info);
       ThrowException(exception,CorruptImageWarning,
         "An error has occurred reading file",clone_info->filename);
+      DestroyImageInfo(clone_info);
+      return((Image *) NULL);
     }
   DestroyBlobInfo(&image->blob);
   for (next=image; next; next=next->next)

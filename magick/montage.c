@@ -112,8 +112,6 @@ Export MontageInfo *CloneMontageInfo(const ImageInfo *image_info,
     cloned_info->texture=AllocateString(montage_info->texture);
   if (montage_info->font != (char *) NULL)
     cloned_info->font=AllocateString(montage_info->font);
-  if (montage_info->pen != (char *) NULL)
-    cloned_info->pen=AllocateString(montage_info->pen);
   return(cloned_info);
 }
 
@@ -154,8 +152,6 @@ Export void DestroyMontageInfo(MontageInfo *montage_info)
     FreeMemory((void **) &montage_info->frame);
   if (montage_info->texture != (char *) NULL)
     FreeMemory((void **) &montage_info->texture);
-  if (montage_info->pen != (char *) NULL)
-    FreeMemory((void **) &montage_info->pen);
   if (montage_info->font != (char *) NULL)
     FreeMemory((void **) &montage_info->font);
   FreeMemory((void **) &montage_info);
@@ -198,7 +194,8 @@ Export void GetMontageInfo(const ImageInfo *image_info,
   montage_info->frame=(char *) NULL;
   montage_info->texture=(char *) NULL;
   montage_info->font=AllocateString(image_info->font);
-  montage_info->pen=AllocateString(image_info->pen);
+  montage_info->stroke=image_info->stroke;
+  montage_info->fill=image_info->fill;
   montage_info->pointsize=image_info->pointsize;
   montage_info->border_width=0;
   montage_info->gravity=CenterGravity;
@@ -495,9 +492,10 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info,
     Initialize annotate info.
   */
   clone_info=CloneImageInfo((ImageInfo *) NULL);
-  (void) CloneString(&clone_info->pen,montage_info->pen);
   (void) CloneString(&clone_info->font,montage_info->font);
   clone_info->pointsize=montage_info->pointsize;
+  clone_info->stroke=montage_info->stroke;
+  clone_info->fill=montage_info->fill;
   clone_info->background_color=montage_info->background_color;
   clone_info->border_color=montage_info->border_color;
   annotate_info=CloneAnnotateInfo(clone_info,(AnnotateInfo *) NULL);

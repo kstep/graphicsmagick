@@ -2505,6 +2505,9 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,
     *p,
     *q;
 
+  register int
+    i;
+
   ImageInfo
     *clone_info;
 
@@ -2790,25 +2793,22 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,
       case '[':
       {
         char
-          c,
-          *attr;
+          key[MaxTextExtent];
 
-        attr=strchr(p,']');
-        if (attr)
+        ImageAttribute
+          *attribute;
+
+        if (strchr(p,']') == (char *) NULL)
+          break;
+        p++;
+        for (i=0; (i < MaxTextExtent) && (*p != ']'); i++)
+          key[i]=(*p++);
+        key[i]='\0';
+        attribute=GetImageAttribute(image,key);
+        if (attribute != (ImageAttribute *) NULL)
           {
-            ImageAttribute
-              *attribute;
-
-            c=*attr;
-            *attr='\0';
-            attribute=GetImageAttribute(image,&p[1]);
-            if (attribute != (ImageAttribute *) NULL)
-              {
-                (void) strcpy(q,attribute->value);
-                q+=Extent(attribute->value);
-              }
-            *attr=c;
-            p=attr;
+            (void) strcpy(q,attribute->value);
+            q+=Extent(attribute->value);
           }
         break;
       }

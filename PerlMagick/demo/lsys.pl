@@ -34,7 +34,7 @@ sub lsys_init
     '{' => sub{ @poly = (); $changes=\%polychanges; },  # Begin polygon
     '}' => sub{ # End polygon
                 $im->Draw (primitive=>'Polygon', points=>join(' ',@poly),
-                           pen=>'light green', fill=>'True');
+                           fill=>'light green');
                 $changes = \%stemchanges;
               },
     'f' => sub{ flower($pink_flower); },  # Flower

@@ -467,6 +467,15 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Render graphic primitive.
         */
+        (void) fprintf(file,"antialias %d\n",
+          graphic_context[n].antialias ? 1 : 0);
+        (void) fprintf(file,"linewidth %g\n",graphic_context[n].linewidth);
+        (void) fprintf(file,"pointsize %g\n",graphic_context[n].pointsize);
+        (void) fprintf(file,"translate %g,%g\n",translate.x,translate.y);
+        (void) fprintf(file,"rotate %g\n",element.angle);
+        (void) fprintf(file,"opacity %g\n",graphic_context[n].opacity);
+        (void) fprintf(file,"fill %s\n",graphic_context[n].fill);
+        (void) fprintf(file,"stroke %s\n",graphic_context[n].stroke);
         if ((LocaleCompare(primitive,"rect") == 0) && (element.major != 0.0))
           CloneString(&primitive,"roundRectangle");
         length=strlen(primitive)+MaxTextExtent;
@@ -535,22 +544,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) strcat(command,text+1);
             (void) strcat(command,"'");
           }
-        (void) fprintf(file,"antialias %d\n",
-          graphic_context[n].antialias ? 1 : 0);
-        (void) fprintf(file,"linewidth %g\n",graphic_context[n].linewidth);
-        (void) fprintf(file,"pointsize %g\n",graphic_context[n].pointsize);
-        (void) fprintf(file,"translate %g,%g\n",translate.x,translate.y);
-        (void) fprintf(file,"rotate %g\n",element.angle);
-        (void) fprintf(file,"opacity %g\n",graphic_context[n].opacity);
-        if (LocaleCompare(graphic_context[n].fill,"none") != 0)
-          {
-            (void) fprintf(file,"pen %s\n",graphic_context[n].fill);
-            (void) fprintf(file,"fill 1\n");
-            (void) fprintf(file,"%s\n",command);
-          }
-        if (LocaleCompare(graphic_context[n].stroke,"none") != 0)
-          (void) fprintf(file,"pen %s\n",graphic_context[n].stroke);
-        (void) fprintf(file,"fill 0\n");
         (void) fprintf(file,"%s\n",command);
         FreeMemory((void **) &command);
         (void) CloneString(&primitive,"none");
