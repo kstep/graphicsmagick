@@ -72,7 +72,7 @@ bool Magick::CoderInfo::isMultiFrame( void ) const
 // Construct from MagickLib::MagickInfo*
 Magick::CoderInfo::CoderInfo ( const MagickLib::MagickInfo *magickInfo_ )
   : _name(string(magickInfo_->name)),
-    _description(string(magickInfo_->description)),
+    _description(string(magickInfo_->description ? magickInfo_->description : "")),
     _isReadable(static_cast<bool>(magickInfo_->decoder)),
     _isWritable(static_cast<bool>(magickInfo_->encoder)),
     _isMultiFrame(static_cast<bool>(magickInfo_->adjoin))

@@ -7,6 +7,7 @@
 
 #include <string>
 #include <iostream>
+#include <list>
 
 #include <Magick++.h>
 
@@ -24,6 +25,13 @@ int main( int /*argc*/, char **argv)
 
   try {
 
+
+//     CoderInfo coderInfo("GIF");
+
+//     cout << "Name: \"" << coderInfo.name()
+//          << "\"  Description:" << coderInfo.description()
+//          << endl;
+
     // Emulate ListMagickInfo
 
     cout << "Here is a list of image formats recognized by ImageMagick.  Mode 'rw+'"
@@ -37,7 +45,13 @@ int main( int /*argc*/, char **argv)
          << endl;
 
     list<CoderInfo> coderList;
-    coderInfoList( &coderList, AnyMatch, AnyMatch, AnyMatch );
+    coderInfoList( &coderList, FalseMatch, TrueMatch, FalseMatch );
+    list<CoderInfo>::iterator entry = coderList.begin();
+    while( entry != coderList.end() )
+      {
+        cout << entry->name() << ": " << entry->description() << endl;
+        entry++;
+      }
 
   }
   catch( Exception &error_ )
