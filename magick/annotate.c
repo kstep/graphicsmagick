@@ -1090,16 +1090,14 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
                 p++;
                 continue;
               }
-            opacity=MaxRGB-((unsigned long) (UpScale(*p)*
-              (MaxRGB-clone_info->fill.opacity))/MaxRGB);
+            opacity=clone_info->fill.opacity+((unsigned long)
+              (MaxRGB-UpScale(*p))*(MaxRGB-clone_info->fill.opacity))/MaxRGB;
             q->red=((unsigned long) (clone_info->fill.red*(MaxRGB-opacity)+
               q->red*opacity)/MaxRGB);
             q->green=((unsigned long) (clone_info->fill.green*(MaxRGB-opacity)+
               q->green*opacity)/MaxRGB);
             q->blue=((unsigned long) (clone_info->fill.blue*(MaxRGB-opacity)+
               q->blue*opacity)/MaxRGB);
-            q->opacity=((unsigned long) (opacity*(MaxRGB-opacity)+
-              q->opacity*opacity)/MaxRGB);
             p++;
             if (!SyncImagePixels(image))
               continue;
