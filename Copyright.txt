@@ -143,4 +143,11 @@ follows.
   contract, tort or otherwise, arising from, out of or in connection
   with Magick++ or the use or other dealings in Magick++.
 
+6)
+  Open ImageMagick makes use of third-party "delegate" libraries to
+  support certain optional features. These libraries bear their own
+  copyrights and licenses, which may be more or less restrictive than the
+  Open ImageMagick license. For convenience, when Open ImageMagick is
+  bundled with (or compiled with) "delegate" libraries, a copy of the
+  licenses for these libraries is provided in a "licenses" directory.
 

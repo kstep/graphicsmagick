@@ -1,0 +1,27 @@
+
+VMS COMPILATION
+
+  You might want to check the values of certain program definitions
+  before compiling.  Verify the definitions in delegates.mgk to suit
+  your local requirements.  Next, type.
+
+  Type
+
+      unzip Open ImageMagick-5.5.1.zip set default [.imagemagick] @make set
+      display/create/node=node_name::
+
+  where node_name is the DECNET X server to contact.
+
+  Finally type:
+
+      display
+
+  Alternatively, get a zipped distribution (with JPEG, PNG, TIFF, TTF)
+  from
+
+      ftp://ftp.imagemagick.org/pub/Open ImageMagick/vms/Open ImageMagick-5.5.1.zip
+
+  Thanks to pmoreau@cenaath.cena.dgac.fr for supplying invaluable help
+  as well as the VMS versions of the JPEG, PNG, TTF, and TIFF
+  libraries.
+

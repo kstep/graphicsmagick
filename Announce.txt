@@ -1,11 +1,11 @@
-The ImageMagick Studio LLC development group announces the release of
-ImageMagick 5.5.2.  Version 5.5.2 provides a number of significant
-enhancements over earlier ImageMagick versions.
+The Open ImageMagick Studio LLC development group announces the release of
+Open ImageMagick 5.5.2.  Version 5.5.2 provides a number of significant
+enhancements over earlier Open ImageMagick versions.
 
-ImageMagick is a robust collection of tools and libraries to read,
+Open ImageMagick is a robust collection of tools and libraries to read,
 write, and manipulate an image in many image formats (over 87 major
 formats) including popular formats like FlashPIX, GIF, JPEG, PDF, PNG,
-Photo CD, SVG, TIFF, and WMF.  With ImageMagick images can be created
+Photo CD, SVG, TIFF, and WMF.  With Open ImageMagick images can be created
 dynamically, making it suitable for Web applications.  You can also
 resize, rotate, sharpen, color reduce, or add special effects to an
 image and save your completed work in the same or differing image
@@ -14,9 +14,9 @@ as well as through C, C++, PERL, Visual Basic, VBscript, and Jscript-
 based programming interfaces.  Support for programming with Java and
 Python is provided by 3rd parties.
 
-ImageMagick is copyrighted by ImageMagick Studio, a nonprofit
+Open ImageMagick is copyrighted by Open ImageMagick Studio, a nonprofit
 organization dedicated to making software imaging solutions freely
-available.  ImageMagick is available for free, may be used to support
+available.  Open ImageMagick is available for free, may be used to support
 both open and proprietary applications, and may be redistributed without
 fee.
 
@@ -34,7 +34,7 @@ for details):
 
       + Local adaptive thresholding is now supported via the -lat option.
 
-      + ImageMagick now reads CMYK + alpha layered PSD files correctly.
+      + Open ImageMagick now reads CMYK + alpha layered PSD files correctly.
 
       + PNG coder now supports the PNG8, PNG24, and PNG32 magick tag
         specifications in order to provide the user with more control
@@ -82,26 +82,26 @@ for details):
   o Perl API enhancements:
      - No changes in this release.
 
-The ImageMagick WWW page is
+The Open ImageMagick WWW page is
 
   http://www.imagemagick.org/
  
-The ImageMagick 5.5.2 source code is available via ftp as
+The Open ImageMagick 5.5.2 source code is available via ftp as
 
-  ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.5.2.tar.gz
+  ftp://ftp.imagemagick.org/pub/Open ImageMagick/Open ImageMagick-5.5.2.tar.gz
 
-The ImageMagick 5.5.2 Windows install package is available via ftp as
+The Open ImageMagick 5.5.2 Windows install package is available via ftp as
 
-  ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-i686-pc-windows.exe
+  ftp://ftp.imagemagick.org/pub/Open ImageMagick/binaries/Open ImageMagick-i686-pc-windows.exe
 
 or (QuantumDepth=8 version)
 
-  ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-i686-Q8-windows.exe
+  ftp://ftp.imagemagick.org/pub/Open ImageMagick/binaries/Open ImageMagick-i686-Q8-windows.exe
 
 If ftp.imagemagick.org is overloaded, check the list of mirrors at
 http://www.imagemagick.org/www/archives.html for other mirrors.
 
-ImageMagick is developed by the members of the ImageMagick Studio
+Open ImageMagick is developed by the members of the Open ImageMagick Studio
 team:
 
 John Cristy           - Principal designer and author.
@@ -116,12 +116,12 @@ Leonard Rosenthol     - Mac support, XCF, PSD, conjure, drawing
                         enhancements.
 
 We would like to give special thanks to several people who assist with
-ImageMagick:
+Open ImageMagick:
 
 Alexander Zimmermann  - Linux binary distributions.
 Jaroslav Fojtik       - CUT, ART, and MATLAB coder modules.
 
 There are many other individual contributors, some of whom made
-significant contributions to ImageMagick but shall remain anonymous
+significant contributions to Open ImageMagick but shall remain anonymous
 anyway.
 
