@@ -51,13 +51,13 @@
   Include declarations.
 */
 #if defined(_VISUALC_)
-#include "magick/studio.h"
-#include "magick/blob.h"
-#include "magick/constitute.h"
-#include "magick/delegate.h"
-#include "magick/magick.h"
-#include "magick/stream.h"
-#include "magick/utility.h"
+#include "studio.h"
+#include "blob.h"
+#include "constitute.h"
+#include "delegate.h"
+#include "magick.h"
+#include "stream.h"
+#include "utility.h"
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
 #include <windows.h>
@@ -95,7 +95,7 @@ static unsigned int
 %      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
-%    o image_info: Specifies a pointer to a ImageInfo structure.
+%    o image_info: Specifies a pointer to an ImageInfo structure.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -122,6 +122,7 @@ static Image *ReadXTRNImage(const ImageInfo *image_info, ExceptionInfo *exceptio
       DestroyImageInfo(clone_info);
       ThrowReaderException(FileOpenWarning,"No filename specified",image);
     }
+  DebugString("ReadXTRN CODER: %s\n",clone_info->filename);
   if (LocaleCompare(image_info->magick,"XTRNFILE") == 0)
     {
       image=ReadImage(clone_info,exception);
@@ -243,6 +244,48 @@ static Image *ReadXTRNImage(const ImageInfo *image_info, ExceptionInfo *exceptio
             }
         }
     }
+  else if (LocaleCompare(image_info->magick,"XTRNBSTR") == 0)
+    {
+      BSTR
+        bstr;
+
+      char
+        *blob_data;
+
+      size_t
+        blob_length;
+
+      HRESULT
+        hr;
+
+      char
+        filename[MaxTextExtent];
+
+      filename[0] = '\0';
+      (void) sscanf(clone_info->filename,"%lx,%s",&param1,&filename);
+      hr = S_OK;
+      bstr = (BSTR) param1;
+      blob_length = SysStringLen(bstr) * 2;
+      blob_data = (char *)bstr;
+      DebugString("XTRN CODER: 0x%04lx (%ld)\n",(unsigned long)blob_data,blob_length);
+      if ((blob_data != (char *)NULL) && (blob_length>0))
+        {
+          if (filename[0] != '\0')
+            {
+              (void) strcpy(clone_info->filename, filename);
+              (void) strcpy(clone_info->magick, filename);
+            }
+          else
+            {
+              *clone_info->magick = '\0';
+              clone_info->filename[0] = '\0';
+            }
+          image=BlobToImage(clone_info,blob_data,blob_length,exception);
+          if (exception->severity != UndefinedException)
+            MagickWarning(exception->severity,exception->reason,
+                exception->description);
+        }
+    }
   DestroyImageInfo(clone_info);
   return(image);
 }
@@ -319,6 +362,15 @@ ModuleExport void RegisterXTRNImage(void)
   entry->description=AllocateString("External transfer via a smart array interface");
   entry->module=AllocateString("XTRN");
   RegisterMagickInfo(entry);
+
+  entry=SetMagickInfo("XTRNBSTR");
+  entry->decoder=ReadXTRNImage;
+  entry->encoder=WriteXTRNImage;
+  entry->adjoin=False;
+  entry->stealth=True;
+  entry->description=AllocateString("External transfer via a smart array interface");
+  entry->module=AllocateString("XTRN");
+  RegisterMagickInfo(entry);
 }
 
 /*
@@ -347,6 +399,7 @@ ModuleExport void UnregisterXTRNImage(void)
   UnregisterMagickInfo("XTRNBLOB");
   UnregisterMagickInfo("XTRNSTREAM");
   UnregisterMagickInfo("XTRNARRAY");
+  UnregisterMagickInfo("XTRNBSTR");
 }
 
 /*
@@ -374,9 +427,9 @@ ModuleExport void UnregisterXTRNImage(void)
 %      False is returned is there is a memory shortage or if the image file
 %      fails to write.
 %
-%    o image_info: Specifies a pointer to a ImageInfo structure.
+%    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o image:  A pointer to an Image structure.
+%    o image:  A pointer to a Image structure.
 %
 %
 */
