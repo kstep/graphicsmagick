@@ -1008,7 +1008,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("filter",option+1,5) == 0)
+          if (LocaleNCompare("intent",option+1,5) == 0)
             {
               if (*option == '-')
                 {
