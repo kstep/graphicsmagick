@@ -286,8 +286,8 @@ can take any parameter that <a href="#seta">SetAttribute</a> knows about.
 For example, <pre>&nbsp;&nbsp;&nbsp; $image-&gt;Write(filename=&gt;'image.png', compression=&gt;'None');</pre>
  Use <tt>-</tt> as the filename to method Read() to read from standard in
 or to method Write() to write to standard out: <pre>&nbsp;&nbsp;&nbsp; binmode STDOUT;<br>&nbsp;&nbsp;&nbsp; $image-&gt;Write('png:-');</pre>
- To read an image in the GIF format from a PERL filehandle, use: <pre>&nbsp;&nbsp;&nbsp; $image = Image::Magick-&gt;new;<br>&nbsp;&nbsp;&nbsp; open(IMAGE, 'image.gif');<br>&nbsp;&nbsp;&nbsp; $image-&gt;Read(file=&gt;IMAGE);<br>&nbsp;&nbsp;&nbsp; close(IMAGE);</pre>
- To write an image in the PNG format to a PERL filehandle, use: <pre>&nbsp;&nbsp;&nbsp; $filename = "image.png";<br>&nbsp;&nbsp;&nbsp; open(IMAGE, "&gt;$filename");<br>&nbsp;&nbsp;&nbsp; $image-&gt;Write(file=&gt;IMAGE, filename=&gt;$filename);<br>&nbsp;&nbsp;&nbsp; close(IMAGE);</pre>
+ To read an image in the GIF format from a PERL filehandle, use: <pre>&nbsp;&nbsp;&nbsp; $image = Image::Magick-&gt;new;<br>&nbsp;&nbsp;&nbsp; open(IMAGE, 'image.gif');<br>&nbsp;&nbsp;&nbsp; $image-&gt;Read(file=&gt;\*IMAGE);<br>&nbsp;&nbsp;&nbsp; close(IMAGE);</pre>
+ To write an image in the PNG format to a PERL filehandle, use: <pre>&nbsp;&nbsp;&nbsp; $filename = "image.png";<br>&nbsp;&nbsp;&nbsp; open(IMAGE, "&gt;$filename");<br>&nbsp;&nbsp;&nbsp; $image-&gt;Write(file=&gt;\*IMAGE, filename=&gt;$filename);<br>&nbsp;&nbsp;&nbsp; close(IMAGE);</pre>
 If <tt>%0Nd, %0No, or %0Nx</tt> appears in the filename, it is interpreted
 as a printf format specification and the specification is replaced with the
 specified decimal, octal, or hexadecimal encoding of the scene number. For
@@ -1563,7 +1563,7 @@ You can specify more than one filename but only one filehandle:
 
 <pre>&nbsp;&nbsp;&nbsp;
   ($width, $height, $size, $format) = $image-&gt;Ping('logo.png');
-  ($width, $height, $size, $format) = $image-&gt;Ping(file=&gt;*IMAGE);
+  ($width, $height, $size, $format) = $image-&gt;Ping(file=&gt;\*IMAGE);
   ($width, $height, $size, $format) = $image-&gt;Ping(blob=&gt;$blob);
 </pre>
 This is a more efficient and less memory intensive way to query if an image 
