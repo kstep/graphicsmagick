@@ -1022,8 +1022,9 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
           */
           image_profile=cmsOpenProfileFromMem(image->color_profile.info,
             image->color_profile.length);
-          transform_profile=cmsOpenProfileFromMem(profile->color_profile.info,
-            profile->color_profile.length);
+          transform_profile=cmsOpenProfileFromMem(
+            profile_image->color_profile.info,
+            profile_image->color_profile.length);
           if ((image_profile == (cmsHPROFILE) NULL) ||
               (transform_profile == (cmsHPROFILE) NULL))
             ThrowBinaryException(ResourceLimitWarning,"Unable to manage color",
