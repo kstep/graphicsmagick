@@ -2702,7 +2702,7 @@ static inline double DistanceToEdge(const PointInfo *p,const double x,
       return(dx*dx+dy*dy);
     }
   beta=dx*(y-p->y)-dy*(x-p->x);
-  return(beta*beta/alpha+MagickEpsilon);
+  return(beta*beta/alpha);
 }
 
 static inline int GetWindingNumber(const PolygonInfo *polygon_info,
@@ -2931,15 +2931,18 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
             {
               if (subpath_opacity > 0.0)
                 fill_opacity=subpath_opacity;
-              winding_number=GetWindingNumber(polygon_info,x,y);
-              if (draw_info->fill_rule != NonZeroRule)
+              if (fill_opacity < 1.0)
                 {
-                  if (AbsoluteValue(winding_number) & 0x01)
-                    fill_opacity=1.0;
+                  winding_number=GetWindingNumber(polygon_info,x,y);
+                  if (draw_info->fill_rule != NonZeroRule)
+                    {
+                      if (AbsoluteValue(winding_number) & 0x01)
+                        fill_opacity=1.0;
+                    }
+                  else
+                    if (AbsoluteValue(winding_number) > 0)
+                      fill_opacity=1.0;
                 }
-              else
-                if (AbsoluteValue(winding_number) > 0)
-                  fill_opacity=1.0;
             }
           /*
             Fill.
