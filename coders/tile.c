@@ -84,12 +84,6 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
   ImageInfo
     *clone_info;
 
-  long
-    y;
-
-  register long
-    x;
-
   /*
     Initialize Image structure.
   */
@@ -114,13 +108,8 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
     Tile texture onto image.
   */
   (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
-  for (y=0; y < (long) image->rows; y+=tile_image->rows)
-  {
-    for (x=0; x < (long) image->columns; x+=tile_image->columns)
-      (void) CompositeImage(image,CopyCompositeOp,tile_image,x,y);
-    if (!MagickMonitor(LoadImageText,y,image->rows,exception))
-      break;
-  }
+  TextureImage(image,tile_image);
+
   DestroyImage(tile_image);
   return(image);
 }

@@ -5116,7 +5116,8 @@ static Image *ReadLOGOImage(const ImageInfo *image_info,
   /*
     Support legacy format names
   */
-  if (!(LocaleCompare(image_info->magick,"IMAGE") == 0))
+  if (!(LocaleCompare(image_info->magick,"IMAGE") == 0) &&
+      !(LocaleCompare(image_info->magick,"PATTERN") == 0))
     strcpy(clone_info->filename,image_info->magick);
 
   /*
@@ -5134,8 +5135,27 @@ static Image *ReadLOGOImage(const ImageInfo *image_info,
   /*
     If a matching entry is found, then retrieve the image.
   */
-  if (blob)
-    image=BlobToImage(clone_info,blob,extent,exception);
+  if (blob == 0)
+    {
+      ThrowReaderException(BlobError,"UnableToOpenFile",image)
+    }
+  image=BlobToImage(clone_info,blob,extent,exception);
+
+  if ((image_info->size) && (LocaleCompare(image_info->magick,"PATTERN") == 0))
+    {
+      Image
+        *pattern_image;
+
+      /*
+        Tile pattern across image canvas.
+      */
+      pattern_image=image;
+      image=AllocateImage(clone_info);
+/*       image->background_color=pattern_image->background_color; */
+/*       SetImage(image,OpaqueOpacity); */
+      TextureImage(image,pattern_image);
+      DestroyImage(pattern_image);
+    }
 
   DestroyImageInfo(clone_info);
   return(image);
@@ -5207,6 +5227,14 @@ ModuleExport void RegisterLOGOImage(void)
   entry->module=AcquireString("LOGO");
   (void) RegisterMagickInfo(entry);
 
+  entry=SetMagickInfo("PATTERN");
+  entry->decoder=(DecoderHandler) ReadLOGOImage;
+  entry->adjoin=False;
+  entry->stealth=True;
+  entry->description=AcquireString("Tiled pattern image");
+  entry->module=AcquireString("LOGO");
+  (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("ROSE");
   entry->decoder=(DecoderHandler) ReadLOGOImage;
   entry->adjoin=False;
@@ -5242,6 +5270,7 @@ ModuleExport void UnregisterLOGOImage(void)
   (void) UnregisterMagickInfo("IMAGE");
   (void) UnregisterMagickInfo("LOGO");
   (void) UnregisterMagickInfo("NETSCAPE");
+  (void) UnregisterMagickInfo("PATTERN");
   (void) UnregisterMagickInfo("ROSE");
 }
 

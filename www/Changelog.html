@@ -53,6 +53,21 @@
 </tr>
 </table>
 <p>
+2003-05-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (TextureImage): Creation of tiled image textures
+        is speeded up by 3.7X.<BR>
+  <LI> coders/tile.c (ReadTILEImage): Use TextureImage.
+  <LI> VisualMagick/bin/modules.mgk: Map "PATTERN" to "LOGO".
+  <LI> coders/modules.mgk: Map "PATTERN" to "LOGO".
+  <LI> coders/logo.c (ReadLOGOImage): Add "PATTERN" tiling support in
+        order to be compatible with ImageMagick.
+  <LI> magick/image.c (SetImageInfo): Map "MAGICK" magick to "IMAGE" in
+        order to be compatible with ImageMagick.
+
+</UL>
+<p>
 2003-05-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

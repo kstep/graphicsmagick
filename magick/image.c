@@ -4640,8 +4640,16 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       */
       (void) strncpy(format,image_info->filename,p-image_info->filename);
       format[p-image_info->filename]='\0';
+
+      /*
+        Backward compatability and interoperability namimg
+      */
       if (LocaleCompare(format,"GRADATION") == 0)
         (void) strcpy(format,"GRADIENT");
+
+      if (LocaleCompare(format,"MAGICK") == 0)
+        (void) strcpy(format,"IMAGE");
+
       LocaleUpper(format);
       if (!IsMagickConflict(format))
         {
@@ -5219,9 +5227,44 @@ MagickExport void SyncImage(Image *image)
 %
 %
 */
+static Image *CreateTextureImage(unsigned int width, unsigned int height,
+                                 const Image *texture, ExceptionInfo *exception)
+{
+  Image
+    *image;
+
+  ImageInfo
+    *image_info;
+
+  long
+    x,
+    y;
+
+  char
+    size[MaxTextExtent];
+
+  image_info=CloneImageInfo(0);
+  FormatString(size,"%ux%u",width,height);
+  CloneString(&image_info->size,size);
+  image=AllocateImage(image_info);
+  DestroyImageInfo(image_info);
+
+  image->background_color=texture->background_color;
+  SetImage(image,OpaqueOpacity);
+
+  for (y=0; y < (long) image->rows; y+=texture->rows)
+  {
+    for (x=0; x < (long) image->columns; x+=texture->columns)
+      (void) CompositeImage(image,CopyCompositeOp,texture,x,y);
+  }
+  return image;
+}
 MagickExport void TextureImage(Image *image,const Image *texture)
 {
 #define TextureImageText  "  Apply image texture...  "
+
+  Image
+    *texture_image;
 
   long
     x,
@@ -5231,17 +5274,30 @@ MagickExport void TextureImage(Image *image,const Image *texture)
   assert(image->signature == MagickSignature);
   if (texture == (const Image *) NULL)
     return;
+  assert(texture->signature == MagickSignature);
+
+  if ((image->columns > texture->columns) &&
+      (((ExtendedUnsignedIntegralType)texture->rows*texture->columns)<320000UL))
+    texture_image=CreateTextureImage(image->columns,texture->rows,
+      texture,&image->exception);
+  else
+    texture_image=CloneImage(texture,0,0,True,&image->exception);
+
+  if (!texture_image)
+    return;
+
   /*
     Tile texture onto the image background.
   */
-  for (y=0; y < (long) image->rows; y+=texture->rows)
+  for (y=0; y < (long) image->rows; y+=texture_image->rows)
   {
-    for (x=0; x < (long) image->columns; x+=texture->columns)
-      (void) CompositeImage(image,CopyCompositeOp,texture,x,y);
+    for (x=0; x < (long) image->columns; x+=texture_image->columns)
+      (void) CompositeImage(image,CopyCompositeOp,texture_image,x,y);
     if (QuantumTick(y,image->rows))
       if (!MagickMonitor(TextureImageText,y,image->rows,&image->exception))
         break;
   }
+  DestroyImage(texture_image);
 }
 
 /*

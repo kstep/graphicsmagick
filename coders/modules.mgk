@@ -53,6 +53,7 @@
   <module magick="O" name="GRAY" />
   <module magick="P7" name="PNM" />
   <module magick="PAL" name="UYVY" />
+  <module magick="PATTERN" name="LOGO" />
   <module magick="PBM" name="PNM" />
   <module magick="PCDS" name="PCD" />
   <module magick="PCT" name="PICT" />

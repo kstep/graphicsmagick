@@ -2733,6 +2733,10 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   if (*image_info->filename == '@')
     return(ReadImages(image_info,exception));
   clone_info=CloneImageInfo(image_info);
+
+  /*
+    Obtain file magick from filename
+  */
   (void) SetImageInfo(clone_info,False,exception);
   (void) strncpy(filename,clone_info->filename,MaxTextExtent-1);
   /*
