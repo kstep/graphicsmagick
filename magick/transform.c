@@ -645,8 +645,8 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method FlattenImage merges a sequence of images.  This is useful for GIF
-%  and MNG animation sequences that have page offsets and disposal methods.
+%  Method FlattenImage merges a sequence of images.  This is useful for
+%  combining Photoshop layers into a single image.
 %
 %  The format of the FlattenImage method is:
 %
@@ -694,6 +694,7 @@ MagickExport Image *FlattenImages(Image *image,ExceptionInfo *exception)
       CopyCompositeOp,next,next->page.x,next->page.y);
     CloseImagePixels(next);
   }
+  IsOpaqueImage(flatten_image);
   return(flatten_image);
 }
 
