@@ -1194,6 +1194,7 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
         local_info=CloneImageInfo(image_info);
         if (local_info == (ImageInfo *) NULL)
           ReaderExit(FileOpenWarning,"Unable to write file",image);
+        GetBlobInfo(&local_info->blob);
         TemporaryFilename(local_info->filename);
         file=fopen(local_info->filename,WriteBinaryType);
         if (file == (FILE *) NULL)

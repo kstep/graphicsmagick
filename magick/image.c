@@ -953,7 +953,6 @@ Export ImageInfo *CloneImageInfo(const ImageInfo *image_info)
       return(cloned_info);
     }
   *cloned_info=(*image_info);
-  GetBlobInfo(&cloned_info->blob);
   if (image_info->size != (char *) NULL)
     cloned_info->size=AllocateString(image_info->size);
   if (image_info->tile != (char *) NULL)
