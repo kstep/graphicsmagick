@@ -4400,12 +4400,35 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         (void) CloneString(&clone_info->font,argv[++i]);
         continue;
       }
-    if (strncmp("gamma",option+1,2) == 0)
+    if (strncmp("gamma",option+1,3) == 0)
       {
         if (*option == '+')
           (*image)->gamma=atof(argv[++i]);
         else
           GammaImage(*image,argv[++i]);
+        continue;
+      }
+    if (Latin1Compare("gaussian",option+1) == 0)
+      {
+        double
+          sigma,
+          width;
+
+        Image
+          *blur_image;
+
+        /*
+          Gaussian blur image.
+        */
+        width=1.0;
+        sigma=1.0;
+        if (*option == '-')
+          (void) sscanf(argv[++i],"%lfx%lf",&width,&sigma);
+        blur_image=GaussianBlurImage(*image,width,sigma,&(*image)->exception);
+        if (blur_image == (Image *) NULL)
+          return(False);
+        DestroyImage(*image);
+        *image=blur_image;
         continue;
       }
     if (strncmp("-geometry",option,4) == 0)
@@ -4979,7 +5002,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         */
         degrees=atof(argv[++i]);
         swirl_image=SwirlImage(*image,degrees,&(*image)->exception);
-        if (swirl_image != (Image *) NULL)
+        if (swirl_image == (Image *) NULL)
           return(False);
         DestroyImage(*image);
         *image=swirl_image;
@@ -5042,9 +5065,8 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         wavelength=150.0;
         if (*option == '-')
           (void) sscanf(argv[++i],"%lfx%lf",&amplitude,&wavelength);
-        wave_image=WaveImage(*image,(double) amplitude,(double) wavelength,
-          &(*image)->exception);
-        if (wave_image != (Image *) NULL)
+        wave_image=WaveImage(*image,amplitude,wavelength,&(*image)->exception);
+        if (wave_image == (Image *) NULL)
           return(False);
         DestroyImage(*image);
         *image=wave_image;

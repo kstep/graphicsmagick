@@ -90,6 +90,7 @@
 %    -frame geometry      surround image with an ornamental border
 %    -fuzz distance       colors within this distance are considered equal
 %    -gamma value         level of gamma correction
+%    -gaussian geometry   gaussian blur an image
 %    -geometry geometry   perferred size or location of the image
 %    -implode amount      implode image pixels about the center
 %    -interlace type      None, Line, Plane, or Partition
@@ -216,6 +217,7 @@ static void Usage(const char *client_name)
       "-frame geometry      surround image with an ornamental border",
       "-fuzz distance       colors within this distance are considered equal",
       "-gamma value         level of gamma correction",
+      "-gaussian geometry   gaussian blur an image",
       "-geometry geometry   perferred size or location of the image",
       "-implode amount      implode image pixels about the center",
       "-interlace type      None, Line, Plane, or Partition",
@@ -791,11 +793,18 @@ int main(int argc,char **argv)
         }
         case 'g':
         {
-          if (strncmp("gamma",option+1,2) == 0)
+          if (strncmp("gamma",option+1,3) == 0)
             {
               i++;
               if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                 MagickError(OptionError,"Missing value",option);
+              break;
+            }
+          if (Latin1Compare("gaussian",option+1) == 0)
+            {
+              i++;
+              if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                MagickError(OptionError,"Missing width",option);
               break;
             }
           if (strncmp("geometry",option+1,2) == 0)

@@ -749,6 +749,10 @@ Use \fB+gamma\fP to set the image gamma level without actually adjusting
 the image pixels.  This option is useful if the image is of a known
 gamma but not set as an image attribute (e.g. PNG images).
 .TP
+.B "-gaussian \fI<width>x<sigma>\fP"
+blur the image with a gaussian operator of the given width and
+standard deviation (sigma).
+.TP
 .B "-geometry \fI<width>x<height>{\+-}<x offset>{\+-}<y offset>{%}{!}{<}{>}\fP"
 preferred size or location of the image when encoding.
 

@@ -75,10 +75,17 @@ extern "C" {
 #include "EXTERN.h"
 #include "perl.h"
 #include "XSUB.h"
+#include <magick/api.h>
+#define False 0
+#define True 1
 #undef tainted
-#include <magick/magick.h>
-#include <magick/defines.h>
+#if !defined(WIN32)
 #include <setjmp.h>
+#else
+#undef setjmp
+#undef longjmp
+#include <setjmpex.h>
+#endif
 
 #ifdef __cplusplus
 }
@@ -366,6 +373,8 @@ static struct
     { "Stegano", { {"image", ImageReference}, {"offset", IntegerReference} } },
     { "Coalesce", },
     { "Deconstruct", },
+    { "GaussianBlur", { {"geom", StringReference}, {"width", DoubleReference},
+      {"sigma", DoubleReference} } },
   };
 
 /*
@@ -3507,6 +3516,8 @@ Mogrify(ref,...)
     CoalesceImage      = 130
     Deconstruct        = 131
     DeconstructImage   = 132
+    GaussianBlur       = 133
+    GaussianBlurImage  = 133
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -4656,6 +4667,24 @@ Mogrify(ref,...)
         case 66:  /* Deconstruct */
         {
           image=DeconstructImages(image,&exception);
+          break;
+        }
+        case 67:  /* GaussianBlur */
+        {
+          double
+            width,
+            sigma;
+
+          width=1.0;
+          sigma=1.0;
+          if (attribute_flag[1])
+            width=argument_list[1].double_reference;
+          if (attribute_flag[2])
+            sigma=argument_list[2].double_reference;
+          if (attribute_flag[0])
+            (void) sscanf(argument_list[0].string_reference,"%lfx%lf",
+              &width,&sigma);
+          image=GaussianBlurImage(image,width,sigma,&exception);
           break;
         }
       }

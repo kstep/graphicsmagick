@@ -834,7 +834,7 @@ int main(int argc,char **argv)
         }
         case 'g':
         {
-          if (strncmp("gamma",option+1,2) == 0)
+          if (strncmp("gamma",option+1,3) == 0)
             {
               i++;
               if ((i == argc) || !sscanf(argv[i],"%lf",&sans))

@@ -616,6 +616,7 @@ extern Export Image
   *FlopImage(Image *,ExceptionInfo *),
   *FrameImage(Image *,const FrameInfo *,ExceptionInfo *),
   *GetNextImage(Image *),
+  *GaussianBlurImage(Image *,const double,const double,ExceptionInfo *),
   *ImplodeImage(Image *,const double,ExceptionInfo *),
   **ListToGroupImage(Image *,unsigned int *),
   *MagnifyImage(Image *,ExceptionInfo *),

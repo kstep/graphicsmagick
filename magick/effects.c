@@ -196,7 +196,7 @@ Export Image *BlurImage(Image *image,const double factor,
   total_blue+=(weight)*s->blue; \
   total_opacity+=(weight)*s->opacity; \
   s++;
-#define BlurImageText  "  Bluring image...  "
+#define BlurImageText  "  Blur image...  "
 
   double
     quantum,
@@ -224,12 +224,12 @@ Export Image *BlurImage(Image *image,const double factor,
     Initialize blurred image attributes.
   */
   assert(image != (Image *) NULL);
-  if ((image->columns < 3) || (image->rows < 3))
-    return((Image *) NULL);
   blur_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (blur_image == (Image *) NULL)
     return((Image *) NULL);
   blur_image->class=DirectClass;
+  if ((image->columns < 3) || (image->rows < 3))
+    return(blur_image);
   /*
     Blur image.
   */
@@ -1050,6 +1050,257 @@ Export Image *EnhanceImage(Image *image,ExceptionInfo *exception)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%     G a u s s i a n B l u r I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GaussianBlurImage creates a blurred copy of the input image.  We
+%  convolve the image with a gaussian operator of the given width and
+%  standard deviation (sigma).
+%  
+%  Each output pixel is set to a value that is the weighted average of the
+%  input pixels in an area enclosing the pixel.  The width parameter
+%  determines how large the area is.  Each pixel in the area is weighted
+%  in the average according to its distance from the center, and the
+%  standard deviation, sigma. The actual weight is calculated according to
+%  the gaussian distribution (also called normal distribution), which
+%  looks like a Bell Curve centered on a pixel.  The standard deviation
+%  controls how 'pointy' the curve is.  The pixels near the center of the
+%  curve (closer to the center of the area we are averaging) contribute
+%  more than the distant pixels.
+%  
+%  In general, the width should be wide enough to include most of the
+%  total weight under the gaussian for the standard deviation you choose.
+%  As a guideline about 90% of the weight lies within two standard
+%  deviations, and 98% of the weight within 3 standard deviations. Since
+%  the width parameter to the function specifies the radius of the
+%  gaussian convolution mask in pixels, not counting the centre pixel, the
+%  width parameter should be chosen larger than the standard deviation,
+%  perhaps about twice as large to three times as large. A width of 1 will
+%  give a (standard) 3x3 convolution mask, a width of 2 gives a 5 by 5
+%  convolution mask. Using non-integral widths will result in some pixels
+%  being considered 'partial' pixels, in which case their weight will be
+%  reduced proportionally.
+%  
+%  Pixels for which the convolution mask does not completely fit on the
+%  image (e.g. pixels without a full set of neighbours) are averaged with
+%  those neighbours they do have. Thus pixels at the edge of images are
+%  typically less blurred.
+%  
+%  Since a 2d gaussian is seperable, we perform Gaussian Blurring by
+%  convolving with two 1d gaussians, first in the x, then in the y
+%  direction. For an n by n image and gaussian width w this requires 2wn^2
+%  multiplications, while convolving with a 2d gaussian requres w^2n^2
+%  mults.
+%  
+%  We are blur the image into a copy, and the original is left untouched.
+%  We must process the image in two passes, in each pass we change the
+%  pixel based on its neightbours, but we need the pixel's original value
+%  for the next pixel's calculation. For the first pass we could use the
+%  original image but that's no good for the second pass, and it would
+%  imply that the original image have to stay around in ram. Instead we
+%  use a small (size=width) buffer to store the pixels we have
+%  overwritten.
+%  
+%  BlurImage deals with boundary pixels by assuming the neighbours not in
+%  the image are zero (black) pixels. The function could be easily
+%  modified to pre-fill the buffer with the first width pixels from the
+%  image scan-line, in effect averaging only the available neighbours for
+%  any pixel.
+%
+%  This method was contributed by runger@cs.mcgill.ca.
+%
+%  The format of the GaussianBlurImage method is:
+%
+%      Image *GaussianBlurImage(Image *image,const double width,
+%        const double sigma,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o blur_image: Method GaussianBlurImage returns a pointer to the image
+%      after it is blurred.  A null image is returned if there is a memory
+%      shortage.
+%
+%    o width: The radius of the gaussian, in pixels, not counting the center
+%      pixel.
+%
+%    o sigma: The standard deviation of the gaussian, in pixels.
+%
+*/
+Export Image *GaussianBlurImage(Image *image,const double width,
+  const double sigma,ExceptionInfo *exception)
+{
+#define LeftStop(x)  (((x) < 0) ? (x)+radius : x)
+#define GaussianBlurImageText  "  Gaussian blur image...  "
+#define RightStop(x)  (((x) >= radius) ? (x)-radius : x)
+
+  double
+    blue,
+    green,
+    *mask,
+    red,
+    total;
+
+  Image
+    *blur_image;
+
+  int
+    j,
+    k,
+    radius,
+    y;
+
+  PixelPacket
+    *scanline;
+
+  register int
+    i,
+    x;
+
+  register PixelPacket
+    *p;
+
+  /*
+    Initialize blurred image attributes.
+  */
+  assert(image != (Image *) NULL);
+  blur_image=CloneImage(image,image->columns,image->rows,False,exception);
+  if (blur_image == (Image *) NULL)
+    return((Image *) NULL);
+  blur_image->class=DirectClass;
+  if (width < 0.0)
+    return(blur_image);
+  /*
+    Build convolution mask.
+  */
+  radius=ceil(width);
+  mask=(double *) AllocateMemory((radius+1)*sizeof(double));
+  scanline=(PixelPacket *) AllocateMemory(radius*sizeof(PixelPacket));
+  if ((mask == (double *) NULL) || (scanline == (PixelPacket *) NULL))
+    {
+      DestroyImage(blur_image);
+      ThrowImageException(ResourceLimitWarning,"Unable to gaussian blur image",
+        "Memory allocation failed");
+    }
+  for (i=0; i < (radius+1); i++)
+    mask[i]=exp(-((double) i*i)/(2*sigma*sigma));
+  if (width < radius)
+    mask[radius]*=(width-(double) radius+1.0); /* adjust partial pixels */
+  total=0.0;
+  for (i=0; i < (radius+1); i++)
+    total+=mask[i];
+  for (i=1; i < (radius+1); i++)
+    total+=mask[i];
+  for (i=0; i < (radius+1); i++)
+    mask[i]/=total;
+  /*
+    Blur each row.
+  */
+  for (y=0; y < (int) blur_image->rows; y++)
+  {
+    p=GetPixelCache(blur_image,0,y,blur_image->columns,1);
+    if (p == (PixelPacket *) NULL)
+      break;
+    j=0;
+    (void) memset(scanline,0,radius*sizeof(PixelPacket));
+    for (x=0; x < (int) blur_image->columns; x++)
+    {    
+      /*
+        Convolve this pixel.
+      */
+      red=mask[0]*p->red;
+      green=mask[0]*p->green;
+      blue=mask[0]*p->blue;
+      k=LeftStop(j-1);
+      for (i=1; i < (radius+1); i++)
+      {
+	red+=mask[i]*scanline[k].red;
+	green+=mask[i]*scanline[k].green;
+	blue+=mask[i]*scanline[k].blue;
+	k=LeftStop(k-1);
+      }
+      for (i=1; i < (radius+1); i++)
+      {
+	if ((x+i) >= blur_image->columns)
+          break;
+        red+=mask[i]*p[i].red;
+        green+=mask[i]*p[i].green;
+        blue+=mask[i]*p[i].blue;
+      }
+      scanline[j]=(*p);
+      p->red=red+0.5;
+      p->green=green+0.5;
+      p->blue=blue+0.5;
+      j=RightStop(j+1);
+      p++;
+    }
+    if (!SyncPixelCache(blur_image))
+      break;
+    if (QuantumTick(y,blur_image->rows+blur_image->columns))
+      ProgressMonitor(GaussianBlurImageText,y,blur_image->rows+
+        blur_image->columns);
+  }
+  /*
+    Blur each column.
+  */
+  for (x=0; x < (int) blur_image->columns; x++)
+  {
+    p=GetPixelCache(blur_image,x,0,1,blur_image->rows);
+    if (p == (PixelPacket *) NULL)
+      break;
+    j=0;
+    (void) memset(scanline,0,radius*sizeof(PixelPacket));
+    for (y=0; y < (int) blur_image->rows; y++)
+    {    
+      /*
+        Convolve this pixel.
+      */
+      red=mask[0]*p->red;
+      green=mask[0]*p->green;
+      blue=mask[0]*p->blue;
+      k=LeftStop(j-1);
+      for (i=1; i < (radius+1); i++)
+      {
+	red+=mask[i]*scanline[k].red;
+	green+=mask[i]*scanline[k].green;
+	blue+=mask[i]*scanline[k].blue;
+	k=LeftStop(k-1);
+      }
+      for (i=1; i < (radius+1); i++)
+      {
+	if ((y+i) >= blur_image->rows)
+          break;
+        red+=mask[i]*p[i].red;
+        green+=mask[i]*p[i].green;
+        blue+=mask[i]*p[i].blue;
+      }
+      scanline[j]=(*p);
+      p->red=red+0.5;
+      p->green=green+0.5;
+      p->blue=blue+0.5;
+      j=RightStop(j+1);
+      p++;
+    }
+    if (!SyncPixelCache(blur_image))
+      break;
+    if (QuantumTick(blur_image->rows+x,blur_image->rows+blur_image->columns))
+      ProgressMonitor(GaussianBlurImageText,blur_image->rows+x,
+        blur_image->rows+blur_image->columns);
+  }
+  /*
+    Free resources.
+  */
+  FreeMemory(mask);
+  FreeMemory(scanline);
+  return(blur_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
 %     I m p l o d e I m a g e                                                 %
 %                                                                             %
 %                                                                             %
@@ -1124,8 +1375,8 @@ Export Image *ImplodeImage(Image *image,const double factor,
   */
   x_scale=1.0;
   y_scale=1.0;
-  x_center=(double) 0.5*image->columns;
-  y_center=(double) 0.5*image->rows;
+  x_center=0.5*image->columns;
+  y_center=0.5*image->rows;
   radius=x_center;
   if (image->columns > image->rows)
     y_scale=(double) image->columns/image->rows;
