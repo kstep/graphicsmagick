@@ -206,6 +206,9 @@ LaunchDelegate = @LaunchDelegate@
 MAGICKLIB = @MAGICKLIB@
 MAGICKLIBDIR = @MAGICKLIBDIR@
 MAGICK_DEP_LIBS = @MAGICK_DEP_LIBS@
+MAGICK_LIB_VERSION = @MAGICK_LIB_VERSION@
+MAGICK_LIB_VERSION_NUMBER = @MAGICK_LIB_VERSION_NUMBER@
+MAGICK_LIB_VERSION_TEXT = @MAGICK_LIB_VERSION_TEXT@
 MAINT = @MAINT@
 MAINTAINER_MODE_FALSE = @MAINTAINER_MODE_FALSE@
 MAINTAINER_MODE_TRUE = @MAINTAINER_MODE_TRUE@
@@ -228,6 +231,7 @@ OLDINCLUDE_DIR = @OLDINCLUDE_DIR@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
+PACKAGE_RELEASE_DATE = @PACKAGE_RELEASE_DATE@
 PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
@@ -874,12 +878,12 @@ check:
 	${GM} convert $(MODEL_MIFF) -background "#000000FF" \
 	        -swirl 90                                -label Swirl Swirl_out.miff
 	${GM} convert $(MODEL_MIFF) -unsharp 0.0x1.0              -label UnsharpMask Unsharp_out.miff
+	${GM} convert $(MODEL_MIFF) -background "#000000FF" \
+	        -wave 25x150                             -label Wave Wave_out.miff
 	${GM} convert $(MODEL_MIFF) -equalize -ordered-dither intensity 2x2 -label Ordered2x2 Ordered2_out.miff
 	${GM} convert $(MODEL_MIFF) -equalize -ordered-dither intensity 3x3 -label Ordered3x3 Ordered3_out.miff
 	${GM} convert $(MODEL_MIFF) -equalize -ordered-dither intensity 4x4 -label Ordered4x4 Ordered4_out.miff
 	${GM} convert $(MODEL_MIFF) -equalize -random-threshold intensity 10% -label Random10% Random10_out.miff
-	${GM} convert $(MODEL_MIFF) -background "#000000FF" \
-	        -wave 25x150                             -label Wave Wave_out.miff
 	${GM} montage -geometry '130x194+10+5>' -gravity 'Center' \
 	  -bordercolor 'green' -borderwidth 1x1 -tile '5x1000' -compose 'over' \
 	  -background '#ffffff' -font $(GENERIC_TTF) -pointsize 18 -fill '#600' \

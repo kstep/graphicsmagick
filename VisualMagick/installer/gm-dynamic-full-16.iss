@@ -98,7 +98,7 @@ Root: HKLM; Subkey: "Software\GraphicsMagick\1.0.0\Q:16"; ValueType: string; Val
 
 Root: HKLM; Subkey: "Software\GraphicsMagick\Current"; ValueType: none; Flags: uninsdeletekey
 Root: HKLM; Subkey: "Software\GraphicsMagick\Current"; ValueType: string; ValueName: "Version"; ValueData: "1.0.0"
-Root: HKLM; Subkey: "Software\GraphicsMagick\Current"; ValueType: dword; ValueName: "QuantumDepth"; ValueData: 8
+Root: HKLM; Subkey: "Software\GraphicsMagick\Current"; ValueType: dword; ValueName: "QuantumDepth"; ValueData: 16
 
 Root: HKLM; Subkey: "Software\GraphicsMagick\Current"; ValueType: string; ValueName: "BinPath"; ValueData: "{app}"
 Root: HKLM; Subkey: "Software\GraphicsMagick\Current"; ValueType: string; ValueName: "ConfigurePath"; ValueData: "{app}\config"

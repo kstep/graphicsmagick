@@ -85,13 +85,25 @@ uninstall-data-html:
 	  rm -rf $(DESTDIR)$(pkgdocdir)$$dir ; \
 	done
 
+# Ensure that version.h at $(srcdir)/magick/version.h is kept up to date.
+magick-version: magick/version.h
+	@if test -n "$(VPATH)" ; then \
+	  cmp magick/version.h $(srcdir)/magick/version.h > /dev/null ; \
+          if test $$? -eq 1 ; then \
+	    echo "Updating $(srcdir)/magick/version.h ..."; \
+	    cp magick/version.h $(srcdir)/magick/version.h ; \
+	  fi ; \
+	fi ; \
+	touch magick-version
+
 # If source files missing, see if they can be obtained via VPATH
 perl-sources:
-	if test -n "$(VPATH)" ; then \
+	@if test -n "$(VPATH)" ; then \
+	  echo "Linking PerlMagick Sources ..." ; \
 	  imagemagick=`(cd $(VPATH) ; pwd)` && \
 	  ( cd $(PERLMAGICK) && \
 	    sh $$imagemagick/lndir.sh $$imagemagick/$(PERLMAGICK) ) \
-	fi
+	fi ; \
 	touch perl-sources
 
 if WITH_PERL
@@ -173,7 +185,7 @@ TXT2HTMLTARGETS= \
 	$(top_srcdir)/www/README.html
 endif # WITH_PERL
 
-all-local: all-perl @MAINTAINER_MODE_TRUE@ $(TXT2HTMLTARGETS)
+all-local: all-perl @MAINTAINER_MODE_TRUE@ magick-version $(TXT2HTMLTARGETS)
 
 # Install PerlMagick
 install-exec-local: install-exec-perl

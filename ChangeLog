@@ -1,7 +1,19 @@
-2003-04-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2003-04-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* magick/magic.mgk: Removed risky entry for PICT which has been
-	demonstrated to lead to a false match in the real-world.
+	* coders/jpeg.c (ReadJPEGImage): Check for failure of
+	AllocateImage.  Close blob prior to error return.
+	* configure.ac: Perform substitutions on magick/version.h
+	* magick/version.h.in: New file to provide base for configured
+	magick/version.h
+	* version.sh (PACKAGE_RELEASE_DATE): Support setting a package
+	release date.
+	* configure.ac: Perform substitutions on PerlMagick/Magick.pm.in to
+	create PerlMagick/Magick.pm.in.
+	* PerlMagick/Magick.pm.in: @PACKAGE_VERSION@ is substituted while
+	configuring PerlMagick/Magick.pm.
+	* magick/magic.mgk, VisualMagick/bin/magic.mgk: Removed risky
+	entry for PICT which has been demonstrated to lead to a false
+	match in the real-world.
 	* coders/pict.c (ReadPICTImage): Ensure that PICT decoder don't
 	loop forever with an EOF condition if none of the PICT op-codes
 	encountered result in a condition which terminates the input loop.

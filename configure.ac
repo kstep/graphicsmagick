@@ -23,6 +23,21 @@ AC_SUBST(LIBRARY_AGE)dnl
 AC_SUBST(PACKAGE_NAME)dnl
 AC_SUBST(PACKAGE_VERSION)dnl
 AC_SUBST(PACKAGE_VERSION_ADDENDUM)dnl
+AC_SUBST(PACKAGE_RELEASE_DATE)dnl
+
+# Definition used to define MagickLibVersion in version.h
+# As soon as any of these values exceeds 9, a more sophisticated formatting
+# scheme must be invented for this string.
+MAGICK_LIB_VERSION="0x0${LIBRARY_CURRENT}0${LIBRARY_AGE}0${LIBRARY_REVISION}"
+AC_SUBST(MAGICK_LIB_VERSION)
+
+# Definition used to define MagickLibVersionText in version.h
+MAGICK_LIB_VERSION_TEXT="${PACKAGE_VERSION}"
+AC_SUBST(MAGICK_LIB_VERSION_TEXT)
+
+# Definition used to define MagickLibVersionNumber in version.h
+MAGICK_LIB_VERSION_NUMBER="${LIBRARY_CURRENT},${LIBRARY_AGE},${LIBRARY_REVISION}"
+AC_SUBST(MAGICK_LIB_VERSION_NUMBER)
 
 # Ensure that make can run correctly
 AM_SANITY_CHECK
@@ -2311,6 +2326,7 @@ AC_OUTPUT( \
         ltdl/Makefile \
         magick/GraphicsMagick-config \
         magick/GraphicsMagick.pc \
+        magick/version.h \
         Magick++/Makefile \
         Magick++/bin/GraphicsMagick++-config \
         Magick++/bin/Makefile \
@@ -2319,7 +2335,9 @@ AC_OUTPUT( \
         Magick++/lib/Makefile \
         Magick++/lib/Magick++/Makefile \
         Magick++/tests/Makefile \
+        PerlMagick/Magick.pm \
         PerlMagick/Makefile.PL )
+# VisualMagick/installer/inc/version.isi
 
 echo ""
 

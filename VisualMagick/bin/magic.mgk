@@ -49,7 +49,6 @@
   <magic name="PFA" offset="0" target="%!PS-AdobeFont-1.0" />
   <magic name="PFB" offset="6" target="%!PS-AdobeFont-1.0" />
   <magic name="PICT" offset="522" target="\000\021\002\377\014\000" />
-  <magic name="PICT" offset="522" target="\021\001" />
   <magic name="PNG" offset="0" target="\211PNG\r\n\032\n" />
   <magic name="PNM" offset="0" target="P1" />
   <magic name="PNM" offset="0" target="P2" />

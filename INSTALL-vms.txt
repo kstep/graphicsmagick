@@ -7,7 +7,7 @@ VMS COMPILATION
 
   Type
 
-      unzip GraphicsMagick-1.0.0.zip set default [.imagemagick] @make set
+      unzip GraphicsMagick-1.0.zip set default [.imagemagick] @make set
       display/create/node=node_name::
 
   where node_name is the DECNET X server to contact.
@@ -19,7 +19,7 @@ VMS COMPILATION
   Alternatively, get a zipped distribution (with JPEG, PNG, TIFF, TTF)
   from
 
-      ftp://ftp.imagemagick.org/pub/GraphicsMagick/vms/GraphicsMagick-1.0.0.zip
+      ftp://ftp.imagemagick.org/pub/GraphicsMagick/vms/GraphicsMagick-1.0.zip
 
   Thanks to pmoreau@cenaath.cena.dgac.fr for supplying invaluable help
   as well as the VMS versions of the JPEG, PNG, TTF, and TIFF

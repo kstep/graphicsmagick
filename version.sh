@@ -8,8 +8,13 @@
 PACKAGE_NAME='GraphicsMagick'
 #
 # Package version.  This is is the numeric version suffix applied to
-# PACKAGE_NAME (e.g. "1.0.0").
+# PACKAGE_NAME (e.g. "1.0").
 PACKAGE_VERSION='1.0'
+
+#
+# Formal Package release date
+PACKAGE_RELEASE_DATE="04/27/03"
+
 #
 # Package version addendum.  This is an arbitrary suffix (if any)
 # appended to the package version. (e.g. "beta1")

@@ -1,4 +1,4 @@
-The GraphicsMagick Group announces the release of GraphicsMagick 1.0.0.
+The GraphicsMagick Group announces the release of GraphicsMagick 1.0.
 GraphicsMagick is originally derived from a development version of
 ImageMagick 5.5.2 from ImageMagick Studio.
 
@@ -86,11 +86,11 @@ The GraphicsMagick WWW page is
 
   http://www.imagemagick.org/
  
-The GraphicsMagick 1.0.0 source code is available via ftp as
+The GraphicsMagick 1.0 source code is available via ftp as
 
-  ftp://ftp.imagemagick.org/pub/GraphicsMagick/GraphicsMagick-1.0.0.tar.gz
+  ftp://ftp.imagemagick.org/pub/GraphicsMagick/GraphicsMagick-1.0.tar.gz
 
-The GraphicsMagick 1.0.0 Windows install package is available via ftp as
+The GraphicsMagick 1.0 Windows install package is available via ftp as
 
   ftp://ftp.imagemagick.org/pub/GraphicsMagick/binaries/GraphicsMagick-i686-pc-windows.exe
 

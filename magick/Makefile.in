@@ -209,6 +209,9 @@ LaunchDelegate = @LaunchDelegate@
 MAGICKLIB = @MAGICKLIB@
 MAGICKLIBDIR = @MAGICKLIBDIR@
 MAGICK_DEP_LIBS = @MAGICK_DEP_LIBS@
+MAGICK_LIB_VERSION = @MAGICK_LIB_VERSION@
+MAGICK_LIB_VERSION_NUMBER = @MAGICK_LIB_VERSION_NUMBER@
+MAGICK_LIB_VERSION_TEXT = @MAGICK_LIB_VERSION_TEXT@
 MAINT = @MAINT@
 MAINTAINER_MODE_FALSE = @MAINTAINER_MODE_FALSE@
 MAINTAINER_MODE_TRUE = @MAINTAINER_MODE_TRUE@
@@ -231,6 +234,7 @@ OLDINCLUDE_DIR = @OLDINCLUDE_DIR@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
+PACKAGE_RELEASE_DATE = @PACKAGE_RELEASE_DATE@
 PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
@@ -478,7 +482,7 @@ man_MANS = $(ALLMANPAGES)
 subdir = magick
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = magick_config.h
-CONFIG_CLEAN_FILES = GraphicsMagick-config GraphicsMagick.pc
+CONFIG_CLEAN_FILES = GraphicsMagick-config GraphicsMagick.pc version.h
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
 @WITH_LTDL_FALSE@@WITH_MODULES_TRUE@libGraphicsMagick_la_DEPENDENCIES =
@@ -570,7 +574,7 @@ HEADERS = $(noinst_HEADERS) $(pkginclude_HEADERS)
 
 DIST_COMMON = $(noinst_HEADERS) $(pkginclude_HEADERS) \
 	GraphicsMagick-config.in GraphicsMagick.pc.in Makefile.am \
-	Makefile.in magick_config.h.in
+	Makefile.in magick_config.h.in version.h.in
 SOURCES = $(libGraphicsMagick_la_SOURCES) $(EXTRA_libGraphicsMagick_la_SOURCES)
 
 all: $(BUILT_SOURCES) magick_config.h
@@ -603,6 +607,8 @@ distclean-hdr:
 GraphicsMagick-config: $(top_builddir)/config.status GraphicsMagick-config.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 GraphicsMagick.pc: $(top_builddir)/config.status GraphicsMagick.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
+version.h: $(top_builddir)/config.status version.h.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 libLTLIBRARIES_INSTALL = $(INSTALL)
 install-libLTLIBRARIES: $(lib_LTLIBRARIES)

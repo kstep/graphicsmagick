@@ -647,6 +647,11 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter");
   image=AllocateImage(image_info);
+  if (image == (Image *) NULL)
+    {
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+        image);
+    }
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
@@ -665,6 +670,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       jpeg_destroy_decompress(&jpeg_info);
       ThrowException(exception,image->exception.severity,
         image->exception.reason,image->exception.description);
+      if (image->blob->type != UndefinedStream)
+        CloseBlob(image);
       number_pixels=image->columns*image->rows;
       if (number_pixels != 0)
         return(image);

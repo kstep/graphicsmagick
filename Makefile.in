@@ -211,6 +211,9 @@ LaunchDelegate = @LaunchDelegate@
 MAGICKLIB = @MAGICKLIB@
 MAGICKLIBDIR = @MAGICKLIBDIR@
 MAGICK_DEP_LIBS = @MAGICK_DEP_LIBS@
+MAGICK_LIB_VERSION = @MAGICK_LIB_VERSION@
+MAGICK_LIB_VERSION_NUMBER = @MAGICK_LIB_VERSION_NUMBER@
+MAGICK_LIB_VERSION_TEXT = @MAGICK_LIB_VERSION_TEXT@
 MAINT = @MAINT@
 MAINTAINER_MODE_FALSE = @MAINTAINER_MODE_FALSE@
 MAINTAINER_MODE_TRUE = @MAINTAINER_MODE_TRUE@
@@ -234,6 +237,7 @@ PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 
 PACKAGE_NAME = @PACKAGE_NAME@
+PACKAGE_RELEASE_DATE = @PACKAGE_RELEASE_DATE@
 PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
@@ -392,7 +396,7 @@ subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/magick/magick_config.h
-CONFIG_CLEAN_FILES = PerlMagick/Makefile.PL
+CONFIG_CLEAN_FILES = PerlMagick/Magick.pm PerlMagick/Makefile.PL
 DIST_SOURCES =
 DATA = $(pkgdata_DATA)
 
@@ -424,6 +428,8 @@ $(srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(srcdir)/configure.ac $(ACLOCAL_M4)
 
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ configure.ac acinclude.m4
 	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
+PerlMagick/Magick.pm: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/Magick.pm.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
 PerlMagick/Makefile.PL: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/Makefile.PL.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 
@@ -844,13 +850,25 @@ uninstall-data-html:
 	  rm -rf $(DESTDIR)$(pkgdocdir)$$dir ; \
 	done
 
+# Ensure that version.h at $(srcdir)/magick/version.h is kept up to date.
+magick-version: magick/version.h
+	@if test -n "$(VPATH)" ; then \
+	  cmp magick/version.h $(srcdir)/magick/version.h > /dev/null ; \
+          if test $$? -eq 1 ; then \
+	    echo "Updating $(srcdir)/magick/version.h ..."; \
+	    cp magick/version.h $(srcdir)/magick/version.h ; \
+	  fi ; \
+	fi ; \
+	touch magick-version
+
 # If source files missing, see if they can be obtained via VPATH
 perl-sources:
-	if test -n "$(VPATH)" ; then \
+	@if test -n "$(VPATH)" ; then \
+	  echo "Linking PerlMagick Sources ..." ; \
 	  imagemagick=`(cd $(VPATH) ; pwd)` && \
 	  ( cd $(PERLMAGICK) && \
 	    sh $$imagemagick/lndir.sh $$imagemagick/$(PERLMAGICK) ) \
-	fi
+	fi ; \
 	touch perl-sources
 
 @WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@$(PERLMAKEFILE): perl-sources $(PERLMAKEMAKER)
@@ -901,7 +919,7 @@ perl-sources:
 @WITH_PERL_FALSE@clean-perl:
 @WITH_PERL_FALSE@distclean-perl:
 
-all-local: all-perl @MAINTAINER_MODE_TRUE@ $(TXT2HTMLTARGETS)
+all-local: all-perl @MAINTAINER_MODE_TRUE@ magick-version $(TXT2HTMLTARGETS)
 
 # Install PerlMagick
 install-exec-local: install-exec-perl
