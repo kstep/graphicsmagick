@@ -491,13 +491,20 @@ static void ipa_device_open(wmfAPI * API)
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData (API);
 
+  DrawInfo
+    *draw_info;
+
+  draw_info = CloneDrawInfo((ImageInfo*)NULL,(DrawInfo*)NULL);
+  draw_info->debug = ddata->image_info->debug;
+
   ddata->pattern_id = 0;
   ddata->clipping = False;
   ddata->clip_path_id = 0;
 
   ddata->push_depth = 0;
 
-  ddata->draw_context = DrawAllocateContext((DrawInfo*)NULL,ddata->image);
+  ddata->draw_context = DrawAllocateContext(draw_info,ddata->image);
+  DestroyDrawInfo(draw_info);
 }
 
 /*
@@ -794,37 +801,36 @@ static void ipa_draw_line(wmfAPI * API, wmfDrawLine_t * draw_line)
   DrawPopGraphicContext(WmfDrawContext);
 }
 
-static void ipa_poly_line(wmfAPI * API, wmfPolyLine_t * poly_line)
+static void ipa_poly_line(wmfAPI * API, wmfPolyLine_t * polyline)
 {
-  U16
-    i;
-
-  /* Save graphic context */
-  DrawPushGraphicContext(WmfDrawContext);
-
-  if (poly_line->count <= 1)
+  if (polyline->count <= 2)
     return;
 
-  if (TO_DRAW(poly_line))
+  if (TO_DRAW(polyline))
     {
-      PointInfo
-        *points;
+      int
+        point;
 
-      DrawSetFillColorString(WmfDrawContext,"none");
-      util_set_pen(API, poly_line->dc);
+      /* Save graphic context */
+      DrawPushGraphicContext(WmfDrawContext);
 
-      points = (PointInfo*)AcquireMemory(poly_line->count * sizeof(PointInfo));
-      for (i = 0; i < poly_line->count; i++)
+      util_set_pen(API, polyline->dc);
+
+      DrawPathStart(WmfDrawContext);
+      DrawPathMoveToAbsolute(WmfDrawContext,
+                             XC(polyline->pt[0].x),
+                             YC(polyline->pt[0].y));
+      for (point = 1; point < polyline->count; point++)
         {
-          points[i].x = XC(poly_line->pt[i].x);
-          points[i].y = YC(poly_line->pt[i].y);
+          DrawPathLineToAbsolute(WmfDrawContext,
+                                 XC(polyline->pt[point].x),
+                                 YC(polyline->pt[point].y));
         }
-      DrawPolyline(WmfDrawContext,poly_line->count,points);
-      LiberateMemory((void**)&points);
-    }
+      DrawPathFinish(WmfDrawContext);
 
-  /* Restore graphic context */
-  DrawPopGraphicContext(WmfDrawContext);
+      /* Restore graphic context */
+      DrawPopGraphicContext(WmfDrawContext);
+    }
 }
 
 static void ipa_draw_polygon(wmfAPI * API, wmfPolyLine_t * polyline)
@@ -1382,22 +1388,6 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc, const BrushApply brush_appl
       break;
     }
 
-#if 0
-  printf("WMF_DC_OPAQUE    : %i\n", WMF_DC_OPAQUE(dc));
-  printf("WMF_DC_POLYFILL  : %i\n", (int)WMF_DC_POLYFILL(dc));
-  printf("WMF_BRUSH_STYLE  : %i\n", (int)WMF_BRUSH_STYLE(brush));
-  if(WMF_BRUSH_COLOR(brush))
-    printf("WMF_BRUSH_COLOR  : #%02x%02x%02x\n",
-           (int) WMF_BRUSH_COLOR(brush)->r,
-           (int) WMF_BRUSH_COLOR(brush)->g,
-           (int) WMF_BRUSH_COLOR(brush)->b);
-  if(WMF_DC_BACKGROUND(dc))
-    printf("WMF_DC_BACKGROUND: #%02x%02x%02x\n",
-           (int) WMF_DC_BACKGROUND(dc)->r,
-           (int) WMF_DC_BACKGROUND(dc)->g,
-           (int) WMF_DC_BACKGROUND(dc)->b);
-#endif
-
   switch (WMF_BRUSH_STYLE(brush))
     {
     case BS_SOLID /* 0 */:
@@ -1480,6 +1470,8 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc, const BrushApply brush_appl
             }
           default:
             {
+              printf("util_set_brush: unexpected brush hatch enumeration %u\n",
+                     (unsigned int)WMF_BRUSH_HATCH(brush));
             }
           }
         DrawPopGraphicContext(WmfDrawContext);
@@ -1536,55 +1528,57 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc, const BrushApply brush_appl
               {
                 /* Binary raster ops */
               case R2_BLACK:
-                printf("util_set_brush R2_BLACK ROP2 mode not supported!\n");
+                printf("util_set_brush: R2_BLACK ROP2 mode not supported!\n");
                 break;
               case R2_NOTMERGEPEN:
-                printf("util_set_brush R2_NOTMERGEPEN ROP2 mode not supported!\n");
+                printf("util_set_brush: R2_NOTMERGEPEN ROP2 mode not supported!\n");
                 break;
               case R2_MASKNOTPEN:
                 printf("util_set_brush R2_MASKNOTPEN ROP2 mode not supported!\n");
                 break;
               case R2_NOTCOPYPEN:
-                printf("util_set_brush R2_NOTCOPYPEN ROP2 mode not supported!\n");
+                printf("util_set_brush: R2_NOTCOPYPEN ROP2 mode not supported!\n");
                 break;
               case R2_MASKPENNOT:
-                printf("util_set_brush R2_MASKPENNOT ROP2 mode not supported!\n");
+                printf("util_set_brush: R2_MASKPENNOT ROP2 mode not supported!\n");
                 break;
               case R2_NOT:
-                printf("util_set_brush R2_NOT ROP2 mode not supported!\n");
+                printf("util_set_brush: R2_NOT ROP2 mode not supported!\n");
                 break;
               case R2_XORPEN:
-                printf("util_set_brush R2_XORPEN ROP2 mode not supported!\n");
+                printf("util_set_brush: R2_XORPEN ROP2 mode not supported!\n");
                 break;
               case R2_NOTMASKPEN:
-                printf("util_set_brush R2_NOTMASKPEN ROP2 mode not supported!\n");
+                printf("util_set_brush: R2_NOTMASKPEN ROP2 mode not supported!\n");
                 break;
               case R2_MASKPEN:
-                printf("util_set_brush R2_MASKPEN ROP2 mode not supported!\n");
+                printf("util_set_brush: R2_MASKPEN ROP2 mode not supported!\n");
                 break;
               case R2_NOTXORPEN:
-                printf("util_set_brush R2_NOTXORPEN ROP2 mode not supported!\n");
+                printf("util_set_brush: R2_NOTXORPEN ROP2 mode not supported!\n");
                 break;
               case R2_NOP:
-                printf("util_set_brush R2_NOP ROP2 mode not supported!\n");
+                printf("util_set_brush: R2_NOP ROP2 mode not supported!\n");
                 break;
               case R2_MERGENOTPEN:
-                printf("util_set_brush R2_MERGENOTPEN ROP2 mode not supported!\n");
+                printf("util_set_brush: R2_MERGENOTPEN ROP2 mode not supported!\n");
                 break;
               case R2_COPYPEN:
                 mode = CopyCompositeOp;
                 break;
               case R2_MERGEPENNOT:
-                printf("util_set_brush R2_MERGEPENNOT ROP2 mode not supported!\n");
+                printf("util_set_brush: R2_MERGEPENNOT ROP2 mode not supported!\n");
                 break;
               case R2_MERGEPEN:
-                printf("util_set_brush R2_MERGEPEN ROP2 mode not supported!\n");
+                printf("util_set_brush: R2_MERGEPEN ROP2 mode not supported!\n");
                 break;
               case R2_WHITE:
-                printf("util_set_brush R2_WHITE ROP2 mode not supported!\n");
+                printf("util_set_brush: R2_WHITE ROP2 mode not supported!\n");
                 break;
               default:
                 {
+                  printf("util_set_brush: unexpected ROP2 enumeration %u!\n",
+                         (unsigned int)WMF_DC_ROP(dc));
                 }
               }
 
@@ -1648,8 +1642,6 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
     pixel_width;
 
   unsigned int
-    pen_endcap,
-    pen_join,
     pen_style,
     pen_type;
 
@@ -1666,8 +1658,6 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
   pen_width = Max(pen_width, pixel_width*0.8);
 
   pen_style = (unsigned int) WMF_PEN_STYLE(pen);
-  pen_endcap = (unsigned int) WMF_PEN_ENDCAP(pen);
-  pen_join = (unsigned int) WMF_PEN_JOIN(pen);
   pen_type = (unsigned int) WMF_PEN_TYPE(pen);
 
   /* Pen style specified? */
@@ -1684,7 +1674,7 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
     LineCap
       linecap;
 
-    switch (pen_endcap)
+    switch ((unsigned int) WMF_PEN_ENDCAP(pen))
       {
       case PS_ENDCAP_SQUARE:
         linecap = SquareCap;
@@ -1704,7 +1694,7 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
     LineJoin
       linejoin;
 
-    switch (pen_join)
+    switch ((unsigned int) WMF_PEN_JOIN(pen))
       {
       case PS_JOIN_BEVEL:
         linejoin = BevelJoin;

@@ -626,7 +626,7 @@ MagickExport void DrawColor(DrawContext context,
     }
 
   if (p != NULL)
-    MvgPrintf(context, "color %s\n", p);
+    MvgPrintf(context, "color %.4g,%.4g %s\n", x, y, p);
 }
 
 MagickExport void DrawComment(DrawContext context,const char* comment)
