@@ -666,6 +666,17 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
     p++;
     switch (*p)
     {
+      case 'b':
+      {
+        register const char
+          *b;
+        
+        for (b=module+strlen(module); b > module; b--)
+          if (*b == *DirectorySeparator)
+            break;
+        (void) fprintf(stdout,"%.1024s",++b);
+        break;
+      }
       case 'd':
       {
         (void) fprintf(stdout,"%.1024s",domain);
@@ -715,7 +726,7 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
       }
       default:
       {
-        (void) fprintf(stdout,"%");
+        (void) fprintf(stdout,"%%");
         (void) fprintf(stdout,"%c",*p);
         break;
       }
