@@ -93,8 +93,8 @@ const char
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method AllocateImage allocates an Image structure and initializes each
-%  field to a default value.
+% AllocateImage() returns a pointer to an image structure initialized to
+% default values.
 %
 %  The format of the AllocateImage method is:
 %
@@ -102,11 +102,9 @@ const char
 %
 %  A description of each parameter follows:
 %
-%    o allocate_image: Method AllocateImage returns a pointer to an image
-%      structure initialized to default values.  A null image is returned if
-%      there is a memory shortage.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: Many of the image default values are set from this
+%      structure.  For example, filename, compression, depth, background color,
+%      and others.
 %
 %
 */
@@ -225,8 +223,10 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method AllocateImageColormap allocates an Image colormap and initializes it.
-%  The minimum number of colormap cells allocated is 256.
+%  AllocateImageColormap() allocates an image colormap and initializes
+%  it to a linear gray colorspace.  If the image already has a colormap, 
+%  it is replaced.  AllocateImageColormap() returns True if successful,
+%  otherwise False if there is not enough memory.
 %
 %  The format of the AllocateImageColormap method is:
 %
@@ -235,10 +235,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method AllocateImageColormap returns True if the colormap is
-%      successfully allocated and initialized, otherwise False.
-%
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %    o colors: The number of colors in the image colormap.
 %
@@ -285,8 +282,9 @@ MagickExport unsigned int AllocateImageColormap(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method AllocateNextImage allocates an Image structure and initializes each
-%  field to a default value.
+%  Use AllocateNextImage() to initialize the next image in a sequence.  The
+%  next member of image points to the newly allocated image.  If there is a
+%  memory shortage, next is assigned NULL.
 %
 %  The format of the AllocateNextImage method is:
 %
@@ -294,9 +292,11 @@ MagickExport unsigned int AllocateImageColormap(Image *image,
 %
 %  A description of each parameter follows:
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: Many of the image default values are set from this
+%      structure.  For example, filename, compression, depth, background color,
+%      and others.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
