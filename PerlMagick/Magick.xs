@@ -4612,14 +4612,14 @@ Mogrify(ref,...)
               case NorthGravity:
               {
                 rectangle_info.x=(image->columns-
-                  argument_list[1].image_reference->columns) >> 1;
+                  argument_list[0].image_reference->columns) >> 1;
                 rectangle_info.y=0;
                 break;
               }
               case NorthEastGravity:
               {
                 rectangle_info.x=image->columns-
-                  argument_list[1].image_reference->columns;
+                  argument_list[0].image_reference->columns;
                 rectangle_info.y=0;
                 break;
               }
@@ -4627,7 +4627,7 @@ Mogrify(ref,...)
               {
                 rectangle_info.x=0;
                 rectangle_info.y=(image->rows-
-                  argument_list[1].image_reference->rows) >> 1;
+                  argument_list[0].image_reference->rows) >> 1;
                 break;
               }
               case ForgetGravity:
@@ -4636,40 +4636,40 @@ Mogrify(ref,...)
               default:
               {
                 rectangle_info.x=(image->columns-
-                  argument_list[1].image_reference->columns) >> 1;
+                  argument_list[0].image_reference->columns) >> 1;
                 rectangle_info.y=(image->rows-
-                  argument_list[1].image_reference->rows) >> 1;
+                  argument_list[0].image_reference->rows) >> 1;
                 break;
               }
               case EastGravity:
               {
                 rectangle_info.x=image->columns-
-                  argument_list[1].image_reference->columns;
+                  argument_list[0].image_reference->columns;
                 rectangle_info.y=(image->rows-
-                  argument_list[1].image_reference->rows) >> 1;
+                  argument_list[0].image_reference->rows) >> 1;
                 break;
               }
               case SouthWestGravity:
               {
                 rectangle_info.x=0;
                 rectangle_info.y=image->rows-
-                  argument_list[1].image_reference->rows;
+                  argument_list[0].image_reference->rows;
                 break;
               }
               case SouthGravity:
               {
                 rectangle_info.x=(image->columns-
-                  argument_list[1].image_reference->columns) >> 1;
+                  argument_list[0].image_reference->columns) >> 1;
                 rectangle_info.y=image->rows-
-                  argument_list[1].image_reference->rows;
+                  argument_list[0].image_reference->rows;
                 break;
               }
               case SouthEastGravity:
               {
                 rectangle_info.x=image->columns-
-                  argument_list[1].image_reference->columns;
+                  argument_list[0].image_reference->columns;
                 rectangle_info.y=image->rows-
-                  argument_list[1].image_reference->rows;
+                  argument_list[0].image_reference->rows;
                 break;
               }
             }
