@@ -90,6 +90,7 @@ static void MogrifyUsage(void)
       "-antialias           remove pixel-aliasing",
       "-authenticate value  decrypt image with this password",
       "-background color    background color",
+      "-blue-primary point  chomaticity blue primary point",
       "-blur radius         blur the image",
       "-border geometry     surround image with a border of color",
       "-bordercolor color   border color",
@@ -131,6 +132,7 @@ static void MogrifyUsage(void)
       "-gamma value         level of gamma correction",
       "-gaussian geometry   gaussian blur an image",
       "-geometry geometry   perferred size or location of the image",
+      "-green-primary point chomaticity green primary point",
       "-implode amount      implode image pixels about the center",
       "-interlace type      None, Line, Plane, or Partition",
       "-help                print program options",
@@ -156,6 +158,7 @@ static void MogrifyUsage(void)
       "-profile filename    add ICM or IPTC information profile to image",
       "-quality value       JPEG/MIFF/PNG compression level",
       "-raise value         lighten/darken image edges to create a 3-D effect",
+      "-red-primary point  chomaticity red primary point",
       "-region geometry     apply options to a portion of the image",
       "-resize geometry     perferred size or location of the image",
       "-roll geometry       roll an image vertically or horizontally",
@@ -190,9 +193,10 @@ static void MogrifyUsage(void)
       "-verbose             print detailed information about the image",
       "-version             print version information",
       "-view                FlashPix viewing transforms",
-      "-virtual_pixel method",
+      "-virtual-pixel method",
       "                     Constant, Edge, Mirror, or Tile",
       "-wave geometry       alter an image along a sine wave",
+      "-white-point point   chomaticity white point",
       (char *) NULL
     };
 

@@ -92,6 +92,7 @@ static void MontageUsage(void)
       "-adjoin              join images into a single multi-image file",
       "-affine matrix       affine transform matrix",
       "-authenticate value  decrypt image with this password",
+      "-blue-primary point  chomaticity blue primary point",
       "-blur factor         apply a filter to blur the image",
       "-cache geometry      min/max megabytes of memory of pixel cache memory",
       "-colors value        preferred number of colors in the image",
@@ -117,6 +118,7 @@ static void MontageUsage(void)
       "-gamma value         level of gamma correction",
       "-geometry geometry   preferred tile and border sizes",
       "-gravity direction   which direction to gravitate towards",
+      "-green-primary point chomaticity green primary point",
       "-interlace type      None, Line, Plane, or Partition",
       "-help                print program options",
       "-label name          assign a label to an image",
@@ -127,6 +129,7 @@ static void MontageUsage(void)
       "-page geometry       size and location of an image canvas",
       "-pointsize value     font point size",
       "-quality value       JPEG/MIFF/PNG compression level",
+      "-red-primary point  chomaticity red primary point",
       "-resize geometry     resize the image",
       "-rotate degrees      apply Paeth rotation to the image",
       "-sampling_factor geometry",
@@ -144,8 +147,9 @@ static void MontageUsage(void)
       "-type type           image type",
       "-verbose             print detailed information about the image",
       "-version             print version information",
-      "-virtual_pixel method",
+      "-virtual-pixel method",
       "                     Constant, Edge, Mirror, or Tile",
+      "-white-point point   chomaticity white point",
       (char *) NULL
     };
 

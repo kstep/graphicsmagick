@@ -3055,6 +3055,13 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             (*image)->background_color=clone_info->background_color;
             continue;
           }
+        if (LocaleCompare("blue-primary",option+1) == 0)
+          {
+            (void) sscanf(argv[++i],"%lf%*[, ]%lf",
+              &(*image)->chromaticity.blue_primary.x,
+              &(*image)->chromaticity.blue_primary.y);
+            continue;
+          }
         if (LocaleCompare("blur",option+1) == 0)
           {
             double
@@ -3781,6 +3788,13 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             (*image)->gravity=gravity;
             continue;
           }
+        if (LocaleCompare("green-primary",option+1) == 0)
+          {
+            (void) sscanf(argv[++i],"%lf%*[, ]%lf",
+              &(*image)->chromaticity.green_primary.x,
+              &(*image)->chromaticity.green_primary.y);
+            continue;
+          }
         break;
       }
       case 'i':
@@ -4168,6 +4182,13 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             */
             (void) GetImageGeometry(*image,argv[++i],False,&geometry);
             (void) RaiseImage(*image,&geometry,*option == '-');
+            continue;
+          }
+        if (LocaleCompare("red-primary",option+1) == 0)
+          {
+            (void) sscanf(argv[++i],"%lf%*[, ]%lf",
+              &(*image)->chromaticity.red_primary.x,
+              &(*image)->chromaticity.red_primary.y);
             continue;
           }
         if (LocaleCompare("region",option+1) == 0)
@@ -4647,7 +4668,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             quantize_info.measure_error=(*option == '-');
             continue;
           }
-        if (LocaleCompare("virtual_pixel",option+1) == 0)
+        if (LocaleCompare("virtual-pixel",option+1) == 0)
           {
             VirtualPixelMethod
               virtual_pixel_method;
@@ -4695,6 +4716,13 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               break;
             DestroyImage(*image);
             *image=wave_image;
+            continue;
+          }
+        if (LocaleCompare("white-point",option+1) == 0)
+          {
+            (void) sscanf(argv[++i],"%lf%*[, ]%lf",
+              &(*image)->chromaticity.white_point.x,
+              &(*image)->chromaticity.white_point.y);
             continue;
           }
         break;

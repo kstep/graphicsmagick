@@ -89,6 +89,7 @@ static void CompositeUsage(void)
     {
       "-affine matrix       affine transform matrix",
       "-authenticate value  decrypt image with this password",
+      "-blue-primary point  chomaticity blue primary point",
       "-cache geometry      number of megabytes available to the pixel cache",
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorspace",
@@ -109,6 +110,7 @@ static void CompositeUsage(void)
       "-font name           render text with this font",
       "-geometry geometry   location of the composite image",
       "-gravity type        which direction to gravitate towards",
+      "-green-primary point chomaticity green primary point",
       "-help                print program options",
       "-interlace type      None, Line, Plane, or Partition",
       "-label name          ssign a label to an image",
@@ -118,8 +120,9 @@ static void CompositeUsage(void)
       "-page geometry       size and location of an image canvas",
       "-profile filename    add ICM or IPTC information profile to image",
       "-quality value       JPEG/MIFF/PNG compression level",
-      "-resize geometry     resize the image",
+      "-red-primary point   chomaticity red primary point",
       "-rotate degrees      apply Paeth rotation to the image",
+      "-resize geometry     resize the image",
       "-sampling_factor geometry",
       "                     horizontal and vertical sampling factor",
       "-scene value         image scene number",
@@ -135,9 +138,10 @@ static void CompositeUsage(void)
       "-unsharp geometry    sharpen the image",
       "-verbose             print detailed information about the image",
       "-version             print version information",
-      "-virtual_pixel method",
+      "-virtual-pixel method",
       "                     Constant, Edge, Mirror, or Tile",
       "-watermark geometry  percent brightness and saturation of a watermark",
+      "-white-point point   chomaticity white point",
       "-write filename      write images to this file",
       (char *) NULL
     };

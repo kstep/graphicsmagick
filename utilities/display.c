@@ -170,7 +170,7 @@ static void DisplayUsage(void)
       "-verbose             print detailed information about the image",
       "-version             print version information",
       "-visual type         display image using this visual type",
-      "-virtual_pixel method",
+      "-virtual-pixel method",
       "                     Constant, Edge, Mirror, or Tile",
       "-window id           display image to background of this window",
       "-window_group id     exit program when this window id is destroyed",
@@ -1469,7 +1469,7 @@ int main(int argc,char **argv)
               }
             break;
   				}
-        if (LocaleCompare("virtual_pixel",option+1) == 0)
+        if (LocaleCompare("virtual-pixel",option+1) == 0)
           {
             if (*option == '-')
               {

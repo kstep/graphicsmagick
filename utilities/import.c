@@ -140,7 +140,7 @@ static void ImportUsage(void)
       "-type type           image type",
       "-verbose             print detailed information about the image",
       "-version             print version information",
-      "-virtual_pixel method",
+      "-virtual-pixel method",
       "                     Constant, Edge, Mirror, or Tile",
       "-window id           select window with this id or name",
       (char *) NULL
