@@ -4617,7 +4617,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             quantize_info.measure_error=(*option == '-');
             continue;
           }
-        if (LocaleCompare("vpm",option+1) == 0)
+        if (LocaleCompare("virtual_pixel",option+1) == 0)
           {
             VirtualPixelMethod
               virtual_pixel_method;
