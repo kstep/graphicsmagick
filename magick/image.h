@@ -13,13 +13,48 @@ extern "C" {
 #define QuantumLeap
 #endif
 
+#if (QuantumDepth == 8)
+#define MaxRGB  255U
+#define ScaleCharToQuantum(value) ((Quantum) (value))
+#define ScaleIntToQuantum(value) ((Quantum) ((value)/16843009U))
+#define ScaleQuantumToChar(quantum) ((unsigned char) (quantum))
+#define ScaleQuantumToInt(quantum) ((unsigned int) (16843009U*(quantum)))
+#define ScaleQuantumToShort(quantum) ((unsigned short) (257U*(quantum)))
+#define ScaleShortToQuantum(value) ((Quantum) ((value)/257U))
+
+typedef unsigned char Quantum;
+#elif (QuantumDepth == 16)
+#define MaxRGB  65535U
+#define ScaleCharToQuantum(value) ((Quantum) (257U*(value)))
+#define ScaleIntToQuantum(value) ((Quantum) ((value)/65537U))
+#define ScaleQuantumToChar(quantum) ((unsigned char) ((quantum)/257U))
+#define ScaleQuantumToInt(quantum) ((unsigned int) (65537U*(quantum)))
+#define ScaleQuantumToShort(quantum) ((unsigned short) (quantum))
+#define ScaleShortToQuantum(value) ((Quantum) (value))
+
+typedef unsigned short Quantum;
+#elif (QuantumDepth == 32)
+#define MaxRGB  4294967295U
+#define ScaleCharToQuantum(value) ((Quantum) (16843009U*(value)))
+#define ScaleIntToQuantum(value) ((Quantum) ((value)))
+#define ScaleQuantumToChar(quantum) ((unsigned char) ((quantum)/16843009U))
+#define ScaleQuantumToInt(quantum) ((unsigned int) (quantum))
+#define ScaleQuantumToShort(quantum) ((unsigned short) ((quantum)/65537U))
+#define ScaleShortToQuantum(value) ((Quantum) (65537U*(value)))
+
+typedef unsigned int Quantum;
+#else
+# error "Specified value of QuantumDepth is not supported"
+#endif
+
 #define ColorMatch(p,q) (((p)->red == (q)->red) && \
   ((p)->green == (q)->green) && ((p)->blue == (q)->blue))
 #define Downscale(quantum)  ScaleQuantumToChar(quantum)
 #define Intensity(color)  ScaleIntensityToQuantum(color)
-#define MaxColormapSize  65536UL
-#define MaxRGB  ((1UL << QuantumDepth)-1UL)
+#define MaxColormapSize  65536U
 #define OpaqueOpacity  0
+#define ScaleIntensityToQuantum(pixel) \
+  ((Quantum) (0.299*(pixel)->red+0.587*(pixel)->green+0.114*(pixel)->blue))
 #define TransparentOpacity  MaxRGB
 #define Upscale(value)  ScaleCharToQuantum(value)
 #define XDownscale(value)  ScaleShortToQuantum(value)
@@ -55,16 +90,6 @@ typedef struct _ChromaticityInfo
     blue_primary,
     white_point;
 } ChromaticityInfo;
-
-#if (QuantumDepth == 8)
-typedef unsigned char Quantum;
-#elif (QuantumDepth == 16)
-typedef unsigned short Quantum;
-#elif (QuantumDepth == 32)
-typedef unsigned int Quantum;
-#else
-#error "Specified value of QuantumDepth is not supported"
-#endif
 
 typedef struct _PixelPacket
 {
@@ -603,17 +628,8 @@ extern MagickExport PixelPacket
   *SetImagePixels(Image *,const long,const long,const unsigned long,
     const unsigned long);
 
-extern MagickExport Quantum
-  ScaleCharToQuantum(const unsigned char),
-  ScaleIntToQuantum(const unsigned itn),
-  ScaleIntensityToQuantum(const PixelPacket *),
-  ScaleShortToQuantum(const unsigned short);
-
 extern MagickExport RectangleInfo
   GetImageBoundingBox(const Image *,ExceptionInfo *exception);
-
-extern MagickExport unsigned char
-  ScaleQuantumToChar(const Quantum);
 
 extern MagickExport unsigned int
   AllocateImageColormap(Image *,const unsigned long),
@@ -658,7 +674,6 @@ extern MagickExport unsigned int
     ExceptionInfo *),
   RaiseImage(Image *,const RectangleInfo *,const int),
   RGBTransformImage(Image *,const ColorspaceType),
-  ScaleQuantumToInt(const Quantum),
   SetImageClipMask(Image *,Image *),
   SetImageDepth(Image *,const unsigned long),
   SetImageInfo(ImageInfo *,const unsigned int,ExceptionInfo *),
@@ -673,9 +688,6 @@ extern MagickExport unsigned int
   WriteImages(ImageInfo *,Image *,const char *,ExceptionInfo *),
   WriteStream(const ImageInfo *,Image *,
     int (*)(const Image *,const void *,const size_t));
-
-extern MagickExport unsigned short
-  ScaleQuantumToShort(const Quantum);
 
 extern MagickExport unsigned long
   GetImageDepth(const Image *,ExceptionInfo *),

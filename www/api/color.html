@@ -29,13 +29,6 @@
 		<LI><A HREF="#listcolorinfo">ListColorInfo</A>
 		<LI><A HREF="#querycolordatabase">QueryColorDatabase</A>
 		<LI><A HREF="#querycolorname">QueryColorname</A>
-		<LI><A HREF="#scalechartoquantum">ScaleCharToQuantum</A>
-		<LI><A HREF="#scaleinttoquantum">ScaleIntToQuantum</A>
-		<LI><A HREF="#scaleintensitytoquantum">ScaleIntensityToQuantum</A>
-		<LI><A HREF="#scalequantumtochar">ScaleQuantumToChar</A>
-		<LI><A HREF="#scalequantumtoint">ScaleQuantumToInt</A>
-		<LI><A HREF="#scalequantumtoshort">ScaleQuantumToShort</A>
-		<LI><A HREF="#scaleshorttoquantum">ScaleShortToQuantum</A>
 	</UL>
 
 </UL>
@@ -60,13 +53,6 @@
 <FONT SIZE=-1>FILE</FONT> *file, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>QueryColorDatabase</STRONG>( const char *name, PixelPacket *color, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>QueryColorname</STRONG>( const Image *image, const PixelPacket *color, const ComplianceType compliance, char *name, ExceptionInfo *exception );</P>
-<P>Quantum  <STRONG>ScaleCharToQuantum</STRONG>( const unsigned char value );</P>
-<P>Quantum  <STRONG>ScaleIntToQuantum</STRONG>( const unsigned int value );</P>
-<P>Quantum  <STRONG>ScaleIntensityToQuantum</STRONG>( const PixelPacket *pixel );</P>
-<P>unsigned char  <STRONG>ScaleQuantumToChar</STRONG>( const Quantum quantum );</P>
-<P>unsigned int  <STRONG>ScaleQuantumToInt</STRONG>( const Quantum quantum );</P>
-<P>unsigned short  <STRONG>ScaleQuantumToShort</STRONG>( const Quantum quantum );</P>
-<P>Quantum  <STRONG>ScaleShortToQuantum</STRONG>( const unsigned short value );</P>
 <P>
 <HR>
 <H1><A NAME="function descriptions">
@@ -241,99 +227,6 @@ Return the color name or hex value.
 <dd><p></p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="scalechartoquantum">ScaleCharToQuantum</A></H2>
-<blockquote>ScaleCharToQuantum() scales a character value to the current quantum depth. </blockquote><blockquote>The format of the ScaleCharToQuantum() method is: </blockquote><blockquote>Quantum ScaleCharToQuantum ( const unsigned char value ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_quantum%3A">quantum:</A></STRONG><BR>
-<DD>
-<CODE>ScaleCharToQuantum()</CODE> returns the scaled value.
-<P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_value%3A">value:</A></STRONG><BR>
-<DD>
-scale this unsigned long value.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="scaleinttoquantum">ScaleIntToQuantum</A></H2>
-<blockquote>ScaleIntToQuantum() scales an integer value to the current quantum depth. </blockquote><blockquote>The format of the ScaleIntToQuantum() method is: </blockquote><blockquote>Quantum ScaleIntToQuantum ( const unsigned int value ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>quantum:</STRONG><BR>
-<DD>
-<CODE>ScaleIntToQuantum()</CODE> returns the scaled quantum value.
-<P></P>
-<dd><p></p><dt><STRONG>value:</STRONG><BR>
-<DD>
-scale this unsigned long value.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="scaleintensitytoquantum">ScaleIntensityToQuantum</A></H2>
-<blockquote>ScaleIntensityToQuantum() scales an intensity value to the current quantum depth. </blockquote><blockquote>The format of the ScaleIntensityToQuantum() method is: </blockquote><blockquote>Quantum ScaleIntensityToQuantum ( const <A HREF="types/PixelPacket.html">PixelPacket</A> *pixel ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>value:</STRONG><BR>
-<DD>
-<CODE>ScaleIntensityToQuantum()</CODE> returns the scaled quantum value.
-<P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_pixel%3A">pixel:</A></STRONG><BR>
-<DD>
-
-<FONT SIZE=-1>A</FONT> pixel value.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="scalequantumtochar">ScaleQuantumToChar</A></H2>
-<blockquote>ScaleQuantumToChar() scales a value at the current quantum depth to a character value. </blockquote><blockquote>The format of the ScaleQuantumToChar() method is: </blockquote><blockquote>unsigned char ScaleQuantumToChar ( const Quantum quantum ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>value:</STRONG><BR>
-<DD>
-<CODE>ScaleQuantumToChar()</CODE> returns the scaled quantum value.
-<P></P>
-<dd><p></p><dt><STRONG>quantum:</STRONG><BR>
-<DD>
-scale this unsigned long quantum value.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="scalequantumtoint">ScaleQuantumToInt</A></H2>
-<blockquote>ScaleQuantumToInt() scales a value at the current quantum depth to an integer value. </blockquote><blockquote>The format of the ScaleQuantumToInt() method is: </blockquote><blockquote>unsigned int ScaleQuantumToInt ( const Quantum quantum ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>value:</STRONG><BR>
-<DD>
-<CODE>ScaleQuantumToInt()</CODE> returns the scaled value.
-<P></P>
-<dd><p></p><dt><STRONG>quantum:</STRONG><BR>
-<DD>
-scale this unsigned long value.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="scalequantumtoshort">ScaleQuantumToShort</A></H2>
-<P><CODE>ScaleQuantumToInt()</CODE> scales a value at the current quantum depth to a short value.</P>
-<blockquote>The format of the ScaleQuantumToShort() method is: </blockquote><blockquote>unsigned short ScaleQuantumToShort ( const Quantum quantum ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>value:</STRONG><BR>
-<DD>
-<CODE>ScaleQuantumToShort()</CODE> returns the scaled value.
-<P></P>
-<dd><p></p><dt><STRONG>quantum:</STRONG><BR>
-<DD>
-scale this unsigned long value.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="scaleshorttoquantum">ScaleShortToQuantum</A></H2>
-<blockquote>ScaleShortToQuantum() scales a value to the current quantum depth. </blockquote><blockquote>The format of the ScaleShortToQuantum() method is: </blockquote><blockquote>Quantum ScaleShortToQuantum ( const unsigned short value ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>quantum:</STRONG><BR>
-<DD>
-<CODE>ScaleShortToQuantum()</CODE> returns the scaled value.
-<P></P>
-<dd><p></p><dt><STRONG>value:</STRONG><BR>
-<DD>
-scale this unsigned long value.
 </DL></DL>
 
 </BODY>
