@@ -1,5 +1,10 @@
 2003-01-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/segment.c (Classify): Implemented idea from Glenn
+ 	Randers-Pehrson to avoid use of pow() when WeightingExponent is
+ 	2.0 (which it is).  This makes image segmentation much faster
+ 	(e.g. 8X).
+
 	* magick/annotate.c (RenderFreetype): For images with
  	matte==False, simply set the opacity of the pixel to be updated to
  	OpaqueOpacity before alpha-compositing the pixel rather than using

@@ -556,7 +556,7 @@ MagickExport void Hull(const long x_offset,const long y_offset,
     q++;
     r++;
     if (polarity > 0)
-      for (x=0; x < (long) columns; x++)
+      for (x=(long) columns; x > 0; x--)
       {
         v=(*p);
         if (*r >= (v+ScaleCharToQuantum(2)))
@@ -567,7 +567,7 @@ MagickExport void Hull(const long x_offset,const long y_offset,
         r++;
       }
     else
-      for (x=0; x < (long) columns; x++)
+      for (x=(long) columns; x > 0; x--)
       {
         v=(*p);
         if (*r <= (v-(long) ScaleCharToQuantum(2)))
@@ -592,7 +592,7 @@ MagickExport void Hull(const long x_offset,const long y_offset,
     r++;
     s++;
     if (polarity > 0)
-      for (x=0; x < (long) columns; x++)
+      for (x=(long) columns; x > 0; x--)
       {
         v=(*q);
         if ((*s >= (v+ScaleCharToQuantum(2))) && (*r > v))
@@ -604,7 +604,7 @@ MagickExport void Hull(const long x_offset,const long y_offset,
         s++;
       }
     else
-      for (x=0; x < (long) columns; x++)
+      for (x=(long) columns; x > 0; x--)
       {
         v=(*q);
         if ((*s <= (v-(long) ScaleCharToQuantum(2))) && (*r < v))

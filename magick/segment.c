@@ -104,7 +104,11 @@
 /*
   Define declarations.
 */
-#define  MaxDimension  3
+#define MaxDimension  3
+#define DeltaTau  0.5
+#define Tau  5.2
+#define WeightingExponent  2
+
 
 /*
   Typedef declarations.
@@ -244,7 +248,7 @@ static unsigned int Classify(Image *image,short **extrema,
     *free_squares,
     local_minima,
     numerator,
-    ratio,
+    ratio_squared,
     sum;
 
   ExtentPacket
@@ -531,7 +535,7 @@ static unsigned int Classify(Image *image,short **extrema,
               squares[ScaleQuantumToChar(q->red)-(long) ScaleQuantumToChar(p->red)]+
               squares[ScaleQuantumToChar(q->green)-(long) ScaleQuantumToChar(p->green)]+
               squares[ScaleQuantumToChar(q->blue)-(long) ScaleQuantumToChar(p->blue)];
-            numerator=sqrt(distance_squared);
+            numerator=distance_squared;
             for (k=0; k < (long) image->colors; k++)
             {
               p=image->colormap+k;
@@ -539,14 +543,16 @@ static unsigned int Classify(Image *image,short **extrema,
                 squares[ScaleQuantumToChar(q->red)-(long) ScaleQuantumToChar(p->red)]+
                 squares[ScaleQuantumToChar(q->green)-(long) ScaleQuantumToChar(p->green)]+
                 squares[ScaleQuantumToChar(q->blue)-(long) ScaleQuantumToChar(p->blue)];
-              ratio=numerator/sqrt(distance_squared);
+              ratio_squared=numerator/distance_squared;;
+#if (WeightingExponent == 2)
               /*
-                Most of the time spent running this algorithm is
-                spent executing the following line of code.  A 427x640
-                image with 76503 colors executes the pow() function
-                401,581,395 times!
+                Since WeightingExponent is currently defined to be 2, this is the
+                normally active code
               */
-              sum+=pow(ratio,(double) (2.0/(weighting_exponent-1.0)));
+              sum+=ratio_squared;
+#else
+              sum+=pow(ratio_squared,((double) (1.0/(weighting_exponent-1.0))));
+#endif
             }
             if (sum && ((1.0/sum) > local_minima))
               {
@@ -1468,9 +1474,6 @@ MagickExport unsigned int SegmentImage(Image *image,
   const ColorspaceType colorspace,const unsigned int verbose,
   const double cluster_threshold,const double smoothing_threshold)
 {
-#define DeltaTau  0.5
-#define Tau  5.2
-#define WeightingExponent  2.0
 
   long
     *histogram[MaxDimension];
@@ -1519,7 +1522,7 @@ MagickExport unsigned int SegmentImage(Image *image,
   /*
     Classify using the fuzzy c-Means technique.
   */
-  status=Classify(image,extrema,cluster_threshold,WeightingExponent,verbose);
+  status=Classify(image,extrema,cluster_threshold,(double)WeightingExponent,verbose);
   if (colorspace != RGBColorspace)
     (void) TransformRGBImage(image,colorspace);
   /*
