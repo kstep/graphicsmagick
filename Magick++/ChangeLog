@@ -1,3 +1,9 @@
+2001-08-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (colorMap): Automatically extend colormap if
+ 	specified index is past end of current colormap.  Colormap is
+ 	still limited to a maximum depth of 256 entries.
+
 2001-08-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (clipMask): New method to add a clip mask to the

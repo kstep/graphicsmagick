@@ -1941,18 +1941,35 @@ void Magick::Image::colorMap ( unsigned int index_,
   
   if ( constImage()->c_class != PseudoClass )
     throwExceptionExplicit( OptionError,
-			    "Image class does not support colormap");
-
-  if ( index_ > constImage()->colors )
-    throwExceptionExplicit( OptionError,
-			    "Color index is greater than maximum image color index");
-
-  if ( !constImage()->colormap )
-    throwExceptionExplicit( OptionError,
-			    "Image does not contain colormap");
+			    "Image is not a PseudoClass image");
 
   modifyImage();
 
+  if ( (!constImage()->colormap) || (index_ > constImage()->colors - 1) )
+    {
+      // ImageMagick is limited a maximum 256 entries in the colormap
+      if ( index_ > 255 )
+        throwExceptionExplicit( OptionError,
+                                "Color index greater than maximum supported index (255)" );
+
+      // Allocate new colormap
+      PixelPacket *colormap
+        = static_cast<PixelPacket *>(AcquireMemory((index_+1)*sizeof(PixelPacket)));
+      // Initialize new colormap all black
+      for( int i=0; i <= index_; i++ )
+        colormap[i] = Color(0,0,0);
+      // Copy over existing colormap entries
+      if(constImage()->colormap)
+        memcpy(colormap,constImage()->colormap,constImage()->colors*sizeof(PixelPacket));
+      // Free existing colormap
+      if (constImage()->colormap != 0)
+        LiberateMemory((void **) &image()->colormap);
+      // Add our own colormap.
+      image()->colormap = colormap;
+      image()->colors = index_+1;
+    }
+
+  // Finally, set color at index in colormap
   *(image()->colormap + index_) = color_;
 }
 // Return color in colormap at index
@@ -1960,7 +1977,7 @@ Magick::Color Magick::Image::colorMap ( unsigned int index_ ) const
 {
   if ( constImage()->c_class != PseudoClass )
     throwExceptionExplicit( OptionError,
-			    "Image class does not support colormap");
+			    "Image is not a PseudoClass image");
 
   if ( !constImage()->colormap )
     throwExceptionExplicit( CorruptImageError,

@@ -4,6 +4,9 @@ Magick++ release number increments even if there are no changes associated
 with Magick++ itself.
 
 (5.3.8)
+  * Image colorMap method automatically extends the colormap if index
+    is past the end of the current colormap.
+
   * Added clipMask method to add a clip mask to the current
     image. Prevents modification to image pixels wherever the
     associated clip mask image is tranparent.
