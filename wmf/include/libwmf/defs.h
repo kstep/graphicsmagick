@@ -148,7 +148,7 @@
 #define MERGEPAINT     (U32)0x00BB0226 /* dest = (NOT source) OR dest     */
 #undef  PATCOPY
 #define PATCOPY        (U32)0x00F00021 /* dest = pattern                  */
-#undef  PATINVERT
+#undef  PATPAINT
 #define PATPAINT       (U32)0x00FB0A09 /* dest = DPSnoo                   */
 #undef  PATINVERT
 #define PATINVERT      (U32)0x005A0049 /* dest = pattern XOR dest         */
