@@ -1986,7 +1986,7 @@ at location (40, 50):
 <tt>Ping</tt> accepts one or more image file names and returns their respective
 width, height, size in bytes, and format (e.g. GIF, JPEG, etc.). For example,</dd>
 
-<pre>&nbsp;&nbsp;&nbsp; ($width, $height, $size, $format) = split(',', $image->Ping('logo.png'));</pre>
+<pre>&nbsp;&nbsp;&nbsp; ($width, $height, $size, $format) = $image->Ping('logo.png');</pre>
 This is a more efficient and less memory intensive way to query if an image
 exists and what its characteristics are. Note, only information about the
 first image in a multi-frame image file is returned.
@@ -2020,7 +2020,7 @@ maximum horizontal advance, expressed in 26.6 fixed point pixels.</li>
 </ul>
 For convenience, method <tt>QueryColor</tt> accepts one or more color names
 or hex value and returns their respective red, green, and blue color values:
-<pre>&nbsp;&nbsp;&nbsp; ($red, $green, $blue, $opacity) = split(', ', $image->QueryColor('cyan'));
+<pre>&nbsp;&nbsp;&nbsp; ($red, $green, $blue, $opacity) = $image->QueryColor('cyan');
 &nbsp;&nbsp;&nbsp; ($red, $green, $blue, $opacity) = $image->QueryColor('#716bae');</pre>
 
 <dd>
