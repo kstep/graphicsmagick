@@ -527,7 +527,7 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int level)
 %
 %  The format of the GetNumberColors method is:
 %
-%      size_t GetNumberColors(Image *image,FILE *file)
+%      off_t GetNumberColors(Image *image,FILE *file)
 %
 %  A description of each parameter follows.
 %
@@ -545,7 +545,7 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int level)
 %
 %
 */
-MagickExport size_t GetNumberColors(Image *image,FILE *file)
+MagickExport off_t GetNumberColors(Image *image,FILE *file)
 {
 #define ComputeImageColorsText  "  Compute image colors...  "
 

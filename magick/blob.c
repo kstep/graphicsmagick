@@ -208,7 +208,7 @@ MagickExport void CloseBlob(Image *image)
   assert(image->signature == MagickSignature);
   CloseImagePixels(image);
   image->taint=False;
-  image->filesize=SizeBlob(image);
+  image->filesize=(double) SizeBlob(image);
   if (image->blob.data != (unsigned char *) NULL)
     {
       image->blob.extent=image->blob.length;

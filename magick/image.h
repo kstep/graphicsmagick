@@ -279,7 +279,7 @@ typedef struct _Image
   FILE
     *file;
 
-  size_t
+  double
     filesize;
 
   int
@@ -378,7 +378,7 @@ typedef struct _Image
   double
     blur;
 
-  size_t
+  double
     total_colors;
 
   unsigned int
@@ -722,7 +722,7 @@ extern MagickExport PixelPacket
 extern MagickExport RectangleInfo
   GetImageBoundingBox(Image *);
 
-extern MagickExport size_t
+extern MagickExport off_t
   GetNumberColors(Image *,FILE *);
 
 extern MagickExport unsigned int
