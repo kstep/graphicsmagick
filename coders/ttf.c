@@ -125,6 +125,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   file=fopen(filename,"w");
   if (file == (FILE *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+  y=0;
   (void) fprintf(file,"font @%s\n",image_info->filename);
   (void) fprintf(file,"pointsize 18\n");
   (void) fprintf(file,"text +10%+d 'abcdefghijklmnopqrstuvwxyz'\n",y+=20);
@@ -154,6 +155,8 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   CloneString(&clone_info->size,geometry);
   FormatString(clone_info->filename,"mvg:%.1024s",filename);
   image=ReadImage(clone_info,exception);
+  if (image != (Image *) NULL)
+    (void) strcpy(image->filename,image_info->filename);
   (void) remove(filename);
   DestroyImageInfo(clone_info);
   return(image);

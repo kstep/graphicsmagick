@@ -465,6 +465,7 @@ MagickExport void GetAnnotateInfo(const ImageInfo *image_info,
   assert(annotate_info != (AnnotateInfo *) NULL);
   clone_info=CloneImageInfo(image_info);
   memset(annotate_info,0,sizeof(AnnotateInfo));
+  annotate_info->text=AllocateString(clone_info->filename);
   if (clone_info->font != (char *) NULL)
     annotate_info->font=AllocateString(clone_info->font);
   if (clone_info->density != (char *) NULL)
@@ -519,6 +520,7 @@ MagickExport unsigned int GetFontMetrics(const AnnotateInfo *annotate_info,
     status;
 
   assert(annotate_info != (AnnotateInfo *) NULL);
+  assert(annotate_info->text != (char *) NULL);
   assert(annotate_info->signature == MagickSignature);
   offset.x=0.0;
   offset.y=0.0;
@@ -634,7 +636,6 @@ static unsigned int RenderTruetype(Image *image,
     y;
 
   PixelPacket
-    box_color,
     fill_color;
 
   PointInfo
@@ -833,7 +834,6 @@ static unsigned int RenderTruetype(Image *image,
   */
   image->storage_class=DirectClass;
   alpha=1.0/MaxRGB;
-  box_color=annotate_info->box;
   fill_color=annotate_info->fill;
   for (glyph=glyphs; glyph->id != 0; glyph++)
   {
@@ -897,7 +897,6 @@ static unsigned int RenderTruetype(Image *image,
     "FreeType library is not available",annotate_info->font);
 }
 #endif
-
 
 static unsigned int RenderPostscript(Image *image,
   const AnnotateInfo *annotate_info,const PointInfo *offset,SegmentInfo *bounds)

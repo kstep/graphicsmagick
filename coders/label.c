@@ -93,6 +93,9 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   AnnotateInfo
     *annotate_info;
 
+  char
+    geometry[MaxTextExtent];
+
   Image
     *image;
 
@@ -113,6 +116,8 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   image->columns=(bounds.x2-bounds.x1+1.0);
   image->rows=(bounds.y2-bounds.y1+1.0);
   SetImage(image,OpaqueOpacity);
+  (void) FormatString(geometry,"+0%+g",bounds.y2);
+  annotate_info->geometry=AllocateString(geometry);
   (void) AnnotateImage(image,annotate_info);
   DestroyAnnotateInfo(annotate_info);
   return(image);

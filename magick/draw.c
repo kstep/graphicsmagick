@@ -48,9 +48,8 @@
 %
 % Bill Radcliffe of Corbis (www.corbis.com) contributed the polygon
 % rendering code.  Parts of the fast rendering algorithm was inspired by
-% libart.  Digital Applications (www.digapp.com) contributed contributed
-% the dash pattern and linecap stroking algorithm.  It was written by
-% David Harr.
+% libart.  Digital Applications (www.digapp.com) contributed the dash
+% pattern and linecap stroking algorithm.  It was written by David Harr.
 %
 */
 
@@ -3488,9 +3487,11 @@ static void DrawPrimitive(const DrawInfo *draw_info,
       annotate->fill=draw_info->fill;
       annotate->stroke=draw_info->stroke;
       annotate->box=draw_info->box;
-      annotate->text=AllocateString(primitive_info->text);
+      CloneString(&annotate->text,primitive_info->text);
+puts(annotate->text);
       FormatString(annotate->geometry,"%+g%+g",primitive_info->point.x,
         primitive_info->point.y);
+puts(annotate->geometry);
       AnnotateImage(image,annotate);
       DestroyAnnotateInfo(annotate);
       break;
