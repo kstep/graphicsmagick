@@ -1184,20 +1184,22 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
 {
   double    
     angle = 0,      /* text rotation angle */
-#if !defined(HasWMFlite)
-    bbox_height,    /* bounding box height */
-    bbox_width,     /* bounding box width */
-#endif
     pointsize = 0;  /* pointsize to output font with desired height */
 
   TypeMetric
     metrics;
+
+#if !defined(HasWMFlite)
+  double
+    bbox_height,   /* bounding box height */
+    bbox_width     /* bounding box width */
 
   wmfD_Coord
     BL,        /* bottom left of bounding box */
     BR,        /* bottom right of bounding box */
     TL,        /* top left of bounding box */
     TR;        /* top right of bounding box */
+#endif
 
   wmfD_Coord
     point;      /* text placement point */
@@ -1211,7 +1213,11 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
   point = draw_text->pt;
 
   /* Choose bounding box and calculate its width and height */
+#if !defined(HasWMFlite)
   {
+    double
+      dx,
+      dy;
 
     if( draw_text->flags)
       {
@@ -1229,11 +1235,6 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
         TR = draw_text->bbox.TR;
         BL = draw_text->bbox.BL;
       }
-#if !defined(HasWMFlite)
-    {
-      double
-        dx,
-        dy;
 
       dx = ((TR.x - TL.x) + (BR.x - BL.x)) / 2;
       dy = ((TR.y - TL.y) + (BR.y - BL.y)) / 2;
@@ -1242,8 +1243,8 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
       dy = ((BL.y - TL.y) + (BR.y - TR.y)) / 2;
       bbox_height = sqrt(dx * dx + dy * dy);
     }
-#endif
   }
+#endif
 
   font = WMF_DC_FONT(draw_text->dc);
 
