@@ -849,6 +849,7 @@ Export Image *RotateImage(Image *image,const double degrees)
   XShearImage(rotate_image,shear.x,y_width,rotate_image->rows,
     (rotate_image->columns-y_width+1)/2,0,range_limit);
   TransformImage(&rotate_image,"0x0",(char *) NULL);
+  GetPageInfo(&rotate_image->page_info);
   FreeMemory(range_table);
   return(rotate_image);
 }
@@ -990,6 +991,7 @@ Export Image *ShearImage(Image *image,const double x_shear,const double y_shear)
   YShearImage(shear_image,shear.y,y_width,image->rows,
     (shear_image->columns-y_width+1)/2,y_offset,range_limit);
   TransformImage(&shear_image,"0x0",(char *) NULL);
+  GetPageInfo(&shear_image->page_info);
   FreeMemory(range_table);
   return(shear_image);
 }
