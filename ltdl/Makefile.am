@@ -44,6 +44,8 @@ endif
 
 endif # WITH_MODULES
 
+EXTRA_DIST = ltdl.h
+
 ## Make sure these will be cleaned even when they're not built by
 ## default.
 CLEANFILES = libltdl.la libltdlc.la

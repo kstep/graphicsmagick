@@ -245,6 +245,8 @@ AUTOMAKE_OPTIONS = 1.6.2 foreign
 
 @CONVENIENCE_LTDL_TRUE@@WITH_MODULES_TRUE@noinst_LTLIBRARIES = libltdlc.la
 
+EXTRA_DIST = ltdl.h
+
 CLEANFILES = libltdl.la libltdlc.la
 
 libltdl_la_SOURCES = ltdl.c
