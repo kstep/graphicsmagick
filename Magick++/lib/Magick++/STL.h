@@ -2156,7 +2156,8 @@ namespace Magick
 
     MagickLib::MontageInfo* montageInfo =
       (MagickLib::MontageInfo*)MagickLib::AllocateMemory(sizeof(MagickLib::MontageInfo));
-    MagickLib::GetMontageInfo( montageInfo );
+    MagickLib::ImageInfo* imageInfo = first_->imageInfo();
+    MagickLib::GetMontageInfo( imageInfo, montageInfo );
 
     // Set some default options based on current imageInfo settings.
     montageInfo->background_color = first_->backgroundColor();

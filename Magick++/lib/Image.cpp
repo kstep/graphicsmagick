@@ -190,17 +190,18 @@ void Magick::Image::annotate ( const std::string &text_,
 {
   modifyImage();
 
+  char geometry[MaxTextExtent];
+
   AnnotateInfo *annotateInfo
     = options()->annotateInfo();
   
-  Magick::CloneString ( &(annotateInfo->text), text_ );
+  annotateInfo->text = const_cast<char *>(text_.c_str());
 
   if ( location_.isValid() ){
     // For some reason width and height parameters in the geometry 
     // causes AnnotateImage to place text incorrectly.
-    char buffer[MaxTextExtent];
-    FormatString(buffer,"%+d%+d", location_.xOff(), location_.yOff() );
-    Magick::CloneString ( &(annotateInfo->geometry), buffer );
+    FormatString(geometry,"%+d%+d", location_.xOff(), location_.yOff() );
+    annotateInfo->geometry = geometry;
   }
 
   annotateInfo->gravity = gravity_;
@@ -208,9 +209,8 @@ void Magick::Image::annotate ( const std::string &text_,
 
   AnnotateImage( image(), annotateInfo );
 
-  FreeMemory( annotateInfo->text );
   annotateInfo->text = 0;
-//   FreeMemory( annotateInfo->geometry ); // Uncommenting this line causes crash
+  annotateInfo->geometry = 0;
 
   throwImageException();
 }
@@ -224,7 +224,7 @@ void Magick::Image::annotate ( const std::string &text_,
   AnnotateInfo *annotateInfo
     = options()->annotateInfo();
 
-  Magick::CloneString ( &(annotateInfo->text), text_ );
+  annotateInfo->text = const_cast<char *>(text_.c_str());
 
   annotateInfo->gravity = gravity_;
   annotateInfo->degrees = 0.0;
@@ -232,8 +232,6 @@ void Magick::Image::annotate ( const std::string &text_,
   AnnotateImage( image(), annotateInfo );
 
   annotateInfo->gravity = NorthWestGravity;
-
-  FreeMemory( annotateInfo->text );
   annotateInfo->text = 0;
 
   throwImageException();
@@ -513,10 +511,8 @@ void Magick::Image::draw ( const Drawable &drawable_ )
     = options()->drawInfo();
 
 //   cout << "Primitive:" << drawable_.primitive() << endl;
-  Magick::CloneString( &(drawInfo->primitive), drawable_.primitive() );
+  drawInfo->primitive = const_cast<char*>(drawable_.primitive().c_str());
   DrawImage( image(), drawInfo );
-
-  FreeMemory( drawInfo->primitive );
   drawInfo->primitive = 0;
 
   throwImageException();
@@ -1974,8 +1970,7 @@ unsigned int Magick::Image::gifDisposeMethod ( void ) const
 void Magick::Image::iccColorProfile( const Magick::Blob &colorProfile_ )
 {
   ProfileInfo * color_profile = &(image()->color_profile);
-  FreeMemory( color_profile->info );
-  color_profile->info = 0;
+  FreeMemory( (void**)&color_profile->info );
   color_profile->length = 0;
 
   if ( colorProfile_.data() != 0 )
@@ -2012,8 +2007,7 @@ Magick::InterlaceType Magick::Image::interlaceType ( void ) const
 void Magick::Image::iptcProfile( const Magick::Blob &iptcProfile_ )
 {
   ProfileInfo * iptc_profile = &(image()->iptc_profile);
-  FreeMemory( iptc_profile->info );
-  iptc_profile->info = 0;
+  FreeMemory( (void**)&iptc_profile->info );
   iptc_profile->length = 0;
 
   if ( iptcProfile_.data() != 0 )

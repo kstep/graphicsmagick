@@ -148,10 +148,7 @@ Magick::BlobRef::BlobRef ( const void* data_,
 // Destructor (actually destroys data)
 Magick::BlobRef::~BlobRef ( void )
 {
-  if ( _data )
-    FreeMemory( _data );
-
-  _data = 0;
+  FreeMemory( &_data );
   _length = 0;
   _refCount = 0;
 }

@@ -107,12 +107,9 @@ Magick::Color Magick::Options::backgroundColor ( void ) const
 void Magick::Options::backgroundTexture ( const std::string &backgroundTexture_ )
 {
   if ( backgroundTexture_.length() == 0 )
-    {
-      FreeMemory( _imageInfo->texture );
-      _imageInfo->texture = 0;
-    }
+    FreeMemory( (void**)&_imageInfo->texture );
   else
-      Magick::CloneString( &_imageInfo->texture, backgroundTexture_ );
+    Magick::CloneString( &_imageInfo->texture, backgroundTexture_ );
 }
 std::string Magick::Options::backgroundTexture ( void ) const
 {
@@ -134,10 +131,8 @@ Magick::Color Magick::Options::borderColor ( void ) const
 // Text bounding-box base color
 void Magick::Options::boxColor ( const Magick::Color &boxColor_ )
 {
-  FreeMemory( _drawInfo->box );
-  _drawInfo->box = 0;
-  FreeMemory( _annotateInfo->box );
-  _annotateInfo->box = 0;
+  FreeMemory( (void**)&_drawInfo->box );
+  FreeMemory( (void**)&_annotateInfo->box );
 
   if ( boxColor_.isValid() )
     {
@@ -156,10 +151,7 @@ Magick::Color Magick::Options::boxColor ( void ) const
 void Magick::Options::density ( const Magick::Geometry &density_ )
 {
   if ( !density_.isValid() )
-    {
-      FreeMemory( _imageInfo->density );
-      _imageInfo->density = 0;
-    }
+    FreeMemory( (void**)&_imageInfo->density );
   else
     Magick::CloneString( &_imageInfo->density, density_ );
 
@@ -187,12 +179,9 @@ std::string Magick::Options::fileName ( void ) const
 void Magick::Options::font ( const std::string &font_ )
 {
   if ( font_.length() == 0 )
-    {
-      FreeMemory( _imageInfo->font );
-      _imageInfo->font = 0;
-    }
+    FreeMemory( (void**)&_imageInfo->font );
   else
-      Magick::CloneString( &_imageInfo->font, font_ );
+    Magick::CloneString( &_imageInfo->font, font_ );
 
   updateAnnotateInfo();
 }
@@ -261,10 +250,7 @@ Magick::Color Magick::Options::matteColor ( void ) const
 void Magick::Options::page ( const Magick::Geometry &pageSize_ )
 {
   if ( !pageSize_.isValid() )
-    {
-      FreeMemory( _imageInfo->page );
-      _imageInfo->page = 0;
-    }
+    FreeMemory( (void**)&_imageInfo->page );
   else
     Magick::CloneString( &_imageInfo->page, pageSize_ );
 }
@@ -282,12 +268,9 @@ void Magick::Options::penColor ( const Color &penColor_ )
 
   if ( !penColor_.isValid() )
     {
-      FreeMemory( _imageInfo->pen );
-      _imageInfo->pen = 0;
-      FreeMemory( _annotateInfo->pen );
-      _annotateInfo->pen = 0;
-      FreeMemory( _drawInfo->pen );
-      _drawInfo->pen = 0;
+      FreeMemory( (void**)&_imageInfo->pen );
+      FreeMemory( (void**)&_annotateInfo->pen );
+      FreeMemory( (void**)&_drawInfo->pen );
       strcpy( clone_info->filename,"xc:black" );
     }
   else
@@ -348,8 +331,7 @@ Magick::ResolutionType Magick::Options::resolutionUnits ( void ) const
 
 void Magick::Options::size ( const Geometry &geometry_ )
 {
-  FreeMemory( _imageInfo->size );
-  _imageInfo->size = 0;
+  FreeMemory( (void**)&_imageInfo->size );
 
   if ( geometry_.isValid() )
     Magick::CloneString( &_imageInfo->size, geometry_ );
@@ -365,28 +347,21 @@ Magick::Geometry Magick::Options::size ( void ) const
 void Magick::Options::tileName ( const std::string &tileName_ )
 {
   if ( tileName_.length() == 0 )
-    {
-      FreeMemory( _imageInfo->tile );
-      _imageInfo->tile = 0;
-    }
+    FreeMemory( (void**)&_imageInfo->tile );
   else
-      Magick::CloneString( &_imageInfo->tile, tileName_ );
+    Magick::CloneString( &_imageInfo->tile, tileName_ );
 }
 std::string Magick::Options::tileName ( void ) const
 {
   if ( _imageInfo->tile )
     return std::string( _imageInfo->tile );
-  
   return std::string();
 }
 
 void Magick::Options::view ( const std::string &view_ )
 {
   if ( view_.length() == 0 )
-    {
-      FreeMemory( _imageInfo->view );
-      _imageInfo->view = 0;
-    }
+    FreeMemory( (void**)&_imageInfo->view );
   else
     Magick::CloneString( &_imageInfo->view, view_ );
 }
@@ -401,10 +376,7 @@ std::string Magick::Options::view ( void ) const
 void Magick::Options::x11Display ( const std::string &display_ )
 {
   if ( display_.length() == 0 )
-    {
-      FreeMemory( _imageInfo->server_name );
-      _imageInfo->server_name = 0;
-    }
+    FreeMemory( (void**)&_imageInfo->server_name );
   else
     Magick::CloneString( &_imageInfo->server_name, display_ );
 }
