@@ -895,14 +895,16 @@ shifted.
 \fRenable debug printout
 
 The events parameter specifies which events are to be logged.  It
-can be either None, All, or a list consisting of
+can be either None, All, or a comma-separated list
+consisting of
 one or more of Configure, Annotate,
 Render, Locale, Coder,
-X11, Cache, or Blob, using whatever punctuation
-you like to separate them.  For example, to log cache and blob events,
-use
+X11, Cache, or Blob.
+For example, to log cache and blob events, use
 
-    convert -debug "Cache, Blob" rose: rose.png
+    convert -debug "Cache,Blob" rose: rose.png
+
+Use \fB+debug\fP to turn off all logging.
 .TP
 .B "-deconstruct"
 \fRbreak down an image sequence into constituent parts
