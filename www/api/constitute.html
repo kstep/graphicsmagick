@@ -13,7 +13,7 @@ A:visited { color: #800080 }
 </STYLE>
 
 <TITLE>constitute - Read or write an image</TITLE>
-<LINK REV="made" HREF="mailto:root@gohan11.freebsd.org">
+<LINK REV="made" HREF="mailto:bfriesen@shaggy.simplesystems.org">
 </HEAD>
 
 <BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
@@ -107,7 +107,10 @@ FUNCTION
 DESCRIPTIONS</A></H2>
 <P>
 <H3><A NAME="constituteimage">ConstituteImage</A></H3>
-<blockquote>ConstituteImage() returns an image from the the pixel data you supply. The pixel data must be in scanline order top-to-bottom. The data can be char, short int, int, float, or double. Float and double require the pixels to be normalized [0..1], otherwise [0..MaxRGB]. For example, to create a 640x480 image from unsigned red-green-blue character data, use </blockquote><blockquote>image=ConstituteImage ( 640, 480, "RGB", CharPixel, pixels, &exception );; </blockquote><P>The format of the Constitute method is:</P>
+<blockquote>ConstituteImage() returns an <A HREF="types.html#Image">Image</A> corresponding to an image stored in a raw memory array format. The pixel data must be in scanline order top-to-bottom. The data can be unsigned char, unsigned short int, unsigned int, unsigned long, float, or double. Float and double require the pixels to be normalized to the range [0..1], otherwise the range is [0..MaxVal] where MaxVal is the maximum possible value for that type. </blockquote><P>Note that for most 32-bit architectures the size of an unsigned long is the same as unsigned int, but for 64-bit architectures observing the 
+LP64 standard, an unsigned long is 64 bits, while an unsigned int remains 32 bits.  This should be considered when deciding if the data should be described as ``Integer'' or ``Long''.</P>
+<P>For example, to create a 640x480 image from unsigned red-green-blue character data, use</P>
+<blockquote>image=ConstituteImage ( 640, 480, "RGB", CharPixel, pixels, &exception );; </blockquote><P>The format of the Constitute method is:</P>
 <blockquote><A HREF="types.html#Image">Image</A> *ConstituteImage ( const unsigned long width, const unsigned long height, const char *map, const <A HREF="types.html#StorageType">StorageType</A> type, const void *pixels, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
@@ -125,12 +128,15 @@ This string reflects the expected ordering of the pixel array.  It can be any co
 R = red, 
 G = green, 
 B = blue, 
-A = alpha, 
+A = alpha (same as Transparency), 
+O = Opacity, 
+T = Transparency, 
 C = cyan, 
 Y = yellow, 
 M = magenta, 
 K = black, or 
-I = intensity (for grayscale). Creation of an alpha channel for 
+I = intensity (for grayscale). Specify 
+``P'' = pad, to skip over a quantum which is intentionally ignored.  Creation of an alpha channel for 
 CMYK images is currently not supported.
 <P></P>
 <DD><P></P><DT><STRONG><A NAME="item_o_type%3A">type:</A></STRONG><BR>
@@ -150,7 +156,9 @@ Return any errors or warnings in this structure.
 <blockquote>DestroyConstitute() destroys the constitute environment. </blockquote><P>The format of the DestroyConstitute method is:</P>
 <blockquote>DestroyConstitute ( void ); </blockquote><P>
 <H3><A NAME="dispatchimage">DispatchImage</A></H3>
-<blockquote>DispatchImage() extracts pixel data from an image and returns it to you. The method returns False on success or True if an error is encountered. The data is returned as char, short int, int, long, float, or double in the order specified by map. </blockquote><P>Suppose we want want to extract the first scanline of a 640x480 image as character data in red-green-blue order:</P>
+<blockquote>DispatchImage() extracts pixel data from an <A HREF="types.html#Image">Image</A> into a raw memory array. The pixel data is written in scanline order top-to-bottom using an arbitrary quantum order specified by 'map', and with quantum size specified by 'type'. </blockquote><P>The output array data may be unsigned char, unsigned short int, unsigned int, unsigned long, float, or double.  Float and double require the pixels to be normalized to the range [0..1], otherwise the range is [0..MaxVal] where MaxVal is the maximum possible value for that type.</P>
+<P>The method returns False on success or True if an error is encountered.</P>
+<P>Suppose we want want to extract the first scanline of a 640x480 image as character data in red-green-blue order:</P>
 <blockquote>DispatchImage ( image, 0, 0, 640, 1, "RGB", 0, pixels, exception );; </blockquote><P>The format of the DispatchImage method is:</P>
 <blockquote>unsigned int DispatchImage ( const <A HREF="types.html#Image">Image</A> *image, const long x_offset, const long y_offset, const unsigned long columns, const unsigned long rows, const char *map, const <A HREF="types.html#StorageType">StorageType</A> type, void *pixels, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
@@ -169,16 +177,19 @@ This string reflects the expected ordering of the pixel array.  It can be any co
 R = red, 
 G = green, 
 B = blue, 
-A = alpha, 
+A = alpha (same as Transparency), 
+O = Opacity, 
+T = Transparency, 
 C = cyan, 
 Y = yellow, 
 M = magenta, 
-K = black, or 
-I = intensity (for grayscale).
+K = black, 
+I = intensity (for grayscale). Specify 
+``P'' = pad, to output a pad quantum.  Pad quantums are zero-value.
 <P></P>
 <DD><P></P><DT><STRONG>type:</STRONG><BR>
 <DD>
-Define the data type of the pixels.  Float and double types are normalized to [0..1] otherwise [0..MaxRGB]. Choose from these types: CharPixel, ShortPixel, IntegerPixel, LongPixel, FloatPixel, or DoublePixel.
+Define the data type of the pixels.  Float and double types are expected to be normalized [0..1] otherwise [0..MaxRGB]. Choose from these types: CharPixel, ShortPixel, IntegerPixel, LongPixel, FloatPixel, or DoublePixel.
 <P></P>
 <DD><P></P><DT><STRONG>pixels:</STRONG><BR>
 <DD>

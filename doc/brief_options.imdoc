@@ -422,6 +422,9 @@ display image using this type.</abs>
 <abs>change this color to the pen color within the image</abs>
 </utils>
 <utils apps=composite,convert,display,import,mogrify,montage>
+<lopt>-ordered-dither <channeltype> <NxN>
+<abs>ordered dither the image</abs>
+<utils apps=composite,convert,display,import,mogrify,montage>
 <lopt>-page <width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}</opt>
 <abs>size and location of an image canvas</abs>
 </utils>
@@ -469,6 +472,9 @@ display image using this type.</abs>
 <lopt>-raise <width>x<height></opt>
 <abs>lighten or darken image edges</abs>
 </utils>
+<utils apps=composite,convert,display,import,mogrify,montage>
+<lopt>-random-threshold <channeltype> <LOWxHIGH>
+<abs>random threshold the image</abs>
 <utils apps=composite,convert,mogrify,montage>
 <lopt>-red-primary <x>,<y></opt>
 <abs>red chromaticity primary point</abs>

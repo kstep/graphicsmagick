@@ -2181,6 +2181,36 @@ option.
 See \fB-fill\fP for more details.
 
 .TP
+.B "-ordered-dither \fI<channeltype> <NxN>
+\fRordered dither the image
+
+The channel or channels specified in the <channeltype> argument are
+reduced to binary, using an ordered dither method.
+The choices for \fBchanneltype\fP are:
+
+
+    all
+    intensity
+    opacity
+    matte
+
+When \fBchanneltype\fP is "all", the color samples are dithered into
+a graylevel and then that graylevel is stored in the three color
+channels.  Separately, the opacity channel is dithered into a bilevel
+opacity value which is stored in the opacity channel.
+
+
+When \fBchanneltype\fP is "intensity", only the color samples are
+dithered.  When \fBchanneltype\fP is "opacity" or "matte", only the
+opacity channel is dithered.
+
+The choices for N are 2, 3, or 4. When N is 2, the image is divided into
+2x2 pixel tiles.  In each tile, 0, 1, 2, 3, or 4 pixels are turned to
+white depending on their intensity.  When N is 3, there are 3x3 tiles
+and 10 levels of gray can be represented.  When N is 4, there are 4x4
+tiles and 17 levels of gray.
+
+.TP
 .B "-page \fI<width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}"\fP
 \fRsize and location of an image canvas
 
@@ -2456,6 +2486,33 @@ Offsets are not used.
 
 
 Use \fB-raise\fP to create a raised effect, otherwise use \fB+raise\fP.
+
+.TP
+.B "-random-threshold \fI<channeltype> <LOWxHIGH>
+\fRrandom threshold the image
+
+The channel or channels specified in the <channeltype> argument are
+reduced to binary, using an random-threshold method.
+The choices for \fBchanneltype\fP are:
+
+
+    all
+    intensity
+    opacity
+    matte
+
+When \fBchanneltype\fP is "all", the color samples are thresholded into
+a graylevel and then that graylevel is stored in the three color
+channels.  Separately, the opacity channel is thresholded into a bilevel
+opacity value which is stored in the opacity channel.  For each pixel,
+a new random number is used to establish the threshold to be used.  The
+threshold never exceeds the specified maximum (HIGH) and is never less
+than the specified minimum (LOW).
+
+
+When \fBchanneltype\fP is "intensity", only the color samples are
+thresholded.  When \fBchanneltype\fP is "opacity" or "matte", only the
+opacity channel is thresholded.
 
 .TP
 .B "-red-primary \fI<x>,<y>"\fP
@@ -3677,6 +3734,9 @@ Options, above.
 .B "-negate"
 \fRreplace every pixel with its complementary color
 .TP
+.B "-ordered-dither \fI<channeltype> <NxN>
+\fRordered dither the image
+.TP
 .B "-page \fI<width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}"\fP
 \fRsize and location of an image canvas
 .TP
@@ -3685,6 +3745,9 @@ Options, above.
 .TP
 .B "-quality \fI<value>"\fP
 \fRJPEG/MIFF/PNG compression level
+.TP
+.B "-random-threshold \fI<channeltype> <LOWxHIGH>
+\fRrandom threshold the image
 .TP
 .B "-red-primary \fI<x>,<y>"\fP
 \fRred chromaticity primary point
@@ -4548,6 +4611,9 @@ Options, above.
 .B "-opaque \fI<color>"\fP
 \fRchange this color to the pen color within the image
 .TP
+.B "-ordered-dither \fI<channeltype> <NxN>
+\fRordered dither the image
+.TP
 .B "-page \fI<width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}"\fP
 \fRsize and location of an image canvas
 .TP
@@ -4577,6 +4643,9 @@ Options, above.
 .TP
 .B "-raise \fI<width>x<height>"\fP
 \fRlighten or darken image edges
+.TP
+.B "-random-threshold \fI<channeltype> <LOWxHIGH>
+\fRrandom threshold the image
 .TP
 .B "-red-primary \fI<x>,<y>"\fP
 \fRred chromaticity primary point
@@ -4982,6 +5051,9 @@ display image using this type.
 .B "-noop"
 \fRNOOP (no option)
 .TP
+.B "-ordered-dither \fI<channeltype> <NxN>
+\fRordered dither the image
+.TP
 .B "-page \fI<width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}"\fP
 \fRsize and location of an image canvas
 .TP
@@ -4990,6 +5062,9 @@ display image using this type.
 .TP
 .B "-raise \fI<width>x<height>"\fP
 \fRlighten or darken image edges
+.TP
+.B "-random-threshold \fI<channeltype> <LOWxHIGH>
+\fRrandom threshold the image
 .TP
 .B "-remote"
 \fRperform a remote operation
@@ -7086,6 +7161,9 @@ Options, above.
 .B "-negate"
 \fRreplace every pixel with its complementary color
 .TP
+.B "-ordered-dither \fI<channeltype> <NxN>
+\fRordered dither the image
+.TP
 .B "-page \fI<width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}"\fP
 \fRsize and location of an image canvas
 .TP
@@ -7100,6 +7178,9 @@ Options, above.
 .TP
 .B "-quality \fI<value>"\fP
 \fRJPEG/MIFF/PNG compression level
+.TP
+.B "-random-threshold \fI<channeltype> <LOWxHIGH>
+\fRrandom threshold the image
 .TP
 .B "-resize \fI<width>x<height>{%}{@}{!}{<}{>}"\fP
 \fRresize an image
@@ -7400,6 +7481,9 @@ Options, above.
 .B "-opaque \fI<color>"\fP
 \fRchange this color to the pen color within the image
 .TP
+.B "-ordered-dither \fI<channeltype> <NxN>
+\fRordered dither the image
+.TP
 .B "-page \fI<width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}"\fP
 \fRsize and location of an image canvas
 .TP
@@ -7420,6 +7504,9 @@ Options, above.
 .TP
 .B "-raise \fI<width>x<height>"\fP
 \fRlighten or darken image edges
+.TP
+.B "-random-threshold \fI<channeltype> <LOWxHIGH>
+\fRrandom threshold the image
 .TP
 .B "-red-primary \fI<x>,<y>"\fP
 \fRred chromaticity primary point
@@ -7774,6 +7861,9 @@ Options, above.
 .B "-noop"
 \fRNOOP (no option)
 .TP
+.B "-ordered-dither \fI<channeltype> <NxN>
+\fRordered dither the image
+.TP
 .B "-page \fI<width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}"\fP
 \fRsize and location of an image canvas
 .TP
@@ -7785,6 +7875,9 @@ Options, above.
 .TP
 .B "-quality \fI<value>"\fP
 \fRJPEG/MIFF/PNG compression level
+.TP
+.B "-random-threshold \fI<channeltype> <LOWxHIGH>
+\fRrandom threshold the image
 .TP
 .B "-red-primary \fI<x>,<y>"\fP
 \fRred chromaticity primary point
