@@ -487,22 +487,17 @@ int main(int argc,char **argv)
           {
             if (*option == '-')
               {
-                int
-                  count;
-
-                double
+                unsigned long
                   maximum,
                   minimum;
 
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                   MagickFatalError(OptionFatalError,"Missing threshold",option);
-                minimum=0.0;
-                maximum=0.0;
-                count=sscanf(argv[i],"%lfx%lf",&minimum,&maximum);
-                if (count == 1)
-                  maximum=minimum;
-                SetCacheThreshold((size_t) minimum,(size_t) maximum);
+                minimum=(~0);
+                maximum=(~0);
+                (void) sscanf(argv[i],"%lux%lu",&minimum,&maximum);
+                SetCacheThreshold(minimum,maximum);
 							}
             break;
           }

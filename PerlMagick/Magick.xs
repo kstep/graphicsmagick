@@ -1207,19 +1207,14 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
     {
       if (LocaleCompare(attribute,"cache-threshold") == 0)
         {
-          int
-            count;
-
-          double
+          unsigned long
             maximum,
             minimum;
 
-          minimum=0.0;
-          maximum=0.0;
-          count=sscanf(SvPV(sval,na),"%lfx%lf",&minimum,&maximum);
-          if (count == 1)
-            maximum=minimum;
-          SetCacheThreshold((size_t) minimum,(size_t) maximum);
+          minimum=(~0);
+          maximum=(~0);
+          (void) sscanf(SvPV(sval,na),"%lux%lu",&minimum,&maximum);
+          SetCacheThreshold(minimum,maximum);
           return;
         }
       if (LocaleCompare(attribute,"clip-mask") == 0)
