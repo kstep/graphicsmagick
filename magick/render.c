@@ -2058,14 +2058,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               graphic_context[n]->fill.opacity=graphic_context[n]->opacity;
             break;
           }
-        if (LocaleCompare("fill-opacity",keyword) == 0)
-          {
-            GetToken(q,&q,token);
-            factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
-            graphic_context[n]->fill.opacity=(Quantum)
-              ((double) MaxRGB*(1.0-factor*atof(token)));
-            break;
-          }
         if (LocaleCompare("fill-rule",keyword) == 0)
           {
             GetToken(q,&q,token);
@@ -2080,6 +2072,14 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 break;
               }
             status=False;
+            break;
+          }
+        if (LocaleCompare("fill-opacity",keyword) == 0)
+          {
+            GetToken(q,&q,token);
+            factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
+            graphic_context[n]->fill.opacity=(Quantum)
+              ((double) MaxRGB*(1.0-factor*atof(token)));
             break;
           }
         if (LocaleCompare("font",keyword) == 0)
@@ -3092,20 +3092,20 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
       case PathPrimitive:
       {
-        register char
+        char
           *p;
 
-        unsigned long
-          number_attributes;
-
         GetToken(q,&q,token);
-        number_attributes=1;
+        length=1;
         for (p=token; *p != '\0'; p++)
-          if (isalpha((int) *p))
-            number_attributes++;
-        if (i > (long) (number_points-6*BezierQuantum*number_attributes-1))
+				{
+          GetToken(p,&p,token);
+          if (isdigit((int) *token))
+            length++;
+				}
+        if (i > (long) (number_points-6*BezierQuantum*length/3-1))
           {
-            number_points+=6*BezierQuantum*number_attributes;
+            number_points+=6*BezierQuantum*length/3;
             ReacquireMemory((void **) &primitive_info,
               number_points*sizeof(PrimitiveInfo));
             if (primitive_info == (PrimitiveInfo *) NULL)

@@ -334,7 +334,7 @@ MagickExport void InitializeMagick(const char *path)
   SetMagickResourceLimit(MemoryResource,
     ((sysconf(_SC_PAGE_SIZE)+512)/1024)*((sysconf(_SC_PHYS_PAGES)+512)/1024));
   SetMagickResourceLimit(MapResource,
-    ((sysconf(_SC_PAGE_SIZE)+512)/1024)*((sysconf(_SC_PHYS_PAGES)+512)/1024));
+    2*((sysconf(_SC_PAGE_SIZE)+512)/1024)*((sysconf(_SC_PHYS_PAGES)+512)/1024));
 #endif
 #if defined(PixelCacheThreshold)
   SetMagickResourceLimit(MemoryResource,PixelCacheThreshold);

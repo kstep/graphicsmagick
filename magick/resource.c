@@ -84,7 +84,7 @@ typedef struct _ResourceInfo
 static ResourceInfo
   resource_info =
   {
-    0, 0, 0, 512, 512, ResourceInfinity
+    0, 0, 0, 512, 1024, ResourceInfinity
   };
 
 static SemaphoreInfo
