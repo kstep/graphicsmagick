@@ -1,3 +1,8 @@
+2001-10-29  Bob Friesenhahn  <bfriesen@sun1107.ssd.usa.alcatel.com>
+
+	* lib/Image.cpp (strokeDashArray): Change to type double.
+	(strokeDashOffset): Change to type double.
+
 2001-10-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Geometry.cpp (Geometry): Add constructor from

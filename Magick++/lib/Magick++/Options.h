@@ -164,12 +164,12 @@ namespace Magick
     // units. If an odd number of values is provided, then the list of
     // values is repeated to yield an even number of values.
     void            strokeDashArray ( const double* strokeDashArray_ );
-    const double* strokeDashArray ( void ) const;
+    const double*   strokeDashArray ( void ) const;
 
     // While drawing using strokeDashArray, specify distance into the dash
     // pattern to start the dash (default 0).
-    void            strokeDashOffset ( double strokdDashOffset_ );
-    double    strokeDashOffset ( void ) const;
+    void            strokeDashOffset ( double strokeDashOffset_ );
+    double          strokeDashOffset ( void ) const;
 
     // Specify the shape to be used at the end of open subpaths when
     // they are stroked. Values of LineCap are UndefinedCap, ButtCap,

@@ -815,12 +815,12 @@ namespace Magick
     // members 5 3 2 0, where the zero value indicates the end of the
     // pattern array.
     void            strokeDashArray ( const double* strokeDashArray_ );
-    const double* strokeDashArray ( void ) const;
+    const double*   strokeDashArray ( void ) const;
 
     // While drawing using a dash pattern, specify distance into the
     // dash pattern to start the dash (default 0).
     void            strokeDashOffset ( double strokeDashOffset_ );
-    double    strokeDashOffset ( void ) const;
+    double          strokeDashOffset ( void ) const;
 
     // Specify the shape to be used at the end of open subpaths when
     // they are stroked. Values of LineCap are UndefinedCap, ButtCap,
