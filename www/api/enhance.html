@@ -23,6 +23,7 @@
 		<LI><A HREF="#contrastimage">ContrastImage</A></LI>
 		<LI><A HREF="#equalizeimage">EqualizeImage</A></LI>
 		<LI><A HREF="#gammaimage">GammaImage</A></LI>
+		<LI><A HREF="#levelimage">LevelImage</A></LI>
 		<LI><A HREF="#modulateimage">ModulateImage</A></LI>
 		<LI><A HREF="#negateimage">NegateImage</A></LI>
 		<LI><A HREF="#normalizeimage">NormalizeImage</A></LI>
@@ -43,6 +44,7 @@
 <P>unsigned int  <STRONG>ContrastImage</STRONG>( Image *image, const unsigned int sharpen );</P>
 <P>unsigned int  <STRONG>EqualizeImage</STRONG>( Image *image );</P>
 <P>unsigned int  <STRONG>GammaImage</STRONG>( Image *image, const char *gamma );</P>
+<P>unsigned int  <STRONG>LevelImage</STRONG>( Image *image, const char *level );</P>
 <P>unsigned int  <STRONG>ModulateImage</STRONG>( Image *image, const char *modulate );</P>
 <P>unsigned int  <STRONG>NegateImage</STRONG>( Image *image, const unsigned int grayscale );</P>
 <P>unsigned int  <STRONG>NormalizeImage</STRONG>( Image *image );</P>
@@ -92,8 +94,22 @@ The image.
 Define the level of gamma correction.
 <P></P></DL></DL>
 <P>
+<H2><A NAME="levelimage">LevelImage</A></H2>
+<blockquote>LevelImage ( ) adjusts the levels of an image given these points: black, mid, and white.; </blockquote><P>The format of the LevelImage method is:</P>
+<blockquote>unsigned int LevelImage ( <A HREF="types/Image.html">Image</A> *image, const char *level ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The image.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_levels%3A">levels:</A></STRONG><BR>
+<DD>
+Define the levels.
+<P></P></DL></DL>
+<P>
 <H2><A NAME="modulateimage">ModulateImage</A></H2>
-<blockquote>ModulateImage ( ) lets you control the brightness, saturation, and hue of an image. Modulate represents the brightness, saturation, and hueas one parameter ( e.g. 90, 150, 100 ) .; </blockquote><P>The format of the ModulateImage method is:</P>
+<blockquote>ModulateImage ( ) lets you control the brightness, saturation, and hueof an image. Modulate represents the brightness, saturation, and hueas one parameter ( e.g. 90, 150, 100 ) .; </blockquote><P>The format of the ModulateImage method is:</P>
 <blockquote>unsigned int ModulateImage ( <A HREF="types/Image.html">Image</A> *image, const char *modulate ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
