@@ -618,9 +618,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           y_resolution=x_resolution;
       }
     x_scale=(width*dx_resolution)/x_resolution;
-    width=(unsigned int) ceil(x_scale-0.5);
+    width=(unsigned long) (x_scale+0.5);
     y_scale=(height*dy_resolution)/y_resolution;
-    height=(unsigned int) ceil(y_scale-0.5);
+    height=(unsigned long) (y_scale+0.5);
     if (page == 1)
       {
         /*

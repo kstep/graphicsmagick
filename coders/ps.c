@@ -987,9 +987,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           y_resolution=x_resolution;
       }
     x_scale=(width*dx_resolution)/x_resolution;
-    width=(unsigned int) x_scale;
+    width=(unsigned long) (x_scale+0.5);
     y_scale=(height*dy_resolution)/y_resolution;
-    height=(unsigned int) y_scale;
+    height=(unsigned long) (y_scale+0.5);
     if (page == 1)
       {
         /*

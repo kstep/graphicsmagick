@@ -978,9 +978,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           y_resolution=x_resolution;
       }
     x_scale=(width*dx_resolution)/x_resolution;
-    width=(unsigned int) (x_scale+0.5);
+    width=(unsigned long) (x_scale+0.5);
     y_scale=(height*dy_resolution)/y_resolution;
-    height=(unsigned int) (y_scale+0.5);
+    height=(unsigned long) (y_scale+0.5);
     /*
       Write Page object.
     */
