@@ -395,6 +395,7 @@ void CConfigureApp::process_module(ofstream &dsw,
 		includes_list.push_back("..\\..\\bzlib");
   }
 
+  // generate the includes paths required for this module
   std::string libpath;
   libpath = "..\\..\\";
   libpath += name;
@@ -426,6 +427,28 @@ void CConfigureApp::process_module(ofstream &dsw,
       FindClose(libhandle);
     }
   }
+
+  // look for any libs that exist and add them into the module
+  libpath = "..\\..\\";
+  libpath += name;
+  libpath += "\\*.lib";
+	libhandle = FindFirstFile(libpath.c_str(), &libdata);
+	if (libhandle != INVALID_HANDLE_VALUE)
+  {
+    std::string extralibrary;
+
+	  do
+	  {
+      extralibrary = "..\\..\\";
+      extralibrary += name;
+      extralibrary += "\\";
+      extralibrary += libdata.cFileName;
+		  libs_list_release.push_back(extralibrary);
+		  libs_list_debug.push_back(extralibrary);
+	  } while (FindNextFile(libhandle, &libdata));
+    FindClose(libhandle);
+  }
+
  	write_lib_dsp(
     dll,
     dll, // multi-threaded
@@ -591,6 +614,7 @@ BOOL CConfigureApp::InitInstance()
       { "jpeg",         THIRDPARTY },
       { "magick",       LIBRARY    },
       { "coders",       MODULE     },
+      { "digimarc",     MODULE     },
       { "PerlMagick",   DISABLED   },
       { "png",          THIRDPARTY },
       { "tiff",         THIRDPARTY },
