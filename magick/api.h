@@ -40,39 +40,39 @@ extern "C" {
 #  define _MAGICKDLL_
 # endif
 # if defined(_MAGICKDLL_)
-#  if !defined(__GNUC__)
+#  if defined(_VISUALC_)
 #   pragma warning( disable: 4273 )  /* Disable the dll linkage warnings */
 #  endif
 #  if !defined(_MAGICKLIB_)
 #   define MagickExport  __declspec(dllimport)
-#   if !defined(__GNUC__)
+#   if defined(_VISUALC_)
 #    pragma message( "Compiling as dll import" )
 #   endif
 #  else
 #   define MagickExport  __declspec(dllexport)
-#   if !defined(__GNUC__)
+#   if defined(_VISUALC_)
 #    pragma message( "Compiling as dll export" )
 #   endif
 #  endif
 # else
 #  define MagickExport
-#  if !defined(__GNUC__)
+#  if defined(_VISUALC_)
 #   pragma message( "Compiling as simple library" )
 #  endif
 # endif
 # if defined(_DLL) && !defined(_LIB)
 #  define ModuleExport  __declspec(dllexport)
-#  if !defined(__GNUC__)
+#  if defined(_VISUALC_)
 #   pragma message( "Module compiled as DLL" ) 
 #  endif
 # else
 #  define ModuleExport
-#  if !defined(__GNUC__)
+#  if defined(_VISUALC_)
 #   pragma message( "Module compiled as library" ) 
 #  endif
 # endif
 # define MagickGlobal __declspec(thread)
-# if !defined(__GNUC__)
+# if defined(_VISUALC_)
 #  pragma warning(disable : 4018)
 #  pragma warning(disable : 4244)
 #  pragma warning(disable : 4142)
