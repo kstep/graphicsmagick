@@ -136,7 +136,7 @@ MagickExport unsigned int BlobToFile(const char *filename,const void *blob,
     count;
 
   register size_t
-	  i;
+    i;
 
   assert(filename != (const char *) NULL);
   assert(blob != (const void *) NULL);
@@ -540,14 +540,15 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
       ThrowException(exception,BlobWarning,"Unable to open file",filename);
       return((void *) NULL);
     }
-  *length=(size_t) (fstat(file,&attributes) == -1 ? 0 : attributes.st_size);
-  if (*length != (size_t) attributes.st_size)
+  if ((fstat(file,&attributes) < 0) ||
+      (attributes.st_size != (size_t) attributes.st_size))
     {
       (void) close(file);
       ThrowException(exception,BlobWarning,"Unable to create blob",
         "Memory allocation failed");
       return((void *) NULL);
     }
+  *length=(size_t) attributes.st_size;
   blob=(unsigned char *) AcquireMemory(*length+1);
   if (blob == (unsigned char *) NULL)
     {
@@ -664,7 +665,7 @@ MagickExport off_t GetBlobSize(const Image *image)
   if (image->file == (FILE *) NULL)
     return(image->blob->size);
   (void) fflush(image->file);
-  return(fstat(fileno(image->file),&attributes) == -1 ? 0 : attributes.st_size);
+  return(fstat(fileno(image->file),&attributes) < 0 ? 0 : attributes.st_size);
 }
 
 /*
@@ -1176,46 +1177,36 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
             const MagickInfo
               *magick_info;
 
+            struct stat
+              attributes;
+
             magick_info=GetMagickInfo(image_info->magick,&image->exception);
-            if (magick_info != (const MagickInfo *) NULL)
-              {
-                if (magick_info->blob_support)
-                  {
-                    int
-                      file;
+            if ((magick_info != (const MagickInfo *) NULL) &&
+                magick_info->blob_support)
+              if ((fstat(fileno(image->file),&attributes) >= 0) &&
+                  (attributes.st_size == (size_t) attributes.st_size))
+                {
+                  size_t
+                    length;
 
-                    struct stat
-                      attributes;
+                  void
+                    *blob;
 
-                    /*
-                      Format supports blobs-- try memory-mapped I/O.
-                    */
-                    file=fileno(image->file);
-                    if (fstat(file,&attributes) != -1)
-                      {
-                        size_t
-                          length;
-
-                        length=(size_t) attributes.st_size;
-                        if (length == attributes.st_size)
-                          {
-                            void
-                              *blob;
-
-                            blob=MapBlob(file,ReadMode,0,length);
-                            if (blob != (void *) NULL)
-                              {
-                                if (image_info->file != (FILE *) NULL)
-                                  image->exempt=False;
-                                else
-                                  (void) fclose(image->file);
-                                image->file=(FILE *) NULL;
-                                AttachBlob(image->blob,blob,length);
-                                image->blob->mapped=True;
-                              }
-                          }
-                      }
-                  }
+                  length=(size_t) attributes.st_size;
+                  blob=MapBlob(fileno(image->file),ReadMode,0,length);
+                  if (blob != (void *) NULL)
+                    {
+                      /*
+                        Format supports blobs-- use memory-mapped I/O.
+                      */
+                      if (image_info->file != (FILE *) NULL)
+                        image->exempt=False;
+                      else
+                        (void) fclose(image->file);
+                      image->file=(FILE *) NULL;
+                      AttachBlob(image->blob,blob,length);
+                      image->blob->mapped=True;
+                    }
               }
           }
         image->blob->size=GetBlobSize(image);

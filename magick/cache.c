@@ -1586,13 +1586,29 @@ static unsigned int ModifyCache(Image *image)
 %
 %
 */
+
+static unsigned int ExtendCache(int file,off_t length)
+{
+  struct stat
+    attributes;
+
+  if (fstat(file,&attributes) < 0)
+    return(False);
+  if (attributes.st_size >= length)
+    return(True);
+  if (lseek(file,length-1,SEEK_SET) < 0)
+    return(False);
+  if (write(file,"",1) != 1)
+    return(False);
+  return(True);
+}
+
 MagickExport unsigned int OpenCache(Image *image)
 {
   CacheInfo
     *cache_info;
 
   int
-    c,
     file;
 
   off_t
@@ -1674,39 +1690,38 @@ MagickExport unsigned int OpenCache(Image *image)
     ThrowBinaryException(ResourceLimitWarning,"Pixel cache allocation failed",
       image->filename);
   cache_info->length=offset;
-  if (cache_info->length != (size_t) cache_info->length)
-    cache_info->type=DiskCache;
-  if ((cache_info->type == MemoryCache) ||
-      ((cache_info->type == UndefinedCache) &&
-       (cache_info->length <= GetCacheMemory(0))))
-    {
-      if (cache_info->storage_class == UndefinedClass)
-        pixels=(PixelPacket *) AcquireMemory(cache_info->length);
-      else
-        {
-          ReacquireMemory((void **) &cache_info->pixels,cache_info->length);
-          if (cache_info->pixels == (void *) NULL)
-            ThrowBinaryException(ResourceLimitWarning,
-              "Memory allocation failed",image->filename);
-          pixels=cache_info->pixels;
-        }
-      if (pixels != (PixelPacket *) NULL)
-        {
-          /*
-            Create in-memory pixel cache.
-          */
-          (void) GetCacheMemory(cache_info->length);
-          cache_info->storage_class=image->storage_class;
-          cache_info->colorspace=image->colorspace;
-          cache_info->type=MemoryCache;
-          cache_info->pixels=pixels;
-          cache_info->indexes=(IndexPacket *) NULL;
-          if ((cache_info->storage_class == PseudoClass) ||
-              (cache_info->colorspace == CMYKColorspace))
-            cache_info->indexes=(IndexPacket *) (pixels+number_pixels);
-          return(True);
-        }
-    }
+  if (cache_info->length == (size_t) cache_info->length)
+    if ((cache_info->type == MemoryCache) ||
+        ((cache_info->type == UndefinedCache) &&
+         (cache_info->length <= GetCacheMemory(0))))
+      {
+        if (cache_info->storage_class == UndefinedClass)
+          pixels=(PixelPacket *) AcquireMemory(cache_info->length);
+        else
+          {
+            ReacquireMemory((void **) &cache_info->pixels,cache_info->length);
+            if (cache_info->pixels == (void *) NULL)
+              ThrowBinaryException(ResourceLimitWarning,
+                "Memory allocation failed",image->filename);
+            pixels=cache_info->pixels;
+          }
+        if (pixels != (PixelPacket *) NULL)
+          {
+            /*
+              Create in-memory pixel cache.
+            */
+            (void) GetCacheMemory(cache_info->length);
+            cache_info->storage_class=image->storage_class;
+            cache_info->colorspace=image->colorspace;
+            cache_info->type=MemoryCache;
+            cache_info->pixels=pixels;
+            cache_info->indexes=(IndexPacket *) NULL;
+            if ((cache_info->storage_class == PseudoClass) ||
+                (cache_info->colorspace == CMYKColorspace))
+              cache_info->indexes=(IndexPacket *) (pixels+number_pixels);
+            return(True);
+          }
+      }
   /*
     Create pixel cache on disk.
   */
@@ -1715,15 +1730,11 @@ MagickExport unsigned int OpenCache(Image *image)
   file=open(cache_info->cache_filename,O_RDWR | O_CREAT | O_BINARY,0777);
   if (file == -1)
     ThrowBinaryException(CacheWarning,"Unable to open cache",image->filename);
-  if (lseek(file,cache_info->offset+cache_info->length,SEEK_SET) == -1)
+  if (!ExtendCache(file,cache_info->offset+cache_info->length))
     {
-      (void) close(file);
-      ThrowBinaryException(CacheWarning,"Unable to seek cache",image->filename)
-    }
-  if (write(file,&c,1) == -1)
-    {
-      (void) close(file);
-      ThrowBinaryException(CacheWarning,"Unable to write cache",image->filename)
+      close(file);
+      ThrowBinaryException(CacheWarning,"Unable to extend cache",
+        image->filename)
     }
   cache_info->storage_class=image->storage_class;
   cache_info->colorspace=image->colorspace;
@@ -1836,8 +1847,7 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
       if (!OpenCache(image))
         return(False);
       (void) ReferenceCache(cache_info);
-      *offset+=(cache_info->length+1)+pagesize-
-        ((cache_info->length+1) % pagesize);
+      *offset+=cache_info->length+pagesize-(cache_info->length % pagesize);
       return(True);
     }
   /*
@@ -1871,7 +1881,7 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
   DestroyImage(clone_image);
   if (y < (long) image->rows)
     return(False);
-  *offset+=(cache_info->length+1)+pagesize-((cache_info->length+1) % pagesize);
+  *offset+=cache_info->length+pagesize-(cache_info->length % pagesize);
   return(True);
 }
 
