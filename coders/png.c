@@ -2640,9 +2640,6 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     o  Palette is sorted to remove unused entries and to put a
        transparent color first, if PNG_SORT_PALETTE is also defined.
    */
-#if (QuantumDepth == 16)
-    mng_info->optimize=image_info->type == OptimizeType;
-#endif
 
   /*
     Open image file.
@@ -2672,6 +2669,9 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) memset(mng_info,0,sizeof(MngInfo));
   mng_info->image=image;
   have_mng_structure=True;
+#if (QuantumDepth == 16)
+    mng_info->optimize=image_info->type == OptimizeType;
+#endif
 
   if (LocaleCompare(image_info->magick,"MNG") == 0)
     {
@@ -3818,6 +3818,9 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 /*
                   Allocate next image structure.
                 */
+                if (logging)
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                      "    Allocate magnified image");
                 AllocateNextImage(image_info,image);
                 if (image->next == (Image *) NULL)
                   {
@@ -3879,6 +3882,9 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
                 /* magnify the rows into the right side of the large image */
 
+                if (logging)
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                      "    Magnify the rows to %lu",large_image->rows);
                 m=mng_info->magn_mt;
                 yy=0;
                 length=(size_t) (image->columns*sizeof(PixelPacket));
@@ -3987,6 +3993,10 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
                 length=image->columns;
 
+                if (logging)
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                      "    Delete original image");
+
                 DeleteImageFromList(&image,GetImageIndexInList(image));
 
                 image=large_image;
@@ -3994,6 +4004,9 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 mng_info->image=image;
 
                 /* magnify the columns */
+                if (logging)
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                      "    Magnify the columns to %lu",image->columns);
 
                 for (y=0; y < (long) image->rows; y++)
                 {
@@ -4092,6 +4105,9 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                    }
                 }
 #endif
+                if (logging)
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                      "  Finished MAGN processing");
               }
           }
 
@@ -4114,6 +4130,9 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (crop_box.bottom != (mng_info->image_box.bottom
             +mng_info->y_off[object_id])))
           {
+            if (logging)
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "  Crop the PNG image");
             if ((crop_box.left < crop_box.right) &&
                 (crop_box.top < crop_box.bottom))
               {
@@ -5984,8 +6003,10 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   MngInfo
     *mng_info;
 
+  int
+    have_mng_structure;
+
   unsigned int
-    have_mng_structure,
     logging,
     status;
 
