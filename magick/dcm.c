@@ -1348,7 +1348,7 @@ static const DicomInfo
     { 0x0028, 0x3003, "LO", "LUT Explanation" },
     { 0x0028, 0x3004, "LO", "Modality LUT Type" },
     { 0x0028, 0x3006, "US", "LUT Data" },
-    { 0x0028, 0x3010, "SQ", "VOI LUT Sequence" },
+    { 0x0028, 0x3010, "xs", "VOI LUT Sequence" },
     { 0x0028, 0x4000, "LT", "Image Presentation Comments" },
     { 0x0028, 0x5000, "SQ", "Biplane Acquisition Sequence" },
     { 0x0028, 0x6010, "US", "Representative Frame Number" },
@@ -3033,7 +3033,7 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
             if (graymap == (unsigned short *) NULL)
               {
                 MagickWarning(ResourceLimitWarning,"Unable to create graymap",
-                 "Memory allocation failed");
+                  "Memory allocation failed");
                 break;
               }
             for (i=0; i < (int) colors; i++)
@@ -3054,7 +3054,7 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
               Initialize colormap.
             */
             image->class=PseudoClass;
-            image->colors=length >> 1;
+            image->colors=length/2;
             if (image->colormap == (PixelPacket *) NULL)
               image->colormap=(PixelPacket *)
                 AllocateMemory(image->colors*sizeof(PixelPacket));
@@ -3076,8 +3076,8 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
               if (element == 0x1203)
                 image->colormap[i].blue=(Quantum) XDownScale(index);
             }
+            break;
           }
-          break;
         }
         break;
       }
@@ -3275,6 +3275,9 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
                 if (graymap != (unsigned short *) NULL)
                   index=graymap[index];
                 image->indexes[x]=index;
+                q->red=image->colormap[index].red;
+                q->green=image->colormap[index].green;
+                q->blue=image->colormap[index].blue;
               }
             else
               if (bytes_per_pixel == 1)
@@ -3306,7 +3309,6 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
         }
         if (image->class == PseudoClass)
           {
-            SyncImage(image);
             if (bytes_per_pixel == 2)
               NormalizeImage(image);
           }
