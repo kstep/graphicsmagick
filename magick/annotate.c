@@ -292,7 +292,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
         offset.x=x+i*draw_info->affine.ry*metrics.height+
           draw_info->affine.ry*(metrics.ascent+metrics.descent);
         offset.y=y+height+i*draw_info->affine.sy*metrics.height+
-          draw_info->affine.sy*(metrics.ascent+metrics.descent);
+          draw_info->affine.sy*(metrics.ascent+metrics.descent)-metrics.descent;
         break;
       }
       case SouthGravity:
@@ -302,7 +302,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
           (metrics.ascent+metrics.descent);
         offset.y=y+height+i*draw_info->affine.sy*metrics.height-
           draw_info->affine.rx*metrics.width/2+draw_info->affine.sy*
-          (metrics.ascent+metrics.descent);
+          (metrics.ascent+metrics.descent)-metrics.descent;
         break;
       }
       case SouthEastGravity:
@@ -312,7 +312,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
           (metrics.ascent+metrics.descent);
         offset.y=y+height+i*draw_info->affine.sy*metrics.height-
           draw_info->affine.rx*metrics.width+draw_info->affine.sy*
-          (metrics.ascent+metrics.descent);
+          (metrics.ascent+metrics.descent)-metrics.descent;
         break;
       }
     }
