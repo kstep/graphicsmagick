@@ -491,6 +491,12 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
         if (glyphs[unicode[i]].z == (TT_Glyph *) NULL)
           continue;
         TT_Get_Glyph_Metrics(glyphs[unicode[i]],&glyph_metrics);
+        if (i == (length-1))
+          {
+            canvas.width+=
+              (glyph_metrics.bbox.xMin+glyph_metrics.bbox.xMax) >> 6;
+            continue;
+          }
         canvas.width+=(glyph_metrics.advance >> 6)+1;
       }
       canvas.width=(canvas.width+3) & -4;

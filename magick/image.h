@@ -330,12 +330,6 @@ typedef struct _ChromaticityInfo
 
 typedef struct _Image
 {
-  BlobInfo
-    blob_info;
-
-  FILE
-    *file;
-
   int
     exempt,
     status,
@@ -343,6 +337,9 @@ typedef struct _Image
 
   char
     filename[MaxTextExtent];
+
+  FILE
+    *file;
 
   size_t
     filesize;
@@ -421,12 +418,6 @@ typedef struct _Image
   char
     *signature;
 
-  Cache
-    cache;
-
-  RectangleInfo
-    cache_info;
-
   PixelPacket
     *pixels;
 
@@ -484,6 +475,15 @@ typedef struct _Image
 
   unsigned int
     orphan;
+
+  BlobInfo
+    blob_info;
+
+  Cache
+    cache;
+
+  RectangleInfo
+    cache_info;
 
   struct _Image
     *previous,
