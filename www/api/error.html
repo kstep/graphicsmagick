@@ -20,6 +20,7 @@
 		<li><a href="#catchexception">CatchException</a></li>
 		<li><a href="#destroyexceptioninfo">DestroyExceptionInfo</a></li>
 		<li><a href="#getexceptioninfo">GetExceptionInfo</a></li>
+		<li><a href="#getlocaleexceptionmessage">GetLocaleExceptionMessage</a></li>
 		<li><a href="#magickerror">MagickError</a></li>
 		<li><a href="#magickwarning">MagickWarning</a></li>
 		<li><a href="#seterrorhandler">SetErrorHandler</a></li>
@@ -44,6 +45,7 @@
 <p><strong>CatchException</strong>( const ExceptionInfo *exception );</p>
 <p>void  <strong>DestroyExceptionInfo</strong>( ExceptionInfo *exception );</p>
 <p><strong>GetExceptionInfo</strong>( ExceptionInfo *exception );</p>
+<p>const char * <strong>GetLocaleExceptionMessage</strong>( const ExceptionType severity, const char *tag );</p>
 <p>void  <strong>MagickError</strong>( const ExceptionType error, const char *reason, const char *description );</p>
 <p>void  <strong>MagickWarning</strong>( const ExceptionType warning, const char *reason, const char *description );</p>
 <p>ErrorHandler  <strong>SetErrorHandler</strong>( ErrorHandler handler );</p>
@@ -88,6 +90,24 @@ The exception info.
 </dt>
 <dd>
 The exception info.
+</dd>
+<p></p></dl>
+<p>
+</p>
+<h2><a name="getlocaleexceptionmessage">GetLocaleExceptionMessage</a></h2>
+<blockquote>GetLocaleExceptionMessage() converts a enumerated exception severity and tag to a message in the current locale. </blockquote><p>The format of the GetLocaleExceptionMessage method is:</p>
+<blockquote>const char *GetLocaleExceptionMessage ( const <A HREF="types/Enumerations.html#ExceptionType">ExceptionType</A> severity, const char *tag ); </blockquote><p>A description of each parameter follows:</p>
+<dl>
+<dt><strong><a name="item_o_severity%3a">o severity:</a></strong><br />
+</dt>
+<dd>
+the severity of the exception.
+</dd>
+<p></p>
+<dt><strong><a name="item_o_tag%3a">o tag:</a></strong><br />
+</dt>
+<dd>
+the message tag.
 </dd>
 <p></p></dl>
 <p>
@@ -189,7 +209,7 @@ The method to handle errors.
 The exception info.
 </dd>
 <p></p>
-<dt><strong><a name="item_o_severity%3a">o severity:</a></strong><br />
+<dt><strong>o severity:</strong><br />
 </dt>
 <dd>
 The exception severity.

@@ -1,3 +1,7 @@
+2002-11-04  Cristy  <cristy@mystic.es.dupont.com>
+  * Quantizing a DirectClass image with less than 256 unique colors is
+    no longer lossy.
+
 2002-10-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Added configure test for compiler __func__ support (HAS___func__).
   * Added configure test for ftime().
