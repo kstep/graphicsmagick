@@ -330,10 +330,16 @@ MagickExport void InitializeMagick(const char *path)
 
   (void) setlocale(LC_ALL,"");
   InitializeSemaphore();
-  (void) SetLogEventMask(getenv("MAGICK_DEBUG"));
+#if defined(HAVE_SYSCONF) && defined(_SC_PAGE_SIZE) && defined(_SC_PHYS_PAGES)
+  SetMagickResourceLimit(MemoryResource,
+    ((sysconf(_SC_PAGE_SIZE)+512)/1024)*((sysconf(_SC_PHYS_PAGES)+512)/1024));
+  SetMagickResourceLimit(MapResource,
+    ((sysconf(_SC_PAGE_SIZE)+512)/1024)*((sysconf(_SC_PHYS_PAGES)+512)/1024));
+#endif
 #if defined(PixelCacheThreshold)
   SetMagickResourceLimit(MemoryResource,PixelCacheThreshold);
 #endif
+  (void) SetLogEventMask(getenv("MAGICK_DEBUG"));
   *execution_path='\0';
 #if !defined(UseInstalledImageMagick)
 #if defined(POSIX) || defined(WIN32)

@@ -291,8 +291,8 @@ int main(int argc,char **argv)
   XrmDatabase
     resource_database;
 
-  ReadCommandlLine(argc,&argv);
   InitializeMagick(*argv);
+  ReadCommandlLine(argc,&argv);
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
     MagickFatalError(ResourceLimitFatalError,"Memory allocation failed",

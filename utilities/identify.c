@@ -148,7 +148,7 @@ int main(int argc,char **argv)
   unsigned int
     status;
 
-  text=(char *) NULL;
+  InitializeMagick(*argv);
   ReadCommandlLine(argc,&argv);
   for (i=1; i < argc; i++)
   {
@@ -170,7 +170,6 @@ int main(int argc,char **argv)
     if (LocaleCompare("?",option+1) == 0)
       IdentifyUsage();
   }
-  InitializeMagick(*argv);
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
     MagickFatalError(ResourceLimitFatalError,"Memory allocation failed",
@@ -179,6 +178,7 @@ int main(int argc,char **argv)
     IdentifyUsage();
   image_info=CloneImageInfo((ImageInfo *) NULL);
   GetExceptionInfo(&exception);
+  text=(char *) NULL;
   status=IdentifyImageCommand(image_info,argc,argv,&text,&exception);
   if (exception.severity != UndefinedException)
     CatchException(&exception);

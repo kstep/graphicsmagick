@@ -269,6 +269,7 @@ int main(int argc,char **argv)
   unsigned int
     status;
 
+  InitializeMagick(*argv);
   ReadCommandlLine(argc,&argv);
   for (i=1; i < argc; i++)
   {
@@ -290,7 +291,6 @@ int main(int argc,char **argv)
     if (LocaleCompare("?",option+1) == 0)
       ConvertUsage();
   }
-  InitializeMagick(*argv);
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
     MagickFatalError(ResourceLimitFatalError,"Memory allocation failed",

@@ -155,8 +155,8 @@ int main(int argc,char **argv)
   unsigned int
     status;
 
-  ReadCommandlLine(argc,&argv);
   InitializeMagick(*argv);
+  ReadCommandlLine(argc,&argv);
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
     MagickFatalError(ResourceLimitFatalError,"Memory allocation failed",
