@@ -380,8 +380,9 @@ static struct
       {"measure", BooleanTypes}, {"global", BooleanTypes} } },
     { "Raise", { {"geom", StringReference}, {"width", IntegerReference},
       {"height", IntegerReference}, {"raise", BooleanTypes} } },
-    { "Segment", { {"cluster", DoubleReference}, {"smooth", DoubleReference},
-      {"colorsp", ColorspaceTypes}, {"verbose", BooleanTypes} } },
+    { "Segment", { {"geom", StringReference}, {"cluster", DoubleReference},
+      {"smooth", DoubleReference}, {"colorsp", ColorspaceTypes},
+      {"verbose", BooleanTypes} } },
     { "Signature", },
     { "Solarize", { {"factor", DoubleReference} } },
     { "Sync", },
@@ -5080,22 +5081,33 @@ Mogrify(ref,...)
         }
         case 50:  /* Segment */
         {
-          if (first)
-            {
-              if (!attribute_flag[0])
-                argument_list[0].double_reference=1.0;
-              if (!attribute_flag[1])
-                argument_list[1].double_reference=1.5;
-              if (!attribute_flag[2])
-                argument_list[2].int_reference=
-                  info ? info->quantize_info->colorspace : RGBColorspace;
-              if (!attribute_flag[3])
-                argument_list[3].int_reference=0;
-            }
-          (void) SegmentImage(image,(ColorspaceType)
-            argument_list[2].int_reference,argument_list[3].int_reference,
-            argument_list[0].double_reference,
-            argument_list[1].double_reference);
+          ColorspaceType
+            colorspace;
+
+          double
+            cluster_threshold,
+            smoothing_threshold;
+
+          unsigned int
+            verbose;
+
+          cluster_threshold=1.0;
+          smoothing_threshold=1.5;
+          colorspace=RGBColorspace;
+          verbose=False;
+          if (attribute_flag[1])
+            cluster_threshold=argument_list[1].double_reference;
+          if (attribute_flag[2])
+            smoothing_threshold=argument_list[2].double_reference;
+          if (attribute_flag[0])
+            (void) sscanf(argument_list[0].string_reference,"%lfx%lf",
+              &cluster_threshold,&smoothing_threshold);
+          if (attribute_flag[3])
+            colorspace=(ColorspaceType) argument_list[3].int_reference;
+          if (attribute_flag[4])
+            verbose=argument_list[4].int_reference;
+          (void) SegmentImage(image,colorspace,verbose,cluster_threshold,
+            smoothing_threshold);
           break;
         }
         case 51:  /* Signature */
