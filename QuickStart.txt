@@ -78,6 +78,11 @@ Win2K, WinME, NT, Win98, Win95 Install:
       cd ImageMagick
       identify -verbose logo:
 
+  If you have an X11 server, from the Command Prompt window type
+
+	    set DISPLAY=:0
+      display
+
   Alternatively, download the ImageMagick Win2K source
 
       ftp://ftp.imagemagick.org/pub/ImageMagick/win2k/ImageMagick-5.4.4.zip
