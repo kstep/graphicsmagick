@@ -1,3 +1,8 @@
+2004-02-02  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* coders/bmp.c: fix potential use of unitialized data.
+	* coders/png.c: fix potential use of unitialized data.
+
 2004-01-27  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* coders/png.c: Add DestroyBlobInfo() calls to stop memory leak when
