@@ -2533,6 +2533,17 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
             primitive_type=TextPrimitive;
             break;
           }
+        if (LocaleCompare("text-align",keyword) == 0)
+          {
+            GetToken(q,&q,token);
+            if (LocaleCompare(token,"left") == 0)
+              graphic_context[n]->align=LeftAlign;
+            if (LocaleCompare(token,"center") == 0)
+              graphic_context[n]->align=CenterAlign;
+            if (LocaleCompare(token,"right") == 0)
+              graphic_context[n]->align=RightAlign;
+            break;
+          }
         if (LocaleCompare("text-antialias",keyword) == 0)
           {
             GetToken(q,&q,token);
@@ -3697,7 +3708,7 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
         break;
       clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
       (void) CloneString(&clone_info->text,primitive_info->text);
-      FormatString(geometry,"0x0%+g%+g",primitive_info->point.x,
+      FormatString(geometry,"%+g%+g",primitive_info->point.x,
         primitive_info->point.y);
       (void) CloneString(&clone_info->geometry,geometry);
       status=AnnotateImage(image,clone_info);

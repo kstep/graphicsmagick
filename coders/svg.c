@@ -1653,12 +1653,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   {
                     if (LocaleCompare(keyword,"text-align") == 0)
                       {
-                        if (LocaleCompare(value,"center") == 0)
-                          (void) fprintf(svg_info->file,"gravity North\n");
-                        if (LocaleCompare(value,"left") == 0)
-                          (void) fprintf(svg_info->file,"gravity NorthWest\n");
-                        if (LocaleCompare(value,"right") == 0)
-                          (void) fprintf(svg_info->file,"gravity NorthEast\n");
+                        (void) fprintf(svg_info->file,"text-align %s\n",value);
                         break;
                       }
                     if (LocaleCompare(keyword,"text-decoration") == 0)
@@ -1696,12 +1691,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"text-align") == 0)
             {
-              if (LocaleCompare(value,"center") == 0)
-                (void) fprintf(svg_info->file,"gravity North\n");
-              if (LocaleCompare(value,"left") == 0)
-                (void) fprintf(svg_info->file,"gravity NorthWest\n");
-              if (LocaleCompare(value,"right") == 0)
-                (void) fprintf(svg_info->file,"gravity NorthEast\n");
+              (void) fprintf(svg_info->file,"text-align %s\n",value);
               break;
             }
           if (LocaleCompare(keyword,"text-decoration") == 0)
@@ -3288,15 +3278,11 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             GetToken(q,&q,token);
             break;
           }
-        if (LocaleCompare("gravity",keyword) == 0)
+        if (LocaleCompare("text-align",keyword) == 0)
           {
             GetToken(q,&q,token);
-            if (LocaleCompare("NorthWest",token) == 0)
-              (void) WriteBlobString(image,"text-align:left;");
-            if (LocaleCompare("NorthEast",token) == 0)
-              (void) WriteBlobString(image,"text-align:right;");
-            if (LocaleCompare("North",token) == 0)
-              (void) WriteBlobString(image,"text-align:center;");
+            FormatString(message,"text-align %.1024s ",token);
+            (void) WriteBlobString(image,message);
             break;
           }
         status=False;

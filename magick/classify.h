@@ -13,6 +13,14 @@ extern "C" {
 */
 typedef enum
 {
+  UndefinedAlign,
+	LeftAlign,
+	CenterAlign,
+	RightAlign
+} AlignType;
+
+typedef enum
+{
   UndefinedCache,
   MemoryCache,
   DiskCache,

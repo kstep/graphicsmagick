@@ -48,7 +48,7 @@ extern MagickExport double
 extern MagickExport int
   GetGeometry(const char *,long *,long *,unsigned long *,unsigned long *),
   GlobExpression(const char *,const char *),
-  LocaleNCompare(const char *,const char *,size_t),
+  LocaleNCompare(const char *,const char *,const size_t),
   LocaleCompare(const char *,const char *),
   GetMagickGeometry(const char *,long *,long *,unsigned long *,unsigned long *),
   ParseImageGeometry(const char *,long *,long *,unsigned long *,

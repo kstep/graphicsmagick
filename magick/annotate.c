@@ -216,6 +216,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
     {
       case ForgetGravity:
       case NorthWestGravity:
+      default:
       {
         offset.x=geometry.x+i*draw_info->affine.ry*metrics.height;
         offset.y=geometry.y+i*draw_info->affine.sy*metrics.height;
@@ -250,7 +251,6 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
       }
       case StaticGravity:
       case CenterGravity:
-      default:
       {
         offset.x=geometry.x+geometry.width/2+i*draw_info->affine.ry*
           metrics.height-draw_info->affine.sx*metrics.width/2+
@@ -303,6 +303,33 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
           metrics.width-draw_info->affine.sy*(number_lines-1)*metrics.height;
         break;
       }
+    }
+    switch (annotate->align)
+    {
+      case LeftAlign:
+      {
+        offset.x=geometry.x+i*draw_info->affine.ry*metrics.height;
+        offset.y=geometry.y+i*draw_info->affine.sy*metrics.height;
+        break;
+      }
+      case CenterAlign:
+      {
+        offset.x=geometry.x+i*draw_info->affine.ry*metrics.height-
+          draw_info->affine.sx*metrics.width/2;
+        offset.y=geometry.y+i*draw_info->affine.sy*metrics.height-
+          draw_info->affine.rx*metrics.width/2;
+        break;
+      }
+      case RightAlign:
+      {
+        offset.x=geometry.x+i*draw_info->affine.ry*metrics.height-
+          draw_info->affine.sx*metrics.width;
+        offset.y=geometry.y+i*draw_info->affine.sy*metrics.height-
+          draw_info->affine.rx*metrics.width;
+        break;
+      }
+      default:
+        break;
     }
     if (draw_info->box.opacity != TransparentOpacity)
       {

@@ -96,6 +96,9 @@ typedef struct _DrawInfo
   char
     *density;
 
+  AlignType
+    align;
+
   PixelPacket
     box,
     border_color;
