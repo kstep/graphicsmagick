@@ -5516,7 +5516,7 @@ static void GetFontInfo(TT_Face face,TT_Face_Properties *face_properties,
   if (image->label == (char *) NULL)
     return;
   *image->label='\0';
-  for (i=0; i < (sizeof(ids)/sizeof(unsigned short)); i++)
+  for (i=0; i < (int) (sizeof(ids)/sizeof(unsigned short)); i++)
   {
     TT_Get_Name_ID(face,ids[i],&platform,&encoding,&language,&id);
     if (((platform != 0) || (language != 0)) &&
@@ -5848,7 +5848,7 @@ Image *ReadLABELImage(const ImageInfo *image_info)
           }
         q->length=0;
         x++;
-        if (x == image->columns)
+        if (x == (int) image->columns)
           {
             if ((image->columns % 2) != 0)
               p++;
@@ -10591,8 +10591,6 @@ Image *ReadPNMImage(const ImageInfo *image_info)
     SetRunlengthPackets(image,packets);
     if (image->class == PseudoClass)
       SyncImage(image);
-    else
-      (void) IsPseudoClass(image);
     /*
       Proceed to next image.
     */
@@ -14435,7 +14433,7 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
             }
             case 8:
             {
-              for (x=0; x < width; x++)
+              for (x=0; x < (int) width; x++)
                 *r++=(*p++);
               break;
             }

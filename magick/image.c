@@ -4122,8 +4122,8 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
         /*
           Determine circle bounding box.
         */
-        x=primitive_info[j+1].x-primitive_info[j].x;
-        y=primitive_info[j+1].y-primitive_info[j].y;
+        x=(int) (primitive_info[j+1].x-primitive_info[j].x);
+        y=(int) (primitive_info[j+1].y-primitive_info[j].y);
         radius=sqrt((double) (x*x+y*y))+annotate_info->linewidth/2.0+0.5;
         point.x=Max(primitive_info[j].x-radius,0);
         point.y=Max(primitive_info[j].y-radius,0);
@@ -4157,10 +4157,10 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
           Arc's are just short segmented polygons.
         */
         i=j;
-        arc.x=primitive_info[i].x;
-        arc.y=primitive_info[i].y;
-        arc.width=primitive_info[i+1].x/2;
-        arc.height=primitive_info[i+1].y/2;
+        arc.x=(int) primitive_info[i].x;
+        arc.y=(int) primitive_info[i].y;
+        arc.width=(int) primitive_info[i+1].x/2;
+        arc.height=(int) primitive_info[i+1].y/2;
         degrees.x=primitive_info[i+2].x;
         degrees.y=primitive_info[i+2].y;
         while (degrees.y < degrees.x)
@@ -4302,10 +4302,10 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
     Account for linewidth.
   */
   mid=annotate_info->linewidth/2.0;
-  bounds.x1=Max((int) (bounds.x1-mid),0);
-  bounds.y1=Max((int) (bounds.y1-mid),0);
-  bounds.x2=Min((int) (bounds.x2+ceil(mid)),image->columns-1);
-  bounds.y2=Min((int) (bounds.y2+ceil(mid)),image->rows-1);
+  bounds.x1=Max(bounds.x1-mid,0);
+  bounds.y1=Max(bounds.y1-mid,0);
+  bounds.x2=Min(bounds.x2+ceil(mid),image->columns-1);
+  bounds.y2=Min(bounds.y2+ceil(mid),image->rows-1);
   /*
     Draw the primitive on the image.
   */
@@ -4316,10 +4316,10 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
   if ((tile != (Image *) NULL) && tile->matte)
     pen_color.flags|=DoOpacity;
   image->class=DirectClass;
-  for (y=bounds.y1; y <= bounds.y2; y++)
+  for (y=(int) bounds.y1; y <= (int) bounds.y2; y++)
   {
     q=image->pixels+y*image->columns+(int) bounds.x1;
-    for (x=bounds.x1; x <= bounds.x2; x++)
+    for (x=(int) bounds.x1; x <= (int) bounds.x2; x++)
     {
       opacity=InsidePrimitive(primitive_info,annotate_info,x,y,image);
       if (opacity != Transparent)

@@ -502,7 +502,7 @@ static Quantum InsideLinePrimitive(const PrimitiveInfo *p,
   if (distance < (mid-0.5))
     return(Opaque);
   if (distance <= (mid+0.5))
-    return(Max(opacity,Opaque*(distance-mid-0.5)*(distance-mid-0.5)));
+    return((Quantum) Max(opacity,Opaque*(distance-mid-0.5)*(distance-mid-0.5)));
   return(opacity);
 }
 
@@ -544,7 +544,7 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
       case PointPrimitive:
       default:
       {
-        if ((x == (int) p->x) && (y == (int) p->y))
+        if ((x == (int) (p->x+0.5)) && (y == (int) (p->y+0.5)))
           opacity=Opaque;
         break;
       }
@@ -555,22 +555,24 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
       }
       case RectanglePrimitive:
       {
-        if ((x >= (int) Min(p->x-mid,q->x+mid)) &&
-            (x < (int) Max(p->x-mid,q->x+mid)) &&
-            (y >= (int) Min(p->y-mid,q->y+mid)) &&
-            (y < (int) Max(p->y-mid,q->y+mid)))
+        if ((x >= (int) (Min(p->x-mid,q->x+mid)+0.5)) &&
+            (x < (int) (Max(p->x-mid,q->x+mid)+0.5)) &&
+            (y >= (int) (Min(p->y-mid,q->y+mid)+0.5)) &&
+            (y < (int) (Max(p->y-mid,q->y+mid)+0.5)))
           opacity=Opaque;
-        if ((x >= (int) Min(p->x+mid,q->x-mid)) &&
-            (x < (int) Max(p->x+mid,q->x-mid)) &&
-            (y >= (int) Min(p->y+mid,q->y-mid)) &&
-            (y < (int) Max(p->y+mid,q->y-mid)))
+        if ((x >= (int) (Min(p->x+mid,q->x-mid)+0.5)) &&
+            (x < (int) (Max(p->x+mid,q->x-mid)+0.5)) &&
+            (y >= (int) (Min(p->y+mid,q->y-mid)+0.5)) &&
+            (y < (int) (Max(p->y+mid,q->y-mid)+0.5)))
           opacity=Transparent;
         break;
       }
       case FillRectanglePrimitive:
       {
-        if ((x >= (int) Min(p->x,q->x)) && (x <= (int) Max(p->x,q->x)) &&
-            (y >= (int) Min(p->y,q->y)) && (y <= (int) Max(p->y,q->y)))
+        if ((x >= (int) (Min(p->x,q->x)+0.5)) &&
+            (x <= (int) (Max(p->x,q->x)+0.5)) &&
+            (y >= (int) (Min(p->y,q->y)+0.5)) &&
+            (y <= (int) (Max(p->y,q->y)+0.5)))
           opacity=Opaque;
         break;
       }
@@ -586,7 +588,8 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
           if (center <= (mid-0.5))
             opacity=Opaque;
           else
-            opacity=Max(opacity,Opaque*(mid-center+0.5)*(mid-center+0.5));
+            opacity=(Quantum)
+              Max(opacity,Opaque*(mid-center+0.5)*(mid-center+0.5));
         break;
       }
       case FillCirclePrimitive:
@@ -597,7 +600,7 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
           opacity=Opaque;
         else
           if (distance < (radius+1.0))
-            opacity=Max(opacity,Opaque*((radius-distance+1.0)/2)*
+            opacity=(Quantum) Max(opacity,Opaque*((radius-distance+1.0)/2)*
               (radius-distance+1.0)/2);
         break;
       }
@@ -829,7 +832,7 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
             if (composite_image != (Image *) NULL)
               {
                 CompositeImage(image,ReplaceCompositeOp,composite_image,
-                  p->x,p->y);
+                  (int) p->x,(int) p->y);
                 DestroyImage(composite_image);
               }
           }

@@ -1432,7 +1432,7 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
         chop_info.x=windows->image.x+segment_info.x1;
         chop_info.height=0;
         chop_info.y=0;
-        if (segment_info.x1 > segment_info.x2)
+        if (segment_info.x1 > (int) segment_info.x2)
           {
             chop_info.width=segment_info.x1-segment_info.x2+1;
             chop_info.x=windows->image.x+segment_info.x2;

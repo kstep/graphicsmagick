@@ -7202,7 +7202,7 @@ unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                       ProgressMonitor(SaveImageText,y,image->rows);
                   x=0;
                   y++;
-                  if (y < image->rows)
+                  if (y < (int) image->rows)
                     q=scanlines[y];
                 }
             }
@@ -7222,7 +7222,7 @@ unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                       ProgressMonitor(SaveImageText,y,image->rows);
                   x=0;
                   y++;
-                  if (y < image->rows)
+                  if (y < (int) image->rows)
                     q=scanlines[y];
                 }
             }
@@ -11221,7 +11221,7 @@ static int TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
   {
     tile_width=(i == (int) number_tiles-1) ?
       image->columns-(i*image->tile_info.width) : image->tile_info.width;
-    for (j=0; j < ((row % image->tile_info.height)+1); j++)
+    for (j=0; j < (int) ((row % image->tile_info.height)+1); j++)
       for (k=0; k < tile_width; k++)
       {
         register int

@@ -1871,7 +1871,7 @@ Export unsigned int LZWEncodeImage(FILE *file,const unsigned int number_pixels,
   next_index=LZWEod+1;
   code_width=9;
   last_code=pixels[0];
-  for (i=1; i < number_pixels; i++)
+  for (i=1; i < (int) number_pixels; i++)
   {
     /*
       Find string.

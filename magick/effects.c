@@ -1616,12 +1616,12 @@ Export Image *OilPaintImage(Image *image,const unsigned int radius)
 %
 */
 
-static Quantum PlasmaPixel(const unsigned int pixel,const double noise)
+static Quantum PlasmaPixel(const double pixel,const double noise)
 {
   double
     value;
 
-  value=(double) pixel+(noise/2.0)-((int) noise ? (rand() % (int) noise) : 0.0);
+  value=pixel+(noise/2.0)-((int) noise ? (rand() % (int) noise) : 0.0);
   if (value < 0.0)
     return(0);
   if (value > MaxRGB)
@@ -1633,9 +1633,7 @@ Export unsigned int PlasmaImage(Image *image,SegmentInfo *segment_info,
   int attenuate,int depth)
 {
   double
-    plasma;
-
-  int
+    plasma,
     x_mid,
     y_mid;
 
@@ -1694,9 +1692,9 @@ Export unsigned int PlasmaImage(Image *image,SegmentInfo *segment_info,
       p=PixelOffset(segment_info->x1,segment_info->y1);
       q=PixelOffset(segment_info->x1,segment_info->y2);
       r=PixelOffset(segment_info->x1,y_mid);
-      r->red=PlasmaPixel((unsigned int) (p->red+q->red)/2,plasma);
-      r->green=PlasmaPixel((unsigned int) (p->green+q->green)/2,plasma);
-      r->blue=PlasmaPixel((unsigned int) (p->blue+q->blue)/2,plasma);
+      r->red=PlasmaPixel((p->red+q->red)/2,plasma);
+      r->green=PlasmaPixel((p->green+q->green)/2,plasma);
+      r->blue=PlasmaPixel((p->blue+q->blue)/2,plasma);
       if (segment_info->x1 != segment_info->x2)
         {
           /*
@@ -1705,9 +1703,9 @@ Export unsigned int PlasmaImage(Image *image,SegmentInfo *segment_info,
           p=PixelOffset(segment_info->x2,segment_info->y1);
           q=PixelOffset(segment_info->x2,segment_info->y2);
           r=PixelOffset(segment_info->x2,y_mid);
-          r->red=PlasmaPixel((unsigned int) (p->red+q->red)/2,plasma);
-          r->green=PlasmaPixel((unsigned int) (p->green+q->green)/2,plasma);
-          r->blue=PlasmaPixel((unsigned int) (p->blue+q->blue)/2,plasma);
+          r->red=PlasmaPixel((p->red+q->red)/2,plasma);
+          r->green=PlasmaPixel((p->green+q->green)/2,plasma);
+          r->blue=PlasmaPixel((p->blue+q->blue)/2,plasma);
         }
     }
   if ((segment_info->y1 != y_mid) || (segment_info->y2 != y_mid))
@@ -1720,9 +1718,9 @@ Export unsigned int PlasmaImage(Image *image,SegmentInfo *segment_info,
           p=PixelOffset(segment_info->x1,segment_info->y2);
           q=PixelOffset(segment_info->x2,segment_info->y2);
           r=PixelOffset(x_mid,segment_info->y2);
-          r->red=PlasmaPixel((unsigned int) (p->red+q->red)/2,plasma);
-          r->green=PlasmaPixel((unsigned int) (p->green+q->green)/2,plasma);
-          r->blue=PlasmaPixel((unsigned int) (p->blue+q->blue)/2,plasma);
+          r->red=PlasmaPixel((p->red+q->red)/2,plasma);
+          r->green=PlasmaPixel((p->green+q->green)/2,plasma);
+          r->blue=PlasmaPixel((p->blue+q->blue)/2,plasma);
         }
       if (segment_info->y1 != segment_info->y2)
         {
@@ -1732,9 +1730,9 @@ Export unsigned int PlasmaImage(Image *image,SegmentInfo *segment_info,
           p=PixelOffset(segment_info->x1,segment_info->y1);
           q=PixelOffset(segment_info->x2,segment_info->y1);
           r=PixelOffset(x_mid,segment_info->y1);
-          r->red=PlasmaPixel((unsigned int) (p->red+q->red)/2,plasma);
-          r->green=PlasmaPixel((unsigned int) (p->green+q->green)/2,plasma);
-          r->blue=PlasmaPixel((unsigned int) (p->blue+q->blue)/2,plasma);
+          r->red=PlasmaPixel((p->red+q->red)/2,plasma);
+          r->green=PlasmaPixel((p->green+q->green)/2,plasma);
+          r->blue=PlasmaPixel((p->blue+q->blue)/2,plasma);
         }
     }
   if ((segment_info->x1 != segment_info->x2) ||
@@ -1746,17 +1744,17 @@ Export unsigned int PlasmaImage(Image *image,SegmentInfo *segment_info,
       p=PixelOffset(segment_info->x1,segment_info->y1);
       q=PixelOffset(segment_info->x2,segment_info->y2);
       r=PixelOffset(x_mid,y_mid);
-      r->red=PlasmaPixel((unsigned int) (p->red+q->red)/2,plasma);
-      r->green=PlasmaPixel((unsigned int) (p->green+q->green)/2,plasma);
-      r->blue=PlasmaPixel((unsigned int) (p->blue+q->blue)/2,plasma);
+      r->red=PlasmaPixel((p->red+q->red)/2,plasma);
+      r->green=PlasmaPixel((p->green+q->green)/2,plasma);
+      r->blue=PlasmaPixel((p->blue+q->blue)/2,plasma);
       p=PixelOffset(segment_info->x1,segment_info->y2);
       q=PixelOffset(segment_info->x2,segment_info->y1);
-      r->red=PlasmaPixel((unsigned int) (p->red+q->red)/2,plasma);
-      r->green=PlasmaPixel((unsigned int) (p->green+q->green)/2,plasma);
-      r->blue=PlasmaPixel((unsigned int) (p->blue+q->blue)/2,plasma);
+      r->red=PlasmaPixel((p->red+q->red)/2,plasma);
+      r->green=PlasmaPixel((p->green+q->green)/2,plasma);
+      r->blue=PlasmaPixel((p->blue+q->blue)/2,plasma);
     }
-  if (((segment_info->x2-segment_info->x1) < 3) &&
-      ((segment_info->y2-segment_info->y1) < 3))
+  if (((segment_info->x2-segment_info->x1) < 3.0) &&
+      ((segment_info->y2-segment_info->y1) < 3.0))
     return(True);
   return(False);
 }
