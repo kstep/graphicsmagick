@@ -67,17 +67,12 @@
 #include "magick.h"
 #include "define.h"
 
-#if defined(HasWMF)
+#if defined(HasWMF) || defined(HasWMFlite)
 #if !defined(WIN32)
 
 #define ERR(API)  ((API)->err != wmf_E_None)
 #define XC(x) ((double)x)
 #define YC(y) ((double)y)
-
-/* Unit conversions */
-#define TWIPS_PER_INCH        1440
-#define CENTIMETERS_PER_INCH  2.54
-#define POINTS_PER_INCH       72
 
 #include "libwmf/fund.h"
 #include "libwmf/types.h"
@@ -89,6 +84,16 @@
 #endif /* HAVE_LIBWMF_FONT_H */
 #include "libwmf/color.h"
 #include "libwmf/macro.h"
+
+/* Unit conversions */
+#define TWIPS_PER_INCH        1440
+#define CENTIMETERS_PER_INCH  2.54
+#define POINTS_PER_INCH       72
+
+#if defined(HasWMFlite)
+# define wmf_api_create(api,flags,options) wmf_lite_create(api,flags,options)
+# define wmf_api_destroy(api) wmf_lite_destroy(api)
+#endif
 
 typedef struct _wmf_magick_t wmf_magick_t;
 
@@ -1773,6 +1778,9 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
       }
   }
 
+#if defined(HasWMFlite)
+#endif
+
   wmf_error = wmf_api_create(&API, wmf_options_flags, &wmf_api_options);
   if (wmf_error != wmf_E_None)
     {
@@ -2042,7 +2050,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   return image;
 }
 #endif
-#endif /* HasWMF */
+#endif /* HasWMF || HasWMFlite */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2069,7 +2077,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
 */
 ModuleExport void RegisterWMFImage(void)
 {
-#if defined(HasWMF)
+#if defined(HasWMF) || defined(HasWMFlite)
   MagickInfo
     *entry;
 
@@ -2089,7 +2097,7 @@ ModuleExport void RegisterWMFImage(void)
   entry->module = AllocateString("WMF");
   (void) RegisterMagickInfo(entry);
 #endif
-#endif /* defined(HasWMF) */
+#endif /* HasWMF || HasWMFlite */
 }
 
 /*
@@ -2113,7 +2121,10 @@ ModuleExport void RegisterWMFImage(void)
 */
 ModuleExport void UnregisterWMFImage(void)
 {
-#if defined(HasWMF)
+#if defined(HasWMF) || defined(HasWMFlite)
   (void) UnregisterMagickInfo("WMF");
+#if defined(WIN32)
+  (void) UnregisterMagickInfo("EMF");
+#endif
 #endif /* defined(HasWMF) */
 }

@@ -20,8 +20,9 @@ int main( int /*argc*/, char **argv)
 {
 
   // Initialize ImageMagick install location for Windows
-  InitializeMagick(*argv);
-
+  // InitializeMagick(*argv);
+  InitializeMagick("");
+  
   int failures=0;
 
   string srcdir("");

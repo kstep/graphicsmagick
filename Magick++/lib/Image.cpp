@@ -3269,6 +3269,10 @@ namespace Magick
   class MagickCleanUp
   {
   public:
+    MagickCleanUp( void )
+      {
+        InitializeMagick(NULL);
+      }
     ~MagickCleanUp( void )
       {
         DestroyMagick();

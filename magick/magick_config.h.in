@@ -240,8 +240,11 @@
 /* Define if you have FreeType (TrueType font) library */
 #undef HasTTF
 
-/* Define if you have WMF library */
+/* Define if you have wmf library */
 #undef HasWMF
+
+/* Define if you have wmflite library */
+#undef HasWMFlite
 
 /* Define if you have X11 library */
 #undef HasX11
