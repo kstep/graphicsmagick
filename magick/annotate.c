@@ -853,14 +853,14 @@ static inline PixelPacket AlphaComposite(const PixelPacket *p,
   PixelPacket
     composite;
 
-  composite.red=(Quantum) ((((double) MaxRGB-alpha)*p->red+alpha*
-    ((double) MaxRGB-beta)*q->red/MaxRGB)/MaxRGB+0.5);
-  composite.green=(Quantum) ((((double) MaxRGB-alpha)*p->green+alpha*
-    ((double) MaxRGB-beta)*q->green/MaxRGB)/MaxRGB+0.5);
-  composite.blue=(Quantum) ((((double) MaxRGB-alpha)*p->blue+alpha*
-    ((double) MaxRGB-beta)*q->blue/MaxRGB)/MaxRGB+0.5);
-  composite.opacity=(Quantum) ((double) MaxRGB-(((double) MaxRGB-alpha)+
-    alpha*((double) MaxRGB-beta)/MaxRGB)+0.5);
+  composite.red=(Quantum)
+    (((MaxRGB-alpha)*p->red+alpha*(MaxRGB-beta)*q->red/MaxRGB)/MaxRGB+0.5);
+  composite.green=(Quantum)
+    (((MaxRGB-alpha)*p->green+alpha*(MaxRGB-beta)*q->green/MaxRGB)/MaxRGB+0.5);
+  composite.blue=(Quantum)
+    (((MaxRGB-alpha)*p->blue+alpha*(MaxRGB-beta)*q->blue/MaxRGB)/MaxRGB+0.5);
+  composite.opacity=(Quantum)
+    (MaxRGB-((MaxRGB-alpha)+alpha*(MaxRGB-beta)/MaxRGB)+0.5);
   return(composite);
 }
 
@@ -1231,8 +1231,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
                     (point.x+x-pattern->tile_info.x) % pattern->columns),(long)
                     ((unsigned long) (point.y+y-pattern->tile_info.y) %
                     pattern->rows),&image->exception);
-                opacity= ((double) (MaxRGB-opacity)*
-                  (MaxRGB-fill_color.opacity))/MaxRGB;
+                opacity=((MaxRGB-opacity)*(MaxRGB-fill_color.opacity))/MaxRGB;
                 if (!active)
                   q=GetImagePixels(image,(long) ceil(point.x+x-0.5),
                     (long) ceil(point.y+y-0.5),1,1);
@@ -1539,9 +1538,8 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
               (x-pattern->tile_info.x) % pattern->columns),(long)
               ((unsigned long) (y-pattern->tile_info.y) % pattern->rows),
               &image->exception);
-          q->opacity=(Quantum) (MaxRGB-((double) ((MaxRGB-
-            PixelIntensityToQuantum(q))*(MaxRGB-fill_color.opacity))/
-            MaxRGB)+0.5);
+          q->opacity=(Quantum) (MaxRGB-(((MaxRGB-PixelIntensityToQuantum(q))*
+            (MaxRGB-fill_color.opacity))/MaxRGB));
           q->red=fill_color.red;
           q->green=fill_color.green;
           q->blue=fill_color.blue;

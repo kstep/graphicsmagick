@@ -3008,8 +3008,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         image->storage_class=PseudoClass;
         image->colors=1 << ping_info->bit_depth;
-        if (image->colors>MAXRGB+1)
-          image->colors=MAXRGB+1;
+        if (image->colors>MaxColormapSize)
+          image->colors=MaxColormapSize;
         if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
           {
             int

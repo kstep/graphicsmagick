@@ -368,15 +368,15 @@ MagickExport unsigned int FuzzyColorMatch(const PixelPacket *p,
   if ((fuzz == 0.0) && (p->red == q->red) && (p->green == q->green) &&
       (p->blue == q->blue))
     return(True);
-  red=(double) (p->red-q->red);
+  red=p->red-(double) q->red;
   distance=red*red;
   if (distance > (fuzz*fuzz))
     return(False);
-  green=(double) (p->green-q->green);
+  green=p->green-(double) q->green;
   distance+=green*green;
   if (distance > (fuzz*fuzz))
     return(False);
-  blue=(double) (p->blue-q->blue);
+  blue=p->blue-(double) q->blue;
   distance+=blue*blue;
   if (distance > (fuzz*fuzz))
     return(False);
@@ -1489,13 +1489,12 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
             } while (isxdigit((int) *name));
           }
       n<<=2;
-      color->red=(Quantum) (((double) MaxRGB*pixel.red)/((1 << n)-1)+0.5);
-      color->green=(Quantum) (((double) MaxRGB*pixel.green)/((1 << n)-1)+0.5);
-      color->blue=(Quantum) (((double) MaxRGB*pixel.blue)/((1 << n)-1)+0.5);
+      color->red=(Quantum) ((MaxRGB*pixel.red)/((1 << n)-1));
+      color->green=(Quantum) ((MaxRGB*pixel.green)/((1 << n)-1));
+      color->blue=(Quantum) ((MaxRGB*pixel.blue)/((1 << n)-1));
       color->opacity=OpaqueOpacity;
       if ((n != 3) && (n != 6) && (n != 9) && (n != 12))
-        color->opacity=(Quantum)
-          (((double) MaxRGB*pixel.opacity)/((1 << n)-1)+0.5);
+        color->opacity=(Quantum) ((MaxRGB*pixel.opacity)/((1 << n)-1));
       return(True);
     }
   if (LocaleNCompare(name,"rgb(",4) == 0)

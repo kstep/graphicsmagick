@@ -5041,9 +5041,9 @@ Mogrify(ref,...)
                 {
                   if (composite_image->matte)
                     q->opacity=(Quantum)
-                      (((double) MaxRGB-q->opacity)*opacity)/100;
+                      ((MaxRGB-q->opacity)*opacity)/100;
                   else
-                    q->opacity=(Quantum) ((double) MaxRGB*opacity)/100;
+                    q->opacity=(Quantum) (MaxRGB*opacity)/100;
                   q++;
                 }
                 if (!SyncImagePixels(composite_image))
@@ -5544,7 +5544,7 @@ Mogrify(ref,...)
         case 57:  /* Threshold */
         {
           if (!attribute_flag[0])
-            argument_list[0].double_reference=((double) MaxRGB+1)/2.0;
+            argument_list[0].double_reference=(MaxRGB+1)/2.0;
           ThresholdImage(image,argument_list[0].double_reference);
           break;
         }

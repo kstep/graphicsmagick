@@ -94,9 +94,9 @@ static void PlasmaPixel(Image *image,double x,double y)
   q=GetImagePixels(image,(long) (x+0.5),(long) (y+0.5),1,1);
   if (q == (PixelPacket *) NULL)
     return;
-  q->red=(Quantum) ((double) MaxRGB*rand()/RAND_MAX);
-  q->green=(Quantum) ((double) MaxRGB*rand()/RAND_MAX);
-  q->blue=(Quantum) ((double) MaxRGB*rand()/RAND_MAX);
+  q->red=(Quantum) (MaxRGB*rand()/RAND_MAX);
+  q->green=(Quantum) (MaxRGB*rand()/RAND_MAX);
+  q->blue=(Quantum) (MaxRGB*rand()/RAND_MAX);
   (void) SyncImagePixels(image);
 }
 
@@ -148,7 +148,7 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      q->opacity=MaxRGB >> 1;
+      q->opacity=(Quantum) (MaxRGB/2);
       q++;
     }
     if (!SyncImagePixels(image))

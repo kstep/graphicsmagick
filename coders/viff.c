@@ -570,11 +570,11 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         else
           if (min_value == max_value)
             {
-              scale_factor=(double) MaxRGB/min_value;
+              scale_factor=MaxRGB/min_value;
               min_value=0;
             }
           else
-            scale_factor=(double) MaxRGB/(max_value-min_value);
+            scale_factor=MaxRGB/(max_value-min_value);
       }
     /*
       Convert pixels to Quantum size.

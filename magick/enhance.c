@@ -537,7 +537,7 @@ MagickExport unsigned int LevelImage(Image *image,const char *levels)
         levels_map[i]=65535;
         continue;
       }
-    levels_map[i]=(unsigned short) (65535*(pow((double) (i-black_point)/
+    levels_map[i]=(unsigned short) (65535*(pow(((double) i-black_point)/
       (white_point-black_point),1.0/mid_point)));
   }
   switch (image->storage_class)

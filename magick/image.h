@@ -14,11 +14,11 @@ extern "C" {
 #endif
 
 #if (QuantumDepth == 8)
-#define MaxRGB  255
+#define MaxRGB  255UL
 #define PixelIntensity(pixel) ((unsigned long) \
-  ((9798L*(pixel)->red+19235L*(pixel)->green+3735L*(pixel)->blue)/32768L))
+  ((9798UL*(pixel)->red+19235UL*(pixel)->green+3735UL*(pixel)->blue)/32768UL))
 #define PixelIntensityToQuantum(pixel) ((Quantum) \
-  ((9798L*(pixel)->red+19235L*(pixel)->green+3735L*(pixel)->blue)/32768L))
+  ((9798UL*(pixel)->red+19235UL*(pixel)->green+3735UL*(pixel)->blue)/32768UL))
 #define ScaleCharToQuantum(value)  ((Quantum) (value))
 #define ScaleLongToQuantum(value)  ((Quantum) ((value)/16843009))
 #define ScaleQuantum(quantum)  ((unsigned long) (quantum))
@@ -30,11 +30,11 @@ extern "C" {
 
 typedef unsigned char Quantum;
 #elif (QuantumDepth == 16)
-#define MaxRGB  65535
+#define MaxRGB  65535UL
 #define PixelIntensity(pixel) ((unsigned long) \
-  ((9798L*(pixel)->red+19235L*(pixel)->green+3735L*(pixel)->blue)/32768L))
+  ((9798UL*(pixel)->red+19235UL*(pixel)->green+3735UL*(pixel)->blue)/32768UL))
 #define PixelIntensityToQuantum(pixel) ((Quantum) \
-  ((9798L*(pixel)->red+19235L*(pixel)->green+3735L*(pixel)->blue)/32768L))
+  ((9798UL*(pixel)->red+19235UL*(pixel)->green+3735UL*(pixel)->blue)/32768UL))
 #define ScaleCharToQuantum(value)  ((Quantum) (257*(value)))
 #define ScaleLongToQuantum(value)  ((Quantum) ((value)/65537))
 #define ScaleQuantum(quantum)  ((unsigned long) ((quantum)/257))
@@ -46,11 +46,11 @@ typedef unsigned char Quantum;
 
 typedef unsigned short Quantum;
 #elif (QuantumDepth == 32)
-#define MaxRGB  4294967295UL
+#define MaxRGB  4294967295e-0
 #define PixelIntensity(pixel) ((unsigned long) \
-  ((9798.0*(pixel)->red+19235.0*(pixel)->green+3735.0*(pixel)->blue)/32768.0))
+  ((0.299*(pixel)->red+0.587*(pixel)->green+0.114*(pixel)->blue)+0.5))
 #define PixelIntensityToQuantum(pixel) ((Quantum) \
-  ((9798.0*(pixel)->red+19235.0*(pixel)->green+3735.0*(pixel)->blue)/32768.0))
+  ((0.299*(pixel)->red+0.587*(pixel)->green+0.114*(pixel)->blue)+0.5))
 #define ScaleCharToQuantum(value)  ((Quantum) (16843009UL*(value)))
 #define ScaleLongToQuantum(value)  ((Quantum) ((value)))
 #define ScaleQuantum(quantum)  ((unsigned long) ((quantum)/16843009))

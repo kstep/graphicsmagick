@@ -329,7 +329,7 @@ static int GetBlurKernel(int width,const double sigma,double **kernel)
   bias=KernelRank*width/2;
   for (i=(-bias); i <= bias; i++)
     (*kernel)[(i+bias)/KernelRank]+=
-      exp((double) (-i*i)/(2.0*KernelRank*KernelRank*sigma*sigma));
+      exp(((double) -i*i)/(2.0*KernelRank*KernelRank*sigma*sigma));
   normalize=0;
   for (i=0; i < width; i++)
     normalize+=(*kernel)[i];
@@ -384,7 +384,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 
       last_kernel=(double *) NULL;
       width=GetBlurKernel(3,sigma,&kernel);
-      while ((long) ((double) MaxRGB*kernel[0]) > 0)
+      while ((long) (MaxRGB*kernel[0]) > 0)
       {
         if (last_kernel != (double *)NULL)
           LiberateMemory((void **) &last_kernel);
@@ -1051,7 +1051,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
     for (u=(-width/2); u <= (width/2); u++)
     {
       kernel[i]=(u < 0 || v < 0 ? -8.0 : 8.0)*
-        exp(-(double) (u*u+v*v)/(sigma*sigma));
+        exp(-((double) u*u+v*v)/(sigma*sigma));
       if (u == j)
         kernel[i]=0.0;
       i++;
@@ -1095,20 +1095,17 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 #define Enhance(weight) \
   mean=(long) (r->red+pixel.red)/2; \
   distance=r->red-(double) pixel.red; \
-  distance_squared= \
-    (2.0*((double) MaxRGB+1.0)+mean)*distance*distance/MaxRGB; \
+  distance_squared=(2.0*(MaxRGB+1)+mean)*distance*distance/MaxRGB; \
   mean=(long) (r->green+pixel.green)/2; \
   distance=r->green-(double) pixel.green; \
   distance_squared+=4.0*distance*distance; \
   mean=(long) (r->blue+pixel.blue)/2; \
   distance=r->blue-(double) pixel.blue; \
-  distance_squared+= \
-    (3.0*((double) MaxRGB+1.0)-1.0-mean)*distance*distance/MaxRGB; \
+  distance_squared+=(3.0*(MaxRGB+1)-1.0-mean)*distance*distance/MaxRGB; \
   mean=(long) (r->opacity+pixel.opacity)/2; \
   distance=r->opacity-(double) pixel.opacity; \
-  distance_squared+= \
-    (3.0*((double) MaxRGB+1.0)-1.0-mean)*distance*distance/MaxRGB; \
-  if (distance_squared < ((double) MaxRGB*MaxRGB/25.0)) \
+  distance_squared+=(3.0*(MaxRGB+1)-1.0-mean)*distance*distance/MaxRGB; \
+  if (distance_squared < (MaxRGB*MaxRGB/25.0)) \
     { \
       aggregate.red+=(weight)*r->red; \
       aggregate.green+=(weight)*r->green; \
@@ -1284,7 +1281,7 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
   {
     for (u=(-width/2); u <= (width/2); u++)
     {
-      kernel[i]=exp(-(double) (u*u+v*v)/(sigma*sigma));
+      kernel[i]=exp(-((double) u*u+v*v)/(sigma*sigma));
       i++;
     }
   }
@@ -1847,7 +1844,7 @@ MagickExport Image *MorphImages(const Image *image,
     handler=SetMonitorHandler((MonitorHandler) NULL);
     for (i=0; i < (long) number_frames; i++)
     {
-      beta=(double) (i+1.0)/(number_frames+1.0);
+      beta=((double) i+1.0)/(number_frames+1.0);
       alpha=1.0-beta;
       clone_image=CloneImage(next,0,0,True,exception);
       if (clone_image == (Image *) NULL)
@@ -1980,7 +1977,7 @@ static int GetMotionBlurKernel(int width,const double sigma,double **kernel)
   bias=KernelRank*width;
   for (i=0; i < bias; i++)
     (*kernel)[i/KernelRank]+=
-      exp((double) (-i*i)/(2.0*KernelRank*KernelRank*sigma*sigma));
+      exp(-((double) i*i)/(2.0*KernelRank*KernelRank*sigma*sigma));
   normalize=0;
   for (i=0; i < width; i++)
     normalize+=(*kernel)[i];
@@ -2035,7 +2032,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
 
       last_kernel=(double *) NULL;
       width=GetMotionBlurKernel(3,sigma,&kernel);
-      while (((double) MaxRGB*kernel[width-1]) > 0.0)
+      while ((MaxRGB*kernel[width-1]) > 0.0)
       {
         if (last_kernel != (double *)NULL)
           LiberateMemory((void **) &last_kernel);
@@ -2345,7 +2342,7 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
   /*
     Average pixels and apply plasma.
   */
-  plasma=(double) MaxRGB/(2.0*attenuate);
+  plasma=MaxRGB/(2.0*attenuate);
   if ((segment->x1 != x_mid) || (segment->x2 != x_mid))
     {
       /*
@@ -2357,9 +2354,9 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
       q=SetImagePixels(image,x,y_mid,1,1);
       if (q == (PixelPacket *) NULL)
         return(True);
-      q->red=PlasmaPixel((double) (u.red+v.red)/2,plasma);
-      q->green=PlasmaPixel((double) (u.green+v.green)/2,plasma);
-      q->blue=PlasmaPixel((double) (u.blue+v.blue)/2,plasma);
+      q->red=PlasmaPixel(((double) u.red+v.red)/2,plasma);
+      q->green=PlasmaPixel(((double) u.green+v.green)/2,plasma);
+      q->blue=PlasmaPixel(((double) u.blue+v.blue)/2,plasma);
       (void) SyncImagePixels(image);
       if (segment->x1 != segment->x2)
         {
@@ -2372,9 +2369,9 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
           q=SetImagePixels(image,x,y_mid,1,1);
           if (q == (PixelPacket *) NULL)
             return(True);
-          q->red=PlasmaPixel((double) (u.red+v.red)/2,plasma);
-          q->green=PlasmaPixel((double) (u.green+v.green)/2,plasma);
-          q->blue=PlasmaPixel((double) (u.blue+v.blue)/2,plasma);
+          q->red=PlasmaPixel(((double) u.red+v.red)/2,plasma);
+          q->green=PlasmaPixel(((double) u.green+v.green)/2,plasma);
+          q->blue=PlasmaPixel(((double) u.blue+v.blue)/2,plasma);
           (void) SyncImagePixels(image);
         }
     }
@@ -2391,9 +2388,9 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
           q=SetImagePixels(image,x_mid,y,1,1);
           if (q == (PixelPacket *) NULL)
             return(True);
-          q->red=PlasmaPixel((double) (u.red+v.red)/2,plasma);
-          q->green=PlasmaPixel((double) (u.green+v.green)/2,plasma);
-          q->blue=PlasmaPixel((double) (u.blue+v.blue)/2,plasma);
+          q->red=PlasmaPixel(((double) u.red+v.red)/2,plasma);
+          q->green=PlasmaPixel(((double) u.green+v.green)/2,plasma);
+          q->blue=PlasmaPixel(((double) u.blue+v.blue)/2,plasma);
           (void) SyncImagePixels(image);
         }
       if (segment->y1 != segment->y2)
@@ -2407,9 +2404,9 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
           q=SetImagePixels(image,x_mid,y,1,1);
           if (q == (PixelPacket *) NULL)
             return(True);
-          q->red=PlasmaPixel((double) (u.red+v.red)/2,plasma);
-          q->green=PlasmaPixel((double) (u.green+v.green)/2,plasma);
-          q->blue=PlasmaPixel((double) (u.blue+v.blue)/2,plasma);
+          q->red=PlasmaPixel(((double) u.red+v.red)/2,plasma);
+          q->green=PlasmaPixel(((double) u.green+v.green)/2,plasma);
+          q->blue=PlasmaPixel(((double) u.blue+v.blue)/2,plasma);
           (void) SyncImagePixels(image);
         }
     }
@@ -2427,9 +2424,9 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
       q=SetImagePixels(image,x_mid,y_mid,1,1);
       if (q == (PixelPacket *) NULL)
         return(True);
-      q->red=PlasmaPixel((double) (u.red+v.red)/2,plasma);
-      q->green=PlasmaPixel((double) (u.green+v.green)/2,plasma);
-      q->blue=PlasmaPixel((double) (u.blue+v.blue)/2,plasma);
+      q->red=PlasmaPixel(((double) u.red+v.red)/2,plasma);
+      q->green=PlasmaPixel(((double) u.green+v.green)/2,plasma);
+      q->blue=PlasmaPixel(((double) u.blue+v.blue)/2,plasma);
       (void) SyncImagePixels(image);
     }
   if (((segment->x2-segment->x1) < 3.0) && ((segment->y2-segment->y1) < 3.0))
@@ -2686,9 +2683,9 @@ MagickExport Image *ShadeImage(const Image *image,
   */
   azimuth=DegreesToRadians(azimuth);
   elevation=DegreesToRadians(elevation);
-  light.x=(double) MaxRGB*cos(azimuth)*cos(elevation);
-  light.y=(double) MaxRGB*sin(azimuth)*cos(elevation);
-  light.z=(double) MaxRGB*sin(elevation);
+  light.x=MaxRGB*cos(azimuth)*cos(elevation);
+  light.y=MaxRGB*sin(azimuth)*cos(elevation);
+  light.z=MaxRGB*sin(elevation);
   normal.z=2.0*MaxRGB;  /* constant Z of surface normal */
   /*
     Shade image.
@@ -2710,12 +2707,12 @@ MagickExport Image *ShadeImage(const Image *image,
       /*
         Determine the surface normal and compute shading.
       */
-      normal.x=(double) PixelIntensity(s0-1)+(double) PixelIntensity(s1-1)+
-        (double) PixelIntensity(s2-1)-(double) PixelIntensity(s0+1)-
-        (double) PixelIntensity(s1+1)-(double) PixelIntensity(s2+1);
-      normal.y=(double) PixelIntensity(s2-1)+(double) PixelIntensity(s2)+
-        (double) PixelIntensity(s2+1)-(double) PixelIntensity(s0-1)-
-        (double) PixelIntensity(s0)-(double) PixelIntensity(s0+1);
+      normal.x=PixelIntensity(s0-1)+PixelIntensity(s1-1)+PixelIntensity(s2-1)-
+        (double) PixelIntensity(s0+1)-(double) PixelIntensity(s1+1)-
+        (double) PixelIntensity(s2+1);
+      normal.y=PixelIntensity(s2-1)+PixelIntensity(s2)+PixelIntensity(s2+1)-
+        (double) PixelIntensity(s0-1)-(double) PixelIntensity(s0)-
+        (double) PixelIntensity(s0+1);
       if ((normal.x == 0.0) && (normal.y == 0.0))
         shade=light.z;
       else
@@ -2825,7 +2822,7 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
   {
     for (u=(-width/2); u <= (width/2); u++)
     {
-      kernel[i]=exp(-(double) (u*u+v*v)/(sigma*sigma));
+      kernel[i]=exp(-((double) u*u+v*v)/(sigma*sigma));
       normalize+=kernel[i];
       i++;
     }
@@ -3001,8 +2998,8 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
     {
       do
       {
-        x_distance=(long) ((double) (2*radius+1)*rand()/RAND_MAX)-quantum;
-        y_distance=(long) ((double) (2*radius+1)*rand()/RAND_MAX)-quantum;
+        x_distance=(long) (((2.0*radius+1.0)*rand())/RAND_MAX)-quantum;
+        y_distance=(long) (((2.0*radius+1.0)*rand())/RAND_MAX)-quantum;
       } while (((x+x_distance) < 0) || ((y+y_distance) < 0) ||
                ((x+x_distance) >= (long) image->columns) ||
                ((y+y_distance) >= (long) image->rows));
@@ -3524,22 +3521,22 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
     for (x=0; x < (long) image->columns; x++)
     {
       red=p->red-(double) q->red;
-      if (AbsoluteValue(2.0*red) < ((double) MaxRGB*threshold))
+      if (AbsoluteValue(2.0*red) < (MaxRGB*threshold))
         red=p->red;
       else
         red=p->red+(red*amount);
       green=p->green-(double) q->green;
-      if (AbsoluteValue(2.0*green) < ((double) MaxRGB*threshold))
+      if (AbsoluteValue(2.0*green) < (MaxRGB*threshold))
         green=p->green;
       else
         green=p->green+(green*amount);
       blue=p->blue-(double) q->blue;
-      if (AbsoluteValue(2.0*blue) < ((double) MaxRGB*threshold))
+      if (AbsoluteValue(2.0*blue) < (MaxRGB*threshold))
         blue=p->blue;
       else
         blue=p->blue+(blue*amount);
       opacity=p->opacity-(double) q->opacity;
-      if (AbsoluteValue(2.0*opacity) < ((double) MaxRGB*threshold))
+      if (AbsoluteValue(2.0*opacity) < (MaxRGB*threshold))
         opacity=p->opacity;
       else
         opacity=p->opacity+(opacity*amount);

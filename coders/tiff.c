@@ -626,7 +626,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             for (i=0; i < (long) image->colors; i++)
             {
               image->colormap[i].red=(Quantum)
-                (((double) MaxRGB*i)/Max(image->colors-1,1));
+                ((MaxRGB*i)/Max(image->colors-1,1));
               image->colormap[i].green=image->colormap[i].red;
               image->colormap[i].blue=image->colormap[i].red;
             }
@@ -638,7 +638,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             for (i=0; i < (long) image->colors; i++)
             {
               image->colormap[i].red=(Quantum) (MaxRGB-
-                (((double) MaxRGB*i)/Max(image->colors-1,1)));
+                ((MaxRGB*i)/Max(image->colors-1,1)));
               image->colormap[i].green=image->colormap[i].red;
               image->colormap[i].blue=image->colormap[i].red;
             }
@@ -667,11 +667,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             for (i=0; i < (long) image->colors; i++)
             {
               image->colormap[i].red=(Quantum)
-                (((double) MaxRGB*red_colormap[i])/range);
+                ((MaxRGB*red_colormap[i])/range);
               image->colormap[i].green=(Quantum)
-                (((double) MaxRGB*green_colormap[i])/range);
+                ((MaxRGB*green_colormap[i])/range);
               image->colormap[i].blue=(Quantum)
-                (((double) MaxRGB*blue_colormap[i])/range);
+                ((MaxRGB*blue_colormap[i])/range);
             }
             break;
           }

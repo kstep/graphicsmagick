@@ -313,8 +313,8 @@ static char *TraceClippingPath(char *blob,size_t length,unsigned long columns,
             {
               y=ReadMSBLong(&blob,&length);
               x=ReadMSBLong(&blob,&length);
-              point[i].y=(double) y*rows/4096/4096;
               point[i].x=(double) x*columns/4096/4096;
+              point[i].y=(double) y*rows/4096/4096;
             }
             if (status)
               {

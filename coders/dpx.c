@@ -213,15 +213,15 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (x=0; x < (long) ((image->columns*image->rows)/3); x++)
       {
         pixel=ReadBlobMSBLong(image);
-        q->red=(Quantum) ((double) MaxRGB*((pixel >> 0) & 0x3ff)/1023L);
+        q->red=(Quantum) (MaxRGB*((pixel >> 0) & 0x3ff)/1023L);
         q->green=q->red;
         q->blue=q->red;
         q++;
-        q->red=(Quantum) ((double) MaxRGB*((pixel >> 10) & 0x3ff)/1023L);
+        q->red=(Quantum) (MaxRGB*((pixel >> 10) & 0x3ff)/1023L);
         q->green=q->red;
         q->blue=q->red;
         q++;
-        q->red=(Quantum) ((double) MaxRGB*((pixel >> 20) & 0x3ff)/1023L);
+        q->red=(Quantum) (MaxRGB*((pixel >> 20) & 0x3ff)/1023L);
         q->green=q->red;
         q->blue=q->red;
         q++;
@@ -238,9 +238,9 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < (long) image->columns; x++)
         {
           pixel=ReadBlobMSBLong(image);
-          q->red=(Quantum) ((double) MaxRGB*((pixel >> 22) & 0x3ff)/1023L);
-          q->green=(Quantum) ((double) MaxRGB*((pixel >> 12) & 0x3ff)/1023L);
-          q->blue=(Quantum) ((double) MaxRGB*((pixel >> 2) & 0x3ff)/1023L);
+          q->red=(Quantum) (MaxRGB*((pixel >> 22) & 0x3ff)/1023L);
+          q->green=(Quantum) (MaxRGB*((pixel >> 12) & 0x3ff)/1023L);
+          q->blue=(Quantum) (MaxRGB*((pixel >> 2) & 0x3ff)/1023L);
           q++;
         }
         if (!SyncImagePixels(image))
@@ -416,9 +416,9 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      pixel=((((1023L*p->red+MaxRGB/2)/MaxRGB) & 0x3ff) << 22) |
-        ((((1023L*p->green+MaxRGB/2)/MaxRGB) &0x3ff) << 12) |
-        ((((1023L*p->blue+MaxRGB/2)/MaxRGB) &0x3ff) << 2);
+      pixel=(((long) ((1023L*p->red+MaxRGB/2)/MaxRGB) & 0x3ff) << 22) |
+        (((long) ((1023L*p->green+MaxRGB/2)/MaxRGB) &0x3ff) << 12) |
+        (((long) ((1023L*p->blue+MaxRGB/2)/MaxRGB) &0x3ff) << 2);
       (void) WriteBlobMSBLong(image,pixel);
       p++;
     }
