@@ -528,9 +528,9 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 
   double
     alpha,
+    beta,
     mid,
-    opacity,
-    radius;
+    opacity;
 
   DrawInfo
     *clone_info;
@@ -808,7 +808,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     bounds.y1=image->rows-1.0;
     bounds.x2=0.0;
     bounds.y2=0.0;
-    radius=0.0;
     i=0;
     j=0;
     for (x=0; *p != '\0'; x++)
@@ -910,7 +909,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             break;
           }
         GenerateArc(primitive_info+j,primitive_info[j].point,
-          primitive_info[j+1].point,primitive_info[j+2].point,0,False,False);
+          primitive_info[j+1].point,primitive_info[j+2].point,0,True,False);
         i=j+primitive_info[j].coordinates;
         break;
       }
@@ -928,13 +927,29 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
       case CirclePrimitive:
       {
+        double
+          radius;
+
+        PointInfo
+          arc,
+          end,
+          start;
+
         if (primitive_info[j].coordinates != 2)
           {
             primitive_type=UndefinedPrimitive;
             break;
           }
-        radius=GenerateCircle(primitive_info+j,primitive_info[j].point,
-          primitive_info[j+1].point);
+        alpha=primitive_info[j+1].point.x-primitive_info[j].point.x;
+        beta=primitive_info[j+1].point.y-primitive_info[j].point.y;
+        radius=sqrt(alpha*alpha+beta*beta);
+        start.x=primitive_info[j].point.x-radius;
+        start.y=primitive_info[j].point.y;
+        end.x=start.x;
+        end.y=start.y-1.0;
+        arc.x=radius;
+        arc.y=radius;
+        GenerateArc(primitive_info+j,start,end,arc,0,True,False);
         i=j+primitive_info[j].coordinates;
         break;
       }
@@ -1265,7 +1280,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       if (point.y > bounds.y2)
         bounds.y2=point.y;
     }
-    mid=ceil(radius+clone_info->affine[0]*clone_info->linewidth/2.0);
+    mid=ceil(clone_info->affine[0]*clone_info->linewidth/2.0);
     bounds.x1-=mid;
     if (bounds.x1 < 0.0)
       bounds.x1=0.0;
@@ -1299,6 +1314,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           case BezierPrimitive:
           case CirclePrimitive:
           case EllipsePrimitive:
+          case LinePrimitive:
           case PathPrimitive:
           case PolylinePrimitive:
           case PolygonPrimitive:
@@ -1337,6 +1353,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           case BezierPrimitive:
           case CirclePrimitive:
           case EllipsePrimitive:
+          case LinePrimitive:
           case PathPrimitive:
           case PolylinePrimitive:
           case PolygonPrimitive:
@@ -2220,8 +2237,7 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
     beta,
     distance,
     mid,
-    opacity,
-    radius;
+    opacity;
 
   register int
     i;
@@ -2254,46 +2270,11 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
           opacity=1.0;
         break;
       }
-      case LinePrimitive:
-      {
-        opacity=PixelOnLine(point,&p->point,&q->point,mid,opacity);
-        break;
-      }
-      case CirclePrimitive:
-      {
-        alpha=p->point.x-point->x;
-        beta=p->point.y-point->y;
-        distance=sqrt(alpha*alpha+beta*beta);
-        alpha=p->point.x-q->point.x;
-        beta=p->point.y-q->point.y;
-        radius=sqrt(alpha*alpha+beta*beta);
-        if (fill)
-          {
-            if (distance <= (radius-1.0))
-              opacity=1.0;
-            else
-              if (distance < (radius+1.0))
-                {
-                  alpha=(radius-distance+1.0)/2.0;
-                  opacity=Max(opacity,alpha*alpha);
-                }
-            break;
-          }
-        if (fabs(distance-radius) < (mid+0.5))
-          {
-            if (fabs(distance-radius) <= (mid-0.5))
-              opacity=1.0;
-            else
-              {
-                alpha=mid-fabs(distance-radius)+0.5;
-                opacity=Max(opacity,alpha*alpha);
-              }
-          }
-        break;
-      }
       case ArcPrimitive:
       case BezierPrimitive:
+      case CirclePrimitive:
       case EllipsePrimitive:
+      case LinePrimitive:
       case PathPrimitive:
       case PolylinePrimitive:
       case PolygonPrimitive:

@@ -58,7 +58,7 @@ extern "C" {
 #define DirectoryListSeparator  ';'
 #define EditorOptions  ""
 #define Exit  exit
-#define IsBasenameSeparator(c)  ((c) == ']')
+#define IsBasenameSeparator(c)  (((c) == ']') || ((c) == ':') || ((c) == '/'))
 #define IsGlob(text) \
   ((strchr(text,'*') != (char *) NULL) || \
    (strchr(text,'?') != (char *) NULL) || \
