@@ -2897,8 +2897,9 @@ MagickExport unsigned long GetImageDepth(const Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (QuantumDepth == 8)
-    return(QuantumDepth);
+#if (QuantumDepth == 8)
+  return(QuantumDepth);
+#endif
   if (QuantumDepth == 32)
     {
       for (y=0; y < (long) image->rows; y++)
@@ -2934,14 +2935,14 @@ MagickExport unsigned long GetImageDepth(const Image *image,
     for (x=0; x < (long) image->columns; x++)
     {
       if (p->red != ScaleCharToQuantum(ScaleQuantumToChar(p->red)))
-        return(QuantumDepth);
+        return(16);
       if (p->green != ScaleCharToQuantum(ScaleQuantumToChar(p->green)))
-        return(QuantumDepth);
+        return(16);
       if (p->blue != ScaleCharToQuantum(ScaleQuantumToChar(p->blue)))
-        return(QuantumDepth);
+        return(16);
       if (image->matte)
         if (p->opacity != ScaleCharToQuantum(ScaleQuantumToChar(p->opacity)))
-          return(QuantumDepth);
+          return(16);
       p++;
     }
   }

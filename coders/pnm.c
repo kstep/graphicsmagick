@@ -975,10 +975,10 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (long) image->columns; x++)
           {
             if (image->depth <= 8)
-              FormatString(buffer,"%u %u %u\n",ScaleQuantumToChar(p->red),
+              FormatString(buffer,"%u %u %u ",ScaleQuantumToChar(p->red),
                 ScaleQuantumToChar(p->green),ScaleQuantumToChar(p->blue));
             else
-              FormatString(buffer,"%u %u %u\n",ScaleQuantumToShort(p->red),
+              FormatString(buffer,"%u %u %u ",ScaleQuantumToShort(p->red),
                 ScaleQuantumToShort(p->green),ScaleQuantumToShort(p->blue));
             (void) WriteBlobString(image,buffer);
             i++;
