@@ -883,6 +883,10 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
           break;
         for (x=0; x < (long) annotate_image->columns; x++)
         {
+          if (draw_info->fill_pattern != (Image *) NULL)
+            fill_color=GetOnePixel(draw_info->fill_pattern,
+              x % draw_info->fill_pattern->columns,
+              y % draw_info->fill_pattern->rows);
           q->opacity=(Quantum) (MaxRGB-((unsigned long) ((MaxRGB-Intensity(*q))*
             (MaxRGB-fill_color.opacity))/MaxRGB));
           q->red=fill_color.red;
@@ -1034,6 +1038,9 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
 
   long
     y;
+
+  PixelPacket
+    fill_color;
 
   PointInfo
     point,
@@ -1216,22 +1223,22 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
         point.x=offset->x+bitmap->left;
         point.y=offset->y-bitmap->top;
         p=bitmap->bitmap.buffer;
-        for (y=0; y < (long)bitmap->bitmap.rows; y++)
+        for (y=0; y < (long) bitmap->bitmap.rows; y++)
         {
-          if (ceil(point.y+y-0.5) >= image->rows)
+          if ((long) ceil(point.y+y-0.5) >= image->rows)
             break;
-          if (ceil(point.y+y-0.5) < 0)
+          if ((long) ceil(point.y+y-0.5) < 0)
             {
               p+=bitmap->bitmap.width;
               continue;
             }
-          q=GetImagePixels(image,(int) ceil(point.x-0.5),
-            (int) ceil(point.y+y-0.5),bitmap->bitmap.width,1);
+          q=GetImagePixels(image,(long) ceil(point.x-0.5),
+            (long) ceil(point.y+y-0.5),bitmap->bitmap.width,1);
           active=q != (PixelPacket *) NULL;
           for (x=0; x < (long) bitmap->bitmap.width; x++)
           {
-            if ((ceil(point.x+x-0.5) < 0) || (*p == 0) ||
-                (ceil(point.x+x-0.5) >= image->columns))
+            if (((long) ceil(point.x+x-0.5) < 0) || (*p == 0) ||
+                ((long) ceil(point.x+x-0.5) >= image->columns))
               {
                 p++;
                 q++;
@@ -1245,14 +1252,19 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
             opacity=(Quantum) ((unsigned long) ((MaxRGB-opacity)*
               (MaxRGB-draw_info->fill.opacity))/MaxRGB);
             if (!active)
-              q=GetImagePixels(image,(int) ceil(point.x+x-0.5),
-                (int) ceil(point.y+y-0.5),1,1);
+              q=GetImagePixels(image,(long) ceil(point.x+x-0.5),
+                (long) ceil(point.y+y-0.5),1,1);
             if (q == (PixelPacket *) NULL)
               {
                 p++;
                 break;
               }
-            AlphaComposite(&draw_info->fill,opacity,q,q->opacity);
+            fill_color=draw_info->fill;
+            if (draw_info->fill_pattern != (Image *) NULL)
+              fill_color=GetOnePixel(draw_info->fill_pattern,
+                (long) ceil(point.x+x-0.5) % draw_info->fill_pattern->columns,
+                (long) ceil(point.y+y-0.5) % draw_info->fill_pattern->rows);
+            AlphaComposite(&fill_color,opacity,q,q->opacity);
             if (!active)
               (void) SyncImagePixels(image);
             p++;

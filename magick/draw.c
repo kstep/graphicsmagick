@@ -133,7 +133,7 @@ static PrimitiveInfo
   *TraceStrokePolygon(const DrawInfo *,const PrimitiveInfo *);
 
 static unsigned int
-  DrawPatternPath(Image *,DrawInfo *,const char *),
+  DrawPatternPath(Image *,DrawInfo *,const char *,Image **),
   DrawPrimitive(Image *,const DrawInfo *,const PrimitiveInfo *),
   DrawStrokePolygon(Image *,const DrawInfo *,const PrimitiveInfo *);
 
@@ -1743,7 +1743,8 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
             (void) QueryColorDatabase(token,&graphic_context[n]->fill);
             FormatString(pattern,"[%.1024s]",token);
             if (GetImageAttribute(image,pattern) != (ImageAttribute *) NULL)
-              DrawPatternPath(image,graphic_context[n],token);
+              DrawPatternPath(image,graphic_context[n],token,
+                &graphic_context[n]->fill_pattern);
             if (graphic_context[n]->fill.opacity != TransparentOpacity)
               graphic_context[n]->fill.opacity=graphic_context[n]->opacity;
             break;
@@ -2209,7 +2210,8 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
             (void) QueryColorDatabase(token,&graphic_context[n]->stroke);
             FormatString(pattern,"[%.1024s]",token);
             if (GetImageAttribute(image,pattern) != (ImageAttribute *) NULL)
-              DrawPatternPath(image,graphic_context[n],token);
+              DrawPatternPath(image,graphic_context[n],token,
+                &graphic_context[n]->stroke_pattern);
             if (graphic_context[n]->stroke.opacity != TransparentOpacity)
               graphic_context[n]->stroke.opacity=graphic_context[n]->opacity;
             break;
@@ -2715,7 +2717,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
 %  The format of the DrawPatternPath method is:
 %
 %      unsigned int DrawPatternPath(Image *image,DrawInfo *draw_info,
-%        const char *name)
+%        const char *name,Image **pattern)
 %
 %  A description of each parameter follows:
 %
@@ -2723,15 +2725,17 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
 %
 %    o draw_info: The draw info.
 %
-%    o pattern: The pattern name.
+%    o name: The pattern name.
+%
+%    o image: The image.
 %
 %
 */
 static unsigned int DrawPatternPath(Image *image,DrawInfo *draw_info,
-  const char *name)
+  const char *name,Image **pattern)
 {
   char
-    pattern[MaxTextExtent];
+    attribute[MaxTextExtent];
 
   const ImageAttribute
     *geometry,
@@ -2750,28 +2754,29 @@ static unsigned int DrawPatternPath(Image *image,DrawInfo *draw_info,
   assert(image->signature == MagickSignature);
   assert(draw_info != (const DrawInfo *) NULL);
   assert(name != (const char *) NULL);
-  FormatString(pattern,"[%.1024s]",name);
-  path=GetImageAttribute(image,pattern);
+  FormatString(attribute,"[%.1024s]",name);
+  path=GetImageAttribute(image,attribute);
   if (path == (ImageAttribute *) NULL)
     return(False);
-  FormatString(pattern,"[%.1024s-geometry]",name);
-  geometry=GetImageAttribute(image,pattern);
+  FormatString(attribute,"[%.1024s-geometry]",name);
+  geometry=GetImageAttribute(image,attribute);
   if (geometry == (ImageAttribute *) NULL)
     return(False);
-  if (draw_info->tile)
-    DestroyImage(draw_info->tile);
+  if ((*pattern) != (Image *) NULL)
+    DestroyImage(*pattern);
   image_info=CloneImageInfo((ImageInfo *) NULL);
   image_info->size=AllocateString(geometry->value);
-  draw_info->tile=AllocateImage(image_info);
+  *pattern=AllocateImage(image_info);
   DestroyImageInfo(image_info);
-  SetImage(draw_info->tile,OpaqueOpacity);
+  SetImage(*pattern,OpaqueOpacity);
   if (draw_info->debug)
     (void) fprintf(stdout,"\nbegin pattern-path %.1024s %.1024s\n",name,
       geometry->value);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-  clone_info->tile=(Image *) NULL;
+  clone_info->fill_pattern=(Image *) NULL;
+  clone_info->stroke_pattern=(Image *) NULL;
   (void) CloneString(&clone_info->primitive,path->value);
-  status=DrawImage(draw_info->tile,clone_info);
+  status=DrawImage(*pattern,clone_info);
   DestroyDrawInfo(clone_info);
   if (draw_info->debug)
     (void) fprintf(stdout,"end pattern-path\n\n");
@@ -3137,20 +3142,21 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
       */
       fill_opacity=GetPixelOpacity(polygon_info,mid,fill,draw_info->fill_rule,
         x,y,&stroke_opacity);
-      if (draw_info->tile != (Image *) NULL)
-        {
-          fill_color=GetOnePixel(draw_info->tile,x % draw_info->tile->columns,
-            y % draw_info->tile->rows);
-          stroke_color=GetOnePixel(draw_info->tile,x % draw_info->tile->columns,
-            y % draw_info->tile->rows);
-        }
       if (!draw_info->stroke_antialias)
         {
           fill_opacity=fill_opacity > 0.50 ? 1.0 : 0.0;
           stroke_opacity=stroke_opacity > 0.50 ? 1.0 : 0.0;
         }
+      if (draw_info->fill_pattern != (Image *) NULL)
+        fill_color=GetOnePixel(draw_info->fill_pattern,
+          x % draw_info->fill_pattern->columns,
+          y % draw_info->fill_pattern->rows);
       fill_opacity=MaxRGB-fill_opacity*(MaxRGB-fill_color.opacity);
       AlphaComposite(&fill_color,fill_opacity,q,q->opacity);
+      if (draw_info->stroke_pattern != (Image *) NULL)
+        stroke_color=GetOnePixel(draw_info->stroke_pattern,
+          x % draw_info->stroke_pattern->columns,
+          y % draw_info->stroke_pattern->rows);
       stroke_opacity=MaxRGB-stroke_opacity*(MaxRGB-stroke_color.opacity);
       AlphaComposite(&stroke_color,stroke_opacity,q,q->opacity);
       q++;
