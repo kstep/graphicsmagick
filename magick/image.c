@@ -7586,22 +7586,22 @@ MagickExport unsigned int TransformRGBImage(Image *image,
             case sRGBColorspace:
             case YCCColorspace:
             {
-              red=(red < 0) ? 0 : (red > ScaleCharToAny(350)) ?
-                ScaleCharToAny(350) : red+0.5;
-              green=(green < 0) ? 0 : (green > ScaleCharToAny(350)) ?
-                ScaleCharToAny(350) : green+0.5;
-              blue=(blue < 0) ? 0 : (blue > ScaleCharToAny(350)) ?
-                ScaleCharToAny(350) : blue+0.5;
+              red=(red < 0) ? 0 : (red > ScaleCharToWideChar(350)) ?
+                ScaleCharToWideChar(350) : red+0.5;
+              green=(green < 0) ? 0 : (green > ScaleCharToWideChar(350)) ?
+                ScaleCharToWideChar(350) : green+0.5;
+              blue=(blue < 0) ? 0 : (blue > ScaleCharToWideChar(350)) ?
+                ScaleCharToWideChar(350) : blue+0.5;
               if (colorspace == sRGBColorspace)
                 {
-                  q->red=ScaleCharToAny(sRGBMap[ScaleQuantumToAny(red)]);
-                  q->green=ScaleCharToAny(sRGBMap[ScaleQuantumToAny(green)]);
-                  q->blue=ScaleCharToAny(sRGBMap[ScaleQuantumToAny(blue)]);
+                  q->red=ScaleCharToWideChar(sRGBMap[ScaleQuantumToWideChar(red)]);
+                  q->green=ScaleCharToWideChar(sRGBMap[ScaleQuantumToWideChar(green)]);
+                  q->blue=ScaleCharToWideChar(sRGBMap[ScaleQuantumToWideChar(blue)]);
                   break;
                 }
-              q->red=ScaleCharToAny(YCCMap[ScaleQuantumToAny(red)]);
-              q->green=ScaleCharToAny(YCCMap[ScaleQuantumToAny(green)]);
-              q->blue=ScaleCharToAny(YCCMap[ScaleQuantumToAny(blue)]);
+              q->red=ScaleCharToWideChar(YCCMap[ScaleQuantumToWideChar(red)]);
+              q->green=ScaleCharToWideChar(YCCMap[ScaleQuantumToWideChar(green)]);
+              q->blue=ScaleCharToWideChar(YCCMap[ScaleQuantumToWideChar(blue)]);
               break;
             }
             default:
@@ -7645,28 +7645,28 @@ MagickExport unsigned int TransformRGBImage(Image *image,
           case sRGBColorspace:
           case YCCColorspace:
           {
-            red=(red < 0) ? 0 : (red > ScaleCharToAny(350)) ?
-              ScaleCharToAny(350) : red+0.5;
-            green=(green < 0) ? 0 : (green > ScaleCharToAny(350)) ?
-              ScaleCharToAny(350) : green+0.5;
-            blue=(blue < 0) ? 0 : (blue > ScaleCharToAny(350)) ?
-              ScaleCharToAny(350) : blue+0.5;
+            red=(red < 0) ? 0 : (red > ScaleCharToWideChar(350)) ?
+              ScaleCharToWideChar(350) : red+0.5;
+            green=(green < 0) ? 0 : (green > ScaleCharToWideChar(350)) ?
+              ScaleCharToWideChar(350) : green+0.5;
+            blue=(blue < 0) ? 0 : (blue > ScaleCharToWideChar(350)) ?
+              ScaleCharToWideChar(350) : blue+0.5;
             if (colorspace == sRGBColorspace)
               {
                 image->colormap[i].red=
-                  ScaleCharToAny(sRGBMap[ScaleQuantumToAny(red)]);
+                  ScaleCharToWideChar(sRGBMap[ScaleQuantumToWideChar(red)]);
                 image->colormap[i].green=
-                  ScaleCharToAny(sRGBMap[ScaleQuantumToAny(green)]);
+                  ScaleCharToWideChar(sRGBMap[ScaleQuantumToWideChar(green)]);
                 image->colormap[i].blue=
-                  ScaleCharToAny(sRGBMap[ScaleQuantumToAny(blue)]);
+                  ScaleCharToWideChar(sRGBMap[ScaleQuantumToWideChar(blue)]);
                 break;
               }
             image->colormap[i].red=
-              ScaleCharToAny(YCCMap[ScaleQuantumToAny(red)]);
+              ScaleCharToWideChar(YCCMap[ScaleQuantumToWideChar(red)]);
             image->colormap[i].green=
-              ScaleCharToAny(YCCMap[ScaleQuantumToAny(green)]);
+              ScaleCharToWideChar(YCCMap[ScaleQuantumToWideChar(green)]);
             image->colormap[i].blue=
-              ScaleCharToAny(YCCMap[ScaleQuantumToAny(blue)]);
+              ScaleCharToWideChar(YCCMap[ScaleQuantumToWideChar(blue)]);
             break;
           }
           default:

@@ -925,7 +925,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           Convert image to a PGM image.
         */
         FormatString(buffer,"%lu\n",
-          image->depth > 8 ? MaxRGB : ScaleQuantumToAny(MaxRGB));
+          image->depth > 8 ? MaxRGB : ScaleQuantumToWideChar(MaxRGB));
         (void) WriteBlobString(image,buffer);
         i=0;
         for (y=0; y < (long) image->rows; y++)
@@ -937,7 +937,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           {
             index=ScaleIntensityToQuantum(p);
             FormatString(buffer," %lu",(unsigned long)
-              (image->depth > 8 ? index : ScaleQuantumToAny(index)));
+              (image->depth > 8 ? index : ScaleQuantumToWideChar(index)));
             (void) WriteBlobString(image,buffer);
             i++;
             if (i == 12)
@@ -961,7 +961,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           Convert image to a PNM image.
         */
         FormatString(buffer,"%lu\n",
-          image->depth > 8 ? MaxRGB : ScaleQuantumToAny(MaxRGB));
+          image->depth > 8 ? MaxRGB : ScaleQuantumToWideChar(MaxRGB));
         (void) WriteBlobString(image,buffer);
         i=0;
         for (y=0; y < (long) image->rows; y++)
@@ -972,9 +972,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (long) image->columns; x++)
           {
             FormatString(buffer," %lu %lu %lu",
-              image->depth > 8 ? (long) p->red : ScaleQuantumToAny(p->red),
-              image->depth > 8 ? (long) p->green : ScaleQuantumToAny(p->green),
-              image->depth > 8 ? (long) p->blue : ScaleQuantumToAny(p->blue));
+              image->depth > 8 ? (long) p->red : ScaleQuantumToWideChar(p->red),
+              image->depth > 8 ? (long) p->green : ScaleQuantumToWideChar(p->green),
+              image->depth > 8 ? (long) p->blue : ScaleQuantumToWideChar(p->blue));
             (void) WriteBlobString(image,buffer);
             i++;
             if (i == 4)
