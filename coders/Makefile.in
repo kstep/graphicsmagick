@@ -1596,22 +1596,20 @@ distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
 
-# Install config files
-install-data-config: 
+# Install delegates files
+install-data-delegates: 
 	$(mkinstalldirs) $(pkglibdir)
 	$(INSTALL_DATA) delegates.mgk $(pkglibdir)
 	$(INSTALL_DATA) fonts.mgk $(pkglibdir)
-	$(INSTALL_DATA) modules.mgk $(pkglibdir)
 
-# Uninstall config files
-uninstall-data-config:
+# Uninstall delegates files
+uninstall-data-delegates:
 	rm -f $(pkglibdir)/delegates.mgk
 	rm -f $(pkglibdir)/fonts.mgk
-	rm -f $(pkglibdir)/modules.mgk
 
-install-exec-local: install-data-config
+install-exec-local: install-data-delegates
 
-uninstall-local: uninstall-data-config
+uninstall-local: uninstall-data-delegates
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -488,19 +488,17 @@ yuv_la_LIBADD       = ../magick/libMagick.la
 
 DEFS = @DEFS@ -I../
 
-# Install config files
-install-data-config: 
+# Install delegates files
+install-data-delegates: 
 	$(mkinstalldirs) $(pkglibdir)
 	$(INSTALL_DATA) delegates.mgk $(pkglibdir)
 	$(INSTALL_DATA) fonts.mgk $(pkglibdir)
-	$(INSTALL_DATA) modules.mgk $(pkglibdir)
 
-# Uninstall config files
-uninstall-data-config:
+# Uninstall delegates files
+uninstall-data-delegates:
 	rm -f $(pkglibdir)/delegates.mgk
 	rm -f $(pkglibdir)/fonts.mgk
-	rm -f $(pkglibdir)/modules.mgk
 
-install-exec-local: install-data-config
+install-exec-local: install-data-delegates
 
-uninstall-local: uninstall-data-config
+uninstall-local: uninstall-data-delegates

@@ -10,14 +10,17 @@ Configuration Files:
       $HOME/.magick/
       $MAGICK_HOME/
       MagickLibPath
+      MagickModulesPath
       MagickSharePath
 
-  Where MagickSharePath and MagickLibPath are defined by the configure
-  program on Unix, and default to /usr/local/share/ImageMagick/ and
-  /usr/local/lib/ImageMagick/ respectively.
+  Where MagickSharePath, MagickLibPath, and MagickModulesPath are
+  defined by the configure program on Unix, and default to
+  /usr/local/share/ImageMagick/, /usr/local/lib/ImageMagick/ and
+  /usr/local/lib/ImageMagick/modules/coders/ respectively.
 
-  MagickLibPath is defined under Win32, VMS, and Macintosh as
-  c:\ImageMagick\, sys$login, and the current directory respectively.
+  MagickLibPath and MagickModulesPath, and are defined under Win32, VMS, and
+  Macintosh as c:\ImageMagick\, sys$login, and the current directory
+  respectively.
 
 
 Environment Variables:
