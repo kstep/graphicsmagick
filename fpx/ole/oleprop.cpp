@@ -11,47 +11,47 @@
 //
 //              PROPERTY TYPE       DATA TYPE
 //                VT_EMPTY,           no bytes
-//                VT_NULL,          no bytes
-//                VT_I1,    VT_UI1,     char/ unsigned char
-//                VT_I2,    VT_UI2,     short/ unsigned short
-//                VT_I4,    VT_UI4,     long/ unsigned long
-//                VT_R4,            float
-//                VT_R8,            double
-//                VT_INT,   VT_UINT,    int/unsigned int
-//                VT_I8,    VT_UI8,     int/unsigned int
-//                VT_BOOL,          boolean (short)
+//                VT_NULL,            no bytes
+//                VT_I1,    VT_UI1,   char/ unsigned char
+//                VT_I2,    VT_UI2,   short/ unsigned short
+//                VT_I4,    VT_UI4,   long/ unsigned long
+//                VT_R4,              float
+//                VT_R8,              double
+//                VT_INT,   VT_UINT,  int/unsigned int
+//                VT_I8,    VT_UI8,   int/unsigned int
+//                VT_BOOL,            boolean (short)
 //                VT_ERROR,           SCODE (unsigned long)
-//                VT_CY,            CY ({ long, unsigned long })
-//                VT_DATE,          DATE (double)
+//                VT_CY,              CY ({ long, unsigned long })
+//                VT_DATE,            DATE (double)
 //                VT_FILETIME,        FILETIME ({unsigned long, unsigned long})
 //                VT_LPSTR,           char * 
-//                VT_BSTR,          char * 
+//                VT_BSTR,            char * 
 //                VT_LPWSTR,          unsigned short * 
-//                VT_BLOB,          BLOB ({unsigned long, unsigned char *})
-//                VT_CF,            CLIPDATA ({unsigned long, unsigned long, unsigned char *})
+//                VT_BLOB,            BLOB ({unsigned long, unsigned char *})
+//                VT_CF,              CLIPDATA ({unsigned long, unsigned long, unsigned char *})
 //                VT_CLSID,           CLSID (two short, one long, 8 bytes)
 //                VT_VARIANT,         VARIANT (four short, one double)
 //                VT_VECTOR,          VECTOR (unsigned long, BYTE *)
 //                VT_STREAM,          LPSTR 
 //                VT_STORAGE,         LPSTR 
-//                VT_STREAMED_OBJECT,     LPSTR 
-//                VT_STORED_OBJECT,       LPSTR 
-//                VT_BLOB_OBJECT,       LPSTR 
+//                VT_STREAMED_OBJECT, LPSTR 
+//                VT_STORED_OBJECT,   LPSTR 
+//                VT_BLOB_OBJECT,     LPSTR 
 //
 //        OLEProperty class also supports data types defined in the FPXBaselineIO.h, 
 //        Including, 
 //
-//                FPXStr,           { unsigned long, unsigned char * } 
-//                FPXShortArray,        { unsigned long, unsigned short * } 
-//                FPXLongArray,         { unsigned long, unsigned long * } 
-//                FPXRealArray,         { unsigned long, float * } 
-//                FPXWideStr,         { unsigned long, unsigned short * } 
-//                FPXWideStrArray,      { unsigned long, FPXWideStr * } 
-//                FPXStrArray,        { unsigned long, FPXStr * } 
-//                FPXfiletime,        { unsigned long, unsigned long } 
+//                FPXStr,                     { unsigned long, unsigned char * } 
+//                FPXShortArray,              { unsigned long, unsigned short * } 
+//                FPXLongArray,               { unsigned long, unsigned long * } 
+//                FPXRealArray,               { unsigned long, float * } 
+//                FPXWideStr,                 { unsigned long, unsigned short * } 
+//                FPXWideStrArray,            { unsigned long, FPXWideStr * } 
+//                FPXStrArray,                { unsigned long, FPXStr * } 
+//                FPXfiletime,                { unsigned long, unsigned long } 
 //                FPXSpacialFrequencyResponseBlockArray  { unsigned long, FPXSpacialFrequencyResponseBlock* }
 //                FPXCFA_PatternBlockArray    { unsigned long, FPXCFA_PatternBlock* }
-//                FPXOECF_BlockArray      { unsigned long, FPXOECF_Block*}
+//                FPXOECF_BlockArray          { unsigned long, FPXOECF_Block*}
 //                FPXScannedImageSizeBlock    { float, float, FPXResolutionUnit }
 //
 //  SCCSID            : @(#)oleprop.cpp 1.5 10:45:17 12 Sep 1997
@@ -111,14 +111,14 @@
 OLEProperty::OLEProperty (OLEPropertySet* parentPropSet, OLEPropertySection *parentPropSection, 
     DWORD properID, DWORD properType)
 {
-  parPropSet    = parentPropSet;          // Keep the property set from which it is created
-  OLEPropSec    = parentPropSection;        // Keep the property section from which it is created
-  propID      = properID;             // Store the property ID
+  parPropSet    = parentPropSet;                  // Keep the property set from which it is created
+  OLEPropSec    = parentPropSection;              // Keep the property section from which it is created
+  propID        = properID;                       // Store the property ID
   V_VT(&val)    = (unsigned short) properType;    // Store the property type
-  len       = parPropSet->SizeVT(properType);   // Get the size of property 
-  Clear();                      // Reset the variant structure in which alldata is 
-                            // going to be stored
-  pDict = 0;            // FIX_DICT_PROP - clear dictionary pointer
+  len           = parPropSet->SizeVT(properType); // Get the size of property 
+  Clear();                                        // Reset the variant structure in which alldata is 
+  // going to be stored
+  pDict = 0;                                      // FIX_DICT_PROP - clear dictionary pointer
 }
 
 OLEProperty::~OLEProperty ()
@@ -132,7 +132,7 @@ OLEProperty::~OLEProperty ()
       break; 
     }
     case VT_LPWSTR: {
-      delete V_BYREF(&val); 
+      delete (unsigned short *)V_BYREF(&val); 
       break; 
     }
     case VT_BLOB: {
@@ -302,7 +302,7 @@ DWORD VTtoVariant(VARIANT* pvar, const char * v)
   
   // Duplicate a string
   if ( !( str = DuplicateStr(v)) ) 
-    return NULL; 
+    return 0; 
   
   // Delete the variant contents if it has been allocated before
   if (V_UI1REF(pvar))
@@ -328,11 +328,11 @@ DWORD VTtoVariant(VARIANT* pvar, const WCHAR * v)
   
   // Duplicate a wide string
   if ( !( wstr = DuplicateWideStr(v)) ) 
-    return NULL; 
+    return 0; 
 
   // Delete the variant contents if it has been allocated before
   if (V_BYREF(pvar))
-    delete V_BYREF(pvar); 
+    delete (char *)V_BYREF(pvar); 
   
   // Clear the variant
   V_R8(pvar) = 0;
@@ -350,7 +350,7 @@ DWORD VTtoVariant(VARIANT* pvar, const BLOB * pblob)
   
   // Duplicate a blob
   if ( !( pb = DuplicateBLOB(pblob)) ) 
-    return NULL; 
+    return 0; 
   
   // Delete the variant contents if it has been allocated before
   if (V_BYREF(pvar)) {
@@ -374,7 +374,7 @@ DWORD VTtoVariant(VARIANT* pvar, const CLIPDATA * pcf)
   
   // Duplicate a clipdata
   if ( !( pc = DuplicateCF(pcf)) ) 
-    return NULL; 
+    return 0; 
   
   // Delete the variant contents if it has been allocated before
   if (V_BYREF(pvar)) {
@@ -397,13 +397,13 @@ DWORD VTtoVariant(VARIANT* pvar, const CLSID * pcls)
   // Allocate and copy the memory
   CLSID * pclsid  = new CLSID;    
   if (pclsid == NULL) {
-    return NULL;
+    return 0;
   }
   memcpy(pclsid, pcls, sizeof(CLSID)); 
 
   // Delete the variant contents if it has been allocated before
   if (V_BYREF(pvar))
-    delete V_BYREF(pvar); 
+    delete (char *)V_BYREF(pvar); 
   
   // Clear the variant
   V_R8(pvar) = 0;
@@ -420,7 +420,8 @@ DWORD VTtoVariant(VARIANT* pvar, const VECTOR * pvector)
   DWORD type; 
   
   // If the type is not vector, return NULL
-  if ( !(pvar->vt & VT_VECTOR) )  return NULL; 
+  if ( !(pvar->vt & VT_VECTOR) )
+    return 0; 
   
   // Get the subtype of vector
   type  = pvar->vt; 
@@ -429,7 +430,7 @@ DWORD VTtoVariant(VARIANT* pvar, const VECTOR * pvector)
   // Allocate a new vector
   VECTOR * pvec = DuplicateVECTOR(pvector, type); 
   if ( !pvec ) {
-    return NULL;
+    return 0;
   }
 
   // If the VECTOR already exists, delete it first

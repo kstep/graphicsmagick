@@ -327,12 +327,12 @@ Boolean OLEStorage::CreateStream(const char * name, OLEStream ** newStream)
 
 Boolean OLEStorage::OpenStorage(const char * name, OLEStorage ** currentStorage, DWORD mode)
 {
-  HRESULT err = NOERROR;
-  LPSTORAGE   ppStg   = NULL;
-  LPSTORAGE   ppLStg    = NULL;
-  OLECustomLink*  customLink  = NULL;
-  OLEStorage*   openStorage = NULL;
-  List *      theList   = NULL;
+  HRESULT        err         = NOERROR;
+  LPSTORAGE      ppStg       = NULL;
+  LPSTORAGE      ppLStg      = NULL;
+  OLECustomLink* customLink  = NULL;
+  OLEStorage*    openStorage = NULL;
+  List *         theList     = NULL;
   
   if (oleStorage) {
   
@@ -899,7 +899,7 @@ Boolean OLEStorage::CopyTo( OLEStorage ** ppStorage )
   HRESULT err = NOERROR;
   if (oleStorage) {
     LPSTORAGE pStg = NULL;
-    if (FAILED(err = oleStorage->CopyTo(NULL, NULL, NULL, pStg))) {
+    if (FAILED(err = oleStorage->CopyTo(0, NULL, NULL, pStg))) {
       lastError = TranslateOLEError(err);
       fpxStatus = OLEtoFPXError(err);
       return false;
@@ -926,7 +926,7 @@ Boolean OLEStorage::CopyTo( IStorage * pStorage )
   HRESULT err = NOERROR;
   if (oleStorage) {
     LPSTORAGE pStg = NULL;
-    if ( FAILED(err = oleStorage->CopyTo(NULL, NULL, NULL, pStorage)) ) {
+    if ( FAILED(err = oleStorage->CopyTo(0, NULL, NULL, pStorage)) ) {
       lastError = TranslateOLEError(err);
       fpxStatus = OLEtoFPXError(err);
       return false;

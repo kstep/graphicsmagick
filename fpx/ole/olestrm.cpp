@@ -913,7 +913,7 @@ DWORD OLEStream::ReadVT_VECTOR(DWORD dwType, VECTOR **ppVector)
   // Allocate a vector
   pvector = AllocVECTOR(dwType, strLen);
   if ( !pvector ) 
-    return NULL;
+    return 0;
   else
     *ppVector = pvector;     
   

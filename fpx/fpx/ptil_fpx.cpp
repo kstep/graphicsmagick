@@ -666,7 +666,7 @@ FPXStatus PTileFlashPix::ReadRawTile (FPXCompressionOption*   compressOption,
       fileFPX = new PFlashPixFile (parentFile->fileName,parentFile->storageName,mode_Lecture);
 
     // If error while opening : signal error and exit with error
-    if (fileFPX->Erreur() != noErr) {
+    if (fileFPX->Erreur() != FPX_OK) {
       parentFile->UpdateErrorCount();
       fileFPX->SignaleErreur();
       status = FPX_FILE_READ_ERROR;
@@ -783,7 +783,7 @@ FPXStatus PTileFlashPix::ReadRawPixels()
       fileFPX = new PFlashPixFile (parentFile->fileName,parentFile->storageName,mode_Lecture);
 
     // If error while opening : signal error and exit with error
-    if (fileFPX->Erreur() != noErr) {
+    if (fileFPX->Erreur() != FPX_OK) {
       parentFile->UpdateErrorCount();
       fileFPX->SignaleErreur();
       freshPixels = 0;
@@ -1779,7 +1779,7 @@ FPXStatus PTileFlashPix::Contrast (
         contrasted = (float)0.999;    // Truncate to 0... 255
       gContrastLut[i] = (unsigned char)(contrasted * 256.0);
     }
-    gContrastVal = k;
+    gContrastVal = (Boolean)k;
   }
   lookup = gContrastLut;  
 

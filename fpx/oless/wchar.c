@@ -7,6 +7,7 @@
 
 #include "h/owchar.h"
 #include <errno.h>
+#include <string.h>
 
 #ifndef _tbstowcs
 #ifndef _WIN32                /* others */
@@ -37,17 +38,17 @@ size_t sbstowcs(WCHAR *pwcs, const char *s, size_t n )
 
   /* if destintation string exists, fill it in */
   if (pwcs)
-  {
-    while (count < n)
     {
-      *pwcs = (WCHAR) ( (unsigned char)s[count]);
-      if (!s[count])
-        return count;
-      count++;
-      pwcs++;
+      while (count < n)
+        {
+          *pwcs = (WCHAR) ( (unsigned char)s[count]);
+          if (!s[count])
+            return count;
+          count++;
+          pwcs++;
+        }
+      return count;
     }
-    return count;
-  }
   else { /* pwcs == NULL, get size only, s must be NUL-terminated */
     return strlen(s);
   }
@@ -79,28 +80,28 @@ size_t sbstowcs(WCHAR *pwcs, const char *s, size_t n )
 size_t _CRTAPI1 wcstosbs( char * s, const WCHAR * pwcs, size_t n)
 {
   size_t count=0;
-        /* if destination string exists, fill it in */
+  /* if destination string exists, fill it in */
   if (s)
-  {
-    while(count < n)
     {
-        if (*pwcs > 255)  /* validate high byte */
+      while(count < n)
         {
-      errno = EILSEQ;
-      return (size_t)-1;  /* error */
-        }
-        s[count] = (char) *pwcs;
+          if (*pwcs > 255)  /* validate high byte */
+            {
+              errno = EILSEQ;
+              return (size_t)-1;  /* error */
+            }
+          s[count] = (char) *pwcs;
 
-        if (!(*pwcs++))
+          if (!(*pwcs++))
+            return count;
+          count++;
+        }
       return count;
-            count++;
-          }
-    return count;
-        } else { /* s == NULL, get size only, pwcs must be NUL-terminated */
-          const WCHAR *eos = pwcs;
-    while (*eos++);
-    return ( (size_t) (eos - pwcs -1));
-  }
+    } else { /* s == NULL, get size only, pwcs must be NUL-terminated */
+      const WCHAR *eos = pwcs;
+      while (*eos++);
+      return ( (size_t) (eos - pwcs -1));
+    }
 }
 
 
@@ -125,14 +126,14 @@ size_t _CRTAPI1 wcstosbs( char * s, const WCHAR * pwcs, size_t n)
 
 WCHAR * _CRTAPI1 wcscat(WCHAR * dst, const WCHAR * src)
 {
-    WCHAR * cp = dst;
+  WCHAR * cp = dst;
 
-    while( *cp )
-            ++cp;       /* Find end of dst */
+  while( *cp )
+    ++cp;       /* Find end of dst */
 
-    wcscpy(cp,src);     /* Copy src to end of dst */
+  wcscpy(cp,src);     /* Copy src to end of dst */
 
-    return dst;         /* return dst */
+  return dst;         /* return dst */
 
 }
 
@@ -156,18 +157,18 @@ WCHAR * _CRTAPI1 wcscat(WCHAR * dst, const WCHAR * src)
 
 WCHAR * _CRTAPI1 wcscpy(WCHAR * dst, const WCHAR * src)
 {
-    WCHAR * cp = dst;
+  WCHAR * cp = dst;
 #ifdef _MSC_VER
-#pragma warning(disable:4706) // assignment within conditional expression
+# pragma warning(disable:4706) // assignment within conditional expression
 #endif //_MSC_VER
 
-    while( *cp++ = *src++ )
-            ;               /* Copy src over dst */
+  while(( *cp++ = *src++ ))
+    ;               /* Copy src over dst */
 
 #ifdef _MSC_VER
-#pragma warning(default:4706)
+# pragma warning(default:4706)
 #endif //_MSC_VER
-    return dst;
+  return dst;
 }
 
 
@@ -190,12 +191,12 @@ WCHAR * _CRTAPI1 wcscpy(WCHAR * dst, const WCHAR * src)
 
 size_t _CRTAPI1 wcslen(const WCHAR * str)
 {
-    WCHAR *string = (WCHAR *) str;
+  WCHAR *string = (WCHAR *) str;
 
-    while( *string )
-            string++;
+  while( *string )
+    string++;
 
-    return string - str;
+  return string - str;
 }
 
 
@@ -222,10 +223,10 @@ size_t _CRTAPI1 wcslen(const WCHAR * str)
 
 static WCHAR wcUp(WCHAR wc)
 {
-    if ('a' <= wc && wc <= 'z')
-        wc += (WCHAR)('A' - 'a');
+  if ('a' <= wc && wc <= 'z')
+    wc += (WCHAR)('A' - 'a');
 
-    return(wc);
+  return(wc);
 }
 
 /***
@@ -253,16 +254,16 @@ static WCHAR wcUp(WCHAR wc)
 
 int _CRTAPI1 wcsnicmp(const WCHAR * first, const WCHAR * last, size_t count)
 {
-      if (!count)
-              return 0;
+  if (!count)
+    return 0;
 
-      while (--count && *first && wcUp(*first) == wcUp(*last))
-              {
-              first++;
-              last++;
-              }
+  while (--count && *first && wcUp(*first) == wcUp(*last))
+    {
+      first++;
+      last++;
+    }
 
-      return wcUp(*first) - wcUp(*last);
+  return wcUp(*first) - wcUp(*last);
 }
 
 /***
@@ -292,17 +293,17 @@ int _CRTAPI1 wcsnicmp(const WCHAR * first, const WCHAR * last, size_t count)
 
 int _CRTAPI1 wcscmp ( const WCHAR * src, const WCHAR * dst )
 {
-    int ret = 0 ;
+  int ret = 0 ;
     
-    while( ! (ret = (int)(*src - *dst)) && *dst)
-        ++src, ++dst;
+  while( ! (ret = (int)(*src - *dst)) && *dst)
+    ++src, ++dst;
 
-    if ( ret < 0 )
-        ret = -1 ;
-    else if ( ret > 0 )
-        ret = 1 ;
+  if ( ret < 0 )
+    ret = -1 ;
+  else if ( ret > 0 )
+    ret = 1 ;
     
-    return( ret );
+  return( ret );
 }
 
 
@@ -328,12 +329,12 @@ int _CRTAPI1 wcscmp ( const WCHAR * src, const WCHAR * dst )
 
 WCHAR * _CRTAPI1 wcschr ( const WCHAR * string, WCHAR ch )
 {
-    while (*string && *string != (WCHAR)ch)
-        string++;
+  while (*string && *string != (WCHAR)ch)
+    string++;
     
-    if (*string == (WCHAR)ch)
-        return((WCHAR *)string);
-    return(NULL);
+  if (*string == (WCHAR)ch)
+    return((WCHAR *)string);
+  return(NULL);
 }
 
 /***
@@ -361,16 +362,16 @@ WCHAR * _CRTAPI1 wcschr ( const WCHAR * string, WCHAR ch )
 
 WCHAR* _CRTAPI1 wcsncpy ( WCHAR * dest, const WCHAR * source, size_t count )
 {
-    WCHAR *start = dest;
+  WCHAR *start = dest;
     
-    while (count && (*dest++ = *source++))    /* copy string */
-        count--;
+  while (count && (*dest++ = *source++))    /* copy string */
+    count--;
 
-    if (count)                              /* pad out with zeroes */
-        while (--count)
-            *dest++ = (WCHAR)'\0';
+  if (count)                              /* pad out with zeroes */
+    while (--count)
+      *dest++ = (WCHAR)'\0';
     
-    return(start);
+  return(start);
 }
 
 
@@ -383,46 +384,43 @@ WCHAR* _CRTAPI1 wcsncpy ( WCHAR * dest, const WCHAR * source, size_t count )
        but that does not matter in the reference implementation */
  
 int STDCALL WideCharToMultiByte(
-    unsigned int CodePage,              /* code page */
-    unsigned long dwFlags,              /* performance and mapping flags */
-    const WCHAR* lpWideCharStr, /* address of wide-character string */
-    int cchWideChar,            /* number of characters in string */
-    char* lpMultiByteStr, /* address of buffer for new string */
-    int cchMultiByte,           /* size of buffer  */
-    const char* lpDefaultChar,  /* addr of default for unmappable chars */
-    int* lpUsedDefaultChar  /* addr of flag set when default char. used */
+    unsigned int CodePage,         /* code page */
+    unsigned long dwFlags,         /* performance and mapping flags */
+    const WCHAR* lpWideCharStr,    /* address of wide-character string */
+    int cchWideChar,               /* number of characters in string */
+    char* lpMultiByteStr,          /* address of buffer for new string */
+    int cchMultiByte,              /* size of buffer  */
+    const char* lpDefaultChar,     /* addr of default for unmappable chars */
+    int* lpUsedDefaultChar         /* addr of flag set when default char. used */
    )
 {
-    /* only support UNICODE or US ANSI */
-    if ((CodePage!=0) && (CodePage!=1252)) 
+  /* only support UNICODE or US ANSI */
+  if ((CodePage!=0) && (CodePage!=1252)) 
     {
-        /* assert(0); */
-        return 0;
+      /* assert(0); */
+      return 0;
     }    
-    /* the following 2 parameters are not used */
-    dwFlags;
-    lpDefaultChar;
 
-    if (lpUsedDefaultChar) 
-        *lpUsedDefaultChar=0;
+  if (lpUsedDefaultChar) 
+    *lpUsedDefaultChar=0;
 
-    if (cchMultiByte)
+  if (cchMultiByte)
     {
-        /* copy upto the smaller of the 2 strings */
-        int nConvert = cchMultiByte;
-        int nConverted;
-        if (cchWideChar!=-1 && nConvert>cchWideChar)
-            nConvert = cchWideChar;
-        nConverted = _wcstotbs(lpMultiByteStr, lpWideCharStr, nConvert);
-        if ( (nConverted < cchMultiByte) && (!lpMultiByteStr[nConverted]))
-            nConverted++;
-        return nConverted;
+      /* copy upto the smaller of the 2 strings */
+      int nConvert = cchMultiByte;
+      int nConverted;
+      if (cchWideChar!=-1 && nConvert>cchWideChar)
+        nConvert = cchWideChar;
+      nConverted = _wcstotbs(lpMultiByteStr, lpWideCharStr, nConvert);
+      if ( (nConverted < cchMultiByte) && (!lpMultiByteStr[nConverted]))
+        nConverted++;
+      return nConverted;
     }
-    else /* calculate length */
+  else /* calculate length */
     {
-        if (cchWideChar!=-1) 
-            return (cchWideChar);
-        return (_wcstotbs(NULL, lpWideCharStr, 0)+1);
+      if (cchWideChar!=-1) 
+        return (cchWideChar);
+      return (_wcstotbs(NULL, lpWideCharStr, 0)+1);
     }
 }
 
@@ -443,32 +441,32 @@ int STDCALL MultiByteToWideChar(
     int cchWideChar             /* size of buffer  */
    )
 {
-    /* only support UNICODE or US ANSI */
-    if ((CodePage!=0) && (CodePage!=1252))
+  /* only support UNICODE or US ANSI */
+  if ((CodePage!=0) && (CodePage!=1252))
     { 
-        /*assert(0); */
-        return 0;
+      /*assert(0); */
+      return 0;
     }
-    dwFlags;  /* we are not using this parameter */
-    if (!cchWideChar)  /* return size required */
+
+  if (!cchWideChar)  /* return size required */
     {
-        if (cchMultiByte != -1) 
-            return cchMultiByte;
-        else
-            /* plus one to include null character */
-            return (_tbstowcs(NULL, lpMultiByteStr, cchWideChar)+1);
+      if (cchMultiByte != -1) 
+        return cchMultiByte;
+      else
+        /* plus one to include null character */
+        return (_tbstowcs(NULL, lpMultiByteStr, cchWideChar)+1);
     }
-    else  
+  else  
     {
-        /* nConvert is the smaller size of the two strings */
-        int nConvert=cchWideChar;
-        int nConverted;
-        if (cchMultiByte!=-1 && nConvert>cchMultiByte) 
-            nConvert = cchMultiByte;  /* prevent copying too much */
-        nConverted = _tbstowcs(lpWideCharStr, lpMultiByteStr, nConvert);
-        if ((nConverted < cchWideChar) && (!lpWideCharStr[nConverted]))
-            nConverted++; /* include null character */
-        return nConverted;
+      /* nConvert is the smaller size of the two strings */
+      int nConvert=cchWideChar;
+      int nConverted;
+      if (cchMultiByte!=-1 && nConvert>cchMultiByte) 
+        nConvert = cchMultiByte;  /* prevent copying too much */
+      nConverted = _tbstowcs(lpWideCharStr, lpMultiByteStr, nConvert);
+      if ((nConverted < cchWideChar) && (!lpWideCharStr[nConverted]))
+        nConverted++; /* include null character */
+      return nConverted;
     }
 }
  

@@ -301,7 +301,6 @@ void Decode_MCU_Chen(
   int interleave) 
 {
     int i, j;
-   int iflag = interleave;
     int *quant_table;
     int blockin[64];
     SCAN_COMPONENT *comp;
@@ -341,7 +340,6 @@ void Decode_MCU_Winograd(
   int interleave)
 {
     int i, j;
-   int iflag = interleave;
     int *quant_table;
     int block[64];
     SCAN_COMPONENT *comp;
@@ -385,7 +383,6 @@ void Decode_MCU_Pruned_Winograd(
   int interleave)
 {
     int i, j;
-   int iflag = interleave;
     int *quant_table, block[64];
     SCAN_COMPONENT *comp;
 
@@ -452,7 +449,6 @@ void Write_Blank_MCUs(
   int interleave)
 {
     int i, j, ncomps, bi;
-   int iflag = interleave;
     SCAN_COMPONENT *comp;
 
     ncomps = (scan->gray_scale) ? 1 : scan->ncomps;

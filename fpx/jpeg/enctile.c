@@ -1394,7 +1394,7 @@ long *header_bytes)
     {
       unsigned char *hclass, *ident, **bits, **huffval;
       int i,j;
-      int q[4][64], *intptr, *intdstptr, whereIndex[4];
+      int q[4][64], *intptr, *intdstptr = 0, whereIndex[4];
       int whereDCIndex[4],whereACIndex[4];
 
       /* Scale input Quantization matrices by the Q-factor */

@@ -457,7 +457,7 @@ FPXStatus FPX_Delete(void *FPXObj) {
   if (FPXObj==NULL) {
     return FPX_FREE_NULL_PTR;
   }
-  delete (FPXObj);
+  delete (unsigned char*)FPXObj;
 
   return FPX_OK;
 }

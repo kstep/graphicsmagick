@@ -1,3 +1,8 @@
+2002-03-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Expanded tabs in sources to spaces (two spaces per tab) and
+ 	reduced the number of warnings when compiling with gcc 3.0.4.
+
 2000-12-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Added build environment based on Autoconf, Automake, and Libtool.
