@@ -24,15 +24,6 @@ extern "C" {
 #  define HAVE_STRERROR
 #if defined(_DEBUG)
 #  include <crtdbg.h>
-/*
-  _ASSERTE(size != 6840);
-  int tmpDbgFlag;
-  tmpDbgFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
-  tmpDbgFlag |= _CRTDBG_CHECK_ALWAYS_DF;
-  tmpDbgFlag |= _CRTDBG_LEAK_CHECK_DF;
-  _CrtSetDbgFlag(tmpDbgFlag);
-  _ASSERTE(_CrtCheckMemory());
- */
 #endif
 #endif
 

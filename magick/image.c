@@ -983,14 +983,14 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
       if (image->directory != (char *) NULL)
         (void) CloneString(&clone_image->directory,image->directory);
     }
+  /*
+    Do not transfer any "sticky" attributes.
+  */
   clone_image->attributes=(ImageAttribute *) NULL;
   attribute=GetImageAttribute(image,(char *) NULL);
   for ( ; attribute != (ImageAttribute *) NULL; attribute=attribute->next)
-  {
-    /* do not tranfer any "sticky" attributes */
     if (LocaleNCompare("XTRN",attribute->value,4) != 0)
       (void) SetImageAttribute(clone_image,attribute->key,attribute->value);
-  }
   GetExceptionInfo(&clone_image->exception);
   if (clone_image->orphan || orphan)
     {
@@ -2234,6 +2234,9 @@ MagickExport void DescribeImage(Image *image,FILE *file,
 */
 MagickExport void DestroyImage(Image *image)
 {
+  ImageAttribute
+    *attribute;
+
   register int
     i;
 
@@ -2242,15 +2245,10 @@ MagickExport void DestroyImage(Image *image)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  {
-    ImageAttribute
-      *attribute;
-
-    attribute=GetImageAttribute(image,"ReceiveMode");
-    if ((attribute != (ImageAttribute *) NULL) &&
-        (LocaleCompare("XTRNIMAGE",attribute->value) == 0))
-      return;
-  }
+  attribute=GetImageAttribute(image,"ReceiveMode");
+  if ((attribute != (ImageAttribute *) NULL) &&
+      (LocaleCompare("XTRNIMAGE",attribute->value) == 0))
+    return;
   DestroyBlobInfo(&image->blob);
   if (image->file != (FILE *) NULL)
     {
