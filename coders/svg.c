@@ -2053,31 +2053,35 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) fclose(file);
   CloseBlob(image);
   DestroyImage(image);
-  /*
-    Draw image.
-  */
-  clone_info=CloneImageInfo(image_info);
-  FormatString(geometry,"%dx%d",svg_info.width,svg_info.height);
-  CloneString(&clone_info->size,geometry);
-  FormatString(clone_info->filename,"mvg:%.1024s",filename);
-  if (clone_info->density != (char *) NULL)
-    LiberateMemory((void **) &clone_info->density);
-  image=ReadImage(clone_info,exception);
-  (void) remove(filename);
-  DestroyImageInfo(clone_info);
-  if (image != (Image *) NULL)
+  image=(Image *) NULL;
+  if (exception->severity == UndefinedException)
     {
-      (void) strcpy(image->filename,image_info->filename);
-      if (svg_info.comment != (char *) NULL)
-        (void) SetImageAttribute(image,"Comment",svg_info.comment);
-      if (svg_info.description != (char *) NULL)
-        (void) SetImageAttribute(image,"Description",svg_info.description);
-      if (svg_info.title != (char *) NULL)
-        (void) SetImageAttribute(image,"Title",svg_info.title);
+      /*
+        Draw image.
+      */
+      clone_info=CloneImageInfo(image_info);
+      FormatString(geometry,"%dx%d",svg_info.width,svg_info.height);
+      CloneString(&clone_info->size,geometry);
+      FormatString(clone_info->filename,"mvg:%.1024s",filename);
+      if (clone_info->density != (char *) NULL)
+        LiberateMemory((void **) &clone_info->density);
+      image=ReadImage(clone_info,exception);
+      DestroyImageInfo(clone_info);
+      if (image != (Image *) NULL)
+        {
+          (void) strcpy(image->filename,image_info->filename);
+          if (svg_info.comment != (char *) NULL)
+            (void) SetImageAttribute(image,"Comment",svg_info.comment);
+          if (svg_info.description != (char *) NULL)
+            (void) SetImageAttribute(image,"Description",svg_info.description);
+          if (svg_info.title != (char *) NULL)
+            (void) SetImageAttribute(image,"Title",svg_info.title);
+        }
     }
   /*
     Free resources.
   */
+  (void) remove(filename);
   if (svg_info.title != (char *) NULL)
     LiberateMemory((void **) &svg_info.title);
   if (svg_info.description != (char *) NULL)
