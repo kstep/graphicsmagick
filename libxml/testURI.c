@@ -18,6 +18,7 @@
 #include <stdarg.h>
 
 #include <libxml/xmlversion.h>
+#include <libxml/xmlmemory.h>
 #include <libxml/uri.h>
 
 int main(int argc, char **argv) {
@@ -26,6 +27,10 @@ int main(int argc, char **argv) {
     const char *base = NULL;
     xmlChar *composite;
 
+    if (argv[arg] == NULL) {
+	printf("Usage: %s [-base URI] URI ...\n", argv[0]);
+	exit(0);
+    }
     if ((!strcmp(argv[arg], "-base")) || (!strcmp(argv[arg], "--base"))) {
 	arg++;
 	base = argv[arg];
@@ -53,17 +58,24 @@ int main(int argc, char **argv) {
 		i--;
 		str[i] = 0;
 	    }
-	    if (i <= 0)
-		continue;
 
-	    ret = xmlParseURIReference(uri, str);
-	    if (ret != 0)
-		printf("%s : error %d\n", str, ret);
-	    else {
-		xmlPrintURI(stdout, uri);
-		printf("\n");
+	    if (base == NULL) {
+		ret = xmlParseURIReference(uri, str);
+		if (ret != 0)
+		    printf("%s : error %d\n", str, ret);
+		else {
+		    xmlPrintURI(stdout, uri);
+		    printf("\n");
+		}
+	    } else {
+		composite = xmlBuildURI((xmlChar *)str, (xmlChar *) base);
+		if (composite != NULL) {
+		    printf("%s\n", composite);
+		    xmlFree(composite);
+		}
+		else
+		    printf("::ERROR::\n");
 	    }
-
         }
     } else {
 	while (argv[arg] != NULL) {
@@ -77,8 +89,7 @@ int main(int argc, char **argv) {
 		}
 	    } else {
 		composite = xmlBuildURI((xmlChar *)argv[arg], (xmlChar *) base);
-		if (base == NULL) {
-		} else {
+		if (composite != NULL) {
 		    printf("%s\n", composite);
 		    xmlFree(composite);
 		}

@@ -1,13 +1,11 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.2)
 AC_INIT(entities.h)
-AC_REVISION
-AC_CANONICAL_SYSTEM
-AC_CONFIG_HEADER(config.h)
+AM_CONFIG_HEADER(config.h)
 
 LIBXML_MAJOR_VERSION=2
-LIBXML_MINOR_VERSION=1
-LIBXML_MICRO_VERSION=0
+LIBXML_MINOR_VERSION=2
+LIBXML_MICRO_VERSION=3
 LIBXML_VERSION=$LIBXML_MAJOR_VERSION.$LIBXML_MINOR_VERSION.$LIBXML_MICRO_VERSION
 LIBXML_VERSION_INFO=`expr $LIBXML_MAJOR_VERSION + $LIBXML_MINOR_VERSION`:$LIBXML_MICRO_VERSION:$LIBXML_MINOR_VERSION
 
@@ -20,85 +18,176 @@ AC_SUBST(LIBXML_VERSION)
 AC_SUBST(LIBXML_VERSION_INFO)
 AC_SUBST(LIBXML_VERSION_NUMBER)
 
-VERSION=$LIBXML_VERSION
+VERSION=${LIBXML_VERSION}
+
+AM_INIT_AUTOMAKE(libxml2, $VERSION)
+
+AC_ARG_WITH(html-dir, [  --with-html-dir=PATH path to installed docs ])
 
 dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_INSTALL
+AC_PROG_CPP
 AC_PATH_PROG(RM, rm, /bin/rm)
 AC_PATH_PROG(MV, mv, /bin/mv)
 AC_PATH_PROG(TAR, tar, /bin/tar)
-AC_PATH_PROG(GZIP, gzip, /bin/gzip)
 
-dnl Checks for libraries.
-for z in z gz ; do
-   AC_CHECK_LIB(${z}, deflate,
-    [LIBS="-l${z} $LIBS"; break])
-done
+dnl Make sure we have an ANSI compiler
+AM_C_PROTOTYPES
+test "x$U" != "x" && AC_MSG_ERROR(Compiler not ANSI compliant)
 
-dnl Checks for inet libraries:
-AC_CHECK_LIB(socket, socket)
-AC_CHECK_LIB(inet, connect)
-AC_CHECK_LIB(nsl, t_accept)
+AM_PROG_LIBTOOL
 
-dnl Checks for libunicode from Gnome
-AC_CHECK_LIB(unicode, unicode_get_utf8,
-[LIBS="-lunicode $LIBS" ; AC_CHECK_HEADERS(unicode.h)])
+AM_MAINTAINER_MODE
+
+dnl Checks for zlib library.
+_cppflags="${CPPFLAGS}"
+_ldflags="${LDFLAGS}"
+
+AC_ARG_WITH(zlib,
+[  --with-zlib[=DIR]       use libz in DIR],[
+  if test "$withval" != "no" -a "$withval" != "yes"; then
+    Z_DIR=$withval
+    CPPFLAGS="${CPPFLAGS} -I$withval/include"
+    LDFLAGS="${LDFLAGS} -L$withval/lib"
+  fi
+])
+
+AC_CHECK_HEADERS(zlib.h,
+    AC_CHECK_LIB(z, gzread,[
+	AC_DEFINE(HAVE_LIBZ)
+        if test "x${Z_DIR}" != "x"; then
+            Z_CFLAGS="-I${Z_DIR}/include"
+            Z_LIBS="-L${Z_DIR}/lib -lz"
+        else
+            Z_LIBS="-lz"
+        fi]))
+AC_SUBST(Z_CFLAGS)
+AC_SUBST(Z_LIBS)
+
+CPPFLAGS=${_cppflags}
+LDFLAGS=${_ldflags}
 
 dnl Checks for header files.
 AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_CHECK_HEADERS(fcntl.h unistd.h ctype.h dirent.h errno.h malloc.h)
-AC_CHECK_HEADERS(stdarg.h sys/stat.h sys/types.h time.h zlib.h)
-AC_CHECK_HEADERS(ieeefp.h nan.h math.h sys/types.h )
+AC_CHECK_HEADERS(stdarg.h sys/stat.h sys/types.h time.h)
+AC_CHECK_HEADERS(ieeefp.h nan.h math.h fp_class.h float.h)
 AC_CHECK_HEADERS(stdlib.h sys/socket.h netinet/in.h arpa/inet.h)
-AC_CHECK_HEADERS(netdb.h sys/time.h sys/select.h resolv.h)
+AC_CHECK_HEADERS(netdb.h sys/time.h sys/select.h sys/mman.h)
+
+dnl Specific dir for HTML output ?
+if test "x$with_html_dir" = "x" ; then
+  HTML_DIR='${datadir}/gtk-doc/html'
+else
+  HTML_DIR=$with_html_dir
+fi
+
+AC_SUBST(HTML_DIR)
+
+AC_ARG_ENABLE(corba,    [  --enable-corba           Add Corba support (default)])
+
+dnl
+dnl Corba is enabled by default
+dnl
+if test "$enable_corba" = "no" ; then
+   CORBA_CFLAGS="-DWITHOUT_CORBA"
+fi
+AC_SUBST(CORBA_CFLAGS)
 
 dnl Checks for library functions.
 AC_FUNC_STRFTIME
 AC_CHECK_FUNCS(strdup strndup strerror snprintf)
-AC_CHECK_FUNCS(finite isinf isnan isnand strftime localtime)
-AC_CHECK_FUNCS(iconv)
+AC_CHECK_FUNCS(finite isnand fp_class class fpclass)
+AC_CHECK_FUNCS(strftime localtime)
+
+dnl Checks for inet libraries:
+AC_CHECK_FUNC(gethostent, , AC_CHECK_LIB(nsl, gethostent))
+AC_CHECK_FUNC(setsockopt, , AC_CHECK_LIB(socket, setsockopt))
+AC_CHECK_FUNC(connect, , AC_CHECK_LIB(inet, connect))
+
+dnl Checks for isnan in libm if not in libc
+AC_CHECK_FUNC(isnan, , AC_CHECK_LIB(m, isnan,
+  [M_LIBS="-lm"; AC_DEFINE(HAVE_ISNAN)]))
+
+AC_CHECK_FUNC(isinf, , AC_CHECK_LIB(m, isinf,
+  [M_LIBS="-lm"; AC_DEFINE(HAVE_ISINF)]))
+
+XML_LIBDIR='-L${libdir}'
+XML_INCLUDEDIR='-I${includedir}/libxml -I${includedir}'
+XML_LIBS="-lxml $Z_LIBS $M_LIBS $LIBS"
 
 dnl
-dnl Workaround wor HP native compiler
+dnl Extra flags
+dnl
+XML_CFLAGS=""
+
+dnl
+dnl Workaround for HP native compiler
 dnl http://bugs.gnome.org/db/31/3163.html
 dnl
-if test "${CC}" != "gcc" ; then
+if test "${GCC}" != "yes" ; then
     case "${host}" in
           *-*-hpux* )
-	       CFLAGS="${CFLAGS} -Wp,-H16800 -Ae"
+	       CFLAGS="${CFLAGS} -Wp,-H30000"
 	       ;;
     esac
-else    
-    case "${host}" in
-          *linux* )
-	       CFLAGS="${CFLAGS} -pedantic"
-	       ;;
-    esac
-fi
-
-if test "${LOGNAME}" = "veillard" ; then
-    with_mem_debug="yes"
 fi
 
 dnl
 dnl Use buffers for content
 dnl
 
-AC_ARG_WITH(buffers, [  --with-buffers          Use buffers for node content (off)])
+AC_ARG_WITH(buffers, [  --with-buffers          Use buffers for node content])
 if test "$with_buffers" = "yes" ; then
     CFLAGS="${CFLAGS} -DXML_USE_BUFFER_CONTENT"
+    XML_CFLAGS="${XML_CFLAGS}  -DXML_USE_BUFFER_CONTENT"
 fi
 
-AC_SUBST(CFLAGS)
+dnl
+dnl Tester makes use of readline if present
+dnl
+_cppflags="${CPPFLAGS}"
+_ldflags="${LDFLAGS}"
 
-LIBXML_LIBS="${LIBS}"
-AC_CHECK_LIB(history, append_history)
-AC_CHECK_LIB(readline, readline)
+AC_ARG_WITH(readline,
+[  --with-readline=DIR     use readline in DIR],[
+  if test "$withval" != "no" -a "$withval" != "yes"; then
+    RDL_DIR=$withval
+    CPPFLAGS="${CPPFLAGS} -I$withval/include"
+    LDFLAGS="${LDFLAGS} -L$withval/lib"
+  fi
+])
+
+dnl check for terminal library. this is a very cool solution
+dnl from octave's configure.in
+unset tcap
+for termlib in ncurses curses termcap terminfo termlib; do
+    AC_CHECK_LIB(${termlib}, tputs, [tcap="-l$termlib"])
+    test -n "$tcap" && break
+done
+
+AC_CHECK_HEADER(readline/history.h,
+    AC_CHECK_LIB(history, append_history,[
+       RDL_LIBS="-lhistory"
+       AC_DEFINE(HAVE_LIBHISTORY)]))
+AC_CHECK_HEADER(readline/readline.h,
+    AC_CHECK_LIB(readline, readline,[
+       RDL_LIBS="-lreadline $RDL_LIBS $tcap"
+       AC_DEFINE(HAVE_LIBREADLINE)], , $tcap))
+if test -n "$RDL_DIR" -a -n "$RDL_LIBS"; then
+    CPPFLAGS="$CPPFLAGS -I${RDL_DIR}/include"
+    RDL_LIBS="-L${RDL_DIR}/lib $RDL_LIBS"
+else
+    CPPFLAGS=${_cppflags}
+fi
+LDFLAGS=${_ldflags}
+
+AC_SUBST(RDL_LIBS)
 
 dnl
-dnl Disable various pieces
+dnl Aloow to disable various pieces
 dnl
 
 AC_ARG_WITH(ftp, [  --with-ftp              Add the FTP support (on)])
@@ -154,13 +243,14 @@ if test "$with_iconv" = "no" ; then
     echo Disabling ICONV support
     WITH_ICONV=0
 else    
+    AC_CHECK_FUNCS(iconv)
     if test "$have_iconv" != "" ; then
         echo Iconv support not found
-	WITH_ICONV=0
+        WITH_ICONV=0
     else
-	WITH_ICONV=1
+        WITH_ICONV=1
     fi
-fi
+fi  
 AC_SUBST(WITH_ICONV)
 
 AC_ARG_WITH(debug, [  --with-debug            Add the debugging module (on)])
@@ -176,17 +266,38 @@ AC_SUBST(WITH_DEBUG)
 AC_SUBST(DEBUG_OBJ)
 
 AC_ARG_WITH(mem_debug, [  --with-mem-debug        Add the memory debugging module (off)])
-if test "$with_mem_debug" = "no" ; then
-    WITH_MEM_DEBUG=0
-else    
+if test "$with_mem_debug" = "yes" ; then
     echo Enabling memory debug support
     WITH_MEM_DEBUG=1
+else    
+    WITH_MEM_DEBUG=0
 fi
 AC_SUBST(WITH_MEM_DEBUG)
 
-AC_SUBST(LIBXML_MAJOR_VERSION)
+AC_SUBST(CFLAGS)
+AC_SUBST(XML_CFLAGS)
 
-xmlextrasrcdir=""
-AC_SUBST(xmlextrasrcdir)
-AC_SUBST(LIBXML_LIBS)
-AC_OUTPUT(Makefile xmlversion.h win32config.h)
+AC_SUBST(XML_LIBDIR)
+AC_SUBST(XML_LIBS)
+AC_SUBST(XML_INCLUDEDIR)
+AC_SUBST(HTML_DIR)
+AC_SUBST(HAVE_ISNAN)
+AC_SUBST(HAVE_ISINF)
+
+AC_SUBST(M_LIBS)
+AC_SUBST(RDL_LIBS)
+
+dnl
+dnl create the libxml link needed to get dependencies right
+dnl
+if test -f $srcdir/libxml 
+then
+    rm -f $srcdir/libxml libxml
+    (cd $srcdir ; ln -s . libxml)
+    (ln -s . libxml)
+else
+    (cd $srcdir ; rm -f libxml ; ln -s . libxml)
+    (rm -f libxml ; ln -s . libxml)
+fi
+AC_OUTPUT(libxml.spec Makefile doc/Makefile example/Makefile xmlversion.h xml-config win32config.h)
+

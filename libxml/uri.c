@@ -207,7 +207,7 @@ xmlSaveUri(xmlURIPtr uri) {
 
 
     max = 80;
-    ret = xmlMalloc((max + 1) * sizeof(xmlChar));
+    ret = (xmlChar *) xmlMalloc((max + 1) * sizeof(xmlChar));
     if (ret == NULL) {
 	fprintf(stderr, "xmlSaveUri: out of memory\n");
 	return(NULL);
@@ -219,7 +219,7 @@ xmlSaveUri(xmlURIPtr uri) {
 	while (*p != 0) {
 	    if (len >= max) {
 		max *= 2;
-		ret = xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
+		ret = (xmlChar *) xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
 		if (ret == NULL) {
 		    fprintf(stderr, "xmlSaveUri: out of memory\n");
 		    return(NULL);
@@ -229,7 +229,7 @@ xmlSaveUri(xmlURIPtr uri) {
 	}
 	if (len >= max) {
 	    max *= 2;
-	    ret = xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
+	    ret = (xmlChar *) xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
 	    if (ret == NULL) {
 		fprintf(stderr, "xmlSaveUri: out of memory\n");
 		return(NULL);
@@ -242,7 +242,7 @@ xmlSaveUri(xmlURIPtr uri) {
 	while (*p != 0) {
 	    if (len + 3 >= max) {
 		max *= 2;
-		ret = xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
+		ret = (xmlChar *) xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
 		if (ret == NULL) {
 		    fprintf(stderr, "xmlSaveUri: out of memory\n");
 		    return(NULL);
@@ -278,7 +278,7 @@ xmlSaveUri(xmlURIPtr uri) {
 	}
 	if (len >= max) {
 	    max *= 2;
-	    ret = xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
+	    ret = (xmlChar *) xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
 	    if (ret == NULL) {
 		fprintf(stderr, "xmlSaveUri: out of memory\n");
 		return(NULL);
@@ -289,7 +289,7 @@ xmlSaveUri(xmlURIPtr uri) {
 	if (uri->server != NULL) {
 	    if (len + 3 >= max) {
 		max *= 2;
-		ret = xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
+		ret = (xmlChar *) xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
 		if (ret == NULL) {
 		    fprintf(stderr, "xmlSaveUri: out of memory\n");
 		    return(NULL);
@@ -302,7 +302,7 @@ xmlSaveUri(xmlURIPtr uri) {
 		while (*p != 0) {
 		    if (len + 3 >= max) {
 			max *= 2;
-			ret = xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
+			ret = (xmlChar *) xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
 			if (ret == NULL) {
 			    fprintf(stderr, "xmlSaveUri: out of memory\n");
 			    return(NULL);
@@ -338,7 +338,7 @@ xmlSaveUri(xmlURIPtr uri) {
 		}
 		if (len + 3 >= max) {
 		    max *= 2;
-		    ret = xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
+		    ret = (xmlChar *) xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
 		    if (ret == NULL) {
 			fprintf(stderr, "xmlSaveUri: out of memory\n");
 			return(NULL);
@@ -350,7 +350,7 @@ xmlSaveUri(xmlURIPtr uri) {
 	    while (*p != 0) {
 		if (len >= max) {
 		    max *= 2;
-		    ret = xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
+		    ret = (xmlChar *) xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
 		    if (ret == NULL) {
 			fprintf(stderr, "xmlSaveUri: out of memory\n");
 			return(NULL);
@@ -361,7 +361,7 @@ xmlSaveUri(xmlURIPtr uri) {
 	    if (uri->port > 0) {
 		if (len + 10 >= max) {
 		    max *= 2;
-		    ret = xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
+		    ret = (xmlChar *) xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
 		    if (ret == NULL) {
 			fprintf(stderr, "xmlSaveUri: out of memory\n");
 			return(NULL);
@@ -372,7 +372,7 @@ xmlSaveUri(xmlURIPtr uri) {
 	} else if (uri->authority != NULL) {
 	    if (len + 3 >= max) {
 		max *= 2;
-		ret = xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
+		ret = (xmlChar *) xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
 		if (ret == NULL) {
 		    fprintf(stderr, "xmlSaveUri: out of memory\n");
 		    return(NULL);
@@ -384,7 +384,7 @@ xmlSaveUri(xmlURIPtr uri) {
 	    while (*p != 0) {
 		if (len + 3 >= max) {
 		    max *= 2;
-		    ret = xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
+		    ret = (xmlChar *) xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
 		    if (ret == NULL) {
 			fprintf(stderr, "xmlSaveUri: out of memory\n");
 			return(NULL);
@@ -424,7 +424,7 @@ xmlSaveUri(xmlURIPtr uri) {
 	    while (*p != 0) {
 		if (len + 3 >= max) {
 		    max *= 2;
-		    ret = xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
+		    ret = (xmlChar *) xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
 		    if (ret == NULL) {
 			fprintf(stderr, "xmlSaveUri: out of memory\n");
 			return(NULL);
@@ -462,7 +462,7 @@ xmlSaveUri(xmlURIPtr uri) {
 	if (uri->query != NULL) {
 	    if (len + 3 >= max) {
 		max *= 2;
-		ret = xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
+		ret = (xmlChar *) xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
 		if (ret == NULL) {
 		    fprintf(stderr, "xmlSaveUri: out of memory\n");
 		    return(NULL);
@@ -473,7 +473,7 @@ xmlSaveUri(xmlURIPtr uri) {
 	    while (*p != 0) {
 		if (len + 3 >= max) {
 		    max *= 2;
-		    ret = xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
+		    ret = (xmlChar *) xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
 		    if (ret == NULL) {
 			fprintf(stderr, "xmlSaveUri: out of memory\n");
 			return(NULL);
@@ -508,7 +508,7 @@ xmlSaveUri(xmlURIPtr uri) {
 	if (uri->fragment != NULL) {
 	    if (len + 3 >= max) {
 		max *= 2;
-		ret = xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
+		ret = (xmlChar *) xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
 		if (ret == NULL) {
 		    fprintf(stderr, "xmlSaveUri: out of memory\n");
 		    return(NULL);
@@ -519,7 +519,7 @@ xmlSaveUri(xmlURIPtr uri) {
 	    while (*p != 0) {
 		if (len + 3 >= max) {
 		    max *= 2;
-		    ret = xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
+		    ret = (xmlChar *) xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
 		    if (ret == NULL) {
 			fprintf(stderr, "xmlSaveUri: out of memory\n");
 			return(NULL);
@@ -553,7 +553,7 @@ xmlSaveUri(xmlURIPtr uri) {
 	}
 	if (len >= max) {
 	    max *= 2;
-	    ret = xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
+	    ret = (xmlChar *) xmlRealloc(ret, (max + 1) * sizeof(xmlChar));
 	    if (ret == NULL) {
 		fprintf(stderr, "xmlSaveUri: out of memory\n");
 		return(NULL);
@@ -1030,7 +1030,9 @@ xmlParseURIPathSegments(xmlURIPtr uri, const char **str, int slash) {
 	    path[len2] = '/';
 	    len2++;
 	}
-	xmlURIUnescapeString(*str, cur - *str, &path[len2]);
+	path[len2] = 0;
+	if (cur - *str > 0)
+	    xmlURIUnescapeString(*str, cur - *str, &path[len2]);
 	if (uri->path != NULL)
 	    xmlFree(uri->path);
 	uri->path = path;
@@ -1214,7 +1216,7 @@ xmlParseRelativeURI(xmlURIPtr uri, const char **str) {
     } else if (cur[0] == '/') {
 	cur++;
 	ret = xmlParseURIPathSegments(uri, &cur, 1);
-    } else {
+    } else if (cur[0] != '#' && cur[0] != '?') {
 	ret = xmlParseURIRelSegment(uri, &cur);
 	if (ret != 0)
 	    return(ret);
@@ -1465,17 +1467,27 @@ xmlBuildURI(const xmlChar *URI, const xmlChar *base) {
     xmlURIPtr bas = NULL;
     xmlURIPtr res = NULL;
 
+    if ((URI == NULL) && (base == NULL))
+	return(NULL);
+    if (URI == NULL)
+	return((xmlChar *) xmlMemStrdup((const char *) base));
 
     /*
      * 1) The URI reference is parsed into the potential four components and
      *    fragment identifier, as described in Section 4.3.
+     *
+     *    NOTE that a completely empty URI is treated by modern browsers
+     *    as a reference to "." rather than as a synonym for the current
+     *    URI.  Should we do that here?
      */
     ref = xmlCreateURI();
     if (ref == NULL)
 	goto done;
-    ret = xmlParseURIReference(ref, (const char *) URI);
-    if (ret != 0)
-	goto done;
+    if (*URI) {
+	ret = xmlParseURIReference(ref, (const char *) URI);
+	if (ret != 0)
+	    goto done;
+    }
     bas = xmlCreateURI();
     if (bas == NULL)
 	goto done;
@@ -1489,19 +1501,42 @@ xmlBuildURI(const xmlChar *URI, const xmlChar *base) {
      *    current document and we are done.  Otherwise, the reference URI's
      *    query and fragment components are defined as found (or not found)
      *    within the URI reference and not inherited from the base URI.
+     *
+     *    NOTE that in modern browsers, the parsing differs from the above
+     *    in the following aspect:  the query component is allowed to be
+     *    defined while still treating this as a reference to the current
+     *    document.
      */
     res = xmlCreateURI();
     if (res == NULL)
 	goto done;
     if ((ref->scheme == NULL) && (ref->path == NULL) &&
-	((ref->authority == NULL) && (ref->server == NULL)) &&
-	(ref->query == NULL)) {
-	if (ref->fragment == NULL)
-	    goto done;
-        res->fragment = xmlMemStrdup(ref->fragment);
-	val = xmlSaveUri(res);
-	goto done;
+	((ref->authority == NULL) && (ref->server == NULL))) {
+	if (bas->scheme != NULL)
+	    res->scheme = xmlMemStrdup(bas->scheme);
+	if (bas->authority != NULL)
+	    res->authority = xmlMemStrdup(bas->authority);
+	else if (bas->server != NULL) {
+	    res->server = xmlMemStrdup(bas->server);
+	    if (bas->user != NULL)
+		res->user = xmlMemStrdup(bas->user);
+	    res->port = bas->port;		
+	}
+	if (bas->path != NULL)
+	    res->path = xmlMemStrdup(bas->path);
+	if (ref->query != NULL)
+	    res->query = xmlMemStrdup(ref->query);
+	else if (bas->query != NULL)
+	    res->query = xmlMemStrdup(bas->query);
+	if (ref->fragment != NULL)
+	    res->fragment = xmlMemStrdup(ref->fragment);
+	goto step_7;
     }
+ 
+    if (ref->query != NULL)
+	res->query = xmlMemStrdup(ref->query);
+    if (ref->fragment != NULL)
+	res->fragment = xmlMemStrdup(ref->fragment);
 
     /*
      * 3) If the scheme component is defined, indicating that the reference
@@ -1513,7 +1548,8 @@ xmlBuildURI(const xmlChar *URI, const xmlChar *base) {
 	val = xmlSaveUri(ref);
 	goto done;
     }
-    res->scheme = xmlMemStrdup(bas->scheme);
+    if (bas->scheme != NULL)
+	res->scheme = xmlMemStrdup(bas->scheme);
 
     /*
      * 4) If the authority component is defined, then the reference is a
@@ -1533,10 +1569,6 @@ xmlBuildURI(const xmlChar *URI, const xmlChar *base) {
 	}
 	if (ref->path != NULL)
 	    res->path = xmlMemStrdup(ref->path);
-	if (ref->query != NULL)
-	    res->query = xmlMemStrdup(ref->query);
-	if (ref->fragment != NULL)
-	    res->fragment = xmlMemStrdup(ref->fragment);
 	goto step_7;
     }
     if (bas->authority != NULL)
@@ -1554,10 +1586,6 @@ xmlBuildURI(const xmlChar *URI, const xmlChar *base) {
      */
     if ((ref->path != NULL) && (ref->path[0] == '/')) {
 	res->path = xmlMemStrdup(ref->path);
-	if (ref->query != NULL)
-	    res->query = xmlMemStrdup(ref->query);
-	if (ref->fragment != NULL)
-	    res->fragment = xmlMemStrdup(ref->fragment);
 	goto step_7;
     }
 
@@ -1611,6 +1639,13 @@ xmlBuildURI(const xmlChar *URI, const xmlChar *base) {
      */
     if (ref->path != NULL) {
 	index = 0;
+	/*
+	 * Ensure the path includes a '/'
+	 */
+	if ((out >0) && (res->path[out -1] != '/') &&
+	    (ref->path[0] != 0) && (ref->path[index] != '/')) {
+	    res->path[out++] = '/';
+	}
 	while (ref->path[index] != 0) {
 	    res->path[out++] = ref->path[index++];
 	}
@@ -1634,7 +1669,7 @@ step_7:
 done:
     if (ref != NULL)
 	xmlFreeURI(ref);
-    if (base != NULL)
+    if (bas != NULL)
 	xmlFreeURI(bas);
     if (res != NULL)
 	xmlFreeURI(res);

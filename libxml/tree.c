@@ -129,18 +129,13 @@ xmlUpgradeOldNs(xmlDocPtr doc) {
  * Creation of a new Namespace. This function will refuse to create
  * a namespace with a similar prefix than an existing one present on this
  * node.
+ * We use href==NULL in the case of an element creation where the namespace
+ * was not defined.
  * Returns returns a new namespace pointer or NULL
  */
 xmlNsPtr
 xmlNewNs(xmlNodePtr node, const xmlChar *href, const xmlChar *prefix) {
     xmlNsPtr cur;
-
-    if (href == NULL) {
-#ifdef DEBUG_TREE
-        fprintf(stderr, "xmlNewNs: href == NULL !\n");
-#endif
-	return(NULL);
-    }
 
     /*
      * Allocate a new Namespace and fill the fields.
@@ -426,10 +421,17 @@ xmlCreateIntSubset(xmlDocPtr doc, const xmlChar *name,
 	} else {
 	    xmlNodePtr prev;
 
-	    prev = doc->last;
-	    prev->next = (xmlNodePtr) cur;
-	    cur->prev = prev;
-	    doc->last = (xmlNodePtr) cur;
+	    if (doc->type == XML_HTML_DOCUMENT_NODE) {
+		prev = doc->children;
+		prev->prev = (xmlNodePtr) cur;
+		cur->next = prev;
+		doc->children = (xmlNodePtr) cur;
+	    } else {
+		prev = doc->last;
+		prev->next = (xmlNodePtr) cur;
+		cur->prev = prev;
+		doc->last = (xmlNodePtr) cur;
+	    }
 	}
     }
     return(cur);
@@ -793,7 +795,8 @@ xmlNodeListGetString(xmlDocPtr doc, xmlNodePtr list, int inLine) {
     if (list == NULL) return(NULL);
 
     while (node != NULL) {
-        if (node->type == XML_TEXT_NODE) {
+        if ((node->type == XML_TEXT_NODE) ||
+	    (node->type == XML_CDATA_SECTION_NODE)) {
 	    if (inLine) {
 #ifndef XML_USE_BUFFER_CONTENT
 		ret = xmlStrcat(ret, node->content);
@@ -1236,9 +1239,8 @@ xmlNewPI(const xmlChar *name, const xmlChar *content) {
  * @ns:  namespace if any
  * @name:  the node name
  *
- * Creation of a new node element. @ns and @content are optionnal (NULL).
- * If content is non NULL, a child list containing the TEXTs and
- * ENTITY_REFs node will be created.
+ * Creation of a new node element. @ns is optionnal (NULL).
+ *
  * Returns a pointer to the new node object.
  */
 xmlNodePtr
@@ -1909,6 +1911,62 @@ xmlAddSibling(xmlNodePtr cur, xmlNodePtr elem) {
 }
 
 /**
+ * xmlAddChildList:
+ * @parent:  the parent node
+ * @cur:  the first node in the list
+ *
+ * Add a list of node at the end of the child list of the parent
+ *
+ * Returns the last child or NULL in case of error.
+ */
+xmlNodePtr
+xmlAddChildList(xmlNodePtr parent, xmlNodePtr cur) {
+    xmlNodePtr prev;
+
+    if (parent == NULL) {
+#ifdef DEBUG_TREE
+        fprintf(stderr, "xmlAddChild : parent == NULL\n");
+#endif
+	return(NULL);
+    }
+
+    if (cur == NULL) {
+#ifdef DEBUG_TREE
+        fprintf(stderr, "xmlAddChild : child == NULL\n");
+#endif
+	return(NULL);
+    }
+
+    if ((cur->doc != NULL) && (parent->doc != NULL) &&
+        (cur->doc != parent->doc)) {
+#ifdef DEBUG_TREE
+	fprintf(stderr, "Elements moved to a different document\n");
+#endif
+    }
+
+    /*
+     * add the first element at the end of the children list.
+     */
+    if (parent->children == NULL) {
+        parent->children = cur;
+    } else {
+        prev = parent->last;
+	prev->next = cur;
+	cur->prev = prev;
+    }
+    while (cur->next != NULL) {
+	cur->parent = parent;
+	cur->doc = parent->doc; /* the parent may not be linked to a doc ! */
+        cur = cur->next;
+    }
+    cur->parent = parent;
+    cur->doc = parent->doc; /* the parent may not be linked to a doc ! */
+    parent->last = cur;
+
+    return(cur);
+}
+
+/**
  * xmlAddChild:
  * @parent:  the parent node
  * @cur:  the child node
@@ -2576,12 +2634,15 @@ xmlNodeSetLang(xmlNodePtr cur, const xmlChar *lang) {
         case XML_ELEMENT_DECL:
         case XML_ATTRIBUTE_DECL:
         case XML_ENTITY_DECL:
-	    return;
-        case XML_ELEMENT_NODE:
-        case XML_ATTRIBUTE_NODE:
         case XML_PI_NODE:
         case XML_ENTITY_REF_NODE:
         case XML_ENTITY_NODE:
+#ifdef LIBXML_SGML_ENABLED
+	case XML_SGML_DOCUMENT_NODE:
+#endif
+	    return;
+        case XML_ELEMENT_NODE:
+        case XML_ATTRIBUTE_NODE:
 	    break;
     }
     xmlSetProp(cur, BAD_CAST "xml:lang", lang);
@@ -2661,6 +2722,9 @@ xmlNodeSetName(xmlNodePtr cur, const xmlChar *name) {
         case XML_DOCUMENT_FRAG_NODE:
         case XML_NOTATION_NODE:
         case XML_HTML_DOCUMENT_NODE:
+#ifdef LIBXML_SGML_ENABLED
+	case XML_SGML_DOCUMENT_NODE:
+#endif
 	    return;
         case XML_ELEMENT_NODE:
         case XML_ATTRIBUTE_NODE:
@@ -2699,6 +2763,9 @@ xmlNodeGetBase(xmlDocPtr doc, xmlNodePtr cur) {
     if ((doc != NULL) && (doc->type == XML_HTML_DOCUMENT_NODE)) {
         cur = doc->children;
 	while ((cur != NULL) && (cur->name != NULL)) {
+	    if (cur->type == XML_ENTITY_DECL) {
+		/* TODO: we are crossing entity boundaries */
+	    }
 	    if (cur->type != XML_ELEMENT_NODE) {
 	        cur = cur->next;
 		continue;
@@ -2784,6 +2851,9 @@ xmlNodeGetContent(xmlNodePtr cur) {
         case XML_DOCUMENT_TYPE_NODE:
         case XML_NOTATION_NODE:
         case XML_DTD_NODE:
+#ifdef LIBXML_SGML_ENABLED
+	case XML_SGML_DOCUMENT_NODE:
+#endif
 	    return(NULL);
         case XML_ELEMENT_DECL:
 	    /* TODO !!! */
@@ -2869,6 +2939,9 @@ xmlNodeSetContent(xmlNodePtr cur, const xmlChar *content) {
         case XML_DOCUMENT_NODE:
         case XML_HTML_DOCUMENT_NODE:
         case XML_DOCUMENT_TYPE_NODE:
+#ifdef LIBXML_SGML_ENABLED
+	case XML_SGML_DOCUMENT_NODE:
+#endif
 	    break;
         case XML_NOTATION_NODE:
 	    break;
@@ -2951,6 +3024,9 @@ xmlNodeSetContentLen(xmlNodePtr cur, const xmlChar *content, int len) {
         case XML_DTD_NODE:
         case XML_HTML_DOCUMENT_NODE:
         case XML_DOCUMENT_TYPE_NODE:
+#ifdef LIBXML_SGML_ENABLED
+	case XML_SGML_DOCUMENT_NODE:
+#endif
 	    break;
         case XML_ELEMENT_DECL:
 	    /* TODO !!! */
@@ -2984,7 +3060,7 @@ xmlNodeAddContentLen(xmlNodePtr cur, const xmlChar *content, int len) {
     switch (cur->type) {
         case XML_DOCUMENT_FRAG_NODE:
         case XML_ELEMENT_NODE: {
-	    xmlNodePtr last = NULL, new;
+	    xmlNodePtr last = NULL, newNode;
 
 	    if (cur->children != NULL) {
 		last = cur->last;
@@ -3006,11 +3082,11 @@ xmlNodeAddContentLen(xmlNodePtr cur, const xmlChar *content, int len) {
 		    last = cur->last;
 		}
 	    }
-	    new = xmlNewTextLen(content, len);
-	    if (new != NULL) {
-		xmlAddChild(cur, new);
-	        if ((last != NULL) && (last->next == new)) {
-		    xmlTextMerge(last, new);
+	    newNode = xmlNewTextLen(content, len);
+	    if (newNode != NULL) {
+		xmlAddChild(cur, newNode);
+	        if ((last != NULL) && (last->next == newNode)) {
+		    xmlTextMerge(last, newNode);
 		}
 	    }
 	    break;
@@ -3035,6 +3111,9 @@ xmlNodeAddContentLen(xmlNodePtr cur, const xmlChar *content, int len) {
         case XML_DTD_NODE:
         case XML_HTML_DOCUMENT_NODE:
         case XML_DOCUMENT_TYPE_NODE:
+#ifdef LIBXML_SGML_ENABLED
+	case XML_SGML_DOCUMENT_NODE:
+#endif
 	    break;
         case XML_ELEMENT_DECL:
         case XML_ATTRIBUTE_DECL:
@@ -3153,6 +3232,10 @@ xmlGetNsList(xmlDocPtr doc, xmlNodePtr node) {
  * recurse on the parents until it finds the defined namespace
  * or return NULL otherwise.
  * @nameSpace can be NULL, this is a search for the default namespace.
+ * We don't allow to cross entities boundaries. If you don't declare
+ * the namespace within those you will be in troubles !!! A warning
+ * is generated to cover this case.
+ *
  * Returns the namespace pointer or NULL.
  */
 xmlNsPtr
@@ -3161,12 +3244,18 @@ xmlSearchNs(xmlDocPtr doc, xmlNodePtr node, const xmlChar *nameSpace) {
 
     if (node == NULL) return(NULL);
     while (node != NULL) {
+	if ((node->type == XML_ENTITY_REF_NODE) ||
+	    (node->type == XML_ENTITY_NODE) ||
+	    (node->type == XML_ENTITY_DECL))
+	    return(NULL);
 	if (node->type == XML_ELEMENT_NODE) {
 	    cur = node->nsDef;
 	    while (cur != NULL) {
-		if ((cur->prefix == NULL) && (nameSpace == NULL))
+		if ((cur->prefix == NULL) && (nameSpace == NULL) &&
+		    (cur->href != NULL))
 		    return(cur);
 		if ((cur->prefix != NULL) && (nameSpace != NULL) &&
+		    (cur->href != NULL) &&
 		    (!xmlStrcmp(cur->prefix, nameSpace)))
 		    return(cur);
 		cur = cur->next;
@@ -3470,6 +3559,54 @@ xmlReconciliateNs(xmlDocPtr doc, xmlNodePtr tree) {
 }
 
 /**
+ * xmlHasProp:
+ * @node:  the node
+ * @name:  the attribute name
+ *
+ * Search an attribute associated to a node
+ * This function also looks in DTD attribute declaration for #FIXED or
+ * default declaration values unless DTD use has been turned off.
+ *
+ * Returns the attribute or the attribute declaration or NULL if 
+ *         neither was found.
+ */
+xmlAttrPtr
+xmlHasProp(xmlNodePtr node, const xmlChar *name) {
+    xmlAttrPtr prop;
+    xmlDocPtr doc;
+
+    if ((node == NULL) || (name == NULL)) return(NULL);
+    /*
+     * Check on the properties attached to the node
+     */
+    prop = node->properties;
+    while (prop != NULL) {
+        if (!xmlStrcmp(prop->name, name))  {
+	    return(prop);
+        }
+	prop = prop->next;
+    }
+    if (!xmlCheckDTD) return(NULL);
+
+    /*
+     * Check if there is a default declaration in the internal
+     * or external subsets
+     */
+    doc =  node->doc;
+    if (doc != NULL) {
+        xmlAttributePtr attrDecl;
+        if (doc->intSubset != NULL) {
+	    attrDecl = xmlGetDtdAttrDesc(doc->intSubset, node->name, name);
+	    if ((attrDecl == NULL) && (doc->extSubset != NULL))
+		attrDecl = xmlGetDtdAttrDesc(doc->extSubset, node->name, name);
+	    if (attrDecl != NULL)
+		return((xmlAttrPtr) attrDecl);
+	}
+    }
+    return(NULL);
+}
+
+/**
  * xmlGetProp:
  * @node:  the node
  * @name:  the attribute name
@@ -3652,7 +3789,9 @@ xmlNodeIsText(xmlNodePtr node) {
  * xmlIsBlankNode:
  * @node:  the node
  * 
- * Is this node a Text node ?
+ * Checks whether this node is an empty or whitespace only
+ * (and possibly ignorable) text-node.
+ *
  * Returns 1 yes, 0 no
  */
 int
@@ -3863,7 +4002,7 @@ xmlBufferGrow(xmlBufferPtr buf, int len) {
 
     size = buf->use + len + 100;
 
-    newbuf = xmlRealloc(buf->content, size);
+    newbuf = (xmlChar *) xmlRealloc(buf->content, size);
     if (newbuf == NULL) return(-1);
     buf->content = newbuf;
     buf->size = size;
@@ -4726,7 +4865,7 @@ xmlNsDumpOutput(xmlOutputBufferPtr buf, xmlNsPtr cur) {
 #endif
 	return;
     }
-    if (cur->type == XML_LOCAL_NAMESPACE) {
+    if ((cur->type == XML_LOCAL_NAMESPACE) && (cur->href != NULL)) {
         /* Within the context of an element attributes */
 	if (cur->prefix != NULL) {
 	    xmlOutputBufferWriteString(buf, " xmlns:");
@@ -5099,7 +5238,7 @@ xmlDocContentDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr cur,
 	if (cur->encoding != NULL)
 	    encoding = (const char *) cur->encoding;
 	else if (cur->charset != XML_CHAR_ENCODING_UTF8)
-	    encoding = xmlGetCharEncodingName(cur->charset);
+	    encoding = xmlGetCharEncodingName((xmlCharEncoding) cur->charset);
     }
     if (encoding != NULL) {
         xmlOutputBufferWriteString(buf, " encoding=");
@@ -5224,91 +5363,6 @@ xmlSetCompressMode(int mode) {
     else xmlCompressMode = mode;
 }
 
-#if 0
-/**
- * xmlDocDump:
- * @f:  the FILE*
- * @cur:  the document
- *
- * Dump an XML document to an open FILE.
- */
-void
-xmlDocDump(FILE *f, xmlDocPtr cur) {
-    xmlBufferPtr buf;
-
-    if (cur == NULL) {
-#ifdef DEBUG_TREE
-        fprintf(stderr, "xmlDocDump : document == NULL\n");
-#endif
-	return;
-    }
-    buf = xmlBufferCreate();
-    if (buf == NULL) return;
-    xmlDocContentDump(buf, cur);
-    xmlBufferDump(f, buf);
-    xmlBufferFree(buf);
-}
-
-/**
- * xmlSaveFile:
- * @filename:  the filename
- * @cur:  the document
- *
- * Dump an XML document to a file. Will use compression if
- * compiled in and enabled. If @filename is "-" the stdout file is
- * used.
- * returns: the number of file written or -1 in case of failure.
- */
-int
-xmlSaveFile(const char *filename, xmlDocPtr cur) {
-    xmlBufferPtr buf;
-#ifdef HAVE_ZLIB_H
-    gzFile zoutput = NULL;
-    char mode[15];
-#endif
-    FILE *output = NULL;
-    int ret;
-
-    /* 
-     * save the content to a temp buffer.
-     */
-    buf = xmlBufferCreate();
-    if (buf == NULL) return(0);
-    xmlDocContentDump(buf, cur);
-
-#ifdef HAVE_ZLIB_H
-    if (cur->compression < 0) cur->compression = xmlCompressMode;
-    if ((cur->compression > 0) && (cur->compression <= 9)) {
-        sprintf(mode, "w%d", cur->compression);
-	if (!strcmp(filename, "-")) 
-	    zoutput = gzdopen(1, mode);
-	else
-	    zoutput = gzopen(filename, mode);
-    }
-    if (zoutput == NULL) {
-#endif
-        output = fopen(filename, "w");
-	if (output == NULL) {
-	    xmlBufferFree(buf);
-	    return(-1);
-	}
-#ifdef HAVE_ZLIB_H
-    }
-
-    if (zoutput != NULL) {
-        ret = gzwrite(zoutput, buf->content, sizeof(xmlChar) * buf->use);
-	gzclose(zoutput);
-    } else {
-#endif
-        ret = xmlBufferDump(output, buf);
-	fclose(output);
-#ifdef HAVE_ZLIB_H
-    }
-#endif
-    xmlBufferFree(buf);
-    return(ret * sizeof(xmlChar));
-}
-#else
 /**
  * xmlDocDump:
  * @f:  the FILE*
@@ -5316,11 +5370,13 @@ xmlSaveFile(const char *filename, xmlDocPtr cur) {
  *
  * Dump an XML document to an open FILE.
  *
- * returns: the number of file written or -1 in case of failure.
+ * returns: the number of byte written or -1 in case of failure.
  */
 int
 xmlDocDump(FILE *f, xmlDocPtr cur) {
     xmlOutputBufferPtr buf;
+    const char * encoding;
+    xmlCharEncodingHandlerPtr handler = NULL;
     int ret;
 
     if (cur == NULL) {
@@ -5329,38 +5385,27 @@ xmlDocDump(FILE *f, xmlDocPtr cur) {
 #endif
 	return(-1);
     }
-    buf = xmlOutputBufferCreateFile(f, NULL);
+    encoding = (const char *) cur->encoding;
+
+    if (encoding != NULL) {
+	xmlCharEncoding enc;
+
+	enc = xmlParseCharEncoding(encoding);
+
+	if (cur->charset != XML_CHAR_ENCODING_UTF8) {
+	    fprintf(stderr, "xmlDocDump: document not in UTF8\n");
+	    return(-1);
+	}
+	if (enc != XML_CHAR_ENCODING_UTF8) {
+	    handler = xmlFindCharEncodingHandler(encoding);
+	    if (handler == NULL) {
+		xmlFree((char *) cur->encoding);
+		cur->encoding = NULL;
+	    }
+	}
+    }
+    buf = xmlOutputBufferCreateFile(f, handler);
     if (buf == NULL) return(-1);
-    xmlDocContentDumpOutput(buf, cur, NULL);
-
-    ret = xmlOutputBufferClose(buf);
-    return(ret);
-}
-
-/**
- * xmlSaveFile:
- * @filename:  the filename (or URL)
- * @cur:  the document
- *
- * Dump an XML document to a file. Will use compression if
- * compiled in and enabled. If @filename is "-" the stdout file is
- * used.
- * returns: the number of file written or -1 in case of failure.
- */
-int
-xmlSaveFile(const char *filename, xmlDocPtr cur) {
-    xmlOutputBufferPtr buf;
-    int ret;
-
-    /* 
-     * save the content to a temp buffer.
-     */
-#ifdef HAVE_ZLIB_H
-    if (cur->compression < 0) cur->compression = xmlCompressMode;
-#endif
-    buf = xmlOutputBufferCreateFilename(filename, NULL, cur->compression);
-    if (buf == NULL) return(0);
-
     xmlDocContentDumpOutput(buf, cur, NULL);
 
     ret = xmlOutputBufferClose(buf);
@@ -5375,7 +5420,7 @@ xmlSaveFile(const char *filename, xmlDocPtr cur) {
  *
  * Dump an XML document to an I/O buffer.
  *
- * returns: the number of file written or -1 in case of failure.
+ * returns: the number of byte written or -1 in case of failure.
  */
 int
 xmlSaveFileTo(xmlOutputBuffer *buf, xmlDocPtr cur, const char *encoding) {
@@ -5395,7 +5440,7 @@ xmlSaveFileTo(xmlOutputBuffer *buf, xmlDocPtr cur, const char *encoding) {
  *
  * Dump an XML document, converting it to the given encoding
  *
- * returns: the number of file written or -1 in case of failure.
+ * returns: the number of byte written or -1 in case of failure.
  */
 int
 xmlSaveFileEnc(const char *filename, xmlDocPtr cur, const char *encoding) {
@@ -5407,17 +5452,15 @@ xmlSaveFileEnc(const char *filename, xmlDocPtr cur, const char *encoding) {
 	xmlCharEncoding enc;
 
 	enc = xmlParseCharEncoding(encoding);
-	if (enc != cur->charset) {
-	    if (cur->charset != XML_CHAR_ENCODING_UTF8) {
-		/*
-		 * Not supported yet
-		 */
+	if (cur->charset != XML_CHAR_ENCODING_UTF8) {
+	    fprintf(stderr, "xmlSaveFileEnc: document not in UTF8\n");
+	    return(-1);
+	}
+	if (enc != XML_CHAR_ENCODING_UTF8) {
+	    handler = xmlFindCharEncodingHandler(encoding);
+	    if (handler == NULL) {
 		return(-1);
 	    }
-
-	    handler = xmlFindCharEncodingHandler(encoding);
-	    if (handler == NULL)
-		return(-1);
 	}
     }
 
@@ -5432,4 +5475,58 @@ xmlSaveFileEnc(const char *filename, xmlDocPtr cur, const char *encoding) {
     ret = xmlOutputBufferClose(buf);
     return(ret);
 }
+
+/**
+ * xmlSaveFile:
+ * @filename:  the filename (or URL)
+ * @cur:  the document
+ *
+ * Dump an XML document to a file. Will use compression if
+ * compiled in and enabled. If @filename is "-" the stdout file is
+ * used.
+ * returns: the number of byte written or -1 in case of failure.
+ */
+int
+xmlSaveFile(const char *filename, xmlDocPtr cur) {
+    xmlOutputBufferPtr buf;
+    const char *encoding;
+    xmlCharEncodingHandlerPtr handler = NULL;
+    int ret;
+
+    if (cur == NULL)
+	return(-1);
+    encoding = (const char *) cur->encoding;
+
+    /* 
+     * save the content to a temp buffer.
+     */
+#ifdef HAVE_ZLIB_H
+    if (cur->compression < 0) cur->compression = xmlCompressMode;
 #endif
+    if (encoding != NULL) {
+	xmlCharEncoding enc;
+
+	enc = xmlParseCharEncoding(encoding);
+
+	if (cur->charset != XML_CHAR_ENCODING_UTF8) {
+	    fprintf(stderr, "xmlSaveFile: document not in UTF8\n");
+	    return(-1);
+	}
+	if (enc != XML_CHAR_ENCODING_UTF8) {
+	    handler = xmlFindCharEncodingHandler(encoding);
+	    if (handler == NULL) {
+		xmlFree((char *) cur->encoding);
+		cur->encoding = NULL;
+	    }
+	}
+    }
+
+    buf = xmlOutputBufferCreateFilename(filename, handler, cur->compression);
+    if (buf == NULL) return(0);
+
+    xmlDocContentDumpOutput(buf, cur, NULL);
+
+    ret = xmlOutputBufferClose(buf);
+    return(ret);
+}
+

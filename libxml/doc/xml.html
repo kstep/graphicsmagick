@@ -1,67 +1,543 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
-   "http://www.w3.org/TR/REC-html40/loose.dtd">
+                      "http://www.w3.org/TR/REC-html40/loose.dtd">
 <html>
 <head>
-<title>The XML library for Gnome</title>
-<meta name="GENERATOR" content="amaya V1.3b">
+  <title>The XML C library for Gnome</title>
+  <meta name="GENERATOR" content="amaya V3.2.1">
+  <meta http-equiv="Content-Type" content="text/html">
 </head>
+
 <body bgcolor="#ffffff">
+<p><a href="http://www.gnome.org/"><img src="smallfootonly.gif"
+alt="Gnome Logo"></a><a href="http://www.w3.org/Status"><img src="w3c.png"
+alt="W3C Logo"></a></p>
 
-<h1 align="center">The XML library for Gnome</h1>
-<p>
-This document describes the <a href="http://www.w3.org/XML/">XML</a> library
-provideed in the <a href="http://www.gnome.org/">Gnome</a> framework. XML is a
-standard to build tag based structured documents. The internal document
-repesentation is as close as possible to the <a
-href="http://www.w3.org/DOM/">DOM</a> interfaces.</p>
+<h1 align="center">The XML C library for Gnome</h1>
 
-<h2>xml</h2>
-<p>
-XML is a standard for markup based structured documents, here is <a
-name="example">an example</a>:</p>
-<pre>&lt;?xml version="1.0"?>
-&lt;EXAMPLE prop1="gnome is great" prop2="&amp;amp; linux too">
-  &lt;head>
-   &lt;title>Welcome to Gnome&lt;/title>
-  &lt;/head>
-  &lt;chapter>
-   &lt;title>The Linux adventure&lt;/title>
-   &lt;p>bla bla bla ...&lt;/p>
-   &lt;image href="linus.gif"/>
-   &lt;p>...&lt;/p>
-  &lt;/chapter>
-&lt;/EXAMPLE></pre>
-<p>
-The first line specify that it's an XML document and gives useful informations
-about it's encoding. Then the document is a text format whose structure is
-specified by tags between brackets. <strong>Each tag opened have to be
-closed</strong> XML is pedantic about this, not that for example the image
-tag has no content (just an attribute) and is closed by ending up the tag
-with <code>/></code>.</p>
+<h2 style="text-align: center">libxml, a.k.a. gnome-xml</h2>
 
-<h2>The tree output</h2>
-<p>
-The parser returns a tree built during the document analysis. The value
-returned is an <strong>xmlDocPtr</strong> (i.e. a pointer to an
-<strong>xmlDoc</strong> structure). This structure contains informations like
-the file  name, the document type, and a <strong>root</strong> pointer which
-is the root of the document (or more exactly the first child under the root
-which is the document). The tree is made of <strong>xmlNode</strong>s, chained
-in double linked lists of siblings and with childs&lt;->parent relationship.
-An xmlNode can also carry properties (a chain of xmlAttr structures). An
-attribute may have a value which is a list of TEXT or ENTITY_REF nodes.</p>
-<p>
-Here is an example (erroneous w.r.t. the XML spec since there should be only
-one ELEMENT under the root):</p>
-<p>
-<img src="structure.gif" alt=" structure.gif "></p>
-<p>
-In the source package there is a small program (not installed by default)
-called <strong>tester</strong> which parses XML files given as argument and
-prints them back as parsed, this is useful to detect errors both in XML code
-and in the XML parser itself. It has an option <strong>--debug</strong> which
-prints the actual in-memory structure of the document, here is the result with
-the <a href="#example">example</a> given before:</p>
+<p></p>
+<ul>
+  <li><a href="#Introducti">Introduction</a></li>
+  <li><a href="#Documentat">Documentation</a></li>
+  <li><a href="#Downloads">Downloads</a></li>
+  <li><a href="#News">News</a></li>
+  <li><a href="#XML">XML</a></li>
+  <li><a href="#tree">The tree output</a></li>
+  <li><a href="#interface">The SAX interface</a></li>
+  <li><a href="#library">The XML library interfaces</a>
+    <ul>
+      <li><a href="#Invoking">Invoking the parser: the pull way</a></li>
+      <li><a href="#Invoking">Invoking the parser: the push way</a></li>
+      <li><a href="#Invoking2">Invoking the parser: the SAX interface</a></li>
+      <li><a href="#Building">Building a tree from scratch</a></li>
+      <li><a href="#Traversing">Traversing the tree</a></li>
+      <li><a href="#Modifying">Modifying the tree</a></li>
+      <li><a href="#Saving">Saving the tree</a></li>
+      <li><a href="#Compressio">Compression</a></li>
+    </ul>
+  </li>
+  <li><a href="#Entities">Entities or no entities</a></li>
+  <li><a href="#Namespaces">Namespaces</a></li>
+  <li><a href="#Validation">Validation</a></li>
+  <li><a href="#Principles">DOM principles</a></li>
+  <li><a href="#real">A real example</a></li>
+  <li><a href="#Contributi">Contributions</a></li>
+</ul>
+
+<p>Separate documents:</p>
+<ul>
+  <li><a href="upgrade.html">upgrade instructions for migrating to
+  libxml2</a></li>
+  <li><a href="encoding.html">libxml Internationalization support</a></li>
+  <li><a href="xmlio.html">libxml Input/Output interfaces</a></li>
+</ul>
+
+<h2><a name="Introducti">Introduction</a></h2>
+
+<p>This document describes libxml, the <a
+href="http://www.w3.org/XML/">XML</a> C library developped for the <a
+href="http://www.gnome.org/">Gnome</a> project. <a
+href="http://www.w3.org/XML/">XML is a standard</a> for building tag-based
+structured documents/data.</p>
+
+<p>Here are some key points about libxml:</p>
+<ul>
+  <li>It is written in plain C, making as few assumptions as possible, and
+    sticking closely to ANSI C for easy embedding.</li>
+  <li>The internal document repesentation is as close as possible to the <a
+    href="http://www.w3.org/DOM/">DOM</a> interfaces.</li>
+  <li>Libxml also has a <a href="http://www.megginson.com/SAX/index.html">SAX
+    like interface</a>; the interface is designed to be compatible with <a
+    href="http://www.jclark.com/xml/expat.html">Expat</a>.</li>
+  <li>Libxml now includes a nearly complete <a
+    href="http://www.w3.org/TR/xpath">XPath</a> implementation.</li>
+  <li>Libxml exports Push and Pull type parser interfaces for both XML and
+    HTML.</li>
+  <li>This library is released both under the <a
+    href="http://www.w3.org/Consortium/Legal/copyright-software-19980720.html">W3C
+    IPR</a> and the GNU LGPL. Use either at your convenience, basically this
+    should make everybody happy, if not, drop me a mail.</li>
+  <li>There is <a href="upgrade.html">a first set of instructions</a>
+    concerning upgrade from libxml-1.x to libxml-2.x</li>
+</ul>
+
+<h2><a name="Documentat">Documentation</a></h2>
+
+<p>There are some on-line resources about using libxml:</p>
+<ol>
+  <li>Check the <a href="FAQ.html">FAQ</a></li>
+  <li>Check the <a href="http://xmlsoft.org/html/libxml-lib.html">extensive
+    documentation</a> automatically extracted from code comments (using <a
+    href="http://cvs.gnome.org/bonsai/rview.cgi?cvsroot=/cvs/gnome&amp;dir=gtk-doc">gtk
+    doc</a>).</li>
+  <li>Look at the documentation about <a href="encoding.html">libxml
+    internationalization support</a></li>
+  <li>This page provides a global overview and <a href="#real">some
+    examples</a> on how to use libxml.</li>
+  <li><a href="mailto:james@daa.com.au">James Henstridge</a> wrote <a
+    href="http://www.daa.com.au/~james/gnome/xml-sax/xml-sax.html">some nice
+    documentation</a> explaining how to use the libxml SAX interface.</li>
+  <li>George Lebl wrote <a
+    href="http://www-4.ibm.com/software/developer/library/gnome3/">an article
+    for IBM developerWorks</a> about using libxml.</li>
+  <li>It is also a good idea to check to <a href="mailto:raph@levien.com">Raph
+    Levien</a> <a href="http://levien.com/gnome/">web site</a> since he is
+    building the <a href="http://levien.com/gnome/gdome.html">DOM interface
+    gdome</a> on top of libxml result tree and an implementation of <a
+    href="http://www.w3.org/Graphics/SVG/">SVG</a> called <a
+    href="http://www.levien.com/svg/">gill</a>. Check his <a
+    href="http://www.levien.com/gnome/domination.html">DOMination
+  paper</a>.</li>
+  <li>Check <a href="http://cvs.gnome.org/lxr/source/gnome-xml/TODO">the TODO
+    file</a></li>
+  <li>Read the <a href="upgrade.html">1.x to 2.x upgrade path</a>. If you are
+    starting a new project using libxml you should really use the 2.x
+  version.</li>
+  <li>And don't forget to look at the <a href="/messages/">mailing-list
+    archive</a>.</li>
+</ol>
+
+<h3>Reporting bugs and getting help</h3>
+
+<p>Well, bugs or missing features are always possible, and I will make a point
+of fixing them in a timely fashion. The best way to report a bug is to <a
+href="http://bugs.gnome.org/db/pa/lgnome-xml.html">use the Gnome bug tracking
+database</a>. I look at reports there regularly and it's good to have a
+reminder when a bug is still open. Check the <a
+href="http://bugs.gnome.org/Reporting.html">instructions on reporting bugs</a>
+and be sure to specify that the bug is for the package gnome-xml.</p>
+
+<p>There is also a mailing-list <a
+href="mailto:xml@rpmfind.net">xml@rpmfind.net</a> for libxml, with an <a
+href="http://xmlsoft.org/messages">on-line archive</a>. To subscribe to this
+majordomo based list, send a mail message to <a
+href="mailto:majordomo@rpmfind.net">majordomo@rpmfind.net</a> with "subscribe
+xml" in the <strong>content</strong> of the message.</p>
+
+<p>Alternatively, you can just send the bug to the <a
+href="mailto:xml@rpmfind.net">xml@rpmfind.net</a> list, if it's really libxml
+related I will approve it..</p>
+
+<p>Of course, bugs reports with a suggested patch for fixing them will
+probably be processed faster.</p>
+
+<p>If you're looking for help, a quick look at <a
+href="http://xmlsoft.org/messages/#407">the list archive</a> may actually
+provide the answer, I usually send source samples when answering libxml usage
+questions. The <a href="http://xmlsoft.org/html/book1.html">auto-generated
+documentantion</a> is not as polished as I would like (i need to learn more
+about Docbook), but it's a good starting point.</p>
+
+<h2><a name="Downloads">Downloads</a></h2>
+
+<p>The latest versions of libxml can be found on <a
+href="ftp://rpmfind.net/pub/libxml/">rpmfind.net</a> or on the <a
+href="ftp://ftp.gnome.org/pub/GNOME/MIRRORS.html">Gnome FTP server</a> either
+as a <a href="ftp://ftp.gnome.org/pub/GNOME/stable/sources/libxml/">source
+archive</a> or <a
+href="ftp://ftp.gnome.org/pub/GNOME/contrib/redhat/SRPMS/">RPM packages</a>.
+(NOTE that you need both the <a
+href="http://rpmfind.net/linux/RPM/libxml2.html">libxml(2)</a> and <a
+href="http://rpmfind.net/linux/RPM/libxml2-devel.html">libxml(2)-devel</a>
+packages installed to compile applications using libxml.)</p>
+
+<p><a name="Snapshot">Snapshot:</a></p>
+<ul>
+  <li>Code from the W3C cvs base libxml <a
+    href="ftp://rpmfind.net/pub/libxml/cvs-snapshot.tar.gz">cvs-snapshot.tar.gz</a></li>
+  <li>Docs, content of the web site, the list archive included <a
+    href="ftp://rpmfind.net/pub/libxml/libxml-docs.tar.gz">libxml-docs.tar.gz</a></li>
+</ul>
+
+<p><a name="Contribs">Contribs:</a></p>
+
+<p>I do accept external contributions, especially if compiling on another
+platform, get in touch with me to upload the package. I will keep them in the
+<a href="ftp://rpmfind.net/pub/libxml/contribs/">contrib directory</a></p>
+
+<p>Libxml is also available from 2 CVS bases:</p>
+<ul>
+  <li><p>The <a href="http://dev.w3.org/cvsweb/XML/">W3C CVS base</a>,
+    available read-only using the CVS pserver authentification (I tend to use
+    this base for my own development, so it's updated more regularly, but the
+    content may not be as stable):</p>
+    <pre>CVSROOT=:pserver:anonymous@dev.w3.org:/sources/public
+        password: anonymous
+        module: XML</pre>
+  </li>
+  <li><p>The <a
+    href="http://cvs.gnome.org/bonsai/rview.cgi?cvsroot=/cvs/gnome&amp;dir=gnome-xml">Gnome
+    CVS base</a>. Check the <a
+    href="http://developer.gnome.org/tools/cvs.html">Gnome CVS Tools</a> page;
+    the CVS module is <b>gnome-xml</b>.</p>
+  </li>
+</ul>
+
+<h2><a name="News">News</a></h2>
+
+<h3>CVS only : check the <a
+href="http://cvs.gnome.org/lxr/source/gnome-xml/ChangeLog">Changelog</a> file
+for really accurate description</h3>
+<ul>
+  <li>working on HTML and XML links recognition layers, get in touch with me
+    if you want to test those.</li>
+</ul>
+
+<h2>2.2.2: August 12 2000</h2>
+<ul>
+  <li>mostly bug fixes</li>
+  <li>started adding routines to access xml parser context options</li>
+</ul>
+
+<h2>2.2.1: July 21 2000</h2>
+<ul>
+  <li>a purely bug fixes release</li>
+  <li>fixed an encoding support problem when parsing from a memory block</li>
+  <li>fixed a DOCTYPE parsing problem</li>
+  <li>removed a bug in the function allowing to override the memory allocation
+    routines</li>
+</ul>
+
+<h2>2.2.0: July 14 2000</h2>
+<ul>
+  <li>applied a lot of portability fixes</li>
+  <li>better encoding support/cleanup and saving (content is now always
+    encoded in UTF-8)</li>
+  <li>the HTML parser now correctly handles encodings</li>
+  <li>added xmlHasProp()</li>
+  <li>fixed a serious problem with &amp;#38;</li>
+  <li>propagated the fix to FTP client</li>
+  <li>cleanup, bugfixes, etc ...</li>
+  <li>Added a page about <a href="encoding.html">libxml Internationalization
+    support</a></li>
+</ul>
+
+<h3>1.8.9:  July 9 2000</h3>
+<ul>
+  <li>fixed the spec the RPMs should be better</li>
+  <li>fixed a serious bug in the FTP implementation, released 1.8.9 to solve
+    rpmfind users problem</li>
+</ul>
+
+<h3>2.1.1: July 1 2000</h3>
+<ul>
+  <li>fixes a couple of bugs in the 2.1.0 packaging</li>
+  <li>improvements on the HTML parser</li>
+</ul>
+
+<h3>2.1.0 and 1.8.8: June 29 2000</h3>
+<ul>
+  <li>1.8.8 is mostly a comodity package for upgrading to libxml2 accoding to
+    <a href="upgrade.html">new instructions</a>. It fixes a nasty problem
+    about &amp;#38; charref parsing</li>
+  <li>2.1.0 also ease the upgrade from libxml v1 to the recent version. it
+    also contains numerous fixes and enhancements:
+    <ul>
+      <li>added xmlStopParser() to stop parsing</li>
+      <li>improved a lot parsing speed when there is large CDATA blocs</li>
+      <li>includes XPath patches provided by Picdar Technology</li>
+      <li>tried to fix as much as possible DtD validation and namespace
+        related problems</li>
+      <li>output to a given encoding has been added/tested</li>
+      <li>lot of various fixes</li>
+    </ul>
+  </li>
+</ul>
+
+<h3>2.0.0: Apr 12 2000</h3>
+<ul>
+  <li>First public release of libxml2. If you are using libxml, it's a good
+    idea to check the 1.x to 2.x upgrade instructions. NOTE: while initally
+    scheduled for Apr 3 the relase occured only on Apr 12 due to massive
+    workload.</li>
+  <li>The include are now located under $prefix/include/libxml (instead of
+    $prefix/include/gnome-xml), they also are referenced by
+    <pre>#include &lt;libxml/xxx.h&gt;</pre>
+    <p>instead of</p>
+    <pre>#include "xxx.h"</pre>
+  </li>
+  <li>a new URI module for parsing URIs and following strictly RFC 2396</li>
+  <li>the memory allocation routines used by libxml can now be overloaded
+    dynamically by using xmlMemSetup()</li>
+  <li>The previously CVS only tool tester has been renamed
+    <strong>xmllint</strong> and is now installed as part of the libxml2
+    package</li>
+  <li>The I/O interface has been revamped. There is now ways to plug in
+    specific I/O modules, either at the URI scheme detection level using
+    xmlRegisterInputCallbacks()  or by passing I/O functions when creating a
+    parser context using xmlCreateIOParserCtxt()</li>
+  <li>there is a C preprocessor macro LIBXML_VERSION providing the version
+    number of the libxml module in use</li>
+  <li>a number of optional features of libxml can now be excluded at configure
+    time (FTP/HTTP/HTML/XPath/Debug)</li>
+</ul>
+
+<h3>2.0.0beta: Mar 14 2000</h3>
+<ul>
+  <li>This is a first Beta release of libxml version 2</li>
+  <li>It's available only from<a href="ftp://rpmfind.net/pub/libxml/">
+    rpmfind.net FTP</a>, it's packaged as libxml2-2.0.0beta and available as
+    tar and RPMs</li>
+  <li>This version is now the head in the Gnome CVS base, the old one is
+    available under the tag LIB_XML_1_X</li>
+  <li>This includes a very large set of changes. Froma  programmatic point of
+    view applications should not have to be modified too much, check the <a
+    href="upgrade.html">upgrade page</a></li>
+  <li>Some interfaces may changes (especially a bit about encoding).</li>
+  <li>the updates includes:
+    <ul>
+      <li>fix I18N support. ISO-Latin-x/UTF-8/UTF-16 (nearly) seems correctly
+        handled now</li>
+      <li>Better handling of entities, especially well formedness checking and
+        proper PEref extensions in external subsets</li>
+      <li>DTD conditional sections</li>
+      <li>Validation now correcly handle entities content</li>
+      <li><a href="http://rpmfind.net/tools/gdome/messages/0039.html">change
+        structures to accomodate DOM</a></li>
+    </ul>
+  </li>
+  <li>Serious progress were made toward compliance, <a
+    href="conf/result.html">here are the result of the test</a> against the
+    OASIS testsuite (except the japanese tests since I don't support that
+    encoding yet). This URL is rebuilt every couple of hours using the CVS
+    head version.</li>
+</ul>
+
+<h3>1.8.7: Mar 6 2000</h3>
+<ul>
+  <li>This is a bug fix release:</li>
+  <li>It is possible to disable the ignorable blanks heuristic used by
+    libxml-1.x, a new function  xmlKeepBlanksDefault(0) will allow this. Note
+    that for adherence to XML spec, this behaviour will be disabled by default
+    in 2.x . The same function will allow to keep compatibility for old
+  code.</li>
+  <li>Blanks in &lt;a&gt;  &lt;/a&gt; constructs are not ignored anymore,
+    avoiding heuristic is really the Right Way :-\</li>
+  <li>The unchecked use of snprintf which was breaking libxml-1.8.6
+    compilation on some platforms has been fixed</li>
+  <li>nanoftp.c nanohttp.c: Fixed '#' and '?' stripping when processing
+  URIs</li>
+</ul>
+
+<h3>1.8.6: Jan 31 2000</h3>
+<ul>
+  <li>added a nanoFTP transport module, debugged until the new version of <a
+    href="http://rpmfind.net/linux/rpm2html/rpmfind.html">rpmfind</a> can use
+    it without troubles</li>
+</ul>
+
+<h3>1.8.5: Jan 21 2000</h3>
+<ul>
+  <li>adding APIs to parse a well balanced chunk of XML (production <a
+    href="http://www.w3.org/TR/REC-xml#NT-content">[43] content</a> of the XML
+    spec)</li>
+  <li>fixed a hideous bug in xmlGetProp pointed by Rune.Djurhuus@fast.no</li>
+  <li>Jody Goldberg &lt;jgoldberg@home.com&gt; provided another patch trying
+    to solve the zlib checks problems</li>
+  <li>The current state in gnome CVS base is expected to ship as 1.8.5 with
+    gnumeric soon</li>
+</ul>
+
+<h3>1.8.4: Jan 13 2000</h3>
+<ul>
+  <li>bug fixes, reintroduced xmlNewGlobalNs(), fixed xmlNewNs()</li>
+  <li>all exit() call should have been removed from libxml</li>
+  <li>fixed a problem with INCLUDE_WINSOCK on WIN32 platform</li>
+  <li>added newDocFragment()</li>
+</ul>
+
+<h3>1.8.3: Jan 5 2000</h3>
+<ul>
+  <li>a Push interface for the XML and HTML parsers</li>
+  <li>a shell-like interface to the document tree (try tester --shell :-)</li>
+  <li>lots of bug fixes and improvement added over XMas hollidays</li>
+  <li>fixed the DTD parsing code to work with the xhtml DTD</li>
+  <li>added xmlRemoveProp(), xmlRemoveID() and xmlRemoveRef()</li>
+  <li>Fixed bugs in xmlNewNs()</li>
+  <li>External entity loading code has been revamped, now it uses
+    xmlLoadExternalEntity(), some fix on entities processing were added</li>
+  <li>cleaned up WIN32 includes of socket stuff</li>
+</ul>
+
+<h3>1.8.2: Dec 21 1999</h3>
+<ul>
+  <li>I got another problem with includes and C++, I hope this issue is fixed
+    for good this time</li>
+  <li>Added a few tree modification functions: xmlReplaceNode,
+    xmlAddPrevSibling, xmlAddNextSibling, xmlNodeSetName and
+    xmlDocSetRootElement</li>
+  <li>Tried to improve the HTML output with help from <a
+    href="mailto:clahey@umich.edu">Chris Lahey</a></li>
+</ul>
+
+<h3>1.8.1: Dec 18 1999</h3>
+<ul>
+  <li>various patches to avoid troubles when using libxml with C++ compilers
+    the "namespace" keyword and C escaping in include files</li>
+  <li>a problem in one of the core macros IS_CHAR was corrected</li>
+  <li>fixed a bug introduced in 1.8.0 breaking default namespace processing,
+    and more specifically the Dia application</li>
+  <li>fixed a posteriori validation (validation after parsing, or by using a
+    Dtd not specified in the original document)</li>
+  <li>fixed a bug in</li>
+</ul>
+
+<h3>1.8.0: Dec 12 1999</h3>
+<ul>
+  <li>cleanup, especially memory wise</li>
+  <li>the parser should be more reliable, especially the HTML one, it should
+    not crash, whatever the input !</li>
+  <li>Integrated various patches, especially a speedup improvement for large
+    dataset from <a href="mailto:cnygard@bellatlantic.net">Carl Nygard</a>,
+    configure with --with-buffers to enable them.</li>
+  <li>attribute normalization, oops should have been added long ago !</li>
+  <li>attributes defaulted from Dtds should be available, xmlSetProp() now
+    does entities escapting by default.</li>
+</ul>
+
+<h3>1.7.4: Oct 25 1999</h3>
+<ul>
+  <li>Lots of HTML improvement</li>
+  <li>Fixed some errors when saving both XML and HTML</li>
+  <li>More examples, the regression tests should now look clean</li>
+  <li>Fixed a bug with contiguous charref</li>
+</ul>
+
+<h3>1.7.3: Sep 29 1999</h3>
+<ul>
+  <li>portability problems fixed</li>
+  <li>snprintf was used unconditionnally, leading to link problems on system
+    were it's not available, fixed</li>
+</ul>
+
+<h3>1.7.1: Sep 24 1999</h3>
+<ul>
+  <li>The basic type for strings manipulated by libxml has been renamed in
+    1.7.1 from <strong>CHAR</strong> to <strong>xmlChar</strong>. The reason
+    is that CHAR was conflicting with a predefined type on Windows. However on
+    non WIN32 environment, compatibility is provided by the way of  a
+    <strong>#define </strong>.</li>
+  <li>Changed another error : the use of a structure field called errno, and
+    leading to troubles on platforms where it's a macro</li>
+</ul>
+
+<h3>1.7.0: sep 23 1999</h3>
+<ul>
+  <li>Added the ability to fetch remote DTD or parsed entities, see the <a
+    href="html/gnome-xml-nanohttp.html">nanohttp</a> module.</li>
+  <li>Added an errno to report errors by another mean than a simple printf
+    like callback</li>
+  <li>Finished ID/IDREF support and checking when validation</li>
+  <li>Serious memory leaks fixed (there is now a <a
+    href="html/gnome-xml-xmlmemory.html">memory wrapper</a> module)</li>
+  <li>Improvement of <a href="http://www.w3.org/TR/xpath">XPath</a>
+    implementation</li>
+  <li>Added an HTML parser front-end</li>
+</ul>
+
+<h2><a name="XML">XML</a></h2>
+
+<p><a href="http://www.w3.org/TR/REC-xml">XML is a standard</a> for
+markup-based structured documents. Here is <a name="example">an example XML
+document</a>:</p>
+<pre>&lt;?xml version="1.0"?&gt;
+&lt;EXAMPLE prop1="gnome is great" prop2="&amp;amp; linux too"&gt;
+  &lt;head&gt;
+   &lt;title&gt;Welcome to Gnome&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;chapter&gt;
+   &lt;title&gt;The Linux adventure&lt;/title&gt;
+   &lt;p&gt;bla bla bla ...&lt;/p&gt;
+   &lt;image href="linus.gif"/&gt;
+   &lt;p&gt;...&lt;/p&gt;
+  &lt;/chapter&gt;
+&lt;/EXAMPLE&gt;</pre>
+
+<p>The first line specifies that it's an XML document and gives useful
+information about its encoding. Then the document is a text format whose
+structure is specified by tags between brackets. <strong>Each tag opened has
+to be closed</strong>. XML is pedantic about this. However, if a tag is empty
+(no content), a single tag can serve as both the opening and closing tag if it
+ends with <code>/&gt;</code> rather than with <code>&gt;</code>. Note that,
+for example, the image tag has no content (just an attribute) and is closed by
+ending the tag with <code>/&gt;</code>.</p>
+
+<p>XML can be applied sucessfully to a wide range of uses, from long term
+structured document maintenance (where it follows the steps of SGML) to simple
+data encoding mechanisms like configuration file formatting (glade),
+spreadsheets (gnumeric), or even shorter lived documents such as WebDAV where
+it is used to encode remote calls between a client and a server.</p>
+
+<h2>An overview of libxml architecture</h2>
+
+<p>Libxml is made of multiple components, some of them optionals, and most of
+the block interfaces are public. The main components are:</p>
+<ul>
+  <li>an Input/Output layer</li>
+  <li>FTP and HTTP client layers (optionnal)</li>
+  <li>an Internationalization layer managing the encodings support</li>
+  <li>an URI module</li>
+  <li>the XML parser and its basic SAX interface</li>
+  <li>an HTML parser using the same SAX interface (optionnal)</li>
+  <li>a SAX tree module to build an in-memory DOM representation</li>
+  <li>a tree module to manipulate the DOM representation</li>
+  <li>a validation module using the DOM representation (optionnal)</li>
+  <li>an XPath module for global lookup in a DOM representation
+  (optionnal)</li>
+  <li>a debug module (optionnal)</li>
+</ul>
+
+<p>Graphically this gives the following:</p>
+
+<p><img src="libxml.gif" alt="a graphical view of the various"></p>
+
+<p></p>
+
+<h2><a name="tree">The tree output</a></h2>
+
+<p>The parser returns a tree built during the document analysis. The value
+returned is an <strong>xmlDocPtr</strong> (i.e., a pointer to an
+<strong>xmlDoc</strong> structure). This structure contains information such
+as the file name, the document type, and a <strong>children</strong> pointer
+which is the root of the document (or more exactly the first child under the
+root which is the document). The tree is made of <strong>xmlNode</strong>s,
+chained in double-linked lists of siblings and with children&lt;-&gt;parent
+relationship. An xmlNode can also carry properties (a chain of xmlAttr
+structures). An attribute may have a value which is a list of TEXT or
+ENTITY_REF nodes.</p>
+
+<p>Here is an example (erroneous with respect to the XML spec since there
+should be only one ELEMENT under the root):</p>
+
+<p><img src="structure.gif" alt=" structure.gif "></p>
+
+<p>In the source package there is a small program (not installed by default)
+called <strong>xmllint</strong> which parses XML files given as argument and
+prints them back as parsed. This is useful for detecting errors both in XML
+code and in the XML parser itself. It has an option <strong>--debug</strong>
+which prints the actual in-memory structure of the document, here is the
+result with the <a href="#example">example</a> given before:</p>
 <pre>DOCUMENT
 version=1.0
 standalone=true
@@ -72,7 +548,7 @@ standalone=true
     ATTRIBUTE prop2
       ENTITY_REF
       TEXT
-      content= too
+      content= linux too 
     ELEMENT head
       ELEMENT title
         TEXT
@@ -91,251 +567,536 @@ standalone=true
       ELEMENT p
         TEXT
         content=...</pre>
-<p>
-This should be useful to learn the internal representation model.</p>
 
-<h2>The XML library interfaces</h2>
-<p>
-This section is directly intended to help programmers getting bootstrapped
-using the XML library from the C language. It doesn't intent to be extensive,
-I hope the automatically generated docs will provide the completeness
-required, but as a separated set of documents. The interfaces of the XML
-library are by principle low level, there is nearly zero abstration. Those
-interested in a higher level API should <a href="#DOM">look at DOM</a>
-(unfortunately not completed).</p>
+<p>This should be useful for learning the internal representation model.</p>
 
-<h3>Invoking the parser</h3>
-<p>
-Usually, the first thing to do is to read an XML input, the parser accepts to
-parse both memory mapped documents or direct files. The functions are defined
-in "parser.h":</p>
+<h2><a name="interface">The SAX interface</a></h2>
+
+<p>Sometimes the DOM tree output is just too large to fit reasonably into
+memory. In that case (and if you don't expect to save back the XML document
+loaded using libxml), it's better to use the SAX interface of libxml. SAX is a
+<strong>callback-based interface</strong> to the parser. Before parsing, the
+application layer registers a customized set of callbacks which are called by
+the library as it progresses through the XML input.</p>
+
+<p>To get more detailed step-by-step guidance on using the SAX interface of
+libxml, see the <a
+href="http://www.daa.com.au/~james/gnome/xml-sax/xml-sax.html">nice
+documentation</a>.written by <a href="mailto:james@daa.com.au">James
+Henstridge</a>.</p>
+
+<p>You can debug the SAX behaviour by using the <strong>testSAX</strong>
+program located in the gnome-xml module (it's usually not shipped in the
+binary packages of libxml, but you can find it in the tar source
+distribution). Here is the sequence of callbacks that would be reported by
+testSAX when parsing the example XML document shown earlier:</p>
+<pre>SAX.setDocumentLocator()
+SAX.startDocument()
+SAX.getEntity(amp)
+SAX.startElement(EXAMPLE, prop1='gnome is great', prop2='&amp;amp; linux too')
+SAX.characters(   , 3)
+SAX.startElement(head)
+SAX.characters(    , 4)
+SAX.startElement(title)
+SAX.characters(Welcome to Gnome, 16)
+SAX.endElement(title)
+SAX.characters(   , 3)
+SAX.endElement(head)
+SAX.characters(   , 3)
+SAX.startElement(chapter)
+SAX.characters(    , 4)
+SAX.startElement(title)
+SAX.characters(The Linux adventure, 19)
+SAX.endElement(title)
+SAX.characters(    , 4)
+SAX.startElement(p)
+SAX.characters(bla bla bla ..., 15)
+SAX.endElement(p)
+SAX.characters(    , 4)
+SAX.startElement(image, href='linus.gif')
+SAX.endElement(image)
+SAX.characters(    , 4)
+SAX.startElement(p)
+SAX.characters(..., 3)
+SAX.endElement(p)
+SAX.characters(   , 3)
+SAX.endElement(chapter)
+SAX.characters( , 1)
+SAX.endElement(EXAMPLE)
+SAX.endDocument()</pre>
+
+<p>Most of the other functionalities of libxml are based on the DOM
+tree-building facility, so nearly everything up to the end of this document
+presupposes the use of the standard DOM tree build. Note that the DOM tree
+itself is built by a set of registered default callbacks, without internal
+specific interface.</p>
+
+<h2><a name="library">The XML library interfaces</a></h2>
+
+<p>This section is directly intended to help programmers getting bootstrapped
+using the XML library from the C language. It is not intended to be extensive.
+I hope the automatically generated documents will provide the completeness
+required, but as a separate set of documents. The interfaces of the XML
+library are by principle low level, there is nearly zero abstraction. Those
+interested in a higher level API should <a href="#DOM">look at DOM</a>.</p>
+
+<p>The <a href="html/gnome-xml-parser.html">parser interfaces for XML</a> are
+separated from the <a href="html/gnome-xml-htmlparser.html">HTML parser
+interfaces</a>.  Let's have a look at how the XML parser can be called:</p>
+
+<h3><a name="Invoking">Invoking the parser : the pull method</a></h3>
+
+<p>Usually, the first thing to do is to read an XML input. The parser accepts
+documents either from in-memory strings or from files.  The functions are
+defined in "parser.h":</p>
 <dl>
-<dt><code>xmlDocPtr xmlParseMemory(char *buffer, int size);</code></dt>
-<dd><p>
-parse a zero terminated string containing the document</p>
-</dd>
+  <dt><code>xmlDocPtr xmlParseMemory(char *buffer, int size);</code></dt>
+    <dd><p>Parse a null-terminated string containing the document.</p>
+    </dd>
 </dl>
 <dl>
-<dt><code>xmlDocPtr xmlParseFile(const char *filename);</code></dt>
-<dd><p>
-parse an XML document contained in a file (possibly compressed)</p>
-</dd>
+  <dt><code>xmlDocPtr xmlParseFile(const char *filename);</code></dt>
+    <dd><p>Parse an XML document contained in a (possibly compressed)
+      file.</p>
+    </dd>
 </dl>
-<p>
-This returns a pointer to the document structure (or NULL in case of
+
+<p>The parser returns a pointer to the document structure (or NULL in case of
 failure).</p>
-<p>
-A couple of comments can be made, first this mean that the parser is
-memory-hungry, first to load the document in memory, second to build the tree.
-Reading a document without building the tree will be possible in the future by
-pluggin the code to the SAX interface (see SAX.c).</p>
 
-<h3>Building a tree from scratch</h3>
-<p>
-The other way to get an XML tree in memory is by building it. Basically there
-is a set of functions dedicated to building new elements, those are also
-described in "tree.h", here is for example the piece of code producing the
-example used before:</p>
-<pre>    xmlDocPtr doc;
+<h3 id="Invoking1">Invoking the parser: the push method</h3>
+
+<p>In order for the application to keep the control when the document is been
+fetched (which is common for GUI based programs) libxml provides a push
+interface, too, as of version 1.8.3. Here are the interface functions:</p>
+<pre>xmlParserCtxtPtr xmlCreatePushParserCtxt(xmlSAXHandlerPtr sax,
+                                         void *user_data,
+                                         const char *chunk,
+                                         int size,
+                                         const char *filename);
+int              xmlParseChunk          (xmlParserCtxtPtr ctxt,
+                                         const char *chunk,
+                                         int size,
+                                         int terminate);</pre>
+
+<p>and here is a simple example showing how to use the interface:</p>
+<pre>            FILE *f;
+
+            f = fopen(filename, "r");
+            if (f != NULL) {
+                int res, size = 1024;
+                char chars[1024];
+                xmlParserCtxtPtr ctxt;
+
+                res = fread(chars, 1, 4, f);
+                if (res &gt; 0) {
+                    ctxt = xmlCreatePushParserCtxt(NULL, NULL,
+                                chars, res, filename);
+                    while ((res = fread(chars, 1, size, f)) &gt; 0) {
+                        xmlParseChunk(ctxt, chars, res, 0);
+                    }
+                    xmlParseChunk(ctxt, chars, 0, 1);
+                    doc = ctxt-&gt;myDoc;
+                    xmlFreeParserCtxt(ctxt);
+                }
+            }</pre>
+
+<p>Also note that the HTML parser embedded into libxml also has a push
+interface; the functions are just prefixed by "html" rather than "xml"</p>
+
+<h3 id="Invoking2">Invoking the parser: the SAX interface</h3>
+
+<p>A couple of comments can be made, first this mean that the parser is
+memory-hungry, first to load the document in memory, second to build the tree.
+Reading a document without building the tree is possible using the SAX
+interfaces (see SAX.h and <a
+href="http://www.daa.com.au/~james/gnome/xml-sax/xml-sax.html">James
+Henstridge's documentation</a>). Note also that the push interface can be
+limited to SAX. Just use the two first arguments of
+<code>xmlCreatePushParserCtxt()</code>.</p>
+
+<h3><a name="Building">Building a tree from scratch</a></h3>
+
+<p>The other way to get an XML tree in memory is by building it. Basically
+there is a set of functions dedicated to building new elements. (These are
+also described in &lt;libxml/tree.h&gt;.) For example, here is a piece of code
+that produces the XML document used in the previous examples:</p>
+<pre>    #include &lt;libxml/tree.h&gt;
+    xmlDocPtr doc;
     xmlNodePtr tree, subtree;
 
     doc = xmlNewDoc("1.0");
-    doc->root = xmlNewDocNode(doc, NULL, "EXAMPLE", NULL);
-    xmlSetProp(doc->root, "prop1", "gnome is great");
-    xmlSetProp(doc->root, "prop2", "&amp;linux; too");
-    tree = xmlNewChild(doc->root, NULL, "head", NULL);
+    doc-&gt;children = xmlNewDocNode(doc, NULL, "EXAMPLE", NULL);
+    xmlSetProp(doc-&gt;children, "prop1", "gnome is great");
+    xmlSetProp(doc-&gt;children, "prop2", "&amp; linux too");
+    tree = xmlNewChild(doc-&gt;children, NULL, "head", NULL);
     subtree = xmlNewChild(tree, NULL, "title", "Welcome to Gnome");
-    tree = xmlNewChild(doc->root, NULL, "chapter", NULL);
+    tree = xmlNewChild(doc-&gt;children, NULL, "chapter", NULL);
     subtree = xmlNewChild(tree, NULL, "title", "The Linux adventure");
     subtree = xmlNewChild(tree, NULL, "p", "bla bla bla ...");
     subtree = xmlNewChild(tree, NULL, "image", NULL);
     xmlSetProp(subtree, "href", "linus.gif");</pre>
-<p>
-Not really rocket science ...</p>
 
-<h3>Traversing the tree</h3>
-<p>
-Basically by including "tree.h" your code has access to the internal structure
-of all the element of the tree. The names should be somewhat simple like
-<strong>parent</strong>, <strong>childs</strong>, <strong>next</strong>,
-<strong>prev</strong>, <strong>properties</strong>, etc... For example still
-with the previous example:</p>
-<pre><code>doc->root->childs->childs</code></pre>
-<p>
-points to the title element,</p>
-<pre>doc->root->childs->next->child->child</pre>
-<p>
-points to the text node containing the chapter titlle "The Linux adventure"
-and</p>
-<pre>doc->root->properties->next->val</pre>
-<p>
-points to the entity reference containing the value of "&amp;linux" at the
-beginning of the second attribute of the root element "EXAMPLE".</p>
+<p>Not really rocket science ...</p>
 
-<h3>Modifying the tree</h3>
-<p>
-functions are provided to read and write the document content:</p>
+<h3><a name="Traversing">Traversing the tree</a></h3>
+
+<p>Basically by <a href="html/gnome-xml-tree.html">including "tree.h"</a> your
+code has access to the internal structure of all the elements of the tree. The
+names should be somewhat simple like <strong>parent</strong>,
+<strong>children</strong>, <strong>next</strong>, <strong>prev</strong>,
+<strong>properties</strong>, etc... For example, still with the previous
+example:</p>
+<pre><code>doc-&gt;children-&gt;children-&gt;children</code></pre>
+
+<p>points to the title element,</p>
+<pre>doc-&gt;children-&gt;children-&gt;next-&gt;child-&gt;child</pre>
+
+<p>points to the text node containing the chapter title "The Linux
+adventure".</p>
+
+<p><strong>NOTE</strong>: XML allows <em>PI</em>s and <em>comments</em> to be
+present before the document root, so <code>doc-&gt;children</code> may point
+to an element which is not the document Root Element, a function
+<code>xmlDocGetRootElement()</code> was added for this purpose.</p>
+
+<h3><a name="Modifying">Modifying the tree</a></h3>
+
+<p>Functions are provided for reading and writing the document content. Here
+is an excerpt from the <a href="html/gnome-xml-tree.html">tree API</a>:</p>
 <dl>
-<dt><code>xmlAttrPtr xmlSetProp(xmlNodePtr node, const CHAR *name, const CHAR
-*value);</code></dt>
-<dd><p>
-This set (or change) an attribute carried by an ELEMENT node the value can be
-NULL</p>
-</dd>
+  <dt><code>xmlAttrPtr xmlSetProp(xmlNodePtr node, const xmlChar *name, const
+  xmlChar *value);</code></dt>
+    <dd><p>This sets (or changes) an attribute carried by an ELEMENT node. The
+      value can be NULL.</p>
+    </dd>
 </dl>
 <dl>
-<dt><code>const CHAR *xmlGetProp(xmlNodePtr node, const CHAR
-*name);</code></dt>
-<dd><p>
-This function returns a pointer to the property content, note that no extra
-copy is made</p>
-</dd>
+  <dt><code>const xmlChar *xmlGetProp(xmlNodePtr node, const xmlChar
+  *name);</code></dt>
+    <dd><p>This function returns a pointer to the property content. Note that
+      no extra copy is made.</p>
+    </dd>
 </dl>
-<p>
-Two functions must be used to read an write the text associated to
+
+<p>Two functions are provided for reading and writing the text associated with
 elements:</p>
 <dl>
-<dt><code>xmlNodePtr xmlStringGetNodeList(xmlDocPtr doc, const CHAR
-*value);</code></dt>
-<dd><p>
-This function takes an "external" string and convert it to one text node or
-possibly to a list of entity and text nodes. All non-predefined entity
-references like &amp;Gnome; will be stored internally as an entity node, hence
-the result of the function may not be a single node.</p>
-</dd>
+  <dt><code>xmlNodePtr xmlStringGetNodeList(xmlDocPtr doc, const xmlChar
+  *value);</code></dt>
+    <dd><p>This function takes an "external" string and convert it to one text
+      node or possibly to a list of entity and text nodes. All non-predefined
+      entity references like &amp;Gnome; will be stored internally as entity
+      nodes, hence the result of the function may not be a single node.</p>
+    </dd>
 </dl>
 <dl>
-<dt><code>CHAR *xmlNodeListGetString(xmlDocPtr doc, xmlNodePtr list, int
-inLine);</code></dt>
-<dd><p>
-this is the dual function, which generate a new string containing the content
-of the text and entity nodes. Note the extra argument inLine, if set to 1
-instead of returning the &amp;Gnome; XML encoding in the string it will
-substitute it with it's value say "GNU Network Object Model Environment". Set
-it if you want to use the string for non XML usage like User Interface.</p>
-</dd>
+  <dt><code>xmlChar *xmlNodeListGetString(xmlDocPtr doc, xmlNodePtr list, int
+  inLine);</code></dt>
+    <dd><p>This function is the inverse of
+      <code>xmlStringGetNodeList()</code>. It generates a new string
+      containing the content of the text and entity nodes. Note the extra
+      argument inLine. If this argument is set to 1, the function will expand
+      entity references.  For example, instead of returning the &amp;Gnome;
+      XML encoding in the string, it will substitute it with its value (say,
+      "GNU Network Object Model Environment"). Set this argument if you want
+      to use the string for non-XML usage like User Interface.</p>
+    </dd>
 </dl>
 
-<h3>Saving a tree</h3>
-<p>
-Basically 3 options are possible:</p>
+<h3><a name="Saving">Saving a tree</a></h3>
+
+<p>Basically 3 options are possible:</p>
 <dl>
-<dt><code>void xmlDocDumpMemory(xmlDocPtr cur, CHAR**mem, int
-*size);</code></dt>
-<dd><p>
-returns a buffer where the document has been saved</p>
-</dd>
+  <dt><code>void xmlDocDumpMemory(xmlDocPtr cur, xmlChar**mem, int
+  *size);</code></dt>
+    <dd><p>Returns a buffer into which the document has been saved.</p>
+    </dd>
 </dl>
 <dl>
-<dt><code>extern void xmlDocDump(FILE *f, xmlDocPtr doc);</code></dt>
-<dd><p>
-dumps a buffer to an open file descriptor</p>
-</dd>
+  <dt><code>extern void xmlDocDump(FILE *f, xmlDocPtr doc);</code></dt>
+    <dd><p>Dumps a document to an open file descriptor.</p>
+    </dd>
 </dl>
 <dl>
-<dt><code>int xmlSaveFile(const char *filename, xmlDocPtr cur);</code></dt>
-<dd><p>
-save the document ot a file. In that case the compression interface is
-triggered if turned on</p>
-</dd>
+  <dt><code>int xmlSaveFile(const char *filename, xmlDocPtr cur);</code></dt>
+    <dd><p>Saves the document to a file. In this case, the compression
+      interface is triggered if it has been turned on.</p>
+    </dd>
 </dl>
 
-<h3>Compression</h3>
-<p>
-The library handle transparently compression when doing file based accesses,
-the level of compression on saves can be tuned either globally or individually
-for one file:</p>
+<h3><a name="Compressio">Compression</a></h3>
+
+<p>The library transparently handles compression when doing file-based
+accesses. The level of compression on saves can be turned on either globally
+or individually for one file:</p>
 <dl>
-<dt><code>int  xmlGetDocCompressMode (xmlDocPtr doc);</code></dt>
-<dd><p>
-Get the document compression ratio (0-9)</p>
-</dd>
+  <dt><code>int  xmlGetDocCompressMode (xmlDocPtr doc);</code></dt>
+    <dd><p>Gets the document compression ratio (0-9).</p>
+    </dd>
 </dl>
 <dl>
-<dt><code>void xmlSetDocCompressMode (xmlDocPtr doc, int mode);</code></dt>
-<dd><p>
-Set the document compression ratio</p>
-</dd>
+  <dt><code>void xmlSetDocCompressMode (xmlDocPtr doc, int mode);</code></dt>
+    <dd><p>Sets the document compression ratio.</p>
+    </dd>
 </dl>
 <dl>
-<dt><code>int  xmlGetCompressMode(void);</code></dt>
-<dd><p>
-Get the default compression ratio</p>
-</dd>
+  <dt><code>int  xmlGetCompressMode(void);</code></dt>
+    <dd><p>Gets the default compression ratio.</p>
+    </dd>
 </dl>
 <dl>
-<dt><code>void xmlSetCompressMode(int mode);</code></dt>
-<dd><p>
-set the default compression ratio</p>
-</dd>
+  <dt><code>void xmlSetCompressMode(int mode);</code></dt>
+    <dd><p>Sets the default compression ratio.</p>
+    </dd>
 </dl>
 
-<h2><a name="DOM">DOM Principles</a></h2>
-<p>
-<a href="http://www.w3.org/DOM/">DOM</a> stands for the <em>Document Object
+<h2><a name="Entities">Entities or no entities</a></h2>
+
+<p>Entities in principle are similar to simple C macros. An entity defines an
+abbreviation for a given string that you can reuse many times throughout the
+content of your document. Entities are especially useful when a given string
+may occur frequently within a document, or to confine the change needed to a
+document to a restricted area in the internal subset of the document (at the
+beginning). Example:</p>
+<pre>1 &lt;?xml version="1.0"?&gt;
+2 &lt;!DOCTYPE EXAMPLE SYSTEM "example.dtd" [
+3 &lt;!ENTITY xml "Extensible Markup Language"&gt;
+4 ]&gt;
+5 &lt;EXAMPLE&gt;
+6    &amp;xml;
+7 &lt;/EXAMPLE&gt;</pre>
+
+<p>Line 3 declares the xml entity. Line 6 uses the xml entity, by prefixing
+it's name with '&amp;' and following it by ';' without any spaces added. There
+are 5 predefined entities in libxml allowing you to escape charaters with
+predefined meaning in some parts of the xml document content:
+<strong>&amp;lt;</strong> for the character '&lt;', <strong>&amp;gt;</strong>
+for the character '&gt;',  <strong>&amp;apos;</strong> for the character ''',
+<strong>&amp;quot;</strong> for the character '"', and
+<strong>&amp;amp;</strong> for the character '&amp;'.</p>
+
+<p>One of the problems related to entities is that you may want the parser to
+substitute an entity's content so that you can see the replacement text in
+your application. Or you may prefer to keep entity references as such in the
+content to be able to save the document back without losing this usually
+precious information (if the user went through the pain of explicitly defining
+entities, he may have a a rather negative attitude if you blindly susbtitute
+them as saving time). The <a
+href="html/gnome-xml-parser.html#XMLSUBSTITUTEENTITIESDEFAULT">xmlSubstituteEntitiesDefault()</a>
+function allows you to check and change the behaviour, which is to not
+substitute entities by default.</p>
+
+<p>Here is the DOM tree built by libxml for the previous document in the
+default case:</p>
+<pre>/gnome/src/gnome-xml -&gt; ./xmllint --debug test/ent1
+DOCUMENT
+version=1.0
+   ELEMENT EXAMPLE
+     TEXT
+     content=
+     ENTITY_REF
+       INTERNAL_GENERAL_ENTITY xml
+       content=Extensible Markup Language
+     TEXT
+     content=</pre>
+
+<p>And here is the result when substituting entities:</p>
+<pre>/gnome/src/gnome-xml -&gt; ./tester --debug --noent test/ent1
+DOCUMENT
+version=1.0
+   ELEMENT EXAMPLE
+     TEXT
+     content=     Extensible Markup Language</pre>
+
+<p>So, entities or no entities? Basically, it depends on your use case. I
+suggest that you keep the non-substituting default behaviour and avoid using
+entities in your XML document or data if you are not willing to handle the
+entity references elements in the DOM tree.</p>
+
+<p>Note that at save time libxml enforce the conversion of the predefined
+entities where necessary to prevent well-formedness problems, and will also
+transparently replace those with chars (i.e., it will not generate entity
+reference elements in the DOM tree or call the reference() SAX callback when
+finding them in the input).</p>
+
+<p><span style="background-color: #FF0000">WARNING</span>: handling entities
+on top of libxml SAX interface is difficult !!! If you plan to use
+non-predefined entities in your documents, then the learning cuvre to handle
+then using the SAX API may be long. If you plan to use complex document, I
+strongly suggest you consider using the DOM interface instead and let libxml
+deal with the complexity rather than trying to do it yourself.</p>
+
+<h2><a name="Namespaces">Namespaces</a></h2>
+
+<p>The libxml library implements <a
+href="http://www.w3.org/TR/REC-xml-names/">XML namespaces</a> support by
+recognizing namespace contructs in the input, and does namespace lookup
+automatically when building the DOM tree. A namespace declaration is
+associated with an in-memory structure and all elements or attributes within
+that namespace point to it. Hence testing the namespace is a simple and fast
+equality operation at the user level.</p>
+
+<p>I suggest that people using libxml use a namespace, and declare it in the
+root element of their document as the default namespace. Then they don't need
+to use the prefix in the content but we will have a basis for future semantic
+refinement and  merging of data from different sources. This doesn't augment
+significantly the size of the XML output, but significantly increase its value
+in the long-term. Example:</p>
+<pre>&lt;mydoc xmlns="http://mydoc.example.org/schemas/"&gt;
+   &lt;elem1&gt;...&lt;/elem1&gt;
+   &lt;elem2&gt;...&lt;/elem2&gt;
+&lt;/mydoc&gt;</pre>
+
+<p>Concerning the namespace value, this has to be an URL, but the URL doesn't
+have to point to any existing resource on the Web. It will bind all the
+element and atributes with that URL. I suggest to use an URL within a domain
+you control, and that the URL should contain some kind of version information
+if possible. For example, <code>"http://www.gnome.org/gnumeric/1.0/"</code> is
+a good namespace scheme.</p>
+
+<p>Then when you load a file, make sure that a namespace carrying the
+version-independent prefix is installed on the root element of your document,
+and if the version information don't match something you know, warn the user
+and be liberal in what you accept as the input. Also do *not* try to base
+namespace checking on the prefix value. &lt;foo:text&gt; may be exactly the
+same as &lt;bar:text&gt; in another document. What really matter is the URI
+associated with the element or the attribute, not the prefix string (which is
+just a shortcut for the full URI). In libxml element and attributes have a
+<code>ns</code> field pointing to an xmlNs structure detailing the namespace
+prefix and it's URI.</p>
+
+<p>@@Interfaces@@</p>
+
+<p>@@Examples@@</p>
+
+<p>Usually people object using namespace in the case of validation, I object
+this and will make sure that using namespaces won't break validity checking,
+so even is you plan to use or currently are using validation I strongly
+suggest adding namespaces to your document. A default namespace scheme
+<code>xmlns="http://...."</code> should not break validity even on less
+flexible parsers. Now using namespace to mix and differentiate content coming
+from multiple DTDs will certainly break current validation schemes. I will try
+to provide ways to do this, but this may not be portable or standardized.</p>
+
+<h2><a name="Validation">Validation, or are you afraid of DTDs ?</a></h2>
+
+<p>Well what is validation and what is a DTD ?</p>
+
+<p>Validation is the process of checking a document against a set of
+construction rules, a <strong>DTD</strong> (Document Type Definition) is such
+a set of rules.</p>
+
+<p>The validation process and building DTDs are the two most difficult parts
+of  XML life cycle. Briefly a DTD defines all the possibles element to be
+found within your document, what is the formal shape of your document tree (by
+defining the allowed content of an element, either text, a regular expression
+for the allowed list of children, or mixed content i.e. both text and
+children). The DTD also defines the allowed attributes for all elements and
+the types of the attributes. For more detailed informations, I suggest to read
+the related parts of the XML specification, the examples found under
+gnome-xml/test/valid/dtd and the large amount of books available on XML. The
+dia example in gnome-xml/test/valid should be both simple and complete enough
+to allow you to build your own.</p>
+
+<p>A word of warning, building a good DTD which will fit your needs of your
+application in the long-term is far from trivial, however the extra level of
+quality it can insure is well worth the price for some sets of applications or
+if you already have already a DTD defined for your application field.</p>
+
+<p>The validation is not completely finished but in a (very IMHO) usable
+state. Until a real validation interface is defined the way to do it is to
+define and set the <strong>xmlDoValidityCheckingDefaultValue</strong> external
+variable to 1, this will of course be changed at some point:</p>
+
+<p>extern int xmlDoValidityCheckingDefaultValue;</p>
+
+<p>...</p>
+
+<p>xmlDoValidityCheckingDefaultValue = 1;</p>
+
+<p></p>
+
+<p>To handle external entities, use the function
+<strong>xmlSetExternalEntityLoader</strong>(xmlExternalEntityLoader f); to
+link in you HTTP/FTP/Entities database library to the standard libxml
+core.</p>
+
+<p>@@interfaces@@</p>
+
+<h2><a name="DOM"></a><a name="Principles">DOM Principles</a></h2>
+
+<p><a href="http://www.w3.org/DOM/">DOM</a> stands for the <em>Document Object
 Model</em> this is an API for accessing XML or HTML structured documents.
 Native support for DOM in Gnome is on the way (module gnome-dom), and it will
 be based on gnome-xml. This will be a far cleaner interface to manipulate XML
-files within Gnome since it won't expose the internal structure. DOM defiles a
+files within Gnome since it won't expose the internal structure. DOM defines a
 set of IDL (or Java) interfaces allowing to traverse and manipulate a
 document. The DOM library will allow accessing and modifying "live" documents
 presents on other programs like this:</p>
-<p>
-<img src="DOM.gif" alt=" DOM.gif "></p>
-<p>
-This should help greatly doing things like modifying a gnumeric spreadsheet
+
+<p><img src="DOM.gif" alt=" DOM.gif "></p>
+
+<p>This should help greatly doing things like modifying a gnumeric spreadsheet
 embedded in a GWP document for example.</p>
 
-<h3><a name="Example">A real example</a></h3>
-<p>
-Here is a real size example, where the actual content of the application data
-is not kept in the DOM tree but uses internal structures. It is based on
+<p>The current DOM implementation on top of libxml is the <a
+href="http://cvs.gnome.org/lxr/source/gdome/">gdome Gnome module</a>, this is
+a full DOM interface, thanks to <a href="mailto:raph@levien.com">Raph
+Levien</a>.</p>
+
+<p>The gnome-dom module in the Gnome CVS base is obsolete</p>
+
+<h2><a name="Example"></a><a name="real">A real example</a></h2>
+
+<p>Here is a real size example, where the actual content of the application
+data is not kept in the DOM tree but uses internal structures. It is based on
 a proposal to keep a database of jobs related to Gnome, with an XML based
-storage structure. Here is an <a href="gjobs.xml">XML encoded jobs base</a>:
-<pre>
-&lt;?xml version="1.0"?>
-&lt;gjob:Helping xmlns:gjob="http://www.gnome.org/some-location">
-  &lt;gjob:Jobs>
+storage structure. Here is an <a href="gjobs.xml">XML encoded jobs
+base</a>:</p>
+<pre>&lt;?xml version="1.0"?&gt;
+&lt;gjob:Helping xmlns:gjob="http://www.gnome.org/some-location"&gt;
+  &lt;gjob:Jobs&gt;
 
-    &lt;gjob:Job>
-      &lt;gjob:Project ID="3"/>
-      &lt;gjob:Application>GBackup&lt;/gjob:Application>
-      &lt;gjob:Category>Development&lt;/gjob:Category>
+    &lt;gjob:Job&gt;
+      &lt;gjob:Project ID="3"/&gt;
+      &lt;gjob:Application&gt;GBackup&lt;/gjob:Application&gt;
+      &lt;gjob:Category&gt;Development&lt;/gjob:Category&gt;
 
-      &lt;gjob:Update>
-	&lt;gjob:Status>Open&lt;/gjob:Status>
-	&lt;gjob:Modified>Mon, 07 Jun 1999 20:27:45 -0400 MET DST&lt;/gjob:Modified>
-        &lt;gjob:Salary>USD 0.00&lt;/gjob:Salary>
-      &lt;/gjob:Update>
+      &lt;gjob:Update&gt;
+        &lt;gjob:Status&gt;Open&lt;/gjob:Status&gt;
+        &lt;gjob:Modified&gt;Mon, 07 Jun 1999 20:27:45 -0400 MET DST&lt;/gjob:Modified&gt;
+        &lt;gjob:Salary&gt;USD 0.00&lt;/gjob:Salary&gt;
+      &lt;/gjob:Update&gt;
 
-      &lt;gjob:Developers>
-        &lt;gjob:Developer>
-        &lt;/gjob:Developer>
-      &lt;/gjob:Developers>
+      &lt;gjob:Developers&gt;
+        &lt;gjob:Developer&gt;
+        &lt;/gjob:Developer&gt;
+      &lt;/gjob:Developers&gt;
 
-      &lt;gjob:Contact>
-        &lt;gjob:Person>Nathan Clemons&lt;/gjob:Person>
-	&lt;gjob:Email>nathan@windsofstorm.net&lt;/gjob:Email>
-        &lt;gjob:Company>
-	&lt;/gjob:Company>
-        &lt;gjob:Organisation>
-	&lt;/gjob:Organisation>
-        &lt;gjob:Webpage>
-	&lt;/gjob:Webpage>
-	&lt;gjob:Snailmail>
-	&lt;/gjob:Snailmail>
-	&lt;gjob:Phone>
-	&lt;/gjob:Phone>
-      &lt;/gjob:Contact>
+      &lt;gjob:Contact&gt;
+        &lt;gjob:Person&gt;Nathan Clemons&lt;/gjob:Person&gt;
+        &lt;gjob:Email&gt;nathan@windsofstorm.net&lt;/gjob:Email&gt;
+        &lt;gjob:Company&gt;
+        &lt;/gjob:Company&gt;
+        &lt;gjob:Organisation&gt;
+        &lt;/gjob:Organisation&gt;
+        &lt;gjob:Webpage&gt;
+        &lt;/gjob:Webpage&gt;
+        &lt;gjob:Snailmail&gt;
+        &lt;/gjob:Snailmail&gt;
+        &lt;gjob:Phone&gt;
+        &lt;/gjob:Phone&gt;
+      &lt;/gjob:Contact&gt;
 
-      &lt;gjob:Requirements>
+      &lt;gjob:Requirements&gt;
       The program should be released as free software, under the GPL.
-      &lt;/gjob:Requirements>
+      &lt;/gjob:Requirements&gt;
 
-      &lt;gjob:Skills>
-      &lt;/gjob:Skills>
+      &lt;gjob:Skills&gt;
+      &lt;/gjob:Skills&gt;
 
-      &lt;gjob:Details>
+      &lt;gjob:Details&gt;
       A GNOME based system that will allow a superuser to configure 
       compressed and uncompressed files and/or file systems to be backed 
       up with a supported media in the system.  This should be able to 
@@ -343,29 +1104,24 @@ storage structure. Here is an <a href="gjobs.xml">XML encoded jobs base</a>:
       to tar, dd, cpio, cp, gzip, etc., to be directed to the tape machine 
       or via operations performed on the filesystem itself. Email 
       notification and GUI status display very important.
-      &lt;/gjob:Details>
+      &lt;/gjob:Details&gt;
 
-    &lt;/gjob:Job>
+    &lt;/gjob:Job&gt;
 
-  &lt;/gjob:Jobs>
-&lt;/gjob:Helping>
+  &lt;/gjob:Jobs&gt;
+&lt;/gjob:Helping&gt;</pre>
 
-</pre>
-<p>
-While loading the XML file into an internal DOM tree is a matter of calling
-only a couple of functions, browsing the tree to gather the informations
-and generate the internals structures is harder, and more error prone. 
-</p>
-<p>
-The suggested principle is to be tolerant with respect to the input
-structure. For example the ordering of the attributes is not significant,
-Cthe XML specification is clear about it. It's also usually a good idea
-to not be dependant of the orders of the childs of a given node, unless it
-really makes things harder. Here is some code to parse the informations
-for a person:
-</p>
-<pre>
-/*
+<p>While loading the XML file into an internal DOM tree is a matter of calling
+only a couple of functions, browsing the tree to gather the informations and
+generate the internals structures is harder, and more error prone.</p>
+
+<p>The suggested principle is to be tolerant with respect to the input
+structure. For example, the ordering of the attributes is not significant,
+Cthe XML specification is clear about it. It's also usually a good idea to not
+be dependent of the orders of the children of a given node, unless it really
+makes things harder. Here is some code to parse the informations for a
+person:</p>
+<pre>/*
  * A person record
  */
 typedef struct person {
@@ -391,45 +1147,44 @@ DEBUG("parsePerson\n");
     ret = (personPtr) malloc(sizeof(person));
     if (ret == NULL) {
         fprintf(stderr,"out of memory\n");
-	return(NULL);
+        return(NULL);
     }
     memset(ret, 0, sizeof(person));
 
     /* We don't care what the top level element name is */
-    cur = cur->childs;
+    cur = cur-&gt;xmlChildrenNode;
     while (cur != NULL) {
-        if ((!strcmp(cur->name, "Person")) &amp;&amp; (cur->ns == ns))
-	    ret->name = xmlNodeListGetString(doc, cur->childs, 1);
-        if ((!strcmp(cur->name, "Email")) &amp;&amp; (cur->ns == ns))
-	    ret->email = xmlNodeListGetString(doc, cur->childs, 1);
-	cur = cur->next;
+        if ((!strcmp(cur-&gt;name, "Person")) &amp;&amp; (cur-&gt;ns == ns))
+            ret-&gt;name = xmlNodeListGetString(doc, cur-&gt;xmlChildrenNode, 1);
+        if ((!strcmp(cur-&gt;name, "Email")) &amp;&amp; (cur-&gt;ns == ns))
+            ret-&gt;email = xmlNodeListGetString(doc, cur-&gt;xmlChildrenNode, 1);
+        cur = cur-&gt;next;
     }
 
     return(ret);
-}
-</pre>
-<p>
-Here is a couple of things to notice:</p>
+}</pre>
+
+<p>Here is a couple of things to notice:</p>
 <ul>
-<li> Usually a recursive parsing style is the more convenient one,
-XML data being by nature subject to repetitive constructs and usualy exibit
-highly stuctured patterns.
-<li> The two arguments of type <em>xmlDocPtr</em> and <em>xmlNsPtr</em>, i.e.
-the pointer to the global XML document and the namespace reserved to the
-application. Document wide information are needed for example to decode
-entities and it's a good coding practice to define a namespace for your
-application set of data and test that the element and attributes you're
-analyzing actually pertains to your application space. This is done by a simple
-equality test (cur->ns == ns).
-<li> To retrieve text and attributes value, it is suggested to use
-the function <em>xmlNodeListGetString</em> to gather all the text and
-entity reference nodes generated by the DOM output and produce an
-single text string.
+  <li>Usually a recursive parsing style is the more convenient one, XML data
+    being by nature subject to repetitive constructs and usualy exibit highly
+    stuctured patterns.</li>
+  <li>The two arguments of type <em>xmlDocPtr</em> and <em>xmlNsPtr</em>, i.e.
+    the pointer to the global XML document and the namespace reserved to the
+    application. Document wide information are needed for example to decode
+    entities and it's a good coding practice to define a namespace for your
+    application set of data and test that the element and attributes you're
+    analyzing actually pertains to your application space. This is done by a
+    simple equality test (cur-&gt;ns == ns).</li>
+  <li>To retrieve text and attributes value, it is suggested to use the
+    function <em>xmlNodeListGetString</em> to gather all the text and entity
+    reference nodes generated by the DOM output and produce an single text
+    string.</li>
 </ul>
-<p>
-Here is another piece of code used to parse another level of the structure:
-</p>
-<pre>
+
+<p>Here is another piece of code used to parse another level of the
+structure:</p>
+<pre>#include &lt;libxml/tree.h&gt;
 /*
  * a Description for a Job
  */
@@ -455,43 +1210,68 @@ DEBUG("parseJob\n");
     ret = (jobPtr) malloc(sizeof(job));
     if (ret == NULL) {
         fprintf(stderr,"out of memory\n");
-	return(NULL);
+        return(NULL);
     }
     memset(ret, 0, sizeof(job));
 
     /* We don't care what the top level element name is */
-    cur = cur->childs;
+    cur = cur-&gt;xmlChildrenNode;
     while (cur != NULL) {
         
-        if ((!strcmp(cur->name, "Project")) &amp;&amp; (cur->ns == ns)) {
-	    ret->projectID = xmlGetProp(cur, "ID");
-	    if (ret->projectID == NULL) {
-		fprintf(stderr, "Project has no ID\n");
-	    }
-	}
-        if ((!strcmp(cur->name, "Application")) &amp;&amp; (cur->ns == ns))
-	    ret->application = xmlNodeListGetString(doc, cur->childs, 1);
-        if ((!strcmp(cur->name, "Category")) &amp;&amp; (cur->ns == ns))
-	    ret->category = xmlNodeListGetString(doc, cur->childs, 1);
-        if ((!strcmp(cur->name, "Contact")) &amp;&amp; (cur->ns == ns))
-	    ret->contact = parsePerson(doc, ns, cur);
-	cur = cur->next;
+        if ((!strcmp(cur-&gt;name, "Project")) &amp;&amp; (cur-&gt;ns == ns)) {
+            ret-&gt;projectID = xmlGetProp(cur, "ID");
+            if (ret-&gt;projectID == NULL) {
+                fprintf(stderr, "Project has no ID\n");
+            }
+        }
+        if ((!strcmp(cur-&gt;name, "Application")) &amp;&amp; (cur-&gt;ns == ns))
+            ret-&gt;application = xmlNodeListGetString(doc, cur-&gt;xmlChildrenNode, 1);
+        if ((!strcmp(cur-&gt;name, "Category")) &amp;&amp; (cur-&gt;ns == ns))
+            ret-&gt;category = xmlNodeListGetString(doc, cur-&gt;xmlChildrenNode, 1);
+        if ((!strcmp(cur-&gt;name, "Contact")) &amp;&amp; (cur-&gt;ns == ns))
+            ret-&gt;contact = parsePerson(doc, ns, cur);
+        cur = cur-&gt;next;
     }
 
     return(ret);
-}
-</pre>
-<p>
-One can notice that once used to it, writing this kind of code
-is quite simple, but boring. Ultimately, it could be possble to write
-stubbers taking either C data structure definitions, a set of XML examples
-or an XML DTD and produce the code needed to import and export the
-content between C data and XML storage. This is left as an exercise to
-the reader :-)</p>
-<p>
-Feel free to use <a href="gjobread.c">the code for the full C parsing
-example</a> as a template,
+}</pre>
 
-<a href="mailto:Daniel.Veillard@w3.org">Daniel Veillard</a>
+<p>One can notice that once used to it, writing this kind of code is quite
+simple, but boring. Ultimately, it could be possble to write stubbers taking
+either C data structure definitions, a set of XML examples or an XML DTD and
+produce the code needed to import and export the content between C data and
+XML storage. This is left as an exercise to the reader :-)</p>
+
+<p>Feel free to use <a href="example/gjobread.c">the code for the full C
+parsing example</a> as a template, it is also available with Makefile in the
+Gnome CVS base under gnome-xml/example</p>
+
+<h2><a name="Contributi">Contributions</a></h2>
+<ul>
+  <li><a href="mailto:ari@btigate.com">Ari Johnson</a> provides a  C++ wrapper
+    for libxml:
+    <p>Website: <a
+    href="http://lusis.org/~ari/xml++/">http://lusis.org/~ari/xml++/</a></p>
+    <p>Download: <a
+    href="http://lusis.org/~ari/xml++/libxml++.tar.gz">http://lusis.org/~ari/xml++/libxml++.tar.gz</a></p>
+  </li>
+  <li><a href="mailto:doolin@cs.utk.edu">David Doolin</a> provides a
+    precompiled Windows version
+    <p><a
+    href="http://www.ce.berkeley.edu/~doolin/code/libxmlwin32/">http://www.ce.berkeley.edu/~doolin/code/libxmlwin32/</a></p>
+  </li>
+  <li><a href="mailto:fnatter@gmx.net">Felix Natter</a> provided <a
+    href="libxml-doc.el">an emacs module</a> to lookup libxml functions
+    documentation</li>
+  <li><a href="mailto:sherwin@nlm.nih.gov">Ziying Sherwin</a> provided <a
+    href="http://xmlsoft.org/messages/0488.html">man pages</a> (not yet
+    integrated in the distribution)</li>
+</ul>
+
+<p></p>
+
+<p><a href="mailto:Daniel.Veillard@w3.org">Daniel Veillard</a></p>
+
+<p>$Id$</p>
 </body>
 </html>

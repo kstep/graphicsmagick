@@ -6,14 +6,29 @@
 /* Define if you have the ANSI C header files.  */
 #undef STDC_HEADERS
 
+#undef PACKAGE
+#undef VERSION
+#undef HAVE_LIBZ
+#undef HAVE_LIBM
+#undef HAVE_ISINF
+#undef HAVE_ISNAN
+#undef HAVE_LIBHISTORY
+#undef HAVE_LIBREADLINE
+
+/* Define if you have the class function.  */
+#undef HAVE_CLASS
+
 /* Define if you have the finite function.  */
 #undef HAVE_FINITE
 
-/* Define if you have the isinf function.  */
-#undef HAVE_ISINF
+/* Define if you have the fp_class function.  */
+#undef HAVE_FP_CLASS
 
-/* Define if you have the isnan function.  */
-#undef HAVE_ISNAN
+/* Define if you have the fpclass function.  */
+#undef HAVE_FPCLASS
+
+/* Define if you have the iconv function.  */
+#undef HAVE_ICONV
 
 /* Define if you have the isnand function.  */
 #undef HAVE_ISNAND
@@ -51,6 +66,12 @@
 /* Define if you have the <fcntl.h> header file.  */
 #undef HAVE_FCNTL_H
 
+/* Define if you have the <float.h> header file.  */
+#undef HAVE_FLOAT_H
+
+/* Define if you have the <fp_class.h> header file.  */
+#undef HAVE_FP_CLASS_H
+
 /* Define if you have the <ieeefp.h> header file.  */
 #undef HAVE_IEEEFP_H
 
@@ -72,17 +93,20 @@
 /* Define if you have the <netinet/in.h> header file.  */
 #undef HAVE_NETINET_IN_H
 
-/* Define if you have the <resolv.h> header file.  */
-#undef HAVE_RESOLV_H
-
 /* Define if you have the <stdarg.h> header file.  */
 #undef HAVE_STDARG_H
 
 /* Define if you have the <stdlib.h> header file.  */
 #undef HAVE_STDLIB_H
 
+/* Define if you have the <string.h> header file.  */
+#undef HAVE_STRING_H
+
 /* Define if you have the <sys/dir.h> header file.  */
 #undef HAVE_SYS_DIR_H
+
+/* Define if you have the <sys/mman.h> header file.  */
+#undef HAVE_SYS_MMAN_H
 
 /* Define if you have the <sys/ndir.h> header file.  */
 #undef HAVE_SYS_NDIR_H
@@ -105,17 +129,11 @@
 /* Define if you have the <time.h> header file.  */
 #undef HAVE_TIME_H
 
-/* Define if you have the <unicode.h> header file.  */
-#undef HAVE_UNICODE_H
-
 /* Define if you have the <unistd.h> header file.  */
 #undef HAVE_UNISTD_H
 
 /* Define if you have the <zlib.h> header file.  */
 #undef HAVE_ZLIB_H
-
-/* Define if you have the history library (-lhistory).  */
-#undef HAVE_LIBHISTORY
 
 /* Define if you have the inet library (-linet).  */
 #undef HAVE_LIBINET
@@ -123,8 +141,15 @@
 /* Define if you have the nsl library (-lnsl).  */
 #undef HAVE_LIBNSL
 
-/* Define if you have the readline library (-lreadline).  */
-#undef HAVE_LIBREADLINE
-
 /* Define if you have the socket library (-lsocket).  */
 #undef HAVE_LIBSOCKET
+
+/* Name of package */
+#undef PACKAGE
+
+/* Version number of package */
+#undef VERSION
+
+/* Define if compiler has function prototypes */
+#undef PROTOTYPES
+

@@ -654,6 +654,23 @@ xmlNanoHTTPConnectAttempt(struct in_addr ia, int port)
 	    close(s);
 	    return(-1);
     }
+
+    if ( FD_ISSET(s, &wfd) ) {
+	unsigned int len; /* was socklen_t barfed on some systems :-( */
+	len = sizeof(status);
+	if (getsockopt(s, SOL_SOCKET, SO_ERROR, &status, &len) < 0 ) {
+	    /* Solaris error code */
+	    return (-1);
+	}
+	if ( status ) {
+	    close (s);
+	    errno = status;
+	    return (-1);
+	}
+    } else {
+	/* pbm */
+	return (-1);
+    }
     
     return(s);
 }
@@ -755,20 +772,21 @@ retry:
     }
     ctxt->fd = ret;
     if (proxy) {
-#ifdef HAVE_SNPRINTF
 	if (ctxt->port != 80)
+#ifdef HAVE_SNPRINTF
 	    snprintf(buf, sizeof(buf),
 		     "GET http://%s:%d%s HTTP/1.0\r\nHost: %s\r\n\r\n",
 		 ctxt->hostname, ctxt->port, ctxt->path, ctxt->hostname);
-	else 
-	    snprintf(buf, sizeof(buf),"GET http://%s%s HTTP/1.0\r\nHost: %s\r\n\r\n",
-		 ctxt->hostname, ctxt->path, ctxt->hostname);
 #else
-	if (ctxt->port != 80)
 	    sprintf(buf, 
 		     "GET http://%s:%d%s HTTP/1.0\r\nHost: %s\r\n\r\n",
 		 ctxt->hostname, ctxt->port, ctxt->path, ctxt->hostname);
+#endif
 	else 
+#ifdef HAVE_SNPRINTF
+	    snprintf(buf, sizeof(buf),"GET http://%s%s HTTP/1.0\r\nHost: %s\r\n\r\n",
+		 ctxt->hostname, ctxt->path, ctxt->hostname);
+#else
 	    sprintf(buf, "GET http://%s%s HTTP/1.0\r\nHost: %s\r\n\r\n",
 		 ctxt->hostname, ctxt->path, ctxt->hostname);
 #endif
@@ -793,6 +811,7 @@ retry:
 	       ctxt->path, ctxt->hostname);
 #endif
     }
+    buf[sizeof(buf) - 1] = 0;
     ctxt->outptr = ctxt->out = xmlMemStrdup(buf);
     ctxt->state = XML_NANO_HTTP_WRITE;
     xmlNanoHTTPSend(ctxt);
@@ -1056,6 +1075,7 @@ retry:
 	    }
 	}
     }
+    buf[sizeof(buf) - 1] = 0;
 #ifdef DEBUG_HTTP
     printf("-> %s", buf);
 #endif

@@ -17,6 +17,7 @@
 #ifdef LIBXML_DEBUG_ENABLED
 
 #include <stdio.h>
+#include <string.h>
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
 #endif
@@ -36,9 +37,15 @@
 
 void xmlDebugDumpString(FILE *output, const xmlChar *str) {
     int i;
+    if (str == NULL) {
+	fprintf(output, "(NULL)");
+	return;
+    }
     for (i = 0;i < 40;i++)
         if (str[i] == 0) return;
 	else if (IS_BLANK(str[i])) fputc(' ', output);
+	else if (str[i] >= 0x80)
+	     fprintf(output, "#%X", str[i]);
 	else fputc(str[i], output);
     fprintf(output, "...");
 }
@@ -221,9 +228,11 @@ void xmlDebugDumpElemDecl(FILE *output, xmlElementPtr elem, int depth) {
 	fprintf(output, "PBM: not a Elem\n");
 	return;
     }
-    if (elem->name != NULL)
-	fprintf(output, "ELEMDECL(%s)", elem->name);
-    else
+    if (elem->name != NULL) {
+	fprintf(output, "ELEMDECL(");
+	xmlDebugDumpString(output, elem->name);
+	fprintf(output, ")");
+    } else
 	fprintf(output, "PBM ELEMDECL noname!!!");
     switch (elem->etype) {
 	case XML_ELEMENT_TYPE_EMPTY: 
@@ -240,11 +249,11 @@ void xmlDebugDumpElemDecl(FILE *output, xmlElementPtr elem, int depth) {
 	    break;
     }
     if (elem->content != NULL) {
-	char buf[1001];
+	char buf[5001];
 
 	buf[0] = 0;
 	xmlSprintfElementContent(buf, elem->content, 1);
-	buf[1000] = 0;
+	buf[5000] = 0;
 	fprintf(output, "%s", buf);
     }
     printf("\n");
@@ -288,9 +297,11 @@ void xmlDebugDumpEntityDecl(FILE *output, xmlEntityPtr ent, int depth) {
 	fprintf(output, "PBM: not a Entity decl\n");
 	return;
     }
-    if (ent->name != NULL)
-	fprintf(output, "ENTITYDECL(%s)", ent->name);
-    else
+    if (ent->name != NULL) {
+	fprintf(output, "ENTITYDECL(");
+	xmlDebugDumpString(output, ent->name);
+	fprintf(output, ")");
+    } else
 	fprintf(output, "PBM ENTITYDECL noname!!!");
     switch (ent->etype) {
 	case XML_INTERNAL_GENERAL_ENTITY: 
@@ -314,15 +325,19 @@ void xmlDebugDumpEntityDecl(FILE *output, xmlEntityPtr ent, int depth) {
     }
     if (ent->ExternalID) {
         fprintf(output, shift);
-        fprintf(output, "ExternalID=%s\n", ent->ExternalID);
+        fprintf(output, " ExternalID=%s\n", ent->ExternalID);
     }
     if (ent->SystemID) {
         fprintf(output, shift);
-        fprintf(output, "SystemID=%s\n", ent->SystemID);
+        fprintf(output, " SystemID=%s\n", ent->SystemID);
+    }
+    if (ent->URI != NULL) {
+        fprintf(output, shift);
+        fprintf(output, " URI=%s\n", ent->URI);
     }
     if (ent->content) {
         fprintf(output, shift);
-	fprintf(output, "content=");
+	fprintf(output, " content=");
 	xmlDebugDumpString(output, ent->content);
 	fprintf(output, "\n");
     }
@@ -363,13 +378,20 @@ void xmlDebugDumpNamespace(FILE *output, xmlNsPtr ns, int depth) {
     fprintf(output, shift);
     if (ns->type == XML_GLOBAL_NAMESPACE)
         fprintf(output, "old ");
-    if (ns->prefix != NULL)
-	fprintf(output, "namespace %s href=", ns->prefix);
-    else
-	fprintf(output, "default namespace href=");
+    if (ns->href == NULL) {
+	if (ns->prefix != NULL)
+	    fprintf(output, "incomplete namespace %s href=NULL\n", ns->prefix);
+	else
+	    fprintf(output, "incomplete default namespace href=NULL\n");
+    } else {
+	if (ns->prefix != NULL)
+	    fprintf(output, "namespace %s href=", ns->prefix);
+	else
+	    fprintf(output, "default namespace href=");
 
-    xmlDebugDumpString(output, ns->href);
-    fprintf(output, "\n");
+	xmlDebugDumpString(output, ns->href);
+	fprintf(output, "\n");
+    }
 }
 
 void xmlDebugDumpNamespaceList(FILE *output, xmlNsPtr ns, int depth) {
@@ -416,6 +438,10 @@ void xmlDebugDumpEntity(FILE *output, xmlEntityPtr ent, int depth) {
         fprintf(output, shift);
         fprintf(output, "SystemID=%s\n", ent->SystemID);
     }
+    if (ent->URI) {
+        fprintf(output, shift);
+        fprintf(output, "URI=%s\n", ent->URI);
+    }
     if (ent->content) {
         fprintf(output, shift);
 	fprintf(output, "content=");
@@ -434,7 +460,9 @@ void xmlDebugDumpAttr(FILE *output, xmlAttrPtr attr, int depth) {
 
     fprintf(output, shift);
 
-    fprintf(output, "ATTRIBUTE %s\n", attr->name);
+    fprintf(output, "ATTRIBUTE ");
+    xmlDebugDumpString(output, attr->name);
+    fprintf(output, "\n");
     if (attr->children != NULL) 
         xmlDebugDumpNodeList(output, attr->children, depth + 1);
 
@@ -479,10 +507,12 @@ void xmlDebugDumpOneNode(FILE *output, xmlNodePtr node, int depth) {
 	case XML_ELEMENT_NODE:
 	    fprintf(output, shift);
 	    fprintf(output, "ELEMENT ");
-	    if (node->ns != NULL)
-	        fprintf(output, "%s:%s\n", node->ns->prefix, node->name);
-	    else
-	        fprintf(output, "%s\n", node->name);
+	    if (node->ns != NULL) {
+		xmlDebugDumpString(output, node->ns->prefix);
+	        fprintf(output, ":");
+	    }
+	    xmlDebugDumpString(output, node->name);
+	    fprintf(output, "\n");
 	    break;
 	case XML_ATTRIBUTE_NODE:
 	    fprintf(output, shift);
@@ -596,7 +626,7 @@ void xmlDebugDumpOneNode(FILE *output, xmlNodePtr node, int depth) {
 
 void xmlDebugDumpNode(FILE *output, xmlNodePtr node, int depth) {
     xmlDebugDumpOneNode(output, node, depth);
-    if (node->children != NULL)
+    if ((node->children != NULL) && (node->type != XML_ENTITY_REF_NODE))
 	xmlDebugDumpNodeList(output, node->children, depth + 1);
 }
 
@@ -673,49 +703,10 @@ void xmlDebugDumpDocumentHead(FILE *output, xmlDocPtr doc) {
         xmlDebugDumpString(output, doc->encoding);
 	fprintf(output, "\n");
     }
-    switch (doc->charset) {
-        case XML_CHAR_ENCODING_ERROR:
-	    fprintf(output, "charset: error !?!\n"); break;
-        case XML_CHAR_ENCODING_NONE:
-	    fprintf(output, "charset: none !?!\n"); break;
-        case XML_CHAR_ENCODING_UTF8:
-	    break;
-        case XML_CHAR_ENCODING_UTF16LE:
-        case XML_CHAR_ENCODING_UTF16BE:
-	    fprintf(output, "charset: utf16 !?!\n"); break;
-        case XML_CHAR_ENCODING_UCS4LE:
-        case XML_CHAR_ENCODING_UCS4BE:
-	    fprintf(output, "charset: ucs4 !?!\n"); break;
-        case XML_CHAR_ENCODING_UCS4_2143:
-        case XML_CHAR_ENCODING_UCS4_3412:
-        case XML_CHAR_ENCODING_EBCDIC:
-	    fprintf(output, "charset: ebcdic !?!\n"); break;
-        case XML_CHAR_ENCODING_UCS2:
-	    fprintf(output, "charset: ucs2 !?!\n"); break;
-        case XML_CHAR_ENCODING_8859_1:
-	    fprintf(output, "charset: Iso 8859 1\n"); break;
-        case XML_CHAR_ENCODING_8859_2:
-	    fprintf(output, "charset: Iso 8859 2\n"); break;
-        case XML_CHAR_ENCODING_8859_3:
-	    fprintf(output, "charset: Iso 8859 3\n"); break;
-        case XML_CHAR_ENCODING_8859_4:
-	    fprintf(output, "charset: Iso 8859 4\n"); break;
-        case XML_CHAR_ENCODING_8859_5:
-	    fprintf(output, "charset: Iso 8859 5\n"); break;
-        case XML_CHAR_ENCODING_8859_6:
-	    fprintf(output, "charset: Iso 8859 6\n"); break;
-        case XML_CHAR_ENCODING_8859_7:
-	    fprintf(output, "charset: Iso 8859 7\n"); break;
-        case XML_CHAR_ENCODING_8859_8:
-	    fprintf(output, "charset: Iso 8859 8\n"); break;
-        case XML_CHAR_ENCODING_8859_9:
-	    fprintf(output, "charset: Iso 8859 9\n"); break;
-        case XML_CHAR_ENCODING_2022_JP:
-	    fprintf(output, "charset: Iso 2022 JP ?!?\n"); break;
-        case XML_CHAR_ENCODING_SHIFT_JIS:
-	    fprintf(output, "charset: Shift JIS ?!?\n"); break;
-        case XML_CHAR_ENCODING_EUC_JP:
-	    fprintf(output, "charset: EUC JP ?!?\n"); break;
+    if (doc->URL != NULL) {
+	fprintf(output, "URL=");
+        xmlDebugDumpString(output, doc->URL);
+	fprintf(output, "\n");
     }
     if (doc->standalone)
         fprintf(output, "standalone=true\n");
@@ -735,6 +726,47 @@ void xmlDebugDumpDocument(FILE *output, xmlDocPtr doc) {
         (doc->children != NULL))
         xmlDebugDumpNodeList(output, doc->children, 1);
 }    
+
+void xmlDebugDumpDTD(FILE *output, xmlDtdPtr dtd) {
+    if (dtd == NULL)
+	return;
+    if (dtd->type != XML_DTD_NODE) {
+	fprintf(output, "PBM: not a DTD\n");
+	return;
+    }
+    if (dtd->name != NULL)
+	fprintf(output, "DTD(%s)", dtd->name);
+    else
+	fprintf(output, "DTD");
+    if (dtd->ExternalID != NULL)
+	fprintf(output, ", PUBLIC %s", dtd->ExternalID);
+    if (dtd->SystemID != NULL)
+	fprintf(output, ", SYSTEM %s", dtd->SystemID);
+    fprintf(output, "\n");
+    /*
+     * Do a bit of checking
+     */
+    if ((dtd->parent != NULL) && (dtd->doc != dtd->parent->doc))
+	fprintf(output, "PBM: Dtd doc differs from parent's one\n");
+    if (dtd->prev == NULL) {
+	if ((dtd->parent != NULL) && (dtd->parent->children != (xmlNodePtr)dtd))
+	    fprintf(output, "PBM: Dtd has no prev and not first of list\n");
+    } else {
+	if (dtd->prev->next != (xmlNodePtr) dtd)
+	    fprintf(output, "PBM: Dtd prev->next : back link wrong\n");
+    }
+    if (dtd->next == NULL) {
+	if ((dtd->parent != NULL) && (dtd->parent->last != (xmlNodePtr) dtd))
+	    fprintf(output, "PBM: Dtd has no next and not last of list\n");
+    } else {
+	if (dtd->next->prev != (xmlNodePtr) dtd)
+	    fprintf(output, "PBM: Dtd next->prev : forward link wrong\n");
+    }
+    if (dtd->children == NULL)
+	fprintf(output, "    DTD is empty\n");
+    else
+        xmlDebugDumpNodeList(output, dtd->children, 1);
+}
 
 void xmlDebugDumpEntities(FILE *output, xmlDocPtr doc) {
     int i;
@@ -793,38 +825,41 @@ void xmlDebugDumpEntities(FILE *output, xmlDocPtr doc) {
         xmlEntitiesTablePtr table = (xmlEntitiesTablePtr) 
 	                            doc->intSubset->entities;
 	fprintf(output, "Entities in internal subset\n");
-	for (i = 0;i < table->nb_entities;i++) {
+	for (i = 0;i < table->max_entities;i++) {
 	    cur = table->table[i];
-	    fprintf(output, "%d : %s : ", i, cur->name);
-	    switch (cur->etype) {
-		case XML_INTERNAL_GENERAL_ENTITY:
-		    fprintf(output, "INTERNAL GENERAL, ");
-		    break;
-		case XML_EXTERNAL_GENERAL_PARSED_ENTITY:
-		    fprintf(output, "EXTERNAL PARSED, ");
-		    break;
-		case XML_EXTERNAL_GENERAL_UNPARSED_ENTITY:
-		    fprintf(output, "EXTERNAL UNPARSED, ");
-		    break;
-		case XML_INTERNAL_PARAMETER_ENTITY:
-		    fprintf(output, "INTERNAL PARAMETER, ");
-		    break;
-		case XML_EXTERNAL_PARAMETER_ENTITY:
-		    fprintf(output, "EXTERNAL PARAMETER, ");
-		    break;
-		default:
-		    fprintf(output, "UNKNOWN TYPE %d",
-			    cur->etype);
+	    while (cur != NULL) {
+		fprintf(output, "%d : %s : ", i, cur->name);
+		switch (cur->etype) {
+		    case XML_INTERNAL_GENERAL_ENTITY:
+			fprintf(output, "INTERNAL GENERAL, ");
+			break;
+		    case XML_EXTERNAL_GENERAL_PARSED_ENTITY:
+			fprintf(output, "EXTERNAL PARSED, ");
+			break;
+		    case XML_EXTERNAL_GENERAL_UNPARSED_ENTITY:
+			fprintf(output, "EXTERNAL UNPARSED, ");
+			break;
+		    case XML_INTERNAL_PARAMETER_ENTITY:
+			fprintf(output, "INTERNAL PARAMETER, ");
+			break;
+		    case XML_EXTERNAL_PARAMETER_ENTITY:
+			fprintf(output, "EXTERNAL PARAMETER, ");
+			break;
+		    default:
+			fprintf(output, "UNKNOWN TYPE %d",
+				cur->etype);
+		}
+		if (cur->ExternalID != NULL) 
+		    fprintf(output, "ID \"%s\"", cur->ExternalID);
+		if (cur->SystemID != NULL)
+		    fprintf(output, "SYSTEM \"%s\"", cur->SystemID);
+		if (cur->orig != NULL)
+		    fprintf(output, "\n orig \"%s\"", cur->orig);
+		if (cur->content != NULL)
+		    fprintf(output, "\n content \"%s\"", cur->content);
+		fprintf(output, "\n");	
+		cur = cur->nexte;
 	    }
-	    if (cur->ExternalID != NULL) 
-	        fprintf(output, "ID \"%s\"", cur->ExternalID);
-	    if (cur->SystemID != NULL)
-	        fprintf(output, "SYSTEM \"%s\"", cur->SystemID);
-	    if (cur->orig != NULL)
-	        fprintf(output, "\n orig \"%s\"", cur->orig);
-	    if (cur->content != NULL)
-	        fprintf(output, "\n content \"%s\"", cur->content);
-	    fprintf(output, "\n");	
 	}
     } else
 	fprintf(output, "No entities in internal subset\n");
@@ -832,38 +867,41 @@ void xmlDebugDumpEntities(FILE *output, xmlDocPtr doc) {
         xmlEntitiesTablePtr table = (xmlEntitiesTablePtr) 
 	                            doc->extSubset->entities;
 	fprintf(output, "Entities in external subset\n");
-	for (i = 0;i < table->nb_entities;i++) {
+	for (i = 0;i < table->max_entities;i++) {
 	    cur = table->table[i];
-	    fprintf(output, "%d : %s : ", i, cur->name);
-	    switch (cur->etype) {
-		case XML_INTERNAL_GENERAL_ENTITY:
-		    fprintf(output, "INTERNAL GENERAL, ");
-		    break;
-		case XML_EXTERNAL_GENERAL_PARSED_ENTITY:
-		    fprintf(output, "EXTERNAL PARSED, ");
-		    break;
-		case XML_EXTERNAL_GENERAL_UNPARSED_ENTITY:
-		    fprintf(output, "EXTERNAL UNPARSED, ");
-		    break;
-		case XML_INTERNAL_PARAMETER_ENTITY:
-		    fprintf(output, "INTERNAL PARAMETER, ");
-		    break;
-		case XML_EXTERNAL_PARAMETER_ENTITY:
-		    fprintf(output, "EXTERNAL PARAMETER, ");
-		    break;
-		default:
-		    fprintf(output, "UNKNOWN TYPE %d",
-			    cur->etype);
+	    while (cur != NULL) {
+		fprintf(output, "%d : %s : ", i, cur->name);
+		switch (cur->etype) {
+		    case XML_INTERNAL_GENERAL_ENTITY:
+			fprintf(output, "INTERNAL GENERAL, ");
+			break;
+		    case XML_EXTERNAL_GENERAL_PARSED_ENTITY:
+			fprintf(output, "EXTERNAL PARSED, ");
+			break;
+		    case XML_EXTERNAL_GENERAL_UNPARSED_ENTITY:
+			fprintf(output, "EXTERNAL UNPARSED, ");
+			break;
+		    case XML_INTERNAL_PARAMETER_ENTITY:
+			fprintf(output, "INTERNAL PARAMETER, ");
+			break;
+		    case XML_EXTERNAL_PARAMETER_ENTITY:
+			fprintf(output, "EXTERNAL PARAMETER, ");
+			break;
+		    default:
+			fprintf(output, "UNKNOWN TYPE %d",
+				cur->etype);
+		}
+		if (cur->ExternalID != NULL) 
+		    fprintf(output, "ID \"%s\"", cur->ExternalID);
+		if (cur->SystemID != NULL)
+		    fprintf(output, "SYSTEM \"%s\"", cur->SystemID);
+		if (cur->orig != NULL)
+		    fprintf(output, "\n orig \"%s\"", cur->orig);
+		if (cur->content != NULL)
+		    fprintf(output, "\n content \"%s\"", cur->content);
+		fprintf(output, "\n");	
+		cur = cur->nexte;
 	    }
-	    if (cur->ExternalID != NULL) 
-	        fprintf(output, "ID \"%s\"", cur->ExternalID);
-	    if (cur->SystemID != NULL)
-	        fprintf(output, "SYSTEM \"%s\"", cur->SystemID);
-	    if (cur->orig != NULL)
-	        fprintf(output, "\n orig \"%s\"", cur->orig);
-	    if (cur->content != NULL)
-	        fprintf(output, "\n content \"%s\"", cur->content);
-	    fprintf(output, "\n");	
 	}
     } else
 	fprintf(output, "No entities in external subset\n");
@@ -879,6 +917,9 @@ static int xmlLsCountNode(xmlNodePtr node) {
 	    break;
 	case XML_DOCUMENT_NODE:
 	case XML_HTML_DOCUMENT_NODE:
+#ifdef LIBXML_SGML_ENABLED
+	case XML_SGML_DOCUMENT_NODE:
+#endif
 	    list = ((xmlDocPtr) node)->children;
 	    break;
 	case XML_ATTRIBUTE_NODE:
@@ -1370,7 +1411,7 @@ xmlShellDu(xmlShellCtxtPtr ctxt, char *arg, xmlNodePtr tree,
         if ((node->type == XML_DOCUMENT_NODE) ||
             (node->type == XML_HTML_DOCUMENT_NODE)) {
 	    node = ((xmlDocPtr) node)->children;
-        } else if (node->children != NULL) {
+        } else if ((node->children != NULL) && (node->type != XML_ENTITY_REF_NODE)) {
 	    /* deep first */
 	    node = node->children;
 	    indent++;
@@ -1472,9 +1513,29 @@ xmlShellPwd(xmlShellCtxtPtr ctxt, char *buffer, xmlNodePtr node,
 	    next = cur->parent;
 	}
 	if (occur == 0)
+#ifdef HAVE_SNPRINTF
+	    snprintf(buf, sizeof(buf), "%c%s%s", sep, name, buffer);
+#else
 	    sprintf(buf, "%c%s%s", sep, name, buffer);
-	else
+#endif
+        else
+#ifdef HAVE_SNPRINTF
+	    snprintf(buf, sizeof(buf), "%c%s[%d]%s",
+                    sep, name, occur, buffer);
+#else
 	    sprintf(buf, "%c%s[%d]%s", sep, name, occur, buffer);
+#endif
+        buf[sizeof(buf) - 1] = 0;
+        /*
+         * This test prevents buffer overflow, because this routine
+         * is only called by xmlShell, in which the second argument is
+         * 500 chars long.
+         * It is a dirty hack before a cleaner solution is found.
+         * Documentation should mention that the second argument must
+         * be at least 500 chars long, and could be stripped if too long.
+         */
+        if (strlen(buffer) + strlen(buf) > 499)
+           break;
 	strcpy(buffer, buf);
         cur = next;
     } while (cur != NULL);
@@ -1532,9 +1593,14 @@ xmlShell(xmlDocPtr doc, char *filename, xmlShellReadlineFunc input,
         if (ctxt->node == (xmlNodePtr) ctxt->doc)
 	    sprintf(prompt, "%s > ", "/");
 	else if (ctxt->node->name)
-	    sprintf(prompt, "%s > ", ctxt->node->name);
-	else
+#ifdef HAVE_SNPRINTF
+	    snprintf(prompt, sizeof(prompt), "%s > ", ctxt->node->name);
+#else
+	    sprintf(buf, "%s > ", ctxt->node->name);
+#endif
+        else
 	    sprintf(prompt, "? > ");
+        prompt[sizeof(prompt) - 1] = 0;
 
         cmdline = ctxt->input(prompt);
         if (cmdline == NULL) break;

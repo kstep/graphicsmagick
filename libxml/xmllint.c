@@ -29,6 +29,13 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#ifdef HAVE_SYS_MMAN_H
+#include <sys/mman.h>
+/* seems needed for Solaris */
+#ifndef MAP_FAILED
+#define MAP_FAILED ((void *) -1)
+#endif
+#endif
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
 #endif
@@ -66,6 +73,9 @@ static int compress = 0;
 static int html = 0;
 static int htmlout = 0;
 static int push = 0;
+#ifdef HAVE_SYS_MMAN_H
+static int memory = 0;
+#endif
 static int noblanks = 0;
 static int testIO = 0;
 static char *encoding = NULL;
@@ -372,6 +382,7 @@ void parseAndPrintFile(char *filename) {
 
 	    f = fopen(filename, "r");
 	    if (f != NULL) {
+		int ret;
 	        int res, size = 3;
 	        char chars[1024];
                 xmlParserCtxtPtr ctxt;
@@ -387,7 +398,12 @@ void parseAndPrintFile(char *filename) {
 		    }
 		    xmlParseChunk(ctxt, chars, 0, 1);
 		    doc = ctxt->myDoc;
+		    ret = ctxt->wellFormed;
 		    xmlFreeParserCtxt(ctxt);
+		    if (!ret) {
+			xmlFreeDoc(doc);
+			doc = NULL;
+		    }
 	        }
 	    }
 	} else if (testIO) {
@@ -420,36 +436,69 @@ void parseAndPrintFile(char *filename) {
 	    xmlSAXHandler silent, *old;
 
 	    ctxt = xmlCreateFileParserCtxt(filename);
-	    memcpy(&silent, ctxt->sax, sizeof(silent));
-	    old = ctxt->sax;
-	    silent.error = xmlHTMLError;
-	    if (xmlGetWarningsDefaultValue)
+
+	    if (ctxt == NULL) {	      
+	      /* If xmlCreateFileParseCtxt() return NULL something
+		 strange happened so we don't want to do anything.  Do
+		 we want to print an error message here?
+		 <sven@zen.org> */
+	      doc = NULL;
+	    } else {
+	      memcpy(&silent, ctxt->sax, sizeof(silent));
+	      old = ctxt->sax;
+	      silent.error = xmlHTMLError;
+	      if (xmlGetWarningsDefaultValue)
 		silent.warning = xmlHTMLWarning;
-	    else 
+	      else 
 		silent.warning = NULL;
-	    silent.fatalError = xmlHTMLError;
-            ctxt->sax = &silent;
-	    ctxt->vctxt.error = xmlHTMLValidityError;
-	    if (xmlGetWarningsDefaultValue)
+	      silent.fatalError = xmlHTMLError;
+	      ctxt->sax = &silent;
+	      ctxt->vctxt.error = xmlHTMLValidityError;
+	      if (xmlGetWarningsDefaultValue)
 		ctxt->vctxt.warning = xmlHTMLValidityWarning;
-	    else 
+	      else 
 		ctxt->vctxt.warning = NULL;
 
-	    xmlParseDocument(ctxt);
+	      xmlParseDocument(ctxt);
 
-	    ret = ctxt->wellFormed;
-	    doc = ctxt->myDoc;
-	    ctxt->sax = old;
-	    xmlFreeParserCtxt(ctxt);
-	    if (!ret) {
+	      ret = ctxt->wellFormed;
+	      doc = ctxt->myDoc;
+	      ctxt->sax = old;
+	      xmlFreeParserCtxt(ctxt);
+	      if (!ret) {
 		xmlFreeDoc(doc);
 		doc = NULL;
+	      }
 	    }
+#ifdef HAVE_SYS_MMAN_H
+	} else if (memory) {
+	    int fd;
+	    struct stat info;
+	    const char *base;
+	    if (stat(filename, &info) < 0) 
+		return;
+	    if ((fd = open(filename, O_RDONLY)) < 0)
+		return;
+	    base = mmap(NULL, info.st_size, PROT_READ, MAP_SHARED, fd, 0) ;
+	    if (base == (void *) MAP_FAILED)
+	        return;
+
+	    doc = xmlParseMemory((char *) base, info.st_size);
+	    munmap((char *) base, info.st_size);
+#endif
 	} else
 	    doc = xmlParseFile(filename);
 #ifdef LIBXML_HTML_ENABLED
     }
 #endif
+
+    /*
+     * If we don't have a document we might as well give up.  Do we
+     * want an error message here?  <sven@zen.org> */
+    if (doc == NULL)
+      {
+	return;
+      }
 
 #ifdef LIBXML_DEBUG_ENABLED
     /*
@@ -521,7 +570,7 @@ void parseAndPrintFile(char *filename) {
 
 #ifdef LIBXML_DEBUG_ENABLED
     if ((debugent) && (!html))
-	xmlDebugDumpEntities(stdout, doc);
+	xmlDebugDumpEntities(stderr, doc);
 #endif
 
     /*
@@ -534,12 +583,11 @@ int main(int argc, char **argv) {
     int i, count;
     int files = 0;
 
+    LIBXML_TEST_VERSION
     for (i = 1; i < argc ; i++) {
 #ifdef LIBXML_DEBUG_ENABLED
 	if ((!strcmp(argv[i], "-debug")) || (!strcmp(argv[i], "--debug")))
 	    debug++;
-	else if ((!strcmp(argv[i], "-debugent")) || (!strcmp(argv[i], "--debugent")))
-	    debugent++;
 	else if ((!strcmp(argv[i], "-shell")) ||
 	         (!strcmp(argv[i], "--shell"))) {
 	    shell++;
@@ -584,6 +632,11 @@ int main(int argc, char **argv) {
 	else if ((!strcmp(argv[i], "-push")) ||
 	         (!strcmp(argv[i], "--push")))
 	    push++;
+#ifdef HAVE_SYS_MMAN_H
+	else if ((!strcmp(argv[i], "-memory")) ||
+	         (!strcmp(argv[i], "--memory")))
+	    memory++;
+#endif
 	else if ((!strcmp(argv[i], "-testIO")) ||
 	         (!strcmp(argv[i], "--testIO")))
 	    testIO++;
@@ -595,11 +648,26 @@ int main(int argc, char **argv) {
 	else if ((!strcmp(argv[i], "-nowarning")) ||
 	         (!strcmp(argv[i], "--nowarning"))) {
 	    xmlGetWarningsDefaultValue = 0;
+	    xmlPedanticParserDefault(0);
         }
+	else if ((!strcmp(argv[i], "-pedantic")) ||
+	         (!strcmp(argv[i], "--pedantic"))) {
+	    xmlGetWarningsDefaultValue = 1;
+	    xmlPedanticParserDefault(1);
+        }
+	else if ((!strcmp(argv[i], "-debugent")) ||
+		 (!strcmp(argv[i], "--debugent"))) {
+	    debugent++;
+	    xmlParserDebugEntities = 1;
+	} 
 	else if ((!strcmp(argv[i], "-encode")) ||
 	         (!strcmp(argv[i], "--encode"))) {
 	    i++;
 	    encoding = argv[i];
+	    /*
+	     * OK it's for testing purposes
+	     */
+	    xmlAddEncodingAlias("UTF-8", "DVEnc");
         }
 	else if ((!strcmp(argv[i], "-noblanks")) ||
 	         (!strcmp(argv[i], "--noblanks"))) {
@@ -662,12 +730,17 @@ int main(int argc, char **argv) {
 	printf("\t--html : use the HTML parser\n");
 #endif
 	printf("\t--push : use the push mode of the parser\n");
+#ifdef HAVE_SYS_MMAN_H
+	printf("\t--memory : parse from memory\n");
+#endif
 	printf("\t--nowarning : do not emit warnings from parser/validator\n");
 	printf("\t--noblanks : drop (ignorable?) blanks spaces\n");
 	printf("\t--testIO : test user I/O support\n");
+	printf("\t--encode encoding : output in the given encoding\n");
     }
     xmlCleanupParser();
     xmlMemoryDump();
 
     return(0);
 }
+

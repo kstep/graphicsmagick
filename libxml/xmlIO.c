@@ -89,6 +89,11 @@ int xmlOutputCallbackInitialized = 0;
  *									*
  ************************************************************************/
 
+int
+xmlNop(void) {
+    return(0);
+}
+
 /**
  * xmlFdMatch:
  * @filename:  the URI for matching
@@ -868,9 +873,6 @@ xmlParserInputBufferCreateFilename(const char *URI, xmlCharEncoding enc) {
 	}
     }
     if (context == NULL) {
-#ifdef DEBUG_INPUT
-	fprintf(stderr, "No input filter matching \"%s\"\n", URI);
-#endif
 	return(NULL);
     }
 
@@ -942,9 +944,6 @@ xmlOutputBufferCreateFilename(const char *URI,
 	}
     }
     if (context == NULL) {
-#ifdef DEBUG_INPUT
-	fprintf(stderr, "No output filter matching \"%s\"\n", URI);
-#endif
 	return(NULL);
     }
 
@@ -1039,6 +1038,35 @@ xmlParserInputBufferCreateFd(int fd, xmlCharEncoding enc) {
         ret->context = (void *) fd;
 	ret->readcallback = xmlFdRead;
 	ret->closecallback = xmlFdClose;
+    }
+
+    return(ret);
+}
+
+/**
+ * xmlParserInputBufferCreateMem:
+ * @mem:  the memory input
+ * @size:  the length of the memory block
+ * @enc:  the charset encoding if known
+ *
+ * Create a buffered parser input for the progressive parsing for the input
+ * from a file descriptor
+ *
+ * Returns the new parser input or NULL
+ */
+xmlParserInputBufferPtr
+xmlParserInputBufferCreateMem(const char *mem, int size, xmlCharEncoding enc) {
+    xmlParserInputBufferPtr ret;
+
+    if (size <= 0) return(NULL);
+    if (mem == NULL) return(NULL);
+
+    ret = xmlAllocParserInputBuffer(enc);
+    if (ret != NULL) {
+        ret->context = (void *) mem;
+	ret->readcallback = (xmlInputReadCallback) xmlNop;
+	ret->closecallback = NULL;
+	xmlBufferAdd(ret->buffer, (const xmlChar *) mem, size);
     }
 
     return(ret);
@@ -1207,7 +1235,7 @@ xmlParserInputBufferGrow(xmlParserInputBufferPtr in, int len) {
     if (len > buffree) 
         len = buffree;
 
-    buffer = xmlMalloc((len + 1) * sizeof(char));
+    buffer = (char *) xmlMalloc((len + 1) * sizeof(char));
     if (buffer == NULL) {
         fprintf(stderr, "xmlParserInputBufferGrow : out of memory !\n");
 	return(-1);
@@ -1499,6 +1527,7 @@ xmlParserInputPtr
 xmlDefaultExternalEntityLoader(const char *URL, const char *ID,
                                xmlParserCtxtPtr ctxt) {
     xmlParserInputPtr ret = NULL;
+
 #ifdef DEBUG_EXTERNAL_ENTITIES
     fprintf(stderr, "xmlDefaultExternalEntityLoader(%s, xxx)\n", URL);
 #endif

@@ -36,6 +36,7 @@
 #endif
 
 
+#include <libxml/xml-error.h>
 #include <libxml/parser.h>
 #include <libxml/parserInternals.h> /* only for xmlNewInputFromFile() */
 #include <libxml/tree.h>
@@ -141,19 +142,15 @@ void
 internalSubsetDebug(void *ctx, const xmlChar *name,
 	       const xmlChar *ExternalID, const xmlChar *SystemID)
 {
-    /* xmlDtdPtr externalSubset; */
-
-    fprintf(stdout, "SAX.internalSubset(%s, %s, %s)\n",
-            name, ExternalID, SystemID);
-
-/***********
-    if ((ExternalID != NULL) || (SystemID != NULL)) {
-        externalSubset = xmlParseDTD(ExternalID, SystemID);
-	if (externalSubset != NULL) {
-	    xmlFreeDtd(externalSubset);
-	}
-    }
- ***********/
+    fprintf(stdout, "SAX.internalSubset(%s,", name);
+    if (ExternalID == NULL)
+	fprintf(stdout, " ,");
+    else
+	fprintf(stdout, " %s,", ExternalID);
+    if (SystemID == NULL)
+	fprintf(stdout, " )\n");
+    else
+	fprintf(stdout, " %s)\n", SystemID);
 }
 
 /**
@@ -370,7 +367,8 @@ startElementDebug(void *ctx, const xmlChar *name, const xmlChar **atts)
     if (atts != NULL) {
         for (i = 0;(atts[i] != NULL);i++) {
 	    fprintf(stdout, ", %s='", atts[i++]);
-	    fprintf(stdout, "%s'", atts[i]);
+	    if (atts[i] != NULL)
+	        fprintf(stdout, "%s'", atts[i]);
 	}
     }
     fprintf(stdout, ")\n");
@@ -401,12 +399,14 @@ endElementDebug(void *ctx, const xmlChar *name)
 void
 charactersDebug(void *ctx, const xmlChar *ch, int len)
 {
+    char output[40];
     int i;
 
-    fprintf(stdout, "SAX.characters(");
-    for (i = 0;(i < len) && (i < 30);i++)
-	fprintf(stdout, "%c", ch[i]);
-    fprintf(stdout, ", %d)\n", len);
+    for (i = 0;(i<len) && (i < 30);i++)
+	output[i] = ch[i];
+    output[i] = 0;
+
+    fprintf(stdout, "SAX.characters(%s, %d)\n", output, len);
 }
 
 /**
@@ -435,8 +435,13 @@ referenceDebug(void *ctx, const xmlChar *name)
 void
 ignorableWhitespaceDebug(void *ctx, const xmlChar *ch, int len)
 {
-    fprintf(stdout, "SAX.ignorableWhitespace(%.30s, %d)\n",
-            (char *) ch, len);
+    char output[40];
+    int i;
+
+    for (i = 0;(i<len) && (i < 30);i++)
+	output[i] = ch[i];
+    output[i] = 0;
+    fprintf(stdout, "SAX.ignorableWhitespace(%s, %d)\n", output, len);
 }
 
 /**

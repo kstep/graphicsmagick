@@ -49,6 +49,7 @@ static int sax = 0;
 static int repeat = 0;
 static int noout = 0;
 static int push = 0;
+static char *encoding = NULL;
 
 xmlSAXHandler emptySAXHandlerStruct = {
     NULL, /* internalSubset */
@@ -142,19 +143,15 @@ void
 internalSubsetDebug(void *ctx, const xmlChar *name,
 	       const xmlChar *ExternalID, const xmlChar *SystemID)
 {
-    /* xmlDtdPtr externalSubset; */
-
-    fprintf(stdout, "SAX.internalSubset(%s, %s, %s)\n",
-            name, ExternalID, SystemID);
-
-/***********
-    if ((ExternalID != NULL) || (SystemID != NULL)) {
-        externalSubset = xmlParseDTD(ExternalID, SystemID);
-	if (externalSubset != NULL) {
-	    xmlFreeDtd(externalSubset);
-	}
-    }
- ***********/
+    fprintf(stdout, "SAX.internalSubset(%s,", name);
+    if (ExternalID == NULL)
+	fprintf(stdout, " ,");
+    else
+	fprintf(stdout, " %s,", ExternalID);
+    if (SystemID == NULL)
+	fprintf(stdout, " )\n");
+    else
+	fprintf(stdout, " %s)\n", SystemID);
 }
 
 /**
@@ -370,8 +367,20 @@ startElementDebug(void *ctx, const xmlChar *name, const xmlChar **atts)
     fprintf(stdout, "SAX.startElement(%s", (char *) name);
     if (atts != NULL) {
         for (i = 0;(atts[i] != NULL);i++) {
-	    fprintf(stdout, ", %s='", atts[i++]);
-	    fprintf(stdout, "%s'", atts[i]);
+	    fprintf(stdout, ", %s", atts[i++]);
+	    if (atts[i] != NULL) {
+		unsigned char output[40];
+		const unsigned char *att = atts[i];
+		int outlen, attlen;
+	        fprintf(stdout, "='");
+		while ((attlen = strlen((char*)att)) > 0) {
+		    outlen = sizeof output - 1;
+		    htmlEncodeEntities(output, &outlen, att, &attlen, '\'');
+		    fprintf(stdout, "%.*s", outlen, output);
+		    att += attlen;
+		}
+		fprintf(stdout, "'");
+	    }
 	}
     }
     fprintf(stdout, ")\n");
@@ -402,12 +411,13 @@ endElementDebug(void *ctx, const xmlChar *name)
 void
 charactersDebug(void *ctx, const xmlChar *ch, int len)
 {
-    int i;
+    unsigned char output[40];
+    int inlen = len, outlen = 30;
 
-    fprintf(stdout, "SAX.characters(");
-    for (i = 0;(i < len) && (i < 30);i++)
-	fprintf(stdout, "%c", ch[i]);
-    fprintf(stdout, ", %d)\n", len);
+    htmlEncodeEntities(output, &outlen, ch, &inlen, 0);
+    output[outlen] = 0;
+
+    fprintf(stdout, "SAX.characters(%s, %d)\n", output, len);
 }
 
 /**
@@ -436,8 +446,14 @@ referenceDebug(void *ctx, const xmlChar *name)
 void
 ignorableWhitespaceDebug(void *ctx, const xmlChar *ch, int len)
 {
-    fprintf(stdout, "SAX.ignorableWhitespace(%.30s, %d)\n",
-            (char *) ch, len);
+    char output[40];
+    int i;
+
+    for (i = 0;(i<len) && (i < 30);i++)
+	output[i] = ch[i];
+    output[i] = 0;
+
+    fprintf(stdout, "SAX.ignorableWhitespace(%s, %d)\n", output, len);
 }
 
 /**
@@ -566,24 +582,82 @@ xmlSAXHandlerPtr debugSAXHandler = &debugSAXHandlerStruct;
  ************************************************************************/
 
 void parseSAXFile(char *filename) {
-    htmlDocPtr doc;
+    htmlDocPtr doc = NULL;
+
     /*
      * Empty callbacks for checking
      */
-    doc = htmlSAXParseFile(filename, NULL, emptySAXHandler, NULL);
-    if (doc != NULL) {
-        fprintf(stdout, "htmlSAXParseFile returned non-NULL\n");
-	xmlFreeDoc(doc);
-    }
+    if (push) {
+	FILE *f;
 
-    if (!noout) {
-	/*
-	 * Debug callback
-	 */
-	doc = htmlSAXParseFile(filename, NULL, debugSAXHandler, NULL);
+	f = fopen(filename, "r");
+	if (f != NULL) {
+	    int res, size = 3;
+	    char chars[4096];
+	    htmlParserCtxtPtr ctxt;
+
+	    /* if (repeat) */
+		size = 4096;
+	    res = fread(chars, 1, 4, f);
+	    if (res > 0) {
+		ctxt = htmlCreatePushParserCtxt(emptySAXHandler, NULL,
+			    chars, res, filename, 0);
+		while ((res = fread(chars, 1, size, f)) > 0) {
+		    htmlParseChunk(ctxt, chars, res, 0);
+		}
+		htmlParseChunk(ctxt, chars, 0, 1);
+		doc = ctxt->myDoc;
+		htmlFreeParserCtxt(ctxt);
+	    }
+	    if (doc != NULL) {
+		fprintf(stdout, "htmlSAXParseFile returned non-NULL\n");
+		xmlFreeDoc(doc);
+	    }
+	    fclose(f);
+	}
+	if (!noout) {
+	    f = fopen(filename, "r");
+	    if (f != NULL) {
+		int res, size = 3;
+		char chars[4096];
+		htmlParserCtxtPtr ctxt;
+
+		/* if (repeat) */
+		    size = 4096;
+		res = fread(chars, 1, 4, f);
+		if (res > 0) {
+		    ctxt = htmlCreatePushParserCtxt(debugSAXHandler, NULL,
+				chars, res, filename, 0);
+		    while ((res = fread(chars, 1, size, f)) > 0) {
+			htmlParseChunk(ctxt, chars, res, 0);
+		    }
+		    htmlParseChunk(ctxt, chars, 0, 1);
+		    doc = ctxt->myDoc;
+		    htmlFreeParserCtxt(ctxt);
+		}
+		if (doc != NULL) {
+		    fprintf(stdout, "htmlSAXParseFile returned non-NULL\n");
+		    xmlFreeDoc(doc);
+		}
+		fclose(f);
+	    }
+	}
+    } else {	
+	doc = htmlSAXParseFile(filename, NULL, emptySAXHandler, NULL);
 	if (doc != NULL) {
 	    fprintf(stdout, "htmlSAXParseFile returned non-NULL\n");
 	    xmlFreeDoc(doc);
+	}
+
+	if (!noout) {
+	    /*
+	     * Debug callback
+	     */
+	    doc = htmlSAXParseFile(filename, NULL, debugSAXHandler, NULL);
+	    if (doc != NULL) {
+		fprintf(stdout, "htmlSAXParseFile returned non-NULL\n");
+		xmlFreeDoc(doc);
+	    }
 	}
     }
 }
@@ -600,11 +674,11 @@ void parseAndPrintFile(char *filename) {
 	f = fopen(filename, "r");
 	if (f != NULL) {
 	    int res, size = 3;
-	    char chars[1024];
+	    char chars[4096];
 	    htmlParserCtxtPtr ctxt;
 
-	    if (repeat)
-		size = 1024;
+	    /* if (repeat) */
+		size = 4096;
 	    res = fread(chars, 1, 4, f);
 	    if (res > 0) {
 		ctxt = htmlCreatePushParserCtxt(NULL, NULL,
@@ -616,6 +690,7 @@ void parseAndPrintFile(char *filename) {
 		doc = ctxt->myDoc;
 		htmlFreeParserCtxt(ctxt);
 	    }
+	    fclose(f);
 	}
     } else {	
 	doc = htmlParseFile(filename, NULL);
@@ -638,12 +713,18 @@ void parseAndPrintFile(char *filename) {
      */
     if (!noout) { 
 #ifdef LIBXML_DEBUG_ENABLED
-	if (!debug)
-	    htmlDocDump(stdout, doc);
-	else
+	if (!debug) {
+	    if (encoding)
+		htmlSaveFileEnc("-", doc, encoding);
+	    else
+		htmlDocDump(stdout, doc);
+	} else
 	    xmlDebugDumpDocument(stdout, doc);
 #else
-	htmlDocDump(stdout, doc);
+	if (encoding)
+	    htmlSaveFileEnc("-", doc, encoding);
+	else
+	    htmlDocDump(stdout, doc);
 #endif
     }	
 
@@ -674,8 +755,18 @@ int main(int argc, char **argv) {
 	else if ((!strcmp(argv[i], "-repeat")) ||
 	         (!strcmp(argv[i], "--repeat")))
 	    repeat++;
+	else if ((!strcmp(argv[i], "-encode")) ||
+	         (!strcmp(argv[i], "--encode"))) {
+	    i++;
+	    encoding = argv[i];
+        }
     }
     for (i = 1; i < argc ; i++) {
+	if ((!strcmp(argv[i], "-encode")) ||
+	         (!strcmp(argv[i], "--encode"))) {
+	    i++;
+	    continue;
+        }
 	if (argv[i][0] != '-') {
 	    if (repeat) {
 		for (count = 0;count < 100 * repeat;count++) {
@@ -705,6 +796,7 @@ int main(int argc, char **argv) {
 	printf("\t--repeat : parse the file 100 times, for timing\n");
 	printf("\t--noout : do not print the result\n");
 	printf("\t--push : use the push mode parser\n");
+	printf("\t--encode encoding : output in the given encoding\n");
     }
     xmlCleanupParser();
     xmlMemoryDump();

@@ -1,0 +1,1514 @@
+Sat Sep 16 21:45:48 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* SAX.c debugXML.c parser.c parserInternals.c tree.c valid.c xpath.c:
+	  removed a few warnings in pedantic mode ...
+	* parserInternals.c parser.c: moved encoding switching function
+	  to parserInternals.c
+
+Sat Sep 16 20:12:41 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* HTMLparser.c parser.c: set ctxt->errNo before calling the
+	  error or warning handlers
+
+Wed Sep 13 22:03:18 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parserInternals.c parserInternals.h parser.c Makefile.am:
+	  created a new module parserInternals.c, moved most of the
+	  code shared by the various parsers there, as well as
+	  deprecated  code from parser.c. More cleanup of parser.c
+	* uri.c: fixed a problem when URI is NULL
+	* valid.c: speedup when looking for an attribute declaration
+
+Sun Sep 10 17:53:48 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* uri.c tree.c SAX.c parser.c entities.c debugXML.c: finished
+	  the cleanup of the computation of URI references when seeking
+	  external entities. The URI reference string and the resulting
+	  URI are both stored now.
+	* parser.c HTMLparser.c valid.c nanoftp.c nanohttp.c xpath.c:
+	  large s(n)printf checks and cleanup from Denis Barbier
+	  <barbier@imacs.polytechnique.fr>
+	* xmlversion.h.in tree.h: couple of SGML declarations for a
+	  possible docbook module.
+	* result/VC/ : a couple of test output changed due to the change
+	  of the entities URI
+
+Sun Sep 10 15:59:58 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.h: added a _private field for linking user's data
+
+Sun Sep 10 15:14:43 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.c parserInternals.h: demacroified most of the IS_XXX
+	  the gain in size is significant so ...
+
+Fri Sep  8 20:48:29 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* entities.c: cases where looking up entities with doc==NULL
+	  covered
+
+Tue Sep  5 12:41:15 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* uri.c: applied Wayne Davison patch
+	* Makefile.in test/URI/uri.data result/URI/uri.data: updated URI tests
+
+Mon Sep  4 13:01:45 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* uri.c testUri.c: applied Wayne Davison patches
+	* test/URI/uri.data result/URI/uri.data: first set of tests/results
+	* Makefile.in: added URItest and included thenin "make tests"
+
+Sun Sep  3 19:19:29 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* xmlversion.h.in: closed bug 22941
+
+Thu Aug 31 16:55:55 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* doc/xmlio.html: added doc and example for entity loader
+	  redefinition.
+
+Thu Aug 31 14:59:28 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* doc/xmlio.html doc/xml.html: added a doc on the I/O mechanism
+	  used by libxml
+
+Tue Aug 29 20:22:53 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.c: Fixed bug on invalid ontent characters and when using
+	  push.
+	* xmllint.c: fixed xmllint endling of errors in push mode
+
+Tue Aug 29 11:24:48 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* HTMLparser.c testHTML.c: applied two new patches from
+	  Wayne Davison <wayned@blorf.net>
+	* result/HTML/*.sax: regenerated HTML SAX output
+	* parser.c: more cleanup.
+
+Mon Aug 28 11:58:12 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* HTMLparser.[ch] testHTML.c: applied the second set of
+	  patches from Wayne Davison <wayned@blorf.net>, adding 
+	  htmlEncodeEntities()
+	* HTMLparser.c: fixed an ignorable white space detection bug
+	  occuring when parsing with SAX only
+	* result/HTML/*.sax: updated since the output is now HTML
+	  encoded...
+
+Mon Aug 28 00:38:31 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* HTMLparser.[ch]: applied some of Wayne Davison <wayned@blorf.net>
+	  patches
+
+Sun Aug 27 22:14:01 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* SAX.c tree.c debugXML.c: fixed bogus behaviour when an
+	  undeclared namespace prefix was used, added a warning.
+	  Cleaned up support w.r.t. entities, spilling out a warning
+	  and being pedantic on lookups.
+	* test/warning/ent9 : added testcase for previous example.
+	* TODO: updated
+	* parserInternals.h parser.c: changed the way names are parsed
+	  now allow infinite size and decrease penalty for normal use
+	* parser.c: Started a big cleanup/check of the parser code,
+	  fixed some of the most tortuous entity code, spotted code
+	  unused anymore
+	* test/*: added tests for very long names and related nasty
+	  things.
+
+Sat Aug 26 23:31:04 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* doc/encoding.html: added encoding aliases doc
+	* doc/xml.html: updates
+	* encoding.[ch]: added EncodingAliases functions
+	* entities.[ch] valid.[ch] debugXML.c: removed two serious
+	  bottleneck affecting large DTDs like Docbook
+	* parser.[ch] xmllint.c: added a pedantic option, will be
+	  useful
+	* SAX.c: redefinition of entities is reported in pedantic mode
+	* testHTML.c: uninitialized warning from gcc
+	* uri.c: fixed a couple of bugs
+	* TODO: added issue raised by Michael
+
+Wed Aug 23 01:50:51 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* doc/encoding.html: propagated Martin Duerst suggestions
+
+Wed Aug 23 00:23:41 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.c: Fixed Bug#21552: libxml fails to decode &amp;
+	* uri.c testUri.c patches, by Marc Sanfacon (1 left)
+	* parser.c HTMLparser.c: HTML/encoding push problems reportedi
+	  by Wayne Davison
+
+Sun Aug 20 17:03:38 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* nanoftp.c nanohttp.c: small cleanup
+	* TODO: updated
+
+Sat Aug 19 22:57:02 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* added an old VC testcase and updated title.xml entity
+
+Sat Aug 19 21:02:08 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* HTMLparser.c SAX.c tree.c HTMLtree.h result/HTML/*: work
+	  done on auto-opening of <p> tags and cleanup of SAX output
+
+Sat Aug 19 18:45:40 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* libxml.4  xmllint.1 Makefile.am libxml.spec.in: added man pages
+
+Sat Aug 19 18:38:53 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* doc/xml.html libxml.* structure.*: updated the doc a bit
+
+Thu Aug 17 15:50:00 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* testSAX.c testHTML.c result/HTML/: cleanup of the output
+	  of SAX tests
+
+Mon Aug 14 13:56:33 EDT 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* Patch from Albert Chin-A-Young <china@thewrittenword.com>:
+	* xmllint.c: workaround a MAP_FAILEd definition bug in DU-4.0
+
+Mon Aug 14 11:10:20 EDT 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* Patch from Dave Yearke <yearke@eng.buffalo.edu>:
+	* testHTML.c: fix core dump on Solaris 2.x systems
+	* HTMLparser.c: fix segfault if ctxt->sax->characters() is NULL
+	* result/HTML/*.sax: previous bug fix lead to new results
+
+Mon Aug 14 10:26:09 EDT 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* Patch from Albert Chin-A-Young <china@thewrittenword.com>:
+	* configure.in: added --with-readline=DIR to accept alternate
+	  path for readline include/library
+	* configure.in: added AM_C_PROTOTYPES to add -Aa -D_HPUX_SOURCE
+	  for ANSI under HP-UX
+	* config.in: Removed @LIBS@ from xml-config because @XML_LIBS@
+	  includes @LIBS@
+
+Sat Aug 12 23:19:42 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* doc/* : rebuilt the docs
+	* getting ready for 2.2.2 release
+
+Sat Aug 12 16:42:37 EDT 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.[ch]: added xmlGetFeaturesList() xmlGetFeature()
+	  and xmlAddFeature()
+	* tree.[ch]: added xmlAddChildList()
+	* xmllint.c: MAP_FAILED macro test
+	* parser.h: added xmlParseCtxtExternalEntity()
+	* valid.c: applied bug fixes removed warning
+	* tree.c: added CDATA block to elements content
+	* testSAX.c: cleanup of output
+	* testHTML.c: added SAX testing
+	* encoding.c: better error recovery
+	* SAX.c, parser.c: fixed one of the external entity processing
+	  of the OASis testsuite
+	* Makefile.am: added HTML SAX regression tests
+	* configure.in: bumped to 2.2.2
+	* test/HTML/ result/HTML: added a few of HTML tests, and added the
+	  SAX results
+
+Fri Aug  4 11:21:50 PDT 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* configure.in: patch for HP compiler
+
+2000-08-04  Sven Heinicke  <sven@zen.org>
+
+	* xmllint.c: Was coredumping sometimes when the file given didn't
+	exist.
+
+Sat Jul 22 05:59:05 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.c xmlIO.[ch]: fixed the problem of encoding support
+
+	  when using in memory parsing. Need some cleanup.
+	* xmllint.c configure.in: added a --memory flag to test memory
+	  parsing
+	
+Fri Jul 21 17:09:57 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* nanohttp.c: fixed socklen_t replacement to unsigned int
+	* parser.c: fixed a space handdling missing at the end of
+	  production 28 DOCTYPE.
+	* xmlmemory.c: fixed a stupid bug on the routine to override
+	  allocation functions
+	* TODO: updated
+
+Fri Jul 14 17:01:14 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* doc/ regenerated the docs
+
+Fri Jul 14 16:12:20 MEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* doc/encoding.html doc/xml.html: added I18N doc
+	* encoding.[ch] HTMLtree.[ch] parser.c HTMLparser.c: I18N encoding
+	  improvements, both parser and filters, added ASCII & HTML,
+	  fixed the ISO-Latin-1 one
+	* xmllint.c testHTML.c: added/made visible --encode
+	* debugXML.c : cleanup
+	* most .c files: applied patches due to warning on Windows and
+	  when using Sun Pro cc compiler
+	* xpath.c : cleanup memleaks
+	* nanoftp.c : added a TESTING preprocessor flag for standalong
+	  compile so that people can report bugs more easilly
+	* nanohttp.c : ditched socklen_t which was a portability mess
+	  and replaced it with unsigned int.
+	* tree.[ch]: added xmlHasProp()
+	* TODO: updated
+	* test/ : added more test for entities, NS, encoding, HTML, wap
+	* configure.in: preparing for 2.2.0 release
+
+Mon Jul 10 16:17:18 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* nanoftp.c: fixed the way the control connection is handled
+	* libxml.spec.in: fixed the dependancies and cleanup
+
+Mon Jul  3 14:37:07 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* doc/xml.html: changed the xmlsoft.org structure, updated the
+	  examples w.r.t. root and childs
+
+Sun Jul  2 20:51:43 MEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* libxml.spec.in: fixed bug #7419, dependancies fouled for libxml-devel
+
+Sun Jul  2 09:52:45 MEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* HTMLparser.c: Work on character encoding support for the HTML parser
+	* HTMLparser.c: Fixed some autoopen/autoclose probs for the HTML parser
+	* encoding.c: Fixed a potential memleak in the encoding stuff
+
+Sat Jul  1 13:44:22 MEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* doc/FAQ.html doc/Makefile.am : added a FAQ
+
+Fri Jun 30 20:29:08 MEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* HTMLparser.c HTMLtree.c SAX.c valid.c tree.h : more cleanup
+	  of the HTML parser to force it to not bypass SAX
+
+Fri Jun 30 11:19:59 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* win32config.h.in: updated
+	* xmlversion.h.in: crap forgot to update this, this mean 2.1.0
+	  lacks iconv support :-( need to release 2.1.1
+	* configure.in: release 2.1.1
+	* HTMLparser: fixed bug #14784
+	* xpath.c HTMLparser.c encoding.c parser.c: fix warning raised
+	  by Windows compiler
+	* HTMLparser.c SAX.c HTMLtree.h tree.h: create HTML document in
+	  the SAX startDocument() callback.
+	* TODO: updated
+
+Thu Jun 29 12:06:48 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* added xmlStopParser()
+
+Wed Jun 28 23:10:26 MEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* configure.in: 2.1.0 prerelease
+	* Large resync between W3C and Gnome tree
+	* nanoftp, nanohttp.c: fixed stalled connections probs
+	* HTMLtree.c SAX.c : support for attribute without values in
+	  HTML for andersca
+	* valid.c: Fixed most validation + namespace problems
+	* HTMLparser.c: start document callback for andersca
+	* debugXML.c xpath.c: lots of XPath fixups from Picdar Technology
+	* parser.h, SAX.c: serious speed improvement for large
+	  CDATA blocks
+	* encoding.[ch] xmlIO.[ch]: Improved seriously saving to
+	  different encoding
+	* example/Makefile.am example/gjobread.c tree.h: work on 
+	  libxml1 libxml2 convergence.
+	* config.h.in parser.c xmllint.c: added xmlCheckVersion()
+	  and the LIBXML_TEST_VERSION macro
+
+Fri Jun 23 22:26:07 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* doc/xml.html: various patches and improvements typo fixed by
+	  Felix Natter
+	* doc/libxml-doc.el: Emacs module to lookup the libxml documentation
+	  from Felix Natter <fnatter@gmx.net>
+
+Sat May  6 10:09:45 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* doc/upgrade.html: updated with instructions for support of both
+	  libxml-1.x and libxml-2.x
+	* doc/gjobread.c : applied Todd Dukes <tdukes@ibmoto.com> patch
+	  for 2.x support and also fixed includes
+
+
+Wed May  3 14:21:25 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* encoding.[ch], xmlIO.[ch], parser.c, configure.in : revamped
+	  the encoding support, added iconv support, so now libxml if
+	  compiled with iconv automatically support japanese encodings
+	  among others. Work based on initial patch from Yuan-Chen Cheng
+	  I may have broken binary compat in the encoding handler
+	  registration scheme, but that was so utterly broken I don't
+	  expect anybody to have used this feature until now.
+	* parserInternals.h: fixup on the CHAR range macro
+	* xml-error.h, parser.c: catch URL/URI errors using the uri.c
+	  code.
+	* tree.[ch]: added xmlBufferGrow(), was needed for iconv
+	* uri.c: added xmlParseURI() I can't believe I forgot to
+	  implement this one in 2.0 !!!
+	* SAX.c: moved doc->encoding update in the endDocument() call.
+	* TODO: updated.
+
+Mon Apr 24 13:30:13 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* tree.h: removed extraneous xmlRemoveProp definition
+	* TODO: added item about --disable-corba configure switch
+	* tree.c parser.c: fixed problems for xmlCopyDoc and postvalidation
+	* nanoftp.c: fixed include problems giving troubles on AIX and 
+	  slowlaris
+	* xmlIO.[ch] valid.h tree.[ch] xlink.c xmlmemory.c uri.c 
+	  parser.c nanoftp.c nanohttp.c SAX.c testSAX.c :
+	  comment and headers changes to lower gtk-doc number of warnings
+	* doc/html/*: rebuilt docs
+
+Sun Apr 16 11:23:29 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* HACKING: documented the tag for 1.x and instructions
+
+Wed Apr 12 15:47:22 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* xmlIO.[ch] parser.[ch]: More interfaces for new I/O functions
+	  xmlNewIOInputStream, xmlParserInputBufferCreateIO,
+	  xmlCreateIOParserCtxt
+	* parser.c parserInternals.h: speedup of IS_CHAR like macros,
+	  significant overall improvement
+	* xmllint.c: added I/O test to xmllint
+	* testSAX.c: added a speed test
+	* doc/* : updated/regenerated
+
+Sat Apr  8 14:54:54 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* xpath.c uri.h parserInternals.h: cosmetic changes from
+	  "Timur I. Bakeyev" <timur@bat.ru>, including making 
+	  xmlCreateURI() public
+
+Fri Apr  7 18:35:02 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* xmlIO.[ch] parser.c: cleane up the xmlParserInputBuffer mess
+	  and the code at the same time. Added a clean mechanism for
+	  overload or added input methods: xmlRegisterInputCallbacks()
+	* tree.c: fixed xmlPrevSibling and xmlNextSibling per 
+	  Christophe Le Gal (Christophe.Le-Gal@imag.fr) input
+	* TODO: updated
+	* doc/* : updated/regenerated
+	* doc/Makefile.am: tweaks to avoid problem with libxml link in the
+	  source dir
+
+Wed Apr  5 21:11:35 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* testURI.c: yet another forgotten commit, I should get some sleep !
+
+Wed Apr  5 20:36:46 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* xmllint.c: forgot to commit this too ?
+
+Wed Apr  5 16:22:44 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* xmlversion.h.in : forgot to commit this previously
+
+Mon Apr  3 21:47:10 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* configure.in: preparing libxml-2.0.0 version looks Ok so far
+	* README TODO: updated for release
+	* uri.c uri.h: added authority parsing/saving
+	* uri.c testURI.c Makefile.am: moved the testing code to testURI.c
+	* xmlversion.h.in configure.in nanoftp.[ch] nanohttp.[ch] encoding.h
+	  debugXML.[ch] xpath.[ch] xmlIO.c tester.c testXPath.c testHTML.c
+	  tree.c HTMLtree.c HTMLparser.c tree.c tree.h parser.c
+	  Makefile.am : added compile-time customization of libxml
+	  --with-ftp --with-http --with-html --with-xpath --with-debug
+	  --with-mem-debug
+	* *.[ch] autoconf.sh : moved to an absolute adressing of includes : 
+	  #include <libxml/xxx.h> I hope it won't break too much stuff
+	  and will be manageable in the future...
+	* xmllint.c Makefile.am libxml.spec.in : renamed tester.c to xmllint.c
+	  and added xmllint to the installed programs
+	* uri.h: added xmlFreeURI()
+	  
+Fri Mar 24 14:35:21 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* uri.c uri.h: finished the escaping handling, the base support
+	  and the URI path normalization. Looks good just lacks the
+	  authority content parsing code.
+	* Makefile.am: added instructions to generate testURI
+	* TODO: updated
+	* doc/xml.html, doc/smallfootonly.gif doc/w3c.png: updated,
+	  added links and icons for W3C and Gnome
+
+Mon Mar 20 14:05:26 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* xmlmemory.[ch] : seems I forgot to actually update the files in
+	  the last commit :-)
+	* doc/xml.html doc/html/* : updated and uploaded the docs
+
+Mon Mar 20 12:33:51 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* test/valid/dtds/xhtml*: removed RCS infos (pain with CVS)
+	* TODO: updated
+	* xmlmemory.[ch] : added xmlMemSetup() and xmlMemGet() to override
+	  libxml default allocation function with another set (like gmalloc/
+	  gfree).
+	* Makefile.am, uri.c, uri.h: added a set of functions to do
+	  exact (litteraly copied from the RFC 2396 productions) parsing
+	  and handling of URI. Will be needed for XLink, one XML WFC, 
+	  XML Base and reused in the nano[ftp/http] modules. Still work
+	  to be done.
+
+Tue Mar 14 20:52:35 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* configure.in, libxml.spec.in : libxml2
+	* doc/* : updated the doc page, rebuilt the docs
+
+Tue Mar 14 19:11:29 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* all: tagged LIB_XML_1_X
+	* *.c *.h : updated from W3C CVS tree
+	* configure.in : 2.0.0-beta
+	* libxml.spec.in : libxml2 package nam
+	* result/* : new version of the tests output
+
+Mon Mar  6 09:34:52 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* doc/xml.html, doc/update.html: updated docs, 1.8.7
+
+Sat Mar  4 16:14:42 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* doc/* : rebuilt the docs
+	* parser.c: final patch on #6766
+	* valid.c: small patch on validity checks.
+
+Sat Mar  4 12:38:41 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* doc/upgrade.html: instruction on how to upgrade from 1.x to 2.x
+	  added
+	* parser.c: adding xmlKeepBlanksDefault() as a way to manage
+	  compatibility w.r.t. XML spec and existing code.
+
+Thu Mar  2 04:45:15 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.c: seems a better solution to <a>   </a> exists,
+	  will try it for a while
+
+Thu Mar  2 02:26:13 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.c: tried to remove the <a>   </a> generating <a/>
+	  this is hard. Left a flag for that purpose. Fixed bug #6766
+	* configure.in: prepared 1.8.7 not released, due to previous
+	  problem
+
+Thu Mar  2 03:03:50 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* doc/xml.html : applied second patch from Paul DuBois
+
+Tue Feb 29 23:55:13 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* doc/xml.html : applied patch from Paul DuBois
+
+Thu Feb  3 16:36:39 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.c HTMLparser.c: do a bit of bufferization in push mode.
+
+Thu Feb  3 15:59:37 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* nanoftp.c nanohttp.c tree.c HTMLtree.[ch] debugXML.c xpath.c: Fixed
+	  compilation warnings on various platforms.
+	* parser.c: Fixed #5281 validity error callbacks are now desactived
+	  by default if not validating.
+
+Thu Feb  3 13:46:14 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* nanoftp.c, win32config.h.in: patches to compile on WIN32
+
+Wed Feb  2 22:51:16 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* nanoftp.c: snprintf/sprintf patch courtesy George Katsirelos
+	  <gkatsi@cs.toronto.edu>
+
+Mon Jan 31 18:58:21 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* nanoftp.c nanohttp.c: Fixed '#' and '?' stripping when
+	  processing URLs
+
+Mon Jan 31 14:25:57 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* nanoftp.[ch]: cleanup, bug fixes, integration in rpmfind, added
+	  xmlNanoFTPUpdateURL for persistent control connections.
+	* configure.in: 1.8.6
+
+Thu Jan 27 17:52:29 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* nanohttp.[ch], nanoftp.[ch]: cleanup, added proxy support
+	* tree.[ch] : added xmlSaveNoEmptyTags
+
+2000-01-29  James Henstridge <james@daa.com.au>
+
+	* nanoftp.c: include <netinet/in.h> for IPPROTO_TCP.
+
+	* Makefile.am: added nanoftp.[ch] to the build.
+
+Wed Jan 26 18:14:55 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* nanoftp.[ch]: cleanup, comments, API
+	* debugXML.c : fixed a bug in the cat command
+	* doc/*: regenerated the docs
+
+Wed Jan 26 16:52:50 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* nanoftp.[ch] parser.c xmlIO.[ch]: added a Nano FTP implementation
+	* debugXML.c : fixed a bug in the cat command
+	* valid.c: fixing some small probs
+	* libxml.spec.in: get rid of the SNAP suffix
+	* doc/xml.html: updated the status
+
+Mon Jan 24 14:31:09 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* xml-config.in: xml-config --version to just return the
+	  version number
+	* xpath.c: some cleanup w.r.t. axis when the current node is
+	  an attribute.
+	* TODO: updated
+
+Tue Jan 18 18:46:06 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* configure.in: prepared for libxml-1.8.5
+	* doc/* recompiled the documentation
+
+2000-01-17  Jody Goldberg <jgoldberg@home.com>
+
+	* configure.in : WARNING autoconf subtlety alert :
+	  Use AC_CHECK_HEADERS rather than AC_CHECK_HEADER
+	  when looking for zlib.h so that HAVE_ZLIB_H is defined.
+	* config.h.in : Have a #undef for HAVE_ZLIB_H so that it will
+	  get defined by AC_CHECK_HEADERS.
+
+Mon Jan 17 17:04:12 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* tree.c: fixed a hideous bug in xmlGetProp() thanks to
+	  Rune.Djurhuus@fast.no
+
+Sat Jan 15 15:09:06 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* TODO: updated
+	* tree.c, parser.c: made sure that only memory alloc problems
+	  and internal parser errors are allowed to write to stdout or
+	  stderr.
+
+Thu Jan 13 11:49:11 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* tree.c : restored xmlNewGlobalNs since this seems used by
+	  a lot of existing code :-(, fixed a bug in xmlNewNs
+	* nanohttp.c: fixed a problem with INCLUDE_WINSOCK
+	* HTMLparser.c, parser.c, entities.c, valid.c : removed all calls
+	  to exit() from the library code.
+	* xpath.c, parser.c: removed bugs or unused code detected by 
+	  Windows compilers
+	* parser.c: started adding interfaces for parsing well balanced
+	  XML fragments
+	* configure.in: releasing 1.8.4
+	* doc/* : rebuilt the docs
+
+Sun Jan  9 23:03:20 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* tree.[ch] : added xmlNewDocFragment() for DOM
+	* testHTML.c: uninitialized variable.
+
+Wed Jan  5 17:29:17 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* doc/* : rebuild the docs
+
+Wed Jan  5 17:08:43 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* acconfig.h: readline and history patch
+	* valid.[ch]: added xmlRemoveID() and xmlRemoveRef()
+	* tree.c: added check and handling when possibly removing an ID
+	* tree.c, HTMLparser.h, HTMLtree.h: fixed entities parsing
+	     and saving.
+	* test/HTML/entities.html result/HTML/entities.html* : test for
+	     various entities reference cases
+	* result/HTML/* : as a result output of some testcase have
+	     changed
+	* HTMLparser.c, parser.c: fixed a bug in the push mode triggered
+	     by previous example. added xmlParseTryOrFinish().
+	* xpath.h tree.h parser.h valid.h xmlIO.h xlink.h encoding.h
+	  entities.h debugXML.h HTMLparser.h: changed the way struct are 
+	  declared to allow gtk-doc to expose those
+	* parser.c: closed bug #4960  
+	* Makefile.am configure.in: Applied patch from 
+	  Albert Chin-A-Young <china@thewrittenword.com> for better zlib
+	  and math/socket libs detection
+
+Mon Jan  3 18:29:43 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* configure.in, Makefile.am: link tester against readline
+	* doc/xml.html doc/*/*: updated and rebuilt the documentation pages
+
+Mon Jan  3 11:58:05 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* tree.[ch]: added xmlRemoveProp
+	* win32config.h.in nanohttp.c: avoid including the Windows
+	    socket stuff in every C files
+	* parser.c: removed an indetermination xmLDecl/PI(xml...) in
+	    the XmL parser(s)
+	* test/ns4 result/ns4 etc...: added test case for previous prob    
+	* tree.c: xmlNewNs wasn't checking for double definition
+	* Makefile.in: fixed a problem with dist-hook duplicates
+	* parser.[hc], xmlIO.c: fixed the loading of external entities
+	    APIs, now xmlLoadExternalEntity() is used everywhere and
+	    setting up an app specific front-end using the 
+	* SAX.c parser.c: some fixes, now the xhtml spec validates
+	    with the xhtml DTD.
+	* error.c: fixed crashes in case of no input stream    
+	* test/valid/[dtds/]/xhtml* : added the xhtml spec and dtds
+	    to the validation tests and results
+
+Wed Dec 29 15:29:52 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* HTMLparser.[ch] testHTML.c: added push mode for the HTML parser
+	  too htmlCreatePushParserCtxt() and htmlParseChunk()
+	* parser.c: a bit of cleanup.
+	* SAX.c, HTMLparser.c: some attributes may not have values (contrary
+	  to XML) removed the last mem leak known
+	* HTMLtree.c: output message cleanup
+	* xmlmemory.c: display content info about memory blocks
+	* result/HTML/wired.* : missing att value warning change
+
+Tue Dec 28 17:42:41 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* doc/* : rebuilt the documentation
+
+Tue Dec 28 18:44:22 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.[ch] parserInternals.h: Push parser for XML,
+	     seems to work fine now
+	* tester.c debugXML.[ch]: Added an XML shell debug facility and
+	     --push for push testing
+	* xpath.[ch] : cleaned up for Shell usage, added missing APIs
+	* testSAX.c: added --push
+	* HTMLtree.[ch] tree.[ch]: new functions for dumping parts of the
+	     subtree
+	* xmlIO.[ch] : enriched API + fixes for push mode     
+	* entities.[ch]: added the entity content length to the struct.
+	* xmlmemory.[ch]: new API to show the last entries for the shell
+	* valid.c: added required attribute testing
+	* SAX.c: the cdata callback now merge contiguous fragments
+	* HTMLparser.c: cleanup of some macros
+
+Wed Dec 22 12:20:53 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.c: fix for PIs name starting with xml
+	* tree.c: fixed a potential problem with || and && ops
+	* *.c, configure.in win32config.h.in : generate win32config.h for
+	  those on the Other Side !
+
+Tue Dec 21 17:22:17 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.c: fixed a stupid = vs. == bug :-(
+	* doc/gnome-xml.sgml: s/glade/xml/
+
+Tue Dec 21 14:29:34 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* configure.in, doc/xml.html : bug fix release 1.8.2
+	* debugXML.h nanohttp.h xml-error.h xmlmemory.h xpath.h : 
+	  Hopefully the end of that silly C++ include problem
+	* tree.[ch]: Added a few functions: xmlReplaceNode, xmlAddPrevSibling,
+	      xmlAddNextSibling, xmlNodeSetName and xmlDocSetRootElement
+	* HTMLparser.c HTMLparser.h HTMLtree.c: When saving HTML try to avoid 
+	      troubles with autoclosed elements when the stree shape doesn't
+	      follow the DtD specs. Added htmlIsAutoClosed() and
+	      htmlAutoCloseTag()
+	* result/HTML/*.htm*: Updated the HTML examples regression tests output
+	* SAX.c tree.c: fixed bug on defaulting namespaces on attributes
+	* debugXML.c: fixed a bug on printing default namespaces.
+	* HTMLtree.c: fixed a problem when outputing XML parsed docs as HTML
+
+Mon Dec 20 16:20:55 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* result/HTML/*.htm[l] : updated the HTML regression tests according
+	  to the new output
+	* xpath.h xml-error.h valid.h tree.h parser.h entities.h SAX.h
+	  HTMLtree.h tree.c entities.c: headers tweakings to avoid a nasty
+	  problem due to intermix of extern "C" { ... } declarations for C++
+	  and recursive includes in the headers
+
+1999-12-20  Chris Lahey  <clahey@umich.edu>
+
+	* HTMLtree.c: Made it so that html nodes with a single child do
+	not insert a carriage return before or after the child node.
+
+Sat Dec 18 16:07:03 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* configure.in, doc/xml.html : bug fix release 1.8.1
+	* parser.c: fixed bug #4344
+	* xpath.h xml-error.h xlink.h nanohttp.h debugXML.h SAX.h HTMLparser.h
+	  added the glue to avoid C++ problems
+	* doc/* : regenerated the documentation
+
+Thu Dec 16 16:19:29 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* tree.c: fixed a bug introduced in 1.8.0 and breaking default
+	  namespace recognition, and Dia as a resul :-(
+	* encoding.c: closed bug #3950
+
+Wed Dec 15 19:22:23 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* valid.c: debugging a posteriori validation, except URI expansion
+	  stuff this should be fixed now
+	* parserInternals.h: fixed a bug in IS_BASECHAR reported by
+	  Carl Nygard <cnygard@bellatlantic.net>
+	* tester.c: added --postvalid, cleaning of the code
+	* tree.[ch]: added xmlDocGetRootElement()
+	  
+Tue Dec 14 20:30:34 PST 1999 Ramiro Estrugo <ramiro@eazel.com>
+
+	* SAX.h, tree.h : changed 'namespace' to 'nameSpace' to workaround
+	c++ losage.
+
+Sun Dec 12 13:08:15 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* configure.in, doc/xml.html : bumped to 1.8.0
+	* xlink.[ch], Makefile.am : added framework for link detection
+	* parser.h: added nbChars to parser context, needed for cleanup.
+	* xmlmemory.c: removed a nasty bug when out of mem
+	* valid.[ch]: adding namespace support for attribute decl
+	* tester.c: added --debugent option
+	* debugXML.[ch]: added xmlDebugDumpEntities()
+	* parser.c: cleanup, avoiding use of CUR_PTR like plague, using
+	  buffers instead, this was really needed, validation was breaking
+	  in strange ways due to that. Added xmlParseStringPEReference()
+	  and other parsing from strings functions. Entities processing
+	  modified again, but PERef are still not handled correcly but
+	  unless you're Eve Maller you won't notice :-)
+	* HTMLparser.c: large changes toward reliability, and switched to
+	  lowercase internal tags, XHTML is lowercase, so it will help
+	  that output is closer to next version.
+	* doc/* : regenerated the documentation, it is now hosted at
+	  http://xmlsoft.org/ (same bits I just bought the domain :-)
+	
+	
+Fri Dec  3 13:46:32 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* SAX.h, SAX.c, makefile.am: added SAX.h mostly useful for the
+	         doc generation
+	* parser.c: fixed bugs #3908 and #3937 and a memory leak
+	         in the SAX API
+	* doc/*: rebuilt the doc making sure everything appears in the
+	         HTML files
+
+Wed Dec  1 10:27:47 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* tree.[ch] HTMLtree.c, debugXML.c, configure.in, xml-config.in:
+	     added the patch from Carl Nygard <cnygard@bellatlantic.net>
+	     which allow impressive speed improvement on dataset with
+	     large text pieces, but at the cost of broken binary
+	     compatibility and slightly bigger memory usage.
+	     Configure with --with-buffers to activate them, they
+	     are protected with XML_USE_BUFFER_CONTENT define.
+	* entities.[ch], parser.c: added xmlCleanupPredefinedEntities(),
+	     goal is 0 memory left allocated once parser is no more used
+	* testDAV.c, testHTML.c, testSAX.c, testXPath.c: make sure we
+	     call xmlCleanupParser() and xmlMemoryDump()
+
+Wed Nov 24 19:00:06 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* tree.[ch] xmlIO.[ch] parser.c valid.c: code cleanup with -pedantic
+	* parser.[ch] encoding.[ch]: added memory cleanup routines
+	* parser.c: closing bug #3788
+	* doc/*: rebuilt the doc
+
+Tue Nov 23 11:23:55 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* tree.[ch]: closing bug 3748, added xmlNewDocRawNode(), 
+	             xmlNewTextChild() and xmlSetCompressMode() behaviour.
+	* tester.c: added --compress option
+	* doc/*: rebuilt the documentation
+
+Fri Nov 19 18:41:28 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* HTMLparser.c: bugfixing, the damn thing MUST not crash even
+	                if given /proc/kcore as input !
+	* doc/xml.html doc/*: updated and rebuilt the documentation
+
+Thu Nov 18 14:57:18 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.c: Fixed some wrongly space collapsing code due to
+	            a misreading of the spec.
+	* result/*: fixed the output accordingly	    
+
+Wed Nov 17 18:28:06 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* encoding.c: bug fix and typos
+	* xmlIO.[ch] parser.c: first bits toward real progressive parsing
+	* parser.c: added attribute normalization closing bug #3597
+	* test/att* result/att* SAXresult/att*: testcase for attribute
+	    normalization
+
+Mon Nov 15 18:50:56 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* configure.in: closing bug #3163 by adding extra flags for the
+	                cc compiler on HP-UX
+
+Fri Nov 12 17:41:20 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* valid.[ch] : removed a typo and an enumerated type bug in the
+	               xmlAddElementDecl() function
+	* tree.c : I changed xmlSetProp() and xmlNewProp() to do the
+	    call to xmlEncodeEntitiesReentrant() so that the functions 
+	    New, Set and Get are at the same level.
+	* parser.c HTMLparser.c: extra memory allocation bug for
+	    attributes detected by someone using libxml in embedded systems :-)
+
+Thu Oct 28 17:49:26 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* xmlmemory.h: turned off mem debug :-\
+
+Mon Oct 25 12:13:25 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.c: closed bug #2784 a one line fix, but worth pushing
+	            a new release out
+        * HTMLparser.c: fixed auto-close bugs on list items, zeroing
+	            some structures, comments before and after the
+		    main element, and other nastyness
+	* HTMLtree.c tree.c: accomodate the extended HTML supported	    
+	* configure.in: pushing 1.7.4
+	* test/ent8 and related outputs : added a new test for bug #2784
+	* test/HTML/wired.html and related output: a nasty HTML example
+	* Makefile.am: improved the test scripts
+	* docs/* : reran the documentation extractor, updated xml.html
+
+Thu Oct 14 10:29:56 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* HTMLparser.c, HTMLtree.c, tree.h: completely revamped the
+	     HTMLparser and debugged the HTML related code. HTML documents
+	     now have their own type
+	* entities.c: do not dump &apos; for HTML output
+	* xmlmemory.c: improvement, breakpoint mechanism
+	* testHTML.c: added --sax --repeat ...
+	* Makefile.am: improved the HTML tests
+	* valid.[ch]: added xmlValidGetValidElements and
+	              xmlValidGetPotentialChildren
+	* tester.c: added --insert to test the 2 new functions
+	* test//* result//* SAXresult//* : regression test cleanup
+	               and extension.
+	* doc/html : added doc for new modules gnome-xml-xmlmemory.html and
+	             gnome-xml-nanohttp.html
+
+Mon Oct 11 14:31:58 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* HTMLparser.c: fixed problems with some autoclose tags
+	* tree.c: fixed XML output problems. 
+	* result/* SAXresult/*: update of the tests output
+
+Sat Oct  9 11:02:57 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* Makefile.am: Arturo patch for xmlConf.sh version info
+	* parser.c: Tim Josling patch for single quoted items
+	* tester.c: Tim Josling patch for tester options usage
+	* tree.h: indent cleanup
+
+Fri Oct  8 16:35:37 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* HTMLparser.c parser.h : Fixed problems with HTML parsing
+	    reported by Kristian Hogsberg Kristensen <hogsberg@daimi.au.dk>
+
+Fri Oct  8 11:37:11 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* tree.c : Raph patch for initialization of CORBA fields
+	* parser.c, xpath.c, ...: modification of doc comments
+	* xpath.c : allow spaces in xpath expressions
+
+Mon Sep 27 10:16:43 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* xmlmemory.h: turning off memory debug :-(
+
+Sun Sep 26 13:16:54 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.[ch] : added xmlSAXUserParseFile() and xmlSAXUserParseMemory()
+	                better SAX interfaces.
+	* testSAX.c: uses the new SAX routine, avoid fetching any remote
+	             entity.
+	* configure.in: 1.7.2
+
+Fri Sep 24 16:01:01 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* libxml.spec.in: fixed the URL
+	* doc/xml.html: improved the documentation front-end
+
+Fri Sep 24 01:06:36 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* nanohttp.c: conditionned references to snprintf with HAVE_SNPRINTF
+
+Fri Sep 24 00:15:58 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* libxml.spec.in: fixed the alpha compile problem
+	* parser.[ch]: changed errno to errNo in the parser context :-(
+	* *.[ch]: changed CHAR to xmlChar to avoid problem on WIN32
+	* doc/xml.html: changed CHAR to xmlChar
+	* doc/html/*: recompiled the documentation
+	* configure.in: 1.7.1
+
+Wed Sep 22 11:40:31 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.h: modified the parser context struct to regain 1.4.0
+	            binary compatibility
+	* parser.c, xml-error.h: added errno ot teh context and defined
+	            a set of errors values with update of errno
+	* nanohttp.[ch]: minimalist HTTP front-end for fetching remote
+	            DTDs and entities
+	* *.h, *.c: complete cleanup of the use of config.h and include
+	            protection depending on the current setup.
+	* overalll debugging, maintenance and bug-fixing on all modules
+	* updated the documentation
+	* ready for 1.7.0
+
+Wed Sep  8 22:46:14 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* HTMLparser.c : cleanup
+	* SAX.c valid.c valid.h: added ID/IDREF checking
+	* tree.c tree.h: extended doc structure for refs
+	* configure.in: 1.6.2
+	* parser.c: patched bug in SAX user arg call
+	* parserInternals.h: patched missing close in C++ wrapping
+	* testXPath.c xpath.c xpath.h: prepared for extensibility,
+	  especially upcoming XPointer implementation.
+	* doc/xml.html: augmented, typo
+
+Sat Sep  4 22:48:05 CEST 1999 Timur Bakeyev <mc@bat.ru>
+
+	* doc/Makefile.am: replaced "install -d " with "mkinstalldirs" -
+	not all invocations of install understand -d.
+
+Sat Sep  4 22:20:07 CEST 1999 Timur Bakeyev <mc@bat.ru>
+
+	* Makefile.am: prepend all the test* calls with $(top_builddir) -
+	to make 'check' works, when builddir != srcdir.
+
+Sat Sep  4 20:25:46 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* doc/xml.html : updated the documentation
+
+Fri Sep  3 00:01:08 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* xmlmemory.[ch] Makefile.am  :added a memory wrapper to chase
+	      not deallocated memory blocks
+	* *.c : replaces all calls to malloc() free() and realloc() to
+	      the wrapper functions/macros
+	* tree.c : removed memory leaks dues to calling xmlFreeNode()
+	      instead of xmlFreeNodeList()
+
+Wed Sep  1 14:15:09 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* HTMLparser.c: corrected a stupid bug leading to core dump at
+	                tree deallocation. Removed warnings indicated by
+			Stephane.Conversy@lri.fr
+	* entities.c: Fixes Yet Another Stupid Bug, entities were not
+	              looked for in the external subset
+
+Mon Aug 30 13:22:26 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.c valid.[ch] xpath.c: patched compilation warnings reported
+	  on SGI by Stephane.Conversy@lri.fr
+
+Sun Aug 29 22:27:29 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* all .h : changed the prototype declaration indent as in gtk
+	* most .c : working on reducing the TODOs in the code
+	* most .c : cleanup though -pedantic and Insure++
+	* improvements on validation ID checkings.
+	* tree.[ch] SAX.c: added support for namespace on attributes #2022
+	* xml-config.in: closed #1810
+
+Mon Aug 16 03:27:38 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* tree.h, valid.c, valid.h: more work on validity, IDs
+	* xpath.c: added/fixed comparidon and equlity, added a new isinf
+	  definition for AIX
+
+Sun Aug 15 21:15:17 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* Makefile.am libxml.spec.in: corrected missing xmlConf.sh in
+	  the distribution due to a cut'n paste error at last commit
+
+Tue Aug 10 20:28:09 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* configure.in: upgraded to version 1.4.0
+	* valid.[ch], SAX.c, parser.[ch] parserInternals.h ...
+	  Big update, added a large part of the validation process,
+	  it should be usable, but some parts are missing
+	* xpath.c: improved the implementation w.r.t. root.
+	* Makefile.am: added more tests
+	* test and result trees: added a lot of tests
+	* libxml.spec.in: export libxml.so.0 and libxml.so.1
+
+Tue Aug 10 11:33:41 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* Added an HACKING file
+
+Tue Jul 27 21:43:00 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+        * xpath.[ch] : improvements and debug of the XPath implementation
+        * parser.c, HTMLparser.c : modified the parsers to be progressive
+	* tree.[ch] : extended the Buffer promitives
+	* xmlIO.[ch] : added basic I/O routines providing progressive
+	  parsing and ready for I18N conversion plugins
+	* SAXresult/* : the SAX callback sequence maybe slightly different
+	  now
+	* test*.c : improved/updated the tests programs
+	* doc/* : recompiled the docs.
+
+1999-07-26  Michael Meeks  <michael@edenproject.org>
+
+	* tree.h: Add const to 'content' in xmlNewDocNode, xmlNewChild
+
+	* tree.c: Ditto.
+
+Thu Jul 15 16:17:16 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* configure.in: upgraded to version 1.4.0
+	* xpath.c, xpath.h, testXPath.c, makefile.am: added code for the XPath
+	  draft from W3C. Will be used by XPointer, Xlink, XSL, and possibly
+	  XML query language, see http://www.w3.org/TR/xpath for more details.
+	* parser.c, parser.h: added CHAR* related string functions for XPath
+	* HTMLparser.[ch], HTMLtree.c: a bit of cleanup on entities.
+	* doc/gnome-xml.sgml, doc/html/* : added XPath and HTML documentation,
+	  rebuild the docs.
+	* Makefile.am, test/XPath/*, result/XPath/*: added an XPathtests target
+	  and regression testing capabilities for XPath.
+
+Mon Jul 12 12:36:39 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.c, HTMLparser.c: applied patch from John Ellson <ellson@lucent.com>
+	  closing bug #1646
+
+Mon Jul 12 11:04:44 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* Makefile.am, example/Makefile.am: closed bug #1683
+
+Sun Jul 11 18:16:34 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* example/Makefile.am, configure.in: added the makefile for the
+	  gjobread example
+
+Sat Jul 10 14:19:11 CEST 1999 Tomasz K³oczko  <kloczek@pld.org.pl>
+
+        * doc/Makefile.am:
+        - fix which allow "make install DESTDIR=</install/prefix>".
+
+Fri Jul  9 12:10:24 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* HTMLparser.c parser.c: applied patch from John Ellson <ellson@lucent.com>
+	  which fixed a problem on the file reading-code.
+
+Wed Jul  7 09:28:43 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* HTMLparser.[ch], HTMLtree.[ch]: more work for HTML parsing and
+	  output.
+        * Makefile.am, test/HTML/*, result/HTML/*: added HTMLtests targetestHTMLt
+
+Wed Jul  7 00:25:42 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.h : Oops removed the binary compatibility problem
+	* HTMLparser.[ch], HTMLtree.h : More work on the HTML parse/dump
+	* parser.c, HTMLparser.c: applied patches for reading from stdin
+
+Mon Jul  5 18:45:31 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.c, entities.c, valid.c: cleanup bug #1591
+	* configure.in: cleanup bug #1592
+	* HTMLparser.[ch], testHTML.c: started adding an HTML parser using
+	  the same tree back-end. Hence gdome will be available for it.
+	* doc/Makefile.am: close bug #617
+
+Sat Jun 26 23:36:38 EDT 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.c: alloctate a per parser context SAX interface block
+
+Tue Jun 22 23:46:32 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* released 1.3.0 with xmlEncodeEntities restoring old behaviour
+	  and xmlEncodeEntitiesReentrant with the correct one :-\
+
+Mon Jun 21 14:07:53 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* commit of my internal XML base changes, quite a lot of
+	  changes, cleanups, better entities support, framework for
+	  new I/O and charset detection and handling
+	* Fixed the configure/Makefile stuff to generate shared libs
+	  with the proper version info, so we jumped on rev from
+	  0.0.0 to 1.2.0 ! The binary interfaces have been broken,
+	  xmlEncodeEntities() result need to be freed now, and a string
+	  xmlParserVersion provide the current library version.
+
+Tue Jun 15 14:24:19 1999  Raph Levien  <raph@acm.org>
+
+	* parser.c: fixed a buffer overrun for when you have a very long
+	attribute with no entities in it.
+
+Mon Jun 14 00:17:50 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* added example directory
+	* added example/gjobs.xml gjobread.c, still need a Makefile.in
+
+Wed Jun  2 19:40:58 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* Release of libxml-1.1, nearly everything has been touched for
+	  this.
+	* Added more regression tests
+	* Updated the documentation
+
+Sat May 29 13:34:42 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* tree.[ch]: unified the XML_NO_CORBA defines.
+	* parser.c encoding.[ch]: started plugging in char encoding detection
+
+Fri May 28 22:58:42 EDT 1999 Manish Vachharajani <mvachhar@vger.rutgers.edu>
+
+	* tree.c: (xmlSaveFile) - removed double call of xmlContentDump.  
+	  Also freed allocated buffer.
+
+Wed Apr 21 22:07:35 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+	* parser.[ch] tree.[ch] entities.[ch] valid.[ch] : removed the main
+	  reentrancy problem at printing. One is left in entities.c, to
+	  remove ASAP
+	* testSAX.c : added a test example showing the use of the SAX 
+	  interface if one doesn't want to build the DOM tree.
+	* html/gnome-xml-*.html html/index.sgml: regenerated the documentation
+
+Mon Apr  5 14:14:40 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.[ch] tree.[ch] SAX.c, parserInternals.h valid.[ch]:
+	  large revamping of the parser to use SAX callbacks
+	  http://www.megginson.com/SAX/ (or at least a C like interface
+	  a la Expat). It's now possible to set up your own callbacks
+	  and the parser will not build a DOM tree.
+	* test/* result/*: updated the test suite, I finally removed
+	  the old Namespace draft support (PI based).
+
+Fri Apr  2 17:57:32 CEST 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* Makefile.am: added test result to EXTRA_DIST for make tests
+
+Wed Mar 24 21:37:02 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.c, parserInternals.h: moved the chars macro definitions
+	  to parserInternals.h
+	* parser.c, error.c: applied patches from "Knut Åkesson"
+	  <ka@s2.chalmers.se> for clean compilation under MSVC 6 :-o
+
+Tue Mar 23 11:10:15 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* xml-config.in : applied patch to make --version work
+
+1999-03-05  Raja R Harinath  <harinath@cs.umn.edu>
+
+	* Makefile.am (check-local): Alias for `tests' target.  This will
+	cause `make check' to do the right thing.
+	(tests): Don't run tests in srcdir.  Also, replaced calls to
+	basename with a `sed' "equivalent".
+
+Fri Mar  5 07:23:53 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* Renamed error.h to xml-error.h, corrected Makefile.am to list
+	  it in the header and not the sources, updated the doc.
+	  Thanks to Tim Mooney <mooney@dogbert.cc.ndsu.nodak.edu> for
+	  pointing this out.
+
+Mon Mar  1 13:27:17 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.c, parser.h, parserInternals.h: memory leak hunting,
+	  exported the inputStream routines.
+	* doc/html/* : updated accordingly
+
+Sun Feb 28 22:51:33 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.c, parser.h, parserInternals.h: added a few extra
+	  internal calls to allocate and free parser contexts ...
+	* doc/html/* : updated accordingly
+
+Thu Feb 25 11:52:24 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* configure.in, Makefile.am, doc/makefile.am : General changes for
+	  1.0.0 release and including the generated HTML documentation.
+
+Thu Feb 25 09:44:52 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* makefile.am : added parserInternals.h, oops.
+
+Mon Feb 22 11:24:56 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parserInternals.h: added this header giving access to the parser
+	  internal functions.
+	* doc/Makefile.am : added a rebuild target which rebuilds the full
+	  set of documentations
+	* parser.[ch] tree.[ch] valid.[ch]: serious updates w.r.t. parsing
+	  the internal subset. 
+	* *.c *.h: modifications needed to generate the documentation using
+	  gtk-doc, cleanup of functions blocks, reorganisation of struct
+	  declarations.
+
+Tue Feb 16 17:27:29 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* Makefile.am, spec, doc/Makefile.am : upgrading to 0.99.8, fixing
+	  the tar and spec file to include the beginning of the doc.
+
+1999-02-13  Nuno Ferreira  <nmrf@rnl.ist.utl.pt>
+
+	* doc/.cvsignore: Added this file.
+
+Mon Feb  8 19:27:56 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* tree.c: fixed xmlGetProp to return "" when the attribute
+	  exists, even if the node-list is NULL.
+
+Mon Feb  8 16:10:15 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* tree.c: patched an error outputting empty attribute values.
+	* Makefile.am and doc/makefile.am: have been updated during the
+	  week-end. Sorry for an empty CVS log, I got a shell problem.
+
+Mon Feb  1 12:10:13 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* tree.h: cleaned up using enums instead of defines
+	* parser.c, valid.[ch]: more work on parsing/output of element
+	  declarations
+
+Sun Jan 31 22:06:48 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* valid.[ch], tree.c, parser.c : more work toward full parsing
+	  of XML DTDs.
+	* README: added informations about mailing-list and on-line
+	  documentation
+
+1999-01-27  Raja R Harinath  <harinath@cs.umn.edu>
+
+	* configure.in (XML_INCLUDEDIR): Use -I not -L for includes.
+
+Sun Jan 17 20:06:36 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.c, tree.[ch] : more work toward conformance testing,
+	  added a last element to accelerate parsing of very flat structures
+	  started working on internal subset Element content declaration.
+	* valid.[ch] : first cut at adding code toward validation.
+	* previous changes had also small impact on most files, especially
+	  the conformance testing using James Clark test suite.
+
+Sun Jan 17 14:45:06 CET 1999 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* test/* : updated the examples, most of them were not well
+	           formed (humm), and added rdf2.
+	* result/* : resulting changes in the output.
+
+Sun Dec  6 13:06:58 EST 1998 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* tree.c: changed the behaviour of xmlGetProp on NULL values.
+
+Sat Dec  5 12:25:09 EST 1998 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* tree.c: patched a bug in the generation of empty attributes
+
+Fri Nov 27 01:36:54 EST 1998 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* entities.[ch], tree.[ch], tester.c: added copy interfaces
+	  for node/trees/documents/... Biggest problem is namespace
+	  support when copying subtrees.
+
+Sun Nov 15 19:59:47 EST 1998 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.c, entities.c: improve entities and char ref encoding,
+	  and cleanups of error messages.
+
+Fri Nov 13 13:03:10 EST 1998 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.c, entities.c: simple bug hunting done during rpm2html and
+	  rpmfind integration.
+
+Sun Nov  8 13:11:07 EST 1998 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.[ch]: Added interfaces allowing to specify a SAX
+	  handler before parsing.
+
+Sun Nov  8 09:39:17 EST 1998 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.c: redirrect all errors reporting through the SAX
+	  error function
+
+Wed Nov  4 14:21:54 EST 1998 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* entities.c: rather use HAVE_SNPRINTF and not depend on glib
+	* libtool, tlmain ...: update of the libtool files
+
+1998-11-04  Miguel de Icaza  <miguel@nuclecu.unam.mx>
+
+	* entities.c: Use g_snprintf insteda of snprintf.
+
+Sun Nov  1 14:31:06 EST 1998 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* entities.c, parser.c: debug and cleanup of CharRef handling/saving.
+	  added ent5 test for this purpose.
+	* parser.c, parser.h: formatting, comments and UTF-8 planning.
+
+Fri Oct 30 01:36:52 EST 1998 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.c: fixed? a strange error due to compression on a GWP
+	  document.
+
+Thu Oct 29 00:48:45 EST 1998 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* tree.[ch]: bug fixing
+	* entities.[ch]: defined a specific type for predefined entities
+	* doc/xml.html: more documentation on the library, how to use it,
+	  overview of the interfaces.
+
+Wed Oct 28 17:56:35 EST 1998 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* tree.[ch]: more cleanup on the API, made the tree mor conformant.
+
+Tue Oct 27 17:54:00 EST 1998 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* tree.c: corrected a small bug
+	* doc/xml.html: continuing writing documentation.
+
+Tue Oct 27 17:54:00 EST 1998 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* debugXML.h debugXML.c: added debugging utilities.
+	* tester.c: added --debug switch.
+	* tree.c: patched an incorrect node->type assignment.
+	* parser.c: formatting, ensure that node->doc != NULL in attributes
+
+Tue Oct 27 01:15:39 EST 1998 Daniel Veillard <Daniel.Veillard@w3.org>
+
+        * parser.[ch] SAX.c tree.[ch]: large amount of changes to improve
+          entity support and provide an internal representation close to
+          DOM one (entity ref nodes, and attribute value as tree). I tried
+          to preserve the interface but this will surely break some apps
+          (I have to change rpm2html/rpmfind for example). I had to change
+	  two interfaces, and the generated tree is somewhat different.
+	* doc/* : started documenting the XML library, the tree and
+	  DOM/Corba. This is a first step.
+
+Sat Oct 24 14:23:51 EDT 1998 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.c: Set up the fonctions comment block, boring but useful.
+	* parser.h, SAX.c, parser.c: now attributes are processed through
+	  the SAX interface. The problem is that my SAX interface diverged
+	  quite a bit from the original one, well this is not an official
+	  spec, and translating it from Java to C is hairy anyway...
+
+Tue Oct 20 02:11:21 EDT 1998 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* SAX.c, entities.c, tree.c, encoding.c, error.c: Set up the
+	  fonctions comment block, boring but useful.
+
+Sun Oct 18 20:40:58 EDT 1998 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* encoding.[ch], Makefile.am: Added the UTF-8, UTF-16 and ISO Latin 1
+	  conversion routines. However they are not yet used to convert the
+	  inputs. The core will run with UTF-8.
+
+Sun Oct 18 15:08:19 EDT 1998 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* tree.c : make sure that the type id is properly set-up when
+	  a new object is allocated, needed for DOM.
+
+Sat Oct 17 02:43:21 EDT 1998 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* tree.h, tree.c: Ok, the main objects in the tree will be native
+	  corba objects, it costs 8 bytes per Node, Attribute and Document
+	  but it simplifies the Corba integration a lot (no extra interface
+	  objects to allocate/free).
+
+Tue Oct 13 21:46:57 EDT 1998 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* tree.h, tree.c, parser.c: added prev and doc pointers to Node,
+	  and changed NODEs contants for conformity with DOM Level 1
+
+Wed Oct  7 23:42:46 EDT 1998 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* added hooks to keep track of servants when creating objects
+	  xmlDoc and xmlNode (for Corba export).
+
+Sun Oct  4 03:18:09 EDT 1998 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* added xml-config script.
+
+Thu Oct  1 16:22:37 EDT 1998 Daniel Veillard <Daniel.Veillard@w3.org>
+
+        * autogen.sh : applied patch from Frederic Devernay <devernay@istar.fr>
+	  to autoupdate libtool and automake conf files.
+
+1998-09-30  Miguel de Icaza  <miguel@nuclecu.unam.mx>
+
+	* Makefile.am: Use '?' to separate the sed
+	commands as ',' is used when people pass -Wl,something.
+
+
+Thu Sep 24 15:13:29 EDT 1998 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* tree.c, tree.h: added a per-document compression interface.
+
+Tue Sep 22 20:47:38 EDT 1998
+
+	* tree.c, tree.h: added saving with compression and added interfaces
+	  to control the compression level (xmlGetCompressMode,
+	  xmlSetCompressMode) and a new save to filename function (xmlSaveFile).
+
+Mon Sep 21 20:11:13 EDT 1998 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* parser.c: corrected a loop for files of size 0
+
+1998-08-20  Raja R Harinath  <harinath@cs.umn.edu>
+
+	* error.h: New file.  Contains prototyes from `error.c'.
+
+Thu Aug 13 19:02:34 1998  Tom Tromey  <tromey@cygnus.com>
+
+	* Makefile.am (xmlincdir): New macro.
+	(xmlinc_HEADERS): Renamed from include_HEADERS.
+
+Thu Aug 13 00:40:14 EDT 1998  Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* applied small patch on numeric entities from
+	  Christopher Blizzard <blizzard@appliedtheory.com>
+
+Wed Aug 12 23:12:58 EDT 1998  Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* New release 0.2, removed the old xml_* files so that it's
+	    coherent with the other CVS base (W3C), far better conformance
+	    to standard, new namespaces, decent entities support, beginning
+	    of a SAX-like interface. Nearly nothing left intact, even the
+	    test examples ...
+
+1998-07-30  Christopher Blizzard  <blizzard@appliedtheory.com>
+
+	* .cvsignore: Add .deps dir
+
+Sun Jul 26 17:29:52 EDT 1998  Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* xml_tree: changed the memory allocation scheme for name in xmlNewNode
+
+Sun Jul 26 00:17:51 EDT 1998  Daniel Veillard <Daniel.Veillard@w3.org>
+
+        * configure.in: added test for CPP
+	* AUTHORS, Changelog: the original ones didn't get commited but the
+	    glib ones instead, fixed.
+	* Makefile.am: corrected an error in library naming
+
+Fri Jul 24 16:47:14 1998  Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* integrated code developped at W3C
+	* changed the original Copyright
+	* migrated to automake
+	* prefixed the filenames by xml_ to avoid filename clashes
+
