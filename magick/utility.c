@@ -2546,12 +2546,11 @@ MagickExport void TemporaryFilename(char *filename)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method Tokenizer is a generalized, finite state token parser.  It
-%  extracts tokens one at a time from a string of characters.  The
-%  characters used for white space, for break characters, and for quotes
-%  can be specified.  Also, characters in the string can be preceded by
-%  a specifiable escape character which removes any special meaning the
-%  character may have.
+%  Method Tokenizer is a generalized, finite state token parser.  It extracts
+%  tokens one at a time from a string of characters.  The characters used for
+%  white space, for break characters, and for quotes can be specified.  Also,
+%  characters in the string can be preceded by a specifiable escape character
+%  which removes any special meaning the character may have.
 %
 %  Here is some terminology:
 %
@@ -2559,18 +2558,17 @@ MagickExport void TemporaryFilename(char *filename)
 %      characters.
 %
 %    o white space: Apace that gets ignored (except within quotes or when
-%      escaped), like blanks and tabs. in addition, white space terminates
-%      a non-quoted token.
+%      escaped), like blanks and tabs. in addition, white space terminates a
+%      non-quoted token.
 %
 %    o break set: One or more characters that separates non-quoted tokens.
-%      Commas are a common break character. The usage of break characters
-%      to signal the end of a token is the same as that of white space,
-%      except multiple break characters with nothing or only white space
-%      between generate a null token for each two break characters
-%      together.
+%      Commas are a common break character. The usage of break characters to
+%      signal the end of a token is the same as that of white space, except
+%      multiple break characters with nothing or only white space between
+%      generate a null token for each two break characters together.
 %
-%      For example, if blank is set to be the white space and comma is set
-%      to be the break character, the line
+%      For example, if blank is set to be the white space and comma is set to
+%      be the break character, the line
 %
 %        A, B, C ,  , DEF
 %
@@ -2582,12 +2580,12 @@ MagickExport void TemporaryFilename(char *filename)
 %        4)  "" (the null string)
 %        5)  "DEF"
 %
-%    o Quote character: A character that, when surrounding a group of
-%      other characters, causes the group of characters to be treated as a
-%      single token, no matter how many white spaces or break characters
-%      exist in the group. Also, a token always terminates after the
-%      closing quote. For example, if ' is the quote character, blank is
-%      white space, and comma is the break character, the following string
+%    o Quote character: A character that, when surrounding a group of other
+%      characters, causes the group of characters to be treated as a single
+%      token, no matter how many white spaces or break characters exist in
+%      the group. Also, a token always terminates after the closing quote.
+%      For example, if ' is the quote character, blank is white space, and
+%      comma is the break character, the following string
 %
 %        A, ' B, CD'EF GHI
 %
@@ -2717,31 +2715,30 @@ static int sindex(char c,char *string)
 static void StoreToken(TokenInfo *token_info,char *string,int max_token_length,
   char c)
 {
-  if ((token_info->offset < 0) || (token_info->offset >= ( max_token_length-1)))
+  register int
+    i;
+
+  if ((token_info->offset < 0) || (token_info->offset >= (max_token_length-1)))
     return;
+  i=token_info->offset++;
+  string[i]=c;
   if (token_info->state == IN_QUOTE)
-    string[token_info->offset]=c;
-  else
-    switch (token_info->flag & 0x03)
+    return;
+  switch (token_info->flag & 0x03)
+  {
+    case 1:
     {
-      case 1:
-      {
-        string[token_info->offset]=toupper(c);
-        break;
-      }
-      case 2:
-      {
-        string[token_info->offset]=tolower(c);
-        break;
-      }
-      default:
-      {
-        string[token_info->offset]=c;
-        break;
-      }
+      string[i]=toupper(c);
+      break;
     }
-  token_info->offset++;
-  return;
+    case 2:
+    {
+      string[i]=tolower(c);
+      break;
+    }
+    default:
+      break;
+  }
 }
 
 MagickExport int Tokenizer(TokenInfo *token_info,unsigned flag,char *token,
@@ -2749,8 +2746,7 @@ MagickExport int Tokenizer(TokenInfo *token_info,unsigned flag,char *token,
   char escape,char *breaker,int *next,char *quoted)
 {
   char
-    c,
-    nc;
+    c;
 
   register int
     i;
@@ -2762,8 +2758,9 @@ MagickExport int Tokenizer(TokenInfo *token_info,unsigned flag,char *token,
   token_info->state=IN_WHITE;
   token_info->quote=False;
   token_info->flag=flag;
-  for (token_info->offset=0; (c=line[*next]) != 0; (*next)++)
+  for (token_info->offset=0; line[*next] != 0; (*next)++)
   {
+    c=line[*next];
     i=sindex(c,break_set);
     if (i >= 0)
       {
@@ -2842,8 +2839,7 @@ MagickExport int Tokenizer(TokenInfo *token_info,unsigned flag,char *token,
       }
     if (c == escape)
       {
-        nc=line[(*next)+1];
-        if (nc == 0)
+        if (line[(*next)+1] == 0)
           {
             *breaker=0;
             StoreToken(token_info,token,max_token_length,c);
@@ -2863,7 +2859,8 @@ MagickExport int Tokenizer(TokenInfo *token_info,unsigned flag,char *token,
           case IN_QUOTE:
           {
             (*next)++;
-            StoreToken(token_info,token,max_token_length,nc);
+            c=line[*next];
+            StoreToken(token_info,token,max_token_length,c);
             break;
           }
           case IN_OZONE:
@@ -3213,6 +3210,9 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         char
           key[MaxTextExtent];
 
+        int
+          offset;
+
         ImageAttribute
           *attribute;
 
@@ -3225,42 +3225,33 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         attribute=GetImageAttribute(image,key);
         if (attribute != (ImageAttribute *) NULL)
           {
-            int
-              alen;
-
-            alen=Extent(attribute->value);
-            if ((q-translated_text+alen) >= (int) length)
+            offset=Extent(attribute->value);
+            if ((q-translated_text+offset) >= (int) length)
               {
-                length+=(alen+MaxTextExtent);
+                length+=(offset+MaxTextExtent);
                 ReacquireMemory((void **) &translated_text,length);
                 if (translated_text == (char *) NULL)
                   break;
                 q=translated_text+Extent(translated_text);
               }
             (void) strcpy(q,attribute->value);
-            q+=alen;
+            q+=offset;
+            break;
           }
-        else
+        attribute=GetImageInfoAttribute(clone_info,image,key);
+        if (attribute == (ImageAttribute *) NULL)
+          break;
+        offset=Extent(attribute->value);
+        if ((q-translated_text+offset) >= (int) length)
           {
-            attribute=GetImageInfoAttribute(clone_info,image,key);
-            if (attribute != (ImageAttribute *) NULL)
-              {
-                int
-                  alen;
-
-                alen=Extent(attribute->value);
-                if ((q-translated_text+alen) >= (int) length)
-                  {
-                    length+=(alen+MaxTextExtent);
-                    ReacquireMemory((void **) &translated_text,length);
-                    if (translated_text == (char *) NULL)
-                      break;
-                    q=translated_text+Extent(translated_text);
-                  }
-                (void) strcpy(q,attribute->value);
-                q+=alen;
-              }
+            length+=(offset+MaxTextExtent);
+            ReacquireMemory((void **) &translated_text,length);
+            if (translated_text == (char *) NULL)
+              break;
+            q=translated_text+Extent(translated_text);
           }
+        (void) strcpy(q,attribute->value);
+        q+=offset;
         break;
       }
       case '%':
