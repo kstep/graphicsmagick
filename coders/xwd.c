@@ -166,9 +166,11 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register unsigned long
     pixel;
 
-  unsigned long
-    lsb_first,
+  size_t
     length;
+
+  unsigned long
+    lsb_first;
 
   XColor
     *colors;

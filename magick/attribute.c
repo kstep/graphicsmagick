@@ -149,7 +149,7 @@ static int GenerateIPTCAttribute(Image *image,const char *key)
   register int
     i;
 
-  unsigned int
+  size_t
     length;
 
   if (image->iptc_profile.length == 0)
@@ -179,7 +179,7 @@ static int GenerateIPTCAttribute(Image *image,const char *key)
   return(i < (int) image->iptc_profile.length);
 }
 
-static unsigned char ReadByte(char **p,unsigned int *length)
+static unsigned char ReadByte(char **p,size_t *length)
 {
   unsigned char
     c;
@@ -191,7 +191,7 @@ static unsigned char ReadByte(char **p,unsigned int *length)
   return(c);
 }
 
-static long ReadMSBLong(char **p,unsigned int *length)
+static long ReadMSBLong(char **p,size_t *length)
 {
   int
     c;
@@ -220,7 +220,7 @@ static long ReadMSBLong(char **p,unsigned int *length)
   return(value);
 }
 
-static int ReadMSBShort(char **p,unsigned int *length)
+static int ReadMSBShort(char **p,size_t *length)
 {
   int
     c,
@@ -245,8 +245,8 @@ static int ReadMSBShort(char **p,unsigned int *length)
   return(value);
 }
 
-static char *TraceClippingPath(char *blob,unsigned int length,
-  unsigned int columns,unsigned int rows)
+static char *TraceClippingPath(char *blob,size_t length,unsigned int columns,
+  unsigned int rows)
 {
   char
     *path,
@@ -375,12 +375,14 @@ static int Generate8BIMAttribute(Image *image,const char *key)
   long
     count;
 
+  size_t
+    length;
+
   unsigned char
     c,
     *info;
 
   unsigned int
-    length,
     status;
 
   if (image->iptc_profile.length == 0)

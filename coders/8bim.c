@@ -146,8 +146,10 @@ static Image *Read8BIMImage(const ImageInfo *image_info,
   register unsigned char
     *q;
 
+  size_t
+    length;
+
   unsigned int
-    length,
     status;
 
   /*
@@ -284,11 +286,11 @@ static unsigned int Write8BIMImage(const ImageInfo *image_info,Image *image)
   unsigned int
     status;
 
-  if (image->iptc_profile.length == 0)
-    ThrowWriterException(FileOpenWarning,"No 8BIM data is available",image);
   /*
     Open image file.
   */
+  if (image->iptc_profile.length == 0)
+    ThrowWriterException(FileOpenWarning,"No 8BIM data is available",image);
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);

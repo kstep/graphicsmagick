@@ -102,7 +102,7 @@ MagickExport char *AllocateString(const char *source)
   char
     *destination;
 
-  unsigned int
+  size_t
     length;
 
   length=MaxTextExtent;
@@ -3096,11 +3096,11 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         char
           key[MaxTextExtent];
 
-        int
-          offset;
-
         ImageAttribute
           *attribute;
+
+        off_t
+          offset;
 
         if (strchr(p,']') == (char *) NULL)
           break;
@@ -3112,7 +3112,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         if (attribute != (ImageAttribute *) NULL)
           {
             offset=Extent(attribute->value);
-            if ((q-translated_text+offset) >= (int) length)
+            if ((size_t) (q-translated_text+offset) >= length)
               {
                 length+=(offset+MaxTextExtent);
                 ReacquireMemory((void **) &translated_text,length);
@@ -3128,7 +3128,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         if (attribute == (ImageAttribute *) NULL)
           break;
         offset=Extent(attribute->value);
-        if ((q-translated_text+offset) >= (int) length)
+        if ((size_t) (q-translated_text+offset) >= length)
           {
             length+=(offset+MaxTextExtent);
             ReacquireMemory((void **) &translated_text,length);

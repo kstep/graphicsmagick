@@ -34,7 +34,7 @@ typedef struct _MagicInfo
   Method declarations.
 */
 extern MagickExport MagicInfo
-  *GetMagicInfo(const unsigned char *,const unsigned int,ExceptionInfo *);
+  *GetMagicInfo(const unsigned char *,const size_t,ExceptionInfo *);
 
 extern MagickExport unsigned int
   ListMagicInfo(FILE *,ExceptionInfo *);

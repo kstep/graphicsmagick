@@ -242,7 +242,7 @@ MagickExport unsigned int AllocateImageColormap(Image *image,
   register int
     i;
 
-  unsigned int
+  size_t
     length;
 
   /*
@@ -255,8 +255,7 @@ MagickExport unsigned int AllocateImageColormap(Image *image,
   image->colors=colors;
   length=Max(image->colors,256);
   if (image->colormap == (PixelPacket *) NULL)
-    image->colormap=(PixelPacket *)
-      AcquireMemory(length*sizeof(PixelPacket));
+    image->colormap=(PixelPacket *) AcquireMemory(length*sizeof(PixelPacket));
   else
     ReacquireMemory((void **) &image->colormap,length*sizeof(PixelPacket));
   if (image->colormap == (PixelPacket *) NULL)
@@ -855,7 +854,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
   register int
     i;
 
-  unsigned long
+  size_t
     length;
 
   /*
@@ -1934,7 +1933,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         *tag,
         *text;
 
-      unsigned short
+      size_t
         length;
 
       /*
@@ -4252,7 +4251,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               next,
               status;
 
-            unsigned int
+            size_t
               length;
 
             TokenInfo

@@ -383,12 +383,13 @@ static void DestroyCacheInfo(Cache cache)
   CacheInfo
     *cache_info;
 
-  off_t
-    length,
-    number_pixels;
 
   register int
     id;
+
+  size_t
+    length,
+    number_pixels;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
@@ -1262,13 +1263,13 @@ MagickExport unsigned int OpenCache(Image *image)
     null = 0;
 
   off_t
-    length,
-    number_pixels;
+    length;
 
   PixelPacket
     *pixels;
 
   size_t
+    number_pixels,
     offset;
 
   assert(image != (Image *) NULL);
@@ -1845,12 +1846,12 @@ static PixelPacket *SetNexus(Image *image,const RectangleInfo *region,
   CacheInfo
     *cache_info;
 
-  off_t
-    length,
-    number_pixels;
-
   register NexusInfo
     *nexus_info;
+
+  size_t
+    length,
+    number_pixels;
 
   assert(image != (Image *) NULL);
   cache_info=(CacheInfo *) image->cache;
@@ -1865,7 +1866,7 @@ static PixelPacket *SetNexus(Image *image,const RectangleInfo *region,
         (nexus_info->rows == 1)) || ((nexus_info->x == 0) &&
         ((nexus_info->columns % cache_info->columns) == 0)))
       {
-        off_t
+        size_t
           offset;
 
         /*

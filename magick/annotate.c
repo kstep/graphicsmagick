@@ -133,9 +133,11 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
   register int
     i;
 
+  size_t
+    length;
+
   unsigned int
     height,
-    length,
     matte,
     number_lines,
     status,
@@ -392,7 +394,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
 %
 */
 
-static int GetUnicodeCharacter(const unsigned char *text,int *length)
+static int GetUnicodeCharacter(const unsigned char *text,size_t *length)
 {
   unsigned int
     c;
@@ -445,14 +447,14 @@ static int GetUnicodeCharacter(const unsigned char *text,int *length)
 
 static unsigned short *ConvertTextToUnicode(const char *text,int *count)
 {
-  int
-    length;
-
   register const char
     *p;
 
   register unsigned short
     *q;
+
+  size_t
+    length;
 
   unsigned short
     *unicode;
@@ -1008,7 +1010,6 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
     last_glyph;
 
   int
-    length,
     y;
 
   PointInfo
@@ -1030,6 +1031,9 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
 
   SegmentInfo
     extent;
+
+  size_t
+    length;
 
   static FT_Outline_Funcs
     OutlineMethods =

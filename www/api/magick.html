@@ -48,7 +48,7 @@
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P><STRONG>DestroyMagick</STRONG>( void );</P>
 <P>void  <STRONG>DestroyMagickInfo</STRONG>( void );</P>
-<P>char * <STRONG>GetImageMagick</STRONG>( const unsigned char *magick, const unsigned int length );</P>
+<P>char * <STRONG>GetImageMagick</STRONG>( const unsigned char *magick, const size_t length );</P>
 <P>char * <STRONG>GetMagickConfigurePath</STRONG>( const char *filename );</P>
 <P>MagickInfo * <STRONG>GetMagickInfo</STRONG>( const char *name, Exception *exception );</P>
 <P>char * <STRONG>GetMagickVersion</STRONG>( unsigned int *version );</P>
@@ -77,7 +77,7 @@
 <P>Method GetImageMagick searches for an image format that matches the specified magick string.  If one is found the name is returned otherwise 
 <FONT SIZE=-1>NULL.</FONT></P>
 <P>The format of the GetImageMagick method is:</P>
-<blockquote>char *GetImageMagick ( const unsigned char *magick, const unsigned int length ); </blockquote><P>
+<blockquote>char *GetImageMagick ( const unsigned char *magick, const size_t length ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_name%3A">name:</A></STRONG><BR>

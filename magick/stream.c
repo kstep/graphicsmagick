@@ -417,12 +417,12 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,
 static PixelPacket *SetPixelStream(Image *image,const int x,const int y,
   const unsigned int columns,const unsigned int rows)
 {
-  off_t
-    length,
-    number_pixels;
-
   StreamInfo
     *stream_info;
+
+  size_t
+    length,
+    number_pixels;
 
   /*
     Validate pixel cache geometry.

@@ -180,8 +180,7 @@ typedef struct _ImageAttribute
     *next;
 } ImageAttribute;
 
-typedef Quantum
-  IndexPacket;
+typedef Quantum IndexPacket;
 
 typedef struct _MontageInfo
 {
@@ -220,7 +219,7 @@ typedef struct _MontageInfo
 
 typedef struct _ProfileInfo
 {
-  unsigned int
+  size_t
     length;
 
   char
@@ -586,7 +585,7 @@ extern MagickExport const unsigned int
 */
 extern MagickExport char
   **GetColorList(const char *,int *),
-  *GetImageMagick(const unsigned char *,const unsigned int),
+  *GetImageMagick(const unsigned char *,const size_t),
   *GetMagickConfigurePath(const char *),
   *GetMagickVersion(unsigned int *);
 

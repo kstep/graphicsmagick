@@ -157,8 +157,7 @@ MagickExport void DestroyMagickInfo(void)
 %
 %  The format of the GetImageMagick method is:
 %
-%      char *GetImageMagick(const unsigned char *magick,
-%        const unsigned int length)
+%      char *GetImageMagick(const unsigned char *magick,const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -173,7 +172,7 @@ MagickExport void DestroyMagickInfo(void)
 %
 */
 MagickExport char *GetImageMagick(const unsigned char *magick,
-  const unsigned int length)
+  const size_t length)
 {
   register MagickInfo
     *p;
