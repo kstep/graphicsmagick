@@ -1,3 +1,11 @@
+2003-02-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jp2.c (WriteJP2Image): Quality factor calculation had
+	accidentally been removed.  The calculation is back, but has been
+	biased up slightly so that a quality factor of 75 results in a
+	more reasonable 16:1 compression. Past a quality factor of 99.5,
+	the compression is set to 1:1 (non-lossy).
+
 2003-02-27  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* Fixed bug with reading interlaced PNG images, introduced
@@ -5,6 +13,7 @@
 
 2003-02-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* Makefile.am (EXTRA_DIST): Forgot to distribute version.sh
 	* configure.ac: Use definitions from version.sh to drive
 	package versioning and naming. These definitions support
 	libtool's recommended approach to library versioning.

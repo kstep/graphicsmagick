@@ -869,7 +869,24 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   (void) strncpy(magick,image_info->magick,MaxTextExtent-1);
   LocaleLower(magick);
   format=jas_image_strtofmt(magick);
-  FormatString(options,"rate=%lf",(double) image_info->quality/100.0);
+  /*
+    A rough approximation to JPEG v1 quality using JPEG-2000.
+    Default "quality" 75 results in a request for 16:1 compression, which
+    results in image sizes approximating that of JPEG v1.
+  */
+  {
+    double
+      d,
+      rate;
+
+    d=115-image_info->quality;
+    if (image_info->quality>99.5)
+      d=10;
+    rate=100.0/(d*d);
+    FormatString(options,"rate=%g",rate);
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Compression rate: %g (%3.2f:1)",
+     rate,(double)1/rate);
+  }
   status=jas_image_encode(jp2_image,jp2_stream,format,options);
   if (status)
     ThrowWriterException(DelegateError,"UnableToEncodeImageFile",image);
