@@ -379,8 +379,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               pixel.green=ScaleCharToQuantum(ReadBlobByte(image));
               pixel.red=ScaleCharToQuantum(ReadBlobByte(image));
               if (tga_info.bits_per_pixel == 32)
-                pixel.opacity=(Quantum)
-                  (MaxRGB-ScaleCharToQuantum(ReadBlobByte(image)));
+                pixel.opacity=(Quantum) ScaleCharToQuantum(ReadBlobByte(image));
               break;
             }
           }
