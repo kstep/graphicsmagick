@@ -739,7 +739,7 @@ use this font when annotating the image with text.
 If the font is a fully qualified X server font name, the font is obtained
 from an X server (e.g. -*-helvetica-medium-r-*-*-12-*-*-*-*-*-iso8859-*).  To
 use a TrueType font, precede the TrueType filename with a \fB@\fP (e.g.
-@times.ttf).  Otherwise, specify a Postscript font (e.g. helvetica).
+@times.ttf).  Otherwise, specify a Postscript, X11, or TrueType font (e.g. helvetica).
 .TP
 .B "-frame \fI<width>x<height>+<outer bevel width>+<inner bevel width>\fP"
 surround the image with an ornamental border.  See \fBX(1)\fP for details
@@ -1031,7 +1031,7 @@ Each pixel is replaced by the most frequent color in a circular neighborhood
 whose width is specified with \fIradius\fP.
 .TP
 .B "-pointsize \fIvalue\fP"
-pointsize of the Postscript font.
+pointsize of the Postscript, X11, or TrueType font.
 .TP
 .B "-preview \fItype\fP"
 image preview type.
