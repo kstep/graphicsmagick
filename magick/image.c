@@ -3504,8 +3504,12 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         quantize_info.number_colors=atoi(argv[++i]);
         continue;
       }
-    if (LocaleNCompare("-colorspace",option,8) == 0)
+    if (LocaleNCompare("colorspace",option+1,7) == 0)
       {
+        char
+          type;
+
+        type=*option;
         option=argv[++i];
         if (LocaleCompare("cmyk",option) == 0)
           {
@@ -3543,6 +3547,9 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         if (LocaleCompare("yuv",option) == 0)
           quantize_info.colorspace=YUVColorspace;
         clone_info->colorspace=quantize_info.colorspace;
+        /* force the image colorspace to the one selected */
+        if (type == '+')
+          (*image)->colorspace=clone_info->colorspace;
         continue;
       }
     if (LocaleNCompare("comment",option+1,4) == 0)
@@ -3961,6 +3968,9 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             if (LocaleCompare("Matte",option) == 0)
               layer=MatteLayer;
           }
+        /* if the colorspace specified does not match the image - convert */
+        if ((*image)->colorspace != clone_info->colorspace)
+          RGBTransformImage(*image,clone_info->colorspace);
         LayerImage(*image,layer);
         continue;
       }
