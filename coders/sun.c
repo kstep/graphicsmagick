@@ -161,7 +161,7 @@ static unsigned int DecodeImage(const unsigned char *compressed_pixels,
   assert(pixels != (unsigned char *) NULL);
   p=compressed_pixels;
   q=pixels;
-  while ((q-pixels) <= (int) (number_columns*number_rows))
+  while ((q-pixels) < (int) (number_columns*number_rows))
   {
     byte=(*p++);
     if (byte != 128)
@@ -391,7 +391,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Read run-length encoded raster pixels.
         */
         height=(unsigned int) sun_info.height;
-        bytes_per_line=(2*sun_info.width*sun_info.depth+15)/16;
+        bytes_per_line=2*(sun_info.width*sun_info.depth+15)/16;
         sun_pixels=(unsigned char *) AcquireMemory(bytes_per_line*height);
         if (sun_pixels == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
