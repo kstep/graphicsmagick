@@ -113,7 +113,7 @@ testFilter('input.miff', 'Gamma',
 testFilter('input.miff', 'Implode',
   q/0.5/,
   'a2d1ee8a517c20c1ec93309b9d934429',
-  'a8e08e25ea60706c37b264edfdc9bd99');
+  'de8e208763de9f3269339d31ed1a3b7d');
 
 ++$test;
 testFilter('input.miff', 'Magnify',
@@ -165,7 +165,7 @@ testFilter('input.miff', 'Opaque',
 testFilter('input.miff', 'Quantize',
   q/128/,
   'a99fc0bbab4e180eef5ba471113daaac',
-  'd51eec15134fee4bfcdb732b6d706a17');
+  '3178d3fdc71aa26d9b4b693cc19e15db');
 
 ++$test;
 testFilter('input.miff', 'Raise',
