@@ -1537,6 +1537,19 @@ MagickExport void DescribeImage(Image *image,FILE *file,
             (void) fprintf(file,"%u/%.6f/%.6fe ",image->mean_error_per_pixel,
               image->normalized_mean_error,image->normalized_maximum_error);
           }
+      switch (GetImageType(image))
+      {
+        case BilevelType: (void) fprintf(file,"Bilevel"); break;
+        case GrayscaleType: (void) fprintf(file,"Grayscale"); break;
+        case PaletteType: (void) fprintf(file,"Palette"); break;
+        case PaletteMatteType: (void) fprintf(file,"PaletteMatte"); break;
+        case TrueColorType: (void) fprintf(file,"TrueColor"); break;
+        case TrueColorMatteType: (void) fprintf(file,"TrueColorMatte"); break;
+        case ColorSeparationType: (void) fprintf(file,"ColorSeparation"); break;
+        case ColorSeparationMatteType:
+          (void) fprintf(file,"ColorSeparationMatte"); break;
+        default: (void) fprintf(file,"Undefined"); break;
+      }
       if (image->filesize != 0)
         {
           if (image->filesize >= (1 << 24))
