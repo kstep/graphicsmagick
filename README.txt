@@ -25,7 +25,7 @@ AVAILABILITY
 
   ImageMagick is available as
 
-    ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-5.0.0.tar.gz
+    ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-5.1.0.tar.gz
 
   ImageMagick client executables are available for some platforms. See
 
@@ -689,33 +689,15 @@ VMS COMPILATION
 
 NT COMPILATION
 
-  The NT distribution contains MetroWerks Codewarrior Professional
-  projects and a Visual C++ workspace (thanks to BillR@corbis.com) for
-  compilation.  For those who do not have access to CodeWarrior or
-  Visual C++, the binaries for the command line utilities are
-  enclosed.
-
-  If you have an NT X server like Exceed (from Hummingbird) you will
-  also need to include
-
-      SET DISPLAY=<local-ip-address>:0.0
-
-  in the System Control panel (NT) or Autoexec.bat (Win95). Autoexec.bat
-  requires that you restart your computer.  See
-  http://www.rahul.net/kenton/xsites.html for a list of commercial and
-  free X server software. Without an X server you can still display or
-  animate to, or import from, a remote X server.  Convert, mogrify,
-  montage, combine, and identify will work with or without an X server
-  directly from the command prompt.
+  The NT distribution contains a Visual C++ workspace in the VisualMagick
+  subdirectory.  This workspace was contributed and maintained by
+  Bill Radcliffe (BillR@corbis.com).  To build ImageMagick simply change
+  to the VisualMagick directory and open the file ImageMagick.dsw and
+  press Build.
 
   To view any image in a Microsoft window, type
 
       convert image.ext win:
-
-  Import(1) works if you have at least one X window open.  Alternatively,
-  type
-
-      convert x:root image.gif
 
   Make sure gswin32 (Ghostscript) is in your execution path (see
   Autoexec.bat), otherwise, you will be unable to convert or view
@@ -725,11 +707,7 @@ NT COMPILATION
   Autoexec.bat), otherwise, you will be unable to browse the ImageMagick
   documentation.
 
-  To compile the source with Codewarrior, start with Magick/Magick.mcp and
-  then animate.mcp, convert.mcp, etc..  The Visual C++ workspace is
-  ImageMagick.dsw.
-
-  And yes, the NT executables will work under Windows 95.
+  The NT executables will work under Windows 95/98.
 
 
 MACINTOSH COMPILATION

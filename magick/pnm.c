@@ -1028,20 +1028,18 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
               if (x < 48)
                 value=x/2+8;
               value+=dither_red[i][j];
-              red_map[i][j][x]=(unsigned short)
-                ((value < 0) ? 0 : (value > 255) ? 255 : value);
+              red_map[i][j][x]=((value < 0) ? 0 : (value > 255) ? 255 : value);
               value=x-16;
               if (x < 48)
                 value=x/2+8;
               value+=dither_green[i][j];
-              green_map[i][j][x]=(unsigned short)
+              green_map[i][j][x]=
                 ((value < 0) ? 0 : (value > 255) ? 255 : value);
               value=x-32;
               if (x < 112)
                 value=x/2+24;
               value+=2*dither_blue[i][j];
-              blue_map[i][j][x]=(unsigned short)
-                ((value < 0) ? 0 : (value > 255) ? 255 : value);
+              blue_map[i][j][x]=((value < 0) ? 0 : (value > 255) ? 255 : value);
             }
         /*
           Convert image to a P7 image.
@@ -1060,10 +1058,11 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (int) image->columns; x++)
           {
             if (!image_info->dither)
-              pixel=(Quantum) ((p->red & 0xe0) | ((p->green & 0xe0) >> 3) |
-                ((p->blue & 0xc0) >> 6));
+              pixel=((DownScale(p->red) & 0xe0) |
+                ((DownScale(p->green) & 0xe0) >> 3) |
+                ((DownScale(p->blue) & 0xc0) >> 6));
             else
-              pixel=(Quantum) ((red_map[i][j][DownScale(p->red)] & 0xe0) |
+              pixel=((red_map[i][j][DownScale(p->red)] & 0xe0) |
                 ((green_map[i][j][DownScale(p->green)] & 0xe0) >> 3) |
                 ((blue_map[i][j][DownScale(p->blue)] & 0xc0) >> 6));
             (void) WriteByte(image,pixel);
