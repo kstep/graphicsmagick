@@ -2971,7 +2971,7 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
-          if (LocaleCompare(attribute,"compress") == 0)
+          if (LocaleCompare(attribute,"compression") == 0)
             {
               j=info ? info->image_info->compression : image->compression;
               if (info)
@@ -3430,7 +3430,7 @@ Get(ref,...)
         case 'R':
         case 'r':
         {
-          if (LocaleCompare(attribute,"render") == 0)
+          if (LocaleCompare(attribute,"rendering-intent") == 0)
             {
               j=image->rendering_intent;
               s=newSViv(j);
@@ -3605,7 +3605,7 @@ Get(ref,...)
         case 'W':
         case 'w':
         {
-          if (LocaleCompare(attribute,"white-primary") == 0)
+          if (LocaleCompare(attribute,"white-point") == 0)
             {
               if (!image)
                 break;
