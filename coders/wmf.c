@@ -49,7 +49,6 @@
 
 
 /*
-
   Should write replacements for:
   WMF_FONT_PSNAME
   wmf_api_create
@@ -69,8 +68,6 @@
 
 #if defined(HasWMF)
 #if !defined(WIN32)
-
-#define WMF_USE_NATIVE_READ 0
 
 #ifdef  min
 #undef  min
@@ -141,13 +138,12 @@ struct _wmf_magick_t
     cur_temp_file_index;
 
   /* Temporary image IDs */
-#if WMF_USE_NATIVE_READ
   long
     *temp_images;
-#else
-  char
-    **temp_images;
-#endif /* WMF_USE_NATIVE_READ */
+
+  /* Pattern ID */
+  unsigned long
+    pattern_id;
 };
 
 #define WMF_MAGICK_GetData(Z) ((wmf_magick_t*)((Z)->device_data))
@@ -281,6 +277,12 @@ static void wmf_magick_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
   char
     *imgspec;
 
+  ExceptionInfo
+    exception;
+
+  long
+    id;
+
   wmfStream
     *out = ddata->out;
 
@@ -294,15 +296,8 @@ static void wmf_magick_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
   imgspec = (char*)AcquireMemory(MaxTextExtent*sizeof(char));
   *imgspec = '\0';
 
-#if WMF_USE_NATIVE_READ
-  {
-    ExceptionInfo
-      exception;
-    long
-      id;
-
-    GetExceptionInfo(&exception);
-    id = SetMagickRegistry(ImageRegistryType,bmp_draw->bmp.data,sizeof(Image),&exception);
+  GetExceptionInfo(&exception);
+  id = SetMagickRegistry(ImageRegistryType,bmp_draw->bmp.data,sizeof(Image),&exception);
   (ddata->temp_images)[ddata->cur_temp_file_index] = id;
   ++ddata->cur_temp_file_index;
   if(ddata->cur_temp_file_index == ddata->max_temp_file_index)
@@ -311,26 +306,6 @@ static void wmf_magick_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
       ReacquireMemory((void **) &ddata->temp_images, ddata->max_temp_file_index*sizeof(long));
     }
   sprintf(imgspec,"mpr:%li", id);
-  }
-#else
-  TemporaryFilename(imgspec);
-  (ddata->temp_images)[ddata->cur_temp_file_index] = imgspec;
-  ++ddata->cur_temp_file_index;
-  if(ddata->cur_temp_file_index == ddata->max_temp_file_index)
-    {
-      ddata->max_temp_file_index += 2048;
-      ReacquireMemory((void **) &ddata->temp_images, ddata->max_temp_file_index*sizeof(char *));
-    }
-
-  wmf_ipa_bmp_png (API,bmp_draw,imgspec);
-
-  if (ERR (API))
-    {
-      /* Restore graphic context */
-      wmf_stream_printf (API,out,"pop graphic-context\n");
-      return;
-    }
-#endif /* WMF_USE_NATIVE_READ */
 
   /* Okay, if we've got this far then "imgspec" is the filename of an png
      (cropped) image */
@@ -340,7 +315,7 @@ static void wmf_magick_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
   x=bmp_draw->pt.x;
   y=bmp_draw->pt.y;
 
-/*   printf("x=%.10g, y=%.10g, width=%.10g, height=%.10g\n", x,y,width,height); */
+  /*   printf("x=%.10g, y=%.10g, width=%.10g, height=%.10g\n", x,y,width,height); */
   wmf_stream_printf (API,out,"image Copy %.10g,%.10g %.10g,%.10g '%s'\n",
                      x,y,width,height,imgspec);
 
@@ -380,7 +355,8 @@ $23 = {
 #endif /* out */
 static void wmf_magick_bmp_read (wmfAPI* API,wmfBMP_Read_t* bmp_read)
 {
-#if WMF_USE_NATIVE_READ
+  wmf_magick_t
+    *ddata = WMF_MAGICK_GetData (API);
 
   ExceptionInfo
     exception;
@@ -395,8 +371,11 @@ static void wmf_magick_bmp_read (wmfAPI* API,wmfBMP_Read_t* bmp_read)
   image_info=CloneImageInfo((ImageInfo *)0);
   strcpy(image_info->magick,"DIB");
   GetExceptionInfo( &exception );
-/* printf("offset=%ld, length=%ld, width=%i, height=%i\n", */
-/*        bmp_read->offset,bmp_read->length,bmp_read->width,bmp_read->height); */
+#if 0
+  printf("offset=%ld, buffer=%lx length=%ld, width=%i, height=%i\n",
+         bmp_read->offset,(unsigned long)bmp_read->buffer,bmp_read->length,
+         bmp_read->width,bmp_read->height);
+#endif
 
   image = BlobToImage(image_info,(const void*)bmp_read->buffer,
                       bmp_read->length,&exception);
@@ -404,48 +383,34 @@ static void wmf_magick_bmp_read (wmfAPI* API,wmfBMP_Read_t* bmp_read)
   if(!image)
     {
       char error_message[MaxTextExtent];
+
+      /* Transfer error to image */
+      if( ddata->image->exception.severity  < CorruptImageWarning )
+        {
+          ddata->image->exception = exception;
+          ddata->image->exception.severity = CorruptImageWarning;
+        }
       snprintf(error_message,sizeof(error_message)-1,"%s (%s)",
                exception.reason, exception.description);
       WMF_ERROR(API,error_message);
-/*       switch(exception.severity) */
-/*         { */
-/*         case ResourceLimitWarning: */
-/*         case ResourceLimitError: */
-/*           API->err = wmf_E_InsMem; */
-/*           break; */
-/*         case CorruptImageWarning: */
-/*         case CorruptImageError: */
-/*           API->err = wmf_E_BadFormat; */
-/*           break; */
-/*         default: */
-/*           { */
-/*             API->err = wmf_E_DeviceError; */
-/*           } */
-/*         } */
     }
   else
     {
       /* printf("rows=%ld,columns=%ld\n", image->rows, image->columns); */
       bmp_read->bmp.data   = image;
-/*       bmp_read->bmp.width  = (U16)image->columns; */
-/*       bmp_read->bmp.height = (U16)image->rows; */
+      /*       bmp_read->bmp.width  = (U16)image->columns; */
+      /*       bmp_read->bmp.height = (U16)image->rows; */
     }
-#else
-  wmf_ipa_bmp_read (API,bmp_read);
-#endif
+
 }
 
 static void wmf_magick_bmp_free (wmfAPI* API,wmfBMP* bmp)
 {
-#if WMF_USE_NATIVE_READ
   if(bmp->data)
     DestroyImage((Image*)bmp->data);
   bmp->data   = (void*)0;
   bmp->width  = (U16)0;
   bmp->height = (U16)0;
-#else
-  wmf_ipa_bmp_free (API,bmp);
-#endif
 }
 
 
@@ -473,14 +438,7 @@ static void wmf_magick_device_close (wmfAPI* API)
   if(ddata->temp_images != 0)
     {
       for( index=0; index<ddata->cur_temp_file_index; index++ )
-        {
-#if WMF_USE_NATIVE_READ
-          DeleteMagickRegistry((ddata->temp_images)[index]);
-#else
-          remove((ddata->temp_images)[index]);
-          LiberateMemory((void**)&(ddata->temp_images)[index]);
-#endif /* WMF_USE_NATIVE_READ */
-        }
+        DeleteMagickRegistry((ddata->temp_images)[index]);
       LiberateMemory((void**)&ddata->temp_images);
     }
 }
@@ -515,16 +473,13 @@ static void wmf_magick_device_begin (wmfAPI* API)
 
   ddata->max_temp_file_index = 2048;
   ddata->cur_temp_file_index = 0;
-#if WMF_USE_NATIVE_READ
   ddata->temp_images = (long*)AcquireMemory(ddata->max_temp_file_index*sizeof(long));
-#else
-  ddata->temp_images = (char**)AcquireMemory(ddata->max_temp_file_index*sizeof(char *));
-#endif /* WMF_USE_NATIVE_READ */
-
-  wmf_stream_printf (API,out,"viewbox 0 0 %u %u\n",ddata->image->columns,ddata->image->rows);
+  ddata->pattern_id = 0;
 
   /* Make SVG output happy */
   wmf_stream_printf (API,out,"push graphic-context\n");
+
+  wmf_stream_printf (API,out,"viewbox 0 0 %u %u\n",ddata->image->columns,ddata->image->rows);
 
   /* Scale width and height to image */
   wmf_stream_printf (API,out,"scale %.10g,%.10g\n",
@@ -726,11 +681,11 @@ static void magick_draw_arc (wmfAPI* API,
           if (phi_e <= phi_s) phi_e += 360;
         }
 
+      magick_pen (API,draw_arc->dc);
       if (finish == magick_arc_open)
 	wmf_stream_printf (API,out,"fill none\n");
       else
 	magick_brush (API,draw_arc->dc);
-      magick_pen (API,draw_arc->dc);
 
       if (finish == magick_arc_ellipse)
 	wmf_stream_printf (API,out,"ellipse %.10g,%.10g %.10g,%.10g 0,360\n",
@@ -829,8 +784,8 @@ static void wmf_magick_draw_polygon (wmfAPI* API,wmfPolyLine_t* poly_line)
 
   if (TO_FILL (poly_line) || TO_DRAW (poly_line))
     {
-      magick_brush (API,poly_line->dc);
       magick_pen (API,poly_line->dc);
+      magick_brush (API,poly_line->dc);
 
       wmf_stream_printf (API,out,"polygon");
 
@@ -861,8 +816,8 @@ static void wmf_magick_draw_rectangle (wmfAPI* API,
 
   if (TO_FILL (draw_rect) || TO_DRAW (draw_rect))
     {
-      magick_brush (API,draw_rect->dc);
       magick_pen (API,draw_rect->dc);
+      magick_brush (API,draw_rect->dc);
 
       if ((draw_rect->width > 0) || (draw_rect->height > 0))
         wmf_stream_printf (API,out,"roundrectangle %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
@@ -1378,60 +1333,84 @@ static void magick_brush (wmfAPI* API,wmfDC* dc)
   /* FIXME: implement */
   switch (brush_style)
     {
-      case BS_SOLID:
-        {
-          wmf_stream_printf (API,out,"fill #%02x%02x%02x\n",
-                             (int)brush_color->r,
-                             (int)brush_color->g,
-                             (int)brush_color->b);
-          break;
-        }
-      case BS_HATCHED:
+    case BS_SOLID:
       {
+        wmf_stream_printf (API,out,"fill #%02x%02x%02x\n",
+                           (int)brush_color->r,
+                           (int)brush_color->g,
+                           (int)brush_color->b);
+        break;
+      }
+    case BS_HATCHED:
+      {
+        char
+          pattern_id[30];
+
+        sprintf(pattern_id, "fill_%lu", ddata->pattern_id);
+
+        wmf_stream_printf (API,out,"push pattern %s 0,0 8,8\n",pattern_id);
+        wmf_stream_printf (API,out,"push graphic-context\n");
+
+        if (fill_opaque)
+          {
+            wmf_stream_printf (API,out,"fill #%02x%02x%02x\n",
+                               (int)bg_color->r,
+                               (int)bg_color->g,
+                               (int)bg_color->b);
+            wmf_stream_printf (API,out,"rectangle 0,0 7,7\n");
+          }
+
+        wmf_stream_printf (API,out,"stroke-antialias 0\n");
+        wmf_stream_printf (API,out,"stroke-width 1\n");
+
+        wmf_stream_printf (API,out,"stroke #%02x%02x%02x\n",
+                           (int)brush_color->r,
+                           (int)brush_color->g,
+                           (int)brush_color->b);
+
         switch (brush_hatch)
           {
+
           case HS_HORIZONTAL:	/* ----- */
             {
-              /* This is an 8x8 pattern with horizontal line at y=3 */
-              printf("magick_brush: horizontal hatch not implemented\n");
+              wmf_stream_printf (API,out,"line 0,3 7,3\n");
               break;
             }
           case HS_VERTICAL:	/* ||||| */
             {
-              /* This is an 8x8 pattern with vertical line at x=3 */
-              printf("magick_brush: vertical hatch not implemented\n");
+              wmf_stream_printf (API,out,"line 3,0 3,7\n");
               break;
             }
           case HS_FDIAGONAL:	/* \\\\\ */
             {
-              /* This is an 8x8 pattern with line from bottom right to top left */
-              printf("magick_brush: fdiagonal hatch not implemented\n");
+              wmf_stream_printf (API,out,"line 0,0 7,7\n");
               break;
             }
           case HS_BDIAGONAL:	/* ///// */
             {
-               /* This is an 8x8 pattern with line from bottom left to top right */
-             printf("magick_brush: bdiagonal hatch not implemented\n");
+              wmf_stream_printf (API,out,"line 0,7 7,0\n");
               break;
             }
           case HS_CROSS:	/* +++++ */
             {
-              /* This is an 8x8 pattern with horizontal line at y=3
-                 and vertical line at x=3 */
-              printf("magick_brush: cross hatch not implemented\n");
+              wmf_stream_printf (API,out,"line 0,3 7,3\n");
+              wmf_stream_printf (API,out,"line 3,0 3,7\n");
               break;
             }
           case HS_DIAGCROSS:	/* xxxxx */
             {
-              /* This is an 8x8 pattern with line from bottom left to
-                 top right and line from bottom right to top left */
-              printf("magick_brush: diagcross hatch not implemented\n");
+              wmf_stream_printf (API,out,"line 0,0 7,7\n");
+              wmf_stream_printf (API,out,"line 0,7 7,0\n");
               break;
             }
           default:
             {
             }
           }
+        wmf_stream_printf (API,out,"pop graphic-context\n");
+        wmf_stream_printf (API,out,"pop pattern\n");
+        wmf_stream_printf (API,out,"fill 'url(#%s)'\n",pattern_id);
+        ++ddata->pattern_id;
         break;
       }
     case BS_PATTERN:
@@ -1446,7 +1425,55 @@ static void magick_brush (wmfAPI* API,wmfDC* dc)
       }
     case BS_DIBPATTERN:
       {
+#if 1
+        char
+          *imgspec;
+
+        Image
+          *image;
+
+        ExceptionInfo
+          exception;
+
+        long
+          id;
+
+        if ( brush_bmp->data != 0 )
+          {
+            char
+              pattern_id[30];
+            
+            sprintf(pattern_id, "fill_%lu", ddata->pattern_id);
+
+            image = (Image*)brush_bmp->data;
+
+            imgspec = (char*)AcquireMemory(MaxTextExtent*sizeof(char));
+            *imgspec = '\0';
+
+            GetExceptionInfo(&exception);
+            id = SetMagickRegistry(ImageRegistryType,(void*)image,sizeof(Image),&exception);
+            (ddata->temp_images)[ddata->cur_temp_file_index] = id;
+            ++ddata->cur_temp_file_index;
+            if(ddata->cur_temp_file_index == ddata->max_temp_file_index)
+              {
+                ddata->max_temp_file_index += 2048;
+                ReacquireMemory((void **) &ddata->temp_images, ddata->max_temp_file_index*sizeof(long));
+              }
+            sprintf(imgspec,"mpr:%li", id);
+            wmf_stream_printf (API,out,"push pattern %s 0,0, %lu,%lu\n",
+                               pattern_id, image->columns, image->rows);
+            wmf_stream_printf (API,out,"image Copy 0,0 %lu,%lu '%s'\n",
+                               image->columns, image->rows, imgspec);
+            wmf_stream_printf (API,out,"pop pattern\n");
+            /* wmf_stream_printf (API,out,"fill url(#%s)\n", pattern_id); */
+
+            ++ddata->pattern_id;
+          }
+        else
+          printf("magick_brush: no image data!\n");
+#else
         printf("magick_brush: BS_DIBPATTERN not supported\n");
+#endif        
         break;
       }
     case BS_DIBPATTERNPT:
@@ -1617,7 +1644,7 @@ static void wmf_magick_render_mvg(wmfAPI *API, const char* mvg)
   draw_info = (DrawInfo*)AcquireMemory(sizeof(DrawInfo));
   GetDrawInfo( image_info, draw_info );
   draw_info->primitive=(char*)mvg;
-/*   puts(draw_info->primitive); */
+  /* puts(draw_info->primitive); */
   DrawImage(ddata->image,draw_info);
   draw_info->primitive = (char*)NULL;
   DestroyDrawInfo(draw_info);
