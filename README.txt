@@ -443,7 +443,7 @@ MAGICK DELEGATES
 
     o ImageMagick requires the LCMS library available from
 
-	  http://www.abaforum.es/martim/lcms.htm
+	  http://www.littlecms.com
 
       to perform color management.
 
