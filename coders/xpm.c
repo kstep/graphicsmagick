@@ -621,7 +621,7 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
   transparent=False;
   if (picon->storage_class == PseudoClass)
     {
-      CompressColormap(picon);
+      CompressImageColormap(picon);
       if (picon->matte)
         transparent=True;
     }
@@ -840,7 +840,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   transparent=False;
   if (image->storage_class == PseudoClass)
     {
-      CompressColormap(image);
+      CompressImageColormap(image);
       if (image->matte)
         transparent=True;
     }

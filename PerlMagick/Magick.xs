@@ -5444,7 +5444,7 @@ Mogrify(ref,...)
               (quantize_info.colorspace == GRAYColorspace))
             (void) QuantizeImage(&quantize_info,image);
           else
-            CompressColormap(image);
+            CompressImageColormap(image);
           break;
         }
         case 49:  /* Raise */

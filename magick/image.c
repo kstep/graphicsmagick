@@ -4662,7 +4662,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           (quantize_info.colorspace == GRAYColorspace))
         (void) QuantizeImage(&quantize_info,*image);
       else
-        CompressColormap(*image);
+        CompressImageColormap(*image);
     }
   if (map_image != (Image *) NULL)
     {
