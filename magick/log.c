@@ -371,6 +371,7 @@ static void *GetLogBlob(const char *filename,char *path,size_t *length,
 #endif
 #endif
   ThrowException(exception,ConfigureError,"UnableToAccessLogFile",filename);
+  return 0;
 }
 
 /*
@@ -514,22 +515,22 @@ static void *LogToBlob(const char *filename,size_t *length,
   SetExceptionInfo(exception,UndefinedException);
   file=open(filename,O_RDONLY | O_BINARY,0777);
   if (file == -1)
-    return((void *) NULL);
+    return(0);
   offset=MagickSeek(file,0,SEEK_END);
   if ((offset < 0) || (offset != (size_t) offset))
     {
       (void) close(file);
-      return((void *) NULL);
+      return(0);
     }
   *length=(size_t) offset;
   blob=MagickAllocateMemory(unsigned char *,*length+1);
-  if (blob == (unsigned char *) NULL)
+  if (blob == 0)
     {
       (void) close(file);
-      return((void *) NULL);
+      return(0);
     }
   map=MapBlob(file,ReadMode,0,*length);
-  if (map != (void *) NULL)
+  if (map != 0)
     {
       (void) memcpy(blob,map,*length);
       UnmapBlob(map,*length);
@@ -553,7 +554,7 @@ static void *LogToBlob(const char *filename,size_t *length,
         {
           (void) close(file);
           MagickFreeMemory(blob);
-          return((void *) NULL);
+          return(0);
         }
     }
   blob[*length]='\0';

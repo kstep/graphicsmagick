@@ -1,5 +1,7 @@
 2003-06-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/log.c (GetLogBlob): GetLogBlob should always return
+	a value.
 	* magick/magick.c (GetMagickInfoArray): Fixed array memory
 	allocation and clearing bug.
 
