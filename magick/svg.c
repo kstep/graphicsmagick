@@ -317,6 +317,10 @@ printf("%s : %s\n",keyword,values);
         if (Latin1Compare(keyword,"height") == 0)
           {
             (void) sscanf(values,"%u",&page_info.height);
+            if (Latin1Compare(values+strlen(values)-2,"cm") == 0)
+              page_info.height=72*page_info.height/2.5;
+            if (Latin1Compare(values+strlen(values)-2,"in") == 0)
+              page_info.height=72*page_info.height;
             if (canvas->rows == 1)
               {
                 clone_image=SampleImage(canvas,canvas->columns,
@@ -377,6 +381,10 @@ printf("%s : %s\n",keyword,values);
         if (Latin1Compare(keyword,"width") == 0)
           {
             (void) sscanf(values,"%u",&page_info.width);
+            if (Latin1Compare(values+strlen(values)-2,"cm") == 0)
+              page_info.width=72*page_info.width/2.5;
+            if (Latin1Compare(values+strlen(values)-2,"in") == 0)
+              page_info.width=72*page_info.width;
             if (canvas->columns == 1)
               {
                 clone_image=
