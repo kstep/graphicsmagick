@@ -155,7 +155,7 @@ int main( int /*argc*/, char ** argv)
     //
 
     // Test default value.
-    if ( image.backgroundColor() != ColorRGB("#000000ff") )
+    if ( image.backgroundColor() != ColorRGB("white") )
       {
 	++failures;
 	cout << "Line: " << __LINE__ << ", backgroundColor default ("
