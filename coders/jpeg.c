@@ -1190,6 +1190,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       /*
         Set image resolution.
       */
+      jpeg_info.write_JFIF_header=True;
       jpeg_info.X_density=(short) image->x_resolution;
       jpeg_info.Y_density=(short) image->y_resolution;
       if (image->units == PixelsPerInchResolution)
