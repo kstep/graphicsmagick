@@ -37,6 +37,12 @@ typedef enum
 
 typedef enum
 {
+  UserSpaceOnUse,
+  ObjectBoundingBox
+} ClipPathUnits;
+
+typedef enum
+{
   UndefinedColorspace,
   RGBColorspace,
   GRAYColorspace,

@@ -897,7 +897,6 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     *clone_image;
 
   register IndexPacket
-    *clone_indexes,
     *indexes;
 
   register int

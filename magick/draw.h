@@ -109,6 +109,9 @@ typedef struct _DrawInfo
   char
     *clip_path;
 
+  ClipPathUnits
+    clip_units;
+
   Image
     *clip_mask;
 
@@ -187,7 +190,7 @@ extern MagickExport unsigned int
   AnnotateImage(Image *,const DrawInfo *),
   ColorFloodfillImage(Image *,const DrawInfo *,const PixelPacket,const int x,
     const int y,const PaintMethod),
-  DrawImage(Image *,const DrawInfo *),
+  DrawImage(Image *,DrawInfo *),
   GetFontMetrics(Image *,const DrawInfo *,FontMetric *),
   ListFontInfo(FILE *,ExceptionInfo *),
   MatteFloodfillImage(Image *,const PixelPacket,const unsigned int,const int x,

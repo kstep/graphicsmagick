@@ -1167,7 +1167,7 @@ static void DrawBoundingRectangles(const DrawInfo *draw_info,
 %
 %  The format of the DrawClipPath method is:
 %
-%      unsigned int DrawClipPath(Image *image,const DrawInfo *draw_info)
+%      unsigned int DrawClipPath(Image *image,DrawInfo *draw_info)
 %
 %  A description of each parameter follows:
 %
@@ -1177,7 +1177,7 @@ static void DrawBoundingRectangles(const DrawInfo *draw_info,
 %
 %
 */
-static unsigned int DrawClipPath(Image *image,const DrawInfo *draw_info)
+static unsigned int DrawClipPath(Image *image,DrawInfo *draw_info)
 {
   char
     clip_path[MaxTextExtent];
@@ -1208,6 +1208,7 @@ static unsigned int DrawClipPath(Image *image,const DrawInfo *draw_info)
   status=DrawImage(draw_info->clip_mask,clone_info);
   if (draw_info->debug)
     (void) fprintf(stdout,"end clip-path\n\n");
+  draw_info->clip_units=clone_info->clip_units;
   DestroyDrawInfo(clone_info);
   SetImageClipMask(image,draw_info->clip_mask);
   return(status);
@@ -1397,7 +1398,7 @@ static void DrawDashPolygon(const DrawInfo *draw_info,
 %
 %  The format of the DrawImage method is:
 %
-%      unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
+%      unsigned int DrawImage(Image *image,DrawInfo *draw_info)
 %
 %  A description of each parameter follows:
 %
@@ -1407,7 +1408,7 @@ static void DrawDashPolygon(const DrawInfo *draw_info,
 %
 %
 */
-MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
+MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
 {
   AffineMatrix
     affine,
@@ -1605,6 +1606,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             graphic_context[n]->clip_path=AllocateString(token);
             graphic_context[n]->clip_mask=
               CloneImage(image,0,0,True,&image->exception);
+            if (graphic_context[n]->clip_mask != (Image *) NULL)
+              (void) DrawClipPath(image,graphic_context[n]);
             break;
           }
         if (LocaleCompare("clip-rule",keyword) == 0)
@@ -1627,9 +1630,13 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           {
             GetToken(q,&q,token);
             if (LocaleCompare("userSpaceOnUse",token) == 0)
-              break;
+              {
+                draw_info->clip_units=UserSpaceOnUse;
+                break;
+              }
             if (LocaleCompare("objectBoundingBox",token) == 0)
               {
+                draw_info->clip_units=ObjectBoundingBox;
                 affine.sx=draw_info->bounds.x2;
                 affine.sy=draw_info->bounds.y2;
                 affine.tx=draw_info->bounds.x1;
@@ -2555,7 +2562,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         graphic_context[n]->bounds.y2=point.y;
     }
     if (graphic_context[n]->clip_mask != (Image *) NULL)
-      (void) DrawClipPath(image,graphic_context[n]);
+      if (graphic_context[n]->clip_units == ObjectBoundingBox)
+        (void) DrawClipPath(image,graphic_context[n]);
     (void) DrawPrimitive(image,graphic_context[n],primitive_info);
     if (primitive_info->text != (char *) NULL)
       LiberateMemory((void **) &primitive_info->text);
