@@ -260,7 +260,7 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
       LiberateMemory((void **) &search_path);
       return(path);
     }
-  ConcatenateString(&search_path,"; Client Path: ");
+  ConcatenateString(&search_path,"; Client Path:");
   ConcatenateString(&search_path,path);
   if (getenv("MAGICK_HOME") != (char *) NULL)
     {
@@ -271,7 +271,7 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
           LiberateMemory((void **) &search_path);
           return(path);
         }
-      ConcatenateString(&search_path,"; MAGICK_HOME: ");
+      ConcatenateString(&search_path,"; MAGICK_HOME:");
       ConcatenateString(&search_path,path);
     }
   if (getenv("HOME") != (char *) NULL)
@@ -284,7 +284,7 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
           LiberateMemory((void **) &search_path);
           return(path);
         }
-      ConcatenateString(&search_path,"; HOME: ");
+      ConcatenateString(&search_path,"; HOME:");
       ConcatenateString(&search_path,path);
     }
   FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
@@ -293,7 +293,7 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
       LiberateMemory((void **) &search_path);
       return(path);
     }
-  ConcatenateString(&search_path,"; MagickLibPath: ");
+  ConcatenateString(&search_path,"; MagickLibPath:");
   ConcatenateString(&search_path,path);
   FormatString(path,"%.1024s%.1024s",MagickModulesPath,filename);
   if (IsAccessible(path))
@@ -301,7 +301,7 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
       LiberateMemory((void **) &search_path);
       return(path);
     }
-  ConcatenateString(&search_path,"; MagickModulesPath: ");
+  ConcatenateString(&search_path,"; MagickModulesPath:");
   ConcatenateString(&search_path,path);
   FormatString(path,"%.1024s%.1024s",MagickSharePath,filename);
   if (IsAccessible(path))
@@ -309,7 +309,7 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
       LiberateMemory((void **) &search_path);
       return(path);
     }
-  ConcatenateString(&search_path,"; MagickSharePath: ");
+  ConcatenateString(&search_path,"; MagickSharePath:");
   ConcatenateString(&search_path,path);
   ThrowException(exception,ConfigurationWarning,
     "Unable to open configuration file",search_path);
