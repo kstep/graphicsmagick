@@ -44,7 +44,7 @@
 <dt>Introduction
 </h2>
 <dd><a href="ftp://204.183.81.131/pub/ImageMagick/perl">PerlMagick</a>, 
-version 1.56, is an objected-oriented <a href="http://www.perl.com/perl/">
+version 1.57, is an objected-oriented <a href="http://www.perl.com/perl/">
 Perl</a> interface to <a href="../ImageMagick.html">ImageMagick</a>.  Use the
 module to read, manipulate, or write an image or image sequence
 from within a Perl script.  This makes it very suitable for Web CGI scripts.
@@ -85,7 +85,7 @@ ImageMagick must already be installed on your system.  Next, get the
 distribution and unpack it as shown below:
 <p>
 <pre>
-    gunzip -c PerlMagick-1.56.tar.gz | tar -xvf -
+    gunzip -c PerlMagick-1.57.tar.gz | tar -xvf -
     cd PerlMagick
 </pre>
 <p>
@@ -323,6 +323,12 @@ Read or Write Methods
   <td>write an image or image sequence</td>
 </tr>
 <tr>
+  <td>Blob</td>
+  <td></td>
+  <td>an array of image data in the respective image format</td>
+  <td>convert an image or image sequence to an array of binary data</td>
+</tr>
+<tr>
   <td>Display</td>
   <td>server name</td>
   <td>the number of images displayed </td>
@@ -336,9 +342,9 @@ Read or Write Methods
 </tr>
 </table>
 <p>
-For convenience, methods <tt>Write</tt>, <tt>Display</tt>, and <tt>Animate</tt>
-can take any parameter that <A HREF="#seta">SetAttribute</A> knows about.  For
-example, 
+For convenience, methods <tt>Write</tt>, <tt>Blob</tt>, <tt>Display</tt>,
+and <tt>Animate</tt> can take any parameter that
+<A HREF="#seta">SetAttribute</A> knows about.  For example, 
 <p>
 <pre>
     $image-&gt;Write(filename=&gt;'image.png', compress=&gt;'None');
@@ -366,6 +372,18 @@ To write an image in the PNG format to a PERL filehandle, use:
     open(DATA, "&gt;$filename");
     $image-&gt;Write(file=&gt;DATA, filename=&gt;$filename);
     close(DATA);
+</pre>
+<p>
+<tt>Blob</tt> returns the image data in their respective formats.  You can
+then print it, save it to an ODBC database, write it to a file, or pipe it
+to a display program:
+<p>
+<pre>
+    @blobs = $image-&gt;Blob();
+    open(DISPLAY,"| display -") || die;
+    binmode DISPLAY;
+    print DISPLAY $blobs[0];
+    close DISPLAY;
 </pre>
 <p>
 <p>

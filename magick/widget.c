@@ -2564,8 +2564,7 @@ Export void XColorBrowserWidget(Display *display,XWindows *windows,char *action,
           type;
 
         int
-          format,
-          status;
+          format;
 
         unsigned char
           *data;
@@ -3977,8 +3976,7 @@ Export int XDialogWidget(Display *display,XWindows *windows,char *action,
           type;
 
         int
-          format,
-          status;
+          format;
 
         unsigned char
           *data;
@@ -5196,8 +5194,7 @@ Export void XFileBrowserWidget(Display *display,XWindows *windows,char *action,
           type;
 
         int
-          format,
-          status;
+          format;
 
         unsigned char
           *data;
@@ -5821,7 +5818,6 @@ Export void XFontBrowserWidget(Display *display,XWindows *windows,char *action,
     if (state & RedrawActionState)
       {
         XFontStruct
-          *font_info,
           *save_info;
 
         /*
@@ -6380,8 +6376,7 @@ Export void XFontBrowserWidget(Display *display,XWindows *windows,char *action,
           type;
 
         int
-          format,
-          status;
+          format;
 
         unsigned char
           *data;
@@ -7376,8 +7371,7 @@ Export void XListBrowserWidget(Display *display,XWindows *windows,
           type;
 
         int
-          format,
-          status;
+          format;
 
         unsigned char
           *data;
@@ -8448,7 +8442,7 @@ Export unsigned int XPreferencesWidget(Display *display,
         preferences_info[1].raised=!resource_info->confirm_exit;
         preferences_info[2].raised=!resource_info->gamma_correct;
         preferences_info[3].raised=!resource_info->display_warnings;
-        preferences_info[4].raised=!resource_info->quantize_info.dither;
+        preferences_info[4].raised=!resource_info->quantize_info->dither;
         preferences_info[5].raised=resource_info->colormap != SharedColormap;
         preferences_info[6].raised=!resource_info->use_pixmap;
         FormatString(cache,CacheButtonText,resource_info->undo_cache);
@@ -8687,7 +8681,7 @@ Export unsigned int XPreferencesWidget(Display *display,
   resource_info->confirm_exit=!preferences_info[1].raised;
   resource_info->gamma_correct=!preferences_info[2].raised;
   resource_info->display_warnings=!preferences_info[3].raised;
-  resource_info->quantize_info.dither=!preferences_info[4].raised;
+  resource_info->quantize_info->dither=!preferences_info[4].raised;
   resource_info->colormap=SharedColormap;
   if (preferences_info[5].raised)
     resource_info->colormap=PrivateColormap;

@@ -694,10 +694,6 @@ unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
       }
       case LineInterlace:
       {
-        register int
-          x,
-          y;
-
         /*
           Line interlacing:  CCC...MMM...YYY...CCC...MMM...YYY...
         */
@@ -11066,6 +11062,55 @@ unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
 %
 */
 
+#if defined(IPTC_SUPPORT)
+static void TIFFIPTCProfileHandler(Image *image, TIFF *tiff, int type)
+{
+  register int
+    i;
+
+  unsigned char
+    *profile;
+
+  unsigned int
+    length;
+
+  if (type == TIFFTAG_RICHTIFFIPTC)
+    {
+      /*
+        Handle TIFFTAG_RICHTIFFIPTC tag.
+      */
+      length=image->iptc_profile.length;
+      profile=(unsigned char *) AllocateMemory(length*sizeof(unsigned char));
+      if ((length == 0) || (profile == (unsigned char *) NULL))
+        return;
+      (void) memcpy((char *) profile,image->iptc_profile.info,length);
+      length=image->iptc_profile.length/4;
+      if (TIFFIsByteSwapped(tiff))
+        TIFFSwabArrayOfLong((uint32 *) profile,length);
+      TIFFSetField(tiff,type,(uint32) length,(void *) profile);
+      FreeMemory((char *) profile);
+      return;
+    }
+  /*
+    Handle TIFFTAG_PHOTOSHOP tag.
+  */
+  length=image->iptc_profile.length;
+  profile=(unsigned char *)
+    AllocateMemory((length+12)*sizeof(unsigned char));
+  if ((length == 0) || (profile == (unsigned char *) NULL))
+    return;
+  (void) memcpy((char *) profile,"8BIM\04\04\0\0",8);
+  profile[8]=(length >> 24) & 0xff;
+  profile[9]=(length >> 16) & 0xff;
+  profile[10]=(length >> 8) & 0xff;
+  profile[11]=length & 0xff;
+  for (i=0; i < length; i++)
+    profile[i+12]=image->iptc_profile.info[i];
+  TIFFSetField(tiff,type,(uint32) length+12,(void *) profile);
+  FreeMemory((char *) profile);
+}
+#endif
+
 static int TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
   tsample_t sample,Image *image)
 {
@@ -11405,9 +11450,12 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         (void *) image->color_profile.info);
 #endif
 #if defined(IPTC_SUPPORT)
+#if defined(PHOTOSHOP_SUPPORT)
     if (image->iptc_profile.length > 0)
-      TIFFSetField(tiff,TIFFTAG_IPTCNEWSPHOTO,(uint32)
-        image->iptc_profile.length,(void *) image->iptc_profile.info);
+        TIFFIPTCProfileHandler(image, tiff, TIFFTAG_PHOTOSHOP);
+#endif
+    if (image->iptc_profile.length > 0)
+        TIFFIPTCProfileHandler(image, tiff, TIFFTAG_RICHTIFFIPTC);
 #endif
     TIFFSetField(tiff,TIFFTAG_DOCUMENTNAME,image->filename);
     TIFFSetField(tiff,TIFFTAG_SOFTWARE,MagickVersion);
@@ -12781,6 +12829,9 @@ unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
   Display
     *display;
 
+  QuantizeInfo
+    quantize_info;
+
   unsigned long
     state;
 
@@ -12806,7 +12857,9 @@ unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
   client_name=SetClientName((char *) NULL);
   resource_database=XGetResourceDatabase(display,client_name);
   XGetResourceInfo(resource_database,client_name,&resource_info);
-  resource_info.image_info=(*image_info);
+  resource_info.image_info=(ImageInfo *) image_info;
+  resource_info.quantize_info=(&quantize_info);
+  GetQuantizeInfo(resource_info.quantize_info);
   resource_info.immutable=True;
   if (image_info->delay)
     resource_info.delay=atoi(image_info->delay);

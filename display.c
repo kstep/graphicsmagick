@@ -348,15 +348,19 @@ int main(int argc,char **argv)
   */
   display=(Display *) NULL;
   first_scene=0;
-  image=(Image *) NULL;
+  image_number=0;
+  last_scene=0;
+  image_info=CloneImageInfo((ImageInfo *) NULL);
   image_marker=(unsigned int *) AllocateMemory((argc+1)*sizeof(unsigned int));
-  if (image_marker == (unsigned int *) NULL)
-    MagickError(ResourceLimitError,"Unable to display image",
+  quantize_info=(QuantizeInfo *) AllocateMemory(sizeof(QuantizeInfo));
+  if ((image_info == (ImageInfo *) NULL) ||
+      (image_marker == (unsigned int *) NULL) ||
+      (quantize_info == (QuantizeInfo *) NULL))
+    MagickError(ResourceLimitError,"Unable to animate image",
       "Memory allocation failed");
   for (i=0; i <= argc; i++)
     image_marker[i]=argc;
-  image_number=0;
-  last_scene=0;
+  GetQuantizeInfo(quantize_info);
   resource_database=(XrmDatabase) NULL;
   state=DefaultState;
   /*
@@ -395,7 +399,8 @@ int main(int argc,char **argv)
   XSetErrorHandler(XError);
   resource_database=XGetResourceDatabase(display,client_name);
   XGetResourceInfo(resource_database,client_name,&resource_info);
-  image_info=(&resource_info.image_info);
+  resource_info.image_info=image_info;
+  resource_info.quantize_info=quantize_info;
   image_info->density=
     XGetResourceInstance(resource_database,client_name,"density",(char *) NULL);
   if (image_info->density == (char *) NULL)
@@ -421,7 +426,9 @@ int main(int argc,char **argv)
   resource_value=
     XGetResourceInstance(resource_database,client_name,"verbose","False");
   image_info->verbose=IsTrue(resource_value);
-  quantize_info=(&resource_info.quantize_info);
+  resource_value=
+    XGetResourceInstance(resource_database,client_name,"dither","True");
+  quantize_info->dither=IsTrue(resource_value);
   /*
     Parse command line.
   */

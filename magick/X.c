@@ -1663,6 +1663,7 @@ Export void XDisplayImageInfo(Display *display,
         "Memory allocation failed");
       return;
     }
+  *p='\0';
   textlist=StringToList(text);
   if (textlist != (char **) NULL)
     {
@@ -2538,7 +2539,7 @@ Export void XGetMapInfo(const XVisualInfo *visual_info,const Colormap colormap,
 %
 %  Method XGetImportInfo initializes the XImportInfo structure.
 %
-%  The format of the GetImageInfo routine is:
+%  The format of the XGetImportInfo routine is:
 %
 %      XGetImportInfo(ximage_info)
 %
@@ -3082,8 +3083,8 @@ Export void XGetResourceInfo(XrmDatabase database,char *client_name,
   */
   assert(resource_info != (XResourceInfo *) NULL);
   resource_info->resource_database=database;
-  GetImageInfo(&resource_info->image_info);
-  GetQuantizeInfo(&resource_info->quantize_info);
+  resource_info->image_info=(ImageInfo *) NULL;
+  resource_info->quantize_info=(QuantizeInfo *) NULL;
   resource_info->colors=0;
   resource_info->close_server=True;
   resource_info->client_name=client_name;
@@ -3117,8 +3118,6 @@ Export void XGetResourceInfo(XrmDatabase database,char *client_name,
   resource_value=
     XGetResourceClass(database,client_name,"displayWarnings","True");
   resource_info->display_warnings=IsTrue(resource_value);
-  resource_value=XGetResourceClass(database,client_name,"dither","True");
-  resource_info->quantize_info.dither=IsTrue(resource_value);
   resource_info->font=
     XGetResourceClass(database,client_name,"font",(char *) NULL);
   resource_info->font=XGetResourceClass(database,client_name,"fontList",
@@ -5563,7 +5562,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
             Convert to 8 bit color-mapped X image.
           */
           if (resource_info->color_recovery &&
-              resource_info->quantize_info.dither)
+              resource_info->quantize_info->dither)
             {
               XDitherImage(image,ximage);
               break;
@@ -5732,7 +5731,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
             Convert to contiguous 8 bit continuous-tone X image.
           */
           if (resource_info->color_recovery &&
-              resource_info->quantize_info.dither)
+              resource_info->quantize_info->dither)
             {
               XDitherImage(image,ximage);
               break;
@@ -6123,7 +6122,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
             Convert to 8 bit color-mapped X image.
           */
           if (resource_info->color_recovery &&
-              resource_info->quantize_info.dither)
+              resource_info->quantize_info->dither)
             {
               XDitherImage(image,ximage);
               break;
@@ -6292,7 +6291,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
             Convert to 8 bit continuous-tone X image.
           */
           if (resource_info->color_recovery &&
-              resource_info->quantize_info.dither)
+              resource_info->quantize_info->dither)
             {
               XDitherImage(image,ximage);
               break;
@@ -7077,7 +7076,7 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
         (map_info->red_max+1)*(map_info->green_max+1)*(map_info->blue_max+1));
       if ((map_info->red_max*map_info->green_max*map_info->blue_max) != 0)
         if (!image->matte && !resource_info->color_recovery &&
-            resource_info->quantize_info.dither &&
+            resource_info->quantize_info->dither &&
             (number_colors < MaxColormapSize))
           {
             Image
@@ -7188,7 +7187,7 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
               p++;
             }
           }
-        quantize_info=resource_info->quantize_info;
+        quantize_info=(*resource_info->quantize_info);
         quantize_info.number_colors=visual_info->colormap_size;
         (void) QuantizeImage(&quantize_info,image);
         image->class=DirectClass;  /* promote to DirectClass */
@@ -7826,7 +7825,6 @@ Export void XMakeWindow(Display *display,Window parent,char **argv,int argc,
     {
       int
         flags,
-        gravity,
         height,
         width;
 
@@ -8776,7 +8774,7 @@ Export void XUserPreferences(XResourceInfo *resource_info)
   value=resource_info->display_warnings ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,value);
   FormatString(specifier,"%.1024s.dither",client_name);
-  value=resource_info->quantize_info.dither ? "True" : "False";
+  value=resource_info->quantize_info->dither ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,value);
   FormatString(specifier,"%.1024s.gammaCorrect",client_name);
   value=resource_info->gamma_correct ? "True" : "False";

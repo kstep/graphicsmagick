@@ -57,6 +57,10 @@
 /*
   Image format declarations.
 */
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 static const MagickInfo
   ImageFormats[] =
   {
@@ -238,6 +242,10 @@ static const MagickInfo
       (unsigned int (*)(const ImageInfo *,Image *)) NULL, 0,
       (char *) NULL },
   };
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -28,7 +28,7 @@ $call Make gems
 $call Make signature
 $call Make decode ("HasJPEG","HasLZW","HasPNG","HasTIFF","HasTTF","HasZLIB")
 $call Make encode ("HasJPEG","HasLZW","HasPNG","HasTIFF","HasTTF","HasZLIB")
-$call Make compress
+$call Make compress ("HasJPEG","HasLZW","HasPNG","HasTIFF","HasTTF","HasZLIB")
 $call Make utility
 $call Make monitor
 $call Make error

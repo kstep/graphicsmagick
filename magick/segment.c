@@ -515,13 +515,13 @@ static unsigned int Classify(Image *image,short **extrema,
         {
           sum=0.0;
           distance_squared=squares[q->red-(int) image->colormap[j].red]+
-            squares[q->green-(int) image->colormap[j].green];
+            squares[q->green-(int) image->colormap[j].green]+
             squares[q->blue-(int) image->colormap[j].blue];
           numerator=sqrt(distance_squared);
           for (k=0; k < (int) image->colors; k++)
           {
             distance_squared=squares[q->red-(int) image->colormap[k].red]+
-              squares[q->green-(int) image->colormap[k].green];
+              squares[q->green-(int) image->colormap[k].green]+
               squares[q->blue-(int) image->colormap[k].blue];
             ratio=numerator/sqrt(distance_squared);
             sum+=pow(ratio,(double) (2.0/(weighting_exponent-1.0)));
@@ -1408,7 +1408,7 @@ Export unsigned int SegmentImage(Image *image,const ColorspaceType colorspace,
   list=(IntervalTree **) AllocateMemory(TreeLength*sizeof(IntervalTree *));
   if (list == (IntervalTree **) NULL)
     {
-      MagickWarning(ResourceLimitError,"Memory allocation failed",
+      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
         (char *) NULL);
       return(False);
     }
@@ -1421,7 +1421,7 @@ Export unsigned int SegmentImage(Image *image,const ColorspaceType colorspace,
     extrema[i]=(short *) AllocateMemory((MaxRGB+1)*sizeof(short));
     if ((histogram[i] == (long *) NULL) || (extrema[i] == (short *) NULL))
       {
-        MagickWarning(ResourceLimitError,"Memory allocation failed",
+        MagickWarning(ResourceLimitWarning,"Memory allocation failed",
           (char *) NULL);
         for (i-- ; i >= 0; i--)
         {

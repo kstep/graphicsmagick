@@ -135,7 +135,7 @@ int main(int argc,char **argv)
     *p;
 
   ImageInfo
-    image_info;
+    *image_info;
 
   int
     number_images;
@@ -158,7 +158,10 @@ int main(int argc,char **argv)
     Set defaults.
   */
   count=0;
-  GetImageInfo(&image_info);
+  image_info=CloneImageInfo((ImageInfo *) NULL);
+  if (image_info == (ImageInfo *) NULL)
+    MagickError(ResourceLimitError,"Unable to animate image",
+      "Memory allocation failed");
   number_images=0;
   /*
     Identify an image.
@@ -184,7 +187,7 @@ int main(int argc,char **argv)
           {
             if (strncmp("ping",option+1,2) == 0)
               {
-                image_info.ping=(*option == '-');
+                image_info->ping=(*option == '-');
                 break;
               }
             MagickError(OptionError,"Unrecognized option",option);
@@ -194,13 +197,13 @@ int main(int argc,char **argv)
           {
             if (strncmp("size",option+1,2) == 0)
               {
-                image_info.size=(char *) NULL;
+                image_info->size=(char *) NULL;
                 if (*option == '-')
                   {
                     i++;
                     if ((i == argc) || !IsGeometry(argv[i]))
                       MagickError(OptionError,"Missing geometry",option);
-                    image_info.size=argv[i];
+                    image_info->size=argv[i];
                   }
                 break;
               }
@@ -211,7 +214,7 @@ int main(int argc,char **argv)
           {
             if (strncmp("verbose",option+1,2) == 0)
               {
-                image_info.verbose=(*option == '-');
+                image_info->verbose=(*option == '-');
                 break;
               }
             MagickError(OptionError,"Unrecognized option",option);
@@ -233,35 +236,35 @@ int main(int argc,char **argv)
     /*
       Identify image.
     */
-    (void) strcpy(image_info.filename,argv[i]);
-    if (image_info.ping)
+    (void) strcpy(image_info->filename,argv[i]);
+    if (image_info->ping)
       {
         unsigned int
           columns,
           rows;
 
-        image_info.verbose=True;
-        (void) PingImage(&image_info,&columns,&rows);
+        image_info->verbose=True;
+        (void) PingImage(image_info,&columns,&rows);
          number_images++;
         continue;
       }
-    image=ReadImage(&image_info);
+    image=ReadImage(image_info);
     if (image == (Image *) NULL)
       continue;
     for (p=image; p != (Image *) NULL; p=p->next)
     {
       if (p->scene == 0)
         p->scene=count++;
-      if (image_info.verbose)
+      if (image_info->verbose)
         NumberColors(p,(FILE *) NULL);
-      DescribeImage(p,stdout,image_info.verbose);
+      DescribeImage(p,stdout,image_info->verbose);
     }
     DestroyImages(image);
     number_images++;
   }
   if (number_images == 0)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
-  DestroyImageInfo(&image_info);
+  DestroyImageInfo(image_info);
   DestroyDelegateInfo();
   Exit(0);
   return(False);

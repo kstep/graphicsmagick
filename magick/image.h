@@ -121,6 +121,14 @@ typedef unsigned char Quantum;
 #endif
 
 /*
+  Image Geometry defines (extends XParseGeometry flags).
+*/
+#define PercentValue  0x1000 
+#define AspectValue  0x2000
+#define LessValue  0x4000
+#define GreaterValue  0x8000
+
+/*
   Enumeration declarations.
 */
 typedef enum
@@ -839,6 +847,9 @@ extern Export Image
   *SwirlImage(Image *,double),
   *WaveImage(Image *,const double,const double),
   *ZoomImage(Image *,const unsigned int,const unsigned int);
+
+extern Export ImageInfo
+  *CloneImageInfo(const ImageInfo *);
 
 extern Export ImageType
   GetImageType(const ImageInfo *,Image *);

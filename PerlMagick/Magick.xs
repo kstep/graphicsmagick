@@ -497,7 +497,8 @@ static struct PackageInfo *ClonePackageInfo(struct PackageInfo *info)
     cloned_info->image_info.matte_color=
       AllocateString(info->image_info.matte_color);
   if (info->image_info.undercolor)
-    cloned_info->image_info.undercolor=AllocateString(info->image_info.undercolor);
+    cloned_info->image_info.undercolor=
+      AllocateString(info->image_info.undercolor);
   return(cloned_info);
 }
 
@@ -1962,8 +1963,8 @@ Animate(ref,...)
         XSetErrorHandler(XError);
         resource_database=XGetResourceDatabase(display,client_name);
         XGetResourceInfo(resource_database,client_name,&resource);
-        resource.image_info=package_info->image_info;
-        resource.quantize_info=package_info->quantize_info;
+        resource.image_info=(&package_info->image_info);
+        resource.quantize_info=(&package_info->quantize_info);
         (void) XAnimateImages(display,&resource,&client_name,1,image);
         XCloseDisplay(display);
       }
@@ -2211,6 +2212,115 @@ Average(ref)
     error_list=NULL;
     error_jump=NULL;
     XSRETURN(1);
+  }
+
+#
+###############################################################################
+#                                                                             #
+#                                                                             #
+#                                                                             #
+#   B l o b                                                                   #
+#                                                                             #
+#                                                                             #
+#                                                                             #
+###############################################################################
+#
+#  Blobs are not very interesting until ImageMagick implements direct to memory
+#  image formats (via memory-mapped I/O).
+#
+void
+Blob(ref,...)
+  Image::Magick ref=NO_INIT
+  ALIAS:
+    BlobImage    = 1
+    blob         = 2
+    blobimage    = 3
+  PPCODE:
+  {
+    char
+      *data,
+      filename[MaxTextExtent];
+
+    Image
+      *clone,
+      *image,
+      *next;
+
+    int
+      scene;
+
+    register int
+      i;
+
+    jmp_buf
+      error_jmp;
+
+    struct PackageInfo
+      *info,
+      *package_info;
+
+    SV
+      *reference;
+
+    package_info=(struct PackageInfo *) NULL;
+    error_list=newSVpv("",0);
+    if (!sv_isobject(ST(0)))
+      {
+        MagickWarning(OptionWarning,"Reference is not my type",PackageName);
+        goto MethodError;
+      }
+    reference=SvRV(ST(0));
+    error_jump=(&error_jmp);
+    if (setjmp(error_jmp))
+      goto MethodError;
+    image=SetupList(reference,&info,(SV ***) NULL);
+    if (!image)
+      {
+        MagickWarning(OptionWarning,"No images to blob",NULL);
+        goto MethodError;
+      }
+    package_info=ClonePackageInfo(info);
+    for (i=2; i < items; i+=2)
+      SetAttribute(package_info,NULL,SvPV(ST(i-1),na),ST(i));
+    (void) strcpy(filename,package_info->image_info.unique);
+    scene=0;
+    for (next=image; next; next=next->next)
+    {
+      next->orphan=True;
+      clone=CloneImage(next,next->columns,next->rows,True);
+      next->orphan=False;
+      if (clone == (Image *) NULL)
+        {
+          PUSHs(&sv_undef);
+          continue;
+        }
+      (void) strcpy(clone->filename,filename);
+      clone->scene=scene++;
+      if (!WriteImage((ImageInfo *) &package_info->image_info,clone))
+        {
+          PUSHs(&sv_undef);
+          continue;
+        }
+      DestroyImage(clone);
+      image->file=fopen(filename,"rb");
+      if (image->file == (FILE *) NULL)
+        {
+          PUSHs(&sv_undef);
+          continue;
+        }
+      data=(char *) safemalloc(image->filesize);
+      ReadData(data,1,image->filesize,image->file);
+      (void) fclose(image->file);
+      remove(filename);
+      PUSHs(sv_2mortal(newSVpv(data,image->filesize)));
+      safefree((char *) data);
+    }
+
+  MethodError:
+    if (package_info)
+      DestroyPackageInfo(package_info);
+    SvREFCNT_dec(error_list);  /* throw away all errors */
+    error_list=NULL;
   }
 
 #
@@ -2479,8 +2589,8 @@ Display(ref,...)
         XSetErrorHandler(XError);
         resource_database=XGetResourceDatabase(display,client_name);
         XGetResourceInfo(resource_database,client_name,&resource);
-        resource.image_info=package_info->image_info;
-        resource.quantize_info=package_info->quantize_info;
+        resource.image_info=(&package_info->image_info);
+        resource.quantize_info=(&package_info->quantize_info);
         resource.immutable=True;
         if (package_info->image_info.delay)
           resource.delay=atoi(package_info->image_info.delay);
@@ -5397,7 +5507,7 @@ Read(ref,...)
           }
         n++;
       }
-    list[n]=NULL;
+    list[n]=(char *) NULL;
     keep=list;
     error_jump=(&error_jmp);
     if (setjmp(error_jmp))

@@ -1786,7 +1786,7 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
 %
 %  The format of the LZWEncodeImage routine is:
 %
-%      status=LZWEncodeImage(file,pixels,number_pixels)
+%      status=LZWEncodeImage(file,number_pixels,pixels)
 %
 %  A description of each parameter follows:
 %
@@ -1796,10 +1796,10 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
 %    o file: The address of a structure of type FILE.  LZW encoded pixels
 %      are written to this file.
 %
-%    o pixels: The address of an unsigned array of characters containing the
+%    o number_pixels:  An unsigned interger that specifies the number of
 %      pixels to compress.
 %
-%    o number_pixels:  An unsigned interger that specifies the number of
+%    o pixels: The address of an unsigned array of characters containing the
 %      pixels to compress.
 %
 %
@@ -1937,8 +1937,8 @@ Export unsigned int LZWEncodeImage(FILE *file,const unsigned int number_pixels,
   return(True);
 }
 #else
-Export unsigned int LZWEncodeImage(FILE *file,unsigned char *pixels,
-  const unsigned int number_pixels)
+Export unsigned int LZWEncodeImage(FILE *file,const unsigned int number_pixels,
+  unsigned char *pixels)
 {
   MagickWarning(MissingDelegateWarning,"LZW library is not available",
     (char *) NULL);

@@ -157,6 +157,7 @@ extern "C" {
 #define PostscriptColorDevice  "pnmraw"
 #define PostscriptMonoDevice  "pbmraw"
 #define ReadBinaryType  "rb"
+#define ReadBinaryUnbufferedType  "rbu"
 #define TemporaryDirectory  "/tmp"
 #define UndoCache  "16"
 #define WriteBinaryType  "wb"

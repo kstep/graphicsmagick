@@ -1324,7 +1324,7 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
           DestroyImage(tile);
           return;
         }
-      for (i=0; i < (image->rows*image->columns); i++)
+      for (i=0; i < (int) (image->rows*image->columns); i++)
         markers[i]=False;
       if (ColorMatch(color,*target,image->fuzz))
         {
@@ -1457,9 +1457,9 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
       */
       p=markers;
       q=image->pixels;
-      for (y=0; y < image->rows; y++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        for (x=0; x < image->columns; x++)
+        for (x=0; x < (int) image->columns; x++)
         {
           if (*p)
             {
@@ -2601,6 +2601,84 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C l o n e I m a g e I n f o                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CloneImageInfo makes a duplicate of the given image info, or if
+%  image info is NULL, a new one.
+%
+%  The format of the CloneImageInfo routine is:
+%
+%      cloned_info=CloneImageInfo(image_info)
+%
+%  A description of each parameter follows:
+%
+%    o cloned_info: Method CloneImageInfo returns a duplicate of the given
+%      image info, or if image info is NULL a new one.
+%
+%    o image_info: a structure of type info.
+%
+%
+*/
+Export ImageInfo *CloneImageInfo(const ImageInfo *image_info)
+{
+  ImageInfo
+    *cloned_info;
+
+  cloned_info=(ImageInfo *) AllocateMemory(sizeof(ImageInfo));
+  if (cloned_info == (ImageInfo *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to clone image info",
+        "Memory allocation failed");
+      return((ImageInfo *) NULL);
+    }
+  if (image_info == (ImageInfo *) NULL)
+    {
+      GetImageInfo(cloned_info);
+      return(cloned_info);
+    }
+  *cloned_info=(*image_info);
+  if (image_info->server_name != (char *) NULL)
+    CloneString(&cloned_info->server_name,image_info->server_name);
+  if (image_info->font != (char *) NULL)
+    CloneString(&cloned_info->font,image_info->font);
+  if (image_info->pen != (char *) NULL)
+    CloneString(&cloned_info->pen,image_info->pen);
+  if (image_info->size != (char *) NULL)
+    CloneString(&cloned_info->size,image_info->size);
+  if (image_info->tile != (char *) NULL)
+    CloneString(&cloned_info->tile,image_info->tile);
+  if (image_info->density != (char *) NULL)
+    CloneString(&cloned_info->density,image_info->density);
+  if (image_info->page != (char *) NULL)
+    CloneString(&cloned_info->page,image_info->page);
+  if (image_info->dispose != (char *) NULL)
+    CloneString(&cloned_info->dispose,image_info->dispose);
+  if (image_info->delay != (char *) NULL)
+    CloneString(&cloned_info->delay,image_info->delay);
+  if (image_info->iterations != (char *) NULL)
+    CloneString(&cloned_info->iterations,image_info->iterations);
+  if (image_info->texture != (char *) NULL)
+    CloneString(&cloned_info->texture,image_info->texture);
+  if (image_info->background_color != (char *) NULL)
+    CloneString(&cloned_info->background_color,image_info->background_color);
+  if (image_info->border_color != (char *) NULL)
+    CloneString(&cloned_info->border_color,image_info->border_color);
+  if (image_info->matte_color != (char *) NULL)
+    CloneString(&cloned_info->matte_color,image_info->matte_color);
+  if (image_info->undercolor != (char *) NULL)
+    CloneString(&cloned_info->undercolor,image_info->undercolor);
+  return(cloned_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   C r o p I m a g e                                                         %
 %                                                                             %
 %                                                                             %
@@ -3095,9 +3173,6 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
 
       register ColorPacket
         *p;
-
-      register int
-        i;
 
       /*
         Display image colormap.
@@ -3594,6 +3669,8 @@ Export void DestroyImageInfo(ImageInfo *image_info)
   if (image_info->undercolor != (char *) NULL)
     FreeMemory((char *) image_info->undercolor);
   image_info->undercolor=(char *) NULL;
+  FreeMemory((char *) image_info);
+  image_info=(ImageInfo *) NULL;
 }
 
 /*
@@ -3936,6 +4013,7 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
     switch (primitive_type)
     {
       case PointPrimitive:
+      default:
       {
         if (primitive_info[j].coordinates != 1)
           primitive_type=UndefinedPrimitive;
@@ -9018,12 +9096,8 @@ Export int ParseImageGeometry(const char *image_geometry,int *x, int *y,
     *p;
 
   unsigned int
-    aspect_ratio,
     former_height,
     former_width,
-    greater,
-    less,
-    percentage,
     tilde;
 
   /*
@@ -9039,11 +9113,8 @@ Export int ParseImageGeometry(const char *image_geometry,int *x, int *y,
     Remove whitespaces and % and ! characters from geometry specification.
   */
   (void) strcpy(geometry,image_geometry);
-  aspect_ratio=True;
-  greater=False;
-  less=False;
-  percentage=False;
   tilde=False;
+  flags=AspectValue;
   p=geometry;
   while (Extent(p) > 0)
   {
@@ -9054,25 +9125,25 @@ Export int ParseImageGeometry(const char *image_geometry,int *x, int *y,
       {
         case '%':
         {
-          percentage=True;
+          flags|=PercentValue;
           (void) strcpy(p,p+1);
           break;
         }
         case '!':
         {
-          aspect_ratio=False;
+          flags&=(~AspectValue);
           (void) strcpy(p,p+1);
           break;
         }
         case '<':
         {
-          less=True;
+          flags|=LessValue;
           (void) strcpy(p,p+1);
           break;
         }
         case '>':
         {
-          greater=True;
+          flags|=GreaterValue;
           (void) strcpy(p,p+1);
           break;
         }
@@ -9091,12 +9162,15 @@ Export int ParseImageGeometry(const char *image_geometry,int *x, int *y,
   */
   former_width=(*width);
   former_height=(*height);
-  flags=XParseGeometry(geometry,x,y,width,height);
+  flags|=XParseGeometry(geometry,x,y,width,height);
   if (((flags & WidthValue) != 0) && (flags & HeightValue) == 0)
-    *height=(*width);
+    {
+      *height=(*width);
+      flags|=HeightValue;
+    }
   if (tilde)
     return(flags);
-  if (percentage)
+  if (flags & PercentValue)
     {
       int
         count;
@@ -9118,7 +9192,7 @@ Export int ParseImageGeometry(const char *image_geometry,int *x, int *y,
       former_width=(*width);
       former_height=(*height);
     }
-  if (aspect_ratio)
+  if (flags & AspectValue)
     {
       unsigned long
         scale_factor;
@@ -9148,14 +9222,14 @@ Export int ParseImageGeometry(const char *image_geometry,int *x, int *y,
     *width-=(*x) << 1;
   if ((flags & YValue) == 0)
     *height-=(*y) << 1;
-  if (greater)
+  if (flags & GreaterValue)
     {
       if (former_width < *width)
         *width=former_width;
       if (former_height < *height)
         *height=former_height;
     }
-  if (less)
+  if (flags & LessValue)
     {
       if (former_width > *width)
         *width=former_width;
@@ -9192,7 +9266,7 @@ Export int ParseImageGeometry(const char *image_geometry,int *x, int *y,
   else
     if ((flags & YNegative) != 0)
       *y+=media_info.height-(*height);
-  if (greater)
+  if (flags & GreaterValue)
     {
       if ((*width+((*x) << 1)) > media_info.width)
         *width=media_info.width-((*x) << 1);

@@ -271,10 +271,10 @@ typedef struct _XResourceInfo
     resource_database;
 
   ImageInfo
-    image_info;
+    *image_info;
 
   QuantizeInfo
-    quantize_info;
+    *quantize_info;
 
   unsigned int
     colors;

@@ -968,7 +968,7 @@ static void ProcessRequest(char *system_type,unsigned int prune,
   /*
     Print, or retrieve a file.
   */
-  for (i=0; i < number_files; i++)
+  for (i=0; i < (int) number_files; i++)
   {
     if (print_expression)
       if (ExecuteRegularExpression(print_expression,filelist[i]))

@@ -6825,9 +6825,6 @@ Image *ReadMIFFImage(const ImageInfo *image_info)
       }
     if (image->compression == BZipCompression)
       {
-        int
-          status;
-
         unsigned char
           *compressed_pixels;
 
@@ -6860,9 +6857,6 @@ Image *ReadMIFFImage(const ImageInfo *image_info)
       }
     if (image->compression == ZipCompression)
       {
-        int
-          status;
-
         unsigned char
           *compressed_pixels;
 
@@ -10417,10 +10411,6 @@ Image *ReadPNMImage(const ImageInfo *image_info)
       }
       case '4':
       {
-        int
-          x,
-          y;
-
         unsigned char
           bit,
           byte;
@@ -13897,6 +13887,7 @@ Image *ReadTGAImage(const ImageInfo *image_info)
 extern "C" {
 #endif
 
+#if defined(ICC_SUPPORT)
 static boolean TIFFColorProfileHandler(char *text,long int length,Image *image)
 {
   register unsigned char
@@ -13920,39 +13911,85 @@ static boolean TIFFColorProfileHandler(char *text,long int length,Image *image)
   memcpy(image->color_profile.info,p,length);
   return(True);
 }
+#endif
 
-static boolean TIFFNewsProfileHandler(char *text,long int length,Image *image)
+#if defined(IPTC_SUPPORT)
+static boolean TIFFNewsProfileHandler(char *text,long int length,Image *image,
+  int type)
 {
   register unsigned char
     *p;
 
   p=(unsigned char *) text;
-  while (length > 0)
-  {
-    if ((p[0] == 0x1c) && (p[1] == 0x02))
-      break;
-    length-=2;
-    p+=2;
-  }
-  if (length <= 0)
-    return(False);
   if (image->iptc_profile.length != 0)
     {
       FreeMemory(image->iptc_profile.info);
       image->iptc_profile.length=0;
+      image->iptc_profile.info=(char *) NULL;
     }
-  image->iptc_profile.info=(unsigned char *)
-    AllocateMemory((unsigned int) length*sizeof(unsigned char));
-  if (image->iptc_profile.info == (unsigned char *) NULL)
+  if (type == TIFFTAG_RICHTIFFIPTC)
     {
-      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-        (char *) NULL);
-      return(False);
+      /*
+        Handle TIFFTAG_RICHTIFFIPTC tag.
+      */
+      length*=4;
+      image->iptc_profile.info=(unsigned char *)
+        AllocateMemory((unsigned int) length*sizeof(unsigned char));
+      if (image->iptc_profile.info == (unsigned char *) NULL)
+        {
+          MagickWarning(ResourceLimitWarning,"Memory allocation failed",
+            (char *) NULL);
+          return(False);
+        }
+      image->iptc_profile.length=length;
+      memcpy(image->iptc_profile.info,p,length);
+      return(True);
     }
-  image->iptc_profile.length=length;
-  memcpy(image->iptc_profile.info,p,length);
-  return(True);
+  else
+    {
+      /*
+        Handle TIFFTAG_PHOTOSHOP tag.
+      */
+      while (length > 0)
+      {
+        if ((p[0]=='8') && (p[1]=='B') && (p[2]=='I') && (p[3]=='M') &&
+            (p[4] == 4) && (p[5] == 4))
+          break;
+        length-=2;
+        p+=2;
+      }
+      if (length <= 0)
+        return(False);
+      if (image->iptc_profile.length != 0)
+        {
+          FreeMemory(image->iptc_profile.info);
+          image->iptc_profile.length=0;
+        }
+      /*
+        Eat OSType, IPTC ID code, and Pascal string length bytes.
+      */
+      p+=6; 
+      length=(*p++);
+      if (length)
+        p+=length;
+      if ((length & 1) == 0)
+        p++;  /* align to an even byte boundary */
+      length=(p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3];
+      image->iptc_profile.info=(unsigned char *)
+        AllocateMemory((unsigned int) length*sizeof(unsigned char));
+      if (image->iptc_profile.info == (unsigned char *) NULL)
+        {
+          MagickWarning(ResourceLimitWarning,"Memory allocation failed",
+            (char *) NULL);
+          return(False);
+        }
+      image->iptc_profile.length=length;
+      memcpy(image->iptc_profile.info,p+4,length);
+      return(True);
+    }
+  return(False);
 }
+#endif
 
 static void TIFFWarningMessage(const char *module,const char *format,
   va_list warning)
@@ -13969,7 +14006,7 @@ static void TIFFWarningMessage(const char *module,const char *format,
       FormatString(p,"%.1024s: ",module);
       p+=Extent(message);
     }
-  FormatString(p,format,warning);
+  (void) vsprintf(p,format,warning);
   (void) strcat(p,".");
   MagickWarning(DelegateWarning,message,(char *) NULL);
 }
@@ -14086,7 +14123,7 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
   CloseImage(image);
   TIFFSetErrorHandler(TIFFWarningMessage);
   TIFFSetWarningHandler(TIFFWarningMessage);
-  tiff=TIFFOpen(image->filename,ReadBinaryType);
+  tiff=TIFFOpen(image->filename,ReadBinaryUnbufferedType);
   if (tiff == (TIFF *) NULL)
     PrematureExit(FileOpenWarning,"Unable to open file",image);
   if (image_info->subrange != 0)
@@ -14143,8 +14180,19 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
 #if defined(IPTC_SUPPORT)
     length=0;
     text=(char *) NULL;
-    TIFFGetField(tiff,TIFFTAG_PHOTOSHOP,&length,&text);
-    TIFFNewsProfileHandler(text,length,image);
+    TIFFGetField(tiff,TIFFTAG_RICHTIFFIPTC,&length,&text);
+    if (length > 0)
+      {
+        if (TIFFIsByteSwapped(tiff))
+          TIFFSwabArrayOfLong((uint32 *) text,length);
+        TIFFNewsProfileHandler(text,length,image,TIFFTAG_RICHTIFFIPTC);
+      }
+    else
+      {
+        TIFFGetField(tiff,TIFFTAG_PHOTOSHOP,&length,&text);
+        if ( length > 0)
+          TIFFNewsProfileHandler(text,length,image,TIFFTAG_PHOTOSHOP);
+      }
 #endif
     /*
       Allocate memory for the image and pixel buffer.

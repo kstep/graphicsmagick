@@ -814,7 +814,7 @@ ACKNOWLEDGEMENT
         regression tests, and Gperf magic handling routine.
       Rick Mabry" <rmabry@server1.softdisk.com>:  tiled drawing pens and
         numerous bug alerts and fixes
-      Bill Radcliffe <BillR@corbis.com>:  FlashPix support
+      Bill Radcliffe <BillR@corbis.com>:  FlashPix and IPTC support.
 
   And thanks to the hundreds of people that have sent e-mail with bug
   reports and suggestions for improving ImageMagick.
