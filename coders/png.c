@@ -2425,7 +2425,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               else
                 *r=0;
               *r|=(*p++);
-              *r*=65537L;
               r++;
               if (ping_info->color_type == 4)
                 {
