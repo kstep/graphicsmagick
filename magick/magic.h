@@ -46,6 +46,7 @@ typedef struct _MagicTestMember
 } MagicTestMember;
 
 /* List of formats to test */
+#define MagicTestListExtent 256
 typedef struct _MagicTest
 {
   char
@@ -57,7 +58,7 @@ typedef struct _MagicTest
 } MagicTest;
 
 /*
-  Modules declarations.
+  Magic declarations.
 */
 
 extern Export void

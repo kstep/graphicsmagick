@@ -82,8 +82,6 @@ Export unsigned int GetImageMagic(char* magic,
   if(magic_test_list == (MagicTest**) NULL)
     IntializeImageMagic();
 
-exit(0);
-
   /* Traverse magic tests */
   for (i=0;magic_test_list[i]!=(MagicTest*)NULL;++i)
     {
@@ -173,13 +171,14 @@ static void IntializeImageMagic(void)
     *tag_p;
 
   int
-    line_number;
+    line_number,
+    list_index;
 
   FILE*
     file;
 
   MagicTestMember
-    test_member;
+    *test_member;
 
   strcpy(file_name,DelegatePath);
   strcat(file_name,DirectorySeparator);
@@ -188,8 +187,19 @@ static void IntializeImageMagic(void)
   file = fopen(file_name, "r");
   if(file != (FILE*) NULL)
     {
+      /* allocate and init format list */
+      list_index=0;
+      magic_test_list=
+        (MagicTest**)AllocateMemory((MagicTestListExtent)*sizeof(MagicTest*));
+      if(magic_test_list == (MagicTest**)NULL)
+        {
+          puts("Memory allocation failure");
+          exit(1);
+        }
+      magic_test_list[list_index]=(MagicTest*)NULL;
+
       line_number=0;
-      while(!feof(file))
+      while((list_index<MagicTestListExtent-1) && !feof(file))
         {
           ++line_number;
           fgets(buffer,MaxTextExtent,file);
@@ -207,7 +217,10 @@ static void IntializeImageMagic(void)
           printf("TAG:\"%s\"\n", tag);
           if(*buff_p == '\0')
             goto eol_error;
-
+          magic_test_list[list_index]=(MagicTest*)AllocateMemory(sizeof(MagicTest));
+          magic_test_list[list_index]->tag=AllocateString(tag);
+          magic_test_list[list_index]->member=(MagicTestMember*)NULL;
+            
           /* parse sequence of match rules */
           while(1)
             {
@@ -218,16 +231,17 @@ static void IntializeImageMagic(void)
                 goto eol_error;
 
               /* intialize test_member */
-              test_member.method=UndefinedMagicMethod;
-              test_member.argument=(void*)NULL;
-              test_member.truth_value=True;
-              test_member.next=(MagicTestMember*)NULL;
+              test_member=(MagicTestMember*)AllocateMemory(sizeof(MagicTestMember));
+              test_member->method=UndefinedMagicMethod;
+              test_member->argument=(void*)NULL;
+              test_member->truth_value=True;
+              test_member->next=(MagicTestMember*)NULL;
 
               /* test truth value */
               if(*buff_p == '!')
                 {
                   ++buff_p;
-                  test_member.truth_value=False;
+                  test_member->truth_value=False;
                 }
 
               /* skip over white space */
@@ -239,15 +253,20 @@ static void IntializeImageMagic(void)
               if(LocaleNCompare(buff_p,"string(",7) == 0)
                 {
                   StringMethodArgument
-                    string_argument;
+                    *string_argument;
 
                   unsigned char
                     *str_p;
                   printf("Parsing string command\n");
-                  test_member.method=StringMagicMethod;
-                  string_argument.value_length=0;
-                  string_argument.value_offset=0;
-                  *string_argument.value='\0';
+
+                  string_argument=
+                    (StringMethodArgument*)AllocateMemory(sizeof(StringMethodArgument));
+                  test_member->argument=(void*)string_argument;
+
+                  test_member->method=StringMagicMethod;
+                  string_argument->value_length=0;
+                  string_argument->value_offset=0;
+                  *string_argument->value='\0';
 
                   /* skip over "string(" */
                   buff_p += 7;
@@ -259,8 +278,8 @@ static void IntializeImageMagic(void)
                     goto eol_error;
 
                   /* get offset */
-                  string_argument.value_offset=strtol(buff_p, &buff_p, 10);
-                  printf("Offset=%u\n", string_argument.value_offset);
+                  string_argument->value_offset=strtol(buff_p, &buff_p, 10);
+                  printf("Offset=%u\n", string_argument->value_offset);
 
                   /* skip over white space */
                   while(isspace((int)*(buff_p)))
@@ -285,7 +304,7 @@ static void IntializeImageMagic(void)
                   ++buff_p;
 
                   /* translate string */
-                  str_p=string_argument.value;
+                  str_p=string_argument->value;
                   while(1)
                     {
                       /* unexpected end of line */
@@ -319,7 +338,7 @@ static void IntializeImageMagic(void)
                               *str_p=(unsigned char)strtol(lbuff,
                                                            (char**)NULL,8);
                               ++str_p;
-                              ++string_argument.value_length;
+                              ++string_argument->value_length;
                               continue;
                             }
                         }
@@ -328,10 +347,10 @@ static void IntializeImageMagic(void)
                       *str_p=*buff_p;
                       ++str_p;
                       ++buff_p;
-                      ++string_argument.value_length;
+                      ++string_argument->value_length;
                     }
-                  printf("Length=%u\n", string_argument.value_length);
-                  printf("Value=\"%s\"\n", string_argument.value);
+                  printf("Length=%u\n", string_argument->value_length);
+                  printf("Value=\"%s\"\n", string_argument->value);
 
                   /* skip over white space */
                   while(isspace((int)*(buff_p)))
@@ -343,6 +362,23 @@ static void IntializeImageMagic(void)
                   if(*buff_p != ')')
                     goto syntax_error;
                   ++buff_p;
+
+                  /* add test to list */
+                  if(magic_test_list[list_index]->member==(MagicTestMember*)NULL)
+                    {
+                      /* first in list */
+                      magic_test_list[list_index]->member=test_member;
+                    }
+                  else
+                    {
+                      MagicTestMember
+                        *member;
+
+                      for(member=magic_test_list[list_index]->member;
+                          member->next!=(MagicTestMember*)NULL;
+                          member=member->next);
+                      member->next=test_member;
+                    }
 
                   /* skip over white space */
                   while(isspace((int)*(buff_p)))
@@ -361,17 +397,18 @@ static void IntializeImageMagic(void)
               else
                 goto syntax_error;
             }
+          ++list_index;
           continue;
           
           syntax_error :
             printf("%s:%d: syntax: \"%s\"\n", file_name,
                    line_number, buff_p);
-          continue;
+            exit(1);
           
           eol_error :
             printf("%s:%d: syntax: \"%s\"\n", file_name,
                    line_number, "unexpected end of line");
-          continue;
+            exit(1);
         }
       fclose(file);
     }
