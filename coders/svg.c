@@ -630,6 +630,7 @@ static void SVGStartDocument(void *context)
   svg_info=(SVGInfo *) context;
   if (svg_info->debug)
     (void) fprintf(stdout,"  SAX.startDocument()\n");
+  GetExceptionInfo(svg_info->exception);
   parser=svg_info->parser;
   svg_info->document=xmlNewDoc(parser->version);
   if (svg_info->document == (xmlDocPtr) NULL)
@@ -1386,6 +1387,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   case 'S':
                   case 's':
                   {
+                    if (LocaleCompare(keyword,"stop-color") == 0)
+                      {
+                        (void) CloneString(&svg_info->stop_color,value);
+                        break;
+                      }
                     if (LocaleCompare(keyword,"stroke") == 0)
                       {
                          if (LocaleCompare(value,"currentColor") == 0)
