@@ -568,7 +568,7 @@ static unsigned int ReadConfigureFile(const char *basename,
   */
   (void) strcpy(path,basename);
   if (master)
-    xml=(char *) GetFontBlob(basename,path,&length,exception);
+    xml=(char *) GetTypeBlob(basename,path,&length,exception);
   else
     xml=(char *) FileToBlob(basename,&length,exception);
   if (xml == (char *) NULL)
