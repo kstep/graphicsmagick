@@ -440,7 +440,7 @@ MagickExport void HSLTransform(const double hue,const double saturation,
   }
   *red=(Quantum) ((double) MaxRGB*r+0.5);
   *green=(Quantum) ((double) MaxRGB*g+0.5);
-  *blue=(Quantum) (MaxRGB(double) *b+0.5);
+  *blue=(Quantum) ((double) MaxRGB*b+0.5);
 }
 
 /*

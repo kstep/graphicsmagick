@@ -2089,7 +2089,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             GetToken(q,&q,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
             graphic_context[n]->fill.opacity=(Quantum)
-              (MaxRGB*(1.0-factor*atof(token)));
+              ((double) MaxRGB*(1.0-factor*atof(token)));
             break;
           }
         if (LocaleCompare("font",keyword) == 0)
@@ -2368,8 +2368,9 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           {
             GetToken(q,&q,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
-            graphic_context[n]->opacity=(Quantum) (MaxRGB*(1.0-((1.0-(double)
-              graphic_context[n]->opacity/MaxRGB)*factor*atof(token))));
+            graphic_context[n]->opacity=(Quantum) ((double) MaxRGB*
+              (1.0-((1.0-(double) graphic_context[n]->opacity/MaxRGB)*
+              factor*atof(token))));
             graphic_context[n]->fill.opacity=graphic_context[n]->opacity;
             graphic_context[n]->stroke.opacity=graphic_context[n]->opacity;
             break;
@@ -2791,7 +2792,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             GetToken(q,&q,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
             graphic_context[n]->stroke.opacity=(Quantum)
-              (MaxRGB*(1.0*factor*atof(token)));
+              ((double) MaxRGB*(1.0*factor*atof(token)));
             break;
           }
         if (LocaleCompare("stroke-width",keyword) == 0)
