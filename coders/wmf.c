@@ -164,6 +164,10 @@ struct _wmf_magick_t
   /* Clip path ID */
   unsigned long
     clip_path_id;
+
+  /* Push depth */
+  long
+    push_depth;
 };
 
 #define WMF_MAGICK_GetData(Z) ((wmf_magick_t*)((Z)->device_data))
@@ -218,6 +222,8 @@ static int          util_append_mvg(wmfAPI * API, char *format, ...);
 static void         util_draw_arc(wmfAPI * API, wmfDrawArc_t * draw_arc,magick_arc_t finish);
 static int          util_font_weight( const char* font );
 static double       util_pointsize( wmfAPI* API, wmfFont* font, char* str, double font_height);
+static void         util_context_pop( wmfAPI* API );
+static void         util_context_push( wmfAPI* API );
 static long         util_registry_add(wmfAPI * API, const Image *image, ExceptionInfo *exception);
 static const Image* util_registry_get(wmfAPI * API, const long id, ExceptionInfo *exception);
 static void         util_registry_remove(wmfAPI * API, const long id);
@@ -231,7 +237,7 @@ static void ipa_rop_draw(wmfAPI * API, wmfROP_Draw_t * rop_draw)
     return;
 
   /* Save graphic context */
-  util_append_mvg(API, "push graphic-context\n");
+  util_context_push(API);
 
   /* FIXME: finish implementing (once we know what it is supposed to do!)*/
 
@@ -278,7 +284,27 @@ static void ipa_rop_draw(wmfAPI * API, wmfROP_Draw_t * rop_draw)
                     XC(rop_draw->BR.x), YC(rop_draw->BR.y));
 
   /* Restore graphic context */
+  util_context_pop(API);
+}
+
+/* Pop graphic context */
+static void util_context_pop( wmfAPI* API )
+{
+  wmf_magick_t
+    *ddata = WMF_MAGICK_GetData(API);
+  
+  ddata->push_depth--;
   util_append_mvg(API, "pop graphic-context\n");
+}
+
+/* Push graphic context */
+static void util_context_push( wmfAPI* API )
+{
+  wmf_magick_t
+    *ddata = WMF_MAGICK_GetData(API);
+ 
+  util_append_mvg(API, "push graphic-context\n");
+  ddata->push_depth++;
 }
 
 /* Register an image with the image registry */
@@ -496,6 +522,8 @@ static void ipa_device_open(wmfAPI * API)
   ddata->clipping = False;
   ddata->clip_path_id = 0;
 
+  ddata->push_depth = 0;
+
   ddata->mvg = 0;
   ddata->mvg_alloc = 0;
   ddata->mvg_length = 0;
@@ -530,7 +558,7 @@ static void ipa_device_begin(wmfAPI * API)
     *ddata = WMF_MAGICK_GetData(API);
 
   /* Make SVG output happy */
-  util_append_mvg(API, "push graphic-context\n");
+  util_context_push(API);
 
   util_append_mvg(API, "viewbox 0 0 %u %u\n", ddata->image->columns,
         ddata->image->rows);
@@ -637,11 +665,11 @@ static void ipa_device_end(wmfAPI * API)
 
   /* Reset any existing clip paths by popping context */
   if(ddata->clipping)
-    util_append_mvg(API, "pop graphic-context\n");
+    util_context_pop(API);
   ddata->clipping = False;
 
   /* Make SVG output happy */
-  util_append_mvg(API, "pop graphic-context\n");
+  util_context_pop(API);
 }
 
 static void ipa_flood_interior(wmfAPI * API, wmfFlood_t * flood)
@@ -650,7 +678,7 @@ static void ipa_flood_interior(wmfAPI * API, wmfFlood_t * flood)
     *rgb = &(flood->color);
 
   /* Save graphic context */
-  util_append_mvg(API, "push graphic-context\n");
+  util_context_push(API);
 
   util_append_mvg(API, "fill #%02x%02x%02x\n",
         (int) rgb->r, (int) rgb->g, (int) rgb->b);
@@ -659,7 +687,7 @@ static void ipa_flood_interior(wmfAPI * API, wmfFlood_t * flood)
         XC(flood->pt.x), YC(flood->pt.y));
 
   /* Restore graphic context */
-  util_append_mvg(API, "pop graphic-context\n");
+  util_context_pop(API);
 }
 
 static void ipa_flood_exterior(wmfAPI * API, wmfFlood_t * flood)
@@ -668,7 +696,7 @@ static void ipa_flood_exterior(wmfAPI * API, wmfFlood_t * flood)
     *rgb = &(flood->color);
 
   /* Save graphic context */
-  util_append_mvg(API, "push graphic-context\n");
+  util_context_push(API);
 
   util_append_mvg(API, "fill #%02x%02x%02x\n",
         (int) rgb->r, (int) rgb->g, (int) rgb->b);
@@ -681,7 +709,7 @@ static void ipa_flood_exterior(wmfAPI * API, wmfFlood_t * flood)
                       XC(flood->pt.x), YC(flood->pt.y));
 
   /* Restore graphic context */
-  util_append_mvg(API, "pop graphic-context\n");
+  util_context_pop(API);
 }
 
 static void ipa_draw_pixel(wmfAPI * API, wmfDrawPixel_t * draw_pixel)
@@ -690,7 +718,7 @@ static void ipa_draw_pixel(wmfAPI * API, wmfDrawPixel_t * draw_pixel)
     *rgb = &(draw_pixel->color);
 
   /* Save graphic context */
-  util_append_mvg(API, "push graphic-context\n");
+  util_context_push(API);
 
   util_append_mvg(API, "stroke none\n");
 
@@ -706,7 +734,7 @@ static void ipa_draw_pixel(wmfAPI * API, wmfDrawPixel_t * draw_pixel)
         YC(draw_pixel->pt.y + draw_pixel->pixel_height));
 
   /* Restore graphic context */
-  util_append_mvg(API, "pop graphic-context\n");
+  util_context_pop(API);
 }
 
 static void ipa_draw_pie(wmfAPI * API, wmfDrawArc_t * draw_arc)
@@ -749,7 +777,7 @@ static void util_draw_arc(wmfAPI * API,
     Ry;
 
   /* Save graphic context */
-  util_append_mvg(API, "push graphic-context\n");
+  util_context_push(API);
 
   if (TO_FILL(draw_arc) || TO_DRAW(draw_arc))
   {
@@ -819,13 +847,13 @@ static void util_draw_arc(wmfAPI * API,
   }
 
   /* Restore graphic context */
-  util_append_mvg(API, "pop graphic-context\n");
+  util_context_pop(API);
 }
 
 static void ipa_draw_line(wmfAPI * API, wmfDrawLine_t * draw_line)
 {
   /* Save graphic context */
-  util_append_mvg(API, "push graphic-context\n");
+  util_context_push(API);
 
   if (TO_DRAW(draw_line))
   {
@@ -836,7 +864,7 @@ static void ipa_draw_line(wmfAPI * API, wmfDrawLine_t * draw_line)
   }
 
   /* Restore graphic context */
-  util_append_mvg(API, "pop graphic-context\n");
+  util_context_pop(API);
 }
 
 static void ipa_poly_line(wmfAPI * API, wmfPolyLine_t * poly_line)
@@ -845,7 +873,7 @@ static void ipa_poly_line(wmfAPI * API, wmfPolyLine_t * poly_line)
     i;
 
   /* Save graphic context */
-  util_append_mvg(API, "push graphic-context\n");
+  util_context_push(API);
 
   if (poly_line->count <= 1)
     return;
@@ -868,7 +896,7 @@ static void ipa_poly_line(wmfAPI * API, wmfPolyLine_t * poly_line)
   }
 
   /* Restore graphic context */
-  util_append_mvg(API, "pop graphic-context\n");
+  util_context_pop(API);
 }
 
 static void ipa_draw_polygon(wmfAPI * API, wmfPolyLine_t * poly_line)
@@ -877,7 +905,7 @@ static void ipa_draw_polygon(wmfAPI * API, wmfPolyLine_t * poly_line)
     i;
 
   /* Save graphic context */
-  util_append_mvg(API, "push graphic-context\n");
+  util_context_push(API);
 
   if (poly_line->count <= 2)
     return;
@@ -900,13 +928,13 @@ static void ipa_draw_polygon(wmfAPI * API, wmfPolyLine_t * poly_line)
   }
 
   /* Restore graphic context */
-  util_append_mvg(API, "pop graphic-context\n");
+  util_context_pop(API);
 }
 
 static void ipa_draw_rectangle(wmfAPI * API, wmfDrawRectangle_t * draw_rect)
 {
   /* Save graphic context */
-  util_append_mvg(API, "push graphic-context\n");
+  util_context_push(API);
 
   if (TO_FILL(draw_rect) || TO_DRAW(draw_rect))
   {
@@ -925,14 +953,14 @@ static void ipa_draw_rectangle(wmfAPI * API, wmfDrawRectangle_t * draw_rect)
   }
 
   /* Restore graphic context */
-  util_append_mvg(API, "pop graphic-context\n");
+  util_context_pop(API);
 }
 
 /* Draw an un-filled rectangle using the current brush */
 static void ipa_region_frame(wmfAPI * API, wmfPolyRectangle_t * poly_rect)
 {
   /* Save graphic context */
-  util_append_mvg(API, "push graphic-context\n");
+  util_context_push(API);
 
   /* FIXME: rectangle outine is supposed to be drawn with brush, not
      pen! */
@@ -954,7 +982,7 @@ static void ipa_region_frame(wmfAPI * API, wmfPolyRectangle_t * poly_rect)
     }
 
   /* Restore graphic context */
-  util_append_mvg(API, "pop graphic-context\n");
+  util_context_pop(API);
 }
 
 static void ipa_region_paint(wmfAPI * API, wmfPolyRectangle_t * poly_rect)
@@ -964,7 +992,7 @@ static void ipa_region_paint(wmfAPI * API, wmfPolyRectangle_t * poly_rect)
     return;
 
   /* Save graphic context */
-  util_append_mvg(API, "push graphic-context\n");
+  util_context_push(API);
 
   if (TO_FILL (poly_rect))
     {
@@ -983,7 +1011,7 @@ static void ipa_region_paint(wmfAPI * API, wmfPolyRectangle_t * poly_rect)
     }
 
   /* Restore graphic context */
-  util_append_mvg(API, "pop graphic-context\n");
+  util_context_pop(API);
 }
 
 static void ipa_region_clip(wmfAPI *API, wmfPolyRectangle_t *poly_rect)
@@ -996,7 +1024,7 @@ static void ipa_region_clip(wmfAPI *API, wmfPolyRectangle_t *poly_rect)
 
   /* Reset any existing clip paths by popping context */
   if(ddata->clipping)
-    util_append_mvg(API, "pop graphic-context\n");
+    util_context_pop(API);
   ddata->clipping = False;
 
   if(poly_rect->count > 0)
@@ -1006,19 +1034,19 @@ static void ipa_region_clip(wmfAPI *API, wmfPolyRectangle_t *poly_rect)
       ddata->clip_path_id++;
       util_append_mvg(API, "push defs\n");
       util_append_mvg(API, "push clip-path clip_%lu\n", ddata->clip_path_id);
-      util_append_mvg(API, "push graphic-context\n");
+      util_context_push(API);
       for (i = 0; i < poly_rect->count; i++)
         {
           util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
                             XC(poly_rect->TL[i].x), YC(poly_rect->TL[i].y),
                             XC(poly_rect->BR[i].x), YC(poly_rect->BR[i].y));
         }
-      util_append_mvg(API, "pop graphic-context\n");
+      util_context_pop(API);
       util_append_mvg(API, "pop clip-path\n");
       util_append_mvg(API, "pop defs\n");
 
       /* Push context for new clip paths */
-      util_append_mvg(API, "push graphic-context\n");
+      util_context_push(API);
       util_append_mvg(API, "clip-path url(#clip_%lu)\n", ddata->clip_path_id);
       ddata->clipping = True;
     }
@@ -1145,7 +1173,7 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
   pointsize = util_pointsize( API, font, draw_text->str, draw_text->font_height);
 
   /* Save graphic context */
-  util_append_mvg(API, "push graphic-context\n");
+  util_context_push(API);
 
 #if 0
   printf("\nipa_draw_text\n");
@@ -1353,17 +1381,17 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
   }
 
   /* Restore graphic context */
-  util_append_mvg(API, "pop graphic-context\n");
+  util_context_pop(API);
 
 #if 0
-  util_append_mvg(API, "push graphic-context\n");
+  util_context_push(API);
   util_append_mvg(API, "stroke red\n");
   util_append_mvg(API, "fill none\n");
   util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
                     XC(TL.x), YC(TL.y),
                     XC(BR.x), YC(BR.y));
   util_append_mvg(API, "stroke none\n");
-  util_append_mvg(API, "pop graphic-context\n");
+  util_context_pop(API);
 #endif
 
 }
@@ -1454,7 +1482,7 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc)
       {
         util_append_mvg(API, "push defs\n");
   util_append_mvg(API, "push pattern brush_%lu 0,0 8,8\n", ddata->pattern_id);
-  util_append_mvg(API, "push graphic-context\n");
+  util_context_push(API);
 
   if (WMF_DC_OPAQUE(dc))
           {
@@ -1512,7 +1540,7 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc)
       {
       }
           }
-  util_append_mvg(API, "pop graphic-context\n");
+  util_context_pop(API);
   util_append_mvg(API, "pop pattern\n");
         util_append_mvg(API, "pop defs\n");
   util_append_mvg(API, "fill 'url(#brush_%lu)'\n", ddata->pattern_id);
@@ -2194,9 +2222,6 @@ static int util_append_mvg(wmfAPI * API, char *format, ...)
       ddata->mvg_alloc = realloc_size;
     }
 
-/*   printf("ddata->mvg = %lx  ddata->mvg_length = %d  ddata->mvg_alloc = %d\n", */
-/*          (long)ddata->mvg, ddata->mvg_length, ddata->mvg_alloc); */
-
   /* Write to end of existing MVG string */
   {
     char
@@ -2204,6 +2229,7 @@ static int util_append_mvg(wmfAPI * API, char *format, ...)
 
     long
       str_length;
+
 
     va_list
       argp;
@@ -2217,9 +2243,25 @@ static int util_append_mvg(wmfAPI * API, char *format, ...)
     va_end(argp);
     if(str_length > 0 && str_length < (MaxTextExtent - 1))
       {
-        /* printf("%s",buffer); */
+        /* Pretty-print indentation */
+        if( *(ddata->mvg+ddata->mvg_length - 1) == '\n' )
+          {
+            long
+              i;
+
+            char
+              buff[MaxTextExtent+1];
+
+            for( i=0; i< ddata->push_depth; i++)
+              buff[i]=' ';
+            buff[i]=0;
+            strcpy(ddata->mvg+ddata->mvg_length, buff);
+            ddata->mvg_length += strlen(buff);
+          }
+
         strcpy(ddata->mvg+ddata->mvg_length, buffer);
         ddata->mvg_length += str_length;
+
         return str_length;
       }
 
