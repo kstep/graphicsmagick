@@ -8227,7 +8227,6 @@ Export Image *XMontageImages(const XResourceInfo *resource_info,
   Image
     **images,
     *montage_image,
-    *sharpened_image,
     *tile_image;
 
   ImageInfo
@@ -8301,8 +8300,11 @@ Export Image *XMontageImages(const XResourceInfo *resource_info,
     y=0;
     (void) ParseImageGeometry(resource_info->image_geometry,&x,&y,
       &width,&height);
-    sharpen=((width*height) << 1) < (images[tile]->rows*images[tile]->columns);
+    sharpen=((width*height) << 1) <
+      (images[tile]->columns*images[tile]->rows);
+    images[tile]->orphan=True;
     tile_image=ZoomImage(images[tile],width,height);
+    images[tile]->orphan=False;
     if (tile_image == (Image *) NULL)
       {
         for (i=0; i < tile; i++)
@@ -8312,18 +8314,19 @@ Export Image *XMontageImages(const XResourceInfo *resource_info,
       }
     images[tile]=tile_image;
     if (sharpen)
-      if ((tile_image->columns >= 3) && (tile_image->rows >= 3))
+      if ((tile_image->columns > 3) && (tile_image->rows > 3))
         {
-          /*
-            Sharpen image.
-          */
-          sharpened_image=SharpenImage(tile_image,SharpenFactor);
+          Image
+            *sharpened_image;
+
+          images[tile]->orphan=True;
+          sharpened_image=SharpenImage(images[tile],SharpenFactor);
+          images[tile]->orphan=False;
           if (sharpened_image != (Image *) NULL)
             {
-              DestroyImage(tile_image);
-              tile_image=sharpened_image;
+              DestroyImage(images[tile]);
+              images[tile]=sharpened_image;
             }
-          images[tile]=tile_image;
         }
     (void) SetMonitorHandler(handler);
     ProgressMonitor(TileImageText,tile,number_images);
@@ -8515,38 +8518,34 @@ Export Image *XMontageImages(const XResourceInfo *resource_info,
         DestroyImages(montage_image);
         return((Image *) NULL);
       }
-    if (!concatenate)
+    /*
+      Set montage geometry.
+    */
+    montage_image->montage=(char *) AllocateMemory(MaxTextExtent*sizeof(char));
+    count=1;
+    for (tile=0; tile < tiles_per_page; tile++)
+      count+=Extent(images[tile]->filename)+1;
+    montage_image->directory=(char *) AllocateMemory(count*sizeof(char));
+    if ((montage_image->montage == (char *) NULL) ||
+        (montage_image->directory == (char *) NULL))
       {
-        /*
-          Set montage geometry.
-        */
-        montage_image->montage=(char *)
-          AllocateMemory(MaxTextExtent*sizeof(char));
-        count=1;
-        for (tile=0; tile < tiles_per_page; tile++)
-          count+=Extent(images[tile]->filename)+1;
-        montage_image->directory=(char *) AllocateMemory(count*sizeof(char));
-        if ((montage_image->montage == (char *) NULL) ||
-            (montage_image->directory == (char *) NULL))
-          {
-            MagickWarning(ResourceLimitWarning,"Unable to montage images",
-              "Memory allocation failed");
-            DestroyImages(montage_image);
-            return((Image *) NULL);
-          }
-        x_offset=0;
-        y_offset=title_offset;
-        FormatString(montage_image->montage,"%dx%d%+d%+d",
-          (int) (tile_info.width+(tile_info.x+border_width)*2),
-          (int) (tile_info.height+(tile_info.y+border_width)*2+(font_height+4)*
-          number_lines+(montage_info->shadow ? 4 : 0)),x_offset,y_offset);
-        *montage_image->directory='\0';
-        for (tile=0; tile < tiles_per_page; tile++)
-        {
-          (void) strcat(montage_image->directory,images[tile]->filename);
-          (void) strcat(montage_image->directory,"\n");
-        }
+        MagickWarning(ResourceLimitWarning,"Unable to montage images",
+          "Memory allocation failed");
+        DestroyImages(montage_image);
+        return((Image *) NULL);
       }
+    x_offset=0;
+    y_offset=title_offset;
+    FormatString(montage_image->montage,"%dx%d%+d%+d",
+      (int) (tile_info.width+(tile_info.x+border_width)*2),
+      (int) (tile_info.height+(tile_info.y+border_width)*2+(font_height+4)*
+      number_lines+(montage_info->shadow ? 4 : 0)),x_offset,y_offset);
+    *montage_image->directory='\0';
+    for (tile=0; tile < tiles_per_page; tile++)
+    {
+      (void) strcat(montage_image->directory,images[tile]->filename);
+      (void) strcat(montage_image->directory,"\n");
+    }
     /*
       Initialize montage image to background color.
     */
@@ -8794,6 +8793,7 @@ Export Image *XMontageImages(const XResourceInfo *resource_info,
         number_images-=tiles_per_page;
       }
   }
+  FreeMemory((char *) images);
   while (montage_image->previous != (Image *) NULL)
     montage_image=montage_image->previous;
   return(montage_image);

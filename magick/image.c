@@ -6778,6 +6778,9 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
 
         if (*option == '+')
           {
+            /*
+              Remove a ICC or IPTC profile from the image.
+            */
             option=argv[++i];
             if (Latin1Compare("icc",option) == 0)
               {
@@ -6795,6 +6798,9 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
               }
             continue;
           }
+        /*
+          Add a ICC or IPTC profile to the image.
+        */
         local_info=(*image_info);
         (void) strcpy(local_info.filename,argv[++i]);
         profile=ReadImage(&local_info);
@@ -10432,7 +10438,7 @@ Export void TransformImage(Image **image,char *crop_geometry,
   y=0;
   (void) ParseImageGeometry(image_geometry,&x,&y,&width,&height);
   sharpen=((width*height) << 1) <
-    (transformed_image->rows*transformed_image->columns);
+    (transformed_image->columns*transformed_image->rows);
   if ((transformed_image->columns != width) ||
       (transformed_image->rows != height))
     {
@@ -11511,7 +11517,7 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
   if ((columns == 0) || (rows == 0))
     return((Image *) NULL);
   if ((image->columns == columns) && (image->rows == rows))
-    return(SampleImage(image,columns,rows));
+    return(CloneImage(image,columns,rows,True));
   if (filters[image->filter].width < 0.5)
     return(SampleImage(image,columns,rows));
   /*

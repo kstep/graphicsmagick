@@ -7583,14 +7583,14 @@ Image *ReadPCDImage(const ImageInfo *image_info)
   /*
     Set CCIR 709 primaries with a D65 white point.
   */
-  image->chromaticity.red_primary.x=0.64;
-  image->chromaticity.red_primary.y=0.33;
-  image->chromaticity.green_primary.x=0.30;
-  image->chromaticity.green_primary.y=0.60;
-  image->chromaticity.blue_primary.x=0.15;
-  image->chromaticity.blue_primary.y=0.06;
-  image->chromaticity.white_point.x=0.3127;
-  image->chromaticity.white_point.y=0.3290;
+  image->chromaticity.red_primary.x=0.64f;
+  image->chromaticity.red_primary.y=0.33f;
+  image->chromaticity.green_primary.x=0.30f;
+  image->chromaticity.green_primary.y=0.60f;
+  image->chromaticity.blue_primary.x=0.15f;
+  image->chromaticity.blue_primary.y=0.06f;
+  image->chromaticity.white_point.x=0.3127f;
+  image->chromaticity.white_point.y=0.3290f;
   image->gamma=0.5;
   CondenseImage(image);
   CloseImage(image);

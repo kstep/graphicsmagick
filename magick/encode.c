@@ -124,9 +124,6 @@ unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
   unsigned int
     scene;
 
-  unsigned short
-    value;
-
   /*
     Open output image file.
   */
@@ -4437,9 +4434,6 @@ unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
   unsigned int
     scene;
 
-  unsigned short
-    value;
-
   /*
     Open output image file.
   */
@@ -7570,9 +7564,6 @@ unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
 
         unsigned char
           *pixels;
-
-        unsigned short
-          value;
 
         /*
           Allocate memory for pixels.
@@ -12089,9 +12080,6 @@ unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
 
   unsigned char
     *pixels;
-
-  unsigned short
-    value;
 
   /*
     Open output image file.

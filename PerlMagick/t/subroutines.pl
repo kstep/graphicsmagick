@@ -349,11 +349,14 @@ sub testMontage {
 
   # Create temporary image
   $image=Image::Magick->new;
+
+  my @colors = ( '#000000', '#008000', '#C0C0C0', '#00FF00',
+		 '#808080', '#808000', '#FFFFFF', '#FFFF00',
+		 '#800000', '#000080', '#FF0000', '#0000FF',
+		 '#800080', '#008080', '#FF00FF', '#00FFFF' );
   
-  foreach $color ('#000000', '#008000', '#C0C0C0', '#00FF00',
-		  '#808080', '#808000', '#FFFFFF', '#FFFF00',
-		  '#800000', '#000080', '#FF0000', '#0000FF',
-		  '#800080', '#008080', '#FF00FF', '#00FFFF' ) {
+  my $color;
+  foreach $color ( @colors ) {
 
     # Generate image
     $image->Set(size=>'50x50');
@@ -388,17 +391,39 @@ sub testMontage {
     print "not ok $test\n";
   } else {
     #$montage->Display();
+    # Check MD5 signature
     $signature=$montage->GetAttribute('signature');
     if ( defined( $signature ) ) {
       if ( $signature ne $md5 ) {
 	print "Test $test Computed: $signature, expected: $md5\n";
-
+	
         $status = $montage->Write("test_${test}_out.miff");
         warn "Write: $status" if "$status";
-
+	
 	print "not ok $test\n";
       } else {
-	print "ok $test\n";
+	# Check montage directory
+	my $directory = $montage->Get('directory');
+	my $expected = join( "\n", @colors ) . "\n";
+	if ( !defined($directory) ) {
+	  print "ok $test\n";
+	} elsif ( $directory  ne $expected) {
+	  print("Invalid montage directory:\n\"$directory\"\n");
+	  print("Expected:\n\"$expected\"\n");
+	  print "not ok $test\n";
+	} else {
+	  # Check montage geometry
+	  $montage_geom=$montage->Get('montage');
+	  if( !defined($montage_geom) ) {
+	    print("Montage geometry not defined!\n");
+	    print "not ok $test\n";
+	  } elsif ( $montage_geom !~ /^\d+x\d+\+\d+\+\d+$/ ) {
+	    print("Montage geometry not in correct format: \"$montage_geom\"\n");
+	    print "not ok $test\n";
+	  } else {
+	    print "ok $test\n";
+	  }
+	}
       }
     } else {
       warn "GetAttribute returned undefined value!";
