@@ -8,24 +8,13 @@
 extern "C" {
 #endif
 
-
-/*
-  Define declarations.
-*/
+#include "render.h"
 
-/*
-  Typedef declarations.
-*/
-
-
 /*
   NT features routines.
 */
 extern MagickExport char
   *NTRegistryKeyLookup(const char *key);
-
-extern MagickExport HBITMAP 
-	ImageToHBITMAP(Image* image);
 
 #if !defined(XS_VERSION)
 

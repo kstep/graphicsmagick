@@ -112,6 +112,9 @@ extern MagickExport long
 extern MagickExport struct dirent
   *readdir(DIR *);
 
+extern MagickExport HBITMAP 
+  ImageToHBITMAP(Image* image);
+
 extern MagickExport unsigned char
   *NTResourceToBlob(const char *);
 
