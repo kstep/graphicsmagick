@@ -547,6 +547,17 @@ section of <em>X(1)</em>.</font></td></tr></table>
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
+    <a name="details-blue-primary"></a>-blue-primary <i>&lt;X&gt;,&lt;Y&gt;,&lt;Z&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>blue chromaticity primary point</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
     <a name="details-blur"></a>-blur <i>&lt;radius&gt;x&lt;sigma&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>blur the image with a Gaussian operator</td></tr></table>
@@ -928,7 +939,7 @@ may result in larger-than-expected GIF files.</font></td></tr></table>
 the JPEG library has been patched to support it.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use the <strong>-quality</strong> option to set the compression level to be used by
-JPEG, PNG, MIFF, and MPEG encoders.  Use the <strong>-sampling_factor</strong>
+JPEG, PNG, MIFF, and MPEG encoders.  Use the <strong>-sampling-factor</strong>
 option to set the sampling factor to be used by JPEG, MPEG, and YUV encoders
 for downsampling the chroma channels.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
@@ -1927,6 +1938,17 @@ for this purpose.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
+    <a name="details-green-primary"></a>-green-primary <i>&lt;X&gt;,&lt;Y&gt;,&lt;Z&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>green chromaticity primary point</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
     -help
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print usage instructions</td></tr></table>
@@ -2741,7 +2763,7 @@ width=15><b><font face="Helvetica, Arial"
 For the JPEG and MPEG image formats, quality is 0 (lowest image quality
 and highest
 compression) to 100 (best quality but least effective compression). The default
-quality is 75.  Use the <strong>-sampling_factor</strong> option to specify the factors
+quality is 75.  Use the <strong>-sampling-factor</strong> option to specify the factors
 for chroma downsampling.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -2809,6 +2831,17 @@ Offsets are not used.
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use <strong>-raise</strong> to create a raised effect, otherwise use <strong>+raise</strong>.
 </font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a name="details-red-primary"></a>-red-primary <i>&lt;X&gt;,&lt;Y&gt;,&lt;Z&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>red chromaticity primary point</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -2935,7 +2968,7 @@ the <strong>-gravity</strong> option has no effect.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="details-sampling_factor"></a>-sampling_factor <i>&lt;horizontal_factor&gt;x&lt;vertical_factor&gt;</i>
+    <a name="details-sampling-factor"></a>-sampling-factor <i>&lt;horizontal_factor&gt;x&lt;vertical_factor&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>sampling factors used by JPEG or MPEG-2 encoder and YUV decoder/encoder.</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -2943,7 +2976,7 @@ This option specifies the sampling factors to be used by the JPEG encoder for
 chroma downsampling.  If this option is omitted, the JPEG library
 will use its own default values.  When reading or writing the YUV format
 and when writing the M2V (MPEG-2) format, use
-<strong>-sampling_factor 2x1</strong> to specify the 4:2:2 downsampling method.</font></td></tr></table>
+<strong>-sampling-factor 2x1</strong> to specify the 4:2:2 downsampling method.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -3090,7 +3123,7 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="details-shared_memory"></a>-shared_memory
+    <a name="details-shared-memory"></a>-shared-memory
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>use shared memory</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -3338,7 +3371,7 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="details-text_font"></a>-text_font <i>&lt;name&gt;</i>
+    <a name="details-text-font"></a>-text-font <i>&lt;name&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>font for writing fixed-width text</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -3596,12 +3629,28 @@ Choose from: <strong>Undefined</strong>, <strong>PixelsPerInch</strong>, or
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="details-unsharp"></a>-unsharp <i>&lt;radius&gt;x&lt;sigma&gt;</i>
+    <a name="details-unsharp"></a>-unsharp <i>&lt;radius&gt;x&lt;sigma&gt;+&lt;amount&gt;+&lt;threshold&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>sharpen the image with an unsharp mask operator</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Use the given radius and standard deviation (sigma).
+The <strong>-unsharp</strong> option sharpens an image.  We convolve the image with a
+Gaussian operator of the given radius and standard deviation (sigma).
+For reasonable results, radius should be larger than sigma.  Use a radius
+of 0 to have the method select a suitable radius.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The parameters are:
 </font></td></tr></table>
+<pre>
+    radius:    The radius of the Gaussian, in pixels,  not
+               counting the center pixel (default 0).
+    sigma:     The standard deviation of the Gaussian, in
+               pixels (default 1.0).
+    amount:    The percentage of the difference between the
+               original and the blur image that is added back
+               into the original (default 1.0).
+    threshold: The threshold, as a fraction of MaxRGB, needed
+               to apply the difference amount (default 0.05).
+</pre>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -3610,7 +3659,7 @@ Use the given radius and standard deviation (sigma).
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    -use_pixmap
+    -use-pixmap
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>use the pixmap</td></tr></table>
 <table BORDER=0 WIDTH="94%">
@@ -3665,7 +3714,7 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="details-virtual_pixel"></a>-virtual_pixel <i>&lt;method&gt;</i>
+    <a name="details-virtual-pixel"></a>-virtual-pixel <i>&lt;method&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>specify contents of "virtual pixels"</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -3747,6 +3796,17 @@ of the wave.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
+    <a name="details-white-point"></a>-white-point <i>&lt;X&gt;,&lt;Y&gt;,&lt;Z&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>chromaticity white point</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
     <a name="details-window"></a>-window <i>&lt;id&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>make image the background of a window</td></tr></table>
@@ -3773,7 +3833,7 @@ unique colors than the target window colormap allows.  Use
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    -window_group
+    -window-group
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>specify the window group</td></tr></table>
 <table BORDER=0 WIDTH="94%">

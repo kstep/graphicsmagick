@@ -67,6 +67,9 @@ For a more detailed description of each option, see
 .B "-background \fI<color>"\fP
 \fRthe background color
 .TP
+.B "-blue-primary \fI<X>,<Y>,<Z>"\fP
+\fRblue chromaticity primary point
+.TP
 .B "-cache \fI<threshold>"\fP
 \fRmegabytes of memory available to the pixel cache
 .TP
@@ -127,6 +130,9 @@ For a more detailed description of each option, see
 .B "-gravity \fI<type>"\fP
 \fRdirection primitive  gravitates to when annotating the image.
 .TP
+.B "-green-primary \fI<X>,<Y>,<Z>"\fP
+\fRgreen chromaticity primary point
+.TP
 .B "-help"
 \fRprint usage instructions
 .TP
@@ -154,13 +160,16 @@ For a more detailed description of each option, see
 .B "-quality \fI<value>"\fP
 \fRJPEG/MIFF/PNG compression level
 .TP
+.B "-red-primary \fI<X>,<Y>,<Z>"\fP
+\fRred chromaticity primary point
+.TP
 .B "-resize \fI<width>x<height>{%}{@}{!}{<}{>}"\fP
 \fRresize an image
 .TP
 .B "-rotate \fI<degrees>{<}{>}"\fP
 \fRapply Paeth image rotation to the image
 .TP
-.B "-sampling_factor \fI<horizontal_factor>x<vertical_factor>"\fP
+.B "-sampling-factor \fI<horizontal_factor>x<vertical_factor>"\fP
 \fRsampling factors used by JPEG or MPEG-2 encoder and YUV decoder/encoder.
 .TP
 .B "-scene \fI<value>"\fP
@@ -190,7 +199,7 @@ For a more detailed description of each option, see
 .B "-units \fI<type>"\fP
 \fRthe type of image resolution
 .TP
-.B "-unsharp \fI<radius>x<sigma>"\fP
+.B "-unsharp \fI<radius>x<sigma>+<amount>+<threshold>"\fP
 \fRsharpen the image with an unsharp mask operator
 .TP
 .B "-verbose"
@@ -201,6 +210,9 @@ For a more detailed description of each option, see
 .TP
 .B "-watermark \fI<brightness>x<saturation>"\fP
 \fRpercent brightness and saturation of a watermark
+.TP
+.B "-white-point \fI<X>,<Y>,<Z>"\fP
+\fRchromaticity white point
 .TP
 .B "-write \fI<filename>"\fP
 \fRwrite  an image sequence [\fIconvert, composite\fP]

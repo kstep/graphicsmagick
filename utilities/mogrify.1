@@ -60,6 +60,9 @@ For a more detailed description of each option, see
 .B "-background \fI<color>"\fP
 \fRthe background color
 .TP
+.B "-blue-primary \fI<X>,<Y>,<Z>"\fP
+\fRblue chromaticity primary point
+.TP
 .B "-blur \fI<radius>x<sigma>"\fP
 \fRblur the image with a Gaussian operator
 .TP
@@ -186,6 +189,9 @@ For a more detailed description of each option, see
 .B "-gravity \fI<type>"\fP
 \fRdirection primitive  gravitates to when annotating the image.
 .TP
+.B "-green-primary \fI<X>,<Y>,<Z>"\fP
+\fRgreen chromaticity primary point
+.TP
 .B "-help"
 \fRprint usage instructions
 .TP
@@ -267,6 +273,9 @@ For a more detailed description of each option, see
 .B "-raise \fI<width>x<height>"\fP
 \fRlighten or darken image edges
 .TP
+.B "-red-primary \fI<X>,<Y>,<Z>"\fP
+\fRred chromaticity primary point
+.TP
 .B "-region \fI<width>x<height>{+-}<x>{+-}<y>"\fP
 \fRapply options to a portion of the image
 .TP
@@ -282,7 +291,7 @@ For a more detailed description of each option, see
 .B "-sample \fI<geometry>"\fP
 \fRscale image with pixel sampling
 .TP
-.B "-sampling_factor \fI<horizontal_factor>x<vertical_factor>"\fP
+.B "-sampling-factor \fI<horizontal_factor>x<vertical_factor>"\fP
 \fRsampling factors used by JPEG or MPEG-2 encoder and YUV decoder/encoder.
 .TP
 .B "-scale \fI<geometry>"\fP
@@ -354,7 +363,7 @@ For a more detailed description of each option, see
 .B "-units \fI<type>"\fP
 \fRthe type of image resolution
 .TP
-.B "-unsharp \fI<radius>x<sigma>"\fP
+.B "-unsharp \fI<radius>x<sigma>+<amount>+<threshold>"\fP
 \fRsharpen the image with an unsharp mask operator
 .TP
 .B "-verbose"
@@ -366,11 +375,14 @@ For a more detailed description of each option, see
 .B "-view \fI<string>"\fP
 \fRFlashPix viewing parameters
 .TP
-.B "-virtual_pixel \fI<method>"\fP
+.B "-virtual-pixel \fI<method>"\fP
 \fRspecify contents of "virtual pixels"
 .TP
 .B "-wave \fI<amplitude>x<wavelength>"\fP
 \fRalter an image along a sine wave
+.TP
+.B "-white-point \fI<X>,<Y>,<Z>"\fP
+\fRchromaticity white point
 
 For a more detailed description of each option, see
 \fIImageMagick(1)\fP.

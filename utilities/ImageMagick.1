@@ -379,6 +379,9 @@ for details.
 The color is specified using the format described in the "Color Names"
 section of \fIX(1)\fP.
 .TP
+.B "-blue-primary \fI<X>,<Y>,<Z>"\fP
+\fRblue chromaticity primary point
+.TP
 .B "-blur \fI<radius>x<sigma>"\fP
 \fRblur the image with a Gaussian operator
 
@@ -831,7 +834,7 @@ may result in larger-than-expected GIF files.
 the JPEG library has been patched to support it.
 
 Use the \fB-quality\fP option to set the compression level to be used by
-JPEG, PNG, MIFF, and MPEG encoders.  Use the \fB-sampling_factor\fP
+JPEG, PNG, MIFF, and MPEG encoders.  Use the \fB-sampling-factor\fP
 option to set the sampling factor to be used by JPEG, MPEG, and YUV encoders
 for downsampling the chroma channels.
 .TP
@@ -1507,6 +1510,9 @@ that an image gravitates within a tile.  The default gravity is \fICenter\fP
 for this purpose.
 
 .TP
+.B "-green-primary \fI<X>,<Y>,<Z>"\fP
+\fRgreen chromaticity primary point
+.TP
 .B "-help"
 \fRprint usage instructions
 .TP
@@ -1994,7 +2000,7 @@ in the \fIAPP1\fP profile), use
 For the JPEG and MPEG image formats, quality is 0 (lowest image quality
 and highest
 compression) to 100 (best quality but least effective compression). The default
-quality is 75.  Use the \fB-sampling_factor\fP option to specify the factors
+quality is 75.  Use the \fB-sampling-factor\fP option to specify the factors
 for chroma downsampling.
 
 
@@ -2053,6 +2059,9 @@ Offsets are not used.
 
 Use \fB-raise\fP to create a raised effect, otherwise use \fB+raise\fP.
 
+.TP
+.B "-red-primary \fI<X>,<Y>,<Z>"\fP
+\fRred chromaticity primary point
 .TP
 .B "-region \fI<width>x<height>{+-}<x>{+-}<y>"\fP
 \fRapply options to a portion of the image
@@ -2124,14 +2133,14 @@ is present.  Offsets, if present in the geometry string, are ignored, and
 the \fB-gravity\fP option has no effect.
 
 .TP
-.B "-sampling_factor \fI<horizontal_factor>x<vertical_factor>"\fP
+.B "-sampling-factor \fI<horizontal_factor>x<vertical_factor>"\fP
 \fRsampling factors used by JPEG or MPEG-2 encoder and YUV decoder/encoder.
 
 This option specifies the sampling factors to be used by the JPEG encoder for
 chroma downsampling.  If this option is omitted, the JPEG library
 will use its own default values.  When reading or writing the YUV format
 and when writing the M2V (MPEG-2) format, use
-\fB-sampling_factor 2x1\fP to specify the 4:2:2 downsampling method.
+\fB-sampling-factor 2x1\fP to specify the 4:2:2 downsampling method.
 .TP
 .B "-scale \fI<geometry>"\fP
 \fRscale the image.
@@ -2205,7 +2214,7 @@ image.
 .B "-shadow \fI<radius>x<sigma>"\fP
 \fRshadow the montage
 .TP
-.B "-shared_memory"
+.B "-shared-memory"
 \fRuse shared memory
 
 This option specifies whether the utility should attempt use shared memory
@@ -2340,7 +2349,7 @@ See \fB-draw\fP for further details.
 \fIDegrees\fP defines the tightness of the swirl.
 
 .TP
-.B "-text_font \fI<name>"\fP
+.B "-text-font \fI<name>"\fP
 \fRfont for writing fixed-width text
 
 Specifies the name of the preferred font to use in fixed (typewriter style)
@@ -2490,13 +2499,28 @@ Choose from: \fBUndefined\fP, \fBPixelsPerInch\fP, or
 \fBPixelsPerCentimeter\fP.
 
 .TP
-.B "-unsharp \fI<radius>x<sigma>"\fP
+.B "-unsharp \fI<radius>x<sigma>+<amount>+<threshold>"\fP
 \fRsharpen the image with an unsharp mask operator
 
-Use the given radius and standard deviation (sigma).
+The \fB-unsharp\fP option sharpens an image.  We convolve the image with a
+Gaussian operator of the given radius and standard deviation (sigma).
+For reasonable results, radius should be larger than sigma.  Use a radius
+of 0 to have the method select a suitable radius.
 
+The parameters are:
+
+
+    radius:    The radius of the Gaussian, in pixels,  not
+               counting the center pixel (default 0).
+    sigma:     The standard deviation of the Gaussian, in
+               pixels (default 1.0).
+    amount:    The percentage of the difference between the
+               original and the blur image that is added back
+               into the original (default 1.0).
+    threshold: The threshold, as a fraction of MaxRGB, needed
+               to apply the difference amount (default 0.05).
 .TP
-.B "-use_pixmap"
+.B "-use-pixmap"
 \fRuse the pixmap
 .TP
 .B "-verbose"
@@ -2519,7 +2543,7 @@ for a description of these values.
 .B "-view \fI<string>"\fP
 \fRFlashPix viewing parameters
 .TP
-.B "-virtual_pixel \fI<method>"\fP
+.B "-virtual-pixel \fI<method>"\fP
 \fRspecify contents of "virtual pixels"
 
 This option 
@@ -2567,6 +2591,9 @@ Specify \fIamplitude\fP and \fIwavelength\fP
 of the wave.
 
 .TP
+.B "-white-point \fI<X>,<Y>,<Z>"\fP
+\fRchromaticity white point
+.TP
 .B "-window \fI<id>"\fP
 \fRmake image the background of a window
 
@@ -2585,7 +2612,7 @@ unique colors than the target window colormap allows.  Use
 \fB-colors\fP to reduce the number of colors.
 
 .TP
-.B "-window_group"
+.B "-window-group"
 \fRspecify the window group
 .TP
 .B "-write \fI<filename>"\fP
