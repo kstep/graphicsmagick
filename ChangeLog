@@ -1,3 +1,9 @@
+2003-04-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* VisualMagick/installer/gm-dynamic-full-8.iss,
+	VisualMagick/installer/gm-dynamic-full-16.iss: Many C header
+	files were not being included in the distribution.  Oops!
+
 2003-04-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* (index.html, www/*.html): Update to new web page style.

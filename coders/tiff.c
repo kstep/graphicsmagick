@@ -757,7 +757,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           if (q == (PixelPacket *) NULL)
             break;
           (void) TIFFReadScanline(tiff,(char *) scanline,(uint32) y,0);
-          if (bits_per_sample == 16)
+          if (bits_per_sample > 8)
             {
               unsigned long
                 lsb_first;
@@ -767,7 +767,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               */
               lsb_first=1;
               if (*(char *) &lsb_first)
-                MSBOrderShort(scanline,(TIFFScanlineSize(tiff) << 1)+4);
+                MSBOrderShort(scanline, Max(TIFFScanlineSize(tiff),
+                  packet_size*width));
             }
           p=scanline;
           r=quantum_scanline;
@@ -838,10 +839,29 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 *r++=(*p++);
               break;
             }
-/*             case 12: */
-/*             { */
-/*               break; */
-/*             } */
+            case 12:
+            {
+              unsigned long
+                quantum;
+
+              for (x=0; x < (long) (width-1); x+=2)
+              {
+                quantum=((*(p+1) >> 4) & 0xf) | (*p);
+                *r++=quantum >> 8;
+                *r++=quantum;
+                quantum=((*(p+1) & 0xf) << 8) | (*(p+2));
+                *r++=quantum >> 8;
+                *r++=quantum;
+                p+=3;
+              }
+              if ((width % 2) != 0)
+                {
+                  quantum=((*(p+1) >> 4) & 0xf) | (*p);
+                  *r++=quantum >> 8;
+                  *r++=quantum;
+                }
+              break;
+            }
             case 16:
             {
               if (image->depth <= 8)
@@ -909,7 +929,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           if (q == (PixelPacket *) NULL)
             break;
           (void) TIFFReadScanline(tiff,(char *) scanline,(uint32) y,0);
-          if (bits_per_sample == 16)
+          if (bits_per_sample > 8)
             {
               unsigned long
                 lsb_first;
