@@ -4833,10 +4833,11 @@ MagickExport void TraceBezier(PrimitiveInfo *primitive_info,
   for (i=0; i < (long) control_points; i++)
   {
     TracePoint(p,points[i]);
-    p++;
+    p+=p->coordinates;
   }
   TracePoint(p,end);
-  primitive_info->coordinates=p-primitive_info+1;
+  p+=p->coordinates;
+  primitive_info->coordinates=p-primitive_info;
   for (i=0; i < (long) primitive_info->coordinates; i++)
   {
     p->primitive=primitive_info->primitive;
@@ -4904,12 +4905,12 @@ MagickExport void TraceEllipse(PrimitiveInfo *primitive_info,
     point.x=cos(angle.x)*stop.x+start.x;
     point.y=sin(angle.x)*stop.y+start.y;
     TracePoint(p,point);
-    p++;
+    p+=p->coordinates;
   }
   point.x=cos(angle.y)*stop.x+start.x;
   point.y=sin(angle.y)*stop.y+start.y;
   TracePoint(p,point);
-  p++;
+  p+=p->coordinates;
   primitive_info->coordinates=p-primitive_info;
   for (i=0; i < (long) primitive_info->coordinates; i++)
   {
