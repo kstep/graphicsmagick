@@ -58,8 +58,6 @@
 /*
   Dicom medical image declarations.
 */
-#ifndef _DICOM_H
-#define _DICOM_H
 
 typedef struct _DicomInfo
 {
@@ -2596,8 +2594,6 @@ static const DicomInfo
     { 0xfffe, 0xe0dd, "xs", "Sequence Delimitation Item" },
     { 0xffff, 0xffff, "xs", "" }
   };
-
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

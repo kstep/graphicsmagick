@@ -2397,9 +2397,9 @@ XClearWindow(
 ){}
 
 #if defined(_VISUALC_)
-__declspec(dllexport) extern XCloseDisplay(
+__declspec(dllexport) extern int XCloseDisplay(
 #else
-XCloseDisplay(
+int XCloseDisplay(
 #endif
 #if NeedFunctionPrototypes
     Display* a		/* display */

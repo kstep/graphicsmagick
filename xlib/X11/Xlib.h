@@ -2376,7 +2376,7 @@ extern int XClearWindow(
 #endif
 );
 
-extern Export int XCloseDisplay(
+extern int XCloseDisplay(
 #if NeedFunctionPrototypes
     Display*		/* display */
 #endif
