@@ -1130,15 +1130,27 @@ static void DrawBoundingRectangles(const DrawInfo *draw_info,
       bounds.x1-=mid;
       if (bounds.x1 < 0.0)
         bounds.x1=0.0;
+      else
+        if (bounds.x1 >= image->columns)
+          bounds.x1=image->columns-1;
       bounds.y1-=mid;
       if (bounds.y1 < 0.0)
         bounds.y1=0.0;
+      else
+        if (bounds.y1 >= image->rows)
+          bounds.y1=image->rows-1;
       bounds.x2+=mid;
-      if (bounds.x2 >= image->columns)
-        bounds.x2=image->columns;
+      if (bounds.x2 < 0.0)
+        bounds.x2=0.0;
+      else
+        if (bounds.x2 >= image->columns)
+          bounds.x2=image->columns-1;
       bounds.y2+=mid;
-      if (bounds.y2 >= image->rows)
-        bounds.y2=image->rows;
+      if (bounds.y2 < 0.0)
+        bounds.y2=0.0;
+      else
+        if (bounds.y2 >= image->rows)
+          bounds.y2=image->rows-1;
       for (i=0; i < polygon_info->number_edges; i++)
       {
         if (polygon_info->edges[i].direction)
@@ -2647,15 +2659,27 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
   bounds.x1-=(mid+1.0);
   if (bounds.x1 < 0.0)
     bounds.x1=0.0;
+  else
+    if (bounds.x1 >= image->columns)
+      bounds.x1=image->columns-1;
   bounds.y1-=(mid+1.0);
   if (bounds.y1 < 0.0)
     bounds.y1=0.0;
+  else
+    if (bounds.y1 >= image->rows)
+      bounds.y1=image->rows-1;
   bounds.x2+=(mid+1.0);
-  if (bounds.x2 >= image->columns)
-    bounds.x2=image->columns-1.0;
+  if (bounds.x2 < 0.0)
+    bounds.x2=0.0;
+  else
+    if (bounds.x2 >= image->columns)
+      bounds.x2=image->columns-1;
   bounds.y2+=(mid+1.0);
-  if (bounds.y2 >= image->rows)
-    bounds.y2=image->rows-1.0;
+  if (bounds.y2 < 0.0)
+    bounds.y2=0.0;
+  else
+    if (bounds.y2 >= image->rows)
+      bounds.y2=image->rows-1;
   for (y=(int) ceil(bounds.y1-0.5); y <= (int) floor(bounds.y2+0.5); y++)
   {
     x=(int) ceil(bounds.x1-0.5);
