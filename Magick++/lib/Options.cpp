@@ -19,10 +19,10 @@
 
 // Constructor
 Magick::Options::Options( void )
-  : _imageInfo((ImageInfo*)AllocateMemory( sizeof(ImageInfo) ) ),
-    _quantizeInfo((QuantizeInfo*)AllocateMemory( sizeof(QuantizeInfo) )),
-    _annotateInfo((AnnotateInfo*)AllocateMemory( sizeof(AnnotateInfo) )),
-    _drawInfo((DrawInfo*)AllocateMemory( sizeof(DrawInfo) ))
+  : _imageInfo((ImageInfo*)AcquireMemory( sizeof(ImageInfo) ) ),
+    _quantizeInfo((QuantizeInfo*)AcquireMemory( sizeof(QuantizeInfo) )),
+    _annotateInfo((AnnotateInfo*)AcquireMemory( sizeof(AnnotateInfo) )),
+    _drawInfo((DrawInfo*)AcquireMemory( sizeof(DrawInfo) ))
 {
   // Initialize image info with defaults
   GetImageInfo( _imageInfo );
@@ -107,7 +107,7 @@ Magick::Color Magick::Options::backgroundColor ( void ) const
 void Magick::Options::backgroundTexture ( const std::string &backgroundTexture_ )
 {
   if ( backgroundTexture_.length() == 0 )
-    FreeMemory( (void**)&_imageInfo->texture );
+    LiberateMemory( (void**)&_imageInfo->texture );
   else
     Magick::CloneString( &_imageInfo->texture, backgroundTexture_ );
 }
@@ -142,7 +142,7 @@ Magick::Color Magick::Options::boxColor ( void ) const
 void Magick::Options::density ( const Magick::Geometry &density_ )
 {
   if ( !density_.isValid() )
-    FreeMemory( (void**)&_imageInfo->density );
+    LiberateMemory( (void**)&_imageInfo->density );
   else
     Magick::CloneString( &_imageInfo->density, density_ );
 
@@ -181,7 +181,7 @@ Magick::Color Magick::Options::fillColor ( void ) const
 void Magick::Options::font ( const std::string &font_ )
 {
   if ( font_.length() == 0 )
-    FreeMemory( (void**)&_imageInfo->font );
+    LiberateMemory( (void**)&_imageInfo->font );
   else
     Magick::CloneString( &_imageInfo->font, font_ );
 
@@ -252,7 +252,7 @@ Magick::Color Magick::Options::matteColor ( void ) const
 void Magick::Options::page ( const Magick::Geometry &pageSize_ )
 {
   if ( !pageSize_.isValid() )
-    FreeMemory( (void**)&_imageInfo->page );
+    LiberateMemory( (void**)&_imageInfo->page );
   else
     Magick::CloneString( &_imageInfo->page, pageSize_ );
 }
@@ -301,7 +301,7 @@ Magick::ResolutionType Magick::Options::resolutionUnits ( void ) const
 
 void Magick::Options::size ( const Geometry &geometry_ )
 {
-  FreeMemory( (void**)&_imageInfo->size );
+  LiberateMemory( (void**)&_imageInfo->size );
 
   if ( geometry_.isValid() )
     Magick::CloneString( &_imageInfo->size, geometry_ );
@@ -329,7 +329,7 @@ Magick::Color Magick::Options::strokeColor ( void ) const
 void Magick::Options::tileName ( const std::string &tileName_ )
 {
   if ( tileName_.length() == 0 )
-    FreeMemory( (void**)&_imageInfo->tile );
+    LiberateMemory( (void**)&_imageInfo->tile );
   else
     Magick::CloneString( &_imageInfo->tile, tileName_ );
 }
@@ -343,7 +343,7 @@ std::string Magick::Options::tileName ( void ) const
 void Magick::Options::view ( const std::string &view_ )
 {
   if ( view_.length() == 0 )
-    FreeMemory( (void**)&_imageInfo->view );
+    LiberateMemory( (void**)&_imageInfo->view );
   else
     Magick::CloneString( &_imageInfo->view, view_ );
 }
@@ -358,7 +358,7 @@ std::string Magick::Options::view ( void ) const
 void Magick::Options::x11Display ( const std::string &display_ )
 {
   if ( display_.length() == 0 )
-    FreeMemory( (void**)&_imageInfo->server_name );
+    LiberateMemory( (void**)&_imageInfo->server_name );
   else
     Magick::CloneString( &_imageInfo->server_name, display_ );
 }
@@ -375,7 +375,7 @@ void Magick::Options::updateAnnotateInfo( void )
 {
   // Update _annotateInfo
   AnnotateInfo* annotate_info =
-    (AnnotateInfo*)AllocateMemory( sizeof(AnnotateInfo) );
+    (AnnotateInfo*)AcquireMemory( sizeof(AnnotateInfo) );
   if ( annotate_info )
     {
       GetAnnotateInfo( _imageInfo, annotate_info );

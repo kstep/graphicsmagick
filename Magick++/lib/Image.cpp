@@ -1640,7 +1640,7 @@ void Magick::Image::classType ( Magick::ClassType class_ )
       // color map and then set to DirectClass type.
       modifyImage();
       SyncImage( image() );
-      FreeMemory( (void**)&(image()->colormap) );
+      LiberateMemory( (void**)&(image()->colormap) );
       image()->c_class = (MagickLib::ClassType)DirectClass;
       return;
     }
@@ -1979,7 +1979,7 @@ unsigned int Magick::Image::gifDisposeMethod ( void ) const
 void Magick::Image::iccColorProfile( const Magick::Blob &colorProfile_ )
 {
   ProfileInfo * color_profile = &(image()->color_profile);
-  FreeMemory( (void**)&color_profile->info );
+  LiberateMemory( (void**)&color_profile->info );
   color_profile->length = 0;
 
   if ( colorProfile_.data() != 0 )
@@ -2012,7 +2012,7 @@ Magick::InterlaceType Magick::Image::interlaceType ( void ) const
 void Magick::Image::iptcProfile( const Magick::Blob &iptcProfile_ )
 {
   ProfileInfo * iptc_profile = &(image()->iptc_profile);
-  FreeMemory( (void**)&iptc_profile->info );
+  LiberateMemory( (void**)&iptc_profile->info );
   iptc_profile->length = 0;
 
   if ( iptcProfile_.data() != 0 )

@@ -291,7 +291,7 @@ namespace Magick
   //
   using MagickLib::AddNoiseImage;
   using MagickLib::AllocateImage;
-  using MagickLib::AllocateMemory;
+  using MagickLib::AcquireMemory;
   using MagickLib::AnnotateImage;
   using MagickLib::AnnotateInfo;
   using MagickLib::AspectValue;
@@ -346,7 +346,7 @@ namespace Magick
   using MagickLib::FormatString;
   using MagickLib::FrameImage;
   using MagickLib::FrameInfo;
-  using MagickLib::FreeMemory;
+  using MagickLib::LiberateMemory;
   using MagickLib::GammaImage;
   using MagickLib::GammaImage;
   using MagickLib::GaussianBlurImage;

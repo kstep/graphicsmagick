@@ -2164,7 +2164,7 @@ namespace Magick
 		      const Montage &montageOpts_ ) {
 
     MagickLib::MontageInfo* montageInfo =
-      (MagickLib::MontageInfo*)MagickLib::AllocateMemory(sizeof(MagickLib::MontageInfo));
+      (MagickLib::MontageInfo*)MagickLib::AcquireMemory(sizeof(MagickLib::MontageInfo));
     MagickLib::ImageInfo* imageInfo = first_->imageInfo();
     MagickLib::GetMontageInfo( imageInfo, montageInfo );
 
