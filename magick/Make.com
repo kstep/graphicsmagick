@@ -49,6 +49,7 @@ $call Make quantize.c
 $call Make segment.c
 $call Make shear.c
 $call Make signature.c
+$call Make static.c
 $call Make stream.c
 $call Make timer.c
 $call Make transform.c
@@ -61,8 +62,8 @@ $call Make zoom.c
 $library/create libMagick.olb PreRvIcccm,animate,annotate,attribute,blob, -
   cache,cache_view,color,compress,constitute,decorate,delegate,display,draw, -
   effect,enhance,error,gem,image,magic,magick,memory,module,monitor, -
-  montage,quantize,segment,semaphore,shear,signature,stream,timer,transform, -
-  type,utility,vms,widget,xwindow,zoom
+  montage,quantize,segment,semaphore,shear,signature,static,stream,timer, -
+  transform,type,utility,vms,widget,xwindow,zoom
 $exit
 $
 $Make: subroutine

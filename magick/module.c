@@ -739,10 +739,12 @@ MagickExport unsigned int OpenModules(ExceptionInfo *exception)
   (void) GetMagickInfo((char *) NULL,exception);
   modules=GetModuleList();
   if (modules == (char **) NULL)
-    return(False);
-  p=modules;
-  while (*p)
-    OpenModule(*p++,exception);
+    {
+      OpenStaticModules();
+      return(False);
+    }
+  for (p=modules; p != (char **) NULL; p++)
+    OpenModule(*p,exception);
   /*
     Free resources.
   */
