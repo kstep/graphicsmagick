@@ -1,3 +1,9 @@
+2003-08-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* VisualMagick/filters/LIBRARY.txt: This file is necessary to
+	incorporate analyze.c into the static build.  Without it the
+	build fails.
+
 2003-08-23  Lars Ruben Skyum  <lars.skyum@stibo.com>
 
 	* magick/transform.c: ProfileImage updated to handle alpha
