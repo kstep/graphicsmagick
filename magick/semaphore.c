@@ -59,9 +59,6 @@
 #if defined(WIN32)
 #include <windows.h>
 #endif
-#if defined(_MT)
-#define MAXSEMLEN  1
-#endif
 
 /*
   Struct declaractions.
@@ -200,13 +197,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
 #endif
 #if defined(WIN32) && defined(_MT)
   {
-    SECURITY_ATTRIBUTES
-      security;
-
-    security.nLength=sizeof(security);
-    security.lpSecurityDescriptor=NULL;
-    security.bInheritHandle=TRUE;
-    semaphore_info->id=CreateSemaphore(&security,1,MAXSEMLEN,NULL);
+    semaphore_info->id=CreateMutex(NULL,False,NULL);
     if (semaphore_info->id == (HANDLE) NULL)
       {
         LiberateMemory((void **) &semaphore_info);
@@ -453,8 +444,8 @@ MagickExport unsigned int UnlockSemaphoreInfo(SemaphoreInfo *semaphore_info)
     return(False);
 #endif
 #if defined(WIN32) && defined(_MT)
-  status=ReleaseSemaphore(semaphore_info->id,1,NULL);
-  if (status == FALSE)
+  status=ReleaseMutex(semaphore_info->id);
+  if (status == 0)
     return(False);
 #endif
   return(True);
