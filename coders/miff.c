@@ -368,7 +368,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                       if (LocaleCompare(values,"BZip") == 0)
                         image->compression=BZipCompression;
                       else
-                        if (LocaleCompare(values,"RunlengthEncoded") == 0)
+                        if (LocaleCompare(values,"RLE") == 0)
                           image->compression=RunlengthEncodedCompression;
                         else
                           image->compression=UndefinedCompression;
@@ -1265,7 +1265,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,buffer);
     *buffer='\0';
     if (compression == RunlengthEncodedCompression)
-      FormatString(buffer,"compression=RunlengthEncoded\n");
+      FormatString(buffer,"compression=RLE\n");
     else
       if (compression == BZipCompression)
         FormatString(buffer,"compression=BZip\n");

@@ -1910,8 +1910,7 @@ MagickExport unsigned int WriteCacheInfo(Image *image)
     case JPEGCompression: (void) fprintf(file,"JPEG\n"); break;
     case LosslessJPEGCompression: (void) fprintf(file,"Lossless\n"); break;
     case LZWCompression: (void) fprintf(file,"LZW\n"); break;
-    case RunlengthEncodedCompression:
-      (void) fprintf(file,"RunlengthEncoded\n"); break;
+    case RunlengthEncodedCompression: (void) fprintf(file,"RLE\n"); break;
     case ZipCompression: (void) fprintf(file,"Zip\n"); break;
   }
   (void) fprintf(file,"columns=%u  rows=%u  depth=%u\n",image->columns,

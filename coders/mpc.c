@@ -347,7 +347,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     compression=LosslessJPEGCompression;
                   if (LocaleCompare("LZW",values) == 0)
                     compression=LZWCompression;
-                  if (LocaleCompare("RunlengthEncoded",values) == 0)
+                  if (LocaleCompare("RLE",values) == 0)
                     compression=RunlengthEncodedCompression;
                   if (LocaleCompare("Zip",values) == 0)
                     compression=ZipCompression;
