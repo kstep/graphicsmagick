@@ -507,11 +507,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Open image file.
   */
-  LogMagickEvent(CoderEvent," Begin ReadBMPImage()");
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+  LogMagickEvent(CoderEvent," Begin ReadBMPImage()");
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
@@ -554,10 +554,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     bmp_info.offset_bits=ReadBlobLSBLong(image);
     bmp_info.size=ReadBlobLSBLong(image);
     if (bmp_info.file_size != GetBlobSize(image))
-         {
-           ThrowReaderException(CorruptImageWarning,
-             "Corrupt BMP header: length and file_size do not match.", image);
-         }
+      ThrowReaderException(CorruptImageWarning,
+        "Corrupt BMP header: length and file_size do not match.", image);
     if (bmp_info.size == 12)
       {
         /*
@@ -574,16 +572,14 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         bmp_info.image_size=0;
         bmp_info.alpha_mask=0;
       }
-    else if (bmp_info.size < 40)
-      {
-         ThrowReaderException(CorruptImageWarning,
-           "Corrupt BMP header: Non OS/2 BMP header size < 40",image);
-      }
     else
       {
         /*
           Microsoft Windows BMP image file.
         */
+        if (bmp_info.size < 40)
+          ThrowReaderException(CorruptImageWarning,
+            "Corrupt BMP header: Non OS/2 BMP header size < 40",image);
         bmp_info.width=(short) ReadBlobLSBLong(image);
         bmp_info.height=(short) ReadBlobLSBLong(image);
         bmp_info.planes=ReadBlobLSBShort(image);
@@ -706,53 +702,41 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
           }
       }
-    /* TMcC: Check rest of header */
     if (bmp_info.width <= 0)
-       ThrowReaderException(CorruptImageWarning,
-          "Corrupt BMP header: Negative or zero width", image);
-    
+      ThrowReaderException(CorruptImageWarning,
+        "Corrupt BMP header: Negative or zero width",image);
     if (bmp_info.height == 0)
-       ThrowReaderException(CorruptImageWarning,
-          "Corrupt BMP header: Zero Height", image);
-    
-    if ( (bmp_info.height < 0) && (bmp_info.compression !=0) )
-       ThrowReaderException(CorruptImageWarning,
-         "Corrupt BMP header: Negative height with compression not valid",
-            image);
-    
+      ThrowReaderException(CorruptImageWarning,
+        "Corrupt BMP header: Zero Height",image);
+    if ((bmp_info.height < 0) && (bmp_info.compression !=0))
+      ThrowReaderException(CorruptImageWarning,
+        "Corrupt BMP header: Negative height with compression not valid",image);
     if (bmp_info.planes != 1)
-       ThrowReaderException(CorruptImageWarning,
-         "Corrupt BMP header: Static Planes value not equal 1", image);
-    
+      ThrowReaderException(CorruptImageWarning,
+        "Corrupt BMP header: Static Planes value not equal 1",image);
     if ((bmp_info.bits_per_pixel != 1) && (bmp_info.bits_per_pixel != 4) &&
         (bmp_info.bits_per_pixel != 8) && (bmp_info.bits_per_pixel != 16) &&
         (bmp_info.bits_per_pixel != 24) && (bmp_info.bits_per_pixel != 32))
-       ThrowReaderException(CorruptImageWarning,
-         "Corrupt BMP header: Invalid Bits per Pixel", image);
-    
+      ThrowReaderException(CorruptImageWarning,
+        "Corrupt BMP header: Invalid Bits per Pixel",image);
     if (bmp_info.number_colors > 1<<bmp_info.number_colors)
-       ThrowReaderException(CorruptImageWarning,
-         "Corrupt BMP header: Invalid Number of Colors", image);
-    
+      ThrowReaderException(CorruptImageWarning,
+        "Corrupt BMP header: Invalid Number of Colors",image);
     if (bmp_info.compression > 3)
-       ThrowReaderException(CorruptImageWarning,
-          "Corrupt BMP header: Invalid Compression", image);
-    
+     ThrowReaderException(CorruptImageWarning,
+      "Corrupt BMP header: Invalid Compression",image);
     if ((bmp_info.compression == 1) && (bmp_info.bits_per_pixel != 8))
-       ThrowReaderException(CorruptImageWarning,
-         "Corrupt BMP header: Invalid bits per pixel for RLE8 compression",
-          image);
-    
+      ThrowReaderException(CorruptImageWarning,
+        "Corrupt BMP header: Invalid bits per pixel for RLE8 compression",
+         image);
     if ((bmp_info.compression == 2) && (bmp_info.bits_per_pixel != 4))
-       ThrowReaderException(CorruptImageWarning,
-         "Corrupt BMP header: Invalid bits per pixel for RLE4 compression",
-          image);
-    
+      ThrowReaderException(CorruptImageWarning,
+        "Corrupt BMP header: Invalid bits per pixel for RLE4 compression",
+        image);
     if ((bmp_info.compression == 3) && (bmp_info.bits_per_pixel < 16))
-       ThrowReaderException(CorruptImageWarning,
-     "Corrupt BMP header: Invalid bits per pixel for BITFIELDS compression",
-      image);
-
+      ThrowReaderException(CorruptImageWarning,
+        "Corrupt BMP header: Invalid bits per pixel for BITFIELDS compression",
+        image);
     switch (bmp_info.compression)
     {
       case BI_RGB:
@@ -1285,7 +1269,6 @@ ModuleExport void RegisterBMPImage(void)
   entry->module=AcquireString("BMP");
   entry->adjoin=False;
   (void) RegisterMagickInfo(entry);
-
   entry=SetMagickInfo("BMP2");
   entry->encoder=WriteBMPImage;
   entry->magick=IsBMP;
@@ -1293,7 +1276,6 @@ ModuleExport void RegisterBMPImage(void)
   entry->module=AcquireString("BMP2");
   entry->adjoin=False;
   (void) RegisterMagickInfo(entry);
-
   entry=SetMagickInfo("BMP3");
   entry->encoder=WriteBMPImage;
   entry->magick=IsBMP;
@@ -1366,9 +1348,6 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
   long
     y;
 
-  int
-    bmp_type;
-
   register const PixelPacket
     *p;
 
@@ -1392,26 +1371,26 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
 
   unsigned long
     bytes_per_line,
-    scene;
+    scene,
+    type;
 
   /*
     Open output image file.
   */
-  LogMagickEvent(CoderEvent," Begin WriteBMPImage()");
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  LogMagickEvent(CoderEvent," Begin WriteBMPImage()");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"Unable to open file",image);
+  type=4;
   if (LocaleCompare(image_info->magick,"BMP2") == 0)
-    bmp_type=2;
-  else if (LocaleCompare(image_info->magick,"BMP3") == 0)
-    bmp_type=3;
+    type=2;
   else
-    bmp_type=4;
-  
+    if (LocaleCompare(image_info->magick,"BMP3") == 0)
+      type=3;
   scene=0;
   do
   {
@@ -1420,10 +1399,9 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     */
     (void) TransformRGBImage(image,RGBColorspace);
     memset(&bmp_info,0,sizeof(BMPInfo));
-
     bmp_info.file_size=14+12;
-    if (bmp_type > 2)
-        bmp_info.file_size+=28;
+    if (type > 2)
+      bmp_info.file_size+=28;
     bmp_info.offset_bits=bmp_info.file_size;
     bmp_info.compression=BI_RGB;
     if (image->storage_class != DirectClass)
@@ -1452,34 +1430,35 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           Full color BMP raster.
         */
         bmp_info.number_colors=0;
-        bmp_info.bits_per_pixel=(bmp_type > 3 && image->matte) ? 32 : 24;
-        bmp_info.compression=(bmp_type > 3 && image->matte) ? BI_BITFIELDS :
-            BI_RGB;
+        bmp_info.bits_per_pixel=((type > 3) && image->matte) ? 32 : 24;
+        bmp_info.compression=
+          (type > 3) && image->matte ?  BI_BITFIELDS : BI_RGB;
       }
     bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
     bmp_info.ba_offset=0;
     have_color_info=(int) ((image->rendering_intent != UndefinedIntent) ||
       (image->color_profile.length != 0) || (image->gamma != 0.0));
-    if (bmp_type == 2)
-       bmp_info.size=12;
-    else if (bmp_type == 3 || (!image->matte && !have_color_info))
-      bmp_info.size=40;
+    if (type == 2)
+      bmp_info.size=12;
     else
-      {
-        int
-          extra_size;
+      if ((type == 3) || (!image->matte && !have_color_info))
+        bmp_info.size=40;
+      else
+        {
+          int
+            extra_size;
 
-        bmp_info.size=108;
-        extra_size=68;
-        if ((image->rendering_intent != UndefinedIntent) ||
-            (image->color_profile.length != 0))
-          {
-            bmp_info.size=124;
-            extra_size+=16;
-          }
-        bmp_info.file_size+=extra_size;
-        bmp_info.offset_bits+=extra_size;
-      }
+          bmp_info.size=108;
+          extra_size=68;
+          if ((image->rendering_intent != UndefinedIntent) ||
+              (image->color_profile.length != 0))
+            {
+              bmp_info.size=124;
+              extra_size+=16;
+            }
+          bmp_info.file_size+=extra_size;
+          bmp_info.offset_bits+=extra_size;
+        }
     bmp_info.width=(long) image->columns;
     bmp_info.height=(long) image->rows;
     bmp_info.planes=1;
@@ -1503,8 +1482,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     */
     pixels=(unsigned char *) AcquireMemory(bmp_info.image_size);
     if (pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitError,"Memory allocation failed",
-        image);
+      ThrowWriterException(ResourceLimitError,"Memory allocation failed",image);
     switch (bmp_info.bits_per_pixel)
     {
       case 1:
@@ -1600,7 +1578,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         break;
       }
     }
-    if (bmp_type > 2 && bmp_info.bits_per_pixel == 8)
+    if ((type > 2) && (bmp_info.bits_per_pixel == 8))
       if (image_info->compression != NoCompression)
         {
           size_t
@@ -1631,7 +1609,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobLSBLong(image,bmp_info.file_size);
     (void) WriteBlobLSBLong(image,bmp_info.ba_offset);  /* always 0 */
     (void) WriteBlobLSBLong(image,bmp_info.offset_bits);
-    if (bmp_type == 2)
+    if (type == 2)
       {
         /*
           Write 12-byte version 2 bitmap header.
@@ -1659,7 +1637,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobLSBLong(image,bmp_info.number_colors);
         (void) WriteBlobLSBLong(image,bmp_info.colors_important);
       }
-    if (bmp_type > 3 && (image->matte || have_color_info))
+    if ((type > 3) && (image->matte || have_color_info))
       {
         /*
           Write the rest of the 108-byte BMP Version 4 header.

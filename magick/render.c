@@ -2078,8 +2078,9 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           {
             GetToken(q,&q,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
-            graphic_context[n]->fill.opacity=(Quantum)
-              ((double) MaxRGB*(1.0-factor*atof(token)));
+            if (graphic_context[n]->fill.opacity != TransparentOpacity)
+              graphic_context[n]->fill.opacity=(Quantum)
+                ((double) MaxRGB*(1.0-factor*atof(token)));
             break;
           }
         if (LocaleCompare("font",keyword) == 0)
@@ -2780,8 +2781,9 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           {
             GetToken(q,&q,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
-            graphic_context[n]->stroke.opacity=(Quantum)
-              ((double) MaxRGB*(1.0*factor*atof(token)));
+            if (graphic_context[n]->stroke.opacity != TransparentOpacity)
+              graphic_context[n]->stroke.opacity=(Quantum)
+                ((double) MaxRGB*(1.0-factor*atof(token)));
             break;
           }
         if (LocaleCompare("stroke-width",keyword) == 0)
@@ -3093,14 +3095,16 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       case PathPrimitive:
       {
         char
-          *p;
+          *s,
+          *t;
 
         GetToken(q,&q,token);
         length=1;
-        for (p=token; *p != '\0'; p++)
+        t=token;
+        for (s=token; *s != '\0'; s=t+1)
         {
-          GetToken(p,&p,token);
-          if (isdigit((int) *token))
+          strtod(s,&t);
+          if (s != t)
             length++;
         }
         if (i > (long) (number_points-6*BezierQuantum*length/3-1))
