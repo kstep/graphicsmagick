@@ -967,14 +967,6 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   else
     {
       packet_size=image->depth > 8 ? 2 : 1;
-      if (image->matte)
-        for (y=0; y < (int) image->rows; y++)
-        {
-          if (!GetImagePixels(image,0,y,image->columns,1))
-            break;
-          (void) PopImagePixels(image,OpacityQuantum,pixels);
-          (void) WriteBlob(image,packet_size*image->columns,pixels);
-        }
       for (y=0; y < (int) image->rows; y++)
       {
         if (!GetImagePixels(image,0,y,image->columns,1))
@@ -1005,6 +997,14 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
           (void) PopImagePixels(image,BlueQuantum,pixels);
         (void) WriteBlob(image,packet_size*image->columns,pixels);
       }
+      if (image->matte)
+        for (y=0; y < (int) image->rows; y++)
+        {
+          if (!GetImagePixels(image,0,y,image->columns,1))
+            break;
+          (void) PopImagePixels(image,OpacityQuantum,pixels);
+          (void) WriteBlob(image,packet_size*image->columns,pixels);
+        }
       if (image->colorspace == CMYKColorspace)
         for (y=0; y < (int) image->rows; y++)
         {
