@@ -738,7 +738,10 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       degrees=rotate == 1 ? -90.0 : 90.0;
       rotated_image=RotateImage(image,degrees,exception);
       if (rotated_image != (Image *) NULL)
-        image=rotated_image;
+        {
+          DestroyImage(image);
+          image=rotated_image;
+        }
     }
   /*
     Set CCIR 709 primaries with a D65 white point.
@@ -1046,7 +1049,7 @@ static unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
   status|=WritePCDTile(image_info,pcd_image,(char *) "768x512>",
     (char *) "768x512");
   CloseBlob(pcd_image);
-  if (image->columns < image->rows)
+  if (pcd_image != image)
     DestroyImage(pcd_image);
   return(status);
 }
