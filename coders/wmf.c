@@ -80,6 +80,21 @@
 #include "libwmf/fund.h"
 #include "libwmf/types.h"
 #include "libwmf/api.h"
+#undef SRCCOPY
+#undef SRCPAINT
+#undef SRCAND
+#undef SRCINVERT
+#undef SRCERASE
+#undef NOTSRCCOPY
+#undef NOTSRCERASE
+#undef MERGECOPY
+#undef MERGEPAINT
+#undef PATCOPY
+#undef PATPAINT
+#undef PATINVERT
+#undef DSTINVERT
+#undef BLACKNESS
+#undef WHITENESS
 #include "libwmf/defs.h"
 #include "libwmf/ipa.h"
 #include "libwmf/color.h"
@@ -1991,7 +2006,7 @@ static void magick_font_map( wmfAPI* API, wmfFont* font)
   /* Look for a family-based best-match */
   if(!magick_font->ps_name)
     {
-      double
+      int
         target_weight,
         best_weight = 0;
 
@@ -2005,7 +2020,7 @@ static void magick_font_map( wmfAPI* API, wmfFont* font)
         {
           if(LocaleCompare(wmf_font_name,type_info->family) == 0)
             {
-              double
+              int
                 weight;
 
               /* printf("Considering font %s\n", type_info->description); */
