@@ -100,11 +100,11 @@ edit=>
 	xterm -title "Edit Image Comment" -e vi %i
 
 eps<=>pdf
-	-sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
+	-dMaxBitmap=300000000 -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 eps<=>ps
-	-sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
+	-dMaxBitmap=300000000 -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 file=>
@@ -124,12 +124,12 @@ gplt=>
 	rm -f %u
 
 gs-color=>
-	-sDEVICE=pnmraw -q -dNOPAUSE -dSAFER \
+	-dMaxBitmap=300000000 -sDEVICE=pnmraw -q -dNOPAUSE -dSAFER \
 	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s \
 	  -sOutputFile="%s" -- "%s" -c quit
 
 gs-mono=>
-	-sDEVICE=pbmraw -q -dNOPAUSE -dSAFER \
+	-dMaxBitmap=300000000 -sDEVICE=pbmraw -q -dNOPAUSE -dSAFER \
 	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s \
 	  -sOutputFile="%s" -- "%s" -c quit
 
@@ -156,11 +156,11 @@ m2v=>
 	rm -f %o*.ppm
 
 pdf<=>eps
-	-sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
+	-dMaxBitmap=300000000 -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 pdf<=>ps
-	-sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
+	-dMaxBitmap=300000000 -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 pgp=>
@@ -178,11 +178,11 @@ pov=>
 	rm -f %o*.png
 
 ps<=>eps
-	-sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
+	-dMaxBitmap=300000000 -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 ps<=>pdf
-	-sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
+	-dMaxBitmap=300000000 -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 ps<=print

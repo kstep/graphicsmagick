@@ -6005,7 +6005,7 @@ Image *ReadLABELImage(const ImageInfo *image_info)
       annotate_info.text=text;
       annotate_info.width=TextWidth(font_info,text,Extent(text));
       annotate_info.height=font_info->ascent+font_info->descent;
-      (void) sprintf(annotate_info.geometry,"%ux%u+1+1",annotate_info.width,
+      (void) sprintf(annotate_info.geometry,"%ux%u+0+0",annotate_info.width,
         annotate_info.height);
       cache_info=(*local_info);
       /*

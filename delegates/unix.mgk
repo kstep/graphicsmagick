@@ -102,11 +102,11 @@ edit=>
 	xterm -title "Edit Image Comment" -e vi %i
 
 eps<=>pdf
-	gs -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
+	gs -dMaxBitmap=300000000 -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 eps<=>ps
-	gs -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
+	gs -dMaxBitmap=300000000 -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 file=>
@@ -125,12 +125,12 @@ gplt=>
 	gnuplot %u
 
 gs-color=>
-	gs -sDEVICE=pnmraw -q -dNOPAUSE -dSAFER \
+	gs -dMaxBitmap=300000000 -sDEVICE=pnmraw -q -dNOPAUSE -dSAFER \
 	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s \
 	  -sOutputFile="%s" -- "%s" -c quit
 
 gs-mono=>
-	gs -sDEVICE=pbmraw -q -dNOPAUSE -dSAFER \
+	gs -dMaxBitmap=300000000 -sDEVICE=pbmraw -q -dNOPAUSE -dSAFER \
 	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s \
 	  -sOutputFile="%s" -- "%s" -c quit
 
@@ -159,11 +159,11 @@ m2v=>
 	convert -concatenate %o*.ppm %o
 
 pdf<=>eps
-	gs -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
+	gs -dMaxBitmap=300000000 -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 pdf<=>ps
-	gs -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
+	gs -dMaxBitmap=300000000 -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 pgp=>
@@ -180,11 +180,11 @@ pov=>
 	convert -concatenate %o*.png %o
 
 ps<=>eps
-	gs -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
+	gs -dMaxBitmap=300000000 -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 ps<=>pdf
-	gs -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
+	gs -dMaxBitmap=300000000 -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 ps<=print

@@ -3157,11 +3157,9 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     (void) fprintf(file,"  class: DirectClass\n");
   else
     (void) fprintf(file,"  class: PseudoClass\n");
+  NumberColors(image,(FILE *) NULL);
   if (image->class == DirectClass)
-    {
-      if (image->total_colors > 0)
-        (void) fprintf(file,"  colors: %lu\n",image->total_colors);
-    }
+    (void) fprintf(file,"  colors: %lu\n",image->total_colors);
   else
     if (image->total_colors <= image->colors)
       (void) fprintf(file,"  colors: %u\n",image->colors);
@@ -5613,8 +5611,7 @@ Export unsigned int IsTainted(Image *image)
 {
   char
     magick[MaxTextExtent],
-    filename[MaxTextExtent],
-    signature[MaxTextExtent];
+    filename[MaxTextExtent];
 
   register Image
     *p;
@@ -12714,8 +12711,8 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
     return((Image *) NULL);
   if ((image->columns == columns) && (image->rows == rows))
     return(CloneImage(image,columns,rows,True));
-  if ((filters[image->filter].width < columns) ||
-      (filters[image->filter].width < rows))
+  if ((filters[image->filter].width > columns) ||
+      (filters[image->filter].width > rows))
     return(SampleImage(image,columns,rows));
   /*
     Image must be uncompressed.

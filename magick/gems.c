@@ -544,7 +544,7 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
       case PointPrimitive:
       default:
       {
-        if ((x == p->x) && (y == p->y))
+        if ((x == (int) p->x) && (y == (int) p->y))
           opacity=Opaque;
         break;
       }
@@ -555,18 +555,22 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
       }
       case RectanglePrimitive:
       {
-        if ((x >= Min(p->x-mid,q->x+mid)) && (x < Max(p->x-mid,q->x+mid)) &&
-            (y >= Min(p->y-mid,q->y+mid)) && (y < Max(p->y-mid,q->y+mid)))
+        if ((x >= (int) Min(p->x-mid,q->x+mid)) &&
+            (x < (int) Max(p->x-mid,q->x+mid)) &&
+            (y >= (int) Min(p->y-mid,q->y+mid)) &&
+            (y < (int) Max(p->y-mid,q->y+mid)))
           opacity=Opaque;
-        if ((x >= Min(p->x+mid,q->x-mid)) && (x < Max(p->x+mid,q->x-mid)) &&
-            (y >= Min(p->y+mid,q->y-mid)) && (y < Max(p->y+mid,q->y-mid)))
+        if ((x >= (int) Min(p->x+mid,q->x-mid)) &&
+            (x < (int) Max(p->x+mid,q->x-mid)) &&
+            (y >= (int) Min(p->y+mid,q->y-mid)) &&
+            (y < (int) Max(p->y+mid,q->y-mid)))
           opacity=Transparent;
         break;
       }
       case FillRectanglePrimitive:
       {
-        if ((x >= Min(p->x,q->x)) && (x <= Max(p->x,q->x)) &&
-            (y >= Min(p->y,q->y)) && (y <= Max(p->y,q->y)))
+        if ((x >= (int) Min(p->x,q->x)) && (x <= (int) Max(p->x,q->x)) &&
+            (y >= (int) Min(p->y,q->y)) && (y <= (int) Max(p->y,q->y)))
           opacity=Opaque;
         break;
       }
@@ -644,7 +648,7 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
               else
                 if (crossing)
                   crossings++;
-              continue;
+              break;
             }
          while ((p <= q) && (p->y < y))
            p++;
@@ -779,10 +783,10 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
         register char
           *r;
 
-        if ((p->x != x) || (p->y != y))
-          continue;
+        if ((x != (int) p->x) || (y != (int) p->y))
+          break;
         if (p->text == (char *) NULL)
-          continue;
+          break;
         r=p->text;
         if (*r == '"')
           {
@@ -807,7 +811,8 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
         annotate_info->text[r-p->text]='\0';
         if (p->primitive == TextPrimitive)
           {
-            FormatString(annotate_info->geometry,"%+d%+d",p->x,p->y);
+            FormatString(annotate_info->geometry,"%+d%+d",
+              (int) p->x,(int) p->y);
             AnnotateImage(image,annotate_info);
           }
         else

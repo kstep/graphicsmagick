@@ -102,11 +102,11 @@ edit=>
 	@EditorDelegate@ -title "Edit Image Comment" -e vi %i
 
 eps<=>pdf
-	@PSDelegate@ -sDEVICE=@GSPDFDevice@ -q -dNOPAUSE -dSAFER \
+	@PSDelegate@ -dMaxBitmap=300000000 -sDEVICE=@GSPDFDevice@ -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 eps<=>ps
-	@PSDelegate@ -sDEVICE=@GSPSDevice@ -q -dNOPAUSE -dSAFER \
+	@PSDelegate@ -dMaxBitmap=300000000 -sDEVICE=@GSPSDevice@ -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 file=>
@@ -125,12 +125,12 @@ gplt=>
 	@GnuplotDecodeDelegate@ %u
 
 gs-color=>
-	@PSDelegate@ -sDEVICE=@GSColorDevice@ -q -dNOPAUSE -dSAFER \
+	@PSDelegate@ -dMaxBitmap=300000000 -sDEVICE=@GSColorDevice@ -q -dNOPAUSE -dSAFER \
 	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s \
 	  -sOutputFile="%s" -- "%s" -c quit
 
 gs-mono=>
-	@PSDelegate@ -sDEVICE=@GSMonoDevice@ -q -dNOPAUSE -dSAFER \
+	@PSDelegate@ -dMaxBitmap=300000000 -sDEVICE=@GSMonoDevice@ -q -dNOPAUSE -dSAFER \
 	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s \
 	  -sOutputFile="%s" -- "%s" -c quit
 
@@ -159,11 +159,11 @@ m2v=>
 	@ConvertDelegate@ -concatenate %o*.ppm %o
 
 pdf<=>eps
-	@PSDelegate@ -sDEVICE=@GSEPSDevice@ -q -dNOPAUSE -dSAFER \
+	@PSDelegate@ -dMaxBitmap=300000000 -sDEVICE=@GSEPSDevice@ -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 pdf<=>ps
-	@PSDelegate@ -sDEVICE=@GSPSDevice@ -q -dNOPAUSE -dSAFER \
+	@PSDelegate@ -dMaxBitmap=300000000 -sDEVICE=@GSPSDevice@ -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 pgp=>
@@ -180,11 +180,11 @@ pov=>
 	@ConvertDelegate@ -concatenate %o*.png %o
 
 ps<=>eps
-	@PSDelegate@ -sDEVICE=@GSEPSDevice@ -q -dNOPAUSE -dSAFER \
+	@PSDelegate@ -dMaxBitmap=300000000 -sDEVICE=@GSEPSDevice@ -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 ps<=>pdf
-	@PSDelegate@ -sDEVICE=@GSPDFDevice@ -q -dNOPAUSE -dSAFER \
+	@PSDelegate@ -dMaxBitmap=300000000 -sDEVICE=@GSPDFDevice@ -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 ps<=print
