@@ -274,8 +274,13 @@ int magick_progress_callback (void* context,float quantum)
   Image
     *image;
 
+  unsigned int
+    status = 0;
+
   image=(Image *) context;
-  return(MagickMonitor((char*)context,(off_t)floor(quantum*100),100,&image->exception));
+  if (MagickMonitor((char*)context,(off_t)floor(quantum*100),100,&image->exception) == False)
+    status = 1;
+  return status;
 }
 
 /* Set fill color */
