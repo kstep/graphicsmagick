@@ -2275,8 +2275,8 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
       ThrowReaderException(DelegateFatalError, "Failed to intialize libwmf", image);
     }
 
-  /* Setup progress monitor */
-  wmf_status_function(API,(void*)LoadImageText, magick_progress_callback);
+  /* Register progress monitor */
+  wmf_status_function(API,(void*)"  Parsing vectors...  ", magick_progress_callback);
 
   ddata = WMF_MAGICK_GetData(API);
   ddata->image = image;
@@ -2495,6 +2495,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
    * Play file to generate MVG drawing commands
    *
    */
+
   ddata->mvg = NULL;
   wmf_error = wmf_play(API, 0, &bbox);
   if (wmf_error != wmf_E_None)

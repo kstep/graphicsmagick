@@ -1794,6 +1794,12 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   unsigned long
     number_points;
 
+  double
+    primitive_extent;
+
+  static const char
+    RenderVectorGraphicsText[]="  Rendering vectors...  ";
+
   /*
     Ensure the annotation info is valid.
   */
@@ -1826,6 +1832,9 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       primitive=TranslateText((ImageInfo *) NULL,image,text);
       LiberateMemory((void **) &text);
     }
+
+  primitive_extent=strlen(primitive);
+  MagickMonitor(RenderVectorGraphicsText,0.0,primitive_extent);
   (void) SetImageAttribute(image,"[MVG]",primitive);
   n=0;
   /*
@@ -1857,6 +1866,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   status=True;
   for (q=primitive; *q != '\0'; )
   {
+    MagickMonitor(RenderVectorGraphicsText,(double)(q-primitive),primitive_extent);
     /*
       Interpret graphic primitive.
     */
@@ -3843,6 +3853,9 @@ MagickExport unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
   unsigned int
     status;
 
+  MonitorHandler
+    handler;
+
   if (draw_info->debug)
     {
       GetTimerInfo(&timer);
@@ -4078,7 +4091,9 @@ MagickExport unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
           */
           FormatString(geometry,"%gx%g!",primitive_info[1].point.x,
             primitive_info[1].point.y);
+          handler=SetMonitorHandler((MonitorHandler) NULL);
           TransformImage(&composite_image,(char *) NULL,geometry);
+          (void) SetMonitorHandler(handler);
         }
       if (!composite_image->matte)
         SetImageOpacity(composite_image,OpaqueOpacity);
