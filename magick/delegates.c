@@ -434,8 +434,8 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
         (void) strcat(image->filename,"%d.yuv");
       }
   if (delegate_info->mode != 0)
-    if ((decode && (*delegate_info->encode != '\0')) ||
-        (encode && (*delegate_info->decode != '\0')))
+    if ((decode && (delegate_info->encode != (char *) NULL)) ||
+        (encode && (delegate_info->decode != (char *) NULL)))
       {
         char
           filename[MaxTextExtent],
