@@ -289,10 +289,16 @@ and the offsets give the location of the leftmost column and topmost
 row to remove.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-If the x offset is negative, it gives the distance leftward from the right edge
-of the image to the rightmost column to remove.  Similarly, if
-the y offset is negative, the distance to the bottommost column to remove
-is measured upward from the bottom edge of the image.</font></td></tr></table>
+The x offset normally specifies the leftmost column to remove.
+If the <strong>-gravity</strong> option is present with <em>NorthEast, East,</em>
+or <em>SouthEast</em>
+gravity, it gives the distance leftward from the right edge
+of the image to the rightmost column to remove.  Similarly, the y offset
+normally specifies the topmost row to remove, but if
+the <strong>-gravity</strong> option is present with <em>SouthWest, South,</em>
+or <em>SouthEast</em>
+gravity, it specifies the distance upward from the bottom edge of the
+image to the bottom row to remove.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The <strong>-chop</strong> option removes entire rows and columns,
 and moves the remaining corner blocks leftward and upward to close the gaps.
@@ -653,7 +659,6 @@ If the <em>x offset</em> is negative, the offset is measured leftward
 from the right edge of the
 screen to the right edge of the image being displayed.
 Similarly, negative <em>y offset</em> is measured between the bottom edges.</font></td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -679,7 +684,7 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Offsets, if present in the geometry specification, are handled in
 the same manner as the <strong>-geometry</strong> option, using X11 style to handle
-negative offsets.
+negative offsets.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 

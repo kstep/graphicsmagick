@@ -54,7 +54,7 @@ unless the images have a scene keyword. If a scene number is specified
 in each image, then the images are tiled onto the composite in the order
 of their scene number. Finally, the last argument on the command line is
 the name assigned to the composite image. By default, the image is written
-in the \fBMIFF\fP format and can be viewed or printed with \fBdisplay\fP.
+in the \fBMIFF\fP format and can be viewed or printed with display.
 
 Note, that if the number of tiles exceeds the default number of 20 (5 per
 row, 4 per column), more than one composite image is created. To ensure
@@ -151,10 +151,16 @@ and the offsets give the location of the leftmost column and topmost
 row to remove.
 
 
-If the x offset is negative, it gives the distance leftward from the right edge
-of the image to the rightmost column to remove.  Similarly, if
-the y offset is negative, the distance to the bottommost column to remove
-is measured upward from the bottom edge of the image.
+The x offset normally specifies the leftmost column to remove.
+If the \fB-gravity\fP option is present with \fINorthEast, East,\fP
+or \fISouthEast\fP
+gravity, it gives the distance leftward from the right edge
+of the image to the rightmost column to remove.  Similarly, the y offset
+normally specifies the topmost row to remove, but if
+the \fB-gravity\fP option is present with \fISouthWest, South,\fP
+or \fISouthEast\fP
+gravity, it specifies the distance upward from the bottom edge of the
+image to the bottom row to remove.
 
 The \fB-chop\fP option removes entire rows and columns,
 and moves the remaining corner blocks leftward and upward to close the gaps.
@@ -842,7 +848,8 @@ The \fB-gravity\fP option is also used in concert with the \fB-geometry\fP
 option and other options that take \fB<geometry>\fP as a parameter, such
 as the \fB-crop\fP option.  See \fB-geometry\fP for details of how the
 \fB-gravity\fP option interacts with the 
-\fB<x_offset>\fP and \fB<y_offset>\fP parameters of a geometry specification.
+\fB<x_offset>\fP and \fB<y_offset>\fP parameters of a geometry
+specification.
 
 When used as an option to \fImontage\fP, \fB-gravity\fP gives the direction
 that an image gravitates within a tile.  The default gravity is \fICenter\fP

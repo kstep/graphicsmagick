@@ -106,10 +106,16 @@ and the offsets give the location of the leftmost column and topmost
 row to remove.
 
 
-If the x offset is negative, it gives the distance leftward from the right edge
-of the image to the rightmost column to remove.  Similarly, if
-the y offset is negative, the distance to the bottommost column to remove
-is measured upward from the bottom edge of the image.
+The x offset normally specifies the leftmost column to remove.
+If the \fB-gravity\fP option is present with \fINorthEast, East,\fP
+or \fISouthEast\fP
+gravity, it gives the distance leftward from the right edge
+of the image to the rightmost column to remove.  Similarly, the y offset
+normally specifies the topmost row to remove, but if
+the \fB-gravity\fP option is present with \fISouthWest, South,\fP
+or \fISouthEast\fP
+gravity, it specifies the distance upward from the bottom edge of the
+image to the bottom row to remove.
 
 The \fB-chop\fP option removes entire rows and columns,
 and moves the remaining corner blocks leftward and upward to close the gaps.
@@ -349,7 +355,6 @@ If the \fIx offset\fP is negative, the offset is measured leftward
 from the right edge of the
 screen to the right edge of the image being displayed.
 Similarly, negative \fIy offset\fP is measured between the bottom edges.
-
 .TP
 .B "-help"
 \fRprint usage instructions

@@ -148,7 +148,7 @@ unless the images have a scene keyword. If a scene number is specified
 in each image, then the images are tiled onto the composite in the order
 of their scene number. Finally, the last argument on the command line is
 the name assigned to the composite image. By default, the image is written
-in the <strong>MIFF</strong> format and can be viewed or printed with <a href="../www/display.html"><strong>display</strong>.</a>
+in the <strong>MIFF</strong> format and can be viewed or printed with <a href="../www/display.html">display.</a>
 <p>
 Note, that if the number of tiles exceeds the default number of 20 (5 per
 row, 4 per column), more than one composite image is created. To ensure
@@ -329,10 +329,16 @@ and the offsets give the location of the leftmost column and topmost
 row to remove.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-If the x offset is negative, it gives the distance leftward from the right edge
-of the image to the rightmost column to remove.  Similarly, if
-the y offset is negative, the distance to the bottommost column to remove
-is measured upward from the bottom edge of the image.</font></td></tr></table>
+The x offset normally specifies the leftmost column to remove.
+If the <strong>-gravity</strong> option is present with <em>NorthEast, East,</em>
+or <em>SouthEast</em>
+gravity, it gives the distance leftward from the right edge
+of the image to the rightmost column to remove.  Similarly, the y offset
+normally specifies the topmost row to remove, but if
+the <strong>-gravity</strong> option is present with <em>SouthWest, South,</em>
+or <em>SouthEast</em>
+gravity, it specifies the distance upward from the bottom edge of the
+image to the bottom row to remove.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The <strong>-chop</strong> option removes entire rows and columns,
 and moves the remaining corner blocks leftward and upward to close the gaps.
@@ -1104,7 +1110,8 @@ The <strong>-gravity</strong> option is also used in concert with the <strong>-g
 option and other options that take <strong>&lt;geometry&gt;</strong> as a parameter, such
 as the <strong>-crop</strong> option.  See <strong>-geometry</strong> for details of how the
 <strong>-gravity</strong> option interacts with the 
-<strong>&lt;x_offset&gt;</strong> and <strong>&lt;y_offset&gt;</strong> parameters of a geometry specification.
+<strong>&lt;x_offset&gt;</strong> and <strong>&lt;y_offset&gt;</strong> parameters of a geometry
+specification.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 When used as an option to <em>montage</em>, <strong>-gravity</strong> gives the direction
 that an image gravitates within a tile.  The default gravity is <em>Center</em>
