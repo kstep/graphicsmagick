@@ -597,7 +597,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
     component_info[i].prec=(unsigned int) image->depth <= 8 ? 8 : 16;
   }
   jp2_image=jas_image_create((short) number_components,component_info,
-    number_components == 1 ? JAS_IMAGE_CM_GRAY : JAS_IMAGE_CM_RGB);
+    number_components == 1 ? JAS_IMAGE_CS_GRAY : JAS_IMAGE_CS_RGB);
   if (jp2_image == (jas_image_t *) NULL)
     ThrowWriterException(DelegateError,"UnableToCreateImage",image);
   /*
