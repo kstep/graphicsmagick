@@ -53,10 +53,11 @@ Unix/Linux/Darwin/Cygwin Install:
   different install directory, follow these steps (here we assume an
   install directory of /opt/ImageMagick):
 
+      mkdir /opt/ImageMagick
       gunzip -c ImageMagick-*.tar.gz | tar xvf -
       /bin/mv share/ImageMagick/* /opt/ImageMagick
-      /bin/mv lib/ImageMagick/* /opt/ImageMagick
       /bin/mv lib/ImageMagick/modules/coders/* /opt/ImageMagick
+      /bin/mv lib/ImageMagick/* /opt/ImageMagick
       /bin/mv lib/libMagick* /opt/ImageMagick
       /bin/mv bin/* /opt/ImageMagick
       setenv LD_LIBRARY_PATH /opt/ImageMagick 
