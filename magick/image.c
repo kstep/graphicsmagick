@@ -3368,7 +3368,6 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
           }
         DestroyImage(tile);
       }
-      DestroyImageInfo(&image_info);
     }
 }
 
@@ -3477,36 +3476,6 @@ Export void DestroyImage(Image *image)
   */
   FreeMemory((char *) image);
   image=(Image *) NULL;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   D e s t r o y I m a g e I n f o                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method DestroyImageInfo deallocates memory associated with an ImageInfo
-%  structure.
-%
-%  The format of the DestroyImageInfo routine is:
-%
-%      DestroyImageInfo(image_info)
-%
-%  A description of each parameter follows:
-%
-%    o image_info: Specifies a pointer to a ImageInfo structure.
-%
-%
-*/
-Export void DestroyImageInfo(ImageInfo *image_info)
-{
-  assert(image_info != (ImageInfo *) NULL);
-  GetImageInfo(image_info);
 }
 
 /*
@@ -4883,6 +4852,49 @@ Export void GetImageInfo(ImageInfo *image_info)
   TemporaryFilename(image_info->unique);
   (void) strcat(image_info->unique,"u");
   image_info->ping=False;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t M o n t a g e I n f o                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetMontageInfo initializes the MontageInfo structure.
+%
+%  The format of the GetMontageInfo routine is:
+%
+%      GetMontageInfo(montage_info)
+%
+%  A description of each parameter follows:
+%
+%    o montage_info: Specifies a pointer to a MontageInfo structure.
+%
+%
+*/
+Export void GetMontageInfo(MontageInfo *montage_info)
+{
+  assert(montage_info != (MontageInfo *) NULL);
+  *montage_info->filename='\0';
+  montage_info->geometry=DefaultTileGeometry;
+  montage_info->tile=DefaultTilePageGeometry;
+  montage_info->background_color=DefaultTileBackground;
+  montage_info->border_color=(char *) NULL;
+  montage_info->matte_color=DefaultTileMatte;
+  montage_info->title=(char *) NULL;
+  montage_info->frame=(char *) NULL;
+  montage_info->texture=(char *) NULL;
+  montage_info->font=(char *) NULL;
+  montage_info->pointsize=atoi(DefaultPointSize);
+  montage_info->border_width=DefaultTileBorderWidth;
+  montage_info->gravity=SouthGravity;
+  montage_info->shadow=False;
+  montage_info->compose=ReplaceCompositeOp;
 }
 
 /*
@@ -7249,6 +7261,659 @@ Export void MogrifyImages(ImageInfo *image_info,int argc,char **argv,
     (void) SetMonitorHandler(handler);
     ProgressMonitor(MogrifyImageText,i,number_images);
   }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M o n t a g e I m a g e s                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MontageImages creates a composite image by combining several
+%  separate images.
+%
+%  The format of the MontageImages routine is:
+%
+%      MontageImages(image,montage_info)
+%
+%  A description of each parameter follows:
+%
+%    o image: Specifies a pointer to an array of Image structures.
+%
+%    o montage_info: Specifies a pointer to a XMontageInfo structure.
+%
+%
+*/
+
+static void FormatLabel(ImageInfo *image_info,char *label,
+  const unsigned int width,unsigned int *font_height)
+{
+  Image
+    *image;
+
+  MonitorHandler
+    handler;
+
+  register char
+    *p,
+    *q;
+
+  if (label == (char *) NULL)
+    return;
+  if (*label == '\0')
+    return;
+  if (strchr(label,'\n') != (char *) NULL)
+    return;
+  /*
+    Format label to fit within a specified width.
+  */
+  handler=SetMonitorHandler((MonitorHandler) NULL);
+  p=label;
+  for (q=p+1; *q != '\0'; q++)
+  {
+    (void) strcpy(image_info->filename,"label:");
+    (void) strncat(image_info->filename+6,p,(int) (q-p));
+    image=ReadImage(image_info);
+    if (image == (Image *) NULL)
+      break;
+    if (image->columns > width)
+      {
+        while (!isspace((int) (*q)) && (q > p))
+          q--;
+        if (q == p)
+          break;
+        *q='\n';
+        p=q+1;
+      }
+    if (image->rows > *font_height)
+      *font_height=image->rows;
+    DestroyImage(image);
+  }
+  (void) SetMonitorHandler(handler);
+}
+
+static int SceneCompare(const void *x,const void *y)
+{
+  Image
+    **image_1,
+    **image_2;
+
+  image_1=(Image **) x;
+  image_2=(Image **) y;
+  return((int) (*image_1)->scene-(int) (*image_2)->scene);
+}
+
+Export Image *MontageImages(Image *image,MontageInfo *montage_info)
+{
+#define MontageImageText  "  Creating visual image directory...  "
+#define TileImageText  "  Creating image tiles...  "
+
+  AnnotateInfo
+    annotate_info;
+
+  char
+    geometry[MaxTextExtent];
+
+  FrameInfo
+    frame_info;
+
+  Image
+    **images,
+    *montage_image,
+    *tile_image;
+
+  ImageInfo
+    local_info;
+
+  int
+    x,
+    x_offset,
+    y,
+    y_offset;
+
+  MonitorHandler
+    handler;
+
+  register int
+    i;
+
+  register RunlengthPacket
+    *p;
+
+  RectangleInfo
+    bounding_box,
+    tile_info;
+
+  unsigned int
+    border_width,
+    bevel_width,
+    concatenate,
+    count,
+    font_height,
+    height,
+    images_per_page,
+    max_height,
+    number_images,
+    number_lines,
+    sharpen,
+    tile,
+    tiles,
+    tiles_per_column,
+    tiles_per_row,
+    tiles_per_page,
+    title_offset,
+    total_tiles,
+    width;
+
+  assert(image != (Image *) NULL);
+  assert(montage_info != (MontageInfo *) NULL);
+  /*
+    Convert image list to an image group.
+  */
+  images=ListToGroupImage(image,&number_images);
+  if (images == (Image **) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to montage images",
+        "Memory allocation failed");
+      return((Image *) NULL);
+    }
+  /*
+    Create image tiles.
+  */
+  for (tile=0; tile < number_images; tile++)
+  {
+    handler=SetMonitorHandler((MonitorHandler) NULL);
+    width=images[tile]->columns;
+    height=images[tile]->rows;
+    x=0;
+    y=0;
+    (void) ParseImageGeometry(montage_info->geometry,&x,&y,&width,&height);
+    sharpen=((width*height) << 1) <
+      (images[tile]->columns*images[tile]->rows);
+    images[tile]->orphan=True;
+    tile_image=ZoomImage(images[tile],width,height);
+    images[tile]->orphan=False;
+    if (tile_image == (Image *) NULL)
+      {
+        for (i=0; i < tile; i++)
+          DestroyImage(images[i]);
+        (void) SetMonitorHandler(handler);
+        return((Image *) NULL);
+      }
+    images[tile]=tile_image;
+    if (sharpen)
+      if ((tile_image->columns > 3) && (tile_image->rows > 3))
+        {
+          Image
+            *sharpened_image;
+
+          images[tile]->orphan=True;
+          sharpened_image=SharpenImage(images[tile],SharpenFactor);
+          images[tile]->orphan=False;
+          if (sharpened_image != (Image *) NULL)
+            {
+              DestroyImage(images[tile]);
+              images[tile]=sharpened_image;
+            }
+        }
+    (void) SetMonitorHandler(handler);
+    ProgressMonitor(TileImageText,tile,number_images);
+  }
+  /*
+    Sort images by increasing tile number.
+  */
+  for (tile=0; tile < number_images; tile++)
+    if (images[tile]->scene == 0)
+      break;
+  if (tile == number_images)
+    qsort((void *) images,number_images,sizeof(Image *),
+      (int (*)(const void *, const void *)) SceneCompare);
+  /*
+    Determine tiles per row and column.
+  */
+  tiles_per_row=1;
+  tiles_per_column=1;
+  while ((tiles_per_row*tiles_per_column) < number_images)
+  {
+    tiles_per_row++;
+    tiles_per_column++;
+  }
+  if (montage_info->tile != (char *) NULL)
+    {
+      tiles_per_column=number_images;
+      x=0;
+      y=0;
+      (void) XParseGeometry(montage_info->tile,&x,&y,&tiles_per_row,
+        &tiles_per_column);
+    }
+  /*
+    Determine tile sizes.
+  */
+  border_width=montage_info->border_width;
+  bevel_width=0;
+  if (montage_info->frame != (char *) NULL)
+    {
+      int
+        flags;
+
+      frame_info.width=0;
+      frame_info.height=0;
+      frame_info.outer_bevel=0;
+      frame_info.inner_bevel=0;
+      flags=XParseGeometry(montage_info->frame,&frame_info.outer_bevel,
+        &frame_info.inner_bevel,&frame_info.width,&frame_info.height);
+      if ((flags & HeightValue) == 0)
+        frame_info.height=frame_info.width;
+      if ((flags & XValue) == 0)
+        frame_info.outer_bevel=(frame_info.width >> 2)+1;
+      if ((flags & YValue) == 0)
+        frame_info.inner_bevel=frame_info.outer_bevel;
+      frame_info.x=frame_info.width;
+      frame_info.y=frame_info.height;
+      bevel_width=Max(frame_info.inner_bevel,frame_info.outer_bevel);
+      border_width=Max(frame_info.width,frame_info.height);
+    }
+  tile_info.x=montage_info->border_width;
+  tile_info.y=montage_info->border_width;
+  tile_info.width=images[0]->columns;
+  tile_info.height=images[0]->rows;
+  concatenate=False;
+  if (montage_info->geometry != (char *) NULL)
+    {
+      int
+        flags;
+
+      /*
+        Initialize tile geometry.
+      */
+      (void) strcpy(geometry,montage_info->geometry);
+      if (strchr(geometry,'%') == (char *) NULL)
+        (void) strcat(geometry,"~");
+      tile_info.x=0;
+      tile_info.y=0;
+      flags=ParseImageGeometry(geometry,&tile_info.x,&tile_info.y,
+        &tile_info.width,&tile_info.height);
+      if ((tile_info.x == 0) && (tile_info.y == 0))
+        concatenate=!((flags & WidthValue) || (flags & HeightValue));
+      if (tile_info.x < 0)
+        tile_info.x=0;
+      if (tile_info.y < 0)
+        tile_info.y=0;
+    }
+  for (tile=1; tile < number_images; tile++)
+  {
+    if (images[tile]->columns > tile_info.width)
+      tile_info.width=images[tile]->columns;
+    if (images[tile]->rows > tile_info.height)
+      tile_info.height=images[tile]->rows;
+  }
+  /*
+    Initialize annotate info.
+  */
+  GetImageInfo(&local_info);
+  local_info.font=montage_info->font;
+  local_info.pointsize=montage_info->pointsize;
+  local_info.background_color=montage_info->background_color;
+  local_info.border_color=montage_info->border_color;
+  GetAnnotateInfo((ImageInfo *) &local_info,&annotate_info);
+  annotate_info.geometry=geometry;
+  annotate_info.gravity=NorthGravity;
+  /*
+    Initialize font info.
+  */
+  font_height=annotate_info.bounds.height;
+  FormatLabel((ImageInfo *) &local_info,montage_info->title,((tile_info.width+
+    (border_width << 1))*Min(number_images,tiles_per_column)) >> 1,
+    &font_height);
+  for (tile=0; tile < number_images; tile++)
+    FormatLabel((ImageInfo *) &local_info,images[tile]->label,tile_info.width+
+      (border_width << 1),&font_height);
+  /*
+    Determine the number of lines in an image label.
+  */
+  title_offset=0;
+  if (montage_info->title != (char *) NULL)
+    title_offset=((font_height*MultilineCensus(montage_info->title)) << 1)+
+      (tile_info.y << 1);
+  number_lines=0;
+  for (tile=0; tile < number_images; tile++)
+    if (MultilineCensus(images[tile]->label) > number_lines)
+      number_lines=MultilineCensus(images[tile]->label);
+  /*
+    Allocate image structure.
+  */
+  montage_image=AllocateImage(&local_info);
+  if (montage_image == (Image *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to montage images",
+        "Memory allocation failed");
+      return((Image *) NULL);
+    }
+  montage_image->scene=1;
+  images_per_page=(number_images-1)/(tiles_per_row*tiles_per_column)+1;
+  tiles=0;
+  total_tiles=number_images;
+  for (i=0; i < images_per_page; i++)
+  {
+    /*
+      Determine bounding box.
+    */
+    tiles_per_page=Min(number_images,tiles_per_row*tiles_per_column);
+    x_offset=0;
+    y_offset=title_offset;
+    max_height=0;
+    bounding_box.width=0;
+    bounding_box.height=0;
+    for (tile=0; tile < tiles_per_page; tile++)
+    {
+      width=concatenate ? images[tile]->columns : tile_info.width;
+      x_offset+=width+(tile_info.x+border_width)*2;
+      if (x_offset > bounding_box.width)
+        bounding_box.width=x_offset;
+      if (images[tile]->rows > max_height)
+        max_height=images[tile]->rows;
+      if (((tile+1) == tiles_per_page) || (((tile+1) % tiles_per_row) == 0))
+        {
+          x_offset=0;
+          height=concatenate ? max_height : tile_info.height;
+          y_offset+=height+(tile_info.y+border_width)*2+(font_height+4)*
+            number_lines+(montage_info->shadow ? 4 : 0)+(concatenate ? 0 : 2);
+          if (y_offset > bounding_box.height)
+            bounding_box.height=y_offset;
+          max_height=0;
+        }
+    }
+    /*
+      Initialize Image structure.
+    */
+    (void) strcpy(montage_image->filename,montage_info->filename);
+    montage_image->columns=bounding_box.width;
+    montage_image->rows=bounding_box.height;
+    montage_image->packets=montage_image->columns*montage_image->rows;
+    montage_image->pixels=(RunlengthPacket *) AllocateMemory((unsigned int)
+      montage_image->packets*sizeof(RunlengthPacket));
+    if (montage_image->pixels == (RunlengthPacket *) NULL)
+      {
+        MagickWarning(ResourceLimitWarning,"Unable to montage images",
+          "Memory allocation failed");
+        DestroyImages(montage_image);
+        return((Image *) NULL);
+      }
+    /*
+      Set montage geometry.
+    */
+    montage_image->montage=(char *) AllocateMemory(MaxTextExtent*sizeof(char));
+    count=1;
+    for (tile=0; tile < tiles_per_page; tile++)
+      count+=Extent(images[tile]->filename)+1;
+    montage_image->directory=(char *) AllocateMemory(count*sizeof(char));
+    if ((montage_image->montage == (char *) NULL) ||
+        (montage_image->directory == (char *) NULL))
+      {
+        MagickWarning(ResourceLimitWarning,"Unable to montage images",
+          "Memory allocation failed");
+        DestroyImages(montage_image);
+        return((Image *) NULL);
+      }
+    x_offset=0;
+    y_offset=title_offset;
+    FormatString(montage_image->montage,"%dx%d%+d%+d",
+      (int) (tile_info.width+(tile_info.x+border_width)*2),
+      (int) (tile_info.height+(tile_info.y+border_width)*2+(font_height+4)*
+      number_lines+(montage_info->shadow ? 4 : 0)),x_offset,y_offset);
+    *montage_image->directory='\0';
+    for (tile=0; tile < tiles_per_page; tile++)
+    {
+      (void) strcat(montage_image->directory,images[tile]->filename);
+      (void) strcat(montage_image->directory,"\n");
+    }
+    /*
+      Initialize montage image to background color.
+    */
+    BlackImage(montage_image);
+    handler=SetMonitorHandler((MonitorHandler) NULL);
+    if (montage_info->texture != (char *) NULL)
+      TextureImage(montage_image,montage_info->texture);
+    if (montage_info->title != (char *) NULL)
+      {
+        /*
+          Annotate composite image with title.
+        */
+        FormatString(annotate_info.geometry,"%ux%u%+d%+d",
+          montage_image->columns,font_height << 1,0,tile_info.y+4);
+        annotate_info.text=montage_info->title;
+        AnnotateImage(montage_image,&annotate_info);
+      }
+    (void) SetMonitorHandler(handler);
+    /*
+      Copy tile images to the composite image.
+    */
+    x_offset=tile_info.x;
+    y_offset=title_offset+tile_info.y;
+    max_height=0;
+    for (tile=0; tile < tiles_per_page; tile++)
+    {
+      /*
+        Copy this tile to the composite image.
+      */
+      handler=SetMonitorHandler((MonitorHandler) NULL);
+      image=images[tile];
+      width=concatenate ? image->columns : tile_info.width;
+      if (image->rows > max_height)
+        max_height=image->rows;
+      height=concatenate ? max_height : tile_info.height;
+      if (border_width != 0)
+        {
+          Image
+            *bordered_image;
+
+          RectangleInfo
+            border_info;
+
+          /*
+            Put a border around the image.
+          */
+          border_info.width=border_width;
+          border_info.height=border_width;
+          if (montage_info->frame != (char *) NULL)
+            {
+              border_info.width=(width-image->columns+1) >> 1;
+              border_info.height=(height-image->rows+1) >> 1;
+            }
+          bordered_image=BorderImage(image,&border_info);
+          if (bordered_image != (Image *) NULL)
+            {
+              DestroyImage(image);
+              image=bordered_image;
+            }
+        }
+      /*
+        Gravitate image as specified by the tile gravity.
+      */
+      switch (montage_info->gravity)
+      {
+        case NorthWestGravity:
+        {
+          x=0;
+          y=0;
+          break;
+        }
+        case NorthGravity:
+        {
+          x=((width+(border_width << 1))-image->columns) >> 1;
+          y=0;
+          break;
+        }
+        case NorthEastGravity:
+        {
+          x=(width+(border_width << 1))-image->columns;
+          y=0;
+          break;
+        }
+        case WestGravity:
+        {
+          x=0;
+          y=((height+(border_width << 1))-image->rows) >> 1;
+          break;
+        }
+        case ForgetGravity:
+        case StaticGravity:
+        case CenterGravity:
+        default:
+        {
+          x=((width+(border_width << 1))-image->columns) >> 1;
+          y=((height+(border_width << 1))-image->rows) >> 1;
+          break;
+        }
+        case EastGravity:
+        {
+          x=(width+(border_width << 1))-image->columns;
+          y=((height+(border_width << 1))-image->rows) >> 1;
+          break;
+        }
+        case SouthWestGravity:
+        {
+          x=0;
+          y=(height+(border_width << 1))-image->rows;
+          break;
+        }
+        case SouthGravity:
+        {
+          x=((width+(border_width << 1))-image->columns) >> 1;
+          y=(height+(border_width << 1))-image->rows;
+          break;
+        }
+        case SouthEastGravity:
+        {
+          x=(width+(border_width << 1))-image->columns;
+          y=(height+(border_width << 1))-image->rows;
+          break;
+        }
+      }
+      if ((montage_info->frame != (char *) NULL) && (bevel_width != 0))
+        {
+          FrameInfo
+            tile_info;
+
+          Image
+            *framed_image;
+
+          /*
+            Put an ornamental border around this tile.
+          */
+          tile_info=frame_info;
+          tile_info.width=width+(frame_info.width << 1);
+          tile_info.height=height+(frame_info.height << 1)+(font_height+4)*
+            MultilineCensus(image->label);
+          framed_image=FrameImage(image,&tile_info);
+          if (framed_image != (Image *) NULL)
+            {
+              DestroyImage(image);
+              image=framed_image;
+            }
+          x=0;
+          y=0;
+        }
+      if (Latin1Compare(image->magick,"NULL") != 0)
+        {
+          /*
+            Composite background image with tile image.
+          */
+          if (image->matte)
+            CompositeImage(montage_image,montage_info->compose,image,x_offset+x,
+              y_offset+y);
+          else
+            CompositeImage(montage_image,ReplaceCompositeOp,image,x_offset+x,
+              y_offset+y);
+          montage_image->matte=False;
+          if (montage_info->shadow)
+            {
+              register int
+                columns,
+                rows;
+
+              /*
+                Put a shadow under the tile to show depth.
+              */
+              for (rows=0; rows < ((int) image->rows-4); rows++)
+              {
+                p=montage_image->pixels+montage_image->columns*
+                  (y_offset+y+rows+4)+x_offset+x+image->columns;
+                for (columns=0; columns < Min(tile_info.x,4); columns++)
+                {
+                  if (p >= (montage_image->pixels+montage_image->packets))
+                    continue;
+                  Modulate(0.0,0.0,-25.0+4*columns,&p->red,&p->green,&p->blue);
+                  p++;
+                }
+              }
+              for (rows=0; rows < Min(tile_info.y,4); rows++)
+              {
+                p=montage_image->pixels+montage_image->columns*
+                  (y_offset+y+image->rows+rows)+x_offset+x+4;
+                for (columns=0; columns < image->columns; columns++)
+                {
+                  if (p >= (montage_image->pixels+montage_image->packets))
+                    continue;
+                  Modulate(0.0,0.0,-25.0+4*rows,&p->red,&p->green,&p->blue);
+                  p++;
+                }
+              }
+            }
+          if (image->label != (char *) NULL)
+            {
+              /*
+                Annotate composite image tile with label.
+              */
+              FormatString(annotate_info.geometry,"%ux%u%+d%+d",
+                (montage_info->frame ? image->columns : width)-
+                (border_width << 1),font_height,(int) (x_offset+border_width),
+                (int) (montage_info->frame ? y_offset+height+
+                (border_width << 1)-bevel_width-2 : y_offset+tile_info.height+
+                (border_width << 1)+(montage_info->shadow ? 4 : 0)+2));
+              annotate_info.text=image->label;
+              AnnotateImage(montage_image,&annotate_info);
+            }
+        }
+      x_offset+=width+(tile_info.x+border_width)*2;
+      if (((tile+1) == tiles_per_page) || (((tile+1) % tiles_per_row) == 0))
+        {
+          x_offset=tile_info.x;
+          y_offset+=height+(tile_info.y+border_width)*2+(font_height+4)*
+            number_lines+(montage_info->shadow ? 4 : 0);
+          max_height=0;
+        }
+      DestroyImage(image);
+      (void) SetMonitorHandler(handler);
+      ProgressMonitor(MontageImageText,tiles,total_tiles);
+      tiles++;
+    }
+    CondenseImage(montage_image);
+    if ((i+1) < images_per_page)
+      {
+        /*
+          Allocate next image structure.
+        */
+        AllocateNextImage((ImageInfo *) NULL,montage_image);
+        if (montage_image->next == (Image *) NULL)
+          {
+            DestroyImages(montage_image);
+            return((Image *) NULL);
+          }
+        montage_image=montage_image->next;
+        images+=tiles_per_page;
+        number_images-=tiles_per_page;
+      }
+  }
+  FreeMemory((char *) images);
+  while (montage_image->previous != (Image *) NULL)
+    montage_image=montage_image->previous;
+  return(montage_image);
 }
 
 /*
@@ -10191,7 +10856,6 @@ Export void TextureImage(Image *image,char *filename)
   GetImageInfo(&texture_info);
   (void) strcpy(texture_info.filename,filename);
   texture_image=ReadImage(&texture_info);
-  DestroyImageInfo(&texture_info);
   if (texture_image == (Image *) NULL)
     return;
   /*

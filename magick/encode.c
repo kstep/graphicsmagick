@@ -7770,13 +7770,8 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,
 
   char
     *commands[NumberTiles+6],
-    *client_name,
     factor[MaxTextExtent],
-    label[MaxTextExtent],
-    *resource_value;
-
-  Display
-    *display;
+    label[MaxTextExtent];
 
   float
     degrees,
@@ -7800,6 +7795,9 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,
   MonitorHandler
     handler;
 
+  MontageInfo
+    montage_info;
+
   register int
     i;
 
@@ -7808,15 +7806,6 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,
     height,
     status,
     width;
-
-  XMontageInfo
-    montage_info;
-
-  XResourceInfo
-    resource_info;
-
-  XrmDatabase
-    resource_database;
 
   /*
     Scale the image to tile size.
@@ -8155,38 +8144,6 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,
   }
   DestroyImage(preview_image);
   /*
-    Get user defaults from X resource database.
-  */
-  XGetMontageInfo(&montage_info);
-  display=XOpenDisplay(image_info->server_name);
-  if (display != (Display *) NULL)
-    XSetErrorHandler(XError);
-  client_name=SetClientName((char *) NULL);
-  resource_database=XGetResourceDatabase(display,client_name);
-  XGetResourceInfo(resource_database,client_name,&resource_info);
-  resource_info.image_info=local_info;
-  resource_info.font=local_info.font;
-  resource_info.background_color=XGetResourceInstance(resource_database,
-    client_name,"background",DefaultTileBackground);
-  resource_info.foreground_color=XGetResourceInstance(resource_database,
-    client_name,"foreground",DefaultTileForeground);
-  resource_info.matte_color=XGetResourceInstance(resource_database,client_name,
-    "mattecolor",DefaultTileMatte);
-  montage_info.frame=XGetResourceClass(resource_database,client_name,"frame",
-    DefaultTileFrame);
-  resource_info.image_geometry=XGetResourceInstance(resource_database,
-    client_name,"imageGeometry",DefaultPreviewGeometry);
-  resource_value=
-    XGetResourceClass(resource_database,client_name,"shadow","True");
-  montage_info.shadow=IsTrue(resource_value);
-  montage_info.texture=XGetResourceClass(resource_database,client_name,
-    "texture","granite:");
-  montage_info.tile=XGetResourceClass(resource_database,client_name,"tile",
-    DefaultPreviewPageGeometry);
-  montage_info.pointsize=image_info->pointsize;
-  if (display != (Display *) NULL)
-    XCloseDisplay(display);
-  /*
     Create the PCD Overview image.
   */
   for (i=1; i < NumberTiles; i++)
@@ -8194,8 +8151,9 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,
     images[i]->previous=images[i-1];
     images[i-1]->next=images[i];
   }
+  GetMontageInfo(&montage_info);
   (void) strcpy(montage_info.filename,image->filename);
-  montage_image=XMontageImages(&resource_info,&montage_info,*images);
+  montage_image=MontageImages(*images,&montage_info);
   for (i=0;  i < i; i++)
     DestroyImage(images[i]);
   if (montage_image == (Image *) NULL)

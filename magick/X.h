@@ -231,26 +231,6 @@ typedef struct _XImportInfo
     silent;
 } XImportInfo;
 
-typedef struct _XMontageInfo
-{
-  char
-    filename[MaxTextExtent];
-
-  unsigned int
-    shadow;
-
-  CompositeOperator
-    compose;
-
-  unsigned int
-    pointsize;
- 
-  char
-    *frame,
-    *tile,
-    *texture;
-} XMontageInfo;
-
 typedef struct _XPixelInfo
 {
   unsigned int
@@ -561,7 +541,6 @@ extern Export Image
   *XDisplayImage(Display *,XResourceInfo *,char **,int,Image **,
     unsigned long *),
   *XImportImage(const ImageInfo *,XImportInfo *),
-  *XMontageImages(const XResourceInfo *,XMontageInfo *,Image *),
   *XGetWindowImage(Display *,const Window,const unsigned int,
     const unsigned int);
 
@@ -597,7 +576,6 @@ extern Export void
   XGetAnnotateInfo(XAnnotateInfo *),
   XGetImportInfo(XImportInfo *),
   XGetMapInfo(const XVisualInfo *,const Colormap,XStandardColormap *),
-  XGetMontageInfo(XMontageInfo *),
   XGetPixelInfo(Display *,const XVisualInfo *,const XStandardColormap *,
     const XResourceInfo *,Image *,XPixelInfo *),
   XGetResourceInfo(XrmDatabase,char *,XResourceInfo *),

@@ -900,7 +900,6 @@ int main(int argc,char **argv)
   if (image_info.verbose)
     DescribeImage(combined_image,stdout,False);
   DestroyImage(combined_image);
-  DestroyImageInfo(&image_info);
   DestroyDelegates;
   Exit(0);
   return(False);

@@ -638,7 +638,6 @@ Export int GlobExpression(char *expression,const char *pattern)
   exempt=(Latin1Compare(image_info.magick,"VID") == 0) ||
     (image_info.subimage &&
     (Latin1Compare(expression,image_info.filename) == 0));
-  DestroyImageInfo(&image_info);
   if (exempt)
     return(False);
   /*

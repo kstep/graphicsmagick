@@ -72,8 +72,8 @@
 %  determined by the font you specify with the -font command line argument or
 %  X resource.  If you do not specify a font, a font is choosen that allows
 %  the name of the image to fit the maximum width of a tiled area.  The label
-%  colors is determined by the -background and -foreground command line
-%  argument or X resource.  Note, that if the background and foreground colors
+%  colors is determined by the -background and -pen command line
+%  argument or X resource.  Note, that if the background and pen colors
 %  are the same, labels will not appear.
 %
 %  Finally, each image is set onto the composite image, surrounded by its
@@ -125,7 +125,7 @@
 %
 %  In addition to those listed above, you can specify these standard X
 %  resources as command line options:  -background, -bordercolor -borderwidth,
-%  -font, -foreground, -mattecolor, or -title.
+%  -font, -mattecolor, or -title.
 %
 %  By default, the image format of `file' is determined by its magic
 %  number.  To specify a particular image format, precede the filename
@@ -222,7 +222,7 @@ static void Usage(const char *client_name)
   (void) printf(
     "resources as command line options:  -background, -bordercolor,\n");
   (void) printf(
-    "-borderwidth, -font, -foreground, -mattecolor, or -title\n");
+    "-borderwidth, -font, -mattecolor, or -title\n");
   (void) printf(
     "\nBy default, the image format of `file' is determined by its magic\n");
   (void) printf(
@@ -253,12 +253,7 @@ int main(int argc,char **argv)
   char
     *client_name,
     *option,
-    *resource_value,
-    *server_name,
     *transparent_color;
-
-  Display
-    *display;
 
   Image
     *image,
@@ -267,31 +262,22 @@ int main(int argc,char **argv)
     *p;
 
   ImageInfo
-    *image_info;
+    image_info;
 
   int
     i,
     x;
 
-  MontageMode
-    mode;
+  MontageInfo
+    montage_info;
 
   QuantizeInfo
-    *quantize_info;
+    quantize_info;
 
   unsigned int
     first_scene,
     last_scene,
     scene;
-
-  XMontageInfo
-    montage_info;
-
-  XrmDatabase
-    resource_database;
-
-  XResourceInfo
-    resource_info;
 
   /*
     Display usage profile if there are no command line arguments.
@@ -303,96 +289,14 @@ int main(int argc,char **argv)
   /*
     Set defaults.
   */
-  display=(Display *) NULL;
   first_scene=0;
   image=(Image *) NULL;
   last_scene=0;
-  mode=FrameMode;
-  XGetMontageInfo(&montage_info);
+  GetImageInfo(&image_info);
+  GetMontageInfo(&montage_info);
+  GetQuantizeInfo(&quantize_info);
   scene=0;
   transparent_color=(char *) NULL;
-  /*
-    Check for server name specified on the command line.
-  */
-  (void) ExpandFilenames(&argc,&argv);
-  server_name=(char *) NULL;
-  for (i=1; i < argc; i++)
-  {
-    /*
-      Check command line for server name.
-    */
-    option=argv[i];
-    if ((Extent(option) == 1) || ((*option != '-') && (*option != '+')))
-      continue;
-    if (Latin1Compare("display",option+1) == 0)
-      {
-        /*
-          User specified server name.
-        */
-        if (*option == '-')
-          {
-            i++;
-            if (i == argc)
-              MagickError(OptionError,"Missing server name",option);
-            server_name=argv[i];
-          }
-        break;
-      }
-    if (strncmp("help",option+1,2) == 0)
-      Usage(client_name);
-  }
-  /*
-    Get user defaults from X resource database.
-  */
-  display=XOpenDisplay(server_name);
-  if (display != (Display *) NULL)
-    XSetErrorHandler(XError);
-  resource_database=XGetResourceDatabase(display,client_name);
-  XGetResourceInfo(resource_database,client_name,&resource_info);
-  resource_info.background_color=XGetResourceInstance(resource_database,
-    client_name,"background",DefaultTileBackground);
-  image_info=(&resource_info.image_info);
-  image_info->density=XGetResourceInstance(resource_database,client_name,
-    "density",(char *) NULL);
-  resource_info.foreground_color=XGetResourceInstance(resource_database,
-    client_name,"foreground",DefaultTileForeground);
-  montage_info.frame=
-    XGetResourceInstance(resource_database,client_name,"frame",(char *) NULL);
-  resource_value=
-    XGetResourceInstance(resource_database,client_name,"interlace","none");
-  image_info->interlace=UndefinedInterlace;
-  if (Latin1Compare("None",resource_value) == 0)
-    image_info->interlace=NoInterlace;
-  if (Latin1Compare("Line",resource_value) == 0)
-    image_info->interlace=LineInterlace;
-  if (Latin1Compare("Plane",resource_value) == 0)
-    image_info->interlace=PlaneInterlace;
-  if (Latin1Compare("Partition",resource_value) == 0)
-    image_info->interlace=PartitionInterlace;
-  if (image_info->interlace == UndefinedInterlace)
-    MagickWarning(OptionWarning,"Unrecognized interlace type",resource_value);
-  resource_info.image_geometry=XGetResourceInstance(resource_database,
-    client_name,"imageGeometry",DefaultTileGeometry);
-  resource_info.matte_color=XGetResourceInstance(resource_database,client_name,
-    "mattecolor",DefaultTileMatte);
-  image_info->page=XGetResourceInstance(resource_database,client_name,
-    "pageGeometry",(char *) NULL);
-  resource_value=XGetResourceInstance(resource_database,client_name,"pointsize",
-    DefaultPointSize);
-  montage_info.pointsize=atoi(resource_value);
-  resource_value=
-    XGetResourceInstance(resource_database,client_name,"quality","85");
-  image_info->quality=atoi(resource_value);
-  resource_value=
-    XGetResourceInstance(resource_database,client_name,"shadow","False");
-  montage_info.shadow=IsTrue(resource_value);
-  montage_info.tile=XGetResourceInstance(resource_database,client_name,"tile",
-    montage_info.tile);
-  resource_value=
-    XGetResourceInstance(resource_database,client_name,"verbose","False");
-  image_info->verbose=IsTrue(resource_value);
-  quantize_info=(&resource_info.quantize_info);
-  quantize_info->number_colors=0;
   /*
     Parse command line.
   */
@@ -406,7 +310,7 @@ int main(int argc,char **argv)
         {
           if (strncmp("adjoin",option+1,2) == 0)
             {
-              image_info->adjoin=(*option == '-');
+              image_info.adjoin=(*option == '-');
               break;
             }
           MagickError(OptionError,"Unrecognized option",option);
@@ -417,37 +321,37 @@ int main(int argc,char **argv)
           if ((strncmp("background",option+1,5) == 0) ||
               (strncmp("bg",option+1,2) == 0))
             {
-              resource_info.background_color=(char *) NULL;
+              montage_info.background_color=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing color",option);
-                  resource_info.background_color=argv[i];
+                  montage_info.background_color=argv[i];
                 }
               break;
             }
           if (strncmp("bordercolor",option+1,7) == 0)
             {
-              resource_info.border_color=(char *) NULL;
+              montage_info.border_color=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing color",option);
-                  resource_info.border_color=argv[i];
+                  montage_info.border_color=argv[i];
                 }
               break;
             }
           if (strncmp("borderwidth",option+1,7) == 0)
             {
-              resource_info.border_width=0;
+              montage_info.border_width=0;
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing width",option);
-                  resource_info.border_width=atoi(argv[i]);
+                  montage_info.border_width=atoi(argv[i]);
                 }
               break;
             }
@@ -458,55 +362,55 @@ int main(int argc,char **argv)
         {
           if (strncmp("colors",option+1,7) == 0)
             {
-              quantize_info->number_colors=0;
+              quantize_info.number_colors=0;
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing colors",option);
-                  quantize_info->number_colors=atoi(argv[i]);
+                  quantize_info.number_colors=atoi(argv[i]);
                 }
               break;
             }
           if (strncmp("colorspace",option+1,7) == 0)
             {
-              quantize_info->colorspace=RGBColorspace;
+              quantize_info.colorspace=RGBColorspace;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
-                  quantize_info->colorspace=UndefinedColorspace;
+                  quantize_info.colorspace=UndefinedColorspace;
                   if (Latin1Compare("cmyk",option) == 0)
-                    quantize_info->colorspace=CMYKColorspace;
+                    quantize_info.colorspace=CMYKColorspace;
                   if (Latin1Compare("gray",option) == 0)
                     {
-                      quantize_info->colorspace=GRAYColorspace;
-                      quantize_info->number_colors=256;
-                      quantize_info->tree_depth=8;
+                      quantize_info.colorspace=GRAYColorspace;
+                      quantize_info.number_colors=256;
+                      quantize_info.tree_depth=8;
                     }
                   if (Latin1Compare("ohta",option) == 0)
-                    quantize_info->colorspace=OHTAColorspace;
+                    quantize_info.colorspace=OHTAColorspace;
                   if (Latin1Compare("rgb",option) == 0)
-                    quantize_info->colorspace=RGBColorspace;
+                    quantize_info.colorspace=RGBColorspace;
                   if (Latin1Compare("srgb",option) == 0)
-                    quantize_info->colorspace=sRGBColorspace;
+                    quantize_info.colorspace=sRGBColorspace;
                   if (Latin1Compare("transparent",option) == 0)
-                    quantize_info->colorspace=TransparentColorspace;
+                    quantize_info.colorspace=TransparentColorspace;
                   if (Latin1Compare("xyz",option) == 0)
-                    quantize_info->colorspace=XYZColorspace;
+                    quantize_info.colorspace=XYZColorspace;
                   if (Latin1Compare("ycbcr",option) == 0)
-                    quantize_info->colorspace=YCbCrColorspace;
+                    quantize_info.colorspace=YCbCrColorspace;
                   if (Latin1Compare("ycc",option) == 0)
-                    quantize_info->colorspace=YCCColorspace;
+                    quantize_info.colorspace=YCCColorspace;
                   if (Latin1Compare("yiq",option) == 0)
-                    quantize_info->colorspace=YIQColorspace;
+                    quantize_info.colorspace=YIQColorspace;
                   if (Latin1Compare("ypbpr",option) == 0)
-                    quantize_info->colorspace=YPbPrColorspace;
+                    quantize_info.colorspace=YPbPrColorspace;
                   if (Latin1Compare("yuv",option) == 0)
-                    quantize_info->colorspace=YUVColorspace;
-                  if (quantize_info->colorspace == UndefinedColorspace)
+                    quantize_info.colorspace=YUVColorspace;
+                  if (quantize_info.colorspace == UndefinedColorspace)
                     MagickError(OptionError,"Invalid colorspace type",option);
                 }
               break;
@@ -523,29 +427,29 @@ int main(int argc,char **argv)
             }
           if (strncmp("compress",option+1,5) == 0)
             {
-              image_info->compression=NoCompression;
+              image_info.compression=NoCompression;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
-                  image_info->compression=UndefinedCompression;
+                  image_info.compression=UndefinedCompression;
                   if (Latin1Compare("None",option) == 0)
-                    image_info->compression=NoCompression;
+                    image_info.compression=NoCompression;
                   if (Latin1Compare("BZip",option) == 0)
-                    image_info->compression=BZipCompression;
+                    image_info.compression=BZipCompression;
                   if (Latin1Compare("Fax",option) == 0)
-                    image_info->compression=FaxCompression;
+                    image_info.compression=FaxCompression;
                   if (Latin1Compare("JPEG",option) == 0)
-                    image_info->compression=JPEGCompression;
+                    image_info.compression=JPEGCompression;
                   if (Latin1Compare("LZW",option) == 0)
-                    image_info->compression=LZWCompression;
+                    image_info.compression=LZWCompression;
                   if (Latin1Compare("RunlengthEncoded",option) == 0)
-                    image_info->compression=RunlengthEncodedCompression;
+                    image_info.compression=RunlengthEncodedCompression;
                   if (Latin1Compare("Zip",option) == 0)
-                    image_info->compression=ZipCompression;
-                  if (image_info->compression == UndefinedCompression)
+                    image_info.compression=ZipCompression;
+                  if (image_info.compression == UndefinedCompression)
                     MagickError(OptionError,"Invalid compression type",option);
                 }
               break;
@@ -614,43 +518,43 @@ int main(int argc,char **argv)
         {
           if (strncmp("density",option+1,3) == 0)
             {
-              image_info->density=(char *) NULL;
+              image_info.density=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  image_info->density=argv[i];
+                  image_info.density=argv[i];
                 }
               break;
             }
           if (Latin1Compare("display",option+1) == 0)
             {
-              image_info->server_name=(char *) NULL;
+              image_info.server_name=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing server name",option);
-                  image_info->server_name=argv[i];
+                  image_info.server_name=argv[i];
                 }
               break;
             }
           if (strncmp("dispose",option+1,5) == 0)
             {
-              image_info->dispose=(char *) NULL;
+              image_info.dispose=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing method",option);
-                  image_info->dispose=PostscriptGeometry(argv[i]);
+                  image_info.dispose=PostscriptGeometry(argv[i]);
                 }
               break;
             }
           if (strncmp("dither",option+1,3) == 0)
             {
-              quantize_info->dither=(*option == '-');
+              quantize_info.dither=(*option == '-');
               break;
             }
           if (strncmp("draw",option+1,2) == 0)
@@ -670,73 +574,60 @@ int main(int argc,char **argv)
         {
           if (strncmp("filter",option+1,3) == 0)
             {
-              image_info->filter=MitchellFilter;
+              image_info.filter=MitchellFilter;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
-                  image_info->filter=UndefinedFilter;
+                  image_info.filter=UndefinedFilter;
                   if (Latin1Compare("Point",option) == 0)
-                    image_info->filter=PointFilter;
+                    image_info.filter=PointFilter;
                   if (Latin1Compare("Box",option) == 0)
-                    image_info->filter=BoxFilter;
+                    image_info.filter=BoxFilter;
                   if (Latin1Compare("Triangle",option) == 0)
-                    image_info->filter=TriangleFilter;
+                    image_info.filter=TriangleFilter;
                   if (Latin1Compare("Hermite",option) == 0)
-                    image_info->filter=HermiteFilter;
+                    image_info.filter=HermiteFilter;
                   if (Latin1Compare("Hanning",option) == 0)
-                    image_info->filter=HanningFilter;
+                    image_info.filter=HanningFilter;
                   if (Latin1Compare("Hamming",option) == 0)
-                    image_info->filter=HammingFilter;
+                    image_info.filter=HammingFilter;
                   if (Latin1Compare("Blackman",option) == 0)
-                    image_info->filter=BlackmanFilter;
+                    image_info.filter=BlackmanFilter;
                   if (Latin1Compare("Gaussian",option) == 0)
-                    image_info->filter=GaussianFilter;
+                    image_info.filter=GaussianFilter;
                   if (Latin1Compare("Quadratic",option) == 0)
-                    image_info->filter=QuadraticFilter;
+                    image_info.filter=QuadraticFilter;
                   if (Latin1Compare("Cubic",option) == 0)
-                    image_info->filter=CubicFilter;
+                    image_info.filter=CubicFilter;
                   if (Latin1Compare("Catrom",option) == 0)
-                    image_info->filter=CatromFilter;
+                    image_info.filter=CatromFilter;
                   if (Latin1Compare("Mitchell",option) == 0)
-                    image_info->filter=MitchellFilter;
+                    image_info.filter=MitchellFilter;
                   if (Latin1Compare("Lanczos",option) == 0)
-                    image_info->filter=LanczosFilter;
+                    image_info.filter=LanczosFilter;
                   if (Latin1Compare("Bessel",option) == 0)
-                    image_info->filter=BesselFilter;
+                    image_info.filter=BesselFilter;
                   if (Latin1Compare("Sinc",option) == 0)
-                    image_info->filter=SincFilter;
-                  if (image_info->filter == UndefinedFilter)
+                    image_info.filter=SincFilter;
+                  if (image_info.filter == UndefinedFilter)
                     MagickError(OptionError,"Invalid filter type",option);
                 }
               break;
             }
           if (strncmp("font",option+1,3) == 0)
             {
-              image_info->font=(char *) NULL;
+              image_info.font=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing font name",option);
-                  image_info->font=argv[i];
+                  image_info.font=argv[i];
                 }
-              resource_info.font=image_info->font;
-              break;
-            }
-          if ((strncmp("foreground",option+1,3) == 0) ||
-              (strncmp("fg",option+1,2) == 0))
-            {
-              resource_info.foreground_color=(char *) NULL;
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing foreground",option);
-                  resource_info.foreground_color=argv[i];
-                }
+              montage_info.font=image_info.font;
               break;
             }
           if (strncmp("frame",option+1,2) == 0)
@@ -766,49 +657,49 @@ int main(int argc,char **argv)
             }
           if (strncmp("geometry",option+1,2) == 0)
             {
-              resource_info.image_geometry=(char *) NULL;
+              montage_info.geometry=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  resource_info.image_geometry=argv[i];
+                  montage_info.geometry=argv[i];
                 }
               break;
             }
           if (strncmp("gravity",option+1,2) == 0)
             {
-              resource_info.gravity=CenterGravity;
+              montage_info.gravity=CenterGravity;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
-                  resource_info.gravity=(-1);
+                  montage_info.gravity=(-1);
                   if (Latin1Compare("Forget",option) == 0)
-                    resource_info.gravity=ForgetGravity;
+                    montage_info.gravity=ForgetGravity;
                   if (Latin1Compare("NorthWest",option) == 0)
-                    resource_info.gravity=NorthWestGravity;
+                    montage_info.gravity=NorthWestGravity;
                   if (Latin1Compare("North",option) == 0)
-                    resource_info.gravity=NorthGravity;
+                    montage_info.gravity=NorthGravity;
                   if (Latin1Compare("NorthEast",option) == 0)
-                    resource_info.gravity=NorthEastGravity;
+                    montage_info.gravity=NorthEastGravity;
                   if (Latin1Compare("West",option) == 0)
-                    resource_info.gravity=WestGravity;
+                    montage_info.gravity=WestGravity;
                   if (Latin1Compare("Center",option) == 0)
-                    resource_info.gravity=CenterGravity;
+                    montage_info.gravity=CenterGravity;
                   if (Latin1Compare("East",option) == 0)
-                    resource_info.gravity=EastGravity;
+                    montage_info.gravity=EastGravity;
                   if (Latin1Compare("SouthWest",option) == 0)
-                    resource_info.gravity=SouthWestGravity;
+                    montage_info.gravity=SouthWestGravity;
                   if (Latin1Compare("South",option) == 0)
-                    resource_info.gravity=SouthGravity;
+                    montage_info.gravity=SouthGravity;
                   if (Latin1Compare("SouthEast",option) == 0)
-                    resource_info.gravity=SouthEastGravity;
+                    montage_info.gravity=SouthEastGravity;
                   if (Latin1Compare("Static",option) == 0)
-                    resource_info.gravity=StaticGravity;
-                  if (resource_info.gravity == (-1))
+                    montage_info.gravity=StaticGravity;
+                  if (montage_info.gravity == (-1))
                     MagickError(OptionError,"Invalid gravity type",option);
                 }
               break;
@@ -830,23 +721,23 @@ int main(int argc,char **argv)
         {
           if (strncmp("interlace",option+1,3) == 0)
             {
-              image_info->interlace=NoInterlace;
+              image_info.interlace=NoInterlace;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
-                  image_info->interlace=UndefinedInterlace;
+                  image_info.interlace=UndefinedInterlace;
                   if (Latin1Compare("None",option) == 0)
-                    image_info->interlace=NoInterlace;
+                    image_info.interlace=NoInterlace;
                   if (Latin1Compare("Line",option) == 0)
-                    image_info->interlace=LineInterlace;
+                    image_info.interlace=LineInterlace;
                   if (Latin1Compare("Plane",option) == 0)
-                    image_info->interlace=PlaneInterlace;
+                    image_info.interlace=PlaneInterlace;
                   if (Latin1Compare("Partition",option) == 0)
-                    image_info->interlace=PartitionInterlace;
-                  if (image_info->interlace == UndefinedInterlace)
+                    image_info.interlace=PartitionInterlace;
+                  if (image_info.interlace == UndefinedInterlace)
                     MagickError(OptionError,"Invalid interlace type",option);
                 }
               break;
@@ -875,13 +766,13 @@ int main(int argc,char **argv)
             break;
           if (strncmp("mattecolor",option+1,6) == 0)
             {
-              resource_info.matte_color=(char *) NULL;
+              montage_info.matte_color=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing color",option);
-                  resource_info.matte_color=argv[i];
+                  montage_info.matte_color=argv[i];
                 }
               break;
             }
@@ -889,6 +780,9 @@ int main(int argc,char **argv)
             {
               if (*option == '-')
                 {
+                  MontageMode
+                    mode;
+
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing type",option);
@@ -906,7 +800,7 @@ int main(int argc,char **argv)
                       mode=UnframeMode;
                       montage_info.frame=(char *) NULL;
                       montage_info.shadow=False;
-                      resource_info.border_width=0;
+                      montage_info.border_width=0;
                       break;
                     }
                   if (Latin1Compare("concatenate",option) == 0)
@@ -914,8 +808,8 @@ int main(int argc,char **argv)
                       mode=ConcatenateMode;
                       montage_info.frame=(char *) NULL;
                       montage_info.shadow=False;
-                      resource_info.image_geometry="+0+0";
-                      resource_info.border_width=0;
+                      montage_info.geometry="+0+0";
+                      montage_info.border_width=0;
                       break;
                     }
                   if (mode == UndefinedMode)
@@ -925,12 +819,12 @@ int main(int argc,char **argv)
             }
           if (strncmp("monochrome",option+1,3) == 0)
             {
-              image_info->monochrome=(*option == '-');
-              if (image_info->monochrome)
+              image_info.monochrome=(*option == '-');
+              if (image_info.monochrome)
                 {
-                  quantize_info->number_colors=2;
-                  quantize_info->tree_depth=8;
-                  quantize_info->colorspace=GRAYColorspace;
+                  quantize_info.number_colors=2;
+                  quantize_info.tree_depth=8;
+                  quantize_info.colorspace=GRAYColorspace;
                 }
               break;
             }
@@ -941,38 +835,38 @@ int main(int argc,char **argv)
         {
           if (strncmp("page",option+1,3) == 0)
             {
-              image_info->page=(char *) NULL;
+              image_info.page=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing page geometry",option);
-                  image_info->page=PostscriptGeometry(argv[i]);
+                  image_info.page=PostscriptGeometry(argv[i]);
                 }
               break;
             }
           if (strncmp("pen",option+1,2) == 0)
             {
-              image_info->pen=(char *) NULL;
+              image_info.pen=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing pen color",option);
-                  image_info->pen=argv[i];
+                  image_info.pen=argv[i];
                 }
               break;
             }
           if (strncmp("pointsize",option+1,2) == 0)
             {
-              image_info->pointsize=atoi(DefaultPointSize);
+              image_info.pointsize=atoi(DefaultPointSize);
               montage_info.pointsize=atoi(DefaultPointSize);
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing size",option);
-                  image_info->pointsize=atoi(argv[i]);
+                  image_info.pointsize=atoi(argv[i]);
                   montage_info.pointsize=atoi(argv[i]);
                 }
               break;
@@ -984,13 +878,13 @@ int main(int argc,char **argv)
         {
           if (strncmp("quality",option+1,2) == 0)
             {
-              image_info->quality=atoi(DefaultImageQuality);
+              image_info.quality=atoi(DefaultImageQuality);
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing quality",option);
-                  image_info->quality=atoi(argv[i]);
+                  image_info.quality=atoi(argv[i]);
                 }
               break;
             }
@@ -1041,13 +935,13 @@ int main(int argc,char **argv)
             }
           if (strncmp("size",option+1,2) == 0)
             {
-              image_info->size=(char *) NULL;
+              image_info.size=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  image_info->size=argv[i];
+                  image_info.size=argv[i];
                 }
               break;
             }
@@ -1082,13 +976,13 @@ int main(int argc,char **argv)
             }
           if (strncmp("title",option+1,3) == 0)
             {
-              resource_info.title=(char *) NULL;
+              montage_info.title=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing title",option);
-                  resource_info.title=argv[i];
+                  montage_info.title=argv[i];
                 }
               break;
             }
@@ -1106,13 +1000,13 @@ int main(int argc,char **argv)
             }
           if (strncmp("treedepth",option+1,3) == 0)
             {
-              quantize_info->tree_depth=0;
+              quantize_info.tree_depth=0;
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing depth",option);
-                  quantize_info->tree_depth=atoi(argv[i]);
+                  quantize_info.tree_depth=atoi(argv[i]);
                 }
               break;
             }
@@ -1123,7 +1017,7 @@ int main(int argc,char **argv)
         {
           if (strncmp("verbose",option+1,2) == 0)
             {
-              image_info->verbose=(*option == '-');
+              image_info.verbose=(*option == '-');
               break;
             }
           MagickError(OptionError,"Unrecognized option",option);
@@ -1146,7 +1040,7 @@ int main(int argc,char **argv)
         /*
           Option is a file name: begin by reading image from specified file.
         */
-        (void) strcpy(image_info->filename,argv[i]);
+        (void) strcpy(image_info.filename,argv[i]);
         if (first_scene != last_scene)
           {
             char
@@ -1155,23 +1049,23 @@ int main(int argc,char **argv)
             /*
               Form filename for multi-part images.
             */
-            FormatString(filename,image_info->filename,scene);
-            if (Latin1Compare(filename,image_info->filename) == 0)
-              FormatString(filename,"%.1024s.%u",image_info->filename,scene);
-            (void) strcpy(image_info->filename,filename);
+            FormatString(filename,image_info.filename,scene);
+            if (Latin1Compare(filename,image_info.filename) == 0)
+              FormatString(filename,"%.1024s.%u",image_info.filename,scene);
+            (void) strcpy(image_info.filename,filename);
           }
-        image_info->font=resource_info.font;
-        image_info->colorspace=quantize_info->colorspace;
-        image_info->dither=quantize_info->dither;
-        if (image_info->size == (char *) NULL)
-          image_info->size=resource_info.image_geometry;
-        next_image=ReadImage(image_info);
+        image_info.font=montage_info.font;
+        image_info.colorspace=quantize_info.colorspace;
+        image_info.dither=quantize_info.dither;
+        if (image_info.size == (char *) NULL)
+          image_info.size=montage_info.geometry;
+        next_image=ReadImage(&image_info);
         if (next_image == (Image *) NULL)
           if (*option == '-')
             break;
           else
             continue;
-        MogrifyImages(image_info,i,argv,&next_image);
+        MogrifyImages(&image_info,i,argv,&next_image);
         if (image == (Image *) NULL)
           image=next_image;
         else
@@ -1193,28 +1087,28 @@ int main(int argc,char **argv)
     Create composite image.
   */
   (void) strcpy(montage_info.filename,argv[argc-1]);
-  montage_image=XMontageImages(&resource_info,&montage_info,image);
+  montage_image=MontageImages(image,&montage_info);
   if (montage_image == (Image *) NULL)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   DestroyImages(image);
   /*
     Write image.
   */
-  (void) strcpy(image_info->filename,argv[argc-1]);
+  (void) strcpy(image_info.filename,argv[argc-1]);
   for (p=montage_image; p != (Image *) NULL; p=p->next)
   {
     if (transparent_color != (char *) NULL)
       TransparentImage(p,transparent_color);
-    if (quantize_info->number_colors != 0)
+    if (quantize_info.number_colors != 0)
       {
         /*
           Reduce the number of colors in the image.
         */
         if ((p->class == DirectClass) ||
-            (p->colors > quantize_info->number_colors) ||
-            (quantize_info->colorspace == GRAYColorspace))
-          (void) QuantizeImage(quantize_info,p);
-        if (image_info->verbose)
+            (p->colors > quantize_info.number_colors) ||
+            (quantize_info.colorspace == GRAYColorspace))
+          (void) QuantizeImage(&quantize_info,p);
+        if (image_info.verbose)
           (void) QuantizationError(p);
         SyncImage(p);
       }
@@ -1222,14 +1116,13 @@ int main(int argc,char **argv)
   }
   for (p=montage_image; p != (Image *) NULL; p=p->next)
   {
-    (void) WriteImage(image_info,p);
-    if (image_info->adjoin)
+    (void) WriteImage(&image_info,p);
+    if (image_info.adjoin)
       break;
   }
-  if (image_info->verbose)
+  if (image_info.verbose)
     DescribeImage(montage_image,stderr,False);
   DestroyImage(montage_image);
-  DestroyImageInfo(image_info);
   DestroyDelegates;
   Exit(0);
   return(False);

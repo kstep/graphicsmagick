@@ -432,6 +432,32 @@ typedef struct _ImageInfo
     ping;
 } ImageInfo;
 
+typedef struct _MontageInfo
+{
+  char
+    filename[MaxTextExtent];
+
+  char
+    *geometry,
+    *tile,
+    *background_color,
+    *border_color,
+    *matte_color,
+    *title,
+    *frame,
+    *texture,
+    *font;
+
+  unsigned int
+    pointsize,
+    border_width,
+    gravity,
+    shadow;
+
+  CompositeOperator
+    compose;
+} MontageInfo;
+
 typedef struct _PointInfo
 {
   float
@@ -722,6 +748,7 @@ extern Export Image
   **ListToGroupImage(Image *,unsigned int *),
   *MagnifyImage(Image *),
   *MinifyImage(Image *),
+  *MontageImages(Image *,MontageInfo *),
   *MorphImages(Image *,unsigned int),
   *OilPaintImage(Image *,const unsigned int),
   *ReadAVSImage(const ImageInfo *image_info),
@@ -887,13 +914,13 @@ extern Export void
   CycleColormapImage(Image *,int),
   DescribeImage(Image *,FILE *,const unsigned int),
   DestroyImage(Image *),
-  DestroyImageInfo(ImageInfo *),
   DestroyImages(Image *),
   DrawImage(Image *,AnnotateInfo *),
   EqualizeImage(Image *),
   GammaImage(Image *,char *),
   GetAnnotateInfo(ImageInfo *,AnnotateInfo *),
   GetImageInfo(ImageInfo *),
+  GetMontageInfo(MontageInfo *),
   GetQuantizeInfo(QuantizeInfo *),
   HSLTransform(double,const double,const double,Quantum *,Quantum *,Quantum *),
   LabelImage(Image *,char *),

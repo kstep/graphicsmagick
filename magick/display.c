@@ -2197,7 +2197,6 @@ static unsigned int XCompositeImage(Display *display,
           FormatString(image_info.size,"%ux%u",composite_image->columns,
             composite_image->rows);
           mask_image=ReadImage(&image_info);
-          DestroyImageInfo(&image_info);
           XSetCursorState(display,windows,False);
           if (mask_image == (Image *) NULL)
             {
@@ -5298,7 +5297,6 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       FormatString(image_info.filename,"%.1024s:%.1024s",format,color);
       image_info.size=geometry;
       loaded_image=ReadImage(&image_info);
-      DestroyImageInfo(&image_info);
       XClientMessage(display,windows->image.id,windows->im_protocols,
         windows->im_next_image,CurrentTime);
       break;
@@ -7785,7 +7783,6 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
   loaded_image=ReadImage(&resource_info->image_info);
   if (Latin1Compare(image_info.magick,"X") == 0)
     (void) SetMonitorHandler(handler);
-  DestroyImageInfo(&image_info);
   XSetCursorState(display,windows,False);
   if (loaded_image != (Image *) NULL)
     XClientMessage(display,windows->image.id,windows->im_protocols,
@@ -10980,7 +10977,6 @@ static Image *XVisualDirectoryImage(Display *display,
   char
     *commands[10],
     **filelist,
-    *resource_value,
     window_id[MaxTextExtent];
 
   Image
@@ -10997,6 +10993,9 @@ static Image *XVisualDirectoryImage(Display *display,
   MonitorHandler
     handler;
 
+  MontageInfo
+    montage_info;
+
   register int
     i;
 
@@ -11007,15 +11006,8 @@ static Image *XVisualDirectoryImage(Display *display,
   unsigned int
     backdrop;
 
-  XMontageInfo
-    vid_info;
-
   XResourceInfo
-    background_resources,
-    vid_resources;
-
-  XrmDatabase
-    resource_database;
+    background_resources;
 
   /*
     Request file name from user.
@@ -11042,32 +11034,6 @@ static Image *XVisualDirectoryImage(Display *display,
       return((Image *) NULL);
     }
   /*
-    Get user defaults from X resource database.
-  */
-  XGetMontageInfo(&vid_info);
-  resource_database=XGetResourceDatabase(display,XClientName);
-  XGetResourceInfo(resource_database,XClientName,&vid_resources);
-  vid_resources.background_color=XGetResourceInstance(resource_database,
-    XClientName,"background",DefaultTileBackground);
-  vid_resources.foreground_color=XGetResourceInstance(resource_database,
-    XClientName,"foreground",DefaultTileForeground);
-  vid_info.frame=XGetResourceClass(resource_database,XClientName,"frame",
-    (char *) NULL);
-  vid_resources.matte_color=XGetResourceInstance(resource_database,XClientName,
-    "mattecolor",DefaultTileMatte);
-  vid_resources.image_geometry=XGetResourceInstance(resource_database,
-    XClientName,"imageGeometry",DefaultTileGeometry);
-  resource_value=XGetResourceClass(resource_database,XClientName,"pointsize",
-    DefaultPointSize);
-  vid_info.pointsize=atoi(resource_value);
-  resource_value=
-    XGetResourceClass(resource_database,XClientName,"shadow","True");
-  vid_info.shadow=IsTrue(resource_value);
-  vid_info.texture=
-    XGetResourceClass(resource_database,XClientName,"texture","granite:");
-  vid_info.tile=XGetResourceClass(resource_database,XClientName,"tile",
-    vid_info.tile);
-  /*
     Set image background resources.
   */
   background_resources=(*resource_info);
@@ -11077,6 +11043,7 @@ static Image *XVisualDirectoryImage(Display *display,
   /*
     Read each image and convert them to a tile.
   */
+  GetMontageInfo(&montage_info);
   backdrop=(windows->visual_info->class == TrueColor) ||
    (windows->visual_info->class == DirectColor);
   local_info=resource_info->image_info;
@@ -11085,7 +11052,7 @@ static Image *XVisualDirectoryImage(Display *display,
   commands[1]="-label";
   commands[2]=DefaultTileLabel;
   commands[3]="-geometry";
-  commands[4]=vid_resources.image_geometry;
+  commands[4]=montage_info.geometry;
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
   for (i=0; i < number_files; i++)
@@ -11094,7 +11061,7 @@ static Image *XVisualDirectoryImage(Display *display,
     (void) strcpy(local_info.filename,filelist[i]);
     *local_info.magick='\0';
     if (local_info.size == (char *) NULL)
-      local_info.size=vid_resources.image_geometry;
+      local_info.size=montage_info.geometry;
     next_image=ReadImage(&local_info);
     if (filelist[i] != filenames)
       FreeMemory((char *) filelist[i]);
@@ -11132,8 +11099,8 @@ static Image *XVisualDirectoryImage(Display *display,
   /*
     Create the Visual Image Directory.
   */
-  (void) strcpy(vid_info.filename,filename);
-  montage_image=XMontageImages(&vid_resources,&vid_info,image);
+  (void) strcpy(montage_info.filename,filename);
+  montage_image=MontageImages(image,&montage_info);
   DestroyImages(image);
   XSetCursorState(display,windows,False);
   if (montage_image == (Image *) NULL)

@@ -858,7 +858,6 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
                     p->x,p->y);
                   DestroyImage(composite_image);
                 }
-              DestroyImageInfo(&composite_info);
             }
         }
         break;

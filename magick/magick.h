@@ -141,7 +141,7 @@ extern "C" {
 #define DefaultTextBackground  "#ffffff"
 #define DefaultTextForeground  "#000000"
 #define DefaultTileBackground  "#696e7e"
-#define DefaultTileForeground  "#000000"
+#define DefaultTileBorderWidth  2
 #define DefaultTileFrame  "15x15+3+3"
 #define DefaultTileGeometry  "120x120+10+10>"
 #define DefaultTileLabel  "%f"

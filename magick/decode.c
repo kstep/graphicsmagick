@@ -7178,8 +7178,7 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image)
 {
   char
     *client_name,
-    *commands[3],
-    *resource_value;
+    *commands[3];
 
   Display
     *display;
@@ -7190,47 +7189,9 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image)
   ImageInfo
     local_info;
 
-  XMontageInfo
+  MontageInfo
     montage_info;
 
-  XResourceInfo
-    resource_info;
-
-  XrmDatabase
-    resource_database;
-
-  /*
-    Get user defaults from X resource database.
-  */
-  XGetMontageInfo(&montage_info);
-  display=XOpenDisplay(image_info->server_name);
-  if (display != (Display *) NULL)
-    XSetErrorHandler(XError);
-  client_name=SetClientName((char *) NULL);
-  resource_database=XGetResourceDatabase(display,client_name);
-  XGetResourceInfo(resource_database,client_name,&resource_info);
-  resource_info.background_color=XGetResourceInstance(resource_database,
-    client_name,"background",DefaultTileBackground);
-  resource_info.foreground_color=XGetResourceInstance(resource_database,
-    client_name,"foreground",DefaultTileForeground);
-  resource_info.matte_color=XGetResourceInstance(resource_database,client_name,
-    "mattecolor",DefaultTileMatte);
-  montage_info.frame=XGetResourceClass(resource_database,client_name,"frame",
-    (char *) NULL);
-  resource_info.image_geometry=XGetResourceInstance(resource_database,
-    client_name,"imageGeometry",DefaultTileGeometry);
-  resource_value=XGetResourceClass(resource_database,client_name,"pointsize",
-    DefaultPointSize);
-  montage_info.pointsize=atoi(resource_value);
-  resource_value=
-    XGetResourceClass(resource_database,client_name,"shadow","True");
-  montage_info.shadow=IsTrue(resource_value);
-  montage_info.texture=XGetResourceClass(resource_database,client_name,
-    "texture","granite:");
-  montage_info.tile=XGetResourceClass(resource_database,client_name,"tile",
-    montage_info.tile);
-  if (display != (Display *) NULL)
-    XCloseDisplay(display);
   /*
     Create image tiles.
   */
@@ -7242,8 +7203,9 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image)
   /*
     Create the PCD Overview image.
   */
+  GetMontageInfo(&montage_info);
   (void) strcpy(montage_info.filename,image_info->filename);
-  montage_image=XMontageImages(&resource_info,&montage_info,image);
+  montage_image=MontageImages(image,&montage_info);
   if (montage_image == (Image *) NULL)
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
   DestroyImage(image);
@@ -9959,6 +9921,8 @@ Image *ReadPNGImage(const ImageInfo *image_info)
 
 static unsigned int PNMInteger(Image *image,const unsigned int base)
 {
+#define P7Comment  "END_OF_COMMENT"
+
   int
     c;
 
@@ -9985,44 +9949,41 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
         /*
           Read comment.
         */
-        if (image->comments != (char *) NULL)
-          {
-            length=Extent(image->comments);
-            p=image->comments+length;
-          }
+        p=image->comments;
+        length=MaxTextExtent;
+        if (image->comments == (char *) NULL)
+          image->comments=(char *) AllocateMemory(length*sizeof(char));
         else
           {
-            length=MaxTextExtent;
-            image->comments=(char *) AllocateMemory(length*sizeof(char));
-            p=image->comments;
+            p=image->comments+Extent(image->comments);
+            length=p-image->comments;
           }
         q=p;
-        for ( ; image->comments != (char *) NULL; p++)
-        {
-          if ((p-image->comments+18) >= length)
-            {
-              *p='\0';
-              length<<=1;
-              image->comments=(char *)
-                ReallocateMemory((char *) image->comments,length*sizeof(char));
-              if (image->comments == (char *) NULL)
-                break;
-              p=image->comments+Extent(image->comments);
-            }
-          c=fgetc(image->file);
-          if ((c == EOF) || (c == '\n'))
-            break;
-          *p=(unsigned char) c;
-        }
+        if (image->comments != (char *) NULL)
+          for ( ; (c != EOF) && (c != '\n'); p++)
+          {
+            if ((p-image->comments+sizeof(P7Comment)) >= length)
+              {
+                length<<=1;
+                length+=MaxTextExtent;
+                image->comments=(char *) ReallocateMemory((char *)
+                  image->comments,length*sizeof(char));
+                if (image->comments == (char *) NULL)
+                  break;
+                p=image->comments+Extent(image->comments);
+              }
+            c=fgetc(image->file);
+            *p=(char) c;
+            *(p+1)='\0';
+          }
         if (image->comments == (char *) NULL)
           {
             MagickWarning(ResourceLimitWarning,"Memory allocation failed",
               (char *) NULL);
             return(0);
           }
-        if (Latin1Compare(q,"END_OF_COMMENT") == 0)
-          p=q;
-        *p='\0';
+        if (Latin1Compare(q,P7Comment) == 0)
+          *q='\0';
         continue;
       }
   } while (!isdigit(c));
@@ -15632,11 +15593,7 @@ Image *ReadVIDImage(const ImageInfo *image_info)
     *client_name,
     *commands[5],
     **filelist,
-    **list,
-    *resource_value;
-
-  Display
-    *display;
+    **list;
 
   Image
     *image,
@@ -15652,17 +15609,11 @@ Image *ReadVIDImage(const ImageInfo *image_info)
   MonitorHandler
     handler;
 
-  register int
-    i;
-
-  XMontageInfo
+  MontageInfo
     montage_info;
 
-  XResourceInfo
-    resource_info;
-
-  XrmDatabase
-    resource_database;
+  register int
+    i;
 
   /*
     Expand the filename.
@@ -15692,40 +15643,9 @@ Image *ReadVIDImage(const ImageInfo *image_info)
       return((Image *) NULL);
     }
   /*
-    Get user defaults from X resource database.
-  */
-  XGetMontageInfo(&montage_info);
-  display=XOpenDisplay(image_info->server_name);
-  if (display != (Display *) NULL)
-    XSetErrorHandler(XError);
-  client_name=SetClientName((char *) NULL);
-  resource_database=XGetResourceDatabase(display,client_name);
-  XGetResourceInfo(resource_database,client_name,&resource_info);
-  resource_info.background_color=XGetResourceInstance(resource_database,
-    client_name,"background",DefaultTileBackground);
-  resource_info.foreground_color=XGetResourceInstance(resource_database,
-    client_name,"foreground",DefaultTileForeground);
-  resource_info.matte_color=XGetResourceInstance(resource_database,client_name,
-    "mattecolor",DefaultTileMatte);
-  montage_info.frame=
-    XGetResourceInstance(resource_database,client_name,"frame",(char *) NULL);
-  resource_info.image_geometry=XGetResourceInstance(resource_database,
-    client_name,"imageGeometry",DefaultTileGeometry);
-  resource_value=XGetResourceClass(resource_database,client_name,
-    "pointsize",DefaultPointSize);
-  montage_info.pointsize=atoi(resource_value);
-  resource_value=
-    XGetResourceClass(resource_database,client_name,"shadow","True");
-  montage_info.shadow=IsTrue(resource_value);
-  montage_info.texture=XGetResourceClass(resource_database,client_name,
-    "texture","granite:");
-  montage_info.tile=XGetResourceClass(resource_database,client_name,"tile",
-    montage_info.tile);
-  if (display != (Display *) NULL)
-    XCloseDisplay(display);
-  /*
     Read each image and convert them to a tile.
   */
+  GetMontageInfo(&montage_info);
   image=(Image *) NULL;
   local_info=(*image_info);
   commands[0]=client_name;
@@ -15735,7 +15655,7 @@ Image *ReadVIDImage(const ImageInfo *image_info)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
     if (local_info.size == (char *) NULL)
-      local_info.size=resource_info.image_geometry;
+      local_info.size=montage_info.geometry;
     (void) strcpy(local_info.filename,filelist[i]);
     *local_info.magick='\0';
     next_image=ReadImage(&local_info);
@@ -15768,7 +15688,7 @@ Image *ReadVIDImage(const ImageInfo *image_info)
     Create the visual image directory.
   */
   (void) strcpy(montage_info.filename,image_info->filename);
-  montage_image=XMontageImages(&resource_info,&montage_info,image);
+  montage_image=MontageImages(image,&montage_info);
   if (montage_image == (Image *) NULL)
     {
       MagickWarning(CorruptImageWarning,"unable to read VID image",
