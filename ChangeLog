@@ -1,9 +1,10 @@
 2002-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Text escaping for -draw and DrawAnnotation was not working properly.
-    Now it does.  Backslash should act as a escape for the the active quote
-    character (', ", or }) as well as backslash.  The backslash should be
-    discarded if it was used as an escape character.  In order to reliably
-    pass a backslash, two successive backslashes are required (e.g. "\\").
+    Now it does.  Backslash should act as a escape for the the active
+    quote character (', ", or }) as well as backslash.  The backslash
+    should be discarded if it was used as an escape character.  In order
+    to reliably pass a backslash, two successive backslashes are required
+    (e.g. "\\").
 
 2002-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Modified Base64Encode() of utility.c so that it returns the number of
