@@ -1,10 +1,10 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
-<HEAD><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<HTML>
+<HEAD>
 <TITLE>segment - Methods to Segment an Image with Thresholding Fuzzy c-Means</TITLE>
 <LINK REV="made" HREF="mailto:bhcompile@daffy.perf.redhat.com">
 </HEAD>
 
-<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" alink="#0085c0"  vlink="#800080">
+<BODY>
 
 <A NAME="__index__"></A>
 <!-- INDEX BEGIN -->
@@ -12,15 +12,15 @@
 <UL>
 
 	<LI><A HREF="#name">
-<FONT SIZE=-1>NAME</FONT></A>
+<FONT SIZE=-1>NAME</FONT></A></LI>
 	<LI><A HREF="#synopsis">
-<FONT SIZE=-1>SYNOPSIS</FONT></A>
+<FONT SIZE=-1>SYNOPSIS</FONT></A></LI>
 	<LI><A HREF="#function descriptions">
 <FONT SIZE=-1>FUNCTION</FONT> 
-<FONT SIZE=-1>DESCRIPTIONS</FONT></A>
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></LI>
 	<UL>
 
-		<LI><A HREF="#segmentimage">SegmentImage</A>
+		<LI><A HREF="#segmentimage">SegmentImage</A></LI>
 	</UL>
 
 </UL>
@@ -48,16 +48,16 @@
 <P>The format of the SegmentImage method is:</P>
 <blockquote>unsigned int SegmentImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#ColorspaceType">ColorspaceType</A> colorspace, const unsigned int verbose, const double cluster_threshold, const double smoothing_threshold ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows.</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_colors%3A">colors:</A></STRONG><BR>
+<DL>
+<DT><STRONG><A NAME="item_o_colors%3A">o colors:</A></STRONG><BR>
 <DD>
 The SegmentImage function returns this integer value.  It is the actual number of colors allocated in the colormap.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DT><STRONG><A NAME="item_o_image%3A">o image:</A></STRONG><BR>
 <DD>
 Specifies a pointer to an Image structure; returned from ReadImage.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_colorspace%3A">colorspace:</A></STRONG><BR>
+<DT><STRONG><A NAME="item_o_colorspace%3A">o colorspace:</A></STRONG><BR>
 <DD>
 An unsigned integer value that indicates the colorspace.  Empirical evidence suggests that distances in 
 <FONT SIZE=-1>YUV</FONT> or 
@@ -65,11 +65,11 @@ An unsigned integer value that indicates the colorspace.  Empirical evidence sug
 <FONT SIZE=-1>RGB</FONT> space.  The image is then returned to 
 <FONT SIZE=-1>RGB</FONT> colorspace after color reduction.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_verbose%3A">verbose:</A></STRONG><BR>
+<DT><STRONG><A NAME="item_o_verbose%3A">o verbose:</A></STRONG><BR>
 <DD>
 
 <FONT SIZE=-1>A</FONT> value greater than zero prints detailed information about the identified classes.
-</DL></DL>
+</DL>
 
 </BODY>
 

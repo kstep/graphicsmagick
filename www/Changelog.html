@@ -23,12 +23,31 @@ ImageMagick Changes</font></font></font></b></td>
 <dl>
 <dd>
 <pre>
+2002-03-28  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
+  * ImageToBlob() only returned the first frame of a multi-frame image.
+
+2002-04-05  Leonard Rosenthol  &lt;leonardr@lazerware.com&gt;
+  * Fixed inversion of colors when converting CMYk JPEG to PDF
+
+2002-04-01  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;
+  * Fixed TTF preview function.
+
+2002-03-28  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
+  * DCM patches provided by Syam Gadde.
+  * Multi-frame MPC image files caused a fault under Windows.
+  * Copy entire comment from SVG (bug report from Bob Friesenhahn).
+  * Enlarged scanline buffer for JPEG-compressed TIFF's (bug report from
+    Bob Friesenhahn).
+
+2002-03-27  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
+  * ImageMagick, version 5.4.4, released.
+
 2002-03-26  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;
   * Added preliminary version of C API for vector drawing commands
-    (draw.h & draw.c).  This interface is subject to change, and
-    has not even been tested yet so it should not be used to support
-    production code. The previous draw.h and draw.c have been renamed
-    to render.h and render.c respectively.
+    (draw.h & draw.c).  This interface is subject to change, and has not
+    even been tested yet so it should not be used to support production
+    code.  The previous draw.h and draw.c have been renamed to render.h
+    and render.c respectively.
 
 2002-03-25  Leonard Rosenthol  &lt;leonardr@lazerware.com&gt;
   * Fixed bugs related to layered CMYK PSD images.

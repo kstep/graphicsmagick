@@ -1,3 +1,6 @@
+2002-03-28  Cristy  <cristy@mystic.es.dupont.com>
+  * ImageToBlob() only returned the first frame of a multi-frame image.
+
 2002-04-05  Leonard Rosenthol  <leonardr@lazerware.com>
   * Fixed inversion of colors when converting CMYk JPEG to PDF
 

@@ -1,10 +1,10 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
-<HEAD><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<HTML>
+<HEAD>
 <TITLE>stream - Image Pixel FIFO</TITLE>
 <LINK REV="made" HREF="mailto:bhcompile@daffy.perf.redhat.com">
 </HEAD>
 
-<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" alink="#0085c0"  vlink="#800080">
+<BODY>
 
 <A NAME="__index__"></A>
 <!-- INDEX BEGIN -->
@@ -12,16 +12,16 @@
 <UL>
 
 	<LI><A HREF="#name">
-<FONT SIZE=-1>NAME</FONT></A>
+<FONT SIZE=-1>NAME</FONT></A></LI>
 	<LI><A HREF="#synopsis">
-<FONT SIZE=-1>SYNOPSIS</FONT></A>
+<FONT SIZE=-1>SYNOPSIS</FONT></A></LI>
 	<LI><A HREF="#function descriptions">
 <FONT SIZE=-1>FUNCTION</FONT> 
-<FONT SIZE=-1>DESCRIPTIONS</FONT></A>
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></LI>
 	<UL>
 
-		<LI><A HREF="#readstream">ReadStream</A>
-		<LI><A HREF="#writestream">WriteStream</A>
+		<LI><A HREF="#readstream">ReadStream</A></LI>
+		<LI><A HREF="#writestream">WriteStream</A></LI>
 	</UL>
 
 </UL>
@@ -48,33 +48,33 @@
 <H2><A NAME="readstream">ReadStream</A></H2>
 <blockquote>ReadStream() makes the image pixels available to a user supplied callback method immediately upon reading a scanline with the ReadImage ( ) method. </blockquote><blockquote>The format of the ReadStream() method is: </blockquote><blockquote><A HREF="types/Image.html">Image</A> *ReadStream ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, void ( *Stream ) ( const <A HREF="types/Image.html">Image</A> *, const void *, const size_t ), <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_image_info%3A">image_info:</A></STRONG><BR>
+<DL>
+<DT><STRONG><A NAME="item_o_image_info%3A">o image_info:</A></STRONG><BR>
 <DD>
 The image info.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_stream%3A">stream:</A></STRONG><BR>
+<DT><STRONG><A NAME="item_o_stream%3A">o stream:</A></STRONG><BR>
 <DD>
 a callback method.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<DT><STRONG><A NAME="item_o_exception%3A">o exception:</A></STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
-<P></P></DL></DL>
+<P></P></DL>
 <P>
 <H2><A NAME="writestream">WriteStream</A></H2>
 <blockquote>WriteStream() makes the image pixels available to a user supplied callback method immediately upon writing pixel data with the WriteImage ( ) method. </blockquote><blockquote>The format of the WriteStream() method is: </blockquote><blockquote>unsigned int WriteStream ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *, int ( *Stream ) ( const <A HREF="types/Image.html">Image</A> *, const void *, const size_t ) ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>image_info:</STRONG><BR>
+<DL>
+<DT><STRONG>o image_info:</STRONG><BR>
 <DD>
 The image info.
 <P></P>
-<dd><p></p><dt><STRONG>stream:</STRONG><BR>
+<DT><STRONG>o stream:</STRONG><BR>
 <DD>
 
 <FONT SIZE=-1>A</FONT> callback method.
-</DL></DL>
+</DL>
 
 </BODY>
 

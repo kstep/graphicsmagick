@@ -1,10 +1,10 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
-<HEAD><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<HTML>
+<HEAD>
 <TITLE>attribute - Image Text Attributes Methods</TITLE>
 <LINK REV="made" HREF="mailto:bhcompile@daffy.perf.redhat.com">
 </HEAD>
 
-<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" alink="#0085c0"  vlink="#800080">
+<BODY>
 
 <A NAME="__index__"></A>
 <!-- INDEX BEGIN -->
@@ -12,18 +12,18 @@
 <UL>
 
 	<LI><A HREF="#name">
-<FONT SIZE=-1>NAME</FONT></A>
+<FONT SIZE=-1>NAME</FONT></A></LI>
 	<LI><A HREF="#synopsis">
-<FONT SIZE=-1>SYNOPSIS</FONT></A>
+<FONT SIZE=-1>SYNOPSIS</FONT></A></LI>
 	<LI><A HREF="#function descriptions">
 <FONT SIZE=-1>FUNCTION</FONT> 
-<FONT SIZE=-1>DESCRIPTIONS</FONT></A>
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></LI>
 	<UL>
 
-		<LI><A HREF="#destroyimageattributes">DestroyImageAttributes</A>
-		<LI><A HREF="#getimageattribute">GetImageAttribute</A>
-		<LI><A HREF="#getimageclippingpathattribute">GetImageClippingPathAttribute</A>
-		<LI><A HREF="#setimageattribute">SetImageAttribute</A>
+		<LI><A HREF="#destroyimageattributes">DestroyImageAttributes</A></LI>
+		<LI><A HREF="#getimageattribute">GetImageAttribute</A></LI>
+		<LI><A HREF="#getimageclippingpathattribute">GetImageClippingPathAttribute</A></LI>
+		<LI><A HREF="#setimageattribute">SetImageAttribute</A></LI>
 	</UL>
 
 </UL>
@@ -52,25 +52,25 @@
 <blockquote>DestroyImageAttributes() deallocates memory associated with the image attribute list. </blockquote><P>The format of the DestroyImageAttributes method is:</P>
 <blockquote>DestroyImageAttributes ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DL>
+<DT><STRONG><A NAME="item_o_image%3A">o image:</A></STRONG><BR>
 <DD>
 The image.
-<P></P></DL></DL>
+<P></P></DL>
 <P>
 <H2><A NAME="getimageattribute">GetImageAttribute</A></H2>
 <blockquote>GetImageAttribute() searches the list of image attributes and returns a pointer to the attribute if it exists otherwise NULL. </blockquote><P>The format of the GetImageAttribute method is:</P>
 <blockquote>const ImageAttribute *GetImageAttribute ( const <A HREF="types/Image.html">Image</A> *image, const char *key ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>image:</STRONG><BR>
+<DL>
+<DT><STRONG>o image:</STRONG><BR>
 <DD>
 The image.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_key%3A">key:</A></STRONG><BR>
+<DT><STRONG><A NAME="item_o_key%3A">o key:</A></STRONG><BR>
 <DD>
 These character strings are the name of an image attribute to return.
-<P></P></DL></DL>
+<P></P></DL>
 <P>
 <H2><A NAME="getimageclippingpathattribute">GetImageClippingPathAttribute</A></H2>
 <P>Method GetImageClippingPathAttribute searches the list of image attributes and returns a pointer to a clipping path if it exists otherwise 
@@ -78,30 +78,30 @@ These character strings are the name of an image attribute to return.
 <P>The format of the GetImageClippingPathAttribute method is:</P>
 <blockquote>const ImageAttribute *GetImageClippingPathAttribute ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_attribute%3A">attribute:</A></STRONG><BR>
+<DL>
+<DT><STRONG><A NAME="item_o_attribute%3A">o attribute:</A></STRONG><BR>
 <DD>
 Method GetImageClippingPathAttribute returns the clipping path if it exists otherwise 
 <FONT SIZE=-1>NULL.</FONT>
 <P></P>
-<dd><p></p><dt><STRONG>image:</STRONG><BR>
+<DT><STRONG>o image:</STRONG><BR>
 <DD>
 The image.
-<P></P></DL></DL>
+<P></P></DL>
 <P>
 <H2><A NAME="setimageattribute">SetImageAttribute</A></H2>
 <blockquote>SetImageAttribute() searches the list of image attributes and replaces the attribute value. If it is not found in the list, the attribute name and value is added to the list. If the attribute exists in the list, the value is concatenated to the attribute. SetImageAttribute returns True if the attribute is successfully concatenated or added to the list, otherwise False. If the value is NULL, the matching key is deleted from the list. </blockquote><P>The format of the SetImageAttribute method is:</P>
 <blockquote>unsigned int SetImageAttribute ( <A HREF="types/Image.html">Image</A> *image, const char *key, const char *value ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>image:</STRONG><BR>
+<DL>
+<DT><STRONG>o image:</STRONG><BR>
 <DD>
 The image.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_key%2Cvalue%3A">key,value:</A></STRONG><BR>
+<DT><STRONG><A NAME="item_o_key%2Cvalue%3A">o key,value:</A></STRONG><BR>
 <DD>
 These character strings are the name and value of an image attribute to replace or add to the list.
-</DL></DL>
+</DL>
 
 </BODY>
 

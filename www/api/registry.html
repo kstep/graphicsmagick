@@ -1,10 +1,10 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
-<HEAD><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<HTML>
+<HEAD>
 <TITLE>NAME</TITLE>
 <LINK REV="made" HREF="mailto:bhcompile@daffy.perf.redhat.com">
 </HEAD>
 
-<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" alink="#0085c0"  vlink="#800080">
+<BODY>
 
 <A NAME="__index__"></A>
 <!-- INDEX BEGIN -->
@@ -12,18 +12,18 @@
 <UL>
 
 	<LI><A HREF="#name">
-<FONT SIZE=-1>NAME</FONT></A>
+<FONT SIZE=-1>NAME</FONT></A></LI>
 	<LI><A HREF="#synopsis">
-<FONT SIZE=-1>SYNOPSIS</FONT></A>
+<FONT SIZE=-1>SYNOPSIS</FONT></A></LI>
 	<LI><A HREF="#function descriptions">
 <FONT SIZE=-1>FUNCTION</FONT> 
-<FONT SIZE=-1>DESCRIPTIONS</FONT></A>
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></LI>
 	<UL>
 
-		<LI><A HREF="#deletemagickregistry">DeleteMagickRegistry</A>
-		<LI><A HREF="#getimagefrommagickregisty">GetImageFromMagickRegisty</A>
-		<LI><A HREF="#getmagickregistry">GetMagickRegistry</A>
-		<LI><A HREF="#setmagickregistry">SetMagickRegistry</A>
+		<LI><A HREF="#deletemagickregistry">DeleteMagickRegistry</A></LI>
+		<LI><A HREF="#getimagefrommagickregisty">GetImageFromMagickRegisty</A></LI>
+		<LI><A HREF="#getmagickregistry">GetMagickRegistry</A></LI>
+		<LI><A HREF="#setmagickregistry">SetMagickRegistry</A></LI>
 	</UL>
 
 </UL>
@@ -51,11 +51,11 @@
 <blockquote>DeleteMagickRegistry() deletes an entry in the registry as defined by the id. It returns True if the entry is deleted otherwise False if no entry is found in the registry that matches the id. </blockquote><P>The format of the DeleteMagickRegistry method is:</P>
 <blockquote>unsigned int DeleteMagickRegistry ( const long id ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_id%3A">id:</A></STRONG><BR>
+<DL>
+<DT><STRONG><A NAME="item_o_id%3A">o id:</A></STRONG><BR>
 <DD>
 The registry id.
-<P></P></DL></DL>
+<P></P></DL>
 <P>
 <H2><A NAME="getimagefrommagickregisty">GetImageFromMagickRegisty</A></H2>
 <P><CODE>GetImageFromMagickRegistry()</CODE> gets an image from the registry as defined by its name.  If the blob that matches the name is not found, 
@@ -66,63 +66,63 @@ The registry id.
       ExceptionInfo *exception)</PRE>
 <P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_name%3A">name:</A></STRONG><BR>
+<DL>
+<DT><STRONG><A NAME="item_o_name%3A">o name:</A></STRONG><BR>
 <DD>
 The name of the image to retrieve from the registry.
 <P></P>
-<dd><p></p><dt><STRONG>id:</STRONG><BR>
+<DT><STRONG>o id:</STRONG><BR>
 <DD>
 The registry id.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<DT><STRONG><A NAME="item_o_exception%3A">o exception:</A></STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
-<P></P></DL></DL>
+<P></P></DL>
 <P>
 <H2><A NAME="getmagickregistry">GetMagickRegistry</A></H2>
 <blockquote>GetMagickRegistry() gets a blob from the registry as defined by the id. If the blob that matches the id is not found, NULL is returned. </blockquote><P>The format of the GetMagickRegistry method is:</P>
 <blockquote>const void *GetMagickRegistry ( const long id, RegistryType *type, size_t *length, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>id:</STRONG><BR>
+<DL>
+<DT><STRONG>o id:</STRONG><BR>
 <DD>
 The registry id.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_type%3A">type:</A></STRONG><BR>
+<DT><STRONG><A NAME="item_o_type%3A">o type:</A></STRONG><BR>
 <DD>
 The registry type.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_length%3A">length:</A></STRONG><BR>
+<DT><STRONG><A NAME="item_o_length%3A">o length:</A></STRONG><BR>
 <DD>
 The blob length in number of bytes.
 <P></P>
-<dd><p></p><dt><STRONG>exception:</STRONG><BR>
+<DT><STRONG>o exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
-<P></P></DL></DL>
+<P></P></DL>
 <P>
 <H2><A NAME="setmagickregistry">SetMagickRegistry</A></H2>
 <blockquote>SetMagickRegistry() sets a blob into the registry and returns a unique ID. If an error occurs, -1 is returned. </blockquote><P>The format of the SetMagickRegistry method is:</P>
 <blockquote>long SetMagickRegistry ( const RegistryType type, const void *blob, const size_t length, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>type:</STRONG><BR>
+<DL>
+<DT><STRONG>o type:</STRONG><BR>
 <DD>
 The registry type.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_blob%3A">blob:</A></STRONG><BR>
+<DT><STRONG><A NAME="item_o_blob%3A">o blob:</A></STRONG><BR>
 <DD>
 The address of a Binary Large OBject.
 <P></P>
-<dd><p></p><dt><STRONG>length:</STRONG><BR>
+<DT><STRONG>o length:</STRONG><BR>
 <DD>
 For a registry type of ImageRegistryType use <CODE>sizeof(Image)</CODE> otherise the blob length in number of bytes.
 <P></P>
-<dd><p></p><dt><STRONG>exception:</STRONG><BR>
+<DT><STRONG>o exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
-</DL></DL>
+</DL>
 
 </BODY>
 
