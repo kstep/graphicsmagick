@@ -2339,6 +2339,9 @@ MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
   Image
     *image;
 
+  MonitorHandler
+    handler;
+
   unsigned char
     *blob;
 
@@ -2347,9 +2350,6 @@ MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
 
   register const char
     *p;
-
-  MonitorHandler
-    handler;
 
   SetExceptionInfo(exception,UndefinedException);
   image=(Image *) NULL;

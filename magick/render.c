@@ -1731,6 +1731,8 @@ static inline unsigned int IsPoint(const char *point)
 
 MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 {
+#define RenderVectorsText  "  Rendering vectors...  "
+
   AffineMatrix
     affine,
     current;
@@ -1750,6 +1752,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     beta,
     angle,
     factor,
+    primitive_extent,
     radius;
 
   DrawInfo
@@ -1794,12 +1797,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   unsigned long
     number_points;
 
-  double
-    primitive_extent;
-
-  static const char
-    RenderVectorGraphicsText[]="  Rendering vectors...  ";
-
   /*
     Ensure the annotation info is valid.
   */
@@ -1834,7 +1831,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     }
 
   primitive_extent=strlen(primitive);
-  MagickMonitor(RenderVectorGraphicsText,0.0,primitive_extent);
+  MagickMonitor(RenderVectorsText,0.0,primitive_extent);
   (void) SetImageAttribute(image,"[MVG]",primitive);
   n=0;
   /*
@@ -1866,7 +1863,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   status=True;
   for (q=primitive; *q != '\0'; )
   {
-    MagickMonitor(RenderVectorGraphicsText,(double)(q-primitive),primitive_extent);
     /*
       Interpret graphic primitive.
     */
@@ -3207,6 +3203,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     (void) DrawPrimitive(image,graphic_context[n],primitive_info);
     if (primitive_info->text != (char *) NULL)
       LiberateMemory((void **) &primitive_info->text);
+    MagickMonitor(RenderVectorsText,(double) (q-primitive),primitive_extent);
   }
   if (graphic_context[n]->debug)
     (void) fprintf(stdout,"end draw-image (%.2fu)\n",GetUserTime(&timer));
@@ -3840,6 +3837,9 @@ MagickExport unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
   long
     y;
 
+  MonitorHandler
+    handler;
+
   register long
     i,
     x;
@@ -3852,9 +3852,6 @@ MagickExport unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
 
   unsigned int
     status;
-
-  MonitorHandler
-    handler;
 
   if (draw_info->debug)
     {
