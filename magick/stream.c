@@ -668,7 +668,7 @@ MagickExport unsigned int WriteStream(const ImageInfo *image_info,Image *image,
   assert(image->signature == MagickSignature);
   clone_info=CloneImageInfo(image_info);
   clone_info->fifo=fifo;
-  status=WriteImage(image_info,image);
+  status=WriteImage(clone_info,image);
   DestroyImageInfo(clone_info);
   return(status);
 }

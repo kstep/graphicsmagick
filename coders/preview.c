@@ -358,9 +358,10 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       }
       case ReduceNoisePreview:
       {
-        for (x=0; x < i; x++)
-          commands[argc++]=(char *) "-noise";
-        FormatString(label,"noise %d",i+1);
+        FormatString(factor,"%gx%g",radius,sigma);
+        FormatString(label,"noise %.1024s",factor);
+        commands[argc++]=(char *) "-noise";
+        commands[argc++]=factor;
         break;
       }
       case AddNoisePreview:
