@@ -147,7 +147,7 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
           break;
         indexes=GetIndexes(image);
         rotate_indexes=GetIndexes(rotate_image);
-        if (image->class == PseudoClass)
+        if (image->color_class == PseudoClass)
           memcpy(rotate_indexes,indexes,image->columns*sizeof(IndexPacket));
         memcpy(q,p,image->columns*sizeof(PixelPacket));
         if (!SyncImagePixels(rotate_image))
@@ -170,7 +170,7 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
           break;
         indexes=GetIndexes(image);
         rotate_indexes=GetIndexes(rotate_image);
-        if (image->class == PseudoClass)
+        if (image->color_class == PseudoClass)
           memcpy(rotate_indexes,indexes,image->columns*sizeof(IndexPacket));
         memcpy(q,p,image->columns*sizeof(PixelPacket));
         if (!SyncImagePixels(rotate_image))
@@ -197,7 +197,7 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
         q+=image->columns;
         indexes=GetIndexes(image);
         rotate_indexes=GetIndexes(rotate_image);
-        if (image->class == PseudoClass)
+        if (image->color_class == PseudoClass)
           for (x=0; x < (int) image->columns; x++)
             rotate_indexes[image->columns-x-1]=indexes[x];
         for (x=0; x < (int) image->columns; x++)
@@ -227,7 +227,7 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
         rotate_indexes=GetIndexes(rotate_image);
         for (x=0; x < (int) image->columns; x++)
           *--q=(*p++);
-        if (image->class == PseudoClass)
+        if (image->color_class == PseudoClass)
           for (x=0; x < (int) image->columns; x++)
             rotate_indexes[image->columns-x-1]=indexes[x];
         if (!SyncImagePixels(rotate_image))
@@ -847,7 +847,7 @@ MagickExport Image *RotateImage(Image *image,const double degrees,
   if (rotate_image == (Image *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to rotate image",
       "Memory allocation failed");
-  rotate_image->class=DirectClass;
+  rotate_image->color_class=DirectClass;
   /*
     Rotate the image.
   */
@@ -961,7 +961,7 @@ MagickExport Image *ShearImage(Image *image,const double x_shear,
     ThrowImageException(ResourceLimitWarning,"Unable to shear image",
       "Memory allocation failed");
   DestroyImage(integral_image);
-  shear_image->class=DirectClass;
+  shear_image->color_class=DirectClass;
   /*
     Shear the image.
   */

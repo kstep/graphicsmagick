@@ -202,7 +202,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         if ((tga_header.image_type == TGARLEColormap) ||
             (tga_header.image_type == TGARLERGB))
-          image->class=PseudoClass;
+          image->color_class=PseudoClass;
         image->colors=tga_header.colormap_length;
       }
     if (image_info->ping)
@@ -374,7 +374,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (status == False)
           ThrowReaderException(CorruptImageWarning,"Unable to read image data",
             image);
-        if (image->class == PseudoClass)
+        if (image->color_class == PseudoClass)
           indexes[x]=index;
         *q++=pixel;
       }
@@ -709,7 +709,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
       indexes=GetIndexes(image);
       for (x=0; x < (int) image->columns; x++)
       {
-        if (image->class == PseudoClass)
+        if (image->color_class == PseudoClass)
           *q++=indexes[x];
         else
           {

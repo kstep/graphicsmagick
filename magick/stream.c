@@ -401,7 +401,7 @@ static PixelPacket *SetPixelStream(Image *image,const int x,const int y,
   stream_info=(StreamInfo *) image->cache;
   number_pixels=stream_info->columns*stream_info->rows;
   length=number_pixels*sizeof(PixelPacket);
-  if (image->class == PseudoClass)
+  if (image->color_class == PseudoClass)
     length+=number_pixels*sizeof(IndexPacket);
   if (stream_info->stash == (void *) NULL)
     stream_info->stash=AllocateMemory(length);

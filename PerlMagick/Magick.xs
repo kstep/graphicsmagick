@@ -1044,7 +1044,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             int
               i;
 
-            if (image->class == DirectClass)
+            if (image->color_class == DirectClass)
               continue;
             i=0;
             (void) sscanf(attribute,"%*[^[][%d",&i);
@@ -1380,7 +1380,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             pixel=GetImagePixels(image,x % image->columns,y % image->rows,1,1);
             if (pixel == (PixelPacket *) NULL)
               break;
-            image->class=DirectClass;
+            image->color_class=DirectClass;
             if (strchr(SvPV(sval,na),',') == 0)
               QueryColorDatabase(SvPV(sval,na),pixel);
             else
@@ -2664,7 +2664,7 @@ Get(ref,...)
 #if defined(__cplusplus) || defined(c_plusplus)
               j=image->c_class;
 #else
-              j=image->class;
+              j=image->color_class;
 #endif
               s=newSViv(j);
               if ((j >= 0) && (j < NumberOf(ClassTypes)-1))
@@ -4745,7 +4745,7 @@ Mogrify(ref,...)
               (void) QuantizeImages(&quantize_info,image);
               goto ReturnIt;
             }
-          if ((image->class == DirectClass) ||
+          if ((image->color_class == DirectClass) ||
               (image->colors > quantize_info.number_colors))
             (void) QuantizeImage(&quantize_info,image);
           else

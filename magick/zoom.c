@@ -328,7 +328,7 @@ MagickExport Image *MagnifyImage(Image *image,ExceptionInfo *exception)
     CloneImage(image,2*image->columns,2*image->rows,False,exception);
   if (magnify_image == (Image *) NULL)
     return((Image *) NULL);
-  magnify_image->class=DirectClass;
+  magnify_image->color_class=DirectClass;
   /*
     Allocate image buffer and scanline buffer for 4 rows of the image.
   */
@@ -525,7 +525,7 @@ MagickExport Image *MinifyImage(Image *image,ExceptionInfo *exception)
   minify_image=CloneImage(image,image->columns/2,image->rows/2,False,exception);
   if (minify_image == (Image *) NULL)
     return((Image *) NULL);
-  minify_image->class=DirectClass;
+  minify_image->color_class=DirectClass;
   /*
     Reduce each row.
   */
@@ -699,7 +699,7 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
       k=x_offset[x];
       *q++=pixels[k];
     }
-    if (sample_image->class == PseudoClass)
+    if (sample_image->color_class == PseudoClass)
       {
         register IndexPacket
           *indexes,
@@ -835,7 +835,7 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
   scale_image=CloneImage(image,columns,rows,False,exception);
   if (scale_image == (Image *) NULL)
     return((Image *) NULL);
-  scale_image->class=DirectClass;
+  scale_image->color_class=DirectClass;
   /*
     Allocate memory.
   */
@@ -1311,9 +1311,9 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
   */
   scale_factor=source->blur*Max(1.0/x_factor,1.0);
   support=Max(scale_factor*filter_info->support,0.5);
-  destination->class=source->class;
+  destination->color_class=source->color_class;
   if (support > 0.5)
-    destination->class=DirectClass;
+    destination->color_class=DirectClass;
   else
     {
       /*
@@ -1368,7 +1368,7 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
       q->opacity=(opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5;
       q++;
     }
-    if (destination->class == PseudoClass)
+    if (destination->color_class == PseudoClass)
       {
         register IndexPacket
           *destination_indexes,
@@ -1429,9 +1429,9 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
   */
   scale_factor=source->blur*Max(1.0/y_factor,1.0);
   support=Max(scale_factor*filter_info->support,0.5);
-  destination->class=source->class;
+  destination->color_class=source->color_class;
   if (support > 0.5)
-    destination->class=DirectClass;
+    destination->color_class=DirectClass;
   else
     {
       /*
@@ -1485,7 +1485,7 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
       q->opacity=(opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5;
       q++;
     }
-    if (destination->class == PseudoClass)
+    if (destination->color_class == PseudoClass)
       {
         register IndexPacket
           *destination_indexes,

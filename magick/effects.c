@@ -116,7 +116,7 @@ MagickExport Image *AddNoiseImage(Image *image,const NoiseType noise_type,
   noise_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (noise_image == (Image *) NULL)
     return((Image *) NULL);
-  noise_image->class=DirectClass;
+  noise_image->color_class=DirectClass;
   /*
     Add noise in each row.
   */
@@ -281,7 +281,7 @@ MagickExport Image *ColorizeImage(Image *image,const char *opacity,
   colorize_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (colorize_image == (Image *) NULL)
     return((Image *) NULL);
-  colorize_image->class=DirectClass;
+  colorize_image->color_class=DirectClass;
   /*
     Determine RGB values of the pen color.
   */
@@ -409,7 +409,7 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
   convolve_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (convolve_image == (Image *) NULL)
     return((Image *) NULL);
-  convolve_image->class=DirectClass;
+  convolve_image->color_class=DirectClass;
   /*
     Convolve image.
   */
@@ -559,7 +559,7 @@ MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
   despeckle_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (despeckle_image == (Image *) NULL)
     return((Image *) NULL);
-  despeckle_image->class=DirectClass;
+  despeckle_image->color_class=DirectClass;
   /*
     Allocate image buffers.
   */
@@ -925,7 +925,7 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
   enhance_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (enhance_image == (Image *) NULL)
     return((Image *) NULL);
-  enhance_image->class=DirectClass;
+  enhance_image->color_class=DirectClass;
   /*
     Enhance image.
   */
@@ -1105,7 +1105,7 @@ MagickExport Image *GaussianBlurImage(Image *image,const double width,
   blur_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (blur_image == (Image *) NULL)
     return((Image *) NULL);
-  blur_image->class=DirectClass;
+  blur_image->color_class=DirectClass;
   if (width < 0.0)
     return(blur_image);
   /*
@@ -1497,7 +1497,7 @@ MagickExport Image *MedianFilterImage(Image *image,const unsigned int order,
   median_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (median_image == (Image *) NULL)
     return((Image *) NULL);
-  median_image->class=DirectClass;
+  median_image->color_class=DirectClass;
   /*
     Allocate window.
   */
@@ -1659,7 +1659,7 @@ MagickExport Image *MorphImages(Image *image,const unsigned int number_frames,
           DestroyImages(morph_images);
           return((Image *) NULL);
         }
-      morph_images->class=DirectClass;
+      morph_images->color_class=DirectClass;
       for (y=0; y < (int) morph_images->rows; y++)
       {
         p=GetImagePixels(morph_image,0,y,morph_image->columns,1);
@@ -1777,7 +1777,7 @@ MagickExport Image *OilPaintImage(Image *image,const unsigned int radius,
   paint_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (paint_image == (Image *) NULL)
     return((Image *) NULL);
-  paint_image->class=DirectClass;
+  paint_image->color_class=DirectClass;
   /*
     Allocate histogram and scanline.
   */
@@ -2132,7 +2132,7 @@ MagickExport Image *ReduceNoiseImage(Image *image,const unsigned int order,
   noise_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (noise_image == (Image *) NULL)
     return((Image *) NULL);
-  noise_image->class=DirectClass;
+  noise_image->color_class=DirectClass;
   /*
     Allocate window.
   */
@@ -2326,7 +2326,7 @@ MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
   shade_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (shade_image == (Image *) NULL)
     return((Image *) NULL);
-  shade_image->class=DirectClass;
+  shade_image->color_class=DirectClass;
   /*
     Compute the light vector.
   */
@@ -2524,7 +2524,7 @@ MagickExport void SolarizeImage(Image *image,const double factor)
 
   assert(image != (Image *) NULL);
   threshold=(unsigned int) (factor*(MaxRGB+1)/100.0);
-  switch (image->class)
+  switch (image->color_class)
   {
     case DirectClass:
     default:
@@ -2638,7 +2638,7 @@ MagickExport Image *SpreadImage(Image *image,const unsigned int amount,
   spread_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (spread_image == (Image *) NULL)
     return((Image *) NULL);
-  spread_image->class=DirectClass;
+  spread_image->color_class=DirectClass;
   /*
     Convolve each row.
   */
@@ -2743,10 +2743,10 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
   stegano_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (stegano_image == (Image *) NULL)
     return((Image *) NULL);
-  if (stegano_image->class == PseudoClass)
+  if (stegano_image->color_class == PseudoClass)
     {
       if (stegano_image->colors > ((MaxRGB+1) >> 1))
-        stegano_image->class=DirectClass;
+        stegano_image->color_class=DirectClass;
       else
         {
           /*
@@ -2794,7 +2794,7 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
       if (p == (PixelPacket *) NULL)
         break;
       indexes=GetIndexes(image);
-      if (stegano_image->class == PseudoClass)
+      if (stegano_image->color_class == PseudoClass)
         EmbedBit(*indexes)
       else
         {
@@ -2811,7 +2811,7 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
     if (QuantumTick(y,image->rows))
       ProgressMonitor(SteganoImageText,y,image->rows);
   }
-  if (stegano_image->class == PseudoClass)
+  if (stegano_image->color_class == PseudoClass)
     SyncImage(stegano_image);
   return(stegano_image);
 }
@@ -2884,7 +2884,7 @@ MagickExport Image *StereoImage(Image *image,Image *offset_image,
     CloneImage(image,image->columns,image->rows,False,exception);
   if (stereo_image == (Image *) NULL)
     return((Image *) NULL);
-  stereo_image->class=DirectClass;
+  stereo_image->color_class=DirectClass;
   /*
     Copy left image to red channel and right image to blue channel.
   */
@@ -3100,7 +3100,7 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
       "Memory allocation failed");
   if (image->colormap != (PixelPacket *) NULL)
     FreeMemory((void **) &image->colormap);
-  image->class=PseudoClass;
+  image->color_class=PseudoClass;
   image->colors=2;
   image->colormap=colormap;
   image->colormap[0].red=0;

@@ -223,7 +223,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (LocaleCompare(name+strlen(name)-7,"_height") == 0))
           break;
   image->depth=8;
-  image->class=PseudoClass;
+  image->color_class=PseudoClass;
   image->colors=2;
   if (image_info->ping)
     {

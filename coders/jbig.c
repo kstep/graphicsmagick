@@ -154,7 +154,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   image->columns=(unsigned int) jbg_dec_getwidth(&jbig_info);
   image->rows=(unsigned int) jbg_dec_getheight(&jbig_info);
   image->depth=8;
-  image->class=PseudoClass;
+  image->color_class=PseudoClass;
   image->colors=2;
   if (image_info->ping)
     {

@@ -1641,7 +1641,7 @@ void Magick::Image::classType ( Magick::ClassType class_ )
       modifyImage();
       SyncImage( image() );
       FreeMemory( (void**)&(image()->colormap) );
-      image()->c_class = (MagickLib::ClassType)DirectClass;
+      image()->color_class = (MagickLib::ClassType)DirectClass;
       return;
     }
 
@@ -1651,7 +1651,7 @@ void Magick::Image::classType ( Magick::ClassType class_ )
       modifyImage();
       quantizeColors(MaxRGB + 1);
       quantize();
-      image()->c_class = (MagickLib::ClassType)PseudoClass;
+      image()->color_class = (MagickLib::ClassType)PseudoClass;
     }
 }
 Magick::ClassType Magick::Image::classType ( void ) const

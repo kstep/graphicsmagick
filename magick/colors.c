@@ -1480,7 +1480,7 @@ static void Histogram(CubeInfo *color_cube,const NodeInfo *node_info,FILE *file)
 %
 %    o color_cube: A pointer to the CubeInfo structure.
 %
-%    o level: Specifies the level in the classification the node resides.
+%    o level: Specifies the level in the color_class the node resides.
 %
 %
 */
@@ -1734,7 +1734,7 @@ MagickExport unsigned int IsPseudoClass(Image *image)
     level;
 
   assert(image != (Image *) NULL);
-  if ((image->class == PseudoClass) && (image->colors <= 256))
+  if ((image->color_class == PseudoClass) && (image->colors <= 256))
     return(True);
   if (image->matte)
     return(False);
@@ -1810,7 +1810,7 @@ MagickExport unsigned int IsPseudoClass(Image *image)
       /*
         Create colormap.
       */
-      image->class=PseudoClass;
+      image->color_class=PseudoClass;
       image->colors=color_cube.colors;
       if (image->colormap == (PixelPacket *) NULL)
         image->colormap=(PixelPacket *)
@@ -1866,7 +1866,7 @@ MagickExport unsigned int IsPseudoClass(Image *image)
     FreeMemory((void **) &color_cube.node_list);
     color_cube.node_list=nodes;
   } while (color_cube.node_list != (Nodes *) NULL);
-  return((image->class == PseudoClass) && (image->colors <= 256));
+  return((image->color_class == PseudoClass) && (image->colors <= 256));
 }
 
 /*

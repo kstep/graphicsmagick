@@ -85,7 +85,7 @@
 %    -rotate degrees      apply Paeth rotation to the image
 %    -scene value         image scene number
 %    -size geometry       width and height of image
-%    -treedepth value     depth of the color classification tree
+%    -treedepth value     depth of the color color_class tree
 %    -verbose             print detailed information about the image
 %    -visual type         display image using this visual type
 %    -window id           display image to background of this window
@@ -171,7 +171,7 @@ static void Usage(const char *client_name)
       "-rotate degrees      apply Paeth rotation to the image",
       "-scene value         image scene number",
       "-size geometry       width and height of image",
-      "-treedepth value     depth of the color classification tree",
+      "-treedepth value     depth of the color color_class tree",
       "-verbose             print detailed information about the image",
       "-visual type         display image using this visual type",
       "-window id          display image to background of this window",

@@ -288,7 +288,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->depth=iris_header.depth <= 8 ? 8 : QuantumDepth;
     if (iris_header.depth < 3)
       {
-        image->class=PseudoClass;
+        image->color_class=PseudoClass;
         image->colors=256;
       }
     if (image_info->ping)
@@ -442,7 +442,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Convert SGI raster image to pixel packets.
     */
-    if (image->class == DirectClass)
+    if (image->color_class == DirectClass)
       {
         /*
           Convert SGI image to DirectClass pixel packets.

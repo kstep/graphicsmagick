@@ -364,7 +364,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,ExceptionInfo *exception
     /*
       Convert bitmap scanline to pixel packets.
     */
-    image->class=DirectClass;
+    image->color_class=DirectClass;
     image->matte=True;
     for (y=image->rows-1; y >= 0; y--)
     {

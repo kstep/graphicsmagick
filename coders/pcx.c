@@ -324,7 +324,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
     if (pcx_header.planes != 1)
-      image->class=DirectClass;
+      image->color_class=DirectClass;
     if (image_info->ping)
       {
         FreeMemory((void **) &pcx_colormap);
@@ -376,7 +376,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
       }
     }
-    if (image->class == DirectClass)
+    if (image->color_class == DirectClass)
       image->matte=pcx_header.planes > 3;
     else
       if ((pcx_header.version == 5) ||
@@ -429,7 +429,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       indexes=GetIndexes(image);
       r=scanline;
-      if (image->class == DirectClass)
+      if (image->color_class == DirectClass)
         for (i=0; i < (int) pcx_header.planes; i++)
         {
           r=scanline+i;
@@ -548,7 +548,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       r=scanline;
       for (x=0; x < (int) image->columns; x++)
       {
-        if (image->class == PseudoClass)
+        if (image->color_class == PseudoClass)
           indexes[x]=(*r++);
         else
           {
@@ -566,7 +566,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (QuantumTick(y,image->rows))
           ProgressMonitor(LoadImageText,y,image->rows);
     }
-    if (image->class == PseudoClass)
+    if (image->color_class == PseudoClass)
       SyncImage(image);
     FreeMemory((void **) &scanline);
     FreeMemory((void **) &pcx_pixels);
@@ -826,7 +826,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     for (i=0; i < (3*256); i++)
       pcx_colormap[i]=0;
     q=pcx_colormap;
-    if (image->class == PseudoClass)
+    if (image->color_class == PseudoClass)
       for (i=0; i < (int) image->colors; i++)
       {
         *q++=DownScale(image->colormap[i].red);
@@ -846,7 +846,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
         image);
     q=pcx_pixels;
-    if (image->class == DirectClass)
+    if (image->color_class == DirectClass)
       {
         /*
           Convert DirectClass image to PCX raster pixels.

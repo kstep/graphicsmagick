@@ -144,7 +144,7 @@
 %    -texture filename    name of texture to tile onto the image background
 %    -threshold value     threshold the image
 %    -transparent color   make this color transparent within the image
-%    -treedepth value     depth of the color classification tree
+%    -treedepth value     depth of the color color_class tree
 %    -units type          PixelsPerInch, PixelsPerCentimeter, or Undefined
 %    -verbose             print detailed information about the image
 %    -view                FlashPix viewing transforms
@@ -346,7 +346,7 @@ static void Usage(const char *client_name)
       "-texture filename    name of texture to tile onto the image background",
       "-threshold value     threshold the image",
       "-transparent color   make this color transparent within the image",
-      "-treedepth value     depth of the color classification tree",
+      "-treedepth value     depth of the color color_class tree",
       "-units type          Inch, Centimeter, or Undefined",
       "-verbose             print detailed information about the image",
       "-view                FlashPix viewing transforms",

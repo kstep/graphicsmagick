@@ -134,7 +134,7 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,
   DestroyImageInfo(clone_info);
   if (image == (Image *) NULL)
     return(image);
-  image->class=DirectClass;
+  image->color_class=DirectClass;
   for (y=0; y < (int) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);

@@ -205,7 +205,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
   TransformRGBImage(image,RGBColorspace);
   transparent=False;
   i=0;
-  if (image->class == PseudoClass)
+  if (image->color_class == PseudoClass)
     colors=image->colors;
   else
     {

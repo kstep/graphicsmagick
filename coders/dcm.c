@@ -3287,7 +3287,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
         }
-        if (image->class == PseudoClass)
+        if (image->color_class == PseudoClass)
           {
             if (bytes_per_pixel == 2)
               NormalizeImage(image);

@@ -257,7 +257,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,ExceptionInfo *exceptio
     }
   }
   image->depth=8;
-  image->class=PseudoClass;
+  image->color_class=PseudoClass;
   image->colors=256;
   if (image_info->ping)
     {

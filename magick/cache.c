@@ -221,7 +221,7 @@ static void DestroyCacheInfo(Cache cache)
     case MemoryCache:
     {
       FreeMemory((void **) &cache_info->pixels);
-      if (cache_info->class == PseudoClass)
+      if (cache_info->color_class == PseudoClass)
         (void) GetCacheMemory(number_pixels*sizeof(IndexPacket));
       (void) GetCacheMemory(number_pixels*sizeof(PixelPacket));
       break;
@@ -235,7 +235,7 @@ static void DestroyCacheInfo(Cache cache)
         Unmap memory-mapped pixels and indexes.
       */
       length=number_pixels*sizeof(PixelPacket);
-      if (cache_info->class == PseudoClass)
+      if (cache_info->color_class == PseudoClass)
         length+=number_pixels*sizeof(IndexPacket);
       (void) UnmapBlob(cache_info->pixels,length);
     }
@@ -364,7 +364,7 @@ MagickExport ClassType GetCacheClassType(const Cache cache)
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
-  return(cache_info->class);
+  return(cache_info->color_class);
 }
 
 /*
@@ -400,7 +400,7 @@ MagickExport void GetCacheInfo(Cache *cache)
   if (cache_info == (CacheInfo *) NULL)
     MagickError(ResourceLimitError,"Memory allocation failed",
       "unable to allocate cache info");
-  cache_info->class=UndefinedClass;
+  cache_info->color_class=UndefinedClass;
   cache_info->type=UndefinedCache;
   cache_info->rows=0;
   cache_info->columns=0;
@@ -568,7 +568,7 @@ MagickExport IndexPacket *GetNexusIndexes(const Cache cache,
   if (cache == (Cache) NULL)
     return((IndexPacket *) NULL);
   cache_info=(CacheInfo *) cache;
-  if (cache_info->class == UndefinedClass)
+  if (cache_info->color_class == UndefinedClass)
     return((IndexPacket *) NULL);
   nexus=cache_info->nexus+id;
   return(nexus->indexes);
@@ -614,7 +614,7 @@ MagickExport PixelPacket *GetNexusPixels(const Cache cache,
   if (cache == (Cache) NULL)
     return((PixelPacket *) NULL);
   cache_info=(CacheInfo *) cache;
-  if (cache_info->class == UndefinedClass)
+  if (cache_info->color_class == UndefinedClass)
     return((PixelPacket *) NULL);
   nexus=cache_info->nexus+id;
   return(nexus->pixels);
@@ -712,7 +712,7 @@ static PixelPacket *GetPixelCache(Image *image,const int x,const int y,
   if (IsNexusInCore(image->cache,0))
     return(pixels);
   status=ReadCachePixels(image->cache,0);
-  if (image->class == PseudoClass)
+  if (image->color_class == PseudoClass)
     status|=ReadCacheIndexes(image->cache,0);
   if (status == False)
     {
@@ -798,7 +798,7 @@ MagickExport unsigned int IsNexusInCore(const Cache cache,const unsigned int id)
   if (cache == (Cache) NULL)
     return(False);
   cache_info=(CacheInfo *) cache;
-  if (cache_info->class == UndefinedClass)
+  if (cache_info->color_class == UndefinedClass)
     return(False);
   nexus=cache_info->nexus+id;
   offset=nexus->y*cache_info->columns+nexus->x;
@@ -826,7 +826,7 @@ MagickExport unsigned int IsNexusInCore(const Cache cache,const unsigned int id)
 %
 %  The format of the OpenCache method is:
 %
-%      unsigned int OpenCache(Cache cache,const ClassType class_type,
+%      unsigned int OpenCache(Cache cache,const ClassType color_class,
 %        const unsigned int columns,const unsigned int rows)
 %
 %  A description of each parameter follows:
@@ -836,7 +836,7 @@ MagickExport unsigned int IsNexusInCore(const Cache cache,const unsigned int id)
 %
 %    o cache: Specifies a pointer to a Cache structure.
 %
-%    o class_type: DirectClass or PseudoClass.
+%    o color_class: DirectClass or PseudoClass.
 %
 %    o columns: This unsigned integer defines the number of columns in the
 %      pixel cache.
@@ -846,7 +846,7 @@ MagickExport unsigned int IsNexusInCore(const Cache cache,const unsigned int id)
 %
 %
 */
-MagickExport unsigned int OpenCache(Cache cache,const ClassType class_type,
+MagickExport unsigned int OpenCache(Cache cache,const ClassType color_class,
   const unsigned int columns,const unsigned int rows)
 {
   CacheInfo
@@ -883,12 +883,12 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType class_type,
   cache_info=(CacheInfo *) cache;
   number_pixels=cache_info->columns*cache_info->rows;
   length=number_pixels*sizeof(PixelPacket);
-  if (cache_info->class == PseudoClass)
+  if (cache_info->color_class == PseudoClass)
     length+=number_pixels*sizeof(IndexPacket);
   cache_info->rows=rows;
   cache_info->columns=columns;
   number_pixels=cache_info->columns*cache_info->rows;
-  if (cache_info->class != UndefinedClass)
+  if (cache_info->color_class != UndefinedClass)
     {
       /*
         Free memory-based cache resources.
@@ -926,12 +926,12 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType class_type,
       cache_info->nexus[0].available=False;
     }
   length=number_pixels*sizeof(PixelPacket);
-  if (class_type == PseudoClass)
+  if (color_class == PseudoClass)
     length+=number_pixels*sizeof(IndexPacket);
   if ((cache_info->type == MemoryCache) ||
       ((cache_info->type == UndefinedCache) && (length <= GetCacheMemory(0))))
     {
-      if (cache_info->class == UndefinedClass)
+      if (cache_info->color_class == UndefinedClass)
         allocation=AllocateMemory(length);
       else
         {
@@ -946,10 +946,10 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType class_type,
             Create in-memory pixel cache.
           */
           (void) GetCacheMemory(-length);
-          cache_info->class=class_type;
+          cache_info->color_class=color_class;
           cache_info->type=MemoryCache;
           cache_info->pixels=(PixelPacket *) allocation;
-          if (cache_info->class == PseudoClass)
+          if (cache_info->color_class == PseudoClass)
             cache_info->indexes=(IndexPacket *)
               (cache_info->pixels+number_pixels);
           return(True);
@@ -958,7 +958,7 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType class_type,
   /*
     Create pixel cache on disk.
   */
-  if (cache_info->class == UndefinedClass)
+  if (cache_info->color_class == UndefinedClass)
     TemporaryFilename(cache_info->filename);
   if (cache_info->file == -1)
     {
@@ -974,7 +974,7 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType class_type,
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
   (void) ftruncate(cache_info->file,length);
 #endif
-  cache_info->class=class_type;
+  cache_info->color_class=color_class;
   if (cache_info->type != DiskCache)
     {
       size_t
@@ -989,7 +989,7 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType class_type,
           */
           cache_info->type=MemoryMappedCache;
           cache_info->pixels=(PixelPacket *) allocation;
-          if (cache_info->class == PseudoClass)
+          if (cache_info->color_class == PseudoClass)
             cache_info->indexes=(IndexPacket *)
               (cache_info->pixels+number_pixels);
         }
@@ -1047,7 +1047,7 @@ MagickExport unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
-  if (cache_info->class != PseudoClass)
+  if (cache_info->color_class != PseudoClass)
     return(False);
   nexus=cache_info->nexus+id;
   offset=nexus->y*cache_info->columns+nexus->x;
@@ -1287,7 +1287,7 @@ MagickExport PixelPacket *SetCacheNexus(Cache cache,const unsigned int id,
         */
         nexus->pixels=cache_info->pixels+nexus->y*cache_info->columns+nexus->x;
         nexus->indexes=(IndexPacket *) NULL;
-        if (cache_info->class == PseudoClass)
+        if (cache_info->color_class == PseudoClass)
           nexus->indexes=
             cache_info->indexes+nexus->y*cache_info->columns+nexus->x;
         return(nexus->pixels);
@@ -1297,7 +1297,7 @@ MagickExport PixelPacket *SetCacheNexus(Cache cache,const unsigned int id,
   */
   number_pixels=nexus->columns*nexus->rows;
   length=number_pixels*sizeof(PixelPacket);
-  if (cache_info->class == PseudoClass)
+  if (cache_info->color_class == PseudoClass)
     length+=number_pixels*sizeof(IndexPacket);
   if (nexus->line == (void *) NULL)
     nexus->line=AllocateMemory(length);
@@ -1369,12 +1369,12 @@ static PixelPacket *SetPixelCache(Image *image,const int x,const int y,
     }
   if (image->cache == (Cache) NULL)
     GetCacheInfo(&image->cache);
-  if (image->class != GetCacheClassType(image->cache))
+  if (image->color_class != GetCacheClassType(image->cache))
     {
       /*
         Allocate pixel cache.
       */
-      status=OpenCache(image->cache,image->class,image->columns,image->rows);
+      status=OpenCache(image->cache,image->color_class,image->columns,image->rows);
       if (status == False)
         {
           ThrowException(&image->exception,CacheWarning,
@@ -1463,7 +1463,7 @@ static unsigned int SyncPixelCache(Image *image)
   if (IsNexusInCore(image->cache,0))
     return(True);
   status=WriteCachePixels(image->cache,0);
-  if (image->class == PseudoClass)
+  if (image->color_class == PseudoClass)
     status|=WriteCacheIndexes(image->cache,0);
   if (status == False)
     ThrowBinaryException(CacheWarning,"Unable to sync pixel cache",
@@ -1521,7 +1521,7 @@ MagickExport unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
-  if (cache_info->class != PseudoClass)
+  if (cache_info->color_class != PseudoClass)
     return(False);
   nexus=cache_info->nexus+id;
   indexes=nexus->indexes;

@@ -135,7 +135,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
             case 0:
             {
               q->red=pixel;
-              if (image->class == PseudoClass)
+              if (image->color_class == PseudoClass)
                 {
                   *indexes=pixel;
                   *q=image->colormap[pixel];
@@ -179,7 +179,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
         case 0:
         {
           q->red=pixel;
-          if (image->class == PseudoClass)
+          if (image->color_class == PseudoClass)
             {
               *indexes=pixel;
               *q=image->colormap[pixel];
@@ -555,7 +555,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 Read uncompressed pixel data as separate planes.
               */
               packet_size=1;
-              if (layer_info[i].image->class == PseudoClass)
+              if (layer_info[i].image->color_class == PseudoClass)
                 {
                   if (layer_info[i].image->colors > 256)
                     packet_size++;
@@ -580,7 +580,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 {
                   case 0:
                   {
-                    if (layer_info[i].image->class == PseudoClass)
+                    if (layer_info[i].image->color_class == PseudoClass)
                       (void) PushImagePixels(layer_info[i].image,IndexQuantum,
                         scanline);
                     else
@@ -690,7 +690,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Read uncompressed pixel data as separate planes.
       */
       packet_size=1;
-      if (image->class == PseudoClass)
+      if (image->color_class == PseudoClass)
         {
           if (image->colors > 256)
             packet_size++;
@@ -716,7 +716,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             case 0:
             {
-              if (image->class == PseudoClass)
+              if (image->color_class == PseudoClass)
                 (void) PushImagePixels(image,IndexQuantum,scanline);
               else
                 (void) PushImagePixels(image,RedQuantum,scanline);
@@ -909,19 +909,19 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlob(image,4,"8BPS");
   MSBFirstWriteShort(image,1);  /* version */
   (void) WriteBlob(image,6,"      ");  /* reserved */
-  if (image->class == PseudoClass)
+  if (image->color_class == PseudoClass)
     MSBFirstWriteShort(image,1);
   else
     MSBFirstWriteShort(image,image->matte ? 4 : 3);
   MSBFirstWriteLong(image,image->rows);
   MSBFirstWriteLong(image,image->columns);
-  MSBFirstWriteShort(image,image->class == PseudoClass ? 8 : image->depth);
+  MSBFirstWriteShort(image,image->color_class == PseudoClass ? 8 : image->depth);
   if (((image_info->colorspace != UndefinedColorspace) ||
        (image->colorspace != CMYKColorspace)) &&
        (image_info->colorspace != CMYKColorspace))
     {
       TransformRGBImage(image,RGBColorspace);
-      MSBFirstWriteShort(image,image->class == PseudoClass ? 2 : 3);
+      MSBFirstWriteShort(image,image->color_class == PseudoClass ? 2 : 3);
     }
   else
     {
@@ -929,7 +929,7 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
         RGBTransformImage(image,CMYKColorspace);
       MSBFirstWriteShort(image,4);
     }
-  if ((image->class == DirectClass) || (image->colors > 256))
+  if ((image->color_class == DirectClass) || (image->colors > 256))
     MSBFirstWriteLong(image,0);
   else
     {
@@ -956,7 +956,7 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   /*
     Write uncompressed pixel data as separate planes.
   */
-  if (image->class == PseudoClass)
+  if (image->color_class == PseudoClass)
     for (y=0; y < (int) image->rows; y++)
     {
       if (!GetImagePixels(image,0,y,image->columns,1))

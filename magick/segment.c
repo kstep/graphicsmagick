@@ -472,7 +472,7 @@ static unsigned int Classify(Image *image,short **extrema,
     ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
       image->filename);
   image->matte=False;
-  image->class=PseudoClass;
+  image->color_class=PseudoClass;
   if (image->colormap != (PixelPacket *) NULL)
     FreeMemory((void **) &image->colormap);
   image->colormap=colormap;
@@ -486,7 +486,7 @@ static unsigned int Classify(Image *image,short **extrema,
     i++;
   }
   /*
-    Do course grain classification.
+    Do course grain color_class.
   */
   for (y=0; y < (int) image->rows; y++)
   {

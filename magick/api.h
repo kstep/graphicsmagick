@@ -14,7 +14,9 @@
 #define _MAGICK_API_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
-#define class  c_class
+#define color_class  c_class
+#else
+#define color_class  class
 #endif
 
 #if defined(WIN32) || defined(__CYGWIN__)

@@ -321,11 +321,7 @@ typedef struct _Image
     *attributes;
 
   ClassType
-#if defined(__cplusplus) || defined(c_plusplus)
-    c_class;
-#else
-    class;
-#endif
+    color_class;
 
   unsigned int
     matte;

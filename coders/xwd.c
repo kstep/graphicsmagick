@@ -301,9 +301,9 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->rows=ximage->height;
   if ((colors == (XColor *) NULL) || (ximage->red_mask != 0) ||
       (ximage->green_mask != 0) || (ximage->blue_mask != 0))
-    image->class=DirectClass;
+    image->color_class=DirectClass;
   else
-    image->class=PseudoClass;
+    image->color_class=PseudoClass;
   image->colors=header.ncolors;
   if (image_info->ping)
     {
@@ -312,7 +312,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       CloseBlob(image);
       return(image);
     }
-  switch (image->class)
+  switch (image->color_class)
   {
     case DirectClass:
     default:
@@ -598,29 +598,29 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   xwd_header.header_size=sz_XWDheader+Extent(image->filename)+1;
   xwd_header.file_version=(CARD32) XWD_FILE_VERSION;
   xwd_header.pixmap_format=(CARD32) ZPixmap;
-  xwd_header.pixmap_depth=(CARD32) (image->class == DirectClass ? 24 : 8);
+  xwd_header.pixmap_depth=(CARD32) (image->color_class == DirectClass ? 24 : 8);
   xwd_header.pixmap_width=(CARD32) image->columns;
   xwd_header.pixmap_height=(CARD32) image->rows;
   xwd_header.xoffset=(CARD32) 0;
   xwd_header.byte_order=(CARD32) MSBFirst;
-  xwd_header.bitmap_unit=(CARD32) (image->class == DirectClass ? 32 : 8);
+  xwd_header.bitmap_unit=(CARD32) (image->color_class == DirectClass ? 32 : 8);
   xwd_header.bitmap_bit_order=(CARD32) MSBFirst;
-  xwd_header.bitmap_pad=(CARD32) (image->class == DirectClass ? 32 : 8);
-  bits_per_pixel=(image->class == DirectClass ? 24 : 8);
+  xwd_header.bitmap_pad=(CARD32) (image->color_class == DirectClass ? 32 : 8);
+  bits_per_pixel=(image->color_class == DirectClass ? 24 : 8);
   xwd_header.bits_per_pixel=(CARD32) bits_per_pixel;
   bytes_per_line=(CARD32) ((((xwd_header.bits_per_pixel*
     xwd_header.pixmap_width)+((xwd_header.bitmap_pad)-1))/
     (xwd_header.bitmap_pad))*((xwd_header.bitmap_pad) >> 3));
   xwd_header.bytes_per_line=(CARD32) bytes_per_line;
   xwd_header.visual_class=(CARD32)
-    (image->class == DirectClass ? DirectColor : PseudoColor);
-  xwd_header.red_mask=(CARD32) (image->class == DirectClass ? 0xff0000 : 0);
-  xwd_header.green_mask=(CARD32) (image->class == DirectClass ? 0xff00 : 0);
-  xwd_header.blue_mask=(CARD32) (image->class == DirectClass ? 0xff : 0);
-  xwd_header.bits_per_rgb=(CARD32) (image->class == DirectClass ? 24 : 8);
+    (image->color_class == DirectClass ? DirectColor : PseudoColor);
+  xwd_header.red_mask=(CARD32) (image->color_class == DirectClass ? 0xff0000 : 0);
+  xwd_header.green_mask=(CARD32) (image->color_class == DirectClass ? 0xff00 : 0);
+  xwd_header.blue_mask=(CARD32) (image->color_class == DirectClass ? 0xff : 0);
+  xwd_header.bits_per_rgb=(CARD32) (image->color_class == DirectClass ? 24 : 8);
   xwd_header.colormap_entries=(CARD32)
-    (image->class == DirectClass ? 256 : image->colors);
-  xwd_header.ncolors=(image->class == DirectClass ? 0 : image->colors);
+    (image->color_class == DirectClass ? 256 : image->colors);
+  xwd_header.ncolors=(image->color_class == DirectClass ? 0 : image->colors);
   xwd_header.window_width=(CARD32) image->columns;
   xwd_header.window_height=(CARD32) image->rows;
   xwd_header.window_x=0;
@@ -634,7 +634,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
     MSBFirstOrderLong((char *) &xwd_header,sizeof(xwd_header));
   (void) WriteBlob(image,sz_XWDheader,(char *) &xwd_header);
   (void) WriteBlob(image,Extent(image->filename)+1,(char *) image->filename);
-  if (image->class == PseudoClass)
+  if (image->color_class == PseudoClass)
     {
       XColor
         *colors;
@@ -695,7 +695,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
     q=pixels;
     for (x=0; x < (int) image->columns; x++)
     {
-      if (image->class == PseudoClass)
+      if (image->color_class == PseudoClass)
         *q++=indexes[x];
       else
         {

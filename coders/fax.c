@@ -149,7 +149,7 @@ static Image *ReadFAXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize image structure.
   */
-  image->class=PseudoClass;
+  image->color_class=PseudoClass;
   if (image->columns == 0)
     image->columns=2592;
   if (image->rows == 0)

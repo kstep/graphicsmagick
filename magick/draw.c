@@ -264,7 +264,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
     Track "hot" pixels with the image index packets.
   */
   alpha=1.0/MaxRGB;
-  image->class=PseudoClass;
+  image->color_class=PseudoClass;
   for (y=0; y < (int) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
@@ -439,7 +439,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
       if (!SyncImagePixels(image))
         break;
     }
-  image->class=DirectClass;
+  image->color_class=DirectClass;
   FreeMemory((void **) &segment_stack);
   return(True);
 }
@@ -1216,7 +1216,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     if (bounds.y2 >= image->rows)
       bounds.y2=image->rows-1.0;
     alpha=1.0/MaxRGB;
-    image->class=DirectClass;
+    image->color_class=DirectClass;
     for (y=(int) bounds.y1; y <= (int) bounds.y2; y++)
     {
       /*
@@ -2560,7 +2560,7 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
   /*
     Push initial segment on stack.
   */
-  image->class=DirectClass;
+  image->color_class=DirectClass;
   if (!image->matte)
     MatteImage(image,OpaqueOpacity);
   x=x_offset;
@@ -2707,7 +2707,7 @@ MagickExport unsigned int OpaqueImage(Image *image,const PixelPacket target,
     Make image color opaque.
   */
   assert(image != (Image *) NULL);
-  switch (image->class)
+  switch (image->color_class)
   {
     case DirectClass:
     default:

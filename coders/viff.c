@@ -588,7 +588,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       Initialize image structure.
     */
     image->matte=(viff_header.number_data_bands == 4);
-    image->class=
+    image->color_class=
       (viff_header.number_data_bands < 3 ? PseudoClass : DirectClass);
     image->columns=(unsigned int) viff_header.rows;
     image->rows=(unsigned int) viff_header.columns;
@@ -641,7 +641,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         }
       }
     else
-      if (image->class == PseudoClass)
+      if (image->color_class == PseudoClass)
         for (y=0; y < (int) image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
@@ -693,7 +693,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           }
         }
     FreeMemory((void **) &viff_pixels);
-    if (image->class == PseudoClass)
+    if (image->color_class == PseudoClass)
       SyncImage(image);
     /*
       Proceed to next image.
