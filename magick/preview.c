@@ -367,6 +367,7 @@ Export unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
             (void) strcpy(factor,"30.0x30.0");
             (void) strcpy(label,"+shade");
             commands[argc++]="+shade";
+            commands[argc++]=factor;
             break;
           }
         degrees+=10.0;
