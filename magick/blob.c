@@ -1087,7 +1087,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                     format[MaxTextExtent];
 
                   (void) strncpy(format,p,MaxTextExtent-1);
-                  FormatString(p,format,(int) image->scene);
+                  FormatString(p,format,GetImageListIndex(image));
                   break;
                 }
             }

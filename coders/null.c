@@ -56,6 +56,12 @@
 #include "define.h"
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WriteNULLImage(const ImageInfo *,Image *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -121,43 +127,6 @@ static Image *ReadNULLImage(const ImageInfo *image_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   W r i t e N U L L I m a g e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method WriteNULLImage writes no output at all. It is useful when specified
-%  as an output format when profiling.
-%
-%  The format of the WriteNULLImage method is:
-%
-%      unsigned int WriteNULLImage(const ImageInfo *image_info,Image *image)
-%
-%  A description of each parameter follows.
-%
-%    o status: Always returns True.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o image:  A pointer to a Image structure.
-%
-%
-*/
-static unsigned int WriteNULLImage(const ImageInfo *image_info,Image *image)
-{
-  assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  return True;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   R e g i s t e r N U L L I m a g e                                         %
 %                                                                             %
 %                                                                             %
@@ -212,4 +181,41 @@ ModuleExport void RegisterNULLImage(void)
 ModuleExport void UnregisterNULLImage(void)
 {
   (void) UnregisterMagickInfo("NULL");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e N U L L I m a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method WriteNULLImage writes no output at all. It is useful when specified
+%  as an output format when profiling.
+%
+%  The format of the WriteNULLImage method is:
+%
+%      unsigned int WriteNULLImage(const ImageInfo *image_info,Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o status: Always returns True.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%    o image:  A pointer to a Image structure.
+%
+%
+*/
+static unsigned int WriteNULLImage(const ImageInfo *image_info,Image *image)
+{
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  return(True);
 }
