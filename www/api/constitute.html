@@ -43,7 +43,7 @@
 <P>image:  <STRONG>ConstituteImage</STRONG>( )returns a pointer to the image. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage or if the image cannot be read.;</P>
 <P><STRONG>DestroyConstitute</STRONG>( void );</P>
-<P>unsigned int  <STRONG>DispatchImage</STRONG>( Image *image, const int x, const int y, const unsigned int columns, const unsigned int rows, const char *map, const StorageType type, void *pixels );</P>
+<P>unsigned int  <STRONG>DispatchImage</STRONG>( Image *image, const int x_offset, const int y_offset, const unsigned int columns, const unsigned int rows, const char *map, const StorageType type, void *pixels );</P>
 <P>Image * <STRONG>PingImage</STRONG>( const ImageInfo *image_info, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ReadImage</STRONG>( const ImageInfo *image_info, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>WriteImage</STRONG>( const ImageInfo *image_info, Image *image );</P>
@@ -98,14 +98,14 @@ Return any errors or warnings in this structure.
 <blockquote>DestroyConstitute ( void ); </blockquote><P>
 <H2><A NAME="dispatchimage">DispatchImage</A></H2>
 <blockquote>DispatchImage ( ) extracts pixel data from an image and returns it to you.The method returns False on success otherwise True if an error isencountered. The data is returned as char, short int, int, float, or doublein the order specified by map. Suppose we want want to extract the firstscanline of a 640x480 image as character data in red-green-blue order:; </blockquote><blockquote>DispatchImage ( image, 0, 0, 640, 1, "RGB", 0, pixels );; </blockquote><P>The format of the DispatchImage method is:</P>
-<blockquote>unsigned int DispatchImage ( <A HREF="types/Image.html">Image</A> *image, const int x, const int y, const unsigned int columns, const unsigned int rows, const char *map, const StorageType type, void *pixels ); </blockquote><P>
+<blockquote>unsigned int DispatchImage ( <A HREF="types/Image.html">Image</A> *image, const int x_offset, const int y_offset, const unsigned int columns, const unsigned int rows, const char *map, const StorageType type, void *pixels ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
 <DD>
 The image.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_x%2C_y%2C_columns%2C_rows%3A">x, y, columns, rows:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_x_offset%2C_y_offset%2C_columns%2C_rows%3A">x_offset, y_offset, columns, rows:</A></STRONG><BR>
 <DD>
 These values define the perimeter of a region of pixels you want to extract.
 <P></P>
