@@ -814,13 +814,12 @@ ANIMATION
 64-BIT MACHINES
 
   Each pixel, within ImageMagick, is represented by the PixelPacket
-  structure found in magick/image.h.  Only 8 bits are required for each
-  color component and 16 bits for the colormap index for a total of 6
-  bytes.  If QuantumLeap is defined (see 16-BIT IMAGING above), the
-  color component size increases to 16 bits for a total of 10 bytes.
-  Some 64-bit machines pad the structure which can cause a significant
-  waste of memory.  For the cray, change the PixelPacket structure
-  to this
+  structure found in magick/image.h. Only 8 bits are required for each
+  color component for a total of 4 bytes. If QuantumLeap is defined (see
+  16-BIT IMAGING above), the color component size increases to 16 bits
+  for a total of 8 bytes. Some 64-bit machines pad the structure which
+  can cause a significant waste of memory. For the cray, change the
+  PixelPacket structure to this
 
       typedef struct _PixelPacket
       {
@@ -829,17 +828,14 @@ ANIMATION
           green : QuantumDepth,
           blue : QuantumDepth,
           opacity : QuantumDepth;
-
-        unsigned short
-          index : 16;
       } PixelPacket;
 
   before compiling.
 
-  I'm not sure if this will work on other 64-bit machines that pad.  If you
-  know a better solution, please send me E-mail.  Note, that the Dec Alpha
-  apparently does not pad the structure so ImageMagick should be fine on
-  this particular 64-bit machine.
+  I'm not sure if this will work on other 64-bit machines that pad. If
+  you know a better solution, please send me E-mail. Note, that the Dec
+  Alpha apparently does not pad the structure so ImageMagick should be
+  fine on this particular 64-bit machine.
 
 
 Magick++
@@ -848,10 +844,10 @@ Magick++
   interface to ImageMagick, first build and install ImageMagick
   according to the instructions in this file (configure script method
   for Unix) and then build and install Magick++ according to the
-  instructions in the README file in the Magick++ subdirectory. Magick++
-  is currently supported using the egcs 1.1.1 version of GNU g++ (or
-  later) under Unix and Microsoft Visual C++ under Windows NT or Windows
-  95/98.
+  instructions in the INSTALL file in the Magick++ subdirectory.
+  Magick++ is currently supported using the egcs 1.1.2 version of GNU
+  g++ (or later) under Unix and Microsoft Visual C++ 6.0 under Windows
+  NT or Windows 95/98.
 
 
 COPYRIGHT
