@@ -2,7 +2,7 @@
   * Added Windows95 define to VisualMagick magick_config.h to
     disable use of features not available under Windows '95
 
-2002-10-22  Cristy  <cristy@mystic.es.dupont.com>
+2002-10-21  Cristy  <cristy@mystic.es.dupont.com>
   * Added large file pixel cache support for Windows NT.
 
 2002-10-21  Leonard Rosenthol <leonardr@lazerware.com>
