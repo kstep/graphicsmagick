@@ -408,7 +408,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     {
       if ((image->blob->file == stdin) || image->blob->pipet)
         remove(filename);
-      ThrowReaderException(FileOpenError,"Unable to open file",image);
+      ThrowReaderException(FileOpenError,"Unable to open file",image)
     }
   if (image_info->subrange != 0)
     while (image->scene < image_info->subimage)
@@ -424,7 +424,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           if ((image->blob->file == stdin) || image->blob->pipet)
             remove(filename);
           ThrowReaderException(CorruptImageError,"Unable to read subimage",
-            image);
+            image)
         }
     }
   do
