@@ -1,5 +1,9 @@
 2003-02-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/xpm.c (WritePICONImage): Close blob using correct image.
+	* tests/Makefile.am (CHECK_SIZED_FILES): Added files to tests
+	subdirectory so that tests don't need to use files from
+	PerlMagick.
 	* magick/image.c (TransformColorspace): New function to
 	simplify/centralize colorspace transform requests.  Replaced calls
 	to RGBTransformImage and TransformRGBImage throughout the code

@@ -4397,7 +4397,7 @@ static void TraceCircle(PrimitiveInfo *primitive_info,const PointInfo start,
   offset.x=radius;
   offset.y=radius;
   degrees.x=0.0;
-  degrees.y=359.999999999;
+  degrees.y=360.0;
   TraceEllipse(primitive_info,start,offset,degrees);
 }
 

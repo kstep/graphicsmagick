@@ -2081,7 +2081,7 @@ void Magick::Image::colorSpace( const ColorspaceType colorSpace_ )
           image()->colorspace != GRAYColorspace)
         {
           /* Transform to RGB colorspace as intermediate step */
-          TransformRGBImage( image(), RGBColorspace );
+          TransformRGBImage( image(), image()->colorspace );
           throwImageException();
         }
       /* Transform to final non-RGB colorspace */
@@ -2095,7 +2095,7 @@ void Magick::Image::colorSpace( const ColorspaceType colorSpace_ )
        colorSpace_ == GRAYColorspace )
     {
       /* Transform to a RGB-type colorspace */
-      TransformRGBImage( image(), colorSpace_ );
+      TransformRGBImage( image(), image()->colorspace );
       throwImageException();
       return;
     }

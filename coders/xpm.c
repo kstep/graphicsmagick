@@ -760,7 +760,7 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
   }
   DestroyImage(picon);
   (void) WriteBlobString(image,"};\n");
-  CloseBlob(picon);
+  CloseBlob(image);
   return(True);
 }
 

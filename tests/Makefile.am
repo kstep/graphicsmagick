@@ -30,7 +30,7 @@
 
 AUTOMAKE_OPTIONS = 1.6 foreign
 
-INCLUDES = -I../ -I$(top_srcdir) -I../magick
+INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/magick
 #INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/magick
 # ../magick/config.h is needed.
 
@@ -54,10 +54,10 @@ clean-local:
 	rm -f *out*.*
 
 CHECK_FILES = \
-	'LOGO:' \
-	'$(top_srcdir)/PerlMagick/t/input_p4.pbm'  \
-	'$(top_srcdir)/PerlMagick/t/input_p5.pgm' \
-	'$(top_srcdir)/PerlMagick/t/input_p6.ppm'
+	'$(srcdir)/input_bilevel.miff' \
+	'$(srcdir)/input_gray.miff'  \
+	'$(srcdir)/input_256c.miff' \
+	'$(srcdir)/input_truecolor.miff'
 
 CHECK_SIZED_FILES = \
 	"xc:white" \
@@ -65,8 +65,7 @@ CHECK_SIZED_FILES = \
 	"xc:\#bfbfbf" \
 	"xc:\#7FFF7FFF7FFF" \
 	"xc:\#800080008000" \
-	"xc:\#800180018001" \
-	"xc:transparent"
+	"xc:\#800180018001"
 
 if HasFPX
 FPX=FPX
