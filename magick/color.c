@@ -359,25 +359,25 @@ static void DestroyColorList(const NodeInfo *node_info)
 MagickExport unsigned int FuzzyColorMatch(const PixelPacket *p,
   const PixelPacket *q,const double fuzz)
 {
+  DoublePixelPacket
+    pixel;
+
   register double
-    blue,
-    distance,
-    green,
-    red;
+    distance;
 
   if ((fuzz == 0.0) && (p->red == q->red) && (p->green == q->green) &&
       (p->blue == q->blue))
     return(True);
-  red=p->red-(double) q->red;
-  distance=red*red;
+  pixel.red=p->red-(double) q->red;
+  distance=pixel.red*pixel.red;
   if (distance > (fuzz*fuzz))
     return(False);
-  green=p->green-(double) q->green;
-  distance+=green*green;
+  pixel.green=p->green-(double) q->green;
+  distance+=pixel.green*pixel.green;
   if (distance > (fuzz*fuzz))
     return(False);
-  blue=p->blue-(double) q->blue;
-  distance+=blue*blue;
+  pixel.blue=p->blue-(double) q->blue;
+  distance+=pixel.blue*pixel.blue;
   if (distance > (fuzz*fuzz))
     return(False);
   return(True);
@@ -1392,11 +1392,10 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
   PixelPacket *color,ExceptionInfo *exception)
 {
   double
-    blue,
-    green,
-    opacity,
-    red,
     scale;
+
+	DoublePixelPacket
+    pixel;
 
   register const ColorInfo
     *p;
@@ -1470,7 +1469,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
               pixel.red=pixel.green;
               pixel.green=pixel.blue;
               pixel.blue=pixel.opacity;
-              opacity=0;
+              pixel.opacity=0;
               for (i=n-1; i >= 0; i--)
               {
                 c=(*name++);
@@ -1505,10 +1504,11 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
     {
       scale=strchr(name,'%') == (char *) NULL ? 1.0 :
         ScaleQuantumToChar(MaxRGB)/100.0;
-      (void) sscanf(name,"%*[^(](%lf%*[%,]%lf%*[%,]%lf",&red,&green,&blue);
-      color->red=ScaleCharToQuantum(scale*red);
-      color->green=ScaleCharToQuantum(scale*green);
-      color->blue=ScaleCharToQuantum(scale*blue);
+      (void) sscanf(name,"%*[^(](%lf%*[%,]%lf%*[%,]%lf",
+        &pixel.red,&pixel.green,&pixel.blue);
+      color->red=ScaleCharToQuantum(scale*pixel.red);
+      color->green=ScaleCharToQuantum(scale*pixel.green);
+      color->blue=ScaleCharToQuantum(scale*pixel.blue);
       color->opacity=OpaqueOpacity;
       return(True);
     }
@@ -1516,12 +1516,12 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
     {
       scale=strchr(name,'%') == (char *) NULL ? 1.0 :
         ScaleQuantumToChar(MaxRGB)/100.0;
-      (void) sscanf(name,"%*[^(](%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf",&red,&green,
-        &blue,&opacity);
-      color->red=ScaleCharToQuantum(scale*red);
-      color->green=ScaleCharToQuantum(scale*green);
-      color->blue=ScaleCharToQuantum(scale*blue);
-      color->opacity=ScaleCharToQuantum(scale*opacity);
+      (void) sscanf(name,"%*[^(](%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf",
+        &pixel.red,&pixel.green,&pixel.blue,&pixel.opacity);
+      color->red=ScaleCharToQuantum(scale*pixel.red);
+      color->green=ScaleCharToQuantum(scale*pixel.green);
+      color->blue=ScaleCharToQuantum(scale*pixel.blue);
+      color->opacity=ScaleCharToQuantum(scale*pixel.opacity);
       return(True);
     }
   p=GetColorInfo(name,exception);

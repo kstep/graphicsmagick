@@ -727,10 +727,10 @@ MagickExport void XBestPixel(Display *display,const Colormap colormap,
   XColor *colors,unsigned int number_colors,XColor *color)
 {
   double
-    blue,
-    green,
-    min_distance,
-    red;
+    min_distance;
+
+  DoublePixelPacket
+    pixel;
 
   int
     query_server,
@@ -774,16 +774,16 @@ MagickExport void XBestPixel(Display *display,const Colormap colormap,
   j=0;
   for (i=0; i < (int) number_colors; i++)
   {
-    red=(double) (colors[i].red-color->red);
-    distance=red*red;
+    pixel.red=(double) (colors[i].red-color->red);
+    distance=pixel.red*pixel.red;
     if (distance > min_distance)
       continue;
-    green=(double) (colors[i].green-color->green);
-    distance+=green*green;
+    pixel.green=(double) (colors[i].green-color->green);
+    distance+=pixel.green*pixel.green;
     if (distance > min_distance)
       continue;
-    blue=(double) (colors[i].blue-color->blue);
-    distance+=blue*blue;
+    pixel.blue=(double) (colors[i].blue-color->blue);
+    distance+=pixel.blue*pixel.blue;
     if (distance > min_distance)
       continue;
     min_distance=distance;

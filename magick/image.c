@@ -2665,17 +2665,14 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
     normalize,
     total_error;
 
+  DoublePixelPacket
+    pixel;
+
   long
     y;
 
   register const PixelPacket
     *p;
-
-  register double
-    blue,
-    green,
-    opacity,
-    red;
 
   register long
     x;
@@ -2705,7 +2702,7 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
   */
   maximum_error_per_pixel=0;
   total_error=0;
-  opacity=0;
+  pixel.opacity=0;
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
@@ -2714,12 +2711,13 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      red=p->red-(double) q->red;
-      green=p->green-(double) q->green;
-      blue=p->blue-(double) q->blue;
+      pixel.red=p->red-(double) q->red;
+      pixel.green=p->green-(double) q->green;
+      pixel.blue=p->blue-(double) q->blue;
       if (image->matte)
-        opacity=p->opacity-(double) q->opacity;
-      distance=red*red+green*green+blue*blue+opacity*opacity;
+        pixel.opacity=p->opacity-(double) q->opacity;
+      distance=pixel.red*pixel.red+pixel.green*pixel.green+
+        pixel.blue*pixel.blue+pixel.opacity*pixel.opacity;
       total_error+=distance;
       if (distance > maximum_error_per_pixel)
         maximum_error_per_pixel=distance;

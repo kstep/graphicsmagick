@@ -556,17 +556,15 @@ static unsigned int Classification(CubeInfo *cube_info,const Image *image,
     mid_green,
     mid_blue;
 
+  DoublePixelPacket
+    pixel;
+
   long
     count,
     y;
 
   NodeInfo
     *node_info;
-
-  register double
-    blue,
-    green,
-    red;
 
   register long
     x;
@@ -633,11 +631,11 @@ static unsigned int Classification(CubeInfo *cube_info,const Image *image,
           Approximate the quantization error represented by this node.
         */
         node_info=node_info->child[id];
-        red=p->red-mid_red;
-        green=p->green-mid_green;
-        blue=p->blue-mid_blue;
-        node_info->quantize_error+=
-          count*red*red+count*green*green+count*blue*blue;
+        pixel.red=p->red-mid_red;
+        pixel.green=p->green-mid_green;
+        pixel.blue=p->blue-mid_blue;
+        node_info->quantize_error+=count*pixel.red*pixel.red+
+          count*pixel.green*pixel.green+count*pixel.blue*pixel.blue;
         cube_info->root->quantize_error+=node_info->quantize_error;
         index--;
       }
@@ -749,10 +747,8 @@ static void ClosestColor(CubeInfo *cube_info,const NodeInfo *node_info)
           double
             distance;
 
-          register double
-            blue,
-            green,
-            red;
+          DoublePixelPacket
+            pixel;
 
           register PixelPacket
             *color;
@@ -761,16 +757,16 @@ static void ClosestColor(CubeInfo *cube_info,const NodeInfo *node_info)
             Determine if this color is "closest".
           */
           color=cube_info->colormap+node_info->color_number;
-          red=color->red-(double) cube_info->color.red;
-          distance=red*red;
+          pixel.red=color->red-(double) cube_info->color.red;
+          distance=pixel.red*pixel.red;
           if (distance < cube_info->distance)
             {
-              green=color->green-(double) cube_info->color.green;
-              distance+=green*green;
+              pixel.green=color->green-(double) cube_info->color.green;
+              distance+=pixel.green*pixel.green;
               if (distance < cube_info->distance)
                 {
-                  blue=color->blue-(double) cube_info->color.blue;
-                  distance+=blue*blue;
+                  pixel.blue=color->blue-(double) cube_info->color.blue;
+                  distance+=pixel.blue*pixel.blue;
                   if (distance < cube_info->distance)
                     {
                       cube_info->distance=distance;
@@ -996,10 +992,8 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
   IndexPacket
     index;
 
-  Quantum
-    blue,
-    green,
-    red;
+  PixelPacket
+    pixel;
 
   register CubeInfo
     *p;
@@ -1033,14 +1027,14 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
         green_error+=p->error[i].green*p->weights[i];
         blue_error+=p->error[i].blue*p->weights[i];
       }
-      red=(Quantum) ((red_error < 0) ? 0 :
+      pixel.red=(Quantum) ((red_error < 0) ? 0 :
         (red_error > MaxRGB) ? MaxRGB : red_error+0.5);
-      green=(Quantum) ((green_error < 0) ? 0 :
+      pixel.green=(Quantum) ((green_error < 0) ? 0 :
         (green_error > MaxRGB) ? MaxRGB : green_error+0.5);
-      blue=(Quantum) ((blue_error < 0) ? 0 :
+      pixel.blue=(Quantum) ((blue_error < 0) ? 0 :
         (blue_error > MaxRGB) ? MaxRGB : blue_error+0.5);
-      i=(blue >> CacheShift) << 12 | (green >> CacheShift) << 6 |
-        (red >> CacheShift);
+      i=(pixel.blue >> CacheShift) << 12 | (pixel.green >> CacheShift) << 6 |
+        (pixel.red >> CacheShift);
       if (p->cache[i] < 0)
         {
           register NodeInfo
@@ -1056,9 +1050,9 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
           for (index=MaxTreeDepth-1; (long) index > 0; index--)
           {
             id=(unsigned int)
-              (((ScaleQuantumToChar(red) >> index) & 0x01) << 2 |
-               ((ScaleQuantumToChar(green) >> index) & 0x01) << 1 |
-               ((ScaleQuantumToChar(blue) >> index) & 0x01));
+              (((ScaleQuantumToChar(pixel.red) >> index) & 0x01) << 2 |
+               ((ScaleQuantumToChar(pixel.green) >> index) & 0x01) << 1 |
+               ((ScaleQuantumToChar(pixel.blue) >> index) & 0x01));
             if ((node_info->census & (1 << id)) == 0)
               break;
             node_info=node_info->child[id];
@@ -1066,9 +1060,9 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
           /*
             Find closest color among siblings and their children.
           */
-          p->color.red=red;
-          p->color.green=green;
-          p->color.blue=blue;
+          p->color.red=pixel.red;
+          p->color.green=pixel.green;
+          p->color.blue=pixel.blue;
           p->distance=3.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0);
           ClosestColor(p,node_info->parent);
           p->cache[i]=(long) p->color_number;
@@ -1092,9 +1086,9 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
       */
       for (i=0; i < (ExceptionQueueLength-1); i++)
         p->error[i]=p->error[i+1];
-      p->error[i].red=red-(double) image->colormap[index].red;
-      p->error[i].green=green-(double) image->colormap[index].green;
-      p->error[i].blue=blue-(double) image->colormap[index].blue;
+      p->error[i].red=pixel.red-(double) image->colormap[index].red;
+      p->error[i].green=pixel.green-(double) image->colormap[index].green;
+      p->error[i].blue=pixel.blue-(double) image->colormap[index].blue;
     }
   switch (direction)
   {
@@ -1895,6 +1889,9 @@ MagickExport unsigned int QuantizationError(Image *image)
     maximum_error_per_pixel,
     total_error;
 
+  DoublePixelPacket
+    pixel;
+
   IndexPacket
     index;
 
@@ -1904,11 +1901,6 @@ MagickExport unsigned int QuantizationError(Image *image)
 
   register const PixelPacket
     *p;
-
-  register double
-    blue,
-    green,
-    red;
 
   register IndexPacket
     *indexes;
@@ -1944,10 +1936,11 @@ MagickExport unsigned int QuantizationError(Image *image)
         if (!ColorMatch(p,p+count))
           break;
       index=indexes[x];
-      red=p->red-(double) image->colormap[index].red;
-      green=p->green-(double) image->colormap[index].green;
-      blue=p->blue-(double) image->colormap[index].blue;
-      distance=count*red*red+count*green*green+count*blue*blue;
+      pixel.red=p->red-(double) image->colormap[index].red;
+      pixel.green=p->green-(double) image->colormap[index].green;
+      pixel.blue=p->blue-(double) image->colormap[index].blue;
+      distance=count*pixel.red*pixel.red+count*pixel.green*pixel.green+
+        count*pixel.blue*pixel.blue;
       total_error+=distance;
       if (distance > maximum_error_per_pixel)
         maximum_error_per_pixel=distance;

@@ -2091,11 +2091,8 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
 {
 #define SharpenImageText  "  Sharpen image...  "
 
-  double
-    blue,
-    green,
-    opacity,
-    red;
+  DoublePixelPacket
+    pixel;
 
   Image
     *sharp_image;
@@ -2126,32 +2123,34 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      red=p->red-(double) q->red;
-      if (AbsoluteValue(2.0*red) < (MaxRGB*threshold))
-        red=p->red;
+      pixel.red=p->red-(double) q->red;
+      if (AbsoluteValue(2.0*pixel.red) < (MaxRGB*threshold))
+        pixel.red=p->red;
       else
-        red=p->red+(red*amount);
-      green=p->green-(double) q->green;
-      if (AbsoluteValue(2.0*green) < (MaxRGB*threshold))
-        green=p->green;
+        pixel.red=p->red+(pixel.red*amount);
+      pixel.green=p->green-(double) q->green;
+      if (AbsoluteValue(2.0*pixel.green) < (MaxRGB*threshold))
+        pixel.green=p->green;
       else
-        green=p->green+(green*amount);
-      blue=p->blue-(double) q->blue;
-      if (AbsoluteValue(2.0*blue) < (MaxRGB*threshold))
-        blue=p->blue;
+        pixel.green=p->green+(pixel.green*amount);
+      pixel.blue=p->blue-(double) q->blue;
+      if (AbsoluteValue(2.0*pixel.blue) < (MaxRGB*threshold))
+        pixel.blue=p->blue;
       else
-        blue=p->blue+(blue*amount);
-      opacity=p->opacity-(double) q->opacity;
-      if (AbsoluteValue(2.0*opacity) < (MaxRGB*threshold))
-        opacity=p->opacity;
+        pixel.blue=p->blue+(pixel.blue*amount);
+      pixel.opacity=p->opacity-(double) q->opacity;
+      if (AbsoluteValue(2.0*pixel.opacity) < (MaxRGB*threshold))
+        pixel.opacity=p->opacity;
       else
-        opacity=p->opacity+(opacity*amount);
-      q->red=(Quantum) ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
-      q->green=(Quantum)
-        ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
-      q->blue=(Quantum) ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
-      q->opacity=(Quantum)
-        ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
+        pixel.opacity=p->opacity+(pixel.opacity*amount);
+      q->red=(Quantum) ((pixel.red < 0) ? 0 :
+        (pixel.red > MaxRGB) ? MaxRGB : pixel.red+0.5);
+      q->green=(Quantum) ((pixel.green < 0) ? 0 :
+        (pixel.green > MaxRGB) ? MaxRGB : pixel.green+0.5);
+      q->blue=(Quantum) ((pixel.blue < 0) ? 0 :
+        (pixel.blue > MaxRGB) ? MaxRGB : pixel.blue+0.5);
+      q->opacity=(Quantum) ((pixel.opacity < 0) ? 0 :
+        (pixel.opacity > MaxRGB) ? MaxRGB : pixel.opacity+0.5);
       p++;
       q++;
     }

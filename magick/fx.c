@@ -158,10 +158,8 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
 {
 #define ColorizeImageText  "  Colorize the image...  "
 
-  double
-    blue,
-    green,
-    red;
+  DoublePixelPacket
+    pixel;
 
   Image
     *colorize_image;
@@ -193,16 +191,17 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
   /*
     Determine RGB values of the pen color.
   */
-  red=100.0;
-  green=100.0;
-  blue=100.0;
-  count=sscanf(opacity,"%lf%*[/,]%lf%*[/,]%lf",&red,&green,&blue);
+  pixel.red=100.0;
+  pixel.green=100.0;
+  pixel.blue=100.0;
+  count=sscanf(opacity,"%lf%*[/,]%lf%*[/,]%lf",
+    &pixel.red,&pixel.green,&pixel.blue);
   if (count == 1)
     {
-      if (red == 0.0)
+      if (pixel.red == 0.0)
         return(colorize_image);
-      green=red;
-      blue=red;
+      pixel.green=pixel.red;
+      pixel.blue=pixel.red;
     }
   /*
     Colorize DirectClass image.
@@ -215,9 +214,12 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      q->red=(Quantum) ((p->red*(100.0-red)+target.red*red)/100.0);
-      q->green=(Quantum) ((p->green*(100.0-green)+target.green*green)/100.0);
-      q->blue=(Quantum) ((p->blue*(100.0-blue)+target.blue*blue)/100.0);
+      q->red=(Quantum)
+        ((p->red*(100.0-pixel.red)+target.red*pixel.red)/100.0);
+      q->green=(Quantum)
+        ((p->green*(100.0-pixel.green)+target.green*pixel.green)/100.0);
+      q->blue=(Quantum)
+        ((p->blue*(100.0-pixel.blue)+target.blue*pixel.blue)/100.0);
       q->opacity=p->opacity;
       p++;
       q++;
@@ -265,7 +267,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
 #define ConvolveImageText  "  Convolving image...  "
 
   DoublePixelPacket
-    aggregate;
+    pixel;
 
   double
     normalize;
@@ -326,36 +328,36 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
       break;
     for (x=0; x < (long) convolve_image->columns; x++)
     {
-      (void) memset(&aggregate,0,sizeof(DoublePixelPacket));
+      (void) memset(&pixel,0,sizeof(DoublePixelPacket));
       r=p;
       k=kernel;
       for (v=0; v < width; v++)
       {
         for (u=0; u < width; u++)
         {
-          aggregate.red+=(*k)*r[u].red;
-          aggregate.green+=(*k)*r[u].green;
-          aggregate.blue+=(*k)*r[u].blue;
-          aggregate.opacity+=(*k)*r[u].opacity;
+          pixel.red+=(*k)*r[u].red;
+          pixel.green+=(*k)*r[u].green;
+          pixel.blue+=(*k)*r[u].blue;
+          pixel.opacity+=(*k)*r[u].opacity;
           k++;
         }
         r+=image->columns+width;
       }
       if ((normalize != 0.0) && (normalize != 1.0))
         {
-          aggregate.red/=normalize;
-          aggregate.green/=normalize;
-          aggregate.blue/=normalize;
-          aggregate.opacity/=normalize;
+          pixel.red/=normalize;
+          pixel.green/=normalize;
+          pixel.blue/=normalize;
+          pixel.opacity/=normalize;
         }
-      q->red=(Quantum) ((aggregate.red < 0) ? 0 :
-        (aggregate.red > MaxRGB) ? MaxRGB : aggregate.red+0.5);
-      q->green=(Quantum) ((aggregate.green < 0) ? 0 :
-        (aggregate.green > MaxRGB) ? MaxRGB : aggregate.green+0.5);
-      q->blue=(Quantum) ((aggregate.blue < 0) ? 0 :
-        (aggregate.blue > MaxRGB) ? MaxRGB : aggregate.blue+0.5);
-      q->opacity=(Quantum) ((aggregate.opacity < 0) ? 0 :
-        (aggregate.opacity > MaxRGB) ? MaxRGB : aggregate.opacity+0.5);
+      q->red=(Quantum) ((pixel.red < 0) ? 0 :
+        (pixel.red > MaxRGB) ? MaxRGB : pixel.red+0.5);
+      q->green=(Quantum) ((pixel.green < 0) ? 0 :
+        (pixel.green > MaxRGB) ? MaxRGB : pixel.green+0.5);
+      q->blue=(Quantum) ((pixel.blue < 0) ? 0 :
+        (pixel.blue > MaxRGB) ? MaxRGB : pixel.blue+0.5);
+      q->opacity=(Quantum) ((pixel.opacity < 0) ? 0 :
+        (pixel.opacity > MaxRGB) ? MaxRGB : pixel.opacity+0.5);
       p++;
       q++;
     }
