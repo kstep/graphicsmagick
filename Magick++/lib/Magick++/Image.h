@@ -576,8 +576,8 @@ namespace Magick
     std::string     label ( void ) const;
     
     // Linewidth for drawing vector objects (default one)
-    void            lineWidth ( unsigned int lineWidth_ );
-    unsigned int    lineWidth ( void ) const;
+    void            lineWidth ( double lineWidth_ );
+    double          lineWidth ( void ) const;
     
     // File type magick identifier (.e.g "GIF")
     void            magick ( const std::string &magick_ );

@@ -108,8 +108,8 @@ namespace Magick
     InterlaceType   interlaceType ( void ) const;
     
     // Linewidth for drawing vector objects (default one)
-    void            lineWidth ( unsigned int lineWidth_ );
-    unsigned int    lineWidth ( void ) const;
+    void            lineWidth ( double lineWidth_ );
+    double          lineWidth ( void ) const;
 
     // Image format to write or read
     void            magick ( const std::string &magick_ );
@@ -279,11 +279,11 @@ inline Magick::InterlaceType Magick::Options::interlaceType ( void ) const
 
 
 // Linewidth for drawing lines, circles, ellipses, etc.
-inline void Magick::Options::lineWidth ( unsigned int lineWidth_ )
+inline void Magick::Options::lineWidth ( double lineWidth_ )
 {
   _drawInfo->linewidth = lineWidth_;
 }
-inline unsigned int Magick::Options::lineWidth ( void ) const
+inline double Magick::Options::lineWidth ( void ) const
 {
   return _drawInfo->linewidth;
 }

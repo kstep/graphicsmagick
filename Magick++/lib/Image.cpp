@@ -2055,12 +2055,12 @@ std::string Magick::Image::label ( void ) const
 }
 
 // Linewidth for drawing lines, circles, ellipses, etc.
-void Magick::Image::lineWidth ( unsigned int lineWidth_ )
+void Magick::Image::lineWidth ( double lineWidth_ )
 {
   modifyImage();
   options()->lineWidth( lineWidth_ );
 }
-unsigned int Magick::Image::lineWidth ( void ) const
+double Magick::Image::lineWidth ( void ) const
 {
   return constOptions()->lineWidth( );
 }

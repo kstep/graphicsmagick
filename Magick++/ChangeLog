@@ -1,3 +1,7 @@
+2000-03-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (lineWidth): Type changed from unsigned int to double.
+
 2000-03-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/STL.h (Magick): 

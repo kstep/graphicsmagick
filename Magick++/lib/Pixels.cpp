@@ -7,6 +7,7 @@
 
 #define MAGICK_IMPLEMENTATION
 
+#include <string> // This is here to compile with Visual C++
 #include "Magick++/Thread.h"
 #include "Magick++/Exception.h"
 #include "Magick++/Pixels.h"

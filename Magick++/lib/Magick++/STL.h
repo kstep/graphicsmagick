@@ -1628,7 +1628,7 @@ namespace Magick
   class lineWidthImage : public std::unary_function<Image&,void>
   {
   public:
-    lineWidthImage( unsigned int lineWidth_ )
+    lineWidthImage( double lineWidth_ )
       : _lineWidth( lineWidth_ ) { }
 
     void operator()( Image &image_ )
@@ -1636,7 +1636,7 @@ namespace Magick
 	image_.lineWidth( _lineWidth );
       }
   private:
-    const unsigned int _lineWidth;
+    const double _lineWidth;
   };
 
   // File type magick identifier (.e.g "GIF")
