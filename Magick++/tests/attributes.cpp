@@ -155,7 +155,7 @@ int main( int /*argc*/, char ** argv)
     //
 
     // Test default value.
-    if ( image.backgroundColor() != ColorRGB("#ffffff") )
+    if ( image.backgroundColor() != ColorRGB("#000000ff") )
       {
 	++failures;
 	cout << "Line: " << __LINE__ << ", backgroundColor default ("
@@ -678,11 +678,13 @@ int main( int /*argc*/, char ** argv)
     // filterType
     //
     // Test default
-    if ( image.filterType() != LanczosFilter )
+    if ( image.filterType() != UndefinedFilter )
       {
 	++failures;
 	cout << "Line: " << __LINE__
-             << ", filterType default is incorrect" << endl;
+             << ", filterType default ("
+             << (int)image.filterType()
+             << ") is incorrect" << endl;
       }
 
     // Test set/get
