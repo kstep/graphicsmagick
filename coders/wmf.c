@@ -891,6 +891,7 @@ static void WmfDrawText(CSTRUCT *cstruct, char *str, RECT *arect,
   y_resolution=72;
   if(IMG_PTR->y_resolution > 0)
     y_resolution=IMG_PTR->y_resolution;
+  fontoffset=0;
 
   ExtendMVG(cstruct, "push graphic-context\n");
 
@@ -917,15 +918,15 @@ static void WmfDrawText(CSTRUCT *cstruct, char *str, RECT *arect,
     sprintf(fontname,"%s.ttf","arial");
   else
     sprintf(fontname,"%s.ttf","arial");
-  printf("facename=\"%s\", fontname=\"%s\"\n", facename, fontname);
+/*   printf("facename=\"%s\", fontname=\"%s\"\n", facename, fontname); */
   sprintf(buff, "font %s\n", fontname);
   ExtendMVG(cstruct,buff);
 
   /* Compute gravity */
   *gravity='\0';
-  fontoffset=(pointsize*y_resolution)/72;
   if(textalign & TA_TOP)
     {
+      fontoffset=(pointsize*y_resolution)/72;
       if(textalign & TA_LEFT)
         strcpy(gravity,"NorthWest");
       else if(textalign & TA_CENTER)
@@ -935,6 +936,7 @@ static void WmfDrawText(CSTRUCT *cstruct, char *str, RECT *arect,
     }
   else if(textalign & TA_BOTTOM)
     {
+      fontoffset=0;
       if(textalign & TA_LEFT)
         strcpy(gravity,"SouthWest");
       else if(textalign & TA_CENTER)
@@ -944,12 +946,18 @@ static void WmfDrawText(CSTRUCT *cstruct, char *str, RECT *arect,
     }
   else if(textalign & TA_BASELINE)
     {
+      fontoffset=(pointsize*y_resolution)/(72*2);
       if(textalign & TA_RIGHT)
         strcpy(gravity,"South");
       else if(textalign & TA_CENTER)
         strcpy(gravity,"Center");
       else if(textalign & TA_RIGHT)
         strcpy(gravity,"East");
+    }
+  else
+    {
+      /* Default gravity is NorthWest */
+      fontoffset=(pointsize*y_resolution)/72;
     }
   if(*gravity!='\0')
     {
@@ -958,7 +966,7 @@ static void WmfDrawText(CSTRUCT *cstruct, char *str, RECT *arect,
     }
 
   /* Set point size */
-  printf("pointsize=%i\n", pointsize);
+/*   printf("pointsize=%i\n", pointsize); */
   sprintf(buff, "font-size %i\n", pointsize);
   ExtendMVG(cstruct, buff);
 
