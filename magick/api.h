@@ -40,31 +40,45 @@ extern "C" {
 #  define _MAGICKDLL_
 # endif
 # if defined(_MAGICKDLL_)
-#  pragma warning( disable: 4273 )  /* Disable the dll linkage warnings */
+#  if !defined(__GNUC__)
+#   pragma warning( disable: 4273 )  /* Disable the dll linkage warnings */
+#  endif
 #  if !defined(_MAGICKLIB_)
 #   define MagickExport  __declspec(dllimport)
-#   pragma message( "Compiling as dll import" ) 
+#   if !defined(__GNUC__)
+#    pragma message( "Compiling as dll import" )
+#   endif
 #  else
 #   define MagickExport  __declspec(dllexport)
-#   pragma message( "Compiling as dll export" ) 
+#   if !defined(__GNUC__)
+#    pragma message( "Compiling as dll export" )
+#   endif
 #  endif
 # else
 #  define MagickExport
-#  pragma message( "Compiling as simple library" ) 
+#  if !defined(__GNUC__)
+#   pragma message( "Compiling as simple library" )
+#  endif
 # endif
 # if defined(_DLL) && !defined(_LIB)
 #  define ModuleExport  __declspec(dllexport)
-#  pragma message( "Module compiled as DLL" ) 
+#  if !defined(__GNUC__)
+#   pragma message( "Module compiled as DLL" ) 
+#  endif
 # else
 #  define ModuleExport
-#  pragma message( "Module compiled as library" ) 
+#  if !defined(__GNUC__)
+#   pragma message( "Module compiled as library" ) 
+#  endif
 # endif
 # define MagickGlobal __declspec(thread)
-# pragma warning(disable : 4018)
-# pragma warning(disable : 4244)
-# pragma warning(disable : 4142)
-# pragma warning(disable : 4800)
-# pragma warning(disable : 4786)
+# if !defined(__GNUC__)
+#  pragma warning(disable : 4018)
+#  pragma warning(disable : 4244)
+#  pragma warning(disable : 4142)
+#  pragma warning(disable : 4800)
+#  pragma warning(disable : 4786)
+# endif
 #else
 # define MagickExport
 # define ModuleExport
