@@ -30,6 +30,12 @@ using namespace std;
 // See Configure.cpp for the implementation of this class
 /////////////////////////////////////////////////////////////////////////////
 
+enum {MULTITHREADEDDLL, SINGLETHREADEDSTATIC, MULTITHREADEDSTATIC, MULTITHREADEDSTATICDLL};
+enum {DLLPROJECT, LIBPROJECT, EXEPROJECT};
+enum {DISABLED, UTILITY, LIBRARY, STATICLIB, MODULE, ADD_ON, THIRDPARTY, PROJECT};
+enum {CPPCOMPILETOOL, RESCOMPILETOOL, MIDLCOMPILETOOL, LIBRARYTOOL, LINKERTOOL};
+enum {OP_REPLACEFILES, OP_RENAMEFILES};
+
 class ConfigureProject
 {
 public:
@@ -39,6 +45,7 @@ public:
   ofstream m_stream;
   string name;
   list<string> depends;
+  int type;
 
   // Assignment operator
   ConfigureProject& operator=(const ConfigureProject& obj); 
@@ -327,7 +334,9 @@ private:
           const char *root, const int runtime,
           const char *stype, const int btype);
   void process_project_replacements(
-          const char *root, const char *stype);
+          const char *root, const char *top,
+            const char *stype, const char *newstype,
+              int operation);
   ConfigureProject *write_project_lib(
     bool dll,
     int runtime,
@@ -360,11 +369,14 @@ private:
   void process_one_folder(
           const char *root, WIN32_FIND_DATA &data,
           int project_type, int projectType);
-  void generate_dependencies(ConfigureProject *project, bool gen_cpp, bool gen_util);
+  void generate_dependencies(ConfigureProject *project,
+    bool gen_cpp, bool gen_util, bool gen_type);
   void generate_a_dependency(ConfigureWorkspace *w,ConfigureProject *p,
     char *s, bool flag1, bool flag2);
   void generate_a_dependency_cs(ConfigureWorkspace *w,ConfigureProject *p,
     char *s);
+  void generate_a_dependency_type(ConfigureWorkspace *w,ConfigureProject *p,
+    int t);
   bool CConfigureApp::process_one_entry(const char *entry, int nLinesRead, int runtime);
   int CConfigureApp::load_environment_file( const char *inputfile, int runtime);
 };

@@ -1,5 +1,12 @@
 2003-08-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* VisualMagick: Incorporate configure/build improvements from the
+	1.1 development version. This fixes build dependency problems and
+	supports building the coders as a static library to improve build
+	times.
+
+2003-08-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
 	* magick/constitute.c (ReadImage): Ensure that the reported image
 	magic string is that of the user-specified input file rather than
 	a temporary file prepared by an external delegate program.

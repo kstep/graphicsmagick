@@ -1,5 +1,5 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Developer Studio generated include file.
+// Microsoft Visual C++ generated include file.
 // Used by configure.rc
 //
 #define IDD_CONFIGURE_DIALOG            102
@@ -38,6 +38,7 @@
 #define IDC_STANDALONE                  1027
 #define IDC_EditConfig                  1028
 #define IDC_GENERATE_VS7                1029
+#define IDC_BIGCODERDLL                 1030
 #define IDD_WAITDIALOG                  23040
 #define IDC_MSGCTRL                     23041
 #define IDC_PROGRESSCTRL                23042
@@ -48,7 +49,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        133
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1030
+#define _APS_NEXT_CONTROL_VALUE         1031
 #define _APS_NEXT_SYMED_VALUE           105
 #endif
 #endif

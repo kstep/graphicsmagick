@@ -126,6 +126,9 @@ BEGIN
     PUSHBUTTON      "Edit ""magick_config.h""",IDC_EditConfig,109,204,92,14
     CONTROL         "Generate Visual Studio 7 format",IDC_GENERATE_VS7,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,182,140,10
+    CONTROL         "All coders go into one big DLL",IDC_BIGCODERDLL,"Button",
+                    BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,186,134,
+                    111,10
 END
 
 IDD_SYSTEM_PAGE DIALOG  0, 0, 318, 233
@@ -249,12 +252,12 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "Comments", "This program is part of the GraphicsMagick imaging tookit."
-            VALUE "CompanyName", "GraphicsMagick Group"
+            VALUE "Comments", "This program is part of the ImageMagick imaging tookit."
+            VALUE "CompanyName", "ImageMagick Development Group"
             VALUE "FileDescription", "ImageMagick Win32 Configure Application"
             VALUE "FileVersion", "1, 0, 0, 2"
             VALUE "InternalName", "Configure"
-            VALUE "LegalCopyright", "Copyright (C) 2002 GraphicsMagick Group"
+            VALUE "LegalCopyright", "This program is LGPL"
             VALUE "OriginalFilename", "Configure.EXE"
             VALUE "ProductName", "Win32 Configure Application"
             VALUE "ProductVersion", "1, 0, 0, 2"
