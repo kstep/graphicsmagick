@@ -372,33 +372,35 @@ must be used.
 <td><font size=-1>const std::string &amp;text_, const <a href="Geometry.html">Geometry</a>
 &amp;location_</font></td>
 
-<td><font size=-1>Annotate image (render text on image) at specified location.</font></td>
+<td><font size=-1>Annotate using specified text, and placement location</font></td>
 </tr>
 
 <tr>
 <td><font size=-1>string text_, const <a href="Geometry.html">Geometry</a>
-&amp;location_, <a href="Enumerations.html#GravityType">GravityType</a>
+&amp;boundingArea_, <a href="Enumerations.html#GravityType">GravityType</a>
 gravity_</font></td>
 
-<td><font size=-1>Annotate image (render text on image) at specified location
-and influenced by gravity.</font></td>
+<td><font size=-1>Annotate using specified text, bounding area, and placement
+gravity. If <i>boundingArea_</i> is invalid, then bounding area is entire
+image.</font></td>
 </tr>
 
 <tr>
 <td><font size=-1>const std::string &amp;text_, const <a href="Geometry.html">Geometry</a>
-&amp;location_, <a href="Enumerations.html#GravityType">GravityType</a>
+&amp;boundingArea_, <a href="Enumerations.html#GravityType">GravityType</a>
 gravity_, double degrees_,&nbsp;</font></td>
 
-<td><font size=-1>Annotate image (render text on image) starting at specified
-location, influenced by gravity, and rendered at specified rotation angle.</font></td>
+<td><font size=-1>Annotate with text using specified text, bounding area,
+placement gravity, and rotation. If <i>boundingArea_</i> is invalid, then
+bounding area is entire image.</font></td>
 </tr>
 
 <tr>
 <td><font size=-1>const std::string &amp;text_, <a href="Enumerations.html#GravityType">GravityType</a>
 gravity_ = NorthWestGravity</font></td>
 
-<td><font size=-1>Annotate image (render text on image) at location implied
-by gravity.</font></td>
+<td><font size=-1>Annotate with text (bounding area is entire image) and
+placement gravity.</font></td>
 </tr>
 
 <tr>

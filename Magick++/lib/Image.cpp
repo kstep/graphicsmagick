@@ -187,40 +187,35 @@ void Magick::Image::addNoise( NoiseType noiseType_ )
   throwException( exceptionInfo );
 }
 
-// Annotate image with text
-// Text & location
+// Annotate using specified text, and placement location
 void Magick::Image::annotate ( const std::string &text_,
 			       const Geometry &location_ )
 {
   annotate ( text_, location_,  NorthWestGravity, 0 );
 }
-// Text, location, & gravity
+// Annotate using specified text, bounding area, and placement gravity
 void Magick::Image::annotate ( const std::string &text_,
-			       const Geometry &location_,
+			       const Geometry &boundingArea_,
 			       GravityType gravity_ )
 {
-  annotate ( text_, location_, gravity_, 0 );
+  annotate ( text_, boundingArea_, gravity_, 0 );
 }
-// Text, location, degrees, gravity
+// Annotate with text using specified text, bounding area, placement
+// gravity, and rotation.
 void Magick::Image::annotate ( const std::string &text_,
-			       const Geometry &location_,
+			       const Geometry &boundingArea_,
 			       GravityType gravity_,
 			       double degrees_ )
 {
   modifyImage();
-
-  char geometry[MaxTextExtent];
 
   AnnotateInfo *annotateInfo
     = options()->annotateInfo();
   
   annotateInfo->text = const_cast<char *>(text_.c_str());
 
-  if ( location_.isValid() ){
-    // For some reason width and height parameters in the geometry 
-    // causes AnnotateImage to place text incorrectly.
-    FormatString(geometry,"%+d%+d", location_.xOff(), location_.yOff() );
-    annotateInfo->geometry = geometry;
+  if ( boundingArea_.isValid() ){
+    annotateInfo->geometry = const_cast<char *>(string(boundingArea_).c_str());
   }
 
   annotateInfo->gravity = gravity_;
@@ -260,8 +255,7 @@ void Magick::Image::annotate ( const std::string &text_,
 
   throwImageException();
 }
-
-// Text & gravity
+// Annotate with text (bounding area is entire image) and placement gravity.
 void Magick::Image::annotate ( const std::string &text_,
 			       GravityType gravity_ )
 {

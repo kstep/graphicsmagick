@@ -1,3 +1,10 @@
+2000-12-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (annotate): Usage of Geometry parameter was
+ 	incorrect. Geometry parameter is used to specify bounding area.
+  	This changes the interpretation for two of the annotate methods
+ 	(which probably weren't usable before).
+
 2000-11-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Color.h (alphaQuantum): Bugfix.  Due to change in

@@ -96,19 +96,40 @@ namespace Magick
     
     // Add noise to image with specified noise type
     void            addNoise ( NoiseType noiseType_ );
-    
+
+    //
     // Annotate image (draw text on image)
+    //
+
+    // Gravity effects text placement in bounding area according to rules:
+    //  NorthWestGravity  text bottom-left corner placed at top-left
+    //  NorthGravity      text bottom-center placed at top-center
+    //  NorthEastGravity  text bottom-right corner placed at top-right
+    //  WestGravity       text left-center placed at left-center
+    //  CenterGravity     text center placed at center
+    //  EastGravity       text right-center placed at right-center
+    //  SouthWestGravity  text top-left placed at bottom-left
+    //  SouthGravity      text top-center placed at bottom-center
+    //  SouthEastGravity  text top-right placed at bottom-right
+
+    // Annotate using specified text, and placement location
     void            annotate ( const std::string &text_,
 			       const Geometry &location_ );
+    // Annotate using specified text, bounding area, and placement
+    // gravity
     void            annotate ( const std::string &text_,
-			       const Geometry &location_,
+			       const Geometry &boundingArea_,
 			       GravityType gravity_ );
+    // Annotate with text using specified text, bounding area,
+    // placement gravity, and rotation.
     void            annotate ( const std::string &text_,
-			       const Geometry &location_,
+			       const Geometry &boundingArea_,
 			       GravityType gravity_,
 			       double degrees_ );
+    // Annotate with text (bounding area is entire image) and placement
+    // gravity.
     void            annotate ( const std::string &text_,
-			       GravityType gravity_ = NorthWestGravity);
+			       GravityType gravity_ );
     
     // Blur image with specified blur factor
     // The radius_ parameter specifies the radius of the Gaussian, in
