@@ -27,16 +27,18 @@ for ($angle=0; $angle < 360; $angle+=30)
     rotate=>$angle);
   $label->Annotate(text=>"North East",gravity=>"NorthEast",x=>$x,y=>$y,
     rotate=>$angle);
-  $label->Annotate(text=>"East",gravity=>"East",x=>$x,y=>$y,
+  $label->Annotate(text=>"West",gravity=>"West",x=>$x,y=>$y,
     rotate=>$angle);
   $label->Annotate(text=>"Center",gravity=>"Center",x=>$x,y=>$y,
     rotate=>$angle);
-  $label->Annotate(text=>"South East",gravity=>"SouthEast",x=>$x,y=>$y,
+  $label->Annotate(text=>"East",gravity=>"East",x=>$x,y=>$y,
     rotate=>$angle);
-  $label->Annotate(text=>"South",gravity=>"South",x=>$x,y=>$y,rotate=>$angle);
   $label->Annotate(text=>"South West",gravity=>"SouthWest",x=>$x,y=>$y,
     rotate=>$angle);
-  $label->Annotate(text=>"West",gravity=>"West",x=>$x,y=>$y,rotate=>$angle);
+  $label->Annotate(text=>"South",gravity=>"South",x=>$x,y=>$y,
+    rotate=>$angle);
+  $label->Annotate(text=>"South East",gravity=>"SouthEast",x=>$x,y=>$y,
+    rotate=>$angle);
   push(@$image,$label);
 }
 $image->Set(delay=>20);
