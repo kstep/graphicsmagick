@@ -487,7 +487,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       status=ReadBlob(image,2,(char *) magick);
     }
     if ((status == False) || 
-        (LocaleNCompare((char *) magick,"BM",2) != 0 && LocaleNCompare((char *) magick,"CI",2) != 0) )
+        ((LocaleNCompare((char *) magick,"BM",2) != 0) &&
+         (LocaleNCompare((char *) magick,"CI",2) != 0)))
       ThrowReaderException(CorruptImageWarning,"Not a BMP image file",image);
     bmp_info.file_size=LSBFirstReadLong(image);
     (void) LSBFirstReadLong(image);
@@ -525,9 +526,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         bmp_info.colors_important=LSBFirstReadLong(image);
         for (i=0; i < ((int) bmp_info.size-40); i++)
           (void) ReadByte(image);
-        if ((bmp_info.compression == 3) &&
-            ((bmp_info.bits_per_pixel == 16) ||
-             (bmp_info.bits_per_pixel == 32)))
+        if ((bmp_info.compression == 3) && ((bmp_info.bits_per_pixel == 16) ||
+            (bmp_info.bits_per_pixel == 32)))
           {
             bmp_info.red_mask=LSBFirstReadShort(image);
             bmp_info.green_mask=LSBFirstReadShort(image);
@@ -746,9 +746,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
       case 16:
       {
-        unsigned char
-          h,
-          l;
+        unsigned short
+          word;
 
         /*
           Convert PseudoColor scanline.
@@ -764,12 +763,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (int) image->columns; x++)
           {
-            h=(*p++);
-            l=(*p++);
-            q->red=(MaxRGB*((int) (l & 0x7c) >> 2))/31;
-            q->green=
-              (MaxRGB*(((int) (l & 0x03) << 3)+((int) (h & 0xe0) >> 5)))/31;
-            q->blue=(MaxRGB*((int) (h & 0x1f)))/31;
+            word=(*p++);
+            word|=(*p++ << 8);
+            q->red=UpScale(ScaleColor5to8((word >> 11) & 0x1f));
+            q->green=UpScale(ScaleColor6to8((word >> 5) & 0x3f));
+            q->blue=UpScale(ScaleColor5to8(word & 0x1f));
             q++;
           }
           if (!SyncImagePixels(image))

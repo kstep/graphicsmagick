@@ -553,9 +553,8 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
           case 16:
           {
-            unsigned char
-              h,
-              l;
+            unsigned short
+              word;
 
             /*
               Convert PseudoColor scanline.
@@ -571,12 +570,11 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               for (x=0; x < (int) image->columns; x++)
               {
-                h=(*p++);
-                l=(*p++);
-                q->red=(MaxRGB*((int) (l & 0x7c) >> 2))/31;
-                q->green=
-                  (MaxRGB*(((int) (l & 0x03) << 3)+((int) (h & 0xe0) >> 5)))/31;
-                q->blue=(MaxRGB*((int) (h & 0x1f)))/31;
+                word=(*p++);
+                word|=(*p++ << 8);
+                q->red=UpScale(ScaleColor5to8((word >> 11) & 0x1f));
+                q->green=UpScale(ScaleColor6to8((word >> 5) & 0x3f));
+                q->blue=UpScale(ScaleColor5to8(word & 0x1f));
                 q++;
               }
               if (!SyncImagePixels(image))

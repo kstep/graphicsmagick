@@ -142,7 +142,8 @@ extern "C" {
      (((double) (color).green-(double) (target).green)* \
       ((double) (color).green-(double) (target).green))+ \
      (((double) (color).blue-(double) (target).blue)* \
-      ((double) (color).blue-(double) (target).blue))) <= (distance*distance))
+      ((double) (color).blue-(double) (target).blue))) <= \
+      (double) (distance*distance))
 #define Extent(string)  ((int) strlen(string))
 #define False  0
 #define DegreesToRadians(x) (M_PI*(x)/180.0)
@@ -164,6 +165,8 @@ extern "C" {
   (((~((span)-i-1) & ((span)-i-2))+1) == ((span)-i-1))
 #define RadiansToDegrees(x) (180.0*(x)/M_PI)
 #define RenderPostscriptText  "  Rendering postscript...  "
+#define ScaleColor5to8(x)  ((x) << 3)
+#define ScaleColor6to8(x)  ((x) << 2)
 #define Swap(x,y) ((x)^=(y), (y)^=(x), (x)^=(y))
 #define True  1
 

@@ -425,7 +425,7 @@ MagickExport char **ListModules(void)
   path=GetMagickConfigurePath(ModuleFilename);
   if (path == (char *) NULL)
     return((char **) NULL);
-  path[strlen(path)-strlen(ModuleFilename)-1]='\0';
+  path[Extent(path)-Extent(ModuleFilename)-1]='\0';
   directory=opendir(path);
   if (directory == (DIR *) NULL)
     return((char **) NULL);

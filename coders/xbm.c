@@ -214,13 +214,13 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   while (GetStringBlob(image,buffer) != (char *) NULL)
     if (sscanf(buffer,"#define %s %u",name,&image->columns) == 2)
-      if ((strlen(name) >= 6) &&
-          (LocaleCompare(name+strlen(name)-6,"_width") == 0))
+      if ((Extent(name) >= 6) &&
+          (LocaleCompare(name+Extent(name)-6,"_width") == 0))
           break;
   while (GetStringBlob(image,buffer) != (char *) NULL)
     if (sscanf(buffer,"#define %s %u",name,&image->rows) == 2)
-      if ((strlen(name) >= 7) &&
-          (LocaleCompare(name+strlen(name)-7,"_height") == 0))
+      if ((Extent(name) >= 7) &&
+          (LocaleCompare(name+Extent(name)-7,"_height") == 0))
           break;
   image->depth=8;
   image->storage_class=PseudoClass;
@@ -499,13 +499,13 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
   if (*q == '.')
     *q='\0';
   FormatString(buffer,"#define %.1024s_width %u\n",basename,image->columns);
-  (void) WriteBlob(image,strlen(buffer),buffer);
+  (void) WriteBlob(image,Extent(buffer),buffer);
   FormatString(buffer,"#define %.1024s_height %u\n",basename,image->rows);
-  (void) WriteBlob(image,strlen(buffer),buffer);
+  (void) WriteBlob(image,Extent(buffer),buffer);
   FormatString(buffer,"static char %.1024s_bits[] = {\n",basename);
-  (void) WriteBlob(image,strlen(buffer),buffer);
+  (void) WriteBlob(image,Extent(buffer),buffer);
   (void) strcpy(buffer," ");
-  (void) WriteBlob(image,strlen(buffer),buffer);
+  (void) WriteBlob(image,Extent(buffer),buffer);
   /*
     Convert MIFF to X bitmap pixels.
   */
@@ -529,7 +529,7 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
   x=0;
   y=0;
   (void) strcpy(buffer," ");
-  (void) WriteBlob(image,strlen(buffer),buffer);
+  (void) WriteBlob(image,Extent(buffer),buffer);
   for (y=0; y < (int) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
@@ -548,12 +548,12 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
             Write a bitmap byte to the image file.
           */
           FormatString(buffer,"0x%02x, ",(unsigned int) (byte & 0xff));
-          (void) WriteBlob(image,strlen(buffer),buffer);
+          (void) WriteBlob(image,Extent(buffer),buffer);
           count++;
           if (count == 12)
             {
               (void) strcpy(buffer,"\n  ");
-              (void) WriteBlob(image,strlen(buffer),buffer);
+              (void) WriteBlob(image,Extent(buffer),buffer);
               count=0;
             };
           bit=0;
@@ -568,12 +568,12 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
         */
         byte>>=(8-bit);
         FormatString(buffer,"0x%02x, ",(unsigned int) (byte & 0xff));
-        (void) WriteBlob(image,strlen(buffer),buffer);
+        (void) WriteBlob(image,Extent(buffer),buffer);
         count++;
         if (count == 12)
           {
             (void) strcpy(buffer,"\n  ");
-            (void) WriteBlob(image,strlen(buffer),buffer);
+            (void) WriteBlob(image,Extent(buffer),buffer);
             count=0;
           };
         bit=0;
@@ -583,7 +583,7 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
       MagickMonitor(SaveImageText,y,image->rows);
   }
   (void) strcpy(buffer,"};\n");
-  (void) WriteBlob(image,strlen(buffer),buffer);
+  (void) WriteBlob(image,Extent(buffer),buffer);
   CloseBlob(image);
   LiberateMemory((void **) &basename);
   return(True);

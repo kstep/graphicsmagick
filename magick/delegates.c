@@ -554,7 +554,7 @@ MagickExport unsigned int ListDelegateInfo(FILE *file)
       tag[i]=' ';
     tag[i]='\0';
     if (p->encode_tag != (char *) NULL)
-      (void) strncpy(tag,p->encode_tag,strlen(p->encode_tag));
+      (void) strncpy(tag,p->encode_tag,Extent(p->encode_tag));
     (void) fprintf(file,"%10s%.1024s=%.1024s%.1024s  %s\n",
       p->decode_tag ? p->decode_tag : "",p->direction <= 0 ? "<" : " ",
       p->direction >= 0 ? ">" : " ",tag,delegate);
@@ -655,20 +655,20 @@ static unsigned int ReadDelegates(void)
       Strip(text);
       if (delegate_info.commands != (char *) NULL)
         ReacquireMemory((void **) &delegate_info.commands,
-          (strlen(delegate_info.commands)+strlen(text)+3));
+          (Extent(delegate_info.commands)+Extent(text)+3));
       else
         {
-          delegate_info.commands=(char *) AcquireMemory(strlen(text)+3);
+          delegate_info.commands=(char *) AcquireMemory(Extent(text)+3);
           if (delegate_info.commands != (char *) NULL)
             *delegate_info.commands='\0';
         }
       if (delegate_info.commands == (char *) NULL)
         break;
       (void) strcat(delegate_info.commands,text);
-      if (delegate_info.commands[strlen(delegate_info.commands)-1] != '\\')
+      if (delegate_info.commands[Extent(delegate_info.commands)-1] != '\\')
         (void) strcat(delegate_info.commands,"\n");
       else
-        delegate_info.commands[strlen(delegate_info.commands)-1]='\0';
+        delegate_info.commands[Extent(delegate_info.commands)-1]='\0';
     }
     if (delegate_info.commands == (char *) NULL)
       MagickWarning(DelegateWarning,"no command for this delegate",
@@ -750,7 +750,7 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
         Note commands associated with this delegate.
       */
       delegate->commands=(char *)
-        AcquireMemory(strlen(delegate_info->commands)+1);
+        AcquireMemory(Extent(delegate_info->commands)+1);
       if (delegate->commands == (char *) NULL)
         return(delegates);
       (void) strcpy(delegate->commands,delegate_info->commands);

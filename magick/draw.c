@@ -82,6 +82,7 @@ static void
   GenerateArc(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo,
     const double,const unsigned int,const unsigned int),
   GenerateBezier(PrimitiveInfo *),
+  GenerateCircle(PrimitiveInfo *,const PointInfo,const PointInfo),
   GenerateEllipse(PrimitiveInfo *,const PointInfo,const PointInfo,
     const PointInfo),
   GenerateLine(PrimitiveInfo *,const PointInfo,const PointInfo),
@@ -966,29 +967,13 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
       case CirclePrimitive:
       {
-        double
-          radius;
-
-        PointInfo
-          arc,
-          end,
-          start;
-
         if (primitive_info[j].coordinates != 2)
           {
             primitive_type=UndefinedPrimitive;
             break;
           }
-        alpha=primitive_info[j+1].point.x-primitive_info[j].point.x;
-        beta=primitive_info[j+1].point.y-primitive_info[j].point.y;
-        radius=sqrt(alpha*alpha+beta*beta);
-        start.x=primitive_info[j].point.x-radius;
-        start.y=primitive_info[j].point.y;
-        end.x=start.x;
-        end.y=start.y-MagickEpsilon;
-        arc.x=radius;
-        arc.y=radius;
-        GenerateArc(primitive_info+j,start,end,arc,0,True,False);
+        GenerateCircle(primitive_info+j,primitive_info[j].point,
+          primitive_info[j+1].point);
         i=j+primitive_info[j].coordinates;
         break;
       }
@@ -2048,6 +2033,22 @@ static void GenerateBezier(PrimitiveInfo *primitive_info)
   }
   LiberateMemory((void **) &points);
   LiberateMemory((void **) &coefficients);
+}
+
+static void GenerateCircle(PrimitiveInfo *primitive_info,PointInfo start,
+  PointInfo end)
+{
+  PointInfo
+    arc;
+
+  arc.x=end.x-start.x;
+  arc.y=end.y-start.y;
+  arc.x=sqrt(arc.x*arc.x+arc.y*arc.y);
+  arc.y=arc.x;
+  start.x-=arc.x;
+  end.x=start.x;
+  end.y=start.y-MagickEpsilon;
+  GenerateArc(primitive_info,start,end,arc,0,True,False);
 }
 
 static void GenerateEllipse(PrimitiveInfo *primitive_info,const PointInfo start,

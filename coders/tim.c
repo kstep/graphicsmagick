@@ -90,8 +90,6 @@
 */
 static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-#define ScaleColor5to8(x)  ((x) << 3)
-
   typedef struct _TIMInfo
   {
     unsigned long
@@ -192,7 +190,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (i=0; i < (int) image->colors; i++)
         {
           word=(*p++);
-          word=word | (*p++ << 8);
+          word|=(*p++ << 8);
           image->colormap[i].blue=UpScale(ScaleColor5to8((word >> 10) & 0x1f));
           image->colormap[i].green=UpScale(ScaleColor5to8((word >> 5) & 0x1f));
           image->colormap[i].red=UpScale(ScaleColor5to8(word & 0x1f));
@@ -290,7 +288,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (x=0; x < (int) image->columns; x++)
           {
             word=(*p++);
-            word=word | (*p++ << 8);
+            word|=(*p++ << 8);
             q->blue=UpScale(ScaleColor5to8((word >> 10) & 0x1f));
             q->green=UpScale(ScaleColor5to8((word >> 5) & 0x1f));
             q->red=UpScale(ScaleColor5to8(word & 0x1f));

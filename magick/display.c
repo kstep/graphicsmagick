@@ -8648,7 +8648,7 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
   */
   TemporaryFilename(print_image->magick_filename);
   (void) strcpy(print_image->filename,"print:");
-  TemporaryFilename(print_image->filename+strlen("print:"));
+  TemporaryFilename(print_image->filename+Extent("print:"));
   status=WriteImage(image_info,print_image);
   DestroyImage(print_image);
   DestroyImageInfo(image_info);
