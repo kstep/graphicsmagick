@@ -930,7 +930,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                       {
                         index=(index << 8)+ReadBlobByte(image);
                         index=(index << 8)+ReadBlobByte(image);
-											}
+                      }
                     if (index >= image->colors)
                       {
                         ThrowException(&image->exception,CorruptImageError,
@@ -978,25 +978,25 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                               pixel.opacity=(ReadBlobMSBShort(image) >>
                                 (image->depth-QuantumDepth));
                         }
-											else
+                      else
                         {
-                          pixel.red=ReadBlobMSBLong(image) >>
-                            (image->depth-QuantumDepth);
-                          pixel.green=ReadBlobMSBLong(image) >>
-                            (image->depth-QuantumDepth);
-                          pixel.blue=ReadBlobMSBLong(image) >>
-                            (image->depth-QuantumDepth);
+                          pixel.red=(Quantum) (ReadBlobMSBLong(image) >>
+                            (image->depth-QuantumDepth));
+                          pixel.green=(Quantum) (ReadBlobMSBLong(image) >>
+                            (image->depth-QuantumDepth));
+                          pixel.blue=(Quantum) (ReadBlobMSBLong(image) >>
+                            (image->depth-QuantumDepth));
                           if (image->colorspace == CMYKColorspace)
                             {
-                              pixel.opacity=(ReadBlobMSBLong(image) >>
+                              pixel.opacity=(Quantum) (ReadBlobMSBLong(image) >>
                                 (image->depth-QuantumDepth));
                               if (image->matte)
-                                index=(ReadBlobMSBLong(image) >>
+                                index=(IndexPacket) (ReadBlobMSBLong(image) >>
                                   (image->depth-QuantumDepth));
                             }
                           else
                             if (image->matte)
-                              pixel.opacity=(ReadBlobMSBLong(image) >>
+                              pixel.opacity=(Quantum) (ReadBlobMSBLong(image) >>
                                 (image->depth-QuantumDepth));
                         }
                   }
@@ -1236,7 +1236,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
                   *q++=value; \
                 } \
           } \
-				else \
+        else \
           { \
             value=pixel.red; \
             if ((QuantumDepth-image->depth) != 0) \
