@@ -1177,7 +1177,6 @@ static void PNGWarningHandler(png_struct *ping,png_const_charp message)
 }
 
 #ifdef PNG_USER_MEM_SUPPORTED
-png_voidp png_IM_malloc(png_structp png_ptr,png_uint_32 size);
 static png_voidp png_IM_malloc(png_structp png_ptr,png_uint_32 size)
 {
 #if (PNG_LIBPNG_VER < 10011)
@@ -1198,7 +1197,6 @@ static png_voidp png_IM_malloc(png_structp png_ptr,png_uint_32 size)
 /*
   Free a pointer.  It is removed from the list at the same time.
 */
-png_free_ptr png_IM_free(png_structp png_ptr,png_voidp ptr);
 static png_free_ptr png_IM_free(png_structp png_ptr,png_voidp ptr)
 {
   png_ptr=png_ptr;
