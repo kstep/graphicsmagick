@@ -430,7 +430,7 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
         cube_info->color.red=q->red;
         cube_info->color.green=q->green;
         cube_info->color.blue=q->blue;
-        cube_info->distance=3.0*(MaxRGB+1)*(MaxRGB+1);
+        cube_info->distance=3.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0);
         ClosestColor(cube_info,node_info->parent);
         index=(unsigned int) cube_info->color_number;
         for (i=0; i < count; i++)
@@ -601,10 +601,10 @@ static unsigned int Classification(CubeInfo *cube_info,const Image *image,
         if (!ColorMatch(p,p+count))
           break;
       index=MaxTreeDepth-1;
-      bisect=(MaxRGB+1)/2.0;
-      mid_red=MaxRGB/2.0;
-      mid_green=MaxRGB/2.0;
-      mid_blue=MaxRGB/2.0;
+      bisect=((double) MaxRGB+1.0)/2.0;
+      mid_red=(double) MaxRGB/2.0;
+      mid_green=(double) MaxRGB/2.0;
+      mid_blue=(double) MaxRGB/2.0;
       node_info=cube_info->root;
       for (level=1; level <= cube_info->depth; level++)
       {
@@ -645,9 +645,9 @@ static unsigned int Classification(CubeInfo *cube_info,const Image *image,
         Sum RGB for this leaf for later derivation of the mean cube color.
       */
       node_info->number_unique+=count;
-      node_info->total_red+=count*p->red;
-      node_info->total_green+=count*p->green;
-      node_info->total_blue+=count*p->blue;
+      node_info->total_red+=(double) count*p->red;
+      node_info->total_green+=(double) count*p->green;
+      node_info->total_blue+=(double) count*p->blue;
       p+=count;
     }
     if (QuantumTick(y,image->rows))
@@ -761,7 +761,7 @@ static void ClosestColor(CubeInfo *cube_info,const NodeInfo *node_info)
             Determine if this color is "closest".
           */
           color=cube_info->colormap+node_info->color_number;
-          red=(double) color->red-(double) cube_info->color.red;
+          red=color->red-(double) cube_info->color.red;
           distance=red*red;
           if (distance < cube_info->distance)
             {
@@ -1069,7 +1069,7 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
           p->color.red=red;
           p->color.green=green;
           p->color.blue=blue;
-          p->distance=3.0*(MaxRGB+1)*(MaxRGB+1);
+          p->distance=3.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0);
           ClosestColor(p,node_info->parent);
           p->cache[i]=(long) p->color_number;
         }
@@ -1092,9 +1092,9 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
       */
       for (i=0; i < (ExceptionQueueLength-1); i++)
         p->error[i]=p->error[i+1];
-      p->error[i].red=(double) red-(double) image->colormap[index].red;
-      p->error[i].green=(double) green-(double) image->colormap[index].green;
-      p->error[i].blue=(double) blue-(double) image->colormap[index].blue;
+      p->error[i].red=red-(double) image->colormap[index].red;
+      p->error[i].green=green-(double) image->colormap[index].green;
+      p->error[i].blue=blue-(double) image->colormap[index].blue;
     }
   switch (direction)
   {
@@ -1256,7 +1256,7 @@ static CubeInfo *GetCubeInfo(const QuantizeInfo *quantize_info,
   for (i=0; i < ExceptionQueueLength; i++)
   {
     cube_info->weights[ExceptionQueueLength-i-1]=1.0/weight;
-    weight*=exp(log((double) (MaxRGB+1))/(ExceptionQueueLength-1.0));
+    weight*=exp(log(((double) MaxRGB+1.0))/(ExceptionQueueLength-1.0));
   }
   /*
     Normalize the weighting factors.
@@ -1944,9 +1944,9 @@ MagickExport unsigned int QuantizationError(Image *image)
         if (!ColorMatch(p,p+count))
           break;
       index=indexes[x];
-      red=(double) p->red-(double) image->colormap[index].red;
-      green=(double) p->green-(double) image->colormap[index].green;
-      blue=(double) p->blue-(double) image->colormap[index].blue;
+      red=p->red-(double) image->colormap[index].red;
+      green=p->green-(double) image->colormap[index].green;
+      blue=p->blue-(double) image->colormap[index].blue;
       distance=count*red*red+count*green*green+count*blue*blue;
       total_error+=distance;
       if (distance > maximum_error_per_pixel)
@@ -1959,9 +1959,9 @@ MagickExport unsigned int QuantizationError(Image *image)
   */
   image->mean_error_per_pixel=total_error/image->columns/image->rows;
   image->normalized_mean_error=image->mean_error_per_pixel/
-    (3.0*(MaxRGB+1)*(MaxRGB+1));
+    (3.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0));
   image->normalized_maximum_error=maximum_error_per_pixel/
-    (3.0*(MaxRGB+1)*(MaxRGB+1));
+    (3.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0));
   return(True);
 }
 
