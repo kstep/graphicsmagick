@@ -339,7 +339,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     bmp_info;
 
   char
-    id[5],
+    id[MaxTextExtent],
     message[MaxTextExtent];
 
   Image
@@ -426,7 +426,8 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(ResourceLimitWarning,
             "Memory allocation failed",image);
         if (number_colors != 0)
-          (void) memcpy(image->colormap,colormap,number_colors*sizeof(PixelPacket));
+          (void) memcpy(image->colormap,colormap,
+            number_colors*sizeof(PixelPacket));
         bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
         pixels=(unsigned char *) AcquireMemory(bytes_per_line*image->rows);
         if (LocaleCompare(id,"00db") == 0)
@@ -785,8 +786,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         continue;
       }
     FormatString(message,"AVI support for chunk %.1024s not yet available",id);
-    ThrowException(&image->exception,CorruptImageWarning,message,
-      image->filename);
+    ThrowException(exception,CorruptImageWarning,message,image->filename);
     break;
   }
   while (image->previous != (Image *) NULL)
@@ -794,6 +794,11 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (EOFBlob(image))
     ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
   CloseBlob(image);
+  if ((image->columns == 0) || (image->rows == 0))
+    {
+      DestroyImages(image);
+      return((Image *) NULL);
+    }
   return(image);
 }
 
