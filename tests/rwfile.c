@@ -11,6 +11,7 @@
  * enough) in order for the test to pass.
  * */
 
+#define MAGICK_IMPLEMENTATION 1
 #if !defined(_VISUALC_)
 #include <magick_config.h>
 #endif

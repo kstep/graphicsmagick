@@ -1,5 +1,8 @@
 2003-09-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* tests/constitute.c, tests/rwblob.c, tests/rwfile.c : Define
+	MAGICK_IMPLEMENTATION since these test programs using some internal
+	extensions.
 	* configure.ac: Test C++ compiler for __func__ support.
 	* magick/log.h: Added GetCurrentFunction() macro to handle
 	__func__ support determination.  Re-wrote GetMagickModule() macro
