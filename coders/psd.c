@@ -722,14 +722,12 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 layer_info[i].image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(layer_info[i].image);
               for (x=0; x < (int) layer_info[i].image->columns; x++)
               {
                 q->red=MaxRGB-q->red;
                 q->green=MaxRGB-q->green;
                 q->blue=MaxRGB-q->blue;
                 q->opacity=MaxRGB-q->opacity;
-                indexes[x]=MaxRGB-indexes[x];
                 q++;
               }
               if (!SyncImagePixels(layer_info[i].image))
@@ -831,14 +829,12 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
         for (x=0; x < (int) image->columns; x++)
         {
           q->red=MaxRGB-q->red;
           q->green=MaxRGB-q->green;
           q->blue=MaxRGB-q->blue;
           q->opacity=MaxRGB-q->opacity;
-          indexes[x]=MaxRGB-indexes[x];
           q++;
         }
         if (!SyncImagePixels(image))
