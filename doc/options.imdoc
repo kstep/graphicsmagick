@@ -3315,6 +3315,39 @@ Use <s>-raise</s> to create a raised effect, otherwise use <s>+raise</s>.
 </utils>
 
 
+<!-- ------------ -random-threshold --------------------------------- -->
+
+<utils apps=composite,convert,display,import,mogrify,montage>
+
+<dopt>-random-threshold <channeltype> <LOWxHIGH>
+
+<abs>random threshold the image</abs>
+
+<pp>
+The channel or channels specified in the <channeltype> argument are
+reduced to binary, using an random-threshold method.
+The choices for <s>channeltype</s> are:
+</pp>
+<pre>
+    all
+    intensity
+    opacity
+    matte
+</pre>
+<pp>
+When <s>channeltype</s> is "all", the color samples are thresholded into
+a graylevel and then that graylevel is stored in the three color
+channels.  Separately, the opacity channel is thresholded into a bilevel
+opacity value which is stored in the opacity channel.  For each pixel,
+a new random number is used to establish the threshold to be used.  The
+threshold never exceeds the specified maximum (HIGH) and is never less
+than the specified minimum (LOW).
+</pp>
+<pp>
+When <s>channeltype</s> is "intensity", only the color samples are
+thresholded.  When <s>channeltype</s> is "opacity" or "matte", only the
+opacity channel is thresholded.
+<pp>
 
 
 <!-- ------------ -red-primary -------------------------------------- -->
