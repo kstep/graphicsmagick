@@ -184,6 +184,12 @@ AC_ARG_WITH(cache,
 	      [with_cache=80])
 AC_DEFINE_UNQUOTED(PixelCacheThreshold,$with_cache,Pixel cache threshold (default 80MB))
 
+# Enable support for threads
+AC_ARG_WITH(with_threads,
+	      [  --with-threads        enable threads support],
+	      [with_threads=$withval],
+	      [with_threads='no'])
+
 # Disable support for full delegate paths
 AC_ARG_WITH(frozenpaths,
 	      [  --without-frozenpaths   disable frozen delegate paths],
@@ -472,12 +478,15 @@ AC_SUBST(LIB_MATH)
 # Find Posix threads library
 #
 LIB_THREAD=''
-AC_CHECK_LIB(pthread,pthread_attr_init,
-  [AC_DEFINE(HasPTHREADS,,Define if you have Posix thread methods.)
-   LIB_THREAD="-lpthread"
-   DEF_THREAD="-D_REENTRANT"],,)
-LIBS="$LIB_THREAD $LIBS"
-CPPFLAGS="$DEF_THREAD $CPPFLAGS"
+if test "$with_threads" != 'no'
+then
+  AC_CHECK_LIB(pthread,pthread_attr_init,
+    [AC_DEFINE(HasPTHREADS,,Define if you have Posix thread methods.)
+     LIB_THREAD="-lpthread"
+     DEF_THREAD="-D_REENTRANT"],,)
+  LIBS="$LIB_THREAD $LIBS"
+  CPPFLAGS="$DEF_THREAD $CPPFLAGS"
+fi
 AC_SUBST(LIB_THREAD)
 
 #
