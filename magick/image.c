@@ -914,6 +914,7 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
                   q++;
                 }
             }
+          image->matte=False;
           break;
         }
       case MatteChannel:
@@ -928,6 +929,7 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
               q++;
             }
           break;
+          image->matte=False;
         }
       default:
         {

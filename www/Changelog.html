@@ -53,6 +53,25 @@
 </tr>
 </table>
 <p>
+2003-10-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (ChannelImage): The OpacityChannel, MatteChannel,
+        and BlackChannel operations set the matte channel to opaque, so
+        set image-&gt;matte to False for those operations.
+
+</UL>
+<p>
+2003-10-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/log.c (LogToBlob): Since MagickSeek(file,0,SEEK_END) is
+        used to obtain the Blob size, MagickSeek(file,0,SEEK_SET) must be
+        used to restore the seek position.  Thanks to John Cristy for
+        bringing this to our attention.
+
+</UL>
+<p>
 2003-10-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

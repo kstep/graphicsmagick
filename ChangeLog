@@ -1,3 +1,9 @@
+2003-10-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (ChannelImage): The OpacityChannel, MatteChannel,
+	and BlackChannel operations set the matte channel to opaque, so
+	set image->matte to False for those operations.
+
 2003-10-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/log.c (LogToBlob): Since MagickSeek(file,0,SEEK_END) is
