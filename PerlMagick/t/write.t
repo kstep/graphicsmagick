@@ -80,7 +80,7 @@ print("Magick image file format ...\n");
 testReadWrite( 'MIFF:input.miff',
                'MIFF:output.miff',
                q//,
-               'eb4d6e084afe2835a1ad28ad7fc12ced');
+               'bf0f2f068231b1673cc31ebf875ac105');
 
 print("MTV Raytracing image format ...\n");
 ++$test;
