@@ -481,7 +481,11 @@ MagickExport unsigned int GammaImage(Image *image,const char *level)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  LevelImage() adjusts the levels of an image given these points:  black,
-%  mid, and white.
+%  mid, and white. Black specifies the darkest color in the image. Colors
+%  darker than the Black value are set to the Black value. Mid specifies a
+%  gamma correction to apply to the image.  White specifies the lightest color
+%  in the image. Colors brighter than the White value are set to the White
+%  value.
 %
 %  The format of the LevelImage method is:
 %
@@ -491,8 +495,9 @@ MagickExport unsigned int GammaImage(Image *image,const char *level)
 %
 %    o image: The image.
 %
-%    o levels: Define the levels.
-%
+%    o levels: Specify the levels as a string of the form "black/mid/white"
+%              (e.g. "10,1.0,65000) where black and white have the range of
+%              0-MaxRGB, and mid has the range 0-10.
 %
 */
 MagickExport unsigned int LevelImage(Image *image,const char *levels)
