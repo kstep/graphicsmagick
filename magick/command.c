@@ -261,8 +261,8 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
   return(status);
 }
 
-MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,const int argc,
-  char **argv,ExceptionInfo *exception)
+MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
+  const int argc,char **argv,ExceptionInfo *exception)
 {
 #define NotInitialized  (unsigned int) (~0)
 #define ThrowCompositeException(code,reason,description) \
@@ -1268,8 +1268,8 @@ static unsigned int ConcatenateImages(const int argc,char **argv,
   return(True);
 }
 
-MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,const int argc,
-  char **argv,ExceptionInfo *exception)
+MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
+  const int argc,char **argv,ExceptionInfo *exception)
 {
 #define NotInitialized  (unsigned int) (~0)
 #define ThrowConvertException(code,reason,description) \
@@ -2900,8 +2900,8 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,const int ar
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IdentifyImageCommand() describes the format and characteristics of one or more
-%  image files. It will also report if an image is incomplete or corrupt.
+%  IdentifyImageCommand() describes the format and characteristics of one or
+%  more image files. It will also report if an image is incomplete or corrupt.
 %  The information displayed includes the scene number, the file name, the
 %  width and height of the image, whether the image is colormapped or not,
 %  the number of colors in the image, the number of bytes in the image, the
@@ -2925,8 +2925,8 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,const int ar
 %
 %
 */
-MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,const int argc,
-  char **argv,ExceptionInfo *exception)
+MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
+  const int argc,char **argv,ExceptionInfo *exception)
 {
 #define ThrowIdentifyException(code,reason,description) \
 { \
@@ -3217,8 +3217,8 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,const int a
 %
 %
 */
-MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,const int argc,
-  char **argv,ExceptionInfo *exception)
+MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
+  const int argc,char **argv,ExceptionInfo *exception)
 {
 #define ThrowMontageException(code,reason,description) \
 { \
