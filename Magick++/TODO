@@ -14,10 +14,11 @@ Items large and small which remain to be worked on.
 
 * Add support for OrderedDitherImage().
 
-* Add support for specifying a CMS color profile (ImageInfo
-  color_profile member).
-
 * Look into adding/removing profiles via the ProfileImage function.
+  Need method for adding a profile via ProfileType and void* as well
+  as a method for removing a profile via ProfileType.  The ProfileType
+  "UndefinedProfile" would remove all profiles.
+  Need to reconcile memory allocators between profiles and Blob.
 
 * Extend Image constructor to allow specifying DirectClass or
   PsuedoClass representation when creating a solid-color canvas.

@@ -66,7 +66,6 @@ int main(int argc,char **argv)
     Image image(input_file);
     image.filterType(filter);
     image.zoom(geometry);
-    image.compressType( RunlengthEncodedCompression );
     image.write(output_file);
   }
   catch( exception &error_ )
