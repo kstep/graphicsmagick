@@ -1194,6 +1194,15 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 GetUserSpaceCoordinateValue(svg_info,value);
               break;
             }
+          if (LocaleCompare(keyword,"rotate") == 0)
+            {
+              double
+                angle;
+
+              angle=GetUserSpaceCoordinateValue(svg_info,value);
+              (void) fprintf(svg_info->file,"rotate %g\n",angle);
+              break;
+            }
           if (LocaleCompare(keyword,"rx") == 0)
             {
               if (LocaleCompare((char *) name,"ellipse") == 0)
