@@ -85,7 +85,7 @@ static void Usage(void)
     {
       "Define any key value pairs required by your script, for example:",
       "",
-      "    conjure -geometry 100x100 -backcolor blue -foo bar script.msl",
+      "    conjure -geometry 100x100 -color blue -foo bar script.msl",
       (char *) NULL
     };
 
