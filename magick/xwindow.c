@@ -5040,12 +5040,12 @@ MagickExport unsigned int XMakeImage(Display *display,
                 x_factor,
                 y_factor;
 
-  					   x_factor=(double) width/window->image->columns;
-						   y_factor=(double) height/window->image->rows;
+               x_factor=(double) width/window->image->columns;
+               y_factor=(double) height/window->image->rows;
                if ((x_factor*y_factor) > 0.1)
-                 resize_image=ZoomImage(window->image,width,height,
-                   &image->exception);
-							 else
+                 resize_image=ResizeImage(window->image,width,height,BoxFilter,
+                   window->image->blur,&image->exception);
+               else
                  resize_image=ThumbnailImage(window->image,width,height,
                    &image->exception);
             }

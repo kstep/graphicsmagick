@@ -11284,8 +11284,8 @@ static Image *XVisualDirectoryImage(Display *display,
         x_factor=(double) geometry.width/next_image->columns;
 			  y_factor=(double) geometry.height/next_image->rows;
         if ((x_factor*y_factor) > 0.1)
-          thumbnail_image=ZoomImage(next_image,geometry.width,geometry.height,
-            &exception);
+          thumbnail_image=ResizeImage(next_image,geometry.width,geometry.height,
+            BoxFilter,next_image->blur,&exception);
 				else
           thumbnail_image=ThumbnailImage(next_image,geometry.width,
             geometry.height,&exception);
