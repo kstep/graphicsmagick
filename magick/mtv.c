@@ -139,6 +139,7 @@ Export Image *ReadMTVImage(const ImageInfo *image_info)
     */
     image->columns=columns;
     image->rows=rows;
+    image->depth=8;
     if (image_info->ping)
       {
         CloseBlob(image);

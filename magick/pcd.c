@@ -532,6 +532,7 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
   }
   image->columns=width;
   image->rows=height;
+  image->depth=8;
   for ( ; i < (int) subimage; i++)
   {
     image->columns<<=1;
@@ -592,6 +593,7 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
         image->scene=j;
         image->columns=width;
         image->rows=height;
+        image->depth=8;
         yy=luma;
         c1=chroma1;
         c2=chroma2;

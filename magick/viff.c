@@ -316,6 +316,7 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
       (void) ReadByte(image);
     image->columns=(unsigned int) viff_header.rows;
     image->rows=(unsigned int) viff_header.columns;
+    image->depth=viff_header.x_bits_per_pixel <= 8 ? 8 : QuantumDepth;
     /*
       Verify that we can read this VIFF image.
     */

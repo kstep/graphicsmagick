@@ -116,6 +116,7 @@ Export Image *ReadUYVYImage(const ImageInfo *image_info)
     return((Image *) NULL);
   if ((image->columns == 0) || (image->rows == 0))
     ReaderExit(OptionWarning,"Must specify image size",image);
+  image->depth=8;
   /*
     Open image file.
   */

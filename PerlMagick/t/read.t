@@ -51,7 +51,7 @@ print("GRADATION (gradual passing from one shade to another) ...\n");
 #
 ++$test;
 testRead( 'gradation:red-blue', 'ce3e346956f17cc6131dfe7213d5e11a',
-                                '826cc95b15955517fcd9bc8c6bbe6490' );
+                                '9f5de5109b40b4dc47941e6df2ad0b86' );
 
 print("GRANITE (granite texture) ...\n");
 #
@@ -78,7 +78,8 @@ testRead( 'input_p7.p7', '471ddc0d5b34bc239a58b38c32881cea',
 
 print("NULL (white image) ...\n");
 ++$test;
-testRead( 'NULL:white', 'b23b5d09162b92c0284923a7f628d2a5');
+testRead( 'NULL:white', '0f01427889bc25ae6f2a049a6fd00f17',
+			'b23b5d09162b92c0284923a7f628d2a5');
 
 print("NULL (black image) ...\n");
 ++$test;

@@ -193,7 +193,6 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
-  image->depth=8;
   /*
     Decode image header;  header terminates one character beyond a ':'.
   */
@@ -209,6 +208,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
     /*
       Decode image header;  header terminates one character beyond a ':'.
     */
+    image->depth=8;
     image->compression=NoCompression;
     while (isgraph(c) && (c != ':'))
     {

@@ -558,6 +558,7 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
     image->matte=bmp_header.bits_per_pixel == 32;
     image->columns=(unsigned int) bmp_header.width;
     image->rows=(unsigned int) AbsoluteValue(bmp_header.height);
+    image->depth=8;
     if ((bmp_header.number_colors != 0) || (bmp_header.bits_per_pixel < 16))
       {
         image->class=PseudoClass;

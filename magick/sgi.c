@@ -237,6 +237,7 @@ Export Image *ReadSGIImage(const ImageInfo *image_info)
     iris_header.depth=MSBFirstReadShort(image);
     image->columns=iris_header.columns;
     image->rows=iris_header.rows;
+    image->depth=iris_header.depth <= 8 ? 8 : QuantumDepth;
     if (iris_header.depth < 3)
       {
         image->class=PseudoClass;

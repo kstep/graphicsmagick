@@ -217,8 +217,6 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
 
 Export Image *ReadPNMImage(const ImageInfo *image_info)
 {
-#define MaxRawValue  255
-
   char
     format;
 
@@ -293,6 +291,7 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
       max_value=1;  /* bitmap */
     else
       max_value=PNMInteger(image,10);
+    image->depth=max_value < 256 ? 8 : QuantumDepth;
     if ((format != '3') && (format != '6'))
       {
         image->class=PseudoClass;
@@ -485,7 +484,7 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
         /*
           Convert PGM raw image to pixel packets.
         */
-        packets=max_value <= MaxRawValue ? 1 : 2;
+        packets=image->depth <= 8 ? 1 : 2;
         pixels=(unsigned char *) AllocateMemory(packets*image->columns);
         if (pixels == (unsigned char *) NULL)
           ReaderExit(CorruptImageWarning,"Unable to allocate memory",image);
@@ -500,7 +499,7 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
             break;
           for (x=0; x < (int) image->columns; x++)
           {
-            if (max_value <= MaxRawValue)
+            if (image->depth <= 8)
               index=(*p++);
             else
               {
@@ -526,7 +525,7 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
         /*
           Convert PNM raster image to pixel packets.
         */
-        packets=max_value <= MaxRawValue ? 3 : 6;
+        packets=image->depth <= 8 ? 3 : 6;
         pixels=(unsigned char *) AllocateMemory(packets*image->columns);
         if (pixels == (unsigned char *) NULL)
           ReaderExit(CorruptImageWarning,"Unable to allocate memory",image);
@@ -541,7 +540,7 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
             break;
           for (x=0; x < (int) image->columns; x++)
           {
-            if (max_value <= MaxRawValue)
+            if (image->depth <= 8)
               {
                 red=(*p++);
                 green=(*p++);
@@ -655,8 +654,6 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
 */
 Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
 {
-#define MaxRawValue  255
-
   char
     buffer[MaxTextExtent],
     *magick;
@@ -722,8 +719,7 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           Full color PNM image.
         */
         format='6';
-        if ((image_info->compression == NoCompression) ||
-            (MaxRGB > MaxRawValue))
+        if ((image_info->compression == NoCompression) || (image->depth > 8))
           format='3';
       }
     else
@@ -732,8 +728,7 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           Colormapped PNM image.
         */
         format='6';
-        if ((image_info->compression == NoCompression) ||
-            (MaxRGB > MaxRawValue))
+        if ((image_info->compression == NoCompression) || (image->depth > 8))
           format='3';
         if ((Latin1Compare(magick,"PPM") != 0) && IsGrayImage(image))
           {
@@ -742,7 +737,7 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             */
             format='5';
             if ((image_info->compression == NoCompression) ||
-                (MaxRGB > MaxRawValue))
+                (image->depth > 8))
               format='2';
             if (Latin1Compare(magick,"PGM") != 0)
               if (image->colors == 2)

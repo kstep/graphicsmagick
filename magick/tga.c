@@ -191,6 +191,7 @@ Export Image *ReadTGAImage(const ImageInfo *image_info)
     image->matte=tga_header.bits_per_pixel == 32;
     image->columns=tga_header.width;
     image->rows=tga_header.height;
+    image->depth=tga_header.bits_per_pixel <= 8 ? 8 : QuantumDepth;
     if (tga_header.colormap_type != 0)
       {
         if ((tga_header.image_type == TGARLEColormap) ||

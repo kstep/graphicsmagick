@@ -213,6 +213,7 @@ Export Image *ReadXBMImage(const ImageInfo *image_info)
       if ((strlen(name) >= 7) &&
           (Latin1Compare(name+strlen(name)-7,"_height") == 0))
           break;
+  image->depth=8;
   image->class=PseudoClass;
   image->colors=2;
   if (image_info->ping)

@@ -851,6 +851,7 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
     page_info.y=LSBFirstReadShort(image);
     image->columns=LSBFirstReadShort(image);
     image->rows=LSBFirstReadShort(image);
+    image->depth=8;
     flag=ReadByte(image);
     image->interlace=BitSet(flag,0x40) ? PlaneInterlace : NoInterlace;
     image->colors=!BitSet(flag,0x80) ? global_colors : 1 << ((flag & 0x07)+1);

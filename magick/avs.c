@@ -137,6 +137,7 @@ Export Image *ReadAVSImage(const ImageInfo *image_info)
     */
     image->columns=width;
     image->rows=height;
+    image->depth=8;
     if (image_info->ping)
       {
         CloseBlob(image);

@@ -849,6 +849,9 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
             (void) MSBFirstReadLong(image);
           width=frame.bottom-frame.top;
           height=frame.right-frame.left;
+          image->depth=pixmap.bits_per_pixel <= 8 ? 8 : QuantumDepth;
+          if (pixmap.bits_per_pixel < 8)
+            image->depth=8;
           if (pixmap.bits_per_pixel <= 8)
             length&=0x7fff;
           if (pixmap.bits_per_pixel == 16)

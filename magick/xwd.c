@@ -182,6 +182,7 @@ Export Image *ReadXWDImage(const ImageInfo *image_info)
     ReaderExit(CorruptImageWarning,"Unable to read dump file header",image);
   image->columns=header.pixmap_width;
   image->rows=header.pixmap_height;
+  image->depth=8;
   /*
     Ensure the header byte-order is most-significant byte first.
   */

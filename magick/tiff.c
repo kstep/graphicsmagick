@@ -461,9 +461,7 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
     }
     image->columns=width;
     image->rows=height;
-    image->depth=Min(bits_per_sample,QuantumDepth);
-    if (bits_per_sample < 8)
-      image->depth=8;
+    image->depth=bits_per_sample <= 8 ? 8 : QuantumDepth;
     range=max_sample_value-min_sample_value;
     if ((samples_per_pixel == 1) && !TIFFIsTiled(tiff))
       {
@@ -697,7 +695,8 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
           /*
             Transfer image scanline.
           */
-          (void) ReadPixelCache(image,IndexQuantum,quantum_scanline);
+          (void) ReadPixelCache(image,IndexQuantum,(const unsigned char *)
+            quantum_scanline);
           if (!SyncPixelCache(image))
             break;
           if (image->previous == (Image *) NULL)

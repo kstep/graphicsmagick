@@ -294,6 +294,7 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
     */
     image->columns=(pcx_header.right-pcx_header.left)+1;
     image->rows=(pcx_header.bottom-pcx_header.top)+1;
+    image->depth=pcx_header.bits_per_pixel <= 8 ? 8 : QuantumDepth;
     image->units=PixelsPerInchResolution;
     image->x_resolution=pcx_header.horizontal_resolution;
     image->y_resolution=pcx_header.vertical_resolution;

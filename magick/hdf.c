@@ -200,6 +200,7 @@ Export Image *ReadHDFImage(const ImageInfo *image_info)
     image->class=class;
     image->columns=width;
     image->rows=height;
+    image->depth=8;
     if (image->class == PseudoClass)
       image->colors=256;
     if (image_info->ping)

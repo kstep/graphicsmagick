@@ -2199,6 +2199,13 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     (void) fprintf(file,"  class: DirectClass\n");
   else
     (void) fprintf(file,"  class: PseudoClass\n");
+  if ((image->magick_columns != 0) || (image->magick_rows != 0))
+    if ((image->magick_columns != image->columns) ||
+        (image->magick_rows != image->rows))
+      (void) fprintf(file,"  base geometry: %ux%u\n",image->magick_columns,
+        image->magick_rows);
+  (void) fprintf(file,"  geometry: %ux%u\n",image->columns,image->rows);
+  (void) fprintf(file,"  depth: %u\n",image->depth);
   x=0;
   p=(Image *) NULL;
   if (!image->matte)
@@ -2414,12 +2421,6 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
           }
       }
     }
-  if ((image->magick_columns != 0) || (image->magick_rows != 0))
-    if ((image->magick_columns != image->columns) ||
-        (image->magick_rows != image->rows))
-      (void) fprintf(file,"  base geometry: %ux%u\n",image->magick_columns,
-        image->magick_rows);
-  (void) fprintf(file,"  geometry: %ux%u\n",image->columns,image->rows);
   if ((image->tile_info.width*image->tile_info.height) != 0)
     (void) fprintf(file,"  tile geometry: %ux%u%+d%+d\n",image->tile_info.width,
       image->tile_info.height,image->tile_info.x,image->tile_info.y);
@@ -2441,7 +2442,6 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
           else
             (void) fprintf(file,"\n");
     }
-  (void) fprintf(file,"  depth: %u\n",image->depth);
   if (image->filesize != 0)
     {
       if (image->filesize >= (1 << 24))

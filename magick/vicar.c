@@ -251,6 +251,7 @@ Export Image *ReadVICARImage(const ImageInfo *image_info)
       count++;
     }
   }
+  image->depth=8;
   image->class=PseudoClass;
   image->colors=256;
   if (image_info->ping)

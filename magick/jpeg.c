@@ -480,6 +480,9 @@ static void JPEGSourceManager(j_decompress_ptr cinfo,Image *image)
 
 Export Image *ReadJPEGImage(const ImageInfo *image_info)
 {
+  IndexPacket
+    index;
+
   int
     x,
     y;
@@ -591,6 +594,7 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
   image->compression=JPEGCompression;
   image->columns=jpeg_info.output_width;
   image->rows=jpeg_info.output_height;
+  image->depth=jpeg_info.data_precision <= 8 ? 8 : QuantumDepth;
   if (image_info->ping)
     {
       jpeg_destroy_decompress(&jpeg_info);
@@ -603,16 +607,19 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
         Initialize grayscale colormap.
       */
       image->class=PseudoClass;
-      image->colors=MaxRGB+1;
+      image->colors=1 << jpeg_info.data_precision;
       image->colormap=(PixelPacket *)
         AllocateMemory(image->colors*sizeof(PixelPacket));
       if (image->colormap == (PixelPacket *) NULL)
         ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
       for (i=0; i < (int) image->colors; i++)
       {
-        image->colormap[i].red=UpScale(i);
-        image->colormap[i].green=UpScale(i);
-        image->colormap[i].blue=UpScale(i);
+        image->colormap[i].red=
+          ((unsigned long) (MaxRGB*i)/(image->colors-1));
+        image->colormap[i].green=
+          ((unsigned long) (MaxRGB*i)/(image->colors-1));
+        image->colormap[i].blue=
+          ((unsigned long) (MaxRGB*i)/(image->colors-1));
       }
     }
   jpeg_pixels=(JSAMPLE *)
@@ -635,7 +642,11 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
       if (jpeg_info.data_precision > QuantumDepth)
         {
           if (jpeg_info.out_color_space == JCS_GRAYSCALE)
-            image->indexes[x]=GETJSAMPLE(*p++) >> 4;
+            {
+              index=GETJSAMPLE(*p++) >> 4;
+              image->indexes[x]=index;
+              *q=image->colormap[index];
+            }
           else
             {
               q->red=(Quantum) (GETJSAMPLE(*p++) >> 4);
@@ -647,7 +658,11 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
         }
       else
         if (jpeg_info.out_color_space == JCS_GRAYSCALE)
-          image->indexes[x]=GETJSAMPLE(*p++);
+          {
+            index=GETJSAMPLE(*p++) >> 4;
+            image->indexes[x]=index;
+            *q=image->colormap[index];
+          }
         else
           {
             q->red=(Quantum) UpScale(GETJSAMPLE(*p++));
@@ -663,31 +678,28 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
     if (QuantumTick(y,image->rows))
       ProgressMonitor(LoadImageText,y,image->rows);
   }
-  if (image->class == PseudoClass)
-    SyncImage(image);
-  else
-    if (image->colorspace == CMYKColorspace)
+  if (image->colorspace == CMYKColorspace)
+    {
+      /*
+        Correct CMYK levels.
+      */
+      for (y=0; y < (int) image->rows; y++)
       {
-        /*
-          Correct CMYK levels.
-        */
-        for (y=0; y < (int) image->rows; y++)
+        q=GetPixelCache(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (int) image->columns; x++)
         {
-          q=GetPixelCache(image,0,y,image->columns,1);
-          if (q == (PixelPacket *) NULL)
-            break;
-          for (x=0; x < (int) image->columns; x++)
-          {
-            q->red=MaxRGB-q->red;
-            q->green=MaxRGB-q->green;
-            q->blue=MaxRGB-q->blue;
-            q->opacity=MaxRGB-q->opacity;
-            q++;
-          }
-          if (!SyncPixelCache(image))
-            break;
+          q->red=MaxRGB-q->red;
+          q->green=MaxRGB-q->green;
+          q->blue=MaxRGB-q->blue;
+          q->opacity=MaxRGB-q->opacity;
+          q++;
         }
+        if (!SyncPixelCache(image))
+          break;
       }
+    }
   /*
     Free jpeg resources.
   */
@@ -949,6 +961,7 @@ Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   jpeg_info.image_width=image->columns;
   jpeg_info.image_height=image->rows;
   jpeg_info.input_components=3;
+  jpeg_info.data_precision=image->depth <= 8 ? 8 : 12;
   jpeg_info.in_color_space=JCS_RGB;
   if (Latin1Compare(image_info->magick,"JPEG24") != 0)
     if (IsGrayImage(image))
@@ -1012,7 +1025,7 @@ Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       jpeg_write_marker(&jpeg_info,JPEG_COM,(unsigned char *) image->comments+i,
         (unsigned int) Min(Extent(image->comments+i),65533));
   if (image->color_profile.length > 0)
-   WriteColorProfile(&jpeg_info,image);
+    WriteColorProfile(&jpeg_info,image);
   if (image->iptc_profile.length > 0)
     WriteNewsProfile(&jpeg_info,image);
   /*
@@ -1023,7 +1036,7 @@ Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   if (jpeg_pixels == (JSAMPLE *) NULL)
     WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
   scanline[0]=(JSAMPROW) jpeg_pixels;
-  if ((jpeg_info.data_precision > 8) && (QuantumDepth > 8))
+  if (jpeg_info.data_precision > 8)
     {
       if (jpeg_info.in_color_space == JCS_GRAYSCALE)
         for (y=0; y < (int) image->rows; y++)

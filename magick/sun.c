@@ -289,6 +289,7 @@ Export Image *ReadSUNImage(const ImageInfo *image_info)
     sun_header.maplength=MSBFirstReadLong(image);
     image->columns=(unsigned int) sun_header.width;
     image->rows=(unsigned int) sun_header.height;
+    image->depth=sun_header.depth <= 8 ? 8 : QuantumDepth;
     if (sun_header.depth < 24)
       {
         image->class=PseudoClass;

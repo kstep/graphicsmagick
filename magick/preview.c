@@ -378,7 +378,7 @@ Export unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
       }
       case RaisePreview:
       {
-        FormatString(factor,"%d",i+1);
+        FormatString(factor,"%d",2*i+2);
         FormatString(label,"raise %.1024s",factor);
         commands[argc++]="-raise";
         commands[argc++]=factor;
@@ -412,9 +412,9 @@ Export unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
       case WavePreview:
       {
         degrees+=5.0;
-        FormatString(factor,"%.1fx%.1f",degrees,degrees);
+        FormatString(factor,"%.1fx%.1f",0.5*degrees,2.0*degrees);
         FormatString(label,"wave %.1024s",factor);
-        commands[argc++]="-implode";
+        commands[argc++]="-wave";
         commands[argc++]=factor;
         break;
       }
@@ -428,7 +428,7 @@ Export unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
       }
       case CharcoalDrawingPreview:
       {
-        FormatString(factor,"%.1f",percentage);
+        FormatString(factor,"%.1f",percentage+5.0);
         FormatString(label,"charcoal %.1024s",factor);
         commands[argc++]="-charcoal";
         commands[argc++]=factor;

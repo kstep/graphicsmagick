@@ -423,7 +423,7 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
     image->matte=psd_header.channels >= 4;
   image->columns=psd_header.columns;
   image->rows=psd_header.rows;
-  image->depth=Max(psd_header.depth,QuantumDepth);
+  image->depth=psd_header.depth <= 8 ? 8 : QuantumDepth;
   length=MSBFirstReadLong(image);
   if ((psd_header.mode == BitmapMode) ||
       (psd_header.mode == GrayscaleMode) ||

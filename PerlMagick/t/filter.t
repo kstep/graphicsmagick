@@ -4,7 +4,7 @@
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1, print "1..43\n"; }
+BEGIN { $| = 1; $test=1, print "1..42\n"; }
 END {print "not ok 1\n" unless $loaded;}
 use Image::Magick;
 $loaded=1;
@@ -13,19 +13,15 @@ require 't/subroutines.pl';
 
 chdir 't' || die 'Cd failed';
 
-testFilter('input.miff', 'Border',
-  q/#ccc/,
-  'c76e32b5e92bacfeda6325361ed5d609');
-
-++$test;
 testFilter('input.miff', 'Blur',
   q/60/,
   '6f686c9082206187c20c3329fa7ad6d6',
-  '2d5000287c7742170e12db75512e7b4d');
+  'b96d206387adfbd8a3a9d6b0f7fc109c');
 
 ++$test;
 testFilter('input.miff', 'Border',
   q/10/,
+  '9a29118485648b8d1af4190348954103',
   'd786ed89a0fad7a401e200e57629faa8');
 
 ++$test;
@@ -42,6 +38,7 @@ testFilter('input.miff', 'ColorFloodfill',
 ++$test;
 testFilter('input.miff', 'Colorize',
   q/red/,
+  '4d2b370daf4cbe131b0753f71023f748',
   '2ffd120c34e437df526227b1dcd83f7d');
 
 ++$test;
@@ -93,7 +90,7 @@ testFilter('input.miff', 'Flop',
 testFilter('input.miff', 'Frame',
   q/10x10/,
   'ce95aac45517ddbf9ea866c453207c01', 
-  '281e5e39e7dc6e13da4506fe2f64f6f7');
+  '713a7f27f0a7d1859613ab953381d126');
 
 ++$test;
 testFilter('input.miff', 'Gamma',
@@ -105,7 +102,7 @@ testFilter('input.miff', 'Gamma',
 testFilter('input.miff', 'Implode',
   q/60/,
   '0b86e917d3e117c0ec879d0a16d4cb3d',
-  '3199982815d5c078d647fdbe91eda550');
+  '52f2364cc8410397f6fca3edfeb4d00a');
 
 ++$test;
 testFilter('input.miff', 'Layer',
@@ -151,7 +148,7 @@ testFilter('input.miff', 'Normalize',
 testFilter('input.miff', 'OilPaint',
   q/3/,
   'eaa4da0ea1326b7d553d5f2c9d1957d8',
-  '8af829d54493c536beeecf64f6519e57');
+  'e16d40c46206f6c3dc682139de76f76d');
 
 ++$test;
 testFilter('input.miff', 'Opaque',
@@ -179,7 +176,7 @@ testFilter('input.miff', 'Roll',
 testFilter('input.miff', 'Rotate',
   q/45/,
   '348660b245a850b59bc9df4bd3000331',
-  'cf2cf4a4502d0c9147373d1c4db35907');
+  'eaf55efaed0508098918a3adde5dc95b');
 
 ++$test;
 testFilter('input.miff', 'Sample',
@@ -207,7 +204,7 @@ testFilter('input.miff', 'Shade',
 testFilter('input.miff', 'Shear',
   q/45x45/,
   'c50868db64675f2e7692c93c0ca6798d',
-  '791f8a7ea64989e01c9e5e27375574a2');
+  '182416f55e1f1d712eedfc61bc763b53');
 
 ++$test;
 testFilter('input.miff', 'Solarize',
@@ -218,7 +215,7 @@ testFilter('input.miff', 'Solarize',
 testFilter('input.miff', 'Swirl',
   q/60/,
   '80d5a065d0f040d509c4f5a81d0d4b5b',
-  '23da17c30a2277cd35203bb9fd6fd790');
+  'e3f92866ecdad7454b088b9c9bf177f9');
 
 ++$test;
 testFilter('input.miff', 'Texture',
@@ -244,6 +241,7 @@ testFilter('input.miff', 'Trim',
 ++$test;
 testFilter('input.miff', 'Wave',
   q/25x157/,
+  '220ead97541447e9d10643724c26bce7',
   '938819868d883a2fca7f8395445b66e5');
 
 ++$test;

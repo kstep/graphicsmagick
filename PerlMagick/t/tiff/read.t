@@ -18,14 +18,16 @@ chdir 't/tiff' || die 'Cd failed';
 # 1) Test Reading Monochrome
 # 
 print("Monochrome ...\n");
-testRead ( 'input_mono.tiff', '8023e6a23a15ab1240b48ec6c085ed40' );
+testRead ( 'input_mono.tiff', '8023e6a23a15ab1240b48ec6c085ed40',
+                              'caff31e82385063ac81515b4bd2c5985' );
 
 #
 # 2) Test reading PseudoColor
 #
 ++$test;
 print("PseudoColor ...\n");
-testRead( 'input_256.tiff', 'f90f998ebc41c7c9833ea2a454791d70' );
+testRead( 'input_256.tiff', 'f90f998ebc41c7c9833ea2a454791d70',
+                            '92dbcbcfb72f64958269c4139e0f85d4' );
 
 #
 # 3) Test Reading TrueColor

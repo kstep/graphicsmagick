@@ -151,6 +151,7 @@ Export Image *ReadFAXImage(const ImageInfo *image_info)
     image->columns=2592;
   if (image->rows == 0)
     image->rows=3508;
+  image->depth=8;
   image->colors=2;
   image->colormap=(PixelPacket *)
     AllocateMemory(image->colors*sizeof(PixelPacket));

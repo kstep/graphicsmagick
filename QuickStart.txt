@@ -3,6 +3,7 @@ ImageMagick commands fails, check this file and verify it is valid for
 your environment.  For details beyond this document, see README.txt and
 ImageMagick.html.
 
+
 Unix:
 
   Download
@@ -16,8 +17,7 @@ Unix:
     ./configure -enable-shared -enable-lzw -with-perl
     make
     make install
-    convert -verbose logo: image.gif
-    display image.gif
+    identify -verbose logo:
 
   Optionally, edit Magick.tmpl and type 
 
@@ -39,6 +39,12 @@ Unix:
     setenv LD_LIBRARY_PATH ~/lib
     setenv DELEGATE_PATH ~/share/ImageMagick
 
+
+  In some cases, ImageMagick needs to write temporary files.  If your
+  default location is too small, use the TMPDIR environment variable to
+  specify a path. For example:
+
+    export TMPDIR=/home/tmp
 
 NT:
 
@@ -63,8 +69,7 @@ NT:
   the Command Prompt window type
 
     cd ImageMagick-5.1.1
-    convert -verbose logo: image.gif
-    convert image.gif win:
+    identifyy -verbose logo:
 
   Alternatively, download the ImageMagick NT source
 
@@ -72,6 +77,12 @@ NT:
 
   and double click on the ImageMagick Visual C++ project to build from
   the source.
+
+  In some cases, ImageMagick needs to write temporary files.  If your
+  default location is too small, use the TMPDIR environment variable to
+  specify a path. For example:
+
+    set TMPDIR=d:\temp
 
 
 Win95:
@@ -99,8 +110,7 @@ Win95:
 
     cd c:\ImageMagick-5.1.1
     del delegates.mgk
-    convert -verbose logo: image.gif
-    convert image.gif win:
+    identify -verbose logo:
 
   Alternatively, download the ImageMagick Win95 source
 
@@ -108,6 +118,12 @@ Win95:
 
   and double click on the ImageMagick Visual C++ project to build from
   the source.
+
+  In some cases, ImageMagick needs to write temporary files.  If your
+  default location is too small, use the TMPDIR environment variable to
+  specify a path. For example:
+
+    set TMPDIR=d:\temp
 
 
 MAC:
@@ -117,19 +133,18 @@ MAC:
     ftp://www.wizards.dupont.com/pub/ImageMagick/mac/ImageMagick-mac.sit.hqx
 
   and double click on it to extract the distribution.   Move to the
-  ImageMagick-5.1.1 directory and double click on the convert program
+  ImageMagick-5.1.1 directory and double click on the identify program
   icon.  Next, type
 
-    -verbose logo: image.gif
+    -verbose logo:
 
-  in the command window and choose File->Quit to exit.  Double click on
-  image.gif to see the results.
+  in the command window and choose File->Quit to exit.
 
   Alternatively, download the ImageMagick MAC source
 
     ftp://www.wizards.dupont.com/pub/ImageMagick/mac/ImageMagick-5.1.1.sit.hqx
 
-  and double click on the Make AppleScript script  to build from the source.
+  and double click on the Make AppleScript script to build from the source.
 
 
 VMS:
@@ -139,5 +154,4 @@ VMS:
     unzip ImageMagick-5.1.1.zip
     set default [.imagemagick]
     @make
-    convert -verbose logo: image.gif
-    display image.gif
+    identify -verbose logo:

@@ -542,6 +542,7 @@ Export Image *ReadXPMImage(const ImageInfo *image_info)
       FreeMemory(textlist);
       ReaderExit(CorruptImageWarning,"Not a XPM image file",image);
     }
+  image->depth=8;
   /*
     Initialize image structure.
   */
