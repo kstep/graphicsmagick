@@ -2448,7 +2448,7 @@ MagickExport unsigned int GetImageDepth(Image *image)
         return(QuantumDepth);
       if (((p->blue >> 8) & 0xff) != (p->blue & 0xff))
         return(QuantumDepth);
-      if (image->matte || (image->colorspace == CMYKColorspace)
+      if (image->matte || (image->colorspace == CMYKColorspace))
         if (((p->opacity >> 8) & 0xff) != (p->opacity & 0xff))
           return(QuantumDepth);
       p++;

@@ -715,6 +715,7 @@ extern MagickExport unsigned int
   DisplayImages(const ImageInfo *image_info,Image *image),
   EqualizeImage(Image *),
   GammaImage(Image *,const char *),
+  GetImageDepth(Image *),
   GetNumberScenes(const Image *),
   IsGeometry(const char *),
   IsGrayImage(Image *),
