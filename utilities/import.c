@@ -61,14 +61,15 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/cache.h"
-#include "magick/command.h"
-#include "magick/list.h"
-#include "magick/log.h"
-#include "magick/utility.h"
-#include "magick/version.h"
-#include "magick/xwindow.h"
+#include "studio.h"
+#include "cache.h"
+#include "command.h"
+#include "list.h"
+#include "log.h"
+#include "resource.h"
+#include "utility.h"
+#include "version.h"
+#include "xwindow.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -99,7 +100,6 @@ static void ImportUsage(void)
     {
       "-adjoin              join images into a single multi-image file",
       "-border              include image borders in the output image",
-      "-cache geometry      megabytes of memory in pixel cache memory",
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorspace",
       "-comment string      annotate image with comment",
@@ -120,6 +120,7 @@ static void ImportUsage(void)
       "-interlace type      None, Line, Plane, or Partition",
       "-help                print program options",
       "-label name          assign a label to an image",
+			"-limit type value    Disk, Map, or Memory resource limit",
       "-monochrome          transform image to black and white",
       "-negate              replace every pixel with its complementary color ",
       "-page geometry       size and location of an image canvas",
@@ -709,6 +710,36 @@ int main(int argc,char **argv)
                 if (i == argc)
                   MagickFatalError(OptionFatalError,"Missing label name",
                     option);
+              }
+            break;
+          }
+        if (LocaleCompare("limit",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                char
+                  *type;
+
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"Missing resource type",
+                    option);
+                type=argv[i];
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickFatalError(OptionFatalError,"Missing resource limit",
+                    option);
+                if (LocaleCompare("disk",type) == 0)
+                  SetMagickResourceLimit(DiskResource,atol(argv[i]));
+                else
+                  if (LocaleCompare("map",type) == 0)
+                    SetMagickResourceLimit(MapResource,atol(argv[i]));
+                  else
+                    if (LocaleCompare("memory",type) == 0)
+                      SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                    else
+                      MagickFatalError(OptionFatalError,
+                        "Unrecognized resource type",type);
               }
             break;
           }

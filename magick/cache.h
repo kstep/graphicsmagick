@@ -18,7 +18,7 @@ typedef enum
   UndefinedCache,
   MemoryCache,
   DiskCache,
-  MemoryMappedCache
+  MapCache
 } CacheType;
 
 typedef enum

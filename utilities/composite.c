@@ -55,10 +55,10 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/command.h"
-#include "magick/version.h"
-#include "magick/utility.h"
+#include "studio.h"
+#include "command.h"
+#include "version.h"
+#include "utility.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -90,7 +90,6 @@ static void CompositeUsage(void)
       "-affine matrix       affine transform matrix",
       "-authenticate value  decrypt image with this password",
       "-blue-primary point  chomaticity blue primary point",
-      "-cache geometry      number of megabytes available to the pixel cache",
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorspace",
       "-comment string      annotate image with comment",
@@ -114,6 +113,7 @@ static void CompositeUsage(void)
       "-help                print program options",
       "-interlace type      None, Line, Plane, or Partition",
       "-label name          ssign a label to an image",
+      "-limit type value    Disk, Map, or Memory resource limit",
       "-matte               store matte channel if the image has one",
       "-monochrome          transform image to black and white",
       "-negate              replace every pixel with its complementary color ",

@@ -57,10 +57,10 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/command.h"
-#include "magick/utility.h"
-#include "magick/version.h"
+#include "studio.h"
+#include "command.h"
+#include "utility.h"
+#include "version.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -94,7 +94,6 @@ static void MogrifyUsage(void)
       "-blur radius         blur the image",
       "-border geometry     surround image with a border of color",
       "-bordercolor color   border color",
-      "-cache geometry      megabytes of memory in pixel cache memory",
       "-channel type        extract a particular color channel from image",
       "-charcoal radius     simulate a charcoal drawing",
       "-chop geometry       remove pixels from the image interior",
@@ -138,6 +137,7 @@ static void MogrifyUsage(void)
       "-help                print program options",
       "-label name          assign a label to an image",
       "-level value         adjust the level of image contrast",
+			"-limit type value    Disk, Map, or Memory resource limit",
       "-list type           Color, Delegate, Format, Magic, Module, or Type",
       "-loop iterations     add Netscape loop extension to your GIF animation",
       "-map filename        transform image colors to match this set of colors",

@@ -1216,7 +1216,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
     {
       if (LocaleCompare(attribute,"cache-threshold") == 0)
         {
-          SetCacheThreshold(atol(SvPV(sval,na)));
+          SetCacheThreshold(SvIV(sval));
           return;
         }
       if (LocaleCompare(attribute,"clip-mask") == 0)
@@ -1308,6 +1308,11 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
         {
           for ( ; image; image=image->next)
             image->delay=SvIV(sval);
+          return;
+        }
+      if (LocaleCompare(attribute,"disk-limit") == 0)
+        {
+          SetMagickResourceLimit(DiskResource,SvIV(sval));
           return;
         }
       if (LocaleCompare(attribute,"density") == 0)
@@ -1576,6 +1581,11 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             }
           return;
         }
+      if (LocaleCompare(attribute,"map-limit") == 0)
+        {
+          SetMagickResourceLimit(MapResource,SvIV(sval));
+          return;
+        }
       if (LocaleCompare(attribute,"mattecolor") == 0)
         {
           (void) QueryColorDatabase(SvPV(sval,na),&target_color,
@@ -1598,6 +1608,12 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             image->matte=sp != 0;
           return;
         }
+      if (LocaleCompare(attribute,"memory-limit") == 0)
+        {
+          SetMagickResourceLimit(MemoryResource,SvIV(sval));
+          return;
+        }
+      if (LocaleCompare(attribute,"mattecolor") == 0)
       if (LocaleCompare(attribute,"monochrome") == 0)
         {
           sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,na)) : SvIV(sval);

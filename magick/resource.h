@@ -19,7 +19,7 @@ typedef enum
   MemoryResource,
   CacheResource,
   DiskResource,
-  MemoryMapResource
+  MapResource
 } ResourceType;
 
 /*

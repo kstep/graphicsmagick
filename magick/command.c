@@ -63,6 +63,7 @@
 #include "module.h"
 #include "quantize.h"
 #include "render.h"
+#include "resource.h"
 #include "utility.h"
 #include "version.h"
 
@@ -936,6 +937,36 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   ThrowCompositeException(OptionError,"Missing label name",
                     option);
+              }
+            break;
+          }
+        if (LocaleCompare("limit",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                char
+                  *type;
+
+                i++;
+                if (i == argc)
+                  ThrowCompositeException(OptionError,"Missing resource type",
+                    option);
+                type=argv[i];
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  ThrowCompositeException(OptionError,"Missing resource limit",
+                    option);
+                if (LocaleCompare("disk",type) == 0)
+                  SetMagickResourceLimit(DiskResource,atol(argv[i]));
+                else
+                  if (LocaleCompare("map",type) == 0)
+                    SetMagickResourceLimit(MapResource,atol(argv[i]));
+                  else
+                    if (LocaleCompare("memory",type) == 0)
+                      SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                    else
+                      ThrowCompositeException(OptionError,
+                        "Unrecognized resource type",type);
               }
             break;
           }
@@ -2258,6 +2289,36 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             i++;
             if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
               ThrowConvertException(OptionError,"Missing value",option);
+            break;
+          }
+        if (LocaleCompare("limit",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                char
+                  *type;
+
+                i++;
+                if (i == argc)
+                  ThrowConvertException(OptionError,"Missing resource type",
+                    option);
+                type=argv[i];
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  ThrowConvertException(OptionError,"Missing resource limit",
+                    option);
+                if (LocaleCompare("disk",type) == 0)
+                  SetMagickResourceLimit(DiskResource,atol(argv[i]));
+                else
+                  if (LocaleCompare("map",type) == 0)
+                    SetMagickResourceLimit(MapResource,atol(argv[i]));
+                  else
+                    if (LocaleCompare("memory",type) == 0)
+                      SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                    else
+                      ThrowConvertException(OptionError,
+                        "Unrecognized resource type",type);
+              }
             break;
           }
         if (LocaleCompare("list",option+1) == 0)
@@ -4353,6 +4414,36 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("limit",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                char
+                  *type;
+
+                i++;
+                if (i == argc)
+                  ThrowMogrifyException(OptionError,"Missing resource type",
+                    option);
+                type=argv[i];
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  ThrowMogrifyException(OptionError,"Missing resource limit",
+                    option);
+                if (LocaleCompare("disk",type) == 0)
+                  SetMagickResourceLimit(DiskResource,atol(argv[i]));
+                else
+                  if (LocaleCompare("map",type) == 0)
+                    SetMagickResourceLimit(MapResource,atol(argv[i]));
+                  else
+                    if (LocaleCompare("memory",type) == 0)
+                      SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                    else
+                      ThrowMogrifyException(OptionError,
+                        "Unrecognized resource type",type);
+              }
+            break;
+          }
         if (LocaleCompare("list",option+1) == 0)
           {
             if (*option == '-')
@@ -5451,7 +5542,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
         if (LocaleCompare("compose",option+1) == 0)
           {
             CompositeOperator
-                compose;
+              compose;
 
             if (*option == '-')
               {
@@ -5861,6 +5952,36 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   ThrowMontageException(OptionError,"Missing label name",
                     option);
+              }
+            break;
+          }
+        if (LocaleCompare("limit",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                char
+                  *type;
+
+                i++;
+                if (i == argc)
+                  ThrowMontageException(OptionError,"Missing resource type",
+                    option);
+                type=argv[i];
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  ThrowMontageException(OptionError,"Missing resource limit",
+                    option);
+                if (LocaleCompare("disk",type) == 0)
+                  SetMagickResourceLimit(DiskResource,atol(argv[i]));
+                else
+                  if (LocaleCompare("map",type) == 0)
+                    SetMagickResourceLimit(MapResource,atol(argv[i]));
+                  else
+                    if (LocaleCompare("memory",type) == 0)
+                      SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                    else
+                      ThrowMontageException(OptionError,
+                        "Unrecognized resource type",type);
               }
             break;
           }

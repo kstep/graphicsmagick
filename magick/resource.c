@@ -130,7 +130,7 @@ MagickExport unsigned int AcquireMagickResource(const ResourceType type,
       status=resource_info.disk > 0;
       break;
     }
-    case MemoryMapResource:
+    case MapResource:
     {
       if (resource_info.memory_map == ResourceInfinity)
         break;
@@ -213,7 +213,7 @@ MagickExport unsigned long GetMagickResourceUsage(const ResourceType type)
       usage=resource_info.disk/1024.0/1024.0;
       break;
 		}
-    case MemoryMapResource:
+    case MapResource:
 		{
   		usage=resource_info.memory_map/1024.0/1024.0;
       break;
@@ -273,7 +273,7 @@ MagickExport void LiberateMagickResource(const ResourceType type,
       resource_info.disk+=size;
       break;
     }
-    case MemoryMapResource:
+    case MapResource:
     {
       if (resource_info.memory_map == ResourceInfinity)
         break;
@@ -326,7 +326,7 @@ MagickExport void SetMagickResourceLimit(const ResourceType type,
       resource_info.disk=1024.0*1024.0*(double) limit;
       break;
     }
-    case MemoryMapResource:
+    case MapResource:
     {
       resource_info.memory_map=1024.0*1024.0*(double) limit;
       break;

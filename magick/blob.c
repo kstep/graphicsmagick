@@ -1272,8 +1272,8 @@ MagickExport void *MapBlob(int file,const MapMode mode,off_t offset,
   */
   if (file == -1)
     return((void *) NULL);
-  if ((AcquireMagickResource(MemoryMapResource,0) != ResourceInfinity) &&
-			(length > AcquireMagickResource(MemoryMapResource,0)))
+  if ((AcquireMagickResource(MapResource,0) != ResourceInfinity) &&
+			(length > AcquireMagickResource(MapResource,0)))
     return((void *) NULL);
   switch (mode)
   {
@@ -1297,7 +1297,7 @@ MagickExport void *MapBlob(int file,const MapMode mode,off_t offset,
   }
   if (map == (void *) MAP_FAILED)
     return((void *) NULL);
-  (void) AcquireMagickResource(MemoryMapResource,length);
+  (void) AcquireMagickResource(MapResource,length);
   return((void *) map);
 #else
   return((void *) NULL);
@@ -2318,7 +2318,7 @@ MagickExport unsigned int UnmapBlob(void *map,const size_t length)
     status;
 
   status=munmap(map,length);
-  LiberateMagickResource(MemoryMapResource,length);
+  LiberateMagickResource(MapResource,length);
   return(status == 0);
 #else
   return(False);

@@ -66,14 +66,15 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/cache.h"
-#include "magick/command.h"
-#include "magick/list.h"
-#include "magick/log.h"
-#include "magick/utility.h"
-#include "magick/version.h"
-#include "magick/xwindow.h"
+#include "studio.h"
+#include "cache.h"
+#include "command.h"
+#include "list.h"
+#include "log.h"
+#include "resource.h"
+#include "utility.h"
+#include "version.h"
+#include "xwindow.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -111,7 +112,6 @@ static void AnimateUsage(void)
     {
       "-authenticate value  decrypt image with this password",
       "-backdrop            display image centered on a backdrop",
-      "-cache geometry      megabytes of memory in pixel cache memory",
       "-colormap type       Shared or Private",
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorspace",
@@ -126,6 +126,7 @@ static void AnimateUsage(void)
       "-geometry geometry   preferred size and location of the Image window",
       "-help                print program options",
       "-interlace type      None, Line, Plane, or Partition",
+      "-limit type value    Disk, Map, or Memory resource limit",
       "-matte               store matte channel if the image has one",
       "-map type            display image using this Standard Colormap",
       "-monochrome          transform image to black and white",
@@ -767,6 +768,41 @@ int main(int argc,char **argv)
                 if (image_info->interlace == UndefinedInterlace)
                   MagickFatalError(OptionFatalError,"Invalid interlace type",
                     option);
+              }
+            break;
+          }
+        MagickFatalError(OptionFatalError,"Unrecognized option",option);
+        break;
+      }
+      case 'l':
+      {
+        if (LocaleCompare("limit",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                char
+                  *type;
+
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"Missing resource type",
+                    option);
+                type=argv[i];
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickFatalError(OptionFatalError,"Missing resource limit",
+                    option);
+                if (LocaleCompare("disk",type) == 0)
+                  SetMagickResourceLimit(DiskResource,atol(argv[i]));
+                else
+                  if (LocaleCompare("map",type) == 0)
+                    SetMagickResourceLimit(MapResource,atol(argv[i]));
+                  else
+                    if (LocaleCompare("memory",type) == 0)
+                      SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                    else
+                      MagickFatalError(OptionFatalError,
+                        "Unrecognized resource type",type);
               }
             break;
           }

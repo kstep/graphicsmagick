@@ -697,11 +697,8 @@ MagickExport void DestroyCacheInfo(Cache cache)
       LiberateMagickResource(MemoryResource,cache_info->length);
       break;
     }
-    case MemoryMappedCache:
-    {
+    case MapCache:
       (void) UnmapBlob(cache_info->pixels,cache_info->length);
-      LiberateMagickResource(MemoryMapResource,cache_info->length);
-    }
     case DiskCache:
     {
       (void) remove(cache_info->cache_filename);
@@ -1840,7 +1837,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   if (cache_info->storage_class != UndefinedClass)
-    if (cache_info->type == MemoryMappedCache)
+    if (cache_info->type == MapCache)
       (void) UnmapBlob(cache_info->pixels,cache_info->length);
   FormatString(cache_info->filename,"%.1024s[%ld]",image->filename,
     GetImageListIndex(image));
@@ -1956,9 +1953,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   cache_info->colorspace=image->colorspace;
   cache_info->type=DiskCache;
   if ((cache_info->length > MinBlobExtent) &&
-      (cache_info->length == (size_t) cache_info->length) &&
-      ((AcquireMagickResource(MemoryMapResource,0) == ResourceInfinity) ||
-       (cache_info->length <= AcquireMagickResource(MemoryMapResource,0))))
+      (cache_info->length == (size_t) cache_info->length))
     {
       pixels=(PixelPacket *)
         MapBlob(file,mode,cache_info->offset,cache_info->length);
@@ -1967,7 +1962,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
           /*
             Create memory-mapped pixel cache.
           */
-          cache_info->type=MemoryMappedCache;
+          cache_info->type=MapCache;
           cache_info->pixels=pixels;
           cache_info->indexes=(IndexPacket *) NULL;
           if ((cache_info->storage_class == PseudoClass) ||
@@ -1983,7 +1978,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   FormatSize(cache_info->length,format);
   FormatString(message,"open %.1024s (%.1024s, %.1024s, %.1024s)",
     cache_info->filename,cache_info->cache_filename,
-    cache_info->type == MemoryMappedCache ? "memory-mapped" : "disk",format);
+    cache_info->type == MapCache ? "memory-mapped" : "disk",format);
   LogMagickEvent(CacheEvent,message);
   return(True);
 }

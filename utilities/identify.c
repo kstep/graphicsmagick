@@ -56,10 +56,10 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/command.h"
-#include "magick/utility.h"
-#include "magick/version.h"
+#include "studio.h"
+#include "command.h"
+#include "utility.h"
+#include "version.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -89,13 +89,13 @@ static void IdentifyUsage(void)
     *options[]=
     {
       "-authenticate value  decrypt image with this password",
-      "-cache geometry      megabytes of memory in pixel cache memory",
       "-debug events        display copious debugging information",
       "-density geometry    horizontal and vertical density of the image",
       "-depth value         image depth",
       "-format \"string\"   output formatted image characteristics",
       "-help                print program options",
       "-interlace type      None, Line, Plane, or Partition",
+			"-limit type value    Disk, Map, or Memory resource limit",
       "-size geometry       width and height of image",
       "-sampling-factor geometry",
       "                     horizontal and vertical sampling factor",

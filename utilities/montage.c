@@ -57,10 +57,10 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/command.h"
-#include "magick/utility.h"
-#include "magick/version.h"
+#include "studio.h"
+#include "command.h"
+#include "utility.h"
+#include "version.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -94,7 +94,6 @@ static void MontageUsage(void)
       "-authenticate value  decrypt image with this password",
       "-blue-primary point  chomaticity blue primary point",
       "-blur factor         apply a filter to blur the image",
-      "-cache geometry      megabytes of memory in pixel cache memory",
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorsapce",
       "-comment string      annotate image with comment",
@@ -122,6 +121,7 @@ static void MontageUsage(void)
       "-interlace type      None, Line, Plane, or Partition",
       "-help                print program options",
       "-label name          assign a label to an image",
+			"-limit type value    Disk, Map, or Memory resource limit",
       "-matte               store matte channel if the image has one",
       "-mode type           Frame, Unframe, or Concatenate",
       "-monochrome          transform image to black and white",
@@ -129,7 +129,7 @@ static void MontageUsage(void)
       "-page geometry       size and location of an image canvas",
       "-pointsize value     font point size",
       "-quality value       JPEG/MIFF/PNG compression level",
-      "-red-primary point  chomaticity red primary point",
+      "-red-primary point   chomaticity red primary point",
       "-resize geometry     resize the image",
       "-rotate degrees      apply Paeth rotation to the image",
       "-sampling-factor geometry",
