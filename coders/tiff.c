@@ -314,10 +314,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     filename[MaxTextExtent],
     *text;
 
-  float
-    *chromaticity,
+  double
     x_resolution,
     y_resolution;
+
+  float
+    *chromaticity;
 
   Image
     *image;
