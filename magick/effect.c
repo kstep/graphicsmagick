@@ -728,8 +728,8 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
     for (x=0; x < (long) convolve_image->columns; x++)
     {
       (void) memset(&aggregate,0,sizeof(AggregatePacket));
+      r=p;
       k=kernel;
-      r=p+x;
       for (v=(-width/2); v <= (width/2); v++)
       {
         for (u=(-width/2); u <= (width/2); u++)
@@ -757,6 +757,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
         (aggregate.blue > MaxRGB) ? MaxRGB : aggregate.blue+0.5);
       q->opacity=(Quantum) ((aggregate.opacity < 0) ? 0 :
         (aggregate.opacity > MaxRGB) ? MaxRGB : aggregate.opacity+0.5);
+      p++;
       q++;
     }
     if (!SyncImagePixels(convolve_image))
@@ -1567,15 +1568,15 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
   center=width*width/2;
   for (y=0; y < (long) median_image->rows; y++)
   {
-    v=Min(Max(y-width/2,0),(long) image->rows-width);
-    p=AcquireImagePixels(image,0,v,image->columns,width,exception);
+    p=AcquireImagePixels(image,-width/2,y-width/2,image->columns,width,
+      exception);
     q=SetImagePixels(median_image,0,y,median_image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     for (x=0; x < (long) median_image->columns; x++)
     {
+      r=p;
       w=window;
-      r=p+Min(Max(x-width/2,0),(long) image->columns-width);
       for (v=0; v < width; v++)
       {
         for (u=0; u < width; u++)
@@ -1590,6 +1591,7 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
       q->blue=window[center].blue;
       qsort((void *) window,width*width,sizeof(PixelPacket),OpacityCompare);
       q->opacity=window[center].opacity;
+      p++;
       q++;
     }
     if (!SyncImagePixels(median_image))
@@ -2012,8 +2014,6 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
     *paint_image;
 
   long
-    count,
-    j,
     k,
     width,
     y;
@@ -2023,13 +2023,15 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
     *r;
 
   register long
-    i,
+    u,
+    v,
     x;
 
   register PixelPacket
     *q;
 
-  unsigned int
+  unsigned long
+    count,
     *histogram;
 
   /*
@@ -2050,8 +2052,8 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   /*
     Allocate histogram and scanline.
   */
-  histogram=(unsigned int *) AcquireMemory((MaxRGB+1)*sizeof(unsigned int));
-  if (histogram == (unsigned int *) NULL)
+  histogram=(unsigned long *) AcquireMemory((MaxRGB+1)*sizeof(unsigned long));
+  if (histogram == (unsigned long *) NULL)
     {
       DestroyImage(paint_image);
       ThrowImageException(ResourceLimitWarning,"Unable to oil paint",
@@ -2060,61 +2062,35 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   /*
     Paint each row of the image.
   */
-  k=0;
-  for (y=width; y < (long) (image->rows-width); y++)
+  for (y=0; y < (long) image->rows; y++)
   {
-    p=AcquireImagePixels(image,0,y-width,image->columns,2*width+1,exception);
-    q=GetImagePixels(paint_image,0,y,paint_image->columns,1);
+    p=AcquireImagePixels(image,-width/2,y-width/2,image->columns,width,
+      exception);
+    q=SetImagePixels(paint_image,0,y,paint_image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    p+=width*image->columns+width;
-    q+=width;
-    for (x=width; x < (long) (image->columns-width); x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       /*
         Determine most frequent color.
       */
       count=0;
-      for (i=0; i < (MaxRGB+1); i++)
-        histogram[i]=0;
-      for (i=0; i < width; i++)
+      (void) memset(histogram,0,(MaxRGB+1)*sizeof(unsigned long));
+      r=p;
+      for (v=(-width/2); v <= (width/2); v++)
       {
-        r=p-(width-i-1)*image->columns-i-1;
-        for (j=0; j < (2*i+1); j++)
+        for (u=(-width/2); u <= (width/2); u++)
         {
-          k=Intensity(r);
+          k=Intensity(r+u);
           histogram[k]++;
-          if ((int) histogram[k] > count)
+          if (histogram[k] > count)
             {
-              *q=(*r);
-              count=(long) histogram[k];
+              *q=(r[u]);
+              count=histogram[k];
             }
-          r++;
+          k++;
         }
-        r=p+(width-i-1)*image->columns-i-1;
-        for (j=0; j < (2*i+1); j++)
-        {
-          k=Intensity(r);
-          histogram[k]++;
-          if ((int) histogram[k] > count)
-            {
-              *q=(*r);
-              count=(long) histogram[k];
-            }
-          r++;
-        }
-      }
-      r=p-width;
-      for (j=0; j < (2*width+1); j++)
-      {
-        k=Intensity(r);
-        histogram[k]++;
-        if ((int) histogram[k] > count)
-          {
-            *q=(*r);
-            count=(long) histogram[k];
-          }
-        r++;
+        r+=image->columns;
       }
       p++;
       q++;
