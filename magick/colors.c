@@ -1749,9 +1749,6 @@ Export unsigned int QueryColorName(const ColorPacket *color,char *name)
   double
     min_distance;
 
-  long
-    mean;
-
   register const ColorlistInfo
     *p;
 
@@ -1765,13 +1762,12 @@ Export unsigned int QueryColorName(const ColorPacket *color,char *name)
   min_distance=0;
   for (p=XColorlist; p->name != (char *) NULL; p++)
   {
-    mean=(DownScale(color->red)+(int) p->red)/2;
     distance=DownScale(color->red)-(int) p->red;
-    distance_squared=(2.0*256.0+mean)*distance*distance/256.0;
+    distance_squared=distance*distance;
     distance=DownScale(color->green)-(int) p->green;
-    distance_squared+=4.0*distance*distance;
+    distance_squared+=distance*distance;
     distance=DownScale(color->blue)-(int) p->blue;
-    distance_squared+=(3.0*256.0-1.0-mean)*distance*distance/256.0;
+    distance_squared+=distance*distance;
     if ((p == XColorlist) || (distance_squared < min_distance))
       {
         min_distance=distance_squared;
