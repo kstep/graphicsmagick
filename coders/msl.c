@@ -4224,6 +4224,8 @@ static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   *msl_info.image_info=CloneImageInfo(image_info);
   *msl_info.draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   *msl_info.attributes=image_info->attributes;
+  if (*msl_info.attributes == (Image *) NULL)
+	  *msl_info.attributes=AllocateImage(image_info);
   *msl_info.image=image;
   msl_info.group_info[0].numImages=0;
   (void) xmlSubstituteEntitiesDefault(1);

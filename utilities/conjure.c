@@ -83,9 +83,9 @@ static void Usage(void)
   static const char
     *options[]=
     {
-      "Specify any name and its value to later read back from your script:",
+      "Define any key value pairs required by your script, for example:",
       "",
-      "    conjure -geometry '100x100' -backcolor 'blue' -foo 'bar' script.msl",
+      "    conjure -geometry 100x100 -backcolor blue -foo bar script.msl",
       (char *) NULL
     };
 
