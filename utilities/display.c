@@ -107,7 +107,7 @@
 %    -roll geometry     roll an image vertically or horizontally
 %    -rotate degrees    apply Paeth rotation to the image
 %    -sample geometry   scale image with pixel sampling
-%    -scene value       image scene number
+%    -scenes range      image scene range
 %    -segment value     segment an image
 %    -sharpen geometry  sharpen the image
 %    -size geometry     width and height of image
@@ -224,7 +224,7 @@ static void DisplayUsage(void)
       "-roll geometry     roll an image vertically or horizontally",
       "-rotate degrees    apply Paeth rotation to the image",
       "-sample geometry   scale image with pixel sampling",
-      "-scene value       image scene number",
+      "-scenes range      image scene range",
       "-segment value     segment an image",
       "-sharpen geometry  sharpen the image",
       "-size geometry     width and height of image",
@@ -1107,7 +1107,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleCompare("scene",option+1) == 0)
+          if (LocaleCompare("scenes",option+1) == 0)
             {
               first_scene=0;
               last_scene=0;

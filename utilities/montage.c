@@ -121,7 +121,7 @@
 %    -quality value      JPEG/MIFF/PNG compression level
 %    -resize geometry    resize the image
 %    -rotate degrees     apply Paeth rotation to the image
-%    -scene value        image scene number
+%    -scenes range       image scene range
 %    -shadow             add a shadow beneath a tile to simulate depth
 %    -sharpen geometry   sharpen the image
 %    -size geometry      width and height of image
@@ -213,7 +213,7 @@ static void MontageUsage(void)
       "-quality value      JPEG/MIFF/PNG compression level",
       "-resize geometry    resize the image",
       "-rotate degrees     apply Paeth rotation to the image",
-      "-scene value        image scene number",
+      "-scenes range       image scene range",
       "-shadow             add a shadow beneath a tile to simulate depth",
       "-size geometry      width and height of image",
       "-stroke color       color to use when stroking a graphic primitive",
@@ -1021,7 +1021,7 @@ static unsigned int MontageUtility(int argc,char **argv)
         }
         case 's':
         {
-          if (LocaleCompare("scene",option+1) == 0)
+          if (LocaleCompare("scenes",option+1) == 0)
             {
               first_scene=0;
               last_scene=0;

@@ -87,7 +87,7 @@
 %    -pause               seconds to pause before reanimating
 %    -remote command      execute a command in an remote display process
 %    -rotate degrees      apply Paeth rotation to the image
-%    -scene value         image scene number
+%    -scenes range        image scene range
 %    -size geometry       width and height of image
 %    -treedepth value     depth of the color tree
 %    -trim                trim image edges
@@ -175,7 +175,7 @@ static void AnimateUsage(void)
       "-pause               seconds to pause before reanimating",
       "-remote command      execute a command in an remote display process",
       "-rotate degrees      apply Paeth rotation to the image",
-      "-scene value         image scene number",
+      "-scenes range         image scene range",
       "-size geometry       width and height of image",
       "-treedepth value     depth of the color tree",
       "-trim                trim image edges",
@@ -813,7 +813,7 @@ int main(int argc,char **argv)
         }
         case 's':
         {
-          if (LocaleCompare("scene",option+1) == 0)
+          if (LocaleCompare("scenes",option+1) == 0)
             {
               first_scene=0;
               last_scene=0;
