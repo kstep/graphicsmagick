@@ -9105,12 +9105,12 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         (void) fprintf(image->file,"%%%%CreationDate: (%.1024s)\n",date);
         bounding_box.x1=x;
         bounding_box.y1=y;
-        bounding_box.x2=x+(int) x_scale;
-        bounding_box.y2=y+(int) (height+text_size);
+        bounding_box.x2=x+x_scale;
+        bounding_box.y2=y+(height+text_size);
         if (image_info->adjoin && (image->next != (Image *) NULL))
           (void) fprintf(image->file,"%%%%BoundingBox: (atend)\n");
         else
-          (void) fprintf(image->file,"%%%%BoundingBox: %d %d %d %d\n",
+          (void) fprintf(image->file,"%%%%BoundingBox: %g %g %g %g\n",
             bounding_box.x1,bounding_box.y1,bounding_box.x2,bounding_box.y2);
         if (image->label != (char *) NULL)
           (void) fprintf(image->file,
@@ -9259,9 +9259,9 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     if (y < bounding_box.y1)
       bounding_box.y1=y;
     if ((x+(int) width-1) > bounding_box.x2)
-      bounding_box.x2=x+(int) width-1;
+      bounding_box.x2=x+width-1;
     if ((y+(int) (height+text_size)-1) > bounding_box.y2)
-      bounding_box.y2=y+(int) (height+text_size)-1;
+      bounding_box.y2=y+(height+text_size)-1;
     if (image->label != (char *) NULL)
       (void) fprintf(image->file,"%%%%PageResources: font Helvetica\n");
     if (Latin1Compare(image_info->magick,"PS") != 0)
@@ -9540,7 +9540,7 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
       image=image->previous;
   (void) fprintf(image->file,"%%%%Trailer\n");
   if (page > 1)
-    (void) fprintf(image->file,"%%%%BoundingBox: %d %d %d %d\n",
+    (void) fprintf(image->file,"%%%%BoundingBox: %g %g %g %g\n",
       bounding_box.x1,bounding_box.y1,bounding_box.x2,bounding_box.y2);
   (void) fprintf(image->file,"%%%%EOF\n");
   CloseImage(image);
@@ -9981,12 +9981,12 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
         (void) fprintf(image->file,"%%%%CreationDate: (%.1024s)\n",date);
         bounding_box.x1=x;
         bounding_box.y1=y;
-        bounding_box.x2=x+(int) width-1;
-        bounding_box.y2=y+(int) (height+text_size)-1;
+        bounding_box.x2=x+width-1;
+        bounding_box.y2=y+(height+text_size)-1;
         if (image_info->adjoin && (image->next != (Image *) NULL))
           (void) fprintf(image->file,"%%%%BoundingBox: (atend)\n");
         else
-          (void) fprintf(image->file,"%%%%BoundingBox: %d %d %d %d\n",
+          (void) fprintf(image->file,"%%%%BoundingBox: %g %g %g %g\n",
             bounding_box.x1,bounding_box.y1,bounding_box.x2,bounding_box.y2);
         if (image->label != (char *) NULL)
           (void) fprintf(image->file,
@@ -10052,9 +10052,9 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     if (y < bounding_box.y1)
       bounding_box.y1=y;
     if ((x+(int) width-1) > bounding_box.x2)
-      bounding_box.x2=x+(int) width-1;
+      bounding_box.x2=x+width-1;
     if ((y+(int) (height+text_size)-1) > bounding_box.y2)
-      bounding_box.y2=y+(int) (height+text_size)-1;
+      bounding_box.y2=y+(height+text_size)-1;
     if (image->label != (char *) NULL)
       (void) fprintf(image->file,"%%%%PageResources: font Helvetica\n");
     if (Latin1Compare(image_info->magick,"PS2") != 0)
@@ -10334,7 +10334,7 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
       image=image->previous;
   (void) fprintf(image->file,"%%%%Trailer\n");
   if (page > 1)
-    (void) fprintf(image->file,"%%%%BoundingBox: %d %d %d %d\n",
+    (void) fprintf(image->file,"%%%%BoundingBox: %g %g %g %g\n",
       bounding_box.x1,bounding_box.y1,bounding_box.x2,bounding_box.y2);
   (void) fprintf(image->file,"%%%%EOF\n");
   CloseImage(image);

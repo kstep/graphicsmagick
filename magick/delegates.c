@@ -495,7 +495,7 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,
         (void) fprintf(file,"-\n");
         (void) fprintf(file,"-\n");
         (void) fprintf(file,"-\n");
-        (void) fprintf(file,"%.1024s\n",image_info->unique);
+        (void) fprintf(file,"%s\n",image_info->zero);
         (void) fprintf(file,"1\n");
         (void) fprintf(file,"%u\n",GetNumberScenes(image));
         (void) fprintf(file,"0\n");
@@ -639,6 +639,7 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,
     Free resources.
   */
   (void) remove(image_info->unique);
+  (void) remove(image_info->zero);
   for ( ; commands[i] != (char *) NULL; i++)
     FreeMemory((char *) commands[i]);
   FreeMemory((char *) commands);

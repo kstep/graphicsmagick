@@ -3095,6 +3095,12 @@ Export char *TranslateText(const ImageInfo *image_info,const Image *image,
         q=translated_text+Extent(translated_text);
         break;
       }
+      case 'z':
+      {
+        (void) strcpy(q,local_info->zero);
+        q+=Extent(local_info->zero);
+        break;
+      }
       case '%':
       {
         *q++=(*p);

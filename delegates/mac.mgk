@@ -26,6 +26,7 @@
 #   %w   width
 #   %x   x resolution
 #   %y   y resolution
+#   %z   data written to this file is discarded
 # 
 # There are three types of delegates: decode, encode, and bypass.  Decode
 # delegates begin with a image format (tag) specified (e.g. mpeg) followed

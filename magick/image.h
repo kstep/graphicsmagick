@@ -103,7 +103,8 @@ typedef struct _ImageInfo
   char
     filename[MaxTextExtent],
     magick[MaxTextExtent],
-    unique[MaxTextExtent];
+    unique[MaxTextExtent],
+    zero[MaxTextExtent];
 
   unsigned int
     affirm,

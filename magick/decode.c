@@ -1941,7 +1941,7 @@ Export Image *ReadDPSImage(const ImageInfo *image_info)
     *dps_image;
 
   XRectangle
-    bounding_box,
+    page_info,
     bits_per_pixel;
 
   XResourceInfo
@@ -2017,7 +2017,7 @@ Export Image *ReadDPSImage(const ImageInfo *image_info)
   if ((image->x_resolution != 0.0) && (image->y_resolution != 0.0))
     pixels_per_point=Min(image->x_resolution,image->y_resolution)/72.0;
   status=XDPSCreatePixmapForEPSF((DPSContext) NULL,screen,image->file,
-    visual_info->depth,pixels_per_point,&pixmap,&bits_per_pixel,&bounding_box);
+    visual_info->depth,pixels_per_point,&pixmap,&bits_per_pixel,&page_info);
   if ((status == dps_status_failure) || (status == dps_status_no_extension))
     {
       DestroyImage(image);
@@ -2029,8 +2029,8 @@ Export Image *ReadDPSImage(const ImageInfo *image_info)
     Rasterize the file into the pixmap.
   */
   status=XDPSImageFileIntoDrawable((DPSContext) NULL,screen,pixmap,image->file,
-    bits_per_pixel.height,visual_info->depth,&bounding_box,-bounding_box.x,
-    -bounding_box.y,pixels_per_point,True,False,True,&sans);
+    bits_per_pixel.height,visual_info->depth,&page_info,-page_info.x,
+    -page_info.y,pixels_per_point,True,False,True,&sans);
   if (status != dps_status_success)
     {
       DestroyImage(image);
@@ -2262,12 +2262,12 @@ Export Image *ReadDPSImage(const ImageInfo *image_info)
     Rasterize matte image.
   */
   status=XDPSCreatePixmapForEPSF((DPSContext) NULL,screen,image->file,1,
-    pixels_per_point,&pixmap,&bits_per_pixel,&bounding_box);
+    pixels_per_point,&pixmap,&bits_per_pixel,&page_info);
   if ((status != dps_status_failure) && (status != dps_status_no_extension))
     {
       status=XDPSImageFileIntoDrawable((DPSContext) NULL,screen,pixmap,
-        image->file,bits_per_pixel.height,1,&bounding_box,-bounding_box.x,
-        -bounding_box.y,pixels_per_point,True,True,True,&sans);
+        image->file,bits_per_pixel.height,1,&page_info,-page_info.x,
+        -page_info.y,pixels_per_point,True,True,True,&sans);
       if (status == dps_status_success)
         {
           XImage
@@ -8565,19 +8565,18 @@ Export Image *ReadPDFImage(const ImageInfo *image_info)
   long int
     filesize;
 
-  PointInfo
-    lower,
-    upper;
-
   RectangleInfo
-    bounding_box,
-    box;
+    box,
+    page_info;
 
   register char
     *p;
 
   register int
     c;
+
+  SegmentInfo
+    bounding_box;
 
   unsigned int
     height,
@@ -8624,12 +8623,12 @@ Export Image *ReadPDFImage(const ImageInfo *image_info)
         image->y_resolution=image->x_resolution;
     }
   FormatString(density,"%gx%g",image->x_resolution,image->y_resolution);
-  bounding_box.width=612;
-  bounding_box.height=792;
-  bounding_box.x=0;
-  bounding_box.y=0;
-  (void) ParseImageGeometry(PSPageGeometry,&bounding_box.x,&bounding_box.y,
-    &bounding_box.width,&bounding_box.height);
+  page_info.width=612;
+  page_info.height=792;
+  page_info.x=0;
+  page_info.y=0;
+  (void) ParseImageGeometry(PSPageGeometry,&page_info.x,&page_info.y,
+    &page_info.width,&page_info.height);
   portrait=True;
   /*
     Determine page geometry from the PDF media box.
@@ -8654,33 +8653,34 @@ Export Image *ReadPDFImage(const ImageInfo *image_info)
       portrait=False;
     if (strncmp(MediaBox,command,Extent(MediaBox)) != 0)
       continue;
-    count=sscanf(command,"/MediaBox [ %f %f %f %f",&lower.x,&lower.y,
-      &upper.x,&upper.y);
+    count=sscanf(command,"/MediaBox [ %f %f %f %f",&bounding_box.x1,
+      &bounding_box.y1,&bounding_box.x2,&bounding_box.y2);
     if (count != 4)
       continue;
-    if ((lower.x > upper.x) || (lower.y > upper.y))
+    if ((bounding_box.x1 > bounding_box.x2) ||
+        (bounding_box.y1 > bounding_box.y2))
       continue;
     /*
       Set Postscript render geometry.
     */
-    width=(unsigned int) (upper.x-lower.x+1);
-    if ((float) ((int) upper.x) != upper.x)
+    width=(unsigned int) (bounding_box.x2-bounding_box.x1+1);
+    if ((float) ((int) bounding_box.x2) != bounding_box.x2)
       width++;
-    height=(unsigned int) (upper.y-lower.y+1);
-    if ((float) ((int) upper.y) != upper.y)
+    height=(unsigned int) (bounding_box.y2-bounding_box.y1+1);
+    if ((float) ((int) bounding_box.y2) != bounding_box.y2)
       height++;
     if ((width <= box.width) && (height <= box.height))
       continue;
-    bounding_box.width=width;
-    bounding_box.height=height;
-    box=bounding_box;
+    page_info.width=width;
+    page_info.height=height;
+    box=page_info;
   }
   if (image_info->page != (char *) NULL)
-    (void) ParseImageGeometry(image_info->page,&bounding_box.x,&bounding_box.y,
-      &bounding_box.width,&bounding_box.height);
-  FormatString(geometry,"%ux%u",(unsigned int) (((bounding_box.width*
+    (void) ParseImageGeometry(image_info->page,&page_info.x,&page_info.y,
+      &page_info.width,&page_info.height);
+  FormatString(geometry,"%ux%u",(unsigned int) (((page_info.width*
     image->x_resolution)/dx_resolution)+0.5),(unsigned int)
-    (((bounding_box.height*image->y_resolution)/dy_resolution)+0.5));
+    (((page_info.height*image->y_resolution)/dy_resolution)+0.5));
   if (ferror(file))
     {
       MagickWarning(FileOpenWarning,"An error has occurred writing to file",
@@ -11686,19 +11686,18 @@ Export Image *ReadPSImage(const ImageInfo *image_info)
   long int
     filesize;
 
-  PointInfo
-    lower,
-    upper;
-
   RectangleInfo
-    bounding_box,
-    box;
+    box,
+    page_info;
 
   register char
     *p;
 
   register int
     i;
+
+  SegmentInfo
+    bounding_box;
 
   unsigned int
     eps_level,
@@ -11748,12 +11747,12 @@ Export Image *ReadPSImage(const ImageInfo *image_info)
         image->y_resolution=image->x_resolution;
     }
   FormatString(density,"%gx%g",image->x_resolution,image->y_resolution);
-  bounding_box.width=612;
-  bounding_box.height=792;
-  bounding_box.x=0;
-  bounding_box.y=0;
-  (void) ParseImageGeometry(PSPageGeometry,&bounding_box.x,&bounding_box.y,
-    &bounding_box.width,&bounding_box.height);
+  page_info.width=612;
+  page_info.height=792;
+  page_info.x=0;
+  page_info.y=0;
+  (void) ParseImageGeometry(PSPageGeometry,&page_info.x,&page_info.y,
+    &page_info.width,&page_info.height);
   /*
     Determine page geometry from the Postscript bounding box.
   */
@@ -11797,41 +11796,44 @@ Export Image *ReadPSImage(const ImageInfo *image_info)
     */
     count=0;
     if (strncmp(BoundingBox,command,Extent(BoundingBox)) == 0)
-      count=sscanf(command,"%%%%BoundingBox: %f %f %f %f",&lower.x,&lower.y,
-        &upper.x,&upper.y);
+      count=sscanf(command,"%%%%BoundingBox: %f %f %f %f",&bounding_box.x1,
+        &bounding_box.y1,&bounding_box.x2,&bounding_box.y2);
     if (strncmp(DocumentMedia,command,Extent(DocumentMedia)) == 0)
-      count=sscanf(command,"%%%%DocumentMedia: %*s %f %f",&upper.x,&upper.y)+2;
+      count=sscanf(command,"%%%%DocumentMedia: %*s %f %f",&bounding_box.x2,
+        &bounding_box.y2)+2;
     if (strncmp(PageBoundingBox,command,Extent(PageBoundingBox)) == 0)
       count=sscanf(command,"%%%%PageBoundingBox: %f %f %f %f",
-        &lower.x,&lower.y,&upper.x,&upper.y);
+        &bounding_box.x1,&bounding_box.y1,&bounding_box.x2,&bounding_box.y2);
     if (count != 4)
       continue;
-    if ((lower.x > upper.x) || (lower.y > upper.y))
+    if ((bounding_box.x1 > bounding_box.x2) ||
+        (bounding_box.y1 > bounding_box.y2))
       continue;
     /*
       Set Postscript render geometry.
     */
-    FormatString(translate_geometry,"%f %f translate\n",-lower.x,-lower.y);
-    width=(unsigned int) (upper.x-lower.x+1);
-    if ((float) ((int) upper.x) != upper.x)
+    FormatString(translate_geometry,"%g %g translate\n",-bounding_box.x1,
+      -bounding_box.y1);
+    width=(unsigned int) (bounding_box.x2-bounding_box.x1+1);
+    if ((float) ((int) bounding_box.x2) != bounding_box.x2)
       width++;
-    height=(unsigned int) (upper.y-lower.y+1);
-    if ((float) ((int) upper.y) != upper.y)
+    height=(unsigned int) (bounding_box.y2-bounding_box.y1+1);
+    if ((float) ((int) bounding_box.y2) != bounding_box.y2)
       height++;
     if ((width <= box.width) && (height <= box.height))
       continue;
-    bounding_box.width=width;
-    bounding_box.height=height;
-    box=bounding_box;
+    page_info.width=width;
+    page_info.height=height;
+    box=page_info;
   }
   if (eps_level != 0)
     (void) fputs("showpage\n",file);
   if (image_info->page != (char *) NULL)
-    (void) ParseImageGeometry(image_info->page,&bounding_box.x,&bounding_box.y,
-      &bounding_box.width,&bounding_box.height);
-  FormatString(geometry,"%ux%u",(unsigned int) (((bounding_box.width*
+    (void) ParseImageGeometry(image_info->page,&page_info.x,&page_info.y,
+      &page_info.width,&page_info.height);
+  FormatString(geometry,"%ux%u",(unsigned int) (((page_info.width*
     image->x_resolution)/dx_resolution)+0.5),(unsigned int)
-    (((bounding_box.height*image->y_resolution)/dy_resolution)+0.5));
+    (((page_info.height*image->y_resolution)/dy_resolution)+0.5));
   if (ferror(file))
     {
       MagickWarning(FileOpenWarning,"An error has occurred writing to file",
@@ -16642,7 +16644,7 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
     offset;
 
   RectangleInfo
-    bounding_box;
+    page_info;
 
   register int
     i;
@@ -16680,22 +16682,22 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
       if (count != 2)
         image->y_resolution=image->x_resolution;
     }
-  bounding_box.width=612;
-  bounding_box.height=792;
-  bounding_box.x=0;
-  bounding_box.y=0;
-  (void) ParseImageGeometry("612x792+43+43",&bounding_box.x,&bounding_box.y,
-    &bounding_box.width,&bounding_box.height);
+  page_info.width=612;
+  page_info.height=792;
+  page_info.x=0;
+  page_info.y=0;
+  (void) ParseImageGeometry("612x792+43+43",&page_info.x,&page_info.y,
+    &page_info.width,&page_info.height);
   if (image_info->page != (char *) NULL)
-    (void) ParseImageGeometry(image_info->page,&bounding_box.x,&bounding_box.y,
-      &bounding_box.width,&bounding_box.height);
+    (void) ParseImageGeometry(image_info->page,&page_info.x,&page_info.y,
+      &page_info.width,&page_info.height);
   /*
     Initialize Image structure.
   */
   image->columns=(unsigned int)
-    (((bounding_box.width*image->x_resolution)/dx_resolution)+0.5);
+    (((page_info.width*image->x_resolution)/dx_resolution)+0.5);
   image->rows=(unsigned int)
-    (((bounding_box.height*image->y_resolution)/dy_resolution)+0.5);
+    (((page_info.height*image->y_resolution)/dy_resolution)+0.5);
   image->packets=image->columns*image->rows;
   image->pixels=(RunlengthPacket *)
     AllocateMemory(image->packets*sizeof(RunlengthPacket));
@@ -16738,14 +16740,14 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
     if (Extent(text) > 0)
       text[Extent(text)-1]='\0';
     (void) CloneString(&annotate_info.text,text);
-    FormatString(geometry,"%+d%+d",bounding_box.x,bounding_box.y+offset);
+    FormatString(geometry,"%+d%+d",page_info.x,page_info.y+offset);
     (void) CloneString(&annotate_info.geometry,geometry);
     AnnotateImage(image,&annotate_info);
     offset+=annotate_info.bounds.height;
     if (image->previous == (Image *) NULL)
-      if (QuantumTick(bounding_box.y+offset,image->rows))
-        ProgressMonitor(LoadImageText,bounding_box.y+offset,image->rows);
-    if (((2*bounding_box.y)+offset+annotate_info.bounds.height) < image->rows)
+      if (QuantumTick(page_info.y+offset,image->rows))
+        ProgressMonitor(LoadImageText,page_info.y+offset,image->rows);
+    if (((2*page_info.y)+offset+annotate_info.bounds.height) < image->rows)
       continue;
     /*
       Page is full-- allocate next image structure.

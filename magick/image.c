@@ -1589,7 +1589,7 @@ Export void CoalesceImages(Image *image)
   for (p=image->next; p != (Image *) NULL; p=p->next)
   {
     x=0;
-    x=0;
+    y=0;
     if (p->previous->page)
       (void) XParseGeometry(p->previous->page,&x,&y,&sans,&sans);
     previous_box.x1=x;
@@ -1633,8 +1633,8 @@ Export void CoalesceImages(Image *image)
         char
           geometry[MaxTextExtent];
 
-        FormatString(geometry,"%lux%lu+%ld+%ld",p->columns,p->rows,
-          bounding_box.x1,bounding_box.y1);
+        FormatString(geometry,"%ux%u%+d%+d",p->columns,p->rows,
+          (int) bounding_box.x1,(int) bounding_box.y1);
         p->page=PostscriptGeometry(geometry);
       }
     matte=p->matte;
@@ -5547,6 +5547,7 @@ Export void GetImageInfo(ImageInfo *image_info)
   *image_info->magick='\0';
   TemporaryFilename(image_info->unique);
   (void) strcat(image_info->unique,"u");
+  TemporaryFilename(image_info->zero);
   image_info->affirm=False;
   image_info->temporary=False;
   image_info->adjoin=True;
