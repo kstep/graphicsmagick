@@ -22,6 +22,7 @@
 
 		<LI><A HREF="#acquireimagepixels">AcquireImagePixels</A>
 		<LI><A HREF="#acquireonepixel">AcquireOnePixel</A>
+		<LI><A HREF="#destroycacheinfo">DestroyCacheInfo</A>
 		<LI><A HREF="#destroyimagepixels">DestroyImagePixels</A>
 		<LI><A HREF="#getimagepixels">GetImagePixels</A>
 		<LI><A HREF="#getindexes">GetIndexes</A>
@@ -47,6 +48,7 @@
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>const PixelPacket * <STRONG>AcquireImagePixels</STRONG>( const Image *image, const long x, const long y, const unsigned long columns, const unsigned long rows, ExceptionInfo *exception );</P>
 <P>PixelPacket  <STRONG>AcquireOnePixel</STRONG>( const Image image, const long x, const long y, ExceptionInfo exception );</P>
+<P>void  <STRONG>DestroyCacheInfo</STRONG>( Cache cache );</P>
 <P>void  <STRONG>DestroyImagePixels</STRONG>( Image *image );</P>
 <P>PixelPacket * <STRONG>GetImagePixels</STRONG>( Image *image, const long x, const long y, const unsigned long columns, const unsigned long rows );</P>
 <P>IndexPacket * <STRONG>GetIndexes</STRONG>( const Image *image );</P>
@@ -103,6 +105,15 @@ These values define the location of the pixel to return.
 <dd><p></p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="destroycacheinfo">DestroyCacheInfo</A></H2>
+<blockquote>Method DestroyCacheInfo() deallocates memory associated with the pixel cache. </blockquote><blockquote>The format of the DestroyCacheInfo() method is: </blockquote><blockquote>void DestroyCacheInfo ( Cache cache ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG><A NAME="item_o_cache%3A">cache:</A></STRONG><BR>
+<DD>
+Specifies a pointer to a Cache structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="destroyimagepixels">DestroyImagePixels</A></H2>

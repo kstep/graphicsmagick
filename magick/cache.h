@@ -149,6 +149,7 @@ extern MagickExport unsigned long
 extern MagickExport void
   AllocateCacheNexus(CacheInfo *),
   DestroyCache(void),
+  DestroyCacheInfo(Cache),
   DestroyCacheNexus(Cache,const unsigned long),
   GetCacheInfo(Cache *),
   ResetPixelCacheMethods(void),

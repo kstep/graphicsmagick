@@ -2718,8 +2718,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *data;
 
   unsigned int
-    explicit_file,
     mask,
+    explicit_file,
     use_explicit;
 
   unsigned long
@@ -2800,10 +2800,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Check for "explicitness", but meta-file headers always explicit.
     */
-    if (group != 0x0002 && explicit_file == -1)
-      explicit_file=
-        isupper((int) *explicit_vr) && isupper((int) *(explicit_vr+1));
-    use_explicit=(explicit_file || (group == 0x0002));
+    if (!explicit_file && (group != 0x0002))
+      explicit_file=isupper((int) *explicit_vr) &&
+        isupper((int) *(explicit_vr+1));
+    use_explicit=((group == 0x0002) || explicit_file);
     if (use_explicit && (strcmp(implicit_vr,"xs") == 0))
       (void) strncpy(implicit_vr,explicit_vr,MaxTextExtent-1);
     if (!use_explicit || (strcmp(implicit_vr,"!!") == 0))

@@ -1,3 +1,6 @@
+2002-05-09  Cristy  <cristy@mystic.es.dupont.com>
+  * DCM patch provided by Shane Blackett.
+
 2002-05-07  Cristy  <cristy@mystic.es.dupont.com>
   * Lock mutex when destorying a SemaphoreInfo structure (patch provided
     by William Radcliffe).

@@ -600,7 +600,7 @@ MagickExport void DestroyCache(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   D e s t r o y C a c h e I n f o                                           %
+%   D e s t r o y C a c h e I n f o                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -619,7 +619,7 @@ MagickExport void DestroyCache(void)
 %
 %
 */
-static void DestroyCacheInfo(Cache cache)
+MagickExport void DestroyCacheInfo(Cache cache)
 {
   CacheInfo
     *cache_info;
