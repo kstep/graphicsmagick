@@ -225,6 +225,9 @@ int main ( int argc, char **argv )
        !strcmp( "JPEG24", format ) )
     fuzz_factor = 5;
 
+  if ( !strcmp( "P7", format ) )
+       fuzz_factor = 2;
+
   if ( !strcmp( "PCD", format ) ||
        !strcmp( "PCDS", format ) )
     fuzz_factor = 8;
