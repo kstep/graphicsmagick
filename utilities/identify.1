@@ -1,6 +1,5 @@
 .SH NAME
 display - display an image on an X terminal
-
 .SH SYNOPSIS
 
 \fBidentify\fP \fIfile\fP [ \fIfile\fP ... ]
@@ -39,7 +38,7 @@ Options are processed in command line order. Any option you specify on
 the command line remains in effect until it is explicitly changed by specifying
 the option again with a different effect.
 .TP
-.B "-cache \fIthreshold\fP
+.B "-cache \fIthreshold"\fP
 \fRmegabytes of memory available to the pixel cache
 
 Image pixels are stored in memory until 80 megabytes of memory have been
@@ -51,7 +50,7 @@ amount of free memory you may want to adjust this threshold value.
 .B "-debug"
 \fRenable debug printout
 .TP
-.B "-density \fI<width>x<height>\fP
+.B "-density \fI<width>x<height>"\fP
 \fRvertical and horizontal resolution in pixels of the image
 
 This option specifies an image density when decoding a \fIPostScript\fP
@@ -59,7 +58,7 @@ or Portable Document page. The default is 72 dots per inch in the horizontal
 and vertical direction. This option is used in concert with \fB-page\fP.
 
 .TP
-.B "-depth \fIvalue\fP
+.B "-depth \fIvalue"\fP
 \fRdepth of the image
 
 This is the number of bits in a pixel. The only acceptable
@@ -68,7 +67,7 @@ depth is unknown such as GRAY, RGB, or CMYK, or to change the depth of any
 image after it has been read.
 
 .TP
-.B "-format \fI\"string\"\fP
+.B "-format \fI\"string\""\fP
 \fRoutput formatted image characteristics
 .TP
 .B "-help"
@@ -77,7 +76,7 @@ image after it has been read.
 .B "-ping"
 \fRefficiently determine image characteristics
 .TP
-.B "-size \fI<width>x<height>{+offset}\fP
+.B "-size \fI<width>x<height>{+offset}"\fP
 \fRwidth and height of the image
 
 Use this option to specify the width and height of raw images whose dimensions
@@ -145,6 +144,6 @@ Except as contained in this notice, the name of the ImageMagick Studio
 shall not be used in advertising or otherwise to promote the sale, use or
 other dealings in ImageMagick without prior written authorization from the
 ImageMagick Studio.
+
 .SH AUTHORS
 John Cristy, ImageMagick Studio LLC
-

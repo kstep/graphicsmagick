@@ -26,6 +26,7 @@ use:
               perch.ras composite.miff
 
 To tile a logo across your image of a cockatoo, use
+
     convert +shade 30x60 cockatoo.miff mask.miff
     composite -compose bumpmap -tile logo.png \\
               cockatoo.miff mask.miff composite.miff
@@ -43,10 +44,10 @@ Options are processed in command line order. Any option you specify on
 the command line remains in effect until it is explicitly changed by specifying
 the option again with a different effect.
 .TP
-.B "-background \fIcolor\fP
+.B "-background \fIcolor"\fP
 \fRthe background color
 .TP
-.B "-cache \fIthreshold\fP
+.B "-cache \fIthreshold"\fP
 \fRmegabytes of memory available to the pixel cache
 
 Image pixels are stored in memory until 80 megabytes of memory have been
@@ -55,7 +56,7 @@ memory are significantly faster but if your computer does not have a sufficient
 amount of free memory you may want to adjust this threshold value.
 
 .TP
-.B "-colors \fIvalue\fP
+.B "-colors \fIvalue"\fP
 \fRpreferred number of colors in the image
 
 The actual number of colors in the image may be less than your request,
@@ -69,7 +70,7 @@ Note, options \fB-dither\fP, \fB-colorspace\fP, and \fB-treedepth\fP
 affect the color reduction algorithm.
 
 .TP
-.B "-colorspace \fIvalue\fP
+.B "-colorspace \fIvalue"\fP
 \fRthe type of colorspace
 
 Choices are: \fBGRAY\fP, \fBOHTA\fP, \fBRGB\fP,
@@ -94,7 +95,7 @@ The \fB-colors\fP or \fB-monochrome\fP option is required for this
 option to take effect.
 
 .TP
-.B "-comment \fIstring\fP
+.B "-comment \fIstring"\fP
 \fRannotate an image with a comment
 
 Use this option to assign a specific comment to the image. You can include the
@@ -138,7 +139,7 @@ If the first character of \fIstring\fP is \fI@\fP, the image comment
 is read from a file titled by the remaining characters in the string.
 
 .TP
-.B "-compose \fIoperator\fP
+.B "-compose \fIoperator"\fP
 \fRthe type of image composition
 
 By default, each of the composite image pixels are replaced by the
@@ -347,8 +348,6 @@ layer in \fIcomposite image\fP.  The other layers are copied untouched.
 .in 15
 
 
-
-
 The image compositor requires a matte, or alpha channel in the image
 for some operations.  This extra channel usually defines a mask which
 represents a sort of a cookie-cutter for the image.  This is the case
@@ -359,7 +358,7 @@ with 0 for any pixel matching in color to pixel location (0,0), otherwise
 255 (to work properly \fBborderwidth\fP must be 0).
 
 .TP
-.B "-compress \fItype\fP
+.B "-compress \fItype"\fP
 \fRthe type of image compression
 
 Choices are: \fINone\fP, \fIBZip\fP, \fIFax\fP,
@@ -375,7 +374,7 @@ The default is the compression type of the specified image file.
 .B "-debug"
 \fRenable debug printout
 .TP
-.B "-density \fI<width>x<height>\fP
+.B "-density \fI<width>x<height>"\fP
 \fRvertical and horizontal resolution in pixels of the image
 
 This option specifies an image density when decoding a \fIPostScript\fP
@@ -383,7 +382,7 @@ or Portable Document page. The default is 72 dots per inch in the horizontal
 and vertical direction. This option is used in concert with \fB-page\fP.
 
 .TP
-.B "-depth \fIvalue\fP
+.B "-depth \fIvalue"\fP
 \fRdepth of the image
 
 This is the number of bits in a pixel. The only acceptable
@@ -392,7 +391,7 @@ depth is unknown such as GRAY, RGB, or CMYK, or to change the depth of any
 image after it has been read.
 
 .TP
-.B "-displace \fI<horizontal scale>x<vertical scale>\fP
+.B "-displace \fI<horizontal scale>x<vertical scale>"\fP
 \fRshift image pixels as defined by a displacement map
 
 With this option, \fIcomposite image\fP is used as a displacement map.  Black,
@@ -404,10 +403,10 @@ in both the horizontal and vertical directions.  However, if you specify
 \fImask\fP the vertical Y displacement.
 
 .TP
-.B "-display \fIhost:display[.screen]\fP
+.B "-display \fIhost:display[.screen]"\fP
 \fRspecifies the X server to contact
 .TP
-.B "-dispose \fImethod\fP
+.B "-dispose \fImethod"\fP
 \fRGIF disposal method
 
 Here are the valid methods:
@@ -418,7 +417,7 @@ Here are the valid methods:
      2     Overwrite frame with background color from header.
      3     Overwrite with previous frame.
 .TP
-.B "-dissolve \fIvalue\fP
+.B "-dissolve \fIvalue"\fP
 \fRdissolve an image
 .TP
 .B "-dither"
@@ -437,7 +436,7 @@ to take effect.
 Use \fB+dither\fP to render Postscript without text or graphic aliasing.
 
 .TP
-.B "-filter \fItype\fP
+.B "-filter \fItype"\fP
 \fRuse this type of filter when resizing an image
 
 Use this option to affect the resizing operation of an image (see
@@ -464,7 +463,7 @@ Choose from these filters:
 The default filter is \fBLanczos\fP
 
 .TP
-.B "-font \fIname\fP
+.B "-font \fIname"\fP
 \fRuse this font when annotating the image with text
 
 You can tag a font to specify whether it is a Postscript, Truetype, or OPTION1
@@ -472,7 +471,7 @@ font.  For example, Arial.ttf is a Truetype font, ps:helvetica
 is Postscript, and x:fixed is OPTION1. 
 
 .TP
-.B "-geometry \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{@}{!}{<}{>}\fP
+.B "-geometry \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{@}{!}{<}{>}"\fP
 \fRpreferred size and location of the Image window.
 
 See \fIX(1)\fP for details
@@ -520,7 +519,7 @@ to 640x480.
 There are 72 pixels per inch in PostScript coordinates.
 
 .TP
-.B "-gravity \fItype\fP
+.B "-gravity \fItype"\fP
 \fRdirection text gravitates to when annotating the image.
 
 Choices are: NorthWest, North,
@@ -536,7 +535,7 @@ within the image. By default, the image gravity is \fINorthWest\fP.
 .B "-help"
 \fRprint usage instructions
 .TP
-.B "-interlace \fItype\fP
+.B "-interlace \fItype"\fP
 \fRthe type of interlacing scheme
 
 Choices are: \fBNone, Line, Plane,\fP
@@ -558,7 +557,7 @@ Use \fBLine\fP, or \fBPlane\fP to create an
 \fBprogressive JPEG\fP image.
 
 .TP
-.B "-label \fIname\fP
+.B "-label \fIname"\fP
 \fRassign a label to an image
 
 Use this option to assign a specific label to the image. Optionally you
@@ -604,7 +603,7 @@ Use \fB+negate\fP
 to only negate the grayscale pixels of the image.
 
 .TP
-.B "-page \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{!}{<}{>}\fP
+.B "-page \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{!}{<}{>}"\fP
 \fRsize and location of an image canvas
 
 Use this option to specify the dimensions of the
@@ -678,14 +677,14 @@ The default page dimensions for a TEXT image is 612x792.
 This option is used in concert with \fB-density\fP.
 
 .TP
-.B "-profile \fIfilename\fP
+.B "-profile \fIfilename"\fP
 \fRadd ICM color or IPTC newswire information profile to image
 
 Use +profile icm or +profile iptc to remove the respective
 profile.
 
 .TP
-.B "-quality \fIvalue\fP
+.B "-quality \fIvalue"\fP
 \fRJPEG/MIFF/PNG compression level
 
 For the JPEG image format, quality is 0 (worst) to 100 (best). The default
@@ -721,7 +720,7 @@ For further information, see the PNG
 specification.
 
 .TP
-.B "-rotate \fIdegrees{<}{>}\fP
+.B "-rotate \fIdegrees{<}{>}"\fP
 \fRapply Paeth image rotation to the image
 
 Use > to rotate the image only if its width exceeds the height.
@@ -736,13 +735,13 @@ defined as \fBbackground\fP (class \fBbackgroundColor\fP). See \fIX(1)\fP
 for details.
 
 .TP
-.B "-scene \fIvalue{-value}\fP
+.B "-scene \fIvalue{-value}"\fP
 \fRimage scene number or range
 
 Use this option to specify an image sequence with a single filename. See
 the discussion of \fIfile\fP below for details.
 .TP
-.B "-size \fI<width>x<height>{+offset}\fP
+.B "-size \fI<width>x<height>{+offset}"\fP
 \fRwidth and height of the image
 
 Use this option to specify the width and height of raw images whose dimensions
@@ -766,19 +765,19 @@ Finally, use this option to choose a particular resolution layer of a JBIG
 or JPEG image (e.g. -size 1024x768).
 
 .TP
-.B "-stackdrop \fIfile\fP
+.B "-stackdrop \fIfile"\fP
 \fRstack some images in "drop" mode
 
 This feature is untested.
 
 .TP
-.B "-stackreplace \fIfile\fP
+.B "-stackreplace \fIfile"\fP
 \fRstack some images in "replace" mode
 
 This feature is untested.
 
 .TP
-.B "-treedepth \fIvalue\fP
+.B "-treedepth \fIvalue"\fP
 \fRtree depth for the color reduction algorithm
 
 Normally, this integer value is zero or one. A zero or one tells display
@@ -796,7 +795,7 @@ The \fB-colors\fP or \fB-monochrome\fP option is required for this option
 to take effect.
 
 .TP
-.B "-type \fItype\fP
+.B "-type \fItype"\fP
 \fRthe image type
 
 Choose from:
@@ -805,14 +804,14 @@ Choose from:
 \fBColorSeparation\fP, \fBColorSeparationMatte\fP, or \fBOptimize\fP.
 
 .TP
-.B "-units \fItype\fP
+.B "-units \fItype"\fP
 \fRthe type of image resolution
 
 Choose from: \fBUndefined\fP, \fBPixelsPerInch\fP, or
 \fBPixelsPerCentimeter\fP.
 
 .TP
-.B "-unsharp \fI<radius>x<sigma>\fP
+.B "-unsharp \fI<radius>x<sigma>"\fP
 \fRsharpen the image with an unsharp mask operator
 
 Use the given radius and standard deviation (sigma).
@@ -900,6 +899,6 @@ Except as contained in this notice, the name of the ImageMagick Studio
 shall not be used in advertising or otherwise to promote the sale, use or
 other dealings in ImageMagick without prior written authorization from the
 ImageMagick Studio.
+
 .SH AUTHORS
 John Cristy, ImageMagick Studio LLC
-

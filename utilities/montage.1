@@ -111,23 +111,23 @@ and are saved to separate files. Use \fB+adjoin\fP to force this
 behavior.
 
 .TP
-.B "-background \fIcolor\fP
+.B "-background \fIcolor"\fP
 \fRthe background color
 .TP
-.B "-blur \fI<radius>x<sigma>\fP
+.B "-blur \fI<radius>x<sigma>"\fP
 \fRblur the image with a gaussian operator
 
 Blur with the given radius and
 standard deviation (sigma).
 
 .TP
-.B "-bordercolor \fIcolor\fP
+.B "-bordercolor \fIcolor"\fP
 \fRthe border color
 .TP
-.B "-borderwidth \fIcolor\fP
+.B "-borderwidth \fIcolor"\fP
 \fRthe border width
 .TP
-.B "-cache \fIthreshold\fP
+.B "-cache \fIthreshold"\fP
 \fRmegabytes of memory available to the pixel cache
 
 Image pixels are stored in memory until 80 megabytes of memory have been
@@ -136,7 +136,7 @@ memory are significantly faster but if your computer does not have a sufficient
 amount of free memory you may want to adjust this threshold value.
 
 .TP
-.B "-chop \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}\fP
+.B "-chop \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}"\fP
 \fRremove pixels from the interior of an image
 
 The width and height give the number of columns and rows to remove,
@@ -148,7 +148,7 @@ The \fB-chop\fP option removes entire rows and columns,
 and moves the remaining corner blocks leftward and upward to close the gaps.
 
 .TP
-.B "-colors \fIvalue\fP
+.B "-colors \fIvalue"\fP
 \fRpreferred number of colors in the image
 
 The actual number of colors in the image may be less than your request,
@@ -162,7 +162,7 @@ Note, options \fB-dither\fP, \fB-colorspace\fP, and \fB-treedepth\fP
 affect the color reduction algorithm.
 
 .TP
-.B "-colorspace \fIvalue\fP
+.B "-colorspace \fIvalue"\fP
 \fRthe type of colorspace
 
 Choices are: \fBGRAY\fP, \fBOHTA\fP, \fBRGB\fP,
@@ -187,7 +187,7 @@ The \fB-colors\fP or \fB-monochrome\fP option is required for this
 option to take effect.
 
 .TP
-.B "-comment \fIstring\fP
+.B "-comment \fIstring"\fP
 \fRannotate an image with a comment
 
 Use this option to assign a specific comment to the image. You can include the
@@ -231,7 +231,7 @@ If the first character of \fIstring\fP is \fI@\fP, the image comment
 is read from a file titled by the remaining characters in the string.
 
 .TP
-.B "-compose \fIoperator\fP
+.B "-compose \fIoperator"\fP
 \fRthe type of image composition
 
 By default, each of the composite image pixels are replaced by the
@@ -440,8 +440,6 @@ layer in \fIcomposite image\fP.  The other layers are copied untouched.
 .in 15
 
 
-
-
 The image compositor requires a matte, or alpha channel in the image
 for some operations.  This extra channel usually defines a mask which
 represents a sort of a cookie-cutter for the image.  This is the case
@@ -452,7 +450,7 @@ with 0 for any pixel matching in color to pixel location (0,0), otherwise
 255 (to work properly \fBborderwidth\fP must be 0).
 
 .TP
-.B "-compress \fItype\fP
+.B "-compress \fItype"\fP
 \fRthe type of image compression
 
 Choices are: \fINone\fP, \fIBZip\fP, \fIFax\fP,
@@ -465,7 +463,7 @@ Specify \fB+compress\fP to store the binary image in an uncompressed format.
 The default is the compression type of the specified image file.
 
 .TP
-.B "-crop \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}\fP
+.B "-crop \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}"\fP
 \fRpreferred size and location of the cropped image
 
 See \fIX(1)\fP for details
@@ -500,7 +498,7 @@ a portion of the trimmed edges with the image.
 .B "-debug"
 \fRenable debug printout
 .TP
-.B "-density \fI<width>x<height>\fP
+.B "-density \fI<width>x<height>"\fP
 \fRvertical and horizontal resolution in pixels of the image
 
 This option specifies an image density when decoding a \fIPostScript\fP
@@ -508,7 +506,7 @@ or Portable Document page. The default is 72 dots per inch in the horizontal
 and vertical direction. This option is used in concert with \fB-page\fP.
 
 .TP
-.B "-depth \fIvalue\fP
+.B "-depth \fIvalue"\fP
 \fRdepth of the image
 
 This is the number of bits in a pixel. The only acceptable
@@ -517,10 +515,10 @@ depth is unknown such as GRAY, RGB, or CMYK, or to change the depth of any
 image after it has been read.
 
 .TP
-.B "-display \fIhost:display[.screen]\fP
+.B "-display \fIhost:display[.screen]"\fP
 \fRspecifies the X server to contact
 .TP
-.B "-dispose \fImethod\fP
+.B "-dispose \fImethod"\fP
 \fRGIF disposal method
 
 Here are the valid methods:
@@ -547,7 +545,7 @@ to take effect.
 Use \fB+dither\fP to render Postscript without text or graphic aliasing.
 
 .TP
-.B "-draw \fIstring\fP
+.B "-draw \fIstring"\fP
 \fRannotate an image with one or more graphic primitives
 
 Use this option to annotate an image with one or more graphic primitives.
@@ -675,14 +673,14 @@ are processed in command line order so be sure to use \fB-fill\fP \fIbefore\fP
 the \fB-draw\fP option.
 
 .TP
-.B "-fill \fIcolor\fP
+.B "-fill \fIcolor"\fP
 \fRcolor to use when filling a graphic primitive
 
 See \fB-draw\fP for further
 details.
 
 .TP
-.B "-filter \fItype\fP
+.B "-filter \fItype"\fP
 \fRuse this type of filter when resizing an image
 
 Use this option to affect the resizing operation of an image (see
@@ -709,7 +707,7 @@ Choose from these filters:
 The default filter is \fBLanczos\fP
 
 .TP
-.B "-font \fIname\fP
+.B "-font \fIname"\fP
 \fRuse this font when annotating the image with text
 
 You can tag a font to specify whether it is a Postscript, Truetype, or OPTION1
@@ -730,7 +728,7 @@ The color of the border is specified with the
 line option.
 
 .TP
-.B "-gamma \fIvalue\fP
+.B "-gamma \fIvalue"\fP
 \fRlevel of gamma correction
 
 The same color image displayed on two different workstations may look different
@@ -750,7 +748,7 @@ the image pixels. This option is useful if the image is of a known gamma
 but not set as an image attribute (e.g. PNG images).
 
 .TP
-.B "-geometry \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{@}{!}{<}{>}\fP
+.B "-geometry \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{@}{!}{<}{>}"\fP
 \fRpreferred size and location of the Image window.
 
 See \fIX(1)\fP for details
@@ -798,7 +796,7 @@ to 640x480.
 There are 72 pixels per inch in PostScript coordinates.
 
 .TP
-.B "-gravity \fItype\fP
+.B "-gravity \fItype"\fP
 \fRdirection text gravitates to when annotating the image.
 
 Choices are: NorthWest, North,
@@ -814,7 +812,7 @@ within the image. By default, the image gravity is \fINorthWest\fP.
 .B "-help"
 \fRprint usage instructions
 .TP
-.B "-interlace \fItype\fP
+.B "-interlace \fItype"\fP
 \fRthe type of interlacing scheme
 
 Choices are: \fBNone, Line, Plane,\fP
@@ -836,7 +834,7 @@ Use \fBLine\fP, or \fBPlane\fP to create an
 \fBprogressive JPEG\fP image.
 
 .TP
-.B "-label \fIname\fP
+.B "-label \fIname"\fP
 \fRassign a label to an image
 
 Use this option to assign a specific label to the image. Optionally you
@@ -869,16 +867,16 @@ string to print above the image. Specify the label font with
 If the image does not have a matte channel, create an opaque one.
 
 .TP
-.B "-mattecolor \fIcolor\fP
+.B "-mattecolor \fIcolor"\fP
 \fRspecify the matte color
 .TP
-.B "-mode \fIvalue\fP
+.B "-mode \fIvalue"\fP
 \fRmode of operation
 .TP
 .B "-monochrome"
 \fRtransform the image to black and white
 .TP
-.B "-page \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{!}{<}{>}\fP
+.B "-page \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{!}{<}{>}"\fP
 \fRsize and location of an image canvas
 
 Use this option to specify the dimensions of the
@@ -952,13 +950,13 @@ The default page dimensions for a TEXT image is 612x792.
 This option is used in concert with \fB-density\fP.
 
 .TP
-.B "-pen \fIcolor\fP
+.B "-pen \fIcolor"\fP
 \fRspecify the pen color for drawing operations
 .TP
-.B "-pointsize \fIvalue\fP
+.B "-pointsize \fIvalue"\fP
 \fRpointsize of the Postscript, OPTION1, or TrueType font
 .TP
-.B "-quality \fIvalue\fP
+.B "-quality \fIvalue"\fP
 \fRJPEG/MIFF/PNG compression level
 
 For the JPEG image format, quality is 0 (worst) to 100 (best). The default
@@ -994,7 +992,7 @@ For further information, see the PNG
 specification.
 
 .TP
-.B "-rotate \fIdegrees{<}{>}\fP
+.B "-rotate \fIdegrees{<}{>}"\fP
 \fRapply Paeth image rotation to the image
 
 Use > to rotate the image only if its width exceeds the height.
@@ -1009,23 +1007,23 @@ defined as \fBbackground\fP (class \fBbackgroundColor\fP). See \fIX(1)\fP
 for details.
 
 .TP
-.B "-scene \fIvalue{-value}\fP
+.B "-scene \fIvalue{-value}"\fP
 \fRimage scene number or range
 
 Use this option to specify an image sequence with a single filename. See
 the discussion of \fIfile\fP below for details.
 .TP
-.B "-shadow \fI<radius>x<sigma>\fP
+.B "-shadow \fI<radius>x<sigma>"\fP
 \fRshadow the montage
 .TP
-.B "-sharpen \fI<radius>x<sigma>\fP
+.B "-sharpen \fI<radius>x<sigma>"\fP
 \fRsharpen the image
 
 Use a gaussian operator of the given radius and
 standard deviation (sigma). 
 
 .TP
-.B "-size \fI<width>x<height>{+offset}\fP
+.B "-size \fI<width>x<height>{+offset}"\fP
 \fRwidth and height of the image
 
 Use this option to specify the width and height of raw images whose dimensions
@@ -1049,26 +1047,26 @@ Finally, use this option to choose a particular resolution layer of a JBIG
 or JPEG image (e.g. -size 1024x768).
 
 .TP
-.B "-stroke \fIcolor\fP
+.B "-stroke \fIcolor"\fP
 \fRcolor to use when stroking a graphic primitive
 
 See \fB-draw\fP for further
 details.
 
 .TP
-.B "-strokewidth \fIvalue\fP
+.B "-strokewidth \fIvalue"\fP
 \fRset the stroke width
 
 See \fB-draw\fP for further details.
 
 .TP
-.B "-texture \fIfilename\fP
+.B "-texture \fIfilename"\fP
 \fRname of texture to tile onto the image background
 .TP
-.B "-tile \fIgeometry\fP
+.B "-tile \fIgeometry"\fP
 \fRlayout of images
 .TP
-.B "-title \fI\"string\"\fP
+.B "-title \fI\"string\""\fP
 \fRassign a title to the displayed image
 
 Use this option to assign a specific title to the image. This is assigned
@@ -1108,10 +1106,10 @@ produces an image title of MIFF:bird.miff 512x480 for an image
 titled bird.miff and whose width is 512 and height is 480.
 
 .TP
-.B "-transparent \fIcolor\fP
+.B "-transparent \fIcolor"\fP
 \fRmake this color transparent within the image
 .TP
-.B "-treedepth \fIvalue\fP
+.B "-treedepth \fIvalue"\fP
 \fRtree depth for the color reduction algorithm
 
 Normally, this integer value is zero or one. A zero or one tells display
@@ -1129,7 +1127,7 @@ The \fB-colors\fP or \fB-monochrome\fP option is required for this option
 to take effect.
 
 .TP
-.B "-type \fItype\fP
+.B "-type \fItype"\fP
 \fRthe image type
 
 Choose from:
@@ -1207,44 +1205,44 @@ All \fBmontage\fP options have a corresponding X resource. In addition,
 \fBmontage\fP
 uses the following X resources:
 .TP
-.B "background \fI(class Background)\fP
+.B "background \fI(class Background)"\fP
 \fRbackground color
 
 Specifies the preferred color to use for the composite image background.
 The default is #ccc.
 .TP
-.B "borderColor \fI(class BorderColor)\fP
+.B "borderColor \fI(class BorderColor)"\fP
 \fRborder color
 
 Specifies the preferred color to use for the composite image border. The
 default is #ccc.
 .TP
-.B "borderWidth \fI(class BorderWidth)\fP
+.B "borderWidth \fI(class BorderWidth)"\fP
 \fRborder width
 
 Specifies the width in pixels of the composite image border. The default
 is 2.
 .TP
-.B "font \fI(class Font)\fP
+.B "font \fI(class Font)"\fP
 \fRfont to use
 
 Specifies the name of the preferred font to use when displaying text within
 the composite image. The default is 9x15, fixed, or 5x8 determined by the
 composite image size.
 .TP
-.B "matteColor \fI(class MatteColor)\fP
+.B "matteColor \fI(class MatteColor)"\fP
 \fRcolor of the frame
 
 Specify the color of an image frame. A 3D effect is achieved by using highlight
 and shadow colors derived from this color. The default value is #697B8F.
 .TP
-.B "pen \fI(class Pen)\fP
+.B "pen \fI(class Pen)"\fP
 \fRtext color
 
 Specifies the preferred color to use for text within the composite image.
 The default is black.
 .TP
-.B "title \fI(class Title)\fP
+.B "title \fI(class Title)"\fP
 \fRcomposite image title
 
 This resource specifies the title to be placed at the top of the composite
@@ -1296,6 +1294,6 @@ Except as contained in this notice, the name of the ImageMagick Studio
 shall not be used in advertising or otherwise to promote the sale, use or
 other dealings in ImageMagick without prior written authorization from the
 ImageMagick Studio.
+
 .SH AUTHORS
 John Cristy, ImageMagick Studio LLC
-

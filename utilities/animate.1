@@ -1,6 +1,5 @@
 .SH NAME
 animate - animate a sequence of images
-
 .SH SYNOPSIS
 
 \fBanimate\fP \fB[\fP \fIoptions\fP \fB...]\fP \fIfile\fP [ [
@@ -32,47 +31,35 @@ You can define a Standard Colormap with \fIxstdcmap\fP. See \fBxstdcmap(1)\fP
 for details. This method is recommended for colormapped X server because
 it eliminates the need to compute a global colormap.
 .SH EXAMPLES
-.in 15
-
-.in 20
 
 To animate a set of images of a cockatoo, use:
 
-.in 15
 
     animate cockatoo.*
-.in 20
 
 To animate a cockatoo image sequence while using the Standard Colormap
 \fIbest\fP, use:
 
-.in 15
 
     xstdcmap -best
     animate -map best cockatoo.*
-.in 20
 
 To animate an image of a cockatoo without a border centered on a backdrop,
 use:
 
-.in 15
 
     animate +borderwidth -backdrop cockatoo.*
-
 .SH OPTIONS
 
 Options are processed in command line order. Any option you specify on
 the command line remains in effect until it is explicitly changed by specifying
 the option again with a different effect.
-.in 15
 
 \fBAnimate\fP options can appear on the command line or in your X resources
 file. See \fIX(1)\fP. Options on the command line supersede values specified
 in your X resources file.
-.in 15
-
 .TP
-.B "-backdrop \fIcolor\fP
+.B "-backdrop \fIcolor"\fP
 \fRdisplay the image centered on a backdrop.
 
 This backdrop covers the entire workstation screen and is useful for hiding
@@ -81,23 +68,23 @@ is specified as the background color. Refer to X Resources
 for details.
 
 .TP
-.B "-background \fIcolor\fP
+.B "-background \fIcolor"\fP
 \fRthe background color
 .TP
-.B "-border \fI<width>x<height>\fP
+.B "-border \fI<width>x<height>"\fP
 \fRsurround the image with a border of color
 
 See \fIX(1)\fP for details
 about the geometry specification.
 
 .TP
-.B "-bordercolor \fIcolor\fP
+.B "-bordercolor \fIcolor"\fP
 \fRthe border color
 .TP
-.B "-borderwidth \fIcolor\fP
+.B "-borderwidth \fIcolor"\fP
 \fRthe border width
 .TP
-.B "-cache \fIthreshold\fP
+.B "-cache \fIthreshold"\fP
 \fRmegabytes of memory available to the pixel cache
 
 Image pixels are stored in memory until 80 megabytes of memory have been
@@ -106,7 +93,7 @@ memory are significantly faster but if your computer does not have a sufficient
 amount of free memory you may want to adjust this threshold value.
 
 .TP
-.B "-chop \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}\fP
+.B "-chop \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}"\fP
 \fRremove pixels from the interior of an image
 
 The width and height give the number of columns and rows to remove,
@@ -118,7 +105,7 @@ The \fB-chop\fP option removes entire rows and columns,
 and moves the remaining corner blocks leftward and upward to close the gaps.
 
 .TP
-.B "-colormap \fItype\fP
+.B "-colormap \fItype"\fP
 \fRdefine the colormap type
 
 Choose between \fBshared\fP or \fBprivate\fP.
@@ -132,7 +119,7 @@ very different than intended. Choose \fBPrivate\fP and the image colors
 appear exactly as they are defined. However, other clients may
 go \fItechnicolor\fP when the image colormap is installed.
 .TP
-.B "-colors \fIvalue\fP
+.B "-colors \fIvalue"\fP
 \fRpreferred number of colors in the image
 
 The actual number of colors in the image may be less than your request,
@@ -146,7 +133,7 @@ Note, options \fB-dither\fP, \fB-colorspace\fP, and \fB-treedepth\fP
 affect the color reduction algorithm.
 
 .TP
-.B "-colorspace \fIvalue\fP
+.B "-colorspace \fIvalue"\fP
 \fRthe type of colorspace
 
 Choices are: \fBGRAY\fP, \fBOHTA\fP, \fBRGB\fP,
@@ -171,7 +158,7 @@ The \fB-colors\fP or \fB-monochrome\fP option is required for this
 option to take effect.
 
 .TP
-.B "-crop \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}\fP
+.B "-crop \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}"\fP
 \fRpreferred size and location of the cropped image
 
 See \fIX(1)\fP for details
@@ -206,7 +193,7 @@ a portion of the trimmed edges with the image.
 .B "-debug"
 \fRenable debug printout
 .TP
-.B "-delay \fI<1/100ths of a second>\fP
+.B "-delay \fI<1/100ths of a second>"\fP
 \fRdisplay the next image after pausing
 
 This option is useful for regulating the animation of GIF images
@@ -220,7 +207,7 @@ You can specify a delay range (e.g. \fI-delay 10-500\fP) which sets the
 minimum and maximum delay.
 
 .TP
-.B "-density \fI<width>x<height>\fP
+.B "-density \fI<width>x<height>"\fP
 \fRvertical and horizontal resolution in pixels of the image
 
 This option specifies an image density when decoding a \fIPostScript\fP
@@ -228,7 +215,7 @@ or Portable Document page. The default is 72 dots per inch in the horizontal
 and vertical direction. This option is used in concert with \fB-page\fP.
 
 .TP
-.B "-depth \fIvalue\fP
+.B "-depth \fIvalue"\fP
 \fRdepth of the image
 
 This is the number of bits in a pixel. The only acceptable
@@ -237,10 +224,10 @@ depth is unknown such as GRAY, RGB, or CMYK, or to change the depth of any
 image after it has been read.
 
 .TP
-.B "-display \fIhost:display[.screen]\fP
+.B "-display \fIhost:display[.screen]"\fP
 \fRspecifies the X server to contact
 .TP
-.B "-dispose \fImethod\fP
+.B "-dispose \fImethod"\fP
 \fRGIF disposal method
 
 Here are the valid methods:
@@ -251,7 +238,7 @@ Here are the valid methods:
      2     Overwrite frame with background color from header.
      3     Overwrite with previous frame.
 .TP
-.B "-dissolve \fIvalue\fP
+.B "-dissolve \fIvalue"\fP
 \fRdissolve an image
 .TP
 .B "-dither"
@@ -270,7 +257,7 @@ to take effect.
 Use \fB+dither\fP to render Postscript without text or graphic aliasing.
 
 .TP
-.B "-font \fIname\fP
+.B "-font \fIname"\fP
 \fRuse this font when annotating the image with text
 
 You can tag a font to specify whether it is a Postscript, Truetype, or OPTION1
@@ -278,10 +265,10 @@ font.  For example, Arial.ttf is a Truetype font, ps:helvetica
 is Postscript, and x:fixed is OPTION1. 
 
 .TP
-.B "-foreground \fIcolor\fP
+.B "-foreground \fIcolor"\fP
 \fRdefine the foreground color
 .TP
-.B "-gamma \fIvalue\fP
+.B "-gamma \fIvalue"\fP
 \fRlevel of gamma correction
 
 The same color image displayed on two different workstations may look different
@@ -301,7 +288,7 @@ the image pixels. This option is useful if the image is of a known gamma
 but not set as an image attribute (e.g. PNG images).
 
 .TP
-.B "-geometry \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{@}{!}{<}{>}\fP
+.B "-geometry \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{@}{!}{<}{>}"\fP
 \fRpreferred size and location of the Image window.
 
 See \fIX(1)\fP for details
@@ -352,13 +339,13 @@ There are 72 pixels per inch in PostScript coordinates.
 .B "-help"
 \fRprint usage instructions
 .TP
-.B "-iconGeometry \fIgeometry\fP
+.B "-iconGeometry \fIgeometry"\fP
 \fRspecify the icon geometry
 .TP
 .B "-iconic"
 \fRiconic animation
 .TP
-.B "-interlace \fItype\fP
+.B "-interlace \fItype"\fP
 \fRthe type of interlacing scheme
 
 Choices are: \fBNone, Line, Plane,\fP
@@ -380,7 +367,7 @@ Use \fBLine\fP, or \fBPlane\fP to create an
 \fBprogressive JPEG\fP image.
 
 .TP
-.B "-map \fItype\fP
+.B "-map \fItype"\fP
 \fR
 display image using this type.
 [animate or display]
@@ -406,7 +393,7 @@ Colormaps.
 If the image does not have a matte channel, create an opaque one.
 
 .TP
-.B "-mattecolor \fIcolor\fP
+.B "-mattecolor \fIcolor"\fP
 \fRspecify the matte color
 .TP
 .B "-monochrome"
@@ -415,7 +402,7 @@ If the image does not have a matte channel, create an opaque one.
 .B "-name"
 \fRname an image
 .TP
-.B "-pause \fIseconds\fP
+.B "-pause \fIseconds"\fP
 \fRpause between animation loops
 
 Pause for the specified number of seconds before repeating the
@@ -428,7 +415,7 @@ The only command recognized at this time is the name of
 an image file to load.
 
 .TP
-.B "-rotate \fIdegrees{<}{>}\fP
+.B "-rotate \fIdegrees{<}{>}"\fP
 \fRapply Paeth image rotation to the image
 
 Use > to rotate the image only if its width exceeds the height.
@@ -443,7 +430,7 @@ defined as \fBbackground\fP (class \fBbackgroundColor\fP). See \fIX(1)\fP
 for details.
 
 .TP
-.B "-scene \fIvalue{-value}\fP
+.B "-scene \fIvalue{-value}"\fP
 \fRimage scene number or range
 
 Use this option to specify an image sequence with a single filename. See
@@ -458,7 +445,7 @@ and the display must support the \fIMIT-SHM\fP extension.  Otherwise, this
 resource is ignored.  The default is \fBTrue\fP.
 
 .TP
-.B "-size \fI<width>x<height>{+offset}\fP
+.B "-size \fI<width>x<height>{+offset}"\fP
 \fRwidth and height of the image
 
 Use this option to specify the width and height of raw images whose dimensions
@@ -482,7 +469,7 @@ Finally, use this option to choose a particular resolution layer of a JBIG
 or JPEG image (e.g. -size 1024x768).
 
 .TP
-.B "-text_font \fIname\fP
+.B "-text_font \fIname"\fP
 \fRfont for writing fixed-width text
 
 Specifies the name of the preferred font to use in fixed (typewriter style)
@@ -494,7 +481,7 @@ OPTION1 font.  For example, Courier.ttf is a Truetype font
 and x:fixed is OPTION1. 
 
 .TP
-.B "-title \fI\"string\"\fP
+.B "-title \fI\"string\""\fP
 \fRassign a title to the displayed image
 
 Use this option to assign a specific title to the image. This is assigned
@@ -534,7 +521,7 @@ produces an image title of MIFF:bird.miff 512x480 for an image
 titled bird.miff and whose width is 512 and height is 480.
 
 .TP
-.B "-treedepth \fIvalue\fP
+.B "-treedepth \fIvalue"\fP
 \fRtree depth for the color reduction algorithm
 
 Normally, this integer value is zero or one. A zero or one tells display
@@ -566,7 +553,7 @@ and color reduction error values are printed. Refer to quantize
 for a description of these values.
 
 .TP
-.B "-visual \fItype\fP
+.B "-visual \fItype"\fP
 \fRanimate images using this X visual type
 
 Choose from these visual classes:
@@ -586,7 +573,7 @@ If a visual is not specified, the visual class that can display the most
 simultaneous colors on the default screen is chosen.
 
 .TP
-.B "-window \fIid\fP
+.B "-window \fIid"\fP
 \fRmake image the background of a window
 
 \fIid\fP can be a window id or name.  Specify \fBroot\fP to
@@ -658,7 +645,6 @@ they appear on the command line.
 
 Press any button to map or unmap the Command widget. See the next section
 for more information about the Command widget.
-
 .SH COMMAND WIDGET
 
 The Command widget lists a number of sub-menus and commands. They are
@@ -686,14 +672,12 @@ The Command widget lists a number of sub-menus and commands. They are
     \fBQuit\fP
 
 
-
 Menu items with a indented triangle have a sub-menu. They are represented
 above as the indented items. To access a sub-menu item, move the pointer
 to the appropriate menu and press a button and drag. When you find the
 desired sub-menu item, release the button and the command is executed.
 Move the pointer away from the sub-menu if you decide not to execute a
 particular command.
-
 .SH KEYBOARD ACCELERATORS
 .in 15
 
@@ -763,6 +747,7 @@ resource file. See \fBX(1)\fP for more information on X resources.
 All \fBanimate\fP options have a corresponding X resource. In addition,
 the \fBanimate\fP program uses the following X resources:
 .in 15
+
 .in 15
 .B "\fBbackground\fP \fB(\fP\fIclass\fP \fBBackground)\fP"
 .in 20
@@ -940,6 +925,6 @@ Except as contained in this notice, the name of the ImageMagick Studio
 shall not be used in advertising or otherwise to promote the sale, use or
 other dealings in ImageMagick without prior written authorization from the
 ImageMagick Studio.
+
 .SH AUTHORS
 John Cristy, ImageMagick Studio LLC
-

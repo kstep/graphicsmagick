@@ -4,7 +4,6 @@ conjure - process a Magick Scripting Language (MSL) script
 \fBWARNING: Conjure and MSL are in very early development and the
 syntax is subject to change!\fP
 
-
 .SH SYNOPSIS
 
 \fBconjure\fP [ options ] script.msl imagefiles
@@ -67,11 +66,29 @@ This can be either an entire string, such as
 geometry="%[dimensions]" or part of a string such as
 filename="%[basename].png".
 
-.SH MAGICK SCRIPTING LANGUAGE
+.TP
+.B "-debug"
+\fRenable debug printout
+.TP
+.B "-help"
+\fRprint usage instructions
+.TP
+.B "-verbose"
+\fRprint detailed information about the image
 
+This information is printed: image scene number; image name; image size;
+the image class (\fIDirectClass\fP or \fIPseudoClass\fP); the total number
+of unique colors; and the number of seconds to read and transform the image.
+Refer to miff for a description of the image class.
+
+
+If \fB-colors\fP is also specified, the total unique colors in the image
+and color reduction error values are printed. Refer to quantize
+for a description of these values.
+
+.SH MAGICK SCRIPTING LANGUAGE
 The Magick Scripting Language (MSL) presently defines the following
 elements and their attributes:
-
 .in 15
 
 .in 15
@@ -106,441 +123,6 @@ another. For example:
 
 .in 15
 .in 15
-.B "<group>"
-.in 20
- \fR
-.in 20
-Define a new group of image objects.
-By default, images are only valid for the life of
-their \fB<image>\fP element.
-
-.in 15
-.in 20
-
-
-    <image>   -- create the image
-    .....     -- do stuff with it
-    </image>  -- dispose of the image
-
-.in 15
-.in 20
-
-However, in a group, all images in that group will stay 
-around for the life of the group:
-
-.in 15
-.in 20
-
-
-    <group>                   -- start a group
-        <image>               -- create an image
-        ....                  -- do stuff
-        </image>              -- NOOP
-        <image>               -- create another image
-        ....                  -- do more stuff
-        </image>              -- NOOP
-        <write filename
-             ="image.mng" />  -- output
-    </group>                  -- dispose of both images
-
-.in 15
-.in 15
-.B "<read>"
-.in 20
- \fR
-.in 20
-Read a new image from a disk file.
-
-.in 15
-.in 20
-
-
-    <read filename="image.gif" />
-
-.in 15
-.in 20
-To read two images use
-
-.in 15
-.in 20
-
-
-    <read filename="image.gif" />
-    <read filename="image.png" />
-
-.in 15
-.in 20
-
-.in 15
-.B "<write>"
-.in 20
- \fR
-.in 20
-Write the image(s) to disk, either as
-a single multiple-image file or multiple ones if necessary.
-
-.in 15
-.in 20
-
-
-     <write filename=image.tiff" />
-
-.in 15
-.in 15
-.B "<set>"
-.in 20
- \fR
-.in 20
-opacity (can handle percentage values, e.g., 50%, but
-UNFORTUNATELY, you have to do %%!), background,
-bordercolor, mattecolor, clip-mask, colorspace (RGB, CMYK, Gray),
-density, magick
-.in 15
-.in 15
-.B "<get>"
-.in 20
- \fR
-.in 20
-Gets any attribute recognized by
-PerlMagick's GetAttribute() and stores it as an image attribute for later
-use. Currently only \fIwidth\fP and \fIheight\fP are supported.
-
-.in 15
-.in 20
-
-
-    <get width="base-width" height="base-height" />
-    <print output=
-      "Image size: %[base-width]x%[base-height].\\n" />
-
-.in 15
-.in 15
-.B "<border>"
-.in 20
- \fR
-.in 20
-    fill, geometry, height, width
-.in 15
-.in 15
-.B "<blur>"
-.in 20
- \fR
-.in 20
-    radius, sigma
-.in 15
-.in 15
-.B "<charcoal>"
-.in 20
- \fR
-.in 20
-    radius, sigma
-.in 15
-.in 15
-.B "<chop>"
-.in 20
- \fR
-.in 20
-    geometry, height, width, x, y
-.in 15
-.in 15
-.B "<composite>"
-.in 20
- \fR
-.in 20
-    compose, gravity
-.in 15
-.in 15
-.B "<crop>"
-.in 20
- \fR
-.in 20
-    geometry, height, width, x, y
-.in 15
-.in 15
-.B "<despeckle>"
-.in 20
- \fR
-.in 15
-.B "<edge>"
-.in 20
- \fR
-.in 20
-    radius
-.in 15
-.in 15
-.B "<emboss>"
-.in 20
- \fR
-.in 20
-    radius, sigma
-.in 15
-.in 15
-.B "<enhance>"
-.in 20
- \fR
-.in 15
-.B "<equalize>"
-.in 20
- \fR
-.in 15
-.B "<flatten>"
-.in 20
- \fR
-.in 15
-.B "<flip>"
-.in 20
- \fR
-.in 15
-.B "<flop>"
-.in 20
- \fR
-.in 15
-.B "<frame>"
-.in 20
- \fR
-.in 20
-    fill, geometry, height, width, x, y, inner, outer
-.in 15
-.in 15
-.B "<gamma>"
-.in 20
- \fR
-.in 20
-    red, green, blue
-.in 15
-.in 15
-.B "<get>"
-.in 20
- \fR
-.in 15
-.B "<image>"
-.in 20
- \fR
-.in 15
-.B "<implode>"
-.in 20
- \fR
-.in 20
-    amount
-.in 15
-.in 15
-.B "<magnify>"
-.in 20
- \fR
-.in 15
-.B "<medianfilter>"
-.in 20
- \fR
-.in 20
-    radius
-.in 15
-.in 15
-.B "<minify>"
-.in 20
- \fR
-.in 15
-.B "<normalize>"
-.in 20
- \fR
-.in 15
-.B "<oilpaint>"
-.in 20
- \fR
-.in 20
-    radius
-.in 15
-.in 15
-.B "<print>"
-.in 20
- \fR
-.in 20
-    output
-.in 15
-.in 15
-.B "<read>"
-.in 20
- \fR
-.in 15
-.B "<reducenoise>"
-.in 20
- \fR
-.in 20
-    radius
-.in 15
-.in 15
-.B "<resize>"
-.in 20
- \fR
-.in 20
-    blur, filter, height, width
-.in 15
-.in 15
-.B "<roll>"
-.in 20
- \fR
-.in 20
-    geometry, x, y
-.in 15
-.in 15
-.B "<rotate>"
-.in 20
- \fR
-.in 20
-    degrees
-.in 15
-.in 15
-.B "<sample>"
-.in 20
- \fR
-.in 20
-    geometry, height, width
-.in 15
-.in 15
-.B "<scale>"
-.in 20
- \fR
-.in 20
-    geometry, height, width
-.in 15
-.in 15
-.B "<sharpen>"
-.in 20
- \fR
-.in 20
-    radius, sigma
-.in 15
-.in 15
-.B "<shave>"
-.in 20
- \fR
-.in 20
-    geometry, height, width
-.in 15
-.in 15
-.B "<shear>"
-.in 20
- \fR
-.in 20
-    x, y
-.in 15
-.in 15
-.B "<solarize>"
-.in 20
- \fR
-.in 20
-    threshold
-.in 15
-.in 15
-.B "<spread>"
-.in 20
- \fR
-.in 20
-    radius
-.in 15
-.in 15
-.B "<stegano>"
-.in 20
- \fR
-.in 20
-    image
-.in 15
-.in 15
-.B "<stereo>"
-.in 20
- \fR
-.in 20
-    image
-.in 15
-.in 15
-.B "<swirl>"
-.in 20
- \fR
-.in 20
-    degrees
-.in 15
-.in 15
-.B "texture>"
-.in 20
- \fR
-.in 20
-    image
-.in 15
-.in 15
-.B "<threshold>"
-.in 20
- \fR
-.in 20
-    threshold
-.in 15
-.in 15
-.B "<transparent>"
-.in 20
- \fR
-.in 20
-    color
-.in 15
-.in 15
-.B "<trim>"
-.in 20
- \fR
-
-.TP
-.B "-debug"
-\fRenable debug printout
-.TP
-.B "-help"
-\fRprint usage instructions
-.TP
-.B "-verbose"
-\fRprint detailed information about the image
-
-This information is printed: image scene number; image name; image size;
-the image class (\fIDirectClass\fP or \fIPseudoClass\fP); the total number
-of unique colors; and the number of seconds to read and transform the image.
-Refer to miff for a description of the image class.
-
-
-If \fB-colors\fP is also specified, the total unique colors in the image
-and color reduction error values are printed. Refer to quantize
-for a description of these values.
-
-.SH MAGICK SCRIPTING LANGUAGE
-The Magick Scripting Language (MSL) presently defines the following
-elements and their attributes:
-.in 15
-
-.in 15
-.B "<image>"
-.in 20
- \fR
-.in 20
-Define a new image object.
-\fB</image>\fP destroys it. Because of this, if you wish
-to reference multiple &quot;subimages&quot;&nbsp;(aka pages or layers),
-you can embed one \fBimage\fP element inside of
-another. For example:
-
-.in 15
-.in 20
-
-
-    <image>
-    <read filename=&quot;input.png&quot; />
-    <get width=&quot;base-width&quot; height=&quot;base-height&quot; />
-    <image height=&quot;base-height&quot; width=&quot;base-width&quot;>
-    <label>this is a simple label<label/>
-    <image />
-    <write filename=&quot;output.mng&quot; />
-    </image>
-
-.in 15
-.in 20
-
-
-    <image size=&quot;400x400&quot; />
-
-.in 15
-.in 15
 .B "<group>
 .in 20
 Define a new group of image objects.
@@ -552,7 +134,7 @@ their \fB<image>\fPelement.
 
 
     <image>   -- creates the image
-    .....        -- do stuff with it
+    .....     -- do stuff with it
     </image>  -- dispose of the image
 
 .in 15
@@ -615,7 +197,7 @@ a single multiple-image file or multiple ones if necessary.
 .in 20
 Get any attribute recognized by
 PerlMagick's GetAttribute() and stores it as an image attribute for later
-use. Currently only \fIwidth</em> and \fIheight</em> are supported.
+use. Currently only <em>width</em> and <em>height</em> are supported.
 .in 15
 .in 20
 
@@ -839,6 +421,8 @@ Except as contained in this notice, the name of the ImageMagick Studio
 shall not be used in advertising or otherwise to promote the sale, use or
 other dealings in ImageMagick without prior written authorization from the
 ImageMagick Studio.
+
 .SH AUTHORS
 John Cristy, ImageMagick Studio LLC
-
+.br
+Leonard Rosenthol, ImageMagick Studio LLC
