@@ -49,10 +49,10 @@ dotest2:
 	cmp test-$(IMG).pgm ../examples/$(IMG).pgm
 
 .1.txt:
-	gtroff -man -Tascii $< | grotty - -u -b >$@
+	gtroff -man -Tascii $< | grotty -u -b - >$@
 
 .5.txt:
-	gtroff -man -Tascii $< | grotty - -u -b >$@
+	gtroff -man -Tascii $< | grotty -u -b - >$@
 
 clean:
 	rm -f *.o *~ core pbmtojbg jbgtopbm

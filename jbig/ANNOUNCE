@@ -1,14 +1,15 @@
 
-Version 1.0 of the JBIG-KIT lossless image compression library available
+Version 1.2 of the JBIG-KIT lossless image compression library available
 ------------------------------------------------------------------------
 
-Markus Kuhn -- 1998-04-11
+Markus Kuhn -- 2000-04-08
 
 
 The latest release of JBIG-KIT can be downloaded over the Internet
 with anonymous ftp from
 
-  <ftp://ftp.informatik.uni-erlangen.de/pub/doc/ISO/JBIG/jbigkit-1.0.tar.gz>
+  ftp://ftp.informatik.uni-erlangen.de/pub/doc/ISO/JBIG/jbigkit-1.2.tar.gz
+  http://www.cl.cam.ac.uk/~mgk25/download/jbigkit-1.2.tar.gz
 
 and from a number of other servers.
 
@@ -36,8 +37,11 @@ international standard for the lossless compression of images using
 arithmetic coding. Like the well-known compression algorithms JPEG and
 MPEG, also JBIG has been developed and published by the International
 Organization for Standardization (ISO) and the International
-Telecommunication Union (ITU) (see also <http://www.iso.ch/> and
-<http://www.itu.ch/>). See also <http://www.jbig.org/>.
+Telecommunication Union (ITU). See also
+
+  http://www.jpeg.org/public/jbighomepage.htm
+  http://www.iso.ch/
+  http://www.itu.ch/
 
 The JBIG compression algorithm offers the following features:
 
@@ -133,6 +137,24 @@ Special features of the JBIG-KIT implementation are:
   - Ready-to-use pbmtojbg and jbgtopbm converters.
 
 
+Changes in version 1.2 (2000-04-08):
+
+  - bug in the decoder fixed, which caused the rest of the input file
+    to be skipped whenever a comment marker was encountered (special
+    thanks to Ben Rudiak-Gould <benrg@math.berkeley.edu> for
+    reporting this one)
+
+Changes in version 1.1 (1999-11-16):
+
+  - serious bug in the encoder fixed, which for a very small
+    percentage of images has caused an unterminated linked list to be
+    created internally that could have been responsible for
+    segmentation violations or non-terminating encoders
+    (special thanks to Hisashi Saiga <saiga@itl.tnr.sharp.co.jp> for
+    tracking that one down)
+
+  - minor bug in the "jbgtopbm -d" diagnostic output fixed
+
 Changes in version 1.0 (1998-04-11):
 
   - two bugs fixed that caused the encoder and decoder to fail
@@ -202,6 +224,10 @@ success stories, comments, etc. to
 
 I will try to provide free support and maintenance for this software
 at least for the next few months depending on my available time.
+
+Y2K statement: JBIG-KIT does not handle any date and time related
+data, therefore if JBIG-KIT causes you any problems related to date
+and time overflows, this would indeed be most surprising.
 
 This library has been published in the hope that it will encourage the
 development of good freely available scanned document handling and

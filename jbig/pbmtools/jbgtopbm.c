@@ -80,7 +80,7 @@ void diagnose_bie(FILE *f)
 	 bih[18] & JBG_ILEAVE ? " ILEAVE" : "",
 	 bih[18] & JBG_SMID ? " SMID" : "",
 	 bih[18] & 0xf0 ? " other" : "");
-  printf("  options = %d %s%s%s%s%s%s%s%s\n", bih[18],
+  printf("  options = %d %s%s%s%s%s%s%s%s\n", bih[19],
 	 bih[19] & JBG_LRLTWO ? " LRLTWO" : "",
 	 bih[19] & JBG_VLENGTH ? " VLENGTH" : "",
 	 bih[19] & JBG_TPDON ? " TPDON" : "",

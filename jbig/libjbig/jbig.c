@@ -7,8 +7,8 @@
  *
  *  This module implements a portable standard C encoder and decoder
  *  using the JBIG lossless bi-level image compression algorithm as
- *  specified in International Standard ISO 11544 or equivalently as
- *  specified in ITU-T Recommendation T.82. See the file jbig.doc
+ *  specified in International Standard ISO 11544:1993 or equivalently
+ *  as specified in ITU-T Recommendation T.82. See the file jbig.doc
  *  for usage instructions and application examples.
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -611,6 +611,7 @@ static void jbg_buf_remove_zeros(struct jbg_buf *head)
       head->last->next = *head->free_list;
       *head->free_list = head->last;
       head->last = last->previous;
+      head->last->next = NULL;
     } else
       break;
   }
@@ -1232,7 +1233,7 @@ static void encode_sde(struct jbg_enc_state *s,
 		line_h1 <<= 1;  line_h2 <<= 1;  line_h3 <<= 1;
 
 		/* deterministic prediction */
-		if (s->options & JBG_DPON)
+		if (s->options & JBG_DPON) {
 		  if ((y & 1) == 0) {
 		    if ((j & 1) == 0) {
 		      /* phase 0 */
@@ -1284,7 +1285,8 @@ static void encode_sde(struct jbg_enc_state *s,
 		      }
 		    }	
 		  }	
-		
+		}
+
 		/* determine context */
 		if (s->tx[plane])
 		  cx = (((line_h1 >> 9)  & 0x003) |
@@ -2479,8 +2481,13 @@ int jbg_dec_in(struct jbg_dec_state *s, unsigned char *data, size_t len,
 
     /* skip COMMENT contents */
     if (s->comment_skip) {
-      *cnt += s->comment_skip < len - *cnt ?
-	s->comment_skip : len - *cnt;
+      if (s->comment_skip <= len - *cnt) {
+	*cnt += s->comment_skip;
+	s->comment_skip = 0;
+      } else {
+	s->comment_skip -= len - *cnt;
+	*cnt = len;
+      }
       continue;
     }
 
@@ -2642,12 +2649,13 @@ long jbg_dec_getwidth(const struct jbg_dec_state *s)
 {
   if (s->d < 0)
     return -1;
-  if (index[s->order & 7][LAYER] == 0)
+  if (index[s->order & 7][LAYER] == 0) {
     if (s->ii[0] < 1)
       return -1;
     else
       return jbg_ceil_half(s->xd, s->d - (s->ii[0] - 1));
-  
+  }
+
   return s->xd;
 }
 
@@ -2660,11 +2668,12 @@ long jbg_dec_getheight(const struct jbg_dec_state *s)
 {
   if (s->d < 0)
     return -1;
-  if (index[s->order & 7][LAYER] == 0)
+  if (index[s->order & 7][LAYER] == 0) {
     if (s->ii[0] < 1)
       return -1;
     else
       return jbg_ceil_half(s->yd, s->d - (s->ii[0] - 1));
+  }
   
   return s->yd;
 }
@@ -2678,11 +2687,12 @@ unsigned char *jbg_dec_getimage(const struct jbg_dec_state *s, int plane)
 {
   if (s->d < 0)
     return NULL;
-  if (index[s->order & 7][LAYER] == 0)
+  if (index[s->order & 7][LAYER] == 0) {
     if (s->ii[0] < 1)
       return NULL;
     else
       return s->lhp[(s->ii[0] - 1) & 1][plane];
+  }
   
   return s->lhp[s->d & 1][plane];
 }
@@ -2697,13 +2707,14 @@ long jbg_dec_getsize(const struct jbg_dec_state *s)
 {
   if (s->d < 0)
     return -1;
-  if (index[s->order & 7][LAYER] == 0)
+  if (index[s->order & 7][LAYER] == 0) {
     if (s->ii[0] < 1)
       return -1;
     else
       return 
 	((jbg_ceil_half(s->xd, s->d - (s->ii[0] - 1)) + 7) / 8) *
 	jbg_ceil_half(s->yd, s->d - (s->ii[0] - 1));
+  }
   
   return ((s->xd + 7) / 8) * s->yd;
 }
@@ -2718,7 +2729,7 @@ long jbg_dec_getsize_merged(const struct jbg_dec_state *s)
 {
   if (s->d < 0)
     return -1;
-  if (index[s->order & 7][LAYER] == 0)
+  if (index[s->order & 7][LAYER] == 0) {
     if (s->ii[0] < 1)
       return -1;
     else
@@ -2726,6 +2737,7 @@ long jbg_dec_getsize_merged(const struct jbg_dec_state *s)
 	jbg_ceil_half(s->xd, s->d - (s->ii[0] - 1)) *
 	jbg_ceil_half(s->yd, s->d - (s->ii[0] - 1)) *
 	((s->planes + 7) / 8);
+  }
   
   return s->xd * s->yd * ((s->planes + 7) / 8);
 }

@@ -517,9 +517,9 @@ some of the optional algorithms defined by JBIG:
                  default deactivated and only required for passing a
                  special compatibility test suite.
 
-In addition, parameter l0 in jbg_enc_options() allows to specify the
-number of lines per stripe in resolution layer 0. The parameters mx
-and my change the maximal offset allowed for the adaptive template
+In addition, parameter l0 in jbg_enc_options() allows you to specify
+the number of lines per stripe in resolution layer 0. The parameters
+mx and my change the maximal offset allowed for the adaptive template
 pixel. The JBIG-KIT implementation allows currently a maximal mx value
 of 23 in the encoder and 32 in the decoder. Parameter my is at the
 moment ignored and always set to 0. As the standard requires of all
@@ -628,8 +628,8 @@ The function
                             void (*data_out)(unsigned char *start, size_t len,
                                              void *file), void *file);
 
-allows to merge the bitplanes that can be accessed individually with
-jbg_dec_getimage() into an array with one or more bytes per pixel
+allows you to merge the bitplanes that can be accessed individually
+with jbg_dec_getimage() into an array with one or more bytes per pixel
 (i.e., the format provided to jbg_split_planes()). If use_graycode is
 zero, then a binary encoding will be used. The output array will be
 delivered via the callback function data_out, exactly in the same way
@@ -672,7 +672,7 @@ has not yet been processed by the decoder has to be delivered to
 jbg_dec_in() again.
 
 If any other return value than JBG_EOK, JBG_EOK_INTR or JBG_EAGAIN
-has been returned by jbg_dec_in(), then an error has occured and
+has been returned by jbg_dec_in(), then an error has occurred and
 
   void jbg_dec_free(struct jbg_dec_state *s);
 
@@ -705,6 +705,16 @@ limitations:
     be zero.
 
   - HITOLO and SEQ bits must not be set in the order value.
+
+A more detailed description of the JBIG-KIT implementation is
+
+  Markus Kuhn: Effiziente Kompression von bi-level Bilddaten durch
+  kontextsensitive arithmetische Codierung. Studienarbeit, Lehrstuhl
+  für Betriebssysteme, IMMD IV, Universität Erlangen-Nürnberg,
+  Erlangen, July 1995. (German, 62 pages)
+  <http://www.cl.cam.ac.uk/~mgk25/kuhn-sta.pdf>
+
+Please quote the above if you use JBIG-KIT in your research project.
 
 *** Happy compressing ***
 

@@ -38,11 +38,12 @@ static void testbuf_write(int v, void *dummy)
 
 static void testbuf_writel(unsigned char *start, size_t len, void *dummy)
 {
-  if (testbuf_len < TESTBUF_SIZE)
+  if (testbuf_len < TESTBUF_SIZE) {
     if (testbuf_len + len < TESTBUF_SIZE)
       memcpy(testbuf + testbuf_len, start, len);
     else
       memcpy(testbuf + testbuf_len, start, TESTBUF_SIZE - testbuf_len);
+  }
   testbuf_len += len;
 
 #ifdef DEBUG
@@ -217,7 +218,7 @@ static int test_cycle(unsigned char **orig_image, int width, int height,
       break;
     }
   }
-  if (l == testbuf_len)
+  if (l == testbuf_len) {
     if (result != JBG_EOK) {
       printf("Decoder complained with return value %d at final byte: " FAILED
 	     "\nCause: '%s'\n", result, jbg_strerror(result, JBG_EN));
@@ -236,6 +237,7 @@ static int test_cycle(unsigned char **orig_image, int width, int height,
       if (result)
 	puts(PASSED);
     }
+  }
 
   jbg_dec_free(&sjd);
   puts("");
