@@ -3503,7 +3503,7 @@ Get(ref,...)
           if (LocaleCompare(attribute,"taint") == 0)
             {
               if (image)
-                s=newSViv(IsImageTainted(image));
+                s=newSViv(IsTaintImage(image));
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
