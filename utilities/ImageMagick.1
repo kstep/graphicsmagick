@@ -2292,6 +2292,15 @@ produces an image title of MIFF:bird.miff 512x480 for an image
 titled bird.miff and whose width is 512 and height is 480.
 
 .TP
+.B "-transform \fI"\fP
+\fRtransform the image
+
+This option applies the transformation matrix from a previous
+\fB-affine\fP option.
+
+
+    convert -affine 2,2,-2,2,0,0 -transform bird.ppm bird.jpg
+.TP
 .B "-transparent \fI<color>"\fP
 \fRmake this color transparent within the image
 
