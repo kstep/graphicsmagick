@@ -52,11 +52,11 @@ OutputBaseFilename=ImageMagick-win2k
 ; Windows registry settings
 [Registry]
 ; Paths contain both release version and quantum depth
-Root: HKLM; Subkey: "Software\ImageMagick\5.4.8\Q16"; ValueType: string; ValueName: "ApplicationDefaultsPath"; ValueData: "{app}\config"; Flags: uninsdeletekey
-Root: HKLM; Subkey: "Software\ImageMagick\5.4.8\Q16"; ValueType: string; ValueName: "BinPath"; ValueData: "{app}"; Flags: uninsdeletekey
-Root: HKLM; Subkey: "Software\ImageMagick\5.4.8\Q16"; ValueType: string; ValueName: "LibPath"; ValueData: "{app}"; Flags: uninsdeletekey
-Root: HKLM; Subkey: "Software\ImageMagick\5.4.8\Q16"; ValueType: string; ValueName: "ModulesPath"; ValueData: "{app}\modules"; Flags: uninsdeletekey
-Root: HKLM; Subkey: "Software\ImageMagick\5.4.8\Q16"; ValueType: string; ValueName: "SharePath"; ValueData: "{app}\config"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\ImageMagick\5.4.8\Q:16"; ValueType: string; ValueName: "ApplicationDefaultsPath"; ValueData: "{app}\config"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\ImageMagick\5.4.8\Q:16"; ValueType: string; ValueName: "BinPath"; ValueData: "{app}"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\ImageMagick\5.4.8\Q:16"; ValueType: string; ValueName: "LibPath"; ValueData: "{app}"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\ImageMagick\5.4.8\Q:16"; ValueType: string; ValueName: "ModulesPath"; ValueData: "{app}\modules"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\ImageMagick\5.4.8\Q:16"; ValueType: string; ValueName: "SharePath"; ValueData: "{app}\config"; Flags: uninsdeletekey
 
 [Files]
 ; Executables
@@ -124,10 +124,10 @@ Name: "{group}\ImageMagick Display"; Filename: "{app}\IMDisplay.exe"; IconFilena
 
 [Run]
 ; Add -debug to parameters to enable debugging
-Filename: "{app}\uninstall\PathTool.exe"; Parameters: "-a:""{app}"""; StatusMsg: "Updating environment variables..."
+Filename: "{app}\uninstall\PathTool.exe"; Parameters: "-silent -a:""{app}"""; StatusMsg: "Updating environment variables..."
 
 [UninstallRun]
 ; Add -debug to parameters to enable debugging
-Filename: "{app}\uninstall\PathTool.exe"; Parameters: "-r:""{app}"""; StatusMsg: "Restoring environment variables..."
+Filename: "{app}\uninstall\PathTool.exe"; Parameters: "-silent -r:""{app}"""; StatusMsg: "Restoring environment variables..."
 
 
