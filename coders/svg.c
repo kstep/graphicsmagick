@@ -552,6 +552,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
 
   double
     angle,
+    current[6],
+    transform[6],
     unit;
 
   int
@@ -596,6 +598,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
           (void) fprintf(stdout,", %s='",keyword);
           (void) fprintf(stdout,"%s'",value);
         }
+      if (LocaleCompare(keyword,"angle") == 0)
+        {
+          (void) sscanf(value,"%lf",&angle);
+          svg_info->element.angle=angle;
+        }
       if (LocaleCompare(keyword,"cx") == 0)
         {
           (void) sscanf(value,"%lf",&unit);
@@ -624,6 +631,18 @@ static void SVGStartElement(void *context,const xmlChar *name,
           CloneString(&svg_info->url,value);
           continue;
         }
+      if (LocaleCompare(keyword,"major") == 0)
+        {
+          (void) sscanf(value,"%lf",&unit);
+          svg_info->element.major=unit*UnitOfMeasure(value);
+          continue;
+        }
+      if (LocaleCompare(keyword,"minor") == 0)
+        {
+          (void) sscanf(value,"%lf",&unit);
+          svg_info->element.minor=unit*UnitOfMeasure(value);
+          continue;
+        }
       if (LocaleCompare(keyword,"points") == 0)
         {
           CloneString(&svg_info->vertices,value);
@@ -640,7 +659,6 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           (void) sscanf(value,"%lf",&unit);
           svg_info->element.major=unit*UnitOfMeasure(value);
-          svg_info->element.minor=unit*UnitOfMeasure(value);
           continue;
         }
       if (LocaleCompare(keyword,"ry") == 0)
@@ -705,10 +723,6 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
       if (LocaleCompare(keyword,"transform") == 0)
         {
-          double
-            current[6],
-            transform[6];
-
           tokens=StringToTokens(value,&number_tokens);
           for (j=0; j < (number_tokens-1); j++)
           {
@@ -868,6 +882,9 @@ static void SVGStartElement(void *context,const xmlChar *name,
 
 static void SVGEndElement(void *context, const xmlChar *name)
 {
+  double
+    angle;
+
   int
     n;
 
@@ -919,9 +936,11 @@ static void SVGEndElement(void *context, const xmlChar *name)
     }
   if (LocaleCompare((char *) name,"ellipse") == 0)
     {
+      angle=svg_info->element.angle;
       (void) fprintf(svg_info->file,"ellipse %g,%g %g,%g 0,360\n",
-        svg_info->element.cx,svg_info->element.cy,svg_info->element.major,
-        svg_info->element.minor);
+        svg_info->element.cx,svg_info->element.cy,
+        angle == 0.0 ? svg_info->element.major : svg_info->element.minor,
+        angle == 0.0 ? svg_info->element.minor : svg_info->element.major);
       svg_info->n--;
       return;
     }
