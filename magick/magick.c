@@ -421,7 +421,8 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag,ExceptionInfo *exception)
 #endif
       atexit(DestroyMagickInfo);
     }
-  LiberateSemaphore(&magick_semaphore);
+  else
+    LiberateSemaphore(&magick_semaphore);
   if ((tag == (const char *) NULL) || (*tag == '\0'))
     return(magick_list);
   /*
