@@ -1180,6 +1180,8 @@ static void WriteOneChannel( Image* image, Image* tmp_image,
     packet_size =tmp_image->depth > 8 ? 2 : 1;
 
 
+  if (tmp_image->depth > 16)
+    tmp_image->depth=16;
   for (y=0; y < (long) tmp_image->rows; y++)
   {
     p=AcquireImagePixels(tmp_image,0,y,tmp_image->columns,1,&image->exception);
@@ -1358,7 +1360,7 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobMSBLong(image,image->rows);
   (void) WriteBlobMSBLong(image,image->columns);
   (void) WriteBlobMSBShort(image,
-    (image->storage_class == PseudoClass ? 8 : image->depth));
+    (image->storage_class == PseudoClass ? 8 : Min(image->depth,16)));
   if (((image_info->colorspace != UndefinedColorspace) ||
        (image->colorspace != CMYKColorspace)) &&
        (image_info->colorspace != CMYKColorspace))
