@@ -1020,7 +1020,7 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
 %
 %  The format of the FormatSize method is:
 %
-%      char *FormatSize(const ExtendedSignedIntegralType size,char *format)
+%      char *FormatSize(const magick_int64_t size,char *format)
 %
 %  A description of each parameter follows:
 %
@@ -4140,7 +4140,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         char
           key[MaxTextExtent];
 
-        ExtendedSignedIntegralType
+        magick_off_t
           offset;
 
         if (strchr(p,']') == (char *) NULL)

@@ -11,6 +11,10 @@
 #ifndef _MAGICK_TYPES_H
 #define _MAGICK_TYPES_H
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 /*
   Assign ANSI C stdint.h-like typedefs based on the sizes of native types
   magick_int8_t   --                       -128 to 127
@@ -23,7 +27,23 @@
   magick_uint64_t --                          0 to 18,446,744,073,709,551,615
 */
 
-#if defined(SIZEOF_SIGNED_INT)
+#if defined(WIN32) && !defined(__MINGW32__)
+
+  /* The following typedefs are used for WIN32 */
+  typedef signed char   magick_int8_t;
+  typedef unsigned char  magick_uint8_t;
+
+  typedef signed short  magick_int16_t;
+  typedef unsigned short magick_uint16_t;
+
+  typedef signed int  magick_int32_t;
+  typedef unsigned int magick_uint32_t;
+
+  /* Maybe we need to do something different for __BORLANDC__ here? */
+  typedef signed __int64  magick_int64_t;
+  typedef unsigned __int64 magick_uint64_t;
+
+#else
 
   /* The following typedefs are subtituted when using Unixish configure */
   typedef @INT8_T@   magick_int8_t;
@@ -38,21 +58,13 @@
   typedef @INT64_T@  magick_int64_t;
   typedef @UINT64_T@ magick_uint64_t;
 
-#elif defined(WIN32)
-
-  /* The following typedefs are used for WIN32 */
-  typedef signed char   magick_int8_t;
-  typedef unsigned char  magick_uint8_t;
-
-  typedef signed short  magick_int16_t;
-  typedef unsigned short magick_uint16_t;
-
-  typedef signed int  magick_int32_t;
-  typedef unsigned int magick_uint32_t;
-
-  typedef signed __int64  magick_int64_t;
-  typedef unsigned __int64 magick_uint64_t;
-
 #endif
+
+  /* 64-bit file and blob offset type */
+  typedef magick_int64_t magick_off_t;
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif /* defined(__cplusplus) || defined(c_plusplus) */
 
 #endif /* _MAGICK_TYPES_H */

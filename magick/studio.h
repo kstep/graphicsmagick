@@ -136,6 +136,13 @@ extern "C" {
 # define ftell  ftello
 #endif
 
+#if !defined(ExtendedSignedIntegralType)
+# define ExtendedSignedIntegralType magick_int64_t
+#endif
+#if !defined(ExtendedUnsignedIntegralType)
+# define ExtendedUnsignedIntegralType magick_uint64_t
+#endif
+
 #include <string.h>
 #include <ctype.h>
 #include <locale.h>
@@ -356,11 +363,9 @@ extern "C" {
   /* Windows '95 and Borland C do not support _lseeki64 */
 #  define MagickSeek(file,offset,whence)  _lseeki64(file,offset,whence)
 #  define MagickTell(file) _telli64(file)
-#  define magick_off_t  __int64
 #else
 #  define MagickSeek(file,offset,whence)  lseek(file,offset,whence)
 #  define MagickTell(file) tell(file)
-#  define magick_off_t off_t
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)

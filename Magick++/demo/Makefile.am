@@ -5,7 +5,7 @@
 #
 AUTOMAKE_OPTIONS = 1.7 foreign
 
-INCLUDES = -I$(srcdir)/../lib -I../.. -I$(top_srcdir)
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)/Magick++/lib -I$(top_srcdir)
 
 check_PROGRAMS = button demo detrans flip gravity piddle shapes zoom
 

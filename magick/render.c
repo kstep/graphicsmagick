@@ -2993,7 +2993,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     if (primitive_info->text != (char *) NULL)
       MagickFreeMemory(primitive_info->text);
     status=MagickMonitor(RenderImageText,q-primitive,
-      (ExtendedSignedIntegralType) primitive_extent,&image->exception);
+      (magick_uint64_t) primitive_extent,&image->exception);
     if (status == False)
       break;
   }

@@ -95,7 +95,7 @@ static ResourceInfo
 %  The format of the AcquireMagickResource() method is:
 %
 %      unsigned int AcquireMagickResource(const ResourceType type,
-%        const ExtendedSignedIntegralType size)
+%        const magick_int64_t size)
 %
 %  A description of each parameter follows:
 %
@@ -450,7 +450,7 @@ MagickExport void InitializeMagickResources(void)
 %  The format of the LiberateMagickResource() method is:
 %
 %      void LiberateMagickResource(const ResourceType type,
-%        const ExtendedSignedIntegralType size)
+%        const magick_int64_t size)
 %
 %  A description of each parameter follows:
 %

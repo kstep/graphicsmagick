@@ -653,8 +653,8 @@ AC_CHECK_SIZEOF(signed long long)
 # supported then the value defined is zero.
 AC_CHECK_SIZEOF(unsigned long long)
 
-# If the system does not provide a 'mode_t' type, use 'int' instead
-AC_CHECK_TYPE(mode_t, int)
+# If the system does not provide a 'mode_t' type, use 'unsigned int' instead
+AC_CHECK_TYPE(mode_t, unsigned int)
 
 # If the system does not provide a 'off_t' type, use 'long' instead
 AC_CHECK_TYPE(off_t, long)
@@ -663,7 +663,10 @@ AC_CHECK_TYPE(off_t, long)
 AC_CHECK_TYPE(pid_t, int)
 
 # If the system does not provide a 'size_t', use 'unsigned int' instead
-AC_CHECK_TYPE(size_t, unsigned)
+AC_CHECK_TYPE(size_t, unsigned int)
+
+# If the system does not provide a 'ssize_t', use 'int' instead
+AC_CHECK_TYPE(ssize_t, int)
 
 # If `signal.h' declares signal as returning a pointer to a function
 # returning void, define RETSIGTYPE to be void; otherwise, define it

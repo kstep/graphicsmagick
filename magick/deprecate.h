@@ -15,10 +15,17 @@
 extern "C" {
 #endif
 
+#if !defined(ExtendedSignedIntegralType)
+# define ExtendedSignedIntegralType magick_int64_t
+#endif
+#if !defined(ExtendedUnsignedIntegralType)
+# define ExtendedUnsignedIntegralType magick_uint64_t
+#endif
+
 extern MagickExport char
   *PostscriptGeometry(const char *);
 
-extern MagickExport ExtendedSignedIntegralType
+extern MagickExport magick_off_t
   SizeBlob(const Image *image);
 
 extern MagickExport Image

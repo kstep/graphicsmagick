@@ -136,7 +136,7 @@ static unsigned int
 
 */
 static inline long FilePositionRead(int file, void *buffer, size_t length,
-  ExtendedSignedIntegralType offset)
+  magick_off_t offset)
 {
   register long
     count=0;
@@ -173,7 +173,7 @@ static inline long FilePositionRead(int file, void *buffer, size_t length,
 
 */
 static inline long FilePositionWrite(int file, const void *buffer,
-  size_t length,ExtendedSignedIntegralType offset)
+  size_t length,magick_off_t offset)
 {
   register long
     count=0;
@@ -258,8 +258,10 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
   CacheInfo
     *cache_info;
 
-  ExtendedSignedIntegralType
-    number_pixels,
+  magick_uint64_t
+    number_pixels;
+
+  magick_off_t
     offset;
 
   IndexPacket
@@ -306,10 +308,9 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
   region.width=columns;
   region.height=rows;
   pixels=SetNexus(image,&region,nexus);
-  offset=region.y*(ExtendedSignedIntegralType) cache_info->columns+region.x;
+  offset=region.y*(magick_off_t) cache_info->columns+region.x;
   length=(region.height-1)*cache_info->columns+region.width-1;
-  number_pixels=(ExtendedSignedIntegralType)
-    cache_info->columns*cache_info->rows;
+  number_pixels=(magick_uint64_t) cache_info->columns*cache_info->rows;
   if ((offset >= 0) && ((offset+length) < number_pixels))
     if ((x >= 0) && ((x+columns) <= cache_info->columns) &&
         (y >= 0) && ((y+rows) <= cache_info->rows))
@@ -747,7 +748,7 @@ static unsigned int ClonePixelCache(Image *image,Image *clone_image)
   char
     *buffer;
 
-  ExtendedSignedIntegralType
+  ssize_t
     count;
 
   int
@@ -1822,7 +1823,7 @@ static PixelPacket *GetPixelCache(Image *image,const long x,const long y,
 %
 %  The format of the GetPixelCacheArea() method is:
 %
-%      unsigned long GetPixelCacheArea(const Image *image)
+%      magick_off_t GetPixelCacheArea(const Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -1830,7 +1831,7 @@ static PixelPacket *GetPixelCache(Image *image,const long x,const long y,
 %
 %
 */
-MagickExport ExtendedSignedIntegralType GetPixelCacheArea(const Image *image)
+MagickExport magick_off_t GetPixelCacheArea(const Image *image)
 {
   CacheInfo
     *cache_info;
@@ -1844,9 +1845,9 @@ MagickExport ExtendedSignedIntegralType GetPixelCacheArea(const Image *image)
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   if (cache_info->nexus_info == (NexusInfo *) NULL)
-    return((ExtendedSignedIntegralType) cache_info->columns*cache_info->rows);
+    return((magick_off_t) cache_info->columns*cache_info->rows);
   nexus_info=cache_info->nexus_info+cache_info->id;
-  return((ExtendedSignedIntegralType) nexus_info->columns*nexus_info->rows);
+  return((magick_off_t) nexus_info->columns*nexus_info->rows);
 }
 
 /*
@@ -1917,7 +1918,7 @@ static inline unsigned int IsNexusInCore(const Cache cache,
   CacheInfo
     *cache_info;
 
-  ExtendedSignedIntegralType
+  magick_off_t
     offset;
 
   register NexusInfo
@@ -1930,7 +1931,7 @@ static inline unsigned int IsNexusInCore(const Cache cache,
   if (cache_info->storage_class == UndefinedClass)
     return(False);
   nexus_info=cache_info->nexus_info+nexus;
-  offset=nexus_info->y*(ExtendedSignedIntegralType) cache_info->columns+
+  offset=nexus_info->y*(magick_off_t) cache_info->columns+
     nexus_info->x;
   if (nexus_info->pixels == (cache_info->pixels+offset))
     return(True);
@@ -2045,10 +2046,12 @@ static unsigned int ModifyCache(Image *image)
 %
 */
 
-static unsigned int ExtendCache(int file,ExtendedSignedIntegralType length)
+static unsigned int ExtendCache(int file,magick_off_t length)
 {
-  ExtendedSignedIntegralType
-    count,
+  ssize_t
+    count;
+
+  magick_off_t
     offset;
 
   offset=MagickSeek(file,0,SEEK_END);
@@ -2093,8 +2096,10 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   CacheInfo
     *cache_info;
 
-  ExtendedSignedIntegralType
-    number_pixels,
+  magick_uint64_t
+    number_pixels;
+
+  magick_off_t
     offset;
 
   int
@@ -2118,8 +2123,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
     GetImageIndexInList(image));
   cache_info->rows=image->rows;
   cache_info->columns=image->columns;
-  number_pixels=(ExtendedSignedIntegralType)
-    cache_info->columns*cache_info->rows;
+  number_pixels=(magick_uint64_t) cache_info->columns*cache_info->rows;
   if (cache_info->nexus_info == (NexusInfo *) NULL)
     {
       register long
@@ -2330,7 +2334,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
 %  The format of the PersistCache() method is:
 %
 %      unsigned int PersistCache(Image *image,const char *filename,
-%        const unsigned int attach,ExtendedSignedIntegralType *offset,
+%        const unsigned int attach,magick_off_t *offset,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -2352,7 +2356,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
 %
 */
 MagickExport unsigned int PersistCache(Image *image,const char *filename,
-  const unsigned int attach,ExtendedSignedIntegralType *offset,
+  const unsigned int attach,magick_off_t *offset,
   ExceptionInfo *exception)
 {
   CacheInfo
@@ -2382,7 +2386,7 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
   assert(image->signature == MagickSignature);
   assert(image->cache != (void *) NULL);
   assert(filename != (const char *) NULL);
-  assert(offset != (ExtendedSignedIntegralType *) NULL);
+  assert(offset != (magick_off_t *) NULL);
   pagesize=0;
 #if defined(HAVE_SYSCONF) && defined(_SC_PAGE_SIZE)
   pagesize=sysconf(_SC_PAGE_SIZE);
@@ -2501,8 +2505,10 @@ static unsigned int ReadCacheIndexes(const Cache cache,
   CacheInfo
     *cache_info;
 
-  ExtendedSignedIntegralType
-    number_pixels,
+  magick_uint64_t
+    number_pixels;
+
+  magick_off_t
     offset;
 
   int
@@ -2532,12 +2538,12 @@ static unsigned int ReadCacheIndexes(const Cache cache,
   nexus_info=cache_info->nexus_info+nexus;
   if (IsNexusInCore(cache,nexus))
     return(True);
-  offset=nexus_info->y*(ExtendedSignedIntegralType) cache_info->columns+
-    nexus_info->x;
+  offset=nexus_info->y*(magick_off_t) cache_info->columns+nexus_info->x;
   length=nexus_info->columns*sizeof(IndexPacket);
   rows=nexus_info->rows;
-  number_pixels=(ExtendedSignedIntegralType) length*rows;
-  if ((cache_info->columns == nexus_info->columns) && (number_pixels == (size_t) number_pixels))
+  number_pixels=(magick_uint64_t) length*rows;
+  if ((cache_info->columns == nexus_info->columns) &&
+      (number_pixels == (size_t) number_pixels))
     {
       length=number_pixels;
       rows=1;
@@ -2566,8 +2572,7 @@ static unsigned int ReadCacheIndexes(const Cache cache,
       if (file == -1)
         return(False);
     }
-  number_pixels=(ExtendedSignedIntegralType)
-    cache_info->columns*cache_info->rows;
+  number_pixels=(magick_uint64_t) cache_info->columns*cache_info->rows;
   for (y=0; y < (long) rows; y++)
   {
     if ((FilePositionRead(file,indexes,length,cache_info->offset+
@@ -2617,8 +2622,10 @@ static unsigned int ReadCachePixels(const Cache cache,const unsigned long nexus)
   CacheInfo
     *cache_info;
 
-  ExtendedSignedIntegralType
-    number_pixels,
+  magick_uint64_t
+    number_pixels;
+
+  magick_off_t
     offset;
 
   int
@@ -2645,12 +2652,12 @@ static unsigned int ReadCachePixels(const Cache cache,const unsigned long nexus)
   nexus_info=cache_info->nexus_info+nexus;
   if (IsNexusInCore(cache,nexus))
     return(True);
-  offset=nexus_info->y*(ExtendedSignedIntegralType) cache_info->columns+
-    nexus_info->x;
+  offset=nexus_info->y*(magick_off_t) cache_info->columns+nexus_info->x;
   length=nexus_info->columns*sizeof(PixelPacket);
   rows=nexus_info->rows;  
-  number_pixels=(ExtendedSignedIntegralType) length*rows;
-  if ((cache_info->columns == nexus_info->columns) && (number_pixels == (size_t) number_pixels))
+  number_pixels=(magick_uint64_t) length*rows;
+  if ((cache_info->columns == nexus_info->columns) &&
+      (number_pixels == (size_t) number_pixels))
     {
       length=number_pixels;
       rows=1;
@@ -2777,8 +2784,10 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
   CacheInfo
     *cache_info;
 
-  ExtendedSignedIntegralType
-    number_pixels,
+  magick_uint64_t
+    number_pixels;
+
+  magick_off_t
     offset;
 
   RectangleInfo
@@ -2795,12 +2804,11 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
     Validate pixel cache geometry.
   */
   cache_info=(CacheInfo *) image->cache;
-  offset=y*(ExtendedSignedIntegralType) cache_info->columns+x;
+  offset=y*(magick_off_t) cache_info->columns+x;
   if (offset < 0)
     return((PixelPacket *) NULL);
-  number_pixels=(ExtendedSignedIntegralType)
-    cache_info->columns*cache_info->rows;
-  offset+=(rows-1)*(ExtendedSignedIntegralType) cache_info->columns+columns-1;
+  number_pixels=(magick_uint64_t) cache_info->columns*cache_info->rows;
+  offset+=(rows-1)*(magick_off_t) cache_info->columns+columns-1;
   if (offset >= number_pixels)
     return((PixelPacket *) NULL);
   /*
@@ -2955,8 +2963,10 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
   CacheInfo
     *cache_info;
 
-  ExtendedSignedIntegralType
-    number_pixels,
+  magick_uint64_t
+    number_pixels;
+
+  magick_off_t
     offset;
 
   register NexusInfo
@@ -2976,11 +2986,9 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
   nexus_info->y=region->y;
   if ((cache_info->type != DiskCache) && (image->clip_mask == (Image *) NULL))
     {
-      offset=nexus_info->y*(ExtendedSignedIntegralType) cache_info->columns+
-        nexus_info->x;
+      offset=nexus_info->y*(magick_off_t) cache_info->columns+nexus_info->x;
       length=(nexus_info->rows-1)*cache_info->columns+nexus_info->columns-1;
-      number_pixels=(ExtendedSignedIntegralType)
-        cache_info->columns*cache_info->rows;
+      number_pixels=(magick_uint64_t) cache_info->columns*cache_info->rows;
       if ((offset >= 0) && ((offset+length) < number_pixels))
         if ((((nexus_info->x+nexus_info->columns) <= cache_info->columns) &&
             (nexus_info->rows == 1)) || ((nexus_info->x == 0) &&
@@ -3000,7 +3008,7 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
   /*
     Pixels are stored in a staging area until they are synced to the cache.
   */
-  number_pixels=(ExtendedSignedIntegralType)
+  number_pixels=(magick_uint64_t)
     Max(nexus_info->columns*nexus_info->rows,cache_info->columns);
   length=number_pixels*sizeof(PixelPacket);
   if ((cache_info->storage_class == PseudoClass) ||
@@ -3339,8 +3347,10 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned long nexus)
   CacheInfo
     *cache_info;
 
-  ExtendedSignedIntegralType
-    number_pixels,
+  magick_uint64_t
+    number_pixels;
+
+  magick_off_t
     offset;
 
   int
@@ -3370,12 +3380,12 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned long nexus)
   nexus_info=cache_info->nexus_info+nexus;
   if (IsNexusInCore(cache,nexus))
     return(True);
-  offset=nexus_info->y*(ExtendedSignedIntegralType) cache_info->columns+
-    nexus_info->x;
+  offset=nexus_info->y*(magick_off_t) cache_info->columns+nexus_info->x;
   length=nexus_info->columns*sizeof(IndexPacket);
   rows=nexus_info->rows;  
-  number_pixels=(ExtendedSignedIntegralType) length*rows;
-  if ((cache_info->columns == nexus_info->columns) && (number_pixels == (size_t) number_pixels))
+  number_pixels=(magick_uint64_t) length*rows;
+  if ((cache_info->columns == nexus_info->columns) &&
+      (number_pixels == (size_t) number_pixels))
     {
       length=number_pixels;
       rows=1;
@@ -3406,8 +3416,7 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned long nexus)
       if (file == -1)
         return(False);
     }
-  number_pixels=(ExtendedSignedIntegralType)
-    cache_info->columns*cache_info->rows;
+  number_pixels=(magick_uint64_t) cache_info->columns*cache_info->rows;
   for (y=0; y < (long) rows; y++)
   {
     if ((FilePositionWrite(file,indexes,length,cache_info->offset+
@@ -3458,8 +3467,10 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned long nexus)
   CacheInfo
     *cache_info;
 
-  ExtendedSignedIntegralType
-    number_pixels,
+  magick_uint64_t
+    number_pixels;
+
+  magick_off_t
     offset;
 
   int
@@ -3486,12 +3497,12 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned long nexus)
   nexus_info=cache_info->nexus_info+nexus;
   if (IsNexusInCore(cache,nexus))
     return(True);
-  offset=nexus_info->y*(ExtendedSignedIntegralType) cache_info->columns+
-    nexus_info->x;
+  offset=nexus_info->y*(magick_off_t) cache_info->columns+nexus_info->x;
   length=nexus_info->columns*sizeof(PixelPacket);
   rows=nexus_info->rows;  
-  number_pixels=(ExtendedSignedIntegralType) length*rows;
-  if ((cache_info->columns == nexus_info->columns) && (number_pixels == (size_t) number_pixels))
+  number_pixels=(magick_uint64_t) length*rows;
+  if ((cache_info->columns == nexus_info->columns) &&
+      (number_pixels == (size_t) number_pixels))
     {
       length=number_pixels;
       rows=1;

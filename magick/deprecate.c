@@ -613,7 +613,7 @@ MagickExport Image *ShiftImageList(Image **images)
 %
 %  The format of the SizeBlob method is:
 %
-%      off_t SizeBlob(const Image *image)
+%      magick_off_t SizeBlob(const Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -624,7 +624,7 @@ MagickExport Image *ShiftImageList(Image **images)
 %
 %
 */
-MagickExport ExtendedSignedIntegralType SizeBlob(const Image *image)
+MagickExport magick_off_t SizeBlob(const Image *image)
 {
   (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
     "Method has been deprecated");

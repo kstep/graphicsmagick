@@ -53,6 +53,35 @@
 </tr>
 </table>
 <p>
+2003-07-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/deprecate.h: ExtendedSignedIntegralType and
+        ExtendedUnsignedIntegralType are now deprecated types so they are
+        moved to deprecate.h. Existing code which uses these types should
+        continue to work.<BR>
+  <LI> magick/blob.c (MapBlob): Change 'offset' parameter from type
+        off_t to magick_off_t so that it is not LFS dependent.
+  <LI> magick/cache.c (GetPixelCacheArea): Return magick_off_t.
+        (PersistCache): Change 'offset' parameter to type magick_off_t.
+  <LI> magick/cache.h (NexusInfo): Change 'length' type from
+        ExtendedSignedIntegralType to magick_off_t.
+        (CacheInfo): Change 'offset' and 'length' types from
+        ExtendedSignedIntegralType to magick_off_t.
+  <LI> magick/blob.c (BlobToFile): Use ssize_t rather than
+        ExtendedSignedIntegralType for count.
+        (TellBlob): Return magick_off_t rather than
+        ExtendedSignedIntegralType.<BR>
+  <LI> configure.ac: Check for a ssize_t type.
+  <LI> magick/blob.h (_BlobInfo): Change 'offset' and'size' members
+        from ExtendedSignedIntegralType to magick_off_t.
+  <LI> magick/blob.c (GetBlobSize): Return magick_off_t rather than
+        ExtendedSignedIntegralType.<BR>
+        (SeekBlob): Accept and return magick_off_t rather than
+        ExtendedSignedIntegralType.
+
+</UL>
+<p>
 2003-07-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -127,6 +127,10 @@ Significant changes associated with GraphicsMagick 1.1 (Under development)
 <UL>
   <LI> Incorporated John Cristy's Wand API's in a new GraphicsMagickWand
     library.<BR>
+  <LI> API definition is no longer dependent on types which vary in size
+    (e.g. size_t) depending on large file compilation options.  This means
+    that applications may now be compiled without any special large file
+    options and still work properly with the library.
   <LI> Thrown exceptions (ExceptionInfo structure) now include source
     file, source line, function name, and current system error number.
   <LI> The GetMagickInfoArray() function is added to replace use of

@@ -72,7 +72,7 @@ typedef struct _BlobInfo
     mapped,
     eof;
 
-  ExtendedSignedIntegralType
+  magick_off_t
     offset,
     size;
 
@@ -113,9 +113,9 @@ extern MagickExport BlobInfo
 extern MagickExport char
   *ReadBlobString(Image *,char *);
 
-extern MagickExport ExtendedSignedIntegralType
+extern MagickExport magick_off_t
   GetBlobSize(const Image *image),
-  SeekBlob(Image *,const ExtendedSignedIntegralType,const int),
+  SeekBlob(Image *image,const magick_off_t offset,const int whence),
   TellBlob(const Image *image);
 
 extern MagickExport Image
@@ -167,7 +167,7 @@ extern MagickExport void
   GetBlobInfo(BlobInfo *),
   *GetConfigureBlob(const char *,char *,size_t *,ExceptionInfo *),
   *ImageToBlob(const ImageInfo *,Image *,size_t *,ExceptionInfo *),
-  *MapBlob(int,const MapMode,off_t,size_t),
+  *MapBlob(int,const MapMode,magick_off_t,size_t),
   MSBOrderLong(unsigned char *,const size_t),
   MSBOrderShort(unsigned char *,const size_t);
 

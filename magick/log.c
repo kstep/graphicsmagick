@@ -502,7 +502,7 @@ static void *LogToBlob(const char *filename,size_t *length,
   int
     file;
 
-  ExtendedSignedIntegralType
+  magick_off_t
     offset;
 
   unsigned char
@@ -538,7 +538,7 @@ static void *LogToBlob(const char *filename,size_t *length,
     }
   else
     {
-      ExtendedSignedIntegralType
+      ssize_t
         count;
 
       register size_t
