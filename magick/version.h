@@ -11,10 +11,10 @@ extern "C" {
 /*
   Define declarations.
 */
-#define MagickCopyright  "Copyright (C) 2002 ImageMagick Studio LLC"
-#define MagickLibVersion  0x0552
-#define MagickLibVersionText  "5.5.2"
-#define MagickLibVersionNumber  5,5,2,0
+#define MagickCopyright  "Copyright (C) 2002 GraphicsMagick Group"
+#define MagickLibVersion  0x0100
+#define MagickLibVersionText  "1.0.0"
+#define MagickLibVersionNumber  1,0,0,0
 #if (QuantumDepth == 8)
 #define MagickQuantumDepth  "Q8"
 #elif (QuantumDepth == 16)
