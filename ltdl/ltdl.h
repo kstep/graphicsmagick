@@ -203,11 +203,21 @@ typedef	struct {
 				   number of times lt_dlclosed. */
 } lt_dlinfo;
 
-extern	const lt_dlinfo	 *lt_dlgetinfo    LT_PARAMS((lt_dlhandle handle));
-extern	int		  lt_dlforeach    LT_PARAMS((
+extern	const lt_dlinfo	*lt_dlgetinfo	    LT_PARAMS((lt_dlhandle handle));
+extern	lt_dlhandle	lt_dlhandle_next    LT_PARAMS((lt_dlhandle place));
+extern	int		lt_dlforeach	    LT_PARAMS((
 				int (*func) (lt_dlhandle handle, lt_ptr data),
 				lt_ptr data));
 
+/* Associating user data with loaded modules. */
+typedef unsigned lt_dlcaller_id;
+
+extern	lt_dlcaller_id	lt_dlcaller_register  LT_PARAMS((void));
+extern	lt_ptr		lt_dlcaller_set_data  LT_PARAMS((lt_dlcaller_id key,
+						lt_dlhandle handle,
+						lt_ptr data));
+extern	lt_ptr		lt_dlcaller_get_data  LT_PARAMS((lt_dlcaller_id key,
+						lt_dlhandle handle));
 
 
 
