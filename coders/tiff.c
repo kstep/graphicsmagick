@@ -488,8 +488,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     }
     image->columns=width;
     image->rows=height;
-    image->depth=range <= 255 ? 8 : QuantumDepth;
     range=max_sample_value-min_sample_value;
+    image->depth=range <= 255 ? 8 : QuantumDepth;
     if ((samples_per_pixel == 1) && !TIFFIsTiled(tiff))
       {
         image->colors=1 << bits_per_sample;

@@ -35,5 +35,5 @@ testRead( 'input_256.tiff', 'f90f998ebc41c7c9833ea2a454791d70',
 ++$test;
 print("TrueColor image ...\n");
 testRead( 'input_truecolor.tiff', '4d3c3e472ace236f15b27c7af6e3d464',
-                                  '7e1bfc2f860aa10ae9895e77c8f095fd' );
+                                  'eb4d6e084afe2835a1ad28ad7fc12ced' );
 
