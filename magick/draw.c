@@ -1690,6 +1690,43 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (LocaleCompare("image",keyword) == 0)
           {
+            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+              value[x]=(*q++);
+            value[x]='\0';
+            if (LocaleCompare("Over",value) == 0)
+              graphic_context[n]->compose=OverCompositeOp;
+            if (LocaleCompare("In",value) == 0)
+              graphic_context[n]->compose=InCompositeOp;
+            if (LocaleCompare("Out",value) == 0)
+              graphic_context[n]->compose=OutCompositeOp;
+            if (LocaleCompare("Atop",value) == 0)
+              graphic_context[n]->compose=AtopCompositeOp;
+            if (LocaleCompare("Xor",value) == 0)
+              graphic_context[n]->compose=XorCompositeOp;
+            if (LocaleCompare("Plus",value) == 0)
+              graphic_context[n]->compose=PlusCompositeOp;
+            if (LocaleCompare("Minus",value) == 0)
+              graphic_context[n]->compose=MinusCompositeOp;
+            if (LocaleCompare("Add",value) == 0)
+              graphic_context[n]->compose=AddCompositeOp;
+            if (LocaleCompare("Subtract",value) == 0)
+              graphic_context[n]->compose=SubtractCompositeOp;
+            if (LocaleCompare("Difference",value) == 0)
+              graphic_context[n]->compose=DifferenceCompositeOp;
+            if (LocaleCompare("Multiply",value) == 0)
+              graphic_context[n]->compose=MultiplyCompositeOp;
+            if (LocaleCompare("Bumpmap",value) == 0)
+              graphic_context[n]->compose=BumpmapCompositeOp;
+            if (LocaleCompare("Replace",value) == 0)
+              graphic_context[n]->compose=ReplaceCompositeOp;
+            if (LocaleCompare("ReplaceRed",value) == 0)
+              graphic_context[n]->compose=ReplaceRedCompositeOp;
+            if (LocaleCompare("ReplaceGreen",value) == 0)
+              graphic_context[n]->compose=ReplaceGreenCompositeOp;
+            if (LocaleCompare("ReplaceBlue",value) == 0)
+              graphic_context[n]->compose=ReplaceBlueCompositeOp;
+            if (LocaleCompare("ReplaceMatte",value) == 0)
+              graphic_context[n]->compose=ReplaceMatteCompositeOp;
             primitive_type=ImagePrimitive;
             break;
           }
@@ -3106,7 +3143,7 @@ static unsigned int DrawPrimitive(const DrawInfo *draw_info,
         }
       matte=image->matte;
       CompositeImage(image,composite_image->matte ? OverCompositeOp :
-        ReplaceCompositeOp,composite_image,x,y);
+        draw_info->compose,composite_image,x,y);
       DestroyImage(composite_image);
       image->matte=matte;
       break;
@@ -3857,6 +3894,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->pointsize=clone_info->pointsize;
   (void) QueryColorDatabase("none",&draw_info->box);
   draw_info->border_color=clone_info->border_color;
+  draw_info->compose=ReplaceCompositeOp;
   if (clone_info->server_name != (char *) NULL)
     draw_info->server_name=AllocateString(clone_info->server_name);
   draw_info->debug=clone_info->debug;

@@ -1475,7 +1475,7 @@ MagickExport unsigned int QueryColorDatabase(const char *target,
     color->opacity=OpaqueOpacity;
     return(status);
   }
-#else
+#endif
   /*
     Match color against the X color database.
   */
@@ -1501,7 +1501,6 @@ MagickExport unsigned int QueryColorDatabase(const char *target,
   }
   (void) fclose(file);
   return(LocaleCompare(colorname,target) == 0);
-#endif
 }
 
 /*

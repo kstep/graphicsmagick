@@ -199,7 +199,7 @@ void Magick::DrawableEllipse::print (std::ostream& stream_) const
 {
   stream_ << "ellipse "
           << Magick::Coordinate(_originX,_originY)
-	  << " " << _radiusX << "," << _radiusY
+	  << " " << _width << "," << _height
 	  << " " << _arcStart << "," << _arcEnd;
 }
 
@@ -321,7 +321,7 @@ void Magick::DrawableGravity::print (std::ostream& stream_) const
 // Draw image at point
 void Magick::DrawableCompositeImage::print (std::ostream& stream_) const
 {
-  stream_ << "image "
+  stream_ << "image Replace "
           << Magick::Coordinate( _x, _y)
           << " "
           << Magick::Coordinate( _width, _height)

@@ -98,6 +98,9 @@ typedef struct _DrawInfo
     box,
     border_color;
 
+  CompositeOperator
+    compose;
+
   char
     *server_name;
 

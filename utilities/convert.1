@@ -661,11 +661,12 @@ titled \fBbird.miff\fP and whose width is 512 and height is 480.
 To generate a Unicode character (TrueType fonts only), embed the
 code as an escaped hex string (e.g. \\0x30a3).
 
-Use \fBimage\fP to composite an image with another image.  Follow the
-image coordinates with the image size and filename:
+Use \fBimage\fP to composite an image with another image. Follow the
+image primitive with a composite operator, image position, image size,
+and filename:
 
 .nf
-     -draw 'image 100,100 225,225 image.jpg'
+     -draw 'image Over 100,100 225,225 image.jpg'
 .fi
 
 If the first character of \fIstring\fP is \fB@\fP, the text is read
@@ -874,9 +875,6 @@ the type of layer: \fBRed\fP, \fBGreen\fP, \fBBlue\fP, or
 Use this option to extract a particular \fIlayer\fP from the image.
 \fBMatte\fP, for example, is useful for extracting the opacity values
 from an image.
-.TP
-.B "-linewidth \fIvalue\fP"
-set the width of a line.  See \fB-draw\fP for further details.
 .TP
 .B "-loop \fIiterations\fP"
 add Netscape loop extension to your GIF animation.
@@ -1224,6 +1222,9 @@ choose a candidate pixel to swap.
 .B "-stroke \fIcolor\fP"
 color to use when stoking a graphic primitive.  See \fB-draw\fP for further
 details.
+.TP
+.B "-strokewidth \fIvalue\fP"
+set the stroke width.  See \fB-draw\fP for further details.
 .TP
 .B "-swirl \fIdegrees\fP"
 swirl image pixels about the center.

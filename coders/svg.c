@@ -80,11 +80,6 @@
 
 char
   *version_string = "AutoTrace version 0.24a";
-/*
-  Forward declarations.
-*/
-static unsigned int
-  WriteSVGImage(const ImageInfo *,Image *);
 #endif
 
 /*
@@ -159,6 +154,12 @@ typedef struct _SVGInfo
     document;
 } SVGInfo;
 #endif
+
+/*
+  Forward declarations.
+*/
+static unsigned int
+  WriteSVGImage(const ImageInfo *,Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1619,7 +1620,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
     {
       if (LocaleCompare((char *) name,"image") == 0)
         {
-          (void) fprintf(svg_info->file,"image %g,%g %g,%g %s\n",
+          (void) fprintf(svg_info->file,"image Replace %g,%g %g,%g %s\n",
             svg_info->bounds.x,svg_info->bounds.y,svg_info->bounds.width,
             svg_info->bounds.height,svg_info->url);
           break;
@@ -2187,9 +2188,7 @@ ModuleExport void RegisterSVGImage(void)
   entry=SetMagickInfo("SVG");
   entry->magick=IsSVG;
   entry->decoder=ReadSVGImage;
-#if defined(HasAUTOTRACE)
   entry->encoder=WriteSVGImage;
-#endif
   entry->description=AllocateString("Scalable Vector Gaphics");
   entry->module=AllocateString("SVG");
   RegisterMagickInfo(entry);
@@ -2352,6 +2351,28 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       image);
   output_writer(output_file,image->filename,0,0,image_header.width,
     image_header.height,splines);
+  return(True);
+}
+#else
+static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
+{
+  ImageAttribute
+    *attribute;
+
+  unsigned int
+    status;
+
+  /*
+    Open output image file.
+  */
+  attribute=GetImageAttribute(image,"[MVG]");
+  if (attribute == (ImageAttribute *) NULL)
+    ThrowWriterException(DelegateWarning,"no image vector graphics",image);
+  status=OpenBlob(image_info,image,WriteBinaryType);
+  if (status == False)
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+  (void) WriteBlob(image,Extent(attribute->value),attribute->value);
+  CloseBlob(image);
   return(True);
 }
 #endif
