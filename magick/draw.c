@@ -3409,6 +3409,9 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
     {
       GetTimerInfo(&timer);
       (void) fprintf(stdout,"  begin draw-primitive\n");
+      (void) fprintf(stdout,"    affine: %g,%g,%g,%g,%g,%g\n",
+        draw_info->affine.sx,draw_info->affine.rx,draw_info->affine.ry,
+	draw_info->affine.sy,draw_info->affine.tx,draw_info->affine.ty);
     }
   status=True;
   x=(long) ceil(primitive_info->point.x-0.5);
