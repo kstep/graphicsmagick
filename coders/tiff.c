@@ -531,7 +531,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if (TIFFGetField(tiff,TIFFTAG_ARTIST,&text) == 1)
       (void) SetImageAttribute(image,"artist",text);
     if (TIFFGetField(tiff,TIFFTAG_DATETIME,&text) == 1)
-      (void) SetImageAttribute(image,"timeStamp",text);
+      (void) SetImageAttribute(image,"timestamp",text);
     if (TIFFGetField(tiff,TIFFTAG_SOFTWARE,&text) == 1)
       (void) SetImageAttribute(image,"software",text);
     if (TIFFGetField(tiff,TIFFTAG_DOCUMENTNAME,&text) == 1)
