@@ -104,7 +104,7 @@
 #define RGBColorDatabase "/usr/openwin/lib/X11/rgb.txt"
 
 /* Define if you have the bzip2 library */
-#define HasBZLIB 1
+/* #undef HasBZLIB */
 
 /* Define if you have Display Postscript */
 #define HasDPS 1
@@ -116,19 +116,19 @@
 /* #undef HasHDF */
 
 /* Define if you have JBIG library */
-#define HasJBIG 1
+/* #undef HasJBIG */
 
 /* Define if you have JPEG library */
-#define HasJPEG 1
+/* #undef HasJPEG */
 
 /* Define if you have PNG library */
-#define HasPNG 1
+/* #undef HasPNG */
 
 /* Define if you have TIFF library */
-#define HasTIFF 1
+/* #undef HasTIFF */
 
 /* Define if you have FreeType (TrueType font) library */
-#define HasTTF 1
+/* #undef HasTTF */
 
 /* Define to specify default TrueType font path. */
 /* #undef TT_FONT_PATH */
@@ -137,7 +137,7 @@
 /* #undef HasSFIO */
 
 /* Define if you have zlib compression library */
-#define HasZLIB 1
+/* #undef HasZLIB */
 
 /* Define if you have sys_errlist[] in libc */
 #define HAVE_SYS_ERRLIST 1

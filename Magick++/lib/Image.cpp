@@ -2224,15 +2224,6 @@ unsigned int Magick::Image::subRange ( void ) const
   return _imgRef->options()->subRange( );
 }
 
-std::string Magick::Image::text ( void ) const
-{
-  MagickLib::Image * image = _imgRef->image();
-  if ( image->text )
-    return std::string(image->text);
-
-  return std::string(); // Intentionally no exception
-}
-
 void Magick::Image::tileName ( const std::string &tileName_ )
 {
   modifyImage();

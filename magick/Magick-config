@@ -48,7 +48,7 @@ while test $# -gt 0; do
       echo 4.2.8
       ;;
     --cflags)
-      echo '-g -O2'
+      echo '-fast'
       ;;
     --cppflags)
       if test $prefix_set = yes
@@ -67,7 +67,7 @@ while test $# -gt 0; do
       fi
       ;;
     --libs)
-      echo '-L/pathos/home/cristy/ImageMagick/magick -lMagick -ldpstk -ldps -lXext -lXt -lX11 -lsocket -lnsl -lm'
+      echo '-L/usr/local/lib -lMagick -ldpstk -ldps -lXext -lXt -lX11 -lsocket -lnsl -lm'
       ;;
     *)
       echo "${usage}" 1>&2
