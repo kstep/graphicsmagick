@@ -2874,43 +2874,38 @@ MagickExport char **StringToList(const char *text)
 %
 %  The format of the Strip method is:
 %
-%      void Strip(char *data)
+%      void Strip(char *message)
 %
 %  A description of each parameter follows:
 %
-%    o data: Specifies an array of characters.
+%    o message: Specifies an array of characters.
 %
 %
 */
-MagickExport void Strip(char *data)
+MagickExport void Strip(char *message)
 {
-  long
-    count;
-
   register char
     *p,
     *q;
 
-  assert(data != (char *) NULL);
-  if (*data == '\0')
+  assert(message != (char *) NULL);
+  if (*message == '\0')
     return;
-  if (strlen(data) == 1)
+  if (strlen(message) == 1)
     return;
-  p=data;
+  p=message;
   while (isspace((int) (*p)))
     p++;
   if ((*p == '\'') || (*p == '"'))
     p++;
-  q=data+strlen(data)-1;
+  q=message+strlen(message)-1;
   while (isspace((int) (*q)) && (q > p))
     q--;
   if (q > p)
     if ((*q == '\'') || (*q == '"'))
       q--;
-  count=q-p+1;
-  q=data;
-  (void) memcpy(q,p,count);
-  *(q+count)='\0';
+  (void) memcpy(message,p,q-p+1);
+  message[q-p+1]='\0';
 }
 
 /*
