@@ -240,7 +240,7 @@ void lt_dlsetsearchpath(char *path)
       lt_slsearchpath=(char *) NULL;
     }
   if (path != (char *) NULL)
-    lt_slsearchpath=GetString(path);
+    lt_slsearchpath=AllocateString(path);
 }
 
 /*
@@ -634,7 +634,7 @@ MagickExport char *NTGetExecutionPath(void)
   char
     *path;
 
-  path=GetString((char *) NULL);
+  path=AllocateString((char *) NULL);
   GetModuleFileName(0,path,MaxTextExtent);
   return(path);
 }
@@ -674,10 +674,10 @@ char *NTGetLastError(void)
     FORMAT_MESSAGE_FROM_SYSTEM,NULL,GetLastError(),
     MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT),(LPTSTR) &buffer,0,NULL);
   if (!status)
-    reason=GetString("An unknown error occurred");
+    reason=AllocateString("An unknown error occurred");
   else
     {
-      reason=GetString(buffer);
+      reason=AllocateString(buffer);
       LocalFree(buffer);
     }
   return(reason);

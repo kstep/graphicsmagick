@@ -217,7 +217,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
           ThrowReaderException(FileOpenWarning,"Memory allocation failed",image)
         }
       image->generic_profiles++;
-      image->generic_profile[i].name=GetString((char *) NULL);
+      image->generic_profile[i].name=AllocateString((char *) NULL);
       FormatString(image->generic_profile[i].name,"APP%d",1);
       image->generic_profile[i].info=(unsigned char *) AcquireMemory(length+2);
       for (q=image->generic_profile[i].info; image->generic_profile[i].info; q++)

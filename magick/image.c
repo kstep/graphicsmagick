@@ -917,7 +917,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
       /*
         Allocate and clone any ICM profile.
       */
-      clone_image->color_profile.name=GetString(image->color_profile.name);
+      clone_image->color_profile.name=AllocateString(image->color_profile.name);
       clone_image->color_profile.length=image->color_profile.length;
       clone_image->color_profile.info=(unsigned char *)
         AcquireMemory(clone_image->color_profile.length);
@@ -932,7 +932,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
       /*
         Allocate and clone any IPTC profile.
       */
-      clone_image->iptc_profile.name=GetString(image->iptc_profile.name);
+      clone_image->iptc_profile.name=AllocateString(image->iptc_profile.name);
       clone_image->iptc_profile.length=image->iptc_profile.length;
       clone_image->iptc_profile.info=(unsigned char *)
         AcquireMemory(clone_image->iptc_profile.length);
@@ -959,7 +959,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
       for (i=0; i < (long) image->generic_profiles; i++)
       {
         clone_image->generic_profile[i].name=
-          GetString(image->generic_profile[i].name);
+          AllocateString(image->generic_profile[i].name);
         if (image->generic_profile[i].length == 0)
           continue;
         length=image->generic_profile[i].length;
@@ -1099,25 +1099,25 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   clone_info->subrange=image_info->subrange;
   clone_info->depth=image_info->depth;
   if (image_info->size != (char *) NULL)
-    clone_info->size=GetString(image_info->size);
+    clone_info->size=AllocateString(image_info->size);
   if (image_info->tile != (char *) NULL)
-    clone_info->tile=GetString(image_info->tile);
+    clone_info->tile=AllocateString(image_info->tile);
   if (image_info->page != (char *) NULL)
-    clone_info->page=GetString(image_info->page);
+    clone_info->page=AllocateString(image_info->page);
   clone_info->interlace=image_info->interlace;
   clone_info->endian=image_info->endian;
   clone_info->units=image_info->units;
   clone_info->quality=image_info->quality;
   if (image_info->sampling_factor != (char *) NULL)
-    clone_info->sampling_factor=GetString(image_info->sampling_factor);
+    clone_info->sampling_factor=AllocateString(image_info->sampling_factor);
   if (image_info->server_name != (char *) NULL)
-    clone_info->server_name=GetString(image_info->server_name);
+    clone_info->server_name=AllocateString(image_info->server_name);
   if (image_info->font != (char *) NULL)
-    clone_info->font=GetString(image_info->font);
+    clone_info->font=AllocateString(image_info->font);
   if (image_info->texture != (char *) NULL)
-    clone_info->texture=GetString(image_info->texture);
+    clone_info->texture=AllocateString(image_info->texture);
   if (image_info->density != (char *) NULL)
-    clone_info->density=GetString(image_info->density);
+    clone_info->density=AllocateString(image_info->density);
   clone_info->pointsize=image_info->pointsize;
   clone_info->fuzz=image_info->fuzz;
   clone_info->pen=image_info->pen;
@@ -1134,7 +1134,7 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   clone_info->verbose=image_info->verbose;
   clone_info->debug=image_info->debug;
   if (image_info->view != (char *) NULL)
-    clone_info->view=GetString(image_info->view);
+    clone_info->view=AllocateString(image_info->view);
   if (image_info->attributes != (Image *) NULL)
     clone_info->attributes=CloneImage(image_info->attributes,0,0,True,
       &image_info->attributes->exception);

@@ -269,10 +269,10 @@ static char *TraceClippingPath(char *blob,size_t length,unsigned long columns,
   unsigned int
     status;
 
-  path=GetString((char *) NULL);
+  path=AllocateString((char *) NULL);
   if (path == (char *) NULL)
     return((char *) NULL);
-  message=GetString((char *) NULL);
+  message=AllocateString((char *) NULL);
   while (length != 0)
   {
     selector=ReadMSBShort(&blob,&length);
@@ -650,7 +650,7 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
     Determine if there is any EXIF data available in the image.
   */
   value=(char *) NULL;
-  final=GetString("");
+  final=AllocateString("");
   index=(-1);
   for (i=0; i < (long) image->generic_profiles; i++)
   {
@@ -856,63 +856,63 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
             case EXIF_FMT_SBYTE:
             {
               FormatString(s,"%d",(int)(*(char *) pval));
-              value=GetString(s);
+              value=AllocateString(s);
               break;
             }
             case EXIF_FMT_BYTE:
             {
               FormatString(s,"%d",(int)(*(unsigned char *) pval));
-              value=GetString(s);
+              value=AllocateString(s);
               break;
             }
             case EXIF_FMT_SSHORT:
             {
               FormatString(s,"%hd",Read16u(morder,pval));
-              value=GetString(s);
+              value=AllocateString(s);
               break;
             }
             case EXIF_FMT_USHORT:
             {
               FormatString(s,"%hu",Read16s(morder,pval));
-              value=GetString(s);
+              value=AllocateString(s);
               break;
             }
             case EXIF_FMT_ULONG:
             {
               FormatString(s,"%lu",Read32u(morder,pval));
-              value=GetString(s);
+              value=AllocateString(s);
               break;
             }
             case EXIF_FMT_SLONG:
             {
               FormatString(s,"%ld",Read32s(morder,pval));
-              value=GetString(s);
+              value=AllocateString(s);
               break;
             }
             case EXIF_FMT_URATIONAL:
             {
               FormatString(s,"%d/%d",Read32u(morder,pval),
                 Read32u(morder,4+(char *) pval));
-              value=GetString(s);
+              value=AllocateString(s);
               break;
             }
             case EXIF_FMT_SRATIONAL:
             {
               FormatString(s,"%d/%d",Read32s(morder,pval),
                 Read32s(morder,4+(char *) pval));
-              value=GetString(s);
+              value=AllocateString(s);
               break;
             }
             case EXIF_FMT_SINGLE:
             {
               FormatString(s,"%f",(double)*(float *) pval);
-              value=GetString(s);
+              value=AllocateString(s);
               break;
             }
             case EXIF_FMT_DOUBLE:
             {
               FormatString(s,"%f",*(double *) pval);
-              value=GetString(s);
+              value=AllocateString(s);
               break;
             }
             default:
@@ -1394,11 +1394,11 @@ MagickExport unsigned int SetImageAttribute(Image *image,const char *key,
   attribute=(ImageAttribute *) AcquireMemory(sizeof(ImageAttribute));
   if (attribute == (ImageAttribute *) NULL)
     return(False);
-  attribute->key=GetString(key);
+  attribute->key=AllocateString(key);
   if ((LocaleNCompare(key,"IPTC",4) == 0) ||
       (LocaleNCompare(key,"8BIM",4) == 0) ||
       (LocaleNCompare(key,"EXIF",4) == 0))
-    attribute->value=GetString(value);
+    attribute->value=AllocateString(value);
   else
     attribute->value=TranslateText((ImageInfo *) NULL,image,value);
   attribute->compression=False;

@@ -4793,7 +4793,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       cache_image->geometry=windows->image.crop_geometry;
       if (windows->image.crop_geometry != (char *) NULL)
         {
-          cache_image->geometry=GetString((char *) NULL);
+          cache_image->geometry=AllocateString((char *) NULL);
           (void) strncpy(cache_image->geometry,windows->image.crop_geometry,
             MaxTextExtent-1);
         }
@@ -10534,7 +10534,7 @@ static void XSetCropGeometry(Display *display,XWindows *windows,
   if (windows->image.crop_geometry != (char *) NULL)
     (void) XParseGeometry(windows->image.crop_geometry,&x,&y,&width,&height);
   else
-    windows->image.crop_geometry=GetString((char *) NULL);
+    windows->image.crop_geometry=AllocateString((char *) NULL);
   /*
     Define the crop geometry string from the cropping rectangle.
   */
@@ -12214,8 +12214,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       /*
         Window name is the base of the filename.
       */
-      windows->image.name=GetString((char *) NULL);
-      windows->image.icon_name=GetString((char *) NULL);
+      windows->image.name=AllocateString((char *) NULL);
+      windows->image.icon_name=AllocateString((char *) NULL);
       GetPathComponent(display_image->filename,TailPath,filename);
       FormatString(windows->image.name,"ImageMagick: %.1024s[%lu]",filename,
         display_image->scene);
@@ -12398,7 +12398,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   FormatString(resource_name,"%.1024s.widget",resource_info->client_name);
   windows->widget.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
-  windows->widget.name=GetString((char *) NULL);
+  windows->widget.name=AllocateString((char *) NULL);
   *windows->widget.name='\0';
   windows->widget.border_width=0;
   windows->widget.flags|=PPosition;
@@ -12427,7 +12427,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     LiberateMemory((void **) &windows->popup.name);
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->popup);
-  windows->popup.name=GetString((char *) NULL);
+  windows->popup.name=AllocateString((char *) NULL);
   *windows->popup.name='\0';
   windows->popup.border_width=0;
   windows->popup.flags|=PPosition;
@@ -12459,7 +12459,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   FormatString(resource_name,"%.1024s.magnify",resource_info->client_name);
   windows->magnify.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
-  windows->magnify.name=GetString((char *) NULL);
+  windows->magnify.name=AllocateString((char *) NULL);
   FormatString(windows->magnify.name,"Magnify %uX",resource_info->magnify);
   windows->magnify.cursor=XMakeCursor(display,windows->image.id,
     map_info->colormap,resource_info->background_color,

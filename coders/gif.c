@@ -887,7 +887,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Read Comment extension.
             */
-            comments=GetString((char *) NULL);
+            comments=AllocateString((char *) NULL);
             for ( ; ; )
             {
               count=ReadBlobBlock(image,header);

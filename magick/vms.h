@@ -495,7 +495,7 @@ extern "C" {
 #define XmTextFieldGetMaxLength XMTEXTFIELDGETMAXLENGTH
 #define XmTextFieldGetSelection XMTEXTFIELDGETSELECTION
 #define XmTextFieldGetSelectionPosition XMTEXTFIELDGETSELECTIONPOSITION
-#define XmTextFieldGetString XMTEXTFIELDGETSTRING
+#define XmTextFieldAllocateString XMTEXTFIELDGETSTRING
 #define XmTextFieldInsert XMTEXTFIELDINSERT
 #define XmTextFieldPaste XMTEXTFIELDPASTE
 #define XmTextFieldRemove XMTEXTFIELDREMOVE
@@ -514,7 +514,7 @@ extern "C" {
 #define XmTextGetMaxLength XMTEXTGETMAXLENGTH
 #define XmTextGetSelection XMTEXTGETSELECTION
 #define XmTextGetSelectionPosition XMTEXTGETSELECTIONPOSITION
-#define XmTextGetString XMTEXTGETSTRING
+#define XmTextAllocateString XMTEXTGETSTRING
 #define XmTextInsert XMTEXTINSERT
 #define XmTextPaste XMTEXTPASTE
 #define XmTextPosToXY XMTEXTPOSTOXY
@@ -552,7 +552,7 @@ extern "C" {
 #define XrmGetDatabase XRMGETDATABASE
 #define XrmGetFileDatabase XRMGETFILEDATABASE
 #define XrmGetResource XRMGETRESOURCE
-#define XrmGetStringDatabase XRMGETSTRINGDATABASE
+#define XrmAllocateStringDatabase XRMGETSTRINGDATABASE
 #define XrmInitialize XRMINITIALIZE
 #define XrmMergeDatabases XRMMERGEDATABASES
 #define XrmParseCommand XRMPARSECOMMAND

@@ -278,13 +278,13 @@ static char **GetStyleTokens(const char *text,int *number_tokens)
   {
     if ((*q != ':') && (*q != ';') && (*q != '\0'))
       continue;
-    tokens[i]=GetString(p);
+    tokens[i]=AllocateString(p);
     (void) strncpy(tokens[i],p,q-p);
     tokens[i][q-p]='\0';
     Strip(tokens[i++]);
     p=q+1;
   }
-  tokens[i]=GetString(p);
+  tokens[i]=AllocateString(p);
   (void) strncpy(tokens[i],p,q-p);
   tokens[i][q-p]='\0';
   Strip(tokens[i++]);
@@ -328,13 +328,13 @@ static char **GetTransformTokens(const char *text,int *number_tokens)
   {
     if ((*q != '(') && (*q != ')') && (*q != '\0'))
       continue;
-    tokens[i]=GetString(p);
+    tokens[i]=AllocateString(p);
     (void) strncpy(tokens[i],p,q-p);
     tokens[i][q-p]='\0';
     Strip(tokens[i++]);
     p=q+1;
   }
-  tokens[i]=GetString(p);
+  tokens[i]=AllocateString(p);
   (void) strncpy(tokens[i],p,q-p);
   tokens[i][q-p]='\0';
   Strip(tokens[i++]);
@@ -706,8 +706,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
     MagickError(ResourceLimitError,"Unable to convert SVG image",
       "Memory allocation failed");
   svg_info->scale[svg_info->n]=svg_info->scale[svg_info->n-1];
-  color=GetString("none");
-  units=GetString("userSpaceOnUse");
+  color=AllocateString("none");
+  units=AllocateString("userSpaceOnUse");
   value=(const char *) NULL;
   if (attributes != (const xmlChar **) NULL)
     for (i=0; (attributes[i] != (const xmlChar *) NULL); i+=2)
@@ -995,7 +995,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                     svg_info->bounds.x,svg_info->bounds.y,svg_info->text);
               draw_info=CloneDrawInfo(svg_info->image_info,(DrawInfo *) NULL);
               draw_info->pointsize=svg_info->pointsize;
-              draw_info->text=GetString(svg_info->text);
+              draw_info->text=AllocateString(svg_info->text);
               (void) ConcatenateString(&draw_info->text," ");
               GetTypeMetrics(svg_info->image,draw_info,&metrics);
               svg_info->bounds.x+=metrics.width;
@@ -2241,7 +2241,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
                     svg_info->bounds.x,svg_info->bounds.y,svg_info->text);
               draw_info=CloneDrawInfo(svg_info->image_info,(DrawInfo *) NULL);
               draw_info->pointsize=svg_info->pointsize;
-              draw_info->text=GetString(svg_info->text);
+              draw_info->text=AllocateString(svg_info->text);
               (void) ConcatenateString(&draw_info->text," ");
               GetTypeMetrics(svg_info->image,draw_info,&metrics);
               svg_info->bounds.x+=metrics.width;
@@ -2622,7 +2622,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   svg_info.exception=exception;
   svg_info.image=image;
   svg_info.image_info=image_info;
-  svg_info.text=GetString("");
+  svg_info.text=AllocateString("");
   svg_info.scale=(double *) AcquireMemory(sizeof(double));
   if (svg_info.scale == (double *) NULL)
     MagickError(ResourceLimitError,"Unable to convert SVG image",
@@ -3061,7 +3061,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   if (primitive_info == (PrimitiveInfo *) NULL)
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   IdentityAffine(&affine);
-  token=GetString(attribute->value);
+  token=AllocateString(attribute->value);
   active=False;
   n=0;
   status=True;

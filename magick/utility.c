@@ -138,6 +138,54 @@ MagickExport const char *AcquireString(const char *source)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   A l l o c a t e S t r i n g                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AllocateString() allocates memory for a string and copies the source string
+%  to that memory location (and returns it).
+%
+%  The format of the AllocateString method is:
+%
+%      char *AllocateString(const char *source)
+%
+%  A description of each parameter follows:
+%
+%    o allocated_string:  Method AllocateString returns a copy of the source
+%      string.
+%
+%    o source: A character string.
+%
+%
+*/
+MagickExport char *AllocateString(const char *source)
+{
+  char
+    *destination;
+
+  size_t
+    length;
+
+  length=MaxTextExtent;
+  if (source != (char *) NULL)
+    length+=strlen(source);
+  destination=(char *) AcquireMemory(length+MaxTextExtent);
+  if (destination == (char *) NULL)
+    MagickError(ResourceLimitError,"Unable to allocate string",
+      "Memory allocation failed");
+  *destination='\0';
+  if (source != (char *) NULL)
+    (void) strcpy(destination,source);
+  return(destination);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %  A p p e n d I m a g e F o r m a t                                          %
 %                                                                             %
 %                                                                             %
@@ -457,7 +505,7 @@ MagickExport unsigned int CloneString(char **destination,const char *source)
       *destination=(char *) NULL;
       return(True);
     }
-  *destination=GetString(source);
+  *destination=AllocateString(source);
   return(True);
 }
 
@@ -714,7 +762,7 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
           continue;
         }
       expanded=True;
-      vector[count]=GetString(filename);
+      vector[count]=AllocateString(filename);
       LiberateMemory((void **) &filelist[j]);
       count++;
     }
@@ -805,7 +853,7 @@ MagickExport char *GetExecutionPath(const char *path)
 #if defined(WIN32)
   return(NTGetExecutionPath());
 #endif
-  return(GetString(path));
+  return(AllocateString(path));
 }
 
 /*
@@ -1322,7 +1370,7 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
     i;
 
   assert(page_geometry != (char *) NULL);
-  page=GetString(page_geometry);
+  page=AllocateString(page_geometry);
   for (i=0; *PageSizes[i] != (char *) NULL; i++)
     if (LocaleNCompare(PageSizes[i][0],page,strlen(PageSizes[i][0])) == 0)
       {
@@ -1439,60 +1487,6 @@ MagickExport void GetPathComponent(const char *path,PathType type,
       break;
     }
   }
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t S t r i n g                                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetString() allocates memory for a string and copies the source string
-%  to that memory location (and returns it).
-%
-%  The format of the GetString method is:
-%
-%      char *GetString(const char *source)
-%
-%  A description of each parameter follows:
-%
-%    o allocated_string:  Method GetString returns a copy of the source
-%      string.
-%
-%    o source: A character string.
-%
-%
-*/
-
-MagickExport char *AllocateString(const char *source)
-{
-  return(GetString(source));
-}
-
-MagickExport char *GetString(const char *source)
-{
-  char
-    *destination;
-
-  size_t
-    length;
-
-  length=MaxTextExtent;
-  if (source != (char *) NULL)
-    length+=strlen(source);
-  destination=(char *) AcquireMemory(length+MaxTextExtent);
-  if (destination == (char *) NULL)
-    MagickError(ResourceLimitError,"Unable to allocate string",
-      "Memory allocation failed");
-  *destination='\0';
-  if (source != (char *) NULL)
-    (void) strcpy(destination,source);
-  return(destination);
 }
 
 /*
@@ -2578,7 +2572,7 @@ MagickExport char **StringToArgv(const char *text,int *argc)
   /*
     Convert string to an ASCII list.
   */
-  argv[0]=GetString("magick");
+  argv[0]=AllocateString("magick");
   p=(char *) text;
   for (i=1; i < *argc; i++)
   {
@@ -3376,7 +3370,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
     Translate any embedded format characters.
   */
   length=strlen(text)+MaxTextExtent;
-  translated_text=GetString(text);
+  translated_text=AllocateString(text);
   clone_info=CloneImageInfo(image_info);
   p=text;
   for (q=translated_text; *p != '\0'; p++)

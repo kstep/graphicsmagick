@@ -98,17 +98,17 @@ MagickExport MontageInfo *CloneMontageInfo(const ImageInfo *image_info,
   if (montage_info == (MontageInfo *) NULL)
     return(clone_info);
   if (montage_info->geometry != (char *) NULL)
-    clone_info->geometry=GetString(montage_info->geometry);
+    clone_info->geometry=AllocateString(montage_info->geometry);
   if (montage_info->tile != (char *) NULL)
-    clone_info->tile=GetString(montage_info->tile);
+    clone_info->tile=AllocateString(montage_info->tile);
   if (montage_info->title != (char *) NULL)
-    clone_info->title=GetString(montage_info->title);
+    clone_info->title=AllocateString(montage_info->title);
   if (montage_info->frame != (char *) NULL)
-    clone_info->frame=GetString(montage_info->frame);
+    clone_info->frame=AllocateString(montage_info->frame);
   if (montage_info->texture != (char *) NULL)
-    clone_info->texture=GetString(montage_info->texture);
+    clone_info->texture=AllocateString(montage_info->texture);
   if (montage_info->font != (char *) NULL)
-    clone_info->font=GetString(montage_info->font);
+    clone_info->font=AllocateString(montage_info->font);
   clone_info->pointsize=montage_info->pointsize;
   clone_info->border_width=montage_info->border_width;
   clone_info->shadow=montage_info->shadow;
@@ -198,11 +198,11 @@ MagickExport void GetMontageInfo(const ImageInfo *image_info,
   assert(montage_info != (MontageInfo *) NULL);
   (void) memset(montage_info,0,sizeof(MontageInfo));
   (void) strncpy(montage_info->filename,image_info->filename,MaxTextExtent-1);
-  montage_info->geometry=GetString(DefaultTileGeometry);
+  montage_info->geometry=AllocateString(DefaultTileGeometry);
   montage_info->gravity=CenterGravity;
-  montage_info->tile=GetString("6x4");
+  montage_info->tile=AllocateString("6x4");
   if (image_info->font != (char *) NULL)
-    montage_info->font=GetString(image_info->font);
+    montage_info->font=AllocateString(image_info->font);
   montage_info->pointsize=image_info->pointsize;
   montage_info->fill.opacity=OpaqueOpacity;
   montage_info->stroke.opacity=TransparentOpacity;
@@ -465,7 +465,7 @@ MagickExport Image *MontageImages(const Image *images,
   draw_info->gravity=NorthGravity;
   draw_info->stroke=montage_info->stroke;
   draw_info->fill=montage_info->fill;
-  draw_info->text=GetString("");
+  draw_info->text=AllocateString("");
   GetTypeMetrics(image_list[0],draw_info,&metrics);
   texture=(Image *) NULL;
   if (montage_info->texture != (char *) NULL)
@@ -542,7 +542,7 @@ MagickExport Image *MontageImages(const Image *images,
     /*
       Set montage geometry.
     */
-    montage->montage=GetString((char *) NULL);
+    montage->montage=AllocateString((char *) NULL);
     count=1;
     for (tile=0; tile < tiles_per_page; tile++)
       count+=strlen(image_list[tile]->filename)+1;

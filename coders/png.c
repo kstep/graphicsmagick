@@ -1345,7 +1345,7 @@ png_read_raw_profile(Image *image, const ImageInfo *image_info,
          ReacquireMemory((void **) &image->generic_profile,
             (i+1)*sizeof(ProfileInfo));
        image->generic_profile[i].length=length;
-       image->generic_profile[i].name=GetString(&text[ii].key[17]);
+       image->generic_profile[i].name=AllocateString(&text[ii].key[17]);
        image->generic_profile[i].info=info;
        image->generic_profiles++;
        if (image_info->verbose)
@@ -2744,7 +2744,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (image->color_profile.length)
           {
 #ifdef PNG_FREE_ME_SUPPORTED
-            image->color_profile.name=GetString("icm");
+            image->color_profile.name=AllocateString("icm");
             image->color_profile.info=(unsigned char *) info;
             png_data_freer(ping, ping_info, PNG_USER_WILL_FREE_DATA,
                PNG_FREE_ICCP);
@@ -2761,7 +2761,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                  (void) memcpy(image->color_profile.info,
                     (unsigned char *) info,length);
-                 image->color_profile.name=GetString("icm");
+                 image->color_profile.name=AllocateString("icm");
                  /* Note that the PNG iCCP profile name gets lost. */
               }
 #endif
@@ -4182,7 +4182,7 @@ ModuleExport void RegisterPNGImage(void)
 
   *version='\0';
 #if defined(PNG_LIBPNG_VER_STRING)
-  (void) strncpy(version,GetString(PNG_LIBPNG_VER_STRING),MaxTextExtent-2);
+  (void) strncpy(version,AllocateString(PNG_LIBPNG_VER_STRING),MaxTextExtent-2);
 # if PNG_LIBPNG_VER > 10001
   if (LocaleCompare(PNG_LIBPNG_VER_STRING,png_get_header_ver(NULL)) != 0)
     {

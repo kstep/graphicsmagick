@@ -631,7 +631,7 @@ int main(int argc,char **argv)
               }
             if ((image_info->font == (char *) NULL) ||
                 (*image_info->font != '@'))
-              resource_info.font=GetString(image_info->font);
+              resource_info.font=AllocateString(image_info->font);
             break;
           }
         if (LocaleCompare("foreground",option+1) == 0)

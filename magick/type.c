@@ -503,8 +503,8 @@ static unsigned int ReadConfigurationFile(const char *basename,
     }
   xml=(char *) FileToBlob(filename,&length,exception);
   if (xml == (char *) NULL)
-    xml=GetString(TypeMap);
-  token=GetString(xml);
+    xml=AllocateString(TypeMap);
+  token=AllocateString(xml);
   for (q=xml; *q != '\0'; )
   {
     /*

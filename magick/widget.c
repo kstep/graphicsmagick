@@ -4844,7 +4844,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
                     continue;
                   if (!p->encoder)
                     continue;
-                  formats[i]=GetString(p->name);
+                  formats[i]=AllocateString(p->name);
                   LocaleLower((char *) formats[i]);
                   i++;
                 }

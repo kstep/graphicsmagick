@@ -2870,7 +2870,7 @@ MagickExport void XGetPixelPacket(Display *display,
 %      returned.
 %
 %    o database: Specifies a resource database; returned from
-%      XrmGetStringDatabase.
+%      XrmAllocateStringDatabase.
 %
 %    o client_name:  Specifies the application name used to retrieve resource
 %      info from the X server database.
@@ -3027,7 +3027,7 @@ MagickExport XrmDatabase XGetResourceDatabase(Display *display,
       /*
         Combine server database.
       */
-      server_database=XrmGetStringDatabase(XResourceManagerString(display));
+      server_database=XrmAllocateStringDatabase(XResourceManagerString(display));
       XrmCombineDatabase(server_database,&resource_database,False);
     }
   /*
@@ -3060,7 +3060,7 @@ MagickExport XrmDatabase XGetResourceDatabase(Display *display,
 %  A description of each parameter follows:
 %
 %    o database: Specifies a resource database; returned from
-%      XrmGetStringDatabase.
+%      XrmAllocateStringDatabase.
 %
 %    o client_name:  Specifies the application name used to retrieve
 %      resource info from the X server database.
@@ -3286,7 +3286,7 @@ MagickExport void XGetResourceInfo(XrmDatabase database,char *client_name,
 %      default value is returned.
 %
 %    o database: Specifies a resource database; returned from
-%      XrmGetStringDatabase.
+%      XrmAllocateStringDatabase.
 %
 %    o client_name:  Specifies the application name used to retrieve
 %      resource info from the X server database.
@@ -8603,7 +8603,7 @@ MagickExport void XUserPreferences(XResourceInfo *resource_info)
   */
   assert(resource_info != (XResourceInfo *) NULL);
   client_name=SetClientName((char *) NULL);
-  preferences_database=XrmGetStringDatabase("");
+  preferences_database=XrmAllocateStringDatabase("");
   FormatString(specifier,"%.1024s.backdrop",client_name);
   value=resource_info->backdrop ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,(char *) value);

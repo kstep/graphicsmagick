@@ -197,9 +197,9 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   if (draw_info == (DrawInfo *) NULL)
     return(clone_info);
   if (draw_info->primitive != (char *) NULL)
-    clone_info->primitive=GetString(draw_info->primitive);
+    clone_info->primitive=AllocateString(draw_info->primitive);
   if (draw_info->geometry != (char *) NULL)
-    clone_info->geometry=GetString(draw_info->geometry);
+    clone_info->geometry=AllocateString(draw_info->geometry);
   clone_info->affine=draw_info->affine;
   clone_info->gravity=draw_info->gravity;
   clone_info->fill=draw_info->fill;
@@ -227,24 +227,24 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   clone_info->compose=draw_info->compose;
   clone_info->unicode=draw_info->unicode;
   if (draw_info->text != (char *) NULL)
-    clone_info->text=GetString(draw_info->text);
+    clone_info->text=AllocateString(draw_info->text);
   if (draw_info->font != (char *) NULL)
-    clone_info->font=GetString(draw_info->font);
+    clone_info->font=AllocateString(draw_info->font);
   if (draw_info->family != (char *) NULL)
-    clone_info->family=GetString(draw_info->family);
+    clone_info->family=AllocateString(draw_info->family);
   clone_info->style=draw_info->style;
   clone_info->stretch=draw_info->stretch;
   clone_info->weight=draw_info->weight;
   if (draw_info->encoding != (char *) NULL)
-    clone_info->encoding=GetString(draw_info->encoding);
+    clone_info->encoding=AllocateString(draw_info->encoding);
   clone_info->pointsize=draw_info->pointsize;
   if (draw_info->density != (char *) NULL)
-    clone_info->density=GetString(draw_info->density);
+    clone_info->density=AllocateString(draw_info->density);
   clone_info->align=draw_info->align;
   clone_info->box=draw_info->box;
   clone_info->border_color=draw_info->border_color;
   if (draw_info->server_name != (char *) NULL)
-    clone_info->server_name=GetString(draw_info->server_name);
+    clone_info->server_name=AllocateString(draw_info->server_name);
   if (draw_info->dash_pattern != (double *) NULL)
     {
       register long
@@ -259,7 +259,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
         (x+1)*sizeof(double));
     }
   if (draw_info->clip_path != (char *) NULL)
-    clone_info->clip_path=GetString(draw_info->clip_path);
+    clone_info->clip_path=AllocateString(draw_info->clip_path);
   clone_info->bounds=draw_info->bounds;
   clone_info->clip_units=draw_info->clip_units;
   clone_info->debug=draw_info->debug;
@@ -1636,7 +1636,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
         "Memory allocation failed")
     }
   graphic_context[n]=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-  token=GetString(primitive);
+  token=AllocateString(primitive);
   (void) QueryColorDatabase("black",&start_color);
   status=True;
   for (q=primitive; *q != '\0'; )
@@ -1721,7 +1721,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
               Create clip mask.
             */
             GetToken(q,&q,token);
-            graphic_context[n]->clip_path=GetString(token);
+            graphic_context[n]->clip_path=AllocateString(token);
             (void) DrawClipPath(image,graphic_context[n],
               graphic_context[n]->clip_path);
             break;
@@ -2925,7 +2925,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
             break;
           }
         GetToken(q,&q,token);
-        primitive_info[j].text=GetString(token);
+        primitive_info[j].text=AllocateString(token);
         break;
       }
       case ImagePrimitive:
@@ -2936,7 +2936,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
             break;
           }
         GetToken(q,&q,token);
-        primitive_info[j].text=GetString(token);
+        primitive_info[j].text=AllocateString(token);
         primitive_info[j+1].point.x-=current.tx;
         primitive_info[j+1].point.y-=current.ty;
         break;
@@ -3062,7 +3062,7 @@ static unsigned int DrawPatternPath(Image *image,DrawInfo *draw_info,
   if ((*pattern) != (Image *) NULL)
     DestroyImage(*pattern);
   image_info=CloneImageInfo((ImageInfo *) NULL);
-  image_info->size=GetString(geometry->value);
+  image_info->size=AllocateString(geometry->value);
   *pattern=AllocateImage(image_info);
   DestroyImageInfo(image_info);
   (void) QueryColorDatabase("none",&(*pattern)->background_color);
@@ -4110,16 +4110,16 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->miterlimit=10;
   draw_info->decorate=NoDecoration;
   if (clone_info->font != (char *) NULL)
-    draw_info->font=GetString(clone_info->font);
+    draw_info->font=AllocateString(clone_info->font);
   if (clone_info->density != (char *) NULL)
-    draw_info->density=GetString(clone_info->density);
+    draw_info->density=AllocateString(clone_info->density);
   draw_info->text_antialias=clone_info->antialias;
   draw_info->pointsize=clone_info->pointsize;
   draw_info->box.opacity=TransparentOpacity;
   draw_info->border_color=clone_info->border_color;
   draw_info->compose=CopyCompositeOp;
   if (clone_info->server_name != (char *) NULL)
-    draw_info->server_name=GetString(clone_info->server_name);
+    draw_info->server_name=AllocateString(clone_info->server_name);
   draw_info->debug=clone_info->debug;
   draw_info->signature=MagickSignature;
   DestroyImageInfo(clone_info);

@@ -346,7 +346,7 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
       ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
         (char *) NULL)
     }
-  image->generic_profile[i].name=GetString((char *) NULL);
+  image->generic_profile[i].name=AllocateString((char *) NULL);
   FormatString(image->generic_profile[i].name,"APP%d",
     jpeg_info->unread_marker-JPEG_APP0);
   image->generic_profile[i].info=(unsigned char *) AcquireMemory(length);

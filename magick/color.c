@@ -530,7 +530,7 @@ MagickExport char **GetColorList(const char *pattern,int *number_colors)
   i=0;
   for (p=color_list; p != (const ColorInfo *) NULL; p=p->next)
     if (GlobExpression(p->name,pattern))
-      colorlist[i++]=GetString(p->name);
+      colorlist[i++]=AllocateString(p->name);
   *number_colors=i;
   return(colorlist);
 }
@@ -1595,8 +1595,8 @@ static unsigned int ReadConfigurationFile(const char *basename,
     }
   xml=(char *) FileToBlob(filename,&length,exception);
   if (xml == (char *) NULL)
-    xml=GetString(ColorMap);
-  token=GetString(xml);
+    xml=AllocateString(ColorMap);
+  token=AllocateString(xml);
   for (q=xml; *q != '\0'; )
   {
     /*

@@ -1295,7 +1295,7 @@ MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
   AttachBlob(clone_info->blob,blob,length);
   clone_info->ping=True;
   if (clone_info->size == (char *) NULL)
-    clone_info->size=GetString(DefaultTileGeometry);
+    clone_info->size=AllocateString(DefaultTileGeometry);
   image=ReadStream(clone_info,&StreamHandler,exception);
   DestroyImageInfo(clone_info);
   return(image);

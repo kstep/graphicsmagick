@@ -239,10 +239,10 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
 
   assert(filename != (const char *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
-  path=GetString(filename);
+  path=AllocateString(filename);
   if (IsAccessible(path))
     return(path);
-  search_path=GetString(path);
+  search_path=AllocateString(path);
   FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
     DirectorySeparator,filename);
   if (IsAccessible(path))

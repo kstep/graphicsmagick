@@ -35,7 +35,7 @@ extern MagickExport char
   *Base64Encode(const unsigned char *,const size_t),
   *GetExecutionPath(const char *),
   *GetPageGeometry(const char *),
-  *GetString(const char *),
+  *AllocateString(const char *),
   **ListFiles(const char *,const char *,long *),
   *PostscriptGeometry(const char *),
   *SetClientName(const char *),

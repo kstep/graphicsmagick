@@ -595,8 +595,8 @@ static unsigned int ReadConfigurationFile(const char *basename,
     }
   xml=(char *) FileToBlob(filename,&length,exception);
   if (xml == (char *) NULL)
-    xml=GetString(DelegateMap);
-  token=GetString(xml);
+    xml=AllocateString(DelegateMap);
+  token=AllocateString(xml);
   for (q=xml; *q != '\0'; )
   {
     /*

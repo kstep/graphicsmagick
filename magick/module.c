@@ -427,7 +427,7 @@ static char **GetModuleList(ExceptionInfo *exception)
     /*
       Add new module name to list.
     */
-    modules[i]=GetString((char *) NULL);
+    modules[i]=AllocateString((char *) NULL);
     GetPathComponent(entry->d_name,BasePath,modules[i]);
     LocaleUpper(modules[i]);
     if (LocaleNCompare("IM_MOD_",modules[i],7) == 0)
@@ -617,7 +617,7 @@ static void ModuleToTag(const char *filename,const char *format,char *module)
   assert(filename != (const char *) NULL);
   assert(format != (const char *) NULL);
   assert(module != (char *) NULL);
-  module_name=GetString(filename);
+  module_name=AllocateString(filename);
   LocaleUpper(module_name);
   FormatString(module,format,module_name);
   LiberateMemory((void **) &module_name);
@@ -848,8 +848,8 @@ static unsigned int ReadConfigurationFile(const char *basename,
     }
   xml=(char *) FileToBlob(filename,&length,exception);
   if (xml == (char *) NULL)
-    xml=GetString(ModuleMap);
-  token=GetString(xml);
+    xml=AllocateString(ModuleMap);
+  token=AllocateString(xml);
   for (q=xml; *q != '\0'; )
   {
     /*
@@ -1125,7 +1125,7 @@ static char *TagToProcess(const char *tag)
     *module_name;
 
   assert(tag != (char *) NULL);
-  module_name=GetString((char *) NULL);
+  module_name=AllocateString((char *) NULL);
 #if !defined(WIN32)
   (void) FormatString(module_name,"%.1024s.la",tag);
   (void) LocaleLower(module_name);
@@ -1165,7 +1165,7 @@ MagickExport char *TagToModule(const char *tag)
     *module_name;
 
   assert(tag != (char *) NULL);
-  module_name=GetString("tag");
+  module_name=AllocateString("tag");
 #if !defined(WIN32)
   (void) FormatString(module_name,"%.1024s.la",tag);
   (void) LocaleLower(module_name);

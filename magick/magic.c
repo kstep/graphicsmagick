@@ -321,8 +321,8 @@ static unsigned int ReadConfigurationFile(const char *basename,
     }
   xml=(char *) FileToBlob(filename,&length,exception);
   if (xml == (char *) NULL)
-    xml=GetString(MagicMap);
-  token=GetString(xml);
+    xml=AllocateString(MagicMap);
+  token=AllocateString(xml);
   for (q=xml; *q != '\0'; )
   {
     /*
@@ -438,7 +438,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
               *q;
 
             magic_list->target=AcquireString(token);
-            magic_list->magic=(unsigned char *) GetString(token);
+            magic_list->magic=(unsigned char *) AllocateString(token);
             q=magic_list->magic;
             for (p=magic_list->target; *p != '\0'; )
             {

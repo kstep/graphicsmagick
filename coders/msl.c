@@ -2364,7 +2364,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
               {
                 if (LocaleCompare(keyword,"size") == 0)
                   {
-                    msl_info->image_info[n]->size=GetString(value);
+                    msl_info->image_info[n]->size=AllocateString(value);
                     break;
                   }
                 ThrowException(msl_info->exception,OptionWarning,

@@ -1354,7 +1354,7 @@ static char *EscapeParenthesis(const char *text)
     escapes;
 
   escapes=0;
-  buffer=GetString(text);
+  buffer=AllocateString(text);
   p=buffer;
   for (i=0; i < (long) Min(strlen(text),(MaxTextExtent-escapes-1)); i++)
   {
@@ -1655,9 +1655,9 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
       XGetResourceInfo(resource_database,client_name,&resource_info);
       resource_info.close_server=False;
       resource_info.colormap=PrivateColormap;
-      resource_info.font=GetString(draw_info->font);
-      resource_info.background_color=GetString("#ffffff");
-      resource_info.foreground_color=GetString("#000000");
+      resource_info.font=AllocateString(draw_info->font);
+      resource_info.background_color=AllocateString("#ffffff");
+      resource_info.foreground_color=AllocateString("#000000");
       map_info=XAllocStandardColormap();
       if (map_info == (XStandardColormap *) NULL)
         ThrowBinaryException(ResourceLimitWarning,"Unable to allocate colormap",

@@ -188,7 +188,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Decode image header;  header terminates one character beyond a ':'.
     */
     length=MaxTextExtent;
-    values=GetString((char *) NULL);
+    values=AllocateString((char *) NULL);
     quantum_depth=QuantumDepth;
     image->depth=8;
     image->compression=NoCompression;
@@ -206,7 +206,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             Read comment-- any text between { }.
           */
           length=MaxTextExtent;
-          comment=GetString((char *) NULL);
+          comment=AllocateString((char *) NULL);
           p=comment;
           for ( ; comment != (char *) NULL; p++)
           {
@@ -502,7 +502,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     if (image->generic_profile == (ProfileInfo *) NULL)
                       ThrowReaderException(ResourceLimitWarning,
                         "Memory allocation failed",image);
-                    image->generic_profile[i].name=GetString(keyword+8);
+                    image->generic_profile[i].name=AllocateString(keyword+8);
                     image->generic_profile[i].length=atol(values);
                     image->generic_profile[i].info=(unsigned char *) NULL;
                     image->generic_profiles++;
@@ -659,7 +659,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Image directory.
         */
-        image->directory=GetString((char *) NULL);
+        image->directory=AllocateString((char *) NULL);
         if (image->directory == (char *) NULL)
           ThrowReaderException(CorruptImageWarning,"Unable to read image data",
             image);
