@@ -1060,6 +1060,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->previous=(Image *) NULL;
   clone_image->list=(Image *) NULL;
   clone_image->next=(Image *) NULL;
+  clone_image->clip_mask=(Image *) NULL;
   if (!orphan)
     {
       if (image->previous != (Image *) NULL)
