@@ -249,7 +249,8 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
 MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
 {
   Image
-    *coalesce_image;
+    *coalesce_image,
+    *previous_image;
 
   register const Image
     *next;
@@ -271,12 +272,19 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
   if (coalesce_image == (Image *) NULL)
     return((Image *) NULL);
   (void) memset(&coalesce_image->page,0,sizeof(RectangleInfo));
+  previous_image=coalesce_image;
   /*
     Coalesce image.
   */
   for (next=image->next; next != (Image *) NULL; next=next->next)
   {
-    coalesce_image->next=CloneImage(coalesce_image,0,0,True,exception);
+    if (next->dispose == 4)
+      coalesce_image->next=CloneImage(previous_image,0,0,True,exception);
+    else
+      {
+        coalesce_image->next=CloneImage(coalesce_image,0,0,True,exception);
+        previous_image=coalesce_image;
+      }
     if (coalesce_image->next == (Image *) NULL)
       {
         DestroyImageList(coalesce_image);
