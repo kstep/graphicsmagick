@@ -55,7 +55,9 @@
 */
 #include "magick.h"
 #include "defines.h"
+#if defined(HasZLIB)
 #include "zlib.h"
+#endif
 
 /*
   Global declarations.
