@@ -40,31 +40,34 @@ Unix:
 
     export TMPDIR=/home/tmp
 
-NT:
-Win95:
-Win98:
+
+Win2K, NT, Win95, Win98:
 
   Download
 
-    ftp://www.wizards.dupont.com/pub/ImageMagick/nt/ImageMagick-nt.zip
+    ftp://www.wizards.dupont.com/pub/ImageMagick/win2k/ImageMagick-win2k.zip
 
   and double click on it to extract the distribution.  Next, select
   File->New->Folder to create c:\ImageMagick.
 
-    ImageMagick-5.2.0/delegates/nt.mgk
+    ImageMagick-5.2.0/delegates/win2k.mgk
 
   to
 
     c:\ImageMagick\delegates.mgk
 
-  Use Copy/Paste/Rename to copy and rename nt.mgk to delegates.mgk.  Now
+  Use Copy/Paste/Rename to copy and rename win2k.mgk to delegates.mgk.  Now
   copy
 
     ImageMagick-5.2.0\delegates\magic.mgk
+    ImageMagick-5.2.0\coders\modules.mgk
 
   to
 
     c:\ImageMagick\magic.mgk
+    c:\ImageMagick\modules.mgk
+
+  respectively.
 
   If you have an X server, change to directory
   ImageMagick-5.2.0/ImageMagick-5.2.0/bin and double-click on
@@ -76,7 +79,7 @@ Win98:
 
   Alternatively, download the ImageMagick NT source
 
-    ftp://www.wizards.dupont.com/pub/ImageMagick/nt/ImageMagick-5.2.0.zip
+    ftp://www.wizards.dupont.com/pub/ImageMagick/win2k/ImageMagick-5.2.0.zip
 
   and double click on the ImageMagick Visual C++ project to build from
   the source.
