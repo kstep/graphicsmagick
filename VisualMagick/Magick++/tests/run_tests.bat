@@ -1,4 +1,4 @@
-dir@echo off
+@echo off
 set srcdir=..\..\..\Magick++\tests\
 set bindir=..\..\bin\
 set PATH=%bindir%;%PATH%
