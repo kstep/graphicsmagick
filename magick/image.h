@@ -420,6 +420,9 @@ typedef struct _Image
     restart_animation_here,
     taint;
 
+  SegmentInfo
+    bounding_box;
+
   Ascii85Info
     ascii85;
 

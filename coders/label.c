@@ -139,6 +139,25 @@ static char *EscapeParenthesis(const char *text)
   return(buffer);
 }
 
+static void EscapeText(char *text,const char escape)
+{
+  register char
+    *p;
+
+  register int
+    i;
+
+  p=text;
+  for (i=0; i < Extent(text); i++)
+  {
+    if ((text[i] == escape) && (text[i+1] != escape))
+      i++;
+    *p++=text[i];
+  }
+  *p='\0';
+  return;
+}
+
 #if defined(HasTTF)
 #if !defined(FREETYPE_MAJOR)
 static void GetFontInfo(TT_Face face,TT_Face_Properties *face_properties,
@@ -460,12 +479,16 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     if (box.yMax > bounding_box.yMax)
       bounding_box.yMax=box.yMax;
   }
+  image->bounding_box.x1=bounding_box.xMin;
+  image->bounding_box.y1=bounding_box.yMin;
+  image->bounding_box.x2=bounding_box.xMax;
+  image->bounding_box.y2=bounding_box.yMax;
+  image->columns=image->bounding_box.x2-image->bounding_box.x1+3;
+  image->rows=image->bounding_box.y2-image->bounding_box.y1+3;
+  SetImage(image,TransparentOpacity);
   /*
     Render label.
   */
-  image->columns=bounding_box.xMax-bounding_box.xMin+3;
-  image->rows=bounding_box.yMax-bounding_box.yMin+3;
-  SetImage(image,TransparentOpacity);
   for (i=0; i < length; i++)
   {
     if (glyphs[i].image == (FT_Glyph) NULL)
@@ -1125,25 +1148,6 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
   ThrowReaderException(MissingDelegateWarning,
     "X11 library is not available",image);
 #endif
-}
-
-static void EscapeText(char *text,const char escape)
-{
-  register char
-    *p;
-
-  register int
-    i;
-
-  p=text;
-  for (i=0; i < Extent(text); i++)
-  {
-    if ((text[i] == escape) && (text[i+1] != escape))
-      i++;
-    *p++=text[i];
-  }
-  *p='\0';
-  return;
 }
 
 static Image *ReadLABELImage(const ImageInfo *image_info,
