@@ -1,3 +1,10 @@
+2003-04-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* VisualMagick/configure: Added rpcrt4.lib to project settings
+	for Visual C++ 6.0 so that configure links.  The code which
+	needs these interfaces is to support Visual C++ 7.0 XML-style
+	project files.
+
 2003-04-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www/windows.html: Updated to match current installer.
