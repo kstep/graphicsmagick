@@ -1591,14 +1591,18 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
     *token;
 
   double
+    alpha,
+    beta,
     angle,
-    factor;
+    factor,
+    radius;
 
   DrawInfo
     **graphic_context;
 
   long
     j,
+    k,
     n;
 
   PointInfo
@@ -2742,9 +2746,9 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
       primitive_info[i].coordinates=0;
       primitive_info[i].method=FloodfillMethod;
       i++;
-      if (i < (long) (number_points-MagickPI*360-6*BezierQuantum))
+      if (i < (long) number_points)
         continue;
-      number_points+=MagickPI*360+6*BezierQuantum;
+      number_points<<=1;
       ReacquireMemory((void **) &primitive_info,
         number_points*sizeof(PrimitiveInfo));
       if (primitive_info == (PrimitiveInfo *) NULL)
@@ -2758,6 +2762,25 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
     primitive_info[j].coordinates=x;
     primitive_info[j].method=FloodfillMethod;
     primitive_info[j].text=(char *) NULL;
+    /*
+      Circumscribe primitive within a circle.
+    */
+    alpha=primitive_info[i-1].point.x-primitive_info[j].point.x;
+    beta=primitive_info[i-1].point.y-primitive_info[j].point.y;
+    radius=sqrt(alpha*alpha+beta*beta);
+    length=2*ceil(MagickPI*radius)+6*BezierQuantum+360;
+    if (i >= (long) (number_points-length))
+      {
+        number_points+=length;
+        ReacquireMemory((void **) &primitive_info,
+          number_points*sizeof(PrimitiveInfo));
+        if (primitive_info == (PrimitiveInfo *) NULL)
+          {
+            ThrowException(&image->exception,ResourceLimitWarning,
+              "Unable to draw image","Memory allocation failed");
+            break;
+          }
+      }
     switch (primitive_type)
     {
       case PointPrimitive:
@@ -4652,13 +4675,10 @@ static void TraceCircle(PrimitiveInfo *primitive_info,const PointInfo start,
 }
 
 static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
-  const PointInfo end,const PointInfo degrees)
+  const PointInfo stop,const PointInfo degrees)
 {
   double
     step;
-
-  long
-    segments;
 
   PointInfo
     angle,
@@ -4673,28 +4693,25 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
   /*
     Ellipses are just short segmented polys.
   */
-  step=2/end.y;
-  if (end.x > end.y)
-    step=2/end.x;
+  step=2/stop.y;
+  if (stop.x > stop.y)
+    step=2/stop.x;
   if (step > MagickPI/8.0)
     step=MagickPI/8.0;
   else
-    {
-      segments=(long) ceil(MagickPI/step/2)*4;
-      step=MagickPI/segments;
-    }
+    step=MagickPI/(4*ceil(MagickPI/step/2));
   angle.x=DegreesToRadians(degrees.x);
   angle.y=DegreesToRadians(degrees.y);
   p=primitive_info;
   for ( ; angle.x < angle.y; angle.x+=step)
   {
-    point.x=cos(angle.x)*end.x+start.x;
-    point.y=sin(angle.x)*end.y+start.y;
+    point.x=cos(angle.x)*stop.x+start.x;
+    point.y=sin(angle.x)*stop.y+start.y;
     TracePoint(p,point);
     p++;
   }
-  point.x=cos(angle.y)*end.x+start.x+MagickEpsilon;
-  point.y=sin(angle.y)*end.y+start.y+MagickEpsilon;
+  point.x=cos(angle.y)*stop.x+start.x+MagickEpsilon;
+  point.y=sin(angle.y)*stop.y+start.y+MagickEpsilon;
   TracePoint(p,point);
   p++;
   primitive_info->coordinates=p-primitive_info;
