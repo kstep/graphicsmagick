@@ -472,8 +472,13 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               if (LocaleCompare(keyword,"page") == 0)
                 {
-                  ParseImageGeometry(PostscriptGeometry(values),&image->page.x,
-                    &image->page.y,&image->page.width,&image->page.height);
+                  char
+                    *geometry;
+
+                  geometry=PostscriptGeometry(values);
+                  ParseImageGeometry(geometry,&image->page.x,&image->page.y,
+                    &image->page.width,&image->page.height);
+                  LiberateMemory((void **) &geometry);
                   break;
                 }
               if (LocaleNCompare(keyword,"profile-",8) == 0)
