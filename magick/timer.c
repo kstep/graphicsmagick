@@ -48,7 +48,6 @@
 %
 %  Contributed by Bill Radcliffe and Bob Friesenhahn.
 %
-%
 */
 
 /*

@@ -614,8 +614,10 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   xwd_info.bytes_per_line=(CARD32) bytes_per_line;
   xwd_info.visual_class=(CARD32)
     (image->storage_class == DirectClass ? DirectColor : PseudoColor);
-  xwd_info.red_mask=(CARD32) (image->storage_class == DirectClass ? 0xff0000 : 0);
-  xwd_info.green_mask=(CARD32) (image->storage_class == DirectClass ? 0xff00 : 0);
+  xwd_info.red_mask=(CARD32)
+    (image->storage_class == DirectClass ? 0xff0000 : 0);
+  xwd_info.green_mask=(CARD32)
+    (image->storage_class == DirectClass ? 0xff00 : 0);
   xwd_info.blue_mask=(CARD32) (image->storage_class == DirectClass ? 0xff : 0);
   xwd_info.bits_per_rgb=(CARD32) (image->storage_class == DirectClass ? 24 : 8);
   xwd_info.colormap_entries=(CARD32)

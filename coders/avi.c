@@ -350,7 +350,8 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     bmp_info;
 
   char
-    id[5];
+    id[5],
+    message[MaxTextExtent];
 
   Image
     *image;
@@ -786,8 +787,8 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) ReadByte(image);
         continue;
       }
-    ThrowReaderException(CorruptImageWarning,
-      "AVI support for this chunk not yet available",image);
+    FormatString(message,"AVI support for chunk %s not yet available",id);
+    ThrowReaderException(CorruptImageWarning,message,image);
   }
   while (image->previous != (Image *) NULL)
     image=image->previous;

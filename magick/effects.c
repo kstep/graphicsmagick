@@ -2350,6 +2350,8 @@ MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
     *shade_image;
 
   int
+    dx,
+    dy,
     y;
 
   PointInfo
@@ -2398,21 +2400,21 @@ MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
     /*
       Shade this row of pixels.
     */
-    *q++=(*(p+image->columns));
-    p++;
     s0=p;
-    s1=p+image->columns;
-    s2=p+2*image->columns;
-    for (x=1; x < (int) (image->columns-1); x++)
+    s1=s0+image->columns;
+    s2=s1+image->columns;
+    for (x=0; x < (int) image->columns; x++)
     {
       /*
         Determine the surface normal and compute shading.
       */
-      normal.x=Intensity(*(s0-1))+Intensity(*(s1-1))+Intensity(*(s2-1))-
-        Intensity(*(s0+1))-Intensity(*(s1+1))-Intensity(*(s2+1));
-      normal.y=Intensity(*(s2-1))+Intensity(*s2)+Intensity(*(s2+1))-
-        Intensity(*(s0-1))-Intensity(*s0)-Intensity(*(s0+1));
-      if ((normal.x == 0) && (normal.y == 0))
+      dx=(x > 0) ? 1 : -1;
+      dy=(x < (image->columns-1)) ? 1 : -1;
+      normal.x=Intensity(*(s0-dx))+Intensity(*(s1-dx))+Intensity(*(s2-dx))-
+        Intensity(*(s0+dy))-Intensity(*(s1+dy))-Intensity(*(s2+dy));
+      normal.y=Intensity(*(s2-dx))+Intensity(*s2)+Intensity(*(s2+dy))-
+        Intensity(*(s0-dx))-Intensity(*s0)-Intensity(*(s0+dy));
+      if ((normal.x == 0.0) && (normal.y == 0.0))
         shade=light.z;
       else
         {
@@ -2444,7 +2446,6 @@ MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
       s2++;
       q++;
     }
-    *q++=(*s1);
     if (!SyncImagePixels(shade_image))
       break;
     if (QuantumTick(y,image->rows))

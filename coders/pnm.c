@@ -847,7 +847,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
     else
       FormatString(buffer,"P%c\n",format);
     (void) WriteBlob(image,strlen(buffer),buffer);
-    attribute=GetImageAttribute(image,"Label");
+    attribute=GetImageAttribute(image,"Comment");
     if (attribute != (ImageAttribute *) NULL)
       {
         register char

@@ -1660,10 +1660,12 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
       case 'M':
       case 'm':
       {
-        point.x=strtod(p,&p);
+        x=strtod(p,&p);
         if (*p == ',')
           p++;
-        point.y=strtod(p,&p);
+        y=strtod(p,&p);
+        point.x=attribute == 'M' ? x : point.x+x;
+        point.y=attribute == 'M' ? y : point.y+y;
         GeneratePoint(q,point);
         q+=q->coordinates;
         start=point;

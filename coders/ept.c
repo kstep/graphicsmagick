@@ -208,13 +208,13 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
 
   (void) strcpy(filename,image->filename);
   (void) strcpy(ps_filename,image->magick_filename);
-  if (LocaleCompare(image_info->magick,"PS") != 0)
+  if (LocaleCompare(image_info->magick,"EPS") != 0)
     {
       /*
         Write image as Encapsulated Postscript to a temporary file.
       */
       TemporaryFilename(ps_filename);
-      FormatString(image->filename,"ps:%.1024s",ps_filename);
+      FormatString(image->filename,"eps:%.1024s",ps_filename);
       (void) WriteImage(image_info,image);
     }
   /*
@@ -263,7 +263,7 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
     }
   (void) fclose(ps_file);
   (void) fclose(tiff_file);
-  if (LocaleCompare(image_info->magick,"PS") != 0)
+  if (LocaleCompare(image_info->magick,"EPS") != 0)
     remove(ps_filename);
   remove(tiff_filename);
   if (status == False)
