@@ -943,57 +943,26 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   for ( ; attribute != (ImageAttribute *) NULL; attribute=attribute->next)
     (void) SetImageAttribute(clone_image,attribute->key,attribute->value);
   GetExceptionInfo(&clone_image->exception);
-  GetCacheInfo(&clone_image->cache);
   if ((columns != 0) || (rows != 0))
     {
       clone_image->page.width=columns;
       clone_image->page.height=rows;
       clone_image->page.x*=(int) ((double) columns/clone_image->columns);
       clone_image->page.y*=(int) ((double) rows/clone_image->rows);
+      clone_image->clip_mask=(Image *) NULL;
+      GetCacheInfo(&clone_image->cache);
       clone_image->columns=columns;
       clone_image->rows=rows;
-      clone_image->clip_mask=(Image *) NULL;
     }
   else
     {
-      int
-        y;
-
-      register const PixelPacket
-        *p;
-
-      register IndexPacket
-        *indexes;
-
-      register PixelPacket
-        *q;
-
-      /*
-        Clone pixel cache.
-      */
-      for (y=0; y < (long) image->rows; y++)
-      {
-        p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-        q=SetImagePixels(clone_image,0,y,clone_image->columns,1);
-        if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-          break;
-        (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
-        indexes=GetIndexes(image);
-        if (indexes != (IndexPacket *) NULL)
-          (void) memcpy(GetIndexes(clone_image),indexes,
-            image->columns*sizeof(IndexPacket));
-        if (!SyncImagePixels(clone_image))
-          break;
-      }
-      if (y < (long) image->rows)
-        ThrowImageException(CacheWarning,"Unable to clone image",
-          "could not get image cache");
       if (image->montage != (char *) NULL)
         (void) CloneString(&clone_image->montage,image->montage);
       if (image->directory != (char *) NULL)
         (void) CloneString(&clone_image->directory,image->directory);
       if (clone_image->clip_mask != (Image *) NULL)
         clone_image->clip_mask=ReferenceImage(image->clip_mask);
+      clone_image->cache=ReferenceCache(image->cache);
     }
   clone_image->blob=CloneBlobInfo((BlobInfo *) NULL);
   if (clone_image->orphan || orphan)
