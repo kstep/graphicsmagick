@@ -56,6 +56,7 @@
 #include "studio.h"
 #include "blob.h"
 #include "cache.h"
+#include "log.h"
 #include "utility.h"
 #if defined(HasZLIB)
 #include "zlib.h"
@@ -1859,6 +1860,9 @@ static void CacheSignalHandler(int status)
 
 MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
 {
+  char
+    message[MaxTextExtent];
+
   CacheInfo
     *cache_info;
 
@@ -1974,6 +1978,9 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
             if ((cache_info->storage_class == PseudoClass) ||
                 (cache_info->colorspace == CMYKColorspace))
               cache_info->indexes=(IndexPacket *) (pixels+number_pixels);
+            FormatString(message,"%.1024s in-memory pixel cache (%lukb)",
+              image->filename,(unsigned long) (cache_info->length/1024/1024));
+            LogMagickEvent(CacheEvent,message);
             return(True);
           }
       }
@@ -2017,6 +2024,9 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   cache_info->storage_class=image->storage_class;
   cache_info->colorspace=image->colorspace;
   cache_info->type=DiskCache;
+  FormatString(message,"%.1024s disk-based pixel cache (%lukb)",
+    image->filename,(unsigned long) (cache_info->length/1024/1024));
+  LogMagickEvent(CacheEvent,message);
   if ((cache_info->length > MinBlobExtent) &&
       (cache_info->length == (size_t) cache_info->length))
     {
@@ -2033,6 +2043,9 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
           if ((cache_info->storage_class == PseudoClass) ||
               (cache_info->colorspace == CMYKColorspace))
             cache_info->indexes=(IndexPacket *) (pixels+number_pixels);
+          FormatString(message,"%.1024s memory-mapped pixel cache (%lukb)",
+            image->filename,(unsigned long) (cache_info->length/1024/1024));
+          LogMagickEvent(CacheEvent,message);
         }
     }
   (void) close(file);
