@@ -779,6 +779,10 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   return(image);
 #endif
 #else
+  Image
+    *image;
+
+  image=AllocateImage(image_info);
   ThrowReaderException(MissingDelegateWarning,
     "FreeType library is not available",image);
 #endif
