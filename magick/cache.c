@@ -2054,6 +2054,7 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
     *indexes;
 
   long
+    pagesize,
     y;
 
   register const PixelPacket
@@ -2065,22 +2066,20 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
   unsigned int
     status;
 
-  unsigned long
-    pagesize;
-
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (void *) NULL);
   assert(filename != (const char *) NULL);
   assert(offset != (ExtendedSignedIntegralType *) NULL);
-  pagesize=4096;
+  pagesize=0;
 #if defined(HAVE_SYSCONF) && defined(_SC_PAGE_SIZE)
   pagesize=sysconf(_SC_PAGE_SIZE);
-#else
+#endif
 #if defined(HAVE_GETPAGESIZE)
   pagesize=getpagesize();
 #endif
-#endif
+  if (pagesize <= 0)
+    pagesize=16384;
   cache_info=(CacheInfo *) image->cache;
   if (attach)
     {

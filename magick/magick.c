@@ -338,17 +338,16 @@ MagickExport void InitializeMagick(const char *path)
   {
     long
       page_size,
-      phys_pages;
+      pages;
 
     page_size=sysconf(_SC_PAGE_SIZE);
-    phys_pages=sysconf(_SC_PHYS_PAGES);
-
-    if ( page_size > 0 && phys_pages > 0 )
+    pages=sysconf(_SC_PHYS_PAGES);
+    if ((page_size > 0) && (pages > 0))
       {
         SetMagickResourceLimit(MemoryResource,
-          ((page_size+512)/1024)*((phys_pages+512)/1024));
+          ((page_size+512)/1024)*((pages+512)/1024));
         SetMagickResourceLimit(MapResource,
-          2*((page_size+512)/1024)*((phys_pages+512)/1024));
+          2*((page_size+512)/1024)*((pages+512)/1024));
       }
   }
 #endif
