@@ -1,3 +1,8 @@
+2004-01-03  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* coders/sgi.c: opacity channel was lost when writing grayscale
+	SGI images.  See bug report in magick-users list.
+
 2003-12-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/annotate.c (RenderFreetype): Ensure that image storage
