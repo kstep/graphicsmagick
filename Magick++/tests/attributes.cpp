@@ -1252,8 +1252,8 @@ int main( int /*argc*/, char ** argv)
     // signature
     //
 
-    if ( image.signature() != "0c6e606a0007e0e40c5a662bed09ce3494ed1adef21cd6bc0f2b45b48870b4a2" &&
-	 image.signature() != "b28dfba61378655f8c083b9a717c9c7b664baa0ddf707b2aec09cd74682a1488" )
+    if ( image.signature() != "81d5c520d4c23e608404e49eb4ac1dd67c546e571faf62bd66d8f89b348ee488" &&
+	 image.signature() != "b3d1dca044c5a015d422eecd7189a02c69db848675302af5770e5a364d4874fc" )
       {
 	++failures;
 	cout << "Line: " << __LINE__ << ", signature ("

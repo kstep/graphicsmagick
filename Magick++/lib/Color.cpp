@@ -148,7 +148,7 @@ Magick::Color::operator std::string() const
   colorstr.setf(ios::right | ios::uppercase );
   colorstr.fill('0');
 
-#if defined(QuantumMagick)
+#if QuantumSize == 8
   colorstr << "#"
 	   << hex
 	   << setw(2) << static_cast<unsigned int>(redQuantum())
