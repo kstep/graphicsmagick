@@ -1,3 +1,8 @@
+2005-01-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/color.c (IsPaletteImage): Fix memory leak reported by
+	Stefan v. Wachter <svwa-dev@mnet-online.de>.
+
 2005-01-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* version.sh: Released 1.1.5.

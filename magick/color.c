@@ -1390,7 +1390,7 @@ MagickExport unsigned int IsOpaqueImage(const Image *image,
 %
 %  The format of the IsPaletteImage method is:
 %
-%      unsigned int IsPaletteImage(const Image *image,ExceptionInfo *exception)
+%      MagickBool IsPaletteImage(const Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -1403,7 +1403,7 @@ MagickExport unsigned int IsOpaqueImage(const Image *image,
 %
 %
 */
-MagickExport unsigned int IsPaletteImage(const Image *image,
+MagickExport MagickBool IsPaletteImage(const Image *image,
   ExceptionInfo *exception)
 {
   CubeInfo
@@ -1434,9 +1434,9 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if ((image->storage_class == PseudoClass) && (image->colors <= 256))
-    return(True);
+    return(MagickTrue);
   if (image->storage_class == PseudoClass)
-    return(False);
+    return(MagickFalse);
   /*
     Initialize color description tree.
   */
@@ -1445,13 +1445,17 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
     {
       ThrowException3(exception,ResourceLimitError,MemoryAllocationFailed,
         UnableToDetermineImageClass);
-      return(False);
+      return(MagickFalse);
     }
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,exception);
     if (p == (const PixelPacket *) NULL)
-      return(False);
+      {
+        DestroyCubeInfo(cube_info);
+        cube_info=(CubeInfo *) NULL;
+        return(MagickFalse);
+      }
     for (x=0; x < (long) image->columns; x++)
     {
       /*
@@ -1461,7 +1465,7 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
       index=MaxTreeDepth-1;
       for (level=1; level < MaxTreeDepth; level++)
       {
-        id=ColorToNodeId(p->red,p->green,p->blue,index);
+        id=ColorToNodeId(p->red,p->green,p->blue,level);
         if (node_info->child[id] == (NodeInfo *) NULL)
           {
             node_info->child[id]=GetNodeInfo(cube_info,level);
@@ -1469,7 +1473,9 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
               {
                 ThrowException3(exception,ResourceLimitError,
                   MemoryAllocationFailed,UnableToDetermineImageClass);
-                return(False);
+                DestroyCubeInfo(cube_info);
+                cube_info=(CubeInfo *) NULL;
+                return(MagickFalse);
               }
           }
         node_info=node_info->child[id];
@@ -1484,7 +1490,8 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
             Add this unique color to the color list.
           */
           if (node_info->number_unique == 0)
-            node_info->list=MagickAllocateMemory(ColorPacket *,sizeof(ColorPacket));
+            node_info->list=MagickAllocateMemory(ColorPacket *,
+                                                 sizeof(ColorPacket));
           else
             MagickReallocMemory(node_info->list,
               (i+1)*sizeof(ColorPacket));
@@ -1492,7 +1499,9 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
             {
               ThrowException3(exception,ResourceLimitError,
                 MemoryAllocationFailed,UnableToDetermineImageClass);
-              return(False);
+              DestroyCubeInfo(cube_info);
+                cube_info=(CubeInfo *) NULL;
+              return(MagickFalse);
             }
           node_info->list[i].pixel=(*p);
           node_info->list[i].index=(unsigned short) cube_info->colors++;
@@ -1500,14 +1509,16 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
           if (cube_info->colors > 256)
             {
               DestroyCubeInfo(cube_info);
-              return(False);
+              cube_info=(CubeInfo *) NULL;
+              return(MagickFalse);
             }
         }
       p++;
     }
   }
   DestroyCubeInfo(cube_info);
-  return(True);
+  cube_info=(CubeInfo *) NULL;
+  return(MagickTrue);
 }
 
 /*
