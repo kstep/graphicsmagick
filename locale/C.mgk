@@ -320,12 +320,6 @@
         <Message name="AnErrorHasOccurredWritingToFile">
           An error has occurred writing to file
         </Message>
-
-        <Message name="CoderDoesNotSupportThisFormat">
-          Decoder does not support this format
-        </Message>
-
-
         <Message name="ColormapExceeds256Colors">
           Colormap exceeded 256 colors
         </Message>

@@ -575,12 +575,6 @@ An error has occurred writing to file
 .
 
 MessageId       = +1
-SymbolicName    = ImageErrorCoderDoesNotSupportThisFormat
-Language        = English
-Decoder does not support this format
-.
-
-MessageId       = +1
 SymbolicName    = ImageErrorColormapExceeds256Colors
 Language        = English
 Colormap exceeded 256 colors

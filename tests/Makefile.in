@@ -365,11 +365,13 @@ INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/magick
 #
 # Execute 'make check' to compile and run a test program
 #
-check_PROGRAMS = constitute drawtest rwblob rwfile
+check_PROGRAMS = constitute drawtest maptest rwblob rwfile
 
 LDADD = ../magick/libGraphicsMagick.la
 
 constitute_SOURCES = constitute.c
+
+maptest_SOURCES = maptest.c
 
 rwblob_SOURCES = rwblob.c
 
@@ -581,8 +583,8 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/magick/magick_config.h \
 	$(top_builddir)/magick/magick_config_api.h
 CONFIG_CLEAN_FILES =
-check_PROGRAMS = constitute$(EXEEXT) drawtest$(EXEEXT) rwblob$(EXEEXT) \
-	rwfile$(EXEEXT)
+check_PROGRAMS = constitute$(EXEEXT) drawtest$(EXEEXT) maptest$(EXEEXT) \
+	rwblob$(EXEEXT) rwfile$(EXEEXT)
 am_constitute_OBJECTS = constitute.$(OBJEXT)
 constitute_OBJECTS = $(am_constitute_OBJECTS)
 constitute_LDADD = $(LDADD)
@@ -593,6 +595,11 @@ drawtest_OBJECTS = $(am_drawtest_OBJECTS)
 drawtest_LDADD = $(LDADD)
 drawtest_DEPENDENCIES = ../magick/libGraphicsMagick.la
 drawtest_LDFLAGS =
+am_maptest_OBJECTS = maptest.$(OBJEXT)
+maptest_OBJECTS = $(am_maptest_OBJECTS)
+maptest_LDADD = $(LDADD)
+maptest_DEPENDENCIES = ../magick/libGraphicsMagick.la
+maptest_LDFLAGS =
 am_rwblob_OBJECTS = rwblob.$(OBJEXT)
 rwblob_OBJECTS = $(am_rwblob_OBJECTS)
 rwblob_LDADD = $(LDADD)
@@ -608,8 +615,8 @@ DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)/magick -I$(top_builddir)/m
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/constitute.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/drawtest.Po ./$(DEPDIR)/rwblob.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/rwfile.Po
+@AMDEP_TRUE@	./$(DEPDIR)/drawtest.Po ./$(DEPDIR)/maptest.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/rwblob.Po ./$(DEPDIR)/rwfile.Po
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -618,9 +625,9 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 DIST_SOURCES = $(constitute_SOURCES) $(drawtest_SOURCES) \
-	$(rwblob_SOURCES) $(rwfile_SOURCES)
+	$(maptest_SOURCES) $(rwblob_SOURCES) $(rwfile_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(constitute_SOURCES) $(drawtest_SOURCES) $(rwblob_SOURCES) $(rwfile_SOURCES)
+SOURCES = $(constitute_SOURCES) $(drawtest_SOURCES) $(maptest_SOURCES) $(rwblob_SOURCES) $(rwfile_SOURCES)
 
 all: all-am
 
@@ -644,6 +651,9 @@ constitute$(EXEEXT): $(constitute_OBJECTS) $(constitute_DEPENDENCIES)
 drawtest$(EXEEXT): $(drawtest_OBJECTS) $(drawtest_DEPENDENCIES) 
 	@rm -f drawtest$(EXEEXT)
 	$(LINK) $(drawtest_LDFLAGS) $(drawtest_OBJECTS) $(drawtest_LDADD) $(LIBS)
+maptest$(EXEEXT): $(maptest_OBJECTS) $(maptest_DEPENDENCIES) 
+	@rm -f maptest$(EXEEXT)
+	$(LINK) $(maptest_LDFLAGS) $(maptest_OBJECTS) $(maptest_LDADD) $(LIBS)
 rwblob$(EXEEXT): $(rwblob_OBJECTS) $(rwblob_DEPENDENCIES) 
 	@rm -f rwblob$(EXEEXT)
 	$(LINK) $(rwblob_LDFLAGS) $(rwblob_OBJECTS) $(rwblob_LDADD) $(LIBS)
@@ -659,6 +669,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/constitute.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drawtest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/maptest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rwblob.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rwfile.Po@am__quote@
 

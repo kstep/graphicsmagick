@@ -1,3 +1,9 @@
+2003-09-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tests/maptest.c (main): Test/demo program for key,value map API.
+	* magick/map.c, magick/map.h: Implementation of a key,value map
+	API for internal use.
+
 2003-09-19  William Radcliffe  <billr@corbis.com>
 	* lcms/include/icc34.h lcms.h: Added back the icc34.h header and
 	changes to make lcms compile on Win32" icc34.h lcms.h.

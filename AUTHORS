@@ -60,7 +60,8 @@ Rick Mabry
 		pattern image.
 
 Lars Ruben Skyum
-		Contributed the -clippath functionality.
+		Contributed the -clippath functionality, improved color
+                profile support, and re-wrote the PS3 coder.
 
 Nathan Brown
 		Original author of the JP2 coder.

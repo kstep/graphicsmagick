@@ -17,12 +17,14 @@ INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/magick
 #
 # Execute 'make check' to compile and run a test program
 #
-check_PROGRAMS = constitute drawtest rwblob rwfile
+check_PROGRAMS = constitute drawtest maptest rwblob rwfile
 
 LDADD = ../magick/libGraphicsMagick.la
 LDFLAGS	= @LDFLAGS@
 
 constitute_SOURCES = constitute.c
+
+maptest_SOURCES = maptest.c
 
 rwblob_SOURCES = rwblob.c
 

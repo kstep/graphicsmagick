@@ -30,8 +30,8 @@ jbig:
 lcms:
   
   cvs -d :pserver:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import lcms 1.09' delegates/lcms \
-    LCMS_DIST LCMS_1_09
+    import -m 'Import lcms 1.11 delegates/lcms' \
+    LCMS_DIST LCMS_1_11
 
 png:
 

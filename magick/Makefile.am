@@ -33,14 +33,60 @@ libGraphicsMagick_la_LDFLAGS = -no-undefined \
 AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) $(INCLTDL) @LIBRARY_EXTRA_CPPFLAGS@
 
 # Library base sources
-MAGICK_BASE_SRCS = memory.c blob.c cache.c locale.c error.c monitor.c \
-	constitute.c image.c composite.c list.c color.c quantize.c segment.c \
-	resize.c transform.c shear.c enhance.c effect.c fx.c decorate.c \
-	annotate.c type.c draw.c render.c paint.c montage.c semaphore.c attribute.c \
-	signature.c compress.c command.c gem.c registry.c magic.c magick.c \
-	delegate.c module.c static.c resource.c log.c timer.c utility.c cache_view.c \
-	stream.c version.c animate.c display.c widget.c xwindow.c PreRvIcccm.c \
-	deprecate.c tempfile.c
+MAGICK_BASE_SRCS = \
+	animate.c \
+	annotate.c \
+	attribute.c \
+	blob.c \
+	cache.c \
+	cache_view.c \
+	color.c \
+	command.c \
+	composite.c \
+	compress.c \
+	constitute.c \
+	decorate.c \
+	delegate.c \
+	deprecate.c \
+	display.c \
+	draw.c \
+	effect.c \
+	enhance.c \
+	error.c \
+	fx.c \
+	gem.c \
+	image.c \
+	list.c \
+	locale.c \
+	log.c \
+	magic.c \
+	magick.c \
+	map.c \
+	memory.c \
+	module.c \
+	monitor.c \
+	montage.c \
+	paint.c \
+	PreRvIcccm.c \
+	quantize.c \
+	registry.c \
+	render.c \
+	resize.c \
+	resource.c \
+	segment.c \
+	semaphore.c \
+	shear.c \
+	signature.c \
+	static.c \
+	stream.c \
+	tempfile.c \
+	timer.c \
+	transform.c \
+	type.c \
+	utility.c \
+	version.c \
+	widget.c \
+	xwindow.c
 
 # Platform specific source files that may appear in the library
 EXTRA_libGraphicsMagick_la_SOURCES = nt_base.c nt_feature.c
