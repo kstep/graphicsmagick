@@ -63,16 +63,19 @@ typedef struct gs_main_instance_s gs_main_instance;
 #  endif
 #endif
 
+/*
+  Define a vector of Ghostscript library callback functions so that
+  DLL/shared and static Ghostscript libbraries may be handled identically.
+  These definitions must be compatible with those in the Ghostscript API
+  headers (which we don't require).
+  */
 typedef struct _GhostscriptVectors
 {
-  int
-    (MagickDLLCall *exit)(gs_main_instance *),
-    (MagickDLLCall *init_with_args)(gs_main_instance *,int,char **),
-    (MagickDLLCall *new_instance)(gs_main_instance **,void *),
-    (MagickDLLCall *run_string)(gs_main_instance *,const char *,int,int *);
-
-  void
-    (MagickDLLCall *delete_instance)(gs_main_instance *);
+  int  (MagickDLLCall *exit)(gs_main_instance *);
+  void (MagickDLLCall *delete_instance)(gs_main_instance *);
+  int  (MagickDLLCall *init_with_args)(gs_main_instance *,int,char **);
+  int  (MagickDLLCall *new_instance)(gs_main_instance **,void *);
+  int  (MagickDLLCall *run_string)(gs_main_instance *,const char *,int,int *);
 } GhostscriptVectors;
 #endif /* MAGICK_IMPLEMENTATION */
 
