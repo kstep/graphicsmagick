@@ -4735,7 +4735,7 @@ Mogrify(ref,...)
         {
           char
             geometry[MaxTextExtent];
-          
+
           CompositeOperator
             compose;
 
@@ -4745,7 +4745,7 @@ Mogrify(ref,...)
           Image
             *composite_image,
             *rotate_image;
-          
+
           int
             status,
             x,
@@ -4772,7 +4772,7 @@ Mogrify(ref,...)
             SetImageOpacity(composite_image,opacity);
           if (compose == DissolveCompositeOp)
             {
-              register PixelPacket 
+              register PixelPacket
                 *q;
 
               for (y=0; y < (int) composite_image->rows; y++)
