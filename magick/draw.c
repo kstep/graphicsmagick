@@ -2124,6 +2124,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                   element;
 
                 SegmentInfo
+                  bounds,
                   segment;
 
                 GetToken(q,&q,token);
@@ -2167,13 +2168,25 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                 }
                 (void) strncpy(token,p,q-p-4);
                 token[q-p-4]='\0';
+                bounds.x1=graphic_context[n]->affine.sx*segment.x1+
+                  graphic_context[n]->affine.ry*segment.y1+
+                  graphic_context[n]->affine.tx;
+                bounds.y1=graphic_context[n]->affine.rx*segment.x1+
+                  graphic_context[n]->affine.sy*segment.y1+
+                  graphic_context[n]->affine.ty;
+                bounds.x2=graphic_context[n]->affine.sx*segment.x2+
+                  graphic_context[n]->affine.ry*segment.y2+
+                  graphic_context[n]->affine.tx;
+                bounds.y2=graphic_context[n]->affine.rx*segment.x2+
+                  graphic_context[n]->affine.sy*segment.y2+
+                  graphic_context[n]->affine.ty;
                 FormatString(key,"[%.1024s]",name);
                 (void) SetImageAttribute(image,key,token);
                 FormatString(key,"[%.1024s-geometry]",name);
                 FormatString(geometry,"%gx%g%+g%+g",
-                  Max(AbsoluteValue(segment.x2-segment.x1),1.0),
-                  Max(AbsoluteValue(segment.y2-segment.y1),1.0),
-                  segment.x1,segment.y1);
+                  Max(AbsoluteValue(bounds.x2-bounds.x1),1.0),
+                  Max(AbsoluteValue(bounds.y2-bounds.y1),1.0),
+                  bounds.x1,bounds.y1);
                 (void) SetImageAttribute(image,key,geometry);
                 GetToken(q,&q,token);
                 break;
@@ -4441,6 +4454,9 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
   double
     step;
 
+  long
+    segments;
+
   PointInfo
     angle,
     point;
@@ -4454,20 +4470,23 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
   /*
     Ellipses are just short segmented polys.
   */
-  step=2.0/end.y;
+  step=2/end.y;
   if (end.x > end.y)
-    step=2.0/end.x;
+    step=2/end.x;
   if (step > MagickPI/8.0)
     step=MagickPI/8.0;
   else
-    step=MagickPI/(4.0*ceil(MagickPI/step/2));
+    {
+      segments=ceil(MagickPI/step/2)*4;
+      step=MagickPI/segments;
+    }
   angle.x=DegreesToRadians(degrees.x);
   angle.y=DegreesToRadians(degrees.y);
   p=primitive_info;
   for ( ; angle.x < angle.y; angle.x+=step)
   {
-    point.x=start.x+cos(angle.x)*end.x;
-    point.y=start.y+sin(angle.x)*end.y;
+    point.x=cos(angle.x)*end.x+start.x;
+    point.y=sin(angle.x)*end.y+start.y;
     TracePoint(p,point);
     p++;
   }
