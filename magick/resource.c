@@ -58,6 +58,11 @@
 #include "utility.h"
 
 /*
+  Define  declarations.
+*/
+#define ResourceInfinity  (~0UL)
+
+/*
   Typedef declarations.
 */
 typedef struct _ResourceInfo
@@ -66,13 +71,21 @@ typedef struct _ResourceInfo
     memory,
     disk,
     map;
+
+  unsigned long
+    memory_limit,
+    disk_limit,
+    map_limit;
 } ResourceInfo;
 
 /*
   Global declarations.
 */
 static ResourceInfo
-  resource_info = { ResourceInfinity, ResourceInfinity, ResourceInfinity};
+  resource_info =
+  {
+    0, 0, 0, ResourceInfinity, ResourceInfinity, ResourceInfinity
+  };
 
 static SemaphoreInfo
   *resource_semaphore = (SemaphoreInfo *) NULL;
@@ -88,11 +101,13 @@ static SemaphoreInfo
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AcquireMagickResource() acquires resources of the specified type.
+%  AcquireMagickResource() acquires resources of the specified type.  True is
+%  returned if the specified resource is available otherwise False.
 %
 %  The format of the AcquireMagickResource() method is:
 %
-%      void int AcquireMagickResource(const ResourceType type,const off_t size)
+%      unsigned  int AcquireMagickResource(const ResourceType type,
+%        const off_t size)
 %
 %  A description of each parameter follows:
 %
@@ -102,37 +117,51 @@ static SemaphoreInfo
 %
 %
 */
-MagickExport void AcquireMagickResource(const ResourceType type,
+MagickExport unsigned int AcquireMagickResource(const ResourceType type,
   const off_t size)
 {
+  unsigned int
+    status;
+
+  status=True;
   AcquireSemaphoreInfo(&resource_semaphore);
   switch (type)
   {
     case MemoryResource:
     {
-      if (resource_info.memory == ResourceInfinity)
+      resource_info.memory+=(double) size;
+      if (resource_info.memory_limit == ResourceInfinity)
         break;
-      resource_info.memory-=(double) size;
+      status=resource_info.memory <=
+        (long double) resource_info.memory_limit*1024.0*1024.0;
       break;
     }
     case DiskResource:
     {
-      if (resource_info.disk == ResourceInfinity)
+      resource_info.disk+=(double) size;
+      if (resource_info.disk_limit == ResourceInfinity)
         break;
-      resource_info.disk-=(double) size;
+      status=resource_info.disk <=
+        (long double) resource_info.disk_limit*1024.0*1024.0;
       break;
     }
     case MapResource:
     {
-      if (resource_info.map == ResourceInfinity)
+      resource_info.map+=(double) size;
+      if (resource_info.map_limit == ResourceInfinity)
         break;
-      resource_info.map-=(double) size;
+      status=resource_info.disk <=
+        (long double) resource_info.disk_limit*1023.0*1024.0;
       break;
     }
     default:
+    {
+      status=False;
       break;
+    }
   }
   LiberateSemaphoreInfo(&resource_semaphore);
+  return(status);
 }
 
 /*
@@ -171,8 +200,7 @@ MagickExport void DestroyMagickResources(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetMagickResource() returns the usage for the specified resource in
-%  megabytes.
+%  GetMagickResource() returns the the specified resource in megabytes.
 %
 %  The format of the GetMagickResource() method is:
 %
@@ -188,34 +216,34 @@ MagickExport void DestroyMagickResources(void)
 MagickExport unsigned long GetMagickResource(const ResourceType type)
 {
   unsigned long
-    usage;
+    resource;
 
   AcquireSemaphoreInfo(&resource_semaphore);
   switch (type)
   {
     case MemoryResource:
     {
-      usage=(unsigned long) (resource_info.memory/1024.0/1024.0+0.5);
+      resource=(unsigned long) (resource_info.memory/1024.0/1024.0+0.5);
       break;
     }
     case DiskResource:
     {
-      usage=(unsigned long) (resource_info.disk/1024.0/1024.0+0.5);
+      resource=(unsigned long) (resource_info.disk/1024.0/1024.0+0.5);
       break;
     }
     case MapResource:
     {
-      usage=(unsigned long) (resource_info.map/1024.0/1024.0+0.5);
+      resource=(unsigned long) (resource_info.map/1024.0/1024.0+0.5);
       break;
     }
     default:
     {
-      usage=0;
+      resource=0;
       break;
     }
   }
   LiberateSemaphoreInfo(&resource_semaphore);
-  return(usage);
+  return(resource);
 }
 
 /*
@@ -251,23 +279,17 @@ MagickExport void LiberateMagickResource(const ResourceType type,
   {
     case MemoryResource:
     {
-      if (resource_info.memory == ResourceInfinity)
-        break;
-      resource_info.memory+=(double) size;
+      resource_info.memory-=size;
       break;
     }
     case DiskResource:
     {
-      if (resource_info.disk == ResourceInfinity)
-        break;
-      resource_info.disk+=(double) size;
+      resource_info.disk-=size;
       break;
     }
     case MapResource:
     {
-      if (resource_info.map == ResourceInfinity)
-        break;
-      resource_info.map+=(double) size;
+      resource_info.map-=size;
       break;
     }
     default:
@@ -287,7 +309,8 @@ MagickExport void LiberateMagickResource(const ResourceType type,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetMagickResourceLimit() sets the limit for a particular resource.
+%  SetMagickResourceLimit() sets the limit for a particular resource in
+%  megabytes..
 %
 %  The format of the SetMagickResourceLimit() method is:
 %
@@ -310,17 +333,17 @@ MagickExport void SetMagickResourceLimit(const ResourceType type,
   {
     case MemoryResource:
     {
-      resource_info.memory=1024.0*1024.0*(double) limit;
+      resource_info.memory_limit=limit;
       break;
     }
     case DiskResource:
     {
-      resource_info.disk=1024.0*1024.0*(double) limit;
+      resource_info.disk_limit=limit;
       break;
     }
     case MapResource:
     {
-      resource_info.map=1024.0*1024.0*(double) limit;
+      resource_info.map_limit=limit;
       break;
     }
     default:
