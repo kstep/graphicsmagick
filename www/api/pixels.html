@@ -20,9 +20,14 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></LI>
 	<UL>
 
-		<LI><A HREF="#getcachenexus">GetCacheNexus</A></LI>
-		<LI><A HREF="#isnexusincore">IsNexusInCore</A></LI>
-		<LI><A HREF="#setpixelcachemethods">SetPixelCacheMethods</A></LI>
+		<LI><A HREF="#closeimagepixels">CloseImagePixels</A></LI>
+		<LI><A HREF="#destroyimagepixels">DestroyImagePixels</A></LI>
+		<LI><A HREF="#getindexes">GetIndexes</A></LI>
+		<LI><A HREF="#getonepixel">GetOnePixel</A></LI>
+		<LI><A HREF="#getimagepixels">GetImagePixels</A></LI>
+		<LI><A HREF="#getpixels">GetPixels</A></LI>
+		<LI><A HREF="#setimagepixels">SetImagePixels</A></LI>
+		<LI><A HREF="#syncimagepixels">SyncImagePixels</A></LI>
 	</UL>
 
 </UL>
@@ -37,46 +42,149 @@
 <HR>
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
-<P>unsigned int  <STRONG>GetCacheNexus</STRONG>( Cache cache );</P>
-<P>unsigned int  <STRONG>IsNexusInCore</STRONG>( const Cache cache, const unsigned int id );</P>
+<P>void  <STRONG>CloseImagePixels</STRONG>( Image *image );</P>
+<P>void  <STRONG>DestroyImagePixels</STRONG>( Image *image );</P>
+<P>PixelPacket * <STRONG>GetImagePixels</STRONG>( Image *image, const int x, const int y, const unsigned int columns, const unsigned int rows );</P>
+<P>IndexPacket * <STRONG>GetIndexes</STRONG>( const Image *image );</P>
+<P>PixelPacket * <STRONG>GetOnePixel</STRONG>( const Image image, const int x, const int y );</P>
+<P>PixelPacket * <STRONG>GetPixels</STRONG>( const Image image );</P>
+<P>PixelPacket * <STRONG>SetImagePixels</STRONG>( Image *image, const int x, const int y, const unsigned int columns, const unsigned int rows );</P>
+<P>unsigned int  <STRONG>SyncImagePixels</STRONG>( Image *image );</P>
 <P>
 <HR>
 <H1><A NAME="function descriptions">
 <FONT SIZE=-1>FUNCTION</FONT> 
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
-<H2><A NAME="getcachenexus">GetCacheNexus</A></H2>
-<P>Method GetCacheNexus returns an available cache nexus.</P>
-<P>The format of the GetCacheNexus method is:</P>
-<blockquote>unsigned int GetCacheNexus ( Cache cache ); </blockquote><P>
+<H2><A NAME="closeimagepixels">CloseImagePixels</A></H2>
+<P>Method CloseImagePixels closes the pixel cache.  Use this method to prevent the too many file descriptors from being allocated when reading an image sequence.  File descriptors are only used for a disk-based cache.  This is essentially a no-op for a memory-based cache.</P>
+<P>The format of the CloseImagePixels method is:</P>
+<blockquote>void CloseImagePixels ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_id%3A">id:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
 <DD>
-Method GetCacheNexus returns an available cache nexus slot.
-<P></P>
-<p><dt><STRONG><A NAME="item_o_cache%3A">cache:</A></STRONG><BR>
-<DD>
-Specifies a pointer to a Cache structure.
+The address of a structure of type Image.
 <P></P></DL></DL>
 <P>
-<H2><A NAME="isnexusincore">IsNexusInCore</A></H2>
-<P>Method IsNexusInCore returns true if the pixels associated with the specified cache nexus is non-strided and in core.</P>
-<P>The format of the IsNexusInCore method is:</P>
-<blockquote>unsigned int IsNexusInCore ( const Cache cache, const unsigned int id ); </blockquote><P>
+<H2><A NAME="destroyimagepixels">DestroyImagePixels</A></H2>
+<P>Method DestroyImagePixels deallocates memory associated with the pixel cache.</P>
+<P>The format of the DestroyImagePixels method is:</P>
+<blockquote>void DestroyImagePixels ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The address of a structure of type Image.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="getindexes">GetIndexes</A></H2>
+<P>Method GetIndexes returns the colormap indexes associated with the last call to the <CODE>SetImagePixels()</CODE> or <CODE>GetImagePixels()</CODE> methods.</P>
+<P>The format of the GetIndexes method is:</P>
+<blockquote>IndexPacket *GetIndexes ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_indexes%3A">indexes:</A></STRONG><BR>
+<DD>
+Method GetIndexes returns the colormap indexes associated with the last call to the <CODE>SetImagePixels()</CODE> or <CODE>GetImagePixels()</CODE> methods.
+<P></P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The address of a structure of type Image.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="getonepixel">GetOnePixel</A></H2>
+<P>Method GetOnePixel returns a single pixel at the specified (x,y) location.  The image background color is returned if an error occurs.</P>
+<P>The format of the GetOnePixel method is:</P>
+<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetOnePixel ( const <A HREF="types/Image.html">Image</A> image, const int x, const int y ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_pixels%3A">pixels:</A></STRONG><BR>
+<DD>
+Method GetOnePixel returns a pixel at the specified (x,y) location.
+<P></P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The address of a structure of type Image.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_x%2Cy%3A">x,y:</A></STRONG><BR>
+<DD>
+These values define the location of the pixel to return.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="getimagepixels">GetImagePixels</A></H2>
+<P>Method GetImagePixels gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters.  
+<FONT SIZE=-1>A</FONT> pointer to the pixels is returned if the pixels are transferred, otherwise a 
+<FONT SIZE=-1>NULL</FONT> is returned.</P>
+<P>The format of the GetImagePixels method is:</P>
+<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetImagePixels ( <A HREF="types/Image.html">Image</A> *image, const int x, const int y, const unsigned int columns, const unsigned int rows ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
 <DD>
-Method IsNexusInCore returns True if the pixels are non-strided and in core, otherwise False.
+Method GetImagePixels returns a pointer to the pixels is returned if the pixels are transferred, otherwise a 
+<FONT SIZE=-1>NULL</FONT> is returned.
 <P></P>
-<p><dt><STRONG>id:</STRONG><BR>
+<p><dt><STRONG>image:</STRONG><BR>
 <DD>
-specifies which cache nexus to return the pixels.
+The address of a structure of type Image.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_x%2Cy%2Ccolumns%2Crows%3A">x,y,columns,rows:</A></STRONG><BR>
+<DD>
+These values define the perimeter of a region of pixels.
 <P></P></DL></DL>
 <P>
-<H2><A NAME="setpixelcachemethods">SetPixelCacheMethods</A></H2>
-<P>Method SetImagePixelsMethods set the default image pixel methods to use the pixel cache.</P>
+<H2><A NAME="getpixels">GetPixels</A></H2>
+<P>Method GetPixels returns the pixels associated with the last call to the <CODE>SetImagePixels()</CODE> or <CODE>GetImagePixels()</CODE> methods.</P>
+<P>The format of the GetPixels method is:</P>
+<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetPixels ( const <A HREF="types/Image.html">Image</A> image ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG>pixels:</STRONG><BR>
+<DD>
+Method GetPixels returns the pixels associated with the last call to the <CODE>SetImagePixels()</CODE> or <CODE>GetImagePixels()</CODE> methods.
+<P></P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The address of a structure of type Image.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="setimagepixels">SetImagePixels</A></H2>
+<P>Method SetImagePixels allocates an area to store image pixels as defined by the region rectangle and returns a pointer to the area.  This area is subsequently transferred from the pixel cache with method SyncImagePixels.  
+<FONT SIZE=-1>A</FONT> pointer to the pixels is returned if the pixels are transferred, otherwise a 
+<FONT SIZE=-1>NULL</FONT> is returned.</P>
+<P>The format of the SetImagePixels method is:</P>
+<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *SetImagePixels ( <A HREF="types/Image.html">Image</A> *image, const int x, const int y, const unsigned int columns, const unsigned int rows ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG>pixels:</STRONG><BR>
+<DD>
+Method SetImagePixels returns a pointer to the pixels is returned if the pixels are transferred, otherwise a 
+<FONT SIZE=-1>NULL</FONT> is returned.
+<P></P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The address of a structure of type Image.
+<P></P>
+<p><dt><STRONG>x,y,columns,rows:</STRONG><BR>
+<DD>
+These values define the perimeter of a region of pixels.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="syncimagepixels">SyncImagePixels</A></H2>
+<P>Method SyncImagePixels saves the image pixels to the in-memory or disk cache.  The method returns True if the pixel region is synced, otherwise False.</P>
+<P>The format of the SyncImagePixels method is:</P>
+<blockquote>unsigned int SyncImagePixels ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG>status:</STRONG><BR>
+<DD>
+Method SyncImagePixels returns True if the image pixels are transferred to the in-memory or disk cache otherwise False.
+<P></P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The address of a structure of type Image.
+</DL></DL>
 
 </BODY>
 
