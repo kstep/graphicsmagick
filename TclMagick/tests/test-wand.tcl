@@ -13,7 +13,7 @@
 if {[file exists ../win/debug/tclMagick.dll]} {
     load ../win/debug/tclMagick.dll
 }
-package require TclMagick
+puts [package require TclMagick]
 puts [info script]
 
 
@@ -29,34 +29,33 @@ set TMP "../tmp"
 #
 set TestFunctions {
     AdaptiveThresholdImage      img     1
-    AddImage                    img     0
+    AddImage                    seq     1
     AddNoiseImage               img     1
     AffineTransformImage        img     1
     ???-how-to-AnnotateImage    img     0
-    AppendImage                 img     0
-    AverageImage                img     0
+    AppendImages                seq     1
+    AverageImages               seq     1
     BlackThresholdImage         img     1
     BlurImage                   img     1
     BorderImage                 img     1
     ChannelImage                img     1
     CharcoalImage               img     1
     ChopImage                   img     1
-    ClipImage                   img     0
-    ClipPathImage               img     0
-    Clone-No-Test               img     0
-    CoalesceImages              img     0
+    xxx-Clone-No-Tests          img     0
     ???-how-to-ClipImage        img     0
+    ???-how-to-ClipPathImage    img     0
+    CoalesceImages              seq     1
     ColorFloodfillImage         img     1
     ColorizeImage               img     1
     CommentImage                img     1
     CompareImages               img     1
-    CompareImageChannels        img     0
+    CompareImageChannels        img     1
     CompositeImage              img     1
     ContrastImage               img     1
     ConvolveImage               img     1
     CropImage                   img     1
     CycleColormapImage          img     1
-    DeconstructImages           img     0
+    DeconstructImages           seq     1
     DescribeImage               img     1
     DespeckleImage              img     1
     DrawImage                   img     1
@@ -68,7 +67,7 @@ set TestFunctions {
     FlipImage                   img     1
     FlopImage                   img     1
     FrameImage                  img     1
-    FxImageChannel              img     0
+    FxImageChannel              img     1
     GammaImage                  img     1
     GammaImageChannel           img     0
 
@@ -97,6 +96,7 @@ set TestFunctions {
     GetSetIterations            img     0
     GetSetMatteColor            img     0
     GetSetImageFilename         img     0
+    GetSetPixels                img     1
     GetSetRemoveProfile         img     0
     GetSetRedPrimary            img     0
     GetSetRendering             img     0
@@ -109,9 +109,10 @@ set TestFunctions {
     GetSetVirtualPixelMethod    img     0
     GetSetWhitePoint            img     0
     GetWidth                    img     0
+    GetNumberImages             seq     0
     GetSetSamplingFactors       img     0
     GetSetSize                  img     1
-    
+
     ImplodeImage                img     1
     LabelImage                  img     1
     LevelImage                  img     1
@@ -128,6 +129,8 @@ set TestFunctions {
     MotionBlurImage             img     1
     NegateImage                 img     1
     NormalizeImage              img     1
+    NextPrevious                seq     0
+
     OilPaintImage               img     1
     OpaqueImage                 img     1
     PingImage                   img     0
@@ -137,6 +140,8 @@ set TestFunctions {
     RaiseImage                  img     1
     ReadBlobImage               img     0
     ReduceNoiseImage            img     1
+    RemoveImage                 seq     0
+    ResetIterator               seq     0
     ResampleImage               img     1
     ResizeImage                 img     1
     RollImage                   img     1
@@ -168,9 +173,6 @@ set TestFunctions {
     UnsharpMaskImage            img     1
     WaveImage                   img     1
     WhiteThresholdImage         img     1
-
-    Pixels                      img     1
-    SequenceTest                seq     1
 }
 
 ############################################
@@ -202,6 +204,18 @@ proc AdaptiveThresholdImage {img} {
     $wand AdaptiveThresholdImage 5 5 0
     $wand WriteImage "$::TMP/x-Adaptive.jpg"
     magick delete $wand
+}
+proc AddImage {seq} {
+    set wand [$seq clone seqX]
+    debug $wand
+
+    $wand SetIndex 3
+    set x [$wand CloneImage imgX]
+    $wand SetIndex 0
+    $wand AddImage $x
+    $wand WriteImages "$::TMP/x-Add.gif"
+
+    magick delete $wand $x
 }
 proc AddNoiseImage {img} {
     foreach noise {impulse poisson} {   ;# uniform gaussian multiplicativegaussian impulse laplacian poisson
@@ -241,6 +255,18 @@ proc AnnotateImage {img} {
     $wand WriteImage "$::TMP/x-Annotate.jpg"
 
     magick delete $draw $wand
+}
+proc AppendImages {seq} {
+    set wand [$seq AppendImages 0 seqX]
+    debug $wand
+    $wand WriteImages "$::TMP/x-Append.gif"
+    magick delete $wand
+}
+proc AverageImages {img} {
+    set wand [$seq AverageImages seqX]
+    debug $wand
+    $wand WriteImage "$::TMP/x-Average.jpg"
+    magick delete $wand
 }
 proc BlackThresholdImage {img} {
     set wand [$img clone imgX]
@@ -303,6 +329,18 @@ proc ClipImage {img} {
     $wand WriteImage "$::TMP/x-Clip.jpg"
     magick delete $wand
 }
+proc ClipPathImage {img} {
+    set wand [$img clone imgX]
+    debug $wand
+    $wand ClipPathImage "#1" 1
+    $wand WriteImage "$::TMP/x-ClipPath.jpg"
+    magick delete $wand
+}
+proc CoalesceImages {img} {
+    set new [$img CoalesceImages]
+    $new WriteImages "$::TMP/x-Coalesce.gif"
+    magick delete $new
+}
 proc ColorFloodfillImage {img} {
     set wand [$img clone imgX]
     set fill [magick create pixel]
@@ -344,6 +382,14 @@ proc CompareImages {img} {
     $wand CompareImages $img meansquarederror
     magick delete $wand
 }
+proc CompareImageChannels {img} {
+    set wand [$img clone imgX]
+    debug $wand
+    $wand BlurImage 1.0 1.0
+    $wand CompareImageChannels $img red peakabsoluteerror
+    $wand CompareImageChannels $img blue peakabsoluteerror
+    magick delete $wand
+}
 proc CompositeImage {img} {
     set wand [$img clone imgX]
     set bg [magick create pixel]
@@ -382,6 +428,12 @@ proc CycleColormapImage {img} {
     debug $wand
     $wand CycleColormapImage 10
     $wand WriteImage "$::TMP/x-CycleColormap.jpg"
+    magick delete $wand
+}
+proc DeconstructImages {seq} {
+    set wand [$seq DeconstructImages seqX]
+    debug $wand
+    $wand WriteImage "$::TMP/x-Deconstruct.jpg"
     magick delete $wand
 }
 proc DescribeImage {img} {
@@ -498,6 +550,13 @@ proc FrameImage {img} {
     $wand WriteImage "$::TMP/x-Frame.jpg"
     magick delete $frm $wand
 }
+proc FxImageChannel {img} {
+    set wand [$img clone imgX]
+    debug $wand
+    $wand FxImageChannel blue "x/4"
+    $wand WriteImage "$::TMP/x-Fx.jpg"
+    magick delete $wand
+}
 proc GammaImage {img} {
     set wand [$img clone imgX]
     debug $wand
@@ -505,6 +564,15 @@ proc GammaImage {img} {
     $wand GammaImage 2.0
     
     $wand WriteImage "$::TMP/x-Gamma.jpg"
+    magick delete $wand
+}
+proc GammaImageChannel {img} {
+    set wand [$img clone imgX]
+    debug $wand
+    
+    $wand GammaImage blue 2.0
+    
+    $wand WriteImage "$::TMP/x-GammaChannel.jpg"
     magick delete $wand
 }
 proc GetSetFilename {img} {
@@ -517,6 +585,34 @@ proc GetSetFilename {img} {
     $wand SetFilename "bar.jpg"
     $wand GetFilename
 
+    magick delete $wand
+}
+proc GetSetPixels {img} {
+    set wand [$img clone imgX]
+    debug $wand
+    set pixelList {
+          0   0   0
+          0   0 255
+          0 255   0
+          0 255 255
+        255 255 255
+        255   0   0
+        255   0 255
+        255 255   0
+        128 128 128
+    }
+    set pix1 [binary format c* $pixelList]
+
+    $wand SetPixels 0 0 3 3 "RGB" char $pix1
+    set pix2 [$wand GetPixels 0 0 3 3 "RGB" char]
+    if {! [string equal $pix1 $pix2]} {
+        error "Get pixels do not match set pixels"
+    }
+    set data [$wand GetPixels 10 5 10 5 "RGB" char]
+    puts [format "image pixels: %d bytes, expected: %d bytes" [string length $data] 150]
+    $wand SetPixels 10 5 10 5 "RGB" char [binary format x150]
+
+    $wand WriteImage "$::TMP/x-Pixels.jpg"
     magick delete $wand
 }
 proc GetSetRemoveSetProfile {img} {
@@ -862,35 +958,6 @@ proc WhiteThresholdImage {img} {
     magick delete $wand $pix
 }
 
-proc Pixels {img} {
-    set wand [$img clone imgX]
-    debug $wand
-    set pixelList {
-          0   0   0
-          0   0 255
-          0 255   0
-          0 255 255
-        255 255 255
-        255   0   0
-        255   0 255
-        255 255   0
-        128 128 128
-    }
-    set pix1 [binary format c* $pixelList]
-
-    $wand SetPixels 0 0 3 3 "RGB" char $pix1
-    set pix2 [$wand GetPixels 0 0 3 3 "RGB" char]
-    if {! [string equal $pix1 $pix2]} {
-        error "Get pixels do not match set pixels"
-    }
-    set data [$wand GetPixels 10 5 10 5 "RGB" char]
-    puts [format "image pixels: %d bytes, expected: %d bytes" [string length $data] 150]
-    $wand SetPixels 10 5 10 5 "RGB" char [binary format x150]
-
-    $wand WriteImage "$::TMP/x-Pixels.jpg"
-    magick delete $wand
-}
-
 ##########################################
 # Image sequence test
 #
@@ -928,8 +995,14 @@ proc SequenceTest {seq} {
 }
 
 ##########################################
-# Main test loop
+# Prepare tests
 #
+
+if {! [file isdirectory $::TMP] } {
+    file mkdir $::TMP
+}
+magick fonts
+magick formats
 
 debug magick
 
@@ -942,6 +1015,11 @@ $img WriteImage "$::TMP/x-0.jpg"
 
 $seq ReadImage $SEQ
 magick names
+
+
+##########################################
+# Main test loop
+#
 
 set ERRORS 0
 set SKIPPED 0

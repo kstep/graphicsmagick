@@ -2,6 +2,7 @@
 
 	* Review of ImageMagick-API completeness
 	* API renamed: wandName GetNumberOfImages ==> GetNumberImages
+	* Two cloning methods: CloneMagickWand & MagickCloneImage
 
 2003-12-30  Rolf Schroedter <rolf.schroedter@dlr.de>
 
