@@ -226,41 +226,7 @@ void CNtMagickView::DoDisplayImage()
       bmi.biClrUsed = 0;			// Number of colors actually used
       bmi.biClrImportant = 0;			// Colors most important
 
-#if QuantumDepth == 8
-      // Determine the size of the scaled image
-      // Don't allow image to be zoomed
-      CSize sizeScaled = Scale(CSize(m_pImage->columns(),m_pImage->rows()), rectClient.Size());
-
-      // Calculate the top-left co-ordinates of the image
-      CPoint pt = rectClient.TopLeft();
-      int nImageX= ((rectClient.Width()-sizeScaled.cx)/2)+ pt.x ;
-      int nImageY = ((rectClient.Height()-sizeScaled.cy)/2) + pt.y;
-
-      // Extract the pixels from Magick++ image object
-      PixelPacket *pPixels = m_pImage->getPixels(0,0,m_pImage->columns(),m_pImage->rows());
-
-      // Blast it to the device context
-      SetStretchBltMode(pDC->m_hDC,COLORONCOLOR);
-
-      StretchDIBits
-        (
-         pDC->m_hDC,		// handle of device context 
-         nImageX,		// x-coordinate of upper-left corner of dest. rect. 
-         nImageY,		// y-coordinate of upper-left corner of dest. rect.
-         sizeScaled.cx,		// width of destination rectangle 
-         sizeScaled.cy,		// height of destination rectangle
-         0,			// x-coordinate of upper-left corner of source rect. 
-         0, 			// y-coordinate of upper-left corner of source rect
-         m_pImage->columns(),	// width of source rectangle 
-         m_pImage->rows(),	// height of source rectangle 
-         pPixels,		// address of bitmap bits
-         (BITMAPINFO *)&bmi,	// address of bitmap data 
-         DIB_RGB_COLORS,	// usage 
-         SRCCOPY		// raster operation code
-         );
-#elif QuantumDepth == 16
-      // Extract the pixels from Magick++ image object and down convert to 8-bit quantum
-
+      // Extract the pixels from Magick++ image object and convert to a DIB section
       PixelPacket *pPixels = m_pImage->getPixels(0,0,m_pImage->columns(),m_pImage->rows());
 
       RGBQUAD *prgbaDIB = 0;
@@ -279,6 +245,11 @@ void CNtMagickView::DoDisplayImage()
 
       unsigned long nPixels = m_pImage->columns() * m_pImage->rows();
       RGBQUAD *pDestPixel = prgbaDIB;
+#if QuantumDepth == 8
+      // Form of PixelPacket is identical to RGBQUAD when QuantumDepth==8
+      memcpy((void*)pDestPixel,(const void*)pPixels,sizeof(PixelPacket)*nPixels);
+#elif QuantumDepth == 16
+      // Transfer pixels, scaling to Quantum
       for( unsigned long nPixelCount = nPixels; nPixelCount ; nPixelCount-- )
         {
           pDestPixel->rgbRed = DownScale(pPixels->red);
@@ -288,15 +259,13 @@ void CNtMagickView::DoDisplayImage()
           ++pDestPixel;
           ++pPixels;
         }
+#endif
 
       // Now copy the bitmap to device.
 	HDC	hMemDC = CreateCompatibleDC( pDC->m_hDC );
 	SelectObject( hMemDC, hBitmap );
 	BitBlt( pDC->m_hDC, 0, 0, m_pImage->columns(), m_pImage->rows(), hMemDC, 0, 0, SRCCOPY );
 	DeleteObject( hMemDC );
-
-#endif
-
     }
 }
 
