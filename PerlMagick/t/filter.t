@@ -76,13 +76,13 @@ testFilter('input.miff', 'Edge',
 testFilter('input.miff', 'Emboss',
   q/3/,
   '5214d01ac3766debeaf2d917db887e9c62ba7cf11232b635c18ada70d219ad2d',
-  'ce3bc0200041d0e19fbb56c664224c02e9f09f19916995bba32fa2bae56bbb14');
+  'a21aec7cafcae46e4f23647301f940cf64010a23ce6870c2871d8a7bd61a9373');
 
 ++$test;
 testFilter('input.miff', 'Equalize',
   q/ /,
   'ef9ac1ab2f8aae9ca568ba4628cfcec5ef6e7f6e3db3d300372ade342dd244cc',
-  '72bb6b273d938e1445a53302a54e30c21e46e43df192bd21e5682f8c257cc836');
+  '539592a1802a5f5d3befdb2cc0ab4cc956383ad8ccd005cdf24ccac47e66d586');
 
 ++$test;
 testFilter('input.miff', 'Flip',
@@ -145,7 +145,7 @@ testFilter('input.miff', 'Negate',
 testFilter('input.miff', 'Normalize',
   q/ /,
   'b1bcbe33aaeac67d8a9c8f43142fffb2895c83a4c923ff610e96ad595a75d4de',
-  '00df35b62736d621efe8c3f12666bee9581984a0dd24d847ea4c9452e1f906c5');
+  '48aca353af569e222be8a13a29ebaa05b9ef316a5464958a50d74d9618ab255c');
 
 ++$test;
 testFilter('input.miff', 'OilPaint',

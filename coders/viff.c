@@ -684,8 +684,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
                   q->green=image->colormap[q->green].green;
                   q->blue=image->colormap[q->blue].blue;
                 }
-              q->opacity=image->matte ? MaxRGB-
-                ScaleCharToQuantum(*(p+number_pixels*3)) : OpaqueOpacity;
+              q->opacity=(Quantum) (image->matte ? MaxRGB-
+                ScaleCharToQuantum(*(p+number_pixels*3)) : OpaqueOpacity);
               p++;
               q++;
             }

@@ -158,7 +158,7 @@ static unsigned int IsSGI(const unsigned char *magick,const size_t length)
 static void SGIDecode(const unsigned long bytes_per_pixel,
   unsigned char *max_packets,unsigned char *pixels)
 {
-  int
+  long
     count;
 
   register unsigned char
@@ -176,7 +176,7 @@ static void SGIDecode(const unsigned long bytes_per_pixel,
       {
         pixel=(*p++) << 8;
         pixel|=(*p++);
-        count=pixel & 0x7f;
+        count=(long) (pixel & 0x7f);
         if (count == 0)
           break;
         if (pixel & 0x80)
@@ -192,8 +192,8 @@ static void SGIDecode(const unsigned long bytes_per_pixel,
             pixel|=(*p++);
             for ( ; count != 0; count--)
             {
-              *q=pixel >> 8;
-              *(q+1)=pixel;
+              *q=(unsigned char) (pixel >> 8);
+              *(q+1)=(unsigned char) pixel;
               q+=8;
             }
           }
@@ -203,7 +203,7 @@ static void SGIDecode(const unsigned long bytes_per_pixel,
   for ( ; ; )
   {
     pixel=(*p++);
-    count=pixel & 0x7f;
+    count=(long) (pixel & 0x7f);
     if (count == 0)
       break;
     if (pixel & 0x80)
@@ -217,7 +217,7 @@ static void SGIDecode(const unsigned long bytes_per_pixel,
         pixel=(*p++);
         for ( ; count != 0; count--)
         {
-          *q=pixel;
+          *q=(unsigned char) pixel;
           q+=4;
         }
       }
