@@ -396,6 +396,7 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
 
       GetExceptionInfo(&module_exception);
       (void) OpenModule(name,&module_exception);
+      DestroyExceptionInfo(&module_exception);
     }
   AcquireSemaphoreInfo(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
