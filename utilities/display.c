@@ -450,10 +450,10 @@ int main(int argc,char **argv)
   /*
     Parse command line.
   */
-	status=True;
+  status=True;
 	j=1;
 	k=0;
-  for (i=1; ((i < argc) && !(state & ExitState)); i++)
+  for (i=1; ((i <= argc) && !(state & ExitState)); i++)
   {
     if (i < argc)
       option=argv[i];

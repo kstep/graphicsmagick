@@ -320,7 +320,7 @@ int main(int argc,char **argv)
   /*
     Check for server name specified on the command line.
   */
-  for (i=1; i < argc; i++)
+  for (i=1; i <= argc; i++)
   {
     /*
       Check command line for server name.
