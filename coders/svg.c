@@ -1447,12 +1447,12 @@ static void SVGStartElement(void *context,const xmlChar *name,
             }
           if (LocaleCompare(keyword,"stroke-dasharray") == 0)
             {
-              MVGPrintf(svg_info->file,"stroke-dasharray '%s'\n",value);
+              MVGPrintf(svg_info->file,"stroke-dasharray %s\n",value);
               break;
             }
           if (LocaleCompare(keyword,"stroke-dashoffset") == 0)
             {
-              MVGPrintf(svg_info->file,"stroke-dashoffset '%s'\n",value);
+              MVGPrintf(svg_info->file,"stroke-dashoffset %s\n",value);
               break;
             }
           if (LocaleCompare(keyword,"stroke-linecap") == 0)
@@ -1619,13 +1619,13 @@ static void SVGStartElement(void *context,const xmlChar *name,
                       }
                     if (LocaleCompare(keyword,"stroke-dasharray") == 0)
                       {
-                        MVGPrintf(svg_info->file,"stroke-dasharray '%s'\n",
+                        MVGPrintf(svg_info->file,"stroke-dasharray %s\n",
                           value);
                         break;
                       }
                     if (LocaleCompare(keyword,"stroke-dashoffset") == 0)
                       {
-                        MVGPrintf(svg_info->file,"stroke-dashoffset '%s'\n",
+                        MVGPrintf(svg_info->file,"stroke-dashoffset %s\n",
                           value);
                         break;
                       }
@@ -2131,13 +2131,13 @@ static void SVGEndElement(void *context,const xmlChar *name)
         }
       if (LocaleCompare((char *) name,"polygon") == 0)
         {
-          MVGPrintf(svg_info->file,"polygon '%s'\n",svg_info->vertices);
+          MVGPrintf(svg_info->file,"polygon %s\n",svg_info->vertices);
           MVGPrintf(svg_info->file,"pop graphic-context\n");
           break;
         }
       if (LocaleCompare((char *) name,"polyline") == 0)
         {
-          MVGPrintf(svg_info->file,"polyline '%s'\n",svg_info->vertices);
+          MVGPrintf(svg_info->file,"polyline %s\n",svg_info->vertices);
           MVGPrintf(svg_info->file,"pop graphic-context\n");
           break;
         }
