@@ -9,9 +9,8 @@ implementation. Magick++ is co-packaged as a subdirectory of ImageMagick as
 of ImageMagick version 4.2.2 and later. The author uses  gcc 2.95.2 (GNU
 C++) which is available under UNIX and under the Cygwin UNIX-emulation
 environment for Windows. Standards compliant commercial C++ compilers should
-also work fine. Most modern C++ compilers for PCs should also work (project
-files are provided in the VisualMagick package for Microsoft Visual C++
-6.0).
+also work fine. Most modern C++ compilers for Microsoft Windows or the Mac
+should also work (project files are provided for Microsoft Visual C++ 6.0).
 
 It was decided that Magick++ will be around for the long-haul, so its API
 definition depends on valuable C++ features which should be common in all
@@ -32,14 +31,17 @@ following compiler/platform combinations:
 
                             Tested Configurations
 
-   Operating System      Architecture                 Compiler
- SunOS 5.6            SPARC              egcs 1.1.2
- SunOS 5.6, 5.7, 5.8  SPARC              gcc-2.95.2
- SunOS 5.7            SPARC              Sun Workshop 5.0 C++
- SunOS 5.7            SPARC              gcc-3.X snapshot (20001023)
- SunOS 5.8            SPARC              Sun Forte 6.0 C++
- FreeBSD 2.2.7        Intel Pentium II   egcs 1.1.2
- Windows NT 4.0 SP6a  Intel Pentium II   Visual C++ 6.0 Standard Edition
+      Operating System        Architecture              Compiler
+ SunOS 5.6                 SPARC             egcs 1.1.2
+ SunOS 5.6, 5.7, 5.8       SPARC             GCC 2.95.2
+ SunOS 5.7                 SPARC             Sun Workshop 5.0 C++
+ SunOS 5.7                 SPARC             GCC 3.0
+ SunOS 5.8                 SPARC             Sun Forte 6.0 C++
+ FreeBSD 2.2.7             Intel Pentium II  egcs 1.1.2
+
+ Windows NT 4.0 SP6a       Intel Pentium II  Visual C++ 6.0 Standard
+                                             Edition
+ Windows '98 + Cygwin 1.3.3Intel Pentium III GCC 2.95.3
 
 User's of Magick++ have reported that the following configurations work with
 Magick++:
@@ -48,26 +50,27 @@ Magick++:
 
  Operating
   System  Architecture    Compiler   Reported By
- Red Hat                             Dr. Alexander Zimmermann
- Linux 6.0i386         egcs 1.1.2    <Alexander.Zimmermann@fmi.uni-passau.de>
-
- Red Hat               egcs 1.1.2    Dr. Alexander Zimmermann
- Linux 5.2i386         (updated from <Alexander.Zimmermann@fmi.uni-passau.de>
+ Red Hat  i386 & alpha EGCS 1.1.2    Dr. Alexander Zimmermann
+ Linux 5.2             (updated from <Alexander.Zimmermann@fmi.uni-passau.de>
                        SRPM)
+ Red Hat  i386 & alpha EGCS 1.1.2    Dr. Alexander Zimmermann
+ Linux 6.0                           <Alexander.Zimmermann@fmi.uni-passau.de>
+ Red Hat  i386         GCC 2.95.2    Dr. Alexander Zimmermann
+ Linux 7.0                           <Alexander.Zimmermann@fmi.uni-passau.de>
+ Red Hat  i386         GCC "2.96"    ???
+ Linux 7.0             snapshot
  Red Hat                             Dr. Alexander Zimmermann
- Linux 7.0i386         gcc 2.95.2    <Alexander.Zimmermann@fmi.uni-passau.de>
- Red Hat               gcc "2.96"
- Linux 7.0i386         snapshot      ???
-
- Red Hat               egcs 1.1.2    Dr. Alexander Zimmermann
- Linux 5.2Alpha        (updated from <Alexander.Zimmermann@fmi.uni-passau.de>
-                       SRPM)
-
+ Linux 7.Xi386 & alpha GCC 3.0       <Alexander.Zimmermann@fmi.uni-passau.de>
  SGI IRIX MIPS         IRIX C++      Albert Chin-A-Young
                        7.3.1.1m      <china@thewrittenword.com>
-                       CodeWarrior
- Mac OS 9 PowerPC      Professional  Leonard Rosenthol <leonardr@digapp.com>
+ HP-UX    PA-RISC      HP ANSI C++   Albert Chin-A-Young
+ 11.00                 A.03.30       <china@thewrittenword.com>
+ Mac OS 9 PowerPC      CodeWarrior   Leonard Rosenthol <leonardr@digapp.com>
+                       Professional
                        Release 6
+ Mac OS X              GCC 2.95.2
+ 10.1     PowerPC      (apple gcc    John Cristy
+ "Darwin"              -926)
 
 Please let me know if you have successfully built and executed Magick++
 using a different configuration so that I can add to the table of verified
@@ -84,14 +87,15 @@ Please follow the installation instructions provided by its README.txt file.
 The following instructions pertain to the Magick++ specific configuration
 and build options.
 
-To install Magick++ under Unix, installation should be similar to
+To install ImageMagick plus Magick++ under Unix, installation should be
+similar to
 
-./configure --with-magick-plus-plus [ --prefix=/prefix ]
+./configure [ --prefix=/prefix ]
 make
 make install
 
 The library is currently named similar to 'libMagick++.a' (and/or
-libMagick++.so.5.0.26) and is installed under prefix/lib while the headers
+libMagick++.so.5.0.39) and is installed under prefix/lib while the headers
 are installed with Magick++.h being installed in prefix/include and the
 remaining headers in prefix/include/Magick++.
 
@@ -131,11 +135,11 @@ ftp://ftp.forwiss.uni-passau.de/pub/linux/local/ImageMagick/. This site is
 mirrored periodically to the ImageMagick linux directory and from there to
 the many ImageMagick and Linux mirror sites. Please note that the default
 version of the C++ compiler delivered with the system may not be sufficient
-to support Magick++. Use of Egcs 1.1.2 or gcc 2.95.2 is strongly recommended
-under Linux.
+to support Magick++. Use of GCC 2.95 or later is strongly recommended under
+Linux.
   ------------------------------------------------------------------------
 
-                         Windows '9X, and Windows NT
+              Windows '9X, Windows NT, Windows 2000, Windows ME
 
 Visual C++
 
@@ -146,56 +150,12 @@ add-on libraries (e.g. JPEG), and a ready-made Visual C++ build environment.
 Please read the configuration and build instructions for the NT source
 package in order to build Magick++.
 
-Magick++ Demos
+Cygwin & GCC
 
-Available demos are:
-
-     button
-        program to create a simple rectangular button with an
-     annotation
-     flip
-        program to invert and morph images in an existing GIF animation
-
-     demo
-        program to demonstrate the image manipulation primitives
-     piddle
-        program to demonstrate use of the drawing primitives
-     shapes
-        program to demonstrate use of the drawing primitives
-
-Magick++ Tests
-
-The available tests are:
-
-     appendImages
-        test STL appendImages function
-     attributes
-        tests for setting/getting Magick::Image attributes
-     averageImages
-        test STL averageImages function
-     coalesceImages
-        test STL coalesceImages function
-     color
-        test Magick::Color classes
-     montageImages
-        test STL montageImages function
-     morphImages
-        test STL morphImages function
-     readWriteBlob
-        test reading/writing BLOBs
-     readWriteImages
-        test STL readImages and writeImages functions
-
-Cygwin & EGCS
-
-It should be possible to build both ImageMagick and Magick++ under the
-Cygwin Unix-emulation environment for Windows NT. Obtain and install Cgywin
-from http://sourceware.cygnus.com/cygwin/ and update to the latest GNU
-compiler from
-http://www.xraylith.wisc.edu/~khan/software/gnu-win32/gcc.html.   X11R6.4
-libraries are available from
-http://dao.gsfc.nasa.gov/software/grads/win32/X11R6.4/.  To build using
-Cygwin and EGCS, follow the instructions for building under Unix.
-ImageMagick and Magick++ do not yet include support for building Windows
-DLLs under Cygwin so do not enable dynamic libraries when building
-ImageMagick.
+It is possible to build both ImageMagick and Magick++ under the Cygwin
+Unix-emulation environment for Windows NT. Obtain and install Cgywin from
+http://www.cygwin.com/ .   An X11R6 environment for Cygwin is available
+from  http://www.cygwin.com/xfree/ .To build using Cygwin and GCC, follow
+the instructions for building under Unix. ImageMagick and Magick++ do not
+yet include support for building Windows DLLs under Cygwin so do not enable
+dynamic libraries when building ImageMagick.

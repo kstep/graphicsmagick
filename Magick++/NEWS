@@ -4,6 +4,10 @@ Magick++ release number increments even if there are no changes associated
 with Magick++ itself.
 
 (5.3.9)
+  * New class, CoderInfo, to return information for a specified image
+    format as well as the coderInfoList() template function to return
+    the list of coders which match a specification.
+
   * User now may tell Blob updateNoCopy() what memory system (C or C++)
     the memory was allocated from.  Used to assume the C++ allocator.
     This resolves a bug on some platforms (e.g. Windows).
@@ -16,9 +20,6 @@ with Magick++ itself.
 
   * Image depth method now adjusts pixels to match specified image depth,
     and reports depth based on current image pixels.
-
-(5.3.8.1)
-  * No change
 
 (5.3.8)
   * New class 'TypeMetric' to contain font type metrics.
