@@ -9086,7 +9086,7 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
                 image);
             }
           /*
-            Convert PICT tiled_image to runlength-encoded packets.
+            Convert PICT tiled image to runlength-encoded packets.
           */
           red=0;
           green=0;
@@ -9103,11 +9103,19 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
                 index=(*p++);
               else
                 {
-                  red=UpScale(*p);
-                  green=UpScale(*(p+tiled_image->columns));
-                  blue=UpScale(*(p+2*tiled_image->columns));
-                  if (tiled_image->matte)
-                    index=UpScale(*(p+3*tiled_image->columns));
+                  if (!tiled_image->matte)
+                    {
+                      red=UpScale(*p);
+                      green=UpScale(*(p+tiled_image->columns));
+                      blue=UpScale(*(p+2*tiled_image->columns));
+                    }
+                  else
+                    {
+                      index=UpScale(*p);
+                      red=UpScale(*(p+tiled_image->columns));
+                      green=UpScale(*(p+2*tiled_image->columns));
+                      blue=UpScale(*(p+3*tiled_image->columns));
+                    }
                   p++;
                 }
               if ((red == q->red) && (green == q->green) &&

@@ -711,8 +711,6 @@ static unsigned int XAnnotateEditImage(Display *display,
           }
         switch (key_symbol)
         {
-          case XK_h:
-          case XK_H:
           case XK_BackSpace:
           {
             /*

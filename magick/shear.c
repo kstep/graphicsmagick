@@ -403,18 +403,18 @@ static void XShearImage(Image *image,const double degrees,
     y;
 
   long
-    fractional_step;
+    blue,
+    fractional_step,
+    green,
+    index,
+    red;
 
   register RunlengthPacket
     *p,
     *q;
 
   register int
-    blue,
-    green,
-    i,
-    index,
-    red;
+    i;
 
   RunlengthPacket
     last_pixel;
@@ -688,18 +688,18 @@ static void YShearImage(Image *image,const double degrees,
     y;
 
   long
-    fractional_step;
+    blue,
+    fractional_step,
+    green,
+    index,
+    red;
 
   register RunlengthPacket
     *p,
     *q;
 
   register int
-    blue,
-    green,
-    i,
-    index,
-    red;
+    i;
 
   RunlengthPacket
     last_pixel;

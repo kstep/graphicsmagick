@@ -199,13 +199,11 @@
 typedef struct _NodeInfo
 {
   double
+    number_unique,
     total_red,
     total_green,
     total_blue,
     quantization_error;
-
-  unsigned long
-    number_unique;
 
   unsigned int
     color_number;
@@ -386,23 +384,6 @@ static unsigned int Assignment(CubeInfo *cube_info,
   cube_info->colormap=image->colormap;
   cube_info->colors=0;
   DefineColormap(cube_info,cube_info->root);
-  if ((quantize_info->number_colors == 2) &&
-      (quantize_info->colorspace == GRAYColorspace))
-    {
-      unsigned int
-        polarity;
-
-      /*
-        Monochrome image.
-      */
-      polarity=Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
-      image->colormap[polarity].red=0;
-      image->colormap[polarity].green=0;
-      image->colormap[polarity].blue=0;
-      image->colormap[!polarity].red=MaxRGB;
-      image->colormap[!polarity].green=MaxRGB;
-      image->colormap[!polarity].blue=MaxRGB;
-    }
   if ((quantize_info->colorspace != TransparentColorspace) &&
       (image->colorspace != CMYKColorspace))
     {
@@ -454,6 +435,23 @@ static unsigned int Assignment(CubeInfo *cube_info,
       p++;
       if (QuantumTick(i,image->packets))
         ProgressMonitor(AssignImageText,i,image->packets);
+    }
+  if ((quantize_info->number_colors == 2) &&
+      (quantize_info->colorspace == GRAYColorspace))
+    {
+      unsigned int
+        polarity;
+
+      /*
+        Monochrome image.
+      */
+      polarity=Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
+      image->colormap[polarity].red=0;
+      image->colormap[polarity].green=0;
+      image->colormap[polarity].blue=0;
+      image->colormap[!polarity].red=MaxRGB;
+      image->colormap[!polarity].green=MaxRGB;
+      image->colormap[!polarity].blue=MaxRGB;
     }
   return(True);
 }
