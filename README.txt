@@ -24,7 +24,7 @@ AVAILABILITY
 
   ImageMagick is available as
 
-    ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.4.3.tar.gz
+    ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.4.4.tar.gz
 
   ImageMagick client executables are available for some platforms. See
 
@@ -77,8 +77,8 @@ UNIX/Cygwin COMPILATION
 
   Type:
 
-    gzip -dc ImageMagick-5.4.3.tar.gz | tar xvf -
-    cd ImageMagick-5.4.3
+    gzip -dc ImageMagick-5.4.4.tar.gz | tar xvf -
+    cd ImageMagick-5.4.4
 
   If you do not have gunzip(1), it is available as
   ftp.gnu.org:pub/gnu/gzip-1.2.4.shar.
@@ -682,7 +682,7 @@ VMS COMPILATION
 
   Type
 
-      unzip ImageMagick-5.4.3.zip set default [.imagemagick] @make set
+      unzip ImageMagick-5.4.4.zip set default [.imagemagick] @make set
       display/create/node=node_name::
 
   where node_name is the DECNET X server to contact.
@@ -694,7 +694,7 @@ VMS COMPILATION
   Alternatively, get a zipped distribution (with JPEG, PNG, TIFF, TTF)
   from
 
-      ftp://ftp.imagemagick.org/pub/ImageMagick/vms/ImageMagick-5.4.3.zip
+      ftp://ftp.imagemagick.org/pub/ImageMagick/vms/ImageMagick-5.4.4.zip
 
   Thanks to pmoreau@cenaath.cena.dgac.fr for supplying invaluable help
   as well as the VMS versions of the JPEG, PNG, TTF, and TIFF

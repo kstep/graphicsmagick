@@ -1,5 +1,5 @@
 The ImageMagick Studio LLC development group announces the release of
-ImageMagick 5.4.3.  Version 5.4.3 is a feature release but also resolves
+ImageMagick 5.4.4.  Version 5.4.4 is a feature release but also resolves
 bugs reported against 5.4.2.
 
 ImageMagick is a robust collection of tools and libraries to read, write,
@@ -71,9 +71,9 @@ The ImageMagick WWW page is
 
   http://www.imagemagick.org/
  
-ImageMagick 5.4.3 is available via ftp as
+ImageMagick 5.4.4 is available via ftp as
 
-  ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.4.3.tar.gz
+  ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.4.4.tar.gz
 
 If ftp.imagemagick.org is overloaded, check the list of mirrors at
 http://www.imagemagick.org/www/archives.html for other mirrors.
