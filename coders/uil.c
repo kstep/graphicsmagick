@@ -165,13 +165,9 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     symbol[MaxTextExtent];
 
   int
-    distance,
     j,
     k,
     y;
-
-  long
-    mean;
 
   register IndexPacket
     *indexes;

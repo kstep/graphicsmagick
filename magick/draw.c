@@ -3045,13 +3045,13 @@ static unsigned int DrawPrimitive(const DrawInfo *draw_info,
         PrintPrimitiveInfo(primitive_info);
       path_info=ConvertPrimitiveToPath(primitive_info);
       if (path_info == (PathInfo *) NULL)
-        return;
+        return(False);
       if (draw_info->verbose)
         PrintPathInfo(path_info);
       polygon_info=ConvertPathToPolygon(path_info);
       LiberateMemory((void **) &path_info);
       if (polygon_info == (PolygonInfo *) NULL)
-        return;
+        return(False);
       if (draw_info->verbose)
         PrintPolygonInfo(polygon_info);
 #ifdef DEBUG_BOUND_BOXES

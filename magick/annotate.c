@@ -640,8 +640,7 @@ static unsigned int RenderTruetype(Image *image,
 
   double
     alpha,
-    opacity,
-    temp;
+    opacity;
 
   FT_BBox
     bounding_box;
