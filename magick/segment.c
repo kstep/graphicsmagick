@@ -287,12 +287,12 @@ static unsigned int Classify(Image *image,short **extrema,
         */
         if (head != (Cluster *) NULL)
           {
-            cluster->next=(Cluster *) AcquireMemory(sizeof(Cluster));
+            cluster->next=MagickAllocateMemory(Cluster *,sizeof(Cluster));
             cluster=cluster->next;
           }
         else
           {
-            cluster=(Cluster *) AcquireMemory(sizeof(Cluster));
+            cluster=MagickAllocateMemory(Cluster *,sizeof(Cluster));
             head=cluster;
           }
         if (cluster == (Cluster *) NULL)
@@ -314,7 +314,7 @@ static unsigned int Classify(Image *image,short **extrema,
       /*
         No classes were identified-- create one.
       */
-      cluster=(Cluster *) AcquireMemory(sizeof(Cluster));
+      cluster=MagickAllocateMemory(Cluster *,sizeof(Cluster));
       if (cluster == (Cluster *) NULL)
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
           image->filename);
@@ -450,7 +450,7 @@ static unsigned int Classify(Image *image,short **extrema,
   /*
     Speed up distance calculations.
   */
-  squares=(double *) AcquireMemory(513*sizeof(double));
+  squares=MagickAllocateMemory(double *,513*sizeof(double));
   if (squares == (double *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
@@ -460,7 +460,7 @@ static unsigned int Classify(Image *image,short **extrema,
   /*
     Allocate image colormap.
   */
-  colormap=(PixelPacket *) AcquireMemory(number_clusters*sizeof(PixelPacket));
+  colormap=MagickAllocateMemory(PixelPacket *,number_clusters*sizeof(PixelPacket));
   if (colormap == (PixelPacket *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
@@ -963,13 +963,13 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
   /*
     Allocate interval tree.
   */
-  list=(IntervalTree **) AcquireMemory(TreeLength*sizeof(IntervalTree *));
+  list=MagickAllocateMemory(IntervalTree **,TreeLength*sizeof(IntervalTree *));
   if (list == (IntervalTree **) NULL)
     return((IntervalTree *) NULL);
   /*
     The root is the entire histogram.
   */
-  root=(IntervalTree *) AcquireMemory(sizeof(IntervalTree));
+  root=MagickAllocateMemory(IntervalTree *,sizeof(IntervalTree));
   root->child=(IntervalTree *) NULL;
   root->sibling=(IntervalTree *) NULL;
   root->tau=0.0;
@@ -996,14 +996,14 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
           {
             if (node == head)
               {
-                node->child=(IntervalTree *)
-                  AcquireMemory(sizeof(IntervalTree));
+                node->child=MagickAllocateMemory(IntervalTree *,
+                  sizeof(IntervalTree));
                 node=node->child;
               }
             else
               {
-                node->sibling=(IntervalTree *)
-                  AcquireMemory(sizeof(IntervalTree));
+                node->sibling=MagickAllocateMemory(IntervalTree *,
+                  sizeof(IntervalTree));
                 node=node->sibling;
               }
             node->tau=zero_crossing[i+1].tau;
@@ -1016,7 +1016,7 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
         }
         if (left != head->left)
           {
-            node->sibling=(IntervalTree *) AcquireMemory(sizeof(IntervalTree));
+            node->sibling=MagickAllocateMemory(IntervalTree *,sizeof(IntervalTree));
             node=node->sibling;
             node->tau=zero_crossing[i+1].tau;
             node->child=(IntervalTree *) NULL;
@@ -1130,14 +1130,14 @@ static double OptimalTau(const long *histogram,const double max_tau,
   /*
     Allocate interval tree.
   */
-  list=(IntervalTree **) AcquireMemory(TreeLength*sizeof(IntervalTree *));
+  list=MagickAllocateMemory(IntervalTree **,TreeLength*sizeof(IntervalTree *));
   if (list == (IntervalTree **) NULL)
     return(0.0);
   /*
     Allocate zero crossing list.
   */
   count=(unsigned long) ((max_tau-min_tau)/delta_tau)+2;
-  zero_crossing=(ZeroCrossing *) AcquireMemory(count*sizeof(ZeroCrossing));
+  zero_crossing=MagickAllocateMemory(ZeroCrossing *,count*sizeof(ZeroCrossing));
   if (zero_crossing == (ZeroCrossing *) NULL)
     return(0.0);
   for (i=0; i < (long) count; i++)
@@ -1145,10 +1145,10 @@ static double OptimalTau(const long *histogram,const double max_tau,
   /*
     Initialize zero crossing list.
   */
-  derivative=(double *)
-    AcquireMemory(256*sizeof(double));
-  second_derivative=(double *)
-    AcquireMemory(256*sizeof(double));
+  derivative=MagickAllocateMemory(double *,
+    256*sizeof(double));
+  second_derivative=MagickAllocateMemory(double *,
+    256*sizeof(double));
   if ((derivative == (double *) NULL) || (second_derivative == (double *) NULL))
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       "UnableToAllocateDerivatives");
@@ -1310,7 +1310,7 @@ static void ScaleSpace(const long *histogram,const double tau,
     u,
     x;
 
-  gamma=(double *) AcquireMemory(256*sizeof(double));
+  gamma=MagickAllocateMemory(double *,256*sizeof(double));
   if (gamma == (double *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       "UnableToAllocateGammaMap");
@@ -1476,8 +1476,8 @@ MagickExport unsigned int SegmentImage(Image *image,
   assert(image->signature == MagickSignature);
   for (i=0; i < MaxDimension; i++)
   {
-    histogram[i]=(long *) AcquireMemory(256*sizeof(long));
-    extrema[i]=(short *) AcquireMemory(256*sizeof(short));
+    histogram[i]=MagickAllocateMemory(long *,256*sizeof(long));
+    extrema[i]=MagickAllocateMemory(short *,256*sizeof(short));
     if ((histogram[i] == (long *) NULL) || (extrema[i] == (short *) NULL))
       {
         for (i-- ; i >= 0; i--)

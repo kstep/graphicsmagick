@@ -169,7 +169,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
   assert(luma != (unsigned char *) NULL);
   assert(chroma1 != (unsigned char *) NULL);
   assert(chroma2 != (unsigned char *) NULL);
-  buffer=(unsigned char *) AcquireMemory(0x800);
+  buffer=MagickAllocateMemory(unsigned char *,0x800);
   if (buffer == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       (char *) NULL);
@@ -180,7 +180,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
   {
     PCDGetBits(8);
     length=(sum & 0xff)+1;
-    pcd_table[i]=(PCDTable *) AcquireMemory(length*sizeof(PCDTable));
+    pcd_table[i]=MagickAllocateMemory(PCDTable *,length*sizeof(PCDTable));
     if (pcd_table[i] == (PCDTable *) NULL)
       {
         MagickFreeMemory(buffer);
@@ -473,7 +473,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Determine if this is a PCD file.
   */
-  header=(unsigned char *) AcquireMemory(3*0x800);
+  header=MagickAllocateMemory(unsigned char *,3*0x800);
   if (header == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   count=ReadBlob(image,3*0x800,(char *) header);
@@ -528,9 +528,9 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Allocate luma and chroma memory.
   */
   number_pixels=image->columns*image->rows;
-  chroma1=(unsigned char *) AcquireMemory(number_pixels+1);
-  chroma2=(unsigned char *) AcquireMemory(number_pixels+1);
-  luma=(unsigned char *) AcquireMemory(number_pixels+1);
+  chroma1=MagickAllocateMemory(unsigned char *,number_pixels+1);
+  chroma2=MagickAllocateMemory(unsigned char *,number_pixels+1);
+  luma=MagickAllocateMemory(unsigned char *,number_pixels+1);
   if ((chroma1 == (unsigned char *) NULL) ||
       (chroma2 == (unsigned char *) NULL) || (luma == (unsigned char *) NULL))
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);

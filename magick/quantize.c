@@ -757,7 +757,7 @@ MagickExport QuantizeInfo *CloneQuantizeInfo(const QuantizeInfo *quantize_info)
   QuantizeInfo
     *clone_info;
 
-  clone_info=(QuantizeInfo *) AcquireMemory(sizeof(QuantizeInfo));
+  clone_info=MagickAllocateMemory(QuantizeInfo *,sizeof(QuantizeInfo));
   if (clone_info == (QuantizeInfo *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       "UnableToAllocateQuantizeInfo");
@@ -1278,7 +1278,7 @@ static CubeInfo *GetCubeInfo(const QuantizeInfo *quantize_info,
   /*
     Initialize tree to describe color cube_info.
   */
-  cube_info=(CubeInfo *) AcquireMemory(sizeof(CubeInfo));
+  cube_info=MagickAllocateMemory(CubeInfo *,sizeof(CubeInfo));
   if (cube_info == (CubeInfo *) NULL)
     return((CubeInfo *) NULL);
   (void) memset(cube_info,0,sizeof(CubeInfo));
@@ -1300,7 +1300,7 @@ static CubeInfo *GetCubeInfo(const QuantizeInfo *quantize_info,
   /*
     Initialize dither resources.
   */
-  cube_info->cache=(long *) AcquireMemory((1 << 18)*sizeof(long));
+  cube_info->cache=MagickAllocateMemory(long *,(1 << 18)*sizeof(long));
   if (cube_info->cache == (long *) NULL)
     return((CubeInfo *) NULL);
   /*
@@ -1376,7 +1376,7 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int id,
       /*
         Allocate a new nodes of nodes.
       */
-      nodes=(Nodes *) AcquireMemory(sizeof(Nodes));
+      nodes=MagickAllocateMemory(Nodes *,sizeof(Nodes));
       if (nodes == (Nodes *) NULL)
         return((NodeInfo *) NULL);
       nodes->next=cube_info->node_queue;

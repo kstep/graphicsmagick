@@ -531,11 +531,11 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     SetImageType(image, TrueColorType);
     }
 
-  one_row = (unsigned char *) AcquireMemory(bytes_per_row);
+  one_row = MagickAllocateMemory(unsigned char *,bytes_per_row);
   if (one_row == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   if (compressionType == PALM_COMPRESSION_SCANLINE)
-    lastrow = (unsigned char *) AcquireMemory(bytes_per_row);
+    lastrow = MagickAllocateMemory(unsigned char *,bytes_per_row);
 
   mask = (1l << bits_per_pixel) - 1;
 
@@ -886,8 +886,8 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
     }
 
   if (image->compression == FaxCompression)
-    lastrow = (unsigned char *) AcquireMemory(bytes_per_row);
-  one_row = (unsigned char *) AcquireMemory(bytes_per_row);
+    lastrow = MagickAllocateMemory(unsigned char *,bytes_per_row);
+  one_row = MagickAllocateMemory(unsigned char *,bytes_per_row);
   if (one_row == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
 

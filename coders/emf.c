@@ -151,7 +151,7 @@ static HENHMETAFILE ReadEnhMetaFile(const char *szFileName,long *width,
           DeleteMetaFile(hOld);
           return((HENHMETAFILE) NULL);
         }
-      pBits=(LPBYTE) AcquireMemory(dwSize);
+      pBits=MagickAllocateMemory(LPBYTE,dwSize);
       if (pBits == (LPBYTE) NULL)
         {
           DeleteMetaFile(hOld);
@@ -188,7 +188,7 @@ static HENHMETAFILE ReadEnhMetaFile(const char *szFileName,long *width,
   if (hFile == INVALID_HANDLE_VALUE)
     return(NULL);
   dwSize=GetFileSize(hFile,NULL);
-  pBits=(LPBYTE) AcquireMemory(dwSize);
+  pBits=MagickAllocateMemory(LPBYTE,dwSize);
   ReadFile(hFile,pBits,dwSize,&dwSize,NULL);
   CloseHandle(hFile);
   if (((PAPMHEADER) pBits)->dwKey != 0x9ac6cdd7l)

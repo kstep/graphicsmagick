@@ -167,7 +167,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   for (i=1; i < (long) TIFFNumberOfStrips(tiff); i++)
     if (byte_count[i] > strip_size)
       strip_size=byte_count[i];
-  buffer=(unsigned char *) AcquireMemory(strip_size);
+  buffer=MagickAllocateMemory(unsigned char *,strip_size);
   if (buffer == (unsigned char *) NULL)
     {
       TIFFClose(tiff);
@@ -808,7 +808,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               Allocate pixel array.
             */
             length=number_pixels;
-            pixels=(unsigned char *) AcquireMemory(length);
+            pixels=MagickAllocateMemory(unsigned char *,length);
             if (pixels == (unsigned char *) NULL)
               ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
                 image);
@@ -917,7 +917,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               */
               length=(image->colorspace == CMYKColorspace ? 4 : 3)*
                 number_pixels;
-              pixels=(unsigned char *) AcquireMemory(length);
+              pixels=MagickAllocateMemory(unsigned char *,length);
               if (pixels == (unsigned char *) NULL)
                 ThrowWriterException(ResourceLimitError,
                   "MemoryAllocationFailed",image);
@@ -1058,7 +1058,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 Allocate pixel array.
               */
               length=number_pixels;
-              pixels=(unsigned char *) AcquireMemory(length);
+              pixels=MagickAllocateMemory(unsigned char *,length);
               if (pixels == (unsigned char *) NULL)
                 ThrowWriterException(ResourceLimitError,
                   "MemoryAllocationFailed",image);

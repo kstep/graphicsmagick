@@ -246,12 +246,12 @@ static jas_stream_t *JP2StreamManager(Image *image)
   StreamManager
     *source;
 
-  stream=(jas_stream_t *) AcquireMemory(sizeof(jas_stream_t));
+  stream=MagickAllocateMemory(jas_stream_t *,sizeof(jas_stream_t));
   if (stream == (jas_stream_t *) NULL)
     return((jas_stream_t *) NULL);
   (void) memset(stream,0,sizeof(jas_stream_t));
   stream->rwlimit_=(-1);
-  stream->obj_=(jas_stream_obj_t *) AcquireMemory(sizeof(StreamManager));
+  stream->obj_=MagickAllocateMemory(jas_stream_obj_t *,sizeof(StreamManager));
   if (stream->obj_ == (jas_stream_obj_t *) NULL)
     return((jas_stream_t *) NULL);
   stream->ops_=(&StreamOperators);

@@ -705,7 +705,7 @@ static char **GetModuleList(ExceptionInfo *exception)
     max_entries;
 
   max_entries=255;
-  modules=(char **) AcquireMemory((max_entries+1)*sizeof(char *));
+  modules=MagickAllocateMemory(char **,(max_entries+1)*sizeof(char *));
   if (modules == (char **) NULL)
     return((char **) NULL);
   *modules=(char *) NULL;
@@ -1275,7 +1275,7 @@ static unsigned int ReadConfigureFile(const char *basename,
         /*
           Allocate memory for the module list.
         */
-        module_info=(ModuleInfo *) AcquireMemory(sizeof(ModuleInfo));
+        module_info=MagickAllocateMemory(ModuleInfo *,sizeof(ModuleInfo));
         if (module_info == (ModuleInfo *) NULL)
           MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
             "UnableToAllocateModuleInfo");
@@ -1473,7 +1473,7 @@ static CoderInfo *SetCoderInfo(const char *tag)
     *entry;
 
   assert(tag != (const char *) NULL);
-  entry=(CoderInfo *) AcquireMemory(sizeof(CoderInfo));
+  entry=MagickAllocateMemory(CoderInfo *,sizeof(CoderInfo));
   if (entry == (CoderInfo *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       "UnableToAllocateModuleInfo");

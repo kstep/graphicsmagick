@@ -326,7 +326,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
   /*
     Convolve image.
   */
-  normal_kernel=(double *) AcquireMemory(width*width*sizeof(double));
+  normal_kernel=MagickAllocateMemory(double *,width*width*sizeof(double));
   if (normal_kernel == (double *) NULL)
     {
       DestroyImage(convolve_image);
@@ -846,7 +846,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   /*
     Allocate histogram and scanline.
   */
-  histogram=(unsigned long *) AcquireMemory((PaintHistSize)*sizeof(unsigned long));
+  histogram=MagickAllocateMemory(unsigned long *,(PaintHistSize)*sizeof(unsigned long));
   if (histogram == (unsigned long *) NULL)
     {
       DestroyImage(paint_image);
@@ -1439,7 +1439,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
   /*
     Allocate sine map.
   */
-  sine_map=(double *) AcquireMemory(wave_image->columns*sizeof(double));
+  sine_map=MagickAllocateMemory(double *,wave_image->columns*sizeof(double));
   if (sine_map == (double *) NULL)
     {
       DestroyImage(wave_image);

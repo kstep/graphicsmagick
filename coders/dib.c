@@ -520,7 +520,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       if (!AllocateImageColormap(image,image->colors))
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
-      dib_colormap=(unsigned char *) AcquireMemory(4*image->colors);
+      dib_colormap=MagickAllocateMemory(unsigned char *,4*image->colors);
       if (dib_colormap == (unsigned char *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
       packet_size=4;
@@ -543,8 +543,8 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     dib_info.bits_per_pixel<<=1;
   bytes_per_line=4*((image->columns*dib_info.bits_per_pixel+31)/32);
   length=bytes_per_line*image->rows;
-  pixels=(unsigned char *)
-    AcquireMemory(Max(bytes_per_line,image->columns+1)*image->rows);
+  pixels=MagickAllocateMemory(unsigned char *,
+    Max(bytes_per_line,image->columns+1)*image->rows);
   if (pixels == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   if ((dib_info.compression == 0) || (dib_info.compression == 3))
@@ -986,7 +986,7 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
   /*
     Convert MIFF to DIB raster pixels.
   */
-  pixels=(unsigned char *) AcquireMemory(dib_info.image_size);
+  pixels=MagickAllocateMemory(unsigned char *,dib_info.image_size);
   if (pixels == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
   switch (dib_info.bits_per_pixel)
@@ -1094,7 +1094,7 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
           Convert run-length encoded raster pixels.
         */
         length=2*(bytes_per_line+2)*(image->rows+2)+2;
-        dib_data=(unsigned char *) AcquireMemory(length);
+        dib_data=MagickAllocateMemory(unsigned char *,length);
         if (pixels == (unsigned char *) NULL)
           {
             MagickFreeMemory(pixels);
@@ -1128,8 +1128,8 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
       /*
         Dump colormap to file.
       */
-      dib_colormap=(unsigned char *)
-        AcquireMemory(4*(1 << dib_info.bits_per_pixel));
+      dib_colormap=MagickAllocateMemory(unsigned char *,
+        4*(1 << dib_info.bits_per_pixel));
       if (dib_colormap == (unsigned char *) NULL)
         ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
       q=dib_colormap;

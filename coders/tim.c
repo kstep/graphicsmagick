@@ -178,7 +178,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!AllocateImageColormap(image,pixel_mode == 1 ? 256 : 16))
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
-        tim_colormap=(unsigned char *) AcquireMemory(image->colors*2);
+        tim_colormap=MagickAllocateMemory(unsigned char *,image->colors*2);
         if (tim_colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
@@ -208,7 +208,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image_size=2*width*height;
     bytes_per_line=width*2;
     width=(width*16)/bits_per_pixel;
-    tim_data=(unsigned char *) AcquireMemory(image_size);
+    tim_data=MagickAllocateMemory(unsigned char *,image_size);
     if (tim_data == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
     (void) ReadBlob(image,image_size,(char *) tim_data);

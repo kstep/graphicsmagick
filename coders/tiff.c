@@ -159,7 +159,7 @@ static unsigned int ReadColorProfile(char *text,long int length,Image *image)
       MagickFreeMemory(image->color_profile.info);
       image->color_profile.length=0;
     }
-  image->color_profile.info=(unsigned char *) AcquireMemory(length);
+  image->color_profile.info=MagickAllocateMemory(unsigned char *,length);
   if (image->color_profile.info == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
@@ -191,7 +191,7 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
         Handle IPTC tag.
       */
       length*=4;
-      image->iptc_profile.info=(unsigned char *) AcquireMemory(length);
+      image->iptc_profile.info=MagickAllocateMemory(unsigned char *,length);
       if (image->iptc_profile.info == (unsigned char *) NULL)
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
           image->filename);
@@ -233,7 +233,7 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
   length=(p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3];
   p+=4;
 #endif
-  image->iptc_profile.info=(unsigned char *) AcquireMemory(length);
+  image->iptc_profile.info=MagickAllocateMemory(unsigned char *,length);
   if (image->iptc_profile.info == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
@@ -723,8 +723,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         packet_size=image->depth > 8 ? 2 : 1;
         if (image->matte)
           packet_size*=2;
-        quantum_scanline=(unsigned char *) AcquireMemory(packet_size*width);
-        scanline=(unsigned char *) AcquireMemory(8*TIFFScanlineSize(tiff));
+        quantum_scanline=MagickAllocateMemory(unsigned char *,packet_size*width);
+        scanline=MagickAllocateMemory(unsigned char *,8*TIFFScanlineSize(tiff));
         if ((quantum_scanline == (unsigned char *) NULL) ||
             (scanline == (unsigned char *) NULL))
           {
@@ -961,7 +961,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "Using DirectClassScanLine read method with %u bits per sample",
                bits_per_sample);
-        scanline=(unsigned char *) AcquireMemory(8*TIFFScanlineSize(tiff));
+        scanline=MagickAllocateMemory(unsigned char *,8*TIFFScanlineSize(tiff));
         if (scanline == (unsigned char *) NULL)
           {
             TIFFClose(tiff);
@@ -1068,7 +1068,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         /*
           Allocate tile buffer
         */
-        tile_pixels=(uint32*) AcquireMemory(tile_columns*tile_rows*sizeof (uint32));
+        tile_pixels=MagickAllocateMemory(uint32*,tile_columns*tile_rows*sizeof (uint32));
         if (tile_pixels == (uint32 *) NULL)
           {
             TIFFClose(tiff);
@@ -1183,7 +1183,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
               image)
           }
-        strip_pixels=(uint32 *) AcquireMemory(number_pixels*sizeof(uint32));
+        strip_pixels=MagickAllocateMemory(uint32 *,number_pixels*sizeof(uint32));
         if (strip_pixels == (uint32 *) NULL)
           {
             TIFFClose(tiff);
@@ -1246,8 +1246,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           Convert TIFF image to DirectClass MIFF image.
         */
         number_pixels=image->columns*image->rows;
-        pixels=(uint32 *)
-          AcquireMemory((number_pixels+6*image->columns)*sizeof(uint32));
+        pixels=MagickAllocateMemory(uint32 *,
+          (number_pixels+6*image->columns)*sizeof(uint32));
         if (pixels == (uint32 *) NULL)
           {
             TIFFClose(tiff);
@@ -1566,7 +1566,7 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
       */
       length=image->iptc_profile.length;
       roundup=4-(length & 0x03); /* round up for long word alignment */
-      profile=(unsigned char *) AcquireMemory(length+roundup);
+      profile=MagickAllocateMemory(unsigned char *,length+roundup);
       if ((length == 0) || (profile == (unsigned char *) NULL))
         return;
       (void) memcpy(profile,image->iptc_profile.info,length);
@@ -1585,7 +1585,7 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
 #if defined(GET_ONLY_IPTC_DATA)
   length=image->iptc_profile.length;
   roundup=(length & 0x01); /* round up for Photoshop */
-  profile=(unsigned char *) AcquireMemory(length+roundup+12);
+  profile=MagickAllocateMemory(unsigned char *,length+roundup+12);
   if ((length == 0) || (profile == (unsigned char *) NULL))
     (void) memcpy(profile,"8BIM\04\04\0\0",8);
   profile[8]=(length >> 24) & 0xff;
@@ -1602,7 +1602,7 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
   if (length == 0)
     return;
   roundup=(length & 0x01); /* round up for Photoshop */
-  profile=(unsigned char *) AcquireMemory(length+roundup);
+  profile=MagickAllocateMemory(unsigned char *,length+roundup);
   if (profile == (unsigned char *) NULL)
     return;
   (void) memcpy(profile,image->iptc_profile.info,length);
@@ -1640,12 +1640,12 @@ static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,unsigned long row,
   if (!TIFFIsTiled(tiff))
     return(TIFFWriteScanline(tiff,scanline,(uint32) row,sample));
   if (scanlines == (unsigned char *) NULL)
-    scanlines=(unsigned char *)
-      AcquireMemory(image->tile_info.height*TIFFScanlineSize(tiff));
+    scanlines=MagickAllocateMemory(unsigned char *,
+      image->tile_info.height*TIFFScanlineSize(tiff));
   if (scanlines == (unsigned char *) NULL)
     return(-1);
   if (tile_pixels == (unsigned char *) NULL)
-    tile_pixels=(unsigned char *)AcquireMemory(TIFFTileSize(tiff));
+    tile_pixels=MagickAllocateMemory(unsigned char *,TIFFTileSize(tiff));
   if (tile_pixels == (unsigned char *) NULL)
     return(-1);
   /*
@@ -2077,7 +2077,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     /*
       Write image scanlines.
     */
-    scanline=(unsigned char *) AcquireMemory(8*TIFFScanlineSize(tiff));
+    scanline=MagickAllocateMemory(unsigned char *,8*TIFFScanlineSize(tiff));
     if (scanline == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
     switch (photometric)
@@ -2209,9 +2209,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         /*
           Colormapped TIFF image.
         */
-        blue=(unsigned short *) AcquireMemory(65536L*sizeof(unsigned short));
-        green=(unsigned short *) AcquireMemory(65536L*sizeof(unsigned short));
-        red=(unsigned short *) AcquireMemory(65536L*sizeof(unsigned short));
+        blue=MagickAllocateMemory(unsigned short *,65536L*sizeof(unsigned short));
+        green=MagickAllocateMemory(unsigned short *,65536L*sizeof(unsigned short));
+        red=MagickAllocateMemory(unsigned short *,65536L*sizeof(unsigned short));
         if ((blue == (unsigned short *) NULL) ||
             (green == (unsigned short *) NULL) ||
             (red == (unsigned short *) NULL))
@@ -2407,7 +2407,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           count = 32768;
           if (count > length)
             count = length;
-          buffer=(unsigned char *) AcquireMemory(count);
+          buffer=MagickAllocateMemory(unsigned char *,count);
           if (buffer == (unsigned char *) NULL)
             {
               (void) close(file);

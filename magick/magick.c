@@ -944,7 +944,7 @@ MagickExport MagickInfo *SetMagickInfo(const char *name)
     *magick_info;
 
   assert(name != (const char *) NULL);
-  magick_info=(MagickInfo *) AcquireMemory(sizeof(MagickInfo));
+  magick_info=MagickAllocateMemory(MagickInfo *,sizeof(MagickInfo));
   if (magick_info == (MagickInfo *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       "UnableToAllocateMagickInfo");

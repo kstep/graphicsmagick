@@ -179,8 +179,8 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
   if ((pattern == (Image *) NULL) &&
       FuzzyColorMatch(&draw_info->fill,&target,image->fuzz))
     return(False);
-  floodplane=(unsigned char *) AcquireMemory(image->columns*image->rows);
-  segment_stack=(SegmentInfo *) AcquireMemory(MaxStacksize*sizeof(SegmentInfo));
+  floodplane=MagickAllocateMemory(unsigned char *,image->columns*image->rows);
+  segment_stack=MagickAllocateMemory(SegmentInfo *,MaxStacksize*sizeof(SegmentInfo));
   if ((floodplane== (unsigned char *) NULL) ||
       (segment_stack == (SegmentInfo *) NULL))
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
@@ -437,7 +437,7 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
   /*
     Allocate segment stack.
   */
-  segment_stack=(SegmentInfo *) AcquireMemory(MaxStacksize*sizeof(SegmentInfo));
+  segment_stack=MagickAllocateMemory(SegmentInfo *,MaxStacksize*sizeof(SegmentInfo));
   if (segment_stack == (SegmentInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       "UnableToFloodfillImage");

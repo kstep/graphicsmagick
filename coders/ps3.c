@@ -169,7 +169,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   for (i=1; i < (long) TIFFNumberOfStrips(tiff); i++)
     if (byte_count[i] > strip_size)
       strip_size=byte_count[i];
-  buffer=(unsigned char *) AcquireMemory(strip_size);
+  buffer=MagickAllocateMemory(unsigned char *,strip_size);
   if (buffer == (unsigned char *) NULL)
     {
       TIFFClose(tiff);
@@ -583,7 +583,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         */
         number_pixels=image->columns*image->rows;
         length=4*number_pixels;
-        pixels=(unsigned char *) AcquireMemory(length);
+        pixels=MagickAllocateMemory(unsigned char *,length);
         if (pixels == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
             image);
@@ -809,7 +809,7 @@ static unsigned int ZLIBEncodeImage(Image *image,const size_t length,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   compressed_packets=(unsigned long) (1.001*length+12);
-  compressed_pixels=(unsigned char *) AcquireMemory(compressed_packets);
+  compressed_pixels=MagickAllocateMemory(unsigned char *,compressed_packets);
   if (compressed_pixels == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       (char *) NULL);

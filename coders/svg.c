@@ -263,7 +263,7 @@ static char **GetStyleTokens(void *context,const char *text,int *number_tokens)
   for (p=text; *p != '\0'; p++)
     if (*p == ':')
       (*number_tokens)+=2;
-  tokens=(char **) AcquireMemory((*number_tokens+2)*sizeof(char *));
+  tokens=MagickAllocateMemory(char **,(*number_tokens+2)*sizeof(char *));
   if (tokens == (char **) NULL)
     {
       ThrowException(svg_info->exception,ResourceLimitError,
@@ -321,7 +321,7 @@ static char **GetTransformTokens(void *context,const char *text,
     if (*p == '(')
       (*number_tokens)+=2;
   }
-  tokens=(char **) AcquireMemory((*number_tokens+2)*sizeof(char *));
+  tokens=MagickAllocateMemory(char **,(*number_tokens+2)*sizeof(char *));
   if (tokens == (char **) NULL)
     {
       ThrowException(svg_info->exception,ResourceLimitError,
@@ -2352,7 +2352,7 @@ static void SVGCharacters(void *context,const xmlChar *c,int length)
     }
   else
     {
-      svg_info->text=(char *) AcquireMemory(length+1);
+      svg_info->text=MagickAllocateMemory(char *,length+1);
       if (svg_info->text != (char *) NULL)
         *svg_info->text='\0';
     }
@@ -2664,7 +2664,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   svg_info.image=image;
   svg_info.image_info=image_info;
   svg_info.text=AllocateString("");
-  svg_info.scale=(double *) AcquireMemory(sizeof(double));
+  svg_info.scale=MagickAllocateMemory(double *,sizeof(double));
   if (svg_info.scale == (double *) NULL)
     {
       (void) fclose(file);
@@ -2907,7 +2907,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   bitmap.dimensions.width=image->columns;
   bitmap.dimensions.height=image->rows;
   number_pixels=image->columns*image->rows;
-  bitmap.bitmap=(unsigned char *) AcquireMemory(number_planes*number_pixels);
+  bitmap.bitmap=MagickAllocateMemory(unsigned char *,number_planes*number_pixels);
   if (bitmap.bitmap == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
   point=0;
@@ -3090,8 +3090,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
     Allocate primitive info memory.
   */
   number_points=2047;
-  primitive_info=(PrimitiveInfo *)
-    AcquireMemory(number_points*sizeof(PrimitiveInfo));
+  primitive_info=MagickAllocateMemory(PrimitiveInfo *,
+    number_points*sizeof(PrimitiveInfo));
   if (primitive_info == (PrimitiveInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
   IdentityAffine(&affine);

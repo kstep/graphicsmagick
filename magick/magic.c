@@ -372,7 +372,7 @@ static unsigned int ReadConfigureFile(const char *basename,
         /*
           Allocate memory for the magic list.
         */
-        magic_info=(MagicInfo *) AcquireMemory(sizeof(MagicInfo));
+        magic_info=MagickAllocateMemory(MagicInfo *,sizeof(MagicInfo));
         if (magic_info == (MagicInfo *) NULL)
           MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
             "UnableToAllocateMagicInfo");

@@ -497,8 +497,8 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       }
                     i=(long) image->generic_profiles;
                     if (image->generic_profile == (ProfileInfo *) NULL)
-                      image->generic_profile=(ProfileInfo *)
-                        AcquireMemory(sizeof(ProfileInfo));
+                      image->generic_profile=MagickAllocateMemory(ProfileInfo *,
+                        sizeof(ProfileInfo));
                     else
                       MagickReallocMemory(image->generic_profile,
                         (i+1)*sizeof(ProfileInfo));
@@ -685,8 +685,8 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Color profile.
         */
-        image->color_profile.info=(unsigned char *)
-          AcquireMemory(image->color_profile.length);
+        image->color_profile.info=MagickAllocateMemory(unsigned char *,
+          image->color_profile.length);
         if (image->color_profile.info == (unsigned char *) NULL)
           ThrowReaderException(CorruptImageError,"UnableToReadColorProfile",
             image);
@@ -698,8 +698,8 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           IPTC profile.
         */
-        image->iptc_profile.info=(unsigned char *)
-          AcquireMemory(image->iptc_profile.length);
+        image->iptc_profile.info=MagickAllocateMemory(unsigned char *,
+          image->iptc_profile.length);
         if (image->iptc_profile.info == (unsigned char *) NULL)
           ThrowReaderException(CorruptImageError,"UnableToReadIPTCProfile",
             image);
@@ -715,8 +715,8 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           if (image->generic_profile[i].length == 0)
             continue;
-          image->generic_profile[i].info=(unsigned char *)
-            AcquireMemory(image->generic_profile[i].length);
+          image->generic_profile[i].info=MagickAllocateMemory(unsigned char *,
+            image->generic_profile[i].length);
           if (image->generic_profile[i].info == (unsigned char *) NULL)
             ThrowReaderException(CorruptImageError,"UnableToReadGenericProfile",
               image);
@@ -752,7 +752,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Read image colormap from file.
             */
             packet_size=image->depth > 8 ? 6 : 3;
-            colormap=(unsigned char *) AcquireMemory(packet_size*image->colors);
+            colormap=MagickAllocateMemory(unsigned char *,packet_size*image->colors);
             if (colormap == (unsigned char *) NULL)
               ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
                 image);
@@ -1225,7 +1225,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
           Allocate colormap.
         */
         packet_size=image->depth > 8 ? 6 : 3;
-        colormap=(unsigned char *) AcquireMemory(packet_size*image->colors);
+        colormap=MagickAllocateMemory(unsigned char *,packet_size*image->colors);
         if (colormap == (unsigned char *) NULL)
           return(False);
         /*

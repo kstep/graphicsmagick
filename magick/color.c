@@ -475,7 +475,7 @@ MagickExport char **GetColorList(const char *pattern,
   i=0;
   for (p=color_list; p != (const ColorInfo *) NULL; p=p->next)
     i++;
-  colorlist=(char **) AcquireMemory(i*sizeof(char *));
+  colorlist=MagickAllocateMemory(char **,i*sizeof(char *));
   if (colorlist == (char **) NULL)
     return((char **) NULL);
   i=0;
@@ -602,7 +602,7 @@ static CubeInfo *GetCubeInfo(void)
   /*
     Initialize tree to describe color cube.
   */
-  cube_info=(CubeInfo *) AcquireMemory(sizeof(CubeInfo));
+  cube_info=MagickAllocateMemory(CubeInfo *,sizeof(CubeInfo));
   if (cube_info == (CubeInfo *) NULL)
     return((CubeInfo *) NULL);
   (void) memset(cube_info,0,sizeof(CubeInfo));
@@ -654,7 +654,7 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int level)
       /*
         Allocate a new nodes of nodes.
       */
-      nodes=(Nodes *) AcquireMemory(sizeof(Nodes));
+      nodes=MagickAllocateMemory(Nodes *,sizeof(Nodes));
       if (nodes == (Nodes *) NULL)
         return((NodeInfo *) NULL);
       nodes->next=cube_info->node_queue;
@@ -777,7 +777,7 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
             continue;
           }
         if (node_info->number_unique == 0)
-          node_info->list=(ColorPacket *) AcquireMemory(sizeof(ColorPacket));
+          node_info->list=MagickAllocateMemory(ColorPacket *,sizeof(ColorPacket));
         else
           MagickReallocMemory(node_info->list,
             (i+1)*sizeof(ColorPacket));
@@ -1213,7 +1213,7 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
             Add this unique color to the color list.
           */
           if (node_info->number_unique == 0)
-            node_info->list=(ColorPacket *) AcquireMemory(sizeof(ColorPacket));
+            node_info->list=MagickAllocateMemory(ColorPacket *,sizeof(ColorPacket));
           else
             MagickReallocMemory(node_info->list,
               (i+1)*sizeof(ColorPacket));
@@ -1697,7 +1697,7 @@ static unsigned int ReadConfigureFile(const char *basename,
         /*
           Allocate memory for the color list.
         */
-        color_info=(ColorInfo *) AcquireMemory(sizeof(ColorInfo));
+        color_info=MagickAllocateMemory(ColorInfo *,sizeof(ColorInfo));
         if (color_info == (ColorInfo *) NULL)
           MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
             "UnableToAllocateColorInfo");

@@ -882,7 +882,7 @@ static unsigned int ClonePixelCache(Image *image,Image *clone_image)
         }
     }
   (void) LogMagickEvent(CacheEvent,GetMagickModule(),"disk => disk");
-  buffer=(char *) AcquireMemory(MaxBufferSize);
+  buffer=MagickAllocateMemory(char *,MaxBufferSize);
   if (buffer == (char *) NULL)
     {
       if (cache_info->file == -1)
@@ -1260,7 +1260,7 @@ MagickExport void GetCacheInfo(Cache *cache)
     *cache_info;
 
   assert(cache != (Cache) NULL);
-  cache_info=(CacheInfo *) AcquireMemory(sizeof(CacheInfo));
+  cache_info=MagickAllocateMemory(CacheInfo *,sizeof(CacheInfo));
   if (cache_info == (CacheInfo *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       "UnableToAllocateCacheInfo");
@@ -2121,8 +2121,8 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
       /*
         Allocate cache nexus.
       */
-      cache_info->nexus_info=(NexusInfo *)
-        AcquireMemory(MaxCacheViews*sizeof(NexusInfo));
+      cache_info->nexus_info=MagickAllocateMemory(NexusInfo *,
+        MaxCacheViews*sizeof(NexusInfo));
       if (cache_info->nexus_info == (NexusInfo *) NULL)
         MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
           "UnableToAllocateCacheInfo");
@@ -2177,7 +2177,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
          AcquireMagickResource(MemoryResource,cache_info->length)))
       {
         if (cache_info->storage_class == UndefinedClass)
-          pixels=(PixelPacket *) AcquireMemory((size_t) cache_info->length);
+          pixels=MagickAllocateMemory(PixelPacket *,(size_t) cache_info->length);
         else
           {
             MagickReallocMemory(cache_info->pixels,(size_t)
@@ -3001,7 +3001,7 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
     length+=number_pixels*sizeof(IndexPacket);
   if (nexus_info->staging == (PixelPacket *) NULL)
     {
-      nexus_info->staging=(PixelPacket *) AcquireMemory(length);
+      nexus_info->staging=MagickAllocateMemory(PixelPacket *,length);
       nexus_info->length=length;
     }
   else

@@ -2865,8 +2865,8 @@ MagickExport int XCommandWidget(Display *display,XWindows *windows,
       */
       if (selection_info != (XWidgetInfo *) NULL)
         MagickFreeMemory(selection_info);
-      selection_info=(XWidgetInfo *)
-        AcquireMemory(number_selections*sizeof(XWidgetInfo));
+      selection_info=MagickAllocateMemory(XWidgetInfo *,
+        number_selections*sizeof(XWidgetInfo));
       if (selection_info == (XWidgetInfo *) NULL)
         {
           MagickError(ResourceLimitError,"MemoryAllocationFailed",
@@ -4820,7 +4820,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
                 i=0;
                 for (p=magick_info; p != (MagickInfo *) NULL; p=p->next)
                   i++;
-                formats=(char **) AcquireMemory((i+1)*sizeof(char *));
+                formats=MagickAllocateMemory(char **,(i+1)*sizeof(char *));
                 i=0;
                 for (p=magick_info; p != (MagickInfo *) NULL; p=p->next)
                 {
@@ -5420,7 +5420,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
     Sort font list in ascending order.
   */
   listhead=fontlist;
-  fontlist=(char **) AcquireMemory(fonts*sizeof(char *));
+  fontlist=MagickAllocateMemory(char **,fonts*sizeof(char *));
   if (fontlist == (char **) NULL)
     {
       XNoticeWidget(display,windows,"MemoryAllocationFailed",
@@ -5698,7 +5698,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
           Sort font list in ascending order.
         */
         listhead=fontlist;
-        fontlist=(char **) AcquireMemory(fonts*sizeof(char *));
+        fontlist=MagickAllocateMemory(char **,fonts*sizeof(char *));
         if (fontlist == (char **) NULL)
           {
             XNoticeWidget(display,windows,"MemoryAllocationFailed",

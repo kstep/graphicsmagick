@@ -876,7 +876,7 @@ static unsigned int ReadConfigureFile(const char *basename,
           /*
             Allocate memory for the delegate list.
           */
-          delegate_info=(DelegateInfo *) AcquireMemory(sizeof(DelegateInfo));
+          delegate_info=MagickAllocateMemory(DelegateInfo *,sizeof(DelegateInfo));
           if (delegate_info == (DelegateInfo *) NULL)
             MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
                              "UnableToAllocateDelegateInfo");
@@ -1099,7 +1099,7 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
   */
   assert(delegate_info != (DelegateInfo *) NULL);
   assert(delegate_info->signature == MagickSignature);
-  delegate=(DelegateInfo *) AcquireMemory(sizeof(DelegateInfo));
+  delegate=MagickAllocateMemory(DelegateInfo *,sizeof(DelegateInfo));
   if (delegate == (DelegateInfo *) NULL)
     return((DelegateInfo *) delegate_list);
   delegate->decode=AcquireString(delegate_info->decode);

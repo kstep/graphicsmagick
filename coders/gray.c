@@ -129,7 +129,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
     Allocate memory for a scanline.
   */
   packet_size=image->depth > 8 ? 2 : 1;
-  scanline=(unsigned char *) AcquireMemory(packet_size*image->tile_info.width);
+  scanline=MagickAllocateMemory(unsigned char *,packet_size*image->tile_info.width);
   if (scanline == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   if (image_info->subrange != 0)
@@ -409,7 +409,7 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
     */
     TransformColorspace(image,RGBColorspace);
     packet_size=image->depth > 8 ? 2: 1;
-    scanline=(unsigned char *) AcquireMemory(packet_size*image->columns);
+    scanline=MagickAllocateMemory(unsigned char *,packet_size*image->columns);
     if (scanline == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
     /*

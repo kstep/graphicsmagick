@@ -654,7 +654,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           /*
             Duotone image data;  the format of this data is undocumented.
           */
-          data=(unsigned char *) AcquireMemory(length);
+          data=MagickAllocateMemory(unsigned char *,length);
           if (data == (unsigned char *) NULL) {
         if(logging)
         {
@@ -703,7 +703,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  reading image resources (IPTC) - %ld bytes", (long) length);
     }
-      data=(unsigned char *) AcquireMemory(length);
+      data=MagickAllocateMemory(unsigned char *,length);
       if (data == (unsigned char *) NULL) {
       if(logging)
       {
@@ -773,7 +773,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  negative layer count corrected for");
       }
         }
-      layer_info=(LayerInfo *) AcquireMemory(number_layers*sizeof(LayerInfo));
+      layer_info=MagickAllocateMemory(LayerInfo *,number_layers*sizeof(LayerInfo));
       if (layer_info == (LayerInfo *) NULL) {
       if(logging)
       {
@@ -1637,8 +1637,8 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   packet_size=image->depth > 8 ? 6 : 3;
   if (image->matte)
     packet_size+=image->depth > 8 ? 2 : 1;
-  pixels=(unsigned char *)
-    AcquireMemory(packet_size*image->columns*sizeof(PixelPacket));
+  pixels=MagickAllocateMemory(unsigned char *,
+    packet_size*image->columns*sizeof(PixelPacket));
   if (pixels == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
   (void) WriteBlob(image,4,"8BPS");

@@ -151,7 +151,7 @@ static unsigned int GenerateIPTCAttribute(Image *image,const char *key)
       continue;
     length=image->iptc_profile.info[i+3] << 8;
     length|=image->iptc_profile.info[i+4];
-    attribute=(char *) AcquireMemory(length+MaxTextExtent);
+    attribute=MagickAllocateMemory(char *,length+MaxTextExtent);
     if (attribute == (char *) NULL)
       continue;
     (void) strncpy(attribute,(char *) image->iptc_profile.info+i+5,length);
@@ -397,7 +397,7 @@ static int Generate8BIMAttribute(Image *image,const char *key)
     string=(char *) NULL;
     if ((count != 0) && (count <= length))
       {
-        string=(char *) AcquireMemory(count+MaxTextExtent);
+        string=MagickAllocateMemory(char *,count+MaxTextExtent);
         if (string != (char *) NULL)
           {
             for (i=0; i < (long) count; i++)
@@ -409,7 +409,7 @@ static int Generate8BIMAttribute(Image *image,const char *key)
     if (!(count & 0x01))
       (void) ReadByte((char **) &info,&length);
     count=ReadMSBLong((char **) &info,&length);
-    attribute=(char *) AcquireMemory(count+MaxTextExtent);
+    attribute=MagickAllocateMemory(char *,count+MaxTextExtent);
     if (attribute != (char *) NULL)
       {
         memcpy(attribute,(char *) info,count);
@@ -905,7 +905,7 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
             case EXIF_FMT_UNDEFINED:
             case EXIF_FMT_STRING:
             {
-              value=(char *) AcquireMemory(n+1);
+              value=MagickAllocateMemory(char *,n+1);
               if (value != (char *) NULL)
                 {
                   long
@@ -1375,7 +1375,7 @@ MagickExport unsigned int SetImageAttribute(Image *image,const char *key,
     }
   if (*value == '\0')
     return(False);
-  attribute=(ImageAttribute *) AcquireMemory(sizeof(ImageAttribute));
+  attribute=MagickAllocateMemory(ImageAttribute *,sizeof(ImageAttribute));
   if (attribute == (ImageAttribute *) NULL)
     return(False);
   attribute->key=AllocateString(key);

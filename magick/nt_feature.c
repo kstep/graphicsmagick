@@ -366,7 +366,7 @@ MagickExport TypeInfo* NTGetTypeList( void )
           continue;
         *pos='\0'; /* Remove (TrueType) from string */
 
-        type_info=(TypeInfo *) AcquireMemory(sizeof(TypeInfo));
+        type_info=MagickAllocateMemory(TypeInfo *,sizeof(TypeInfo));
         if (type_info == (TypeInfo *) NULL)
           MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
             "UnableToAllocateTypeInfo");
@@ -552,7 +552,7 @@ MagickExport TypeInfo* NTGetTypeList( void )
     int
       array_index = 0;
 
-    type_array = (TypeInfo**) AcquireMemory(sizeof(TypeInfo*)*list_entries);
+    type_array = MagickAllocateMemory(TypeInfo**,sizeof(TypeInfo*)*list_entries);
 
     while (type_list->previous != (TypeInfo *) NULL)
       type_list=type_list->previous;

@@ -458,7 +458,7 @@ static void *LogToBlob(const char *filename,size_t *length,
       return((void *) NULL);
     }
   *length=(size_t) offset;
-  blob=(unsigned char *) AcquireMemory(*length+1);
+  blob=MagickAllocateMemory(unsigned char *,*length+1);
   if (blob == (unsigned char *) NULL)
     {
       (void) close(file);
@@ -852,7 +852,7 @@ static unsigned int ReadConfigureFile(const char *basename,
         /*
           Allocate memory for the log list.
         */
-        log_info=(LogInfo *) AcquireMemory(sizeof(LogInfo));
+        log_info=MagickAllocateMemory(LogInfo *,sizeof(LogInfo));
         if (log_info == (LogInfo *) NULL)
           MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
             "UnableToAllocateLogInfo");

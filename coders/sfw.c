@@ -233,7 +233,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read image into a buffer.
   */
-  buffer=(unsigned char *) AcquireMemory((size_t) GetBlobSize(image));
+  buffer=MagickAllocateMemory(unsigned char *,(size_t) GetBlobSize(image));
   if (buffer == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   count=ReadBlob(image,(size_t) GetBlobSize(image),(char *) buffer);

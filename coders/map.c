@@ -133,9 +133,9 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (!AllocateImageColormap(image,image->offset ? image->offset : 256))
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   packet_size=image->depth > 8 ? 2 : 1;
-  pixels=(unsigned char *) AcquireMemory(packet_size*image->columns);
+  pixels=MagickAllocateMemory(unsigned char *,packet_size*image->columns);
   packet_size=image->colors > 256 ? 6 : 3;
-  colormap=(unsigned char *) AcquireMemory(packet_size*image->colors);
+  colormap=MagickAllocateMemory(unsigned char *,packet_size*image->colors);
   if ((pixels == (unsigned char *) NULL) ||
       (colormap == (unsigned char *) NULL))
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
@@ -339,9 +339,9 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
   if (!IsPaletteImage(image,&image->exception))
     SetImageType(image,PaletteType);
   packet_size=image->depth > 8 ? 2 : 1;
-  pixels=(unsigned char *) AcquireMemory(image->columns*packet_size);
+  pixels=MagickAllocateMemory(unsigned char *,image->columns*packet_size);
   packet_size=image->colors > 256 ? 6 : 3;
-  colormap=(unsigned char *) AcquireMemory(packet_size*image->colors);
+  colormap=MagickAllocateMemory(unsigned char *,packet_size*image->colors);
   if ((pixels == (unsigned char *) NULL) ||
       (colormap == (unsigned char *) NULL))
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);

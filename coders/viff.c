@@ -398,8 +398,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         if (!AllocateImageColormap(image,image->colors))
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
-        viff_colormap=(unsigned char *)
-          AcquireMemory(bytes_per_pixel*image->colors*viff_info.map_rows);
+        viff_colormap=MagickAllocateMemory(unsigned char *,
+          bytes_per_pixel*image->colors*viff_info.map_rows);
         if (viff_colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
@@ -486,8 +486,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       max_packets=((image->columns+7) >> 3)*image->rows;
     else
       max_packets=number_pixels*viff_info.number_data_bands;
-    viff_pixels=(unsigned char *)
-      AcquireMemory(bytes_per_pixel*max_packets*sizeof(Quantum));
+    viff_pixels=MagickAllocateMemory(unsigned char *,
+      bytes_per_pixel*max_packets*sizeof(Quantum));
     if (viff_pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
     (void) ReadBlob(image,bytes_per_pixel*max_packets,(char *) viff_pixels);
@@ -1033,7 +1033,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
     /*
       Convert MIFF to VIFF raster pixels.
     */
-    viff_pixels=(unsigned char *) AcquireMemory(packets);
+    viff_pixels=MagickAllocateMemory(unsigned char *,packets);
     if (viff_pixels == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
     q=viff_pixels;
@@ -1073,7 +1073,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
           /*
             Dump colormap to file.
           */
-          viff_colormap=(unsigned char *) AcquireMemory(3*image->colors);
+          viff_colormap=MagickAllocateMemory(unsigned char *,3*image->colors);
           if (viff_colormap == (unsigned char *) NULL)
             ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
               image);

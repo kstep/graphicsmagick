@@ -241,7 +241,7 @@ MagickExport void Ascii85Initialize(Image *image)
   /*
     Allocate image structure.
   */
-  image->ascii85=(Ascii85Info *) AcquireMemory(sizeof(Ascii85Info));
+  image->ascii85=MagickAllocateMemory(Ascii85Info *,sizeof(Ascii85Info));
   if (image->ascii85 == (Ascii85Info *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       "UnableToAllocateAscii85Info");
@@ -417,9 +417,9 @@ MagickExport unsigned int HuffmanDecodeImage(Image *image)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  mb_hash=(HuffmanTable **) AcquireMemory(HashSize*sizeof(HuffmanTable *));
-  mw_hash=(HuffmanTable **) AcquireMemory(HashSize*sizeof(HuffmanTable *));
-  scanline=(unsigned char *) AcquireMemory(image->columns);
+  mb_hash=MagickAllocateMemory(HuffmanTable **,HashSize*sizeof(HuffmanTable *));
+  mw_hash=MagickAllocateMemory(HuffmanTable **,HashSize*sizeof(HuffmanTable *));
+  scanline=MagickAllocateMemory(unsigned char *,image->columns);
   if ((mb_hash == (HuffmanTable **) NULL) ||
       (mw_hash == (HuffmanTable **) NULL) ||
       (scanline == (unsigned char *) NULL))
@@ -699,7 +699,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
   width=image->columns;
   if (is_fax == True)
     width=Max(image->columns,1728);
-  scanline=(unsigned char *) AcquireMemory(width+1);
+  scanline=MagickAllocateMemory(unsigned char *,width+1);
   if (scanline == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       (char *) NULL);
@@ -911,7 +911,7 @@ MagickExport unsigned int LZWEncodeImage(Image *image,const size_t length,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(pixels != (unsigned char *) NULL);
-  table=(TableType *) AcquireMemory((1 << 12)*sizeof(TableType));
+  table=MagickAllocateMemory(TableType *,(1 << 12)*sizeof(TableType));
   if (table == (TableType *) NULL)
     return(False);
   /*
@@ -1056,7 +1056,7 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,const size_t length,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(pixels != (unsigned char *) NULL);
-  packbits=(unsigned char *) AcquireMemory(128);
+  packbits=MagickAllocateMemory(unsigned char *,128);
   if (packbits == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       (char *) NULL);

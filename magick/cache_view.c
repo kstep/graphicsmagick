@@ -254,7 +254,7 @@ MagickExport ViewInfo *OpenCacheView(Image *image)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  view=(ViewInfo *) AcquireMemory(sizeof(ViewInfo));
+  view=MagickAllocateMemory(ViewInfo *,sizeof(ViewInfo));
   if (view == (ViewInfo *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       "UnableToAllocateCacheView");

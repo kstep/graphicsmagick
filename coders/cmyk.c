@@ -136,8 +136,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
       image->matte=True;
       packet_size=image->depth > 8 ? 10 : 8;
     }
-  scanline=(unsigned char *)
-    AcquireMemory(packet_size*image->tile_info.width);
+  scanline=MagickAllocateMemory(unsigned char *,
+    packet_size*image->tile_info.width);
   if (scanline == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   if (image_info->subrange != 0)
@@ -566,7 +566,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
   packet_size=image->depth > 8 ? 8 : 4;
   if (LocaleCompare(image_info->magick,"CMYKA") == 0)
     packet_size=image->depth > 8 ? 10 : 8;
-  pixels=(unsigned char *) AcquireMemory(packet_size*image->columns);
+  pixels=MagickAllocateMemory(unsigned char *,packet_size*image->columns);
   if (pixels == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
   if (image_info->interlace != PartitionInterlace)

@@ -499,12 +499,12 @@ static unsigned int CompressColormapTransFirst(Image *image)
   if (image->storage_class != PseudoClass || image->colors > 256 ||
       image->colors < 2)
     return(False);
-  marker=(unsigned char *) AcquireMemory(image->colors);
+  marker=MagickAllocateMemory(unsigned char *,image->colors);
   if (marker == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       "UnableToCompressColormap")
-  opacity=(IndexPacket *)
-    AcquireMemory(image->colors*sizeof(IndexPacket));
+  opacity=MagickAllocateMemory(IndexPacket *,
+    image->colors*sizeof(IndexPacket));
   if (opacity == (IndexPacket *) NULL)
     {
       MagickFreeMemory(marker);
@@ -601,7 +601,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
     Compress colormap.
   */
 
-  colormap=(PixelPacket *) AcquireMemory(image->colors*sizeof(PixelPacket));
+  colormap=MagickAllocateMemory(PixelPacket *,image->colors*sizeof(PixelPacket));
   if (colormap == (PixelPacket *) NULL)
     {
       MagickFreeMemory(marker);
@@ -612,7 +612,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
   /*
     Eliminate unused colormap entries.
   */
-  map=(IndexPacket *) AcquireMemory(number_colors*sizeof(IndexPacket));
+  map=MagickAllocateMemory(IndexPacket *,number_colors*sizeof(IndexPacket));
   if (map == (IndexPacket *) NULL)
     {
       MagickFreeMemory(marker);
@@ -1383,13 +1383,13 @@ static png_voidp png_IM_malloc(png_structp png_ptr,png_uint_32 size)
     ret;
 
   png_ptr=png_ptr;
-  ret=((png_voidp) AcquireMemory((size_t) size));
+  ret=MagickAllocateMemory(png_voidp,(size_t) size);
   if (ret == NULL)
     png_error("Insufficient memory.");
   return (ret);
 #else
   png_ptr=png_ptr;
-  return((png_voidp) AcquireMemory((size_t) size));
+  return MagickAllocateMemory(png_voidp,(size_t) size);
 #endif
 }
 
@@ -1453,7 +1453,7 @@ png_read_raw_profile(Image *image, const ImageInfo *image_info,
       "invalid profile length");
     return (False);
   }
-  info=(unsigned char *) AcquireMemory(length);
+  info=MagickAllocateMemory(unsigned char *,length);
   if (info == (unsigned char *) NULL)
   {
     (void) ThrowException(&image->exception,ResourceLimitError,
@@ -1501,8 +1501,8 @@ png_read_raw_profile(Image *image, const ImageInfo *image_info,
     {
       i=(long) image->generic_profiles;
       if (image->generic_profile == (ProfileInfo *) NULL)
-        image->generic_profile=(ProfileInfo *)
-           AcquireMemory(sizeof(ProfileInfo));
+        image->generic_profile=MagickAllocateMemory(ProfileInfo *,
+           sizeof(ProfileInfo));
       else
         MagickReallocMemory(image->generic_profile,
            (i+1)*sizeof(ProfileInfo));
@@ -1767,7 +1767,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
              PNG_FREE_ICCP);
 #else
           /* libpng will destroy name and info so we must copy them now. */
-          image->color_profile.info=(unsigned char *) AcquireMemory(length);
+          image->color_profile.info=MagickAllocateMemory(unsigned char *,length);
           if (image->color_profile.info == (unsigned char *) NULL)
             {
                MagickError(OptionError,"MemoryAllocationFailed",
@@ -2148,11 +2148,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "    Reading PNG IDAT chunk(s)");
   if (num_passes > 1)
-    png_pixels=(unsigned char *)
-      AcquireMemory(ping_info->rowbytes*image->rows);
+    png_pixels=MagickAllocateMemory(unsigned char *,
+      ping_info->rowbytes*image->rows);
   else
-    png_pixels=(unsigned char *)
-      AcquireMemory(ping_info->rowbytes);
+    png_pixels=MagickAllocateMemory(unsigned char *,
+      ping_info->rowbytes);
   if (png_pixels == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
 
@@ -2321,7 +2321,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         Convert grayscale image to PseudoClass pixel packets.
       */
       image->matte=ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA;
-      quantum_scanline=(Quantum *) AcquireMemory((image->matte ?  2 : 1) *
+      quantum_scanline=MagickAllocateMemory(Quantum *,(image->matte ?  2 : 1) *
          image->columns*sizeof(Quantum));
       if (quantum_scanline == (Quantum *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
@@ -2567,7 +2567,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             *value;
 
           length=text[i].text_length;
-          value=(char *) AcquireMemory(length+1);
+          value=MagickAllocateMemory(char *,length+1);
           if (value == (char *) NULL)
             {
               (void) ThrowException(&image->exception,ResourceLimitError,
@@ -2595,8 +2595,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           /*
             create a new object buffer.
           */
-          mng_info->ob[object_id]=(MngBuffer *)
-            AcquireMemory(sizeof(MngBuffer));
+          mng_info->ob[object_id]=MagickAllocateMemory(MngBuffer *,
+            sizeof(MngBuffer));
           if (mng_info->ob[object_id] != (MngBuffer *) NULL)
             {
               mng_info->ob[object_id]->image=(Image *) NULL;
@@ -2727,7 +2727,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Allocate a MngInfo structure.
   */
   have_mng_structure=False;
-  mng_info=(MngInfo *) AcquireMemory(sizeof(MngInfo));
+  mng_info=MagickAllocateMemory(MngInfo *,sizeof(MngInfo));
   if (mng_info == (MngInfo *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   /*
@@ -2943,7 +2943,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
     p=NULL;
     if (length)
       {
-        chunk=(unsigned char *) AcquireMemory(length);
+        chunk=MagickAllocateMemory(unsigned char *,length);
         if (chunk == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
@@ -3024,7 +3024,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
                open alpha_blob, attached to alpha_image
         */
 
-        color_image_info=(ImageInfo *)AcquireMemory(sizeof(ImageInfo));
+        color_image_info=MagickAllocateMemory(ImageInfo *,sizeof(ImageInfo));
         if (color_image_info == (ImageInfo *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
               image);
@@ -3045,7 +3045,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
         if (!image_info->ping && jng_color_type >= 12)
           {
-            alpha_image_info=(ImageInfo *)AcquireMemory(sizeof(ImageInfo));
+            alpha_image_info=MagickAllocateMemory(ImageInfo *,sizeof(ImageInfo));
             if (alpha_image_info == (ImageInfo *) NULL)
               ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
                   image);
@@ -3473,7 +3473,7 @@ static Image *ReadJNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Allocate a MngInfo structure.
   */
   have_mng_structure=False;
-  mng_info=(MngInfo *) AcquireMemory(sizeof(MngInfo));
+  mng_info=MagickAllocateMemory(MngInfo *,sizeof(MngInfo));
   if (mng_info == (MngInfo *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   /*
@@ -3629,7 +3629,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Allocate a MngInfo structure.
   */
-  mng_info=(MngInfo *) AcquireMemory(sizeof(MngInfo));
+  mng_info=MagickAllocateMemory(MngInfo *,sizeof(MngInfo));
   if (mng_info == (MngInfo *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   /*
@@ -3713,7 +3713,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
        p=NULL;
        if (length)
           {
-            chunk=(unsigned char *) AcquireMemory(length);
+            chunk=MagickAllocateMemory(unsigned char *,length);
             if (chunk == (unsigned char *) NULL)
               ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
                 image);
@@ -3956,7 +3956,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 if (mng_info->global_plte == (png_colorp) NULL)
                   mng_info->global_plte=
-                   (png_colorp) AcquireMemory(256*sizeof(png_color));
+                   MagickAllocateMemory(png_colorp,256*sizeof(png_color));
                 for (i=0; i < (long) (length/3); i++)
                 {
                   mng_info->global_plte[i].red=p[3*i];
@@ -4942,8 +4942,8 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 m=mng_info->magn_mt;
                 yy=0;
                 length=(size_t) (image->columns*sizeof(PixelPacket));
-                next=(PixelPacket *) AcquireMemory(length);
-                prev=(PixelPacket *) AcquireMemory(length);
+                next=MagickAllocateMemory(PixelPacket *,length);
+                prev=MagickAllocateMemory(PixelPacket *,length);
                 if ((prev == (PixelPacket *) NULL) ||
                     (next == (PixelPacket *) NULL))
                   {
@@ -6164,8 +6164,8 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
           number_colors=image->colors;
           image->colors=save_number_colors;
 #endif
-          palette=(png_color *)
-            AcquireMemory(number_colors*sizeof(png_color));
+          palette=MagickAllocateMemory(png_color *,
+            number_colors*sizeof(png_color));
           if (palette == (png_color *) NULL)
             ThrowWriterException((ExceptionType) ResourceLimitError,
               "MemoryAllocationFailed",image);
@@ -6194,7 +6194,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
           /*
             Identify which colormap entry is transparent.
           */
-          ping_info->trans=(unsigned char *) AcquireMemory(number_colors);
+          ping_info->trans=MagickAllocateMemory(unsigned char *,number_colors);
           if (ping_info->trans == (unsigned char *) NULL)
             ThrowWriterException((ExceptionType) ResourceLimitError,
               "MemoryAllocationFailed",image);
@@ -6516,8 +6516,8 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
                     image->colors=save_number_colors;
                   }
 #endif
-                palette=(png_color *)
-                  AcquireMemory(number_colors*sizeof(png_color));
+                palette=MagickAllocateMemory(png_color *,
+                  number_colors*sizeof(png_color));
                 if (palette == (png_color *) NULL)
                   ThrowWriterException((ExceptionType) ResourceLimitError,
                     "MemoryAllocationFailed",image);
@@ -6541,7 +6541,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
             /*
               Identify which colormap entry is transparent.
             */
-            ping_info->trans=(unsigned char *) AcquireMemory(number_colors);
+            ping_info->trans=MagickAllocateMemory(unsigned char *,number_colors);
             if (ping_info->trans == (unsigned char *) NULL)
               ThrowWriterException((ExceptionType) ResourceLimitError,
                 "MemoryAllocationFailed",image);
@@ -6921,7 +6921,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
         else
           rowbytes*=(image->matte ? 8 : 6);
       }
-  png_pixels=(unsigned char *) AcquireMemory(rowbytes);
+  png_pixels=MagickAllocateMemory(unsigned char *,rowbytes);
   if (png_pixels == (unsigned char *) NULL)
     ThrowWriterException((ExceptionType) ResourceLimitError,
       "MemoryAllocationFailed",image);
@@ -7094,7 +7094,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
  * 1.0.5a is leaky */
     if (ping_info->num_text == 0)
       {
-        ping_info->text=(png_text *) AcquireMemory(256*sizeof(png_text));
+        ping_info->text=MagickAllocateMemory(png_text *,256*sizeof(png_text));
         if (ping_info->text == (png_text *) NULL)
           (void) ThrowException(&image->exception,(ExceptionType)
             ResourceLimitError,"MemoryAllocationFailed",image->filename);
@@ -7227,7 +7227,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     Allocate a MngInfo structure.
   */
   have_mng_structure=False;
-  mng_info=(MngInfo *) AcquireMemory(sizeof(MngInfo));
+  mng_info=MagickAllocateMemory(MngInfo *,sizeof(MngInfo));
   if (mng_info == (MngInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
   /*
@@ -7323,7 +7323,7 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
       if (jpeg_image == (Image *) NULL)
         ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
             image);
-      jpeg_image->blob=(BlobInfo *) AcquireMemory(sizeof(BlobInfo));
+      jpeg_image->blob=MagickAllocateMemory(BlobInfo *,sizeof(BlobInfo));
       GetBlobInfo(jpeg_image->blob);
       status=ChannelImage(jpeg_image,OpacityChannel);
       status=NegateImage(jpeg_image,False);
@@ -7663,7 +7663,7 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
   if (jpeg_image == (Image *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
         image);
-  jpeg_image->blob=(BlobInfo *) AcquireMemory(sizeof(BlobInfo));
+  jpeg_image->blob=MagickAllocateMemory(BlobInfo *,sizeof(BlobInfo));
   GetBlobInfo(jpeg_image->blob);
 
   AcquireUniqueFilename(jpeg_image->filename);
@@ -7753,7 +7753,7 @@ static unsigned int WriteJNGImage(const ImageInfo *image_info,Image *image)
     Allocate a MngInfo structure.
   */
   have_mng_structure=False;
-  mng_info=(MngInfo *) AcquireMemory(sizeof(MngInfo));
+  mng_info=MagickAllocateMemory(MngInfo *,sizeof(MngInfo));
   if (mng_info == (MngInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
   /*
@@ -7842,7 +7842,7 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
     Allocate a MngInfo structure.
   */
   have_mng_structure=False;
-  mng_info=(MngInfo *) AcquireMemory(sizeof(MngInfo));
+  mng_info=MagickAllocateMemory(MngInfo *,sizeof(MngInfo));
   if (mng_info == (MngInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
   /*

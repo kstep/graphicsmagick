@@ -232,7 +232,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
       */
       if (!AllocateImageColormap(image,1 << icon_info.bits_per_pixel))
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
-      icon_colormap=(unsigned char *) AcquireMemory(4*image->colors);
+      icon_colormap=MagickAllocateMemory(unsigned char *,4*image->colors);
       if (icon_colormap == (unsigned char *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
       (void) ReadBlob(image,4*image->colors,(char *) icon_colormap);

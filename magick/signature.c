@@ -200,7 +200,7 @@ MagickExport unsigned int SignatureImage(Image *image)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  message=(unsigned char *) AcquireMemory(20*image->columns);
+  message=MagickAllocateMemory(unsigned char *,20*image->columns);
   if (message == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       "UnableToComputeImageSignature");

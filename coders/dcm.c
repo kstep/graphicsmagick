@@ -2890,7 +2890,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         else
           if ((quantum != 0) && (length != 0))
             {
-              data=(unsigned char *) AcquireMemory(quantum*(length+1));
+              data=MagickAllocateMemory(unsigned char *,quantum*(length+1));
               if (data == (unsigned char *) NULL)
                 ThrowReaderException(ResourceLimitError,
                   "MemoryAllocationFailed",image);
@@ -3111,8 +3111,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             */
             colors=length/bytes_per_pixel;
             datum=(long) colors;
-            graymap=(unsigned short *)
-              AcquireMemory(colors*sizeof(unsigned short));
+            graymap=MagickAllocateMemory(unsigned short *,
+              colors*sizeof(unsigned short));
             if (graymap == (unsigned short *) NULL)
               ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
                 image);
@@ -3248,7 +3248,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Compute pixel scaling table.
       */
-      scale=(Quantum *) AcquireMemory((max_value+1)*sizeof(Quantum));
+      scale=MagickAllocateMemory(Quantum *,(max_value+1)*sizeof(Quantum));
       if (scale == (Quantum *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
       for (i=0; i <= (long) max_value; i++)

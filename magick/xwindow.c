@@ -464,7 +464,7 @@ static char **FontToList(char *font)
   for (p=font; *p != '\0'; p++)
     if ((*p == ':') || (*p == ';') || (*p == ','))
       fonts++;
-  fontlist=(char **) AcquireMemory((fonts+1)*sizeof(char *));
+  fontlist=MagickAllocateMemory(char **,(fonts+1)*sizeof(char *));
   if (fontlist == (char **) NULL)
     {
       MagickError(ResourceLimitError,"MemoryAllocationFailed",
@@ -477,7 +477,7 @@ static char **FontToList(char *font)
     for (q=p; *q != '\0'; q++)
       if ((*q == ':') || (*q == ';') || (*q == ','))
         break;
-    fontlist[i]=(char *) AcquireMemory(q-p+1);
+    fontlist[i]=MagickAllocateMemory(char *,q-p+1);
     if (fontlist[i] == (char *) NULL)
       {
         MagickError(ResourceLimitError,"MemoryAllocationFailed",
@@ -760,7 +760,7 @@ MagickExport void XBestPixel(Display *display,const Colormap colormap,
       /*
         Read X server colormap.
       */
-      colors=(XColor *) AcquireMemory(number_colors*sizeof(XColor));
+      colors=MagickAllocateMemory(XColor *,number_colors*sizeof(XColor));
       if (colors == (XColor *) NULL)
         {
           MagickError(ResourceLimitError,"MemoryAllocationFailed",
@@ -1756,10 +1756,10 @@ static void XDitherImage(Image *image,XImage *ximage)
   for (i=0; i < 2; i++)
     for (j=0; j < 16; j++)
     {
-      red_map[i][j]=(unsigned char *) AcquireMemory(256*sizeof(unsigned char));
-      green_map[i][j]=(unsigned char *)
-        AcquireMemory(256*sizeof(unsigned char));
-      blue_map[i][j]=(unsigned char *) AcquireMemory(256*sizeof(unsigned char));
+      red_map[i][j]=MagickAllocateMemory(unsigned char *,256*sizeof(unsigned char));
+      green_map[i][j]=MagickAllocateMemory(unsigned char *,
+        256*sizeof(unsigned char));
+      blue_map[i][j]=MagickAllocateMemory(unsigned char *,256*sizeof(unsigned char));
       if ((red_map[i][j] == (unsigned char *) NULL) ||
           (green_map[i][j] == (unsigned char *) NULL) ||
           (blue_map[i][j] == (unsigned char *) NULL))
@@ -2640,7 +2640,7 @@ MagickExport void XGetPixelPacket(Display *display,
   packets=Max((int) pixel->colors,visual_info->colormap_size)+MaxNumberPens;
   if (pixel->pixels != (unsigned long *) NULL)
     MagickFreeMemory(pixel->pixels);
-  pixel->pixels=(unsigned long *) AcquireMemory(packets*sizeof(unsigned long));
+  pixel->pixels=MagickAllocateMemory(unsigned long *,packets*sizeof(unsigned long));
   if (pixel->pixels == (unsigned long *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       "UnableToGetPixelInfo");
@@ -3689,8 +3689,8 @@ static Image *XGetWindowImage(Display *display,const Window window,
       */
       max_windows+=1024;
       if (window_info == (WindowInfo *) NULL)
-        window_info=(WindowInfo *)
-          AcquireMemory(max_windows*sizeof(WindowInfo));
+        window_info=MagickAllocateMemory(WindowInfo *,
+          max_windows*sizeof(WindowInfo));
       else
         MagickReallocMemory(window_info,max_windows*sizeof(WindowInfo));
     }
@@ -3843,7 +3843,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
                 /*
                   Get the window colormap.
                 */
-                colors=(XColor *) AcquireMemory(number_colors*sizeof(XColor));
+                colors=MagickAllocateMemory(XColor *,number_colors*sizeof(XColor));
                 if (colors == (XColor *) NULL)
                   {
                     XDestroyImage(ximage);
@@ -3898,7 +3898,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
                 /*
                   Append colormap to colormap list.
                 */
-                p=(ColormapInfo *) AcquireMemory(sizeof(ColormapInfo));
+                p=MagickAllocateMemory(ColormapInfo *,sizeof(ColormapInfo));
                 if (p == (ColormapInfo *) NULL)
                   return((Image *) NULL);
                 p->colormap=window_info[id].colormap;
@@ -4681,7 +4681,7 @@ MagickExport XWindows *XInitializeWindows(Display *display,
   /*
     Allocate windows structure.
   */
-  windows=(XWindows *) AcquireMemory(sizeof(XWindows));
+  windows=MagickAllocateMemory(XWindows *,sizeof(XWindows));
   if (windows == (XWindows *) NULL)
     {
       MagickError(ResourceLimitError,"MemoryAllocationFailed",
@@ -4689,10 +4689,10 @@ MagickExport XWindows *XInitializeWindows(Display *display,
       return((XWindows *) NULL);
     }
   (void) memset(windows,0,sizeof(XWindows));
-  windows->pixel_info=(XPixelInfo *) AcquireMemory(sizeof(XPixelInfo));
-  windows->icon_pixel=(XPixelInfo *) AcquireMemory(sizeof(XPixelInfo));
-  windows->icon_resources=(XResourceInfo *)
-    AcquireMemory(sizeof(XResourceInfo));
+  windows->pixel_info=MagickAllocateMemory(XPixelInfo *,sizeof(XPixelInfo));
+  windows->icon_pixel=MagickAllocateMemory(XPixelInfo *,sizeof(XPixelInfo));
+  windows->icon_resources=MagickAllocateMemory(XResourceInfo *,
+    sizeof(XResourceInfo));
   if ((windows->pixel_info == (XPixelInfo *) NULL) ||
       (windows->icon_pixel == (XPixelInfo *) NULL) ||
       (windows->icon_resources == (XResourceInfo *) NULL))
@@ -5126,11 +5126,11 @@ MagickExport unsigned int XMakeImage(Display *display,
   if (!window->shared_memory)
     {
       if (ximage->format == XYBitmap)
-        ximage->data=(char *)
-          AcquireMemory(ximage->bytes_per_line*ximage->height*ximage->depth);
+        ximage->data=MagickAllocateMemory(char *,
+          ximage->bytes_per_line*ximage->height*ximage->depth);
       else
-        ximage->data=(char *)
-          AcquireMemory(ximage->bytes_per_line*ximage->height);
+        ximage->data=MagickAllocateMemory(char *,
+          ximage->bytes_per_line*ximage->height);
     }
   if (ximage->data == (char *) NULL)
     {
@@ -5194,7 +5194,7 @@ MagickExport unsigned int XMakeImage(Display *display,
             */
             length=matte_image->bytes_per_line*
               matte_image->height*matte_image->depth;
-            matte_image->data=(char *) AcquireMemory(length);
+            matte_image->data=MagickAllocateMemory(char *,length);
             if (matte_image->data == (char *) NULL)
               {
                 XDestroyImage(matte_image);
@@ -7158,8 +7158,8 @@ MagickExport void XMakeStandardColormap(Display *display,
         Define Standard Colormap for StaticGray or StaticColor visual.
       */
       number_colors=image->colors;
-      colors=(XColor *)
-        AcquireMemory(visual_info->colormap_size*sizeof(XColor));
+      colors=MagickAllocateMemory(XColor *,
+        visual_info->colormap_size*sizeof(XColor));
       if (colors == (XColor *) NULL)
         MagickFatalError(XServerFatalError,"MemoryAllocationFailed",
           "UnableToCreateColormap");
@@ -7198,8 +7198,8 @@ MagickExport void XMakeStandardColormap(Display *display,
         Define Standard Colormap for GrayScale or PseudoColor visual.
       */
       number_colors=image->colors;
-      colors=(XColor *)
-        AcquireMemory(visual_info->colormap_size*sizeof(XColor));
+      colors=MagickAllocateMemory(XColor *,
+        visual_info->colormap_size*sizeof(XColor));
       if (colors == (XColor *) NULL)
         MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
           "UnableToCreateColormap");
@@ -7244,8 +7244,8 @@ MagickExport void XMakeStandardColormap(Display *display,
           /*
             Define Standard colormap for shared GrayScale or PseudoColor visual.
           */
-          diversity=(DiversityPacket *)
-            AcquireMemory(image->colors*sizeof(DiversityPacket));
+          diversity=MagickAllocateMemory(DiversityPacket *,
+            image->colors*sizeof(DiversityPacket));
           if (diversity == (DiversityPacket *) NULL)
             MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
               "UnableToCreateColormap");
@@ -7306,8 +7306,8 @@ MagickExport void XMakeStandardColormap(Display *display,
           /*
             Read X server colormap.
           */
-          server_colors=(XColor *)
-            AcquireMemory(visual_info->colormap_size*sizeof(XColor));
+          server_colors=MagickAllocateMemory(XColor *,
+            visual_info->colormap_size*sizeof(XColor));
           if (server_colors == (XColor *) NULL)
             MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
               "UnableToCreateColormap");
@@ -7447,7 +7447,7 @@ MagickExport void XMakeStandardColormap(Display *display,
       /*
         Allocate color array.
       */
-      colors=(XColor *) AcquireMemory(number_colors*sizeof(XColor));
+      colors=MagickAllocateMemory(XColor *,number_colors*sizeof(XColor));
       if (colors == (XColor *) NULL)
         MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
           "UnableToCreateColormap");

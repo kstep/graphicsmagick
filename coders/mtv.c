@@ -142,7 +142,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Convert MTV raster image to pixel packets.
     */
-    pixels=(unsigned char *) AcquireMemory(3*image->columns);
+    pixels=MagickAllocateMemory(unsigned char *,3*image->columns);
     if (pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
     for (y=0; y < (long) image->rows; y++)
@@ -340,8 +340,8 @@ static unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
       Allocate memory for pixels.
     */
     TransformColorspace(image,RGBColorspace);
-    pixels=(unsigned char *)
-      AcquireMemory(image->columns*sizeof(PixelPacket));
+    pixels=MagickAllocateMemory(unsigned char *,
+      image->columns*sizeof(PixelPacket));
     if (pixels == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
     /*

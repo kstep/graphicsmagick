@@ -242,7 +242,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       CloseBlob(image);
       return(image);
     }
-  scanlines=(long *) AcquireMemory(image->rows*sizeof(long));
+  scanlines=MagickAllocateMemory(long *,image->rows*sizeof(long));
   if (scanlines == (long *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   if (*rla_info.description != '\0')

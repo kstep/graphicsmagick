@@ -123,7 +123,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       if (status == False)
         ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
       length=MaxTextExtent;
-      caption=(char *) AcquireMemory(length);
+      caption=MagickAllocateMemory(char *,length);
       p=caption;
       if (caption != (char *) NULL)
         while (ReadBlobString(image,p) != (char *) NULL)

@@ -450,11 +450,11 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
   /*
     Allocate pixel and scanline buffer.
   */
-  pixels=(unsigned char *) AcquireMemory(row_bytes*image->rows);
+  pixels=MagickAllocateMemory(unsigned char *,row_bytes*image->rows);
   if (pixels == (unsigned char *) NULL)
     return((unsigned char *) NULL);
   memset(pixels,0,row_bytes*image->rows);
-  scanline=(unsigned char *) AcquireMemory(row_bytes);
+  scanline=MagickAllocateMemory(unsigned char *,row_bytes);
   if (scanline == (unsigned char *) NULL)
     return((unsigned char *) NULL);
   if (bytes_per_line < 8)
@@ -1154,7 +1154,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             length-=4;
             if (length == 0)
               break;
-            info=(unsigned char *) AcquireMemory(length);
+            info=MagickAllocateMemory(unsigned char *,length);
             if (info == (unsigned char *) NULL)
               break;
             (void) ReadBlob(image,length,info);
@@ -1162,8 +1162,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             {
               case 0xe0:
               {
-                image->color_profile.info=(unsigned char *)
-                  AcquireMemory(length);
+                image->color_profile.info=MagickAllocateMemory(unsigned char *,
+                  length);
                 if (image->color_profile.info == (unsigned char *) NULL)
                   ThrowReaderException(ResourceLimitError,
                     "MemoryAllocationFailed",image);
@@ -1173,8 +1173,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               }
               case 0x1f2:
               {
-                image->iptc_profile.info=(unsigned char *)
-                  AcquireMemory(length);
+                image->iptc_profile.info=MagickAllocateMemory(unsigned char *,
+                  length);
                 if (image->iptc_profile.info == (unsigned char *) NULL)
                   ThrowReaderException(ResourceLimitError,
                     "MemoryAllocationFailed",image);
@@ -1517,9 +1517,9 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   bytes_per_line=image->columns;
   if (storage_class == DirectClass)
     bytes_per_line*=image->matte ? 4 : 3;
-  buffer=(unsigned char *) AcquireMemory(PictInfoSize);
-  packed_scanline=(unsigned char *) AcquireMemory(row_bytes+MaxCount);
-  scanline=(unsigned char *) AcquireMemory(row_bytes);
+  buffer=MagickAllocateMemory(unsigned char *,PictInfoSize);
+  packed_scanline=MagickAllocateMemory(unsigned char *,row_bytes+MaxCount);
+  scanline=MagickAllocateMemory(unsigned char *,row_bytes);
   if ((buffer == (unsigned char *) NULL) ||
       (packed_scanline == (unsigned char *) NULL) ||
       (scanline == (unsigned char *) NULL))

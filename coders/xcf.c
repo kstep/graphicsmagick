@@ -294,7 +294,7 @@ static int load_tile (Image* image, Image* tile_image, XCFDocInfo* inDocInfo,
   XCFPixelPacket *xcfdata, *xcfodata;
   unsigned char  *graydata;
 
-  xcfdata = xcfodata = (XCFPixelPacket *) AcquireMemory(data_length);
+  xcfdata = xcfodata = MagickAllocateMemory(XCFPixelPacket *,data_length);
   graydata = (unsigned char *)xcfdata;  /* used by gray and indexed */
   nmemb_read_successfully = ReadBlob(image, data_length, xcfdata);
 
@@ -342,7 +342,7 @@ static int load_tile_rle (Image* image, Image* tile_image, XCFDocInfo* inDocInfo
 
   bpp = (int) inDocInfo->bpp;
  
-  xcfdata = xcfodata = (unsigned char *) AcquireMemory(data_length);
+  xcfdata = xcfodata = MagickAllocateMemory(unsigned char *,data_length);
 
   nmemb_read_successfully = ReadBlob(image, data_length, xcfdata);
 
@@ -1137,8 +1137,8 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
 
     /* allocate our array of layer info blocks */
-    layer_info=(XCFLayerInfo *)
-      AcquireMemory(number_layers*sizeof(XCFLayerInfo));
+    layer_info=MagickAllocateMemory(XCFLayerInfo *,
+      number_layers*sizeof(XCFLayerInfo));
     if (layer_info == (XCFLayerInfo *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
     (void) memset(layer_info,0,number_layers*sizeof(XCFLayerInfo));

@@ -825,7 +825,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!AllocateImageColormap(image,image->colors))
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
-        bmp_colormap=(unsigned char *) AcquireMemory(4*image->colors);
+        bmp_colormap=MagickAllocateMemory(unsigned char *,4*image->colors);
         if (bmp_colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
@@ -857,8 +857,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       bmp_info.bits_per_pixel<<=1;
     bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
     length=bytes_per_line*image->rows;
-    pixels=(unsigned char *)
-      AcquireMemory(Max(bytes_per_line,image->columns+1)*image->rows);
+    pixels=MagickAllocateMemory(unsigned char *,
+      Max(bytes_per_line,image->columns+1)*image->rows);
     if (pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
     if ((bmp_info.compression == BI_RGB) ||
@@ -1557,7 +1557,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     /*
       Convert MIFF to BMP raster pixels.
     */
-    pixels=(unsigned char *) AcquireMemory(bmp_info.image_size);
+    pixels=MagickAllocateMemory(unsigned char *,bmp_info.image_size);
     if (pixels == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
     switch (bmp_info.bits_per_pixel)
@@ -1700,7 +1700,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
             Convert run-length encoded raster pixels.
           */
           length=2*(bytes_per_line+2)*(image->rows+2)+2;
-          bmp_data=(unsigned char *) AcquireMemory(length);
+          bmp_data=MagickAllocateMemory(unsigned char *,length);
           if (pixels == (unsigned char *) NULL)
             {
               MagickFreeMemory(pixels);
@@ -1888,8 +1888,8 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  Colormap: %ld entries",image->colors);
-        bmp_colormap=(unsigned char *)
-          AcquireMemory(4*(1 << bmp_info.bits_per_pixel));
+        bmp_colormap=MagickAllocateMemory(unsigned char *,
+          4*(1 << bmp_info.bits_per_pixel));
         if (bmp_colormap == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
             image);

@@ -274,7 +274,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Note image label.
         */
-        label=(char *) AcquireMemory(summary_info.title.length+1);
+        label=MagickAllocateMemory(char *,summary_info.title.length+1);
         if (label == (char *) NULL)
           {
             FPX_ClearSystem();
@@ -297,7 +297,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Note image comment.
         */
-        comments=(char *) AcquireMemory(summary_info.comments.length+1);
+        comments=MagickAllocateMemory(char *,summary_info.comments.length+1);
         if (comments == (char *) NULL)
           {
             FPX_ClearSystem();
@@ -357,7 +357,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Allocate memory for the image and pixel buffer.
   */
-  scanline=(unsigned char *) AcquireMemory(colorspace.numberOfComponents*
+  scanline=MagickAllocateMemory(unsigned char *,colorspace.numberOfComponents*
     image->columns*(tile_height+1));
   if (scanline == (unsigned char *) NULL)
     {
@@ -887,8 +887,8 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       */
       summary_info.title_valid=True;
       summary_info.title.length=strlen(label->value);
-      summary_info.title.ptr=(unsigned char *)
-        AcquireMemory(strlen(label->value)+1);
+      summary_info.title.ptr=MagickAllocateMemory(unsigned char *,
+        strlen(label->value)+1);
       if (summary_info.title.ptr != (unsigned char *) NULL)
         (void) strncpy((char *) summary_info.title.ptr,label->value,
           MaxTextExtent-1);
@@ -903,8 +903,8 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       */
       summary_info.comments_valid=True;
       summary_info.comments.length=strlen(comment->value);
-      summary_info.comments.ptr=(unsigned char *)
-        AcquireMemory(strlen(comment->value)+1);
+      summary_info.comments.ptr=MagickAllocateMemory(unsigned char *,
+        strlen(comment->value)+1);
       if (summary_info.comments.ptr != (unsigned char *) NULL)
         (void) strcpy((char *) summary_info.comments.ptr,comment->value);
       else
@@ -916,8 +916,8 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   /*
     Allocate pixels.
   */
-  pixels=(unsigned char *)
-    AcquireMemory(colorspace.numberOfComponents*image->columns);
+  pixels=MagickAllocateMemory(unsigned char *,
+    colorspace.numberOfComponents*image->columns);
   if (pixels == (unsigned char *) NULL)
     {
       (void) FPX_CloseImage(flashpix);

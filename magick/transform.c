@@ -537,8 +537,8 @@ MagickExport Image *DeconstructImages(const Image *image,
   /*
     Allocate memory.
   */
-  bounds=(RectangleInfo *)
-    AcquireMemory(GetImageListLength(image)*sizeof(RectangleInfo));
+  bounds=MagickAllocateMemory(RectangleInfo *,
+    GetImageListLength(image)*sizeof(RectangleInfo));
   if (bounds == (RectangleInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
       "UnableToDeconstructImageSequence");
@@ -1083,7 +1083,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
         MagickFreeMemory(image->iptc_profile.info);
       if (clone)
         {
-          image->iptc_profile.info=(unsigned char *) AcquireMemory(length);
+          image->iptc_profile.info=MagickAllocateMemory(unsigned char *,length);
           if (image->iptc_profile.info == (unsigned char *) NULL)
             ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
               "UnableToAddIPTCProfile");
@@ -1219,7 +1219,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
         }
       if (clone)
         {
-          image->color_profile.info=(unsigned char *) AcquireMemory(length);
+          image->color_profile.info=MagickAllocateMemory(unsigned char *,length);
           if (image->color_profile.info == (unsigned char *) NULL)
             ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
               "UnableToAddICMProfile");
@@ -1239,8 +1239,8 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
   if (i == (long) image->generic_profiles)
     {
       if (image->generic_profile == (ProfileInfo *) NULL)
-        image->generic_profile=(ProfileInfo *)
-          AcquireMemory((i+1)*sizeof(ProfileInfo));
+        image->generic_profile=MagickAllocateMemory(ProfileInfo *,
+          (i+1)*sizeof(ProfileInfo));
       else
         MagickReallocMemory(image->generic_profile,
           (i+1)*sizeof(ProfileInfo));
@@ -1256,7 +1256,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
     MagickFreeMemory(image->generic_profile[i].info);
   if (clone)
     {
-      image->generic_profile[i].info=(unsigned char *) AcquireMemory(length);
+      image->generic_profile[i].info=MagickAllocateMemory(unsigned char *,length);
       if (image->generic_profile[i].info == (unsigned char *) NULL)
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
           "UnableToAddGenericProfile");

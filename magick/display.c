@@ -544,7 +544,7 @@ static unsigned int XAnnotateEditImage(Display *display,
   /*
     Initialize annotate structure.
   */
-  annotate_info=(XAnnotateInfo *) AcquireMemory(sizeof(XAnnotateInfo));
+  annotate_info=MagickAllocateMemory(XAnnotateInfo *,sizeof(XAnnotateInfo));
   if (annotate_info == (XAnnotateInfo *) NULL)
     return(False);
   XGetAnnotateInfo(annotate_info);
@@ -560,8 +560,8 @@ static unsigned int XAnnotateEditImage(Display *display,
   annotate_info->height=font_info->ascent+font_info->descent;
   annotate_info->degrees=degrees;
   annotate_info->font_info=font_info;
-  annotate_info->text=(char *)
-    AcquireMemory(windows->image.width/Max(font_info->min_bounds.width,1)+2);
+  annotate_info->text=MagickAllocateMemory(char *,
+    windows->image.width/Max(font_info->min_bounds.width,1)+2);
   if (annotate_info->text == (char *) NULL)
     return(False);
   /*
@@ -824,14 +824,14 @@ static unsigned int XAnnotateEditImage(Display *display,
                 p=annotate_info->text;
                 break;
               }
-            annotate_info->next=(XAnnotateInfo *)
-              AcquireMemory(sizeof(XAnnotateInfo));
+            annotate_info->next=MagickAllocateMemory(XAnnotateInfo *,
+              sizeof(XAnnotateInfo));
             if (annotate_info->next == (XAnnotateInfo *) NULL)
               return(False);
             *annotate_info->next=(*annotate_info);
             annotate_info->next->previous=annotate_info;
             annotate_info=annotate_info->next;
-            annotate_info->text=(char *) AcquireMemory(windows->image.width/
+            annotate_info->text=MagickAllocateMemory(char *,windows->image.width/
               Max(font_info->min_bounds.width,1)+2);
             if (annotate_info->text == (char *) NULL)
               return(False);
@@ -918,14 +918,14 @@ static unsigned int XAnnotateEditImage(Display *display,
               p=annotate_info->text;
               continue;
             }
-          annotate_info->next=(XAnnotateInfo *)
-            AcquireMemory(sizeof(XAnnotateInfo));
+          annotate_info->next=MagickAllocateMemory(XAnnotateInfo *,
+            sizeof(XAnnotateInfo));
           if (annotate_info->next == (XAnnotateInfo *) NULL)
             return(False);
           *annotate_info->next=(*annotate_info);
           annotate_info->next->previous=annotate_info;
           annotate_info=annotate_info->next;
-          annotate_info->text=(char *) AcquireMemory(windows->image.width/
+          annotate_info->text=MagickAllocateMemory(char *,windows->image.width/
             Max(font_info->min_bounds.width,1)+2);
           if (annotate_info->text == (char *) NULL)
             return(False);
@@ -3718,7 +3718,7 @@ static unsigned int XDrawEditImage(Display *display,
     Allocate polygon info.
   */
   max_coordinates=2048;
-  coordinate_info=(XPoint *) AcquireMemory(max_coordinates*sizeof(XPoint));
+  coordinate_info=MagickAllocateMemory(XPoint *,max_coordinates*sizeof(XPoint));
   if (coordinate_info == (XPoint *) NULL)
     {
       MagickError(ResourceLimitError,"MemoryAllocationFailed",
@@ -8059,7 +8059,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
           MagickError(XServerError,"UnableToGetProperty","UnableToSelectImage");
           return((Image *) NULL);
         }
-      filelist=(char **) AcquireMemory(count*sizeof(char *));
+      filelist=MagickAllocateMemory(char **,count*sizeof(char *));
       if (filelist == (char **) NULL)
         {
           MagickError(ResourceLimitError,"MemoryAllocationFailed",
@@ -11341,7 +11341,7 @@ static Image *XVisualDirectoryImage(Display *display,
   /*
     Expand the filenames.
   */
-  filelist=(char **) AcquireMemory(sizeof(char *));
+  filelist=MagickAllocateMemory(char **,sizeof(char *));
   if (filelist == (char **) NULL)
     {
       MagickError(ResourceLimitError,"MemoryAllocationFailed",(char *) NULL);

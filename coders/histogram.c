@@ -219,9 +219,9 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
     Allocate histogram count arrays.
   */
   length=Max(ScaleQuantumToChar(MaxRGB)+1,histogram_image->columns);
-  red=(long *) AcquireMemory(length*sizeof(long));
-  green=(long *) AcquireMemory(length*sizeof(long));
-  blue=(long *) AcquireMemory(length*sizeof(long));
+  red=MagickAllocateMemory(long *,length*sizeof(long));
+  green=MagickAllocateMemory(long *,length*sizeof(long));
+  blue=MagickAllocateMemory(long *,length*sizeof(long));
   if ((red == (long *) NULL) || (green == (long *) NULL) ||
       (blue == (long *) NULL))
     {

@@ -144,7 +144,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Expand the filenames.
       */
-      filelist=(char **) AcquireMemory(sizeof(char *));
+      filelist=MagickAllocateMemory(char **,sizeof(char *));
       if (filelist == (char **) NULL)
         {
           MagickError(ResourceLimitError,"MemoryAllocationFailed",filenames);
@@ -767,9 +767,9 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   /*
     Initialize image pixmaps structure.
   */
-  window_info.pixmaps=(Pixmap *) AcquireMemory(number_scenes*sizeof(Pixmap));
-  window_info.matte_pixmaps=(Pixmap *)
-    AcquireMemory(number_scenes*sizeof(Pixmap));
+  window_info.pixmaps=MagickAllocateMemory(Pixmap *,number_scenes*sizeof(Pixmap));
+  window_info.matte_pixmaps=MagickAllocateMemory(Pixmap *,
+    number_scenes*sizeof(Pixmap));
   if ((window_info.pixmaps == (Pixmap *) NULL) ||
       (window_info.matte_pixmaps == (Pixmap *) NULL))
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
@@ -1649,9 +1649,9 @@ MagickExport Image *XAnimateImages(Display *display,
     Initialize image pixmaps structure.
   */
   (void) XMapWindow(display,windows->image.id);
-  windows->image.pixmaps=(Pixmap *) AcquireMemory(number_scenes*sizeof(Pixmap));
-  windows->image.matte_pixmaps=(Pixmap *)
-    AcquireMemory(number_scenes*sizeof(Pixmap));
+  windows->image.pixmaps=MagickAllocateMemory(Pixmap *,number_scenes*sizeof(Pixmap));
+  windows->image.matte_pixmaps=MagickAllocateMemory(Pixmap *,
+    number_scenes*sizeof(Pixmap));
   if ((windows->image.pixmaps == (Pixmap *) NULL) ||
       (windows->image.matte_pixmaps == (Pixmap *) NULL))
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",

@@ -434,8 +434,8 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (image->scene >= (image_info->subimage+image_info->subrange-1))
             break;
         bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
-        pixels=(unsigned char *)
-          AcquireMemory(Max(bytes_per_line,image->columns+1)*image->rows);
+        pixels=MagickAllocateMemory(unsigned char *,
+          Max(bytes_per_line,image->columns+1)*image->rows);
         if (pixels == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
@@ -758,8 +758,8 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               number_colors=1 << bmp_info.bits_per_pixel;
             if (number_colors != 0)
               {
-                colormap=(PixelPacket *)
-                  AcquireMemory(number_colors*sizeof(PixelPacket));
+                colormap=MagickAllocateMemory(PixelPacket *,
+                  number_colors*sizeof(PixelPacket));
                 if (colormap == (PixelPacket *) NULL)
                   ThrowReaderException(ResourceLimitError,
                     "MemoryAllocationFailed",image);

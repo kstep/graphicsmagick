@@ -743,7 +743,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       Decode image header;  header terminates one character beyond a ':'.
     */
     length=MaxTextExtent;
-    values=(char *) AcquireMemory(length);
+    values=MagickAllocateMemory(char *,length);
     if (values == (char *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
     colors=0;
@@ -763,7 +763,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             Read comment-- any text between { }.
           */
           length=MaxTextExtent;
-          comment=(char *) AcquireMemory(length);
+          comment=MagickAllocateMemory(char *,length);
           p=comment;
           for ( ; comment != (char *) NULL; p++)
           {
@@ -1040,8 +1040,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                       }
                     i=(long) image->generic_profiles;
                     if (image->generic_profile == (ProfileInfo *) NULL)
-                      image->generic_profile=(ProfileInfo *)
-                        AcquireMemory(sizeof(ProfileInfo));
+                      image->generic_profile=MagickAllocateMemory(ProfileInfo *,
+                        sizeof(ProfileInfo));
                     else
                       MagickReallocMemory(image->generic_profile,
                         (i+1)*sizeof(ProfileInfo));
@@ -1207,7 +1207,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         /*
           Image directory.
         */
-        image->directory=(char *) AcquireMemory(MaxTextExtent);
+        image->directory=MagickAllocateMemory(char *,MaxTextExtent);
         if (image->directory == (char *) NULL)
           ThrowReaderException(CorruptImageError,"UnableToReadImageData",image);
         p=image->directory;
@@ -1235,8 +1235,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         /*
           ICC profile.
         */
-        image->color_profile.info=(unsigned char *)
-          AcquireMemory(image->color_profile.length);
+        image->color_profile.info=MagickAllocateMemory(unsigned char *,
+          image->color_profile.length);
         if (image->color_profile.info == (unsigned char *) NULL)
           ThrowReaderException(CorruptImageError,"UnableToReadColorProfile",
             image);
@@ -1248,8 +1248,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         /*
           IPTC profile.
         */
-        image->iptc_profile.info=(unsigned char *)
-          AcquireMemory(image->iptc_profile.length);
+        image->iptc_profile.info=MagickAllocateMemory(unsigned char *,
+          image->iptc_profile.length);
         if (image->iptc_profile.info == (unsigned char *) NULL)
           ThrowReaderException(CorruptImageError,
             "UnableToReadiPTCProfile",image);
@@ -1265,8 +1265,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         {
           if (image->generic_profile[i].length == 0)
             continue;
-          image->generic_profile[i].info=(unsigned char *)
-            AcquireMemory(image->generic_profile[i].length);
+          image->generic_profile[i].info=MagickAllocateMemory(unsigned char *,
+            image->generic_profile[i].length);
           if (image->generic_profile[i].info == (unsigned char *) NULL)
             ThrowReaderException(CorruptImageError,"UnableToReadGenericProfile",
               image);
@@ -1296,7 +1296,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               Read image colormap from file.
             */
             packet_size=3*image->depth/8;
-            colormap=(unsigned char *) AcquireMemory(packet_size*image->colors);
+            colormap=MagickAllocateMemory(unsigned char *,packet_size*image->colors);
             if (colormap == (unsigned char *) NULL)
               ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
                 image);
@@ -1354,9 +1354,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       packet_size+=image->depth/8;
     if (image->compression == RLECompression)
       packet_size++;
-    pixels=(unsigned char *) AcquireMemory(packet_size*image->columns);
+    pixels=MagickAllocateMemory(unsigned char *,packet_size*image->columns);
     length=(size_t) (1.01*packet_size*image->columns+600);
-    compress_pixels=(unsigned char *) AcquireMemory(length);
+    compress_pixels=MagickAllocateMemory(unsigned char *,length);
     if ((pixels == (unsigned char *) NULL) ||
         (compress_pixels == (unsigned char *) NULL))
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
@@ -1877,12 +1877,12 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     if (compression == RLECompression)
       packet_size+=image->depth/8;
     length=packet_size*image->columns;
-    pixels=(unsigned char *) AcquireMemory(length);
+    pixels=MagickAllocateMemory(unsigned char *,length);
     length=(size_t) (1.01*packet_size*image->columns+600);
     if ((compression == BZipCompression) || (compression == ZipCompression))
       if (length != (unsigned int) length)
         compression=NoCompression;
-    compress_pixels=(unsigned char *) AcquireMemory(length);
+    compress_pixels=MagickAllocateMemory(unsigned char *,length);
     if ((pixels == (unsigned char *) NULL) ||
         (compress_pixels == (unsigned char *) NULL))
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
@@ -2106,7 +2106,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           Allocate colormap.
         */
         packet_size=3*image->depth/8;
-        colormap=(unsigned char *) AcquireMemory(packet_size*image->colors);
+        colormap=MagickAllocateMemory(unsigned char *,packet_size*image->colors);
         if (colormap == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
             image);

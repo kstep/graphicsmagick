@@ -105,7 +105,7 @@ DIR *opendir(char *name)
   /*
     Allocate memory for handle and the pattern.
   */
-  directory=(DIR *) AcquireMemory(sizeof(DIR));
+  directory=MagickAllocateMemory(DIR *,sizeof(DIR));
   if (directory == (DIR *) NULL)
     {
       errno=ENOMEM;
@@ -113,7 +113,7 @@ DIR *opendir(char *name)
     }
   if (strcmp(".",name) == 0)
     name="";
-  directory->pattern=(char *) AcquireMemory(strlen(name)+sizeof("*.*")+1);
+  directory->pattern=MagickAllocateMemory(char *,strlen(name)+sizeof("*.*")+1);
   if (directory->pattern == (char *) NULL)
     {
       MagickFreeMemory(directory);

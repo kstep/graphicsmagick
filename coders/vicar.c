@@ -255,7 +255,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   /*
     Read VICAR pixels.
   */
-  scanline=(unsigned char *) AcquireMemory(image->columns);
+  scanline=MagickAllocateMemory(unsigned char *,image->columns);
   if (scanline == (unsigned char *) NULL)
     ThrowReaderException(CorruptImageError,"UnableToReadImageData",image);
   for (y=0; y < (long) image->rows; y++)
@@ -413,7 +413,7 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
   /*
     Allocate memory for scanline.
   */
-  scanline=(unsigned char *) AcquireMemory(image->columns);
+  scanline=MagickAllocateMemory(unsigned char *,image->columns);
   if (scanline == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
   /*

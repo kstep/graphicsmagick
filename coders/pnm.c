@@ -157,7 +157,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
           Read comment.
         */
         length=MaxTextExtent;
-        comment=(char *) AcquireMemory(length+strlen(P7Comment)+1);
+        comment=MagickAllocateMemory(char *,length+strlen(P7Comment)+1);
         p=comment;
         offset=p-comment;
         if (comment != (char *) NULL)
@@ -327,8 +327,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Compute pixel scaling table.
         */
-        scale=(unsigned long *)
-          AcquireMemory((max_value+1)*sizeof(unsigned long));
+        scale=MagickAllocateMemory(unsigned long *,
+          (max_value+1)*sizeof(unsigned long));
         if (scale == (unsigned long *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
@@ -486,7 +486,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Convert PGM raw image to pixel packets.
         */
         packets=image->depth <= 8 ? 1 : 2;
-        pixels=(unsigned char *) AcquireMemory(packets*image->columns);
+        pixels=MagickAllocateMemory(unsigned char *,packets*image->columns);
         if (pixels == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
@@ -542,7 +542,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Convert PNM raster image to pixel packets.
         */
         packets=image->depth <= 8 ? 3 : 6;
-        pixels=(unsigned char *) AcquireMemory(packets*image->columns);
+        pixels=MagickAllocateMemory(unsigned char *,packets*image->columns);
         if (pixels == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
@@ -1090,7 +1090,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           Allocate memory for pixels.
         */
         packets=image->depth <= 8 ? 3 : 6;
-        pixels=(unsigned char *) AcquireMemory(packets*image->columns);
+        pixels=MagickAllocateMemory(unsigned char *,packets*image->columns);
         if (pixels == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
             image);
@@ -1171,12 +1171,12 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         for (i=0; i < 2; i++)
           for (j=0; j < 16; j++)
           {
-            red_map[i][j]=(unsigned short *)
-              AcquireMemory(256*sizeof(unsigned short));
-            green_map[i][j]=(unsigned short *)
-              AcquireMemory(256*sizeof(unsigned short));
-            blue_map[i][j]=(unsigned short *)
-              AcquireMemory(256*sizeof(unsigned short));
+            red_map[i][j]=MagickAllocateMemory(unsigned short *,
+              256*sizeof(unsigned short));
+            green_map[i][j]=MagickAllocateMemory(unsigned short *,
+              256*sizeof(unsigned short));
+            blue_map[i][j]=MagickAllocateMemory(unsigned short *,
+              256*sizeof(unsigned short));
             if ((red_map[i][j] == (unsigned short *) NULL) ||
                 (green_map[i][j] == (unsigned short *) NULL) ||
                 (blue_map[i][j] == (unsigned short *) NULL))

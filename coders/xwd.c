@@ -208,7 +208,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (header.header_size < sz_XWDheader)
     ThrowReaderException(CorruptImageError,"CorruptXWDImage",image);
   length=header.header_size-sz_XWDheader;
-  comment=(char *) AcquireMemory(length+1);
+  comment=MagickAllocateMemory(char *,length+1);
   if (comment == (char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   count=ReadBlob(image,length,comment);
@@ -221,7 +221,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize the X image.
   */
-  ximage=(XImage *) AcquireMemory(sizeof(XImage));
+  ximage=MagickAllocateMemory(XImage *,sizeof(XImage));
   if (ximage == (XImage *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   ximage->depth=(int) header.pixmap_depth;
@@ -251,7 +251,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       XWDColor
         color;
 
-      colors=(XColor *) AcquireMemory(header.ncolors*sizeof(XColor));
+      colors=MagickAllocateMemory(XColor *,header.ncolors*sizeof(XColor));
       if (colors == (XColor *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
       for (i=0; i < (long) header.ncolors; i++)
@@ -286,7 +286,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     length=ximage->bytes_per_line*ximage->height;
   else
     length=ximage->bytes_per_line*ximage->height*ximage->depth;
-  ximage->data=(char *) AcquireMemory(length);
+  ximage->data=MagickAllocateMemory(char *,length);
   if (ximage->data == (char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   count=ReadBlob(image,length,ximage->data);
@@ -651,7 +651,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
       /*
         Dump colormap to file.
       */
-      colors=(XColor *) AcquireMemory(image->colors*sizeof(XColor));
+      colors=MagickAllocateMemory(XColor *,image->colors*sizeof(XColor));
       if (colors == (XColor *) NULL)
         ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
       for (i=0; i < (long) image->colors; i++)
@@ -682,8 +682,8 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   /*
     Allocate memory for pixels.
   */
-  pixels=(unsigned char *)
-    AcquireMemory(image->columns*sizeof(PixelPacket));
+  pixels=MagickAllocateMemory(unsigned char *,
+    image->columns*sizeof(PixelPacket));
   if (pixels == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
   /*

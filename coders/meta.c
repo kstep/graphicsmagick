@@ -305,7 +305,7 @@ static long parse8BIM(Image *ifile, Image *ofile)
 
   dataset = 0;
   recnum = 0;
-  line = (char *) AcquireMemory(inputlen);
+  line = MagickAllocateMemory(char *,inputlen);
   name = token = (char *)NULL;
   savedpos = 0;
   while(super_fgets(&line,&inputlen,ifile)!=NULL)
@@ -313,8 +313,8 @@ static long parse8BIM(Image *ifile, Image *ofile)
     state=0;
     next=0;
 
-    token = (char *) AcquireMemory(inputlen);
-    newstr = (char *) AcquireMemory(inputlen);
+    token = MagickAllocateMemory(char *,inputlen);
+    newstr = MagickAllocateMemory(char *,inputlen);
     while (Tokenizer(&token_info, 0, token, inputlen, line,
           (char *) "", (char *) "=",
       (char *) "\"", 0, &brkused,&next,&quoted)==0)
@@ -346,7 +346,7 @@ static long parse8BIM(Image *ifile, Image *ofile)
                 recnum = atoi(newstr);
                 break;
               case 2:
-                name = (char *) AcquireMemory(strlen(newstr)+1);
+                name = MagickAllocateMemory(char *,strlen(newstr)+1);
                 if (name)
                   strcpy(name,newstr);
                 break;
@@ -564,7 +564,7 @@ static long parse8BIMW(Image *ifile, Image *ofile)
 
   dataset = 0;
   recnum = 0;
-  line = (char *) AcquireMemory(inputlen);
+  line = MagickAllocateMemory(char *,inputlen);
   name = token = (char *)NULL;
   savedpos = 0;
   /* DebugString("META CODER Parse8BIM\n"); */
@@ -574,8 +574,8 @@ static long parse8BIMW(Image *ifile, Image *ofile)
     next=0;
 
     /* DebugString("META CODER Parse8BIM: %s (%d)\n",line, inputlen); */
-    token = (char *) AcquireMemory(inputlen);
-    newstr = (char *) AcquireMemory(inputlen);
+    token = MagickAllocateMemory(char *,inputlen);
+    newstr = MagickAllocateMemory(char *,inputlen);
     while (Tokenizer(&token_info, 0, token, inputlen, line,
           (char *) "", (char *) "=",
       (char *) "\"", 0, &brkused,&next,&quoted)==0)
@@ -607,7 +607,7 @@ static long parse8BIMW(Image *ifile, Image *ofile)
                 recnum = atoi(newstr);
                 break;
               case 2:
-                name = (char *) AcquireMemory(strlen(newstr)+1);
+                name = MagickAllocateMemory(char *,strlen(newstr)+1);
                 if (name)
                   strcpy(name,newstr);
                 break;
@@ -1046,7 +1046,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
       buff=AllocateImage((ImageInfo *) NULL);
       if (buff == (Image *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
-      blob=(unsigned char *) AcquireMemory(length);
+      blob=MagickAllocateMemory(unsigned char *,length);
       if (blob == (unsigned char *) NULL)
         {
           DestroyImage(buff);
@@ -1091,8 +1091,8 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
       */
       i=(long) image->generic_profiles;
       if (image->generic_profile == (ProfileInfo *) NULL)
-        image->generic_profile=(ProfileInfo *)
-          AcquireMemory(sizeof(ProfileInfo));
+        image->generic_profile=MagickAllocateMemory(ProfileInfo *,
+          sizeof(ProfileInfo));
       else
         MagickReallocMemory(image->generic_profile,
           (i+1)*sizeof(ProfileInfo));
@@ -1111,7 +1111,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
       buff=AllocateImage((ImageInfo *) NULL);
       if (buff == (Image *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
-      blob=(unsigned char *) AcquireMemory(length);
+      blob=MagickAllocateMemory(unsigned char *,length);
       if (blob == (unsigned char *) NULL)
         {
           DestroyImage(buff);
@@ -1185,7 +1185,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
             i,
             length;
 
-          buffer=(char *) AcquireMemory(MaxBufferSize);
+          buffer=MagickAllocateMemory(char *,MaxBufferSize);
           if (buffer != (char *) NULL)
             {
               i=0;
@@ -1216,7 +1216,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
       buff=AllocateImage((ImageInfo *) NULL);
       if (buff == (Image *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
-      blob=(unsigned char *) AcquireMemory(length);
+      blob=MagickAllocateMemory(unsigned char *,length);
       if (blob == (unsigned char *) NULL)
         {
           DestroyImage(buff);
@@ -1241,7 +1241,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
       buff=AllocateImage((ImageInfo *) NULL);
       if (buff == (Image *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
-      blob=(unsigned char *) AcquireMemory(length);
+      blob=MagickAllocateMemory(unsigned char *,length);
       if (blob == (unsigned char *) NULL)
         {
           DestroyImage(buff);
@@ -1794,7 +1794,7 @@ static int formatIPTC(Image *ifile, Image *ofile)
       }
     if (taglen < 0) return -1;
     /* make a buffer to hold the tag data and snag it from the input stream */
-    str=(unsigned char *) AcquireMemory((unsigned int) (taglen+1));
+    str=MagickAllocateMemory(unsigned char *,(unsigned int) (taglen+1));
     if (str == (unsigned char *) NULL)
       {
         printf("MemoryAllocationFailed");
@@ -1917,7 +1917,7 @@ static int formatIPTCfromBuffer(Image *ofile, char *s, long len)
       }
     if (taglen < 0) return -1;
     /* make a buffer to hold the tag data and snag it from the input stream */
-    str=(unsigned char *) AcquireMemory((unsigned int) (taglen+1));
+    str=MagickAllocateMemory(unsigned char *,(unsigned int) (taglen+1));
     if (str == (unsigned char *) NULL)
       {
         printf("MemoryAllocationFailed");
@@ -2005,7 +2005,7 @@ static int format8BIM(Image *ifile, Image *ofile)
       c=ReadBlobByte(ifile);
       if (c == EOF) return -1;
       plen = (unsigned char) c;
-      PString=(unsigned char *) AcquireMemory((unsigned int) (plen+1));
+      PString=MagickAllocateMemory(unsigned char *,(unsigned int) (plen+1));
       if (PString == (unsigned char *) NULL)
       {
         printf("MemoryAllocationFailed");
@@ -2027,7 +2027,7 @@ static int format8BIM(Image *ifile, Image *ofile)
     Size = ReadBlobMSBLong(ifile);
     if (Size < 0) return -1;
     /* make a buffer to hold the data and snag it from the input stream */
-    str=(unsigned char *) AcquireMemory((size_t) Size);
+    str=MagickAllocateMemory(unsigned char *,(size_t) Size);
     if (str == (unsigned char *) NULL)
       {
         printf("MemoryAllocationFailed");

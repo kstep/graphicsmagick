@@ -127,7 +127,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(exception->signature == MagickSignature);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"enter");
   image=AllocateImage(image_info);
-  list=(char **) AcquireMemory(sizeof(char *));
+  list=MagickAllocateMemory(char **,sizeof(char *));
   if (list == (char **) NULL)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");

@@ -152,7 +152,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   /*
     Read JBIG file.
   */
-  buffer=(unsigned char *) AcquireMemory(MaxBufferSize);
+  buffer=MagickAllocateMemory(unsigned char *,MaxBufferSize);
   if (buffer == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   status=JBG_EAGAIN;
@@ -420,7 +420,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     */
     TransformColorspace(image,RGBColorspace);
     number_packets=((image->columns+7) >> 3)*image->rows;
-    pixels=(unsigned char *) AcquireMemory(number_packets);
+    pixels=MagickAllocateMemory(unsigned char *,number_packets);
     if (pixels == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
     /*

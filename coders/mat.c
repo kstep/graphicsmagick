@@ -424,7 +424,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
   }
 
   /* ----- Load raster data ----- */
-  BImgBuff = (unsigned char *) AcquireMemory(ldblk);    /*Ldblk was set in the check phase */
+  BImgBuff = MagickAllocateMemory(unsigned char *,ldblk);    /*Ldblk was set in the check phase */
   if (BImgBuff == NULL)
     goto NoMemory;
 

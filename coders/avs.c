@@ -138,7 +138,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    pixels=(unsigned char *) AcquireMemory(4*image->columns);
+    pixels=MagickAllocateMemory(unsigned char *,4*image->columns);
     if (pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
     for (y=0; y < (long) image->rows; y++)
@@ -337,7 +337,7 @@ static unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
     /*
       Allocate memory for pixels.
     */
-    pixels=(unsigned char *) AcquireMemory(image->columns*sizeof(PixelPacket));
+    pixels=MagickAllocateMemory(unsigned char *,image->columns*sizeof(PixelPacket));
     if (pixels == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
     /*

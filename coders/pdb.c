@@ -377,7 +377,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return(image);
     }
   packets=(bits_per_pixel*image->columns/8)*image->rows;
-  pixels=(unsigned char *) AcquireMemory(packets+256);
+  pixels=MagickAllocateMemory(unsigned char *,packets+256);
   if (pixels == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitWarning,"MemoryAllocationFailed",image);
   switch (pdb_image.version)
@@ -528,7 +528,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       c=ReadBlobByte(image);
       length=MaxTextExtent;
-      comment=(char *) AcquireMemory(length+1);
+      comment=MagickAllocateMemory(char *,length+1);
       p=comment;
       if (comment != (char *) NULL)
         for ( ; c != EOF; p++)
@@ -763,14 +763,14 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
     pdb_image.width=(short) (16*(image->columns/16+1));
   pdb_image.height=(short) image->rows;
   packets=(bits_per_pixel*image->columns/8)*image->rows;
-  p=(unsigned char *) AcquireMemory(packets+packets/128);
+  p=MagickAllocateMemory(unsigned char *,packets+packets/128);
   if (p == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitWarning,"MemoryAllocationFailed",image);
-  buffer=(unsigned char *) AcquireMemory(256);
+  buffer=MagickAllocateMemory(unsigned char *,256);
   if (buffer == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitWarning,"MemoryAllocationFailed",image);
   packet_size=image->depth > 8 ? 2: 1;
-  scanline=(unsigned char *) AcquireMemory(packet_size*image->columns);
+  scanline=MagickAllocateMemory(unsigned char *,packet_size*image->columns);
   if (scanline == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitWarning,"MemoryAllocationFailed",image);
   TransformColorspace(image,RGBColorspace);

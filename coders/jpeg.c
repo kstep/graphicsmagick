@@ -286,7 +286,7 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   length-=2;
   if (length <= 0)
     return(True);
-  comment=(char *) AcquireMemory(length+1);
+  comment=MagickAllocateMemory(char *,length+1);
   if (comment == (char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       (char *) NULL);
@@ -337,7 +337,7 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
   image=error_manager->image;
   i=(long) image->generic_profiles;
   if (image->generic_profile == (ProfileInfo *) NULL)
-    image->generic_profile=(ProfileInfo *) AcquireMemory(sizeof(ProfileInfo));
+    image->generic_profile=MagickAllocateMemory(ProfileInfo *,sizeof(ProfileInfo));
   else
     MagickReallocMemory(image->generic_profile,
       (i+1)*sizeof(ProfileInfo));
@@ -349,7 +349,7 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
     }
   image->generic_profile[i].name=AllocateString((char *) NULL);
   FormatString(image->generic_profile[i].name,"APP%d",marker);
-  image->generic_profile[i].info=(unsigned char *) AcquireMemory(length);
+  image->generic_profile[i].info=MagickAllocateMemory(unsigned char *,length);
   if (image->generic_profile[i].info == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       (char *) NULL);
@@ -423,7 +423,7 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
   error_manager=(ErrorManager *) jpeg_info->client_data;
   image=error_manager->image;
   if (image->color_profile.length == 0)
-    image->color_profile.info=(unsigned char *) AcquireMemory(length);
+    image->color_profile.info=MagickAllocateMemory(unsigned char *,length);
   else
     MagickReallocMemory(image->color_profile.info,
       image->color_profile.length+length);
@@ -530,8 +530,8 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
     }
   else
     {
-      image->iptc_profile.info=(unsigned char *)
-        AcquireMemory(length+tag_length);
+      image->iptc_profile.info=MagickAllocateMemory(unsigned char *,
+        length+tag_length);
       if (image->iptc_profile.info != (unsigned char *) NULL)
         image->iptc_profile.length=0;
     }
@@ -953,8 +953,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       CloseBlob(image);
       return(image);
     }
-  jpeg_pixels=(JSAMPLE *)
-    AcquireMemory(jpeg_info.output_components*image->columns*sizeof(JSAMPLE));
+  jpeg_pixels=MagickAllocateMemory(JSAMPLE *,
+    jpeg_info.output_components*image->columns*sizeof(JSAMPLE));
   if (jpeg_pixels == (JSAMPLE *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   /*
@@ -1266,7 +1266,7 @@ static void WriteICCProfile(j_compress_ptr jpeg_info,Image *image)
   for (i=0; i < (long) image->color_profile.length; i+=65519)
   {
     length=Min(image->color_profile.length-i,65519);
-    profile=(unsigned char *) AcquireMemory(length+14);
+    profile=MagickAllocateMemory(unsigned char *,length+14);
     if (profile == (unsigned char *) NULL)
       break;
     (void) strcpy((char *) profile,"ICC_PROFILE");
@@ -1306,7 +1306,7 @@ static void WriteIPTCProfile(j_compress_ptr jpeg_info,Image *image)
   {
     length=Min(image->iptc_profile.length-i,65500);
     roundup=(length & 0x01); /* round up for Photoshop */
-    profile=(unsigned char *) AcquireMemory(length+roundup+tag_length);
+    profile=MagickAllocateMemory(unsigned char *,length+roundup+tag_length);
     if (profile == (unsigned char *) NULL)
       break;
 #ifdef GET_ONLY_IPTC_DATA
@@ -1720,8 +1720,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   /*
     Convert MIFF to JPEG raster pixels.
   */
-  jpeg_pixels=(JSAMPLE *)
-    AcquireMemory(jpeg_info.input_components*image->columns*sizeof(JSAMPLE));
+  jpeg_pixels=MagickAllocateMemory(JSAMPLE *,
+    jpeg_info.input_components*image->columns*sizeof(JSAMPLE));
   if (jpeg_pixels == (JSAMPLE *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
   scanline[0]=(JSAMPROW) jpeg_pixels;

@@ -204,7 +204,7 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
       (image->colorspace == CMYKColorspace))
     length+=number_pixels*sizeof(IndexPacket);
   if (stream_info->pixels == (PixelPacket *) NULL)
-    stream_info->pixels=(PixelPacket *) AcquireMemory(length);
+    stream_info->pixels=MagickAllocateMemory(PixelPacket *,length);
   else
     if (length != stream_info->length)
       MagickReallocMemory(stream_info->pixels,length);
@@ -578,7 +578,7 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
     length+=number_pixels*sizeof(IndexPacket);
   if (stream_info->pixels == (PixelPacket *) NULL)
     {
-      stream_info->pixels=(PixelPacket *) AcquireMemory(length);
+      stream_info->pixels=MagickAllocateMemory(PixelPacket *,length);
       stream_info->length=length;
     }
   else

@@ -231,7 +231,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Read image colormaps.
         */
-        colormap=(unsigned char *) AcquireMemory(number_colormaps*map_length);
+        colormap=MagickAllocateMemory(unsigned char *,number_colormaps*map_length);
         if (colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
@@ -252,7 +252,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Read image comment.
         */
         length=ReadBlobLSBShort(image);
-        comment=(char *) AcquireMemory(length);
+        comment=MagickAllocateMemory(char *,length);
         if (comment == (char *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
@@ -272,7 +272,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image->matte)
       number_planes++;
     number_pixels=image->columns*image->rows;
-    rle_pixels=(unsigned char *) AcquireMemory(number_pixels*number_planes);
+    rle_pixels=MagickAllocateMemory(unsigned char *,number_pixels*number_planes);
     if (rle_pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
     if ((flags & 0x01) && !(flags & 0x02))

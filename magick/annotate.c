@@ -180,7 +180,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
     if (strlen(textlist[i]) > length)
       length=strlen(textlist[i]);
   number_lines=i;
-  text=(char *) AcquireMemory(length+MaxTextExtent);
+  text=MagickAllocateMemory(char *,length+MaxTextExtent);
   if (text == (char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       "UnableToAnnotateImage");
@@ -455,8 +455,8 @@ static unsigned short *EncodeSJIS(const char *text,size_t *count)
   *count=0;
   if ((text == (char *) NULL) || (*text == '\0'))
     return((unsigned short *) NULL);
-  encoding=(unsigned short *)
-    AcquireMemory((strlen(text)+MaxTextExtent)*sizeof(unsigned short));
+  encoding=MagickAllocateMemory(unsigned short *,
+    (strlen(text)+MaxTextExtent)*sizeof(unsigned short));
   if (encoding == (unsigned short *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       "UnableToConvertText");
@@ -522,8 +522,8 @@ static unsigned short *EncodeText(const char *text,size_t *count)
   *count=0;
   if ((text == (char *) NULL) || (*text == '\0'))
     return((unsigned short *) NULL);
-  encoding=(unsigned short *)
-    AcquireMemory((strlen(text)+MaxTextExtent)*sizeof(unsigned short));
+  encoding=MagickAllocateMemory(unsigned short *,
+    (strlen(text)+MaxTextExtent)*sizeof(unsigned short));
   if (encoding == (unsigned short *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       "UnableToConvertText");
@@ -636,8 +636,8 @@ static unsigned short *EncodeUnicode(const char *text,size_t *count)
   *count=0;
   if ((text == (char *) NULL) || (*text == '\0'))
     return((unsigned short *) NULL);
-  unicode=(unsigned short *)
-    AcquireMemory((strlen(text)+MaxTextExtent)*sizeof(unsigned short));
+  unicode=MagickAllocateMemory(unsigned short *,
+    (strlen(text)+MaxTextExtent)*sizeof(unsigned short));
   if (unicode == (unsigned short *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       "UnableToConvertText");

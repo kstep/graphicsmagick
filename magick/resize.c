@@ -313,8 +313,8 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   /*
     Allocate image buffer and scanline buffer for 4 rows of the image.
   */
-  scanline=(PixelPacket *)
-    AcquireMemory(magnify_image->columns*sizeof(PixelPacket));
+  scanline=MagickAllocateMemory(PixelPacket *,
+    magnify_image->columns*sizeof(PixelPacket));
   if (scanline == (PixelPacket *) NULL)
     {
       DestroyImage(magnify_image);
@@ -1143,8 +1143,8 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   support=Max(x_support,y_support);
   if (support < filters[i].support)
     support=filters[i].support;
-  contribution=(ContributionInfo *)
-    AcquireMemory((size_t) (2.0*Max(support,0.5)+3)*sizeof(ContributionInfo));
+  contribution=MagickAllocateMemory(ContributionInfo *,
+    (size_t) (2.0*Max(support,0.5)+3)*sizeof(ContributionInfo));
   if (contribution == (ContributionInfo *) NULL)
     {
       DestroyImage(resize_image);
@@ -1289,9 +1289,9 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
   /*
     Allocate scan line buffer and column offset buffers.
   */
-  pixels=(PixelPacket *) AcquireMemory(image->columns*sizeof(PixelPacket));
-  x_offset=(double *) AcquireMemory(sample_image->columns*sizeof(double));
-  y_offset=(double *) AcquireMemory(sample_image->rows*sizeof(double));
+  pixels=MagickAllocateMemory(PixelPacket *,image->columns*sizeof(PixelPacket));
+  x_offset=MagickAllocateMemory(double *,sample_image->columns*sizeof(double));
+  y_offset=MagickAllocateMemory(double *,sample_image->rows*sizeof(double));
   if ((pixels == (PixelPacket *) NULL) || (x_offset == (double *) NULL) ||
       (y_offset == (double *) NULL))
     {
@@ -1449,16 +1449,16 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
   /*
     Allocate memory.
   */
-  x_vector=(DoublePixelPacket *)
-    AcquireMemory(image->columns*sizeof(DoublePixelPacket));
+  x_vector=MagickAllocateMemory(DoublePixelPacket *,
+    image->columns*sizeof(DoublePixelPacket));
   scanline=x_vector;
   if (image->rows != scale_image->rows)
-    scanline=(DoublePixelPacket *)
-      AcquireMemory(image->columns*sizeof(DoublePixelPacket));
-  scale_scanline=(DoublePixelPacket *)
-    AcquireMemory(scale_image->columns*sizeof(DoublePixelPacket));
-  y_vector=(DoublePixelPacket *)
-    AcquireMemory(image->columns*sizeof(DoublePixelPacket));
+    scanline=MagickAllocateMemory(DoublePixelPacket *,
+      image->columns*sizeof(DoublePixelPacket));
+  scale_scanline=MagickAllocateMemory(DoublePixelPacket *,
+    scale_image->columns*sizeof(DoublePixelPacket));
+  y_vector=MagickAllocateMemory(DoublePixelPacket *,
+    image->columns*sizeof(DoublePixelPacket));
   if ((scanline == (DoublePixelPacket *) NULL) ||
       (scale_scanline == (DoublePixelPacket *) NULL) ||
       (x_vector == (DoublePixelPacket *) NULL) ||

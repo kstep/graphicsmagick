@@ -209,8 +209,8 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
     packet_size=image->storage_class == DirectClass ? 3 : 1;
-    hdf_pixels=(unsigned char *)
-      AcquireMemory(packet_size*image->columns*image->rows);
+    hdf_pixels=MagickAllocateMemory(unsigned char *,
+      packet_size*image->columns*image->rows);
     if (hdf_pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
     if (image->storage_class == PseudoClass)
@@ -224,7 +224,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!AllocateImageColormap(image,image->colors))
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
-        hdf_palette=(unsigned char *) AcquireMemory(768);
+        hdf_palette=MagickAllocateMemory(unsigned char *,768);
         if (hdf_palette == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
@@ -307,7 +307,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Read the image label.
         */
         length+=MaxTextExtent;
-        label=(char *) AcquireMemory(length);
+        label=MagickAllocateMemory(char *,length);
         if (label != (char *) NULL)
           {
             DFANgetlabel(image->filename,DFTAG_RIG,reference,label,length);
@@ -325,7 +325,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Read the image comments.
         */
         length+=MaxTextExtent;
-        comments=(char *) AcquireMemory(length);
+        comments=MagickAllocateMemory(char *,length);
         if (comments != (char *) NULL)
           {
             DFANgetdesc(image->filename,DFTAG_RIG,reference,comments,length);
@@ -525,8 +525,8 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
     */
     TransformColorspace(image,RGBColorspace);
     packet_size=image->storage_class == DirectClass ? 3 : 11;
-    hdf_pixels=(unsigned char *)
-      AcquireMemory(packet_size*image->columns*image->rows);
+    hdf_pixels=MagickAllocateMemory(unsigned char *),
+      packet_size*image->columns*image->rows);
     if (hdf_pixels == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
     if (image->storage_class == DirectClass)
@@ -692,7 +692,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
             unsigned char
               *hdf_palette;
 
-            hdf_palette=(unsigned char *) AcquireMemory(768);
+            hdf_palette=MagickAllocateMemory(unsigned char *,768);
             if (hdf_palette == (unsigned char *) NULL)
               ThrowWriterException(ResourceLimitError,
                 "MemoryAllocationFailed",image);

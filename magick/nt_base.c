@@ -1618,7 +1618,7 @@ MagickExport char *NTRegistryKeyLookup(const char *subkey)
       res;
     
     size = 32;
-    dest = (char *) AcquireMemory(size);
+    dest = MagickAllocateMemory(char *,size);
     
     res = RegQueryValueExA (reg_key, subkey, 0, &type, dest, &size);
     if (res == ERROR_MORE_DATA && type == REG_SZ)
@@ -1711,7 +1711,7 @@ MagickExport unsigned char *NTResourceToBlob(const char *id)
       FreeResource(global);
       return((char *) NULL);
     }
-  blob=(unsigned char *) AcquireMemory(length+1);
+  blob=MagickAllocateMemory(unsigned char *,length+1);
   if (blob != (unsigned char *) NULL)
     {
       (void) memcpy(blob,value,length);
@@ -1941,7 +1941,7 @@ MagickExport DIR *opendir(char *path)
   assert(path != (char *) NULL);
   (void) strncpy(file_specification,path,MaxTextExtent-1);
   (void) strcat(file_specification,DirectorySeparator);
-  entry=(DIR *) AcquireMemory(sizeof(DIR));
+  entry=MagickAllocateMemory(DIR *,sizeof(DIR));
   if (entry != (DIR *) NULL)
     {
       entry->firsttime=TRUE;

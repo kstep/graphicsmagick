@@ -457,7 +457,7 @@ static int GetBlurKernel(unsigned long width,const double sigma,double **kernel)
   */
   if (width == 0)
     width=3;
-  *kernel=(double *) AcquireMemory(width*sizeof(double));
+  *kernel=MagickAllocateMemory(double *,width*sizeof(double));
   if (*kernel == (double *) NULL)
     return(0);
   for (i=0; i < (long) width; i++)
@@ -553,7 +553,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
       return((Image *) NULL);
     }
   blur_image->storage_class=DirectClass;
-  scanline=(PixelPacket *) AcquireMemory(image->rows*sizeof(PixelPacket));
+  scanline=MagickAllocateMemory(PixelPacket *,image->rows*sizeof(PixelPacket));
   if (scanline == (PixelPacket *) NULL)
     {
       DestroyImage(blur_image);
@@ -812,8 +812,8 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     Allocate image buffers.
   */
   length=(image->columns+2)*(image->rows+2)*sizeof(Quantum);
-  pixels=(Quantum *) AcquireMemory(length);
-  buffer=(Quantum *) AcquireMemory(length);
+  pixels=MagickAllocateMemory(Quantum *,length);
+  buffer=MagickAllocateMemory(Quantum *,length);
   if ((buffer == (Quantum *) NULL) || (pixels == (Quantum *) NULL))
     {
       DestroyImage(despeckle_image);
@@ -962,7 +962,7 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
   if (((long) image->columns < width) || ((long) image->rows < width))
     ThrowImageException(OptionError,"UnableToEdgeImage",
       "ImageIsSmallerThanRadius");
-  kernel=(double *) AcquireMemory(width*width*sizeof(double));
+  kernel=MagickAllocateMemory(double *,width*width*sizeof(double));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
       "UnableToEdgeImage");
@@ -1032,7 +1032,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth(radius,0.5);
-  kernel=(double *) AcquireMemory(width*width*sizeof(double));
+  kernel=MagickAllocateMemory(double *,width*width*sizeof(double));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
       "UnableToEmbossImage");
@@ -1273,7 +1273,7 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
   if (((long) image->columns < width) || ((long) image->rows < width))
     ThrowImageException(OptionError,"UnableToBlurImage",
       "ImageIsSmallerThanRadius");
-  kernel=(double *) AcquireMemory(width*width*sizeof(double));
+  kernel=MagickAllocateMemory(double *,width*width*sizeof(double));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
       "UnableToBlurImage");
@@ -1579,7 +1579,7 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
   /*
     Allocate skip-lists.
   */
-  skiplist=(MedianPixelList *) AcquireMemory(sizeof(MedianPixelList));
+  skiplist=MagickAllocateMemory(MedianPixelList *,sizeof(MedianPixelList));
   if (skiplist == (MedianPixelList *) NULL)
     {
       DestroyImage(median_image);
@@ -1681,7 +1681,7 @@ static int GetMotionBlurKernel(int width,const double sigma,double **kernel)
   */
   if (width <= 0)
     width=3;
-  *kernel=(double *) AcquireMemory(width*sizeof(double));
+  *kernel=MagickAllocateMemory(double *,width*sizeof(double));
   if (*kernel == (double *) NULL)
     return(0);
   for (i=0; i < width; i++)
@@ -1765,7 +1765,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
   if (width < 3)
     ThrowImageException(OptionError,"UnableToBlurimage",
       "KernelRadiusIsTooSmall");
-  offsets=(PointInfo *) AcquireMemory(width*sizeof(PointInfo));
+  offsets=MagickAllocateMemory(PointInfo *,width*sizeof(PointInfo));
   if (offsets == (PointInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
       "UnableToMotionBlurImage");
@@ -2189,7 +2189,7 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
   /*
     Allocate skip-lists.
   */
-  skiplist=(MedianPixelList *) AcquireMemory(sizeof(MedianPixelList));
+  skiplist=MagickAllocateMemory(MedianPixelList *,sizeof(MedianPixelList));
   if (skiplist == (MedianPixelList *) NULL)
     {
       DestroyImage(noise_image);
@@ -2448,7 +2448,7 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
   if (((long) image->columns < width) || ((long) image->rows < width))
     ThrowImageException(OptionError,"UnableToSharpenImage",
       "ImageIsSmallerThanRadius");
-  kernel=(double *) AcquireMemory(width*width*sizeof(double));
+  kernel=MagickAllocateMemory(double *,width*width*sizeof(double));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
       "UnableToSharpenImage");
@@ -2546,7 +2546,7 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
   /*
     Initialize random offsets cache
   */
-  offsets=(long *)AcquireMemory(OFFSETS_ENTRIES*sizeof(long));
+  offsets=MagickAllocateMemory(long *,OFFSETS_ENTRIES*sizeof(long));
   if (offsets == (long *) NULL)
     {
       ThrowException(exception,ResourceLimitError,

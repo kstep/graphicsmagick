@@ -245,7 +245,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Get the colormap colors.
   */
-  colors=(XColor *) AcquireMemory(visual_info->colormap_size*sizeof(XColor));
+  colors=MagickAllocateMemory(XColor *,visual_info->colormap_size*sizeof(XColor));
   if (colors == (XColor *) NULL)
     {
       DestroyImage(image);

@@ -1,3 +1,7 @@
+2003-05-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* */*.c: Updated to use MagickAllocateMemory macro.
+
 2003-05-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/utility.h (MagickAllocateMemory): New macro to allocate

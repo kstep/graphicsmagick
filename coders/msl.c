@@ -4166,12 +4166,12 @@ static unsigned int ProcessMSLScript(const ImageInfo *image_info,Image **image,
   */
   (void) memset(&msl_info,0,sizeof(MSLInfo));
   msl_info.exception=exception;
-  msl_info.image_info=(ImageInfo **) AcquireMemory(sizeof(ImageInfo *));
-  msl_info.draw_info=(DrawInfo **) AcquireMemory(sizeof(DrawInfo *));
+  msl_info.image_info=MagickAllocateMemory(ImageInfo **,sizeof(ImageInfo *));
+  msl_info.draw_info=MagickAllocateMemory(DrawInfo **,sizeof(DrawInfo *));
   /* top of the stack is the MSL file itself */
-  msl_info.image=(Image **) AcquireMemory(sizeof(Image *));
-  msl_info.attributes=(Image **) AcquireMemory(sizeof(Image *));
-  msl_info.group_info=(MSLGroupInfo *) AcquireMemory(sizeof(MSLGroupInfo));
+  msl_info.image=MagickAllocateMemory(Image **,sizeof(Image *));
+  msl_info.attributes=MagickAllocateMemory(Image **,sizeof(Image *));
+  msl_info.group_info=MagickAllocateMemory(MSLGroupInfo *,sizeof(MSLGroupInfo));
   if ((msl_info.image_info == (ImageInfo **) NULL) ||
       (msl_info.image == (Image **) NULL) ||
       (msl_info.attributes == (Image **) NULL) ||

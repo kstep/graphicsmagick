@@ -326,7 +326,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!AllocateImageColormap(image,image->colors))
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
-        sun_colormap=(unsigned char *) AcquireMemory(image->colors);
+        sun_colormap=MagickAllocateMemory(unsigned char *,image->colors);
         if (sun_colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
@@ -350,7 +350,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Read SUN raster colormap.
         */
-        sun_colormap=(unsigned char *) AcquireMemory(sun_info.maplength);
+        sun_colormap=MagickAllocateMemory(unsigned char *,sun_info.maplength);
         if (sun_colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
@@ -369,7 +369,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         CloseBlob(image);
         return(image);
       }
-    sun_data=(unsigned char *) AcquireMemory(sun_info.length);
+    sun_data=MagickAllocateMemory(unsigned char *,sun_info.length);
     if (sun_data == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
     count=ReadBlob(image,sun_info.length,(char *) sun_data);
@@ -386,7 +386,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         height=sun_info.height;
         bytes_per_line=2*(sun_info.width*sun_info.depth+15)/16;
-        sun_pixels=(unsigned char *) AcquireMemory(bytes_per_line*height);
+        sun_pixels=MagickAllocateMemory(unsigned char *,bytes_per_line*height);
         if (sun_pixels == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
@@ -751,7 +751,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
           Allocate memory for pixels.
         */
         length=image->columns*sizeof(PixelPacket);
-        pixels=(unsigned char *) AcquireMemory(length);
+        pixels=MagickAllocateMemory(unsigned char *,length);
         if (pixels == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
             image);

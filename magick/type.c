@@ -611,7 +611,7 @@ MagickExport char **GetTypeList(const char *pattern,unsigned long *number_types)
   i=0;
   for (p=type_list; p != (const TypeInfo *) NULL; p=p->next)
     i++;
-  typelist=(char **) AcquireMemory(i*sizeof(char *));
+  typelist=MagickAllocateMemory(char **,i*sizeof(char *));
   if (typelist == (char **) NULL)
     return((char **) NULL);
   i=0;
@@ -853,7 +853,7 @@ static unsigned int ReadConfigureFile(const char *basename,
         /*
           Allocate memory for the type list.
         */
-        type_info=(TypeInfo *) AcquireMemory(sizeof(TypeInfo));
+        type_info=MagickAllocateMemory(TypeInfo *,sizeof(TypeInfo));
         if (type_info == (TypeInfo *) NULL)
           MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
             "UnableToAllocateTypeInfo");

@@ -254,7 +254,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((image->columns % 16) && ((image->columns % 16) < 9)  && (version == 10))
     padding=1;
   bytes_per_line=(image->columns+7)/8+padding;
-  data=(unsigned char *) AcquireMemory(bytes_per_line*image->rows);
+  data=MagickAllocateMemory(unsigned char *,bytes_per_line*image->rows);
   if (data == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   /*

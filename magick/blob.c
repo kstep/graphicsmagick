@@ -470,7 +470,7 @@ MagickExport BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
   BlobInfo
     *clone_info;
 
-  clone_info=(BlobInfo *) AcquireMemory(sizeof(BlobInfo));
+  clone_info=MagickAllocateMemory(BlobInfo *,sizeof(BlobInfo));
   if (clone_info == (BlobInfo *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       "UnableToCloneBlobInfo");
@@ -831,7 +831,7 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
       return((void *) NULL);
     }
   *length=(size_t) offset;
-  blob=(unsigned char *) AcquireMemory(*length+1);
+  blob=MagickAllocateMemory(unsigned char *,*length+1);
   if (blob == (unsigned char *) NULL)
     {
       (void) close(file);
@@ -1287,7 +1287,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
       /*
         Native blob support for this image format.
       */
-      clone_info->blob=(void *) AcquireMemory(65535L);
+      clone_info->blob=MagickAllocateMemory(void *,65535L);
       if (clone_info->blob == (void *) NULL)
         {
           ThrowException(exception,BlobError,"MemoryAllocationFailed",
@@ -1428,7 +1428,7 @@ MagickExport unsigned int ImageToFile(Image *image,const char *filename,
       ThrowException(exception,BlobError,"UnableToWriteBlob",filename);
       return(False);
     }
-  buffer=(char *) AcquireMemory(MaxBufferSize);
+  buffer=MagickAllocateMemory(char *,MaxBufferSize);
   if (buffer == (char *) NULL)
     {
       (void) close(file);

@@ -221,7 +221,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read XPM file.
   */
   length=MaxTextExtent;
-  xpm_buffer=(char *) AcquireMemory(length);
+  xpm_buffer=MagickAllocateMemory(char *,length);
   p=xpm_buffer;
   if (xpm_buffer != (char *) NULL)
     while (ReadBlobString(image,p) != (char *) NULL)
@@ -283,7 +283,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize image structure.
   */
-  keys=(char **) AcquireMemory(image->colors*sizeof(char *));
+  keys=MagickAllocateMemory(char **,image->colors*sizeof(char *));
   if (!AllocateImageColormap(image,image->colors) || (keys == (char **) NULL))
     {
       for (i=0; textlist[i] != (char *) NULL; i++)
@@ -301,7 +301,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     p=textlist[i++];
     if (p == (char *) NULL)
       break;
-    keys[j]=(char *) AcquireMemory(width+1);
+    keys[j]=MagickAllocateMemory(char *,width+1);
     if (keys[j] == (char *) NULL)
       {
         for (i=0; textlist[i] != (char *) NULL; i++)

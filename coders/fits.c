@@ -349,7 +349,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     if (packet_size < 0)
       packet_size=(-packet_size);
     number_pixels=image->columns*image->rows;
-    fits_pixels=(unsigned char *) AcquireMemory(packet_size*number_pixels);
+    fits_pixels=MagickAllocateMemory(unsigned char *,packet_size*number_pixels);
     if (fits_pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
     /*
@@ -703,8 +703,8 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
     Allocate image memory.
   */
   packet_size=image->depth > 8 ? 2 : 1;
-  fits_info=(char *) AcquireMemory(2880);
-  pixels=(unsigned char *) AcquireMemory(packet_size*image->columns);
+  fits_info=MagickAllocateMemory(char *,2880);
+  pixels=MagickAllocateMemory(unsigned char *,packet_size*image->columns);
   if ((fits_info == (char *) NULL) || (pixels == (unsigned char *) NULL))
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
   /*

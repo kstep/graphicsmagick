@@ -83,7 +83,7 @@ MagickExport MontageInfo *CloneMontageInfo(const ImageInfo *image_info,
   MontageInfo
     *clone_info;
 
-  clone_info=(MontageInfo *) AcquireMemory(sizeof(MontageInfo));
+  clone_info=MagickAllocateMemory(MontageInfo *,sizeof(MontageInfo));
   if (clone_info == (MontageInfo *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       "UnableToAllocateMontageInfo");
@@ -547,7 +547,7 @@ MagickExport Image *MontageImages(const Image *images,
     count=1;
     for (tile=0; tile < tiles_per_page; tile++)
       count+=strlen(image_list[tile]->filename)+1;
-    montage->directory=(char *) AcquireMemory(count);
+    montage->directory=MagickAllocateMemory(char *,count);
     if ((montage->montage == (char *) NULL) ||
         (montage->directory == (char *) NULL))
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",

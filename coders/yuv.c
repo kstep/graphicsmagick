@@ -171,9 +171,9 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Allocate memory for a scanline.
   */
   if (interlace == NoInterlace)
-    scanline=(unsigned char *) AcquireMemory(2*image->columns+2);
+    scanline=MagickAllocateMemory(unsigned char *,2*image->columns+2);
   else
-    scanline=(unsigned char *) AcquireMemory(image->columns);
+    scanline=MagickAllocateMemory(unsigned char *,image->columns);
   if (scanline == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   do

@@ -309,7 +309,7 @@ MagickExport void *GetMagickRegistry(const long id,RegistryType *type,
       }
       default:
       {
-        blob=(void *) AcquireMemory(registry_info->length);
+        blob=MagickAllocateMemory(void *,registry_info->length);
         if (blob == (void *) NULL)
           {
             ThrowException(exception,ResourceLimitError,
@@ -428,13 +428,13 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
     }
     default:
     {
-      clone_blob=(void *) AcquireMemory(length);
+      clone_blob=MagickAllocateMemory(void *,length);
       if (clone_blob == (void *) NULL)
         return(-1);
       (void) memcpy(clone_blob,blob,length);
     }
   }
-  registry_info=(RegistryInfo *) AcquireMemory(sizeof(RegistryInfo));
+  registry_info=MagickAllocateMemory(RegistryInfo *,sizeof(RegistryInfo));
   if (registry_info == (RegistryInfo *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       "UnableToAllocateRegistryInfo");

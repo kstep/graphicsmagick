@@ -288,8 +288,8 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       /*
         Allocate pixel buffers.
       */
-      pixels=(unsigned char *)
-        AcquireMemory(3*image->columns*sizeof(unsigned char));
+      pixels=MagickAllocateMemory(unsigned char *,
+        3*image->columns*sizeof(unsigned char));
       if (pixels == (unsigned char *) NULL)
         ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image)
       /*

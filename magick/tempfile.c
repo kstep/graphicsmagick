@@ -61,7 +61,7 @@ static void AddTemporaryFileToList(const char *filename)
     TempfileInfo
       *info;
 
-    info=(TempfileInfo *) AcquireMemory(sizeof(TempfileInfo));
+    info=MagickAllocateMemory(TempfileInfo *,sizeof(TempfileInfo));
     if (info)
       {
         info->next=0;

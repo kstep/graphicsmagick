@@ -138,10 +138,10 @@ static unsigned int DecodeImage(Image *image,const long opacity)
     Allocate decoder tables.
   */
   assert(image != (Image *) NULL);
-  packet=(unsigned char *) AcquireMemory(256);
-  prefix=(short *) AcquireMemory(MaxStackSize*sizeof(short));
-  suffix=(unsigned char *) AcquireMemory(MaxStackSize);
-  pixel_stack=(unsigned char *) AcquireMemory(MaxStackSize+1);
+  packet=MagickAllocateMemory(unsigned char *,256);
+  prefix=MagickAllocateMemory(short *,MaxStackSize*sizeof(short));
+  suffix=MagickAllocateMemory(unsigned char *,MaxStackSize);
+  pixel_stack=MagickAllocateMemory(unsigned char *,MaxStackSize+1);
   if ((packet == (unsigned char *) NULL) ||
       (prefix == (short *) NULL) ||
       (suffix == (unsigned char *) NULL) ||
@@ -458,10 +458,10 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
     Allocate encoder tables.
   */
   assert(image != (Image *) NULL);
-  packet=(unsigned char *) AcquireMemory(256);
-  hash_code=(short *) AcquireMemory(MaxHashTable*sizeof(short));
-  hash_prefix=(short *) AcquireMemory(MaxHashTable*sizeof(short));
-  hash_suffix=(unsigned char *) AcquireMemory(MaxHashTable);
+  packet=MagickAllocateMemory(unsigned char *,256);
+  hash_code=MagickAllocateMemory(short *,MaxHashTable*sizeof(short));
+  hash_prefix=MagickAllocateMemory(short *,MaxHashTable*sizeof(short));
+  hash_suffix=MagickAllocateMemory(unsigned char *,MaxHashTable);
   if ((packet == (unsigned char *) NULL) || (hash_code == (short *) NULL) ||
       (hash_prefix == (short *) NULL) ||
       (hash_suffix == (unsigned char *) NULL))
@@ -824,7 +824,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   background=ReadBlobByte(image);
   c=ReadBlobByte(image);  /* reserved */
   global_colors=1 << ((flag & 0x07)+1);
-  global_colormap=(unsigned char *) AcquireMemory(3*Max(global_colors,256));
+  global_colormap=MagickAllocateMemory(unsigned char *,3*Max(global_colors,256));
   if (global_colormap == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   if (BitSet(flag,0x80))
@@ -983,7 +983,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Read local colormap.
         */
-        colormap=(unsigned char *) AcquireMemory(3*image->colors);
+        colormap=MagickAllocateMemory(unsigned char *,3*image->colors);
         if (colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
@@ -1201,8 +1201,8 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   /*
     Allocate colormap.
   */
-  global_colormap=(unsigned char *) AcquireMemory(768);
-  colormap=(unsigned char *) AcquireMemory(768);
+  global_colormap=MagickAllocateMemory(unsigned char *,768);
+  colormap=MagickAllocateMemory(unsigned char *,768);
   if ((global_colormap == (unsigned char *) NULL) ||
       (colormap == (unsigned char *) NULL))
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);

@@ -303,7 +303,7 @@ static int UnpackWPGRaster(Image *image,int bpp)
   y=0;
 
   ldblk=(long) ((bpp*image->columns+7)/8);
-  BImgBuff=(unsigned char *) AcquireMemory(ldblk);
+  BImgBuff=MagickAllocateMemory(unsigned char *,ldblk);
   if(BImgBuff==NULL) return(-2);
 
   while(y<(long) image->rows)
@@ -401,7 +401,7 @@ static int UnpackWPG2Raster(Image *image,int bpp)
   x=0;
   y=0;
   ldblk=(long) ((bpp*image->columns+7)/8);
-  BImgBuff=(unsigned char *) AcquireMemory(ldblk);
+  BImgBuff=MagickAllocateMemory(unsigned char *,ldblk);
   if(BImgBuff==NULL)
     return(-2);
 
@@ -954,8 +954,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                 case 0:    /*Uncompressed raster*/
                   {
                     ldblk=(long) ((bpp*image->columns+7)/8);
-                    if((BImgBuff=(unsigned char *)
-                        AcquireMemory(ldblk))==NULL)
+                    BImgBuff=MagickAllocateMemory(unsigned char *,ldblk);
+                    if (BImgBuff == (unsigned char *) NULL)
                       goto NoMemory;
 
                     for(i=0;i<(long) image->rows;i++)

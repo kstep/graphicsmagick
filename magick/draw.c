@@ -359,7 +359,7 @@ static int MvgPrintf(DrawContext context, const char *format, ...)
   /* Allocate initial memory */
   if (context->mvg == (char*) NULL)
     {
-      context->mvg = (char *) AcquireMemory(alloc_size);
+      context->mvg = MagickAllocateMemory(char *,alloc_size);
       if( context->mvg == (char*) NULL )
         {
           ThrowException(&context->image->exception,ResourceLimitError,
@@ -666,7 +666,7 @@ MagickExport DrawContext DrawAllocateContext(const DrawInfo *draw_info,
     context;
 
   /* Allocate initial drawing context */
-  context = (DrawContext) AcquireMemory(sizeof(struct _DrawContext));
+  context = MagickAllocateMemory(DrawContext,sizeof(struct _DrawContext));
   if(context == (DrawContext) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       "UnableToAllocateDrawContext");
@@ -691,7 +691,7 @@ MagickExport DrawContext DrawAllocateContext(const DrawInfo *draw_info,
 
   /* Graphic context */
   context->index = 0;
-  context->graphic_context=(DrawInfo **) AcquireMemory(sizeof(DrawInfo *));
+  context->graphic_context=MagickAllocateMemory(DrawInfo **,sizeof(DrawInfo *));
   if(context->graphic_context == (DrawInfo **) NULL)
     {
       ThrowException(&context->image->exception,ResourceLimitError,
@@ -4830,7 +4830,7 @@ MagickExport double *DrawGetStrokeDashArray(DrawContext context,
   dasharray = (double *)NULL;
   if (n != 0)
     {
-      dasharray = (double *)AcquireMemory(n*sizeof(double));
+      dasharray = MagickAllocateMemory(double *, n*sizeof(double));
       p = CurrentContext->dash_pattern;
       q = dasharray;
       i = n;
@@ -4931,8 +4931,8 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
 
       if( n_new != 0)
         {
-          CurrentContext->dash_pattern = (double *)
-            AcquireMemory((n_new+1)*sizeof(double));
+          CurrentContext->dash_pattern = MagickAllocateMemory(double *,
+            (n_new+1)*sizeof(double));
           if(CurrentContext->dash_pattern)
             {
               q=CurrentContext->dash_pattern;

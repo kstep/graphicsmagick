@@ -117,7 +117,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   /*
     Allocate image structure.
   */
-  allocate_image=(Image *) AcquireMemory(sizeof(Image));
+  allocate_image=MagickAllocateMemory(Image *,sizeof(Image));
   if (allocate_image == (Image *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       "UnableToAllocateImage");
@@ -254,7 +254,7 @@ MagickExport unsigned int AllocateImageColormap(Image *image,
   image->colors=colors;
   length=image->colors*sizeof(PixelPacket);
   if (image->colormap == (PixelPacket *) NULL)
-    image->colormap=(PixelPacket *) AcquireMemory(length);
+    image->colormap=MagickAllocateMemory(PixelPacket *,length);
   else
     MagickReallocMemory(image->colormap,length);
   if (image->colormap == (PixelPacket *) NULL)
@@ -595,8 +595,8 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
     Allocate sum accumulation buffer.
   */
   number_pixels=image->columns*image->rows;
-  pixels_array=(DoublePixelPacket *)
-    AcquireMemory(number_pixels*sizeof(DoublePixelPacket));
+  pixels_array=MagickAllocateMemory(DoublePixelPacket *,
+    number_pixels*sizeof(DoublePixelPacket));
   if (pixels_array == (DoublePixelPacket *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
       "UnableToAverageImageSequence");
@@ -972,7 +972,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  clone_image=(Image *) AcquireMemory(sizeof(Image));
+  clone_image=MagickAllocateMemory(Image *,sizeof(Image));
   if (clone_image == (Image *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
       "UnableToCloneImage");
@@ -995,7 +995,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
       */
       clone_image->colors=image->colors;
       length=image->colors*sizeof(PixelPacket);
-      clone_image->colormap=(PixelPacket *) AcquireMemory(length);
+      clone_image->colormap=MagickAllocateMemory(PixelPacket *,length);
       if (clone_image->colormap == (PixelPacket *) NULL)
         ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
           "UnableToCloneImage");
@@ -1014,8 +1014,8 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
       */
       clone_image->color_profile.name=AllocateString(image->color_profile.name);
       clone_image->color_profile.length=image->color_profile.length;
-      clone_image->color_profile.info=(unsigned char *)
-        AcquireMemory(clone_image->color_profile.length);
+      clone_image->color_profile.info=MagickAllocateMemory(unsigned char *,
+        clone_image->color_profile.length);
       if (clone_image->color_profile.info == (unsigned char *) NULL)
         ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
           "UnableToCloneImage");
@@ -1029,8 +1029,8 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
       */
       clone_image->iptc_profile.name=AllocateString(image->iptc_profile.name);
       clone_image->iptc_profile.length=image->iptc_profile.length;
-      clone_image->iptc_profile.info=(unsigned char *)
-        AcquireMemory(clone_image->iptc_profile.length);
+      clone_image->iptc_profile.info=MagickAllocateMemory(unsigned char *,
+        clone_image->iptc_profile.length);
       if (clone_image->iptc_profile.info == (unsigned char *) NULL)
         ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
           "UnableToCloneImage");
@@ -1043,8 +1043,8 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
       /*
         Allocate and clone any generic profiles.
       */
-      clone_image->generic_profile=(ProfileInfo *)
-        AcquireMemory(image->generic_profiles*sizeof(ProfileInfo));
+      clone_image->generic_profile=MagickAllocateMemory(ProfileInfo *,
+        image->generic_profiles*sizeof(ProfileInfo));
       if (clone_image->generic_profile == (ProfileInfo *) NULL)
         ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
           "UnableToCloneImage");
@@ -1059,7 +1059,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
           continue;
         length=image->generic_profile[i].length;
         clone_image->generic_profile[i].info=
-          (unsigned char *) AcquireMemory(length);
+          MagickAllocateMemory(unsigned char *,length);
         if (clone_image->generic_profile[i].info == (unsigned char *) NULL)
           ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
             "UnableToCloneImage");
@@ -1174,7 +1174,7 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   ImageInfo
     *clone_info;
 
-  clone_info=(ImageInfo *) AcquireMemory(sizeof(ImageInfo));
+  clone_info=MagickAllocateMemory(ImageInfo *,sizeof(ImageInfo));
   if (clone_info == (ImageInfo *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       "UnableToCloneImageInfo");
@@ -1681,7 +1681,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         (void) fprintf(file,"    %.1024s:\n",tag);
         length=image->iptc_profile.info[i++] << 8;
         length|=image->iptc_profile.info[i++];
-        text=(char *) AcquireMemory(length+1);
+        text=MagickAllocateMemory(char *,length+1);
         if (text != (char *) NULL)
           {
             char
@@ -2766,7 +2766,7 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
           /*
             Allocate memory for colormap index
           */
-          colormap_index=(int *) AcquireMemory(MaxColormapSize*sizeof(int));
+          colormap_index=MagickAllocateMemory(int *,MaxColormapSize*sizeof(int));
           if (colormap_index == (int *) NULL)
             {
               ThrowException(&image->exception,ResourceLimitError,
@@ -2846,7 +2846,7 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
       */
       if (colormap_index == (int *) NULL)
         {
-          colormap_index=(int *) AcquireMemory(MaxColormapSize*sizeof(int));
+          colormap_index=MagickAllocateMemory(int *,MaxColormapSize*sizeof(int));
           if (colormap_index == (int *) NULL)
             {
               ThrowException(&image->exception,ResourceLimitError,
@@ -2876,7 +2876,7 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
         int
           j;
 
-        new_colormap=(PixelPacket *) AcquireMemory(image->colors*sizeof(PixelPacket));
+        new_colormap=MagickAllocateMemory(PixelPacket *,image->colors*sizeof(PixelPacket));
         if (new_colormap == (PixelPacket *) NULL)
           {
             ThrowException(&image->exception,ResourceLimitError,
@@ -3787,9 +3787,9 @@ MagickExport unsigned int RGBTransformImage(Image *image,
   /*
     Allocate the tables.
   */
-  x_map=(XYZColorTransformPacket *) AcquireMemory(XYZMapAllocSize);
-  y_map=(XYZColorTransformPacket *) AcquireMemory(XYZMapAllocSize);
-  z_map=(XYZColorTransformPacket *) AcquireMemory(XYZMapAllocSize);
+  x_map=MagickAllocateMemory(XYZColorTransformPacket *,XYZMapAllocSize);
+  y_map=MagickAllocateMemory(XYZColorTransformPacket *,XYZMapAllocSize);
+  z_map=MagickAllocateMemory(XYZColorTransformPacket *,XYZMapAllocSize);
   if ((x_map == 0) || (y_map == 0) || (z_map == 0))
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       "UnableToTransformColorSpace");
@@ -5087,7 +5087,7 @@ MagickExport unsigned int SortColormapByIntensity(Image *image)
   /*
     Allocate memory for pixel indexes.
   */
-  pixels=(unsigned short *) AcquireMemory(image->colors*sizeof(unsigned short));
+  pixels=MagickAllocateMemory(unsigned short *,image->colors*sizeof(unsigned short));
   if (pixels == (unsigned short *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       "UnableToSortImageColormap");
@@ -5637,12 +5637,12 @@ MagickExport unsigned int TransformRGBImage(Image *image,
   /*
     Allocate the tables.
   */
-  red_map=(RGBColorTransformPacket *)
-    AcquireMemory((MaxMap+1)*sizeof(RGBColorTransformPacket));
-  green_map=(RGBColorTransformPacket *)
-    AcquireMemory((MaxMap+1)*sizeof(RGBColorTransformPacket));
-  blue_map=(RGBColorTransformPacket *)
-    AcquireMemory((MaxMap+1)*sizeof(RGBColorTransformPacket));
+  red_map=MagickAllocateMemory(RGBColorTransformPacket *,
+    (MaxMap+1)*sizeof(RGBColorTransformPacket));
+  green_map=MagickAllocateMemory(RGBColorTransformPacket *,
+    (MaxMap+1)*sizeof(RGBColorTransformPacket));
+  blue_map=MagickAllocateMemory(RGBColorTransformPacket *,
+    (MaxMap+1)*sizeof(RGBColorTransformPacket));
   if ((red_map == (RGBColorTransformPacket *) NULL) ||
       (green_map == (RGBColorTransformPacket *) NULL) ||
       (blue_map == (RGBColorTransformPacket *) NULL))

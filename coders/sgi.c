@@ -296,8 +296,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     bytes_per_pixel=iris_info.bytes_per_pixel;
     number_pixels=iris_info.columns*iris_info.rows;
-    iris_pixels=(unsigned char *)
-      AcquireMemory(4*bytes_per_pixel*number_pixels);
+    iris_pixels=MagickAllocateMemory(unsigned char *,
+      4*bytes_per_pixel*number_pixels);
     if (iris_pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
     if (iris_info.storage != 0x01)
@@ -308,8 +308,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Read standard image format.
         */
-        scanline=(unsigned char *)
-          AcquireMemory(bytes_per_pixel*iris_info.columns);
+        scanline=MagickAllocateMemory(unsigned char *,
+          bytes_per_pixel*iris_info.columns);
         if (scanline == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
@@ -353,10 +353,10 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Read runlength-encoded image format.
         */
-        offsets=(unsigned long *) AcquireMemory(iris_info.rows*
+        offsets=MagickAllocateMemory(unsigned long *,iris_info.rows*
           iris_info.depth*sizeof(unsigned long));
-        max_packets=(unsigned char *) AcquireMemory(4*iris_info.columns+10);
-        runlength=(unsigned long *) AcquireMemory(iris_info.rows*
+        max_packets=MagickAllocateMemory(unsigned char *,4*iris_info.columns+10);
+        runlength=MagickAllocateMemory(unsigned long *,iris_info.rows*
           iris_info.depth*sizeof(unsigned long));
         if ((offsets == (unsigned long *) NULL) ||
             (max_packets == (unsigned char *) NULL) ||
@@ -814,7 +814,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
       Allocate SGI pixels.
     */
     number_pixels=image->columns*image->rows;
-    iris_pixels=(unsigned char *) AcquireMemory(4*number_pixels);
+    iris_pixels=MagickAllocateMemory(unsigned char *,4*number_pixels);
     if (iris_pixels == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
     /*
@@ -847,7 +847,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
         /*
           Write uncompressed SGI pixels.
         */
-        scanline=(unsigned char *) AcquireMemory(iris_info.columns);
+        scanline=MagickAllocateMemory(unsigned char *,iris_info.columns);
         if (scanline == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
             image);
@@ -878,11 +878,11 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
         /*
           Convert SGI uncompressed pixels.
         */
-        offsets=(unsigned long *) AcquireMemory(iris_info.rows*
+        offsets=MagickAllocateMemory(unsigned long *,iris_info.rows*
           iris_info.depth*sizeof(unsigned long));
-        packets=(unsigned char *)
-          AcquireMemory(4*(2*iris_info.columns+10)*image->rows);
-        runlength=(unsigned long *) AcquireMemory(iris_info.rows*
+        packets=MagickAllocateMemory(unsigned char *,
+          4*(2*iris_info.columns+10)*image->rows);
+        runlength=MagickAllocateMemory(unsigned long *,iris_info.rows*
           iris_info.depth*sizeof(unsigned long));
         if ((offsets == (unsigned long *) NULL) ||
             (packets == (unsigned char *) NULL) ||

@@ -207,10 +207,10 @@ MagickExport unsigned int EqualizeImage(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   is_grayscale=image->is_grayscale;
-  histogram=(DoublePixelPacket *)
-    AcquireMemory((MaxMap+1)*sizeof(DoublePixelPacket));
-  map=(DoublePixelPacket *) AcquireMemory((MaxMap+1)*sizeof(DoublePixelPacket));
-  equalize_map=(PixelPacket *) AcquireMemory((MaxMap+1)*sizeof(PixelPacket));
+  histogram=MagickAllocateMemory(DoublePixelPacket *,
+    (MaxMap+1)*sizeof(DoublePixelPacket));
+  map=MagickAllocateMemory(DoublePixelPacket *,(MaxMap+1)*sizeof(DoublePixelPacket));
+  equalize_map=MagickAllocateMemory(PixelPacket *,(MaxMap+1)*sizeof(PixelPacket));
   if ((histogram == (DoublePixelPacket *) NULL) ||
       (map == (DoublePixelPacket *) NULL) ||
       (equalize_map == (PixelPacket *) NULL))
@@ -435,7 +435,7 @@ MagickExport unsigned int GammaImage(Image *image,const char *level)
   /*
     Allocate and initialize gamma maps.
   */
-  gamma_map=(PixelPacket *) AcquireMemory((MaxMap+1)*sizeof(PixelPacket));
+  gamma_map=MagickAllocateMemory(PixelPacket *,(MaxMap+1)*sizeof(PixelPacket));
   if (gamma_map == (PixelPacket *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       "UnableToGammaCorrectImage");
@@ -585,7 +585,7 @@ MagickExport unsigned int LevelImage(Image *image,const char *levels)
   white_point=ScaleQuantumToMap(white_point);
   if (count == 1)
     white_point=MaxMap-black_point;
-  levels_map=(double *) AcquireMemory((MaxMap+1)*sizeof(double));
+  levels_map=MagickAllocateMemory(double *,(MaxMap+1)*sizeof(double));
   if (levels_map == (double *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       "UnableToLevelTheImage");
@@ -716,7 +716,7 @@ MagickExport unsigned int LevelImageChannel(Image *image,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  levels_map=(double *) AcquireMemory((MaxMap+1)*sizeof(double));
+  levels_map=MagickAllocateMemory(double *,(MaxMap+1)*sizeof(double));
   if (levels_map == (double *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       "UnableToLevelTheImage");
@@ -1162,9 +1162,9 @@ MagickExport unsigned int NormalizeImage(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   is_grayscale=image->is_grayscale;
-  histogram=(DoublePixelPacket *)
-    AcquireMemory((MaxMap+1)*sizeof(DoublePixelPacket));
-  normalize_map=(PixelPacket *) AcquireMemory((MaxMap+1)*sizeof(PixelPacket));
+  histogram=MagickAllocateMemory(DoublePixelPacket *,
+    (MaxMap+1)*sizeof(DoublePixelPacket));
+  normalize_map=MagickAllocateMemory(PixelPacket *,(MaxMap+1)*sizeof(PixelPacket));
   if ((histogram == (DoublePixelPacket *) NULL) ||
       (normalize_map == (PixelPacket *) NULL))
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",

@@ -4192,7 +4192,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                 GetToken(p,&p,token);
             }
             order=(unsigned int) sqrt(x+1);
-            kernel=(double *) AcquireMemory(order*order*sizeof(double));
+            kernel=MagickAllocateMemory(double *,order*order*sizeof(double));
             if (kernel == (double *) NULL)
               MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
                 "UnableToAllocateCoefficients");
@@ -6061,7 +6061,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
               token_info;
 
             length=strlen(argv[++i]);
-            token=(char *) AcquireMemory(length+1);
+            token=MagickAllocateMemory(char *,length+1);
             if (token == (char *) NULL)
               continue;
             next=0;
@@ -11533,7 +11533,7 @@ MagickExport unsigned int DisplayImageCommand(int argc,char **argv)
   image_number=0;
   last_image=0;
   last_scene=0;
-  image_marker=(unsigned int *) AcquireMemory((argc+1)*sizeof(unsigned int));
+  image_marker=MagickAllocateMemory(unsigned int *,(argc+1)*sizeof(unsigned int));
   if (image_marker == (unsigned int *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       "UnableToDisplayImage");
