@@ -46,12 +46,12 @@ ALLMANPAGES = Magick-config.1
 libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
 
 # Library base sources
-MAGICK_BASE_SRCS=PreRvIcccm.c animate.c annotate.c attribute.c blob.c \
-  cache.c cache_view.c color.c compress.c constitute.c decorate.c \
-  delegate.c display.c draw.c effect.c enhance.c error.c gem.c image.c \
-  magic.c magick.c memory.c module.c monitor.c montage.c quantize.c \
-  segment.c semaphore.c shear.c signature.c static.c stream.c timer.c \
-  transform.c type.c utility.c widget.c xwindow.c zoom.c
+MAGICK_BASE_SRCS = memory.c blob.c cache.c error.c monitor.c constitute.c \
+  image.c color.c quantize.c segment.c zoom.c transform.c shear.c \
+  enhance.c effect.c decorate.c annotate.c type.c draw.c montage.c \
+  semaphore.c attribute.c signature.c compress.c gem.c magic.c magick.c \
+  delegate.c module.c static.c timer.c utility.c cache_view.c stream.c \
+  animate.c display.c widget.c xwindow.c PreRvIcccm.c
 
 # Library sources
 if WITH_MODULES
