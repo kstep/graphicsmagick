@@ -445,7 +445,11 @@ static void UpdateMessageDigest(MessageDigest *message_digest,
 %  signature uniquely identifies the image and is convenient for determining
 %  if the colormap of a sequence of images is identical when animating.  The
 %  digital signature is from RSA Data Security MD5 Digest Algorithm described
-%  in Internet draft [MD5], July 1992.
+%  in Internet draft [MD5], July 1992, computed on the pixels after expanding
+%  them to 64-bit RGBA representation, with the two bytes of each 16-bit
+%  sample ordered most significant byte first.  The signature is in RGBA or
+%  CMYK order depending on the colorspace of the image.  If the image does not
+%  have any alpha information, an opaque value (65535) is used.
 %
 %  The format of the SignatureImage method is:
 %
