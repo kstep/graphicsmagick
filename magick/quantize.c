@@ -606,7 +606,7 @@ static unsigned int ClassifyImageColors(CubeInfo *cube_info,const Image *image,
             node_info->child[id]=GetNodeInfo(cube_info,id,level,node_info);
             if (node_info->child[id] == (NodeInfo *) NULL)
               ThrowException(exception,ResourceLimitError,
-								"MemoryAllocationFailed","Unable to quantize image");
+                "MemoryAllocationFailed","Unable to quantize image");
             if (level == cube_info->depth)
               cube_info->colors++;
           }
