@@ -9,6 +9,10 @@ extern "C" {
 #endif
 
 extern MagickExport unsigned int
+  AnimateImageCommand(int,char **),
+  ConjureImageCommand(int,char **),
+  DisplayImageCommand(int,char **),
+  ImportImageCommand(int,char **),
   CompositeImageCommand(ImageInfo *,const int,char **,char **,ExceptionInfo *),
   ConvertImageCommand(ImageInfo *,const int,char **,char **,ExceptionInfo *),
   IdentifyImageCommand(ImageInfo *,const int,char **,char **,ExceptionInfo *),
