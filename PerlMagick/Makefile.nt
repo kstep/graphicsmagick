@@ -5,7 +5,7 @@ use Config;
 WriteMakefile(
     'NAME'      => 'Image::Magick',
     'VERSION_FROM' => 'Magick.pm', # finds $VERSION
-    'LIBS'      => ['-L"e:\Vc98\lib" -L..\magick -lIMagick -L..\xlib\lib -lX11'],
+    'LIBS'      => ['-L..\VisualMagick\lib -L..\VisualMagick\bin -lIMagick'],
     'DEFINE'    => '-D_VISUALC_ -D_WINDOWS',     # e.g., '-DHAVE_SOMETHING' 
     'INC'       => '-I.. -I..\xlib\include',
     ($Config{'archname'} =~ /-object$/i ? ('CAPI' => 'TRUE') : ()),
