@@ -101,6 +101,12 @@ typedef struct _SVGInfo
   ExceptionInfo
     *exception;
 
+  Image
+    *image;
+
+  const ImageInfo
+    *image_info;
+
   AffineMatrix
     affine;
 
@@ -974,6 +980,32 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
       if (LocaleCompare((char *) name,"tspan") == 0)
         {
+          DrawInfo
+            *draw_info;
+
+          TypeMetric
+            metrics;
+
+          Strip(svg_info->text);
+          if (strlen(svg_info->text) == 0)
+            CloneString(&svg_info->text," ");
+          if (strchr(svg_info->text,'\'') != (char *) NULL)
+            {
+              (void) fprintf(svg_info->file,"text %g,%g \"%s\"\n",
+                svg_info->bounds.x,svg_info->bounds.y,svg_info->text);
+              (void) fprintf(svg_info->file,"pop graphic-context\n");
+              break;
+            }
+          (void) fprintf(svg_info->file,"text %g,%g '%s'\n",svg_info->bounds.x,
+            svg_info->bounds.y,svg_info->text);
+          draw_info=CloneDrawInfo(svg_info->image_info,(DrawInfo *) NULL);
+          draw_info->pointsize=svg_info->pointsize;
+          draw_info->text=AllocateString(svg_info->text);
+          (void) ConcatenateString(&draw_info->text," ");
+          GetTypeMetrics(svg_info->image,draw_info,&metrics);
+          svg_info->bounds.x+=metrics.width;
+          DestroyDrawInfo(draw_info);
+          *svg_info->text='\0';
           (void) fprintf(svg_info->file,"push graphic-context\n");
           break;
         }
@@ -2061,6 +2093,12 @@ static void SVGEndElement(void *context,const xmlChar *name)
         }
       if (LocaleCompare((char *) name,"tspan") == 0)
         {
+          DrawInfo
+            *draw_info;
+
+          TypeMetric
+            metrics;
+
           if (strlen(svg_info->text) == 0)
             CloneString(&svg_info->text," ");
           if (strchr(svg_info->text,'\'') != (char *) NULL)
@@ -2072,6 +2110,13 @@ static void SVGEndElement(void *context,const xmlChar *name)
             }
           (void) fprintf(svg_info->file,"text %g,%g '%s'\n",svg_info->bounds.x,
             svg_info->bounds.y,svg_info->text);
+          draw_info=CloneDrawInfo(svg_info->image_info,(DrawInfo *) NULL);
+          draw_info->pointsize=svg_info->pointsize;
+          draw_info->text=AllocateString(svg_info->text);
+          (void) ConcatenateString(&draw_info->text," ");
+          GetTypeMetrics(svg_info->image,draw_info,&metrics);
+          svg_info->bounds.x+=metrics.width;
+          DestroyDrawInfo(draw_info);
           (void) fprintf(svg_info->file,"pop graphic-context\n");
           break;
         }
@@ -2442,6 +2487,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   svg_info.file=file;
   svg_info.debug=image_info->debug;
   svg_info.exception=exception;
+  svg_info.image=image;
+  svg_info.image_info=image_info;
   svg_info.scale=(double *) AcquireMemory(sizeof(double));
   if (svg_info.scale == (double *) NULL)
     MagickError(ResourceLimitError,"Unable to convert SVG image",
