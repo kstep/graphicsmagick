@@ -312,6 +312,69 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+appendImages.o: appendImages.cpp ../lib/Magick++.h \
+	../lib/Magick++/Image.h ../lib/Magick++/Blob.h \
+	../lib/Magick++/Color.h ../lib/Magick++/Include.h \
+	../lib/Magick++/Drawable.h ../lib/Magick++/Geometry.h \
+	../lib/Magick++/Exception.h ../lib/Magick++/Options.h \
+	../lib/Magick++/LastError.h ../lib/Magick++/STL.h \
+	../lib/Magick++/Montage.h ../lib/Magick++/Functions.h
+attributes.o: attributes.cpp ../lib/Magick++.h ../lib/Magick++/Image.h \
+	../lib/Magick++/Blob.h ../lib/Magick++/Color.h \
+	../lib/Magick++/Include.h ../lib/Magick++/Drawable.h \
+	../lib/Magick++/Geometry.h ../lib/Magick++/Exception.h \
+	../lib/Magick++/Options.h ../lib/Magick++/LastError.h \
+	../lib/Magick++/STL.h ../lib/Magick++/Montage.h \
+	../lib/Magick++/Functions.h
+averageImages.o: averageImages.cpp ../lib/Magick++.h \
+	../lib/Magick++/Image.h ../lib/Magick++/Blob.h \
+	../lib/Magick++/Color.h ../lib/Magick++/Include.h \
+	../lib/Magick++/Drawable.h ../lib/Magick++/Geometry.h \
+	../lib/Magick++/Exception.h ../lib/Magick++/Options.h \
+	../lib/Magick++/LastError.h ../lib/Magick++/STL.h \
+	../lib/Magick++/Montage.h ../lib/Magick++/Functions.h
+coalesceImages.o: coalesceImages.cpp ../lib/Magick++.h \
+	../lib/Magick++/Image.h ../lib/Magick++/Blob.h \
+	../lib/Magick++/Color.h ../lib/Magick++/Include.h \
+	../lib/Magick++/Drawable.h ../lib/Magick++/Geometry.h \
+	../lib/Magick++/Exception.h ../lib/Magick++/Options.h \
+	../lib/Magick++/LastError.h ../lib/Magick++/STL.h \
+	../lib/Magick++/Montage.h ../lib/Magick++/Functions.h
+color.o: color.cpp ../lib/Magick++.h ../lib/Magick++/Image.h \
+	../lib/Magick++/Blob.h ../lib/Magick++/Color.h \
+	../lib/Magick++/Include.h ../lib/Magick++/Drawable.h \
+	../lib/Magick++/Geometry.h ../lib/Magick++/Exception.h \
+	../lib/Magick++/Options.h ../lib/Magick++/LastError.h \
+	../lib/Magick++/STL.h ../lib/Magick++/Montage.h \
+	../lib/Magick++/Functions.h
+montageImages.o: montageImages.cpp ../lib/Magick++.h \
+	../lib/Magick++/Image.h ../lib/Magick++/Blob.h \
+	../lib/Magick++/Color.h ../lib/Magick++/Include.h \
+	../lib/Magick++/Drawable.h ../lib/Magick++/Geometry.h \
+	../lib/Magick++/Exception.h ../lib/Magick++/Options.h \
+	../lib/Magick++/LastError.h ../lib/Magick++/STL.h \
+	../lib/Magick++/Montage.h ../lib/Magick++/Functions.h
+morphImages.o: morphImages.cpp ../lib/Magick++.h ../lib/Magick++/Image.h \
+	../lib/Magick++/Blob.h ../lib/Magick++/Color.h \
+	../lib/Magick++/Include.h ../lib/Magick++/Drawable.h \
+	../lib/Magick++/Geometry.h ../lib/Magick++/Exception.h \
+	../lib/Magick++/Options.h ../lib/Magick++/LastError.h \
+	../lib/Magick++/STL.h ../lib/Magick++/Montage.h \
+	../lib/Magick++/Functions.h
+readWriteBlob.o: readWriteBlob.cpp ../lib/Magick++.h \
+	../lib/Magick++/Image.h ../lib/Magick++/Blob.h \
+	../lib/Magick++/Color.h ../lib/Magick++/Include.h \
+	../lib/Magick++/Drawable.h ../lib/Magick++/Geometry.h \
+	../lib/Magick++/Exception.h ../lib/Magick++/Options.h \
+	../lib/Magick++/LastError.h ../lib/Magick++/STL.h \
+	../lib/Magick++/Montage.h ../lib/Magick++/Functions.h
+readWriteImages.o: readWriteImages.cpp ../lib/Magick++.h \
+	../lib/Magick++/Image.h ../lib/Magick++/Blob.h \
+	../lib/Magick++/Color.h ../lib/Magick++/Include.h \
+	../lib/Magick++/Drawable.h ../lib/Magick++/Geometry.h \
+	../lib/Magick++/Exception.h ../lib/Magick++/Options.h \
+	../lib/Magick++/LastError.h ../lib/Magick++/STL.h \
+	../lib/Magick++/Montage.h ../lib/Magick++/Functions.h
 
 info-am:
 info: info-am

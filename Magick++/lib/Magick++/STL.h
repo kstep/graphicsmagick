@@ -98,6 +98,7 @@ namespace Magick
   void readImages( Container *sequence_,
 		   const std::string &imageSpec_ );
   template <class Container>
+  // Read images from BLOB
   void readImages( Container *sequence_,
 		   const Blob &blob_ );
 
@@ -110,9 +111,10 @@ namespace Magick
 		    const std::string &imageSpec_,
 		    bool adjoin_ );
   template <class InputIterator>
+  // Write images to a BLOB
   void writeImages( InputIterator first_,
 		    InputIterator last_,
-		    const Blob &blob_,
+		    Blob *blob_,
 		    bool adjoin_ );
 
   //
@@ -2240,11 +2242,12 @@ namespace Magick
     if ( errPtr->isError() )
       errPtr->throwException();
   }
+  // Write images to BLOB
   template <class InputIterator>
   void writeImages( InputIterator first_,
 		    InputIterator last_,
-		    const Blob &blob_,
-		    bool adjoin_ ) {
+		    Blob *blob_,
+		    bool adjoin_ = true) {
     // Save original image settings
     std::string origMagick = first_->magick();
     bool origAdjoin = first_->adjoin();
@@ -2253,7 +2256,7 @@ namespace Magick
 
     linkImages( first_, last_ );
 
-    unsigned long length = 24576; // 64 x 64 x 6
+    size_t length = 2048; // Efficient size for small images
     void* data = MagickLib::ImageToBlob( first_->imageInfo(),
 					 first_->image(),
 					 &length );

@@ -245,8 +245,8 @@ be quantized to fewer colors. Use a copy of the original if this is a problem.</
 </tr>
 
 <tr>
-<td><font size=-1>InputIterator first_, InputIterator last_, const <a href="Blob.html">Blob</a>
-&amp;blob_, bool adjoin_</font></td>
+<td><font size=-1>InputIterator first_, InputIterator last_, <a href="Blob.html">Blob</a>
+*blob_, bool adjoin_ = true</font></td>
 
 <td><font size=-1>Write images in container to in-memory BLOB specified
 by <a href="Blob.html">Blob</a> blob_. Set adjoin_ to false to write a
@@ -1613,10 +1613,10 @@ matte channel if&nbsp; the image has one otherwise create an opaque one.</font><
 <td><font size=-1>const <a href="Geometry.html#PostscriptPageSize">Geometry</a>
 &amp;pageSize_</font></td>
 
-<td><font size=-1>Preferred size and location of an image canvas.</font><font size=-1></font>
+<td><font size=-1>Preferred size and location of an image canvas.</font>
 <p><font size=-1>Use this option to specify the dimensions and position
 of the Postscript page in dots per inch or a TEXT page in pixels. This
-option is typically used in concert with <i><a href="#density">density</a></i>.</font><font size=-1></font>
+option is typically used in concert with <i><a href="#density">density</a></i>.</font>
 <p><font size=-1>Page may also be used to position a GIF image (such as
 for a scene in an animation)</font></td>
 </tr>

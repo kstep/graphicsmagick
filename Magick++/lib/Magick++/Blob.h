@@ -38,6 +38,12 @@ namespace Magick
     // Any existing data in the object is deallocated.
     void          update ( const void* data_, size_t length_ );
 
+    // Update object contents, using supplied pointer directly (no
+    // copy). Any existing data in the object is deallocated.  The user
+    // must ensure that the pointer supplied is not deleted or
+    // otherwise modified after it has been supplied to this method.
+    void          updateNoCopy ( void* data_, size_t length_ );
+
     // Obtain pointer to data
     const void*   data ( void ) const;
 
@@ -45,12 +51,6 @@ namespace Magick
     size_t length ( void ) const;
 
   protected:
-
-    // Update object contents, using supplied pointer directly (no
-    // copy) Any existing data in the object is deallocated.  The user
-    // must ensure that the pointer supplied is not deleted or
-    // otherwise modified after it has been supplied to this method.
-    void          updateNoCopy ( void* data_, size_t length_ );
 
   private:
     BlobRef * _blobRef;

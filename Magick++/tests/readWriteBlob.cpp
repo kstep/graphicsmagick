@@ -15,7 +15,7 @@ using namespace std;
 
 using namespace Magick;
 
-// A derived Blob class to exercize updateNoCopy()
+// A derived Blob class to exercise updateNoCopy()
 class myBlob : public Blob
 {
 public:
@@ -150,6 +150,14 @@ int main( int /*argc*/, char **/*argv*/)
 	  }
       }
       
+    }
+    // Test writing BLOBs via STL writeImages
+    {
+      Blob blob;
+
+      list<Image> first;
+      readImages( &first, "test_image_anim.miff" );
+      writeImages( first.begin(), first.end(), &blob, true );
     }
 
     // Test constructing a BLOB from a derived class
