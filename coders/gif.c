@@ -99,9 +99,6 @@ static unsigned int DecodeImage(Image *image,const int opacity,
 #define MaxStackSize  4096
 #define NullCode  (-1)
 
-  IndexPacket
-    index;
-
   int
     available,
     bits,
@@ -138,6 +135,7 @@ static unsigned int DecodeImage(Image *image,const int opacity,
   unsigned char
     data_size,
     first,
+    index,
     *packet,
     *pixel_stack,
     *suffix,
@@ -332,15 +330,13 @@ static unsigned int DecodeImage(Image *image,const int opacity,
       if (QuantumTick(y,image->rows))
         MagickMonitor(LoadImageText,y,image->rows);
   }
+  if (y < image->rows)
+    ThrowBinaryException(CorruptImageWarning,"Corrupt GIF image",
+      image->filename);
   LiberateMemory((void **) &pixel_stack);
   LiberateMemory((void **) &suffix);
   LiberateMemory((void **) &prefix);
   LiberateMemory((void **) &packet);
-  image->compression=LZWCompression;
-  image->matte=opacity >= 0;
-  if (y < image->rows)
-    ThrowBinaryException(CorruptImageWarning,"Corrupt GIF image",
-      image->filename);
   return(True);
 }
 
@@ -776,7 +772,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (BitSet(flag,0x80))
     {
       /*
-        opacity global colormap.
+        Global colormap.
       */
       global_colors=1 << ((flag & 0x07)+1);
       global_colormap=(unsigned char *) AcquireMemory(3*global_colors);
@@ -984,6 +980,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Decode image.
     */
+    image->compression=LZWCompression;
+    image->matte=opacity >= 0;
     status=DecodeImage(image,opacity,exception);
     if (status == False)
       ThrowBinaryException(CorruptImageWarning,"Corrupt GIF image",
