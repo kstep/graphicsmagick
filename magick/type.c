@@ -434,13 +434,70 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
 %
 %
 */
+static const char* StretchTypeToString(StretchType stretch)
+{
+  switch(stretch)
+    {
+    case NormalStretch:
+      return "normal";
+    case UltraCondensedStretch:
+      return "ultra-condensed";
+    case ExtraCondensedStretch:
+      return "extra-condensed";
+    case CondensedStretch:
+      return "condensed";
+    case SemiCondensedStretch:
+      return "semi-condensed";
+    case SemiExpandedStretch:
+      return "semi-expanded";
+    case ExpandedStretch:
+      return "expanded";
+    case ExtraExpandedStretch:
+      return "extra-expanded";
+    case UltraExpandedStretch:
+      return "ultra-expanded";
+    case AnyStretch:
+      return "any";
+    default:
+      {
+        return "unknown";
+      }
+    }
+  return "unknown";
+}
+static const char* StyleTypeToString(StyleType style)
+{
+  switch(style)
+    {
+    case NormalStyle:
+      return "normal";
+    case ItalicStyle:
+      return "italic";
+    case ObliqueStyle:
+      return "oblique";
+    case AnyStyle:
+      return "any";
+    default:
+      {
+        return "unknown";
+      }
+    }
+  return "unknown";
+}
 MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
 {
-  register long
-    i;
-
   register const TypeInfo
     *p;
+  
+  char
+    weight[MaxTextExtent];
+
+  const char
+    *family,
+    *format = "%-32s %-19s %-7s %-12s %-3s\n",
+    *name,
+    *stretch,
+    *style;
 
   if (file == (FILE *) NULL)
     file=stdout;
@@ -454,18 +511,27 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
         if (p->previous != (TypeInfo *) NULL)
           (void) fprintf(file,"\n");
         (void) fprintf(file,"Filename: %.1024s\n\n",p->filename);
-        (void) fprintf(file,"Name                             Description\n");
+        (void) fprintf(file,format,"Name","Family","Style","Stretch","Weight");
         (void) fprintf(file,"-------------------------------------------------"
           "------------------------------\n");
       }
     if (p->stealth)
       continue;
-    (void) fprintf(file,"%.1024s",p->name);
-    for (i=(long) strlen(p->name); i <= 32; i++)
-      (void) fprintf(file," ");
-    if (p->description != (char *) NULL)
-      (void) fprintf(file," %.1024s",p->description);
-    (void) fprintf(file,"\n");
+
+    if (p->name != (char *) NULL)
+      name=p->name;
+    else
+      name="unknown";
+
+    if (p->family != (char *) NULL)
+      family=p->family;
+    else
+      family="unknown";
+
+    style=StyleTypeToString(p->style);
+    stretch=StretchTypeToString(p->stretch);
+    FormatString(weight, "%lu",p->weight);
+    (void) fprintf(file,format,name,family,style,stretch,weight);
   }
   (void) fflush(file);
   LiberateSemaphoreInfo(&type_semaphore);

@@ -1009,7 +1009,7 @@ MagickExport void DrawSetFontFamily(DrawContext context,
       if(CurrentContext->family == (char*)NULL)
         ThrowDrawException(ResourceLimitError, "Unable to draw image",
                            "Memory allocation failed");
-      MvgPrintf(context, "font-family %s\n", font_family);
+      MvgPrintf(context, "font-family '%s'\n", font_family);
     }
 }
 
@@ -1076,7 +1076,7 @@ MagickExport void DrawSetFontStretch(DrawContext context,
         }
 
       if (p != NULL)
-        MvgPrintf(context, "font-stretch %s\n", p);
+        MvgPrintf(context, "font-stretch '%s'\n", p);
     }
 }
 
@@ -1110,7 +1110,7 @@ MagickExport void DrawSetFontStyle(DrawContext context,
         }
 
       if (p != NULL)
-        MvgPrintf(context, "font-style %s\n", p);
+        MvgPrintf(context, "font-style '%s'\n", p);
     }
 }
 
