@@ -1,3 +1,9 @@
+2002-06-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * Update to use Automake 1.6.2
+
+2002-06-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * Try harder when searching for Ghostscript fonts under Linux.
+
 2002-06-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Identify PICT files via magic.mgk.
 

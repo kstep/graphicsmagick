@@ -1743,28 +1743,51 @@ case $host_os in
 esac
 
 # Ghostscript
-if test "$with_gs_font_dir" != 'default'
+AC_MSG_CHECKING(for Ghostscript fonts directory)
+ghostscript_font_dir=''
+if test "${with_gs_font_dir}" != 'default'
 then
-  ghostscript_font_dir="$with_gs_font_dir/"
+  ghostscript_font_dir="${with_gs_font_dir}/"
+
 else
-  if test "$native_win32_build" = 'yes'
+  if test "${native_win32_build}" = 'yes'
   then
     ghostscript_font_dir="c:\\gs\\fonts\\"
-    if test "$PSDelegate" != 'gswin32c'
+    if test "${PSDelegate}" != 'gswin32c'
     then
-      ghostscript_font_dir=`echo "$PSDelegate" | sed -e 's:/gs/.*:/gs:;s:^/::;s/./&:/;s:/:\\\\:g'`"\\fonts\\"
+      ghostscript_font_dir=`echo "${PSDelegate}" | sed -e 's:/gs/.*:/gs:;s:^/::;s/./&:/;s:/:\\\\:g'`"\\fonts\\"
     fi
+
   else
-    ghostscript_font_dir="$prefix$/share/ghostscript/fonts/"
-    if test "$PSDelegate" != 'gs'
+    # Red Hat Linux puts Ghostscript fonts in /usr/share/fonts/default/Type1
+    for font_dir in '/usr/share/fonts/default/Type1/' "${prefix}/share/ghostscript/fonts/"
+    do
+      if test -f "${font_dir}a010013l.pfb"
+      then
+        ghostscript_font_dir="${font_dir}"
+        break 1
+      fi
+    done
+
+    if test "${ghostscript_font_dir}x" = 'x'
     then
-      ghostscript_font_dir=`echo "$PSDelegate" | sed -e 's:/bin/gs:/share/ghostscript/fonts:'`"/"
+      if test "$PSDelegate" != 'gs'
+      then
+        ghostscript_font_dir=`echo "$PSDelegate" | sed -e 's:/bin/gs:/share/ghostscript/fonts:'`"/"
+      fi
     fi
+
   fi
 fi
-type_include_files="$type_include_files "'file="type-ghostscript.mgk"'
+if test "${ghostscript_font_dir}x" != 'x'
+then
+  type_include_files="${type_include_files} "'file="type-ghostscript.mgk"'
+  AC_MSG_RESULT($ghostscript_font_dir)
+else
+  AC_MSG_RESULT(not found!);
+fi
 AC_SUBST(ghostscript_font_dir)
-if test "$native_win32_build" = 'yes'
+if test "${native_win32_build}" = 'yes'
 then
   PSDelegate=`$WinPathScript "$PSDelegate" 1`
 fi
@@ -2100,7 +2123,12 @@ echo "DPS               --with-dps=$with_dps              	$have_dps"
 echo "FlashPIX          --with-fpx=$with_fpx              	$have_fpx"
 echo "FreeType 2.0      --with-ttf=$with_ttf          	$have_ttf"
 echo "Ghostscript       None                   	$PSDelegate"
-echo "Ghostscript fonts --with-gs-font-dir=$with_gs_font_dir    $ghostscript_font_dir"
+result_ghostscript_font_dir='none'
+if test "${ghostscript_font_dir}x" != 'x'
+then
+  result_ghostscript_font_dir="$ghostscript_font_dir"
+fi
+echo "Ghostscript fonts --with-gs-font-dir=$with_gs_font_dir    $result_ghostscript_font_dir"
 echo "Ghostscript lib   --with-gslib=$with_gslib       	$have_gslib"
 echo "HDF               --with-hdf=$with_hdf          	$have_hdf"
 echo "JBIG              --with-jbig=$with_jbig        	$have_jbig"
@@ -2113,8 +2141,9 @@ echo "PERL              --with-perl=$with_perl            	$have_perl"
 echo "PNG               --with-png=$with_png          	$have_png"
 echo "TIFF              --with-tiff=$with_tiff        	$have_tiff"
 result_windows_font_dir='none'
-if test -n "$windows_font_dir" ; then
-  result_windows_font_dir="$windows_font_dir"
+if test "${windows_font_dir}x" != 'x'
+then
+  result_windows_font_dir="${windows_font_dir}"
 fi
 echo "Windows fonts     --with-windows-font-dir=$with_windows_font_dir	$result_windows_font_dir"
 echo "WMF               --with-wmf=$with_wmf          	$have_wmf"
