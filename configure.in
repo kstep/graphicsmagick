@@ -1085,6 +1085,11 @@ AC_SUBST(LIB_XML)
 #
 # Check for WMF
 #
+
+#
+# WMF2 tests should test for -lwmf and libwmf/ipa.h
+#
+
 have_wmf='no'
 LIB_WMF=''
 OLIBS="$LIBS"

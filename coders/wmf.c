@@ -14,8 +14,8 @@
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
-%                              Bob Friesenhahn                                %
-%                               December 2000                                 %
+%                     Bob Friesenhahn & Francis J. Franklin                   %
+%                          December 2000 - May 2001                           %
 %                                                                             %
 %                                                                             %
 %  Copyright (C) 2001 ImageMagick Studio, a non-profit organization dedicated %
@@ -48,7 +48,7 @@
 %
 %
 %
-Work remaining to be completed on this module:
+Work remaining to be completed on libwmf portion of this module:
  - Clipping rectangles
  - Overlay/inset images
  - Text annotation
@@ -66,6 +66,8 @@ Work remaining to be completed on this module:
 #include "magick.h"
 #include "defines.h"
 
+#if defined(HasWMF2)
+#endif /* HasWMF2 */
 #if defined(HasWMF)
 #include <wmfapi.h>
 
@@ -1763,7 +1765,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   return image;
 }
-#endif
+#endif /* HasWMF */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1790,7 +1792,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 */
 ModuleExport void RegisterWMFImage(void)
 {
-#if defined(HasWMF)
+#if defined(HasWMF) || defined(HasWMF2)
   MagickInfo
     *entry;
 
@@ -1850,7 +1852,7 @@ ModuleExport void RegisterWMFImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r R G B I m a g e                                       %
+%   U n r e g i s t e r W M F I m a g e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1866,7 +1868,7 @@ ModuleExport void RegisterWMFImage(void)
 */
 ModuleExport void UnregisterWMFImage(void)
 {
-#if defined(HasWMF)
+#if defined(HasWMF) || defined(HasWMF2)
   UnregisterMagickInfo("WMF");
 #endif
 }

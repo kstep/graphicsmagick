@@ -250,6 +250,7 @@ CHECK_BLOB_FORMATS = \
 	FAX \
 	G3 \
 	FITS \
+	$(FPX) \
 	GIF \
 	GIF87 \
 	GRAY \
@@ -303,6 +304,7 @@ CHECK_FILE_FORMATS = \
 	EPT \
 	FAX \
 	FITS \
+	$(FPX) \
 	GIF \
 	GRAY \
 	$(HDF) \
