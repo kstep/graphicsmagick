@@ -24,7 +24,7 @@ extern int
   Error typedef declarations.
 */
 typedef void
-  (*ErrorHandler)(const char *,const char *);
+  (*ErrorHandler)(const unsigned int,const char *,const char *);
 
 /*
   Enumeration declarations.
@@ -56,15 +56,12 @@ typedef enum
 /*
   Error declarations.
 */
-extern Export int
-  SetErrorStatus(int);
-
 extern Export ErrorHandler
   SetErrorHandler(ErrorHandler),
   SetWarningHandler(ErrorHandler);
 
 extern Export void
-  MagickError(const int,const char *,const char *),
-  MagickWarning(const int,const char *,const char *);
+  MagickError(const unsigned int,const char *,const char *),
+  MagickWarning(const unsigned int,const char *,const char *);
 
 #endif

@@ -62,8 +62,8 @@ extern "C" {
 #endif
 
 static void
-  DefaultErrorHandler(const char *,const char *),
-  DefaultWarningHandler(const char *,const char *);
+  DefaultErrorHandler(const unsigned int,const char *,const char *),
+  DefaultWarningHandler(const unsigned int,const char *,const char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
@@ -92,9 +92,11 @@ static ErrorHandler
 %
 %  The format of the DefaultErrorHandler routine is:
 %
-%      DefaultErrorHandler(message,qualifier)
+%      DefaultErrorHandler(error,message,qualifier)
 %
 %  A description of each parameter follows:
+%
+%    o error: Specifies the numeric error category.
 %
 %    o message: Specifies the message to display before terminating the
 %      program.
@@ -103,14 +105,11 @@ static ErrorHandler
 %
 %
 */
-static void DefaultErrorHandler(const char *message,const char *qualifier)
+static void DefaultErrorHandler(const unsigned int error,const char *message,
+  const char *qualifier)
 {
-  int
-    magick_status;
-
-  magick_status=SetErrorStatus(0);
   if (message == (char *) NULL)
-    Exit(magick_status % 100);
+    Exit(error % 100);
   (void) fprintf(stderr,"%.1024s: %.1024s",SetClientName((char *) NULL),
     message);
   if (qualifier != (char *) NULL)
@@ -118,7 +117,7 @@ static void DefaultErrorHandler(const char *message,const char *qualifier)
   if (errno)
     (void) fprintf(stderr," [%.1024s]",strerror(errno));
   (void) fprintf(stderr,".\n");
-  Exit(magick_status % 100);
+  Exit(error % 100);
 }
 
 /*
@@ -136,9 +135,11 @@ static void DefaultErrorHandler(const char *message,const char *qualifier)
 %
 %  The format of the DefaultWarningHandler routine is:
 %
-+      DefaultWarningHandler(message,qualifier)
++      DefaultWarningHandler(warning,message,qualifier)
 %
 %  A description of each parameter follows:
+%
+%    o warning: Specifies the numeric warning category.
 %
 %    o message: Specifies the message to display before terminating the
 %      program.
@@ -147,11 +148,13 @@ static void DefaultErrorHandler(const char *message,const char *qualifier)
 %
 %
 */
-static void DefaultWarningHandler(const char *message,const char *qualifier)
+static void DefaultWarningHandler(const unsigned int warning,
+  const char *message,const char *qualifier)
 {
   if (message == (char *) NULL)
     return;
-  (void) fprintf(stderr,"%.1024s: %.1024s",SetClientName((char *) NULL),message);
+  (void) fprintf(stderr,"%.1024s: %.1024s",SetClientName((char *) NULL),
+    message);
   if (qualifier != (char *) NULL)
     (void) fprintf(stderr," (%.1024s)",qualifier);
   (void) fprintf(stderr,".\n");
@@ -185,12 +188,11 @@ static void DefaultWarningHandler(const char *message,const char *qualifier)
 %
 %
 */
-Export void MagickError(const int error,const char *message,
+Export void MagickError(const unsigned int error,const char *message,
   const char *qualifier)
 {
-  (void) SetErrorStatus(error);
   if (error_handler != (ErrorHandler) NULL)
-    (*error_handler)(message,qualifier);
+    (*error_handler)(error,message,qualifier);
   errno=0;
 }
 
@@ -223,12 +225,11 @@ Export void MagickError(const int error,const char *message,
 %
 %
 */
-Export void MagickWarning(const int warning,const char *message,
+Export void MagickWarning(const unsigned int warning,const char *message,
   const char *qualifier)
 {
-  (void) SetErrorStatus(warning);
   if (warning_handler != (ErrorHandler) NULL)
-    (*warning_handler)(message,qualifier);
+    (*warning_handler)(warning,message,qualifier);
 }
 
 /*
@@ -263,46 +264,6 @@ Export ErrorHandler SetErrorHandler(ErrorHandler handler)
   previous_handler=error_handler;
   error_handler=handler;
   return(previous_handler);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   S e t E r r o r S t a t u s                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method SetErrorStatus sets the error handler status and returns the
-%  previous status.
-%
-%  The format of the SetErrorStatus routine is:
-%
-%      previous_status=SetErrorStatus(status)
-%
-%  A description of each parameter follows:
-%
-%    o previous_status: Method SetErrorStatus returns the current error
-%      status.
-%
-%    o status: Specifies the new status value.
-%
-%
-*/
-Export int SetErrorStatus(int status)
-{
-  int
-    previous_status;
-
-  static int
-    magick_status = 0;
-
-  previous_status=magick_status;
-  magick_status=status;
-  return(previous_status);
 }
 
 /*

@@ -8847,9 +8847,11 @@ Export char *XVisualClassName(const int class)
 %
 %  The format of the XWarning routine is:
 %
-%      XWarning(message,qualifier)
+%      XWarning(warning,message,qualifier)
 %
 %  A description of each parameter follows:
+%
+%    o warning: Specifies the numeric warning category.
 %
 %    o message: Specifies the message to display before terminating the
 %      program.
@@ -8858,7 +8860,8 @@ Export char *XVisualClassName(const int class)
 %
 %
 */
-Export void XWarning(const char *message,const char *qualifier)
+Export void XWarning(const unsigned int warning,const char *message,
+  const char *qualifier)
 {
   char
     text[MaxTextExtent];

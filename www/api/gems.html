@@ -48,7 +48,7 @@ gems - Graphic Gems - Graphic Support Methods
 <STRONG>Hull</STRONG>(x_offset,y_offset,polarity,columns,rows,f,g)
 
 <P>
-status=<STRONG>InsidePrimitive</STRONG>(primitive_info,annotate_info,x,y,image)
+opacity=<STRONG>InsidePrimitive</STRONG>(primitive_info,annotate_info,x,y,image)
 
 <P>
 <STRONG>InterpolateColor</STRONG>(image,x,y)
@@ -182,23 +182,26 @@ A pointer to an image pixel and one of it's neighbor.
 <HR>
 <H2><A NAME="InsidePrimitive">InsidePrimitive</A></H2>
 <P>
-Method InsidePrimitive returns True if the (x,y) position is inside the
-primitive as defined in primitive_info. Otherwise False is returned.
+Method InsidePrimitive returns the opacity of the pen at the (x,y) position
+of the image. The opacity is Opaque if the (x,y) position is within the
+primitive as defined in primitive_info. A value less than fully opaque and
+greater than fully transparent is returned for a primitive edge pixel to
+allow for anti-aliasing. Otherwise fully transparent is returned.
 
 <P>
 The format of the InsidePrimitive routine is:
 
 <P>
-<PRE>        status=InsidePrimitive(primitive_info,annotate_info,x,y,image)
+<PRE>        opacity=InsidePrimitive(primitive_info,annotate_info,x,y,image)
 </PRE>
 <P>
 A description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<DT><STRONG>opacity:</STRONG><DD>
 <P>
-Method InsidePrimitive returns True if the (x,y) position is inside the
-primitive as defined in primitive_info. Otherwise False is returned.
+Method InsidePrimitive returns a pen opacity associated with the (x,y)
+position of the image.
 
 <DT><STRONG>primitive_info:</STRONG><DD>
 <P>

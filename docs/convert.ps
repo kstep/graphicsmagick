@@ -1,6 +1,6 @@
 %!PS-Adobe-3.0
 %%Creator: groff version 1.10
-%%CreationDate: Fri Jan  1 14:04:13 1999
+%%CreationDate: Mon Jan 11 14:52:37 1999
 %%DocumentNeededResources: font Times-Roman
 %%+ font Times-Bold
 %%+ font Times-Italic
@@ -653,10 +653,10 @@ F1(point)4.032 E F0 1.532(method changes the)4.032 F 1.398(matte v)144
 (matches the color of the tar)144 372 R .538(get pix)-.18 F(el.)-.15 E
 F1(Flood\214ll)5.538 E F0 .537(changes the matte v)3.038 F .537
 (alue of an)-.25 F 3.037(yp)-.15 G(ix)-3.037 E .537(el that matches)-.15
-F .815(the color of the tar)144 384 R .815(get pix)-.18 F .815
-(el and is a neighbor)-.15 F 3.315(,w)-.4 G(hereas)-3.315 E F1
-(\214lltoborder)3.315 E F0 .815(changes the matte v)3.315 F .815
-(alue an)-.25 F(y)-.15 E .687(neighbor pix)144 396 R .687
+F .13(the color of the tar)144 384 R .13(get pix)-.18 F .13
+(el and is a neighbor)-.15 F 2.63(,w)-.4 G(hereas)-2.63 E F1
+(\214lltoborder)2.63 E F0 .13(changes the matte v)2.63 F .13(alue of an)
+-.25 F(y)-.15 E .687(neighbor pix)144 396 R .687
 (el that is not the border color \()-.15 F F1(-border)A(color)-.18 E F0
 3.186(\). Finally)B F1 -.18(re)3.186 G(set).18 E F0 .686
 (changes the matte v)3.186 F(alue)-.25 E(of all pix)144 408 Q(els.)-.15
@@ -1323,103 +1323,109 @@ F -.15(Fo)108 252 S 2.5(re).15 G(xample,)-2.65 E(image%02d.mif)120.5 276
 Q(f)-.25 E(con)108 300 Q -.15(ve)-.4 G(rts \214les image00.mif).15 E
 (f, image01.mif)-.25 E(f, etc.)-.25 E(The % character is al)108 324 Q
 -.1(wa)-.1 G(ys interpreted in output \214lenames. T).1 E 2.5(og)-.8 G
-(et a % character in the \214lename, use %%.)-2.5 E/F3 9/Times-Bold@0 SF
-(IMA)72 340.8 Q 1.5(GE SEGMENT)-.495 F -.855(AT)-.81 G(ION).855 E F0
-(Use)108 352.8 Q F2(-segment)3.37 E F0 .87(to se)3.37 F .869(gment an i\
-mage by analyzing the histograms of the color components and identifyin\
-g)-.15 F 1.697
-(units that are homogeneous with the fuzzy c-means technique.)108 364.8
+(et a % character in the \214lename, use %%.)-2.5 E .488
+(Prepend an at sign \()108 348 R F2(@)A F0 2.988(\)t)C 2.988(oa\214)
+-2.988 G .488
+(lename to read a list of image \214lenames from that \214le.)-2.988 F
+.487(This is con)5.487 F -.15(ve)-.4 G .487(nient in).15 F(the e)108 360
+Q -.15(ve)-.25 G(nt you ha).15 E .3 -.15(ve t)-.2 H
+(oo may image \214lenames to \214t on the command line.).15 E/F3 9
+/Times-Bold@0 SF(IMA)72 376.8 Q 1.5(GE SEGMENT)-.495 F -.855(AT)-.81 G
+(ION).855 E F0(Use)108 388.8 Q F2(-segment)3.369 E F0 .869(to se)3.369 F
+.869(gment an image by analyzing the histograms of the color components\
+ and identifying)-.15 F 1.697
+(units that are homogeneous with the fuzzy c-means technique.)108 400.8
 R 1.697(The scale-space \214lter analyzes the his-)6.697 F .015(tograms\
  of the three color components of the image and identi\214es a set of c\
-lasses.)108 376.8 R .015(The e)5.015 F .015(xtents of each class)-.15 F
-1.296(is used to coarsely se)108 388.8 R 1.297
+lasses.)108 412.8 R .016(The e)5.016 F .016(xtents of each class)-.15 F
+1.297(is used to coarsely se)108 424.8 R 1.297
 (gment the image with thresholding.)-.15 F 1.297
-(The color associated with each class is deter)6.297 F(-)-.2 E .345
-(mined by the mean color of all pix)108 400.8 R .344(els within the e)
--.15 F .344(xtents of a particular class.)-.15 F(Finally)5.344 E 2.844
-(,a)-.65 G .644 -.15(ny u)-2.844 H .344(nclassi\214ed pix-).15 F(els ar\
+(The color associated with each class is deter)6.297 F(-)-.2 E .344
+(mined by the mean color of all pix)108 436.8 R .344(els within the e)
+-.15 F .345(xtents of a particular class.)-.15 F(Finally)5.345 E 2.845
+(,a)-.65 G .645 -.15(ny u)-2.845 H .345(nclassi\214ed pix-).15 F(els ar\
 e assigned to the closest class with the fuzzy c-means technique.)108
-412.8 Q(The fuzzy c-Means algorithm can be summarized as follo)108 436.8
-Q(ws:)-.25 E 2.5(oB)144 453.6 S
+448.8 Q(The fuzzy c-Means algorithm can be summarized as follo)108 472.8
+Q(ws:)-.25 E 2.5(oB)144 489.6 S
 (uild a histogram, one for each color component of the image.)-2.5 E
-3.528(oF)144 470.4 S 1.028(or each histogram, successi)-3.678 F -.15(ve)
+3.528(oF)144 506.4 S 1.028(or each histogram, successi)-3.678 F -.15(ve)
 -.25 G 1.028(ly apply the scale-space \214lter and b).15 F 1.028
-(uild an interv)-.2 F 1.028(al tree of zero)-.25 F .818
-(crossings in the second deri)144 482.4 R -.25(va)-.25 G(ti).25 E 1.118
--.15(ve a)-.25 H 3.318(te).15 G .818(ach scale.)-3.318 F .817
-(Analyze this scale-space `)5.818 F(`\214ngerprint')-.74 E 3.317('t)-.74
-G 3.317(od)-3.317 G(eter)-3.317 E(-)-.2 E(mine which peaks or v)144
-494.4 Q(alle)-.25 E(ys in the histogram are most predominant.)-.15 E
-3.733(oT)144 511.2 S 1.233(he \214ngerprint de\214nes interv)-3.733 F
-1.233(als on the axis of the histogram.)-.25 F 1.234(Each interv)6.234 F
-1.234(al contains either a)-.25 F .321
-(minima or a maxima in the original signal.)144 523.2 R .32
+(uild an interv)-.2 F 1.028(al tree of zero)-.25 F .817
+(crossings in the second deri)144 518.4 R -.25(va)-.25 G(ti).25 E 1.118
+-.15(ve a)-.25 H 3.318(te).15 G .818(ach scale.)-3.318 F .818
+(Analyze this scale-space `)5.818 F(`\214ngerprint')-.74 E 3.318('t)-.74
+G 3.318(od)-3.318 G(eter)-3.318 E(-)-.2 E(mine which peaks or v)144
+530.4 Q(alle)-.25 E(ys in the histogram are most predominant.)-.15 E
+3.734(oT)144 547.2 S 1.234(he \214ngerprint de\214nes interv)-3.734 F
+1.233(als on the axis of the histogram.)-.25 F 1.233(Each interv)6.233 F
+1.233(al contains either a)-.25 F .32
+(minima or a maxima in the original signal.)144 559.2 R .321
 (If each color component lies within the maxima inter)5.321 F(-)-.2 E
--.25(va)144 535.2 S(l, that pix).25 E(el is considered `)-.15 E
+-.25(va)144 571.2 S(l, that pix).25 E(el is considered `)-.15 E
 (`classi\214ed')-.74 E 2.5('a)-.74 G
-(nd is assigned an unique class number)-2.5 E(.)-.55 E 2.72(oA)144 552 S
+(nd is assigned an unique class number)-2.5 E(.)-.55 E 2.72(oA)144 588 S
 .52 -.15(ny p)-2.72 H(ix).15 E .22(el that f)-.15 F .22
 (ails to be classi\214ed in the abo)-.1 F .52 -.15(ve t)-.15 H .22
 (hresholding pass is classi\214ed using the fuzzy c-).15 F
-(Means technique.)144 564 Q(It is assigned to one of the classes disco)5
-E -.15(ve)-.15 G(red in the histogram analysis phase.).15 E 1.32
-(The fuzzy c-Means technique attempts to cluster a pix)108 588 R 1.319
-(el by \214nding the local minima of the generalized)-.15 F .453
-(within group sum of squared error objecti)108 600 R .753 -.15(ve f)-.25
-H 2.953(unction. A).15 F(pix)2.953 E .454
+(Means technique.)144 600 Q(It is assigned to one of the classes disco)5
+E -.15(ve)-.15 G(red in the histogram analysis phase.).15 E 1.319
+(The fuzzy c-Means technique attempts to cluster a pix)108 624 R 1.32
+(el by \214nding the local minima of the generalized)-.15 F .454
+(within group sum of squared error objecti)108 636 R .753 -.15(ve f)-.25
+H 2.953(unction. A).15 F(pix)2.953 E .453
 (el is assigned to the closest class of which the)-.15 F
-(fuzzy membership has a maximum v)108 612 Q(alue.)-.25 E -.15(Fo)108 636
-S 2.5(ra).15 G(dditional information see)-2.5 E -1.1(Yo)144 652.8 S
-1.755(ung W)1.1 F 1.754(on Lim, Sang Uk Lee, "On The Color Image Se)-.8
-F 1.754(gmentation Algorithm Based on the)-.15 F 1.308
-(Thresholding and the Fuzzy c-Means T)144 664.8 R 1.308(echniques", P)
--.7 F 1.308(attern Recognition, V)-.15 F 1.309(olume 23, Number 9,)-1.29
-F(pages 935-952, 1990.)144 676.8 Q F3(ENVIR)72 693.6 Q(ONMENT)-.27 E F2
-(DISPLA)108 705.6 Q(Y)-1 E F0 1.6 -.8(To g)144 717.6 T(et the def).8 E
-(ault host, display number)-.1 E 2.5(,a)-.4 G(nd screen.)-2.5 E 124.3
-(ImageMagick Last)72 768 R(change: 12 Feb 1997)2.5 E(18)172.34 E EP
+(fuzzy membership has a maximum v)108 648 Q(alue.)-.25 E -.15(Fo)108 672
+S 2.5(ra).15 G(dditional information see)-2.5 E -1.1(Yo)144 688.8 S
+1.754(ung W)1.1 F 1.754(on Lim, Sang Uk Lee, "On The Color Image Se)-.8
+F 1.755(gmentation Algorithm Based on the)-.15 F 1.308
+(Thresholding and the Fuzzy c-Means T)144 700.8 R 1.308(echniques", P)
+-.7 F 1.308(attern Recognition, V)-.15 F 1.308(olume 23, Number 9,)-1.29
+F(pages 935-952, 1990.)144 712.8 Q 124.3(ImageMagick Last)72 768 R
+(change: 12 Feb 1997)2.5 E(18)172.34 E EP
 %%Page: 19 19
 %%BeginPageSetup
 BP
 %%EndPageSetup
 /F0 10/Times-Roman@0 SF(User Commands)72 48 Q(con)354.962 E -.15(ve)-.4
-G -.834(rt \( 1 \)).15 F/F1 9/Times-Bold@0 SF 1.5(SEE ALSO)72 96 R/F2 10
-/Times-Bold@0 SF(display\(1\), animate\(1\), import\(1\), montage\(1\),\
- mogrify\(1\), combine\(1\), xtp\(1\))108 108 Q F1(COPYRIGHT)72 124.8 Q
-F0(1998 1998 E. I. du Pont de Nemours and Compan)108 136.8 Q(y)-.15 E
-.171(Permission is hereby granted, free of char)108 160.8 R .171
-(ge, to an)-.18 F 2.671(yp)-.15 G .17(erson obtaining a cop)-2.671 F
-2.67(yo)-.1 G 2.67(ft)-2.67 G .17(his softw)-2.67 F .17
-(are and associated)-.1 F .579(documentation \214les \("ImageMagick"\),\
- to deal in ImageMagick without restriction, including without limi-)108
-172.8 R 3.347(tation the rights to use, cop)108 184.8 R 4.647 -.65(y, m)
--.1 H(odify).65 E 5.847(,m)-.65 G(er)-5.847 E 3.347
-(ge, publish, distrib)-.18 F 3.347
-(ute, sublicense, and/or sell copies of)-.2 F .054(ImageMagick, and to \
-permit persons to whom the ImageMagick is furnished to do so, subject t\
-o the follo)108 196.8 R(w-)-.25 E(ing conditions:)108 208.8 Q .187
-(The abo)108 232.8 R .487 -.15(ve c)-.15 H(op).15 E .187(yright notice \
+G -.834(rt \( 1 \)).15 F/F1 9/Times-Bold@0 SF(ENVIR)72 96 Q(ONMENT)-.27
+E/F2 10/Times-Bold@0 SF(DISPLA)108 108 Q(Y)-1 E F0 1.6 -.8(To g)144 120
+T(et the def).8 E(ault host, display number)-.1 E 2.5(,a)-.4 G
+(nd screen.)-2.5 E F1 1.5(SEE ALSO)72 136.8 R F2(display\(1\), animate\
+\(1\), import\(1\), montage\(1\), mogrify\(1\), combine\(1\), xtp\(1\))
+108 148.8 Q F1(COPYRIGHT)72 165.6 Q F0
+(1998 1998 E. I. du Pont de Nemours and Compan)108 177.6 Q(y)-.15 E .17
+(Permission is hereby granted, free of char)108 201.6 R .17(ge, to an)
+-.18 F 2.671(yp)-.15 G .171(erson obtaining a cop)-2.671 F 2.671(yo)-.1
+G 2.671(ft)-2.671 G .171(his softw)-2.671 F .171(are and associated)-.1
+F .579(documentation \214les \("ImageMagick"\), to deal in ImageMagick \
+without restriction, including without limi-)108 213.6 R 3.347
+(tation the rights to use, cop)108 225.6 R 4.647 -.65(y, m)-.1 H(odify)
+.65 E 5.847(,m)-.65 G(er)-5.847 E 3.347(ge, publish, distrib)-.18 F
+3.347(ute, sublicense, and/or sell copies of)-.2 F .054(ImageMagick, an\
+d to permit persons to whom the ImageMagick is furnished to do so, subj\
+ect to the follo)108 237.6 R(w-)-.25 E(ing conditions:)108 249.6 Q .186
+(The abo)108 273.6 R .486 -.15(ve c)-.15 H(op).15 E .187(yright notice \
 and this permission notice shall be included in all copies or substanti\
-al portions)-.1 F(of ImageMagick.)108 244.8 Q .016(The softw)108 268.8 R
-.016(are is pro)-.1 F .016(vided "as is", without w)-.15 F .016
-(arranty of an)-.1 F 2.517(yk)-.15 G .017(ind, e)-2.517 F .017
-(xpress or implied, including b)-.15 F .017(ut not limited)-.2 F .252
-(to the w)108 280.8 R .252(arranties of merchantability)-.1 F 2.752
+al portions)-.1 F(of ImageMagick.)108 285.6 Q .017(The softw)108 309.6 R
+.017(are is pro)-.1 F .017(vided "as is", without w)-.15 F .017
+(arranty of an)-.1 F 2.516(yk)-.15 G .016(ind, e)-2.516 F .016
+(xpress or implied, including b)-.15 F .016(ut not limited)-.2 F .252
+(to the w)108 321.6 R .252(arranties of merchantability)-.1 F 2.752
 <2c8c>-.65 G .252(tness for a particular purpose and noninfringement.)
--2.752 F .252(In no e)5.252 F -.15(ve)-.25 G .252(nt shall).15 F .728
-(E. I. du Pont de Nemours and Compan)108 292.8 R 3.228(yb)-.15 G 3.228
-(el)-3.228 G .728(iable for an)-3.228 F 3.229(yc)-.15 G .729
-(laim, damages or other liability)-3.229 F 3.229(,w)-.65 G .729
-(hether in an)-3.229 F .563(action of contract, tort or otherwise, aris\
+-2.752 F .252(In no e)5.252 F -.15(ve)-.25 G .252(nt shall).15 F .729
+(E. I. du Pont de Nemours and Compan)108 333.6 R 3.229(yb)-.15 G 3.228
+(el)-3.229 G .728(iable for an)-3.228 F 3.228(yc)-.15 G .728
+(laim, damages or other liability)-3.228 F 3.228(,w)-.65 G .728
+(hether in an)-3.228 F .563(action of contract, tort or otherwise, aris\
 ing from, out of or in connection with ImageMagick or the use or)108
-304.8 R(other dealings in ImageMagick.)108 316.8 Q 1.012(Except as cont\
+345.6 R(other dealings in ImageMagick.)108 357.6 Q 1.013(Except as cont\
 ained in this notice, the name of the E. I. du Pont de Nemours and Comp\
-an)108 340.8 R 3.513(ys)-.15 G 1.013(hall not be)-3.513 F .885
-(used in adv)108 352.8 R .884(ertising or otherwise to promote the sale\
+an)108 381.6 R 3.512(ys)-.15 G 1.012(hall not be)-3.512 F .884
+(used in adv)108 393.6 R .884(ertising or otherwise to promote the sale\
 , use or other dealings in ImageMagick without prior)-.15 F
 (written authorization from the E. I. du Pont de Nemours and Compan)108
-364.8 Q -.65(y.)-.15 G F1 -.45(AU)72 381.6 S(THORS).45 E F0(John Cristy)
-108 393.6 Q 2.5(,E)-.65 G(.I. du Pont De Nemours and Compan)-2.5 E 2.5
+405.6 Q -.65(y.)-.15 G F1 -.45(AU)72 422.4 S(THORS).45 E F0(John Cristy)
+108 434.4 Q 2.5(,E)-.65 G(.I. du Pont De Nemours and Compan)-2.5 E 2.5
 (yI)-.15 G(ncorporated)-2.5 E 124.3(ImageMagick Last)72 768 R
 (change: 12 Feb 1997)2.5 E(19)172.34 E EP
 %%Trailer

@@ -1,12 +1,12 @@
 /*
   Graphic gems define declarations.
 */
-extern Export Quantum
-  GenerateNoise(const Quantum,const NoiseType);
-   
 extern Export ColorPacket
   InterpolateColor(Image *,double,double);
 
+extern Export Quantum
+  GenerateNoise(const Quantum,const NoiseType);
+   
 extern Export unsigned int
   InsidePrimitive(PrimitiveInfo *,AnnotateInfo *,const int,const int,Image *);
 

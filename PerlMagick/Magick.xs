@@ -583,9 +583,11 @@ static void DestroyPackageInfo(struct PackageInfo *info)
 %
 %  The format of the errorhandler routine is:
 %
-%      errorhandler(message,qualifier)
+%      errorhandler(error,message,qualifier)
 %
 %  A description of each parameter follows:
+%
+%    o error: Specifies the numeric error category.
 %
 %    o message: Specifies the message to display before terminating the
 %      program.
@@ -594,20 +596,19 @@ static void DestroyPackageInfo(struct PackageInfo *info)
 %
 %
 */
-static void errorhandler(const char *message,const char *qualifier)
+static void errorhandler(const unsigned int error,const char *message,
+  const char *qualifier)
 {
   char
-    error[MaxTextExtent];
+    text[MaxTextExtent];
 
   int
-    error_number,
-    magick_status;
+    error_number;
 
   error_number=errno;
   errno=0;
-  magick_status=SetErrorStatus(0);
-  FormatString(error,"Error %d: %.1024s%s%.1024s%s%s%.64s%s",
-    magick_status,(message ? message : "ERROR"),
+  FormatString(text,"Error %d: %.1024s%s%.1024s%s%s%.64s%s",error,
+    (message ? message : "ERROR"),
     qualifier ? " (" : "",qualifier ? qualifier : "",qualifier ? ")" : "",
     error_number ? " [" : "",error_number ? strerror(error_number) : "",
     error_number? "]" : "");
@@ -616,17 +617,17 @@ static void errorhandler(const char *message,const char *qualifier)
       /*
         Set up message buffer.
       */
-      warn("%s",error);
+      warn("%s",text);
       if (error_jump == NULL)
-        exit(magick_status % 100);
+        exit(error % 100);
     }
   if (error_list)
     {
       if (SvCUR(error_list))
         sv_catpv(error_list,"\n");
-      sv_catpv(error_list,error);
+      sv_catpv(error_list,text);
     }
-  longjmp(*error_jump,magick_status);
+  longjmp(*error_jump,error);
 }
 
 /*
@@ -1669,9 +1670,11 @@ static int strEQcase(const char *p,const char *q)
 %
 %  The format of the warninghandler routine is:
 %
-%      warninghandler(message,qualifier)
+%      warninghandler(warning,message,qualifier)
 %
 %  A description of each parameter follows:
+%
+%    o warning: Specifies the numeric warning category.
 %
 %    o message: Specifies the message to display before terminating the
 %      program.
@@ -1680,21 +1683,20 @@ static int strEQcase(const char *p,const char *q)
 %
 %
 */
-static void warninghandler(const char *message,const char *qualifier)
+static void warninghandler(const unsigned int warning,const char *message,
+  const char *qualifier)
 {
   char
-    warning[MaxTextExtent];
+    text[MaxTextExtent];
 
   int
-    error_number,
-    magick_status;
+    error_number;
 
   error_number=errno;
   errno=0;
   if (!message)
     return;
-  magick_status=SetErrorStatus(0);
-  FormatString(warning,"Warning %d: %.1024s%s%.1024s%s%s%.64s%s",magick_status,
+  FormatString(text,"Warning %d: %.1024s%s%.1024s%s%s%.64s%s",warning,
     message,qualifier ? " (" : "",qualifier ? qualifier : "",
     qualifier? ")" : "",error_number ? " [" : "",
     error_number ? strerror(error_number) : "",error_number ? "]" : "");
@@ -1703,13 +1705,13 @@ static void warninghandler(const char *message,const char *qualifier)
       /*
         Set up message buffer.
       */
-      warn("%s",warning);
+      warn("%s",text);
       if (error_list == NULL)
         return;
     }
   if (SvCUR(error_list))
     sv_catpv(error_list,"\n");  /* add \n separator between messages */
-  sv_catpv(error_list,warning);
+  sv_catpv(error_list,text);
 }
 
 /*

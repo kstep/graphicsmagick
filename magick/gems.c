@@ -445,18 +445,20 @@ Export void Hull(const int x_offset,const int y_offset,const int polarity,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method InsidePrimitive returns True if the (x,y) position is inside the
-%  primitive as defined in primitive_info.  Otherwise False is returned.
+%  Method InsidePrimitive returns the opacity of the pen at the (x,y) position
+%  of the image.  The opacity is Opaque if the (x,y) position is within the
+%  primitive as defined in primitive_info.  A value less than fully opaque
+%  and greater than fully transparent is returned for a primitive edge pixel
+%  to allow for anti-aliasing.  Otherwise fully transparent is returned.
 %
 %  The format of the InsidePrimitive routine is:
 %
-%      status=InsidePrimitive(primitive_info,annotate_info,x,y,image)
+%      opacity=InsidePrimitive(primitive_info,annotate_info,x,y,image)
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method InsidePrimitive returns True if the (x,y) position
-%      is inside the primitive as defined in primitive_info.  Otherwise False
-%      is returned.
+%    o opacity:  Method InsidePrimitive returns a pen opacity associated with
+%      the (x,y) position of the image.
 %
 %    o primitive_info: Specifies a pointer to a PrimitiveInfo structure.
 %
@@ -472,7 +474,9 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
   AnnotateInfo *annotate_info,const int x,const int y,Image *image)
 {
   double
+    distance,
     mid,
+    radius,
     slope,
     trix,
     triy;
@@ -485,7 +489,7 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
     *q;
 
   register unsigned int
-    inside;
+    opacity;
 
   RunlengthPacket
     target;
@@ -496,7 +500,7 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
   assert(primitive_info != (PrimitiveInfo *) NULL);
   assert(annotate_info != (AnnotateInfo *) NULL);
   assert(image != (Image *) NULL);
-  inside=False;
+  opacity=Transparent;
   mid=annotate_info->linewidth/2.0;
   p=primitive_info;
   while (p->primitive != UndefinedPrimitive)
@@ -507,28 +511,37 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
       case PointPrimitive:
       default:
       {
-        for ( ; (p < q) && !inside; p++)
-          inside=(x == p->x) && (y == p->y);
+        for ( ; (p < q) && (opacity == Transparent); p++)
+          if ((x == p->x) && (y == p->y))
+            opacity=Opaque;
         break;
       }
       case LinePrimitive:
       {
-        for ( ; (p < q) && !inside; p++)
+        for ( ; (p < q) && (opacity == Transparent); p++)
         {
           if (p->x == (p+1)->x)
-            inside=(x >= (p->x-mid)) && (x < (p->x+mid)) &&
-              (y >= Min(p->y,(p+1)->y)) && (y <= Max(p->y,(p+1)->y));
+            {
+              if ((x >= (p->x-mid)) && (x < (p->x+mid)) &&
+                  (y >= Min(p->y,(p+1)->y)) && (y <= Max(p->y,(p+1)->y)))
+                opacity=Opaque;
+            }
           else
             if (p->y == (p+1)->y)
-              inside=(x >= Min(p->x,(p+1)->x)) && (x <= Max(p->x,(p+1)->x)) &&
-                (y >= (p->y-mid)) && (y < (p->y+mid));
+              {
+                if ((x >= Min(p->x,(p+1)->x)) && (x <= Max(p->x,(p+1)->x)) &&
+                    (y >= (p->y-mid)) && (y < (p->y+mid)))
+                  opacity=Opaque;
+              }
             else
               {
                 slope=(double) (p->y-(p+1)->y)/(p->x-(p+1)->x);
                 trix=(slope*p->x+x/slope+y-p->y)/(slope+1.0/slope);
                 triy=slope*(trix-p->x)+p->y;
-                inside=(((x-trix)*(x-trix)+(y-triy)*(y-triy)) <= (mid*mid)) &&
-                  (trix >= Min(p->x,(p+1)->x)) && (trix <= Max(p->x,(p+1)->x));
+                if ((((x-trix)*(x-trix)+(y-triy)*(y-triy)) <= (mid*mid)) &&
+                    (trix >= Min(p->x,(p+1)->x)) &&
+                    (trix <= Max(p->x,(p+1)->x)))
+                  opacity=Opaque;
               }
           p++;
         }
@@ -536,98 +549,127 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
       }
       case RectanglePrimitive:
       {
-        for ( ; (p < q) && !inside; p++)
+        for ( ; (p < q) && (opacity == Transparent); p++)
         {
-          inside=(x >= Min(p->x-mid,(p+1)->x+mid)) &&
-            (x < Max(p->x-mid,(p+1)->x+mid)) &&
-            (y >= Min(p->y-mid,(p+1)->y+mid)) &&
-            (y < Max(p->y-mid,(p+1)->y+mid));
-          inside&=!((x >= Min(p->x+mid,(p+1)->x-mid)) &&
-            (x < Max(p->x+mid,(p+1)->x-mid)) &&
-            (y >= Min(p->y+mid,(p+1)->y-mid)) &&
-            (y < Max(p->y+mid,(p+1)->y-mid)));
+          if ((x >= Min(p->x-mid,(p+1)->x+mid)) &&
+              (x < Max(p->x-mid,(p+1)->x+mid)) &&
+              (y >= Min(p->y-mid,(p+1)->y+mid)) &&
+              (y < Max(p->y-mid,(p+1)->y+mid)))
+            opacity=Opaque;
+          if ((x >= Min(p->x+mid,(p+1)->x-mid)) &&
+              (x < Max(p->x+mid,(p+1)->x-mid)) &&
+              (y >= Min(p->y+mid,(p+1)->y-mid)) &&
+              (y < Max(p->y+mid,(p+1)->y-mid)))
+            opacity=Transparent;
           p++;
         }
         break;
       }
       case FillRectanglePrimitive:
       {
-        for ( ; (p < q) && !inside; p++)
+        for ( ; (p < q) && (opacity == Transparent); p++)
         {
-          inside=(x >= Min(p->x,(p+1)->x)) && (x <= Max(p->x,(p+1)->x)) &&
-            (y >= Min(p->y,(p+1)->y)) && (y <= Max(p->y,(p+1)->y));
+          if ((x >= Min(p->x,(p+1)->x)) && (x <= Max(p->x,(p+1)->x)) &&
+              (y >= Min(p->y,(p+1)->y)) && (y <= Max(p->y,(p+1)->y)))
+            opacity=Opaque;
           p++;
         }
         break;
       }
       case CirclePrimitive:
       {
-        for ( ; (p < q) && !inside; p++)
+        double
+          center;
+
+        for ( ; (p < q) && (opacity == Transparent); p++)
         {
-          inside=(((p->y-y)*(p->y-y))+((p->x-x)*(p->x-x))) <=
-            (((p->y-(p+1)->y-mid)*(p->y-(p+1)->y-mid))+
-            ((p->x-(p+1)->x-mid)*(p->x-(p+1)->x-mid)));
-          inside&=!((((p->y-y)*(p->y-y))+((p->x-x)*(p->x-x))) <=
-            (((p->y-(p+1)->y+mid)*(p->y-(p+1)->y+mid))+
-            ((p->x-(p+1)->x+mid)*(p->x-(p+1)->x+mid))));
+          radius=sqrt(((p->y-(p+1)->y)*(p->y-(p+1)->y))+
+            ((p->x-(p+1)->x)*(p->x-(p+1)->x)));
+          distance=sqrt(((p->y-y)*(p->y-y))+((p->x-x)*(p->x-x)));
+          center=fabs(distance-radius);
+          if (center >= (mid+0.5))
+            opacity=Transparent;
+          else
+            if (center <= (mid-0.5))
+              opacity=Opaque;
+            else
+              opacity=Opaque*pow((mid-center+0.5),2);
           p++;
         }
         break;
       }
       case FillCirclePrimitive:
       {
-        for ( ; (p < q) && !inside; p++)
+        for ( ; (p < q) && (opacity == Transparent); p++)
         {
-          inside=((p->y-y)*(p->y-y))+((p->x-x)*(p->x-x)) <=
-            ((p->y-(p+1)->y)*(p->y-(p+1)->y))+((p->x-(p+1)->x)*(p->x-(p+1)->x));
+          radius=sqrt(((p->y-(p+1)->y)*(p->y-(p+1)->y))+
+            ((p->x-(p+1)->x)*(p->x-(p+1)->x)));
+          distance=sqrt(((p->y-y)*(p->y-y))+((p->x-x)*(p->x-x)));
+          if (distance >= (radius+1.0))
+            opacity=Transparent;
+          else
+            if (distance <= (radius-1.0))
+              opacity=Opaque;
+            else
+              opacity=Opaque*pow((radius-distance+1.0)/2,2);
           p++;
         }
         break;
       }
       case PolygonPrimitive:
       {
-        for ( ; (p < q) && !inside; p++)
+        for ( ; (p < q) && (opacity == Transparent); p++)
         {
           if (p->x == (p+1)->x)
             {
-              inside|=(x >= (p->x-mid)) && (x < (p->x+mid)) &&
-                (y >= (Min(p->y,(p+1)->y)-mid)) &&
-                (y < (Max(p->y,(p+1)->y)+mid));
+              if ((x >= (p->x-mid)) && (x < (p->x+mid)) &&
+                  (y >= (Min(p->y,(p+1)->y)-mid)) &&
+                  (y < (Max(p->y,(p+1)->y)+mid)))
+                opacity=Opaque;
               continue;
             }
           if (p->y == (p+1)->y)
             {
-              inside|=(x >= Min(p->x,(p+1)->x)-mid) &&
-                (x < Max(p->x,(p+1)->x)+mid) &&
-                (y >= (p->y-mid)) && (y < (p->y+mid));
+              if ((x >= Min(p->x,(p+1)->x)-mid) &&
+                  (x < Max(p->x,(p+1)->x)+mid) &&
+                  (y >= (p->y-mid)) && (y < (p->y+mid)))
+                opacity=Opaque;
               continue;
             }
           slope=(double) (p->y-(p+1)->y)/(p->x-(p+1)->x);
           trix=(slope*p->x+x/slope+y-p->y)/(slope+1.0/slope);
           triy=slope*(trix-p->x)+p->y;
-          inside|=(((x-trix)*(x-trix)+(y-triy)*(y-triy)) <= (mid*mid)) &&
-            (trix >= Min(p->x,(p+1)->x)) && (trix <= Max(p->x,(p+1)->x));
+          if ((((x-trix)*(x-trix)+(y-triy)*(y-triy)) <= (mid*mid)) &&
+              (trix >= Min(p->x,(p+1)->x)) && (trix <= Max(p->x,(p+1)->x)))
+            opacity=Opaque;
         }
         while (p <= q)
           p++;
-        if (inside)
+        if (opacity != Transparent)
           break;
         p--;
         q=primitive_info;
         if (p->x == q->x)
-          inside=(x >= (p->x-mid)) && (x < (p->x+mid)) &&
-            (y >= (Min(p->y,q->y)-mid)) && (y < (Max(p->y,q->y)+mid));
+          {
+            if ((x >= (p->x-mid)) && (x < (p->x+mid)) &&
+                (y >= (Min(p->y,q->y)-mid)) && (y < (Max(p->y,q->y)+mid)))
+              opacity=Opaque;
+          }
         else
           if (p->y == q->y)
-            inside=(x >= (Min(p->x,q->x)-mid)) && (x < (Max(p->x,q->x)+mid)) &&
-              (y >= (p->y-mid)) && (y < (p->y+mid));
+            {
+              if ((x >= (Min(p->x,q->x)-mid)) && (x < (Max(p->x,q->x)+mid)) &&
+                  (y >= (p->y-mid)) && (y < (p->y+mid)))
+                opacity=Opaque;
+            }
           else
             {
               slope=(double) (p->y-q->y)/(p->x-q->x);
               trix=(slope*p->x+x/slope+y-p->y)/(slope+1.0/slope);
               triy=slope*(trix-p->x)+p->y;
-              inside=(((x-trix)*(x-trix)+(y-triy)*(y-triy)) <= (mid*mid)) &&
-                (trix >= Min(p->x,q->x)) && (trix <= Max(p->x,q->x));
+              if ((((x-trix)*(x-trix)+(y-triy)*(y-triy)) <= (mid*mid)) &&
+                  (trix >= Min(p->x,q->x)) && (trix <= Max(p->x,q->x)))
+                opacity=Opaque;
             }
         p++;
         break;
@@ -677,12 +719,13 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
            if (crossing)
              crossings++;
         }
-        inside=crossings & 0x01;
+        if (crossings & 0x01)
+          opacity=Opaque;
         break;
       }
       case ColorPrimitive:
       {
-        for ( ; (p <= q) && !inside; p++)
+        for ( ; (p <= q) && (opacity == Transparent); p++)
           switch (p->method)
           {
             case PointMethod:
@@ -690,7 +733,7 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
             {
               if ((p->x != x) || (p->y != y))
                 break;
-              inside=True;
+              opacity=Opaque;
               break;
             }
             case ReplaceMethod:
@@ -701,7 +744,8 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
               if ((x == 0) && (y == 0))
                 target=image->pixels[p->y*image->columns+p->x];
               color=image->pixels[y*image->columns+x];
-              inside=ColorMatch(color,target,(int) image->fuzz);
+              if (ColorMatch(color,target,(int) image->fuzz))
+                opacity=Opaque;
               break;
             }
             case FloodfillMethod:
@@ -724,7 +768,7 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
             }
             case ResetMethod:
             {
-              inside=True;
+              opacity=Opaque;
               break;
             }
           }
@@ -854,10 +898,10 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
         break;
       }
     }
-    if (inside)
-      return(True);
+    if (opacity != Transparent)
+      return(opacity);
   }
-  return(inside);
+  return(opacity);
 }
 
 /*

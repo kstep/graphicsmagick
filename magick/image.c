@@ -3815,12 +3815,14 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
     keyword[MaxTextExtent],
     *primitive;
 
+  double
+    mid;
+
   Image
     *tile;
 
   int
     j,
-    mid,
     n,
     y;
 
@@ -3852,7 +3854,8 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
   unsigned int
     indirection,
     length,
-    number_coordinates;
+    number_coordinates,
+    opacity;
 
   XColor
     pen_color;
@@ -4289,33 +4292,36 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
   if ((tile != (Image *) NULL) && tile->matte)
     pen_color.flags|=DoOpacity;
   image->class=DirectClass;
-  mid=(int) ((annotate_info->linewidth+0.5)/2.0);
+  mid=annotate_info->linewidth/2.0;
   for (y=bounds.y1-mid; y <= (bounds.y2+mid); y++)
   {
-    q=image->pixels+y*image->columns+bounds.x1-mid;
+    q=image->pixels+y*image->columns+(int) (bounds.x1-mid);
     for (x=bounds.x1-mid; x <= (bounds.x2+mid); x++)
     {
-      if (InsidePrimitive(primitive_info,annotate_info,x,y,image))
+      opacity=InsidePrimitive(primitive_info,annotate_info,x,y,image);
+      if (opacity != Transparent)
         {
           if (tile != (Image *) NULL)
             pixel=tile->pixels[(y % tile->rows)*
               tile->columns+(x % tile->columns)];
-          if (!(pen_color.flags & DoOpacity))
+          q->red=(Quantum) ((long) (pixel.red*opacity+q->red*
+            (Opaque-opacity))/Opaque);
+          q->green=(Quantum) ((long) (pixel.green*opacity+q->green*
+            (Opaque-opacity))/Opaque);
+          q->blue=(Quantum) ((long) (pixel.blue*opacity+q->blue*
+            (Opaque-opacity))/Opaque);
+          if (pen_color.flags & DoOpacity)
             {
-              q->red=pixel.red;
-              q->green=pixel.green;
-              q->blue=pixel.blue;
-            }
-          else
-            {
+              q->index=(unsigned short) ((long) (pixel.index*opacity+q->index*
+                (Opaque-opacity))/Opaque);
               q->red=(Quantum) ((long) (pixel.red*pixel.index+q->red*
                 (Opaque-pixel.index))/Opaque);
               q->green=(Quantum) ((long) (pixel.green*pixel.index+q->green*
                 (Opaque-pixel.index))/Opaque);
               q->blue=(Quantum) ((long) (pixel.blue*pixel.index+q->blue*
                 (Opaque-pixel.index))/Opaque);
-              q->index=(Quantum) ((long) (pixel.index*pixel.index+q->index*
-                (Opaque-pixel.index))/Opaque);
+              q->index=(unsigned short) ((long) (pixel.index*pixel.index+
+                q->index*(Opaque-pixel.index))/Opaque);
             }
         }
       q++;

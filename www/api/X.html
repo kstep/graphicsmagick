@@ -232,7 +232,7 @@ windows=<STRONG>XSetWindows</STRONG>(windows_info)
 visual_type=<STRONG>XVisualClassName</STRONG>(class)
 
 <P>
-<STRONG>XWarning</STRONG>(message,qualifier)
+<STRONG>XWarning</STRONG>(warning,message,qualifier)
 
 <P>
 child=<STRONG>XWindowByID</STRONG>(display,window,id)
@@ -2058,12 +2058,16 @@ Method XWarning displays a warning message in a Notice widget.
 The format of the XWarning routine is:
 
 <P>
-<PRE>        XWarning(message,qualifier)
+<PRE>        XWarning(warning,message,qualifier)
 </PRE>
 <P>
 A description of each parameter follows:
 
 <DL><DL>
+<DT><STRONG>warning:</STRONG><DD>
+<P>
+Specifies the numeric warning category.
+
 <DT><STRONG>message:</STRONG><DD>
 <P>
 Specifies the message to display before terminating the program.

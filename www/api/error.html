@@ -18,7 +18,6 @@
 		<LI><A HREF="#MagickError">MagickError</A>
 		<LI><A HREF="#MagickWarning">MagickWarning</A>
 		<LI><A HREF="#SetErrorHandler">SetErrorHandler</A>
-		<LI><A HREF="#SetErrorStatus">SetErrorStatus</A>
 		<LI><A HREF="#SetWarningHandler">SetWarningHandler</A>
 	</UL>
 
@@ -44,9 +43,6 @@ error - ImageMagick Error Methods
 previous_handler=<STRONG>SetErrorHandler</STRONG>(handler)
 
 <P>
-previous_status=<STRONG>SetErrorStatus</STRONG>(status)
-
-<P>
 previous_handler=<STRONG>SetWarningHandler</STRONG>(handler)
 
 <P>
@@ -56,7 +52,11 @@ previous_handler=<STRONG>SetWarningHandler</STRONG>(handler)
 A description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG><A NAME="item_o">message:</A></STRONG><DD>
+<DT><STRONG><A NAME="item_o">warning:</A></STRONG><DD>
+<P>
+Specifies the numeric warning category.
+
+<DT><STRONG>message:</STRONG><DD>
 <P>
 Specifies the message to display before terminating the program.
 
@@ -144,32 +144,6 @@ A description of each parameter follows:
 <DT><STRONG>handler:</STRONG><DD>
 <P>
 Specifies a pointer to a routine to handle errors.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="SetErrorStatus">SetErrorStatus</A></H2>
-<P>
-Method SetErrorStatus sets the error handler status and returns the
-previous status.
-
-<P>
-The format of the SetErrorStatus routine is:
-
-<P>
-<PRE>        previous_status=SetErrorStatus(status)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>previous_status:</STRONG><DD>
-<P>
-Method SetErrorStatus returns the current error status.
-
-<DT><STRONG>status:</STRONG><DD>
-<P>
-Specifies the new status value.
 
 </DL></DL>
 <P>
