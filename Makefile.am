@@ -175,7 +175,14 @@ clean-perl:
 distclean-perl:
 endif # WITH_PERL
 
-all-local: $(top_srcdir)/www/NEWS.html $(top_srcdir)/www/Changelog.html
+all-local: \
+	$(top_srcdir)/www/Changelog.html \
+	$(top_srcdir)/www/INSTALL-mac.html \
+	$(top_srcdir)/www/INSTALL-unix.html \
+	$(top_srcdir)/www/INSTALL-vms.html \
+	$(top_srcdir)/www/INSTALL-windows.html \
+	$(top_srcdir)/www/NEWS.html \
+	$(top_srcdir)/www/README.html
 
 # Install PerlMagick
 install-exec-local: install-exec-perl
@@ -203,10 +210,30 @@ LIBTOOL_DEPS = @LIBTOOL_DEPS@
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
 
+# Build HTML version of ChangeLog
+$(top_srcdir)/www/Changelog.html: $(top_srcdir)/ChangeLog
+	@PERL@ $(top_srcdir)/scripts/txt2html  -t 'GraphicsMagick ChangeLog' < $(top_srcdir)/ChangeLog > $(top_srcdir)/www/Changelog.html
+
 # Build HTML version of news
 $(top_srcdir)/www/NEWS.html: $(top_srcdir)/NEWS
 	@PERL@ $(top_srcdir)/scripts/txt2html -t 'GraphicsMagick News' < $(top_srcdir)/NEWS  > $(top_srcdir)/www/NEWS.html
 
-# Build HTML version of ChangeLog
-$(top_srcdir)/www/Changelog.html: $(top_srcdir)/ChangeLog
-	@PERL@ $(top_srcdir)/scripts/txt2html  -t 'GraphicsMagick ChangeLog' < $(top_srcdir)/ChangeLog > $(top_srcdir)/www/Changelog.html
+# Build HTML version of README
+$(top_srcdir)/www/README.html: $(top_srcdir)/README.txt
+	@PERL@ $(top_srcdir)/scripts/txt2html  -t 'GraphicsMagick Install README' < $(top_srcdir)/README.txt > $(top_srcdir)/www/README.html
+
+# Build HTML version of INSTALL-mac.txt
+$(top_srcdir)/www/INSTALL-mac.html: $(top_srcdir)/INSTALL-unix.txt
+	@PERL@ $(top_srcdir)/scripts/txt2html  -t 'GraphicsMagick MacOS 9 Installation' < $(top_srcdir)/INSTALL-mac.txt > $(top_srcdir)/www/INSTALL-mac.html
+
+# Build HTML version of INSTALL-unix.txt
+$(top_srcdir)/www/INSTALL-unix.html: $(top_srcdir)/INSTALL-unix.txt
+	@PERL@ $(top_srcdir)/scripts/txt2html  -t 'GraphicsMagick Unix Installation' < $(top_srcdir)/INSTALL-unix.txt > $(top_srcdir)/www/INSTALL-unix.html
+
+# Build HTML version of INSTALL-vms.txt
+$(top_srcdir)/www/INSTALL-vms.html: $(top_srcdir)/INSTALL-vms.txt
+	@PERL@ $(top_srcdir)/scripts/txt2html  -t 'GraphicsMagick VMS Installation' < $(top_srcdir)/INSTALL-vms.txt > $(top_srcdir)/www/INSTALL-vms.html
+
+# Build HTML version of INSTALL-windows.txt
+$(top_srcdir)/www/INSTALL-windows.html: $(top_srcdir)/INSTALL-windows.txt
+	@PERL@ $(top_srcdir)/scripts/txt2html  -t 'GraphicsMagick Windows Installation' < $(top_srcdir)/INSTALL-windows.txt > $(top_srcdir)/www/INSTALL-windows.html

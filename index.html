@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020718;11000900">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20030208;20123200">
+	<META NAME="CHANGED" CONTENT="20030223;17251800">
 	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a robust collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats including GIF, JPEG, PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically making it suitable for Web applications.  You can also resize, rotate, sharpen, color reduce, or add special effects to an image and save your completed work in the same or differing image format.">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic, PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic, WebMagick, Web Magic, visualization, image processing, software development, simulation, image, software, AniMagick, Animagic,  Magick++">
 	<STYLE>
@@ -44,13 +44,13 @@
 of tools and libraries offered under a usage <A HREF="www/Copyright.html">license</A>
 to read, write, and manipulate an image in many image <A HREF="www/formats.html">formats</A>
 (over 88 major formats) including popular formats like TIFF, JPEG,
-PNG, PDF, PhotoCD, and GIF. With <I>GraphicsMagick</I> you can create
-images dynamically, making it suitable for Web applications. You can
-also resize, rotate, sharpen, color reduce, or add special effects to
-an image and save your completed work in the same or differing image
-format. Image processing operations are available from the command
-line, as well as through C, C++, Perl, or Java programming
-interfaces.</P>
+JPEG-2000,PNG, PDF, PhotoCD, SVG, and GIF. With <I>GraphicsMagick</I>
+you can create images, making it suitable for dynamic Web
+applications. You can also resize, rotate, sharpen, color reduce, or
+add special effects to an image and save your completed work in the
+same or differing image format. Image processing operations are
+available from the command line, as well as through C, C++, Perl, or
+Java programming interfaces.</P>
 <P CLASS="western">Here are just a few <A HREF="images/examples.jpg">examples</A>
 of what <I>GraphicsMagick</I> can do:</P>
 <DL>
@@ -151,18 +151,19 @@ of what <I>GraphicsMagick</I> can do:</P>
 	</TABLE>
 </DL>
 <P CLASS="western">You can access <I>GraphicsMagick</I> functions
-directly from the command line using the GraphicsMagick tools convert
-, <A HREF="www/mogrify.html">mogrify</A> , <A HREF="www/montage.html">montage</A>
-, <A HREF="www/composite.html">composite</A> , or <A HREF="www/identify.html">identify</A>
-. Use the <A HREF="www/display.html">display</A> program to
-interactively manipulate your images or <A HREF="www/animate.html">animate</A>
-an image sequence from a graphical panel. Finally you have access to
-the various image manipulation methods directly from the most popular
-application development environment: <A HREF="www/perl.html">Perl</A>
-, <A HREF="www/Magick++/index.html">C++</A> , <A HREF="www/api.html">C</A>
-, <A HREF="http://pythonmagick.procoders.net/">Python</A>, or <A HREF="www/archives.html">Java</A>
-. These programs, and much more, are discussed in detail. Just follow
-the appropriate link on this page.</P>
+directly from the command line by using the GraphicsMagick <A HREF="www/GraphicsMagick.html">gm</A>
+tool's <A HREF="www/convert.html">gm convert</A>, <A HREF="www/mogrify.html">gm
+mogrify</A>, <A HREF="www/montage.html">gm montage</A>, <A HREF="www/composite.html">gm
+composite</A>, or <A HREF="www/identify.html">gm identify</A>
+subcommands. Use the <A HREF="www/display.html">gm display</A>
+subcommand to interactively manipulate your images or <A HREF="www/animate.html">gm
+animate</A> to play an image animation or animate a series of images.
+Finally you have access to the various image manipulation methods
+directly from the most popular application development environment:
+<A HREF="www/perl.html">Perl</A> , <A HREF="www/Magick++/index.html">C++</A>
+, <A HREF="www/api.html">C</A> , <A HREF="http://www.alagad.com/index.cfm/name-products">ColdFusion</A>,
+<A HREF="http://pear.php.net/imagick">PHP</A>, <A HREF="http://pythonmagick.procoders.net/">Python</A>,
+or <A HREF="www/archives.html">Java</A>.</P>
 <P CLASS="western"><!--- <P CLASS="western">You can <A HREF="www/magick-list.html">subscribe</A>
 to the mailing list. Here you can ask questions and get advice from
 other <I>GraphicsMagick</I> users and see announcements of bug fixes,
@@ -190,14 +191,18 @@ virtually any Unix or Unix-like system, including Linux. It also runs
 under <A HREF="www/windows.html">Windows</A> '95 and later ('95, '98,
 ME, NT 4.0, 2000, and XP), Macintosh (MacOS 9 and 10), VMS, and OS/2.</P>
 <P CLASS="western"><I>GraphicsMagick</I> source and binaries are
-available from a large number of ftp and http <A HREF="www/archives.html">mirror
+available from a number of ftp and http <A HREF="www/archives.html">mirror
 sites</A>. <A HREF="www/QuickStart.html">Binary packages</A> are
 provided for a variety of operating systems. Besides the mirror
 sites, developers may obtain the <I>GraphicsMagick</I> source code
-via <A HREF="www/cvs.html">anonymous CVS</A>.</P>
-<P CLASS="western">Installation instructions are available <A HREF="www/install.html">here</A>
-for building <I>GraphicsMagick</I> from source code under Unix, VMS,
-Windows, and Macintosh.</P>
+via <A HREF="www/cvs.html">anonymous CVS</A> and may view changes to
+the source code via <A HREF="http://cvs.graphicsmagick.org/cgi-bin/cvsweb.cgi/I">CVSWeb</A>.</P>
+<P CLASS="western">Installation instructions are available for
+building <I>GraphicsMagick</I> from source code under <A HREF="www/INSTALL-unix.html">Unix
+(including MacOS-X)</A>, <A HREF="www/INSTALL-vms.html">VMS</A>,
+<A HREF="www/INSTALL-windows.html">Windows</A>, and <A HREF="www/INSTALL-mac.html">MacOS
+9</A>, but first you should read <A HREF="www/README.html">these
+instructions</A> which apply to all of the platforms..</P>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
 	<TR>
 		<TD BGCOLOR="#52799e">
@@ -206,15 +211,16 @@ Windows, and Macintosh.</P>
 		</TD>
 	</TR>
 </TABLE>
-<P CLASS="western"><I>GraphicsMagick</I> provides a powerful set of
-<A HREF="www/tools.html">command line utilities</A>. These utilities
-use a consistent set of <A HREF="www/GraphicsMagick.html">options</A>.
+<P CLASS="western"><I>GraphicsMagick</I> provides a powerful <A HREF="www/tools.html">command
+line utility</A> called 'gm' Gm uses a consistent set of <A HREF="www/GraphicsMagick.html">options</A>.
 Unlike ImageMagick, GraphicsMagick combines the utilities into a
-single executable commandline program called &quot;gm&quot;; for
-example, to run the &quot;convert&quot; utility, type &quot;gm
-convert ...&quot;. This allows GraphicsMagick and ImageMagick to
-coexist on your platform. The available utilities and links to their
-documentation are shown in the following table:</P>
+single executable command-line program called &quot;gm&quot;; for
+example, to use the &quot;convert&quot; mode, type &quot;gm convert
+...&quot;. This allows GraphicsMagick and ImageMagick to coexist on
+your platform. GraphicsMagick provides a single utility which is the
+equivalent of nine separate ImageMagick utilities. The available
+command modes and links to their documentation are shown in the
+following table:</P>
 <DL>
 	<DD>
 	<TABLE WIDTH=90% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0>
@@ -223,7 +229,8 @@ documentation are shown in the following table:</P>
 		<TR VALIGN=TOP>
 			<TH WIDTH=25% BGCOLOR="#52799e">
 				<P CLASS="western" ALIGN=CENTER STYLE="font-style: normal; text-decoration: none">
-				<FONT COLOR="#ffffff"><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3><B><SPAN STYLE="background: transparent">Utility</SPAN></B></FONT></FONT></FONT></P>
+				<FONT COLOR="#ffffff"><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3><B><SPAN STYLE="background: transparent">GM
+				Command Mode</SPAN></B></FONT></FONT></FONT></P>
 			</TH>
 			<TH WIDTH=75% BGCOLOR="#52799e">
 				<P CLASS="western" ALIGN=CENTER STYLE="font-style: normal; text-decoration: none">
@@ -342,9 +349,10 @@ documentation are shown in the following table:</P>
 		</TD>
 	</TR>
 </TABLE>
-<P CLASS="western"><I>GraphicsMagick</I> capabilities may be accessed
-from many languages and scripting environments as shown in the
-following table: 
+<P CLASS="western"><SPAN STYLE="font-style: normal">In addition to
+the gm utility, </SPAN><I>GraphicsMagick</I> capabilities may be
+accessed from many languages and scripting environments via
+programming APIs as shown in the following table: 
 </P>
 <DL>
 	<DD>
@@ -507,22 +515,21 @@ and supported by third parties.</P>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=37%>
-				<P CLASS="western" ALIGN=LEFT><A HREF="www/new.html">What's New </A>
-				</P>
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/NEWS.html">Project
+				News</A></P>
 			</TD>
 			<TD WIDTH=63%>
-				<P CLASS="western">Provides a high-level view of enhancements
-				made to <EM>GraphicsMagick</EM> over the years.</P>
+				<P CLASS="western">Provides a summary of changes and enhancements
+				made to <EM>GraphicsMagick</EM>.</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=37%>
-				<P CLASS="western" ALIGN=LEFT><A HREF="www/Changelog.html">Change
-				Log</A></P>
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/Changelog.html">Change-Log</A></P>
 			</TD>
 			<TD WIDTH=63%>
-				<P CLASS="western">Provides a change-log view of <EM>GraphicsMagick</EM>
-				source code and feature changes.</P>
+				<P CLASS="western">Provides a detailed change-log view of
+				<EM>GraphicsMagick</EM> source code and feature changes.</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
@@ -565,14 +572,13 @@ Alternatively,
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=37%>
-				<P CLASS="western" ALIGN=LEFT><A HREF="www/quantize.html">GraphicsMagick's
-				Color Reduction Algorithm</A> 
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/quantize.html">Color
+				Reduction Algorithm</A> 
 				</P>
 			</TD>
 			<TD WIDTH=63%>
-				<P CLASS="western">Provides a detailed description of the
-				algorithm used by <EM>GraphicsMagick</EM> to reduce the number of
-				colors in an image.</P>
+				<P CLASS="western">Describes the algorithm used  to reduce the
+				number of colors in an image.</P>
 			</TD>
 		</TR>
 	</TABLE>
@@ -627,7 +633,8 @@ Alternatively,
 	</TABLE>
 </DL>
 <P CLASS="western">The following publications provide an in-depth
-coverage of <EM>GraphicsMagick</EM> topics: 
+coverage of <EM>ImageMagick</EM> topics which also apply to
+<I>GraphicsMagick</I>: 
 </P>
 <DL>
 	<DD>
@@ -657,6 +664,17 @@ coverage of <EM>GraphicsMagick</EM> topics:
 				as other tools for creating Web graphics.</P>
 			</TD>
 		</TR>
+		<TR VALIGN=TOP>
+			<TD WIDTH=37%>
+				<P CLASS="western" ALIGN=LEFT><A HREF="http://www.wrox.com/books/1861007647.htm">Professional
+				PHP4 Multimedia Programming</A></P>
+			</TD>
+			<TD WIDTH=63%>
+				<P CLASS="western">Written by<!--StartFragment --> Allan Kent,
+				<I>et. al.</I>, Wrox Press Ltd<!--EndFragment-->. Covers use of
+				ImageMagick in PHP4 applications.</P>
+			</TD>
+		</TR>
 	</TABLE>
 </DL>
 <P CLASS="western" STYLE="margin-left: 0.79in; margin-bottom: 0in"><BR>
@@ -669,8 +687,8 @@ coverage of <EM>GraphicsMagick</EM> topics:
 		</TD>
 	</TR>
 </TABLE>
-<P CLASS="western">We want to thank these sponsors of the
-<I>GraphicsMagick</I> project: 
+<P CLASS="western">We thank these sponsors of the <I>GraphicsMagick</I>
+project: 
 </P>
 <DL>
 	<DD>
@@ -689,7 +707,7 @@ coverage of <EM>GraphicsMagick</EM> topics:
 		<TR>
 			<TD WIDTH=30% BGCOLOR="#ffffff">
 				<P CLASS="western" ALIGN=CENTER><FONT COLOR="#0085c0"><A HREF="http://www.pdfsages.com/"><FONT COLOR="#0085c0"><IMG SRC="images/pdfsages.png" NAME="HTTP://WWW.PDFSAGES.COM/" ALT="PDF Sages" ALIGN=BOTTOM WIDTH=126 HEIGHT=40 BORDER=1></FONT></A></FONT>
-				</P>
+								</P>
 			</TD>
 			<TD WIDTH=70% BGCOLOR="#ffffff">
 				<P CLASS="western">PDF Sages, a company dedicated to providing
@@ -698,8 +716,8 @@ coverage of <EM>GraphicsMagick</EM> topics:
 		</TR>
 	</TABLE>
 </DL>
-<P CLASS="western">You or your company may want to <A HREF="www/sponsor.html">sponsor</A>
-the <I>GraphicsMagick</I> project as well.</P>
+<P CLASS="western"><BR><BR>
+</P>
 <HR>
 <P CLASS="western"><BR><BR>
 </P>
