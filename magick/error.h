@@ -21,7 +21,7 @@ extern "C" {
 */
 typedef enum
 {
-  UndefinedException = 0,
+  UndefinedExceptionBase = 0,
   ExceptionBase = 1,
   ResourceBase = 2,
   ResourceLimitBase = 2,
@@ -54,6 +54,7 @@ typedef enum
 
 typedef enum
 {
+  UndefinedException = 0,
   EventException = 100,
   ExceptionEvent = EventException + ExceptionBase,
   ResourceEvent = EventException + ResourceBase,

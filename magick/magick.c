@@ -570,6 +570,7 @@ static RETSIGTYPE MagickSignalHandler(int signo)
    string is a valid and complete path to a file within the 
    filesystem
  */
+#if !defined(UseInstalledMagick)
 static unsigned int IsValidFilesystemPath(const char *path)
 {
   if ((path != (const char *) NULL) && (*path != '\0'))
@@ -597,6 +598,7 @@ static unsigned int IsValidFilesystemPath(const char *path)
     }
   return False;
 }
+#endif /* !defined(UseInstalledMagick) */
 
 /*
   Try and figure out the path and name of the client

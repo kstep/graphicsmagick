@@ -1,3 +1,22 @@
+2003-08-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/cache.c (PersistCache): If HAVE_SYSCONF and _SC_PAGE_SIZE
+	are defined, then assume that sysconf works and don't use legacy
+	getpagesize() function.
+	* magick/studio.h (_XOPEN_SOURCE): Should be defined as 600 in
+	order to match _POSIX_C_SOURCE=200112L according to the Single
+	UNIX Specification v3.  This is necessary for the vsnprintf
+	prototype to be visible.
+	* magick/attribute.c (ReadByte): Fix compilation warnings due to
+	casting 'unsigned char *' to 'char *' by changing function
+	definition to accept 'unsigned char *' instead.
+	* magick/error.h (UndefinedException): UndefinedException should
+	be ExceptionType, not ExceptionBaseType.
+	* magick/magick.c (IsValidFilesystemPath): Eliminate warning about
+	unused function when UseInstalledMagick is defined.
+	* magick/error.c (ThrowLoggedException): Fix improper parameters
+	passed to LogMagickEvent() when reason is not available.
+
 003-08-07  William Radcliffe  <billr@corbis.com>
 
 	* magick/log.c, log.h: Added ability to log by either severity

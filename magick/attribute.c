@@ -163,7 +163,7 @@ static unsigned int GenerateIPTCAttribute(Image *image,const char *key)
   return(i < (long) image->iptc_profile.length);
 }
 
-static unsigned char ReadByte(char **p,size_t *length)
+static unsigned char ReadByte(unsigned char **p,size_t *length)
 {
   unsigned char
     c;
@@ -415,20 +415,20 @@ static int Generate8BIMAttribute(Image *image,const char *key)
   info=image->iptc_profile.info;
   while (length != 0)
   {
-    if (ReadByte((char **) &info,&length) != '8')
+    if (ReadByte(&info,&length) != '8')
       continue;
-    if (ReadByte((char **) &info,&length) != 'B')
+    if (ReadByte(&info,&length) != 'B')
       continue;
-    if (ReadByte((char **) &info,&length) != 'I')
+    if (ReadByte(&info,&length) != 'I')
       continue;
-    if (ReadByte((char **) &info,&length) != 'M')
+    if (ReadByte(&info,&length) != 'M')
       continue;
     id=ReadMSBShort((unsigned char **) &info,&length);
     if (id < start)
       continue;
     if (id > stop)
       continue;
-    count=ReadByte((char **) &info,&length);
+    count=ReadByte(&info,&length);
     string=(char *) NULL;
     if ((count != 0) && (count <= length))
       {
@@ -436,13 +436,13 @@ static int Generate8BIMAttribute(Image *image,const char *key)
         if (string != (char *) NULL)
           {
             for (i=0; i < (long) count; i++)
-              string[i]=(char) ReadByte((char **) &info,&length);
+              string[i]=(char) ReadByte(&info,&length);
             string[count]=0;
             MagickFreeMemory(string);
           }
       }
     if (!(count & 0x01))
-      (void) ReadByte((char **) &info,&length);
+      (void) ReadByte(&info,&length);
     count=ReadMSBLong((unsigned char **) &info,&length);
     attribute=MagickAllocateMemory(char *,count+MaxTextExtent);
     if (attribute != (char *) NULL)
@@ -778,17 +778,17 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
   info=image->generic_profile[index].info;
   while (length != 0)
   {
-    if (ReadByte((char **) &info,&length) != 0x45)
+    if (ReadByte(&info,&length) != 0x45)
       continue;
-    if (ReadByte((char **) &info,&length) != 0x78)
+    if (ReadByte(&info,&length) != 0x78)
       continue;
-    if (ReadByte((char **) &info,&length) != 0x69)
+    if (ReadByte(&info,&length) != 0x69)
       continue;
-    if (ReadByte((char **) &info,&length) != 0x66)
+    if (ReadByte(&info,&length) != 0x66)
       continue;
-    if (ReadByte((char **) &info,&length) != 0x00)
+    if (ReadByte(&info,&length) != 0x00)
       continue;
-    if (ReadByte((char **) &info,&length) != 0x00)
+    if (ReadByte(&info,&length) != 0x00)
       continue;
     break;
   }

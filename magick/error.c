@@ -882,7 +882,7 @@ MagickExport void ThrowLoggedException(ExceptionInfo *exception,
   else
     {
       LogMagickEvent(severity,module,function,line,
-        "%s: exception contains no reason!");
+        "exception contains no reason!");
     }
   return;
 }

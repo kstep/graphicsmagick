@@ -2398,8 +2398,7 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
   pagesize=0;
 #if defined(HAVE_SYSCONF) && defined(_SC_PAGE_SIZE)
   pagesize=sysconf(_SC_PAGE_SIZE);
-#endif
-#if defined(HAVE_GETPAGESIZE) && defined(POSIX)
+#elif defined(HAVE_GETPAGESIZE) && defined(POSIX)
   pagesize=getpagesize();
 #endif
   if (pagesize <= 0)
