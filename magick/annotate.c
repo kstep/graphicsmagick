@@ -224,7 +224,7 @@ MagickExport unsigned int AnnotateImage(Image *image,
           q=GetImagePixels(annotate_image,0,0,annotate_image->columns,1);
         else
           if (annotate_info->decorate == UnderlineDecoration)
-            q=GetImagePixels(annotate_image,0,(int) annotate_image->rows,
+            q=GetImagePixels(annotate_image,0,(int) annotate_image->rows-1,
               annotate_image->columns,1);
           else
             q=GetImagePixels(annotate_image,0,(int) (0.5*annotate_image->rows),
