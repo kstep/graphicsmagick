@@ -100,7 +100,6 @@ extern "C" {
 
 #if !defined(vms) && !defined(macintosh)
 # include "magick/magick_types.h"
-# include "magick/semaphore.h"
 # include "magick/error.h"
 # include "magick/log.h"
 # include "magick/timer.h"
@@ -143,7 +142,6 @@ extern "C" {
 # include "magick/version.h"
 #else
 # include "magick_types.h"
-# include "semaphore.h"
 # include "timer.h"
 # include "error.h"
 # include "log.h"

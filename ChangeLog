@@ -1,3 +1,8 @@
+2003-10-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/api.h: Removed inclusion of <magick/semaphore.h> since it
+	is an implementation header.
+
 2003-10-13  Lars Skyum  <lrs@stibo.dk>
 
 	* www/GraphicsMagick.html, www/animate.html, www/composite.html,
