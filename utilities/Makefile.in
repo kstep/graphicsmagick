@@ -229,7 +229,11 @@ ALLMANPAGES = $(STDMANPAGES) $(X11MANPAGES)
 @HasX11_FALSE@X11PROGRAMS = 
 @HasX11_TRUE@MANPAGES = $(ALLMANPAGES)
 @HasX11_FALSE@MANPAGES = $(STDMANPAGES)
-bin_PROGRAMS = composite convert identify mogrify montage $(X11PROGRAMS)
+
+@HasXML_TRUE@XMLPROGRAMS = conjure
+@HasXML_FALSE@XMLPROGRAMS = 
+
+bin_PROGRAMS = composite $(XMLPROGRAMS) convert identify mogrify montage $(X11PROGRAMS)
 
 # Libtool libraries, dependencies, and linker flags used by most executables
 @WITH_MODULES_TRUE@COMMONLDADD = $(MAGICK_LIB) $(top_builddir)/ltdl/libltdlc.la
@@ -244,6 +248,10 @@ animate_SOURCES = animate.c
 composite_LDADD = $(COMMONLDADD)
 composite_LDFLAGS = $(COMMONLDFLAGS)
 composite_SOURCES = composite.c
+
+conjure_LDADD = $(COMMONLDADD) @LIB_XML@
+conjure_LDFLAGS = $(COMMONLDFLAGS)
+conjure_SOURCES = conjure.c
 
 convert_LDADD = $(COMMONLDADD)
 convert_LDFLAGS = $(COMMONLDFLAGS)
@@ -278,13 +286,23 @@ subdir = utilities
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/magick/magick_config.h
 CONFIG_CLEAN_FILES =
-@HasX11_TRUE@bin_PROGRAMS = composite$(EXEEXT) convert$(EXEEXT) \
-@HasX11_TRUE@	identify$(EXEEXT) mogrify$(EXEEXT) \
-@HasX11_TRUE@	montage$(EXEEXT) animate$(EXEEXT) display$(EXEEXT) \
-@HasX11_TRUE@	import$(EXEEXT)
-@HasX11_FALSE@bin_PROGRAMS = composite$(EXEEXT) convert$(EXEEXT) \
-@HasX11_FALSE@	identify$(EXEEXT) mogrify$(EXEEXT) \
-@HasX11_FALSE@	montage$(EXEEXT)
+@HasX11_FALSE@@HasXML_TRUE@bin_PROGRAMS = composite$(EXEEXT) \
+@HasX11_FALSE@@HasXML_TRUE@	conjure$(EXEEXT) convert$(EXEEXT) \
+@HasX11_FALSE@@HasXML_TRUE@	identify$(EXEEXT) mogrify$(EXEEXT) \
+@HasX11_FALSE@@HasXML_TRUE@	montage$(EXEEXT)
+@HasX11_FALSE@@HasXML_FALSE@bin_PROGRAMS = composite$(EXEEXT) \
+@HasX11_FALSE@@HasXML_FALSE@	convert$(EXEEXT) identify$(EXEEXT) \
+@HasX11_FALSE@@HasXML_FALSE@	mogrify$(EXEEXT) montage$(EXEEXT)
+@HasX11_TRUE@@HasXML_TRUE@bin_PROGRAMS = composite$(EXEEXT) \
+@HasX11_TRUE@@HasXML_TRUE@	conjure$(EXEEXT) convert$(EXEEXT) \
+@HasX11_TRUE@@HasXML_TRUE@	identify$(EXEEXT) mogrify$(EXEEXT) \
+@HasX11_TRUE@@HasXML_TRUE@	montage$(EXEEXT) animate$(EXEEXT) \
+@HasX11_TRUE@@HasXML_TRUE@	display$(EXEEXT) import$(EXEEXT)
+@HasX11_TRUE@@HasXML_FALSE@bin_PROGRAMS = composite$(EXEEXT) \
+@HasX11_TRUE@@HasXML_FALSE@	convert$(EXEEXT) identify$(EXEEXT) \
+@HasX11_TRUE@@HasXML_FALSE@	mogrify$(EXEEXT) montage$(EXEEXT) \
+@HasX11_TRUE@@HasXML_FALSE@	animate$(EXEEXT) display$(EXEEXT) \
+@HasX11_TRUE@@HasXML_FALSE@	import$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 
 am_animate_OBJECTS = animate.$(OBJEXT)
@@ -297,6 +315,11 @@ composite_OBJECTS = $(am_composite_OBJECTS)
 @WITH_MODULES_TRUE@composite_DEPENDENCIES = ../magick/libMagick.la \
 @WITH_MODULES_TRUE@	$(top_builddir)/ltdl/libltdlc.la
 @WITH_MODULES_FALSE@composite_DEPENDENCIES = ../magick/libMagick.la
+am_conjure_OBJECTS = conjure.$(OBJEXT)
+conjure_OBJECTS = $(am_conjure_OBJECTS)
+@WITH_MODULES_TRUE@conjure_DEPENDENCIES = ../magick/libMagick.la \
+@WITH_MODULES_TRUE@	$(top_builddir)/ltdl/libltdlc.la
+@WITH_MODULES_FALSE@conjure_DEPENDENCIES = ../magick/libMagick.la
 am_convert_OBJECTS = convert.$(OBJEXT)
 convert_OBJECTS = $(am_convert_OBJECTS)
 @WITH_MODULES_TRUE@convert_DEPENDENCIES = ../magick/libMagick.la \
@@ -335,9 +358,10 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 @AMDEP_TRUE@DEP_FILES = $(DEPDIR)/animate.Po $(DEPDIR)/composite.Po \
-@AMDEP_TRUE@	$(DEPDIR)/convert.Po $(DEPDIR)/display.Po \
-@AMDEP_TRUE@	$(DEPDIR)/identify.Po $(DEPDIR)/import.Po \
-@AMDEP_TRUE@	$(DEPDIR)/mogrify.Po $(DEPDIR)/montage.Po
+@AMDEP_TRUE@	$(DEPDIR)/conjure.Po $(DEPDIR)/convert.Po \
+@AMDEP_TRUE@	$(DEPDIR)/display.Po $(DEPDIR)/identify.Po \
+@AMDEP_TRUE@	$(DEPDIR)/import.Po $(DEPDIR)/mogrify.Po \
+@AMDEP_TRUE@	$(DEPDIR)/montage.Po
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -347,13 +371,14 @@ LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CFLAGS = @CFLAGS@
 DIST_SOURCES = $(animate_SOURCES) $(composite_SOURCES) \
-	$(convert_SOURCES) $(display_SOURCES) $(identify_SOURCES) \
-	$(import_SOURCES) $(mogrify_SOURCES) $(montage_SOURCES)
+	$(conjure_SOURCES) $(convert_SOURCES) $(display_SOURCES) \
+	$(identify_SOURCES) $(import_SOURCES) $(mogrify_SOURCES) \
+	$(montage_SOURCES)
 
 NROFF = nroff
 MANS = $(man_MANS)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(animate_SOURCES) $(composite_SOURCES) $(convert_SOURCES) $(display_SOURCES) $(identify_SOURCES) $(import_SOURCES) $(mogrify_SOURCES) $(montage_SOURCES)
+SOURCES = $(animate_SOURCES) $(composite_SOURCES) $(conjure_SOURCES) $(convert_SOURCES) $(display_SOURCES) $(identify_SOURCES) $(import_SOURCES) $(mogrify_SOURCES) $(montage_SOURCES)
 
 all: all-am
 
@@ -405,6 +430,9 @@ animate$(EXEEXT): $(animate_OBJECTS) $(animate_DEPENDENCIES)
 composite$(EXEEXT): $(composite_OBJECTS) $(composite_DEPENDENCIES) 
 	@rm -f composite$(EXEEXT)
 	$(LINK) $(composite_LDFLAGS) $(composite_OBJECTS) $(composite_LDADD) $(LIBS)
+conjure$(EXEEXT): $(conjure_OBJECTS) $(conjure_DEPENDENCIES) 
+	@rm -f conjure$(EXEEXT)
+	$(LINK) $(conjure_LDFLAGS) $(conjure_OBJECTS) $(conjure_LDADD) $(LIBS)
 convert$(EXEEXT): $(convert_OBJECTS) $(convert_DEPENDENCIES) 
 	@rm -f convert$(EXEEXT)
 	$(LINK) $(convert_LDFLAGS) $(convert_OBJECTS) $(convert_LDADD) $(LIBS)
@@ -432,6 +460,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/animate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/composite.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/conjure.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/convert.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/display.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/identify.Po@am__quote@

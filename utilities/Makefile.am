@@ -50,7 +50,14 @@ else
 X11PROGRAMS =
 MANPAGES = $(STDMANPAGES)
 endif
-bin_PROGRAMS = composite convert identify mogrify montage $(X11PROGRAMS)
+
+if HasXML
+XMLPROGRAMS = conjure
+else
+XMLPROGRAMS = 
+endif
+
+bin_PROGRAMS = composite $(XMLPROGRAMS) convert identify mogrify montage $(X11PROGRAMS)
 
 # Libtool libraries, dependencies, and linker flags used by most executables
 if WITH_MODULES
@@ -68,6 +75,10 @@ animate_SOURCES   = animate.c
 composite_LDADD     = $(COMMONLDADD)
 composite_LDFLAGS   = $(COMMONLDFLAGS)
 composite_SOURCES   = composite.c
+
+conjure_LDADD     = $(COMMONLDADD) @LIB_XML@
+conjure_LDFLAGS   = $(COMMONLDFLAGS)
+conjure_SOURCES   = conjure.c
 
 convert_LDADD     = $(COMMONLDADD)
 convert_LDFLAGS   = $(COMMONLDFLAGS)
