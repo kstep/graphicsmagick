@@ -309,7 +309,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
     length;
 
   /*
-    Read the magic configuration file.
+    Read the magic configure file.
   */
   xml=(char *) GetConfigureBlob(basename,path,&length,exception);
   if (xml == (char *) NULL)

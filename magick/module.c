@@ -841,7 +841,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
     length;
 
   /*
-    Read the module configuration file.
+    Read the module configure file.
   */
   xml=(char *) GetModuleBlob(basename,path,&length,exception);
   if (xml == (char *) NULL)

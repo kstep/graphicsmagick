@@ -835,11 +835,11 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
       if (CheckFileAccessability(path,debug))
         return(FileToBlob(path,length,exception));
     }
-  /*
-    Search MAGICK_HOME.
-  */
   if (getenv("MAGICK_HOME") != (char *) NULL)
     {
+      /*
+        Search MAGICK_HOME.
+      */
 #if defined(POSIX)
       FormatString(path,"%.1024s/lib/ImageMagick/%.1024s",getenv("MAGICK_HOME"),
         filename);
@@ -850,11 +850,11 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
       if (CheckFileAccessability(path,debug))
         return(FileToBlob(path,length,exception));
     }
-  /*
-    Search $HOME/.magick.
-  */
   if (getenv("HOME") != (char *) NULL)
     {
+      /*
+        Search $HOME/.magick.
+      */
       FormatString(path,"%.1024s%s%s%.1024s",getenv("HOME"),
         *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator,filename);
       if (CheckFileAccessability(path,debug))
@@ -965,15 +965,15 @@ MagickExport void *GetFontBlob(const char *filename,char *path,
   return(FileToBlob(path,length,exception));
 #  endif /* MagickLibPath */
 #  else
-  /*
-    Search based on executable directory if directory is known.
-  */
   if (*SetClientPath((char *) NULL) != '\0')
     {
 #if defined(POSIX)
       char
         prefix[MaxTextExtent];
 
+      /*
+        Search based on executable directory if directory is known.
+      */
       strcpy(prefix,SetClientPath((char *) NULL));
       if (debug)
         (void) fprintf(stdout,"original path  \"%s\"\n",prefix);
@@ -988,11 +988,11 @@ MagickExport void *GetFontBlob(const char *filename,char *path,
       if (CheckFileAccessability(path,debug))
         return(FileToBlob(path,length,exception));
     }
-  /*
-    Search MAGIC_FONT_PATH.
-  */
   if (getenv("MAGIC_FONT_PATH") != (char *) NULL)
     {
+      /*
+        Search MAGIC_FONT_PATH.
+      */
       FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_FONT_PATH"),
         DirectorySeparator,filename);
       if (CheckFileAccessability(path,debug))
@@ -1089,10 +1089,10 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
   }
 #  endif /* WIN32 */
 #  if defined(MagickLibPath)
+#    if defined(MagickModulesPath)
   /*
     Search hard coded paths.
   */
-#    if defined(MagickModulesPath)
   FormatString(path,"%.1024s%.1024s",MagickModulesPath,filename);
   if (!CheckFileAccessability(path,debug))
     {
@@ -1105,15 +1105,15 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
 #    endif /* MagickModulesBlob */
 #  endif /* MagickLibPath */
 #  else
-  /*
-    Search based on executable directory if directory is known.
-  */
   if (*SetClientPath((char *) NULL) != '\0')
     {
 #if defined(POSIX)
       char
         prefix[MaxTextExtent];
 
+      /*
+        Search based on executable directory if directory is known.
+      */
       (void) strcpy(prefix,SetClientPath((char *) NULL));
       if (debug)
         (void) fprintf(stdout,"original path  \"%s\"\n",prefix);
@@ -1129,11 +1129,11 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
       if (CheckFileAccessability(path,debug))
         return(FileToBlob(path,length,exception));
     }
-  /*
-    Search MAGICK_HOME.
-  */
   if (getenv("MAGICK_HOME") != (char *) NULL)
     {
+      /*
+        Search MAGICK_HOME.
+      */
 #if defined(POSIX)
       FormatString(path,"%.1024s/lib/ImageMagick/modules/coders/%.1024s",
         getenv("MAGICK_HOME"),filename);
@@ -1144,11 +1144,11 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
       if (CheckFileAccessability(path,debug))
         return(FileToBlob(path,length,exception));
     }
-  /*
-    Search $HOME/.magick.
-  */
   if (getenv("HOME") != (char *) NULL)
     {
+      /*
+        Search $HOME/.magick.
+      */
       FormatString(path,"%.1024s%s%s%.1024s",getenv("HOME"),
         *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator,filename);
       if (CheckFileAccessability(path,debug))
@@ -1161,12 +1161,12 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
     return(FileToBlob(path,length,exception));
 #  if defined(WIN32)
   {
-    /*
-      Look for a named resource.
-    */
     void
       *blob;
 
+    /*
+      Look for a named resource.
+    */
     FormatString(path,"%.1024s",filename);
     blob=NTResourceToBlob(path);
     if (blob != (unsigned char *) NULL)

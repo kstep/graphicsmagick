@@ -1643,7 +1643,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
     length;
 
   /*
-    Read the color configuration file.
+    Read the color configure file.
   */
   xml=(char *) GetConfigureBlob(basename,path,&length,exception);
   if (xml == (char *) NULL)
