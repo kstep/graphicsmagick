@@ -2918,34 +2918,34 @@ MagickExport char *TranslateText(const ImageInfo *image_info,const Image *image,
         /*
           Label segment is the base of the filename.
         */
-        if (strlen(image->filename) == 0)
+        if (strlen(image->magick_filename) == 0)
           break;
         switch (*p)
         {
           case 'd':
           {
-            GetPathComponent(image->filename,HeadPath,filename);
+            GetPathComponent(image->magick_filename,HeadPath,filename);
             (void) strncpy(q,filename,MaxTextExtent-1);
             q+=strlen(filename);
             break;
           }
           case 'e':
           {
-            GetPathComponent(image->filename,ExtensionPath,filename);
+            GetPathComponent(image->magick_filename,ExtensionPath,filename);
             (void) strncpy(q,filename,MaxTextExtent-1);
             q+=strlen(filename);
             break;
           }
           case 'f':
           {
-            GetPathComponent(image->filename,TailPath,filename);
+            GetPathComponent(image->magick_filename,TailPath,filename);
             (void) strncpy(q,filename,MaxTextExtent-1);
             q+=strlen(filename);
             break;
           }
           case 't':
           {
-            GetPathComponent(image->filename,BasePath,filename);
+            GetPathComponent(image->magick_filename,BasePath,filename);
             (void) strncpy(q,filename,MaxTextExtent-1);
             q+=strlen(filename);
             break;
@@ -2961,7 +2961,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,const Image *image,
       }
       case 'h':
       {
-        FormatString(q,"%lu",image->rows);
+        FormatString(q,"%lu",image->magick_rows ? image->magick_rows : 256);
         q=translated_text+strlen(translated_text);
         break;
       }
@@ -3044,7 +3044,8 @@ MagickExport char *TranslateText(const ImageInfo *image_info,const Image *image,
       }
       case 'w':
       {
-        FormatString(q,"%lu",image->columns);
+        FormatString(q,"%lu",
+          image->magick_columns ? image->magick_columns : 256);
         q=translated_text+strlen(translated_text);
         break;
       }
