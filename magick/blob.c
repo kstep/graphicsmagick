@@ -889,7 +889,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  G e t C o n f i g u r e B l o b                                            %
+%  G e t F o n t B l o b                                                      %
 %                                                                             %
 %                                                                             %
 %                                                                             %
