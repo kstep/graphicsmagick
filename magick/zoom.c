@@ -936,7 +936,7 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
     Apply filter to resize vertically from source to destination.
   */
   scale=blur/y_factor;
-  support=Max(filter_info->support,0.5);
+  support=Max(scale*filter_info->support,0.5);
   if (support > 0.5)
     SetImageType(destination,TrueColorType);
   else
