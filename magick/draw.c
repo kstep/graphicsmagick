@@ -670,6 +670,39 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         (void) QueryColorDatabase(keyword,&clone_info->fill);
         continue;
       }
+    if (LocaleCompare("font",keyword) == 0)
+      {
+        for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
+          keyword[x]=(*p++);
+        keyword[x]='\0';
+        CloneString(&clone_info->font,keyword);
+        continue;
+      }
+    if (LocaleCompare("gravity",keyword) == 0)
+      {
+        for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
+          keyword[x]=(*p++);
+        keyword[x]='\0';
+        if (LocaleCompare("NorthWest",keyword) == 0)
+          clone_info->gravity=NorthWestGravity;
+        if (LocaleCompare("North",keyword) == 0)
+          clone_info->gravity=NorthGravity;
+        if (LocaleCompare("NorthEast",keyword) == 0)
+          clone_info->gravity=NorthEastGravity;
+        if (LocaleCompare("West",keyword) == 0)
+          clone_info->gravity=WestGravity;
+        if (LocaleCompare("Center",keyword) == 0)
+          clone_info->gravity=CenterGravity;
+        if (LocaleCompare("East",keyword) == 0)
+          clone_info->gravity=EastGravity;
+        if (LocaleCompare("SouthWest",keyword) == 0)
+          clone_info->gravity=SouthWestGravity;
+        if (LocaleCompare("South",keyword) == 0)
+          clone_info->gravity=SouthGravity;
+        if (LocaleCompare("SouthEast",keyword) == 0)
+          clone_info->gravity=SouthEastGravity;
+        continue;
+      }
     if (LocaleCompare("linewidth",keyword) == 0)
       {
         clone_info->linewidth=strtod(p,&p);
@@ -1019,7 +1052,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       case ImagePrimitive:
       {
         ExceptionInfo
-          error;
+          exception;
 
         Image
           *composite_image;
@@ -1070,9 +1103,52 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               p++;
           }
         *q='\0';
-        composite_image=ReadImage(composite_info,&error);
+        composite_image=ReadImage(composite_info,&exception);
         if (composite_image == (Image *) NULL)
           break;
+        if ((clone_info->affine[1] == 0.0) && (clone_info->affine[2] == 0.0))
+          {
+            if ((clone_info->affine[0] != 1.0) ||
+                (clone_info->affine[0] != 1.0))
+              {
+                Image
+                  *scale_image;
+
+                unsigned int
+                  height,
+                  width;
+
+                width=clone_info->affine[0]*composite_image->columns;
+                height=clone_info->affine[3]*composite_image->rows;
+                scale_image=ZoomImage(composite_image,width,height,&exception);
+                if (scale_image != (Image *) NULL)
+                  {
+                    DestroyImage(composite_image);
+                    composite_image=scale_image;
+                  }
+              }
+          }
+        else
+          {
+            if (((clone_info->affine[0]-clone_info->affine[3]) == 0.0) &&
+                ((clone_info->affine[1]+clone_info->affine[2]) == 0.0))
+              {
+                double
+                  theta;
+
+                Image
+                  *rotate_image;
+
+                theta=(180.0/M_PI)*
+                  atan2(clone_info->affine[1],clone_info->affine[0]);
+                rotate_image=RotateImage(composite_image,theta,&exception);
+                if (rotate_image != (Image *) NULL)
+                  {
+                    DestroyImage(composite_image);
+                    composite_image=rotate_image;
+                  }
+              }
+          }
         CompositeImage(image,image->matte ? OverCompositeOp :
           ReplaceCompositeOp,composite_image,(int) pixel.x,(int) pixel.y);
         DestroyImage(composite_image);
@@ -1268,8 +1344,8 @@ static void GenerateArc(PrimitiveInfo *primitive_info,PointInfo start,
     *p;
 
   p=primitive_info;
-  scale.x=AbsoluteValue((end.x-start.x)/2.0);
-  scale.y=AbsoluteValue((end.y-start.y)/2.0);
+  scale.x=fabs((end.x-start.x)/2.0);
+  scale.y=fabs((end.y-start.y)/2.0);
   x=Min(start.x,end.x)+scale.x;
   y=Min(start.y,end.y)+scale.y;
   for (angle=(arc.x+1.0); angle <= arc.y; angle+=1.0)

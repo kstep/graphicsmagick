@@ -113,7 +113,9 @@ typedef struct _AnnotateInfo
     *font_name;
 
   unsigned int
-    antialias,
+    antialias;
+
+  GravityType
     gravity;
 
   double
@@ -231,8 +233,10 @@ typedef struct _MontageInfo
   double
     pointsize;
 
+  GravityType
+    gravity;
+
   unsigned int
-    gravity,
     border_width,
     shadow;
 
@@ -457,7 +461,9 @@ typedef struct _DrawInfo
     *font;
 
   unsigned int
-    antialias,
+    antialias;
+
+  GravityType
     gravity;
 
   double

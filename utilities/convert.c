@@ -992,7 +992,7 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("gravity",option+1,2) == 0)
             {
-              int
+              GravityType
                 gravity;
 
               gravity=ForgetGravity;

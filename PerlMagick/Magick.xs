@@ -4229,7 +4229,8 @@ Mogrify(ref,...)
               (void) CloneString(&annotate_info->geometry,message);
             }
           if (attribute_flag[11])
-            annotate_info->gravity=argument_list[11].int_reference;
+            annotate_info->gravity=(GravityType)
+              argument_list[11].int_reference;
           for (j=12; j < 17; j++)
           {
             if (!attribute_flag[j])
@@ -5238,7 +5239,7 @@ Montage(ref,...)
                    SvPV(ST(i),na));
                  return;
                }
-             montage_info->gravity=in;
+             montage_info->gravity=(GravityType) in;
              continue;
            }
          break;

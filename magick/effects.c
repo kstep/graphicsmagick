@@ -2372,7 +2372,7 @@ MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
             {
               normal_distance=
                 normal.x*normal.x+normal.y*normal.y+normal.z*normal.z;
-              if (AbsoluteValue(normal_distance) > 0.0000001)
+              if (fabs(normal_distance) > 0.0000001)
                 shade=distance/sqrt(normal_distance);
             }
         }
@@ -3188,8 +3188,8 @@ MagickExport Image *WaveImage(Image *image,const double amplitude,
   assert(image != (Image *) NULL);
   if (!image->matte)
     MatteImage(image,OpaqueOpacity);
-  wave_image=CloneImage(image,image->columns,image->rows+
-    (int) (2*AbsoluteValue(amplitude)),False,exception);
+  wave_image=CloneImage(image,image->columns,image->rows+2.0*fabs(amplitude),
+    False,exception);
   if (wave_image == (Image *) NULL)
     return((Image *) NULL);
   /*
@@ -3203,7 +3203,7 @@ MagickExport Image *WaveImage(Image *image,const double amplitude,
         "Memory allocation failed");
     }
   for (x=0; x < (int) wave_image->columns; x++)
-    sine_map[x]=AbsoluteValue(amplitude)+amplitude*sin((2*M_PI*x)/wavelength);
+    sine_map[x]=fabs(amplitude)+amplitude*sin((2*M_PI*x)/wavelength);
   /*
     Wave image.
   */

@@ -913,9 +913,9 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
   extent.y=0;
   for (x=0; x <= (Extent(text)+2); x++)
   {
-    point.x=AbsoluteValue(image_info->affine[0]*x*image_info->pointsize+
+    point.x=fabs(image_info->affine[0]*x*image_info->pointsize+
       image_info->affine[2]*2.0*image_info->pointsize);
-    point.y=AbsoluteValue(image_info->affine[1]*x*image_info->pointsize+
+    point.y=fabs(image_info->affine[1]*x*image_info->pointsize+
       image_info->affine[3]*2.0*image_info->pointsize);
     if (point.x > extent.x)
       extent.x=point.x;
@@ -1212,9 +1212,6 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
 
       unsigned int
         length;
-
-      ExceptionInfo
-        exception;
 
       /*
         Read text from a file.

@@ -73,10 +73,14 @@ typedef struct _GraphicContext
 {
   char
     *fill,
-    *stroke;
+    *stroke,
+    *font;
 
   unsigned int
     antialias;
+
+  GravityType
+    gravity;
 
   double
     linewidth,
@@ -582,6 +586,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
     AllocateString(svg_info->graphic_context[n-1].fill);
   svg_info->graphic_context[n].stroke=
     AllocateString(svg_info->graphic_context[n-1].stroke);
+  svg_info->graphic_context[n].font=
+    AllocateString(svg_info->graphic_context[n-1].font);
   if (svg_info->verbose)
     (void) fprintf(stdout,"SAX.startElement(%s",(char *) name);
   if (attributes != (const xmlChar **) NULL)
@@ -633,6 +639,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
           svg_info->element.minor=atof(value)*UnitOfMeasure(value);
           continue;
         }
+      if (LocaleCompare(keyword,"path") == 0)
+        {
+          CloneString(&svg_info->url,value);
+          continue;
+        }
       if (LocaleCompare(keyword,"points") == 0)
         {
           CloneString(&svg_info->vertices,value);
@@ -662,6 +673,9 @@ static void SVGStartElement(void *context,const xmlChar *name,
             if ((LocaleCompare(tokens[j],"fill:") == 0) ||
                 (LocaleCompare(tokens[j],"fillcolor:") == 0))
               (void) CloneString(&svg_info->graphic_context[n].fill,
+                tokens[++j]);
+            if (LocaleCompare(tokens[j],"font-family:") == 0)
+              (void) CloneString(&svg_info->graphic_context[n].font,
                 tokens[++j]);
             if (LocaleCompare(tokens[j],"fill-opacity:") == 0)
               {
@@ -693,6 +707,16 @@ static void SVGStartElement(void *context,const xmlChar *name,
               {
                 svg_info->graphic_context[n].linewidth=
                   atof(tokens[++j])*UnitOfMeasure(tokens[j]);
+              }
+            if (LocaleCompare(tokens[j],"text-align:") == 0)
+              {
+                j++;
+                if (LocaleCompare(tokens[j],"center") == 0)
+                  svg_info->graphic_context[n].gravity=NorthGravity;
+                if (LocaleCompare(tokens[j],"left") == 0)
+                  svg_info->graphic_context[n].gravity=NorthWestGravity;
+                if (LocaleCompare(tokens[j],"right") == 0)
+                  svg_info->graphic_context[n].gravity=NorthEastGravity;
               }
             if (LocaleCompare(tokens[j],"text-antialiasing:") == 0)
               svg_info->graphic_context[n].antialias=
@@ -736,10 +760,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
               }
             if (LocaleCompare(tokens[j],"scale") == 0)
               {
-                k=sscanf(tokens[++j]+1,"%lf%lf",&affine[0],&affine[3]);
-                k=sscanf(tokens[j]+1,"%lf,%lf",&affine[0],&affine[3]);
+                j++;
+                k=sscanf(tokens[j]+1,"%lf%lf",&affine[0],&affine[3]);
                 if (k == 1)
                   affine[3]=affine[0];
+                k=sscanf(tokens[j]+1,"%lf,%lf",&affine[0],&affine[3]);
               }
             if (LocaleCompare(tokens[j],"skewX") == 0)
               {
@@ -871,7 +896,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
     }
 }
 
-static void SVGEndElement(void *context, const xmlChar *name)
+static void SVGEndElement(void *context,const xmlChar *name)
 {
   double
     angle;
@@ -894,6 +919,13 @@ static void SVGEndElement(void *context, const xmlChar *name)
   n=svg_info->n;
   (void) fprintf(svg_info->file,"antialias %d\n",
     svg_info->graphic_context[n].antialias ? 1 : 0);
+  if (svg_info->graphic_context[n].gravity == NorthEastGravity)
+    (void) fprintf(svg_info->file,"gravity NorthEast\n");
+  else
+    if (svg_info->graphic_context[n].gravity == CenterGravity)
+      (void) fprintf(svg_info->file,"gravity Center\n");
+    else
+      (void) fprintf(svg_info->file,"gravity NorthWest\n");
   (void) fprintf(svg_info->file,"linewidth %g\n",
     svg_info->graphic_context[n].linewidth);
   (void) fprintf(svg_info->file,"pointsize %g\n",
@@ -910,6 +942,9 @@ static void SVGEndElement(void *context, const xmlChar *name)
       (void) fprintf(svg_info->file,"stroke %s\n",
         svg_info->graphic_context[n].stroke);
     }
+  if (0)
+    (void) fprintf(svg_info->file,"font %s\n",
+      svg_info->graphic_context[n].font);  /* future */
   (void) fprintf(svg_info->file,"angle %f\n",
     svg_info->graphic_context[n].angle);
   (void) fprintf(svg_info->file,"affine ");
@@ -1268,7 +1303,9 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(ResourceLimitError,"Unable to allocate memory",image);
   svg_info.graphic_context[0].fill=AllocateString("none");
   svg_info.graphic_context[0].stroke=AllocateString("none");
+  svg_info.graphic_context[0].font=AllocateString("Times");
   svg_info.graphic_context[0].antialias=True;
+  svg_info.graphic_context[0].gravity=NorthWestGravity;
   svg_info.graphic_context[0].linewidth=1.0;
   svg_info.graphic_context[0].pointsize=12.0;
   svg_info.graphic_context[0].opacity=100.0;
