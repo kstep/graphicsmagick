@@ -5558,7 +5558,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     if (image->color_profile.length)
 #if (PNG_LIBPNG_VER > 10008) && defined(PNG_WRITE_iCCP_SUPPORTED)
       {
-        if (image->color_profile.name == (png_charp) NULL)
+        if (image->color_profile.name == (png_charp) NULL ||
+            *image->color_profile.name == '\0')
           png_set_iCCP(ping,ping_info,(png_charp) "icm",
              (int) 0, (png_charp) image->color_profile.info,
              (png_uint_32) image->color_profile.length);
