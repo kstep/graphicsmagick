@@ -7552,6 +7552,7 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
 
           (void) strncpy(jpeg_image_info->magick,"PNG",MaxTextExtent-1);
           (void) strncpy(jpeg_image->magick,"PNG",MaxTextExtent-1);
+          jpeg_image_info->interlace=NoInterlace;
 
           blob=(char *) ImageToBlob(jpeg_image_info,jpeg_image,&length,
               &image->exception);
@@ -7593,6 +7594,7 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
           /* Encode opacity as a grayscale JPEG blob */
           FormatString(jpeg_image_info->filename,"%.1024sA.jpg",basename);
           FormatString(jpeg_image->filename,"%.1024sA.jpg",basename);
+          jpeg_image_info->interlace=NoInterlace;
 
           status=OpenBlob(jpeg_image_info,jpeg_image,WriteBinaryBlobMode,
             &image->exception);
