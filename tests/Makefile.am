@@ -30,6 +30,46 @@ CHECK_FILES = \
 	'../PerlMagick/t/input_p5.pgm' \
 	'../PerlMagick/t/input_p6.ppm'
 
+if HasHDF
+HDF=HDF
+else
+HDF=
+endif
+
+if HasJBIG
+JBIG=JBIG
+else
+JBIG=
+endif
+
+if HasJPEG
+JPG=JPG
+else
+JPG=
+endif
+
+if HasPNG
+MNG=MNG
+PNG=PNG
+else
+MNG=
+PNG=
+endif
+
+if HasTIFF
+TIFF=TIFF
+PTIF=PTIF
+else
+TIFF=
+PTIF=
+endif
+
+if HasX11
+XWD=XWD
+else
+XWD=
+endif
+
 CHECK_FORMATS = \
 	AVS \
 	BMP \
@@ -39,12 +79,12 @@ CHECK_FORMATS = \
 	FITS \
 	GIF \
 	GRAY \
-	HDF \
+	$(HDF) \
 	ICB \
-	JBIG \
-	JPEG \
+	$(JBIG) \
+	$(JPEG) \
 	MIFF \
-	MNG \
+	$(MNG) \
 	MONO \
 	MTV \
 	P7 \
@@ -54,18 +94,18 @@ CHECK_FORMATS = \
 	PCX \
 	PGM \
 	PICT \
-	PNG \
+	$(PNG) \
 	PNM \
 	PPM \
 	PSD \
-	PTIF \
+	$(PTIF) \
 	RAS \
 	RGB \
 	RGBA \
 	SGI \
 	SUN \
 	TGA \
-	TIFF \
+	$(TIFF) \
 	UYVY \
 	VDA \
 	VICAR \
@@ -73,7 +113,7 @@ CHECK_FORMATS = \
 	VST \
 	XBM \
 	XPM \
-	XWD \
+	$(XWD) \
 	YUV
 
 check-rwblob:

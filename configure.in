@@ -138,6 +138,7 @@ AC_ARG_ENABLE(lzw,
 	      [with_lzw=$enableval],
 	      [with_lzw='no'])
 test "$with_lzw" = 'yes' && AC_DEFINE(HasLZW)
+AM_CONDITIONAL(HasLZW, test "$have_lzw" != 'no')
 
 # Enable 16-bit pixels.
 AC_ARG_ENABLE(16bit-pixel,
@@ -520,6 +521,7 @@ then
 	AC_MSG_RESULT(no)
     fi
 fi
+AM_CONDITIONAL(HasSFIO, test "$have_sfio" != 'no')
 
 
 #
@@ -557,6 +559,7 @@ then
     AC_MSG_RESULT(no)
   fi
 fi
+AM_CONDITIONAL(HasZLIB, test "$have_zlib" != 'no')
 
 #
 # Check for BZLIB
@@ -589,6 +592,7 @@ then
     AC_MSG_RESULT(no)
   fi
 fi
+AM_CONDITIONAL(HasBZLIB, test "$have_bzlib" != 'no')
 
 #
 # Find the X11 include and library directories.
@@ -660,6 +664,7 @@ then
     CPPFLAGS=$O_CPPFLAGS
     fi
 fi
+AM_CONDITIONAL(HasDPS, test "$have_dps" != 'no')
 
 
 #
@@ -692,6 +697,7 @@ then
         AC_MSG_RESULT(no)
     fi
 fi
+AM_CONDITIONAL(HasFPX, test "$have_fpx" != 'no')
 
 #
 # Check for PNG
@@ -724,6 +730,7 @@ then
     AC_MSG_RESULT(no)
     fi
 fi
+AM_CONDITIONAL(HasPNG, test "$have_png" != 'no')
 
 #
 # Check for JPEG
@@ -758,6 +765,7 @@ then
         AC_MSG_RESULT(no)
     fi
 fi
+AM_CONDITIONAL(HasJPEG, test "$have_jpeg" != 'no')
 
 #
 # Check for TTF
@@ -795,6 +803,7 @@ then
 	AC_MSG_RESULT(no)
     fi
 fi
+AM_CONDITIONAL(HasTTF, test "$have_ttf" != 'no')
 
 #
 # Check for TIFF
@@ -828,6 +837,7 @@ then
     AC_MSG_RESULT(no)
     fi
 fi
+AM_CONDITIONAL(HasTIFF, test "$have_tiff" != 'no')
 
 #
 # Check for HDF
@@ -859,6 +869,7 @@ then
     AC_MSG_RESULT(no)
     fi
 fi
+AM_CONDITIONAL(HasHDF, test "$have_hdf" != 'no')
 
 #
 # Check for JBIG
@@ -890,7 +901,7 @@ then
         AC_MSG_RESULT(no)
     fi
 fi
-
+AM_CONDITIONAL(HasJBIG, test "$have_jbig" != 'no')
 
 #
 # Configure Delegates
