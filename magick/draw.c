@@ -776,7 +776,7 @@ static PolygonInfo *ConvertPathToPolygon(const DrawInfo *draw_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   C o n v e r t P r i m i t e T o P a t h                                   %
++   C o n v e r t P r i m i t i v e T o P a t h                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -794,7 +794,7 @@ static PolygonInfo *ConvertPathToPolygon(const DrawInfo *draw_info,
 %
 %    o Method ConvertPrimitiveToPath returns a vector path structure of type
 %      PathInfo.
-%   
+%
 %    o draw_info: a structure of type DrawInfo.
 %
 %    o primitive_info: Specifies a pointer to an PrimitiveInfo structure.
@@ -1765,7 +1765,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
-            if (LocaleNCompare("clip-path-",value,10) == 0)
+            if (LocaleCompare("clip-path",value) == 0)
               break;
             if (LocaleCompare("graphic-context",value) == 0)
               {
@@ -1782,7 +1782,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
-            if (LocaleCompare("clip-path",value) == 0)
+            if (LocaleNCompare("clip-path-",value,10) == 0)
               break;
             if (LocaleCompare("graphic-context",value) == 0)
               {
@@ -2855,21 +2855,21 @@ static void PrintPrimitiveInfo(const PrimitiveInfo *primitive_info)
         p=point;
       }
     point=primitive_info[i].point;
-    if ((fabs(q.x-point.x) <= MagickEpsilon) &&
-        (fabs(q.y-point.y) <= MagickEpsilon))
+    if ((fabs(q.x-point.x) > MagickEpsilon) ||
+        (fabs(q.y-point.y) > MagickEpsilon))
+      (void) fprintf(stdout,"    %d: %g,%g\n",coordinates,point.x,point.y);
+    else
       (void) fprintf(stdout,"    %d: %g,%g (duplicate)\n",coordinates,point.x,
         point.y);
-    else
-      (void) fprintf(stdout,"    %d: %g,%g\n",coordinates,point.x,point.y);
     q=point;
     coordinates--;
     if (coordinates > 0)
       continue;
-    if ((fabs(p.x-point.x) <= MagickEpsilon) &&
-        (fabs(p.y-point.y) <= MagickEpsilon))
-      (void) fprintf(stdout,"  end open (%d)\n",coordinates);
-    else
+    if ((fabs(p.x-point.x) > MagickEpsilon) ||
+        (fabs(p.y-point.y) > MagickEpsilon))
       (void) fprintf(stdout,"  end q (%d)\n",coordinates);
+    else
+      (void) fprintf(stdout,"  end open (%d)\n",coordinates);
   }
 }
 
