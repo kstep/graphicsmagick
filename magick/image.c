@@ -134,7 +134,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   (void) QueryColorDatabase(BackgroundColor,&allocate_image->background_color);
   (void) QueryColorDatabase(BorderColor,&allocate_image->border_color);
   (void) QueryColorDatabase(MatteColor,&allocate_image->matte_color);
-  allocate_image->filter=MitchellFilter;
+  allocate_image->filter=LanczosFilter;
   allocate_image->blur=1.0;
   allocate_image->reference_count=1;
   GetExceptionInfo(&allocate_image->exception);
@@ -3936,11 +3936,11 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
 
             if (*option == '+')
               {
-                (*image)->filter=MitchellFilter;
+                (*image)->filter=LanczosFilter;
                 continue;
               }
             option=argv[++i];
-            filter=MitchellFilter;
+            filter=LanczosFilter;
             if (LocaleCompare("Point",option) == 0)
               filter=PointFilter;
             if (LocaleCompare("Box",option) == 0)

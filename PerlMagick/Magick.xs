@@ -4552,7 +4552,7 @@ Mogrify(ref,...)
               &rectangle_info.x,&rectangle_info.y,&rectangle_info.width,
               &rectangle_info.height);
           if (!attribute_flag[3])
-            argument_list[3].int_reference=(int) MitchellFilter;
+            argument_list[3].int_reference=(int) LanczosFilter;
           if (!attribute_flag[4])
             argument_list[4].double_reference=1.0;
           image=ResizeImage(image,rectangle_info.width,rectangle_info.height,
