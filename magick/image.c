@@ -1562,7 +1562,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         default: (void) fprintf(file,"Undefined"); break;
       }
       (void) fprintf(file," ");
-      (void) fprintf(file,"%d ",image->depth);
+      (void) fprintf(file,"%u-bit ",image->depth);
       if (image->filesize != 0)
         {
           if (image->filesize >= (1 << 24))
@@ -1617,7 +1617,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     default: (void) fprintf(file,"undefined"); break;
   }
   (void) fprintf(file,"\n");
-  (void) fprintf(file,"  Depth: %u\n",GetImageDepth(image));
+  (void) fprintf(file,"  Depth: %u-depth\n",GetImageDepth(image));
   x=0;
   p=(Image *) NULL;
   if (image->matte && (strcmp(image->magick,"GIF") != 0) || image->taint)
