@@ -88,7 +88,7 @@
 <P>int  <STRONG>GetImageGeometry</STRONG>( const Image *image, const char *geometry, const unsigned int size_to_fit, RectangeInfo *region_info );</P>
 <P>void  <STRONG>GetImageInfo</STRONG>( ImageInfo *image_info );</P>
 <P>ImageType  <STRONG>GetImageType</STRONG>( const Image *image, ExceptionInfo *exception );</P>
-<P>unsigned int  <STRONG>IsImagesEqual</STRONG>( const Image *image, const Image *reference, ErrorInfo *error, ExceptionInfo *exception );</P>
+<P>unsigned int  <STRONG>IsImagesEqual</STRONG>( Image *image, const Image *reference );</P>
 <P>unsigned int  <STRONG>IsTaintImage</STRONG>( const Image *image );</P>
 <P><STRONG>ModifyImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>PlasmaImage</STRONG>( Image *image, const SegmentInfo *segment, unsigned long attenuate, unsigned long depth );</P>
@@ -429,7 +429,7 @@ The normalized maximum quantization error for any single pixel in the image.  Th
 <P>
 <FONT SIZE=-1>A</FONT> small normalized mean square error, accessed as image-&gt;normalized_mean_error, suggests the images are very similiar in spatial layout and color.</P>
 <P>The format of the IsImagesEqual method is:</P>
-<blockquote>unsigned int IsImagesEqual ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Image.html">Image</A> *reference, ErrorInfo *error, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote>unsigned int IsImagesEqual ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Image.html">Image</A> *reference ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows.</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG>image:</STRONG><BR>
@@ -439,14 +439,6 @@ The image.
 <dd><p></p><dt><STRONG><A NAME="item_o_reference%3A">reference:</A></STRONG><BR>
 <DD>
 The reference image.
-<P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_error%3A">error:</A></STRONG><BR>
-<DD>
-The error measurements are returned here.
-<P></P>
-<dd><p></p><dt><STRONG>exception:</STRONG><BR>
-<DD>
-Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="istaintimage">IsTaintImage</A></H2>

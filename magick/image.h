@@ -131,7 +131,7 @@ typedef struct _PixelPacket
 typedef struct _ColorInfo
 {
   const char
-    *filename,
+    *path,
     *name;
 
   ComplianceType

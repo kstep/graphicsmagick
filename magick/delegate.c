@@ -122,8 +122,8 @@ MagickExport void DestroyDelegateInfo(void)
   {
     delegate_info=p;
     p=p->next;
-    if (delegate_info->filename != (char *) NULL)
-      LiberateMemory((void **) &delegate_info->filename);
+    if (delegate_info->path != (char *) NULL)
+      LiberateMemory((void **) &delegate_info->path);
     if (delegate_info->decode != (char *) NULL)
       LiberateMemory((void **) &delegate_info->decode);
     if (delegate_info->encode != (char *) NULL)
@@ -509,11 +509,11 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
   for (p=delegate_list; p != (const DelegateInfo *) NULL; p=p->next)
   {
     if ((p->previous == (DelegateInfo *) NULL) ||
-        (LocaleCompare(p->filename,p->previous->filename) != 0))
+        (LocaleCompare(p->path,p->previous->path) != 0))
       {
         if (p->previous != (DelegateInfo *) NULL)
           (void) fprintf(file,"\n");
-        (void) fprintf(file,"Filename: %.1024s\n\n",p->filename);
+        (void) fprintf(file,"Path: %.1024s\n\n",p->path);
         (void) fprintf(file,"Delegate             Command\n");
         (void) fprintf(file,"-------------------------------------------------"
           "------------------------------\n");
@@ -573,9 +573,8 @@ static unsigned int ReadConfigurationFile(const char *basename,
   ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent],
     keyword[MaxTextExtent],
-    *path,
+    path[MaxTextExtent],
     *q,
     *token,
     *xml;
@@ -586,14 +585,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
   /*
     Read the delegates configuration file.
   */
-  FormatString(filename,"%.1024s",basename);
-  path=GetConfigurePath(basename,exception);
-  if (path != (char *) NULL)
-    {
-      FormatString(filename,"%.1024s",path);
-      LiberateMemory((void **) &path);
-    }
-  xml=(char *) FileToBlob(filename,&length,exception);
+  xml=(char *) GetConfigureBlob(basename,path,&length,exception);
   if (xml == (char *) NULL)
     xml=AllocateString(DelegateMap);
   token=AllocateString(xml);
@@ -649,7 +641,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
           MagickFatalError(ResourceLimitFatalError,
             "Unable to allocate delegate","Memory allocation failed");
         (void) memset(delegate_info,0,sizeof(DelegateInfo));
-        delegate_info->filename=AcquireString(filename);
+        delegate_info->path=AcquireString(path);
         delegate_info->signature=MagickSignature;
         if (delegate_list == (DelegateInfo *) NULL)
           {

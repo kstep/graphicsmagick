@@ -236,8 +236,8 @@ MagickExport void DestroyColorInfo(void)
   {
     color_info=p;
     p=p->next;
-    if (color_info->filename != (char *) NULL)
-      LiberateMemory((void **) &color_info->filename);
+    if (color_info->path != (char *) NULL)
+      LiberateMemory((void **) &color_info->path);
     if (color_info->name != (char *) NULL)
       LiberateMemory((void **) &color_info->name);
     LiberateMemory((void **) &color_info);
@@ -1324,11 +1324,11 @@ MagickExport unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
   for (p=color_list; p != (const ColorInfo *) NULL; p=p->next)
   {
     if ((p->previous == (ColorInfo *) NULL) ||
-        (LocaleCompare(p->filename,p->previous->filename) != 0))
+        (LocaleCompare(p->path,p->previous->path) != 0))
       {
         if (p->previous != (ColorInfo *) NULL)
           (void) fprintf(file,"\n");
-        (void) fprintf(file,"Filename: %.1024s\n\n",p->filename);
+        (void) fprintf(file,"Path: %.1024s\n\n",p->path);
         (void) fprintf(file,
           "Name                   Color                   Compliance\n");
         (void) fprintf(file,"-------------------------------------------------"
@@ -1633,9 +1633,8 @@ static unsigned int ReadConfigurationFile(const char *basename,
   ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent],
     keyword[MaxTextExtent],
-    *path,
+    path[MaxTextExtent],
     *q,
     *token,
     *xml;
@@ -1646,14 +1645,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
   /*
     Read the color configuration file.
   */
-  FormatString(filename,"%.1024s",basename);
-  path=GetConfigurePath(basename,exception);
-  if (path != (char *) NULL)
-    {
-      FormatString(filename,"%.1024s",path);
-      LiberateMemory((void **) &path);
-    }
-  xml=(char *) FileToBlob(filename,&length,exception);
+  xml=(char *) GetConfigureBlob(basename,path,&length,exception);
   if (xml == (char *) NULL)
     xml=AllocateString(ColorMap);
   token=AllocateString(xml);
@@ -1709,7 +1701,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
           MagickFatalError(ResourceLimitFatalError,"Unable to allocate colors",
             "Memory allocation failed");
         (void) memset(color_info,0,sizeof(ColorInfo));
-        color_info->filename=AcquireString(filename);
+        color_info->path=AcquireString(path);
         color_info->signature=MagickSignature;
         if (color_list == (ColorInfo *) NULL)
           {

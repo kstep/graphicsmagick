@@ -115,8 +115,8 @@ MagickExport void DestroyMagicInfo(void)
   {
     magic_info=p;
     p=p->next;
-    if (magic_info->filename != (char *) NULL)
-      LiberateMemory((void **) &magic_info->filename);
+    if (magic_info->path != (char *) NULL)
+      LiberateMemory((void **) &magic_info->path);
     if (magic_info->name != (char *) NULL)
       LiberateMemory((void **) &magic_info->name);
     if (magic_info->target != (char *) NULL)
@@ -241,11 +241,11 @@ MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
   for (p=magic_list; p != (MagicInfo *) NULL; p=p->next)
   {
     if ((p->previous == (MagicInfo *) NULL) ||
-        (LocaleCompare(p->filename,p->previous->filename) != 0))
+        (LocaleCompare(p->path,p->previous->path) != 0))
       {
         if (p->previous != (MagicInfo *) NULL)
           (void) fprintf(file,"\n");
-        (void) fprintf(file,"Filename: %.1024s\n\n",p->filename);
+        (void) fprintf(file,"Path: %.1024s\n\n",p->path);
         (void) fprintf(file,"Name      Offset Target\n");
         (void) fprintf(file,"-------------------------------------------------"
           "------------------------------\n");
@@ -299,9 +299,8 @@ static unsigned int ReadConfigurationFile(const char *basename,
   ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent],
     keyword[MaxTextExtent],
-    *path,
+    path[MaxTextExtent],
     *q,
     *token,
     *xml;
@@ -312,14 +311,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
   /*
     Read the magic configuration file.
   */
-  FormatString(filename,"%.1024s",basename);
-  path=GetConfigurePath(filename,exception);
-  if (path != (char *) NULL)
-    {
-      FormatString(filename,"%.1024s",path);
-      LiberateMemory((void **) &path);
-    }
-  xml=(char *) FileToBlob(filename,&length,exception);
+  xml=(char *) GetConfigureBlob(basename,path,&length,exception);
   if (xml == (char *) NULL)
     xml=AllocateString(MagicMap);
   token=AllocateString(xml);
@@ -375,7 +367,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
           MagickFatalError(ResourceLimitFatalError,"Unable to allocate magics",
             "Memory allocation failed");
         (void) memset(magic_info,0,sizeof(MagicInfo));
-        magic_info->filename=AcquireString(filename);
+        magic_info->path=AcquireString(path);
         magic_info->signature=MagickSignature;
         if (magic_list == (MagicInfo *) NULL)
           {

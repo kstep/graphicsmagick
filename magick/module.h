@@ -30,7 +30,7 @@ typedef struct _CoderInfo
 typedef struct _ModuleInfo
 {
   const char
-    *filename,
+    *path,
     *magick,
     *name;
 
@@ -49,7 +49,6 @@ typedef struct _ModuleInfo
   Modules declarations.
 */
 extern MagickExport char
-  *GetModulePath(const char *,ExceptionInfo *),
   *TagToModule(const char *);
 
 extern MagickExport const CoderInfo

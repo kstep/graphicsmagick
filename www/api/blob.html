@@ -28,6 +28,8 @@
 		<LI><A HREF="#detachblob">DetachBlob</A>
 		<LI><A HREF="#filetoblob">FileToBlob</A>
 		<LI><A HREF="#getblobinfo">GetBlobInfo</A>
+		<LI><A HREF="#getconfigureblob">GetConfigureBlob</A>
+		<LI><A HREF="#getmoduleblob">GetModuleBlob</A>
 		<LI><A HREF="#imagetoblob">ImageToBlob</A>
 		<LI><A HREF="#pingblob">PingBlob</A>
 		<LI><A HREF="#referenceblob">ReferenceBlob</A>
@@ -53,6 +55,8 @@
 <P>void  <STRONG>DetachBlob</STRONG>( BlobInfo *blob_info );</P>
 <P>void * <STRONG>FileToBlob</STRONG>( const char *filename, size_t *length, ExceptionInfo *exception );</P>
 <P>void  <STRONG>GetBlobInfo</STRONG>( BlobInfo *blob_info );</P>
+<P>void * <STRONG>GetConfigureBlob</STRONG>( const char *filename, ExceptionInfo *exception );</P>
+<P>void * <STRONG>GetModuleBlob</STRONG>( const char *filename, ExceptionInfo *exception );</P>
 <P>void * <STRONG>ImageToBlob</STRONG>( const ImageInfo *image_info, Image *image, size_t *length, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>PingBlob</STRONG>( const ImageInfo *image_info, const void *blob, const size_t length, ExceptionInfo *exception );</P>
 <P>BlobInfo  <STRONG>ReferenceBlob</STRONG>( BlobInfo *blob_info );</P>
@@ -194,6 +198,52 @@ Return any errors or warnings in this structure.
 <dd><p></p><dt><STRONG>blob_info:</STRONG><BR>
 <DD>
 Specifies a pointer to a BlobInfo structure.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="getconfigureblob">GetConfigureBlob</A></H2>
+<blockquote>GetConfigureBlob() returns a configure file as a blob. </blockquote><P>The format of the GetConfigureBlob method is:</P>
+<blockquote>void *GetConfigureBlob ( const char *filename, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>filename:</STRONG><BR>
+<DD>
+
+<FONT SIZE=-1>A</FONT> character string representing the desired configuration file.
+<P></P>
+<dd><p></p><dt><STRONG><A NAME="item_o_path%3A">path:</A></STRONG><BR>
+<DD>
+return the full path information of the configure file.
+<P></P>
+<dd><p></p><dt><STRONG>length:</STRONG><BR>
+<DD>
+This pointer to a size_t integer sets the initial length of the blob.  On return, it reflects the actual length of the blob.
+<P></P>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="getmoduleblob">GetModuleBlob</A></H2>
+<blockquote>GetModuleBlob() returns a module file as a blob. </blockquote><P>The format of the GetModuleBlob method is:</P>
+<blockquote>void *GetModuleBlob ( const char *filename, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>filename:</STRONG><BR>
+<DD>
+
+<FONT SIZE=-1>A</FONT> character string representing the desired module file.
+<P></P>
+<dd><p></p><dt><STRONG>path:</STRONG><BR>
+<DD>
+return the full path information of the module file.
+<P></P>
+<dd><p></p><dt><STRONG>length:</STRONG><BR>
+<DD>
+This pointer to a size_t integer sets the initial length of the blob.  On return, it reflects the actual length of the blob.
+<P></P>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="imagetoblob">ImageToBlob</A></H2>

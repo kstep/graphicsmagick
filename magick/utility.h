@@ -34,7 +34,6 @@ extern MagickExport char
   *AllocateString(const char *),
   *Base64Encode(const unsigned char *,const size_t,size_t *),
   *EscapeString(const char *,const char),
-  *GetConfigurePath(const char *,ExceptionInfo *),
   *GetPageGeometry(const char *),
   **ListFiles(const char *,const char *,long *),
   *PostscriptGeometry(const char *),
@@ -67,7 +66,6 @@ extern MagickExport unsigned char
   *Base64Decode(const char *, size_t *);
 
 extern MagickExport unsigned int
-  CheckFileAccessability(const char *,const unsigned int),
   CloneString(char **,const char *),
   ConcatenateString(char **,const char *),
   ExpandFilenames(int *,char ***),
@@ -82,7 +80,6 @@ extern MagickExport unsigned long
 extern MagickExport void
   *AcquireMemory(const size_t),
   AppendImageFormat(const char *,char *),
-  ChopPathComponents(char *,const unsigned long),
   *CloneMemory(void *,const void *,const size_t),
   ExpandFilename(char *),
   GetPathComponent(const char *,PathType,char *),

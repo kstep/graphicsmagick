@@ -136,7 +136,7 @@ typedef struct _PointInfo
 typedef struct _TypeInfo
 {
   const char
-    *filename,
+    *path,
     *name,
     *description,
     *family;

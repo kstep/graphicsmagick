@@ -14,7 +14,7 @@ extern "C" {
 typedef struct _MagicInfo
 {  
   const char
-    *filename,
+    *path,
     *name,
     *target;
 

@@ -116,8 +116,8 @@ MagickExport void DestroyTypeInfo(void)
   {
     type_info=p;
     p=p->next;
-    if (type_info->filename != (char *) NULL)
-      LiberateMemory((void **) &type_info->filename);
+    if (type_info->path != (char *) NULL)
+      LiberateMemory((void **) &type_info->path);
     if (type_info->name != (char *) NULL)
       LiberateMemory((void **) &type_info->name);
     if (type_info->description != (char *) NULL)
@@ -488,11 +488,11 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
   for (p=type_list; p != (const TypeInfo *) NULL; p=p->next)
   {
     if ((p->previous == (TypeInfo *) NULL) ||
-        (LocaleCompare(p->filename,p->previous->filename) != 0))
+        (LocaleCompare(p->path,p->previous->path) != 0))
       {
         if (p->previous != (TypeInfo *) NULL)
           (void) fprintf(file,"\n");
-        (void) fprintf(file,"Filename: %.1024s\n\n",p->filename);
+        (void) fprintf(file,"Path: %.1024s\n\n",p->path);
         (void) fprintf(file,"%-32.32s %-23.23s %-7.7s %-8s %-3s\n",
           "Name","Family","Style","Stretch","Weight");
         (void) fprintf(file,"--------------------------------------------------"
@@ -551,9 +551,8 @@ static unsigned int ReadConfigurationFile(const char *basename,
   ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent],
     keyword[MaxTextExtent],
-    *path,
+    path[MaxTextExtent],
     *q,
     *token,
     *xml;
@@ -564,14 +563,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
   /*
     Read the type configuration file.
   */
-  FormatString(filename,"%.1024s",basename);
-  path=GetConfigurePath(filename,exception);
-  if (path != (char *) NULL)
-    {
-      FormatString(filename,"%.1024s",path);
-      LiberateMemory((void **) &path);
-    }
-  xml=(char *) FileToBlob(filename,&length,exception);
+  xml=(char *) GetConfigureBlob(basename,path,&length,exception);
   if (xml == (char *) NULL)
     xml=AllocateString(TypeMap);
   token=AllocateString(xml);
@@ -627,7 +619,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
           MagickFatalError(ResourceLimitFatalError,"Unable to allocate fonts",
             "Memory allocation failed");
         (void) memset(type_info,0,sizeof(TypeInfo));
-        type_info->filename=AcquireString(filename);
+        type_info->path=AcquireString(path);
         type_info->signature=MagickSignature;
         if (type_list == (TypeInfo *) NULL)
           {
