@@ -1148,11 +1148,12 @@ static void PNGErrorHandler(png_struct *ping,png_const_charp message)
   Image
     *image;
 
-  image=(Image *) ping->error_ptr;
+  image=(Image *) png_get_error_ptr(ping);
 #ifdef PNG_DEBUG
   printf("libpng-%.1024s error: %.1024s\n", PNG_LIBPNG_VER_STRING, message);
 #endif
-  ThrowException(&image->exception,DelegateWarning,message,(char *) NULL);
+  ThrowException(&image->exception,DelegateWarning,message,
+     image->filename);
   longjmp(ping->jmpbuf,1);
 }
 
@@ -1164,8 +1165,9 @@ static void PNGWarningHandler(png_struct *ping,png_const_charp message)
 #ifdef PNG_DEBUG
   printf("libpng-%.1024s warning: %.1024s\n", PNG_LIBPNG_VER_STRING, message);
 #endif
-  image=(Image *) ping->error_ptr;
-  ThrowException(&image->exception,DelegateWarning,message,(char *) NULL);
+  image=(Image *) png_get_error_ptr(ping);
+  ThrowException(&image->exception,DelegateWarning,message,
+     image->filename);
 }
 
 #ifdef PNG_USER_MEM_SUPPORTED
@@ -2481,8 +2483,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Allocate the PNG structures
     */
 #ifdef PNG_USER_MEM_SUPPORTED
-   ping=png_create_read_struct_2(PNG_LIBPNG_VER_STRING,(void *) NULL,
-     PNGErrorHandler,PNGWarningHandler,image,
+   ping=png_create_read_struct_2(PNG_LIBPNG_VER_STRING, image,
+     PNGErrorHandler,PNGWarningHandler, NULL,
      (png_malloc_ptr) png_IM_malloc,(png_free_ptr) png_IM_free);
 #else
     ping=png_create_read_struct(PNG_LIBPNG_VER_STRING,image,
@@ -4737,11 +4739,11 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     */
     TransformRGBImage(image,RGBColorspace);
 #ifdef PNG_USER_MEM_SUPPORTED
-    ping = png_create_write_struct_2(PNG_LIBPNG_VER_STRING,(png_voidp) image_info,
+    ping = png_create_write_struct_2(PNG_LIBPNG_VER_STRING,image,
       PNGErrorHandler,PNGWarningHandler,(void *) NULL,
       (png_malloc_ptr) png_IM_malloc,(png_free_ptr) png_IM_free);
 #else
-    ping=png_create_write_struct(PNG_LIBPNG_VER_STRING,(png_voidp) image_info,
+    ping=png_create_write_struct(PNG_LIBPNG_VER_STRING,image,
       PNGErrorHandler,PNGWarningHandler);
 #endif
     if (ping == (png_struct *) NULL)
@@ -4844,7 +4846,6 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     /*
       Select the color type.
     */
-    ping_info->bit_depth=8;
     if (ImageIsMonochrome(image))
       {
         if (!image->matte)
