@@ -4417,43 +4417,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             draw_info->pointsize=clone_info->pointsize;
             continue;
           }
-        if (LocaleCompare("-process",option) == 0)
-          {
-            char
-              *arguments,
-              breaker,
-              quote,
-              *token;
-
-            int
-              next,
-              status;
-
-            size_t
-              length;
-
-            TokenInfo
-              token_info;
-
-            length=strlen(argv[++i]);
-            token=(char *) AcquireMemory(length+1);
-            if (token == (char *) NULL)
-              continue;
-            next=0;
-            arguments=argv[i];
-            status=Tokenizer(&token_info,0,token,length,arguments,(char *) "",
-              (char *) "=",(char *) "\"",0,&breaker,&next,&quote);
-            if (status == 0)
-              {
-                char
-                  *argv;
-
-                argv=&(arguments[next]);
-                (void) ExecuteModuleProcess((const char *) token,image,1,&argv);
-              }
-            LiberateMemory((void **) &token);
-            continue;
-          }
         if (LocaleCompare("profile",option+1) == 0)
           {
             Image
@@ -5256,6 +5219,47 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
                 mogrify_images=mosaic_image;
               }
             break;
+          }
+        break;
+      }
+      case 'p':
+      {
+        if (LocaleCompare("-process",option) == 0)
+          {
+            char
+              *arguments,
+              breaker,
+              quote,
+              *token;
+
+            int
+              next,
+              status;
+
+            size_t
+              length;
+
+            TokenInfo
+              token_info;
+
+            length=strlen(argv[++i]);
+            token=(char *) AcquireMemory(length+1);
+            if (token == (char *) NULL)
+              continue;
+            next=0;
+            arguments=argv[i];
+            status=Tokenizer(&token_info,0,token,length,arguments,"","=","\"",0,
+              &breaker,&next,&quote);
+            if (status == 0)
+              {
+                char
+                  *argv;
+
+                argv=&(arguments[next]);
+                (void) ExecuteModuleProcess(token,&mogrify_images,1,&argv);
+              }
+            LiberateMemory((void **) &token);
+            continue;
           }
         break;
       }
