@@ -1624,6 +1624,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                 magick_info->blob_support)
               if ((fstat(fileno(image->blob->file),&attributes) >= 0) &&
                   (attributes.st_size > MinBlobExtent) &&
+                  (attributes.st_size <= MaxBlobExtent) &&
                   (attributes.st_size == (size_t) attributes.st_size))
                 {
                   size_t
