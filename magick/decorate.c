@@ -534,22 +534,22 @@ MagickExport unsigned int RaiseImage(Image *image,
     }
     for ( ; x < (long) (image->columns-(image->rows-y)); x++)
     {
-      q->red=(Quantum) (((double) q->red*TroughModulate+
-        (double) background*(MaxRGB-TroughModulate))/MaxRGB+0.5);
-      q->green=(Quantum) (((double) q->green*TroughModulate+
-        (double) background*(MaxRGB-TroughModulate))/MaxRGB+0.5);
-      q->blue=(Quantum) (((double) q->blue*TroughModulate+
-        (double) background*(MaxRGB-TroughModulate))/MaxRGB+0.5);
+      q->red=(Quantum) (((double) q->red*TroughFactor+
+        (double) background*(MaxRGB-TroughFactor))/MaxRGB+0.5);
+      q->green=(Quantum) (((double) q->green*TroughFactor+
+        (double) background*(MaxRGB-TroughFactor))/MaxRGB+0.5);
+      q->blue=(Quantum) (((double) q->blue*TroughFactor+
+        (double) background*(MaxRGB-TroughFactor))/MaxRGB+0.5);
       q++;
     }
     for ( ; x < (long) image->columns; x++)
     {
-      q->red=(Quantum) (((double) q->red*ShadowModulate+
-        (double) background*(MaxRGB-ShadowModulate))/MaxRGB+0.5);
-      q->green=(Quantum) (((double) q->green*ShadowModulate+
-        (double) background*(MaxRGB-ShadowModulate))/MaxRGB+0.5);
-      q->blue=(Quantum) (((double) q->blue*ShadowModulate+
-        (double) background*(MaxRGB-ShadowModulate))/MaxRGB+0.5);
+      q->red=(Quantum) (((double) q->red*ShadowFactor+
+        (double) background*(MaxRGB-ShadowFactor))/MaxRGB+0.5);
+      q->green=(Quantum) (((double) q->green*ShadowFactor+
+        (double) background*(MaxRGB-ShadowFactor))/MaxRGB+0.5);
+      q->blue=(Quantum) (((double) q->blue*ShadowFactor+
+        (double) background*(MaxRGB-ShadowFactor))/MaxRGB+0.5);
       q++;
     }
     if (!SyncImagePixels(image))
