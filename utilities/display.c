@@ -571,6 +571,7 @@ int main(int argc,char **argv)
                 }
         continue;
       }
+    j=k+1;
     switch (*(option+1))
     {
       case 'b':
@@ -1434,7 +1435,6 @@ int main(int argc,char **argv)
         break;
       }
     }
-    j=k+1;
   }
   if (state & RetainColorsState)
     {

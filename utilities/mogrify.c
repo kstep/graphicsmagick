@@ -356,6 +356,7 @@ static unsigned int MogrifyUtility(int argc,char **argv)
         DestroyImage(image);
         continue;
       }
+    j=k+1;
     switch (*(option+1))
     {
       case 'a':
@@ -1646,7 +1647,6 @@ static unsigned int MogrifyUtility(int argc,char **argv)
         break;
       }
     }
-    j=k+1;
   }
   if ((i != argc) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);

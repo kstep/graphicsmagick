@@ -204,6 +204,7 @@ static unsigned int MontageUtility(int argc,char **argv)
 
   Image
     *image,
+    *image_list,
     *montage_image,
     *next_image;
 
@@ -239,6 +240,7 @@ static unsigned int MontageUtility(int argc,char **argv)
   GetExceptionInfo(&exception);
   first_scene=0;
   image=(Image *) NULL;
+  image_list=(Image *) NULL;
   last_scene=0;
   image_info=CloneImageInfo((ImageInfo *) NULL);
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
@@ -307,8 +309,10 @@ static unsigned int MontageUtility(int argc,char **argv)
       }
     if (j != (k+1))
       {
-        status&=MogrifyImages(image_info,i-j,argv+j,&next_image);
-        (void) CatchImageException(next_image);
+        status&=MogrifyImages(image_info,i-j,argv+j,&image);
+        (void) CatchImageException(image);
+        PushImageList(&image_list,image,&exception);
+        DestroyImageList(&image);
         j=k+1;
       }
     switch (*(option+1))
@@ -1192,11 +1196,13 @@ static unsigned int MontageUtility(int argc,char **argv)
   */
   status&=MogrifyImages(image_info,i-j,argv+j,&image);
   (void) CatchImageException(image);
+  PushImageList(&image_list,image,&exception);
+  DestroyImageList(&image);
   (void) strncpy(montage_info->filename,argv[argc-1],MaxTextExtent-1);
-  montage_image=MontageImages(image,montage_info,&exception);
+  montage_image=MontageImages(image_list,montage_info,&exception);
   if (montage_image == (Image *) NULL)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
-  DestroyImageList(&image);
+  DestroyImageList(&image_list);
   /*
     Write image.
   */
