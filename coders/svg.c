@@ -150,15 +150,12 @@ typedef struct _SVGInfo
   PointInfo
     radius;
 
-  double
-    offset;
-
   char
     *stop_color,
+    *offset,
     *text,
     *vertices,
-    *url,
-    *entities;
+    *url;
 
 #if defined(HasXML)
   xmlParserCtxtPtr
@@ -665,6 +662,10 @@ static void SVGEndDocument(void *context)
   */
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.endDocument()");
   svg_info=(SVGInfo *) context;
+  if (svg_info->offset != (char *) NULL)
+    LiberateMemory((void **) &svg_info->offset);
+  if (svg_info->stop_color != (char *) NULL)
+    LiberateMemory((void **) &svg_info->stop_color);
   if (svg_info->scale != (double *) NULL)
     LiberateMemory((void **) &svg_info->scale);
   if (svg_info->text != (char *) NULL)
@@ -917,8 +918,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
       if (LocaleCompare((char *) name,"linearGradient") == 0)
         {
-          MVGPrintf(svg_info->file,"push gradient '%s' linear %g,%g %g,%g\n",
-            id,svg_info->segment.x1,svg_info->segment.y1,svg_info->segment.x2,
+          MVGPrintf(svg_info->file,"push gradient '%s' linear %g,%g %g,%g\n",id,
+            svg_info->segment.x1,svg_info->segment.y1,svg_info->segment.x2,
             svg_info->segment.y2);
           break;
         }
@@ -1350,7 +1351,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"offset") == 0)
             {
-              svg_info->offset=GetUserSpaceCoordinateValue(svg_info,0,value);
+              (void) CloneString(&svg_info->offset,value);
               break;
             }
           if (LocaleCompare(keyword,"opacity") == 0)
@@ -1619,8 +1620,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                       }
                     if (LocaleCompare(keyword,"stroke-dasharray") == 0)
                       {
-                        MVGPrintf(svg_info->file,"stroke-dasharray %s\n",
-                          value);
+                        MVGPrintf(svg_info->file,"stroke-dasharray %s\n",value);
                         break;
                       }
                     if (LocaleCompare(keyword,"stroke-dashoffset") == 0)
@@ -2182,7 +2182,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
     {
       if (LocaleCompare((char *) name,"stop") == 0)
         {
-          MVGPrintf(svg_info->file,"stop-color '%s' %g\n",svg_info->stop_color,
+          MVGPrintf(svg_info->file,"stop-color '%s' %s\n",svg_info->stop_color,
             svg_info->offset);
           break;
         }
