@@ -849,7 +849,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
       if (LocaleCompare(image_info->magick,"PBM") == 0)
         {
           format=4;
-          SetImageType(image,BilevelType);
+          if ((image->storage_class == DirectClass) ||
+              !IsMonochromeImage(image,&image->exception))
+  			    SetImageType(image,BilevelType);
         }
       else
         if ((LocaleCompare(image_info->magick,"PNM") == 0) &&
@@ -900,9 +902,16 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
     {
       case 1:
       {
+        unsigned int
+          polarity;
+
         /*
           Convert image to a PBM image.
         */
+    	  polarity=PixelIntensityToQuantum(&image->colormap[0]) < (0.5*MaxRGB);
+  		  if (image->colors == 2)
+          polarity=PixelIntensityToQuantum(&image->colormap[0]) <
+            PixelIntensityToQuantum(&image->colormap[1]);
         i=0;
         for (y=0; y < (long) image->rows; y++)
         {
@@ -912,7 +921,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           indexes=GetIndexes(image);
           for (x=0; x < (long) image->columns; x++)
           {
-            FormatString(buffer,"%u ",PixelIntensityToQuantum(p) <= (MaxRGB/2));
+            FormatString(buffer,"%u ",indexes[x] == polarity);
             (void) WriteBlobString(image,buffer);
             i++;
             if (i == 36)
@@ -920,7 +929,6 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
                 (void) WriteBlobByte(image,'\n');
                 i=0;
               }
-            p++;
           }
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
