@@ -1554,6 +1554,8 @@ MagickExport unsigned int QueryColorName(const PixelPacket *color,char *name)
     distance_squared+=distance*distance;
     distance=color->blue-(int) p->blue;
     distance_squared+=distance*distance;
+    distance=color->opacity-(int) p->opacity;
+    distance_squared+=distance*distance;
     if ((p == Colorlist) || (distance_squared < min_distance))
       {
         min_distance=distance_squared;
