@@ -14,7 +14,7 @@ require "lsys.pl";
   dtheta => 0.1,
   motionsub => sub{
                     $im->Draw ( primitive=>'line', points=>join(' ',@_),
-                                stroke=>'dark green', stroke_width=>1 );
+                                stroke=>'dark green', strokewidth=>1 );
                   }
 );
 
