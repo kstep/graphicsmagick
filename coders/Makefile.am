@@ -62,7 +62,7 @@ if WITH_MODULES
 pkgdir = $(libdir)/ImageMagick/modules/coders
 
 # Architecture-dependent data files installed with modules
-pkg_DATA = 
+pkg_DATA = modules.mgk
 
 # Architecture independent data files installed in the package's data directory
 pkgdata_DATA = 

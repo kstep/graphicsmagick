@@ -232,7 +232,7 @@ noinst_HEADERS =
 @WITH_MODULES_TRUE@pkgdir = @WITH_MODULES_TRUE@$(libdir)/ImageMagick/modules/coders
 
 # Architecture-dependent data files installed with modules
-@WITH_MODULES_TRUE@pkg_DATA = @WITH_MODULES_TRUE@
+@WITH_MODULES_TRUE@pkg_DATA = @WITH_MODULES_TRUE@modules.mgk
 
 # Architecture independent data files installed in the package's data directory
 @WITH_MODULES_TRUE@pkgdata_DATA = 
