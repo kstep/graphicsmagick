@@ -280,7 +280,6 @@ MagickExport ModuleInfo *GetModuleInfo(const char *tag)
   register ModuleInfo
     *p;
 
-  assert(tag != (const char *) NULL);
   if (module_list == (ModuleInfo*) NULL)
     return((ModuleInfo*) NULL);
   if (tag == (char *) NULL)
