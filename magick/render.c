@@ -133,6 +133,7 @@ static PrimitiveInfo
   *TraceStrokePolygon(const DrawInfo *,const PrimitiveInfo *);
 
 static unsigned int
+  DrawAffineImage(Image *,const Image *,const AffineMatrix *),
   DrawPatternPath(Image *,DrawInfo *,const char *,Image **),
   DrawPrimitive(Image *,const DrawInfo *,const PrimitiveInfo *),
   DrawStrokePolygon(Image *,const DrawInfo *,const PrimitiveInfo *);
@@ -1105,6 +1106,206 @@ static void DestroyPolygonInfo(PolygonInfo *polygon_info)
     LiberateMemory((void **) &polygon_info->edges[i].points);
   LiberateMemory((void **) &polygon_info->edges);
   LiberateMemory((void **) &polygon_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%     D r a w A f f i n e I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawAffineImage() composites the source over the destination image as
+%  dictated by the affine transform.
+%
+%  The format of the DrawAffineImage method is:
+%
+%      unsigned int DrawAffineImage(Image *image,const Image *composite,
+%        const AffineMatrix *affine)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o image: The composite image.
+%
+%    o affine: The affine transform.
+%
+%
+*/
+
+static SegmentInfo AffineEdge(const Image *image,const AffineMatrix *affine,
+  const long y,const SegmentInfo *edge)
+{
+  double
+    intercept,
+    z;
+
+  register long
+    x;
+
+  SegmentInfo
+    inverse_edge;
+
+  /*
+    Determine left and right edges.
+  */
+  inverse_edge.x1=edge->x1;
+  inverse_edge.x2=edge->x2;
+  z=affine->ry*(y+0.5)+affine->tx;
+  if (affine->sx > MagickEpsilon)
+    {
+      intercept=(-z/affine->sx);
+      x=ceil(intercept+MagickEpsilon-0.5);
+      if (x > inverse_edge.x1)
+        inverse_edge.x1=x;
+      intercept=(-z+image->columns)/affine->sx;
+      x=ceil(intercept-MagickEpsilon-0.5);
+      if (x < inverse_edge.x2)
+        inverse_edge.x2=x;
+    }
+  else
+    if (affine->sx < -MagickEpsilon)
+      {
+        intercept=(-z+image->columns)/affine->sx;
+        x=ceil(intercept+MagickEpsilon-0.5);
+        if (x > inverse_edge.x1)
+          inverse_edge.x1=x;
+        intercept=(-z/affine->sx);
+        x=ceil(intercept-MagickEpsilon-0.5);
+        if (x < inverse_edge.x2)
+          inverse_edge.x2=x;
+      }
+    else
+      if ((z < 0) || (z >= image->columns))
+        {
+          inverse_edge.x2=edge->x1;
+          return(inverse_edge);
+        }
+  /*
+    Determine top and bottom edges.
+  */
+  z=affine->sy*(y+0.5)+affine->ty;
+  if (affine->rx > MagickEpsilon)
+    {
+      intercept=(-z /affine->rx);
+      x=ceil(intercept+MagickEpsilon-0.5);
+      if (x > inverse_edge.x1)
+        inverse_edge.x1=x;
+      intercept=(-z+image->rows)/affine->rx;
+      x=ceil(intercept-MagickEpsilon-0.5);
+      if (x < inverse_edge.x2)
+        inverse_edge.x2=x;
+    }
+  else
+    if (affine->rx < -MagickEpsilon)
+      {
+        intercept=(-z+image->rows)/affine->rx;
+        x=ceil(intercept+MagickEpsilon-0.5);
+        if (x > inverse_edge.x1)
+          inverse_edge.x1=x;
+        intercept=(-z/affine->rx);
+        x=ceil(intercept-MagickEpsilon-0.5);
+        if (x < inverse_edge.x2)
+          inverse_edge.x2=x;
+      }
+    else
+      if ((z < 0) || (z >= image->rows))
+        {
+          inverse_edge.x2=edge->x1;
+          return(inverse_edge);
+        }
+  return(inverse_edge);
+}
+
+static AffineMatrix InverseAffineMatrix(const AffineMatrix *affine)
+{
+  AffineMatrix
+    inverse_affine;
+
+  double
+    determinant;
+
+  determinant=1.0/(affine->sx*affine->sy-affine->rx*affine->ry);
+  inverse_affine.sx=determinant*affine->sy;
+  inverse_affine.rx=determinant*(-affine->rx);
+  inverse_affine.ry=determinant*(-affine->ry);
+  inverse_affine.sy=determinant*affine->sx;
+  inverse_affine.tx=
+    (-affine->tx)*inverse_affine.sx-affine->ty*inverse_affine.ry;
+  inverse_affine.ty=
+    (-affine->tx)*inverse_affine.rx-affine->ty*inverse_affine.sy;
+  return(inverse_affine);
+}
+
+static unsigned int DrawAffineImage(Image *image,const Image *composite,
+  const AffineMatrix *affine)
+{
+#define DrawAffineImageText  "  Affine transform image...  "
+
+  AffineMatrix
+    inverse_affine;
+
+  long
+    y;
+
+  PixelPacket
+    pixel;
+
+  PointInfo
+    point;
+
+  register long
+    x;
+
+  register PixelPacket
+    *q;
+
+  SegmentInfo
+    edge,
+    inverse_edge;
+
+  /*
+    Affine transform image.
+  */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(composite != (const Image *) NULL);
+  assert(composite->signature == MagickSignature);
+  assert(affine != (AffineMatrix *) NULL);
+  image->storage_class=DirectClass;
+  edge.x1=0;
+  edge.x2=image->columns;
+  inverse_affine=InverseAffineMatrix(affine);
+  for (y=0; y < (long) image->rows; y++)
+  {
+    inverse_edge=AffineEdge(composite,&inverse_affine,y,&edge);
+    if (inverse_edge.x2 < inverse_edge.x1)
+      continue;
+    q=GetImagePixels(image,(long) inverse_edge.x1,y,(unsigned long)
+      (inverse_edge.x2-inverse_edge.x1+1),1);
+    if (q == (const PixelPacket *) NULL)
+      break;
+    for (x=(long) inverse_edge.x1; x < (long) inverse_edge.x2; x++)
+    {
+      point.x=(x+0.5)*inverse_affine.sx+(y+0.5)*inverse_affine.ry+
+        inverse_affine.tx;
+      point.y=(x+0.5)*inverse_affine.rx+(y+0.5)*inverse_affine.sy+
+        inverse_affine.ty;
+      pixel=AcquireOnePixel(composite,(long) floor(point.x),
+        (long) floor(point.y),&image->exception);
+      *q=AlphaComposite(&pixel,pixel.opacity,q,q->opacity);
+      q++;
+    }
+    if (!SyncImagePixels(image))
+      break;
+    if (QuantumTick(y,image->rows))
+      MagickMonitor(DrawAffineImageText,y,image->rows);
+  }
+  return(True);
 }
 
 /*
@@ -2811,7 +3012,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
         TraceEllipse(primitive_info+j,primitive_info[j].point,point,
           primitive_info[j+2].point);
         i=(long) (j+primitive_info[j].coordinates);
-      	break;
+        break;
       }
       case EllipsePrimitive:
       {
@@ -2939,8 +3140,6 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
           }
         GetToken(q,&q,token);
         primitive_info[j].text=AllocateString(token);
-        primitive_info[j+1].point.x-=current.tx;
-        primitive_info[j+1].point.y-=current.ty;
         break;
       }
     }
@@ -2972,6 +3171,8 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
         graphic_context[n]->bounds.x2=point.x;
       if (point.y > graphic_context[n]->bounds.y2)
         graphic_context[n]->bounds.y2=point.y;
+      if (primitive_info[i].primitive == ImagePrimitive)
+        break;
     }
     if ((n != 0) && (graphic_context[n]->clip_path != (char *) NULL) &&
         (LocaleCompare(graphic_context[n]->clip_path,
@@ -3823,14 +4024,14 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
     }
     case ImagePrimitive:
     {
+      AffineMatrix
+        affine;
+
       Image
         *composite_image;
 
       ImageInfo
         *clone_info;
-
-      unsigned int
-        matte;
 
       if (primitive_info->text == (char *) NULL)
         break;
@@ -3850,8 +4051,6 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
       DestroyImageInfo(clone_info);
       if (composite_image == (Image *) NULL)
         break;
-      if (draw_info->opacity != OpaqueOpacity)
-        SetImageOpacity(composite_image,draw_info->opacity);
       if ((primitive_info[1].point.x != composite_image->columns) &&
           (primitive_info[1].point.y != composite_image->rows))
         {
@@ -3865,28 +4064,13 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
             primitive_info[1].point.y);
           TransformImage(&composite_image,(char *) NULL,geometry);
         }
-      if ((draw_info->affine.rx != 0.0) || (draw_info->affine.ry != 0.0))
-        {
-          double
-            theta;
-
-          Image
-            *rotate_image;
-
-          theta=(180.0/MagickPI)*
-            atan2(draw_info->affine.rx,draw_info->affine.sx);
-          rotate_image=RotateImage(composite_image,theta,&image->exception);
-          if (rotate_image != (Image *) NULL)
-            {
-              DestroyImage(composite_image);
-              composite_image=rotate_image;
-            }
-        }
-      matte=image->matte;
-      (void) CompositeImage(image,composite_image->matte ? OverCompositeOp :
-        draw_info->compose,composite_image,x,y);
+      if (draw_info->opacity != OpaqueOpacity)
+        SetImageOpacity(composite_image,draw_info->opacity);
+      affine=draw_info->affine;
+      affine.tx=x;
+      affine.ty=y;
+      (void) DrawAffineImage(image,composite_image,&affine);
       DestroyImage(composite_image);
-      image->matte=matte;
       break;
     }
     default:
