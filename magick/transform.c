@@ -647,7 +647,7 @@ Export Image *CropImage(const Image *image,const RectangleInfo *crop_info)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method DeconstructImages breaks down an image sequence into constituent
-%  parts.  This is useful %  for creating GIF or MNG animation sequences.
+%  parts.  This is useful for creating GIF or MNG animation sequences.
 %
 %  The format of the DeconstructImages routine is:
 %
@@ -775,7 +775,7 @@ Export void DeconstructImages(Image *images)
       if (y < (int) image->rows)
         break;
     }
-    bounding_box[i].width=x-bounding_box[i].x;
+    bounding_box[i].width=x-bounding_box[i].x+1;
     for (y=image->rows-1; y >= 0; y--)
     {
       p=image->pixels+y*image->columns;
@@ -790,16 +790,16 @@ Export void DeconstructImages(Image *images)
       if (x < (int) image->columns)
         break;
     }
-    bounding_box[i].height=y-bounding_box[i].y;
+    bounding_box[i].height=y-bounding_box[i].y+1;
     i++;
   }
   /*
     Deconstruct the image sequence.
   */
-  i=0;
   if (images->page != (char *) NULL)
     FreeMemory(images->page);
   images->page=(char *) NULL;
+  i=0;
   for (image=images->next; image != (Image *) NULL; image=image->next)
   {
     image->orphan=True;

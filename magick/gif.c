@@ -1102,6 +1102,8 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
       &page_info.width,&page_info.height);
   LSBFirstWriteShort(page_info.width,image->file);
   LSBFirstWriteShort(page_info.height,image->file);
+  page_info.x=0;
+  page_info.y=0;
   /*
     Write images to file.
   */

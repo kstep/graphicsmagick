@@ -551,7 +551,7 @@ static unsigned int Classification(CubeInfo *cube_info,const Image *image)
   for (i=1; i <= MaxTreeDepth; i++)
     bisect[i]=0.5*bisect[i-1];
   squares=cube_info->squares;
-  cube_info->root->quantization_error=
+  cube_info->root->quantization_error+=
     3.0*(MaxRGB/2.0)*(MaxRGB/2.0)*image->columns*image->rows;
   p=image->pixels;
   for (i=0; i < (int) image->packets; i++)
