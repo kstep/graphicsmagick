@@ -73,7 +73,7 @@
 %
 %  The format of the AppendImageToList method is:
 %
-%      unsigned int AppendImageToList(Image *images,Image *image)
+%      AppendImageToList(Image *images,Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -83,25 +83,25 @@
 %
 %
 */
-MagickExport unsigned int AppendImageToList(Image **images,Image *image)
+MagickExport void AppendImageToList(Image **images,Image *image)
 {
   register Image
     *p;
 
   assert(images != (Image **) NULL);
   if (image == (Image *) NULL)
-    return(False);
+    return;
   assert(image->signature == MagickSignature);
   if ((*images) == (Image *) NULL)
     {
       *images=image;
-      return(True);
+      return;
     }
   assert((*images)->signature == MagickSignature);
   for (p=(*images); p->next != (Image *) NULL; p=p->next);
   p->next=image;
   image->previous=p;
-  return(True);
+  return;
 }
 
 /*
@@ -593,7 +593,7 @@ MagickExport Image *NewImageList(void)
 %
 %  The format of the PrependImageToList method is:
 %
-%      unsigned int PrependImageToList(Image *images,Image *image)
+%      PrependImageToList(Image *images,Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -603,26 +603,9 @@ MagickExport Image *NewImageList(void)
 %
 %
 */
-MagickExport unsigned int PrependImageToList(Image **images,Image *image)
+MagickExport void PrependImageToList(Image **images,Image *image)
 {
-  register Image
-    *p,
-    *q;
-
-  assert(images != (Image **) NULL);
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if ((*images) == (Image *) NULL)
-    {
-      *images=image;
-      return(True);
-    }
-  assert((*images)->signature == MagickSignature);
-  for (p=(*images); p->previous != (Image *) NULL; p=p->previous);
-  for (q=image; q->next != (Image *) NULL; q=q->next);
-  q->next=p;
-  p->previous=q;
-  return(True);
+  AppendImageToList(&image,*images);
 }
 
 /*
@@ -650,26 +633,21 @@ MagickExport unsigned int PrependImageToList(Image **images,Image *image)
 */
 MagickExport Image *RemoveFirstImageFromList(Image **images)
 {
-  register Image
-    *p,
-    *q;
+  Image
+    *image;
 
   assert(images != (Image **) NULL);
   if ((*images) == (Image *) NULL)
     return((Image *) NULL);
   assert((*images)->signature == MagickSignature);
-  for (p=(*images); p->previous != (Image *) NULL; p=p->next);
-  if (p->next == (Image *) NULL)
-    {
-      (*images)=(Image *) NULL;
-      return(p);
-    }
-  q=p;
-  q=q->next;
-  if (q != (Image *) NULL)
-    q->previous=(Image *) NULL;
-  q->next=(Image *) NULL;
-  return(q);
+  image=(*images);
+  while (image->previous != (Image *) NULL)
+    image=image->previous;
+  if (image == *images)
+    *images=(*images)->next;
+  image->previous=(Image *) NULL;
+  image->next=(Image *) NULL;
+  return(image);
 }
 
 /*
@@ -697,22 +675,19 @@ MagickExport Image *RemoveFirstImageFromList(Image **images)
 */
 MagickExport Image *RemoveLastImageFromList(Image **images)
 {
-  register Image
-    *p;
+  Image
+    *image;
 
   assert(images != (Image **) NULL);
   if ((*images) == (Image *) NULL)
     return((Image *) NULL);
   assert((*images)->signature == MagickSignature);
-  for (p=(*images); p->next != (Image *) NULL; p=p->next);
-  if (p->previous == (Image *) NULL)
-    {
-      (*images)=(Image *) NULL;
-      return(p);
-    }
-  p->previous->next=(Image *) NULL;
-  p->previous=(Image *) NULL;
-  return(p);
+  image=(*images);
+  while (image->next != (Image *) NULL)
+    image=image->next;
+  if (image->previous != (Image *) NULL)
+    image=image->previous;
+  return(SplitImageList(image));
 }
 
 /*
@@ -798,7 +773,7 @@ MagickExport unsigned int SpliceImageIntoList(Image **images,
 
   register long
     i;
-
+  
   assert(images != (Image **) NULL);
   assert(splice != (Image *) NULL);
   assert(splice->signature == MagickSignature);
