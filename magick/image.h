@@ -402,7 +402,7 @@ typedef struct _Image
     magick_rows;
 
   int
-    animate_restart,
+    start_loop,
     taint;
 
   TimerInfo

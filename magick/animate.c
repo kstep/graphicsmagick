@@ -1720,7 +1720,7 @@ MagickExport Image *XAnimateImages(Display *display,
                   }
             }
           image=images[scene];
-          if ((image != (Image *) NULL) && image->animate_restart)
+          if ((image != (Image *) NULL) && image->start_loop)
             first_scene=scene;
           if ((state & StepAnimationState) ||
               (resource_info->title != (char *) NULL))

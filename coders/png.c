@@ -689,7 +689,7 @@ static unsigned int IsPNG(const unsigned char *magick,const unsigned int length)
 %    Restore features that were lost in the 4.2.9-to-5.1.0 update:
 %
 %       o preserve transparency when reading gray-alpha PNGs
-%       o variable interframe durations (animate_restart feature
+%       o variable interframe durations (start_loop feature
 %         was broken)
 %       o coalescing frames that have zero interframe duration
 %
@@ -1287,7 +1287,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               ThrowReaderException(ResourceLimitWarning,
                "Unable to allocate memory for chunk data",image);
             for (i=0; i < (int) length; i++)
-              chunk[i]=ReadByte(image);
+              chunk[i]=ReadBlobByte(image);
             p=chunk;
           }
         (void) ReadBlobMSBLong(image);  /* read crc word */
@@ -1665,12 +1665,12 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 mng_info->image=image;
                 if (term_chunk_found)
                   {
-                    image->animate_restart=True;
+                    image->start_loop=True;
                     image->iterations=mng_iterations;
                     term_chunk_found=False;
                   }
                 else
-                    image->animate_restart=False;
+                    image->start_loop=False;
                 image->columns=subframe_width;
                 image->rows=subframe_height;
                 image->page.width=subframe_width;
@@ -2006,12 +2006,12 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 mng_info->image=image;
                 if (term_chunk_found)
                   {
-                    image->animate_restart=True;
+                    image->start_loop=True;
                     image->iterations=mng_iterations;
                     term_chunk_found=False;
                   }
                 else
-                    image->animate_restart=False;
+                    image->start_loop=False;
                 /*
                   Make a background rectangle.
                 */
@@ -2053,12 +2053,12 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             mng_info->image=image;
             if (term_chunk_found)
               {
-                image->animate_restart=True;
+                image->start_loop=True;
                 image->iterations=mng_iterations;
                 term_chunk_found=False;
               }
             else
-                image->animate_restart=False;
+                image->start_loop=False;
             image->delay=0;
             image->columns=subframe_width;
             image->rows=subframe_height;
@@ -2093,11 +2093,11 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         MagickMonitor(LoadImagesText,TellBlob(image),image->filesize);
         if (term_chunk_found)
           {
-            image->animate_restart=True;
+            image->start_loop=True;
             term_chunk_found=False;
           }
         else
-            image->animate_restart=False;
+            image->start_loop=False;
         if (framing_mode == 1 || framing_mode == 3)
           {
             image->delay=(unsigned int) frame_delay;
