@@ -6,6 +6,9 @@ with Magick++ itself.
 (5.4.1)
   * Fixed memory leak in Image::draw().
 
+  * Automatically cleans up ImageMagick allocations prior to process
+    exit to avoid annoying memory leak tools.
+
 (5.4.0)
   * Fixed bug when scaling from Quantum to double in derived Color classes.
 

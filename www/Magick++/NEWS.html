@@ -10,6 +10,15 @@ Magick++ release number increments even if there are no changes associated
 with Magick++ itself.
 
 <p>
+(5.4.1)<BR>
+<UL>
+  <LI> Fixed memory leak in Image::draw().
+
+  <LI> Automatically cleans up ImageMagick allocations prior to process
+    exit to avoid annoying memory leak tools.
+
+</UL>
+<p>
 (5.4.0)<BR>
 <UL>
   <LI> Fixed bug when scaling from Quantum to double in derived Color classes.
