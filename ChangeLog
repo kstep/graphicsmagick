@@ -1,3 +1,9 @@
+2002-12-18  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+	* Sync png.c and fx.c with IM-5.5.3.  "gm convert -list format"
+	now includes zlib version info among the PNG info.
+	* ConvolveImage() logs kernel info as a "Transform" debug event.
+	* ReadJNGImage() now skips decoding JPEG subimage when "pinging" 
+
 2002-12-17  Cristy  <cristy@mystic.es.dupont.com>
 	* * SVG element 'stroke-dasharray: 0' no longer causes a
 	segmentation fault.
