@@ -195,90 +195,78 @@ ModuleExport void UnregisterEPTImage(void)
 static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
 {
   char
-    filename[MaxTextExtent];
+    filename[MaxTextExtent],
+    ps_filename[MaxTextExtent],
+    tiff_filename[MaxTextExtent];
 
   FILE
     *ps_file,
     *tiff_file;
 
-  int
-    c;
-
   unsigned int
     status;
 
-  unsigned long
-    eps_length,
-    tiff_length;
-
-  ps_file=(FILE *) NULL;
-  if (LocaleCompare(image_info->magick,"PS") == 0)
-    ps_file=fopen(image->magick_filename,ReadBinaryType);
-  if (ps_file != (FILE *) NULL)
-    {
-      struct stat
-        attributes;
-
-      /*
-        Read existing Encapsulated Postscript.
-      */
-      eps_length=
-        fstat(fileno(ps_file),&attributes) < 0 ? 0 : attributes.st_size;
-    }
-  else
+  (void) strcpy(filename,image->filename);
+  (void) strcpy(ps_filename,image->magick_filename);
+  if (LocaleCompare(image_info->magick,"PS") != 0)
     {
       /*
         Write image as Encapsulated Postscript to a temporary file.
       */
-      (void) strcpy(filename,image->filename);
-      (void) strcpy(image->filename,"ps:");
-      TemporaryFilename(image->filename+3);
-      status=WriteImage(image_info,image);
-      if (status == False)
-        return(status);
-      status=OpenBlob(image_info,image,ReadBinaryType);
-      if (status == False)
-        ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-      (void) remove(image->filename);
-      eps_length=image->filesize;
-      ps_file=image->file;
-      image->file=(FILE *) NULL;
+      TemporaryFilename(ps_filename);
+      FormatString(image->filename,"ps:%.1024s",ps_filename);
+      (void) WriteImage(image_info,image);
     }
   /*
     Write image as TIFF to a temporary file.
   */
-  (void) strcpy(image->filename,"tiff:");
-  TemporaryFilename(image->filename+5);
-  status=WriteImage(image_info,image);
-  if (status == False)
-    return(status);
-  status=OpenBlob(image_info,image,ReadBinaryType);
-  if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  (void) remove(image->filename);
-  tiff_length=image->filesize;
-  tiff_file=image->file;
-  image->file=(FILE *) NULL;
+  TemporaryFilename(tiff_filename);
+  FormatString(image->filename,"tiff:%.1024s",tiff_filename);
+  (void) strcpy(image->filename,tiff_filename);
+  (void) WriteImage(image_info,image);
   /*
     Write EPT image.
   */
   (void) strcpy(image->filename,filename);
   status=OpenBlob(image_info,image,WriteBinaryType);
+  ps_file=fopen(ps_filename,ReadBinaryType);
+  status&=ps_file != (FILE *) NULL;
+  tiff_file=fopen(tiff_filename,ReadBinaryType);
+  status&=tiff_file != (FILE *) NULL;
+  if (status != False)
+    {
+      int
+        c;
+
+      struct stat
+        attributes;
+
+      /*
+        Write EPT image.
+      */
+      LSBFirstWriteLong(image,0xc6d3d0c5ul);
+      LSBFirstWriteLong(image,30);
+      attributes.st_size=0;
+      (void) fstat(fileno(ps_file),&attributes);
+      LSBFirstWriteLong(image,attributes.st_size);
+      LSBFirstWriteLong(image,0);
+      LSBFirstWriteLong(image,0);
+      LSBFirstWriteLong(image,attributes.st_size+30);
+      (void) fstat(fileno(tiff_file),&attributes);
+      LSBFirstWriteLong(image,attributes.st_size);
+      LSBFirstWriteShort(image,0xffff);
+      for (c=fgetc(ps_file); c != EOF; c=fgetc(ps_file))
+        (void) WriteByte(image,c);
+      for (c=fgetc(tiff_file); c != EOF; c=fgetc(tiff_file))
+        (void) WriteByte(image,c);
+      CloseBlob(image);
+    }
+  (void) fclose(ps_file);
+  (void) fclose(tiff_file);
+  if (LocaleCompare(image_info->magick,"PS") != 0)
+    remove(ps_filename);
+  remove(tiff_filename);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  LSBFirstWriteLong(image,0xc6d3d0c5ul);
-  LSBFirstWriteLong(image,30);
-  LSBFirstWriteLong(image,eps_length);
-  LSBFirstWriteLong(image,0);
-  LSBFirstWriteLong(image,0);
-  LSBFirstWriteLong(image,eps_length+30);
-  LSBFirstWriteLong(image,tiff_length);
-  LSBFirstWriteShort(image,0xffff);
-  for (c=fgetc(ps_file); c != EOF; c=fgetc(ps_file))
-    (void) WriteByte(image,c);
-  for (c=fgetc(tiff_file); c != EOF; c=fgetc(tiff_file))
-    (void) WriteByte(image,c);
-  (void) fclose(tiff_file);
-  CloseBlob(image);
   return(True);
 }
