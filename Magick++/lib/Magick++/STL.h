@@ -1788,7 +1788,7 @@ namespace Magick
     // Clear out container
     container_->clear();
 
-    for ( ; magickInfo != 0; magickInfo=magickInfo->next)
+    for ( ; magickInfo != 0; magickInfo=(const MagickLib::MagickInfo *) magickInfo->next)
       {
         // Skip stealth coders
         if ( magickInfo->stealth )
