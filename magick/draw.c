@@ -457,7 +457,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
       break;
     q+=x1;
     indexes=GetIndexes(image);
-    for (x=x1; x >= 0 ; x--)
+    for (x=x1; x >= 0; x--)
     {
       if (method == FloodfillMethod)
         {
@@ -576,21 +576,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
                 y % draw_info->tile->rows);
               if (!draw_info->tile->matte)
                 color.opacity=OpaqueOpacity;
-              switch (color.opacity)
-              {
-                case TransparentOpacity:
-                  break;
-                case OpaqueOpacity:
-                {
-                  *q=color;
-                  break;
-                }
-                default:
-                {
-                  AlphaComposite(&color,color.opacity,q,q->opacity);
-                  break;
-                }
-              }
+              AlphaComposite(&color,color.opacity,q,q->opacity);
             }
           q++;
         }
@@ -2670,76 +2656,83 @@ static inline double DistanceToEdge(const PointInfo *p,const double x,
 {
   double
     alpha,
-    beta,
-    dot_product,
+    beta;
+
+  register double
     dx,
     dy;
+
+  register const PointInfo
+    *q;
 
   /*
     Determine distance between a point and an edge.
   */
-  dx=(p+1)->x-p->x,
-  dy=(p+1)->y-p->y;
-  dot_product=dx*(x-p->x)+dy*(y-p->y);
-  if (dot_product < 0.0)
+  q=p+1;
+  dx=q->x-p->x,
+  dy=q->y-p->y;
+  beta=dx*(x-p->x)+dy*(y-p->y);
+  if (beta < 0.0)
     {
       dx=x-p->x;
       dy=y-p->y;
       return(dx*dx+dy*dy);
     }
   alpha=dx*dx+dy*dy;
-  if (dot_product > alpha)
+  if (beta > alpha)
     {
-      dx=x-(p+1)->x;
-      dy=y-(p+1)->y;
+      dx=x-q->x;
+      dy=y-q->y;
       return(dx*dx+dy*dy);
     }
+  alpha=1.0/alpha;
   beta=dx*(y-p->y)-dy*(x-p->x);
-  return(beta*beta/alpha);
+  return(alpha*beta*beta);
 }
 
-static inline int GetWindingNumber(const PolygonInfo *polygon_info,
-  const double x,const double y)
+static inline int GetWindingNumber(const PolygonInfo *polygon_info,const double x,
+  const double y)
 {
-  double
-    dx,
-    dy;
-
   int
     j,
     winding_number;
+
+  register double
+    dx,
+    dy;
+
+  register EdgeInfo
+    *p;
 
   register int
     i;
 
   register PointInfo
-    *p;
+    *q;
 
   winding_number=0;
   for (i=0; i < polygon_info->number_edges; i++)
   {
-    if (polygon_info->edges[i].bounds.y1 > y)
+    p=polygon_info->edges+i;
+    if (p->bounds.y1 > y)
       break;
-    if (polygon_info->edges[i].bounds.y2 <= y)
+    if (p->bounds.y2 <= y)
       continue;
-    if (polygon_info->edges[i].bounds.x2 < x)
+    if (p->bounds.x2 < x)
       {
-        winding_number+=polygon_info->edges[i].direction ? 1 : -1;
+        winding_number+=p->direction ? 1 : -1;
         continue;
       }
-    if (polygon_info->edges[i].bounds.x1 > x)
+    if (p->bounds.x1 > x)
       continue;
-    j=1;
-    if (polygon_info->edges[i].highwater > 0)
-      j=polygon_info->edges[i].highwater;
-    for ( ; j < polygon_info->edges[i].number_points; j++)
-      if (polygon_info->edges[i].points[j].y > y)
+    for (j=Max(p->highwater,1); j < p->number_points; j++)
+      if (p->points[j].y > y)
         break;
-    p=polygon_info->edges[i].points+j-1;
-    dx=(p+1)->x-p->x;
-    dy=(p+1)->y-p->y;
-    if ((dy*(x-p->x)) > (dx*(y-p->y)))
-      winding_number+=polygon_info->edges[i].direction ? 1 : -1;
+    q=p->points+j-1;
+    dx=(q+1)->x-q->x;
+    dy=(q+1)->y-q->y;
+    if ((dy*(x-q->x)) > (dx*(y-q->y)))
+      winding_number+=p->direction ? 1 : -1;
   }
   return(winding_number);
 }
@@ -2786,6 +2779,7 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
     Compute bounding box.
   */
   assert(primitive_info != (PrimitiveInfo *) NULL);
+  assert(primitive_info->coordinates > 0);
   assert(draw_info != (DrawInfo *) NULL);
   assert(draw_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
@@ -2814,25 +2808,21 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
       bounds.y2=p->bounds.y2;
   }
   bounds.x1-=(mid+1.0);
-  bounds.x1=bounds.x1 < 0.0 ? 0.0 :
-    bounds.x1 >= image->columns ? image->columns-1 : bounds.x1;
+  bounds.x1=bounds.x1 < 0.0 ? 0.0 : bounds.x1 >= image->columns ?
+    image->columns-1 : bounds.x1;
   bounds.y1-=(mid+1.0);
-  bounds.y1=bounds.y1 < 0.0 ? 0.0 :
-    bounds.y1 >= image->rows ? image->rows-1 : bounds.y1;
+  bounds.y1=bounds.y1 < 0.0 ? 0.0 : bounds.y1 >= image->rows ?
+    image->rows-1 : bounds.y1;
   bounds.x2+=(mid+1.0);
-  bounds.x2=bounds.x2 < 0.0 ? 0.0 :
-    bounds.x2 >= image->columns ? image->columns-1 : bounds.x2;
+  bounds.x2=bounds.x2 < 0.0 ? 0.0 : bounds.x2 >= image->columns ?
+    image->columns-1 : bounds.x2;
   bounds.y2+=(mid+1.0);
-  bounds.y2=bounds.y2 < 0.0 ? 0.0 :
-    bounds.y2 >= image->rows ? image->rows-1 : bounds.y2;
-  switch (primitive_info->coordinates)
-  {
-    case 0:
-      break;
-    case 1:
+  bounds.y2=bounds.y2 < 0.0 ? 0.0 : bounds.y2 >= image->rows ?
+    image->rows-1 : bounds.y2;
+  if (primitive_info->coordinates == 1)
     {
       /*
-        Point.
+        Draw point.
       */
       for (y=(int) ceil(bounds.y1-0.5); y <= (int) floor(bounds.y2+0.5); y++)
       {
@@ -2850,158 +2840,125 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
         if (!SyncImagePixels(image))
           break;
       }
+      if (draw_info->debug)
+        (void) fprintf(stdout,"    end draw-polygon (%.2fu)\n",
+          GetUserTime(&timer));
+      return;
     }
-    default:
-    {
-      /*
-        Polygon or line.
-      */
-      for (y=(int) ceil(bounds.y1-0.5); y <= (int) floor(bounds.y2+0.5); y++)
-      {
-        x=(int) ceil(bounds.x1-0.5);
-        q=GetImagePixels(image,x,y,(int) floor(bounds.x2+0.5)-x,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        for ( ; x <= (int) floor(bounds.x2+0.5); x++)
-        {
-          fill_opacity=0.0;
-          stroke_opacity=0.0;
-          subpath_opacity=0.0;
-          for (i=0; i < polygon_info->number_edges; i++)
-          {
-            p=polygon_info->edges+i;
-            if (y < (p->bounds.y1-mid-0.5))
-              break;
-            if (y >= (p->bounds.y2+mid+0.5))
-              {
-                (void) DestroyEdge(polygon_info,i);
-                continue;
-              }
-            if ((x < (p->bounds.x1-mid-0.5)) || (x >= (p->bounds.x2+mid+0.5)))
-              continue;
-            for (j=Max(p->highwater,1) ; j < p->number_points; j++)
-            {
-              if (y < (p->points[j-1].y-mid-0.5))
-                break;
-              if (y >= (p->points[j].y+mid+0.5))
-                continue;
-              if (p->scanline != y)
-                {
-                  p->scanline=y;
-                  p->highwater=j;
-                }
-              distance=DistanceToEdge(p->points+j-1,x,y);
-              beta=0.0;
-              if (!p->ghostline)
-                {
-                  alpha=mid+0.5;
-                  if ((stroke_opacity < 1.0) && (distance <= (alpha*alpha)))
-                    {
-                      alpha=mid-0.5;
-                      if (distance <= (alpha*alpha))
-                        stroke_opacity=1.0;
-                      else
-                        {
-                          beta=1.0;
-                          if (distance != 1.0)
-                            beta=sqrt(distance);
-                          alpha=beta-mid-0.5;
-                          if (stroke_opacity < (alpha*alpha))
-                            stroke_opacity=alpha*alpha;
-                        }
-                    }
-                }
-              if (!fill || (distance > 1.0) || (subpath_opacity >= 1.0))
-                continue;
-              if (distance <= 0.0)
-                {
-                  subpath_opacity=1.0;
-                  continue;
-                }
-              if (distance > 1.0)
-                continue;
-              if (beta == 0.0)
-                {
-                  beta=1.0;
-                  if (distance != 1.0)
-                    beta=sqrt(distance);
-                }
-              alpha=beta-1.0;
-              if (subpath_opacity < (alpha*alpha))
-                subpath_opacity=alpha*alpha;
-            }
-          }
-          if (fill)
-            {
-              if (subpath_opacity > 0.0)
-                fill_opacity=subpath_opacity;
-              if (fill_opacity < 1.0)
-                {
-                  winding_number=GetWindingNumber(polygon_info,x,y);
-                  if (draw_info->fill_rule != NonZeroRule)
-                    {
-                      if (AbsoluteValue(winding_number) & 0x01)
-                        fill_opacity=1.0;
-                    }
-                  else
-                    if (AbsoluteValue(winding_number) > 0)
-                      fill_opacity=1.0;
-                }
-            }
-          /*
-            Fill.
-          */
-          if (draw_info->tile != (Image *) NULL)
-            fill_color=GetOnePixel(draw_info->tile,x %
-              draw_info->tile->columns,y % draw_info->tile->rows);
-          if (!draw_info->stroke_antialias)
-            {
-              fill_opacity=fill_opacity >= 0.25-MagickEpsilon ? 1.0 : 0.0;
-              stroke_opacity=stroke_opacity >= 0.25-MagickEpsilon ? 1.0 : 0.0;
-            }
-          fill_opacity=MaxRGB-fill_opacity*(MaxRGB-fill_color.opacity);
-          stroke_opacity=MaxRGB-stroke_opacity*(MaxRGB-stroke_color.opacity);
-          if (stroke_opacity != OpaqueOpacity)
-            switch ((int) fill_opacity)
-            {
-              case TransparentOpacity:
-                break;
-              case OpaqueOpacity:
-              {
-                *q=fill_color;
-                break;
-              }
-              default:
-              {
-                AlphaComposite(&fill_color,fill_opacity,q,q->opacity);
-                break;
-              }
-            }
-          /*
-            Stroke.
-          */
-          switch ((int) stroke_opacity)
-          {
-            case TransparentOpacity:
-              break;
-            case OpaqueOpacity:
-            {
-              *q=stroke_color;
-              break;
-            }
-            default:
-            {
-              AlphaComposite(&stroke_color,stroke_opacity,q,q->opacity);
-              break;
-            }
-          }
-          q++;
-        }
-        if (!SyncImagePixels(image))
-          break;
-      }
+  /*
+    Draw polygon or line.
+  */
+  for (y=(int) ceil(bounds.y1-0.5); y <= (int) floor(bounds.y2+0.5); y++)
+  {
+    x=(int) ceil(bounds.x1-0.5);
+    q=GetImagePixels(image,x,y,(int) floor(bounds.x2+0.5)-x,1);
+    if (q == (PixelPacket *) NULL)
       break;
+    for ( ; x <= (int) floor(bounds.x2+0.5); x++)
+    {
+      fill_opacity=0.0;
+      stroke_opacity=0.0;
+      subpath_opacity=0.0;
+      for (i=0; i < polygon_info->number_edges; i++)
+      {
+        p=polygon_info->edges+i;
+        if (y < (p->bounds.y1-mid-0.5))
+          break;
+        if (y >= (p->bounds.y2+mid+0.5))
+          {
+            (void) DestroyEdge(polygon_info,i);
+            continue;
+          }
+        if ((x < (p->bounds.x1-mid-0.5)) || (x >= (p->bounds.x2+mid+0.5)))
+          continue;
+        for (j=Max(p->highwater,1); j < p->number_points; j++)
+        {
+          if (y < (p->points[j-1].y-mid-0.5))
+            break;
+          if (y >= (p->points[j].y+mid+0.5))
+            continue;
+          if (p->scanline != y)
+            {
+              p->scanline=y;
+              p->highwater=j;
+            }
+          distance=DistanceToEdge(p->points+j-1,x,y);
+          beta=0.0;
+          if (!p->ghostline)
+            {
+              alpha=mid+0.5;
+              if ((stroke_opacity < 1.0) && (distance <= (alpha*alpha)))
+                {
+                  alpha=mid-0.5;
+                  if (distance <= (alpha*alpha))
+                    stroke_opacity=1.0;
+                  else
+                    {
+                      beta=1.0;
+                      if (distance != 1.0)
+                        beta=sqrt(distance);
+                      alpha=beta-mid-0.5;
+                      if (stroke_opacity < (alpha*alpha))
+                        stroke_opacity=alpha*alpha;
+                    }
+                }
+            }
+          if (!fill || (distance > 1.0) || (subpath_opacity >= 1.0))
+            continue;
+          if (distance <= 0.0)
+            {
+              subpath_opacity=1.0;
+              continue;
+            }
+          if (distance > 1.0)
+            continue;
+          if (beta == 0.0)
+            {
+              beta=1.0;
+              if (distance != 1.0)
+                beta=sqrt(distance);
+            }
+          alpha=beta-1.0;
+          if (subpath_opacity < (alpha*alpha))
+            subpath_opacity=alpha*alpha;
+        }
+      }
+      if (fill)
+        {
+          if (subpath_opacity > 0.0)
+            fill_opacity=subpath_opacity;
+          if (fill_opacity < 1.0)
+            {
+              winding_number=GetWindingNumber(polygon_info,x,y);
+              if (draw_info->fill_rule != NonZeroRule)
+                {
+                  if (AbsoluteValue(winding_number) & 0x01)
+                    fill_opacity=1.0;
+                }
+              else
+                if (AbsoluteValue(winding_number) > 0)
+                  fill_opacity=1.0;
+            }
+        }
+      /*
+        Fill and/or stroke.
+      */
+      if (draw_info->tile != (Image *) NULL)
+        fill_color=GetOnePixel(draw_info->tile,x % draw_info->tile->columns,
+          y % draw_info->tile->rows);
+      if (!draw_info->stroke_antialias)
+        {
+          fill_opacity=fill_opacity >= 0.25-MagickEpsilon ? 1.0 : 0.0;
+          stroke_opacity=stroke_opacity >= 0.25-MagickEpsilon ? 1.0 : 0.0;
+        }
+      fill_opacity=MaxRGB-fill_opacity*(MaxRGB-fill_color.opacity);
+      AlphaComposite(&fill_color,fill_opacity,q,q->opacity);
+      stroke_opacity=MaxRGB-stroke_opacity*(MaxRGB-stroke_color.opacity);
+      AlphaComposite(&stroke_color,stroke_opacity,q,q->opacity);
+      q++;
     }
+    if (!SyncImagePixels(image))
+      break;
   }
   if (draw_info->debug)
     (void) fprintf(stdout,"    end draw-polygon (%.2fu)\n",GetUserTime(&timer));
@@ -3207,21 +3164,7 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
                   if (!draw_info->tile->matte)
                     color.opacity=OpaqueOpacity;
                 }
-              switch (color.opacity)
-              {
-                case TransparentOpacity:
-                  break;
-                case OpaqueOpacity:
-                {
-                  *q=color;
-                  break;
-                }
-                default:
-                {
-                  AlphaComposite(&color,color.opacity,q,q->opacity);
-                  break;
-                }
-              }
+              AlphaComposite(&color,color.opacity,q,q->opacity);
               q++;
             }
             if (!SyncImagePixels(image))
@@ -4302,7 +4245,7 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
     if (q == (PixelPacket *) NULL)
       break;
     q+=x1;
-    for (x=x1; x >= 0 ; x--)
+    for (x=x1; x >= 0; x--)
     {
       if (method == FloodfillMethod)
         {
@@ -4357,7 +4300,7 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
       if (q == (PixelPacket *) NULL)
         break;
       q+=x;
-      for (x++; x <= x2 ; x++)
+      for (x++; x <= x2; x++)
       {
         q++;
         if (method == FloodfillMethod)

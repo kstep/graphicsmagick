@@ -1104,21 +1104,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
                 p++;
                 break;
               }
-            switch (opacity)
-            {
-              case TransparentOpacity:
-                break;
-              case OpaqueOpacity:
-              {
-                *q=draw_info->fill;
-                break;
-              }
-              default:
-              {
-                AlphaComposite(&draw_info->fill,opacity,q,q->opacity);
-                break;
-              }
-            }
+            AlphaComposite(&draw_info->fill,opacity,q,q->opacity);
             if (!active)
               (void) SyncImagePixels(image);
             p++;

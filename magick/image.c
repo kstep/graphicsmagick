@@ -1358,21 +1358,7 @@ MagickExport unsigned int CompositeImage(Image *image,
             case OverCompositeOp:
             default:
             {
-              switch (p->opacity)
-              {
-                case TransparentOpacity:
-                  break;
-                case OpaqueOpacity:
-                {
-                  *q=(*p);
-                  break;
-                }
-                default:
-                {
-                  AlphaComposite(p,p->opacity,q,q->opacity);
-                  break;
-                }
-              }
+              AlphaComposite(p,p->opacity,q,q->opacity);
               break;
             }
             case InCompositeOp:
