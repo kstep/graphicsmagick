@@ -222,8 +222,8 @@ MagickExport void AnimateUsage(void)
       "-pause               seconds to pause before reanimating",
       "-remote command      execute a command in an remote display process",
       "-rotate degrees      apply Paeth rotation to the image",
-      "-sampling-factor geometry",
-      "                     horizontal and vertical sampling factor",
+      "-sampling-factor HxV[,...]
+      "                     horizontal and vertical sampling factors",
       "-scenes range        image scene range",
       "-size geometry       width and height of image",
       "-treedepth value     color tree depth",
@@ -997,7 +997,7 @@ Display
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
+                if (i == argc)
                   MagickFatalError(OptionFatalError,MissingArgument,option);
                 (void) CloneString(&image_info->sampling_factor,argv[i]);
               }
@@ -2256,7 +2256,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
+                if (i == argc)
                   ThrowCompositeException(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->sampling_factor,argv[i]);
               }
@@ -2584,8 +2584,8 @@ MagickExport void CompositeUsage(void)
       "-red-primary point   chomaticity red primary point",
       "-rotate degrees      apply Paeth rotation to the image",
       "-resize geometry     resize the image",
-      "-sampling-factor geometry",
-      "                     horizontal and vertical sampling factor",
+      "-sampling-factor HxV[,...]
+      "                     horizontal and vertical sampling factors",
       "-scene value         image scene number",
       "-sharpen geometry    sharpen the image",
       "-size geometry       width and height of image",
@@ -4171,7 +4171,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
+                if (i == argc)
                   ThrowConvertException(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->sampling_factor,argv[i]);
               }
@@ -4695,8 +4695,8 @@ MagickExport void ConvertUsage(void)
       "-roll geometry       roll an image vertically or horizontally",
       "-rotate degrees      apply Paeth rotation to the image",
       "-sample geometry     scale image with pixel sampling",
-      "-sampling-factor geometry",
-      "                     horizontal and vertical sampling factor",
+      "-sampling-factor HxV[,...]
+      "                     horizontal and vertical sampling factors",
       "-scale geometry      scale the image",
       "-scene value         image scene number",
       "-seed value          pseudo-random number generator seed value",
@@ -5000,8 +5000,8 @@ MagickExport void DisplayUsage(void)
       "-roll geometry       roll an image vertically or horizontally",
       "-rotate degrees      apply Paeth rotation to the image",
       "-sample geometry     scale image with pixel sampling",
-      "-sampling-factor geometry",
-      "                     horizontal and vertical sampling factor",
+      "-sampling-factor HxV[,...]
+      "                     horizontal and vertical sampling factors",
       "-scenes range        image scene range",
       "-segment value       segment an image",
       "-sharpen geometry    sharpen the image",
@@ -6161,7 +6161,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
+                if (i == argc)
                   MagickFatalError(OptionFatalError,MissingArgument,option);
                 (void) CloneString(&image_info->sampling_factor,argv[i]);
               }
@@ -6848,7 +6848,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
+                if (i == argc)
                   ThrowIdentifyException(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->sampling_factor,argv[i]);
               }
@@ -6967,8 +6967,8 @@ MagickExport void IdentifyUsage(void)
       "-limit type value    Disk, Map, or Memory resource limit",
       "-log format          format of debugging information",
       "-size geometry       width and height of image",
-      "-sampling-factor geometry",
-      "                     horizontal and vertical sampling factor",
+      "-sampling-factor HxV[,...]
+      "                     horizontal and vertical sampling factors",
       "-verbose             print detailed information about the image",
       "-version             print version information",
       "-virtual-pixel method",
@@ -7187,6 +7187,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
   /*
     Transmogrify the image.
   */
+
   for (i=0; i < argc; i++)
   {
     option=argv[i];
@@ -10919,7 +10920,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
+                if (i == argc)
                   ThrowMogrifyException(OptionError,MissingArgument,
                     option);
                 (void) CloneString(&image_info->sampling_factor,argv[i]);
@@ -11387,8 +11388,8 @@ MagickExport void MogrifyUsage(void)
       "-roll geometry       roll an image vertically or horizontally",
       "-rotate degrees      apply Paeth rotation to the image",
       "-sample geometry     scale image with pixel sampling",
-      "-sampling-factor geometry",
-      "                     horizontal and vertical sampling factor",
+      "-sampling-factor HxV[,...]
+      "                     horizontal and vertical sampling factors",
       "-scale geometry      scale the image",
       "-scene number        image scene number",
       "-seed value          pseudo-random number generator seed value",
@@ -12465,7 +12466,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
+                if (i == argc)
                   ThrowMontageException(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->sampling_factor,argv[i]);
               }
@@ -12826,8 +12827,8 @@ MagickExport void MontageUsage(void)
       "-red-primary point   chomaticity red primary point",
       "-resize geometry     resize the image",
       "-rotate degrees      apply Paeth rotation to the image",
-      "-sampling-factor geometry",
-      "                     horizontal and vertical sampling factor",
+      "-sampling-factor HxV[,...]
+      "                     horizontal and vertical sampling factors",
       "-scenes range        image scene range",
       "-shadow              add a shadow beneath a tile to simulate depth",
       "-size geometry       width and height of image",
@@ -13617,7 +13618,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
+                if (i == argc)
                   MagickFatalError(OptionFatalError,MissingArgument,option);
                 (void) CloneString(&image_info->sampling_factor,argv[i]);
               }
@@ -13871,8 +13872,8 @@ MagickExport void ImportUsage(void)
       "-quality value       JPEG/MIFF/PNG compression level",
       "-resize geometry     resize the image",
       "-rotate degrees      apply Paeth rotation to the image",
-      "-sampling-factor geometry",
-      "                     horizontal and vertical sampling factor",
+      "-sampling-factor HxV[,...]
+      "                     horizontal and vertical sampling factors",
       "-scene value         image scene number",
       "-screen              select image from root window",
       "-silent              operate silently, i.e. don't ring any bells ",
