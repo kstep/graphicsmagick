@@ -163,7 +163,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
     return(False);
   length=strlen(textlist[0]);
   for (i=1; textlist[i] != (char *) NULL; i++)
-    if (strlen(textlist[i]) > (int) length)
+    if (strlen(textlist[i]) > length)
       length=strlen(textlist[i]);
   text=(char *) AcquireMemory(length+MaxTextExtent);
   if (text == (char *) NULL)
@@ -302,8 +302,8 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
         clone_info->fill=draw_info->box;
         clone_info->affine.tx=offset.x-draw_info->affine.ry*metrics.ascent;
         clone_info->affine.ty=offset.y-draw_info->affine.sy*metrics.ascent;
-        FormatString(primitive,"rectangle 0,0 %d,%d",(int) metrics.width,
-          (int) metrics.height);
+        FormatString(primitive,"rectangle 0,0 %lu,%lu",
+          metrics.width,metrics.height);
         CloneString(&clone_info->primitive,primitive);
         DrawImage(image,clone_info);
       }
@@ -341,7 +341,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
             (metrics.ascent+metrics.descent)/2;
         }
     clone_info->fill=draw_info->fill;
-    FormatString(primitive,"line 0,0 %d,0",(int) metrics.width);
+    FormatString(primitive,"line 0,0 %lu,0",metrics.width);
     CloneString(&clone_info->primitive,primitive);
     DrawImage(image,clone_info);
   }
@@ -665,22 +665,22 @@ static unsigned int RenderType(Image *image,const DrawInfo *draw_info,
 
 static char *EscapeParenthesis(const char *text)
 {
-  int
-    escapes;
+  char
+    *buffer;
 
   register char
     *p;
 
-  register int
+  register size_t
     i;
 
-  char
-    *buffer;
+  size_t
+    escapes;
 
   escapes=0;
   buffer=AllocateString(text);
   p=buffer;
-  for (i=0; i < Min((int) strlen(text),(MaxTextExtent-escapes-1)); i++)
+  for (i=0; i < Min(strlen(text),(MaxTextExtent-escapes-1)); i++)
   {
     if ((text[i] == '(') || (text[i] == ')'))
       {
@@ -722,11 +722,13 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
     resolution;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *q;
+
+  register size_t
+    i;
 
   unsigned int
     identity;
@@ -1018,11 +1020,13 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
     opacity;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *q;
+
+  register size_t
+    i;
 
   register unsigned char
     *p;
@@ -1124,7 +1128,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
       FT_Done_Face(face);
       FT_Done_FreeType(library);
       ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
-        "Memory allocation failed");
+        "Memory allocation failed")
     }
   /*
     Compute bounding box.
@@ -1411,7 +1415,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
           XFreeResources(display,visual_info,map_info,&pixel,font_info,
             &resource_info,(XWindowInfo *) NULL);
           ThrowBinaryException(XServerWarning,"Unable to get X server font",
-            draw_info->server_name);
+            draw_info->server_name)
         }
       cache_info=(*draw_info);
     }
@@ -1436,7 +1440,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
   annotate_info.font_info=font_info;
   annotate_info.text=(char *) draw_info->text;
   annotate_info.width=XTextWidth(font_info,draw_info->text,
-    strlen(draw_info->text));
+    (int) strlen(draw_info->text));
   annotate_info.height=font_info->ascent+font_info->descent;
   metrics->pixels_per_em.x=font_info->max_bounds.width;
   metrics->pixels_per_em.y=font_info->max_bounds.width;

@@ -6773,15 +6773,15 @@ QueryFontMetrics(ref,...)
         PUSHs(sv_2mortal(newSVpv(message,0)));
         FormatString(message,"%g",metrics.pixels_per_em.y);
         PUSHs(sv_2mortal(newSVpv(message,0)));
-        FormatString(message,"%d",metrics.ascent);
+        FormatString(message,"%lu",metrics.ascent);
         PUSHs(sv_2mortal(newSVpv(message,0)));
-        FormatString(message,"%d",metrics.descent);
+        FormatString(message,"%lu",metrics.descent);
         PUSHs(sv_2mortal(newSVpv(message,0)));
-        FormatString(message,"%d",metrics.width);
+        FormatString(message,"%lu",metrics.width);
         PUSHs(sv_2mortal(newSVpv(message,0)));
-        FormatString(message,"%d",metrics.height);
+        FormatString(message,"%lu",metrics.height);
         PUSHs(sv_2mortal(newSVpv(message,0)));
-        FormatString(message,"%d",metrics.max_advance);
+        FormatString(message,"%lu",metrics.max_advance);
         PUSHs(sv_2mortal(newSVpv(message,0)));
       }
     DestroyDrawInfo(draw_info);

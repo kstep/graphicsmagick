@@ -148,11 +148,11 @@ typedef struct _TypeMetric
   PointInfo
     pixels_per_em;
     
-  int
+  long
     ascent,
     descent;
     
-  unsigned int
+  unsigned long
     width, 
     height,
     max_advance;
