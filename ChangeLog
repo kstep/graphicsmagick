@@ -1,3 +1,8 @@
+2003-07-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* NEWS: Updated news to include fixes and enhancements since the
+	1.0 release.
+
 2003-07-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/semaphore.c (UnlockSemaphoreInfo): Bugfix, modify

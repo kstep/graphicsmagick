@@ -58,15 +58,38 @@ Significant changes associated with GraphicsMagick 1.1 (Under development)
 <p>
   Bug fixes:<BR>
 <UL>
-  <LI> The JNG encoder was writing files with incorrect alpha_sample_value
-    in the header.  These can be repaired by reading them into GM 1.1
-    and rewriting them.
+  <LI> Semaphore fix which is necessary for proper multi-threaded operation.
+  <LI> Configure script fix to ensure that -lfpx is not supplied to the C
+    compiler during subsequent tests since this fails on some systems.
+  <LI> Fix for East and West gravity computations.
+  <LI> System error reports (errno) associated with an exception are now
+    correctly obtained from the context existing when the exception was
+    thrown rather than the context of the reporting function.
+  <LI> JNG encoder fix. Files were being written with incorrect
+    alpha_sample_value in the header. These can be repaired by reading
+    them into GM 1.1 and rewriting them.
+  <LI> BMP reader fix to avoid unnecessary rejection of some old
+    uncompressed Windows 2.X and OS/2 BMPs.
+  <LI> XPM fix to module registration.
+  <LI> PSD fix for index calculation when QuantumDepth&gt;8.
+  <LI> Validate that geometry specifications only include allowed characters.
+  <LI> SGI fix to save compression type while writing.
 
 </UL>
 <p>
   Performance improvements:<BR>
 <UL>
   <LI> Texture tiling is now 7X faster.
+
+</UL>
+<p>
+  Utilities enhancements:<BR>
+<UL>
+  <LI> For Unix, 'gm version' now includes a dump of the configure and
+    build parameters.<BR>
+  <LI> Logging of thrown exceptions is now supported. Use '-debug
+    exception'. This is useful to learn when and where errors are
+    reported.
 
 </UL>
 <p>
@@ -82,39 +105,69 @@ Significant changes associated with GraphicsMagick 1.1 (Under development)
     (equivalent results to TILE:IMAGE:pattern). This is for ImageMagick
     compatibility.<BR>
   <LI> Reading and writting compressed SVG (SVGZ) is now supported.
+  <LI> The TXT coder now observes depth when writing.
 
 </UL>
 <p>
   Code structure enhancements:<BR>
 <UL>
   <LI> Error handling has been improved and validated through testing.
-    Some errors were being lost or unnecessarily ignored.
+    Some errors were being lost, unnecessarily ignored, or reported as
+    something else entirely.<BR>
   <LI> The memory allocator functions have been replaced with similar
     macros in order to eliminate warnings with GCC 3.3, avoid
     accidentally casting away const, and allow memory debuggers to
     report memory allocations and frees against the correct functions.
+    The previously-used functions remain in the library for the purpose
+    of compatibility.
 
 </UL>
 <p>
   API enhancements:<BR>
 <UL>
-  <LI> The GetMagickInfoArray() function is added in order to provide a
-    safer alternative to GetMagickInfo() for user code which wants to
-    access the coder list.
+  <LI> Incorporated John Cristy's Wand API's in a new GraphicsMagickWand
+    library.<BR>
+  <LI> Thrown exceptions (ExceptionInfo structure) now include source
+    file, source line, function name, and current system error number.
+  <LI> The GetMagickInfoArray() function is added to replace use of
+    GetMagickInfo() for code which needs to access the coder list. This
+    is necessary since invoking GetMagickInfo() may re-order the coder
+    list, causing problems for code which traverses the list. Using
+    GetMagickInfo() to access individual list elements is safe.
+  <LI> Added the CopyException function to support copying exception info
+    from one structure to another.<BR>
+  <LI> Added the ReplaceImageInList function to replace an image in an
+    image list.<BR>
+  <LI> Added the DrawPeekGraphicContext function to access the current
+    DrawInfo structure in the drawing context stack. Use of this
+    function is not recommended since it voilates proper programming
+    practices. It is added to support the Wand API's.
+
+</UL>
+<p>
+  PerlMagick fixes:<BR>
+<UL>
+  <LI> Adjusted a number of function option names so that they match the
+    documentation.<BR>
+  <LI> Memory leak fixed.
 
 </UL>
 <p>
   Windows-specific improvements<BR>
 <UL>
+  <LI> The static install package now uses the "uninstalled"
+    configuration so that it does not depend on the Windows registry in
+    order to run. This allows files from the static install package to
+    be copied to another computer without running an installer.
   <LI> The executable search path is extended at run-time to include the
     directory where the CORE DLLs reside in order to ensure that they
     are found.<BR>
-  <LI> When building GraphicsMagick, the -t option to configure enables
-    building all of the coders into one library in order to save build
-    time and simplify linkage.<BR>
+  <LI> Adding the -t option to VisualMagick configure enables building
+    all of the coders into one library in order to save build time and
+    simplify linkage.<BR>
   <LI> The XTRN coder now supports wide characters.
   <LI> LCMS library updated to version 1.10.
-  <LI> GMDisplay displays a pattern behind transparent images.
+  <LI> GMDisplay displays a checkerboard pattern behind transparent images.
 
 </UL>
 <p>
