@@ -250,7 +250,7 @@ SOURCE=..\..\magick\fits.c
 # Begin Source File
 
 SOURCE=..\..\magick\fpx.c
-# ADD CPP /I "..\..\fpx\\"
+# ADD CPP /I "..\..\fpx\"
 # End Source File
 # Begin Source File
 
@@ -271,6 +271,7 @@ SOURCE=..\..\magick\gray.c
 # Begin Source File
 
 SOURCE=..\..\magick\hdf.c
+# ADD CPP /I "..\..\hdf"
 # End Source File
 # Begin Source File
 
@@ -338,7 +339,7 @@ SOURCE=..\..\magick\memory.c
 # Begin Source File
 
 SOURCE=..\..\magick\miff.c
-# ADD CPP /I "..\..\zlib"
+# ADD CPP /I "..\..\zlib" /I "..\..\bzlib"
 # End Source File
 # Begin Source File
 

@@ -15,6 +15,9 @@ Package=<4>
     Project_Dep_Name MagickZIP
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name MagickBZIP
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name MagickFPXjpeg
     End Project Dependency
     Begin Project Dependency
@@ -34,6 +37,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name MagickTIFF
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name MagickHDF
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name IMagick
@@ -87,6 +93,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "MagickBZIP"=.\bzip\MagickBZIP.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "MagickFPX"=.\fpx\MagickFPX.dsp - Package Owner=<4>
 
 Package=<5>
@@ -100,6 +118,18 @@ Package=<4>
 ###############################################################################
 
 Project: "MagickFPXjpeg"=.\fpx\MagickFPXjpeg.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MagickHDF"=.\hdf\MagickHDF.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -207,6 +237,9 @@ Package=<4>
     Project_Dep_Name MagickZIP
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name MagickBZIP
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name MagickFPXjpeg
     End Project Dependency
     Begin Project Dependency
@@ -226,6 +259,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name MagickTIFF
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name MagickHDF
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name IMagick
@@ -246,6 +282,9 @@ Package=<4>
     Project_Dep_Name MagickZIP
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name MagickBZIP
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name MagickFPXjpeg
     End Project Dependency
     Begin Project Dependency
@@ -265,6 +304,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name MagickTIFF
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name MagickHDF
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name IMagick
@@ -285,6 +327,9 @@ Package=<4>
     Project_Dep_Name MagickZIP
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name MagickBZIP
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name MagickFPXjpeg
     End Project Dependency
     Begin Project Dependency
@@ -304,6 +349,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name MagickTIFF
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name MagickHDF
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name IMagick
@@ -336,6 +384,9 @@ Package=<4>
     Project_Dep_Name MagickZIP
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name MagickBZIP
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name MagickFPXjpeg
     End Project Dependency
     Begin Project Dependency
@@ -355,6 +406,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name MagickTIFF
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name MagickHDF
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name IMagick
@@ -375,6 +429,9 @@ Package=<4>
     Project_Dep_Name MagickZIP
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name MagickBZIP
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name MagickFPXjpeg
     End Project Dependency
     Begin Project Dependency
@@ -394,6 +451,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name MagickTIFF
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name MagickHDF
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name IMagick
@@ -414,6 +474,9 @@ Package=<4>
     Project_Dep_Name MagickZIP
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name MagickBZIP
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name MagickFPXjpeg
     End Project Dependency
     Begin Project Dependency
@@ -433,6 +496,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name MagickTIFF
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name MagickHDF
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name IMagick
@@ -453,6 +519,9 @@ Package=<4>
     Project_Dep_Name MagickZIP
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name MagickBZIP
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name MagickFPXjpeg
     End Project Dependency
     Begin Project Dependency
@@ -472,6 +541,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name MagickTIFF
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name MagickHDF
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name IMagick

@@ -83,6 +83,8 @@
 #define HasTTF
 #define HasX11
 #define HasZLIB
+#define HasBZLIB
+#define HasHDF
 #endif
 
 #if defined(VMS)

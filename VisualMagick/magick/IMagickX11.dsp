@@ -9,12 +9,12 @@ CFG=IMagick - Win32 Debug static
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "IMagick.mak".
+!MESSAGE NMAKE /f "IMagickX11.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "IMagick.mak" CFG="IMagick - Win32 Debug static"
+!MESSAGE NMAKE /f "IMagickX11.mak" CFG="IMagick - Win32 Debug static"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
@@ -250,7 +250,7 @@ SOURCE=..\..\magick\fits.c
 # Begin Source File
 
 SOURCE=..\..\magick\fpx.c
-# ADD CPP /I "..\..\fpx\\"
+# ADD CPP /I "..\..\fpx\"
 # End Source File
 # Begin Source File
 
@@ -271,6 +271,7 @@ SOURCE=..\..\magick\gray.c
 # Begin Source File
 
 SOURCE=..\..\magick\hdf.c
+# ADD CPP /I "..\..\hdf"
 # End Source File
 # Begin Source File
 
@@ -338,7 +339,7 @@ SOURCE=..\..\magick\memory.c
 # Begin Source File
 
 SOURCE=..\..\magick\miff.c
-# ADD CPP /I "..\..\zlib"
+# ADD CPP /I "..\..\zlib" /I "..\..\bzlib"
 # End Source File
 # Begin Source File
 

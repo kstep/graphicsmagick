@@ -41,6 +41,12 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name MagickPNG
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name MagickBZIP
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name MagickHDF
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -75,6 +81,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "MagickBZIP"=.\bzip\MagickBZIP.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "MagickFPX"=.\fpx\MagickFPX.dsp - Package Owner=<4>
 
 Package=<5>
@@ -98,6 +116,24 @@ Package=<5>
 
 Package=<4>
 {{{
+}}}
+
+###############################################################################
+
+Project: "MagickHDF"=.\hdf\MagickHDF.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name MagickJPEG
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name MagickZIP
+    End Project Dependency
 }}}
 
 ###############################################################################
