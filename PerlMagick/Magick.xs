@@ -293,7 +293,7 @@ static struct
       {"height", IntegerReference}, {"x", IntegerReference},
       {"y", IntegerReference} } },
     { "Despeckle", },
-    { "Edge", { {"geom", StringReference}, {"radius", DoubleReference} } },
+    { "Edge", { {"radius", DoubleReference} } },
     { "Emboss", { {"geom", StringReference}, {"radius", DoubleReference},
       {"sigma", DoubleReference} } },
     { "Enhance", },
@@ -4136,10 +4136,8 @@ Mogrify(ref,...)
             radius;
 
           radius=0.0;
-          if (attribute_flag[1])
-            radius=argument_list[1].double_reference;
           if (attribute_flag[0])
-            (void) sscanf(argument_list[0].string_reference,"%lf",&radius);
+            radius=argument_list[0].double_reference;
           image=EdgeImage(image,radius,&exception);
           break;
         }
