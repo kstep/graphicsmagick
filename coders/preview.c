@@ -239,8 +239,8 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
   y=0;
   for (i=0; i < NumberTiles; i++)
   {
-    preview_image=ZoomImage(image,geometry.width,geometry.height,
-      &image->exception);
+    preview_image=ResizeImage(image,geometry.width,geometry.height,
+      TriangleFilter,1.0,&image->exception);
     if (preview_image == (Image *) NULL)
       break;
     (void) SetImageAttribute(preview_image,"label",DefaultTileLabel);

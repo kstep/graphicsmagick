@@ -222,7 +222,8 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   if (huffman_image == (Image *) NULL)
     return(False);
   if ((huffman_image->storage_class == DirectClass) ||
-       !IsMonochromeImage(huffman_image,&image->exception))
+      (huffman_image->colors > 256) ||
+      !IsMonochromeImage(huffman_image,&image->exception))
     SetImageType(huffman_image,BilevelType);
   TemporaryFilename(filename);
   FormatString(huffman_image->filename,"tiff:%s",filename);
@@ -741,7 +742,6 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     y;
 
   Image
-    *clone_image,
     encode_image,
     *tile_image;
 
@@ -1064,7 +1064,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     xref[object++]=TellBlob(image);
     FormatString(buffer,"%lu 0 obj\n",object);
     (void) WriteBlobString(image,buffer);
-    if (image->storage_class == DirectClass)
+    if ((image->storage_class == DirectClass) || (image->colors > 256))
       (void) strcpy(buffer,"[ /PDF /Text /ImageC");
     else
       if (compression == FaxCompression)
@@ -1252,7 +1252,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         }
       }
     else
-      if ((image->storage_class == DirectClass) ||
+      if ((image->storage_class == DirectClass) || (image->colors > 256) ||
           (compression == JPEGCompression))
         switch (compression)
         {
@@ -1472,7 +1472,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
            IsGrayImage(image,&image->exception)))
           (void) strcpy(buffer,"/DeviceGray\n");
       else
-        if ((image->storage_class == DirectClass) ||
+        if ((image->storage_class == DirectClass) || (image->colors > 256) ||
             (compression == JPEGCompression))
           (void) strcpy(buffer,"/DeviceRGB\n");
         else
@@ -1486,14 +1486,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     SetGeometry(image,&geometry);
     (void) GetMagickGeometry("106x106+0+0>",&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
-    clone_image=CloneImage(image,0,0,True,&image->exception);
-    if (clone_image == (Image *) NULL)
-      ThrowWriterException(ResourceLimitError,"Unable to scale image",image);
-    if (clone_image->storage_class == PseudoClass)
-      clone_image->filter=PointFilter;
-    tile_image=ZoomImage(clone_image,geometry.width,geometry.height,
-      &image->exception);
-    DestroyImage(clone_image);
+    tile_image=ResizeImage(image,geometry.width,geometry.height,TriangleFilter,
+      1.0,&image->exception);
     if (tile_image == (Image *) NULL)
       ThrowWriterException(ResourceLimitError,"Unable to scale image",image);
     xref[object++]=TellBlob(image);
@@ -1649,7 +1643,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         }
       }
     else
-      if ((image->storage_class == DirectClass) ||
+      if ((image->storage_class == DirectClass) || (image->colors > 256) ||
           (compression == JPEGCompression))
         switch (compression)
         {
@@ -1849,7 +1843,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     FormatString(buffer,"%lu\n",(unsigned long) offset);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"endobj\n");
-    if ((image->storage_class == DirectClass) ||
+    if ((image->storage_class == DirectClass) || (image->colors > 256) ||
         (compression == FaxCompression))
       {
         xref[object++]=0;

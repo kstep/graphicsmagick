@@ -366,21 +366,13 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       if ((geometry.width != image->columns) ||
           (geometry.height != image->rows))
         {
-          Image
-            *clone_image;
-
           /*
             Scale image.
           */
-          clone_image=CloneImage(image,0,0,True,&image->exception);
-          if (clone_image == (Image *) NULL)
-            ThrowWriterException(ResourceLimitError,"Unable to scale image",
-              image);
-          monochrome_image=ZoomImage(clone_image,geometry.width,geometry.height,
-            &image->exception);
-          DestroyImage(clone_image);
+          monochrome_image=ResizeImage(image,geometry.width,geometry.height,
+            TriangleFilter,1.0,&image->exception);
           if (monochrome_image == (Image *) NULL)
-            ThrowWriterException(ResourceLimitError,"Unable to scale image",
+            ThrowWriterException(ResourceLimitError,"Unable to resize image",
               image);
         }
       if (!IsMonochromeImage(monochrome_image,&monochrome_image->exception))

@@ -873,7 +873,6 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
   char *page_geometry,char *tile_geometry)
 {
   Image
-    *clone_image,
     *downsample_image,
     *tile_image;
 
@@ -901,12 +900,8 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
     geometry.width--;
   if ((geometry.height % 2) != 0)
     geometry.height--;
-  clone_image=CloneImage(image,0,0,True,&image->exception);
-  if (clone_image == (Image *) NULL)
-    return(False);
-  tile_image=ZoomImage(clone_image,geometry.width,geometry.height,
-    &image->exception);
-  DestroyImage(clone_image);
+  tile_image=ResizeImage(image,geometry.width,geometry.height,TriangleFilter,
+    1.0,&image->exception);
   if (tile_image == (Image *) NULL)
     return(False);
   (void) sscanf(page_geometry,"%lux%lu",&geometry.width,&geometry.height);
@@ -932,8 +927,8 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
     }
   (void) TransformImage(&tile_image,(char *) NULL,tile_geometry);
   (void) RGBTransformImage(tile_image,YCCColorspace);
-  downsample_image=ZoomImage(tile_image,tile_image->columns/2,
-    tile_image->rows/2,&image->exception);
+  downsample_image=ResizeImage(tile_image,tile_image->columns/2,
+    tile_image->rows/2,TriangleFilter,1.0,&image->exception);
   if (downsample_image == (Image *) NULL)
     return(False);
   /*

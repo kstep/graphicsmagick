@@ -1072,7 +1072,6 @@ ModuleExport void UnregisterTIFFImage(void)
 static unsigned int WritePTIFImage(const ImageInfo *image_info,Image *image)
 {
   Image
-    *clone_image,
     *pyramid_image;
 
   ImageInfo
@@ -1089,13 +1088,8 @@ static unsigned int WritePTIFImage(const ImageInfo *image_info,Image *image)
     ThrowWriterException(FileOpenError,"Unable to pyramid-encode image",image);
   do
   {
-    clone_image=CloneImage(pyramid_image,0,0,True,&image->exception);
-    if (clone_image == (Image *) NULL)
-      ThrowWriterException(FileOpenError,"Unable to pyramid-encode image",
-        image);
-    pyramid_image->next=ZoomImage(clone_image,pyramid_image->columns/2,
-      pyramid_image->rows/2,&image->exception);
-    DestroyImage(clone_image);
+    pyramid_image->next=ResizeImage(image,pyramid_image->columns/2,
+      pyramid_image->rows/2,TriangleFilter,1.0,&image->exception);
     if (pyramid_image->next == (Image *) NULL)
       ThrowWriterException(FileOpenError,"Unable to pyramid-encode image",
         image);
