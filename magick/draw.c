@@ -3488,10 +3488,8 @@ static void DrawPrimitive(const DrawInfo *draw_info,
       annotate->stroke=draw_info->stroke;
       annotate->box=draw_info->box;
       CloneString(&annotate->text,primitive_info->text);
-puts(annotate->text);
       FormatString(annotate->geometry,"%+g%+g",primitive_info->point.x,
         primitive_info->point.y);
-puts(annotate->geometry);
       AnnotateImage(image,annotate);
       DestroyAnnotateInfo(annotate);
       break;
