@@ -721,7 +721,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
             }
             transform[0]=1.0;
             transform[3]=1.0;
-            if (LocaleCompare(tokens[j],"current") == 0)
+            if (LocaleCompare(tokens[j],"matrix") == 0)
               (void) sscanf(tokens[++j]+1,
                 "%lf%*[ ,]%lf%*[ ,]%lf%*[ ,]%lf%*[ ,]%lf%*[ ,]%lf",
                 &transform[0],&transform[1],&transform[2],&transform[3],

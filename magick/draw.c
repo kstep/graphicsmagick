@@ -1097,13 +1097,15 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     /*
       Transform points.
     */
+    clone_info->pointsize=clone_info->transform[0]*clone_info->pointsize+
+      clone_info->transform[2]*clone_info->pointsize;
     for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
     {
       pixel=primitive_info[i].pixel;
       primitive_info[i].pixel.x=clone_info->transform[0]*pixel.x+
-	clone_info->transform[2]*pixel.y+clone_info->transform[4];
+        clone_info->transform[2]*pixel.y+clone_info->transform[4];
       primitive_info[i].pixel.y=clone_info->transform[1]*pixel.x+
-	clone_info->transform[3]*pixel.y+clone_info->transform[5];
+        clone_info->transform[3]*pixel.y+clone_info->transform[5];
     }
     /*
       Compute bounding box.
