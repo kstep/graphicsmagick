@@ -485,33 +485,45 @@ typedef struct _Image
 typedef struct _DrawInfo
 {
   char
-    *primitive,
-    *font;
+    *primitive;
 
-  unsigned int
-    antialias;
+  double
+    affine[6],
+    angle;
 
   GravityType
     gravity;
 
-  double
-    opacity,
-    linewidth,
-    pointsize,
-    angle,
-    affine[6];
+  PixelPacket
+    fill;
+
+  Image
+    *tile;
 
   PixelPacket
-    fill,
-    stroke,
-    box,
-    border_color;
+    stroke;
+
+  double
+    linewidth;
+
+  unsigned int
+    stroke_antialias;
 
   DecorationType
     decorate;
 
-  Image
-    *tile;
+  char
+    *font;
+
+  unsigned int
+    text_antialias;
+
+  double
+    pointsize;
+
+  PixelPacket
+    box,
+    border_color;
 
   unsigned int
     verbose;

@@ -10,7 +10,9 @@
 #define __EXTENSIONS__  1
 #define _POSIX_C_SOURCE  199506L
 #define _XOPEN_SOURCE  500
+#ifndef __NetBSD__
 #define _XOPEN_SOURCE_EXTENDED  1
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -77,7 +77,7 @@
 %
 %  A description of each parameter follows:
 %
-%    o cloned_info: Method CloneMontageInfo returns a duplicate of the given
+%    o clone_info: Method CloneMontageInfo returns a duplicate of the given
 %      annotate info, or if annotate info is NULL a new one.
 %
 %    o image_info: a structure of type ImageInfo.
@@ -90,29 +90,29 @@ MagickExport MontageInfo *CloneMontageInfo(const ImageInfo *image_info,
   const MontageInfo *montage_info)
 {
   MontageInfo
-    *cloned_info;
+    *clone_info;
 
-  cloned_info=(MontageInfo *) AcquireMemory(sizeof(MontageInfo));
-  if (cloned_info == (MontageInfo *) NULL)
+  clone_info=(MontageInfo *) AcquireMemory(sizeof(MontageInfo));
+  if (clone_info == (MontageInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to clone montage info",
       "Memory allocation failed");
   if (montage_info == (MontageInfo *) NULL)
     {
-      GetMontageInfo(image_info,cloned_info);
-      return(cloned_info);
+      GetMontageInfo(image_info,clone_info);
+      return(clone_info);
     }
-  *cloned_info=(*montage_info);
+  *clone_info=(*montage_info);
   if (montage_info->geometry != (char *) NULL)
-    cloned_info->geometry=AllocateString(montage_info->geometry);
+    clone_info->geometry=AllocateString(montage_info->geometry);
   if (montage_info->tile != (char *) NULL)
-    cloned_info->tile=AllocateString(montage_info->tile);
+    clone_info->tile=AllocateString(montage_info->tile);
   if (montage_info->frame != (char *) NULL)
-    cloned_info->frame=AllocateString(montage_info->frame);
+    clone_info->frame=AllocateString(montage_info->frame);
   if (montage_info->texture != (char *) NULL)
-    cloned_info->texture=AllocateString(montage_info->texture);
+    clone_info->texture=AllocateString(montage_info->texture);
   if (montage_info->font != (char *) NULL)
-    cloned_info->font=AllocateString(montage_info->font);
-  return(cloned_info);
+    clone_info->font=AllocateString(montage_info->font);
+  return(clone_info);
 }
 
 /*

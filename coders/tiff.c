@@ -493,6 +493,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       {
         TIFFClose(tiff);
         CloseBlob(image);
+        LiberateSemaphore(tiff_semaphore);
         return(image);
       }
     if (units == RESUNIT_INCH)
@@ -895,6 +896,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (image->next == (Image *) NULL)
           {
             DestroyImages(image);
+            LiberateSemaphore(tiff_semaphore);
             return((Image *) NULL);
           }
         image=image->next;

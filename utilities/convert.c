@@ -143,6 +143,7 @@
 %    -swirl degrees       swirl image pixels about the center
 %    -texture filename    name of texture to tile onto the image background
 %    -threshold value     threshold the image
+%    -tile filename       tile image when filling a graphic primitive
 %    -transparent color   make this color transparent within the image
 %    -treedepth value     depth of the color color tree
 %    -units type          PixelsPerInch, PixelsPerCentimeter, or Undefined
@@ -341,6 +342,7 @@ static void Usage()
       "-swirl degrees       swirl image pixels about the center",
       "-texture filename    name of texture to tile onto the image background",
       "-threshold value     threshold the image",
+      "-tile filename       tile image when filling a graphic primitive",
       "-transparent color   make this color transparent within the image",
       "-treedepth value     depth of the color color tree",
       "-units type          Inch, Centimeter, or Undefined",
@@ -511,7 +513,7 @@ int main(int argc,char **argv)
           }
       }
     else
-      switch(*(option+1))
+      switch (*(option+1))
       {
         case 'a':
         {
@@ -1664,6 +1666,13 @@ int main(int argc,char **argv)
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing value",option);
                 }
+              break;
+            }
+          if (LocaleNCompare("tile",option+1,4) == 0)
+            {
+              i++;
+              if (i == argc)
+                MagickError(OptionError,"Missing tile",option);
               break;
             }
           if (LocaleNCompare("transparent",option+1,7) == 0)

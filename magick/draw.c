@@ -500,10 +500,11 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     beta;
 
   DrawInfo
-    *clone_info;
+    **graphic_context;
 
   int
     j,
+    k,
     n,
     number_points,
     y;
@@ -535,8 +536,13 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   assert(draw_info->primitive != (char *) NULL);
   if (*draw_info->primitive == '\0')
     return(False);
-  clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-  primitive=clone_info->primitive;
+  n=0;
+  graphic_context=(DrawInfo **) AcquireMemory(sizeof(DrawInfo *));
+  if (graphic_context == (DrawInfo **) NULL)
+    MagickError(ResourceLimitWarning,"Unable to draw image",
+      "Memory allocation failed");
+  graphic_context[n]=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+  primitive=graphic_context[n]->primitive;
   indirection=(*primitive == '@');
   if (indirection)
     {
@@ -555,7 +561,9 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       file=(FILE *) fopen(primitive+1,"r");
       if (file == (FILE *) NULL)
         {
-          DestroyDrawInfo(clone_info);
+          for ( ; n >= 0; n--)
+            DestroyDrawInfo(graphic_context[n]);
+          LiberateMemory((void **) &graphic_context);
           ThrowBinaryException(FileOpenWarning,"Unable to read primitive file",
             primitive+1);
         }
@@ -581,7 +589,9 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       (void) fclose(file);
       if (primitive == (char *) NULL)
         {
-          DestroyDrawInfo(clone_info);
+          for ( ; n >= 0; n--)
+            DestroyDrawInfo(graphic_context[n]);
+          LiberateMemory((void **) &graphic_context);
           ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
             "Memory allocation failed");
         }
@@ -597,7 +607,9 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     {
       if (indirection)
         LiberateMemory((void **) &primitive);
-      DestroyDrawInfo(clone_info);
+      for ( ; n >= 0; n--)
+        DestroyDrawInfo(graphic_context[n]);
+      LiberateMemory((void **) &graphic_context);
       ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
         "Memory allocation failed");
     }
@@ -618,22 +630,30 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       p++;
     if (LocaleCompare("affine",keyword) == 0)
       {
-        for (n=0; n < 6; n++)
+        double
+          affine[6],
+          current[6];
+
+        for (k=0; k < 6; k++)
         {
-          clone_info->affine[n]=strtod(p,&p);
+          current[k]=graphic_context[n]->affine[k];
+          affine[k]=strtod(p,&p);
           if (*p == ',')
             break;
         }
+        graphic_context[n]->affine[0]=current[0]*affine[0]+current[2]*affine[1];
+        graphic_context[n]->affine[1]=current[1]*affine[0]+current[3]*affine[1];
+        graphic_context[n]->affine[2]=current[0]*affine[2]+current[2]*affine[3];
+        graphic_context[n]->affine[3]=current[1]*affine[2]+current[3]*affine[3];
+        graphic_context[n]->affine[4]=
+          current[0]*affine[4]+current[2]*affine[5]+current[4];
+        graphic_context[n]->affine[5]=
+          current[1]*affine[4]+current[3]*affine[5]+current[5];
         continue;
       }
     if (LocaleCompare("angle",keyword) == 0)
       {
-        clone_info->angle=strtod(p,&p);
-        continue;
-      }
-    if (LocaleCompare("antialias",keyword) == 0)
-      {
-        clone_info->antialias=(unsigned int) strtod(p,&p);
+        graphic_context[n]->angle=strtod(p,&p);
         continue;
       }
     if (LocaleCompare("decorate",keyword) == 0)
@@ -642,13 +662,13 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           keyword[x]=(*p++);
         keyword[x]='\0';
         if (LocaleCompare("none",keyword) == 0)
-          clone_info->decorate=NoDecoration;
+          graphic_context[n]->decorate=NoDecoration;
         if (LocaleCompare("underline",keyword) == 0)
-          clone_info->decorate=UnderlineDecoration;
+          graphic_context[n]->decorate=UnderlineDecoration;
         if (LocaleCompare("overline",keyword) == 0)
-          clone_info->decorate=OverlineDecoration;
+          graphic_context[n]->decorate=OverlineDecoration;
         if (LocaleCompare("line-through",keyword) == 0)
-          clone_info->decorate=LineThroughDecoration;
+          graphic_context[n]->decorate=LineThroughDecoration;
         continue;
       }
     if (LocaleCompare("fill",keyword) == 0)
@@ -660,7 +680,12 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
             keyword[x]=(*p++);
         keyword[x]='\0';
-        (void) QueryColorDatabase(keyword,&clone_info->fill);
+        (void) QueryColorDatabase(keyword,&graphic_context[n]->fill);
+        continue;
+      }
+    if (LocaleCompare("fill-opacity",keyword) == 0)
+      {
+        graphic_context[n]->fill.opacity=MaxRGB*strtod(p,&p);
         continue;
       }
     if (LocaleCompare("font",keyword) == 0)
@@ -668,7 +693,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
           keyword[x]=(*p++);
         keyword[x]='\0';
-        CloneString(&clone_info->font,keyword);
+        CloneString(&graphic_context[n]->font,keyword);
         continue;
       }
     if (LocaleCompare("gravity",keyword) == 0)
@@ -677,38 +702,60 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           keyword[x]=(*p++);
         keyword[x]='\0';
         if (LocaleCompare("NorthWest",keyword) == 0)
-          clone_info->gravity=NorthWestGravity;
+          graphic_context[n]->gravity=NorthWestGravity;
         if (LocaleCompare("North",keyword) == 0)
-          clone_info->gravity=NorthGravity;
+          graphic_context[n]->gravity=NorthGravity;
         if (LocaleCompare("NorthEast",keyword) == 0)
-          clone_info->gravity=NorthEastGravity;
+          graphic_context[n]->gravity=NorthEastGravity;
         if (LocaleCompare("West",keyword) == 0)
-          clone_info->gravity=WestGravity;
+          graphic_context[n]->gravity=WestGravity;
         if (LocaleCompare("Center",keyword) == 0)
-          clone_info->gravity=CenterGravity;
+          graphic_context[n]->gravity=CenterGravity;
         if (LocaleCompare("East",keyword) == 0)
-          clone_info->gravity=EastGravity;
+          graphic_context[n]->gravity=EastGravity;
         if (LocaleCompare("SouthWest",keyword) == 0)
-          clone_info->gravity=SouthWestGravity;
+          graphic_context[n]->gravity=SouthWestGravity;
         if (LocaleCompare("South",keyword) == 0)
-          clone_info->gravity=SouthGravity;
+          graphic_context[n]->gravity=SouthGravity;
         if (LocaleCompare("SouthEast",keyword) == 0)
-          clone_info->gravity=SouthEastGravity;
-        continue;
-      }
-    if (LocaleCompare("linewidth",keyword) == 0)
-      {
-        clone_info->linewidth=strtod(p,&p);
+          graphic_context[n]->gravity=SouthEastGravity;
         continue;
       }
     if (LocaleCompare("opacity",keyword) == 0)
       {
-        clone_info->opacity=strtod(p,&p);
+        graphic_context[n]->fill.opacity=MaxRGB*strtod(p,&p);
+        graphic_context[n]->stroke.opacity=MaxRGB*strtod(p,&p);
+        continue;
+      }
+    if (LocaleCompare("pop",keyword) == 0)
+      {
+        for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
+          keyword[x]=(*p++);
+        keyword[x]='\0';
+        DestroyDrawInfo(graphic_context[n]);
+        n--;
+        if (n < 0)
+          ThrowBinaryException(CorruptImageWarning,
+            "unbalanced graphic context push/pop",keyword);
+        continue;
+      }
+    if (LocaleCompare("push",keyword) == 0)
+      {
+        for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
+          keyword[x]=(*p++);
+        keyword[x]='\0';
+        n++;
+        ReacquireMemory((void **) &graphic_context,(n+1)*sizeof(DrawInfo *));
+        if (graphic_context == (DrawInfo **) NULL)
+          MagickError(ResourceLimitWarning,"Unable to draw image",
+            "Memory allocation failed");
+        graphic_context[n]=
+          CloneDrawInfo((ImageInfo *) NULL,graphic_context[n-1]);
         continue;
       }
     if (LocaleCompare("pointsize",keyword) == 0)
       {
-        clone_info->pointsize=strtod(p,&p);
+        graphic_context[n]->pointsize=strtod(p,&p);
         continue;
       }
     if (LocaleCompare("stroke",keyword) == 0)
@@ -720,7 +767,27 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
             keyword[x]=(*p++);
         keyword[x]='\0';
-        (void) QueryColorDatabase(keyword,&clone_info->stroke);
+        (void) QueryColorDatabase(keyword,&graphic_context[n]->stroke);
+        continue;
+      }
+    if (LocaleCompare("stroke-antialias",keyword) == 0)
+      {
+        graphic_context[n]->stroke_antialias=(unsigned int) strtod(p,&p);
+        continue;
+      }
+    if (LocaleCompare("stroke-opacity",keyword) == 0)
+      {
+        graphic_context[n]->stroke.opacity=MaxRGB*strtod(p,&p);
+        continue;
+      }
+    if (LocaleCompare("stroke-width",keyword) == 0)
+      {
+        graphic_context[n]->linewidth=strtod(p,&p);
+        continue;
+      }
+    if (LocaleCompare("text-antialias",keyword) == 0)
+      {
+        graphic_context[n]->text_antialias=(unsigned int) strtod(p,&p);
         continue;
       }
     primitive_type=UndefinedPrimitive;
@@ -794,7 +861,9 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         continue;
       if (indirection)
         LiberateMemory((void **) &primitive);
-      DestroyDrawInfo(clone_info);
+      for ( ; n >= 0; n--)
+        DestroyDrawInfo(graphic_context[n]);
+      LiberateMemory((void **) &graphic_context);
       ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
         "Memory allocation failed");
     }
@@ -990,7 +1059,9 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               {
                 if (indirection)
                   LiberateMemory((void **) &primitive);
-                DestroyDrawInfo(clone_info);
+                for ( ; n >= 0; n--)
+                  DestroyDrawInfo(graphic_context[n]);
+                LiberateMemory((void **) &graphic_context);
                 ThrowBinaryException(ResourceLimitWarning,
                   "Unable to draw image","Memory allocation failed");
               }
@@ -1099,7 +1170,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     }
     while (isspace((int) (*p)) && (*p != '\0'))
       p++;
-    if (clone_info->verbose)
+    if (graphic_context[n]->verbose)
       {
         char
           *element;
@@ -1118,12 +1189,12 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
     {
       point=primitive_info[i].point;
-      primitive_info[i].point.x=clone_info->affine[0]*point.x+
-        clone_info->affine[2]*point.y+clone_info->affine[4];
-      primitive_info[i].point.y=clone_info->affine[1]*point.x+
-        clone_info->affine[3]*point.y+clone_info->affine[5];
+      primitive_info[i].point.x=graphic_context[n]->affine[0]*point.x+
+        graphic_context[n]->affine[2]*point.y+graphic_context[n]->affine[4];
+      primitive_info[i].point.y=graphic_context[n]->affine[1]*point.x+
+        graphic_context[n]->affine[3]*point.y+graphic_context[n]->affine[5];
     }
-    DrawPrimitive(image,clone_info,primitive_info);
+    DrawPrimitive(image,graphic_context[n],primitive_info);
   }
   /*
     Free resources.
@@ -1131,7 +1202,9 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   LiberateMemory((void **) &primitive_info);
   if (indirection)
     LiberateMemory((void **) &primitive);
-  DestroyDrawInfo(clone_info);
+  for ( ; n >= 0; n--)
+    DestroyDrawInfo(graphic_context[n]);
+  LiberateMemory((void **) &graphic_context);
   if (primitive_type == UndefinedPrimitive)
     ThrowBinaryException(OptionWarning,
       "Non-conforming drawing primitive definition",keyword);
@@ -1356,7 +1429,7 @@ static void DrawPrimitive(Image *image,const DrawInfo *draw_info,
               break;
       clone_info=CloneImageInfo((ImageInfo *) NULL);
       clone_info->font=AllocateString(draw_info->font);
-      clone_info->antialias=draw_info->antialias;
+      clone_info->antialias=draw_info->text_antialias;
       clone_info->pointsize=draw_info->pointsize;
       for (i=0; i < 6; i++)
         clone_info->affine[i]=draw_info->affine[i];
@@ -1462,7 +1535,7 @@ static void DrawPrimitive(Image *image,const DrawInfo *draw_info,
       double
         alpha,
         fill_opacity,
-	mid,
+        mid,
         stroke_opacity;
 
       int
@@ -1535,10 +1608,7 @@ static void DrawPrimitive(Image *image,const DrawInfo *draw_info,
               /*
                 Fill.
               */
-              fill_opacity=MaxRGB-
-                0.01*(MaxRGB-color.opacity)*draw_info->opacity*fill_opacity;
-              if (!draw_info->antialias)
-                fill_opacity=(Quantum) (OpaqueOpacity*draw_info->opacity/100.0);
+              fill_opacity=MaxRGB-fill_opacity*(MaxRGB-color.opacity);
               q->red=(Quantum) (alpha*(color.red*(MaxRGB-fill_opacity)+
                 q->red*fill_opacity));
               q->green=(Quantum) (alpha*(color.green*(MaxRGB-fill_opacity)+
@@ -1554,11 +1624,7 @@ static void DrawPrimitive(Image *image,const DrawInfo *draw_info,
               /*
                 Stroke.
               */
-              stroke_opacity=MaxRGB-
-                0.01*(MaxRGB-color.opacity)*draw_info->opacity*stroke_opacity;
-              if (!draw_info->antialias)
-                stroke_opacity=(Quantum)
-                  (OpaqueOpacity*draw_info->opacity/100.0);
+              stroke_opacity=MaxRGB-stroke_opacity*(MaxRGB-color.opacity);
               q->red=(Quantum) (alpha*(color.red*(MaxRGB-stroke_opacity)+
                 q->red*stroke_opacity));
               q->green=(Quantum) (alpha*(color.green*(MaxRGB-stroke_opacity)+
@@ -2272,21 +2338,21 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   assert(image_info->signature == MagickSignature);
   assert(draw_info != (DrawInfo *) NULL);
   draw_info->primitive=(char *) NULL;
-  draw_info->font=AllocateString(image_info->font);
-  draw_info->antialias=image_info->antialias;
-  draw_info->gravity=NorthWestGravity;
-  draw_info->opacity=100.0;
-  draw_info->linewidth=1.0;
-  draw_info->pointsize=image_info->pointsize;
-  draw_info->angle=0.0;
   for (i=0; i < 6; i++)
     draw_info->affine[i]=image_info->affine[i];
+  draw_info->angle=0.0;
+  draw_info->gravity=NorthWestGravity;
   draw_info->fill=image_info->fill;
+  draw_info->tile=(Image *) NULL;
   draw_info->stroke=image_info->stroke;
+  draw_info->linewidth=1.0;
+  draw_info->stroke_antialias=image_info->antialias;
+  draw_info->decorate=NoDecoration;
+  draw_info->font=AllocateString(image_info->font);
+  draw_info->text_antialias=image_info->antialias;
+  draw_info->pointsize=image_info->pointsize;
   (void) QueryColorDatabase("none",&draw_info->box);
   draw_info->border_color=image_info->border_color;
-  draw_info->decorate=NoDecoration;
-  draw_info->tile=(Image *) NULL;
   draw_info->verbose=image_info->verbose;
   draw_info->signature=MagickSignature;
 }

@@ -729,7 +729,7 @@ MagickExport double IntersectPrimitive(PrimitiveInfo *primitive_info,
           *fill_opacity=subpath_opacity;
           continue;
         }
-    if (!draw_info->antialias || (minimum_distance > (0.5*0.5)))
+    if (!draw_info->stroke_antialias || (minimum_distance > (0.5*0.5)))
       {
         if (crossings & 0x01)
           *fill_opacity=1.0;
