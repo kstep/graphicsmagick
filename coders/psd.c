@@ -291,6 +291,38 @@ static unsigned int IsPSD(const unsigned char *magick,const size_t length)
     return(True);
   return(False);
 }
+
+
+/*
+	Simple utility routine to convert between PSD blending modes and
+	ImageMagick compositing operators
+*/
+static CompositeOperator PSDBlendModeToCompositeOperator( const char* blendMode )
+{
+	if (strncmp(blendMode, "norm", 4)==0) return( OverCompositeOp );
+	if (strncmp(blendMode, "mul ", 4)==0) return( MultiplyCompositeOp );
+	if (strncmp(blendMode, "diss", 4)==0) return( DissolveCompositeOp );
+	if (strncmp(blendMode, "diff", 4)==0) return( DifferenceCompositeOp );
+	if (strncmp(blendMode, "dark", 4)==0) return( DarkenCompositeOp );
+	if (strncmp(blendMode, "lite", 4)==0) return( LightenCompositeOp );
+	if (strncmp(blendMode, "hue ", 4)==0) return( HueCompositeOp );
+	if (strncmp(blendMode, "sat ", 4)==0) return( SaturateCompositeOp );
+	if (strncmp(blendMode, "colr", 4)==0) return( ColorizeCompositeOp );
+	if (strncmp(blendMode, "lum ", 4)==0) return( LuminizeCompositeOp );
+	if (strncmp(blendMode, "scrn", 4)==0) return( ScreenCompositeOp );
+	if (strncmp(blendMode, "over", 4)==0) return( OverlayCompositeOp );
+/*
+	if (strncmp(blendMode, "hLit", 4)==0) return(???);	// HardLight
+	if (strncmp(blendMode, "sLit", 4)==0) return(???);	// SoftLight
+	if (strncmp(blendMode, "smud", 4)==0) return(???);	// Exclusion
+	if (strncmp(blendMode, "div ", 4)==0) return(???);	// Dodge
+	if (strncmp(blendMode, "idiv", 4)==0) return(???);	// Burn
+*/
+
+	/* NOTE: if we got here, it's not a supported mode... */
+	return( OverCompositeOp );
+}
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -336,29 +368,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     DuotoneMode = 8, 
     LabMode = 9
   } PSDImageType;
-
-/*
-  enum
-  {
-    layerNormal    = 'norm',
-    layerDarken    = 'dark',
-    layerLighten  = 'lite',
-    layerHue    = 'hue ',
-    layerSaturation  = 'sat ',
-    layerColor    = 'colr',
-    layerLuminosity  = 'lum ',
-    layerMultiply  = 'mul ',
-    layerScreen    = 'scrn',
-    layerDissolve  = 'diss',
-    layerOverlay  = 'over',
-    layerHardLight  = 'hLit',
-    layerSoftLight  = 'sLit',
-    layerDifference  = 'diff',
-    layerExclusion  = 'smud',
-    layerDodge    = 'div ',
-    layerBurn    = 'idiv'
-  };
-*/
 
   typedef struct _ChannelInfo
   {
@@ -662,7 +671,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Allocate layered image.
         */
         layer_info[i].image=CloneImage(image,layer_info[i].page.width,
-          layer_info[i].page.height,True,&image->exception);
+									   layer_info[i].page.height,
+									   True,&image->exception);
         if (layer_info[i].image == (Image *) NULL)
           {
             for (j=0; j < i; j++)
@@ -671,6 +681,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               "Memory allocation failed",image)
           }
         SetImage(layer_info[i].image,OpaqueOpacity);
+		layer_info[i].image->compose = PSDBlendModeToCompositeOperator( layer_info[i].blendkey );
+		if ( layer_info[i].visible == False )	/* BOGUS: should really be separate member var! */
+			layer_info[i].image->compose = NoCompositeOp;	
         if (psd_info.mode == CMYKMode)
           layer_info[i].image->colorspace=CMYKColorspace;
         for (j=0; j < layer_info[i].channels; j++)

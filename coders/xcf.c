@@ -192,6 +192,64 @@ static unsigned int IsXCF(const unsigned char *magick,const size_t length)
     return(True);
   return(False);
 }
+
+
+typedef enum
+{
+  GIMP_NORMAL_MODE,
+  GIMP_DISSOLVE_MODE,
+  GIMP_BEHIND_MODE,
+  GIMP_MULTIPLY_MODE,
+  GIMP_SCREEN_MODE,
+  GIMP_OVERLAY_MODE,
+  GIMP_DIFFERENCE_MODE,
+  GIMP_ADDITION_MODE,
+  GIMP_SUBTRACT_MODE,
+  GIMP_DARKEN_ONLY_MODE,
+  GIMP_LIGHTEN_ONLY_MODE,
+  GIMP_HUE_MODE,
+  GIMP_SATURATION_MODE,
+  GIMP_COLOR_MODE,
+  GIMP_VALUE_MODE,
+  GIMP_DIVIDE_MODE,
+  GIMP_DODGE_MODE,
+  GIMP_BURN_MODE,
+  GIMP_HARDLIGHT_MODE
+} GimpLayerModeEffects;
+
+/*
+	Simple utility routine to convert between PSD blending modes and
+	ImageMagick compositing operators
+*/
+static CompositeOperator GIMPBlendModeToCompositeOperator( unsigned long blendMode )
+{
+	switch ( blendMode ) {
+		case GIMP_NORMAL_MODE:		return( OverCompositeOp );			break;
+		case GIMP_DISSOLVE_MODE:	return( DissolveCompositeOp );		break;
+		case GIMP_MULTIPLY_MODE:	return( MultiplyCompositeOp );		break;
+		case GIMP_SCREEN_MODE:		return( ScreenCompositeOp );		break;
+		case GIMP_OVERLAY_MODE:		return( OverlayCompositeOp );		break;
+		case GIMP_DIFFERENCE_MODE:	return( DifferenceCompositeOp );	break;
+		case GIMP_ADDITION_MODE:	return( AddCompositeOp );			break;
+		case GIMP_SUBTRACT_MODE:	return( SubtractCompositeOp );		break;
+		case GIMP_DARKEN_ONLY_MODE:	return( DarkenCompositeOp );		break;
+		case GIMP_LIGHTEN_ONLY_MODE:return( LightenCompositeOp );		break;
+		case GIMP_HUE_MODE:			return( HueCompositeOp );			break;
+		case GIMP_SATURATION_MODE:	return( SaturateCompositeOp );		break;
+		case GIMP_COLOR_MODE:		return( ColorizeCompositeOp );		break;
+		/* these are the ones we don't support...yet */
+		case GIMP_DODGE_MODE:		return( OverCompositeOp );		break;
+		case GIMP_BURN_MODE:		return( OverCompositeOp );		break;
+		case GIMP_HARDLIGHT_MODE:	return( OverCompositeOp );		break;
+		case GIMP_BEHIND_MODE:		return( OverCompositeOp );		break;
+		case GIMP_VALUE_MODE:		return( OverCompositeOp );		break;
+		case GIMP_DIVIDE_MODE:		return( OverCompositeOp );		break;
+		default:
+				return( OverCompositeOp );
+				break;
+	}
+}
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -791,6 +849,11 @@ static int ReadOneLayer( Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo* outL
 
 	/* clear the image based on the layer opacity */
   	SetImage(outLayer->image,(Quantum)(255-outLayer->opacity));
+
+	/* set the compositing mode */
+	outLayer->image->compose = GIMPBlendModeToCompositeOperator( outLayer->mode );
+	if ( outLayer->visible == False )	/* BOGUS: should really be separate member var! */
+		outLayer->image->compose = NoCompositeOp;	
 
   /* read the hierarchy and layer mask offsets */
 	hierarchy_offset = ReadBlobMSBLong(image);
