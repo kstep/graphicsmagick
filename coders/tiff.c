@@ -1564,11 +1564,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           (compress_tag != COMPRESSION_ADOBE_DEFLATE))
         (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,strip_size);
       else
-        {
-          (void) TIFFSetField(tiff,TIFFTAG_PREDICTOR,2);
-          (void) TIFFSetField(tiff,TIFFTAG_ZIPQUALITY,9);
-          (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
-        }
+        (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
     if ((image->x_resolution != 0) && (image->y_resolution != 0))
       {
         unsigned short
