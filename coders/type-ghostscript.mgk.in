@@ -11,7 +11,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/a010013l.afm"
     glyphs="@ghostscript_font_dir@/a010013l.pfb"
-    version="0.1" />
+    />
   <type
     name="AvantGarde-BookOblique"
     fullname="AvantGarde Book Oblique"
@@ -23,7 +23,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/a010033l.afm"
     glyphs="@ghostscript_font_dir@/a010033l.pfb"
-    version="0.1" />
+    />
   <type
     name="AvantGarde-Demi"
     fullname="AvantGarde DemiBold"
@@ -35,7 +35,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/a010015l.afm"
     glyphs="@ghostscript_font_dir@/a010015l.pfb"
-    version="0.1" />
+    />
   <type
     name="AvantGarde-DemiOblique"
     fullname="AvantGarde DemiOblique"
@@ -47,7 +47,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/a010035l.afm"
     glyphs="@ghostscript_font_dir@/a010035l.pfb"
-    version="0.1" />
+    />
   <type
     name="Bookman-Demi"
     fullname="Bookman DemiBold"
@@ -59,7 +59,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/b018015l.afm"
     glyphs="@ghostscript_font_dir@/b018015l.pfb"
-    version="0.1" />
+    />
   <type
     name="Bookman-DemiItalic"
     fullname="Bookman DemiBold Italic"
@@ -71,7 +71,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/b018035l.afm"
     glyphs="@ghostscript_font_dir@/b018035l.pfb"
-    version="0.1" />
+    />
   <type
     name="Bookman-Light"
     fullname="Bookman Light"
@@ -83,7 +83,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/b018012l.afm"
     glyphs="@ghostscript_font_dir@/b018012l.pfb"
-    version="0.1" />
+    />
   <type
     name="Bookman-LightItalic"
     fullname="Bookman Light Italic"
@@ -95,7 +95,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/b018032l.afm"
     glyphs="@ghostscript_font_dir@/b018032l.pfb"
-    version="0.1" />
+    />
   <type
     name="Courier"
     fullname="Courier Regular"
@@ -107,7 +107,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/n022003l.afm"
     glyphs="@ghostscript_font_dir@/n022003l.pfb"
-    version="0.1" />
+    />
   <type
     name="Courier-Bold"
     fullname="Courier Bold"
@@ -119,7 +119,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/n022004l.afm"
     glyphs="@ghostscript_font_dir@/n022004l.pfb"
-    version="0.1" />
+    />
   <type
     name="Courier-Oblique"
     fullname="Courier Regular Oblique"
@@ -131,7 +131,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/n022023l.afm"
     glyphs="@ghostscript_font_dir@/n022023l.pfb"
-    version="0.1" />
+    />
   <type
     name="Courier-BoldOblique"
     fullname="Courier Bold Oblique"
@@ -143,7 +143,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/n022024l.afm"
     glyphs="@ghostscript_font_dir@/n022024l.pfb"
-    version="0.1" />
+    />
   <type
     name="Helvetica"
     fullname="Helvetica Regular"
@@ -155,7 +155,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/n019003l.afm"
     glyphs="@ghostscript_font_dir@/n019003l.pfb"
-    version="0.1" />
+    />
   <type
     name="Helvetica-Bold"
     fullname="Helvetica Bold"
@@ -167,7 +167,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/n019004l.afm"
     glyphs="@ghostscript_font_dir@/n019004l.pfb"
-    version="0.1" />
+    />
   <type
     name="Helvetica-Oblique"
     fullname="Helvetica Regular Italic"
@@ -179,7 +179,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/n019023l.afm"
     glyphs="@ghostscript_font_dir@/n019023l.pfb"
-    version="0.1" />
+    />
   <type
     name="Helvetica-BoldOblique"
     fullname="Helvetica Bold Italic"
@@ -191,7 +191,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/n019024l.afm"
     glyphs="@ghostscript_font_dir@/n019024l.pfb"
-    version="0.1" />
+    />
   <type
     name="Helvetica-Narrow"
     fullname="Helvetica Narrow"
@@ -203,7 +203,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/n019043l.afm"
     glyphs="@ghostscript_font_dir@/n019043l.pfb"
-    version="0.1" />
+    />
   <type
     name="Helvetica-Narrow-Oblique"
     fullname="Helvetica Narrow Oblique"
@@ -215,7 +215,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/n019063l.afm"
     glyphs="@ghostscript_font_dir@/n019063l.pfb"
-    version="0.1" />
+    />
   <type
     name="Helvetica-Narrow-Bold"
     fullname="Helvetica Narrow Bold"
@@ -227,7 +227,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/n019044l.afm"
     glyphs="@ghostscript_font_dir@/n019044l.pfb"
-    version="0.1" />
+    />
   <type
     name="Helvetica-Narrow-BoldOblique"
     fullname="Helvetica Narrow Bold Oblique"
@@ -239,7 +239,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/n019064l.afm"
     glyphs="@ghostscript_font_dir@/n019064l.pfb"
-    version="0.1" />
+    />
   <type
     name="NewCenturySchlbk-Roman"
     fullname="New Century Schoolbook"
@@ -251,7 +251,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/c059013l.afm"
     glyphs="@ghostscript_font_dir@/c059013l.pfb"
-    version="0.1" />
+    />
   <type
     name="NewCenturySchlbk-Italic"
     fullname="New Century Schoolbook Italic"
@@ -263,7 +263,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/c059033l.afm"
     glyphs="@ghostscript_font_dir@/c059033l.pfb"
-    version="0.1" />
+    />
   <type
     name="NewCenturySchlbk-Bold"
     fullname="New Century Schoolbook Bold"
@@ -275,7 +275,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/c059016l.afm"
     glyphs="@ghostscript_font_dir@/c059016l.pfb"
-    version="0.1" />
+    />
   <type
     name="NewCenturySchlbk-BoldItalic"
     fullname="New Century Schoolbook Bold Italic"
@@ -287,7 +287,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/c059036l.afm"
     glyphs="@ghostscript_font_dir@/c059036l.pfb"
-    version="0.1" />
+    />
   <type
     name="Palatino-Roman"
     fullname="Palatino Regular"
@@ -299,7 +299,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/p052003l.afm"
     glyphs="@ghostscript_font_dir@/p052003l.pfb"
-    version="0.1" />
+    />
   <type
     name="Palatino-Italic"
     fullname="Palatino Italic"
@@ -311,7 +311,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/p052023l.afm"
     glyphs="@ghostscript_font_dir@/p052023l.pfb"
-    version="0.1" />
+    />
   <type
     name="Palatino-Bold"
     fullname="Palatino Bold"
@@ -323,7 +323,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/p052004l.afm"
     glyphs="@ghostscript_font_dir@/p052004l.pfb"
-    version="0.1" />
+    />
   <type
     name="Palatino-BoldItalic"
     fullname="Palatino Bold Italic"
@@ -335,7 +335,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/p052024l.afm"
     glyphs="@ghostscript_font_dir@/p052024l.pfb"
-    version="0.1" />
+    />
   <type
     name="Times-Roman"
     fullname="Times Regular"
@@ -347,7 +347,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/n021003l.afm"
     glyphs="@ghostscript_font_dir@/n021003l.pfb"
-    version="0.1" />
+    />
   <type
     name="Times-Bold"
     fullname="Times Medium"
@@ -359,7 +359,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/n021004l.afm"
     glyphs="@ghostscript_font_dir@/n021004l.pfb"
-    version="0.1" />
+    />
   <type
     name="Times-Italic"
     fullname="Times Regular Italic"
@@ -371,7 +371,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/n021023l.afm"
     glyphs="@ghostscript_font_dir@/n021023l.pfb"
-    version="0.1" />
+    />
   <type
     name="Times-BoldItalic"
     fullname="Times Medium Italic"
@@ -383,7 +383,7 @@
     format="type1"
     metrics="@ghostscript_font_dir@/n021024l.afm"
     glyphs="@ghostscript_font_dir@/n021024l.pfb"
-    version="0.1" />
+    />
   <type
     name="Symbol"
     fullname="Symbol"

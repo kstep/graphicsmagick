@@ -8,7 +8,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/arial.ttf"
-    version="0.1" />
+    />
   <type
     name="Arial-Black"
     fullname="Arial Black"
@@ -17,7 +17,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/ariblk.ttf"
-    version="0.1" />
+    />
   <type
     name="Arial-Bold"
     fullname="Arial Bold"
@@ -26,7 +26,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/arialbd.ttf"
-    version="0.1" />
+    />
   <type
     name="Arial-Bold-Italic"
     fullname="Arial Bold Italic"
@@ -35,7 +35,7 @@
     style="italic"
     stretch="normal"
     glyphs="@windows_font_dir@/arialbi.ttf"
-    version="0.1" />
+    />
   <type
     name="Arial-Italic"
     fullname="Arial Italic"
@@ -44,7 +44,7 @@
     style="italic"
     stretch="normal"
     glyphs="@windows_font_dir@/ariali.ttf"
-    version="0.1" />
+    />
   <type
     name="Arial-Narrow"
     fullname="Arial Narrow"
@@ -53,7 +53,7 @@
     style="normal"
     stretch="condensed"
     glyphs="@windows_font_dir@/arialn.ttf"
-    version="0.1" />
+    />
   <type
     name="Arial-Narrow-Bold"
     fullname="Arial Narrow Bold"
@@ -62,7 +62,7 @@
     style="normal"
     stretch="condensed"
     glyphs="@windows_font_dir@/arialnb.ttf"
-    version="0.1" />
+    />
   <type
     name="Arial-Narrow-Bold-Italic"
     fullname="Arial Narrow Bold Italic"
@@ -71,7 +71,7 @@
     style="italic"
     stretch="condensed"
     glyphs="@windows_font_dir@/arialnbi.ttf"
-    version="0.1" />
+    />
   <type
     name="Arial-Narrow-Italic"
     fullname="Arial Narrow Italic"
@@ -80,7 +80,7 @@
     style="italic"
     stretch="condensed"
     glyphs="@windows_font_dir@/arnari.ttf"
-    version="0.1" />
+    />
   <type
     name="Arial-Narrow-Special-G1"
     fullname="Arial Narrow Special G1"
@@ -89,7 +89,7 @@
     style="normal"
     stretch="condensed"
     glyphs="@windows_font_dir@/msgeonr1.ttf"
-    version="0.1" />
+    />
   <type
     name="Arial-Narrow-Special-G1-Bold"
     fullname="Arial Narrow Special G1 Bold"
@@ -98,7 +98,7 @@
     style="normal"
     stretch="condensed"
     glyphs="@windows_font_dir@/msgeonb1.ttf"
-    version="0.1" />
+    />
   <type
     name="Arial-Narrow-Special-G1-Italic"
     fullname="Arial Narrow Special G1 Italic"
@@ -107,7 +107,7 @@
     style="italic"
     stretch="condensed"
     glyphs="@windows_font_dir@/msgeoni1.ttf"
-    version="0.1" />
+    />
   <type
     name="Arial-Narrow-Special-G2"
     fullname="Arial Narrow Special G2"
@@ -116,7 +116,7 @@
     style="normal"
     stretch="condensed"
     glyphs="@windows_font_dir@/msgeonr2.ttf"
-    version="0.1" />
+    />
   <type
     name="Arial-Narrow-Special-G2-Bold"
     fullname="Arial Narrow Special G2 Bold"
@@ -125,7 +125,7 @@
     style="Narrow"
     stretch="normal"
     glyphs="@windows_font_dir@/msgeonb2.ttf"
-    version="0.1" />
+    />
   <type
     name="Arial-Narrow-Special-G2-Italic"
     fullname="Arial Narrow Special G2 Italic"
@@ -134,7 +134,7 @@
     style="italic"
     stretch="condensed"
     glyphs="@windows_font_dir@/msgeoni2.ttf"
-    version="0.1" />
+    />
   <type
     name="Arial-Rounded-MT-Bold"
     fullname="Arial Rounded MT Bold"
@@ -143,7 +143,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/arlrdbd.ttf"
-    version="0.1" />
+    />
   <type
     name="Arial-Special-G1"
     fullname="Arial Special G1"
@@ -152,7 +152,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/msgeor1.ttf"
-    version="0.1" />
+    />
   <type
     name="Arial-Special-G1-Bold"
     fullname="Arial Special G1 Bold"
@@ -161,7 +161,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/msgeoab1.ttf"
-    version="0.1" />
+    />
   <type
     name="Arial-Special-G1-Bold-Italic"
     fullname="Arial Special G1 Bold Italic"
@@ -170,7 +170,7 @@
     style="italic"
     stretch="normal"
     glyphs="@windows_font_dir@/msgeoax1.ttf"
-    version="0.1" />
+    />
   <type
     name="Arial-Special-G1-Italic"
     fullname="Arial Special G1 Italic"
@@ -179,7 +179,7 @@
     style="italic"
     stretch="normal"
     glyphs="@windows_font_dir@/msgeoai1.ttf"
-    version="0.1" />
+    />
   <type
     name="Arial-Special-G2"
     fullname="Arial Special G2"
@@ -188,7 +188,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/msgeoar2.ttf"
-    version="0.1" />
+    />
   <type
     name="Arial-Special-G2-Bold"
     fullname="Arial Special G2 Bold"
@@ -197,7 +197,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/msgeoab2.ttf"
-    version="0.1" />
+    />
   <type
     name="Arial-Special-G2-Bold-Italic"
     fullname="Arial Special G2 Bold Italic"
@@ -206,7 +206,7 @@
     style="italic"
     stretch="normal"
     glyphs="@windows_font_dir@/msgeoax2.ttf"
-    version="0.1" />
+    />
   <type
     name="Arial-Special-G2-Italic"
     fullname="Arial Special G2 Italic"
@@ -215,7 +215,7 @@
     style="italic"
     stretch="normal"
     glyphs="@windows_font_dir@/msgeoai2.ttf"
-    version="0.1" />
+    />
   <type
     name="Bookman-Old-Style"
     fullname="Bookman Old Style"
@@ -224,7 +224,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/bkmnos.ttf"
-    version="0.1" />
+    />
   <type
     name="Bookman-Old-Style-Bold"
     fullname="Bookman Old Style Bold"
@@ -233,7 +233,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/bookosb.ttf"
-    version="0.1" />
+    />
   <type
     name="Bookman-Old-Style-Bold-Italic"
     fullname="Bookman Old Style Bold Italic"
@@ -242,7 +242,7 @@
     style="italic"
     stretch="normal"
     glyphs="@windows_font_dir@/bookosbi.ttf"
-    version="0.1" />
+    />
   <type
     name="Bookman-Old-Style-Italic"
     fullname="Bookman Old Style Italic"
@@ -251,7 +251,7 @@
     style="italic"
     stretch="normal"
     glyphs="@windows_font_dir@/boookosi.ttf"
-    version="0.1" />
+    />
   <type
     name="Century-Schoolbook"
     fullname="Century Schoolbook"
@@ -260,7 +260,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/censcbk.ttf"
-    version="0.1" />
+    />
   <type
     name="Century-Schoolbook-Bold"
     fullname="Century Schoolbook Bold"
@@ -269,7 +269,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/schlbkb.ttf"
-    version="0.1" />
+    />
   <type
     name="Century-Schoolbook-Bold-Italic"
     fullname="Century Schoolbook Bold Italic"
@@ -278,7 +278,7 @@
     style="italic"
     stretch="normal"
     glyphs="@windows_font_dir@/schlbkbi.ttf"
-    version="0.1" />
+    />
   <type
     name="Century-Schoolbook-Italic"
     fullname="Century Schoolbook Italic"
@@ -287,7 +287,7 @@
     style="italic"
     stretch="normal"
     glyphs="@windows_font_dir@/schlbki.ttf"
-    version="0.1" />
+    />
   <type
     name="Comic-Sans-MS"
     fullname="Comic Sans MS"
@@ -296,7 +296,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/comic.ttf"
-    version="0.1" />
+    />
   <type
     name="Comic-Sans-MS-Bold"
     fullname="Comic Sans MS Bold"
@@ -305,7 +305,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/comicbd.ttf"
-    version="0.1" />
+    />
   <type
     name="Courier-New"
     fullname="Courier New"
@@ -314,7 +314,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/cour.ttf"
-    version="0.1" />
+    />
   <type
     name="Courier-New-Bold"
     fullname="Courier New Bold"
@@ -323,7 +323,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/courbd.ttf"
-    version="0.1" />
+    />
   <type
     name="Courier-New-Bold-Italic"
     fullname="Courier New Bold Italic"
@@ -332,7 +332,7 @@
     style="italic"
     stretch="normal"
     glyphs="@windows_font_dir@/courbi.ttf"
-    version="0.1" />
+    />
   <type
     name="Courier-New-Italic"
     fullname="Courier New Italic"
@@ -341,7 +341,7 @@
     style="italic"
     stretch="normal"
     glyphs="@windows_font_dir@/couri.ttf"
-    version="0.1" />
+    />
   <type
     name="Garamond"
     fullname="Garamond"
@@ -350,7 +350,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/gara.ttf"
-    version="0.1" />
+    />
   <type
     name="Garamond-Bold"
     fullname="Garamond Bold"
@@ -359,7 +359,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/garabd.ttf"
-    version="0.1" />
+    />
   <type
     name="Garamond-Italic"
     fullname="Garamond Italic"
@@ -368,7 +368,7 @@
     style="italic"
     stretch="normal"
     glyphs="@windows_font_dir@/Italic"
-    version="0.1" />
+    />
   <type
     name="Gill-Sans-MT-Ext-Condensed-Bold"
     fullname="Gill Sans MT Ext Condensed Bold"
@@ -377,7 +377,7 @@
     style="normal"
     stretch="extra-condensed"
     glyphs="@windows_font_dir@/glsnecb.ttf"
-    version="0.1" />
+    />
   <type
     name="Impact"
     fullname="Impact"
@@ -386,7 +386,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/impact.ttf"
-    version="0.1" />
+    />
   <type
     name="Lucida-Blackletter"
     fullname="Lucida Blackletter"
@@ -395,7 +395,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/lblack.ttf"
-    version="0.1" />
+    />
   <type
     name="Lucida-Bright"
     fullname="Lucida Bright"
@@ -404,7 +404,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/lbrite.ttf"
-    version="0.1" />
+    />
   <type
     name="Lucida-Bright-Demibold"
     fullname="Lucida Bright Demibold"
@@ -413,7 +413,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/lbrited.ttf"
-    version="0.1" />
+    />
   <type
     name="Lucida-Bright-Demibold-Italic"
     fullname="Lucida Bright Demibold Italic"
@@ -422,7 +422,7 @@
     style="italic"
     stretch="normal"
     glyphs="@windows_font_dir@/lbritedi.ttf"
-    version="0.1" />
+    />
   <type
     name="Lucida-Bright-Italic"
     fullname="Lucida Bright Italic"
@@ -431,7 +431,7 @@
     style="italic"
     stretch="normal"
     glyphs="@windows_font_dir@/lbritei.ttf"
-    version="0.1" />
+    />
   <type
     name="Lucida-Caligraphy-Italic"
     fullname="Lucida Caligraphy Italic"
@@ -440,7 +440,7 @@
     style="italic"
     stretch="normal"
     glyphs="@windows_font_dir@/lcalig.ttf"
-    version="0.1" />
+    />
   <type
     name="Lucida-Console,	Lucida-Console"
     fullname="Lucida Console,	Lucida Console"
@@ -449,7 +449,7 @@
     style="lucon.ttf"
     stretch="normal"
     glyphs="@windows_font_dir@/"
-    version="0.1" />
+    />
   <type
     name="Lucida-Fax-Demibold"
     fullname="Lucida Fax Demibold"
@@ -458,7 +458,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/lfaxd.ttf"
-    version="0.1" />
+    />
   <type
     name="Lucida-Fax-Demibold-Italic"
     fullname="Lucida Fax Demibold Italic"
@@ -467,7 +467,7 @@
     style="italic"
     stretch="normal"
     glyphs="@windows_font_dir@/lfaxdi.ttf"
-    version="0.1" />
+    />
   <type
     name="Lucida-Fax-Italic"
     fullname="Lucida Fax Italic"
@@ -476,7 +476,7 @@
     style="italic"
     stretch="normal"
     glyphs="@windows_font_dir@/lfaxi.ttf"
-    version="0.1" />
+    />
   <type
     name="Lucida-Fax-Regular"
     fullname="Lucida Fax Regular"
@@ -485,7 +485,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/lfax.ttf"
-    version="0.1" />
+    />
   <type
     name="Lucida-Handwriting-Italic"
     fullname="Lucida Handwriting Italic"
@@ -494,7 +494,7 @@
     style="italic"
     stretch="normal"
     glyphs="@windows_font_dir@/lhandw.ttf"
-    version="0.1" />
+    />
   <type
     name="Lucida-Sans-Demibold-Italic"
     fullname="Lucida Sans Demibold Italic"
@@ -503,7 +503,7 @@
     style="italic"
     stretch="normal"
     glyphs="@windows_font_dir@/lsansdi.ttf"
-    version="0.1" />
+    />
   <type
     name="Lucida-Sans-Demibold-Roman"
     fullname="Lucida Sans Demibold Roman"
@@ -512,7 +512,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/lsansd.ttf"
-    version="0.1" />
+    />
   <type
     name="Lucida-Sans-Regular"
     fullname="Lucida Sans Regular"
@@ -521,7 +521,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/lsans.ttf"
-    version="0.1" />
+    />
   <type
     name="Lucida-Sans-Typewriter-Bold"
     fullname="Lucida Sans Typewriter Bold"
@@ -530,7 +530,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/ltypeb.ttf"
-    version="0.1" />
+    />
   <type
     name="Lucida-Sans-Typewriter-Bold-Oblique"
     fullname="Lucida Sans Typewriter Bold Oblique"
@@ -539,7 +539,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/ltypebo.ttf"
-    version="0.1" />
+    />
   <type
     name="Lucida-Sans-Typewriter-Oblique"
     fullname="Lucida Sans Typewriter Oblique"
@@ -548,7 +548,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/ltypeo.ttf"
-    version="0.1" />
+    />
   <type
     name="Lucida-Sans-Typewriter-Regular"
     fullname="Lucida Sans Typewriter Regular"
@@ -557,7 +557,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/ltype.ttf"
-    version="0.1" />
+    />
   <type
     name="MS-Sans-Serif"
     fullname="MS Sans Serif"
@@ -566,7 +566,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/sseriff.ttf"
-    version="0.1" />
+    />
   <type
     name="MS-Serif"
     fullname="MS Serif"
@@ -575,7 +575,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/seriff.ttf"
-    version="0.1" />
+    />
   <type
     name="Modern"
     fullname="Modern"
@@ -584,7 +584,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/modern.ttf"
-    version="0.1" />
+    />
   <type
     name="Monotype-Corsiva"
     fullname="Monotype Corsiva"
@@ -593,7 +593,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/mtcorsva.ttf"
-    version="0.1" />
+    />
   <type
     name="Small-Fonts"
     fullname="Small Fonts"
@@ -602,7 +602,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/smallf.ttf"
-    version="0.1" />
+    />
   <type
     name="Symbol"
     fullname="Symbol"
@@ -612,7 +612,7 @@
     stretch="normal"
     glyphs="@windows_font_dir@/symbol.ttf"
     encoding="AppleRoman"
-    version="0.1" />
+    />
   <type
     name="Tahoma"
     fullname="Tahoma"
@@ -621,7 +621,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/tahoma.ttf"
-    version="0.1" />
+    />
   <type
     name="Tahoma-Bold"
     fullname="Tahoma Bold"
@@ -630,7 +630,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/tahomabd.ttf"
-    version="0.1" />
+    />
   <type
     name="Times-New-Roman"
     fullname="Times New Roman"
@@ -639,7 +639,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/times.ttf"
-    version="0.1" />
+    />
   <type
     name="Times-New-Roman-Bold"
     fullname="Times New Roman Bold"
@@ -648,7 +648,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/timesbd.ttf"
-    version="0.1" />
+    />
   <type
     name="Times-New-Roman-Bold-Italic"
     fullname="Times New Roman Bold Italic"
@@ -657,7 +657,7 @@
     style="italic"
     stretch="normal"
     glyphs="@windows_font_dir@/timesbi.ttf"
-    version="0.1" />
+    />
   <type
     name="Times-New-Roman-Italic"
     fullname="Times New Roman Italic"
@@ -666,7 +666,7 @@
     style="italic"
     stretch="normal"
     glyphs="@windows_font_dir@/timesi.ttf"
-    version="0.1" />
+    />
   <type
     name="Times-New-Roman-MT-Extra-Bold"
     fullname="Times New Roman MT Extra Bold"
@@ -675,7 +675,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/timnreb.ttf"
-    version="0.1" />
+    />
   <type
     name="Verdana"
     fullname="Verdana"
@@ -684,7 +684,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/verdana.ttf"
-    version="0.1" />
+    />
   <type
     name="Verdana-Bold"
     fullname="Verdana Bold"
@@ -693,7 +693,7 @@
     style="normal"
     stretch="normal"
     glyphs="@windows_font_dir@/verdanab.ttf"
-    version="0.1" />
+    />
   <type
     name="Verdana-Bold-Italic"
     fullname="Verdana Bold Italic"
@@ -702,7 +702,7 @@
     style="italic"
     stretch="normal"
     glyphs="@windows_font_dir@/verdanaz.ttf"
-    version="0.1" />
+    />
   <type
     name="Verdana-Italic"
     fullname="Verdana Italic"
@@ -711,7 +711,7 @@
     style="italic"
     stretch="normal"
     glyphs="@windows_font_dir@/verdanai.ttf"
-    version="0.1" />
+    />
   <type
     name="Wingdings"
     fullname="Wingdings"
@@ -721,7 +721,7 @@
     stretch="normal"
     glyphs="@windows_font_dir@/wingding.ttf"
     encoding="AppleRoman"
-    version="0.1" />
+    />
   <type
     name="Wingdings-2"
     fullname="Wingdings 2"
@@ -731,7 +731,7 @@
     stretch="normal"
     glyphs="@windows_font_dir@/wingdng2.ttf"
     encoding="AppleRoman"
-    version="0.1" />
+    />
   <type
     name="Wingdings-3"
     fullname="Wingdings 3"
@@ -741,6 +741,6 @@
     stretch="normal"
     glyphs="@windows_font_dir@/wingdng3.ttf"
     encoding="AppleRoman"
-    version="0.1" />
+    />
 </typemap>
 

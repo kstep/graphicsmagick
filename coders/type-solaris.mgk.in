@@ -11,7 +11,7 @@
     format="type1"
     metrics="/usr/openwin/lib/X11/fonts/Type1/afm/Courier.afm"
     glyphs="/usr/openwin/lib/X11/fonts/Type1/cour.pfa"
-    version="0.1" />
+    />
   <type
     name="Courier-Bold"
     fullname="Courier Bold"
@@ -23,7 +23,7 @@
     format="type1"
     metrics="/usr/openwin/lib/X11/fonts/Type1/afm/Courier-Bold.afm"
     glyphs="/usr/openwin/lib/X11/fonts/Type1/courb.pfa"
-    version="0.1" />
+    />
   <type
     name="Courier-Oblique"
     fullname="Courier Regular Oblique"
@@ -35,7 +35,7 @@
     format="type1"
     metrics="/usr/openwin/lib/X11/fonts/Type1/afm/Courier-Oblique.afm"
     glyphs="/usr/openwin/lib/X11/fonts/Type1/couri.pfa"
-    version="0.1" />
+    />
   <type
     name="Courier-BoldOblique"
     fullname="Courier Bold Oblique"
@@ -47,7 +47,7 @@
     format="type1"
     metrics="/usr/openwin/lib/X11/fonts/Type1/afm/Courier-BoldOblique.afm"
     glyphs="/usr/openwin/lib/X11/fonts/Type1/courbi.pfa"
-    version="0.1" />
+    />
   <type
     name="Helvetica"
     fullname="Helvetica Regular"
@@ -59,7 +59,7 @@
     format="type1"
     metrics="/usr/openwin/lib/X11/fonts/Type1/afm/Helvetica.afm"
     glyphs="/usr/openwin/lib/X11/fonts/Type1/Helvetica.pfa"
-    version="0.1" />
+    />
   <type
     name="Helvetica-Bold"
     fullname="Helvetica Bold"
@@ -71,7 +71,7 @@
     format="type1"
     metrics="/usr/openwin/lib/X11/fonts/Type1/afm/Helvetica-Bold.afm"
     glyphs="/usr/openwin/lib/X11/fonts/Type1/Helvetica-Bold.pfa"
-    version="0.1" />
+    />
   <type
     name="Helvetica-Oblique"
     fullname="Helvetica Regular Italic"
@@ -83,7 +83,7 @@
     format="type1"
     metrics="/usr/openwin/lib/X11/fonts/Type1/afm/Helvetica-Oblique.afm"
     glyphs="/usr/openwin/lib/X11/fonts/Type1/Helvetica-Oblique.pfa"
-    version="0.1" />
+    />
   <type
     name="Helvetica-BoldOblique"
     fullname="Helvetica Bold Italic"
@@ -95,7 +95,7 @@
     format="type1"
     metrics="/usr/openwin/lib/X11/fonts/Type1/afm/Helvetica-BoldOblique.afm"
     glyphs="/usr/openwin/lib/X11/fonts/Type1/Helvetica-BoldOblique.pfa"
-    version="0.1" />
+    />
   <type
     name="Times-Roman"
     fullname="Times Regular"
@@ -107,7 +107,7 @@
     format="type1"
     metrics="/usr/openwin/lib/X11/fonts/Type1/afm/Times-Roman.afm"
     glyphs="/usr/openwin/lib/X11/fonts/Type1/Times-Roman.pfa"
-    version="0.1" />
+    />
   <type
     name="Times-Bold"
     fullname="Times Medium"
@@ -119,7 +119,7 @@
     format="type1"
     metrics="/usr/openwin/lib/X11/fonts/Type1/afm/Times-Bold.afm"
     glyphs="/usr/openwin/lib/X11/fonts/Type1/Times-Bold.pfa"
-    version="0.1" />
+    />
   <type
     name="Times-Italic"
     fullname="Times Regular Italic"
@@ -131,7 +131,7 @@
     format="type1"
     metrics="/usr/openwin/lib/X11/fonts/Type1/afm/Times-Italic.afm"
     glyphs="/usr/openwin/lib/X11/fonts/Type1/Times-Italic.pfa"
-    version="0.1" />
+    />
   <type
     name="Times-BoldItalic"
     fullname="Times Medium Italic"
@@ -143,7 +143,7 @@
     format="type1"
     metrics="/usr/openwin/lib/X11/fonts/Type1/afm/Times-BoldItalic.afm"
     glyphs="/usr/openwin/lib/X11/fonts/Type1/Times-BoldItalic.pfa"
-    version="0.1" />
+    />
   <type
     name="Symbol"
     fullname="Symbol"
@@ -167,7 +167,7 @@
     stretch="normal"
     format="type1"
     glyphs="/usr/openwin/lib/X11/fonts/Type1/UTRG____.pfa"
-    version="0.1" >
+    >
   <type
     name="Utopia-Italic"
     fullname="Utopia Italic"
@@ -178,7 +178,7 @@
     stretch="normal"
     format="type1"
     glyphs="/usr/openwin/lib/X11/fonts/Type1/UTI_____.pfa"
-    version="0.1" >
+    >
   <type
     name="Utopia-Bold"
     fullname="Utopia Bold"
@@ -189,7 +189,7 @@
     stretch="normal"
     format="type1"
     glyphs="/usr/openwin/lib/X11/fonts/Type1/UTB_____.pfa"
-    version="0.1" >
+    >
   <type
     name="Utopia-BoldItalic"
     fullname="Utopia Bold Italic"
@@ -200,6 +200,6 @@
     stretch="normal"
     format="type1"
     glyphs="/usr/openwin/lib/X11/fonts/Type1/UTBI____.pfa"
-    version="0.1" >
+    >
 </typemap>
 
