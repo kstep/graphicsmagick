@@ -31,11 +31,11 @@
 AUTOMAKE_OPTIONS = 1.4 foreign
 
 # Architecture independent data files installed in the package's data directory
-pkgdata_DATA = magic.mgk
+pkgdata_DATA = 
 
 # Additional files to distribute
-EXTRA_DIST = delegates.mgk.in mac.mgk magic.mgk nt.mgk \
-             unix.mgk vms.mgk win98.mgk win2k.mgk
+EXTRA_DIST = delegates.mgk.in mac.mgk nt.mgk unix.mgk vms.mgk win98.mgk \
+	win2k.mgk
 
 # Install delegates files
 install-data-delegates:

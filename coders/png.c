@@ -4268,6 +4268,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   page.y=0;
   have_write_global_plte=False;
 #ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
+  all_images_are_gray=False;
   need_local_plte=True;
 #endif
   have_write_global_srgb=False;

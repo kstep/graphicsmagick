@@ -91,7 +91,7 @@ pkgdir = $(libdir)/ImageMagick/modules/coders
 pkg_DATA = 
 
 # Architecture independent data files installed in the package's data directory
-pkgdata_DATA =
+pkgdata_DATA = magic.mgk fontmap.mgk
 
 # Manual pages to install
 man_MANS = $(ALLMANPAGES)

@@ -57,6 +57,7 @@
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
 #include "modules.h"
 #include "defines.h"
+
 /*
   Constant declaractions.
 */

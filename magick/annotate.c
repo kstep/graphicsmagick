@@ -101,6 +101,12 @@ typedef struct _FontInfo
 } FontInfo;
 
 /*
+  Constant declaractions.
+*/
+const char
+  *FontmapFilename = "fontmap.mgk";
+
+/*
   Static declarations.
 */
 static FontInfo
@@ -616,8 +622,6 @@ static void ParseFontmap(void *context,const xmlChar *name,
 
 MagickExport FontInfo *GetFontInfo(char *name)
 {
-#define FontmapPath  "/usr/share/fonts/fontmap"
-
   register FontInfo
     *p;
 
@@ -657,7 +661,8 @@ MagickExport FontInfo *GetFontInfo(char *name)
         };
 
       char
-        buffer[MaxTextExtent];
+        buffer[MaxTextExtent],
+        *path;
 
       FILE
         *file;
@@ -677,13 +682,17 @@ MagickExport FontInfo *GetFontInfo(char *name)
       /*
         Initialize fontmap.
       */
-      file=fopen(FontmapPath,"r");
+      path=GetMagickConfigurePath(FontmapFilename);
+      if (path == (char *) NULL)
+        return(fontmap);
+      file=fopen(FontmapFilename,"r");
+      LiberateMemory((void **) &path);
       if (file == (FILE *) NULL)
         return(fontmap);
       xmlSubstituteEntitiesDefault(1);
       SAXHandler=(&SAXHandlerStruct);
       parser=xmlCreatePushParserCtxt(SAXHandler,NULL,(char *) NULL,0,
-        FontmapPath);
+        FontmapFilename);
       while (fgets(buffer,MaxTextExtent,file) != (char *) NULL)
       {
         n=Extent(buffer);
