@@ -2717,14 +2717,24 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>JPEG/MIFF/PNG compression level</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-For the JPEG image format, quality is 0 (worst) to 100 (best). The default
-quality is 75.
+For the JPEG image format, quality is 0 (lowest image quality and highest
+compression) to 100 (best quality but least effective compression). The default
+quality is 75.  If the quality is an odd number, 2x2 chroma downsampling is
+used.  If it is even, 1x1 chroma sampling is used.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Quality for the MIFF and PNG image format sets the amount of image compression
-(quality / 10) and filter-type (quality % 10). Compression quality values
-range from 0 (worst) to 100 (best). If filter-type is 4 or less, the specified
-filter-type is used for all scanlines:
+For the MIFF image format, quality is the zlib compression level, which
+is 0 (worst but fastest compression) to 9 (best but slowest).  It has no
+effect on the image appearance, since the compression is always lossless.
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+For the MNG and PNG image format, the quality value sets the zlib compression
+level (quality / 10) and filter-type (quality % 10). Compression levels
+range from 0 (fastest compression) to 100 (best but slowest). For compression
+level 0, the Huffman-only strategy is used, which is fastest but not
+necessarily the worst compression.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+If
+filter-type is 4 or less, the specified filter-type is used for all scanlines:
 </font></td></tr></table>
 <pre>
      0: none
@@ -2739,12 +2749,19 @@ than 50 and the image does not have a color map, otherwise no filtering
 is used.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-If filter-type is 6 or more, adaptive filtering with <em>minimum-sum-of-absolute-values</em>
+If filter-type is 6, adaptive filtering
+with <em>minimum-sum-of-absolute-values</em>
 is used.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-The default is quality is 75. Which means nearly the best compression with
-adaptive filtering.
+Only if the output is MNG, if filter-type is 7, the LOCO color transformation
+and adaptive filtering with <em>minimum-sum-of-absolute-values</em>
+are used.
+</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The default is quality is 75, which means nearly the best compression with
+adaptive filtering.  The quality setting has no effect on the appearance
+of PNG and MNG images, since the compression is always lossless.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 For further information, see the <a href="http://www.w3.org/pub/WWW/TR">PNG</a>
