@@ -200,10 +200,11 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 red=UpScale(ReadByte(image));
               }
           }
+        if (image->class == PseudoClass)
+          indexes[x]=index;
         q->blue=blue;
         q->green=green;
         q->red=red;
-        indexes[x]=index;
         length--;
         q++;
       }
