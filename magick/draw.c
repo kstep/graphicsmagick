@@ -4539,11 +4539,6 @@ static unsigned int TracePath(PrimitiveInfo *primitive_info,const char *path)
       }
     }
   }
-  if (z_count == 0)
-    {
-      TracePoint(q,point);
-      q+=q->coordinates;
-    }
   primitive_info->coordinates=q-primitive_info;
   number_coordinates+=primitive_info->coordinates;
   for (i=0; i < (int) number_coordinates; i++)
