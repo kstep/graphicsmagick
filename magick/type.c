@@ -168,7 +168,7 @@ MagickExport void DestroyTypeInfo(void)
 MagickExport const TypeInfo *GetTypeInfo(const char *name,
   ExceptionInfo *exception)
 {
-  register const TypeInfo
+  register TypeInfo
     *p;
 
   AcquireSemaphoreInfo(&type_semaphore);
@@ -180,9 +180,25 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
   /*
     Search for requested type.
   */
+  AcquireSemaphoreInfo(&type_semaphore);
   for (p=type_list; p != (TypeInfo *) NULL; p=p->next)
     if ((p->name != (char *) NULL) && (LocaleCompare(p->name,name) == 0))
       break;
+  if ((p != (TypeInfo *) NULL) && (p != type_list))
+    {
+      /*
+        Self-adjusting list.
+      */
+      if (p->previous != (TypeInfo *) NULL)
+        p->previous->next=p->next;
+      if (p->next != (TypeInfo *) NULL)
+        p->next->previous=p->previous;
+      p->previous=(TypeInfo *) NULL;
+      p->next=type_list;
+      type_list->previous=p;
+      type_list=p;
+    }
+  LiberateSemaphoreInfo(&type_semaphore);
   return(p);
 }
 

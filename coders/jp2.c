@@ -58,6 +58,18 @@
 #if !defined(uchar)
 #define uchar  unsigned char
 #endif
+#if !defined(ushort)
+#define ushort  unsigned short
+#endif
+#if !defined(uint)
+#define uint  unsigned int
+#endif
+#if !defined(longlong)
+#define longlong  long long
+#endif
+#if !defined(ulonglong)
+#define ulonglong  unsigned long long
+#endif
 #include "jasper/jasper.h"
 #endif
 

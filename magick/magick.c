@@ -367,7 +367,7 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
 MagickExport const MagickInfo *GetMagickInfo(const char *name,
   ExceptionInfo *exception)
 {
-  register const MagickInfo
+  register MagickInfo
     *p;
 
   if ((name != (const char *) NULL) && (LocaleCompare(name,"*") == 0))
@@ -398,32 +398,39 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
     if (LocaleCompare(p->name,name) == 0)
       break;
-  if (p != (MagickInfo *) NULL)
+  if (p == (MagickInfo *) NULL)
     {
       LiberateSemaphoreInfo(&magick_semaphore);
-      return(p);
-    }
-  LiberateSemaphoreInfo(&magick_semaphore);
-  if (*name != '\0')
-    {
-      ExceptionInfo
-        module_exception;
+      if (*name != '\0')
+        {
+          ExceptionInfo
+            module_exception;
 
-      GetExceptionInfo(&module_exception);
-      (void) OpenModule(name,&module_exception);
-      DestroyExceptionInfo(&module_exception);
+          GetExceptionInfo(&module_exception);
+          (void) OpenModule(name,&module_exception);
+          DestroyExceptionInfo(&module_exception);
+        }
+      AcquireSemaphoreInfo(&magick_semaphore);
+      for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
+        if (LocaleCompare(p->name,name) == 0)
+          break;
     }
-  AcquireSemaphoreInfo(&magick_semaphore);
-  for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
-    if (LocaleCompare(p->name,name) == 0)
-      break;
-  if (p != (MagickInfo *) NULL)
+  if ((p != (MagickInfo *) NULL) && (p != magick_list))
     {
-      LiberateSemaphoreInfo(&magick_semaphore);
-      return(p);
+      /*
+        Self-adjusting list.
+      */
+      if (p->previous != (MagickInfo *) NULL)
+        p->previous->next=p->next;
+      if (p->next != (MagickInfo *) NULL)
+        p->next->previous=p->previous;
+      p->previous=(MagickInfo *) NULL;
+      p->next=magick_list;
+      magick_list->previous=p;
+      magick_list=p;
     }
   LiberateSemaphoreInfo(&magick_semaphore);
-  return((MagickInfo *) NULL);
+  return(p);
 }
 
 /*

@@ -256,7 +256,7 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
 MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
   const char *encode,ExceptionInfo *exception)
 {
-  register const DelegateInfo
+  register DelegateInfo
     *p;
 
   AcquireSemaphoreInfo(&delegate_semaphore);
@@ -268,6 +268,7 @@ MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
   /*
     Search for requested delegate.
   */
+  AcquireSemaphoreInfo(&delegate_semaphore);
   for (p=delegate_list; p != (const DelegateInfo *) NULL; p=p->next)
   {
     if (p->mode > 0)
@@ -292,6 +293,21 @@ MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
       if (LocaleCompare(encode,"*") == 0)
         break;
   }
+  if ((p != (DelegateInfo *) NULL) && (p != delegate_list))
+    {
+      /*
+        Self-adjusting list.
+      */
+      if (p->previous != (DelegateInfo *) NULL)
+        p->previous->next=p->next;
+      if (p->next != (DelegateInfo *) NULL)
+        p->next->previous=p->previous;
+      p->previous=(DelegateInfo *) NULL;
+      p->next=delegate_list;
+      delegate_list->previous=p;
+      delegate_list=p;
+    }
+  LiberateSemaphoreInfo(&delegate_semaphore);
   return(p);
 }
 

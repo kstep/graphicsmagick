@@ -322,7 +322,7 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
   register char
     *q;
 
-  register const ColorInfo
+  register ColorInfo
     *p;
 
   AcquireSemaphoreInfo(&color_semaphore);
@@ -342,9 +342,25 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
     (void) strcpy(q,q+1);
     q--;
   }
+  AcquireSemaphoreInfo(&color_semaphore);
   for (p=color_list; p != (ColorInfo *) NULL; p=p->next)
     if (LocaleCompare(colorname,p->name) == 0)
       break;
+  if ((p != (ColorInfo *) NULL) && (p != color_list))
+    {
+      /*
+        Self-adjusting list.
+      */
+      if (p->previous != (ColorInfo *) NULL)
+        p->previous->next=p->next;
+      if (p->next != (ColorInfo *) NULL)
+        p->next->previous=p->previous;
+      p->previous=(ColorInfo *) NULL;
+      p->next=color_list;
+      color_list->previous=p;
+      color_list=p;
+    }
+  LiberateSemaphoreInfo(&color_semaphore);
   return(p);
 }
 

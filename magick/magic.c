@@ -167,7 +167,7 @@ MagickExport void DestroyMagicInfo(void)
 MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
   const size_t length,ExceptionInfo *exception)
 {
-  register const MagicInfo
+  register MagicInfo
     *p;
 
   AcquireSemaphoreInfo(&magic_semaphore);
@@ -179,9 +179,25 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
   /*
     Search for requested magic.
   */
+  AcquireSemaphoreInfo(&magic_semaphore);
   for (p=magic_list; p != (MagicInfo *) NULL; p=p->next)
     if (memcmp(magic+p->offset,p->magic,p->length) == 0)
       break;
+  if ((p != (MagicInfo *) NULL) && (p != magic_list))
+    {
+      /*
+        Self-adjusting list.
+      */
+      if (p->previous != (MagicInfo *) NULL)
+        p->previous->next=p->next;
+      if (p->next != (MagicInfo *) NULL)
+        p->next->previous=p->previous;
+      p->previous=(MagicInfo *) NULL;
+      p->next=magic_list;
+      magic_list->previous=p;
+      magic_list=p;
+    }
+  LiberateSemaphoreInfo(&magic_semaphore);
   return(p);
 }
 

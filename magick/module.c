@@ -323,7 +323,7 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image **image,
 MagickExport const CoderInfo *GetCoderInfo(const char *tag,
   ExceptionInfo *exception)
 {
-  register const CoderInfo
+  register CoderInfo
     *p;
 
   (void) GetMagicInfo((unsigned char *) NULL,0,exception);
@@ -332,8 +332,22 @@ MagickExport const CoderInfo *GetCoderInfo(const char *tag,
     return(coder_list);
   for (p=coder_list; p != (CoderInfo *) NULL; p=p->next)
     if (LocaleCompare(p->tag,tag) == 0)
-      return(p);
-  return((CoderInfo *) NULL);
+      break;
+  if ((p != (CoderInfo *) NULL) && (p != coder_list))
+    {
+      /*
+        Self-adjusting list.
+      */
+      if (p->previous != (CoderInfo *) NULL)
+        p->previous->next=p->next;
+      if (p->next != (CoderInfo *) NULL)
+        p->next->previous=p->previous;
+      p->previous=(CoderInfo *) NULL;
+      p->next=coder_list;
+      coder_list->previous=p;
+      coder_list=p;
+    }
+  return(p);
 }
 
 /*
@@ -465,7 +479,7 @@ static char **GetModuleList(ExceptionInfo *exception)
 MagickExport const ModuleInfo *GetModuleInfo(const char *name,
   ExceptionInfo *exception)
 {
-  register const ModuleInfo
+  register ModuleInfo
     *p;
 
   AcquireSemaphoreInfo(&module_semaphore);
@@ -483,10 +497,26 @@ MagickExport const ModuleInfo *GetModuleInfo(const char *name,
   LiberateSemaphoreInfo(&module_semaphore);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     return(module_list);
+  AcquireSemaphoreInfo(&module_semaphore);
   for (p=module_list; p != (ModuleInfo *) NULL; p=p->next)
     if (LocaleCompare(p->name,name) == 0)
-      return(p);
-  return((const ModuleInfo *) NULL);
+      break;
+  if ((p != (ModuleInfo *) NULL) && (p != module_list))
+    {
+      /*
+        Self-adjusting list.
+      */
+      if (p->previous != (ModuleInfo *) NULL)
+        p->previous->next=p->next;
+      if (p->next != (ModuleInfo *) NULL)
+        p->next->previous=p->previous;
+      p->previous=(ModuleInfo *) NULL;
+      p->next=module_list;
+      module_list->previous=p;
+      module_list=p;
+    }
+  LiberateSemaphoreInfo(&module_semaphore);
+  return(p);
 }
 
 /*
