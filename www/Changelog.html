@@ -53,6 +53,34 @@
 </tr>
 </table>
 <p>
+2003-11-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/locale.c (GetLocaleMessageFromID): Fix ID range checking
+        logic.
+
+</UL>
+<p>
+2003-10-30  Lars Ruben Skyum  &lt;lars.skyum@stibo.com&gt;
+
+<UL>
+  <LI> coders/jpeg.c: changed to not write gray CMYK images as
+        grayscales. That would not be a valid optimization.
+  <LI> magick/color.c (IsGrayImage, IsMonochromeImage): Changed to
+        never return true for CMYK images. Separated images get wrong
+        colors when optimized to grayscales based on what these two
+        functions return. Gray and CMYK are two different color spaces.
+  <LI> magick/nt_feature.c (NTIsMagickConflict): changed to accept
+        colon as part of the magick string, consistent with the way the
+        function is used.<BR>
+  <LI> magick/utility.c, magick/utility.h (ExpandFilenames,
+        GetPathComponent): Fixed filename glob expansion. Added handling
+        of filename prefix-magick and sub-image specification to
+        GetPathComponent. Sub-image specification takes precedence over
+        any filename patterns.
+
+</UL>
+<p>
 2003-10-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

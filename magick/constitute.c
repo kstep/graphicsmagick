@@ -2823,11 +2823,13 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
             */
             if (clone_info->filename[0] == 0)
               {
-                ThrowException(exception,MissingDelegateError,NoDecodeDelegateForThisImageFormat,clone_info->magick);
+                ThrowException(exception,MissingDelegateError,
+                  NoDecodeDelegateForThisImageFormat,clone_info->magick);
               }
             else if (IsAccessibleAndNotEmpty(clone_info->filename))
               {
-                ThrowException(exception,MissingDelegateError, NoDecodeDelegateForThisImageFormat,clone_info->filename);
+                ThrowException(exception,MissingDelegateError,
+                   NoDecodeDelegateForThisImageFormat,clone_info->filename);
               }
             else
               {

@@ -561,7 +561,7 @@ MagickExport unsigned int LogMagickEvent(const ExceptionType type,
     case OptionBase: domain=(char *) "Option"; break;
     case DelegateBase: domain=(char *) "Delegate"; break;
     case MissingDelegateBase: domain=(char *) "MissingDelegate"; break;
-    case CorruptImageBase : domain=(char *) "CorruptImage"; break;
+    case CorruptImageBase: domain=(char *) "CorruptImage"; break;
     case FileOpenBase: domain=(char *) "FileOpen"; break;
     case BlobBase: domain=(char *) "Blob"; break;
     case StreamBase: domain=(char *) "Stream"; break;

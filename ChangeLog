@@ -1,3 +1,8 @@
+2003-11-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/locale.c (GetLocaleMessageFromID): Fix ID range checking
+	logic.
+
 2003-10-30  Lars Ruben Skyum  <lars.skyum@stibo.com>
 
 	* coders/jpeg.c: changed to not write gray CMYK images as

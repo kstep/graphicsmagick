@@ -312,7 +312,7 @@ GetLocaleMessageFromSeverityAndTag(const ExceptionType severity,
 MagickExport const char *
 GetLocaleMessageFromID(const int id)
 {
-  if ((id > 0) || (id >= MAX_LOCALE_MSGS))
+  if ((id > 0) && (id <= MAX_LOCALE_MSGS))
     {
 #if defined(WIN32)
       return NTFormatMessage(id);

@@ -32,7 +32,7 @@ BEGIN
             VALUE "InternalName", "GraphicsMagick\0"
             VALUE "FileVersion", MagickLibVersionText "\0"
             VALUE "ProductVersion", MagickLibVersionText "\0"
-            VALUE "CompanyName", "ImageMagick Studio\0"
+            VALUE "CompanyName", "GraphicsMagick Group\0"
             VALUE "LegalCopyright", MagickCopyright "\0"
             VALUE "Comments", MagickVersion "\0"
         END
