@@ -69,13 +69,13 @@ typedef struct _ResourceInfo
 {
   long double
     memory,
-    disk,
-    map;
+    map,
+    disk;
 
   unsigned long
     memory_limit,
-    disk_limit,
-    map_limit;
+    map_limit,
+    disk_limit;
 } ResourceInfo;
 
 /*
@@ -136,15 +136,6 @@ MagickExport unsigned int AcquireMagickResource(const ResourceType type,
         (long double) resource_info.memory_limit*1024.0*1024.0;
       break;
     }
-    case DiskResource:
-    {
-      resource_info.disk+=(double) size;
-      if (resource_info.disk_limit == ResourceInfinity)
-        break;
-      status=resource_info.disk <=
-        (long double) resource_info.disk_limit*1024.0*1024.0;
-      break;
-    }
     case MapResource:
     {
       resource_info.map+=(double) size;
@@ -152,6 +143,15 @@ MagickExport unsigned int AcquireMagickResource(const ResourceType type,
         break;
       status=resource_info.disk <=
         (long double) resource_info.map_limit*1023.0*1024.0;
+      break;
+    }
+    case DiskResource:
+    {
+      resource_info.disk+=(double) size;
+      if (resource_info.disk_limit == ResourceInfinity)
+        break;
+      status=resource_info.disk <=
+        (long double) resource_info.disk_limit*1024.0*1024.0;
       break;
     }
     default:
@@ -226,14 +226,14 @@ MagickExport unsigned long GetMagickResource(const ResourceType type)
       resource=(unsigned long) (resource_info.memory/1024.0/1024.0+0.5);
       break;
     }
-    case DiskResource:
-    {
-      resource=(unsigned long) (resource_info.disk/1024.0/1024.0+0.5);
-      break;
-    }
     case MapResource:
     {
       resource=(unsigned long) (resource_info.map/1024.0/1024.0+0.5);
+      break;
+    }
+    case DiskResource:
+    {
+      resource=(unsigned long) (resource_info.disk/1024.0/1024.0+0.5);
       break;
     }
     default:
@@ -282,14 +282,14 @@ MagickExport void LiberateMagickResource(const ResourceType type,
       resource_info.memory-=size;
       break;
     }
-    case DiskResource:
-    {
-      resource_info.disk-=size;
-      break;
-    }
     case MapResource:
     {
       resource_info.map-=size;
+      break;
+    }
+    case DiskResource:
+    {
+      resource_info.disk-=size;
       break;
     }
     default:
@@ -336,14 +336,14 @@ MagickExport void SetMagickResourceLimit(const ResourceType type,
       resource_info.memory_limit=limit;
       break;
     }
-    case DiskResource:
-    {
-      resource_info.disk_limit=limit;
-      break;
-    }
     case MapResource:
     {
       resource_info.map_limit=limit;
+      break;
+    }
+    case DiskResource:
+    {
+      resource_info.disk_limit=limit;
       break;
     }
     default:
