@@ -58,7 +58,7 @@ WriteMakefile
    'INSTALLBIN'	=> '${exec_prefix}/bin',
 
    # Library specification
-   'LIBS'	=> ['-L/usr/lib -L/usr/lib -L/usr/local/lib -L/usr/X11R6/lib -L/home/cristy/ImageMagick/magick -lMagick -llcms -ltiff -lfreetype -ljasper -ljpeg -lpng -lfpx -lwmf -ldpstk -ldps -lXext -lXt -lSM -lICE -lX11 -lbz2 -lxml2 -lz -lpthread -lm'],
+   'LIBS'	=> ['-L/usr/lib -L/usr/lib -L/usr/local/lib -L/usr/X11R6/lib -L/usr/local/lib -lMagick -llcms -lfreetype -lXext -lXt -lSM -lICE -lX11 -lz -lpthread -lm'],
 
    # Perl binary name (if a Perl binary is built)
    'MAP_TARGET'	=> 'PerlMagick',
@@ -70,7 +70,7 @@ WriteMakefile
    # 'OPTIMIZE'	=> '',
 
    # Use same compiler as ImageMagick
-   # 'PERLMAINCC'	=> 'gcc',
+   # 'PERLMAINCC'	=> 'g++',
 
    # Set Perl installation prefix to ImageMagick installation prefix
 #   'PREFIX'	=> '/usr/local',

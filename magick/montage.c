@@ -356,7 +356,7 @@ MagickExport Image *MontageImages(const Image *images,
     (void) SetMonitorHandler(handler);
     MagickMonitor(TileImageText,i,number_images);
   }
-  if (i < number_images)
+  if (i < (long) number_images)
     {
       for (i=0; i < (long) number_images; i++)
         DestroyImage(master_list[i]);
@@ -366,10 +366,10 @@ MagickExport Image *MontageImages(const Image *images,
   /*
     Sort image list by increasing tile number.
   */
-  for (i=0; i < number_images; i++)
+  for (i=0; i < (long) number_images; i++)
     if (image_list[i]->scene == 0)
       break;
-  if (i == number_images)
+  if (i == (long) number_images)
     qsort((void *) image_list,number_images,sizeof(Image *),SceneCompare);
   /*
     Determine tiles per row and column.

@@ -4437,7 +4437,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                 /*
                   Remove a ICM, IPTC, or generic profile from the image.
                 */
-                (void) ProfileImage(*image,argv[++i],(void *) NULL,0);
+                (void) ProfileImage(*image,argv[++i],
+                  (const unsigned char *) NULL,0);
                 continue;
               }
             /*

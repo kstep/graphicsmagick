@@ -1042,7 +1042,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
     {
       if (image->iptc_profile.length != 0)
         LiberateMemory((void **) &image->iptc_profile.info);
-      image->iptc_profile.info=AcquireMemory(length);
+      image->iptc_profile.info=(unsigned char *) AcquireMemory(length);
       if (image->iptc_profile.info == (unsigned char *) NULL)
         ThrowBinaryException(ResourceLimitWarning,"Unable to add IPTC profile",
           "Memory allocation failed");
@@ -1170,7 +1170,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
 #endif
           LiberateMemory((void **) &image->color_profile.info);
         }
-      image->color_profile.info=AcquireMemory(length);
+      image->color_profile.info=(unsigned char *) AcquireMemory(length);
       if (image->color_profile.info == (unsigned char *) NULL)
         ThrowBinaryException(ResourceLimitWarning,"Unable to add ICM profile",
           "Memory allocation failed");
@@ -1192,7 +1192,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
 		}
   if (image->generic_profile[i].length != 0)
     LiberateMemory((void **) &image->generic_profile[i].info);
-  image->generic_profile[i].info=AcquireMemory(length);
+  image->generic_profile[i].info=(unsigned char *) AcquireMemory(length);
   if (image->generic_profile[i].info == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to add profile",
       "Memory allocation failed");

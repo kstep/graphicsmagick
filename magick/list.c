@@ -154,7 +154,7 @@ MagickExport unsigned int DeleteImageList(Image *images,
   while (images->previous != (Image *) NULL)
     images=images->previous;
   for (i=0; images != (Image *) NULL; images=images->next)
-    if (i++ == offset)
+    if (i++ == (long) offset)
       break;
   if (images == (Image *) NULL)
     return(False);
@@ -254,7 +254,7 @@ MagickExport Image *GetImageList(const Image *images,const unsigned long offset,
   while (images->previous != (Image *) NULL)
     images=images->previous;
   for (i=0; images != (Image *) NULL; images=images->next)
-    if (i++ == offset)
+    if (i++ == (long) offset)
       break;
   if (images == (Image *) NULL)
     return((Image *) NULL);
@@ -549,7 +549,7 @@ MagickExport Image *ReverseImageList(const Image *images,
     return((Image *) NULL);
   assert(images->signature == MagickSignature);
   reverse_images=(Image *) NULL;
-  for (i=0; i < GetImageListSize(images); i++)
+  for (i=0; i < (long) GetImageListSize(images); i++)
   {
     image=GetImageList(images,GetImageListSize(images)-i-1,exception);
     if (image == (Image *) NULL)
@@ -625,7 +625,7 @@ MagickExport unsigned int SetImageList(Image **images,const Image *image,
   assert((*images)->signature == MagickSignature);
   for (next=(*images); next->next != (Image *) NULL; next=next->next);
   for (i=0; next != (Image *) NULL; next=next->next)
-    if (i++ == offset)
+    if (i++ == (long) offset)
       break;
   if (next == (Image *) NULL)
     return(False);
@@ -732,13 +732,13 @@ MagickExport Image *SpliceImageList(Image *images,const unsigned long offset,
   while (images->previous != (Image *) NULL)
     images=images->previous;
   for (i=0; images != (Image *) NULL; images=images->next)
-    if (i++ == offset)
+    if (i++ == (long) offset)
       break;
   if (images == (Image *) NULL)
     return((Image *) NULL);
   p=images;
   for (i=1; images != (Image *) NULL; images=images->next)
-    if (i++ == length)
+    if (i++ == (long) length)
       break;
   if (images == (Image *) NULL)
     return((Image *) NULL);

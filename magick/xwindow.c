@@ -5230,8 +5230,8 @@ MagickExport unsigned int XMakeImage(Display *display,
   matte_image=(XImage *) NULL;
   if (window->image != (Image *) NULL)
     if (window->image->matte &&
-        (width <= XDisplayWidth(display,window->screen)) &&
-        (height <= XDisplayHeight(display,window->screen)))
+        (width <= (unsigned int) XDisplayWidth(display,window->screen)) &&
+        (height <= (unsigned int) XDisplayHeight(display,window->screen)))
       {
         /*
           Create matte image.
