@@ -319,7 +319,6 @@ MagickExport unsigned int EqualizeImage(Image *image)
 %  You can also reduce the influence of a particular channel with a gamma
 %  value of 0.
 %
-%
 %  The format of the GammaImage method is:
 %
 %      unsigned int GammaImage(Image *image,const char *gamma)
@@ -342,8 +341,10 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
     opacity_gamma,
     red_gamma;
 
+  int
+    count;
+
   long
-    count,
     y;
 
   register long
@@ -364,10 +365,8 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
   green_gamma=1.0;
   blue_gamma=1.0;
   opacity_gamma=1.0;
-  count=sscanf(gamma,"%lf,%lf,%lf,%lf",&red_gamma,&green_gamma,&blue_gamma,
-    &opacity_gamma);
-  count=sscanf(gamma,"%lf/%lf/%lf/%lf",&red_gamma,&green_gamma,&blue_gamma,
-    &opacity_gamma);
+  count=sscanf(gamma,"%lf%*[,/]%lf%*[,/]%lf%*[,/]%lf",&red_gamma,&green_gamma,
+    &blue_gamma,&opacity_gamma);
   if (count == 1)
     {
       if (red_gamma == 1.0)
@@ -382,16 +381,7 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
   if (gamma_map == (PixelPacket *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to gamma correct image",
       "Memory allocation failed");
-  for (i=0; i <= MaxRGB; i++)
-  {
-    gamma_map[i].red=0;
-    gamma_map[i].green=0;
-    gamma_map[i].blue=0;
-    gamma_map[i].opacity=0;
-  }
-  /*
-    Initialize gamma table.
-  */
+  memset(gamma_map,0,(MaxRGB+1)*sizeof(PixelPacket));
   for (i=0; i <= MaxRGB; i++)
   {
     if (red_gamma != 0.0)
@@ -460,13 +450,143 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%     L e v e l I m a g e                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  LevelImage() adjusts the levels of an image given these points:  black,
+%  mid, and white.
+%
+%  The format of the LevelImage method is:
+%
+%      unsigned int LevelImage(Image *image,const char *level)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o levels: Define the levels.
+%
+%
+*/
+MagickExport unsigned int LevelImage(Image *image,const char *levels)
+{
+#define LevelImageText  "  Leveling the image...  "
+
+  double
+    black_point,
+    mid_point,
+    white_point;
+
+  int
+    count;
+
+  long
+    y;
+
+  Quantum
+    *levels_map;
+
+  register long
+    i,
+    x;
+
+  register PixelPacket
+    *q;
+
+  /*
+    Allocate and initialize levels map.
+  */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (levels == (char *) NULL)
+    return(False);
+  black_point=0.0;
+  mid_point=1.0;
+  white_point=MaxRGB;
+  count=sscanf(levels,"%lf%*[,/]%lf%*[,/]%lf",&black_point,&mid_point,
+    &white_point);
+  if (count == 1)
+    white_point=MaxRGB-black_point;
+  levels_map=(Quantum *) AcquireMemory((MaxRGB+1)*sizeof(Quantum));
+  if (levels_map == (Quantum *) NULL)
+    ThrowBinaryException(ResourceLimitWarning,"Unable to level the image",
+      "Memory allocation failed");
+  for (i=0; i <= MaxRGB; i++)
+  {
+    if (i < black_point)
+      {
+        levels_map[i]=0;
+        continue;
+      }
+    if (i > white_point)
+      {
+        levels_map[i]=MaxRGB;
+        continue;
+      }
+    levels_map[i]=(Quantum) ((pow((double) (i-black_point)/
+      (white_point-black_point),1.0/mid_point)*MaxRGB)+0.5);
+  }
+  switch (image->storage_class)
+  {
+    case DirectClass:
+    default:
+    {
+      /*
+        Level DirectClass image.
+      */
+      for (y=0; y < (long) image->rows; y++)
+      {
+        q=GetImagePixels(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (long) image->columns; x++)
+        {
+          q->red=levels_map[q->red];
+          q->green=levels_map[q->green];
+          q->blue=levels_map[q->blue];
+          q->opacity=levels_map[q->opacity];
+          q++;
+        }
+        if (!SyncImagePixels(image))
+          break;
+        if (QuantumTick(y,image->rows))
+          MagickMonitor(GammaImageText,y,image->rows);
+      }
+      break;
+    }
+    case PseudoClass:
+    {
+      /*
+        Level PseudoClass image.
+      */
+      for (i=0; i < (long) image->colors; i++)
+      {
+        image->colormap[i].red=levels_map[image->colormap[i].red];
+        image->colormap[i].green=levels_map[image->colormap[i].green];
+        image->colormap[i].blue=levels_map[image->colormap[i].blue];
+      }
+      SyncImage(image);
+      break;
+    }
+  }
+  LiberateMemory((void **) &levels_map);
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
 %     M o d u l a t e I m a g e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ModulateImage() lets you control the brightness, saturation, and hue 
+%  ModulateImage() lets you control the brightness, saturation, and hue
 %  of an image.  Modulate represents the brightness, saturation, and hue
 %  as one parameter (e.g. 90,150,100).
 %
@@ -512,10 +632,8 @@ MagickExport unsigned int ModulateImage(Image *image,const char *modulate)
   percent_hue=100.0;
   percent_brightness=100.0;
   percent_saturation=100.0;
-  (void) sscanf(modulate,"%lf,%lf,%lf",&percent_brightness,&percent_saturation,
-    &percent_hue);
-  (void) sscanf(modulate,"%lf/%lf/%lf",&percent_brightness,&percent_saturation,
-    &percent_hue);
+  (void) sscanf(modulate,"%lf%*[,/]%lf%*[,/]%lf",&percent_brightness,
+    &percent_saturation,&percent_hue);
   switch (image->storage_class)
   {
     case DirectClass:

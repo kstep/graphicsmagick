@@ -731,6 +731,7 @@ extern MagickExport unsigned int
   IsOpaqueImage(const Image *,ExceptionInfo *),
   IsPaletteImage(const Image *,ExceptionInfo *),
   IsSubimage(const char *,const unsigned int),
+  LevelImage(Image *,const char *),
   ListColorInfo(FILE *,ExceptionInfo *),
   ListMagickInfo(FILE *,ExceptionInfo *),
   ModulateImage(Image *,const char *),
