@@ -5,7 +5,7 @@
   <delegate decode="browse" restrain="True" spawn="True" command='cmd /C start http://www.imagemagick.org/ImageMagick/'  />
   <delegate decode="bzip" restrain="True" command='|bzip2 -cd "%i"' />
   <delegate decode="cgm" command='ralcgm -d ps "%i" "%o" %u
-    convert -concatenate "%o"*.ps "%o"' />
+    convert -concatenate %o*.ps "%o"' />
   <delegate decode="compress" restrain="True" command='|uncompress -c "%i"' />
   <delegate decode="dot" command='dot -Tps "%i" -o "%o"' />
   <delegate decode="dvi" command='dvips -q -o "%o" "%i"' />
@@ -29,7 +29,7 @@
   <delegate decode="pgp" command='pgpv -fq "%i"' />
   <delegate decode="pnm" encode="ilbm" mode="encode" command='ppmtoilbm -24if "%i" > "%o"' />
   <delegate decode="pov" command='povray "+i"%i"" +o"%o" +fn%q +w%w +h%h +a -q9 -kfi"%s" -kff"%n"
-    convert -concatenate "%o*.png" "%o"' />
+    convert -concatenate %o*.png "%o"' />
   <delegate decode="ps" encode="eps" mode="bi" command='gswin32c -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=epswrite -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="ps" encode="pdf" mode="bi" command='gswin32c -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=pdfwrite -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="pcl" encode="print" mode="encode" command='print "%i"' />
