@@ -5457,7 +5457,8 @@ Mogrify(ref,...)
           if (!attribute_flag[1])
             argument_list[1].string_reference=(char *) NULL;
           (void) ProfileImage(image,argument_list[0].string_reference,
-            argument_list[1].string_reference,argument_list[1].length);
+            (const unsigned char) argument_list[1].string_reference,
+            argument_list[1].length);
           break;
         }
         case 69:  /* UnsharpMask */
