@@ -6014,7 +6014,9 @@ MagickExport unsigned int TextureImage(Image *image,const Image *texture)
 MagickExport void TransformColorspace(Image *image,
   const ColorspaceType colorspace)
 {
+  assert(image != (Image *) NULL);
   assert(colorspace != UndefinedColorspace);
+  assert(image->colorspace != UndefinedColorspace);
 
   /*
     If the image colorspace is the same as requested, do nothing.
