@@ -1276,12 +1276,9 @@ MagickExport unsigned int OpenCache(Image *image)
       if (cache_info->nexus_info == (NexusInfo *) NULL)
         MagickError(ResourceLimitError,"Memory allocation failed",
           "unable to allocate cache nexus_info");
-      for (i=0; i < (int) (cache_info->rows+3); i++)
-      {
-        memset(cache_info->nexus_info+i,0,sizeof(NexusInfo));
+      memset(cache_info->nexus_info,0,(cache_info->rows+3)*sizeof(NexusInfo));
+      for (i=1; i < (int) (cache_info->rows+3); i++)
         cache_info->nexus_info[i].available=True;
-      }
-      cache_info->nexus_info[0].available=False;
     }
   length=number_pixels*sizeof(PixelPacket);
   if ((image->storage_class == PseudoClass) ||
