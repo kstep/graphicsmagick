@@ -817,6 +817,8 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
       clone_image->rows=rows;
       clone_image->page_info.width=0;
       clone_image->page_info.height=0;
+      clone_image->page_info.x=0;
+      clone_image->page_info.y=0;
     }
   else
     {
