@@ -1,7 +1,7 @@
 2003-02-18  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* coders/png.c: Write proper JNG image_interlace_method.
-	* coders/png.c: Write proper MNG and JNG sRGB intent.
+	* coders/png.c: Read and write proper MNG and JNG sRGB intent.
 
 2003-02-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
