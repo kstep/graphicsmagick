@@ -1069,39 +1069,4 @@ MagickExport long telldir(DIR *entry)
   assert(entry != (DIR *) NULL);
   return(0);
 }
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   D l l M a i n                                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method Dllmain is the entry point for the ImageMagick DLL library.
-%
-%
-*/
-BOOL WINAPI DllMain(HINSTANCE instance,DWORD data_segment,LPVOID reserved)
-{
-  switch(data_segment)
-  {
-    case DLL_PROCESS_ATTACH:
-    {
-      return(1);
-    }
-    case DLL_PROCESS_DETACH:
-    {
-      break;
-    }
-    default:
-    {
-      return(1);
-    }
-  }
-  return(0);
-}
 #endif

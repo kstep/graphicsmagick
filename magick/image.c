@@ -2718,12 +2718,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   */
   image_info->antialias=True;
   image_info->pointsize=12;
-  image_info->affine.sx=1.0;
-  image_info->affine.rx=0.0;
-  image_info->affine.ry=0.0;
-  image_info->affine.sy=1.0;
-  image_info->affine.tx=0.0;
-  image_info->affine.ty=0.0;
+  IdentityAffine(&image_info->affine);
   (void) QueryColorDatabase("none",&image_info->stroke);
   (void) QueryColorDatabase("none",&image_info->fill);
   (void) QueryColorDatabase("#ffffff",&image_info->background_color);

@@ -648,8 +648,13 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       jpeg_info.scale_denom=image_info->subrange;
       jpeg_calc_output_dimensions(&jpeg_info);
     }
-#if (JPEG_LIB_VERSION >= 61) && !defined(D_LOSSLESS_SUPPORTED)
+#if (JPEG_LIB_VERSION >= 61) && defined(D_PROGRESSIVE_SUPPORTED)
+#ifdef D_LOSSLESS_SUPPORTED
+  image->interlace=
+    jpeg_info.process == JPROC_PROGRESSIVE ? PlaneInterlace : NoInterlace;
+# else
   image->interlace=jpeg_info.progressive_mode ? PlaneInterlace : NoInterlace;
+# endif
 #endif
   jpeg_start_decompress(&jpeg_info);
   image->compression=JPEGCompression;
@@ -1182,9 +1187,24 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     }
   jpeg_set_quality(&jpeg_info,image_info->quality,True);
   jpeg_info.optimize_coding=True;
-#if (JPEG_LIB_VERSION >= 61) && !defined(C_LOSSLESS_SUPPORTED)
+#if (JPEG_LIB_VERSION >= 61) && defined(C_PROGRESSIVE_SUPPORTED)
   if (image_info->interlace != NoInterlace)
     jpeg_simple_progression(&jpeg_info);
+#endif
+  if (image_info->quality > 100)
+#if defined(C_LOSSLESS_SUPPORTED)
+    {
+      int
+	point_transform,
+	predictor;
+
+      predictor=image_info->quality/1000;  /* range 1-7 */
+      point_transform=image_info->quality % 100;  /* range 0-15 */
+      jpeg_simple_lossless(&jpeg_info,predictor,point_transform);
+    }
+#else
+    ThrowBinaryException(DelegateWarning,
+      "Lossless JPEG not supported, using quality 100",image->filename);
 #endif
   jpeg_start_compress(&jpeg_info,True);
   /*

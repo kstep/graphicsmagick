@@ -4448,12 +4448,7 @@ Mogrify(ref,...)
             value=argument_list[j].string_reference;
             angle=argument_list[j].double_reference;
             current=annotate_info->affine;
-            affine.sx=1.0;
-            affine.rx=0.0;
-            affine.ry=0.0;
-            affine.sy=1.0;
-            affine.tx=0.0;
-            affine.ty=0.0;
+            IdentityAffine(&affine);
             switch (j)
             {
               case 12:
@@ -4779,12 +4774,7 @@ Mogrify(ref,...)
             value=argument_list[j].string_reference;
             angle=argument_list[j].double_reference;
             current=draw_info->affine;
-            affine.sx=1.0;
-            affine.rx=0.0;
-            affine.ry=0.0;
-            affine.sy=1.0;
-            affine.tx=0.0;
-            affine.ty=0.0;
+            IdentityAffine(&affine);
             switch (j)
             {
               case 10:
@@ -6147,12 +6137,7 @@ QueryFontMetrics(ref,...)
     info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
     annotate_info=CloneAnnotateInfo(info->image_info,(AnnotateInfo *) NULL);
     current=annotate_info->affine;
-    affine.sx=1.0;
-    affine.rx=0.0;
-    affine.ry=0.0;
-    affine.sy=1.0;
-    affine.tx=0.0;
-    affine.ty=0.0;
+    IdentityAffine(&affine);
     bounds.x1=0.0;
     bounds.y1=0.0;
     bounds.x2=0.0;
@@ -6299,7 +6284,7 @@ QueryFontMetrics(ref,...)
     if (status != False)
       {
         FormatString(message,"%g,%g,%g,%g,%g",bounds.x1,bounds.y1,bounds.x2,
-          bounds.y2,AffineExpansion(&annotate_info->affine)*
+          bounds.y2,ExpandAffine(&annotate_info->affine)*
           annotate_info->pointsize);
         s=sv_2mortal(newSVpv(message,0));
         PUSHs(s);

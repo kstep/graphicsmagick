@@ -12,7 +12,7 @@ extern "C" {
   Graphic gems define declarations.
 */
 extern MagickExport double
-  AffineExpansion(const AffineInfo *),
+  ExpandAffine(const AffineInfo *),
   Permutate(int,int);
 
 extern MagickExport int
@@ -32,6 +32,7 @@ extern MagickExport void
     Quantum *),
   Hull(const int,const int,const int,const unsigned int,const unsigned int,
     Quantum *,Quantum *),
+  IdentityAffine(AffineInfo *),
   Modulate(double,double,double,Quantum *,Quantum *,Quantum *),
   TransformHSL(const Quantum,const Quantum,const Quantum,double *,double *,
     double *),

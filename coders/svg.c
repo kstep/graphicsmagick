@@ -2034,15 +2034,18 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) fprintf(stdout,"begin SAX\n");
   xmlSubstituteEntitiesDefault(1);
   SAXHandler=(&SAXHandlerStruct);
-  n=ReadBlob(image,4,buffer);
-  if (n > 0)
-    {
-      svg_info.parser=xmlCreatePushParserCtxt(SAXHandler,&svg_info,buffer,n,
-        image->filename);
-      while ((n=ReadBlob(image,3,buffer)) > 0)
-        xmlParseChunk(svg_info.parser,buffer,n,0);
-    }
-  n=xmlParseChunk(svg_info.parser,buffer,0,1);
+  svg_info.parser=xmlCreatePushParserCtxt(SAXHandler,&svg_info,(char *) NULL,0,
+    image->filename);
+  while (GetStringBlob(image,buffer) != (char *) NULL)
+  {
+    n=Extent(buffer);
+    if (n == 0)
+      continue;
+    status=xmlParseChunk(svg_info.parser,buffer,n,False);
+    if (status != 0)
+      break;
+  }
+  /* (void) xmlParseChunk(svg_info.parser,(char *) NULL,0,True); */
   xmlFreeParserCtxt(svg_info.parser);
   if (svg_info.verbose)
     (void) fprintf(stdout,"end SAX\n");

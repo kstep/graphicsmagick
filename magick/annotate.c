@@ -189,8 +189,7 @@ MagickExport unsigned int AnnotateImage(Image *image,
         height-=2*y > height ? height : 2*y;
     }
   clone_info=CloneAnnotateInfo((ImageInfo *) NULL,annotate_info);
-  font_height=AffineExpansion(&annotate_info->affine)*
-    annotate_info->pointsize;
+  font_height=ExpandAffine(&annotate_info->affine)*annotate_info->pointsize;
   matte=image->matte;
   for (i=0; textlist[i] != (char *) NULL; i++)
   {
@@ -846,7 +845,7 @@ static unsigned int RenderTruetype(Image *image,
       continue;
     point.x=offset->x+bitmap->left-bounds->x1;
     point.y=offset->y+bounds->y2-bitmap->top-3.0*
-      AffineExpansion(&annotate_info->affine)*annotate_info->pointsize/4.0+1.5;
+      ExpandAffine(&annotate_info->affine)*annotate_info->pointsize/4.0+1.5;
     p=bitmap->bitmap.buffer;
     for (y=0; y < bitmap->bitmap.rows; y++)
     {
@@ -1011,13 +1010,13 @@ static unsigned int RenderPostscript(Image *image,
 
       crop_info=GetImageBoundingBox(annotate_image);
       crop_info.height=(unsigned int) ceil(
-        AffineExpansion(&annotate_info->affine)*annotate_info->pointsize-0.5);
+        ExpandAffine(&annotate_info->affine)*annotate_info->pointsize-0.5);
       crop_info.y=(int) ceil(extent.y/8.0-0.5);
       (void) FormatString(geometry,"%ux%u%+d%+d",crop_info.width,
         crop_info.height,crop_info.x,crop_info.y);
       TransformImage(&annotate_image,geometry,(char *) NULL);
     }
-  font_height=AffineExpansion(&annotate_info->affine)*annotate_info->pointsize;
+  font_height=ExpandAffine(&annotate_info->affine)*annotate_info->pointsize;
   bounds->x1=0.0;
   bounds->y1=(font_height/-4.0)+1.5;
   bounds->x2=annotate_image->columns;

@@ -95,7 +95,6 @@ extern "C" {
 #define HasJPEG
 #define HasPNG
 #define HasTIFF
-#define HasTTF
 #define HasX11
 #define HasZLIB
 #endif

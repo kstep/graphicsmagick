@@ -61,40 +61,6 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   A f f i n e E x p a n s i o n                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method AffineExpansion computes the affine's expansion factor, i.e. the
-%  square root of the factor by which the affine transform affects area. In an
-%  affine transform composed of scaling, rotation, shearing, and translation,
-%  returns the amount of scaling.
-%
-%  The format of the AffineExpansion method is:
-%
-%      double AffineExpansion(const AffineInfo *affine)
-%
-%  A description of each parameter follows:
-%
-%    o expansion: Method AffineExpansion returns the affine's expansion factor.
-%
-%    o affine: A pointer the the affine transform of type AffineInfo.
-%
-%
-*/
-MagickExport double AffineExpansion(const AffineInfo *affine)
-{
-  assert(affine != (AffineInfo *) NULL);
-  return(sqrt(fabs(affine->sx*affine->sy)-fabs(affine->rx*affine->ry)));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   C o n s t r a s t                                                         %
 %                                                                             %
 %                                                                             %
@@ -140,6 +106,40 @@ MagickExport void Contrast(const int sign,Quantum *red,Quantum *green,
     if (brightness < 0.0)
       brightness=0.0;
   HSLTransform(hue,saturation,brightness,red,green,blue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   E x p a n d A f f i n e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ExpandAffine computes the affine's expansion factor, i.e. the
+%  square root of the factor by which the affine transform affects area. In an
+%  affine transform composed of scaling, rotation, shearing, and translation,
+%  returns the amount of scaling.
+%
+%  The format of the ExpandAffine method is:
+%
+%      double ExpandAffine(const AffineInfo *affine)
+%
+%  A description of each parameter follows:
+%
+%    o expansion: Method ExpandAffine returns the affine's expansion factor.
+%
+%    o affine: A pointer the the affine transform of type AffineInfo.
+%
+%
+*/
+MagickExport double ExpandAffine(const AffineInfo *affine)
+{
+  assert(affine != (const AffineInfo *) NULL);
+  return(sqrt(fabs(affine->sx*affine->sy)-fabs(affine->rx*affine->ry)));
 }
 
 /*
@@ -569,6 +569,41 @@ MagickExport void Hull(const int x_offset,const int y_offset,const int polarity,
     r++;
     s++;
   }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I d e n t i t y A f f i n e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IdentityAffine initializes the affine transform to the identity
+%  matrix.
+%
+%  The format of the IdentityAffine method is:
+%
+%      IdentityAffine(AffineInfo *affine)
+%
+%  A description of each parameter follows:
+%
+%    o affine: A pointer the the affine transform of type AffineInfo.
+%
+%
+*/
+MagickExport void IdentityAffine(AffineInfo *affine)
+{
+  assert(affine != (AffineInfo *) NULL);
+  affine->sx=1.0;
+  affine->rx=0.0;
+  affine->ry=0.0;
+  affine->sy=1.0;
+  affine->tx=0.0;
+  affine->ty=0.0;
 }
 
 /*
