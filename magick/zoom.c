@@ -843,7 +843,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
     scanline=(ScaledPacket *)
       AllocateMemory(image->columns*sizeof(ScaledPacket));
   scaled_scanline=(ScaledPacket *)
-    AllocateMemory(scale_image->columns*sizeof(ScaledPacket));
+    AllocateMemory((scale_image->columns+1)*sizeof(ScaledPacket));
   y_vector=(ScaledPacket *) AllocateMemory(image->columns*sizeof(ScaledPacket));
   if ((x_vector == (ScaledPacket *) NULL) ||
       (scanline == (ScaledPacket *) NULL) ||
