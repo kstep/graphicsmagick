@@ -4,6 +4,7 @@
 	simplify/centralize colorspace transform requests.  Replaced calls
 	to RGBTransformImage and TransformRGBImage throughout the code
 	with calls to TransformColorspace.
+	* IMDisplay: Disable save function since it is not implemented yet.
 
 2003-02-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
