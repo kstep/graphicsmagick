@@ -925,7 +925,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           Convert image to a PGM image.
         */
         FormatString(buffer,"%lu\n",
-          image->depth > 8 ? MaxRGB : ScaleQuantumToChar(MaxRGB));
+          image->depth > 8 ? MaxRGB : ScaleQuantumToAny(MaxRGB));
         (void) WriteBlobString(image,buffer);
         i=0;
         for (y=0; y < (long) image->rows; y++)
@@ -937,7 +937,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           {
             index=ScaleIntensityToQuantum(p);
             FormatString(buffer," %lu",(unsigned long)
-              (image->depth > 8 ? index : ScaleQuantumToChar(index)));
+              (image->depth > 8 ? index : ScaleQuantumToAny(index)));
             (void) WriteBlobString(image,buffer);
             i++;
             if (i == 12)
@@ -961,7 +961,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           Convert image to a PNM image.
         */
         FormatString(buffer,"%lu\n",
-          image->depth > 8 ? MaxRGB : ScaleQuantumToChar(MaxRGB));
+          image->depth > 8 ? MaxRGB : ScaleQuantumToAny(MaxRGB));
         (void) WriteBlobString(image,buffer);
         i=0;
         for (y=0; y < (long) image->rows; y++)
@@ -972,9 +972,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (long) image->columns; x++)
           {
             FormatString(buffer," %lu %lu %lu",
-              image->depth > 8 ? (long) p->red : ScaleQuantumToChar(p->red),
-              image->depth > 8 ? (long) p->green : ScaleQuantumToChar(p->green),
-              image->depth > 8 ? (long) p->blue : ScaleQuantumToChar(p->blue));
+              image->depth > 8 ? (long) p->red : ScaleQuantumToAny(p->red),
+              image->depth > 8 ? (long) p->green : ScaleQuantumToAny(p->green),
+              image->depth > 8 ? (long) p->blue : ScaleQuantumToAny(p->blue));
             (void) WriteBlobString(image,buffer);
             i++;
             if (i == 4)
@@ -1063,7 +1063,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
       case 6:
       {
         register unsigned char
-          *q; 
+          *q;
 
         size_t
           length;
@@ -1199,10 +1199,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
                 ((ScaleQuantumToChar(p->green) & 0xe0) >> 3) |
                 ((ScaleQuantumToChar(p->blue) & 0xc0) >> 6));
             else
-              pixel=(Quantum)
-                ((red_map[i][j][ScaleQuantumToChar(p->red)] & 0xe0) |
-                 ((green_map[i][j][ScaleQuantumToChar(p->green)] & 0xe0) >> 3) |
-                 ((blue_map[i][j][ScaleQuantumToChar(p->blue)] & 0xc0) >> 6));
+              pixel=(Quantum) ((red_map[i][j][ScaleQuantumToChar(p->red)] & 0xe0) |
+                ((green_map[i][j][ScaleQuantumToChar(p->green)] & 0xe0) >> 3) |
+                ((blue_map[i][j][ScaleQuantumToChar(p->blue)] & 0xc0) >> 6));
             (void) WriteBlobByte(image,pixel);
             p++;
             j++;
