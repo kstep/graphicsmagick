@@ -120,6 +120,8 @@ Export Image *ReadMONOImage(const ImageInfo *image_info)
   image=AllocateImage(image_info);
   if (image == (Image *) NULL)
     return((Image *) NULL);
+  if ((image->columns == 0) || (image->rows == 0))
+    ReaderExit(OptionWarning,"must specify image size",image);
   /*
     Open image file.
   */
