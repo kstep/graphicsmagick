@@ -1392,7 +1392,7 @@ static void magick_pen (wmfAPI* API, wmfDC* dc)
                  ((double)1/(ddata->scale_y)))/2;
 
   /* Don't allow pen_width to be less than pixel_width in order to
-     avoid spider-web lines*/
+     avoid dissapearing or spider-web lines*/
   pen_width = max(pen_width,pixel_width);
 
   pen_style  = (unsigned int) WMF_PEN_STYLE (pen);
@@ -1406,6 +1406,7 @@ static void magick_pen (wmfAPI* API, wmfDC* dc)
       return;
     }
 
+  wmf_stream_printf (API,out,"stroke-antialias 1\n");
   wmf_stream_printf (API,out,"stroke-width %.10g\n", max(0,pen_width));
 
   switch (pen_endcap)
@@ -1442,23 +1443,26 @@ static void magick_pen (wmfAPI* API, wmfDC* dc)
 
   switch (pen_style)
     {
-    case PS_DASH: /* DASH_LINE */
+    case PS_DASH: /* DASH_LINE, 18,7 */
       wmf_stream_printf (API,out,"stroke-dasharray %.10g,%.10g\n",
-		         pixel_width*18,pixel_width*7);
+		         pixel_width*17,pixel_width*8);
       break;
 
     case PS_ALTERNATE:
-    case PS_DOT: /* DOTTED_LINE */
+    case PS_DOT: /* DOTTED_LINE, 3,3 */
+      wmf_stream_printf (API,out,"stroke-antialias 0\n");
       wmf_stream_printf (API,out,"stroke-dasharray %.10g,%.10g\n",
 		         pixel_width*3,pixel_width*3);
       break;
 
-    case PS_DASHDOT: /* DASH_DOT_LINE */
+    case PS_DASHDOT: /* DASH_DOT_LINE, 9,6,3,6 */
+      wmf_stream_printf (API,out,"stroke-antialias 0\n");
       wmf_stream_printf (API,out,"stroke-dasharray %.10g,%.10g,%.10g,%.10g\n",
 		         pixel_width*9,pixel_width*6,pixel_width*3,pixel_width*6);
       break;
 
-    case PS_DASHDOTDOT: /* DASH_2_DOTS_LINE */
+    case PS_DASHDOTDOT: /* DASH_2_DOTS_LINE, 9,3,3,3,3,3 */
+      wmf_stream_printf (API,out,"stroke-antialias 0\n");
       wmf_stream_printf (API,out,"stroke-dasharray %.10g,%.10g,%.10g,%.10g,%.10g,%.10g\n",
 		         pixel_width*9,pixel_width*3,pixel_width*3,pixel_width*3,
                          pixel_width*3,pixel_width*3);
