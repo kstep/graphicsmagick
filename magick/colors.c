@@ -1581,7 +1581,8 @@ static unsigned int ReadConfigurationFile(const char *basename,
     }
   }
   LiberateMemory((void **) &token);
-  LiberateMemory((void **) &xml);
+  if (xml != ColorMap)
+    LiberateMemory((void **) &xml);
   if (color_list == (ColorInfo *) NULL)
     return(False);
   while (color_list->previous != (ColorInfo *) NULL)

@@ -899,7 +899,8 @@ static unsigned int ReadConfigurationFile(const char *basename,
     }
   }
   LiberateMemory((void **) &token);
-  LiberateMemory((void **) &xml);
+  if (xml != ModuleMap)
+    LiberateMemory((void **) &xml);
   if (module_aliases == (ModuleAlias *) NULL)
     return(False);
   while (module_aliases->previous != (ModuleAlias *) NULL)

@@ -435,7 +435,8 @@ static unsigned int ReadConfigurationFile(const char *basename,
     }
   }
   LiberateMemory((void **) &token);
-  LiberateMemory((void **) &xml);
+  if (xml != FontMap)
+    LiberateMemory((void **) &xml);
   if (font_list == (FontInfo *) NULL)
     return(False);
   while (font_list->previous != (FontInfo *) NULL)

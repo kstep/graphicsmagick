@@ -763,7 +763,8 @@ static unsigned int ReadConfigurationFile(const char *basename,
     }
   }
   LiberateMemory((void **) &token);
-  LiberateMemory((void **) &xml);
+  if (xml != DelegateMap)
+    LiberateMemory((void **) &xml);
   if (delegate_list == (DelegateInfo *) NULL)
     return(False);
   while (delegate_list->previous != (DelegateInfo *) NULL)

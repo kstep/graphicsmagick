@@ -423,7 +423,8 @@ static unsigned int ReadConfigurationFile(const char *basename,
     }
   }
   LiberateMemory((void **) &token);
-  LiberateMemory((void **) &xml);
+  if (xml != MagicMap)
+    LiberateMemory((void **) &xml);
   if (magic_list == (MagicInfo *) NULL)
     return(False);
   while (magic_list->previous != (MagicInfo *) NULL)
