@@ -2799,34 +2799,18 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           &image->chromaticity.green_primary.y,
           &image->chromaticity.blue_primary.x,
           &image->chromaticity.blue_primary.y);
-        image->chromaticity.white_point.z=1.000f
-          -(image->chromaticity.white_point.x
-          +image->chromaticity.white_point.y);
-        image->chromaticity.red_primary.z=1.000f
-          -(image->chromaticity.red_primary.x
-          +image->chromaticity.red_primary.y);
-        image->chromaticity.green_primary.z=1.000f
-          -(image->chromaticity.green_primary.x
-          +image->chromaticity.green_primary.y);
-        image->chromaticity.blue_primary.z=1.000f
-          -(image->chromaticity.blue_primary.x
-          +image->chromaticity.blue_primary.y);
       }
     if (image->rendering_intent)
       {
         image->gamma=0.45455;
         image->chromaticity.red_primary.x=0.6400f;
         image->chromaticity.red_primary.y=0.3300f;
-        image->chromaticity.red_primary.z=1.0000f-(0.6400f+0.3300f);
         image->chromaticity.green_primary.x=0.3000f;
         image->chromaticity.green_primary.y=0.6000f;
-        image->chromaticity.green_primary.z=1.0000f-(0.3000f+0.6000f);
         image->chromaticity.blue_primary.x=0.1500f;
         image->chromaticity.blue_primary.y=0.0600f;
-        image->chromaticity.blue_primary.z=1.0000f-(0.1500f+0.0600f);
         image->chromaticity.white_point.x=0.3127f;
         image->chromaticity.white_point.y=0.3290f;
-        image->chromaticity.white_point.z=1.0000f-(0.3127f+0.3290f);
       }
     if (have_global_gama || image->rendering_intent)
       ping_info->valid|=PNG_INFO_gAMA;
@@ -4841,26 +4825,18 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                     next_image->next->chromaticity.red_primary.x ||
                     next_image->chromaticity.red_primary.y !=
                     next_image->next->chromaticity.red_primary.y ||
-                    next_image->chromaticity.red_primary.z !=
-                    next_image->next->chromaticity.red_primary.z ||
                     next_image->chromaticity.green_primary.x !=
                     next_image->next->chromaticity.green_primary.x ||
                     next_image->chromaticity.green_primary.y !=
                     next_image->next->chromaticity.green_primary.y ||
-                    next_image->chromaticity.green_primary.z !=
-                    next_image->next->chromaticity.green_primary.z ||
                     next_image->chromaticity.blue_primary.x !=
                     next_image->next->chromaticity.blue_primary.x ||
                     next_image->chromaticity.blue_primary.y !=
                     next_image->next->chromaticity.blue_primary.y ||
-                    next_image->chromaticity.blue_primary.z !=
-                    next_image->next->chromaticity.blue_primary.z ||
                     next_image->chromaticity.white_point.x !=
                     next_image->next->chromaticity.white_point.x ||
                     next_image->chromaticity.white_point.y !=
-                    next_image->next->chromaticity.white_point.y ||
-                    next_image->chromaticity.white_point.z !=
-                    next_image->next->chromaticity.white_point.z)
+                    next_image->next->chromaticity.white_point.y)
                   equal_chrms=False;
               }
           }
@@ -5003,35 +4979,23 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
              PrimaryInfo
                primary;
 
-             double
-               x,
-               y;
-
              /*
                 Write MNG cHRM chunk
              */
              (void) WriteBlobMSBULong(image,32L);
              PNGType(chunk,mng_cHRM);
              primary=image->chromaticity.white_point;
-             x=primary.x/(primary.x+primary.y+primary.z);
-             y=primary.y/(primary.x+primary.y+primary.z);
-             PNGLong(chunk+4,(unsigned long) (100000*x+0.5));
-             PNGLong(chunk+8,(unsigned long) (100000*y+0.5));
+             PNGLong(chunk+4,(unsigned long) (100000*primary.x+0.5));
+             PNGLong(chunk+8,(unsigned long) (100000*primary.y+0.5));
              primary=image->chromaticity.red_primary;
-             x=primary.x/(primary.x+primary.y+primary.z);
-             y=primary.y/(primary.x+primary.y+primary.z);
-             PNGLong(chunk+12,(unsigned long) (100000*x+0.5));
-             PNGLong(chunk+16,(unsigned long) (100000*y+0.5));
+             PNGLong(chunk+12,(unsigned long) (100000*primary.x+0.5));
+             PNGLong(chunk+16,(unsigned long) (100000*primary.y+0.5));
              primary=image->chromaticity.green_primary;
-             x=primary.x/(primary.x+primary.y+primary.z);
-             y=primary.y/(primary.x+primary.y+primary.z);
-             PNGLong(chunk+20,(unsigned long) (100000*x+0.5));
-             PNGLong(chunk+24,(unsigned long) (100000*y+0.5));
+             PNGLong(chunk+20,(unsigned long) (100000*primary.x+0.5));
+             PNGLong(chunk+24,(unsigned long) (100000*primary.y+0.5));
              primary=image->chromaticity.blue_primary;
-             x=primary.x/(primary.x+primary.y+primary.z);
-             y=primary.y/(primary.x+primary.y+primary.z);
-             PNGLong(chunk+28,(unsigned long) (100000*x+0.5));
-             PNGLong(chunk+32,(unsigned long) (100000*y+0.5));
+             PNGLong(chunk+28,(unsigned long) (100000*primary.x+0.5));
+             PNGLong(chunk+32,(unsigned long) (100000*primary.y+0.5));
              (void) WriteBlob(image,36,(char *) chunk);
              (void) WriteBlobMSBULong(image,crc32(0,chunk,36));
              have_write_global_chrm=True;
@@ -5794,22 +5758,13 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
              PrimaryInfo
                bp,
                gp,
-               primary,
                rp,
                wp;
 
-             primary=image->chromaticity.white_point;
-             wp.x=primary.x/(primary.x+primary.y+primary.z);
-             wp.y=primary.y/(primary.x+primary.y+primary.z);
-             primary=image->chromaticity.red_primary;
-             rp.x=primary.x/(primary.x+primary.y+primary.z);
-             rp.y=primary.y/(primary.x+primary.y+primary.z);
-             primary=image->chromaticity.green_primary;
-             gp.x=primary.x/(primary.x+primary.y+primary.z);
-             gp.y=primary.y/(primary.x+primary.y+primary.z);
-             primary=image->chromaticity.blue_primary;
-             bp.x=primary.x/(primary.x+primary.y+primary.z);
-             bp.y=primary.y/(primary.x+primary.y+primary.z);
+             wp=image->chromaticity.white_point;
+             rp=image->chromaticity.red_primary;
+             gp=image->chromaticity.green_primary;
+             bp=image->chromaticity.blue_primary;
 
             png_set_cHRM(ping,ping_info,wp.x,wp.y,rp.x,rp.y,gp.x,gp.y,
                bp.x,bp.y);
