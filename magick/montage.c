@@ -524,13 +524,12 @@ MagickExport Image *MontageImages(const Image *images,
           height=concatenate ? max_height : tile_info.height;
           y_offset+=(unsigned long) (height+(tile_info.y+border_width)*2+
             (metrics.ascent-metrics.descent+4)*number_lines+
-            (montage_info->shadow ? 4 : 0)+(concatenate ? 0 : 2));
+            (montage_info->shadow ? 4 : 0));
           if (y_offset > (long) bounds.height)
             bounds.height=y_offset;
           max_height=0;
         }
     }
-    bounds.height-=(concatenate ? 0 : (2*(tiles_per_row+1)));
     /*
       Initialize montage image.
     */
