@@ -95,9 +95,9 @@ static unsigned int IsPS(const unsigned char *magick,const unsigned int length)
 {
   if (length < 4)
     return(False);
-  if (memcmp(magick,"\004%!",3) == 0)
-    return(True);
   if (LocaleNCompare((char *) magick,"%!",2) == 0)
+    return(True);
+  if (memcmp(magick,"\004%!",3) == 0)
     return(True);
   if (memcmp(magick,"\305\320\323\306",4) == 0)
     return(True);
@@ -1116,6 +1116,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         (void) strcpy(buffer,"userdict begin\n");
         (void) WriteBlob(image,strlen(buffer),buffer);
       }
+    (void) strcpy(buffer,"%%BeginData:\n");
     (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"DisplayImage\n");
     (void) WriteBlob(image,strlen(buffer),buffer);
@@ -1433,6 +1434,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           }
           (void) WriteByte(image,'\n');
         }
+    (void) strcpy(buffer,"%%EndData\n");
     (void) WriteBlob(image,strlen(buffer),buffer);
     if (LocaleCompare(image_info->magick,"PS") != 0)
       {
