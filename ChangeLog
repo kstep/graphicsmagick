@@ -1,3 +1,10 @@
+2003-10-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/log.c (LogToBlob): Since MagickSeek(file,0,SEEK_END) is
+	used to obtain the Blob size, MagickSeek(file,0,SEEK_SET) must be
+	used to restore the seek position.  Thanks to John Cristy for
+	bringing this to our attention.
+
 2003-10-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/bit_stream.h: Added a bit-stream writer function.
