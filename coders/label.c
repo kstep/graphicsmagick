@@ -129,7 +129,6 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   SetImage(image,OpaqueOpacity);
   (void) AnnotateImage(image,draw_info);
   image->matte=True;
-  if (0)
   for (y=0; y < (int) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
