@@ -119,18 +119,18 @@ extern "C" {
 */
 #define AbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
 #define ColorMatch(color,target,distance) \
-  ((unsigned int) ((((int) (color).red-(int) (target).red)* \
+  ((unsigned long) ((((int) (color).red-(int) (target).red)* \
      ((int) (color).red-(int) (target).red))+ \
     (((int) (color).green-(int) (target).green)* \
      ((int) (color).green-(int) (target).green))+ \
     (((int) (color).blue-(int) (target).blue)* \
      ((int) (color).blue-(int) (target).blue))) <= (distance*distance))
-#define DownShift(x) (((unsigned int) ((x)+(1L << 13))) >> 14)
+#define DownShift(x) (((unsigned long) ((x)+(1L << 13))) >> 14)
 #define Extent(string)  ((int) strlen(string))
 #define False  0
 #define DegreesToRadians(x) ((x)*M_PI/180.0)
 #define Intensity(color)  \
-  ((unsigned int) ((color).red*77+(color).green*150+(color).blue*29) >> 8)
+  ((unsigned long) ((color).red*77+(color).green*150+(color).blue*29) >> 8)
 #define IsFaxImage(color)  \
   (IsMonochromeImage(image) && ((image)->columns <= 2560))
 #define IsGray(color)  \

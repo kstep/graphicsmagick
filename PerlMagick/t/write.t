@@ -8,7 +8,7 @@
 # Whenever a new test is added/removed, be sure to update the
 # 1..n ouput.
 
-BEGIN { $| = 1; $test=1; print "1..34\n"; }
+BEGIN { $| = 1; $test=1; print "1..32\n"; }
 END {print "not ok $test\n" unless $loaded;}
 use Image::Magick;
 $loaded=1;
@@ -306,26 +306,5 @@ testReadWriteSized( 'RGBA:input_70x46.rgba',
 		    '70x46',
 		    q//,
 		    'f3e5ab88e328da3044c1fc177a7e2978' );
-
-#
-# CMYK format
-#
-++$test;
-testReadWriteSized( 'CMYK:input_70x46.cmyk',
-		    'CMYK:output_70x46.cmyk',
-		    '70x46',
-		    q//,
-		    '70b0c3d7fcc7a617481285a1e27345d5' );
-
-#
-# UYVY format
-#
-++$test;
-testReadWriteSized( 'UYVY:input_70x46.uyvy',
-		    'UYVY:output_70x46.uyvy',
-		    '70x46',
-		    q//,
-		    '5493371d700756a7eadf8198c70d1fe7' );
-
 
 1;

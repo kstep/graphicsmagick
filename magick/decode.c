@@ -80,7 +80,7 @@ const char
   *DefaultTileGeometry = "106x106+4+3>",
   *DefaultXFont = "-adobe-helvetica-medium-r-*-*-14-*-*-*-*-*-iso8859-*",
   *PSDensityGeometry = "72x72",
-  *PSPageGeometry = "612x792>",
+  *PSPageGeometry = "612x792+43+43>",
   *ReadBinaryType = "rb",
   *ReadBinaryUnbufferedType = "rbu";
 
@@ -13740,14 +13740,17 @@ Export Image *ReadSTEGANOImage(const ImageInfo *image_info)
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
   for (i=0; i < (int) image->colors; i++)
   {
-    image->colormap[i].red=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
-    image->colormap[i].green=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
-    image->colormap[i].blue=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
+    image->colormap[i].red=(Quantum)
+      ((unsigned long) (MaxRGB*i)/(image->colors-1));
+    image->colormap[i].green=(Quantum)
+      ((unsigned long) (MaxRGB*i)/(image->colors-1));
+    image->colormap[i].blue=(Quantum)
+      ((unsigned long) (MaxRGB*i)/(image->colors-1));
   }
   /*
     Grab embedded watermark.
   */
-  shift=QuantumDepth-1;
+  shift=image->depth-1;
   p=stegano_image->pixels+(stegano_image->offset % stegano_image->packets);
   q=image->pixels;
   for (i=0; i < (int) stegano_image->packets; i++)

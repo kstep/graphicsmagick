@@ -78,7 +78,6 @@ t/montage.t
 t/mpeg/input.m2v
 t/mpeg/input.mpg
 t/mpeg/read.t
-t/mpeg/write.t
 t/png/input.mng
 t/png/input_256.png
 t/png/input_mono.png

@@ -234,7 +234,7 @@ Export void NTErrorHandler(const unsigned int error,const char *message,
   const char *qualifier)
 {
   char
-    buffer[3*MaxTextLength];
+    buffer[3*MaxTextExtent];
 
   if (message == (char *) NULL)
     Exit(0);

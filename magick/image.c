@@ -1860,14 +1860,14 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
             }
           else
             {
-              q->red=(Quantum) ((long) (pixel->red*pixel->index+
+              q->red=(Quantum) ((unsigned long) (pixel->red*pixel->index+
                 q->red*(Opaque-pixel->index))/Opaque);
-              q->green=(Quantum) ((long) (pixel->green*pixel->index+
+              q->green=(Quantum) ((unsigned long) (pixel->green*pixel->index+
                 q->green*(Opaque-pixel->index))/Opaque);
-              q->blue=(Quantum) ((long) (pixel->blue*pixel->index+
+              q->blue=(Quantum) ((unsigned long) (pixel->blue*pixel->index+
                 q->blue*(Opaque-pixel->index))/Opaque);
-              q->index=(unsigned short) ((long) (pixel->index*pixel->index+
-                q->index*(Opaque-pixel->index))/Opaque);
+              q->index=(unsigned short) ((unsigned long) (pixel->index*
+                pixel->index+q->index*(Opaque-pixel->index))/Opaque);
             }
         }
       r++;
@@ -1919,9 +1919,6 @@ Export void ColorizeImage(Image *image,const char *opacity,
     green_opacity,
     red_opacity;
 
-  long
-    value;
-
   register int
     i;
 
@@ -1968,14 +1965,12 @@ Export void ColorizeImage(Image *image,const char *opacity,
       p=image->pixels;
       for (i=0; i < (int) image->packets; i++)
       {
-        value=(long) (p->red*(100-red_opacity)+target.red*red_opacity)/100;
-        p->red=(Quantum) ((value < 0) ? 0 : (value > MaxRGB) ? MaxRGB : value);
-        value=(long)
-          (p->green*(100-green_opacity)+target.green*green_opacity)/100;
-        p->green=(Quantum)
-          ((value < 0) ? 0 : (value > MaxRGB) ? MaxRGB : value);
-        value=(long) (p->blue*(100-blue_opacity)+target.blue*blue_opacity)/100;
-        p->blue=(Quantum) ((value < 0) ? 0 : (value > MaxRGB) ? MaxRGB : value);
+        p->red=(Quantum) ((unsigned long)
+          (p->red*(100-red_opacity)+target.red*red_opacity)/100);
+        p->green=(Quantum) ((unsigned long)
+          (p->green*(100-green_opacity)+target.green*green_opacity)/100);
+        p->blue=(Quantum) ((unsigned long)
+          (p->blue*(100-blue_opacity)+target.blue*blue_opacity)/100);
         p++;
         if (QuantumTick(i,image->packets))
           ProgressMonitor(ColorizeImageText,i,image->packets);
@@ -1989,18 +1984,15 @@ Export void ColorizeImage(Image *image,const char *opacity,
       */
       for (i=0; i < (int) image->colors; i++)
       {
-        value=(long)
-          (image->colormap[i].red*(100-red_opacity)+target.red*red_opacity)/100;
-        image->colormap[i].red=(Quantum)
-          ((value < 0) ? 0 : (value > MaxRGB) ? MaxRGB : value);
-        value=(long) (image->colormap[i].green*(100-green_opacity)+
-          target.green*green_opacity)/100;
-        image->colormap[i].green=(Quantum)
-          ((value < 0) ? 0 : (value > MaxRGB) ? MaxRGB : value);
-        value=(long) (image->colormap[i].blue*(100-blue_opacity)+
-          target.blue*blue_opacity)/100;
-        image->colormap[i].blue=(Quantum)
-          ((value < 0) ? 0 : (value > MaxRGB) ? MaxRGB : value);
+        image->colormap[i].red=(Quantum) ((unsigned long)
+          (image->colormap[i].red*(100-red_opacity)+target.red*
+          red_opacity)/100);
+        image->colormap[i].green=(Quantum) ((unsigned long)
+          (image->colormap[i].green*(100-green_opacity)+target.green*
+          green_opacity)/100);
+        image->colormap[i].blue=(Quantum) ((unsigned long)
+          (image->colormap[i].blue*(100-blue_opacity)+target.blue*
+          blue_opacity)/100);
       }
       SyncImage(image);
       break;
@@ -2460,120 +2452,120 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
               }
             else
               {
-                red=(unsigned int)
-                  (p->red*p->index+q->red*(Opaque-p->index))/Opaque;
-                green=(unsigned int)
-                  (p->green*p->index+q->green*(Opaque-p->index))/Opaque;
-                blue=(unsigned int)
-                  (p->blue*p->index+q->blue*(Opaque-p->index))/Opaque;
-                index=(unsigned int)
-                  (p->index*p->index+q->index*(Opaque-p->index))/Opaque;
+                red=(long) ((unsigned long)
+                  (p->red*p->index+q->red*(Opaque-p->index))/Opaque);
+                green=(long) ((unsigned long)
+                  (p->green*p->index+q->green*(Opaque-p->index))/Opaque);
+                blue=(long) ((unsigned long)
+                  (p->blue*p->index+q->blue*(Opaque-p->index))/Opaque);
+                index=(long) ((unsigned long)
+                  (p->index*p->index+q->index*(Opaque-p->index))/Opaque);
               }
           break;
         }
         case InCompositeOp:
         {
-          red=(unsigned int) (p->red*q->index)/Opaque;
-          green=(unsigned int) (p->green*q->index)/Opaque;
-          blue=(unsigned int) (p->blue*q->index)/Opaque;
-          index=(unsigned int) (p->index*q->index)/Opaque;
+          red=((unsigned long) (p->red*q->index)/Opaque);
+          green=((unsigned long) (p->green*q->index)/Opaque);
+          blue=((unsigned long) (p->blue*q->index)/Opaque);
+          index=((unsigned long) (p->index*q->index)/Opaque);
           break;
         }
         case OutCompositeOp:
         {
-          red=(unsigned int) (p->red*(Opaque-q->index))/Opaque;
-          green=(unsigned int) (p->green*(Opaque-q->index))/Opaque;
-          blue=(unsigned int) (p->blue*(Opaque-q->index))/Opaque;
-          index=(unsigned int) (p->index*(Opaque-q->index))/Opaque;
+          red=((unsigned long) (p->red*(Opaque-q->index))/Opaque);
+          green=((unsigned long) (p->green*(Opaque-q->index))/Opaque);
+          blue=((unsigned long) (p->blue*(Opaque-q->index))/Opaque);
+          index=((unsigned long) (p->index*(Opaque-q->index))/Opaque);
           break;
         }
         case AtopCompositeOp:
         {
-          red=(unsigned int)
-            (p->red*q->index+q->red*(Opaque-p->index))/Opaque;
-          green=(unsigned int)
-            (p->green*q->index+q->green*(Opaque-p->index))/Opaque;
-          blue=(unsigned int)
-            (p->blue*q->index+q->blue*(Opaque-p->index))/Opaque;
-          index=(unsigned int)
-            (p->index*q->index+q->index*(Opaque-p->index))/Opaque;
+          red=((unsigned long)
+            (p->red*q->index+q->red*(Opaque-p->index))/Opaque);
+          green=((unsigned long)
+            (p->green*q->index+q->green*(Opaque-p->index))/Opaque);
+          blue=((unsigned long)
+            (p->blue*q->index+q->blue*(Opaque-p->index))/Opaque);
+          index=((unsigned long)
+            (p->index*q->index+q->index*(Opaque-p->index))/Opaque);
           break;
         }
         case XorCompositeOp:
         {
-          red=(unsigned int)
-            (p->red*(Opaque-q->index)+q->red*(Opaque-p->index))/Opaque;
-          green=(unsigned int)
-            (p->green*(Opaque-q->index)+q->green*(Opaque-p->index))/Opaque;
-          blue=(unsigned int)
-            (p->blue*(Opaque-q->index)+q->blue*(Opaque-p->index))/Opaque;
-          index=(unsigned int)
-            (p->index*(Opaque-q->index)+q->index*(Opaque-p->index))/Opaque;
+          red=((unsigned long)
+            (p->red*(Opaque-q->index)+q->red*(Opaque-p->index))/Opaque);
+          green=((unsigned long)
+            (p->green*(Opaque-q->index)+q->green*(Opaque-p->index))/Opaque);
+          blue=((unsigned long)
+            (p->blue*(Opaque-q->index)+q->blue*(Opaque-p->index))/Opaque);
+          index=((unsigned long)
+            (p->index*(Opaque-q->index)+q->index*(Opaque-p->index))/Opaque);
           break;
         }
         case PlusCompositeOp:
         {
-          red=(long) p->red+(long) q->red;
-          green=(long) p->green+(long) q->green;
-          blue=(long) p->blue+(long) q->blue;
-          index=(long) p->index+(long) q->index;
+          red=p->red+q->red;
+          green=p->green+q->green;
+          blue=p->blue+q->blue;
+          index=p->index+q->index;
           break;
         }
         case MinusCompositeOp:
         {
-          red=(long) p->red-(long) q->red;
-          green=(long) p->green-(long) q->green;
-          blue=(long) p->blue-(long) q->blue;
+          red=p->red-(int) q->red;
+          green=p->green-(int) q->green;
+          blue=p->blue-(int) q->blue;
           index=Opaque;
           break;
         }
         case AddCompositeOp:
         {
-          red=(long) p->red+(long) q->red;
+          red=p->red+q->red;
           if (red > MaxRGB)
             red-=(MaxRGB+1);
-          green=(long) p->green+(long) q->green;
+          green=p->green+q->green;
           if (green > MaxRGB)
             green-=(MaxRGB+1);
-          blue=(long) p->blue+(long) q->blue;
+          blue=p->blue+q->blue;
           if (blue > MaxRGB)
             blue-=(MaxRGB+1);
-          index=(long) p->index+(long) q->index;
+          index=p->index+q->index;
           if (index > Opaque)
             index-=(Opaque+1);
           break;
         }
         case SubtractCompositeOp:
         {
-          red=(long) p->red-(long) q->red;
+          red=p->red-(int) q->red;
           if (red < 0)
             red+=(MaxRGB+1);
-          green=(long) p->green-(long) q->green;
+          green=p->green-(int) q->green;
           if (green < 0)
             green+=(MaxRGB+1);
-          blue=(long) p->blue-(long) q->blue;
+          blue=p->blue-(int) q->blue;
           if (blue < 0)
             blue+=(MaxRGB+1);
-          index=(long) p->index-(long) q->index;
+          index=p->index-(int) q->index;
           if (index < 0)
             index+=(MaxRGB+1);
           break;
         }
         case DifferenceCompositeOp:
         {
-          red=AbsoluteValue((long) p->red-(long) q->red);
-          green=AbsoluteValue((long) p->green-(long) q->green);
-          blue=AbsoluteValue((long) p->blue-(long) q->blue);
-          index=AbsoluteValue((long) p->index-(long) q->index);
+          red=AbsoluteValue(p->red-(int) q->red);
+          green=AbsoluteValue(p->green-(int) q->green);
+          blue=AbsoluteValue(p->blue-(int) q->blue);
+          index=AbsoluteValue(p->index-(int) q->index);
           break;
         }
         case BumpmapCompositeOp:
         {
           shade=Intensity(*p);
-          red=(unsigned int) (q->red*shade)/Opaque;
-          green=(unsigned int) (q->green*shade)/Opaque;
-          blue=(unsigned int) (q->blue*shade)/Opaque;
-          index=(unsigned int) (q->index*shade)/Opaque;
+          red=((unsigned long) (q->red*shade)/Opaque);
+          green=((unsigned long) (q->green*shade)/Opaque);
+          blue=((unsigned long) (q->blue*shade)/Opaque);
+          index=((unsigned long) (q->index*shade)/Opaque);
           break;
         }
         case ReplaceCompositeOp:
@@ -2618,9 +2610,12 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
         }
         case BlendCompositeOp:
         {
-          red=(unsigned int) (p->red*p->index+q->red*q->index)/Opaque;
-          green=(unsigned int) (p->green*p->index+q->green*q->index)/Opaque;
-          blue=(unsigned int) (p->blue*p->index+q->blue*q->index)/Opaque;
+          red=((unsigned long)
+            (p->red*p->index+q->red*q->index)/Opaque);
+          green=((unsigned long)
+            (p->green*p->index+q->green*q->index)/Opaque);
+          blue=((unsigned long)
+            (p->blue*p->index+q->blue*q->index)/Opaque);
           index=Opaque;
           break;
         }
@@ -4643,24 +4638,24 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
         {
           pixel=(*PixelOffset(local_info->tile,x % local_info->tile->columns,
             y % local_info->tile->rows));
-          q->red=(Quantum)
-            ((long) (pixel.red*opacity+q->red*(Opaque-opacity))/Opaque);
-          q->green=(Quantum)
-            ((long) (pixel.green*opacity+q->green*(Opaque-opacity))/Opaque);
-          q->blue=(Quantum)
-            ((long) (pixel.blue*opacity+q->blue*(Opaque-opacity))/Opaque);
+          q->red=(Quantum) ((unsigned long)
+            (pixel.red*opacity+q->red*(Opaque-opacity))/Opaque);
+          q->green=(Quantum) ((unsigned long)
+            (pixel.green*opacity+q->green*(Opaque-opacity))/Opaque);
+          q->blue=(Quantum) ((unsigned long)
+            (pixel.blue*opacity+q->blue*(Opaque-opacity))/Opaque);
           if (local_info->tile->matte)
             {
-              q->index=(unsigned short) ((long) (pixel.index*opacity+q->index*
-                (Opaque-opacity))/Opaque);
-              q->red=(Quantum) ((long) (pixel.red*pixel.index+q->red*
-                (Opaque-pixel.index))/Opaque);
-              q->green=(Quantum) ((long) (pixel.green*pixel.index+q->green*
-                (Opaque-pixel.index))/Opaque);
-              q->blue=(Quantum) ((long) (pixel.blue*pixel.index+q->blue*
-                (Opaque-pixel.index))/Opaque);
-              q->index=(unsigned short) ((long) (pixel.index*pixel.index+
-                q->index*(Opaque-pixel.index))/Opaque);
+              q->index=(unsigned short) ((unsigned long)
+                (pixel.index*opacity+q->index*(Opaque-opacity))/Opaque);
+              q->red=(Quantum) ((unsigned long)
+                (pixel.red*pixel.index+q->red*(Opaque-pixel.index))/Opaque);
+              q->green=(Quantum) ((unsigned long)
+                (pixel.green*pixel.index+q->green*(Opaque-pixel.index))/Opaque);
+              q->blue=(Quantum) ((unsigned long)
+                (pixel.blue*pixel.index+q->blue*(Opaque-pixel.index))/Opaque);
+              q->index=(unsigned short) ((unsigned long) (pixel.index*
+                pixel.index+q->index*(Opaque-pixel.index))/Opaque);
             }
         }
       q++;
@@ -5144,30 +5139,30 @@ Export Image *FrameImage(const Image *image,const FrameInfo *frame_info)
   matte.blue=image->matte_color.blue;
   matte.index=Opaque;
   matte.length=0;
-  accentuate.red=(unsigned int) (matte.red*AccentuateModulate+
-    (MaxRGB-AccentuateModulate)*MaxRGB)/MaxRGB;
-  accentuate.green=(unsigned int) (matte.green*AccentuateModulate+
-    (MaxRGB-AccentuateModulate)*MaxRGB)/MaxRGB;
-  accentuate.blue=(unsigned int) (matte.blue*AccentuateModulate+
-    (MaxRGB-AccentuateModulate)*MaxRGB)/MaxRGB;
+  accentuate.red=(Quantum) ((unsigned long)
+    (matte.red*AccentuateModulate+(MaxRGB-AccentuateModulate)*MaxRGB)/MaxRGB);
+  accentuate.green=(Quantum) ((unsigned long)
+    (matte.green*AccentuateModulate+(MaxRGB-AccentuateModulate)*MaxRGB)/MaxRGB);
+  accentuate.blue=(Quantum) ((unsigned long)
+    (matte.blue*AccentuateModulate+(MaxRGB-AccentuateModulate)*MaxRGB)/MaxRGB);
   accentuate.index=Opaque;
   accentuate.length=0;
-  highlight.red=(unsigned int) (matte.red*HighlightModulate+
-    (MaxRGB-HighlightModulate)*MaxRGB)/MaxRGB;
-  highlight.green=(unsigned int) (matte.green*HighlightModulate+
-    (MaxRGB-HighlightModulate)*MaxRGB)/MaxRGB;
-  highlight.blue=(unsigned int) (matte.blue*HighlightModulate+
-    (MaxRGB-HighlightModulate)*MaxRGB)/MaxRGB;
+  highlight.red=(Quantum) ((unsigned long)
+    (matte.red*HighlightModulate+(MaxRGB-HighlightModulate)*MaxRGB)/MaxRGB);
+  highlight.green=(Quantum) ((unsigned long)
+    (matte.green*HighlightModulate+(MaxRGB-HighlightModulate)*MaxRGB)/MaxRGB);
+  highlight.blue=(Quantum) ((unsigned long)
+    (matte.blue*HighlightModulate+(MaxRGB-HighlightModulate)*MaxRGB)/MaxRGB);
   highlight.index=Opaque;
   highlight.length=0;
-  shadow.red=(unsigned int) (matte.red*ShadowModulate)/MaxRGB;
-  shadow.green=(unsigned int) (matte.green*ShadowModulate)/MaxRGB;
-  shadow.blue=(unsigned int) (matte.blue*ShadowModulate)/MaxRGB;
+  shadow.red=(Quantum) ((unsigned long) (matte.red*ShadowModulate)/MaxRGB);
+  shadow.green=(Quantum) ((unsigned long) (matte.green*ShadowModulate)/MaxRGB);
+  shadow.blue=(Quantum) ((unsigned long) (matte.blue*ShadowModulate)/MaxRGB);
   shadow.index=Opaque;
   shadow.length=0;
-  trough.red=(unsigned int) (matte.red*TroughModulate)/MaxRGB;
-  trough.green=(unsigned int) (matte.green*TroughModulate)/MaxRGB;
-  trough.blue=(unsigned int) (matte.blue*TroughModulate)/MaxRGB;
+  trough.red=(Quantum) ((unsigned long) (matte.red*TroughModulate)/MaxRGB);
+  trough.green=(Quantum) ((unsigned long) (matte.green*TroughModulate)/MaxRGB);
+  trough.blue=(Quantum) ((unsigned long) (matte.blue*TroughModulate)/MaxRGB);
   trough.index=Opaque;
   trough.length=0;
   /*

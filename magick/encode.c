@@ -6809,9 +6809,9 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       MSBFirstWriteShort((unsigned short) (image->colors-1),image->file);
       for (i=0; i < (int) image->colors; i++)
       {
-        red=(unsigned int) (image->colormap[i].red*65535L)/MaxRGB;
-        green=(unsigned int) (image->colormap[i].green*65535L)/MaxRGB;
-        blue=(unsigned int) (image->colormap[i].blue*65535L)/MaxRGB;
+        red=((unsigned long) (image->colormap[i].red*65535L)/MaxRGB);
+        green=((unsigned long) (image->colormap[i].green*65535L)/MaxRGB);
+        blue=((unsigned long) (image->colormap[i].blue*65535L)/MaxRGB);
         MSBFirstWriteShort((unsigned int) i,image->file);
         MSBFirstWriteShort(red,image->file);
         MSBFirstWriteShort(green,image->file);
@@ -11978,9 +11978,9 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         */
         for (i=0; i < (int) image->colors; i++)
         {
-          red[i]=(unsigned int) (image->colormap[i].red*65535L)/MaxRGB;
-          green[i]=(unsigned int) (image->colormap[i].green*65535L)/MaxRGB;
-          blue[i]=(unsigned int) (image->colormap[i].blue*65535L)/MaxRGB;
+          red[i]=((unsigned long) (image->colormap[i].red*65535L)/MaxRGB);
+          green[i]=((unsigned long) (image->colormap[i].green*65535L)/MaxRGB);
+          blue[i]=((unsigned long) (image->colormap[i].blue*65535L)/MaxRGB);
         }
         for ( ; i < (1 << image->depth); i++)
         {
@@ -13573,6 +13573,9 @@ Export unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
 */
 Export unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
 {
+  FilterType
+    filter;
+
   Image
     *downsampled_image,
     *yuv_image;
@@ -13610,6 +13613,8 @@ Export unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       Zoom image to an even width and height.
     */
     TransformRGBImage(image,RGBColorspace);
+    filter=image->filter;
+    image->filter=PointFilter;
     image->orphan=True;
     yuv_image=ZoomImage(image,image->columns+(image->columns & 0x01 ? 1 : 0),
       image->rows+(image->rows & 0x01 ? 1 : 0));
@@ -13638,6 +13643,7 @@ Export unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       (image->columns+(image->columns & 0x01 ? 1 : 0)) >> 1,
       (image->rows+(image->rows & 0x01 ? 1 : 0)) >> 1);
     image->orphan=False;
+    image->filter=filter;
     if (downsampled_image == (Image *) NULL)
       PrematureExit(ResourceLimitWarning,"Unable to zoom image",image);
     /*
@@ -13842,7 +13848,7 @@ Export unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
       }
       for (i=0; i < (int) image->colors; i++)
       {
-        color.pixel=(unsigned int) colors[i].pixel;
+        color.pixel=(unsigned long) colors[i].pixel;
         color.red=colors[i].red;
         color.green=colors[i].green;
         color.blue=colors[i].blue;

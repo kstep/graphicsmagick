@@ -1843,32 +1843,32 @@ Export void RaiseImage(Image *image,const RectangleInfo *raise_info,
   {
     for (x=0; x < y; x++)
     {
-      p->red=(unsigned int) (p->red*HighlightFactor+foreground*
-        (MaxRGB-HighlightFactor))/MaxRGB;
-      p->green=(unsigned int) (p->green*HighlightFactor+foreground*
-        (MaxRGB-HighlightFactor))/MaxRGB;
-      p->blue=(unsigned int) (p->blue*HighlightFactor+foreground*
-        (MaxRGB-HighlightFactor))/MaxRGB;
+      p->red=(Quantum) ((unsigned long)
+        (p->red*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
+      p->green=(Quantum) ((unsigned long)
+        (p->green*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
+      p->blue=(Quantum) ((unsigned long)
+        (p->blue*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
       p++;
     }
     for (x=0; x < (int) (image->columns-(y << 1)); x++)
     {
-      p->red=(unsigned int) (p->red*AccentuateFactor+foreground*
-        (MaxRGB-AccentuateFactor))/MaxRGB;
-      p->green=(unsigned int) (p->green*AccentuateFactor+foreground*
-        (MaxRGB-AccentuateFactor))/MaxRGB;
-      p->blue=(unsigned int) (p->blue*AccentuateFactor+foreground*
-        (MaxRGB-AccentuateFactor))/MaxRGB;
+      p->red=(Quantum) ((unsigned long)
+        (p->red*AccentuateFactor+foreground*(MaxRGB-AccentuateFactor))/MaxRGB);
+      p->green=(Quantum) ((unsigned long) (p->green*
+        AccentuateFactor+foreground*(MaxRGB-AccentuateFactor))/MaxRGB);
+      p->blue=(Quantum) ((unsigned long)
+        (p->blue*AccentuateFactor+foreground*(MaxRGB-AccentuateFactor))/MaxRGB);
       p++;
     }
     for (x=0; x < y; x++)
     {
-      p->red=(unsigned int)
-        (p->red*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB;
-      p->green=(unsigned int)
-        (p->green*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB;
-      p->blue=(unsigned int)
-        (p->blue*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB;
+      p->red=(Quantum) ((unsigned long)
+        (p->red*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
+      p->green=(Quantum) ((unsigned long)
+        (p->green*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
+      p->blue=(Quantum) ((unsigned long)
+        (p->blue*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
       p++;
     }
   }
@@ -1877,24 +1877,24 @@ Export void RaiseImage(Image *image,const RectangleInfo *raise_info,
   {
     for (x=0; x < (int) raise_info->width; x++)
     {
-      p->red=(unsigned int) (p->red*HighlightFactor+foreground*
-        (MaxRGB-HighlightFactor))/MaxRGB;
-      p->green=(unsigned int) (p->green*HighlightFactor+foreground*
-        (MaxRGB-HighlightFactor))/MaxRGB;
-      p->blue=(unsigned int) (p->blue*HighlightFactor+foreground*
-        (MaxRGB-HighlightFactor))/MaxRGB;
+      p->red=(Quantum) ((unsigned long)
+	(p->red*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
+      p->green=(Quantum) ((unsigned long)
+	(p->green*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
+      p->blue=(Quantum) ((unsigned long)
+	(p->blue*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
       p++;
     }
     for (x=0; x < (int) (image->columns-(raise_info->width << 1)); x++)
       p++;
     for (x=0; x < (int) raise_info->width; x++)
     {
-      p->red=(unsigned int)
-        (p->red*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB;
-      p->green=(unsigned int)
-        (p->green*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB;
-      p->blue=(unsigned int)
-        (p->blue*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB;
+      p->red=(Quantum) ((unsigned long)
+        (p->red*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
+      p->green=(Quantum) ((unsigned long)
+        (p->green*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
+      p->blue=(Quantum) ((unsigned long)
+        (p->blue*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
       p++;
     }
     if (QuantumTick(y,height))
@@ -1904,32 +1904,32 @@ Export void RaiseImage(Image *image,const RectangleInfo *raise_info,
   {
     for (x=0; x < (int) (raise_info->width-y); x++)
     {
-      p->red=(unsigned int) (p->red*HighlightFactor+foreground*
-        (MaxRGB-HighlightFactor))/MaxRGB;
-      p->green=(unsigned int) (p->green*HighlightFactor+foreground*
-        (MaxRGB-HighlightFactor))/MaxRGB;
-      p->blue=(unsigned int) (p->blue*HighlightFactor+foreground*
-        (MaxRGB-HighlightFactor))/MaxRGB;
+      p->red=(Quantum) ((unsigned long)
+	(p->red*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
+      p->green=(Quantum) ((unsigned long)
+	(p->green*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
+      p->blue=(Quantum) ((unsigned long)
+	(p->blue*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
       p++;
     }
     for (x=0; x < (int) (image->columns-((raise_info->width-y) << 1)); x++)
     {
-      p->red=(unsigned int)
-        (p->red*TroughFactor+background*(MaxRGB-TroughFactor))/MaxRGB;
-      p->green=(unsigned int)
-        (p->green*TroughFactor+background*(MaxRGB-TroughFactor))/MaxRGB;
-      p->blue=(unsigned int)
-        (p->blue*TroughFactor+background*(MaxRGB-TroughFactor))/MaxRGB;
+      p->red=(Quantum) ((unsigned long)
+        (p->red*TroughFactor+background*(MaxRGB-TroughFactor))/MaxRGB);
+      p->green=(Quantum) ((unsigned long)
+        (p->green*TroughFactor+background*(MaxRGB-TroughFactor))/MaxRGB);
+      p->blue=(Quantum) ((unsigned long)
+        (p->blue*TroughFactor+background*(MaxRGB-TroughFactor))/MaxRGB);
       p++;
     }
     for (x=0; x < (int) (raise_info->width-y); x++)
     {
-      p->red=(unsigned int)
-        (p->red*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB;
-      p->green=(unsigned int)
-        (p->green*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB;
-      p->blue=(unsigned int)
-        (p->blue*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB;
+      p->red=(Quantum) ((unsigned long)
+        (p->red*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
+      p->green=(Quantum) ((unsigned long)
+        (p->green*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
+      p->blue=(Quantum) ((unsigned long)
+        (p->blue*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
       p++;
     }
   }

@@ -3501,49 +3501,51 @@ Export void XGetPixelInfo(Display *display,const XVisualInfo *visual_info,
   /*
     Set highlight color.
   */
-  pixel_info->highlight_color.red=(unsigned int) (pixel_info->matte_color.red*
-    HighlightModulate+(MaxRGB-HighlightModulate)*65535L)/MaxRGB;
-  pixel_info->highlight_color.green=(unsigned int)
-    (pixel_info->matte_color.green*HighlightModulate+
-    (MaxRGB-HighlightModulate)*65535L)/MaxRGB;
-  pixel_info->highlight_color.blue=(unsigned int) (pixel_info->matte_color.blue*
-    HighlightModulate+(MaxRGB-HighlightModulate)*65535L)/MaxRGB;
+  pixel_info->highlight_color.red=((unsigned long)
+    (pixel_info->matte_color.red*HighlightModulate+(MaxRGB-HighlightModulate)*
+    65535L)/MaxRGB);
+  pixel_info->highlight_color.green=((unsigned long)
+    (pixel_info->matte_color.green*HighlightModulate+(MaxRGB-HighlightModulate)*
+    65535L)/MaxRGB);
+  pixel_info->highlight_color.blue=((unsigned long)
+    (pixel_info->matte_color.blue*HighlightModulate+(MaxRGB-HighlightModulate)*
+    65535L)/MaxRGB);
   pixel_info->highlight_color.pixel=
     XStandardPixel(map_info,pixel_info->highlight_color,16);
   pixel_info->highlight_color.flags=DoRed | DoGreen | DoBlue;
   /*
     Set shadow color.
   */
-  pixel_info->shadow_color.red=(unsigned int)
-    (pixel_info->matte_color.red*ShadowModulate)/MaxRGB;
-  pixel_info->shadow_color.green=(unsigned int)
-    (pixel_info->matte_color.green*ShadowModulate)/MaxRGB;
-  pixel_info->shadow_color.blue=(unsigned int)
-    (pixel_info->matte_color.blue*ShadowModulate)/MaxRGB;
+  pixel_info->shadow_color.red=((unsigned long)
+    (pixel_info->matte_color.red*ShadowModulate)/MaxRGB);
+  pixel_info->shadow_color.green=((unsigned long)
+    (pixel_info->matte_color.green*ShadowModulate)/MaxRGB);
+  pixel_info->shadow_color.blue=((unsigned long)
+    (pixel_info->matte_color.blue*ShadowModulate)/MaxRGB);
   pixel_info->shadow_color.pixel=
     XStandardPixel(map_info,pixel_info->shadow_color,16);
   pixel_info->shadow_color.flags=DoRed | DoGreen | DoBlue;
   /*
     Set depth color.
   */
-  pixel_info->depth_color.red=(unsigned int)
-    (pixel_info->matte_color.red*DepthModulate)/MaxRGB;
-  pixel_info->depth_color.green=(unsigned int)
-    (pixel_info->matte_color.green*DepthModulate)/MaxRGB;
-  pixel_info->depth_color.blue=(unsigned int)
-    (pixel_info->matte_color.blue*DepthModulate)/MaxRGB;
+  pixel_info->depth_color.red=((unsigned long)
+    (pixel_info->matte_color.red*DepthModulate)/MaxRGB);
+  pixel_info->depth_color.green=((unsigned long)
+    (pixel_info->matte_color.green*DepthModulate)/MaxRGB);
+  pixel_info->depth_color.blue=((unsigned long)
+    (pixel_info->matte_color.blue*DepthModulate)/MaxRGB);
   pixel_info->depth_color.pixel=
     XStandardPixel(map_info,pixel_info->depth_color,16);
   pixel_info->depth_color.flags=DoRed | DoGreen | DoBlue;
   /*
     Set trough color.
   */
-  pixel_info->trough_color.red=(unsigned int)
-    (pixel_info->matte_color.red*TroughModulate)/MaxRGB;
-  pixel_info->trough_color.green=(unsigned int)
-    (pixel_info->matte_color.green*TroughModulate)/MaxRGB;
-  pixel_info->trough_color.blue=(unsigned int)
-    (pixel_info->matte_color.blue*TroughModulate)/MaxRGB;
+  pixel_info->trough_color.red=((unsigned long)
+    (pixel_info->matte_color.red*TroughModulate)/MaxRGB);
+  pixel_info->trough_color.green=((unsigned long)
+    (pixel_info->matte_color.green*TroughModulate)/MaxRGB);
+  pixel_info->trough_color.blue=((unsigned long)
+    (pixel_info->matte_color.blue*TroughModulate)/MaxRGB);
   pixel_info->trough_color.pixel=
     XStandardPixel(map_info,pixel_info->trough_color,16);
   pixel_info->trough_color.flags=DoRed | DoGreen | DoBlue;
@@ -8334,8 +8336,8 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
         {
           color.blue=(unsigned short) 0;
           if (map_info->blue_max != 0)
-            color.blue=(unsigned int)
-              (((i % map_info->green_mult)*65535L)/map_info->blue_max);
+            color.blue=((unsigned long)
+              (((i % map_info->green_mult)*65535L)/map_info->blue_max));
           color.green=color.blue;
           color.red=color.blue;
           color.pixel=XStandardPixel(map_info,color,16);
@@ -8346,16 +8348,16 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
         {
           color.red=(unsigned short) 0;
           if (map_info->red_max != 0)
-            color.red=(unsigned int)
-              (((i/map_info->red_mult)*65535L)/map_info->red_max);
+            color.red=((unsigned long)
+              (((i/map_info->red_mult)*65535L)/map_info->red_max));
           color.green=(unsigned int) 0;
           if (map_info->green_max != 0)
-            color.green=(unsigned int) ((((i/map_info->green_mult) %
-              (map_info->green_max+1))*65535L)/map_info->green_max);
+            color.green=((unsigned long) ((((i/map_info->green_mult) %
+              (map_info->green_max+1))*65535L)/map_info->green_max));
           color.blue=(unsigned short) 0;
           if (map_info->blue_max != 0)
-            color.blue=(unsigned int)
-              (((i % map_info->green_mult)*65535L)/map_info->blue_max);
+            color.blue=((unsigned long)
+              (((i % map_info->green_mult)*65535L)/map_info->blue_max));
           color.pixel=XStandardPixel(map_info,color,16);
           *p++=color;
         }
@@ -8851,10 +8853,10 @@ Export unsigned int XQueryColorDatabase(const char *target,XColor *color)
             } while (*target != '\0');
           }
       n<<=2;
-      color->red=(unsigned int) (65535L*red)/((1 << n)-1);
-      color->green=(unsigned int) (65535L*green)/((1 << n)-1);
-      color->blue=(unsigned int) (65535L*blue)/((1 << n)-1);
-      color->pixel=(unsigned int) (65535L*index)/((1 << n)-1);
+      color->red=((unsigned long) (65535L*red)/((1 << n)-1));
+      color->green=((unsigned long) (65535L*green)/((1 << n)-1));
+      color->blue=((unsigned long) (65535L*blue)/((1 << n)-1));
+      color->pixel=((unsigned long) (65535L*index)/((1 << n)-1));
       return(True);
     }
   if (database == (FILE *) NULL)

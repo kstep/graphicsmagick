@@ -12,28 +12,28 @@ extern "C" {
 /*
   Color quantum is [0..65535].
 */
-#define DownScale(quantum)  (((unsigned int) (quantum)) >> 8)
+#define DownScale(quantum)  (((unsigned long) (quantum)) >> 8)
 #define HexColorFormat "#%04x%04x%04x"
 #define MaxRGB  65535L
 #define MaxRunlength  65535L
 #define QuantumDepth  16
-#define UpScale(quantum)  (((unsigned int) (quantum))*257)
-#define XDownScale(color)  ((unsigned int) (color))
-#define XUpScale(color)  ((unsigned int) (color))
+#define UpScale(quantum)  (((unsigned long) (quantum))*257)
+#define XDownScale(color)  ((unsigned long) (color))
+#define XUpScale(color)  ((unsigned long) (color))
 
 typedef unsigned short Quantum;
 #else
 /*
   Color quantum is [0..255].
 */
-#define DownScale(quantum)  ((unsigned int) (quantum))
+#define DownScale(quantum)  ((unsigned long) (quantum))
 #define HexColorFormat "#%02x%02x%02x"
 #define MaxRGB  255
 #define MaxRunlength  255
 #define QuantumDepth  8
-#define UpScale(quantum)  ((unsigned int) (quantum))
-#define XDownScale(color)  (((unsigned int) (color)) >> 8)
-#define XUpScale(color)  (((unsigned int) (color))*257)
+#define UpScale(quantum)  ((unsigned long) (quantum))
+#define XDownScale(color)  (((unsigned long) (color)) >> 8)
+#define XUpScale(color)  (((unsigned long) (color))*257)
 
 typedef unsigned char Quantum;
 #endif
