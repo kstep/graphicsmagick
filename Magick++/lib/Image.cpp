@@ -379,14 +379,12 @@ void Magick::Image::channel ( ChannelType channel_ )
 // Charcoal-effect image
 void Magick::Image::charcoal( const double radius_, const double sigma_ )
 {
-  quantizeDither( true );
-  quantizeColorSpace( GRAYColorspace );
-  quantize( );
-  edge( radius_ );
-  blur( radius_, sigma_ );
-  normalize( );
-  negate( true );
-  quantize( );
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickLib::Image* newImage =
+    CharcoalImage( image(), radius_, sigma_, &exceptionInfo );
+  replaceImage( newImage );
+  throwException( exceptionInfo );
 }
 
 // Chop image

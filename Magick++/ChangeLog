@@ -1,5 +1,9 @@
 2002-02-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* lib/Image.cpp (charcoal): Replace Magick++'s charcoal effect
+ 	with the output of ImageMagick's CharcoalImage function in order
+ 	to ensure consistency.
+
 	* lib/Magick++/CoderInfo.h (MatchType): Scope the MatchType
  	enumeration to the CoderInfo class so these enumeration names can
  	be re-used elsewhere without conflict.  This results in a minor

@@ -353,6 +353,7 @@ namespace Magick
   using MagickLib::CacheWarning;
   using MagickLib::ChannelImage;
   using MagickLib::ChopImage;
+  using MagickLib::CharcoalImage;
   using MagickLib::CloneDrawInfo;
   using MagickLib::CloneImage;
   using MagickLib::CloneImageInfo;
