@@ -497,7 +497,7 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
               if (image_info->stroke.opacity != TransparentOpacity)
                 if (*p < 255)
                   *q=image_info->stroke;
-              q->opacity=UpScale(DownScale(MaxRGB)-(*p));
+              q->opacity=MaxRGB-(int) UpScale(*p);
             }
           p++;
           q++;

@@ -1054,7 +1054,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
             *(q+offset)=DownScale(p->green);
             *(q+offset*2)=DownScale(p->blue);
             if (image->matte)
-              *(q+offset*3)=DownScale(MaxRGB-p->opacity);
+              *(q+offset*3)=MaxRGB-DownScale(p->opacity);
             p++;
             q++;
           }

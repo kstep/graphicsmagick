@@ -894,7 +894,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                         pixel.blue=UpScale(ReadByte(image));
                         if (image->matte ||
                             (image->colorspace == CMYKColorspace))
-                          pixel.opacity=UpScale(MaxRGB-ReadByte(image));
+                          pixel.opacity=MaxRGB-UpScale(ReadByte(image));
                       }
                     else
                       {
@@ -1452,7 +1452,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
                         *q++=DownScale(pixel.blue);
                         if (image->matte ||
                             (image->colorspace == CMYKColorspace))
-                          *q++=DownScale(MaxRGB-pixel.opacity);
+                          *q++=MaxRGB-DownScale(pixel.opacity);
                       }
                     else
                       {

@@ -1086,12 +1086,19 @@ MagickExport unsigned int CompositeImage(Image *image,
 {
   double
     alpha,
+    amount,
     blue,
+    brightness,
     green,
+    hue,
     midpoint,
     opacity,
+    percent_brightness,
+    percent_saturation,
     red,
-    shade;
+    saturation,
+    shade,
+    threshold;
 
   int
     y;
@@ -1110,15 +1117,6 @@ MagickExport unsigned int CompositeImage(Image *image,
     *p,
     *q;
 
-  double
-    amount,
-    saturation_scale,
-    brightness_scale,
-    brightness,
-    hue,
-    saturation,
-    threshold;
-
   /*
     Prepare composite image.
   */
@@ -1130,7 +1128,6 @@ MagickExport unsigned int CompositeImage(Image *image,
   red=0.0;
   green=0.0;
   blue=0.0;
-  midpoint=0x80;
   switch (compose)
   {
     case XorCompositeOp:
@@ -1236,8 +1233,8 @@ MagickExport unsigned int CompositeImage(Image *image,
       image->storage_class=DirectClass;
       composite_image->storage_class=DirectClass;
       midpoint=0x80;
-      saturation_scale=50.0;
-      brightness_scale=50.0;
+      percent_saturation=50.0;
+      percent_brightness=50.0;
       if (composite_image->geometry != (char *) NULL)
         {
           int
@@ -1247,12 +1244,12 @@ MagickExport unsigned int CompositeImage(Image *image,
             Determine the brightness and saturation scale.
           */
           count=sscanf(composite_image->geometry,"%lfx%lf\n",
-            &brightness_scale,&saturation_scale);
+            &percent_brightness,&percent_saturation);
           if (count == 1)
-            saturation_scale=brightness_scale;
+            percent_saturation=percent_brightness;
         }
-      brightness_scale/=100.0;
-      saturation_scale/=100.0;
+      percent_brightness/=100.0;
+      percent_saturation/=100.0;
       break;
     }
     case ThresholdCompositeOp:
@@ -1363,7 +1360,7 @@ MagickExport unsigned int CompositeImage(Image *image,
       if ((x-x_offset) >= composite_image->columns)
         break;
       p=GetImagePixels(composite_image,x-x_offset,y-y_offset,1,1);
-      if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      if (p == (PixelPacket *) NULL)
         break;
       composite_indexes=GetIndexes(composite_image);
       opacity=q->opacity;
@@ -1389,49 +1386,56 @@ MagickExport unsigned int CompositeImage(Image *image,
               opacity=p->opacity;
               break;
             }
-          red=alpha*(p->red*(MaxRGB-p->opacity)+q->red*p->opacity);
-          green=alpha*(p->green*(MaxRGB-p->opacity)+q->green*p->opacity);
-          blue=alpha*(p->blue*(MaxRGB-p->opacity)+q->blue*p->opacity);
+          red=alpha*(unsigned long)
+            (p->red*(MaxRGB-p->opacity)+q->red*p->opacity);
+          green=alpha*(unsigned long)
+            (p->green*(MaxRGB-p->opacity)+q->green*p->opacity);
+          blue=alpha*(unsigned long)
+            (p->blue*(MaxRGB-p->opacity)+q->blue*p->opacity);
           if (composite_image->matte)
-            opacity=alpha*(p->opacity*(MaxRGB-p->opacity)+
-              q->opacity*p->opacity);
+            opacity=alpha*(unsigned long)
+              (p->opacity*(MaxRGB-p->opacity)+q->opacity*p->opacity);
           break;
         }
         case InCompositeOp:
         {
-          red=alpha*(p->red*(MaxRGB-q->opacity));
-          green=alpha*(p->green*(MaxRGB-q->opacity));
-          blue=alpha*(p->blue*(MaxRGB-q->opacity));
+          red=alpha*(unsigned long) (p->red*(MaxRGB-q->opacity));
+          green=alpha*(unsigned long) (p->green*(MaxRGB-q->opacity));
+          blue=alpha*(unsigned long) (p->blue*(MaxRGB-q->opacity));
           if (composite_image->matte)
-            opacity=alpha*(p->opacity*(MaxRGB-q->opacity));
+            opacity=alpha*(unsigned long) (p->opacity*(MaxRGB-q->opacity));
           break;
         }
         case OutCompositeOp:
         {
-          red=alpha*(p->red*q->opacity);
-          green=alpha*(p->green*q->opacity);
-          blue=alpha*(p->blue*q->opacity);
+          red=alpha*(unsigned long) (p->red*q->opacity);
+          green=alpha*(unsigned long) (p->green*q->opacity);
+          blue=alpha*(unsigned long) (p->blue*q->opacity);
           if (composite_image->matte)
-            opacity=alpha*(p->opacity*q->opacity);
+            opacity=alpha*(unsigned long) (p->opacity*q->opacity);
           break;
         }
         case AtopCompositeOp:
         {
-          red=alpha*(p->red*(MaxRGB-q->opacity)+q->red*p->opacity);
-          green=alpha*(p->green*(MaxRGB-q->opacity)+q->green*p->opacity);
-          blue=alpha*(p->blue*(MaxRGB-q->opacity)+q->blue*p->opacity);
+          red=alpha*(unsigned long)
+            (p->red*(MaxRGB-q->opacity)+q->red*p->opacity);
+          green=alpha*(unsigned long)
+            (p->green*(MaxRGB-q->opacity)+q->green*p->opacity);
+          blue=alpha*(unsigned long)
+            (p->blue*(MaxRGB-q->opacity)+q->blue*p->opacity);
           if (composite_image->matte)
-            opacity=alpha*(p->opacity*(MaxRGB-q->opacity)+
+            opacity=alpha*(unsigned long) (p->opacity*(MaxRGB-q->opacity)+
               q->opacity*p->opacity);
           break;
         }
         case XorCompositeOp:
         {
-          red=alpha*(p->red*q->opacity+q->red*p->opacity);
-          green=alpha*(p->green*q->opacity+q->green*p->opacity);
-          blue=alpha*(p->blue*q->opacity+q->blue*p->opacity);
+          red=alpha*(unsigned long) (p->red*q->opacity+q->red*p->opacity);
+          green=alpha*(unsigned long) (p->green*q->opacity+q->green*p->opacity);
+          blue=alpha*(unsigned long) (p->blue*q->opacity+q->blue*p->opacity);
           if (composite_image->matte)
-            opacity=alpha*(p->opacity*q->opacity+q->opacity*p->opacity);
+            opacity=alpha*(unsigned long)
+              (p->opacity*q->opacity+q->opacity*p->opacity);
           break;
         }
         case PlusCompositeOp:
@@ -1501,10 +1505,10 @@ MagickExport unsigned int CompositeImage(Image *image,
         case BumpmapCompositeOp:
         {
           shade=Intensity(*p);
-          red=alpha*(q->red*shade);
-          green=alpha*(q->green*shade);
-          blue=alpha*(q->blue*shade);
-          opacity=alpha*(q->opacity*shade);
+          red=alpha*(unsigned long) (q->red*shade);
+          green=alpha*(unsigned long) (q->green*shade);
+          blue=alpha*(unsigned long) (q->blue*shade);
+          opacity=alpha*(unsigned long) (q->opacity*shade);
           break;
         }
         case ReplaceCompositeOp:
@@ -1547,9 +1551,12 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
         case BlendCompositeOp:
         {
-          red=alpha*(p->red*p->opacity+q->red*(MaxRGB-p->opacity));
-          green=alpha*(p->green*p->opacity+q->green*(MaxRGB-p->opacity));
-          blue=alpha*(p->blue*p->opacity+q->blue*(MaxRGB-p->opacity));
+          red=alpha*(unsigned long)
+            (p->red*p->opacity+q->red*(MaxRGB-p->opacity));
+          green=alpha*(unsigned long)
+            (p->green*p->opacity+q->green*(MaxRGB-p->opacity));
+          blue=alpha*(unsigned long)
+            (p->blue*p->opacity+q->blue*(MaxRGB-p->opacity));
           opacity=OpaqueOpacity;
           break;
         }
@@ -1598,7 +1605,7 @@ MagickExport unsigned int CompositeImage(Image *image,
               color=(*q);
               TransformHSL(color.red,color.green,color.blue,&hue,&saturation,
                 &brightness);
-              percent_brightness=(brightness_scale*offset)/midpoint;
+              percent_brightness=(percent_brightness*offset)/midpoint;
               brightness+=percent_brightness;
               if (brightness < 0.0)
                 brightness=0.0;

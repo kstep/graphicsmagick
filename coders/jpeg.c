@@ -1308,10 +1308,10 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
             /*
               Convert DirectClass packets to contiguous CMYK scanlines.
             */
-            *q++=(JSAMPLE) DownScale(MaxRGB-p->red);
-            *q++=(JSAMPLE) DownScale(MaxRGB-p->green);
-            *q++=(JSAMPLE) DownScale(MaxRGB-p->blue);
-            *q++=(JSAMPLE) DownScale(MaxRGB-p->opacity);
+            *q++=(JSAMPLE) MaxRGB-DownScale(p->red);
+            *q++=(JSAMPLE) MaxRGB-DownScale(p->green);
+            *q++=(JSAMPLE) MaxRGB-DownScale(p->blue);
+            *q++=(JSAMPLE) MaxRGB-DownScale(p->opacity);
             p++;
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);

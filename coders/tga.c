@@ -367,7 +367,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               pixel.green=UpScale(ReadByte(image));
               pixel.red=UpScale(ReadByte(image));
               if (tga_info.bits_per_pixel == 32)
-                pixel.opacity=UpScale(MaxRGB-ReadByte(image));
+                pixel.opacity=MaxRGB-UpScale(ReadByte(image));
               break;
             }
           }

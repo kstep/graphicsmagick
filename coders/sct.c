@@ -198,7 +198,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      q->red=UpScale(MaxRGB-ReadByte(image));
+      q->red=MaxRGB-UpScale(ReadByte(image));
       q++;
     }
     if ((image->columns % 2) != 0)
@@ -208,7 +208,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      q->green=UpScale(MaxRGB-ReadByte(image));
+      q->green=MaxRGB-UpScale(ReadByte(image));
       q++;
     }
     if ((image->columns % 2) != 0)
@@ -218,7 +218,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      q->blue=UpScale(MaxRGB-ReadByte(image));
+      q->blue=MaxRGB-UpScale(ReadByte(image));
       q++;
     }
     if ((image->columns % 2) != 0)
