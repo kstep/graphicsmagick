@@ -226,7 +226,7 @@ ModuleExport void RegisterCAPTIONImage(void)
     *entry;
 
   entry=SetMagickInfo("CAPTION");
-  entry->decoder=ReadCAPTIONImage;
+  entry->decoder=(DecoderHandler) ReadCAPTIONImage;
   entry->adjoin=False;
   entry->description=AcquireString("Image caption");
   entry->module=AcquireString("CAPTION");

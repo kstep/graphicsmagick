@@ -3494,8 +3494,8 @@ ModuleExport void RegisterDCMImage(void)
     *entry;
 
   entry=SetMagickInfo("DCM");
-  entry->decoder=ReadDCMImage;
-  entry->magick=IsDCM;
+  entry->decoder=(DecoderHandler) ReadDCMImage;
+  entry->magick=(MagickHandler) IsDCM;
   entry->adjoin=False;
   entry->description=
     AcquireString("Digital Imaging and Communications in Medicine image");

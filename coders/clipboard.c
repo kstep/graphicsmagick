@@ -306,8 +306,8 @@ ModuleExport void RegisterCLIPBOARDImage(void)
     *entry;
 
   entry=SetMagickInfo("CLIPBOARD");
-  entry->decoder=ReadCLIPBOARDImage;
-  entry->encoder=WriteCLIPBOARDImage;
+  entry->decoder=(DecoderHandler) ReadCLIPBOARDImage;
+  entry->encoder=(EncoderHandler) WriteCLIPBOARDImage;
   entry->adjoin = False;
   entry->description=AcquireString("the system clipboard");
   entry->module=AcquireString("CLIPBOARD");

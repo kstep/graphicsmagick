@@ -379,7 +379,7 @@ static unsigned int IsDIB(const unsigned char *magick,const size_t length)
 {
   if (length < 2)
     return(False);
-  if( (*magick==40) && (*(magick+1)==0))
+  if( (*magick=(MagickHandler) =40) && (*(magick+1)==0))
     return(True);
   return(False);
 }
@@ -850,9 +850,9 @@ ModuleExport void RegisterDIBImage(void)
     *entry;
 
   entry=SetMagickInfo("DIB");
-  entry->decoder=ReadDIBImage;
-  entry->encoder=WriteDIBImage;
-  entry->magick=IsDIB;
+  entry->decoder=(DecoderHandler) ReadDIBImage;
+  entry->encoder=(EncoderHandler) WriteDIBImage;
+  entry->magick=(MagickHandler) IsDIB;
   entry->adjoin=False;
   entry->stealth=True;
   entry->description=

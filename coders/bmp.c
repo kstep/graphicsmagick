@@ -1266,7 +1266,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    *magick='\0';
+    *magick=(MagickHandler) '\0';
     if (bmp_info.ba_offset != 0)
       (void) SeekBlob(image,bmp_info.ba_offset,SEEK_SET);
     (void) ReadBlob(image,2,(char *) magick);
@@ -1325,23 +1325,23 @@ ModuleExport void RegisterBMPImage(void)
     *entry;
 
   entry=SetMagickInfo("BMP");
-  entry->decoder=ReadBMPImage;
-  entry->encoder=WriteBMPImage;
-  entry->magick=IsBMP;
+  entry->decoder=(DecoderHandler) ReadBMPImage;
+  entry->encoder=(EncoderHandler) WriteBMPImage;
+  entry->magick=(MagickHandler) IsBMP;
   entry->description=AcquireString("Microsoft Windows bitmap image");
   entry->module=AcquireString("BMP");
   entry->adjoin=False;
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("BMP2");
-  entry->encoder=WriteBMPImage;
-  entry->magick=IsBMP;
+  entry->encoder=(EncoderHandler) WriteBMPImage;
+  entry->magick=(MagickHandler) IsBMP;
   entry->description=AcquireString("Microsoft Windows bitmap image v2");
   entry->module=AcquireString("BMP2");
   entry->adjoin=False;
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("BMP3");
-  entry->encoder=WriteBMPImage;
-  entry->magick=IsBMP;
+  entry->encoder=(EncoderHandler) WriteBMPImage;
+  entry->magick=(MagickHandler) IsBMP;
   entry->description=AcquireString("Microsoft Windows bitmap image v3");
   entry->module=AcquireString("BMP3");
   entry->adjoin=False;

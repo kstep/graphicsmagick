@@ -66,7 +66,7 @@
   Declare type map.
 */
 static char
-  *TypeMap =
+  *TypeMap = (char *)
     "<?xml version=\"1.0\"?>"
     "<typemap>"
     "  <type stealth=\"True\" />"
@@ -302,10 +302,14 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   static Fontmap
     fontmap[] =
     {
-      { "fixed", "courier" }, { "modern","courier" },
-      { "monotype corsiva", "courier" }, { "news gothic", "helvetica" },
-      { "system", "courier" }, { "terminal", "courier" },
-      { "wingdings", "symbol" }, { (char *) NULL, (char *) NULL }
+      { (char *) "fixed", (char *) "courier" },
+      { (char *) "modern",(char *) "courier" },
+      { (char *) "monotype corsiva", (char *) "courier" },
+      { (char *) "news gothic", (char *) "helvetica" },
+      { (char *) "system", (char *) "courier" },
+      { (char *) "terminal", (char *) "courier" },
+      { (char *) "wingdings", (char *) "symbol" },
+      { (char *) NULL, (char *) NULL }
     };
 
   unsigned long

@@ -481,16 +481,16 @@ ModuleExport void RegisterCMYKImage(void)
     *entry;
 
   entry=SetMagickInfo("CMYK");
-  entry->decoder=ReadCMYKImage;
-  entry->encoder=WriteCMYKImage;
+  entry->decoder=(DecoderHandler) ReadCMYKImage;
+  entry->encoder=(EncoderHandler) WriteCMYKImage;
   entry->raw=True;
   entry->description=
     AcquireString("Raw cyan, magenta, yellow, and black samples");
   entry->module=AcquireString("CMYK");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("CMYKA");
-  entry->decoder=ReadCMYKImage;
-  entry->encoder=WriteCMYKImage;
+  entry->decoder=(DecoderHandler) ReadCMYKImage;
+  entry->encoder=(EncoderHandler) WriteCMYKImage;
   entry->raw=True;
   entry->description=
     AcquireString("Raw cyan, magenta, yellow, black, and opacity samples");

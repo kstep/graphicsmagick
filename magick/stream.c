@@ -64,20 +64,38 @@
 typedef CacheInfo StreamInfo;
 
 /*
-  Declare pixel stream interfaces.
+  Declare pixel cache interfaces.
 */
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 static const PixelPacket
   *AcquirePixelStream(const Image *,const long,const long,const unsigned long,
     const unsigned long,ExceptionInfo *);
 
+static IndexPacket
+  *GetIndexesFromStream(const Image *);
+
 static PixelPacket
+  AcquireOnePixelFromStream(const Image *,const long,const long,
+    ExceptionInfo *),
+  GetOnePixelFromStream(Image *,const long,const long),
   *GetPixelStream(Image *,const long,const long,const unsigned long,
     const unsigned long),
+  *GetPixelsFromStream(const Image *),
   *SetPixelStream(Image *,const long,const long,const unsigned long,
     const unsigned long);
 
 static unsigned int
   SyncPixelStream(Image *);
+
+static void
+  DestroyPixelStream(Image *);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
