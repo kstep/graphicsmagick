@@ -122,7 +122,6 @@ typedef struct _SVGInfo
 
   char
     *size,
-    *page,
     *title,
     *comment;
 
@@ -1970,48 +1969,17 @@ static void SVGStartElement(void *context,const xmlChar *name,
           (char *) svg_info->document->encoding);
       if (attributes != (const xmlChar **) NULL)
         {
-          char
-            *geometry,
-            *p;
-
-          RectangleInfo
-            page;
-
           if ((svg_info->view_box.width == 0.0) ||
               (svg_info->view_box.height == 0.0))
             svg_info->view_box=svg_info->bounds;
-          SetGeometry(svg_info->image,&page);
-          page.width=(unsigned long) svg_info->bounds.width;
-          page.height=(unsigned long) svg_info->bounds.height;
-          geometry=(char *) NULL;
-          if (svg_info->page != (char *) NULL)
-            geometry=GetPageGeometry(svg_info->page);
-          else
-            if (svg_info->size != (char *) NULL)
-              geometry=GetPageGeometry(svg_info->size);
-          if (geometry != (char *) NULL)
-            {
-              p=strchr(geometry,'>');
-              if (p != (char *) NULL)
-                *p='\0';
-              (void) GetMagickGeometry(geometry,&page.x,&page.y,
-                &page.width,&page.height);
-              LiberateMemory((void **) &geometry);
-            }
-          if (svg_info->affine.sx != 1.0)
-            page.width=(unsigned long)
-              ceil(ExpandAffine(&svg_info->affine)*page.width-0.5);
-          if (svg_info->affine.sy != 0.0)
-            page.height=(unsigned long)
-              ceil(ExpandAffine(&svg_info->affine)*page.height-0.5);
           (void) fprintf(svg_info->file,"viewbox 0 0 %g %g\n",
             svg_info->view_box.width,svg_info->view_box.height);
+          svg_info->width=svg_info->bounds.width;
+          svg_info->height=svg_info->bounds.height;
           (void) fprintf(svg_info->file,"affine %g 0 0 %g %g %g\n",
-            (double) page.width/svg_info->view_box.width,
-            (double) page.height/svg_info->view_box.height,
+            (double) svg_info->width/svg_info->view_box.width,
+            (double) svg_info->height/svg_info->view_box.height,
             0.0-svg_info->view_box.x,0.0-svg_info->view_box.y);
-          svg_info->width=page.width;
-          svg_info->height=page.height;
         }
     }
   LogMagickEvent(CoderEvent,"  )");
@@ -2625,8 +2593,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   svg_info.bounds.height=image->rows;
   if (image_info->size != (char *) NULL)
     (void) CloneString(&svg_info.size,image_info->size);
-  if (image_info->page != (char *) NULL)
-    (void) CloneString(&svg_info.page,image_info->page);
   LogMagickEvent(CoderEvent,"begin SAX");
   (void) xmlSubstituteEntitiesDefault(1);
   SAXHandler=(&SAXModules);
