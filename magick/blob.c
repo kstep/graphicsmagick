@@ -2243,7 +2243,7 @@ MagickExport int SyncBlob(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S y n c B l o b T o I m a g e                                             %
++   S y n c B l o b T o I m a g e                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %

@@ -403,8 +403,6 @@ MagickExport Image *GetNextImageInList(const Image *images)
   if (images == (Image *) NULL)
     return((Image *) NULL);
   assert(images->signature == MagickSignature);
-  if (images->next == (Image *) NULL)
-    return((Image *) NULL);
   return(images->next);
 }
 
@@ -436,8 +434,6 @@ MagickExport Image *GetPreviousImageInList(const Image *images)
   if (images == (Image *) NULL)
     return((Image *) NULL);
   assert(images->signature == MagickSignature);
-  if (images->previous == (Image *) NULL)
-    return((Image *) NULL);
   return(images->previous);
 }
 
