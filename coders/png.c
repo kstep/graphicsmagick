@@ -510,7 +510,6 @@ static unsigned int CompressColormapTransFirst(Image *image)
     *marker,
     have_transparency;
 
-
   /*
     Determine if colormap can be compressed.
   */
@@ -1615,7 +1614,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     *q;
 
   unsigned long
-    length;
+    length,
+    row_offset;
 
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),
       "  enter ReadOnePNGImage()");
@@ -2037,6 +2037,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         png_set_sBIT(ping,ping_info,&mng_info->global_sbit);
     }
 #endif
+  num_passes=png_set_interlace_handling(ping);
   png_read_update_info(ping,ping_info);
   /*
     Initialize image structure.
@@ -2153,8 +2154,12 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "    Reading PNG IDAT chunk(s)");
-  png_pixels=(unsigned char *)
-    AcquireMemory(ping_info->rowbytes*sizeof(Quantum));
+  if (num_passes > 1)
+    png_pixels=(unsigned char *)
+      AcquireMemory(ping_info->rowbytes*image->rows);
+  else
+    png_pixels=(unsigned char *)
+      AcquireMemory(ping_info->rowbytes);
   if (png_pixels == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
 
@@ -2180,7 +2185,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   /*
     Convert PNG pixels to pixel packets.
   */
-  num_passes=png_set_interlace_handling(ping);
   if (image->storage_class == DirectClass)
     for (pass=0; pass < num_passes; pass++)
     {
@@ -2199,7 +2203,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
       for (y=0; y < (long) image->rows; y++)
       {
-        png_read_row(ping,png_pixels,NULL);
+        if (num_passes > 1)
+          row_offset=ping_info->rowbytes*y;
+        else
+          row_offset=0;
+        png_read_row(ping,png_pixels+row_offset,NULL);
         if (!GetImagePixels(image,0,y,image->columns,1))
           break;
 #if (QuantumDepth == 8)
@@ -2209,7 +2217,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               *p,
               *r;
 
-            r=png_pixels;
+            r=png_pixels+row_offset;
             p=r;
             if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
               {
@@ -2275,46 +2283,46 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           }
         if (depth == 8 && ping_info->color_type == PNG_COLOR_TYPE_GRAY)
           (void) PushImagePixels(image,(QuantumType) GrayQuantum,
-            png_pixels);
+            png_pixels+row_offset);
         if (ping_info->color_type == PNG_COLOR_TYPE_GRAY ||
             ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
           {
             image->depth=8;
             (void) PushImagePixels(image,(QuantumType) GrayAlphaQuantum,
-              png_pixels);
+              png_pixels+row_offset);
             image->depth=depth;
           }
         else if (depth == 8 && ping_info->color_type == PNG_COLOR_TYPE_RGB)
            (void) PushImagePixels(image,(QuantumType) RGBQuantum,
-              png_pixels);
+              png_pixels+row_offset);
         else if (ping_info->color_type == PNG_COLOR_TYPE_RGB ||
               ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
           {
             image->depth=8;
             (void) PushImagePixels(image,(QuantumType) RGBAQuantum,
-              png_pixels);
+              png_pixels+row_offset);
             image->depth=depth;
           }
         else if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
             (void) PushImagePixels(image,(QuantumType) IndexQuantum,
-              png_pixels);
+              png_pixels+row_offset);
 #else /* (QuantumDepth != 8) */
 
         if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
           (void) PushImagePixels(image,(QuantumType) GrayQuantum,
-              png_pixels);
+              png_pixels+row_offset);
         else if (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
           (void) PushImagePixels(image,(QuantumType) GrayAlphaQuantum,
-              png_pixels);
+              png_pixels+row_offset);
         else if (ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
           (void) PushImagePixels(image,(QuantumType) RGBAQuantum,
-              png_pixels);
+              png_pixels+row_offset);
         else if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
           (void) PushImagePixels(image,(QuantumType) IndexQuantum,
-              png_pixels);
+              png_pixels+row_offset);
         else
           (void) PushImagePixels(image,(QuantumType) RGBQuantum,
-              png_pixels);
+              png_pixels+row_offset);
 #endif
         if (!SyncImagePixels(image))
           break;
@@ -2342,12 +2350,16 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
       for (y=0; y < (long) image->rows; y++)
       {
-        png_read_row(ping,png_pixels,NULL);
+        if (num_passes > 1)
+          row_offset=ping_info->rowbytes*y;
+        else
+          row_offset=0;
+        png_read_row(ping,png_pixels+row_offset,NULL);
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
-        p=png_pixels;
+        p=png_pixels+row_offset;
         r=quantum_scanline;
         switch (ping_info->bit_depth)
         {
@@ -2871,6 +2883,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
     length;
 
   jng_alpha_compression_method=0;
+  jng_alpha_sample_depth=8;
   jng_color_type=0;
   jng_height=0;
   jng_width=0;
@@ -6928,7 +6941,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
         else
           rowbytes*=(image->matte ? 8 : 6);
       }
-  png_pixels=(unsigned char *) AcquireMemory(rowbytes*sizeof(Quantum));
+  png_pixels=(unsigned char *) AcquireMemory(rowbytes);
   if (png_pixels == (unsigned char *) NULL)
     ThrowWriterException((ExceptionType) ResourceLimitError,
       "MemoryAllocationFailed",image);

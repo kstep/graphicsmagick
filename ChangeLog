@@ -1,3 +1,8 @@
+2003-02-27  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* Fixed bug with reading interlaced PNG images, introduced
+	yesterday.
+
 2003-02-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Use definitions from version.sh to drive
