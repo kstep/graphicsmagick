@@ -1047,8 +1047,8 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
   */
   assert(image != (Image *) NULL);
   assert(composite_image != (Image *) NULL);
-  if (((x_offset+(int) image->columns) < 0) ||
-      ((y_offset+(int) image->rows) < 0) ||
+  if (((x_offset+(int) composite_image->columns) < 0) ||
+      ((y_offset+(int) composite_image->rows) < 0) ||
       (x_offset > (int) image->columns) || (y_offset > (int) image->rows))
     {
       MagickWarning(ResourceLimitWarning,"Unable to composite image",
