@@ -1030,7 +1030,6 @@ MagickExport unsigned int OpenCache(Image *image)
       threshold=(double) sysconf(_SC_PAGESIZE)*
         sysconf(_SC_PHYS_PAGES)*4.0/1048576.0;
 #endif
-printf("%d\n",(int) threshold);
       if (getenv("MAGICK_CACHE_THRESHOLD") != (char *) NULL)
         threshold=atoi(getenv("MAGICK_CACHE_THRESHOLD"));
       SetCacheThreshold(threshold);
