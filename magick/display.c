@@ -9961,13 +9961,13 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
     (void) XMagickCommand(display,resource_info,windows,ApplyCommand,image);
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
-  (*image)->border_color.red=
+  (*image)->background_color.red=
     ScaleShortToQuantum(windows->pixel_info->pen_colors[pen_id].red);
-  (*image)->border_color.green=
+  (*image)->background_color.green=
     ScaleShortToQuantum(windows->pixel_info->pen_colors[pen_id].green);
-  (*image)->border_color.blue=
+  (*image)->background_color.blue=
     ScaleShortToQuantum(windows->pixel_info->pen_colors[pen_id].blue);
-  (*image)->border_color.opacity=TransparentOpacity;
+  (*image)->background_color.opacity=TransparentOpacity;
   rotate_image=RotateImage(*image,degrees,&(*image)->exception);
   XSetCursorState(display,windows,False);
   if (rotate_image == (Image *) NULL)
