@@ -139,6 +139,9 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   int
     y;
 
+  off_t
+    offset;
+
   register int
     i,
     x;
@@ -167,11 +170,12 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=ReadBlob(image,4,(char *) magick);
   if ((status == False) || (LocaleNCompare((char *) magick,"SDPX",4) != 0))
     ThrowReaderException(CorruptImageWarning,"Not a DPX image file",image);
-  for (i=0; i < 768; i++)
+  offset=ReadBlobMSBLong(image);
+  for (i=0; i < 764; i++)
     (void) ReadBlobByte(image);
   width=ReadBlobMSBLong(image);
   height=ReadBlobMSBLong(image);
-  for (i=0; i < 7412; i++)
+  for (i=0; i < (offset-780); i++)
     (void) ReadBlobByte(image);
   /*
     Initialize image structure.
