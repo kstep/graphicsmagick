@@ -120,6 +120,7 @@ typedef struct _CubeInfo
   Nodes
     *node_queue;
 } CubeInfo;
+
 /*
   Static declarations.
 */

@@ -55,6 +55,9 @@
 #include "magick.h"
 #include "defines.h"
 
+static SemaphoreInfo
+  *constitute_semaphore = (SemaphoreInfo *) NULL;
+
 /*
   Forward declarations.
 */
@@ -1755,6 +1758,21 @@ MagickExport unsigned int PushImagePixels(Image *image,
 %
 %
 */
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
+static void DestroyConstituteInfo(void)
+{
+  AcquireSemaphore(&constitute_semaphore,(void (*)(void)) NULL);
+  DestroySemaphore(constitute_semaphore);
+}
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
+
 MagickExport Image *ReadImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -1799,8 +1817,12 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       (magick_info->decoder !=
         (Image *(*)(const ImageInfo *,ExceptionInfo *)) NULL))
     {
+      if (!magick_info->thread_support)
+        AcquireSemaphore(&constitute_semaphore,DestroyConstituteInfo);
       clone_info->client_data=magick_info->client_data;
       image=(magick_info->decoder)(clone_info,exception);
+      if (!magick_info->thread_support)
+        LiberateSemaphore(&constitute_semaphore);
     }
   else
     {
@@ -1852,7 +1874,11 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           DestroyImageInfo(clone_info);
           return((Image *) NULL);
         }
+      if (!magick_info->thread_support)
+        AcquireSemaphore(&constitute_semaphore,DestroyConstituteInfo);
       image=(magick_info->decoder)(clone_info,exception);
+      if (!magick_info->thread_support)
+        LiberateSemaphore(&constitute_semaphore);
     }
   if (clone_info->temporary)
     {
@@ -2182,8 +2208,12 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
       (magick_info->encoder !=
         (unsigned int (*)(const ImageInfo *,Image *)) NULL))
     {
+      if (!magick_info->thread_support)
+        AcquireSemaphore(&constitute_semaphore,DestroyConstituteInfo);
       clone_info->client_data=magick_info->client_data;
       status=(magick_info->encoder)(clone_info,image);
+      if (!magick_info->thread_support)
+        LiberateSemaphore(&constitute_semaphore);
     }
   else
     {
@@ -2216,7 +2246,11 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
           ThrowBinaryException(MissingDelegateWarning,
             "no encode delegate for this image format",clone_info->magick);
         }
+      if (!magick_info->thread_support)
+        AcquireSemaphore(&constitute_semaphore,DestroyConstituteInfo);
       status=(magick_info->encoder)(clone_info,image);
+      if (!magick_info->thread_support)
+        LiberateSemaphore(&constitute_semaphore);
     }
   (void) strcpy(image->magick,clone_info->magick);
   DestroyImageInfo(clone_info);
