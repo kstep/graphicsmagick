@@ -4449,7 +4449,8 @@ Mogrify(ref,...)
           }
           if (attribute_flag[17])
             draw_info->stroke_width=argument_list[17].int_reference;
-          draw_info->text_antialias=argument_list[18].int_reference;
+          if (attribute_flag[18])
+            draw_info->text_antialias=argument_list[18].int_reference;
           AnnotateImage(image,draw_info);
           DestroyDrawInfo(draw_info);
           break;
@@ -4779,8 +4780,11 @@ Mogrify(ref,...)
           if (attribute_flag[16])
             (void) QueryColorDatabase(argument_list[16].string_reference,
               &draw_info->fill);
-          draw_info->stroke_antialias=argument_list[17].int_reference;
-          draw_info->text_antialias=argument_list[17].int_reference;
+          if (attribute_flag[17])
+            {
+              draw_info->stroke_antialias=argument_list[17].int_reference;
+              draw_info->text_antialias=argument_list[17].int_reference;
+            }
           DrawImage(image,draw_info);
           DestroyDrawInfo(draw_info);
           break;
