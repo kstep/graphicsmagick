@@ -88,6 +88,9 @@ typedef struct _MSLInfo
   ImageInfo
     **image_info;
 
+  DrawInfo
+	 **draw_info;
+
   Image
     **attributes,
     **image;
@@ -855,6 +858,9 @@ static void MSLStartElement(void *context,const xmlChar *name,
 					srcImage = (Image*)NULL;
 				CompositeOperator
 					compositeOp = OverCompositeOp;
+				GravityType
+					gravity = CenterGravity;
+					
 				x = y = 0;
 
 				if (msl_info->image[n] == (Image *) NULL)
@@ -872,6 +878,111 @@ static void MSLStartElement(void *context,const xmlChar *name,
 									msl_info->attributes[n],attributes[i]));
 					switch (*keyword)
 					{
+						case 'C':
+						case 'c':
+						{
+							if (LocaleCompare(keyword, "compose") == 0)
+							{
+								if (LocaleCompare(value, "Over") == 0)
+									compositeOp = OverCompositeOp;
+								else if (LocaleCompare(value, "In") == 0)
+									compositeOp = InCompositeOp;
+								else if (LocaleCompare(value, "Out") == 0)
+									compositeOp = OutCompositeOp;
+								else if (LocaleCompare(value, "Atop") == 0)
+									compositeOp = AtopCompositeOp;
+								else if (LocaleCompare(value, "Xor") == 0)
+									compositeOp = XorCompositeOp;
+								else if (LocaleCompare(value, "Plus") == 0)
+									compositeOp = PlusCompositeOp;
+								else if (LocaleCompare(value, "Minus") == 0)
+									compositeOp = MinusCompositeOp;
+								else if (LocaleCompare(value, "Add") == 0)
+									compositeOp = AddCompositeOp;
+								else if (LocaleCompare(value, "Subtract") == 0)
+									compositeOp = SubtractCompositeOp;
+								else if (LocaleCompare(value, "Difference") == 0)
+									compositeOp = DifferenceCompositeOp;
+								else if (LocaleCompare(value, "Multiply") == 0)
+									compositeOp = MultiplyCompositeOp;
+								else if (LocaleCompare(value, "Bumpmap") == 0)
+									compositeOp = BumpmapCompositeOp;
+								else if (LocaleCompare(value, "Copy") == 0)
+									compositeOp = CopyCompositeOp;
+								else if (LocaleCompare(value, "CopyRed") == 0)
+									compositeOp = CopyRedCompositeOp;
+								else if (LocaleCompare(value, "CopyGreen") == 0)
+									compositeOp = CopyGreenCompositeOp;
+								else if (LocaleCompare(value, "CopyBlue") == 0)
+									compositeOp = CopyBlueCompositeOp;
+								else if (LocaleCompare(value, "CopyOpacity") == 0)
+									compositeOp = CopyOpacityCompositeOp;
+								else if (LocaleCompare(value, "Dissolve") == 0)
+									compositeOp = DissolveCompositeOp;
+								else if (LocaleCompare(value, "Clear") == 0)
+									compositeOp = ClearCompositeOp;
+								else if (LocaleCompare(value, "Displace") == 0)
+									compositeOp = DisplaceCompositeOp;
+								else if (LocaleCompare(value, "Modulate") == 0)
+									compositeOp = ModulateCompositeOp;
+								else if (LocaleCompare(value, "Threshold") == 0)
+									compositeOp = ThresholdCompositeOp;
+								else if (LocaleCompare(value, "Darken") == 0)
+									compositeOp = DarkenCompositeOp;
+								else if (LocaleCompare(value, "Lighten") == 0)
+									compositeOp = LightenCompositeOp;
+								else if (LocaleCompare(value, "Hue") == 0)
+									compositeOp = HueCompositeOp;
+								else if (LocaleCompare(value, "Saturate") == 0)
+									compositeOp = SaturateCompositeOp;
+								else if (LocaleCompare(value, "Colorize") == 0)
+									compositeOp = ColorizeCompositeOp;
+								else if (LocaleCompare(value, "Luminize") == 0)
+									compositeOp = LuminizeCompositeOp;
+								else if (LocaleCompare(value, "Screen") == 0)
+									compositeOp = ScreenCompositeOp;
+  								else if (LocaleCompare(value, "Overlay") == 0)
+									compositeOp = OverlayCompositeOp;
+							}
+							ThrowException(&msl_info->exception,OptionWarning,
+											"Unrecognized attribute",keyword);
+							break;
+						}
+						case 'G':
+						case 'g':
+						{
+							if (LocaleCompare(keyword,"geometry") == 0)
+							{
+								(void) ParseImageGeometry(value,&x,&y,&width,&height);
+								gravity = ForgetGravity;	/* disable on explicit x,y */
+								break;
+							}
+							else if (LocaleCompare(keyword,"gravity") == 0)
+							{
+								if (LocaleCompare(value, "NorthWest") == 0)
+									gravity = NorthWestGravity;
+								else if (LocaleCompare(value, "North") == 0)
+									gravity = NorthGravity;
+								else if (LocaleCompare(value, "NorthEast") == 0)
+									gravity = NorthEastGravity;
+								else if (LocaleCompare(value, "West") == 0)
+									gravity = WestGravity;
+								else if (LocaleCompare(value, "Center") == 0)
+									gravity = CenterGravity;
+								else if (LocaleCompare(value, "East") == 0)
+									gravity = EastGravity;
+								else if (LocaleCompare(value, "SouthWest") == 0)
+									gravity = SouthWestGravity;
+								else if (LocaleCompare(value, "South") == 0)
+									gravity = SouthGravity;
+								else if (LocaleCompare(value, "SouthEast") == 0)
+									gravity = SouthEastGravity;
+								break;
+							}
+							ThrowException(&msl_info->exception,OptionWarning,
+											"Unrecognized attribute",keyword);
+							break;
+						}
 						case 'I':
 						case 'i':
 						{
@@ -899,6 +1010,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 							if (LocaleCompare(keyword,"x") == 0)
 							{
 								x = atoi( value );
+								gravity = ForgetGravity;	/* disable on explicit x,y */
 								break;
 							}
 							ThrowException(&msl_info->exception,OptionWarning,
@@ -911,6 +1023,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 							if (LocaleCompare(keyword,"y") == 0)
 							{
 								y = atoi( value );
+								gravity = ForgetGravity;	/* disable on explicit x,y */
 								break;
 							}
 							ThrowException(&msl_info->exception,OptionWarning,
@@ -924,22 +1037,86 @@ static void MSLStartElement(void *context,const xmlChar *name,
 							break;
 						}
 					}
-
-					/*
-						process image.
-					*/
-					if (srcImage != (Image*)NULL)
-					{
-						unsigned int
-								result;
-						
-						result = CompositeImage(msl_info->image[n], compositeOp, srcImage, x, y);
-						break;
-					} else 
-						ThrowException(&msl_info->exception,OptionWarning,
-										"no composite image defined",name);
-
 				}
+					
+				/*
+					process image.
+				*/
+				if (srcImage != (Image*)NULL)
+				{
+					unsigned int
+							result;
+					
+					switch (gravity)
+					{
+						case ForgetGravity:
+						{
+							/* do nothing, since we alreay have explicit x,y */
+							break;
+						}
+						case NorthWestGravity:
+						{
+							x = 0;
+							y = 0;
+							break;
+						}
+						case NorthGravity:
+						{
+							x = (msl_info->image[n]->columns - srcImage->columns) >> 1;
+							y = 0;
+							break;
+						}
+						case NorthEastGravity:
+						{
+							x = msl_info->image[n]->columns - srcImage->columns;
+							y = 0;
+							break;
+						}
+						case WestGravity:
+						{
+							x = 0;
+							y = (msl_info->image[n]->rows - srcImage->rows) >> 1;
+							break;
+						}
+						case CenterGravity:
+						default:
+						{
+							x = (msl_info->image[n]->columns - srcImage->columns) >> 1;
+							y = (msl_info->image[n]->rows - srcImage->rows) >> 1;
+							break;
+						}
+						case EastGravity:
+						{
+							x = msl_info->image[n]->columns - srcImage->columns;
+							y = (msl_info->image[n]->rows - srcImage->rows) >> 1;
+							break;
+						}
+						case SouthWestGravity:
+						{
+							x = 0;
+							y = msl_info->image[n]->rows - srcImage->rows;
+							break;
+						}
+						case SouthGravity:
+						{
+							x =  (msl_info->image[n]->columns - srcImage->columns) >> 1;
+							y = msl_info->image[n]->rows - srcImage->rows;
+							break;
+						}
+						case SouthEastGravity:
+						{
+							x = msl_info->image[n]->columns - srcImage->columns;
+							y = msl_info->image[n]->rows - srcImage->rows;
+							break;
+						}
+					}
+
+					result = CompositeImage(msl_info->image[n], compositeOp, srcImage, x, y);
+					break;
+				} else 
+					ThrowException(&msl_info->exception,OptionWarning,
+									"no composite image defined",name);
+
 				break;
 			}
 		  else if (LocaleCompare(name,"crop") == 0)
@@ -1093,7 +1270,66 @@ static void MSLStartElement(void *context,const xmlChar *name,
 	case 'E':
 	case 'e':
 		{
-			if (LocaleCompare(name, "emboss") == 0)
+			if (LocaleCompare(name, "edge") == 0)
+			{
+				double	radius = 0.0;
+
+				if (msl_info->image[n] == (Image *) NULL)
+				{
+					ThrowException(&msl_info->exception,OptionWarning,
+						"no images defined",name);
+				  break;
+				}
+				/*
+				NOTE: edge can have no attributes, since we use all the defaults!
+				*/
+				if (attributes != (const xmlChar **) NULL)
+				{
+				  for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
+				  {
+					keyword=(const char *) attributes[i++];
+					CloneString(&value,TranslateText(msl_info->image_info[n],
+					  msl_info->attributes[n],attributes[i]));
+					switch (*keyword)
+					{
+					  case 'R':
+					  case 'r':
+						{
+							if (LocaleCompare(keyword, "radius") == 0)
+							{
+							  radius = atof( value );
+							  break;
+							}
+							ThrowException(&msl_info->exception,OptionWarning,
+							  "Unrecognized attribute",keyword);
+							break;
+						}
+					  default:
+					  {
+							ThrowException(&msl_info->exception,OptionWarning,
+							  "Unrecognized attribute",keyword);
+							break;
+					  }
+					}
+				  }
+				}
+
+				/*
+				  edge image.
+				*/
+				{
+				Image
+				  *newImage;
+
+				newImage=EdgeImage(msl_info->image[n],radius,&msl_info->image[n]->exception);
+				if (newImage == (Image *) NULL)
+				  break;
+				DestroyImage(msl_info->image[n]);
+				msl_info->image[n]=newImage;
+				break;
+				}
+			}
+			else if (LocaleCompare(name, "emboss") == 0)
 			{
 				double	radius = 0.0,
 						sigma = 1.0;
@@ -1212,7 +1448,31 @@ static void MSLStartElement(void *context,const xmlChar *name,
 	case 'F':
 	case 'f':
 		{
-			if (LocaleCompare(name, "flip") == 0)
+			if (LocaleCompare(name, "flatten") == 0)
+			{
+				if (msl_info->image[n] == (Image *) NULL)
+				{
+					ThrowException(&msl_info->exception,OptionWarning,
+									"no images defined",name);
+					break;
+				}
+				
+				/* no attributes here */
+
+				/* process the image */
+				{
+					Image
+					  *newImage;
+
+					newImage=FlattenImages(msl_info->image[n],&msl_info->image[n]->exception);
+					if (newImage == (Image *) NULL)
+					  break;
+					DestroyImage(msl_info->image[n]);
+					msl_info->image[n]=newImage;
+					break;
+				}
+			}
+			else if (LocaleCompare(name, "flip") == 0)
 			{
 				if (msl_info->image[n] == (Image *) NULL)
 				{
@@ -1422,7 +1682,81 @@ static void MSLStartElement(void *context,const xmlChar *name,
     case 'G':
     case 'g':
     {
-      if (LocaleCompare(name,"get") == 0)
+		if (LocaleCompare(name, "gamma") == 0)
+		{
+			double
+				gammaRed = 0, gammaGreen = 0, gammaBlue = 0;
+
+			if (msl_info->image[n] == (Image *) NULL)
+			{
+				ThrowException(&msl_info->exception,OptionWarning,
+								"no images defined",name);
+				break;
+			}
+			if (attributes == (const xmlChar **) NULL)
+				break;
+			for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
+			{
+				keyword=(const char *) attributes[i++];
+				CloneString(&value,attributes[i]);
+				(void) strncpy(key,value,MaxTextExtent-1);
+				switch (*keyword)
+				{
+					case 'B':
+					case 'b':
+					{
+						if (LocaleCompare(keyword,"blue") == 0)
+						{
+							gammaBlue = atof( value );
+							break;
+						}
+						ThrowException(&msl_info->exception,OptionWarning,
+										"Unrecognized attribute",keyword);
+						break;
+					}
+					case 'G':
+					case 'g':
+					{
+						if (LocaleCompare(keyword,"green") == 0)
+						{
+							gammaGreen = atof( value );
+							break;
+						}
+						ThrowException(&msl_info->exception,OptionWarning,
+										"Unrecognized attribute",keyword);
+						break;
+					}
+					case 'R':
+					case 'r':
+					{
+						if (LocaleCompare(keyword,"red") == 0)
+						{
+							gammaRed = atof( value );
+							break;
+						}
+						ThrowException(&msl_info->exception,OptionWarning,
+										"Unrecognized attribute",keyword);
+						break;
+					}
+					default:
+					{
+						ThrowException(&msl_info->exception,OptionWarning,
+										"Unrecognized attribute",keyword);
+						break;
+					}
+				}
+			}
+
+			/* process image */
+			{
+				char gamma[MaxTextExtent + 1];
+				FormatString( gamma, "%3.6f/%3.6f/%3.6f/",
+								gammaRed, gammaGreen, gammaBlue);
+
+				GammaImage ( msl_info->image[n], gamma );
+			}
+		}
+      else if (LocaleCompare(name,"get") == 0)
         {
           if (msl_info->image[n] == (Image *) NULL)
             {
@@ -1494,22 +1828,27 @@ static void MSLStartElement(void *context,const xmlChar *name,
           msl_info->n=n;
           ReacquireMemory((void **) &msl_info->image_info,
             (n+1)*sizeof(ImageInfo *));
+          ReacquireMemory((void **) &msl_info->draw_info,
+            (n+1)*sizeof(DrawInfo *));
           ReacquireMemory((void **) &msl_info->attributes,
             (n+1)*sizeof(Image *));
           ReacquireMemory((void **) &msl_info->image,(n+1)*sizeof(Image *));
           if ((msl_info->image_info == (ImageInfo **) NULL) ||
+              (msl_info->draw_info == (DrawInfo **) NULL) ||
               (msl_info->attributes == (Image **) NULL) ||
               (msl_info->image == (Image **) NULL))
             ThrowException(&msl_info->exception,ResourceLimitError,
               "Unable to allocate image","Memory allocation failed");
           msl_info->image_info[n]=CloneImageInfo(msl_info->image_info[n-1]);
+          msl_info->draw_info[n]=CloneDrawInfo(msl_info->image_info[n-1], msl_info->draw_info[n-1]);
           msl_info->attributes[n]=AllocateImage(msl_info->image_info[n]);
           msl_info->image[n]=(Image *) NULL;
           if ((msl_info->image_info[n] == (ImageInfo *) NULL) ||
               (msl_info->attributes[n] == (Image *) NULL))
             ThrowException(&msl_info->exception,ResourceLimitError,
               "Unable to allocate image","Memory allocation failed");
-		  msl_info->group_info[msl_info->nGroups-1].numImages++;
+		  if ( msl_info->nGroups )
+			msl_info->group_info[msl_info->nGroups-1].numImages++;
           attribute=GetImageAttribute(msl_info->attributes[n-1],(char *) NULL);
           while (attribute != (const ImageAttribute *) NULL)
           {
@@ -1613,6 +1952,62 @@ static void MSLStartElement(void *context,const xmlChar *name,
           }
           break;
         }
+		  else if (LocaleCompare(name,"implode") == 0)
+			{
+			  /* init the values */
+			  double	amount = 0;
+
+			  if (msl_info->image[n] == (Image *) NULL)
+				{
+				  ThrowException(&msl_info->exception,OptionWarning,
+					"no images defined",name);
+				  break;
+				}
+			  if (attributes == (const xmlChar **) NULL)
+				break;
+			  for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
+			  {
+				keyword=(const char *) attributes[i++];
+				CloneString(&value,TranslateText(msl_info->image_info[n],
+				  msl_info->attributes[n],attributes[i]));
+				switch (*keyword)
+				{
+				  case 'A':
+				  case 'a':
+				  {
+					if (LocaleCompare(keyword,"amount") == 0)
+					  {
+						amount = atof( value );
+						break;
+					  }
+					ThrowException(&msl_info->exception,OptionWarning,
+					  "Unrecognized attribute",keyword);
+					break;
+				  }
+				  default:
+				  {
+					ThrowException(&msl_info->exception,OptionWarning,
+					  "Unrecognized attribute",keyword);
+					break;
+				  }
+				}
+			  }
+
+				/*
+				  process image.
+				*/
+			  {
+				Image
+				  *newImage;
+
+				newImage=ImplodeImage(msl_info->image[n],amount,&msl_info->image[n]->exception);
+				if (newImage == (Image *) NULL)
+				  break;
+				DestroyImage(msl_info->image[n]);
+				msl_info->image[n]=newImage;
+				break;
+			  }
+			}
       ThrowException(&msl_info->exception,OptionError,
         "Unrecognized element",(const char *) name);
     }
@@ -1642,6 +2037,62 @@ static void MSLStartElement(void *context,const xmlChar *name,
 					msl_info->image[n]=newImage;
 					break;
 				}
+			}
+		  else if (LocaleCompare(name,"medianfilter") == 0)
+			{
+			  /* init the values */
+			  unsigned int	radius = 0;
+
+			  if (msl_info->image[n] == (Image *) NULL)
+				{
+				  ThrowException(&msl_info->exception,OptionWarning,
+					"no images defined",name);
+				  break;
+				}
+			  if (attributes == (const xmlChar **) NULL)
+				break;
+			  for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
+			  {
+				keyword=(const char *) attributes[i++];
+				CloneString(&value,TranslateText(msl_info->image_info[n],
+				  msl_info->attributes[n],attributes[i]));
+				switch (*keyword)
+				{
+				  case 'R':
+				  case 'r':
+				  {
+					if (LocaleCompare(keyword,"radius") == 0)
+					  {
+						radius = atoi( value );
+						break;
+					  }
+					ThrowException(&msl_info->exception,OptionWarning,
+					  "Unrecognized attribute",keyword);
+					break;
+				  }
+				  default:
+				  {
+					ThrowException(&msl_info->exception,OptionWarning,
+					  "Unrecognized attribute",keyword);
+					break;
+				  }
+				}
+			  }
+
+				/*
+				  process image.
+				*/
+			  {
+				Image
+				  *newImage;
+
+				newImage=MedianFilterImage(msl_info->image[n], radius, &msl_info->image[n]->exception);
+				if (newImage == (Image *) NULL)
+				  break;
+				DestroyImage(msl_info->image[n]);
+				msl_info->image[n]=newImage;
+				break;
+			  }
 			}
 			else if (LocaleCompare(name, "minify") == 0)
 			{
@@ -1698,6 +2149,68 @@ static void MSLStartElement(void *context,const xmlChar *name,
 					NormalizeImage(msl_info->image[n]);
 					break;
 				}
+			}
+			ThrowException(&msl_info->exception,OptionError,
+							"Unrecognized element",(const char *) name);
+		}
+	case 'O':
+	case 'o':
+		{
+			if (LocaleCompare(name, "oilpaint") == 0)
+			{
+			  /* init the values */
+			  unsigned int	radius = 3;
+
+			  if (msl_info->image[n] == (Image *) NULL)
+				{
+				  ThrowException(&msl_info->exception,OptionWarning,
+					"no images defined",name);
+				  break;
+				}
+			  if (attributes == (const xmlChar **) NULL)
+				break;
+			  for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
+			  {
+				keyword=(const char *) attributes[i++];
+				CloneString(&value,TranslateText(msl_info->image_info[n],
+				  msl_info->attributes[n],attributes[i]));
+				switch (*keyword)
+				{
+				  case 'R':
+				  case 'r':
+				  {
+					if (LocaleCompare(keyword,"radius") == 0)
+					  {
+						radius = atoi( value );
+						break;
+					  }
+					ThrowException(&msl_info->exception,OptionWarning,
+					  "Unrecognized attribute",keyword);
+					break;
+				  }
+				  default:
+				  {
+					ThrowException(&msl_info->exception,OptionWarning,
+					  "Unrecognized attribute",keyword);
+					break;
+				  }
+				}
+			  }
+
+				/*
+				  process image.
+				*/
+			  {
+				Image
+				  *newImage;
+
+				newImage=OilPaintImage(msl_info->image[n], radius, &msl_info->image[n]->exception);
+				if (newImage == (Image *) NULL)
+				  break;
+				DestroyImage(msl_info->image[n]);
+				msl_info->image[n]=newImage;
+				break;
+			  }
 			}
 			ThrowException(&msl_info->exception,OptionError,
 							"Unrecognized element",(const char *) name);
@@ -1815,7 +2328,63 @@ static void MSLStartElement(void *context,const xmlChar *name,
           }
           break;
         }
-      if (LocaleCompare(name,"resize") == 0)
+	  else if (LocaleCompare(name, "reducenoise") == 0 )
+	  {
+			  /* init the values */
+			  unsigned int	radius = 0;
+
+			  if (msl_info->image[n] == (Image *) NULL)
+				{
+				  ThrowException(&msl_info->exception,OptionWarning,
+					"no images defined",name);
+				  break;
+				}
+			  if (attributes == (const xmlChar **) NULL)
+				break;
+			  for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
+			  {
+				keyword=(const char *) attributes[i++];
+				CloneString(&value,TranslateText(msl_info->image_info[n],
+				  msl_info->attributes[n],attributes[i]));
+				switch (*keyword)
+				{
+				  case 'R':
+				  case 'r':
+				  {
+					if (LocaleCompare(keyword,"radius") == 0)
+					  {
+						radius = atoi( value );
+						break;
+					  }
+					ThrowException(&msl_info->exception,OptionWarning,
+					  "Unrecognized attribute",keyword);
+					break;
+				  }
+				  default:
+				  {
+					ThrowException(&msl_info->exception,OptionWarning,
+					  "Unrecognized attribute",keyword);
+					break;
+				  }
+				}
+			  }
+
+				/*
+				  process image.
+				*/
+			  {
+				Image
+				  *newImage;
+
+				newImage=ReduceNoiseImage(msl_info->image[n], radius, &msl_info->image[n]->exception);
+				if (newImage == (Image *) NULL)
+				  break;
+				DestroyImage(msl_info->image[n]);
+				msl_info->image[n]=newImage;
+				break;
+			  }
+	  }
+      else if (LocaleCompare(name,"resize") == 0)
         {
 		  /* init the values */
 			width=msl_info->image[n]->columns;
@@ -2276,6 +2845,148 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
 			  break;
 			}
+			else if (LocaleCompare(name, "set") == 0)
+			{
+				if (msl_info->image[n] == (Image *) NULL)
+				{
+					ThrowException(&msl_info->exception,OptionWarning,
+									"no images defined",name);
+					break;
+				}
+				
+				if (attributes == (const xmlChar **) NULL)
+					break;
+				for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
+				{
+					keyword=(const char *) attributes[i++];
+					CloneString(&value,TranslateText(msl_info->image_info[n],
+								msl_info->attributes[n],attributes[i]));
+					switch (*keyword)
+					{
+						case 'B':
+						case 'b':
+						{
+							if (LocaleCompare(keyword,"background") == 0)
+							{
+								(void) QueryColorDatabase(value,
+													&msl_info->image_info[n]->background_color);
+								break;
+							}
+							else if (LocaleCompare(keyword,"bordercolor") == 0)
+							{
+								(void) QueryColorDatabase(value,
+													&msl_info->image_info[n]->border_color);
+								break;
+							}
+							ThrowException(&msl_info->exception,OptionWarning,
+							  "Unrecognized attribute",keyword);
+							break;
+						}
+						case 'C':
+						case 'c':
+						{
+							if (LocaleCompare(keyword,"clip-mask") == 0)
+							{
+								for (j=0; j<msl_info->n;j++)
+								{
+									ImageAttribute *
+										theAttr = GetImageAttribute(msl_info->attributes[j], "id");
+									if (theAttr && LocaleCompare(theAttr->value, value) == 0)
+									{
+										SetImageClipMask( msl_info->image[n], msl_info->image[j] );
+										break;
+									}
+								}
+								break;
+							}
+							else if (LocaleCompare(keyword, "colorspace") == 0)
+							{
+								if (LocaleCompare(value, "CMYK") == 0)
+									SetImageType( msl_info->image[n], ColorSeparationType );
+								else if (LocaleCompare(value, "Gray") == 0)
+									SetImageType( msl_info->image[n], GrayscaleType );
+								else if (LocaleCompare(value, "RGB") == 0)
+									SetImageType( msl_info->image[n], TrueColorType );
+								else
+									ThrowException(&msl_info->exception,OptionWarning,
+													"Unrecognized colorspace",keyword);
+								break;
+							}
+							ThrowException(&msl_info->exception,OptionWarning,
+							  "Unrecognized attribute",keyword);
+							break;
+						}
+						case 'D':
+						case 'd':
+						{
+							if (LocaleCompare(keyword, "density") == 0)
+							{
+								(void) CloneString(&msl_info->image_info[n]->density,(char*)NULL);
+								(void) CloneString(&msl_info->image_info[n]->density,value);
+								(void) CloneString(&msl_info->draw_info[n]->density,
+													msl_info->image_info[n]->density);
+								j=sscanf(msl_info->image_info[n]->density,"%lfx%lf",
+											&msl_info->image[n]->x_resolution,
+											&msl_info->image[n]->y_resolution);
+								if (j != 2)
+								  msl_info->image[n]->y_resolution = msl_info->image[n]->x_resolution;
+								break;
+							}
+							ThrowException(&msl_info->exception,OptionWarning,
+							  "Unrecognized attribute",keyword);
+							break;
+						}
+						case 'M':
+						case 'm':
+						{
+							if (LocaleCompare(keyword, "magick") == 0)
+							{
+								strcpy( msl_info->image_info[n]->magick, value );
+								break;
+							}
+							else if (LocaleCompare(keyword,"mattecolor") == 0)
+							{
+								(void) QueryColorDatabase(value,
+													&msl_info->image_info[n]->matte_color);
+								break;
+							}
+							ThrowException(&msl_info->exception,OptionWarning,
+							  "Unrecognized attribute",keyword);
+							break;
+						}
+						case 'O':
+						case 'o':
+						{
+							if (LocaleCompare(keyword, "opacity") == 0)
+							{
+								int	opac = OpaqueOpacity,
+									len = strlen( value );
+
+								if (value[len-1] == '%') {
+									char	tmp[100];
+									strncpy(tmp, value, len-1);
+									opac = atoi( tmp );
+									opac = (int)(MaxRGB * ((float)opac/100));
+								} else 
+									opac = atoi( value );
+								SetImageOpacity( msl_info->image[n], opac );
+								break;
+							}
+
+							ThrowException(&msl_info->exception,OptionWarning,
+											"Unrecognized attribute",keyword);
+							break;
+						}
+						default:
+						{
+							ThrowException(&msl_info->exception,OptionWarning,
+											"Unrecognized attribute",keyword);
+							break;
+						}
+					}
+				}
+				break;
+			}
 			else if (LocaleCompare(name, "sharpen") == 0)
 			{
 				double	radius = 0.0,
@@ -2616,6 +3327,142 @@ static void MSLStartElement(void *context,const xmlChar *name,
 				break;
 			  }
 			}
+		  else if (LocaleCompare(name,"stegano") == 0)
+			{
+				Image *
+					watermark = (Image*)NULL;
+
+			  if (msl_info->image[n] == (Image *) NULL)
+				{
+				  ThrowException(&msl_info->exception,OptionWarning,
+					"no images defined",name);
+				  break;
+				}
+			  if (attributes == (const xmlChar **) NULL)
+				break;
+			  for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
+			  {
+				keyword=(const char *) attributes[i++];
+				CloneString(&value,TranslateText(msl_info->image_info[n],
+				  msl_info->attributes[n],attributes[i]));
+				switch (*keyword)
+				{
+				  case 'I':
+				  case 'i':
+				  {
+					if (LocaleCompare(keyword,"image") == 0)
+					  {
+						for (j=0; j<msl_info->n;j++)
+						{
+							ImageAttribute *
+								theAttr = GetImageAttribute(msl_info->attributes[j], "id");
+							if (theAttr && LocaleCompare(theAttr->value, value) == 0)
+							{
+								watermark = msl_info->image[j];
+								break;
+							}
+						}
+						break;
+					  }
+					ThrowException(&msl_info->exception,OptionWarning,
+					  "Unrecognized attribute",keyword);
+					break;
+				  }
+				  default:
+				  {
+					ThrowException(&msl_info->exception,OptionWarning,
+					  "Unrecognized attribute",keyword);
+					break;
+				  }
+				}
+			  }
+
+				/*
+				  process image.
+				*/
+			  if ( watermark != (Image*) NULL )
+			  {
+				Image
+				  *newImage;
+
+				newImage=SteganoImage(msl_info->image[n], watermark, &msl_info->image[n]->exception);
+				if (newImage == (Image *) NULL)
+				  break;
+				DestroyImage(msl_info->image[n]);
+				msl_info->image[n]=newImage;
+				break;
+			  } else 
+					ThrowException(&msl_info->exception,OptionWarning,
+					  "Missing watermark image",keyword);
+			}
+		  else if (LocaleCompare(name,"stereo") == 0)
+			{
+				Image *
+					stereoImage = (Image*)NULL;
+
+			  if (msl_info->image[n] == (Image *) NULL)
+				{
+				  ThrowException(&msl_info->exception,OptionWarning,
+					"no images defined",name);
+				  break;
+				}
+			  if (attributes == (const xmlChar **) NULL)
+				break;
+			  for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
+			  {
+				keyword=(const char *) attributes[i++];
+				CloneString(&value,TranslateText(msl_info->image_info[n],
+				  msl_info->attributes[n],attributes[i]));
+				switch (*keyword)
+				{
+				  case 'I':
+				  case 'i':
+				  {
+					if (LocaleCompare(keyword,"image") == 0)
+					  {
+						for (j=0; j<msl_info->n;j++)
+						{
+							ImageAttribute *
+								theAttr = GetImageAttribute(msl_info->attributes[j], "id");
+							if (theAttr && LocaleCompare(theAttr->value, value) == 0)
+							{
+								stereoImage = msl_info->image[j];
+								break;
+							}
+						}
+						break;
+					  }
+					ThrowException(&msl_info->exception,OptionWarning,
+					  "Unrecognized attribute",keyword);
+					break;
+				  }
+				  default:
+				  {
+					ThrowException(&msl_info->exception,OptionWarning,
+					  "Unrecognized attribute",keyword);
+					break;
+				  }
+				}
+			  }
+
+				/*
+				  process image.
+				*/
+			  if ( stereoImage != (Image*) NULL )
+			  {
+				Image
+				  *newImage;
+
+				newImage=StereoImage(msl_info->image[n], stereoImage, &msl_info->image[n]->exception);
+				if (newImage == (Image *) NULL)
+				  break;
+				DestroyImage(msl_info->image[n]);
+				msl_info->image[n]=newImage;
+				break;
+			  } else 
+					ThrowException(&msl_info->exception,OptionWarning,
+					  "Missing stereo image",keyword);
+			}
 		  else if (LocaleCompare(name,"swirl") == 0)
 			{
 			  /* init the values */
@@ -2680,7 +3527,93 @@ static void MSLStartElement(void *context,const xmlChar *name,
 	case 'T':
 	case 't':
 		{
-			if (LocaleCompare(name,"threshold") == 0)
+		  if (LocaleCompare(name,"texture") == 0)
+			{
+				Image *
+					textureImage = (Image*)NULL;
+
+			  /*
+				if the image hasn't been initted yet, then clear it to white
+			  */
+			  if (msl_info->image[n] == (Image *) NULL)
+				{
+					Image
+					  *next_image;
+
+					(void) strcpy(msl_info->image_info[n]->filename,"xc:white");
+					next_image=ReadImage(msl_info->image_info[n],&exception);
+					if (exception.severity != UndefinedException)
+					  MagickWarning(exception.severity,exception.reason,
+						exception.description);
+					if (next_image == (Image *) NULL)
+					  break;
+					if (msl_info->image[n] == (Image *) NULL)
+					  msl_info->image[n]=next_image;
+					else
+					  {
+						register Image
+						  *p;
+
+						/*
+						  Link image into image list.
+						*/
+						p=msl_info->image[n];
+						for ( ; p->next != (Image *) NULL; p=p->next);
+						next_image->previous=p;
+						p->next=next_image;
+					  }
+				}
+			  if (attributes == (const xmlChar **) NULL)
+				break;
+			  for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
+			  {
+				keyword=(const char *) attributes[i++];
+				CloneString(&value,TranslateText(msl_info->image_info[n],
+				  msl_info->attributes[n],attributes[i]));
+				switch (*keyword)
+				{
+				  case 'I':
+				  case 'i':
+				  {
+					if (LocaleCompare(keyword,"image") == 0)
+					  {
+						for (j=0; j<msl_info->n;j++)
+						{
+							ImageAttribute *
+								theAttr = GetImageAttribute(msl_info->attributes[j], "id");
+							if (theAttr && LocaleCompare(theAttr->value, value) == 0)
+							{
+								textureImage = msl_info->image[j];
+								break;
+							}
+						}
+						break;
+					  }
+					ThrowException(&msl_info->exception,OptionWarning,
+					  "Unrecognized attribute",keyword);
+					break;
+				  }
+				  default:
+				  {
+					ThrowException(&msl_info->exception,OptionWarning,
+					  "Unrecognized attribute",keyword);
+					break;
+				  }
+				}
+			  }
+
+				/*
+				  process image.
+				*/
+			  if ( textureImage != (Image*) NULL )
+			  {
+				TextureImage(msl_info->image[n], textureImage);
+				break;
+			  } else 
+					ThrowException(&msl_info->exception,OptionWarning,
+					  "Missing texture image",keyword);
+			}
+			else if (LocaleCompare(name,"threshold") == 0)
 			{
 			  /* init the values */
 			  int	threshold = 0;
@@ -2728,6 +3661,50 @@ static void MSLStartElement(void *context,const xmlChar *name,
 				ThresholdImage(msl_info->image[n], threshold);
 				break;
 			  }
+			}
+			else if (LocaleCompare(name, "transparent") == 0)
+			{
+				if (msl_info->image[n] == (Image *) NULL)
+				{
+					ThrowException(&msl_info->exception,OptionWarning,
+									"no images defined",name);
+					break;
+				}
+				if (attributes == (const xmlChar **) NULL)
+					break;
+				for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
+				{
+					keyword=(const char *) attributes[i++];
+					CloneString(&value,TranslateText(msl_info->image_info[n],
+								msl_info->attributes[n],attributes[i]));
+					switch (*keyword)
+					{
+						case 'C':
+						case 'c':
+						{
+							if (LocaleCompare(keyword,"color") == 0)
+							{
+								PixelPacket
+								  target;
+
+								target=GetOnePixel(msl_info->image[n],0,0);
+								(void) QueryColorDatabase(value,&target);
+								(void) TransparentImage(msl_info->image[n],target,TransparentOpacity);
+								break;
+							}
+							ThrowException(&msl_info->exception,OptionWarning,
+											"Unrecognized attribute",keyword);
+							break;
+						}
+						default:
+						{
+							ThrowException(&msl_info->exception,OptionWarning,
+											"Unrecognized attribute",keyword);
+						break;
+						}
+					}
+				}
+				break;
 			}
 			else if (LocaleCompare(name, "trim") == 0)
 			{
@@ -3269,6 +4246,7 @@ int main(int argc,char **argv)
   (void) memset(&msl_info,0,sizeof(MSLInfo));
   GetExceptionInfo(&msl_info.exception);
   msl_info.image_info=(ImageInfo **) AcquireMemory(sizeof(ImageInfo *));
+  msl_info.draw_info=(DrawInfo **) AcquireMemory(sizeof(DrawInfo *));
   msl_info.image=(Image **) AcquireMemory(sizeof(Image *));
   msl_info.attributes=(Image **) AcquireMemory(sizeof(Image *));
   msl_info.group_info=(MSLGroupInfo *) AcquireMemory(sizeof(MSLGroupInfo));
@@ -3279,6 +4257,7 @@ int main(int argc,char **argv)
     MagickError(ResourceLimitError,"Unable to allocate image",
       "Memory allocation failed");
   msl_info.image_info[0]=CloneImageInfo((ImageInfo *) NULL);
+  msl_info.draw_info[0]=CloneDrawInfo(msl_info.image_info[0], (DrawInfo *) NULL);
   msl_info.attributes[0]=AllocateImage(msl_info.image_info[0]);
   msl_info.image[0]=AllocateImage(msl_info.image_info[0]);
   msl_info.group_info[0].numImages = 0;
@@ -3352,7 +4331,7 @@ int main(int argc,char **argv)
 			if (msl_info.exception.severity != UndefinedException)
 			{
 				MagickError(msl_info.exception.severity,msl_info.exception.reason, msl_info.exception.description);
-			break;
+				break;
 			}
 		}
 		(void) xmlParseChunk(msl_info.parser," ",1,True);
