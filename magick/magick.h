@@ -100,7 +100,7 @@
 #endif
 
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-#include <magick/api.h>
+#include "magick/api.h"
 #else
 #include "api.h"
 #endif

@@ -2098,7 +2098,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
           */
           r=quantum_scanline;
           for (x=0; x < (int) image->columns; x++)
-            image->indexes[x]=(*r++);
+              image->indexes[x]=(*r++);
           if (!SyncPixelCache(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -2113,25 +2113,32 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             /*
               Image has a transparent background.
             */
-            image->class=DirectClass;
             image->matte=True;
             for (y=0; y < (int) image->rows; y++)
             {
-              q=SetPixelCache(image,0,y,image->columns,1);
+              image->class=PseudoClass;
+              q=GetPixelCache(image,0,y,image->columns,1);
+              image->class=DirectClass;
               if (q == (PixelPacket *) NULL)
                 break;
               for (x=0; x < (int) image->columns; x++)
               {
-                opacity=q->opacity;
+                unsigned short
+                  index;
+
                 q->opacity=Opaque;
+                index=image->indexes[x];
+                q->red=(Quantum) UpScale(image->colormap[index].red);
+                q->green=(Quantum) UpScale(image->colormap[index].green);
+                q->blue=(Quantum) UpScale(image->colormap[index].blue);
                 if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
                   {
-                    if (opacity < ping_info->num_trans)
-                      q->opacity=(Quantum) UpScale(ping_info->trans[opacity]);
+                    if (index < ping_info->num_trans)
+                      q->opacity=(Quantum) UpScale(ping_info->trans[index]);
                   }
                 else
                   {
-                    if (opacity == transparent_color.opacity)
+                    if (q->red == transparent_color.opacity)
                       q->opacity=Transparent;
                   }
                 q++;
@@ -3391,7 +3398,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                 for (x=0; x < (int) image->columns; x++)
                 {
                   if (p->opacity != Opaque)
-                    for (i=image->colors-1; i; i--)
+                    for (i=0; i < image->colors; i++)
                       if (image->indexes[x] == i)
                         {
                           ping_info->trans[i]=DownScale(p->opacity);
