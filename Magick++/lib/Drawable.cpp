@@ -244,8 +244,9 @@ void Magick::DrawableFillOpacity::print (std::ostream& stream_) const
 // Specify text font
 void Magick::DrawableFont::print (std::ostream& stream_) const
 {
-  stream_ << "font "
-          << _font;
+  stream_ << "font '"
+          << _font
+          << "'";
 }
 
 // Specify text positioning gravity

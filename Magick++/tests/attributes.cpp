@@ -122,13 +122,13 @@ int main( int /*argc*/, char ** argv)
     //
 
     // Test default value
-    if ( image.animationIterations() != 1 )
+    if ( image.animationIterations() != 0 )
       {
 	++failures;
 	cout << "Line: " << __LINE__
              << ", animationIterations default ("
 	     << image.animationIterations()
-	     << ") not 1 as expected" << endl;
+	     << ") not 0 as expected" << endl;
       }
 
     // Test setting to 0
