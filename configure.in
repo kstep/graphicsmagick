@@ -171,19 +171,20 @@ AC_ARG_ENABLE(lzw,
 test "$with_lzw" = 'yes' && AC_DEFINE(HasLZW,1,Include LZW compression)
 AM_CONDITIONAL(HasLZW, test "$have_lzw" != 'no')
 
-# Disable 16-bit pixels.
+# Number of bits in a Quantum
+QuantumSize=16
 AC_ARG_ENABLE(16bit-pixel,
 	      [  --disable-16bit-pixel   disable 16 bit/quantum pixels (default enabled)],
-	      [with_16_bit_pixel=$enableval],
-	      [with_16_bit_pixel='yes'])
-test "$with_16_bit_pixel" = 'no' && AC_DEFINE(QuantumMagick,,Decrease max color value from 65535 to 255)
+	      [QuantumSize=8],
+	      [QuantumSize=16])
+AC_DEFINE_UNQUOTED(QuantumSize,$QuantumSize,[Number of bits in a pixel Quantum (8 or 16)])
 
 # Set pixel cache threshold
 AC_ARG_WITH(cache,
 	      [  --with-cache            set pixel cache threshhold (default 2047MB)],
 	      [with_cache=$withval],
 	      [with_cache=2047])
-AC_DEFINE_UNQUOTED(PixelCacheThreshold,$with_cache,Pixel cache threshold (default 2047MB))
+AC_DEFINE_UNQUOTED(PixelCacheThreshold,$with_cache,[Pixel cache threshold (default 2047MB)])
 
 # Enable support for threads
 AC_ARG_WITH(threads,

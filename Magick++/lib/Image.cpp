@@ -1720,10 +1720,6 @@ void Magick::Image::backgroundColor ( const Color &color_ )
 Magick::Color Magick::Image::backgroundColor ( void ) const
 {
   return constOptions()->backgroundColor( );
-//   Image * image = image();
-//   return Color( image->background_color.red,
-// 		      image->background_color.green,
-// 		      image->background_color.blue );
 }
 
 // Background fill texture
@@ -1778,11 +1774,6 @@ void Magick::Image::borderColor ( const Color &color_ )
 Magick::Color Magick::Image::borderColor ( void ) const
 {
   return constOptions()->borderColor( );
-
-//   Image * image = image();
-//   return Color ( image->border_color.red,
-// 		       image->border_color.green,
-// 		       image->border_color.blue );
 }
 
 // Text bounding-box base color
@@ -2059,7 +2050,7 @@ unsigned int Magick::Image::columns ( void ) const
   return constImage()->columns;
 }
 
-// Comment
+// Comment string
 void Magick::Image::comment ( const std::string &comment_ )
 {
   modifyImage();
@@ -2079,6 +2070,7 @@ std::string Magick::Image::comment ( void ) const
   return std::string(); // Intentionally no exception
 }
 
+// Compression algorithm
 void Magick::Image::compressType ( Magick::CompressionType compressType_ )
 {
   modifyImage();
@@ -2088,9 +2080,9 @@ void Magick::Image::compressType ( Magick::CompressionType compressType_ )
 Magick::CompressionType Magick::Image::compressType ( void ) const
 {
   return constOptions()->compressType( );
-  //  return constImage()->compression;
 }
 
+// Pixel resolution
 void Magick::Image::density ( const Geometry &density_ )
 {
   modifyImage();
@@ -2115,6 +2107,7 @@ Magick::Geometry Magick::Image::density ( void ) const
   return constOptions()->density( );
 }
 
+// Image quantum depth (8 or 16)
 void Magick::Image::depth ( unsigned int depth_ )
 {
   modifyImage();
@@ -2124,7 +2117,6 @@ void Magick::Image::depth ( unsigned int depth_ )
 unsigned int Magick::Image::depth ( void ) const
 {
   return constImage()->depth;
-  //  return constOptions()->depth( );
 }
 
 std::string Magick::Image::directory ( void ) const
@@ -2138,6 +2130,7 @@ std::string Magick::Image::directory ( void ) const
   return std::string();
 }
 
+// Image file name
 void Magick::Image::fileName ( const std::string &fileName_ )
 {
   modifyImage();
@@ -2152,9 +2145,9 @@ void Magick::Image::fileName ( const std::string &fileName_ )
 std::string Magick::Image::fileName ( void ) const
 {
   return constOptions()->fileName( );
-  //  return std::string( constImage()->filename );
 }
 
+// Image file size
 off_t Magick::Image::fileSize ( void ) const
 {
   return constImage()->blob->filesize;
@@ -2229,7 +2222,6 @@ void Magick::Image::fontTypeMetrics( const std::string &text_,
 std::string Magick::Image::format ( void ) const
 {
   ExceptionInfo exception;
-  //  return options()->format ( );
   GetExceptionInfo(&exception);
   const MagickInfo * magick_info
   = GetMagickInfo( constImage()->magick , &exception);
@@ -2244,6 +2236,7 @@ std::string Magick::Image::format ( void ) const
   return std::string();
 }
 
+// Gamma adjustment
 double Magick::Image::gamma ( void ) const
 {
   return constImage()->gamma;
@@ -2303,7 +2296,6 @@ void Magick::Image::interlaceType ( Magick::InterlaceType interlace_ )
 Magick::InterlaceType Magick::Image::interlaceType ( void ) const
 {
   return constOptions()->interlaceType ( );
-  //  return image()->interlace;
 }
 
 // IPTC profile (BLOB)
@@ -2643,7 +2635,6 @@ void Magick::Image::resolutionUnits ( Magick::ResolutionType resolutionUnits_ )
 Magick::ResolutionType Magick::Image::resolutionUnits ( void ) const
 {
   return constOptions()->resolutionUnits( );
-  //  return image()->units;
 }
 
 unsigned int Magick::Image::rows ( void ) const

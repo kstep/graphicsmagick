@@ -14,7 +14,7 @@
 
 #include "resource.h"       // main symbols
 #include <Magick++.h>
-#if !defined(QuantumMagick)
+#if QuantumSize != 8
 # error "This code only works when ImageMagick is compiled with 8-bit Quantum size"
 #endif
 #include <string>

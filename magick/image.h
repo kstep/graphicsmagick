@@ -8,7 +8,10 @@
 extern "C" {
 #endif
 
-#if defined(QuantumMagick)
+#if !defined(QuantumSize)
+# define QuantumSize 16
+#endif
+#if QuantumSize == 8
 /*
   Color quantum is [0..255].
 */
@@ -20,7 +23,7 @@ extern "C" {
 #define XUpScale(color)  (257*(color))
 
 typedef unsigned char Quantum;
-#else
+#elif QuantumSize == 16
 /*
   Color quantum is [0..65535].
 */
@@ -32,6 +35,8 @@ typedef unsigned char Quantum;
 #define XUpScale(color)  (color)
 
 typedef unsigned short Quantum;
+#else
+# error "Specified value of QuantumSize is not supported"
 #endif
 #define OpaqueOpacity  0
 #define TransparentOpacity  MaxRGB

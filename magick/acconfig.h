@@ -56,9 +56,6 @@
 /* X11 server supports shared memory extension */
 #undef HasSharedMemory
 
-/* Decrease max color value from 65535 to 255 */
-#undef QuantumMagick
-
 /* Location of X11 RGB database */
 #undef RGBColorDatabase
 

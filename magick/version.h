@@ -12,12 +12,14 @@ extern "C" {
 #define MagickLibVersion  0x0539
 #define MagickLibVersionText  "5.3.9"
 #define MagickLibVersionNumber  5,3,9,0
-#if defined(QuantumMagick)
+#if QuantumSize == 8
 #define MagickVersion \
   "@(#)ImageMagick 5.3.9 10/01/01 Q:8 http://www.imagemagick.org"
-#else
+#elif
 #define MagickVersion \
   "@(#)ImageMagick 5.3.9 10/01/01 Q:16 http://www.imagemagick.org"
+#else
+# error "Specified value of QuantumSize is not supported"
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)

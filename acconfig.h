@@ -63,9 +63,6 @@
 /* X11 server supports shared memory extension */
 #undef HasSharedMemory
 
-/* Decrease max color value from 65535 to 255 */
-#undef QuantumMagick
-
 /* Define if you have the bzip2 library */
 #undef HasBZLIB
 
@@ -288,5 +285,3 @@
 /* Define if you have the POSIX.4 clock_gettime function.  */
 #undef HAVE_CLOCK_GETTIME
 
-/* Pixel cache threshold (default 80MB)*/
-#undef PixelCacheThreshold
