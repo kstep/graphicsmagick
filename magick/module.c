@@ -1005,8 +1005,8 @@ static CoderInfo *RegisterModule(CoderInfo *entry,ExceptionInfo *exception)
   */
   assert(entry != (CoderInfo *) NULL);
   assert(entry->signature == MagickSignature);
-  (void) UnregisterModule(entry->tag,exception);
   AcquireSemaphoreInfo(&module_semaphore);
+  (void) UnregisterModule(entry->tag,exception);
   entry->previous=(CoderInfo *) NULL;
   entry->next=(CoderInfo *) NULL;
   if (coder_list == (CoderInfo *) NULL)
