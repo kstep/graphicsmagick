@@ -222,7 +222,7 @@ MICRO_VERSION = @MICRO_VERSION@
 @WITH_MODULES_FALSE@libCoders_la_SOURCES = @WITH_MODULES_FALSE@$(MAGICK_CODER_SRCS)
 
 # Additional files to distribute
-EXTRA_DIST = modules.mgk delegates.mgk.in
+EXTRA_DIST = modules.mgk delegates.mgk.in fonts.mgk.in
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = 
@@ -1592,10 +1592,12 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 install-data-delegates:
 	$(mkinstalldirs) $(pkglibdir)
 	$(INSTALL_DATA) delegates.mgk $(pkglibdir)
+	$(INSTALL_DATA) fonts.mgk $(pkglibdir)
 
 # Uninstall delegates files
 uninstall-data-delegates:
 	rm -f $(pkglibdir)/delegates.mgk
+	rm -f $(pkglibdir)/fonts.mgk
 
 install-exec-local: install-data-delegates
 

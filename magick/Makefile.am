@@ -81,7 +81,7 @@ noinst_HEADERS = animate.h defines.h display.h mac.h magic.h modules.h nt.h \
   vms.h
 
 # Additional files to distribute
-EXTRA_DIST = $(ALLMANPAGES) colors.mgk fonts.mgk fonts.mgk.in magic.mgk \
+EXTRA_DIST = $(ALLMANPAGES) colors.mgk fonts.mgk.in magic.mgk Magick-config.in \
   Magick-config.in Make.com mac.c nt.c vms.c $(MAGICK_BASE_SRCS)
 
 # Where modules are installed
@@ -91,7 +91,7 @@ pkgdir = $(libdir)/ImageMagick/modules/coders
 pkg_DATA = 
 
 # Architecture independent data files installed in the package's data directory
-pkgdata_DATA = colors.mgk fonts.mgk magic.mgk
+pkgdata_DATA = colors.mgk magic.mgk
 
 # Manual pages to install
 man_MANS = $(ALLMANPAGES)

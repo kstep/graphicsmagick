@@ -52,7 +52,7 @@ libCoders_la_SOURCES = $(MAGICK_CODER_SRCS)
 endif # WITH_MODULES
 
 # Additional files to distribute
-EXTRA_DIST = modules.mgk delegates.mgk.in
+EXTRA_DIST = modules.mgk delegates.mgk.in fonts.mgk.in
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = 
@@ -492,10 +492,12 @@ DEFS = @DEFS@ -I../
 install-data-delegates: 
 	$(mkinstalldirs) $(pkglibdir)
 	$(INSTALL_DATA) delegates.mgk $(pkglibdir)
+	$(INSTALL_DATA) fonts.mgk $(pkglibdir)
 
 # Uninstall delegates files
 uninstall-data-delegates:
 	rm -f $(pkglibdir)/delegates.mgk
+	rm -f $(pkglibdir)/fonts.mgk
 
 install-exec-local: install-data-delegates
 
