@@ -1874,8 +1874,8 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   if (cache_info->length == (size_t) cache_info->length)
     if ((cache_info->type == MemoryCache) ||
         ((cache_info->type == UndefinedCache) &&
-         ((AcquireMagickResource(MemoryResource,0) == ResourceInfinity) ||
-          (cache_info->length <= AcquireMagickResource(MemoryResource,0)))))
+         ((GetMagickResourceUsage(MemoryResource) == ResourceInfinity) ||
+          (cache_info->length <= GetMagickResourceUsage(MemoryResource)))))
       {
         if (cache_info->storage_class == UndefinedClass)
           pixels=(PixelPacket *) AcquireMemory(cache_info->length);
@@ -1900,7 +1900,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
             if ((cache_info->storage_class == PseudoClass) ||
                 (cache_info->colorspace == CMYKColorspace))
               cache_info->indexes=(IndexPacket *) (pixels+number_pixels);
-            (void) AcquireMagickResource(MemoryResource,cache_info->length);
+            AcquireMagickResource(MemoryResource,cache_info->length);
             FormatSize(cache_info->length,format);
             FormatString(message,"open %.1024s (%.1024s)",cache_info->filename,
               format);
@@ -1911,8 +1911,8 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   /*
     Create pixel cache on disk.
   */
-  if ((AcquireMagickResource(DiskResource,0) == ResourceInfinity) ||
-      (cache_info->length <= AcquireMagickResource(DiskResource,0)))
+  if ((GetMagickResource(DiskResource,0) == ResourceInfinity) ||
+      (cache_info->length <= GetMagickResource(DiskResource)))
     ThrowBinaryException(ResourceLimitError,"Cache resources exhausted",
       image->filename);
   if (*cache_info->cache_filename == '\0')
@@ -1971,7 +1971,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
         }
     }
   (void) close(file);
-  (void) AcquireMagickResource(DiskResource,cache_info->length);
+  AcquireMagickResource(DiskResource,cache_info->length);
 #if defined(SIGBUS)
   (void) signal(SIGBUS,CacheSignalHandler);
 #endif

@@ -25,13 +25,11 @@ typedef enum
 /*
   Method declarations.
 */
-extern MagickExport unsigned int
-  AcquireMagickResource(const ResourceType,const off_t);
-
 extern MagickExport unsigned long
   GetMagickResourceUsage(const ResourceType);
 
 extern MagickExport void
+  AcquireMagickResource(const ResourceType,const off_t),
   DestroyMagickResources(void),
   LiberateMagickResource(const ResourceType,const off_t),
   SetMagickResourceLimit(const ResourceType,const unsigned long);
