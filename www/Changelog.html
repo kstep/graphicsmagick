@@ -53,6 +53,20 @@
 </tr>
 </table>
 <p>
+2004-02-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/render.c (DestroyEdge): Use memmove for overlapping copy.
+
+</UL>
+<p>
+2004-02-03  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> coders/bmp.c: initialize padding bytes.
+
+</UL>
+<p>
 2004-02-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
@@ -75,6 +89,14 @@
   <LI> coders/mono.c (RegisterMONOImage): Mono is a raw format.
   <LI> magick/magic.c (GetMagicInfo): Ensure that magic tests are
         within the range of header data which was read.
+
+</UL>
+<p>
+2004-02-02  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> coders/bmp.c: fix potential use of uninitialized data.
+  <LI> coders/png.c: fix potential use of uninitialized data.
 
 </UL>
 <p>

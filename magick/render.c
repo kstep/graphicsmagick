@@ -764,7 +764,7 @@ static long DestroyEdge(PolygonInfo *polygon_info,const long edge)
   MagickFreeMemory(polygon_info->edges[edge].points);
   polygon_info->number_edges--;
   if (edge < polygon_info->number_edges)
-    (void) memcpy(polygon_info->edges+edge,polygon_info->edges+edge+1,
+    (void) memmove(polygon_info->edges+edge,polygon_info->edges+edge+1,
       (polygon_info->number_edges-edge)*sizeof(EdgeInfo));
   return(polygon_info->number_edges);
 }
