@@ -823,7 +823,7 @@ extern MagickExport unsigned int
   TransparentImage(Image *,const PixelPacket),
   UnregisterMagickInfo(const char *),
   WriteImage(const ImageInfo *,Image *),
-  WriteStrean(const ImageInfo *,Image *,
+  WriteStream(ImageInfo *,Image *,
     int (*)(const Image *,const void *,const size_t));
 
 extern MagickExport void
