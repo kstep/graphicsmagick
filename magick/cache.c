@@ -731,10 +731,7 @@ MagickExport void DestroyCacheInfo(Cache cache)
       break;
     }
     case MemoryMappedCache:
-    {
       (void) UnmapBlob(cache_info->pixels,cache_info->length);
-      (void) GetCacheThreshold(-cache_info->length);
-    }
     case DiskCache:
     {
       (void) remove(cache_info->cache_filename);
@@ -2048,9 +2045,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   cache_info->colorspace=image->colorspace;
   cache_info->type=DiskCache;
   if ((cache_info->length > MinBlobExtent) &&
-      (cache_info->length == (size_t) cache_info->length) &&
-      ((GetCacheThreshold(0).minimum == ~0) ||
-       (cache_info->length <= (2*GetCacheThreshold(0).minimum))))
+      (cache_info->length == (size_t) cache_info->length))
     {
       pixels=(PixelPacket *)
         MapBlob(file,mode,cache_info->offset,cache_info->length);
@@ -2065,7 +2060,6 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
           if ((cache_info->storage_class == PseudoClass) ||
               (cache_info->colorspace == CMYKColorspace))
             cache_info->indexes=(IndexPacket *) (pixels+number_pixels);
-          (void) GetCacheThreshold(cache_info->length);
         }
     }
   (void) close(file);
