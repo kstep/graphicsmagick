@@ -513,14 +513,14 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       case COMPRESSION_ADOBE_DEFLATE: image->compression=ZipCompression; break;
       default: image->compression=RLECompression; break;
     }
-    image->columns= width;
-    image->rows= height;
+    image->columns=width;
+    image->rows=height;
     range=max_sample_value-min_sample_value;
     image->depth=range <= 255 ? 8 : QuantumDepth;
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
       &sample_info);
     image->matte=((extra_samples == 1) &&
-      (sample_info[0] == EXTRASAMPLE_ASSOCALPHA));
+      (*sample_info == EXTRASAMPLE_ASSOCALPHA));
     if (image->colorspace == CMYKColorspace)
       {
         if (samples_per_pixel > 4)
@@ -1407,16 +1407,14 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 #ifdef CCITT_SUPPORT
       case FaxCompression:
       {
-        if ((image->storage_class == PseudoClass) &&
-            IsMonochromeImage(image,&image->exception))
-          compress_tag=COMPRESSION_CCITTFAX3;
+        SetImageType(image,BilevelType);
+        compress_tag=COMPRESSION_CCITTFAX3;
         break;
       }
       case Group4Compression:
       {
-        if ((image->storage_class == PseudoClass) &&
-            IsMonochromeImage(image,&image->exception))
-          compress_tag=COMPRESSION_CCITTFAX4;
+        SetImageType(image,BilevelType);
+        compress_tag=COMPRESSION_CCITTFAX4;
         break;
       }
 #endif
