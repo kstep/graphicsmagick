@@ -20,6 +20,13 @@
         exit program. Clean-up to avoid any appearance of leaks.
   <LI> tests/rwfile.c (main): Add -pause option to require keypress to
         exit program. Clean-up to avoid any appearance of leaks.
+  <LI> magick/static.c (ExecuteStaticModuleProcess): Don't bind in
+        process filter functions for Visual C++ since the build environment
+        doesn't support it yet.<BR>
+  <LI> magick/log.c (GetLogBlob) Code wasn't actually testing current
+        directory for log.mgk, now it does.
+  <LI> magick/log.c (IsEventLogging): Eliminate accidental recursive, or
+        repeated, initialization of the logging system.
 
 </UL>
 <p>
