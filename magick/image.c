@@ -1060,7 +1060,6 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
     image->exception.reason,image->exception.description);
   clone_image->client_data=image->client_data;
   clone_image->start_loop=image->start_loop;
-  clone_image->blob=ReferenceBlob(image->blob);
   clone_image->ascii85=image->ascii85;
   clone_image->magick_columns=image->magick_columns;
   clone_image->magick_rows=image->magick_rows;
@@ -1073,8 +1072,11 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->list=(Image *) NULL;
   clone_image->next=(Image *) NULL;
   clone_image->clip_mask=(Image *) NULL;
-  if (!orphan)
+  if (orphan)
+    clone_image->blob=CloneBlobInfo((BlobInfo *) NULL);
+  else
     {
+      clone_image->blob=ReferenceBlob(image->blob);
       if (image->previous != (Image *) NULL)
         clone_image->previous->next=clone_image;
       if (image->next != (Image *) NULL)
@@ -6386,7 +6388,10 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   magic_info=GetMagicInfo(magick,2*MaxTextExtent,exception);
   if ((magic_info != (const MagicInfo *) NULL) &&
       (magic_info->name != (char *) NULL))
-    (void) strncpy(image_info->magick,magic_info->name,MaxTextExtent-1);
+    {
+      (void) strncpy(image_info->magick,magic_info->name,MaxTextExtent-1);
+      return(True);
+    }
   /*
     Check module IsImage() methods.
   */
