@@ -8850,11 +8850,10 @@ Export unsigned int XQueryColorDatabase(const char *target,XColor *color)
             } while (*target != '\0');
           }
       n<<=2;
-      n=16-n;
-      color->red=red << n;
-      color->green=green << n;
-      color->blue=blue << n;
-      color->pixel=index << n;
+      color->red=(65535L*red)/((1 << n)-1);
+      color->green=(65535L*green)/((1 << n)-1);
+      color->blue=(65535L*blue)/((1 << n)-1);
+      color->pixel=(65535L*index)/((1 << n)-1);
       return(True);
     }
   if (database == (FILE *) NULL)
@@ -8872,9 +8871,9 @@ Export unsigned int XQueryColorDatabase(const char *target,XColor *color)
           continue;
         if (Latin1Compare(colorname,target) == 0)
           {
-            color->red=red << 8;
-            color->green=green << 8;
-            color->blue=blue << 8;
+            color->red=257*red;
+            color->green=257*green;
+            color->blue=257*blue;
             return(True);
           }
       }
@@ -8885,9 +8884,9 @@ Export unsigned int XQueryColorDatabase(const char *target,XColor *color)
   for (p=Colorlist; p->name != (char *) NULL; p++)
     if (Latin1Compare(p->name,target) == 0)
       {
-        color->red=p->red << 8;
-        color->green=p->green << 8;
-        color->blue=p->blue << 8;
+        color->red=257*p->red;
+        color->green=257*p->green;
+        color->blue=257*p->blue;
         return(True);
       }
   /*

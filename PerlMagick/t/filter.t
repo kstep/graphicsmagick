@@ -30,7 +30,7 @@ testFilter('input.miff', 'Border',
 ++$test;
 testFilter('input.miff', 'Charcoal',
   q/60/,
-  'e6e381790100fb5300ed464c2b49ecf8');
+  '5642e22185bd1ae4c3587f2c46a7c9af');
 
 ++$test;
 testFilter('input.miff', 'Chop',

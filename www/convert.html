@@ -337,8 +337,10 @@ left-to-right.
 <DD> average a set of images.
 <P>
 <DT><B>-blur</B> <I>factor</I>
-<DD>blurs an image.  Specify factor as the percent enhancement (0.0 -
-99.9%).
+<DD>use this blur factor when resizing an image.
+Specify <i>factor</i> as the percent enhancement (0.0 - 99.9%).
+
+To blur without resizing, specify <b>-geometry 100%</b>.
 <P>
 <DT><B>-border</B> <I>&lt;width&gt;x&lt;height&gt;</I>
 <DD>surround the image with a border of color.  See <I>X(1)</I>
@@ -1129,8 +1131,10 @@ source.  Use <b>+shade</b> to return the shading results as a grayscale image.
 image.
 <P>
 <DT><B>-sharpen</B> <I>factor</I>
-<DD>sharpen an image.  Specify <I>factor</I> as the percent
-enhancement (0.0 - 99.9%). 
+<DD>use this sharpen factor when resizing an image.
+Specify <i>factor</i> as the percent enhancement (0.0 - 99.9%).
+
+To sharpen without resizing, specify <b>-geometry 100%</b>.
 <P>
 <DT><B>-shear</B> &lt;x degrees&gt;x&lt;y degrees&gt;
 <DD>shear the image along the X or Y axis by a positive

@@ -4,7 +4,7 @@
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1, print "1..91)\n"; }
+BEGIN { $| = 1; $test=1, print "1..76)\n"; }
 END {print "not ok 1\n" unless $loaded;}
 use Image::Magick;
 $loaded=1;
@@ -77,51 +77,6 @@ testSetAttribute('input.miff','display','bogus:0.0');
 
 ++$test;
 testSetAttribute('input.miff','filename','bogus.jpg');
-
-++$test;
-testSetAttribute('input.miff','filter','Point');
-
-++$test;
-testSetAttribute('input.miff','filter','Box');
-
-++$test;
-testSetAttribute('input.miff','filter','Triangle');
-
-++$test;
-testSetAttribute('input.miff','filter','Hermite');
-
-++$test;
-testSetAttribute('input.miff','filter','Hanning');
-
-++$test;
-testSetAttribute('input.miff','filter','Hamming');
-
-++$test;
-testSetAttribute('input.miff','filter','Blackman');
-
-++$test;
-testSetAttribute('input.miff','filter','Gaussian');
-
-++$test;
-testSetAttribute('input.miff','filter','Quadratic');
-
-++$test;
-testSetAttribute('input.miff','filter','Cubic');
-
-++$test;
-testSetAttribute('input.miff','filter','Catrom');
-
-++$test;
-testSetAttribute('input.miff','filter','Mitchell');
-
-++$test;
-testSetAttribute('input.miff','filter','Lanczos');
-
-++$test;
-testSetAttribute('input.miff','filter','Bessel');
-
-++$test;
-testSetAttribute('input.miff','filter','Sinc');
 
 ++$test;
 testSetAttribute('input.miff','font',q/-*-helvetica-medium-r-*-*-12-*-*-*-*-*-iso8859-*/);

@@ -197,6 +197,8 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->delay=0;
   allocated_image->iterations=1;
   allocated_image->fuzz=0;
+  allocated_image->filter=MitchellFilter;
+  allocated_image->blur=1.0;
   (void) XQueryColorDatabase(BackgroundColor,&color);
   allocated_image->background_color.red=XDownScale(color.red);
   allocated_image->background_color.green=XDownScale(color.green);
@@ -281,7 +283,6 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   if (image_info->iterations != (char *) NULL)
     allocated_image->iterations=atoi(image_info->iterations);
   allocated_image->depth=image_info->depth;
-  allocated_image->filter=image_info->filter;
   if (image_info->background_color != (char *) NULL)
     {
       (void) XQueryColorDatabase(image_info->background_color,&color);
@@ -2462,23 +2463,21 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
               }
             else
               {
-                red=((unsigned int) (p->red*p->index+
-                  q->red*(Opaque-p->index))/Opaque);
-                green=((unsigned int) (p->green*p->index+
-                  q->green*(Opaque-p->index))/Opaque);
-                blue=((unsigned int) (p->blue*p->index+
-                  q->blue*(Opaque-p->index))/Opaque);
-                index=((unsigned int) (p->index*p->index+
-                  q->index*(Opaque-p->index))/Opaque);
+                red=(long) (p->red*p->index+q->red*(Opaque-p->index))/Opaque;
+                green=(long)
+                  (p->green*p->index+q->green*(Opaque-p->index))/Opaque;
+                blue=(long) (p->blue*p->index+q->blue*(Opaque-p->index))/Opaque;
+                index=(long)
+                  (p->index*p->index+q->index*(Opaque-p->index))/Opaque;
               }
           break;
         }
         case InCompositeOp:
         {
-          red=((unsigned int) (p->red*q->index)/Opaque);
-          green=((unsigned int) (p->green*q->index)/Opaque);
-          blue=((unsigned int) (p->blue*q->index)/Opaque);
-          index=((unsigned int) (p->index*q->index)/Opaque);
+          red=(long) (p->red*q->index)/Opaque;
+          green=(long) (p->green*q->index)/Opaque;
+          blue=(long) (p->blue*q->index)/Opaque;
+          index=(long) (p->index*q->index)/Opaque;
           break;
         }
         case OutCompositeOp:
@@ -2491,91 +2490,86 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
         }
         case AtopCompositeOp:
         {
-          red=((unsigned int) (p->red*q->index+
-            q->red*(Opaque-p->index))/Opaque);
-          green=((unsigned int) (p->green*q->index+
-            q->green*(Opaque-p->index))/Opaque);
-          blue=((unsigned int) (p->blue*q->index+
-            q->blue*(Opaque-p->index))/Opaque);
-          index=((unsigned int) (p->index*q->index+
-            q->index*(Opaque-p->index))/Opaque);
+          red=(long) (p->red*q->index+q->red*(Opaque-p->index))/Opaque;
+          green=(long) (p->green*q->index+q->green*(Opaque-p->index))/Opaque;
+          blue=(long) (p->blue*q->index+q->blue*(Opaque-p->index))/Opaque;
+          index=(long) (p->index*q->index+q->index*(Opaque-p->index))/Opaque;
           break;
         }
         case XorCompositeOp:
         {
-          red=((unsigned int) (p->red*(Opaque-q->index)+
-            q->red*(Opaque-p->index))/Opaque);
-          green=((unsigned int) (p->green*(Opaque-q->index)+
-            q->green*(Opaque-p->index))/Opaque);
-          blue=((unsigned int) (p->blue*(Opaque-q->index)+
-            q->blue*(Opaque-p->index))/Opaque);
-          index=((unsigned int) (p->index*(Opaque-q->index)+
-            q->index*(Opaque-p->index))/Opaque);
+          red=(long) (p->red*(Opaque-q->index)+q->red*(Opaque-p->index))/Opaque;
+          green=(long)
+            (p->green*(Opaque-q->index)+q->green*(Opaque-p->index))/Opaque;
+          blue=(long)
+            (p->blue*(Opaque-q->index)+q->blue*(Opaque-p->index))/Opaque;
+          index=(long)
+            (p->index*(Opaque-q->index)+q->index*(Opaque-p->index))/Opaque;
           break;
         }
         case PlusCompositeOp:
         {
-          red=p->red+q->red;
-          green=p->green+q->green;
-          blue=p->blue+q->blue;
-          index=p->index+q->index;
+          red=(long) p->red+(long) q->red;
+          green=(long) p->green+(long) q->green;
+          blue=(long) p->blue+(long) q->blue;
+          index=(long) p->index+(long) q->index;
           break;
         }
         case MinusCompositeOp:
         {
-          red=p->red-(int) q->red;
-          green=p->green-(int) q->green;
-          blue=p->blue-(int) q->blue;
+          red=(long) p->red-(long) q->red;
+          green=(long) p->green-(long) q->green;
+          blue=(long) p->blue-(long) q->blue;
           index=Opaque;
           break;
         }
         case AddCompositeOp:
         {
-          red=p->red+q->red;
+          red=(long) p->red+(long) q->red;
           if (red > MaxRGB)
             red-=(MaxRGB+1);
-          green=p->green+q->green;
+          green=(long) p->green+(long) q->green;
           if (green > MaxRGB)
             green-=(MaxRGB+1);
-          blue=p->blue+q->blue;
+          blue=(long) p->blue+(long) q->blue;
           if (blue > MaxRGB)
             blue-=(MaxRGB+1);
-          index=p->index+q->index;
+          index=(long) p->index+(long) q->index;
           if (index > Opaque)
             index-=(Opaque+1);
           break;
         }
         case SubtractCompositeOp:
         {
-          red=p->red-(int) q->red;
+          red=(long) p->red-(long) q->red;
           if (red < 0)
             red+=(MaxRGB+1);
-          green=p->green-(int) q->green;
+          green=(long) p->green-(long) q->green;
           if (green < 0)
             green+=(MaxRGB+1);
-          blue=p->blue-(int) q->blue;
+          blue=(long) p->blue-(long) q->blue;
           if (blue < 0)
             blue+=(MaxRGB+1);
-          index=p->index-(int) q->index;
+          index=(long) p->index-(long) q->index;
           if (index < 0)
             index+=(MaxRGB+1);
           break;
         }
         case DifferenceCompositeOp:
         {
-          red=AbsoluteValue(p->red-(int) q->red);
-          green=AbsoluteValue(p->green-(int) q->green);
-          blue=AbsoluteValue(p->blue-(int) q->blue);
-          index=AbsoluteValue(p->index-(int) q->index);
+          red=AbsoluteValue((long) p->red-(long) q->red);
+          green=AbsoluteValue((long) p->green-(long) q->green);
+          blue=AbsoluteValue((long) p->blue-(long) q->blue);
+          index=AbsoluteValue((long) p->index-(long) q->index);
           break;
         }
         case BumpmapCompositeOp:
         {
           shade=Intensity(*p);
-          red=((unsigned int) (q->red*shade)/Opaque);
-          green=((unsigned int) (q->green*shade)/Opaque);
-          blue=((unsigned int) (q->blue*shade)/Opaque);
-          index=((unsigned int) (q->index*shade)/Opaque);
+          red=(long) (q->red*shade)/Opaque;
+          green=(long) (q->green*shade)/Opaque;
+          blue=(long) (q->blue*shade)/Opaque;
+          index=(long) (q->index*shade)/Opaque;
           break;
         }
         case ReplaceCompositeOp:
@@ -2620,9 +2614,9 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
         }
         case BlendCompositeOp:
         {
-          red=((unsigned int) (p->red*p->index+q->red*q->index)/Opaque);
-          green=((unsigned int) (p->green*p->index+q->green*q->index)/Opaque);
-          blue=((unsigned int) (p->blue*p->index+q->blue*q->index)/Opaque);
+          red=(long) (p->red*p->index+q->red*q->index)/Opaque;
+          green=(long) (p->green*p->index+q->green*q->index)/Opaque;
+          blue=(long) (p->blue*p->index+q->blue*q->index)/Opaque;
           index=Opaque;
           break;
         }
@@ -5561,7 +5555,6 @@ Export void GetImageInfo(ImageInfo *image_info)
   image_info->compression=UndefinedCompression;
   image_info->interlace=DefaultInterlace;
   image_info->units=UndefinedResolution;
-  image_info->filter=MitchellFilter;
   image_info->preview_type=JPEGPreview;
   image_info->group=0L;
   image_info->background_color=(char *) NULL;
@@ -7109,22 +7102,10 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("-blur",option,4) == 0)
       {
-        double
-          factor;
-
-        Image
-          *blurred_image;
-
         /*
-          Blur an image.
+          Blur factoe.
         */
-        factor=atof(argv[++i]);
-        blurred_image=BlurImage(*image,factor);
-        if (blurred_image != (Image *) NULL)
-          {
-            DestroyImage(*image);
-            *image=blurred_image;
-          }
+        (*image)->blur=1.0+atof(argv[++i])/100.0;
         continue;
       }
     if (Latin1Compare("-border",option) == 0)
@@ -7396,42 +7377,44 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("filter",option+1,3) == 0)
       {
-        local_info->filter=MitchellFilter;
         if (*option == '-')
           {
+            FilterType
+              filter;
+
             option=argv[++i];
             if (Latin1Compare("Point",option) == 0)
-              local_info->filter=PointFilter;
+              filter=PointFilter;
             if (Latin1Compare("Box",option) == 0)
-              local_info->filter=BoxFilter;
+              filter=BoxFilter;
             if (Latin1Compare("Triangle",option) == 0)
-              local_info->filter=TriangleFilter;
+              filter=TriangleFilter;
             if (Latin1Compare("Hermite",option) == 0)
-              local_info->filter=HermiteFilter;
+              filter=HermiteFilter;
             if (Latin1Compare("Hanning",option) == 0)
-              local_info->filter=HanningFilter;
+              filter=HanningFilter;
             if (Latin1Compare("Hamming",option) == 0)
-              local_info->filter=HammingFilter;
+              filter=HammingFilter;
             if (Latin1Compare("Blackman",option) == 0)
-              local_info->filter=BlackmanFilter;
+              filter=BlackmanFilter;
             if (Latin1Compare("Gaussian",option) == 0)
-              local_info->filter=GaussianFilter;
+              filter=GaussianFilter;
             if (Latin1Compare("Quadratic",option) == 0)
-              local_info->filter=QuadraticFilter;
+              filter=QuadraticFilter;
             if (Latin1Compare("Cubic",option) == 0)
-              local_info->filter=CubicFilter;
+              filter=CubicFilter;
             if (Latin1Compare("Catrom",option) == 0)
-              local_info->filter=CatromFilter;
+              filter=CatromFilter;
             if (Latin1Compare("Mitchell",option) == 0)
-              local_info->filter=MitchellFilter;
+              filter=MitchellFilter;
             if (Latin1Compare("Lanczos",option) == 0)
-              local_info->filter=LanczosFilter;
+              filter=LanczosFilter;
             if (Latin1Compare("Bessel",option) == 0)
-              local_info->filter=BesselFilter;
+              filter=BesselFilter;
             if (Latin1Compare("Sinc",option) == 0)
-              local_info->filter=SincFilter;
+              filter=SincFilter;
+            (*image)->filter=filter;
           }
-        (*image)->filter=local_info->filter;
         continue;
       }
     if (strncmp("-flip",option,4) == 0)
@@ -7522,8 +7505,24 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("-geometry",option,4) == 0)
       {
-        TransformImage(image,(char *) NULL,argv[++i]);
-        (void) CloneString(&geometry,argv[i]);
+        Image
+          *zoomed_image;
+
+        /*
+          Resize image.
+        */
+        width=(*image)->columns;
+        height=(*image)->rows;
+        x=0;
+        y=0;
+        (void) CloneString(&geometry,argv[++i]);
+        (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
+        zoomed_image=ZoomImage(*image,width,height);
+        if (zoomed_image != (Image *) NULL)
+          {
+            DestroyImage(*image);
+            *image=zoomed_image;
+          }
         continue;
       }
     if (strncmp("gravity",option+1,2) == 0)
@@ -7956,22 +7955,10 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("-sharpen",option,5) == 0)
       {
-        double
-          factor;
-
-        Image
-          *sharpened_image;
-
         /*
-          Sharpen an image.
+          Sharpen factor.
         */
-        factor=atof(argv[++i]);
-        sharpened_image=SharpenImage(*image,factor);
-        if (sharpened_image != (Image *) NULL)
-          {
-            DestroyImage(*image);
-            *image=sharpened_image;
-          }
+        (*image)->blur=1.0-atof(argv[++i])/100.0;
         continue;
       }
     if (strncmp("-shear",option,4) == 0)
@@ -11977,7 +11964,6 @@ Export void TransformImage(Image **image,const char *crop_geometry,
 
   unsigned int
     height,
-    sharpen,
     width;
 
   assert(image != (Image **) NULL);
@@ -12080,8 +12066,6 @@ Export void TransformImage(Image **image,const char *crop_geometry,
   x=0;
   y=0;
   (void) ParseImageGeometry(image_geometry,&x,&y,&width,&height);
-  sharpen=((width*height) << 1) <
-    (transformed_image->columns*transformed_image->rows);
   if ((transformed_image->columns != width) ||
       (transformed_image->rows != height))
     {
@@ -12100,22 +12084,6 @@ Export void TransformImage(Image **image,const char *crop_geometry,
           transformed_image=zoomed_image;
         }
     }
-  if (sharpen)
-    if ((transformed_image->columns >= 3) && (transformed_image->rows >= 3))
-      {
-        Image
-          *sharpened_image;
-
-        /*
-          Sharpen image.
-        */
-        sharpened_image=SharpenImage(transformed_image,SharpenFactor);
-        if (sharpened_image != (Image *) NULL)
-          {
-            DestroyImage(transformed_image);
-            transformed_image=sharpened_image;
-          }
-      }
   *image=transformed_image;
 }
 
@@ -12746,6 +12714,9 @@ Export unsigned int UncondenseImage(Image *image)
 %  and Mitchel giver slower, very high-quality results.  See Graphic Gems III
 %  for details on this algorithm.
 %
+%  The filter member of the Image structure specifies which image filter to
+%  use. Blur specifies the blur factor where > 1 is blurry, < 1 is sharp.
+%
 %  The format of the ZoomImage routine is:
 %
 %      zoomed_image=ZoomImage(image,columns,rows)
@@ -12920,7 +12891,7 @@ static void HorizontalFilter(Image *source,Image *destination,double x_factor,
     red_weight,
     scale_factor,
     sum,
-    width;
+    support;
 
   int
     n,
@@ -12938,19 +12909,29 @@ static void HorizontalFilter(Image *source,Image *destination,double x_factor,
   /*
     Apply filter to zoom horizontally from source to destination.
   */
-  width=filter_info->width;
+  support=filter_info->support;
   scale_factor=1.0;
   if (x_factor < 1.0)
     {
-      width/=x_factor;
+      support/=x_factor;
       scale_factor/=x_factor;
     }
+  scale_factor*=source->blur;
+  destination->class=source->class;
+  if (support > 0.5)
+    destination->class=DirectClass;
+  else
+    {
+      support=0.5;
+      scale_factor=1.0;
+    }
+  support+=1e-7;
   for (x=0; x < (int) destination->columns; x++)
   {
     sum=0.0;
     n=0;
     center=(double) x/x_factor;
-    for (i=(int) (center-width+0.5); i <= (int) (center+width+0.5); i++)
+    for (i=(int) (center-support+0.5); i <= (int) (center+support+0.5); i++)
     {
       j=i;
       if (j < 0)
@@ -13014,7 +12995,7 @@ static void VerticalFilter(Image *source,Image *destination,double y_factor,
     red_weight,
     scale_factor,
     sum,
-    width;
+    support;
 
   int
     n,
@@ -13032,20 +13013,30 @@ static void VerticalFilter(Image *source,Image *destination,double y_factor,
   /*
     Apply filter to zoom vertically from source to destination.
   */
-  width=filter_info->width;
+  support=filter_info->support;
   scale_factor=1.0;
   if (y_factor < 1.0)
     {
-      width/=y_factor;
+      support/=y_factor;
       scale_factor/=y_factor;
     }
+  scale_factor*=source->blur;
+  destination->class=source->class;
+  if (support > 0.5)
+    destination->class=DirectClass;
+  else
+    {
+      support=0.5;
+      scale_factor=1.0;
+    }
+  support+=1e-7;
   q=destination->pixels;
   for (y=0; y < (int) destination->rows; y++)
   {
     sum=0.0;
     n=0;
     center=(double) y/y_factor;
-    for (i=(int) (center-width+0.5); i <= (int) (center+width+0.5); i++)
+    for (i=(int) (center-support+0.5); i <= (int) (center+support+0.5); i++)
     {
       j=i;
       if (j < 0)
@@ -13103,7 +13094,7 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
     *contribution_info;
 
   double
-    width,
+    support,
     x_factor,
     y_factor;
 
@@ -13149,11 +13140,6 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
   assert((image->filter >= 0) && (image->filter <= SincFilter));
   if ((columns == 0) || (rows == 0))
     return((Image *) NULL);
-  if ((image->columns == columns) && (image->rows == rows))
-    return(CloneImage(image,columns,rows,True));
-  if ((filters[image->filter].width > columns) ||
-      (filters[image->filter].width > rows))
-    return(SampleImage(image,columns,rows));
   /*
     Image must be uncompressed.
   */
@@ -13169,7 +13155,6 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
         "Memory allocation failed");
       return((Image *) NULL);
     }
-  zoomed_image->class=DirectClass;
   image->orphan=True;
   if (zoomed_image->rows >= image->rows)
     source_image=CloneImage(image,zoomed_image->columns,image->rows,False);
@@ -13210,12 +13195,12 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
   */
   x_factor=(double) zoomed_image->columns/(double) image->columns;
   y_factor=(double) zoomed_image->rows/(double) image->rows;
-  width=Max(filters[image->filter].width/x_factor,
-    filters[image->filter].width/y_factor);
-  if (width < filters[image->filter].width)
-    width=filters[image->filter].width;
+  support=Max(filters[image->filter].support/x_factor,
+    filters[image->filter].support/y_factor);
+  if (support < filters[image->filter].support)
+    support=filters[image->filter].support;
   contribution_info=(ContributionInfo *)
-    AllocateMemory((int) (width*2+2)*sizeof(ContributionInfo));
+    AllocateMemory((int) (support*2+2)*sizeof(ContributionInfo));
   if (contribution_info == (ContributionInfo *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to zoom image",

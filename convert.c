@@ -55,7 +55,7 @@
 %
 %  Where options include:
 %    -adjoin              join images into a single multi-image file
-%    -antialias               remove pixelaliasing
+%    -antialias           remove pixel-aliasing
 %    -append              append an image sequence
 %    -average             average an image sequence
 %    -blur factor         apply a filter to blur the image
@@ -245,7 +245,7 @@ static void Usage(const char *client_name)
     *options[]=
     {
       "-adjoin              join images into a single multi-image file",
-      "-antialias               remove pixelaliasing",
+      "-antialias           remove pixel-aliasing",
       "-append              append an image sequence",
       "-average             average an image sequence",
       "-blur factor         apply a filter to blur the image",
@@ -791,45 +791,47 @@ int main(int argc,char **argv)
         {
           if (strncmp("filter",option+1,3) == 0)
             {
-              image_info.filter=MitchellFilter;
               if (*option == '-')
                 {
+                  FilterType
+                    filter;
+
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
-                  image_info.filter=UndefinedFilter;
+                  filter=UndefinedFilter;
                   if (Latin1Compare("Point",option) == 0)
-                    image_info.filter=PointFilter;
+                    filter=PointFilter;
                   if (Latin1Compare("Box",option) == 0)
-                    image_info.filter=BoxFilter;
+                    filter=BoxFilter;
                   if (Latin1Compare("Triangle",option) == 0)
-                    image_info.filter=TriangleFilter;
+                    filter=TriangleFilter;
                   if (Latin1Compare("Hermite",option) == 0)
-                    image_info.filter=HermiteFilter;
+                    filter=HermiteFilter;
                   if (Latin1Compare("Hanning",option) == 0)
-                    image_info.filter=HanningFilter;
+                    filter=HanningFilter;
                   if (Latin1Compare("Hamming",option) == 0)
-                    image_info.filter=HammingFilter;
+                    filter=HammingFilter;
                   if (Latin1Compare("Blackman",option) == 0)
-                    image_info.filter=BlackmanFilter;
+                    filter=BlackmanFilter;
                   if (Latin1Compare("Gaussian",option) == 0)
-                    image_info.filter=GaussianFilter;
+                    filter=GaussianFilter;
                   if (Latin1Compare("Quadratic",option) == 0)
-                    image_info.filter=QuadraticFilter;
+                    filter=QuadraticFilter;
                   if (Latin1Compare("Cubic",option) == 0)
-                    image_info.filter=CubicFilter;
+                    filter=CubicFilter;
                   if (Latin1Compare("Catrom",option) == 0)
-                    image_info.filter=CatromFilter;
+                    filter=CatromFilter;
                   if (Latin1Compare("Mitchell",option) == 0)
-                    image_info.filter=MitchellFilter;
+                    filter=MitchellFilter;
                   if (Latin1Compare("Lanczos",option) == 0)
-                    image_info.filter=LanczosFilter;
+                    filter=LanczosFilter;
                   if (Latin1Compare("Bessel",option) == 0)
-                    image_info.filter=BesselFilter;
+                    filter=BesselFilter;
                   if (Latin1Compare("Sinc",option) == 0)
-                    image_info.filter=SincFilter;
-                  if (image_info.filter == UndefinedFilter)
+                    filter=SincFilter;
+                  if (filter == UndefinedFilter)
                     MagickError(OptionError,"Invalid filter type",option);
                 }
               break;

@@ -7695,7 +7695,7 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PGM image.
         */
-        (void) fprintf(image->file,"%d\n",MaxRGB);
+        (void) fprintf(image->file,"%ld\n",MaxRGB);
         for (i=0; i < (int) image->packets; i++)
         {
           index=DownScale(Intensity(*p));
@@ -7721,7 +7721,7 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PNM image.
         */
-        (void) fprintf(image->file,"%d\n",MaxRGB);
+        (void) fprintf(image->file,"%ld\n",MaxRGB);
         for (i=0; i < (int) image->packets; i++)
         {
           for (j=0; j <= ((int) p->length); j++)
@@ -7934,7 +7934,7 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           Convert image to a P7 image.
         */
         (void) fprintf(image->file,"#END_OF_COMMENTS\n");
-        (void) fprintf(image->file,"%u %u %d\n",image->columns,image->rows,
+        (void) fprintf(image->file,"%u %u %ld\n",image->columns,image->rows,
           MaxRGB);
         i=0;
         j=0;
@@ -11703,7 +11703,10 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     }
     TIFFSetField(tiff,TIFFTAG_PHOTOMETRIC,photometric);
     TIFFSetField(tiff,TIFFTAG_COMPRESSION,compress_tag);
-    TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_MSB2LSB);
+    if (Latin1Compare(image_info->magick,"TIF") == 0)
+      TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_LSB2MSB);
+    else
+      TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_MSB2LSB);
     TIFFSetField(tiff,TIFFTAG_ORIENTATION,ORIENTATION_TOPLEFT);
     TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_CONTIG);
     if (photometric == PHOTOMETRIC_RGB)

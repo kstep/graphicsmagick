@@ -305,7 +305,8 @@ static struct
     { "Spread", { {"amount", IntegerReference} } },
     { "Swirl", { {"degree", DoubleReference} } },
     { "Zoom", { {"geom", StringReference}, {"width", IntegerReference},
-      {"height", IntegerReference}, {"filter", FilterTypes} } },
+      {"height", IntegerReference}, {"filter", FilterTypes},
+      {"blur", DoubleReference } } },
     { "IsGrayImage", },
     { "Annotate", { {"text", StringReference}, {"font", StringReference},
       {"point", IntegerReference}, {"density", StringReference},
@@ -1134,20 +1135,6 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         {
           if (info)
             info->image_info->file=IoIFP(sv_2io(sval));
-          return;
-        }
-      if (strEQcase(attribute,"filter"))
-        {
-          sp=SvPOK(sval) ? LookupStr(FilterTypes,SvPV(sval,na)) : SvIV(sval);
-          if (sp < 0)
-            {
-              MagickWarning(OptionWarning,"Invalid filter type",SvPV(sval,na));
-              return;
-            }
-          if (info)
-            info->image_info->filter=(FilterType) sp;
-          for ( ; image; image=image->next)
-            image->filter=(FilterType) sp;
           return;
         }
       if (strEQcase(attribute,"font"))
@@ -2777,7 +2764,7 @@ Get(ref,...)
             }
           if (strEQcase(attribute,"filter"))
             {
-              j=info ? info->image_info->filter : image->filter;
+              j=image->filter;
               s=newSViv(j);
               if ((j >= 0) && (j < NumberOf(FilterTypes)-1))
                 {
@@ -4000,9 +3987,10 @@ Mogrify(ref,...)
             (void) ParseImageGeometry(argument_list[0].string_reference,
               &rectangle_info.x,&rectangle_info.y,&rectangle_info.width,
               &rectangle_info.height);
-          if (!attribute_flag[3])
-            argument_list[3].int_reference=(int) MitchellFilter;
-          image->filter=(FilterType) argument_list[3].int_reference;
+          if (attribute_flag[3])
+            image->filter=(FilterType) argument_list[3].int_reference;
+          if (attribute_flag[4])
+            image->blur=argument_list[4].double_reference;
           image=ZoomImage(image,rectangle_info.width,rectangle_info.height);
           break;
         }

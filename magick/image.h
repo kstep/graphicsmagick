@@ -74,7 +74,7 @@ typedef struct _FilterInfo
 {
   double
     (*function)(double),
-    width;
+    support;
 } FilterInfo;
 
 typedef struct _FrameInfo
@@ -149,7 +149,7 @@ typedef struct _ImageInfo
     units;
 
   FilterType
-    filter;
+    filter;  /* no longer used */
 
   PreviewType
     preview_type;
@@ -399,6 +399,9 @@ typedef struct _Image
 
   FilterType
     filter;
+
+  double
+    blur;
 
   unsigned long
     total_colors;
