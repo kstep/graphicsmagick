@@ -69,6 +69,14 @@
 #endif
 #endif
 
+#if defined(HasAUTOTRACE)
+/*
+  Forward declarations.
+*/
+static unsigned int
+  WriteSVGImage(const ImageInfo *,Image *);
+#endif
+
 /*
   Typedef declaractions.
 */
@@ -1513,9 +1521,6 @@ static void SVGStartElement(void *context,const xmlChar *name,
 
 static void SVGEndElement(void *context,const xmlChar *name)
 {
-  register int
-    i;
-
   SVGInfo
     *svg_info;
 
@@ -2137,6 +2142,9 @@ ModuleExport void RegisterSVGImage(void)
   entry=SetMagickInfo("SVG");
   entry->magick=IsSVG;
   entry->decoder=ReadSVGImage;
+#if defined(HasAUTOTRACE)
+  entry->encoder=WriteSVGImage;
+#endif
   entry->description=AllocateString("Scalable Vector Gaphics");
   entry->module=AllocateString("SVG");
   RegisterMagickInfo(entry);
@@ -2171,3 +2179,145 @@ ModuleExport void UnregisterSVGImage(void)
 {
   UnregisterMagickInfo("SVG");
 }
+
+#if defined(HasAUTOTRACE)
+/* autotrace -- convert bitmaps to splines. */
+#include "types.h"
+#include "image-header.h"
+#include "fit.h"
+#include "output.h"
+#include "pxl-outline.h"
+#include "atquantize.h"
+#include "thin-image.h" 
+
+char *version_string = "AutoTrace version 0.24a";
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e S V G I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method WriteSVGImage writes a image in the SVG - XML based W3C standard
+%  format.
+%
+%  The format of the WriteSVGImage method is:
+%
+%      unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o status: Method WriteSVGImage return True if the image is written.
+%      False is returned is there is a memory shortage or if the image file
+%      fails to write.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%    o image:  A pointer to a Image structure.
+%
+%
+*/
+static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
+{
+  FILE
+    *output_file;
+
+  bool
+    thin;
+
+  fitting_opts_type
+    fitting_opts;
+
+  image_header_type
+    image_header;
+
+  pixel_outline_list_type
+    pixels;
+
+  spline_list_array_type
+    splines;
+
+  bitmap_type
+    bitmap;
+
+  ImageType
+    image_type;
+
+  PixelPacket
+    p;
+
+  PixelPacket
+    *pixel;
+
+  QuantizeObj
+    *myQuant;
+
+  output_write
+    output_writer;
+
+  unsigned int
+    i,
+    j,
+    point,
+    np;
+
+  thin = false;
+  myQuant = NULL;
+  pixel=&p;
+
+  fitting_opts = new_fitting_opts ();
+
+  output_writer = output_get_handler("svg");
+  if (output_writer == NULL)
+    ThrowWriterException(FileOpenWarning,"Unable to write svg format",image);
+
+  image_type=GetImageType(image);
+  if(image_type == BilevelType || image_type == GrayscaleType)
+    np=1;
+  else
+    np=3;
+
+  bitmap.np=np;
+  bitmap.dimensions.width=image->columns;
+  bitmap.dimensions.height=image->rows;
+  bitmap.bitmap=(unsigned char*)AcquireMemory(np*image->columns*image->rows);
+  for(j=0,point=0;j<image->rows;j++)
+  {
+    for(i=0;i<image->columns;i++)
+    {
+      p=GetOnePixel(image,i,j);
+      bitmap.bitmap[point++]=pixel->red; /* if gray: red=green=blue */
+      if (np==3)
+      {
+        bitmap.bitmap[point++]=pixel->green;
+        bitmap.bitmap[point++]=pixel->blue;
+      }
+    }
+  }
+  image_header.width = DIMENSIONS_WIDTH (bitmap.dimensions);
+  image_header.height = DIMENSIONS_HEIGHT (bitmap.dimensions);
+
+  if (fitting_opts.color_count > 0 && BITMAP_PLANES(bitmap)== 3)
+    quantize (bitmap.bitmap, bitmap.bitmap, DIMENSIONS_WIDTH (bitmap.dimensions),
+      DIMENSIONS_HEIGHT (bitmap.dimensions), fitting_opts.color_count,
+      fitting_opts.bgColor, &myQuant);
+  if (thin)
+    thin_image (&bitmap); 
+ 
+  pixels = find_outline_pixels (bitmap);
+  LiberateMemory((void **) &(bitmap.bitmap));
+  splines = fitted_splines (pixels, &fitting_opts);
+
+  output_file = fopen(image->filename, "w");
+  if (output_file == (FILE *) NULL)
+    ThrowWriterException(FileOpenWarning,"Unable to open the output file",image);
+  output_writer (output_file, image->filename,
+		0, 0, image_header.width, image_header.height, splines);
+  
+  return(True);
+}
+#endif
