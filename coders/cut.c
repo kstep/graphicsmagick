@@ -125,41 +125,35 @@ register IndexPacket *indexes;
            indexes=GetIndexes(image);
            for (x=0; x < ((int) image->columns-1); x+=2)
                  {
-                 index=(*p >> 6) & 0x3;
-		 if(index>=image->colors) index=image->colors-1;
+                 index=ValidateColormapIndex(image,(*p >> 6) & 0x3);
                  indexes[x]=index;
                  *q++=image->colormap[index];
-		 index=(*p >> 4) & 0x3;
-		 if(index>=image->colors) index=image->colors-1;
+		 index=ValidateColormapIndex(image,(*p >> 4) & 0x3);
                  indexes[x]=index;
                  *q++=image->colormap[index];
-		 index=(*p >> 2) & 0x3;
-		 if(index>=image->colors) index=image->colors-1;
+		 index=ValidateColormapIndex(image,(*p >> 2) & 0x3);
                  indexes[x]=index;
                  *q++=image->colormap[index];
-                 index=(*p) & 0x3;
-		 if(index>=image->colors) index=image->colors-1;
+                 index=ValidateColormapIndex(image,(*p) & 0x3);
                  indexes[x+1]=index;
                  *q++=image->colormap[index];
 		 p++;
                  }
            if ((image->columns % 4) != 0)
                  {
-                   index=(*p >> 6) & 0x3;
-		   if(index>=image->colors) index=image->colors-1;
+                   index=ValidateColormapIndex(image,(*p >> 6) & 0x3);
                    indexes[x]=index;
                    *q++=image->colormap[index];
 		   if ((image->columns % 4) >= 1)
 
 		      {
-		      index=(*p >> 4) & 0x3;
-		      if(index>=image->colors) index=image->colors-1;
+		      index=ValidateColormapIndex(image,(*p >> 4) & 0x3);
                       indexes[x]=index;
                       *q++=image->colormap[index];
 		      if ((image->columns % 4) >= 2)
 
 		        {
-		        index=(*p >> 2) & 0x3;
+		        index=ValidateColormapIndex(image,(*p >> 2) & 0x3);
                         indexes[x]=index;
                         *q++=image->colormap[index];
 		        }
@@ -182,20 +176,17 @@ register IndexPacket *indexes;
            indexes=GetIndexes(image);
            for (x=0; x < ((int) image->columns-1); x+=2)
                  {
-                 index=(*p >> 4) & 0xf;
-		 if(index>=image->colors) index=image->colors-1;
+                 index=ValidateColormapIndex(image,(*p >> 4) & 0xf);
 		 indexes[x]=index;
                  *q++=image->colormap[index];
-                 index=(*p) & 0xf;
-		 if(index>=image->colors) index=image->colors-1;
+                 index=ValidateColormapIndex(image,(*p) & 0xf);
                  indexes[x+1]=index;
                  *q++=image->colormap[index];
                  p++;
                  }
            if ((image->columns % 2) != 0)
                  {
-                   index=(*p >> 4) & 0xf;
-		   if(index>=image->colors) index=image->colors-1;
+                   index=ValidateColormapIndex(image,(*p >> 4) & 0xf);
                    indexes[x]=index;
                    *q++=image->colormap[index];
                    p++;
@@ -215,10 +206,10 @@ register IndexPacket *indexes;
 
 	   for (x=0; x < (int) image->columns; x++)
                 {
-                index=(*p++);
-		if(index>=image->colors) index=image->colors-1;
+                index=ValidateColormapIndex(image,*p);
                 indexes[x]=index;
                 *q++=image->colormap[index];
+                p++;
                 }
            if (!SyncImagePixels(image))
                  break;

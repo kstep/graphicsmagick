@@ -1634,3 +1634,44 @@ MagickExport unsigned int QueryColorName(const PixelPacket *color,char *name)
       (unsigned int) color->opacity);
   return((unsigned int) min_distance);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   V a l i d a t e C o l o r m a p I n d e x                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ValidateColormapIndex validates the colormap index.  If the index
+%  does not range from 0 to the number of colors in the colormap an exception
+%  is issued and 0 is returned.
+%
+%  The format of the ValidateColormapIndex method is:
+%
+%      IndexPacket ValidateColormapIndex(Image *image,const int index)
+%
+%  A description of each parameter follows:
+%
+%    o index: Method ValidateColormapIndex returns colormap index if it is
+%      valid other an exception is issued and 0 is returned.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o index: This integer is the colormap index.
+%
+%
+*/
+MagickExport IndexPacket ValidateColormapIndex(Image *image,const int index)
+{
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if ((index >= 0) && (index < image->colors))
+    return(index);
+  ThrowException(&image->exception,CorruptImageWarning,
+    "invalid colormap index",image->filename);
+  return(0);
+}

@@ -1308,30 +1308,21 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (int) image->columns; x++)
           {
-            index=(*p++);
-            if (index >= image->colors)
-              {
-                index=0;
-                ThrowException(&image->exception,CorruptImageWarning,
-                  "invalid colormap index",image->filename);
-              }
+            index=ValidateColormapIndex(image,*p);
             indexes[x]=index;
-            *q++=image->colormap[index];
+            *q=image->colormap[index];
+            p++;
+            q++;
           }
           break;
         }
       for (x=0; x < (int) image->columns; x++)
       {
-        index=(*p++ << 8);
-        index|=(*p++);
-        if (index >= image->colors)
-          {
-            index=0;
-            ThrowException(&image->exception,CorruptImageWarning,
-              "invalid colormap index",image->filename);
-              }
+        index=ValidateColormapIndex(image,(*p << 8) | *(p+1));
         indexes[x]=index;
-        *q++=image->colormap[index];
+        *q=image->colormap[index];
+        p+=2;
+        q++;
       }
       break;
     }
@@ -1341,33 +1332,24 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (int) image->columns; x++)
           {
-            index=(*p++);
-            if (index >= image->colors)
-              {
-                index=0;
-                ThrowException(&image->exception,CorruptImageWarning,
-                  "invalid colormap index",image->filename);
-              }
+            index=ValidateColormapIndex(image,*p);
             indexes[x]=index;
             *q=image->colormap[index];
-            q->opacity=MaxRGB-UpScale(*p++);
+            p++;
+            q->opacity=MaxRGB-UpScale(*p);
+            p++;
             q++;
           }
           break;
         }
       for (x=0; x < (int) image->columns; x++)
       {
-        index=DownScale(*p++) << 8;
-        index|=DownScale(*p++);
-        if (index >= image->colors)
-          {
-            index=0;
-            ThrowException(&image->exception,CorruptImageWarning,
-              "invalid colormap index",image->filename);
-          }
+        index=ValidateColormapIndex(image,
+          (DownScale(*p) << 8) | DownScale(*(p+1)));
         indexes[x]=index;
         *q=image->colormap[index];
-        q->opacity=XDownScale(XUpScale(MaxRGB)-(((*p) << 8) | *(p+1)));
+        p+=2;
+        q->opacity=XDownScale(XUpScale(MaxRGB)-((*p << 8) | *(p+1)));
         p+=2;
         q++;
       }
@@ -1379,30 +1361,21 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (int) image->columns; x++)
           {
-            index=(*p++);
-            if (index >= image->colors)
-              {
-                index=0;
-                ThrowException(&image->exception,CorruptImageWarning,
-                  "invalid colormap index",image->filename);
-              }
+            index=ValidateColormapIndex(image,*p);
             indexes[x]=index;
-            *q++=image->colormap[index];
+            *q=image->colormap[index];
+            p++;
+            q++;
           }
           break;
         }
       for (x=0; x < (int) image->columns; x++)
       {
-        index= ((*p) << 8) | *(p+1);
-        p+=2;
-        if (index >= image->colors)
-          {
-            index=0;
-            ThrowException(&image->exception,CorruptImageWarning,
-              "invalid colormap index",image->filename);
-          }
+        index=ValidateColormapIndex(image,(*p << 8) | *(p+1));
         indexes[x]=index;
-        *q++=image->colormap[index];
+        *q=image->colormap[index];
+        p+=2;
+        q++;
       }
       break;
     }
@@ -1412,33 +1385,22 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (int) image->columns; x++)
           {
-            index=(*p++);
-            if (index >= image->colors)
-              {
-                index=0;
-                ThrowException(&image->exception,CorruptImageWarning,
-                  "invalid colormap index",image->filename);
-              }
+            index=ValidateColormapIndex(image,*p);
             indexes[x]=index;
             *q=image->colormap[index];
             q->opacity=MaxRGB-(*p++);
+            p++;
             q++;
           }
           break;
         }
       for (x=0; x < (int) image->columns; x++)
       {
-        index=((*p) << 8) | *(p+1);
-        p+=2;
-        if (index >= image->colors)
-          {
-            index=0;
-            ThrowException(&image->exception,CorruptImageWarning,
-              "invalid colormap index",image->filename);
-          }
+        index=ValidateColormapIndex(image,(*p << 8) | *(p+1));
         indexes[x]=index;
         *q=image->colormap[index];
-        q->opacity=XDownScale(XUpScale(MaxRGB)-(((*p) << 8) | *(p+1)));
+        p+=2;
+        q->opacity=XDownScale(XUpScale(MaxRGB)-((*p << 8) | *(p+1)));
         p+=2;
         q++;
       }

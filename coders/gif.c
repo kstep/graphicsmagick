@@ -273,7 +273,7 @@ static unsigned int DecodeImage(Image *image,const int opacity,
         Pop a pixel off the pixel stack.
       */
       top_stack--;
-      index=(*top_stack);
+      index=ValidateColormapIndex(image,*top_stack);
       indexes[x]=index;
       *q=image->colormap[index];
       q->opacity=index == opacity ? TransparentOpacity : OpaqueOpacity;

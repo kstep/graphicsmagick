@@ -426,11 +426,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         indexes=GetIndexes(image);
         for (x=0; x < (int) image->columns; x++)
         {
-          index=XGetPixel(ximage,x,y);
+          index=ValidateColormapIndex(image,XGetPixel(ximage,x,y));
           indexes[x]=index;
-          if (index >= image->colors)
-            ThrowReaderException(CorruptImageWarning,"invalid colormap index",
-              image);
           *q++=image->colormap[index];
         }
         if (!SyncImagePixels(image))

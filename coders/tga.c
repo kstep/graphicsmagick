@@ -331,7 +331,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               /*
                 Gray scale.
               */
-              index=ReadBlobByte(image);
+              index=ValidateColormapIndex(image,ReadBlobByte(image));
               if (tga_info.colormap_type != 0)
                 pixel=image->colormap[index];
               else
@@ -354,7 +354,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               pixel.green=(Quantum)
                 ((MaxRGB*(((int) (k & 0x03) << 3)+((int) (j & 0xe0) >> 5)))/31);
               pixel.blue=(Quantum) ((MaxRGB*((int) (j & 0x1f)))/31);
-              index=((unsigned short) k << 8)+j;
+              index=ValidateColormapIndex(image,((unsigned short) k << 8)+j);
               break;
             }
             case 24:

@@ -704,7 +704,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
           {
             for (x=0; x < (int) image->columns; x++)
             {
-              index=GETJSAMPLE(*p++)/16;
+              index=ValidateColormapIndex(image,GETJSAMPLE(*p++)/16);
               indexes[x]=index;
               *q++=image->colormap[index];
             }
@@ -727,7 +727,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         {
           for (x=0; x < (int) image->columns; x++)
           {
-            index=GETJSAMPLE(*p++);
+            index=ValidateColormapIndex(image,GETJSAMPLE(*p++));
             indexes[x]=index;
             *q++=image->colormap[index];
           }

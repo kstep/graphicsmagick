@@ -1271,6 +1271,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       image->temporary=True;
     }
   CloseBlob(image);
+  tiff_exception=(&image->exception);
   TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
   tiff=TIFFOpen(image->filename,WriteBinaryType);

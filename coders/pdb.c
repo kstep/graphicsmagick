@@ -423,16 +423,16 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         indexes=GetIndexes(image);
         for (x=0; x < image->columns; x+=4)
         {
-          index=3-((*p >> 6) & 0x03);
+          index=ValidateColormapIndex(image,3-((*p >> 6) & 0x03));
           indexes[x]=index;
           *q++=image->colormap[index];
-          index=3-((*p >> 4) & 0x03);
+          index=ValidateColormapIndex(image,3-((*p >> 4) & 0x03));
           indexes[x+1]=index;
           *q++=image->colormap[index];
-          index=3-((*p >> 2) & 0x03);
+          index=ValidateColormapIndex(image,3-((*p >> 2) & 0x03));
           indexes[x+2]=index;
           *q++=image->colormap[index];
-          index=3-((*p) & 0x03);
+          index=ValidateColormapIndex(image,3-((*p) & 0x03));
           indexes[x+3]=index;
           *q++=image->colormap[index];
           p++;
@@ -457,10 +457,10 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         indexes=GetIndexes(image);
         for (x=0; x < image->columns; x+=2)
         {
-          index=15-((*p >> 4) & 0x0f);
+          index=ValidateColormapIndex(image,15-((*p >> 4) & 0x0f));
           indexes[x]=index;
           *q++=image->colormap[index];
-          index=15-((*p) & 0x0f);
+          index=ValidateColormapIndex(image,15-((*p) & 0x0f));
           indexes[x+1]=index;
           *q++=image->colormap[index];
           p++;

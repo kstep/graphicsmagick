@@ -1051,7 +1051,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               {
                 if (tile_image->storage_class == PseudoClass)
                   {
-                    index=(*p);
+                    index=ValidateColormapIndex(image,*p);
                     indexes[x]=index;
                     q->red=tile_image->colormap[index].red;
                     q->green=tile_image->colormap[index].green;

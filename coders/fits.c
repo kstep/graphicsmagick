@@ -442,6 +442,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         index=(IndexPacket) ((scaled_pixel < 0) ? 0 :
           (scaled_pixel > ((1 << image->depth)-1)) ? ((1 << image->depth)-1) :
           scaled_pixel+0.5);
+        index=ValidateColormapIndex(image,index);
         indexes[x]=index;
         *q++=image->colormap[index];
       }

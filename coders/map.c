@@ -183,12 +183,9 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) ReadBlob(image,packet_size*image->columns,(char *) pixels);
     for (x=0; x < (int) image->columns; x++)
     {
-      index=(*p++);
+      index=ValidateColormapIndex(image,*p++);
       if (image->colors > 256)
-        index=(index << 8)+(*p++);
-      if (index >= image->colors)
-        ThrowReaderException(CorruptImageWarning,"invalid colormap index",
-          image);
+        index=ValidateColormapIndex(image,(index << 8)+(*p++));
       indexes[x]=index;
       *q++=image->colormap[index];
     }

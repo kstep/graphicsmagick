@@ -360,7 +360,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           indexes=GetIndexes(image);
           for (x=0; x < (int) image->columns; x++)
           {
-            index=!PNMInteger(image,2);
+            index=ValidateColormapIndex(image,!PNMInteger(image,2));
             indexes[x]=index;
             *q++=image->colormap[index];
           }
@@ -385,7 +385,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           indexes=GetIndexes(image);
           for (x=0; x < (int) image->columns; x++)
           {
-            index=PNMInteger(image,10);
+            index=ValidateColormapIndex(image,PNMInteger(image,10));
             indexes[x]=index;
             *q++=image->colormap[index];
           }
@@ -493,15 +493,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (x=0; x < (int) image->columns; x++)
           {
             if (image->depth <= 8)
-              index=(*p++);
+              index=ValidateColormapIndex(image,*p++);
             else
               {
-                index=(*p++) << 8;
-                index|=(*p++);
+                index=ValidateColormapIndex(image,(*p << 8) | *(p+1));
+                p+=2;
               }
-            if (index >= image->colors)
-              ThrowReaderException(CorruptImageWarning,"invalid colormap index",
-                image);
             indexes[x]=index;
             *q++=image->colormap[index];
           }
@@ -925,7 +922,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             break;
           for (x=0; x < (int) image->columns; x++)
           {
-            index=(short unsigned int) Intensity(*p);
+            index=Intensity(*p);
             FormatString(buffer,"%d ",index);
             (void) WriteBlobString(image,buffer);
             i++;
@@ -1031,7 +1028,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             break;
           for (x=0; x < (int) image->columns; x++)
           {
-            index=(short unsigned int) DownScale(Intensity(*p)+0.5);
+            index=DownScale(Intensity(*p)+0.5);
             (void) WriteBlobByte(image,index);
             p++;
           }

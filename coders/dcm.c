@@ -3071,14 +3071,14 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             p=data;
             for (i=0; i < (int) image->colors; i++)
             {
-              index=(*p++);
-              index|=(*p++) << 8;
+              index=ValidateColormapIndex(image,*p | *(p+1) << 8);
               if (element == 0x1201)
                 image->colormap[i].red=(Quantum) XDownScale(index);
               if (element == 0x1202)
                 image->colormap[i].green=(Quantum) XDownScale(index);
               if (element == 0x1203)
                 image->colormap[i].blue=(Quantum) XDownScale(index);
+              p+=2;
             }
             break;
           }
@@ -3276,6 +3276,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   index=graymap[index];
                 if (scale != (Quantum *) NULL)
                   index=scale[index];
+                index=ValidateColormapIndex(image,index);
                 indexes[x]=index;
                 red=image->colormap[index].red;
                 green=image->colormap[index].green;
