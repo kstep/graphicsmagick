@@ -11,6 +11,8 @@
 #include "Magick++/Exception.h"
 #include "Magick++/Include.h"
 
+using namespace std;
+
 Magick::CoderInfo::CoderInfo ( const std::string &name_ )
   : _name(),
     _description(),
