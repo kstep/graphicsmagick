@@ -2671,7 +2671,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           */
           image->storage_class=DirectClass;
           image->matte=True;
-          class=image->storage_class;
+          storage_class=image->storage_class;
           for (y=0; y < (int) image->rows; y++)
           {
             image->storage_class=storage_class;
