@@ -606,7 +606,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
         */
         delegate_info=(DelegateInfo *) AcquireMemory(sizeof(DelegateInfo));
         if (delegate_info == (DelegateInfo *) NULL)
-          MagickError(ResourceLimitError,"Unable to allocate delegates",
+          MagickError(ResourceLimitError,"Unable to allocate delegate",
             "Memory allocation failed");
         (void) memset(delegate_info,0,sizeof(DelegateInfo));
         if (delegate_list == (DelegateInfo *) NULL)

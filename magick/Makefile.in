@@ -225,8 +225,8 @@ libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VE
 MAGICK_BASE_SRCS = memory.c blob.c cache.c error.c monitor.c constitute.c \
   image.c color.c quantize.c segment.c zoom.c transform.c shear.c enhance.c \
   effect.c decorate.c annotate.c type.c draw.c montage.c semaphore.c \
-  attribute.c signature.c compress.c gem.c magic.c magick.c delegate.c \
-  module.c static.c timer.c utility.c cache_view.c stream.c animate.c \
+  attribute.c signature.c compress.c gem.c registry.c magic.c magick.c \
+  delegate.c module.c static.c timer.c utility.c cache_view.c stream.c animate.c \
   display.c widget.c xwindow.c PreRvIcccm.c
 
 # Library sources
@@ -241,7 +241,7 @@ bin_SCRIPTS = Magick-config
 # Headers which are installed
 include_HEADERS = PreRvIcccm.h api.h attribute.h blob.h cache.h cache_view.h \
   classify.h compress.h magick_config.h delegate.h draw.h error.h gem.h \
-  image.h magic.h magick.h module.h monitor.h quantize.h semaphore.h \
+  image.h magic.h magick.h module.h monitor.h quantize.h registry.h semaphore.h \
   timer.h utility.h version.h widget.h xwindow.h
 
 
@@ -280,7 +280,7 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 @WITH_MODULES_TRUE@    color.lo quantize.lo segment.lo zoom.lo transform.lo \
 @WITH_MODULES_TRUE@    shear.lo enhance.lo effect.lo decorate.lo annotate.lo \
 @WITH_MODULES_TRUE@    type.lo draw.lo montage.lo semaphore.lo attribute.lo \
-@WITH_MODULES_TRUE@    signature.lo compress.lo gem.lo magic.lo magick.lo \
+@WITH_MODULES_TRUE@    signature.lo compress.lo gem.lo registry.lo magic.lo magick.lo \
 @WITH_MODULES_TRUE@    delegate.lo module.lo static.lo timer.lo utility.lo \
 @WITH_MODULES_TRUE@    cache_view.lo stream.lo animate.lo display.lo \
 @WITH_MODULES_TRUE@    widget.lo xwindow.lo PreRvIcccm.lo
@@ -289,7 +289,7 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 @WITH_MODULES_FALSE@	cache_view.lo color.lo compress.lo \
 @WITH_MODULES_FALSE@	constitute.lo decorate.lo delegate.lo \
 @WITH_MODULES_FALSE@	display.lo draw.lo effect.lo enhance.lo \
-@WITH_MODULES_FALSE@	error.lo gem.lo image.lo magic.lo magick.lo \
+@WITH_MODULES_FALSE@	error.lo gem.lo registry.lo image.lo magic.lo magick.lo \
 @WITH_MODULES_FALSE@	memory.lo module.lo monitor.lo montage.lo \
 @WITH_MODULES_FALSE@	quantize.lo segment.lo semaphore.lo \
 @WITH_MODULES_FALSE@	shear.lo signature.lo static.lo stream.lo \
@@ -311,7 +311,7 @@ depcomp = $(SHELL) $(top_srcdir)/depcomp
 @AMDEP_TRUE@	$(DEPDIR)/decorate.Plo $(DEPDIR)/delegate.Plo \
 @AMDEP_TRUE@	$(DEPDIR)/display.Plo $(DEPDIR)/draw.Plo \
 @AMDEP_TRUE@	$(DEPDIR)/effect.Plo $(DEPDIR)/enhance.Plo \
-@AMDEP_TRUE@	$(DEPDIR)/error.Plo $(DEPDIR)/gem.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/error.Plo $(DEPDIR)/gem.Plo $(DEPDIR)/registry.Plo \
 @AMDEP_TRUE@	$(DEPDIR)/image.Plo $(DEPDIR)/magic.Plo \
 @AMDEP_TRUE@	$(DEPDIR)/magick.Plo $(DEPDIR)/memory.Plo \
 @AMDEP_TRUE@	$(DEPDIR)/module.Plo $(DEPDIR)/monitor.Plo \
@@ -458,6 +458,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/enhance.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/error.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/gem.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/registry.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/image.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/magic.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/magick.Plo@am__quote@

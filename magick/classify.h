@@ -133,6 +133,7 @@ typedef enum
   BlobWarning = 335,
   CacheWarning = 340,
   StreamWarning = 345,
+  RegistryWarning = 350,
   FatalException = 400,
   ResourceLimitError = 400,
   XServerError = 405,
@@ -143,7 +144,8 @@ typedef enum
   FileOpenError = 430,
   BlobError = 435,
   CacheError = 440,
-  StreamError = 445
+  StreamError = 445,
+  RegistryError = 445
 } ExceptionType;
 
 typedef enum
@@ -394,6 +396,12 @@ typedef enum
   CMYKQuantum,
   CMYKAQuantum
 } QuantumType;
+
+typedef enum
+{
+  UndefinedRegistryType,
+  ImageRegistryType
+} RegistryType;
 
 typedef enum
 {

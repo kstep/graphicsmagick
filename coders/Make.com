@@ -74,6 +74,7 @@ $call Make ps2.c
 $call Make ps3.c
 $call Make psd.c
 $call Make pwp.c
+$call Make registry.c
 $call Make rgb.c
 $call Make rla.c
 $call Make rle.c

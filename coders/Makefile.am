@@ -37,9 +37,9 @@ MAGICK_CODER_SRCS = 8bim.c app1.c art.c avi.c avs.c bmp.c cmyk.c cut.c dcm.c \
   histogram.c html.c icm.c icon.c iptc.c jbig.c jpeg.c jp2.c label.c logo.c \
   map.c mat.c matte.c miff.c mono.c mpc.c mpeg.c mtv.c mvg.c null.c pcd.c \
   pcl.c pcx.c pdb.c pdf.c pict.c pix.c plasma.c png.c pnm.c preview.c ps.c \
-  ps2.c ps3.c psd.c pwp.c rgb.c rla.c rle.c sct.c sfw.c sgi.c stegano.c sun.c \
-  svg.c tga.c tiff.c tile.c tim.c ttf.c txt.c uil.c url.c uyvy.c vicar.c vid.c \
-  viff.c wbmp.c wmf.c wpg.c x.c xbm.c xc.c xpm.c xwd.c yuv.c
+  ps2.c ps3.c psd.c pwp.c registry.c rgb.c rla.c rle.c sct.c sfw.c sgi.c \
+  stegano.c sun.c svg.c tga.c tiff.c tile.c tim.c ttf.c txt.c uil.c url.c uyvy.c \
+  vicar.c vid.c viff.c wbmp.c wmf.c wpg.c x.c xbm.c xc.c xpm.c xwd.c yuv.c
 
 MAJOR_VERSION=@MAJOR_VERSION@
 MINOR_VERSION=@MINOR_VERSION@
@@ -73,10 +73,11 @@ pkg_LTLIBRARIES   = 8bim.la app1.la art.la avi.la avs.la bmp.la cmyk.la cut.la \
   hdf.la histogram.la html.la icm.la icon.la iptc.la jbig.la jpeg.la jp2.la \
   label.la logo.la map.la mat.la matte.la miff.la mono.la mpc.la mpeg.la \
   mtv.la mvg.la null.la pcd.la pcl.la pcx.la pdb.la pdf.la pict.la pix.la \
-  plasma.la png.la pnm.la preview.la ps.la ps2.la ps3.la psd.la pwp.la rgb.la \
-  rla.la  rle.la sct.la sfw.la sgi.la stegano.la sun.la svg.la tga.la tiff.la \
-  tile.la tim.la ttf.la txt.la uil.la url.la uyvy.la vicar.la vid.la viff.la \
-  wbmp.la wmf.la wpg.la x.la xbm.la xc.la xpm.la xwd.la yuv.la
+  plasma.la png.la pnm.la preview.la ps.la ps2.la ps3.la psd.la pwp.la \
+  registry.la rgb.la rla.la  rle.la sct.la sfw.la sgi.la stegano.la sun.la \
+  svg.la tga.la tiff.la tile.la tim.la ttf.la txt.la uil.la url.la uyvy.la \
+  vicar.la vid.la viff.la wbmp.la wmf.la wpg.la x.la xbm.la xc.la xpm.la xwd.la \
+  yuv.la
 else
 pkg_LTLIBRARIES   =
 endif # WITH_MODULES
@@ -350,6 +351,11 @@ psd_la_LIBADD       = ../magick/libMagick.la
 pwp_la_SOURCES      = pwp.c
 pwp_la_LDFLAGS      = -no-undefined -module -avoid-version
 pwp_la_LIBADD       = ../magick/libMagick.la
+
+# REGISTRY module
+registry_la_SOURCES      = registry.c
+registry_la_LDFLAGS      = -no-undefined -module -avoid-version
+registry_la_LIBADD       = ../magick/libMagick.la
 
 # RGB module
 rgb_la_SOURCES      = rgb.c

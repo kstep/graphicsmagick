@@ -62,8 +62,8 @@
 static MagickInfo
   *magick_list = (MagickInfo *) NULL;
 
-static SemaphoreInfo *
-  magick_semaphore = (SemaphoreInfo *) NULL;
+static SemaphoreInfo
+  *magick_semaphore = (SemaphoreInfo *) NULL;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -93,6 +93,7 @@ MagickExport void DestroyMagick(void)
   DestroyMagicInfo();
   DestroyMagickInfo();
   DestroyConstitute();
+  DestroyMagickRegistry();
   DestroyCache();
   DestroySemaphore();
 }
