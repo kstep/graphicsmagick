@@ -125,7 +125,6 @@ static SemaphoreInfo
   Forward declarations.
 */
 static unsigned int
-  IsLogAccessible(const char *),
   ReadConfigureFile(const char *,const unsigned long,ExceptionInfo *);
 
 static void
@@ -172,6 +171,7 @@ MagickExport void DestroyLogInfo(void)
     LiberateMemory((void **) &log_info->format);
   LiberateMemory((void **) &log_info);
   DestroySemaphoreInfo(&log_semaphore);
+  log_initialize=True;
 }
 
 /*
@@ -279,7 +279,7 @@ static void *GetLogBlob(const char *filename,char *path,size_t *length,
       FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
         DirectorySeparator,filename);
 #endif
-      if (IsLogAccessible(path))
+      if (IsAccessible(path))
         return(LogToBlob(path,length,exception));
     }
   if (getenv("MAGICK_HOME") != (char *) NULL)
@@ -294,7 +294,7 @@ static void *GetLogBlob(const char *filename,char *path,size_t *length,
       FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_HOME"),
         DirectorySeparator,filename);
 #endif
-      if (IsLogAccessible(path))
+      if (IsAccessible(path))
         return(LogToBlob(path,length,exception));
     }
   if (getenv("HOME") != (char *) NULL)
@@ -304,20 +304,74 @@ static void *GetLogBlob(const char *filename,char *path,size_t *length,
       */
       FormatString(path,"%.1024s%s%s%.1024s",getenv("HOME"),
         *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator,filename);
-      if (IsLogAccessible(path))
+      if (IsAccessible(path))
         return(LogToBlob(path,length,exception));
     }
   /*
     Search current directory.
   */
   (void) strncpy(path,filename,MaxTextExtent-1);
-  if (IsLogAccessible(path))
+  if (IsAccessible(path))
     return(LogToBlob(path,length,exception));
 #if defined(WIN32)
   return(NTResourceToBlob(filename));
 #endif
 #endif
   return((void *) NULL);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   I n i t i a l i z e L o g I n f o                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method InitializeLogInfo initializes the structures required to support
+%  logging. It may be explicitly invoked before any other logging API is
+%  invoked, or it may be implicitly invoked (as required) by IsEventLogging(),
+%  LogMagickEvent(), or SetLogEventMask(). True is returned if initialization
+%  is successful.  False is returned if initialization fails, and detailed
+%  error info may be available (not currently assured) via the exception
+%  parameter. Since logging is not a critical function, failure to initialize
+%  the logging subsystem is not normally considered a fatal error.
+%
+%  The format of the InitializeLogInfo method is:
+%
+%      unsigned int InitializeLogInfo(ExceptionInfo *exception)
+%
+%  A description of each parameter follows.
+%
+%    o status: True on success.
+%
+%    o exception: May be filled with error information if there is
+%    an error.
+%
+*/
+MagickExport unsigned int InitializeLogInfo(ExceptionInfo *exception)
+{
+  unsigned int
+    initialize;
+
+  initialize=False;
+  if ((log_info == (LogInfo *) NULL) && (log_initialize == True))
+    {
+      AcquireSemaphoreInfo(&log_semaphore);
+      if ((log_info == (LogInfo *) NULL) && (log_initialize == True))
+        {
+          log_initialize=False;
+          initialize=True;
+        }
+      LiberateSemaphoreInfo(&log_semaphore);
+
+      if (initialize == True)
+        (void) ReadConfigureFile(LogFilename,0,exception);
+    }
+  return(log_info != (LogInfo *) NULL);
 }
 
 /*
@@ -342,79 +396,16 @@ static void *GetLogBlob(const char *filename,char *path,size_t *length,
 */
 MagickExport unsigned int IsEventLogging(void)
 {
-  unsigned int
-    initialize,
-    status;
-
-  initialize=False;
-  if ((log_info == (LogInfo *) NULL) && (log_initialize == True))
+  if (log_initialize == True)
     {
-      /* AcquireSemaphoreInfo(&log_semaphore); */
-      if ((log_info == (LogInfo *) NULL) && (log_initialize == True))
-        {
-          log_initialize=False;
-          initialize=True;
-        }
-      /* LiberateSemaphoreInfo(&log_semaphore); */
+      ExceptionInfo
+        exception;
 
-      if (initialize == True)
-        {
-          ExceptionInfo
-            exception;
-          
-          GetExceptionInfo(&exception);
-          (void) ReadConfigureFile(LogFilename,0,&exception);
-          DestroyExceptionInfo(&exception);
-        }
+      GetExceptionInfo(&exception);
+      (void) InitializeLogInfo(&exception);
+      DestroyExceptionInfo(&exception);
     }
-  if (log_info == (LogInfo *) NULL)
-    return(False);
-  status=log_info->events != NoEvents;
-  return(status);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+  I s L o g A c c e s s i b l e                                              %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  IsLogAccessible() returns True if the file as defined by filename is
-%  accessible.
-%
-%  The format of the IsLogAccessible method is:
-%
-%      unsigned int IsLogAccessible(const char *filename)
-%
-%  A description of each parameter follows.
-%
-%    o status:  IsLogAccessible() returns True is the file as defined by
-%      filename is accessible, otherwise False is returned.
-%
-%    o filename:  Specifies a pointer to an array of characters.  The unique
-%      file name is returned in this array.
-%
-%
-*/
-static unsigned int IsLogAccessible(const char *filename)
-{
-  int
-    status;
-
-  struct stat
-    file_info;
-
-  if ((filename == (const char *) NULL) || (*filename == '\0'))
-    return(False);
-  status=stat(filename,&file_info);
-  if (status != 0)
-    return(False);
-  return(S_ISREG(file_info.st_mode));
+  return ((log_info != (LogInfo *) NULL) && (log_info->events != NoEvents));
 }
 
 /*
@@ -1012,16 +1003,17 @@ static unsigned int ReadConfigureFile(const char *basename,
 */
 MagickExport unsigned long SetLogEventMask(const char *events)
 {
-  AcquireSemaphoreInfo(&log_semaphore);
-  if (log_info == (LogInfo *) NULL)
+
+  if (log_initialize == True)
     {
       ExceptionInfo
-        exception;
+            exception;
 
       GetExceptionInfo(&exception);
-      (void) ReadConfigureFile(LogFilename,0,&exception);
+      (void) InitializeLogInfo(&exception);
       DestroyExceptionInfo(&exception);
     }
+  AcquireSemaphoreInfo(&log_semaphore);
   if (log_info == (LogInfo *) NULL)
     {
       LiberateSemaphoreInfo(&log_semaphore);

@@ -16,12 +16,15 @@
 2003-03-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
-  <LI> magick/log.c (IsEventLogging): Only hold the lock long
-        enough to test initialization flags.  This should eliminate
-        one of the potential deadlock points.
-  <LI> magick/blob.c: Revert to version before logging statements
-        were added since logging has uncovered deadlocks in the logging
-        subsystem design.
+  <LI> magick/blob.c: Fix some erroneous log printf specifications.
+  <LI> magick/log.c (IsEventLogging): Use  InitializeLogInfo().
+        (InitializeLogInfo): New function to intelligently initialize
+        logging subsystem.  Only locks when initialization may be required,
+        and only locks long enough to determine if initialization is required.
+        This approach should avoid deadlocking while logging from functions
+        used to initialize logging.<BR>
+        (IsLogAccessible): No longer need this duplicate of IsAccessible().
+        (SetLogEventMask): Use  InitializeLogInfo().
 
 </UL>
 <p>

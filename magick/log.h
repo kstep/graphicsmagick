@@ -36,6 +36,7 @@ typedef enum
   Method declarations.
 */
 extern MagickExport unsigned int
+  InitializeLogInfo(ExceptionInfo *exception),
   IsEventLogging(void),
 #if defined(__GNUC__)
   LogMagickEvent(const LogEventType,const char *,const char *,
@@ -44,6 +45,7 @@ extern MagickExport unsigned int
   LogMagickEvent(const LogEventType,const char *,const char *,
     const unsigned long,const char *,...);
 #endif
+
 
 extern MagickExport unsigned long
   SetLogEventMask(const char *);
