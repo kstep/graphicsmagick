@@ -1262,12 +1262,13 @@ int main(int argc,char **argv)
       {
         if (LocaleCompare("quality",option+1) == 0)
           {
-            image_info->quality=75;
+            image_info->quality=DefaultCompressionQuality;
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,"MissingQuality",option);
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickFatalError(OptionFatalError,"MissingCompressionQuality",
+                    option);
                 image_info->quality=atol(argv[i]);
               }
             break;

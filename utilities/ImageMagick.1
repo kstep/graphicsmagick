@@ -616,6 +616,9 @@ Use this option to assign a specific comment to the image, when writing
 to an image format that supports comments. You can include the
 image filename, type, width, height, or other image attribute by embedding
 special format characters listed under the \fB-format\fP option.
+The comment is not drawn on the image, but is embedded in the image
+datastream via a "Comment" tag or similar mechanism.  If you want the
+comment to be visible on the image itself, use the \fB-draw\fP option.
 
 
 For example,
@@ -884,6 +887,10 @@ darker elements of the image. Use \fB-contrast\fP to enhance
 the image
 or \fB+contrast\fP to reduce the image contrast.
 
+
+For a more pronounced effect you can repeat the option:
+
+    convert rose: -contrast -contrast rose_c2.png
 .TP
 .B "-crop \fI<width>x<height>{+-}<x>{+-}<y>{%}"\fP
 \fRpreferred size and location of the cropped image
@@ -1728,9 +1735,14 @@ Use \fBLine\fP or \fBPlane\fP to create an
 .B "-label \fI<name>"\fP
 \fRassign a label to an image
 
-Use this option to assign a specific label to the image. Optionally you
-can include the image filename, type, width, height, or other image attribute
-by embedding special format character. See \fB-comment\fP for details.
+Use this option to assign a specific label to the image, when writing
+to an image format that supports labels, such as TIFF, PNG, MIFF, or
+PostScript. You can include the the image filename, type, width, height,
+or other image attribute by embedding special format character.  A label
+is not drawn on the image, but is embedded in the image datastream via
+a "Label" tag or similar mechanism.  If you want the
+label to be visible on the image itself, use the \fB-draw\fP option.
+See \fB-comment\fP for details.
 
 
 For example,
@@ -1751,6 +1763,10 @@ When converting to \fIPostScript\fP, use this option to specify a header
 string to print above the image. Specify the label font with
 \fB-font\fP.
 
+
+When creating a montage, by default the label associated with an image
+is displayed with the corresponding tile in the montage.  Use the
+\fB+label\fP option to suppress this behavior.
 .TP
 .B "-lat \fI<radius>x<sigma>{+-}<offset>{%}"\fP
 \fRperform local adaptive thresholding
