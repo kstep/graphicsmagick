@@ -54,7 +54,7 @@ EXTRA_DIST = Manifest.ps ImageMagick.html Magickshr.opt Make.com README.txt \
 	ltcf-gcj.sh ltconfig
 
 # Non-Automake subdirectories to distribute
-DISTDIRS = images scenes scripts www PerlMagick
+DISTDIRS = contrib images scenes scripts www PerlMagick
 dist-hook:
 	( \
 	  builddir=`pwd` ; \

@@ -163,6 +163,7 @@ WWWDecodeDelegate = @WWWDecodeDelegate@
 XCFDecodeDelegate = @XCFDecodeDelegate@
 X_CFLAGS = @X_CFLAGS@
 ZipDelegate = @ZipDelegate@
+freetype_config = @freetype_config@
 install_sh = @install_sh@
 
 #
@@ -218,7 +219,7 @@ EXTRA_DIST = Manifest.ps ImageMagick.html Magickshr.opt Make.com README.txt \
 
 
 # Non-Automake subdirectories to distribute
-DISTDIRS = images scenes scripts www PerlMagick
+DISTDIRS = contrib images scenes scripts www PerlMagick
 
 @WITH_PERL_TRUE@PERLMAGICK = @WITH_PERL_TRUE@PerlMagick
 @WITH_PERL_TRUE@PERLMAKEMAKER = @WITH_PERL_TRUE@$(PERLMAGICK)/Makefile.PL

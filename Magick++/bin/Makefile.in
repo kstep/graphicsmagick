@@ -158,6 +158,7 @@ WWWDecodeDelegate = @WWWDecodeDelegate@
 XCFDecodeDelegate = @XCFDecodeDelegate@
 X_CFLAGS = @X_CFLAGS@
 ZipDelegate = @ZipDelegate@
+freetype_config = @freetype_config@
 install_sh = @install_sh@
 
 #
