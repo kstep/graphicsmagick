@@ -459,7 +459,7 @@ use:</dd>
 
 <dl>
 <dd>
-<tt>convert -font helvetica -pen blue -draw "text 100,100 Cockatoo" bird.jpg
+<tt>convert -font helvetica -fill blue -draw "text 100,100 Cockatoo" bird.jpg
 bird.miff</tt></dd>
 </dl>
 
@@ -1089,8 +1089,8 @@ a file titled by the remaining characters in the string.</dd>
 
 <p><br>You can set the primitive color, font color, and font bounding box
 color with
-<b>-pen</b>, <b>-font</b>, and <b>-box</b> respectively. Options
-are processed in command line order so be sure to use <b>-pen</b><i>before</i>
+<b>-fill</b>, <b>-font</b>, and <b>-box</b> respectively. Options
+are processed in command line order so be sure to use <b>-fill</b><i>before</i>
 the <b>-draw</b> option.</dl>
 
 <dl>&nbsp;
@@ -1132,13 +1132,18 @@ perform histogram equalization to the image.</dd>
 <dl>&nbsp;
 <table BORDER=0 WIDTH="65%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle_option.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-fill</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color
+="#FFFFFF"><font size=+1>-fill
+<i>color</i></font></font></font></b></td>
 </tr>
 </table>
 
 <dd>
-paint the interior a drawing primitive.</dd>
+color to use when filling a graphic primitive. See <b>-draw</b> for further
+details.</dd>
 </dl>
+
 
 <dl>&nbsp;
 <table BORDER=0 WIDTH="65%" >
@@ -1662,7 +1667,7 @@ transform image to span the full range of color values.</dd>
 change this color to the pen color within the image.</dd>
 
 <dd>
-See <b>-pen</b> for more details.</dd>
+See <b>-fill</b> for more details.</dd>
 </dl>
 
 <dl>&nbsp;
@@ -1763,22 +1768,6 @@ simulate an oil painting.</dd>
 Each pixel is replaced by the most frequent color in a circular neighborhood
 whose width is specified with <i>radius</i>.</dd>
 </dl>
-
-<dl>&nbsp;
-<table BORDER=0 WIDTH="65%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle_option.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-pen
-<i>color</i></font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
-set the color of the font or opaque color. See <b>-draw</b> for further
-details.</dd>
-
-<p><br>See <b>X(1)</b> for details about the color specification. A pen
-can also be an image. Specify the pen color as an image name preceded by
-a <tt>@</tt> (e.g. <tt>@tile.png</tt>).</dl>
 
 <dl>&nbsp;
 <table BORDER=0 WIDTH="65%" >
@@ -2164,6 +2153,19 @@ displace image pixels by a random amount.</dd>
 <dd>
 <i>Amount</i> defines the size of the neighborhood around each pixel to
 choose a candidate pixel to swap.</dd>
+</dl>
+
+<dl>&nbsp;
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle_option.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-stroke
+<i>color</i></font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+color to use when stroking a graphic primitive. See <b>-draw</b> for further
+details.</dd>
 </dl>
 
 <dl>&nbsp;

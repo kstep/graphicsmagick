@@ -102,7 +102,7 @@
 %    -dispose method     GIF disposal method
 %    -dither             apply Floyd/Steinberg error diffusion to image
 %    -draw string        annotate the image with a graphic primitive
-%    -fill color         fill color for annotating
+%    -fill color         color to use when filling a graphic primitive
 %    -filter type        use this filter when resizing an image
 %    -frame geometry     surround image with an ornamental border
 %    -gamma value        level of gamma correction
@@ -121,7 +121,7 @@
 %    -shadow             add a shadow beneath a tile to simulate depth
 %    -sharpen factor     apply a filter to sharpen the image
 %    -size geometry      width and height of image
-%    -stroke color       stoke color for annotating
+%    -stroke color       color to use when stroking a graphic primitive
 %    -texture filename   name of texture to tile onto the image background
 %    -tile geometry      number of tiles per row and column
 %    -transparent color  make this color transparent within the image
@@ -191,7 +191,7 @@ static void Usage(const char *client_name)
       "-dispose method     GIF disposal method",
       "-dither             apply Floyd/Steinberg error diffusion to image",
       "-draw string        annotate the image with a graphic primitive",
-      "-fill color         fill color for annotating",
+      "-fill color         color to use when filling a graphic primitive",
       "-filter type        use this filter when resizing an image",
       "-frame geometry     surround image with an ornamental border",
       "-gamma value        level of gamma correction",
@@ -209,7 +209,7 @@ static void Usage(const char *client_name)
       "-scene value        image scene number",
       "-shadow             add a shadow beneath a tile to simulate depth",
       "-size geometry      width and height of image",
-      "-stroke color       stoke color for annotating",
+      "-stroke color       color to use when stroking a graphic primitive",
       "-texture filename   name of texture to tile onto the image background",
       "-tile geometry      number of tiles per row and column",
       "-transparent color  make this color transparent within the image",
@@ -1017,7 +1017,7 @@ int main(int argc,char **argv)
                 {
                   i++;
                   if (i == argc)
-                    MagickError(OptionError,"Missing stroke color",option);
+                    MagickError(OptionError,"Missing color",option);
                   (void) QueryColorDatabase(argv[i],&image_info->stroke);
                 }
               montage_info->stroke=image_info->stroke;

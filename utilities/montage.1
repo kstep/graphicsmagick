@@ -440,9 +440,13 @@ If the first character of \fIstring\fP is \fB@\fP, the text is read
 from a file titled by the remaining characters in the string.
 
 You can set the primitive color, font color, and font bounding box color with
-\fB-pen\fP, \fB-font\fP, and \fB-box\fP respectively.  Options are
-processed in command line order so be sure to use \fB-pen\fP
+\fB-fill\fP, \fB-font\fP, and \fB-box\fP respectively.  Options are
+processed in command line order so be sure to use \fB-fill\fP
 \fIbefore\fP the \fB-draw\fP option.
+.TP
+.B "-fill \fIcolor\fP"
+color to use when filling a graphic primitive.  See \fB-draw\fP for further
+details.
 .TP
 .B "-filter \fItype\fP"
 use this type of filter when resizing an image.
@@ -652,11 +656,6 @@ The default page dimensions for a TEXT image is 612x792.
 
 This option is used in concert with \fB-density\fP.
 .TP
-.B "-pen \fIcolor\fP"
-set the color of the font.
-
-See \fBX(1)\fP for details about the color specification.
-.TP
 .B "-pointsize \fIvalue\fP"
 pointsize of the Postscript font.
 .TP
@@ -722,6 +721,10 @@ dimensions are unknown such as \fBGRAY\fP, \fBRGB\fP, or \fBCMYK\fP.
 In addition to width and height, use \fB-size\fP to skip any header
 information in the image or tell the number of colors in a \fBMAP\fP
 image file, (e.g. -size 640x512+256).
+.TP
+.B "-stroke \fIcolor\fP"
+color to use when stroking a graphic primitive.  See \fB-draw\fP for further
+details.
 .TP
 .B "-texture \fIfilename\fP"
 name of texture to tile onto the image background.

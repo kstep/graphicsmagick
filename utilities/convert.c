@@ -87,7 +87,7 @@
 %    -emboss order        emboss an image
 %    -enhance             apply a digital filter to enhance a noisy image
 %    -equalize            perform histogram equalization to an image
-%    -fill color          fill color for drawing or annotating
+%    -fill color          color to use when filling a graphic primitive
 %    -filter type         use this filter when resizing an image
 %    -flip                flip image in the vertical direction
 %    -flop                flop image in the horizontal direction
@@ -137,7 +137,7 @@
 %    -size geometry       width and height of image
 %    -solarize threshold  negate all pixels above the threshold level
 %    -spread amount       displace image pixels by a random amount
-%    -stroke color        stoke color for drawing or annotating
+%    -stroke color        color to use when stroking a graphic primitive
 %    -swirl degrees       swirl image pixels about the center
 %    -texture filename    name of texture to tile onto the image background
 %    -threshold value     threshold the image
@@ -286,7 +286,7 @@ static void Usage(const char *client_name)
       "-emboss order        emboss an image",
       "-enhance             apply a digital filter to enhance a noisy image",
       "-equalize            perform histogram equalization to an image",
-      "-fill color          fill color for drawing or annotating",
+      "-fill color          color to use when filling a graphic primitive",
       "-filter type         use this filter when resizing an image",
       "-flip                flip image in the vertical direction",
       "-flop                flop image in the horizontal direction",
@@ -337,7 +337,7 @@ static void Usage(const char *client_name)
       "-size geometry       width and height of image",
       "-solarize threshold  negate all pixels above the threshold level",
       "-spread amount       displace image pixels by a random amount",
-      "-stroke color        stroke color for drawing or annotating",
+      "-stroke color        color to use when stoking a graphic primitive",
       "-swirl degrees       swirl image pixels about the center",
       "-texture filename    name of texture to tile onto the image background",
       "-threshold value     threshold the image",
@@ -1545,7 +1545,7 @@ int main(int argc,char **argv)
                 {
                   i++;
                   if (i == argc)
-                    MagickError(OptionError,"Missing stroke color",option);
+                    MagickError(OptionError,"Missing color",option);
                   (void) QueryColorDatabase(argv[i],&image_info->stroke);
                 }
               break;

@@ -602,7 +602,7 @@ qualified to work. That is, all 14 fields must be specified. Here is one
 example where we annotate an image with large <i>Helvetica</i> text:</dd>
 
 <pre>&nbsp;&nbsp;&nbsp; convert -font '-*-helvetica-*-*-*--300-300-*-*-*-*-iso8859-1' \
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -pen green -draw 'text 50,300 Magick' image.gif annotated.gif</pre>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -fill green -draw 'text 50,300 Magick' image.gif annotated.gif</pre>
 If you have the FreeType support built into ImageMagick, just increase
 your pointsize and/or density:
 <pre>&nbsp; convert -font @ArtBrush -pointsize 100 -density 300 ...</pre>

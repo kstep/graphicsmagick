@@ -106,13 +106,13 @@ and height, and the image border width defaults to the value of the X resource
 is determined by the font you specify with the <b>-font</b> command line
 argument or X resource. If you do not specify a font, a font is chosen
 that allows the name of the image to fit the maximum width of a tiled area.
-The label colors is determined by the <b>-background</b> and <b>-pen</b>
+The label colors is determined by the <b>-background</b> and <b>-fill</b>
 command line argument or X resource. Note, that if the background and pen
 colors are the same, labels will not appear.</dd>
 
 <dd>
 Initially, the composite image title is placed at the top if one is specified
-(refer to <b>-pen</b>). Next, each image is set onto the composite image,
+(refer to <b>-fill</b>). Next, each image is set onto the composite image,
 surrounded by its border color, with its name centered just below it. The
 individual images are left-justified within the width of the tiled area.
 The order of the images is the same as they appear on the command line
@@ -741,9 +741,20 @@ a file titled by the remaining characters in the string.</dd>
 <p>&nbsp;
 <p>You can set the primitive color, font color, and font bounding box color
 with
-<b>-pen</b>, <b>-font</b>, and <b>-box</b> respectively. Options are
-processed in command line order so be sure to use <b>-pen</b><i>before</i>
+<b>-fill</b>, <b>-font</b>, and <b>-box</b> respectively. Options are
+processed in command line order so be sure to use <b>-fill</b><i>before</i>
 the <b>-draw</b> option.
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle_option.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=-2>-fill
+<i>Color</i></font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+color to use when filling a graphic primitive.</dd>
+
+
 <table BORDER=0 WIDTH="65%" >
 <tr>
 <td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle_option.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=-2>-filter
@@ -1062,19 +1073,6 @@ is reduced to fit the page.</dd>
 
 <table BORDER=0 WIDTH="65%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle_option.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=-2>-pen
-<i>Color</i></font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
-set the color of the font.</dd>
-
-<dd>
-See <b>X(1)</b> for details about the color specification.</dd>
-
-<table BORDER=0 WIDTH="65%" >
-<tr>
 <td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle_option.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=-2>-pointsize
 <i>value</i></font></font></font></b></td>
 </tr>
@@ -1195,6 +1193,17 @@ are unknown such as <b>GRAY</b>, <b>RGB</b>, or <b>CMYK</b>. In addition
 to width and height, use <b>-size</b> to skip any header information in
 the image or tell the number of colors in a <b>MAP</b> image file, (e.g.
 -size 640x512+256).</dd>
+
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle_option.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=-2>-stroke
+<i>Color</i></font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+color to use when stroking a graphic primitive.</dd>
+
 
 <table BORDER=0 WIDTH="65%" >
 <tr>
