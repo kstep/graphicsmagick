@@ -1,3 +1,10 @@
+2003-10-06  Lars Ruben Skyum  <lars.skyum@stibo.com>
+
+	* magick/image.c (SetImageInfo): cleaned up parsing of sub-image
+	spcification (image.psd[0]). It would fail sometimes due to
+	incorrect reuse of variables. It's a bit strange the code accepts
+	more range syntax-variations than can be stored in ImageInfo.
+
 2003-10-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.c (ChannelImage): The OpacityChannel, MatteChannel,

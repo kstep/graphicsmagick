@@ -5220,45 +5220,50 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   *magic='\0';
   p=image_info->filename+Max((long) strlen(image_info->filename)-1,0);
   if (*p == ']')
-    for (q=p-1; q > image_info->filename; q--)
     {
-      unsigned long
-        first,
-        last;
-
       /*
         Look for sub-image specification (e.g. img0001.pcd[4]).
       */
-      if (*q != '[')
-        continue;
-      if (!IsFrame(q+1))
-        break;
-      (void) CloneString(&image_info->tile,q+1);
-      image_info->tile[p-q-1]='\0';
-      *q='\0';
-      image_info->subimage=atol(image_info->tile);
-      image_info->subrange=image_info->subimage;
-      p=image_info->tile;
-      for (q=p; *q != '\0'; p++)
-      {
-        while (isspace((int)(unsigned char) *p) || (*p == ','))
-          p++;
-        first=strtol(p,&q,10);
-        last=first;
-        while (isspace((int)(unsigned char) *q))
-          q++;
-        if (*q == '-')
-          last=strtol(q+1,&q,10);
-        if (first > last)
-          Swap(first,last);
-        if (first < image_info->subimage)
-          image_info->subimage=first;
-        if (last > image_info->subrange)
-          image_info->subrange=last;
-        p=q;
-      }
-      image_info->subrange-=image_info->subimage-1;
-      break;
+      for (q=p; (q > image_info->filename) && (*q != '['); q--)
+        ;
+
+      if ((q > image_info->filename) && (*q == '[') && IsFrame(q+1))
+        {
+          unsigned long
+            first,
+            last;
+
+          (void) CloneString(&image_info->tile,q+1);
+          /* Copy image range spec. to tile spec. w/o brackets */
+          image_info->tile[p-q-1]='\0';
+          /* Cut image range spec. from filename */
+          *q='\0';
+          image_info->subimage=atol(image_info->tile);
+          image_info->subrange=image_info->subimage;
+
+          /* Parse the image range spec. now placed in tile */
+          for (q=image_info->tile; *q != '\0'; )
+          {
+            while (isspace((int)(unsigned char) *q) || (*q == ','))
+              q++;
+            first=strtol(q,&q,10);
+            last=first;
+            while (isspace((int)(unsigned char) *q))
+              q++;
+            if (*q == '-')
+              last=strtol(q+1,&q,10);
+            if (first > last)
+              Swap(first,last);
+            if (first < image_info->subimage)
+              image_info->subimage=first;
+            if (last > image_info->subrange)
+              image_info->subrange=last;
+          }
+          image_info->subrange-=image_info->subimage-1;
+        }
+
+      /* Restore p to end of modified filename */
+      p=image_info->filename+Max((long) strlen(image_info->filename)-1,0);
     }
   while ((*p != '.') && (p > (image_info->filename+1)))
     p--;
