@@ -285,6 +285,9 @@ specified, it is composited into a single multi-image file.  Use
 Raw images are expected to have one byte per pixel unless \fBImageMagick\fP
 is compiled in 16-bit mode.  Here, the raw data is expected to be stored
 two bytes per pixel in most-significant-byte-first order.
+You can tell if
+\fBImageMagick\fP was compiled in 16-bit mode by typing "convert" without any
+options, and looking for "Q:16" in the first line of output.
 
 .SH EXAMPLES
 
@@ -311,7 +314,7 @@ To convert a raw \fBGRAY\fP image with a 128 byte header to a portable graymap,
 use:
 
 .nf
-     convert -size 768x5.2.228 gray:raw image.pgm
+     convert -depth 8 -size 768x512.128 gray:raw image.pgm
 .fi
 
 To convert a Photo CD image to a TIFF image, use:
@@ -554,8 +557,10 @@ Portable Document page.  The default is 72 pixels per inch in the horizontal
 and vertical direction.  This option is used in concert with \fB-page\fP.
 .TP
 .B "-depth \fIvalue\fP"
-depth of the image.  This is the number of bits in a pixel.  The only
-acceptable values are 8 or 16.
+depth of the image. This is the number of bits in a pixel. The only acceptable
+values are 8 or 16.  Use this option to specify the depth of raw images whose
+depth is unknown such as \fBGRAY\fP, \fBRGB\fP, or \fBCMYK\fP,
+or to change the depth of any image after it has been read.
 .TP
 .B "-despeckle"
 reduce the speckles within an image.
@@ -1359,8 +1364,8 @@ Use an optional index enclosed in brackets after a file name to specify
 a desired subimage of a multi-resolution image format like Photo CD
 (e.g. img0001.pcd[4]) or a range for MPEG images (e.g. video.mpg[50-75]).
 A subimage specification can be disjoint (e.g. image.tiff[2,7,4]).
-For raw images, specify a subimage with a geometry (e.g. -size 640x512
-image.rgb[320x256+50+50]).
+For raw images, specify a subimage with a geometry (e.g. -depth 8 -size
+640x512 image.rgb[320x256+50+50]).
 
 Single images are written with the filename you specify.  However,
 multi-part images (e.g. a multi-page Postscript document with \fB+adjoin\fP

@@ -254,8 +254,11 @@ Document page.  The default is 72 pixels per inch in the horizontal and
 vertical direction.  This option is used in concert with \fB-page\fP.
 .TP
 .B "-depth \fIvalue\fP"
-depth of the image.  This is the number of bits in a pixel.  The only
-acceptable values are 8 or 16.
+depth of the image. This is the number of bits in a pixel. The only acceptable
+values are 8 or 16.  Use this option to specify the depth of raw images whose
+depth is unknown such as \fBGRAY\fP, \fBRGB\fP, or \fBCMYK\fP,
+or to change the depth of any
+image after it has been read.
 .TP
 .B "-displace \fI<horizontal scale>x<vertical scale>\fP"
 shift image pixels as defined by a displacement map.
