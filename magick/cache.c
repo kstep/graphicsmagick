@@ -270,6 +270,7 @@ static unsigned int CompressCache(Cache cache)
       }
   LiberateMemory((void **) &pixels);
   (void) gzclose(file);
+  CloseCache(cache);
   if (y != cache_info->rows)
     (void) remove(filename);
   else
