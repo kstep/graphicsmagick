@@ -1656,7 +1656,10 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   if ((magick_info != (MagickInfo *) NULL) &&
       (magick_info->decoder !=
         (Image *(*)(const ImageInfo *,ExceptionInfo *)) NULL))
-    image=(magick_info->decoder)(clone_info,exception);
+    {
+      clone_info->client_data=magick_info->data;
+      image=(magick_info->decoder)(clone_info,exception);
+    }
   else
     if (!GetDelegateInfo(clone_info->magick,(char *) NULL,&delegate_info))
       {
@@ -2055,7 +2058,10 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
   if ((magick_info != (MagickInfo *) NULL) &&
       (magick_info->encoder !=
         (unsigned int (*)(const ImageInfo *,Image *)) NULL))
-    status=(magick_info->encoder)(clone_info,image);
+    {
+      clone_info->client_data=magick_info->data;
+      status=(magick_info->encoder)(clone_info,image);
+    }
   else
     if (!GetDelegateInfo((char *) NULL,clone_info->magick,&delegate_info))
       {
