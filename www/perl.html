@@ -9,13 +9,13 @@
    <link rel="StyleSheet" href="magick.css" type="text/css">
 </head>
 <body bgcolor="#FFFFFF" text="#000000" link="#0085c0" vlink="#800080" alink="#0085c0" >
-  
+
 <center><img src="../images/magick_small.png" alt="" height="118" width="114">
 </center>
-  
+
 <p><br>
  </p>
-<p><a name="contents"></a> 
+<p><a name="contents"></a>
 <table border="0" width="100%">
  <tbody>
     <tr>
@@ -23,40 +23,40 @@
       <b><font face="Helvetica, Arial"><font color="#ffffff"><font size="+1">
 Contents</font></font></font></b></td>
  </tr>
- 
+
   </tbody>
 </table>
   </p>
 <ul>
- 
+
   <li> <a href="#intr">Introduction</a></li>
-  
+
   <li> <a href="#inst">Installation</a></li>
-  
+
   <li> <a href="#over">Overview</a></li>
-  
+
   <li> <a href="#exam">Example Script</a></li>
-  
+
   <li> <a href="#read">Read or Write an Image</a></li>
-  
+
   <li> <a href="#mani">Manipulate an Image</a></li>
-  
+
   <li> <a href="#seta">Set an Image Attribute</a></li>
-  
+
   <li> <a href="#geta">Get an Image Attribute</a></li>
-  
+
   <li> <a href="#mont">Create an Image Montage</a></li>
-  
+
   <li> <a href="#blobs">Working with Blobs</a></li>
-  
+
   <li> <a href="#misc">Miscellaneous Methods</a></li>
-  
+
   <li> <a href="#erro">Handling Errors</a></li>
-  
+
   <li> <a href="#copy">Copyright</a></li>
- 
+
 </ul>
-  
+
 <dl>
 <a name="intr"></a>
 <table border="0" width="100%">
@@ -66,7 +66,7 @@ Contents</font></font></font></b></td>
       <b><font face="Helvetica, Arial"><font color="#ffffff"><font size="+1">
 Introduction</font></font></font></b></td>
  </tr>
- 
+
   </tbody>
 </table>
 <dd> <a href="archives.html">PerlMagick</a> is an objected-oriented
@@ -75,11 +75,11 @@ interface to <a href="../ImageMagick.html">ImageMagick</a>. Use
 the module to read, manipulate, or write an image or image sequence from
 within a Perl script. This makes it very suitable for Web CGI scripts. You
 must have <b>ImageMagick</b> 5.4.3 or above and Perl version 5.005_02 or greater
-installed on your system for either of these utilities to work. 
+installed on your system for either of these utilities to work.
 </dd>
 <p>
 <dd>There are a number of useful scripts available to show you the value of <b>
-PerlMagick</b>. You can do Web based image manipulation and conversion with 
+PerlMagick</b>. You can do Web based image manipulation and conversion with
     <a href="archives.html">MagickStudio</a>, or use <a href="archives.html">
 L-systems</a> to create images of plants using mathematical constructs, and
 finally navigate through collections of thumbnail images and select the image
@@ -89,7 +89,7 @@ ImageMagick Studio</a>. Or, you can see <a href="../images/examples.jpg">
 examples</a> of select <b>PerlMagick</b> functions.</p>
     </dl>
  <i><a href="#contents">Back to Contents</a></i> <br>
-&nbsp; 
+&nbsp;
     <dl>
     <a name="inst"></a>
     <table border="0" width="100%">
@@ -99,17 +99,17 @@ examples</a> of select <b>PerlMagick</b> functions.</p>
           <b><font face="Helvetica, Arial"><font color="#ffffff"><font size="+1">
 Installation</font></font></font></b></td>
  </tr>
- 
+
       </tbody>
     </table>
     <dd> <b>UNIX</b></dd>
       </dl>
       <blockquote>
         <dl>
-        <i>The following instructions for Unix apply only to the unbundled 
-PerlMagick as obtained from CPAN. PerlMagick is included as a subdirectory 
-(PerlMagick) of the ImageMagick source distribution, and may be configured 
-and built using the instructions provided in the ImageMagick distribution's 
+        <i>The following instructions for Unix apply only to the unbundled
+PerlMagick as obtained from CPAN. PerlMagick is included as a subdirectory
+(PerlMagick) of the ImageMagick source distribution, and may be configured
+and built using the instructions provided in the ImageMagick distribution's
 README.txt file. It is usually most convenient to install PerlMagick as part
 of the ImageMagick distribution.</i>
         <p>ImageMagick must already be installed on your system. Next,
@@ -119,13 +119,13 @@ to the installed ImageMagick distribution (e.g. PerlMagick 5.39 for ImageMagick
  Next, edit <tt>Makefile.PL</tt> and change LIBS and INC to include the appropriate
 path information to the required <tt>libMagick</tt> library. You will also
 need paths to JPEG, PNG, TIFF, etc. delegates if they were included with
-your installed version of <b>ImageMagick</b>. Build and install it like this: 
+your installed version of <b>ImageMagick</b>. Build and install it like this:
         <pre>&nbsp;&nbsp;&nbsp; perl Makefile.PL<br>&nbsp;&nbsp;&nbsp; make<br>&nbsp;&nbsp;&nbsp; make install</pre>
- For Unix, you typically need to be <tt>root</tt> to install the software. 
-There are ways around this. Consult the Perl manual pages for more information. 
+ For Unix, you typically need to be <tt>root</tt> to install the software.
+There are ways around this. Consult the Perl manual pages for more information.
         </p>
         <p><b>Windows XP / Windows 2000</b> </p>
-        <p>ImageMagick must already be installed on your system. Also, the 
+        <p>ImageMagick must already be installed on your system. Also, the
 ImageMagick source distribution for <a href="archives.html">Windows 2000</a>
  is required. You must also have the <tt>nmake</tt> from the Visual C++ or
 J++ development environment. Copy <tt>\bin\IMagick.dll</tt> and <tt>\bin\X11.dll</tt>
@@ -137,15 +137,15 @@ HowTo</a> page for further installation instructions.
 <p>
  <b>Running the Regression Tests</b> </p>
         <p>&nbsp;To verify a correct installation, type <pre>&nbsp;&nbsp;&nbsp; make test</pre>
- Use <tt>nmake test</tt> under Windows. There are a few demonstration scripts 
-available to exercise many of the functions <b>PerlMagick</b> can perform. 
+ Use <tt>nmake test</tt> under Windows. There are a few demonstration scripts
+available to exercise many of the functions <b>PerlMagick</b> can perform.
 Type <pre>&nbsp;&nbsp;&nbsp; cd demo<br>&nbsp;&nbsp;&nbsp; make</pre>
  You are now ready to utilize the <b>PerlMagick</b> methods from within your
 Perl scripts.</p>
         </dl>
         </blockquote>
  <i><a href="#contents">Back to Contents</a></i> <br>
-&nbsp; 
+&nbsp;
         <dl>
         <a name="over"></a>
         <table border="0" width="100%">
@@ -155,7 +155,7 @@ Perl scripts.</p>
               <b><font face="Helvetica, Arial"><font color="#ffffff"><font size="+1">
 Overview</font></font></font></b></td>
  </tr>
- 
+
           </tbody>
         </table>
         <dd> Any script that wants to use <b>PerlMagick</b> methods must
@@ -167,31 +167,31 @@ Do this with:</dd>
             <pre>&nbsp;&nbsp;&nbsp; use Image::Magick;<br><br>&nbsp;&nbsp;&nbsp; $image=Image::Magick-&gt;new;</pre>
 The new() method takes the same parameters as <a href="#seta">SetAttribute</a>
 . For example, <pre>&nbsp;&nbsp;&nbsp; $image=Image::Magick-&gt;new(size=&gt;'384x256');</pre>
-Next you will want to read an image or image sequence, manipulate it, and 
+Next you will want to read an image or image sequence, manipulate it, and
 then display or write it. The input and output methods for <b>PerlMagick</b>
 are defined in <a href="#read">Read or Write an Image</a>. See <a href="#seta">
-Set an Image Attribute</a> for methods that affect the way an image is read 
+Set an Image Attribute</a> for methods that affect the way an image is read
 or written. Refer to <a href="#mani">Manipulate an Image</a> for a list of
 methods to transform an image. <a href="#geta">Get an Image Attribute</a>
  describes how to retrieve an attribute for an image. Refer to <a href="#mont">
-Create an Image Montage</a> for details about tiling your images as thumbnails 
+Create an Image Montage</a> for details about tiling your images as thumbnails
 on a background. Finally, some methods do not neatly fit into any of the categories
 just mentioned. Review <a href="#misc">Miscellaneous Methods</a> for a list
-of these methods. 
+of these methods.
             <p>Once you are finished with a <b>PerlMagick</b> object you
 should consider destroying it. Each image in an image sequence is stored
 in virtual memory. This can potentially add up to mega-bytes of memory. Upon
 destroying a <b>PerlMagick</b> object, the memory is returned for use by
 other Perl methods. The recommended way to destroy an object is with <tt>
 undef</tt>: <pre>&nbsp;&nbsp;&nbsp; undef $image;</pre>
- To delete all the images but retain the <tt>Image::Magick</tt> object use 
+ To delete all the images but retain the <tt>Image::Magick</tt> object use
             <pre>&nbsp;&nbsp;&nbsp; @$image = ();</pre>
  and finally, to delete a single image from a multi-image sequence, use <pre>&nbsp;&nbsp;&nbsp; undef $image-&gt;[x];</pre>
- The next section illustrates how to use various <b>PerlMagick</b> methods 
+ The next section illustrates how to use various <b>PerlMagick</b> methods
 to manipulate an image sequence.</p>
             </dl>
 Some of the <b>PerlMagick</b> methods require external programs such as <i>
-Ghostscript</i>. This may require an explicit path in your PATH environment 
+Ghostscript</i>. This may require an explicit path in your PATH environment
 variable to work properly. For example, <pre>&nbsp;&nbsp;&nbsp; $ENV{PATH}='/bin:/usr/bin:/usr/local/bin';</pre>
             <br>
             </blockquote>
@@ -209,7 +209,7 @@ variable to work properly. For example, <pre>&nbsp;&nbsp;&nbsp; $ENV{PATH}='/bin
                   <b><font face="Helvetica, Arial"><font color="#ffffff"><font size="+1">
 Example Script</font></font></font></b></td>
  </tr>
- 
+
               </tbody>
             </table>
             <dd> Here is an example script to get you started:</dd>
@@ -238,7 +238,7 @@ Other clever things you can do with a <b>PerlMagick</b> objects include <pre>&nb
                       <b><font face="Helvetica, Arial"><font color="#ffffff"><font size="+1">
 Read or Write an Image</font></font></font></b></td>
  </tr>
- 
+
                   </tbody>
                 </table>
                 <dd> Use the methods listed below to either read, write,
@@ -278,11 +278,11 @@ or display an image or image sequence.</dd>
   <td>the number of images animated&nbsp;</td>
   <td>animate image sequence to an X server</td>
  </tr>
- 
+
                       </tbody>
                     </table>
                     <p>For convenience, methods Write(), Display(), and Animate()
-can take any parameter that <a href="#seta">SetAttribute</a> knows about. 
+can take any parameter that <a href="#seta">SetAttribute</a> knows about.
 For example, <pre>&nbsp;&nbsp;&nbsp; $image-&gt;Write(filename=&gt;'image.png', compression=&gt;'None');</pre>
  Use <tt>-</tt> as the filename to method Read() to read from standard in
 or to method Write() to write to standard out: <pre>&nbsp;&nbsp;&nbsp; binmode STDOUT;<br>&nbsp;&nbsp;&nbsp; $image-&gt;Write('png:-');</pre>
@@ -303,7 +303,7 @@ name. For example, ReadImage() is an alias for method Read().</p>
                     </dl>
                     </blockquote>
  <i><a href="#contents">Back to Contents</a></i> &nbsp; <br>
-&nbsp; 
+&nbsp;
                     <dl>
                     <a name="mani"></a>
                     <table border="0" width="100%">
@@ -313,13 +313,13 @@ name. For example, ReadImage() is an alias for method Read().</p>
                           <b><font face="Helvetica, Arial"><font color="#ffffff"><font size="+1">
 Manipulate an Image</font></font></font></b></td>
  </tr>
- 
+
                       </tbody>
                     </table>
                     <dd> Once you create an image with, for example, method
 ReadImage() you may want to operate on it. Below is a list of all the image
 manipulations methods available to you with <b>PerlMagick</b>. There are
-                      <a href="../images/examples.jpg">examples</a> of select 
+                      <a href="../images/examples.jpg">examples</a> of select
                       <b>PerlMagick</b> methods. Here is an example call
 to an image manipulation method:</dd>
                       </dl>
@@ -328,7 +328,7 @@ to an image manipulation method:</dd>
                         <pre>&nbsp;&nbsp;&nbsp; $image-&gt;Crop(geometry=&gt;'100x100"+1"0+20');<br>&nbsp;&nbsp;&nbsp; $image-&gt;[x]-&gt;Frame("100x200");</pre>
 And here is a list of other image manipulation methods you can call:<br>
                         <br>
- 
+
                         <table border="1">
  <caption>Image Manipulation Methods</caption>  <tbody>
                             <tr>
@@ -350,7 +350,7 @@ And here is a list of other image manipulation methods you can call:<br>
   <tr>
  <td>Edge</td>
   <td>radius=&gt;<i>double</i></td>
-  <td>enhance edges within the image with a convolution filter of the given 
+  <td>enhance edges within the image with a convolution filter of the given
 radius.</td>
  </tr>
   <tr>
@@ -372,7 +372,7 @@ radius.</td>
   translate=&gt;<i>float, float</i>, scale=&gt;<i>float, float</i>,
   rotate=&gt;<i>float</i>. skewX=&gt;<i>float</i>, skewY=&gt;<i> float</i>,
 	align=&gt;{Left, Center, Right},
-	encoding=&gt;{None, SJIScode, Unicode}, unicode=&gt;{True, False}, </td>
+	encoding=&gt;{None, SJIScode, Unicode}, unicode=&gt;{True, False}</td>
   <td>annotate an image with text. See <a href="#misc">QueryFontMetrics</a>
  to get font metrics without rendering any text.</td>
  </tr>
@@ -380,18 +380,18 @@ radius.</td>
  <td>Blur</td>
   <td>geometry=&gt;<i>geometry</i>, radius=&gt;<i>double</i>, sigma=&gt;<i>
 double</i></td>
-  <td>blur the image with a gaussian operator of the given radius and standard 
+  <td>blur the image with a gaussian operator of the given radius and standard
 deviation (sigma).</td>
  </tr>
   <tr>
  <td>Border</td>
   <td>geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, height=&gt;<i>
-integer</i>, fill=<i><a href="color.html">color name</a></i></td>
+integer</i>, fill=&gt;<i><a href="color.html">color name</a></i></td>
   <td>surround the image with a border of color</td>
  </tr>
   <tr>
  <td>Channel</td>
-  <td>channel={Red, Cyan, Green, Magenta, Blue, Yellow, Opacity, Black}</td>
+  <td>channel=>{Red, Cyan, Green, Magenta, Blue, Yellow, Opacity, Black}</td>
   <td>extract a channel from the image</td>
  </tr>
   <tr>
@@ -420,7 +420,7 @@ integer</i>, x=&gt;<i>integer</i>, y=&gt;<i>integer</i></td>
   <tr>
  <td>ColorFloodfill</td>
   <td>geometry=&gt;<i>geometry</i>, x=&gt;<i>integer</i>, y=&gt;<i>integer</i>
-, fill=<i><a href="color.html">color name</a></i>, bordercolor=<i><a href="color.html">
+, fill=&gt;<i><a href="color.html">color name</a></i>, bordercolor=&gt;<i><a href="color.html">
 color name</a></i></td>
   <td>changes the color value of any pixel that matches the color of the target
 pixel and is a neighbor. If you specify a border color, the color value is
@@ -491,7 +491,7 @@ integer</i>, x=&gt;<i>integer</i>, y=&gt;<i>integer</i></td>
  <td>Draw</td>
   <td>primitive=&gt;{point, line, rectangle, arc, ellipse, circle, path,
     polyline, polygon, bezier, color, matte, text, @<i>filename</i>},
-    points=&gt;<i>string</i> , method=<i>{Point, Replace, Floodfill,
+    points=&gt;<i>string</i> , method=&gt;<i>{Point, Replace, Floodfill,
     FillToBorder, Reset}</i>, stroke=&gt;<i><a href="color.html">
 color name</a></i>, fill=&gt;<i><a href="color.html">color name</a></i>,
 tile=&gt;<i>image-handle</i>, strokewidth=&gt;<i>float</i>, antialias=&gt;{true,
@@ -505,7 +505,7 @@ float</i></td>
   <tr>
  <td>Edge</td>
   <td>radius=&gt;<i>double</i></td>
-  <td>enhance edges within the image with a convolution filter of the given 
+  <td>enhance edges within the image with a convolution filter of the given
 radius.</td>
  </tr>
   <tr>
@@ -537,14 +537,14 @@ deviation (sigma).</td>
  <td>Flip</td>
   <td><br>
                               </td>
-  <td>create a <i>mirror image</i> by reflecting the image scanlines in the 
+  <td>create a <i>mirror image</i> by reflecting the image scanlines in the
 vertical direction</td>
  </tr>
   <tr>
  <td>Flop</td>
   <td><br>
                               </td>
-  <td>create a <i>mirror image</i> by reflecting the image scanlines in the 
+  <td>create a <i>mirror image</i> by reflecting the image scanlines in the
 horizontal direction</td>
  </tr>
   <tr>
@@ -585,13 +585,13 @@ color name</a></i></td>
  </tr>
   <tr>
  <td>Map</td>
-  <td>image=&gt;<i>image-handle</i>, dither={True, False}</td>
+  <td>image=&gt;<i>image-handle</i>, dither=&gt;{True, False}</td>
   <td>choose a particular set of colors from this image</td>
  </tr>
   <tr>
  <td>MatteFloodfill</td>
   <td>geometry=&gt;<i>geometry</i>, x=&gt;<i>integer</i>, y=&gt;<i>integer</i>
-, matte=<i>integer</i>, bordercolor=<i><a href="color.html">color name</a></i></td>
+, matte=&gt;<i>integer</i>, bordercolor=&gt;<i><a href="color.html">color name</a></i></td>
   <td>changes the matte value of any pixel that matches the color of the target
 pixel and is a neighbor. If you specify a border color, the matte value is
 changed for any neighbor pixel that is not that color.</td>
@@ -611,23 +611,20 @@ changed for any neighbor pixel that is not that color.</td>
  <td>Modulate</td>
   <td>brightness=&gt;<i>double</i>, saturation=&gt;<i>double</i>, hue=&gt;<i>
 double</i></td>
-  <td>vary the brightness, saturation, and hue of an image by the specified 
+  <td>vary the brightness, saturation, and hue of an image by the specified
 percentage</td>
  </tr>
   <tr>
  <td>MotionBlur</td>
   <td>geometry=&gt;<i>geometry</i>, radius=&gt;<i>double</i>, sigma=&gt;<i>
 double</i>,   angle=&gt;<i>double</i></td>
-  <td>blur the image with a gaussian operator of the given radius and standard 
+  <td>blur the image with a gaussian operator of the given radius and standard
 deviation (sigma) at the given angle to simulate the effect of motion</td>
- </tr>
-  <tr>
- <td>Border</td>
  </tr>
                             <tr>
  <td>Negate</td>
   <td>gray=&gt;{True, False}</td>
-  <td>replace every pixel with its complementary color (white becomes black, 
+  <td>replace every pixel with its complementary color (white becomes black,
 yellow becomes blue, etc.)</td>
  </tr>
   <tr>
@@ -709,7 +706,7 @@ integer</i></td>
   <td>colorspace=&gt;{RGB, Gray, Transparent, OHTA, XYZ, YCbCr, YCC, YIQ,
 YPbPr, YUV, CMYK}, verbose={True, False}, cluster=&gt;<i>double</i>, smooth=<i>
 double</i></td>
-  <td>segment an image by analyzing the histograms of the color components 
+  <td>segment an image by analyzing the histograms of the color components
 and identifying units that are homogeneous</td>
  </tr>
   <tr>
@@ -735,7 +732,7 @@ integer</i> </td>
  <td>Shear</td>
   <td>geometry=&gt;<i>geometry</i>, x=&gt;<i>double</i>, y=&gt;<i>double</i>
     color=&gt;<i><a href="color.html">color name</a></i> </td>
-  <td>shear the image along the X or Y axis by a positive or negative shear 
+  <td>shear the image along the X or Y axis by a positive or negative shear
 angle</td>
  </tr>
   <tr>
@@ -757,12 +754,12 @@ angle</td>
   <tr>
  <td>Stereo</td>
   <td>image=&gt;<i>image-handle</i></td>
-  <td>composites two images and produces a single image that is the composite 
+  <td>composites two images and produces a single image that is the composite
 of a left and right image of a stereo pair</td>
  </tr>
   <tr>
  <td>Stegano</td>
-  <td>image=&gt;<i>image-handle</i>, offset=<i>integer</i></td>
+  <td>image=&gt;<i>image-handle</i>, offset=&gt;<i>integer</i></td>
   <td>hide a digital watermark within the image</td>
  </tr>
   <tr>
@@ -803,7 +800,7 @@ double</i>, amount=&gt;<i>double</i>, threshold=&gt;<i>double</i></td>
 double</i></td>
   <td>alter an image along a sine wave</td>
  </tr>
- 
+
                           </tbody>
                         </table>
                         <p>Note, that the <tt>geometry</tt> parameter is
@@ -821,7 +818,7 @@ attribute by embedding these special format characters: <pre>&nbsp;&nbsp;&nbsp; 
  For example, <pre>&nbsp; text=&gt;"%m:%f %wx%h"</pre>
   </p>
                         </dl>
- produces an annotation of <b>MIFF:bird.miff 512x480</b> for an image titled 
+ produces an annotation of <b>MIFF:bird.miff 512x480</b> for an image titled
                         <b>bird.miff</b> and whose width is 512 and height
 is 480.
                         <dl>
@@ -843,7 +840,7 @@ description of these attributes.</p>
                               <b><font face="Helvetica, Arial"><font color="#ffffff"><font size="+1">
 Set an Image Attribute</font></font></font></b></td>
  </tr>
- 
+
                           </tbody>
                         </table>
                         <dd> Use method Set() to set an image attribute.
@@ -854,7 +851,7 @@ For example,</dd>
                             <pre>&nbsp;&nbsp;&nbsp; $image-&gt;Set(dither=&gt;'True');<br>&nbsp;&nbsp;&nbsp; $image-&gt;[$x]-&gt;Set(delay=&gt;3);</pre>
 And here is a list of all the image attributes you can set:<br>
                             <br>
- 
+
                             <table border="1">
  <caption>Image Attributes</caption>  <tbody>
                                 <tr>
@@ -891,7 +888,7 @@ And here is a list of all the image attributes you can set:<br>
  <td>cache-threshold</td>
   <td><i>integer</i></td>
   <td>Image pixels are stored in memory until your computers memory is
-consumed. Subsequent pixel operations are cached to disk. Operations 
+consumed. Subsequent pixel operations are cached to disk. Operations
 to memory are significantly faster but if your computer does not have a
 sufficient amount of free memory you may want to set this threshold to
 a small megabyte value (e.g. 8). </td>
@@ -917,13 +914,13 @@ a small megabyte value (e.g. 8). </td>
  </tr>
   <tr>
  <td>compression</td>
-  <td>None, BZip, Fax, Group4, JPEG, LosslessJPEG, LZW, RLE, Zip</td>
+  <td>{None, BZip, Fax, Group4, JPEG, LosslessJPEG, LZW, RLE, Zip}</td>
   <td>type of image compression</td>
  </tr>
   <tr>
  <td>delay</td>
   <td><i>integer</i></td>
-  <td>this many 1/100ths of a second\fP must expire before displaying the 
+  <td>this many 1/100ths of a second\fP must expire before displaying the
 next image in a sequence</td>
  </tr>
   <tr>
@@ -973,8 +970,8 @@ next image in a sequence</td>
  </tr>
   <tr>
  <td>Gravity</td>
-  <td>Forget, NorthWest, North, NorthEast, West, Center, East,
-    SouthWest, South, SouthEast</td>
+  <td>{Forget, NorthWest, North, NorthEast, West, Center, East,
+    SouthWest, South, SouthEast}</td>
   <td>type of image gravity</td>
  </tr>
   <tr>
@@ -1028,7 +1025,7 @@ next image in a sequence</td>
  </tr>
   <tr>
  <td>page</td>
-  <td>{ Letter, Tabloid, Ledger, Legal, Statement, Executive, A3, A4, A5, 
+  <td>{ Letter, Tabloid, Ledger, Legal, Statement, Executive, A3, A4, A5,
 B4, B5, Folio, Quarto, 10x14} or <i>geometry</i></td>
   <td>preferred size and location of an image canvas</td>
  </tr>
@@ -1044,9 +1041,9 @@ B4, B5, Folio, Quarto, 10x14} or <i>geometry</i></td>
  </tr>
   <tr>
  <td>preview</td>
-  <td>{ Rotate, Shear, Roll, Hue, Saturation, Brightness, Gamma, Spiff, Dull, 
-Grayscale, Quantize, Despeckle, ReduceNoise, AddNoise, Sharpen, Blur, Threshold, 
-EdgeDetect, Spread, Solarize, Shade, Raise, Segment, Swirl, Implode, Wave, 
+  <td>{ Rotate, Shear, Roll, Hue, Saturation, Brightness, Gamma, Spiff, Dull,
+Grayscale, Quantize, Despeckle, ReduceNoise, AddNoise, Sharpen, Blur, Threshold,
+EdgeDetect, Spread, Solarize, Shade, Raise, Segment, Swirl, Implode, Wave,
 OilPaint, CharcoalDrawing, JPEG}&nbsp;</td>
   <td>type of preview for the Preview image format</td>
  </tr>
@@ -1112,7 +1109,7 @@ OilPaint, CharcoalDrawing, JPEG}&nbsp;</td>
  </tr>
   <tr>
  <td>type</td>
-  <td>{Bilevel, Grayscale, GrayscaleMatte, Palette, PaletteMatte, TrueColor, 
+  <td>{Bilevel, Grayscale, GrayscaleMatte, Palette, PaletteMatte, TrueColor,
 TrueColorMatte, ColorSeparation, ColorSeparationMatte, Optimize }</td>
   <td>image type</td>
  </tr>
@@ -1131,14 +1128,14 @@ TrueColorMatte, ColorSeparation, ColorSeparationMatte, Optimize }</td>
   <td><i>x-value</i>, <i>y-value</i></td>
   <td>chromaticity white point (e.g. 0.3127, 0.329)</td>
  </tr>
- 
+
                               </tbody>
                             </table>
                             <p>Note, that the <tt>geometry</tt> parameter
 is a short cut for the <tt>width</tt> and <tt>height</tt> parameters (e.g.
                             <tt>geometry=&gt;'106x80'</tt> is equivalent to
                             <tt>width=&gt;106, height=&gt;80</tt>). </p>
-                            <p>SetAttribute() is an alias for method Set(). 
+                            <p>SetAttribute() is an alias for method Set().
                             </p>
                             <p>Most of the attributes listed above have an
 analog in <a href="convert.html">convert</a>. See the documentation for a
@@ -1146,7 +1143,7 @@ more detailed description of these attributes.</p>
                             </dl>
                             </blockquote>
  <a href="#contents">Back to Contents</a> <br>
-&nbsp; &nbsp; 
+&nbsp; &nbsp;
                             <dl>
                             <a name="geta"></a>
                             <table border="0" width="100%">
@@ -1156,7 +1153,7 @@ more detailed description of these attributes.</p>
                                   <b><font face="Helvetica, Arial"><font color="#ffffff"><font size="+1">
 Get an Image Attribute</font></font></font></b></td>
  </tr>
- 
+
                               </tbody>
                             </table>
                             <dd> Use method Get() to get an image attribute.
@@ -1168,7 +1165,7 @@ For example,</dd>
 In addition to all the attributes listed in <a href="#seta">Set an Image Attribute</a>
 , you can get these additional attributes:<br>
                                 <br>
- 
+
                                 <table border="1">
  <caption>Image Attributes</caption>  <tbody>
                                     <tr>
@@ -1269,7 +1266,7 @@ In addition to all the attributes listed in <a href="#seta">Set an Image Attribu
   <tr>
  <td>mean-error</td>
   <td><i>double</i></td>
-  <td>the normalized mean error per pixel computed when an image is color 
+  <td>the normalized mean error per pixel computed when an image is color
 reduced</td>
  </tr>
   <tr>
@@ -1307,7 +1304,7 @@ reduced</td>
   <td><i>integer</i></td>
   <td>y resolution of the image</td>
  </tr>
- 
+
                                   </tbody>
                                 </table>
                                 <p>GetAttribute() is an alias for method
@@ -1318,7 +1315,7 @@ a more detailed description of these attributes.</p>
                                 </dl>
                                 </blockquote>
  <a href="#contents">Back to Contents</a> <br>
-&nbsp; &nbsp; 
+&nbsp; &nbsp;
                                 <dl>
                                 <a name="mont"></a>
                                 <table border="0" width="100%">
@@ -1328,7 +1325,7 @@ a more detailed description of these attributes.</p>
                                       <b><font face="Helvetica, Arial"><font color="#ffffff"><font size="+1">
 Create an Image Montage</font></font></font></b></td>
  </tr>
- 
+
                                   </tbody>
                                 </table>
                                 <dd> Use method Montage() to create a composite
@@ -1341,7 +1338,7 @@ tile. For example,</dd>
                                     <pre>&nbsp;&nbsp;&nbsp; $image-&gt;Montage(geometry=&gt;'160x160', tile=&gt;'2x2', texture=&gt;'granite:');</pre>
 And here is a list of Montage() parameters you can set:<br>
                                     <br>
- 
+
                                     <table border="1">
  <caption>Montage Parameters</caption>  <tbody>
                                         <tr>
@@ -1392,7 +1389,7 @@ Copy, Mask, Dissolve, Clear, Displace}</td>
  </tr>
   <tr>
  <td>gravity</td>
-  <td>{NorthWest, North, NorthEast, West, Center, East, SouthWest, South, 
+  <td>{NorthWest, North, NorthEast, West, Center, East, SouthWest, South,
 SouthEast}</td>
   <td>direction image gravitates to within a tile</td>
  </tr>
@@ -1451,12 +1448,12 @@ SouthEast}</td>
   <td><i>string</i></td>
   <td>make this color transparent within the image</td>
  </tr>
- 
+
                                       </tbody>
                                     </table>
                                     <p>Note, that the <tt>geometry</tt> parameter
 is a short cut for the <tt>width</tt> and <tt>height</tt> parameters (e.g.
-                                    <tt>geometry=&gt;'106x80'</tt> is equivalent 
+                                    <tt>geometry=&gt;'106x80'</tt> is equivalent
 to <tt>width=&gt;106, height=&gt;80</tt>). </p>
                                     <p>MontageImage() is an alias for method
 Montage(). </p>
@@ -1466,7 +1463,7 @@ for a more detailed description of these attributes.</p>
                                     </dl>
                                     </blockquote>
  <i><a href="#contents">Back to Contents</a></i> &nbsp;<br>
-&nbsp; 
+&nbsp;
                                     <dl>
                                     <a name="blobs"></a>
                                     <table border="0" width="100%">
@@ -1476,7 +1473,7 @@ for a more detailed description of these attributes.</p>
                                           <b><font face="Helvetica, Arial"><font color="#ffffff"><font size="+1">
 Working with Blobs</font></font></font></b></td>
  </tr>
- 
+
                                       </tbody>
                                     </table>
                                     <dd> A blob contains data that directly
@@ -1506,7 +1503,7 @@ and provides methods to convert a blob to or from a particular image format.</dd
   <td>the number of blobs converted to an image</td>
   <td>convert one or more blobs to an image</td>
  </tr>
- 
+
                                           </tbody>
                                         </table>
                                         </dl>
@@ -1531,7 +1528,7 @@ supplied blob: <pre>&nbsp;&nbsp;&nbsp; @blob=$db-&gt;GetImage();<br>&nbsp;&nbsp;
                                               <b><font face="Helvetica, Arial"><font color="#ffffff"><font size="+1">
 Miscellaneous Methods</font></font></font></b></td>
  </tr>
- 
+
                                           </tbody>
                                         </table>
                                         <dd> The Append() method append a
@@ -1540,7 +1537,7 @@ set of images. For example,</dd>
                                           <blockquote>
                                             <dl>
                                             <pre>&nbsp;&nbsp;&nbsp; $p = $image-&gt;Append(stack=&gt;{true,false});</pre>
-appends all the images associated with object <tt>$image</tt>. 
+appends all the images associated with object <tt>$image</tt>.
 By default, images are stacked left-to-right.  Set <tt>stack</tt> to
 True to stack them top-to-bottom.
                                             <p>The Average() method averages
@@ -1548,7 +1545,7 @@ a set of images. For example, <pre>&nbsp;&nbsp;&nbsp; $p = $image-&gt;Average();
  averages all the images associated with object <tt>$image</tt>. </p>
                                             <p>The Clone() method copies
 a set of images. For example, <pre>&nbsp;&nbsp;&nbsp; $p = $image-&gt;Clone();</pre>
- copies all the images from object <tt>$q</tt> to <tt>$p</tt>. You can use 
+ copies all the images from object <tt>$q</tt> to <tt>$p</tt>. You can use
 this method for single or multi-image sequences. </p>
                                             <p>The Morph() method morphs
 a set of images. Both the image pixels and size are linearly interpolated
@@ -1576,7 +1573,7 @@ You can specify more than one filename but only one filehandle:
   ($width, $height, $size, $format) = $image-&gt;Ping(file=&gt;\*IMAGE);
   ($width, $height, $size, $format) = $image-&gt;Ping(blob=&gt;$blob);
 </pre>
-This is a more efficient and less memory intensive way to query if an image 
+This is a more efficient and less memory intensive way to query if an image
 exists and what its characteristics are.
                                               <p>To have full control over
 text positioning you need font metric information. Use <pre>&nbsp;&nbsp;&nbsp; ($x_ppem, $y_ppem, $ascender, $descender, $width, $height, $max_advance) =<br>&nbsp;&nbsp;&nbsp;&nbsp; $image-&gt;QueryFontMetrics(<i>parameters</i>);</pre>
@@ -1584,26 +1581,26 @@ text positioning you need font metric information. Use <pre>&nbsp;&nbsp;&nbsp; (
  method. The return values are </p>
                                               <p> </p>
                                               <ul>
- 
+
                                                 <li> character width</li>
-  
+
                                                 <li> character height</li>
-  
+
                                                 <li> ascender</li>
-  
+
                                                 <li> descender</li>
-  
+
                                                 <li> text width</li>
-  
+
                                                 <li> text height</li>
-  
+
                                                 <li> maximum horizontal advance</li>
- 
+
                                               </ul>
                                               <p> </p>
                                               </dl>
- Call QueryColor() with no parameters to return a list of known colors names 
-or specify one or more color names to get these attributes: red, green, blue, 
+ Call QueryColor() with no parameters to return a list of known colors names
+or specify one or more color names to get these attributes: red, green, blue,
 and opacity value. <br>
                                               <dl>
                                               <p> <pre>&nbsp;&nbsp;&nbsp; @colors = $image-&gt;QueryColor();<br>&nbsp;&nbsp;&nbsp; ($red, $green, $blue, $opacity) = $image-&gt;QueryColor('cyan');<br>&nbsp;&nbsp;&nbsp; ($red, $green, $blue, $opacity) = $image-&gt;QueryColor('#716bae');<br></pre>
@@ -1624,7 +1621,7 @@ and glyphs values.<br>
   </p>
                                               <p> </p>
                                               </dl>
- Call QueryFormat() with no parameters to return a list of known image formats 
+ Call QueryFormat() with no parameters to return a list of known image formats
 or specify one or more format names to get these attributes: adjoin, blob
 support, raw, decoder, encoder, description, and module. <br>
                                               <dl>
@@ -1638,7 +1635,7 @@ or animate. </p>
                                               <p>Finally, the Transform()
 method accepts a fully-qualified geometry specification for cropping or resizing
 one or more images. For example, <pre>&nbsp;&nbsp;&nbsp; $p = $image-&gt;Transform(crop=&gt;'100x100');</pre>
- You can optionally add <i>Image</i> to any method name above. For example, 
+ You can optionally add <i>Image</i> to any method name above. For example,
 PingImage() is an alias for method Ping().</p>
                                               </dl>
                                               </blockquote>
@@ -1653,7 +1650,7 @@ PingImage() is an alias for method Ping().</p>
                                                     <b><font face="Helvetica, Arial"><font color="#ffffff"><font size="+1">
 Handling Errors</font></font></font></b></td>
  </tr>
- 
+
                                                 </tbody>
                                               </table>
                                               <dd> All <b>PerlMagick</b>
@@ -1666,28 +1663,28 @@ Here is how errors are returned for the different methods:</dd>
                                                 </dl>
                                                 <dl>
                                                 <ul>
- 
+
                                                   <ul>
                                                       <li> Methods which
 return a number (e.g. Read(), Write()):</li>
   <pre>&nbsp;&nbsp;&nbsp; $x = $image-&gt;Read(...);<br>&nbsp;&nbsp;&nbsp; warn "$x" if "$x";&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # print the error message<br>&nbsp;&nbsp;&nbsp; $x =~ /(\d+)/;<br>&nbsp;&nbsp;&nbsp; print $1;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # print the error number&nbsp;<br>&nbsp;&nbsp;&nbsp; print 0+$x;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # print the number of images read</pre>
-  
+
                                                       <li> Methods which
 operate on an image (e.g. Resize(), Crop()):</li>
   <pre>&nbsp;&nbsp;&nbsp; $x = $image-&gt;Crop(...);<br>&nbsp;&nbsp;&nbsp; warn "$x" if "$x";&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # print the error message<br>&nbsp;&nbsp;&nbsp; $x =~ /(\d+)/;<br>&nbsp;&nbsp;&nbsp; print $1;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # print the error number</pre>
-  
+
                                                       <li> Methods which
 return images (Average(), Montage(), Clone()) should be checked for errors
 this way:</li>
   <pre>&nbsp;&nbsp;&nbsp; $x = $image-&gt;Montage(...);<br>&nbsp;&nbsp;&nbsp; warn "$x" if !ref($x);&nbsp; # print the error message<br>&nbsp;&nbsp;&nbsp; $x =~ /(\d+)/;<br>&nbsp;&nbsp;&nbsp; print $1;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # print the error number</pre>
- 
+
                                                   </ul>
                                                 </ul>
                                                 </dl>
                                                 <blockquote>
                                                   <dl>
 Here is an example error message: <pre>&nbsp;&nbsp;&nbsp; Error 400: Memory allocation failed</pre>
-Below is a list of error and warning codes: 
+Below is a list of error and warning codes:
 <p>
                                                   <table border="1">
  <caption>Error and Warning Codes</caption>  <tbody>
@@ -1831,7 +1828,7 @@ Delegate</i> is missing</td>
   <td>ConfigurationError</td>
   <td>there was a problem getting a configuration file</td>
  </tr>
- 
+
                                                     </tbody>
                                                   </table>
                                                   </dl>
@@ -1852,7 +1849,7 @@ The following illustrates how you can use a numeric status code: <pre>&nbsp;&nbs
                                                         <b><font face="Helvetica, Arial"><font color="#ffffff"><font size="+1">
 Copyright</font></font></font></b></td>
  </tr>
- 
+
                                                     </tbody>
                                                   </table>
                                                   <dd> <b>Copyright (C) 2002
@@ -1884,13 +1881,13 @@ shall not be used in advertising or otherwise to promote the sale,
 use or other dealings in PerlMagick without prior written authorization from
 the ImageMagick Studio.</b></dd>
                                                             </dl>
- <a href="#contents">Back to Contents</a> 
-                                                            <hr> 
+ <a href="#contents">Back to Contents</a>
+                                                            <hr>
                                                             <dl>
                                                             <a href="../ImageMagick.html"><img src="../images/home.png" alt="Home Page" border="0" height="40" width="40" align="Center">
                                                             </a><font size="-2">
  Image manipulation software that works like magic.</font>
                                                             </dl>
-  
+
                                                             </body>
                                                             </html>
