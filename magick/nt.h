@@ -33,7 +33,11 @@ extern "C" {
 #define SAFE_GLOBAL
 #endif
 #define CoderModuleDirectory "."
+#if defined(_DEBUG)
+#define ModuleSearchSpec "IM_MOD_DB_*.dll"
+#else
 #define ModuleSearchSpec "IM_MOD_*.dll"
+#endif
 /*
   Typedef declarations.
 */
