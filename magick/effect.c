@@ -1464,24 +1464,24 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
 /*
   Add a pixel into the skip-lists.
 */
-#define InsertMedianList(p,pixel) \
+#define InsertMedianList(pixel_list,pixel) \
 { \
-  if (p->lists[0].nodes[(pixel)->red].marker == p->marker) \
-    p->lists[0].nodes[(pixel)->red].count++; \
+  if (pixel_list->lists[0].nodes[(pixel)->red].marker == pixel_list->marker) \
+    pixel_list->lists[0].nodes[(pixel)->red].count++; \
   else \
-    AddNodeMedianList(p,0,(pixel)->red); \
-  if (p->lists[1].nodes[(pixel)->green].marker == p->marker) \
-    p->lists[1].nodes[(pixel)->green].count++; \
+    AddNodeMedianList(pixel_list,0,(pixel)->red); \
+  if (pixel_list->lists[1].nodes[(pixel)->green].marker == pixel_list->marker) \
+    pixel_list->lists[1].nodes[(pixel)->green].count++; \
   else \
-    AddNodeMedianList(p,1,(pixel)->green); \
-  if (p->lists[2].nodes[(pixel)->blue].marker == p->marker) \
-    p->lists[2].nodes[(pixel)->blue].count++; \
+    AddNodeMedianList(pixel_list,1,(pixel)->green); \
+  if (pixel_list->lists[2].nodes[(pixel)->blue].marker == pixel_list->marker) \
+    pixel_list->lists[2].nodes[(pixel)->blue].count++; \
   else \
-    AddNodeMedianList(p,2,(pixel)->blue); \
-  if (p->lists[3].nodes[(pixel)->opacity].marker == p->marker) \
-    p->lists[3].nodes[(pixel)->opacity].count++; \
+    AddNodeMedianList(pixel_list,2,(pixel)->blue); \
+  if (pixel_list->lists[3].nodes[(pixel)->opacity].marker == pixel_list->marker) \
+    pixel_list->lists[3].nodes[(pixel)->opacity].count++; \
   else \
-    AddNodeMedianList(p,3,(pixel)->opacity); \
+    AddNodeMedianList(pixel_list,3,(pixel)->opacity); \
 }
 
 typedef struct _MedianListNode
@@ -1512,29 +1512,24 @@ typedef struct _MedianPixelList
     seed;
 } MedianPixelList;
 
-static void AddNodeMedianList(register MedianPixelList *p,int channel,
-  register unsigned long color)
+static void AddNodeMedianList(MedianPixelList *pixel_list,int channel,
+  unsigned long color)
 {
-  register MedianSkipList
-    *list;
-
-  register unsigned long
-    search;
-
   register int
     level;
 
-  register unsigned long
-    seed;
+  register MedianSkipList
+    *list;
 
   unsigned long
+    search,
     update[(QuantumDepth/2+1)];
 
   /*
     Initialize the node.
   */
-  list=(&(p->lists[channel]));
-  list->nodes[color].marker=p->marker;
+  list=pixel_list->lists+channel;
+  list->nodes[color].marker=pixel_list->marker;
   list->nodes[color].count=1;
   /*
     Determine where it belongs in the list.
@@ -1544,19 +1539,17 @@ static void AddNodeMedianList(register MedianPixelList *p,int channel,
   {
     while (list->nodes[search].next[level] < color)
       search=list->nodes[search].next[level];
-    update[level] = search;
+    update[level]=search;
   }
   /*
     Generate a pseudo-random level for this node.
   */
-  seed=p->seed;
   for (level=0; ; level++)
   {
-    seed=seed*42893621L+1;
-    if ((seed & 0x300) != 0x300)
+    pixel_list->seed*=42893621L+1L;
+    if ((pixel_list->seed & 0x300) != 0x300)
       break;
   }
-  p->seed=seed;
   if (level > ((QuantumDepth/2+1)-1))
     level=(QuantumDepth/2+1)-1;
   if (level > (list->level+2))
@@ -1565,7 +1558,10 @@ static void AddNodeMedianList(register MedianPixelList *p,int channel,
     If we're raising the list's level, link back to the root node.
   */
   while (level > list->level)
-    update[++(list->level)]=(MaxRGB+1L);
+  {
+    list->level++;
+    update[list->level]=(MaxRGB+1L);
+  }
   /*
     Link the node into the skip-list.
   */
@@ -1577,33 +1573,31 @@ static void AddNodeMedianList(register MedianPixelList *p,int channel,
   while (level-- > 0);
 }
 
-static PixelPacket GetMedianList(register MedianPixelList *p)
+static PixelPacket GetMedianList(MedianPixelList *pixel_list)
 {
-  unsigned long
-    channels[4];
+  PixelPacket
+    pixel;
 
-  int
+  register int
     channel;
 
   register MedianSkipList
     *list;
 
-  register unsigned long
+  unsigned long
+    center,
+    channels[4],
     color,
-    count,
-    center;
-
-  PixelPacket
-    pixel;
+    count;
 
   /*
     Find the median value for each of the color.
   */
-  center=p->center;
+  center=pixel_list->center;
   for (channel=0; channel < 4; channel++)
   {
-    list=(&(p->lists[channel]));
-    color=(MaxRGB+1L);
+    list=pixel_list->lists+channel;
+    color=MaxRGB+1L;
     count=0;
     do
     {
@@ -1620,94 +1614,39 @@ static PixelPacket GetMedianList(register MedianPixelList *p)
   return(pixel);
 }
 
-static PixelPacket GetNonpeakMedianList(register MedianPixelList *p)
+static void InitializeMedianList(MedianPixelList *pixel_list,long width)
 {
-  unsigned long
-    channels[4];
+  pixel_list->center=width*width/2;
+  pixel_list->marker=0xDEADBEEFL;
+  (void) memset((void *) pixel_list->lists,0,4*sizeof(MedianSkipList));
+}
 
+static void ResetMedianList(MedianPixelList *pixel_list)
+{
   int
-    channel;
-
-  register MedianSkipList
-    *list;
-
-  register unsigned long
-    color;
-
-  register unsigned long
-    count,
-    center;
-
-  unsigned long
-    previous,
-    next;
-
-  PixelPacket
-    pixel;
-
-  /*
-    Finds the median value for each of the color.
-  */
-  center=p->center;
-  for (channel=0; channel < 4; channel++)
-  {
-    list=(&(p->lists[channel]));
-    color=(MaxRGB+1L);
-    next=list->nodes[color].next[0];
-    count=0;
-    do
-    {
-      previous=color;
-      color=next;
-      next=list->nodes[color].next[0];
-      count+=list->nodes[color].count;
-    }
-    while (count <= center);
-    if ((previous == (MaxRGB+1L)) && (next != (MaxRGB+1L)))
-      color=next;
-    else
-      if ((previous != (MaxRGB+1L)) && (next == (MaxRGB+1L)))
-        color=previous;
-    channels[channel]=color;
-  }
-  pixel.red=channels[0];
-  pixel.green=channels[1];
-  pixel.blue=channels[2];
-  pixel.opacity=channels[3];
-  return(pixel);
-}
-
-static void InitializeMedianList(register MedianPixelList *p,long width)
-{
-  p->center=width*width/2;
-  p->marker=0xDEADBEEFL;
-  (void) memset((void *) p->lists,0,4*sizeof(MedianSkipList));
-}
-
-static void ResetMedianList(register MedianPixelList *p)
-{
-  register int
-    channel,
     level;
 
-  register MedianSkipList
-    *list;
+  register int
+    channel;
 
   register MedianListNode
     *root;
 
+  register MedianSkipList
+    *list;
+
   /*
     Reset the skip-list.
   */
-  for (channel=0 ; channel < 4; channel++)
+  for (channel=0; channel < 4; channel++)
   {
-    list=(&(p->lists[channel]));
-    root=(&(list->nodes[(MaxRGB+1L)]));
+    list=pixel_list->lists+channel;
+    root=list->nodes+MaxRGB+1;
     list->level=0;
     for (level=0; level < (QuantumDepth/2+1); level++)
-      root->next[level]=(MaxRGB+1L);
+      root->next[level]=MaxRGB+1L;
   }
-  p->seed=p->marker++;
+  pixel_list->seed=pixel_list->marker++;
 }
 
 MagickExport Image *MedianFilterImage(const Image *image,const double radius,
@@ -2512,6 +2451,58 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
 %
 %
 */
+
+static PixelPacket GetNonpeakMedianList(MedianPixelList *pixel_list)
+{
+  PixelPacket
+    pixel;
+
+  register int
+    channel;
+
+  register MedianSkipList
+    *list;
+
+  unsigned long
+    channels[4],
+    center,
+    color,
+    count,
+    previous,
+    next;
+
+  /*
+    Finds the median value for each of the color.
+  */
+  center=pixel_list->center;
+  for (channel=0; channel < 4; channel++)
+  {
+    list=pixel_list->lists+channel;
+    color=MaxRGB+1L;
+    next=list->nodes[color].next[0];
+    count=0;
+    do
+    {
+      previous=color;
+      color=next;
+      next=list->nodes[color].next[0];
+      count+=list->nodes[color].count;
+    }
+    while (count <= center);
+    if ((previous == (MaxRGB+1L)) && (next != (MaxRGB+1L)))
+      color=next;
+    else
+      if ((previous != (MaxRGB+1L)) && (next == (MaxRGB+1L)))
+        color=previous;
+    channels[channel]=color;
+  }
+  pixel.red=channels[0];
+  pixel.green=channels[1];
+  pixel.blue=channels[2];
+  pixel.opacity=channels[3];
+  return(pixel);
+}
+
 MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
   ExceptionInfo *exception)
 {
