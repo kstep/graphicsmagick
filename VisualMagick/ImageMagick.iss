@@ -51,11 +51,11 @@ OutputBaseFilename=ImageMagick-win2k
 
 ; Windows registry settings
 [Registry]
-Root: HKLM; Subkey: "Software\ImageMagick\5.4.7"; ValueType: string; ValueName: "ApplicationDefaultsPath"; ValueData: "{app}"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\ImageMagick\5.4.7"; ValueType: string; ValueName: "ApplicationDefaultsPath"; ValueData: "{app}\config"; Flags: uninsdeletekey
 Root: HKLM; Subkey: "Software\ImageMagick\5.4.7"; ValueType: string; ValueName: "BinPath"; ValueData: "{app}"; Flags: uninsdeletekey
 Root: HKLM; Subkey: "Software\ImageMagick\5.4.7"; ValueType: string; ValueName: "LibPath"; ValueData: "{app}"; Flags: uninsdeletekey
-Root: HKLM; Subkey: "Software\ImageMagick\5.4.7"; ValueType: string; ValueName: "ModulesPath"; ValueData: "{app}"; Flags: uninsdeletekey
-Root: HKLM; Subkey: "Software\ImageMagick\5.4.7"; ValueType: string; ValueName: "SharePath"; ValueData: "{app}"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\ImageMagick\5.4.7"; ValueType: string; ValueName: "ModulesPath"; ValueData: "{app}\modules"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\ImageMagick\5.4.7"; ValueType: string; ValueName: "SharePath"; ValueData: "{app}\config"; Flags: uninsdeletekey
 
 [Files]
 ; Executables
@@ -65,6 +65,7 @@ Source: "bin\composite.exe"; DestDir: "{app}"
 Source: "bin\conjure.exe"; DestDir: "{app}"
 Source: "bin\convert.exe"; DestDir: "{app}"
 Source: "bin\display.exe"; DestDir: "{app}"
+;Source: "bin\hp2xx.exe"; DestDir: "{app}"
 Source: "bin\identify.exe"; DestDir: "{app}"
 Source: "bin\import.exe"; DestDir: "{app}"
 Source: "bin\mogrify.exe"; DestDir: "{app}"
@@ -73,18 +74,18 @@ Source: "bin\mpeg2dec.exe"; DestDir: "{app}"
 Source: "bin\mpeg2enc.exe"; DestDir: "{app}"
 ; DLLs
 Source: "bin\CORE_RL*.dll"; DestDir: "{app}"
-Source: "bin\IM_MOD_RL*.dll"; DestDir: "{app}"
+Source: "bin\IM_MOD_RL*.dll"; DestDir: "{app}\modules"
 Source: "bin\X11.dll"; DestDir: "{app}"
 Source: "bin\Xext.dll"; DestDir: "{app}"
 ; Configuration files
-Source: "bin\colors.mgk"; DestDir: "{app}"
-Source: "bin\delegates.mgk"; DestDir: "{app}"
-Source: "bin\fonts.mgk"; DestDir: "{app}"
-Source: "bin\magic.mgk"; DestDir: "{app}"
-Source: "bin\modules.mgk"; DestDir: "{app}"
-Source: "bin\type-ghostscript.mgk"; DestDir: "{app}"
-Source: "bin\type-windows.mgk"; DestDir: "{app}"
-Source: "bin\type.mgk"; DestDir: "{app}"
+Source: "bin\colors.mgk"; DestDir: "{app}\config"
+Source: "bin\delegates.mgk"; DestDir: "{app}\config"
+Source: "bin\fonts.mgk"; DestDir: "{app}\config"
+Source: "bin\magic.mgk"; DestDir: "{app}\config"
+Source: "bin\modules.mgk"; DestDir: "{app}\modules"
+Source: "bin\type-ghostscript.mgk"; DestDir: "{app}\config"
+Source: "bin\type-windows.mgk"; DestDir: "{app}\config"
+Source: "bin\type.mgk"; DestDir: "{app}\config"
 ; Release documentation files
 Source: "..\ChangeLog"; DestDir: "{app}"; DestName: "ChangeLog.txt"
 Source: "..\Copyright.txt"; DestDir: "{app}"
@@ -110,8 +111,8 @@ Source: "..\licenses\*.txt"; DestDir: "{app}\licenses"
 ; Icon file
 Source: "..\magick\ImageMagick.ico"; DestDir: "{app}"
 ; Path Tool
-Source: "..\contrib\win32\PathTool\PathTool.exe"; DestDir: "{app}"
-Source: "..\contrib\win32\PathTool\PathTool.pdf"; DestDir: "{app}"
+Source: "..\contrib\win32\PathTool\PathTool.exe"; DestDir: "{app}\uninstall"
+Source: "..\contrib\win32\PathTool\PathTool.pdf"; DestDir: "{app}\uninstall"
 
 [Icons]
 Name: "{group}\ImageMagick Web Pages"; Filename: "{app}\ImageMagick.html"
@@ -122,10 +123,10 @@ Name: "{group}\ImageMagick Display"; Filename: "{app}\IMDisplay.exe"; IconFilena
 
 [Run]
 ; Add -debug to parameters to enable debugging
-Filename: "{app}\PathTool.exe"; Parameters: "-a:""{app}"""; StatusMsg: "Updating environment variables..."
+Filename: "{app}\uninstall\PathTool.exe"; Parameters: "-a:""{app}"""; StatusMsg: "Updating environment variables..."
 
 [UninstallRun]
 ; Add -debug to parameters to enable debugging
-Filename: "{app}\PathTool.exe"; Parameters: "-r:""{app}"""; StatusMsg: "Restoring environment variables..."
+Filename: "{app}\uninstall\PathTool.exe"; Parameters: "-r:""{app}"""; StatusMsg: "Restoring environment variables..."
 
 
