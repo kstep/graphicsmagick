@@ -1030,7 +1030,7 @@ ModuleExport void RegisterPSDImage(void)
   entry->decoder=ReadPSDImage;
   entry->encoder=WritePSDImage;
   entry->magick=IsPSD;
-//  entry->adjoin=False;	-- not any more, we can do multiple layers!!
+/*  entry->adjoin=False;	-- not any more, we can do multiple layers!! */
   entry->description=AllocateString("Adobe Photoshop bitmap");
   entry->module=AllocateString("PSD");
   (void) RegisterMagickInfo(entry);
@@ -1202,13 +1202,13 @@ static void WriteWhiteBackground( Image* image )
 	
 	bytecount = d - scanline;
 	
-	// Scanline counts (rows*channels)
+	/* Scanline counts (rows*channels) */
 	for(i=0; i < dim; i++)
 	{
 		WriteBlobMSBShort( image, bytecount );
 	}
 
-	// RLE compressed data
+	/* RLE compressed data  */
 	count = bytecount;
 	for(i=0; i < dim; i++)
 	{
@@ -1364,7 +1364,7 @@ compute_layer_info:
   {
 	  (void) WriteBlobMSBLong(image,layer_info_size + 4 + 4);  
 
-		if( layer_info_size/2 != (layer_info_size+1)/2 ) // odd
+		if( layer_info_size/2 != (layer_info_size+1)/2 ) /* odd */
 			rounded_layer_info_size = layer_info_size + 1;
 		else
 			rounded_layer_info_size = layer_info_size;
