@@ -234,6 +234,116 @@ void ReadPixelCache(Image *image,QuantumTypes quantum,unsigned char *source)
   switch (quantum)
   {
     case IndexQuantum:
+    {
+      if (image->colors <= 256)
+        {
+          if (source == (unsigned char *) NULL)
+            {
+              for (x=0; x < (int) image->columns; x++)
+              {
+                index=ReadByte(image);
+                image->indexes[x]=index;
+                q->red=image->colormap[index].red;
+                q->green=image->colormap[index].green;
+                q->blue=image->colormap[index].blue;
+                q++;
+              }
+              break;
+            }
+          for (x=0; x < (int) image->columns; x++)
+          {
+            index=(*p++);
+            image->indexes[x]=index;
+            q->red=image->colormap[index].red;
+            q->green=image->colormap[index].green;
+            q->blue=image->colormap[index].blue;
+            q++;
+          }
+          break;
+        }
+      if (source == (unsigned char *) NULL)
+        {
+          for (x=0; x < (int) image->columns; x++)
+          {
+            index=MSBFirstReadShort(image);
+            image->indexes[x]=index;
+            q->red=image->colormap[index].red;
+            q->green=image->colormap[index].green;
+            q->blue=image->colormap[index].blue;
+            q++;
+          }
+          break;
+        }
+      for (x=0; x < (int) image->columns; x++)
+      {
+        index=(*p++ << 8);
+	index|=(*p++);
+        image->indexes[x]=index;
+        q->red=image->colormap[index].red;
+        q->green=image->colormap[index].green;
+        q->blue=image->colormap[index].blue;
+        q++;
+      }
+      break;
+    }
+    case IndexOpacityQuantum:
+    {
+      if (image->colors <= 256)
+        {
+          if (source == (unsigned char *) NULL)
+            {
+              for (x=0; x < (int) image->columns; x++)
+              {
+                index=ReadByte(image);
+                image->indexes[x]=index;
+                q->red=image->colormap[index].red;
+                q->green=image->colormap[index].green;
+                q->blue=image->colormap[index].blue;
+                q->opacity=UpScale(ReadByte(image));
+                q++;
+              }
+              break;
+            }
+          for (x=0; x < (int) image->columns; x++)
+          {
+            index=(*p++);
+            image->indexes[x]=index;
+            q->red=image->colormap[index].red;
+            q->green=image->colormap[index].green;
+            q->blue=image->colormap[index].blue;
+            q->opacity=UpScale(*p++);
+            q++;
+          }
+          break;
+        }
+      if (source == (unsigned char *) NULL)
+        {
+          for (x=0; x < (int) image->columns; x++)
+          {
+            index=MSBFirstReadShort(image);
+            image->indexes[x]=index;
+            q->red=image->colormap[index].red;
+            q->green=image->colormap[index].green;
+            q->blue=image->colormap[index].blue;
+            q->opacity=MSBFirstReadShort(image) >> (image->depth-QuantumDepth);
+            q++;
+          }
+          break;
+        }
+      for (x=0; x < (int) image->columns; x++)
+      {
+        index=(*p++ << 8);
+	index|=(*p++);
+        image->indexes[x]=index;
+        q->red=image->colormap[index].red;
+        q->green=image->colormap[index].green;
+        q->blue=image->colormap[index].blue;
+        q->opacity=(*p++ << 8);
+	q->opacity|=(*p++);
+        q++;
+      }
+      break;
+    }
     case GrayQuantum:
     {
       if (image->colors <= 256)
@@ -287,7 +397,6 @@ void ReadPixelCache(Image *image,QuantumTypes quantum,unsigned char *source)
       }
       break;
     }
-    case IndexOpacityQuantum:
     case GrayOpacityQuantum:
     {
       if (image->colors <= 256)

@@ -517,9 +517,9 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
             if (image->colors <= 256)
               for (i=0; i < (int) image->colors; i++)
               {
-                image->colormap[i].red=(*p++);
-                image->colormap[i].green=(*p++);
-                image->colormap[i].blue=(*p++);
+                image->colormap[i].red=UpScale(*p++);
+                image->colormap[i].green=UpScale(*p++);
+                image->colormap[i].blue=UpScale(*p++);
               }
             else
               for (i=0; i < (int) image->colors; i++)
