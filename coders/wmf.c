@@ -1274,7 +1274,7 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
    */
 
   /* Output string */
-  DrawAnnotation(WmfDrawContext, 0, 0, draw_text->str);
+  DrawAnnotation(WmfDrawContext, 0, 0, (unsigned char*)draw_text->str);
 
   /* Underline text the Windows way (at the bottom) */
   if (WMF_TEXT_UNDERLINE(font))
@@ -1718,62 +1718,72 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
     DrawSetStrokeLineJoin(WmfDrawContext,linejoin);
   }
 
-  switch (pen_style)
-    {
-    case PS_DASH:    /* -------  */
-      {
-        /* Pattern 18,7 */
-        double
-          dasharray[3] =
-        { pixel_width * 18, pixel_width * 7, 0 };
+  {
+    double
+      dasharray[7];
 
-        DrawSetStrokeAntialias(WmfDrawContext,False);
-        DrawSetStrokeDashArray(WmfDrawContext,dasharray);
-        break;
-      }
-    case PS_ALTERNATE:
-    case PS_DOT:    /* .......  */
+    switch (pen_style)
       {
-        /* Pattern 3,3 */
-        double
-          dasharray[3] =
-        { pixel_width * 3, pixel_width * 3, 0 };
+      case PS_DASH:    /* -------  */
+        {
+          /* Pattern 18,7 */
+          dasharray[0] = pixel_width * 18;
+          dasharray[1] = pixel_width * 7;
+          dasharray[2] = 0;
 
-        DrawSetStrokeAntialias(WmfDrawContext,False);
-        DrawSetStrokeDashArray(WmfDrawContext,dasharray);
-        break;
-      }
-    case PS_DASHDOT:    /* _._._._  */
-      {
-        /* Pattern 9,6,3,6 */
-        double
-          dasharray[5] =
-        { pixel_width * 9, pixel_width * 6, pixel_width * 3, pixel_width * 6, 0 };
+          DrawSetStrokeAntialias(WmfDrawContext,False);
+          DrawSetStrokeDashArray(WmfDrawContext,dasharray);
+          break;
+        }
+      case PS_ALTERNATE:
+      case PS_DOT:    /* .......  */
+        {
+          /* Pattern 3,3 */
+          dasharray[0] = pixel_width * 3;
+          dasharray[1] = pixel_width * 3;
+          dasharray[2] = 0;
 
-        DrawSetStrokeAntialias(WmfDrawContext,False);
-        DrawSetStrokeDashArray(WmfDrawContext,dasharray);
-        break;
-      }
-    case PS_DASHDOTDOT:  /* _.._.._  */
-      {
-        /* Pattern 9,3,3,3,3,3 */
-        double
-          dasharray[7] =
-        { pixel_width * 9, pixel_width * 3, pixel_width * 3,
-          pixel_width * 3, pixel_width * 3, pixel_width * 3, 0 };
+          DrawSetStrokeAntialias(WmfDrawContext,False);
+          DrawSetStrokeDashArray(WmfDrawContext,dasharray);
+          break;
+        }
+      case PS_DASHDOT:    /* _._._._  */
+        {
+          /* Pattern 9,6,3,6 */
+          dasharray[0] = pixel_width * 9;
+          dasharray[1] = pixel_width * 6;
+          dasharray[2] = pixel_width * 3;
+          dasharray[3] = pixel_width * 6;
+          dasharray[4] = 0;
 
-        DrawSetStrokeAntialias(WmfDrawContext,False);
-        DrawSetStrokeDashArray(WmfDrawContext,dasharray);
-        break;
+          DrawSetStrokeAntialias(WmfDrawContext,False);
+          DrawSetStrokeDashArray(WmfDrawContext,dasharray);
+          break;
+        }
+      case PS_DASHDOTDOT:  /* _.._.._  */
+        {
+          /* Pattern 9,3,3,3,3,3 */
+          dasharray[0] = pixel_width * 9;
+          dasharray[1] = pixel_width * 3;
+          dasharray[2] = pixel_width * 3;
+          dasharray[3] = pixel_width * 3;
+          dasharray[4] = pixel_width * 3;
+          dasharray[5] = pixel_width * 3;
+          dasharray[6] = 0;
+
+          DrawSetStrokeAntialias(WmfDrawContext,False);
+          DrawSetStrokeDashArray(WmfDrawContext,dasharray);
+          break;
+        }
+      case PS_INSIDEFRAME:  /* There is nothing to do in this case... */
+      case PS_SOLID:
+      default:
+        {
+          DrawSetStrokeDashArray(WmfDrawContext,(double *)NULL);
+          break;
+        }
       }
-    case PS_INSIDEFRAME:  /* There is nothing to do in this case... */
-    case PS_SOLID:
-    default:
-      {
-        DrawSetStrokeDashArray(WmfDrawContext,(double *)NULL);
-        break;
-      }
-    }
+  }
 
   draw_color_stroke_rgb(API,WMF_PEN_COLOR(pen));
 }
