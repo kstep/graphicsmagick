@@ -57,12 +57,6 @@
     ((color).blue == (target).blue))
 #endif
 
-#if (QuantumDepth == 32)
-#  define LONG long long
-#else
-#  define LONG long
-#endif
-
 /*
   Include declarations.
 */
@@ -3781,16 +3775,16 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           else
                             {
                               /* Interpolate */
-                              (*q).red=(Quantum) (((LONG) (2*i*((*n).red
-                                 -(*p).red)+m))/((LONG) (m*2))+(*p).red);
-                              (*q).green=(Quantum) (((LONG) (2*i*((*n).green
-                                 -(*p).green)+m))/((LONG) (m*2))+(*p).green);
-                              (*q).blue=(Quantum) (((LONG) (2*i*((*n).blue
-                                 -(*p).blue)+m))/((LONG) (m*2))+(*p).blue);
+                              (*q).red=(Quantum) (((QuantumPrecision) (2*i*((*n).red
+                                 -(*p).red)+m))/((QuantumPrecision) (m*2))+(*p).red);
+                              (*q).green=(Quantum) (((QuantumPrecision) (2*i*((*n).green
+                                 -(*p).green)+m))/((QuantumPrecision) (m*2))+(*p).green);
+                              (*q).blue=(Quantum) (((QuantumPrecision) (2*i*((*n).blue
+                                 -(*p).blue)+m))/((QuantumPrecision) (m*2))+(*p).blue);
                               if (image->matte)
-                                 (*q).opacity=(Quantum) (((LONG)
+                                 (*q).opacity=(Quantum) (((QuantumPrecision)
                                  (2*i*((*n).opacity-(*p).opacity)+m))
-                                 /((LONG) (m*2))+(*p).opacity);
+                                 /((QuantumPrecision) (m*2))+(*p).opacity);
                             }
                           if (magn_methy == 4)
                             {
@@ -3810,8 +3804,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                              *q=(*n);
                           if (magn_methy == 5)
                             {
-                              (*q).opacity=(Quantum) (((LONG) (2*i*((*n).opacity
-                                 -(*p).opacity)+m))/((LONG) (m*2))+(*p).opacity);
+                              (*q).opacity=(Quantum) (((QuantumPrecision) (2*i*((*n).opacity
+                                 -(*p).opacity)+m))/((QuantumPrecision) (m*2))+(*p).opacity);
                             }
                         }
                       n++;
@@ -3868,11 +3862,11 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                             {
                               /* Interpolate */
                               (*q).red=(Quantum) ((2*i*((*n).red-(*p).red)+m)
-                                 /((LONG) (m*2))+(*p).red);
+                                 /((QuantumPrecision) (m*2))+(*p).red);
                               (*q).green=(Quantum) ((2*i*((*n).green-(*p).green)
-                                 +m)/((LONG) (m*2))+(*p).green);
+                                 +m)/((QuantumPrecision) (m*2))+(*p).green);
                               (*q).blue=(Quantum) ((2*i*((*n).blue-(*p).blue)+m)
-                                 /((LONG) (m*2))+(*p).blue);
+                                 /((QuantumPrecision) (m*2))+(*p).blue);
                               if (image->matte)
                                  (*q).opacity=(Quantum) ((2*i*((*n).opacity
                                    -(*p).opacity)+m)/((long) (m*2))
@@ -3898,7 +3892,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                             {
                               /* Interpolate */
                               (*q).opacity=(Quantum) ((2*i*((*n).opacity
-                                 -(*p).opacity)+m) /((LONG) (m*2))
+                                 -(*p).opacity)+m) /((QuantumPrecision) (m*2))
                                  +(*p).opacity);
                             }
                         }
