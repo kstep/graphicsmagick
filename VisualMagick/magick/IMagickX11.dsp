@@ -205,6 +205,10 @@ SOURCE=..\..\magick\compress.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\magick\constitute.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\magick\dcm.c
 # End Source File
 # Begin Source File
@@ -254,7 +258,7 @@ SOURCE=..\..\magick\fits.c
 # Begin Source File
 
 SOURCE=..\..\magick\fpx.c
-# ADD CPP /I "..\..\fpx\"
+# ADD CPP /I "..\..\fpx\\"
 # End Source File
 # Begin Source File
 
@@ -476,11 +480,23 @@ SOURCE=..\..\magick\signature.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\magick\stash.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\magick\stegano.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\magick\stream.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\magick\sun.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\magick\svg.c
 # End Source File
 # Begin Source File
 
@@ -584,14 +600,6 @@ SOURCE=..\..\magick\yuv.c
 
 SOURCE=..\..\magick\zoom.c
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\magick\stream.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\magick\constitute.c
-# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -610,11 +618,15 @@ SOURCE=..\..\magick\api.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\magick\attributes.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\magick\blob.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\magick\cache.h
+SOURCE=..\..\magick\cache_view.h
 # End Source File
 # Begin Source File
 
@@ -622,15 +634,7 @@ SOURCE=..\..\magick\classify.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\magick\Colorlist.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\magick\compress.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\magick\config.h
 # End Source File
 # Begin Source File
 
@@ -654,19 +658,11 @@ SOURCE=..\..\magick\error.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\magick\formats.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\magick\gems.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\magick\image.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\magick\logo.h
 # End Source File
 # Begin Source File
 
@@ -682,6 +678,14 @@ SOURCE=..\..\magick\memory.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\magick\mng.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\magick\modules.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\magick\monitor.h
 # End Source File
 # Begin Source File
@@ -694,11 +698,11 @@ SOURCE=..\..\magick\PreRvIcccm.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\magick\proxy.h
+SOURCE=..\..\magick\quantize.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\magick\quantize.h
+SOURCE=..\..\magick\stash.h
 # End Source File
 # Begin Source File
 
@@ -719,10 +723,6 @@ SOURCE=..\..\magick\vms.h
 # Begin Source File
 
 SOURCE=..\..\magick\widget.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\magick\XWDFile.h
 # End Source File
 # Begin Source File
 
