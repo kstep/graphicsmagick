@@ -4293,24 +4293,28 @@ Mogrify(ref,...)
         *sv;
 
       longest=0;
-      pp=rp->arguments,
+      pp=(Arguments *) NULL;
       qq=rp->arguments;
       if (i == items)
-        sv=ST(i-1);
+        {
+          pp=rp->arguments,
+          sv=ST(i-1);
+        }
       else
         for (sv=ST(i), attribute=(char *) SvPV(ST(i-1),na); ; qq++)
         {
           if ((qq >= EndOf(rp->arguments)) || (qq->method == NULL))
-            {
-              if (longest > 0)
-                break;
-              goto continue_outer_loop;
-            }
+            break;
           if (strEQcase(attribute,qq->method) > longest)
             {
               pp=qq;
               longest=strEQcase(attribute,qq->method);
             }
+        }
+      if (pp == (Arguments *) NULL)
+        {
+          MagickError(OptionError,"Unrecognized option",attribute);
+          goto continue_outer_loop;
         }
       al=(&argument_list[pp-rp->arguments]);
       if (pp->type == IntegerReference)

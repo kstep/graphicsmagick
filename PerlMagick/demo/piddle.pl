@@ -48,13 +48,13 @@ $image->Draw(primitive=>'polygon',
 #
 # Draw rectangle.
 #
-$image->Draw(primitve=>'line',points=>'200,260 200,200',stroke=>yellow,
+$image->Draw(primitive=>'line',points=>'200,260 200,200',stroke=>yellow,
   strokewidth=>5);
-$image->Draw(primitve=>'line',points=>'200,200 260,200',stroke=>yellow,
+$image->Draw(primitive=>'line',points=>'200,200 260,200',stroke=>yellow,
   strokewidth=>5);
-$image->Draw(primitve=>'line',points=>'260,200 260,260',stroke=>red,
+$image->Draw(primitive=>'line',points=>'260,200 260,260',stroke=>red,
   strokewidth=>5);
-$image->Draw(primitve=>'line',points=>'200,260 260,260',stroke=>green,
+$image->Draw(primitive=>'line',points=>'200,260 260,260',stroke=>green,
   strokewidth=>5);
 #
 # Draw text.
