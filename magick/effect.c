@@ -669,6 +669,9 @@ MagickExport unsigned int ChannelThresholdImage(Image *image,
   register PixelPacket
     *q;
 
+  unsigned int
+    is_grayscale=image->is_grayscale;
+
   /*
     Threshold image.
   */
@@ -721,7 +724,7 @@ MagickExport unsigned int ChannelThresholdImage(Image *image,
         break;
   }
 
-  if ((red_threshold_quantum == green_threshold_quantum) &&
+  if (is_grayscale && (red_threshold_quantum == green_threshold_quantum) &&
       (green_threshold_quantum == blue_threshold_quantum))
     {
       image->is_monochrome=True;
