@@ -66,20 +66,20 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   C r o p S h e a r I m a g e                                               %
++   C r o p T o F i t I m a g e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CropShearImage crops the sheared image as determined by the bounding
+%  Method CropToFitImage crops the sheared image as determined by the bounding
 %  box as defined by width and height and shearing angles.
 %
-%  The format of the CropShearImage method is:
+%  The format of the CropToFitImage method is:
 %
-%      Image *CropShearImage(Image **image,const double x_shear,
+%      Image *CropToFitImage(Image **image,const double x_shear,
 %        const double x_shear,const double width,const double height,
-%        ExceptionInfo *exception)
+%        const unsigne int rotate,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -91,9 +91,9 @@
 %
 %
 */
-static void CropShearImage(Image **image,const double x_shear,
+static void CropToFitImage(Image **image,const double x_shear,
   const double y_shear,const double width,const double height,
-	ExceptionInfo *exception)
+	const unsigned int rotate,ExceptionInfo *exception)
 {
 	Image
 		*crop_image;
@@ -120,11 +120,13 @@ static void CropShearImage(Image **image,const double x_shear,
   extent[2].y=height/2.0;
   extent[3].x=width/2.0;
   extent[3].y=height/2.0;
+printf("%g %g\n",x_shear,y_shear);
   for (i=0; i < 4; i++)
   {
     extent[i].x+=x_shear*extent[i].y;
     extent[i].y+=y_shear*extent[i].x;
-    extent[i].x+=x_shear*extent[i].y;
+    if (rotate)
+      extent[i].x+=x_shear*extent[i].y;
     extent[i].x+=(double) (*image)->columns/2.0;
     extent[i].y+=(double) (*image)->rows/2.0;
   }
@@ -991,7 +993,7 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   XShearImage(rotate_image,shear.x,y_width,rotate_image->rows,
     (long) (rotate_image->columns-y_width)/2,0);
   (void) memset(&rotate_image->page,0,sizeof(RectangleInfo));
-  CropShearImage(&rotate_image,shear.x,shear.y,width,height,exception);
+  CropToFitImage(&rotate_image,shear.x,shear.y,width,height,True,exception);
   return(rotate_image);
 }
 
@@ -1106,7 +1108,7 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   YShearImage(shear_image,shear.y,y_width,image->rows,
     (long) (shear_image->columns-y_width)/2,y_offset);
   (void) memset(&shear_image->page,0,sizeof(RectangleInfo));
-  CropShearImage(&shear_image,shear.x,shear.y,image->columns,image->rows,
-		exception);
+  CropToFitImage(&shear_image,shear.x,shear.y,image->columns,image->rows,
+	  False,exception);
   return(shear_image);
 }
