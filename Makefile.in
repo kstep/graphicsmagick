@@ -46,15 +46,319 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+build_triplet = @build@
+host_triplet = @host@
+target_triplet = @target@
 
 # Architecture independent data files installed in the package's data directory
 pkgdatadir = @MagickSharePath@
+ACLOCAL = @ACLOCAL@
+AMDEP_FALSE = @AMDEP_FALSE@
+AMDEP_TRUE = @AMDEP_TRUE@
+AMTAR = @AMTAR@
+AR = @AR@
+AS = @AS@
+AUTOCONF = @AUTOCONF@
+AUTOHEADER = @AUTOHEADER@
+AUTOMAKE = @AUTOMAKE@
+AWK = @AWK@
+AutotraceDecodeDelegate = @AutotraceDecodeDelegate@
+BIN_DIR = @BIN_DIR@
+BZIPDelegate = @BZIPDelegate@
+BrowseDelegate = @BrowseDelegate@
+CC = @CC@
+CCDEPMODE = @CCDEPMODE@
+CCMALLOCDelegate = @CCMALLOCDelegate@
+CFLAGS = @CFLAGS@
+CGMDecodeDelegate = @CGMDecodeDelegate@
+CONVENIENCE_LTDL_FALSE = @CONVENIENCE_LTDL_FALSE@
+CONVENIENCE_LTDL_TRUE = @CONVENIENCE_LTDL_TRUE@
+CPP = @CPP@
+CPPFLAGS = @CPPFLAGS@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
+CXXDEPMODE = @CXXDEPMODE@
+CXXFLAGS = @CXXFLAGS@
+CYGPATH_W = @CYGPATH_W@
+CYGWIN_BUILD_FALSE = @CYGWIN_BUILD_FALSE@
+CYGWIN_BUILD_TRUE = @CYGWIN_BUILD_TRUE@
+CatDelegate = @CatDelegate@
+ConvertDelegate = @ConvertDelegate@
+DATA_DIR = @DATA_DIR@
+DCRAWDecodeDelegate = @DCRAWDecodeDelegate@
+DEFS = @DEFS@
+DELEGATES = @DELEGATES@
+DEPDIR = @DEPDIR@
+DLLDFLAGS = @DLLDFLAGS@
+DLLTOOL = @DLLTOOL@
+DOTDecodeDelegate = @DOTDecodeDelegate@
+DVIDecodeDelegate = @DVIDecodeDelegate@
+ECHO = @ECHO@
+ECHO_C = @ECHO_C@
+ECHO_N = @ECHO_N@
+ECHO_T = @ECHO_T@
+EGREP = @EGREP@
+EXEC_PREFIX_DIR = @EXEC_PREFIX_DIR@
+EXEEXT = @EXEEXT@
+EchoDelegate = @EchoDelegate@
+EditorDelegate = @EditorDelegate@
+F77 = @F77@
+FFLAGS = @FFLAGS@
+FIGDecodeDelegate = @FIGDecodeDelegate@
+GMDelegate = @GMDelegate@
+GSColorDevice = @GSColorDevice@
+GSEPSDevice = @GSEPSDevice@
+GSMonoDevice = @GSMonoDevice@
+GSPDFDevice = @GSPDFDevice@
+GSPSDevice = @GSPSDevice@
+GSVersion = @GSVersion@
+GnuplotDecodeDelegate = @GnuplotDecodeDelegate@
+HPGLDecodeDelegate = @HPGLDecodeDelegate@
+HTMLDecodeDelegate = @HTMLDecodeDelegate@
+HasBZLIB_FALSE = @HasBZLIB_FALSE@
+HasBZLIB_TRUE = @HasBZLIB_TRUE@
+HasDPS_FALSE = @HasDPS_FALSE@
+HasDPS_TRUE = @HasDPS_TRUE@
+HasFPX_FALSE = @HasFPX_FALSE@
+HasFPX_TRUE = @HasFPX_TRUE@
+HasGS_FALSE = @HasGS_FALSE@
+HasGS_TRUE = @HasGS_TRUE@
+HasJBIG_FALSE = @HasJBIG_FALSE@
+HasJBIG_TRUE = @HasJBIG_TRUE@
+HasJP2_FALSE = @HasJP2_FALSE@
+HasJP2_TRUE = @HasJP2_TRUE@
+HasJPEG_FALSE = @HasJPEG_FALSE@
+HasJPEG_TRUE = @HasJPEG_TRUE@
+HasLCMS_FALSE = @HasLCMS_FALSE@
+HasLCMS_TRUE = @HasLCMS_TRUE@
+HasLZW_FALSE = @HasLZW_FALSE@
+HasLZW_TRUE = @HasLZW_TRUE@
+HasPNG_FALSE = @HasPNG_FALSE@
+HasPNG_TRUE = @HasPNG_TRUE@
+HasTIFF_FALSE = @HasTIFF_FALSE@
+HasTIFF_TRUE = @HasTIFF_TRUE@
+HasTTF_FALSE = @HasTTF_FALSE@
+HasTTF_TRUE = @HasTTF_TRUE@
+HasTXT2HTML_FALSE = @HasTXT2HTML_FALSE@
+HasTXT2HTML_TRUE = @HasTXT2HTML_TRUE@
+HasWINGDI32_FALSE = @HasWINGDI32_FALSE@
+HasWINGDI32_TRUE = @HasWINGDI32_TRUE@
+HasWMF_FALSE = @HasWMF_FALSE@
+HasWMF_TRUE = @HasWMF_TRUE@
+HasX11_FALSE = @HasX11_FALSE@
+HasX11_TRUE = @HasX11_TRUE@
+HasXML_FALSE = @HasXML_FALSE@
+HasXML_TRUE = @HasXML_TRUE@
+HasZLIB_FALSE = @HasZLIB_FALSE@
+HasZLIB_TRUE = @HasZLIB_TRUE@
+ILBMDecodeDelegate = @ILBMDecodeDelegate@
+ILBMEncodeDelegate = @ILBMEncodeDelegate@
+INCLTDL = @INCLTDL@
+INCLUDE_DIR = @INCLUDE_DIR@
+INFO_DIR = @INFO_DIR@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_LTDL_FALSE = @INSTALL_LTDL_FALSE@
+INSTALL_LTDL_TRUE = @INSTALL_LTDL_TRUE@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+INT16_T = @INT16_T@
+INT32_T = @INT32_T@
+INT64_T = @INT64_T@
+INT8_T = @INT8_T@
+LD = @LD@
+LDFLAGS = @LDFLAGS@
+LFS_CPPFLAGS = @LFS_CPPFLAGS@
+LIBADD_DL = @LIBADD_DL@
+LIBEXEC_DIR = @LIBEXEC_DIR@
+LIBLTDL = @LIBLTDL@
+LIBOBJS = @LIBOBJS@
+LIBRARY_EXTRA_CPPFLAGS = @LIBRARY_EXTRA_CPPFLAGS@
+LIBS = @LIBS@
+LIBSTDCLDFLAGS = @LIBSTDCLDFLAGS@
+LIBTOOL = @LIBTOOL@
+
+# Automatically reconfigure libtool
+LIBTOOL_DEPS = @LIBTOOL_DEPS@
+LIB_BZLIB = @LIB_BZLIB@
+LIB_DIR = @LIB_DIR@
+LIB_DL = @LIB_DL@
+LIB_DPS = @LIB_DPS@
+LIB_FPX = @LIB_FPX@
+LIB_GDI32 = @LIB_GDI32@
+LIB_GS = @LIB_GS@
+LIB_JBIG = @LIB_JBIG@
+LIB_JP2 = @LIB_JP2@
+LIB_JPEG = @LIB_JPEG@
+LIB_LCMS = @LIB_LCMS@
+LIB_MATH = @LIB_MATH@
+LIB_PNG = @LIB_PNG@
+LIB_THREAD = @LIB_THREAD@
+LIB_TIFF = @LIB_TIFF@
+LIB_TTF = @LIB_TTF@
+LIB_WMF = @LIB_WMF@
+LIB_WMF_DEPS = @LIB_WMF_DEPS@
+LIB_X11 = @LIB_X11@
+LIB_XEXT = @LIB_XEXT@
+LIB_XML = @LIB_XML@
+LIB_ZLIB = @LIB_ZLIB@
+LN_S = @LN_S@
+LOCALSTATE_DIR = @LOCALSTATE_DIR@
+LPDelegate = @LPDelegate@
+LPRDelegate = @LPRDelegate@
+LTLIBOBJS = @LTLIBOBJS@
+LZWDecodeDelegate = @LZWDecodeDelegate@
+LZWEncodeDelegate = @LZWEncodeDelegate@
+LaunchDelegate = @LaunchDelegate@
+MAGICKLIB = @MAGICKLIB@
+MAGICKLIBDIR = @MAGICKLIBDIR@
+MAGICK_DEP_LIBS = @MAGICK_DEP_LIBS@
+MAGICK_LIBRARY_AGE = @MAGICK_LIBRARY_AGE@
+MAGICK_LIBRARY_CURRENT = @MAGICK_LIBRARY_CURRENT@
+MAGICK_LIBRARY_REVISION = @MAGICK_LIBRARY_REVISION@
+MAGICK_LIB_VERSION = @MAGICK_LIB_VERSION@
+MAGICK_LIB_VERSION_NUMBER = @MAGICK_LIB_VERSION_NUMBER@
+MAGICK_LIB_VERSION_TEXT = @MAGICK_LIB_VERSION_TEXT@
+MAGICK_PLUS_PLUS_LIBRARY_AGE = @MAGICK_PLUS_PLUS_LIBRARY_AGE@
+MAGICK_PLUS_PLUS_LIBRARY_CURRENT = @MAGICK_PLUS_PLUS_LIBRARY_CURRENT@
+MAGICK_PLUS_PLUS_LIBRARY_REVISION = @MAGICK_PLUS_PLUS_LIBRARY_REVISION@
+MAGICK_WAND_LIBRARY_AGE = @MAGICK_WAND_LIBRARY_AGE@
+MAGICK_WAND_LIBRARY_CURRENT = @MAGICK_WAND_LIBRARY_CURRENT@
+MAGICK_WAND_LIBRARY_REVISION = @MAGICK_WAND_LIBRARY_REVISION@
+MAINT = @MAINT@
+MAINTAINER_MODE_FALSE = @MAINTAINER_MODE_FALSE@
+MAINTAINER_MODE_TRUE = @MAINTAINER_MODE_TRUE@
+MAKEINFO = @MAKEINFO@
+MANDelegate = @MANDelegate@
+MAN_DIR = @MAN_DIR@
+MODULE_EXTRA_CPPFLAGS = @MODULE_EXTRA_CPPFLAGS@
+MPEGDecodeDelegate = @MPEGDecodeDelegate@
+MPEGEncodeDelegate = @MPEGEncodeDelegate@
+MVDelegate = @MVDelegate@
+MagickBinPath = @MagickBinPath@
+MagickCoderModulesPath = @MagickCoderModulesPath@
+MagickFilterModulesPath = @MagickFilterModulesPath@
+MagickLibPath = @MagickLibPath@
+MagickSharePath = @MagickSharePath@
+MogrifyDelegate = @MogrifyDelegate@
+OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
+OLDINCLUDE_DIR = @OLDINCLUDE_DIR@
+PACKAGE = @PACKAGE@
+PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
+
+PACKAGE_NAME = @PACKAGE_NAME@
+PACKAGE_RELEASE_DATE = @PACKAGE_RELEASE_DATE@
+PACKAGE_STRING = @PACKAGE_STRING@
+PACKAGE_TARNAME = @PACKAGE_TARNAME@
+PACKAGE_VERSION = @PACKAGE_VERSION@
+PACKAGE_VERSION_ADDENDUM = @PACKAGE_VERSION_ADDENDUM@
+PATH_SEPARATOR = @PATH_SEPARATOR@
+PERL = @PERL@
+PERLMAINCC = @PERLMAINCC@
+PERL_MAKE_OPTIONS = @PERL_MAKE_OPTIONS@
+PGPDecodeDelegate = @PGPDecodeDelegate@
+POVDelegate = @POVDelegate@
+PREFIX_DIR = @PREFIX_DIR@
+PSDelegate = @PSDelegate@
+PrintDelegate = @PrintDelegate@
+QuantumDepth = @QuantumDepth@
+RADDecodeDelegate = @RADDecodeDelegate@
+RANLIB = @RANLIB@
+RLEEncodeDelegate = @RLEEncodeDelegate@
+RMDelegate = @RMDelegate@
+SBIN_DIR = @SBIN_DIR@
+SCANDecodeDelegate = @SCANDecodeDelegate@
+SET_MAKE = @SET_MAKE@
+SHAREDSTATE_DIR = @SHAREDSTATE_DIR@
+SHELL = @SHELL@
+STRIP = @STRIP@
+SYSCONF_DIR = @SYSCONF_DIR@
+ShowImageDelegate = @ShowImageDelegate@
+SysCtlDelegate = @SysCtlDelegate@
+TXT2HTML = @TXT2HTML@
+TXTDelegate = @TXTDelegate@
+UINT16_T = @UINT16_T@
+UINT32_T = @UINT32_T@
+UINT64_T = @UINT64_T@
+UINT8_T = @UINT8_T@
+VERSION = @VERSION@
+WIN32_NATIVE_BUILD_FALSE = @WIN32_NATIVE_BUILD_FALSE@
+WIN32_NATIVE_BUILD_TRUE = @WIN32_NATIVE_BUILD_TRUE@
+WITH_LTDL_FALSE = @WITH_LTDL_FALSE@
+WITH_LTDL_TRUE = @WITH_LTDL_TRUE@
+WITH_MAGICK_PLUS_PLUS_FALSE = @WITH_MAGICK_PLUS_PLUS_FALSE@
+WITH_MAGICK_PLUS_PLUS_TRUE = @WITH_MAGICK_PLUS_PLUS_TRUE@
+WITH_MODULES_FALSE = @WITH_MODULES_FALSE@
+WITH_MODULES_TRUE = @WITH_MODULES_TRUE@
+WITH_PERL_DYNAMIC_FALSE = @WITH_PERL_DYNAMIC_FALSE@
+WITH_PERL_DYNAMIC_TRUE = @WITH_PERL_DYNAMIC_TRUE@
+WITH_PERL_FALSE = @WITH_PERL_FALSE@
+WITH_PERL_STATIC_FALSE = @WITH_PERL_STATIC_FALSE@
+WITH_PERL_STATIC_TRUE = @WITH_PERL_STATIC_TRUE@
+WITH_PERL_TRUE = @WITH_PERL_TRUE@
+WMFDecodeDelegate = @WMFDecodeDelegate@
+WWWDecodeDelegate = @WWWDecodeDelegate@
+WinPathScript = @WinPathScript@
+X_CFLAGS = @X_CFLAGS@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
+X_LIBS = @X_LIBS@
+X_PRE_LIBS = @X_PRE_LIBS@
+ZipDelegate = @ZipDelegate@
+ac_ct_AR = @ac_ct_AR@
+ac_ct_AS = @ac_ct_AS@
+ac_ct_CC = @ac_ct_CC@
+ac_ct_CXX = @ac_ct_CXX@
+ac_ct_DLLTOOL = @ac_ct_DLLTOOL@
+ac_ct_F77 = @ac_ct_F77@
+ac_ct_OBJDUMP = @ac_ct_OBJDUMP@
+ac_ct_RANLIB = @ac_ct_RANLIB@
+ac_ct_STRIP = @ac_ct_STRIP@
+am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
+am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
+am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
+am__fastdepCXX_TRUE = @am__fastdepCXX_TRUE@
+am__include = @am__include@
+am__quote = @am__quote@
+bindir = @bindir@
+build = @build@
+build_alias = @build_alias@
+build_cpu = @build_cpu@
+build_os = @build_os@
+build_vendor = @build_vendor@
+datadir = @datadir@
+exec_prefix = @exec_prefix@
+freetype_config = @freetype_config@
+ghostscript_font_dir = @ghostscript_font_dir@
+host = @host@
+host_alias = @host_alias@
+host_cpu = @host_cpu@
+host_os = @host_os@
+host_vendor = @host_vendor@
+includedir = @includedir@
+infodir = @infodir@
+install_sh = @install_sh@
+libdir = @libdir@
+libexecdir = @libexecdir@
+localstatedir = @localstatedir@
+mandir = @mandir@
+oldincludedir = @oldincludedir@
+prefix = @prefix@
+program_transform_name = @program_transform_name@
+sbindir = @sbindir@
+sharedstatedir = @sharedstatedir@
+sysconfdir = @sysconfdir@
+target = @target@
+target_alias = @target_alias@
+target_cpu = @target_cpu@
+target_os = @target_os@
+target_vendor = @target_vendor@
+type_include_files = @type_include_files@
+windows_font_dir = @windows_font_dir@
+xml2_config = @xml2_config@
 
 # Don't require all the GNU mandated files
 AUTOMAKE_OPTIONS = 1.7.2 dist-zip dist-bzip2 foreign
-
-PACKAGE_NAME = @PACKAGE_NAME@
-PACKAGE_VERSION = @PACKAGE_VERSION@
 
 # Subdirectories to build
 @WITH_MAGICK_PLUS_PLUS_TRUE@MAGICK_PLUS_PLUS = Magick++
@@ -103,13 +407,12 @@ DOCDIRS = images www www/api www/api/types www/Magick++
 @WITH_PERL_TRUE@	$(top_srcdir)/www/NEWS.html \
 @WITH_PERL_TRUE@	$(top_srcdir)/www/README.html
 
-
-# Automatically reconfigure libtool
-LIBTOOL_DEPS = @LIBTOOL_DEPS@
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_CLEAN_FILES =
+CONFIG_HEADER = $(top_builddir)/magick/magick_config.h \
+	$(top_builddir)/magick/magick_config_api.h
+CONFIG_CLEAN_FILES = PerlMagick/Magick.pm PerlMagick/Makefile.PL
 DIST_SOURCES =
 DATA = $(pkgdata_DATA)
 
@@ -128,19 +431,32 @@ all: all-recursive
 
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno
-$(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.ac $(ACLOCAL_M4)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am  $(top_srcdir)/configure.ac $(ACLOCAL_M4)
 	cd $(top_srcdir) && \
 	  $(AUTOMAKE) --foreign  Makefile
-Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
+Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $@ $(am__depfiles_maybe)
 
 $(top_builddir)/config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	$(SHELL) ./config.status --recheck
-$(srcdir)/configure:  $(srcdir)/configure.ac $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
+$(srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(srcdir)/configure.ac $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
 	cd $(srcdir) && $(AUTOCONF)
 
-$(ACLOCAL_M4):  configure.ac acinclude.m4
+$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ configure.ac acinclude.m4
 	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
+PerlMagick/Magick.pm: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/Magick.pm.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+PerlMagick/Makefile.PL: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/Makefile.PL.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+	-rm -f libtool
 uninstall-info-am:
 pkgdataDATA_INSTALL = $(INSTALL_DATA)
 install-pkgdataDATA: $(pkgdata_DATA)
@@ -295,6 +611,7 @@ distcleancheck_listfiles = find . -type f -print
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
+	$(mkinstalldirs) $(distdir)/Magick++/bin $(distdir)/Magick++/lib $(distdir)/PerlMagick $(distdir)/coders $(distdir)/magick $(distdir)/wand
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -452,11 +769,12 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-recursive
 
-clean-am: clean-generic clean-local mostlyclean-am
+clean-am: clean-generic clean-libtool clean-local mostlyclean-am
 
 distclean: distclean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
-distclean-am: clean-am distclean-generic distclean-local distclean-tags
+distclean-am: clean-am distclean-generic distclean-libtool \
+	distclean-local distclean-tags
 
 dvi: dvi-recursive
 
@@ -484,7 +802,7 @@ maintainer-clean-am: distclean-am maintainer-clean-generic \
 
 mostlyclean: mostlyclean-recursive
 
-mostlyclean-am: mostlyclean-generic
+mostlyclean-am: mostlyclean-generic mostlyclean-libtool
 
 pdf: pdf-recursive
 
@@ -499,23 +817,23 @@ uninstall-am: uninstall-info-am uninstall-local uninstall-pkgdataDATA
 uninstall-info: uninstall-info-recursive
 
 .PHONY: $(RECURSIVE_TARGETS) CTAGS GTAGS all all-am all-local check \
-	check-am check-local clean clean-generic clean-local \
-	clean-recursive ctags ctags-recursive dist dist-all dist-bzip2 \
-	dist-gzip dist-zip distcheck distclean distclean-generic \
-	distclean-local distclean-recursive distclean-tags \
-	distcleancheck distdir distuninstallcheck dvi dvi-am \
-	dvi-recursive info info-am info-recursive install install-am \
-	install-data install-data-am install-data-local \
-	install-data-recursive install-exec install-exec-am \
-	install-exec-local install-exec-recursive install-info \
-	install-info-am install-info-recursive install-man \
+	check-am check-local clean clean-generic clean-libtool \
+	clean-local clean-recursive ctags ctags-recursive dist dist-all \
+	dist-bzip2 dist-gzip dist-zip distcheck distclean \
+	distclean-generic distclean-libtool distclean-local \
+	distclean-recursive distclean-tags distcleancheck distdir \
+	distuninstallcheck dvi dvi-am dvi-recursive info info-am \
+	info-recursive install install-am install-data install-data-am \
+	install-data-local install-data-recursive install-exec \
+	install-exec-am install-exec-local install-exec-recursive \
+	install-info install-info-am install-info-recursive install-man \
 	install-pkgdataDATA install-recursive install-strip \
 	installcheck installcheck-am installdirs installdirs-am \
 	installdirs-recursive maintainer-clean maintainer-clean-generic \
 	maintainer-clean-local maintainer-clean-recursive mostlyclean \
-	mostlyclean-generic mostlyclean-recursive pdf pdf-am \
-	pdf-recursive ps ps-am ps-recursive tags tags-recursive \
-	uninstall uninstall-am uninstall-info-am \
+	mostlyclean-generic mostlyclean-libtool mostlyclean-recursive \
+	pdf pdf-am pdf-recursive ps ps-am ps-recursive tags \
+	tags-recursive uninstall uninstall-am uninstall-info-am \
 	uninstall-info-recursive uninstall-local uninstall-pkgdataDATA \
 	uninstall-recursive
 
