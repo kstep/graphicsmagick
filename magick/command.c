@@ -10173,8 +10173,8 @@ MagickExport unsigned int AnimateImageCommand(int argc,char **argv)
 #else
   MagickFatalError(MissingDelegateError,"XWindowLibraryIsNotAvailable",
     (char *) NULL);
-#endif
   return(False);
+#endif
 }
 
 /*
@@ -11160,8 +11160,8 @@ MagickExport unsigned int ImportImageCommand(int argc,char **argv)
 #else
   MagickFatalError(MissingDelegateError,"XWindowLibraryIsNotAvailable",
     (char *) NULL);
-#endif
   return(False);
+#endif
 }
 
 /*
@@ -12835,8 +12835,8 @@ MagickExport unsigned int DisplayImageCommand(int argc,char **argv)
 #else
   MagickFatalError(MissingDelegateError,"XWindowLibraryIsNotAvailable",
     (char *) NULL);
-#endif
   return(False);
+#endif
 }
 
 
