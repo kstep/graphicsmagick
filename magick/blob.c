@@ -489,7 +489,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
           return((void *) NULL);
         }
       DestroyImageInfo(clone_info);
-      for (p=image; p->next != (Image *) NULL; p++)
+      for (p=image; p != (Image *) NULL; p++)
       {
         *length=p->blob.length;
         blob=p->blob.data;
