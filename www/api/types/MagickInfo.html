@@ -2,7 +2,7 @@
 <html>
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.61 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <meta name="Author" content="Bob Friesenhahn">
    <meta name="Description" content="Description of MagickInfo structure members.">
    <title>ImageMagick MagickInfo Structure</title>
@@ -13,14 +13,15 @@
 <h1>
 ImageMagick MagickInfo Structure</h1></center>
 The MagickInfo structure is used by ImageMagick to register support for
-an Image format. Image formats are registered by calling <a href="../magick.html">RegisterMagickInfo()</a>
-which adds the initial structure to a linked list. A pointer to the structure
-describing a format may be obtained by calling <a href="../magick.html#GetMagickInfo">GetMagickInfo()</a>.
-Currently no function exists to obtain the first member of this list. As
-a work-around <a href="../magick.html#GetMagickInfo">GetMagickInfo()</a>
-may be called for format "AVS" (the first format in the list) to return
-the head of the list. A human-readable list of registered image formats
-may be printed to file descriptor by calling <a href="../magick.html#ListMagickInfo">ListMagickInfo()</a>.
+an Image format. The MagickInfo structure is allocated with default parameters
+by calling <a href="../magick.html#SetMagickInfo">SetMagickInfo()</a>.
+Image formats are registered by calling <a href="../magick.html">RegisterMagickInfo()</a>
+which adds the initial structure to a linked list (at which point it is
+owned by the list). A pointer to the structure describing a format may
+be obtained by calling <a href="../magick.html#GetMagickInfo">GetMagickInfo()</a>.
+Pass the argument NULL to obtain the first member of this list. A human-readable
+list of registered image formats may be printed to a file descriptor by
+calling <a href="../magick.html#ListMagickInfo">ListMagickInfo()</a>.
 <p>Example:
 <p><tt>export unsigned int IsGIF(const unsigned char *magick,unsigned int
 length)</tt>
@@ -39,10 +40,18 @@ length)</tt>
 <p><tt>#include &lt;stdio.h></tt>
 <br><tt>int main( void )</tt>
 <br><tt>{</tt>
-<br><tt>&nbsp; struct MagickInfo info;</tt>
-<p><tt>&nbsp; (void) RegisterMagickInfo("GIF",ReadGIFImage,WriteGIFImage,IsGIF,True,</tt>
-<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; True,"CompuServe graphics interchange
-format");</tt>
+<br><tt>&nbsp; struct MagickInfo* info;</tt><tt></tt>
+<p><tt>&nbsp; info = SetMagickInfo("GIF");</tt><tt></tt>
+<p><tt>&nbsp; if ( info == (MagickInfo*)NULL )</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; exit(1);</tt><tt></tt>
+<p><tt>&nbsp; info->decoder = ReadGIFImage;</tt>
+<br><tt>&nbsp; info->encoder = WriteGIFImage;</tt>
+<br><tt>&nbsp; info->magick&nbsp; = IsGIF;</tt>
+<br><tt>&nbsp; info->adjoin&nbsp; = False;</tt>
+<br><tt>&nbsp; info->description = AllocateString("CompuServe graphics
+interchange format");</tt>
+<br><tt>&nbsp; /* Add MagickInfo structure to list */</tt>
+<br><tt>&nbsp; RegisterMagickInfo(info);</tt>
 <p><tt>&nbsp; info = GetMagickInfo("GIF");</tt>
 <br><tt>&nbsp; [ do something with info ... ]</tt>
 <p><tt>&nbsp; ListMagickInfo( stdout );</tt>
@@ -121,6 +130,14 @@ operating arbitrary BLOBs (rather than only disk files).</td>
 </tr>
 
 <tr>
+<td>raw</td>
+
+<td>unsigned int</td>
+
+<td>Image format does not contain size (must be specified in ImageInfo).</td>
+</tr>
+
+<tr>
 <td>description</td>
 
 <td>const char *</td>
@@ -158,10 +175,9 @@ parameter.</td>
 </tr>
 </table>
 
-<p><hr>
-<p><a href="../../../ImageMagick.html"><img SRC="../../../images/home.gif"
-  ALT="Home Page" BORDER=0 height=40 width=40 align=CENTER></a><font size=-2>
-  Image manipulation software that works like magic.</font></dl>
-
+<p>
+<hr>
+<p><a href="../../../ImageMagick.html"><img SRC="../../../images/home.gif" ALT="Home Page" BORDER=0 height=40 width=40 align=CENTER></a><font size=-2>
+Image manipulation software that works like magic.</font>
 </body>
 </html>
