@@ -304,12 +304,18 @@ UNIX/Cygwin COMPILATION
       PERL you want to use.
 
     o --with-perl-options: The PerlMagick module is normally installed
-      into the same directory tree as ImageMagick. If you want PerlMagick
-      to install elsewhere, then provide a PREFIX option to PERL's
-      configuration step via "--with-perl-options=PREFIX=/some/place".
-      Other options accepted by MakeMaker are 'LIB', 'LIBPERL_A',
-      'LINKTYPE', and 'OPTIMIZE'. See the ExtUtils::MakeMaker(3) manual
-      page for more information on configuring PERL extensions.
+      using the Perl interpreter's installation PREFIX, rather than
+      ImageMagick's. If ImageMagick's installation prefix is not the
+      same as PERL's PREFIX, then you may find that PerlMagick's 'make
+      install' step tries to install into a directory tree that you
+      don't have write permissions to. This is common when PERL is
+      delivered with the operating system or on Internet Service
+      Provider (ISP) web servers. If you want PerlMagick to install
+      elsewhere, then provide a PREFIX option to PERL's configuration
+      step via "--with-perl-options=PREFIX=/some/place". Other options
+      accepted by MakeMaker are 'LIB', 'LIBPERL_A', 'LINKTYPE', and
+      'OPTIMIZE'. See the ExtUtils::MakeMaker(3) manual page for more
+      information on configuring PERL extensions.
 
     o --without-x: By default, ImageMagick will use X11 libraries if
       they are available. When --without-x is specified, use of X11 is
