@@ -730,18 +730,15 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
 
   if (delegate_info == (DelegateInfo *) NULL)
     {
-      char
-        *client_path;
-
-      client_path=SetClientPath((char *) NULL);
-      if (client_path)
-        (void) ReadDelegates(client_path,DirectorySeparator);
-      else
-        (void) ReadDelegates(DelegatePath,(char *) NULL);
+      /*
+        Read one or more delegate configuration files.
+      */
+      (void) ReadDelegates(DelegatePath,(char *) NULL);
+      (void) ReadDelegates(SetClientPath((char *) NULL),DirectorySeparator);
+      (void) ReadDelegates(getenv("HOME"),"/.magick/");
+      (void) ReadDelegates((char *) NULL,(char *) NULL);
       (void) ReadDelegates((char *) getenv("MAGICK_DELEGATE_PATH"),
         DirectorySeparator);
-      (void) ReadDelegates((char *) getenv("HOME"),"/.magick/");
-      (void) ReadDelegates((char *) NULL,(char *) NULL);
       atexit(DestroyDelegateInfo);
       return(delegates);
     }

@@ -1200,6 +1200,7 @@ MagickExport char **ListColors(const char *pattern,int *number_colors)
 {
   char
     color[MaxTextExtent],
+    filename[MaxTextExtent],
     **colorlist,
     text[MaxTextExtent];
 
@@ -1228,26 +1229,11 @@ MagickExport char **ListColors(const char *pattern,int *number_colors)
     Open database.
   */
   *number_colors=0;
-#if defined(_VISUALC_)
-  {
-    char
-      path[MaxTextExtent],
-      *client_path;
-
-    client_path=SetClientPath((char *) NULL);
-    if (client_path)
-      {
-        (void) strcpy(path,client_path);
-        (void) strcat(path,DirectorySeparator);
-        (void) strcat(path,"rgb.txt");
-        database=fopen(path,"r");
-      }
-    else
-      database=fopen(RGBColorDatabase,"r");
-  }
-#else
-  database=fopen(RGBColorDatabase,"r");
-#endif
+  FormatString(filename,"%s%s%s",SetClientPath((char *) NULL),
+    DirectorySeparator,"rgb.txt");
+  database=fopen(filename,"r");
+  if (database == (FILE *) NULL)
+     database=fopen(RGBColorDatabase,"r");
   if (database == (FILE *) NULL)
     {
       register const ColorlistInfo

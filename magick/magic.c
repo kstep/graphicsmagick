@@ -402,29 +402,31 @@ static int ReadMagicConfigurationFile(const char *filename)
 static unsigned int InitializeMagic(void)
 {
   char
-    path[MaxTextExtent],
-    *client_path;
+    filename[MaxTextExtent];
 
+  unsigned int
+    status;
+
+  /*
+    Read one or more magic configuration files.
+  */
+  FormatString(filename,"%s%s%s",DelegatePath,DirectorySeparator,MagicFilename);
+  status=ReadMagicConfigurationFile(filename);
+  FormatString(filename,"%s%s%s",SetClientPath((char *) NULL),
+    DirectorySeparator,MagicFilename);
+  status|=ReadMagicConfigurationFile(filename);
+  FormatString(filename,"%s%s.magick%s",getenv("HOME") ? getenv("HOME") : "",
+    DirectorySeparator,MagicFilename);
+  status|=ReadMagicConfigurationFile(filename);
+  status|=ReadMagicConfigurationFile(MagicFilename);
   if (getenv("MAGICK_DELEGATE_PATH") != (char *) NULL)
     {
-      (void) strcpy(path,getenv("MAGICK_DELEGATE_PATH"));
-      (void) strcat(path,DirectorySeparator);
-      (void) strcat(path,MagicFilename);
-      if (ReadMagicConfigurationFile(path) == True)
-        return(True);
+      FormatString(filename,"%s%s%s",
+	getenv("MAGICK_DELEGATE_PATH") ? getenv("MAGICK_DELEGATE_PATH") : "",
+        DirectorySeparator,MagicFilename);
+      status|=ReadMagicConfigurationFile(filename);
     }
-  if (ReadMagicConfigurationFile(MagicFilename) == True)
-    return(True);
-  client_path=SetClientPath((char *) NULL);
-  (void) strcpy(path,client_path);
-  (void) strcat(path,DirectorySeparator);
-  (void) strcat(path,MagicFilename);
-  if (ReadMagicConfigurationFile(path) == True)
-    return(True);
-  (void) strcpy(path,DelegatePath);
-  (void) strcat(path,DirectorySeparator);
-  (void) strcat(path,MagicFilename);
-  return(ReadMagicConfigurationFile(path));
+  return(status);
 }
 
 MagickExport unsigned int SetImageMagic(const unsigned char *magick,

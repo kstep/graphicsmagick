@@ -429,7 +429,7 @@ MagickExport void MagickIncarnate(const char *path)
     }
   (void) setlocale(LC_ALL,"");
   (void) setlocale(LC_NUMERIC,"C");
-  (void) SetImageMagic("NULL",MaxTextExtent,magick);
+  (void) SetImageMagic("XC",MaxTextExtent,magick);
 }
 
 /*

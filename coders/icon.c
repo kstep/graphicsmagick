@@ -72,7 +72,8 @@
 %
 %  The format of the ReadIconImage method is:
 %
-%      Image *ReadIconImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadIconImage(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -86,7 +87,8 @@
 %
 %
 */
-static Image *ReadIconImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadIconImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
 #define MaxIcons  256
 

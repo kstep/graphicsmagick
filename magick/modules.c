@@ -57,6 +57,11 @@
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
 #include "modules.h"
 #include "defines.h"
+/*
+  Constant declaractions.
+*/
+const char
+  *ModuleFilename = "modules.mgk";
 
 /*
   Global declarations.
@@ -321,8 +326,7 @@ MagickExport void InitializeModules(void)
 
   ModuleAliases
     *aliases,
-    *entry,
-    *module_aliases;
+    *entry;
 
   register char
     *p,
@@ -343,18 +347,26 @@ MagickExport void InitializeModules(void)
     MagickError(DelegateError,"failed to initialise module loader",
       lt_dlerror());
   /*
-    Add user specified path.
+    Read one or more module configuration files.
   */
   i=0;
   module_path=(char **) AllocateMemory((MaxPathElements+1)*sizeof(char *));
   if (module_path == (char **) NULL)
     MagickError(ResourceLimitError,"Unable to allocate module path",
       "Memory allocation failed");
+  module_path[i++]=AllocateString(CoderModuleDirectory);
+  module_path[i++]=AllocateString(SetClientPath((char *) NULL));
+  FormatString(filename,"%s%s.magick",getenv("HOME") ? getenv("HOME") : "",
+    DirectorySeparator);
+  module_path[i++]=AllocateString(filename);
   module_path[i++]=AllocateString("");
   if (getenv("MAGICK_MODULE_PATH") != (char *) NULL)
     {
+      /*
+        Add user specified path.
+      */
       p=getenv("MAGICK_MODULE_PATH");
-      while (i < MaxPathElements)
+      while (i < (MaxPathElements-1))
       {
         q=strchr(p,DirectoryListSeparator);
         if (q == (char *) NULL)
@@ -362,48 +374,18 @@ MagickExport void InitializeModules(void)
             module_path[i++]=AllocateString(p);
             break;
           }
-        (void) strncpy(message,p,q-p);
-        message[q-p]='\0';
-        module_path[i++]=AllocateString(message);
+        (void) strncpy(filename,p,q-p);
+        filename[q-p]='\0';
+        module_path[i++]=AllocateString(filename);
         p=q+1;
       }
     }
-  /*
-    Add HOME/.magick if it exists
-  */
-  p=getenv("HOME");
-  if ((i < MaxPathElements) && (p != (char *) NULL))
-    {
-      (void) strcpy(message,p);
-      (void) strcat(message,"/.magick");
-      if (access(message,R_OK) == 0)
-        module_path[i++]=AllocateString(message);
-    }
-  /*
-    Add default module installation directory.
-  */
-  if (i < MaxPathElements)
-#if defined(_VISUALC_)
-    {
-      char
-        *client_path;
-
-      client_path=SetClientPath((char *) NULL);
-      if (client_path)
-        module_path[i++]=AllocateString(client_path);
-      else
-        module_path[i++]=AllocateString(".");
-    }
-#else
-    module_path[i++]=AllocateString(CoderModuleDirectory);
-#endif
   module_path[i]=(char *) NULL;
   module_aliases=(ModuleAliases *) NULL;
   for (i=0; module_path[i]; i++)
   {
-    (void) strcpy(filename,module_path[i]);
-    (void) strcat(filename,DirectorySeparator);
-    (void) strcat(filename,"modules.mgk");
+    FormatString(filename,"%s%s%s",module_path[i],DirectorySeparator,
+      ModuleFilename);
     file=fopen(filename,"r");
     if (file == (FILE*) NULL)
       continue;

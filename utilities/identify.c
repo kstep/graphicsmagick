@@ -293,7 +293,11 @@ int main(int argc,char **argv)
         image_info->subrange=0;
         image=ReadImage(image_info,&exception);
         if (image == (Image *) NULL)
-          MagickError(exception.severity,exception.message,exception.qualifier);
+          {
+            MagickWarning(exception.severity,exception.message,
+              exception.qualifier);
+            continue;
+          }
         if (format == (char *) NULL)
           DescribeImage(image,stdout,False);
         else
@@ -312,27 +316,25 @@ int main(int argc,char **argv)
       }
     image=ReadImage(image_info,&exception);
     if (image == (Image *) NULL)
-      MagickError(exception.severity,exception.message,exception.qualifier);
+      MagickWarning(exception.severity,exception.message,exception.qualifier);
     for (p=image; p != (Image *) NULL; p=p->next)
     {
       if (p->scene == 0)
         p->scene=count++;
-      if (format != NULL)
+      if (format == (char *) NULL)
+        DescribeImage(p,stdout,image_info->verbose);
+      else
         {
           char
             *text;
 
           text=TranslateText((ImageInfo *) NULL,image,format);
-          if (text == (char *) NULL)
-            {
-              ThrowBinaryException(ResourceLimitWarning,
-                "Unable to format image data","Memory allocation failed");
-            }
-          else
+          if (text != (char *) NULL)
             fputs(text,stdout);
+          else
+            ThrowBinaryException(ResourceLimitWarning,
+              "Unable to format image data","Memory allocation failed");
         }
-      else
-          DescribeImage(p,stdout,image_info->verbose);
     }
     DestroyImages(image);
     number_images++;
