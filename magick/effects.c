@@ -3035,9 +3035,6 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
   int
     y;
 
-  PixelPacket
-    *colormap;
-
   register IndexPacket
     *indexes;
 
@@ -3052,21 +3049,9 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  colormap=(PixelPacket *) AcquireMemory(2*sizeof(PixelPacket));
-  if (colormap == (PixelPacket *) NULL)
+  if (!AllocateImageColormap(image,2))
     ThrowBinaryException(ResourceLimitWarning,"Unable to threshold image",
       "Memory allocation failed");
-  if (image->colormap != (PixelPacket *) NULL)
-    LiberateMemory((void **) &image->colormap);
-  image->storage_class=PseudoClass;
-  image->colors=2;
-  image->colormap=colormap;
-  image->colormap[0].red=0;
-  image->colormap[0].green=0;
-  image->colormap[0].blue=0;
-  image->colormap[1].red=MaxRGB;
-  image->colormap[1].green=MaxRGB;
-  image->colormap[1].blue=MaxRGB;
   for (y=0; y < (int) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);

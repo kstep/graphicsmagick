@@ -1672,12 +1672,12 @@ MagickExport unsigned int IsMonochromeImage(Image *image)
     return(False);
   if (image->colors > 2)
     return(False);
-  if ((Intensity(image->colormap[0]) != 0) &&
-      (Intensity(image->colormap[0]) != MaxRGB))
+  if (((int) Intensity(image->colormap[0]) != 0) &&
+      ((int) Intensity(image->colormap[0]) != MaxRGB))
     return(False);
   if (image->colors == 2)
-    if ((Intensity(image->colormap[1]) != 0) &&
-        (Intensity(image->colormap[1]) != MaxRGB))
+    if (((int) Intensity(image->colormap[1]) != 0) &&
+        ((int) Intensity(image->colormap[1]) != MaxRGB))
       return(False);
   return(True);
 }

@@ -317,6 +317,8 @@ MagickExport unsigned int AllocateImageColormap(Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(colors != 0);
+  if (image->colormap != (PixelPacket *) NULL)
+    LiberateMemory((void **) &image->colormap);
   image->storage_class=PseudoClass;
   image->colors=colors;
   image->colormap=(PixelPacket *)
