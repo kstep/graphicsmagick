@@ -1,10 +1,8 @@
 <?xml version="1.0"?>
 <delegatemap>
   <delegate decode="browse" stealth="True" spawn="True" command='@BrowseDelegate@ http://www.imagemagick.org/ImageMagick/'  />
-  <delegate decode="bzip" stealth="True" command='|@BZIPDelegate@ -cd "%i"' />
   <delegate decode="cgm" command='@CGMDecodeDelegate@ -d ps "%i" "%o" "%u"
     @ConvertDelegate@ -concatenate %o*.ps "%o"' />
-  <delegate decode="compress" stealth="True" command='|@LZWDecodeDelegate@ -c "%i"' />
   <delegate decode="dot" command='@DOTDecodeDelegate@ -Tps "%i" -o "%o"' />
   <delegate decode="dvi" command='@DVIDecodeDelegate@ -q -o "%o" "%i"' />
   <delegate decode="edit" stealth="True" command='@EditorDelegate@ -title "Edit Image Comment" -e vi "%o"' />
@@ -26,7 +24,6 @@
   <delegate encode="mpeg-encode" stealth="True" command='@MPEGEncodeDelegate@ "%i" "%o"' />
   <delegate decode="pdf" encode="eps" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=@GSEPSDevice@ -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="pdf" encode="ps" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=@GSPSDevice@ -sOutputFile=%o -- "%i" -c quit' />
-  <delegate decode="pgp" command='@PGPDecodeDelegate@ -fq "%i"' />
   <delegate decode="pnm" encode="ilbm" mode="encode" command='@ILBMEncodeDelegate@ -24if "%i" > "%o"' />
   <delegate decode="pnm" encode="launch" mode="encode" command='@LaunchDelegate@ "%i"' />
   <delegate decode="pnm" encode="win" mode="encode" command='@ShowImageDelegate@ -immutable "%i"' />
@@ -43,9 +40,9 @@
   <delegate decode="txt" encode="ps" mode="bi" command='@TXTDelegate@ -o "%o" "%i"' />
   <delegate decode="wmf" command='@WMFDecodeDelegate@ -o "%o" "%i"' />
   <delegate decode="xcf" command='@XCFDecodeDelegate@ "%i" > "%o"' />
+  <delegate decode="bzip" stealth="True" command='|@BZIPDelegate@ -cdfq "%i"' />
   <delegate decode="zip" stealth="True" command='|@ZipDelegate@ -cdfq "%i"' />
-  <delegate encode="bzip" stealth="True" command='|@BZIPDelegate@ -f > "%o"' />
-  <delegate encode="compress" stealth="True" command='|@LZWEncodeDelegate@ -c > "%o"' />
-  <delegate encode="show" stealth="True" spawn="True" command='@ShowImageDelegate@ -immutable -window_group %g -title "%l of %f" "tmp:%o"' />
+  <delegate encode="bzip" stealth="True" command='|@BZIPDelegate@ -cf > "%o"' />
   <delegate encode="zip" stealth="True" command='|@ZipDelegate@ -cf > "%o"' />
+  <delegate encode="show" stealth="True" spawn="True" command='@ShowImageDelegate@ -immutable -window_group %g -title "%l of %f" "tmp:%o"' />
 </delegatemap>
