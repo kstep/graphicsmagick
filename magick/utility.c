@@ -238,11 +238,14 @@ Export char *BaseFilename(const char *name)
 %  Method CloneString allocates memory for the destination string and copies
 %  the source string to that memory location.
 %
-%  The format of the CloneString routine is:
+%  The format of the (void) CloneString routine is:
 %
-%      CloneString(destination,source)
+%      status=CloneString(destination,source)
 %
 %  A description of each parameter follows:
+%
+%    o status:  Method IsAccessible returns True is the string is cloned,
+%      otherwise False is returned.
 %
 %    o destination:  A pointer to a character string.
 %
@@ -250,23 +253,24 @@ Export char *BaseFilename(const char *name)
 %
 %
 */
-Export void CloneString(char **destination,const char *source)
+Export unsigned int CloneString(char **destination,const char *source)
 {
   assert(destination != (char **) NULL);
   if (*destination != (char *) NULL)
     FreeMemory(*destination);
   *destination=(char *) NULL;
   if (source == (const char *) NULL)
-    return;
+    return(True);
   *destination=(char *) 
     AllocateMemory(Max(Extent(source)+1,MaxTextExtent)*sizeof(char));
   if (*destination == (char *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to allocate string",
         "Memory allocation failed");
-      return;
+      return(False);
     }
   (void) strcpy(*destination,source);
+  return(True);
 }
 
 /*
@@ -1052,10 +1056,10 @@ Export int GlobExpression(const char *expression,const char *pattern)
 %
 %  A description of each parameter follows.
 %
-%   o  status:  Method IsAccessible returns True is the file as defined by
+%    o status:  Method IsAccessible returns True is the file as defined by
 %      filename is accessible, otherwise False is returned.
 %
-%   o  filename:  Specifies a pointer to an array of characters.  The unique
+%    o filename:  Specifies a pointer to an array of characters.  The unique
 %      file name is returned in this array.
 %
 %

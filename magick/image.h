@@ -469,7 +469,7 @@ extern Export Image
   *AddNoiseImage(const Image *,const NoiseType),
   *AllocateImage(const ImageInfo *),
   *AppendImages(Image *,const unsigned int),
-  *AverageImages(Image *),
+  *AverageImages(const Image *),
   *BlurImage(const Image *,const double),
   *BorderImage(const Image *,const RectangleInfo *),
   *ChopImage(const Image *,const RectangleInfo *),

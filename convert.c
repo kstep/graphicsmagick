@@ -491,7 +491,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing background color",option);
-                  CloneString(&image_info.background_color,argv[i]);
+                  (void) CloneString(&image_info.background_color,argv[i]);
                 }
               break;
             }
@@ -523,7 +523,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing border color",option);
-                  CloneString(&image_info.border_color,argv[i]);
+                  (void) CloneString(&image_info.border_color,argv[i]);
                 }
               break;
             }
@@ -535,7 +535,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing box color",option);
-                  CloneString(&image_info.border_color,argv[i]);
+                  (void) CloneString(&image_info.border_color,argv[i]);
                 }
               break;
             }
@@ -703,7 +703,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  CloneString(&image_info.density,argv[i]);
+                  (void) CloneString(&image_info.density,argv[i]);
                 }
               break;
             }
@@ -729,7 +729,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing server name",option);
-                  CloneString(&image_info.server_name,argv[i]);
+                  (void) CloneString(&image_info.server_name,argv[i]);
                 }
               break;
             }
@@ -843,7 +843,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing font name",option);
-                  CloneString(&image_info.font,argv[i]);
+                  (void) CloneString(&image_info.font,argv[i]);
                 }
               break;
             }
@@ -1060,7 +1060,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing matte color",option);
-                  CloneString(&image_info.matte_color,argv[i]);
+                  (void) CloneString(&image_info.matte_color,argv[i]);
                 }
               break;
             }
@@ -1167,7 +1167,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing pen color",option);
-                  CloneString(&image_info.pen,argv[i]);
+                  (void) CloneString(&image_info.pen,argv[i]);
                 }
               break;
             }
@@ -1407,7 +1407,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  CloneString(&image_info.size,argv[i]);
+                  (void) CloneString(&image_info.size,argv[i]);
                 }
               break;
             }
@@ -1454,7 +1454,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing filename",option);
-                  CloneString(&image_info.texture,argv[i]);
+                  (void) CloneString(&image_info.texture,argv[i]);
                 }
               break;
             }
@@ -1528,7 +1528,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing view transform",option);
-                  CloneString(&image_info.view,argv[i]);
+                  (void) CloneString(&image_info.view,argv[i]);
                 }
               break;
             }

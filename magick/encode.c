@@ -3437,12 +3437,12 @@ Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
             for (j=0; j <= ((int) p->length); j++)
             {
               /*
-                Convert DirectClass packets to contiguous RGB scanlines.
+                Convert DirectClass packets to contiguous CMYK scanlines.
               */
-              *q++=(JSAMPLE) (p->red >> 4);
-              *q++=(JSAMPLE) (p->green >> 4);
-              *q++=(JSAMPLE) (p->blue >> 4);
-              *q++=(JSAMPLE) (p->index >> 4);
+              *q++=(JSAMPLE) (MaxRGB-(p->red >> 4));
+              *q++=(JSAMPLE) (MaxRGB-(p->green >> 4));
+              *q++=(JSAMPLE) (MaxRGB-(p->blue >> 4));
+              *q++=(JSAMPLE) (MaxRGB-(p->index >> 4));
               x++;
               if (x == (int) image->columns)
                 {
@@ -3505,12 +3505,12 @@ Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
           for (j=0; j <= ((int) p->length); j++)
           {
             /*
-              Convert DirectClass packets to contiguous RGB scanlines.
+              Convert DirectClass packets to contiguous CMYK scanlines.
             */
-            *q++=(JSAMPLE) DownScale(p->red);
-            *q++=(JSAMPLE) DownScale(p->green);
-            *q++=(JSAMPLE) DownScale(p->blue);
-            *q++=(JSAMPLE) DownScale(p->index);
+            *q++=(JSAMPLE) DownScale(MaxRGB-p->red);
+            *q++=(JSAMPLE) DownScale(MaxRGB-p->green);
+            *q++=(JSAMPLE) DownScale(MaxRGB-p->blue);
+            *q++=(JSAMPLE) DownScale(MaxRGB-p->index);
             x++;
             if (x == (int) image->columns)
               {
@@ -8146,11 +8146,11 @@ Export unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
   }
   GetMontageInfo(&montage_info);
   (void) strcpy(montage_info.filename,image->filename);
-  CloneString(&montage_info.geometry,DefaultPreviewGeometry);
-  CloneString(&montage_info.tile,DefaultPreviewPageGeometry);
-  CloneString(&montage_info.font,image_info->font);
+  (void) CloneString(&montage_info.geometry,DefaultPreviewGeometry);
+  (void) CloneString(&montage_info.tile,DefaultPreviewPageGeometry);
+  (void) CloneString(&montage_info.font,image_info->font);
   montage_info.pointsize=image_info->pointsize;
-  CloneString(&montage_info.frame,DefaultTileFrame);
+  (void) CloneString(&montage_info.frame,DefaultTileFrame);
   montage_info.shadow=True;
   montage_image=MontageImages(*images,&montage_info);
   DestroyMontageInfo(&montage_info);

@@ -5723,7 +5723,7 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
   if (local_info == (ImageInfo *) NULL)
     return((Image *) NULL);
   if (local_info->font == (char *) NULL)
-    CloneString(&local_info->font,DefaultXFont);
+    (void) CloneString(&local_info->font,DefaultXFont);
   (void) strcpy(text,local_info->filename);
   (void) XQueryColorDatabase("black",&pen_color);
   if (local_info->pen != (char *) NULL)
@@ -5800,7 +5800,7 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
           MagickWarning(DelegateWarning,"Unable to open TTF font",
             local_info->font+1);
           DestroyImage(image);
-          CloneString(&local_info->font,DefaultXFont);
+          (void) CloneString(&local_info->font,DefaultXFont);
           image=ReadLABELImage(local_info);
           DestroyImageInfo(local_info);
           return(image);
@@ -6022,7 +6022,7 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
               XGetResourceInfo(resource_database,client_name,&resource_info);
               resource_info.close_server=False;
               resource_info.colormap=PrivateColormap;
-              CloneString(&resource_info.font,local_info->font);
+              (void) CloneString(&resource_info.font,local_info->font);
               resource_info.background_color="black";
               resource_info.foreground_color="white";
               map_info=XAllocStandardColormap();
@@ -6072,7 +6072,7 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
           MagickWarning(XServerWarning,"Unable to open X server",
             local_info->server_name);
           DestroyImage(image);
-          CloneString(&local_info->font,DefaultPSFont);
+          (void) CloneString(&local_info->font,DefaultPSFont);
           image=ReadLABELImage(local_info);
           DestroyImageInfo(local_info);
           return(image);
@@ -6088,7 +6088,7 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
             Font name has changed.
           */
           XFreeFont(display,font_info);
-          CloneString(&resource_info.font,local_info->font);
+          (void) CloneString(&resource_info.font,local_info->font);
           font_info=XBestFont(display,&resource_info,False);
           if (font_info == (XFontStruct *) NULL)
             PrematureExit(ResourceLimitWarning,"Unable to load font",image);
@@ -6139,7 +6139,7 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
   local_info->density=(char *) NULL;
   (void) sprintf(page,"%ux%u+0+0!",local_info->pointsize*Extent(text),
     local_info->pointsize << 1);
-  CloneString(&local_info->page,page);
+  (void) CloneString(&local_info->page,page);
   TemporaryFilename(filename);
   file=fopen(filename,WriteBinaryType);
   if (file == (FILE *) NULL)
@@ -6688,7 +6688,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
                   image->iterations=atoi(value);
               }
             if (Latin1Compare(keyword,"label") == 0)
-              CloneString(&image->label,value);
+              (void) CloneString(&image->label,value);
             if ((Latin1Compare(keyword,"matte") == 0) ||
                 (Latin1Compare(keyword,"alpha") == 0))
               {
@@ -6707,7 +6707,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
                 image->matte_color.index=0;
               }
             if (Latin1Compare(keyword,"montage") == 0)
-              CloneString(&image->montage,value);
+              (void) CloneString(&image->montage,value);
             if (Latin1Compare(keyword,"page") == 0)
               {
                 if (image_info->page == (char *) NULL)
@@ -6742,7 +6742,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
             if (Latin1Compare(keyword,"scene") == 0)
               image->scene=(unsigned int) atoi(value);
             if (Latin1Compare(keyword,"signature") == 0)
-              CloneString(&image->signature,value);
+              (void) CloneString(&image->signature,value);
             if (Latin1Compare(keyword,"units") == 0)
               {
                 if (Latin1Compare(value,"undefined") == 0)
@@ -7435,7 +7435,7 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image)
   */
   GetMontageInfo(&montage_info);
   (void) strcpy(montage_info.filename,image_info->filename);
-  CloneString(&montage_info.font,image_info->font);
+  (void) CloneString(&montage_info.font,image_info->font);
   montage_info.pointsize=image_info->pointsize;
   montage_image=MontageImages(image,&montage_info);
   DestroyMontageInfo(&montage_info);
@@ -14735,11 +14735,11 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
     text=(char *) NULL;
     TIFFGetField(tiff,TIFFTAG_PAGENAME,&text);
     if (text != (char *) NULL)
-      CloneString(&image->label,text);
+      (void) CloneString(&image->label,text);
     text=(char *) NULL;
     TIFFGetField(tiff,TIFFTAG_IMAGEDESCRIPTION,&text);
     if (text != (char *) NULL)
-      CloneString(&image->comments,text);
+      (void) CloneString(&image->comments,text);
     if (range < 0)
       range=max_sample_value;
     q=image->pixels;
@@ -15637,10 +15637,10 @@ Export Image *ReadTTFImage(const ImageInfo *image_info)
   local_info=CloneImageInfo(image_info);
   if (local_info == (ImageInfo *) NULL)
     return((Image *) NULL);
-  CloneString(&local_info->size,"800x520");
-  CloneString(&local_info->pen,"black");
+  (void) CloneString(&local_info->size,"800x520");
+  (void) CloneString(&local_info->pen,"black");
   *font='\0';
-  CloneString(&local_info->font,font);
+  (void) CloneString(&local_info->font,font);
   local_info->pointsize=18;
   FormatString(local_info->font,"@%.1024s",image_info->filename);
   GetAnnotateInfo(local_info,&annotate_info);
@@ -15664,7 +15664,7 @@ Export Image *ReadTTFImage(const ImageInfo *image_info)
     }
   (void) strcpy(image->filename,image_info->filename);
   if (annotate_info.font_name != (char *) NULL)
-    CloneString(&image->label,annotate_info.font_name);
+    (void) CloneString(&image->label,annotate_info.font_name);
   /*
     Annotate canvas with text rendered with font at different point sizes.
   */
@@ -15673,25 +15673,25 @@ Export Image *ReadTTFImage(const ImageInfo *image_info)
     {
       annotate_info.image_info->pointsize=30;
       FormatString(geometry,"+10%+d",y);
-      CloneString(&annotate_info.geometry,geometry);
-      CloneString(&annotate_info.text,annotate_info.font_name);
+      (void) CloneString(&annotate_info.geometry,geometry);
+      (void) CloneString(&annotate_info.text,annotate_info.font_name);
       AnnotateImage(image,&annotate_info);
       y+=42;
     }
   annotate_info.image_info->pointsize=18;
   FormatString(geometry,"+10%+d",y);
-  CloneString(&annotate_info.geometry,geometry);
-  CloneString(&annotate_info.text,"abcdefghijklmnopqrstuvwxyz");
+  (void) CloneString(&annotate_info.geometry,geometry);
+  (void) CloneString(&annotate_info.text,"abcdefghijklmnopqrstuvwxyz");
   AnnotateImage(image,&annotate_info);
   y+=20;
   FormatString(geometry,"+10%+d",y);
-  CloneString(&annotate_info.geometry,geometry);
-  CloneString(&annotate_info.text,"ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+  (void) CloneString(&annotate_info.geometry,geometry);
+  (void) CloneString(&annotate_info.text,"ABCDEFGHIJKLMNOPQRSTUVWXYZ");
   AnnotateImage(image,&annotate_info);
   y+=20;
   FormatString(geometry,"+10%+d",y);
-  CloneString(&annotate_info.geometry,geometry);
-  CloneString(&annotate_info.text,"1234567890.:,;(:*!?')");
+  (void) CloneString(&annotate_info.geometry,geometry);
+  (void) CloneString(&annotate_info.text,"1234567890.:,;(:*!?')");
   AnnotateImage(image,&annotate_info);
   y+=20;
   for (i=12; i <= 72; i+=6)
@@ -15699,14 +15699,14 @@ Export Image *ReadTTFImage(const ImageInfo *image_info)
     y+=i+6;
     annotate_info.image_info->pointsize=18;
     FormatString(geometry,"+10%+d",y);
-    CloneString(&annotate_info.geometry,geometry);
+    (void) CloneString(&annotate_info.geometry,geometry);
     FormatString(text,"%d",i);
-    CloneString(&annotate_info.text,text);
+    (void) CloneString(&annotate_info.text,text);
     AnnotateImage(image,&annotate_info);
     annotate_info.image_info->pointsize=i;
     FormatString(geometry,"+40%+d",y);
-    CloneString(&annotate_info.geometry,geometry);
-    CloneString(&annotate_info.text,
+    (void) CloneString(&annotate_info.geometry,geometry);
+    (void) CloneString(&annotate_info.text,
       "That which does not kill us, makes us stronger");
     AnnotateImage(image,&annotate_info);
     if (i >= 24)
@@ -15873,9 +15873,9 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
       break;
     if (Extent(text) > 0)
       text[Extent(text)-1]='\0';
-    CloneString(&annotate_info.text,text);
+    (void) CloneString(&annotate_info.text,text);
     FormatString(geometry,"%+d%+d",bounding_box.x,bounding_box.y+offset);
-    CloneString(&annotate_info.geometry,geometry);
+    (void) CloneString(&annotate_info.geometry,geometry);
     AnnotateImage(image,&annotate_info);
     offset+=annotate_info.bounds.height;
     if (image->previous == (Image *) NULL)
@@ -16400,7 +16400,7 @@ Export Image *ReadVIDImage(const ImageInfo *image_info)
   local_info=CloneImageInfo(image_info);
   if (local_info == (ImageInfo *) NULL)
     return((Image *) NULL);
-  CloneString(&local_info->size,DefaultTileGeometry);
+  (void) CloneString(&local_info->size,DefaultTileGeometry);
   commands[0]=SetClientName((char *) NULL);
   commands[1]="-label";
   commands[2]=DefaultTileLabel;
@@ -16443,7 +16443,7 @@ Export Image *ReadVIDImage(const ImageInfo *image_info)
   */
   GetMontageInfo(&montage_info);
   (void) strcpy(montage_info.filename,image_info->filename);
-  CloneString(&montage_info.font,image_info->font);
+  (void) CloneString(&montage_info.font,image_info->font);
   montage_info.pointsize=image_info->pointsize;
   montage_image=MontageImages(image,&montage_info);
   DestroyMontageInfo(&montage_info);
@@ -16613,7 +16613,7 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
     (void) ReadData((char *) viff_header.comment,1,512,image->file);
     viff_header.comment[511]='\0';
     if (Extent(viff_header.comment) > 4)
-      CloneString(&image->comments,viff_header.comment);
+      (void) CloneString(&image->comments,viff_header.comment);
     if ((viff_header.machine_dependency == VFF_DEP_DECORDER) ||
         (viff_header.machine_dependency == VFF_DEP_NSORDER))
       {

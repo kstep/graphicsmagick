@@ -65,6 +65,7 @@ extern Export int
   SystemCommand(const unsigned int,const char *);
 
 extern Export unsigned int
+  CloneString(char **,const char *),
   ExpandFilenames(int *,char ***),
   IsAccessible(const char *),
   IsDirectory(const char *),
@@ -81,7 +82,6 @@ extern Export unsigned short
 
 extern Export void
   AppendImageFormat(const char *,char *),
-  CloneString(char **,const char *),
   DestroyPostscriptGeometry(char *),
   ExpandFilename(char *),
   FormatString(char *,const char *,...),

@@ -462,7 +462,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing color",option);
-                  CloneString(&resource_info.background_color,argv[i]);
+                  (void) CloneString(&resource_info.background_color,argv[i]);
                 }
               break;
             }
@@ -484,7 +484,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing color",option);
-                  CloneString(&resource_info.border_color,argv[i]);
+                  (void) CloneString(&resource_info.border_color,argv[i]);
                 }
               break;
             }
@@ -660,7 +660,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  CloneString(&image_info.density,argv[i]);
+                  (void) CloneString(&image_info.density,argv[i]);
                 }
               break;
             }

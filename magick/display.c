@@ -2189,7 +2189,7 @@ static unsigned int XCompositeImage(Display *display,
           XCheckRefreshWindows(display,windows);
           GetImageInfo(&image_info);
           (void) strcpy(image_info.filename,filename);
-          CloneString(&image_info.size,size);
+          (void) CloneString(&image_info.size,size);
           FormatString(image_info.size,"%ux%u",composite_image->columns,
             composite_image->rows);
           mask_image=ReadImage(&image_info);
@@ -5278,7 +5278,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Create canvas.
       */
       FormatString(image_info.filename,"%.1024s:%.1024s",format,color);
-      CloneString(&image_info.size,geometry);
+      (void) CloneString(&image_info.size,geometry);
       loaded_image=ReadImage(&image_info);
       XClientMessage(display,windows->image.id,windows->im_protocols,
         windows->im_next_image,CurrentTime);
@@ -7741,7 +7741,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
       */
       if (resource_info->image_info->size != (char *) NULL)
         (void) strcpy(geometry,resource_info->image_info->size);
-      CloneString(&resource_info->image_info->size,geometry);
+      (void) CloneString(&resource_info->image_info->size,geometry);
       (void) XDialogWidget(display,windows,"Load",
         "Enter the image geometry:",geometry);
     }
@@ -11037,7 +11037,7 @@ static Image *XVisualDirectoryImage(Display *display,
     handler=SetMonitorHandler((MonitorHandler) NULL);
     (void) strcpy(local_info->filename,filelist[i]);
     *local_info->magick='\0';
-    CloneString(&local_info->size,DefaultTileGeometry);
+    (void) CloneString(&local_info->size,DefaultTileGeometry);
     next_image=ReadImage(local_info);
     if (filelist[i] != filenames)
       FreeMemory((char *) filelist[i]);
@@ -11078,7 +11078,7 @@ static Image *XVisualDirectoryImage(Display *display,
   */
   GetMontageInfo(&montage_info);
   (void) strcpy(montage_info.filename,filename);
-  CloneString(&montage_info.font,resource_info->image_info->font);
+  (void) CloneString(&montage_info.font,resource_info->image_info->font);
   montage_info.pointsize=resource_info->image_info->pointsize;
   montage_image=MontageImages(image,&montage_info);
   DestroyMontageInfo(&montage_info);

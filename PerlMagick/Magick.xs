@@ -937,7 +937,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"background"))
         {
           if (info)
-            CloneString(&info->image_info->background_color,SvPV(sval,na));
+            (void) CloneString(&info->image_info->background_color,SvPV(sval,na));
           (void) XQueryColorDatabase(SvPV(sval,na),&target_color);
           for ( ; image; image=image->next)
           {
@@ -958,7 +958,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"bordercolor"))
         {
           if (info)
-            CloneString(&info->image_info->border_color,SvPV(sval,na));
+            (void) CloneString(&info->image_info->border_color,SvPV(sval,na));
           (void) XQueryColorDatabase(SvPV(sval,na),&target_color);
           for ( ; image; image=image->next)
           {
@@ -1055,7 +1055,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"delay"))
         {
           if (info)
-            CloneString(&info->image_info->delay,SvPV(sval,na));
+            (void) CloneString(&info->image_info->delay,SvPV(sval,na));
           for ( ; image; image=image->next)
             image->delay=SvIV(sval);
           return;
@@ -1069,7 +1069,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
               return;
             }
           if (info)
-            CloneString(&info->image_info->density,SvPV(sval,na));
+            (void) CloneString(&info->image_info->density,SvPV(sval,na));
           return;
         }
       if (strEQcase(attribute,"depth"))
@@ -1083,7 +1083,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"dispose"))
         {
           if (info)
-            CloneString(&info->image_info->dispose,SvPV(sval,na));
+            (void) CloneString(&info->image_info->dispose,SvPV(sval,na));
           for (; image; image=image->next)
             image->dispose=SvIV(sval);
           return;
@@ -1108,7 +1108,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         {
           display:
           if (info)
-            CloneString(&info->image_info->server_name,SvPV(sval,na));
+            (void) CloneString(&info->image_info->server_name,SvPV(sval,na));
           return;
         }
       break;
@@ -1151,7 +1151,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"font"))
         {
           if (info)
-            CloneString(&info->image_info->font,SvPV(sval,na));
+            (void) CloneString(&info->image_info->font,SvPV(sval,na));
           return;
         }
       if (strEQcase(attribute,"fuzz"))
@@ -1187,7 +1187,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         {
   iterations:
           if (info)
-            CloneString(&info->image_info->iterations,SvPV(sval,na));
+            (void) CloneString(&info->image_info->iterations,SvPV(sval,na));
           for ( ; image; image=image->next)
             image->iterations=SvIV(sval);
           return;
@@ -1244,7 +1244,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"mattec") || strEQcase(attribute,"matte_color"))
         {
           if (info)
-            CloneString(&info->image_info->matte_color,SvPV(sval,na));
+            (void) CloneString(&info->image_info->matte_color,SvPV(sval,na));
           (void) XQueryColorDatabase(SvPV(sval,na),&target_color);
           for ( ; image; image=image->next)
           {
@@ -1297,7 +1297,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
           if (!p)
             return;
           if (info)
-            CloneString(&info->image_info->page,p);
+            (void) CloneString(&info->image_info->page,p);
           for ( ; image; image=image->next)
             image->page=PostscriptGeometry(SvPV(sval,na));
           DestroyPostscriptGeometry(p);
@@ -1306,7 +1306,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"pen"))
         {
           if (info)
-            CloneString(&info->image_info->pen,SvPV(sval,na));
+            (void) CloneString(&info->image_info->pen,SvPV(sval,na));
           return;
         }
       if (strEQcase(attribute,"pixel"))
@@ -1448,7 +1448,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                     SvPV(sval,na));
                   return;
                 }
-              CloneString(&info->image_info->size,SvPV(sval,na));
+              (void) CloneString(&info->image_info->size,SvPV(sval,na));
             }
           return;
         }
@@ -1460,13 +1460,13 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"tile"))
         {
           if (info)
-            CloneString(&info->image_info->tile,SvPV(sval,na));
+            (void) CloneString(&info->image_info->tile,SvPV(sval,na));
           return;
         }
       if (strEQcase(attribute,"texture"))
         {
           if (info)
-            CloneString(&info->image_info->texture,SvPV(sval,na));
+            (void) CloneString(&info->image_info->texture,SvPV(sval,na));
           return;
         }
       break;
@@ -1512,7 +1512,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"view"))
         {
           if (info)
-            CloneString(&info->image_info->view,SvPV(sval,na));
+            (void) CloneString(&info->image_info->view,SvPV(sval,na));
           return;
         }
       break;
@@ -4012,29 +4012,29 @@ Mogrify(ref,...)
             {
               package_info=ClonePackageInfo(info);
               if (attribute_flag[1])
-                CloneString(&package_info->image_info->font,
+                (void) CloneString(&package_info->image_info->font,
                   argument_list[1].string_reference);
               if (attribute_flag[2])
                package_info->image_info->pointsize=
                  argument_list[2].int_reference;
               if (attribute_flag[3])
-                CloneString(&package_info->image_info->density,
+                (void) CloneString(&package_info->image_info->density,
                   argument_list[3].string_reference);
               if (attribute_flag[4])
-                CloneString(&package_info->image_info->box,
+                (void) CloneString(&package_info->image_info->box,
                   argument_list[4].string_reference);
               if (attribute_flag[5])
-                CloneString(&package_info->image_info->pen,
+                (void) CloneString(&package_info->image_info->pen,
                   argument_list[5].string_reference);
               if (attribute_flag[7])
-                CloneString(&package_info->image_info->server_name,
+                (void) CloneString(&package_info->image_info->server_name,
                   argument_list[7].string_reference);
               GetAnnotateInfo(package_info->image_info,&annotate_info);
               if (attribute_flag[0])
-                CloneString(&annotate_info.text,
+                (void) CloneString(&annotate_info.text,
                   argument_list[0].string_reference);
               if (attribute_flag[6])
-                CloneString(&annotate_info.geometry,
+                (void) CloneString(&annotate_info.geometry,
                   argument_list[6].string_reference);
               if (attribute_flag[8] || attribute_flag[9])
                 {
@@ -4044,7 +4044,7 @@ Mogrify(ref,...)
                     argument_list[9].int_reference=0;
                   FormatString(message,"%+d%+d",argument_list[8].int_reference,
                     argument_list[9].int_reference);
-                  CloneString(&annotate_info.geometry,message);
+                  (void) CloneString(&annotate_info.geometry,message);
                 }
               if (attribute_flag[10])
                 annotate_info.gravity=argument_list[10].int_reference;
@@ -4212,22 +4212,22 @@ Mogrify(ref,...)
             {
               package_info=ClonePackageInfo(info);
               if (attribute_flag[3])
-                CloneString(&package_info->image_info->pen,
+                (void) CloneString(&package_info->image_info->pen,
                   argument_list[3].string_reference);
               if (attribute_flag[4])
                 package_info->image_info->linewidth=
                   argument_list[4].int_reference;
               if (attribute_flag[5])
-                CloneString(&package_info->image_info->server_name,
+                (void) CloneString(&package_info->image_info->server_name,
                   argument_list[5].string_reference);
               if (attribute_flag[6])
-                CloneString(&package_info->image_info->border_color,
+                (void) CloneString(&package_info->image_info->border_color,
                   argument_list[6].string_reference);
               GetAnnotateInfo(package_info->image_info,&annotate_info);
             }
-          CloneString(&annotate_info.primitive,"Point");
+          (void) CloneString(&annotate_info.primitive,"Point");
           if (attribute_flag[0] && (argument_list[0].int_reference > 0))
-            CloneString(&annotate_info.primitive,
+            (void) CloneString(&annotate_info.primitive,
               PrimitiveTypes[argument_list[0].int_reference]);
           if (attribute_flag[1])
             {
@@ -4733,12 +4733,12 @@ Montage(ref,...)
         {
           if (strEQcase(attribute,"background"))
             {
-              CloneString(&montage_info.background_color,SvPV(ST(i),na));
+              (void) CloneString(&montage_info.background_color,SvPV(ST(i),na));
               continue;
             }
           if (strEQcase(attribute,"bordercolor"))
             {
-              CloneString(&montage_info.border_color,SvPV(ST(i),na));
+              (void) CloneString(&montage_info.border_color,SvPV(ST(i),na));
               continue;
             }
           if (strEQcase(attribute,"borderwidth"))
@@ -4779,7 +4779,7 @@ Montage(ref,...)
                   MagickWarning(OptionWarning,"Invalid geometry on frame",p);
                   continue;
                 }
-              CloneString(&montage_info.frame,p);
+              (void) CloneString(&montage_info.frame,p);
               if (*p == '\0')
                 montage_info.frame=(char *) NULL;
               continue;
@@ -4792,14 +4792,14 @@ Montage(ref,...)
             }
           if (strEQcase(attribute,"font"))
             {
-              CloneString(&montage_info.font,SvPV(ST(i),na));
+              (void) CloneString(&montage_info.font,SvPV(ST(i),na));
               continue;
             }
           if (strEQcase(attribute,"fore"))  /* anachronism */
             {
               if (info)
-                CloneString(&info->image_info->pen,SvPV(ST(i),na));
-              CloneString(&montage_info.pen,SvPV(ST(i),na));
+                (void) CloneString(&info->image_info->pen,SvPV(ST(i),na));
+              (void) CloneString(&montage_info.pen,SvPV(ST(i),na));
               continue;
              }
           break;
@@ -4818,7 +4818,7 @@ Montage(ref,...)
                   MagickWarning(OptionWarning,"Invalid geometry on geometry",p);
                   continue;
                 }
-             CloneString(&montage_info.geometry,p);
+             (void) CloneString(&montage_info.geometry,p);
              if (*p == '\0')
                montage_info.geometry=(char *) NULL;
              continue;
@@ -4857,7 +4857,7 @@ Montage(ref,...)
         {
           if (strEQcase(attribute,"mattec"))
             {
-              CloneString(&montage_info.matte_color,SvPV(ST(i),na));
+              (void) CloneString(&montage_info.matte_color,SvPV(ST(i),na));
               continue;
             }
           if (strEQcase(attribute,"mode"))
@@ -4877,7 +4877,7 @@ Montage(ref,...)
                 }
                 case FrameMode:
                 {
-                  CloneString(&montage_info.frame,DefaultTileFrame);
+                  (void) CloneString(&montage_info.frame,DefaultTileFrame);
                   montage_info.shadow=True;
                   break;
                 }
@@ -4892,7 +4892,7 @@ Montage(ref,...)
                 {
                   montage_info.frame=(char *) NULL;
                   montage_info.shadow=False;
-                  CloneString(&montage_info.geometry,"+0+0");
+                  (void) CloneString(&montage_info.geometry,"+0+0");
                   montage_info.border_width=0;
                   concatenate=True;
                 }
@@ -4907,8 +4907,8 @@ Montage(ref,...)
           if (strEQcase(attribute,"pen"))
             {
               if (info)
-                CloneString(&info->image_info->pen,SvPV(ST(i),na));
-              CloneString(&montage_info.pen,SvPV(ST(i),na));
+                (void) CloneString(&info->image_info->pen,SvPV(ST(i),na));
+              (void) CloneString(&montage_info.pen,SvPV(ST(i),na));
               continue;
              }
           if (strEQcase(attribute,"point"))
@@ -4941,7 +4941,7 @@ Montage(ref,...)
         {
           if (strEQcase(attribute,"texture"))
             {
-              CloneString(&montage_info.texture,SvPV(ST(i),na));
+              (void) CloneString(&montage_info.texture,SvPV(ST(i),na));
               continue;
             }
           if (strEQcase(attribute,"tile"))
@@ -4952,14 +4952,14 @@ Montage(ref,...)
                   MagickWarning(OptionWarning,"Invalid geometry on tile",p);
                   continue;
                 }
-              CloneString(&montage_info.tile,p);
+              (void) CloneString(&montage_info.tile,p);
               if (*p == '\0')
                 montage_info.tile=(char *) NULL;
               continue;
             }
           if (strEQcase(attribute,"title"))
             {
-              CloneString(&montage_info.title,SvPV(ST(i),na));
+              (void) CloneString(&montage_info.title,SvPV(ST(i),na));
               continue;
             }
           if (strEQcase(attribute,"trans"))

@@ -545,7 +545,7 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
         FormatString(local_info->image_info->filename,"xc:%.1024s",
           local_info->image_info->box);
         FormatString(size,"%ux%u",annotate_image->columns,annotate_image->rows);
-        CloneString(&local_info->image_info->size,size);
+        (void) CloneString(&local_info->image_info->size,size);
         box_image=ReadImage(local_info->image_info);
         if (box_image != (Image *) NULL)
           {
@@ -767,28 +767,41 @@ Export Image *AppendImages(Image *images,const unsigned int stack)
 %
 %
 */
-Export Image *AverageImages(Image *images)
+Export Image *AverageImages(const Image *images)
 {
 #define AverageImageText  "  Average image sequence...  "
 
-  Image
-    *averaged_image,
+  typedef struct _SumPacket
+  {
+    double
+      red,
+      green,
+      blue,
+      index;
+  } SumPacket;
+
+  const Image
     *image;
 
-  long
-    blue,
-    green,
-    red,
-    index;
+  Image
+    *averaged_image;
+
+  int
+    x;
 
   register int
-    i;
-
-  register long
-    count;
+    i,
+    j;
 
   register RunlengthPacket
+    *p,
     *q;
+
+  SumPacket
+    *sum;
+
+  unsigned int
+    number_scenes;
 
   assert(images != (Image *) NULL);
   if (images->next == (Image *) NULL)
@@ -798,7 +811,7 @@ Export Image *AverageImages(Image *images)
       return((Image *) NULL);
     }
   /*
-    Ensure the images are uncompressed.
+    Ensure the images are the same size.
   */
   for (image=images; image != (Image *) NULL; image=image->next)
   {
@@ -809,47 +822,77 @@ Export Image *AverageImages(Image *images)
           "images are not the same size");
         return((Image *) NULL);
       }
-    if (!UncondenseImage(image))
-      return((Image *) NULL);
   }
   /*
-    Initialize average image attributes.
+    Allocate sum accumulation buffer.
   */
-  images->orphan=True;
-  averaged_image=CloneImage(images,images->columns,images->rows,False);
-  images->orphan=False;
-  if (averaged_image == (Image *) NULL)
+  sum=(SumPacket *)
+    AllocateMemory(images->columns*images->rows*sizeof(SumPacket));
+  if (sum == (SumPacket *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to average image",
         "Memory allocation failed");
       return((Image *) NULL);
     }
+  for (i=0; i < (images->columns*images->rows); i++)
+  {
+    sum[i].red=0.0;
+    sum[i].green=0.0;
+    sum[i].blue=0.0;
+    sum[i].index=0.0;
+  }
+  /*
+    Initialize average image attributes.
+  */
+  ((Image *) images)->orphan=True;
+  averaged_image=CloneImage(images,images->columns,images->rows,False);
+  ((Image *) images)->orphan=False;
+  if (averaged_image == (Image *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to average image",
+        "Memory allocation failed");
+      FreeMemory((char *) sum);
+      return((Image *) NULL);
+    }
+  /*
+    Compute sum over each pixel color component.
+  */
   averaged_image->class=DirectClass;
+  number_scenes=0;
+  for (image=images; image != (Image *) NULL; image=image->next)
+  {
+    x=0;
+    p=image->pixels;
+    for (i=0; i < image->packets; i++)
+    {
+      for (j=0; j <= p->length; j++)
+      {
+        sum[x].red+=p->red;
+        sum[x].green+=p->green;
+        sum[x].blue+=p->blue;
+        sum[x].index+=p->index;
+        x++;
+      }
+      p++;
+    }
+    number_scenes++;
+  }
+  /*
+    Average image pixels.
+  */
   q=averaged_image->pixels;
   for (i=0; i < (int) averaged_image->packets; i++)
   {
-    red=0;
-    green=0;
-    blue=0;
-    index=0;
-    count=0;
-    for (image=images; image != (Image *) NULL; image=image->next)
-    {
-      red+=image->pixels[i].red;
-      green+=image->pixels[i].green;
-      blue+=image->pixels[i].blue;
-      index+=image->pixels[i].index;
-      count++;
-    }
-    q->red=(Quantum) ((red+(long) (count >> 1))/(long) count);
-    q->green=(Quantum) ((green+(long) (count >> 1))/(long) count);
-    q->blue=(Quantum) ((blue+(long) (count >> 1))/(long) count);
-    q->index=(unsigned short) ((index+(long) (count >> 1))/(long) count);
+    q->red=(Quantum) ((sum[i].red+number_scenes/2.0)/number_scenes);
+    q->green=(Quantum) ((sum[i].green+number_scenes/2.0)/number_scenes);
+    q->blue=(Quantum) ((sum[i].blue+number_scenes/2.0)/number_scenes);
+    q->index=(Quantum) ((sum[i].index+number_scenes/2.0)/number_scenes);
     q->length=0;
     q++;
     if (QuantumTick(i,averaged_image->packets))
       ProgressMonitor(AverageImageText,i,averaged_image->packets);
   }
+  FreeMemory((char *) sum);
   return(averaged_image);
 }
 
@@ -1216,26 +1259,26 @@ Export Image *CloneImage(const Image *image,const unsigned int columns,
   clone_image->packed_pixels=(unsigned char *) NULL;
   clone_image->comments=(char *) NULL;
   if (image->comments != (char *) NULL)
-    CloneString(&clone_image->comments,image->comments);
+    (void) CloneString(&clone_image->comments,image->comments);
   clone_image->label=(char *) NULL;
   if (image->label != (char *) NULL)
-    CloneString(&clone_image->label,image->label);
+    (void) CloneString(&clone_image->label,image->label);
   clone_image->montage=(char *) NULL;
   if (clone_pixels)
     if (image->montage != (char *) NULL)
-      CloneString(&clone_image->montage,image->montage);
+      (void) CloneString(&clone_image->montage,image->montage);
   clone_image->directory=(char *) NULL;
   if (clone_pixels)
     if (image->directory != (char *) NULL)
-      CloneString(&clone_image->directory,image->directory);
+      (void) CloneString(&clone_image->directory,image->directory);
   clone_image->signature=(char *) NULL;
   if (clone_pixels)
     if (image->signature != (char *) NULL)
-      CloneString(&clone_image->signature,image->signature);
+      (void) CloneString(&clone_image->signature,image->signature);
   clone_image->page=(char *) NULL;
   if (clone_pixels)
     if (image->page != (char *) NULL)
-      CloneString(&clone_image->page,image->page);
+      (void) CloneString(&clone_image->page,image->page);
   if (image->colormap != (ColorPacket *) NULL)
     {
       /*
@@ -3581,7 +3624,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
         Display visual image directory.
       */
       GetImageInfo(&image_info);
-      CloneString(&image_info.size,"64x64");
+      (void) CloneString(&image_info.size,"64x64");
       (void) fprintf(file,"  directory:\n");
       for (p=image->directory; *p != '\0'; p++)
       {
@@ -6992,7 +7035,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("-background",option,6) == 0)
       {
-        CloneString(&local_info->background_color,argv[++i]);
+        (void) CloneString(&local_info->background_color,argv[++i]);
         (void) XQueryColorDatabase(local_info->background_color,&target_color);
         (*image)->background_color.red=XDownScale(target_color.red);
         (*image)->background_color.green=XDownScale(target_color.green);
@@ -7049,7 +7092,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("-bordercolor",option,8) == 0)
       {
-        CloneString(&local_info->border_color,argv[++i]);
+        (void) CloneString(&local_info->border_color,argv[++i]);
         (void) XQueryColorDatabase(local_info->border_color,&target_color);
         (*image)->border_color.red=XDownScale(target_color.red);
         (*image)->border_color.green=XDownScale(target_color.green);
@@ -7058,7 +7101,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
       }
     if (Latin1Compare("-box",option) == 0)
       {
-        CloneString(&local_info->box,argv[++i]);
+        (void) CloneString(&local_info->box,argv[++i]);
         continue;
       }
     if (strncmp("-charcoal",option,3) == 0)
@@ -7175,7 +7218,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
         /*
           Set image density.
         */
-        CloneString(&local_info->density,argv[++i]);
+        (void) CloneString(&local_info->density,argv[++i]);
         count=sscanf(local_info->density,"%fx%f",
           &(*image)->x_resolution,&(*image)->y_resolution);
         if (count != 2)
@@ -7199,7 +7242,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("-display",option,6) == 0)
       {
-        CloneString(&local_info->server_name,argv[++i]);
+        (void) CloneString(&local_info->server_name,argv[++i]);
         continue;
       }
     if (strncmp("dither",option+1,3) == 0)
@@ -7217,9 +7260,9 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
           Draw image.
         */
         GetAnnotateInfo(local_info,&annotate_info);
-        CloneString(&annotate_info.primitive,argv[++i]);
+        (void) CloneString(&annotate_info.primitive,argv[++i]);
         if (geometry != (char *) NULL)
-          CloneString(&annotate_info.geometry,geometry);
+          (void) CloneString(&annotate_info.geometry,geometry);
         if (gravity != ForgetGravity)
           annotate_info.gravity=gravity;
         DrawImage(*image,&annotate_info);
@@ -7401,7 +7444,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
       }
     if (Latin1Compare("-font",option) == 0)
       {
-        CloneString(&local_info->font,argv[++i]);
+        (void) CloneString(&local_info->font,argv[++i]);
         continue;
       }
     if (strncmp("gamma",option+1,2) == 0)
@@ -7415,7 +7458,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
     if (strncmp("-geometry",option,4) == 0)
       {
         TransformImage(image,(char *) NULL,argv[++i]);
-        CloneString(&geometry,argv[i]);
+        (void) CloneString(&geometry,argv[i]);
         continue;
       }
     if (strncmp("gravity",option+1,2) == 0)
@@ -7518,7 +7561,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("-mattecolor",option,7) == 0)
       {
-        CloneString(&local_info->matte_color,argv[++i]);
+        (void) CloneString(&local_info->matte_color,argv[++i]);
         (void) XQueryColorDatabase(local_info->matte_color,&target_color);
         (*image)->matte_color.red=XDownScale(target_color.red);
         (*image)->matte_color.green=XDownScale(target_color.green);
@@ -7607,7 +7650,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
       }
     if (Latin1Compare("-pen",option) == 0)
       {
-        CloneString(&local_info->pen,argv[++i]);
+        (void) CloneString(&local_info->pen,argv[++i]);
         continue;
       }
     if (strncmp("pointsize",option+1,2) == 0)
@@ -8420,11 +8463,11 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
     Initialize annotate info.
   */
   local_info=CloneImageInfo((ImageInfo *) NULL);
-  CloneString(&local_info->pen,montage_info->pen);
-  CloneString(&local_info->font,montage_info->font);
+  (void) CloneString(&local_info->pen,montage_info->pen);
+  (void) CloneString(&local_info->font,montage_info->font);
   local_info->pointsize=montage_info->pointsize;
-  CloneString(&local_info->background_color,montage_info->background_color);
-  CloneString(&local_info->border_color,montage_info->border_color);
+  (void) CloneString(&local_info->background_color,montage_info->background_color);
+  (void) CloneString(&local_info->border_color,montage_info->border_color);
   GetAnnotateInfo(local_info,&annotate_info);
   annotate_info.gravity=NorthGravity;
   texture=(Image *) NULL;
@@ -8557,8 +8600,8 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
         */
         FormatString(geometry,"%ux%u%+d%+d",montage_image->columns,
           font_height << 1,0,tile_info.y+4);
-        CloneString(&annotate_info.geometry,geometry);
-        CloneString(&annotate_info.text,montage_info->title);
+        (void) CloneString(&annotate_info.geometry,geometry);
+        (void) CloneString(&annotate_info.text,montage_info->title);
         AnnotateImage(montage_image,&annotate_info);
       }
     (void) SetMonitorHandler(handler);
@@ -8752,8 +8795,8 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
                 (int) (montage_info->frame ? y_offset+height+
                 (border_width << 1)-bevel_width-2 : y_offset+tile_info.height+
                 (border_width << 1)+(montage_info->shadow ? 4 : 0)+2));
-              CloneString(&annotate_info.geometry,geometry);
-              CloneString(&annotate_info.text,image->label);
+              (void) CloneString(&annotate_info.geometry,geometry);
+              (void) CloneString(&annotate_info.text,image->label);
               AnnotateImage(montage_image,&annotate_info);
             }
         }
@@ -11049,7 +11092,7 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
       tile[p-q-1]='\0';
       *q='\0';
       p=q;
-      CloneString(&image_info->tile,tile);
+      (void) CloneString(&image_info->tile,tile);
       FreeMemory((char *) tile);
       if (!IsSubimage(image_info->tile,True))
         break;

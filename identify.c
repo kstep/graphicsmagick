@@ -201,7 +201,7 @@ int main(int argc,char **argv)
                     i++;
                     if ((i == argc) || !IsGeometry(argv[i]))
                       MagickError(OptionError,"Missing geometry",option);
-                    CloneString(&image_info.size,argv[i]);
+                    (void) CloneString(&image_info.size,argv[i]);
                   }
                 break;
               }
