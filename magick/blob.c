@@ -430,6 +430,8 @@ MagickExport void DestroyBlobInfo(BlobInfo *blob)
 MagickExport void DetachBlob(BlobInfo *blob_info)
 {
   assert(blob_info != (BlobInfo *) NULL);
+  if (blob_info->mapped)
+    (void) UnmapBlob(blob_info->data,blob_info->length);
   blob_info->eof=False;
   blob_info->mapped=False;
   blob_info->length=0;
