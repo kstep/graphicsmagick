@@ -1,0 +1,76 @@
+dnl Process this file with autoconf to produce a configure script.
+dnl Written by Bob Friesenhahn, bfriesen@simple.dallas.tx.us
+#
+# Magick++ Configure Script
+#
+# Report Magick++ configure bugs to bfriesen@simple.dallas.tx.us
+#
+
+AC_INIT(lib/Magick++.h)
+AC_CANONICAL_SYSTEM
+
+AM_INIT_AUTOMAKE(Magick++, 0.8, ' ')
+TESTED_MAGICK_VERSION="4.2.1"
+
+# Check for ImageMagick release and warn if not what we expect
+AC_MSG_CHECKING(ImageMagick version)
+MAGICK_VERSION=`Magick-config --version`
+AC_MSG_RESULT("version $MAGICK_VERSION")
+if test "$MAGICK_VERSION" != "$TESTED_MAGICK_VERSION"
+then
+  AC_MSG_WARN("ImageMagick version is not expected version $TESTED_MAGICK_VERSION !!!")
+fi
+
+# Ensure that make can run correctly
+AM_SANITY_CHECK
+
+# Override configure's default compilation flags
+CFLAGS="$CFLAGS"
+CXXFLAGS="$CXXFLAGS"
+
+# Check for programs
+AC_PROG_CC
+AC_PROG_CPP
+AM_PROG_CC_STDC
+AC_PROG_CXX
+AC_LANG_CPLUSPLUS
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_RANLIB
+
+# Add configure option --enable-maintainer-mode which enables dependency
+# checking and generation useful to package maintainers.  This is made an
+# option to avoid confusing end users.
+AM_MAINTAINER_MODE
+AC_CANONICAL_HOST
+
+#
+# Check for using dmalloc malloc debugging library
+#
+AM_WITH_DMALLOC
+
+#
+# Obtain ImageMagick compilation options from installed Magick-config script.
+#
+
+AC_MSG_CHECKING(C compiler flags)
+CFLAGS=`Magick-config --cflags`" $CFLAGS"
+AC_MSG_RESULT("$CFLAGS")
+
+AC_MSG_CHECKING(C++ compiler flags)
+CXXFLAGS=`Magick-config --cflags`" $CXXFLAGS"
+AC_MSG_RESULT("$CXXFLAGS")
+
+AC_MSG_CHECKING(pre-processor flags)
+CPPFLAGS="-DHAVE_CONFIG_H "`Magick-config --cppflags`" $CPPFLAGS"
+AC_MSG_RESULT("$CPPFLAGS")
+
+AC_MSG_CHECKING(linker flags)
+LDFLAGS=`Magick-config --ldflags`" $LDFLAGS"
+AC_MSG_RESULT("$LDFLAGS")
+
+AC_MSG_CHECKING(libraries)
+LIBS="$LIBS "`Magick-config --libs`
+AC_MSG_RESULT("$LIBS")
+
+AC_OUTPUT(Makefile lib/Makefile demo/Makefile tests/Makefile)

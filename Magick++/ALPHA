@@ -1,0 +1,30 @@
+                 #
+                # #    #       #####   #    #    ##
+               #   #   #       #    #  #    #   #  #
+              #     #  #       #    #  ######  #    #
+              #######  #       #####   #    #  ######
+              #     #  #       #       #    #  #    #
+              #     #  ######  #       #    #  #    #
+
+This release of Magick++ is an Alpha release. As such, there may be bugs or
+inconsistencies which effect proper operation of the library. The goal of
+Alpha releases is to find these bugs and inconsistencies. Alpha releases
+should only be used by those who are willing to assist with finding defects
+and providing solutions to those defects if possible.
+
+Since this is an Alpha release, feel free to suggest changes to class names
+or organization. I am very interested in ensuring that Magick++ is both easy
+to use and powerful. Until basic issues have been worked out, I am not
+interested in minor efficiency issues. This is why I have not bothered to
+make any of the methods inline yet.
+
+Please report any problems to Bob Friesenhahn <bfriesen@simple.dallas.tx.us>.
+
+The Alpha-test team is as follows:
+
+Bill Radcliffe <BillR@corbis.com>
+Jim Ellsworth <jellsworth@lifetouch.com>
+Michael L. Welles <mike@queso.onshore.com>
+Chris Friesen <cfriesen@home.com>
+John Vechey <John.Vechey@won.net>
+

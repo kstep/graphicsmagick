@@ -1,0 +1,57 @@
+(0.8)
+  * Transitioned to Beta
+  * Improved Microsoft Visual C++ build environment.
+(0.7.4)
+  * Added animateImages() and displayImages() to MagickSTL.h.
+  * Added function objects to support setting image attributes.
+(0.7.3)
+  * Image::penTexture() now takes Image reference rather than
+    Image pointer.  Set Image to invalid using isValid(false)
+    to unset texture.
+  * Attribute methods that take Color, Geometry, Image, or string
+    arguments may now unset the attribute by setting the state of
+    the object to invalid using isValid(false), or the empty string
+    (in the case of string).  This allows full control over ImageMagick
+    attributes which are stored as C strings which may be set to NULL.
+  * Updated for ImageMagick 4.2.1
+(0.7.2)
+  * Added STL function object support for all Image manipulation
+    methods to support operating on all or part of the images
+    stored in an STL container.
+(0.7.1)
+  * Added Coordinate class and methods in Drawable to support x,y
+    coordinates.
+  * Changed coordinate parameters from unsigned int to double in Drawable.
+  * Changed polygon methods in Drawable to use STL list argument.
+  * Added STL list based draw method to Image.
+  * Changed Exception heirarchy to support Warning and Error sub-classes.
+    Most exception class names have changed.
+(0.7)
+  * Updated for ImageMagick 4.2.0
+  * Added support for flood-filling and drawing with texture.
+  * Montage supported.
+  * Oodles of bugs fixed.
+  * Implemented image attribute tests.
+  * Implemented PerlMagick 'demo' and 'shapes' demo programs in Magick++.
+  * Some parameters re-ordered due to experience from writing demo programs.
+(0.6)
+  * Initial support for integrating image-list oriented operations with
+    STL containers.
+(0.5):
+  * Compiles and runs under Unix using egcs release 1.1 or later.
+  * Compiles and runs under Windows using Visual C++ 5.X or later.
+  * Users of Magick++ API are not exposed to ImageMagick headers.
+  * Magick++ API is namespaced under "Magick".
+  * "Magick" prefix removed from object names.
+  * User options are now completely contained within Image object.
+    There is no longer a MagickOptions parameter to some methods.
+(0.1):
+  * All ImageMagick operations which operate on individual images are
+    supported.
+  * Image objects have value semantics, avoid unnecessary image
+    copies through the use of reference counting, and may be compared
+    via standard operators.
+  * Geometry, color, annotations, and user-options are supported by
+    separate classes.
+  * Errors are reported synchronously via C++ exceptions.
+
