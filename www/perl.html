@@ -1478,11 +1478,9 @@ set of images. For example,</dd>
                                           <blockquote>
                                             <dl>
                                             <pre>&nbsp;&nbsp;&nbsp; $p = $image-&gt;Append(stack=&gt;{true,false});</pre>
-appends all the images associated with object <tt>$image</tt>. All the input
-images must have the same width or height.
-Images of the same width are stacked top-to-bottom.
-Images of the same height are stacked left-to-right.
-If the stack parameter is True, rectangular images are stacked top-to-bottom.
+appends all the images associated with object <tt>$image</tt>. 
+By default, images are stacked left-to-right.  Set <tt>stack</tt> to
+True to stack them top-to-bottom.
                                             <p>The Average() method averages
 a set of images. For example, <pre>&nbsp;&nbsp;&nbsp; $p = $image-&gt;Average();</pre>
  averages all the images associated with object <tt>$image</tt>. </p>
