@@ -9,7 +9,7 @@ extern "C" {
 #endif
 
 #define MagickCopyright  "Copyright (C) 2002 ImageMagick Studio LLC"
-#define MagickLibVersion  0x0545
+#define MagickLibVersion  0x0546
 #define MagickLibVersionText  "5.4.6"
 #define MagickLibVersionNumber  5,4,6,0
 #if QuantumDepth == 8
