@@ -840,7 +840,7 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
         pixel.red+=contribution[i].weight*(p+j)->red;
         pixel.green+=contribution[i].weight*(p+j)->green;
         pixel.blue+=contribution[i].weight*(p+j)->blue;
-        if (source->matte)
+	if ((source->matte) || (source->colorspace == CMYKColorspace))
           pixel.opacity+=contribution[i].weight*(p+j)->opacity;
       }
       if ((indexes != (IndexPacket *) NULL) &&
@@ -857,7 +857,7 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
         (pixel.green > MaxRGB) ? MaxRGB : pixel.green+0.5);
       q->blue=(Quantum) ((pixel.blue < 0) ? 0 :
         (pixel.blue > MaxRGB) ? MaxRGB : pixel.blue+0.5);
-      if (destination->matte)
+      if ((destination->matte) || (destination->colorspace == CMYKColorspace))
         q->opacity=(Quantum) ((pixel.opacity < 0) ? 0 :
           (pixel.opacity > MaxRGB) ? MaxRGB : pixel.opacity+0.5);
       q++;
@@ -965,7 +965,7 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
         pixel.red+=contribution[i].weight*(p+j)->red;
         pixel.green+=contribution[i].weight*(p+j)->green;
         pixel.blue+=contribution[i].weight*(p+j)->blue;
-        if (source->matte)
+        if ((source->matte) || (source->colorspace == CMYKColorspace))
           pixel.opacity+=contribution[i].weight*(p+j)->opacity;
       }
       if ((indexes != (IndexPacket *) NULL) &&
@@ -982,7 +982,7 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
         (pixel.green > MaxRGB) ? MaxRGB : pixel.green+0.5);
       q->blue=(Quantum) ((pixel.blue < 0) ? 0 :
         (pixel.blue > MaxRGB) ? MaxRGB : pixel.blue+0.5);
-      if (destination->matte)
+      if ((destination->matte) || (destination->colorspace == CMYKColorspace))
         q->opacity=(Quantum) ((pixel.opacity < 0) ? 0 :
           (pixel.opacity > MaxRGB) ? MaxRGB : pixel.opacity+0.5);
       q++;

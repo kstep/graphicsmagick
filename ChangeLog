@@ -1,3 +1,9 @@
+2004-02-16  Lars Ruben Skyum  <lars.skyum@stibo.com>
+
+	* magick/resize.c (HorizontalFilter): Fixed: do process K channel
+	for CMYK images.
+	(VerticalFilter): do process K channel for CMYK images.
+	
 2004-02-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tga.c (ReadTGAImage): Fix matte channel handling. For
