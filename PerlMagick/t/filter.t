@@ -103,7 +103,7 @@ testFilter('input.miff', 'Frame',
 ++$test;
 testFilter('input.miff', 'Gamma',
   q/2.2/,
-  'e29420079d66769f9e571ab9ce091957c9cd12ad9af0e8aa613d46b0b5ddcd3a',
+  '500b17abf69d4c9e11e8f6a9c245a3a021ba935731f9d3d477ac07d9f4a6b197',
   'a643f8c1998c4d4e643e6de69b488d9ea349d9def527481a511ff7839c523651');
 
 ++$test;
@@ -150,7 +150,7 @@ testFilter('input.miff', 'Normalize',
 ++$test;
 testFilter('input.miff', 'OilPaint',
   q/3/,
-  'fd92178558fa6bb4c3175d11f05ee68c182d6a3c0029fe8f5792a4d7e91edafd',
+  ' ae81b1636f41eba1923ff4bcdd606fbba6fde92cb2073549c0c2778eeff6d0f6',
   'f0546cdb07cc0c20d3226c9d96abaa7de78bda798d5616115e0f151d27402386');
 
 ++$test;
@@ -206,7 +206,7 @@ testFilter('input.miff', 'Segment',
 ++$test;
 testFilter('input.miff', 'Shade',
   q/30/,
-  '47505dbc0872060a8718b589eee1099cda25823b20dea5565e18f18321056ee9',
+  '952f26eb25cda963e3f53d2dea1e1d3d6673d137835c125208a5609fa7fa35a3',
   '451d93885c7d973c8c653bba5ecc0261734413759283d2ee8d1e4253dbb111e0');
 
 ++$test;
