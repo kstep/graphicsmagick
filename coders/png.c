@@ -75,6 +75,8 @@
 */
 #undef MNG_OBJECT_BUFFERS
 #undef MNG_BASI_SUPPORTED
+#undef PNG_SORT_PALETTE
+#undef PNG_REDUCE_TO_PSEUDOCLASS
 
 /*
   If this is not defined, spec is interpreted strictly.  If it is
@@ -320,6 +322,7 @@ typedef struct _MngInfo
 static unsigned int
   WritePNGImage(const ImageInfo *,Image *);
 
+#ifdef PNG_SORT_PALETTE
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -580,6 +583,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
   LiberateMemory((void **) &map);
   return(True);
 }
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -624,9 +628,7 @@ unsigned int ImageIsGray(Image *image)
     for (x=0; (x < (int) image->columns); x++)
     {
        if (!IsGray(*p))
-         {
           return(False);
-         }
        p++;
     }
   }
@@ -645,6 +647,7 @@ unsigned int ImageIsGray(Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %   Like IsMonochromeImage except does not change DirectClass to PseudoClass  %
+%   and is more accurate.                                                     %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -664,9 +667,11 @@ unsigned int ImageIsMonochrome(Image *image)
   if (image->storage_class == PseudoClass)
     {
       for (i=0; i < (int) image->colors; i++)
-        if (((int) Intensity(image->colormap[1]) != 0) &&
-            ((int) Intensity(image->colormap[1]) != MaxRGB))
+      {
+        if(!IsGray(image->colormap[i]) || (image->colormap[i].red != 0) ||
+            (image->colormap[i].red != MaxRGB))
           return(False);
+      }
       return(True);
     }
   for (y=0; y < (int) image->rows; y++)
@@ -676,7 +681,7 @@ unsigned int ImageIsMonochrome(Image *image)
       return(False);
     for (x=0; (x < (int) image->columns); x++,p++)
     {
-        if (((int) Intensity(*p) != 0) && ((int) Intensity(*p) != MaxRGB))
+        if (!IsGray(*p) || ((*p).red != 0) || ((*p).red != MaxRGB))
           return(False);
     }
   }
@@ -2655,16 +2660,16 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         int
           scale;
 
-        scale=MaxRGB/(1<<ping_info->bit_depth-1);
+        scale=(int) MaxRGB/((1<<ping_info->bit_depth)-1);
         if (scale < 1)
            scale=1;
         /*
           Image has a transparent background.
         */
-        transparent_color.red=ping_info->trans_values.red*scale;
-        transparent_color.green=ping_info->trans_values.green*scale;
-        transparent_color.blue=ping_info->trans_values.blue*scale;
-        transparent_color.opacity=ping_info->trans_values.gray*scale;
+        transparent_color.red=(int) (ping_info->trans_values.red*scale);
+        transparent_color.green=(int) (ping_info->trans_values.green*scale);
+        transparent_color.blue=(int) (ping_info->trans_values.blue*scale);
+        transparent_color.opacity=(int) (ping_info->trans_values.gray*scale);
         if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
           {
             transparent_color.red=transparent_color.opacity;
@@ -2765,9 +2770,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                scale=1;
             for (i=0; i < (int) image->colors; i++)
             {
-              image->colormap[i].red=scale*i;
-              image->colormap[i].green=scale*i;
-              image->colormap[i].blue=scale*i;
+              image->colormap[i].red=(Quantum) (i*scale);
+              image->colormap[i].green=(Quantum) (i*scale);
+              image->colormap[i].blue=(Quantum) (i*scale);
             }
          }
       }
@@ -2790,7 +2795,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         int
           depth;
 
-        depth=ping_info->bit_depth;
+        depth=image->depth;
 #endif
         image->matte=((ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA) ||
             (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
@@ -3957,6 +3962,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   framing_mode=1;
   old_framing_mode=1;
 
+#ifdef PNG_REDUCE_TO_PSEUDOCLASS
   /* Reduce DirectClass images to PseudoClass if possible */
   for (next_image=image; next_image != (Image *) NULL;
        next_image=next_image->next)
@@ -3970,6 +3976,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         /* image reduced */;
 #  endif
   }
+#endif
+
   if (image_info->adjoin)
     {
       unsigned int
@@ -4700,7 +4708,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               png_set_PLTE(ping,ping_info,NULL,0);
             else
               {
-#if (PNG_LIBPNG_VER > 10005)
+#ifdef PNG_SORT_PALETTE
+/* Still does not work for at least one GIF animation */
                 int
                    save_number_colors;
 
@@ -4952,7 +4961,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
           if (image->storage_class == PseudoClass)
-            (void) PopImagePixels(image,GrayQuantum,scanlines[y]);
+                (void) PopImagePixels(image,GrayQuantum,scanlines[y]);
           else
             (void) PopImagePixels(image,RedQuantum,scanlines[y]);
           if (image->previous == (Image *) NULL)
@@ -4971,10 +4980,21 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               break;
             if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
               {
-                if (image->storage_class == DirectClass)
-                  (void) PopImagePixels(image,RedQuantum,scanlines[y]);
+                if (image->storage_class == PseudoClass)
+                  {
+                   if(image->depth > 8)
+                     /* logo8 and logo16 are dark */
+                     /* coyote has pink background */
+                     /* catrun is black */
+                     (void) PopImagePixels(image,IndexQuantum,scanlines[y]);
+                   else
+                     /* logo8 is ok, logo16 is stretched */
+                     /* coyote OK */
+                     /* catrun OK */
+                     (void) PopImagePixels(image,GrayQuantum,scanlines[y]);
+                  }
                 else
-                  (void) PopImagePixels(image,GrayQuantum,scanlines[y]);
+                  (void) PopImagePixels(image,RedQuantum,scanlines[y]);
               }
             else /* PNG_COLOR_TYPE_GRAY_ALPHA */
               {
