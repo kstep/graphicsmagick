@@ -2147,7 +2147,7 @@ namespace Magick
     MagickLib::GetExceptionInfo( &exceptionInfo );
     linkImages( first_, last_ );
     MagickLib::MapImages( first_->image(),
-			  mapImage_->constImage(),
+			  mapImage_.constImage(),
 			  dither_ );
     MagickLib::GetImageException( first_->image(), &exceptionInfo );
     if ( exceptionInfo.severity != MagickLib::UndefinedException )
@@ -2171,8 +2171,8 @@ namespace Magick
 	  }
 	
 	// Udate DirectClass representation of pixels
-	MagickLib::SyncImage( image->image() );
-	if ( image->image()->exception.severity > MagickLib::UndefinedException )
+	MagickLib::SyncImage( image );
+	if ( image->exception.severity > MagickLib::UndefinedException )
 	  {
 	    unlinkImages( first_, last_ );
 	    throwException( exceptionInfo );
@@ -2330,7 +2330,7 @@ namespace Magick
 	  MagickLib::QuantizationError( image );
 
 	// Update DirectClass representation of pixels
-	MagickLib::SyncImage( _imgRef->image() );
+	MagickLib::SyncImage( image );
 
 	// Next image
 	image=image->next;
