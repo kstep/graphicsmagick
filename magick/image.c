@@ -6050,7 +6050,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       image_info->subimage=atol(image_info->tile);
       image_info->subrange=image_info->subimage;
       p=image_info->tile;
-      for (p=q; *q != '\0'; p++)
+      for (q=p; *q != '\0'; p++)
       {
         while (isspace((int) *p) || (*p == ','))
           p++;
