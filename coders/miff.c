@@ -733,14 +733,14 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               *colormap;
 
             unsigned int
-              packet_size;
+              packet_size,
+              pixel;
 
             /*
               Read image colormap from file.
             */
-            packet_size=image->depth > 8 ? 6 : 3;
-            colormap=(unsigned char *)
-              AcquireMemory(packet_size*image->colors);
+            packet_size=3*image->depth/8;
+            colormap=(unsigned char *) AcquireMemory(packet_size*image->colors);
             if (colormap == (unsigned char *) NULL)
               ThrowReaderException(ResourceLimitError,
                 "Memory allocation failed",image);
@@ -754,15 +754,32 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 image->colormap[i].blue=ScaleCharToQuantum(*p++);
               }
             else
-              for (i=0; i < (long) image->colors; i++)
-              {
-                image->colormap[i].red=(*p++ << 8);
-                image->colormap[i].red|=(*p++);
-                image->colormap[i].green=(*p++ << 8);
-                image->colormap[i].green|=(*p++);
-                image->colormap[i].blue=(*p++ << 8);
-                image->colormap[i].blue|=(*p++);
-              }
+              if (image->depth <= 16)
+                for (i=0; i < (long) image->colors; i++)
+                {
+                  pixel=(*p << 8) | *(p+1);
+                  image->colormap[i].red=ScaleShortToQuantum(pixel);
+                  p+=2;
+                  pixel=(*p << 8) | *(p+1);
+                  image->colormap[i].green=ScaleShortToQuantum(pixel);
+                  p+=2;
+                  pixel=(*p << 8) | *(p+1);
+                  image->colormap[i].blue=ScaleCharToQuantum(pixel);
+                  p+=2;
+                }
+							else
+                for (i=0; i < (long) image->colors; i++)
+                {
+                  pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
+                  image->colormap[i].red=pixel;
+                  p+=4;
+                  pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
+                  image->colormap[i].green=pixel;
+                  p+=4;
+                  pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
+                  image->colormap[i].blue=pixel;
+                  p+=4;
+                }
             LiberateMemory((void **) &colormap);
           }
       }
@@ -773,15 +790,15 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       Allocate image pixels.
     */
     if (image->storage_class == DirectClass)
-      packet_size=image->depth > 8 ? 6 : 3;
+      packet_size=3*image->depth/8;
     else
-      packet_size=image->depth > 8 ? 2 : 1;
+      packet_size=image->depth/8;
     if (image->colorspace == CMYKColorspace)
-      packet_size+=image->depth > 8 ? 2 : 1;
+      packet_size+=image->depth/8;
     if (image->matte)
-      packet_size+=image->depth > 8 ? 2 : 1;
+      packet_size+=image->depth/8;
     if (image->compression == RunlengthEncodedCompression)
-      packet_size+=image->depth > 8 ? 2 : 1;
+      packet_size+=image->depth/8;
     pixels=(unsigned char *) AcquireMemory(packet_size*image->columns);
     compress_pixels=(unsigned char *)
       AcquireMemory((size_t) (1.01*packet_size*image->columns+600));
@@ -1271,15 +1288,15 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       if (image->colorspace != CMYKColorspace)
         (void) RGBTransformImage(image,CMYKColorspace);
     if (image->storage_class == DirectClass)
-      packet_size=image->depth > 8 ? 6 : 3;
+      packet_size=3*image->depth/8;
     else
-      packet_size=image->depth > 8 ? 2 : 1;
+      packet_size=image->depth/8;
     if (image->colorspace == CMYKColorspace)
-      packet_size+=image->depth > 8 ? 2 : 1;
+      packet_size+=image->depth/8;
     if (image->matte)
-      packet_size+=image->depth > 8 ? 2 : 1;
+      packet_size+=image->depth/8;
     if (compression == RunlengthEncodedCompression)
-      packet_size+=image->depth > 8 ? 2 : 1;
+      packet_size+=image->depth/8;
     length=packet_size*image->columns;
     pixels=(unsigned char *) AcquireMemory(length);
     length=(size_t) 1.01*packet_size*image->columns+600;
@@ -1289,8 +1306,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     compress_pixels=(unsigned char *) AcquireMemory(length);
     if ((pixels == (unsigned char *) NULL) ||
         (compress_pixels == (unsigned char *) NULL))
-      ThrowWriterException(ResourceLimitError,"Memory allocation failed",
-        image);
+      ThrowWriterException(ResourceLimitError,"Memory allocation failed",image);
     /*
       Write MIFF header.
     */
@@ -1506,7 +1522,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         /*
           Allocate colormap.
         */
-        packet_size=image->depth > 8 ? 6 : 3;
+        packet_size=3*image->depth/8;
         colormap=(unsigned char *) AcquireMemory(packet_size*image->colors);
         if (colormap == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitError,"Memory allocation failed",
@@ -1523,15 +1539,32 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             *q++=ScaleQuantumToChar(image->colormap[i].blue);
           }
         else
-          for (i=0; i < (long) image->colors; i++)
-          {
-            *q++=image->colormap[i].red >> 8;
-            *q++=image->colormap[i].red & 0xff;
-            *q++=image->colormap[i].green >> 8;
-            *q++=image->colormap[i].green  & 0xff;
-            *q++=image->colormap[i].blue >> 8;
-            *q++=image->colormap[i].blue  & 0xff;
-          }
+          if (image->depth <= 16)
+            for (i=0; i < (long) image->colors; i++)
+            {
+              *q++=ScaleQuantumToShort(image->colormap[i].red) >> 8;
+              *q++=ScaleQuantumToShort(image->colormap[i].red);
+              *q++=ScaleQuantumToShort(image->colormap[i].green) >> 8;
+              *q++=ScaleQuantumToShort(image->colormap[i].green);
+              *q++=ScaleQuantumToShort(image->colormap[i].blue) >> 8;
+              *q++=ScaleQuantumToShort(image->colormap[i].blue);
+            }
+          else
+            for (i=0; i < (long) image->colors; i++)
+            {
+              *q++=image->colormap[i].red >> 24;
+              *q++=image->colormap[i].red >> 16;
+              *q++=image->colormap[i].red >> 8;
+              *q++=image->colormap[i].red;
+              *q++=image->colormap[i].green >> 24;
+              *q++=image->colormap[i].green >> 16;
+              *q++=image->colormap[i].green >> 8;
+              *q++=image->colormap[i].green;
+              *q++=image->colormap[i].blue >> 24;
+              *q++=image->colormap[i].blue >> 16;
+              *q++=image->colormap[i].blue >> 8;
+              *q++=image->colormap[i].blue;
+            }
         (void) WriteBlob(image,packet_size*image->colors,colormap);
         LiberateMemory((void **) &colormap);
       }

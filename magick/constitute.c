@@ -1205,8 +1205,8 @@ MagickExport Image *PingImage(const ImageInfo *image_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method PopImagePixels transfers one or more pixel components from the image
-%  pixel cache to a user supplied buffer.   It returns True if the pixels are
+%  PopImagePixels() transfers one or more pixel components from the image pixel
+%  cache to a user supplied buffer.   True is returned if the pixels are
 %  successfully transferred, otherwise False.
 %
 %  The format of the PopImagePixels method is:
@@ -1221,8 +1221,7 @@ MagickExport Image *PingImage(const ImageInfo *image_info,
 %
 %    o image: The image.
 %
-%    o quantum: Declare which pixel components to transfer (red, green, blue,
-%      opacity, RGB, or RGBA).
+%    o quantum: Declare which pixel components to transfer (RGB, RGBA, etc).
 %
 %    o destination:  The components are transferred to this buffer.
 %
@@ -1878,7 +1877,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method PushImagePixels transfers one or more pixel components from a user
+%  PushImagePixels() transfers one or more pixel components from a user
 %  supplied buffer into the image pixel cache of an image.  It returns True if
 %  the pixels are successfully transferred, otherwise False.
 %
@@ -1945,10 +1944,9 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            pixel=(*p);
+            pixel=(*p++);
             indexes[x]=PushColormapIndex(image,pixel);
             *q++=image->colormap[indexes[x]];
-            p++;
           }
           break;
         }
@@ -1957,18 +1955,18 @@ MagickExport unsigned int PushImagePixels(Image *image,
           for (x=0; x < (long) image->columns; x++)
           {
             pixel=(*p << 8) | *(p+1);
+            p+=2;
             indexes[x]=PushColormapIndex(image,pixel);
             *q++=image->colormap[indexes[x]];
-            p+=2;
           }
           break;
         }
       for (x=0; x < (long) image->columns; x++)
       {
         pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
+        p+=4;
         indexes[x]=PushColormapIndex(image,pixel);
         *q++=image->colormap[indexes[x]];
-        p+=4;
       }
       break;
     }
@@ -1978,13 +1976,11 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            pixel=(*p);
+            pixel=(*p++);
             indexes[x]=PushColormapIndex(image,pixel);
             *q=image->colormap[indexes[x]];
-            p++;
-            pixel=(*p);
+            pixel=(*p++);
             q->opacity=(MaxRGB-ScaleCharToQuantum(pixel));
-            p++;
             q++;
           }
           break;
@@ -1994,12 +1990,12 @@ MagickExport unsigned int PushImagePixels(Image *image,
           for (x=0; x < (long) image->columns; x++)
           {
             pixel=(*p << 8) | *(p+1);
+            p+=2;
             indexes[x]=PushColormapIndex(image,pixel);
             *q=image->colormap[indexes[x]];
-            p+=2;
             pixel=(*p << 8) | *(p+1);
-            q->opacity=ScaleShortToQuantum(ScaleQuantumToShort(MaxRGB)-pixel);
             p+=2;
+            q->opacity=ScaleShortToQuantum(ScaleQuantumToShort(MaxRGB)-pixel);
             q++;
           }
           break;
@@ -2007,12 +2003,12 @@ MagickExport unsigned int PushImagePixels(Image *image,
       for (x=0; x < (long) image->columns; x++)
       {
         pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
+        p+=4;
         indexes[x]=PushColormapIndex(image,pixel);
         *q=image->colormap[indexes[x]];
-        p+=4;
         pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        q->opacity=ScaleIntToQuantum(ScaleQuantumToInt(MaxRGB)-pixel);
         p+=4;
+        q->opacity=ScaleIntToQuantum(ScaleQuantumToInt(MaxRGB)-pixel);
         q++;
       }
       break;
@@ -2023,10 +2019,9 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            pixel=(*p);
+            pixel=(*p++);
             indexes[x]=PushColormapIndex(image,pixel);
             *q++=image->colormap[indexes[x]];
-            p++;
           }
           break;
         }
@@ -2035,18 +2030,18 @@ MagickExport unsigned int PushImagePixels(Image *image,
           for (x=0; x < (long) image->columns; x++)
           {
             pixel=(*p << 8) | *(p+1);
+            p+=2;
             indexes[x]=PushColormapIndex(image,pixel);
             *q++=image->colormap[indexes[x]];
-            p+=2;
           }
           break;
         }
       for (x=0; x < (long) image->columns; x++)
       {
         pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
+        p+=4;
         indexes[x]=PushColormapIndex(image,pixel);
         *q++=image->colormap[indexes[x]];
-        p+=4;
       }
       break;
     }
@@ -2056,13 +2051,11 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            pixel=(*p);
+            pixel=(*p++);
             indexes[x]=PushColormapIndex(image,pixel);
             *q=image->colormap[indexes[x]];
-            p++;
-            pixel=(*p);
+            pixel=(*p++);
             q->opacity=MaxRGB-pixel;
-            p++;
             q++;
           }
           break;
@@ -2072,12 +2065,12 @@ MagickExport unsigned int PushImagePixels(Image *image,
           for (x=0; x < (long) image->columns; x++)
           {
             pixel=(*p << 8) | *(p+1);
+            p+=2;
             indexes[x]=PushColormapIndex(image,pixel);
             *q=image->colormap[indexes[x]];
-            p+=2;
             pixel=(*p << 8) | *(p+1);
-            q->opacity=ScaleShortToQuantum(ScaleQuantumToShort(MaxRGB)-pixel);
             p+=2;
+            q->opacity=ScaleShortToQuantum(ScaleQuantumToShort(MaxRGB)-pixel);
             q++;
           }
           break;
@@ -2085,12 +2078,12 @@ MagickExport unsigned int PushImagePixels(Image *image,
       for (x=0; x < (long) image->columns; x++)
       {
         pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
+        p+=4;
         indexes[x]=PushColormapIndex(image,pixel);
         *q=image->colormap[indexes[x]];
-        p+=4;
         pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        q->opacity=ScaleIntToQuantum(ScaleQuantumToInt(MaxRGB)-pixel);
         p+=4;
+        q->opacity=ScaleIntToQuantum(ScaleQuantumToInt(MaxRGB)-pixel);
         q++;
       }
       break;
@@ -2102,9 +2095,8 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            pixel=(*p);
+            pixel=(*p++);
             q->red=ScaleCharToQuantum(pixel);
-            p++;
             q++;
           }
           break;
@@ -2114,8 +2106,8 @@ MagickExport unsigned int PushImagePixels(Image *image,
           for (x=0; x < (long) image->columns; x++)
           {
             pixel=(*p << 8) | *(p+1);
-            q->red=ScaleShortToQuantum(pixel);
             p+=2;
+            q->red=ScaleShortToQuantum(pixel);
             q++;
           }
           break;
@@ -2123,8 +2115,8 @@ MagickExport unsigned int PushImagePixels(Image *image,
       for (x=0; x < (long) image->columns; x++)
       {
         pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        q->red=ScaleIntToQuantum(pixel);
         p+=4;
+        q->red=ScaleIntToQuantum(pixel);
         q++;
       }
       break;
@@ -2136,9 +2128,8 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            pixel=(*p);
+            pixel=(*p++);
             q->green=ScaleCharToQuantum(pixel);
-            p++;
             q++;
           }
           break;
@@ -2148,8 +2139,8 @@ MagickExport unsigned int PushImagePixels(Image *image,
           for (x=0; x < (long) image->columns; x++)
           {
             pixel=(*p << 8) | *(p+1);
-            q->green=ScaleShortToQuantum(pixel);
             p+=2;
+            q->green=ScaleShortToQuantum(pixel);
             q++;
           }
           break;
@@ -2157,8 +2148,8 @@ MagickExport unsigned int PushImagePixels(Image *image,
       for (x=0; x < (long) image->columns; x++)
       {
         pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        q->green=ScaleIntToQuantum(pixel);
         p+=4;
+        q->green=ScaleIntToQuantum(pixel);
         q++;
       }
       break;
@@ -2170,9 +2161,8 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            pixel=(*p);
+            pixel=(*p++);
             q->blue=ScaleCharToQuantum(pixel);
-            p++;
             q++;
           }
           break;
@@ -2182,8 +2172,8 @@ MagickExport unsigned int PushImagePixels(Image *image,
           for (x=0; x < (long) image->columns; x++)
           {
             pixel=(*p << 8) | *(p+1);
-            q->blue=ScaleShortToQuantum(pixel);
             p+=2;
+            q->blue=ScaleShortToQuantum(pixel);
             q++;
           }
           break;
@@ -2191,8 +2181,8 @@ MagickExport unsigned int PushImagePixels(Image *image,
       for (x=0; x < (long) image->columns; x++)
       {
         pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        q->blue=ScaleIntToQuantum(pixel);
         p+=4;
+        q->blue=ScaleIntToQuantum(pixel);
         q++;
       }
       break;
@@ -2205,9 +2195,8 @@ MagickExport unsigned int PushImagePixels(Image *image,
             {
               for (x=0; x < (long) image->columns; x++)
 							{
-                pixel=(*p);
+                pixel=(*p++);
                 indexes[x]=ScaleCharToQuantum(pixel);
-                p++;
 							}
               break;
             }
@@ -2216,16 +2205,16 @@ MagickExport unsigned int PushImagePixels(Image *image,
               for (x=0; x < (long) image->columns; x++)
               {
                 pixel=(*p << 8) | *(p+1);
-                indexes[x]=ScaleShortToQuantum(pixel);
                 p+=2;
+                indexes[x]=ScaleShortToQuantum(pixel);
               }
               break;
             }
           for (x=0; x < (long) image->columns; x++)
           {
             pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-            indexes[x]=ScaleIntToQuantum(pixel);
             p+=4;
+            indexes[x]=ScaleIntToQuantum(pixel);
           }
           break;
         }
@@ -2233,9 +2222,8 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            pixel=(*p);
+            pixel=(*p++);
             q->opacity=MaxRGB-(long) ScaleCharToQuantum(pixel);
-            p++;
             q++;
           }
           break;
@@ -2245,8 +2233,8 @@ MagickExport unsigned int PushImagePixels(Image *image,
           for (x=0; x < (long) image->columns; x++)
           {
             pixel=(*p << 8) | *(p+1);
-            q->opacity=ScaleShortToQuantum(ScaleQuantumToShort(MaxRGB)-pixel);
             p+=2;
+            q->opacity=ScaleShortToQuantum(ScaleQuantumToShort(MaxRGB)-pixel);
             q++;
           }
           break;
@@ -2254,8 +2242,8 @@ MagickExport unsigned int PushImagePixels(Image *image,
       for (x=0; x < (long) image->columns; x++)
       {
         pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        q->opacity=ScaleIntToQuantum(ScaleQuantumToInt(MaxRGB)-pixel);
         p+=4;
+        q->opacity=ScaleIntToQuantum(ScaleQuantumToInt(MaxRGB)-pixel);
         q++;
       }
       break;
@@ -2266,9 +2254,8 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            pixel=(*p);
+            pixel=(*p++);
             q->opacity=ScaleCharToQuantum(pixel);
-            p++;
             q++;
           }
           break;
@@ -2278,8 +2265,8 @@ MagickExport unsigned int PushImagePixels(Image *image,
           for (x=0; x < (long) image->columns; x++)
           {
             pixel=(*p << 8) | *(p+1);
-            q->opacity=ScaleShortToQuantum(pixel);
             p+=2;
+            q->opacity=ScaleShortToQuantum(pixel);
             q++;
           }
           break;
@@ -2287,8 +2274,8 @@ MagickExport unsigned int PushImagePixels(Image *image,
       for (x=0; x < (long) image->columns; x++)
       {
         pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        q->opacity=ScaleIntToQuantum(pixel);
         p+=4;
+        q->opacity=ScaleIntToQuantum(pixel);
         q++;
       }
       break;
@@ -2300,15 +2287,12 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            pixel=(*p);
+            pixel=(*p++);
             q->red=ScaleCharToQuantum(pixel);
-            p++;
-            pixel=(*p);
+            pixel=(*p++);
             q->green=ScaleCharToQuantum(pixel);
-            p++;
-            pixel=(*p);
+            pixel=(*p++);
             q->blue=ScaleCharToQuantum(pixel);
-            p++;
             q++;
           }
           break;
@@ -2318,14 +2302,14 @@ MagickExport unsigned int PushImagePixels(Image *image,
           for (x=0; x < (long) image->columns; x++)
           {
             pixel=(*p << 8) | *(p+1);
+            p+=2;
             q->red=ScaleShortToQuantum(pixel);
-            p+=2;
             pixel=(*p << 8) | *(p+1);
+            p+=2;
             q->green=ScaleShortToQuantum(pixel);
-            p+=2;
             pixel=(*p << 8) | *(p+1);
-            q->blue=ScaleShortToQuantum(pixel);
             p+=2;
+            q->blue=ScaleShortToQuantum(pixel);
             q++;
           }
           break;
@@ -2333,14 +2317,14 @@ MagickExport unsigned int PushImagePixels(Image *image,
       for (x=0; x < (long) image->columns; x++)
       {
         pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
+        p+=4;
         q->red=ScaleIntToQuantum(pixel);
-        p+=4;
         pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
+        p+=4;
         q->green=ScaleIntToQuantum(pixel);
-        p+=4;
         pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        q->blue=ScaleIntToQuantum(pixel);
         p+=4;
+        q->blue=ScaleIntToQuantum(pixel);
         q++;
       }
       break;
@@ -2351,18 +2335,14 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            pixel=(*p);
+            pixel=(*p++);
             q->red=ScaleCharToQuantum(pixel);
-            p++;
-            pixel=(*p);
+            pixel=(*p++);
             q->green=ScaleCharToQuantum(pixel);
-            p++;
-            pixel=(*p);
+            pixel=(*p++);
             q->blue=ScaleCharToQuantum(pixel);
-            p++;
-            pixel=(*p);
+            pixel=(*p++);
             q->opacity=MaxRGB-ScaleCharToQuantum(pixel);
-            p++;
             q++;
           }
           break;
@@ -2372,17 +2352,17 @@ MagickExport unsigned int PushImagePixels(Image *image,
           for (x=0; x < (long) image->columns; x++)
           {
             pixel=(*p << 8) | *(p+1);
+            p+=2;
             q->red=ScaleShortToQuantum(pixel);
-            p+=2;
             pixel=(*p << 8) | *(p+1);
+            p+=2;
             q->green=ScaleShortToQuantum(pixel);
-            p+=2;
             pixel=(*p << 8) | *(p+1);
+            p+=2;
             q->blue=ScaleShortToQuantum(pixel);
-            p+=2;
             pixel=(*p << 8) | *(p+1);
-            q->opacity=ScaleShortToQuantum(ScaleQuantumToShort(MaxRGB)-pixel);
             p+=2;
+            q->opacity=ScaleShortToQuantum(ScaleQuantumToShort(MaxRGB)-pixel);
             q++;
           }
           break;
@@ -2390,17 +2370,17 @@ MagickExport unsigned int PushImagePixels(Image *image,
       for (x=0; x < (long) image->columns; x++)
       {
         pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
+        p+=4;
         q->red=ScaleIntToQuantum(pixel);
-        p+=4;
         pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
+        p+=4;
         q->green=ScaleIntToQuantum(pixel);
-        p+=4;
         pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
+        p+=4;
         q->blue=ScaleIntToQuantum(pixel);
-        p+=4;
         pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        q->opacity=ScaleIntToQuantum(ScaleQuantumToInt(MaxRGB)-pixel);
         p+=4;
+        q->opacity=ScaleIntToQuantum(ScaleQuantumToInt(MaxRGB)-pixel);
         q++;
       }
       break;
@@ -2411,18 +2391,14 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            pixel=(*p);
+            pixel=(*p++);
             q->red=ScaleCharToQuantum(pixel);
-            p++;
-            pixel=(*p);
+            pixel=(*p++);
             q->green=ScaleCharToQuantum(pixel);
-            p++;
-            pixel=(*p);
+            pixel=(*p++);
             q->blue=ScaleCharToQuantum(pixel);
-            p++;
-            pixel=(*p);
+            pixel=(*p++);
             q->opacity=ScaleCharToQuantum(pixel);
-            p++;
             q++;
           }
           break;
@@ -2432,17 +2408,17 @@ MagickExport unsigned int PushImagePixels(Image *image,
           for (x=0; x < (long) image->columns; x++)
           {
             pixel=(*p << 8) | *(p+1);
+            p+=2;
             q->red=ScaleShortToQuantum(pixel);
-            p+=2;
             pixel=(*p << 8) | *(p+1);
+            p+=2;
             q->green=ScaleShortToQuantum(pixel);
-            p+=2;
             pixel=(*p << 8) | *(p+1);
+            p+=2;
             q->blue=ScaleShortToQuantum(pixel);
-            p+=2;
             pixel=(*p << 8) | *(p+1);
-            q->opacity=ScaleShortToQuantum(pixel);
             p+=2;
+            q->opacity=ScaleShortToQuantum(pixel);
             q++;
           }
           break;
@@ -2450,17 +2426,17 @@ MagickExport unsigned int PushImagePixels(Image *image,
       for (x=0; x < (long) image->columns; x++)
       {
         pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
+        p+=4;
         q->red=ScaleIntToQuantum(pixel);
-        p+=4;
         pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
+        p+=4;
         q->green=ScaleIntToQuantum(pixel);
-        p+=4;
         pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
+        p+=4;
         q->blue=ScaleIntToQuantum(pixel);
-        p+=4;
         pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        q->opacity=ScaleIntToQuantum(pixel);
         p+=4;
+        q->opacity=ScaleIntToQuantum(pixel);
         q++;
       }
       break;
@@ -2471,21 +2447,16 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            pixel=(*p);
+            pixel=(*p++);
             q->red=ScaleCharToQuantum(pixel);
-            p++;
-            pixel=(*p);
+            pixel=(*p++);
             q->green=ScaleCharToQuantum(pixel);
-            p++;
-            pixel=(*p);
+            pixel=(*p++);
             q->blue=ScaleCharToQuantum(pixel);
-            p++;
-            pixel=(*p);
+            pixel=(*p++);
             q->opacity=ScaleCharToQuantum(pixel);
-            p++;
-            pixel=(*p);
+            pixel=(*p++);
             indexes[x]=MaxRGB-ScaleCharToQuantum(pixel);
-            p++;
             q++;
           }
           break;
@@ -2495,20 +2466,20 @@ MagickExport unsigned int PushImagePixels(Image *image,
           for (x=0; x < (long) image->columns; x++)
           {
             pixel=(*p << 8) | *(p+1);
+            p+=2;
             q->red=ScaleShortToQuantum(pixel);
-            p+=2;
             pixel=(*p << 8) | *(p+1);
+            p+=2;
             q->green=ScaleShortToQuantum(pixel);
-            p+=2;
             pixel=(*p << 8) | *(p+1);
+            p+=2;
             q->blue=ScaleShortToQuantum(pixel);
-            p+=2;
             pixel=(*p << 8) | *(p+1);
+            p+=2;
             q->opacity=ScaleShortToQuantum(pixel);
-            p+=2;
             pixel=(*p << 8) | *(p+1);
-            indexes[x]=ScaleShortToQuantum(ScaleQuantumToShort(MaxRGB)-pixel);
             p+=2;
+            indexes[x]=ScaleShortToQuantum(ScaleQuantumToShort(MaxRGB)-pixel);
             q++;
           }
           break;
@@ -2516,20 +2487,20 @@ MagickExport unsigned int PushImagePixels(Image *image,
       for (x=0; x < (long) image->columns; x++)
       {
         pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
+        p+=4;
         q->red=ScaleIntToQuantum(pixel);
-        p+=4;
         pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
+        p+=4;
         q->green=ScaleIntToQuantum(pixel);
-        p+=4;
         pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
+        p+=4;
         q->blue=ScaleIntToQuantum(pixel);
-        p+=4;
         pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
+        p+=4;
         q->opacity=ScaleIntToQuantum(pixel);
-        p+=4;
         pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        indexes[x]=ScaleIntToQuantum(ScaleQuantumToInt(MaxRGB)-pixel);
         p+=4;
+        indexes[x]=ScaleIntToQuantum(ScaleQuantumToInt(MaxRGB)-pixel);
         q++;
       }
       break;
