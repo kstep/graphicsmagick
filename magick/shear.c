@@ -93,7 +93,7 @@ MagickExport Image *AffineTransformImage(const Image *image,
   const AffineMatrix *affine,ExceptionInfo *exception)
 {
   AffineMatrix
-    current;
+    transform;
 
   Image
     *affine_image;
@@ -154,13 +154,13 @@ MagickExport Image *AffineTransformImage(const Image *image,
   if (affine_image == (Image *) NULL)
     return((Image *) NULL);
   SetImage(affine_image,OpaqueOpacity);
-  current.sx=affine->sx;
-  current.rx=affine->rx;
-  current.ry=affine->ry;
-  current.sy=affine->sy;
-  current.tx=(-min.x);
-  current.ty=(-min.y);
-  DrawAffineImage(affine_image,image,&current);
+  transform.sx=affine->sx;
+  transform.rx=affine->rx;
+  transform.ry=affine->ry;
+  transform.sy=affine->sy;
+  transform.tx=(-min.x);
+  transform.ty=(-min.y);
+  DrawAffineImage(affine_image,image,&transform);
   return(affine_image);
 }
 
