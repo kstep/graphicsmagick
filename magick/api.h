@@ -19,6 +19,11 @@
 
 #if defined(WIN32) || defined(__CYGWIN__)
 #define Export  __declspec(dllexport)
+#if defined(_VISUALC_)
+#pragma warning(disable : 4018)
+#pragma warning(disable : 4244)
+#pragma warning(disable : 4142)
+#endif
 #else
 # define Export
 #endif

@@ -55,9 +55,6 @@
 */
 #include "magick.h"
 #include "defines.h"
-#if defined(HAVE_MMAP)
-#include <sys/mman.h>
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -44,27 +44,29 @@
 #include <limits.h>
 #include <assert.h>
 
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-# include <sys/times.h>
+#if !defined(vms) && !defined(macintosh)
 # include <sys/types.h>
 # include <sys/stat.h>
+#if !defined(WIN32)
+# include <sys/times.h>
 # include <sys/time.h>
 #if defined(HAVE_MMAP)
 # include <sys/mman.h>
 #endif
 # include "magick/api.h"
 #else
-# include <times.h>
+# include "api.h"
+#endif
+#else
 # include <types.h>
 # include <stat.h>
 # include <time.h>
-# include "api.h"
-#endif
-
-#if defined(__MWERKS__)
+#if defined(macintosh)
 # include <SIOUX.h>
 # include <console.h>
 # include <unix.h>
+#endif
+# include "api.h"
 #endif
 
 /*
