@@ -120,13 +120,13 @@ MagickExport PixelPacket AlphaComposite(const CompositeOperator compose,
         {
           color=(*q);
           color.opacity=(Quantum) beta;
-          return(color);
+          break;
         }
         case OpaqueOpacity:
         {
           color=(*p);
           color.opacity=(Quantum) alpha;
-          return(color);
+          break;
         }
         default:
         {
@@ -138,106 +138,105 @@ MagickExport PixelPacket AlphaComposite(const CompositeOperator compose,
             alpha/MaxRGB*(MaxRGB-beta)*q->blue)/MaxRGB);
           color.opacity=(Quantum) (((MaxRGB-alpha)+
             alpha/MaxRGB*(MaxRGB-beta))/MaxRGB);
-          return(color);
+          break;
         }
       }
+      return(color);
       break;
     }
     case InCompositeOp:
     {
-      color.red=(Quantum) ((MaxRGB-alpha)/MaxRGB*p->red*(MaxRGB-beta)/MaxRGB);
+      color.red=(Quantum)
+        ((MaxRGB-alpha)/MaxRGB*p->red*(MaxRGB-beta)/MaxRGB+0.5);
       color.green=(Quantum)
-        ((MaxRGB-alpha)/MaxRGB*p->green*(MaxRGB-beta)/MaxRGB);
-      color.blue=(Quantum) ((MaxRGB-alpha)/MaxRGB*p->blue*(MaxRGB-beta)/MaxRGB);
-      color.opacity=(Quantum) (MaxRGB-((MaxRGB-alpha)*(MaxRGB-beta))/MaxRGB);
+        ((MaxRGB-alpha)/MaxRGB*p->green*(MaxRGB-beta)/MaxRGB+0.5);
+      color.blue=(Quantum)
+        ((MaxRGB-alpha)/MaxRGB*p->blue*(MaxRGB-beta)/MaxRGB+0.5);
+      color.opacity=(Quantum) (MaxRGB-(MaxRGB-alpha)*(MaxRGB-beta)/MaxRGB+0.5);
       return(color);
     }
     case OutCompositeOp:
     {
-      color.red=(Quantum) ((MaxRGB-alpha)/MaxRGB*p->red*beta/MaxRGB);
-      color.green=(Quantum) ((MaxRGB-alpha)/MaxRGB*p->green*beta/MaxRGB);
-      color.blue=(Quantum) ((MaxRGB-alpha)/MaxRGB*p->blue*beta/MaxRGB);
-      color.opacity=(Quantum) (MaxRGB-((MaxRGB-alpha)/MaxRGB*beta/MaxRGB));
+      color.red=(Quantum) ((MaxRGB-alpha)/MaxRGB*p->red*beta/MaxRGB+0.5);
+      color.green=(Quantum) ((MaxRGB-alpha)/MaxRGB*p->green*beta/MaxRGB+0.5);
+      color.blue=(Quantum) ((MaxRGB-alpha)/MaxRGB*p->blue*beta/MaxRGB+0.5);
+      color.opacity=(Quantum) (MaxRGB-(MaxRGB-alpha)*beta/MaxRGB+0.5);
       return(color);
     }
     case AtopCompositeOp:
     {
       red=((MaxRGB-alpha)/MaxRGB*p->red*(MaxRGB-beta)+
         (MaxRGB-beta)/MaxRGB*q->red*alpha)/MaxRGB;
-      color.red=(Quantum) (red > MaxRGB ? MaxRGB : red);
+      color.red=(Quantum) (red > MaxRGB ? MaxRGB : red+0.5);
       green=((MaxRGB-alpha)/MaxRGB*p->green*(MaxRGB-beta)+
         (MaxRGB-beta)/MaxRGB*q->green*alpha)/MaxRGB;
-      color.green=(Quantum) (green > MaxRGB ? MaxRGB : green);
+      color.green=(Quantum) (green > MaxRGB ? MaxRGB : green+0.5);
       blue=((MaxRGB-alpha)/MaxRGB*p->blue*(MaxRGB-beta)+
         (MaxRGB-beta)/MaxRGB*q->blue*alpha)/MaxRGB;
-      color.blue=(Quantum) (blue > MaxRGB ? MaxRGB : blue);
-      opacity=MaxRGB-((MaxRGB-alpha)/MaxRGB*(MaxRGB-beta)+
-        (MaxRGB-beta)/MaxRGB*alpha)/MaxRGB;
-      color.opacity=(Quantum) (opacity > MaxRGB ? MaxRGB : opacity);
+      color.blue=(Quantum) (blue > MaxRGB ? MaxRGB : blue+0.5);
+      opacity=MaxRGB-((MaxRGB-alpha)*(MaxRGB-beta)+(MaxRGB-beta)*alpha)/MaxRGB;
+      color.opacity=(Quantum) (opacity > MaxRGB ? MaxRGB : opacity+0.5);
       return(color);
     }
     case XorCompositeOp:
     {
       red=((MaxRGB-alpha)/MaxRGB*p->red*beta+
         (MaxRGB-beta)/MaxRGB*q->red*alpha)/MaxRGB;
-      color.red=(Quantum) (red > MaxRGB ? MaxRGB : red);
+      color.red=(Quantum) (red > MaxRGB ? MaxRGB : red+0.5);
       green=((MaxRGB-alpha)/MaxRGB*p->green*beta+
         (MaxRGB-beta)/MaxRGB*q->green*alpha)/MaxRGB;
-      color.green=(Quantum) (green > MaxRGB ? MaxRGB : green);
+      color.green=(Quantum) (green > MaxRGB ? MaxRGB : green+0.5);
       blue=((MaxRGB-alpha)/MaxRGB*p->blue*beta+
         (MaxRGB-beta)/MaxRGB*q->blue*alpha)/MaxRGB;
-      color.blue=(Quantum) (blue > MaxRGB ? MaxRGB : blue);
-      opacity=MaxRGB-((MaxRGB-alpha)/MaxRGB*beta+
-        (MaxRGB-beta)/MaxRGB*alpha)/MaxRGB;
-      color.opacity=(Quantum) (opacity > MaxRGB ? MaxRGB : opacity);
+      color.blue=(Quantum) (blue > MaxRGB ? MaxRGB : blue+0.5);
+      opacity=MaxRGB-((MaxRGB-alpha)*beta+(MaxRGB-beta)*alpha)/MaxRGB;
+      color.opacity=(Quantum) (opacity > MaxRGB ? MaxRGB : opacity+0.5);
       return(color);
     }
     case PlusCompositeOp:
     {
       red=((MaxRGB-alpha)*p->red+(MaxRGB-beta)*q->red)/MaxRGB;
-      color.red=(Quantum) (red > MaxRGB ? MaxRGB : red);
+      color.red=(Quantum) (red > MaxRGB ? MaxRGB : red+0.5);
       green=((MaxRGB-alpha)*p->green+(MaxRGB-beta)*q->green)/MaxRGB;
-      color.green=(Quantum) (green > MaxRGB ? MaxRGB : green);
+      color.green=(Quantum) (green > MaxRGB ? MaxRGB : green+0.5);
       blue=((MaxRGB-alpha)*p->blue+(MaxRGB-beta)*q->blue)/MaxRGB;
-      color.blue=(Quantum) (blue > MaxRGB ? MaxRGB : blue);
-      opacity=MaxRGB-((MaxRGB-alpha)+(MaxRGB-beta))/MaxRGB;
+      color.blue=(Quantum) (blue > MaxRGB ? MaxRGB : blue+0.5);
+      opacity=MaxRGB-((MaxRGB-alpha)+(MaxRGB-beta));
       color.opacity=(Quantum) (opacity > MaxRGB ? MaxRGB : opacity);
       return(color);
     }
     case MinusCompositeOp:
     {
       red=((MaxRGB-alpha)*p->red-(MaxRGB-beta)*q->red)/MaxRGB;
-      color.red=(Quantum) (red < 0 ? 0 : red);
+      color.red=(Quantum) (red < 0 ? 0 : red+0.5);
       green=((MaxRGB-alpha)*p->green-(MaxRGB-beta)*q->green)/MaxRGB;
-      color.green=(Quantum) (green < 0 ? 0 : green);
+      color.green=(Quantum) (green < 0 ? 0 : green+0.5);
       blue=((MaxRGB-alpha)*p->blue-(MaxRGB-beta)*q->blue)/MaxRGB;
-      color.blue=(Quantum) (blue < 0 ? 0 : blue);
-      opacity=MaxRGB-((MaxRGB-alpha)-(MaxRGB-beta))/MaxRGB;
+      color.blue=(Quantum) (blue < 0 ? 0 : blue+0.5);
+      opacity=MaxRGB-((MaxRGB-alpha)-(MaxRGB-beta));
       color.opacity=(Quantum) (opacity < 0 ? 0 : opacity);
       return(color);
     }
     case AddCompositeOp:
     {
       red=p->red+q->red;
-      color.red=(Quantum) (red > MaxRGB ? red-=MaxRGB : red);
+      color.red=(Quantum) (red > MaxRGB ? red-=MaxRGB : red+0.5);
       green=p->green+q->green;
-      color.green=(Quantum) (green > MaxRGB ? green-=MaxRGB : green);
+      color.green=(Quantum) (green > MaxRGB ? green-=MaxRGB : green+0.5);
       blue=p->blue+q->blue;
-      color.blue=(Quantum) (blue > MaxRGB ? blue-=MaxRGB : blue);
-      opacity=alpha+beta;
-      color.opacity=(Quantum) (opacity > MaxRGB ? opacity-=MaxRGB : opacity);
+      color.blue=(Quantum) (blue > MaxRGB ? blue-=MaxRGB : blue+0.5);
+      color.opacity=OpaqueOpacity;
       return(color);
     }
     case SubtractCompositeOp:
     {
       red=p->red-q->red;
-      color.red=(Quantum) (red < 0 ? red+=MaxRGB : red);
+      color.red=(Quantum) (red < 0 ? red+=MaxRGB : red+0.5);
       green=p->green-q->green;
-      color.green=(Quantum) (green < 0 ? green+=MaxRGB : green);
+      color.green=(Quantum) (green < 0 ? green+=MaxRGB : green+0.5);
       blue=p->blue-q->blue;
-      color.blue=(Quantum) (blue < 0 ? blue+=MaxRGB : blue);
-      opacity=alpha-beta;
-      color.opacity=(Quantum) (opacity < 0 ? opacity+=MaxRGB : opacity);
+      color.blue=(Quantum) (blue < 0 ? blue+=MaxRGB : blue+0.5);
+      color.opacity=OpaqueOpacity;
       return(color);
     }
     case MultiplyCompositeOp:
@@ -245,7 +244,7 @@ MagickExport PixelPacket AlphaComposite(const CompositeOperator compose,
       color.red=(unsigned long) (p->red*q->red/MaxRGB);
       color.green=(unsigned long) (p->green*q->green/MaxRGB);
       color.blue=(unsigned long) (p->blue*q->blue/MaxRGB);
-      color.opacity=(unsigned long) (alpha*beta/MaxRGB);
+      color.opacity=(unsigned long) (alpha*beta/MaxRGB+0.5);
       return(color);
     }
     case DifferenceCompositeOp:
@@ -295,18 +294,19 @@ MagickExport PixelPacket AlphaComposite(const CompositeOperator compose,
     }
     case ClearCompositeOp:
     {
-      memset(&color,0,sizeof(color));
+      color.red=0;
+      color.green=0;
+      color.blue=0;
+      color.opacity=TransparentOpacity;
       return(color);
     }
     case DissolveCompositeOp:
     {
-      color.red=(unsigned long)
-        ((alpha*p->red+(MaxRGB-beta)*q->red)/MaxRGB);
+      color.red=(unsigned long) ((alpha*p->red+(MaxRGB-beta)*q->red)/MaxRGB);
       color.green=(unsigned long)
         ((alpha*p->green+(MaxRGB-beta)*q->green)/MaxRGB);
-      color.blue=(unsigned long)
-        ((alpha*p->blue+(MaxRGB-beta)*q->blue)/MaxRGB);
-      color.opacity=(unsigned long) ((alpha+(MaxRGB-beta))/MaxRGB);
+      color.blue=(unsigned long) ((alpha*p->blue+(MaxRGB-beta)*q->blue)/MaxRGB);
+      color.opacity=OpaqueOpacity;
       return(color);
     }
     case DisplaceCompositeOp:
