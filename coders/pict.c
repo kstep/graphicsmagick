@@ -974,12 +974,12 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 }
               for (i=0; i < (int) tile_image->colors; i++)
               {
-                tile_image->colormap[i].red=
-                  (unsigned long) (MaxRGB*i)/(tile_image->colors-1);
-                tile_image->colormap[i].green=
-                  (unsigned long) (MaxRGB*i)/(tile_image->colors-1);
-                tile_image->colormap[i].blue=
-                  (unsigned long) (MaxRGB*i)/(tile_image->colors-1);
+                tile_image->colormap[i].red=MaxRGB-
+                  ((unsigned long) (MaxRGB*i)/(tile_image->colors-1));
+                tile_image->colormap[i].green=MaxRGB-
+                  ((unsigned long) (MaxRGB*i)/(tile_image->colors-1));
+                tile_image->colormap[i].blue=MaxRGB-
+                  ((unsigned long) (MaxRGB*i)/(tile_image->colors-1));
               }
               if (bytes_per_line & 0x8000)
                 for (i=0; i < (int) tile_image->colors; i++)
