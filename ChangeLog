@@ -3,6 +3,8 @@
 	* www/links.html: Added link to Nathan Day's MagickDocs
 	"ImageMagick and GraphicsMagick documentation project"
 	site.
+	Added a link to an on-line article regarding the PHP front-end
+	to ImageMagick.
 	* coders/icon.c (ReadIconImage): Add support for Windows
 	.CUR format based on advice from Jean Piquemal.
 	* magick/image.c (SetImageInfo): Added missing CloseBlob
