@@ -659,8 +659,6 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
     Parse geometry using ParseGeometry.
   */
   flags|=ParseGeometry(geometry,x,y,width,height);
-  if ((flags & XValue) || (flags & YValue))
-    flags|=AspectValue;
   return(flags);
 }
 
@@ -1690,6 +1688,10 @@ MagickExport int ParseGeometry(const char *geometry,long *x,long *y,
   assert(y != (long *) NULL);
   assert(width != (unsigned long *) NULL);
   assert(height != (unsigned long *) NULL);
+  *width=0;
+  *height=0;
+  *x=0;
+  *y=0;
   if ((geometry == (char *) NULL) || (*geometry == '\0'))
     return(NoValue);
   mask=NoValue;

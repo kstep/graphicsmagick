@@ -218,7 +218,7 @@ testFilter('input.miff', 'Sharpen',
 ++$test;
 testFilter('input.miff', 'Shave',
   q/10x10/,
-  'a846c6ab249c5655c093b47cce1f3e569b750bf0d1e204815cd246475ddaf031');
+  'f30f652c3dad0f84474ec6fef65b34abef704bf5d4d1332a1fd79164b29d5a8b');
 
 ++$test;
 testFilter('input.miff', 'Shear',

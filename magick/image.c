@@ -157,21 +157,15 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
       flags=ParseGeometry(image_info->size,&allocate_image->tile_info.x,
         &allocate_image->tile_info.y,&allocate_image->columns,
         &allocate_image->rows);
-      if ((flags & HeightValue) == 0)
-        allocate_image->rows=allocate_image->columns;
       allocate_image->offset=allocate_image->tile_info.x;
       allocate_image->tile_info.width=allocate_image->columns;
       allocate_image->tile_info.height=allocate_image->rows;
     }
   if (image_info->tile != (char *) NULL)
     if (!IsSubimage(image_info->tile,False))
-      {
-        flags=ParseGeometry(image_info->tile,&allocate_image->tile_info.x,
-          &allocate_image->tile_info.y,&allocate_image->columns,
-          &allocate_image->rows);
-        if ((flags & HeightValue) == 0)
-          allocate_image->rows=allocate_image->columns;
-      }
+      flags=ParseGeometry(image_info->tile,&allocate_image->tile_info.x,
+        &allocate_image->tile_info.y,&allocate_image->columns,
+        &allocate_image->rows);
   allocate_image->compression=image_info->compression;
   allocate_image->interlace=image_info->interlace;
   allocate_image->units=image_info->units;
@@ -191,7 +185,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
         *geometry;
 
       geometry=PostscriptGeometry(image_info->page);
-      flags=ParseImageGeometry(geometry,&allocate_image->page.x,
+      flags=ParseGeometry(geometry,&allocate_image->page.x,
         &allocate_image->page.y,&allocate_image->page.width,
         &allocate_image->page.height);
       LiberateMemory((void **) &geometry);
@@ -5193,7 +5187,7 @@ MagickExport int ParseImageGeometry(const char *geometry,long *x,long *y,
       former_width=(*width);
       former_height=(*height);
     }
-  if (!(flags & AspectValue))
+  if (((flags & WidthValue) == 0) || ((flags & HeightValue) == 0))
     {
       double
         scale_factor;
@@ -5202,20 +5196,14 @@ MagickExport int ParseImageGeometry(const char *geometry,long *x,long *y,
         Respect aspect ratio of the image.
       */
       scale_factor=1.0;
-      if ((former_width*former_height) != 0)
+      if ((flags & WidthValue) != 0)
         {
-          if (((flags & WidthValue) != 0) && (flags & HeightValue) != 0)
-            {
-              scale_factor=(double) *width/former_width;
-              if (scale_factor > ((double) *height/former_height))
-                scale_factor=(double) *height/former_height;
-            }
-          else
-            if ((flags & WidthValue) != 0)
-              scale_factor=(double) *width/former_width;
-            else
-              scale_factor=(double) *height/former_height;
+          if (former_width != 0)
+            scale_factor=(double) *width/former_width;
         }
+      else
+        if (former_height != 0)
+          scale_factor=(double) *height/former_height;
       *width=(unsigned long) floor(scale_factor*former_width+0.5);
       *height=(unsigned long) floor(scale_factor*former_height+0.5);
     }
@@ -5227,10 +5215,6 @@ MagickExport int ParseImageGeometry(const char *geometry,long *x,long *y,
     *height-=(*y) << 1;
   if ((flags & YNegative) != 0)
     *y+=former_height-(*height);
-  if ((flags & WidthValue) == 0)
-    *width=(unsigned long) ((long) former_width-(*x));
-  if ((flags & HeightValue) == 0)
-    *height=(unsigned long) ((long) former_height-(*y));
   if (flags & GreaterValue)
     {
       if (former_width < *width)
