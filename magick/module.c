@@ -527,8 +527,6 @@ MagickExport unsigned int ListModuleInfo(FILE *file,ExceptionInfo *exception)
   AcquireSemaphoreInfo(&module_semaphore);
   for (p=module_list; p != (ModuleInfo *) NULL; p=p->next)
   {
-    if (p->stealth)
-      continue;
     if ((p->previous == (ModuleInfo *) NULL) ||
         (LocaleCompare(p->filename,p->previous->filename) != 0))
       {
@@ -539,6 +537,8 @@ MagickExport unsigned int ListModuleInfo(FILE *file,ExceptionInfo *exception)
         (void) fprintf(file,"-------------------------------------------------"
           "------------------------------\n");
       }
+    if (p->stealth)
+      continue;
     (void) fprintf(file,"%.1024s",p->magick);
     for (i=(long) strlen(p->magick); i <= 10; i++)
       (void) fprintf(file," ");

@@ -492,8 +492,6 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
   AcquireSemaphoreInfo(&delegate_semaphore);
   for (p=delegate_list; p != (const DelegateInfo *) NULL; p=p->next)
   {
-    if (p->stealth)
-      continue;
     if ((p->previous == (DelegateInfo *) NULL) ||
         (LocaleCompare(p->filename,p->previous->filename) != 0))
       {
@@ -504,6 +502,8 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
         (void) fprintf(file,"-------------------------------------------------"
           "------------------------------\n");
       }
+    if (p->stealth)
+      continue;
     *delegate='\0';
     if (p->encode != (char *) NULL)
       (void) strncpy(delegate,p->encode,MaxTextExtent-1);

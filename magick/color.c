@@ -1159,8 +1159,6 @@ MagickExport unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
   AcquireSemaphoreInfo(&color_semaphore);
   for (p=color_list; p != (const ColorInfo *) NULL; p=p->next)
   {
-    if (p->stealth)
-      continue;
     if ((p->previous == (ColorInfo *) NULL) ||
         (LocaleCompare(p->filename,p->previous->filename) != 0))
       {
@@ -1172,6 +1170,8 @@ MagickExport unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
         (void) fprintf(file,"-------------------------------------------------"
           "------------------------------\n");
       }
+    if (p->stealth)
+      continue;
     (void) fprintf(file,"%.1024s",p->name);
     for (i=(long) strlen(p->name); i <= 22; i++)
       (void) fprintf(file," ");

@@ -224,8 +224,6 @@ MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
   AcquireSemaphoreInfo(&magic_semaphore);
   for (p=magic_list; p != (MagicInfo *) NULL; p=p->next)
   {
-    if (p->stealth)
-      continue;
     if ((p->previous == (MagicInfo *) NULL) ||
         (LocaleCompare(p->filename,p->previous->filename) != 0))
       {
@@ -236,6 +234,8 @@ MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
         (void) fprintf(file,"-------------------------------------------------"
           "------------------------------\n");
       }
+    if (p->stealth)
+      continue;
     (void) fprintf(file,"%.1024s",p->name);
     for (i=(long) strlen(p->name); i <= 9; i++)
       (void) fprintf(file," ");
