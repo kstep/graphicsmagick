@@ -1,5 +1,5 @@
 ***********************************************************
-**  GraphicsMagick library - v.1.1 - 24 Oct 2003         **
+**  GraphicsMagick library - v.1.1 - 03 Nov 2003         **
 **                                                       **
 **  Porting for compilation with Borland C++Builder 6.0  **
 **-------------------------------------------------------**
@@ -71,8 +71,12 @@ INSTRUCTIONS FOR COMPILATION
 
         [GM Dir]\BCBMagick\All\GMdll-1.1.bpg 
 
-     then Build libraries [Project->Build all projects]. Will be segnaled some 
-     warnings: nothing of important.
+     The compiler will segnal an error for each DLL to build:
+     
+        "Cannot find resource file XXX.res. Recreated."
+        
+     Press Ok each time: will be created needed resource files. Then Build 
+     DLLs [Project->Build all projects]. 
      Finally launch the batch file:
 
         [GM Dir]\BCBMagick\All\getdlls.bat

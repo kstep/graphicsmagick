@@ -3,7 +3,7 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.00"/>
-    <PROJECT value="..\..\Lib\BC\lcms.lib"/>
+    <PROJECT value="lcms.lib"/>
     <OBJFILES value="lcms.obj ..\..\src\cmscnvrt.obj ..\..\src\cmserr.obj 
       ..\..\src\cmsgamma.obj ..\..\src\cmsgmt.obj ..\..\src\cmsintrp.obj 
       ..\..\src\cmsio1.obj ..\..\src\cmslut.obj ..\..\src\cmsmatsh.obj 
@@ -37,8 +37,7 @@
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <CFLAG1 value="-O2 -H=c:\PROGRA~1\borland\CBUILD~1\lib\vcl60.csm -Hc -Vx -Ve -x- -RT- -X- 
-      -a8 -5 -b- -d -k- -vi -c -tWM"/>
+    <CFLAG1 value="-O2 -Vx -Ve -x- -RT- -X- -a8 -5 -b- -d -k- -vi -c -tWM"/>
     <PFLAGS value="-$Y- -$L- -$D- -$A8 -v -JPHN -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mu /w2 /zn"/>
@@ -118,7 +117,8 @@ Item0=$(BCB)\source\vcl
 
 [HistoryLists\hlFinalOutputDir]
 Count=1
-Item0=..\..\Lib\BC\
+Item0=..\..\
+
 
 [HistoryLists\hlTlibPageSize]
 Count=1
