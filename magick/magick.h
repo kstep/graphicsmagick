@@ -11,6 +11,9 @@ extern "C" {
 /*
   System include declarations.
 */
+#define _XOPEN_SOURCE  500
+#define _POSIX_C_SOURCE  199506L
+
 #define _MAGICK_CONFIG_H
 #if !defined(vms) && !defined(macintosh)
 #include "magick/magick_config.h"
