@@ -12252,20 +12252,14 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     windows->image.immutable=True;
   windows->image.use_pixmap=resource_info->use_pixmap;
   windows->image.geometry=resource_info->image_geometry;
-  windows->image.width=(unsigned int) display_image->columns;
-  windows->image.height=(unsigned int) display_image->rows;
   FormatString(geometry,"%ux%u+0+0>!",
     XDisplayWidth(display,visual_info->screen),
     XDisplayHeight(display,visual_info->screen));
-  width=windows->image.width;
-  height=windows->image.height;
-  x=windows->image.x;
-  y=windows->image.y;
+  width=display_image->columns;
+  height=display_image->rows
   (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
   windows->image.width=(unsigned int) width;
   windows->image.height=(unsigned int) height;
-  windows->image.x=(int) x;
-  windows->image.y=(int) y;
   windows->image.attributes.event_mask=ButtonMotionMask | ButtonPressMask |
     ButtonReleaseMask | EnterWindowMask | ExposureMask | KeyPressMask |
     KeyReleaseMask | LeaveWindowMask | OwnerGrabButtonMask |

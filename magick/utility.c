@@ -642,8 +642,8 @@ MagickExport char *GetExecutionPath(const char *path)
 %
 %  The format of the GetGeometry method is:
 %
-%      int GetGeometry(const char *image_geometry,int *x,int *y,
-%        unsigned int *width,unsigned int *height)
+%      int GetGeometry(const char *image_geometry,long *x,long *y,
+%        unsigned long *width,unsigned long *height)
 %
 %  A description of each parameter follows:
 %
