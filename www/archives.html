@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.0  (Win32)">
 	<META NAME="CREATED" CONTENT="20020804;19232175">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20020804;21573928">
+	<META NAME="CHANGED" CONTENT="20020805;12255148">
 	<META NAME="DESCRIPTION" CONTENT="ImageMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With ImageMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
 	<META NAME="KEYWORDS" CONTENT="ImageMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
 	<STYLE>
@@ -30,440 +30,453 @@ listed here (unless otherwise noted).</P>
 </P>
 <P>The organization of the ftp mirror sites is shown in the following
 table:</P>
-<TABLE WIDTH=885 BORDER=1 BORDERCOLOR="#000000" CELLPADDING=2 CELLSPACING=0 RULES=NONE>
-	<COL WIDTH=130>
-	<COL WIDTH=745>
-	<TR VALIGN=TOP>
-		<TH WIDTH=130 BGCOLOR="#52799e">
-			<P><FONT COLOR="#ffffff"><SPAN STYLE="background: transparent">Directory</SPAN></FONT></P>
-		</TH>
-		<TH WIDTH=745 BGCOLOR="#52799e">
-			<P><FONT COLOR="#ffffff"><SPAN STYLE="background: transparent">Description</SPAN></FONT></P>
-		</TH>
-	</TR>
-	<TR VALIGN=TOP>
-		<TD WIDTH=130>
-			<P ALIGN=LEFT>Top directory</P>
-		</TD>
-		<TD WIDTH=745>
-			<P>Contains the core ImageMagick sources in a file named similarly
-			to ImageMagick-5.4.8.tar.gz, ImageMagick-5.4.8.tar.bz, or
-			ImageMagick-5.4.8.zip. These core sources are sufficient to
-			compile a minimal ImageMagick on a Unix system, or under the
-			Cygwin and MinGW environments for Windows.</P>
-		</TD>
-	</TR>
-	<TR VALIGN=TOP>
-		<TD WIDTH=130>
-			<P ALIGN=LEFT>beta</P>
-		</TD>
-		<TD WIDTH=745>
-			<P>Prerelease versions of ImageMagick may be found here.</P>
-		</TD>
-	</TR>
-	<TR VALIGN=TOP>
-		<TD WIDTH=130>
-			<P ALIGN=LEFT>binaries</P>
-		</TD>
-		<TD WIDTH=745>
-			<P>Binary packages built by ImageMagick Studio for various
-			operating environments may be found here. Currently these include
-			Linux for Pentium and Alpha processors, Cygwin, MacOS 9, MacOS 10
-			(&ldquo;Darwin&rdquo;), SGI IRIX, Sun Solaris 9 (64-bit kernel),
-			and Microsoft Windows ('95 and later).</P>
-		</TD>
-	</TR>
-	<TR VALIGN=TOP>
-		<TD WIDTH=130>
-			<P ALIGN=LEFT>delegates</P>
-		</TD>
-		<TD WIDTH=745>
-			<P>Add on libraries and applications which extend the formats
-			supported by ImageMagick may be obtained from this directory.</P>
-		</TD>
-	</TR>
-	<TR VALIGN=TOP>
-		<TD WIDTH=130>
-			<P ALIGN=LEFT>java</P>
-		</TD>
-		<TD WIDTH=745>
-			<P>Sources for JMagick, the Java API for ImageMagick may be found
-			here.</P>
-		</TD>
-	</TR>
-	<TR VALIGN=TOP>
-		<TD WIDTH=130>
-			<P ALIGN=LEFT>linux</P>
-		</TD>
-		<TD WIDTH=745>
-			<P>Linux packages for Red Hat Linux, and other Linux systems may
-			be found here.</P>
-		</TD>
-	</TR>
-	<TR VALIGN=TOP>
-		<TD WIDTH=130>
-			<P ALIGN=LEFT>mac</P>
-		</TD>
-		<TD WIDTH=745>
-			<P>An extended source code package for MacOS 9 (including
-			configured delegates and MetroWerks CodeWarrior build files) may
-			be found here. Note: Use the Unix source package from the top
-			directory for MacOS 10.</P>
-		</TD>
-	</TR>
-	<TR VALIGN=TOP>
-		<TD WIDTH=130>
-			<P ALIGN=LEFT>perl</P>
-		</TD>
-		<TD WIDTH=745>
-			<P>The source code for a number of packages based on PerlMagick
-			may be found here. These include MagickStudio, a CGI (dynamic Web
-			server) interface to ImageMagick, ScreamerMagick, a CGI interface
-			for rendering 3D logos, and WebMagick, a script for preparing
-			Web-based photo albums.</P>
-		</TD>
-	</TR>
-	<TR VALIGN=TOP>
-		<TD WIDTH=130>
-			<P ALIGN=LEFT>vms</P>
-		</TD>
-		<TD WIDTH=745>
-			<P>A source package prepared for use with VMS may be found here.</P>
-		</TD>
-	</TR>
-	<TR VALIGN=TOP>
-		<TD WIDTH=130>
-			<P ALIGN=LEFT>win2k</P>
-		</TD>
-		<TD WIDTH=745>
-			<P>An extended source code package for use with Microsoft Visual
-			C++ (including configured delegates and a Visual C++ workspace)
-			may be found here.</P>
-		</TD>
-	</TR>
-	<TR VALIGN=TOP>
-		<TD WIDTH=130>
-			<P ALIGN=LEFT>xtp</P>
-		</TD>
-		<TD WIDTH=745>
-			<P>Xtp is a network file transfer utility written by the principle
-			author of ImageMagick.</P>
-		</TD>
-	</TR>
-</TABLE>
-<P STYLE="margin-left: 2cm; margin-bottom: 0cm"><BR>
-</P>
+<DL>
+	<DD>
+	<TABLE WIDTH=90% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=2 CELLSPACING=0>
+		<COL WIDTH=41*>
+		<COL WIDTH=215*>
+		<TR VALIGN=TOP>
+			<TH WIDTH=16% BGCOLOR="#52799e">
+				<P><FONT COLOR="#ffffff"><SPAN STYLE="background: transparent">Directory</SPAN></FONT></P>
+			</TH>
+			<TH WIDTH=84% BGCOLOR="#52799e">
+				<P><FONT COLOR="#ffffff"><SPAN STYLE="background: transparent">Description</SPAN></FONT></P>
+			</TH>
+		</TR>
+		<TR VALIGN=TOP>
+			<TD WIDTH=16%>
+				<P ALIGN=LEFT><FONT SIZE=3>ImageMagick (Top directory)</FONT></P>
+			</TD>
+			<TD WIDTH=84%>
+				<P><FONT SIZE=3>Contains the core ImageMagick sources in a file
+				named similarly to ImageMagick-5.4.8.tar.gz,
+				ImageMagick-5.4.8.tar.bz, or ImageMagick-5.4.8.zip. These core
+				sources are sufficient to compile a minimal ImageMagick on a Unix
+				system, or under the Cygwin and MinGW environments for Windows.</FONT></P>
+			</TD>
+		</TR>
+		<TR VALIGN=TOP>
+			<TD WIDTH=16%>
+				<P ALIGN=RIGHT><FONT SIZE=3>beta</FONT></P>
+			</TD>
+			<TD WIDTH=84%>
+				<P><FONT SIZE=3>Prerelease versions of ImageMagick may be found
+				here.</FONT></P>
+			</TD>
+		</TR>
+		<TR VALIGN=TOP>
+			<TD WIDTH=16%>
+				<P ALIGN=RIGHT><FONT SIZE=3>binaries</FONT></P>
+			</TD>
+			<TD WIDTH=84%>
+				<P><FONT SIZE=3>Binary packages built by ImageMagick Studio for
+				various operating environments may be found here. Currently these
+				include Linux for Pentium and Alpha processors, Cygwin, MacOS 9,
+				MacOS 10 (&ldquo;Darwin&rdquo;), SGI IRIX, Sun Solaris 9 (64-bit
+				kernel), and Microsoft Windows ('95 and later).</FONT></P>
+			</TD>
+		</TR>
+		<TR VALIGN=TOP>
+			<TD WIDTH=16%>
+				<P ALIGN=RIGHT><FONT SIZE=3>delegates</FONT></P>
+			</TD>
+			<TD WIDTH=84%>
+				<P><FONT SIZE=3>Add on libraries and applications which extend
+				the formats supported by ImageMagick may be obtained from this
+				directory.</FONT></P>
+			</TD>
+		</TR>
+		<TR VALIGN=TOP>
+			<TD WIDTH=16%>
+				<P ALIGN=RIGHT><FONT SIZE=3>java</FONT></P>
+			</TD>
+			<TD WIDTH=84%>
+				<P><FONT SIZE=3>Sources for JMagick, the Java API for ImageMagick
+				may be found here.</FONT></P>
+			</TD>
+		</TR>
+		<TR VALIGN=TOP>
+			<TD WIDTH=16%>
+				<P ALIGN=RIGHT><FONT SIZE=3>linux</FONT></P>
+			</TD>
+			<TD WIDTH=84%>
+				<P><FONT SIZE=3>Linux packages for Red Hat Linux, and other Linux
+				systems may be found here.</FONT></P>
+			</TD>
+		</TR>
+		<TR VALIGN=TOP>
+			<TD WIDTH=16%>
+				<P ALIGN=RIGHT><FONT SIZE=3>mac</FONT></P>
+			</TD>
+			<TD WIDTH=84%>
+				<P><FONT SIZE=3>An extended source code package for MacOS 9
+				(including configured delegates and MetroWerks CodeWarrior build
+				files) may be found here. Note: Use the Unix source package from
+				the top directory for MacOS 10.</FONT></P>
+			</TD>
+		</TR>
+		<TR VALIGN=TOP>
+			<TD WIDTH=16%>
+				<P ALIGN=RIGHT><FONT SIZE=3>perl</FONT></P>
+			</TD>
+			<TD WIDTH=84%>
+				<P><FONT SIZE=3>The source code for a number of packages based on
+				PerlMagick may be found here. These include MagickStudio, a CGI
+				(dynamic Web server) interface to ImageMagick, ScreamerMagick, a
+				CGI interface for rendering 3D logos, and WebMagick, a script for
+				preparing Web-based photo albums.</FONT></P>
+			</TD>
+		</TR>
+		<TR VALIGN=TOP>
+			<TD WIDTH=16%>
+				<P ALIGN=RIGHT><FONT SIZE=3>vms</FONT></P>
+			</TD>
+			<TD WIDTH=84%>
+				<P><FONT SIZE=3>A source package prepared for use with VMS may be
+				found here.</FONT></P>
+			</TD>
+		</TR>
+		<TR VALIGN=TOP>
+			<TD WIDTH=16%>
+				<P ALIGN=RIGHT><FONT SIZE=3>win2k</FONT></P>
+			</TD>
+			<TD WIDTH=84%>
+				<P><FONT SIZE=3>An extended source code package for use with
+				Microsoft Visual C++ (including configured delegates and a Visual
+				C++ workspace) may be found here.</FONT></P>
+			</TD>
+		</TR>
+		<TR VALIGN=TOP>
+			<TD WIDTH=16%>
+				<P ALIGN=RIGHT><FONT SIZE=3>xtp</FONT></P>
+			</TD>
+			<TD WIDTH=84%>
+				<P><FONT SIZE=3>Xtp is a network file transfer utility written by
+				the principle author of ImageMagick.</FONT></P>
+			</TD>
+		</TR>
+	</TABLE>
+</DL>
 <P STYLE="margin-bottom: 0cm">If you operate an ImageMagick mirror
 site, or know of additional mirrors of the <A HREF="http://www.imagemagick.org/">ImageMagick</A>
 archives, please E-mail <A HREF="mailto:sponsor-01@imagemagick.org">ImageMagick
 Studio</A> so that they can be listed here. Known mirror sites are
 provided with privileged access to the master site so that they are
-not denied access when the default user limit has been reached. 
-</P>
+not denied access when the default user limit has been reached.</P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>ImageMagick Download
 Sites</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2>
-	<TR>
-		<TD>
-			<P ALIGN=CENTER><B>Site</B></P>
-		</TD>
-		<TD>
-			<P ALIGN=CENTER><B>Max Users</B></P>
-		</TD>
-		<TD>
-			<P><B>Location</B></P>
-		</TD>
-		<TD>
-			<P ALIGN=CENTER><B>Notes</B></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="ftp://ftp.nluug.nl/pub/ImageMagick">ftp.imagemagick.org</A></P>
-		</TD>
-		<TD>
-			<P>800</P>
-		</TD>
-		<TD>
-			<P>Amsterdam, Netherlands</P>
-		</TD>
-		<TD>
-			<P>Master site, mirrors and downloads (thanks to the Netherlands
-			Unix Users Group)</P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="http://imagemagick.sourceforge.net/">http://imagemagick.sourceforge.net</A></P>
-		</TD>
-		<TD>
-			<P>1000</P>
-		</TD>
-		<TD>
-			<P>Fremont, CA USA</P>
-		</TD>
-		<TD>
-			<P>HTTP download; no binaries</P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="ftp://ftp.yggdrasil.com/mirrors/site/ftp.simplesystems.org/pub/ImageMagick/">ftp.yggdrasil.com</A></P>
-		</TD>
-		<TD>
-			<P>3000</P>
-		</TD>
-		<TD>
-			<P>Berkeley, CA USA</P>
-		</TD>
-		<TD>
-			<P>&nbsp;</P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="ftp://gd.tuwien.ac.at/pub/graphics/ImageMagick/">gd.tuwien.ac.at</A></P>
-		</TD>
-		<TD>
-			<P>1200</P>
-		</TD>
-		<TD>
-			<P>Austria</P>
-		</TD>
-		<TD>
-			<P>&nbsp;</P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="ftp://ftp.sunet.se/pub/multimedia/graphics/ImageMagick">ftp.sunet.se</A></P>
-		</TD>
-		<TD>
-			<P>1000</P>
-		</TD>
-		<TD>
-			<P>Sweden</P>
-		</TD>
-		<TD>
-			<P>&nbsp;</P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="ftp://ftp.planetmirror.com/pub/ImageMagick/">ftp.planetmirror.com</A></P>
-		</TD>
-		<TD>
-			<P>?</P>
-		</TD>
-		<TD>
-			<P>Australia</P>
-		</TD>
-		<TD>
-			<P>&nbsp;</P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="ftp://ftp.fu-berlin.de/unix/X11/graphics/ImageMagick">ftp.fu-berlin.de</A></P>
-		</TD>
-		<TD>
-			<P>?</P>
-		</TD>
-		<TD>
-			<P>Germany</P>
-		</TD>
-		<TD>
-			<P>&nbsp;</P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="ftp://zoffy.asahi-net.or.jp/pub/graphics/ImageMagick">zoffy.asahi-net.or.jp</A></P>
-		</TD>
-		<TD>
-			<P>150</P>
-		</TD>
-		<TD>
-			<P>Japan</P>
-		</TD>
-		<TD>
-			<P>&nbsp;</P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="ftp://ftp.u-aizu.ac.jp/pub/graphics/image/ImageMagick/">ftp.u-aizu.ac.jp</A></P>
-		</TD>
-		<TD>
-			<P>?</P>
-		</TD>
-		<TD>
-			<P>Japan</P>
-		</TD>
-		<TD>
-			<P>&nbsp;</P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="ftp://ftp.eos.hokudai.ac.jp/pub/graphics/ImageMagick/">ftp.eos.hokudai.ac.jp</A></P>
-		</TD>
-		<TD>
-			<P>?</P>
-		</TD>
-		<TD>
-			<P>Japan</P>
-		</TD>
-		<TD>
-			<P>&nbsp;</P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="ftp://ftp.kddlabs.co.jp/graphics/ImageMagick/">ftp.kddlabs.co.jp</A></P>
-		</TD>
-		<TD>
-			<P>100</P>
-		</TD>
-		<TD>
-			<P>Japan</P>
-		</TD>
-		<TD>
-			<P>&nbsp;</P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="ftp://ftp.icm.edu.pl/pub/graphics/ImageMagick/">ftp.icm.edu.pl</A></P>
-		</TD>
-		<TD>
-			<P>300</P>
-		</TD>
-		<TD>
-			<P>Poland</P>
-		</TD>
-		<TD>
-			<P>&nbsp;</P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="ftp://giswitch.sggw.waw.pl/pub/graphics/ImageMagick/">giswitch.sggw.waw.pl</A></P>
-		</TD>
-		<TD>
-			<P>30</P>
-		</TD>
-		<TD>
-			<P>Poland</P>
-		</TD>
-		<TD>
-			<P>&nbsp;</P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="ftp://ftp.crc.ca/pub/packages/graphics/imagemagick/">ftp.crc.ca</A></P>
-		</TD>
-		<TD>
-			<P>15</P>
-		</TD>
-		<TD>
-			<P>Canada</P>
-		</TD>
-		<TD>
-			<P>&nbsp;</P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="ftp://ftp.fifi.org/pub/ImageMagick/">ftp.fifi.org</A></P>
-		</TD>
-		<TD>
-			<P>10</P>
-		</TD>
-		<TD>
-			<P>San Francisco, CA USA</P>
-		</TD>
-		<TD>
-			<P>&nbsp;</P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="ftp://ftp.rge.com/pub/multimedia/imagemagick/">ftp://ftp.rge.com</A>&nbsp;
-			<A HREF="http://www.rge.com/pub/multimedia/imagemagick/">http://www.rge.com</A></P>
-		</TD>
-		<TD>
-			<P>?</P>
-		</TD>
-		<TD>
-			<P>Rochester, NY</P>
-		</TD>
-		<TD></TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="ftp://ftp.simplesystems.org/pub/ImageMagick/">ftp.simplesystems.org</A></P>
-		</TD>
-		<TD>
-			<P>5</P>
-		</TD>
-		<TD>
-			<P>Dallas, Texas USA</P>
-		</TD>
-		<TD>
-			<P>Daily mirror.&nbsp; This is a good site to mirror from.&nbsp;
-			If you provide a public mirror of ImageMagick (and can provide a
-			verifiable URL), please send an email to
-			bfriesen@simple.dallas.tx.us for your mirror to be given assured
-			access.</P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="http://www.dylanbeattie.net/magick/">www.dylanbeattie.net</A></P>
-		</TD>
-		<TD>
-			<P>?</P>
-		</TD>
-		<TD>
-			<P>London, UK</P>
-		</TD>
-		<TD>
-			<P>Windows 2000 binaries for ImageMagick, including PerlMagick.
-			Also includes detailed instructions for building PerlMagick under
-			Windows.</P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="http://hpux.connect.org.uk/hppd/hpux/X11/Viewers/">hpux.connect.org.uk</A></P>
-		</TD>
-		<TD SDVAL="30" SDNUM="1033;">
-			<P ALIGN=RIGHT>30</P>
-		</TD>
-		<TD>
-			<P>United Kingdom</P>
-		</TD>
-		<TD>
-			<P>HP-UX 10.20 and 11.00 source and binary</P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="ftp://ftp.vsm.com.au/kits/decwindows/">ftp.vsm.com.au</A></P>
-		</TD>
-		<TD>
-			<P>?</P>
-		</TD>
-		<TD>
-			<P>Australia</P>
-		</TD>
-		<TD>
-			<P>OpenVMS source and binary</P>
-		</TD>
-	</TR>
-</TABLE>
+<DL>
+	<DD>
+	<TABLE WIDTH=95% BORDER=1 CELLPADDING=2 CELLSPACING=0>
+		<COL WIDTH=83*>
+		<COL WIDTH=23*>
+		<COL WIDTH=36*>
+		<COL WIDTH=114*>
+		<TR>
+			<TD WIDTH=33% BGCOLOR="#52799e">
+				<P ALIGN=CENTER><FONT COLOR="#ffffff"><B>Site</B></FONT></P>
+			</TD>
+			<TD WIDTH=9% BGCOLOR="#52799e">
+				<P ALIGN=CENTER><FONT COLOR="#ffffff"><B>Max Users</B></FONT></P>
+			</TD>
+			<TD WIDTH=14% BGCOLOR="#52799e">
+				<P><FONT COLOR="#ffffff"><B>Location</B></FONT></P>
+			</TD>
+			<TD WIDTH=44% BGCOLOR="#52799e">
+				<P ALIGN=CENTER><FONT COLOR="#ffffff"><B>Notes</B></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=33%>
+				<P><A HREF="ftp://ftp.nluug.nl/pub/ImageMagick"><FONT SIZE=3>ftp.imagemagick.org</FONT></A></P>
+			</TD>
+			<TD WIDTH=9%>
+				<P><FONT SIZE=3>800</FONT></P>
+			</TD>
+			<TD WIDTH=14%>
+				<P><FONT SIZE=3>Amsterdam, Netherlands</FONT></P>
+			</TD>
+			<TD WIDTH=44%>
+				<P><FONT SIZE=3>Master site, mirrors and downloads (thanks to the
+				Netherlands Unix Users Group)</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=33%>
+				<P><A HREF="http://imagemagick.sourceforge.net/"><FONT SIZE=3>http://imagemagick.sourceforge.net</FONT></A></P>
+			</TD>
+			<TD WIDTH=9%>
+				<P><FONT SIZE=3>1000</FONT></P>
+			</TD>
+			<TD WIDTH=14%>
+				<P><FONT SIZE=3>Fremont, CA USA</FONT></P>
+			</TD>
+			<TD WIDTH=44%>
+				<P><FONT SIZE=3>HTTP download; no binaries</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=33%>
+				<P><A HREF="ftp://ftp.yggdrasil.com/mirrors/site/ftp.simplesystems.org/pub/ImageMagick/"><FONT SIZE=3>ftp.yggdrasil.com</FONT></A></P>
+			</TD>
+			<TD WIDTH=9%>
+				<P><FONT SIZE=3>3000</FONT></P>
+			</TD>
+			<TD WIDTH=14%>
+				<P><FONT SIZE=3>Berkeley, CA USA</FONT></P>
+			</TD>
+			<TD WIDTH=44%>
+				<P><FONT SIZE=3>&nbsp;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=33%>
+				<P><A HREF="ftp://gd.tuwien.ac.at/pub/graphics/ImageMagick/"><FONT SIZE=3>gd.tuwien.ac.at</FONT></A></P>
+			</TD>
+			<TD WIDTH=9%>
+				<P><FONT SIZE=3>1200</FONT></P>
+			</TD>
+			<TD WIDTH=14%>
+				<P><FONT SIZE=3>Austria</FONT></P>
+			</TD>
+			<TD WIDTH=44%>
+				<P><FONT SIZE=3>&nbsp;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=33%>
+				<P><A HREF="ftp://ftp.sunet.se/pub/multimedia/graphics/ImageMagick"><FONT SIZE=3>ftp.sunet.se</FONT></A></P>
+			</TD>
+			<TD WIDTH=9%>
+				<P><FONT SIZE=3>1000</FONT></P>
+			</TD>
+			<TD WIDTH=14%>
+				<P><FONT SIZE=3>Sweden</FONT></P>
+			</TD>
+			<TD WIDTH=44%>
+				<P><FONT SIZE=3>&nbsp;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=33%>
+				<P><A HREF="ftp://ftp.planetmirror.com/pub/ImageMagick/"><FONT SIZE=3>ftp.planetmirror.com</FONT></A></P>
+			</TD>
+			<TD WIDTH=9%>
+				<P><FONT SIZE=3>?</FONT></P>
+			</TD>
+			<TD WIDTH=14%>
+				<P><FONT SIZE=3>Australia</FONT></P>
+			</TD>
+			<TD WIDTH=44%>
+				<P><FONT SIZE=3>&nbsp;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=33%>
+				<P><A HREF="ftp://ftp.fu-berlin.de/unix/X11/graphics/ImageMagick"><FONT SIZE=3>ftp.fu-berlin.de</FONT></A></P>
+			</TD>
+			<TD WIDTH=9%>
+				<P><FONT SIZE=3>?</FONT></P>
+			</TD>
+			<TD WIDTH=14%>
+				<P><FONT SIZE=3>Germany</FONT></P>
+			</TD>
+			<TD WIDTH=44%>
+				<P><FONT SIZE=3>&nbsp;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=33%>
+				<P><A HREF="ftp://zoffy.asahi-net.or.jp/pub/graphics/ImageMagick"><FONT SIZE=3>zoffy.asahi-net.or.jp</FONT></A></P>
+			</TD>
+			<TD WIDTH=9%>
+				<P><FONT SIZE=3>150</FONT></P>
+			</TD>
+			<TD WIDTH=14%>
+				<P><FONT SIZE=3>Japan</FONT></P>
+			</TD>
+			<TD WIDTH=44%>
+				<P><FONT SIZE=3>&nbsp;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=33%>
+				<P><A HREF="ftp://ftp.u-aizu.ac.jp/pub/graphics/image/ImageMagick/"><FONT SIZE=3>ftp.u-aizu.ac.jp</FONT></A></P>
+			</TD>
+			<TD WIDTH=9%>
+				<P><FONT SIZE=3>?</FONT></P>
+			</TD>
+			<TD WIDTH=14%>
+				<P><FONT SIZE=3>Japan</FONT></P>
+			</TD>
+			<TD WIDTH=44%>
+				<P><FONT SIZE=3>&nbsp;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=33%>
+				<P><A HREF="ftp://ftp.eos.hokudai.ac.jp/pub/graphics/ImageMagick/"><FONT SIZE=3>ftp.eos.hokudai.ac.jp</FONT></A></P>
+			</TD>
+			<TD WIDTH=9%>
+				<P><FONT SIZE=3>?</FONT></P>
+			</TD>
+			<TD WIDTH=14%>
+				<P><FONT SIZE=3>Japan</FONT></P>
+			</TD>
+			<TD WIDTH=44%>
+				<P><FONT SIZE=3>&nbsp;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=33%>
+				<P><A HREF="ftp://ftp.kddlabs.co.jp/graphics/ImageMagick/"><FONT SIZE=3>ftp.kddlabs.co.jp</FONT></A></P>
+			</TD>
+			<TD WIDTH=9%>
+				<P><FONT SIZE=3>100</FONT></P>
+			</TD>
+			<TD WIDTH=14%>
+				<P><FONT SIZE=3>Japan</FONT></P>
+			</TD>
+			<TD WIDTH=44%>
+				<P><FONT SIZE=3>&nbsp;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=33%>
+				<P><A HREF="ftp://ftp.icm.edu.pl/pub/graphics/ImageMagick/"><FONT SIZE=3>ftp.icm.edu.pl</FONT></A></P>
+			</TD>
+			<TD WIDTH=9%>
+				<P><FONT SIZE=3>300</FONT></P>
+			</TD>
+			<TD WIDTH=14%>
+				<P><FONT SIZE=3>Poland</FONT></P>
+			</TD>
+			<TD WIDTH=44%>
+				<P><FONT SIZE=3>&nbsp;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=33%>
+				<P><A HREF="ftp://giswitch.sggw.waw.pl/pub/graphics/ImageMagick/"><FONT SIZE=3>giswitch.sggw.waw.pl</FONT></A></P>
+			</TD>
+			<TD WIDTH=9%>
+				<P><FONT SIZE=3>30</FONT></P>
+			</TD>
+			<TD WIDTH=14%>
+				<P><FONT SIZE=3>Poland</FONT></P>
+			</TD>
+			<TD WIDTH=44%>
+				<P><FONT SIZE=3>&nbsp;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=33%>
+				<P><A HREF="ftp://ftp.crc.ca/pub/packages/graphics/imagemagick/"><FONT SIZE=3>ftp.crc.ca</FONT></A></P>
+			</TD>
+			<TD WIDTH=9%>
+				<P><FONT SIZE=3>15</FONT></P>
+			</TD>
+			<TD WIDTH=14%>
+				<P><FONT SIZE=3>Canada</FONT></P>
+			</TD>
+			<TD WIDTH=44%>
+				<P><FONT SIZE=3>&nbsp;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=33%>
+				<P><A HREF="ftp://ftp.fifi.org/pub/ImageMagick/"><FONT SIZE=3>ftp.fifi.org</FONT></A></P>
+			</TD>
+			<TD WIDTH=9%>
+				<P><FONT SIZE=3>10</FONT></P>
+			</TD>
+			<TD WIDTH=14%>
+				<P><FONT SIZE=3>San Francisco, CA USA</FONT></P>
+			</TD>
+			<TD WIDTH=44%>
+				<P><FONT SIZE=3>&nbsp;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=33%>
+				<P><A HREF="ftp://ftp.rge.com/pub/multimedia/imagemagick/"><FONT SIZE=3>ftp://ftp.rge.com</FONT></A><FONT SIZE=3>&nbsp;
+				</FONT><A HREF="http://www.rge.com/pub/multimedia/imagemagick/"><FONT SIZE=3>http://www.rge.com</FONT></A></P>
+			</TD>
+			<TD WIDTH=9%>
+				<P><FONT SIZE=3>?</FONT></P>
+			</TD>
+			<TD WIDTH=14%>
+				<P><FONT SIZE=3>Rochester, NY</FONT></P>
+			</TD>
+			<TD WIDTH=44%>
+				<P><BR>
+				</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=33%>
+				<P><A HREF="ftp://ftp.simplesystems.org/pub/ImageMagick/"><FONT SIZE=3>ftp.simplesystems.org</FONT></A></P>
+			</TD>
+			<TD WIDTH=9%>
+				<P><FONT SIZE=3>5</FONT></P>
+			</TD>
+			<TD WIDTH=14%>
+				<P><FONT SIZE=3>Dallas, Texas USA</FONT></P>
+			</TD>
+			<TD WIDTH=44%>
+				<P><FONT SIZE=3>Daily mirror. This is a good site to mirror from.
+				If you provide a public mirror of ImageMagick (and can provide a
+				verifiable URL), please send an email to
+				bfriesen@simple.dallas.tx.us for your mirror to be given assured
+				access.</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=33%>
+				<P><A HREF="http://www.dylanbeattie.net/magick/"><FONT SIZE=3>www.dylanbeattie.net</FONT></A></P>
+			</TD>
+			<TD WIDTH=9%>
+				<P><FONT SIZE=3>?</FONT></P>
+			</TD>
+			<TD WIDTH=14%>
+				<P><FONT SIZE=3>London, UK</FONT></P>
+			</TD>
+			<TD WIDTH=44%>
+				<P><FONT SIZE=3>Windows 2000 binaries for ImageMagick, including
+				PerlMagick. Also includes detailed instructions for building
+				PerlMagick under Windows.</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=33%>
+				<P><A HREF="http://hpux.connect.org.uk/hppd/hpux/X11/Viewers/"><FONT SIZE=3>hpux.connect.org.uk</FONT></A></P>
+			</TD>
+			<TD WIDTH=9% SDVAL="30" SDNUM="1033;">
+				<P ALIGN=LEFT><FONT SIZE=3>30</FONT></P>
+			</TD>
+			<TD WIDTH=14%>
+				<P><FONT SIZE=3>United Kingdom</FONT></P>
+			</TD>
+			<TD WIDTH=44%>
+				<P><FONT SIZE=3>HP-UX 10.20 and 11.00 source and binary</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=33%>
+				<P><A HREF="ftp://ftp.vsm.com.au/kits/decwindows/"><FONT SIZE=3>ftp.vsm.com.au</FONT></A></P>
+			</TD>
+			<TD WIDTH=9%>
+				<P><FONT SIZE=3>?</FONT></P>
+			</TD>
+			<TD WIDTH=14%>
+				<P><FONT SIZE=3>Australia</FONT></P>
+			</TD>
+			<TD WIDTH=44%>
+				<P><FONT SIZE=3>OpenVMS source and binary</FONT></P>
+			</TD>
+		</TR>
+	</TABLE>
+</DL>
 <P>If you get the message 
 </P>
 <PRE STYLE="margin-bottom: 0.5cm"> 530 User anonymous access denied.</PRE><P>
