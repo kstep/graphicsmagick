@@ -17,17 +17,17 @@ AVAILABILITY
   GraphicsMagick is currently under development.  It may be retrieved
   via CVS using the following procedure:
 
-  Use
+  To use CVS over SSH:
+
+    export CVS_RSH=ssh
+    export CVSROOT=":ext:anoncvs@cvs.graphicsmagick.org:/GraphicsMagick"
+
+  or to use CVS with its built-in (and insecure) pserver protocol:
 
     export CVSROOT=":pserver:anonymous@cvs.graphicsmagick.org:/GraphicsMagick"
 
-  or
-
-    setenv CVSROOT=":pserver:anonymous@cvs.graphicsmagick.org:/GraphicsMagick"
-
-  to set CVSROOT in the environment (depending on your shell), or prepend
+  to set CVSROOT in the environment (adjust for your shell), or prepend
   -d followed by the CVS root to every command. For example
-
 
     cvs -d ":pserver:anonymous@cvs ...
 
@@ -252,10 +252,12 @@ MAGICK DELEGATES
 
       to read the TIFF image format. It in turn optionally requires the
       JPEG and ZLIB libraries. Support for JPEG, ZIP, and LZW compression
-      must be explicitly enabled by editing libtiff Makefiles. The TIFF
-      library no longer includes support for LZW compression due to patent
-      issues. If you need to use LZW compression, support is available via
-      a seperate LZW compression kit (a patch) at the sites listed above.
+      must be explicitly enabled by editing libtiff Makefiles. Since LZW
+      was protected by Unisys patent until July 7, 2004, the TIFF library
+      has not been including support for LZW compression. If you need to
+      use LZW compression and libtiff is not yet updated to include it,
+      support is available via a seperate LZW compression kit (a patch) at
+      the sites listed above.
 
     o GraphicsMagick may optionally use the TRIO library from
 

@@ -1,3 +1,7 @@
+2004-07-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Enable LZW compression by default.
+
 2004-07-05  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>  <bfriesen@simple.dallas.tx.us>
 
 	* wand/magick_wand.c (MagickSetPassphrase): String was being

@@ -430,9 +430,9 @@ fi
 
 # Enable LZW compression.
 AC_ARG_ENABLE(lzw,
-	      [  --enable-lzw            enable LZW support (default disabled)],
+	      [  --disable-lzw           disable LZW support (default enabled)],
 	      [with_lzw=$enableval],
-	      [with_lzw='no'])
+	      [with_lzw='yes'])
 test "$with_lzw" = 'yes' && AC_DEFINE(HasLZW,1,Include LZW compression)
 AM_CONDITIONAL(HasLZW, test "$have_lzw" != 'no')
 

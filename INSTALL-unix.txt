@@ -110,7 +110,7 @@ UNIX/Cygwin/MinGW COMPILATION
    --disable-installed     disable building an installed GraphicsMagick
                            (default enabled)
    --disable-largefile     disable support for large (64 bit) file offsets
-   --enable-lzw            enable LZW support (default disabled)
+   --disable-lzw           disable LZW support (default enabled)
    --enable-symbol-prefix  enable prefixing library symbols with "Gm"
    --enable-magick-compat  install ImageMagick utility shortcuts (default disabled)
 
@@ -238,25 +238,9 @@ UNIX/Cygwin/MinGW COMPILATION
       copying a module into place) but GraphicsMagick itself is not built
       using modules.
 
-    o --enable-lzw: In a number of countries, Unisys claims a patent on
-      the algorithm supporting LZW compression (e.g. used by GIF and
-      TIFF). To avoid possibly infringing on this patent, support for
-      LZW is disabled by default. With LZW support, GIF files written by
-      GraphicsMagick will be much larger than expected. Note that the
-      TIFF library must be patched in order to support LZW compression,
-      and that this support must be explicitly enabled in the libtiff
-      Makefiles. The U.S. patent for LZW expired on June 20, 2003, the
-      counterpart Canadian patent expires on July 7, 2004, the
-      counterpart patents in the United Kingdom, France, Germany and
-      Italy expire on June 18, 2004, and the Japanese counterpart
-      patents expire on June 20, 2004. Please be advised that if the
-      software is to be built or used in a country where the patent is
-      in effect, that IT MAY BE ILLEGAL TO ENABLE THIS OPTION without a
-      license from UNISYS. The GraphicsMagick Group DOES NOT RECOMMEND
-      OR ENCOURAGE THE UNLICENSED USE OF LZW in a country where the
-      UNISYS patent applies. The GraphicsMagick Group does not support
-      the illegal import of LZW-enabled software into a country where
-      the UNISYS LZW patent applies.
+    o --disable-lzw: Until July 7, 2004, Unisys held a patent on the LZW
+      algorithm so LZW was disabled by default. Support for LZW is now
+      enabled by default. Use this option if you need to disable it.
 
     o --enable-symbol-prefix: The GraphicsMagick libraries may contain
       symbols which conflict with other libraries.  Specifify this option
