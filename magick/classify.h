@@ -118,6 +118,13 @@ typedef enum
 
 typedef enum
 {
+  UndefinedRule,
+  EvenOddRule,
+  NonZeroRule
+} FillRule;
+
+typedef enum
+{
   UndefinedFilter,
   PointFilter,
   BoxFilter,
