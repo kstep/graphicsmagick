@@ -76,11 +76,18 @@ USE OF LIBRARY IN OUR PROJECTS
 
 (3) Copy all following files into execution path of your application: 
 
-        [GM dir]\Magick\color.mgk
-        [GM dir]\Magick\log.mgk
+        [GM dir]\Coders\modules.mgk
+        [GM dir]\locale\C.mgk
+        [GM dir]\locale\locale.mgk
+        [GM dir]\Magick\colors.mgk
         [GM dir]\Magick\magick.mgk
+        [GM dir]\VisualMagick\delegates.mgk
+        [GM dir]\VisualMagick\log.mgk
+        [GM dir]\VisualMagick\type.mgk
+        [GM dir]\VisualMagick\type_ghostscript.mgk
 
     
+
 
 All comments and/orsuggestions are welcome.
 
