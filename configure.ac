@@ -1318,7 +1318,6 @@ then
 	AC_DEFINE(HasJP2,1,Define if you have JPEG version 2 "Jasper" library)
 	AC_MSG_RESULT(yes)
 	have_jp2='yes'
-	AC_CHECK_HEADERS(jp2conf.h)
     fi
     else
     AC_MSG_RESULT(no)
