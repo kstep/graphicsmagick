@@ -331,20 +331,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       (void) strcpy(buffer,"</map>\n");
       (void) WriteBlob(image,strlen(buffer),buffer);
       if (image->montage != (char *) NULL)
-        {
-          char
-            color[MaxTextExtent] = "#000";
-
-          PixelPacket
-            pixel;
-
-          /*
-            Make montage background transparent.
-          */
-          pixel=GetOnePixel(image,0,0);
-          FormatString(color,HexColorFormat,pixel.red,pixel.green,pixel.blue);
-          TransparentImage(image,color);
-        }
+        TransparentImage(image,GetOnePixel(image,0,0));
       (void) strcpy(filename,image->filename);
       (void) strcpy(buffer,"</center>\n");
       (void) WriteBlob(image,strlen(buffer),buffer);

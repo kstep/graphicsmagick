@@ -294,7 +294,7 @@ Export Image *BlurImage(Image *image,const double factor,
 %  The format of the ColorizeImage method is:
 %
 %      Image *ColorizeImage(Image *image,const char *opacity,
-%        const char *pen_color,ExceptionInfo *exception)
+%        const PixelPacket target,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -304,14 +304,14 @@ Export Image *BlurImage(Image *image,const double factor,
 %    o opacity:  A character string indicating the level of opacity as a
 %      percentage (0-100).
 %
-%    o pen_color: A color string.
+%    o target: A color value.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 %
 */
 Export Image *ColorizeImage(Image *image,const char *opacity,
-  const char *pen_color,ExceptionInfo *exception)
+  const PixelPacket target,ExceptionInfo *exception)
 {
 #define ColorizeImageText  "  Colorizing the image...  "
 
@@ -326,9 +326,6 @@ Export Image *ColorizeImage(Image *image,const char *opacity,
     count,
     green,
     red;
-
-  PixelPacket
-    target;
 
   register int
     x;
@@ -348,7 +345,6 @@ Export Image *ColorizeImage(Image *image,const char *opacity,
   /*
     Determine RGB values of the pen color.
   */
-  (void) QueryColorDatabase(pen_color,&target);
   red=100;
   green=100;
   blue=100;

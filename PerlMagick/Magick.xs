@@ -3771,12 +3771,17 @@ Mogrify(ref,...)
         }
         case 4:  /* Colorize */
         {
+          PixelPacket
+            target;
+
+          target=GetOnePixel(image,0,0);
           if (!attribute_flag[0])
-            argument_list[0].string_reference="black";
+            (void) QueryColorDatabase(argument_list[0].string_reference,
+              &target);
           if (!attribute_flag[1])
             argument_list[1].string_reference="100";
-          image=ColorizeImage(image,argument_list[1].string_reference,
-            argument_list[0].string_reference,&exception);
+          image=ColorizeImage(image,argument_list[1].string_reference,target,
+            &exception);
           break;
         }
         case 5:  /* Border */
@@ -4449,12 +4454,19 @@ Mogrify(ref,...)
           break;
         case 47:  /* Opaque */
         {
+          PixelPacket
+            pen_color,
+            target;
+
+          target=GetOnePixel(image,0,0);
           if (!attribute_flag[0])
-            argument_list[0].string_reference="black";
+            (void) QueryColorDatabase(argument_list[0].string_reference,
+              &target);
+          pen_color=GetOnePixel(image,0,0);
           if (!attribute_flag[1])
-            argument_list[1].string_reference="white";
-          OpaqueImage(image,argument_list[0].string_reference,
-            argument_list[1].string_reference);
+            (void) QueryColorDatabase(argument_list[1].string_reference,
+              &pen_color);
+          OpaqueImage(image,target,pen_color);
           break;
         }
         case 48:  /* Quantize */
@@ -4576,9 +4588,14 @@ Mogrify(ref,...)
         }
         case 56:  /* Transparent */
         {
+          PixelPacket
+            target;
+
+          target=GetOnePixel(image,0,0);
           if (!attribute_flag[0])
-            argument_list[0].string_reference=(char *) NULL;
-          TransparentImage(image,argument_list[0].string_reference);
+            (void) QueryColorDatabase(argument_list[0].string_reference,
+              &target);
+          TransparentImage(image,target);
           break;
         }
         case 57:  /* Threshold */
@@ -4750,8 +4767,7 @@ Montage(ref,...)
 
     char
       *attribute,
-      *p,
-      *transparent_color;
+      *p;
 
     ExceptionInfo
       exception;
@@ -4803,7 +4819,6 @@ Montage(ref,...)
     av=newAV();
     av_reference=sv_2mortal(sv_bless(newRV((SV *) av),hv));
     SvREFCNT_dec(av);
-    transparent_color=NULL;
     error_jump=(&error_jmp);
     status=setjmp(error_jmp);
     if (status)
@@ -5066,7 +5081,13 @@ Montage(ref,...)
             }
           if (strEQcase(attribute,"trans"))
             {
-              transparent_color=SvPV(ST(i),na);
+              PixelPacket
+                transparent_color;
+
+              transparent_color=GetOnePixel(image,0,0);
+              QueryColorDatabase(SvPV(ST(i),na),&transparent_color);
+              for (next=image; next; next=next->next)
+                TransparentImage(next,transparent_color);
               continue;
             }
           break;
@@ -5081,9 +5102,6 @@ Montage(ref,...)
         MagickWarning(exception.severity,exception.message,exception.qualifier);
         goto MethodException;
       }
-    if (transparent_color)
-      for (next=image; next; next=next->next)
-        TransparentImage(next,transparent_color);
     (void) strcpy(info->image_info->filename,montage_info->filename);
     (void) SetImageInfo(info->image_info,False);
     for (next=image; next; next=next->next)

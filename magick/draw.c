@@ -1810,27 +1810,24 @@ Export unsigned int MatteFloodfillImage(Image *image,const PixelPacket *target,
 %
 %  The format of the OpaqueImage method is:
 %
-%      unsigned int OpaqueImage(Image *image,const char *opaque_color,
-%        const char *pen_color)
+%      unsigned int OpaqueImage(Image *image,const PixelPacket target,
+%        const PixelPacket pen_color)
 %
 %  A description of each parameter follows:
 %
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
-%    o opaque_color,
-%      pen_color: A character string that contain an X11 color string.
+%    o target: the color to search for in the image.
+%
+%    o pen_color: the color to replace it with.
 %
 %
 */
-Export unsigned int OpaqueImage(Image *image,const char *opaque_color,
-  const char *pen_color)
+Export unsigned int OpaqueImage(Image *image,const PixelPacket target,
+  const PixelPacket pen_color)
 {
 #define OpaqueImageText  "  Setting opaque color in the image...  "
-
-  PixelPacket
-    target,
-    target_color;
 
   int
     y;
@@ -1846,18 +1843,9 @@ Export unsigned int OpaqueImage(Image *image,const char *opaque_color,
     status;
 
   /*
-    Determine RGB values of the opaque color.
-  */
-  assert(image != (Image *) NULL);
-  status=QueryColorDatabase(opaque_color,&target);
-  if (status == False)
-    return(False);
-  status=QueryColorDatabase(pen_color,&target_color);
-  if (status == False)
-    return(False);
-  /*
     Make image color opaque.
   */
+  assert(image != (Image *) NULL);
   switch (image->class)
   {
     case DirectClass:
@@ -1874,7 +1862,7 @@ Export unsigned int OpaqueImage(Image *image,const char *opaque_color,
         for (x=0; x < (int) image->columns; x++)
         {
           if (ColorMatch(*q,target,image->fuzz))
-            *q=target_color;
+            *q=pen_color;
           q++;
         }
         if (!SyncImagePixels(image))
@@ -1892,7 +1880,7 @@ Export unsigned int OpaqueImage(Image *image,const char *opaque_color,
       for (i=0; i < (int) image->colors; i++)
       {
         if (ColorMatch(image->colormap[i],target,image->fuzz))
-          image->colormap[i]=target_color;
+          image->colormap[i]=pen_color;
         if (QuantumTick(i,image->colors))
           ProgressMonitor(OpaqueImageText,i,image->colors);
       }
@@ -1919,23 +1907,20 @@ Export unsigned int OpaqueImage(Image *image,const char *opaque_color,
 %
 %  The format of the TransparentImage method is:
 %
-%      unsigned int TransparentImage(Image *image,const char *color)
+%      unsigned int TransparentImage(Image *image,const PixelPacket target)
 %
 %  A description of each parameter follows:
 %
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
-%    o color: A character string that contain an X11 color string.
+%    o target: The color to search for in the image.
 %
 %
 */
-Export unsigned int TransparentImage(Image *image,const char *color)
+Export unsigned int TransparentImage(Image *image,const PixelPacket target)
 {
 #define TransparentImageText  "  Setting transparent color in the image...  "
-
-  PixelPacket
-    target;
 
   int
     y;
@@ -1950,15 +1935,9 @@ Export unsigned int TransparentImage(Image *image,const char *color)
     status;
 
   /*
-    Determine RGB values of the transparent color.
-  */
-  assert(image != (Image *) NULL);
-  status=QueryColorDatabase(color,&target);
-  if (status == False)
-    return(False);
-  /*
     Make image color transparent.
   */
+  assert(image != (Image *) NULL);
   if (!image->matte)
     MatteImage(image,Opaque);
   for (y=0; y < (int) image->rows; y++)

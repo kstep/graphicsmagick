@@ -2241,18 +2241,18 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (!SetImagePixels(image,0,y,image->columns,1))
             break;
           if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
-            (void) PullImagePixels(image,GrayQuantum,scanlines[y]);
+            (void) PopImagePixels(image,GrayQuantum,scanlines[y]);
           else
             if (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
-              (void) PullImagePixels(image,GrayOpacityQuantum,scanlines[y]);
+              (void) PopImagePixels(image,GrayOpacityQuantum,scanlines[y]);
             else
               if (ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
-                (void) PullImagePixels(image,RGBAQuantum,scanlines[y]);
+                (void) PopImagePixels(image,RGBAQuantum,scanlines[y]);
               else
                 if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
-                  (void) PullImagePixels(image,IndexQuantum,scanlines[y]);
+                  (void) PopImagePixels(image,IndexQuantum,scanlines[y]);
                 else
-                  (void) PullImagePixels(image,RGBQuantum,scanlines[y]);
+                  (void) PopImagePixels(image,RGBQuantum,scanlines[y]);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)

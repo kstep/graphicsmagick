@@ -589,29 +589,29 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   case 0:
                   {
                     if (layer_info[i].image->class == PseudoClass)
-                      (void) PullImagePixels(layer_info[i].image,IndexQuantum,
+                      (void) PopImagePixels(layer_info[i].image,IndexQuantum,
                         scanline);
                     else
-                      (void) PullImagePixels(layer_info[i].image,RedQuantum,
+                      (void) PopImagePixels(layer_info[i].image,RedQuantum,
                         scanline);
                     break;
                   }
                   case 1:
                   {
-                    (void) PullImagePixels(layer_info[i].image,GreenQuantum,
+                    (void) PopImagePixels(layer_info[i].image,GreenQuantum,
                       scanline);
                     break;
                   }
                   case 2:
                   {
-                    (void) PullImagePixels(layer_info[i].image,BlueQuantum,
+                    (void) PopImagePixels(layer_info[i].image,BlueQuantum,
                       scanline);
                     break;
                   }
                   case 3:
                   default:
                   {
-                    (void) PullImagePixels(layer_info[i].image,OpacityQuantum,
+                    (void) PopImagePixels(layer_info[i].image,OpacityQuantum,
                       scanline);
                     break;
                   }
@@ -724,25 +724,25 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             case 0:
             {
               if (image->class == PseudoClass)
-                (void) PullImagePixels(image,IndexQuantum,scanline);
+                (void) PopImagePixels(image,IndexQuantum,scanline);
               else
-                (void) PullImagePixels(image,RedQuantum,scanline);
+                (void) PopImagePixels(image,RedQuantum,scanline);
               break;
             }
             case 1:
             {
-              (void) PullImagePixels(image,GreenQuantum,scanline);
+              (void) PopImagePixels(image,GreenQuantum,scanline);
               break;
             }
             case 2:
             {
-              (void) PullImagePixels(image,BlueQuantum,scanline);
+              (void) PopImagePixels(image,BlueQuantum,scanline);
               break;
             }
             case 3:
             default:
             {
-              (void) PullImagePixels(image,OpacityQuantum,scanline);
+              (void) PopImagePixels(image,OpacityQuantum,scanline);
               break;
             }
           }

@@ -834,7 +834,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           /*
             Transfer image scanline.
           */
-          (void) PullImagePixels(image,IndexQuantum,quantum_scanline);
+          (void) PopImagePixels(image,IndexQuantum,quantum_scanline);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -896,12 +896,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               }
             }
           if (image->colorspace == CMYKColorspace)
-            (void) PullImagePixels(image,CMYKQuantum,scanline);
+            (void) PopImagePixels(image,CMYKQuantum,scanline);
           else
             if (!image->matte)
-              (void) PullImagePixels(image,RGBQuantum,scanline);
+              (void) PopImagePixels(image,RGBQuantum,scanline);
             else
-              (void) PullImagePixels(image,RGBAQuantum,scanline);
+              (void) PopImagePixels(image,RGBAQuantum,scanline);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)

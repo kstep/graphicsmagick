@@ -914,24 +914,24 @@ Export Image *PingImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   P u l l I m a g e P i x e l s                                             %
+%   P o p I m a g e P i x e l s                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method PullImagePixels transfers one or more pixel components from a buffer
+%  Method PopImagePixels transfers one or more pixel components from a buffer
 %  or file into the image pixel buffer of an image.  It returns True if the
 %  pixels are successfully transferred, otherwise False.
 %
-%  The format of the PullImagePixels method is:
+%  The format of the PopImagePixels method is:
 %
-%      unsigned int PullImagePixels(const Image *image,
+%      unsigned int PopImagePixels(const Image *image,
 %        const QuantumTypes quantum,const unsigned char *source)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method PullImagePixels returns True if the pixels are
+%    o status: Method PopImagePixels returns True if the pixels are
 %      successfully transferred, otherwise False.
 %
 %    o image: The address of a structure of type Image.
@@ -942,7 +942,7 @@ Export Image *PingImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %    o source:  The pixel components are transferred from this buffer.
 %
 */
-Export unsigned int PullImagePixels(const Image *image,
+Export unsigned int PopImagePixels(const Image *image,
   const QuantumTypes quantum,const unsigned char *source)
 {
   IndexPacket

@@ -169,7 +169,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,ExceptionInfo *exception
             (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
           if (!SetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PullImagePixels(image,CMYKQuantum,scanline+x);
+          (void) PopImagePixels(image,CMYKQuantum,scanline+x);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -195,13 +195,13 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,ExceptionInfo *exception
             (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
           if (!SetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PullImagePixels(image,CyanQuantum,scanline+x);
+          (void) PopImagePixels(image,CyanQuantum,scanline+x);
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-          (void) PullImagePixels(image,YellowQuantum,scanline+x);
+          (void) PopImagePixels(image,YellowQuantum,scanline+x);
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-          (void) PullImagePixels(image,MagentaQuantum,scanline+x);
+          (void) PopImagePixels(image,MagentaQuantum,scanline+x);
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-          (void) PullImagePixels(image,BlackQuantum,scanline+x);
+          (void) PopImagePixels(image,BlackQuantum,scanline+x);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -240,7 +240,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,ExceptionInfo *exception
             (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
           if (!SetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PullImagePixels(image,CyanQuantum,scanline+x);
+          (void) PopImagePixels(image,CyanQuantum,scanline+x);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -266,7 +266,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,ExceptionInfo *exception
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PullImagePixels(image,YellowQuantum,scanline+x);
+          (void) PopImagePixels(image,YellowQuantum,scanline+x);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -292,7 +292,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,ExceptionInfo *exception
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PullImagePixels(image,MagentaQuantum,scanline+x);
+          (void) PopImagePixels(image,MagentaQuantum,scanline+x);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -319,7 +319,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,ExceptionInfo *exception
             scanline);
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PullImagePixels(image,BlackQuantum,scanline+x);
+          (void) PopImagePixels(image,BlackQuantum,scanline+x);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)

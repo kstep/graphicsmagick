@@ -1161,7 +1161,14 @@ int main(int argc,char **argv)
   for (p=montage_image; p != (Image *) NULL; p=p->next)
   {
     if (transparent_color != (char *) NULL)
-      TransparentImage(p,transparent_color);
+      {
+        PixelPacket
+          target;
+
+        target=GetOnePixel(p,0,0);
+        (void) QueryColorDatabase(transparent_color,&target);
+        TransparentImage(p,target);
+      }
     if (quantize_info.number_colors != 0)
       {
         /*

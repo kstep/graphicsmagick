@@ -3216,11 +3216,16 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         Image
           *colorized_image;
 
+        PixelPacket
+          target;
+
         /*
           Colorize the image.
         */
+        target=GetOnePixel(*image,0,0);
+        (void) QueryColorDatabase(clone_info->pen,&target);
         colorized_image=
-          ColorizeImage(*image,argv[++i],clone_info->pen,&(*image)->exception);
+          ColorizeImage(*image,argv[++i],target,&(*image)->exception);
         if (colorized_image == (Image *) NULL)
           return(False);
         DestroyImage(*image);
@@ -3790,7 +3795,15 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
       }
     if (strncmp("-opaque",option,3) == 0)
       {
-        OpaqueImage(*image,argv[++i],clone_info->pen);
+        PixelPacket
+          pen_color,
+          target;
+
+        target=GetOnePixel(*image,0,0);
+        (void) QueryColorDatabase(argv[++i],&target);
+        pen_color=GetOnePixel(*image,0,0);
+        (void) QueryColorDatabase(clone_info->pen,&pen_color);
+        OpaqueImage(*image,target,pen_color);
         continue;
       }
     if (strncmp("-paint",option,4) == 0)
@@ -4180,7 +4193,12 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
       }
     if (strncmp("-transparent",option,4) == 0)
       {
-        TransparentImage(*image,argv[++i]);
+        PixelPacket
+          target;
+
+        target=GetOnePixel(*image,0,0);
+        (void) QueryColorDatabase(argv[++i],&target);
+        TransparentImage(*image,target);
         continue;
       }
     if (strncmp("-treedepth",option,4) == 0)

@@ -170,7 +170,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,ExceptionInfo *exception
         (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
       if (!SetImagePixels(image,0,y,image->columns,1))
         break;
-      (void) PullImagePixels(image,GrayQuantum,scanline+x);
+      (void) PopImagePixels(image,GrayQuantum,scanline+x);
       if (!SyncImagePixels(image))
         break;
       if (image->previous == (Image *) NULL)

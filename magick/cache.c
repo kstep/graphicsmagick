@@ -1064,7 +1064,7 @@ Export unsigned int OpenCache(Cache cache,const ClassType class_type,
         AllocateMemory((cache_info->rows+1)*sizeof(NexusInfo));
       if (cache_info->nexus == (NexusInfo *) NULL)
         MagickError(ResourceLimitError,"Memory allocation failed",
-          "unable to allocate cache nexuss");
+          "unable to allocate cache nexus");
       for (id=0; id <= cache_info->rows; id++)
       {
         cache_info->nexus[id].available=True;
@@ -1619,18 +1619,18 @@ static Image *ReadCacheImage(const ImageInfo *image_info,
           if (image->class == PseudoClass)
             {
               if (!image->matte)
-                (void) PullImagePixels(image,IndexQuantum,pixels);
+                (void) PopImagePixels(image,IndexQuantum,pixels);
               else
-                (void) PullImagePixels(image,IndexOpacityQuantum,pixels);
+                (void) PopImagePixels(image,IndexOpacityQuantum,pixels);
             }
           else
             if (image->colorspace == CMYKColorspace)
-              (void) PullImagePixels(image,CMYKQuantum,pixels);
+              (void) PopImagePixels(image,CMYKQuantum,pixels);
             else
               if (!image->matte)
-                (void) PullImagePixels(image,RGBQuantum,pixels);
+                (void) PopImagePixels(image,RGBQuantum,pixels);
               else
-                (void) PullImagePixels(image,RGBAQuantum,pixels);
+                (void) PopImagePixels(image,RGBAQuantum,pixels);
         }
       else
         {

@@ -650,18 +650,18 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
           if (image->class == PseudoClass)
             {
               if (!image->matte)
-                (void) PullImagePixels(image,IndexQuantum,pixels);
+                (void) PopImagePixels(image,IndexQuantum,pixels);
               else
-                (void) PullImagePixels(image,IndexOpacityQuantum,pixels);
+                (void) PopImagePixels(image,IndexOpacityQuantum,pixels);
             }
           else
             if (image->colorspace == CMYKColorspace)
-              (void) PullImagePixels(image,CMYKQuantum,pixels);
+              (void) PopImagePixels(image,CMYKQuantum,pixels);
             else
               if (!image->matte)
-                (void) PullImagePixels(image,RGBQuantum,pixels);
+                (void) PopImagePixels(image,RGBQuantum,pixels);
               else
-                (void) PullImagePixels(image,RGBAQuantum,pixels);
+                (void) PopImagePixels(image,RGBAQuantum,pixels);
         }
       else
         {
