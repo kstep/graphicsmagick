@@ -803,6 +803,8 @@ int main(int argc,char **argv)
   }
   if ((image == (Image *) NULL) || (composite_image == (Image *) NULL))
     Usage(client_name);
+  if ((i != (argc-1)) || (combined_image == (Image *) NULL))
+    MagickError(OptionError,"Missing an image file name",(char *) NULL);
   if (mask_image != (Image *) NULL)
     {
       status=CompositeImage(composite_image,ReplaceMatteCompositeOp,

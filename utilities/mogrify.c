@@ -1523,8 +1523,8 @@ int main(int argc,char **argv)
             }
         DestroyImage(image);
       }
-    }
-  if (image == (Image *) NULL)
+  }
+  if ((i != argc) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   DestroyImageInfo(image_info);
   DestroyDelegateInfo();

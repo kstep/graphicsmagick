@@ -382,10 +382,10 @@ static void InitializeModuleSearchPath(void)
   char
     message[MaxTextExtent];
 
-  max_path_elements=31,
+  max_path_elements=31;
   path_index=0;
   module_path=(char **) AllocateMemory((max_path_elements+1)*sizeof(char*));
-  if(module_path != (char**)NULL)
+  if (module_path != (char **) NULL)
     {
       char
         *path,
@@ -419,22 +419,20 @@ static void InitializeModuleSearchPath(void)
               }
           }
         }
-#if !defined(_VISUALC_)
       /*
         Add HOME/.magick if it exists
       */
-      if ((path_index < max_path_elements) &&
-          ((path=getenv("HOME")) != NULL))
+      path=getenv("HOME");
+      if ((path_index < max_path_elements) && (path != NULL))
         {
           (void) strcpy(message,path);
           (void) strcat(message,"/.magick");
           if (access(message,R_OK) == 0)
             {
               module_path[path_index]=AllocateString(message);
-              ++path_index;
+              path_index++;
             }
         }
-#endif
       /*
         Add default module installation directory.
       */
@@ -449,11 +447,11 @@ static void InitializeModuleSearchPath(void)
 
 MagickExport void InitializeModules(void)
 {
-  if (module_list != (ModuleInfo *) NULL)
-    return;
   /*
     Initialize ltdl.
   */
+  if (module_list != (ModuleInfo *) NULL)
+    return;
   if (lt_dlinit() != 0)
     MagickError(DelegateError,"failed to initialise module loader",
       lt_dlerror());
@@ -585,7 +583,7 @@ MagickExport char **ListModules(void)
     (void) strcat(message,ModuleSearchSpec);
     directory=opendir(message);
 #endif
-    if(directory == (DIR *) NULL)
+    if (directory == (DIR *) NULL)
       continue;
     entry=readdir(directory);
     while (entry != (struct dirent *) NULL)
@@ -816,13 +814,9 @@ void ModuleToTag(const char *filename,const char *format,char *module)
       FormatString(module,format,filename);
       return;
     }
-  basename=(char *) AllocateMemory(strlen(filename)+1);
-  if (basename == (char *) NULL)
-    MagickError(ResourceLimitError,"Unable to get module tag",
-      "Memory allocation failed");
-  (void) strcpy(basename,filename);
-  p=basename+(Extent(basename)-1);
   count=0;
+  basename=AllocateString(filename);
+  p=basename+(Extent(basename)-1);
   while (p > basename)
   {
     if (IsTagSeparator(*p))
@@ -1039,7 +1033,7 @@ MagickExport int UnloadDynamicModule(const char* module)
       */
       ModuleToTag(module,"Unregister%sImage",name);
       method=(void (*)(void)) lt_dlsym(module_info->handle,name);
-      if (method == NULL)
+      if (method == (void (*)(void)) NULL)
         MagickWarning(DelegateWarning,"failed to find symbol",lt_dlerror());
       else
         method();

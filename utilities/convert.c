@@ -1696,7 +1696,7 @@ int main(int argc,char **argv)
         }
       }
   }
-  if (image == (Image *) NULL)
+  if ((i != (argc-1)) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   /*
     Write images.

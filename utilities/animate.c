@@ -954,7 +954,7 @@ int main(int argc,char **argv)
         }
       }
   }
-  if (image == (Image *) NULL)
+  if ((i != argc) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   while (image->previous != (Image *) NULL)
     image=image->previous;
