@@ -1318,7 +1318,7 @@ MagickExport unsigned int OpenCache(Image *image)
   if (cache_info->nexus_info == (NexusInfo *) NULL)
     {
       unsigned int
-        i;
+        id;
 
       /*
         Allocate cache nexus.
