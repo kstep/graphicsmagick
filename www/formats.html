@@ -16,9 +16,7 @@
 <br>
 <br>
 <p>Here is a table of image formats <b>ImageMagick</b> can read and/or
-write. Support for some of the formats are delegated to libraries or external
-programs. <a href="install.html#extr">README</a> mentions where to find
-these distributions.
+write.
 <br>&nbsp;
 <center><table BORDER=0 CELLPADDING=5 WIDTH="90%" BGCOLOR="#99CCFF" >
 <caption>&nbsp;</caption>
@@ -937,6 +935,15 @@ width and height</td>
 </table></center>
 
 <br>&nbsp;
+Support for some of the formats are delegated to libraries or external
+programs. <a href="install.html#extr">README</a> mentions where to find
+these distributions.
+<p>
+To get a complete listing of which image formats are supported on your system,
+type
+<pre>
+    convert -list format
+</pre>
 <p>On some platforms, ImageMagick automatically processes these extensions:
 <tt>.gz</tt>
 for Zip compression, <tt>.Z</tt> for Unix compression,
