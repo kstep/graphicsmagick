@@ -107,7 +107,7 @@
 <P>unsigned int  <strong>SetImageClipMask</strong>( Image *image, const Image *clip_mask );</P>
 <P>unsigned int  <strong>SetImageDepth</strong>( Image *image, const unsigned long depth );</P>
 <P>void  <strong>SetImageOpacity</strong>( Image *image, const unsigned int opacity );</P>
-<P><strong>SetImageType</strong>( Image *image, const ImageType image_type );</P>
+<P>( void ) <strong>SetImageType</strong>( Image *image, const ImageType image_type );</P>
 <P>unsigned int  <strong>TextureImage</strong>( Image *image, const Image *texture );</P>
 <P>
 </P>
@@ -911,13 +911,13 @@ The level of transparency: 0 is fully opaque and MaxRGB is fully transparent.
 <P>
 </P>
 <h2><a name="setimagetype">SetImageType</a></h2>
-<blockquote>SetImageType() sets the type of image. Choose from these types: </blockquote><pre>
+<blockquote>( void ) SetImageType() sets the type of image. Choose from these types: </blockquote><pre>
       Bilevel        Grayscale       GrayscaleMatte
       Palette        PaletteMatte    TrueColor
       TrueColorMatte ColorSeparation ColorSeparationMatte
       OptimizeType</pre>
-<P>The format of the SetImageType method is:</P>
-<blockquote>SetImageType ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#ImageType">ImageType</A> image_type ); </blockquote><P>A description of each parameter follows:</P>
+<P>The format of the (void) SetImageType method is:</P>
+<blockquote>( void ) SetImageType ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#ImageType">ImageType</A> image_type ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>image:</strong><br />
 </dt>

@@ -20,9 +20,9 @@
 		<li><a href="#constituteimage">ConstituteImage</a></li>
 		<li><a href="#destroyconstitute">DestroyConstitute</a></li>
 		<li><a href="#dispatchimage">DispatchImage</a></li>
+		<li><a href="#exportimagepixelarea">ExportImagePixelArea</a></li>
+		<li><a href="#importimagepixelarea">ImportImagePixelArea</a></li>
 		<li><a href="#pingimage">PingImage</a></li>
-		<li><a href="#popimagepixels">PopImagePixels</a></li>
-		<li><a href="#pushimagepixels">PushImagePixels</a></li>
 		<li><a href="#readimage">ReadImage</a></li>
 		<li><a href="#readinlineimage">ReadInlineImage</a></li>
 		<li><a href="#writeimage">WriteImage</a></li>
@@ -44,9 +44,9 @@
 <P>Image * <strong>ConstituteImage</strong>( const unsigned long width, const unsigned long height, const char *map, const StorageType type, const void *pixels, ExceptionInfo *exception );</P>
 <P><strong>DestroyConstitute</strong>( void );</P>
 <P>unsigned int  <strong>DispatchImage</strong>( const Image *image, const long x_offset, const long y_offset, const unsigned long columns, const unsigned long rows, const char *map, const StorageType type, void *pixels, ExceptionInfo *exception );</P>
+<P>MagickPassFail  <strong>ExportImagePixelArea</strong>( const Image *image, const QuantumType quantum_type, unsigned int quantum_size, unsigned char *destination );</P>
+<P>MagickPassFail  <strong>ImportImagePixelArea</strong>( Image *image, const QuantumType quantum_type, unsigned int quantum_size, const unsigned char *source );</P>
 <P>Image * <strong>PingImage</strong>( const ImageInfo *image_info, ExceptionInfo *exception );</P>
-<P>unsigned int  <strong>PopImagePixels</strong>( const Image *, const QuantumType quantum, unsigned char *destination );</P>
-<P>unsigned int  <strong>PushImagePixels</strong>( Image *image, const QuantumType quantum_type, const unsigned char *source );</P>
 <P>Image * <strong>ReadImage</strong>( const ImageInfo *image_info, ExceptionInfo *exception );</P>
 <P>Image * <strong>ReadInlineImage</strong>( const ImageInfo *image_info, const char *content, ExceptionInfo *exception );</P>
 <P>unsigned int  <strong>WriteImage</strong>( const ImageInfo *image_info, Image *image );</P>
@@ -107,7 +107,7 @@ Return any errors or warnings in this structure.
 </P>
 <h2><a name="dispatchimage">DispatchImage</a></h2>
 <blockquote>DispatchImage() extracts pixel data from an <A HREF="types.html#Image">Image</A> into a raw memory array. The pixel data is written in scanline order top-to-bottom using an arbitrary quantum order specified by 'map', and with quantum size specified by 'type'. </blockquote><P>The output array data may be unsigned char, unsigned short int, unsigned int, unsigned long, float, or double.  Float and double require the pixels to be normalized to the range [0..1], otherwise the range is [0..MaxVal] where MaxVal is the maximum possible value for that type.</P>
-<P>The method returns False on success or True if an error is encountered.</P>
+<P>The method returns MagickPass on success or MagickFail if an error is encountered.</P>
 <P>Suppose we want want to extract the first scanline of a 640x480 image as character data in red-green-blue order:</P>
 <blockquote>DispatchImage ( image, 0, 0, 640, 1, "RGB", 0, pixels, exception );; </blockquote><P>The format of the DispatchImage method is:</P>
 <blockquote>unsigned int DispatchImage ( const <A HREF="types.html#Image">Image</A> *image, const long x_offset, const long y_offset, const unsigned long columns, const unsigned long rows, const char *map, const <A HREF="types.html#StorageType">StorageType</A> type, void *pixels, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
@@ -150,6 +150,78 @@ Return any errors or warnings in this structure.
 <P></P></dl>
 <P>
 </P>
+<h2><a name="exportimagepixelarea">ExportImagePixelArea</a></h2>
+<blockquote>ExportImagePixelArea() transfers one or more pixel components from the image pixel cache to a user supplied buffer. MagickPass is returned if the pixels are successfully transferred, otherwise MagickFail. </blockquote><P>The format of the ExportImagePixelArea method is:</P>
+<blockquote>MagickPassFail ExportImagePixelArea ( const <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#QuantumType">QuantumType</A> quantum_type, unsigned int quantum_size, unsigned char *destination ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong><a name="item_o_status_3a">status:</a></strong><br />
+</dt>
+<DD>
+Returns MagickPass if the pixels are successfully transferred, otherwise MagickFail.
+</dd>
+<P></P>
+<dt><strong>image:</strong><br />
+</dt>
+<DD>
+The image.
+</dd>
+<P></P>
+<dt><strong><a name="item_o_quantum_type_3a">quantum_type:</a></strong><br />
+</dt>
+<DD>
+Declare which pixel components to transfer (RGB, RGBA, etc).
+</dd>
+<P></P>
+<dt><strong><a name="item_o_quantum_size_3a">quantum_size:</a></strong><br />
+</dt>
+<DD>
+Bits per quantum sample.
+</dd>
+<P></P>
+<dt><strong><a name="item_o_destination_3a">destination:</a></strong><br />
+</dt>
+<DD>
+The components are transferred to this buffer.
+</dd>
+<P></P></dl>
+<P>
+</P>
+<h2><a name="importimagepixelarea">ImportImagePixelArea</a></h2>
+<blockquote>ImportImagePixelArea() transfers one or more pixel components from a user supplied buffer into the image pixel cache of an image. The pixels are read in network ( big-endian ) byte order. It returns MagickPass if the pixels are successfully transferred, otherwise MagickFail. </blockquote><P>The format of the ImportImagePixelArea method is:</P>
+<blockquote>MagickPassFail ImportImagePixelArea ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#QuantumType">QuantumType</A> quantum_type, unsigned int quantum_size, const unsigned char *source ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>status:</strong><br />
+</dt>
+<DD>
+Method PushImagePixels returns MagickPass if the pixels are successfully transferred, otherwise MagickFail.
+</dd>
+<P></P>
+<dt><strong>image:</strong><br />
+</dt>
+<DD>
+The image.
+</dd>
+<P></P>
+<dt><strong>quantum_type:</strong><br />
+</dt>
+<DD>
+Declare which pixel components to transfer (AlphaQuantum, BlackQuantum, BlueQuantum, CMYKAQuantum, CMYKQuantum, CyanQuantum, GrayAlphaQuantum, GrayQuantum, GreenQuantum, IndexAlphaQuantum, IndexQuantum, MagentaQuantum, RGBAQuantum, RGBQuantum, RedQuantum, YellowQuantum)
+</dd>
+<P></P>
+<dt><strong>quantum_size:</strong><br />
+</dt>
+<DD>
+Bits per quantum sample (range 1-31)
+</dd>
+<P></P>
+<dt><strong><a name="item_o_source_3a">source:</a></strong><br />
+</dt>
+<DD>
+The pixel components are transferred from this buffer.
+</dd>
+<P></P></dl>
+<P>
+</P>
 <h2><a name="pingimage">PingImage</a></h2>
 <blockquote>PingImage() returns all the attributes of an image or image sequence except for the pixels. It is much faster and consumes far less memory than ReadImage ( ) . On failure, a NULL image is returned and exception describes the reason for the failure. </blockquote><P>The format of the PingImage method is:</P>
 <blockquote><A HREF="types.html#Image">Image</A> *PingImage ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
@@ -164,66 +236,6 @@ Ping the image defined by the file or filename members of this structure.
 </dt>
 <DD>
 Return any errors or warnings in this structure.
-</dd>
-<P></P></dl>
-<P>
-</P>
-<h2><a name="popimagepixels">PopImagePixels</a></h2>
-<blockquote>PopImagePixels() transfers one or more pixel components from the image pixel cache to a user supplied buffer. True is returned if the pixels are successfully transferred, otherwise False. </blockquote><P>The format of the PopImagePixels method is:</P>
-<blockquote>unsigned int PopImagePixels ( const <A HREF="types.html#Image">Image</A> *, const <A HREF="types.html#QuantumType">QuantumType</A> quantum, unsigned char *destination ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong><a name="item_o_status_3a">status:</a></strong><br />
-</dt>
-<DD>
-Method PopImagePixels returns True if the pixels are successfully transferred, otherwise False.
-</dd>
-<P></P>
-<dt><strong>image:</strong><br />
-</dt>
-<DD>
-The image.
-</dd>
-<P></P>
-<dt><strong><a name="item_o_quantum_3a">quantum:</a></strong><br />
-</dt>
-<DD>
-Declare which pixel components to transfer (RGB, RGBA, etc).
-</dd>
-<P></P>
-<dt><strong><a name="item_o_destination_3a">destination:</a></strong><br />
-</dt>
-<DD>
-The components are transferred to this buffer.
-</dd>
-<P></P></dl>
-<P>
-</P>
-<h2><a name="pushimagepixels">PushImagePixels</a></h2>
-<blockquote>PushImagePixels() transfers one or more pixel components from a user supplied buffer into the image pixel cache of an image. It returns True if the pixels are successfully transferred, otherwise False. </blockquote><P>The format of the PushImagePixels method is:</P>
-<blockquote>unsigned int PushImagePixels ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#QuantumType">QuantumType</A> quantum_type, const unsigned char *source ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>status:</strong><br />
-</dt>
-<DD>
-Method PushImagePixels returns True if the pixels are successfully transferred, otherwise False.
-</dd>
-<P></P>
-<dt><strong>image:</strong><br />
-</dt>
-<DD>
-The image.
-</dd>
-<P></P>
-<dt><strong><a name="item_o_quantum_type_3a">quantum_type:</a></strong><br />
-</dt>
-<DD>
-Declare which pixel components to transfer (red, green, blue, opacity, RGB, or RGBA).
-</dd>
-<P></P>
-<dt><strong><a name="item_o_source_3a">source:</a></strong><br />
-</dt>
-<DD>
-The pixel components are transferred from this buffer.
 </dd>
 <P></P></dl>
 <P>

@@ -17,6 +17,8 @@
 	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
 	<ul>
 
+		<li><a href="#popimagepixels">PopImagePixels</a></li>
+		<li><a href="#pushimagepixels">PushImagePixels</a></li>
 		<li><a href="#deleteimagelist">DeleteImageList</a></li>
 		<li><a href="#destroyimages">DestroyImages</a></li>
 		<li><a href="#getimagelist">GetImageList</a></li>
@@ -55,8 +57,10 @@
 <P>unsigned int  <strong>GetNumberScenes</strong>( const Image *images );</P>
 <P>Image * <strong>GetPreviousImage</strong>( const Image *images );</P>
 <P>Image * <strong>PopImageList</strong>( Image ** images );</P>
+<P>unsigned int  <strong>PopImagePixels</strong>( const Image *, const QuantumType quantum, unsigned char *destination );</P>
 <P>char * <strong>PostscriptGeometry</strong>( const char *page );</P>
 <P>unsigned int  <strong>PushImageList</strong>( Image *images, const Image *image, ExceptionInfo *exception );</P>
+<P>unsigned int  <strong>PushImagePixels</strong>( Image *image, const QuantumType quantum_type, const unsigned char *source );</P>
 <P>unsigned int  <strong>SetImageList</strong>( Image *images, const Image *image, const long offset, ExceptionInfo *exception );</P>
 <P>Image * <strong>ShiftImageList</strong>( Image ** images );</P>
 <P>Image * <strong>SpliceImageList</strong>( Image *images, const long offset, const unsigned long length, const Image *splices, ExceptionInfo *exception );</P>
@@ -65,6 +69,66 @@
 </P>
 <hr />
 <h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
+<P>
+</P>
+<h2><a name="popimagepixels">PopImagePixels</a></h2>
+<blockquote>PopImagePixels() transfers one or more pixel components from the image pixel cache to a user supplied buffer. True is returned if the pixels are successfully transferred, otherwise False. </blockquote><P>The format of the PopImagePixels method is:</P>
+<blockquote>unsigned int PopImagePixels ( const <A HREF="types.html#Image">Image</A> *, const <A HREF="types.html#QuantumType">QuantumType</A> quantum, unsigned char *destination ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong><a name="item_o_status_3a">status:</a></strong><br />
+</dt>
+<DD>
+Method PopImagePixels returns True if the pixels are successfully transferred, otherwise False.
+</dd>
+<P></P>
+<dt><strong><a name="item_o_image_3a">image:</a></strong><br />
+</dt>
+<DD>
+The image.
+</dd>
+<P></P>
+<dt><strong><a name="item_o_quantum_3a">quantum:</a></strong><br />
+</dt>
+<DD>
+Declare which pixel components to transfer (RGB, RGBA, etc).
+</dd>
+<P></P>
+<dt><strong><a name="item_o_destination_3a">destination:</a></strong><br />
+</dt>
+<DD>
+The components are transferred to this buffer.
+</dd>
+<P></P></dl>
+<P>
+</P>
+<h2><a name="pushimagepixels">PushImagePixels</a></h2>
+<blockquote>PushImagePixels() transfers one or more pixel components from a user supplied buffer into the image pixel cache of an image. It returns True if the pixels are successfully transferred, otherwise False. </blockquote><P>The format of the PushImagePixels method is:</P>
+<blockquote>unsigned int PushImagePixels ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#QuantumType">QuantumType</A> quantum_type, const unsigned char *source ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>status:</strong><br />
+</dt>
+<DD>
+Method PushImagePixels returns True if the pixels are successfully transferred, otherwise False.
+</dd>
+<P></P>
+<dt><strong>image:</strong><br />
+</dt>
+<DD>
+The image.
+</dd>
+<P></P>
+<dt><strong><a name="item_o_quantum_type_3a">quantum_type:</a></strong><br />
+</dt>
+<DD>
+Declare which pixel components to transfer (red, green, blue, opacity, RGB, or RGBA).
+</dd>
+<P></P>
+<dt><strong><a name="item_o_source_3a">source:</a></strong><br />
+</dt>
+<DD>
+The pixel components are transferred from this buffer.
+</dd>
+<P></P></dl>
 <P>
 </P>
 <h2><a name="deleteimagelist">DeleteImageList</a></h2>
@@ -91,7 +155,7 @@ The position within the list.
 <P>The format of the DestroyImages method is:</P>
 <blockquote>void DestroyImages ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_image_3a">image:</a></strong><br />
+<dt><strong>image:</strong><br />
 </dt>
 <DD>
 The image sequence.

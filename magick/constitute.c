@@ -597,7 +597,8 @@ MagickExport void DestroyConstitute(void)
 %  to be normalized to the range [0..1], otherwise the range is [0..MaxVal]
 %  where MaxVal is the maximum possible value for that type.
 %
-%  The method returns False on success or True if an error is encountered.
+%  The method returns MagickPass on success or MagickFail if an error is
+%  encountered.
 %
 %  Suppose we want want to extract the first scanline of a 640x480 image as
 %  character data in red-green-blue order:
