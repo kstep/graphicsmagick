@@ -988,7 +988,6 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
       clone_image->exempt=True;
       clone_image->previous=(Image *) NULL;
       clone_image->next=(Image *) NULL;
-      return(clone_image);
     }
   /*
     Link image into image list.
