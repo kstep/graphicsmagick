@@ -73,8 +73,8 @@ static MonitorHandler
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method MagickMonitor calls the monitor handler methods with a text
-%  string that describes the task and a measure of completion.
+%  MagickMonitor() calls the monitor handler method with a text string that
+%  describes the task and a measure of completion.
 %
 %  The format of the MagickMonitor method is:
 %
@@ -82,10 +82,10 @@ static MonitorHandler
 %
 %  A description of each parameter follows:
 %
-%    o quantum: Specifies the quantum position within the span which represents
-%      how much progress has been made in completing a task.
+%    o quantum: The position relative to the span parameter which represents
+%      how much progress has been made toward completing a task.
 %
-%    o span: Specifies the span relative to completing a task.
+%    o span: The span relative to completing a task.
 %
 %
 */
@@ -109,7 +109,7 @@ MagickExport void MagickMonitor(const char *text,const off_t quantum,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SetMonitorHandler sets the monitor handler to the specified method
+%  SetMonitorHandler() sets the monitor handler to the specified method
 %  and returns the previous monitor handler.
 %
 %  The format of the SetMonitorHandler method is:

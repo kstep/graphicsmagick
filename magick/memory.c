@@ -67,8 +67,8 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method AcquireMemory returns a pointer to a block of at least size bytes
-%  suitably aligned for any use.
+%  AcquireMemory() returns a pointer to a block of memory at least size
+%  bytes suitably aligned for any use.
 %
 %  The format of the AcquireMemory method is:
 %
@@ -76,10 +76,7 @@
 %
 %  A description of each parameter follows:
 %
-%    o memory: Method AcquireMemory returns a pointer to a block of at
-%      least size bytes suitably aligned for any use.
-%
-%    o size: Specifies the size of the memory to return.
+%    o size: The size of the memory in bytes to allocate.
 %
 %
 */
@@ -104,7 +101,7 @@ MagickExport void *AcquireMemory(const size_t size)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method LiberateMemory frees memory that has already been allocated.
+%  LiberateMemory() frees memory that has already been allocated.
 %
 %  The format of the LiberateMemory method is:
 %
@@ -112,7 +109,7 @@ MagickExport void *AcquireMemory(const size_t size)
 %
 %  A description of each parameter follows:
 %
-%    o span: Specifies the pointer to a block memory to free for reuse.
+%    o span: A pointer to a block memory to free for reuse.
 %
 %
 */
@@ -136,9 +133,9 @@ MagickExport void LiberateMemory(void **memory)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReacquireMemory changes the size of the memory and returns a
-%  pointer to the (possibly moved) block.  The contents will be unchanged up
-%  to the lesser of the new and old sizes.
+%  ReacquireMemory() changes the size of the memory and returns a
+%  pointer to the (possibly moved) block.  The contents will be unchanged
+%  up to the lesser of the new and old sizes.
 %
 %  The format of the ReacquireMemory method is:
 %
@@ -146,10 +143,10 @@ MagickExport void LiberateMemory(void **memory)
 %
 %  A description of each parameter follows:
 %
-%    o memory: Method ReacquireMemory returns a pointer to a block of at
-%      least size bytes suitably aligned for any use.
+%    o memory: A pointer to a memory allocation.  On return the pointer
+%      may change but the contents of the original allocation will not.
 %
-%    o size: Specifies the size of the memory to return.
+%    o size: The new size of the allocated memory.
 %
 %
 */

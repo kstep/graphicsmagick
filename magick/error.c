@@ -83,9 +83,9 @@ static WarningHandler
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CatchImageException returns if no exceptions are found in the
-%  image sequence, otherwise it determines the most severe exception and
-%  reports it as a warning or error depending on the severity.
+%  CatchImageException() returns if no exceptions are found in the image
+%  sequence, otherwise it determines the most severe exception and reports
+%  it as a warning or error depending on the severity.
 %
 %  The format of the CatchImageException method is:
 %
@@ -93,7 +93,7 @@ static WarningHandler
 %
 %  A description of each parameter follows:
 %
-%    o image: Specifies a pointer to a list of one or more images.
+%    o image: An image sequence.
 %
 %
 */
@@ -216,8 +216,7 @@ static void DefaultWarningHandler(const ExceptionType warning,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroyExceptionInfo deallocates memory associated with an
-%  ExceptionInfo structure.
+%  DestroyExceptionInfo() deallocates memory associated with exception.
 %
 %  The format of the DestroyExceptionInfo method is:
 %
@@ -225,7 +224,7 @@ static void DefaultWarningHandler(const ExceptionType warning,
 %
 %  A description of each parameter follows:
 %
-%    o exception: Specifies a pointer to an ExceptionInfo structure.
+%    o exception: The exception info.
 %
 %
 */
@@ -250,7 +249,7 @@ MagickExport void DestroyExceptionInfo(ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetExceptionInfo initializes the ExceptionInfo structure.
+%  GetExceptionInfo() initializes exception to default values.
 %
 %  The format of the GetExceptionInfo method is:
 %
@@ -258,7 +257,7 @@ MagickExport void DestroyExceptionInfo(ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o error_info: Specifies a pointer to a ExceptionInfo structure.
+%    o exception: The exception info
 %
 %
 */
@@ -281,12 +280,12 @@ MagickExport void GetExceptionInfo(ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetImageException traverses an image sequence and returns any
+%  GetImageException() traverses an image sequence and returns any
 %  error more severe than noted by the exception parameter.
 %
 %  The format of the GetImageException method is:
 %
-%      GetImageException(Image *image,ExceptionInfo *exception)
+%      void GetImageException(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -374,12 +373,11 @@ MagickExport void MagickError(const ExceptionType error,const char *reason,
 %
 %  A description of each parameter follows:
 %
-%    o warning: Specifies the numeric warning category.
+%    o warning: The warning severity.
 %
-%    o reason: Specifies the reason to display before terminating the
-%      program.
+%    o reason: Define the reason for the warning.
 %
-%    o description: Specifies any description to the reason.
+%    o description: Describe the warning.
 %
 %
 */
@@ -401,7 +399,7 @@ MagickExport void MagickWarning(const ExceptionType warning,const char *reason,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SetErrorHandler sets the error handler to the specified method
+%  SetErrorHandler() sets the error handler to the specified method
 %  and returns the previous error handler.
 %
 %  The format of the SetErrorHandler method is:
@@ -410,7 +408,7 @@ MagickExport void MagickWarning(const ExceptionType warning,const char *reason,
 %
 %  A description of each parameter follows:
 %
-%    o handler: Specifies a pointer to a method to handle errors.
+%    o handler: The method to handle errors.
 %
 %
 */
@@ -435,7 +433,7 @@ MagickExport ErrorHandler SetErrorHandler(ErrorHandler handler)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SetWarningHandler sets the warning handler to the specified method
+%  SetWarningHandler() sets the warning handler to the specified method
 %  and returns the previous warning handler.
 %
 %  The format of the SetWarningHandler method is:
@@ -444,7 +442,7 @@ MagickExport ErrorHandler SetErrorHandler(ErrorHandler handler)
 %
 %  A description of each parameter follows:
 %
-%    o handler: Specifies a pointer to a method to handle warnings.
+%    o handler: The method to handle warnings.
 %
 %
 */
@@ -469,7 +467,7 @@ MagickExport WarningHandler SetWarningHandler(WarningHandler handler)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ThrowException throws an exception with the specified severity code,
+%  ThrowException() throws an exception with the specified severity code,
 %  reason, and optional description.
 %
 %  The format of the ThrowException method is:
@@ -480,14 +478,13 @@ MagickExport WarningHandler SetWarningHandler(WarningHandler handler)
 %
 %  A description of each parameter follows:
 %
-%    o exception: Specifies a pointer to the ExceptionInfo structure.
+%    o exception: The exception.
 %
-%    o severity: This ExceptionType declares the severity of the exception.
+%    o severity: Define the severity of the exception.
 %
-%    o reason: Specifies the reason to display before terminating the
-%      program.
+%    o reason: Define the reason of the exception.
 %
-%    o description: Specifies any description to the reason.
+%    o description: Describe the exception.
 %
 %
 */
