@@ -54,6 +54,12 @@ sub MY::test
     }
    }
    $inherited =~ s:^TEST_FILES =.*:TEST_FILES = t/*.t ${delegate_tests}:m;
+   #
+   # Only test installed PerlMagick due to portability problems
+   # and because PerlMagick does not link against the uninstalled
+   # ImageMagick library.
+   #
+   $inherited =~ s:PERL_DL_NONLAZY=1 ::mg;
    $inherited;
 }
 

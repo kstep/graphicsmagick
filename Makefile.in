@@ -212,10 +212,6 @@ DISTDIRS = images scenes scripts www PerlMagick Magick++
 @WITH_PERL_TRUE@PERLMAKEMAKER = $(PERLMAGICK)/Makefile.PL
 @WITH_PERL_TRUE@PERLMAKEFILE = $(PERLMAGICK)/Makefile
 
-# Make all PERL sub-targets except those that require a link
-# since the link must be against installed libraries
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_TRUE@PERLALLTARGETS = config pm_to_blib subdirs Magick.o manifypods
-
 @WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@PERLSTATICNAME = PerlMagick
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -281,7 +277,7 @@ mkinstalldirs
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(combine_SOURCES) $(convert_SOURCES) $(identify_SOURCES) $(mogrify_SOURCES) $(montage_SOURCES) $(animate_SOURCES) $(display_SOURCES) $(import_SOURCES)
 OBJECTS = $(combine_OBJECTS) $(convert_OBJECTS) $(identify_OBJECTS) $(mogrify_OBJECTS) $(montage_OBJECTS) $(animate_OBJECTS) $(display_OBJECTS) $(import_OBJECTS)
@@ -678,7 +674,7 @@ install-am: all-am
 install: install-recursive
 uninstall-am: uninstall-binPROGRAMS uninstall-man
 uninstall: uninstall-recursive
-all-am: Makefile $(PROGRAMS) $(MANS) all-local
+all-am: Makefile $(PROGRAMS) $(MANS)
 all-redirect: all-recursive
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
@@ -741,8 +737,8 @@ maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
 distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
 dvi-am dvi check-local check check-am installcheck-am installcheck \
 install-exec-local install-exec-am install-exec install-data-am \
-install-data install-am install uninstall-am uninstall all-local \
-all-redirect all-am all installdirs-am installdirs mostlyclean-generic \
+install-data install-am install uninstall-am uninstall all-redirect \
+all-am all installdirs-am installdirs mostlyclean-generic \
 distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
@@ -767,20 +763,25 @@ dist-hook:
 
 @WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_TRUE@$(PERLMAKEFILE): perl-sources $(PERLMAKEMAKER)
 @WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_TRUE@	cd $(PERLMAGICK) && @PERL@ Makefile.PL
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_TRUE@all-perl: $(PERLMAKEFILE)
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_TRUE@	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' $(PERLALLTARGETS)
 
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_TRUE@install-exec-perl: all-perl
+# Make all PERL sub-targets except those that require a link
+# since the link must be against installed libraries
+#PERLALLTARGETS=config pm_to_blib subdirs Magick.o manifypods
+#all-perl: $(PERLMAKEFILE)
+#	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' $(PERLALLTARGETS)
+
+@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_TRUE@install-exec-perl: $(PERLMAKEFILE)
 @WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_TRUE@	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' install
 
 @WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@$(PERLMAKEFILE): perl-sources $(PERLMAKEMAKER)
 @WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@	cd $(PERLMAGICK) && @PERL@ Makefile.PL MAP_TARGET=$(PERLSTATICNAME)
 
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@all-perl: $(PERLMAKEFILE)
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' $(PERLSTATICNAME)
+#all-perl: $(PERLMAKEFILE)
+#	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' $(PERLSTATICNAME)
 
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@install-exec-perl: all-perl
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@	cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl CC='@CC@' inst_perl
+@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@install-exec-perl: $(PERLMAKEFILE)
+@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' $(PERLSTATICNAME)
+@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@	cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl CC='@CC@' $(PERLSTATICNAME) inst_perl
 
 @WITH_PERL_TRUE@check-perl: $(PERLMAKEFILE)
 @WITH_PERL_TRUE@	DELEGATE_PATH=../delegates cd $(PERLMAGICK) && $(MAKE) CC='@CC@' test
@@ -798,7 +799,7 @@ dist-hook:
 @WITH_PERL_FALSE@clean-perl:
 @WITH_PERL_FALSE@distclean-perl:
 
-all-local: all-perl
+#all-local: all-perl
 
 # Install PerlMagick
 install-exec-local: install-exec-perl
