@@ -2241,10 +2241,8 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 
             if (mng_info->ob[object_id]->image != (Image *)NULL)
               DestroyImage(mng_info->ob[object_id]->image);
-            image->orphan=True;
             mng_info->ob[object_id]->image=
               CloneImage(image,image->columns,image->rows,True);
-            image->orphan=False;
             if (mng_info->ob[object_id]->image != (Image *)NULL)
               mng_info->ob[object_id]->image->file=(FILE *)NULL;
             else

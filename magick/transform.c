@@ -146,7 +146,7 @@ Export Image *ChopImage(Image *image,const RectangleInfo *chop_info)
     Initialize chop image attributes.
   */
   chop_image=CloneImage(image,image->columns-local_info.width,
-    image->rows-local_info.height,True);
+    image->rows-local_info.height,False);
   if (chop_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to chop image",
@@ -535,7 +535,7 @@ Export Image *DeconstructImages(Image *images)
 {
   Image
     *crop_image,
-    *deconstructed_image,
+    *deconstruct_image,
     *image;
 
   int
@@ -664,8 +664,8 @@ Export Image *DeconstructImages(Image *images)
   /*
     Clone first image in sequence.
   */
-  deconstructed_image=CloneImage(images,images->columns,images->rows,True);
-  if (deconstructed_image == (Image *) NULL)
+  deconstruct_image=CloneImage(images,images->columns,images->rows,True);
+  if (deconstruct_image == (Image *) NULL)
     {
       FreeMemory(bounding_box);
       return((Image *) NULL);
@@ -679,14 +679,14 @@ Export Image *DeconstructImages(Image *images)
     crop_image=CropImage(image,&bounding_box[i++]);
     if (crop_image == (Image *) NULL)
       break;
-    deconstructed_image->next=crop_image;
-    crop_image->previous=deconstructed_image;
-    deconstructed_image=deconstructed_image->next;
+    deconstruct_image->next=crop_image;
+    crop_image->previous=deconstruct_image;
+    deconstruct_image=deconstruct_image->next;
   }
   FreeMemory(bounding_box);
-  while (deconstructed_image->previous != (Image *) NULL)
-    deconstructed_image=deconstructed_image->previous;
-  return(deconstructed_image);
+  while (deconstruct_image->previous != (Image *) NULL)
+    deconstruct_image=deconstruct_image->previous;
+  return(deconstruct_image);
 }
 
 /*
@@ -742,7 +742,7 @@ Export Image *FlipImage(Image *image)
     Initialize flip image attributes.
   */
   assert(image != (Image *) NULL);
-  flip_image=CloneImage(image,image->columns,image->rows,True);
+  flip_image=CloneImage(image,image->columns,image->rows,False);
   if (flip_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to flip image",
@@ -829,7 +829,7 @@ Export Image *FlopImage(Image *image)
     Initialize flop image attributes.
   */
   assert(image != (Image *) NULL);
-  flop_image=CloneImage(image,image->columns,image->rows,True);
+  flop_image=CloneImage(image,image->columns,image->rows,False);
   if (flop_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to flop image",
@@ -921,7 +921,7 @@ Export Image *RollImage(Image *image,const int x_offset,const int y_offset)
     Initialize roll image attributes.
   */
   assert(image != (Image *) NULL);
-  roll_image=CloneImage(image,image->columns,image->rows,True);
+  roll_image=CloneImage(image,image->columns,image->rows,False);
   if (roll_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to roll image",

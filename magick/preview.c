@@ -166,8 +166,8 @@ Export unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
   commands[0]=SetClientName((char *) NULL);
   for (i=0; i < NumberTiles; i++)
   {
-    images[i]=
-      CloneImage(preview_image,preview_image->columns,preview_image->rows,True);
+    images[i]=CloneImage(preview_image,preview_image->columns,
+      preview_image->rows,True);
     if (images[i] == (Image *) NULL)
       {
         for (x=0;  x < i; x++)

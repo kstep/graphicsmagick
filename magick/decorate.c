@@ -196,7 +196,7 @@ Export Image *FrameImage(Image *image,const FrameInfo *frame_info)
   /*
     Initialize framed image attributes.
   */
-  frame_image=CloneImage(image,frame_info->width,frame_info->height,True);
+  frame_image=CloneImage(image,frame_info->width,frame_info->height,False);
   if (frame_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to frame image",

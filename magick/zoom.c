@@ -322,7 +322,7 @@ Export Image *MagnifyImage(Image *image)
     Initialize magnify image attributes.
   */
   assert(image != (Image *) NULL);
-  magnify_image=CloneImage(image,image->columns << 1,image->rows << 1,True);
+  magnify_image=CloneImage(image,image->columns << 1,image->rows << 1,False);
   if (magnify_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to magnify image",
@@ -522,7 +522,7 @@ Export Image *MinifyImage(Image *image)
   /*
     Initialize minified image.
   */
-  minify_image=CloneImage(image,image->columns >> 1,image->rows >> 1,True);
+  minify_image=CloneImage(image,image->columns >> 1,image->rows >> 1,False);
   if (minify_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to minify image",
@@ -646,11 +646,11 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
       return((Image *) NULL);
     }
   if ((columns == image->columns) && (rows == image->rows))
-    return(CloneImage(image,columns,rows,True));
+    return(CloneImage(image,columns,rows,False));
   /*
     Initialize sampled image attributes.
   */
-  sample_image=CloneImage(image,columns,rows,True);
+  sample_image=CloneImage(image,columns,rows,False);
   if (sample_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to sample image",
@@ -826,7 +826,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
   /*
     Initialize scaled image attributes.
   */
-  scale_image=CloneImage(image,columns,rows,True);
+  scale_image=CloneImage(image,columns,rows,False);
   if (scale_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to scale image",
@@ -1549,11 +1549,11 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
       return((Image *) NULL);
     }
   if ((columns == image->columns) && (rows == image->rows))
-    return(CloneImage(image,columns,rows,True));
+    return(CloneImage(image,columns,rows,False));
   /*
     Initialize zoom image attributes.
   */
-  zoom_image=CloneImage(image,columns,rows,True);
+  zoom_image=CloneImage(image,columns,rows,False);
   if (zoom_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to zoom image",

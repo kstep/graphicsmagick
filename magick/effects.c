@@ -109,7 +109,7 @@ Export Image *AddNoiseImage(Image *image,const NoiseType noise_type)
     Initialize noisy image attributes.
   */
   assert(image != (Image *) NULL);
-  noisy_image=CloneImage(image,image->columns,image->rows,True);
+  noisy_image=CloneImage(image,image->columns,image->rows,False);
   if (noisy_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to reduce noise",
@@ -221,7 +221,7 @@ Export Image *BlurImage(Image *image,const double factor)
   /*
     Clone blurred image.
   */
-  blur_image=CloneImage(image,image->columns,image->rows,True);
+  blur_image=CloneImage(image,image->columns,image->rows,False);
   if (blur_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to blur image",
@@ -337,7 +337,7 @@ Export Image *ColorizeImage(Image *image,const char *opacity,
     Allocate colorized image.
   */
   assert(image != (Image *) NULL);
-  colorize_image=CloneImage(image,image->columns,image->rows,True);
+  colorize_image=CloneImage(image,image->columns,image->rows,False);
   if (colorize_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to colorized image",
@@ -458,7 +458,7 @@ Export Image *DespeckleImage(Image *image)
     Allocate despeckled image.
   */
   assert(image != (Image *) NULL);
-  despeckle_image=CloneImage(image,image->columns,image->rows,True);
+  despeckle_image=CloneImage(image,image->columns,image->rows,False);
   if (despeckle_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to despeckle image",
@@ -668,7 +668,7 @@ Export Image *EdgeImage(Image *image,const double factor)
   /*
     Initialize edge image attributes.
   */
-  edge_image=CloneImage(image,image->columns,image->rows,True);
+  edge_image=CloneImage(image,image->columns,image->rows,False);
   if (edge_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to detect edges",
@@ -802,7 +802,7 @@ Export Image *EmbossImage(Image *image)
   /*
     Initialize embossed image attributes.
   */
-  emboss_image=CloneImage(image,image->columns,image->rows,True);
+  emboss_image=CloneImage(image,image->columns,image->rows,False);
   if (emboss_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to enhance image",
@@ -968,7 +968,7 @@ Export Image *EnhanceImage(Image *image)
   /*
     Initialize enhanced image attributes.
   */
-  enhance_image=CloneImage(image,image->columns,image->rows,True);
+  enhance_image=CloneImage(image,image->columns,image->rows,False);
   if (enhance_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to enhance image",
@@ -1120,7 +1120,7 @@ Export Image *ImplodeImage(Image *image,const double factor)
   assert(image != (Image *) NULL);
   if (!image->matte)
     MatteImage(image,Opaque);
-  implode_image=CloneImage(image,image->columns,image->rows,True);
+  implode_image=CloneImage(image,image->columns,image->rows,False);
   if (implode_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to implode image",
@@ -1270,7 +1270,7 @@ Export Image *MedianFilterImage(Image *image,const unsigned int radius)
   /*
     Initialize median image attributes.
   */
-  median_image=CloneImage(image,image->columns,image->rows,True);
+  median_image=CloneImage(image,image->columns,image->rows,False);
   if (median_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to reduce noise",
@@ -1559,7 +1559,7 @@ Export Image *OilPaintImage(Image *image,const unsigned int radius)
   /*
     Initialize painted image attributes.
   */
-  paint_image=CloneImage(image,image->columns,image->rows,True);
+  paint_image=CloneImage(image,image->columns,image->rows,False);
   if (paint_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to oil paint",
@@ -1934,7 +1934,7 @@ Export Image *ReduceNoiseImage(Image *image)
   /*
     Initialize noisy image attributes.
   */
-  noisy_image=CloneImage(image,image->columns,image->rows,True);
+  noisy_image=CloneImage(image,image->columns,image->rows,False);
   if (noisy_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to reduce noise",
@@ -2087,7 +2087,7 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
     Initialize shaded image attributes.
   */
   assert(image != (Image *) NULL);
-  shade_image=CloneImage(image,image->columns,image->rows,True);
+  shade_image=CloneImage(image,image->columns,image->rows,False);
   if (shade_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to shade image",
@@ -2282,7 +2282,7 @@ Export Image *SharpenImage(Image *image,const double factor)
   /*
     Initialize sharpened image attributes.
   */
-  sharpen_image=CloneImage(image,image->columns,image->rows,True);
+  sharpen_image=CloneImage(image,image->columns,image->rows,False);
   if (sharpen_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to sharpen image",
@@ -2513,7 +2513,7 @@ Export Image *SpreadImage(Image *image,const unsigned int amount)
   /*
     Initialize spread image attributes.
   */
-  spread_image=CloneImage(image,image->columns,image->rows,True);
+  spread_image=CloneImage(image,image->columns,image->rows,False);
   if (spread_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to enhance image",
@@ -2615,7 +2615,7 @@ Export Image *SteganoImage(Image *image,Image *watermark)
   */
   assert(image != (Image *) NULL);
   assert(watermark != (Image *) NULL);
-  stegano_image=CloneImage(image,image->columns,image->rows,True);
+  stegano_image=CloneImage(image,image->columns,image->rows,False);
   if (stegano_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,
@@ -2757,7 +2757,7 @@ Export Image *StereoImage(Image *left_image,Image *right_image)
     Initialize stereo image attributes.
   */
   stereo_image=
-    CloneImage(left_image,left_image->columns,left_image->rows,True);
+    CloneImage(left_image,left_image->columns,left_image->rows,False);
   if (stereo_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to create stereo image",
@@ -2862,7 +2862,7 @@ Export Image *SwirlImage(Image *image,double degrees)
   assert(image != (Image *) NULL);
   if (!image->matte)
     MatteImage(image,Opaque);
-  swirl_image=CloneImage(image,image->columns,image->rows,True);
+  swirl_image=CloneImage(image,image->columns,image->rows,False);
   if (swirl_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to swirl image",
@@ -3069,7 +3069,7 @@ Export Image *WaveImage(Image *image,const double amplitude,
   if (!image->matte)
     MatteImage(image,Opaque);
   wave_image=CloneImage(image,image->columns,image->rows+
-    (int) (2*AbsoluteValue(amplitude)),True);
+    (int) (2*AbsoluteValue(amplitude)),False);
   if (wave_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to wave image",

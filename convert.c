@@ -260,6 +260,7 @@ static void Usage(const char *client_name)
       "-border geometry     surround image with a border of color",
       "-bordercolor color   border color",
       "-box color           color for annotation bounding box",
+      "-cache threshold     megabytes of memory available to the pixel cache",
       "-charcoal factor     simulate a charcoal drawing",
       "-coalesce            merge a sequence of images",
       "-colorize value      colorize the image with the pen color",

@@ -18,6 +18,7 @@
 		<LI><A HREF="#CompressColormap">CompressColormap</A></LI>
 		<LI><A HREF="#GetNumberColors">GetNumberColors</A></LI>
 		<LI><A HREF="#IsGrayImage">IsGrayImage</A></LI>
+		<LI><A HREF="#IsMatteImage">IsMatteImage</A></LI>
 		<LI><A HREF="#IsMonochromeImage">IsMonochromeImage</A></LI>
 		<LI><A HREF="#IsPseudoClass">IsPseudoClass</A></LI>
 		<LI><A HREF="#QueryColorDatabase">QueryColorDatabase</A></LI>
@@ -47,6 +48,10 @@ number_colors= <STRONG>GetNumberColors</STRONG>( image, file );
 </P>
 <P>
 unsigned int  <STRONG>IsGrayImage</STRONG>( Image <CODE>*image</CODE> );
+
+</P>
+<P>
+unsigned int  <STRONG>IsMatteImage</STRONG>( Image <CODE>*image</CODE> );
 
 </P>
 <P>
@@ -178,6 +183,38 @@ The format of the IsGrayImage method is:
 <P>
 Method IsGrayImage returns True if the image is grayscale otherwise False
 is returned.
+
+</P>
+<p><dt><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+</P>
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="IsMatteImage">IsMatteImage</A></H2>
+<P>
+Method IsMatteImage returns True if the image has one or more pixels that
+are transparent otherwise False is returned. to PseudoClass.
+
+</P>
+<P>
+The format of the IsMatteImage method is:
+
+</P>
+<blockquote>unsigned int IsMatteImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
+
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
+
+</P>
+<DL><DL>
+<p><dt><STRONG>status:</STRONG><DD>
+<P>
+Method IsMatteImage returns True if the image has one or more pixels that
+are transparent otherwise False is returned.
 
 </P>
 <p><dt><STRONG>image:</STRONG><DD>

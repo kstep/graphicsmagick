@@ -57,7 +57,6 @@
 		<LI><A HREF="#SyncImage">SyncImage</A></LI>
 		<LI><A HREF="#TextureImage">TextureImage</A></LI>
 		<LI><A HREF="#TransformRGBImage">TransformRGBImage</A></LI>
-		<LI><A HREF="#TransparentImage">TransparentImage</A></LI>
 		<LI><A HREF="#WriteImage">WriteImage</A></LI>
 	</UL>
 
@@ -245,10 +244,6 @@ void  <STRONG>TextureImage</STRONG>( Image *image, Image <CODE>*texture</CODE> )
 </P>
 <P>
 void  <STRONG>TransformRGBImage</STRONG>( Image *image, const ColorspaceType colorspace );
-
-</P>
-<P>
-void  <STRONG>TransparentImage</STRONG>( Image *image, const char <CODE>*color</CODE> );
 
 </P>
 <P>
@@ -1718,41 +1713,6 @@ The address of a structure of type Image; returned from ReadImage.
 <P>
 An unsigned integer value defines which colorspace to transform the image
 to.
-
-</P>
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="TransparentImage">TransparentImage</A></H2>
-<P>
-Method TransparentImage creates a matte image associated with the image.
-All pixel locations are initially set to opaque. Any pixel that matches the
-specified color are set to transparent.
-
-</P>
-<P>
-The format of the TransparentImage method is:
-
-</P>
-<blockquote>void TransparentImage ( <A HREF="types/Image.html">Image</A> *image, const char *color ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
-<DL><DL>
-<p><dt><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image; returned from ReadImage.
-
-</P>
-<p><dt><STRONG>color:</STRONG><DD>
-<P>
-
-<FONT SIZE=-1>A</FONT> character string that contain an 
-<FONT SIZE=-1>X11</FONT> color string.
-
 
 </P>
 </DL></DL>

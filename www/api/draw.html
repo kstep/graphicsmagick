@@ -19,6 +19,7 @@
 		<LI><A HREF="#DrawImage">DrawImage</A></LI>
 		<LI><A HREF="#MatteFloodfillImage">MatteFloodfillImage</A></LI>
 		<LI><A HREF="#OpaqueImage">OpaqueImage</A></LI>
+		<LI><A HREF="#TransparentImage">TransparentImage</A></LI>
 	</UL>
 
 </UL>
@@ -51,6 +52,10 @@ int x_offset, const int y_offset, const PaintMethod method );
 <P>
 void  <STRONG>OpaqueImage</STRONG>( Image *image, const char *opaque_color, const char
 <CODE>*pen_color</CODE> );
+
+</P>
+<P>
+void  <STRONG>TransparentImage</STRONG>( Image *image, const char <CODE>*color</CODE> );
 
 </P>
 <P>
@@ -213,6 +218,41 @@ The address of a structure of type Image; returned from ReadImage.
 
 </P>
 <p><dt><STRONG>opaque_color, pen_color:</STRONG><DD>
+<P>
+
+<FONT SIZE=-1>A</FONT> character string that contain an 
+<FONT SIZE=-1>X11</FONT> color string.
+
+
+</P>
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="TransparentImage">TransparentImage</A></H2>
+<P>
+Method TransparentImage creates a matte image associated with the image.
+All pixel locations are initially set to opaque. Any pixel that matches the
+specified color are set to transparent.
+
+</P>
+<P>
+The format of the TransparentImage method is:
+
+</P>
+<blockquote>void TransparentImage ( <A HREF="types/Image.html">Image</A> *image, const char *color ); </blockquote>
+
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
+
+</P>
+<DL><DL>
+<p><dt><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+</P>
+<p><dt><STRONG>color:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> character string that contain an 

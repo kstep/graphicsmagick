@@ -114,9 +114,9 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations)
   assert(image != (Image *) NULL);
   rotations%=4;
   if ((rotations == 1) || (rotations == 3))
-    rotate_image=CloneImage(image,image->rows,image->columns,True);
+    rotate_image=CloneImage(image,image->rows,image->columns,False);
   else
-    rotate_image=CloneImage(image,image->columns,image->rows,True);
+    rotate_image=CloneImage(image,image->columns,image->rows,False);
   if (rotate_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to rotate image",
@@ -814,6 +814,7 @@ Export Image *RotateImage(Image *image,const double degrees)
   */
   if (!integral_image->matte)
     MatteImage(integral_image,Opaque);
+  integral_image->border_color.opacity=Transparent;
   border_info.width=x_offset;
   border_info.height=y_offset;
   rotate_image=BorderImage(integral_image,&border_info);
@@ -956,6 +957,7 @@ Export Image *ShearImage(Image *image,const double x_shear,const double y_shear)
   */
   if (!integral_image->matte)
     MatteImage(integral_image,Opaque);
+  integral_image->border_color.opacity=Transparent;
   border_info.width=x_offset;
   border_info.height=y_offset;
   shear_image=BorderImage(integral_image,&border_info);
