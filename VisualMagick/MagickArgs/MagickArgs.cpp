@@ -859,7 +859,7 @@ MagickArgOpaque::do_something(Magick::Image &image)
 void
 MagickArgPage::do_something(Magick::Image &image)
 {
-  image.psPageSize( (std::string)val );
+  image.page( (std::string)val );
 }
 //MagickActionArgInt(MagickArgPaint, "simulate an oil painting");
 void
