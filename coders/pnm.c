@@ -226,15 +226,15 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     index;
 
   int
+    blue,
+    green,
+    red,
     y;
 
   MonitorHandler
     handler;
 
   Quantum
-    blue,
-    green,
-    red,
     *scale;
 
   register IndexPacket
@@ -340,7 +340,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             ThrowReaderException(ResourceLimitWarning,
               "Memory allocation failed",image);
           for (i=0; i <= (int) max_value; i++)
-            scale[i]=(Quantum) ((i*MaxRGB+(max_value >> 1))/max_value);
+            scale[i]=(Quantum) ((MaxRGB*i+(max_value >> 1))/max_value);
         }
     /*
       Convert PNM pixels to runlength-encoded MIFF packets.
