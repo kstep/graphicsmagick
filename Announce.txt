@@ -1,6 +1,6 @@
 The ImageMagick Studio LLC development group announces the release of
 ImageMagick 5.3.9.  Version 5.3.9 is a bug-fix release to resolve bugs
-reported against 5.3.8 and 5.3.8.1.
+reported against 5.3.8, 5.3.8.1, and 5.3.8.2.
 
 ImageMagick is a robust collection of tools and libraries to read,
 write, and manipulate an image in many image formats (over 71 major
@@ -19,16 +19,43 @@ available.  ImageMagick is available for free, may be used to support
 both open and proprietary applications, and may be redistributed
 without fee.
 
-Significant changes from the 5.3.8.1 release (see release ChangeLog
+Significant changes from the 5.3.8.2 release (see release ChangeLog
 for details):
 
   o Many bugs fixed which were reported via the ImageMagick bug
     tracking system, or via the mailing lists.
 
-  o The ImageMagick C API has been enhanced so that it is no longer
-    sensitive to the large-file configuration option.  Most
-    applications will no longer care if the ImageMagick library is
-    configured for large-file support.
+  o ImageMagick is now optimized when compiled as a 64-bit application
+    using the LP64 data model in which pointers and longs are increased
+    to 64-bits. This allows power users who have access to 64-bit
+    machines with large memory to process extremely large images (>2GB)
+    entirely in main memory rather than as a memory-mapped temporary
+    file. The use of main memory provides an observed performance
+    improvement on the order of 18 times over use of a temporary file.
+
+  o Added a MATLAB encoder contributed by Jaroslav Fojtik.
+
+  o Text drawing now handles UTF8-encoding.
+
+  o PingImage() now reports attributes for all images in an image
+    sequence.
+
+  o C++ API enhancements (since 5.3.8):
+
+    - Added interfaces to obtain image format support information.
+
+    - Image 'depth' method now inspects (or modifies) image pixels.
+
+    - Support added for adjusting overall image opacity.
+
+    - Support added for adjusting image storage type (e.g.
+      TrueColor --> GrayScale).
+
+    - Fixed long-standing bug with Blob design that caused it to
+      improperly mix use of memory allocation systems. User may now
+      specify memory allocator used for supplied Blob.
+
+    - Image colorMap method automatically extends the colormap.
 
 The ImageMagick WWW page is
 
