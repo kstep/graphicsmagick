@@ -141,7 +141,7 @@ testFilterSignature('input.miff', 'Negate',
 testFilterSignature('input.miff', 'Normalize',
   q/ /,
   'b1bcbe33aaeac67d8a9c8f43142fffb2895c83a4c923ff610e96ad595a75d4de',
-  '48aca353af569e222be8a13a29ebaa05b9ef316a5464958a50d74d9618ab255c');
+  '3aae3839969b7cd059d830824717eddf02a42c50df58b3cc6c3868390e7419a6');
 
 ++$test;
 testFilterSignature('input.miff', 'OilPaint',
