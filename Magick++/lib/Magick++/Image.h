@@ -1105,7 +1105,7 @@ inline void Magick::Image::reduceNoise ( void )
 }
 
 // Stroke width for drawing vector objects (default one)
-inline void Magick::Image::lineWidth ( double lineWidth_ )
+inline void Magick::Image::lineWidth ( const double lineWidth_ )
 {
   strokeWidth( lineWidth_ );
 }
