@@ -358,18 +358,24 @@ MagickExport unsigned int EqualizeImage(Image *image)
 */
 MagickExport unsigned int GammaImage(Image *image,const char *gamma)
 {
-#define BlueGamma(color) blue_gamma == 0.0 ? (color) : \
-  (Quantum) (MaxRGB*pow((double) (color)/MaxRGB,1.0/blue_gamma)+0.5)
 #define GammaImageText  "  Gamma correcting the image...  "
-#define GreenGamma(color) green_gamma == 0.0 ? (color) : \
-  (Quantum) (MaxRGB*pow((double) (color)/MaxRGB,1.0/green_gamma)+0.5)
-#define RedGamma(color) red_gamma == 0.0 ? (color) : \
-  (Quantum) (MaxRGB*pow((double) (color)/MaxRGB,1.0/red_gamma)+0.5)
+
+  typedef struct _GammaPacket
+  {
+    unsigned short 
+      red,
+      green,
+      blue,
+      opacity;
+  } GammaPacket;
 
   double
     blue_gamma,
     green_gamma,
     red_gamma;
+
+  GammaPacket
+    *gamma_map;
 
   int
     count;
@@ -383,6 +389,9 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
 
   register PixelPacket
     *q;
+
+  size_t
+    length;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -400,6 +409,30 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
       green_gamma=red_gamma;
       blue_gamma=red_gamma;
     }
+  /*
+    Allocate and initialize gamma maps.
+  */
+  length=(ScaleQuantumToShort(MaxRGB)+1)*sizeof(GammaPacket);
+  gamma_map=(GammaPacket *) AcquireMemory(length);
+  if (gamma_map == (GammaPacket *) NULL)
+    ThrowBinaryException(ResourceLimitError,"Unable to gamma correct image",
+      "Memory allocation failed");
+  (void) memset(gamma_map,0,length);
+  for (i=0; i <= ScaleQuantumToShort(MaxRGB); i++)
+  {
+    if (red_gamma != 0.0)
+      gamma_map[i].red=(unsigned long) ((pow((double) i/
+        ScaleQuantumToShort(MaxRGB),1.0/red_gamma)*
+        ScaleQuantumToShort(MaxRGB))+0.5);
+    if (green_gamma != 0.0)
+      gamma_map[i].green=(unsigned long) ((pow((double) i/
+        ScaleQuantumToShort(MaxRGB),1.0/green_gamma)*
+        ScaleQuantumToShort(MaxRGB))+0.5);
+    if (blue_gamma != 0.0)
+      gamma_map[i].blue=(unsigned long) ((pow((double) i/
+        ScaleQuantumToShort(MaxRGB),1.0/blue_gamma)*
+        ScaleQuantumToShort(MaxRGB))+0.5);
+  }
   switch (image->storage_class)
   {
     case DirectClass:
@@ -415,9 +448,9 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
           break;
         for (x=0; x < (long) image->columns; x++)
         {
-          q->red=RedGamma(q->red);
-          q->green=GreenGamma(q->green);
-          q->blue=BlueGamma(q->blue);
+          q->red=ScaleShortToQuantum(gamma_map[q->red].red);
+          q->green=ScaleShortToQuantum(gamma_map[q->green].green);
+          q->blue=ScaleShortToQuantum(gamma_map[q->blue].blue);
           q++;
         }
         if (!SyncImagePixels(image))
@@ -434,9 +467,12 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
       */
       for (i=0; i < (long) image->colors; i++)
       {
-        image->colormap[i].red=RedGamma(image->colormap[i].red);
-        image->colormap[i].green=GreenGamma(image->colormap[i].green);
-        image->colormap[i].blue=BlueGamma(image->colormap[i].blue);
+        image->colormap[i].red=
+          ScaleShortToQuantum(gamma_map[image->colormap[i].red].red);
+        image->colormap[i].green=
+          ScaleShortToQuantum(gamma_map[image->colormap[i].green].green);
+        image->colormap[i].blue=
+          ScaleShortToQuantum(gamma_map[image->colormap[i].blue].blue);
       }
       SyncImage(image);
       break;
@@ -444,6 +480,7 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
   }
   if (image->gamma != 0.0)
     image->gamma*=(red_gamma+green_gamma+blue_gamma)/3.0;
+  LiberateMemory((void **) &gamma_map);
   return(True);
 }
 
