@@ -895,7 +895,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
       for (i=0; i < image->generic_profiles; i++)
       {
         if ((LocaleCompare(image->generic_profile[i].name,profile_name) != 0) &&
-            (*profile_name != '*')
+            (*profile_name != '*'))
           continue;
         if (image->generic_profile[i].name != (char *) NULL)
           LiberateMemory((void **) &image->generic_profile[i].name);
