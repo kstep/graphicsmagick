@@ -343,7 +343,6 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       (void) jas_stream_close(jp2_stream);
       jas_image_destroy(jp2_image);
-      CloseBlob(image);
       return(image);
     }
   number_components=Min(jas_image_numcmpts(jp2_image),4);
@@ -421,7 +420,6 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     jas_matrix_destroy(pixels[i]);
   (void) jas_stream_close(jp2_stream);
   jas_image_destroy(jp2_image);
-  CloseBlob(image);
   return(image);
 }
 #endif
@@ -694,7 +692,6 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
     ThrowWriterException(DelegateError,"UnableToEncodeImageFile",image);
   (void) jas_stream_close(jp2_stream);
   jas_image_destroy(jp2_image);
-  CloseBlob(image);
   return(True);
 }
 #endif
