@@ -61,11 +61,11 @@
 #include "magick.h"
 #include "resource.h"
 #include "utility.h"
-#if defined(HasBZLIB)
-#include "bzlib.h"
-#endif
 #if defined(HasZLIB)
 #include "zlib.h"
+#endif
+#if defined(HasBZLIB)
+#include "bzlib.h"
 #endif
 
 /*
@@ -143,6 +143,8 @@ MagickExport void AttachBlob(BlobInfo *blob_info,const void *blob,
 %    o blob: The address of a blob.
 %
 %    o length: This length in bytes of the blob.
+%
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -410,6 +412,7 @@ MagickExport void CloseBlob(Image *image)
   switch (image->blob->type)
   {
     case UndefinedStream:
+    case FifoStream:
       break;
     case FileStream:
     case StandardStream:
@@ -436,11 +439,6 @@ MagickExport void CloseBlob(Image *image)
 #if defined(HasBZLIB)
       BZ2_bzclose(image->blob->file);
 #endif
-      break;
-    }
-    case FifoStream:
-    {
-      status=pclose(image->blob->file);
       break;
     }
     case BlobStream:
@@ -819,6 +817,66 @@ MagickExport ExtendedSignedIntegralType GetBlobSize(const Image *image)
     }
   }
   return(offset);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t B l o b S t r e a m D a t a                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetBlobStreamData() returns the stream data for the image.
+%
+%  The format of the GetBlobStreamData method is:
+%
+%      unsigned char *GetBlobStreamData(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport unsigned char *GetBlobStreamData(const Image *image)
+{
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  return(image->blob->data);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t B l o b S t r e a m T y p e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetBlobStreamType() returns the stream type for the image.
+%
+%  The format of the GetBlobStreamType method is:
+%
+%      StreamType GetBlobStreamType(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport StreamType GetBlobStreamType(const Image *image)
+{
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  return(image->blob->type);
 }
 
 /*
@@ -1346,13 +1404,102 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I m a g e T o F i l e                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ImageToFile() writes an image to a file.  It returns False if an error
+%  occurs otherwise True.
+%
+%  The format of the ImageToFile method is:
+%
+%      unsigned int ImageToFile(Image *image,const char *filename,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o status:  ImageToFile returns True on success; otherwise,  it
+%      returns False if an error occurs.
+%
+%    o image: The image.
+%
+%    o filename: Write the image to this file.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport unsigned int ImageToFile(Image *image,const char *filename,
+  ExceptionInfo *exception)
+{
+#define MaxBufferSize  65541
+
+  char
+    *buffer;
+
+  ExtendedSignedIntegralType
+    count;
+
+  int
+    file;
+
+  register size_t
+    i;
+
+  size_t
+    length;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(filename != (const char *) NULL);
+  file=open(filename,O_WRONLY | O_CREAT | O_BINARY | O_EXCL,0777);
+  if (file == -1)
+    file=open(filename,O_WRONLY | O_CREAT | O_BINARY,0777);
+  if (file == -1)
+    {
+      ThrowException(exception,BlobError,"UnableToWriteBlob",filename);
+      return(False);
+    }
+  buffer=(char *) AcquireMemory(MaxBufferSize);
+  if (buffer == (char *) NULL)
+    {
+      ThrowException(exception,ResourceLimitError,"MemoryAllocationError",
+        filename);
+      (void) close(file);
+      return(False);
+    }
+  i=0;
+  while ((length=ReadBlob(image,MaxBufferSize,buffer)) != 0)
+  {
+    count=0;
+    for (i=0; i < length; i+=count)
+    {
+      count=write(file,buffer+i,length-i);
+      if (count <= 0)
+        break;
+    }
+    if (i < length)
+      break;
+  }
+  (void) close(file);
+  LiberateMemory((void **) &buffer);
+  return(i < length);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +  M a p B l o b                                                              %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method MapBlob creates a mapping from a file to a binary large object.
+%  MapBlob() creates a mapping from a file to a binary large object.
 %
 %  The format of the MapBlob method is:
 %
@@ -1541,7 +1688,7 @@ MagickExport void MSBOrderShort(unsigned char *p,const size_t length)
 %    o status:  Method OpenBlob returns True if the file is successfully
 %      opened otherwise False.
 %
-%    o image_info: The image info..
+%    o image_info: The image info.
 %
 %    o image: The image.
 %
@@ -1691,7 +1838,33 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
             {
               image->blob->file=(FILE *) fopen(filename,type);
               if (image->blob->file != (FILE *) NULL)
-                image->blob->type=FileStream;
+                {
+                  unsigned char
+                    magick[MaxTextExtent];
+
+                  image->blob->type=FileStream;
+                  (void) fread(magick,MaxTextExtent,1,image->blob->file);
+                  (void) rewind(image->blob->file);
+#if defined(HasZLIB)
+                  if ((magick[0] == 0x1F) && (magick[1] == 0x8B) &&
+                      (magick[2] == 0x08))
+                    {
+                      (void) fclose(image->blob->file);
+                      image->blob->file=(FILE *) gzopen(filename,type);
+                      if (image->blob->file != (FILE *) NULL)
+                        image->blob->type=ZipStream;
+                     }
+#endif
+#if defined(HasBZLIB)
+                  if (strncmp((char *) magick,"BZh",3) == 0)
+                    {
+                      (void) fclose(image->blob->file);
+                      image->blob->file=(FILE *) BZ2_bzopen(filename,type);
+                      if (image->blob->file != (FILE *) NULL)
+                        image->blob->type=BZipStream;
+                    }
+#endif
+                }
             }
         if ((image->blob->type == FileStream) && (*type == 'r'))
           {
@@ -2176,7 +2349,11 @@ MagickExport char *ReadBlobString(Image *image,char *string)
   {
     c=ReadBlobByte(image);
     if (c == EOF)
-      return((char *) NULL);
+      {
+        if (i == 0)
+          return((char *) NULL);
+        break;
+      }
     string[i]=c;
     if ((string[i] == '\n') || (string[i] == '\r'))
       break;
@@ -2277,7 +2454,16 @@ MagickExport ExtendedSignedIntegralType SeekBlob(Image *image,
     case StandardStream:
     case PipeStream:
     case ZipStream:
+    {
+#if defined(HasZLIB)
+      if (gzseek(image->blob->file,(off_t) offset,whence) < 0)
+        return(-1);
+#endif
+      image->blob->offset=TellBlob(image);
+      break;
+    }
     case BZipStream:
+      return(-1);
     case FifoStream:
       return(-1);
     case BlobStream:
@@ -2455,7 +2641,14 @@ MagickExport ExtendedSignedIntegralType TellBlob(const Image *image)
     case StandardStream:
     case PipeStream:
     case ZipStream:
+    {
+#if defined(HasZLIB)
+      offset=gztell(image->blob->file);
+#endif
+      break;
+    }
     case BZipStream:
+      break;
     case FifoStream:
       break;
     case BlobStream:

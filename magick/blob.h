@@ -128,8 +128,15 @@ extern MagickExport size_t
   WriteBlobMSBShort(Image *,const unsigned long),
   WriteBlobString(Image *,const char *);
 
+extern MagickExport StreamType
+  GetBlobStreamType(const Image *);
+
+extern MagickExport unsigned char
+  *GetBlobStreamData(const Image *);
+
 extern MagickExport unsigned int
   BlobToFile(const char *,const void *,const size_t,ExceptionInfo *),
+  ImageToFile(Image *,const char *,ExceptionInfo *),
   OpenBlob(const ImageInfo *,Image *,const BlobMode,ExceptionInfo *),
   UnmapBlob(void *,const size_t);
 
