@@ -81,7 +81,6 @@ char
 /*
   Typedef declaractions.
 */
-#if defined(HasXML)
 typedef struct _BoundingBox
 {
   double
@@ -145,13 +144,14 @@ typedef struct _SVGInfo
     *url,
     *entities;
 
+#if defined(HasXML)
   xmlParserCtxtPtr
     parser;
 
   xmlDocPtr
     document;
-} SVGInfo;
 #endif
+} SVGInfo;
 
 /*
   Forward declarations.
