@@ -1061,7 +1061,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
           Rasterize the glyph.
         */
         status=FT_Glyph_To_Bitmap(&glyph.image,ft_render_mode_normal,
-          (FT_Vector *) NULL,False);
+          (FT_Vector *) NULL,True);
         if (status != False)
           continue;
         image->storage_class=DirectClass;
