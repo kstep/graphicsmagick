@@ -24,6 +24,11 @@ extern "C" {
 #define PROT_READWRITE  3
 #define MAP_SHARED  1
 #define MAP_PRIVATE  2
+#if defined(_MT) && defined(_VISUALC_)
+#define SAFE_GLOBAL __declspec(thread)
+#else
+#define SAFE_GLOBAL
+#endif
 /*
   Typedef declarations.
 */
