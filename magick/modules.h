@@ -14,9 +14,10 @@ extern "C" {
 #if defined(HasLTDL)
 #include "ltdl/ltdl.h"
 typedef lt_dlhandle ModuleHandle;
+#else
+typedef void *ModuleHandle;
 #endif
 #if defined(_MAGICKMOD_)
-typedef void *ModuleHandle;
 #if defined(_MT) && defined(_VISUALC_)
 #  define CoderModuleDirectory "."
 #if defined(_DEBUG)

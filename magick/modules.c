@@ -55,11 +55,7 @@
 */
 #include "magick.h"
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
-#if !defined(_VISUALC_)
-#include "magick/modules.h"
-#else
 #include "modules.h"
-#endif
 #include "defines.h"
 
 /*

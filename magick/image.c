@@ -54,15 +54,10 @@
   Include declarations.
 */
 #include "magick.h"
-#if !defined(_VISUALC_)
-#include "magick/modules.h"
-#else
-#include "modules.h"
-#endif
-#include "magic.h"
 #include "defines.h"
-#if defined(HasX11)
-#include "xwindows.h"
+#include "magic.h"
+#if defined(HasLTDL) || defined(_MAGICKMOD_)
+#include "modules.h"
 #endif
 
 /*
@@ -324,6 +319,8 @@ MagickExport void AllocateNextImage(const ImageInfo *image_info,Image *image)
   image->next->previous=image;
 }
 
+#if defined(HasX11)
+#include "xwindows.h"
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -355,7 +352,6 @@ MagickExport void AllocateNextImage(const ImageInfo *image_info,Image *image)
 MagickExport unsigned int AnimateImages(const ImageInfo *image_info,
   Image *image)
 {
-#if defined(HasX11)
   char
     *client_name;
 
@@ -382,12 +378,16 @@ MagickExport unsigned int AnimateImages(const ImageInfo *image_info,
   (void) XAnimateImages(display,&resource,&client_name,1,image);
   XCloseDisplay(display);
   return(image->exception.severity == UndefinedException);
+}
 #else
+MagickExport unsigned int AnimateImages(const ImageInfo *image_info,
+  Image *image)
+{
   ThrowBinaryException(MissingDelegateWarning,"X11 library is not available",
     image->filename);
   return(False);
-#endif
 }
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2291,6 +2291,7 @@ MagickExport void DestroyImages(Image *image)
   } while (image != (Image *) NULL);
 }
 
+#if defined(HasX11)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -2322,7 +2323,6 @@ MagickExport void DestroyImages(Image *image)
 MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
   Image *image)
 {
-#if defined(HasX11)
   char
     *client_name;
 
@@ -2361,12 +2361,15 @@ MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
   }
   XCloseDisplay(display);
   return(image->exception.severity != UndefinedException);
+}
 #else
+MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
+  Image *image)
+{
   ThrowBinaryException(MissingDelegateWarning,"X11 library is not available",
     image->filename);
   return(False);
 #endif
-}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -3839,36 +3842,40 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         clone_info->pointsize=atof(argv[++i]);
         continue;
       }
+#if defined(HasLTDL) || defined(_MAGICKMOD_)
     if (LocaleNCompare("-process",option,5) == 0)
       {
         char
-          *args,
-          brkused,
-          quoted,
+          *arguments,
+          breaker,
+          quote,
           *token;
 
         int
-          next;
+          next,
+          status;
 
         unsigned int
           length;
 
         TokenInfo
-          tinfo;
+          token_info;
 
         length=Extent(argv[++i]);
         token=(char *) AllocateMemory(length+1);
-        if (token != (char *) NULL)
-          {
-            next=0;
-            args=argv[i];
-            if(Tokenizer(&tinfo, 0, token, length, args, "", "=", "\"", 0,
-              &brkused,&next,&quoted)==0)
-                CallImageFilter((const char *)token,*image,(const char *)&args[next]);
-            FreeMemory((void **) &token);
-          }
+        if (token == (char *) NULL)
+          continue;
+        next=0;
+        arguments=argv[i];
+        status=Tokenizer(&token_info,0,token,length,arguments,"","=","\"",0,
+          &breaker,&next,&quote);
+        if (status == 0)
+          CallImageFilter((const char *) token,*image,(const char *)
+            &arguments[next]);
+        FreeMemory((void **) &token);
         continue;
       }
+#endif
     if (LocaleNCompare("profile",option+1,4) == 0)
       {
         Image
