@@ -5076,6 +5076,9 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
 {
 #define MogrifyImageText  "  Transform image...  "
 
+  char
+    *option;
+
   Image
     *image,
     *mogrify_images;
@@ -5087,11 +5090,11 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
     i;
 
   unsigned int
+    scene,
     status;
 
   unsigned long
-    number_images,
-    scene;
+    number_images;
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
@@ -5100,16 +5103,24 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
   number_images=GetImageListSize(*images);
   if (number_images == 1)
     return(MogrifyImage(image_info,argc,argv,images));
+  scene=False;
+  for (i=0; i < argc; i++)
+  {
+    option=argv[i];
+    if ((strlen(option) <= 1) || ((*option != '-') && (*option != '+')))
+      continue;
+    if (LocaleCompare("-scene",option) == 0)
+      scene=True;
+  }
   status=True;
   mogrify_images=NewImageList();
   for (i=0; i < (long) number_images; i++)
   {
     image=ShiftImageList(images);
-    scene=image->scene;
     handler=SetMonitorHandler((MonitorHandler) NULL);
     status&=MogrifyImage(image_info,argc,argv,&image);
     (void) SetMonitorHandler(handler);
-    if (scene != image->scene)
+    if (scene)
       image->scene+=i;
     if (image_info->verbose)
       DescribeImage(image,stdout,False);
