@@ -722,8 +722,14 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"%g %g scale\n",x_scale,y_scale);
     (void) WriteBlobString(image,buffer);
-    (void) WriteBlobString(image,"ImageMaskDictionary /Decode [ 1 0 ] put\n");
-    (void) WriteBlobString(image,"MaskedImageDictionary image\n");
+    if (compression == JPEGCompression)
+      (void) WriteBlobString(image,"ImageDataDictionary image\n");
+    else
+      {
+        (void) WriteBlobString(image,
+          "ImageMaskDictionary /Decode [ 1 0 ] put\n");
+        (void) WriteBlobString(image,"MaskedImageDictionary image\n");
+      }
     (void) WriteBlobString(image,"grestore                    \n");
     (void) WriteBlobByte(image,'\n');
     if (LocaleCompare(image_info->magick,"PS3") == 0)
