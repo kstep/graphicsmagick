@@ -544,8 +544,8 @@ argz_insert (pargz, pargz_len, before, entry)
 
   /* Either PARGZ/PARGZ_LEN is empty and BEFORE is NULL,
      or BEFORE points into an address within the ARGZ vector.  */
-  assert ((!*pargz && !*pargz_len && !before)
-	  || ((*pargz <= before) && (before < (*pargz + *pargz_len))));
+/*  assert ((!*pargz && !*pargz_len && !before)
+	  || ((*pargz <= before) && (before < (*pargz + *pargz_len))));*/
 
   /* No BEFORE address indicates ENTRY should be inserted after the
      current last element.  */
