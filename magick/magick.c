@@ -571,23 +571,25 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
     *p;
 
   /*
-    Add tag info to the image format list.
+    Delete any existing tag.
   */
   assert(entry != (MagickInfo *) NULL);
   assert(entry->signature == MagickSignature);
+  UnregisterMagickInfo(entry->tag);
   p=(MagickInfo *) NULL;
   if (magick_list != (MagickInfo *) NULL)
     for (p=magick_list; p->next != (MagickInfo *) NULL; p=p->next)
     {
+      /*
+        Position new tag in alphabetical order.
+      */
       if (LocaleCompare(p->tag,entry->tag) < 0)
         continue;
-      if (LocaleCompare(p->tag,entry->tag) == 0)
-        {
-          p=p->previous;
-          UnregisterMagickInfo(entry->tag);
-        }
       break;
     }
+  /*
+    Add tag info to the image format list.
+  */
   if (magick_list == (MagickInfo *) NULL)
     {
       entry->previous=(MagickInfo *) NULL;
