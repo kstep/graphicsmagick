@@ -967,8 +967,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
   }
-  if (global_colormap != (unsigned char *) NULL)
-    LiberateMemory((void **) &global_colormap);
+  LiberateMemory((void **) &global_colormap);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(CorruptImageWarning,"image size is 0",image);
   while (image->previous != (Image *) NULL)
