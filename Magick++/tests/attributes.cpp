@@ -261,7 +261,7 @@ int main( int /*argc*/, char ** argv)
     // Base filename is color for xc images
     if ( image.baseFilename() != "#FF0000" &&
 	 image.baseFilename() != "#FFFF00000000" &&
-	 image.baseFilename() != "#FFFFFFFF0000000000000000")
+	 image.baseFilename() != "xc:#FFFFFFFF0000000000000000")
       {
 	++failures;
 	cout << "Line: " << __LINE__

@@ -2,12 +2,12 @@
 	* magick/constitute.c: Log entry and exit from coders so that
 	coders don't need to.
 	* Finished re-writing PushImagePixels() using coding practices
-	which should result in faster code.  Some questions remain
-	regarding how the value of opacity is calculated.
+	which may result in faster code.
 	* PerlMagick is changed from Image::Magick to Graphics::Magick
 	in order to avoid conflicts with the ImageMagick version.  This
 	means that any Perl scripts based on the ImageMagick version need
 	to do a global replace of Image::Magick to Graphics::Magick.
+	* PerlMagick/reference/filter/Raise.miff: Replaced with new version.
 
 2003-01-08 William Radcliffe <billr@corbis.com>
 	* magick/nt_feature.c
