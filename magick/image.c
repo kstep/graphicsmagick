@@ -5990,6 +5990,9 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
     {
       if (image->colorspace != CMYKColorspace)
         RGBTransformImage(image,CMYKColorspace);
+      if (!image->matte)
+        SetImageOpacity(image,OpaqueOpacity);
+      image->matte=True;
       break;
     }
     default:

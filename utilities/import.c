@@ -10,7 +10,7 @@
 %                 IIIII  M   M  P       OOO   R  R     T                      %
 %                                                                             %
 %                                                                             %
-%             Import image to a machine independent format.               %
+%               Import image to a machine independent format.                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -91,7 +91,7 @@
 %    -transparent color  make this color transparent within the image
 %    -treedepth value    depth of the color tree
 %    -type type          Bilevel, Gray, Palette, PaletteMatte, TrueColor,
-%                        TrueColorMatte, or ColorSeparation
+%                        TrueColorMatte, ColorSeparation, or ColorSeparationMatte
 %    -verbose            print detailed information about the image
 %    -window id          select window with this id or name
 %
@@ -171,7 +171,7 @@ static void Usage()
       "-transparent color  make this color transparent within the image",
       "-treedepth value    depth of the color tree",
       "-type type          Bilevel, Gray, Palette, PaletteMatte, TrueColor, ",
-      "                    TrueColorMatte, or ColorSeparation",
+      "                    TrueColorMatte, ColorSeparation, or ColorSeparationMatte",
       "-verbose            print detailed information about the image",
       "-window id          select window with this id or name",
       (char *) NULL
@@ -830,6 +830,8 @@ int main(int argc,char **argv)
                     image_type=TrueColorMatteType;
                   if (LocaleCompare("ColorSeparation",option) == 0)
                     image_type=ColorSeparationType;
+                  if (LocaleCompare("ColorSeparationMatte",option) == 0)
+                    image_type=ColorSeparationMatteType;
                   if (image_type == UndefinedType)
                     MagickError(OptionError,"Invalid image type",option);
                 }

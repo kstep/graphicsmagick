@@ -137,7 +137,7 @@
 %    -transparent color   make this color transparent within the image
 %    -treedepth value     depth of the color color tree
 %    -type type           Bilevel, Gray, Palette, PaletteMatte, TrueColor,
-%                         TrueColorMatte, or ColorSeparation
+%                         TrueColorMatte, ColorSeparation, or ColorSeparationMatte
 %    -units type          PixelsPerInch, PixelsPerCentimeter, or Undefined
 %    -verbose             print detailed information about the image
 %    -view                FlashPix viewing transforms
@@ -268,7 +268,7 @@ static void Usage()
       "-transparent color   make this color transparent within the image",
       "-treedepth value     depth of the color color tree",
       "-type type           Bilevel, Gray, Palette, PaletteMatte, TrueColor, ",
-      "                     TrueColorMatte, or ColorSeparation",
+      "                     TrueColorMatte, ColorSeparation, or ColorSeparationMatte",
       "-units type          PixelsPerInch, PixelsPerCentimeter, or Undefined",
       "-verbose             print detailed information about the image",
       "-view                FlashPix viewing transforms",
@@ -1443,6 +1443,8 @@ int main(int argc,char **argv)
                     image_type=TrueColorMatteType;
                   if (LocaleCompare("ColorSeparation",option) == 0)
                     image_type=ColorSeparationType;
+                  if (LocaleCompare("ColorSeparationMatte",option) == 0)
+                    image_type=ColorSeparationMatteType;
                   if (image_type == UndefinedType)
                     MagickError(OptionError,"Invalid image type",option);
                 }

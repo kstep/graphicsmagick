@@ -126,8 +126,8 @@
 %    -tile geometry      number of tiles per row and column
 %    -transparent color  make this color transparent within the image
 %    -treedepth value    depth of the color color tree
-%    -type type           Bilevel, Gray, Palette, PaletteMatte, TrueColor,
-%                         TrueColorMatte, or ColorSeparation
+%    -type type          Bilevel, Gray, Palette, PaletteMatte, TrueColor,
+%                        TrueColorMatte, ColorSeparation, or ColorSeparationMatte
 %    -verbose            print detailed information about the image
 %
 %  In addition to those listed above, you can specify these standard X
@@ -214,7 +214,7 @@ static void Usage()
       "-transparent color  make this color transparent within the image",
       "-treedepth value    depth of the color color tree",
       "-type type          Bilevel, Gray, Palette, PaletteMatte, TrueColor, ",
-      "                    TrueColorMatte, or ColorSeparation",
+      "                    TrueColorMatte, ColorSeparation, or ColorSeparationMatte",
       "-verbose            print detailed information about the image",
       (char *) NULL
     };
@@ -1139,6 +1139,8 @@ int main(int argc,char **argv)
                     image_type=TrueColorMatteType;
                   if (LocaleCompare("ColorSeparation",option) == 0)
                     image_type=ColorSeparationType;
+                  if (LocaleCompare("ColorSeparationMatte",option) == 0)
+                    image_type=ColorSeparationMatteType;
                   if (image_type == UndefinedType)
                     MagickError(OptionError,"Invalid image type",option);
                 }
