@@ -166,7 +166,7 @@ static unsigned int XAnnotateEditImage(Display *display,
   register char
     *p;
 
-  register int
+  register size_t
     i;
 
   unsigned int
@@ -623,7 +623,7 @@ static unsigned int XAnnotateEditImage(Display *display,
               Finished annotating.
             */
             annotate_info->width=XTextWidth(font_info,annotate_info->text,
-              strlen(annotate_info->text));
+              (int) strlen(annotate_info->text));
             XRefreshWindow(display,&windows->image,&text_event);
             state|=ExitState;
             break;
@@ -675,11 +675,11 @@ static unsigned int XAnnotateEditImage(Display *display,
               if (annotate_info->stencil == ForegroundStencil)
                 XDrawString(display,windows->image.id,annotate_context,
                   text_info->x,text_info->y,text_info->text,
-                  strlen(text_info->text));
+                  (int) strlen(text_info->text));
               else
                 XDrawImageString(display,windows->image.id,annotate_context,
                   text_info->x,text_info->y,text_info->text,
-                  strlen(text_info->text));
+                  (int) strlen(text_info->text));
               text_info=text_info->previous;
             }
             XDrawString(display,windows->image.id,annotate_context,x,y,"_",1);
@@ -771,7 +771,7 @@ static unsigned int XAnnotateEditImage(Display *display,
               Finished annotating.
             */
             annotate_info->width=XTextWidth(font_info,annotate_info->text,
-              strlen(annotate_info->text));
+              (int) strlen(annotate_info->text));
             XRefreshWindow(display,&windows->image,&text_event);
             state|=ExitState;
             break;
@@ -804,7 +804,7 @@ static unsigned int XAnnotateEditImage(Display *display,
             */
             *p='\0';
             annotate_info->width=XTextWidth(font_info,annotate_info->text,
-              strlen(annotate_info->text));
+              (int) strlen(annotate_info->text));
             if (annotate_info->next != (XAnnotateInfo *) NULL)
               {
                 /*
@@ -878,7 +878,7 @@ static unsigned int XAnnotateEditImage(Display *display,
         /*
           Annotate Image window with primary selection.
         */
-        for (i=0; i < (int) length; i++)
+        for (i=0; i < length; i++)
         {
           if (data[i] != '\n')
             {
@@ -897,7 +897,7 @@ static unsigned int XAnnotateEditImage(Display *display,
           */
           *p='\0';
           annotate_info->width=XTextWidth(font_info,annotate_info->text,
-            strlen(annotate_info->text));
+            (int) strlen(annotate_info->text));
           if (annotate_info->next != (XAnnotateInfo *) NULL)
             {
               /*
@@ -968,7 +968,7 @@ static unsigned int XAnnotateEditImage(Display *display,
     */
     windows->pixel_info->box_color=windows->pixel_info->pen_colors[box_id];
     if (windows->pixel_info->colors != 0)
-      for (i=0; i < (int) windows->pixel_info->colors; i++)
+      for (i=0; i < windows->pixel_info->colors; i++)
         if (windows->pixel_info->pixels[i] ==
             windows->pixel_info->pen_colors[box_id].pixel)
           {
@@ -977,7 +977,7 @@ static unsigned int XAnnotateEditImage(Display *display,
           }
     windows->pixel_info->pen_color=windows->pixel_info->pen_colors[pen_id];
     if (windows->pixel_info->colors != 0)
-      for (i=0; i < (int) windows->pixel_info->colors; i++)
+      for (i=0; i < windows->pixel_info->colors; i++)
         if (windows->pixel_info->pixels[i] ==
             windows->pixel_info->pen_colors[pen_id].pixel)
           {
@@ -1601,12 +1601,12 @@ static unsigned int XColorEditImage(Display *display,
     y,
     y_offset;
 
-  register int
-    i;
-
   register PixelPacket
     *p,
     *q;
+
+  register size_t
+    i;
 
   unsigned int
     height,
@@ -2037,7 +2037,7 @@ static unsigned int XColorEditImage(Display *display,
               }
             else
               {
-                for (i=0; i < (int) (*image)->colors; i++)
+                for (i=0; i < (*image)->colors; i++)
                   if (ColorMatch((*image)->colormap[i],target,(*image)->fuzz))
                     {
                       (*image)->colormap[i].red=XDownScale(color.red);
@@ -6940,7 +6940,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
             "http://www.imagemagick.org/");
           mozilla_atom=XInternAtom(display,"_MOZILLA_COMMAND",False);
           XChangeProperty(display,mozilla_window,mozilla_atom,XA_STRING,8,
-            PropModeReplace,(unsigned char *) command,strlen(command));
+            PropModeReplace,(unsigned char *) command,(int) strlen(command));
           XSetCursorState(display,windows,False);
           break;
         }
@@ -7192,7 +7192,7 @@ static void XMagnifyWindowCommand(Display *display,XWindows *windows,
     case XK_8:
     case XK_9:
     {
-      windows->magnify.data=(unsigned int) (key_symbol-XK_0);
+      windows->magnify.data=(key_symbol-XK_0);
       break;
     }
     case XK_KP_0:
@@ -7206,7 +7206,7 @@ static void XMagnifyWindowCommand(Display *display,XWindows *windows,
     case XK_KP_8:
     case XK_KP_9:
     {
-      windows->magnify.data=(unsigned int) (key_symbol-XK_KP_0);
+      windows->magnify.data=(key_symbol-XK_KP_0);
       break;
     }
     default:
@@ -10259,7 +10259,7 @@ static void XScreenEvent(Display *display,XWindows *windows,XEvent *event)
       */
       if (event->xclient.message_type != windows->wm_protocols)
         break;
-      if (*event->xclient.data.l != (int) windows->wm_delete_window)
+      if (*event->xclient.data.l != (long) windows->wm_delete_window)
         break;
       if (event->xclient.window == windows->magnify.id)
         {
@@ -12744,7 +12744,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             event.xclient.format,(unsigned long) event.xclient.data.l[0]);
         if (event.xclient.message_type == windows->im_protocols)
           {
-            if (*event.xclient.data.l == (int) windows->im_update_widget)
+            if (*event.xclient.data.l == (long) windows->im_update_widget)
               {
                 windows->command.name=(char *) MagickTitle;
                 windows->command.data=MagickMenus;
@@ -12752,7 +12752,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                   (XEvent *) NULL);
                 break;
               }
-            if (*event.xclient.data.l == (int) windows->im_update_colormap)
+            if (*event.xclient.data.l == (long) windows->im_update_colormap)
               {
                 /*
                   Update graphic context and window colormap.
@@ -12792,22 +12792,22 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                   XInstallColormap(display,map_info->colormap);
                 break;
               }
-            if (*event.xclient.data.l == (int) windows->im_former_image)
+            if (*event.xclient.data.l == (long) windows->im_former_image)
               {
                 *state|=FormerImageState | ExitState;
                 break;
               }
-            if (*event.xclient.data.l == (int) windows->im_next_image)
+            if (*event.xclient.data.l == (long) windows->im_next_image)
               {
                 *state|=NextImageState | ExitState;
                 break;
               }
-            if (*event.xclient.data.l == (int) windows->im_retain_colors)
+            if (*event.xclient.data.l == (long) windows->im_retain_colors)
               {
                 *state|=RetainColorsState;
                 break;
               }
-            if (*event.xclient.data.l == (int) windows->im_exit)
+            if (*event.xclient.data.l == (long) windows->im_exit)
               {
                 *state|=ExitState;
                 break;
@@ -12836,8 +12836,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             /*
               Display image named by the Drag-and-Drop selection.
             */
-            if (((int) (*event.xclient.data.l) != 2) &&
-                ((int) (*event.xclient.data.l) != 128))
+            if ((*event.xclient.data.l != 2) && (*event.xclient.data.l != 128))
               break;
             selection=XInternAtom(display,"DndSelection",False);
             status=XGetWindowProperty(display,root_window,selection,0L,
@@ -12845,7 +12844,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
               &length,&after,&data);
             if ((status != Success) || (length == 0))
               break;
-            if ((int) (*event.xclient.data.l) == 2)
+            if (*event.xclient.data.l == 2)
               {
                 /*
                   Offix DND.
@@ -12878,9 +12877,9 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         /*
           If client window delete message, exit.
         */
-        if ((int) event.xclient.message_type != (int) windows->wm_protocols)
+        if (event.xclient.message_type != windows->wm_protocols)
           break;
-        if (*event.xclient.data.l != (int) windows->wm_delete_window)
+        if (*event.xclient.data.l != (long) windows->wm_delete_window)
           break;
         XWithdrawWindow(display,event.xclient.window,visual_info->screen);
         if (event.xclient.window == windows->image.id)
@@ -12971,8 +12970,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                         windows->pan.screen,CWX | CWY,&window_changes);
                     }
               }
-            if ((event.xconfigure.width == (int) windows->image.width) &&
-                (event.xconfigure.height == (int) windows->image.height))
+            if ((event.xconfigure.width == (long) windows->image.width) &&
+                (event.xconfigure.height == (long) windows->image.height))
               {
                 if (windows->image.mapped)
                   XRefreshWindow(display,&windows->image,(XEvent *) NULL);

@@ -318,9 +318,11 @@ typedef struct _XResourceInfo
 
   unsigned int
     update,
-    undo_cache,
     use_pixmap,
     use_shared_memory;
+
+  unsigned long
+    undo_cache;
 
   char
     *visual_type,
@@ -378,10 +380,8 @@ typedef struct _XWindowInfo
     *icon_geometry,
     *crop_geometry;
 
-  unsigned int
-    data;
-
   unsigned long
+    data,
     flags;
 
   int
