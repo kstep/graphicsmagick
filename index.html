@@ -163,11 +163,15 @@ application development environment: <A HREF="www/perl.html">Perl</A>
 , <A HREF="http://pythonmagick.procoders.net/">Python</A>, or <A HREF="www/archives.html">Java</A>
 . These programs, and much more, are discussed in detail. Just follow
 the appropriate link on this page.</P>
+
+<!---
 <P CLASS="western">You can <A HREF="www/magick-list.html">subscribe</A>
 to the mailing list. Here you can ask questions and get advice from
 other <I>GraphicsMagick</I> users and see announcements of bug fixes,
 enhancements, and new releases. 
 </P>
+-->
+
 <P CLASS="western"><I>GraphicsMagick</I> is <A HREF="www/Copyright.html">copyrighted</A>
 by the GraphicsMagick Group. <I>GraphicsMagick</I> is available for
 free, may be used to support both open and proprietary applications,
@@ -200,14 +204,18 @@ Windows, and Macintosh.</P>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
 	<TR>
 		<TD BGCOLOR="#52799e">
-			<P CLASS="western"><IMG SRC="images/right_triangle.png" NAME="Graphic11" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Open
-			ImageMagick Utilities</FONT></FONT></B></P>
+			<P CLASS="western"><IMG SRC="images/right_triangle.png" NAME="Graphic11" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">
+			GraphicsMagick Utilities</FONT></FONT></B></P>
 		</TD>
 	</TR>
 </TABLE>
 <P CLASS="western"><I>GraphicsMagick</I> provides a powerful set of
 <A HREF="www/tools.html">command line utilities</A>. These utilities
 use a consistent set of <A HREF="www/GraphicsMagick.html">options</A>.
+Unlike ImageMagick, GraphicsMagick combines the utilities into a single
+executable commandline program called "gm"; for example, to run the
+"convert" utility, type "gm convert ...".  This allows GraphicsMagick
+and ImageMagick to coexist on your platform.
 The available utilities and links to their documentation are shown in
 the following table:</P>
 <DL>
@@ -227,7 +235,7 @@ the following table:</P>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=25%>
-				<P CLASS="western" ALIGN=LEFT><A HREF="www/animate.html"><SPAN STYLE="text-decoration: none">animate</SPAN></A></P>
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/animate.html"><SPAN STYLE="text-decoration: none">gm animate</SPAN></A></P>
 			</TD>
 			<TD WIDTH=75%>
 				<P CLASS="western" ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
@@ -237,7 +245,7 @@ the following table:</P>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=25%>
-				<P CLASS="western" ALIGN=LEFT><A HREF="www/composite.html"><SPAN STYLE="text-decoration: none">composite</SPAN></A></P>
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/composite.html"><SPAN STYLE="text-decoration: none">gm composite</SPAN></A></P>
 			</TD>
 			<TD WIDTH=75%>
 				<P CLASS="western" ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
@@ -247,7 +255,7 @@ the following table:</P>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=25%>
-				<P CLASS="western" ALIGN=LEFT><A HREF="www/conjure.html"><SPAN STYLE="text-decoration: none">conjure</SPAN></A></P>
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/conjure.html"><SPAN STYLE="text-decoration: none">gm conjure</SPAN></A></P>
 			</TD>
 			<TD WIDTH=75%>
 				<P CLASS="western" ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
@@ -257,7 +265,7 @@ the following table:</P>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=25%>
-				<P CLASS="western" ALIGN=LEFT><A HREF="www/convert.html"><SPAN STYLE="text-decoration: none">convert</SPAN></A></P>
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/convert.html"><SPAN STYLE="text-decoration: none">gm convert</SPAN></A></P>
 			</TD>
 			<TD WIDTH=75%>
 				<P CLASS="western" ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
@@ -267,7 +275,7 @@ the following table:</P>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=25%>
-				<P CLASS="western" ALIGN=LEFT><A HREF="www/display.html"><SPAN STYLE="text-decoration: none">display</SPAN></A></P>
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/display.html"><SPAN STYLE="text-decoration: none">gm display</SPAN></A></P>
 			</TD>
 			<TD WIDTH=75%>
 				<P CLASS="western" ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
@@ -277,7 +285,7 @@ the following table:</P>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=25%>
-				<P CLASS="western" ALIGN=LEFT><A HREF="www/identify.html"><SPAN STYLE="text-decoration: none">identify</SPAN></A></P>
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/identify.html"><SPAN STYLE="text-decoration: none">gm identify</SPAN></A></P>
 			</TD>
 			<TD WIDTH=75%>
 				<P CLASS="western" ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
@@ -287,7 +295,7 @@ the following table:</P>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=25%>
-				<P CLASS="western" ALIGN=LEFT><A HREF="www/import.html"><SPAN STYLE="text-decoration: none">import</SPAN></A></P>
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/import.html"><SPAN STYLE="text-decoration: none">gm import</SPAN></A></P>
 			</TD>
 			<TD WIDTH=75%>
 				<P CLASS="western" ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
@@ -297,7 +305,7 @@ the following table:</P>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=25%>
-				<P CLASS="western" ALIGN=LEFT><A HREF="www/mogrify.html"><SPAN STYLE="text-decoration: none">mogrify</SPAN></A></P>
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/mogrify.html"><SPAN STYLE="text-decoration: none">gm mogrify</SPAN></A></P>
 			</TD>
 			<TD WIDTH=75%>
 				<P CLASS="western" ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
@@ -307,7 +315,7 @@ the following table:</P>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=25%>
-				<P CLASS="western" ALIGN=LEFT><A HREF="www/montage.html"><SPAN STYLE="text-decoration: none">montage</SPAN></A></P>
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/montage.html"><SPAN STYLE="text-decoration: none">gm montage</SPAN></A></P>
 			</TD>
 			<TD WIDTH=75%>
 				<P CLASS="western" ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
@@ -526,13 +534,24 @@ and supported by third parties.</P>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=37%>
-				<P CLASS="western" ALIGN=LEFT><A HREF="mailto:magick-bugs@imagemagick.org?subject=GraphicsMagick Bug Report">Reporting
-				Bugs</A></P>
+				<P CLASS="western" ALIGN=LEFT>
+<!---
+<A HREF="mailto:magick-bugs@imagemagick.org?subject=GraphicsMagick Bug Report">
+-->
+Reporting Bugs
+<!---</A>-->
+</P>
 			</TD>
+
 			<TD WIDTH=63%>
-				<P CLASS="western">Bugs should be reported by posting to the
+				<P CLASS="western">
+<!---
+Bugs should be reported by posting to the
 				Magick-bugs mailing list. But first you must <A HREF="http://studio.imagemagick.org/mailman/listinfo/magick-bugs">subscribe
-				to the list</A>! Alternatively, you can report bugs using the <A HREF="http://sourceforge.net/projects/imagemagick/">bug
+				to the list</A>! 
+Alternatively, 
+-->
+you can report bugs using the <A HREF="http://sourceforge.net/projects/graphicsmagick/">bug
 				tracker</A> at <SPAN LANG="en-US">SourceForge.</SPAN></P>
 			</TD>
 		</TR>
