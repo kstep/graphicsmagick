@@ -315,10 +315,6 @@ UNIX/Cygwin/MinGW COMPILATION
       than when it is built to support eight-bit pixel quantums. Those who
       value performance over accuracy may specify --with-quantum-depth=8.
 
-      A quantum depth of 32 requires that sizeof(unsigned long) >= 8
-      available on 64-bit hardware such as Sun Sparc, Compaq Alpha, and
-      Intel Itanium.
-
     o --without-magick-plus-plus: Disable building Magick++, the C++
       application programming interface to ImageMagick. A suitable C++
       compiler is required in order to build Magick++. Specify the CXX
