@@ -2773,7 +2773,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (image->color_profile.info == (unsigned char *) NULL)
               {
                  MagickError(OptionError,"MemoryAllocationFailed",
-									"UnableToAllocateICCProfile");
+                  "UnableToAllocateICCProfile");
                  image->color_profile.length=0;
               }
             else
