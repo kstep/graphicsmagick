@@ -1,4 +1,4 @@
-Major changes associated with GraphicsMagick 1.0.3 (Not released yet)
+Major changes associated with GraphicsMagick 1.0.3 (Released August 23, 2003)
 
   Bug Fixes:
     * Configure script fix to ensure that -lfpx is not supplied to C
@@ -6,7 +6,21 @@ Major changes associated with GraphicsMagick 1.0.3 (Not released yet)
     * BMP reader fix to avoid unnecessary rejection of some old
     uncompressed Windows 2.X and OS/2 BMPs.
     * Semaphore fix which is necessary for proper multi-threaded operation.
-    * EXIF attributes were not being retrieved when requested.
+    * EXIF attributes were failing to be retrieved.
+    * Image magick string is that of the user-specified input file rather
+    than (possibly) a temporary file.
+    * BLOB file header tests are only performed if the user has not
+    specified the BLOB format (magick).
+    * Fixed a problem with reading images via a user provided file
+    descriptor. The coder was sometimes being passed a file descriptor
+    with a non-zero seek position. Note that reading from non-seekable
+    file streams may still be unreliable since the header magic tests
+    must read part of the input data and the seek position must be rewound.
+    * A locking problem was fixed in the logging code.
+    * JNG support can now be removed while continuing to support PNG and
+    MNG.  This is neccessary if libjpeg is not available.
+    * VisualMagick configure is updated to eliminate a build dependency
+    problem and to enable fast static builds.
 
 Major changes associated with GraphicsMagick 1.0.2 (Released June 6, 2003)
 
