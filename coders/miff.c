@@ -852,8 +852,10 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       if (q == (PixelPacket *) NULL)
         break;
       indexes=GetIndexes(image);
+      switch (image->compression)
+      {
 #if defined(HasZLIB)
-      if (image->compression == ZipCompression)
+        case ZipCompression:
         {
           if (y == 0)
             {
@@ -883,49 +885,46 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 zip_info.avail_in),SEEK_CUR);
               status=!inflateEnd(&zip_info);
             }
+          (void) PushImagePixels(image,quantum_type,pixels);
+          break;
         }
-      else
 #endif
 #if defined(HasBZLIB)
-        if (image->compression == BZipCompression)
-          {
-            if (y == 0)
-              {
-                bzip_info.bzalloc=NULL;
-                bzip_info.bzfree=NULL;
-                bzip_info.opaque=NULL;
-                (void) BZ2_bzDecompressInit(&bzip_info,image_info->verbose,
-                  False);
-                bzip_info.avail_in=0;
-              }
-            bzip_info.next_out=(char *) pixels;
-            bzip_info.avail_out=(unsigned int) (packet_size*image->columns);
-            do
+        case BZipCompression:
+        {
+          if (y == 0)
             {
-              if (bzip_info.avail_in == 0)
-                {
-                  bzip_info.next_in=(char *) compress_pixels;
-                  length=(int) (1.01*packet_size*image->columns+12);
-                  bzip_info.avail_in=(unsigned int)
-                    ReadBlob(image,length,bzip_info.next_in);
-                }
-              if (BZ2_bzDecompress(&bzip_info) == BZ_STREAM_END)
-                break;
-            } while (bzip_info.avail_out != 0);
-            if (y == (long) (image->rows-1))
+              bzip_info.bzalloc=NULL;
+              bzip_info.bzfree=NULL;
+              bzip_info.opaque=NULL;
+              (void) BZ2_bzDecompressInit(&bzip_info,image_info->verbose,False);
+              bzip_info.avail_in=0;
+            }
+          bzip_info.next_out=(char *) pixels;
+          bzip_info.avail_out=(unsigned int) (packet_size*image->columns);
+          do
+          {
+            if (bzip_info.avail_in == 0)
               {
-                (void) SeekBlob(image,-((ExtendedSignedIntegralType)
-                  bzip_info.avail_in),SEEK_CUR);
-                status=!BZ2_bzDecompressEnd(&bzip_info);
+                bzip_info.next_in=(char *) compress_pixels;
+                length=(int) (1.01*packet_size*image->columns+12);
+                bzip_info.avail_in=(unsigned int)
+                  ReadBlob(image,length,bzip_info.next_in);
               }
-          }
-        else
+            if (BZ2_bzDecompress(&bzip_info) == BZ_STREAM_END)
+              break;
+          } while (bzip_info.avail_out != 0);
+          if (y == (long) (image->rows-1))
+            {
+              (void) SeekBlob(image,-((ExtendedSignedIntegralType)
+                bzip_info.avail_in),SEEK_CUR);
+              status=!BZ2_bzDecompressEnd(&bzip_info);
+            }
+          (void) PushImagePixels(image,quantum_type,pixels);
+          break;
+        }
 #endif
-          if (image->compression != RLECompression)
-            (void) ReadBlob(image,packet_size*image->columns,pixels);
-      if (image->compression != RLECompression)
-        (void) PushImagePixels(image,quantum_type,pixels);
-      else
+        case RLECompression:
         {
           if (y == 0)
             {
@@ -964,13 +963,15 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                         pixel.blue=ScaleCharToQuantum(ReadBlobByte(image));
                         if (image->colorspace == CMYKColorspace)
                           {
-                            pixel.opacity=ScaleCharToQuantum(ReadBlobByte(image));
+                            pixel.opacity=
+                              ScaleCharToQuantum(ReadBlobByte(image));
                             if (image->matte)
                               index=ScaleCharToQuantum(ReadBlobByte(image));
                           }
                         else
                           if (image->matte)
-                            pixel.opacity=ScaleCharToQuantum(ReadBlobByte(image));
+                            pixel.opacity=
+                              ScaleCharToQuantum(ReadBlobByte(image));
                       }
                     else
                       if (image->depth <= 16)
@@ -1024,7 +1025,15 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               indexes[x]=index;
             *q++=pixel;
           }
+          break;
         }
+        default:
+        {
+          (void) ReadBlob(image,packet_size*image->columns,pixels);
+          (void) PushImagePixels(image,quantum_type,pixels);
+          break;
+        }
+      }
       if (!SyncImagePixels(image))
         break;
     }
@@ -1556,7 +1565,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobString(image,buffer);
       }
     attribute=GetImageAttribute(image,(char *) NULL);
-    for ( ; attribute != (const ImageAttribute *) NULL; attribute=attribute->next)
+    for ( ; attribute != (ImageAttribute *) NULL; attribute=attribute->next)
     {
       if (*attribute->key == '[')
         continue;
@@ -1693,9 +1702,89 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         break;
       indexes=GetIndexes(image);
       q=pixels;
-      if (compression != RLECompression)
-        (void) PopImagePixels(image,quantum_type,pixels);
-      else
+      switch (compression)
+      {
+#if defined(HasZLIB)
+        case ZipCompression:
+        {
+          if (y == 0)
+            {
+              zip_info.zalloc=NULL;
+              zip_info.zfree=NULL;
+              zip_info.opaque=NULL;
+              (void) deflateInit(&zip_info,(int) Min(image_info->quality/10,9));
+            }
+          zip_info.next_in=pixels;
+          zip_info.avail_in=(uInt) (packet_size*image->columns);
+          (void) PopImagePixels(image,quantum_type,pixels);
+          do
+          {
+            zip_info.next_out=compress_pixels;
+            zip_info.avail_out=(uInt) (1.01*packet_size*image->columns+12);
+            status=!deflate(&zip_info,Z_NO_FLUSH);
+            length=zip_info.next_out-compress_pixels;
+            if (zip_info.next_out != compress_pixels)
+              (void) WriteBlob(image,length,compress_pixels);
+          } while (zip_info.avail_in != 0);
+          if (y == (long) (image->rows-1))
+            {
+              for ( ; ; )
+              {
+                zip_info.next_out=compress_pixels;
+                zip_info.avail_out=(uInt) (1.01*packet_size*image->columns+12);
+                status=!deflate(&zip_info,Z_FINISH);
+                if (zip_info.next_out == compress_pixels)
+                  break;
+                length=zip_info.next_out-compress_pixels;
+                (void) WriteBlob(image,length,compress_pixels);
+              }
+              status=!deflateEnd(&zip_info);
+            }
+          break;
+        }
+#endif
+#if defined(HasBZLIB)
+        case BZipCompression:
+        {
+          if (y == 0)
+            {
+              bzip_info.bzalloc=NULL;
+              bzip_info.bzfree=NULL;
+              bzip_info.opaque=NULL;
+              (void) BZ2_bzCompressInit(&bzip_info,
+                (int) Min(image_info->quality/10,9),image_info->verbose,0);
+            }
+          bzip_info.next_in=(char *) pixels;
+          bzip_info.avail_in=(unsigned int) (packet_size*image->columns);
+          (void) PopImagePixels(image,quantum_type,pixels);
+          do
+          {
+            bzip_info.next_out=(char *) compress_pixels;
+            bzip_info.avail_out=(unsigned int) (packet_size*image->columns+600);
+            (void) BZ2_bzCompress(&bzip_info,BZ_RUN);
+            length=bzip_info.next_out-(char *) compress_pixels;
+            if (bzip_info.next_out != (char *) compress_pixels)
+              (void) WriteBlob(image,length,compress_pixels);
+          } while (bzip_info.avail_in != 0);
+          if (y == (long) (image->rows-1))
+            {
+              for ( ; ; )
+              {
+                bzip_info.next_out=(char *) compress_pixels;
+                bzip_info.avail_out=(unsigned int)
+                  (packet_size*image->columns+600);
+                (void) BZ2_bzCompress(&bzip_info,BZ_FINISH);
+                if (bzip_info.next_out == (char *) compress_pixels)
+                  break;
+                length=bzip_info.next_out-(char *) compress_pixels;
+                (void) WriteBlob(image,length,compress_pixels);
+              }
+              status=!BZ2_bzCompressEnd(&bzip_info);
+            }
+          break;
+        }
+#endif
+        case RLECompression:
         {
           pixel=(*p);
           index=0;
@@ -1720,92 +1809,16 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             p++;
           }
           WriteRunlengthPacket(image,pixel,length,q,index);
+          (void) WriteBlob(image,q-pixels,pixels);
+          break;
         }
-#if defined(HasZLIB)
-        if (compression == ZipCompression)
-          {
-            if (y == 0)
-              {
-                zip_info.zalloc=NULL;
-                zip_info.zfree=NULL;
-                zip_info.opaque=NULL;
-                (void) deflateInit(&zip_info,
-                  (int) Min(image_info->quality/10,9));
-              }
-            zip_info.next_in=pixels;
-            zip_info.avail_in=(uInt) (packet_size*image->columns);
-            do
-            {
-              zip_info.next_out=compress_pixels;
-              zip_info.avail_out=(uInt) (1.01*packet_size*image->columns+12);
-              status=!deflate(&zip_info,Z_NO_FLUSH);
-              length=zip_info.next_out-compress_pixels;
-              if (zip_info.next_out != compress_pixels)
-                (void) WriteBlob(image,length,compress_pixels);
-            } while (zip_info.avail_in != 0);
-            if (y == (long) (image->rows-1))
-              {
-                for ( ; ; )
-                {
-                  zip_info.next_out=compress_pixels;
-                  zip_info.avail_out=(uInt)
-                    (1.01*packet_size*image->columns+12);
-                  status=!deflate(&zip_info,Z_FINISH);
-                  if (zip_info.next_out == compress_pixels)
-                    break;
-                  length=zip_info.next_out-compress_pixels;
-                  (void) WriteBlob(image,length,compress_pixels);
-                }
-                status=!deflateEnd(&zip_info);
-              }
-          }
-        else
-#endif
-#if defined(HasBZLIB)
-        if (compression == BZipCompression)
-          {
-            if (y == 0)
-              {
-                bzip_info.bzalloc=NULL;
-                bzip_info.bzfree=NULL;
-                bzip_info.opaque=NULL;
-                (void) BZ2_bzCompressInit(&bzip_info,
-                  (int) Min(image_info->quality/10,9),image_info->verbose,0);
-              }
-            bzip_info.next_in=(char *) pixels;
-            bzip_info.avail_in=(unsigned int) (packet_size*image->columns);
-            do
-            {
-              bzip_info.next_out=(char *) compress_pixels;
-              bzip_info.avail_out=(unsigned int)
-                (packet_size*image->columns+600);
-              (void) BZ2_bzCompress(&bzip_info,BZ_RUN);
-              length=bzip_info.next_out-(char *) compress_pixels;
-              if (bzip_info.next_out != (char *) compress_pixels)
-                (void) WriteBlob(image,length,compress_pixels);
-            } while (bzip_info.avail_in != 0);
-            if (y == (long) (image->rows-1))
-              {
-                for ( ; ; )
-                {
-                  bzip_info.next_out=(char *) compress_pixels;
-                  bzip_info.avail_out=(unsigned int)
-                    (packet_size*image->columns+600);
-                  (void) BZ2_bzCompress(&bzip_info,BZ_FINISH);
-                  if (bzip_info.next_out == (char *) compress_pixels)
-                    break;
-                  length=bzip_info.next_out-(char *) compress_pixels;
-                  (void) WriteBlob(image,length,compress_pixels);
-                }
-                status=!BZ2_bzCompressEnd(&bzip_info);
-              }
-          }
-        else
-#endif
-          if (compression == RLECompression)
-            (void) WriteBlob(image,q-pixels,pixels);
-          else
-            (void) WriteBlob(image,packet_size*image->columns,pixels);
+        default:
+        {
+          (void) PopImagePixels(image,quantum_type,pixels);
+          (void) WriteBlob(image,packet_size*image->columns,pixels);
+          break;
+        }
+      }
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
           if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
