@@ -53,6 +53,26 @@
 </tr>
 </table>
 <p>
+2003-05-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/log.c (GetLogBlob): Return an error if log.mgk can not
+        be accessed.<BR>
+  <LI> locale/C.mgk: Added UnableToAccessLogFile.
+  <LI> magick/blob.c (GetConfigureBlob): Only return result of
+        NTResourceToBlob if it is non-NULL.
+  <LI> magick/type.c (GetTypeBlob): Search $MAGICK_HOME for
+        type.mgk. Only return result of NTResourceToBlob if it is
+        non-NULL.<BR>
+  <LI> magick/magick.c (GetMagickInfo): Return an error if GetModuleInfo
+        reports an error.<BR>
+  <LI> magick/module.c (GetModuleInfo): Return an error if modules.txt
+        fails to load.<BR>
+  <LI> utility.c (SubstituteString): Fixed a bug which was introduced
+        while updating the code to use the memory allocation macros.
+
+</UL>
+<p>
 2003-05-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

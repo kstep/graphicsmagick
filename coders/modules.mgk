@@ -64,6 +64,9 @@
   <module magick="PGX" name="JP2" />
   <module magick="PICON" name="XPM" />
   <module magick="PM" name="XPM" />
+  <module magick="PNG8" name="PNG" />
+  <module magick="PNG24" name="PNG" />
+  <module magick="PNG32" name="PNG" />
   <module magick="PPM" name="PNM" />
   <module magick="PSD" name="PSD" />
   <module magick="PTIF" name="TIFF" />
