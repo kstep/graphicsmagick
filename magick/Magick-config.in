@@ -29,7 +29,7 @@ while test $# -gt 0; do
       echo '@CFLAGS@'
       ;;
     --cppflags)
-      echo "-DHAVE_CONFIG_H @CPPFLAGS@"
+      echo "@CPPFLAGS@"
       ;;
     --ldflags)
       echo '@LDFLAGS@'

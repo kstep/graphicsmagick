@@ -26,7 +26,7 @@ while test $# -gt 0; do
       echo @MAJOR_VERSION@.@MINOR_VERSION@.@MICRO_VERSION@
       ;;
     --cppflags)
-      echo "-DHAVE_CONFIG_H @CPPFLAGS@"
+      echo "@CPPFLAGS@"
       ;;
     --cxxflags)
       echo '@CXXFLAGS@'
