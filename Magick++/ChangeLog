@@ -1,3 +1,8 @@
+2000-10-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (edge): Change argument from 'unsigned int' to
+ 	'double' in order to match ImageMagick API.
+
 2000-10-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Drawable.cpp (DrawableCompositeImage): Renamed from

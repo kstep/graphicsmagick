@@ -557,7 +557,7 @@ void Magick::Image::draw ( const std::list<Magick::Drawable> &drawable_ )
   DrawInfo *drawInfo
     = options()->drawInfo();
 
-  char buffer[256000];
+  char buffer[256000]; //FIXME -- this is rediculous.
   ostrstream buffstr( buffer, sizeof(buffer));
 
   std::list<Magick::Drawable>::const_iterator p = drawable_.begin();
@@ -579,7 +579,7 @@ void Magick::Image::draw ( const std::list<Magick::Drawable> &drawable_ )
 }
 
 // Hilight edges in image
-void Magick::Image::edge ( unsigned int factor_ )
+void Magick::Image::edge ( double factor_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );

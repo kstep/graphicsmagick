@@ -178,7 +178,7 @@ namespace Magick
     void            draw ( const std::list<Magick::Drawable> &drawable_ );
     
     // Edge image (hilight edges in image)
-    void            edge ( unsigned int order_ );
+    void            edge ( double order_ );
     
     // Emboss image (hilight edges with 3D effect)
     // The radius_ parameter specifies the radius of the Gaussian, in
