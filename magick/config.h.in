@@ -33,6 +33,9 @@
 /* Define to `unsigned' if <sys/types.h> doesn't define.  */
 #undef size_t
 
+/* Define if the `S_IS*' macros in <sys/stat.h> do not work properly.  */
+#undef STAT_MACROS_BROKEN
+
 /* Define if you have the ANSI C header files.  */
 #undef STDC_HEADERS
 
@@ -41,10 +44,6 @@
 
 /* Define if you can safely include both <sys/time.h> and <time.h>.  */
 #undef TIME_WITH_SYS_TIME
-
-/* Define if your processor stores words with the most significant
-   byte first (like Motorola and SPARC, unlike Intel and VAX).  */
-#undef WORDS_BIGENDIAN
 
 /* Define if the X Window System is missing or not being used.  */
 #undef X_DISPLAY_MISSING
@@ -169,17 +168,8 @@
 /* Define directory where ImageMagick/delegates.h lives. (default /usr/local/share) */
 #undef DelegatePath
 
-/* The number of bytes in a int.  */
-#undef SIZEOF_INT
-
-/* The number of bytes in a long.  */
-#undef SIZEOF_LONG
-
 /* Define if you have the getcwd function.  */
 #undef HAVE_GETCWD
-
-/* Define if you have the gethostname function.  */
-#undef HAVE_GETHOSTNAME
 
 /* Define if you have the getpagesize function.  */
 #undef HAVE_GETPAGESIZE
@@ -193,8 +183,8 @@
 /* Define if you have the snprintf function.  */
 #undef HAVE_SNPRINTF
 
-/* Define if you have the strcspn function.  */
-#undef HAVE_STRCSPN
+/* Define if you have the strchr function.  */
+#undef HAVE_STRCHR
 
 /* Define if you have the strerror function.  */
 #undef HAVE_STRERROR
@@ -202,8 +192,8 @@
 /* Define if you have the strtol function.  */
 #undef HAVE_STRTOL
 
-/* Define if you have the sysconf function.  */
-#undef HAVE_SYSCONF
+/* Define if you have the tempnam function.  */
+#undef HAVE_TEMPNAM
 
 /* Define if you have the vsnprintf function.  */
 #undef HAVE_VSNPRINTF
@@ -211,26 +201,47 @@
 /* Define if you have the <dirent.h> header file.  */
 #undef HAVE_DIRENT_H
 
+/* Define if you have the <errno.h> header file.  */
+#undef HAVE_ERRNO_H
+
 /* Define if you have the <fcntl.h> header file.  */
 #undef HAVE_FCNTL_H
+
+/* Define if you have the <malloc.h> header file.  */
+#undef HAVE_MALLOC_H
+
+/* Define if you have the <math.h> header file.  */
+#undef HAVE_MATH_H
+
+/* Define if you have the <memory.h> header file.  */
+#undef HAVE_MEMORY_H
 
 /* Define if you have the <ndir.h> header file.  */
 #undef HAVE_NDIR_H
 
-/* Define if you have the <strings.h> header file.  */
-#undef HAVE_STRINGS_H
+/* Define if you have the <pwd.h> header file.  */
+#undef HAVE_PWD_H
+
+/* Define if you have the <stdarg.h> header file.  */
+#undef HAVE_STDARG_H
+
+/* Define if you have the <string.h> header file.  */
+#undef HAVE_STRING_H
 
 /* Define if you have the <sys/dir.h> header file.  */
 #undef HAVE_SYS_DIR_H
 
-/* Define if you have the <sys/file.h> header file.  */
-#undef HAVE_SYS_FILE_H
-
 /* Define if you have the <sys/ndir.h> header file.  */
 #undef HAVE_SYS_NDIR_H
 
+/* Define if you have the <sys/stat.h> header file.  */
+#undef HAVE_SYS_STAT_H
+
 /* Define if you have the <sys/time.h> header file.  */
 #undef HAVE_SYS_TIME_H
+
+/* Define if you have the <sys/types.h> header file.  */
+#undef HAVE_SYS_TYPES_H
 
 /* Define if you have the <unistd.h> header file.  */
 #undef HAVE_UNISTD_H

@@ -707,13 +707,11 @@ int main(int argc,char **argv)
             }
           if (strncmp("box",option+1,3) == 0)
             {
-              image_info.box=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing box color",option);
-                  image_info.box=argv[i];
                 }
               break;
             }

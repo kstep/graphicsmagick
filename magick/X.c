@@ -8254,22 +8254,20 @@ Export Image *XMontageImages(const XResourceInfo *resource_info,
   /*
     Initialize annotate info.
   */
-  GetAnnotateInfo(&annotate_info);
-  annotate_info.image_info=(ImageInfo *) (&resource_info->image_info);
-  annotate_info.image_info->font=resource_info->font;
-  annotate_info.image_info->pointsize=montage_info->pointsize;
+  GetAnnotateInfo((ImageInfo *) &resource_info->image_info,&annotate_info);
+  annotate_info.pointsize=montage_info->pointsize;
   annotate_info.geometry=geometry;
   annotate_info.gravity=CenterGravity;
   /*
     Initialize font info.
   */
-  font_height=annotate_info.image_info->pointsize;
-  FormatLabel(annotate_info.image_info,resource_info->title,((tile_info.width+
-    (border_width << 1))*Min(number_images,tiles_per_column)) >> 1,
-    &font_height);
+  font_height=annotate_info.pointsize;
+  FormatLabel((ImageInfo *) &resource_info->image_info,resource_info->title,
+    ((tile_info.width+(border_width << 1))*Min(number_images,
+    tiles_per_column)) >> 1,&font_height);
   for (tile=0; tile < number_images; tile++)
-    FormatLabel(annotate_info.image_info,images[tile]->label,tile_info.width+
-      (border_width << 1),&font_height);
+    FormatLabel((ImageInfo *) &resource_info->image_info,images[tile]->label,
+      tile_info.width+(border_width << 1),&font_height);
   /*
     Determine the number of lines in an image label.
   */

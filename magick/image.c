@@ -342,9 +342,6 @@ Export void AllocateNextImage(const ImageInfo *image_info,Image *image)
 */
 Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
 {
-#define Alphabet  "`-=[]\\;',./~!@#$%^&*()_+{}|:\"<>?" \
-  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
   char
     size[MaxTextExtent],
     *text,
@@ -376,20 +373,8 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
   */
   assert(image != (Image *) NULL);
   assert(annotate_info != (AnnotateInfo *) NULL);
-  assert(annotate_info->image_info != (ImageInfo *) NULL);
   if (!UncondenseImage(image))
     return;
-  /*
-    Determine font width and height.
-  */
-  FormatString(annotate_info->image_info->filename,"label:%s",Alphabet);
-  annotate_image=ReadImage(annotate_info->image_info);
-  if (annotate_image == (Image *) NULL)
-    return;
-  annotate_info->bounds.width=
-    (annotate_image->columns+(strlen(Alphabet) >> 1))/strlen(Alphabet);
-  annotate_info->bounds.height=annotate_image->rows;
-  DestroyImage(annotate_image);
   /*
     Translate any embedded format characters (e.g. %f).
   */
@@ -440,6 +425,10 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
   /*
     Annotate image.
   */
+  GetImageInfo(&local_info);
+  local_info.font=annotate_info->font;
+  local_info.pointsize=annotate_info->pointsize;
+  local_info.size=size;
   for (i=0; textlist[i] != (char *) NULL; i++)
   {
     if (*textlist[i] == '\0')
@@ -450,9 +439,9 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
     /*
       Convert text to image.
     */
-    FormatString(annotate_info->image_info->filename,"label:%s",textlist[i]);
+    FormatString(local_info.filename,"label:%s",textlist[i]);
     FreeMemory(textlist[i]);
-    annotate_image=ReadImage(annotate_info->image_info);
+    annotate_image=ReadImage(&local_info);
     if (annotate_image == (Image *) NULL)
       {
         MagickWarning(ResourceLimitWarning,"Unable to annotate image",
@@ -529,14 +518,12 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
       }
     }
     matte=image->matte;
-    if (annotate_info->image_info->box != (char *) NULL)
+    if (annotate_info->box != (char *) NULL)
       {
         /*
           Surround text with a bounding box.
         */
-        local_info=(*annotate_info->image_info);
-        local_info.size=size;
-        (void) sprintf(local_info.filename,"xc:%s",local_info.box);
+        (void) sprintf(local_info.filename,"xc:%s",annotate_info->box);
         (void) sprintf(local_info.size,"%ux%u",annotate_image->columns,
           annotate_image->rows);
         box_image=ReadImage(&local_info);
@@ -866,7 +853,7 @@ Export Image *AverageImages(Image *images)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method BlackImage initializes the reference image to all black pixels.
+%  Method BlackImage initializes the reference image to the background color.
 %
 %  The format of the BlackImage routine is:
 %
@@ -893,9 +880,9 @@ Export void BlackImage(Image *image)
   p=image->pixels;
   for (i=0; i < image->packets; i++)
   {
-    p->red=0;
-    p->green=0;
-    p->blue=0;
+    p->red=image->background_color.red;
+    p->green=image->background_color.green;
+    p->blue=image->background_color.blue;
     p->length=0;
     p->index=0;
     p++;
@@ -3691,7 +3678,7 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
   /*
     Parse the primitive attributes.
   */
-  (void) XQueryColorDatabase(annotate_info->image_info->pen,&pen_color);
+  (void) XQueryColorDatabase(annotate_info->pen,&pen_color);
   primitive_type=UndefinedPrimitive;
   p=primitive;
   bounds.x1=image->columns-1;
@@ -4731,7 +4718,7 @@ Export void GammaImage(Image *image,char *gamma)
 %
 %  The format of the GetAnnotateInfo routine is:
 %
-%      GetAnnotateInfo(annotate_info)
+%      GetAnnotateInfo(image_info,annotate_info)
 %
 %  A description of each parameter follows:
 %
@@ -4741,19 +4728,42 @@ Export void GammaImage(Image *image,char *gamma)
 %
 %
 */
-Export void GetAnnotateInfo(AnnotateInfo *annotate_info)
+Export void GetAnnotateInfo(ImageInfo *image_info,AnnotateInfo *annotate_info)
 {
+#define Alphabet  "`-=[]\\;',./~!@#$%^&*()_+{}|:\"<>?" \
+  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+  Image
+    *annotate_image;
+
+  ImageInfo
+    local_info;
+
   assert(annotate_info != (AnnotateInfo *) NULL);
-  annotate_info->image_info=(ImageInfo *) NULL;
   annotate_info->geometry=(char *) NULL;
+  annotate_info->font=image_info->font;
+  annotate_info->box=(char *) NULL;
+  annotate_info->pen=image_info->pen;
+  annotate_info->pointsize=image_info->pointsize;
+  annotate_info->border_color=image_info->border_color;
   annotate_info->text=(char *) NULL;
   annotate_info->primitive=(char *) NULL;
   annotate_info->linewidth=1;
+  annotate_info->gravity=NorthWestGravity;
   annotate_info->bounds.width=0;
   annotate_info->bounds.height=0;
+  local_info=(*image_info);
+  FormatString(local_info.filename,"label:%s",Alphabet);
+  annotate_image=ReadImage(&local_info);
+  if (annotate_image != (Image *) NULL)
+    {
+      annotate_info->bounds.width=
+        (annotate_image->columns+(strlen(Alphabet) >> 1))/strlen(Alphabet);
+      annotate_info->bounds.height=annotate_image->rows;
+    }
   annotate_info->bounds.x=0;
   annotate_info->bounds.y=0;
-  annotate_info->gravity=NorthWestGravity;
+  DestroyImage(annotate_image);
 }
 
 /*
@@ -4791,7 +4801,6 @@ Export void GetImageInfo(ImageInfo *image_info)
   image_info->server_name=(char *) NULL;
   image_info->font=(char *) NULL;
   image_info->pen=(char *) NULL;
-  image_info->box=(char *) NULL;
   image_info->size=(char *) NULL;
   image_info->tile=(char *) NULL;
   image_info->density=(char *) NULL;
@@ -6064,7 +6073,7 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
   */
   assert(image_info != (ImageInfo *) NULL);
   assert(image != (Image **) NULL);
-  GetAnnotateInfo(&annotate_info);
+  GetAnnotateInfo(image_info,&annotate_info);
   GetQuantizeInfo(&quantize_info);
   compress=(*image)->packets < (((*image)->columns*(*image)->rows*3) >> 2);
   map_image=(Image *) NULL;
@@ -6163,7 +6172,7 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
       }
     if (Latin1Compare("-box",option) == 0)
       {
-        image_info->box=argv[++i];
+        annotate_info.box=argv[++i];
         continue;
       }
     if (strncmp("-charcoal",option,3) == 0)
@@ -6295,7 +6304,6 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
       }
     if (strncmp("-draw",option,3) == 0)
       {
-        annotate_info.image_info=image_info;
         annotate_info.primitive=argv[++i];
         DrawImage(*image,&annotate_info);
         continue;
@@ -6431,7 +6439,7 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
       }
     if (strncmp("-font",option,3) == 0)
       {
-        image_info->font=argv[++i];
+        annotate_info.font=argv[++i];
         continue;
       }
     if (Latin1Compare("-frame",option) == 0)
@@ -6528,23 +6536,6 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
           {
             DestroyImage(*image);
             *image=imploded_image;
-          }
-        continue;
-      }
-    if (strncmp("interlace",option+1,3) == 0)
-      {
-        image_info->interlace=NoInterlace;
-        if (*option == '-')
-          {
-            option=argv[++i];
-            if (Latin1Compare("None",option) == 0)
-              image_info->interlace=NoInterlace;
-            if (Latin1Compare("Line",option) == 0)
-              image_info->interlace=LineInterlace;
-            if (Latin1Compare("Plane",option) == 0)
-              image_info->interlace=PlaneInterlace;
-            if (Latin1Compare("Partition",option) == 0)
-              image_info->interlace=PartitionInterlace;
           }
         continue;
       }

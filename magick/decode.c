@@ -5349,7 +5349,6 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
       TT_Done_Instance(instance);
       TT_Close_Face(face);
       TT_Done_FreeType(engine);
-      CondenseImage(image);
       return(image);
 #else
       MagickWarning(MissingDelegateWarning,"FreeType library is not available",
@@ -5503,13 +5502,12 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
           q=image->pixels;
           for (i=0; i < image->packets; i++)
           {
+            q->index=Intensity(*q);
             q->red=XDownScale(pen_color.red);
             q->green=XDownScale(pen_color.green);
             q->blue=XDownScale(pen_color.blue);
-            q->index=Intensity(*q);
             q++;
           }
-          CondenseImage(image);
           return(image);
         }
     }
@@ -5579,13 +5577,12 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
   q=image->pixels;
   for (i=0; i < image->packets; i++)
   {
+    q->index=Intensity(*q);
     q->red=XDownScale(pen_color.red);
     q->green=XDownScale(pen_color.green);
     q->blue=XDownScale(pen_color.blue);
-    q->index=Intensity(*q);
     q++;
   }
-  CondenseImage(image);
   return(image);
 }
 
@@ -13431,33 +13428,19 @@ static Image *ReadTEXTImage(const ImageInfo *image_info)
     AllocateMemory(image->packets*sizeof(RunlengthPacket));
   if (image->pixels == (RunlengthPacket *) NULL)
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
+  (void) XQueryColorDatabase(DefaultTextBackground,&color);
+  image->background_color.red=XDownScale(color.red);
+  image->background_color.green=XDownScale(color.green);
+  image->background_color.blue=XDownScale(color.blue);
   BlackImage(image);
-  /*
-    Initialize to background color.
-  */
-  (void) XQueryColorDatabase("white",&color);
-  if (image_info->box != (char *) NULL)
-    (void) XQueryColorDatabase(image_info->box,&color);
-  q=image->pixels;
-  for (i=0; i < image->packets; i++)
-  {
-    q->red=XDownScale(color.red);
-    q->green=XDownScale(color.green);
-    q->blue=XDownScale(color.blue);
-    q->index=0;
-    q->length=0;
-    q++;
-  }
   if (image_info->texture != (char *) NULL)
     TextureImage(image,image_info->texture);
   /*
     Initialize image annotation info.
   */
-  GetAnnotateInfo(&annotate_info);
-  annotate_info.image_info=(ImageInfo *) image_info;
+  GetAnnotateInfo((ImageInfo *) image_info,&annotate_info);
   annotate_info.text=text;
   annotate_info.geometry=geometry;
-  annotate_info.bounds.height=image_info->pointsize;
   (void) strcpy(filename,image_info->filename);
   /*
     Annotate the text image.
@@ -14718,8 +14701,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info)
   local_info.pointsize=18;
   local_info.font=font;
   FormatString(local_info.font,"@%s",image_info->filename);
-  GetAnnotateInfo(&annotate_info);
-  annotate_info.image_info=(ImageInfo *) &local_info;
+  GetAnnotateInfo(&local_info,&annotate_info);
   annotate_info.geometry=geometry;
   annotate_info.text=text;
   (void) strcpy(local_info.filename,"white");

@@ -278,7 +278,7 @@ static struct routines {
     {	"Opaque", { {"color", P_STR}, {"pen", P_STR} } },
     {	"Quantize", { {"colors", P_INT}, {"tree", P_INT},
     		    {"colorsp", p_colorspaces}, {"dither", p_boolean},
-		    {"measure", p_boolean} } },
+		    {"measure", p_boolean}, {"global", p_boolean} } },
     {	"Raise", { {"geom", P_STR}, {"width", P_INT}, {"height", P_INT},
 		    {"x", P_INT}, {"y", P_INT}, {"raise", p_boolean} } },
     {	"Segment", { {"colorsp", p_colorspaces}, {"verbose", p_boolean},
@@ -373,8 +373,6 @@ copy_info(struct info *info)
 	newinfo->info.font = copy_string(info->info.font);
     if (info->info.pen)
 	newinfo->info.pen = copy_string(info->info.pen);
-    if (info->info.box)
-	newinfo->info.box = copy_string(info->info.box);
     if (info->info.size)
 	newinfo->info.size = copy_string(info->info.size);
     if (info->info.tile)
@@ -414,8 +412,6 @@ destroy_info(struct info *info)
 	safefree(info->info.font);
     if (info->info.pen)
 	safefree(info->info.pen);
-    if (info->info.box)
-	safefree(info->info.box);
     if (info->info.size)
 	safefree(info->info.size);
     if (info->info.tile)
@@ -615,12 +611,6 @@ SetAttribute(struct info *info, Image *image, char *attr, SV *sval)
 		image->border_color.green = XDownScale(target_color.green);
 		image->border_color.blue = XDownScale(target_color.blue);
 	    }
-	    return;
-	}
-	if (strEQcase(attr, "box"))
-	{
-	    if (info)
-		newval(&info->info.box, SvPV(sval, na));
 	    return;
 	}
 	break;
@@ -2903,9 +2893,8 @@ Mogrify(ref, ...)
 		case 33:	/* Annotate */
 		    if (first)
 		    {
-			GetAnnotateInfo(&annotate);
 			temp = copy_info(info);
-			annotate.image_info = &temp->info;
+			GetAnnotateInfo(&temp->info, &annotate);
 			if (aflag[7])
 			    newval(&temp->info.server_name, alist[7].t_str);
 			if (aflag[1])
@@ -2915,7 +2904,7 @@ Mogrify(ref, ...)
 			if (aflag[3])
 			    newval(&temp->info.density, alist[3].t_str);
 			if (aflag[4])
-			    newval(&temp->info.box, alist[4].t_str);
+			    annotate.box = alist[4].t_str;
 			if (aflag[5])
 			    newval(&temp->info.pen, alist[5].t_str);
 			if (aflag[6])
@@ -3085,9 +3074,8 @@ Mogrify(ref, ...)
 		case 38:	/* Draw */
 		    if (first)
 		    {
-			GetAnnotateInfo(&annotate);
 			temp = copy_info(info);
-			annotate.image_info = &temp->info;
+			GetAnnotateInfo(&temp->info, &annotate);
 			if (aflag[3])
 			    newval(&temp->info.pen, alist[3].t_str);
 			if (aflag[4])
@@ -3252,6 +3240,11 @@ Mogrify(ref, ...)
 				(info? info->quant.colorspace : RGBColorspace));
 			quan.dither = aflag[3] ? alist[3].t_int :
 				(info? info->quant.dither : False);
+			if (aflag[5] && alist[5].t_int)
+			{
+			    (void) QuantizeImages(&quan, image);
+			    goto return_it;
+			}
 			if ((image->class == DirectClass) ||
 			    (image->colors > quan.number_colors))
 			    (void) QuantizeImage(&quan, image);
@@ -3259,7 +3252,7 @@ Mogrify(ref, ...)
 			    CompressColormap(image);
 			if (aflag[4] && alist[4].t_int)
 			    (void) QuantizationError(image);
-		    	SyncImage(image);
+			SyncImage(image);
 			break;
 		    }
 		case 49:	/* Raise */

@@ -478,9 +478,6 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
     trix,
     triy;
 
-  ImageInfo
-    *image_info;
-
   register int
     i;
 
@@ -500,7 +497,6 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
   assert(primitive_info != (PrimitiveInfo *) NULL);
   assert(annotate_info != (AnnotateInfo *) NULL);
   assert(image != (Image *) NULL);
-  image_info=annotate_info->image_info;
   inside=False;
   mid=annotate_info->linewidth/2.0;
   p=primitive_info;
@@ -720,14 +716,14 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
 
               if ((p->x != x) || (p->y != y))
                 break;
-              (void) XQueryColorDatabase(image_info->pen,&pen_color);
+              (void) XQueryColorDatabase(annotate_info->pen,&pen_color);
               color.red=XDownScale(pen_color.red);
               color.green=XDownScale(pen_color.green);
               color.blue=XDownScale(pen_color.blue);
               target=image->pixels[y*image->columns+x];
               if (p->method == FillToBorderMethod)
                 {
-                  (void) XQueryColorDatabase(image_info->border_color,
+                  (void) XQueryColorDatabase(annotate_info->border_color,
                     &border_color);
                   target.red=XDownScale(border_color.red);
                   target.green=XDownScale(border_color.green);
@@ -790,7 +786,7 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
               target=image->pixels[y*image->columns+x];
               if (p->method == FillToBorderMethod)
                 {
-                  (void) XQueryColorDatabase(image_info->border_color,
+                  (void) XQueryColorDatabase(annotate_info->border_color,
                     &border_color);
                   target.red=XDownScale(border_color.red);
                   target.green=XDownScale(border_color.green);
@@ -826,7 +822,6 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
               for (r++; *r != '\0'; r++)
                 if ((*r == '"') && (*(r-1) != '\\'))
                   break;
-              r--;
             }
           else
             if (*r == '\'')
@@ -835,7 +830,6 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
                 for (r++; *r != '\0'; r++)
                   if ((*r == '\'') && (*(r-1) != '\\'))
                     break;
-                r--;
               }
             else
               for (r++;  *r != '\0'; r++)

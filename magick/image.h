@@ -374,7 +374,6 @@ typedef struct _ImageInfo
     *server_name,
     *font,
     *pen,
-    *box,
     *size,
     *tile,
     *density,
@@ -500,16 +499,18 @@ typedef struct _SegmentInfo
 
 typedef struct _AnnotateInfo
 {
-  ImageInfo
-    *image_info;
-
   char
     *geometry,
     *text,
+    *font,
+    *pen,
+    *box,
+    *border_color,
     *primitive;
 
   unsigned int
-    linewidth;
+    linewidth,
+    pointsize;
 
   int
     gravity;
@@ -778,7 +779,7 @@ extern Export void
   DrawImage(Image *,AnnotateInfo *),
   EqualizeImage(Image *),
   GammaImage(Image *,char *),
-  GetAnnotateInfo(AnnotateInfo *),
+  GetAnnotateInfo(ImageInfo *,AnnotateInfo *),
   GetImageInfo(ImageInfo *),
   GetQuantizeInfo(QuantizeInfo *),
   HSLTransform(double,const double,const double,Quantum *,Quantum *,Quantum *),
