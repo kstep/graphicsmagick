@@ -2745,9 +2745,9 @@ static unsigned int XConfigureImage(Display *display,
     {
       mask|=CWX | CWY;
       window_changes.x=
-        (XDisplayWidth(display,windows->image.screen) >> 1)-(width/2);
+        (XDisplayWidth(display,windows->image.screen)/2)-(width/2);
       window_changes.y=
-        (XDisplayHeight(display,windows->image.screen) >> 1)-(height/2);
+        (XDisplayHeight(display,windows->image.screen)/2)-(height/2);
     }
   XReconfigureWMWindow(display,windows->image.id,windows->image.screen,mask,
     &window_changes);
@@ -3540,10 +3540,9 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
     MatteImage(image,Opaque);
   for (y=0; y < (int) crop_info.height; y++)
   {
-    q=GetPixelCache(image,0,y+crop_info.y,image->columns,1);
+    q=GetPixelCache(image,crop_info.x,y+crop_info.y,crop_info.width,1);
     if (q == (PixelPacket *) NULL)
       break;
-    q+=crop_info.x;
     for (x=0; x < (int) crop_info.width; x++)
     {
       q->opacity=Transparent;
@@ -10527,7 +10526,7 @@ static void XSetCropGeometry(Display *display,XWindows *windows,
     width=1;
   scale_factor=(double) height/windows->image.ximage->height;
   if (crop_info->y > 0)
-    y+=scale_factor*crop_info->y*scale_factor;
+    y+=scale_factor*crop_info->y;
   height=scale_factor*crop_info->height;
   if (height == 0)
     height=1;
@@ -10752,6 +10751,9 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
         x_offset,
         y_offset;
 
+      PixelPacket
+	pixel;
+
       register int
         j;
 
@@ -10784,13 +10786,14 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
 	r=GetPixelCache(image,0,0,1,1);
         if (r == (PixelPacket *) NULL)
           continue;
+        pixel=(*r);
         for (i=0; i < (int) height; i++)
         {
           s=GetPixelCache(image,x_offset,y_offset+i,width,1);
           if (s == (PixelPacket *) NULL)
             break;
           for (j=0; j < (int) width; j++)
-            *s++=(*r);
+            *s++=pixel;
           if (!SyncPixelCache(image))
             break;
         }
