@@ -1826,7 +1826,7 @@ namespace Magick
     // Obtain first entry in MagickInfo list
     MagickLib::ExceptionInfo exceptionInfo;
     MagickLib::GetExceptionInfo( &exceptionInfo );
-    const MagickLib::MagickInfo **coder_list =
+    MagickLib::MagickInfo **coder_list =
       MagickLib::GetMagickInfoArray( &exceptionInfo );
     throwException( exceptionInfo );
     if( !coder_list )

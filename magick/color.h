@@ -43,6 +43,9 @@ extern MagickExport char
 extern MagickExport const ColorInfo
   *GetColorInfo(const char *,ExceptionInfo *);
 
+extern MagickExport ColorInfo
+  **GetColorInfoArray(ExceptionInfo *exception);
+
 extern MagickExport HistogramColorPacket
   *GetColorHistogram(const Image *, unsigned long *colors, ExceptionInfo *);
 
@@ -64,9 +67,6 @@ extern MagickExport void
   DestroyColorInfo(void),
   GetColorTuple(const PixelPacket *,const unsigned int,const unsigned int,
     const unsigned int,char *);
-
-extern MagickExport
-  const ColorInfo **GetColorInfoArray(ExceptionInfo *exception);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

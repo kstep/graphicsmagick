@@ -1,5 +1,12 @@
 2003-09-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/image.c (TextureImage): Fixed return with no value warning.
+	* magick/color.c (GetColorInfoArray): Decided that the const
+	return value was a bad idea.  Therefore, the return type has been
+	made non-const.
+	* magick/magick.c (GetMagickInfoArray): Decided that the const
+	return value was a bad idea.  Therefore, the return type has been
+	made non-const.	
 	* tests/constitute.c, tests/rwblob.c, tests/rwfile.c : Define
 	MAGICK_IMPLEMENTATION since these test programs using some internal
 	extensions.

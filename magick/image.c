@@ -5703,7 +5703,7 @@ MagickExport unsigned int TextureImage(Image *image,const Image *texture)
   assert(image->signature == MagickSignature);
   status=False;
   if (texture == (const Image *) NULL)
-    return;
+    return False;
   image->storage_class=DirectClass;
   status=True;
   for (y=0; y < (long) image->rows; y++)

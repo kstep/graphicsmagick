@@ -344,11 +344,13 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
 %  all modules are loaded in order to return a complete list. This function
 %  should be used to access the entire list rather than GetMagickInfo since
 %  the list returned by GetMagickInfo may be re-ordered every time it is
-%  invoked.
+%  invoked. Once the returned array is no longer needed, the allocated array
+%  should be deallocated. Do not attempt to deallocate the MagickInfo
+%  structures based on pointers in the array!
 %
 %  The format of the GetMagickList method is:
 %
-%      const MagickInfo **GetMagickInfoArray(ExceptionInfo *exception)
+%      MagickInfo **GetMagickInfoArray(ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -367,9 +369,9 @@ static int MagickInfoCompare(const void *x, const void *y)
 
   return (strcmp(xx->name, yy->name));
 }
-MagickExport const MagickInfo **GetMagickInfoArray(ExceptionInfo *exception)
+MagickExport MagickInfo **GetMagickInfoArray(ExceptionInfo *exception)
 {
-  const MagickInfo
+  MagickInfo
     **array;
 
   MagickInfo
@@ -404,7 +406,7 @@ MagickExport const MagickInfo **GetMagickInfoArray(ExceptionInfo *exception)
   /*
     Allocate array memory
   */
-  array=MagickAllocateMemory(const MagickInfo **,sizeof(MagickInfo *)*(entries+1));
+  array=MagickAllocateMemory(MagickInfo **,sizeof(MagickInfo *)*(entries+1));
   if (!array)
     {
       ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,0);
@@ -858,7 +860,7 @@ MagickExport int unsigned IsMagickConflict(const char *magick)
 MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
 {
 
-  const MagickInfo
+  MagickInfo
     **magick_array;
 
   int
@@ -908,7 +910,7 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
   }
   (void) fprintf(file,"\n* native blob support\n\n");
   (void) fflush(file);
-  MagickFreeMemory((void *)magick_array);
+  MagickFreeMemory(magick_array);
   return(True);
 }
 
@@ -940,7 +942,7 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
 */
 MagickExport unsigned int ListModuleMap(FILE *file,ExceptionInfo *exception)
 {
-  const MagickInfo
+  MagickInfo
     **magick_array;
 
   int
@@ -972,7 +974,7 @@ MagickExport unsigned int ListModuleMap(FILE *file,ExceptionInfo *exception)
    (void) fprintf(file, "</modulemap>\n");
    (void) fflush(file);
 
-   MagickFreeMemory((void *)magick_array);
+   MagickFreeMemory(magick_array);
 
    return(True);
 }

@@ -559,10 +559,12 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
 %  should be used to access the entire list rather than GetColorInfo since
 %  the list returned by GetColorInfo may be re-ordered every time it is
 %  invoked. GetColorList may be used if only a list of color names is desired.
+%  The array should be deallocated by the user once it is no longer needed.
+%  Do not attempt to deallocate members of the array.
 %
 %  The format of the GetMagickList method is:
 %
-%      const ColorInfo **GetColorInfoArray(ExceptionInfo *exception)
+%      ColorInfo **GetColorInfoArray(ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -581,9 +583,9 @@ static int ColorInfoCompare(const void *x, const void *y)
 
   return (strcmp(xx->name, yy->name));
 }
-MagickExport const ColorInfo **GetColorInfoArray(ExceptionInfo *exception)
+MagickExport ColorInfo **GetColorInfoArray(ExceptionInfo *exception)
 {
-  const ColorInfo
+  ColorInfo
     **array;
 
   ColorInfo
@@ -618,7 +620,7 @@ MagickExport const ColorInfo **GetColorInfoArray(ExceptionInfo *exception)
   /*
     Allocate array memory
   */
-  array=MagickAllocateMemory(const ColorInfo **,sizeof(ColorInfo *)*(entries+1));
+  array=MagickAllocateMemory(ColorInfo **,sizeof(ColorInfo *)*(entries+1));
   if (!array)
     {
       ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,0);

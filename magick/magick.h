@@ -84,9 +84,9 @@ extern MagickExport void
   InitializeMagick(const char *);
 
 extern MagickExport const MagickInfo
-  *GetMagickInfo(const char *,ExceptionInfo *exception);
+*GetMagickInfo(const char *,ExceptionInfo *exception);
 
-extern MagickExport const MagickInfo
+extern MagickExport MagickInfo
   **GetMagickInfoArray(ExceptionInfo *exception);
 
 extern MagickExport MagickInfo
