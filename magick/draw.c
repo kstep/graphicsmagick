@@ -762,8 +762,7 @@ static void DrawDashPolygon(const DrawInfo *draw_info,
           n=0;
         distance=scale*draw_info->dash_pattern[n];
       }
-    this_distance=0.0;
-    while (maximum_distance >= (distance+this_distance))
+    for (this_distance=0.0; maximum_distance >= (distance+this_distance); )
     {
       this_distance+=distance;
       if (n & 0x01)

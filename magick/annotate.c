@@ -189,6 +189,9 @@ MagickExport unsigned int AnnotateImage(Image *image,
         height-=2*y > height ? height : 2*y;
     }
   clone_info=CloneAnnotateInfo((ImageInfo *) NULL,annotate_info);
+  if ((clone_info->fill.opacity == TransparentOpacity) &&
+      (clone_info->stroke.opacity == TransparentOpacity))
+    QueryColorDatabase("black",&clone_info->fill);
   affine=annotate_info->affine;
   draw_info=CloneDrawInfo((ImageInfo *) NULL,(DrawInfo *) NULL);
   draw_info->primitive=AllocateString(primitive);
@@ -499,9 +502,6 @@ MagickExport void GetAnnotateInfo(const ImageInfo *image_info,
   annotate_info->affine=clone_info->affine;
   annotate_info->fill=clone_info->fill;
   annotate_info->stroke=clone_info->stroke;
-  if ((clone_info->fill.opacity == TransparentOpacity) &&
-      (clone_info->stroke.opacity == TransparentOpacity))
-    QueryColorDatabase("black",&annotate_info->fill);
   (void) QueryColorDatabase("none",&annotate_info->box);
   annotate_info->decorate=NoDecoration;
   if (clone_info->server_name != (char *) NULL)

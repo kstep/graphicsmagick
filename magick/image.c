@@ -2719,7 +2719,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   image_info->pointsize=12;
   IdentityAffine(&image_info->affine);
   (void) QueryColorDatabase("none",&image_info->stroke);
-  (void) QueryColorDatabase("black",&image_info->fill);
+  (void) QueryColorDatabase("none",&image_info->fill);
   (void) QueryColorDatabase("#ffffff",&image_info->background_color);
   (void) QueryColorDatabase(BorderColor,&image_info->border_color);
   (void) QueryColorDatabase(MatteColor,&image_info->matte_color);
