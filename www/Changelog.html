@@ -56,6 +56,16 @@
 2004-01-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/montage.c (MontageImages): Free thumbnails once they are
+        no longer needed (big leak).<BR>
+  <LI> magick/blob.c (OpenBlob): Ensure that magick array is
+        fully initialized, even if the fread() is short.
+  <LI> magick/list.c (ImageListToArray): Add a null pointer to the end
+        of the image list to serve as a handy list terminator.
+  <LI> magick/tempfile.c (DestroyTemporaryFiles): Fix memory leak of
+        semaphore.<BR>
+  <LI> magick/map.c (MagickMapDeallocateMap): Fix memory leak of
+        semaphore.<BR>
   <LI> coders/png.c (WriteOneJNGImage): Use DestroyBlob.
   <LI> magick/list.c (SyncNextImageInList): Use DestroyBlob.
   <LI> magick/image.c (AllocateNextImage): Use DestroyBlob.

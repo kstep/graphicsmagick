@@ -1636,7 +1636,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
           if (*length > 0)
             {
               (void) fseek(file,0L,SEEK_SET);
-              blob=MagickAllocateMemory(unsigned char *,*length+1);
+              blob=MagickAllocateMemory(unsigned char *,(*length)+1);
               if (blob)
                 {
                   *length=fread((void  *)blob, 1, *length, file);
@@ -2352,13 +2352,19 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                   unsigned char
                     magick[MaxTextExtent];
 
+                  size_t
+                    count;
+
                   setvbuf(image->blob->file,NULL,_IOFBF,16384);
                   image->blob->type=FileStream;
                   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
                     "  opened file %s as FileStream blob %p",
                       filename,&image->blob);
-                  (void) fread(magick,MaxTextExtent,1,image->blob->file);
+                  memset((void *) magick,0,MaxTextExtent);
+                  count=fread(magick,MaxTextExtent,1,image->blob->file);
                   (void) rewind(image->blob->file);
+                  (void) LogMagickEvent(BlobEvent,GetMagickModule(),
+                     "  read %d magic header bytes", count);
 #if defined(HasZLIB)
                   if ((magick[0] == 0x1F) && (magick[1] == 0x8B) &&
                       (magick[2] == 0x08))

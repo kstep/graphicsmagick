@@ -214,6 +214,7 @@ MagickMapDestroyObject(MagickMapObject *object)
   (object->deallocate_function)(object->object);
 
   memset((void *)object,0xbf,sizeof(MagickMapObject));
+  MagickFreeMemory(object);
 }
 
 /*
@@ -667,6 +668,7 @@ MagickMapDeallocateMap(MagickMap map)
   }
 
   UnlockSemaphoreInfo(map->semaphore);
+  DestroySemaphoreInfo(&map->semaphore);
 
   memset((void *)map,0xbf,sizeof(MagickMapHandle));
   MagickFreeMemory(map);

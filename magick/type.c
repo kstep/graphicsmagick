@@ -671,6 +671,7 @@ static unsigned int ReadTypeConfigureFile(const char *basename,
         {
           (void) strncpy(keyword,token,MaxTextExtent-1);
           GetToken(q,&q,token);
+          /* FIXME, valgrind invalid read here. */
           if (*token != '=')
             continue;
           GetToken(q,&q,token);

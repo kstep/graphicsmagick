@@ -377,6 +377,12 @@ MagickExport Image *MontageImages(const Image *images,
   }
   if (i < (long) number_images)
     {
+      if (!thumbnail)
+        --i;
+
+      for (tile=0; tile <= i; tile++)
+        if (image_list[tile])
+          DestroyImage(image_list[tile]);
       MagickFreeMemory(master_list);
       return((Image *) NULL);
     }
@@ -742,6 +748,7 @@ MagickExport Image *MontageImages(const Image *images,
           max_height=0;
         }
       DestroyImage(image);
+      DestroyImage(image_list[tile]);
       (void) SetMonitorHandler(handler);
       if (!MagickMonitor(MontageImageText,tiles,total_tiles,&image->exception))
         break;
