@@ -272,7 +272,8 @@ typedef enum
   ColorPrimitive,
   MattePrimitive,
   TextPrimitive,
-  ImagePrimitive
+  ImagePrimitive,
+  PathPrimitive
 } PrimitiveType;
 
 typedef enum
