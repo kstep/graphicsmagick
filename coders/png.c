@@ -4247,6 +4247,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     **scanlines;
 
   unsigned int
+    adjoin,
     delay,
     final_delay=0,
     initial_delay,
@@ -4280,7 +4281,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   framing_mode=1;
   old_framing_mode=1;
 
-  if (image_info->adjoin)
+  adjoin=image_info->adjoin && (image->next != (Image *) NULL);
+  if (adjoin)
     {
       unsigned int
         need_geom;
@@ -4774,11 +4776,11 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       Prepare PNG for writing.
     */
 #if defined(PNG_MNG_FEATURES_SUPPORTED)
-    if (image_info->adjoin)
+    if (adjoin)
        png_permit_mng_features(ping,PNG_ALL_MNG_FEATURES);
 #else
 # ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
-    if (image_info->adjoin)
+    if (adjoin)
        png_permit_empty_plte(ping,True);
 # endif
 #endif
@@ -4787,7 +4789,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     save_image_depth=image->depth;
     ping_info->bit_depth=save_image_depth;
     if ((image->x_resolution != 0) && (image->y_resolution != 0) &&
-        (!image_info->adjoin || !equal_physs))
+        (!adjoin || !equal_physs))
       {
         int
           unit_type;
@@ -4816,7 +4818,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           }
          png_set_pHYs(ping,ping_info,x_resolution,y_resolution,unit_type);
       }
-    if (image->matte && (!image_info->adjoin || !equal_backgrounds))
+    if (image->matte && (!adjoin || !equal_backgrounds))
       {
         png_color_16
           background;
@@ -5140,7 +5142,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
        png_set_compression_strategy(ping, Z_HUFFMAN_ONLY);
 #if defined(PNG_MNG_FEATURES_SUPPORTED) && defined(PNG_INTRAPIXEL_DIFFERENCING)
     /* This became available in libpng-1.0.9.  Output must be a MNG. */
-    if (image_info->adjoin && ((image_info->quality % 10) == 7))
+    if (adjoin && ((image_info->quality % 10) == 7))
     {
       ping_info->filter_type=PNG_INTRAPIXEL_DIFFERENCING;
     }
@@ -5211,7 +5213,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         png_set_gAMA(ping,ping_info,0.45455);
       }
     not_valid=(!ping_info->valid);
-    if ((!image_info->adjoin) || not_valid & PNG_INFO_sRGB)
+    if ((!adjoin) || not_valid & PNG_INFO_sRGB)
 #endif
       {
         if (!have_write_global_gama && (image->gamma != 0.0))
@@ -5241,7 +5243,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       }
     ping_info->interlace_type=image_info->interlace != NoInterlace;
 
-    if (need_fram && image_info->adjoin && ((image->delay != delay) ||
+    if (need_fram && adjoin && ((image->delay != delay) ||
         (framing_mode != old_framing_mode)))
       {
         if (image->delay == delay)
@@ -5277,7 +5279,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         old_framing_mode=framing_mode;
       }
 
-    if (image_info->adjoin)
+    if (adjoin)
       png_set_sig_bytes(ping,8);
 
     png_write_info(ping,ping_info);
@@ -5530,11 +5532,11 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       break;
     image=GetNextImage(image);
     MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
-  } while (image_info->adjoin);
-  if (image_info->adjoin)
+  } while (adjoin);
+  if (adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;
-  if (image_info->adjoin)
+  if (adjoin)
     {
       /*
         Write the MEND chunk.
