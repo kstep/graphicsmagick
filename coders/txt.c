@@ -196,7 +196,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Annotate image with text.
     */
-    text[strlen(text)]='\0';
+    text[sizeof(text)-1]='\0';
     (void) ConcatenateString(&draw_info->text,text);
     (void) ConcatenateString(&draw_info->text,"\\n");
     offset+=metrics.ascent-metrics.descent;
