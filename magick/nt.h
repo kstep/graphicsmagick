@@ -70,6 +70,10 @@ extern MagickExport char
   *SetClientName(const char *),
   *NTGetLastError(void);
 
+MagickExport Image
+  *ReadWMFImage(const ImageInfo *,
+  ExceptionInfo *);
+
 extern MagickExport int
   Exit(int),
   IsWindows95(),
