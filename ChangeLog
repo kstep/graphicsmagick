@@ -1,3 +1,8 @@
+2003-10-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/cineon.c: Imported and adapted Cineon image format coder
+	written by Kelly Bergougnoux with assistance from John Cristy.
+
 2003-10-08  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* coders/jpeg.c: Extended -sampling-factor option to allow

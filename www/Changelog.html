@@ -53,6 +53,25 @@
 </tr>
 </table>
 <p>
+2003-10-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/cineon.c: Imported and adapted Cineon image format coder
+        written by Kelly Bergougnoux with assistance from John Cristy.
+
+</UL>
+<p>
+2003-10-08  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> coders/jpeg.c: Extended -sampling-factor option to allow
+        user to supply full set of sampling factors.  If the full
+        set is not supplied, omitted ones are 1x1 by default, similar
+        to the behavior of "cjpeg -sample".
+  <LI> magick/command.c: Accept multiple pairs of sampling factors.
+
+</UL>
+<p>
 2003-10-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
@@ -60,6 +79,13 @@
         output.  Cleaned up evaluation of SAMPLESPERPIXEL and
         BITSPERSAMPLE.  Provided support for the TIFF coder options
         tiff:samples-per-pixel and tiff:bits-per-sample for power users.
+        (ReadTIFFImage): Colormap generation for PHOTOMETRIC_MINISBLACK
+        and PHOTOMETRIC_MINISWHITE was inaccurate.  Seems to be accurate
+        now.<BR>
+  <LI> PerlMagick/t/reference/read/input.miff: Updated due to Glenn's
+        change to scale macros.<BR>
+  <LI> PerlMagick/t/tiff/input_gray_12bit.tiff: Replaced 12 bit image
+        with a different one which is written by GraphicsMagick.
   <LI> coders/ps3.c (WritePS3Image): Use AccessCoderOption().
   <LI> magick/image.c (AccessCoderOption): Added a function to use for
         accessing coder-specific options.

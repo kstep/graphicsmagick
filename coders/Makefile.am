@@ -22,7 +22,7 @@ MAGICK_GDI32_MODULES =
 endif
 
 MAGICK_CODER_SRCS = \
-  art.c avi.c avs.c bmp.c caption.c clipboard.c cmyk.c cut.c dcm.c \
+  art.c avi.c avs.c bmp.c caption.c cineon.c clipboard.c cmyk.c cut.c dcm.c \
   dib.c dps.c dpx.c emf.c ept.c fax.c fits.c fpx.c gif.c gradient.c \
   gray.c histogram.c html.c icon.c jbig.c jp2.c jpeg.c label.c \
   locale.c logo.c map.c mat.c matte.c meta.c miff.c mono.c mpc.c mpeg.c \
@@ -66,7 +66,7 @@ if WITH_MODULES
 
 # Modules which are to be built
 pkg_LTLIBRARIES = \
-  art.la avi.la avs.la bmp.la caption.la cmyk.la cut.la dcm.la dib.la dps.la \
+  art.la avi.la avs.la bmp.la caption.la cineon.la cmyk.la cut.la dcm.la dib.la dps.la \
   dpx.la ept.la fax.la fits.la fpx.la gif.la gradient.la gray.la \
   histogram.la html.la icon.la jbig.la jp2.la jpeg.la label.la locale.la \
   logo.la map.la mat.la matte.la meta.la miff.la mono.la mpc.la mpeg.la mpr.la \
@@ -106,6 +106,11 @@ bmp_la_LIBADD       = $(LIBMAGICK)
 caption_la_SOURCES  = caption.c
 caption_la_LDFLAGS  = $(MODULECOMMONFLAGS)
 caption_la_LIBADD   = $(LIBMAGICK)
+
+# CINEON module
+cineon_la_SOURCES  = cineon.c
+cineon_la_LDFLAGS  = $(MODULECOMMONFLAGS)
+cineon_la_LIBADD   = $(LIBMAGICK)
 
 # CLIPBOARD module
 clipboard_la_SOURCES= clipboard.c
