@@ -114,8 +114,7 @@ static Image *ReadMPRImage(const ImageInfo *image_info,
   if ((image == (Image *) NULL) || (type != ImageRegistryType))
     ThrowReaderException(RegistryWarning,"Image not found in registry",image);
   if (length != sizeof(Image))
-    ThrowReaderException(RegistryWarning,"Incompatible image in registry",
-      image);
+    ThrowReaderException(RegistryWarning,"Image structure size mismatch",image);
   return(CloneImage(image,0,0,True,exception));
 }
 
