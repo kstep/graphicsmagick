@@ -262,7 +262,7 @@ sub testReadCompare {
 sub testReadSized {
   my( $infile, $size, $depth, $ref_8, $ref_16, $ref_32 ) =  @_;
   
-  my($image,$depth,$ref_signature);
+  my($image,$ref_signature);
 
   if ( !defined( $ref_16 ) )
     {
