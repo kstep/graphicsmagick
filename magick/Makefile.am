@@ -95,7 +95,7 @@ avs_la_LDFLAGS      = -no-undefined -module -avoid-version
 avs_la_LIBADD       =
 
 # BIM module
-bim_la_SOURCES     = 8bim.c
+bim_la_SOURCES     = bim.c
 bim_la_LDFLAGS     = -no-undefined -module -avoid-version
 bim_la_LIBADD      = 
 

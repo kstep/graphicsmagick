@@ -217,7 +217,7 @@ avs_la_LDFLAGS = -no-undefined -module -avoid-version
 avs_la_LIBADD = 
 
 # BIM module
-bim_la_SOURCES = 8bim.c
+bim_la_SOURCES = bim.c
 bim_la_LDFLAGS = -no-undefined -module -avoid-version
 bim_la_LIBADD = 
 
@@ -701,7 +701,7 @@ xwd_la_OBJECTS =  xwd.lo
 yuv_la_DEPENDENCIES = 
 yuv_la_OBJECTS =  yuv.lo
 bim_la_DEPENDENCIES = 
-bim_la_OBJECTS =  8bim.lo
+bim_la_OBJECTS =  bim.lo
 SCRIPTS =  $(bin_SCRIPTS)
 
 CFLAGS = @CFLAGS@
@@ -719,6 +719,28 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
+DEP_FILES =  .deps/PreRvIcccm.P .deps/animate.P .deps/annotate.P \
+.deps/avs.P .deps/bim.P .deps/blob.P .deps/bmp.P .deps/cache.P \
+.deps/cache_io.P .deps/cmyk.P .deps/colors.P .deps/compress.P \
+.deps/dcm.P .deps/decorate.P .deps/delegates.P .deps/display.P \
+.deps/dps.P .deps/draw.P .deps/effects.P .deps/enhance.P .deps/ept.P \
+.deps/error.P .deps/fax.P .deps/fits.P .deps/fpx.P .deps/gems.P \
+.deps/gif.P .deps/gradation.P .deps/gray.P .deps/hdf.P \
+.deps/histogram.P .deps/html.P .deps/icc.P .deps/icon.P .deps/image.P \
+.deps/iptc.P .deps/jbig.P .deps/jpeg.P .deps/label.P .deps/logo.P \
+.deps/mac.P .deps/magick.P .deps/map.P .deps/matte.P .deps/memory.P \
+.deps/miff.P .deps/monitor.P .deps/mono.P .deps/montage.P .deps/mtv.P \
+.deps/nt.P .deps/null.P .deps/pcd.P .deps/pcl.P .deps/pcx.P .deps/pdb.P \
+.deps/pdf.P .deps/pict.P .deps/pix.P .deps/plasma.P .deps/png.P \
+.deps/pnm.P .deps/preview.P .deps/ps.P .deps/ps2.P .deps/ps3.P \
+.deps/psd.P .deps/pwp.P .deps/quantize.P .deps/rgb.P .deps/rla.P \
+.deps/rle.P .deps/sct.P .deps/segment.P .deps/sfw.P .deps/sgi.P \
+.deps/shear.P .deps/signature.P .deps/stegano.P .deps/sun.P .deps/tga.P \
+.deps/tiff.P .deps/tile.P .deps/tim.P .deps/timer.P .deps/transform.P \
+.deps/ttf.P .deps/txt.P .deps/uil.P .deps/utility.P .deps/uyvy.P \
+.deps/vicar.P .deps/vid.P .deps/viff.P .deps/vms.P .deps/wbmp.P \
+.deps/widget.P .deps/x.P .deps/xbm.P .deps/xc.P .deps/xpm.P .deps/xwd.P \
+.deps/xwindows.P .deps/yuv.P .deps/zoom.P
 SOURCES = $(libMagick_la_SOURCES) $(EXTRA_libMagick_la_SOURCES) $(avs_la_SOURCES) $(bmp_la_SOURCES) $(cmyk_la_SOURCES) $(dcm_la_SOURCES) $(dps_la_SOURCES) $(ept_la_SOURCES) $(fax_la_SOURCES) $(fpx_la_SOURCES) $(fits_la_SOURCES) $(gif_la_SOURCES) $(gray_la_SOURCES) $(hdf_la_SOURCES) $(icc_la_SOURCES) $(icon_la_SOURCES) $(iptc_la_SOURCES) $(jbig_la_SOURCES) $(jpeg_la_SOURCES) $(logo_la_SOURCES) $(miff_la_SOURCES) $(mono_la_SOURCES) $(mtv_la_SOURCES) $(null_la_SOURCES) $(pcd_la_SOURCES) $(pcl_la_SOURCES) $(pcx_la_SOURCES) $(pdb_la_SOURCES) $(pdf_la_SOURCES) $(pict_la_SOURCES) $(png_la_SOURCES) $(pix_la_SOURCES) $(plasma_la_SOURCES) $(pnm_la_SOURCES) $(preview_la_SOURCES) $(ps_la_SOURCES) $(ps2_la_SOURCES) $(ps3_la_SOURCES) $(psd_la_SOURCES) $(pwp_la_SOURCES) $(rgb_la_SOURCES) $(rla_la_SOURCES) $(rle_la_SOURCES) $(sct_la_SOURCES) $(sfw_la_SOURCES) $(sgi_la_SOURCES) $(sun_la_SOURCES) $(tga_la_SOURCES) $(tiff_la_SOURCES) $(tile_la_SOURCES) $(tim_la_SOURCES) $(txt_la_SOURCES) $(uil_la_SOURCES) $(uyvy_la_SOURCES) $(vicar_la_SOURCES) $(vid_la_SOURCES) $(viff_la_SOURCES) $(wbmp_la_SOURCES) $(x_la_SOURCES) $(xbm_la_SOURCES) $(xc_la_SOURCES) $(xpm_la_SOURCES) $(xwd_la_SOURCES) $(yuv_la_SOURCES) $(bim_la_SOURCES)
 OBJECTS = $(libMagick_la_OBJECTS) $(avs_la_OBJECTS) $(bmp_la_OBJECTS) $(cmyk_la_OBJECTS) $(dcm_la_OBJECTS) $(dps_la_OBJECTS) $(ept_la_OBJECTS) $(fax_la_OBJECTS) $(fpx_la_OBJECTS) $(fits_la_OBJECTS) $(gif_la_OBJECTS) $(gray_la_OBJECTS) $(hdf_la_OBJECTS) $(icc_la_OBJECTS) $(icon_la_OBJECTS) $(iptc_la_OBJECTS) $(jbig_la_OBJECTS) $(jpeg_la_OBJECTS) $(logo_la_OBJECTS) $(miff_la_OBJECTS) $(mono_la_OBJECTS) $(mtv_la_OBJECTS) $(null_la_OBJECTS) $(pcd_la_OBJECTS) $(pcl_la_OBJECTS) $(pcx_la_OBJECTS) $(pdb_la_OBJECTS) $(pdf_la_OBJECTS) $(pict_la_OBJECTS) $(png_la_OBJECTS) $(pix_la_OBJECTS) $(plasma_la_OBJECTS) $(pnm_la_OBJECTS) $(preview_la_OBJECTS) $(ps_la_OBJECTS) $(ps2_la_OBJECTS) $(ps3_la_OBJECTS) $(psd_la_OBJECTS) $(pwp_la_OBJECTS) $(rgb_la_OBJECTS) $(rla_la_OBJECTS) $(rle_la_OBJECTS) $(sct_la_OBJECTS) $(sfw_la_OBJECTS) $(sgi_la_OBJECTS) $(sun_la_OBJECTS) $(tga_la_OBJECTS) $(tiff_la_OBJECTS) $(tile_la_OBJECTS) $(tim_la_OBJECTS) $(txt_la_OBJECTS) $(uil_la_OBJECTS) $(uyvy_la_OBJECTS) $(vicar_la_OBJECTS) $(vid_la_OBJECTS) $(viff_la_OBJECTS) $(wbmp_la_OBJECTS) $(x_la_OBJECTS) $(xbm_la_OBJECTS) $(xc_la_OBJECTS) $(xpm_la_OBJECTS) $(xwd_la_OBJECTS) $(yuv_la_OBJECTS) $(bim_la_OBJECTS)
 
@@ -726,9 +748,9 @@ all: all-redirect
 .SUFFIXES:
 .SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --foreign --include-deps magick/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --foreign magick/Makefile
 
-Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
@@ -813,9 +835,6 @@ uninstall-pkgLTLIBRARIES:
 	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(pkgdir)/$$p; \
 	done
 
-.c.o:
-	$(COMPILE) -c $<
-
 # FIXME: We should only use cygpath when building on Windows,
 # and only if it is available.
 .c.obj:
@@ -837,9 +856,6 @@ distclean-compile:
 	-rm -f *.tab.c
 
 maintainer-clean-compile:
-
-.c.lo:
-	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
 
 .s.lo:
 	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
@@ -1117,6 +1133,11 @@ distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 subdir = magick
 
 distdir: $(DISTFILES)
+	here=`cd $(top_builddir) && pwd`; \
+	top_distdir=`cd $(top_distdir) && pwd`; \
+	distdir=`cd $(distdir) && pwd`; \
+	cd $(top_srcdir) \
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --foreign magick/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
@@ -1128,6 +1149,38 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
+
+DEPS_MAGIC := $(shell mkdir .deps > /dev/null 2>&1 || :)
+
+-include $(DEP_FILES)
+
+mostlyclean-depend:
+
+clean-depend:
+
+distclean-depend:
+	-rm -rf .deps
+
+maintainer-clean-depend:
+
+%.o: %.c
+	@echo '$(COMPILE) -c $<'; \
+	$(COMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-cp .deps/$(*F).pp .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm .deps/$(*F).pp
+
+%.lo: %.c
+	@echo '$(LTCOMPILE) -c $<'; \
+	$(LTCOMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-sed -e 's/^\([^:]*\)\.o[ 	]*:/\1.lo \1.o :/' \
+	  < .deps/$(*F).pp > .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm -f .deps/$(*F).pp
 info-am:
 info: info-am
 dvi-am:
@@ -1171,21 +1224,21 @@ distclean-generic:
 maintainer-clean-generic:
 mostlyclean-am:  mostlyclean-hdr mostlyclean-libLTLIBRARIES \
 		mostlyclean-pkgLTLIBRARIES mostlyclean-compile \
-		mostlyclean-libtool mostlyclean-tags \
+		mostlyclean-libtool mostlyclean-tags mostlyclean-depend \
 		mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
 clean-am:  clean-hdr clean-libLTLIBRARIES clean-pkgLTLIBRARIES \
-		clean-compile clean-libtool clean-tags clean-generic \
-		mostlyclean-am
+		clean-compile clean-libtool clean-tags clean-depend \
+		clean-generic mostlyclean-am
 
 clean: clean-am
 
 distclean-am:  distclean-hdr distclean-libLTLIBRARIES \
 		distclean-pkgLTLIBRARIES distclean-compile \
-		distclean-libtool distclean-tags distclean-generic \
-		clean-am
+		distclean-libtool distclean-tags distclean-depend \
+		distclean-generic clean-am
 	-rm -f libtool
 
 distclean: distclean-am
@@ -1194,8 +1247,8 @@ maintainer-clean-am:  maintainer-clean-hdr \
 		maintainer-clean-libLTLIBRARIES \
 		maintainer-clean-pkgLTLIBRARIES \
 		maintainer-clean-compile maintainer-clean-libtool \
-		maintainer-clean-tags maintainer-clean-generic \
-		distclean-am
+		maintainer-clean-tags maintainer-clean-depend \
+		maintainer-clean-generic distclean-am
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
@@ -1212,10 +1265,12 @@ distclean-compile clean-compile maintainer-clean-compile \
 mostlyclean-libtool distclean-libtool clean-libtool \
 maintainer-clean-libtool uninstall-binSCRIPTS install-binSCRIPTS \
 uninstall-includeHEADERS install-includeHEADERS tags mostlyclean-tags \
-distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
-dvi-am dvi check check-am installcheck-am installcheck all-recursive-am \
-install-exec-am install-exec install-data-am install-data install-am \
-install uninstall-am uninstall all-redirect all-am all installdirs \
+distclean-tags clean-tags maintainer-clean-tags distdir \
+mostlyclean-depend distclean-depend clean-depend \
+maintainer-clean-depend info-am info dvi-am dvi check check-am \
+installcheck-am installcheck all-recursive-am install-exec-am \
+install-exec install-data-am install-data install-am install \
+uninstall-am uninstall all-redirect all-am all installdirs \
 mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
