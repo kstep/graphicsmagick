@@ -448,7 +448,7 @@ Export Image *ReadXPMImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenBlob(image_info,image,"r");
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
