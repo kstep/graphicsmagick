@@ -51,7 +51,7 @@
 <P>unsigned int  <STRONG>IsPaletteImage</STRONG>( const Image *image, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>ListColorInfo</STRONG>( 
 <FONT SIZE=-1>FILE</FONT> *file, ExceptionInfo *exception );</P>
-<P>unsigned int  <STRONG>QueryColorDatabase</STRONG>( const char *name, PixelPacket *color );</P>
+<P>unsigned int  <STRONG>QueryColorDatabase</STRONG>( const char *name, PixelPacket *color, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>QueryColorname</STRONG>( const Image *image, const PixelPacket *color, ComplianceType compliance, char *name, ExceptionInfo *exception );</P>
 <P>
 <HR>
@@ -184,7 +184,7 @@ Return any errors or warnings in this structure.
 <P>
 <H2><A NAME="querycolordatabase">QueryColorDatabase</A></H2>
 <blockquote>QueryColorDatabase() returns the red, green, blue, and opacity intensities for a given color name. </blockquote><P>The format of the QueryColorDatabase method is:</P>
-<blockquote>unsigned int QueryColorDatabase ( const char *name, <A HREF="types/PixelPacket.html">PixelPacket</A> *color ); </blockquote><P>
+<blockquote>unsigned int QueryColorDatabase ( const char *name, <A HREF="types/PixelPacket.html">PixelPacket</A> *color, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG><A NAME="item_o_name%3A">name:</A></STRONG><BR>
@@ -195,7 +195,7 @@ The color name (e.g.  white, blue, yellow).
 <DD>
 The red, green, blue, and opacity intensities values of the named color in this structure.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
 <P></P></DL></DL>

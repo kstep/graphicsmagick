@@ -185,19 +185,18 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="writeimage">WriteImage</A></H2>
-<P>Use <CODE>Write()</CODE> to write an image or an image sequence to a file or filehandle.  <CODE>Write()</CODE> returns 0 is there is a memory shortage or if the image cannot be written.  Check the exception member of image to determine the cause for any failure.</P>
+<P>Use <CODE>Write()</CODE> to write an image or an image sequence to a file or filehandle.  If writing to a file on disk, the name is defined by the filename member of the image structure.  <CODE>Write()</CODE> returns 0 is there is a memory shortage or if the image cannot be written.  Check the exception member of image to determine the cause for any failure.</P>
 <P>The format of the WriteImage method is:</P>
 <blockquote>unsigned int WriteImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG>image_info:</STRONG><BR>
 <DD>
-Write the image defined by the file or filename members of this structure.
+The image info.
 <P></P>
 <dd><p></p><dt><STRONG>image:</STRONG><BR>
 <DD>
-
-<FONT SIZE=-1>A</FONT> pointer to a Image structure.
+The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="writeimages">WriteImages</A></H2>

@@ -2362,9 +2362,10 @@ MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Use Write() to write an image or an image sequence to a file or
-%  filehandle.  Write() returns 0 is there is a memory shortage or if the
-%  image cannot be written.  Check the exception member of image to determine
-%  the cause for any failure.
+%  filehandle.  If writing to a file on disk, the name is defined by the
+%  filename member of the image structure.  Write() returns 0 is there is a
+%  memory shortage or if the image cannot be written.  Check the exception
+%  member of image to determine the cause for any failure.
 %
 %  The format of the WriteImage method is:
 %
@@ -2372,10 +2373,9 @@ MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
 %
 %  A description of each parameter follows:
 %
-%    o image_info: Write the image defined by the file or filename members of
-%      this structure.
+%    o image_info: The image info.
 %
-%    o image: A pointer to a Image structure.
+%    o image: The image.
 %
 %
 */
