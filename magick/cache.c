@@ -70,6 +70,9 @@ typedef struct _VistaInfo
     x,
     y;
 
+  off_t
+    length;
+
   void
     *stash;
 
@@ -110,9 +113,6 @@ typedef struct _CacheInfo
 
   int
     file;
-
-  off_t
-    length;
 
   VistaInfo
     *vista;
@@ -219,6 +219,7 @@ Export unsigned int AllocateCache(Cache cache,const ClassType class_type,
         cache_info->vista[id].rows=0;
         cache_info->vista[id].x=0;
         cache_info->vista[id].y=0;
+        cache_info->vista[id].length=0;
         cache_info->vista[id].stash=(void *) NULL;
         cache_info->vista[id].pixels=(PixelPacket *) NULL;
         cache_info->vista[id].indexes=(IndexPacket *) NULL;
@@ -565,7 +566,6 @@ Export void GetCacheInfo(Cache *cache)
   cache_info->indexes=(IndexPacket *) NULL;
   *cache_info->filename='\0';
   cache_info->file=(-1);
-  cache_info->length=0;
   cache_info->vista=(VistaInfo *) NULL;
   *cache=cache_info;
 }
@@ -912,7 +912,7 @@ Export unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
   if (cache_info->type != DiskCache)
     {
       /*
-        Read pixels from memory.
+        Read indexes from memory.
       */
       if (indexes == (cache_info->indexes+offset))
         return(True);
@@ -926,7 +926,7 @@ Export unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
       return(True);
     }
   /*
-    Read pixels from disk.
+    Read indexes from disk.
   */
   if (cache_info->file == -1)
     {
@@ -1185,9 +1185,9 @@ Export void SetCacheVista(Cache cache,const unsigned int id,
   if (vista->stash == (void *) NULL)
     vista->stash=AllocateMemory(length);
   else
-    if (cache_info->length < length)
-      vista->stash=ReallocateMemory(vista->stash,length);
-  cache_info->length=length;
+    if (vista->length < length)
+       vista->stash=ReallocateMemory(vista->stash,length);
+  vista->length=length;
   vista->pixels=(PixelPacket *) vista->stash;
   vista->indexes=(IndexPacket *) (vista->pixels+vista->columns*vista->rows);
 }
