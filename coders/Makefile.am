@@ -215,7 +215,7 @@ jpeg_la_LIBADD      = $(LIBMAGICK) $(LIB_JPEG)
 # JPEG 2000 module
 jp2_la_SOURCES      = jp2.c
 jp2_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-jp2_la_LIBADD       = $(LIBMAGICK) $(LIB_JP2)  $(LIB_JPEG) $(LIB_MATH)
+jp2_la_LIBADD       = $(LIBMAGICK) $(LIB_JP2) $(LIB_JPEG) $(LIB_MATH)
 
 # LABEL module
 label_la_SOURCES    = label.c
@@ -275,12 +275,12 @@ mpeg_la_LIBADD      = $(LIBMAGICK)
 # MPR module
 mpr_la_SOURCES      = mpr.c
 mpr_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-mpr_la_LIBADD       = $(LIBMAGICK) $(LIB_XML) $(LIB_ZLIB) $(LIB_X11) $(LIB_MATH)
+mpr_la_LIBADD       = $(LIBMAGICK)
 
 # MSL module
 msl_la_SOURCES      = msl.c
 msl_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-msl_la_LIBADD       = $(LIBMAGICK) $(LIB_XML) $(LIB_ZLIB) $(LIB_X11) $(LIB_MATH)
+msl_la_LIBADD       = $(LIBMAGICK) $(LIB_XML) $(LIB_ZLIB) $(LIB_MATH)
 
 # MTV module
 mtv_la_SOURCES      = mtv.c
@@ -430,7 +430,7 @@ sun_la_LIBADD       = $(LIBMAGICK)
 # SVG module
 svg_la_SOURCES      = svg.c
 svg_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-svg_la_LIBADD       = $(LIBMAGICK) $(LIB_XML) $(LIB_ZLIB) $(LIB_X11) $(LIB_MATH)
+svg_la_LIBADD       = $(LIBMAGICK) $(LIB_XML) $(LIB_ZLIB) $(LIB_MATH)
 
 # TGA module
 tga_la_SOURCES      = tga.c
@@ -475,7 +475,7 @@ uil_la_LIBADD       = $(LIBMAGICK)
 # URL module
 url_la_SOURCES      = url.c
 url_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-url_la_LIBADD       = $(LIBMAGICK) $(LIB_XML) $(LIB_ZLIB) $(LIB_X11) $(LIB_MATH)
+url_la_LIBADD       = $(LIBMAGICK) $(LIB_XML) $(LIB_ZLIB) $(LIB_MATH)
 
 # UYVY module
 uyvy_la_SOURCES     = uyvy.c
@@ -515,7 +515,7 @@ wpg_la_LIBADD       = $(LIBMAGICK)
 # X module
 x_la_SOURCES        = x.c
 x_la_LDFLAGS        = $(MODULECOMMONFLAGS)
-x_la_LIBADD         = $(LIBMAGICK) $(LIB_X11)
+x_la_LIBADD         = $(LIBMAGICK)
 
 # XBM module
 xbm_la_SOURCES      = xbm.c
@@ -540,7 +540,7 @@ xpm_la_LIBADD       = $(LIBMAGICK)
 # XWD module
 xwd_la_SOURCES      = xwd.c
 xwd_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-xwd_la_LIBADD       = $(LIBMAGICK) $(LIB_X11)
+xwd_la_LIBADD       = $(LIBMAGICK)
 
 # YUV module
 yuv_la_SOURCES      = yuv.c

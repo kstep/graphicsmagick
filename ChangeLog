@@ -1,3 +1,15 @@
+2004-03-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/t/x/write.t: Don't test X11 if DISPLAY is not set.
+	* PerlMagick/t/x/read.t: Don't test X11 if DISPLAY is not set.
+
+2004-03-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/Makefile.am: Removed some apparently unnecessary library
+	dependencies.
+	* Makefile.am (windows-src): Added a way to generate a Windows
+	source zip file.
+
 2004-03-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c: The -operator command now supports

@@ -267,6 +267,21 @@ format_c_api_docs:
 	@PERL@ $(top_srcdir)/scripts/format_c_api_docs -format html --srcdir $(top_srcdir)/magick --outdir $(top_srcdir)/www/api
 
 #
+# Build a Windows source Zip-ball
+#
+ZIP_FILES= \
+	acinclude.m4 configure.ac aclocal.m4 GraphicsMagick.spec.in \
+	Makefile.am Makefile.in rungm.sh.in configure $(EXTRA_DIST) \
+	 BCBMagick CVS CVSROOT Magick++ PerlMagick TclMagick \
+	VisualMagick bzlib coders config contrib doc filters fpx images \
+	jbig jp2 jpeg lcms libxml licenses locale ltdl magick png scenes scripts \
+	tests tiff ttf utilities wand win2k wmf www xlib zlib
+DIST_WINDOWS_SRC_ZIP=$(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-windows.zip
+$(DIST_WINDOWS_SRC_ZIP) windows-src:
+	rm -f $(DIST_WINDOWS_SRC_ZIP)
+	builddir=`pwd` ; cd $(top_srcdir) && zip -r -9 -q $$builddir/$(DIST_WINDOWS_SRC_ZIP) $(ZIP_FILES) -x '*~' -x '*.o' -x autom4te.cache -x CVS -x '*.so' -x '.libs' -x '.deps' -x '.#*' -x core -x '*.core'
+
+#
 # RPM build support
 #
 if HAS_RPM
@@ -312,4 +327,5 @@ endif # HAS_RPM
 #
 snapshot: distcheck
 	$(MAKE) $(DIST_ARCHIVE_SRPM)
-	mv $(DIST_ARCHIVES) $(DIST_ARCHIVE_SRPM) /ftp/pub/GraphicsMagick/snapshots/
+	$(MAKE) $(DIST_WINDOWS_SRC_ZIP)
+	mv $(DIST_ARCHIVES) $(DIST_WINDOWS_SRC_ZIP) $(DIST_ARCHIVE_SRPM) /ftp/pub/GraphicsMagick/snapshots/

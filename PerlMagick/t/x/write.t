@@ -25,19 +25,23 @@ chdir 't/x' || die 'Cd failed';
 #
 # 1) Test reading and displaying an image
 #
-$image=Graphics::Magick->new;
-$x=$image->ReadImage('congrats.miff');
-if( "$x" ) {
-  print "not ok $test\n";
-} else {
-  $x = $image->Display(delay=>800);
+if ( defined($ENV{'DISPLAY'}) ) {
+  $image=Graphics::Magick->new;
+  $x=$image->ReadImage('congrats.miff');
   if( "$x" ) {
     print "not ok $test\n";
   } else {
-    print "ok $test\n";
+    $x = $image->Display(delay=>800);
+    if( "$x" ) {
+      print "not ok $test\n";
+    } else {
+      print "ok $test\n";
+    }
   }
+  undef $image;
+} else {
+  print "ok $test\n";
 }
-undef $image;
 
 $test = 0;  # Quench PERL compliaint
 

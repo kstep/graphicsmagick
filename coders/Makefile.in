@@ -216,14 +216,11 @@ mpc_la_OBJECTS = $(am_mpc_la_OBJECTS)
 mpeg_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am_mpeg_la_OBJECTS = mpeg.lo
 mpeg_la_OBJECTS = $(am_mpeg_la_OBJECTS)
-mpr_la_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2)
+mpr_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am_mpr_la_OBJECTS = mpr.lo
 mpr_la_OBJECTS = $(am_mpr_la_OBJECTS)
 msl_la_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2)
+	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_2)
 am_msl_la_OBJECTS = msl.lo
 msl_la_OBJECTS = $(am_msl_la_OBJECTS)
 mtv_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -323,8 +320,7 @@ sun_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am_sun_la_OBJECTS = sun.lo
 sun_la_OBJECTS = $(am_sun_la_OBJECTS)
 svg_la_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2)
+	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_2)
 am_svg_la_OBJECTS = svg.lo
 svg_la_OBJECTS = $(am_svg_la_OBJECTS)
 tga_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -353,8 +349,7 @@ uil_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am_uil_la_OBJECTS = uil.lo
 uil_la_OBJECTS = $(am_uil_la_OBJECTS)
 url_la_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2)
+	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_2)
 am_url_la_OBJECTS = url.lo
 url_la_OBJECTS = $(am_url_la_OBJECTS)
 uyvy_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -379,7 +374,7 @@ wmf_la_OBJECTS = $(am_wmf_la_OBJECTS)
 wpg_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am_wpg_la_OBJECTS = wpg.lo
 wpg_la_OBJECTS = $(am_wpg_la_OBJECTS)
-x_la_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_2)
+x_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am_x_la_OBJECTS = x.lo
 x_la_OBJECTS = $(am_x_la_OBJECTS)
 xbm_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -394,7 +389,7 @@ xcf_la_OBJECTS = $(am_xcf_la_OBJECTS)
 xpm_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am_xpm_la_OBJECTS = xpm.lo
 xpm_la_OBJECTS = $(am_xpm_la_OBJECTS)
-xwd_la_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_2)
+xwd_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am_xwd_la_OBJECTS = xwd.lo
 xwd_la_OBJECTS = $(am_xwd_la_OBJECTS)
 yuv_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -1042,7 +1037,7 @@ jpeg_la_LIBADD = $(LIBMAGICK) $(LIB_JPEG)
 # JPEG 2000 module
 jp2_la_SOURCES = jp2.c
 jp2_la_LDFLAGS = $(MODULECOMMONFLAGS)
-jp2_la_LIBADD = $(LIBMAGICK) $(LIB_JP2)  $(LIB_JPEG) $(LIB_MATH)
+jp2_la_LIBADD = $(LIBMAGICK) $(LIB_JP2) $(LIB_JPEG) $(LIB_MATH)
 
 # LABEL module
 label_la_SOURCES = label.c
@@ -1102,12 +1097,12 @@ mpeg_la_LIBADD = $(LIBMAGICK)
 # MPR module
 mpr_la_SOURCES = mpr.c
 mpr_la_LDFLAGS = $(MODULECOMMONFLAGS)
-mpr_la_LIBADD = $(LIBMAGICK) $(LIB_XML) $(LIB_ZLIB) $(LIB_X11) $(LIB_MATH)
+mpr_la_LIBADD = $(LIBMAGICK)
 
 # MSL module
 msl_la_SOURCES = msl.c
 msl_la_LDFLAGS = $(MODULECOMMONFLAGS)
-msl_la_LIBADD = $(LIBMAGICK) $(LIB_XML) $(LIB_ZLIB) $(LIB_X11) $(LIB_MATH)
+msl_la_LIBADD = $(LIBMAGICK) $(LIB_XML) $(LIB_ZLIB) $(LIB_MATH)
 
 # MTV module
 mtv_la_SOURCES = mtv.c
@@ -1257,7 +1252,7 @@ sun_la_LIBADD = $(LIBMAGICK)
 # SVG module
 svg_la_SOURCES = svg.c
 svg_la_LDFLAGS = $(MODULECOMMONFLAGS)
-svg_la_LIBADD = $(LIBMAGICK) $(LIB_XML) $(LIB_ZLIB) $(LIB_X11) $(LIB_MATH)
+svg_la_LIBADD = $(LIBMAGICK) $(LIB_XML) $(LIB_ZLIB) $(LIB_MATH)
 
 # TGA module
 tga_la_SOURCES = tga.c
@@ -1302,7 +1297,7 @@ uil_la_LIBADD = $(LIBMAGICK)
 # URL module
 url_la_SOURCES = url.c
 url_la_LDFLAGS = $(MODULECOMMONFLAGS)
-url_la_LIBADD = $(LIBMAGICK) $(LIB_XML) $(LIB_ZLIB) $(LIB_X11) $(LIB_MATH)
+url_la_LIBADD = $(LIBMAGICK) $(LIB_XML) $(LIB_ZLIB) $(LIB_MATH)
 
 # UYVY module
 uyvy_la_SOURCES = uyvy.c
@@ -1342,7 +1337,7 @@ wpg_la_LIBADD = $(LIBMAGICK)
 # X module
 x_la_SOURCES = x.c
 x_la_LDFLAGS = $(MODULECOMMONFLAGS)
-x_la_LIBADD = $(LIBMAGICK) $(LIB_X11)
+x_la_LIBADD = $(LIBMAGICK)
 
 # XBM module
 xbm_la_SOURCES = xbm.c
@@ -1367,7 +1362,7 @@ xpm_la_LIBADD = $(LIBMAGICK)
 # XWD module
 xwd_la_SOURCES = xwd.c
 xwd_la_LDFLAGS = $(MODULECOMMONFLAGS)
-xwd_la_LIBADD = $(LIBMAGICK) $(LIB_X11)
+xwd_la_LIBADD = $(LIBMAGICK)
 
 # YUV module
 yuv_la_SOURCES = yuv.c
