@@ -185,6 +185,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   GetCacheInfo(&image->cache);
   cache_info=(CacheInfo *) image->cache;
   (void) strcpy(cache_info->meta_filename,image_info->filename);
+  quantum_depth=QuantumDepth;
   image->depth=8;
   image->compression=NoCompression;
   while (isgraph(c) && (c != ':'))

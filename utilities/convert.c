@@ -480,6 +480,8 @@ int main(int argc,char **argv)
   image=(Image *) NULL;
   image_info=CloneImageInfo((ImageInfo *) NULL);
   (void) strcpy(image_info->filename,argv[argc-1]);
+  param1=(void *) NULL;
+  param2=(void *) NULL;
   SetImageInfo(image_info,True);
   option=(char *) NULL;
   scene=0;

@@ -2059,6 +2059,8 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
       status=QuantizeImage(quantize_info,images);
       return(status);
     }
+  status=False;
+  image=images;
   number_colors=quantize_info->number_colors;
   if (number_colors == 0)
     number_colors=MaxRGB+1;

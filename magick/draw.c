@@ -4937,6 +4937,8 @@ static void TraceSquareLinecap(PrimitiveInfo *primitive_info,
   register int
     i;
 
+  dx=0.0;
+  dy=0.0;
   for (i=1; i < number_vertices; i++)
   {
     dx=primitive_info[0].point.x-primitive_info[i].point.x;

@@ -1243,9 +1243,9 @@ png_read_raw_profile(Image *image, const ImageInfo *image_info,
      while (*sp < '0' || (*sp > '9' && *sp < 'a') || *sp > 'f')
         sp++;
      if (i%2 == 0)
-        *dp=16*unhex[*sp++];
+        *dp=16*unhex[(int) (*sp++)];
      else
-        (*dp++)+=unhex[*sp++];
+        (*dp++)+=unhex[(int) (*sp++)];
    }
 
    /* We have already read "Raw profile type " */
@@ -1383,8 +1383,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     subframe_width,
     ticks_per_second;
 
-    png_textp
-      text;
+  png_textp
+    text;
 
   /*
     Open image file.
@@ -1396,6 +1396,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   first_mng_object=False;
   skipping_loop=(-1);
   have_mng_structure=False;
+  mng_info=(MngInfo *) NULL;
   if (LocaleCompare(image_info->magick,"MNG") == 0)
     {
       char

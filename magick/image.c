@@ -1229,7 +1229,6 @@ MagickExport unsigned int CompositeImage(Image *image,
     }
     case ModulateCompositeOp:
     {
-      midpoint=0x80;
       percent_saturation=50.0;
       percent_brightness=50.0;
       if (composite_image->geometry != (char *) NULL)
@@ -1268,6 +1267,7 @@ MagickExport unsigned int CompositeImage(Image *image,
   /*
     Composite image.
   */
+  midpoint=0x80;
   for (y=0; y < image->rows; y++)
   {
     if (y < y_offset)
@@ -1830,7 +1830,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   (void) fprintf(file,"  Depth: %u-bits\n",GetImageDepth(image));
   x=0;
   p=(Image *) NULL;
-  if (image->matte && (strcmp(image->magick,"GIF") != 0) || image->taint)
+  if ((image->matte && (strcmp(image->magick,"GIF") != 0)) || image->taint)
     {
       PixelPacket
         *p;
@@ -2760,10 +2760,11 @@ MagickExport ImageType GetImageType(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->colorspace == CMYKColorspace)
-    if (!image->matte)
-      return(ColorSeparationType);
-    else
+    {
+      if (!image->matte)
+        return(ColorSeparationType);
       return(ColorSeparationMatteType);
+    }
   if (IsMonochromeImage(image))
     return(BilevelType);
   if (IsGrayImage(image) && image->matte)

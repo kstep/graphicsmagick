@@ -347,6 +347,7 @@ MagickExport void InitializeModules(void)
   LiberateMemory((void **) &path);
   if (file == (FILE*) NULL)
     return;
+  aliases=module_aliases;
   while (!feof(file))
   {
     if (fscanf(file,"%s %s",alias,module) != 2)

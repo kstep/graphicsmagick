@@ -275,6 +275,8 @@ int main(int argc,char **argv)
   (void) strcpy(image_info->filename,argv[argc-1]);
   SetImageInfo(image_info,True);
   mask_image=(Image *) NULL;
+  param1=(void *) NULL;
+  param2=(void *) NULL;
   stegano=0;
   stereo=False;
   tile=False;
