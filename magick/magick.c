@@ -573,6 +573,7 @@ MagickExport void InitializeMagick(const char *path)
   InitializeSemaphore();
   (void) getcwd(directory,MaxTextExtent);
   (void) SetClientPath(directory);
+#if !defined(WIN32)
   if (path != (const char *) NULL)
     {
       GetPathComponent(path,HeadPath,filename);
@@ -580,32 +581,40 @@ MagickExport void InitializeMagick(const char *path)
       GetPathComponent(path,BasePath,filename);
       (void) SetClientName(filename);
     }
-#if defined(WIN32)
-  {
-    char
-      *execution_path;
-
-    execution_path=NTGetExecutionPath();
-    GetPathComponent(execution_path,HeadPath,filename);
-    (void) SetClientPath(filename);
-    GetPathComponent(execution_path,TailPath,filename);
-    (void) SetClientName(filename);
-    LiberateMemory((void **) &execution_path);
-    InitializeTracingCriticalSection();
-#if defined(_DEBUG)
+#else
+  if (path != (const char *) NULL)
     {
-      int
-        debug;
-
-      debug=_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
-      debug|=_CRTDBG_CHECK_ALWAYS_DF;
-      debug|=_CRTDBG_DELAY_FREE_MEM_DF;
-      debug|=_CRTDBG_LEAK_CHECK_DF;
-      // debug=_CrtSetDbgFlag(debug);
-      // _ASSERTE(_CrtCheckMemory());  // use this to check condition of memory
+      GetPathComponent(path,HeadPath,filename);
+      (void) SetClientPath(filename);
+      GetPathComponent(path,TailPath,filename);
+      (void) SetClientName(filename);
     }
+  else
+    {
+      char
+        *execution_path;
+
+      execution_path=NTGetExecutionPath();
+      GetPathComponent(execution_path,HeadPath,filename);
+      (void) SetClientPath(filename);
+      GetPathComponent(execution_path,TailPath,filename);
+      (void) SetClientName(filename);
+      LiberateMemory((void **) &execution_path);
+      InitializeTracingCriticalSection();
+#if defined(_DEBUG)
+      {
+        int
+          debug;
+
+        debug=_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
+        debug|=_CRTDBG_CHECK_ALWAYS_DF;
+        debug|=_CRTDBG_DELAY_FREE_MEM_DF;
+        debug|=_CRTDBG_LEAK_CHECK_DF;
+        // debug=_CrtSetDbgFlag(debug);
+        // _ASSERTE(_CrtCheckMemory());  // use this to check condition of memory
+      }
 #endif
-  }
+    }
 #endif
 }
 
