@@ -896,12 +896,9 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
           /*
             Initialize image background color.
           */
-          image->background_color.red=
-            XDownScale(MSBFirstReadShort(image));
-          image->background_color.green=
-            XDownScale(MSBFirstReadShort(image));
-          image->background_color.blue=
-            XDownScale(MSBFirstReadShort(image));
+          image->background_color.red=XDownScale(MSBFirstReadShort(image));
+          image->background_color.green=XDownScale(MSBFirstReadShort(image));
+          image->background_color.blue=XDownScale(MSBFirstReadShort(image));
           break;
         }
         case 0x70:
@@ -1193,11 +1190,15 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
         if (file == (FILE *) NULL)
           ReaderExit(FileOpenWarning,"Unable to write file",image);
         length=MSBFirstReadLong(image);
-        for (i=0; i < length; i++)
+        for (i=0; i < 6; i++)
+          (void) MSBFirstReadLong(image);
+        ReadRectangle(frame);
+        for (i=0; i < 122; i++)
+          (void) ReadByte(image);
+        for (i=0; i < (length-154); i++)
         {
           c=ReadByte(image);
-          if (i >= 154)
-            (void) putc(c,file);
+          (void) putc(c,file);
         }
         (void) fclose(file);
         tiled_image=ReadJPEGImage(local_info);
@@ -1205,11 +1206,11 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
         (void) remove(local_info->filename);
         if (tiled_image == (Image *) NULL)
           continue;
-        FormatString(geometry,"%ux%u",
-          Max(image->columns,tiled_image->columns),
+        FormatString(geometry,"%ux%u",Max(image->columns,tiled_image->columns),
           Max(image->rows,tiled_image->rows));
         TransformImage(&image,(char *) NULL,geometry);
-        CompositeImage(image,ReplaceCompositeOp,tiled_image,0,0);
+        CompositeImage(image,ReplaceCompositeOp,tiled_image,
+          frame.left,frame.right);
         tiled_image->file=(FILE *) NULL;
         DestroyImage(tiled_image);
         continue;

@@ -272,9 +272,9 @@ Export unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
     if (QuantumTick(i,histogram_image->columns))
       ProgressMonitor(SaveImageText,i,histogram_image->columns);
   }
-  free ((char *) blue);
-  free ((char *) green);
-  free ((char *) red);
+  FreeMemory ((char *) blue);
+  FreeMemory ((char *) green);
+  FreeMemory ((char *) red);
   TemporaryFilename(filename);
   file=fopen(filename,WriteBinaryType);
   if (file != (FILE *) NULL)
