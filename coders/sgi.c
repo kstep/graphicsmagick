@@ -324,7 +324,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image);
         for (z=0; z < (int) iris_header.depth; z++)
         {
-          p=iris_pixels+z;
+          p=iris_pixels+bytes_per_pixel*z;
           for (y=0; y < (int) iris_header.rows; y++)
           {
             (void) ReadBlob(image,bytes_per_pixel*iris_header.columns,

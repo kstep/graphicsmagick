@@ -1011,10 +1011,10 @@ MagickExport unsigned int ProfileImage(Image *image,const ProfileType type,
           switch (image->rendering_intent)
           {
             case AbsoluteIntent: intent=INTENT_ABSOLUTE_COLORIMETRIC; break;
-            case PerceptualIntent: intent=INTENT_PERCEPTUAL;
-            case RelativeIntent: intent=INTENT_RELATIVE_COLORIMETRIC;
-            case SaturationIntent: intent=INTENT_SATURATION;
-            default: intent=INTENT_PERCEPTUAL;
+            case PerceptualIntent: intent=INTENT_PERCEPTUAL; break;
+            case RelativeIntent: intent=INTENT_RELATIVE_COLORIMETRIC; break;
+            case SaturationIntent: intent=INTENT_SATURATION; break;
+            default: intent=INTENT_PERCEPTUAL; break;
           }
           if (image->colorspace == CMYKColorspace)
             transform=cmsCreateTransform(image_profile,TYPE_CMYK_16,
