@@ -2125,7 +2125,7 @@ MagickExport Image *OilPaintImage(Image *image,const double radius,
   for (y=width; y < (int) (image->rows-width-1); y++)
   {
     p=GetImagePixels(image,0,y-width,image->columns,2*width+1);
-    q=SetImagePixels(paint_image,0,y,paint_image->columns,1);
+    q=GetImagePixels(paint_image,0,y,paint_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     p+=width*image->columns+width;
