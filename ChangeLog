@@ -1,6 +1,8 @@
 2003-03-17  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* magick/image.c Relocated misplaced break in ChannelImage()
+	and sped up SetImageOpacity by avoiding blend operation when
+	setting the image fully opaque.
 
 2003-03-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
