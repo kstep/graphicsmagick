@@ -592,6 +592,105 @@ static unsigned int CompressColormapTransFirst(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I m a g e I s G r a y                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%   Like IsGrayImage except does not change DirectClass to PseudoClass        %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+*/
+unsigned int ImageIsGray(Image *image)
+{
+  register PixelPacket
+    *p;
+
+  register int
+    i,
+    x,
+    y;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+
+  if (image->storage_class == PseudoClass)
+    {
+      for (i=0; i < (int) image->colors; i++)
+        if (!IsGray(image->colormap[i]))
+          return(False);
+      return(True);
+    }
+  for (y=0; y < (int) image->rows; y++)
+  {
+    p=GetImagePixels(image,0,y,image->columns,1);
+    if (p == (PixelPacket *) NULL)
+      return(False);
+    for (x=0; (x < (int) image->columns); x++)
+    {
+       if (!IsGray(*p++))
+          return(False);
+    }
+  }
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I m a g e I s M o n o c h r o m e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%   Like IsMonochromeImage except does not change DirectClass to PseudoClass  %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+*/
+unsigned int ImageIsMonochrome(Image *image)
+{
+  register PixelPacket
+    *p;
+
+  register int
+    i,
+    x,
+    y;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+
+  if (image->storage_class == PseudoClass)
+    {
+      for (i=0; i < (int) image->colors; i++)
+        if (((int) Intensity(image->colormap[1]) != 0) &&
+            ((int) Intensity(image->colormap[1]) != MaxRGB))
+          return(False);
+      return(True);
+    }
+  for (y=0; y < (int) image->rows; y++)
+  {
+    p=GetImagePixels(image,0,y,image->columns,1);
+    if (p == (PixelPacket *) NULL)
+      return(False);
+    for (x=0; (x < (int) image->columns); x++,p++)
+    {
+        if (((int) Intensity(*p) != 0) && ((int) Intensity(*p) != MaxRGB))
+          return(False);
+    }
+  }
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   I s M N G                                                                 %
 %                                                                             %
 %                                                                             %
@@ -3910,7 +4009,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
            need_local_plte=True;
         if (!need_local_plte)
           {
-            if (!IsGrayImage(image))
+            if (!ImageIsGray(image))
               all_images_are_gray=False;
             equal_palettes=PalettesAreEqual(image_info,image,next_image);
             if (!use_global_plte)
@@ -4412,7 +4511,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     /*
       Select the color type.
     */
-    if (IsMonochromeImage(image))
+    if (ImageIsMonochrome(image))
       {
         ping_info->bit_depth=1;
         if (image->matte)
@@ -4524,12 +4623,10 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     matte=image->matte;
     if (ping_info->valid & PNG_INFO_tRNS)
       image->matte=False;
-    if (IsGrayImage(image) && (!image->matte || image->depth >= 8))
+    if (ImageIsGray(image) && (!image->matte || image->depth >= 8))
       {
         if (image->matte)
-          {
             ping_info->color_type=PNG_COLOR_TYPE_GRAY_ALPHA;
-          }
         else
           {
             ping_info->color_type=PNG_COLOR_TYPE_GRAY;
@@ -4770,7 +4867,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     rowbytes=image->columns;
     if (image->depth == 8)
       {
-        if (IsGrayImage(image))
+        if (ImageIsGray(image))
           rowbytes*=(image->matte ? 2 : 1);
         else
           if (!IsPseudoClass(image))
@@ -4779,7 +4876,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     else
       if (image->depth == 16)
         {
-          if (IsGrayImage(image))
+          if (ImageIsGray(image))
             rowbytes*=(image->matte ? 4 : 2);
           else
             rowbytes*=(image->matte ? 8 : 6);
@@ -4797,7 +4894,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     */
     for (i=0; i < (int) image->rows; i++)
       scanlines[i]=png_pixels+(rowbytes*i);
-    if (!image->matte && IsMonochromeImage(image))
+    if (!image->matte && ImageIsMonochrome(image))
       {
         /*
           Convert PseudoClass image to a PNG monochrome image.
@@ -4814,14 +4911,14 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       }
     else
       {
-      if ((!image->matte || (ping_info->bit_depth >= 8)) && IsGrayImage(image))
+      if ((!image->matte || (ping_info->bit_depth >= 8)) && ImageIsGray(image))
         {
           for (y=0; y < (int) image->rows; y++)
           {
             if (!GetImagePixels(image,0,y,image->columns,1))
               break;
             if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
-              (void) PopImagePixels(image,GrayQuantum,scanlines[y]);
+                (void) PopImagePixels(image,GrayQuantum,scanlines[y]);
             else
               (void) PopImagePixels(image,GrayOpacityQuantum,scanlines[y]);
             if (image->previous == (Image *) NULL)

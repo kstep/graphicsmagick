@@ -148,7 +148,7 @@ extern "C" {
 #define False  0
 #define DegreesToRadians(x) (MagickPI*(x)/180.0)
 #define Intensity(color)  \
-  ((0.299*(color).red+0.587*(color).green+(0.114+MagickEpsilon)*(color).blue))
+  ((9798*(color).red+19235*(color).green+3735*(color).blue)/32768L)
 #define IsFaxImage(color) \
   (IsMonochromeImage(image) && ((image)->columns <= 2560))
 #define IsGray(color)  \

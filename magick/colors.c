@@ -830,8 +830,8 @@ MagickExport unsigned int IsGrayImage(Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method IsMonochromeImage returns True if the image is monochrome otherwise
-%  False is returned.  If the image is DirectClass and monochrome, it is
-%  demoted to PseudoClass.
+%  False is returned.  If the image is DirectClass and grayscale (including
+%  monochrome), it is demoted to PseudoClass.
 %
 %  The format of the IsMonochromeImage method is:
 %

@@ -1023,11 +1023,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           for (x=0; x < (int) image->columns; x++)
           {
-#if (QuantumDepth == 16)
-            *q++=(unsigned char) Intensity(*p)/256;
-#else
             *q++=(unsigned char) Intensity(*p);
-#endif
             p++;
           }
           break;
