@@ -1463,7 +1463,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             if ((image_info->type != PaletteType) &&
                 IsGrayImage(image,&image->exception))
               {
-               (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
+                (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
                 photometric=PHOTOMETRIC_MINISBLACK;
                 if (IsMonochromeImage(image,&image->exception))
                   {
