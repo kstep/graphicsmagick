@@ -4714,6 +4714,36 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   optimize=(image_info->type == OptimizeType || image_info->type ==
     UndefinedType);
 
+  /* Log some info about the input */
+  LogMagickEvent(CoderEvent,  "  Checking input image(s)");
+  if (optimize)
+    LogMagickEvent(CoderEvent,"     Optimize=TRUE");
+  else
+    LogMagickEvent(CoderEvent,"     Optimize=FALSE");
+  LogMagickEvent(CoderEvent,  "     Image_info depth=%d",image_info->depth);
+  LogMagickEvent(CoderEvent,  "     Type=%d",image_info->type);
+  {
+    Image
+      *p;
+
+    int
+      scene;
+
+    for(p=image; p != (Image *) NULL; p=p->next)
+    {
+      LogMagickEvent(CoderEvent,  "     Scene=%d",scene++);
+      LogMagickEvent(CoderEvent,  "       Image depth=%d",p->depth);
+      if (p->matte)
+        LogMagickEvent(CoderEvent,"       Matte=True");
+      if(p->storage_class == PseudoClass)
+        LogMagickEvent(CoderEvent,"       Storage class=PseudoClass");
+      else
+        LogMagickEvent(CoderEvent,"       Storage class=DirectClass");
+      if (!adjoin)
+        break;
+    }
+  }
+
   /*
     Sometimes we get PseudoClass images whose RGB values don't match
     the colors in the colormap.  This code syncs the RGB values.
@@ -5388,8 +5418,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     /*
       Select the color type.
     */
-    if (optimize || IsPalette ||
-        image_info->type==BilevelType)
+    if (optimize || IsPalette || image_info->type==BilevelType)
       {
         if (ImageIsMonochrome(image))
           {
