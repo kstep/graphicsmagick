@@ -1806,7 +1806,7 @@ static void CacheSignalHandler(int status)
 
 MagickExport void SetCacheThreshold(const off_t size)
 {
-  SetMagickResources(MemoryResource,size);
+  SetMagickResourceLimit(MemoryResource,size);
 }
 
 MagickExport unsigned int OpenCache(Image *image,const MapMode mode)

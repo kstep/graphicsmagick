@@ -32,7 +32,7 @@ extern MagickExport unsigned int
 extern MagickExport void
   DestroyMagickResources(void),
   LiberateMagickResource(const ResourceType,const off_t),
-  SetMagickResources(const ResourceType,const off_t);
+  SetMagickResourceLimit(const ResourceType,const off_t);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

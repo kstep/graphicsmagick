@@ -273,17 +273,17 @@ MagickExport void LiberateMagickResource(const ResourceType type,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S e t M a g i c k R e s o u r c e s                                       %
+%   S e t M a g i c k R e s o u r c e L i m i t                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetMagickResources() sets the limit for a particular resource.
+%  SetMagickResourceLimit() sets the limit for a particular resource.
 %
-%  The format of the SetMagickResources() method is:
+%  The format of the SetMagickResourceLimit() method is:
 %
-%      void SetMagickResources(const ResourceType type,const off_t limit)
+%      void SetMagickResourceLimit(const ResourceType type,const off_t limit)
 %
 %  A description of each parameter follows:
 %
@@ -293,7 +293,8 @@ MagickExport void LiberateMagickResource(const ResourceType type,
 %
 %
 */
-MagickExport void SetMagickResources(const ResourceType type,const off_t limit)
+MagickExport void SetMagickResourceLimit(const ResourceType type,
+  const off_t limit)
 {
   AcquireSemaphoreInfo(&resource_semaphore);
   switch (type)
