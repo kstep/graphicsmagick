@@ -217,9 +217,6 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
         height-=2*y > (long) height ? height : 2*y;
     }
   annotate=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-  if ((annotate->fill.opacity == TransparentOpacity) &&
-      (annotate->stroke.opacity == TransparentOpacity))
-    (void) QueryColorDatabase("black",&annotate->fill);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   clone_info->primitive=AllocateString(primitive);
   matte=image->matte;
@@ -1196,85 +1193,92 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
     if (status != False)
       continue;
     FT_Vector_Transform(&glyph.origin,&affine);
-    if (render && (draw_info->stroke.opacity != TransparentOpacity))
-      {
-        /*
-          Trace the glyph.
-        */
-        clone_info->affine.tx=offset->x+(glyph.origin.x >> 6);
-        clone_info->affine.ty=offset->y-(glyph.origin.y >> 6);
-        (void) CloneString(&clone_info->primitive,"path '");
-        (void) FT_Outline_Decompose(&((FT_OutlineGlyph) glyph.image)->outline,
-          &OutlineMethods,clone_info);
-        (void) ConcatenateString(&clone_info->primitive,"'");
-      }
-    (void) FT_Glyph_Transform(glyph.image,&affine,&glyph.origin);
-    if (render && (draw_info->fill.opacity != TransparentOpacity))
-      {
-        /*
-          Rasterize the glyph.
-        */
-        status=FT_Glyph_To_Bitmap(&glyph.image,ft_render_mode_normal,
-          (FT_Vector *) NULL,True);
-        if (status != False)
-          continue;
-        SetImageType(image,TrueColorType);
-        bitmap=(FT_BitmapGlyph) glyph.image;
-        point.x=offset->x+bitmap->left;
-        point.y=offset->y-bitmap->top;
-        p=bitmap->bitmap.buffer;
-        for (y=0; y < (long) bitmap->bitmap.rows; y++)
+    if (render)
+      if ((draw_info->stroke.opacity != TransparentOpacity) ||
+          (draw_info->stroke_pattern != (Image *) NULL))
         {
-          if ((long) ceil(point.y+y-0.5) >= image->rows)
-            break;
-          if ((long) ceil(point.y+y-0.5) < 0)
-            {
-              p+=bitmap->bitmap.width;
-              continue;
-            }
-          q=GetImagePixels(image,(long) ceil(point.x-0.5),
-            (long) ceil(point.y+y-0.5),bitmap->bitmap.width,1);
-          active=q != (PixelPacket *) NULL;
-          for (x=0; x < (long) bitmap->bitmap.width; x++)
+          /*
+            Trace the glyph.
+          */
+          clone_info->affine.tx=offset->x+(glyph.origin.x >> 6);
+          clone_info->affine.ty=offset->y-(glyph.origin.y >> 6);
+          (void) CloneString(&clone_info->primitive,"path '");
+          (void) FT_Outline_Decompose(&((FT_OutlineGlyph) glyph.image)->outline,
+            &OutlineMethods,clone_info);
+          (void) ConcatenateString(&clone_info->primitive,"'");
+        }
+    (void) FT_Glyph_Transform(glyph.image,&affine,&glyph.origin);
+    if (render)
+      {
+        if ((draw_info->fill.opacity != TransparentOpacity) ||
+            (draw_info->fill_pattern != (Image *) NULL))
           {
-            if (((long) ceil(point.x+x-0.5) < 0) || (*p == 0) ||
-                ((long) ceil(point.x+x-0.5) >= image->columns))
+            /*
+              Rasterize the glyph.
+            */
+            status=FT_Glyph_To_Bitmap(&glyph.image,ft_render_mode_normal,
+              (FT_Vector *) NULL,True);
+            if (status != False)
+              continue;
+            SetImageType(image,TrueColorType);
+            bitmap=(FT_BitmapGlyph) glyph.image;
+            point.x=offset->x+bitmap->left;
+            point.y=offset->y-bitmap->top;
+            p=bitmap->bitmap.buffer;
+            for (y=0; y < (long) bitmap->bitmap.rows; y++)
+            {
+              if ((long) ceil(point.y+y-0.5) >= image->rows)
+                break;
+              if ((long) ceil(point.y+y-0.5) < 0)
+                {
+                  p+=bitmap->bitmap.width;
+                  continue;
+                }
+              q=GetImagePixels(image,(long) ceil(point.x-0.5),
+                (long) ceil(point.y+y-0.5),bitmap->bitmap.width,1);
+              active=q != (PixelPacket *) NULL;
+              for (x=0; x < (long) bitmap->bitmap.width; x++)
               {
+                if (((long) ceil(point.x+x-0.5) < 0) || (*p == 0) ||
+                    ((long) ceil(point.x+x-0.5) >= image->columns))
+                  {
+                    p++;
+                    q++;
+                    continue;
+                  }
+                if (draw_info->text_antialias)
+                  opacity=(Quantum) UpScale(*p);
+                else
+                  opacity=(Quantum)
+                    ((*p) >= 64 ? TransparentOpacity : OpaqueOpacity);
+                fill_color=draw_info->fill;
+                if (draw_info->fill_pattern != (Image *) NULL)
+                  fill_color=GetOnePixel(draw_info->fill_pattern,
+                    x % draw_info->fill_pattern->columns,
+                    y % draw_info->fill_pattern->rows);
+                opacity=(Quantum) ((unsigned long) ((MaxRGB-opacity)*
+                  (MaxRGB-fill_color.opacity))/MaxRGB);
+                if (!active)
+                  q=GetImagePixels(image,(long) ceil(point.x+x-0.5),
+                    (long) ceil(point.y+y-0.5),1,1);
+                if (q == (PixelPacket *) NULL)
+                  {
+                    p++;
+                    break;
+                  }
+                AlphaComposite(&fill_color,opacity,q,q->opacity);
+                if (!active)
+                  (void) SyncImagePixels(image);
                 p++;
                 q++;
-                continue;
               }
-            if (draw_info->text_antialias)
-              opacity=(Quantum) UpScale(*p);
-            else
-              opacity=(Quantum)
-                ((*p) >= 64 ? TransparentOpacity : OpaqueOpacity);
-            fill_color=draw_info->fill;
-            if (draw_info->fill_pattern != (Image *) NULL)
-              fill_color=GetOnePixel(draw_info->fill_pattern,
-                x % draw_info->fill_pattern->columns,
-                y % draw_info->fill_pattern->rows);
-            opacity=(Quantum) ((unsigned long) ((MaxRGB-opacity)*
-              (MaxRGB-fill_color.opacity))/MaxRGB);
-            if (!active)
-              q=GetImagePixels(image,(long) ceil(point.x+x-0.5),
-                (long) ceil(point.y+y-0.5),1,1);
-            if (q == (PixelPacket *) NULL)
-              {
-                p++;
-                break;
-              }
-            AlphaComposite(&fill_color,opacity,q,q->opacity);
-            if (!active)
               (void) SyncImagePixels(image);
-            p++;
-            q++;
+            }
           }
-          (void) SyncImagePixels(image);
-        }
+        if ((draw_info->stroke.opacity != TransparentOpacity) ||
+            (draw_info->stroke_pattern != (Image *) NULL))
+          (void) DrawImage(image,clone_info);  /* draw text stroke */
       }
-    if (render && (draw_info->stroke.opacity != TransparentOpacity))
-      (void) DrawImage(image,clone_info);  /* draw text stroke */
     FT_Glyph_Get_CBox(glyph.image,ft_glyph_bbox_pixels,&bounding_box);
     if (bounding_box.xMin < extent.x1)
       extent.x1=bounding_box.xMin;

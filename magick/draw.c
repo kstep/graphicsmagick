@@ -1740,9 +1740,10 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
         if (LocaleCompare("fill",keyword) == 0)
           {
             GetToken(q,&q,token);
-            (void) QueryColorDatabase(token,&graphic_context[n]->fill);
             FormatString(pattern,"[%.1024s]",token);
-            if (GetImageAttribute(image,pattern) != (ImageAttribute *) NULL)
+            if (GetImageAttribute(image,pattern) == (ImageAttribute *) NULL)
+              (void) QueryColorDatabase(token,&graphic_context[n]->fill);
+            else
               DrawPatternPath(image,graphic_context[n],token,
                 &graphic_context[n]->fill_pattern);
             if (graphic_context[n]->fill.opacity != TransparentOpacity)
@@ -2207,9 +2208,10 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
         if (LocaleCompare("stroke",keyword) == 0)
           {
             GetToken(q,&q,token);
-            (void) QueryColorDatabase(token,&graphic_context[n]->stroke);
             FormatString(pattern,"[%.1024s]",token);
-            if (GetImageAttribute(image,pattern) != (ImageAttribute *) NULL)
+            if (GetImageAttribute(image,pattern) == (ImageAttribute *) NULL)
+              (void) QueryColorDatabase(token,&graphic_context[n]->stroke);
+            else
               DrawPatternPath(image,graphic_context[n],token,
                 &graphic_context[n]->stroke_pattern);
             if (graphic_context[n]->stroke.opacity != TransparentOpacity)
