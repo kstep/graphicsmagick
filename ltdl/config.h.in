@@ -1,4 +1,16 @@
 /* config.h.in.  Generated automatically from configure.in by autoheader.  */
+/* Some of these are defined here, not in configure.in, because
+   they're AC_DEFINEd in two different places, which causes two
+   defines to appear.  Some C compilers might now appreciate it...  */
+
+/* Define if you have the libdl library or equivalent.  */
+#undef HAVE_LIBDL
+
+/* Define if you have the GNU dld library.  */
+#undef HAVE_DLD
+
+/* Define if you have the shl_load function.  */
+#undef HAVE_SHL_LOAD
 
 /* Define if you have the <ctype.h> header file. */
 #undef HAVE_CTYPE_H
@@ -74,7 +86,7 @@
    library search path. */
 #undef LTDL_SHLIBPATH_VAR
 
-/* Define to the extension used for shared libraries, say, .so. */
+/* Define to the extension used for shared libraries, say, ".so". */
 #undef LTDL_SHLIB_EXT
 
 /* Define to the system default library search path. */

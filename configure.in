@@ -127,7 +127,6 @@ fi
 # checking and generation useful to package maintainers.  This is made an
 # option to avoid confusing end users.
 AM_MAINTAINER_MODE
-AC_CANONICAL_HOST
 
 # Add configure option --with-dmalloc to enable malloc debugging.
 # dmalloc is available at ftp://ftp.letters.com/src/dmalloc/dmalloc.tar.gz
