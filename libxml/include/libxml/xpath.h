@@ -221,6 +221,13 @@ struct _xmlXPathContext {
 };
 
 /*
+ * The structure of a compiled expression form is not public
+ */
+
+typedef struct _xmlXPathCompExpr xmlXPathCompExpr;
+typedef xmlXPathCompExpr *xmlXPathCompExprPtr;
+
+/*
  * An XPath parser context, it contains pure parsing informations,
  * an xmlXPathContext, and the stack of objects.
  */
@@ -235,6 +242,9 @@ struct _xmlXPathParserContext {
     int                 valueNr;	/* number of values stacked */
     int                valueMax;	/* max number of values stacked */
     xmlXPathObjectPtr *valueTab;	/* stack of values */
+
+    xmlXPathCompExprPtr comp;		/* the precompiled expression */
+    int xptr;				/* it this an XPointer expression */
 };
 
 /*
@@ -252,26 +262,47 @@ typedef void (*xmlXPathFunction) (xmlXPathParserContextPtr ctxt, int nargs);
  ************************************************************************/
 
 /**
- * Evaluation functions.
+ * Objects and Nodesets handling
  */
-void		   xmlXPathInit			(void);
-xmlXPathContextPtr xmlXPathNewContext		(xmlDocPtr doc);
-void		   xmlXPathFreeContext		(xmlXPathContextPtr ctxt);
-xmlXPathObjectPtr  xmlXPathEval			(const xmlChar *str,
-						 xmlXPathContextPtr ctxt);
-xmlXPathObjectPtr  xmlXPathEvalXPtrExpr		(const xmlChar *str,
-						 xmlXPathContextPtr ctxt);
 void		   xmlXPathFreeObject		(xmlXPathObjectPtr obj);
-xmlXPathObjectPtr  xmlXPathEvalExpression	(const xmlChar *str,
-						 xmlXPathContextPtr ctxt);
 xmlNodeSetPtr	   xmlXPathNodeSetCreate	(xmlNodePtr val);
 void		   xmlXPathFreeNodeSetList	(xmlXPathObjectPtr obj);
 void		   xmlXPathFreeNodeSet		(xmlNodeSetPtr obj);
 xmlXPathObjectPtr  xmlXPathObjectCopy		(xmlXPathObjectPtr val);
 int		   xmlXPathCmpNodes		(xmlNodePtr node1,
 						 xmlNodePtr node2);
+/**
+ * Conversion functions to basic types
+ */
+xmlXPathObjectPtr  xmlXPathConvertBoolean	(xmlXPathObjectPtr val);
+xmlXPathObjectPtr  xmlXPathConvertNumber	(xmlXPathObjectPtr val);
+xmlXPathObjectPtr  xmlXPathConvertString	(xmlXPathObjectPtr val);
 
+/**
+ * Context handling
+ */
+void		   xmlXPathInit			(void);
+xmlXPathContextPtr xmlXPathNewContext		(xmlDocPtr doc);
+void		   xmlXPathFreeContext		(xmlXPathContextPtr ctxt);
 
+/**
+ * Evaluation functions.
+ */
+xmlXPathObjectPtr  xmlXPathEval			(const xmlChar *str,
+						 xmlXPathContextPtr ctxt);
+xmlXPathObjectPtr  xmlXPathEvalXPtrExpr		(const xmlChar *str,
+						 xmlXPathContextPtr ctxt);
+xmlXPathObjectPtr  xmlXPathEvalExpression	(const xmlChar *str,
+						 xmlXPathContextPtr ctxt);
+int                xmlXPathEvalPredicate	(xmlXPathContextPtr ctxt,
+						 xmlXPathObjectPtr res);
+/**
+ * Separate compilation/evaluation entry points
+ */
+xmlXPathCompExprPtr xmlXPathCompile		(const xmlChar *str);
+xmlXPathObjectPtr   xmlXPathCompiledEval	(xmlXPathCompExprPtr comp,
+						 xmlXPathContextPtr ctx);
+void                xmlXPathFreeCompExpr	(xmlXPathCompExprPtr comp);
 #ifdef __cplusplus
 }
 #endif

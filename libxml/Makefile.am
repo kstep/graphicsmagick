@@ -15,29 +15,11 @@ libxml2_la_LIBADD = @Z_LIBS@ -lm
 
 libxml2_la_LDFLAGS = -version-info @LIBXML_VERSION_INFO@
 
-libxml2_la_SOURCES = \
-		SAX.c \
-		entities.c \
-		encoding.c \
-		error.c \
-		parserInternals.c \
-		parser.c \
-		tree.c \
-		hash.c \
-		list.c \
-		xmlIO.c \
-		xmlmemory.c \
-		uri.c \
-		valid.c \
-		xlink.c \
-		HTMLparser.c \
-		HTMLtree.c \
-		debugXML.c \
-		xpath.c \
-		xpointer.c \
-		xinclude.c \
-		nanohttp.c \
-		nanoftp.c
+libxml2_la_SOURCES = SAX.c entities.c encoding.c error.c parserInternals.c  \
+		parser.c tree.c hash.c list.c xmlIO.c xmlmemory.c uri.c  \
+		valid.c xlink.c HTMLparser.c HTMLtree.c debugXML.c xpath.c  \
+		xpointer.c xinclude.c nanohttp.c nanoftp.c  \
+		strio.c strio.h trio.c trio.h triop.h libxml.h
 
 DEPS = $(top_builddir)/libxml2.la
 LDADDS = $(top_builddir)/libxml2.la @Z_LIBS@ -lm
@@ -75,7 +57,7 @@ testURI_LDADD= $(LDADDS)
 check-local: tests
 
 $(srcdir)/libxml:
-	-$(RM) $(srcdir)/libxml
+	-$(RM) -f $(srcdir)/libxml
 	ln -s $(srcdir)/. $(srcdir)/libxml
 
 install-data: $(srcdir)/libxml
@@ -253,6 +235,7 @@ URItests : testURI
 	  fi ; fi ; done)
 
 XPathtests : testXPath
+	@(rm -f .memdump ; touch .memdump)
 	@echo "##"
 	@echo "## XPath regression tests"
 	@echo "##"
@@ -262,9 +245,11 @@ XPathtests : testXPath
 	  if [ ! -f $(srcdir)/result/XPath/expr/$$name ] ; then \
 	      echo New test file $$name ; \
 	      $(top_builddir)/testXPath -f --expr $$i > $(srcdir)/result/XPath/expr/$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	  else \
 	      echo Testing $$name ; \
 	      $(top_builddir)/testXPath -f --expr $$i > result.$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/XPath/expr/$$name result.$$name ; \
 	      rm result.$$name ; \
 	  fi ; fi ; done)
@@ -278,9 +263,11 @@ XPathtests : testXPath
 	  if [ ! -f $(srcdir)/result/XPath/tests/$$name ] ; then \
 	      echo New test file $$name ; \
 	      $(top_builddir)/testXPath -f -i $$i $$j > $(srcdir)/result/XPath/tests/$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	  else \
 	      echo Testing $$name ; \
 	      $(top_builddir)/testXPath -f -i $$i $$j > result.$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/XPath/tests/$$name result.$$name ; \
 	      rm result.$$name ; \
 	  fi ; fi ; done ; fi ; done)
@@ -309,6 +296,7 @@ XPtrtests : testXPath
 	  fi ; fi ; done ; fi ; done)
 
 XIncludetests : xmllint
+	@(rm -f .memdump ; touch .memdump)
 	@echo "##"
 	@echo "## XInclude regression tests"
 	@echo "##"
@@ -364,6 +352,17 @@ SAXtests : testSAX
 
 
 Validtests : xmllint
+	@(rm -f .memdump ; touch .memdump)
+	@echo "##"
+	@echo "## Valid documents regression tests"
+	@echo "##"
+	@(for i in $(srcdir)/test/VCM/* ; do \
+	  name=`basename $$i`; \
+	  if [ ! -d $$i ] ; then \
+	      echo Testing $$name ; \
+	      $(top_builddir)/xmllint --valid --noout $$i ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
+	  fi ; done ; exit 0)
 	@echo "##"
 	@echo "## Validity checking regression tests"
 	@echo "##"
@@ -376,11 +375,12 @@ Validtests : xmllint
 	  else \
 	      echo Testing $$name ; \
 	      $(top_builddir)/xmllint --noout --valid $$i 2> result.$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/VC/$$name result.$$name ; \
 	      rm result.$$name ; \
 	  fi ; fi ; done)
 	@echo "##"
-	@echo "## Valid documents regression tests"
+	@echo "## General documents valid regression tests"
 	@echo "##"
 	@(for i in $(srcdir)/test/valid/* ; do \
 	  name=`basename $$i`; \
@@ -391,6 +391,7 @@ Validtests : xmllint
 	  else \
 	      echo Testing $$name ; \
 	      $(top_builddir)/xmllint --valid $$i > result.$$name 2>error.$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/valid/$$name result.$$name ; \
 	      diff $(srcdir)/result/valid/$$name.err error.$$name ; \
 	      rm result.$$name error.$$name ; \
@@ -423,7 +424,10 @@ EXTRA_DIST = xml2Conf.sh.in libxml.spec.in libxml.spec libxml.m4 \
 	     $(man_MANS) libxml-2.0.pc.in xmlversion.h.in \
 	     win32/README.MSDev win32/Makefile.mingw \
 	     win32/libxml2/libxml2.dsp win32/libxml2/libxml2_so.dsp \
-	     win32/libxml2/libxml2_a.dsp vms/build_libxml.com vms/config.vms
+	     win32/libxml2/libxml2_a.dsp win32/libxml2/xmllint.dsp \
+	     win32/libxml2/libxml2.def.src \
+	     vms/build_libxml.com vms/config.vms \
+             trio.h strio.h
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libxml-2.0.pc

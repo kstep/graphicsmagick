@@ -1,5 +1,5 @@
 # Note that this is NOT a relocatable package
-%define ver      2.3.4
+%define ver      2.3.7
 %define prefix   /usr
 
 Summary: Library providing XML and HTML support

@@ -11,13 +11,8 @@
  *  
  */
 
-#ifdef WIN32
-#include "win32config.h"
-#else
-#include "config.h"
-#endif
+#include "libxml.h"
 
-#include <stdio.h>
 #include <string.h> /* for memset() only ! */
 
 #ifdef HAVE_CTYPE_H
@@ -36,6 +31,15 @@
 #include <libxml/entities.h>
 #include <libxml/valid.h>
 #include <libxml/xmlerror.h>
+#include <libxml/parserInternals.h>
+
+xmlNsPtr xmlNewReconciliedNs(xmlDocPtr doc, xmlNodePtr tree, xmlNsPtr ns);
+
+/************************************************************************
+ *									*
+ * 		A few static variables and macros			*
+ *									*
+ ************************************************************************/
 
 xmlChar xmlStringText[] = { 't', 'e', 'x', 't', 0 };
 xmlChar xmlStringTextNoenc[] =
@@ -48,9 +52,6 @@ xmlBufferAllocationScheme xmlBufferAllocScheme = XML_BUFFER_ALLOC_EXACT;
 static int xmlCompressMode = 0;
 static int xmlCheckDTD = 1;
 int xmlSaveNoEmptyTags = 0;
-
-#define IS_BLANK(c)							\
-  (((c) == '\n') || ((c) == '\r') || ((c) == '\t') || ((c) == ' '))
 
 #define UPDATE_LAST_CHILD_AND_PARENT(n) if ((n) != NULL) {		\
     xmlNodePtr ulccur = (n)->children;					\
@@ -99,8 +100,8 @@ xmlSetBufferAllocationScheme(xmlBufferAllocationScheme scheme) {
  * Returns the current allocation scheme
  */
 xmlBufferAllocationScheme
-xmlGetBufferAllocationScheme() {
-    return xmlBufferAllocScheme;
+xmlGetBufferAllocationScheme(void) {
+    return(xmlBufferAllocScheme);
 }
 
 /**
@@ -205,7 +206,6 @@ xmlFreeNs(xmlNsPtr cur) {
     }
     if (cur->href != NULL) xmlFree((char *) cur->href);
     if (cur->prefix != NULL) xmlFree((char *) cur->prefix);
-    MEM_CLEANUP(cur, sizeof(xmlNs));
     xmlFree(cur);
 }
 
@@ -438,7 +438,6 @@ xmlFreeDtd(xmlDtdPtr cur) {
     if (cur->pentities != NULL)
         xmlFreeEntitiesTable((xmlEntitiesTablePtr) cur->pentities);
 
-    MEM_CLEANUP(cur, sizeof(xmlDtd));
     xmlFree(cur);
 }
 
@@ -471,6 +470,7 @@ xmlNewDoc(const xmlChar *version) {
     cur->standalone = -1;
     cur->compression = -1; /* not initialized */
     cur->doc = cur;
+    cur->charset = XML_CHAR_ENCODING_UTF8;
     return(cur);
 }
 
@@ -500,7 +500,6 @@ xmlFreeDoc(xmlDocPtr cur) {
     if (cur->ids != NULL) xmlFreeIDTable((xmlIDTablePtr) cur->ids);
     if (cur->refs != NULL) xmlFreeRefTable((xmlRefTablePtr) cur->refs);
     if (cur->URL != NULL) xmlFree((char *) cur->URL);
-    MEM_CLEANUP(cur, sizeof(xmlDoc));
     xmlFree(cur);
 }
 
@@ -640,7 +639,10 @@ xmlStringGetNodeList(xmlDocPtr doc, const xmlChar *value) {
 
     q = cur;
     while (*cur != 0) {
-	if (*cur == '&') {
+	if (cur[0] == '&') {
+	    int charval = 0;
+	    xmlChar tmp;
+
 	    /*
 	     * Save the current text.
 	     */
@@ -659,55 +661,113 @@ xmlStringGetNodeList(xmlDocPtr doc, const xmlChar *value) {
 		    }
 		}
 	    }
-	    /*
-	     * Read the entity string
-	     */
-	    cur++;
 	    q = cur;
-	    while ((*cur != 0) && (*cur != ';')) cur++;
-	    if (*cur == 0) {
-#ifdef DEBUG_TREE
-	        xmlGenericError(xmlGenericErrorContext,
-		        "xmlStringGetNodeList: unterminated entity %30s\n", q);
-#endif
-	        return(ret);
-	    }
-            if (cur != q) {
-		/*
-		 * Predefined entities don't generate nodes
-		 */
-		val = xmlStrndup(q, cur - q);
-		ent = xmlGetDocEntity(doc, val);
-		if ((ent != NULL) &&
-		    (ent->etype == XML_INTERNAL_PREDEFINED_ENTITY)) {
-		    if (last == NULL) {
-		        node = xmlNewDocText(doc, ent->content);
-			last = ret = node;
-		    } else
-		        xmlNodeAddContent(last, ent->content);
-		        
-		} else {
-		    /*
-		     * Create a new REFERENCE_REF node
-		     */
-		    node = xmlNewReference(doc, val);
-		    if (node == NULL) {
-			if (val != NULL) xmlFree(val);
-		        return(ret);
-		    }
-		    if (last == NULL)
-			last = ret = node;
+	    if ((cur[1] == '#') && (cur[2] == 'x')) {
+		cur += 3;
+		tmp = *cur;
+		while (tmp != ';') { /* Non input consuming loop */
+		    if ((tmp >= '0') && (tmp <= '9')) 
+			charval = charval * 16 + (tmp - '0');
+		    else if ((tmp >= 'a') && (tmp <= 'f'))
+			charval = charval * 16 + (tmp - 'a') + 10;
+		    else if ((tmp >= 'A') && (tmp <= 'F'))
+			charval = charval * 16 + (tmp - 'A') + 10;
 		    else {
-			last->next = node;
-			node->prev = last;
-			last = node;
+			xmlGenericError(xmlGenericErrorContext,
+		    "xmlStringGetNodeList: incharvalid hexadecimal charvalue\n");
+			charval = 0;
+			break;
+		    }
+		    cur++;
+		    tmp = *cur;
+		}
+		if (tmp == ';')
+		    cur++;
+		q = cur;
+	    } else if  (cur[1] == '#') {
+		cur += 2;
+		tmp = *cur;
+		while (tmp != ';') { /* Non input consuming loops */
+		    if ((tmp >= '0') && (tmp <= '9')) 
+			charval = charval * 10 + (tmp - '0');
+		    else {
+			xmlGenericError(xmlGenericErrorContext,
+		    "xmlStringGetNodeList: incharvalid decimal charvalue\n");
+			charval = 0;
+			break;
+		    }
+		    cur++;
+		    tmp = *cur;
+		}
+		if (tmp == ';')
+		    cur++;
+		q = cur;
+	    } else {
+		/*
+		 * Read the entity string
+		 */
+		cur++;
+		q = cur;
+		while ((*cur != 0) && (*cur != ';')) cur++;
+		if (*cur == 0) {
+#ifdef DEBUG_TREE
+		    xmlGenericError(xmlGenericErrorContext,
+			    "xmlStringGetNodeList: unterminated entity %30s\n", q);
+#endif
+		    return(ret);
+		}
+		if (cur != q) {
+		    /*
+		     * Predefined entities don't generate nodes
+		     */
+		    val = xmlStrndup(q, cur - q);
+		    ent = xmlGetDocEntity(doc, val);
+		    if ((ent != NULL) &&
+			(ent->etype == XML_INTERNAL_PREDEFINED_ENTITY)) {
+			if (last == NULL) {
+			    node = xmlNewDocText(doc, ent->content);
+			    last = ret = node;
+			} else
+			    xmlNodeAddContent(last, ent->content);
+			    
+		    } else {
+			/*
+			 * Create a new REFERENCE_REF node
+			 */
+			node = xmlNewReference(doc, val);
+			if (node == NULL) {
+			    if (val != NULL) xmlFree(val);
+			    return(ret);
+			}
+			if (last == NULL) {
+			    last = ret = node;
+			} else {
+			    last = xmlAddNextSibling(last, node);
+			}
+		    }
+		    xmlFree(val);
+		}
+		cur++;
+		q = cur;
+	    }
+	    if (charval != 0) {
+		xmlChar buf[10];
+		int len;
+
+		len = xmlCopyCharMultiByte(buf, charval);
+		buf[len] = 0;
+		node = xmlNewDocText(doc, buf);
+		if (node != NULL) {
+		    if (last == NULL) {
+			last = ret = node;
+		    } else {
+			last = xmlAddNextSibling(last, node);
 		    }
 		}
-		xmlFree(val);
+
+		charval = 0;
 	    }
-	    cur++;
-	    q = cur;
-	} else 
+	} else
 	    cur++;
     }
     if (cur != q) {
@@ -719,12 +779,10 @@ xmlStringGetNodeList(xmlDocPtr doc, const xmlChar *value) {
 	} else {
 	    node = xmlNewDocTextLen(doc, q, cur - q);
 	    if (node == NULL) return(ret);
-	    if (last == NULL)
+	    if (last == NULL) {
 		last = ret = node;
-	    else {
-		last->next = node;
-		node->prev = last;
-		last = node;
+	    } else {
+		last = xmlAddNextSibling(last, node);
 	    }
 	}
     }
@@ -1125,7 +1183,6 @@ xmlFreeProp(xmlAttrPtr cur) {
         xmlRemoveID(cur->parent->doc, cur);
     if (cur->name != NULL) xmlFree((char *) cur->name);
     if (cur->children != NULL) xmlFreeNodeList(cur->children);
-    MEM_CLEANUP(cur, sizeof(xmlAttr));
     xmlFree(cur);
 }
 
@@ -1686,6 +1743,7 @@ xmlNewCDataBlock(xmlDocPtr doc, const xmlChar *content, int len) {
     }
     memset(cur, 0, sizeof(xmlNode));
     cur->type = XML_CDATA_SECTION_NODE;
+    cur->doc = doc;
 
     if (content != NULL) {
 #ifndef XML_USE_BUFFER_CONTENT
@@ -2320,7 +2378,6 @@ xmlFreeNode(xmlNodePtr cur) {
 	(cur->name != xmlStringComment))
 	xmlFree((char *) cur->name);
     if (cur->nsDef != NULL) xmlFreeNsList(cur->nsDef);
-    MEM_CLEANUP(cur, sizeof(xmlNode));
     xmlFree(cur);
 }
 
@@ -2616,7 +2673,7 @@ xmlStaticCopyNode(xmlNodePtr node, xmlDocPtr doc, xmlNodePtr parent,
 	        xmlNodePtr root = ret;
 
 		while (root->parent != NULL) root = root->parent;
-		xmlNewNs(root, ns->href, ns->prefix);
+		ret->ns = xmlNewNs(root, ns->href, ns->prefix);
 	    }
 	} else {
 	    /*
@@ -2670,6 +2727,23 @@ xmlCopyNode(xmlNodePtr node, int recursive) {
     xmlNodePtr ret;
 
     ret = xmlStaticCopyNode(node, NULL, NULL, recursive);
+    return(ret);
+}
+
+/**
+ * xmlDocCopyNode:
+ * @node:  the node
+ * @recursive:  if 1 do a recursive copy.
+ *
+ * Do a copy of the node to a given document.
+ *
+ * Returns: a new xmlNodePtr, or NULL in case of error.
+ */
+xmlNodePtr
+xmlDocCopyNode(xmlNodePtr node, xmlDocPtr doc, int recursive) {
+    xmlNodePtr ret;
+
+    ret = xmlStaticCopyNode(node, doc, NULL, recursive);
     return(ret);
 }
 
@@ -3077,34 +3151,6 @@ xmlNodeSetBase(xmlNodePtr cur, xmlChar* uri) {
 	    break;
     }
     xmlSetProp(cur, BAD_CAST "xml:base", uri);
-}
-
-/**
- * xmlDocumentGetBase:
- * @doc:  the document
- *
- * Searches for the Document BASE URL. The code should work on both XML
- * and HTML document.
- * It returns the base as defined in RFC 2396 section
- * 5.1.3. Base URI from the Retrieval URI
- * However it does not return the computed base (5.1.1 and 5.1.2), use
- * xmlNodeGetBase() for this
- *
- * Returns a pointer to the base URL, or NULL if not found
- *     It's up to the caller to free the memory.
- */
-xmlChar *
-xmlDocumentGetBase(xmlDocPtr doc) {
-    if (doc == NULL)
-        return(NULL);
-    if (doc->type == XML_HTML_DOCUMENT_NODE) {
-	if (doc->URL != NULL)
-	    return(xmlStrdup(doc->URL));
-	return(NULL);
-    }
-    if (doc->URL != NULL)
-	return(xmlStrdup(doc->URL));
-    return(NULL);
 }
 
 /**
@@ -3627,7 +3673,7 @@ xmlTextMerge(xmlNodePtr first, xmlNodePtr second) {
  *         namespace if defined
  */
 xmlNsPtr *
-xmlGetNsList(xmlDocPtr doc, xmlNodePtr node) {
+xmlGetNsList(xmlDocPtr doc ATTRIBUTE_UNUSED, xmlNodePtr node) {
     xmlNsPtr cur;
     xmlNsPtr *ret = NULL;
     int nbns = 0;
@@ -4530,14 +4576,8 @@ xmlBufferFree(xmlBufferPtr buf) {
 	return;
     }
     if (buf->content != NULL) {
-#ifndef XML_USE_BUFFER_CONTENT
-        MEM_CLEANUP(buf->content, BASE_BUFFER_SIZE);
-#else
-        MEM_CLEANUP(buf->content, buf->size);
-#endif
         xmlFree(buf->content);
     }
-    MEM_CLEANUP(buf, sizeof(xmlBuffer));
     xmlFree(buf);
 }
 
@@ -4551,7 +4591,7 @@ void
 xmlBufferEmpty(xmlBufferPtr buf) {
     if (buf->content == NULL) return;
     buf->use = 0;
-    MEM_CLEANUP(buf->content, buf->size);
+    memset(buf->content, 0, buf->size);
 }
 
 /**
@@ -5448,7 +5488,7 @@ xmlDtdDumpOutput(xmlOutputBufferPtr buf, xmlDtdPtr dtd, const char *encoding) {
  */
 static void
 xmlAttrDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlAttrPtr cur,
-	          const char *encoding) {
+	          const char *encoding ATTRIBUTE_UNUSED) {
     xmlChar *value;
 
     if (cur == NULL) {
@@ -5804,7 +5844,8 @@ xmlDocContentDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr cur,
 
 void
 xmlDocDumpFormatMemoryEnc(xmlDocPtr out_doc, xmlChar **doc_txt_ptr,
-		int * doc_txt_len, const char * txt_encoding, int format) {
+		int * doc_txt_len, const char * txt_encoding,
+		int format) {
     int                         dummy = 0;
 
     xmlCharEncoding             doc_charset;
@@ -5867,7 +5908,7 @@ xmlDocDumpFormatMemoryEnc(xmlDocPtr out_doc, xmlChar **doc_txt_ptr,
         return;
     }
 
-    xmlDocContentDumpOutput(out_buff, out_doc, txt_encoding, 1);
+    xmlDocContentDumpOutput(out_buff, out_doc, txt_encoding, format);
     xmlOutputBufferFlush(out_buff);
     if (out_buff->conv != NULL) {
 	*doc_txt_len = out_buff->conv->use;
@@ -5934,7 +5975,7 @@ void
 xmlDocDumpMemoryEnc(xmlDocPtr out_doc, xmlChar **doc_txt_ptr,
 	            int * doc_txt_len, const char * txt_encoding) {
     xmlDocDumpFormatMemoryEnc(out_doc, doc_txt_ptr, doc_txt_len,
-	                      txt_encoding, 1);
+	                      txt_encoding, 0);
 }
 
 /**
@@ -6036,7 +6077,7 @@ xmlDocDump(FILE *f, xmlDocPtr cur) {
     }
     buf = xmlOutputBufferCreateFile(f, handler);
     if (buf == NULL) return(-1);
-    xmlDocContentDumpOutput(buf, cur, NULL, 1);
+    xmlDocContentDumpOutput(buf, cur, NULL, 0);
 
     ret = xmlOutputBufferClose(buf);
     return(ret);
@@ -6057,7 +6098,7 @@ xmlSaveFileTo(xmlOutputBuffer *buf, xmlDocPtr cur, const char *encoding) {
     int ret;
 
     if (buf == NULL) return(0);
-    xmlDocContentDumpOutput(buf, cur, encoding, 1);
+    xmlDocContentDumpOutput(buf, cur, encoding, 0);
     ret = xmlOutputBufferClose(buf);
     return(ret);
 }
@@ -6101,7 +6142,7 @@ xmlSaveFileEnc(const char *filename, xmlDocPtr cur, const char *encoding) {
     buf = xmlOutputBufferCreateFilename(filename, handler, 0);
     if (buf == NULL) return(-1);
 
-    xmlDocContentDumpOutput(buf, cur, encoding, 1);
+    xmlDocContentDumpOutput(buf, cur, encoding, 0);
 
     ret = xmlOutputBufferClose(buf);
     return(ret);
@@ -6156,7 +6197,7 @@ xmlSaveFile(const char *filename, xmlDocPtr cur) {
     buf = xmlOutputBufferCreateFilename(filename, handler, cur->compression);
     if (buf == NULL) return(-1);
 
-    xmlDocContentDumpOutput(buf, cur, NULL, 1);
+    xmlDocContentDumpOutput(buf, cur, NULL, 0);
 
     ret = xmlOutputBufferClose(buf);
     return(ret);

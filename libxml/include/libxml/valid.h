@@ -11,10 +11,17 @@
 #define __XML_VALID_H__
 
 #include <libxml/tree.h>
+#include <libxml/list.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/*
+ * Validation state added for non-determinist content model
+ */
+typedef struct _xmlValidState xmlValidState;
+typedef xmlValidState *xmlValidStatePtr;
 
 /**
  * an xmlValidCtxt is used for error reporting when validating
@@ -39,6 +46,12 @@ struct _xmlValidCtxt {
     int              finishDtd;       /* finished validating the Dtd ? */
     xmlDocPtr              doc;       /* the document */
     int                  valid;       /* temporary validity check result */
+
+    /* state state used for non-determinist content validation */
+    xmlValidState     *vstate;        /* current state */
+    int                vstateNr;      /* Depth of the validation stack */
+    int                vstateMax;     /* Max depth of the validation stack */
+    xmlValidState     *vstateTab;     /* array of validation states */
 };
 
 /*
@@ -167,6 +180,8 @@ int		xmlIsRef	(xmlDocPtr doc,
 				 xmlNodePtr elem,
 				 xmlAttrPtr attr);
 int		xmlRemoveRef	(xmlDocPtr doc, xmlAttrPtr attr);
+xmlListPtr	xmlGetRefs	(xmlDocPtr doc,
+				 const xmlChar *ID);
 
 /**
  * The public function calls related to validity checking

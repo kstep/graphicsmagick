@@ -93,6 +93,11 @@ structured documents/data.</p>
     everybody happy, if not, drop me a mail.</li>
 </ul>
 
+<p>Warning: unless you are forced to because your application links with a
+Gnome library requiring it,  <strong><span
+style="background-color: #FF0000">Do Not Use libxml1</span></strong>, use
+libxml2</p>
+
 <h2><a name="Documentat">Documentation</a></h2>
 
 <p>There are some on-line resources about using libxml:</p>
@@ -136,16 +141,16 @@ of fixing them in a timely fashion. The best way to report a bug is to use the
 <a href="http://bugzilla.gnome.org/buglist.cgi?product=libxml">Gnome bug
 tracking database</a> (make sure to use the "libxml" module name). I look at
 reports there regularly and it's good to have a reminder when a bug is still
-open. Check the <a href="http://bugs.gnome.org/Reporting.html">instructions on
-reporting bugs</a> and be sure to specify that the bug is for the package
-libxml.</p>
+open. Check the <a
+href="http://bugzilla.gnome.org/bugwritinghelp.html">instructions on reporting
+bugs</a> and be sure to specify that the bug is for the package libxml.</p>
 
 <p>There is also a mailing-list <a
-href="mailto:xml@gnome.org">xml@gnome.org</a> for libxml, with an <a
-href="http://xmlsoft.org/messages">on-line archive</a>. To subscribe to this
-list, please visit the <a
-href="http://mail.gnome.org/mailman/listinfo/xml">associated Web</a> page and
-follow the instructions.</p>
+href="mailto:xml@gnome.org">xml@gnome.org</a> for libxml, with an  <a
+href="http://mail.gnome.org/archives/xml/">on-line archive</a> (<a
+href="http://xmlsoft.org/messages">old</a>). To subscribe to this list, please
+visit the <a href="http://mail.gnome.org/mailman/listinfo/xml">associated
+Web</a> page and follow the instructions.</p>
 
 <p>Alternatively, you can just send the bug to the <a
 href="mailto:xml@gnome.org">xml@gnome.org</a> list; if it's really libxml
@@ -190,8 +195,8 @@ href="ftp://xmlsoft.org/">xmlsoft.org</a> or on the <a
 href="ftp://ftp.gnome.org/pub/GNOME/MIRRORS.html">Gnome FTP server</a> either
 as a <a href="ftp://ftp.gnome.org/pub/GNOME/stable/sources/libxml/">source
 archive</a> or <a
-href="ftp://ftp.gnome.org/pub/GNOME/contrib/redhat/SRPMS/">RPM packages</a>.
-(NOTE that you need both the <a
+href="ftp://ftp.gnome.org/pub/GNOME/stable/redhat/i386/libxml/">RPM
+packages</a>. (NOTE that you need both the <a
 href="http://rpmfind.net/linux/RPM/libxml2.html">libxml(2)</a> and <a
 href="http://rpmfind.net/linux/RPM/libxml2-devel.html">libxml(2)-devel</a>
 packages installed to compile applications using libxml.)</p>
@@ -237,6 +242,42 @@ you want to test those</p>
     href="http://www.w3.org/TR/xinclude">XInclude</a></li>
   <li>(seeems working but delayed from release) parsing/import of Docbook SGML
     docs</li>
+</ul>
+
+<h3>2.3.7: April 22 2001</h3>
+<ul>
+  <li>lots of small bug fixes, corrected XPointer</li>
+  <li>Non determinist content model validation support</li>
+  <li>added xmlDocCopyNode for gdome2</li>
+  <li>revamped the way the HTML parser handles end of tags</li>
+  <li>XPath: corrctions of namespacessupport and number formatting</li>
+  <li>Windows: Igor Zlatkovic patches for MSC compilation</li>
+  <li>HTML ouput fixes from P C Chow and William M. Brack</li>
+  <li>Improved validation speed sensible for DocBook</li>
+  <li>fixed a big bug with ID declared in external parsed entities</li>
+  <li>portability fixes, update of Trio from Bjorn Reese</li>
+</ul>
+
+<h3>2.3.6: April 8 2001</h3>
+<ul>
+  <li>Code cleanup using extreme gcc compiler warning options, found and
+    cleared half a dozen potential problem</li>
+  <li>the Eazel team found an XML parser bug</li>
+  <li>cleaned up the user of some of the string formatting function. used the
+    trio library code to provide the one needed when the platform is missing
+    them</li>
+  <li>xpath: removed a memory leak and fixed the predicate evaluation problem,
+    extended the testsuite and cleaned up the result. XPointer seems broken
+    ...</li>
+</ul>
+
+<h3>2.3.5: Mar 23 2001</h3>
+<ul>
+  <li>Biggest change is separate parsing and evaluation of XPath expressions,
+    there is some new APIs for this too</li>
+  <li>included a number of bug fixes(XML push parser, 51876, notations,
+  52299)</li>
+  <li>Fixed some portability issues</li>
 </ul>
 
 <h3>2.3.4: Mar 10 2001</h3>
@@ -1228,22 +1269,15 @@ core.</p>
 Model</em>; this is an API for accessing XML or HTML structured documents.
 Native support for DOM in Gnome is on the way (module gnome-dom), and will be
 based on gnome-xml. This will be a far cleaner interface to manipulate XML
-files within Gnome since it won't expose the internal structure. DOM defines a
-set of IDL (or Java) interfaces allowing you to traverse and manipulate a
-document. The DOM library will allow accessing and modifying "live" documents
-present in other programs like this:</p>
-
-<p><img src="DOM.gif" alt=" DOM.gif "></p>
-
-<p>This should help greatly doing things like modifying a gnumeric spreadsheet
-embedded in a GWP document for example.</p>
+files within Gnome since it won't expose the internal structure.</p>
 
 <p>The current DOM implementation on top of libxml is the <a
-href="http://cvs.gnome.org/lxr/source/gdome/">gdome Gnome module</a>, this is
-a full DOM interface, thanks to <a href="mailto:raph@levien.com">Raph
-Levien</a>.</p>
+href="http://cvs.gnome.org/lxr/source/gdome2/">gdome2 Gnome module</a>, this
+is a full DOM interface, thanks to Paolo Casarini, check the <a
+href="http://www.cs.unibo.it/~casarini/gdome2/">Gdome2 homepage</a> for more
+informations.</p>
 
-<p>The gnome-dom module in the Gnome CVS base is obsolete</p>
+<p>The gnome-dom and gdome modules in the Gnome CVS base are obsolete</p>
 
 <h2><a name="Example"></a><a name="real">A real example</a></h2>
 

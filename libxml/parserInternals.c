@@ -7,15 +7,14 @@
  * Daniel.Veillard@w3.org
  */
 
+#include "libxml.h"
+
 #ifdef WIN32
-#include "win32config.h"
 #define XML_DIR_SEP '\\'
 #else
-#include "config.h"
 #define XML_DIR_SEP '/'
 #endif
 
-#include <stdio.h>
 #include <string.h>
 #ifdef HAVE_CTYPE_H
 #include <ctype.h>
@@ -48,6 +47,7 @@
 #include <libxml/xmlIO.h>
 #include <libxml/uri.h>
 
+void xmlUpgradeOldNs(xmlDocPtr doc);
 
 /************************************************************************
  *									*
@@ -276,17 +276,7 @@ xmlSetFeature(xmlParserCtxtPtr ctxt, const char *name, void *value) {
 		ctxt->vctxt.warning = xmlParserValidityWarning;
 	    if (ctxt->vctxt.error == NULL)
 		ctxt->vctxt.error = xmlParserValidityError;
-	    /* Allocate the Node stack */
-	    ctxt->vctxt.nodeTab = (xmlNodePtr *)
-		       xmlMalloc(4 * sizeof(xmlNodePtr));
-	    if (ctxt->vctxt.nodeTab == NULL) {
-		ctxt->vctxt.nodeMax = 0;
-		ctxt->validate = 0;
-		return(-1);
-	    }
-	    ctxt->vctxt.nodeNr = 0;
-	    ctxt->vctxt.nodeMax = 4;
-	    ctxt->vctxt.node = NULL;
+	    ctxt->vctxt.nodeMax = 0;
 	}
         ctxt->validate = newvalidate;
     } else if (!strcmp(name, "keep blanks")) {
@@ -932,7 +922,7 @@ int
 xmlParserInputRead(xmlParserInputPtr in, int len) {
     int ret;
     int used;
-    int index;
+    int indx;
 
 #ifdef DEBUG_INPUT
     xmlGenericError(xmlGenericErrorContext, "Read\n");
@@ -956,9 +946,9 @@ xmlParserInputRead(xmlParserInputPtr in, int len) {
         /*
 	 * the buffer has been realloced
 	 */
-	index = in->cur - in->base;
+	indx = in->cur - in->base;
 	in->base = in->buf->buffer->content;
-	in->cur = &in->buf->buffer->content[index];
+	in->cur = &in->buf->buffer->content[indx];
     }
     in->end = &in->buf->buffer->content[in->buf->buffer->use];
 
@@ -981,7 +971,7 @@ xmlParserInputRead(xmlParserInputPtr in, int len) {
 int
 xmlParserInputGrow(xmlParserInputPtr in, int len) {
     int ret;
-    int index;
+    int indx;
 
 #ifdef DEBUG_INPUT
     xmlGenericError(xmlGenericErrorContext, "Grow\n");
@@ -993,8 +983,8 @@ xmlParserInputGrow(xmlParserInputPtr in, int len) {
 
     CHECK_BUFFER(in);
 
-    index = in->cur - in->base;
-    if (in->buf->buffer->use > (unsigned int) index + INPUT_CHUNK) {
+    indx = in->cur - in->base;
+    if (in->buf->buffer->use > (unsigned int) indx + INPUT_CHUNK) {
 
 	CHECK_BUFFER(in);
 
@@ -1015,9 +1005,9 @@ xmlParserInputGrow(xmlParserInputPtr in, int len) {
         /*
 	 * the buffer has been realloced
 	 */
-	index = in->cur - in->base;
+	indx = in->cur - in->base;
 	in->base = in->buf->buffer->content;
-	in->cur = &in->buf->buffer->content[index];
+	in->cur = &in->buf->buffer->content[indx];
     }
     in->end = &in->buf->buffer->content[in->buf->buffer->use];
 
@@ -1036,7 +1026,7 @@ void
 xmlParserInputShrink(xmlParserInputPtr in) {
     int used;
     int ret;
-    int index;
+    int indx;
 
 #ifdef DEBUG_INPUT
     xmlGenericError(xmlGenericErrorContext, "Shrink\n");
@@ -1053,7 +1043,7 @@ xmlParserInputShrink(xmlParserInputPtr in) {
      * Do not shrink on large buffers whose only a tiny fraction
      * was consumned
      */
-    if (in->buf->buffer->use > used + 2 * INPUT_CHUNK)
+    if ((int) in->buf->buffer->use > used + 2 * INPUT_CHUNK)
 	return;
     if (used > INPUT_CHUNK) {
 	ret = xmlBufferShrink(in->buf->buffer, used - LINE_LEN);
@@ -1074,9 +1064,9 @@ xmlParserInputShrink(xmlParserInputPtr in) {
         /*
 	 * the buffer has been realloced
 	 */
-	index = in->cur - in->base;
+	indx = in->cur - in->base;
 	in->base = in->buf->buffer->content;
-	in->cur = &in->buf->buffer->content[index];
+	in->cur = &in->buf->buffer->content[indx];
     }
     in->end = &in->buf->buffer->content[in->buf->buffer->use];
 
@@ -1434,7 +1424,7 @@ xmlStringCurrentChar(xmlParserCtxtPtr ctxt, const xmlChar *cur, int *len) {
 	      /* 2-byte code */
 		*len = 2;
 		val = (cur[0] & 0x1f) << 6;
-		val |= cur[2] & 0x3f;
+		val |= cur[1] & 0x3f;
 	    }
 	    if (!IS_CHAR(val)) {
 		if ((ctxt->sax != NULL) &&
@@ -1481,18 +1471,16 @@ encoding_error:
 }
 
 /**
- * xmlCopyChar:
- * @len:  pointer to the length of the char read (or zero)
- * @array:  pointer to an arry of xmlChar
+ * xmlCopyCharMultiByte:
+ * @out:  pointer to an arry of xmlChar
  * @val:  the char value
  *
  * append the char value in the array 
  *
  * Returns the number of xmlChar written
  */
-
 int
-xmlCopyChar(int len, xmlChar *out, int val) {
+xmlCopyCharMultiByte(xmlChar *out, int val) {
     /*
      * We are supposed to handle UTF8, check it's valid
      * From rfc2044: encoding of the Unicode values on UTF-8:
@@ -1502,34 +1490,45 @@ xmlCopyChar(int len, xmlChar *out, int val) {
      * 0000 0080-0000 07FF   110xxxxx 10xxxxxx
      * 0000 0800-0000 FFFF   1110xxxx 10xxxxxx 10xxxxxx 
      */
-    if (len == 0) {
-	if (val < 0) len = 0;
-	else if (val < 0x80) len = 1;
-	else if (val < 0x800) len = 2;
-	else if (val < 0x10000) len = 3;
-	else if (val < 0x110000) len = 4;
-	if (len == 0) {
+    if  (val >= 0x80) {
+	xmlChar *savedout = out;
+	int bits;
+	if (val <   0x800) { *out++= (val >>  6) | 0xC0;  bits=  0; }
+	else if (val < 0x10000) { *out++= (val >> 12) | 0xE0;  bits=  6;}
+	else if (val < 0x110000)  { *out++= (val >> 18) | 0xF0;  bits=  12; }
+	else {
 	    xmlGenericError(xmlGenericErrorContext,
 		    "Internal error, xmlCopyChar 0x%X out of bound\n",
 		    val);
 	    return(0);
 	}
-    }
-    if (len > 1) {
-	int bits; 
-
-        if      (val <    0x80) {  *out++=  val;                bits= -6; }
-        else if (val <   0x800) {  *out++= (val >>  6) | 0xC0;  bits=  0; }
-        else if (val < 0x10000) {  *out++= (val >> 12) | 0xE0;  bits=  6; }
-        else                  {    *out++= (val >> 18) | 0xF0;  bits= 12; }
- 
-        for ( ; bits >= 0; bits-= 6)
-            *out++= ((val >> bits) & 0x3F) | 0x80 ;
-
-        return(len);
+	for ( ; bits >= 0; bits-= 6)
+	    *out++= ((val >> bits) & 0x3F) | 0x80 ;
+	return (out - savedout);
     }
     *out = (xmlChar) val;
-    return(1);
+    return 1;
+}
+
+/**
+ * xmlCopyChar:
+ * @len:  Ignored, compatibility
+ * @out:  pointer to an arry of xmlChar
+ * @val:  the char value
+ *
+ * append the char value in the array 
+ *
+ * Returns the number of xmlChar written
+ */
+
+int
+xmlCopyChar(int len ATTRIBUTE_UNUSED, xmlChar *out, int val) {
+    /* the len parameter is ignored */
+    if  (val >= 0x80) {
+	return(xmlCopyCharMultiByte (out, val));
+    }
+    *out = (xmlChar) val;
+    return 1;
 }
 
 /************************************************************************
@@ -1867,7 +1866,6 @@ xmlFreeInputStream(xmlParserInputPtr input) {
         input->free((xmlChar *) input->base);
     if (input->buf != NULL) 
         xmlFreeParserInputBuffer(input->buf);
-    MEM_CLEANUP(input, sizeof(xmlParserInput));
     xmlFree(input);
 }
 
@@ -2214,20 +2212,7 @@ xmlInitParserCtxt(xmlParserCtxtPtr ctxt)
 	    ctxt->vctxt.warning = NULL;
 	else
 	    ctxt->vctxt.warning = xmlParserValidityWarning;
-	/* Allocate the Node stack */
-	ctxt->vctxt.nodeTab = (xmlNodePtr *) xmlMalloc(4 * sizeof(xmlNodePtr));
-	if (ctxt->vctxt.nodeTab == NULL) {
-	    xmlGenericError(xmlGenericErrorContext,
-		    "xmlInitParserCtxt: out of memory\n");
-	    ctxt->vctxt.nodeMax = 0;
-	    ctxt->validate = 0;
-	    ctxt->vctxt.error = NULL;
-	    ctxt->vctxt.warning = NULL;
-	} else {
-	    ctxt->vctxt.nodeNr = 0;
-	    ctxt->vctxt.nodeMax = 4;
-	    ctxt->vctxt.node = NULL;
-	}
+	ctxt->vctxt.nodeMax = 0;
     } else {
 	ctxt->vctxt.error = NULL;
 	ctxt->vctxt.warning = NULL;
@@ -2274,7 +2259,6 @@ xmlFreeParserCtxt(xmlParserCtxtPtr ctxt)
     if (ctxt->intSubName != NULL) xmlFree((char *) ctxt->intSubName);
     if (ctxt->extSubURI != NULL) xmlFree((char *) ctxt->extSubURI);
     if (ctxt->extSubSystem != NULL) xmlFree((char *) ctxt->extSubSystem);
-    if (ctxt->vctxt.nodeTab != NULL) xmlFree(ctxt->vctxt.nodeTab);
     if ((ctxt->sax != NULL) && (ctxt->sax != &xmlDefaultSAXHandler))
         xmlFree(ctxt->sax);
     if (ctxt->directory != NULL) xmlFree((char *) ctxt->directory);
@@ -2575,8 +2559,8 @@ xmlCheckLanguageID(const xmlChar *lang) {
  *      must deallocate it !
  */
 xmlChar *
-xmlDecodeEntities(xmlParserCtxtPtr ctxt, int len, int what,
-                  xmlChar end, xmlChar  end2, xmlChar end3) {
+xmlDecodeEntities(xmlParserCtxtPtr ctxt ATTRIBUTE_UNUSED, int len ATTRIBUTE_UNUSED, int what ATTRIBUTE_UNUSED,
+	      xmlChar end ATTRIBUTE_UNUSED, xmlChar  end2 ATTRIBUTE_UNUSED, xmlChar end3 ATTRIBUTE_UNUSED) {
 #if 0
     xmlChar *buffer = NULL;
     unsigned int buffer_size = 0;
@@ -2709,7 +2693,7 @@ xmlDecodeEntities(xmlParserCtxtPtr ctxt, int len, int what,
  */
 
 xmlChar *
-xmlNamespaceParseNCName(xmlParserCtxtPtr ctxt) {
+xmlNamespaceParseNCName(xmlParserCtxtPtr ctxt ATTRIBUTE_UNUSED) {
 #if 0
     xmlChar buf[XML_MAX_NAMELEN + 5];
     int len = 0, l;
@@ -2778,7 +2762,7 @@ xmlGenericError(xmlGenericErrorContext,
  */
 
 xmlChar *
-xmlNamespaceParseQName(xmlParserCtxtPtr ctxt, xmlChar **prefix) {
+xmlNamespaceParseQName(xmlParserCtxtPtr ctxt ATTRIBUTE_UNUSED, xmlChar **prefix ATTRIBUTE_UNUSED) {
 
     static int deprecated = 0;
     if (!deprecated) {
@@ -2820,7 +2804,7 @@ xmlNamespaceParseQName(xmlParserCtxtPtr ctxt, xmlChar **prefix) {
  */
 
 xmlChar *
-xmlNamespaceParseNSDef(xmlParserCtxtPtr ctxt) {
+xmlNamespaceParseNSDef(xmlParserCtxtPtr ctxt ATTRIBUTE_UNUSED) {
     static int deprecated = 0;
     if (!deprecated) {
 	xmlGenericError(xmlGenericErrorContext,
@@ -2855,7 +2839,7 @@ xmlNamespaceParseNSDef(xmlParserCtxtPtr ctxt) {
  * Returns the string parser or NULL.
  */
 xmlChar *
-xmlParseQuotedString(xmlParserCtxtPtr ctxt) {
+xmlParseQuotedString(xmlParserCtxtPtr ctxt ATTRIBUTE_UNUSED) {
     static int deprecated = 0;
     if (!deprecated) {
 	xmlGenericError(xmlGenericErrorContext,
@@ -2953,7 +2937,7 @@ xmlGenericError(xmlGenericErrorContext,
  */
 
 void
-xmlParseNamespace(xmlParserCtxtPtr ctxt) {
+xmlParseNamespace(xmlParserCtxtPtr ctxt ATTRIBUTE_UNUSED) {
     static int deprecated = 0;
     if (!deprecated) {
 	xmlGenericError(xmlGenericErrorContext,
@@ -3080,7 +3064,7 @@ xmlGenericError(xmlGenericErrorContext,
  */
 
 xmlChar *
-xmlScanName(xmlParserCtxtPtr ctxt) {
+xmlScanName(xmlParserCtxtPtr ctxt ATTRIBUTE_UNUSED) {
     static int deprecated = 0;
     if (!deprecated) {
 	xmlGenericError(xmlGenericErrorContext,
@@ -3153,7 +3137,7 @@ xmlScanName(xmlParserCtxtPtr ctxt) {
  *      http://www.w3.org/TR/REC-xml#entproc
  */
 void
-xmlParserHandleReference(xmlParserCtxtPtr ctxt) {
+xmlParserHandleReference(xmlParserCtxtPtr ctxt ATTRIBUTE_UNUSED) {
     static int deprecated = 0;
     if (!deprecated) {
 	xmlGenericError(xmlGenericErrorContext,
@@ -3399,7 +3383,7 @@ xmlGenericError(xmlGenericErrorContext,
  */
 
 void
-xmlHandleEntity(xmlParserCtxtPtr ctxt, xmlEntityPtr entity) {
+xmlHandleEntity(xmlParserCtxtPtr ctxt ATTRIBUTE_UNUSED, xmlEntityPtr entity ATTRIBUTE_UNUSED) {
     static int deprecated = 0;
     if (!deprecated) {
 	xmlGenericError(xmlGenericErrorContext,
@@ -3452,7 +3436,8 @@ handle_as_char:
  * Returns NULL this functionnality had been removed
  */
 xmlNsPtr
-xmlNewGlobalNs(xmlDocPtr doc, const xmlChar *href, const xmlChar *prefix) {
+xmlNewGlobalNs(xmlDocPtr doc ATTRIBUTE_UNUSED, const xmlChar *href ATTRIBUTE_UNUSED,
+	       const xmlChar *prefix ATTRIBUTE_UNUSED) {
     static int deprecated = 0;
     if (!deprecated) {
 	xmlGenericError(xmlGenericErrorContext,
@@ -3513,7 +3498,7 @@ xmlNewGlobalNs(xmlDocPtr doc, const xmlChar *href, const xmlChar *prefix) {
  * DEPRECATED
  */
 void
-xmlUpgradeOldNs(xmlDocPtr doc) {
+xmlUpgradeOldNs(xmlDocPtr doc ATTRIBUTE_UNUSED) {
     static int deprecated = 0;
     if (!deprecated) {
 	xmlGenericError(xmlGenericErrorContext,

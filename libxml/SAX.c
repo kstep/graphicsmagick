@@ -7,12 +7,7 @@
  */
 
 
-#ifdef WIN32
-#include "win32config.h"
-#else
-#include "config.h"
-#endif
-#include <stdio.h>
+#include "libxml.h"
 #include <stdlib.h>
 #include <string.h>
 #include <libxml/xmlmemory.h>
@@ -31,6 +26,12 @@
 /* #define DEBUG_SAX */
 /* #define DEBUG_SAX_TREE */
 
+#ifdef __GNUC__
+#ifdef DEBUG_SAX
+#define ATTRIBUTE_UNUSED
+#endif
+#endif
+
 /**
  * getPublicId:
  * @ctx: the user data (XML parser context)
@@ -40,7 +41,7 @@
  * Returns a xmlChar *
  */
 const xmlChar *
-getPublicId(void *ctx)
+getPublicId(void *ctx ATTRIBUTE_UNUSED)
 {
     /* xmlParserCtxtPtr ctxt = (xmlParserCtxtPtr) ctx; */
     return(NULL);
@@ -59,7 +60,7 @@ const xmlChar *
 getSystemId(void *ctx)
 {
     xmlParserCtxtPtr ctxt = (xmlParserCtxtPtr) ctx;
-    return(BAD_CAST ctxt->input->filename); 
+    return((const xmlChar *) ctxt->input->filename); 
 }
 
 /**
@@ -584,7 +585,7 @@ notationDecl(void *ctx, const xmlChar *name,
 	nota = xmlAddNotationDecl(&ctxt->vctxt, ctxt->myDoc->intSubset, name,
                               publicId, systemId);
     else if (ctxt->inSubset == 2)
-	nota = xmlAddNotationDecl(&ctxt->vctxt, ctxt->myDoc->intSubset, name,
+	nota = xmlAddNotationDecl(&ctxt->vctxt, ctxt->myDoc->extSubset, name,
                               publicId, systemId);
     else {
 	if ((ctxt->sax != NULL) && (ctxt->sax->error != NULL))
@@ -621,12 +622,22 @@ unparsedEntityDecl(void *ctx, const xmlChar *name,
             name, publicId, systemId, notationName);
 #endif
     if (ctxt->validate && ctxt->wellFormed &&
-        ctxt->myDoc && ctxt->myDoc->intSubset)
+        ctxt->myDoc && ctxt->myDoc->extSubset)
 	ctxt->valid &= xmlValidateNotationUse(&ctxt->vctxt, ctxt->myDoc,
 	                                      notationName);
-    xmlAddDocEntity(ctxt->myDoc, name,
-                    XML_EXTERNAL_GENERAL_UNPARSED_ENTITY,
-		    publicId, systemId, notationName);
+    if (ctxt->inSubset == 1)
+	xmlAddDocEntity(ctxt->myDoc, name,
+			XML_EXTERNAL_GENERAL_UNPARSED_ENTITY,
+			publicId, systemId, notationName);
+    else if (ctxt->inSubset == 2)
+	xmlAddDtdEntity(ctxt->myDoc, name,
+			XML_EXTERNAL_GENERAL_UNPARSED_ENTITY,
+			publicId, systemId, notationName);
+    else {
+	if ((ctxt->sax != NULL) && (ctxt->sax->error != NULL))
+	    ctxt->sax->error(ctxt, 
+	     "SAX.unparsedEntityDecl(%s) called while not in subset\n", name);
+    }
 }
 
 /**
@@ -638,7 +649,7 @@ unparsedEntityDecl(void *ctx, const xmlChar *name,
  * Everything is available on the context, so this is useless in our case.
  */
 void
-setDocumentLocator(void *ctx, xmlSAXLocatorPtr loc)
+setDocumentLocator(void *ctx ATTRIBUTE_UNUSED, xmlSAXLocatorPtr loc ATTRIBUTE_UNUSED)
 {
     /* xmlParserCtxtPtr ctxt = (xmlParserCtxtPtr) ctx; */
 #ifdef DEBUG_SAX
@@ -683,7 +694,7 @@ startDocument(void *ctx)
     }
     if ((ctxt->myDoc != NULL) && (ctxt->myDoc->URL == NULL) &&
 	(ctxt->input != NULL) && (ctxt->input->filename != NULL)) {
-        ctxt->myDoc->URL = xmlStrdup((xmlChar *) ctxt->input->filename);
+        ctxt->myDoc->URL = xmlStrdup((const xmlChar *) ctxt->input->filename);
     }
 }
 
@@ -874,7 +885,7 @@ attribute(void *ctx, const xmlChar *fullname, const xmlChar *value)
 	    ctxt->valid &= xmlValidateOneAttribute(&ctxt->vctxt, ctxt->myDoc,
 					       ctxt->node, ret, value);
 	}
-    } else {
+    } else if (ctxt->external != 2){
         /*
 	 * when validating, the ID registration is done at the attribute
 	 * validation level. Otherwise we have to do specific handling here.
@@ -1072,7 +1083,7 @@ startElement(void *ctx, const xmlChar *fullname, const xmlChar **atts)
  * called when the end of an element has been detected.
  */
 void
-endElement(void *ctx, const xmlChar *name)
+endElement(void *ctx, const xmlChar *name ATTRIBUTE_UNUSED)
 {
     xmlParserCtxtPtr ctxt = (xmlParserCtxtPtr) ctx;
     xmlParserNodeInfo node_info;
@@ -1251,7 +1262,7 @@ characters(void *ctx, const xmlChar *ch, int len)
  * Question: how much at a time ???
  */
 void
-ignorableWhitespace(void *ctx, const xmlChar *ch, int len)
+ignorableWhitespace(void *ctx ATTRIBUTE_UNUSED, const xmlChar *ch ATTRIBUTE_UNUSED, int len ATTRIBUTE_UNUSED)
 {
     /* xmlParserCtxtPtr ctxt = (xmlParserCtxtPtr) ctx; */
 #ifdef DEBUG_SAX

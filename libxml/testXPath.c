@@ -6,16 +6,9 @@
  * Daniel.Veillard@w3.org
  */
 
-#ifdef WIN32
-#include "win32config.h"
-#else
-#include "config.h"
-#endif
-
-#include <libxml/xmlversion.h>
+#include "libxml.h"
 #if defined(LIBXML_XPATH_ENABLED) && defined(LIBXML_DEBUG_ENABLED)
 
-#include <stdio.h>
 #include <string.h>
 
 #ifdef HAVE_SYS_TYPES_H
@@ -50,6 +43,7 @@ static int xptr = 0;
 static int debug = 0;
 static int valid = 0;
 static int expr = 0;
+static int tree = 0;
 static xmlDocPtr document = NULL;
 
 /*
@@ -87,7 +81,8 @@ static xmlChar buffer[] =
 ";
 
 
-void testXPath(const char *str) {
+static void
+testXPath(const char *str) {
     xmlXPathObjectPtr res;
     xmlXPathContextPtr ctxt;
     
@@ -101,8 +96,20 @@ void testXPath(const char *str) {
 	ctxt->node = xmlDocGetRootElement(document);
 	if (expr)
 	    res = xmlXPathEvalExpression(BAD_CAST str, ctxt);
-	else
-	    res = xmlXPathEval(BAD_CAST str, ctxt);
+	else {
+	    /* res = xmlXPathEval(BAD_CAST str, ctxt); */
+	    xmlXPathCompExprPtr comp;
+
+	    comp = xmlXPathCompile(BAD_CAST str);
+	    if (comp != NULL) {
+		if (tree) 
+		    xmlXPathDebugDumpCompExpr(stdout, comp, 0);
+
+		res = xmlXPathCompiledEval(comp, ctxt);
+		xmlXPathFreeCompExpr(comp);
+	    } else
+		res = NULL;
+	}
 #if defined(LIBXML_XPTR_ENABLED)
     }
 #endif
@@ -111,9 +118,10 @@ void testXPath(const char *str) {
     xmlXPathFreeContext(ctxt);
 }
 
-void testXPathFile(const char *filename) {
+static void
+testXPathFile(const char *filename) {
     FILE *input;
-    char expr[5000];
+    char expression[5000];
     int len;
 
     input = fopen(filename, "r");
@@ -122,16 +130,16 @@ void testXPathFile(const char *filename) {
 		"Cannot open %s for reading\n", filename);
 	return;
     }
-    while (fgets(expr, 4500, input) != NULL) {
-	len = strlen(expr);
+    while (fgets(expression, 4500, input) != NULL) {
+	len = strlen(expression);
 	len--;
 	while ((len >= 0) && 
-	       ((expr[len] == '\n') || (expr[len] == '\t') ||
-		(expr[len] == '\r') || (expr[len] == ' '))) len--;
-	expr[len + 1] = 0;      
+	       ((expression[len] == '\n') || (expression[len] == '\t') ||
+		(expression[len] == '\r') || (expression[len] == ' '))) len--;
+	expression[len + 1] = 0;      
 	if (len >= 0) {
-	    printf("\n========================\nExpression: %s\n", expr) ;
-	    testXPath(expr);
+	    printf("\n========================\nExpression: %s\n", expression) ;
+	    testXPath(expression);
 	}
     }
 
@@ -155,6 +163,8 @@ int main(int argc, char **argv) {
 	    valid++;
 	if ((!strcmp(argv[i], "-expr")) || (!strcmp(argv[i], "--expr")))
 	    expr++;
+	if ((!strcmp(argv[i], "-tree")) || (!strcmp(argv[i], "--tree")))
+	    tree++;
 	if ((!strcmp(argv[i], "-i")) || (!strcmp(argv[i], "--input")))
 	    filename = argv[++i];
 	if ((!strcmp(argv[i], "-f")) || (!strcmp(argv[i], "--file")))
@@ -189,6 +199,7 @@ int main(int argc, char **argv) {
 	printf("\t--xptr : expressions are XPointer expressions\n");
 #endif
 	printf("\t--expr : debug XPath expressions only\n");
+	printf("\t--tree : show the compiled XPath tree\n");
 	printf("\t--input filename : or\n");
 	printf("\t-i filename      : read the document from filename\n");
 	printf("\t--file : or\n");

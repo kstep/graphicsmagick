@@ -17,11 +17,22 @@ extern "C" {
  * use those to be sure nothing nasty will happen if
  * your library and includes mismatch
  */
+#ifndef LIBXML2_COMPILING_MSCCDEF
 extern void xmlCheckVersion(int version);
-#define LIBXML_DOTTED_VERSION "2.3.4"
-#define LIBXML_VERSION 20304
-#define LIBXML_VERSION_STRING "20304"
-#define LIBXML_TEST_VERSION xmlCheckVersion(20304);
+#endif /* LIBXML2_COMPILING_MSCCDEF */
+#define LIBXML_DOTTED_VERSION "2.3.7"
+#define LIBXML_VERSION 20307
+#define LIBXML_VERSION_STRING "20307"
+#define LIBXML_TEST_VERSION xmlCheckVersion(20307);
+
+/*
+ * Whether the trio support need to be configured in
+ */
+#if 0
+#define WITH_TRIO
+#else
+#define WITHOUT_TRIO
+#endif
 
 /*
  * Whether the FTP support is configured in
@@ -119,6 +130,17 @@ extern void xmlCheckVersion(int version);
 #else
 #define LIBXML_DLL_IMPORT
 #endif
+#endif
+
+#ifdef __GNUC__
+#ifdef HAVE_ANSIDECL_H
+#include <ansidecl.h>
+#endif
+#ifndef ATTRIBUTE_UNUSED
+#define ATTRIBUTE_UNUSED
+#endif
+#else
+#define ATTRIBUTE_UNUSED
 #endif
 
 #ifdef __cplusplus

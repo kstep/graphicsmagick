@@ -7,16 +7,9 @@
  * Daniel Veillard <Daniel.Veillard@w3.org>
  */
 
-#ifdef WIN32
-#include "win32config.h"
-#else
-#include "config.h"
-#endif
-
-#include <libxml/xmlversion.h>
+#include "libxml.h"
 #ifdef LIBXML_DEBUG_ENABLED
 
-#include <stdio.h>
 #include <string.h>
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
@@ -51,7 +44,8 @@ void xmlDebugDumpString(FILE *output, const xmlChar *str) {
     fprintf(output, "...");
 }
 
-void xmlDebugDumpDtd(FILE *output, xmlDtdPtr dtd, int depth) {
+static void
+xmlDebugDumpDtdNode(FILE *output, xmlDtdPtr dtd, int depth) {
     int i;
     char shift[100];
 
@@ -99,7 +93,8 @@ void xmlDebugDumpDtd(FILE *output, xmlDtdPtr dtd, int depth) {
     }
 }
 
-void xmlDebugDumpAttrDecl(FILE *output, xmlAttributePtr attr, int depth) {
+static void
+xmlDebugDumpAttrDecl(FILE *output, xmlAttributePtr attr, int depth) {
     int i;
     char shift[100];
 
@@ -154,11 +149,11 @@ void xmlDebugDumpAttrDecl(FILE *output, xmlAttributePtr attr, int depth) {
 	    break;
     }
     if (attr->tree != NULL) {
-	int i;
+	int indx;
 	xmlEnumerationPtr cur = attr->tree;
 
-	for (i = 0;i < 5; i++) {
-	    if (i != 0)
+	for (indx = 0;indx < 5; indx++) {
+	    if (indx != 0)
 		fprintf(output, "|%s", cur->name);
 	    else
 		fprintf(output, " (%s", cur->name);
@@ -215,7 +210,8 @@ void xmlDebugDumpAttrDecl(FILE *output, xmlAttributePtr attr, int depth) {
     }
 }
 
-void xmlDebugDumpElemDecl(FILE *output, xmlElementPtr elem, int depth) {
+static void
+xmlDebugDumpElemDecl(FILE *output, xmlElementPtr elem, int depth) {
     int i;
     char shift[100];
 
@@ -236,6 +232,9 @@ void xmlDebugDumpElemDecl(FILE *output, xmlElementPtr elem, int depth) {
     } else
 	fprintf(output, "PBM ELEMDECL noname!!!");
     switch (elem->etype) {
+	case XML_ELEMENT_TYPE_UNDEFINED: 
+	    fprintf(output, ", UNDEFINED");
+	    break;
 	case XML_ELEMENT_TYPE_EMPTY: 
 	    fprintf(output, ", EMPTY");
 	    break;
@@ -284,7 +283,8 @@ void xmlDebugDumpElemDecl(FILE *output, xmlElementPtr elem, int depth) {
     }
 }
 
-void xmlDebugDumpEntityDecl(FILE *output, xmlEntityPtr ent, int depth) {
+static void
+xmlDebugDumpEntityDecl(FILE *output, xmlEntityPtr ent, int depth) {
     int i;
     char shift[100];
 
@@ -368,7 +368,8 @@ void xmlDebugDumpEntityDecl(FILE *output, xmlEntityPtr ent, int depth) {
     }
 }
 
-void xmlDebugDumpNamespace(FILE *output, xmlNsPtr ns, int depth) {
+static void
+xmlDebugDumpNamespace(FILE *output, xmlNsPtr ns, int depth) {
     int i;
     char shift[100];
 
@@ -397,14 +398,16 @@ void xmlDebugDumpNamespace(FILE *output, xmlNsPtr ns, int depth) {
     }
 }
 
-void xmlDebugDumpNamespaceList(FILE *output, xmlNsPtr ns, int depth) {
+static void
+xmlDebugDumpNamespaceList(FILE *output, xmlNsPtr ns, int depth) {
     while (ns != NULL) {
         xmlDebugDumpNamespace(output, ns, depth);
 	ns = ns->next;
     }
 }
 
-void xmlDebugDumpEntity(FILE *output, xmlEntityPtr ent, int depth) {
+static void
+xmlDebugDumpEntity(FILE *output, xmlEntityPtr ent, int depth) {
     int i;
     char shift[100];
 
@@ -563,7 +566,7 @@ void xmlDebugDumpOneNode(FILE *output, xmlNodePtr node, int depth) {
 	    fprintf(output, "NOTATION\n");
 	    break;
 	case XML_DTD_NODE:
-	    xmlDebugDumpDtd(output, (xmlDtdPtr) node, depth);
+	    xmlDebugDumpDtdNode(output, (xmlDtdPtr) node, depth);
 	    return;
 	case XML_ELEMENT_DECL:
 	    xmlDebugDumpElemDecl(output, (xmlElementPtr) node, depth);
@@ -786,8 +789,8 @@ void xmlDebugDumpDTD(FILE *output, xmlDtdPtr dtd) {
         xmlDebugDumpNodeList(output, dtd->children, 1);
 }
 
-void xmlDebugDumpEntityCallback(xmlEntityPtr cur, FILE *output,
-	                        const xmlChar *name) {
+static void
+xmlDebugDumpEntityCallback(xmlEntityPtr cur, FILE *output) {
     fprintf(output, "%s : ", cur->name);
     switch (cur->etype) {
 	case XML_INTERNAL_GENERAL_ENTITY:
@@ -1067,9 +1070,9 @@ void xmlLsOneNode(FILE *output, xmlNodePtr node) {
  *
  * Returns 0
  */
-int
-xmlShellList(xmlShellCtxtPtr ctxt, char *arg, xmlNodePtr node,
-                  xmlNodePtr node2) {
+static int
+xmlShellList(xmlShellCtxtPtr ctxt ATTRIBUTE_UNUSED , char *arg ATTRIBUTE_UNUSED, xmlNodePtr node,
+                  xmlNodePtr node2 ATTRIBUTE_UNUSED) {
     xmlNodePtr cur;
 
     if ((node->type == XML_DOCUMENT_NODE) ||
@@ -1100,9 +1103,9 @@ xmlShellList(xmlShellCtxtPtr ctxt, char *arg, xmlNodePtr node,
  *
  * Returns 0
  */
-int
-xmlShellDir(xmlShellCtxtPtr ctxt, char *arg, xmlNodePtr node,
-                  xmlNodePtr node2) {
+static int
+xmlShellDir(xmlShellCtxtPtr ctxt ATTRIBUTE_UNUSED, char *arg ATTRIBUTE_UNUSED, xmlNodePtr node,
+                  xmlNodePtr node2 ATTRIBUTE_UNUSED) {
     if ((node->type == XML_DOCUMENT_NODE) ||
         (node->type == XML_HTML_DOCUMENT_NODE)) {
 	xmlDebugDumpDocumentHead(stdout, (xmlDocPtr) node);
@@ -1126,9 +1129,9 @@ xmlShellDir(xmlShellCtxtPtr ctxt, char *arg, xmlNodePtr node,
  *
  * Returns 0
  */
-int
-xmlShellCat(xmlShellCtxtPtr ctxt, char *arg, xmlNodePtr node,
-                  xmlNodePtr node2) {
+static int
+xmlShellCat(xmlShellCtxtPtr ctxt, char *arg ATTRIBUTE_UNUSED, xmlNodePtr node,
+                  xmlNodePtr node2 ATTRIBUTE_UNUSED) {
     if (ctxt->doc->type == XML_HTML_DOCUMENT_NODE) {
 #ifdef LIBXML_HTML_ENABLED
 	if (node->type == XML_HTML_DOCUMENT_NODE)
@@ -1163,9 +1166,9 @@ xmlShellCat(xmlShellCtxtPtr ctxt, char *arg, xmlNodePtr node,
  *
  * Returns 0 or -1 if loading failed
  */
-int
-xmlShellLoad(xmlShellCtxtPtr ctxt, char *filename, xmlNodePtr node,
-             xmlNodePtr node2) {
+static int
+xmlShellLoad(xmlShellCtxtPtr ctxt, char *filename, xmlNodePtr node ATTRIBUTE_UNUSED,
+             xmlNodePtr node2 ATTRIBUTE_UNUSED) {
     xmlDocPtr doc;
     int html = 0;
 
@@ -1215,9 +1218,9 @@ xmlShellLoad(xmlShellCtxtPtr ctxt, char *filename, xmlNodePtr node,
  *
  * Returns 0 or -1 in case of error
  */
-int
+static int
 xmlShellWrite(xmlShellCtxtPtr ctxt, char *filename, xmlNodePtr node,
-                  xmlNodePtr node2) {
+                  xmlNodePtr node2 ATTRIBUTE_UNUSED) {
     if (node == NULL)
         return(-1);
     if ((filename == NULL) || (filename[0] == 0)) {
@@ -1283,9 +1286,9 @@ xmlShellWrite(xmlShellCtxtPtr ctxt, char *filename, xmlNodePtr node,
  *
  * Returns 0 or -1 in case of error
  */
-int 
-xmlShellSave(xmlShellCtxtPtr ctxt, char *filename, xmlNodePtr node,
-             xmlNodePtr node2) {
+static int 
+xmlShellSave(xmlShellCtxtPtr ctxt, char *filename, xmlNodePtr node ATTRIBUTE_UNUSED,
+             xmlNodePtr node2 ATTRIBUTE_UNUSED) {
     if (ctxt->doc == NULL)
 	return(-1);
     if ((filename == NULL) || (filename[0] == 0))
@@ -1339,9 +1342,9 @@ xmlShellSave(xmlShellCtxtPtr ctxt, char *filename, xmlNodePtr node,
  *
  * Returns 0 or -1 in case of error
  */
-int 
-xmlShellValidate(xmlShellCtxtPtr ctxt, char *dtd, xmlNodePtr node,
-                 xmlNodePtr node2) {
+static int 
+xmlShellValidate(xmlShellCtxtPtr ctxt, char *dtd, xmlNodePtr node ATTRIBUTE_UNUSED,
+                 xmlNodePtr node2 ATTRIBUTE_UNUSED) {
     xmlValidCtxt vctxt;
     int res = -1;
 
@@ -1377,9 +1380,9 @@ xmlShellValidate(xmlShellCtxtPtr ctxt, char *dtd, xmlNodePtr node,
  *
  * Returns 0 or -1 in case of error
  */
-int 
-xmlShellDu(xmlShellCtxtPtr ctxt, char *arg, xmlNodePtr tree,
-                  xmlNodePtr node2) {
+static int 
+xmlShellDu(xmlShellCtxtPtr ctxt ATTRIBUTE_UNUSED, char *arg ATTRIBUTE_UNUSED, xmlNodePtr tree,
+                  xmlNodePtr node2 ATTRIBUTE_UNUSED) {
     xmlNodePtr node;
     int indent = 0,i;
 
@@ -1453,9 +1456,9 @@ xmlShellDu(xmlShellCtxtPtr ctxt, char *arg, xmlNodePtr tree,
  *
  * Returns 0 or -1 in case of error
  */
-int 
-xmlShellPwd(xmlShellCtxtPtr ctxt, char *buffer, xmlNodePtr node,
-                  xmlNodePtr node2) {
+static int 
+xmlShellPwd(xmlShellCtxtPtr ctxt ATTRIBUTE_UNUSED, char *buffer, xmlNodePtr node,
+                  xmlNodePtr node2 ATTRIBUTE_UNUSED) {
     xmlNodePtr cur, tmp, next;
     char buf[500];
     char sep;
@@ -1505,18 +1508,10 @@ xmlShellPwd(xmlShellCtxtPtr ctxt, char *buffer, xmlNodePtr node,
 	    next = cur->parent;
 	}
 	if (occur == 0)
-#ifdef HAVE_SNPRINTF
 	    snprintf(buf, sizeof(buf), "%c%s%s", sep, name, buffer);
-#else
-	    sprintf(buf, "%c%s%s", sep, name, buffer);
-#endif
         else
-#ifdef HAVE_SNPRINTF
 	    snprintf(buf, sizeof(buf), "%c%s[%d]%s",
                     sep, name, occur, buffer);
-#else
-	    sprintf(buf, "%c%s[%d]%s", sep, name, occur, buffer);
-#endif
         buf[sizeof(buf) - 1] = 0;
         /*
          * This test prevents buffer overflow, because this routine
@@ -1586,11 +1581,7 @@ xmlShell(xmlDocPtr doc, char *filename, xmlShellReadlineFunc input,
         if (ctxt->node == (xmlNodePtr) ctxt->doc)
 	    sprintf(prompt, "%s > ", "/");
 	else if (ctxt->node->name)
-#ifdef HAVE_SNPRINTF
 	    snprintf(prompt, sizeof(prompt), "%s > ", ctxt->node->name);
-#else
-	    sprintf(prompt, "%s > ", ctxt->node->name);
-#endif
         else
 	    sprintf(prompt, "? > ");
         prompt[sizeof(prompt) - 1] = 0;
@@ -1605,6 +1596,7 @@ xmlShell(xmlDocPtr doc, char *filename, xmlShellReadlineFunc input,
 	 * Parse the command itself
 	 */
 	cur = cmdline;
+	nbargs = 0;
 	while ((*cur == ' ') || (*cur == '\t')) cur++;
 	i = 0;
 	while ((*cur != ' ') && (*cur != '\t') &&
@@ -1685,15 +1677,16 @@ xmlShell(xmlDocPtr doc, char *filename, xmlShellReadlineFunc input,
 				    "%s: no such node\n", arg);
 			    break;
 			case XPATH_NODESET: {
-			    int i;
+			    int indx;
 
-			    for (i = 0;i < list->nodesetval->nodeNr;i++) {
+			    for (indx = 0;indx < list->nodesetval->nodeNr;
+				 indx++) {
 				if (dir)
 				    xmlShellDir(ctxt, NULL,
-				       list->nodesetval->nodeTab[i], NULL);
+				       list->nodesetval->nodeTab[indx], NULL);
 				else
 				    xmlShellList(ctxt, NULL,
-				       list->nodesetval->nodeTab[i], NULL);
+				       list->nodesetval->nodeTab[indx], NULL);
 			    }
 			    break;
 			}
@@ -1819,12 +1812,13 @@ xmlShell(xmlDocPtr doc, char *filename, xmlShellReadlineFunc input,
 				    "%s: no such node\n", arg);
 			    break;
 			case XPATH_NODESET: {
-			    int i;
+			    int indx;
 
-			    for (i = 0;i < list->nodesetval->nodeNr;i++) {
+			    for (indx = 0;indx < list->nodesetval->nodeNr;
+				 indx++) {
 			        if (i > 0) printf(" -------\n");
 				xmlShellCat(ctxt, NULL,
-				    list->nodesetval->nodeTab[i], NULL);
+				    list->nodesetval->nodeTab[indx], NULL);
 			    }
 			    break;
 			}

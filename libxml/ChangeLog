@@ -1,3 +1,348 @@
+Sun Apr 22 21:29:52 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* doc/html/* doc/xml.html: updated and regenerated the docs
+
+Sun Apr 22 21:11:45 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* xpath.c: fixed the XPointer problem introduced in 2.3.6
+
+Sun Apr 22 14:11:58 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* tree.c: fixed #53388 with the provided patch
+
+Sun Apr 22 12:34:41 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* valid.c: Bjorn detected an invalid memory access. Fixed
+	  vstateVPush()
+
+Sun Apr 22 10:49:23 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* xpath.c: fixed xmlXPathCompile to detected unproperly ended expr
+
+Sat Apr 21 18:27:51 CEST 2001 Bjorn Reese <breese@users.sourceforge.net>
+
+	* libxml.h: new header used only for the compilation of libxml
+	* HTMLparser.c HTMLtree.c SAX.c debugXML.c encoding.c entities.c
+	  error.c hash.c list.c nanoftp.c nanohttp.c parser.c
+	  parserInternals.c testHTML.c testSAX.c testURI.c testXPath.c
+	  tree.c uri.c valid.c xinclude.c xlink.c xmlIO.c xmllint.c
+	  xmlmemory.c xpath.c xpointer.c: libxml.h integration
+	* trio.[ch] triop.h strio.[ch]: upgraded to the latest trio
+	  baseline (version 1.2 plus a single patch).
+	* xpath.c result/XPath/expr/floats test/XPath/expr/floats: parses
+	  scientific notation for numbers. Tests added.
+	* xpath.c: formatting of numbers changed to use sprintf
+	  (contribution from William Brack)
+
+Sat Apr 21 16:12:59 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* valid.c: cleanup, more useful debugging
+	* parserInternals.c: cleanup vctxt.nodeTab (de)allocation
+	* xmlIO.c: entity loading is printed as an error when validating
+
+Sat Apr 21 12:25:49 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* valid.c: fixed to validate within entities
+	* test/VCM/v22.xml: added a specific testcase
+
+Fri Apr 20 17:45:47 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* valid.c: forgot an epsilon transition in for ()+
+	* test/VCM/v21.xml : added a specific test case
+
+Fri Apr 20 15:46:04 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* valid.c: removed a state explosion exhibited by RSS
+	* test/valid/rss.xml result/valid/rss.xml*: added the testcase
+	  from bug #51872
+
+Fri Apr 20 14:52:44 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* valid.[ch] tree.h: worked *hard* to get non-determinist content
+	  validation without using an ugly NFA -> DFA algo in the source.
+	  Made a specific algorithm easier to maintain, using a single
+	  stack and without recursion.
+	* Makefile.am test/VCM/*.xml: added more tests to "make Validtests"
+	* hash.c: made the growing routine static
+	* tree.h parser.c: added the parent information to an
+	  xmlElementContent node.
+
+Wed Apr 18 23:33:11 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* SAX.c parser.c xpath.c: generating IDs when not validating
+	  from an external parsed entity was poisoning the ID has table
+	  with removed values. This was killing XSLT on the KDE help
+	  browser.
+
+Wed Apr 18 17:09:15 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* entities.h: andrew@ugh.net.au detected a double declaration
+
+Wed Apr 18 15:06:30 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* debugXML.c hash.c tree.h valid.c : some changes related to
+	  the validation suport to improve speed with DocBook
+	* result/VC/OneID2 result/VC/OneID3 : this slightly changes
+	  the way validation errors get reported
+
+Wed Apr 18 11:42:47 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* HTMLparser.c HTMLtree.c: applied part of the patches provided
+	  by P C Chow and William M. Brack for XSLT HTML output
+
+Mon Apr 16 19:44:36 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* xmlversion.h.in win32config.h win32/libxml2/*: applied 
+	  Igor Zlatkovic patches for MSC compilation and added his
+	  updates
+
+Tue Apr 17 10:08:19 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* xpath.c: fixed xmlXPathNodeCollectAndTest() to do proper
+	  prefix lookup.
+	* parserInternals.c: fixed the bug reported by Morus Walter
+	  due to an off by one typo in xmlStringCurrentChar()
+	
+Thu Apr 12 17:41:09 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* HTMLparser.c result/HTML/*: revamped the way the HTML
+	  parser handles end of tags or end of input
+
+Thu Apr 12 10:50:34 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* tree.[ch] : added xmlDocCopyNode for gdome2 support
+
+Wed Apr 11 16:37:50 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* tree.h: include xmlmemory.h this seems to havoid a nasty glibc
+	  bug where the linktime verions of free() won't work ...
+
+Wed Apr 11 14:21:31 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* config.h.in configure.in xmlversion.h.in: added ansidecl.h test
+
+Wed Apr 11 13:50:42 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* doc/xml.html: added 2.3.6 release
+
+Wed Apr 11 13:26:34 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* tree.c: fixed xmlStringGetNodeList() to handle charrefs
+	* result/wml.xml: resulted in a small output change
+
+Wed Apr 11 09:47:55 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* tree.c: xmlNewDoc was missing the charset initialization
+	* xmllint.c: added --auto to autogenerate a doc, allow to
+	  reproduce the problem fixed on xmlNewDoc
+
+Tue Apr 10 18:13:10 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* xpath.c: trying to get 52979 solved
+	* tree.c result/ result/noent/: trying to get 52712 solved, this
+	  also made me clean up the fact that XML output in general should
+	  not add formating blanks by default, this changed the output of
+	  a few tests
+
+Tue Apr 10 16:30:20 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* xpath.c: Bill Brack pointer an error in detecting a null nodeset
+
+Sun Apr  8 15:07:16 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* configure.in: finally released 2.3.6
+
+Sun Apr  8 11:39:21 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* xpath.c: checking for null pointer generated by new code
+
+Fri Apr  6 12:53:05 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* xpath.c: fixed a [] evaluation problem reported
+	* test/XPath/tests/simpleaddr: extended test
+	* result/XPath/simpleaddr: updated result
+
+Wed Apr  4 02:07:53 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* xmllint.c: Dan Timis reported a portability problem
+	  on Macs without mmap, fixed it.
+
+Tue Apr  3 20:20:51 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* testXPath.c : added a --tree option allowing to display the
+	  tree dump of the XPath expression
+
+Mon Apr  2 17:13:51 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* xpath.c: fixed a memleak when comparing nodesets
+	* HTMLtree.c: don't invent the HTML doctype if not available (XSLT)
+	* tree.c: added a TODO
+
+Tue Mar 27 14:32:06 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* configure.in Makefile.am config.h.in xmlversion.h.in: detect if
+	  we need string functions
+	* trio.[ch] strio.[ch]: embedded the Trio-0.23 string functions
+	  to be able to use them where needed. Applied some changes
+	  to reduce name linking pollution and compile in only what's
+	  needed.
+	* HTMLtree.c debugXML.c entities.c error.c nanoftp.c valid.c
+	  xlink.c xmlversion.h.in xpath.c: got rid of the #ifdef 
+	  for the string manipulation functions
+	* xmlmemory.[ch]: removed DEBUG_MEMORY_FREED and added it automatically
+	  to the free() function of xmlmemory.c
+	* entities.c HTMLtree.c parserInternals.c tree.c uri.c valid.c
+	  xinclude.c xmlIO.c xpath.c xpointer.c: removed the MEM_CLEANUP
+	  usage.
+
+
+Tue Mar 27 02:30:23 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* error.c: applied the context output patch of the error
+	  handling submitted by Chuck Griffith
+	* error/VC/*: this slightly change some error logs
+
+Tue Mar 27 00:51:27 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* parser.c: fixed line number reporting on error
+
+Mon Mar 26 23:21:41 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* parser.c: Sullivan and Darin found a parser bug,
+	  applied the patch.
+
+Mon Mar 26 18:24:52 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* HTMLparser.c HTMLtree.c SAX.c debugXML.c error.c parserInternals.c
+	  testHTML.c testSAX.c tree.c valid.c xmlIO.c xmlmemory.c
+	  xmlversion.h.in xpointer.c: of course the way I defined
+	  UNUSED breaks on old gcc version. Try to be smart and
+	  also define it directly in xmlversion.h
+	* configure.in: removed -ansi flag from the pedantic set
+
+Sat Mar 24 17:45:36 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+        Huge cleanup, I switched to compile with
+	-Wall -g -O -ansi -pedantic -W -Wunused -Wimplicit
+	-Wreturn-type -Wswitch -Wcomment -Wtrigraphs -Wformat
+	-Wchar-subscripts -Wuninitialized -Wparentheses -Wshadow
+	-Wpointer-arith -Wcast-align -Wwrite-strings -Waggregate-return
+	-Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Winline
+	* HTMLparser.[ch] HTMLtree.c SAX.c debugXML.c encoding.[ch]
+	  encoding.h entities.c error.c list.[ch] nanoftp.c
+	  nanohttp.c parser.[ch] parserInternals.[ch] testHTML.c
+	  testSAX.c testURI.c testXPath.c tree.[ch] uri.c
+	  valid.[ch] xinclude.c xmlIO.[ch] xmllint.c xmlmemory.c
+	  xpath.c xpathInternals.h xpointer.[ch] example/gjobread.c:
+	  Cleanup, staticfied a number of non-exported functions,
+	  detected and cleaned up a dozen of problem found this way,
+	  avoided a lot of public function name/typedef/system names clashes
+	* doc/xml.html: updated
+	* configure.in: switched private flags to the really pedantic ones.
+
+Thu Mar 22 22:44:15 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* configure.in: 2.3.5
+	* doc/html/*: rebuilt the docs
+
+Thu Mar 22 15:36:45 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* parser.c: fixed a reported bug in NOTATION parsing
+	* uri.c: accepted but not fixed bug 51876, added TODO 
+	* Makefile.am: fixed bug 51876
+
+Thu Mar 22 13:41:22 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* config.h.in configure.in error.c: fix a compilation problem
+	  on platforms without vsnprintf (xml@thewrittenword.com)
+
+Wed Mar 21 19:04:34 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* parser.c: fixed a function name header typo
+	* SAX.c: notations can also occur in external subset.
+
+Tue Mar 20 14:21:28 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* error.c: removed a C++ like comment
+
+Tue Mar 20 12:22:36 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* parser.c: fixing bug 52299 strange condition leading
+	  to a parser crash due to a buffer overflow
+	* result/noent/attrib.xml result/attrib.xml test/attrib.xml:
+	  added the specific test case
+
+Mon Mar 19 16:50:52 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* xpath.[ch]: still a lot of cleanup based on XSLT, added
+	  xmlXPathConvert{String,Number,Boolean} to be able to make
+	  type casts without a context stack, fixed some implementation
+	  problems related to the absence of context at parse-time,
+	  added xmlXPathEvalPredicate() and xmlXPathFreeCompExpr()
+	  in the public API too
+	* xpointer.c xpathInternals.h: we need to know at parse time
+	  whether we are compiling an XPointer
+
+Mon Mar 19 11:54:31 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* xpath.[ch] xpointer.c: restaured the Binary and API compatibility
+	  cleaned up the parser internals, refactored XPath code, added
+	  new compilation based APIs and cleanly separated public and
+	  private APIs.
+
+Mon Mar 19 00:59:25 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* xpath.h: the comp field must be added at the end to avoid
+	  killing binary compat.
+
+Mon Mar 19 00:11:18 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* Makefile.am: detect XPath memleaks in regreson tests
+	* error.c: fixed and error w.r.t. error reporting still using
+	  stderr
+	* hash.c: added new line at end of file
+	* tree.h: minor cleanup
+	* xpath.[ch] xpointer.[ch]: Major changes ! Separated XPath
+	  expression parsing from evaluation, resulted in a number of
+	  changes internally, and in XPointer. Likely to break stuff
+	  using xpathInternals.h but should remain binary compatible,
+	  new interfaces will be added.
+
+Wed Mar 14 20:34:02 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* configure.in: fixed a couple of problems reported by 
+	  okiddle@yahoo.co.uk and allanc@chickenandporn.com when compiling
+	  without gcc on non linux platforms.
+
+Wed Mar 14 20:13:54 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* doc/Makefile.am configure.in: yearke@eng.buffalo.edu suggested
+	  a fix for --with-html-dir= configure support. I hope it won't
+	  break rpm generation
+
+Wed Mar 14 17:28:49 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* xmlIO.c: one function comment cleanup.
+
+Wed Mar 14 14:55:46 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* SAX.c: external subset notations were improperly registered
+	  in the internal subset.
+
+Tue Mar 13 10:28:49 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* README.cvs-commits: added, pointing to HACKING
+	* HACKING: updated
+
+Mon Mar 12 22:09:40 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* parser.c: and Matt Sergeant found one in the XML push
+	  parser (erroneous check I forgot to remove when I fixed the
+	  main parser).
+
+Mon Mar 12 19:19:04 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* xpath.c: ptittom found a small bug in UnaryExpr
+
 Sat Mar 10 13:09:53 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
 
 	* configure.in: bumped to 2.3.4

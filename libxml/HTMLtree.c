@@ -7,16 +7,9 @@
  */
 
 
-#ifdef WIN32
-#include "win32config.h"
-#else
-#include "config.h"
-#endif
-
-#include <libxml/xmlversion.h>
+#include "libxml.h"
 #ifdef LIBXML_HTML_ENABLED
 
-#include <stdio.h>
 #include <string.h> /* for memset() only ! */
 
 #ifdef HAVE_CTYPE_H
@@ -177,12 +170,8 @@ htmlSetMetaEncoding(htmlDocPtr doc, const xmlChar *encoding) {
 	return(-1);
 
     if (encoding != NULL) {
-#ifdef HAVE_SNPRINTF
 	snprintf(newcontent, sizeof(newcontent), "text/html; charset=%s",
                 encoding);
-#else
-	sprintf(newcontent, "text/html; charset=%s", encoding);
-#endif
 	newcontent[sizeof(newcontent) - 1] = 0;
     }
 
@@ -193,6 +182,7 @@ htmlSetMetaEncoding(htmlDocPtr doc, const xmlChar *encoding) {
      */
     while (cur != NULL) {
 	if (cur->name != NULL) {
+/*
 	    if (xmlStrEqual(cur->name, BAD_CAST"html"))
 		break;
 	    if (xmlStrEqual(cur->name, BAD_CAST"body")) {
@@ -211,6 +201,13 @@ htmlSetMetaEncoding(htmlDocPtr doc, const xmlChar *encoding) {
 		goto found_head;
 	    if (xmlStrEqual(cur->name, BAD_CAST"meta"))
 		goto found_meta;
+*/
+	    if (xmlStrcasecmp(cur->name, BAD_CAST"html") == 0)
+		break;
+	    if (xmlStrcasecmp(cur->name, BAD_CAST"head") == 0)
+		goto found_head;
+	    if (xmlStrcasecmp(cur->name, BAD_CAST"meta") == 0)
+		goto found_meta;
 	}
 	cur = cur->next;
     }
@@ -223,6 +220,7 @@ htmlSetMetaEncoding(htmlDocPtr doc, const xmlChar *encoding) {
      */
     while (cur != NULL) {
 	if (cur->name != NULL) {
+/*
 	    if (xmlStrEqual(cur->name, BAD_CAST"head"))
 		break;
 	    if (xmlStrEqual(cur->name, BAD_CAST"body")) {
@@ -239,6 +237,11 @@ htmlSetMetaEncoding(htmlDocPtr doc, const xmlChar *encoding) {
 	    }
 	    if (xmlStrEqual(cur->name, BAD_CAST"meta"))
 		goto found_meta;
+*/
+	    if (xmlStrcasecmp(cur->name, BAD_CAST"head") == 0)
+		break;
+	    if (xmlStrcasecmp(cur->name, BAD_CAST"meta") == 0)
+		goto found_meta;
 	}
 	cur = cur->next;
     }
@@ -250,8 +253,8 @@ found_head:
 	    return(0);
 	meta = xmlNewDocNode(doc, NULL, BAD_CAST"meta", NULL);
 	xmlAddChild(cur, meta);
-	xmlNewProp(meta, BAD_CAST"http-equiv", BAD_CAST"Content-Type");
 	xmlNewProp(meta, BAD_CAST"content", BAD_CAST newcontent);
+	xmlNewProp(meta, BAD_CAST"http-equiv", BAD_CAST"Content-Type");
 	return(0);
     }
     cur = cur->children;
@@ -264,8 +267,8 @@ found_meta:
 
 	meta = xmlNewDocNode(doc, NULL, BAD_CAST"meta", NULL);
 	xmlAddPrevSibling(cur, meta);
-	xmlNewProp(meta, BAD_CAST"http-equiv", BAD_CAST"Content-Type");
 	xmlNewProp(meta, BAD_CAST"content", BAD_CAST newcontent);
+	xmlNewProp(meta, BAD_CAST"http-equiv", BAD_CAST"Content-Type");
     }
 
     /*
@@ -274,13 +277,15 @@ found_meta:
      */
     while (cur != NULL) {
 	if (cur->name != NULL) {
-	    if (xmlStrEqual(cur->name, BAD_CAST"meta")) {
+	    if (xmlStrcasecmp(cur->name, BAD_CAST"meta") == 0) {
 		xmlAttrPtr attr = cur->properties;
 		int http;
 		const xmlChar *value;
+                int same_charset;
 
 		content = NULL;
 		http = 0;
+                same_charset = 0;
 		while (attr != NULL) {
 		    if ((attr->children != NULL) &&
 		        (attr->children->type == XML_TEXT_NODE) &&
@@ -293,15 +298,22 @@ found_meta:
 			if ((!xmlStrcasecmp(attr->name, BAD_CAST"http-equiv"))
 			 && (!xmlStrcasecmp(value, BAD_CAST"Content-Type")))
 			    http = 1;
-			else if ((value != NULL)
-			 && (!xmlStrcasecmp(attr->name, BAD_CAST"content")))
-			    content = value;
-			if ((http != 0) && (content != NULL))
+			else 
+                        {
+                           if ((value != NULL) && 
+				(!xmlStrcasecmp(attr->name, BAD_CAST"content")))
+			      content = value;
+			   else 
+			     if ((!xmlStrcasecmp(attr->name, BAD_CAST"charset"))
+			 		&& (!xmlStrcasecmp(value, encoding)))
+			    same_charset = 1;
+                        }
+		        if ((http != 0) && (content != NULL) && (same_charset != 0))
 			    break;
 		    }
 		    attr = attr->next;
 		}
-		if ((http != 0) && (content != NULL)) {
+		if ((http != 0) && (content != NULL) && (same_charset != 0)) {
 		    meta = cur;
 		    cur = cur->next;
 		    xmlUnlinkNode(meta);
@@ -663,7 +675,6 @@ htmlDocDumpMemory(xmlDocPtr cur, xmlChar**mem, int *size) {
     htmlDocContentDump(buf, cur);
     *mem = buf->content;
     *size = buf->use;
-    MEM_CLEANUP(buf, sizeof(xmlBuffer));
     xmlFree(buf);
 }
 
@@ -680,10 +691,13 @@ htmlDocDumpMemory(xmlDocPtr cur, xmlChar**mem, int *size) {
  * @doc:  the document
  * @encoding:  the encoding string
  * 
+ * TODO: check whether encoding is needed
+ *
  * Dump the HTML document DTD, if any.
  */
 static void
-htmlDtdDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, const char *encoding) {
+htmlDtdDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
+	          const char *encoding ATTRIBUTE_UNUSED) {
     xmlDtdPtr cur = doc->intSubset;
 
     if (cur == NULL) {
@@ -717,7 +731,8 @@ htmlDtdDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, const char *encoding) {
  * Dump an HTML attribute
  */
 static void
-htmlAttrDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlAttrPtr cur, const char *encoding) {
+htmlAttrDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlAttrPtr cur,
+	           const char *encoding ATTRIBUTE_UNUSED) {
     xmlChar *value;
 
     if (cur == NULL) {
@@ -797,7 +812,8 @@ htmlNodeListDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, co
  * Dump an HTML node, recursive behaviour,children are printed too.
  */
 void
-htmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, const char *encoding) {
+htmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
+	           xmlNodePtr cur, const char *encoding) {
     htmlElemDescPtr info;
 
     if (cur == NULL) {
@@ -868,7 +884,7 @@ htmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, const 
     }
 
     /*
-     * Get specific HTmL info for taht node.
+     * Get specific HTML info for taht node.
      */
     info = htmlTagLookup(cur->name);
 
@@ -888,6 +904,10 @@ htmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, const 
     }
     if ((cur->content == NULL) && (cur->children == NULL)) {
         if ((info != NULL) && (info->saveEndTag != 0) &&
+/*
+	    (xmlStrcasecmp(BAD_CAST info->name, BAD_CAST "html")) && 
+	    (xmlStrcasecmp(BAD_CAST info->name, BAD_CAST "body"))) {
+*/
 	    (strcmp(info->name, "html")) && (strcmp(info->name, "body"))) {
 	    xmlOutputBufferWriteString(buf, ">");
 	} else {
@@ -962,12 +982,15 @@ htmlDocContentDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr cur, const char *enco
      */
     type = cur->type;
     cur->type = XML_HTML_DOCUMENT_NODE;
-    if (cur->intSubset != NULL)
+    if (cur->intSubset != NULL) {
         htmlDtdDumpOutput(buf, cur, NULL);
-    else {
+#if 0
+    /* Disabled for XSLT output */
+    } else {
 	/* Default to HTML-4.0 transitionnal @@@@ */
 	xmlOutputBufferWriteString(buf, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\" \"http://www.w3.org/TR/REC-html40/loose.dtd\">\n");
 
+#endif
     }
     if (cur->children != NULL) {
         htmlNodeListDumpOutput(buf, cur, cur->children, encoding);
@@ -975,7 +998,6 @@ htmlDocContentDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr cur, const char *enco
     xmlOutputBufferWriteString(buf, "\n");
     cur->type = (xmlElementType) type;
 }
-
 
 /************************************************************************
  *									*
@@ -1131,6 +1153,8 @@ htmlSaveFileEnc(const char *filename, xmlDocPtr cur, const char *encoding) {
 		return(-1);
             htmlSetMetaEncoding(cur, (const xmlChar *) encoding);
 	}
+    } else {
+	htmlSetMetaEncoding(cur, (const xmlChar *) "UTF-8");
     }
 
     /*

@@ -6,17 +6,19 @@
  * Daniel.Veillard@w3.org
  */
 
-#ifdef WIN32
-#include "win32config.h"
-#else
-#include "config.h"
-#endif
+#include "libxml.h"
 
-#include <stdio.h>
 #include <string.h>
-#include <stdio.h>
 #include <stdarg.h>
+#ifdef _WIN32
+#ifdef _MSC_VER
+#include <winsock2.h>
+#pragma comment(lib, "ws2_32.lib")
+#define gettimeofday(p1,p2)
+#endif /* _MSC_VER */
+#else /* _WIN32 */
 #include <sys/time.h>
+#endif /* _WIN32 */
 
 
 #ifdef HAVE_SYS_TYPES_H
@@ -91,6 +93,7 @@ static int xinclude = 0;
 #endif
 static int progresult = 0;
 static int timing = 0;
+static int generate = 0;
 static struct timeval begin, end;
 
 
@@ -109,7 +112,7 @@ extern int xmlGetWarningsDefaultValue;
  ************************************************************************/
 char buffer[50000];
 
-void
+static void
 xmlHTMLEncodeSend(void) {
     char *result;
 
@@ -128,7 +131,7 @@ xmlHTMLEncodeSend(void) {
  * Displays the associated file and line informations for the current input
  */
 
-void
+static void
 xmlHTMLPrintFileInfo(xmlParserInputPtr input) {
     xmlGenericError(xmlGenericErrorContext, "<p>");
     if (input != NULL) {
@@ -149,7 +152,7 @@ xmlHTMLPrintFileInfo(xmlParserInputPtr input) {
  * Displays current context within the input content for error tracking
  */
 
-void
+static void
 xmlHTMLPrintFileContext(xmlParserInputPtr input) {
     const xmlChar *cur, *base;
     int n;
@@ -194,7 +197,7 @@ xmlHTMLPrintFileContext(xmlParserInputPtr input) {
  * Display and format an error messages, gives file, line, position and
  * extra parameters.
  */
-void
+static void
 xmlHTMLError(void *ctx, const char *msg, ...)
 {
     xmlParserCtxtPtr ctxt = (xmlParserCtxtPtr) ctx;
@@ -231,7 +234,7 @@ xmlHTMLError(void *ctx, const char *msg, ...)
  * Display and format a warning messages, gives file, line, position and
  * extra parameters.
  */
-void
+static void
 xmlHTMLWarning(void *ctx, const char *msg, ...)
 {
     xmlParserCtxtPtr ctxt = (xmlParserCtxtPtr) ctx;
@@ -269,7 +272,7 @@ xmlHTMLWarning(void *ctx, const char *msg, ...)
  * Display and format an validity error messages, gives file,
  * line, position and extra parameters.
  */
-void
+static void
 xmlHTMLValidityError(void *ctx, const char *msg, ...)
 {
     xmlParserCtxtPtr ctxt = (xmlParserCtxtPtr) ctx;
@@ -303,7 +306,7 @@ xmlHTMLValidityError(void *ctx, const char *msg, ...)
  * Display and format a validity warning messages, gives file, line,
  * position and extra parameters.
  */
-void
+static void
 xmlHTMLValidityWarning(void *ctx, const char *msg, ...)
 {
     xmlParserCtxtPtr ctxt = (xmlParserCtxtPtr) ctx;
@@ -342,7 +345,7 @@ xmlHTMLValidityWarning(void *ctx, const char *msg, ...)
  * Returns a pointer to it or NULL on EOF the caller is expected to
  *     free the returned string.
  */
-char *
+static char *
 xmlShellReadline(char *prompt) {
 #ifdef HAVE_LIBREADLINE
     char *line_read;
@@ -373,10 +376,10 @@ xmlShellReadline(char *prompt) {
  * 									*
  ************************************************************************/
 
-int myRead(FILE *f, char * buffer, int len) {
-    return(fread(buffer, 1, len, f));
+static int myRead(FILE *f, char * buf, int len) {
+    return(fread(buf, 1, len, f));
 }
-void myClose(FILE *f) {
+static void myClose(FILE *f) {
   if (f != stdin) {
     fclose(f);
   }
@@ -387,18 +390,29 @@ void myClose(FILE *f) {
  * 			Test processing					*
  * 									*
  ************************************************************************/
-void parseAndPrintFile(char *filename) {
+static void parseAndPrintFile(char *filename) {
     xmlDocPtr doc = NULL, tmp;
 
     if ((timing) && (!repeat))
 	gettimeofday(&begin, NULL);
     
 
+    if (filename == NULL) {
+	if (generate) {
+	    xmlNodePtr n;
+
+	    doc = xmlNewDoc(BAD_CAST "1.0");
+	    n = xmlNewNode(NULL, BAD_CAST "info");
+	    xmlNodeSetContent(n, BAD_CAST "abc");
+	    xmlDocSetRootElement(doc, n);
+	}
+    }
 #ifdef LIBXML_HTML_ENABLED
-    if (html) {
+    else if (html) {
 	doc = htmlParseFile(filename, NULL);
-    } else {
+    }
 #endif /* LIBXML_HTML_ENABLED */
+    else {
 	/*
 	 * build an XML tree from a string;
 	 */
@@ -523,9 +537,7 @@ void parseAndPrintFile(char *filename) {
 #endif
 	} else
 	    doc = xmlParseFile(filename);
-#ifdef LIBXML_HTML_ENABLED
     }
-#endif
 
     /*
      * If we don't have a document we might as well give up.  Do we
@@ -611,6 +623,7 @@ void parseAndPrintFile(char *filename) {
 	    if ((timing) && (!repeat)) {
 		gettimeofday(&begin, NULL);
 	    }
+#ifdef HAVE_SYS_MMAN_H
 	    if (memory) {
 		xmlChar *result;
 		int len;
@@ -626,7 +639,9 @@ void parseAndPrintFile(char *filename) {
 		    write(1, result, len);
 		    xmlFree(result);
 		}
-	    } else if (compress)
+	    } else
+#endif /* HAVE_SYS_MMAN_H */
+	    if (compress)
 		xmlSaveFile("-", doc);
 	    else if (encoding != NULL)
 	        xmlSaveFileEnc("-", doc, encoding);
@@ -790,6 +805,9 @@ main(int argc, char **argv) {
 	else if ((!strcmp(argv[i], "-timing")) ||
 	         (!strcmp(argv[i], "--timing")))
 	    timing++;
+	else if ((!strcmp(argv[i], "-auto")) ||
+	         (!strcmp(argv[i], "--auto")))
+	    generate++;
 	else if ((!strcmp(argv[i], "-repeat")) ||
 	         (!strcmp(argv[i], "--repeat")))
 	    repeat++;
@@ -891,10 +909,12 @@ main(int argc, char **argv) {
 	    fprintf(stderr, "100 iteration took %ld ms\n", msec);
 	}
     }
+    if (generate) 
+	parseAndPrintFile(NULL);
     if ((htmlout) && (!nowrap)) {
 	xmlGenericError(xmlGenericErrorContext, "</body></html>\n");
     }
-    if (files == 0) {
+    if ((files == 0) && (!generate)) {
 	printf("Usage : %s [options] XMLfiles ...\n",
 	       argv[0]);
 	printf("\tParse the XML files and output the result of the parsing\n");
@@ -927,6 +947,7 @@ main(int argc, char **argv) {
 	printf("\t--noblanks : drop (ignorable?) blanks spaces\n");
 	printf("\t--testIO : test user I/O support\n");
 	printf("\t--encode encoding : output in the given encoding\n");
+	printf("\t--auto : generate a small doc on the fly\n");
 #ifdef LIBXML_XINCLUDE_ENABLED
 	printf("\t--xinclude : do XInclude processing\n");
 #endif

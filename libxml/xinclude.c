@@ -13,13 +13,8 @@
  * TODO: compute XPointers nodesets
  */
 
-#ifdef WIN32
-#include "win32config.h"
-#else
-#include "config.h"
-#endif
+#include "libxml.h"
 
-#include <stdio.h>
 #include <string.h>
 #include <libxml/xmlmemory.h>
 #include <libxml/tree.h>
@@ -79,7 +74,7 @@ struct _xmlXIncludeCtxt {
  * 
  * Add a new node to process to an XInclude context
  */
-void
+static void
 xmlXIncludeAddNode(xmlXIncludeCtxtPtr ctxt, xmlNodePtr node) {
     if (ctxt->incMax == 0) {
 	ctxt->incMax = 4;
@@ -128,7 +123,7 @@ xmlXIncludeAddNode(xmlXIncludeCtxtPtr ctxt, xmlNodePtr node) {
  * 
  * Add a new document to the list
  */
-void
+static void
 xmlXIncludeAddDoc(xmlXIncludeCtxtPtr ctxt, xmlDocPtr doc, const xmlURL url) {
     if (ctxt->docMax == 0) {
 	ctxt->docMax = 4;
@@ -177,7 +172,7 @@ xmlXIncludeAddDoc(xmlXIncludeCtxtPtr ctxt, xmlDocPtr doc, const xmlURL url) {
  * 
  * Add a new txtument to the list
  */
-void
+static void
 xmlXIncludeAddTxt(xmlXIncludeCtxtPtr ctxt, xmlNodePtr txt, const xmlURL url) {
     if (ctxt->txtMax == 0) {
 	ctxt->txtMax = 4;
@@ -226,7 +221,7 @@ xmlXIncludeAddTxt(xmlXIncludeCtxtPtr ctxt, xmlNodePtr txt, const xmlURL url) {
  *
  * Returns the new set
  */
-xmlXIncludeCtxtPtr
+static xmlXIncludeCtxtPtr
 xmlXIncludeNewContext(xmlDocPtr doc) {
     xmlXIncludeCtxtPtr ret;
 
@@ -254,7 +249,7 @@ xmlXIncludeNewContext(xmlDocPtr doc) {
  *
  * Free an XInclude context
  */
-void
+static void
 xmlXIncludeFreeContext(xmlXIncludeCtxtPtr ctxt) {
     int i;
 
@@ -281,7 +276,6 @@ xmlXIncludeFreeContext(xmlXIncludeCtxtPtr ctxt) {
 	xmlFree(ctxt->txtTab);
     if (ctxt->txturlTab != NULL)
 	xmlFree(ctxt->txturlTab);
-    MEM_CLEANUP(ctxt, sizeof(xmlXIncludeCtxt));
     xmlFree(ctxt);
 }
 
@@ -299,7 +293,7 @@ xmlXIncludeFreeContext(xmlXIncludeCtxtPtr ctxt) {
  * 
  * Load the document, and store the result in the XInclude context
  */
-void
+static void
 xmlXIncludeLoadDoc(xmlXIncludeCtxtPtr ctxt, const xmlChar *url, int nr) {
     xmlDocPtr doc;
     xmlURIPtr uri;
@@ -417,7 +411,7 @@ loaded:
  * 
  * Load the content, and store the result in the XInclude context
  */
-void
+static void
 xmlXIncludeLoadTxt(xmlXIncludeCtxtPtr ctxt, const xmlChar *url, int nr) {
     xmlParserInputBufferPtr buf;
     xmlNodePtr node;
@@ -529,7 +523,7 @@ loaded:
  *
  * Returns the result list or NULL in case of error
  */
-xmlNodePtr
+static xmlNodePtr
 xmlXIncludePreProcessNode(xmlXIncludeCtxtPtr ctxt, xmlNodePtr node) {
     xmlXIncludeAddNode(ctxt, node);
     return(0);
@@ -544,7 +538,7 @@ xmlXIncludePreProcessNode(xmlXIncludeCtxtPtr ctxt, xmlNodePtr node) {
  *
  * Returns 0 if substition succeeded, -1 if some processing failed
  */
-int
+static int
 xmlXIncludeLoadNode(xmlXIncludeCtxtPtr ctxt, int nr) {
     xmlNodePtr cur;
     xmlChar *href;
@@ -668,7 +662,7 @@ xmlXIncludeLoadNode(xmlXIncludeCtxtPtr ctxt, int nr) {
  *
  * Returns 0 if substition succeeded, -1 if some processing failed
  */
-int
+static int
 xmlXIncludeIncludeNode(xmlXIncludeCtxtPtr ctxt, int nr) {
     xmlNodePtr cur, end, list;
 
@@ -710,15 +704,14 @@ xmlXIncludeIncludeNode(xmlXIncludeCtxtPtr ctxt, int nr) {
 
 /**
  * xmlXIncludeTestNode:
- * @doc: an XML document
  * @node: an XInclude node
  *
  * test if the node is an XInclude node
  *
  * Returns 1 true, 0 otherwise
  */
-int
-xmlXIncludeTestNode(xmlDocPtr doc, xmlNodePtr node) {
+static int
+xmlXIncludeTestNode(xmlNodePtr node) {
     if (node == NULL)
 	return(0);
     if (node->ns == NULL)
@@ -754,18 +747,18 @@ xmlXIncludeProcess(xmlDocPtr doc) {
      * First phase: lookup the elements in the document
      */
     cur = xmlDocGetRootElement(doc);
-    if (xmlXIncludeTestNode(doc, cur))
+    if (xmlXIncludeTestNode(cur))
 	xmlXIncludePreProcessNode(ctxt, cur);
     while (cur != NULL) {
 	/* TODO: need to work on entities -> stack */
 	if ((cur->children != NULL) &&
 	    (cur->children->type != XML_ENTITY_DECL)) {
 	    cur = cur->children;
-	    if (xmlXIncludeTestNode(doc, cur))
+	    if (xmlXIncludeTestNode(cur))
 		xmlXIncludePreProcessNode(ctxt, cur);
 	} else if (cur->next != NULL) {
 	    cur = cur->next;
-	    if (xmlXIncludeTestNode(doc, cur))
+	    if (xmlXIncludeTestNode(cur))
 		xmlXIncludePreProcessNode(ctxt, cur);
 	} else {
 	    do {
@@ -773,7 +766,7 @@ xmlXIncludeProcess(xmlDocPtr doc) {
 		if (cur == NULL) break; /* do */
 		if (cur->next != NULL) {
 		    cur = cur->next;
-		    if (xmlXIncludeTestNode(doc, cur))
+		    if (xmlXIncludeTestNode(cur))
 			xmlXIncludePreProcessNode(ctxt, cur);
 		    break; /* do */
 		}

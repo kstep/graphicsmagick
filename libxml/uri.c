@@ -8,14 +8,12 @@
  * Daniel.Veillard@w3.org
  */
 
+#include "libxml.h"
+
 #ifdef WIN32
 #define INCLUDE_WINSOCK
-#include "win32config.h"
-#else
-#include "config.h"
 #endif
 
-#include <stdio.h>
 #include <string.h>
 
 #include <libxml/xmlmemory.h>
@@ -556,7 +554,7 @@ xmlPrintURI(FILE *stream, xmlURIPtr uri) {
  *
  * Make sure the xmlURI struct is free of content
  */
-void
+static void
 xmlCleanURI(xmlURIPtr uri) {
     if (uri == NULL) return;
 
@@ -596,7 +594,6 @@ xmlFreeURI(xmlURIPtr uri) {
     if (uri->opaque != NULL) xmlFree(uri->opaque);
     if (uri->authority != NULL) xmlFree(uri->authority);
     if (uri->query != NULL) xmlFree(uri->query);
-    MEM_CLEANUP(uri, sizeof(xmlURI));
     xmlFree(uri);
 }
 
@@ -987,6 +984,10 @@ xmlURIUnescapeString(const char *str, int len, char *target) {
  * It will try to escape the chars needing this, but this is heuristic
  * based it's impossible to be sure.
  *
+ * TODO: make the proper implementation of this function by calling
+ *       xmlParseURIReference() and escaping each section accordingly
+ *       to the rules (c.f. bug 51876)
+ *
  * Returns an copy of the string, but escaped
  */
 xmlChar *
@@ -1060,7 +1061,7 @@ xmlURIEscape(const xmlChar *str) {
  *
  * Returns 0 or the error code
  */
-int
+static int
 xmlParseURIFragment(xmlURIPtr uri, const char **str) {
     const char *cur = *str;
 
@@ -1086,7 +1087,7 @@ xmlParseURIFragment(xmlURIPtr uri, const char **str) {
  *
  * Returns 0 or the error code
  */
-int
+static int
 xmlParseURIQuery(xmlURIPtr uri, const char **str) {
     const char *cur = *str;
 
@@ -1112,7 +1113,7 @@ xmlParseURIQuery(xmlURIPtr uri, const char **str) {
  *
  * Returns 0 or the error code
  */
-int
+static int
 xmlParseURIScheme(xmlURIPtr uri, const char **str) {
     const char *cur;
 
@@ -1144,7 +1145,7 @@ xmlParseURIScheme(xmlURIPtr uri, const char **str) {
  *
  * Returns 0 or the error code
  */
-int
+static int
 xmlParseURIOpaquePart(xmlURIPtr uri, const char **str) {
     const char *cur;
 
@@ -1186,7 +1187,7 @@ xmlParseURIOpaquePart(xmlURIPtr uri, const char **str) {
  *
  * Returns 0 or the error code
  */
-int
+static int
 xmlParseURIServer(xmlURIPtr uri, const char **str) {
     const char *cur;
     const char *host, *tmp;
@@ -1320,7 +1321,7 @@ host_done:
  *
  * Returns 0 or the error code
  */
-int
+static int
 xmlParseURIRelSegment(xmlURIPtr uri, const char **str) {
     const char *cur;
 
@@ -1355,7 +1356,7 @@ xmlParseURIRelSegment(xmlURIPtr uri, const char **str) {
  *
  * Returns 0 or the error code
  */
-int
+static int
 xmlParseURIPathSegments(xmlURIPtr uri, const char **str, int slash) {
     const char *cur;
 
@@ -1435,7 +1436,7 @@ xmlParseURIPathSegments(xmlURIPtr uri, const char **str, int slash) {
  *
  * Returns 0 or the error code
  */
-int
+static int
 xmlParseURIAuthority(xmlURIPtr uri, const char **str) {
     const char *cur;
     int ret;
@@ -1485,7 +1486,7 @@ xmlParseURIAuthority(xmlURIPtr uri, const char **str) {
  *
  * Returns 0 or the error code
  */
-int
+static int
 xmlParseURIHierPart(xmlURIPtr uri, const char **str) {
     int ret;
     const char *cur;
@@ -1534,7 +1535,7 @@ xmlParseURIHierPart(xmlURIPtr uri, const char **str) {
  *
  * Returns 0 or the error code
  */
-int
+static int
 xmlParseAbsoluteURI(xmlURIPtr uri, const char **str) {
     int ret;
 
@@ -1566,7 +1567,7 @@ xmlParseAbsoluteURI(xmlURIPtr uri, const char **str) {
  *
  * Returns 0 or the error code
  */
-int
+static int
 xmlParseRelativeURI(xmlURIPtr uri, const char **str) {
     int ret = 0;
     const char *cur;
@@ -1708,7 +1709,7 @@ xmlParseURI(const char *str) {
 xmlChar *
 xmlBuildURI(const xmlChar *URI, const xmlChar *base) {
     xmlChar *val = NULL;
-    int ret, len, index, cur, out;
+    int ret, len, indx, cur, out;
     xmlURIPtr ref = NULL;
     xmlURIPtr bas = NULL;
     xmlURIPtr res = NULL;
@@ -1904,14 +1905,14 @@ xmlBuildURI(const xmlChar *URI, const xmlChar *base) {
      *    string.
      */
     if (ref->path != NULL && ref->path[0] != 0) {
-	index = 0;
+	indx = 0;
 	/*
 	 * Ensure the path includes a '/'
 	 */
 	if ((out == 0) && (bas->server != NULL))
 	    res->path[out++] = '/';
-	while (ref->path[index] != 0) {
-	    res->path[out++] = ref->path[index++];
+	while (ref->path[indx] != 0) {
+	    res->path[out++] = ref->path[indx++];
 	}
     }
     res->path[out] = 0;

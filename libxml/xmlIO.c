@@ -8,13 +8,8 @@
  * 14 Nov 2000 ht - for VMS, truncated name of long functions to under 32 char
  */
 
-#ifdef WIN32
-#include "win32config.h"
-#else
-#include "config.h"
-#endif
+#include "libxml.h"
 
-#include <stdio.h>
 #include <string.h>
 #include <errno.h>
 
@@ -159,92 +154,9 @@ xmlCheckFilename (const char *path)
     return 1;
 }
 
-int
+static int
 xmlNop(void) {
     return(0);
-}
-
-/**
- * xmlFdMatch:
- * @filename:  the URI for matching
- *
- * input from file descriptor
- *
- * Returns 1 if matches, 0 otherwise
- */
-int
-xmlFdMatch (const char *filename) {
-    return(1);
-}
-
-/**
- * xmlFdOpen:
- * @filename:  the URI for matching
- *
- * input from file descriptor, supports compressed input
- * if @filename is " " then the standard input is used
- *
- * Returns an I/O context or NULL in case of error
- */
-void *
-xmlFdOpen (const char *filename) {
-    const char *path = NULL;
-    int fd;
-
-    if (!strcmp(filename, "-")) {
-	fd = 0;
-	return((void *) fd);
-    }
-
-    if (!strncmp(filename, "file://localhost", 16))
-	path = &filename[16];
-    else if (!strncmp(filename, "file:///", 8))
-	path = &filename[8];
-    else if (filename[0] == '/')
-	path = filename;
-    if (path == NULL)
-	return(NULL);
-
-#ifdef WIN32
-    fd = _open (path, O_RDONLY | _O_BINARY);
-#else
-    fd = open (path, O_RDONLY);
-#endif
-
-    return((void *) fd);
-}
-
-/**
- * xmlFdOpenW:
- * @filename:  the URI for matching
- *
- * input from file descriptor,
- * if @filename is "-" then the standard output is used
- *
- * Returns an I/O context or NULL in case of error
- */
-void *
-xmlFdOpenW (const char *filename) {
-    const char *path = NULL;
-    int fd;
-
-    if (!strcmp(filename, "-")) {
-	fd = 1;
-	return((void *) fd);
-    }
-
-    if (!strncmp(filename, "file://localhost", 16))
-	path = &filename[16];
-    else if (!strncmp(filename, "file:///", 8))
-	path = &filename[8];
-    else if (filename[0] == '/')
-	path = filename;
-    if (path == NULL)
-	return(NULL);
-
-    fd = open (path, O_WRONLY);
-
-    return((void *) fd);
 }
 
 /**
@@ -257,7 +169,7 @@ xmlFdOpenW (const char *filename) {
  *
  * Returns the number of bytes written
  */
-int
+static int
 xmlFdRead (void * context, char * buffer, int len) {
     return(read((int) context, &buffer[0], len));
 }
@@ -272,7 +184,7 @@ xmlFdRead (void * context, char * buffer, int len) {
  *
  * Returns the number of bytes written
  */
-int
+static int
 xmlFdWrite (void * context, const char * buffer, int len) {
     return(write((int) context, &buffer[0], len));
 }
@@ -283,7 +195,7 @@ xmlFdWrite (void * context, const char * buffer, int len) {
  *
  * Close an I/O channel
  */
-void
+static void
 xmlFdClose (void * context) {
     close((int) context);
 }
@@ -296,8 +208,8 @@ xmlFdClose (void * context) {
  *
  * Returns 1 if matches, 0 otherwise
  */
-int
-xmlFileMatch (const char *filename) {
+static int
+xmlFileMatch (const char *filename ATTRIBUTE_UNUSED) {
     return(1);
 }
 
@@ -310,7 +222,7 @@ xmlFileMatch (const char *filename) {
  *
  * Returns an I/O context or NULL in case of error
  */
-void *
+static void *
 xmlFileOpen (const char *filename) {
     const char *path = NULL;
     FILE *fd;
@@ -349,7 +261,7 @@ xmlFileOpen (const char *filename) {
  *
  * Returns an I/O context or NULL in case of error
  */
-void *
+static void *
 xmlFileOpenW (const char *filename) {
     const char *path = NULL;
     FILE *fd;
@@ -383,7 +295,7 @@ xmlFileOpenW (const char *filename) {
  *
  * Returns the number of bytes written
  */
-int
+static int
 xmlFileRead (void * context, char * buffer, int len) {
     return(fread(&buffer[0], 1,  len, (FILE *) context));
 }
@@ -398,7 +310,7 @@ xmlFileRead (void * context, char * buffer, int len) {
  *
  * Returns the number of bytes written
  */
-int
+static int
 xmlFileWrite (void * context, const char * buffer, int len) {
     return(fwrite(&buffer[0], 1,  len, (FILE *) context));
 }
@@ -409,7 +321,7 @@ xmlFileWrite (void * context, const char * buffer, int len) {
  *
  * Close an I/O channel
  */
-void
+static void
 xmlFileClose (void * context) {
     fclose((FILE *) context);
 }
@@ -420,7 +332,7 @@ xmlFileClose (void * context) {
  *
  * Flush an I/O channel
  */
-void
+static void
 xmlFileFlush (void * context) {
     fflush((FILE *) context);
 }
@@ -439,8 +351,8 @@ xmlFileFlush (void * context) {
  *
  * Returns 1 if matches, 0 otherwise
  */
-int
-xmlGzfileMatch (const char *filename) {
+static int
+xmlGzfileMatch (const char *filename ATTRIBUTE_UNUSED) {
     return(1);
 }
 
@@ -453,7 +365,7 @@ xmlGzfileMatch (const char *filename) {
  *
  * Returns an I/O context or NULL in case of error
  */
-void *
+static void *
 xmlGzfileOpen (const char *filename) {
     const char *path = NULL;
     gzFile fd;
@@ -489,7 +401,7 @@ xmlGzfileOpen (const char *filename) {
  *
  * Returns an I/O context or NULL in case of error
  */
-void *
+static void *
 xmlGzfileOpenW (const char *filename, int compression) {
     const char *path = NULL;
     char mode[15];
@@ -525,7 +437,7 @@ xmlGzfileOpenW (const char *filename, int compression) {
  *
  * Returns the number of bytes written
  */
-int
+static int
 xmlGzfileRead (void * context, char * buffer, int len) {
     return(gzread((gzFile) context, &buffer[0], len));
 }
@@ -540,7 +452,7 @@ xmlGzfileRead (void * context, char * buffer, int len) {
  *
  * Returns the number of bytes written
  */
-int
+static int
 xmlGzfileWrite (void * context, const char * buffer, int len) {
     return(gzwrite((gzFile) context, (char *) &buffer[0], len));
 }
@@ -551,7 +463,7 @@ xmlGzfileWrite (void * context, const char * buffer, int len) {
  *
  * Close a compressed I/O channel
  */
-void
+static void
 xmlGzfileClose (void * context) {
     gzclose((gzFile) context);
 }
@@ -571,7 +483,7 @@ xmlGzfileClose (void * context) {
  *
  * Returns 1 if matches, 0 otherwise
  */
-int
+static int
 xmlIOHTTPMatch (const char *filename) {
     if (!strncmp(filename, "http://", 7))
 	return(1);
@@ -586,7 +498,7 @@ xmlIOHTTPMatch (const char *filename) {
  *
  * Returns an I/O context or NULL in case of error
  */
-void *
+static void *
 xmlIOHTTPOpen (const char *filename) {
     return(xmlNanoHTTPOpen(filename, NULL));
 }
@@ -601,7 +513,7 @@ xmlIOHTTPOpen (const char *filename) {
  *
  * Returns the number of bytes written
  */
-int 
+static int 
 xmlIOHTTPRead(void * context, char * buffer, int len) {
     return(xmlNanoHTTPRead(context, &buffer[0], len));
 }
@@ -612,7 +524,7 @@ xmlIOHTTPRead(void * context, char * buffer, int len) {
  *
  * Close an HTTP I/O channel
  */
-void
+static void
 xmlIOHTTPClose (void * context) {
     xmlNanoHTTPClose(context);
 }
@@ -632,7 +544,7 @@ xmlIOHTTPClose (void * context) {
  *
  * Returns 1 if matches, 0 otherwise
  */
-int
+static int
 xmlIOFTPMatch (const char *filename) {
     if (!strncmp(filename, "ftp://", 6))
 	return(1);
@@ -647,7 +559,7 @@ xmlIOFTPMatch (const char *filename) {
  *
  * Returns an I/O context or NULL in case of error
  */
-void *
+static void *
 xmlIOFTPOpen (const char *filename) {
     return(xmlNanoFTPOpen(filename));
 }
@@ -662,7 +574,7 @@ xmlIOFTPOpen (const char *filename) {
  *
  * Returns the number of bytes written
  */
-int 
+static int 
 xmlIOFTPRead(void * context, char * buffer, int len) {
     return(xmlNanoFTPRead(context, &buffer[0], len));
 }
@@ -673,7 +585,7 @@ xmlIOFTPRead(void * context, char * buffer, int len) {
  *
  * Close an FTP I/O channel
  */
-void
+static void
 xmlIOFTPClose (void * context) {
     xmlNanoFTPClose(context);
 }
@@ -682,51 +594,51 @@ xmlIOFTPClose (void * context) {
 
 /**
  * xmlRegisterInputCallbacks:
- * @match:  the xmlInputMatchCallback
- * @open:  the xmlInputOpenCallback
- * @read:  the xmlInputReadCallback
- * @close:  the xmlInputCloseCallback
+ * @matchFunc:  the xmlInputMatchCallback
+ * @openFunc:  the xmlInputOpenCallback
+ * @readFunc:  the xmlInputReadCallback
+ * @closeFunc:  the xmlInputCloseCallback
  *
  * Register a new set of I/O callback for handling parser input.
  *
  * Returns the registered handler number or -1 in case of error
  */
 int
-xmlRegisterInputCallbacks(xmlInputMatchCallback match,
-	xmlInputOpenCallback open, xmlInputReadCallback read,
-	xmlInputCloseCallback close) {
+xmlRegisterInputCallbacks(xmlInputMatchCallback matchFunc,
+	xmlInputOpenCallback openFunc, xmlInputReadCallback readFunc,
+	xmlInputCloseCallback closeFunc) {
     if (xmlInputCallbackNr >= MAX_INPUT_CALLBACK) {
 	return(-1);
     }
-    xmlInputCallbackTable[xmlInputCallbackNr].matchcallback = match;
-    xmlInputCallbackTable[xmlInputCallbackNr].opencallback = open;
-    xmlInputCallbackTable[xmlInputCallbackNr].readcallback = read;
-    xmlInputCallbackTable[xmlInputCallbackNr].closecallback = close;
+    xmlInputCallbackTable[xmlInputCallbackNr].matchcallback = matchFunc;
+    xmlInputCallbackTable[xmlInputCallbackNr].opencallback = openFunc;
+    xmlInputCallbackTable[xmlInputCallbackNr].readcallback = readFunc;
+    xmlInputCallbackTable[xmlInputCallbackNr].closecallback = closeFunc;
     return(xmlInputCallbackNr++);
 }
 
 /**
  * xmlRegisterOutputCallbacks:
- * @match:  the xmlOutputMatchCallback
- * @open:  the xmlOutputOpenCallback
- * @write:  the xmlOutputWriteCallback
- * @close:  the xmlOutputCloseCallback
+ * @matchFunc:  the xmlOutputMatchCallback
+ * @openFunc:  the xmlOutputOpenCallback
+ * @writeFunc:  the xmlOutputWriteCallback
+ * @closeFunc:  the xmlOutputCloseCallback
  *
  * Register a new set of I/O callback for handling output.
  *
  * Returns the registered handler number or -1 in case of error
  */
 int
-xmlRegisterOutputCallbacks(xmlOutputMatchCallback match,
-	xmlOutputOpenCallback open, xmlOutputWriteCallback write,
-	xmlOutputCloseCallback close) {
+xmlRegisterOutputCallbacks(xmlOutputMatchCallback matchFunc,
+	xmlOutputOpenCallback openFunc, xmlOutputWriteCallback writeFunc,
+	xmlOutputCloseCallback closeFunc) {
     if (xmlOutputCallbackNr >= MAX_INPUT_CALLBACK) {
 	return(-1);
     }
-    xmlOutputCallbackTable[xmlOutputCallbackNr].matchcallback = match;
-    xmlOutputCallbackTable[xmlOutputCallbackNr].opencallback = open;
-    xmlOutputCallbackTable[xmlOutputCallbackNr].writecallback = write;
-    xmlOutputCallbackTable[xmlOutputCallbackNr].closecallback = close;
+    xmlOutputCallbackTable[xmlOutputCallbackNr].matchcallback = matchFunc;
+    xmlOutputCallbackTable[xmlOutputCallbackNr].opencallback = openFunc;
+    xmlOutputCallbackTable[xmlOutputCallbackNr].writecallback = writeFunc;
+    xmlOutputCallbackTable[xmlOutputCallbackNr].closecallback = closeFunc;
     return(xmlOutputCallbackNr++);
 }
 
@@ -908,7 +820,6 @@ xmlFreeParserInputBuffer(xmlParserInputBufferPtr in) {
 	in->buffer = NULL;
     }
 
-    MEM_CLEANUP(in, (size_t) sizeof(xmlParserInputBuffer));
     xmlFree(in);
 }
 
@@ -945,7 +856,6 @@ xmlOutputBufferClose(xmlOutputBufferPtr out) {
 	out->buffer = NULL;
     }
 
-    MEM_CLEANUP(out, (size_t) sizeof(xmlOutputBuffer));
     xmlFree(out);
     return(written);
 }
@@ -1683,14 +1593,22 @@ xmlDefaultExternalEntityLoader(const char *URL, const char *ID,
 	    "xmlDefaultExternalEntityLoader(%s, xxx)\n", URL);
 #endif
     if (URL == NULL) {
-        if ((ctxt->sax != NULL) && (ctxt->sax->warning != NULL))
+	if ((ctxt->validate) && (ctxt->sax != NULL) && 
+            (ctxt->sax->error != NULL))
+	    ctxt->sax->error(ctxt,
+		    "failed to load external entity \"%s\"\n", ID);
+	else if ((ctxt->sax != NULL) && (ctxt->sax->warning != NULL))
 	    ctxt->sax->warning(ctxt,
 		    "failed to load external entity \"%s\"\n", ID);
         return(NULL);
     }
     ret = xmlNewInputFromFile(ctxt, URL);
     if (ret == NULL) {
-        if ((ctxt->sax != NULL) && (ctxt->sax->warning != NULL))
+	if ((ctxt->validate) && (ctxt->sax != NULL) && 
+            (ctxt->sax->error != NULL))
+	    ctxt->sax->error(ctxt,
+		    "failed to load external entity \"%s\"\n", URL);
+	else if ((ctxt->sax != NULL) && (ctxt->sax->warning != NULL))
 	    ctxt->sax->warning(ctxt,
 		    "failed to load external entity \"%s\"\n", URL);
     }

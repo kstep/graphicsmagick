@@ -6,13 +6,8 @@
  * Daniel.Veillard@w3.org
  */
 
-#ifdef WIN32
-#include "win32config.h"
-#else
-#include "config.h"
-#endif
+#include "libxml.h"
 
-#include <stdio.h>
 #include <string.h>
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
@@ -24,23 +19,6 @@
 #include <libxml/xmlerror.h>
 
 #define DEBUG_ENT_REF /* debugging of cross entities dependancies */
-#define ENTITY_HASH_SIZE 256 /* modify xmlEntityComputeHash accordingly */
-
-/*
- * xmlEntityComputeHash:
- *
- * Computes the hash value for this given entity
- */
-int
-xmlEntityComputeHash(const xmlChar *name) {
-    register const unsigned char *cur = (const unsigned char *) name;
-    register unsigned char val = 0;
-
-    if (name == NULL)
-	return(val);
-    while (*cur) val += *cur++;
-    return(val);
-}
 
 /*
  * The XML predefined entities.
@@ -67,7 +45,7 @@ xmlHashTablePtr xmlPredefinedEntities = NULL;
 /*
  * xmlFreeEntity : clean-up an entity record.
  */
-void xmlFreeEntity(xmlEntityPtr entity) {
+static void xmlFreeEntity(xmlEntityPtr entity) {
     if (entity == NULL) return;
 
     if (entity->children)
@@ -84,7 +62,6 @@ void xmlFreeEntity(xmlEntityPtr entity) {
         xmlFree((char *) entity->content);
     if (entity->orig != NULL)
         xmlFree((char *) entity->orig);
-    MEM_CLEANUP(entity, sizeof(xmlEntity));
     xmlFree(entity);
 }
 
@@ -166,7 +143,7 @@ xmlAddEntity(xmlDtdPtr dtd, const xmlChar *name, int type,
  * Set up the predefined entities.
  */
 void xmlInitializePredefinedEntities(void) {
-    int i;
+    unsigned int i;
     xmlChar name[50];
     xmlChar value[50];
     const char *in;
@@ -326,7 +303,7 @@ xmlAddDocEntity(xmlDocPtr doc, const xmlChar *name, int type,
  * 
  * Returns A pointer to the entity structure or NULL if not found.
  */
-xmlEntityPtr
+static xmlEntityPtr
 xmlGetEntityFromTable(xmlEntitiesTablePtr table, const xmlChar *name) {
     return((xmlEntityPtr) xmlHashLookup(table, name));
 }
@@ -428,13 +405,13 @@ xmlGetDocEntity(xmlDocPtr doc, const xmlChar *name) {
 /*
  * A buffer used for converting entities to their equivalent and back.
  */
-static int buffer_size = 0;
-static xmlChar *buffer = NULL;
+static int static_buffer_size = 0;
+static xmlChar *static_buffer = NULL;
 
-int growBuffer(void) {
-    buffer_size *= 2;
-    buffer = (xmlChar *) xmlRealloc(buffer, buffer_size * sizeof(xmlChar));
-    if (buffer == NULL) {
+static int growBuffer(void) {
+    static_buffer_size *= 2;
+    static_buffer = (xmlChar *) xmlRealloc(static_buffer, static_buffer_size * sizeof(xmlChar));
+    if (static_buffer == NULL) {
         perror("realloc failed");
 	return(-1);
     }
@@ -461,7 +438,7 @@ int growBuffer(void) {
 const xmlChar *
 xmlEncodeEntities(xmlDocPtr doc, const xmlChar *input) {
     const xmlChar *cur = input;
-    xmlChar *out = buffer;
+    xmlChar *out = static_buffer;
     static int warning = 1;
     int html = 0;
 
@@ -478,21 +455,21 @@ xmlEncodeEntities(xmlDocPtr doc, const xmlChar *input) {
     if (doc != NULL)
         html = (doc->type == XML_HTML_DOCUMENT_NODE);
 
-    if (buffer == NULL) {
-        buffer_size = 1000;
-        buffer = (xmlChar *) xmlMalloc(buffer_size * sizeof(xmlChar));
-	if (buffer == NULL) {
+    if (static_buffer == NULL) {
+        static_buffer_size = 1000;
+        static_buffer = (xmlChar *) xmlMalloc(static_buffer_size * sizeof(xmlChar));
+	if (static_buffer == NULL) {
 	    perror("malloc failed");
             return(NULL);
 	}
-	out = buffer;
+	out = static_buffer;
     }
     while (*cur != '\0') {
-        if (out - buffer > buffer_size - 100) {
-	    int index = out - buffer;
+        if (out - static_buffer > static_buffer_size - 100) {
+	    int indx = out - static_buffer;
 
 	    growBuffer();
-	    out = &buffer[index];
+	    out = &static_buffer[indx];
 	}
 
 	/*
@@ -538,11 +515,7 @@ xmlEncodeEntities(xmlDocPtr doc, const xmlChar *input) {
 	} else if ((sizeof(xmlChar) == 1) && (*cur >= 0x80)) {
 	    char buf[10], *ptr;
 
-#ifdef HAVE_SNPRINTF
 	    snprintf(buf, sizeof(buf), "&#%d;", *cur);
-#else
-	    sprintf(buf, "&#%d;", *cur);
-#endif
             buf[sizeof(buf) - 1] = 0;
             ptr = buf;
 	    while (*ptr != 0) *out++ = *ptr++;
@@ -550,11 +523,7 @@ xmlEncodeEntities(xmlDocPtr doc, const xmlChar *input) {
 	} else if (IS_CHAR(*cur)) {
 	    char buf[10], *ptr;
 
-#ifdef HAVE_SNPRINTF
 	    snprintf(buf, sizeof(buf), "&#%d;", *cur);
-#else
-	    sprintf(buf, "&#%d;", *cur);
-#endif
             buf[sizeof(buf) - 1] = 0;
             ptr = buf;
 	    while (*ptr != 0) *out++ = *ptr++;
@@ -572,7 +541,7 @@ xmlEncodeEntities(xmlDocPtr doc, const xmlChar *input) {
 	cur++;
     }
     *out++ = 0;
-    return(buffer);
+    return(static_buffer);
 }
 
 /*
@@ -626,10 +595,10 @@ xmlEncodeEntitiesReentrant(xmlDocPtr doc, const xmlChar *input) {
 
     while (*cur != '\0') {
         if (out - buffer > buffer_size - 100) {
-	    int index = out - buffer;
+	    int indx = out - buffer;
 
 	    growBufferReentrant();
-	    out = &buffer[index];
+	    out = &buffer[indx];
 	}
 
 	/*
@@ -696,11 +665,7 @@ xmlEncodeEntitiesReentrant(xmlDocPtr doc, const xmlChar *input) {
 		    xmlGenericError(xmlGenericErrorContext,
 			    "xmlEncodeEntitiesReentrant : input not UTF-8\n");
 		    doc->encoding = xmlStrdup(BAD_CAST "ISO-8859-1");
-#ifdef HAVE_SNPRINTF
 		    snprintf(buf, sizeof(buf), "&#%d;", *cur);
-#else
-		    sprintf(buf, "&#%d;", *cur);
-#endif
 		    buf[sizeof(buf) - 1] = 0;
 		    ptr = buf;
 		    while (*ptr != 0) *out++ = *ptr++;
@@ -731,11 +696,7 @@ xmlEncodeEntitiesReentrant(xmlDocPtr doc, const xmlChar *input) {
 		    xmlGenericError(xmlGenericErrorContext,
 			"xmlEncodeEntitiesReentrant : char out of range\n");
 		    doc->encoding = xmlStrdup(BAD_CAST "ISO-8859-1");
-#ifdef HAVE_SNPRINTF
 		    snprintf(buf, sizeof(buf), "&#%d;", *cur);
-#else
-		    sprintf(buf, "&#%d;", *cur);
-#endif
 		    buf[sizeof(buf) - 1] = 0;
 		    ptr = buf;
 		    while (*ptr != 0) *out++ = *ptr++;
@@ -745,11 +706,7 @@ xmlEncodeEntitiesReentrant(xmlDocPtr doc, const xmlChar *input) {
 		/*
 		 * We could do multiple things here. Just save as a char ref
 		 */
-#ifdef HAVE_SNPRINTF
 		snprintf(buf, sizeof(buf), "&#x%X;", val);
-#else
-		sprintf(buf, "&#x%X;", val);
-#endif
 		buf[sizeof(buf) - 1] = 0;
 		ptr = buf;
 		while (*ptr != 0) *out++ = *ptr++;
@@ -759,11 +716,7 @@ xmlEncodeEntitiesReentrant(xmlDocPtr doc, const xmlChar *input) {
 	} else if (IS_CHAR(*cur)) {
 	    char buf[10], *ptr;
 
-#ifdef HAVE_SNPRINTF
 	    snprintf(buf, sizeof(buf), "&#%d;", *cur);
-#else
-	    sprintf(buf, "&#%d;", *cur);
-#endif
 	    buf[sizeof(buf) - 1] = 0;
             ptr = buf;
 	    while (*ptr != 0) *out++ = *ptr++;
@@ -819,10 +772,10 @@ xmlEncodeSpecialChars(xmlDocPtr doc, const xmlChar *input) {
 
     while (*cur != '\0') {
         if (out - buffer > buffer_size - 10) {
-	    int index = out - buffer;
+	    int indx = out - buffer;
 
 	    growBufferReentrant();
-	    out = &buffer[index];
+	    out = &buffer[indx];
 	}
 
 	/*
@@ -895,7 +848,7 @@ xmlFreeEntitiesTable(xmlEntitiesTablePtr table) {
  * 
  * Returns the new xmlEntitiesPtr or NULL in case of error.
  */
-xmlEntityPtr
+static xmlEntityPtr
 xmlCopyEntity(xmlEntityPtr ent) {
     xmlEntityPtr cur;
 

@@ -1,8 +1,8 @@
 
-Subject: ImageMagick 5.3.2 - tools and libraries for image manipulation
+Subject: ImageMagick 5.3.3 - tools and libraries for image manipulation
 
 The ImageMagick Studio LLC development group is proud to announce the
-release of ImageMagick 5.3.2.  Version 5.3.2 is a bug-fix release to
+release of ImageMagick 5.3.3.  Version 5.3.3 is a bug-fix release to
 resolve bugs reported against 5.2.8.
 
 ImageMagick is a robust collection of tools and libraries to read,
@@ -26,9 +26,9 @@ The ImageMagick WWW page is
 
    http://www.imagemagick.org/
  
-ImageMagick 5.3.2 is available via ftp as
+ImageMagick 5.3.3 is available via ftp as
 
-   ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.3.2.tar.gz
+   ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.3.3.tar.gz
 
 If ftp.imagemagick.org is overloaded (very likely), check the list of
 mirrors at http://www.imagemagick.org/www/archives.html for other

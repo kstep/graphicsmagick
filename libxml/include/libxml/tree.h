@@ -15,6 +15,7 @@
 
 #include <stdio.h>
 #include <libxml/xmlversion.h>
+#include <libxml/xmlmemory.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -83,7 +84,7 @@ typedef unsigned char xmlChar;
 typedef struct _xmlNotation xmlNotation;
 typedef xmlNotation *xmlNotationPtr;
 struct _xmlNotation {
-    const xmlChar               *name;	/* Notation name */
+    const xmlChar               *name;	        /* Notation name */
     const xmlChar               *PublicID;	/* Public identifier, if any */
     const xmlChar               *SystemID;	/* System identifier, if any */
 };
@@ -168,9 +169,11 @@ struct _xmlElementContent {
     const xmlChar            *name;	/* Element name */
     struct _xmlElementContent *c1;	/* first child */
     struct _xmlElementContent *c2;	/* second child */
+    struct _xmlElementContent *parent;	/* parent */
 };
 
 typedef enum {
+    XML_ELEMENT_TYPE_UNDEFINED = 0,
     XML_ELEMENT_TYPE_EMPTY = 1,
     XML_ELEMENT_TYPE_ANY,
     XML_ELEMENT_TYPE_MIXED,
@@ -394,8 +397,13 @@ LIBXML_DLL_IMPORT extern int xmlDefaultBufferSize; /* default buffer size */
  * Handling Buffers.
  */
 
+void		xmlSetBufferAllocationScheme(xmlBufferAllocationScheme scheme);
+xmlBufferAllocationScheme	 xmlGetBufferAllocationScheme(void);
+
 xmlBufferPtr	xmlBufferCreate		(void);
 xmlBufferPtr	xmlBufferCreateSize	(size_t size);
+int		xmlBufferResize		(xmlBufferPtr buf,
+					 unsigned int size);
 void		xmlBufferFree		(xmlBufferPtr buf);
 int		xmlBufferDump		(FILE *file,
 					 xmlBufferPtr buf);
@@ -440,6 +448,7 @@ xmlNsPtr	xmlNewNs		(xmlNodePtr node,
 					 const xmlChar *href,
 					 const xmlChar *prefix);
 void		xmlFreeNs		(xmlNsPtr cur);
+void		xmlFreeNsList		(xmlNsPtr cur);
 xmlDocPtr 	xmlNewDoc		(const xmlChar *version);
 void		xmlFreeDoc		(xmlDocPtr cur);
 xmlAttrPtr	xmlNewDocProp		(xmlDocPtr doc,
@@ -504,6 +513,9 @@ xmlNodePtr	xmlNewCharRef		(xmlDocPtr doc,
 xmlNodePtr	xmlNewReference		(xmlDocPtr doc,
 					 const xmlChar *name);
 xmlNodePtr	xmlCopyNode		(xmlNodePtr node,
+					 int recursive);
+xmlNodePtr	xmlDocCopyNode		(xmlNodePtr node,
+					 xmlDocPtr doc,
 					 int recursive);
 xmlNodePtr	xmlCopyNodeList		(xmlNodePtr node);
 xmlNodePtr	xmlNewDocFragment	(xmlDocPtr doc);

@@ -6,7 +6,7 @@ AC_CANONICAL_HOST
 
 LIBXML_MAJOR_VERSION=2
 LIBXML_MINOR_VERSION=3
-LIBXML_MICRO_VERSION=4
+LIBXML_MICRO_VERSION=7
 LIBXML_VERSION=$LIBXML_MAJOR_VERSION.$LIBXML_MINOR_VERSION.$LIBXML_MICRO_VERSION
 LIBXML_VERSION_INFO=`expr $LIBXML_MAJOR_VERSION + $LIBXML_MINOR_VERSION`:$LIBXML_MICRO_VERSION:$LIBXML_MINOR_VERSION
 
@@ -73,14 +73,14 @@ dnl Checks for header files.
 AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_CHECK_HEADERS(fcntl.h unistd.h ctype.h dirent.h errno.h malloc.h)
-AC_CHECK_HEADERS(stdarg.h sys/stat.h sys/types.h time.h)
+AC_CHECK_HEADERS(stdarg.h sys/stat.h sys/types.h time.h ansidecl.h)
 AC_CHECK_HEADERS(ieeefp.h nan.h math.h fp_class.h float.h)
 AC_CHECK_HEADERS(stdlib.h sys/socket.h netinet/in.h arpa/inet.h)
 AC_CHECK_HEADERS(netdb.h sys/time.h sys/select.h sys/mman.h)
 
 dnl Specific dir for HTML output ?
 if test "x$with_html_dir" = "x" ; then
-  HTML_DIR='${datadir}/gtk-doc/html'
+  HTML_DIR='$(prefix)/doc'
 else
   HTML_DIR=$with_html_dir
 fi
@@ -100,10 +100,14 @@ AC_SUBST(CORBA_CFLAGS)
 
 dnl Checks for library functions.
 AC_FUNC_STRFTIME
-AC_CHECK_FUNCS(strdup strndup strerror snprintf)
+AC_CHECK_FUNCS(strdup strndup strerror)
 AC_CHECK_FUNCS(finite isnand fp_class class fpclass)
 AC_CHECK_FUNCS(strftime localtime)
 AC_CHECK_FUNCS(stat _stat)
+
+dnl Checking the standard string functions availability
+AC_CHECK_FUNCS(printf sprintf fprintf snprintf vfprintf vsprintf vsnprintf sscanf,,
+               NEED_TRIO=1)
 
 dnl Checks for inet libraries:
 AC_CHECK_FUNC(gethostent, , AC_CHECK_LIB(nsl, gethostent))
@@ -157,12 +161,13 @@ dnl Workaround for HP native compiler
 dnl http://bugs.gnome.org/db/31/3163.html
 dnl
 if test "${GCC}" != "yes" ; then
-    CFLAGS="${CFLAGS} -Wall "
     case "${host}" in
           *-*-hpux* )
 	       CFLAGS="${CFLAGS} -Wp,-H30000"
 	       ;;
     esac
+else
+    CFLAGS="${CFLAGS} -Wall"
 fi
 case ${host} in
     *-*-solaris*)
@@ -236,8 +241,22 @@ dnl    fi
     if test "${with_xptr}" = "" ; then
         with_xptr="yes"
     fi
-    CFLAGS="-Wall -g -pedantic"
+    CFLAGS="-Wall -g -O -pedantic -W -Wunused -Wimplicit -Wreturn-type -Wswitch -Wcomment -Wtrigraphs -Wformat -Wchar-subscripts -Wuninitialized -Wparentheses -Wshadow -Wpointer-arith -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Winline "
+dnl -Wcast-qual -ansi
 fi
+
+dnl
+dnl Check for trio string functions
+dnl
+
+if test "${NEED_TRIO}" = "1" ; then
+    echo Adding trio library for string functions
+    WITH_TRIO=1
+else    
+    WITH_TRIO=0
+fi
+AC_SUBST(WITH_TRIO)
+
 dnl
 dnl Aloow to disable various pieces
 dnl
@@ -320,8 +339,9 @@ AC_ARG_WITH(iconv, [  --with-iconv            Add the ICONV support (on)])
 if test "$with_iconv" = "no" ; then
     echo Disabling ICONV support
     WITH_ICONV=0
-else    
-    AC_CHECK_FUNC(iconv, , AC_CHECK_LIB(iconv, iconv))
+else
+    AC_CHECK_HEADER(iconv.h, 
+	AC_CHECK_FUNC(iconv, , AC_CHECK_LIB(iconv, iconv)))
     if test "$have_iconv" != "" ; then
         echo Iconv support not found
         WITH_ICONV=0

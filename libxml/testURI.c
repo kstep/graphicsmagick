@@ -6,18 +6,12 @@
  * Daniel.Veillard@w3.org
  */
 
-#ifdef WIN32
-#include "win32config.h"
-#else
-#include "config.h"
-#endif
+#include "libxml.h"
 
-#include <stdio.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdarg.h>
 
-#include <libxml/xmlversion.h>
 #include <libxml/xmlmemory.h>
 #include <libxml/uri.h>
 
@@ -27,7 +21,7 @@ int main(int argc, char **argv) {
     const char *base = NULL;
     xmlChar *composite;
 
-    if ((argv[arg] != NULL) &&
+    if ((argc > 1) && (argv[arg] != NULL) &&
 	((!strcmp(argv[arg], "-base")) || (!strcmp(argv[arg], "--base")))) {
 	arg++;
 	base = argv[arg];

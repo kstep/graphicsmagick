@@ -4,13 +4,8 @@
  * Daniel.Veillard@w3.org
  */
 
-#ifdef WIN32
-#include "win32config.h"
-#else
-#include "config.h"
-#endif
+#include "libxml.h"
 
-#include <stdio.h>
 #include <string.h>
 
 #ifdef HAVE_SYS_TYPES_H
@@ -32,6 +27,20 @@
 
 #include <libxml/xmlmemory.h>
 #include <libxml/xmlerror.h>
+
+void xmlMallocBreakpoint(void);
+void * xmlMemMalloc(int size);
+void * xmlMallocLoc(int size, const char * file, int line);
+void * xmlMemRealloc(void *ptr,int size);
+void xmlMemFree(void *ptr);
+char * xmlMemoryStrdup(const char *str);
+
+/************************************************************************
+ *									*
+ * 		Macros, variables and associated types			*
+ *									*
+ ************************************************************************/
+
 
 #ifdef xmlMalloc
 #undef xmlMalloc
@@ -269,8 +278,11 @@ void
 xmlMemFree(void *ptr)
 {
     MEMHDR *p;
+    char *target;
 
     TEST_POINT
+
+    target = (char *) ptr;
 
     p = CLIENT_2_HDR(ptr);
     if (p->mh_tag != MEMTAG) {
@@ -279,6 +291,7 @@ xmlMemFree(void *ptr)
     }
     p->mh_tag = ~MEMTAG;
     debugMemSize -= p->mh_size;
+    memset(target, -1, p->mh_size);
 
 #ifdef MEM_LIST
     debugmem_list_delete(p);
@@ -384,7 +397,7 @@ xmlMemUsed(void) {
  * tries to show some content from the memory block
  */
 
-void
+static void
 xmlMemContentShow(FILE *fp, MEMHDR *p)
 {
     int i,j,len = p->mh_size;
@@ -498,7 +511,7 @@ xmlMemDisplay(FILE *fp)
 
     currentTime = time(NULL);
     tstruct = localtime(&currentTime);
-    strftime(buf, sizeof(buf) - 1, "%c", tstruct);
+    strftime(buf, sizeof(buf) - 1, "%I:%M:%S %p", tstruct);
     fprintf(fp,"      %s\n\n", buf);
 #endif
 
