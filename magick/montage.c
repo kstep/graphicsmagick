@@ -501,7 +501,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
   if (montage_info->texture != (char *) NULL)
     {
       (void) strcpy(clone_info->filename,montage_info->texture);
-      texture=ReadImage(clone_info,&exception);
+      texture=ReadImage(clone_info,exception);
     }
   /*
     Initialize font info.
