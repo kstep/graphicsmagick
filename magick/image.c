@@ -1534,6 +1534,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           (void) fprintf(file,"ColorSeparationMatte"); break;
         default: (void) fprintf(file,"Undefined"); break;
       }
+      (void) fprintf(file," ");
       if (image->storage_class == DirectClass)
         {
           (void) fprintf(file,"DirectClass ");
