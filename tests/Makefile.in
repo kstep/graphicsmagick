@@ -155,6 +155,7 @@ VERSION = @VERSION@
 WMFDecodeDelegate = @WMFDecodeDelegate@
 WWWDecodeDelegate = @WWWDecodeDelegate@
 XCFDecodeDelegate = @XCFDecodeDelegate@
+X_CFLAGS = @X_CFLAGS@
 ZipDelegate = @ZipDelegate@
 install_sh = @install_sh@
 
@@ -283,7 +284,6 @@ check_PROGRAMS =  rwblob$(EXEEXT) rwfile$(EXEEXT)
 DEFS = @DEFS@ -I. -I$(srcdir) -I../magick
 CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
-X_CFLAGS = @X_CFLAGS@
 X_LIBS = @X_LIBS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@

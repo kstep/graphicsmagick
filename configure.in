@@ -290,61 +290,9 @@ AC_ARG_WITH(zlib,
 	      [with_zlib=$withval],
 	      [with_zlib='yes'])
 
-# Check standard headers
-AC_HEADER_STDC
-AC_HEADER_STAT
-AC_HEADER_TIME
-AC_HEADER_SYS_WAIT
-AC_HEADER_DIRENT
-AC_CHECK_HEADER(elf.h,AC_DEFINE(SVR4,,Define on System V Release 4.))
-AC_CHECK_HEADERS(sys/time.h sys/stat.h sys/types.h)
-AC_CHECK_HEADERS(math.h string.h stdarg.h pwd.h malloc.h)
-AC_CHECK_HEADERS(memory.h errno.h fcntl.h)
 
-# Checks for typedefs, structures, and compiler characteristics.
-AC_PROG_CC_STDC
-AC_C_CONST
-#AC_C_INLINE
-AC_C_BIGENDIAN
-
-AC_TYPE_MODE_T
-AC_TYPE_OFF_T
-AC_TYPE_PID_T
-AC_TYPE_SIZE_T
-AC_CHECK_SIZEOF(int,0)
-AC_CHECK_SIZEOF(long long,0)
-
-# Check for functions.
+# Does gcc required -traditional?
 AC_PROG_GCC_TRADITIONAL
-AC_FUNC_MEMCMP
-AC_TYPE_SIGNAL
-AC_FUNC_VPRINTF
-AC_FUNC_WAIT3
-AC_FUNC_MMAP
-
-# Check for functions
-AC_CHECK_FUNCS(getcwd gettimeofday mkdir select snprintf strchr strerror strtol tempnam vsnprintf)
-
-# Test for sys_errlist array if strerror() not supported.
-if test "$ac_cv_func_strerror" != 'yes' ; then
-AC_CACHE_CHECK(for sys_errlist array, ac_cv_sys_errlist,
-[AC_TRY_LINK(
-changequote(<<, >>)dnl
-<<
-extern char** sys_errlist;
->>,<<
-char** p = sys_errlist;
->>,
-changequote([, ])dnl
-ac_cv_sys_errlist='yes',
-ac_cv_sys_errlist='no')])
-if test "$ac_cv_sys_errlist" = 'yes' ; then
- AC_DEFINE(HAVE_SYS_ERRLIST,,Define if you have sys_errlist in libc)
- AC_MSG_RESULT(yes)
-else
- AC_MSG_RESULT(no)
-fi
-fi
 
 #
 # Check for large file support
@@ -957,6 +905,61 @@ fi
 AM_CONDITIONAL(HasJBIG, test "$have_jbig" != 'no')
 AC_SUBST(LIB_JBIG)
 
+# Check standard headers
+AC_HEADER_STDC
+AC_HEADER_STAT
+AC_HEADER_TIME
+AC_HEADER_SYS_WAIT
+AC_HEADER_DIRENT
+AC_CHECK_HEADER(elf.h,AC_DEFINE(SVR4,,Define on System V Release 4.))
+AC_CHECK_HEADERS(sys/time.h sys/stat.h sys/types.h)
+AC_CHECK_HEADERS(math.h string.h stdarg.h pwd.h malloc.h)
+AC_CHECK_HEADERS(memory.h errno.h fcntl.h)
+
+# Checks for typedefs, structures, and compiler characteristics.
+AC_PROG_CC_STDC
+AC_C_CONST
+#AC_C_INLINE
+AC_C_BIGENDIAN
+
+AC_TYPE_MODE_T
+AC_TYPE_OFF_T
+AC_TYPE_PID_T
+AC_TYPE_SIZE_T
+AC_CHECK_SIZEOF(int,0)
+AC_CHECK_SIZEOF(long long,0)
+
+#
+# Check for functions
+#
+AC_FUNC_MEMCMP
+AC_TYPE_SIGNAL
+AC_FUNC_VPRINTF
+AC_FUNC_WAIT3
+AC_FUNC_MMAP
+AC_CHECK_FUNCS(getcwd gettimeofday mkdir select snprintf strchr strerror strtol tempnam vsnprintf)
+
+# Test for sys_errlist array if strerror() not supported.
+if test "$ac_cv_func_strerror" != 'yes' ; then
+AC_CACHE_CHECK(for sys_errlist array, ac_cv_sys_errlist,
+[AC_TRY_LINK(
+changequote(<<, >>)dnl
+<<
+extern char** sys_errlist;
+>>,<<
+char** p = sys_errlist;
+>>,
+changequote([, ])dnl
+ac_cv_sys_errlist='yes',
+ac_cv_sys_errlist='no')])
+if test "$ac_cv_sys_errlist" = 'yes' ; then
+ AC_DEFINE(HAVE_SYS_ERRLIST,,Define if you have sys_errlist in libc)
+ AC_MSG_RESULT(yes)
+else
+ AC_MSG_RESULT(no)
+fi
+fi
+
 #
 # Configure Delegates
 #
@@ -1283,7 +1286,7 @@ AC_SUBST(X_CFLAGS)
 #AC_SUBST(X_LIBS)
 #AC_SUBST(X_EXTRA_LIBS)
 
-AC_OUTPUT(Makefile delegates/delegates.mgk delegates/Makefile magick/Makefile tests/Makefile magick/Magick-config PerlMagick/Makefile.PL)
+AC_OUTPUT(Makefile delegates/delegates.mgk delegates/Makefile magick/Makefile coders/Makefile tests/Makefile magick/Magick-config PerlMagick/Makefile.PL)
 
 echo ""
 

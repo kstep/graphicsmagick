@@ -42,6 +42,9 @@
 /* Define if you have the `gettimeofday' function. */
 #undef HAVE_GETTIMEOFDAY
 
+/* Define if you have the `bsd' library (-lbsd). */
+#undef HAVE_LIBBSD
+
 /* Define if you have the `bz2' library (-lbz2). */
 #undef HAVE_LIBBZ2
 
@@ -152,6 +155,9 @@
 
 /* Define if you have the <stdarg.h> header file. */
 #undef HAVE_STDARG_H
+
+/* Define if you have the <stdlib.h> header file. */
+#undef HAVE_STDLIB_H
 
 /* Define if you have the `strchr' function. */
 #undef HAVE_STRCHR
@@ -298,7 +304,7 @@
 /* Define if the X Window System is missing or not being used. */
 #undef X_DISPLAY_MISSING
 
-/* Define to empty if the keyword `const' is not conform to ANSI C. */
+/* Define to empty if `const' does not conform to ANSI C. */
 #undef const
 
 /* Define to `int' if <sys/types.h> does not define. */

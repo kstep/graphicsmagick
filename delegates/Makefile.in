@@ -155,6 +155,7 @@ VERSION = @VERSION@
 WMFDecodeDelegate = @WMFDecodeDelegate@
 WWWDecodeDelegate = @WWWDecodeDelegate@
 XCFDecodeDelegate = @XCFDecodeDelegate@
+X_CFLAGS = @X_CFLAGS@
 ZipDelegate = @ZipDelegate@
 install_sh = @install_sh@
 

@@ -79,6 +79,9 @@ Export unsigned int GetImageMagic(char* magic,
   int
     i;
 
+  if(magic_test_list == (MagicTest**) NULL)
+    IntializeImageMagic();
+
   /* Traverse magic tests */
   for (i=0;magic_test_list[i]!=(MagicTest*)NULL;++i)
     {
@@ -245,12 +248,12 @@ static void IntializeImageMagic(void)
                     string_argument;
 
                   unsigned char
-                    string_buff[StringMethodArgumentExtent],
                     *str_p;
 
                   test_member.method=StringMagicMethod;
-                  *string_buff='\0';
-                  str_p=string_buff;
+                  string_argument.value_length=0;
+                  string_argument.value_offset=0;
+                  *string_argument.value='\0';
 
                   /* skip over "string(" */
                   buff_p += 7;
@@ -307,8 +310,20 @@ static void IntializeImageMagic(void)
                   ++buff_p;
 
                   /* translate string */
+                  str_p=string_argument.value;
                   while(1)
                     {
+
+                      /* unexpected end of line */
+                      if(*buff_p == '\0')
+                        {
+                          printf("%s:%d: syntax: \"%s\"\n", file_name,
+                                 line_number,
+                                 "unexpected end of line");
+                          break;
+                        }
+
+                      /* end of string */
                       if(*buff_p == '"')
                         break;
 
@@ -330,23 +345,22 @@ static void IntializeImageMagic(void)
 
                             *str_p++=(unsigned char)strtol(lbuff,
                                                            (char**)NULL,8);
+                            ++string_argument.value_length;
                             buff_p += 3;
                           }
                         else
                           {
                             /* escaped character */
                             *str_p++=*buff_p++;
+                            ++string_argument.value_length;
                           }
                         continue;
                       }
 
-                      if(*buff_p == '\0')
-                        {
-                          printf("%s:%d: syntax: \"%s\"\n", file_name,
-                                 line_number,
-                                 "unexpected end of line");
-                          break;
-                        }
+                      /* any other character */
+                      *str_p++=*buff_p++;
+                      ++string_argument.value_length;
+
                     }
 
                   /* skip over white space */
@@ -367,6 +381,16 @@ static void IntializeImageMagic(void)
                       break;
                     }
                   ++buff_p;
+
+                  /* skip over white space */
+                  while(isspace((int)*buff_p))
+                    ++buff_p;
+
+                  if(*buff_p == ';')
+                    {
+                      ++buff_p;
+                      continue;
+                    }
 
                   /* done with the line? */
                   if(*buff_p == '\0')

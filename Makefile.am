@@ -40,7 +40,11 @@ MAGICK_LIB	= magick/libMagick.la # libtool library name
 INCLUDES	= -I$(srcdir) $(INCLTDL) $(X_CFLAGS)
 
 # Subdirectories to build
-SUBDIRS = delegates ltdl magick tests
+if WITH_MODULES
+SUBDIRS = delegates ltdl magick coders tests
+else
+SUBDIRS = delegates ltdl coders magick tests
+endif # WITH_MODULES
 
 STDMANPAGES = ImageMagick.1  combine.1 convert.1  identify.1 \
    miff.4 mogrify.1 montage.1 quantize.5
