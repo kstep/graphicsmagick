@@ -487,16 +487,16 @@ static unsigned int RenderFont(Image *image,const DrawInfo *draw_info,
     CloneString(&clone_info->font,image_info->filename);
   else
     CloneString(&clone_info->font,image_info->filename+1);
-  if (LocaleCompare(image_info->magick,"ps") == 0)
+  if (LocaleCompare(image_info->magick,"PS") == 0)
     status=RenderPostscript(image,clone_info,offset,render,metrics);
   else
-    if ((LocaleCompare(image_info->magick,"ttf") == 0) ||
-        (LocaleCompare(image_info->magick,"afm") == 0) ||
-        (LocaleCompare(image_info->magick,"pfb") == 0) ||
-        (LocaleCompare(image_info->magick,"pfm") == 0))
+    if ((LocaleCompare(image_info->magick,"TTF") == 0) ||
+        (LocaleCompare(image_info->magick,"AFM") == 0) ||
+        (LocaleCompare(image_info->magick,"PFB") == 0) ||
+        (LocaleCompare(image_info->magick,"PFM") == 0))
       status=RenderTruetype(image,clone_info,offset,render,metrics);
     else
-      if (LocaleCompare(image_info->magick,"x") == 0)
+      if (LocaleCompare(image_info->magick,"X") == 0)
         status=RenderX11(image,clone_info,offset,render,metrics);
       else
         status=RenderPostscript(image,clone_info,offset,render,metrics);

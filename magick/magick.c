@@ -882,6 +882,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     {
+      CloseBlob(image);
       DestroyImage(image);
       return(True);
     }
@@ -916,6 +917,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       }
       (void) fclose(file);
     }
+  CloseBlob(image);
   DestroyImage(image);
   p=GetImageMagick(magick,2*MaxTextExtent);
   if (p != (char *) NULL)
