@@ -613,10 +613,13 @@ static void XShearImage(Image *image,const double degrees,
           p++;
           q++;
         }
-        *q++=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
+        *q=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
           image->background_color.opacity);
         for (i=0; i < (step-1); i++)
-          *q++=image->background_color;
+				{
+				  q++;
+          *q=image->background_color;
+				}
         break;
       }
       case RIGHT:
@@ -638,10 +641,14 @@ static void XShearImage(Image *image,const double degrees,
           *q=AlphaComposite(&pixel,pixel.opacity,p,p->opacity);
           pixel=(*p);
         }
-        *--q=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
+        q--;
+        *q=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
           image->background_color.opacity);
         for (i=0; i < (step-1); i++)
-          *--q=image->background_color;
+				{
+          q--;
+          *q=image->background_color;
+				}
         break;
       }
     }
@@ -808,10 +815,13 @@ static void YShearImage(Image *image,const double degrees,
           p++;
           q++;
         }
-        *q++=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
+        *q=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
           image->background_color.opacity);
         for (i=0; i < (step-1); i++)
-          *q++=image->background_color;
+				{
+				  q++;
+          *q=image->background_color;
+				}
         break;
       }
       case DOWN:
@@ -833,10 +843,14 @@ static void YShearImage(Image *image,const double degrees,
           *q=AlphaComposite(&pixel,pixel.opacity,p,p->opacity);
           pixel=(*p);
         }
-        *--q=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
+        q--;
+        *q=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
           image->background_color.opacity);
-        for (i=0; i < step; i++)
-          *--q=image->background_color;
+        for (i=0; i < (step-1); i++)
+				{
+          q--;
+          *q=image->background_color;
+				}
         break;
       }
     }
