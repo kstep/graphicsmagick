@@ -6,6 +6,11 @@
 // project files may need to be edited to remove libraries the feature
 // depends on.
 
+// Specify size of PixelPacket color Quantums (8 or 16)
+// A value of 8 uses half the memory than 16 and may run 30% faster,
+// but provides 256 times less color precision than a value of 16.
+#define QuantumDepth 16
+
 // Define to use the autotrace library (obtain sources seperately)
 //#define HasAUTOTRACE
 
@@ -60,22 +65,22 @@
 // Define to use the zlib ZIP compression library
 #define HasZLIB
 
-// Specify size of PixelPacket Quantums (8 or 16)
-#define QuantumDepth 16
-
 // Use Visual C++ C inline method extension to improve performance
 #define inline __inline
 
-// Specify where X11 application resource files are installed
-#define ApplicationDefaults "c:\\ImageMagick\\"
+// Optional: Specify where X11 application resource files are installed
+// #define ApplicationDefaults "c:\\ImageMagick\\"
 
-// Specify where operating system specific files are installed
-#define MagickLibPath       "c:\\ImageMagick\\"
+// Optional: Specify where user-specific X11 application resource files are installed
+// #define PreferencesDefaults  "~\\."
 
-// Specify where operating system independent files are installed
-#define MagickSharePath     "c:\\ImageMagick\\"
+// Optional: Specify where operating system specific files are installed
+// #define MagickLibPath       "c:\\ImageMagick\\"
 
-// Specify where coder modules (DLLs) are installed
-#define MagickModulesPath   "c:\\ImageMagick\\"
+// Optional: Specify where operating system independent files are installed
+// #define MagickSharePath     "c:\\ImageMagick\\"
+
+// Optional: Specify where coder modules (DLLs) are installed
+// #define MagickModulesPath   "c:\\ImageMagick\\"
 
 #endif

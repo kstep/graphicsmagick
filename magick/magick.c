@@ -211,9 +211,9 @@ MagickExport const char *GetImageMagick(const unsigned char *magick,
 %             $HOME/.magick/
 %             $MAGICK_FONT_PATH
 %             Windows Resource
-%             MagickLibPath
-%             MagickModulesPath
-%             MagickSharePath
+%             MagickLibPath (if defined at compile time)
+%             MagickModulesPath  (if defined at compile time)
+%             MagickSharePath (if defined at compile time)
 %
 %  The format of the GetMagickConfigurePath method is:
 %
@@ -373,6 +373,7 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
   /*
     Search hard coded paths.
   */
+#if defined(MagickLibPath)
   FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
   if (IsAccessible(path))
     {
@@ -381,6 +382,8 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
     }
   ConcatenateString(&search_path,"; MagickLibPath:");
   ConcatenateString(&search_path,path);
+#endif /* MagickLibPath */
+#if defined(MagickModulesPath)
   FormatString(path,"%.1024s%.1024s",MagickModulesPath,filename);
   if (IsAccessible(path))
     {
@@ -389,6 +392,8 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
     }
   ConcatenateString(&search_path,"; MagickModulesPath:");
   ConcatenateString(&search_path,path);
+#endif /* MagickModulesPath */
+#if defined(MagickSharePath)
   FormatString(path,"%.1024s%.1024s",MagickSharePath,filename);
   if (IsAccessible(path))
     {
@@ -397,6 +402,7 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
     }
   ConcatenateString(&search_path,"; MagickSharePath:");
   ConcatenateString(&search_path,path);
+#endif /* MagickSharePath */
   ThrowException(exception,ConfigurationError,
     "Unable to open configuration file",search_path);
   LiberateMemory((void **) &search_path);

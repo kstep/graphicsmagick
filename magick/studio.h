@@ -130,9 +130,6 @@ extern "C" {
   Review these platform specific definitions.
 */
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-# if !defined(ApplicationDefaults)
-#  define ApplicationDefaults  "/usr/X11R6/lib/X11/app-defaults/"
-# endif
 # define DirectorySeparator  "/"
 # define DirectoryListSeparator  ':'
 # define EditorOptions  " -title \"Edit Image Comment\" -e vi"
@@ -145,15 +142,6 @@ extern "C" {
    (strchr(text,'}') != (char *) NULL) || \
    (strchr(text,'[') != (char *) NULL) || \
    (strchr(text,']') != (char *) NULL))
-# if !defined(MagickLibPath)
-#  define MagickLibPath  "/usr/local/lib/ImageMagick/"
-# endif
-# if !defined(MagickModulesPath)
-#  define MagickModulesPath  "/usr/local/lib/ImageMagick/modules/"
-# endif
-# if !defined(MagickSharePath)
-#  define MagickSharePath  "/usr/local/share/ImageMagick/"
-# endif
 # define PreferencesDefaults  "~/."
 # define ProcessPendingEvents(text)
 # define ReadCommandlLine(argc,argv)
@@ -205,9 +193,6 @@ extern "C" {
 # endif
 
 # if defined(WIN32)
-#  if !defined(ApplicationDefaults)
-#   define ApplicationDefaults  "c:\\ImageMagick\\"
-#  endif
 #  define DirectorySeparator  "\\"
 #  define DirectoryListSeparator  ';'
 #  define EditorOptions ""
@@ -219,17 +204,10 @@ extern "C" {
      (strchr(text,'}') != (char *) NULL) || \
      (strchr(text,'[') != (char *) NULL) || \
      (strchr(text,']') != (char *) NULL))
-#  if !defined(MagickLibPath)
-#   define MagickLibPath  "c:\\ImageMagick\\"
-#  endif
-#  if !defined(MagickModulesPath)
-#   define MagickModulesPath  "c:\\ImageMagick\\"
-#  endif
-#  if !defined(MagickSharePath)
-#   define MagickSharePath  "c:\\ImageMagick\\"
-#  endif
-#  define PreferencesDefaults  "~/."
 #  define ProcessPendingEvents(text)
+#if !defined(PreferencesDefaults)
+#  define PreferencesDefaults  "~\\."
+#endif /* PreferencesDefaults */
 #  define ReadCommandlLine(argc,argv)
 #  define SetNotifyHandlers \
     SetErrorHandler(NTErrorHandler); \

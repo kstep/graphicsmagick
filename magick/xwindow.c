@@ -3020,8 +3020,10 @@ MagickExport XrmDatabase XGetResourceDatabase(Display *display,
     else
       if ((c >= XK_oslash) && (c <= XK_thorn))
         c-=(XK_oslash-XK_Ooblique);
+#if defined(ApplicationDefaults)
   FormatString(filename,"%.1024s%c%.1024s",ApplicationDefaults,c,client_name+1);
   (void) XrmCombineFileDatabase(filename,&resource_database,False);
+#endif /* ApplicationDefaults */
   if (XResourceManagerString(display) != (char *) NULL)
     {
       /*
@@ -3033,9 +3035,11 @@ MagickExport XrmDatabase XGetResourceDatabase(Display *display,
   /*
     Merge user preferences database.
   */
+#if defined(PreferencesDefaults)
   FormatString(filename,"%.1024s%.1024src",PreferencesDefaults,client_name);
   ExpandFilename(filename);
   (void) XrmCombineFileDatabase(filename,&resource_database,False);
+#endif /* PreferencesDefaults */
   return(resource_database);
 }
 
@@ -8597,6 +8601,7 @@ MagickExport XWindows *XSetWindows(XWindows *windows_info)
 */
 MagickExport void XUserPreferences(XResourceInfo *resource_info)
 {
+#if defined(PreferencesDefaults)
   char
     cache[MaxTextExtent],
     *client_name,
@@ -8642,6 +8647,7 @@ MagickExport void XUserPreferences(XResourceInfo *resource_info)
   FormatString(filename,"%.1024s%.1024src",PreferencesDefaults,client_name);
   ExpandFilename(filename);
   XrmPutFileDatabase(preferences_database,filename);
+#endif /* PreferencesDefaults */
 }
 
 /*
