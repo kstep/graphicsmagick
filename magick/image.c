@@ -809,12 +809,29 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
   clone_image->cache_info.height=0;
   clone_image->pixels=(PixelPacket *) NULL;
   clone_image->indexes=(IndexPacket *) NULL;
+  if (orphan)
+    {
+      clone_image->exempt=True;
+      clone_image->previous=(Image *) NULL;
+      clone_image->next=(Image *) NULL;
+    }
+  else
+    {
+      /*
+        Link image into image list.
+      */
+      if (clone_image->previous != (Image *) NULL)
+        clone_image->previous->next=clone_image;
+      if (clone_image->next != (Image *) NULL)
+        clone_image->next->previous=clone_image;
+    }
   if ((image->columns != columns) || (image->rows != rows))
     {
       clone_image->columns=columns;
       clone_image->rows=rows;
       clone_image->page_info.width=0;
       clone_image->page_info.height=0;
+      SetImage(clone_image);
     }
   else
     {
@@ -844,22 +861,6 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
         (void) CloneString(&clone_image->directory,image->directory);
       if (image->signature != (char *) NULL)
         (void) CloneString(&clone_image->signature,image->signature);
-    }
-  if (orphan)
-    {
-      clone_image->exempt=True;
-      clone_image->previous=(Image *) NULL;
-      clone_image->next=(Image *) NULL;
-    }
-  else
-    {
-      /*
-        Link image into image list.
-      */
-      if (clone_image->previous != (Image *) NULL)
-        clone_image->previous->next=clone_image;
-      if (clone_image->next != (Image *) NULL)
-        clone_image->next->previous=clone_image;
     }
   return(clone_image);
 }
@@ -6487,6 +6488,9 @@ Export void SetImage(Image *image)
   int
     y;
 
+  PixelPacket
+    background_color;
+
   register int
     x;
 
@@ -6494,6 +6498,8 @@ Export void SetImage(Image *image)
     *q;
 
   assert(image != (Image *) NULL);
+  background_color=image->background_color;
+  background_color.opacity=Opaque;
   for (y=0; y < (int) image->rows; y++)
   {
     q=SetPixelCache(image,0,y,image->columns,1);
@@ -6501,13 +6507,10 @@ Export void SetImage(Image *image)
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      *q=image->background_color;
-      q->opacity=Opaque;
-      q++;
-    }
-    if (image->class == PseudoClass)
-      for (x=0; x < (int) image->columns; x++)
+      if (image->class == PseudoClass)
         image->indexes[x]=0;
+      *q++=background_color;
+    }
     if (!SyncPixelCache(image))
       break;
   }
