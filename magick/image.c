@@ -993,8 +993,8 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
     }
   clone_image->page.width=columns;
   clone_image->page.height=rows;
-  clone_image->page.x*=(long) ((double) columns/clone_image->columns);
-  clone_image->page.y*=(long) ((double) rows/clone_image->rows);
+  clone_image->page.x*=(double) columns/clone_image->columns;
+  clone_image->page.y*=(double) rows/clone_image->rows;
   clone_image->columns=columns;
   clone_image->rows=rows;
   return(clone_image);
