@@ -1706,8 +1706,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
     image->depth=ping_info->bit_depth;
     if (ping_info->bit_depth < 8)
       {
-        if ((ping_info->color_type == PNG_COLOR_TYPE_PALETTE) ||
-            (ping_info->color_type == PNG_COLOR_TYPE_GRAY))
+        if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
           png_set_packing(ping);
         image->depth=8;
       }
