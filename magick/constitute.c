@@ -2305,7 +2305,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
         break;
       }
     }
-  return(True);
+  return(MagickPass);
 }
 
 /*

@@ -613,7 +613,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       */
 #if defined(TIFFTAG_ICCPROFILE)
       if (TIFFGetField(tiff,TIFFTAG_ICCPROFILE,&length,&text) == 1)
-        SetImageProfile(image,"ICM",(unsigned char *) text,(size_t) length);
+        {
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "ICC ICM embedded profile with length %u bytes",length);
+          SetImageProfile(image,"ICM",(unsigned char *) text,(size_t) length);
+        }
 #endif /* defined(TIFFTAG_ICCPROFILE) */
       /*
         IPTC/Photoshop profile.
@@ -621,13 +625,19 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 #if defined(TIFFTAG_PHOTOSHOP)
       /* Photoshop profile (with embedded IPTC profile) */
       if (TIFFGetField(tiff,TIFFTAG_PHOTOSHOP,&length,&text) == 1)
-        (void) ReadNewsProfile(text,(long) length,image,TIFFTAG_PHOTOSHOP);
+        {
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "Photoshop embedded profile with length %u bytes",length);
+          (void) ReadNewsProfile(text,(long) length,image,TIFFTAG_PHOTOSHOP);
+        }
 #elif defined(TIFFTAG_RICHTIFFIPTC)
       /* IPTC TAG from RichTIFF specifications */
       if (TIFFGetField(tiff,TIFFTAG_RICHTIFFIPTC,&length,&text) == 1)
         {
           if (TIFFIsByteSwapped(tiff))
             TIFFSwabArrayOfLong((uint32 *) text,length);
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "IPTC Newsphoto embedded profile with length %u bytes",length);
           ReadNewsProfile(text,length,image,TIFFTAG_RICHTIFFIPTC);
         }
 #endif
@@ -635,9 +645,13 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         XML XMP profile.
       */
 #if defined(TIFFTAG_XMLPACKET)
-      /* %XML packet [Adobe XMP technote 9-14-02] */
+      /* %XML packet [Adobe XMP Specification, Janary 2004] */
     if (TIFFGetField(tiff,TIFFTAG_XMLPACKET,&length,&text) == 1)
-      SetImageProfile(image,"XMP",(unsigned char *) text,(size_t) length);
+      {
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "XMP embedded profile with length %u bytes",length);
+        SetImageProfile(image,"XMP",(unsigned char *) text,(size_t) length);
+      }
 #endif
     }
     /*
@@ -1404,12 +1418,12 @@ ModuleExport void UnregisterTIFFImage(void)
 %
 %  The format of the WritePTIFImage method is:
 %
-%      unsigned int WritePTIFImage(const ImageInfo *image_info,Image *image)
+%      MagickPassFail WritePTIFImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method WritePTIFImage return True if the image is written.
-%      False is returned is there is of a memory shortage or if the image
+%    o status:  Method WritePTIFImage return MagickPass if the image is written.
+%      MagickFail is returned is there is of a memory shortage or if the image
 %      file cannot be opened for writing.
 %
 %    o image_info: Specifies a pointer to a ImageInfo structure.
@@ -1418,7 +1432,7 @@ ModuleExport void UnregisterTIFFImage(void)
 %
 %
 */
-static unsigned int WritePTIFImage(const ImageInfo *image_info,Image *image)
+static MagickPassFail WritePTIFImage(const ImageInfo *image_info,Image *image)
 {
   Image
     *pyramid_image;
@@ -1489,74 +1503,77 @@ static unsigned int WritePTIFImage(const ImageInfo *image_info,Image *image)
 %
 */
 
-static void WriteNewsProfile(TIFF *tiff,int profile_tag,
+static void WriteNewsProfile(TIFF *tiff,
+                             int profile_tag,
                              const unsigned char *profile_data,
-                             size_t profile_length)
+                             const size_t profile_length)
 {
-  register long
-    i;
-
   unsigned char
-    *profile;
+    *profile=0;
 
-  unsigned long
-    length,
-    roundup;
+  uint32
+    length;
+
+  assert(tiff != (TIFF *) NULL);
+  assert(profile_tag != 0);
+  assert(profile_data != (const unsigned char *) NULL);
+
+  length = (uint32) profile_length;
+  if (length == 0)
+    return;
 
   if (profile_tag == TIFFTAG_RICHTIFFIPTC)
     {
       /*
         Handle TIFFTAG_RICHTIFFIPTC tag.
       */
-      length=profile_length;
-      roundup=4-(length & 0x03); /* round up for long word alignment */
-      profile=MagickAllocateMemory(unsigned char *,length+roundup);
-      if ((length == 0) || (profile == (unsigned char *) NULL))
+      length += (4-(length & 0x03)); /* Round up for long word alignment */
+      profile=MagickAllocateMemory(unsigned char *,length);
+      if (profile == (unsigned char *) NULL)
         return;
-      (void) memcpy(profile,profile_data,length);
-      for (i=0; i < (long) roundup; i++)
-        profile[length+i] = 0;
-      length=(profile_length+roundup)/4;
+      (void) memset(profile,0,length);
+      (void) memcpy(profile,profile_data,profile_length);
+
       if (TIFFIsByteSwapped(tiff))
-        TIFFSwabArrayOfLong((uint32 *) profile,length);
-      (void) TIFFSetField(tiff,profile_tag,(uint32) (length+roundup),
-                          (void *) profile);
-      MagickFreeMemory(profile);
-      return;
+        TIFFSwabArrayOfLong((uint32 *) profile,length/4);
+
+      /* Tag is type TIFF_LONG so byte length is divided by four */
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "TIFFSetField(tiff=0x%p,tag=%d,length=%u,data=0x%p)",
+                            tiff,profile_tag,(uint32) length/4,profile);
+      (void) TIFFSetField(tiff,profile_tag,(uint32) length/4,(void *) profile);
     }
-  /*
-    Handle TIFFTAG_PHOTOSHOP tag.
-  */
+  else if (profile_tag == TIFFTAG_PHOTOSHOP)
+    {
+      /*
+        Handle TIFFTAG_PHOTOSHOP tag.
+      */
+      length += (length & 0x01); /* Round up for Photoshop */
 #if defined(GET_ONLY_IPTC_DATA)
-  length=profile_length;
-  roundup=(length & 0x01); /* round up for Photoshop */
-  profile=MagickAllocateMemory(unsigned char *,length+roundup+12);
-  if ((length == 0) || (profile == (unsigned char *) NULL))
-    (void) memcpy(profile,"8BIM\04\04\0\0",8);
-  profile[8]=(length >> 24) & 0xff;
-  profile[9]=(length >> 16) & 0xff;
-  profile[10]=(length >> 8) & 0xff;
-  profile[11]=length & 0xff;
-  for (i=0; i < length; i++)
-    profile[i+12]=profile_data[i];
-  if (roundup)
-    profile[length+roundup+11]=0;
-  (void) TIFFSetField(tiff,profile_tag,(uint32) length+roundup+12,
-                      (void *) profile);
+      length += 12;              /* Space for 8BIM header */
+      profile=MagickAllocateMemory(unsigned char *,length);
+      if (profile == (unsigned char *) NULL)
+        return;
+      (void) memset(profile,0,length);
+      (void) memcpy(profile,"8BIM\04\04\0\0",8);
+      profile[8]=(length >> 24) & 0xff;
+      profile[9]=(length >> 16) & 0xff;
+      profile[10]=(length >> 8) & 0xff;
+      profile[11]=length & 0xff;
+      (void) memcpy(profile+12,profile_data,profile_length);
 #else
-  length=profile_length;
-  if (length == 0)
-    return;
-  roundup=(length & 0x01); /* round up for Photoshop */
-  profile=MagickAllocateMemory(unsigned char *,length+roundup);
-  if (profile == (unsigned char *) NULL)
-    return;
-  (void) memcpy(profile,profile_data,length);
-  if (roundup)
-    profile[length+roundup]=0;
-  (void) TIFFSetField(tiff,profile_tag,(uint32) length+roundup,
-                      (void *) profile);
+      profile=MagickAllocateMemory(unsigned char *,length);
+      if (profile == (unsigned char *) NULL)
+        return;
+      (void) memset(profile,0,length);
+      (void) memcpy(profile,profile_data,profile_length);
 #endif
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "TIFFSetField(tiff=0x%p,tag=%d,length=%u,data=0x%p)",
+                            tiff,profile_tag,(uint32) length,profile);
+      (void) TIFFSetField(tiff,profile_tag,(uint32) length,(void *) profile);
+    }
+
   MagickFreeMemory(profile);
 }
 
@@ -1650,7 +1667,7 @@ static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,unsigned long row,
 #if !defined(TIFFDefaultStripSize)
 #define TIFFDefaultStripSize(tiff,request)  ((8*1024)/TIFFScanlineSize(tiff))
 #endif
-static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
+static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
 {
   char
     filename[MaxTextExtent];
@@ -1679,9 +1696,11 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   unsigned char
     *scanline;
 
-  unsigned int
-    filename_is_temporary=False,
-    logging,
+  MagickBool
+    filename_is_temporary=MagickFalse,
+    logging;
+
+  MagickPassFail
     status;
 
   unsigned long
@@ -1698,7 +1717,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   logging=IsEventLogging();
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
-  if (status == False)
+  if (status == MagickFail)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   tiff_exception=(&image->exception);
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
@@ -1710,7 +1729,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         If output is not to a stdio file descriptor, then use a
         temporary file for the output so that it is.
       */
-      filename_is_temporary=True;
+      filename_is_temporary=MagickTrue;
       if(!AcquireTemporaryFileName(filename))
         ThrowWriterTemporaryFileException(filename);
     }
@@ -1726,7 +1745,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     {
       if (filename_is_temporary)
         (void) LiberateTemporaryFile(filename);
-      return(False);
+      return(MagickFail);
     }
   scene=0;
   do
@@ -1987,6 +2006,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 
     (void) TIFFSetField(tiff,TIFFTAG_PHOTOMETRIC,photometric);
     (void) TIFFSetField(tiff,TIFFTAG_COMPRESSION,compress_tag);
+
     switch (image_info->endian)
     {
       case LSBEndian:
@@ -2118,8 +2138,13 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         XML XMP profile.
       */
       if ((profile_data=GetImageProfile(image,"XMP",&profile_length)) != 0)
-        (void) TIFFSetField(tiff,TIFFTAG_XMLPACKET,(uint32) profile_length,
-                            profile_data);
+        {
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "XMP embedded profile with length %lu bytes",
+                                (unsigned long) profile_length);
+          (void) TIFFSetField(tiff,TIFFTAG_XMLPACKET,(uint32) profile_length,
+                              profile_data);
+        }
 #endif /* defined(TIFFTAG_XMLPACKET) */
       
 #if defined(TIFFTAG_ICCPROFILE)
@@ -2127,8 +2152,13 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         ICC color profile.
       */
       if ((profile_data=GetImageProfile(image,"ICM",&profile_length)) != 0)
-        (void) TIFFSetField(tiff,TIFFTAG_ICCPROFILE,(uint32)profile_length,
-                            profile_data);
+        {
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "ICC ICM embedded profile with length %lu bytes",
+                                (unsigned long) profile_length);
+          (void) TIFFSetField(tiff,TIFFTAG_ICCPROFILE,(uint32)profile_length,
+                              profile_data);
+        }
 #endif /* defined(ICC_SUPPORT) */
       
       /*
@@ -2141,9 +2171,16 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 #if defined(TIFFTAG_PHOTOSHOP)
           /* Photoshop profile (with embedded IPTC profile). */
           profile_tag=TIFFTAG_PHOTOSHOP;
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "Photoshop embedded profile with length %lu bytes",
+                                (unsigned long) profile_length);
 #else
           /* IPTC TAG from RichTIFF specifications */
           profile_tag=TIFFTAG_RICHTIFFIPTC;
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "IPTC Newsphoto embedded profile with length %lu bytes",
+                                (unsigned long) profile_length);
+
 #endif /* defined(PHOTOSHOP_SUPPORT) */
           WriteNewsProfile(tiff,profile_tag,profile_data,profile_length);
         }
@@ -2208,21 +2245,27 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
               p=AcquireImagePixels(image,0,y,image->columns,1,
                 &image->exception);
               if (p == (const PixelPacket *) NULL)
-                break;
+                {
+                  status=MagickFail;
+                    break;
+                }
               if (!image->matte)
-                (void) ExportImagePixelArea(image,RGBQuantum,bits_per_sample,scanline);
+                (void) ExportImagePixelArea(image,RGBQuantum,bits_per_sample,
+                                            scanline);
               else
-                (void) ExportImagePixelArea(image,RGBAQuantum,bits_per_sample,scanline);
+                (void) ExportImagePixelArea(image,RGBAQuantum,bits_per_sample,
+                                            scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
-                break;
+                {
+                  status=MagickFail;
+                  break;
+                }
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  {
-                    status=MagickMonitor(SaveImageText,y,image->rows,
-                      &image->exception);
-                    if (status == False)
-                      break;
-                  }
+                  if((status &= MagickMonitor(SaveImageText,y,image->rows,
+                                              &image->exception))
+                     == MagickFail)
+                    break;
             }
             break;
           }
@@ -2237,36 +2280,60 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
               p=AcquireImagePixels(image,0,y,image->columns,1,
                 &image->exception);
               if (p == (const PixelPacket *) NULL)
-                break;
-              (void) ExportImagePixelArea(image,RedQuantum,bits_per_sample,scanline);
+                {
+                  status=MagickFail;
+                  break;
+                }
+              (void) ExportImagePixelArea(image,RedQuantum,bits_per_sample,
+                                          scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
-                break;
+                {
+                  status=MagickFail;
+                  break;
+                }
             }
-            if (!MagickMonitor(SaveImageText,100,400,&image->exception))
+            if ((status &= MagickMonitor(SaveImageText,100,400,
+                                         &image->exception)) == MagickFail)
               break;
             for (y=0; y < image->rows; y++)
             {
               p=AcquireImagePixels(image,0,y,image->columns,1,
                 &image->exception);
               if (p == (const PixelPacket *) NULL)
-                break;
-              (void) ExportImagePixelArea(image,GreenQuantum,bits_per_sample,scanline);
+                {
+                  status=MagickFail;
+                  break;
+                }
+              (void) ExportImagePixelArea(image,GreenQuantum,bits_per_sample,
+                                          scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,1,image) < 0)
-                break;
+                {
+                  status=MagickFail;
+                  break;
+                }
             }
-            if (!MagickMonitor(SaveImageText,200,400,&image->exception))
+            if ((status &= MagickMonitor(SaveImageText,200,400,
+                                         &image->exception)) == MagickFail)
               break;
             for (y=0; y < image->rows; y++)
             {
               p=AcquireImagePixels(image,0,y,image->columns,1,
                 &image->exception);
               if (p == (const PixelPacket *) NULL)
-                break;
-              (void) ExportImagePixelArea(image,BlueQuantum,bits_per_sample,scanline);
+                {
+                  status=MagickFail;
+                  break;
+                }
+              (void) ExportImagePixelArea(image,BlueQuantum,bits_per_sample,
+                                          scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,2,image) < 0)
-                break;
+                {
+                  status=MagickFail;
+                  break;
+                }
             }
-            if (!MagickMonitor(SaveImageText,300,400,&image->exception))
+            if ((status &= MagickMonitor(SaveImageText,300,400,
+                                         &image->exception)) == MagickFail)
               break;
             if (image->matte)
               for (y=0; y < image->rows; y++)
@@ -2274,12 +2341,21 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 p=AcquireImagePixels(image,0,y,image->columns,1,
                   &image->exception);
                 if (p == (const PixelPacket *) NULL)
-                  break;
-                (void) ExportImagePixelArea(image,AlphaQuantum,bits_per_sample,scanline);
+                  {
+                    status=MagickFail;
+                    break;
+                  }
+                (void) ExportImagePixelArea(image,AlphaQuantum,
+                                            bits_per_sample,scanline);
                 if (TIFFWritePixels(tiff,(char *) scanline,y,3,image) < 0)
-                  break;
+                  {
+                    status=MagickFail;
+                    break;
+                  }
               }
-            if (!MagickMonitor(SaveImageText,400,400,&image->exception))
+            if ((status &= MagickMonitor(SaveImageText,400,400,
+                                         &image->exception))
+                == MagickFail)
               break;
             break;
           }
@@ -2296,16 +2372,25 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         {
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
-            break;
+            {
+              status=MagickFail;
+              break;
+            }
           if (!image->matte)
-            (void) ExportImagePixelArea(image,CMYKQuantum,bits_per_sample,scanline);
+            (void) ExportImagePixelArea(image,CMYKQuantum,bits_per_sample,
+                                        scanline);
           else
-            (void) ExportImagePixelArea(image,CMYKAQuantum,bits_per_sample,scanline);
+            (void) ExportImagePixelArea(image,CMYKAQuantum,bits_per_sample,
+                                        scanline);
           if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
-            break;
+            {
+              status=MagickFail;
+              break;
+            }
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+              if ((status &= MagickMonitor(SaveImageText,y,image->rows,
+                                           &image->exception)) == MagickFail)
                 break;
         }
         break;
@@ -2320,9 +2405,12 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         /*
           Colormapped TIFF image.
         */
-        blue=MagickAllocateMemory(unsigned short *,65536L*sizeof(unsigned short));
-        green=MagickAllocateMemory(unsigned short *,65536L*sizeof(unsigned short));
-        red=MagickAllocateMemory(unsigned short *,65536L*sizeof(unsigned short));
+        blue=MagickAllocateMemory(unsigned short *,
+                                  65536L*sizeof(unsigned short));
+        green=MagickAllocateMemory(unsigned short *,
+                                   65536L*sizeof(unsigned short));
+        red=MagickAllocateMemory(unsigned short *,
+                                 65536L*sizeof(unsigned short));
         if ((blue == (unsigned short *) NULL) ||
             (green == (unsigned short *) NULL) ||
             (red == (unsigned short *) NULL))
@@ -2386,61 +2474,67 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           {
             p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
             if (p == (const PixelPacket *) NULL)
-              break;
+              {
+                status=MagickFail;
+                break;
+              }
             if (ExportImagePixelArea(image,quantum_type,bits_per_sample,
                                      scanline) == MagickFail)
-              break;
+              {
+                status=MagickFail;
+                break;
+              }
             if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
-              break;
+              {
+                status=MagickFail;
+                break;
+              }
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
-                {
-                  status=MagickMonitor(SaveImageText,y,image->rows,&image->exception);
-                  if (status == False)
-                    break;
-                }
+                if((status &= MagickMonitor(SaveImageText,y,image->rows,
+                                            &image->exception)) == MagickFail)
+                  break;
           }
         break;
       }
     }
     MagickFreeMemory(scanline);
-    if (image_info->verbose == True)
-      TIFFPrintDirectory(tiff,stdout,False);
-    (void) TIFFWriteDirectory(tiff);
+    if (image_info->verbose == MagickTrue)
+      TIFFPrintDirectory(tiff,stdout,MagickFalse);
+    if(!TIFFWriteDirectory(tiff))
+      status=MagickFail;
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),
-      &image->exception);
-    if (status == False)
+    if ((status &= MagickMonitor(SaveImagesText,scene++,
+                                 GetImageListLength(image),
+                                 &image->exception)) == MagickFail)
       break;
   } while (image_info->adjoin);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   TIFFClose(tiff);
-  if (filename_is_temporary)
-#ifdef SLOW_METHOD
+
+  if (status == MagickFail)
     {
-      FILE
-        *file;
-
-      int
-        c;
-
+      /*
+        Handle Failure
+      */
+      while (image->previous != (Image *) NULL)
+        image=image->previous;
+      if (filename_is_temporary)
+        LiberateTemporaryFile(filename);
+      else
+        unlink(filename);
+      CloseBlob(image);
+      return (MagickFail);
+    }
+  
+  if (filename_is_temporary)
+    {
       /*
         Copy temporary file to image blob.
       */
-      file=fopen(filename,"rb");
-      if (file == (FILE *) NULL)
-        ThrowWriterException(FileOpenError,UnableToOpenFile,image);
-      for (c=fgetc(file); c != EOF; c=fgetc(file))
-        (void) WriteBlobByte(image,c);
-      (void) fclose(file);
-      LiberateTemporaryFile(filename);
-      CloseBlob(image);
-    }
-#else
-    {
       int
         file;
 
@@ -2494,7 +2588,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           if (buffer == (unsigned char *) NULL)
             {
               (void) close(file);
-              ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+              ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
+                                   image);
             }
           for (i=0; i < length; i+=count)
           {
@@ -2509,7 +2604,6 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       (void) LiberateTemporaryFile(filename);
       CloseBlob(image);
     }
-#endif
-  return(True);
+  return(MagickPass);
 }
 #endif

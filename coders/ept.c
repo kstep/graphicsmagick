@@ -411,6 +411,28 @@ ModuleExport void RegisterEPTImage(void)
     AcquireString("Adobe Encapsulated PostScript with MS-DOS TIFF preview");
   entry->module=AcquireString("EPT");
   (void) RegisterMagickInfo(entry);
+
+  entry=SetMagickInfo("EPT2");
+  entry->decoder=(DecoderHandler) ReadEPTImage;
+  entry->encoder=(EncoderHandler) WriteEPTImage;
+  entry->magick=(MagickHandler) IsEPT;
+  entry->adjoin=False;
+  entry->blob_support=False;
+  entry->description=
+    AcquireString("Adobe Level II Encapsulated PostScript with MS-DOS TIFF preview");
+  entry->module=AcquireString("EPT");
+  (void) RegisterMagickInfo(entry);
+
+  entry=SetMagickInfo("EPT3");
+  entry->decoder=(DecoderHandler) ReadEPTImage;
+  entry->encoder=(EncoderHandler) WriteEPTImage;
+  entry->magick=(MagickHandler) IsEPT;
+  entry->adjoin=False;
+  entry->blob_support=False;
+  entry->description=
+    AcquireString("Adobe Level III Encapsulated PostScript with MS-DOS TIFF preview");
+  entry->module=AcquireString("EPT");
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -435,6 +457,8 @@ ModuleExport void RegisterEPTImage(void)
 ModuleExport void UnregisterEPTImage(void)
 {
   (void) UnregisterMagickInfo("EPT");
+  (void) UnregisterMagickInfo("EPT2");
+  (void) UnregisterMagickInfo("EPT3");
 }
 
 /*
@@ -496,9 +520,25 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
       /*
         Write image as Encapsulated Postscript to a temporary file.
       */
+      char
+        subformat[MaxTextExtent];
+
       if(!AcquireTemporaryFileName(ps_filename))
         ThrowWriterTemporaryFileException(ps_filename);
-      FormatString(image->filename,"eps:%.1024s",ps_filename);
+
+      /* Select desired EPS level */
+      strcpy(subformat,"eps");
+      if (LocaleCompare(image_info->magick,"EPT2") == 0)
+        strcpy(subformat,"eps2");
+      else if (LocaleCompare(image_info->magick,"EPT3") == 0)
+        strcpy(subformat,"eps3");
+
+      /* JPEG compression requires at least EPS2 */
+      if ((image->compression == JPEGCompression) &&
+          (LocaleCompare(subformat,"EPS") == 0))
+        strcpy(subformat,"eps2");
+
+      FormatString(image->filename,"%s:%.1024s",subformat,ps_filename);
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "Writing temporary EPS file \"%s\"",ps_filename);
