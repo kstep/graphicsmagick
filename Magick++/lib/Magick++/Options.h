@@ -78,7 +78,15 @@ namespace Magick
     void            compressType ( CompressionType compressType_ );
     CompressionType compressType ( void ) const;
     
-    // Vertical and horizontal resolution in pixels of the image
+    // dash offset for drawing vector objects (default one)
+    void            dashOffset ( unsigned int dashOffset_ );
+    unsigned int    dashOffset ( void ) const;
+
+    // dash pattern for drawing vector objects (default one)
+    void            dashPattern ( unsigned int* dashPattern_ );
+    unsigned int*   dashPattern ( void ) const;
+
+   // Vertical and horizontal resolution in pixels of the image
     void            density ( const Geometry &geomery_ );
     Geometry        density ( void ) const;
 
@@ -112,11 +120,19 @@ namespace Magick
     void            interlaceType ( InterlaceType interlace_ );
     InterlaceType   interlaceType ( void ) const;
     
-    // Linewidth for drawing vector objects (default one)
+ 	 // LineCap for drawing lines, circles, ellipses, etc.
+	void				lineCap ( MagickLib::LineCap lineCap_ );
+	MagickLib::LineCap	lineCap ( void ) const;
+
+	// LineJoin for drawing lines, circles, ellipses, etc.
+	void				lineJoin ( MagickLib::LineJoin lineJoin_ );
+	MagickLib::LineJoin	lineJoin ( void ) const;
+
+   // Linewidth for drawing vector objects (default one)
     void            lineWidth ( double lineWidth_ );
     double          lineWidth ( void ) const;
 
-    // Image format to write or read
+   // Image format to write or read
     void            magick ( const std::string &magick_ );
     std::string     magick ( void ) const;
     
@@ -124,7 +140,11 @@ namespace Magick
     void            matteColor ( const Color &matteColor_ );
     Color           matteColor ( void ) const;
 
-    // Write as a monochrome image
+     // miterLimit for drawing vector objects (default one)
+    void            miterLimit ( unsigned int miterLimit_ );
+    unsigned int    miterLimit ( void ) const;
+
+   // Write as a monochrome image
     void            monochrome ( bool monochromeFlag_ );
     bool            monochrome ( void ) const;
 
@@ -278,6 +298,24 @@ inline Magick::CompressionType Magick::Options::compressType ( void ) const
   return static_cast<Magick::CompressionType>(_imageInfo->compression);
 }
 
+inline void Magick::Options::dashOffset ( unsigned int dashOffset_ )
+{
+  _drawInfo->dash_offset = dashOffset_;
+}
+inline unsigned int Magick::Options::dashOffset ( void ) const
+{
+  return _drawInfo->dash_offset;
+}
+
+inline void Magick::Options::dashPattern ( unsigned int* dashPattern_ )
+{
+  _drawInfo->dash_pattern = dashPattern_;
+}
+inline unsigned int* Magick::Options::dashPattern ( void ) const
+{
+  return _drawInfo->dash_pattern;
+}
+
 inline void Magick::Options::depth ( unsigned int depth_ )
 {
   _imageInfo->depth = depth_;
@@ -316,6 +354,36 @@ inline void Magick::Options::lineWidth ( double lineWidth_ )
 inline double Magick::Options::lineWidth ( void ) const
 {
   return _drawInfo->linewidth;
+}
+
+// LineCap for drawing lines, circles, ellipses, etc.
+inline void Magick::Options::lineCap ( MagickLib::LineCap lineCap_ )
+{
+  _drawInfo->linecap = lineCap_;
+}
+inline MagickLib::LineCap Magick::Options::lineCap ( void ) const
+{
+  return _drawInfo->linecap;
+}
+
+// LineJoin for drawing lines, circles, ellipses, etc.
+inline void Magick::Options::lineJoin ( MagickLib::LineJoin lineJoin_ )
+{
+  _drawInfo->linejoin = lineJoin_;
+}
+inline MagickLib::LineJoin Magick::Options::lineJoin ( void ) const
+{
+  return _drawInfo->linejoin;
+}
+
+// miterLimit for drawing lines, circles, ellipses, etc.
+inline void Magick::Options::miterLimit ( unsigned int miterLimit_ )
+{
+  _drawInfo->miterlimit = miterLimit_;
+}
+inline unsigned int Magick::Options::miterLimit ( void ) const
+{
+  return _drawInfo->miterlimit;
 }
 
 inline void Magick::Options::monochrome ( bool monochromeFlag_ )

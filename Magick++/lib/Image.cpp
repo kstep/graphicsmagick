@@ -1919,6 +1919,30 @@ Magick::CompressionType Magick::Image::compressType ( void ) const
   //  return constImage()->compression;
 }
 
+// dash offset for drawing vector objects (default one)
+void Magick::Image::dashOffset ( unsigned int dashOffset_ )
+{
+  modifyImage();
+  options()->dashOffset( dashOffset_ );
+}
+
+unsigned int Magick::Image::dashOffset ( void ) const
+{
+  return constOptions()->dashOffset( );
+}
+
+ // dash pattern for drawing vector objects (default one)
+void Magick::Image::dashPattern ( unsigned int* dashPattern_ )
+{
+  modifyImage();
+  options()->dashPattern( dashPattern_ );
+}
+
+unsigned int* Magick::Image::dashPattern ( void ) const
+{
+  return constOptions()->dashPattern( );
+}
+
 void Magick::Image::density ( const Geometry &density_ )
 {
   modifyImage();
@@ -2193,6 +2217,28 @@ double Magick::Image::lineWidth ( void ) const
   return constOptions()->lineWidth( );
 }
 
+// LineCap for drawing lines, circles, ellipses, etc.
+void Magick::Image::lineCap ( MagickLib::LineCap lineCap_ )
+{
+  modifyImage();
+  options()->lineCap( lineCap_ );
+}
+MagickLib::LineCap Magick::Image::lineCap ( void ) const
+{
+  return constOptions()->lineCap( );
+}
+
+// LineJoin for drawing lines, circles, ellipses, etc.
+void Magick::Image::lineJoin ( MagickLib::LineJoin lineJoin_ )
+{
+  modifyImage();
+  options()->lineJoin( lineJoin_ );
+}
+MagickLib::LineJoin Magick::Image::lineJoin ( void ) const
+{
+  return constOptions()->lineJoin( );
+}
+
 void Magick::Image::magick ( const std::string &magick_ )
 {
   modifyImage();
@@ -2257,6 +2303,17 @@ Magick::Color Magick::Image::matteColor ( void ) const
 double Magick::Image::meanErrorPerPixel ( void ) const
 {
   return(constImage()->mean_error_per_pixel);
+}
+
+// Linewidth for drawing lines, circles, ellipses, etc.
+void Magick::Image::miterLimit ( unsigned int miterLimit_ )
+{
+  modifyImage();
+  options()->miterLimit( miterLimit_ );
+}
+unsigned int Magick::Image::miterLimit ( void ) const
+{
+  return constOptions()->miterLimit( );
 }
 
 void Magick::Image::monochrome ( bool monochromeFlag_ )

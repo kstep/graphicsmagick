@@ -557,6 +557,14 @@ namespace Magick
     void            compressType ( CompressionType compressType_ );
     CompressionType compressType ( void ) const;
 
+     // dash offset for drawing vector objects (default one)
+    void            dashOffset ( unsigned int dashOffset_ );
+    unsigned int	dashOffset ( void ) const;
+    
+     // dash pattern for drawing vector objects (default one)
+    void            dashPattern ( unsigned int* dashPattern_ );
+    unsigned int*	dashPattern ( void ) const;
+    
     // Vertical and horizontal resolution in pixels of the image
     void            density ( const Geometry &geomery_ );
     Geometry        density ( void ) const;
@@ -627,6 +635,14 @@ namespace Magick
     void            lineWidth ( double lineWidth_ );
     double          lineWidth ( void ) const;
     
+	 // LineCap for drawing lines, circles, ellipses, etc.
+	void				lineCap ( MagickLib::LineCap lineCap_ );
+	MagickLib::LineCap	lineCap ( void ) const;
+
+	// LineJoin for drawing lines, circles, ellipses, etc.
+	void				lineJoin ( MagickLib::LineJoin lineJoin_ );
+	MagickLib::LineJoin	lineJoin ( void ) const;
+
     // File type magick identifier (.e.g "GIF")
     void            magick ( const std::string &magick_ );
     std::string     magick ( void ) const;
@@ -642,7 +658,11 @@ namespace Magick
     // The mean error per pixel computed when an image is color reduced
     double          meanErrorPerPixel ( void ) const;
 
-    // Tile size and offset within an image montage
+     // miterLimit for drawing vector objects (default one)
+    void            miterLimit ( unsigned int miterLimit_ );
+    unsigned int    miterLimit ( void ) const;
+    
+   // Tile size and offset within an image montage
     Geometry        montageGeometry ( void ) const;
 
     // Transform image to black and white
