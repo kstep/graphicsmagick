@@ -53,6 +53,34 @@
 </tr>
 </table>
 <p>
+2003-05-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> locale/C.mgk: Removed some defunct messages.
+  <LI> magick/blob.c (PingBlob): Report useful error message.
+        (BlobToImage): Report sensible error message for null blob.
+  <LI> magick/utility.c (AcquireString): Change UnableToAquireString to
+        UnableToAllocateString.<BR>
+  <LI> coders/xwd.c (ReadXWDImage): Report CorruptImage rather than
+        CorruptXWDImage.<BR>
+  <LI> coders/xpm.c (ReadXPMImage): Report CorruptImage rather than
+        CorruptXPMImage.<BR>
+  <LI> coders/xcf.c (load_level): Report CorruptImage rather than
+        CorruptXCFImage.<BR>
+  <LI> coders/wbmp.c (ReadWBMPImage): Report CorruptImage rather than
+        CorruptWBMPImage.<BR>
+  <LI> coders/pcd.c: Report CorruptImage rather than CorruptPCDImage.
+  <LI> coders/otb.c (ReadOTBImage): Report CorruptImage rather than
+        CorruptOTBImage.<BR>
+  <LI> magick/constitute.c (ReadInlineImage): Report CorruptImage
+        rather than CorruptInlineImage.
+  <LI> coders/pdb.c (ReadPDBImage): Incorporated undocumented fix from
+        ImageMagick which obtains the image depth from the image depth
+        attribute, and increases the packet memory allocation. Report
+        CorruptImage rather than CorruptPDBImageFile.
+
+</UL>
+<p>
 2003-05-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -202,7 +202,7 @@ static unsigned int IsPDB(const unsigned char *magick,const size_t length)
 {
   if (length < 68)
     return(False);
-  if (LocaleNCompare((char *) (magick+60),"vIMGView",8) == 0)
+  if (memcmp(magick+60,"vIMGView",8) == 0)
     return(True);
   return(False);
 }
@@ -326,7 +326,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   record_type=ReadBlobByte(image);
   if (((record_type != 0x00) && (record_type != 0x01)) ||
       (memcmp(tag,"\x40\x6f\x80",3) != 0))
-    ThrowReaderException(CorruptImageError,"CorruptPDBImageFile",image);
+    ThrowReaderException(CorruptImageError,"CorruptImage",image);
   if ((offset-TellBlob(image)) == 6)
     {
       (void) ReadBlobByte(image);
@@ -339,7 +339,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       record_type=ReadBlobByte(image);
       if (((record_type != 0x00) && (record_type != 0x01)) ||
           (memcmp(tag,"\x40\x6f\x80",3) != 0))
-        ThrowReaderException(CorruptImageError,"CorruptPDBImageFile",image);
+        ThrowReaderException(CorruptImageError,"CorruptImage",image);
       if ((offset-TellBlob(image)) == 6)
         {
           (void) ReadBlobByte(image);
@@ -708,7 +708,7 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
   if (status == False)
     ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   TransformColorspace(image,RGBColorspace);
-  bits_per_pixel=image_info->depth;
+  bits_per_pixel=image->depth;
   if (GetImageType(image,&image->exception) == BilevelType)
     bits_per_pixel=1;
   if ((bits_per_pixel != 1) && (bits_per_pixel != 2))
@@ -763,7 +763,7 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
     pdb_image.width=(short) (16*(image->columns/16+1));
   pdb_image.height=(short) image->rows;
   packets=(bits_per_pixel*image->columns/8)*image->rows;
-  p=MagickAllocateMemory(unsigned char *,packets+packets/128);
+  p=MagickAllocateMemory(unsigned char *,2*packets);
   if (p == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitWarning,"MemoryAllocationFailed",image);
   buffer=MagickAllocateMemory(unsigned char *,256);

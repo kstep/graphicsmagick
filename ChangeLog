@@ -1,3 +1,28 @@
+2003-05-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* locale/C.mgk: Removed some defunct messages.
+	* magick/blob.c (PingBlob): Report useful error message.
+	(BlobToImage): Report sensible error message for null blob.
+	* magick/utility.c (AcquireString): Change UnableToAquireString to
+	UnableToAllocateString.
+	* coders/xwd.c (ReadXWDImage): Report CorruptImage rather than
+	CorruptXWDImage.
+	* coders/xpm.c (ReadXPMImage): Report CorruptImage rather than
+	CorruptXPMImage.
+	* coders/xcf.c (load_level): Report CorruptImage rather than
+	CorruptXCFImage.
+	* coders/wbmp.c (ReadWBMPImage): Report CorruptImage rather than
+	CorruptWBMPImage.
+	* coders/pcd.c: Report CorruptImage rather than CorruptPCDImage.
+	* coders/otb.c (ReadOTBImage): Report CorruptImage rather than
+	CorruptOTBImage.
+	* magick/constitute.c (ReadInlineImage): Report CorruptImage
+	rather than CorruptInlineImage.
+	* coders/pdb.c (ReadPDBImage): Incorporated undocumented fix from
+	ImageMagick which obtains the image depth from the image depth
+	attribute, and increases the packet memory allocation. Report
+	CorruptImage rather than CorruptPDBImageFile.
+
 2003-05-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* VisualMagick/bin/modules.mgk: Add mapping from SVGZ to SVG.

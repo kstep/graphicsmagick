@@ -161,7 +161,7 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           byte=ReadBlobByte(image);
           if (byte == EOF)
-            ThrowReaderException(CorruptImageError,"CorruptOTBImage",image);
+            ThrowReaderException(CorruptImageError,"CorruptImage",image);
         }
       indexes[x]=(byte & (0x01 << (7-bit))) ? 0x01 : 0x00;
       bit++;

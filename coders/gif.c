@@ -153,7 +153,7 @@ static unsigned int DecodeImage(Image *image,const long opacity)
   */
   data_size=ReadBlobByte(image);
   if (data_size > 8)
-    ThrowBinaryException(CorruptImageError,"CorruptGIFImage",image->filename);
+    ThrowBinaryException(CorruptImageError,"CorruptImage",image->filename);
   clear=1 << data_size;
   end_of_information=clear+1;
   available=clear+2;
@@ -333,7 +333,7 @@ static unsigned int DecodeImage(Image *image,const long opacity)
   MagickFreeMemory(prefix);
   MagickFreeMemory(packet);
   if (y < (long) image->rows)
-    ThrowBinaryException(CorruptImageError,"CorruptGIFImage",image->filename);
+    ThrowBinaryException(CorruptImageError,"CorruptImage",image->filename);
   return(True);
 }
 
@@ -1005,7 +1005,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     status=DecodeImage(image,opacity);
     if (!image_info->ping && (status == False))
-      ThrowReaderException(CorruptImageError,"CorruptGIFImage",image);
+      ThrowReaderException(CorruptImageError,"CorruptImage",image);
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;

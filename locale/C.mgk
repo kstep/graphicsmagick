@@ -8,9 +8,6 @@
       <Message name="UnableToOpenFile">
         Unable to open file
       </Message>
-      <Message name="UnableToReadBlob">
-        Unable to read blob
-      </Message>
       <Message name="UnableToReadFile">
         Unable to read file
       </Message>
@@ -25,9 +22,6 @@
       </Message>
       <Message name="UnrecognizedImageFormat">
         Unrecognized image format
-      </Message>
-      <Message name="ZeroLengthBlobNotPermitted">
-        Zero-length blob not permitted
       </Message>
     </Error>
   </Blob>
@@ -53,9 +47,6 @@
       </Message>
       <Message name="UnableToOpenCache">
         Unable to open cache
-      </Message>
-      <Message name="UnableToPersistPixelCache">
-        Unable to persist pixel cache
       </Message>
       <Message name="UnableToReadPixelCache">
         Unable to read pixel cache
@@ -96,9 +87,6 @@
       <Message name="EncryptedWPGImageFileNotSupported">
         Encrypted WPG image file not supported
       </Message>
-      <Message name="FractalCompressNotSupported">
-        Fractal compression not supported
-      </Message>
       <Message name="ImageColumnOrRowSizeIsNotSupported">
         Image column or row size is not supported
       </Message>
@@ -113,12 +101,6 @@
       </Message>
       <Message name="IncompatibleSizeOfDouble">
         Incompatible size of double
-      </Message>
-      <Message name="JNGCompressNotSupported">
-        JNG compression not supported
-      </Message>
-      <Message name="JPEGCompressNotSupported">
-        JPEG compression not supported
       </Message>
       <Message name="JPEGEmbeddingFailed">
         JPEG embedding failed
@@ -147,9 +129,6 @@
       <Message name="No8BIMDataIsAvailable">
         No 8BIM data is available
       </Message>
-      <Message name="NoColorProfileIsAvailable">
-        No color profile is available
-      </Message>
       <Message name="NoDataReturned">
         No data returned
       </Message>
@@ -170,12 +149,6 @@
       </Message>
       <Message name="OnlyLevelZerofilesSupported">
         Only level zero files Supported
-      </Message>
-      <Message name="PNGCompressNotSupported">
-        PNG compression not supported
-      </Message>
-      <Message name="RLECompressNotSupported">
-        RLE compression not supported
       </Message>
       <Message name="UnableToCopyProfile">
         Unable to copy profile
@@ -201,17 +174,8 @@
       <Message name="UnableToZipCompressImage">
         Unable to zip-compress image
       </Message>
-      <Message name="UnsupportedLevel">
-        Unsupported level
-      </Message>
-      <Message name="UnsupportedRLEImagefile">
-        Unsupported RLE image file
-      </Message>
       <Message name="UnsupportedCellTypeInTheMatrix">
         Unsupported cell type in the matrix
-      </Message>
-      <Message name="ZipCompressNotSupported">
-        Zip compression not supported
       </Message>
     </Error>
     <Warning>
@@ -254,38 +218,11 @@
         <Message name="ColormapExceeds256Colors">
           Colormap exceeded 256 colors
         </Message>
-        <Message name="CompressNotValid">
-          Compress not valid
-        </Message>
-        <Message name="CorruptGIFImage">
-          Corrupt GIF image
-        </Message>
-        <Message name="CorruptInlineImage">
-          Corrupt inline image
+        <Message name="CorruptImage">
+          Corrupt image
         </Message>
         <Message name="CorruptMNGImage">
           Corrupt MNG image
-        </Message>
-        <Message name="CorruptOTBImage">
-          Corrupt OTB image
-        </Message>
-        <Message name="CorruptPCDImage">
-          Corrupt PCD image
-        </Message>
-        <Message name="CorruptPDBImage">
-          Corrupt PDB image
-        </Message>
-        <Message name="CorruptWBMPImage">
-          Corrupt WBMP image
-        </Message>
-        <Message name="CorruptXCFImage">
-          Corrupt XCF image
-        </Message>
-        <Message name="CorruptXPMImage">
-          Corrupt XPM image
-        </Message>
-        <Message name="CorruptXWDImage">
-          Corrupt XWD image
         </Message>
         <Message name="FileFormatVersionMismatch">
           file format version mismatch
@@ -422,9 +359,6 @@
         <Message name="NotAXPMImageFile">
           Not a XPM image file
         </Message>
-        <Message name="NotEnoughPixelData">
-          Not enough pixel data
-        </Message>
         <Message name="NotEnoughTiles">
           Not enough tiles found in level
         </Message>
@@ -433,9 +367,6 @@
         </Message>
         <Message name="StaticPlanesValueNotEqualToOne">
           Static planes value not equal to 1
-        </Message>
-        <Message name="UnableToReadColormapFromDumpFile">
-          Unable to read colormap from dump file
         </Message>
         <Message name="UnableToReadColorProfile">
           Unable to read color profile
@@ -457,9 +388,6 @@
         </Message>
         <Message name="UnableToReadPixmapFromDumpFile">
           Unable to read pixmap from dump file
-        </Message>
-        <Message name="UnableToReadSubmage">
-          Unable to read subimage
         </Message>
         <Message name="UnableToReadVIDImage">
           Unable to read VID image
@@ -487,12 +415,6 @@
         </Message>
         <Message name="UnrecognizedImageCompression">
           Unrecognized compression
-        </Message>
-        <Message name="UnrecognizedImageCompressionMethod">
-          Unrecognized compression method
-        </Message>
-        <Message name="UnrecognizedNumerOfColors">
-          Unrecognized number of colors
         </Message>
         <Message name="UnrecognizedXWDHeader">
           Unrecognized XWD header
@@ -700,9 +622,6 @@
       <Message name="UnableToSegmentImage">
         Unable to segment image
       </Message>
-      <Message name="UnableToSetImageClipMask">
-        Unable to set image clip mask
-      </Message>
       <Message name="WidthOrHeightExceedsLimit">
         Width or height exceeds limit
       </Message>
@@ -776,9 +695,6 @@
       <Message name="BevelWidthIsNegative">
         bevel width is negative
       </Message>
-      <Message name="CompositeImageRequired">
-        Composite image required
-      </Message>
       <Message name="FrameIsLessThanImageSize">
         frame is less than image size
       </Message>
@@ -808,9 +724,6 @@
       </Message>
       <Message name="KernelWidthMustBeAnOddNumber">
         kernel width must be an odd number
-      </Message>
-      <Message name="MapImageRequired">
-        Map image required
       </Message>
       <Message name="MissingAffineMatrix">
         Missing affine matrix
@@ -847,9 +760,6 @@
       </Message>
       <Message name="MissingComment">
         Missing comment
-      </Message>
-      <Message name="MissingCompressQuality">
-        Missing compression quality
       </Message>
       <Message name="MissingCycleAmount">
         Missing an cycle amount
@@ -889,9 +799,6 @@
       </Message>
       <Message name="MissingImageDepth">
         Missing image depth
-      </Message>
-      <Message name="MissingImageFrames">
-        Missing image frames
       </Message>
       <Message name="MissingImageGamma">
         Missing image gamma
@@ -1003,6 +910,9 @@
       </Message>
       <Message name="NoProfileNameWasGiven">
         No profile name was given
+      </Message>
+      <Message name="NullBlobArgument">
+        Null blob argument
       </Message>
       <Message name="ReferenceImageRequired">
         Reference image required
@@ -1153,7 +1063,7 @@
       <Message name="MissingBorderColor">
         Missing border color
       </Message>
-      <Message name="MissingColor">
+      <Message name="MissingColors">
         Missing color
       </Message>
       <Message name="MissingCommand">
@@ -1336,9 +1246,6 @@
         <Message name="MemoryAllocationFailed">
           Memory allocation failed
         </Message>
-        <Message name="UnableToAcquireString">
-          unable to acquire string
-        </Message>
         <Message name="UnableToAllocateCoefficients">
           unable to allocate coefficients
         </Message>
@@ -1420,9 +1327,6 @@
         <Message name="UnableToDetermineTheNumberOfImageColors">
           unable to determine the number of image colors
         </Message>
-        <Message name="UnableToDistillRandomEvent">
-          unable to distill random event
-        </Message>
         <Message name="UnableToDitherImage">
           unable to dither image
         </Message>
@@ -1449,6 +1353,7 @@
         </Message>
         <Message name="UnableToGetFromRegistry">
           unable to get from registry
+        </Message>
         </Message>
         <Message name="UnableToGetPackageInfo">
           Unable to get package info
@@ -1644,9 +1549,6 @@
     <Error>
       <Message name="FontSubstitutionRequired">
         Font substitution required
-      </Message>
-      <Message name="UnableToConvertStringtoARGV">
-        Unable to convert string to ARGV
       </Message>
       <Message name="UnableToGetTypeMetrics">
         Unable to get type metrics

@@ -121,7 +121,7 @@ MagickExport char *AcquireString(const char *source)
   destination=MagickAllocateMemory(char *,strlen(source)+1);
   if (destination == (char *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToAcquireString");
+      "UnableToAllocateString");
   *destination='\0';
   if (source != (char *) NULL)
     (void) strcpy(destination,source);

@@ -622,7 +622,7 @@ static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo*
 
 
   if (offset != 0)
-    ThrowBinaryException(CorruptImageError,"CorruptXCFImage",image->filename)
+    ThrowBinaryException(CorruptImageError,"CorruptImage",image->filename)
 
   return 1;
 }

@@ -3143,11 +3143,11 @@ MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
   image=(Image *) NULL;
   for (p=content; (*p != ',') && (*p != '\0'); p++);
   if (*p == '\0')
-    ThrowReaderException(CorruptImageWarning,"CorruptInlineImage",image);
+    ThrowReaderException(CorruptImageWarning,"CorruptImage",image);
   p++;
   blob=Base64Decode(p,&length);
   if (length == 0)
-    ThrowReaderException(CorruptImageWarning,"CorruptInlineImage",image);
+    ThrowReaderException(CorruptImageWarning,"CorruptImage",image);
   handler=SetMonitorHandler((MonitorHandler) NULL);
   image=BlobToImage(image_info,blob,length,exception);
   (void) SetMonitorHandler(handler);

@@ -373,7 +373,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   SetExceptionInfo(exception,UndefinedException);
   if ((blob == (const void *) NULL) || (length == 0))
     {
-      ThrowException(exception,BlobError,"ZeroLengthBlobNotPermitted",
+      ThrowException(exception,OptionError,"NullBlobArgument",
         image_info->magick);
       (void) LogMagickEvent(BlobEvent,GetMagickModule(),
         "Leaving BlobToImage");
@@ -2039,9 +2039,9 @@ MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   SetExceptionInfo(exception,UndefinedException);
-  if ((blob == (const void *) NULL) || (length == 0))
+  if (((blob == (const void *) NULL)) || (length == 0))
     {
-      ThrowException(exception,BlobError,"UnrecognizedImageFormat",
+      ThrowException(exception,OptionError,"NullBlobArgument",
         image_info->magick);
       return((Image *) NULL);
     }

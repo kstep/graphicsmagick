@@ -151,9 +151,9 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
     Initialize image structure.
   */
   if (WBMPReadInteger(image,&image->columns) == False) 
-    ThrowReaderException(CorruptImageError,"CorruptWBMPimage",image);
+    ThrowReaderException(CorruptImageError,"CorruptImage",image);
   if (WBMPReadInteger(image,&image->rows) == False) 
-    ThrowReaderException(CorruptImageError,"CorruptWBMPimage",image);
+    ThrowReaderException(CorruptImageError,"CorruptImage",image);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(CorruptImageError,"NotAWBMPImageFile",image);
   for (i=0; i < image->offset; i++)
@@ -182,7 +182,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
         {
           byte=ReadBlobByte(image);
           if (byte == EOF)
-            ThrowReaderException(CorruptImageError,"CorruptWBMPImage",image);
+            ThrowReaderException(CorruptImageError,"CorruptImage",image);
         }
       indexes[x]=(byte & (0x01 << (7-bit))) ? 1 : 0;
       bit++;

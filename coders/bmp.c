@@ -794,7 +794,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       case BI_PNG:
         ThrowReaderException(CoderError,"PNGCompressionNotSupported",image)
       default:
-        ThrowReaderException(CorruptImageError,"UnrecognizedImageCompressionMethod",
+        ThrowReaderException(CorruptImageError,"UnrecognizedImageCompression",
           image)
     }
     image->columns=bmp_info.width;

@@ -206,7 +206,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (header.file_version != XWD_FILE_VERSION)
     ThrowReaderException(CorruptImageError,"FileFormatVersionMismatch",image);
   if (header.header_size < sz_XWDheader)
-    ThrowReaderException(CorruptImageError,"CorruptXWDImage",image);
+    ThrowReaderException(CorruptImageError,"CorruptImage",image);
   length=header.header_size-sz_XWDheader;
   comment=MagickAllocateMemory(char *,length+1);
   if (comment == (char *) NULL)

@@ -264,7 +264,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
           }
           default:
           {
-            ThrowBinaryException(CorruptImageError,"CorruptPCDImage",
+            ThrowBinaryException(CorruptImageError,"CorruptImage",
               image->filename)
           }
         }

@@ -223,3 +223,4 @@ xlib/X11/Xresource.h
 xlib/X11/Xutil.h
 xlib/X11/Xw32defs.h
 xlib/X11/XWDFile.h
+PerlMagick/Magick.xs

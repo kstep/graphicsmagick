@@ -342,7 +342,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (i=0; textlist[i] != (char *) NULL; i++)
         MagickFreeMemory(textlist[i]);
       MagickFreeMemory(textlist);
-      ThrowReaderException(CorruptImageError,"CorruptXPMImage",image)
+      ThrowReaderException(CorruptImageError,"CorruptImage",image)
     }
   j=0;
   key[width]='\0';
