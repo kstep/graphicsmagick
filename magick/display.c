@@ -12461,7 +12461,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     StructureNotifyMask;
   class_hints->res_name=(char *) "pan";
   manager_hints->flags=InputHint | StateHint | WindowGroupHint;
-  manager_hints->input=True;
+  manager_hints->input=False;
   manager_hints->initial_state=NormalState;
   manager_hints->window_group=windows->image.id;
   XMakeWindow(display,root_window,argv,argc,class_hints,manager_hints,
