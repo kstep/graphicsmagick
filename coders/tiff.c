@@ -249,6 +249,29 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
 }
 #endif
 
+static unsigned int TIFFErrorHandler(const char *module,const char *format,
+  va_list warning)
+{
+  char
+    message[MaxTextExtent];
+
+  register char
+    *p;
+
+  p=message;
+  if (module != (char *) NULL)
+    {
+      FormatString(p,"%.1024s: ",module);
+      p+=Extent(message);
+    }
+  (void) vsprintf(p,format,warning);
+  (void) strcat(p,".");
+  if (image != (Image *) NULL)
+    ThrowBinaryException(DelegateError,message,image->filename);
+  return(True);
+}
+
+static Image *ReadTIFFImage(const ImageInfo *image_info,
 static unsigned int TIFFWarningHandler(const char *module,const char *format,
   va_list warning)
 {
@@ -369,7 +392,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       (void) strcpy(image->filename,image_info->filename);
       image->temporary=True;
     }
-  TIFFSetErrorHandler((TIFFErrorHandler) TIFFWarningHandler);
+  TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrorHandler);
   TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarningHandler);
   tiff=TIFFOpen(image->filename,ReadBinaryUnbufferedType);
   if (tiff == (TIFF *) NULL)
@@ -1297,7 +1320,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       image->temporary=True;
     }
   CloseBlob(image);
-  TIFFSetErrorHandler((TIFFErrorHandler) TIFFWarningHandler);
+  TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrorHandler);
   TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarningHandler);
   tiff=TIFFOpen(image->filename,WriteBinaryType);
   if (tiff == (TIFF *) NULL)

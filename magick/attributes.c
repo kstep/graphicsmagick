@@ -729,9 +729,11 @@ ImageAttribute *GetImageInfoAttribute(const ImageInfo *image_info,
 %
 %  Method SetImageAttribute searches the list of image attributes and replaces
 %  the attribute value.  If it is not found in the list, the attribute name
-%  and value is added to the list. SetImageAttribute returns True if the
-%  attribute is successfully replaced or added to the list, otherwise False.
-%  If the value is NULL, the matching key is deleted from the list.
+%  and value is added to the list.   If the attribute exists in the list,
+%  the value is concatenated to the attribute.  SetImageAttribute returns True
+%  if the attribute is successfully concatenated or added to the list,
+%  otherwise False.  If the value is NULL, the matching key is deleted from
+%  the list.
 %
 %  The format of the SetImageAttribute method is:
 %
