@@ -221,6 +221,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->next->scene=image->scene+1;
     image->next->previous=image;
     image=image->next;
+    SetImage(image,OpaqueOpacity);
     MagickMonitor(LoadImagesText,TellBlob(image),image->filesize);
     /*
       Initialize text image to background color.
