@@ -187,6 +187,7 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
   register MagickInfo
     *p;
 
+  EngageSemaphore(magick_semaphore);
   if (magick_list == (MagickInfo *) NULL)
     {
       /*
@@ -270,6 +271,7 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
       RegisterYUVImage();
 #endif
     }
+  DisengageSemaphore(magick_semaphore);
   if ((tag == (char *) NULL) || (*tag == '\0'))
     return((MagickInfo *) NULL);
   /*
@@ -499,8 +501,8 @@ MagickExport unsigned int UnregisterMagickInfo(const char *tag)
   unsigned int
     status;
 
-  EngageSemaphore(magick_semaphore);
   status=False;
+  EngageSemaphore(magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
   {
     if (LocaleCompare(p->tag,tag) != 0)
