@@ -526,7 +526,8 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
 %
 %  The format of the Classification method is:
 %
-%      unsigned int Classification(CubeInfo *cube_info,Image *image)
+%      unsigned int Classification(CubeInfo *cube_info,const Image *image,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -537,7 +538,8 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
 %
 %
 */
-static unsigned int Classification(CubeInfo *cube_info,Image *image)
+static unsigned int Classification(CubeInfo *cube_info,const Image *image,
+  ExceptionInfo *exception)
 {
 #define ClassifyImageText  "  Classifying image colors...  "
 
@@ -572,7 +574,7 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
 
   for (y=0; y < (long) image->rows; y++)
   {
-    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
     if (cube_info->nodes > MaxNodes)
@@ -614,7 +616,7 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
             node_info->census|=(1 << id);
             node_info->child[id]=GetNodeInfo(cube_info,id,level,node_info);
             if (node_info->child[id] == (NodeInfo *) NULL)
-              ThrowBinaryException(ResourceLimitWarning,
+              ThrowException(exception,ResourceLimitWarning,
                 "Unable to quantize image","Memory allocation failed");
             if (level == cube_info->depth)
               cube_info->colors++;
@@ -1481,7 +1483,7 @@ static void HilbertCurve(CubeInfo *cube_info,Image *image,const int level,
 %
 %  The format of the MapImage method is:
 %
-%      unsigned int MapImage(Image *image,Image *map_image,
+%      unsigned int MapImage(Image *image,const Image *map_image,
 %        const unsigned int dither)
 %
 %  A description of each parameter follows:
@@ -1496,7 +1498,7 @@ static void HilbertCurve(CubeInfo *cube_info,Image *image,const int level,
 %
 %
 */
-MagickExport unsigned int MapImage(Image *image,Image *map_image,
+MagickExport unsigned int MapImage(Image *image,const Image *map_image,
   const unsigned int dither)
 {
   CubeInfo
@@ -1522,7 +1524,7 @@ MagickExport unsigned int MapImage(Image *image,Image *map_image,
   if (cube_info == (CubeInfo *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to map image",
       "Memory allocation failed");
-  status=Classification(cube_info,map_image);
+  status=Classification(cube_info,map_image,&image->exception);
   if (status != False)
     {
       /*
@@ -1566,7 +1568,7 @@ MagickExport unsigned int MapImage(Image *image,Image *map_image,
 %
 %
 */
-MagickExport unsigned int MapImages(Image *images,Image *map_image,
+MagickExport unsigned int MapImages(Image *images,const Image *map_image,
   const unsigned int dither)
 {
   CubeInfo
@@ -1612,7 +1614,7 @@ MagickExport unsigned int MapImages(Image *images,Image *map_image,
   if (cube_info == (CubeInfo *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to map image sequence",
       "Memory allocation failed");
-  status=Classification(cube_info,map_image);
+  status=Classification(cube_info,map_image,&image->exception);
   if (status != False)
     {
       /*
@@ -2021,7 +2023,7 @@ MagickExport unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
       "Memory allocation failed");
   if (quantize_info->colorspace != RGBColorspace)
     (void) RGBTransformImage(image,quantize_info->colorspace);
-  status=Classification(cube_info,image);
+  status=Classification(cube_info,image,&image->exception);
   if (status != False)
     {
       /*
@@ -2151,7 +2153,7 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
   for (i=0; image != (Image *) NULL; i++)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
-    status=Classification(cube_info,image);
+    status=Classification(cube_info,image,&image->exception);
     if (status == False)
       break;
     image=image->next;

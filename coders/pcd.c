@@ -865,7 +865,8 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
   char *geometry,char *tile_geometry)
 {
   Image
-    *downsampled_image,
+    *clone_image,
+    *downsample_image,
     *tile_image;
 
   long
@@ -895,8 +896,11 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
     width--;
   if ((height % 2) != 0)
     height--;
-  image->orphan=True;
-  tile_image=ZoomImage(image,width,height,&image->exception);
+  clone_image=CloneImage(image,0,0,True,&image->exception);
+  if (clone_image == (Image *) NULL)
+    return(False);
+  tile_image=ZoomImage(clone_image,width,height,&image->exception);
+  DestroyImage(clone_image);
   if (tile_image == (Image *) NULL)
     return(False);
   (void) sscanf(geometry,"%lux%lu",&width,&height);
@@ -921,9 +925,9 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
     }
   (void) TransformImage(&tile_image,(char *) NULL,tile_geometry);
   (void) RGBTransformImage(tile_image,YCCColorspace);
-  downsampled_image=ZoomImage(tile_image,tile_image->columns/2,
+  downsample_image=ZoomImage(tile_image,tile_image->columns/2,
     tile_image->rows/2,&image->exception);
-  if (downsampled_image == (Image *) NULL)
+  if (downsample_image == (Image *) NULL)
     return(False);
   /*
     Write tile to PCD file.
@@ -939,20 +943,20 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
       (void) WriteBlobByte(image,DownScale(p->red));
       p++;
     }
-    q=AcquireImagePixels(downsampled_image,0,y >> 1,downsampled_image->columns,
-      1,&downsampled_image->exception);
+    q=AcquireImagePixels(downsample_image,0,y >> 1,downsample_image->columns,
+      1,&downsample_image->exception);
     if (q == (const PixelPacket *) NULL)
       break;
-    for (x=0; x < (long) downsampled_image->columns; x++)
+    for (x=0; x < (long) downsample_image->columns; x++)
     {
       (void) WriteBlobByte(image,DownScale(q->green));
       q++;
     }
-    q=AcquireImagePixels(downsampled_image,0,y >> 1,downsampled_image->columns,
-      1,&downsampled_image->exception);
+    q=AcquireImagePixels(downsample_image,0,y >> 1,downsample_image->columns,
+      1,&downsample_image->exception);
     if (q == (const PixelPacket *) NULL)
       break;
-    for (x=0; x < (long) downsampled_image->columns; x++)
+    for (x=0; x < (long) downsample_image->columns; x++)
     {
       (void) WriteBlobByte(image,DownScale(q->blue));
       q++;
@@ -962,7 +966,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
   }
   for (i=0; i < 0x800; i++)
     (void) WriteBlobByte(image,'\0');
-  DestroyImage(downsampled_image);
+  DestroyImage(downsample_image);
   DestroyImage(tile_image);
   return(True);
 }

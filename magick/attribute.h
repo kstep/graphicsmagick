@@ -14,7 +14,7 @@ extern "C" {
 extern MagickExport ImageAttribute
   *GetImageAttribute(const Image *,const char *),
   *GetImageClippingPathAttribute(const Image *),
-  *GetImageInfoAttribute(const ImageInfo *,Image *,const char *);
+  *GetImageInfoAttribute(const ImageInfo *,const Image *,const char *);
 
 extern MagickExport unsigned int
   SetImageAttribute(Image *,const char *,const char *);

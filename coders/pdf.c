@@ -512,6 +512,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     y;
 
   Image
+    *clone_image,
     encode_image,
     *tile_image;
 
@@ -1166,12 +1167,16 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     x=0;
     y=0;
     (void) ParseImageGeometry("106x106+0+0>",&x,&y,&width,&height);
-    image->orphan=True;
-    if (image->storage_class == PseudoClass)
-      image->filter=PointFilter;
-    tile_image=ZoomImage(image,width,height,&image->exception);
+    clone_image=CloneImage(image,0,0,True,&image->exception);
+    if (clone_image == (Image *) NULL)
+      ThrowWriterException(ResourceLimitWarning,"Unable to scale image",
+        image);
+    if (clone_image->storage_class == PseudoClass)
+      clone_image->filter=PointFilter;
+    tile_image=ZoomImage(clone_image,width,height,&image->exception);
+    DestroyImage(clone_image);
     if (tile_image == (Image *) NULL)
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+      ThrowWriterException(ResourceLimitWarning,"Unable to scale image",
         image);
     xref[object++]=TellBlob(image);
     FormatString(buffer,"%u 0 obj\n",object);

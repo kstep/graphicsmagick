@@ -2831,7 +2831,7 @@ MagickExport int Tokenizer(TokenInfo *token_info,unsigned flag,char *token,
 %
 %  The format of the TranslateText method is:
 %
-%      char *TranslateText(const ImageInfo *image_info,Image *image,
+%      char *TranslateText(const ImageInfo *image_info,const Image *image,
 %        const char *formatted_text)
 %
 %  A description of each parameter follows:
@@ -2848,13 +2848,16 @@ MagickExport int Tokenizer(TokenInfo *token_info,unsigned flag,char *token,
 %
 %
 */
-MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
+MagickExport char *TranslateText(const ImageInfo *image_info,const Image *image,
   const char *formatted_text)
 {
   char
     filename[MaxTextExtent],
     *text,
     *translated_text;
+
+  ExceptionInfo
+    exception;
 
   ImageInfo
     *clone_info;
@@ -2870,12 +2873,13 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
     length;
 
   assert(image != (Image *) NULL);
+  GetExceptionInfo(&exception);
   if ((formatted_text == (const char *) NULL) || (*formatted_text == '\0'))
     return((char *) NULL);
   text=(char *) formatted_text;
   if ((*text == '@') && IsAccessible(text+1))
     {
-      text=(char *) FileToBlob(text+1,&length,&image->exception);
+      text=(char *) FileToBlob(text+1,&length,&exception);
       if (text == (char *) NULL)
         return((char *) NULL);
     }
@@ -3007,8 +3011,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'k':
       {
-        FormatString(q,"%lu",
-          GetNumberColors(image,(FILE *) NULL,&image->exception));
+        FormatString(q,"%lu",GetNumberColors(image,(FILE *) NULL,&exception));
         q=translated_text+strlen(translated_text);
         break;
       }

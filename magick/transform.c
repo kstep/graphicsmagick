@@ -461,7 +461,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *crop_info,
 %
 %  The format of the DeconstructImages method is:
 %
-%      Image *DeconstructImages(Image *image,ExceptionInfo *exception)
+%      Image *DeconstructImages(const Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -471,9 +471,11 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *crop_info,
 %
 %
 */
-MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
+MagickExport Image *DeconstructImages(const Image *image,
+  ExceptionInfo *exception)
 {
   Image
+    *crop_image,
     *crop_next,
     *deconstruct_image;
 
@@ -614,8 +616,11 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
   i=0;
   for (next=image->next; next != (Image *) NULL; next=next->next)
   {
-    next->orphan=True;
-    crop_next=CropImage(next,&bounds[i++],exception);
+    crop_image=CloneImage(next,0,0,True,exception);
+    if (crop_image == (Image *) NULL)
+      break;
+    crop_next=CropImage(crop_image,&bounds[i++],exception);
+    DestroyImage(crop_image);
     if (crop_next == (Image *) NULL)
       break;
     deconstruct_image->next=crop_next;
@@ -625,6 +630,11 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
   LiberateMemory((void **) &bounds);
   while (deconstruct_image->previous != (Image *) NULL)
     deconstruct_image=deconstruct_image->previous;
+  if (next != (Image *) NULL)
+    {
+      DestroyImages(deconstruct_image);
+      return((Image *) NULL);
+    }
   return(deconstruct_image);
 }
 

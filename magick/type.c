@@ -222,7 +222,7 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
   register TypeInfo
     *p;
 
-  if (file == (const FILE *) NULL)
+  if (file == (FILE *) NULL)
     file=stdout;
   (void) fprintf(file,"ImageMagick supports these built-in fonts.\n");
   p=GetTypeInfo("*",exception);

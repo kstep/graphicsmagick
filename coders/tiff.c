@@ -1212,6 +1212,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   if (LocaleCompare(image_info->magick,"PTIF") == 0)
     {
       Image
+        *clone_image,
         *pyramid_image;
 
       /*
@@ -1223,9 +1224,12 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           "Unable to pyramid encode image",image);
       do
       {
-        pyramid_image->orphan=True;
-        pyramid_image->next=ZoomImage(pyramid_image,pyramid_image->columns >> 1,
+        clone_image=CloneImage(pyramid_image,0,0,True,&image->exception);
+        if (clone_image == (Image *) NULL)
+          return(False);
+        pyramid_image->next=ZoomImage(clone_image,pyramid_image->columns >> 1,
           pyramid_image->rows >>1,&image->exception);
+        DestroyImage(clone_image);
         if (pyramid_image->next == (Image *) NULL)
           ThrowWriterException(FileOpenWarning,
             "Unable to pyramid encode image",image);

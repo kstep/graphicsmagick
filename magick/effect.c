@@ -1744,7 +1744,7 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
 %
 %  The format of the MorphImage method is:
 %
-%      Image *MorphImages(Image *image,const unsigned long number_frames,
+%      Image *MorphImages(const Image *image,const unsigned long number_frames,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1762,8 +1762,8 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
 %
 %
 */
-MagickExport Image *MorphImages(Image *image,const unsigned long number_frames,
-  ExceptionInfo *exception)
+MagickExport Image *MorphImages(const Image *image,
+  const unsigned long number_frames,ExceptionInfo *exception)
 {
 #define MorphImageText  "  Morph image sequence...  "
 
@@ -1772,6 +1772,7 @@ MagickExport Image *MorphImages(Image *image,const unsigned long number_frames,
     beta;
 
   Image
+    *clone_image,
     *morph_image,
     *morph_images;
 
@@ -1781,20 +1782,18 @@ MagickExport Image *MorphImages(Image *image,const unsigned long number_frames,
   MonitorHandler
     handler;
 
+  register const Image
+    *next;
+
   register const PixelPacket
     *p;
 
-  register Image
-    *next;
-
   register long
+    i,
     x;
 
   register PixelPacket
     *q;
-
-  register long
-    i;
 
   unsigned int
     scene;
@@ -1841,25 +1840,25 @@ MagickExport Image *MorphImages(Image *image,const unsigned long number_frames,
     {
       beta=(double) (i+1.0)/(number_frames+1.0);
       alpha=1.0-beta;
-      next->orphan=True;
-      morph_images->next=ZoomImage(next,
-        (unsigned int) (alpha*next->columns+beta*next->next->columns+0.5),
-        (unsigned int) (alpha*next->rows+beta*next->next->rows+0.5),exception);
+      clone_image=CloneImage(next,0,0,True,exception);
+      if (clone_image == (Image *) NULL)
+        break;
+      morph_images->next=ZoomImage(clone_image,
+        (unsigned long) (alpha*next->columns+beta*next->next->columns+0.5),
+        (unsigned long) (alpha*next->rows+beta*next->next->rows+0.5),exception);
+      DestroyImage(clone_image);
       if (morph_images->next == (Image *) NULL)
-        {
-          DestroyImages(morph_images);
-          return((Image *) NULL);
-        }
+        break;
       morph_images->next->previous=morph_images;
       morph_images=morph_images->next;
-      next->next->orphan=True;
-      morph_image=ZoomImage(next->next,morph_images->columns,morph_images->rows,
-        exception);
+      clone_image=CloneImage(next->next,0,0,True,exception);
+      if (clone_image == (Image *) NULL)
+        break;
+      morph_image=ZoomImage(clone_image,morph_images->columns,
+        morph_images->rows,exception);
+      DestroyImage(clone_image);
       if (morph_image == (Image *) NULL)
-        {
-          DestroyImages(morph_images);
-          return((Image *) NULL);
-        }
+        break;
       morph_images->storage_class=DirectClass;
       for (y=0; y < (long) morph_images->rows; y++)
       {
@@ -1881,15 +1880,14 @@ MagickExport Image *MorphImages(Image *image,const unsigned long number_frames,
       }
       DestroyImage(morph_image);
     }
+    if (i < (long) number_frames)
+      break;
     /*
       Clone last frame in sequence.
     */
     morph_images->next=CloneImage(next->next,0,0,True,exception);
     if (morph_images->next == (Image *) NULL)
-      {
-        DestroyImages(morph_images);
-        return((Image *) NULL);
-      }
+      break;
     morph_images->next->previous=morph_images;
     morph_images=morph_images->next;
     (void) SetMonitorHandler(handler);

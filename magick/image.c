@@ -6240,7 +6240,7 @@ MagickExport void SyncImage(Image *image)
 %
 %  The format of the TextureImage method is:
 %
-%      void TextureImage(Image *image,Image *texture)
+%      void TextureImage(Image *image,const Image *texture)
 %
 %  A description of each parameter follows:
 %
@@ -6250,7 +6250,7 @@ MagickExport void SyncImage(Image *image)
 %
 %
 */
-MagickExport void TextureImage(Image *image,Image *texture)
+MagickExport void TextureImage(Image *image,const Image *texture)
 {
 #define TextureImageText  "  Apply image texture...  "
 

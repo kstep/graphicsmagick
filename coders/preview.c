@@ -178,6 +178,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
     threshold;
 
   Image
+    *clone_image,
     *images[NumberTiles],
     *montage_image,
     *preview_image;
@@ -218,8 +219,11 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
   x=0;
   y=0;
   (void) ParseImageGeometry(DefaultPreviewGeometry,&x,&y,&width,&height);
-  image->orphan=True;
-  preview_image=ZoomImage(image,width,height,&image->exception);
+  clone_image=CloneImage(image,0,0,True,&image->exception);
+  if (clone_image == (Image *) NULL)
+    return(False);
+  preview_image=ZoomImage(clone_image,width,height,&image->exception);
+  DestroyImage(clone_image);
   if (preview_image == (Image *) NULL)
     return(False);
   preview_image->exempt=True;

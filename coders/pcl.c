@@ -364,11 +364,19 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       monochrome_image=image;
       if ((width != image->columns) || (height != image->rows))
         {
+          Image
+            *clone_image;
+
           /*
             Scale image.
           */
-          image->orphan=True;
-          monochrome_image=ZoomImage(image,width,height,&image->exception);
+          clone_image=CloneImage(image,0,0,True,&image->exception);
+          if (clone_image == (Image *) NULL)
+            ThrowWriterException(ResourceLimitWarning,"Unable to scale image",
+              image);
+          monochrome_image=
+            ZoomImage(clone_image,width,height,&image->exception);
+          DestroyImage(clone_image);
           if (monochrome_image == (Image *) NULL)
             ThrowWriterException(ResourceLimitWarning,"Unable to scale image",
               image);

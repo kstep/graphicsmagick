@@ -90,7 +90,8 @@ static SemaphoreInfo
 */
 static unsigned int
   ReadConfigurationFile(const char *,ExceptionInfo *),
-  WriteMPEGParameterFiles(const ImageInfo *,const DelegateInfo *,Image *);
+  WriteMPEGParameterFiles(const ImageInfo *,const DelegateInfo *,Image *,
+    ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -230,7 +231,7 @@ MagickExport DelegateInfo *GetDelegateInfo(const char *decode,
 %
 %  The format of the GetDelegateCommand method is:
 %
-%      char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
+%      char *GetDelegateCommand(const ImageInfo *image_info,const Image *image,
 %        const char *decode,const char *encode,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -252,8 +253,9 @@ MagickExport DelegateInfo *GetDelegateInfo(const char *decode,
 %
 %
 */
-MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
-  const char *decode,const char *encode,ExceptionInfo *exception)
+MagickExport char *GetDelegateCommand(const ImageInfo *image_info,
+  const Image *image,const char *decode,const char *encode,
+  ExceptionInfo *exception)
 {
   char
     *command,
@@ -356,7 +358,7 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   (void) strncpy(filename,image->filename,MaxTextExtent-1);
-  delegate_info=GetDelegateInfo(decode,encode,&image->exception);
+  delegate_info=GetDelegateInfo(decode,encode,exception);
   if (delegate_info == (DelegateInfo *) NULL)
     {
       ThrowException(exception,MissingDelegateWarning,"no tag found",
@@ -371,7 +373,8 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
         (LocaleCompare(delegate_info->encode,"MPG") == 0) ||
         (LocaleCompare(delegate_info->encode,"MPEG") == 0))
       {
-        status=WriteMPEGParameterFiles(clone_info,delegate_info,image);
+        status=WriteMPEGParameterFiles(clone_info,delegate_info,image,
+          exception);
         if (status == False)
           {
             DestroyImageInfo(clone_info);
@@ -409,7 +412,7 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
         LiberateMemory((void **) &magick);
         (void) strncpy(filename,image->filename,MaxTextExtent-1);
         FormatString(clone_info->filename,"%.1024s:",delegate_info->decode);
-        (void) SetImageInfo(clone_info,True,&image->exception);
+        (void) SetImageInfo(clone_info,True,exception);
         for (p=image; p != (Image *) NULL; p=p->next)
         {
           FormatString(p->filename,"%.1024s:%.1024s",delegate_info->decode,
@@ -843,7 +846,7 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
 %  The format of the WriteMPEGParameterFiles method is:
 %
 %      unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
-%        const DelegateInfo *delegate_info,Image *image)
+%        DelegateInfo *delegate_info,Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -853,10 +856,12 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
 %
 %    o image: The image.
 %
+%    o exception: Return any errors or warnings in this structure.
+%
 %
 */
 static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
-  const DelegateInfo *delegate_info,Image *image)
+  const DelegateInfo *delegate_info,Image *image,ExceptionInfo *exception)
 {
   char
     filename[MaxTextExtent];
@@ -893,7 +898,7 @@ static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
   /*
     Write parameter file (see mpeg2encode documentation for details).
   */
-  (void) CoalesceImages(image,&image->exception);
+  (void) CoalesceImages(image,exception);
   file=fopen(image_info->unique,"w");
   if (file == (FILE *) NULL)
     return(False);

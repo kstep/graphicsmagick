@@ -96,6 +96,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *chroma_image,
+    *clone_image,
     *image,
     *resize_image;
 
@@ -237,9 +238,12 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Scale image.
     */
-    chroma_image->orphan=True;
-    resize_image=ResizeImage(chroma_image,image->columns,image->rows,
+    clone_image=CloneImage(chroma_image,0,0,True,&image->exception);
+    if (clone_image == (Image *) NULL)
+      return(False);
+    resize_image=ResizeImage(clone_image,image->columns,image->rows,
       TriangleFilter,1.0,exception);
+    DestroyImage(clone_image);
     DestroyImage(chroma_image);
     if (resize_image == (Image *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
@@ -392,6 +396,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
 {
   Image
     *chroma_image,
+    *clone_image,
     *yuv_image;
 
   long
@@ -437,10 +442,13 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     (void) TransformRGBImage(image,RGBColorspace);
     width=image->columns+(image->columns & 0x01);
     height=image->rows+(image->rows & 0x01);
-    image->orphan=True;
-    if (image->storage_class == PseudoClass)
-      image->filter=PointFilter;
-    yuv_image=ZoomImage(image,width,height,&image->exception);
+    clone_image=CloneImage(image,0,0,True,&image->exception);
+    if (clone_image == (Image *) NULL)
+      ThrowWriterException(ResourceLimitWarning,"Unable to resize image",image);
+    if (clone_image->storage_class == PseudoClass)
+      clone_image->filter=PointFilter;
+    yuv_image=ZoomImage(clone_image,width,height,&image->exception);
+    DestroyImage(clone_image);
     if (yuv_image == (Image *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Unable to resize image",image);
     (void) RGBTransformImage(yuv_image,YCbCrColorspace);
@@ -466,10 +474,13 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     /*
       Downsample image.
     */
-    image->orphan=True;
-    if (image->storage_class == PseudoClass)
-      image->filter=PointFilter;
-    chroma_image=ZoomImage(image,width/2,height/2,&image->exception);
+    clone_image=CloneImage(image,0,0,True,&image->exception);
+    if (clone_image == (Image *) NULL)
+      ThrowWriterException(ResourceLimitWarning,"Unable to resize image",image);
+    if (clone_image->storage_class == PseudoClass)
+      clone_image->filter=PointFilter;
+    chroma_image=ZoomImage(clone_image,width/2,height/2,&image->exception);
+    DestroyImage(clone_image);
     if (chroma_image == (Image *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Unable to resize image",image);
     (void) RGBTransformImage(chroma_image,YCbCrColorspace);

@@ -222,7 +222,7 @@ MagickExport void GetMontageInfo(const ImageInfo *image_info,
 %
 %  The format of the MontageImages method is:
 %
-%      Image *MontageImages(Image *image,const MontageInfo *montage_info,
+%      Image *MontageImages(const Image *image,const MontageInfo *montage_info,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -255,8 +255,8 @@ static int SceneCompare(const void *x,const void *y)
 }
 #endif
 
-MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
-  ExceptionInfo *exception)
+MagickExport Image *MontageImages(const Image *image,
+  const MontageInfo *montage_info,ExceptionInfo *exception)
 {
 #define MontageImageText  "  Create visual image directory...  "
 #define TileImageText  "  Create image tiles...  "
@@ -272,6 +272,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
     frame_info;
 
   Image
+    *clone_image,
     **next_list,
     **master_list,
     *montage_next,
@@ -347,19 +348,24 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
     x=0;
     y=0;
     (void) ParseImageGeometry(montage_info->geometry,&x,&y,&width,&height);
-    next_list[tile]->orphan=True;
-    tile_next=ZoomImage(next_list[tile],width,height,exception);
+    clone_image=CloneImage(next_list[tile],0,0,True,exception);
+    if (clone_image == (Image *) NULL)
+      break;
+    tile_next=ZoomImage(clone_image,width,height,exception);
+    DestroyImage(clone_image);
     if (tile_next == (Image *) NULL)
-      {
-        for (i=0; i < (long) tile; i++)
-          DestroyImage(next_list[i]);
-        (void) SetMonitorHandler(handler);
-        return((Image *) NULL);
-      }
+      break;
     next_list[tile]=tile_next;
     (void) SetMonitorHandler(handler);
     MagickMonitor(TileImageText,tile,number_images);
   }
+  if (tile < number_images)
+    {
+      for (i=0; i < (long) tile; i++)
+        DestroyImage(next_list[i]);
+      (void) SetMonitorHandler(handler);
+      return((Image *) NULL);
+    }
   /*
     Sort next_list by increasing tile number.
   */
@@ -596,7 +602,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
       if (border_width != 0)
         {
           Image
-            *bordered_next;
+            *border_image;
 
           RectangleInfo
             border_info;
@@ -611,12 +617,16 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
               border_info.width=(width-next->columns+1)/2;
               border_info.height=(height-next->rows+1)/2;
             }
-          next->orphan=True;
-          bordered_next=BorderImage(next,&border_info,exception);
-          if (bordered_next != (Image *) NULL)
+          clone_image=CloneImage(next,0,0,True,exception);
+          if (clone_image != (Image *) NULL)
             {
-              DestroyImage(next);
-              next=bordered_next;
+              border_image=BorderImage(clone_image,&border_info,exception);
+              DestroyImage(clone_image);
+              if (border_image != (Image *) NULL)
+                {
+                  DestroyImage(next);
+                  next=border_image;
+                }
             }
         }
       /*
@@ -688,7 +698,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
             tile_info;
 
           Image
-            *framed_next;
+            *frame_image;
 
           /*
             Put an ornamental border around this tile.
@@ -699,12 +709,16 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
           attribute=GetImageAttribute(next,"label");
           if (attribute != (ImageAttribute *) NULL)
             tile_info.height+=(font_height+4)*MultilineCensus(attribute->value);
-          next->orphan=True;
-          framed_next=FrameImage(next,&tile_info,exception);
-          if (framed_next != (Image *) NULL)
+          clone_image=CloneImage(next,0,0,True,exception);
+          if (clone_image != (Image *) NULL)
             {
-              DestroyImage(next);
-              next=framed_next;
+              frame_image=FrameImage(clone_image,&tile_info,exception);
+              DestroyImage(clone_image);
+              if (frame_image != (Image *) NULL)
+                {
+                  DestroyImage(next);
+                  next=frame_image;
+                }
             }
           x=0;
           y=0;

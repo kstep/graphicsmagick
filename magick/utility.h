@@ -39,7 +39,7 @@ extern MagickExport char
   *SetClientPath(const char *),
   **StringToArgv(const char *,int *),
   **StringToList(const char *),
-  *TranslateText(const ImageInfo *,Image *,const char *);
+  *TranslateText(const ImageInfo *,const Image *,const char *);
 
 extern MagickExport int
   GetGeometry(const char *,long *,long *,unsigned long *,unsigned long *),

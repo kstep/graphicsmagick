@@ -1682,6 +1682,7 @@ MagickExport Image *ZoomImage(const Image *image,const unsigned long columns,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  zoom_image=ResizeImage(image,columns,rows,image->filter,image->blur,exception);
+  zoom_image=
+    ResizeImage(image,columns,rows,image->filter,image->blur,exception);
   return(zoom_image);
 }

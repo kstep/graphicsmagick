@@ -784,7 +784,7 @@ static void YShearImage(Image *image,const double degrees,
 %
 %  The format of the RotateImage method is:
 %
-%      Image *RotateImage(Image *image,const double degrees,
+%      Image *RotateImage(const Image *image,const double degrees,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
@@ -801,7 +801,7 @@ static void YShearImage(Image *image,const double degrees,
 %
 %
 */
-MagickExport Image *RotateImage(Image *image,const double degrees,
+MagickExport Image *RotateImage(const Image *image,const double degrees,
   ExceptionInfo *exception)
 {
   double
@@ -922,8 +922,8 @@ MagickExport Image *RotateImage(Image *image,const double degrees,
 %
 %  The format of the ShearImage method is:
 %
-%      Image *ShearImage(Image *image,const double x_shear,const double y_shear,
-%        ExceptionInfo *exception)
+%      Image *ShearImage(const Image *image,const double x_shear,
+%        const double y_shear,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -939,7 +939,7 @@ MagickExport Image *RotateImage(Image *image,const double degrees,
 %
 %
 */
-MagickExport Image *ShearImage(Image *image,const double x_shear,
+MagickExport Image *ShearImage(const Image *image,const double x_shear,
   const double y_shear,ExceptionInfo *exception)
 {
   Image

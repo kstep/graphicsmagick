@@ -4668,17 +4668,21 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
       if ((crop_info.width != 0) && (crop_info.height != 0))
         {
           Image
+            *clone_image,
             *crop_image;
 
           /*
             Crop image as defined by the cropping rectangle.
           */
-          image->orphan=True;
-          crop_image=CropImage(image,&crop_info,&image->exception);
-          if (crop_image != (Image *) NULL)
+          clone_image=CloneImage(image,0,0,True,&image->exception);
+          if (clone_image != (Image *) NULL)
             {
-              DestroyImage(image);
-              image=crop_image;
+              crop_image=CropImage(clone_image,&crop_info,&image->exception);
+              if (crop_image != (Image *) NULL)
+                {
+                  DestroyImage(image);
+                  image=crop_image;
+                }
             }
         }
       status=XGetWMName(display,target,&window_name);
