@@ -134,7 +134,7 @@ testFilter('input.miff', 'Minify',
 testFilter('input.miff', 'Modulate',
   q/60/,
   '4a9c88f7ffaa8937920235af65d4b7d38d70d72315e4868a9068c3b1d0cbb308',
-  '5ada8ae04ca6e3b36b4113b9e053ee3502ec78ddde3a459bc9b56efe85452c9e');
+  '5d2a14f4ebece1c43e185ee9cefc05f6942f830d1a62b1a70de982da9627eda5');
 
 ++$test;
 testFilter('input.miff', 'Negate',

@@ -85,6 +85,7 @@ MagickExport void Contrast(const int sign,Quantum *red,Quantum *green,
   Quantum *blue)
 {
   double
+    alpha,
     brightness,
     hue,
     saturation;
@@ -96,8 +97,9 @@ MagickExport void Contrast(const int sign,Quantum *red,Quantum *green,
   assert(green != (Quantum *) NULL);
   assert(blue != (Quantum *) NULL);
   TransformHSL(*red,*green,*blue,&hue,&saturation,&brightness);
-  brightness+=sign*((sin(MagickPI*(brightness-0.5))+1.0)/2-brightness)/2+
-	  MagickEpsilon;
+  alpha=0.5+MagickEpsilon;
+	brightness+=
+	  alpha*sign*(alpha*(sin(MagickPI*(brightness-alpha))+1.0)-brightness);
   if (brightness > 1.0)
     brightness=1.0;
   else
@@ -803,19 +805,19 @@ MagickExport void Modulate(const double percent_hue,
   assert(green != (Quantum *) NULL);
   assert(blue != (Quantum *) NULL);
   TransformHSL(*red,*green,*blue,&hue,&saturation,&brightness);
-  brightness*=percent_brightness/100.0;
+  brightness*=(0.01+MagickEpsilon)*percent_brightness;
   if (brightness < 0.0)
     brightness=0.0;
   else
     if (brightness > 1.0)
       brightness=1.0;
-  saturation*=percent_saturation/100.0;
+  saturation*=(0.01+MagickEpsilon)*percent_saturation;
   if (saturation < 0.0)
     saturation=0.0;
   else
     if (saturation > 1.0)
       saturation=1.0;
-  hue*=percent_hue/100.0;
+  hue*=(0.01+MagickEpsilon)*percent_hue;
   if (hue < 0.0)
     hue+=1.0;
   else
