@@ -3,6 +3,10 @@ Magick++ release numbering tracks ImageMagick release numbering so the
 Magick++ release number increments even if there are no changes associated
 with Magick++ itself.
 
+(5.4.6)
+  * Magick++ library no longer depends on C++ iostreams APIs.
+  * Added DrawableTextUnderColor class to set text underbox color.
+
 (5.4.5)
   * Drawable classes have been re-written to use ImageMagick's draw.h
     APIs.

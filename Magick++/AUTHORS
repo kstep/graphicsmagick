@@ -1,10 +1,9 @@
 The author and maintainer of Magick++ is Bob Friesenhan
 <bfriesen@simple.dallas.tx.us>.
 
-Many thanks to John Cristy <magick@wizards.dupont.com> for
-developing the powerful ImageMagick package that Magick++ is based
-on and for enhancing ImageMagick API features in order to allow a
-cleaner implementation.
+Many thanks to John Cristy for developing the powerful ImageMagick
+package that Magick++ is based on and for enhancing ImageMagick API
+features in order to allow a cleaner implementation.
 
 Thanks to Bill Radcliffe <BillR@corbis.com> for his assistance with
 getting Magick++ to compile under Visual C++, and for maintaining the
