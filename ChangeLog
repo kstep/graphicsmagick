@@ -1,5 +1,8 @@
 2005-01-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/tga.c (WriteTGAImage): Incorported patch from Stefan
+	v. Wachter to enable writing grayscale images as well as adding
+	more image type option smarts.
 	* coders/psd.c (ReadPSDImage): Fix stack overflow vulnerability
 	reported by Andrei Nigmatulin.
 
