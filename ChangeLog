@@ -1,3 +1,20 @@
+2002-12-06 William Radcliffe <billr@corbis.com>
+	* coders/jpeg.c:
+	Modification of JPEG APP1 detection logic to name EXIF and XMP
+	profiles as EXIF and XMP instead of APP1. THe current algorithm is
+	brute force.
+	* coders/meta.c:
+	Modification deal with EXIF and XMP requests so that you can ask for
+	these blobs specifically if they exist.
+	* coders/pdf.c,ps.c,ps2.c,ps3.c:
+	Cristy bug fixes to eliminate redundant file access checking and fix
+	embedded JPEG support.
+	* magick/random.c:
+	Upgraded this to match current Cristy code. The upgrade is to support
+	more robust temporary filenames in another change to this in utility.c
+	however, I have not upgraded this code yet because I don't understand
+	it well enough.
+
 2002-12-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* Added build support for utilities/gm.c
 
