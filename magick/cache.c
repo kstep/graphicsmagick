@@ -401,10 +401,10 @@ MagickExport PixelPacket AcquireOnePixel(const Image *image,const long x,
 %
 %
 */
-static const PixelPacket AcquireOnePixelFromCache(const Image *image,
-  const long x,const long y,ExceptionInfo *exception)
+static PixelPacket AcquireOnePixelFromCache(const Image *image,const long x,
+  const long y,ExceptionInfo *exception)
 {
-  register const PixelPacket
+  register PixelPacket
     *pixel;
 
   assert(image != (Image *) NULL);
