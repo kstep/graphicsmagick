@@ -86,10 +86,7 @@
 /* Unit conversions */
 #define TWIPS_PER_INCH        1440
 #define CENTIMETERS_PER_INCH  2.54
-#define POINTS_PER_CENTIMETER 28.34646
-#define CENTIMETERS_PER_POINT 0.03527778
 #define POINTS_PER_INCH       72
-#define INCHES_PER_POINT      0.01388889
 
 #include "libwmf/fund.h"
 #include "libwmf/types.h"
@@ -129,7 +126,7 @@ struct _wmf_magick_t
       *image;
 
   /* ImageInfo */
-    ImageInfo
+    const ImageInfo
       *image_info;
 
   /* Maximum and current number of temporary files */
@@ -161,11 +158,14 @@ typedef enum
 }
 magick_arc_t;
 
-static int magick_mvg_printf(wmfAPI * API, char *format, ...);
+static int  magick_mvg_printf(wmfAPI * API, char *format, ...);
+static int  wmf_magick_read(void* context);
+static int  wmf_magick_seek(void* context,long position);
+static long wmf_magick_tell(void* context);
 static void magick_brush(wmfAPI * API, wmfDC * dc);
-static void magick_draw_arc(wmfAPI * API, wmfDrawArc_t * draw_arc,
-			    magick_arc_t finish);
+static void magick_draw_arc(wmfAPI * API, wmfDrawArc_t * draw_arc,magick_arc_t finish);
 static void magick_pen(wmfAPI * API, wmfDC * dc);
+static void magick_render_mvg(wmfAPI * API);
 static void wmf_magick_bmp_draw(wmfAPI * API, wmfBMP_Draw_t * bmp_draw);
 static void wmf_magick_bmp_free(wmfAPI * API, wmfBMP * bmp);
 static void wmf_magick_bmp_read(wmfAPI * API, wmfBMP_Read_t * bmp_read);
@@ -189,7 +189,6 @@ static void wmf_magick_poly_line(wmfAPI * API, wmfPolyLine_t * poly_line);
 static void wmf_magick_region_clip(wmfAPI * API, wmfPolyRectangle_t * poly_rect);
 static void wmf_magick_region_frame(wmfAPI * API, wmfPolyRectangle_t * poly_rect);
 static void wmf_magick_region_paint(wmfAPI * API, wmfPolyRectangle_t * poly_rect);
-static void magick_render_mvg(wmfAPI * API);
 static void wmf_magick_rop_draw(wmfAPI * API, wmfROP_Draw_t * rop_draw);
 static void wmf_magick_udata_copy(wmfAPI * API, wmfUserData_t * userdata);
 static void wmf_magick_udata_free(wmfAPI * API, wmfUserData_t * userdata);
@@ -259,9 +258,7 @@ static void wmf_magick_bmp_draw(wmfAPI * API, wmfBMP_Draw_t * bmp_draw)
 
   double
     height,
-    width,
-    x,
-    y;
+    width;
 
   char
     imgspec[30];
@@ -293,17 +290,19 @@ static void wmf_magick_bmp_draw(wmfAPI * API, wmfBMP_Draw_t * bmp_draw)
   }
   sprintf(imgspec, "mpr:%li", id);
 
-  /* Okay, if we've got this far then "imgspec" is the filename of an png
-     (cropped) image */
-
   width = abs(bmp_draw->pixel_width * (double) bmp_draw->crop.w);
-  height = abs(bmp_draw->pixel_height * (double) bmp_draw->crop.h) - 0.0000022;
-  x = bmp_draw->pt.x;
-  y = bmp_draw->pt.y;
+  height = abs(bmp_draw->pixel_height * (double) bmp_draw->crop.h);
+
+#if 0
+printf("pixel_width      = %.10g\n", (double)bmp_draw->pixel_width);
+printf("pixel_height     = %.10g\n", (double)bmp_draw->pixel_height);
+printf("bmp_draw->crop.w = %.10g\n", (double)bmp_draw->crop.w);
+printf("bmp_draw->crop.h = %.10g\n", (double)bmp_draw->crop.h);
+#endif
 
   /*   printf("x=%.10g, y=%.10g, width=%.10g, height=%.10g\n", x,y,width,height); */
   magick_mvg_printf(API, "image Copy %.10g,%.10g %.10g,%.10g '%s'\n",
-		    x, y, width, height, imgspec);
+		    (double)bmp_draw->pt.x, (double)bmp_draw->pt.y, width, height, imgspec);
 
   /* Restore graphic context */
   magick_mvg_printf(API, "pop graphic-context\n");
@@ -1655,16 +1654,30 @@ static void magick_render_mvg(wmfAPI * API)
   DestroyImageInfo(image_info);
 }
 
+/* BLOB read byte */
+static int wmf_magick_read(void* context)
+{
+  return ReadBlobByte((Image*)context);
+}
+
+/* BLOB seek */
+static int wmf_magick_seek(void* context,long position)
+{
+  return (int)SeekBlob((Image*)context,(off_t)position,SEEK_SET);
+}
+
+/* BLOB tell */
+static long wmf_magick_tell(void* context)
+{
+  return (long)TellBlob((Image*)context);
+}
+
 static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * exception)
 {
   Image
     *image;
 
-  ImageInfo
-    *canvas_info;
-
   char
-    buff[MaxTextExtent],
     font_map_path[MaxTextExtent];
 
   float
@@ -1701,7 +1714,8 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
     bounding_box;
 
   image = AllocateImage(image_info);
-  GetExceptionInfo(exception);
+  if (!OpenBlob(image_info,image,ReadBinaryType,exception))
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
 
   /*
    * Create WMF API
@@ -1739,10 +1753,10 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
     }
 
   /*
-   * Open WMF file
+   * Open input via libwmf API
    *
    */
-  wmf_error = wmf_file_open(API, (char *) image_info->filename);
+  wmf_error = wmf_bbuf_input(API,wmf_magick_read,wmf_magick_seek,wmf_magick_tell,(void*)image);
   if (wmf_error != wmf_E_None)
     {
       wmf_api_destroy(API);
@@ -1790,23 +1804,24 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   if (wmf_error != wmf_E_None)
     {
       wmf_api_destroy(API);
-      ThrowReaderException(CorruptImageError, "Failed to compute output size", image);
+      ThrowReaderException(CorruptImageError,
+                           "Failed to compute output size", image);
     }
 
   /* Obtain (or guess) metafile units */
-  units_per_inch = TWIPS_PER_INCH;
   if ((API)->File->placeable)
     units_per_inch = (API)->File->pmh->Inch;
   else if( (wmf_width*wmf_height) < 1024*1024)
-    units_per_inch = 72;  /* MM_TEXT */
+    units_per_inch = POINTS_PER_INCH;	/* MM_TEXT */
   else
-    units_per_inch = 1440; /* MM_TWIPS */
+    units_per_inch = TWIPS_PER_INCH;	/* MM_TWIPS */
 
-  /* Calculate image width and height based on specified DPI resolution */
-  image_width_inch = (double) wmf_width / units_per_inch;
-  image_width = image_width_inch * resolution_x;
+  /* Calculate image width and height based on specified DPI
+     resolution */
+  image_width_inch  = (double) wmf_width / units_per_inch;
   image_height_inch = (double) wmf_height / units_per_inch;
-  image_height = image_height_inch * resolution_y;
+  image_width       = image_width_inch * resolution_x;
+  image_height      = image_height_inch * resolution_y;
 
   /* Compute bounding box scale factors and origin translations
    *
@@ -1816,7 +1831,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
    * where to place the logical bounding box within the image.
    *
    */
-  bounding_width = abs(ddata->bbox.BR.x - ddata->bbox.TL.x);
+  bounding_width  = abs(ddata->bbox.BR.x - ddata->bbox.TL.x);
   bounding_height = abs(ddata->bbox.BR.y - ddata->bbox.TL.y);
 
   ddata->bbox_to_pixels_scale_x = (image_width/bounding_width);
@@ -1854,46 +1869,78 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
    * Create canvas image
    *
    */
-  canvas_info = CloneImageInfo(image_info);
-  sprintf(buff, "%ix%i", (int) ceil(image_width), (int) ceil(image_height));
-  (void) CloneString(&(canvas_info->size), buff);
+
+  image->rows = (unsigned long)ceil(image_height);
+  image->columns = (unsigned long)ceil(image_width);
+
   if (image_info->texture == (char *) NULL)
     {
-      QueryColorDatabase("none", &canvas_info->background_color);
-      if (ColorMatch(&image_info->background_color, &canvas_info->background_color, 0))
-        QueryColorDatabase("white", &canvas_info->background_color);
-      else
-        canvas_info->background_color = image_info->background_color;
+      /*
+       * Set solid background color
+       */
+      unsigned long
+        column,
+        row;
 
-      sprintf(canvas_info->filename,
-#if QuantumDepth == 8
-              "XC:#%02x%02x%02x%02x",
-#elif QuantumDepth == 16
-              "XC:#%04x%04x%04x%04x",
-#endif
-              canvas_info->background_color.red,
-              canvas_info->background_color.green,
-              canvas_info->background_color.blue,
-              canvas_info->background_color.opacity);
+      PixelPacket
+        *pixel,
+        background_color;
+
+      /* Ensure that background is white rather than "none" */
+      QueryColorDatabase("none", &background_color);
+      if( background_color.red     == image_info->background_color.red &&
+          background_color.green   == image_info->background_color.green &&
+          background_color.blue    == image_info->background_color.blue &&
+          background_color.opacity == image_info->background_color.opacity )
+        QueryColorDatabase("white", &background_color);
+      else
+        background_color = image_info->background_color;
+      image->background_color = background_color;
+
+      for (row=0; row < (long) image->rows; row++)
+        {
+          pixel=SetImagePixels(image,0,row,image->columns,1);
+          if (pixel == (PixelPacket *) NULL)
+            break;
+          for (column=image->columns; column; column--)
+            *pixel++ = background_color;
+          if (!SyncImagePixels(image))
+            break;
+        }
     }
   else
-    sprintf(canvas_info->filename, "TILE:%.1024s", image_info->texture);
-  GetExceptionInfo(exception);
-  DestroyImage(image);
-  image = ReadImage(canvas_info, exception);
-  if (image == (Image *) NULL)
     {
-      wmf_api_destroy(API);
-      return image;
-    }
-  image->units = PixelsPerInchResolution;
-  image->x_resolution = resolution_x;
-  image->y_resolution = resolution_y;
+      /*
+       * Tile texture on background
+       */
+      ImageInfo
+        *tile_info;
 
-  strncpy(image->filename, image_info->filename, MaxTextExtent - 1);
-  strncpy(image->magick, image_info->magick, MaxTextExtent - 1);
+      Image
+        *tile_image;
+
+      long
+        column,
+        row;
+
+      tile_info = CloneImageInfo((ImageInfo*)NULL);
+      *tile_info->magick='\0';
+      strncpy(tile_info->filename,image_info->texture,MaxTextExtent-1);
+      tile_image=ReadImage(tile_info,exception);
+      DestroyImageInfo(tile_info);
+      if(tile_image == (Image *) NULL)
+        return((Image *) NULL);
+
+      for (row=0; row < (long) image->rows; row+=tile_image->rows)
+        {
+          for (column=0; column < (long) image->columns; column+=tile_image->columns)
+            (void) CompositeImage(image,CopyCompositeOp,tile_image,column,row);
+        }
+      DestroyImage(tile_image);
+    }
+
   ddata->image = image;
-  ddata->image_info = canvas_info;
+  ddata->image_info = image_info;
 
   /*
    * Play file to generate MVG drawing commands
@@ -1904,7 +1951,6 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   wmf_error = wmf_play(API, 0, &bounding_box);
   if (wmf_error != wmf_E_None)
     {
-      DestroyImageInfo(canvas_info);
       wmf_api_destroy(API);
       ThrowReaderException(CorruptImageError, "Failed to render file", image);
     }
@@ -1916,7 +1962,6 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   magick_render_mvg(API);
 
   /* Cleanup allocated data */
-  DestroyImageInfo(canvas_info);
   wmf_api_destroy(API);
 
   /* Return image */
@@ -1957,13 +2002,15 @@ ModuleExport void RegisterWMFImage(void)
   entry = SetMagickInfo("WMF");
   entry->decoder = ReadWMFImage;
   entry->description = AllocateString("Windows Meta File");
+#if !defined(WIN32)
   entry->blob_support = False;
+#endif
   entry->module = AllocateString("WMF");
   (void) RegisterMagickInfo(entry);
 #if defined(WIN32)
   entry = SetMagickInfo("EMF");
   entry->decoder = ReadWMFImage;
-  entry->description = AllocateString("Windows Meta File");
+  entry->description = AllocateString("Windows Enhanced Meta File");
   entry->blob_support = False;
   entry->module = AllocateString("WMF");
   (void) RegisterMagickInfo(entry);
