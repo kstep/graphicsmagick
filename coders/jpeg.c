@@ -369,7 +369,7 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
     Read generic profile.
   */
   image->generic_profile[i].length=length;
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Profile: %s, %ld bytes",
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Profile: %s, %ld bytes",
     image->generic_profile[i].name,length);
   for (p=image->generic_profile[i].info; --length >= 0; p++)
     *p=GetCharacter(jpeg_info);
@@ -433,7 +433,8 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
     Read color profile.
   */
   p=image->color_profile.info+image->color_profile.length;
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  ICC profile: %ld bytes",length);
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"ICC profile: %ld bytes",
+    length);
   for (image->color_profile.length+=length; --length >= 0; p++)
     *p=GetCharacter(jpeg_info);
   return(True);
@@ -539,7 +540,8 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
     Read the payload of this binary data.
   */
   p=image->iptc_profile.info+image->iptc_profile.length;
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Profile: IPTC, %ld bytes",length);
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Profile: IPTC, %ld bytes",
+    length);
   for (image->iptc_profile.length+=length; --length >= 0; p++)
     *p=GetCharacter(jpeg_info);
   return(True);
@@ -642,7 +644,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter ReadJPEGImage()");
+  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter");
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
@@ -712,7 +714,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         scale_factor=(double) jpeg_info.output_height/image->rows;
       jpeg_info.scale_denom=(unsigned int) scale_factor;
       jpeg_calc_output_dimensions(&jpeg_info);
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Scale_factor: %ld",(long) scale_factor);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Scale_factor: %ld",
+        (long) scale_factor);
     }
   if (image_info->subrange != 0)
     {
@@ -742,16 +745,19 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   if (logging)
     {
       if (image->interlace == PlaneInterlace)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Interlace: progressive");
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "Interlace: progressive");
       else
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Interlace: nonprogressive");
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Data precision: %d",
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "Interlace: nonprogressive");
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Data precision: %d",
         (int) jpeg_info.data_precision);
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Geometry: %dx%d",
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Geometry: %dx%d",
         (int) jpeg_info.output_width,(int) jpeg_info.output_height);
 #ifdef D_LOSSLESS_SUPPORTED
       if (image->compression==LosslessJPEGCompression)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Quality: 100 (lossless)");
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "Quality: 100 (lossless)");
       else
 #endif
       {
@@ -814,10 +820,11 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
                if ((hashval >= hash[i]) || (sum >= sums[i]))
                  {
                    if ((hashval > hash[i]) || (sum > sums[i]))
-                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Quality: %ld (approximate)",
-                       i+1);
+                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                       "Quality: %ld (approximate)",i+1);
                    else
-                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Quality: %ld",i+1);
+                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                       "Quality: %ld",i+1);
                    break;
                  }
              }
@@ -858,10 +865,11 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
                if ((hashval >= bwhash[i]) || (sum >= bwsum[i]))
                  {
                    if ((hashval > bwhash[i]) || (sum > bwsum[i]))
-                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Quality: %ld (approximate)",
-                       i+1);
+                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                       "Quality: %ld (approximate)",i+1);
                    else
-                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Quality: %ld",i+1);
+                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                       "Quality: %ld",i+1);
                    break;
                  }
              }
@@ -871,9 +879,10 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       {
         case JCS_CMYK:
         {
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Colorspace: CMYK");
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "  Sampling factors: (%d,%d),(%d,%d),(%d,%d),(%d,%d)",
+            "Colorspace: CMYK");
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Sampling factors: (%d,%d),(%d,%d),(%d,%d),(%d,%d)",
             jpeg_info.comp_info[0].h_samp_factor,
             jpeg_info.comp_info[0].v_samp_factor,
             jpeg_info.comp_info[1].h_samp_factor,
@@ -886,17 +895,19 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         }
         case JCS_GRAYSCALE:
         {
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Colorspace: GRAYSCALE");
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Sampling factors: (%d,%d)",
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Colorspace: GRAYSCALE");
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Sampling factors: (%d,%d)",
             jpeg_info.comp_info[0].h_samp_factor,
             jpeg_info.comp_info[0].v_samp_factor);
             break;
         }
         case JCS_RGB:
         {
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Colorspace: RGB");
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Colorspace: RGB");
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "  Sampling factors: (%d,%d),(%d,%d),(%d,%d)",
+            "Sampling factors: (%d,%d),(%d,%d),(%d,%d)",
             jpeg_info.comp_info[0].h_samp_factor,
             jpeg_info.comp_info[0].v_samp_factor,
             jpeg_info.comp_info[1].h_samp_factor,
@@ -907,10 +918,10 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         }
         default:
         {
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Colorspace: %d",
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Colorspace: %d",
             jpeg_info.out_color_space);
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "  Sampling factors: (%d,%d),(%d,%d),(%d,%d),(%d,%d)",
+            "Sampling factors: (%d,%d),(%d,%d),(%d,%d),(%d,%d)",
             jpeg_info.comp_info[0].h_samp_factor,
             jpeg_info.comp_info[0].v_samp_factor,
             jpeg_info.comp_info[1].h_samp_factor,
@@ -1031,7 +1042,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   LiberateMemory((void **) &jpeg_pixels);
   CloseBlob(image);
   if (logging) 
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"exit ReadJPEGImage()");
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
   ThrowException(exception,image->exception.severity,image->exception.reason,
     image->exception.description);
   return(image);
@@ -1363,7 +1374,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter WriteJPEGImage()");
+  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
@@ -1434,8 +1445,9 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   image->y_resolution=y_resolution;
   jpeg_info.density_unit=1;  /* default to DPI */
   if (logging)
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Image resolution: %ld,%ld",
-      (long) image->x_resolution,(long) image->y_resolution);
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+      "Image resolution: %ld,%ld",(long) image->x_resolution,
+      (long) image->y_resolution);
   if ((image->x_resolution != 0) && (image->y_resolution != 0))
     {
       /*
@@ -1457,13 +1469,16 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   if (logging)
     {
       if (image_info->interlace != NoInterlace)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Interlace: progressive");
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "Interlace: progressive");
       else
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Interlace: nonprogressive");
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "Interlace: nonprogressive");
     }
 #else
   if (logging)
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Interlace:  nonprogressive");
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+      "Interlace:  nonprogressive");
 #endif
   if ((image->compression == LosslessJPEGCompression) ||
       (image_info->quality > 100))
@@ -1483,17 +1498,19 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
           jpeg_simple_lossless(&jpeg_info,predictor,point_transform);
           if (logging)
             {
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Compression: lossless");
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),"    Predictor: %d",predictor);
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),"    Point Transform: %d",
-                point_transform);
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                "Compression: lossless");
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                "Predictor: %d",predictor);
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                "Point Transform: %d",point_transform);
             }
         }
 #else
         {
           jpeg_set_quality(&jpeg_info,100,True);
           if (logging)
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Quality: 100");
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Quality: 100");
         }
 #endif
     }
@@ -1501,7 +1518,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     {
       jpeg_set_quality(&jpeg_info,(int) image_info->quality,True);
       if (logging)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Quality: %lu",image_info->quality);
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Quality: %lu",
+          image_info->quality);
     }
   if (image_info->sampling_factor != (char *) NULL)
     {
@@ -1529,28 +1547,35 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   if (logging)
     {
       if (image->storage_class == PseudoClass)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Storage class: PseudoClass");
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "Storage class: PseudoClass");
       else
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Storage class: DirectClass");
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Depth: %lu",image->depth);
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "Storage class: DirectClass");
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Depth: %lu",
+        image->depth);
       if (image->colors)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Number of colors: %lu",
-          image->colors);
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "Number of colors: %lu",image->colors);
       else
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Number of colors: unspecified");
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  JPEG data precision: %d",
-        (int) jpeg_info.data_precision);
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "Number of colors: unspecified");
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "JPEG data precision: %d",(int) jpeg_info.data_precision);
       switch (image_info->colorspace)
       {
         case CMYKColorspace:
         {
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Storage class: PseudoClass");
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Colorspace: CMYK");
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Storage class: DirectClass");
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Colorspace: CMYK");
           break;
         }
         case YCbCrColorspace:
         {
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Colorspace: YCbCr");
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Colorspace: YCbCr");
           break;
         }
           default:
@@ -1560,9 +1585,10 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       {
         case CMYKColorspace:
         {
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Colorspace: CMYK");
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "  Sampling factors: (%d,%d),(%d,%d),(%d,%d),(%d,%d)",
+            "Colorspace: CMYK");
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Sampling factors: (%d,%d),(%d,%d),(%d,%d),(%d,%d)",
             jpeg_info.comp_info[0].h_samp_factor,
             jpeg_info.comp_info[0].v_samp_factor,
             jpeg_info.comp_info[1].h_samp_factor,
@@ -1575,17 +1601,19 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         }
         case GRAYColorspace:
         {
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Colorspace: GRAY");
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Sampling factors: (%d,%d)",
-            jpeg_info.comp_info[0].h_samp_factor,
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Colorspace: GRAY");
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Sampling factors: (%d,%d)",jpeg_info.comp_info[0].h_samp_factor,
             jpeg_info.comp_info[0].v_samp_factor);
           break;
         }
         case RGBColorspace:
         {
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Image colorspace is RGB");
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "  Sampling factors: (%d,%d),(%d,%d),(%d,%d)",
+            " Image colorspace is RGB");
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Sampling factors: (%d,%d),(%d,%d),(%d,%d)",
             jpeg_info.comp_info[0].h_samp_factor,
             jpeg_info.comp_info[0].v_samp_factor,
             jpeg_info.comp_info[1].h_samp_factor,
@@ -1596,9 +1624,10 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         }
         case YCbCrColorspace:
         {
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Colorspace: YCbCr");
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "  Sampling factors: (%d,%d),(%d,%d),(%d,%d)",
+            "Colorspace: YCbCr");
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Sampling factors: (%d,%d),(%d,%d),(%d,%d)",
             jpeg_info.comp_info[0].h_samp_factor,
             jpeg_info.comp_info[0].v_samp_factor,
             jpeg_info.comp_info[1].h_samp_factor,
@@ -1609,9 +1638,10 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         }
         default:
         {
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Colorspace: %d",image->colorspace);
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Colorspace: %d",
+            image->colorspace);
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "  Sampling factors: (%d,%d),(%d,%d),(%d,%d),(%d,%d)",
+            "Sampling factors: (%d,%d),(%d,%d),(%d,%d),(%d,%d)",
             jpeg_info.comp_info[0].h_samp_factor,
             jpeg_info.comp_info[0].v_samp_factor,
             jpeg_info.comp_info[1].h_samp_factor,
@@ -1637,15 +1667,15 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     {
       WriteICCProfile(&jpeg_info,image);
       if (logging)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  ICC profile: %ld bytes",
-          (long) image->color_profile.length);
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "ICC profile: %ld bytes",(long) image->color_profile.length);
     }
   if (image->iptc_profile.length != 0)
     {
       WriteIPTCProfile(&jpeg_info,image);
       if (logging)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  IPTC profile: %ld bytes",
-          (long) image->iptc_profile.length);
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "IPTC profile: %ld bytes",(long) image->iptc_profile.length);
     }
   for (i=0; i < (long) image->generic_profiles; i++)
   {
@@ -1656,8 +1686,9 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       continue;
     x=atol(image->generic_profile[i].name+3);
     if (logging)
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Profile: %s, %ld bytes",
-        image->generic_profile[i].name,(long) image->generic_profile[i].length);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "Profile: %s, %ld bytes",image->generic_profile[i].name,
+        (long) image->generic_profile[i].length);
     for (j=0; j < (long) image->generic_profile[i].length; j+=65533L)
       jpeg_write_marker(&jpeg_info,JPEG_APP0+(int) x,
         image->generic_profile[i].info+j,(int)
@@ -1805,7 +1836,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   LiberateMemory((void **) &jpeg_pixels);
   CloseBlob(image);
   if (logging) 
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"exit WriteJPEGImage()");
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
   return(True);
 }
 #endif
