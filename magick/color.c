@@ -928,7 +928,7 @@ MagickExport unsigned int IsMonochromeImage(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsOpaqueImage() returns True if any of the pixels in the image have an
+%  IsOpaqueImage() returns True if none of the pixels in the image have an
 %  opacity value other than opaque (0).
 %
 %  The format of the IsOpaqueImage method is:
