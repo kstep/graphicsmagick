@@ -55,6 +55,16 @@
     ((color).green == (target).green) && \
     ((color).blue == (target).blue))
 #endif
+#if MaxRGB==255
+#  define MAXRGB 255
+#else
+#  if MaxRGB==65535
+#    define MAXRGB 65535
+#  else
+#    define MAXRGB MaxRGB
+#  endif
+#endif
+
 /*
   Include declarations.
 */
@@ -706,7 +716,7 @@ static unsigned int ImageIsMonochrome(Image *image)
       for (i=0; i < (long) image->colors; i++)
       {
         if (!IsGray(image->colormap[i]) || ((image->colormap[i].red != 0)
-            && (image->colormap[i].red != MaxRGB)))
+            && (image->colormap[i].red != MAXRGB)))
           return(False);
       }
       return(True);
@@ -718,7 +728,7 @@ static unsigned int ImageIsMonochrome(Image *image)
       return(False);
     for (x=0; x < (long) image->columns; x++)
     {
-      if ((p->red != 0) && (p->red != MaxRGB))
+      if ((p->red != 0) && (p->red != MAXRGB))
         return(False);
       if (!IsGray(*p))
         return(False);
@@ -2889,7 +2899,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         int
           scale;
 
-        scale=(int) (MaxRGB/((1L<<ping_info->bit_depth)-1L));
+        scale=(int) (MAXRGB/((1L<<ping_info->bit_depth)-1L));
         if (scale < 1)
            scale=1;
         /*
@@ -2940,8 +2950,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         image->storage_class=PseudoClass;
         image->colors=1 << ping_info->bit_depth;
-        if (image->colors>MaxRGB+1)
-          image->colors=MaxRGB+1;
+        if (image->colors>MAXRGB+1)
+          image->colors=MAXRGB+1;
         if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
           {
             int
@@ -2984,7 +2994,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             long
               scale;
 
-            scale=MaxRGB/((int) ((1<<ping_info->bit_depth)-1));
+            scale=MAXRGB/((int) ((1<<ping_info->bit_depth)-1));
             if (scale < 1)
                scale=1;
             for (i=0; i < (long) image->colors; i++)
@@ -3244,7 +3254,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   {
                     q->opacity=((*p++) << 8);
                     q->opacity|=(*p++);
-                    q->opacity=(Quantum) (MaxRGB-q->opacity);
+                    q->opacity=(Quantum) (MAXRGB-q->opacity);
                     q++;
                   }
 #else
@@ -3252,7 +3262,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 p++; /* strip low byte */
                 if (ping_info->color_type == 4)
                   {
-                    q->opacity=(Quantum) (MaxRGB-(*p++));
+                    q->opacity=(Quantum) (MAXRGB-(*p++));
                     p++;
                     q++;
                   }
@@ -4412,6 +4422,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     ThrowWriterException((ExceptionType) FileOpenWarning,
       "Unable to open file",image);
   optimize=(image_info->type == OptimizeType || image->depth < 8);
+  ImageIsGray(image);
   use_global_plte=False;
   page.width=0;
   page.height=0;
@@ -4986,13 +4997,13 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 
             maxval=(1<<image->depth)-1;
             background.red=(png_uint_16)
-              (maxval*image->background_color.red/MaxRGB);
+              (maxval*image->background_color.red/MAXRGB);
             background.green=(png_uint_16)
-              (maxval*image->background_color.green/MaxRGB);
+              (maxval*image->background_color.green/MAXRGB);
             background.blue=(png_uint_16)
-              (maxval*image->background_color.blue/MaxRGB);
+              (maxval*image->background_color.blue/MAXRGB);
             background.gray=(png_uint_16)
-              (maxval*Intensity(&image->background_color)/MaxRGB);
+              (maxval*Intensity(&image->background_color)/MAXRGB);
           }
         else
           {
@@ -5075,7 +5086,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             ping_info->trans_values.blue=p->blue;
             ping_info->trans_values.gray=(png_uint_16) Intensity(p);
             ping_info->trans_values.index=(unsigned char)
-               (MaxRGB-Downscale(p->opacity));
+               (MAXRGB-Downscale(p->opacity));
           }
         if (ping_info->valid & PNG_INFO_tRNS)
           {
@@ -5145,7 +5156,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           }
         if (image->depth > QuantumDepth)
           image->depth=QuantumDepth;
-        if (image->colors == 0 || image->colors > MaxRGB+1)
+        if (image->colors == 0 || image->colors > MAXRGB+1)
           image->colors=1<<image->depth;
         if (image->depth > 8)
           ping_info->bit_depth=16;
@@ -5319,13 +5330,14 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 
            maxval=(1<<ping_info->bit_depth)-1;
 
+
            background.gray=(png_uint_16)
-             (maxval*(Intensity(&image->background_color))/MaxRGB);
+             (maxval*(Intensity(&image->background_color))/MAXRGB);
 
            png_set_bKGD(ping,ping_info,&background);
 
            ping_info->trans_values.gray=(png_uint_16)(maxval*
-             ping_info->trans_values.gray/MaxRGB);
+             ping_info->trans_values.gray/MAXRGB);
         }
 
     /*
@@ -5536,6 +5548,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                   scanlines[y]);
           else
             (void) PopImagePixels(image,(QuantumType) RedQuantum,scanlines[y]);
+          for (i=0; i<image->columns; i++)
+             *(scanlines[y]+i)=(*(scanlines[y]+i)>128) ? 255 : 0;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               MagickMonitor(SaveImageText,y,image->rows);
