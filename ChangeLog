@@ -1,5 +1,16 @@
 2003-10-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/image.c (RGBTransformPacket): Removed inline request
+	since this function is too big to inline.
+	* magick/animate.c (XAnimateBackgroundImage): Fixed a GCC 3.X
+	"type pinning" warning.
+	* magick/display.c (XDisplayBackgroundImage): Fixed a GCC 3.X
+	"type pinning" warning.
+	* magick/render.c (GetPixelOpacity): Removed inline directive.  No
+	one in their right mind could ever imagine this function inlining
+	successfully.	
+	* magick/cache.c (IsNexusInCore): Adjusted so function inlines as
+	requested.
 	* coders/tiff.c (ReadTIFFImage): Improved logging information.
 	(WriteTIFFImage): Changed the way the bilevel/grayscale logic
 	works.  Now bilevel images are treated similar to any other

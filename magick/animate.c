@@ -463,7 +463,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     coalesce,
     status;
 
-  unsigned long
+  unsigned int
     height,
     width;
 
@@ -674,7 +674,15 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   height=window_info.height;
   x=window_info.x;
   y=window_info.y;
-  (void) GetMagickGeometry(geometry,&x,&y,&width,&height);
+  {
+    unsigned long
+      geometry_width=width,
+      geometry_height=height;
+
+    (void) GetMagickGeometry(geometry,&x,&y,&geometry_width,&geometry_height);
+    width=(unsigned int) geometry_width;
+    height=(unsigned int) geometry_height;
+  }
   window_info.width=(unsigned int) height;
   window_info.height=(unsigned int) height;
   window_info.x=(int) x;
@@ -733,7 +741,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
         MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
           UnableToDisplayImage);
       size_hints->flags=(long) NULL;
-      FormatString(default_geometry,"%lux%lu",width,height);
+      FormatString(default_geometry,"%ux%u",width,height);
       flags=XWMGeometry(display,visual_info->screen,resources.image_geometry,
         default_geometry,window_info.border_width,size_hints,&window_info.x,
         &window_info.y,(int *) &width,(int *) &height,&gravity);

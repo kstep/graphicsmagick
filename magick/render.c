@@ -3115,7 +3115,7 @@ MagickExport unsigned int DrawPatternPath(Image *image,
 %
 */
 
-static inline double GetPixelOpacity(PolygonInfo *polygon_info,const double mid,
+static double GetPixelOpacity(PolygonInfo *polygon_info,const double mid,
   const unsigned int fill,const FillRule fill_rule,const long x,const long y,
   double *stroke_opacity)
 {

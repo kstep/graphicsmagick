@@ -215,6 +215,59 @@ static inline long FilePositionWrite(int file, const void *buffer,
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   I s N e x u s I n C o r e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IsNexusInCore() returns true if the pixels associated with the specified
+%  cache nexus is non-strided and in core.
+%
+%  The format of the IsNexusInCore() method is:
+%
+%      unsigned int IsNexusInCore(const Cache cache,const unsigned long nexus)
+%
+%  A description of each parameter follows:
+%
+%    o status: IsNexusInCore() returns True if the pixels are non-strided and
+%      in core, otherwise False.
+%
+%    o nexus: specifies which cache nexus to return the pixels.
+%
+%
+*/
+static inline unsigned int IsNexusInCore(const Cache cache,
+  const unsigned long nexus)
+{
+  unsigned int
+    status=False;
+
+  CacheInfo
+    *cache_info=(CacheInfo *) cache;
+
+  if (cache_info && (cache_info->storage_class != UndefinedClass))
+  {
+    register NexusInfo
+      *nexus_info;
+
+    magick_off_t
+      offset;
+
+    assert(cache_info->signature == MagickSignature);
+    nexus_info=cache_info->nexus_info+nexus;
+    offset=nexus_info->y*(magick_off_t) cache_info->columns+nexus_info->x;
+    if (nexus_info->pixels == (cache_info->pixels+offset))
+      status=True;
+  }
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   A c q u i r e C a c h e N e x u s                                         %
 %                                                                             %
 %                                                                             %
@@ -1893,59 +1946,7 @@ static PixelPacket *GetPixelsFromCache(const Image *image)
   assert(image->cache != (Cache) NULL);
   return(GetNexusPixels(image->cache,0));
 }
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   I s N e x u s I n C o r e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  IsNexusInCore() returns true if the pixels associated with the specified
-%  cache nexus is non-strided and in core.
-%
-%  The format of the IsNexusInCore() method is:
-%
-%      unsigned int IsNexusInCore(const Cache cache,const unsigned long nexus)
-%
-%  A description of each parameter follows:
-%
-%    o status: IsNexusInCore() returns True if the pixels are non-strided and
-%      in core, otherwise False.
-%
-%    o nexus: specifies which cache nexus to return the pixels.
-%
-%
-*/
-static inline unsigned int IsNexusInCore(const Cache cache,
-  const unsigned long nexus)
-{
-  CacheInfo
-    *cache_info;
 
-  magick_off_t
-    offset;
-
-  register NexusInfo
-    *nexus_info;
-
-  if (cache == (Cache) NULL)
-    return(False);
-  cache_info=(CacheInfo *) cache;
-  assert(cache_info->signature == MagickSignature);
-  if (cache_info->storage_class == UndefinedClass)
-    return(False);
-  nexus_info=cache_info->nexus_info+nexus;
-  offset=nexus_info->y*(magick_off_t) cache_info->columns+
-    nexus_info->x;
-  if (nexus_info->pixels == (cache_info->pixels+offset))
-    return(True);
-  return(False);
-}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -6183,7 +6183,7 @@ typedef struct _RGBColorTransformPacket
     blue;
 } RGBColorTransformPacket;
 
-static inline void RGBTransformPacket(PixelPacket *pixel,
+static void RGBTransformPacket(PixelPacket *pixel,
   const RGBColorTransformPacket *red_map,
   const RGBColorTransformPacket *green_map,
   const RGBColorTransformPacket *blue_map,
