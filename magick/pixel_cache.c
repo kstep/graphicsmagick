@@ -123,7 +123,7 @@ Export IndexPacket *GetIndexes(const Image *image)
 %    o x,y:  These values define the location of the pixel to return.
 %
 */
-Export PixelPacket GetPixel(Image *image,const int x,const int y)
+Export PixelPacket GetOnePixel(Image *image,const int x,const int y)
 {
   register PixelPacket
     *pixel;

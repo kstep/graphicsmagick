@@ -15,7 +15,7 @@ extern Export IndexPacket
   *GetIndexes(const Image *);
 
 extern Export PixelPacket
-  GetPixel(Image *,const int,const int),
+  GetOnePixel(Image *,const int,const int),
   *GetPixels(const Image *),
   *GetPixelCache(Image *,const int,const int,const unsigned int,
     const unsigned int),

@@ -145,9 +145,9 @@ Export PixelPacket *GetCacheView(ViewInfo *view,const int x,const int y,
   pixels=SetCacheView(view,x,y,columns,rows);
   if (pixels == (PixelPacket *) NULL)
     return((PixelPacket *) NULL);
+  image=view->image;
   if (IsNexusInCore(image->cache,view->id))
     return(pixels);
-  image=view->image;
   status=ReadCachePixels(image->cache,view->id);
   if (image->class == PseudoClass)
     status|=ReadCacheIndexes(image->cache,view->id);

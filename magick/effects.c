@@ -2001,8 +2001,8 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
       /*
         Left pixel.
       */
-      pixel_1=GetPixel(image,(int) segment->x1,(int) segment->y1);
-      pixel_2=GetPixel(image,(int) segment->x1,(int) segment->y2);
+      pixel_1=GetOnePixel(image,(int) segment->x1,(int) segment->y1);
+      pixel_2=GetOnePixel(image,(int) segment->x1,(int) segment->y2);
       q=SetPixelCache(image,(int) segment->x1,(int) y_mid,1,1);
       if (q != (PixelPacket *) NULL)
         {
@@ -2016,8 +2016,8 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
           /*
             Right pixel.
           */
-          pixel_1=GetPixel(image,(int) segment->x2,(int) segment->y1);
-          pixel_2=GetPixel(image,(int) segment->x2,(int) segment->y2);
+          pixel_1=GetOnePixel(image,(int) segment->x2,(int) segment->y1);
+          pixel_2=GetOnePixel(image,(int) segment->x2,(int) segment->y2);
           q=SetPixelCache(image,(int) segment->x2,(int) y_mid,1,1);
           if (q != (PixelPacket *) NULL)
             {
@@ -2036,8 +2036,8 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
           /*
             Bottom pixel.
           */
-          pixel_1=GetPixel(image,(int) segment->x1,(int) segment->y2);
-          pixel_2=GetPixel(image,(int) segment->x2,(int) segment->y2);
+          pixel_1=GetOnePixel(image,(int) segment->x1,(int) segment->y2);
+          pixel_2=GetOnePixel(image,(int) segment->x2,(int) segment->y2);
           q=SetPixelCache(image,(int) x_mid,(int) segment->y2,1,1);
           if (q != (PixelPacket *) NULL)
             {
@@ -2053,8 +2053,8 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
           /*
             Top pixel.
           */
-          pixel_1=GetPixel(image,(int) segment->x1,(int) segment->y1);
-          pixel_2=GetPixel(image,(int) segment->x2,(int) segment->y1);
+          pixel_1=GetOnePixel(image,(int) segment->x1,(int) segment->y1);
+          pixel_2=GetOnePixel(image,(int) segment->x2,(int) segment->y1);
           q=SetPixelCache(image,(int) x_mid,(int) segment->y1,1,1);
           if (q != (PixelPacket *) NULL)
             {
@@ -2072,8 +2072,8 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
       /*
         Middle pixel.
       */
-      pixel_1=GetPixel(image,(int) segment->x1,(int) segment->y1);
-      pixel_2=GetPixel(image,(int) segment->x2,(int) segment->y2);
+      pixel_1=GetOnePixel(image,(int) segment->x1,(int) segment->y1);
+      pixel_2=GetOnePixel(image,(int) segment->x2,(int) segment->y2);
       q=SetPixelCache(image,(int) x_mid,(int) y_mid,1,1);
       if (q != (PixelPacket *) NULL)
         {
@@ -2705,7 +2705,6 @@ Export Image *SpreadImage(Image *image,const unsigned int amount,
     x;
 
   register PixelPacket
-    *p,
     *q;
 
   assert(image != (Image *) NULL);
@@ -2731,7 +2730,7 @@ Export Image *SpreadImage(Image *image,const unsigned int amount,
     {
       x_distance=(rand() & (amount+1))-quantum;
       y_distance=(rand() & (amount+1))-quantum;
-      *q++=GetPixel(image,Min(x+x_distance,image->columns-1),
+      *q++=GetOnePixel(image,Min(x+x_distance,image->columns-1),
         Min(y+y_distance,image->rows-1));
     }
     if (!SyncPixelCache(spread_image))

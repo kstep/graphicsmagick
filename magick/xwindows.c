@@ -180,7 +180,6 @@ Export unsigned int XAnnotateImage(Display *display,
     annotate_pixmap;
 
   register PixelPacket
-    *p,
     *q;
 
   unsigned int
@@ -255,7 +254,7 @@ Export unsigned int XAnnotateImage(Display *display,
   x=0;
   y=0;
   (void) XParseGeometry(annotate_info->geometry,&x,&y,&width,&height);
-  annotate_image->background_color=GetPixel(image,x,y);
+  annotate_image->background_color=GetOnePixel(image,x,y);
   annotate_image->matte=True;
   for (y=0; y < (int) annotate_image->rows; y++)
   {
@@ -1912,7 +1911,6 @@ Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
     draw_pixmap;
 
   register PixelPacket
-    *p,
     *q;
 
   unsigned int
@@ -2062,7 +2060,7 @@ Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
   x=0;
   y=0;
   (void) XParseGeometry(draw_info->geometry,&x,&y,&width,&height);
-  draw_image->background_color=GetPixel(image,x,y);
+  draw_image->background_color=GetOnePixel(image,x,y);
   draw_image->matte=True;
   for (y=0; y < (int) draw_image->rows; y++)
   {

@@ -200,9 +200,6 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   register char
     *p;
 
-  register PixelPacket
-    *q;
-
   unsigned int
     height,
     status,
@@ -344,7 +341,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
           /*
             Make montage background transparent.
           */
-          pixel=GetPixel(image,0,0);
+          pixel=GetOnePixel(image,0,0);
           FormatString(color,HexColorFormat,pixel.red,pixel.green,pixel.blue);
           TransparentImage(image,color);
         }

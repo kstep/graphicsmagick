@@ -506,16 +506,16 @@ Export PixelPacket InterpolateColor(Image *image,const double x_offset,
     {
       p=image->background_color;
       if ((x >= 0) && (y >= 0))
-        p=GetPixel(image,(int) x,(int) y);
+        p=GetOnePixel(image,(int) x,(int) y);
       q=image->background_color;
       if (((x+1) < image->columns) && (y >= 0))
-        q=GetPixel(image,(int) x+1,(int) y);
+        q=GetOnePixel(image,(int) x+1,(int) y);
       r=image->background_color;
       if ((x >= 0) && ((y+1) < image->rows))
-        r=GetPixel(image,(int) x,(int) y+1);
+        r=GetOnePixel(image,(int) x,(int) y+1);
       s=image->background_color;
       if (((x+1) < image->columns) && ((y+1) < image->rows))
-        s=GetPixel(image,(int) x+1,(int) y+1);
+        s=GetOnePixel(image,(int) x+1,(int) y+1);
     }
   x-=floor(x);
   y-=floor(y);

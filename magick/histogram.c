@@ -184,7 +184,8 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
       &width,&height);
   histogram_image=CloneImage(image,width,height,True,&image->exception);
   if (histogram_image == (Image *) NULL)
-    return((Image *) NULL);
+      ThrowWriterException(ResourceLimitWarning,
+        "Memory allocation failed",image);
   histogram_image->class=DirectClass;
   /*
     Allocate histogram count arrays.
