@@ -286,7 +286,6 @@ test "$with_lzw" = 'yes' && AC_DEFINE(HasLZW,1,Include LZW compression)
 AM_CONDITIONAL(HasLZW, test "$have_lzw" != 'no')
 
 # Number of bits in a Quantum
-QuantumDepth=16
 AC_ARG_WITH(quantum-depth,
 	      [  --with-quantum-depth    number of bits in a pixel quantum (default 16)],
 	      [with_quantum_depth=$withval],
@@ -302,7 +301,6 @@ QuantumDepth="$with_quantum_depth"
 AC_DEFINE_UNQUOTED(QuantumDepth,$QuantumDepth,[Number of bits in a pixel Quantum (8/16/32)])
 
 # Set pixel cache threshold
-with_cache=''
 AC_ARG_WITH(cache,
 	      [  --with-cache            set pixel cache threshhold in MB (default available memory)],
 	      [with_cache=$withval],
