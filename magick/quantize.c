@@ -596,11 +596,11 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
         Start at the root and descend the color cube tree.
       */
       node_info=cube_info->root;
-      level=1;
+      index=MaxTreeDepth-1;
       mid_red=MaxRGB/2.0;
       mid_green=MaxRGB/2.0;
       mid_blue=MaxRGB/2.0;
-      for (index=MaxTreeDepth-1; (int) index > 0; index--)
+      for (level=1; level <= cube_info->depth; level++)
       {
         id=((DownScale(p->red) >> index) & 0x01) << 2 |
            ((DownScale(p->green) >> index) & 0x01) << 1 |
@@ -608,8 +608,6 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
         mid_red+=id & 4 ? bisect[level] : -bisect[level];
         mid_green+=id & 2 ? bisect[level] : -bisect[level];
         mid_blue+=id & 1 ? bisect[level] : -bisect[level];
-        distance_squared=squares[(int) (p->red-mid_red)]+
-          squares[(int) (p->green-mid_green)]+squares[(int) (p->blue-mid_blue)];
         if (node_info->child[id] == (NodeInfo *) NULL)
           {
             /*
@@ -627,10 +625,17 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
               cube_info->colors++;
           }
         node_info=node_info->child[id];
-        node_info->quantization_error+=distance_squared;
-        if (level == cube_info->depth)
-          break;
-        level++;
+        if (level != MaxTreeDepth)
+          {
+            /*
+              Approximate the quantization error represented by this node.
+            */
+            distance_squared=squares[(int) (p->red-mid_red)]+
+              squares[(int) (p->green-mid_green)]+
+              squares[(int) (p->blue-mid_blue)];
+            node_info->quantization_error+=distance_squared;
+          }
+        index--;
       }
       /*
         Sum RGB for this leaf for later derivation of the mean cube color.
@@ -753,7 +758,7 @@ static void ClosestColor(CubeInfo *cube_info,const NodeInfo *node_info)
           if (distance_squared < cube_info->distance)
             {
               cube_info->distance=distance_squared;
-              cube_info->color_number=node_info->color_number;
+              cube_info->color_number=(unsigned short) node_info->color_number;
             }
         }
     }
@@ -809,11 +814,11 @@ static void DefineColormap(CubeInfo *cube_info,NodeInfo *node_info)
       */
       number_unique=node_info->number_unique;
       cube_info->colormap[cube_info->colors].red=(Quantum)
-        ((node_info->total_red+0.5*number_unique)/number_unique);
+        ((node_info->total_red+number_unique/2)/number_unique);
       cube_info->colormap[cube_info->colors].green=(Quantum)
-        ((node_info->total_green+0.5*number_unique)/number_unique);
+        ((node_info->total_green+number_unique/2)/number_unique);
       cube_info->colormap[cube_info->colors].blue=(Quantum)
-        ((node_info->total_blue+0.5*number_unique)/number_unique);
+        ((node_info->total_blue+number_unique/2)/number_unique);
       node_info->color_number=(unsigned int) cube_info->colors++;
     }
 }
