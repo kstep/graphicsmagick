@@ -77,7 +77,7 @@ extern "C" {
 #include "XSUB.h"
 #include <math.h>
 #include <magick/api.h>
-#define DegreesToRadians(x) ((x)*M_PI/180.0)
+#define DegreesToRadians(x) ((x)*3.14159265358979323846/180.0)
 #define False 0
 #define True 1
 #undef tainted
@@ -1214,9 +1214,9 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"fuzz"))
         {
           if (info)
-            info->image_info->fuzz=SvIV(sval);
+            info->image_info->fuzz=SvNV(sval);
           for ( ; image; image=image->next)
-            image->fuzz=SvIV(sval);
+            image->fuzz=SvNV(sval);
           return;
         }
       break;
@@ -1309,8 +1309,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         }
       if (strEQcase(attribute,"matte"))
         {
-          sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,na)) :
-            SvIV(sval);
+          sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
               MagickWarning(OptionWarning,"Invalid matte type",SvPV(sval,na));
@@ -4327,24 +4326,24 @@ Mogrify(ref,...)
           PixelPacket
             target;
 
+          draw_info=CloneDrawInfo(info->image_info,(DrawInfo *) NULL);
           if (attribute_flag[0])
             (void) ParseGeometry(argument_list[0].string_reference,
               &rectangle_info.x,&rectangle_info.y,&rectangle_info.width,
               &rectangle_info.height);
           if (attribute_flag[1])
-             rectangle_info.x=argument_list[1].int_reference;
+            rectangle_info.x=argument_list[1].int_reference;
           if (attribute_flag[2])
-             rectangle_info.y=argument_list[2].int_reference;
+            rectangle_info.y=argument_list[2].int_reference;
           if (attribute_flag[3])
             (void) QueryColorDatabase(argument_list[3].string_reference,
-              &info->image_info->fill);
+              &draw_info->fill);
           if (attribute_flag[4])
             QueryColorDatabase(argument_list[4].string_reference,&border_color);
           target=GetOnePixel(image,rectangle_info.x % image->columns,
             rectangle_info.y % image->rows);
           if (attribute_flag[4])
             target=border_color;
-          draw_info=CloneDrawInfo(info->image_info,(DrawInfo *) NULL);
           ColorFloodfillImage(image,draw_info,target,rectangle_info.x,
             rectangle_info.y,attribute_flag[4] ? FillToBorderMethod :
             FloodfillMethod);

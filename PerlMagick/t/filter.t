@@ -31,8 +31,8 @@ testFilter('input.miff', 'Chop',
 
 ++$test;
 testFilter('input.miff', 'ColorFloodfill',
-  q/geometry=>+25+45,fill=>black/,
-  'a8f72ee2ed80304df33760c65a14b5e4',
+  q/+25+45/,
+  '09c82f6759682ee2adbd09571edfb34f',
   '12643c99ecf96cf1d7e8f5cc62b13c78');
 
 ++$test;
@@ -123,8 +123,8 @@ testFilter('input.miff', 'Magnify',
 
 ++$test;
 testFilter('input.miff', 'MatteFloodfill',
-  q/geometry=>'+25+45',matte=>Opaque/,
-  'bc674b55340d90afc4c01ea31f47a686',
+  q/+25+45/,
+  '875628edd6e4c05889ddfb279d05dcd0',
   '6f55ec5c0a6e1472ea54c4320d3a9030');
 
 ++$test;
