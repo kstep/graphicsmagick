@@ -1057,7 +1057,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     case 'C':
     case 'c':
     {
-      if (LocaleCompare(attribute,"cache") == 0)
+      if (LocaleNCompare(attribute,"cache-",6) == 0)
         {
           SetCacheThreshold(SvIV(sval));
           return;
