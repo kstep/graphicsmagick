@@ -1,5 +1,6 @@
 2003-07-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/jpeg.c (ReadJPEGImage): Conditionally copy exception.
 	* wand/Makefile.am (noinst_HEADERS): Need to distribute
 	magick_compat.h.
 	(EXTRA_DIST): Need to distribute GraphicsMagickWand-config.1.
