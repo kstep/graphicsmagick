@@ -6234,14 +6234,34 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                   &image->exception);
                 if (p == (const PixelPacket *) NULL)
                   break;
-                for (x=0; x < (long) image->columns; x++)
-                {
-                  *q++=0;
-                  *q++=ScaleQuantumToChar(XRedGamma(p->red));
-                  *q++=ScaleQuantumToChar(XGreenGamma(p->green));
-                  *q++=ScaleQuantumToChar(XBlueGamma(p->blue));
-                  p++;
-                }
+                if ( red_gamma != 1.0 || green_gamma != 1.0 || blue_gamma != 1.0 )
+                    {
+                      /*
+                        Gamma translation reqired
+                      */
+                      for (x= (long) image->columns; x > 0 ; x--)
+                        {
+                          *q++=0;
+                          *q++=ScaleQuantumToChar(XRedGamma(p->red));
+                          *q++=ScaleQuantumToChar(XGreenGamma(p->green));
+                          *q++=ScaleQuantumToChar(XBlueGamma(p->blue));
+                          p++;
+                        }
+                    }
+                else
+                  {
+                    /*
+                      Avoiding X*Gamma macros uses 50% less time for gamma 1.0
+                    */
+                    for (x= (long) image->columns; x > 0 ; x--)
+                      {
+                        *q++=0;
+                        *q++=ScaleQuantumToChar((Quantum)p->red);
+                        *q++=ScaleQuantumToChar((Quantum)p->green);
+                        *q++=ScaleQuantumToChar((Quantum)p->blue);
+                        p++;
+                      }
+                  }
               }
             }
           else
@@ -6256,17 +6276,37 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                 for (y=0; y < (long) image->rows; y++)
                 {
                   p=AcquireImagePixels(image,0,y,image->columns,1,
-                    &image->exception);
+                                       &image->exception);
                   if (p == (const PixelPacket *) NULL)
                     break;
-                  for (x=0; x < (long) image->columns; x++)
-                  {
-                    *q++=0;
-                    *q++=ScaleQuantumToChar(XBlueGamma(p->blue));
-                    *q++=ScaleQuantumToChar(XGreenGamma(p->green));
-                    *q++=ScaleQuantumToChar(XRedGamma(p->red));
-                    p++;
-                  }
+                  if ( red_gamma != 1.0 || green_gamma != 1.0 || blue_gamma != 1.0 )
+                    {
+                      /*
+                        Gamma translation reqired
+                      */
+                      for (x= (long) image->columns; x > 0; x--)
+                        {
+                          *q++=0;
+                          *q++=ScaleQuantumToChar(XBlueGamma(p->blue));
+                          *q++=ScaleQuantumToChar(XGreenGamma(p->green));
+                          *q++=ScaleQuantumToChar(XRedGamma(p->red));
+                          p++;
+                        }
+                    }
+                  else
+                    {
+                      /*
+                        Avoiding X*Gamma macros uses 50% less time for gamma 1.0
+                      */
+                      for (x= (long) image->columns; x > 0; x--)
+                        {
+                          *q++=0;
+                          *q++=ScaleQuantumToChar((Quantum)p->blue);
+                          *q++=ScaleQuantumToChar((Quantum)p->green);
+                          *q++=ScaleQuantumToChar((Quantum)p->red);
+                          p++;
+                        }
+                    }
                 }
               }
             else
