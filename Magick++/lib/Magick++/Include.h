@@ -352,6 +352,7 @@ namespace Magick
   using MagickLib::CompositeImage;
   using MagickLib::ConstituteImage;
   using MagickLib::ContrastImage;
+  using MagickLib::ConvolveImage;
   using MagickLib::CorruptImageError;
   using MagickLib::CorruptImageWarning;
   using MagickLib::CropImage;
@@ -480,6 +481,7 @@ namespace Magick
   using MagickLib::TransparentImage;
   using MagickLib::UndefinedException;
   using MagickLib::UnregisterMagickInfo;
+  using MagickLib::UnsharpMaskImage;
   using MagickLib::ViewInfo;
   using MagickLib::WaveImage;
   using MagickLib::WidthValue;
