@@ -197,7 +197,7 @@ static long ReadMSBLong(char **p,size_t *length)
   long
     value;
 
-  register int
+  register long
     i;
 
   unsigned char
@@ -224,7 +224,7 @@ static int ReadMSBShort(char **p,size_t *length)
     c,
     value;
 
-  register int
+  register long
     i;
 
   unsigned char
@@ -263,7 +263,7 @@ static char *TraceClippingPath(char *blob,size_t length,unsigned long columns,
     last[3],
     point[3];
 
-  register int
+  register long
     i;
 
   unsigned int

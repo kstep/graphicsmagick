@@ -2232,7 +2232,7 @@ static Image *ReadImages(const ImageInfo *image_info,ExceptionInfo *exception)
   register Image
     *next;
 
-  register int
+  register long
     i;
 
   size_t

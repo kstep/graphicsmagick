@@ -1549,7 +1549,7 @@ MagickExport char *ReadBlobString(Image *image,char *string)
   int
     c;
 
-  register int
+  register long
     i;
 
   assert(image != (Image *) NULL);

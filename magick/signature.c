@@ -233,7 +233,7 @@ static void TransformSignature(SignatureInfo *signature_info)
     j,
     shift;
 
-  register int
+  register long
     i;
 
   register unsigned char

@@ -124,7 +124,7 @@ static double J1(const double x)
     p,
     q;
 
-  register int
+  register long
     i;
 
   static const double
@@ -169,7 +169,7 @@ static double P1(const double x)
     p,
     q;
 
-  register int
+  register long
     i;
 
   static const double
@@ -208,7 +208,7 @@ static double Q1(const double x)
     p,
     q;
 
-  register int
+  register long
     i;
 
   static const double

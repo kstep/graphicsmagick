@@ -630,14 +630,14 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
     **vector,
     working_directory[MaxTextExtent];
 
-  int
+  long
     count,
     expanded,
-    i,
     number_files;
 
-  register int
-    j;
+  register long
+    i,
+	  j;
 
   /*
     Allocate argument vector.
@@ -1323,7 +1323,7 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
   char
     *page;
 
-  register int
+  register long
     i;
 
   assert(page_geometry != (char *) NULL);
@@ -1987,7 +1987,7 @@ MagickExport unsigned int IsGeometry(const char *geometry)
 %  The format of the ListFiles function is:
 %
 %      char **ListFiles(const char *directory,const char *pattern,
-%        int *number_entries)
+%        long *number_entries)
 %
 %  A description of each parameter follows:
 %
@@ -2026,7 +2026,7 @@ static int FileCompare(const void *x,const void *y)
 #endif
 
 MagickExport char **ListFiles(const char *directory,const char *pattern,
-  int *number_entries)
+  long *number_entries)
 {
   char
     **filelist,
@@ -2049,7 +2049,7 @@ MagickExport char **ListFiles(const char *directory,const char *pattern,
   */
   assert(directory != (const char *) NULL);
   assert(pattern != (char *) NULL);
-  assert(number_entries != (int *) NULL);
+  assert(number_entries != (long *) NULL);
   *number_entries=0;
   status=chdir(directory);
   if (status != 0)
@@ -2500,7 +2500,7 @@ MagickExport char **StringToArgv(const char *text,int *argc)
     *p,
     *q;
 
-  register int
+  register long
     i;
 
   *argc=0;
@@ -3307,7 +3307,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
     *p,
     *q;
 
-  register int
+  register long
     i;
 
   size_t
@@ -3367,7 +3367,8 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       case 'b':
       {
         if (GetBlobSize(image) >= (1 << 24))
-          FormatString(q,"%lumb ",(unsigned long) (GetBlobSize(image)/1024/1024));
+          FormatString(q,"%lumb ",(unsigned long)
+            (GetBlobSize(image)/1024/1024));
         else
           if (GetBlobSize(image) >= (1 << 16))
             FormatString(q,"%lukb ",(unsigned long) (GetBlobSize(image)/1024));

@@ -711,7 +711,7 @@ static void ReversePoints(PointInfo *points,const int number_points)
   PointInfo
     point;
 
-  register int
+  register long
     i;
 
   for (i=0; i < (number_points >> 1); i++)
@@ -743,7 +743,7 @@ static PolygonInfo *ConvertPathToPolygon(const DrawInfo *draw_info,
   SegmentInfo
     bounds;
 
-  register int
+  register long
     i,
     n;
 
@@ -973,7 +973,7 @@ static PathInfo *ConvertPrimitiveToPath(const DrawInfo *draw_info,
     p,
     q;
 
-  register int
+  register long
     i,
     n;
 
@@ -1434,7 +1434,7 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
     dx,
     dy;
 
-  register int
+  register long
     i;
 
   TimerInfo
@@ -4049,7 +4049,7 @@ static void DrawRoundLinecap(Image *image,const DrawInfo *draw_info,
   PrimitiveInfo
     linecap[5];
 
-  register int
+  register long
     i;
 
   for (i=0; i < 4; i++)

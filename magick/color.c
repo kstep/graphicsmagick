@@ -404,7 +404,7 @@ MagickExport char **GetColorList(const char *pattern,int *number_colors)
   ExceptionInfo
     exception;
 
-  register int
+  register long
     i;
 
   /*

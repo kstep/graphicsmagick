@@ -295,7 +295,7 @@ MagickExport Image *MontageImages(const Image *images,
   MonitorHandler
     handler;
 
-  register int
+  register long
     i;
 
   register PixelPacket

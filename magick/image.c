@@ -3411,7 +3411,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
     geometry,
     region_geometry;
 
-  register int
+  register long
     i;
 
   unsigned int
@@ -4521,7 +4521,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             Image
               *profile;
 
-            register int
+            register long
               j;
 
             if (*option == '+')
@@ -5139,7 +5139,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
   MonitorHandler
     handler;
 
-  register int
+  register long
     i;
 
   unsigned int
@@ -6334,8 +6334,10 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       FILE
         *file;
 
-      register int
-        c,
+      int
+        c;
+
+      register long
         i;
 
       /*

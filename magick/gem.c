@@ -316,7 +316,7 @@ MagickExport int GetOptimalKernelWidth1D(const double radius,const double sigma)
   int
     width;
 
-  register int
+  register long
     u;
 
   if (radius > 0.0)
@@ -344,7 +344,7 @@ MagickExport int GetOptimalKernelWidth2D(const double radius,const double sigma)
   int
     width;
 
-  register int
+  register long
     u,
     v;
 

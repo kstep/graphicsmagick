@@ -4126,13 +4126,15 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
     working_directory[MaxTextExtent];
 
   int
-    files,
     height,
     status,
     text_width,
     width,
     x,
     y;
+
+  long
+    files;
 
   register int
     i;
@@ -4437,7 +4439,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
         char
           **checklist;
 
-        int
+        long
           number_files;
 
         /*

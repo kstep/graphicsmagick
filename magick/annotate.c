@@ -203,7 +203,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
   RectangleInfo
     geometry;
 
-  register int
+  register long
     i;
 
   size_t
@@ -507,11 +507,11 @@ static unsigned short *EncodeSJIS(const char *text,size_t *count)
   int
     c;
 
-  register int
-    i;
-
   register const char
     *p;
+
+  register long
+    i;
 
   register unsigned short
     *q;

@@ -185,7 +185,7 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
   const DelegateInfo
     *delegate_info;
 
-  register int
+  register long
     i;
 
   assert(image_info != (ImageInfo *) NULL);
@@ -352,7 +352,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
   const DelegateInfo
     *delegate_info;
 
-  register int
+  register long
     i;
 
   unsigned int
@@ -499,7 +499,7 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
   register const DelegateInfo
     *p;
 
-  register int
+  register long
     i;
 
   if (file == (const FILE *) NULL)

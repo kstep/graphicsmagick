@@ -769,7 +769,7 @@ MagickExport unsigned int OpenModules(ExceptionInfo *exception)
     register char
       **p;
 
-    register int
+    register long
       i;
 
     /*

@@ -312,7 +312,7 @@ static int GetBlurKernel(int width,const double sigma,double **kernel)
   int
     bias;
 
-  register int
+  register long
     i;
 
   /*
@@ -962,7 +962,7 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
   int
     width;
 
-  register int
+  register long
     i;
 
   assert(image != (const Image *) NULL);
@@ -1031,7 +1031,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
     j,
     width;
 
-  register int
+  register long
     i,
     u,
     v;
@@ -1263,7 +1263,7 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
   int
     width;
 
-  register int
+  register long
     i,
     u,
     v;
@@ -1491,7 +1491,7 @@ typedef struct _MedianPixelList
 static void AddNodeMedianList(MedianPixelList *pixel_list,int channel,
   unsigned long color)
 {
-  register int
+  register long
     level;
 
   register MedianSkipList
@@ -1554,7 +1554,7 @@ static PixelPacket GetMedianList(MedianPixelList *pixel_list)
   PixelPacket
     pixel;
 
-  register int
+  register long
     channel;
 
   register MedianSkipList
@@ -1630,7 +1630,7 @@ static void ResetMedianList(MedianPixelList *pixel_list)
   int
     level;
 
-  register int
+  register long
     channel;
 
   register MedianListNode
@@ -1959,7 +1959,7 @@ static int GetMotionBlurKernel(int width,const double sigma,double **kernel)
   int
     bias;
 
-  register int
+  register long
     i;
 
   /*
@@ -2010,10 +2010,8 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
   PointInfo
     *offsets;
 
-  register int
-    i;
-
   register long
+    i,
     x,
     u,
     v;

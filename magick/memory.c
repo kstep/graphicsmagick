@@ -124,7 +124,7 @@ MagickExport void *CloneMemory(void *destination,const void *source,
 	register const char
 		*p;
 
-  register int
+  register long
 		i;
 
   assert(destination != (void *) NULL);

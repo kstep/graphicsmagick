@@ -997,7 +997,7 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
   register CubeInfo
     *p;
 
-  register int
+  register long
     i;
 
   register PixelPacket
@@ -1202,7 +1202,7 @@ static CubeInfo *GetCubeInfo(const QuantizeInfo *quantize_info,
     sum,
     weight;
 
-  register int
+  register long
     i;
 
   /*
@@ -1771,7 +1771,7 @@ static void PruneChild(CubeInfo *cube_info,const NodeInfo *node_info)
   NodeInfo
     *parent;
 
-  register int
+  register long
     id;
 
   /*
@@ -1821,7 +1821,7 @@ static void PruneChild(CubeInfo *cube_info,const NodeInfo *node_info)
 */
 static void PruneLevel(CubeInfo *cube_info,const NodeInfo *node_info)
 {
-  register int
+  register long
     id;
 
   /*
@@ -2089,7 +2089,7 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
   Image
     *image;
 
-  register int
+  register long
     i;
 
   unsigned int

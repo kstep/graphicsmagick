@@ -610,7 +610,7 @@ static void ConsolidateCrossings(ZeroCrossing *zero_crossing,
     left,
     right;
 
-  register int
+  register long
     i,
     j,
     k,
@@ -781,7 +781,7 @@ static int DefineRegion(const short *extrema,ExtentPacket *extents)
 */
 static void DerivativeHistogram(const double *histogram,double *derivative)
 {
-  register int
+  register long
     i,
     n;
 
@@ -958,7 +958,7 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
     *node,
     *root;
 
-  register int
+  register long
     i,
     j,
     k;
@@ -1118,7 +1118,7 @@ static double OptimalTau(const long *histogram,const double max_tau,
     *node,
     *root;
 
-  register int
+  register long
     i,
     j,
     k;
@@ -1307,7 +1307,7 @@ static void ScaleSpace(const long *histogram,const double tau,
     *gamma,
     sum;
 
-  register int
+  register long
     u,
     x;
 
@@ -1373,7 +1373,7 @@ static void ZeroCrossHistogram(double *second_derivative,
   int
     parity;
 
-  register int
+  register long
     i;
 
   /*
@@ -1464,7 +1464,7 @@ MagickExport unsigned int SegmentImage(Image *image,
   long
     *histogram[MaxDimension];
 
-  register int
+  register long
     i;
 
   short
