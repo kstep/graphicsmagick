@@ -1,5 +1,8 @@
 2003-05-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/paint.c (ColorFloodfillImage): Fix hang while
+	floodfilling using a pattern image with color similar to the
+	border color.
 	* magick/GraphicsMagick-config.in: Added example
 	usage to the help output.
 	* magick/type.c (GetTypeBlob): Search $MAGICK_HOME for type.mgk.
