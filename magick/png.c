@@ -658,7 +658,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 
         if (strncmp(type,"MEND",4) == 0)
           {
-            FreeMemory((char *) chunk);
           break;
           }
 

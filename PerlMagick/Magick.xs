@@ -76,7 +76,6 @@ extern "C" {
 #include "XSUB.h"
 #include <magick/magick.h>
 #include <magick/defines.h>
-#include <magick/proxy.h>
 #include <setjmp.h>
 
 #ifdef __cplusplus
