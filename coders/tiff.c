@@ -248,13 +248,9 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
 }
 #endif
 
-static int TIFFCloseBlob(thandle_t context)
+static int TIFFCloseBlob(thandle_t image)
 {
-  Image
-    *image;
-
-  image=(Image *) context;
-  CloseBlob(image);
+  CloseBlob((Image *) image);
   return(0);
 }
 
@@ -270,39 +266,27 @@ static unsigned int TIFFErrors(const char *module,const char *format,
   return(True);
 }
 
-static int TIFFMapBlob(thandle_t context,tdata_t *base,toff_t *size)
+static int TIFFMapBlob(thandle_t image,tdata_t *base,toff_t *size)
 {
   return(0);
 }
 
-static tsize_t TIFFReadBlob(thandle_t context,tdata_t data,tsize_t size)
+static tsize_t TIFFReadBlob(thandle_t image,tdata_t data,tsize_t size)
 {
-  Image
-    *image;
-
-  image=(Image *) context;
-  return(ReadBlob(image,size,data));
+  return((tsize_t) ReadBlob((Image *) image,(size_t) size,data));
 }
 
-static toff_t TIFFSeekBlob(thandle_t context,toff_t offset,int whence)
+static toff_t TIFFSeekBlob(thandle_t image,toff_t offset,int whence)
 {
-  Image
-    *image;
-
-  image=(Image *) context;
-  return(SeekBlob(image,offset,whence));
+  return((toff_t) SeekBlob((Image *) image,(off_t) offset,whence));
 }
 
-static toff_t TIFFSizeBlob(thandle_t context)
+static toff_t TIFFSizeBlob(thandle_t image)
 {
-  Image
-    *image;
-
-  image=(Image *) context;
-  return(SizeBlob(image));
+  return(SizeBlob((Image *) image));
 }
 
-static void TIFFUnmapBlob(thandle_t context,tdata_t base,toff_t size)
+static void TIFFUnmapBlob(thandle_t image,tdata_t base,toff_t size)
 {
 }
 
@@ -318,13 +302,9 @@ static unsigned int TIFFWarnings(const char *module,const char *format,
   return(True);
 }
 
-static tsize_t TIFFWriteBlob(thandle_t context,tdata_t data,tsize_t size)
+static tsize_t TIFFWriteBlob(thandle_t image,tdata_t data,tsize_t size)
 {
-  Image
-    *image;
-
-  image=(Image *) context;
-  return(WriteBlob(image,size,data));
+  return((tsize_t) WriteBlob((Image *) image,(size_t) size,data));
 }
 
 static Image *ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
