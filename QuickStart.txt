@@ -24,7 +24,7 @@ Unix/Linux/Darwin/Cygwin/MinGW Install:
   already in your executable search path, add it to your
   PATH environment variable.  For example
 
-     export PATH="$HOME/ImageMagick:PATH"
+     export PATH; PATH="$HOME/ImageMagick:$PATH"
 
   Test ImageMagick to see if it is working
 
