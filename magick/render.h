@@ -224,16 +224,31 @@ extern MagickExport unsigned int
   ColorFloodfillImage(Image *,const DrawInfo *,const PixelPacket,const long,
     const long,const PaintMethod),
   DrawAffineImage(Image *,const Image *,const AffineMatrix *),
+  DrawClipPath(Image *,const DrawInfo *,const char *),
   DrawImage(Image *,const DrawInfo *),
+  DrawPatternPath(Image *,const DrawInfo *,const char *,Image **),
+  DrawPrimitive(Image *,const DrawInfo *,const PrimitiveInfo *),
   GetTypeMetrics(Image *,const DrawInfo *,TypeMetric *),
   ListTypeInfo(FILE *,ExceptionInfo *),
   MatteFloodfillImage(Image *,const PixelPacket,const unsigned int,const long,
     const long,const PaintMethod);
 
+extern MagickExport unsigned long
+  TracePath(PrimitiveInfo *,const char *);
+
 extern MagickExport void
   DestroyDrawInfo(DrawInfo *),
   DestroyTypeInfo(void),
-  GetDrawInfo(const ImageInfo *,DrawInfo *);
+  GetDrawInfo(const ImageInfo *,DrawInfo *),
+  TraceArc(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo,
+           const double,const unsigned int,const unsigned int),
+  TraceBezier(PrimitiveInfo *,const unsigned long),
+  TraceCircle(PrimitiveInfo *,const PointInfo,const PointInfo),
+  TraceEllipse(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo),
+  TraceLine(PrimitiveInfo *,const PointInfo,const PointInfo),
+  TracePoint(PrimitiveInfo *,const PointInfo),
+  TraceRectangle(PrimitiveInfo *,const PointInfo,const PointInfo),
+  TraceRoundRectangle(PrimitiveInfo *,const PointInfo,const PointInfo,PointInfo);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

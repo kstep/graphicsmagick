@@ -133,25 +133,10 @@ static PrimitiveInfo
   *TraceStrokePolygon(const DrawInfo *,const PrimitiveInfo *);
 
 static unsigned int
-  DrawPatternPath(Image *,const DrawInfo *,const char *,Image **),
-  DrawPrimitive(Image *,const DrawInfo *,const PrimitiveInfo *),
   DrawStrokePolygon(Image *,const DrawInfo *,const PrimitiveInfo *);
-
-static unsigned long
-  TracePath(PrimitiveInfo *,const char *);
 
 static void
   DrawBoundingRectangles(Image *,const DrawInfo *,const PolygonInfo *),
-  TraceArc(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo,
-    const double,const unsigned int,const unsigned int),
-  TraceBezier(PrimitiveInfo *,const unsigned long),
-  TraceCircle(PrimitiveInfo *,const PointInfo,const PointInfo),
-  TraceEllipse(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo),
-  TraceLine(PrimitiveInfo *,const PointInfo,const PointInfo),
-  TracePoint(PrimitiveInfo *,const PointInfo),
-  TraceRectangle(PrimitiveInfo *,const PointInfo,const PointInfo),
-  TraceRoundRectangle(PrimitiveInfo *,const PointInfo,const PointInfo,
-    PointInfo),
   TraceSquareLinecap(PrimitiveInfo *,const unsigned long,const double);
 
 /*
@@ -1494,7 +1479,7 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
 %
 %
 */
-static unsigned int DrawClipPath(Image *image,const DrawInfo *draw_info,
+MagickExport unsigned int DrawClipPath(Image *image,const DrawInfo *draw_info,
   const char *name)
 {
   char
@@ -3261,7 +3246,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 %
 %
 */
-static unsigned int DrawPatternPath(Image *image,const DrawInfo *draw_info,
+MagickExport unsigned int DrawPatternPath(Image *image,const DrawInfo *draw_info,
   const char *name,Image **pattern)
 {
   char
@@ -3839,7 +3824,7 @@ static void PrintPrimitiveInfo(const PrimitiveInfo *primitive_info)
   }
 }
 
-static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
+MagickExport unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
   const PrimitiveInfo *primitive_info)
 {
   long
@@ -4653,7 +4638,7 @@ MagickExport unsigned int OpaqueImage(Image *image,const PixelPacket target,
 %
 */
 
-static void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
+MagickExport void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
   const PointInfo end,const PointInfo arc,const double angle,
   const unsigned int large_arc,const unsigned int sweep)
 {
@@ -4749,7 +4734,7 @@ static void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
   }
 }
 
-static void TraceBezier(PrimitiveInfo *primitive_info,
+MagickExport void TraceBezier(PrimitiveInfo *primitive_info,
   const unsigned long number_coordinates)
 {
   double
@@ -4839,7 +4824,7 @@ static void TraceBezier(PrimitiveInfo *primitive_info,
   LiberateMemory((void **) &coefficients);
 }
 
-static void TraceCircle(PrimitiveInfo *primitive_info,const PointInfo start,
+MagickExport void TraceCircle(PrimitiveInfo *primitive_info,const PointInfo start,
   const PointInfo end)
 {
   double
@@ -4861,7 +4846,7 @@ static void TraceCircle(PrimitiveInfo *primitive_info,const PointInfo start,
   TraceEllipse(primitive_info,start,offset,degrees);
 }
 
-static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
+MagickExport void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
   const PointInfo stop,const PointInfo degrees)
 {
   double
@@ -4909,7 +4894,7 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
   }
 }
 
-static void TraceLine(PrimitiveInfo *primitive_info,const PointInfo start,
+MagickExport void TraceLine(PrimitiveInfo *primitive_info,const PointInfo start,
   const PointInfo end)
 {
   TracePoint(primitive_info,start);
@@ -4925,7 +4910,7 @@ static void TraceLine(PrimitiveInfo *primitive_info,const PointInfo start,
   primitive_info->coordinates=2;
 }
 
-static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
+MagickExport unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
 {
   char
     *p,
@@ -5265,13 +5250,13 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
   return(number_coordinates);
 }
 
-static void TracePoint(PrimitiveInfo *primitive_info,const PointInfo point)
+MagickExport void TracePoint(PrimitiveInfo *primitive_info,const PointInfo point)
 {
   primitive_info->coordinates=1;
   primitive_info->point=point;
 }
 
-static void TraceRectangle(PrimitiveInfo *primitive_info,const PointInfo start,
+MagickExport void TraceRectangle(PrimitiveInfo *primitive_info,const PointInfo start,
   const PointInfo end)
 {
   PointInfo
@@ -5306,7 +5291,7 @@ static void TraceRectangle(PrimitiveInfo *primitive_info,const PointInfo start,
   }
 }
 
-static void TraceRoundRectangle(PrimitiveInfo *primitive_info,
+MagickExport void TraceRoundRectangle(PrimitiveInfo *primitive_info,
   const PointInfo start,const PointInfo end,PointInfo arc)
 {
   PointInfo
