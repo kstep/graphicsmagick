@@ -456,6 +456,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     offset_x,
     offset_y;
 
+  unsigned char
+	name[256];
+
     Image
       *image;
   } LayerInfo;
@@ -513,6 +516,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   size_t
     count,
     length,
+	combinedlength = 0,
     size;
 
   off_t
@@ -520,7 +524,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   diff_offset;
 
   unsigned char
-    *data;
+    *data,
+	s[32];
 
   unsigned int
     packet_size,
@@ -712,10 +717,36 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 for (j=0; j < (long) (length-16); j++)
                   (void) ReadBlobByte(image);
               }
-            /*
+            combinedlength += length + 4;	/* +4 for length */
+
+            length=ReadBlobMSBLong(image);
+            if (length != 0)
+              {
+                /*
+                  Layer blending ranges info.
+                */
+                /*
+                  Skip over it for now...
+                */
+                for (j=0; j < (long) (length); j++)
+                  (void) ReadBlobByte(image);
+              }
+            combinedlength += length + 4;	/* +4 for length */
+
+            length=ReadBlobByte(image);
+            if (length != 0)
+			{
+				/* layer name */
+                for (j=0; j < (long) (length); j++)
+                  layer_info[i].name[j] = ReadBlobByte(image);
+				layer_info[i].name[j] = 0;	/* zero term */
+			}
+            combinedlength += length + 1;	/* +1 for length */
+
+           /*
               Skip the rest of the variable data until we support it.
             */
-            for (j=0; j < (long) (size-length-4); j++)
+            for (j=0; j < (long) (size-combinedlength); j++)
               (void) ReadBlobByte(image);
           }
         /*
@@ -741,6 +772,15 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (j=0; j < layer_info[i].channels; j++)
           if (layer_info[i].channel_info[j].type == -1)
             layer_info[i].image->matte=True;
+
+        /* set up some hidden attributes for folks that need them */
+		sprintf( s, "%d", layer_info[i].page.x );
+		(void) SetImageAttribute(layer_info[i].image,"[layer-xpos]",s);
+		sprintf( s, "%d", layer_info[i].page.y );
+		(void) SetImageAttribute(layer_info[i].image,"[layer-ypos]",s);
+		sprintf( s, "%d", layer_info[i].opacity );
+		(void) SetImageAttribute(layer_info[i].image,"[layer-opacity]",s);
+		(void) SetImageAttribute(layer_info[i].image,"[layer-name]",layer_info[i].name);
       }
       /*
         Read pixel data for each layer.
