@@ -12,12 +12,12 @@
 #
 
 if { $tcl_platform(platform) == "unix" } {
-    set auto_path "[file join .. unix] $auto_path"
+    set auto_path [linsert $auto_path 0 [file join .. unix]]
     package require TclMagick
 } else {
     set dll [file join .. win debug tclMagick.dll]
     if {[file exists $dll]} {
-	load $dl
+	load $dll
     }
     package require TclMagick
 }
