@@ -291,8 +291,6 @@ static unsigned int MontageUtility(int argc,char **argv)
           status&=next_image != (Image *) NULL;
           if (next_image == (Image *) NULL)
             continue;
-          status&=MogrifyImages(image_info,i-j,argv+j,&next_image);
-          (void) CatchImageException(next_image);
           if (image == (Image *) NULL)
             {
               image=next_image;
@@ -306,6 +304,12 @@ static unsigned int MontageUtility(int argc,char **argv)
           p->next=next_image;
         }
         continue;
+      }
+    if (j != (k+1))
+      {
+        status&=MogrifyImages(image_info,i-j,argv+j,&next_image);
+        (void) CatchImageException(next_image);
+        j=k+1;
       }
     switch (*(option+1))
     {
@@ -1178,9 +1182,7 @@ static unsigned int MontageUtility(int argc,char **argv)
         break;
       }
     }
-    j=k+1;
   }
-  j=k+1;
   if ((i != (argc-1)) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   while (image->previous != (Image *) NULL)
