@@ -718,6 +718,11 @@ namespace Magick
     
     // Image comment
     std::string     comment ( void ) const;
+
+    // Composition operator to be used when composition is implicitly
+    // used (such as for image flattening).
+    void            compose (const CompositeOperator compose_);
+    CompositeOperator compose ( void ) const;
     
     // Compression type
     void            compressType ( const CompressionType compressType_ );

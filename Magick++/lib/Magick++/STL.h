@@ -1218,6 +1218,19 @@ namespace Magick
     Color        _color;
   };
 
+  // Composition operator to be used when composition is implicitly used
+  // (such as for image flattening).
+  class MagickDLLDecl composeImage : public std::unary_function<Image&,void>
+  {
+  public:
+    composeImage( const CompositeOperator compose_ );
+
+    void operator()( Image &image_ ) const;
+
+  private:
+    CompositeOperator _compose;
+  };
+
   // Compression type
   class MagickDLLDecl compressTypeImage : public std::unary_function<Image&,void>
   {

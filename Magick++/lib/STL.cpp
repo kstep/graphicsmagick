@@ -1111,6 +1111,17 @@ void Magick::colorMapImage::operator()( Magick::Image &image_ ) const
   image_.colorMap( _index, _color );
 }
 
+// Composition operator to be used when composition is implicitly used
+// (such as for image flattening).
+Magick::composeImage::composeImage( const CompositeOperator compose_ )
+  : _compose( compose_ )
+{
+}
+void Magick::composeImage::operator()( Magick::Image &image_ ) const
+{
+  image_.compose( _compose );
+}
+
 // Compression type
 Magick::compressTypeImage::compressTypeImage( const CompressionType compressType_ )
   : _compressType( compressType_ )

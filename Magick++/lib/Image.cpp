@@ -2253,6 +2253,17 @@ std::string Magick::Image::comment ( void ) const
   return std::string(); // Intentionally no exception
 }
 
+// Composition operator to be used when composition is implicitly used
+// (such as for image flattening).
+void Magick::Image::compose (const CompositeOperator compose_)
+{
+  image()->compose=compose_;
+}
+Magick::CompositeOperator Magick::Image::compose ( void ) const
+{
+  return constImage()->compose;
+}
+
 // Compression algorithm
 void Magick::Image::compressType ( const CompressionType compressType_ )
 {

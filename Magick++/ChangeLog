@@ -1,3 +1,12 @@
+2004-03-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am (../www/Magick++/ChangeLog.html): Fix execution of
+	txt2html.
+	* lib/STL.cpp (composeImage): Added a function object to set/get
+	the Image composition option.
+	* lib/Image.cpp (compose): Added a method to set/get the Image
+	composition option.
+
 2004-03-06  Vladimir Lukianov  <lvm@integrum.ru>
 
 	* lib/Thread.cpp (lock): Use MsgWaitForMultipleObjects() rather than
