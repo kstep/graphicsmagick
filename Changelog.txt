@@ -8,7 +8,7 @@
 	  signature algorithm.
 
 2001-09-08  Cristy  <cristy@mystic.es.dupont.com>
-	* ImageMagick defaults to 16-bit quantum.  Set QuantumSize for
+	* ImageMagick defaults to 16-bit quantum.  Set QuantumMagick for
 	  8-bit.
 	* Changed image->blob from BlobInfo to BlobInfo* so the Image
 	  structure size is not dependent on the large-file preprocessor
