@@ -49,6 +49,7 @@ extern "C" {
 # include <DPS/dpsXclient.h>
 # include <DPS/dpsXpreview.h>
 #endif
+#include "quantize.h"
 #include "PreRvIcccm.h"
 
 #undef index

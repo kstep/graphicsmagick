@@ -100,6 +100,8 @@
 */
 
 #include "studio.h"
+#include "monitor.h"
+#include "utility.h"
 
 /*
   Define declarations.

@@ -58,8 +58,12 @@
   Include declarations.
 */
 #include "studio.h"
-#if defined(HasDPS)
+#include "blob.h"
+#include "magick.h"
+#include "monitor.h"
+#include "utility.h"
 #include "xwindow.h"
+#if defined(HasDPS)
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -58,8 +58,17 @@
   Include declarations.
 */
 #include "studio.h"
-#if defined(HasX11)
+#include "attribute.h"
+#include "blob.h"
+#include "delegate.h"
+#include "list.h"
+#include "log.h"
+#include "monitor.h"
+#include "render.h"
+#include "utility.h"
+#include "version.h"
 #include "xwindow.h"
+#if defined(HasX11)
 #include "display.h"
 
 /*
@@ -4771,7 +4780,6 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
             */
             cache_image=previous_image;
             previous_image=previous_image->previous;
-            cache_image->blob->file=(FILE *) NULL;
             DestroyImage(cache_image->list);
             DestroyImage(cache_image);
           }

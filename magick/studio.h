@@ -33,6 +33,67 @@ extern "C" {
 # endif
 #endif
 
+#if defined(WIN32) && !defined(__CYGWIN__)
+# if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_) && !defined(_LIB)
+#  define _MAGICKDLL_
+# endif
+# if defined(_MAGICKDLL_)
+#  if defined(_VISUALC_)
+#   pragma warning( disable: 4273 )  /* Disable the dll linkage warnings */
+#  endif
+#  if !defined(_MAGICKLIB_)
+#   define MagickExport  __declspec(dllimport)
+#   if defined(_VISUALC_)
+#    pragma message( "Magick lib DLL import interface" )
+#   endif
+#  else
+#   define MagickExport  __declspec(dllexport)
+#   if defined(_VISUALC_)
+#    pragma message( "Magick lib DLL export interface" )
+#   endif
+#  endif
+# else
+#  define MagickExport
+#  if defined(_VISUALC_)
+#   pragma message( "Magick lib static interface" )
+#  endif
+# endif
+
+# if defined(_DLL) && !defined(_LIB)
+#  define ModuleExport  __declspec(dllexport)
+#  if defined(_VISUALC_)
+#   pragma message( "Magick module DLL export interface" ) 
+#  endif
+# else
+#  define ModuleExport
+#  if defined(_VISUALC_)
+#   pragma message( "Magick module static interface" ) 
+#  endif
+
+# endif
+# define MagickGlobal __declspec(thread)
+# if defined(_VISUALC_)
+#  pragma warning(disable : 4018)
+#  pragma warning(disable : 4244)
+#  pragma warning(disable : 4142)
+#  pragma warning(disable : 4800)
+#  pragma warning(disable : 4786)
+# endif
+#else
+# define MagickExport
+# define ModuleExport
+# define MagickGlobal
+#endif
+
+#if defined(__cplusplus) || defined(c_plusplus)
+# define storage_class  c_class
+#else
+# define storage_class  class
+#endif
+
+#define MagickSignature  0xabacadabUL
+#define MaxTextExtent  2053
+
 #include <stdarg.h>
 #include <stdio.h>
 #if defined(WIN32) && defined(_DEBUG)
@@ -46,6 +107,10 @@ extern "C" {
 # if !defined(HAVE_STRERROR)
 #  define HAVE_STRERROR
 # endif
+#endif
+
+#if defined(HAVE_INTTYPES_H)
+# include <inttypes.h>
 #endif
 
 #if defined(_FILE_OFFSET_BITS) && (_FILE_OFFSET_BITS == 64)
@@ -92,7 +157,7 @@ extern "C" {
 # if !defined(S_ISREG)
 #  define S_ISREG(mode) (((mode) & S_IFMT) == S_IFREG)
 # endif
-# include "magick/api.h"
+# include "magick/image.h"
 # if !defined(WIN32)
 #  include <sys/time.h>
 #  include <sys/times.h>
@@ -105,7 +170,7 @@ extern "C" {
 #  include <console.h>
 #  include <unix.h>
 # endif
-# include "api.h"
+# include "image.h"
 #endif
 
 #if defined(WIN32)

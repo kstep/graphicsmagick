@@ -58,6 +58,8 @@
   Include declarations.
 */
 #include "studio.h"
+#include "blob.h"
+#include "utility.h"
 
 /*
   Define declarations.

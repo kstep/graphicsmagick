@@ -59,6 +59,9 @@
   Include declarations.
 */
 #include "studio.h"
+#include "gem.h"
+#include "monitor.h"
+#include "utility.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -63,6 +63,9 @@
   Include declarations.
 */
 #include "studio.h"
+#include "cache.h"
+#include "cache_view.h"
+#include "utility.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

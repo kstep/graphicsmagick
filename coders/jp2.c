@@ -58,6 +58,9 @@
   Include declarations.
 */
 #include "studio.h"
+#include "blob.h"
+#include "magick.h"
+#include "utility.h"
 #if defined(HasJP2)
 #if !defined(uchar)
 #define uchar  unsigned char

@@ -61,6 +61,9 @@
  * Include declarations.
  */
 #include "studio.h"
+#include "blob.h"
+#include "magick.h"
+#include "utility.h"
 #if defined(WIN32)
 #define M_PI MagickPI
 #endif

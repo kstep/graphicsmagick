@@ -59,6 +59,7 @@
   Include declarations.
 */
 #include "studio.h"
+#include "utility.h"
 
 /*
   Forward declarations.

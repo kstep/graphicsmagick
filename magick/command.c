@@ -59,6 +59,16 @@
   Include declarations.
 */
 #include "studio.h"
+#include "cache.h"
+#include "delegate.h"
+#include "list.h"
+#include "log.h"
+#include "magic.h"
+#include "magick.h"
+#include "module.h"
+#include "quantize.h"
+#include "render.h"
+#include "utility.h"
 
 /*
   Typedef declarations.

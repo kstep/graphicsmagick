@@ -58,6 +58,10 @@
   Include declarations.
 */
 #include "studio.h"
+#include "blob.h"
+#include "magick.h"
+#include "utility.h"
+#include "studio.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

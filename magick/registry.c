@@ -58,6 +58,9 @@
   Include declarations.
 */
 #include "studio.h"
+#include "list.h"
+#include "registry.h"
+#include "utility.h"
 
 /*
   Global declarations.

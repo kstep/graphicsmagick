@@ -58,6 +58,11 @@
   Include declarations.
 */
 #include "studio.h"
+#include "blob.h"
+#include "list.h"
+#include "magick.h"
+#include "monitor.h"
+#include "utility.h"
 
 /*
   Typedef declarations.

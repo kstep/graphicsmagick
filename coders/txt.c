@@ -58,6 +58,12 @@
   Include declarations.
 */
 #include "studio.h"
+#include "blob.h"
+#include "list.h"
+#include "magick.h"
+#include "monitor.h"
+#include "render.h"
+#include "utility.h"
 
 /*
   Forward declarations.

@@ -61,9 +61,10 @@
   Include declarations.
 */
 #include "studio.h"
-#if defined(HasX11)
+#include "gem.h"
+#include "render.h"
+#include "utility.h"
 #include "xwindow.h"
-#endif
 #if defined(HasTTF)
 #if defined(__MINGW32__)
 #  undef interface  /* Remove interface define */

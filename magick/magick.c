@@ -59,6 +59,16 @@
   Include declarations.
 */
 #include "studio.h"
+#include "blob.h"
+#include "cache.h"
+#include "delegate.h"
+#include "log.h"
+#include "magic.h"
+#include "magick.h"
+#include "module.h"
+#include "registry.h"
+#include "render.h"
+#include "utility.h"
 
 /*
   Global declarations.

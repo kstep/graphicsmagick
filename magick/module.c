@@ -59,6 +59,11 @@
   Include declarations.
 */
 #include "studio.h"
+#include "blob.h"
+#include "magic.h"
+#include "magick.h"
+#include "module.h"
+#include "utility.h"
 #if defined(HasLTDL)
 #  include "ltdl.h"
    typedef lt_dlhandle ModuleHandle;

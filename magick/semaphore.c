@@ -58,6 +58,7 @@
   Include declarations.
 */
 #include "studio.h"
+#include "utility.h"
 #if defined(HasPTHREADS)
 #include <pthread.h>
 #endif

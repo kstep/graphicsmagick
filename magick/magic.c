@@ -57,6 +57,9 @@
   Include declarations.
 */
 #include "studio.h"
+#include "blob.h"
+#include "magic.h"
+#include "utility.h"
 
 /*
   Define declarations.

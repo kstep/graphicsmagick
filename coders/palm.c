@@ -59,6 +59,11 @@
   Include declarations.
 */
 #include "studio.h"
+#include "attribute.h"
+#include "blob.h"
+#include "magick.h"
+#include "quantize.h"
+#include "utility.h"
 
 #define PALM_IS_COMPRESSED_FLAG  0x8000
 #define PALM_HAS_COLORMAP_FLAG  0x4000

@@ -59,6 +59,9 @@
   Include declarations.
 */
 #include "studio.h"
+#include "blob.h"
+#include "cache.h"
+#include "utility.h"
 #if defined(HasZLIB)
 #include "zlib.h"
 #endif

@@ -58,8 +58,12 @@
   Include declarations.
 */
 #include "studio.h"
-#if defined(HasX11)
+#include "blob.h"
+#include "log.h"
+#include "utility.h"
+#include "version.h"
 #include "xwindow.h"
+#if defined(HasX11)
 
 /*
   X defines.

@@ -57,6 +57,10 @@
   Include declarations.
 */
 #include "studio.h"
+#include "blob.h"
+#include "quantize.h"
+#include "monitor.h"
+#include "utility.h"
 
 /*
   Define declarations.

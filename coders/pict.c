@@ -58,6 +58,11 @@
   Include declarations.
 */
 #include "studio.h"
+#include "blob.h"
+#include "log.h"
+#include "magick.h"
+#include "monitor.h"
+#include "utility.h"
 
 /*
   ImageMagick Macintosh PICT Methods.

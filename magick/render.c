@@ -63,6 +63,13 @@
   Include declarations.
 */
 #include "studio.h"
+#include "attribute.h"
+#include "blob.h"
+#include "gem.h"
+#include "log.h"
+#include "monitor.h"
+#include "render.h"
+#include "utility.h"
 
 /*
   Define declarations.

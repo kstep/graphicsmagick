@@ -59,8 +59,10 @@
   Include declarations.
 */
 #include "studio.h"
-#if defined(HasX11)
+#include "magick.h"
+#include "utility.h"
 #include "xwindow.h"
+#if defined(HasX11)
 
 /*
   Define declarations.

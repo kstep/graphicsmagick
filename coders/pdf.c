@@ -58,12 +58,21 @@
   Include declarations.
 */
 #include "studio.h"
+#include "attribute.h"
+#include "blob.h"
+#include "compress.h"
+#include "delegate.h"
+#include "list.h"
+#include "magick.h"
+#include "monitor.h"
+#include "utility.h"
+#include "version.h"
 #if defined(HasTIFF)
 #define CCITTParam  "-1"
 #else
 #define CCITTParam  "0"
 #endif
-
+
 /*
   Forward declarations.
 */

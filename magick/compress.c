@@ -59,6 +59,10 @@
   Include declarations.
 */
 #include "studio.h"
+#include "blob.h"
+#include "compress.h"
+#include "monitor.h"
+#include "utility.h"
 
 /*
   Define declarations.

@@ -58,6 +58,13 @@
   Include declarations.
 */
 #include "studio.h"
+#include "attribute.h"
+#include "blob.h"
+#include "delegate.h"
+#include "list.h"
+#include "magick.h"
+#include "monitor.h"
+#include "utility.h"
 #if defined(HasGS)
 #include "ps/iapi.h"
 #include "ps/errors.h"

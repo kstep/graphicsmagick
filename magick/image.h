@@ -8,6 +8,17 @@
 extern "C" {
 #endif
 
+/*
+  Include declarations.
+*/
+#include "classify.h"
+#include "semaphore.h"
+#include "error.h"
+#include "timer.h"
+
+/*
+  Define declarations.
+*/
 #if !defined(QuantumDepth)
 #define QuantumDepth  16
 #define QuantumLeap
@@ -56,7 +67,7 @@ typedef unsigned int Quantum;
 #define ColorMatch(p,q) (((p)->red == (q)->red) && \
   ((p)->green == (q)->green) && ((p)->blue == (q)->blue))
 #define MaxColormapSize  65536
-#define OpaqueOpacity  0
+#define OpaqueOpacity  0UL
 #define PixelIntensity(pixel) ((unsigned long) \
   (0.299*(pixel)->red+0.587*(pixel)->green+0.114*(pixel)->blue+0.5))
 #define PixelIntensityToQuantum(pixel) ((Quantum) \

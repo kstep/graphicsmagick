@@ -64,6 +64,8 @@
   Include declarations.
 */
 #include "studio.h"
+#include "monitor.h"
+#include "render.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

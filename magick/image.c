@@ -59,6 +59,20 @@
   Include declarations.
 */
 #include "studio.h"
+#include "attribute.h"
+#include "blob.h"
+#include "cache.h"
+#include "compress.h"
+#include "gem.h"
+#include "list.h"
+#include "magic.h"
+#include "magick.h"
+#include "module.h"
+#include "monitor.h"
+#include "quantize.h"
+#include "render.h"
+#include "utility.h"
+#include "xwindow.h"
 
 /*
   Constant declaration.
@@ -316,7 +330,6 @@ MagickExport void AllocateNextImage(const ImageInfo *image_info,Image *image)
 }
 
 #if defined(HasX11)
-#include "xwindow.h"
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %

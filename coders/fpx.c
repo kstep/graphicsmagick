@@ -58,6 +58,9 @@
   Include declarations.
 */
 #include "studio.h"
+#include "blob.h"
+#include "magick.h"
+#include "utility.h"
 #if defined(HasFPX)
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
 #include <fpxlib.h>

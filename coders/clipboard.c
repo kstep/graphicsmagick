@@ -54,6 +54,9 @@
 */
 
 #include "studio.h"
+#include "blob.h"
+#include "magick.h"
+#include "utility.h"
 #if defined(HasWINGDI32)
 #  if defined(__CYGWIN__)
 #    include <windows.h>

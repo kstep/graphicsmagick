@@ -58,6 +58,13 @@
   Include declarations.
 */
 #include "studio.h"
+#include "attribute.h"
+#include "blob.h"
+#include "list.h"
+#include "magick.h"
+#include "monitor.h"
+#include "utility.h"
+#include "version.h"
 #if defined(HasTIFF)
 #if defined(HAVE_TIFFCONF_H)
 #include "tiffconf.h"

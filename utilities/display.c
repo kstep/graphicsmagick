@@ -73,8 +73,14 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/xwindow.h"
+#include "studio.h"
+#include "cache.h"
+#include "command.h"
+#include "list.h"
+#include "log.h"
+#include "version.h"
+#include "utility.h"
+#include "xwindow.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

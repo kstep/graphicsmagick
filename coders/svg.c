@@ -59,6 +59,13 @@
   Include declarations.
 */
 #include "studio.h"
+#include "attribute.h"
+#include "blob.h"
+#include "gem.h"
+#include "log.h"
+#include "magick.h"
+#include "render.h"
+#include "utility.h"
 #if defined(HasXML)
 #  if defined(WIN32)
 #    if defined(__MINGW32__)
