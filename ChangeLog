@@ -1,5 +1,8 @@
 2002-04-06  Glenn Randers-Pehrson <randeg@alum.pri.edu>
   *  Added CCIS-601 4:2:2 YUV format read-write support.
+  *  Added CCIS-601 4:2:2 MPEG-2 format write support.
+  *  Fixed a bug introduced in 5.4.0 that caused files with "M2V"
+     suffix to be written in MPEG-1 instead of MPEG-2 format.
 
 2002-03-28  Cristy  <cristy@mystic.es.dupont.com>
   * ImageToBlob() only returned the first frame of a multi-frame image.
