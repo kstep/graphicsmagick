@@ -36,8 +36,8 @@ call :_dorwtest both GIF
 if not %COUNT% EQU 6 goto :_failed
 call :_dorwtest both GRAY
 if not %COUNT% EQU 6 goto :_failed
-call :_dorwtest both HDF
-if not %COUNT% EQU 6 goto :_failed
+:call :_dorwtest both HDF
+:if not %COUNT% EQU 6 goto :_failed
 call :_dorwtest both ICB
 if not %COUNT% EQU 6 goto :_failed
 call :_dorwtest both JBIG
