@@ -71,7 +71,7 @@ typedef struct _ContributionInfo
 typedef struct _FilterInfo
 {
   double
-    (*function)(const double),
+    (*function)(const double,const double),
     support;
 } FilterInfo;
 
@@ -598,7 +598,19 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
 %
 */
 
-static double Box(const double x)
+static double Blackman(const double x,const double support)
+{
+  return(0.42+0.50*cos(MagickPI*x)+0.08*cos(2.0*MagickPI*x));
+}
+
+static double Sinc(const double x,const double support)
+{
+  if (x == 0.0)
+    return(0.0);
+  return(Blackman(support*x,support)*sin(MagickPI*x)/(MagickPI*x));
+}
+
+static double Box(const double x,const double support)
 {
   if (x < -0.5)
     return(0.0);
@@ -607,19 +619,14 @@ static double Box(const double x)
   return(0.0);
 }
 
-static double Bessel(const double x)
+static double Bessel(const double x,const double support)
 {
   if (x == 0.0)
-    return(MagickPI/4.0);
-  return(BesselOrderOne(MagickPI*x)/(2.0*x));
+    return(Blackman(support*x,support)*MagickPI/4.0);
+  return(Blackman(support*x,support)*BesselOrderOne(MagickPI*x)/(2.0*x));
 }
 
-static double Blackman(const double x)
-{
-  return(0.42+0.50*cos(MagickPI*x)+0.08*cos(2.0*MagickPI*x));
-}
-
-static double Catrom(const double x)
+static double Catrom(const double x,const double support)
 {
   if (x < -2.0)
     return(0.0);
@@ -634,7 +641,7 @@ static double Catrom(const double x)
   return(0.0);
 }
 
-static double Cubic(const double x)
+static double Cubic(const double x,const double support)
 {
   if (x < -2.0)
     return(0.0);
@@ -649,22 +656,22 @@ static double Cubic(const double x)
   return(0.0);
 }
 
-static double Gaussian(const double x)
+static double Gaussian(const double x,const double support)
 {
   return(exp(-2.0*x*x)*sqrt(2.0/MagickPI));
 }
 
-static double Hanning(const double x)
+static double Hanning(const double x,const double support)
 {
   return(0.5+0.5*cos(MagickPI*x));
 }
 
-static double Hamming(const double x)
+static double Hamming(const double x,const double support)
 {
   return(0.54+0.46*cos(MagickPI*x));
 }
 
-static double Hermite(const double x)
+static double Hermite(const double x,const double support)
 {
   if (x < -1.0)
     return(0.0);
@@ -675,25 +682,18 @@ static double Hermite(const double x)
   return(0.0);
 }
 
-static double Sinc(const double x)
-{
-  if (x == 0.0)
-    return(1.0);
-  return(sin(MagickPI*x)/(MagickPI*x));
-}
-
-static double Lanczos(const double x)
+static double Lanczos(const double x,const double support)
 {
   if (x < -3.0)
     return(0.0);
   if (x < 0.0)
-    return(Sinc(-x)*Sinc(-x/3.0));
+    return(Sinc(-x,support)*Sinc(-x/3.0,support));
   if (x < 3.0)
-    return(Sinc(x)*Sinc(x/3.0));
+    return(Sinc(x,support)*Sinc(x/3.0,support));
   return(0.0);
 }
 
-static double Mitchell(const double x)
+static double Mitchell(const double x,const double support)
 {
 #define b   (1.0/3.0)
 #define c   (1.0/3.0)
@@ -718,7 +718,7 @@ static double Mitchell(const double x)
   return(0.0);
 }
 
-static double Quadratic(const double x)
+static double Quadratic(const double x,const double support)
 {
   if (x < -1.5)
     return(0.0);
@@ -731,7 +731,7 @@ static double Quadratic(const double x)
   return(0.0);
 }
 
-static double Triangle(const double x)
+static double Triangle(const double x,const double support)
 {
   if (x < -1.0)
     return(0.0);
@@ -806,7 +806,8 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
     for (n=0; n < (stop-start); n++)
     {
       contribution[n].pixel=start+n;
-      contribution[n].weight=filter_info->function(scale*(start+n-center+0.5));
+      contribution[n].weight=
+        filter_info->function(scale*(start+n-center+0.5),1.0/support);
       density+=contribution[n].weight;
     }
     if ((density != 0.0) && (density != 1.0))
@@ -930,7 +931,8 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
     for (n=0; n < (stop-start); n++)
     {
       contribution[n].pixel=start+n;
-      contribution[n].weight=filter_info->function(scale*(start+n-center+0.5));
+      contribution[n].weight=
+        filter_info->function(scale*(start+n-center+0.5),1.0/support);
       density+=contribution[n].weight;
     }
     if ((density != 0.0) && (density != 1.0))
