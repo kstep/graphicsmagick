@@ -28,8 +28,8 @@ extern int
   if (code >= (exception)->severity) \
     { \
       (exception)->severity=code; \
-      (exception)->message=reason; \
-      (exception)->qualifier=description; \
+      CloneString(&(exception)->message,reason); \
+      CloneString(&(exception)->qualifier,description); \
     } \
 }
 #define ThrowBinaryException(code,reason,description) \
@@ -75,6 +75,7 @@ extern Export ErrorHandler
 
 extern Export void
   CatchImageException(Image *),
+  DestroyExceptionInfo(ExceptionInfo *),
   GetImageException(Image *,ExceptionInfo *),
   GetExceptionInfo(ExceptionInfo *),
   MagickError(const ExceptionType,const char *,const char *),

@@ -213,6 +213,39 @@ static void DefaultWarningHandler(const ExceptionType warning,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D e s t r o y E x c e p t i o n I n f o                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DestroyExceptionInfo deallocates memory associated with an
+%  ExceptionInfo structure.
+%
+%  The format of the DestroyExceptionInfo method is:
+%
+%      void DestroyExceptionInfo(ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o exception: Specifies a pointer to an ExceptionInfo structure.
+%
+%
+*/
+Export void DestroyExceptionInfo(ExceptionInfo *exception)
+{
+  assert(exception != (ExceptionInfo *) NULL);
+  if (exception->message != (char *) NULL)
+    FreeMemory((void **) &exception->message);
+  if (exception->qualifier != (char *) NULL)
+    FreeMemory((void **) &exception->qualifier);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t E x c e p t i o n I n f o                                           %
 %                                                                             %
 %                                                                             %

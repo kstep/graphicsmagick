@@ -2143,6 +2143,10 @@ Export void DestroyImage(Image *image)
   */
   DestroyImageAttributes(image);
   /*
+    Deallocate the exception info structure.
+  */
+  DestroyExceptionInfo(&image->exception);
+  /*
     Deallocate the image pixels.
   */
   if (!image->orphan)

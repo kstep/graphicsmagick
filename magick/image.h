@@ -161,7 +161,7 @@ typedef struct _ExceptionInfo
   ExceptionType
     severity;
 
-  const char
+  char
     *message,
     *qualifier;
 } ExceptionInfo;
