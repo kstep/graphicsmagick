@@ -80,13 +80,13 @@
   Constant declaractions.
 */
 const char
-  *FontmapFilename = "fontmap.mgk";
+  *FontmapFilename = "fonts.mgk";
 
 /*
   Static declarations.
 */
 static FontInfo
-  *fontmap = (FontInfo *) NULL;
+  *fonts = (FontInfo *) NULL;
 
 static SemaphoreInfo *
   font_semaphore = (SemaphoreInfo *) NULL;
@@ -414,7 +414,7 @@ MagickExport void DestroyFontInfo(void)
     *p;
 
   AcquireSemaphore(&font_semaphore);
-  for (p=fontmap; p != (FontInfo *) NULL; )
+  for (p=fonts; p != (FontInfo *) NULL; )
   {
     if (p->format != (char *) NULL)
       LiberateMemory((void **) &p->format);
@@ -434,11 +434,11 @@ MagickExport void DestroyFontInfo(void)
       LiberateMemory((void **) &p->version);
     if (p->alias != (char *) NULL)
       LiberateMemory((void **) &p->alias);
-    fontmap=p;
+    fonts=p;
     p=p->next;
-    LiberateMemory((void **) &fontmap);
+    LiberateMemory((void **) &fonts);
   }
-  fontmap=(FontInfo *) NULL;
+  fonts=(FontInfo *) NULL;
   LiberateSemaphore(&font_semaphore);
 }
 
@@ -497,7 +497,7 @@ static void ParseFontmap(void *context,const xmlChar *name,
     return;
   font_info=(FontInfo *) AcquireMemory(sizeof(FontInfo));
   if (font_info == (FontInfo *) NULL)
-    MagickError(ResourceLimitError,"Unable to allocate fontmap",
+    MagickError(ResourceLimitError,"Unable to allocate fonts",
       "Memory allocation failed");
   memset(font_info,0,sizeof(FontInfo));
   for (i=0; (attributes[i] != (const xmlChar *) NULL); i+=2)
@@ -585,12 +585,12 @@ static void ParseFontmap(void *context,const xmlChar *name,
         break;
     }
   }
-  if (fontmap == (FontInfo *) NULL)
+  if (fonts == (FontInfo *) NULL)
     {
-      fontmap=font_info;
+      fonts=font_info;
       return;
     }
-  for (p=fontmap; p->next != (FontInfo *) NULL; p=p->next);
+  for (p=fonts; p->next != (FontInfo *) NULL; p=p->next);
   p->next=font_info;
   font_info->previous=p;
 }
@@ -603,7 +603,7 @@ MagickExport FontInfo *GetFontInfo(char *name)
 
 #if defined(HasXML)
   AcquireSemaphore(&font_semaphore);
-  if (fontmap == (FontInfo *) NULL)
+  if (fonts == (FontInfo *) NULL)
     {
       xmlSAXHandler
         SAXHandlerStruct =
@@ -656,15 +656,15 @@ MagickExport FontInfo *GetFontInfo(char *name)
         SAXHandler;
 
       /*
-        Initialize fontmap.
+        Initialize fonts.
       */
       path=GetMagickConfigurePath(FontmapFilename);
       if (path == (char *) NULL)
-        return(fontmap);
+        return(fonts);
       file=fopen(FontmapFilename,"r");
       LiberateMemory((void **) &path);
       if (file == (FILE *) NULL)
-        return(fontmap);
+        return(fonts);
       xmlSubstituteEntitiesDefault(1);
       SAXHandler=(&SAXHandlerStruct);
       parser=xmlCreatePushParserCtxt(SAXHandler,NULL,(char *) NULL,0,
@@ -688,9 +688,9 @@ MagickExport FontInfo *GetFontInfo(char *name)
   LiberateSemaphore(&font_semaphore);
 #endif
   /*
-    Search fontmap.
+    Search fonts.
   */
-  for (p=fontmap; p != (FontInfo *) NULL; p=p->next)
+  for (p=fonts; p != (FontInfo *) NULL; p=p->next)
     if ((p->name != (char *) NULL) && (LocaleCompare(p->name,name) == 0))
       break;
   return(p);

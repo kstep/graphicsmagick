@@ -149,7 +149,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     translate_geometry[MaxTextExtent];
 
   DelegateInfo
-    delegate_info;
+    *delegate_info;
 
   double
     dx_resolution,
@@ -194,12 +194,16 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   if (image_info->monochrome)
     {
-      if (!GetDelegateInfo("gs-mono",(char *) NULL,&delegate_info))
+      delegate_info=GetDelegateInfo("gs-mono",(char *) NULL);
+      if (delegate_info == (DelegateInfo *) NULL)
         return((Image *) NULL);
     }
   else
-    if (!GetDelegateInfo("gs-color",(char *) NULL,&delegate_info))
-      return((Image *) NULL);
+    {
+      delegate_info=GetDelegateInfo("gs-color",(char *) NULL);
+      if (delegate_info == (DelegateInfo *) NULL)
+        return((Image *) NULL);
+    }
   /*
     Open image file.
   */
@@ -330,7 +334,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image_info->subimage+1,image_info->subimage+image_info->subrange);
   (void) strcpy(filename,image_info->filename);
   TemporaryFilename((char *) image_info->filename);
-  FormatString(command,delegate_info.commands,image_info->antialias ? 4 : 1,
+  FormatString(command,delegate_info->commands,image_info->antialias ? 4 : 1,
     image_info->antialias ? 4 : 1,geometry,density,options,image_info->filename,
     postscript_filename);
   MagickMonitor(RenderPostscriptText,0,8);

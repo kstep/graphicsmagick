@@ -71,7 +71,7 @@ static ModuleAliases
   *module_aliases = (ModuleAliases *) NULL;
 
 static ModuleInfo
-  *module_list = (ModuleInfo *) NULL;
+  *modules = (ModuleInfo *) NULL;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -100,7 +100,7 @@ MagickExport void DestroyModuleInfo(void)
   register ModuleInfo
     *p;
 
-  for (p=module_list; p != (ModuleInfo *) NULL; )
+  for (p=modules; p != (ModuleInfo *) NULL; )
   {
     entry=p;
     p=p->next;
@@ -108,7 +108,7 @@ MagickExport void DestroyModuleInfo(void)
       LiberateMemory((void **) &entry->tag);
     LiberateMemory((void **) &entry);
   }
-  module_list=(ModuleInfo *) NULL;
+  modules=(ModuleInfo *) NULL;
 }
 
 /*
@@ -219,7 +219,7 @@ MagickExport void ExitModules(void)
   register ModuleInfo
     *p;
 
-  if (module_list != (ModuleInfo *) NULL)
+  if (modules != (ModuleInfo *) NULL)
     {
       /*
         Unload and unregister all loaded modules.
@@ -239,7 +239,7 @@ MagickExport void ExitModules(void)
       }
       module_aliases=(ModuleAliases *) NULL;
     }
-  module_list=(ModuleInfo *) NULL;
+  modules=(ModuleInfo *) NULL;
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -281,11 +281,11 @@ MagickExport ModuleInfo *GetModuleInfo(const char *tag)
   register ModuleInfo
     *p;
 
-  if (module_list == (ModuleInfo*) NULL)
+  if (modules == (ModuleInfo*) NULL)
     return((ModuleInfo*) NULL);
   if (tag == (char *) NULL)
-    return(module_list);
-  for (p=module_list; p != (ModuleInfo *) NULL; p=p->next)
+    return(modules);
+  for (p=modules; p != (ModuleInfo *) NULL; p=p->next)
     if (LocaleCompare(p->tag,tag) == 0)
       return(p);
   return((ModuleInfo *) NULL);
@@ -332,7 +332,7 @@ MagickExport void InitializeModules(void)
   /*
     Initialize ltdl.
   */
-  if (module_list != (ModuleInfo *) NULL)
+  if (modules != (ModuleInfo *) NULL)
     return;
   if (lt_dlinit() != 0)
     MagickError(DelegateError,"failed to initialise module loader",
@@ -412,7 +412,7 @@ MagickExport void InitializeModules(void)
 MagickExport char **ListModules(void)
 {
   char
-    **module_list,
+    **modules,
     *path;
 
   DIR
@@ -428,10 +428,10 @@ MagickExport char **ListModules(void)
     max_entries;
 
   max_entries=255;
-  module_list=(char **) AcquireMemory((max_entries+1)*sizeof(char *));
-  if (module_list == (char **) NULL)
+  modules=(char **) AcquireMemory((max_entries+1)*sizeof(char *));
+  if (modules == (char **) NULL)
     return((char **) NULL);
-  *module_list=(char *) NULL;
+  *modules=(char *) NULL;
   path=GetMagickConfigurePath(ModuleFilename);
   if (path == (char *) NULL)
     return((char **) NULL);
@@ -451,27 +451,27 @@ MagickExport char **ListModules(void)
     if (i >= max_entries)
       {
         max_entries<<=1;
-        ReacquireMemory((void **) &module_list,max_entries*sizeof(char *));
-        if (module_list == (char **) NULL)
+        ReacquireMemory((void **) &modules,max_entries*sizeof(char *));
+        if (modules == (char **) NULL)
           break;
       }
     /*
       Add new module name to list.
     */
-    module_list[i]=AllocateString((char *) NULL);
-    GetPathComponent(entry->d_name,BasePath,module_list[i]);
-    LocaleUpper(module_list[i]);
-    if (LocaleNCompare("IM_MOD_",module_list[i],7) == 0)
+    modules[i]=AllocateString((char *) NULL);
+    GetPathComponent(entry->d_name,BasePath,modules[i]);
+    LocaleUpper(modules[i]);
+    if (LocaleNCompare("IM_MOD_",modules[i],7) == 0)
       {
-        (void) strcpy(module_list[i],module_list[i]+10);
-        module_list[i][Extent(module_list[i])-1]='\0';
+        (void) strcpy(modules[i],modules[i]+10);
+        modules[i][Extent(modules[i])-1]='\0';
       }
     i++;
-    module_list[i]=(char *) NULL;
+    modules[i]=(char *) NULL;
     entry=readdir(directory);
   }
   (void) closedir(directory);
-  return(module_list);
+  return(modules);
 }
 
 /*
@@ -641,7 +641,7 @@ MagickExport int OpenModule(const char *module)
 MagickExport int OpenModules(void)
 {
   char
-    **module_list;
+    **modules;
 
   register char
     **p;
@@ -652,18 +652,18 @@ MagickExport int OpenModules(void)
   /*
     Load all modules.
   */
-  module_list=ListModules();
-  if (module_list == (char **) NULL)
+  modules=ListModules();
+  if (modules == (char **) NULL)
     return(False);
-  p=module_list;
+  p=modules;
   while (*p)
     OpenModule(*p++);
   /*
     Free resources.
   */
-  for (i=0; module_list[i]; i++)
-    LiberateMemory((void **) &module_list[i]);
-  LiberateMemory((void **) &module_list);
+  for (i=0; modules[i]; i++)
+    LiberateMemory((void **) &modules[i]);
+  LiberateMemory((void **) &modules);
   return(True);
 }
 
@@ -705,18 +705,18 @@ MagickExport ModuleInfo *RegisterModuleInfo(ModuleInfo *entry)
   UnregisterModuleInfo(entry->tag);
   entry->previous=(ModuleInfo *) NULL;
   entry->next=(ModuleInfo *) NULL;
-  if (module_list == (ModuleInfo *) NULL)
+  if (modules == (ModuleInfo *) NULL)
     {
       /*
         Start module list.
       */
-      module_list=entry;
+      modules=entry;
       return(entry);
     }
   /*
     Tag is added in lexographic order.
   */
-  for (p=module_list; p->next != (ModuleInfo *) NULL; p=p->next)
+  for (p=modules; p->next != (ModuleInfo *) NULL; p=p->next)
     if (LocaleCompare(p->tag,entry->tag) >= 0)
       break;
   if (LocaleCompare(p->tag,entry->tag) < 0)
@@ -739,8 +739,8 @@ MagickExport ModuleInfo *RegisterModuleInfo(ModuleInfo *entry)
   p->previous=entry;
   if (entry->previous != (ModuleInfo *) NULL)
     entry->previous->next=entry;
-  if (p == module_list)
-    module_list=entry;
+  if (p == modules)
+    modules=entry;
   return(entry);
 }
 
@@ -968,7 +968,7 @@ MagickExport int UnregisterModuleInfo(const char *tag)
     *p;
 
   assert(tag != (const char *) NULL);
-  for (p=module_list; p != (ModuleInfo *) NULL; p=p->next)
+  for (p=modules; p != (ModuleInfo *) NULL; p=p->next)
   {
     if (LocaleCompare(p->tag,tag) != 0)
       continue;
@@ -977,7 +977,7 @@ MagickExport int UnregisterModuleInfo(const char *tag)
       p->previous->next=p->next;
     else
       {
-        module_list=p->next;
+        modules=p->next;
         if (p->next != (ModuleInfo *) NULL)
           p->next->previous=(ModuleInfo *) NULL;
       }

@@ -1721,7 +1721,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     filename[MaxTextExtent];
 
   DelegateInfo
-    delegate_info;
+    *delegate_info;
 
   Image
     *image,
@@ -1762,58 +1762,58 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       image=(magick_info->decoder)(clone_info,exception);
     }
   else
-    if (!GetDelegateInfo(clone_info->magick,(char *) NULL,&delegate_info))
-      {
-        if (IsAccessible(clone_info->filename))
-          ThrowException(exception,MissingDelegateWarning,
-            "no delegate for this image format",clone_info->filename);
-        else 
-          ThrowException(exception,FileOpenWarning,"Unable to open file",
-            clone_info->filename);
-        DestroyImageInfo(clone_info);
-        return((Image *) NULL);
-      }
-    else
-      {
-        unsigned int
-          status;
+    {
+      unsigned int
+        status;
 
-        /*
-          Let our decoding delegate process the image.
-        */
-        image=AllocateImage(clone_info);
-        if (image == (Image *) NULL)
-          {
-            DestroyImageInfo(clone_info);
-            return((Image *) NULL);
-          }
-        (void) strcpy(image->filename,clone_info->filename);
-        TemporaryFilename(clone_info->filename);
-        status=
-          InvokeDelegate(clone_info,image,clone_info->magick,(char *) NULL);
-        ThrowException(exception,image->exception.severity,
-           image->exception.reason,image->exception.description);
-        DestroyImages(image);
-        image=(Image *) NULL;
-        if (status != False)
-          clone_info->temporary=True;
-        SetImageInfo(clone_info,False);
-        magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick);
-        if ((magick_info == (MagickInfo *) NULL) ||
-            (magick_info->decoder ==
-              (Image *(*)(const ImageInfo *,ExceptionInfo *)) NULL))
-          {
-            if (IsAccessible(clone_info->filename))
-              ThrowException(exception,MissingDelegateWarning,
-                "no delegate for this image format",clone_info->filename);
-            else
-              ThrowException(exception,FileOpenWarning,"Unable to open file",
-                clone_info->filename);
-            DestroyImageInfo(clone_info);
-            return((Image *) NULL);
-          }
-        image=(magick_info->decoder)(clone_info,exception);
-      }
+      delegate_info=GetDelegateInfo(clone_info->magick,(char *) NULL);
+      if (delegate_info == (DelegateInfo *) NULL)
+        {
+          if (IsAccessible(clone_info->filename))
+            ThrowException(exception,MissingDelegateWarning,
+              "no delegate for this image format",clone_info->filename);
+          else 
+            ThrowException(exception,FileOpenWarning,"Unable to open file",
+              clone_info->filename);
+          DestroyImageInfo(clone_info);
+          return((Image *) NULL);
+        }
+      /*
+        Let our decoding delegate process the image.
+      */
+      image=AllocateImage(clone_info);
+      if (image == (Image *) NULL)
+        {
+          DestroyImageInfo(clone_info);
+          return((Image *) NULL);
+        }
+      (void) strcpy(image->filename,clone_info->filename);
+      TemporaryFilename(clone_info->filename);
+      status=
+        InvokeDelegate(clone_info,image,clone_info->magick,(char *) NULL);
+      ThrowException(exception,image->exception.severity,
+        image->exception.reason,image->exception.description);
+      DestroyImages(image);
+      image=(Image *) NULL;
+      if (status != False)
+        clone_info->temporary=True;
+      SetImageInfo(clone_info,False);
+      magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick);
+      if ((magick_info == (MagickInfo *) NULL) ||
+          (magick_info->decoder ==
+            (Image *(*)(const ImageInfo *,ExceptionInfo *)) NULL))
+        {
+          if (IsAccessible(clone_info->filename))
+            ThrowException(exception,MissingDelegateWarning,
+              "no delegate for this image format",clone_info->filename);
+          else
+            ThrowException(exception,FileOpenWarning,"Unable to open file",
+              clone_info->filename);
+          DestroyImageInfo(clone_info);
+          return((Image *) NULL);
+        }
+      image=(magick_info->decoder)(clone_info,exception);
+    }
   if (clone_info->temporary)
     {
       (void) remove(clone_info->filename);
@@ -2126,7 +2126,7 @@ MagickExport Image *ReadImages(const ImageInfo *image_info,
 MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
 {
   DelegateInfo
-    delegate_info;
+    *delegate_info;
 
   ImageInfo
     *clone_info;
@@ -2153,9 +2153,11 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
   if ((image->next == (Image *) NULL) || clone_info->adjoin)
     if ((image->previous == (Image *) NULL) && !IsImageTainted(image))
       if (IsAccessible(image->magick_filename))
-        if (GetDelegateInfo(image->magick,clone_info->magick,&delegate_info))
-          if (clone_info->page == (char *) NULL)          
-            if (delegate_info.direction == 0)
+        {
+          delegate_info=GetDelegateInfo(image->magick,clone_info->magick);
+          if ((delegate_info != (DelegateInfo *) NULL) &&
+              (clone_info->page == (char *) NULL))
+            if (delegate_info->direction == 0)
               {
                 /*
                   Let our bi-directional delegate process the image.
@@ -2166,6 +2168,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
                 DestroyImageInfo(clone_info);
                 return(!status);
               }
+        }
   /*
     Call appropriate image writer based on image type.
   */
@@ -2179,35 +2182,35 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
       status=(magick_info->encoder)(clone_info,image);
     }
   else
-    if (!GetDelegateInfo((char *) NULL,clone_info->magick,&delegate_info))
-      {
-        magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick);
-        if ((magick_info == (MagickInfo *) NULL) ||
-            (magick_info->encoder ==
-              (unsigned int (*)(const ImageInfo *,Image *)) NULL))
-          magick_info=(MagickInfo *) GetMagickInfo(image->magick);
-        if ((magick_info == (MagickInfo *) NULL) ||
-            (magick_info->encoder ==
-             (unsigned int (*)(const ImageInfo *,Image *)) NULL))
-          {
-            DestroyImageInfo(clone_info);
-            ThrowBinaryException(MissingDelegateWarning,
-              "no encode delegate for this image format",clone_info->magick);
-          }
-        status=(magick_info->encoder)(clone_info,image);
-      }
-    else
-      {
-        /*
-          Let our encoding delegate process the image.
-        */
-        TemporaryFilename(image->filename);
-        status=
-          InvokeDelegate(clone_info,image,(char *) NULL,clone_info->magick);
-        (void) remove(image->filename);
-        DestroyImageInfo(clone_info);
-        return(!status);
-      }
+    {
+      delegate_info=GetDelegateInfo((char *) NULL,clone_info->magick);
+      if (delegate_info != (DelegateInfo *) NULL)
+        {
+          /*
+            Let our encoding delegate process the image.
+          */
+          TemporaryFilename(image->filename);
+          status=
+            InvokeDelegate(clone_info,image,(char *) NULL,clone_info->magick);
+          (void) remove(image->filename);
+          DestroyImageInfo(clone_info);
+          return(!status);
+        }
+      magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick);
+      if ((magick_info == (MagickInfo *) NULL) ||
+          (magick_info->encoder ==
+            (unsigned int (*)(const ImageInfo *,Image *)) NULL))
+        magick_info=(MagickInfo *) GetMagickInfo(image->magick);
+      if ((magick_info == (MagickInfo *) NULL) ||
+          (magick_info->encoder ==
+           (unsigned int (*)(const ImageInfo *,Image *)) NULL))
+        {
+          DestroyImageInfo(clone_info);
+          ThrowBinaryException(MissingDelegateWarning,
+            "no encode delegate for this image format",clone_info->magick);
+        }
+      status=(magick_info->encoder)(clone_info,image);
+    }
   (void) strcpy(image->magick,clone_info->magick);
   DestroyImageInfo(clone_info);
   if (image->status)

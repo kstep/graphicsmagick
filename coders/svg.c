@@ -56,6 +56,9 @@
 #include "magick.h"
 #include "defines.h"
 #if defined(HasXML)
+#ifdef WIN32
+#include <win32config.h>
+#endif
 #include <libxml/parser.h>
 #include <libxml/xmlmemory.h>
 #include <libxml/parserInternals.h>
