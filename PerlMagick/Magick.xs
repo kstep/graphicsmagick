@@ -467,8 +467,20 @@ static double constant(char *name,int sans)
   errno=0;
   switch (*name)
   {
+    case 'B':
+    {
+      if (strEQ(name,"BlobError"))
+        return(BlobError);
+      if (strEQ(name,"BlobWarning"))
+        return(BlobWarning);
+      break;
+    }
     case 'C':
     {
+      if (strEQ(name,"CacheError"))
+        return(CacheError);
+      if (strEQ(name,"CorruptImageError"))
+        return(CorruptImageError);
       if (strEQ(name,"CorruptImageWarning"))
         return(CorruptImageWarning);
       break;
@@ -481,12 +493,16 @@ static double constant(char *name,int sans)
     }
     case 'F':
     {
+      if (strEQ(name,"FileOpenError"))
+        return(FileOpenError);
       if (strEQ(name,"FileOpenWarning"))
         return(FileOpenWarning);
       break;
     }
     case 'M':
     {
+      if (strEQ(name,"MissingDelegateError"))
+        return(MissingDelegateError);
       if (strEQ(name,"MissingDelegateWarning"))
         return(MissingDelegateWarning);
       if (strEQ(name,"MissingPluginWarning"))
@@ -513,6 +529,8 @@ static double constant(char *name,int sans)
     {
       if (strEQ(name,"ResourceLimitError"))
         return(ResourceLimitError);
+      if (strEQ(name,"ResourceLimitWarning"))
+        return(ResourceLimitWarning);
       break;
     }
     case 'S':
