@@ -73,6 +73,7 @@ static ExceptionInfo
   Forward declarations.
 */
 static unsigned int
+  WritePTIFImage(const ImageInfo *,Image *),
   WriteTIFFImage(const ImageInfo *,Image *);
 
 /*
@@ -985,7 +986,7 @@ ModuleExport void RegisterTIFFImage(void)
 #endif
   entry=SetMagickInfo("PTIF");
   entry->decoder=ReadTIFFImage;
-  entry->encoder=WriteTIFFImage;
+  entry->encoder=WritePTIFImage;
   entry->adjoin=False;
   entry->description=AcquireString("Pyramid encoded TIFF");
   entry->module=AcquireString("TIFF");
@@ -1036,6 +1037,90 @@ ModuleExport void UnregisterTIFFImage(void)
   (void) UnregisterMagickInfo("TIFF");
 #endif
 }
+
+#if defined(HasTIFF)
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e P T I F I m a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  WritePTIFImage() writes an image in the pyrimid-encoded Tagged image file
+%  format.
+%
+%  The format of the WritePTIFImage method is:
+%
+%      unsigned int WritePTIFImage(const ImageInfo *image_info,Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method WritePTIFImage return True if the image is written.
+%      False is returned is there is of a memory shortage or if the image
+%      file cannot be opened for writing.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%    o image:  A pointer to a Image structure.
+%
+%
+*/
+static unsigned int WritePTIFImage(const ImageInfo *image_info,Image *image)
+{
+  Image
+    *clone_image,
+    *pyramid_image;
+
+  ImageInfo
+    *clone_info;
+
+  unsigned int
+    status;
+
+  /*
+    Create pyramid-encoded TIFF image.
+  */
+  pyramid_image=CloneImage(image,0,0,True,&image->exception);
+  if (pyramid_image == (Image *) NULL)
+    ThrowWriterException(FileOpenError,"Unable to pyramid-encode image",image);
+  do
+  {
+    clone_image=CloneImage(pyramid_image,0,0,True,&image->exception);
+    if (clone_image == (Image *) NULL)
+      ThrowWriterException(FileOpenError,"Unable to pyramid-encode image",
+        image);
+    pyramid_image->next=ZoomImage(clone_image,pyramid_image->columns/2,
+      pyramid_image->rows/2,&image->exception);
+    DestroyImage(clone_image);
+    if (pyramid_image->next == (Image *) NULL)
+      ThrowWriterException(FileOpenError,"Unable to pyramid-encode image",
+        image);
+    pyramid_image->next->previous=pyramid_image;
+    pyramid_image=pyramid_image->next;
+  } while ((pyramid_image->columns > 64) && (pyramid_image->rows > 64));
+  while (pyramid_image->previous != (Image *) NULL)
+    pyramid_image=pyramid_image->previous;
+  /*
+    Write pyramid-encoded TIFF image.
+  */
+  clone_info=CloneImageInfo(image_info);
+  clone_info->adjoin=True;
+  status=WriteTIFFImage(clone_info,pyramid_image);
+  DestroyImageList(pyramid_image);
+  DestroyImageInfo(clone_info);
+  return(status);
+}
+#else
+static unsigned int WritePTIFImage(const ImageInfo *image_info,Image *image)
+{
+  ThrowBinaryException(MissingDelegateError,"TIFF library is not available",
+    image->filename);
+}
+#endif
 
 #if defined(HasTIFF)
 /*
@@ -1260,7 +1345,6 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     *scanline;
 
   unsigned int
-    adjoin,
     scene,
     status;
 
@@ -1277,39 +1361,6 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"Unable to open file",image);
-  adjoin=image_info->adjoin;
-  if (LocaleCompare(image_info->magick,"PTIF") == 0)
-    {
-      Image
-        *clone_image,
-        *pyramid_image;
-
-      /*
-        Pyramid encode TIFF image.
-      */
-      pyramid_image=CloneImage(image,0,0,True,&image->exception);
-      if (pyramid_image == (Image *) NULL)
-        ThrowWriterException(FileOpenError,"Unable to pyramid encode image",
-          image);
-      do
-      {
-        clone_image=CloneImage(pyramid_image,0,0,True,&image->exception);
-        if (clone_image == (Image *) NULL)
-          return(False);
-        pyramid_image->next=ZoomImage(clone_image,pyramid_image->columns >> 1,
-          pyramid_image->rows >> 1,&image->exception);
-        DestroyImage(clone_image);
-        if (pyramid_image->next == (Image *) NULL)
-          ThrowWriterException(FileOpenError,"Unable to pyramid encode image",
-            image);
-        pyramid_image->next->previous=pyramid_image;
-        pyramid_image=pyramid_image->next;
-      } while ((pyramid_image->columns > 64) && (pyramid_image->rows > 64));
-      image=pyramid_image;
-      while (image->previous != (Image *) NULL)
-        image=image->previous;
-      adjoin=True;
-    }
   tiff_exception=(&image->exception);
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
@@ -1545,7 +1596,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       WriteNewsProfile(tiff,TIFFTAG_RICHTIFFIPTC,image);
 #endif
 #endif
-    if (adjoin && (GetImageListSize(image) > 1))
+    if (image_info->adjoin && (GetImageListSize(image) > 1))
       {
         (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
         (void) TIFFSetField(tiff,TIFFTAG_PAGENUMBER,(unsigned short)
@@ -1747,7 +1798,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           bit,
           byte,
           polarity;
- 
+
         if ((image_info->type == PaletteType) ||
             !IsMonochromeImage(image,&image->exception))
           {
@@ -1830,7 +1881,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       break;
     image=GetNextImage(image);
     MagickMonitor(SaveImagesText,scene++,GetImageListSize(image));
-  } while (adjoin);
+  } while (image_info->adjoin);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   TIFFClose(tiff);
@@ -1856,8 +1907,6 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       (void) remove(filename);
       CloseBlob(image);
     }
-  if (LocaleCompare(image_info->magick,"PTIF") == 0)
-    DestroyImageList(image);
   return(True);
 }
 #else
