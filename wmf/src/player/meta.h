@@ -795,6 +795,8 @@ static void meta_polygons (wmfAPI* API,wmfRecord* Record)
 	U16 par_U16_y;
 
 	U16 num_pars;
+	U16 count;
+	U16 style;
 
 	U16 i;
 	U16 j;
@@ -832,10 +834,12 @@ static void meta_polygons (wmfAPI* API,wmfRecord* Record)
 		return;
 	}
 
+	count = 0;
 	num_pars = 0;
 	skip_record = 0;
 	for (i = 0; i < polypoly.npoly; i++)
 	{	polypoly.count[i] = ParU16 (API,Record,(unsigned long) (1 + i));
+		count += polypoly.count[i] + 2; /* for polypoly->polyline fill constructor */
 		num_pars += polypoly.count[i];
 		if ((polypoly.count[i] < 3) && (skip_record == 0))
 		{	WMF_DEBUG (API,"strange polygon in polypolygon list; skipping record...");
@@ -907,11 +911,39 @@ static void meta_polygons (wmfAPI* API,wmfRecord* Record)
 	{	FR->draw_polypolygon (API,&polypoly);
 	}
 	else if (FR->draw_polygon)
-	{	for (i = 0; i < polypoly.npoly; i++)
-		{	polyline.dc = polypoly.dc;
-			polyline.pt = polypoly.pt[i];
-			polyline.count = polypoly.count[i];
-			if ((polyline.count > 2) && polyline.pt) FR->draw_polygon (API,&polyline);
+	{	if (TO_FILL (&polypoly))
+		{	style = polypoly.dc->pen->lopnStyle; /* [TODO: use macros ??] */
+			polypoly.dc->pen->lopnStyle = PS_NULL;
+
+			polyline.dc = polypoly.dc;
+			polyline.pt = (wmfD_Coord*) wmf_malloc (API, count * sizeof (wmfD_Coord));
+			polyline.count = 0;
+
+			if (ERR (API))
+			{	WMF_DEBUG (API,"bailing...");
+				return;
+			}
+
+			polypoly_construct (API, &polypoly, &polyline, 0);
+
+			if (polyline.count > 2) FR->draw_polygon (API,&polyline);
+
+			wmf_free (API, polyline.pt);
+
+			polypoly.dc->pen->lopnStyle = style;
+		}
+		if (TO_DRAW (&polypoly))
+		{	style = polypoly.dc->brush->lbStyle; /* [TODO: use macros ??] */
+			polypoly.dc->brush->lbStyle = BS_NULL;
+			for (i = 0; i < polypoly.npoly; i++)
+			{	polyline.dc = polypoly.dc;
+				polyline.pt = polypoly.pt[i];
+				polyline.count = polypoly.count[i];
+				if ((polyline.count > 2) && polyline.pt)
+				{	FR->draw_polygon (API,&polyline);
+				}
+			}
+			polypoly.dc->brush->lbStyle = style;
 		}
 	}
 
@@ -920,6 +952,87 @@ static void meta_polygons (wmfAPI* API,wmfRecord* Record)
 	}
 	wmf_free (API, polypoly.pt);
 	wmf_free (API, polypoly.count);
+}
+
+static void polypoly_construct (wmfAPI* API,wmfPolyPoly_t* polypoly,wmfPolyLine_t* polyline,U16 ipoly)
+{	U16 count = polypoly->count[ipoly];
+	U16 i;
+	U16 imin;
+	U16 last;
+
+	double x2;
+	double y2;
+	double r2;
+	double r2_min;
+
+	if ((polyline->pt == 0) || (polypoly->pt == 0)) return; // erk!!
+
+	if ((polypoly->pt[ipoly] == 0) || (polypoly->count[ipoly] < 3)) return;
+
+	while ((polypoly->pt[ipoly][0].x == polypoly->pt[ipoly][count-1].x)
+	    && (polypoly->pt[ipoly][0].y == polypoly->pt[ipoly][count-1].y))
+	{
+		count--;
+		if (count < 3) break;
+	}
+	if (count < 3) return;
+
+	last = 0;
+	if (ipoly < (polypoly->npoly - 1))
+	{	if ((polypoly->pt[ipoly+1] == 0) || (polypoly->count[ipoly+1] < 3))
+		{	last = 1; // erk!!
+		}
+	}
+	else
+	{	last = 1; /* last poly, yay! */
+	}
+	if (last)
+	{	for (i = 0; i < count; i++)
+		{	polyline->pt[polyline->count].x = polypoly->pt[ipoly][i].x;
+			polyline->pt[polyline->count].y = polypoly->pt[ipoly][i].y;
+			polyline->count++;
+		}
+		polyline->pt[polyline->count].x = polypoly->pt[ipoly][0].x;
+		polyline->pt[polyline->count].y = polypoly->pt[ipoly][0].y;
+		polyline->count++;
+
+		return;
+	}
+
+	/* find polygon point closest to point 0 in next polygon [TODO: improve this??]
+	 */
+	imin = 0;
+	for (i = 0; i < count; i++)
+	{	x2 = (double) polypoly->pt[ipoly][i].x - (double) polypoly->pt[ipoly+1][0].x;
+		x2 *= x2;
+		y2 = (double) polypoly->pt[ipoly][i].y - (double) polypoly->pt[ipoly+1][0].y;
+		y2 *= y2;
+		r2 = x2 + y2;
+		if (i == 0)
+		{	r2_min = r2;
+		}
+		else if (r2 < r2_min)
+		{	r2_min = r2;
+			imin = i;
+		}
+	}
+
+	for (i = 0; i <= imin; i++)
+	{	polyline->pt[polyline->count].x = polypoly->pt[ipoly][i].x;
+		polyline->pt[polyline->count].y = polypoly->pt[ipoly][i].y;
+		polyline->count++;
+	}
+
+	polypoly_construct (API, polypoly, polyline, ipoly + 1);
+
+	for (i = imin; i < count; i++)
+	{	polyline->pt[polyline->count].x = polypoly->pt[ipoly][i].x;
+		polyline->pt[polyline->count].y = polypoly->pt[ipoly][i].y;
+		polyline->count++;
+	}
+	polyline->pt[polyline->count].x = polypoly->pt[ipoly][0].x;
+	polyline->pt[polyline->count].y = polypoly->pt[ipoly][0].y;
+	polyline->count++;
 }
 
 static void meta_round (wmfAPI* API,wmfRecord* Record)

@@ -210,6 +210,8 @@ static void meta_palette_create (wmfAPI*,wmfRecord*);
 static void meta_delete (wmfAPI*,wmfRecord*);
 static void meta_unused (wmfAPI*,wmfRecord*);
 
+static void polypoly_construct (wmfAPI*,wmfPolyPoly_t*,wmfPolyLine_t*,U16);
+
 static void diagnose_object (wmfAPI*,unsigned int,wmfObject*);
 
 /* In: player.c
