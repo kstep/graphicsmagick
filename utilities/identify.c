@@ -203,21 +203,6 @@ int main(int argc,char **argv)
       {
         switch(*(option+1))
         {
-          case 'f':
-          {
-            if (LocaleNCompare("format",option+1,2) == 0)
-              {
-                if (*option == '-')
-                  {
-                    i++;
-                    if (i == argc)
-                      MagickError(OptionError,"Missing format string",option);
-                  }
-                break;
-              }
-            MagickError(OptionError,"Unrecognized option",option);
-            break;
-          }
           case 'c':
           {
             if (LocaleNCompare("cache",option+1,3) == 0)
@@ -236,6 +221,11 @@ int main(int argc,char **argv)
           }
           case 'd':
           {
+            if (LocaleNCompare("debug",option+1,3) == 0)
+              {
+                image_info->debug=(*option == '-');
+                break;
+              }
             if (LocaleNCompare("density",option+1,3) == 0)
               {
                 CloneString(&image_info->density,(char *) NULL);
@@ -245,6 +235,21 @@ int main(int argc,char **argv)
                     if ((i == argc) || !IsGeometry(argv[i]))
                       MagickError(OptionError,"Missing geometry",option);
                     (void) CloneString(&image_info->density,argv[i]);
+                  }
+                break;
+              }
+            MagickError(OptionError,"Unrecognized option",option);
+            break;
+          }
+          case 'f':
+          {
+            if (LocaleNCompare("format",option+1,2) == 0)
+              {
+                if (*option == '-')
+                  {
+                    i++;
+                    if (i == argc)
+                      MagickError(OptionError,"Missing format string",option);
                   }
                 break;
               }
