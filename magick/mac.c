@@ -405,13 +405,13 @@ Export int ImageFormatConflict(const char *magick)
   OSErr
     status,
     volume;
-    
+
   short
     index;
-  
+
   Str255
     volume_name;
-  
+
   StringPtr
     p;
 
@@ -697,19 +697,17 @@ static OSErr MacGSSetWorkingFolder(char *directory)
     event;
 
   DescType
-    folder_type;
+    folder_type = 'wfdr';
 
   OSErr
     error;
 
   OSType
-    id;
+    id = 'GPLT';
 
   /*
     Send the Apple Event.
   */
-  folder_type='wfdr';
-  id='GPLT';
   AECreateDesc(typeNull,NULL,0,&application_descriptor);
   AECreateDesc(typeChar,directory,strlen(directory),&path_descriptor);
   (void) AECreateDesc(typeType,&folder_type,sizeof(DescType),&type_descriptor);
@@ -1027,7 +1025,7 @@ Image *ReadPICTImage(const ImageInfo *image_info)
 
   Image
     *image;
-    
+
   int
     depth,
     status,
@@ -1038,6 +1036,9 @@ Image *ReadPICTImage(const ImageInfo *image_info)
 
   PictInfo
     picture_info;
+
+  QDErr
+    theErr = noErr;
 
   Rect
     rectangle;
@@ -1074,22 +1075,23 @@ Image *ReadPICTImage(const ImageInfo *image_info)
   (void) ReadBlob(image,PICTHeaderSize,*(char **) picture_handle);
   status=
     ReadBlob(image,image->filesize-PICTHeaderSize,*(char **) picture_handle);
-  HUnlock((Handle) picture_handle);
   if (status == False)
     {
       DisposeHandle((Handle) picture_handle);
       PrematureExit(CorruptImageWarning,"Unable to read image data",image);
     }
   GetGWorld(&port,&device);
-  status=NewGWorld(&graphic_world,0,&(**picture_handle).picFrame,nil,nil,0);
-  if (status != noErr)
+  theErr=NewGWorld(&graphic_world,0,&(**picture_handle).picFrame,nil,nil,
+    useTempMem|keepLocal);
+  if (theErr != noErr && graphic_world == nil)
     {
       DisposeHandle((Handle) picture_handle);
       PrematureExit(ResourceLimitWarning,"Unable to allocate memory",image);
     }
+  HUnlock((Handle) picture_handle);
   SetGWorld(graphic_world,nil);
-  status=GetPictInfo(picture_handle,&picture_info,0,1,systemMethod,0);
-  if (status != noErr)
+  theErr=GetPictInfo(picture_handle,&picture_info,0,1,systemMethod,0);
+  if (theErr != noErr)
     {
       DisposeGWorld(graphic_world);
       DisposeHandle((Handle) picture_handle);
@@ -1133,11 +1135,11 @@ Image *ReadPICTImage(const ImageInfo *image_info)
       image->class=PseudoClass;
       image->colors=(*(picture_info.theColorTable))->ctSize;
       image->colormap=(PixelPacket *)
-        AllocateMemory(image->colors*sizeof(PixelPacket));
+        AllocateMemory(image->colors*sizeof(ColorPacket));
       if (image->colormap == (PixelPacket *) NULL)
         {
           if (picture_info.theColorTable != nil)
-            DisposeHandle((Handle) picture_info.theColorTable); 
+            DisposeHandle((Handle) picture_info.theColorTable);
           DisposeGWorld(graphic_world);
           DisposeHandle((Handle) picture_handle);
           PrematureExit(ResourceLimitWarning,"Unable to allocate memory",image);
@@ -1228,7 +1230,7 @@ static Boolean SearchForFile(OSType creator_type,OSType file_type,FSSpec *file,
     parameter_info;
 
   long
-    buffer_size;
+    buffer_size = 16384;
 
   OSErr
     error;
@@ -1239,7 +1241,6 @@ static Boolean SearchForFile(OSType creator_type,OSType file_type,FSSpec *file,
   ProcessSerialNumber
     serial_number;
 
-  buffer_size=16384;
   serial_number.lowLongOfPSN=kCurrentProcess;
   serial_number.highLongOfPSN=0;
   application_info.processInfoLength=sizeof(ProcessInfoRec);
