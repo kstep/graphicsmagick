@@ -1110,13 +1110,11 @@ MagickExport unsigned int CompositeImage(Image *image,
   long
     y;
 
-  register const PixelPacket
-    *p;
-
   register long
     x;
 
   register PixelPacket
+    *p,
     *q;
 
   /*
@@ -1178,11 +1176,10 @@ MagickExport unsigned int CompositeImage(Image *image,
       {
         if (((y+y_offset) < 0) || ((y+y_offset) >= (long) image->rows))
           continue;
-        p=AcquireImagePixels(composite_image,0,y,composite_image->columns,1,
-          &composite_image->exception);
+        p=GetImagePixels(composite_image,0,y,composite_image->columns,1);
         q=GetImagePixels(image,0,y+y_offset,image->columns,1);
         r=GetImagePixels(displace_image,0,y,displace_image->columns,1);
-        if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL) ||
+        if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL) ||
             (r == (PixelPacket *) NULL))
           break;
         q+=x_offset;
@@ -1272,9 +1269,8 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
       if ((x-x_offset) >= (long) composite_image->columns)
         break;
-      p=AcquireImagePixels(composite_image,x-x_offset,y-y_offset,1,1,
-        &composite_image->exception);
-      if (p == (const PixelPacket *) NULL)
+      p=GetImagePixels(composite_image,x-x_offset,y-y_offset,1,1);
+      if (p == (PixelPacket *) NULL)
         break;
       composite_indexes=GetIndexes(composite_image);
       switch (compose)
