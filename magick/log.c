@@ -583,11 +583,11 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
     {
       FormatString(timestamp,"%02d:%02d:%02d",
         time_meridian->tm_hour,time_meridian->tm_min,time_meridian->tm_sec);
-      (void) fprintf(log_info->file,"%.1024s %0.2fu %ld:%02ld %ld "
-        "%.1024s/%.1024s/%lu/%.1024s:%c  %.1024s\n",timestamp,user_time,
+      (void) fprintf(log_info->file,"%.1024s %ld:%02ld %0.2fu %ld "
+        "%.1024s/%.1024s/%lu/%.1024s:%c  %.1024s\n",timestamp,
         (long) (elapsed_time/60.0),(long) ceil(fmod(elapsed_time,60.0)),
-        (long) getpid(),module,method,line,domain,strlen(event) > 20 ? '\n' :
-        ' ',event);
+        user_time,(long) getpid(),module,method,line,domain,
+        strlen(event) > 20 ? '\n' : ' ',event);
     }
   else
     {
@@ -618,11 +618,11 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
       (void) fprintf(log_info->file,"<record>\n");
       (void) fprintf(log_info->file,"  <timestamp>%.1024s</timestamp>\n",
         timestamp);
-      (void) fprintf(log_info->file,"  <user-time>%0.3f</user-time>\n",
-        user_time);
       (void) fprintf(log_info->file,
         "  <elapsed-time>%ld:%02ld</elapsed-time>\n",
         (long) (elapsed_time/60.0),(long) ceil(fmod(elapsed_time,60.0)));
+      (void) fprintf(log_info->file,"  <user-time>%0.3f</user-time>\n",
+        user_time);
       (void) fprintf(log_info->file,"  <pid>%ld</pid>\n",(long) getpid());
       (void) fprintf(log_info->file,"  <module>%.1024s</module>\n",module);
       (void) fprintf(log_info->file,"  <method>%.1024s</method>\n",method);
