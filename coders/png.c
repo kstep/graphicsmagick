@@ -4819,10 +4819,10 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
        palette;
 
     int
-       IsPseudo,
+       IsPalette,
        not_valid;
 
-    IsPseudo=image->storage_class==PseudoClass;
+    IsPalette=image->storage_class==PseudoClass && image->colors <= 256;
 
 #if defined(PNG_WRITE_EMPTY_PLTE_SUPPORTED) || \
     defined(PNG_MNG_FEATURES_SUPPORTED)
@@ -4832,7 +4832,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     */
     if (need_local_plte && use_global_plte && !all_images_are_gray)
       {
-        if (IsPseudo)
+        if (IsPalette)
           {
             /*
               When equal_palettes is true, this image has the same palette
@@ -5018,7 +5018,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     /*
       Select the color type.
     */
-    if (optimize || IsPseudo ||
+    if (optimize || IsPalette ||
         image_info->type==BilevelType)
       {
         if (ImageIsMonochrome(image))
@@ -5031,7 +5031,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     matte=image->matte;
     if (!optimize && matte)
       ping_info->color_type=PNG_COLOR_TYPE_RGB_ALPHA;
-    if (matte && (optimize || IsPseudo))
+    if (matte && (optimize || IsPalette))
       {
         register const PixelPacket
           *p=NULL;
@@ -5143,7 +5143,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     matte=image->matte;
     if (ping_info->valid & PNG_INFO_tRNS)
       image->matte=False;
-    if ((optimize || IsPseudo) &&
+    if ((optimize || IsPalette) &&
         ImageIsGray(image) && (!image->matte || image->depth >= 8))
       {
         if (image->matte)
@@ -5169,7 +5169,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                   ping_info->bit_depth<<=1;
               }
             else if (optimize && ping_info->color_type == PNG_COLOR_TYPE_GRAY &&
-                image->colors < 17 && IsPseudo)
+                image->colors < 17 && IsPalette)
               {
 
               /* Check if grayscale is reducible */
@@ -5201,7 +5201,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           }
       }
     else
-      if (IsPseudo)
+      if (IsPalette)
       {
         if (image->depth <= 8)
           {
@@ -5501,19 +5501,19 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     rowbytes=image->columns;
     if (image->depth == 8)
       {
-        if ((optimize || IsPseudo) &&
+        if ((optimize || IsPalette) &&
             ImageIsGray(image))
           rowbytes*=(image->matte ? 2 : 1);
         else
           {
-            if (!IsPseudo)
+            if (!IsPalette)
               rowbytes*=(image->matte ? 4 : 3);
           }
       }
     else
       if (image->depth == 16)
         {
-          if ((optimize || IsPseudo) &&
+          if ((optimize || IsPalette) &&
               ImageIsGray(image))
             rowbytes*=(image->matte ? 4 : 2);
           else
@@ -5532,7 +5532,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     */
     for (i=0; i < (long) image->rows; i++)
       scanlines[i]=png_pixels+(rowbytes*i);
-    if ((optimize || IsPseudo ||
+    if ((optimize || IsPalette ||
         image_info->type == BilevelType) &&
         !image->matte && ImageIsMonochrome(image))
       {
@@ -5543,7 +5543,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         {
           if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
             break;
-          if (IsPseudo)
+          if (IsPalette)
                 (void) PopImagePixels(image,(QuantumType) GrayQuantum,
                   scanlines[y]);
           else
@@ -5558,7 +5558,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     else
       {
       if ((!image->matte || (ping_info->bit_depth >= QuantumDepth)) &&
-          (optimize || IsPseudo) && ImageIsGray(image))
+          (optimize || IsPalette) && ImageIsGray(image))
         {
           for (y=0; y < (long) image->rows; y++)
           {
@@ -5566,7 +5566,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               break;
             if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
               {
-                if (IsPseudo)
+                if (IsPalette)
                   (void) PopImagePixels(image,(QuantumType) GrayQuantum,
                      scanlines[y]);
                 else
@@ -5617,7 +5617,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         }
       else
         {
-          if ((image->depth > 8) || !IsPseudo)
+          if ((image->depth > 8) || !IsPalette)
             for (y=0; y < (long) image->rows; y++)
             {
               if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
