@@ -222,67 +222,98 @@ void CNtMagickView::DoDisplayError(CString szFunction, CString szCause)
 void CNtMagickView::DoDisplayImage()
 {
   if (m_pImage == NULL)
-  {
-    return;
-  }
+    {
+      return;
+    }
 
   CDC *pDC = GetDC();
   if (pDC != NULL)
-  {
-    CRect rectClient;
-    GetClientRect(rectClient);
+    {
+      CRect rectClient;
+      GetClientRect(rectClient);
 
-    // Clear the background
-    pDC->FillSolidRect(rectClient,pDC->GetBkColor());
+      // Clear the background
+      pDC->FillSolidRect(rectClient,pDC->GetBkColor());
 
-    // Determine the size of the scaled image
-    // Don't allow image to be zoomed
-    CSize sizeScaled = Scale(CSize(m_pImage->columns(),m_pImage->rows()), rectClient.Size());
-
-    // Calculate the top-left co-ordinates of the image
-    CPoint pt = rectClient.TopLeft();
-    int nImageX= ((rectClient.Width()-sizeScaled.cx)/2)+ pt.x ;
-    int nImageY = ((rectClient.Height()-sizeScaled.cy)/2) + pt.y;
-
-    // Set up the Windows bitmap header
-    BITMAPINFOHEADER bmi;
-    bmi.biSize = sizeof(BITMAPINFOHEADER);
-    bmi.biWidth = m_pImage->columns();
-    bmi.biHeight = (-1)*m_pImage->rows();
-    bmi.biPlanes = 1;
-    bmi.biBitCount = 32;
-    bmi.biCompression = BI_RGB;
-    bmi.biSizeImage = 0;
-    bmi.biXPelsPerMeter = 0;
-    bmi.biYPelsPerMeter = 0;
-    bmi.biClrUsed = 0;
-    bmi.biClrImportant = 0;
+      // Set up the Windows bitmap header
+      BITMAPINFOHEADER bmi;
+      bmi.biSize = sizeof(BITMAPINFOHEADER);
+      bmi.biWidth = m_pImage->columns();
+      bmi.biHeight = (-1)*m_pImage->rows();
+      bmi.biPlanes = 1;
+      bmi.biBitCount = 32;
+      bmi.biCompression = BI_RGB;
+      bmi.biSizeImage = 0;
+      bmi.biXPelsPerMeter = 0;
+      bmi.biYPelsPerMeter = 0;
+      bmi.biClrUsed = 0;
+      bmi.biClrImportant = 0;
 
 #if QuantumDepth == 8
-    // Extract the pixels from Magick++ image object
-    PixelPacket *pPixels = m_pImage->getPixels(0,0,m_pImage->columns(),m_pImage->rows());
+      // Determine the size of the scaled image
+      // Don't allow image to be zoomed
+      CSize sizeScaled = Scale(CSize(m_pImage->columns(),m_pImage->rows()), rectClient.Size());
 
-    // Blast it to the device context
-    SetStretchBltMode(pDC->m_hDC,COLORONCOLOR);
+      // Calculate the top-left co-ordinates of the image
+      CPoint pt = rectClient.TopLeft();
+      int nImageX= ((rectClient.Width()-sizeScaled.cx)/2)+ pt.x ;
+      int nImageY = ((rectClient.Height()-sizeScaled.cy)/2) + pt.y;
 
-    StretchDIBits(pDC->m_hDC,
-                  nImageX,
-                  nImageY,
-                  sizeScaled.cx,
-                  sizeScaled.cy,
-                  0,
-                  0,
-                  m_pImage->columns(),
-                  m_pImage->rows(),
-                  pPixels,
-                  (BITMAPINFO *)&bmi,
-                  DIB_RGB_COLORS,
-                  SRCCOPY);
+      // Extract the pixels from Magick++ image object
+      PixelPacket *pPixels = m_pImage->getPixels(0,0,m_pImage->columns(),m_pImage->rows());
+
+      // Blast it to the device context
+      SetStretchBltMode(pDC->m_hDC,COLORONCOLOR);
+
+      StretchDIBits
+        (
+         pDC->m_hDC,		// handle of device context 
+         nImageX,		// x-coordinate of upper-left corner of dest. rect. 
+         nImageY,		// y-coordinate of upper-left corner of dest. rect.
+         sizeScaled.cx,		// width of destination rectangle 
+         sizeScaled.cy,		// height of destination rectangle
+         0,			// x-coordinate of upper-left corner of source rect. 
+         0, 			// y-coordinate of upper-left corner of source rect
+         m_pImage->columns(),	// width of source rectangle 
+         m_pImage->rows(),	// height of source rectangle 
+         pPixels,		// address of bitmap bits
+         (BITMAPINFO *)&bmi,	// address of bitmap data 
+         DIB_RGB_COLORS,	// usage 
+         SRCCOPY		// raster operation code
+         );
 #elif QuantumDepth == 16
-# error "This code only works when ImageMagick is compiled with 8-bit Quantum size"
+      // Extract the pixels from Magick++ image object and down convert to 8-bit quantum
+
+      PixelPacket *pPixels = m_pImage->getPixels(0,0,m_pImage->columns(),m_pImage->rows());
+
+      RGBQUAD *prgbaDIB = 0;
+      HBITMAP hBitmap = CreateDIBSection
+        (
+         pDC->m_hDC,		// handle to device context 
+         &bmi,			// pointer to structure containing bitmap size, format, and color data
+         DIB_RGB_COLORS,	// color data type indicator: RGB values or palette indices 
+         (void**)&prgbaDIB,	// pointer to variable to receive a pointer to the bitmap's bit values
+         NULL,			// optional handle to a file mapping object 
+         0			// offset to the bitmap bit values within the file mapping object 
+         );
+
+      if ( !hBitmap )
+        return;
+
+      unsigned long nPixels = m_pImage->columns() * m_pImage->rows();
+      RGBQUAD *pDestPixel = prgbaDIB;
+      for( unsigned long nPixelCount = nPixels; nPixelCount ; nPixelCount-- )
+        {
+          pDestPixel->rgbRed = DownScale(pPixels16->red);
+          pDestPixel->rgbGreen = DownScale(pPixels16->green);
+          pDestPixel->rgbBlue = DownScale(pPixels16->blue);
+          pDestPixel->rgbReserved = 0;
+          ++pDestPixel;
+          ++pPixels;
+        }
 #endif
 
-  }
+    }
 }
 
 //-------------------------------------------------------------------
