@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
 //
 // Tests for setting/getting Magick::Image attributes
 //
@@ -174,7 +174,8 @@ int main( int /*argc*/, char ** argv)
       }
     else
       if ( string(image.backgroundColor()) != "#0000FF" &&
-	   string(image.backgroundColor()) != "#00000000FFFF" )
+	   string(image.backgroundColor()) != "#00000000FFFF" &&
+	   string(image.backgroundColor()) != "#0000000000000000FFFFFFFF" )
 	{
 	  ++failures;
 	  cout << "Line: " << __LINE__ << ", backgroundColor ("
@@ -193,7 +194,8 @@ int main( int /*argc*/, char ** argv)
       }
     else
       if ( string(image.backgroundColor()) != "#00AAFF" && 
-	   string(image.backgroundColor()) != "#0000AAAAFFFF" )
+	   string(image.backgroundColor()) != "#0000AAAAFFFF" && 
+	   string(image.backgroundColor()) != "#00000000AAAAAAAAFFFFFFFF" )
 	{
 	  ++failures;
 	  cout << "Line: " << __LINE__
@@ -258,7 +260,8 @@ int main( int /*argc*/, char ** argv)
     //
     // Base filename is color for xc images
     if ( image.baseFilename() != "#FF0000" &&
-	 image.baseFilename() != "#FFFF00000000")
+	 image.baseFilename() != "#FFFF00000000" &&
+	 image.baseFilename() != "#FFFFFFFF0000000000000000")
       {
 	++failures;
 	cout << "Line: " << __LINE__

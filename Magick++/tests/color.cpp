@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
 //
 // Test Magick::Color classes
 //
@@ -41,7 +41,7 @@ int main( int /*argc*/, char **argv)
       struct colorStr colorMap [] =
       { 
 	{ "red", 1,0,0 },
-	{ "green", 0,0.50197,0 },
+	{ "green", 0,0.5019607843137255,0 },
 	{ "blue", 0,0,1 },
 	{ "black", 0,0,0 },
 	{ "white", 1,1,1 },
@@ -67,6 +67,7 @@ int main( int /*argc*/, char **argv)
 		     << " rather than "
 		     << string(colorMatch)
 		     << endl;
+                // printf ("Green: %10.16f\n", color.green());
 	      }
 	  }
 	}      
@@ -84,8 +85,12 @@ int main( int /*argc*/, char **argv)
 
 #if QuantumDepth == 8
       string expectedString = "#AABBCC";
-#else
+#elif QuantumDepth == 16
       string expectedString = "#AAAABBBBCCCC";
+#elif QuantumDepth == 32
+      string expectedString = "#AAAAAAAABBBBBBBBCCCCCCCC";
+#else
+# error Quantum depth not supported!
 #endif
 
       for ( int i = 0; colorStrings[i] != NULL; ++i )
@@ -109,6 +114,9 @@ int main( int /*argc*/, char **argv)
 #define MagickEpsilon  1.0e-12
       double resolution = 1.0/MaxRGB;
       double max_error = resolution + MagickEpsilon;
+
+      if ( resolution < 0.0001 )
+        resolution = 0.0001;
 
       for( double value = 0; value < 1.0 + MagickEpsilon; value += resolution )
         {
