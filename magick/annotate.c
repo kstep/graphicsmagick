@@ -236,30 +236,29 @@ MagickExport unsigned int AnnotateImage(Image *image,
       case NorthWestGravity:
       {
         clone_info->bounds.x=x;
-        clone_info->bounds.y=i*clone_info->bounds.height+y-
+        clone_info->bounds.y=y+i*clone_info->bounds.height-
           annotate_image->bounding_box.y2;
         break;
       }
       case NorthGravity:
       {
-        clone_info->bounds.x=(width/2)-(int) (annotate_image->columns/2)+x;
-        clone_info->bounds.y=i*clone_info->bounds.height+y-
+        clone_info->bounds.x=x+(width/2.0)-(annotate_image->columns/2.0);
+        clone_info->bounds.y=y+i*clone_info->bounds.height-
           annotate_image->bounding_box.y2;
         break;
       }
       case NorthEastGravity:
       {
-        clone_info->bounds.x=width-(int) annotate_image->columns+x;
-        clone_info->bounds.y=i*clone_info->bounds.height+y-
+        clone_info->bounds.x=width-annotate_image->columns+x;
+        clone_info->bounds.y=y+i*clone_info->bounds.height-
           annotate_image->bounding_box.y2;
         break;
       }
       case WestGravity:
       {
         clone_info->bounds.x=x;
-        clone_info->bounds.y=(height/2)-(int) (number_lines*
-          clone_info->bounds.height/2)+i*clone_info->bounds.height+y-
-          annotate_image->bounding_box.y2;
+        clone_info->bounds.y=y+(height/2.0)+i*clone_info->bounds.height-
+          annotate_image->bounding_box.y2/2.0;
         break;
       }
       case ForgetGravity:
@@ -267,39 +266,34 @@ MagickExport unsigned int AnnotateImage(Image *image,
       case CenterGravity:
       default:
       {
-        clone_info->bounds.x=x+(width/2)-(int) (annotate_image->columns/2);
-        clone_info->bounds.y=y+(height/2)-(int) (number_lines*
-          clone_info->bounds.height/2)+i*clone_info->bounds.height+
+        clone_info->bounds.x=x+(width/2.0)-(annotate_image->columns/2.0);
+        clone_info->bounds.y=y+(height/2.0)+i*clone_info->bounds.height-
           annotate_image->bounding_box.y2/2.0;
         break;
       }
       case EastGravity:
       {
-        clone_info->bounds.x=x+width-(int) annotate_image->columns;
-        clone_info->bounds.y=y+(height/2)-(int) (number_lines*
-          clone_info->bounds.height/2)+i*clone_info->bounds.height-
-          annotate_image->bounding_box.y2;
+        clone_info->bounds.x=x+width-annotate_image->columns;
+        clone_info->bounds.y=y+(height/2.0)+i*clone_info->bounds.height-
+          annotate_image->bounding_box.y2/2.0;
         break;
       }
       case SouthWestGravity:
       {
         clone_info->bounds.x=x;
-        clone_info->bounds.y=y+height-(i+1)*clone_info->bounds.height-
-          annotate_image->bounding_box.y2/2.0;
+        clone_info->bounds.y=y+height+i*clone_info->bounds.height;
         break;
       }
       case SouthGravity:
       {
-        clone_info->bounds.x=x+(width/2)-(int) (annotate_image->columns/2);
-        clone_info->bounds.y=y+height-(i+1)*clone_info->bounds.height-
-          annotate_image->bounding_box.y2;
+        clone_info->bounds.x=x+(width/2.0)-(annotate_image->columns/2.0);
+        clone_info->bounds.y=y+height+i*clone_info->bounds.height;
         break;
       }
       case SouthEastGravity:
       {
-        clone_info->bounds.x=x+width-(int) annotate_image->columns;
-        clone_info->bounds.y=y+height-(i+1)*clone_info->bounds.height-
-          annotate_image->bounding_box.y2;
+        clone_info->bounds.x=x+width-annotate_image->columns;
+        clone_info->bounds.y=y+height-i*clone_info->bounds.height;
         break;
       }
     }
