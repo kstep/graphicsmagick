@@ -1,4 +1,14 @@
 2004-07-20  Mike Chiarappa  <mikechiarappa@libero.it>
+	* lcms/src/cmsio1.c: Test [testcms.c] related to lcms 1.13 fail with error 
+	  #12288 when perform "Checking saved linearization devicelink".
+	  Fixed function __cmsSaveProfile().
+	  "...malloc(0) is implementation dependent and may return non NULL
+	  pointer on some compilers, like VC++ and gcc. This is not the case
+	  of Borland C++ Builder" - Thanks to Marti' Maria that have supplied me 
+	  this patched file: this will be part of the next lcms 1.14 which probabily 
+	  will be released on summer's end.
+
+2004-07-20  Mike Chiarappa  <mikechiarappa@libero.it>
 	* lcms/include/lcms.h: Modified to achieve BCBMagick DLL compilation.
 	  Included modifications was introduced in GM in 2004-01-16 and 
 	  probabily lost with latest update of library.
