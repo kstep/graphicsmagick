@@ -92,7 +92,11 @@ static unsigned int IsMPEG(const unsigned char *magick,const size_t length)
   return(False);
 }
 
+#define HasMPEG2
 #if defined(HasMPEG2)
+#include <inttypes.h>
+#include "video_out.h"
+#include "mpeg2.h"
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -127,13 +131,181 @@ static unsigned int IsMPEG(const unsigned char *magick,const size_t length)
 %
 %
 */
+
+static mpeg2dec_t mpeg2dec;
+#define BUFFER_SIZE 4096
+static uint8_t buffer[BUFFER_SIZE];
+
+typedef struct common_instance_s {
+    vo_instance_t vo;
+    int prediction_index;
+    vo_frame_t * frame_ptr[3];
+} common_instance_t;
+
+
+typedef struct pgm_instance_s {
+    vo_instance_t vo;
+    int prediction_index;
+    vo_frame_t * frame_ptr[3];
+    vo_frame_t frame[3];
+    int width;
+    int height;
+    int framenum;
+    char header[1024];
+    char filename[128];
+} pgm_instance_t;
+
+int libvo_common_alloc_frames (vo_instance_t * _instance,
+			       int width, int height, int frame_size,
+			       void (* copy) (vo_frame_t *, uint8_t **),
+			       void (* field) (vo_frame_t *, int),
+			       void (* draw) (vo_frame_t *))
+{
+    common_instance_t * instance;
+    int size;
+    uint8_t * alloc;
+    int i;
+
+    instance = (common_instance_t *) _instance;
+    instance->prediction_index = 1;
+    size = width * height / 4;
+    alloc = malloc (18 * size);
+    if (alloc == NULL)
+	return 1;
+
+    for (i = 0; i < 3; i++) {
+	instance->frame_ptr[i] =
+	    (vo_frame_t *) (((char *) instance) + sizeof (common_instance_t) +
+			    i * frame_size);
+	instance->frame_ptr[i]->base[0] = alloc;
+	instance->frame_ptr[i]->base[1] = alloc + 4 * size;
+	instance->frame_ptr[i]->base[2] = alloc + 5 * size;
+	instance->frame_ptr[i]->copy = copy;
+	instance->frame_ptr[i]->field = field;
+	instance->frame_ptr[i]->draw = draw;
+	instance->frame_ptr[i]->instance = (vo_instance_t *) instance;
+	alloc += 6 * size;
+    }
+
+    return 0;
+}
+
+void libvo_common_free_frames (vo_instance_t * _instance)
+{
+    common_instance_t * instance;
+
+    instance = (common_instance_t *) _instance;
+    free (instance->frame_ptr[0]->base[0]);
+}
+
+vo_frame_t * libvo_common_get_frame (vo_instance_t * _instance, int flags)
+{
+    common_instance_t * instance;
+
+    instance = (common_instance_t *)_instance;
+    if (flags & VO_PREDICTION_FLAG) {
+        instance->prediction_index ^= 1;
+        return instance->frame_ptr[instance->prediction_index];
+    } else
+        return instance->frame_ptr[2];
+}
+
+
+static int internal_setup (vo_instance_t * _instance, int width, int height,
+                           void (* draw_frame) (vo_frame_t *))
+{
+    pgm_instance_t * instance;
+
+    instance = (pgm_instance_t *) _instance;
+
+    instance->vo.close = libvo_common_free_frames;
+    instance->vo.get_frame = libvo_common_get_frame;
+    instance->width = width;
+    instance->height = height;
+    sprintf (instance->header, "P5\n\n%d %d\n255\n", width, height * 3 / 2);
+    return libvo_common_alloc_frames ((vo_instance_t *) instance,
+                                      width, height, sizeof (vo_frame_t),
+                                      NULL, NULL, draw_frame);
+}
+
+static void pgm_draw_frame (vo_frame_t * frame)
+{
+    pgm_instance_t * instance;
+    int i;
+    FILE * file;
+
+    instance = (pgm_instance_t *) frame->instance;
+    if (++(instance->framenum) < 0)
+        return;
+    sprintf (instance->filename, "%d.pgm", instance->framenum);
+    file = fopen (instance->filename, "wb");
+    if (!file)
+        return;
+
+    fwrite (instance->header, strlen (instance->header), 1, file);
+    fwrite (frame->base[0], instance->width, instance->height, file);
+    for (i = 0; i < instance->height >> 1; i++) {
+        fwrite (frame->base[1]+i*instance->width/2, instance->width/2, 1,
+                file);
+        fwrite (frame->base[2]+i*instance->width/2, instance->width/2, 1,
+                file);
+    }
+    fclose (file);
+}
+
+static int pgm_setup (vo_instance_t * instance, int width, int height)
+{
+   return internal_setup (instance, width, height, pgm_draw_frame);
+}
+
+vo_instance_t *OpenVideo(void)
+{
+  pgm_instance_t
+    *instance;
+
+  instance=malloc (sizeof (pgm_instance_t));
+  if (instance == NULL)
+    return NULL;
+  instance->vo.setup=pgm_setup;
+  instance->framenum=(-2);
+  return(vo_instance_t *) instance;
+}
+
 static Image *ReadMPEGImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   Image
     *image;
 
-  image=(Image *) NULL;
+  int
+    num_frames;
+
+  uint8_t
+    *end;
+
+  unsigned int
+    status;
+
+  vo_instance_t
+    *video;
+
+  /*
+    Open image.
+  */
+  image=AllocateImage(image_info);
+  status=OpenBlob(image_info,image,ReadBinaryType,exception);
+  if (status == False)
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+  video=vo_open(OpenVideo);
+  mpeg2_init(&mpeg2dec,0,video);
+  do
+  {
+    end=buffer+ReadBlob(image,BUFFER_SIZE,buffer);
+    num_frames=mpeg2_decode_data(&mpeg2dec,buffer,end);
+    printf("%d\n",num_frames);
+  } while (end == (buffer+BUFFER_SIZE));
+  mpeg2_close(&mpeg2dec);
+  vo_close(video);
   return(image);
 }
 #else
