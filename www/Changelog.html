@@ -56,6 +56,9 @@
 2004-03-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/nt_base.c (NTSystemComman): Have not been successful with using
+        MsgWaitForMultipleObjects() reliably, so back out usage of it for
+        now.<BR>
   <LI> magick/fx.c (ConvolveImage): Support convolution in CMYK
         colorspace.
 
