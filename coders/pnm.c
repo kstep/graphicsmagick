@@ -327,11 +327,11 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 for (pixel.blue=0; pixel.blue < 4; pixel.blue++)
                 {
                   image->colormap[i].red=(Quantum)
-                    ((unsigned long) (MaxRGB*pixel.red)/0x07);
+                    (((double) MaxRGB*pixel.red)/0x07);
                   image->colormap[i].green=(Quantum)
-                    ((unsigned long) (MaxRGB*pixel.green)/0x07);
+                    (((double) MaxRGB*pixel.green)/0x07);
                   image->colormap[i].blue=(Quantum)
-                    ((unsigned long) (MaxRGB*pixel.blue)/0x03);
+                    (((double) MaxRGB*pixel.blue)/0x03);
                   i++;
                 }
           }
@@ -347,7 +347,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(ResourceLimitError,"Memory allocation failed",
             image);
         for (i=0; i <= (long) max_value; i++)
-          scale[i]=(unsigned long) ((MaxRGB*(double) i)/(double) max_value);
+          scale[i]=(unsigned long) (((double) MaxRGB*i)/max_value);
       }
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
