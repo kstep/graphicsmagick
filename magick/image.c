@@ -3012,6 +3012,87 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%     G e t I m a g e P r o f i l e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImageProfile returns a pointer to the named image profile if it is
+%  present. A null pointer is returned if the named profile is not present.
+%
+%  The format of the GetImageProfile method is:
+%
+%      const unsigned char *GetImageProfile(const Image* image,
+%                             const char *name, size_t *length)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o name: Profile name. Valid names are "8BIM", "ICM", & "IPTC" or an
+%                          existing generic profile name.
+%
+%    o length: Updated with profile length if profile is present.
+%
+*/
+MagickExport const unsigned char *GetImageProfile(const Image* image,
+  const char *name, size_t *length)
+{
+  long
+    i;
+  
+  const ProfileInfo
+    *profile=0;
+  
+  *length=0;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(name != NULL);
+  assert(length != (size_t *) NULL);
+
+  /* ICC color profile ("ICM") */
+  if ((LocaleCompare("ICM",name) == 0) &&
+      (image->color_profile.info != 0))
+    {
+      profile=&image->color_profile;
+    }
+
+  /* IPTC profile ("8BIM" or "IPTC") */
+  if (((LocaleCompare("8BIM",name) == 0) ||
+      (LocaleCompare("IPTC",name) == 0)) &&
+       (image->iptc_profile.info != 0))
+    {
+      profile=&image->iptc_profile;
+    }
+
+  /* Generic profiles */
+  if ((image->generic_profiles != 0) && (image->generic_profile))
+    {
+      for (i=0; i < (long) image->generic_profiles; i++)
+        {
+          if (LocaleCompare(image->generic_profile[i].name,name) != 0)
+            continue;
+          if(image->generic_profile[i].info)
+            profile=&image->generic_profile[i];
+          break;
+        }
+    }
+  if (profile)
+    {
+      *length=profile->length;
+      return (profile->info);
+    }
+
+  return (0);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t I m a g e T y p e                                                   %
 %                                                                             %
 %                                                                             %
@@ -5635,6 +5716,120 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%     S e t I m a g e P r o f i l e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetImageProfile adds a named profile to the image. If a profile with the
+%  same name already exists, then it is replaced. The profile is copied into
+%  the image. Note that this function does not execute CMS color profiles.
+%  Any existing CMS color profile is simply replaced. Use the ProfileImage()
+%  function in order to execute a CMS color profile.
+%
+%  The format of the SetImageProfile method is:
+%
+%      unsigned int SetImageProfile(Image *image,const char *name,
+%                            const unsigned char *profile,const size_t length)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o name: Profile name. Valid names are "8BIM", "ICM", & "IPTC" or an
+%                          generic profile name.
+%
+%    o length: The length of the profile.
+%
+*/
+MagickExport unsigned int SetImageProfile(Image *image,const char *name,
+  const unsigned char *profile,const size_t length)
+{
+  long
+    i;
+  
+  ProfileInfo
+    *image_profile=0;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(name != NULL);
+
+  /* ICC color profile ("ICM") */
+  if (LocaleCompare("ICM",name) == 0)
+    image_profile=&image->color_profile;
+
+  /* IPTC profile ("8BIM" or "IPTC") */
+  if ((LocaleCompare("8BIM",name) == 0) ||
+      (LocaleCompare("IPTC",name) == 0))
+    image_profile=&image->iptc_profile;
+
+  /* Generic profiles */
+  if (!image_profile)
+    {
+      if ((image->generic_profiles != 0) && (image->generic_profile))
+        {
+          /* Search for an existing profile entry using name */
+          for (i=0; i < (long) image->generic_profiles; i++)
+            {
+              if (LocaleCompare(image->generic_profile[i].name,name) == 0)
+                {
+                  image_profile=&image->generic_profile[i];
+                  break;
+                }
+            }
+        }
+      if (!image_profile && profile)
+        {
+          /* Need to add a new generic profile */
+          if (!image->generic_profile)
+            {
+              /* Initial generic profile */
+              image->generic_profile=MagickAllocateMemory(ProfileInfo *,
+                sizeof(ProfileInfo));
+              image->generic_profiles=1;
+            }
+          else
+            {
+              /* Extend generic profiles */
+              image->generic_profiles++;
+              MagickReallocMemory(image->generic_profile,
+                image->generic_profiles*sizeof(ProfileInfo));
+            }
+          if (!image->generic_profile)
+            ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
+              UnableToAddColorProfile);
+          image_profile=&image->generic_profile[image->generic_profiles-1];
+          image_profile->info=0;
+          image_profile->length=0;
+        }
+    }
+  if (image_profile)
+    {
+      /* Clear existing profile */
+      MagickFreeMemory(image_profile->info);
+      image_profile->length=0;
+
+      if (profile)
+        {
+          /* Clone user-supplied profile */
+          image_profile->info=MagickAllocateMemory(unsigned char *,length);
+          if (!image_profile->info)
+            ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
+              UnableToAddColorProfile);
+          image_profile->length=length;
+          (void) memcpy(image_profile,profile,length);
+        }
+    }
+  return (True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   S e t I m a g e T y p e                                                   %
 %                                                                             %
 %                                                                             %
@@ -5660,10 +5855,13 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
 %
 %
 */
-MagickExport void SetImageType(Image *image,const ImageType image_type)
+MagickExport unsigned int SetImageType(Image *image,const ImageType image_type)
 {
   QuantizeInfo
     quantize_info;
+
+  unsigned int
+    status = True;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -5780,6 +5978,7 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
     default:
       break;
   }
+  return (status);
 }
 
 /*
@@ -6107,9 +6306,11 @@ MagickExport unsigned int TextureImage(Image *image,const Image *texture)
 %    o colorspace: the desired colorspace.
 %
 */
-MagickExport void TransformColorspace(Image *image,
+MagickExport unsigned int TransformColorspace(Image *image,
   const ColorspaceType colorspace)
 {
+  unsigned int
+    status = True;
   assert(image != (Image *) NULL);
   assert(colorspace != UndefinedColorspace);
   assert(image->colorspace != UndefinedColorspace);
@@ -6118,7 +6319,7 @@ MagickExport void TransformColorspace(Image *image,
     If the image colorspace is the same as requested, do nothing.
   */
   if (image->colorspace == colorspace)
-     return;
+     return (status);
 
   /*
     If the requested colorspace is RGB or Transparent, then convert
@@ -6128,7 +6329,7 @@ MagickExport void TransformColorspace(Image *image,
       (colorspace == TransparentColorspace))
       {
         (void) TransformRGBImage(image,image->colorspace);
-        return;
+        return  (status);
       }
 
   /*
@@ -6143,6 +6344,7 @@ MagickExport void TransformColorspace(Image *image,
       (void) TransformRGBImage(image,image->colorspace);
 
   (void) RGBTransformImage(image,colorspace);
+  return  (status);
 }
 
 /*

@@ -27,7 +27,8 @@ extern WandExport double
   PixelGetRed(const PixelWand *);
 
 extern WandExport PixelWand
-  *NewPixelWand(void);
+  *NewPixelWand(void),
+  **NewPixelWands(const unsigned long);
 
 extern WandExport Quantum
   PixelGetBlueQuantum(const PixelWand *),
@@ -38,6 +39,9 @@ extern WandExport Quantum
 extern WandExport unsigned int
   PixelSetColor(PixelWand *,const char *);
 
+extern WandExport unsigned long
+  PixelGetColorCount(const PixelWand *);
+
 extern WandExport void
   DestroyPixelWand(PixelWand *),
   PixelGetQuantumColor(const PixelWand *,PixelPacket *),
@@ -47,6 +51,7 @@ extern WandExport void
   PixelSetGreenQuantum(PixelWand *,const Quantum),
   PixelSetOpacity(PixelWand *,const double),
   PixelSetOpacityQuantum(PixelWand *,const Quantum),
+  PixelSetColorCount(PixelWand *,const unsigned long),
   PixelSetQuantumColor(PixelWand *,PixelPacket *),
   PixelSetRed(PixelWand *,const double),
   PixelSetRedQuantum(PixelWand *,const Quantum);

@@ -444,6 +444,7 @@ static const char *ExceptionSeverityToTag(const ExceptionType severity)
     case ModuleWarning: return("Module/Warning/");
     case DrawWarning: return("Draw/Warning/");
     case ImageWarning: return("Image/Warning/");
+    case WandWarning: return("Wand/Warning/");
     case XServerWarning: return("XServer/Warning/");
     case MonitorWarning: return("Monitor/Warning/");
     case RegistryWarning: return("Registry/Warning/");
@@ -462,6 +463,7 @@ static const char *ExceptionSeverityToTag(const ExceptionType severity)
     case ModuleError: return("Module/Error/");
     case DrawError: return("Draw/Error/");
     case ImageError: return("Image/Error/");
+    case WandError: return("Wand/Error/");
     case XServerError: return("XServer/Error/");
     case MonitorError: return("Monitor/Error/");
     case RegistryError: return("Registry/Error/");
@@ -480,6 +482,7 @@ static const char *ExceptionSeverityToTag(const ExceptionType severity)
     case ModuleFatalError: return("Module/FatalError/");
     case DrawFatalError: return("Draw/FatalError/");
     case ImageFatalError: return("Image/FatalError/");
+    case WandFatalError: return("Wand/FatalError/");
     case XServerFatalError: return("XServer/FatalError/");
     case MonitorFatalError: return("Monitor/FatalError/");
     case RegistryFatalError: return("Registry/FatalError/");

@@ -901,6 +901,7 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%                                                                             %
 %     M o s a i c I m a g e s                                                 %
 %                                                                             %
 %                                                                             %

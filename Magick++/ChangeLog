@@ -1,3 +1,13 @@
+2003-12-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (iccColorProfile): Implementation now uses the
+	profile method with profile name "ICM".  Note that this now
+	invokes the color profile if the image already has one.
+	(iccColorProfile): Reimplement using new GetImageProfile function.
+	(iptcProfile): Reimplement using the new GetImageProfile and
+	SetImageProfile functions.
+	(profile): Reimplement using new GetImageProfile function.
+
 2003-12-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Makefile.am (pkglibdir): Improve header file

@@ -582,6 +582,7 @@ namespace Magick
   using MagickLib::GetImageDepth;
   using MagickLib::GetImageInfo;
   using MagickLib::GetImagePixels;
+  using MagickLib::GetImageProfile;
   using MagickLib::GetImageQuantizeError;
   using MagickLib::GetImageType;
   using MagickLib::GetIndexes;
@@ -686,6 +687,7 @@ namespace Magick
   using MagickLib::SetImageInfo;
   using MagickLib::SetImageOpacity;
   using MagickLib::SetImagePixels;
+  using MagickLib::SetImageProfile;
   using MagickLib::SetImageType;
   using MagickLib::SetLogEventMask;
   using MagickLib::SetMagickInfo;

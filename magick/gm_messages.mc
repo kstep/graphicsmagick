@@ -2453,6 +2453,12 @@ unable to allocate type info
 .
 
 MessageId       = +1
+SymbolicName    = LimitFatalErrorUnableToAllocateWand
+Language        = English
+unable to allocate wand '%s
+.
+
+MessageId       = +1
 SymbolicName    = LimitFatalErrorUnableToAnimateImageSequence
 Language        = English
 unable to animate image sequence
@@ -2612,6 +2618,24 @@ MessageId       = +1
 SymbolicName    = TypeWarningDefault
 Language        = English
 default warning
+.
+
+MessageId       = +1
+SymbolicName    = WandErrorInvalidColormapIndex
+Language        = English
+invalid colormap index `%.1024s
+.
+
+MessageId       = +1
+SymbolicName    = WandErrorWandContainsNoImageIndexs
+Language        = English
+Wand contains no image indices `%.1024s
+.
+
+MessageId       = +1
+SymbolicName    = WandErrorWandContainsNoImages
+Language        = English
+Wand contains no images `%.1024s
 .
 
 MessageId       = +1

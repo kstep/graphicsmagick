@@ -16,6 +16,8 @@ For 1.1 Release
  o Fix libtool configure problem under IRIX and AIX.
  o Debug utilities test failure noticed under OS-X.
  o Add a Magick++ method to set/update/remove defines (-define).
+ o GM is not linking under Cygwin due to missing SYSV IPC functions
+   (from -lcygipc).
 
 For Future Release
 ==================

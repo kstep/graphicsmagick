@@ -28,6 +28,7 @@ extern "C" {
 #include "magick/enhance.h"
 #include "magick/fx.h"
 #include "magick/shear.h"
+#include "magick/semaphore.h"
 #include "magick/tempfile.h"
 #include "magick/transform.h"
 

@@ -152,7 +152,8 @@ typedef enum
   YellowChannel,
   OpacityChannel,
   BlackChannel,
-  MatteChannel
+  MatteChannel,
+  AllChannels
 } ChannelType;
 
 typedef enum
@@ -654,14 +655,6 @@ typedef struct _Image
   ChromaticityInfo
     chromaticity;       /* Red, green, blue, and white chromaticity values */
 
-  ProfileInfo
-    color_profile,      /* ICC color profile */
-    iptc_profile,       /* IPTC newsphoto profile */
-    *generic_profile;   /* List of additional profiles */
-
-  unsigned long
-    generic_profiles;   /* Number of additional generic profiles */
-
   RenderingIntent
     rendering_intent;   /* Rendering intent */
 
@@ -744,6 +737,14 @@ typedef struct _Image
   /*
     Only private members appear past this point
   */
+
+  ProfileInfo
+    color_profile,      /* ICC color profile */
+    iptc_profile,       /* IPTC newsphoto profile */
+    *generic_profile;   /* List of additional profiles */
+
+  unsigned long
+    generic_profiles;   /* Number of additional generic profiles */
 
   unsigned int
     is_monochrome,      /* Private, True if image is known to be monochrome */
@@ -949,10 +950,12 @@ extern MagickExport const char
   *AccessDefinition(const ImageInfo *image_info,const char *magick,
    const char *key);
 
+extern MagickExport const unsigned char
+  *GetImageProfile(const Image* image, const char *name, size_t *length);
+
 extern MagickExport int
   GetImageGeometry(const Image *,const char *,const unsigned int,
   RectangleInfo *);
-
 
 extern MagickExport RectangleInfo
   GetImageBoundingBox(const Image *,ExceptionInfo *exception);
@@ -982,8 +985,12 @@ extern MagickExport unsigned int
   SetImageClipMask(Image *image,Image *clip_mask),
   SetImageDepth(Image *,const unsigned long),
   SetImageInfo(ImageInfo *,const unsigned int,ExceptionInfo *),
+  SetImageProfile(Image *image,const char *name,const unsigned char *profile,
+    const size_t length),
+  SetImageType(Image *,const ImageType),
   SortColormapByIntensity(Image *),
   TextureImage(Image *,const Image *),
+  TransformColorspace(Image *,const ColorspaceType),
   TransformRGBImage(Image *,const ColorspaceType);
 
 extern MagickExport unsigned long
@@ -999,9 +1006,7 @@ extern MagickExport void
   ModifyImage(Image **,ExceptionInfo *),
   SetImage(Image *,const Quantum),
   SetImageOpacity(Image *,const unsigned int),
-  SetImageType(Image *,const ImageType),
-  SyncImage(Image *),
-  TransformColorspace(Image *,const ColorspaceType);
+  SyncImage(Image *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

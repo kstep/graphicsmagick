@@ -232,6 +232,8 @@ extern MagickExport PixelPacket
     const unsigned long nexus);
 
 extern MagickExport unsigned int
+  SetImageVirtualPixelMethod(const Image *image,
+    const VirtualPixelMethod method),
   OpenCache(Image *image,const MapMode mode),
   PersistCache(Image *image,const char *filename,const unsigned int attach,
     magick_off_t *offset,ExceptionInfo *exception),
@@ -250,8 +252,6 @@ extern MagickExport void
   DestroyCacheNexus(Cache cache,const unsigned long nexu),
   DestroyImagePixels(Image *image),
   GetCacheInfo(Cache *cache),
-  SetImageVirtualPixelMethod(const Image *image,
-    const VirtualPixelMethod method),
   SetPixelCacheMethods(Cache cache,AcquirePixelHandler acquire_pixel,
     GetPixelHandler get_pixel,SetPixelHandler set_pixel,SyncPixelHandler sync_pixel,
     GetPixelsFromHandler get_pixels_from,GetIndexesFromHandler get_indexes_from,

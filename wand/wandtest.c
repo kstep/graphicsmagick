@@ -23,37 +23,49 @@
 %                                 March 2003                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright (C) 2003 ImageMagick Studio, a non-profit organization dedicated %
-%  to making software imaging solutions freely available.                     %
+%  Copyright (C) 1999-2004 ImageMagick Studio, a non-profit organization      %
+%  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
-%  Permission is hereby granted, free of charge, to any person obtaining a    %
-%  copy of this software and associated documentation files ("ImageMagick"),  %
-%  to deal in ImageMagick without restriction, including without limitation   %
-%  the rights to use, copy, modify, merge, publish, distribute, sublicense,   %
-%  and/or sell copies of ImageMagick, and to permit persons to whom the       %
-%  ImageMagick is furnished to do so, subject to the following conditions:    %
+%  This software and documentation is provided "as is," and the copyright     %
+%  holders and contributing author(s) make no representations or warranties,  %
+%  express or implied, including but not limited to, warranties of            %
+%  merchantability or fitness for any particular purpose or that the use of   %
+%  the software or documentation will not infringe any third party patents,   %
+%  copyrights, trademarks or other rights.                                    %
 %                                                                             %
-%  The above copyright notice and this permission notice shall be included in %
-%  all copies or substantial portions of ImageMagick.                         %
+%  The copyright holders and contributing author(s) will not be held liable   %
+%  for any direct, indirect, special or consequential damages arising out of  %
+%  any use of the software or documentation, even if advised of the           %
+%  possibility of such damage.                                                %
 %                                                                             %
-%  The software is provided "as is", without warranty of any kind, express or %
-%  implied, including but not limited to the warranties of merchantability,   %
-%  fitness for a particular purpose and noninfringement.  In no event shall   %
-%  ImageMagick Studio be liable for any claim, damages or other liability,    %
-%  whether in an action of contract, tort or otherwise, arising from, out of  %
-%  or in connection with ImageMagick or the use or other dealings in          %
-%  ImageMagick.                                                               %
+%  Permission is hereby granted to use, copy, modify, and distribute this     %
+%  source code, or portions hereof, documentation and executables, for any    %
+%  purpose, without fee, subject to the following restrictions:               %
 %                                                                             %
-%  Except as contained in this notice, the name of the ImageMagick Studio     %
-%  shall not be used in advertising or otherwise to promote the sale, use or  %
-%  other dealings in ImageMagick without prior written authorization from the %
-%  ImageMagick Studio.                                                        %
+%    1. The origin of this source code must not be misrepresented.            %
+%    2. Altered versions must be plainly marked as such and must not be       %
+%       misrepresented as being the original source.                          %
+%    3. This Copyright notice may not be removed or altered from any source   %
+%       or altered source distribution.                                       %
+%                                                                             %
+%  The copyright holders and contributing author(s) specifically permit,      %
+%  without fee, and encourage the use of this source code as a component for  %
+%  supporting image processing in commercial products.  If you use this       %
+%  source code in a product, acknowledgment is not required but would be      %
+%  appreciated.                                                               %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %
 %
 */
+
+/*
+ * This version is modified by Bob Friesenhahn so that it may be executed
+ * from outside the source directory.
+ *
+ */
+
 
 /*
   Include declarations.
@@ -86,6 +98,7 @@ int main(int argc,char **argv)
     severity;
 
   MagickWand
+    *clone_wand,
     *magick_wand;
  
   PixelWand
@@ -110,30 +123,68 @@ int main(int argc,char **argv)
       (void) fprintf(stderr,"Unexpected magick wand size\n");
       exit(1);
     }
+  (void) fprintf(stdout,"Reading images...\n");
   {
     char
       *p,
       path[MaxTextExtent];
-
+    
     path[0]=0;
     p=getenv("SRCDIR");
     if (p)
       strcpy(path,p);
     strcat(path,"sequence.miff");
+    
     status=MagickReadImage(magick_wand,path);
   }
   if (status == False)
     ThrowAPIException(magick_wand);
-  if (MagickGetNumberOfImages(magick_wand) != 5)
-    (void) fprintf(stderr,"read %ld images; expected 5\n",
-      MagickGetNumberOfImages(magick_wand));
+  if (MagickGetNumberImages(magick_wand) != 5)
+    (void) fprintf(stderr,"read %lu images; expected 5\n",
+      (unsigned long) MagickGetNumberImages(magick_wand));
+  (void) fprintf(stdout,"Iterate forward...\n");
+  MagickResetIterator(magick_wand);
+  while (MagickNextImage(magick_wand) != False)
+    (void) fprintf(stdout,"index %ld scene %ld\n",
+      MagickGetImageIndex(magick_wand),MagickGetImageScene(magick_wand));
+  (void) fprintf(stdout,"Iterate reverse...\n");
+  while (MagickPreviousImage(magick_wand) != False)
+    (void) fprintf(stdout,"index %ld scene %ld\n",
+      MagickGetImageIndex(magick_wand),MagickGetImageScene(magick_wand));
+  (void) fprintf(stdout,"Remove scene 1...\n");
+  (void) MagickSetImageIndex(magick_wand,1);
+  clone_wand=MagickCloneImage(magick_wand);
   status=MagickRemoveImage(magick_wand);
   if (status == False)
     ThrowAPIException(magick_wand);
+  MagickResetIterator(magick_wand);
+  while (MagickNextImage(magick_wand) != False)
+    (void) fprintf(stdout,"index %ld scene %ld\n",
+      MagickGetImageIndex(magick_wand),MagickGetImageScene(magick_wand));
+  (void) fprintf(stdout,"Insert scene 1 back in sequence...\n");
+  (void) MagickSetImageIndex(magick_wand,0);
+  status=MagickAddImage(magick_wand,clone_wand);
+  if (status == False)
+    ThrowAPIException(magick_wand);
+  MagickResetIterator(magick_wand);
+  while (MagickNextImage(magick_wand) != False)
+    (void) fprintf(stdout,"index %ld scene %ld\n",
+      MagickGetImageIndex(magick_wand),MagickGetImageScene(magick_wand));
+  (void) fprintf(stdout,"Set scene 2 to scene 1...\n");
+  (void) MagickSetImageIndex(magick_wand,2);
+  status=MagickSetImage(magick_wand,clone_wand);
+  DestroyMagickWand(clone_wand);
+  if (status == False)
+    ThrowAPIException(magick_wand);
+  MagickResetIterator(magick_wand);
+  while (MagickNextImage(magick_wand) != False)
+    (void) fprintf(stdout,"index %ld scene %ld\n",
+      MagickGetImageIndex(magick_wand),MagickGetImageScene(magick_wand));
+  (void) fprintf(stdout,"Apply image processing options...\n");
   status=MagickCropImage(magick_wand,60,60,10,10);
   if (status == False)
     ThrowAPIException(magick_wand);
-  (void) MagickSetImage(magick_wand,0);
+  MagickResetIterator(magick_wand);
   background=NewPixelWand();
   PixelSetColor(background,"#000000");
   status=MagickRotateImage(magick_wand,background,90.0);
@@ -150,7 +201,7 @@ int main(int argc,char **argv)
   DestroyPixelWand(fill);
   (void) DrawAnnotation(drawing_wand,15,5,(const unsigned char *) "Magick");
   (void) DrawPopGraphicContext(drawing_wand);
-  (void) MagickSetImage(magick_wand,1);
+  (void) MagickSetImageIndex(magick_wand,1);
   status=MagickDrawImage(magick_wand,drawing_wand);
   if (status == False)
     ThrowAPIException(magick_wand);
@@ -171,7 +222,7 @@ int main(int argc,char **argv)
         128, 128, 128,
       };
 
-    (void) MagickSetImage(magick_wand,2);
+    (void) MagickSetImageIndex(magick_wand,2);
     status=MagickSetImagePixels(magick_wand,10,10,3,3,"RGB",CharPixel,
       primary_colors);
     if (status == False)
@@ -186,10 +237,11 @@ int main(int argc,char **argv)
           exit(1);
         }
   }
-  (void) MagickSetImage(magick_wand,3);
+  (void) MagickSetImageIndex(magick_wand,3);
   status=MagickResizeImage(magick_wand,50,50,UndefinedFilter,1.0);
   if (status == False)
     ThrowAPIException(magick_wand);
+  (void) fprintf(stdout,"Write to image.miff...\n");
   status=MagickWriteImages(magick_wand,"image.miff",True);
   if (status == False)
     ThrowAPIException(magick_wand);

@@ -23,39 +23,68 @@
 %                                 August 2003                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright (C) 2001 ImageMagick Studio, a non-profit organization dedicated %
-%  to making software imaging solutions freely available.                     %
+%  Copyright (C) 1999-2004 ImageMagick Studio, a non-profit organization      %
+%  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
-%  Permission is hereby granted, free of charge, to any person obtaining a    %
-%  copy of this software and associated documentation files ("ImageMagick"),  %
-%  to deal in ImageMagick without restriction, including without limitation   %
-%  the rights to use, copy, modify, merge, publish, distribute, sublicense,   %
-%  and/or sell copies of ImageMagick, and to permit persons to whom the       %
-%  ImageMagick is furnished to do so, subject to the following conditions:    %
+%  This software and documentation is provided "as is," and the copyright     %
+%  holders and contributing author(s) make no representations or warranties,  %
+%  express or implied, including but not limited to, warranties of            %
+%  merchantability or fitness for any particular purpose or that the use of   %
+%  the software or documentation will not infringe any third party patents,   %
+%  copyrights, trademarks or other rights.                                    %
 %                                                                             %
-%  The above copyright notice and this permission notice shall be included in %
-%  all copies or substantial portions of ImageMagick.                         %
+%  The copyright holders and contributing author(s) will not be held liable   %
+%  for any direct, indirect, special or consequential damages arising out of  %
+%  any use of the software or documentation, even if advised of the           %
+%  possibility of such damage.                                                %
 %                                                                             %
-%  The software is provided "as is", without warranty of any kind, express or %
-%  implied, including but not limited to the warranties of merchantability,   %
-%  fitness for a particular purpose and noninfringement.  In no event shall   %
-%  ImageMagick Studio be liable for any claim, damages or other liability,    %
-%  whether in an action of contract, tort or otherwise, arising from, out of  %
-%  or in connection with ImageMagick or the use or other dealings in          %
-%  ImageMagick.                                                               %
+%  Permission is hereby granted to use, copy, modify, and distribute this     %
+%  source code, or portions hereof, documentation and executables, for any    %
+%  purpose, without fee, subject to the following restrictions:               %
 %                                                                             %
-%  Except as contained in this notice, the name of the ImageMagick Studio     %
-%  shall not be used in advertising or otherwise to promote the sale, use or  %
-%  other dealings in ImageMagick without prior written authorization from the %
-%  ImageMagick Studio.                                                        %
+%    1. The origin of this source code must not be misrepresented.            %
+%    2. Altered versions must be plainly marked as such and must not be       %
+%       misrepresented as being the original source.                          %
+%    3. This Copyright notice may not be removed or altered from any source   %
+%       or altered source distribution.                                       %
+%                                                                             %
+%  The copyright holders and contributing author(s) specifically permit,      %
+%  without fee, and encourage the use of this source code as a component for  %
+%  supporting image processing in commercial products.  If you use this       %
+%  source code in a product, acknowledgment is not required but would be      %
+%  appreciated.                                                               %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  This is the tentative public API for ImageMagick.  Use it with caution
 %  because it is subject to change until it is finished somewhere around
-%  September of 2003.
+%  1st quarter of 2004.
 %
 */
+
+/*
+ * This version has been modified by Bob Friesenhahn for use with
+ * GraphicsMagick.
+ *
+ * The following functions are not implemented at this time and always
+ * return False:
+ *
+ *   MagickBlackThresholdImage
+ *   MagickCompareImageChannels
+ *   MagickCompareImages
+ *   MagickFxImageChannel
+ *   MagickGammaImageChannel
+ *   MagickGetImageChannelExtrema
+ *   MagickGetImageChannelMean
+ *   MagickGetImageExtrema
+ *   MagickGetImageProfile
+ *   MagickNegateImageChannel
+ *   MagickPreviewImages
+ *   MagickThresholdImageChannel
+ *   MagickTintImage
+ *   MagickWhiteThresholdImage
+ *
+ */
 
 /*
   Include declarations.
@@ -88,6 +117,9 @@
 */
 struct _MagickWand
 {
+  char
+    id[MaxTextExtent];
+
   ExceptionInfo
     exception;
 
@@ -101,9 +133,18 @@ struct _MagickWand
     *image,
     *images;
 
+  unsigned int
+    iterator;
+
   unsigned long
     signature;
 };
+
+/*
+  Forward declarations.
+*/
+static unsigned long
+  GetMagickWandId(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -116,20 +157,18 @@ struct _MagickWand
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CloneMagickWand() makes a copy of the wand excepting the image list.
+%  CloneMagickWand() makes an exact copy of the specified wand.
 %
 %  The format of the CloneMagickWand method is:
 %
-%      unsigned int CloneMagickWand(MagickWand *wand,Image *images)
+%      MagickWand * CloneMagickWand(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
 %    o wand: The magick wand.
 %
-%    o images: replace the image list with these image(s).
-%
 */
-static MagickWand *CloneMagickWand(const MagickWand *wand,Image *images)
+WandExport MagickWand *CloneMagickWand(const MagickWand *wand)
 {
   MagickWand
     *clone_wand;
@@ -141,6 +180,59 @@ static MagickWand *CloneMagickWand(const MagickWand *wand,Image *images)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
       UnableToAllocateImage);
   (void) memset(clone_wand,0,sizeof(MagickWand));
+  (void) FormatMagickString(clone_wand->id,MaxTextExtent,"MagickWand-%lu",
+    GetMagickWandId());
+  GetExceptionInfo(&clone_wand->exception);
+  InheritException(&clone_wand->exception,&wand->exception);
+  clone_wand->image_info=CloneImageInfo(wand->image_info);
+  clone_wand->quantize_info=CloneQuantizeInfo(wand->quantize_info);
+  clone_wand->images=CloneImageList(wand->images,&clone_wand->exception);
+  clone_wand->image=clone_wand->images;
+  clone_wand->signature=MagickSignature;
+  return(clone_wand);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   C l o n e M a g i c k W a n d W i t h I m a g e s                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CloneMagickWandWithImages() clones the magick wand and inserts a new image
+%  list.
+%
+%  The format of the CloneMagickWandWithImages method is:
+%
+%      MagickWand *CloneMagickWandWithImages(const MagickWand *wand,
+%                                            Image *images)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o images: replace the image list with these image(s).
+%
+*/
+static MagickWand *CloneMagickWandWithImages(const MagickWand *wand,
+  Image *images)
+{
+  MagickWand
+    *clone_wand;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  clone_wand=(MagickWand *) AcquireMagickMemory(sizeof(MagickWand));
+  if (clone_wand == (MagickWand *) NULL)
+    MagickFatalError(ResourceLimitFatalError,UnableToAllocateWand,
+      images->filename);
+  (void) memset(clone_wand,0,sizeof(MagickWand));
+  (void) FormatMagickString(clone_wand->id,MaxTextExtent,"MagickWand-%lu",
+    GetMagickWandId());
   GetExceptionInfo(&clone_wand->exception);
   InheritException(&clone_wand->exception,&wand->exception);
   clone_wand->image_info=CloneImageInfo(wand->image_info);
@@ -181,8 +273,7 @@ WandExport unsigned int DestroyMagickWand(MagickWand *wand)
   DestroyQuantizeInfo(wand->quantize_info);
   DestroyImageInfo(wand->image_info);
   DestroyExceptionInfo(&wand->exception);
-  if (wand->images != (Image *) NULL)
-    DestroyImageList(wand->images);
+  DestroyImageList(wand->images);
   wand=(MagickWand *) RelinquishMagickMemory(wand);
   return(True);
 }
@@ -227,13 +318,66 @@ WandExport unsigned int MagickAdaptiveThresholdImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   threshold_image=AdaptiveThresholdImage(wand->image,width,height,offset,
     &wand->exception);
   if (threshold_image == (Image *) NULL)
     return(False);
   ReplaceImageInList(&wand->image,threshold_image);
+  wand->images=GetFirstImageInList(wand->image);
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k A d d I m a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickAddImage() adds the specified images at the current image location.
+%
+%  The format of the MagickAddImage method is:
+%
+%      unsigned int MagickAddImage(MagickWand *wand,
+%        const MagickWand *add_wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o insert: The splice wand.
+%
+*/
+WandExport unsigned int MagickAddImage(MagickWand *wand,
+  const MagickWand *add_wand)
+{
+  Image
+    *images;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  assert(add_wand != (MagickWand *) NULL);
+  assert(add_wand->signature == MagickSignature);
+  if (add_wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,add_wand->id);
+  images=CloneImageList(add_wand->images,&wand->exception);
+  if (images == (Image *) NULL)
+    return(False);
+  if ((wand->iterator != False) &&
+      (GetPreviousImageInList(wand->image) == (Image *) NULL))
+    PrependImageToList(&wand->image,images);
+  else
+    if ((wand->iterator != False) &&
+        (GetNextImageInList(wand->image) == (Image *) NULL))
+      AppendImageToList(&wand->image,images);
+    else
+      InsertImageInList(&wand->image,images);
   wand->images=GetFirstImageInList(wand->image);
   return(True);
 }
@@ -271,8 +415,8 @@ WandExport unsigned int MagickAddNoiseImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   noise_image=AddNoiseImage(wand->image,noise_type,&wand->exception);
   if (noise_image == (Image *) NULL)
     return(False);
@@ -318,8 +462,8 @@ WandExport unsigned int MagickAffineTransformImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   draw_info=DrawPeekGraphicContext(drawing_wand);
   if (draw_info == (DrawInfo *) NULL)
     return(False);
@@ -380,8 +524,8 @@ WandExport unsigned int MagickAnnotateImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   draw_info=DrawPeekGraphicContext(drawing_wand);
   if (draw_info == (DrawInfo *) NULL)
     return(False);
@@ -475,7 +619,7 @@ WandExport MagickWand *MagickAppendImages(MagickWand *wand,
   append_image=AppendImages(wand->images,stack,&wand->exception);
   if (append_image == (Image *) NULL)
     return((MagickWand *) NULL);
-  return(CloneMagickWand(wand,append_image));
+  return(CloneMagickWandWithImages(wand,append_image));
 }
 
 /*
@@ -512,7 +656,7 @@ WandExport MagickWand *MagickAverageImages(MagickWand *wand)
   average_image=AverageImages(wand->images,&wand->exception);
   if (average_image == (Image *) NULL)
     return((MagickWand *) NULL);
-  return(CloneMagickWand(wand,average_image));
+  return(CloneMagickWandWithImages(wand,average_image));
 }
 
 /*
@@ -554,8 +698,8 @@ WandExport unsigned int MagickBlackThresholdImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   (void) FormatMagickString(thresholds,MaxTextExtent,"%u,%u,%u,%u",
     PixelGetRedQuantum(threshold),PixelGetGreenQuantum(threshold),
     PixelGetBlueQuantum(threshold),PixelGetOpacityQuantum(threshold));
@@ -607,8 +751,8 @@ WandExport unsigned int MagickBlurImage(MagickWand *wand,const double radius,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   blur_image=BlurImage(wand->image,radius,sigma,&wand->exception);
   if (blur_image == (Image *) NULL)
     return(False);
@@ -660,8 +804,8 @@ WandExport unsigned int MagickBorderImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   border_info.width=width;
   border_info.height=height;
   border_info.x=0;
@@ -711,8 +855,8 @@ WandExport unsigned int MagickChannelImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   status=ChannelImage(wand->image,channel);
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
@@ -755,8 +899,8 @@ WandExport unsigned int MagickCharcoalImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   charcoal_image=CharcoalImage(wand->image,radius,sigma,&wand->exception);
   if (charcoal_image == (Image *) NULL)
     return(False);
@@ -810,8 +954,8 @@ WandExport unsigned int MagickChopImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   chop.width=width;
   chop.height=height;
   chop.x=x;
@@ -822,56 +966,6 @@ WandExport unsigned int MagickChopImage(MagickWand *wand,
   ReplaceImageInList(&wand->image,chop_image);
   wand->images=GetFirstImageInList(wand->image);
   return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   M a g i c k C l o n e W a n d                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MagickCloneWand() makes an exact copy of the specified wand.
-%
-%  The format of the MagickCloneWand method is:
-%
-%      unsigned int MagickCloneWand(MagickWand *wand)
-%
-%  A description of each parameter follows:
-%
-%    o wand: The magick wand.
-%
-%
-*/
-WandExport MagickWand *MagickCloneWand(const MagickWand *wand)
-{
-  Image
-    *image;
-
-  MagickWand
-    *clone_wand;
-
-  assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == MagickSignature);
-  clone_wand=(MagickWand *) AcquireMagickMemory(sizeof(MagickWand));
-  if (clone_wand == (MagickWand *) NULL)
-    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
-      UnableToAllocateImage);
-  (void) memset(clone_wand,0,sizeof(MagickWand));
-  GetExceptionInfo(&clone_wand->exception);
-  InheritException(&clone_wand->exception,&wand->exception);
-  clone_wand->image_info=CloneImageInfo(wand->image_info);
-  clone_wand->quantize_info=CloneQuantizeInfo(wand->quantize_info);
-  clone_wand->images=CloneImageList(wand->images,&clone_wand->exception);
-  clone_wand->image=clone_wand->images;
-  for (image=wand->images; image != wand->image; image=image->next)
-    clone_wand->image=clone_wand->image->next;
-  clone_wand->signature=MagickSignature;
-  return(clone_wand);
 }
 
 /*
@@ -904,8 +998,8 @@ WandExport unsigned int MagickClipImage(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   status=ClipImage(wand->image);
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
@@ -952,12 +1046,49 @@ WandExport unsigned int MagickClipPathImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   status=ClipPathImage(wand->image,pathname,inside);
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
   return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k C l o n e I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickCloneImage() clones the image at the current image index.
+%
+%  The format of the MagickCloneImage method is:
+%
+%      MagickWand *MagickCloneImage(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+*/
+WandExport MagickWand *MagickCloneImage(MagickWand *wand)
+{
+  Image
+    *image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  image=CloneImage(wand->image,0,0,True,&wand->exception);
+  if (image == (Image *) NULL)
+    return(False);
+  return(CloneMagickWandWithImages(wand,image));
 }
 
 /*
@@ -999,7 +1130,7 @@ WandExport MagickWand *MagickCoalesceImages(MagickWand *wand)
   coalesce_image=CoalesceImages(wand->images,&wand->exception);
   if (coalesce_image == (Image *) NULL)
     return((MagickWand *) NULL);
-  return(CloneMagickWand(wand,coalesce_image));
+  return(CloneMagickWandWithImages(wand,coalesce_image));
 }
 
 /*
@@ -1057,8 +1188,8 @@ WandExport unsigned int MagickColorFloodfillImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   draw_info=CloneDrawInfo(wand->image_info,(DrawInfo *) NULL);
   PixelGetQuantumColor(fill,&draw_info->fill);
   target=AcquireOnePixel(wand->image,x % wand->image->columns,
@@ -1115,8 +1246,8 @@ WandExport unsigned int MagickColorizeImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   (void) FormatMagickString(percent_opaque,MaxTextExtent,"%g,%g,%g,%g",
     100.0*PixelGetRedQuantum(colorize)/MaxRGB,
     100.0*PixelGetGreenQuantum(colorize)/MaxRGB,
@@ -1163,8 +1294,8 @@ WandExport unsigned int MagickCommentImage(MagickWand *wand,const char *comment)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   (void) SetImageAttribute(wand->image,"comment",(char *) NULL);
   status=SetImageAttribute(wand->image,"comment",comment);
   if (status == False)
@@ -1177,25 +1308,20 @@ WandExport unsigned int MagickCommentImage(MagickWand *wand,const char *comment)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k C o m p a r e I m a g e                                       %
+%   M a g i c k C o m p a r e I m a g e s                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickCompareImage() measures the difference between colors at each pixel
-%  location of two images.  A value other than 0 means the colors match
-%  exactly.  Otherwise an error measure is computed by summing over all
-%  pixels in an image the distance squared in RGB space between each image
-%  pixel and its corresponding pixel in the reference image.  A small
-%  normalized mean square error, suggests the images are very similiar in
-%  spatial layout and color.
+%  MagickCompareImage() compares one or more image channels and returns the
+%  specified distortion metric.
 %
-%  The format of the MagickCompareImage method is:
+%  The format of the MagickCompareImageChannels method is:
 %
-%      unsigned int MagickCompareImage(MagickWand *wand,
-%        const MagickWand *reference,double *mean_error_per_pixel,
-%        double *normalized_mean_error,double *normalized_maximum_error)
+%      MagickWand *MagickCompareImageChannels(MagickWand *wand,
+%        const MagickWand *reference,const ChannelType channel,
+%        const MetricType metric,double *distortion)
 %
 %  A description of each parameter follows:
 %
@@ -1203,38 +1329,86 @@ WandExport unsigned int MagickCommentImage(MagickWand *wand,const char *comment)
 %
 %    o reference: The reference wand.
 %
-%    o mean_error_per_pixel:  The mean error for any single pixel in
-%      the image.
+%    o channel: The channel.
 %
-%    o normalized_mean_error:  The normalized mean quantization error for
-%      any single pixel in the image.  This distance measure is normalized to
-%      a range between 0 and 1.  It is independent of the range of red, green,
-%      and blue values in the image.
+%    o metric: The metric.
 %
-%    o normalized_maximum_error:  The normalized maximum quantization
-%      error for any single pixel in the image.  This distance measure is
-%      normalized to a range between 0 and 1.  It is independent of the range
-%      of red, green, and blue values in your image.
+%    o distortion: The computed distortion between the images.
 %
 */
-WandExport unsigned int MagickCompareImage(MagickWand *wand,
-  const MagickWand *reference,double *mean_error_per_pixel,
-  double *normalized_mean_error,double *normalized_maximum_error)
+WandExport MagickWand *MagickCompareImageChannels(MagickWand *wand,
+  const MagickWand *reference,const ChannelType channel,const MetricType metric,
+  double *distortion)
 {
-  unsigned int
-    status;
+#if NOT_IMPLEMENTED
+  Image
+    *compare_image;
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if ((wand->image == (Image *) NULL) || (reference->image == (Image *) NULL))
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
-  status=IsImagesEqual(wand->image,reference->image);
-  if (status == False)
-    InheritException(&wand->exception,&wand->image->exception);
-  *mean_error_per_pixel=wand->image->error.mean_error_per_pixel;
-  *normalized_mean_error=wand->image->error.normalized_mean_error;
-  *normalized_maximum_error=wand->image->error.normalized_maximum_error;
-  return(status);
+  if ((wand->images == (Image *) NULL) || (reference->images == (Image *) NULL))
+    ThrowWandException(WandError,WandContainsNoImageChannels,wand->id);
+  compare_image=CompareImageChannels(wand->image,reference->image,channel,
+    metric,distortion,&wand->image->exception);
+  if (compare_image == (Image *) NULL)
+    return((MagickWand *) NULL);
+  return(CloneMagickWandWithImages(wand,compare_image));
+#else
+  return False;
+#endif /* NOT_IMPLEMENTED */
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k C o m p a r e I m a g e s                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickCompareImage() compares one or more images and returns the specified
+%  distortion metric.
+%
+%  The format of the MagickCompareImages method is:
+%
+%      MagickWand *MagickCompareImages(MagickWand *wand,
+%        const MagickWand *reference,const MetricType metric,
+%        double *distortion)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o reference: The reference wand.
+%
+%    o metric: The metric.
+%
+%    o distortion: The computed distortion between the images.
+%
+*/
+WandExport MagickWand *MagickCompareImages(MagickWand *wand,
+  const MagickWand *reference,const MetricType metric,double *distortion)
+{
+#if NOT_IMPLEMENTED
+  Image
+    *compare_image;
+
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if ((wand->images == (Image *) NULL) || (reference->images == (Image *) NULL))
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  compare_image=CompareImages(wand->image,reference->image,metric,distortion,
+    &wand->image->exception);
+  if (compare_image == (Image *) NULL)
+    return((MagickWand *) NULL);
+  return(CloneMagickWandWithImages(wand,compare_image));
+#else
+  return False;
+#endif /* NOT_IMPLEMENTED */
 }
 
 /*
@@ -1287,9 +1461,9 @@ WandExport unsigned int MagickCompositeImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if ((wand->image == (Image *) NULL) ||
-      (composite_wand->image == (Image *) NULL))
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if ((wand->images == (Image *) NULL) ||
+      (composite_wand->images == (Image *) NULL))
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   status=CompositeImage(wand->image,compose,composite_wand->image,x,y);
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
@@ -1332,8 +1506,8 @@ WandExport unsigned int MagickContrastImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   status=ContrastImage(wand->image,sharpen);
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
@@ -1356,7 +1530,7 @@ WandExport unsigned int MagickContrastImage(MagickWand *wand,
 %  The format of the MagickConvolveImage method is:
 %
 %      unsigned int MagickConvolveImage(MagickWand *wand,
-%        const unsigned int order,const double *kernel)
+%        const unsigned long order,const double *kernel)
 %
 %  A description of each parameter follows:
 %
@@ -1364,12 +1538,12 @@ WandExport unsigned int MagickContrastImage(MagickWand *wand,
 %
 %    o order: The number of columns and rows in the filter kernel.
 %
-%    o kernel: An array of double representing the convolution kernel.
+%    o kernel: An array of doubles representing the convolution kernel.
 %
 %
 */
 WandExport unsigned int MagickConvolveImage(MagickWand *wand,
-  const unsigned int order,const double *kernel)
+  const unsigned long order,const double *kernel)
 {
   Image
     *convolve_image;
@@ -1378,8 +1552,8 @@ WandExport unsigned int MagickConvolveImage(MagickWand *wand,
   assert(wand->signature == MagickSignature);
   if (kernel == (const double *) NULL)
     return(False);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   convolve_image=ConvolveImage(wand->image,order,kernel,&wand->exception);
   if (convolve_image == (Image *) NULL)
     return(False);
@@ -1433,8 +1607,8 @@ WandExport unsigned int MagickCropImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   crop.width=width;
   crop.height=height;
   crop.x=x;
@@ -1482,8 +1656,8 @@ WandExport unsigned int MagickCycleColormapImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   status=CycleColormapImage(wand->image,displace);
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
@@ -1526,7 +1700,7 @@ WandExport MagickWand *MagickDeconstructImages(MagickWand *wand)
   deconstruct_image=DeconstructImages(wand->images,&wand->exception);
   if (deconstruct_image == (Image *) NULL)
     return((MagickWand *) NULL);
-  return(CloneMagickWand(wand,deconstruct_image));
+  return(CloneMagickWandWithImages(wand,deconstruct_image));
 }
 
 /*
@@ -1569,8 +1743,8 @@ WandExport char *MagickDescribeImage(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   description=(char *) NULL;
   unique_file=AcquireUniqueFileResource(filename);
   file=(FILE *) NULL;
@@ -1578,7 +1752,7 @@ WandExport char *MagickDescribeImage(MagickWand *wand)
     file=fdopen(unique_file,"wb");
   if ((unique_file == -1) || (file == (FILE *) NULL))
     {
-      ThrowMagickException(&wand->exception,FileOpenError,
+      ThrowException(&wand->exception,FileOpenError,
                            UnableToCreateTemporaryFile,filename);
     }
   else
@@ -1620,8 +1794,8 @@ WandExport unsigned int MagickDespeckleImage(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   despeckle_image=DespeckleImage(wand->image,&wand->exception);
   if (despeckle_image == (Image *) NULL)
     return(False);
@@ -1665,8 +1839,8 @@ WandExport unsigned int MagickDisplayImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   image=CloneImage(wand->image,0,0,True,&wand->exception);
   if (image == (Image *) NULL)
     return(False);
@@ -1755,8 +1929,8 @@ WandExport unsigned int MagickDrawImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   draw_info=DrawPeekGraphicContext(drawing_wand);
   if ((draw_info == (DrawInfo *) NULL) ||
       (draw_info->primitive == (char *) NULL))
@@ -1801,8 +1975,8 @@ WandExport unsigned int MagickEdgeImage(MagickWand *wand,const double radius)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   edge_image=EdgeImage(wand->image,radius,&wand->exception);
   if (edge_image == (Image *) NULL)
     return(False);
@@ -1851,8 +2025,8 @@ WandExport unsigned int MagickEmbossImage(MagickWand *wand,const double radius,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   emboss_image=EmbossImage(wand->image,radius,sigma,&wand->exception);
   if (emboss_image == (Image *) NULL)
     return(False);
@@ -1891,8 +2065,8 @@ WandExport unsigned int MagickEnhanceImage(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   enhance_image=EnhanceImage(wand->image,&wand->exception);
   if (enhance_image == (Image *) NULL)
     return(False);
@@ -1930,8 +2104,8 @@ WandExport unsigned int MagickEqualizeImage(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   status=EqualizeImage(wand->image);
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
@@ -1973,7 +2147,7 @@ WandExport MagickWand *MagickFlattenImages(MagickWand *wand)
   flatten_image=FlattenImages(wand->images,&wand->exception);
   if (flatten_image == (Image *) NULL)
     return((MagickWand *) NULL);
-  return(CloneMagickWand(wand,flatten_image));
+  return(CloneMagickWandWithImages(wand,flatten_image));
 }
 
 /*
@@ -2006,8 +2180,8 @@ WandExport unsigned int MagickFlipImage(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   flip_image=FlipImage(wand->image,&wand->exception);
   if (flip_image == (Image *) NULL)
     return(False);
@@ -2046,8 +2220,8 @@ WandExport unsigned int MagickFlopImage(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   flop_image=FlopImage(wand->image,&wand->exception);
   if (flop_image == (Image *) NULL)
     return(False);
@@ -2106,8 +2280,8 @@ WandExport unsigned int MagickFrameImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   (void) memset(&frame_info,0,sizeof(FrameInfo));
   frame_info.width=wand->image->columns+2*width;
   frame_info.height=wand->image->rows+2*height;
@@ -2164,9 +2338,9 @@ WandExport unsigned int MagickFxImageChannel(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if ((wand->image == (Image *) NULL) ||
-      (fx_wand->image == (Image *) NULL))
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if ((wand->images == (Image *) NULL) ||
+      (fx_wand->images == (Image *) NULL))
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   status=FxImageChannel(wand->image,fx_wand->image,channel,expression);
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
@@ -2209,21 +2383,21 @@ WandExport unsigned int MagickFxImageChannel(MagickWand *wand,
 */
 WandExport unsigned int MagickGammaImage(MagickWand *wand,const double gamma)
 {
-#if defined(NOT_IMPLEMENTED)
+  char
+    level[MaxTextExtent];
+
   unsigned int
     status;
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
-  status=GammaImageChannel(wand->image,AllChannels,gamma);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  FormatString(level,"%g",gamma);
+  status=GammaImage(wand->image,level);
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
   return(status);
-#else
-  return False;
-#endif
 }
 
 /*
@@ -2269,8 +2443,8 @@ WandExport unsigned int MagickGammaImageChannel(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   status=GammaImageChannel(wand->image,channel,gamma);
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
@@ -2305,18 +2479,6 @@ WandExport unsigned int MagickGammaImageChannel(MagickWand *wand,
 %    o severity: The severity of the error is returned here.
 %
 */
-
-static const char *GetErrorMessageString(const int error_number)
-{
-  const char
-    *message;
-
-  message=strerror(error_number);
-  if (message == (const char *) NULL)
-    return("Error number is out of range");
-  return(message);
-}
-
 WandExport char *MagickGetException(const MagickWand *wand,
   ExceptionType *severity)
 {
@@ -2341,13 +2503,6 @@ WandExport char *MagickGetException(const MagickWand *wand,
       (void) ConcatenateMagickString(description,GetLocaleExceptionMessage(
         wand->exception.severity,wand->exception.description),MaxTextExtent);
       (void) ConcatenateMagickString(description,")",MaxTextExtent);
-    }
-  if ((wand->exception.severity != OptionError) && errno)
-    {
-      (void) ConcatenateMagickString(description," [",MaxTextExtent);
-      (void) ConcatenateMagickString(description,GetErrorMessageString(errno),
-        MaxTextExtent);
-      (void) ConcatenateMagickString(description,"]",MaxTextExtent);
     }
   return(description);
 }
@@ -2412,8 +2567,8 @@ WandExport unsigned int MagickGetImageBackgroundColor(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   PixelSetQuantumColor(background_color,&wand->image->background_color);
   return(True);
 }
@@ -2451,8 +2606,8 @@ WandExport unsigned int MagickGetImageBluePrimary(MagickWand *wand,double *x,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   *x=wand->image->chromaticity.blue_primary.x;
   *y=wand->image->chromaticity.blue_primary.y;
   return(True);
@@ -2488,10 +2643,149 @@ WandExport unsigned int MagickGetImageBorderColor(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   PixelSetQuantumColor(border_color,&wand->image->border_color);
   return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k G e t I m a g e C h a n n e l D e p t h                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageChannelDepth() gets the depth for a particular image channel.
+%
+%  The format of the MagickGetImageChannelDepth method is:
+%
+%      unsigned long MagickGetImageChannelDepth(MagickWand *wand,
+%        const ChannelType channel)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o channel: Identify which channel to extract: RedChannel, GreenChannel,
+%      BlueChannel, OpacityChannel, CyanChannel, MagentaChannel, YellowChannel,
+%      BlackChannel, or IndexChannel.
+%
+*/
+WandExport unsigned long MagickGetImageChannelDepth(MagickWand *wand,
+  const ChannelType channel)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  return(GetImageChannelDepth(wand->image,channel,&wand->exception));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k G e t I m a g e C h a n n e l E x t r e m a                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageChannelExtrema() gets the extrema for one or more image
+%  channels.
+%
+%  The format of the MagickGetImageChannelExtrema method is:
+%
+%      unsigned int MagickGetImageChannelExtrema(MagickWand *wand,
+%        const ChannelType channel,unsigned long *minima,unsigned long *maxima)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o channel: Identify which channel to extract: RedChannel, GreenChannel,
+%      BlueChannel, OpacityChannel, CyanChannel, MagentaChannel, YellowChannel,
+%      BlackChannel, or IndexChannel.
+%
+%    o minima:  The minimum pixel value for the specified channel(s).
+%
+%    o maxima:  The maximum pixel value for the specified channel(s).
+%
+*/
+WandExport unsigned int MagickGetImageChannelExtrema(MagickWand *wand,
+  const ChannelType channel,unsigned long *minima,unsigned long *maxima)
+{
+#if NOT_IMPLEMENTED
+  unsigned int
+    status;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  status=GetImageChannelExtrema(wand->image,channel,minima,maxima,
+    &wand->exception);
+  return(status);
+#else
+  return False;
+#endif
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k G e t I m a g e C h a n n e l M e a n                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageChannelMean() gets the mean and standard deviation of one or
+%  more image channels.
+%
+%  The format of the MagickGetImageChannelMean method is:
+%
+%      unsigned int MagickGetImageChannelMean(MagickWand *wand,
+%        const ChannelType channel,double *mean,double *standard_deviation)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o channel: Identify which channel to extract: RedChannel, GreenChannel,
+%      BlueChannel, OpacityChannel, CyanChannel, MagentaChannel, YellowChannel,
+%      BlackChannel, or IndexChannel.
+%
+%    o mean:  The mean pixel value for the specified channel(s).
+%
+%    o standard_deviation:  The standard deviation for the specified channel(s).
+%
+*/
+WandExport unsigned int MagickGetImageChannelMean(MagickWand *wand,
+  const ChannelType channel,double *mean,double *standard_deviation)
+{
+#if NOT_IMPLEMENTED
+  unsigned int
+    status;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  status=GetImageChannelMean(wand->image,channel,mean,standard_deviation,
+    &wand->exception);
+  return(status);
+#else
+  return False;
+#endif
 }
 
 /*
@@ -2527,11 +2821,11 @@ WandExport unsigned int MagickGetImageColormapColor(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   if ((wand->image->colormap == (PixelPacket *) NULL) ||
       (index >= wand->image->colors))
-    ThrowWandException(ImageError,InvalidColormapIndex,(char *) NULL);
+    ThrowWandException(WandError,InvalidColormapIndex,(char *) NULL);
   PixelSetQuantumColor(color,wand->image->colormap+index);
   return(True);
 }
@@ -2562,10 +2856,44 @@ WandExport unsigned long MagickGetImageColors(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowMagickException(&wand->exception,ImageError,NoImagesWereFound,
-      (char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   return(GetNumberColors(wand->image,(FILE *) NULL,&wand->exception));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k G e t I m a g e C o l o r s p a c e                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageColorspace() gets the image colorspace.
+%
+%  The format of the MagickGetImageColorspace method is:
+%
+%      ColorspaceType MagickGetImageColorspace(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+*/
+WandExport ColorspaceType MagickGetImageColorspace(MagickWand *wand)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    {
+      (void) ThrowException(&wand->exception,WandError,WandContainsNoImages,
+                            wand->id);
+      return(UndefinedColorspace);
+    }
+  return(wand->image->colorspace);
 }
 
 /*
@@ -2595,9 +2923,12 @@ WandExport CompositeOperator MagickGetImageCompose(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowMagickException(&wand->exception,ImageError,NoImagesWereFound,
-      (char *) NULL);
+  if (wand->images == (Image *) NULL)
+    {
+      (void) ThrowException(&wand->exception,WandError,WandContainsNoImages
+                            ,wand->id);
+      return(UndefinedCompositeOp);
+    }
   return(wand->image->compose);
 }
 
@@ -2627,9 +2958,8 @@ WandExport CompressionType MagickGetImageCompression(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowMagickException(&wand->exception,ImageError,NoImagesWereFound,
-      (char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   return(wand->image->compression);
 }
 
@@ -2659,48 +2989,9 @@ WandExport unsigned long MagickGetImageDelay(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowMagickException(&wand->exception,ImageError,NoImagesWereFound,
-      (char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   return(wand->image->delay);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   M a g i c k G e t I m a g e D e p t h                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MagickGetImageChannelDepth() gets the depth for a particular image channel.
-%
-%  The format of the MagickGetImageChannelDepth method is:
-%
-%      unsigned long MagickGetImageChannelDepth(MagickWand *wand,
-%        const ChannelType channel)
-%
-%  A description of each parameter follows:
-%
-%    o wand: The magick wand.
-%
-%    o channel: Identify which channel to extract: RedChannel, GreenChannel,
-%      BlueChannel, OpacityChannel, CyanChannel, MagentaChannel, YellowChannel,
-%      BlackChannel, or IndexChannel.
-%
-*/
-WandExport unsigned long MagickGetImageChannelDepth(MagickWand *wand,
-  const ChannelType channel)
-{
-  assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowMagickException(&wand->exception,ImageError,NoImagesWereFound,
-      (char *) NULL);
-  return(GetImageChannelDepth(wand->image,channel,&wand->exception));
 }
 
 /*
@@ -2729,9 +3020,8 @@ WandExport unsigned long MagickGetImageDepth(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowMagickException(&wand->exception,ImageError,NoImagesWereFound,
-      (char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   return(GetImageDepth(wand->image,&wand->exception));
 }
 
@@ -2740,30 +3030,143 @@ WandExport unsigned long MagickGetImageDepth(MagickWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k G e t I m a g e H e i g h t                                   %
+%   M a g i c k G e t I m a g e E x t r e m a                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickGetImageHeight() returns the image height.
+%  MagickGetImageExtrema() gets the extrema for the image.
 %
-%  The format of the MagickGetImageHeight method is:
+%  The format of the MagickGetImageExtrema method is:
 %
-%      unsigned long MagickGetImageHeight(MagickWand *wand)
+%      unsigned int MagickGetImageExtrema(MagickWand *wand,
+%        unsigned long *min,unsigned long *max)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o min:  The minimum pixel value for the specified channel(s).
+%
+%    o max:  The maximum pixel value for the specified channel(s).
+%
+*/
+WandExport unsigned int MagickGetImageExtrema(MagickWand *wand,
+  unsigned long *min,unsigned long *max)
+{
+#if NOT_IMPLEMENTED
+  unsigned int
+    status;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  status=GetImageExtrema(wand->image,min,max,&wand->exception);
+  return(status);
+#else
+  return False;
+#endif /* NOT_IMPLEMENTED */
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k G e t I m a g e D i s p o s e                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageDispose() gets the image disposal method.
+%
+%  The format of the MagickGetImageDispose method is:
+%
+%      DisposeType MagickGetImageDispose(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
 %    o wand: The magick wand.
 %
 */
-WandExport unsigned long MagickGetImageHeight(MagickWand *wand)
+WandExport DisposeType MagickGetImageDispose(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
-  return(wand->image->rows);
+  if (wand->images == (Image *) NULL)
+    {
+      (void) ThrowException(&wand->exception,WandError,WandContainsNoImages,
+                            wand->id);
+      return(UndefinedDispose);
+    }
+  return((DisposeType) wand->image->dispose);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k G e t I m a g e F i l e n a m e                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageFilename() returns the filename of a particular image in a
+%  sequence.
+%
+%  The format of the MagickGetImageFilename method is:
+%
+%      const char MagickGetImageFilename(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+*/
+WandExport char *MagickGetImageFilename(MagickWand *wand)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  return(AcquireString(wand->image->filename));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k G e t I m a g e F o r m a t                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageFormat() returns the format of a particular image in a
+%  sequence.
+%
+%  The format of the MagickGetImageFormat method is:
+%
+%      const char MagickGetImageFormat(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+*/
+WandExport char *MagickGetImageFormat(MagickWand *wand)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  return(AcquireString(wand->image->magick));
 }
 
 /*
@@ -2792,9 +3195,8 @@ WandExport double MagickGetImageGamma(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowMagickException(&wand->exception,ImageError,NoImagesWereFound,
-      (char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   return(wand->image->gamma);
 }
 
@@ -2830,8 +3232,8 @@ WandExport unsigned int MagickGetImageGreenPrimary(MagickWand *wand,double *x,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   *x=wand->image->chromaticity.green_primary.x;
   *y=wand->image->chromaticity.green_primary.y;
   return(True);
@@ -2842,31 +3244,30 @@ WandExport unsigned int MagickGetImageGreenPrimary(MagickWand *wand,double *x,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k G e t I m a g e F i l e n a m e                               %
+%   M a g i c k G e t I m a g e H e i g h t                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickGetImageFilename() returns the filename of a particular image in a
-%  sequence.
+%  MagickGetImageHeight() returns the image height.
 %
-%  The format of the MagickGetImageFilename method is:
+%  The format of the MagickGetImageHeight method is:
 %
-%      const char MagickGetImageFilename(MagickWand *wand)
+%      unsigned long MagickGetImageHeight(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
 %    o wand: The magick wand.
 %
 */
-WandExport char *MagickGetImageFilename(MagickWand *wand)
+WandExport unsigned long MagickGetImageHeight(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
-  return(AcquireString(wand->image->filename));
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  return(wand->image->rows);
 }
 
 /*
@@ -2874,31 +3275,153 @@ WandExport char *MagickGetImageFilename(MagickWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k G e t I m a g e F o r m a t                                   %
+%   M a g i c k G e t I m a g e H i s t o g r a m                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickGetImageFormat() returns the format of a particular image in a
-%  sequence.
+%  MagickGetImageHistogram() returns the image histogram as an array of
+%  PixelWand wands.
 %
-%  The format of the MagickGetImageFormat method is:
+%  The format of the MagickGetImageHistogram method is:
 %
-%      const char MagickGetImageFormat(MagickWand *wand)
+%      PixelWand *MagickGetImageHistogram(MagickWand *wand,
+%        unsigned long *number_colors)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o number_colors: The number of unique colors in the image and the number
+%      of pixel wands returned.
+%
+%
+*/
+WandExport PixelWand **MagickGetImageHistogram(MagickWand *wand,
+  unsigned long *number_colors)
+{
+  HistogramColorPacket
+    *histogram;
+
+  PixelWand
+    **pixel_wands;
+
+  register long
+    i;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  histogram=GetColorHistogram(wand->image,number_colors,&wand->exception);
+  if (histogram == (HistogramColorPacket *) NULL)
+    return((PixelWand **) NULL);
+  pixel_wands=NewPixelWands(*number_colors);
+  for (i=0; i < (long) *number_colors; i++)
+  {
+    PixelSetQuantumColor(pixel_wands[i],&histogram[i].pixel);
+    PixelSetColorCount(pixel_wands[i],histogram[i].count);
+  }
+  histogram=(HistogramColorPacket *) RelinquishMagickMemory(histogram);
+  return(pixel_wands);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k G e t I m a g e I n d e x                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageIndex() returns the index of the current image.
+%
+%  The format of the MagickGetImageIndex method is:
+%
+%      unsigned int MagickGetImageIndex(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
 %    o wand: The magick wand.
 %
 */
-WandExport char *MagickGetImageFormat(MagickWand *wand)
+WandExport long MagickGetImageIndex(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
-  return(AcquireString(wand->image->magick));
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImageIndexs,wand->id);
+  return(GetImageIndexInList(wand->image));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k G e t I m a g e I n t e r l a c e S c h e m e                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageInterlaceScheme() gets the image interlace scheme.
+%
+%  The format of the MagickGetImageInterlaceScheme method is:
+%
+%      InterlaceType MagickGetImageInterlaceScheme(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+*/
+WandExport InterlaceType MagickGetImageInterlaceScheme(MagickWand *wand)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    {
+      (void) ThrowException(&wand->exception,WandError,WandContainsNoImages,
+                            wand->id);
+      return(UndefinedInterlace);
+    }
+  return(wand->image->interlace);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k G e t I m a g e I t e r a t i o n s                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageIterations() gets the image iterations.
+%
+%  The format of the MagickGetImageIterations method is:
+%
+%      unsigned long MagickGetImageIterations(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+*/
+WandExport unsigned long MagickGetImageIterations(MagickWand *wand)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  return(wand->image->iterations);
 }
 
 /*
@@ -2931,8 +3454,8 @@ WandExport unsigned int MagickGetImageMatteColor(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   PixelSetQuantumColor(matte_color,&wand->image->matte_color);
   return(True);
 }
@@ -2963,7 +3486,7 @@ WandExport unsigned int MagickGetImageMatteColor(MagickWand *wand,
 %      unsigned int MagickGetImagePixels(MagickWand *wand,const long x_offset,
 %        const long y_offset,const unsigned long columns,
 %        const unsigned long rows,const char *map,const StorageType storage,
-%        void *pixels)
+%        unsigned char *pixels)
 %
 %  A description of each parameter follows:
 %
@@ -2991,20 +3514,75 @@ WandExport unsigned int MagickGetImageMatteColor(MagickWand *wand,
 WandExport unsigned int MagickGetImagePixels(MagickWand *wand,
   const long x_offset,const long y_offset,const unsigned long columns,
   const unsigned long rows,const char *map,const StorageType storage,
-  void *pixels)
+  unsigned char *pixels)
 {
   unsigned int
     status;
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   status=ExportImagePixels(wand->image,x_offset,y_offset,columns,rows,map,
     storage,pixels,&wand->exception);
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
   return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k G e t I m a g e P r o f i l e                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageProfile() returns the named image profile.
+%
+%  The format of the MagickGetImageProfile method is:
+%
+%      unsigned char *MagickGetImageProfile(MagickWand *wand,const char *name,
+%        unsigned long *length)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o name: Name of profile to return: ICC, IPTC, or generic profile.
+%
+%    o length: The length of the profile.
+%
+*/
+WandExport unsigned char *MagickGetImageProfile(MagickWand *wand,
+  const char *name,unsigned long *length)
+{
+  size_t
+    profile_length=0;
+
+  const unsigned char
+    *profile=0;
+  
+  unsigned char
+    *result=0;
+  
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  *length=0;
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  profile=GetImageProfile(wand->image,name,&profile_length);
+  if (profile)
+    {
+      result=MagickAllocateMemory(unsigned char *,profile_length);
+      if (result)
+        memcpy(result,profile,profile_length);
+    }
+  *length=profile_length;
+  return (result);
 }
 
 /*
@@ -3039,8 +3617,8 @@ WandExport unsigned int MagickGetImageRedPrimary(MagickWand *wand,double *x,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   *x=wand->image->chromaticity.red_primary.x;
   *y=wand->image->chromaticity.red_primary.y;
   return(True);
@@ -3072,10 +3650,13 @@ WandExport RenderingIntent MagickGetImageRenderingIntent(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowMagickException(&wand->exception,ImageError,NoImagesWereFound,
-      (char *) NULL);
-  return(wand->image->rendering_intent);
+  if (wand->images == (Image *) NULL)
+    {
+      (void) ThrowException(&wand->exception,WandError,WandContainsNoImages,
+                            wand->id);
+      return(UndefinedIntent);
+    }
+  return((RenderingIntent) wand->image->rendering_intent);
 }
 
 /*
@@ -3104,9 +3685,8 @@ WandExport unsigned long MagickGetImageScene(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowMagickException(&wand->exception,ImageError,NoImagesWereFound,
-      (char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   return(wand->image->scene);
 }
 
@@ -3143,8 +3723,8 @@ WandExport char *MagickGetImageSignature(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   status=SignatureImage(wand->image);
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
@@ -3181,9 +3761,44 @@ WandExport ExtendedSignedIntegralType MagickGetImageSize(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   return(GetBlobSize(wand->image));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k G e t I m a g e T y p e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageType() gets the image type.
+%
+%  The format of the MagickGetImageType method is:
+%
+%      ImageType MagickGetImageType(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+*/
+WandExport ImageType MagickGetImageType(MagickWand *wand)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    {
+      (void) ThrowException(&wand->exception,WandError,WandContainsNoImages,
+                            wand->id);
+      return(UndefinedType);
+    }
+  return(GetImageType(wand->image,&wand->exception));
 }
 
 /*
@@ -3212,10 +3827,49 @@ WandExport ResolutionType MagickGetImageUnits(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowMagickException(&wand->exception,ImageError,NoImagesWereFound,
-      (char *) NULL);
+  if (wand->images == (Image *) NULL)
+    {
+      (void) ThrowException(&wand->exception,WandError,WandContainsNoImages,
+                            wand->id);
+      return(UndefinedResolution);
+    }
   return(wand->image->units);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k G e t I m a g e V i r t u a l P i x e l M e t h o d           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageVirtualPixelMethod() returns the virtual pixel method for the
+%  sepcified image.
+%
+%  The format of the MagickGetImageVirtualPixelMethod method is:
+%
+%      VirtualPixelMethod MagickGetImageVirtualPixelMethod(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+*/
+WandExport VirtualPixelMethod MagickGetImageVirtualPixelMethod(MagickWand *wand)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    {
+      (void) ThrowException(&wand->exception,WandError,WandContainsNoImages,
+                            wand->id);
+      return(UndefinedVirtualPixelMethod);
+    }
+  return(GetImageVirtualPixelMethod(wand->image));
 }
 
 /*
@@ -3250,8 +3904,8 @@ WandExport unsigned int MagickGetImageWhitePoint(MagickWand *wand,double *x,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   *x=wand->image->chromaticity.white_point.x;
   *y=wand->image->chromaticity.white_point.y;
   return(True);
@@ -3283,8 +3937,8 @@ WandExport unsigned long MagickGetImageWidth(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   return(wand->image->columns);
 }
 
@@ -3314,9 +3968,8 @@ WandExport double MagickGetImageXResolution(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowMagickException(&wand->exception,ImageError,NoImagesWereFound,
-      (char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   return(wand->image->x_resolution);
 }
 
@@ -3346,9 +3999,8 @@ WandExport double MagickGetImageYResolution(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowMagickException(&wand->exception,ImageError,NoImagesWereFound,
-      (char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   return(wand->image->y_resolution);
 }
 
@@ -3357,7 +4009,7 @@ WandExport double MagickGetImageYResolution(MagickWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k G e t N u m b e r O f I m a g e s                             %
+%   M a g i c k G e t N u m b e r I m a g e s                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3366,21 +4018,21 @@ WandExport double MagickGetImageYResolution(MagickWand *wand)
 %  MagickGetNumberOfImages() returns the number of images associated with a
 %  magick wand.
 %
-%  The format of the MagickGetNumberOfImages method is:
+%  The format of the MagickGetNumberImages method is:
 %
-%      unsigned long MagickGetNumberOfImages(MagickWand *wand)
+%      unsigned long MagickGetNumberImages(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
 %    o wand: The magick wand.
 %
 */
-WandExport unsigned long MagickGetNumberOfImages(MagickWand *wand)
+WandExport unsigned long MagickGetNumberImages(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   return(GetImageListLength(wand->image));
 }
 
@@ -3409,6 +4061,74 @@ WandExport unsigned long MagickGetNumberOfImages(MagickWand *wand)
 WandExport unsigned long MagickGetResourceLimit(const ResourceType type)
 {
   return(GetMagickResource(type));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k G e t S a m p l i n g F a c t o r                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetSamplingFactor() gets the horizontal and vertical sampling factor.
+%
+%  The format of the MagickGetSamplingFactor method is:
+%
+%      double *MagickGetSamplingFactor(MagickWand *wand,
+%        unsigned long *number_factors)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o number_factors: The number of factors in the returned array.
+%
+*/
+WandExport double *MagickGetSamplingFactor(MagickWand *wand,
+  unsigned long *number_factors)
+{
+  double
+    *sampling_factors;
+
+  register const char
+    *p;
+
+  register long
+    i;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  *number_factors=0;
+  sampling_factors=(double *) NULL;
+  if (wand->image_info->sampling_factor == (char *) NULL)
+    return(sampling_factors);
+  i=0;
+  for (p=wand->image_info->sampling_factor; p != (char *) NULL; p=strchr(p,','))
+  {
+    while (((int) *p != 0) && ((isspace((int) ((unsigned char) *p)) != 0) ||
+           (*p == ',')))
+      p++;
+    i++;
+  }
+  sampling_factors=(double *) AcquireMagickMemory((size_t) i*sizeof(double));
+  if (sampling_factors == (double *) NULL)
+    MagickFatalError(ResourceLimitFatalError,MemoryAllocationFailed,
+      wand->image_info->filename);
+  i=0;
+  for (p=wand->image_info->sampling_factor; p != (char *) NULL; p=strchr(p,','))
+  {
+    while (((int) *p != 0) && ((isspace((int) ((unsigned char) *p)) != 0) ||
+           (*p == ',')))
+      p++;
+    sampling_factors[i]=atof(p);
+    i++;
+  }
+  *number_factors=(unsigned long) i;
+  return(sampling_factors);
 }
 
 /*
@@ -3458,6 +4178,74 @@ WandExport unsigned int MagickGetSize(const MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k H a s N e x t I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickHasNextImage() returns True if the wand has more images when
+%  traversing the list in the forward direction
+%
+%  The format of the MagickHasNextImage method is:
+%
+%      unsigned int MagickHasNextImage(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+*/
+WandExport unsigned int MagickHasNextImage(MagickWand *wand)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  if (GetNextImageInList(wand->image) == (Image *) NULL)
+    return(False);
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k H a s P r e v i o u s I m a g e                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickHasPreviousImage() returns True if the wand has more images when
+%  traversing the list in the reverse direction
+%
+%  The format of the MagickHasPreviousImage method is:
+%
+%      unsigned int MagickHasPreviousImage(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+*/
+WandExport unsigned int MagickHasPreviousImage(MagickWand *wand)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  if (GetPreviousImageInList(wand->image) == (Image *) NULL)
+    return(False);
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k I m p l o d e I m a g e                                       %
 %                                                                             %
 %                                                                             %
@@ -3487,8 +4275,8 @@ WandExport unsigned int MagickImplodeImage(MagickWand *wand,const double amount)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   implode_image=ImplodeImage(wand->image,amount,&wand->exception);
   if (implode_image == (Image *) NULL)
     return(False);
@@ -3528,8 +4316,8 @@ WandExport unsigned int MagickLabelImage(MagickWand *wand,const char *label)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   (void) SetImageAttribute(wand->image,"label",(char *) NULL);
   status=SetImageAttribute(wand->image,"label",label);
   if (status == False)
@@ -3584,8 +4372,8 @@ WandExport unsigned int MagickLevelImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   (void) FormatMagickString(levels,MaxTextExtent,"%g,%g,%g",black_point,
     white_point,gamma);
   status=LevelImage(wand->image,levels);
@@ -3643,8 +4431,8 @@ WandExport unsigned int MagickLevelImageChannel(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   status=LevelImageChannel(wand->image,channel,black_point,white_point,gamma);
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
@@ -3681,8 +4469,8 @@ WandExport unsigned int MagickMagnifyImage(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   magnify_image=MagnifyImage(wand->image,&wand->exception);
   if (magnify_image == (Image *) NULL)
     return(False);
@@ -3728,8 +4516,8 @@ WandExport unsigned int MagickMapImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if ((wand->image == (Image *) NULL) || (map_wand->image == (Image *) NULL))
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if ((wand->images == (Image *) NULL) || (map_wand->images == (Image *) NULL))
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   status=MapImage(wand->image,map_wand->image,dither);
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
@@ -3791,8 +4579,8 @@ WandExport unsigned int MagickMatteFloodfillImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   draw_info=CloneDrawInfo(wand->image_info,(DrawInfo *) NULL);
   target=AcquireOnePixel(wand->image,x % wand->image->columns,
     y % wand->image->rows,&wand->exception);
@@ -3841,8 +4629,8 @@ WandExport unsigned int MagickMedianFilterImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   median_image=MedianFilterImage(wand->image,radius,&wand->exception);
   if (median_image == (Image *) NULL)
     return(False);
@@ -3881,8 +4669,8 @@ WandExport unsigned int MagickMinifyImage(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   minify_image=MinifyImage(wand->image,&wand->exception);
   if (minify_image == (Image *) NULL)
     return(False);
@@ -3932,8 +4720,8 @@ WandExport unsigned int MagickModulateImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   (void) FormatMagickString(modulate,MaxTextExtent,"%g,%g,%g",brightness,
     saturation,hue);
   status=ModulateImage(wand->image,modulate);
@@ -4049,7 +4837,7 @@ WandExport MagickWand *MagickMontageImage(MagickWand *wand,
   DestroyMontageInfo(montage_info);
   if (montage_image == (Image *) NULL)
     return((MagickWand *) NULL);
-  return(CloneMagickWand(wand,montage_image));
+  return(CloneMagickWandWithImages(wand,montage_image));
 }
 
 /*
@@ -4092,7 +4880,7 @@ WandExport MagickWand *MagickMorphImages(MagickWand *wand,
   morph_image=MorphImages(wand->images,number_frames,&wand->exception);
   if (morph_image == (Image *) NULL)
     return((MagickWand *) NULL);
-  return(CloneMagickWand(wand,morph_image));
+  return(CloneMagickWandWithImages(wand,morph_image));
 }
 
 /*
@@ -4131,7 +4919,7 @@ WandExport MagickWand *MagickMosaicImages(MagickWand *wand)
   mosaic_image=MosaicImages(wand->images,&wand->exception);
   if (mosaic_image == (Image *) NULL)
     return((MagickWand *) NULL);
-  return(CloneMagickWand(wand,mosaic_image));
+  return(CloneMagickWandWithImages(wand,mosaic_image));
 }
 
 /*
@@ -4176,8 +4964,8 @@ WandExport unsigned int MagickMotionBlurImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   blur_image=MotionBlurImage(wand->image,radius,sigma,angle,&wand->exception);
   if (blur_image == (Image *) NULL)
     return(False);
@@ -4223,8 +5011,8 @@ WandExport unsigned int MagickNegateImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   status=NegateImage(wand->image,gray);
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
@@ -4274,8 +5062,8 @@ WandExport unsigned int MagickNegateImageChannel(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   status=NegateImageChannel(wand->image,channel,gray);
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
@@ -4311,9 +5099,19 @@ WandExport unsigned int MagickNextImage(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if ((wand->image == (Image *) NULL) || (wand->image->next == (Image *) NULL))
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
-  wand->image=wand->image->next;
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  if (GetNextImageInList(wand->image) == (Image *) NULL)
+    {
+      wand->iterator=True;
+      return(False);
+    }
+  if (wand->iterator != False)
+    {
+      wand->iterator=False;
+      return(True);
+    }
+  wand->image=GetNextImageInList(wand->image);
   return(True);
 }
 
@@ -4350,8 +5148,8 @@ WandExport unsigned int MagickNormalizeImage(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   status=NormalizeImage(wand->image);
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
@@ -4392,8 +5190,8 @@ WandExport unsigned int MagickOilPaintImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   paint_image=OilPaintImage(wand->image,radius,&wand->exception);
   if (paint_image == (Image *) NULL)
     return(False);
@@ -4449,8 +5247,8 @@ WandExport unsigned int MagickOpaqueImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   PixelGetQuantumColor(target,&target_pixel);
   PixelGetQuantumColor(fill,&fill_pixel);
   wand->image->fuzz=fuzz;
@@ -4584,9 +5382,9 @@ WandExport unsigned int MagickPreviousImage(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if ((wand->image == (Image *) NULL) ||
+  if ((wand->images == (Image *) NULL) ||
       (wand->image->previous == (Image *) NULL))
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   wand->image=wand->image->previous;
   return(True);
 }
@@ -4624,15 +5422,15 @@ WandExport unsigned int MagickPreviousImage(MagickWand *wand)
 %
 */
 WandExport unsigned int MagickProfileImage(MagickWand *wand,const char *name,
-  const unsigned char *profile,const size_t length)
+  const unsigned char *profile,const unsigned long length)
 {
   unsigned int
     status;
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   status=ProfileImage(wand->image,name,profile,length,True);
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
@@ -4703,8 +5501,8 @@ WandExport unsigned int MagickQuantizeImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   quantize_info=CloneQuantizeInfo((QuantizeInfo *) NULL);
   quantize_info->number_colors=number_colors;
   quantize_info->tree_depth=treedepth;
@@ -4781,8 +5579,8 @@ WandExport unsigned int MagickQuantizeImages(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   quantize_info=CloneQuantizeInfo((QuantizeInfo *) NULL);
   quantize_info->number_colors=number_colors;
   quantize_info->tree_depth=treedepth;
@@ -4851,8 +5649,8 @@ WandExport double *MagickQueryFontMetrics(MagickWand *wand,
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
   assert(drawing_wand != (const DrawingWand *) NULL);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   font_metrics=(double *) AcquireMagickMemory(7*sizeof(double));
   if (font_metrics == (double *) NULL)
     return((double *) NULL);
@@ -4879,6 +5677,80 @@ WandExport double *MagickQueryFontMetrics(MagickWand *wand,
   font_metrics[5]=metrics.height;
   font_metrics[6]=metrics.max_advance;
   return(font_metrics);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k Q u e r y F o r m a t s                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickQueryFormats() returns any image formats that match the specified
+%  pattern.
+%
+%  The format of the MagickQueryFormats function is:
+%
+%      char **MagickQueryFormats(const char *pattern,
+%        unsigned long *number_formats)
+%
+%  A description of each parameter follows:
+%
+%    o pattern: Specifies a pointer to a text string containing a pattern.
+%
+%    o number_formats:  This integer returns the number of image formats in the
+%      list.
+%
+%
+*/
+MagickExport char **MagickQueryFormats(const char *pattern,
+  unsigned long *number_formats)
+{
+  ExceptionInfo
+    exception;
+
+  char
+    **format_array;
+
+  int
+    entries,
+    i;
+
+  MagickInfo **
+    magick_info;
+
+  *number_formats=0;
+  GetExceptionInfo(&exception);
+  magick_info=GetMagickInfoArray(&exception);
+  DestroyExceptionInfo(&exception);
+  if (!magick_info)
+    return 0;
+
+  for (entries = 0; magick_info[entries] != 0; entries++);
+  if (!entries)
+    {
+      MagickFreeMemory(magick_info);
+      return 0;
+    }
+
+  format_array=MagickAllocateMemory(char **,(entries+1)*sizeof(char *));
+  if (!format_array)
+    {
+      MagickFreeMemory(magick_info);
+      return 0;
+    }
+
+  for (i=0 ; i < entries ; i++)
+    format_array[i]=AcquireString(magick_info[i]->name);
+  format_array[i]=0;
+
+  MagickFreeMemory(magick_info);
+  *number_formats=entries;
+  return (format_array);
 }
 
 /*
@@ -4925,8 +5797,8 @@ WandExport unsigned int MagickRaiseImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   raise_info.width=width;
   raise_info.height=height;
   raise_info.x=x;
@@ -5009,7 +5881,7 @@ WandExport unsigned int MagickReadImage(MagickWand *wand,const char *filename)
 %    o length: The blob length.
 %
 */
-WandExport unsigned int MagickReadImageBlob(MagickWand *wand,const void *blob,
+WandExport unsigned int MagickReadImageBlob(MagickWand *wand,const unsigned char *blob,
   const size_t length)
 {
   Image
@@ -5112,8 +5984,8 @@ WandExport unsigned int MagickReduceNoiseImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   noise_image=ReduceNoiseImage(wand->image,radius,&wand->exception);
   if (noise_image == (Image *) NULL)
     return(False);
@@ -5179,11 +6051,43 @@ WandExport unsigned int MagickRemoveImage(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   DeleteImageFromList(&wand->image);
   wand->images=GetFirstImageInList(wand->image);
   return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k R e s e t I t e r a t o r                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickReset() resets the wand iterator.  Use it in conjunction
+%  with MagickNextImage() to iterate over all the images in a wand
+%  container.
+%
+%  The format of the MagickReset method is:
+%
+%      void MagickResetIterator(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+*/
+WandExport void MagickResetIterator(MagickWand *wand)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  wand->iterator=True;
+  wand->image=wand->images;
 }
 
 /*
@@ -5242,8 +6146,8 @@ WandExport unsigned int MagickResampleImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   width=(unsigned long) (x_resolution*wand->image->columns/
     (wand->image->x_resolution == 0.0 ? 72.0 : wand->image->x_resolution)+0.5);
   height=(unsigned long) (y_resolution*wand->image->rows/
@@ -5310,8 +6214,8 @@ WandExport unsigned int MagickResizeImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   resize_image=ResizeImage(wand->image,columns,rows,filter,blur,
     &wand->exception);
   if (resize_image == (Image *) NULL)
@@ -5357,8 +6261,8 @@ WandExport unsigned int MagickRollImage(MagickWand *wand,const long x_offset,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   roll_image=RollImage(wand->image,x_offset,y_offset,&wand->exception);
   if (roll_image == (Image *) NULL)
     return(False);
@@ -5405,8 +6309,8 @@ WandExport unsigned int MagickRotateImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   PixelGetQuantumColor(background,&wand->image->background_color);
   rotate_image=RotateImage(wand->image,degrees,&wand->exception);
   if (rotate_image == (Image *) NULL)
@@ -5454,8 +6358,8 @@ WandExport unsigned int MagickSampleImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   sample_image=SampleImage(wand->image,columns,rows,&wand->exception);
   if (sample_image == (Image *) NULL)
     return(False);
@@ -5500,8 +6404,8 @@ WandExport unsigned int MagickScaleImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   scale_image=ScaleImage(wand->image,columns,rows,&wand->exception);
   if (scale_image == (Image *) NULL)
     return(False);
@@ -5541,7 +6445,6 @@ WandExport unsigned int MagickSetFilename(MagickWand *wand,const char *filename)
   (void) CopyMagickString(wand->image_info->filename,filename,MaxTextExtent);
   return(True);
 }
-
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -5553,33 +6456,38 @@ WandExport unsigned int MagickSetFilename(MagickWand *wand,const char *filename)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickSetImage() selects the image associated with a magick wand.
+%  MagickSetImage() replaces the last image returned by MagickSetImageIndex(),
+%  MagickNextImage(), MagickPreviousImage() with the images from the specified
+%  wand.
 %
 %  The format of the MagickSetImage method is:
 %
-%      unsigned int MagickSetImage(MagickWand *wand,const unsigned long scene)
+%      unsigned int MagickSetImage(MagickWand *wand,const MagickWand *set_wand)
 %
 %  A description of each parameter follows:
 %
 %    o wand: The magick wand.
 %
-%    o scene: The scene number.
+%    o set_wand: The set_wand wand.
 %
 */
 WandExport unsigned int MagickSetImage(MagickWand *wand,
-  const unsigned long scene)
+  const MagickWand *set_wand)
 {
   Image
-    *image;
+    *images;
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->images == (Image *) NULL)
+  assert(set_wand != (MagickWand *) NULL);
+  assert(set_wand->signature == MagickSignature);
+  if (set_wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  images=CloneImageList(set_wand->images,&wand->exception);
+  if (images == (Image *) NULL)
     return(False);
-  image=GetImageFromList(wand->images,scene);
-  if (image == (Image *) NULL)
-    return(False);
-  wand->image=image;
+  ReplaceImageInList(&wand->image,images);
+  wand->images=GetFirstImageInList(wand->image);
   return(True);
 }
 
@@ -5613,8 +6521,8 @@ WandExport unsigned int MagickSetImageBackgroundColor(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   PixelGetQuantumColor(background,&wand->image->background_color);
   return(True);
 }
@@ -5652,8 +6560,8 @@ WandExport unsigned int MagickSetImageBluePrimary(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   wand->image->chromaticity.blue_primary.x=x;
   wand->image->chromaticity.blue_primary.y=y;
   return(True);
@@ -5689,8 +6597,8 @@ WandExport unsigned int MagickSetImageBorderColor(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   PixelGetQuantumColor(border,&wand->image->border_color);
   return(True);
 }
@@ -5728,13 +6636,52 @@ WandExport unsigned int MagickSetImageColormapColor(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   if ((wand->image->colormap == (PixelPacket *) NULL) ||
       (index >= wand->image->colors))
-    ThrowWandException(ImageError,InvalidColormapIndex,(char *) NULL);
+    ThrowWandException(WandError,InvalidColormapIndex,(char *) NULL);
   PixelGetQuantumColor(color,wand->image->colormap+index);
   return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t I m a g e C o l o r s p a c e                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetImageColorspace() sets the image colorspace.
+%
+%  The format of the MagickSetImageColorspace method is:
+%
+%      unsigned int MagickSetImageColorspace(MagickWand *wand,
+%        const ColorspaceType colorspace)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o colorspace: The image colorspace:   UndefinedColorspace, RGBColorspace,
+%      GRAYColorspace, TransparentColorspace, OHTAColorspace, XYZColorspace,
+%      YCbCrColorspace, YCCColorspace, YIQColorspace, YPbPrColorspace,
+%      YPbPrColorspace, YUVColorspace, CMYKColorspace, sRGBColorspace,
+%      HSLColorspace, or HWBColorspace.
+%
+*/
+WandExport unsigned int MagickSetImageColorspace(MagickWand *wand,
+  const ColorspaceType colorspace)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  return(TransformColorspace(wand->image,colorspace));
 }
 
 /*
@@ -5769,8 +6716,8 @@ WandExport unsigned int MagickSetImageCompose(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   wand->image->compose=compose;
   return(True);
 }
@@ -5805,8 +6752,8 @@ WandExport unsigned int MagickSetImageCompression(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   wand->image->compression=compression;
   return(True);
 }
@@ -5841,8 +6788,8 @@ WandExport unsigned int MagickSetImageDelay(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   wand->image->delay=delay;
   return(True);
 }
@@ -5852,7 +6799,7 @@ WandExport unsigned int MagickSetImageDelay(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k S e t I m a g e D e p t h                                     %
+%   M a g i c k S e t I m a g e C h a n n e l D e p t h                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -5881,8 +6828,8 @@ WandExport unsigned int MagickSetImageChannelDepth(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   SetImageChannelDepth(wand->image,channel,depth);
   return(True);
 }
@@ -5917,9 +6864,82 @@ WandExport unsigned int MagickSetImageDepth(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   SetImageDepth(wand->image,depth);
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t I m a g e D i s p o s e                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetImageDispose() sets the image disposal method.
+%
+%  The format of the MagickSetImageDispose method is:
+%
+%      unsigned int MagickSetImageDispose(MagickWand *wand,
+%        const DisposeType dispose)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o dispose: The image disposeal type.
+%
+*/
+WandExport unsigned int MagickSetImageDispose(MagickWand *wand,
+  const DisposeType dispose)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  wand->image->dispose=dispose;
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t I m a g e F i l e n a m e                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetImageFilename() sets the filename of a particular image in a
+%  sequence.
+%
+%  The format of the MagickSetImageFilename method is:
+%
+%      unsigned int MagickSetImageFilename(MagickWand *wand,
+%        const char *filename)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o filename: The image filename.
+%
+*/
+WandExport unsigned int MagickSetImageFilename(MagickWand *wand,
+  const char *filename)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  (void) CopyMagickString(wand->image->filename,filename,MaxTextExtent);
   return(True);
 }
 
@@ -5951,8 +6971,8 @@ WandExport unsigned int MagickSetImageGamma(MagickWand *wand,const double gamma)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   wand->image->gamma=gamma;
   return(True);
 }
@@ -5991,10 +7011,127 @@ WandExport unsigned int MagickSetImageGreenPrimary(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   wand->image->chromaticity.green_primary.x=x;
   wand->image->chromaticity.green_primary.y=y;
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t I m a g e I n d e x                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetImageIndex() set the current image to the position of the list
+%  specified with the index parameter.
+%
+%  The format of the MagickSetImageIndex method is:
+%
+%      unsigned int MagickSetImageIndex(MagickWand *wand,
+%        const unsigned long index)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o index: The scene number.
+%
+*/
+WandExport unsigned int MagickSetImageIndex(MagickWand *wand,
+  const unsigned long index)
+{
+  Image
+    *image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    return(False);
+  image=GetImageFromList(wand->images,index);
+  if (image == (Image *) NULL)
+    return(False);
+  wand->image=image;
+  wand->iterator=False;
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t I m a g e I n t e r l a c e S c h m e m e               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetImageInterlaceScheme() sets the image compression.
+%
+%  The format of the MagickSetImageInterlaceScheme method is:
+%
+%      unsigned int MagickSetImageInterlaceScheme(MagickWand *wand,
+%        const InterlaceType interlace_scheme)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o interlace_scheme: The image interlace scheme: NoInterlace, LineInterlace,
+%      PlaneInterlace, PartitionInterlace.
+%
+*/
+WandExport unsigned int MagickSetImageInterlaceScheme(MagickWand *wand,
+  const InterlaceType interlace_scheme)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  wand->image->interlace=interlace_scheme;
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t I m a g e I t e r a t i o n s                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetImageIterations() sets the image iterations.
+%
+%  The format of the MagickSetImageIterations method is:
+%
+%      unsigned int MagickSetImageIterations(MagickWand *wand,
+%        const unsigned long iterations)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o delay: The image delay in 1/100th of a second.
+%
+*/
+WandExport unsigned int MagickSetImageIterations(MagickWand *wand,
+  const unsigned long iterations)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  wand->image->iterations=iterations;
   return(True);
 }
 
@@ -6028,8 +7165,8 @@ WandExport unsigned int MagickSetImageMatteColor(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   PixelGetQuantumColor(matte,&wand->image->matte_color);
   return(True);
 }
@@ -6039,35 +7176,39 @@ WandExport unsigned int MagickSetImageMatteColor(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k S e t I m a g e F i l e n a m e                               %
+%   M a g i c k S e t I m a g e O p t i o n                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickSetImageFilename() sets the filename of a particular image in a
-%  sequence.
+%  MagickSetImageOption() associates one or options with an image format.
 %
-%  The format of the MagickSetImageFilename method is:
+%  The format of the MagickSetImageOption method is:
 %
-%      unsigned int MagickSetImageFilename(MagickWand *wand,
-%        const char *filename)
+%      unsigned int MagickSetImageOption(MagickWand *wand,const char *format,
+%        const char *options)
 %
 %  A description of each parameter follows:
 %
 %    o wand: The magick wand.
 %
-%    o filename: The image filename.
+%    o format: The image format.
+%
+%    o options:  Associate these options with the image format.
 %
 */
-WandExport unsigned int MagickSetImageFilename(MagickWand *wand,
-  const char *filename)
+WandExport unsigned int MagickSetImageOption(MagickWand *wand,
+  const char *format,const char *options)
 {
+  char
+    option[MaxTextExtent];
+
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
-  (void) CopyMagickString(wand->image->filename,filename,MaxTextExtent);
+  (void) FormatMagickString(option,MaxTextExtent,"%.1024s:%.1024s",
+    format,options);
+  AddDefinitions(wand->image_info,option,&wand->exception);
   return(True);
 }
 
@@ -6129,15 +7270,15 @@ WandExport unsigned int MagickSetImageFilename(MagickWand *wand,
 WandExport unsigned int MagickSetImagePixels(MagickWand *wand,
   const long x_offset,const long y_offset,const unsigned long columns,
   const unsigned long rows,const char *map,const StorageType storage,
-  void *pixels)
+  unsigned char *pixels)
 {
   unsigned int
     status;
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   status=ImportImagePixels(wand->image,x_offset,y_offset,columns,rows,map,
     storage,pixels);
   if (status == False)
@@ -6177,8 +7318,8 @@ WandExport unsigned int MagickSetImageRedPrimary(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   wand->image->chromaticity.red_primary.x=x;
   wand->image->chromaticity.red_primary.y=y;
   return(True);
@@ -6215,82 +7356,9 @@ WandExport unsigned int MagickSetImageRenderingIntent(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   wand->image->rendering_intent=rendering_intent;
-  return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   M a g i c k S e t I m a g e D e l a y                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MagickSetImageScene() sets the image scene.
-%
-%  The format of the MagickSetImageScene method is:
-%
-%      unsigned int MagickSetImageScene(MagickWand *wand,
-%        const unsigned long scene)
-%
-%  A description of each parameter follows:
-%
-%    o wand: The magick wand.
-%
-%    o delay: The image scene number.
-%
-*/
-WandExport unsigned int MagickSetImageScene(MagickWand *wand,
-  const unsigned long scene)
-{
-  assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
-  wand->image->scene=scene;
-  return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   M a g i c k S e t I m a g e U n i t s                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MagickSetImageUnits() sets the image units of resolution.
-%
-%  The format of the MagickSetImageUnits method is:
-%
-%      unsigned int MagickSetImageUnits(MagickWand *wand,
-%        const ResolutionType units)
-%
-%  A description of each parameter follows:
-%
-%    o wand: The magick wand.
-%
-%    o units: The image units of resolution : Undefinedresolution,
-%      PixelsPerInchResolution, or PixelsPerCentimeterResolution.
-%
-*/
-WandExport unsigned int MagickSetImageUnits(MagickWand *wand,
-  const ResolutionType units)
-{
-  assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
-  wand->image->units=units;
   return(True);
 }
 
@@ -6326,10 +7394,193 @@ WandExport unsigned int MagickSetImageResolution(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   wand->image->x_resolution=x_resolution;
   wand->image->y_resolution=y_resolution;
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t I m a g e S c e n e                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetImageScene() sets the image scene.
+%
+%  The format of the MagickSetImageScene method is:
+%
+%      unsigned int MagickSetImageScene(MagickWand *wand,
+%        const unsigned long scene)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o delay: The image scene number.
+%
+*/
+WandExport unsigned int MagickSetImageScene(MagickWand *wand,
+  const unsigned long scene)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  wand->image->scene=scene;
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t I m a g e T y p e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetImageType() sets the image type.
+%
+%  The format of the MagickSetImageType method is:
+%
+%      unsigned int MagickSetImageType(MagickWand *wand,
+%        const ImageType image_type)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o image_type: The image type:   UndefinedType, BilevelType, GrayscaleType,
+%      GrayscaleMatteType, PaletteType, PaletteMatteType, TrueColorType,
+%      TrueColorMatteType, ColorSeparationType, ColorSeparationMatteType,
+%      or OptimizeType.
+%
+*/
+WandExport unsigned int MagickSetImageType(MagickWand *wand,
+  const ImageType image_type)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  return(SetImageType(wand->image,image_type));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t I m a g e U n i t s                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetImageUnits() sets the image units of resolution.
+%
+%  The format of the MagickSetImageUnits method is:
+%
+%      unsigned int MagickSetImageUnits(MagickWand *wand,
+%        const ResolutionType units)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o units: The image units of resolution : Undefinedresolution,
+%      PixelsPerInchResolution, or PixelsPerCentimeterResolution.
+%
+*/
+WandExport unsigned int MagickSetImageUnits(MagickWand *wand,
+  const ResolutionType units)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  wand->image->units=units;
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t I m a g e V i r t u a l P i x e l M e t h o d           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetImageVirtualPixelMethod() sets the image virtual pixel method.
+%
+%  The format of the MagickSetImageVirtualPixelMethod method is:
+%
+%      unsigned int MagickSetImageVirtualPixelMethod(MagickWand *wand,
+%        const VirtualPixelMethod method)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o method: The image virtual pixel method : UndefinedVirtualPixelMethod,
+%      ConstantVirtualPixelMethod,  EdgeVirtualPixelMethod,
+%      MirrorVirtualPixelMethod, or TileVirtualPixelMethod.
+%
+*/
+WandExport unsigned int MagickSetImageVirtualPixelMethod(MagickWand *wand,
+  const VirtualPixelMethod method)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  return(SetImageVirtualPixelMethod(wand->image,method));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t I n t e r l a c e S c h m e m e                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetInterlaceScheme() sets the image compression.
+%
+%  The format of the MagickSetInterlaceScheme method is:
+%
+%      unsigned int MagickSetInterlaceScheme(MagickWand *wand,
+%        const InterlaceType interlace_scheme)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o interlace_scheme: The image interlace scheme: NoInterlace, LineInterlace,
+%      PlaneInterlace, PartitionInterlace.
+%
+*/
+WandExport unsigned int MagickSetInterlaceScheme(MagickWand *wand,
+  const InterlaceType interlace_scheme)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  wand->image_info->interlace=interlace_scheme;
   return(True);
 }
 
@@ -6364,6 +7615,63 @@ WandExport unsigned int MagickSetResourceLimit(const ResourceType type,
   const unsigned long limit)
 {
   return(SetMagickResourceLimit(type,limit));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t S a m p l i n g F a c t o r s                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetSamplingFactors() sets the image sampling factors.
+%
+%  The format of the MagickSetSamplingFactors method is:
+%
+%      unsigned int MagickSetSamplingFactors(MagickWand *wand,
+%        const unsigned long number_factors,const double *sampling_factors)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o number_factoes: The number of factors.
+%
+%    o sampling_factors: An array of doubles representing the sampling factor
+%      for each color component (in RGB order).
+%
+*/
+WandExport unsigned int MagickSetSamplingFactors(MagickWand *wand,
+  const unsigned long number_factors,const double *sampling_factors)
+{
+  char
+    sampling_factor[MaxTextExtent];
+
+  register long
+    i;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->image_info->sampling_factor != (char *) NULL)
+    wand->image_info->sampling_factor=(char *)
+      RelinquishMagickMemory(wand->image_info->sampling_factor);
+  if (number_factors == 0)
+    return(True);
+  for (i=0; i < (long) (number_factors-1); i++)
+  {
+    (void) FormatMagickString(sampling_factor,MaxTextExtent,"%g,",
+      sampling_factors[i]);
+    (void) ConcatenateString(&wand->image_info->sampling_factor,
+      sampling_factor);
+  }
+  (void) FormatMagickString(sampling_factor,MaxTextExtent,"%g",
+    sampling_factors[i]);
+  (void) ConcatenateString(&wand->image_info->sampling_factor,sampling_factor);
+  return(True);
 }
 
 /*
@@ -6441,8 +7749,8 @@ WandExport unsigned int MagickSetImageWhitePoint(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   wand->image->chromaticity.white_point.x=x;
   wand->image->chromaticity.white_point.y=y;
   return(True);
@@ -6521,8 +7829,8 @@ WandExport unsigned int MagickSharpenImage(MagickWand *wand,const double radius,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   sharpen_image=SharpenImage(wand->image,radius,sigma,&wand->exception);
   if (sharpen_image == (Image *) NULL)
     return(False);
@@ -6572,8 +7880,8 @@ WandExport unsigned int MagickShaveImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   shave_info.width=columns;
   shave_info.height=rows;
   shave_info.x=0;
@@ -6591,7 +7899,7 @@ WandExport unsigned int MagickShaveImage(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k S h e a r e I m a g e                                         %
+%   M a g i c k S h e a r I m a g e                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -6630,8 +7938,8 @@ WandExport unsigned int MagickShearImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   PixelGetQuantumColor(background,&wand->image->background_color);
   shear_image=ShearImage(wand->image,x_shear,y_shear,&wand->exception);
   if (shear_image == (Image *) NULL)
@@ -6675,8 +7983,8 @@ WandExport unsigned int MagickSolarizeImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   status=SolarizeImage(wand->image,threshold);
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
@@ -6715,8 +8023,8 @@ WandExport unsigned int MagickSpreadImage(MagickWand *wand,const double radius)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   spread_image=SpreadImage(wand->image,radius,&wand->exception);
   if (spread_image == (Image *) NULL)
     return(False);
@@ -6763,15 +8071,15 @@ WandExport MagickWand *MagickSteganoImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if ((wand->image == (Image *) NULL) ||
-      (watermark_wand->image == (Image *) NULL))
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if ((wand->images == (Image *) NULL) ||
+      (watermark_wand->images == (Image *) NULL))
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   wand->image->offset=offset;
   stegano_image=SteganoImage(wand->image,watermark_wand->image,
     &wand->exception);
   if (stegano_image == (Image *) NULL)
     return((MagickWand *) NULL);
-  return(CloneMagickWand(wand,stegano_image));
+  return(CloneMagickWandWithImages(wand,stegano_image));
 }
 
 /*
@@ -6808,12 +8116,12 @@ WandExport MagickWand *MagickStereoImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if ((wand->image == (Image *) NULL) || (offset_wand->image == (Image *) NULL))
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if ((wand->images == (Image *) NULL) || (offset_wand->images == (Image *) NULL))
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   stereo_image=StereoImage(wand->image,offset_wand->image,&wand->exception);
   if (stereo_image == (Image *) NULL)
     return((MagickWand *) NULL);
-  return(CloneMagickWand(wand,stereo_image));
+  return(CloneMagickWandWithImages(wand,stereo_image));
 }
 
 /*
@@ -6840,21 +8148,17 @@ WandExport MagickWand *MagickStereoImage(MagickWand *wand,
 */
 WandExport unsigned int MagickStripImage(MagickWand *wand)
 {
-#if defined(NOT_IMPLEMENTED)
   unsigned int
     status;
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
-  status=StripImage(wand->image);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  status=ProfileImage(wand->image,"*",0,0,0);
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
   return(status);
-#else
-  return False;
-#endif
 }
 
 /*
@@ -6890,8 +8194,8 @@ WandExport unsigned int MagickSwirlImage(MagickWand *wand,const double degrees)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   swirl_image=SwirlImage(wand->image,degrees,&wand->exception);
   if (swirl_image == (Image *) NULL)
     return(False);
@@ -6937,16 +8241,16 @@ WandExport MagickWand *MagickTextureImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if ((wand->image == (Image *) NULL) ||
-      (texture_wand->image == (Image *) NULL))
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if ((wand->images == (Image *) NULL) ||
+      (texture_wand->images == (Image *) NULL))
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   texture_image=CloneImage(wand->image,0,0,True,&wand->exception);
   if (texture_image == (Image *) NULL)
     return((MagickWand *) NULL);
   status=TextureImage(texture_image,texture_wand->image);
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
-  return(CloneMagickWand(wand,texture_image));
+  return(CloneMagickWandWithImages(wand,texture_image));
 }
 
 /*
@@ -6984,12 +8288,61 @@ WandExport unsigned int MagickThresholdImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   status=ThresholdImage(wand->image,threshold);
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
   return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k T h r e s h o l d I m a g e C h a n n e l                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickThresholdImageChannel() changes the value of individual pixel
+%  component based on the intensity of each pixel compared to threshold.  The
+%  result is a high-contrast, two color image.
+%
+%  The format of the MagickThresholdImage method is:
+%
+%      unsigned int MagickThresholdImageChannel(MagickWand *wand,
+%        const ChannelType channel,const double threshold)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o channel: The channel.
+%
+%    o threshold: Define the threshold value.
+%
+*/
+WandExport unsigned int MagickThresholdImageChannel(MagickWand *wand,
+  const ChannelType channel,const double threshold)
+{
+#if NOT_IMPLEMENTED
+  unsigned int
+    status;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  status=BilevelImageChannel(wand->image,channel,threshold);
+  if (status == False)
+    InheritException(&wand->exception,&wand->image->exception);
+  return(status);
+#else
+  return False;
+#endif /* NOT_IMPLEMENTED */
 }
 
 /*
@@ -7037,8 +8390,8 @@ WandExport unsigned int MagickTintImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   (void) FormatMagickString(percent_opaque,MaxTextExtent,"%g,%g,%g,%g",
     100.0*PixelGetRedQuantum(tint)/MaxRGB,
     100.0*PixelGetGreenQuantum(tint)/MaxRGB,
@@ -7053,7 +8406,7 @@ WandExport unsigned int MagickTintImage(MagickWand *wand,
   return(True);
 #else
   return False;
-#endif
+#endif /* NOT_IMPLEMENTED */
 }
 
 /*
@@ -7104,7 +8457,7 @@ WandExport MagickWand *MagickTransformImage(MagickWand *wand,
   TransformImage(&transform_image,crop,geometry);
   if (transform_image == (Image *) NULL)
     return((MagickWand *) NULL);
-  return(CloneMagickWand(wand,transform_image));
+  return(CloneMagickWandWithImages(wand,transform_image));
 }
 
 /*
@@ -7144,7 +8497,7 @@ WandExport MagickWand *MagickTransformImage(MagickWand *wand,
 %
 */
 WandExport unsigned int MagickTransparentImage(MagickWand *wand,
-  const PixelWand *target,const unsigned int opacity,const double fuzz)
+  const PixelWand *target,const Quantum opacity,const double fuzz)
 {
   PixelPacket
     target_pixel;
@@ -7154,8 +8507,8 @@ WandExport unsigned int MagickTransparentImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   PixelGetQuantumColor(target,&target_pixel);
   wand->image->fuzz=fuzz;
   status=TransparentImage(wand->image,target_pixel,opacity);
@@ -7203,8 +8556,8 @@ WandExport unsigned int MagickTrimImage(MagickWand *wand,const double fuzz)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   trim.width=0;
   trim.height=0;
   trim.x=0;
@@ -7263,8 +8616,8 @@ WandExport unsigned int MagickUnsharpMaskImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   unsharp_image=UnsharpMaskImage(wand->image,radius,sigma,amount,threshold,
     &wand->exception);
   if (unsharp_image == (Image *) NULL)
@@ -7310,8 +8663,8 @@ WandExport unsigned int MagickWaveImage(MagickWand *wand,const double amplitude,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   wave_image=WaveImage(wand->image,amplitude,wave_length,&wand->exception);
   if (wave_image == (Image *) NULL)
     return(False);
@@ -7359,8 +8712,8 @@ WandExport unsigned int MagickWhiteThresholdImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   (void) FormatMagickString(thresholds,MaxTextExtent,"%u,%u,%u,%u",
     PixelGetRedQuantum(threshold),PixelGetGreenQuantum(threshold),
     PixelGetBlueQuantum(threshold),PixelGetOpacityQuantum(threshold));
@@ -7408,8 +8761,8 @@ WandExport unsigned int MagickWriteImage(MagickWand *wand,const char *filename)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   (void) CopyMagickString(wand->image->filename,filename,MaxTextExtent);
   write_info=CloneImageInfo(wand->image_info);
   write_info->adjoin=False;
@@ -7437,7 +8790,7 @@ WandExport unsigned int MagickWriteImage(MagickWand *wand,const char *filename)
 %
 %  The format of the MagickWriteImageBlob method is:
 %
-%      void *MagickWriteImageBlob(MagickWand *wand,size_t *length)
+%      unsigned char *MagickWriteImageBlob(MagickWand *wand,size_t *length)
 %
 %  A description of each parameter follows:
 %
@@ -7446,12 +8799,12 @@ WandExport unsigned int MagickWriteImage(MagickWand *wand,const char *filename)
 %    o length: The length of the blob.
 %
 */
-WandExport void *MagickWriteImageBlob(MagickWand *wand,size_t *length)
+WandExport unsigned char *MagickWriteImageBlob(MagickWand *wand,size_t *length)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   return(ImageToBlob(wand->image_info,wand->image,length,&wand->exception));
 }
 
@@ -7490,8 +8843,8 @@ WandExport unsigned int MagickWriteImageFile(MagickWand *wand,FILE *file)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if (wand->image == (Image *) NULL)
-    ThrowWandException(ImageError,NoImagesWereFound,(char *) NULL);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   write_info=CloneImageInfo(wand->image_info);
   write_info->file=file;
   status=WriteImage(write_info,wand->image);
@@ -7567,6 +8920,20 @@ WandExport unsigned int MagickWriteImages(MagickWand *wand,const char *filename,
 %
 %
 */
+static unsigned long GetMagickWandId()
+{
+  static SemaphoreInfo
+    *wand_semaphore = (SemaphoreInfo *) NULL;
+
+  static unsigned long
+    id = 0;
+
+  AcquireSemaphoreInfo(&wand_semaphore);
+  id++;
+  LiberateSemaphoreInfo(&wand_semaphore);
+  return(id);
+}
+
 WandExport MagickWand *NewMagickWand(void)
 {
   MagickWand
@@ -7574,13 +8941,46 @@ WandExport MagickWand *NewMagickWand(void)
 
   wand=(MagickWand *) AcquireMagickMemory(sizeof(MagickWand));
   if (wand == (MagickWand *) NULL)
-    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
-      UnableToAllocateImage);
+    MagickFatalError(ResourceLimitFatalError,UnableToAllocateWand,
+      strerror(errno));
   (void) memset(wand,0,sizeof(MagickWand));
+  (void) FormatMagickString(wand->id,MaxTextExtent,"MagickWand-%lu",
+    GetMagickWandId());
   GetExceptionInfo(&wand->exception);
   wand->image_info=CloneImageInfo((ImageInfo *) NULL);
   wand->quantize_info=CloneQuantizeInfo((QuantizeInfo *) NULL);
   wand->images=NewImageList();
   wand->signature=MagickSignature;
   return(wand);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e s e t M a g i c k W a n d I t e r a t o r                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ResetMagickWandIterator() resets the wand iterator.  Use it in conjunction
+%  with GetNextImageInMagickWand() to iterate over all the images in the wand
+%  container.
+%
+%  The format of the ResetMagickWandIterator method is:
+%
+%      void ResetMagickWandIterator(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+*/
+WandExport void ResetMagickWandIterator(MagickWand *wand)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  wand->image=wand->images;
 }

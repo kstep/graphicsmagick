@@ -2483,25 +2483,16 @@ unsigned int Magick::Image::gifDisposeMethod ( void ) const
   return constImage()->dispose;
 }
 
-// ICC color profile (BLOB)
+// ICC ICM color profile (BLOB)
 void Magick::Image::iccColorProfile( const Magick::Blob &colorProfile_ )
 {
-  ProfileInfo * color_profile = &(image()->color_profile);
-  LiberateMemory( reinterpret_cast<void**>(&color_profile->info) );
-  color_profile->length = 0;
-
-  if ( colorProfile_.data() != 0 )
-    {
-      color_profile->info = new unsigned char[colorProfile_.length()];
-      memcpy( color_profile->info, colorProfile_.data(),
-              colorProfile_.length());
-      color_profile->length = colorProfile_.length();
-    }
+  profile("ICM",colorProfile_);
 }
 Magick::Blob Magick::Image::iccColorProfile( void ) const
 {
-  const ProfileInfo * color_profile = &(constImage()->color_profile);
-  return Blob( color_profile->info, color_profile->length );
+  size_t length=0;
+  const void *data= (const void *) GetImageProfile(constImage(),"ICM",&length);
+  return Blob(data, length);
 }
 
 void Magick::Image::interlaceType ( const Magick::InterlaceType interlace_ )
@@ -2518,23 +2509,15 @@ Magick::InterlaceType Magick::Image::interlaceType ( void ) const
 // IPTC profile (BLOB)
 void Magick::Image::iptcProfile( const Magick::Blob &iptcProfile_ )
 {
-  ProfileInfo * iptc_profile = &(image()->iptc_profile);
-  LiberateMemory( reinterpret_cast<void**>(&iptc_profile->info) );
-  iptc_profile->length = 0;
-
-  if ( iptcProfile_.data() != 0 )
-    {
-      iptc_profile->info = new unsigned char[iptcProfile_.length()];
-      memcpy( iptc_profile->info, iptcProfile_.data(),
-              iptcProfile_.length());
-
-      iptc_profile->length = iptcProfile_.length();
-    }
+  modifyImage();
+  SetImageProfile(image(),"IPTC",(const unsigned char*)iptcProfile_.data(),
+                  iptcProfile_.length());
 }
 Magick::Blob Magick::Image::iptcProfile( void ) const
 {
-  const ProfileInfo * iptc_profile = &(constImage()->iptc_profile);
-  return Blob( iptc_profile->info, iptc_profile->length );
+  size_t length=0;
+  const void *data=(const void *) GetImageProfile(constImage(),"IPTC",&length);
+  return Blob(data, length);
 }
 
 // Does object contain valid image?
@@ -2841,16 +2824,12 @@ void Magick::Image::profile( const std::string name_,
 // an existing generic profile name.
 Magick::Blob Magick::Image::profile( const std::string name_ ) const
 {
-  const MagickLib::Image* image = constImage();
+  size_t length=0;
+  const void *data=(const void *)
+    GetImageProfile(constImage(),name_.c_str(),&length);
 
-  for (long i=0; i < (long) image->generic_profiles; i++)
-    {
-      if (!GlobExpression(image->generic_profile[i].name,name_.c_str()))
-        continue;      
-      
-      return Blob( (void*)image->generic_profile[i].info,
-                   image->generic_profile[i].length );
-    }
+  if (data)
+    return Blob(data, length);
   
   Blob blob;
   Image temp_image = *this;

@@ -75,6 +75,7 @@ struct _PixelWand
     pixel;
 
   unsigned long
+    count,
     signature;
 };
 
@@ -103,7 +104,7 @@ struct _PixelWand
 */
 WandExport void DestroyPixelWand(PixelWand *wand)
 {
-  assert(wand != (void *) NULL);
+  assert(wand != (PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
   wand=(PixelWand *) RelinquishMagickMemory(wand);
 }
@@ -147,6 +148,46 @@ WandExport PixelWand *NewPixelWand(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   N e w P i x e l W a n d s                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  NewPixelWands() returns an array of pixel wands.
+%
+%  The format of the NewPixelWand method is:
+%
+%      PixelWand NewPixelWand(const unsigned long number_wands)
+%
+%  A description of each parameter follows:
+%
+%    o number_wands: The number of wands.
+%
+*/
+WandExport PixelWand **NewPixelWands(const unsigned long number_wands)
+{
+  register long
+    i;
+
+  struct _PixelWand
+    **wands;
+
+  wands=(struct _PixelWand **)
+    AcquireMagickMemory((size_t) number_wands*sizeof(struct _PixelWand *));
+  if (wands == (PixelWand **) NULL)
+    MagickFatalError(ResourceLimitFatalError,UnableToAllocateWand,
+      strerror(errno));
+  for (i=0; i < (long) number_wands; i++)
+    wands[i]=NewPixelWand();
+  return(wands);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   P i x e l G e t E x c e p t i o n                                         %
 %                                                                             %
 %                                                                             %
@@ -168,20 +209,9 @@ WandExport PixelWand *NewPixelWand(void)
 %
 */
 
-static const char *GetErrorMessageString(const int error_number)
-{
-  const char
-    *message;
-
-  message=strerror(error_number);
-  if (message == (const char *) NULL)
-    return("Error number is out of range");
-  return(message);
-}
-
 WandExport unsigned int PixelGetException(PixelWand *wand,char **description)
 {
-  assert(wand != (void *) NULL);
+  assert(wand != (PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
   assert(description != (char **) NULL);
   *description=(char *) malloc(2*MaxTextExtent);
@@ -198,13 +228,6 @@ WandExport unsigned int PixelGetException(PixelWand *wand,char **description)
       (void) ConcatenateMagickString(*description,GetLocaleExceptionMessage(
         wand->exception.severity,wand->exception.description),MaxTextExtent);
       (void) ConcatenateMagickString(*description,")",MaxTextExtent);
-    }
-  if ((wand->exception.severity != OptionError) && errno)
-    {
-      (void) ConcatenateMagickString(*description," [",MaxTextExtent);
-      (void) ConcatenateMagickString(*description,GetErrorMessageString(errno),
-        MaxTextExtent);
-      (void) ConcatenateMagickString(*description,"]",MaxTextExtent);
     }
   return(wand->exception.severity);
 }
@@ -233,7 +256,7 @@ WandExport unsigned int PixelGetException(PixelWand *wand,char **description)
 */
 WandExport double PixelGetBlue(const PixelWand *wand)
 {
-  assert(wand != (void *) NULL);
+  assert(wand != (const PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
   return(wand->pixel.blue);
 }
@@ -263,7 +286,7 @@ WandExport double PixelGetBlue(const PixelWand *wand)
 */
 WandExport Quantum PixelGetBlueQuantum(const PixelWand *wand)
 {
-  assert(wand != (void *) NULL);
+  assert(wand != (const PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
   return((Quantum) (MaxRGB*wand->pixel.blue+0.5));
 }
@@ -295,7 +318,7 @@ WandExport char *PixelGetColorAsString(const PixelWand *wand)
   char
     color[MaxTextExtent];
 
-  assert(wand != (void *) NULL);
+  assert(wand != (const PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
   (void) FormatMagickString(color,MaxTextExtent,"%u,%u,%u,%u",
     (Quantum) (MaxRGB*wand->pixel.red+0.5),
@@ -303,6 +326,35 @@ WandExport char *PixelGetColorAsString(const PixelWand *wand)
     (Quantum) (MaxRGB*wand->pixel.blue+0.5),
     (Quantum) (MaxRGB*wand->pixel.opacity+0.5));
   return(AcquireString(color));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P i x e l G e t C o l o r C o u n t                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PixelGetColorCount() returns the color count associated with this color.
+%
+%  The format of the PixelGetColorCount method is:
+%
+%      unsigned long PixelGetColorCount(const PixelWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The pixel wand.
+%
+*/
+WandExport unsigned long PixelGetColorCount(const PixelWand *wand)
+{
+  assert(wand != (const PixelWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  return(wand->count);
 }
 
 /*
@@ -329,7 +381,7 @@ WandExport char *PixelGetColorAsString(const PixelWand *wand)
 */
 WandExport double PixelGetGreen(const PixelWand *wand)
 {
-  assert(wand != (void *) NULL);
+  assert(wand != (const PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
   return(wand->pixel.green);
 }
@@ -359,7 +411,7 @@ WandExport double PixelGetGreen(const PixelWand *wand)
 */
 WandExport Quantum PixelGetGreenQuantum(const PixelWand *wand)
 {
-  assert(wand != (void *) NULL);
+  assert(wand != (const PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
   return((Quantum) (MaxRGB*wand->pixel.green+0.5));
 }
@@ -389,7 +441,7 @@ WandExport Quantum PixelGetGreenQuantum(const PixelWand *wand)
 */
 WandExport double PixelGetOpacity(const PixelWand *wand)
 {
-  assert(wand != (void *) NULL);
+  assert(wand != (const PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
   return(wand->pixel.opacity);
 }
@@ -419,7 +471,7 @@ WandExport double PixelGetOpacity(const PixelWand *wand)
 */
 WandExport Quantum PixelGetOpacityQuantum(const PixelWand *wand)
 {
-  assert(wand != (void *) NULL);
+  assert(wand != (const PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
   return((Quantum) (MaxRGB*wand->pixel.opacity+0.5));
 }
@@ -448,7 +500,7 @@ WandExport Quantum PixelGetOpacityQuantum(const PixelWand *wand)
 */
 WandExport double PixelGetRed(const PixelWand *wand)
 {
-  assert(wand != (void *) NULL);
+  assert(wand != (const PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
   return(wand->pixel.red);
 }
@@ -478,7 +530,7 @@ WandExport double PixelGetRed(const PixelWand *wand)
 */
 WandExport Quantum PixelGetRedQuantum(const PixelWand *wand)
 {
-  assert(wand != (void *) NULL);
+  assert(wand != (const PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
   return((Quantum) (MaxRGB*wand->pixel.red+0.5));
 }
@@ -509,7 +561,7 @@ WandExport Quantum PixelGetRedQuantum(const PixelWand *wand)
 */
 WandExport void PixelGetQuantumColor(const PixelWand *wand,PixelPacket *color)
 {
-  assert(wand != (void *) NULL);
+  assert(wand != (const PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
   assert(color != (PixelPacket *) NULL);
   color->red=(Quantum) (MaxRGB*wand->pixel.red+0.5);
@@ -552,7 +604,7 @@ WandExport unsigned int PixelSetColor(PixelWand *wand,const char *color)
   unsigned int
     status;
 
-  assert(wand != (void *) NULL);
+  assert(wand != (PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
   status=QueryColorDatabase(color,&pixel,&wand->exception);
   if (status != False)
@@ -586,7 +638,7 @@ WandExport unsigned int PixelSetColor(PixelWand *wand,const char *color)
 */
 WandExport void PixelSetBlue(PixelWand *wand,const double blue)
 {
-  assert(wand != (void *) NULL);
+  assert(wand != (PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
   if (blue > 1.0)
     wand->pixel.blue=1.0;
@@ -624,9 +676,41 @@ WandExport void PixelSetBlue(PixelWand *wand,const double blue)
 */
 WandExport void PixelSetBlueQuantum(PixelWand *wand,const Quantum blue)
 {
-  assert(wand != (void *) NULL);
+  assert(wand != (PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
   wand->pixel.blue=(double) blue/MaxRGB;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P i x e l S e t C o l o r C o u n t                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PixelSetColorCount() sets the color count of the pixel wand.
+%
+%  The format of the PixelSetColorCount method is:
+%
+%      unsigned int PixelSetColorCount(PixelWand *wand,
+%        const unsigned long count)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The pixel wand.
+%
+%    o count: The number of this particular color.
+%
+*/
+WandExport void PixelSetColorCount(PixelWand *wand,const unsigned long count)
+{
+  assert(wand != (PixelWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  wand->count=count;
 }
 
 /*
@@ -655,7 +739,7 @@ WandExport void PixelSetBlueQuantum(PixelWand *wand,const Quantum blue)
 */
 WandExport void PixelSetGreen(PixelWand *wand,const double green)
 {
-  assert(wand != (void *) NULL);
+  assert(wand != (PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
   if (green > 1.0)
     wand->pixel.green=1.0;
@@ -693,7 +777,7 @@ WandExport void PixelSetGreen(PixelWand *wand,const double green)
 */
 WandExport void PixelSetGreenQuantum(PixelWand *wand,const Quantum green)
 {
-  assert(wand != (void *) NULL);
+  assert(wand != (PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
   wand->pixel.green=(double) green/MaxRGB;
 }
@@ -724,7 +808,7 @@ WandExport void PixelSetGreenQuantum(PixelWand *wand,const Quantum green)
 */
 WandExport void PixelSetOpacity(PixelWand *wand,const double opacity)
 {
-  assert(wand != (void *) NULL);
+  assert(wand != (PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
   if (opacity > 1.0)
     wand->pixel.opacity=1.0;
@@ -763,7 +847,7 @@ WandExport void PixelSetOpacity(PixelWand *wand,const double opacity)
 */
 WandExport void PixelSetOpacityQuantum(PixelWand *wand,const Quantum opacity)
 {
-  assert(wand != (void *) NULL);
+  assert(wand != (PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
   wand->pixel.opacity=(double) opacity/MaxRGB;
 }
@@ -794,7 +878,7 @@ WandExport void PixelSetOpacityQuantum(PixelWand *wand,const Quantum opacity)
 */
 WandExport void PixelSetQuantumColor(PixelWand *wand,PixelPacket *color)
 {
-  assert(wand != (void *) NULL);
+  assert(wand != (PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
   assert(color != (PixelPacket *) NULL);
   wand->pixel.red=(double) color->red/MaxRGB;
@@ -829,7 +913,7 @@ WandExport void PixelSetQuantumColor(PixelWand *wand,PixelPacket *color)
 */
 WandExport void PixelSetRed(PixelWand *wand,const double red)
 {
-  assert(wand != (void *) NULL);
+  assert(wand != (PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
   if (red > 1.0)
     wand->pixel.red=1.0;
@@ -867,7 +951,7 @@ WandExport void PixelSetRed(PixelWand *wand,const double red)
 */
 WandExport void PixelSetRedQuantum(PixelWand *wand,const Quantum red)
 {
-  assert(wand != (void *) NULL);
+  assert(wand != (PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
   wand->pixel.red=(double) red/MaxRGB;
 }

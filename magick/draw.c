@@ -157,7 +157,7 @@ struct _DrawVTable
     (DrawContext context, const double sx, const double sy,
      const double ex, const double ey, const double sd, const double ed);
   void (*DrawBezier)
-    (DrawContext context, const size_t num_coords, const PointInfo *coordinates);
+    (DrawContext context, const unsigned long num_coords, const PointInfo *coordinates);
   void (*DrawCircle)
     (DrawContext context, const double ox, const double oy,
      const double px, const double py);
@@ -236,9 +236,9 @@ struct _DrawVTable
   void (*DrawPoint)
     (DrawContext context, const double x, const double y);
   void (*DrawPolygon)
-    (DrawContext context, const size_t num_coords, const PointInfo * coordinates);
+    (DrawContext context, const unsigned long num_coords, const PointInfo * coordinates);
   void (*DrawPolyline)
-    (DrawContext context, const size_t num_coords, const PointInfo * coordinates);
+    (DrawContext context, const unsigned long num_coords, const PointInfo * coordinates);
   void (*DrawPopClipPath)
     (DrawContext context);
   void (*DrawPopDefs)
@@ -513,7 +513,7 @@ static void MvgAppendColor(DrawContext context, const PixelPacket *color)
 }
 
 static void MvgAppendPointsCommand(DrawContext context, const char* command,
-                                   const size_t num_coords,
+                                   const unsigned long num_coords,
                                    const PointInfo * coordinates)
 {
   const PointInfo
@@ -792,7 +792,7 @@ MagickExport void DrawArc(DrawContext context,
 %
 %  The format of the DrawBezier method is:
 %
-%      void DrawBezier(DrawContext context, const size_t num_coords,
+%      void DrawBezier(DrawContext context, const unsigned long num_coords,
 %                      const PointInfo *coordinates)
 %
 %  A description of each parameter follows:
@@ -804,7 +804,7 @@ MagickExport void DrawArc(DrawContext context,
 %    o coordinates: coordinates
 %
 */
-MagickExport void DrawBezier(DrawContext context, const size_t num_coords,
+MagickExport void DrawBezier(DrawContext context, const unsigned long num_coords,
                              const PointInfo *coordinates)
 {
   assert(context != (DrawContext)NULL);
@@ -3812,7 +3812,7 @@ MagickExport void DrawPoint(DrawContext context,
 %  The format of the DrawPolygon method is:
 %
 %      void DrawPolygon(DrawContext context,
-%                       const size_t num_coords,
+%                       const unsigned long num_coords,
 %                       const PointInfo * coordinates)
 %
 %  A description of each parameter follows:
@@ -3825,7 +3825,7 @@ MagickExport void DrawPoint(DrawContext context,
 %
 */
 MagickExport void DrawPolygon(DrawContext context,
-                              const size_t num_coords,
+                              const unsigned long num_coords,
                               const PointInfo * coordinates)
 {
   assert(context != (DrawContext)NULL);
@@ -3851,7 +3851,7 @@ MagickExport void DrawPolygon(DrawContext context,
 %  The format of the DrawPolyline method is:
 %
 %      void DrawPolyline(DrawContext context,
-%                        const size_t num_coords,
+%                        const unsigned long num_coords,
 %                        const PointInfo * coordinates)
 %
 %  A description of each parameter follows:
@@ -3864,7 +3864,7 @@ MagickExport void DrawPolygon(DrawContext context,
 %
 */
 MagickExport void DrawPolyline(DrawContext context,
-                               const size_t num_coords,
+                               const unsigned long num_coords,
                                const PointInfo * coordinates)
 {
   assert(context != (DrawContext)NULL);
@@ -4836,7 +4836,7 @@ MagickExport void DrawSetStrokeAntialias(DrawContext context,
 %
 %  The format of the DrawGetStrokeDashArray method is:
 %
-%      double *DrawGetStrokeDashArray(DrawContext context,size_t *num_elems)
+%      double *DrawGetStrokeDashArray(DrawContext context,unsigned long *num_elems)
 %
 %  A description of each parameter follows:
 %
@@ -4846,7 +4846,7 @@ MagickExport void DrawSetStrokeAntialias(DrawContext context,
 %
 % */
 MagickExport double *DrawGetStrokeDashArray(DrawContext context,
-                                            size_t *num_elems)
+                                            unsigned long *num_elems)
 {
   register const double
     *p;
@@ -4863,7 +4863,7 @@ MagickExport double *DrawGetStrokeDashArray(DrawContext context,
 
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
-  assert(num_elems != (size_t *)NULL);
+  assert(num_elems != (unsigned long *)NULL);
 
   p = CurrentContext->dash_pattern;
   if( p != (const double *) NULL )
@@ -4906,7 +4906,7 @@ MagickExport double *DrawGetStrokeDashArray(DrawContext context,
 %  The format of the DrawSetStrokeDashArray method is:
 %
 %      void DrawSetStrokeDashArray(DrawContext context,
-%                                  const size_t num_elems,
+%                                  const unsigned long num_elems,
 %                                  const double *dasharray)
 %
 %  A description of each parameter follows:
@@ -4919,7 +4919,7 @@ MagickExport double *DrawGetStrokeDashArray(DrawContext context,
 %
 % */
 MagickExport void DrawSetStrokeDashArray(DrawContext context,
-                                         const size_t num_elems,
+                                         const unsigned long num_elems,
                                          const double *dasharray)
 {
   register const double

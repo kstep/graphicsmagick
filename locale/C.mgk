@@ -1336,6 +1336,9 @@
         <Message name="UnableToAllocateRegistryInfo">
           unable to allocate registry info
         </Message>
+        <Message name="UnableToAllocateWand">
+          unable to allocate wand '%s'
+        </Message>
         <Message name="MemoryAllocationFailed">
           Memory allocation failed
         </Message>
@@ -1441,6 +1444,19 @@
       </Message>
     </Warning>
   </Stream>
+  <Wand>
+    <Error>
+      <Message name="InvalidColormapIndex">
+         invalid colormap index `%.1024s'
+      </Message>
+      <Message name="WandContainsNoImages">
+        Wand contains no images `%.1024s'
+      </Message>
+      <Message name="WandContainsNoImageIndexs">
+        Wand contains no image indices `%.1024s'
+      </Message>
+    </Error>
+  </Wand>
   <XServer>
     <Error>
       <Message name="ColorIsNotKnownToServer">

@@ -53,6 +53,47 @@
 </tr>
 </table>
 <p>
+2003-12-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> wand/wandtest.c: Ported from latest ImageMagick version.
+  <LI> wand/drawing_wand.c: Adapted to be compatible with latest
+        ImageMagick version.<BR>
+  <LI> wand/pixel_wand.c: Adapted to be compatible with latest
+        ImageMagick version.<BR>
+  <LI> wand/magick_wand.c: Ported from latest ImageMagick version.
+  <LI> magick/image.h (Image): Members color_profile, iptc_profile,
+        generic_profile, and generic_profiles are now deprecated and
+        private although they continue to work as before. Please migrate
+        existing code to use the GetImageProfile and SetImageProfile
+        functions since these members will eventually be removed.
+  <LI> magick/image.c (GetImageProfile): New function to retrieve an
+        image profile. Return value differs from similarly named
+        ImageMagick method since the ImageMagick approach assumes a
+        particular storage method.<BR>
+        (SetImageProfile): New function to add (or remove) an image
+        profile. Does not execute CMS color profiles.
+  <LI> magick/cache.c (SetImageVirtualPixelMethod): Return unsigned int to
+        make the Wand implementation happy.
+  <LI> magick/image.c (TransformColorspace): Return unsigned int to
+        make the Wand implementation happy.
+        (SetImageType): Return unsigned int to make the Wand
+        implementation happy.<BR>
+  <LI> magick/draw.h, magick/draw.c: Substitute 'unsigned long' in
+        place of 'size_t' in interfaces so that the draw API is not
+        sensitive to the definition of _LP64.
+  <LI> locale/C.mgk: Added new messages required by Wand library.
+  <LI> magick/error.c (ExceptionSeverityToTag): Add tag translations
+        for the WandWarning, WandError, &amp; WandFatalError enumerations
+  <LI> magick/error.h (enum ExceptionType): Add WandWarning, WandError,
+        &amp; WandFatalError enumerations to ExceptionType for ImageMagick
+        API compatibility.<BR>
+  <LI> magick/image.h (enum ChannelType): Add an 'AllChannels'
+        enumeration to the ChannelType enumeration for ImageMagick
+        API compatibility.
+
+</UL>
+<p>
 2003-12-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

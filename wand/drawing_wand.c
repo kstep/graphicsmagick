@@ -164,7 +164,7 @@ struct _DrawVTable
     const unsigned char *);
   void (*DrawArc)(DrawingWand *,const double,const double,const double,
     const double,const double,const double);
-  void (*DrawBezier)(DrawingWand *,const size_t,const PointInfo *);
+  void (*DrawBezier)(DrawingWand *,const unsigned long,const PointInfo *);
   void (*DrawCircle)(DrawingWand *,const double,const double,const double,
     const double);
   void (*DrawColor)(DrawingWand *,const double,const double,const PaintMethod);
@@ -209,8 +209,8 @@ struct _DrawVTable
   void (*DrawPathMoveToRelative)(DrawingWand *,const double,const double);
   void (*DrawPathStart)(DrawingWand *);
   void (*DrawPoint)(DrawingWand *,const double,const double);
-  void (*DrawPolygon)(DrawingWand *,const size_t,const PointInfo *);
-  void (*DrawPolyline)(DrawingWand *,const size_t,const PointInfo *);
+  void (*DrawPolygon)(DrawingWand *,const unsigned long,const PointInfo *);
+  void (*DrawPolyline)(DrawingWand *,const unsigned long,const PointInfo *);
   void (*DrawPopClipPath)(DrawingWand *);
   void (*DrawPopDefs)(DrawingWand *);
   void (*DrawPopGraphicContext)(DrawingWand *);
@@ -413,7 +413,7 @@ static void MvgAppendColor(DrawingWand *drawing_wand, const PixelPacket *color)
 }
 
 static void MvgAppendPointsCommand(DrawingWand *drawing_wand,
-  char *command,const size_t number_coordinates,const PointInfo *coordinates)
+  char *command,const unsigned long number_coordinates,const PointInfo *coordinates)
 {
   const PointInfo
     *coordinate;
@@ -720,7 +720,7 @@ WandExport void DrawArc(DrawingWand *drawing_wand,const double sx,
 %  The format of the DrawBezier method is:
 %
 %      void DrawBezier(DrawingWand *drawing_wand,
-%        const size_t number_coordinates,const PointInfo *coordinates)
+%        const unsigned long number_coordinates,const PointInfo *coordinates)
 %
 %  A description of each parameter follows:
 %
@@ -732,7 +732,7 @@ WandExport void DrawArc(DrawingWand *drawing_wand,const double sx,
 %
 */
 WandExport void DrawBezier(DrawingWand *drawing_wand,
-  const size_t number_coordinates,const PointInfo *coordinates)
+  const unsigned long number_coordinates,const PointInfo *coordinates)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -3507,7 +3507,7 @@ WandExport void DrawPoint(DrawingWand *drawing_wand,const double x,
 %  The format of the DrawPolygon method is:
 %
 %      void DrawPolygon(DrawingWand *drawing_wand,
-%        const size_t number_coordinates,const PointInfo *coordinates)
+%        const unsigned long number_coordinates,const PointInfo *coordinates)
 %
 %  A description of each parameter follows:
 %
@@ -3519,7 +3519,7 @@ WandExport void DrawPoint(DrawingWand *drawing_wand,const double x,
 %
 */
 WandExport void DrawPolygon(DrawingWand *drawing_wand,
-  const size_t number_coordinates,const PointInfo *coordinates)
+  const unsigned long number_coordinates,const PointInfo *coordinates)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -3543,7 +3543,7 @@ WandExport void DrawPolygon(DrawingWand *drawing_wand,
 %  The format of the DrawPolyline method is:
 %
 %      void DrawPolyline(DrawingWand *drawing_wand,
-%        const size_t number_coordinates,const PointInfo *coordinates)
+%        const unsigned long number_coordinates,const PointInfo *coordinates)
 %
 %  A description of each parameter follows:
 %
@@ -3555,7 +3555,7 @@ WandExport void DrawPolygon(DrawingWand *drawing_wand,
 %
 */
 WandExport void DrawPolyline(DrawingWand *drawing_wand,
-  const size_t number_coordinates,const PointInfo *coordinates)
+  const unsigned long number_coordinates,const PointInfo *coordinates)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -4453,7 +4453,7 @@ WandExport void DrawSetStrokeAntialias(DrawingWand *drawing_wand,
 %  The format of the DrawGetStrokeDashArray method is:
 %
 %      double *DrawGetStrokeDashArray(const DrawingWand *drawing_wand,
-%        size_t *number_elements)
+%        unsigned long *number_elements)
 %
 %  A description of each parameter follows:
 %
@@ -4463,7 +4463,7 @@ WandExport void DrawSetStrokeAntialias(DrawingWand *drawing_wand,
 %
 % */
 WandExport double *DrawGetStrokeDashArray(const DrawingWand *drawing_wand,
-  size_t *number_elements)
+  unsigned long *number_elements)
 {
   register const double
     *p;
@@ -4480,7 +4480,7 @@ WandExport double *DrawGetStrokeDashArray(const DrawingWand *drawing_wand,
 
   assert(drawing_wand != (const DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
-  assert(number_elements != (size_t *)NULL);
+  assert(number_elements != (unsigned long *)NULL);
   p=CurrentContext->dash_pattern;
   if ( p != (const double *) NULL )
     while (*p++ != 0)
@@ -4521,7 +4521,7 @@ WandExport double *DrawGetStrokeDashArray(const DrawingWand *drawing_wand,
 %  The format of the DrawSetStrokeDashArray method is:
 %
 %      void DrawSetStrokeDashArray(DrawingWand *drawing_wand,
-%        const size_t number_elements,const double *dash_array)
+%        const unsigned long number_elements,const double *dash_array)
 %
 %  A description of each parameter follows:
 %
@@ -4533,7 +4533,7 @@ WandExport double *DrawGetStrokeDashArray(const DrawingWand *drawing_wand,
 %
 % */
 WandExport void DrawSetStrokeDashArray(DrawingWand *drawing_wand,
-  const size_t number_elements,const double *dash_array)
+  const unsigned long number_elements,const double *dash_array)
 {
   register const double
     *p;

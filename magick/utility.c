@@ -1885,7 +1885,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
           magick[p-component]='\0';
           p++;
           q=component;
-          while (*q++=*p++)
+          while ((*q++=*p++))
             ;
         }
     }

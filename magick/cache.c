@@ -2920,7 +2920,7 @@ MagickExport PixelPacket *SetImagePixels(Image *image,const long x,const long y,
 %
 %
 */
-MagickExport void SetImageVirtualPixelMethod(const Image *image,
+MagickExport unsigned int SetImageVirtualPixelMethod(const Image *image,
   const VirtualPixelMethod method)
 {
   CacheInfo
@@ -2932,6 +2932,7 @@ MagickExport void SetImageVirtualPixelMethod(const Image *image,
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   cache_info->virtual_pixel_method=method;
+  return True;
 }
 
 /*
