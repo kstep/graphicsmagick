@@ -2641,9 +2641,9 @@ calling <i>syncPixels()</i> insures that the base image is updated with
 the contents of the modified pixel cache. The method
 <i>readPixels()</i>
 supports copying foreign pixel data formats into the pixel cache according
-to the <i>QuantumType</i>. The method <i>writePixels()</i> supports copying
+to the <i>QuantumTypes</i>. The method <i>writePixels()</i> supports copying
 the pixels in the cache to a foreign pixel representation according to
-the format specified by <i>QuantumType</i>.
+the format specified by <i>QuantumTypes</i>.
 <p>The pixel region is effectively a small image in which the pixels may
 be accessed, addressed, and updated, as shown in the following example:
 <table BORDER=0 WIDTH="100%" NOSAVE >
@@ -2746,7 +2746,7 @@ from the pixel cache to the image via syncPixels.</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td><font size=-1><a href="Enumerations.html#QuantumType">QuantumType</a>
+<td><font size=-1><a href="Enumerations.html#QuantumTypes">QuantumTypes</a>
 quantum_, unsigned char *source_,</font></td>
 
 <td><font size=-1>Transfers one or more pixel components from a buffer
@@ -2761,7 +2761,7 @@ used to support image decoders.</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td><font size=-1><a href="Enumerations.html#QuantumType">QuantumType</a>
+<td><font size=-1><a href="Enumerations.html#QuantumTypes">QuantumTypes</a>
 quantum_, unsigned char *destination_</font></td>
 
 <td><font size=-1>Transfers one or more pixel components from the image
