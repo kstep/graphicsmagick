@@ -2391,67 +2391,32 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
       CloseBlob(image);
       return(image);
     }
-  if (image_info->texture == (char *) NULL)
+
+  /*
+   * Set solid background color
+   */
+  unsigned long
+    column,
+    row;
+
+  PixelPacket
+    *pixel,
+    background_color;
+
+  background_color = image_info->background_color;
+  image->background_color = background_color;
+  if(background_color.opacity != OpaqueOpacity)
+    image->matte = True;
+
+  for (row=0; row < (long) image->rows; row++)
     {
-      /*
-       * Set solid background color
-       */
-      unsigned long
-        column,
-        row;
-
-      PixelPacket
-        *pixel,
-        background_color;
-
-      background_color = image_info->background_color;
-      image->background_color = background_color;
-      if(background_color.opacity != OpaqueOpacity)
-        image->matte = True;
-
-      for (row=0; row < (long) image->rows; row++)
-        {
-          pixel=SetImagePixels(image,0,row,image->columns,1);
-          if (pixel == (PixelPacket *) NULL)
-            break;
-          for (column=image->columns; column; column--)
-            *pixel++ = background_color;
-          if (!SyncImagePixels(image))
-            break;
-        }
-    }
-  else
-    {
-      /*
-       * Tile texture on background
-       */
-      ImageInfo
-        *tile_info;
-
-      Image
-        *tile_image;
-
-      long
-        column,
-        row;
-
-      tile_info = CloneImageInfo((ImageInfo*)NULL);
-      *tile_info->magick='\0';
-      strncpy(tile_info->filename,image_info->texture,MaxTextExtent-1);
-      tile_image=ReadImage(tile_info,exception);
-      DestroyImageInfo(tile_info);
-      if(tile_image == (Image *) NULL)
-        {
-          CloseBlob(image);
-          return((Image *) NULL);
-        }
-
-      for (row=0; row < (long) image->rows; row+=tile_image->rows)
-        {
-          for (column=0; column < (long) image->columns; column+=tile_image->columns)
-            (void) CompositeImage(image,CopyCompositeOp,tile_image,column,row);
-        }
-      DestroyImage(tile_image);
+      pixel=SetImagePixels(image,0,row,image->columns,1);
+      if (pixel == (PixelPacket *) NULL)
+        break;
+      for (column=image->columns; column; column--)
+        *pixel++ = background_color;
+      if (!SyncImagePixels(image))
+        break;
     }
 
   /*
