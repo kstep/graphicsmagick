@@ -124,15 +124,11 @@ typedef struct _PolygonInfo
 /*
   Forward declarations.
 */
-static inline int
-  GetWindingNumber(const PolygonInfo *,const double,const double);
-
 static unsigned int
   TracePath(PrimitiveInfo *,const char *);
 
 static void
   DrawPrimitive(const DrawInfo *,PrimitiveInfo *,Image *),
-  ReversePoints(PointInfo *,const int),
   TraceArc(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo,
     const double,const unsigned int,const unsigned int),
   TraceBezier(PrimitiveInfo *,const unsigned int),
@@ -1604,8 +1600,7 @@ static int DestroyEdge(PolygonInfo *polygon_info,const int edge)
   return(polygon_info->number_edges);
 }
 
-static inline double DistanceToLine(const PointInfo *p,const double x,
-  const double y)
+static double DistanceToLine(const PointInfo *p,const double x,const double y)
 {
   double
     alpha,
@@ -1643,8 +1638,8 @@ static inline double DistanceToLine(const PointInfo *p,const double x,
   return(beta*beta/alpha+MagickEpsilon);
 }
 
-static inline int GetWindingNumber(const PolygonInfo *polygon_info,
-  const double x,const double y)
+static int GetWindingNumber(const PolygonInfo *polygon_info,const double x,
+  const double y)
 {
   int
     j,

@@ -35,6 +35,7 @@
 		<LI><A HREF="#destroyimageinfo">DestroyImageInfo</A></LI>
 		<LI><A HREF="#destroyimages">DestroyImages</A></LI>
 		<LI><A HREF="#displayimages">DisplayImages</A></LI>
+		<LI><A HREF="#getimageboundingbox">GetImageBoundingBox</A></LI>
 		<LI><A HREF="#getimageinfo">GetImageInfo</A></LI>
 		<LI><A HREF="#getimagetype">GetImageType</A></LI>
 		<LI><A HREF="#getnextimage">GetNextImage</A></LI>
@@ -89,6 +90,7 @@
 <P>void  <STRONG>DestroyImageInfo</STRONG>( ImageInfo *image_info );</P>
 <P>void  <STRONG>DestroyImages</STRONG>( Image *image );</P>
 <P>unsigned int  <STRONG>DisplayImages</STRONG>( const ImageInfo *image_info, Image *image );</P>
+<P>RectangleInfo  <STRONG>GetImageBoundingBox</STRONG>( Image *image );</P>
 <P>void  <STRONG>GetImageInfo</STRONG>( ImageInfo *image_info );</P>
 <P>ImageType  <STRONG>GetImageType</STRONG>( Image *image );</P>
 <P>Image * <STRONG>GetNextImage</STRONG>( Image *image );</P>
@@ -385,6 +387,21 @@ Method DisplayImages returns True if the images are displayed in an
 <p><dt><STRONG>image_info:</STRONG><BR>
 <DD>
 Specifies a pointer to an ImageInfo structure.
+<P></P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The address of a structure of type Image.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="getimageboundingbox">GetImageBoundingBox</A></H2>
+<P>Method GetImageBoundingBox returns the bounding box of an image canvas.</P>
+<P>The format of the GetImageBoundingBox method is:</P>
+<blockquote><A HREF="types/RectangleInfo.html">RectangleInfo</A> GetImageBoundingBox ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_bounds%3A">bounds:</A></STRONG><BR>
+<DD>
+Method GetImageBoundingBox returns the bounding box of an image canvas.
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>

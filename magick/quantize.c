@@ -293,7 +293,7 @@ typedef struct _CubeInfo
 /*
   Method prototypes.
 */
-static inline void
+static void
   ClosestColor(CubeInfo *,const NodeInfo *);
 
 static NodeInfo
@@ -716,7 +716,7 @@ MagickExport QuantizeInfo *CloneQuantizeInfo(const QuantizeInfo *quantize_info)
 %
 %
 */
-static inline void ClosestColor(CubeInfo *cube_info,const NodeInfo *node_info)
+static void ClosestColor(CubeInfo *cube_info,const NodeInfo *node_info)
 {
   register unsigned int
     id;

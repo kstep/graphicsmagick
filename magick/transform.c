@@ -348,9 +348,6 @@ MagickExport Image *CropImage(Image *image,const RectangleInfo *crop_info,
     *crop_indexes,
     *indexes;
 
-  register int
-    x;
-
   register PixelPacket
     *p,
     *q;

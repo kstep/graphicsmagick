@@ -47,7 +47,7 @@
 <P>unsigned int  <STRONG>ColorFloodfillImage</STRONG>( Image *image, const DrawInfo *draw_info, const PixelPacket target, const int x_offset, const int y_offset, const PaintMethod method );</P>
 <P>void  <STRONG>DestroyDrawInfo</STRONG>( DrawInfo *draw_info );</P>
 <P>unsigned int  <STRONG>DrawImage</STRONG>( Image *image, const DrawInfo *draw_info );</P>
-<P>void  <STRONG>DrawPrimitive</STRONG>( Image *image, const DrawInfo *draw_info, PrimitiveInfo *primitive_info ));</P>
+<P>void  <STRONG>DrawPrimitive</STRONG>( const DrawInfo *draw_info, PrimitiveInfo *primitive_info, Image *image );</P>
 <P>void  <STRONG>GetDrawInfo</STRONG>( const ImageInfo *image_info, DrawInfo *draw_info );</P>
 <P>unsigned int  <STRONG>MatteFloodfillImage</STRONG>( Image *image, const PixelPacket target, const unsigned int matte, const int x_offset, const int y_offset, const PaintMethod method );</P>
 <P>unsigned int  <STRONG>OpaqueImage</STRONG>( Image *image, const PixelPacket target, const PixelPacket pen_color );</P>
@@ -137,13 +137,9 @@ The address of a DrawInfo structure.
 <H2><A NAME="drawprimitive">DrawPrimitive</A></H2>
 <P>Method DrawPrimitive draws a primitive (line, rectangle, ellipse) on the image.</P>
 <P>The format of the DrawPrimitive method is:</P>
-<blockquote>void DrawPrimitive ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/DrawInfo.html">DrawInfo</A> *draw_info, PrimitiveInfo *primitive_info ) ); </blockquote><P>
+<blockquote>void DrawPrimitive ( const <A HREF="types/DrawInfo.html">DrawInfo</A> *draw_info, PrimitiveInfo *primitive_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The address of a structure of type Image.
-<P></P>
 <p><dt><STRONG>draw_info:</STRONG><BR>
 <DD>
 The address of a DrawInfo structure.
@@ -151,6 +147,10 @@ The address of a DrawInfo structure.
 <p><dt><STRONG><A NAME="item_o_primitive_info%3A">primitive_info:</A></STRONG><BR>
 <DD>
 Specifies a pointer to a PrimitiveInfo structure.
+<P></P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The address of a structure of type Image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getdrawinfo">GetDrawInfo</A></H2>

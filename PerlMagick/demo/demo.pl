@@ -43,7 +43,6 @@ $example->Label('Add Noise');
 $example->AddNoise("LaplacianNoise");
 push(@$images,$example);
 $example=$model->Clone();
-$example=$model->Clone();
 $example->Label('Annotate');
 $example->Annotate(text=>'Magick',geometry=>'+0+20',font=>'@Generic.ttf',
   fill=>'gold',gravity=>'North',pointsize=>14);
