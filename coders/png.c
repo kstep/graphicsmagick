@@ -64,6 +64,7 @@
 #include "png.h"
 #include "zlib.h"
 
+#if PNG_LIBPNG_VER > 95
 /*
   Optional declarations. Define or undefine them as you like.
 */
@@ -340,7 +341,8 @@ typedef struct _MngInfo
     magn_methy;
 
 } MngInfo;
-#endif
+#endif /* VER */
+#endif /* HasPNG */
 
 /*
   Forward declarations.
@@ -348,6 +350,7 @@ typedef struct _MngInfo
 static unsigned int
   WritePNGImage(const ImageInfo *,Image *);
 
+#if PNG_LIBPNG_VER > 95
 #if defined(PNG_SORT_PALETTE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -754,6 +757,7 @@ static unsigned int ImageIsMonochrome(Image *image)
 %
 %
 */
+#endif
 static unsigned int IsMNG(const unsigned char *magick,const size_t length)
 {
   if (length < 8)
@@ -802,6 +806,7 @@ static unsigned int IsPNG(const unsigned char *magick,const size_t length)
 }
 
 #if defined(HasPNG)
+#if PNG_LIBPNG_VER > 95
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1434,6 +1439,12 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     o  Palette is sorted to remove unused entries and to put a
        transparent color first, if PNG_SORT_PALETTE is also defined.
    */
+
+#if (PNG_LIBPNG_VER < 10007)
+    if (image_info->verbose)
+      printf("Your PNG library (libpng-%s) is rather old.\n",
+         PNG_LIBPNG_VER_STRING);
+#endif
 
 #if (QuantumDepth == 16)
     optimize=image_info->type==OptimizeType;
@@ -2587,7 +2598,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         png_permit_mng_features(ping,PNG_ALL_MNG_FEATURES);
         png_set_read_fn(ping,image,png_get_data);
 #else
-#if defined(PNG_READ_EMPTY_PLTE_SUPPORTED)
+#  if defined(PNG_READ_EMPTY_PLTE_SUPPORTED)
         png_permit_empty_plte(ping,True);
         png_set_read_fn(ping,image,png_get_data);
 #  else
@@ -3986,7 +3997,17 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   have_mng_structure=False;
   return(image);
 }
-#else
+#else /* PNG_LIBPNG_VER > 95 */
+static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
+{
+  printf("Your PNG library is too old: You have libpng-%s\n",
+     PNG_LIBPNG_VER_STRING);
+  ThrowException(exception,(ExceptionType) MissingDelegateWarning,
+    "PNG library is too old", image_info->filename);
+  return (Image *) NULL;
+}
+#endif /* PNG_LIBPNG_VER > 95 */
+#else /* HasPNG */
 static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   ThrowException(exception,(ExceptionType) MissingDelegateWarning,
@@ -4066,6 +4087,7 @@ ModuleExport void UnregisterPNGImage(void)
 }
 
 #if defined(HasPNG)
+#if PNG_LIBPNG_VER > 95
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -4180,8 +4202,8 @@ png_set_compression_buffer_size(png_structp png_ptr, png_uint_32 size)
 {
     if(png_ptr->zbuf)
        png_free(png_ptr, png_ptr->zbuf); png_ptr->zbuf=NULL;
-    png_ptr->zbuf_size = (png_size_t)size;
-    png_ptr->zbuf = (png_bytep)png_malloc(png_ptr, size);
+    png_ptr->zbuf_size = (png_size_t) size;
+    png_ptr->zbuf = (png_bytep) png_malloc(png_ptr, size);
     if(!png_ptr->zbuf)
        png_error(png_ptr,"Unable to allocate zbuf");
 }
@@ -4346,6 +4368,12 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     initial_delay,
     save_image_depth,
     ticks_per_second=0;
+
+#if (PNG_LIBPNG_VER < 10007)
+    if (image_info->verbose)
+      printf("Your PNG library (libpng-%s) is rather old.\n",
+         PNG_LIBPNG_VER_STRING);
+#endif
 
     optimize=image_info->type==OptimizeType;
   /*
@@ -4751,7 +4779,10 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
        palette;
 
     int
+       IsPseudo,
        not_valid;
+
+    IsPseudo=image->storage_class==PseudoClass;
 
 #if defined(PNG_WRITE_EMPTY_PLTE_SUPPORTED) || \
     defined(PNG_MNG_FEATURES_SUPPORTED)
@@ -4761,7 +4792,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     */
     if (need_local_plte && use_global_plte && !all_images_are_gray)
       {
-        if (image->storage_class==PseudoClass)
+        if (IsPseudo)
           {
             /*
               When equal_palettes is true, this image has the same palette
@@ -4940,7 +4971,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     /*
       Select the color type.
     */
-    if (optimize || image->storage_class == PseudoClass ||
+    if (optimize || IsPseudo ||
         image_info->type==BilevelType)
       {
         if (ImageIsMonochrome(image))
@@ -4953,7 +4984,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     matte=image->matte;
     if (!optimize && matte)
       ping_info->color_type=PNG_COLOR_TYPE_RGB_ALPHA;
-    if (matte && (optimize || image->storage_class == PseudoClass))
+    if (matte && (optimize || IsPseudo))
       {
         ping_info->color_type=PNG_COLOR_TYPE_GRAY_ALPHA;
         for (y=0; y < (long) image->rows; y++)
@@ -5062,7 +5093,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     matte=image->matte;
     if (ping_info->valid & PNG_INFO_tRNS)
       image->matte=False;
-    if ((optimize || image->storage_class == PseudoClass) &&
+    if ((optimize || IsPseudo) &&
         ImageIsGray(image) && (!image->matte || image->depth >= 8))
       {
         if (image->matte)
@@ -5088,7 +5119,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                   ping_info->bit_depth<<=1;
               }
             else if (optimize && ping_info->color_type == PNG_COLOR_TYPE_GRAY &&
-                image->colors < 17 && image->storage_class==PseudoClass)
+                image->colors < 17 && IsPseudo)
               {
 
               /* Check if grayscale is reducible */
@@ -5120,7 +5151,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           }
       }
     else
-      if (image->storage_class==PseudoClass)
+      if (IsPseudo)
       {
         if (image->depth <= 8)
           {
@@ -5394,19 +5425,19 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     rowbytes=image->columns;
     if (image->depth == 8)
       {
-        if ((optimize || image->storage_class==PseudoClass) &&
+        if ((optimize || IsPseudo) &&
             ImageIsGray(image))
           rowbytes*=(image->matte ? 2 : 1);
         else
           {
-            if (image->storage_class!=PseudoClass)
+            if (!IsPseudo)
               rowbytes*=(image->matte ? 4 : 3);
           }
       }
     else
       if (image->depth == 16)
         {
-          if ((optimize || image->storage_class==PseudoClass) &&
+          if ((optimize || IsPseudo) &&
               ImageIsGray(image))
             rowbytes*=(image->matte ? 4 : 2);
           else
@@ -5425,7 +5456,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     */
     for (i=0; i < (long) image->rows; i++)
       scanlines[i]=png_pixels+(rowbytes*i);
-    if ((optimize || image->storage_class==PseudoClass ||
+    if ((optimize || IsPseudo ||
         image_info->type == BilevelType) &&
         !image->matte && ImageIsMonochrome(image))
       {
@@ -5436,7 +5467,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         {
           if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
             break;
-          if (image->storage_class == PseudoClass)
+          if (IsPseudo)
                 (void) PopImagePixels(image,(QuantumType) GrayQuantum,
                   scanlines[y]);
           else
@@ -5449,7 +5480,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     else
       {
       if ((!image->matte || (ping_info->bit_depth >= QuantumDepth)) &&
-          (optimize || image->storage_class==PseudoClass) && ImageIsGray(image))
+          (optimize || IsPseudo) && ImageIsGray(image))
         {
           for (y=0; y < (long) image->rows; y++)
           {
@@ -5457,7 +5488,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               break;
             if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
               {
-                if (image->storage_class == PseudoClass)
+                if (IsPseudo)
                   (void) PopImagePixels(image,(QuantumType) GrayQuantum,
                      scanlines[y]);
                 else
@@ -5508,7 +5539,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         }
       else
         {
-          if ((image->depth > 8) || image->storage_class!=PseudoClass)
+          if ((image->depth > 8) || !IsPseudo)
             for (y=0; y < (long) image->rows; y++)
             {
               if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
@@ -5672,7 +5703,16 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   CloseBlob(image);
   return(True);
 }
-#else
+#else /* PNG_LIBPNG_VER > 95 */
+static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
+{
+  printf("Your PNG library is too old: You have libpng-%s\n",
+     PNG_LIBPNG_VER_STRING);
+  ThrowBinaryException((ExceptionType) MissingDelegateWarning,
+    "PNG library is too old", image->filename);
+}
+#endif /* PNG_LIBPNG_VER > 95 */
+#else /* HasPNG */
 static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 {
   ThrowBinaryException((ExceptionType) MissingDelegateWarning,

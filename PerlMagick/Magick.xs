@@ -235,18 +235,21 @@ static char
     "Undefined", "PixelsPerInch", "PixelsPerCentimeter", (char *) NULL
   };
 
+typedef struct _Arguments
+{
+  char
+    *method,
+    **type;
+} Arguments;
+
 static struct
   Methods
   {
     char
       *name;
 
-    struct arguments
-    {
-      char
-        *method,
-        **type;
-    } arguments[MaxArguments];
+    Arguments
+      arguments[MaxArguments];
   } Methods[] =
   {
     { "comment", { {"comment", StringReference} } },
@@ -1128,7 +1131,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
               continue;
             i=0;
             (void) sscanf(attribute,"%*[^[][%d",&i);
-            if (i > image->colors)
+            if (i > (int) image->colors)
               i%=image->colors;
             if (strchr(SvPV(sval,na),',') == 0)
               QueryColorDatabase(SvPV(sval,na),image->colormap+i);
@@ -1345,7 +1348,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
               break;
             indexes=GetIndexes(image);
             (void) sscanf(SvPV(sval,na),"%ld",&index);
-            if ((index >= 0) && (index < image->colors))
+            if ((index >= 0) && (index < (int) image->colors))
               *indexes=(IndexPacket) index;
             (void) SyncImagePixels(image);
           }
@@ -2946,7 +2949,7 @@ Get(ref,...)
               j=image->storage_class;
 #endif
               s=newSViv(j);
-              if ((j >= 0) && (j < NumberOf(ClassTypes)-1))
+              if ((j >= 0) && (j < (int) NumberOf(ClassTypes)-1))
                 {
                   (void) sv_setpv(s,ClassTypes[j]);
                   SvIOK_on(s);
@@ -2961,7 +2964,7 @@ Get(ref,...)
                 if (info->image_info->compression == UndefinedCompression)
                   j=image->compression;
               s=newSViv(j);
-              if ((j >= 0) && (j < NumberOf(CompressionTypes)-1))
+              if ((j >= 0) && (j < (int) NumberOf(CompressionTypes)-1))
                 {
                   (void) sv_setpv(s,CompressionTypes[j]);
                   SvIOK_on(s);
@@ -2973,7 +2976,7 @@ Get(ref,...)
             {
               j=image ? image->colorspace : RGBColorspace;
               s=newSViv(j);
-              if ((j >= 0) && (j < NumberOf(ColorspaceTypes)-1))
+              if ((j >= 0) && (j < (int) NumberOf(ColorspaceTypes)-1))
                 {
                   (void) sv_setpv(s,ColorspaceTypes[j]);
                   SvIOK_on(s);
@@ -2994,7 +2997,7 @@ Get(ref,...)
                 break;
               j=0;
               (void) sscanf(attribute,"%*[^[][%d",&j);
-              if (j > image->colors)
+              if (j > (int) image->colors)
                 j%=image->colors;
               FormatString(color,"%u,%u,%u,%u",image->colormap[j].red,
                 image->colormap[j].green,image->colormap[j].blue,
@@ -3105,7 +3108,7 @@ Get(ref,...)
             {
               j=image->filter;
               s=newSViv(j);
-              if ((j >= 0) && (j < NumberOf(FilterTypess)-1))
+              if ((j >= 0) && (j < (int) NumberOf(FilterTypess)-1))
                 {
                   (void) sv_setpv(s,FilterTypess[j]);
                   SvIOK_on(s);
@@ -3231,7 +3234,7 @@ Get(ref,...)
             {
               j=info ? info->image_info->interlace : image->interlace;
               s=newSViv(j);
-              if ((j >= 0) && (j < NumberOf(InterlaceTypes)-1))
+              if ((j >= 0) && (j < (int) NumberOf(InterlaceTypes)-1))
                 {
                   (void) sv_setpv(s,InterlaceTypes[j]);
                   SvIOK_on(s);
@@ -3384,7 +3387,7 @@ Get(ref,...)
             {
               s=newSViv(info->image_info->preview_type);
               if ((info->image_info->preview_type >= 0) &&
-                  (info->image_info->preview_type < NumberOf(PreviewTypes)-1))
+                  (info->image_info->preview_type < (int) NumberOf(PreviewTypes)-1))
                 {
                   (void) sv_setpv(s,
                     PreviewTypes[info->image_info->preview_type]);
@@ -3414,7 +3417,7 @@ Get(ref,...)
             {
               j=image->rendering_intent;
               s=newSViv(j);
-              if ((j >= 0) && (j < NumberOf(IntentTypes)-1))
+              if ((j >= 0) && (j < (int) NumberOf(IntentTypes)-1))
                 {
                   (void) sv_setpv(s,IntentTypes[j]);
                   SvIOK_on(s);
@@ -3532,7 +3535,7 @@ Get(ref,...)
                 break;
               j=(int) GetImageType(image,&image->exception);
               s=newSViv(j);
-              if ((j >= 0) && (j < NumberOf(ImageTypes)-1))
+              if ((j >= 0) && (j < (int) NumberOf(ImageTypes)-1))
                 {
                   (void) sv_setpv(s,ImageTypes[j]);
                   SvIOK_on(s);
@@ -3730,7 +3733,7 @@ ImageToBlob(ref,...)
     }
     SetImageInfo(package_info->image_info,True,&image->exception);
     GetExceptionInfo(&exception);
-    EXTEND(sp,GetNumberScenes(image));
+    EXTEND(sp,(int) GetNumberScenes(image));
     for (next=image; next; next=next->next)
     {
       length=0;
@@ -3740,7 +3743,7 @@ ImageToBlob(ref,...)
           exception.description);
       if (blob != (char *) NULL)
         {
-          PUSHs(sv_2mortal(newSVpv(blob,length)));
+          PUSHs(sv_2mortal(newSVpv((const char *) blob,length)));
           LiberateMemory((void **) &blob);
         }
       if (package_info->image_info->adjoin)
@@ -4042,7 +4045,7 @@ Mogrify(ref,...)
       int
         longest;
 
-      struct arguments
+      Arguments
         *pp,
         *qq;
 
@@ -4760,7 +4763,7 @@ Mogrify(ref,...)
           if (attribute_flag[6])
             opacity=argument_list[6].double_reference;
           if (opacity != OpaqueOpacity)
-            SetImageOpacity(composite_image,opacity);
+            SetImageOpacity(composite_image,(unsigned int) opacity);
           if (compose == DissolveCompositeOp)
             {
               register PixelPacket
@@ -4775,9 +4778,9 @@ Mogrify(ref,...)
                 for (x=0; x < (long) composite_image->columns; x++)
                 {
                   if (composite_image->matte)
-                    q->opacity=((MaxRGB-q->opacity)*opacity)/100;
+                    q->opacity=(Quantum) ((MaxRGB-q->opacity)*opacity)/100;
                   else
-                    q->opacity=(MaxRGB*opacity)/100;
+                    q->opacity=(Quantum) (MaxRGB*opacity)/100;
                   q++;
                 }
                 if (!SyncImagePixels(composite_image))
@@ -4832,11 +4835,11 @@ Mogrify(ref,...)
           if ((flags & XNegative) != 0)
             x+=image->columns;
           if ((flags & WidthValue) == 0)
-            width-=2*x > width ? width : 2*x;
+            width-=2*x > (int) width ? width : 2*x;
           if ((flags & YNegative) != 0)
             y+=image->rows;
           if ((flags & HeightValue) == 0)
-            height-=2*y > height ? height : 2*y;
+            height-=2*y > (int) height ? height : 2*y;
           if (attribute_flag[5])
             switch (argument_list[5].int_reference)
             {
@@ -4844,7 +4847,7 @@ Mogrify(ref,...)
                 break;
               case NorthGravity:
               {
-                x+=0.5*width-composite_image->columns/2;
+                x+=(int) (0.5*width-composite_image->columns/2);
                 break;
               }
               case NorthEastGravity:
@@ -4854,7 +4857,7 @@ Mogrify(ref,...)
               }
               case WestGravity:
               {
-                y+=0.5*height-composite_image->rows/2;
+                y+=(int) (0.5*height-composite_image->rows/2);
                 break;
               }
               case ForgetGravity:
@@ -4862,14 +4865,14 @@ Mogrify(ref,...)
               case CenterGravity:
               default:
               {
-                x+=0.5*width-composite_image->columns/2;
-                y+=0.5*height-composite_image->rows/2;
+                x+=(int) (0.5*width-composite_image->columns/2);
+                y+=(int) (0.5*height-composite_image->rows/2);
                 break;
               }
               case EastGravity:
               {
                 x+=width-composite_image->columns;
-                y+=0.5*height-composite_image->rows/2;
+                y+=(int) (0.5*height-composite_image->rows/2);
                 break;
               }
               case SouthWestGravity:
@@ -4879,7 +4882,7 @@ Mogrify(ref,...)
               }
               case SouthGravity:
               {
-                x+=0.5*width-composite_image->columns/2;
+                x+=(int) (0.5*width-composite_image->columns/2);
                 y+=height-composite_image->rows;
                 break;
               }
@@ -4910,7 +4913,7 @@ Mogrify(ref,...)
         case 36:  /* Contrast */
         {
           if (!attribute_flag[0])
-            argument_list[0].int_reference=0.0;
+            argument_list[0].int_reference=0;
           ContrastImage(image,argument_list[0].int_reference);
           break;
         }
@@ -5428,11 +5431,11 @@ Mogrify(ref,...)
           if (!attribute_flag[0])
             break;
           av=(AV*) argument_list[0].array_reference;
-          radius=sqrt(av_len(av)+1);
+          radius=(unsigned int) sqrt(av_len(av)+1);
           kernel=(double *) AcquireMemory(radius*radius*sizeof(double));
           for (j=0; j < (av_len(av)+1); j++)
             kernel[j]=(double) SvNV(*(av_fetch(av,j,0)));
-          for ( ; j < (radius*radius); j++)
+          for ( ; j < (int) (radius*radius); j++)
             kernel[j]=0.0;
           image=ConvolveImage(image,radius,kernel,&exception);
           LiberateMemory((void **) &kernel);
@@ -6938,7 +6941,7 @@ Read(ref,...)
     info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
     n=1;
     if (items <= 1)
-      *list=
+      *list=(char *)
         (*info->image_info->filename ? info->image_info->filename : "XC:black");
     else
       for (n=0, i=0; i < ac; i++)
