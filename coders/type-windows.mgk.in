@@ -32,7 +32,7 @@
     fullname="Arial Bold Italic"
     family="Arial"
     weight="700"
-    style="normal"
+    style="italic"
     stretch="normal"
     glyphs="@windows_font_dir@/arialbi.ttf"
     version="0.1" />
