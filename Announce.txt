@@ -1,6 +1,6 @@
 The ImageMagick Studio LLC development group announces the release of
 ImageMagick 5.4.4.  Version 5.4.4 is a feature release but also resolves
-bugs reported against 5.4.2.
+bugs reported against 5.4.3.
 
 ImageMagick is a robust collection of tools and libraries to read, write,
 and manipulate an image in many image formats (over 72 major formats)
@@ -22,50 +22,22 @@ for details):
 
   o General:
 
-    - A ChangeLog is now included with the source distribution.
+    - Many internal improvements to improve speed.  Regression tests run
+      20% faster than 5.4.3.
 
-    - Palm pixmap support contributed by Christopher R. Hawks.
+    - See ImageMagick-5.4.4/ChangeLog.
 
-    - Bug fixes to AVI, BMP, DIB, MPC, PGM, PPM, PSD, WMF, & XCF coders.
-
-    - SVG now supports inline images.
-
-    - ASCII Postscript Type 1 (PFA) fonts rendered via FreeType.
-
-    - Format of type.mgk font specification file is extended to
-      support more font attributes, and in particular, to support
-      including additional font specification files.
-
-    - Font specification files provided for Ghostscript, Solaris DPS,
-      and Microsoft Windows fonts.
-
-    - The -geometry and -page options now work consistently (but
-      differently).
-
-    - Font search path (TT_FONT_PATH) no longer supported.
-      
   o Utilities enhancements/changes:
 
-    - Command line options now stay in effect for any image in command
-      line order until a another option is encountered or if -noop is
-      specified.
-
-    - Use -trim to trim the edges of an image.
-
-    - Added -mask to the convert/mogrify programs to add clips masks to
-      an image.
+    - 
 
   o C API enhancements:
 
-    - Image list functions added to API.
+    - 
 
   o C++ API enhancements:
 
-    - Various bugfixes (see Magick++/NEWS and Magick++/ChangeLog).
-
-    - Added support (via DrawableFont) for selecting a font by
-      font-family, font-style, font-weight, and font-stretch. Wildcard
-      matches are supported.
+    - 
 
 The ImageMagick WWW page is
 
