@@ -5,6 +5,11 @@
 	xwindow.h
 	* */*.c: Updated to use MagickAllocateMemory macro.
 
+2003-05-17  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* coders/png.c: stifled compiler warnings about uninitialized
+	chunk and blob variables.
+
 2003-05-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/utility.h (MagickAllocateMemory): New macro to allocate

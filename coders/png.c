@@ -2940,6 +2940,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
     if (length > PNG_MAX_UINT || count == 0)
       ThrowReaderException(CorruptImageError,"CorruptJNGImage",image);
+    chunk=(unsigned char *) NULL;
     p=NULL;
     if (length)
       {
@@ -3710,8 +3711,9 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           status=False;
         if (count == 0)
           ThrowReaderException(CorruptImageError,"CorruptMNGImage",image);
-       p=NULL;
-       if (length)
+        p=NULL;
+        chunk=(unsigned char *) NULL;
+        if (length)
           {
             chunk=MagickAllocateMemory(unsigned char *,length);
             if (chunk == (unsigned char *) NULL)
@@ -7286,6 +7288,7 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),
       "  enter WriteOneJNGImage()");
 
+  blob=(char *) NULL;
   jpeg_image=(Image *) NULL;
   jpeg_image_info=(ImageInfo *) NULL;
 
