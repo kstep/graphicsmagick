@@ -334,7 +334,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     image->depth=fits_info.bits_per_pixel <= 8 ? 8 : QuantumDepth;
     image->storage_class=PseudoClass;
     image->scene=scene;
-    if (!AllocateImageColormap(image,MaxRGB+1))
+    if (!AllocateImageColormap(image,1 << image->depth))
       ThrowReaderException(FileOpenWarning,"Unable to open file",image);
     if (image_info->ping)
       {
@@ -411,8 +411,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     */
     scale=1.0;
     if (((fits_info.max_data-fits_info.min_data) <= 1.0) ||
-        ((fits_info.max_data-fits_info.min_data) > MaxRGB))
-      scale=MaxRGB/(fits_info.max_data-fits_info.min_data);
+        ((fits_info.max_data-fits_info.min_data) > ((1 << image->depth)-1)))
+      scale=((1 << image->depth)-1)/(fits_info.max_data-fits_info.min_data);
     p=fits_pixels;
     for (y=image->rows-1; y >= 0; y--)
     {
@@ -440,7 +440,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         scaled_pixel=scale*
           (pixel*fits_info.scale-fits_info.min_data-fits_info.zero);
         index=(IndexPacket) ((scaled_pixel < 0) ? 0 :
-          (scaled_pixel > MaxRGB) ? MaxRGB : scaled_pixel+0.5);
+          (scaled_pixel > ((1 << image->depth)-1)) ? ((1 << image->depth)-1) :
+          scaled_pixel+0.5);
         indexes[x]=index;
         *q++=image->colormap[index];
       }
@@ -625,7 +626,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   (void) strncpy(fits_info+320,buffer,Extent(buffer));
   FormatString(buffer,"DATAMIN =           %10u",0);
   (void) strncpy(fits_info+400,buffer,Extent(buffer));
-  FormatString(buffer,"DATAMAX =           %10u",MaxRGB);
+  FormatString(buffer,"DATAMAX =           %10u",(1 << image->depth)-1);
   (void) strncpy(fits_info+480,buffer,Extent(buffer));
   (void) strcpy(buffer,"HISTORY Created by ImageMagick.");
   (void) strncpy(fits_info+560,buffer,Extent(buffer));
