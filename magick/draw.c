@@ -133,6 +133,7 @@ static PrimitiveInfo
   *TraceStrokePolygon(const DrawInfo *,const PrimitiveInfo *);
 
 static unsigned int
+  DrawPatternPath(Image *,DrawInfo *,const char *),
   DrawPrimitive(Image *,const DrawInfo *,const PrimitiveInfo *),
   DrawStrokePolygon(Image *,const DrawInfo *,const PrimitiveInfo *);
 
@@ -226,8 +227,6 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
     }
   if (draw_info->clip_path != (char *) NULL)
     clone_info->clip_path=AllocateString(draw_info->clip_path);
-  if (draw_info->pattern_path != (char *) NULL)
-    clone_info->pattern_path=AllocateString(draw_info->pattern_path);
   return(clone_info);
 }
 
@@ -959,8 +958,6 @@ MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
     LiberateMemory((void **) &draw_info->dash_pattern);
   if (draw_info->clip_path != (char *) NULL)
     LiberateMemory((void **) &draw_info->clip_path);
-  if (draw_info->pattern_path != (char *) NULL)
-    LiberateMemory((void **) &draw_info->pattern_path);
   LiberateMemory((void **) &draw_info);
 }
 
@@ -1203,6 +1200,8 @@ static unsigned int DrawClipPath(Image *image,DrawInfo *draw_info)
   unsigned int
     status;
 
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   assert(draw_info != (const DrawInfo *) NULL);
   FormatString(clip_path,"[%.1024s]",draw_info->clip_path);
   attribute=GetImageAttribute(image,clip_path);
@@ -1442,6 +1441,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
 
   char
     keyword[MaxTextExtent],
+    pattern[MaxTextExtent],
     *primitive,
     *q,
     *token;
@@ -1741,6 +1741,9 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
           {
             GetToken(q,&q,token);
             (void) QueryColorDatabase(token,&graphic_context[n]->fill);
+            FormatString(pattern,"[%.1024s]",token);
+            if (GetImageAttribute(image,pattern) != (ImageAttribute *) NULL)
+              DrawPatternPath(image,graphic_context[n],token);
             if (graphic_context[n]->fill.opacity != TransparentOpacity)
               graphic_context[n]->fill.opacity=graphic_context[n]->opacity;
             break;
@@ -2087,11 +2090,14 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
             if (LocaleCompare("pattern",token) == 0)
               {
                 char
+                  geometry[MaxTextExtent],
+                  key[2*MaxTextExtent],
                   name[MaxTextExtent];
 
                 GetToken(q,&q,token);
-                FormatString(name,"[%.1024s]",token);
-                GetToken(q,&q,token);  /* geometry */
+                (void) strncpy(name,token,MaxTextExtent-1);
+                GetToken(q,&q,token);
+                (void) strncpy(geometry,token,MaxTextExtent-1);
                 for (p=q; *q != '\0'; )
                 {
                   GetToken(q,&q,token);
@@ -2104,7 +2110,10 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                 }
                 (void) strncpy(token,p,q-p-4);
                 token[q-p-4]='\0';
-                (void) SetImageAttribute(image,name,token);
+                FormatString(key,"[%.1024s]",name);
+                (void) SetImageAttribute(image,key,token);
+                FormatString(key,"[%.1024s-geometry]",name);
+                (void) SetImageAttribute(image,key,geometry);
                 GetToken(q,&q,token);
                 break;
               }
@@ -2198,6 +2207,9 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
           {
             GetToken(q,&q,token);
             (void) QueryColorDatabase(token,&graphic_context[n]->stroke);
+            FormatString(pattern,"[%.1024s]",token);
+            if (GetImageAttribute(image,pattern) != (ImageAttribute *) NULL)
+              DrawPatternPath(image,graphic_context[n],token);
             if (graphic_context[n]->stroke.opacity != TransparentOpacity)
               graphic_context[n]->stroke.opacity=graphic_context[n]->opacity;
             break;
@@ -2702,7 +2714,8 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
 %
 %  The format of the DrawPatternPath method is:
 %
-%      unsigned int DrawPatternPath(Image *image,DrawInfo *draw_info)
+%      unsigned int DrawPatternPath(Image *image,DrawInfo *draw_info,
+%        const char *name)
 %
 %  A description of each parameter follows:
 %
@@ -2710,34 +2723,54 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
 %
 %    o draw_info: The draw info.
 %
+%    o pattern: The pattern name.
+%
 %
 */
-static unsigned int DrawPatternPath(Image *image,DrawInfo *draw_info)
+static unsigned int DrawPatternPath(Image *image,DrawInfo *draw_info,
+  const char *name)
 {
   char
     pattern[MaxTextExtent];
 
   const ImageAttribute
-    *attribute;
+    *geometry,
+    *path;
 
   DrawInfo
     *clone_info;
 
+  ImageInfo
+    *image_info;
+
   unsigned int
     status;
 
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   assert(draw_info != (const DrawInfo *) NULL);
-  FormatString(pattern,"[%.1024s]",draw_info->clip_path);
-  attribute=GetImageAttribute(image,pattern);
-  if (attribute == (ImageAttribute *) NULL)
+  assert(name != (const char *) NULL);
+  FormatString(pattern,"[%.1024s]",name);
+  path=GetImageAttribute(image,pattern);
+  if (path == (ImageAttribute *) NULL)
     return(False);
+  FormatString(pattern,"[%.1024s-geometry]",name);
+  geometry=GetImageAttribute(image,pattern);
+  if (geometry == (ImageAttribute *) NULL)
+    return(False);
+  if (draw_info->tile)
+    DestroyImage(draw_info->tile);
+  image_info=CloneImageInfo((ImageInfo *) NULL);
+  image_info->size=AllocateString(geometry->value);
+  draw_info->tile=AllocateImage(image_info);
+  DestroyImageInfo(image_info);
   SetImage(draw_info->tile,OpaqueOpacity);
   if (draw_info->debug)
-    (void) fprintf(stdout,"\nbegin pattern-path %.1024s\n",
-      draw_info->pattern_path);
+    (void) fprintf(stdout,"\nbegin pattern-path %.1024s %.1024s\n",name,
+      geometry->value);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-  (void) CloneString(&clone_info->primitive,attribute->value);
-  (void) QueryColorDatabase("black",&clone_info->fill);
+  clone_info->tile=(Image *) NULL;
+  (void) CloneString(&clone_info->primitive,path->value);
   status=DrawImage(draw_info->tile,clone_info);
   DestroyDrawInfo(clone_info);
   if (draw_info->debug)
