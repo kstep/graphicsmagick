@@ -13,7 +13,7 @@ AUTOMAKE_OPTIONS = 1.9 subdir-objects dist-zip dist-bzip2 foreign
 
 topincludedir = @includedir@/GraphicsMagick
 
-AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/Magick++/lib
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_builddir)/ltdl -I$(top_srcdir) -I$(top_srcdir)/Magick++/lib -I$(top_srcdir)/ltdl
 
 MODULECOMMONFLAGS = -no-undefined -module -avoid-version
 
