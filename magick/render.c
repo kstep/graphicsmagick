@@ -3447,8 +3447,13 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
         x,y,&stroke_opacity);
       if (!draw_info->stroke_antialias)
         {
-          fill_opacity=fill_opacity > 0.50 ? 1.0 : 0.0;
-          stroke_opacity=stroke_opacity > 0.50 ? 1.0 : 0.0;
+          /* When stroke antialiasing is disabled, only draw for
+             opacities >= 0.99 in order to ensure that lines are not
+             drawn wider than requested. */
+          if (fill_opacity < 0.99)
+            fill_opacity=0.0;
+          if (stroke_opacity < 0.99)
+            stroke_opacity=0.0;
         }
       pattern=draw_info->fill_pattern;
       if (pattern != (Image *) NULL)

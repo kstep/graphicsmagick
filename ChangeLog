@@ -1,3 +1,8 @@
+2002-12-31  Cristy  <cristy@mystic.es.dupont.com>
+	* magick/command.c: Do not quantize CMYK (bug fix).
+	* magick/render.c: Ensure that stroke is not drawn wider than
+	requested when antialiasing is disabled (bug fix).
+
 2002-12-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* magick/image.c: For TransformRGBImage() and RGBTransformImage()
 	round values to int when creating tables rather than using scaling

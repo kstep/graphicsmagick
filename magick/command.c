@@ -3930,7 +3930,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             if (LocaleCompare("cmyk",option) == 0)
               {
                 (void) RGBTransformImage(*image,CMYKColorspace);
-                quantize_info.colorspace=CMYKColorspace;
+                /* Ignore request to quantize in CMYK colorspace */
+                quantize_info.colorspace=RGBColorspace;
               }
             if (LocaleCompare("gray",option) == 0)
               {
