@@ -120,7 +120,8 @@ static unsigned int IsVICAR(const unsigned char *magick,
 %
 %  The format of the ReadVICARImage method is:
 %
-%      Image *ReadVICARImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadVICARImage(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -134,7 +135,8 @@ static unsigned int IsVICAR(const unsigned char *magick,
 %
 %
 */
-static Image *ReadVICARImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadVICARImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   char
     keyword[MaxTextExtent],
