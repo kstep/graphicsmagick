@@ -477,32 +477,23 @@ MagickExport void MagickIncarnate(const char *path)
         Set client path.
       */
       filename=AllocateString(path);
-      p=filename+(Extent(filename)-1);
-      while (p > filename)
-      {
-        if (!IsBasenameSeparator(*p))
+      for (p=filename+(Extent(filename)-1); p > filename; p--)
+        if (IsBasenameSeparator(*(p-1)))
           {
-            p--;
-            continue;
+            *p='\0';
+            SetClientPath(filename);
+            (void) strcpy(filename,path+(p-filename));
+            break;
           }
-        *p='\0';
-        SetClientPath(filename);
-        (void) strcpy(filename,p+1);
-        break;
-      }
       /*
         Set client name.
       */
-      p=filename+(Extent(filename)-1);
-      while (p > filename)
-      {
+      for (p=filename+(Extent(filename)-1); p > filename; p--)
         if (*p == '.')
           {
             *p='\0';
             break;
           }
-        p--;
-      }
       SetClientName(filename);
       LiberateMemory((void **) &filename);
     }
