@@ -1902,17 +1902,7 @@ static void magick_font_map( wmfAPI* API, wmfFont* font)
       return;
     }
 
-  /* Look for exact full match first */
-  for ( type_info=type_info_base; type_info != 0; type_info=type_info->next)
-    {
-      if(LocaleCompare(WMF_FONT_NAME(font),type_info->description) == 0)
-        {
-          CloneString(&magick_font->ps_name,type_info->name);
-          break;
-        }
-    }
-
-  /* Look for a family-based best-match next */
+  /* Look for a family-based best-match */
   if(!magick_font->ps_name)
     {
       double
@@ -1924,24 +1914,41 @@ static void magick_font_map( wmfAPI* API, wmfFont* font)
       else
         target_weight = WMF_FONT_WEIGHT(font);
 
+      /* printf("Desired weight  = %i\n", WMF_FONT_WEIGHT(font)); */
       for ( type_info=type_info_base; type_info != 0; type_info=type_info->next )
         {
           if(LocaleCompare(WMF_FONT_NAME(font),type_info->family) == 0)
             {
               double
                 weight;
+
+              /* printf("Considering font %s\n", type_info->description); */
               
               if( WMF_FONT_ITALIC(font) && !(strstr(type_info->description,"Italic") ||
                                              strstr(type_info->description,"Oblique")) )
                 continue;
 
               weight = font_weight( type_info->description );
+              /* printf("Estimated weight =  %.10g\n", weight); */
 
               if( abs(weight - target_weight) < abs(best_weight - target_weight) )
                 {
                   best_weight = weight;
                   CloneString(&magick_font->ps_name,type_info->name);
                 }
+            }
+        }
+    }
+
+  /* Look for exact full match */
+  if(!magick_font->ps_name)
+    {
+      for ( type_info=type_info_base; type_info != 0; type_info=type_info->next)
+        {
+          if(LocaleCompare(WMF_FONT_NAME(font),type_info->description) == 0)
+            {
+              CloneString(&magick_font->ps_name,type_info->name);
+              break;
             }
         }
     }
@@ -1998,7 +2005,8 @@ static void magick_font_map( wmfAPI* API, wmfFont* font)
 
 #if 0
   printf("\nmagick_font_map\n");
-  printf("WMF_FONT_NAME:          = \"%s\"\n", WMF_FONT_NAME(font));
+  printf("WMF_FONT_NAME           = \"%s\"\n", WMF_FONT_NAME(font));
+  printf("WMF_FONT_WEIGHT         = %i\n",  WMF_FONT_WEIGHT(font));
   printf("WMF_FONT_PSNAME         = \"%s\"\n", WMF_FONT_PSNAME(font));
   fflush(stdout);
 #endif
