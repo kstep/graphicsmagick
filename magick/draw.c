@@ -2457,7 +2457,7 @@ MagickExport void DrawSetTextEncoding(DrawContext context, const char* encoding)
     {
         CloneString(&CurrentContext->encoding,encoding);
 
-      MvgPrintf(context, "encoding %s\n", encoding);
+      MvgPrintf(context, "encoding '%s'\n", encoding);
     }
 }
 
