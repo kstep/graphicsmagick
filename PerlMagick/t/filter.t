@@ -13,6 +13,8 @@ require 't/subroutines.pl';
 
 chdir 't' || die 'Cd failed';
 
+
+
 testFilterSignature('input.miff', 'Blur',
   q/0.0x1.0/,
   '66c8403de767bb48540fcf19e50ae61bb9346b39f744399fade43e28795c181d',
@@ -238,7 +240,7 @@ testFilterSignature('input.miff', 'Swirl',
 
 ++$test;
 testFilterSignature('input.miff', 'Threshold',
-  q/128/,
+  ($MaxRGB+1)/2,
   '36c9b367b84035869df118d2fc61cbd7060d419d8626c4147955c712bcab15c0',
   '40db28af0162a4abd3ee8a1094591cd7eb07463464d7c235e4c2f2ae40aa3686');
 

@@ -5,6 +5,35 @@
 #
 
 #
+# Retrieve quantum depth
+#
+sub quantumDepth ( ) {
+  my($depth,$image);
+  $image=Image::Magick->new;
+  $depth=$image->Get('depth');
+  undef $image;
+  return $depth;
+}
+
+#
+# Establish some global constants (MaxRGB, OpaqueOpacity, & QuantumDepth)
+#
+$QuantumDepth=quantumDepth();
+$OpaqueOpacity=0;
+if ($QuantumDepth == 8)
+  {
+    $MaxRGB=255;
+  }
+elsif ($QuantumDepth == 16)
+  {
+    $MaxRGB=65535;
+  }
+elsif ($QuantumDepth == 32)
+  {
+    $MaxRGB=4294967295;
+  }
+
+#
 # Test reading a 16-bit file in which two signatures are possible,
 # depending on whether 16-bit pixels data has been enabled
 #
@@ -514,7 +543,7 @@ sub testFilterSignature {
   warn "Readimage: $status" if "$status";
 
   $image->$filter($options);
-  # $image->write(filename=>"reference/filter/$filter.miff", compression=>'None');
+#$image->write(filename=>"reference/filter/$filter.miff", compression=>'None');
 
   $signature=$image->GetAttribute('signature');
   if ( defined( $signature ) ) {
@@ -570,7 +599,7 @@ sub testFilterCompare {
       $errorinfo = "$filter ($options): $status";
       goto COMPARE_RUNTIME_ERROR;
     }
-  # $srcimage->write(filename=>"reference/filter/$filter.miff", compression=>'None');
+#$srcimage->write(filename=>"reference/filter/$filter.miff", compression=>'None');
 
   $status=$refimage->ReadImage("$refimage_name");
   if ("$status")
@@ -578,6 +607,9 @@ sub testFilterCompare {
       $errorinfo = "Readimage ($refimage_name): $status";
       goto COMPARE_RUNTIME_ERROR;
     }
+
+  # FIXME: The following statement should not be needed.
+  $status=$refimage->Set(type=>'TrueColor');
 
   $srcimage->Compare($refimage);
 #  $status=$image->Compare($refimage);
@@ -587,18 +619,21 @@ sub testFilterCompare {
 #      goto COMPARE_RUNTIME_ERROR;
 #    }
 
+  $mean_error_per_pixel=0;
   $mean_error_per_pixel=$srcimage->GetAttribute('error');
   if ( !defined($mean_error_per_pixel) )
     {
       $errorinfo = "GetAttribute('error') returned undefined value!";
       goto COMPARE_RUNTIME_ERROR;
     }
+  $normalized_mean_error=0;
   $normalized_mean_error=$srcimage->GetAttribute('mean-error');
   if ( !defined($normalized_mean_error) )
     {
       $errorinfo = "GetAttribute('mean-error') returned undefined value!";
       goto COMPARE_RUNTIME_ERROR;
     }
+  $normalized_maximum_error=0;
   $normalized_maximum_error=$srcimage->GetAttribute('maximum-error');
   if ( ! defined($normalized_maximum_error) )
     {
