@@ -354,7 +354,7 @@ static unsigned int WriteOTBImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlobByte(image,image->columns);
       (void) WriteBlobByte(image,image->rows);
     }
-  (void) WriteBlobMSBShort(image,1);  /* depth */
+  (void) WriteBlobByte(image,1);  /* depth */
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);

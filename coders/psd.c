@@ -404,9 +404,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   PSDInfo
     psd_info;
 
-  Quantum
-    pixel;
-
   register long
     x;
 
@@ -421,15 +418,13 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     length,
     size;
 
-  unsigned char
-    *scanline;
-
   unsigned int
     packet_size,
     status;
 
   unsigned short
-    compression;
+    compression,
+    pixel;
 
   /*
     Open image file.
@@ -531,7 +526,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Layer and mask block.
       */
       size=ReadBlobMSBLong(image);
-      number_layers=ReadBlobMSBShort(image);
+      number_layers=(short) ReadBlobMSBShort(image);
       number_layers=AbsoluteValue(number_layers);
       layer_info=(LayerInfo *) AcquireMemory(number_layers*sizeof(LayerInfo));
       if (layer_info == (LayerInfo *) NULL)
@@ -645,62 +640,58 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           else
             if (layer_info[i].image->depth > 8)
               packet_size++;
-          scanline=(unsigned char *)
-            AcquireMemory(packet_size*layer_info[i].image->columns+1);
-          if (scanline == (unsigned char *) NULL)
-            ThrowReaderException(ResourceLimitWarning,
-              "Memory allocation failed",image);
           for (y=0; y < (long) layer_info[i].image->rows; y++)
           {
             q=GetImagePixels(layer_info[i].image,0,y,
               layer_info[i].image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
-            (void) ReadBlob(layer_info[i].image,packet_size*
-              layer_info[i].image->columns,(char *) scanline);
             indexes=GetIndexes(layer_info[i].image);
             for (x=0; x < (long) layer_info[i].image->columns; x++)
             {
-              pixel=scanline[x];
+              if (packet_size == 1)
+                pixel=UpScale(ReadBlobByte(layer_info[i].image));
+              else
+                pixel=XUpScale(ReadBlobMSBShort(layer_info[i].image));
               switch (layer_info[i].channel_info[j].type)
               {
                 case -1:
                 {
-                  q->opacity=MaxRGB-UpScale(pixel);
+                  q->opacity=MaxRGB-pixel;
                   break;
                 }
                 case 0:
                 {
-                  q->red=UpScale(pixel);
+                  q->red=pixel;
                   if (image->storage_class == PseudoClass)
                     {
-                      indexes[x]=pixel;
-                      *q=image->colormap[pixel];
+                      indexes[x]=DownScale(pixel);
+                      *q=image->colormap[indexes[x]];
                     }
                   break;
                 }
                 case 1:
                 {
                   if (image->storage_class == PseudoClass)
-                    q->opacity=UpScale(pixel);
+                    q->opacity=pixel;
                   else
-                    q->green=UpScale(pixel);
+                    q->green=pixel;
                   break;
                 }
                 case 2:
                 {
-                  q->blue=UpScale(pixel);
+                  q->blue=pixel;
                   break;
                 }
                 case 3:
                 {
-                  q->opacity=UpScale(pixel);
+                  q->opacity=pixel;
                   break;
                 }
                 case 4:
                 {
                   if (image->colorspace == CMYKColorspace)
-                    indexes[x]=UpScale(pixel);
+                    indexes[x]=pixel;
                   break;
                 }
                 default:
@@ -711,7 +702,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (!SyncImagePixels(layer_info[i].image))
               break;
           }
-          LiberateMemory((void **) &scanline);
         }
         *image->blob=(*layer_info[i].image->blob);
         image->file=layer_info[i].image->file;
@@ -808,61 +798,59 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       else
         if (image->depth > 8)
           packet_size++;
-      scanline=(unsigned char *) AcquireMemory(packet_size*image->columns);
-      if (scanline == (unsigned char *) NULL)
-        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-          image);
       for (i=0; i < psd_info.channels; i++)
       {
         for (y=0; y < (long) image->rows; y++)
         {
           q=GetImagePixels(image,0,y,image->columns,1);
-          count=ReadBlob(image,packet_size*image->columns,(char *) scanline);
-          if ((count == 0) || (q == (PixelPacket *) NULL))
+          if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
           for (x=0; x < (long) image->columns; x++)
           {
-            pixel=scanline[x];
+            if (packet_size == 1)
+              pixel=UpScale(ReadBlobByte(image));
+            else
+              pixel=XUpScale(ReadBlobMSBShort(image));
             switch (image->matte ? i-1 : i)
             {
               case -1:
               {
-                q->opacity=MaxRGB-UpScale(pixel);
+                q->opacity=MaxRGB-pixel;
                 break;
               }
               case 0:
               {
-                q->red=UpScale(pixel);
+                q->red=pixel;
                 if (image->storage_class == PseudoClass)
                   {
-                    indexes[x]=pixel;
-                    *q=image->colormap[pixel];
+                    indexes[x]=DownScale(pixel);
+                    *q=image->colormap[indexes[x]];
                   }
                 break;
               }
               case 1:
               {
                 if (image->storage_class == PseudoClass)
-                  q->opacity=UpScale(pixel);
+                  q->opacity=pixel;
                 else
-                  q->green=UpScale(pixel);
+                  q->green=pixel;
                 break;
               }
               case 2:
               {
-                q->blue=UpScale(pixel);
+                q->blue=pixel;
                 break;
               }
               case 3:
               {
-                q->opacity=UpScale(pixel);
+                q->opacity=pixel;
                 break;
               }
               case 4:
               {
                 if (image->colorspace == CMYKColorspace)
-                  *indexes=UpScale(pixel);
+                  *indexes=pixel;
                 break;
               }
               default:
@@ -874,7 +862,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
         }
       }
-      LiberateMemory((void **) &scanline);
     }
   if (image->colorspace == CMYKColorspace)
     {
