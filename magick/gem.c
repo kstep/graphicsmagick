@@ -264,7 +264,7 @@ MagickExport Quantum GenerateNoise(const Quantum pixel,
         beta=(double) (rand() & NoiseMask)/NoiseMask;
         alpha*=beta;
       }
-      value=i/SigmaPoisson;
+      value=Upscale(i/SigmaPoisson);
       break;
     }
   }
