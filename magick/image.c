@@ -2863,36 +2863,6 @@ MagickExport unsigned int GetNumberScenes(const Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%                                                                             %
-+   G e t P i x e l P a c k e t                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method GetPixelPacket initializes the PixelPacket structure.
-%
-%  The format of the GetPixelPacket method is:
-%
-%      void GetPixelPacket(PixelPacket *pixel)
-%
-%  A description of each parameter follows:
-%
-%    o pixel: Specifies a pointer to a PixelPacket structure.
-%
-%
-*/
-MagickExport void GetPixelPacket(PixelPacket *pixel)
-{
-  assert(pixel != (PixelPacket *) NULL);
-  memset(pixel,0,sizeof(PixelPacket));
-  pixel->opacity=TransparentOpacity;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
 +     I s G e o m e t r y                                                     %
 %                                                                             %
 %                                                                             %

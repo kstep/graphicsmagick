@@ -617,7 +617,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-unsigned int ImageIsGray(Image *image)
+static unsigned int ImageIsGray(Image *image)
 {
   register PixelPacket
     *p;
@@ -668,7 +668,7 @@ unsigned int ImageIsGray(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-unsigned int ImageIsMonochrome(Image *image)
+static unsigned int ImageIsMonochrome(Image *image)
 {
   register PixelPacket
     *p;

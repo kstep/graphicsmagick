@@ -901,6 +901,7 @@ extern MagickExport void
   UnregisterBIEImage(void),
   UnregisterBMPImage(void),
   UnregisterCMYKImage(void),
+  UnregisterCUTImage(void),
   UnregisterDCMImage(void),
   UnregisterDCXImage(void),
   UnregisterDIBImage(void),
