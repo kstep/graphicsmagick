@@ -2420,11 +2420,16 @@ MagickExport void SetPixelCacheMethods(AcquirePixelHandler acquire_pixel,
 */
 static unsigned int SyncCache(Image *image)
 {
+  CacheInfo
+    *cache_info;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (void *) NULL);
-  if ((image->storage_class != GetCacheClass(image->cache)) ||
-      (image->colorspace != GetCacheColorspace(image->cache)))
+  cache_info=(CacheInfo *) image->cache;
+  assert(cache_info->signature == MagickSignature);
+  if ((image->storage_class != cache_info->storage_class) ||
+      (image->colorspace != cache_info->colorspace))
     if (OpenCache(image) == False)
       return(False);
   return(True);
