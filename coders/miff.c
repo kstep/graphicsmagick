@@ -1254,14 +1254,14 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     */
     (void) WriteBlobString(image,"id=ImageMagick\n");
     if (image->storage_class == PseudoClass)
-      FormatString(buffer,"class=PseudoClass  colors=%u  matte=%s\n",
+      FormatString(buffer,"class=PseudoClass  colors=%u  matte=%.1024s\n",
         image->colors,image->matte ? "True" : "False");
     else
       if (image->colorspace == CMYKColorspace)
-        FormatString(buffer,"class=DirectClass  colorspace=CMYK  matte=%s\n",
+        FormatString(buffer,"class=DirectClass  colorspace=CMYK  matte=%.1024s\n",
           image->matte ? "True" : "False");
       else
-        FormatString(buffer,"class=DirectClass  matte=%s\n",
+        FormatString(buffer,"class=DirectClass  matte=%.1024s\n",
           image->matte ? "True" : "False");
     (void) WriteBlobString(image,buffer);
     *buffer='\0';
@@ -1392,7 +1392,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         */
         for (i=0; i < image->generic_profiles; i++)
         {
-          FormatString(buffer,"profile-%s=%u\n",
+          FormatString(buffer,"profile-%.1024s=%u\n",
             image->generic_profile[i].name == (char *) NULL ? "generic" :
             image->generic_profile[i].name,image->generic_profile[i].length);
           (void) WriteBlobString(image,buffer);

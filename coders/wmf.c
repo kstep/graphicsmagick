@@ -484,7 +484,7 @@ static void WmfCopyXpm(CSTRUCT *cstruct,
     buff[MaxTextExtent];
 
   /* image x,y width,height filename */
-  sprintf(buff, "image Copy %i,%i %i,%i XPM:%s\n",
+  sprintf(buff, "image Copy %i,%i %i,%i XPM:%.1024s\n",
           (int)dest_x,
           (int)dest_y,
           (int)dest_w,
@@ -1146,8 +1146,8 @@ static void WmfDrawText(CSTRUCT *cstruct, char *str, RECT *arect,
     strcpy(fontspec,"arial.ttf");
 
 
-  printf("facename=\"%s\", fontspec=\"%s\"\n", facename, fontspec);
-  sprintf(buff, "font %s\n", fontspec);
+  printf("facename=\"%.1024s\", fontspec=\"%.1024s\"\n", facename, fontspec);
+  sprintf(buff, "font %.1024s\n", fontspec);
   ExtendMVG(cstruct,buff);
 
   /* Compute gravity */
@@ -1189,7 +1189,7 @@ static void WmfDrawText(CSTRUCT *cstruct, char *str, RECT *arect,
     }
   if(*gravity!='\0')
     {
-      sprintf(buff, "gravity %s\n", gravity);
+      sprintf(buff, "gravity %.1024s\n", gravity);
       ExtendMVG(cstruct, buff);
     }
 
@@ -1211,7 +1211,7 @@ static void WmfDrawText(CSTRUCT *cstruct, char *str, RECT *arect,
 
   /* Render text */
   if(str!=NULL)
-    sprintf(buff, "text 0,0 \"%s\"\n",str);
+    sprintf(buff, "text 0,0 \"%.1024s\"\n",str);
   ExtendMVG(cstruct, buff);
 
   ExtendMVG(cstruct, "pop graphic-context\n");
@@ -1600,7 +1600,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   GetExceptionInfo(exception);
 
-/*       printf("magick=%s\n", image_info->magick); */
+/*       printf("magick=%.1024s\n", image_info->magick); */
   /* Return WFM hatch images */
 /*   if(LocaleCompare(image_info->magick,"WMF") != 0) */
 /*     { */
@@ -1708,7 +1708,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 image_info->background_color.blue,
                 image_info->background_color.opacity);
       else
-        sprintf(clone_info->filename,"TILE:%s",image_info->texture);
+        sprintf(clone_info->filename,"TILE:%.1024s",image_info->texture);
       GetExceptionInfo(exception);
       DestroyImage(image);
       image = ReadImage( clone_info, exception );

@@ -641,7 +641,7 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
     count--;
     for (j=0; j < number_files; j++)
     {
-      FormatString(filename,"%.1024s%s%.1024s",working_directory,
+      FormatString(filename,"%.1024s%.1024s%.1024s",working_directory,
         DirectorySeparator,filelist[j]);
       if (IsDirectory(filename) != 0)
         {

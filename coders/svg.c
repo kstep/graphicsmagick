@@ -430,11 +430,11 @@ static void SVGInternalSubset(void *context,const xmlChar *name,
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
     {
-      (void) fprintf(stdout,"  SAX.internalSubset(%s",name);
+      (void) fprintf(stdout,"  SAX.internalSubset(%.1024s",name);
       if (external_id != NULL)
-        (void) fprintf(stdout,"  , %s",external_id);
+        (void) fprintf(stdout,"  , %.1024s",external_id);
       if (system_id != NULL)
-        (void) fprintf(stdout,"  , %s",system_id);
+        (void) fprintf(stdout,"  , %.1024s",system_id);
       (void) fprintf(stdout,"  \n");
     }
   (void) xmlCreateIntSubset(svg_info->document,name,external_id,system_id);
@@ -460,11 +460,11 @@ static xmlParserInputPtr SVGResolveEntity(void *context,
     {
       (void) fprintf(stdout,"  SAX.resolveEntity(");
       if (public_id != NULL)
-        (void) fprintf(stdout,"  %s",(char *) public_id);
+        (void) fprintf(stdout,"  %.1024s",(char *) public_id);
       else
         (void) fprintf(stdout,"   ");
       if (system_id != NULL)
-        (void) fprintf(stdout,"  , %s)\n",(char *) system_id);
+        (void) fprintf(stdout,"  , %.1024s)\n",(char *) system_id);
       else
         (void) fprintf(stdout,"  , )\n");
     }
@@ -483,7 +483,7 @@ static xmlEntityPtr SVGGetEntity(void *context,const xmlChar *name)
   */
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
-    (void) fprintf(stdout,"  SAX.SVGGetEntity(%s)\n",name);
+    (void) fprintf(stdout,"  SAX.SVGGetEntity(%.1024s)\n",name);
   return(xmlGetDocEntity(svg_info->document,name));
 }
 
@@ -497,7 +497,7 @@ static xmlEntityPtr SVGGetParameterEntity(void *context,const xmlChar *name)
   */
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
-    (void) fprintf(stdout,"  SAX.getParameterEntity(%s)\n",name);
+    (void) fprintf(stdout,"  SAX.getParameterEntity(%.1024s)\n",name);
   return(xmlGetParameterEntity(svg_info->document,name));
 }
 
@@ -512,7 +512,7 @@ static void SVGEntityDeclaration(void *context,const xmlChar *name,int type,
   */
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
-    (void) fprintf(stdout,"  SAX.entityDecl(%s, %d, %s, %s, %s)\n",name,type,
+    (void) fprintf(stdout,"  SAX.entityDecl(%.1024s, %d, %.1024s, %.1024s, %.1024s)\n",name,type,
       public_id ? (char *) public_id : "none",
       system_id ? (char *) system_id : "none",content);
   if (svg_info->parser->inSubset == 1)
@@ -543,7 +543,7 @@ void SVGAttributeDeclaration(void *context,const xmlChar *element,
   */
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
-    (void) fprintf(stdout,"  SAX.attributeDecl(%s, %s, %d, %d, %s, ...)\n",
+    (void) fprintf(stdout,"  SAX.attributeDecl(%.1024s, %.1024s, %d, %d, %.1024s, ...)\n",
       element,name,type,value,default_value);
   fullname=(xmlChar *) NULL;
   prefix=(xmlChar *) NULL;
@@ -578,7 +578,7 @@ static void SVGElementDeclaration(void *context,const xmlChar *name,int type,
   */
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
-    (void) fprintf(stdout,"  SAX.elementDecl(%s, %d, ...)\n",name,type);
+    (void) fprintf(stdout,"  SAX.elementDecl(%.1024s, %d, ...)\n",name,type);
   parser=svg_info->parser;
   if (parser->inSubset == 1)
     (void) xmlAddElementDecl(&parser->vctxt,svg_info->document->intSubset,
@@ -603,7 +603,7 @@ static void SVGNotationDeclaration(void *context,const xmlChar *name,
   */
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
-    (void) fprintf(stdout,"  SAX.notationDecl(%s, %s, %s)\n",(char *) name,
+    (void) fprintf(stdout,"  SAX.notationDecl(%.1024s, %.1024s, %.1024s)\n",(char *) name,
       public_id ? (char *) public_id : "none",
       system_id ? (char *) system_id : "none");
   parser=svg_info->parser;
@@ -627,7 +627,7 @@ static void SVGUnparsedEntityDeclaration(void *context,const xmlChar *name,
   */
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
-    (void) fprintf(stdout,"  SAX.unparsedEntityDecl(%s, %s, %s, %s)\n",
+    (void) fprintf(stdout,"  SAX.unparsedEntityDecl(%.1024s, %.1024s, %.1024s, %.1024s)\n",
       (char *) name,public_id ? (char *) public_id : "none",
       system_id ? (char *) system_id : "none",(char *) notation);
   xmlAddDocEntity(svg_info->document,name,XML_EXTERNAL_GENERAL_UNPARSED_ENTITY,
@@ -727,7 +727,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
   */
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
-    (void) fprintf(stdout,"  SAX.startElement(%s",(char *) name);
+    (void) fprintf(stdout,"  SAX.startElement(%.1024s",(char *) name);
   switch (*name)
   {
     case 'C':
@@ -857,8 +857,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
       value=(const char *) attributes[i+1];
       if (svg_info->verbose)
         {
-          (void) fprintf(stdout,"  , %s='",keyword);
-          (void) fprintf(stdout,"  %s'",value);
+          (void) fprintf(stdout,"  , %.1024s='",keyword);
+          (void) fprintf(stdout,"  %.1024s'",value);
         }
       switch (*keyword)
       {
@@ -878,7 +878,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"clip-path") == 0)
             {
-              (void) fprintf(svg_info->file,"clip-path %s\n",value);
+              (void) fprintf(svg_info->file,"clip-path %.1024s\n",value);
               break;
             }
           if (LocaleCompare(keyword,"clipPathUnits") == 0)
@@ -920,20 +920,20 @@ static void SVGStartElement(void *context,const xmlChar *name,
             {
               if (LocaleCompare(value,"currentColor") == 0)
                 {
-                  (void) fprintf(svg_info->file,"fill %s\n",color);
+                  (void) fprintf(svg_info->file,"fill %.1024s\n",color);
                   break;
                 }
-              (void) fprintf(svg_info->file,"fill %s\n",value);
+              (void) fprintf(svg_info->file,"fill %.1024s\n",value);
               break;
             }
           if (LocaleCompare(keyword,"fillcolor") == 0)
             {
-              (void) fprintf(svg_info->file,"fill %s\n",value);
+              (void) fprintf(svg_info->file,"fill %.1024s\n",value);
               break;
             }
           if (LocaleCompare(keyword,"fill-rule") == 0)
             {
-              (void) fprintf(svg_info->file,"fill-rule %s\n",value);
+              (void) fprintf(svg_info->file,"fill-rule %.1024s\n",value);
               break;
             }
           if (LocaleCompare(keyword,"fill-opacity") == 0)
@@ -1079,10 +1079,10 @@ static void SVGStartElement(void *context,const xmlChar *name,
             {
               if (LocaleCompare(value,"currentColor") == 0)
                 {
-                  (void) fprintf(svg_info->file,"stroke %s\n",color);
+                  (void) fprintf(svg_info->file,"stroke %.1024s\n",color);
                   break;
                 }
-              (void) fprintf(svg_info->file,"stroke %s\n",value);
+              (void) fprintf(svg_info->file,"stroke %.1024s\n",value);
               break;
             }
           if (LocaleCompare(keyword,"stroke-antialiasing") == 0)
@@ -1093,27 +1093,27 @@ static void SVGStartElement(void *context,const xmlChar *name,
             }
           if (LocaleCompare(keyword,"stroke-dasharray") == 0)
             {
-              (void) fprintf(svg_info->file,"stroke-dasharray %s\n",value);
+              (void) fprintf(svg_info->file,"stroke-dasharray %.1024s\n",value);
               break;
             }
           if (LocaleCompare(keyword,"stroke-dashoffset") == 0)
             {
-              (void) fprintf(svg_info->file,"stroke-dashoffset %s\n",value);
+              (void) fprintf(svg_info->file,"stroke-dashoffset %.1024s\n",value);
               break;
             }
           if (LocaleCompare(keyword,"stroke-linecap") == 0)
             {
-              (void) fprintf(svg_info->file,"stroke-linecap %s\n",value);
+              (void) fprintf(svg_info->file,"stroke-linecap %.1024s\n",value);
               break;
             }
           if (LocaleCompare(keyword,"stroke-linejoin") == 0)
             {
-              (void) fprintf(svg_info->file,"stroke-linejoin %s\n",value);
+              (void) fprintf(svg_info->file,"stroke-linejoin %.1024s\n",value);
               break;
             }
           if (LocaleCompare(keyword,"stroke-miterlimit") == 0)
             {
-              (void) fprintf(svg_info->file,"stroke-miterlimit %s\n",value);
+              (void) fprintf(svg_info->file,"stroke-miterlimit %.1024s\n",value);
               break;
             }
           if (LocaleCompare(keyword,"stroke-opacity") == 0)
@@ -1138,7 +1138,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 keyword=(char *) tokens[j];
                 value=(char *) tokens[j+1];
                 if (svg_info->verbose)
-                  (void) fprintf(stdout,"    %s: %s\n",keyword,value);
+                  (void) fprintf(stdout,"    %.1024s: %.1024s\n",keyword,value);
                 switch (*keyword)
                 {
                   case 'C':
@@ -1146,7 +1146,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   {
                      if (LocaleCompare(keyword,"clip-path") == 0)
                        {
-                         (void) fprintf(svg_info->file,"clip-path %s\n",value);
+                         (void) fprintf(svg_info->file,"clip-path %.1024s\n",value);
                          break;
                        }
                      if (LocaleCompare(keyword,"clipPathUnits") == 0)
@@ -1168,20 +1168,20 @@ static void SVGStartElement(void *context,const xmlChar *name,
                       {
                          if (LocaleCompare(value,"currentColor") == 0)
                            {
-                             (void) fprintf(svg_info->file,"fill %s\n",color);
+                             (void) fprintf(svg_info->file,"fill %.1024s\n",color);
                              break;
                            }
-                        (void) fprintf(svg_info->file,"fill %s\n",value);
+                        (void) fprintf(svg_info->file,"fill %.1024s\n",value);
                         break;
                       }
                     if (LocaleCompare(keyword,"fillcolor") == 0)
                       {
-                        (void) fprintf(svg_info->file,"fill %s\n",value);
+                        (void) fprintf(svg_info->file,"fill %.1024s\n",value);
                         break;
                       }
                     if (LocaleCompare(keyword,"fill-rule") == 0)
                       {
-                        (void) fprintf(svg_info->file,"fill-rule %s\n",value);
+                        (void) fprintf(svg_info->file,"fill-rule %.1024s\n",value);
                         break;
                       }
                     if (LocaleCompare(keyword,"fill-opacity") == 0)
@@ -1241,10 +1241,10 @@ static void SVGStartElement(void *context,const xmlChar *name,
                       {
                          if (LocaleCompare(value,"currentColor") == 0)
                            {
-                             (void) fprintf(svg_info->file,"stroke %s\n",color);
+                             (void) fprintf(svg_info->file,"stroke %.1024s\n",color);
                              break;
                            }
-                        (void) fprintf(svg_info->file,"stroke %s\n",value);
+                        (void) fprintf(svg_info->file,"stroke %.1024s\n",value);
                         break;
                       }
                     if (LocaleCompare(keyword,"stroke-antialiasing") == 0)
@@ -1255,31 +1255,31 @@ static void SVGStartElement(void *context,const xmlChar *name,
                       }
                     if (LocaleCompare(keyword,"stroke-dasharray") == 0)
                       {
-                        (void) fprintf(svg_info->file,"stroke-dasharray %s\n",
+                        (void) fprintf(svg_info->file,"stroke-dasharray %.1024s\n",
                           value);
                         break;
                       }
                     if (LocaleCompare(keyword,"stroke-dashoffset") == 0)
                       {
-                        (void) fprintf(svg_info->file,"stroke-dashoffset %s\n",
+                        (void) fprintf(svg_info->file,"stroke-dashoffset %.1024s\n",
                           value);
                         break;
                       }
                     if (LocaleCompare(keyword,"stroke-linecap") == 0)
                       {
-                        (void) fprintf(svg_info->file,"stroke-linecap %s\n",
+                        (void) fprintf(svg_info->file,"stroke-linecap %.1024s\n",
                           value);
                         break;
                       }
                     if (LocaleCompare(keyword,"stroke-linejoin") == 0)
                       {
-                        (void) fprintf(svg_info->file,"stroke-linejoin %s\n",
+                        (void) fprintf(svg_info->file,"stroke-linejoin %.1024s\n",
                           value);
                         break;
                       }
                     if (LocaleCompare(keyword,"stroke-miterlimit") == 0)
                       {
-                        (void) fprintf(svg_info->file,"stroke-miterlimit %s\n",
+                        (void) fprintf(svg_info->file,"stroke-miterlimit %.1024s\n",
                           value);
                         break;
                       }
@@ -1386,7 +1386,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 keyword=(char *) tokens[j];
                 value=(char *) tokens[j+1];
                 if (svg_info->verbose)
-                  (void) fprintf(stdout,"    %s: %s\n",keyword,value);
+                  (void) fprintf(stdout,"    %.1024s: %.1024s\n",keyword,value);
                 current=transform;
                 IdentityAffine(&affine);
                 switch (*keyword)
@@ -1595,16 +1595,16 @@ static void SVGStartElement(void *context,const xmlChar *name,
       }
       if (font_family != (char *) NULL)
         {
-          (void) fprintf(svg_info->file,"font %s",font_family);
+          (void) fprintf(svg_info->file,"font %.1024s",font_family);
           if ((font_weight != (char *) NULL) && (font_style != (char *) NULL))
-            (void) fprintf(svg_info->file,"-%s%s",font_weight,
+            (void) fprintf(svg_info->file,"-%.1024s%.1024s",font_weight,
               font_style);
           else
             if (font_weight != (char *) NULL)
-              (void) fprintf(svg_info->file,"-%s",font_weight);
+              (void) fprintf(svg_info->file,"-%.1024s",font_weight);
             else
               if (font_style != (char *) NULL)
-                (void) fprintf(svg_info->file,"-%s",font_style);
+                (void) fprintf(svg_info->file,"-%.1024s",font_style);
           (void) fprintf(svg_info->file,"\n");
         }
       if (font_family != (char *) NULL)
@@ -1680,7 +1680,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
   */
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
-    (void) fprintf(stdout,"  SAX.endElement(%s)\n",(char *) name);
+    (void) fprintf(stdout,"  SAX.endElement(%.1024s)\n",(char *) name);
   if (svg_info->text != (char *) NULL)
     Strip(svg_info->text);
   switch (*name)
@@ -1756,7 +1756,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
     {
       if (LocaleCompare((char *) name,"image") == 0)
         {
-          (void) fprintf(svg_info->file,"image Copy %g,%g %g,%g %s\n",
+          (void) fprintf(svg_info->file,"image Copy %g,%g %g,%g %.1024s\n",
             svg_info->bounds.x,svg_info->bounds.y,svg_info->bounds.width,
             svg_info->bounds.height,svg_info->url);
           (void) fprintf(svg_info->file,"pop graphic-context\n");
@@ -1782,19 +1782,19 @@ static void SVGEndElement(void *context,const xmlChar *name)
     {
       if (LocaleCompare((char *) name,"path") == 0)
         {
-          (void) fprintf(svg_info->file,"path '%s'\n",svg_info->vertices);
+          (void) fprintf(svg_info->file,"path '%.1024s'\n",svg_info->vertices);
           (void) fprintf(svg_info->file,"pop graphic-context\n");
           break;
         }
       if (LocaleCompare((char *) name,"polygon") == 0)
         {
-          (void) fprintf(svg_info->file,"polygon %s\n",svg_info->vertices);
+          (void) fprintf(svg_info->file,"polygon %.1024s\n",svg_info->vertices);
           (void) fprintf(svg_info->file,"pop graphic-context\n");
           break;
         }
       if (LocaleCompare((char *) name,"polyline") == 0)
         {
-          (void) fprintf(svg_info->file,"polyline %s\n",svg_info->vertices);
+          (void) fprintf(svg_info->file,"polyline %.1024s\n",svg_info->vertices);
           (void) fprintf(svg_info->file,"pop graphic-context\n");
           break;
         }
@@ -1849,12 +1849,12 @@ static void SVGEndElement(void *context,const xmlChar *name)
             break;
           if (strchr(svg_info->text,'\'') != (char *) NULL)
             {
-              (void) fprintf(svg_info->file,"text %g,%g \"%s\"\n",
+              (void) fprintf(svg_info->file,"text %g,%g \"%.1024s\"\n",
                 svg_info->bounds.x,svg_info->bounds.y,svg_info->text);
               (void) fprintf(svg_info->file,"pop graphic-context\n");
               break;
             }
-          (void) fprintf(svg_info->file,"text %g,%g '%s'\n",svg_info->bounds.x,
+          (void) fprintf(svg_info->file,"text %g,%g '%.1024s'\n",svg_info->bounds.x,
             svg_info->bounds.y,svg_info->text);
           (void) fprintf(svg_info->file,"pop graphic-context\n");
           break;
@@ -1925,7 +1925,7 @@ static void SVGReference(void *context,const xmlChar *name)
   */
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
-    (void) fprintf(stdout,"  SAX.reference(%s)\n",name);
+    (void) fprintf(stdout,"  SAX.reference(%.1024s)\n",name);
   parser=svg_info->parser;
   if (*name == '#')
     xmlAddChild(parser->node,xmlNewCharRef(svg_info->document,name));
@@ -1958,7 +1958,7 @@ static void SVGProcessingInstructions(void *context,const xmlChar *target,
   */
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
-    (void) fprintf(stdout,"  SAX.processingInstruction(%s, %s)\n",(char *) target,
+    (void) fprintf(stdout,"  SAX.processingInstruction(%.1024s, %.1024s)\n",(char *) target,
       (char *) data);
 }
 
@@ -1972,7 +1972,7 @@ static void SVGComment(void *context,const xmlChar *value)
   */
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
-    (void) fprintf(stdout,"  SAX.comment(%s)\n",value);
+    (void) fprintf(stdout,"  SAX.comment(%.1024s)\n",value);
   CloneString(&svg_info->comment,(char *) value);
 }
 
@@ -2088,11 +2088,11 @@ static void SVGExternalSubset(void *context,const xmlChar *name,
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
     {
-      (void) fprintf(stdout,"  SAX.InternalSubset(%s",name);
+      (void) fprintf(stdout,"  SAX.InternalSubset(%.1024s",name);
       if (external_id != NULL)
-        (void) fprintf(stdout,"  , %s",external_id);
+        (void) fprintf(stdout,"  , %.1024s",external_id);
       if (system_id != NULL)
-        (void) fprintf(stdout,"  , %s",system_id);
+        (void) fprintf(stdout,"  , %.1024s",system_id);
       (void) fprintf(stdout,"\n");
     }
   parser=svg_info->parser;
@@ -2728,7 +2728,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
               for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
                 value[x]=(*q++);
             value[x]='\0';
-            FormatString(buffer,"clip-path:%s;",value);
+            FormatString(buffer,"clip-path:%.1024s;",value);
             WriteBlobString(image,buffer);
             break;
           }
@@ -2753,7 +2753,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
-            FormatString(buffer,"text-decoration:%s;",value);
+            FormatString(buffer,"text-decoration:%.1024s;",value);
             WriteBlobString(image,buffer);
             break;
           }
@@ -2783,7 +2783,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
               for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
                 value[x]=(*q++);
             value[x]='\0';
-            FormatString(buffer,"fill:%s;",value);
+            FormatString(buffer,"fill:%.1024s;",value);
             WriteBlobString(image,buffer);
             break;
           }
@@ -2792,7 +2792,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
-            FormatString(buffer,"fill-rule:%s;",value);
+            FormatString(buffer,"fill-rule:%.1024s;",value);
             WriteBlobString(image,buffer);
             break;
           }
@@ -2807,7 +2807,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
-            FormatString(buffer,"font-family:%s;",value);
+            FormatString(buffer,"font-family:%.1024s;",value);
             WriteBlobString(image,buffer);
             break;
           }
@@ -3010,7 +3010,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
               for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
                 value[x]=(*q++);
             value[x]='\0';
-            FormatString(buffer,"stroke:%s;",value);
+            FormatString(buffer,"stroke:%.1024s;",value);
             WriteBlobString(image,buffer);
             break;
           }
@@ -3036,7 +3036,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
-            FormatString(buffer,"stroke-dasharray:%s;",value);
+            FormatString(buffer,"stroke-dasharray:%.1024s;",value);
             WriteBlobString(image,buffer);
             break;
           }
@@ -3051,7 +3051,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
-            FormatString(buffer,"stroke-linecap:%s;",value);
+            FormatString(buffer,"stroke-linecap:%.1024s;",value);
             WriteBlobString(image,buffer);
             break;
           }
@@ -3060,7 +3060,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
-            FormatString(buffer,"stroke-linejoin:%s;",value);
+            FormatString(buffer,"stroke-linejoin:%.1024s;",value);
             WriteBlobString(image,buffer);
             break;
           }
@@ -3542,7 +3542,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             primitive_info[j].text[q-p]='\0';
           }
         (void) FormatString(buffer,"  <image x=\"%g\" y=\"%g\" "
-          "width=\"%g\" height=\"%g\" xlink:href=\"%s\"/>\n",
+          "width=\"%g\" height=\"%g\" xlink:href=\"%.1024s\"/>\n",
           primitive_info[j].point.x,primitive_info[j].point.y,
           primitive_info[j+1].point.x,primitive_info[j+1].point.y,
           primitive_info[j].text);

@@ -2018,7 +2018,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
               {
                 for (j=0; textlist[j] != (char *) NULL; j++)
                 {
-                  (void) fprintf(file,"  %s\n",textlist[j]);
+                  (void) fprintf(file,"  %.1024s\n",textlist[j]);
                   LiberateMemory((void **) &textlist[j]);
                 }
                 LiberateMemory((void **) &textlist);
@@ -2176,7 +2176,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           if (*attribute->key == '[')
             continue;
           (void) fprintf(file,"  %.1024s:\n",attribute->key);
-          (void) fprintf(file,"%s\n",attribute->value);
+          (void) fprintf(file,"%.1024s\n",attribute->value);
         }
         DestroyImage(tile);
       }
@@ -2191,7 +2191,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     if (*attribute->key == '[')
       continue;
     (void) fprintf(file,"  %.1024s: ",attribute->key);
-    (void) fprintf(file,"%s\n",attribute->value);
+    (void) fprintf(file,"%.1024s\n",attribute->value);
   }
   if (image->taint)
     (void) fprintf(file,"  Tainted: True\n");

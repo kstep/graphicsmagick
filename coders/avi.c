@@ -409,7 +409,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
       chunk_size++;
     if (image_info->verbose)
       {
-        (void) fprintf(stdout,"AVI cid %s\n",id);
+        (void) fprintf(stdout,"AVI cid %.1024s\n",id);
         (void) fprintf(stdout,"  chunk size %u\n",chunk_size);
       }
     if ((LocaleCompare(id,"00db") == 0) || (LocaleCompare(id,"00dc") == 0))
@@ -676,7 +676,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         (void) ReadBlob(image,4,id);
         if (image_info->verbose)
-          (void) fprintf(stdout,"  List type %s\n",id);
+          (void) fprintf(stdout,"  List type %.1024s\n",id);
         continue;
       }
     if (LocaleCompare(id,"RIFF") == 0)
@@ -686,7 +686,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         (void) ReadBlob(image,4,id);
         if (image_info->verbose)
-          (void) fprintf(stdout,"  RIFF form type %s\n",id);
+          (void) fprintf(stdout,"  RIFF form type %.1024s\n",id);
         continue;
       }
     if (LocaleCompare(id,"strf") == 0)
@@ -745,7 +745,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for ( ; chunk_size > 0; chunk_size--)
               (void) ReadBlobByte(image);
             if (image_info->verbose)
-              (void) fprintf(stdout,"Video compression: %s\n",
+              (void) fprintf(stdout,"Video compression: %.1024s\n",
                 bmp_info.compression);
             continue;
           }
@@ -774,7 +774,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (chunk_size-=48; chunk_size > 0; chunk_size--)
           (void) ReadBlobByte(image);
         if (image_info->verbose)
-          (void) fprintf(stdout,"AVI Test handler: %s\n",
+          (void) fprintf(stdout,"AVI Test handler: %.1024s\n",
             stream_info.data_handler);
         continue;
       }

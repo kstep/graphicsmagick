@@ -406,7 +406,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         jpeg_image=CloneImage(image,0,0,True,&image->exception);
         if (jpeg_image == (Image *) NULL)
           ThrowWriterException(DelegateWarning,"Unable to clone image",image);
-        (void) FormatString(jpeg_image->filename,"jpeg:%s",filename);
+        (void) FormatString(jpeg_image->filename,"jpeg:%.1024s",filename);
         status=WriteImage(image_info,jpeg_image);
         DestroyImage(jpeg_image);
         if (status == False)

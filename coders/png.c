@@ -1150,7 +1150,7 @@ static void PNGErrorHandler(png_struct *ping,png_const_charp message)
 
   image=(Image *) ping->error_ptr;
 #ifdef PNG_DEBUG
-  printf("libpng-%s error: %s\n", PNG_LIBPNG_VER_STRING, message);
+  printf("libpng-%.1024s error: %.1024s\n", PNG_LIBPNG_VER_STRING, message);
 #endif
   ThrowException(&image->exception,DelegateWarning,message,(char *) NULL);
   longjmp(ping->jmpbuf,1);
@@ -1162,7 +1162,7 @@ static void PNGWarningHandler(png_struct *ping,png_const_charp message)
     *image;
 
 #ifdef PNG_DEBUG
-  printf("libpng-%s warning: %s\n", PNG_LIBPNG_VER_STRING, message);
+  printf("libpng-%.1024s warning: %.1024s\n", PNG_LIBPNG_VER_STRING, message);
 #endif
   image=(Image *) ping->error_ptr;
   ThrowException(&image->exception,DelegateWarning,message,(char *) NULL);
@@ -1288,7 +1288,7 @@ png_read_raw_profile(Image *image, const ImageInfo *image_info,
        image->generic_profile[i].info=info;
        image->generic_profiles++;
        if (image_info->verbose)
-         printf(" Found a generic profile, type %s\n", &text[ii].key[17]);
+         printf(" Found a generic profile, type %.1024s\n", &text[ii].key[17]);
      }
    return True;
 }
@@ -4143,7 +4143,7 @@ png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
 #endif
    if (image_info->verbose)
      {
-     printf("writing raw profile: type=%s, length=%lu\n",
+     printf("writing raw profile: type=%.1024s, length=%lu\n",
        profile_type, length);
      }
 #if (PNG_LIBPNG_VER > 10005)

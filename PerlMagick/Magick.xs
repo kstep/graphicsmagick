@@ -693,7 +693,7 @@ static void errorhandler(const ExceptionType error,const char *message,
   error_number=errno;
   errno=0;
   text=AllocateString(message);
-  FormatString(text,"Exception %d: %.1024s%s%.1024s%s%s%.1024s%s",error,
+  FormatString(text,"Exception %d: %.1024s%.1024s%.1024s%.1024s%.1024s%.1024s%.1024s",error,
     (message ? message : "ERROR"),
     qualifier ? " (" : "",qualifier ? qualifier : "",qualifier ? ")" : "",
     error_number ? " [" : "",error_number ? strerror(error_number) : "",
@@ -1838,7 +1838,7 @@ static void warninghandler(const ExceptionType warning,const char *message,
   if (!message)
     return;
   text=AllocateString(message);
-  FormatString(text,"Warning %d: %.1024s%s%.1024s%s%s%.64s%s",warning,
+  FormatString(text,"Warning %d: %.1024s%.1024s%.1024s%.1024s%.1024s%.64s%.1024s",warning,
     message,qualifier ? " (" : "",qualifier ? qualifier : "",
     qualifier? ")" : "",error_number ? " [" : "",
     error_number ? strerror(error_number) : "",error_number ? "]" : "");

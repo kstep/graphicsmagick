@@ -533,7 +533,7 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
   AcquireSemaphore(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
     if (p->stealth != True)
-      (void) fprintf(file,"%10s%c  %c%c%c  %s\n",p->tag ? p->tag : "",
+      (void) fprintf(file,"%10s%c  %c%c%c  %.1024s\n",p->tag ? p->tag : "",
         p->blob_support ? '*' : ' ',p->decoder ? 'r' : '-',
         p->encoder ? 'w' : '-',p->encoder && p->adjoin ? '+' : '-',
         p->description ? p->description : "");
