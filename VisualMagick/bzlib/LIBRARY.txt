@@ -5,4 +5,7 @@ EXCLUDE = dlltest.c
 EXCLUDE = bzip2recover.c
 EXCLUDE = bzip2.c
 EXCLUDE = libbz2.def
+EXCLUDE = mk251.c
+EXCLUDE = spewG.c
+EXCLUDE = unzcrash.c
 SOURCE = bzlib.rc
