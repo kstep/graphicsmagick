@@ -3910,7 +3910,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleNCompare("-fuzz",option,3) == 0)
           {
-            (*image)->StringToDouble=atof(argv[++i],MaxRGB);
+            (*image)->fuzz=StringToDouble(argv[++i],MaxRGB);
             continue;
           }
         if (LocaleCompare("-font",option) == 0)
