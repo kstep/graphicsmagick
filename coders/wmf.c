@@ -1149,16 +1149,18 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
       
       if (GetTypeMetrics(image, &draw_info, &metrics) != False)
         {
-#if !defined(HasWMFlite)
           /* Center the text if it is not yet centered and should be */
           if ((WMF_DC_TEXTALIGN(draw_text->dc) & TA_CENTER))
             {
               double
                 text_width = metrics.width * (ddata->scale_y / ddata->scale_x);
               
+#if defined(HasWMFlite)
+              point.x -= text_width / 2;
+#else
               point.x += bbox_width / 2 - text_width / 2;
-            }
 #endif
+            }
         }
     }
 
@@ -1323,7 +1325,7 @@ if(draw_text->flags)
   /* Restore graphic context */
   magick_mvg_printf(API, "pop graphic-context\n");
 
-#if 1
+#if 0
   magick_mvg_printf(API, "push graphic-context\n");
   magick_mvg_printf(API, "stroke red\n");
   magick_mvg_printf(API, "fill none\n");
@@ -1769,17 +1771,41 @@ static double magick_font_pointsize( wmfAPI* API, wmfFont* font, char* str, doub
 
   if (GetTypeMetrics(image, &draw_info, &metrics) != False)
     {
-      pointsize = (font_height *
-        ((double) font_height / (metrics.ascent + AbsoluteValue(metrics.descent))));
 
+      if(strlen(str) == 1)
+        {
+          pointsize = (font_height *
+                       ( font_height / (metrics.ascent + AbsoluteValue(metrics.descent))));
+          draw_info.pointsize = pointsize;
+          if (GetTypeMetrics(image, &draw_info, &metrics) != False)
+            pointsize *= (font_height / ( metrics.ascent + AbsoluteValue(metrics.descent)));
+        }
+      else
+        {
+          pointsize = (font_height * (font_height / (metrics.height)));
+          draw_info.pointsize = pointsize;
+          if (GetTypeMetrics(image, &draw_info, &metrics) != False)
+            pointsize *= (font_height / metrics.height);
+          
+        }
+
+
+#if 0
       draw_info.pointsize = pointsize;
       if (GetTypeMetrics(image, &draw_info, &metrics) != False)
         pointsize *= (font_height / (metrics.ascent + AbsoluteValue(metrics.descent)));
-      pointsize *= 1.068966; /* Magic number computed through trial and error */
+      pointsize *= 1.114286; /* Magic number computed through trial and error */
+#endif
     }
 #if 0
   printf("String    = %s\n", str);
   printf("Font      = %s\n", WMF_FONT_PSNAME(font));
+  printf("lfHeight  = %.10g\n", font_height);
+  printf("bounds    = %.10g,%.10g %.10g,%.10g\n", metrics.bounds.x1, metrics.bounds.y1,
+         metrics.bounds.x2,metrics.bounds.y2);
+  printf("ascent    = %.10g\n", metrics.ascent);
+  printf("descent   = %.10g\n", metrics.descent);
+  printf("height    = %.10g\n", metrics.height);
   printf("Pointsize = %.10g\n", pointsize);
 #endif
 
