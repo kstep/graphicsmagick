@@ -254,17 +254,17 @@ MagickExport void CloseBlob(Image *image)
   CloseImagePixels(image);
   image->taint=False;
   image->blob->maximum_extent=SizeBlob(image);
-  if (image->blob->mapped)
+  if (image->blob->data != (unsigned char *) NULL)
     {
       image->blob->eof=False;
       (void) UnmapBlob(image->blob->data,image->blob->length);
-      image->blob->mapped=False;
+      DisengageBlob(image->blob);
       if (!image->orphan)
         {
           while (image->previous != (Image *) NULL)
             image=image->previous;
           for ( ; image != (Image *) NULL; image=image->next)
-            image->blob->mapped=False;
+            DisengageBlob(image->blob);
         }
       return;
     }
@@ -353,6 +353,7 @@ MagickExport void DestroyBlobInfo(BlobInfo *blob)
 MagickExport void DisengageBlob(BlobInfo *blob)
 {
   assert(blob != (BlobInfo *) NULL);
+  blob->mapped=False;
   blob->length=0;
   blob->offset=0;
   blob->data=(unsigned char *) NULL;
