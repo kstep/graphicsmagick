@@ -553,21 +553,32 @@ MAGICK DELEGATES
       to read the TIFF image format.  It in turn optionally requires
       the JPEG and ZLIB libraries.
 
-    o ImageMagick requires libwmf 0.2.1 (a component of wvWare) available
+    o ImageMagick requires libwmf 0.2.2 (a component of wvWare) available
       from
 
           http://sourceforge.net/projects/wvware/
 
       to read the Windows Meta File image format (16-bit WMF files only,
-      not 32-bit "EMF"). This is the format used for most Windows clipart.
-      If ImageMagick is built using libwmf then WMF files are rendered
-      directly by ImageMagick otherwise the rendering is done by running
-      the wmftopng program.  The configure script for libwmf offers a
-      choice between using the 'expat' XML library (--with-expat) and
-      xmlsoft's libxml (--with-xml).  Since ImageMagick already uses
-      libxml (for reading SVG), it is recommended that the options
-      '--without-expat --with-xml' be supplied to libwmf's configure
-      script.
+      not 32-bit "EMF"). This is the format commonly used for Windows
+      clipart (available on CD at your local computer or technical book
+      store). If ImageMagick is built using libwmf then WMF files are
+      rendered via ImageMagick's wmf coder module, otherwise output of
+      the wmf2magick program is rendered by ImageMagick. The configure
+      script for libwmf offers a choice between using the 'expat' XML
+      library (--with-expat) and xmlsoft's libxml (--with-xml). Since
+      ImageMagick already uses libxml (for reading SVG), it is
+      recommended that the options '--without-expat --with-xml' be
+      supplied to libwmf's configure script.  If you plan to limit
+      your use of libwmf to ImageMagick, and don't need libwmf's
+      utilities, you can build a smaller libwmf by configuring libwmf
+      with the '--without-layers' option.
+
+      ImageMagick's WMF render provides some of the finest WMF rendering
+      available due its use of antialiased drawing algorithms. You may
+      select a background color or texture image to render on. For
+      example, "-background '#ffffffff'" renders on a transparent
+      background while "-texture plasma:fractal" renders on a fractal
+      image.
 
     o ImageMagick requires an X server for display and animate to work
       properly.  There is a nearly free X server available for Windows
