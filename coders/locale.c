@@ -885,7 +885,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
       register char
         *p;
 
-      FormatString(text, "#define MAX_LOCALE_MSGS %d",count);
+      FormatString(text, "#define MAX_LOCALE_MSGS %ld",count);
       WriteBlobStringWithEOL(image,text);
       WriteBlobStringEOL(image);
       /*
@@ -909,7 +909,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
                   index++;
                 }
             }
-            FormatString(text, "#define %s%s%s%s = %d",fields[0],fields[1],fields[2],fields[3],i+1);
+            FormatString(text, "#define %s%s%s%s = %ld",fields[0],fields[1],fields[2],fields[3],i+1);
             WriteBlobStringWithEOL(image,text);
           }
       }
@@ -1001,14 +1001,14 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
             FormatString(severity, "%s%s%s",fields[0], fields[1], fields[2]);
             if (LocaleCompare(severity,last) != 0)
               {
-                FormatString(text, "    { \"%s%s%s/%s\", %d, %s },", fields[0],
+                FormatString(text, "    { \"%s%s%s/%s\", %ld, %s },", fields[0],
                   strlen(fields[0]) ? "/" : "", fields[1], fields[2], i, severity);
                 WriteBlobStringWithEOL(image,text);
                 strncpy(last,severity,MaxTextExtent-1);
               }
           }
       }
-      FormatString(text, "    { 0, %d, 0 }",count);
+      FormatString(text, "    { 0, %ld, 0 }",count);
       WriteBlobStringWithEOL(image,text);
       WriteBlobStringWithEOL(image,"  };");
       WriteBlobStringWithEOL(image,"#endif");
@@ -1043,7 +1043,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
                   index++;
                 }
             }
-            FormatString(text, "    { \"%s\", %d },", fields[3], i+1);
+            FormatString(text, "    { \"%s\", %ld },", fields[3], i+1);
             WriteBlobStringWithEOL(image,text);
           }
       }
