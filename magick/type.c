@@ -563,7 +563,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
   /*
     Read the type configuration file.
   */
-  xml=(char *) GetConfigureBlob(basename,path,&length,exception);
+  xml=(char *) GetFontBlob(basename,path,&length,exception);
   if (xml == (char *) NULL)
     xml=AllocateString(TypeMap);
   token=AllocateString(xml);

@@ -784,7 +784,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
     char
       *key_value;
 
-    key_value=NTRegistryKeyLookup("ConfigureBlob");
+    key_value=NTRegistryKeyLookup("ConfigurePath");
     if (key_value != (char *) NULL)
       {
         FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
@@ -889,6 +889,148 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%  G e t C o n f i g u r e B l o b                                            %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetFontBlob() returns a font file as a blob.
+%
+%  The format of the GetFontBlob method is:
+%
+%      void *GetFontBlob(const char *filename,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o filename: A character string representing the desired configuration
+%      file.
+%
+%    o path: return the full path information of the font file.
+%
+%    o length: This pointer to a size_t integer sets the initial length of the
+%      blob.  On return, it reflects the actual length of the blob.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport void *GetFontBlob(const char *filename,char *path,
+  size_t *length,ExceptionInfo *exception)
+{
+  unsigned int
+    debug;
+
+  assert(filename != (const char *) NULL);
+  assert(exception != (ExceptionInfo *) NULL);
+  debug=getenv("MAGICK_DEBUG") != (char *) NULL;
+  (void) strncpy(path,filename,MaxTextExtent-1);
+  if (debug)
+    (void) fprintf(stdout,"Searching for configure file \"%s\" ...\n",filename);
+#if defined(UseInstalledImageMagick)
+#  if defined(WIN32)
+  /*
+    Locate file via registry key.
+  */
+  {
+    char
+      *key_value;
+
+    key_value=NTRegistryKeyLookup("FontPath");
+    if (key_value != (char *) NULL)
+      {
+        FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
+          filename);
+        if (!CheckFileAccessability(path,debug))
+          ThrowException(exception,ConfigurationError,
+            "Unable to open configure file",path);
+        return(FileToBlob(path,length,exception));
+      }
+  }
+#  endif /* WIN32 */
+#  if defined(MagickLibPath)
+  /*
+    Search hard coded paths.
+  */
+  FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
+  if (!CheckFileAccessability(path,debug))
+    {
+      if (debug)
+        (void) fprintf(stdout,"  !%s",path);
+      ThrowException(exception,ConfigurationError,
+        "Unable to access configure file",path);
+    }
+  return(FileToBlob(path,length,exception));
+#  endif /* MagickLibPath */
+#  else
+  /*
+    Search based on executable directory if directory is known.
+  */
+  if (*SetClientPath((char *) NULL) != '\0')
+    {
+#if defined(POSIX)
+      char
+        prefix[MaxTextExtent];
+
+      strcpy(prefix,SetClientPath((char *) NULL));
+      if (debug)
+        (void) fprintf(stdout,"original path  \"%s\"\n",prefix);
+      ChopBlobComponents(prefix,1);
+      if (debug)
+        (void) fprintf(stdout,"chopped path  \"%s\"\n",prefix);
+      FormatString(path,"%.1024s/lib/ImageMagick/%.1024s",prefix,filename);
+#else
+      FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
+        DirectorySeparator,filename);
+#endif
+      if (CheckFileAccessability(path,debug))
+        return(FileToBlob(path,length,exception));
+    }
+  /*
+    Search MAGIC_FONT_PATH.
+  */
+  if (getenv("MAGIC_FONT_PATH") != (char *) NULL)
+    {
+#if defined(POSIX)
+      FormatString(path,"%.1024s/lib/ImageMagick/%.1024s",
+        getenv("MAGIC_FONT_PATH"),filename);
+#else
+      FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_FONT_PATH"),
+        DirectorySeparator,filename);
+#endif
+      if (CheckFileAccessability(path,debug))
+        return(FileToBlob(path,length,exception));
+    }
+  /*
+    Search current directory.
+  */
+  if (CheckFileAccessability(path,debug))
+    return(FileToBlob(path,length,exception));
+#  if defined(WIN32)
+  {
+    /*
+      Look for a named resource.
+    */
+    void
+      *blob;
+
+    FormatString(path,"%.1024s",filename);
+    blob=NTResourceToBlob(path);
+    if (blob != (unsigned char *) NULL)
+      return(blob);
+  }
+#  endif /* WIN32 */
+#endif /* UseInstalledImageMagick */
+  ThrowException(exception,ConfigurationError,"Unable to find configure file",
+    filename);
+  return((void *) NULL);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %  G e t M o d u l e B l o b                                                  %
 %                                                                             %
 %                                                                             %
@@ -936,7 +1078,7 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
     char
       *key_value;
 
-    key_value=NTRegistryKeyLookup("ModulesBlob");
+    key_value=NTRegistryKeyLookup("ModulesPath");
     if (key_value != (char *) NULL)
       {
         FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
