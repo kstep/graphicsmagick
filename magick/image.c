@@ -2348,20 +2348,20 @@ MagickExport void DestroyImageInfo(ImageInfo *image_info)
 {
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
-  if (image_info->server_name != (char *) NULL)
-    LiberateMemory((void **) &image_info->server_name);
   if (image_info->size != (char *) NULL)
     LiberateMemory((void **) &image_info->size);
   if (image_info->tile != (char *) NULL)
     LiberateMemory((void **) &image_info->tile);
   if (image_info->page != (char *) NULL)
     LiberateMemory((void **) &image_info->page);
-  if (image_info->density != (char *) NULL)
-    LiberateMemory((void **) &image_info->density);
-  if (image_info->texture != (char *) NULL)
-    LiberateMemory((void **) &image_info->texture);
+  if (image_info->server_name != (char *) NULL)
+    LiberateMemory((void **) &image_info->server_name);
   if (image_info->font != (char *) NULL)
     LiberateMemory((void **) &image_info->font);
+  if (image_info->texture != (char *) NULL)
+    LiberateMemory((void **) &image_info->texture);
+  if (image_info->density != (char *) NULL)
+    LiberateMemory((void **) &image_info->density);
   if (image_info->view != (char *) NULL)
     LiberateMemory((void **) &image_info->view);
   LiberateMemory((void **) &image_info);

@@ -312,8 +312,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (eps_level != 0)
     (void) fputs("showpage\n",file);
   if (image_info->page != (char *) NULL)
-    (void) ParseImageGeometry(image_info->page,&page.x,&page.y,
-      &page.width,&page.height);
+    (void) ParseImageGeometry(image_info->page,&page.x,&page.y,&page.width,
+      &page.height);
   FormatString(geometry,"%ux%u",
     (unsigned int) ceil(page.width*image->x_resolution/dx_resolution-0.5),
     (unsigned int) ceil(page.height*image->y_resolution/dy_resolution-0.5));
@@ -334,8 +334,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   *options='\0';
   if (image_info->subrange != 0)
-    FormatString(options,"-dFirstPage=%u -dLastPage=%u",
-      image_info->subimage+1,image_info->subimage+image_info->subrange);
+    FormatString(options,"-dFirstPage=%u -dLastPage=%u",image_info->subimage+1,
+      image_info->subimage+image_info->subrange);
   (void) strcpy(filename,image_info->filename);
   TemporaryFilename((char *) image_info->filename);
   FormatString(command,delegate_info->commands,image_info->antialias ? 4 : 1,
