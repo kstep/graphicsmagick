@@ -25310,7 +25310,7 @@ if test $ac_cv_lib_trio_trio_vsnprintf = yes; then
   have_trio='yes'
 fi
 
-   if test "$have_trio" == 'yes'
+   if test "$have_trio" = 'yes'
    then
      LIB_TRIO="-ltrio"
      LIBS="$LIB_TRIO $LIBS"

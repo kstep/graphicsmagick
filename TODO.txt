@@ -2,6 +2,12 @@
 Items large and small which remain to be worked on.
 --------------------------------------------------------------------
 
+Immediate Bugs
+==============
+
+ o SegmentImage is producing black images in some cases.
+ o Double free observed with 'gm display -geometry "1280x1024!" image.tiff'.
+
 For Next Release
 ===============
 

@@ -2,7 +2,7 @@
   "http://www.w3.org/TR/html4/loose.dtd">
 <HTML>
 <HEAD>
-<TITLE>GraphicsMagick 1.1 ChangeLog</TITLE>
+<TITLE>GraphicsMagick 1.2 ChangeLog</TITLE>
 	<STYLE>
 	<!--
 		@page { size: 8.5in 11in }
@@ -49,9 +49,132 @@
 <table BORDER=0 WIDTH="100%" >
 <tr>
 <td BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" height=14 width=15>
-<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.1 ChangeLog</font></font></font></b></td>
+<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.2 ChangeLog</font></font></font></b></td>
 </tr>
 </table>
+<p>
+2004-04-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/studio.h (_FILE_OFFSET_BITS): Fix _FILE_OFFSET_BITS
+        #ifdef to avoid warnings when it is not defined.
+
+</UL>
+<p>
+2004-04-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> configure.ac: Fix minor shell syntax error (used ==).
+
+</UL>
+<p>
+2004-04-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> Merged in updates from 1.1 release branch.
+  <LI> version.sh (PACKAGE_VERSION): Release version 1.1.
+        (PACKAGE_VERSION): Next major release will be 1.1.  Bump library
+        versions since we anticipate adding interfaces.
+  <LI> magick/studio.h: Disabled use of Windows message lookups
+        entirely since this doesn't seem to work for programs.  It
+        probably only works for DLLs like ImageMagickObject.
+  <LI> magick/delegate.c (ListDelegateInfo): Don't get stuck in a loop
+        if fprintf() returns zero.
+
+</UL>
+<p>
+2004-04-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> VisualMagick/*/*.bat: Add .exe to exe file names in order to
+        ensure that the executable is executed rather than something else
+        (such as a batch script).<BR>
+  <LI> magick/locale.c: Only use Windows resource message lookup for
+        the DLL build since it doesn't seem to work for static
+        executables.<BR>
+  <LI> magick/utility.c (SetClientPath): Ensure that client path is
+        null terminated.<BR>
+        (SetClientFilename): Initialize default client filename to ""
+        rather than "gm.exe" and ensure that filename is null terminated.
+        (SetClientName): Ensure that client path is null terminated.
+  <LI> magick/blob.c (GetConfigureBlob): Enable logging the load of
+        log.mgk<BR>
+  <LI> magick/log.c: Re-designed logging initialization in order to
+        avoid the "chicken and the egg" snafu.  This allows logging the
+        initialization of the logging subsystem.
+
+</UL>
+<p>
+2004-04-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> VisualMagick/bin/log.mgk: Add comments to help document usage.
+  <LI> config/log.mgk: Add comments to help document usage.
+  <LI> magick/utility.c (IsAccessible): Use access() rather than stat().
+        (IsAccessibleNoLogging): Use access() rather than stat().
+        (IsDirectory): Implemented return status according to existing API
+        documentation.<BR>
+        (GetExecutionPathUsingName): Complete re-write in order to minimize
+        path computation logic and fix failure with partial paths.
+
+</UL>
+<p>
+2004-03-31  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> doc/options.imdoc: Add "Color" to the arguments available for -list.
+
+</UL>
+<p>
+2004-03-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> version.sh (PACKAGE_CHANGE_DATE): Updated version to 1.1Beta3
+  <LI> magick/nt_base.c (NTSystemComman): Have not been successful with using
+        MsgWaitForMultipleObjects() reliably, so back out usage of it for
+        now.<BR>
+  <LI> magick/fx.c (ConvolveImage): Support convolution in CMYK
+        colorspace.
+
+</UL>
+<p>
+2004-03-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> version.sh (PACKAGE_CHANGE_DATE): Update release to 1.1Beta2.
+  <LI> magick/constitute.c (ReadImage): Ignore errors of type
+        ConfigureError when loading modules so that error report can still
+        report the familiar "No delegate for this image format" message
+        while still being able to report problems with loading a module if
+        it was found.  This is a compromise which reports useless messages
+        when the modules are not found at all, but I can't think of a way
+        around it.<BR>
+  <LI> magick/nt_base.c (NTSystemComman): Adjust
+        MsgWaitForMultipleObjects() arguments to wait for object to be
+        signaled only (FALSE) rather wait for object to be signaled as
+        well as an input event received(TRUE).  It seems that process
+        status changes do not result in an input event, so the call was
+        deadlocking.<BR>
+  <LI> magick/constitute.c (ReadImage): If module loading reported an
+        error, ReadImage immediately returned an error rather than trying
+        to use a delegate defined by delegates.mgk.
+
+</UL>
+<p>
+2004-03-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> version.sh: Updated version to 1.1Beta1
+
+</UL>
+<p>
+2004-03-24  Mike Chiarappa  &lt;mikechiarappa@libero.it&gt;
+
+<UL>
+  <LI> BCBMagick/magick/libMagick.bpr: updated to latest source modifications.
+  <LI> BCBMagick/magick/GM_Magick.bpr: updated to latest source modifications.
+
+</UL>
 <p>
 2004-03-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 

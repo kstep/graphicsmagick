@@ -79,17 +79,17 @@ typedef enum
   Method declarations.
 */
 extern MagickExport unsigned int
-  InitializeLogInfo(ExceptionInfo *exception),
   IsEventLogging(void),
-  LogMagickEvent(const ExceptionType,const char *,const char *,
-    const unsigned long,const char *,...) __attribute__((format (printf,5,6)));
+  LogMagickEvent(const ExceptionType type,
+    const char *module,const char *function,const unsigned long line,
+    const char *format,...) __attribute__((format (printf,5,6)));
 
 extern MagickExport unsigned long
-  SetLogEventMask(const char *);
+  SetLogEventMask(const char *events);
 
 extern MagickExport void
   DestroyLogInfo(void),
-  SetLogFormat(const char *);
+  SetLogFormat(const char *format);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -35,10 +35,10 @@ extern "C" {
 */
 #define MagickPackageName "GraphicsMagick"
 #define MagickCopyright  "Copyright (C) 2002, 2003, 2004 " MagickPackageName " Group"
-#define MagickLibVersion  0x010000
-#define MagickLibVersionText  "1.1"
-#define MagickLibVersionNumber 1,0,0
-#define MagickChangeDate   "20040323"
+#define MagickLibVersion  0x020000
+#define MagickLibVersionText  "1.2"
+#define MagickLibVersionNumber 2,0,0
+#define MagickChangeDate   "20040405"
 #define MagickReleaseDate  "unreleased"
 
 

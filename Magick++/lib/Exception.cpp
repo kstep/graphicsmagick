@@ -269,7 +269,7 @@ MagickDLLDecl void Magick::throwExceptionExplicit( const ExceptionType severity_
   ExceptionInfo exception;
 
   GetExceptionInfo( &exception );
-  ThrowException( &exception, severity_, reason_, description_ );
+  ThrowException2( &exception, severity_, reason_, description_ );
   throwException( exception );
 }
 

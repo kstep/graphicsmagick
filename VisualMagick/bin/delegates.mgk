@@ -65,7 +65,7 @@
     set terminal postscript portrait color solid; set output "%o"; load "%i"" > %u;gnuplot %u' />
   <delegate decode="gs-color" restrain="True" command='"@PSDelegate@" -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -sDEVICE=pnmraw -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile=%s -- "%s" -c quit' />
   <delegate decode="gs-mono" restrain="True" command='"@PSDelegate@" -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -sDEVICE=pbmraw -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile=%s -- "%s" -c quit' />
-  <delegate decode="hpgl" command='@HPGLDecodeDelegate@ -q -m eps -f "%o" "%i"' />
+  <delegate decode="hpgl" command='"@HPGLDecodeDelegate@" -q -m eps -f "%o" "%i"' />
   <delegate decode="htm" command='html2ps -U -o "%o" "%i"' />
   <delegate decode="html" command='html2ps -U -o "%o" "%i"' />
   <delegate decode="ilbm" command='ilbmtoppm "%i" > "%o"' />

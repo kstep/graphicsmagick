@@ -632,6 +632,8 @@ static unsigned int ReadTypeConfigureFile(const char *basename,
   /*
     Read the type configure file.
   */
+  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+    "File path=\"%.1024s\", recursion depth=%lu",basename,depth);
   (void) strcpy(path,basename);
   if (depth == 0)
     {
@@ -694,10 +696,11 @@ static unsigned int ReadTypeConfigureFile(const char *basename,
                     filename[MaxTextExtent];
 
                   GetPathComponent(path,HeadPath,filename);
-                  if (*filename != '\0')
+                  if (filename[0] != '\0')
                     (void) strcat(filename,DirectorySeparator);
                   (void) strncat(filename,token,MaxTextExtent-
                     strlen(filename)-1);
+                  filename[sizeof(filename)-1]='\0';
                   (void) ReadTypeConfigureFile(filename,depth+1,exception);
                 }
               if (type_list != (TypeInfo *) NULL)

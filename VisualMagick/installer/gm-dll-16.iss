@@ -15,5 +15,5 @@
 #include "inc\body.isx"
 
 #ifdef Debug
-  #expr SaveToFile(AddBackslash(SourcePath) + "gm-static-16.isp")
+  #expr SaveToFile(AddBackslash(SourcePath) + "gm-dynamic-16.isp")
 #endif

@@ -4,34 +4,34 @@ set bindir=..\..\bin\
 set PATH=%bindir%;%PATH%
 
 echo exceptions ...
-exceptions
+%bindir%exceptions.exe
 
 echo appendImages ...
-appendImages
+%bindir%appendImages.exe
 
 echo attributes ...
-attributes
+%bindir%attributes.exe
 
 echo averageImages ...
-averageImages
+%bindir%averageImages.exe
 
 echo coaleseImages ...
-coalesceImages
+%bindir%coalesceImages.exe
 
 echo coderInfo ...
-coderInfo
+%bindir%coderInfo.exe
 
 echo color ...
-color
+%bindir%color.exe
 
 echo montageImages ...
-montageImages
+%bindir%montageImages.exe
 
 echo morphImages ...
-morphImages
+%bindir%morphImages.exe
 
 echo readWriteBlob ...
-readWriteBlob
+%bindir%readWriteBlob.exe
 
 echo readWriteImages ...
-readWriteImages
+%bindir%readWriteImages.exe

@@ -82,10 +82,26 @@ void Magick::MutexLock::lock(void)
                           strerror(sysError));
 #endif
 #if defined(_MT) && defined(_VISUALC_)
-  if (MsgWaitForMultipleObjects(1, &_mutex.id, true, INFINITE, QS_ALLEVENTS)
-      != WAIT_FAILED )
+#if 1
+  if (WaitForSingleObject(_mutex.id,INFINITE) != WAIT_FAILED)
     return;
   throwExceptionExplicit( OptionError, "mutex lock failed" );
+#else
+  // Following code  is not known to work correctly yet.
+  while(1)
+  {
+    DWORD status=MsgWaitForMultipleObjects(1, &_mutex.id, FALSE, INFINITE,
+      QS_ALLEVENTS);
+    // Loop if return was due to message received (which we don't care about).
+    if (status == (WAIT_OBJECT_0+1))
+      continue;
+    // If return was due to handle state change, then object is available.
+    if ((status - WAIT_OBJECT_0) == 0)
+      return;
+   }
+  // If we get here, then there was an unexpected return value.
+  throwExceptionExplicit( OptionError, "mutex lock failed" );
+#endif
 #endif
 }
 

@@ -96,7 +96,7 @@ Magick::Image::Image( const std::string &imageSpec_ )
     {
       // FIXME: need a way to report warnings in constructor
     }
-  catch ( const Error & error_ )
+  catch ( const Error & /* error_ */ )
     {
       // Release resources
       delete _imgRef;
@@ -125,7 +125,7 @@ Magick::Image::Image( const Geometry &size_,
     {
       // FIXME: need a way to report warnings in constructor
     }
-  catch ( const Error & error_ )
+  catch ( const Error & /* error_ */ )
     {
       // Release resources
       delete _imgRef;
@@ -146,7 +146,7 @@ Magick::Image::Image ( const Blob &blob_ )
     {
       // FIXME: need a way to report warnings in constructor
     }
-  catch ( const Error & error_ )
+  catch ( const Error & /* error_ */ )
     {
       // Release resources
       delete _imgRef;
@@ -168,7 +168,7 @@ Magick::Image::Image ( const Blob &blob_,
     {
       // FIXME: need a way to report warnings in constructor
     }
-  catch ( const Error & error_ )
+  catch ( const Error & /* error_ */ )
     {
       // Release resources
       delete _imgRef;
@@ -191,7 +191,7 @@ Magick::Image::Image ( const Blob &blob_,
     {
       // FIXME: need a way to report warnings in constructor
     }
-  catch ( const Error & error_ )
+  catch ( const Error & /* error_ */ )
     {
       // Release resources
       delete _imgRef;
@@ -215,7 +215,7 @@ Magick::Image::Image ( const Blob &blob_,
     {
       // FIXME: need a way to report warnings in constructor
     }
-  catch ( const Error & error_ )
+  catch ( const Error & /* error_ */ )
     {
       // Release resources
       delete _imgRef;
@@ -238,7 +238,7 @@ Magick::Image::Image ( const Blob &blob_,
     {
       // FIXME: need a way to report warnings in constructor
     }
-  catch ( const Error & error_ )
+  catch ( const Error & /* error_ */ )
     {
       // Release resources
       delete _imgRef;
@@ -263,7 +263,7 @@ Magick::Image::Image ( const unsigned int width_,
     {
       // FIXME: need a way to report warnings in constructor
     }
-  catch ( const Error & error_ )
+  catch ( const Error & /* error_ */ )
     {
       // Release resources
       delete _imgRef;

@@ -1,3 +1,19 @@
+2004-04-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Include.h: <inttypes.h> is not used. Inclusion
+	removed.
+
+2004-03-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Thread.cpp (lock): Have not been successful with using
+	MsgWaitForMultipleObjects() reliably, so back out usage of it for
+	now.
+
+2004-03-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Thread.cpp (lock): For MsgWaitForMultipleObjects, monitor
+	state change only.  Otherwise lock may deadlock.
+
 2004-03-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (statistics): New method to obtain image

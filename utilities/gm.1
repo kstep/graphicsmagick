@@ -974,9 +974,9 @@ The events parameter specifies which events are to be logged.  It
 can be either None, All, or a comma-separated list
 consisting of one or more of the following domains: Annotate,
 Blob, Cache, Coder, Configure,
-Deprecate, Exception, Locale, Render,
-Resource, TemporaryFile, Transform, X11,
-or User.
+Deprecate, Error, Exception, Locale,
+Render,Resource, TemporaryFile,
+Transform, Warning, X11, or User.
 For example, to log cache and blob events, use
 
     gm convert -debug "Cache,Blob" rose: rose.png
@@ -1965,8 +1965,9 @@ You can use the option -list resource to find out the limits.
 .B "-list \fI<type>"\fP
 \fRthe type of list
 
-Choices are: \fBDelegate\fP, \fBFormat\fP, \fBMagic\fP,
-\fBModule\fP, \fBResource\fP, or \fBType\fP.
+Choices are: \fBColor\fP, \fBDelegate\fP, \fBFormat\fP, \fBMagic\fP,
+\fBModule\fP, \fBResource\fP, or \fBType\fP. The \fBModule\fP option
+is only available if GraphicsMagick was built to support loadable modules.
 
 
 This option lists information about the GraphicsMagick configuration.

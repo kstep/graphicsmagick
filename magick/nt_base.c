@@ -1753,10 +1753,29 @@ MagickExport int NTSystemComman(const char *command)
     return(-1);
   if (background_process)
     return(status == 0);
-  status=MsgWaitForMultipleObjects(1, &process_info.hProcess, TRUE, INFINITE,
-                                   QS_ALLEVENTS);
+
+#if 1
+  // This code has been used for years, but supposedly may
+  // cause problems in GUIs.
+  status=WaitForSingleObject(process_info.hProcess,INFINITE);
   if (status != WAIT_OBJECT_0)
-    return(status);
+    return (status);
+#else
+  // Following code doesn't work correctly yet
+  while(1)
+  {
+    // Wait for state change or message received
+    DWORD result=MsgWaitForMultipleObjects(1, &process_info.hProcess, FALSE,
+      INFINITE, QS_ALLEVENTS);
+    // Loop if return was due to message received (which we don't care about).
+    if (result == (WAIT_OBJECT_0+1))
+      continue;
+    // If return was due to handle state change, then object is available.
+    if ((result - WAIT_OBJECT_0) == 0)
+      break;
+   }
+#endif
+
   status=GetExitCodeProcess(process_info.hProcess,&child_status);
   if (status == 0)
     return(-1);

@@ -53,6 +53,31 @@
 </tr>
 </table>
 <p>
+2004-04-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Include.h: &lt;inttypes.h&gt; is not used. Inclusion
+        removed.
+
+</UL>
+<p>
+2004-03-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Thread.cpp (lock): Have not been successful with using
+        MsgWaitForMultipleObjects() reliably, so back out usage of it for
+        now.
+
+</UL>
+<p>
+2004-03-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Thread.cpp (lock): For MsgWaitForMultipleObjects, monitor
+        state change only.  Otherwise lock may deadlock.
+
+</UL>
+<p>
 2004-03-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
