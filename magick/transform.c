@@ -292,7 +292,6 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
     (void) CompositeImage(coalesce_image,next->matte ? OverCompositeOp :
       CopyCompositeOp,next,next->page.x,(long) next->page.height-
       next->page.y-(long) next->rows);
-    (void) memset(&coalesce_image->page,0,sizeof(RectangleInfo));
   }
   while (coalesce_image->previous != (Image *) NULL)
     coalesce_image=coalesce_image->previous;
