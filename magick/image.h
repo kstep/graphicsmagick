@@ -123,7 +123,7 @@ typedef struct _AnnotateInfo
   DecorationType
     decorate;
 
-  unsigned int
+  unsigned long
     signature;
 } AnnotateInfo;
 
@@ -152,7 +152,7 @@ typedef struct _BlobInfo
     extent,
     quantum;
 
-  unsigned int
+  unsigned long
     signature;
 } BlobInfo;
 
@@ -185,7 +185,7 @@ typedef struct _ExceptionInfo
     *message,
     *qualifier;
 
-  unsigned int
+  unsigned long
     signature;
 } ExceptionInfo;
 
@@ -251,7 +251,7 @@ typedef struct _MontageInfo
     border_color,
     matte_color;
 
-  unsigned int
+  unsigned long
     signature;
 } MontageInfo;
 
@@ -293,7 +293,7 @@ typedef struct _TimerInfo
   TimerState
     state;
 
-  unsigned int
+  unsigned long
     signature;
 } TimerInfo;
 
@@ -455,13 +455,15 @@ typedef struct _Image
     *client_data;
 
   unsigned int
-    orphan,
-    signature;
+    orphan;
 
   struct _Image
     *previous,
     *list,
     *next;
+
+  unsigned long
+    signature;
 } Image;
 
 typedef struct _DrawInfo
@@ -495,7 +497,7 @@ typedef struct _DrawInfo
   Image
     *tile;
 
-  unsigned int
+  unsigned long
     signature;
 } DrawInfo;
 
@@ -616,7 +618,7 @@ typedef struct _ImageInfo
   int
     (*fifo)(const Image *,const void *,const size_t);
 
-  unsigned int
+  unsigned long
     signature;
 } ImageInfo;
 
@@ -642,12 +644,12 @@ typedef struct _MagickInfo
   void
     *data;
 
-  unsigned int
-    signature;
-
   struct _MagickInfo
     *previous,
     *next;
+
+  unsigned long
+    signature;
 } MagickInfo;
 
 /*

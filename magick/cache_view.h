@@ -19,7 +19,7 @@ typedef struct _ViewInfo
   Image
     *image;
 
-  unsigned int
+  unsigned long
     signature;
 } ViewInfo;
 

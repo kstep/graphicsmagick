@@ -14,22 +14,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
-#if defined(_VISUALC_)
-#  include <direct.h>
-#  define HAVE_STRERROR
-#else
-#  include <unistd.h>
-#endif
-
 #include <stdarg.h>
-#include <string.h>
 
 #if defined _FILE_OFFSET_BITS && _FILE_OFFSET_BITS == 64
 #define fseek  fseeko
 #define ftell  ftello
 #endif
 
+#include <string.h>
 #include <ctype.h>
 #include <locale.h>
 #include <errno.h>
@@ -75,6 +67,12 @@
 #  include "api.h"
 #endif
 #include <fcntl.h>
+#if defined(_VISUALC_)
+#  include <direct.h>
+#  define HAVE_STRERROR
+#else
+#  include <unistd.h>
+#endif
 
 /*
   ImageMagick API headers
@@ -115,7 +113,7 @@
 #define HasLCMS
 #endif
 
-#define MagickSignature  0xcafe
+#define MagickSignature  0xabacadab
 
 #undef index
 

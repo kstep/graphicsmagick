@@ -68,11 +68,11 @@ typedef struct _CacheInfo
   int
     file;
 
-  unsigned int
-    signature;
-
   NexusInfo
     *nexus;
+
+  unsigned long
+    signature;
 } CacheInfo;
 
 /*
