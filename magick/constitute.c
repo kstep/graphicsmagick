@@ -67,15 +67,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method ConstituteImage is a convenience routine that creates an image from
-%  the pixel data you supply and returns it.  It allocates the memory necessary
-%  for the new Image structure and returns a pointer to the new image.  The
-%  pixel data must be in scanline order top-to-bottom.  The data can be
-%  character, short int, integer, float, or double.  Float and double require
-%  the pixels to be normalized [0..1].  The other types are [0..MaxRGB].  For
-%  example, to create a 640x480 image from unsigned red-green-blue character
-%  data, use
+%  the pixel data you supply and returns it. The pixel data must be in
+%  scanline order top-to-bottom.  The data can be char, short int,
+%  int, float, or double.  Float and double require the pixels to
+%  be normalized [0..1], otherwise [0..MaxRGB].  For example, to create a
+%  640x480 image from unsigned red-green-blue character data, use
 %
-%      image=ConstituteImage(640,480,"RGB",0,pixels,&exception);
+%      image=ConstituteImage(640,480,"RGB",CharPixel,pixels,&exception);
 %
 %  The format of the Constitute method is:
 %
@@ -85,28 +83,25 @@
 %
 %  A description of each parameter follows:
 %
-%    o image:  Method Constitute returns a pointer to the image.  A null
-%      image is returned if there is a memory shortage or if the image cannot
-%      be read.
+%    o image:  ConstituteImage() returns a pointer to the image.  A null image
+%      is returned if there is a memory shortage or if the image cannot be read.
 %
-%    o width: Specifies the width in pixels of the image.
+%    o width: width in pixels of the image.
 %
-%    o height: Specifies the height in pixels of the image.
+%    o height: height in pixels of the image.
 %
-%    o map:  This character string can be any combination or order of
-%      R = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow,
-%      M = magenta, and K = black, and I = intensity for grayscale images.
-%      The ordering reflects the order of the pixels in the supplied pixel
-%      array.
+%    o map:  This string reflects the expected ordering of the pixel array.
+%      It can be any combination or order of R = red, G = green, B = blue,
+%      A = alpha, C = cyan, Y = yellow, M = magenta, K = black, or
+%      I = intensity (for grayscale).
 %
 %    o type: pixel type where 0 = unsigned char, 1 = short int, 2 = int,
 %      3 = float, and 4 = double.  Float and double types are expected to be
 %      normalized [0..1] otherwise [0..MaxRGB].
 %
-%    o pixels: This array of values contain the pixel components as defined
-%      by the map and type parameters.  The length of the arrays must
-%      equal the area specified by the width and height values and type
-%      parameters.
+%    o pixels: this array of values contain the pixel components as defined by
+%      map and type.  The expected length of this array varies depending on the
+%      values of width, height, and type.
 %
 %    o exception: return any errors or warnings in this structure.
 %
