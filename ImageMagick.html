@@ -1,363 +1,554 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
-<HTML>
-<HEAD>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+               
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <title>ImageMagick - Convert, Edit, and Compose Images</title>
+                           
   <meta name="keywords" content="ImageMagick, Image Magick, Image Magic, PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic, WebMagick, Web Magic, visualization, image processing, software development, simulation, image, software, AniMagick, Animagic,  Magick++">
+               
   <meta name="description" content="ImageMagick is a robust collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats including GIF, JPEG, PNG, PDF, and Photo CD.  With ImageMagick you can create GIFs dynamically making it suitable for Web applications.  You can also resize, rotate, sharpen, color reduce, or add special effects to an image and save your completed work in the same or differing image format.">
-
+                
   <link rel="StyleSheet" href="www/magick.css" type="text/css">
 </head>
-<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" vlink="#800080" alink="#0085c0" >
+  <body bgcolor="#ffffff" text="#000000" link="#0085c0" vlink="#800080" alink="#0085c0">
+       
 <dl>
-<dd>
-<div align="Left"> ImageMagick<sup><font size="-2">TM</font></sup> is a robust
-collection of tools and libraries to read, write, and manipulate an image in
-many image <a href="www/formats.html">formats</a> (over 68 major formats)
-including popular formats like TIFF, JPEG, PNG, PDF, PhotoCD, and GIF. With
-ImageMagick you can create images dynamically, making it suitable for Web
-applications.  You can also resize, rotate, sharpen, color reduce, or add
-special effects to an image and save your completed work in the same or
-differing image format.  Image processing operations are available from the
-command line, as well as through C, C++, Perl, or Java programming
-interfaces.</div>
-</dd>
-<p>
-<dd>
-<a href="www/archives.html"><img src="images/magick.png" alt="Image Magick"
-  border="0" height="236" width="229" align="Right"></a>
-<div align="Left">Here are just a few <a href="images/examples.jpg">examples</a>
-of what ImageMagick can do:</div>
-</dd>
-<dd> </dd>
-</dl>
-<blockquote>
-<dl>
-<dd> <img src="images/ball.png" alt="*" height="14" width="14">
-Convert an image from one format to another (e.g. TIFF to JPEG)</dd>
-<dd> <img src="images/ball.png" alt="*" height="14" width="14">
-Resize, rotate, sharpen, color reduce, or add special effects to an image</dd>
-<dd> <img src="images/ball.png" alt="*" height="14" width="14">
-Create a montage of image thumbnails</dd>
-<dd> <img src="images/ball.png" alt="*" height="14" width="14">
-Create a transparent image suitable for use on the Web</dd>
-<dd> <img src="images/ball.png" alt="*" height="14" width="14">
-Turn a group of images into a GIF animation sequence</dd>
-<dd> <img src="images/ball.png" alt="*" height="14" width="14">
-Create a composite image by combining several separate images</dd>
-<dd> <img src="images/ball.png" alt="*" height="14" width="14">
-Draw shapes or text on an image</dd>
-<dd> <img src="images/ball.png" alt="*" height="14" width="14">
-Decorate an image with a border or frame</dd>
-<dd> <img src="images/ball.png" alt="*" height="14" width="14">
-Describe the format and characteristics of an image</dd>
-</dl>
-</blockquote>
-
-<blockquote> 
-<dl>
-Click on the <b>Wizard</b> to immediately go to the download area. 
-<p>You can access ImageMagick functions directly
-from the command line using the ImageMagick tools <a href="www/convert.html">
-convert</a>, <a href="www/mogrify.html">mogrify</a>, <a href="www/montage.html">
-montage</a>, <a href="www/composite.html">composite</a>, or <a href="www/identify.html">
-identify</a>. Use the <a href="www/display.html">display</a> program to interactively
-manipulate your images or <a href="www/animate.html">animate</a> an image
-sequence from a graphical panel.&nbsp; Finally you have access to the various
-image manipulation methods directly from your favorite application development
-environment:&nbsp;&nbsp; <a href="www/perl.html">Perl</a>, <a href="www/Magick++/index.html">
-C++</a>, <a href="www/api.html">C</a>, or <a href="www/archives.html">Java</a>
-. These programs, and much more, are discussed in detail.&nbsp; Just follow
-the appropriate link on this page. </p>
-<p><a href="www/archives.html">ImageMagick</a>
-is known to compile and run on virtually any <a href="www/archives.html">
-Unix</a> system and <a href="www/archives.html">Linux</a>. It also runs under
-<a href="www/archives.html">Windows 2000</a>,
-<a href="www/archives.html">Windows 95/98</a>
-, <a href="www/archives.html">Macintosh</a>, <a href="www/archives.html">
-VMS</a>, and<a href="ftp://24.2.168.186/pub/os2/unix/xfree86/ports/graphics/">
-OS/2</a>. See the <a href="www/install.html">install guide</a> for compiling
-instructions.&nbsp; Pre compiled <a href="www/archives.html">binaries</a>
-are available for some of the more popular operating systems. The entire
-source and binary distribution is also available for a limited time on <a href="www/cd.html">
-CD</a>. </p>
-<p>Developers will probably be interested in
-the latest source from the ImageMagick anonymous <a href="www/cvs.html">CVS</a>
-server. </p>
-<p>You can <a href="www/magick-list.html">subscribe</a>
-to the mailing list. Here you can ask questions and get advice from other
-<b>ImageMagick</b> users and see announcements
-of bug fixes, enhancements, and new releases. </p>
-<p>ImageMagick is copyrighted by ImageMagick
-Studio LLC, a non-profit organization. ImageMagick is available for free, may
-be used to support both open and proprietary applications, and may be redistributed
-without fee. </p>
-<p>The ImageMagick logo is copyright <a href="http://www.greetme.com">
-Pineapple USA Inc</a>. It is freely distributable, however, modifications
-to the logo are not permitted.</p>
-</dl>
-</blockquote>
-<table border="0" width="100%">
-<caption>
-</caption><tbody>
-
-</tbody>  <tbody>
-<tr>
-<td bgcolor="#52799e"><img src="images/right_triangle.png" alt="&gt;" height="14" width="15">
-<b><font face="Helvetica, Arial"><font color="#ffffff"><font size="+1">
-How Can I Find Out More About ImageMagick</font></font></font></b></td>
-</tr>
-
-</tbody>
-</table>
-
-<dl>
-<dd> For detailed information about the ImageMagick
-command line utilities, select from these sources:</dd>
-</dl>
-<blockquote>
-<dl>
-<dd> <img src="images/ball.png" alt="*" height="14" width="14">
-<a href="www/tools.html">ImageMagick Tools</a></dd>
-<dd> <img src="images/ball.png" alt="*" height="14" width="14">
-<a href="www/Magick.html">Frequently Asked
-Questions</a></dd>
-<dd> <img src="images/ball.png" alt="*" height="14" width="14">
-<a href="www/miff.html">Magick Image
-File Format</a></dd>
-<dd> <img src="images/ball.png" alt="*" height="14" width="14">
-<a href="www/quantize.html">ImageMagick's 
-Color Reduction Algorithm</a></dd>
-<dd> <img src="images/ball.png" alt="*" height="14" width="14">
-<a href="www/new.html">What's New</a></dd>
-<dd> <img src="images/ball.png" alt="*" height="14" width="14">
-<a href="www/Changelog.html">
-Recent Changes</a></dd>
-<dd> <img src="images/ball.png" alt="*" height="14" width="14">
-<a href="www/help.html">How 
-You Can Help</a></dd>
-</dl>
-</blockquote>
-<dl>
-<dl>
-<dd> </dd>
-</dl>
-</dl>
-<blockquote>
-<dl>
-<dt> Get the ImageMagick
-source or binary distributions from here:</dt>
-</dl>
-</blockquote>
-<blockquote>
-<dl>
-<dd> <img src="images/ball.png" alt="*" height="14" width="14">
-<a href="www/archives.html">
-ImageMagick Download Sites</a></dd>
-<dd> <img src="images/ball.png" alt="*" height="14" width="14">
-<a href="www/cvs.html">
-Concurrent Version System</a></dd>
-</dl>
-</blockquote>
-<dl>
-<dl>
-<dd> </dd>
-</dl>
-</dl>
-<blockquote>
-<dl>
-<dt> You can
-access ImageMagick capabilities from a number of application programming interfaces
-(APIs):</dt>
-</dl>
-</blockquote>
-<blockquote>
-<dl>
-<dd> <img src="images/ball.png" alt="*" height="14" width="14">
-<a href="www/api.html">
-C Language:</a> the core programming interface to ImageMagick</dd>
-<dd> <img src="images/ball.png" alt="*" height="14" width="14">
-<a href="www/perl.html">
-Perl Language:</a> PerlMagick provides an object-oriented Perl interface
-to ImageMagick</dd>
-<dd>
-<img src="images/ball.png" alt="*" height="14" width="14">
-<a href="www/Magick++/index.html">
-C++ Language:</a> Magick++&nbsp; provides an object-oriented C++ interface 
-to ImageMagick</dd>
-<dd>
-<img src="images/ball.png" alt="*" height="14" width="14">
-<a href="http://starship.python.net/crew/zack/">
-Python Language:</a> PythonMagick provides an object-oriented Python interface 
-to ImageMagick</dd>
-<dd>
-<img src="images/ball.png" alt="*" height="14" width="14">
-<a href="http://www.yeo.nu:81/jmagick/">
-Java Language:</a> JMagick provides an object-oriented Java interface to
-ImageMagick</dd>
-<dd>
-<img src="images/ball.png" alt="*" height="14" width="14">
-<a href="http://www.lazerware.com/imagemagick/">
-Macintosh Scripting Interface:</a> A scripting interface for the Mac</dd>
-</dl>
-</blockquote>
-<dl>
-<dl>
-<dd>
-</dd>
-</dl>
-</dl>
-<blockquote>
-<dl>
-<dt>
-In addition to the ImageMagick programming APIs, there are several projects 
-to provide adaptation interfaces for other environments:</dt>
-</dl>
-</blockquote>
-<blockquote>
-<blockquote>
-<img src="images/ball.png" alt="*" height="14" width="14">
-<a href="http://freshmeat.net/projects/gdkmagick/homepage/">
-GDK Tool kit Interface to ImageMagick</a><br>
-<img src="images/ball.png" alt="*" height="14" width="14">
-<a href="http://www.simplesystems.org/ImageMagick/Integration/">
-ImageMagick Integration Project</a>
-</blockquote>
-</blockquote>
-<dl>
-<dl>
-<dt>
-</dt>
-</dl>
-</dl>
-<blockquote>
-<dl>
-<dt>
-ImageMagick Defects:</dt>
-</dl>
-</blockquote>
-<blockquote>
-<dl>
-<dd>
-<img src="images/ball.png" alt="*" height="14" width="14">
-<a href="http://studio.imagemagick.org/mailman/listinfo/magick-bugs">
-Defect Tracking System</a></dd>
-</dl>
-</blockquote>
-<dl>
-<dl>
-<dd>
-</dd>
-</dl>
-</dl>
-<blockquote>
-<dl>
-<dt>
-Books that discuss ImageMagick:</dt>
-</dl>
-</blockquote>
-<blockquote>
-<dl>
-<dd>
-<img src="images/ball.png" alt="*" height="14" width="14">
-<a href="http://www.manning.com/verbruggen/">
-Graphics Programming with Perl</a></dd>
-<dd>
-<img src="images/ball.png" alt="*" height="14" width="14">
-<a href="http://www.oreilly.com/catalog/prowg/">
-Programming Web Graphics with Perl &amp; GNU Software</a></dd>
-</dl>
-</blockquote>
-<dl>
-<dl>
-<dd>
-</dd>
-</dl>
-</dl>
-<blockquote>
-<dl>
-<dt>
-Here are a few miscellaneous uses of ImageMagick:</dt>
-</dl>
-</blockquote>
-<blockquote>
-<dl>
-<dd>
-<img src="images/ball.png" alt="*" height="14" width="14">
-<a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">
-ImageMagick Studio</a></dd>
-<dd>
-<img src="images/ball.png" alt="*" height="14" width="14">
-<a href="http://webmagick.sourceforge.net/">
-WebMagick Image Navigator</a></dd>
-<dd>
-<img src="images/ball.png" alt="*" height="14" width="14">
-<a href="http://www.wisdom.weizmann.ac.il/%7Ebill/animate/index.html">
-Motif GUI for Animate</a></dd>
-<dd>
-<img src="images/ball.png" alt="*" height="14" width="14">
-<a href="ftp://ftp.imagemagick.org/pub/ImageMagick/perl/ScreamerMagick-1.0.tar.gz">
-3-D Web Screamers</a></dd>
-</dl>
-<p>
-</blockquote>
-<table border="0" width="100%">
-<caption>
-</caption><tbody>
-
-</tbody>
-<tbody>
-<tr>
-<td bgcolor="#52799e"><img src="images/right_triangle.png" alt="&gt;" height="14" width="15">
-<b><font face="Helvetica, Arial"><font color="#ffffff"><font size="+1">ImageMagick Sponsors</font></font></font></b></td>
-</tr>
-
-</tbody>
-</table>
-
-<blockquote>
-We want to thank these sponsors of the ImageMagick project:
-<dl>
-<dl>
-<table border="0" cellpadding="5" width="87%">
-<caption>
-</caption><tbody>
-</tbody>
-<tbody>
-<tr>
-<td width="10%" bgcolor="#d0d0d0"><a href="http://www.corbis.com"><img src="images/corbis.png" alt="Corbis" height="39" width="145">
-</a></td>
-<td bgcolor="#9ebac6">The place for pictures online.</td>
-</tr>
-<tr>
-<td width="10%" bgcolor="#d0d0d0"><a href="http://www.authentica.com"><img src="images/authentica.jpg" alt="Authentica" height="68" width="168">
-</a></td>
-<td bgcolor="#9ebac6">Protect your sensitive business information across 
-the Internet.</td>
-</tr>
-<tr>
-<td width="10%" bgcolor="#d0d0d0"><a href="http://www.appligent.com"><img src="images/appligent.jpg" alt="Appligent" height="67" width="196">
-</a></td>
-<td bgcolor="#9ebac6">Technology provider for e-Paper solutions.</td>
-</tr>
-
-</tbody>
-</table>
-</dl>
-</dl>
-</blockquote>
-<blockquote>
-<dl>
-You or your company may want to <a href="www/sponsor.html">sponsor</a> the
-ImageMagick project as well.
-</dl>
-</blockquote>
-<hr>
-<p>
-<a href="mailto:magick-user@imagemagick.org">
-  <img src="images/mail.png" alt="Mail" border="0" height="40" width="40"
-    align="Center"></a>
-<font size="-2">Image manipulation software that works like magic.</font> </p>
-</body>
-</html>
+<dd>          
+  <div align="Left"> ImageMagick<sup><font size="-2">TM</font></sup> is a 
+ robust collection of tools and libraries to read, write, and manipulate an
+ image in many image <a href="www/formats.html">formats</a>
+    (over 68 major formats) including popular formats like TIFF, JPEG, PNG, 
+ PDF, PhotoCD, and GIF. With ImageMagick you can create images dynamically, 
+ making it suitable for Web applications.  You can also resize, rotate, sharpen, 
+ color reduce, or add special effects to an image and save your completed 
+work in the same or differing image format.  Image processing operations are
+available from the command line, as well as through C, C++, Perl, or Java
+programming interfaces.<br>
+    <br>
+    </div>
+    </dd>
+  <dd> <a href="www/archives.html"><img src="images/magick.png" alt="Image Magick" border="0" height="236" width="229" align="Right">
+       </a>
+                   
+    <div align="Left">Here are just a few <a href="images/examples.jpg">examples</a>
+    of what ImageMagick can do:</div>
+    </dd>
+    </dl>
+                     
+    <blockquote>                        
+      <dl>
+      <dd> <img src="images/ball.png" alt="*" height="14" width="14">
+    Convert an image from one format to another (e.g. TIFF to JPEG)</dd>
+        <dd> <img src="images/ball.png" alt="*" height="14" width="14">
+    Resize, rotate, sharpen, color reduce, or add special effects to an image</dd>
+          <dd> <img src="images/ball.png" alt="*" height="14" width="14">
+    Create a montage of image thumbnails</dd>
+            <dd> <img src="images/ball.png" alt="*" height="14" width="14">
+    Create a transparent image suitable for use on the Web</dd>
+              <dd> <img src="images/ball.png" alt="*" height="14" width="14">
+    Turn a group of images into a GIF animation sequence</dd>
+                <dd> <img src="images/ball.png" alt="*" height="14" width="14">
+    Create a composite image by combining several separate images</dd>
+                  <dd> <img src="images/ball.png" alt="*" height="14" width="14">
+    Draw shapes or text on an image</dd>
+                    <dd> <img src="images/ball.png" alt="*" height="14" width="14">
+    Decorate an image with a border or frame</dd>
+                      <dd> <img src="images/ball.png" alt="*" height="14" width="14">
+    Describe the format and characteristics of an image</dd>
+                        </dl>
+    </blockquote>
+                                                                        
+         
+                        <blockquote>                                     
+                                               
+                          <dl>
+Click on the <b>Wizard</b> to immediately go to the download area.       
+                                                                        
+    
+                          <p>You can access ImageMagick functions directly
+  from the command line using the ImageMagick tools <a href="www/convert.html">
+    convert</a>
+   , <a href="www/mogrify.html">mogrify</a>
+   , <a href="www/montage.html"> montage</a>
+   , <a href="www/composite.html">composite</a>
+   , or <a href="www/identify.html"> identify</a>
+   . Use the <a href="www/display.html">display</a>
+    program to interactively manipulate your images or <a href="www/animate.html">
+   animate</a>
+    an image sequence from a graphical panel.&nbsp; Finally you have access 
+ to the various image manipulation methods directly from your favorite application 
+ development environment:&nbsp;&nbsp; <a href="www/perl.html">Perl</a>
+   , <a href="www/Magick++/index.html"> C++</a>
+   , <a href="www/api.html">C</a>
+   , or <a href="www/archives.html">Java</a>
+    . These programs, and much more, are discussed in detail.&nbsp; Just
+follow   the appropriate link on this page. </p>
+                          <p><a href="www/archives.html">ImageMagick</a>
+    is known to compile and run on virtually any <a href="www/archives.html">
+    Unix</a>
+    system and <a href="www/archives.html">Linux</a>
+   . It also runs under <a href="www/archives.html">Windows 2000</a>
+   , <a href="www/archives.html">Windows 95/98</a>
+    , <a href="www/archives.html">Macintosh</a>
+   , <a href="www/archives.html"> VMS</a>
+   , and<a href="ftp://24.2.168.186/pub/os2/unix/xfree86/ports/graphics/">
+  OS/2</a>
+   . See the <a href="www/install.html">install guide</a>
+    for compiling instructions.&nbsp; Pre compiled <a href="www/archives.html">
+   binaries</a>
+    are available for some of the more popular operating systems. The entire
+  source and binary distribution is also available for a limited time on
+                          <a href="www/cd.html">    CD</a>
+   . </p>
+                          <p>Developers will probably be interested in the 
+ latest source from the ImageMagick anonymous <a href="www/cvs.html">CVS</a>
+    server. </p>
+                          <p>You can <a href="www/magick-list.html">subscribe</a>
+    to the mailing list. Here you can ask questions and get advice from other
+                              <b>ImageMagick</b> users and see announcements
+  of bug fixes, enhancements, and new releases. </p>
+                          <p>ImageMagick is copyrighted by ImageMagick Studio 
+ LLC, a non-profit organization. ImageMagick is available for free, may be 
+ used to support both open and proprietary applications, and may be redistributed
+  without fee. </p>
+                          <p>The ImageMagick logo is copyright <a href="http://www.greetme.com">
+    Pineapple USA Inc</a>
+   . It is freely distributable, however, modifications to the logo are not 
+ permitted.</p>
+                          </dl>
+    </blockquote>
+                                                                        
+              
+                          <table border="0" width="100%">
+    <caption><br>
+    </caption><tbody>
+                                                                        
+                     
+                            </tbody>  <tbody>
+    <tr>
+    <td bgcolor="#52799e"><img src="images/right_triangle.png" alt="&gt;" height="14" width="15">
+    <b><font face="Helvetica, Arial"><font color="#ffffff"><font size="+1">
+   How Can I Find Out More About ImageMagick</font></font></font></b></td>
+    </tr>
+                                                                        
+                     
+                            </tbody>                                     
+                                              
+                          </table>
+                                                                        
+               
+                          <dl>
+                          <dd> For detailed information about the ImageMagick
+  command line utilities, select from these sources:</dd>
+                            </dl>
+                                                                        
+                    
+                            <blockquote>                                
+                                                               
+                              <dl>
+                              <dd> <img src="images/ball.png" alt="*" height="14" width="14">
+    <a href="www/tools.html">ImageMagick Tools</a>
+                                     </dd>
+                                <dd> <img src="images/ball.png" alt="*" height="14" width="14">
+    <a href="www/Magick.html">Frequently Asked Questions</a>
+                                       </dd>
+                                  <dd> <img src="images/ball.png" alt="*" height="14" width="14">
+    <a href="www/miff.html">Magick Image File Format</a>
+                                         </dd>
+                                    <dd> <img src="images/ball.png" alt="*" height="14" width="14">
+    <a href="www/quantize.html">ImageMagick's  Color Reduction Algorithm</a>
+                                           </dd>
+                                      <dd> <img src="images/ball.png" alt="*" height="14" width="14">
+    <a href="www/new.html">What's New</a>
+                                             </dd>
+                                        <dd> <img src="images/ball.png" alt="*" height="14" width="14">
+    <a href="www/Changelog.html"> Recent Changes</a>
+                                               </dd>
+                                          <dd> <img src="images/ball.png" alt="*" height="14" width="14">
+    <a href="www/help.html">How  You Can Help</a>
+                                                 </dd>
+                                            </dl>
+    </blockquote>
+                                                                        
+                                                                     
+                                            <blockquote>                
+                                                                        
+                                                      
+                                              <dl>
+                                              <dt> Get the ImageMagick source 
+ or binary distributions from here:</dt>
+                                                </dl>
+    </blockquote>
+                                                                        
+                                                                        
+       
+                                                <blockquote>            
+                                                                        
+                                                                      
+                                                  <dl>
+                                                  <dd> <img src="images/ball.png" alt="*" height="14" width="14">
+    <a href="www/archives.html"> ImageMagick Download Sites</a>
+                                                         </dd>
+                                                    <dd> <img src="images/ball.png" alt="*" height="14" width="14">
+    <a href="www/cvs.html"> Concurrent Version System</a>
+                                                           </dd>
+                                                      </dl>
+    </blockquote>
+                                                                        
+                                                                        
+                          
+                                                      <blockquote>      
+                                                                        
+                                                                        
+                     
+                                                        <dl>
+                                                        <dt> You can access 
+ ImageMagick capabilities from a number of application programming interfaces
+  (APIs):</dt>
+                                                          </dl>
+    </blockquote>
+                                                                        
+                                                                        
+                                     
+                                                          <blockquote>  
+                                                                        
+                                                                        
+                                     
+                                                            <dl>
+                                                            <dd> <img src="images/ball.png" alt="*" height="14" width="14">
+    <a href="www/api.html"> C Language:</a>
+    the core programming interface to ImageMagick</dd>
+                                                              <dd> <img src="images/ball.png" alt="*" height="14" width="14">
+    <a href="www/perl.html"> Perl Language:</a>
+    PerlMagick provides an object-oriented Perl interface to ImageMagick</dd>
+                                                                <dd> <img src="images/ball.png" alt="*" height="14" width="14">
+    <a href="www/Magick++/index.html"> C++ Language:</a>
+    Magick++&nbsp; provides an object-oriented C++ interface  to ImageMagick</dd>
+                                                                  <dd> <img src="images/ball.png" alt="*" height="14" width="14">
+    <a href="http://starship.python.net/crew/zack/"> Python Language:</a>
+    PythonMagick provides an object-oriented Python interface  to ImageMagick</dd>
+                                                                    <dd> 
+                                                                      <img src="images/ball.png" alt="*" height="14" width="14">
+    <a href="http://www.yeo.nu:81/jmagick/"> Java Language:</a>
+    JMagick provides an object-oriented Java interface to ImageMagick</dd>
+                                                                      <dd>
+    <img src="images/ball.png" alt="*" height="14" width="14">
+    <a href="http://www.lazerware.com/imagemagick/"> Macintosh Scripting
+Interface:</a>
+    A scripting interface for the Mac</dd>
+                                                                        </dl>
+    </blockquote>
+                                                                        
+                                                                        
+                                                                        
+       
+                                                                        <blockquote>
+                                                                        
+                                                                        
+                                                                        
+            
+                                                                          <dl>
+                                                                          <dt>
+    In addition to the ImageMagick programming APIs, there are several projects 
+  to provide adaptation interfaces for other environments:</dt>
+                                                                            </dl>
+    </blockquote>
+                                                                        
+                                                                        
+                                                                        
+                  
+                                                                            <blockquote>
+                                                                        
+                                                                        
+                                                                        
+                        
+                                                                              <blockquote>
+    <img src="images/ball.png" alt="*" height="14" width="14">
+    <a href="http://freshmeat.net/projects/gdkmagick/homepage/"> GDK Tool 
+kit  Interface to ImageMagick</a>
+                                                                        
+            <br>
+    <img src="images/ball.png" alt="*" height="14" width="14">
+    <a href="http://www.simplesystems.org/ImageMagick/Integration/"> ImageMagick 
+ Integration Project</a>
+    </blockquote>
+    </blockquote>
+                                                                        
+                                                                        
+                                                                        
+                               
+                                                                                <blockquote>
+                                                                        
+                                                                        
+                                                                        
+                                    
+                                                                                  <dl>
+                                                                                  <dt>
+    ImageMagick Defects:</dt>
+                                                                                    </dl>
+    </blockquote>
+                                                                        
+                                                                        
+                                                                        
+                                          
+                                                                                    <blockquote>
+                                                                        
+                                                                        
+                                                                        
+                                                
+                                                                                      <dl>
+                                                                                      <dd>
+    <img src="images/ball.png" alt="*" height="14" width="14">
+    <a href="http://studio.imagemagick.org/mailman/listinfo/magick-bugs">
+ Defect  Tracking System</a>
+                                                                        
+                    </dd>
+                                                                                        </dl>
+    </blockquote>
+                                                                        
+                                                                        
+                                                                        
+                                                       
+                                                                                        <blockquote>
+                                                                        
+                                                                        
+                                                                        
+                                                            
+                                                                                          <dl>
+                                                                                          <dt>
+    Books that discuss ImageMagick:</dt>
+                                                                                            </dl>
+    </blockquote>
+                                                                        
+                                                                        
+                                                                        
+                                                                  
+                                                                                            <blockquote>
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                                                              <dl>
+                                                                                              <dd>
+    <img src="images/ball.png" alt="*" height="14" width="14">
+    <a href="http://www.manning.com/verbruggen/"> Graphics Programming with 
+ Perl</a>
+                                                                        
+                            </dd>
+                                                                                                <dd>
+    <img src="images/ball.png" alt="*" height="14" width="14">
+    <a href="http://www.oreilly.com/catalog/prowg/"> Programming Web Graphics 
+ with Perl &amp; GNU Software</a>
+                                                                        
+                              </dd>
+                                                                                                  </dl>
+    </blockquote>
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+            
+                                                                                                  <blockquote>
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                 
+                                                                                                    <dl>
+                                                                                                    <dt>
+    Here are a few miscellaneous uses of ImageMagick:</dt>
+                                                                                                      </dl>
+    </blockquote>
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                       
+                                                                                                      <blockquote>
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                             
+                                                                                                        <dl>
+                                                                                                        <dd>
+    <img src="images/ball.png" alt="*" height="14" width="14">
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">
+    ImageMagick Studio</a>
+                                                                        
+                                      </dd>
+                                                                                                          <dd>
+    <img src="images/ball.png" alt="*" height="14" width="14">
+    <a href="http://webmagick.sourceforge.net/"> WebMagick Image Navigator</a>
+                                                                        
+                                        </dd>
+                                                                                                            <dd>
+    <img src="images/ball.png" alt="*" height="14" width="14">
+    <a href="http://www.wisdom.weizmann.ac.il/%7Ebill/animate/index.html">
+  Motif GUI for Animate</a>
+                                                                        
+                                          </dd>
+                                                                                                              <dd>
+    <img src="images/ball.png" alt="*" height="14" width="14">
+    <a href="ftp://ftp.imagemagick.org/pub/ImageMagick/perl/ScreamerMagick-1.0.tar.gz">
+    3-D Web Screamers</a>
+                                                                        
+                                            </dd>
+                                                                                                                </dl>
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                     
+                                                                                                                <p>
+    </p>
+                                                                        
+                                            </blockquote>
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                     
+                                                                                                                <table border="0" width="100%">
+    <caption><br>
+    </caption><tbody>
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                            
+                                                                                                                  </tbody>
+    <tbody>
+    <tr>
+    <td bgcolor="#52799e"><img src="images/right_triangle.png" alt="&gt;" height="14" width="15">
+    <b><font face="Helvetica, Arial"><font color="#ffffff"><font size="+1">
+  ImageMagick Sponsors</font></font></font></b></td>
+    </tr>
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                            
+                                                                                                                  </tbody>
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                     
+                                                                                                                </table>
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                      
+                                                                                                                <blockquote>
+    We want to thank these sponsors of the ImageMagick project:         
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                              
+                                                                                                                  <blockquote>
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                               
+                                                                                                                    <dl>
+                                                                                                                    <dl>
+                                                                                                                    <table border="0" cellpadding="5" width="87%">
+    <caption><br>
+    </caption><tbody>
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                                       
+                                                                                                                      </tbody>
+    <tbody>
+    <tr>
+    <td width="10%" bgcolor="#d0d0d0"><a href="http://www.corbis.com"><img src="images/corbis.png" alt="Corbis" height="39" width="145">
+    </a>
+                                                                        
+                                                      </td>
+    <td bgcolor="#9ebac6">The place for pictures online.</td>
+    </tr>
+    <tr>
+    <td width="10%" bgcolor="#d0d0d0"><a href="http://www.authentica.com"><img src="images/authentica.jpg" alt="Authentica" height="68" width="168">
+    </a>
+                                                                        
+                                                      </td>
+    <td bgcolor="#9ebac6">Protect your sensitive business information across 
+  the Internet. </td>
+                                                                        
+                                                    </tr>
+    <tr>
+    <td width="10%" bgcolor="#d0d0d0"><a href="http://www.appligent.com"><img src="images/appligent.jpg" alt="Appligent" height="67" width="196">
+    </a>
+                                                                        
+                                                      </td>
+    <td bgcolor="#9ebac6">Technology provider for e-Paper solutions.</td>
+    </tr>
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                                                                                      </tbody>
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                                 
+                                                                                                                    </table>
+                                                                                                                    </dl>
+                                                                                                                    </dl>
+    </blockquote>
+                                                                        
+                                                </blockquote>
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                                 
+                                                                                                                    <blockquote>
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                                       
+                                                                                                                      <dl>
+You or your company may want to <a href="www/sponsor.html">sponsor</a>
+ the ImageMagick project as well.                                       
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                            
+                                                                                                                      </dl>
+    </blockquote>
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                                       
+                                                                                                                      <hr>
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                                       
+                                                                                                                      <p>
+    <a href="mailto:magick-user@imagemagick.org">   <img src="images/mail.png" alt="Mail" border="0" height="40" width="40" align="Center">
+                                                                        
+                                                  </a>
+    <font size="-2">Image manipulation software that works like magic.</font>
+    </p>
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                                       
+                                                                                                                      </body>
+                                                                                                                      </html>
