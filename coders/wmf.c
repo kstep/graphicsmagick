@@ -235,12 +235,10 @@ static void WmfClipRect(CSTRUCT *cstruct)
 }
 
 /* Copy drawing context */
-#if 0
-static void WmfCopyUserData(CSTRUCT *cstruct, DC *old, DC *new)
-{
-  puts("WmfCopyUserData()");
-}
-#endif
+/* static void WmfCopyUserData(CSTRUCT *cstruct, DC *old, DC *new) */
+/* { */
+/*   puts("WmfCopyUserData()"); */
+/* } */
 
 static void WmfCopyXpm(CSTRUCT *cstruct,
                        unsigned short src_x, unsigned short src_y,
@@ -504,12 +502,10 @@ static void WmfDrawText(CSTRUCT *cstruct, char *str, RECT *arect,
   puts("WmfDrawText()");
 }
 
-#if 0
-static void WmfFrameRgn(CSTRUCT *cstruct,WINEREGION *rgn,U16 width,U16 height)
-{
-  puts("WmfFrameRgn()");
-}
-#endif
+/* static void WmfFrameRgn(CSTRUCT *cstruct,WINEREGION *rgn,U16 width,U16 height) */
+/* { */
+/*   puts("WmfFrameRgn()"); */
+/* } */
 
 /* Extended floodfill. Fill to border color, or fill color at point. */
 static void WmfExtFloodFill(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
@@ -574,12 +570,10 @@ static void WmfParseROP(CSTRUCT *cstruct, unsigned int dwROP,
 }
 
 /* Restore drawing context */
-#if 0
-static void WmfRestoreUserData(CSTRUCT *cstruct, DC *new)
-{
-  puts("WmfRestoreUserData()");
-}
-#endif
+/* static void WmfRestoreUserData(CSTRUCT *cstruct, DC *new) */
+/* { */
+/*   puts("WmfRestoreUserData()"); */
+/* } */
 
 /* Set pixel to specified color */
 static void WmfSetPixel(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
@@ -622,16 +616,17 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image* image;
 
   image=AllocateImage(image_info);
+  GetExceptionInfo(exception);
 
   wmfinit(cstruct);
   wmffunctions = &WmfFunctions;
 
   strcpy(filename,image_info->filename);
 
+  im=AcquireMemory(sizeof(IM));
+  im->mvg=AllocateString("");
+  im->image=(Image*)NULL;
   cstruct->userdata = (void *)&im;
-  ((IM*)cstruct->userdata)->mvg=AcquireMemory(sizeof(char)*MaxTextExtent);
-  strcpy(((IM*)cstruct->userdata)->mvg,"");
-  ((IM*)cstruct->userdata)->image=(Image*)NULL;
 
   if (1 == FileIsPlaceable(filename))
     {
