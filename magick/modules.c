@@ -278,8 +278,8 @@ Export int LoadModule(const char* module)
     }
   module_info->handle=handle;
   time(&module_info->load_time);
-  if(!RegisterModuleInfo(module_info))
-    return False;
+/*   if(!RegisterModuleInfo(module_info)) */
+/*     return False; */
 
   /*
     Locate and execute RegisterFORMATImage function
