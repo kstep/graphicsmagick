@@ -752,7 +752,7 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
       if (image_info->antialias)
         q->opacity=(int) (Opaque*Min(*p,4))/4;
       else
-        q->opacity=(*p) > 1 ? Opaque : Transparent;
+        q->opacity=(*p) >= 1 ? Opaque : Transparent;
       if (q->opacity == Transparent)
         {
           q->red=(~q->red);
