@@ -376,7 +376,8 @@ static Image *ReadTOPOLImage(const ImageInfo * image_info, ExceptionInfo * excep
     status;
 
   long
-    i,j,
+    i,
+    j,
     ldblk;
 
   unsigned char
@@ -480,7 +481,7 @@ static Image *ReadTOPOLImage(const ImageInfo * image_info, ExceptionInfo * excep
   /* ----- Handle the reindexing mez file ----- */
   for(i=0;i<255;i++)
     {
-    MEZ[i]=i;
+      MEZ[i]=(unsigned char) i;
     }
     
   if(Header.TypSou>=5) goto NoMEZ;    
@@ -519,7 +520,7 @@ static Image *ReadTOPOLImage(const ImageInfo * image_info, ExceptionInfo * excep
   status=OpenBlob(clone_info,palette,ReadBinaryBlobMode,exception);
   if (status == False) goto NoMEZ; 
 
-  ldblk=GetBlobSize(palette);
+  ldblk=(long) GetBlobSize(palette);
   if(ldblk>sizeof(MEZ)) ldblk=sizeof(MEZ);
   ReadBlob(palette, ldblk, MEZ); 
             
@@ -621,7 +622,7 @@ NoMemory:
     }
 
   /* ----- Load TopoL raster ----- */
-  ldblk = (((long) depth * image->columns + 7) / 8);
+  ldblk = (long) ((depth * image->columns + 7) / 8);
   BImgBuff = (unsigned char *) AcquireMemory(ldblk);	/*Ldblk was set in the check phase */
   if (BImgBuff == NULL)
     goto NoMemory;

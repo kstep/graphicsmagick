@@ -502,9 +502,9 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     (void) ReadBlobByte(image);    /* # of bits of blue */
     ReadBlobByte(image);               /* reserved by Palm */
     ReadBlobByte(image);               /* reserved by Palm */
-    transpix.red = ReadBlobByte(image) * MaxRGB / 31;
-    transpix.green = ReadBlobByte(image) * MaxRGB / 63;
-    transpix.blue = ReadBlobByte(image) * MaxRGB / 31;
+    transpix.red = (unsigned char) (ReadBlobByte(image) * MaxRGB / 31);
+    transpix.green = (unsigned char) (ReadBlobByte(image) * MaxRGB / 63);
+    transpix.blue = (unsigned char) (ReadBlobByte(image) * MaxRGB / 31);
     }
       image->colormap[255 - i].red = ScaleCharToQuantum(PalmPalette[i][0]);
       image->colormap[255 - i].green = ScaleCharToQuantum(PalmPalette[i][1]);
@@ -583,9 +583,9 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
         {
         color16 = (*ptr++ << 8);
         color16 |= *ptr++;
-        q->red = (((color16 >> 11) & 0x1f) * MaxRGB) / 31;
-        q->green = (((color16 >> 5) & 0x3f) * MaxRGB) / 63;
-        q->blue = ((color16 & 0x1f) * MaxRGB) / 31;
+        q->red = (unsigned char) ((((color16 >> 11) & 0x1f) * MaxRGB) / 31);
+        q->green = (unsigned char) ((((color16 >> 5) & 0x3f) * MaxRGB) / 63);
+        q->blue = (unsigned char) (((color16 & 0x1f) * MaxRGB) / 31);
         q->opacity = 0;
         q++;
         }
@@ -896,9 +896,9 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
       {
       for (x=0; x < (int) image->columns; x++)
         {
-        color16 = ((p->red * 31) / MaxRGB) << 11
+        color16 = (unsigned short) (((p->red * 31) / MaxRGB) << 11
                 | ((p->green * 63) / MaxRGB) << 5
-                | ((p->blue * 31) / MaxRGB);
+                | ((p->blue * 31) / MaxRGB));
         if(p->opacity == TransparentOpacity)
           {
           transpix.red = p->red;

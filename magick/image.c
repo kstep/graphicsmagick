@@ -261,7 +261,7 @@ MagickExport unsigned int AllocateImageColormap(Image *image,
     return(False);
   for (i=0; i < (long) image->colors; i++)
   {
-    quantum=(Quantum) i*(MaxRGB/Max(colors-1,1));
+    quantum=(Quantum) (i*(MaxRGB/Max(colors-1,1)));
     image->colormap[i].red=quantum;
     image->colormap[i].green=quantum;
     image->colormap[i].blue=quantum;

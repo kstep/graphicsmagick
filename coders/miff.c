@@ -671,7 +671,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
 
   int
     c,
-    code,
+    code;
+
+  size_t
     length;
 
   long
@@ -764,7 +766,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             c=ReadBlobByte(image);
             if ((c == EOF) || (c == '}'))
               break;
-            if ((p-comment+1) >= (int) length)
+            if ((size_t) (p-comment+1) >= length)
               {
                 *p='\0';
                 length<<=1;
@@ -802,7 +804,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             p=values;
             while ((c != '}') && (c != EOF))
             {
-              if ((p-values+1) >= (int) length)
+              if ((size_t) (p-values+1) >= length)
                 {
                   *p='\0';
                   length<<=1;

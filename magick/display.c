@@ -5315,7 +5315,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
   XWindows *windows,const CommandType command,Image **image)
 {
   char
-    *argv[10],
+    /* *argv[10], */
     filename[MaxTextExtent],
     geometry[MaxTextExtent],
     modulate_factors[MaxTextExtent];
@@ -5346,7 +5346,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
   */
   XCheckRefreshWindows(display,windows);
   XImageCache(display,resource_info,windows,command,image);
-  argv[0]=resource_info->client_name;
+  /* argv[0]=resource_info->client_name; */
   nexus=(Image *) NULL;
   windows->image.window_changes.width=windows->image.ximage->width;
   windows->image.window_changes.height=windows->image.ximage->height;

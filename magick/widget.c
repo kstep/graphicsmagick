@@ -1929,7 +1929,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
           Determine slider id and position.
         */
         if (slider_info.id >= (int) (colors-visible_colors))
-          slider_info.id=colors-visible_colors;
+          slider_info.id=(int) (colors-visible_colors);
         if ((slider_info.id < 0) || (colors <= visible_colors))
           slider_info.id=0;
         slider_info.y=slider_info.min_y;
@@ -2401,7 +2401,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
               case XK_End:
               case XK_KP_End:
               {
-                slider_info.id=colors;
+                slider_info.id=(int) colors;
                 break;
               }
             }
@@ -2502,8 +2502,8 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
               slider_info.y=slider_info.max_y;
             slider_info.id=0;
             if (slider_info.y != slider_info.min_y)
-              slider_info.id=(colors*(slider_info.y-slider_info.min_y+1))/
-                (slider_info.max_y-slider_info.min_y+1);
+              slider_info.id=(int) ((colors*(slider_info.y-slider_info.min_y+1))/
+                (slider_info.max_y-slider_info.min_y+1));
             state|=RedrawListState;
             break;
           }

@@ -1,5 +1,11 @@
 2003-09-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/jpeg.c, coders/locale.c, coders/meta.c, coders/miff.c,
+	coders/palm.c, coders/pict.c, coders/svg.c, coders/tiff.c,
+	coders/topol.c, magick/cache.c, magick/display.c, magick/image.c,
+	magick/widget.c: Removed unused values, changed storage types, or
+	added explicit casts, in order to reduce the number of "REMARK"s
+	when using the SGI IRIX compiler.
 	* magick/render.c (DrawClipPath): Fix memory leak of
 	clone_info->clip_path.  Problem reported by Vladimir
 	<lvm@integrum.ru>.

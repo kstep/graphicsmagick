@@ -170,7 +170,7 @@ static inline long FilePositionRead(int file, void *buffer, size_t length,
     }
   if (count < 0)
     return -1;
-  return total_count;
+  return (long) total_count;
 }
 /*
 
@@ -206,7 +206,7 @@ static inline long FilePositionWrite(int file, const void *buffer,
     }
   if (count < 0)
     return -1;
-  return total_count;
+  return (long) total_count;
 }
 
 /*

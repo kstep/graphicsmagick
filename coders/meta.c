@@ -2203,7 +2203,7 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
         long
           length;
 
-        length=image->generic_profile[i].length;
+        length=(long) image->generic_profile[i].length;
         if (length == 0)
           ThrowWriterException(CoderError,NoAPP1DataIsAvailable,image);
         name=image->generic_profile[i].name;

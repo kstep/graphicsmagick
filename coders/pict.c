@@ -653,7 +653,7 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
       }
     }
   if (count > 0)
-    *q++=count-1;
+    *q++= (unsigned char) (count-1);
   /*
     Write the number of and the packed length.
   */

@@ -2626,7 +2626,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  long
+  size_t
     n;
 
   SVGInfo

@@ -768,7 +768,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
   const ImageAttribute
     *attribute;
 
-  register long
+  register int
     i,
     j;
 
@@ -778,7 +778,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
   unsigned int
     status;
 
-  unsigned long
+  int
     count;
 
   /*
@@ -802,8 +802,8 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
   */
   for (i=0; locale[i] != (char *) NULL; i++);
   count=i-1;
-  for (i=0; i < (long) count; i++)
-    for (j=(i+1); j < (long) count; j++)
+  for (i=0; i < count; i++)
+    for (j=(i+1); j < count; j++)
       if (LocaleCompare(locale[i],locale[j]) > 0)
         {
           char
@@ -814,14 +814,14 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
           locale[j]=swap;
         }
   if (IsEventLogging())
-    for (i=0; i < (long) count; i++)
+    for (i=0; i < count; i++)
       (void) LogMagickEvent(LocaleEvent,GetMagickModule(),"%.1024s",locale[i]);
   if (LocaleCompare(image_info->magick,"LOCALEMC") == 0)
     {
       /*
         Write microsoft message compiler message file format.
       */
-      for (i=0; i < (long) count; i++)
+      for (i=0; i < count; i++)
       {
         char
           *fields[4],
@@ -889,13 +889,13 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
       WriteBlobStringEOL(image);
       WriteBlobStringWithEOL(image,"extern MagickExport const char *GetLocaleMessageFromID(const int);");
       WriteBlobStringEOL(image);
-      FormatString(text, "#define MAX_LOCALE_MSGS %ld",count);
+      FormatString(text, "#define MAX_LOCALE_MSGS %d",count);
       WriteBlobStringWithEOL(image,text);
       WriteBlobStringEOL(image);
       /*
         Write series of #defines for all the messages in the system.
       */
-      for (i=0; i < (long) count; i++)
+      for (i=0; i < count; i++)
       {
         strcpy(path,locale[i]);
         if (*path != '\0')
@@ -934,7 +934,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
       last[0]='\0';
       last2[0]='\0';
       severityindex=0;
-      for (i=0; i < (long) count; i++)
+      for (i=0; i < count; i++)
       {
         strcpy(path,locale[i]);
         if (*path != '\0')
@@ -986,7 +986,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
       WriteBlobStringWithEOL(image,"static const SeverityInfo severity_map[] =");
       WriteBlobStringWithEOL(image,"  {");
       last[0]='\0';
-      for (i=0; i < (long) count; i++)
+      for (i=0; i < count; i++)
       {
         strcpy(path,locale[i]);
         if (*path != '\0')
@@ -1014,7 +1014,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
               }
           }
       }
-      FormatString(text, "    { 0, %ld, UndefinedException }",count);
+      FormatString(text, "    { 0, %d, UndefinedException }",count);
       WriteBlobStringWithEOL(image,text);
       WriteBlobStringWithEOL(image,"  };");
       WriteBlobStringWithEOL(image,"#endif");
@@ -1031,7 +1031,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
       WriteBlobStringEOL(image);
       WriteBlobStringWithEOL(image,"static const MessageInfo message_map[] =");
       WriteBlobStringWithEOL(image,"  {");
-      for (i=0; i < (long) count; i++)
+      for (i=0; i < count; i++)
       {
         strcpy(path,locale[i]);
         if (*path != '\0')
@@ -1065,7 +1065,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
       WriteBlobStringWithEOL(image,"  {");
       /* message 0 is reserved as the generic windows event message */
       WriteBlobStringWithEOL(image,"    \"%1\",");
-      for (i=0; i < (long) count; i++)
+      for (i=0; i < count; i++)
       {
         strcpy(path,locale[i]);
         if (*path != '\0')
@@ -1112,7 +1112,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
   /*
     Free resources.
   */
-  for (i=0; i <= (long) count; i++)
+  for (i=0; i <= count; i++)
     MagickFreeMemory(locale[i]);
   MagickFreeMemory(locale);
   CloseBlob(image);

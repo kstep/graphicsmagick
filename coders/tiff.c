@@ -1176,8 +1176,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         /*
           Convert stripped TIFF image to DirectClass MIFF image.
         */
-        number_pixels=(ExtendedSignedIntegralType)
-          image->columns*rows_per_strip;
+        number_pixels=(unsigned long) image->columns*rows_per_strip;
         if ((number_pixels*sizeof(uint32)) != (size_t)
             (number_pixels*sizeof(uint32)))
           {
@@ -1185,7 +1184,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
               image)
           }
-        strip_pixels=MagickAllocateMemory(uint32 *,number_pixels*sizeof(uint32));
+        strip_pixels=MagickAllocateMemory(uint32 *,(size_t) (number_pixels*sizeof(uint32)));
         if (strip_pixels == (uint32 *) NULL)
           {
             TIFFClose(tiff);
@@ -1197,9 +1196,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         */
         for (y=0; y < (long) image->rows; y+=rows_per_strip)
         {
-          i=rows_per_strip;
+          i=(long) rows_per_strip;
           if ((y+rows_per_strip) > (long) image->rows)
-            i=image->rows-y;
+            i=(long) (image->rows-y);
           q=SetImagePixels(image,0,y,image->columns,i);
           if (q == (PixelPacket *) NULL)
             break;
@@ -1247,7 +1246,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         /*
           Convert TIFF image to DirectClass MIFF image.
         */
-        number_pixels=image->columns*image->rows;
+        number_pixels=(unsigned long) image->columns*image->rows;
         pixels=MagickAllocateMemory(uint32 *,
           (number_pixels+6*image->columns)*sizeof(uint32));
         if (pixels == (uint32 *) NULL)
