@@ -1,3 +1,7 @@
+2001-09-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (fileSize): Changed return value to double.
+
 2001-09-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (colorMap): Allocate a colormap if it does not

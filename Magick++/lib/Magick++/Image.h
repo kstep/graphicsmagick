@@ -630,7 +630,7 @@ namespace Magick
     std::string     fileName ( void ) const;
 
     // Number of bytes of the image on disk
-    unsigned int    fileSize ( void ) const;
+    double          fileSize ( void ) const;
 
     // Color to use when filling drawn objects
     void            fillColor ( const Color &fillColor_ );

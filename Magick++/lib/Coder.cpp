@@ -9,6 +9,8 @@
 
 #define MAGICK_IMPLEMENTATION
 
+#if 0
+
 #include "Magick++/Include.h"
 #include "Magick++/Functions.h"
 #include "Magick++/Coder.h"
@@ -142,3 +144,5 @@ Magick::Coder::Coder (
   info->client_data = static_cast<void *>(this); // coder object
   RegisterMagickInfo ( info );
 }
+
+#endif

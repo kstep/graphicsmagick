@@ -1966,7 +1966,7 @@ void Magick::Image::colorMap ( unsigned int index_,
 
       // Initialize new colormap entries as all black
       Color black(0,0,0);
-      for( int i=imageptr->colors; i<index_; i++ )
+      for( unsigned int i=imageptr->colors; i<index_; i++ )
         (imageptr->colormap)[i] = black;
 
       // Change number of colors
@@ -2155,7 +2155,7 @@ std::string Magick::Image::fileName ( void ) const
   //  return std::string( constImage()->filename );
 }
 
-unsigned int Magick::Image::fileSize ( void ) const
+double Magick::Image::fileSize ( void ) const
 {
   return constImage()->filesize;
 }
