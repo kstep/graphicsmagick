@@ -321,7 +321,10 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="medianfilterimage">MedianFilterImage</A></H2>
-<blockquote>MedianFilterImage() applies a digital filter that improves the quality of a noisy image. Each pixel is replaced by the median in a set of neighboring pixels as defined by radius. </blockquote><P>The format of the MedianFilterImage method is:</P>
+<blockquote>MedianFilterImage() applies a digital filter that improves the quality of a noisy image. Each pixel is replaced by the median in a set of neighboring pixels as defined by radius. </blockquote><P>The algorithm was contributed by Mike Edmonds and implements an insertion sort for selecting median color-channel values.  For more on this algorithm see ``Skip Lists: 
+<FONT SIZE=-1>A</FONT> probabilistic Alternative to Balanced Trees'' by William Pugh in the June 1990 of Communications of the 
+<FONT SIZE=-1>ACM.</FONT></P>
+<P>The format of the MedianFilterImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *MedianFilterImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>

@@ -1112,7 +1112,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
     {
       (void) FT_Done_FreeType(library);
       ThrowBinaryException(DelegateWarning,"Unable to read font",
-        draw_info->font);
+        draw_info->font)
     }
   (void) strncpy(font,draw_info->font,MaxTextExtent-1);
   if (draw_info->encoding != (char *) NULL)
