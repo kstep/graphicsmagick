@@ -63,7 +63,37 @@ Package=<4>
 
 ###############################################################################
 
+Project: "IM_MOD_SVG"=.\modules\IM_MOD_SVG.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name IMagickMOD
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "IM_MOD_TIFF"=.\modules\IM_MOD_TIFF.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name IMagickMOD
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "IM_MOD_XC"=.\modules\IM_MOD_XC.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

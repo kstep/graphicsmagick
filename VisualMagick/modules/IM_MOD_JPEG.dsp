@@ -57,7 +57,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /machine:I386
-# ADD LINK32 ..\lib\MagickJPEG.lib ..\lib\MagickTIFF.lib ..\lib\MagickPNG.lib ..\lib\MagickZIP.lib ..\lib\MagickJBIG.lib ..\lib\Magickttf.lib ..\lib\MagickFPX.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /pdb:"..\bin\IM_MOD_JPEG.pdb" /machine:I386 /out:"..\bin\IM_MOD_JPEG.dll"
+# ADD LINK32 ..\lib\MagickJPEG.lib ..\lib\MagickTIFF.lib ..\lib\MagickPNG.lib ..\lib\MagickZIP.lib ..\lib\MagickJBIG.lib ..\lib\Magickttf.lib ..\lib\MagickFPX.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /pdb:"..\bin\IM_MOD_JPEG_.pdb" /machine:I386 /out:"..\bin\IM_MOD_JPEG_.dll"
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "IM_MOD_JPEG - Win32 Debug"
@@ -88,7 +88,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /debug /machine:I386
-# ADD LINK32 ..\lib\MagickJPEGDB.lib ..\lib\MagickTIFFDB.lib ..\lib\MagickPNGDB.lib ..\lib\MagickZIPDB.lib ..\lib\MagickJBIGDB.lib ..\lib\MagickttfDB.lib ..\lib\MagickFPXDB.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"..\bin\IM_MOD_JPEGDB.pdb" /debug /machine:I386 /out:"..\bin\IM_MOD_JPEGDB.dll"
+# ADD LINK32 ..\lib\MagickJPEGDB.lib ..\lib\MagickTIFFDB.lib ..\lib\MagickPNGDB.lib ..\lib\MagickZIPDB.lib ..\lib\MagickJBIGDB.lib ..\lib\MagickttfDB.lib ..\lib\MagickFPXDB.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"..\bin\IM_MOD_JPEG_DB.pdb" /debug /machine:I386 /out:"..\bin\IM_MOD_JPEG_DB.dll"
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "IM_MOD_JPEG - Win32 Release static"
@@ -115,7 +115,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:"..\lib\IM_MOD_JPEGstatic.lib"
+# ADD LIB32 /nologo /out:"..\lib\IM_MOD_JPEG_static.lib"
 
 !ELSEIF  "$(CFG)" == "IM_MOD_JPEG - Win32 Debug static"
 
@@ -141,7 +141,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:"..\lib\IM_MOD_JPEGstaticDB.lib"
+# ADD LIB32 /nologo /out:"..\lib\IM_MOD_JPEG_static_DB.lib"
 
 !ENDIF 
 
