@@ -1072,10 +1072,10 @@ ModuleExport void RegisterJPEGImage(void)
 
   entry=SetMagickInfo("JPEG");
 #if defined(HasJPEG)
-  entry->decoder=(DecoderHandler) ReadJPEGImage;
-  entry->encoder=(EncoderHandler) WriteJPEGImage;
+  entry->decoder=ReadJPEGImage;
+  entry->encoder=WriteJPEGImage;
 #endif
-  entry->magick=(MagickHandler) IsJPEG;
+  entry->magick=IsJPEG;
   entry->adjoin=False;
   entry->description=
     AcquireString("Joint Photographic Experts Group JFIF format");
@@ -1092,8 +1092,8 @@ ModuleExport void RegisterJPEGImage(void)
   entry=SetMagickInfo("JPG");
   entry->thread_support=False;
 #if defined(HasJPEG)
-  entry->decoder=(DecoderHandler) ReadJPEGImage;
-  entry->encoder=(EncoderHandler) WriteJPEGImage;
+  entry->decoder=ReadJPEGImage;
+  entry->encoder=WriteJPEGImage;
 #endif
   entry->adjoin=False;
   entry->description=
@@ -1438,7 +1438,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   image->y_resolution=y_resolution;
   jpeg_info.density_unit=1;  /* default to DPI */
   if (logging)
-    LogMagickEvent(CoderEvent,"   image resolution=(%ld,%ld)",
+    LogMagickEvent(CoderEvent,"   Image resolution=(%ld,%ld)",
       (long) image->x_resolution,(long) image->y_resolution);
   if ((image->x_resolution != 0) && (image->y_resolution != 0))
     {
@@ -1532,18 +1532,29 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   jpeg_start_compress(&jpeg_info,True);
   if (logging)
     {
+      if (image->storage_class == PseudoClass)
+        LogMagickEvent(CoderEvent,"   Storage class=PseudoClass");
+      else
+        LogMagickEvent(CoderEvent,"   Storage class=DirectClass");
+      LogMagickEvent(CoderEvent,"   Image depth=%lu",image->depth);
+      if (image->colors)
+        LogMagickEvent(CoderEvent,"   Number of colors=%lu",
+          image->colors);
+      else
+        LogMagickEvent(CoderEvent,"   Number of colors is unspecified");
       LogMagickEvent(CoderEvent,"   JPEG data_Precision=%d",
         (int) jpeg_info.data_precision);
       switch (image_info->colorspace)
       {
         case CMYKColorspace:
         {
-          LogMagickEvent(CoderEvent,"   image_info->colorspace=CMYK");
+        LogMagickEvent(CoderEvent,"   Storage class=PseudoClass");
+          LogMagickEvent(CoderEvent,"   Image_info->colorspace=CMYK");
           break;
         }
         case YCbCrColorspace:
         {
-          LogMagickEvent(CoderEvent,"   image_info->colorspace=YCbCr");
+          LogMagickEvent(CoderEvent,"   Image_info->colorspace=YCbCr");
           break;
         }
           default:
@@ -1603,7 +1614,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         }
         default:
         {
-          LogMagickEvent(CoderEvent,"   image->colorspace=%d",
+          LogMagickEvent(CoderEvent,"   Image->colorspace=%d",
             image->colorspace);
           LogMagickEvent(CoderEvent,
             "   Sampling factors=(%d,%d),(%d,%d),(%d,%d),(%d,%d)",

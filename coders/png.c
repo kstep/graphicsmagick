@@ -3573,7 +3573,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             value[length]='\0';
             (void) SetImageAttribute(image,text[i].key,value);
             if (logging)
-              LogMagickEvent(CoderEvent,"       keyword=%s",text[i].key);
+              LogMagickEvent(CoderEvent,"       Keyword=%s",text[i].key);
             LiberateMemory((void **) &value);
           }
       }
@@ -4541,11 +4541,11 @@ static void LogPNGChunk(int logging, png_bytep type, unsigned long length)
 static void
 png_set_compression_buffer_size(png_structp png_ptr, png_uint_32 size)
 {
-    if(png_ptr->zbuf)
+    if (png_ptr->zbuf)
        png_free(png_ptr, png_ptr->zbuf); png_ptr->zbuf=NULL;
     png_ptr->zbuf_size=(png_size_t) size;
     png_ptr->zbuf=(png_bytep) png_malloc(png_ptr, size);
-    if(!png_ptr->zbuf)
+    if (!png_ptr->zbuf)
        png_error(png_ptr,"Unable to allocate zbuf");
 }
 #endif
@@ -4763,13 +4763,20 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       for(p=image; p != (Image *) NULL; p=p->next)
       {
         LogMagickEvent(CoderEvent,  "     Scene=%ld",scene++);
-        LogMagickEvent(CoderEvent,  "       Image depth=%ld",p->depth);
+        LogMagickEvent(CoderEvent,  "       Image depth=%lu",p->depth);
         if (p->matte)
           LogMagickEvent(CoderEvent,"       Matte=True");
-        if(p->storage_class == PseudoClass)
+        else
+          LogMagickEvent(CoderEvent,"       Matte=False");
+        if (p->storage_class == PseudoClass)
           LogMagickEvent(CoderEvent,"       Storage class=PseudoClass");
         else
           LogMagickEvent(CoderEvent,"       Storage class=DirectClass");
+        if (p->colors)
+          LogMagickEvent(CoderEvent,"       Number of colors=%lu",
+            p->colors);
+        else
+          LogMagickEvent(CoderEvent,"       Number of colors is unspecified");
         if (!adjoin)
           break;
       }
@@ -4785,7 +4792,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 
     for(p=image; p != (Image *) NULL; p=p->next)
     {
-      if(p->taint && p->storage_class == PseudoClass)
+      if (p->taint && p->storage_class == PseudoClass)
          SyncImage(p);
       if (!adjoin)
         break;
@@ -4804,7 +4811,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 
       for(p=image; p != (Image *) NULL; p=p->next)
       {
-        if(p->storage_class != PseudoClass)
+        if (p->storage_class != PseudoClass)
           {
             p->colors=GetNumberColors(p,(FILE *) NULL,&p->exception);
             if (p->colors <= 256)
@@ -5639,7 +5646,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                    else if ((intensity & 0x01) != ((intensity & 0x02) >> 1))
                      depth_1_ok=False;
                 }
-                if(depth_1_ok)
+                if (depth_1_ok)
                    ping_info->bit_depth=1;
                 else if (depth_2_ok)
                    ping_info->bit_depth=2;
@@ -5805,11 +5812,11 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     LogMagickEvent(CoderEvent,"   Setting up deflate compression");
 #if (PNG_LIBPNG_VER > 99)
          if (logging)
-    LogMagickEvent(CoderEvent,"     compression buffer size= 32768");
+    LogMagickEvent(CoderEvent,"     Compression buffer size= 32768");
     png_set_compression_buffer_size(ping,32768L);
 #endif
          if (logging)
-    LogMagickEvent(CoderEvent,"     compression mem level= 9");
+    LogMagickEvent(CoderEvent,"     Compression mem level= 9");
     png_set_compression_mem_level(ping, 9);
     if (image_info->quality > 9)
       {
@@ -5818,13 +5825,13 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 
         level=(int) Min(image_info->quality/10,9);
         if (logging)
-          LogMagickEvent(CoderEvent,"     compression level= %d",level);
+          LogMagickEvent(CoderEvent,"     Compression level= %d",level);
         png_set_compression_level(ping,level);
       }
     else
       {
         if (logging)
-          LogMagickEvent(CoderEvent,"     compression strategy=Z_HUFFMAN_ONLY");
+          LogMagickEvent(CoderEvent,"     Compression strategy=Z_HUFFMAN_ONLY");
         png_set_compression_strategy(ping, Z_HUFFMAN_ONLY);
       }
     if (logging)
@@ -5903,7 +5910,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       }
     for (i=0; i < (long) image->generic_profiles; i++)
     {
-      if(image->generic_profile[i].name == (png_charp) NULL)
+      if (image->generic_profile[i].name == (png_charp) NULL)
         {
         if (logging)
           LogMagickEvent(CoderEvent,
@@ -6179,7 +6186,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     if (logging)
       {
         LogMagickEvent(CoderEvent,"   Writing PNG image data");
-        LogMagickEvent(CoderEvent,"     Bit depth=%d",ping_info->bit_depth);
+        LogMagickEvent(CoderEvent,"     PNG bit depth=%d",ping_info->bit_depth);
         LogMagickEvent(CoderEvent,"     Color type=%d",ping_info->color_type);
         LogMagickEvent(CoderEvent,"     Interlace method=%d",
           ping_info->interlace_type);
