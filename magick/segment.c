@@ -1297,7 +1297,7 @@ static void ScaleSpace(const long *histogram,const double tau,
   double
     alpha,
     beta,
-    gamma[MaxRGB+1],
+    gamma[Downscale(MaxRGB+1)],
     sum;
 
   register int
