@@ -613,7 +613,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
               (next->colors > (unsigned long) visual_info->colormap_size))
             break;
           for (i=0; i < (long) images->colors; i++)
-            if (!FuzzyColorMatch(next->colormap+i,images->colormap+i,0))
+            if (!ColorMatch(next->colormap+i,images->colormap+i))
               break;
           if (i < (long) images->colors)
             break;
@@ -1230,7 +1230,7 @@ MagickExport Image *XAnimateImages(Display *display,
               (next->colors > (unsigned long) visual_info->colormap_size))
             break;
           for (i=0; i < (long) images->colors; i++)
-            if (!FuzzyColorMatch(next->colormap+i,images->colormap+i,0))
+            if (!ColorMatch(next->colormap+i,images->colormap+i))
               break;
           if (i < (long) images->colors)
             break;

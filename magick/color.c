@@ -729,7 +729,7 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
         if (level != MaxTreeDepth)
           continue;
         for (i=0; i < (long) node_info->number_unique; i++)
-           if (FuzzyColorMatch(p,&node_info->list[i].pixel,0))
+           if (ColorMatch(p,&node_info->list[i].pixel))
              break;
         if (i < (long) node_info->number_unique)
           {
@@ -1154,7 +1154,7 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
         index--;
       }
       for (i=0; i < (long) node_info->number_unique; i++)
-        if (FuzzyColorMatch(p,&node_info->list[i].pixel,0))
+        if (ColorMatch(p,&node_info->list[i].pixel))
           break;
       if (i == (long) node_info->number_unique)
         {

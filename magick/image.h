@@ -37,6 +37,8 @@ typedef unsigned short Quantum;
 # error "Specified value of QuantumDepth is not supported"
 #endif
 
+#define ColorMatch(p,q) (((p)->red == (q)->red) && \
+	((p)->green == (q)->green) && ((p)->blue == (q)->blue))
 #define Intensity(color)  ((Quantum) \
   ((9798L*(color)->red+19235L*(color)->green+3735L*(color)->blue)/32768L))
 #define XIntensity(color)  ((unsigned short) \
