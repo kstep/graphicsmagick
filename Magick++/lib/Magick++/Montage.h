@@ -9,16 +9,16 @@
 #define Magick_Montage_header
 
 #include <string>
+#include "Magick++/Include.h"
 #include "Magick++/Color.h"
 #include "Magick++/Geometry.h"
-#include "Magick++/Include.h"
 
 //
 // Basic (Un-framed) Montage
 //
 namespace Magick
 {
-  class Montage
+  class MagickPPExport Montage
   {
   public:
     Montage( void );
@@ -105,7 +105,7 @@ namespace Magick
   //
   // Montage With Frames (Extends Basic Montage)
   //
-  class MontageFramed : public Montage
+  class MagickPPExport MontageFramed : public Montage
   {
   public:
     MontageFramed ( void );

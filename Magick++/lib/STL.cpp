@@ -5,9 +5,10 @@
 // Implementation of STL classes and functions
 //
 
+#define MAGICK_IMPLEMENTATION
+
 #include <Magick++/Image.h>
 #include <Magick++/STL.h>
-#define MAGICK_IMPLEMENTATION
 
 // Add noise to image with specified noise type
 Magick::addNoiseImage::addNoiseImage( Magick::NoiseType noiseType_ )

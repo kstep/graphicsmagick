@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
 //
 // Reference counted container class for Binary Large Objects (BLOBs)
 //
@@ -8,15 +8,16 @@
 #if !defined(Magick_Blob_header)
 #define Magick_Blob_header
 
+#include "Magick++/Include.h"
 #include "Magick++/Thread.h"
 #include <string>
 
 namespace Magick
 {
   // Forward decl
-  class BlobRef;
+  class MagickPPExport BlobRef;
 
-  class Blob
+  class MagickPPExport Blob
   {
 
     friend class Image;
@@ -83,7 +84,7 @@ namespace Magick
   // Reference counted access to Blob data
   // (Private implementation class)
   //
-  class BlobRef {
+  class MagickPPExport BlobRef {
     friend class Blob;
   public:
     // There are no public methods in this class

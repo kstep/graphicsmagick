@@ -15,17 +15,17 @@
 #define Magick_Options_header
 
 #include <string>
+#include "Magick++/Include.h"
 #include "Magick++/Color.h"
 #include "Magick++/Geometry.h"
 #include "Magick++/Drawable.h"
-#include "Magick++/Include.h"
 
 namespace Magick
 {
 
-  class Image;
+  class MagickPPExport Image;
 
-  class Options
+  class MagickPPExport Options
   {
     friend class Image;
 

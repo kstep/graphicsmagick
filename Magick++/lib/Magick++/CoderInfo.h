@@ -10,12 +10,12 @@
 #if !defined (Magick_CoderInfo_header)
 #define Magick_CoderInfo_header
 
-#include "Magick++/Include.h"
 #include <string>
+#include "Magick++/Include.h"
 
 namespace Magick
 {
-  class CoderInfo
+  class MagickPPExport CoderInfo
   {
   public:
 

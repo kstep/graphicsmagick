@@ -20,9 +20,9 @@ using namespace std;
 
 #define AbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
 
-const std::string Magick::borderGeometryDefault = "6x6+0+0";
-const std::string Magick::frameGeometryDefault  = "25x25+6+6";
-const std::string Magick::raiseGeometryDefault  = "6x6+0+0";
+extern MagickPPExport const std::string Magick::borderGeometryDefault = "6x6+0+0";
+extern MagickPPExport const std::string Magick::frameGeometryDefault  = "25x25+6+6";
+extern MagickPPExport const std::string Magick::raiseGeometryDefault  = "6x6+0+0";
 
 //
 // Explicit template instantiations
@@ -32,7 +32,7 @@ const std::string Magick::raiseGeometryDefault  = "6x6+0+0";
 // Friend functions to compare Image objects
 //
 
-int Magick::operator == ( const Magick::Image& left_, const Magick::Image& right_ )
+MagickPPExport int Magick::operator == ( const Magick::Image& left_, const Magick::Image& right_ )
 {
   // If image pixels and signature are the same, then the image is identical
   return ( ( left_.rows() == right_.rows() ) &&
@@ -40,26 +40,26 @@ int Magick::operator == ( const Magick::Image& left_, const Magick::Image& right
 	   ( left_.signature() == right_.signature() )
 	   );
 }
-int Magick::operator != ( const Magick::Image& left_, const Magick::Image& right_ )
+MagickPPExport int Magick::operator != ( const Magick::Image& left_, const Magick::Image& right_ )
 {
   return ( ! (left_ == right_) );
 }
-int Magick::operator >  ( const Magick::Image& left_, const Magick::Image& right_ )
+MagickPPExport int Magick::operator >  ( const Magick::Image& left_, const Magick::Image& right_ )
 {
   return ( !( left_ < right_ ) && ( left_ != right_ ) );
 }
-int Magick::operator <  ( const Magick::Image& left_, const Magick::Image& right_ )
+MagickPPExport int Magick::operator <  ( const Magick::Image& left_, const Magick::Image& right_ )
 {
   // If image pixels are less, then image is smaller
   return ( ( left_.rows() * left_.columns() ) <
 	   ( right_.rows() * right_.columns() )
 	   );
 }
-int Magick::operator >= ( const Magick::Image& left_, const Magick::Image& right_ )
+MagickPPExport int Magick::operator >= ( const Magick::Image& left_, const Magick::Image& right_ )
 {
   return ( ( left_ > right_ ) || ( left_ == right_ ) );
 }
-int Magick::operator <= ( const Magick::Image& left_, const Magick::Image& right_ )
+MagickPPExport int Magick::operator <= ( const Magick::Image& left_, const Magick::Image& right_ )
 {
   return ( ( left_ < right_ ) || ( left_ == right_ ) );
 }

@@ -50,6 +50,21 @@ namespace MagickLib
 #undef class
 }
 
+/**
+ * Under Visual C++ we have single threaded static libraries, or
+ * mutli-threaded DLLs using the multithreaded runtime DLLs.
+ **/
+#if defined(_MT) && defined(_DLL) && !defined(_LIB)
+#  pragma warning( disable: 4273 )      /* Disable the stupid dll linkage warnings */
+#  if !defined(MAGICK_IMPLEMENTATION)
+#    define MagickPPExport __declspec(dllimport)
+#  else
+#   define MagickPPExport __declspec(dllexport)
+#  endif
+#else
+#  define MagickPPExport
+#endif
+
 //
 // Import ImageMagick symbols and types which are used as part of the
 // Magick++ API definition into namespace "Magick".
@@ -464,7 +479,6 @@ namespace Magick
   using MagickLib::DrawSetScale;
   using MagickLib::DrawSetSkewX;
   using MagickLib::DrawSetSkewY;
-//   using MagickLib::DrawSetStopColor;
   using MagickLib::DrawSetStrokeAntialias;
   using MagickLib::DrawSetStrokeColor;
   using MagickLib::DrawSetStrokeColorString;
@@ -501,6 +515,7 @@ namespace Magick
   using MagickLib::GaussianBlurImage;
   using MagickLib::GetCacheView;
   using MagickLib::GetCacheViewIndexes;
+  using MagickLib::GetColorTuple;
   using MagickLib::GetDrawInfo;
   using MagickLib::GetExceptionInfo;
   using MagickLib::GetGeometry;

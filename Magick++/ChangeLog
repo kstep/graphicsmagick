@@ -1,3 +1,7 @@
+2002-08-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Overall: Now compiles as a DLL using Visual C++.
+
 2002-07-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (profile): Added method to store, delete, or

@@ -11,40 +11,40 @@
 #include <string>
 #include <list>
 
+#include "Magick++/Include.h"
 #include "Magick++/Blob.h"
 #include "Magick++/Color.h"
 #include "Magick++/Drawable.h"
 #include "Magick++/Exception.h"
 #include "Magick++/Geometry.h"
 #include "Magick++/Options.h"
-#include "Magick++/Include.h"
 #include "Magick++/Thread.h"
 #include "Magick++/TypeMetric.h"
 
 namespace Magick
 {
   // Forward declarations
-  class ImageRef;
+  class MagickPPExport ImageRef;
 
-  extern const std::string borderGeometryDefault;
-  extern const std::string frameGeometryDefault;
-  extern const std::string raiseGeometryDefault;
+  extern MagickPPExport const std::string borderGeometryDefault;
+  extern MagickPPExport const std::string frameGeometryDefault;
+  extern MagickPPExport const std::string raiseGeometryDefault;
 
   // Compare two Image objects regardless of LHS/RHS
   // Image sizes and signatures are used as basis of comparison
-  int operator == ( const Magick::Image& left_, const Magick::Image& right_ );
-  int operator != ( const Magick::Image& left_, const Magick::Image& right_ );
-  int operator >  ( const Magick::Image& left_, const Magick::Image& right_ );
-  int operator <  ( const Magick::Image& left_, const Magick::Image& right_ );
-  int operator >= ( const Magick::Image& left_, const Magick::Image& right_ );
-  int operator <= ( const Magick::Image& left_, const Magick::Image& right_ );
+  int MagickPPExport operator == ( const Magick::Image& left_, const Magick::Image& right_ );
+  int MagickPPExport operator != ( const Magick::Image& left_, const Magick::Image& right_ );
+  int MagickPPExport operator >  ( const Magick::Image& left_, const Magick::Image& right_ );
+  int MagickPPExport operator <  ( const Magick::Image& left_, const Magick::Image& right_ );
+  int MagickPPExport operator >= ( const Magick::Image& left_, const Magick::Image& right_ );
+  int MagickPPExport operator <= ( const Magick::Image& left_, const Magick::Image& right_ );
 
   //
   // Image is the representation of an image.  In reality, it actually
   // a handle object which contains a pointer to a shared reference
   // object (ImageRef). As such, this object is extremely space efficient.
   //
-  class Image
+  class MagickPPExport Image
   {
   public:
     // Construct from image file or image specification
@@ -1044,8 +1044,8 @@ namespace Magick
   // Reference counted access to Image *
   // (Private implementation class)
   //
-  class ImageRef {
-    friend class Image; 
+  class MagickPPExport ImageRef {
+    friend class MagickPPExport Image; 
   private:
     // Construct with an image pointer and default options
     ImageRef ( MagickLib::Image * image_ );

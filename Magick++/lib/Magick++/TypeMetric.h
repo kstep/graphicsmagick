@@ -14,7 +14,7 @@
 
 namespace Magick
 {
-  class TypeMetric
+  class MagickPPExport TypeMetric
   {
     friend class Image;
   public:

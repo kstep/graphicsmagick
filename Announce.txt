@@ -62,6 +62,8 @@ details):
 
      + The Cygwin build should now properly distinguish between drive
        letters and magick types for path specifications.
+
+     + Magick++ (C++ API) now builds as a DLL under Windows.
   
   o Utilities enhancements/changes:
      - No changes in this release.
