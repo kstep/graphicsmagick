@@ -3,11 +3,11 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                            IIIII   CCCC   CCCC                              %
-%                              I    C      C                                  %
-%                              I    C      C                                  %
-%                              I    C      C                                  %
-%                            IIIII   CCCC   CCCC                              %
+%                            IIIII   CCCC  M   M                              %
+%                              I    C      MM MM                              %
+%                              I    C      M M M                              %
+%                              I    C      M   M                              %
+%                            IIIII   CCCC  M   M                              %
 %                                                                             %
 %                                                                             %
 %                    Read/Write ImageMagick Image Format.                     %
@@ -59,32 +59,32 @@
   Forward declarations.
 */
 static unsigned int
-  WriteICCImage(const ImageInfo *,Image *);
+  WriteICMImage(const ImageInfo *,Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d I C C I m a g e                                                   %
+%   R e a d I C M I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadICCImage reads an image file in the ICC format and returns it.
+%  Method ReadICMImage reads an image file in the ICM format and returns it.
 %  It allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.  This method differs from the other decoder
 %  methods in that only the color profile information is useful in the
 %  returned image.
 %
-%  The format of the ReadICCImage method is:
+%  The format of the ReadICMImage method is:
 %
-%      Image *ReadICCImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadICMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o image:  Method ReadICCImage returns a pointer to the image after
+%    o image:  Method ReadICMImage returns a pointer to the image after
 %      reading. A null image is returned if there is a memory shortage or if
 %      the image cannot be read.
 %
@@ -94,7 +94,7 @@ static unsigned int
 %
 %
 */
-static Image *ReadICCImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadICMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -116,8 +116,11 @@ static Image *ReadICCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+  image->columns=1;
+  image->rows=1;
+  SetImage(image,Opaque);
   /*
-    Read ICC image.
+    Read ICM image.
   */
   length=MaxTextExtent;
   image->color_profile.info=(unsigned char *) AllocateMemory(length);
@@ -150,35 +153,35 @@ static Image *ReadICCImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e g i s t e r I C C I m a g e                                           %
+%   R e g i s t e r I C M I m a g e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method RegisterICCImage adds attributes for the ICC image format to
+%  Method RegisterICMImage adds attributes for the ICM image format to
 %  the list of supported formats.  The attributes include the image format
 %  tag, a method to read and/or write the format, whether the format
 %  supports the saving of more than one frame to the same file or blob,
 %  whether the format supports native in-memory I/O, and a brief
 %  description of the format.
 %
-%  The format of the RegisterICCImage method is:
+%  The format of the RegisterICMImage method is:
 %
-%      RegisterICCImage(void)
+%      RegisterICMImage(void)
 %
 */
-ModuleExport void RegisterICCImage(void)
+ModuleExport void RegisterICMImage(void)
 {
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("ICC");
-  entry->decoder=ReadICCImage;
-  entry->encoder=WriteICCImage;
+  entry=SetMagickInfo("ICM");
+  entry->decoder=ReadICMImage;
+  entry->encoder=WriteICMImage;
   entry->adjoin=False;
   entry->description=AllocateString("ICC Color Profile");
-  entry->module=AllocateString("ICC");
+  entry->module=AllocateString("ICM");
   RegisterMagickInfo(entry);
 }
 
@@ -187,23 +190,23 @@ ModuleExport void RegisterICCImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r I C C I m a g e                                       %
+%   U n r e g i s t e r I C M I m a g e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method UnregisterICCImage removes format registrations made by the
-%  ICC module from the list of supported formats.
+%  Method UnregisterICMImage removes format registrations made by the
+%  ICM module from the list of supported formats.
 %
-%  The format of the UnregisterICCImage method is:
+%  The format of the UnregisterICMImage method is:
 %
-%      UnregisterICCImage(void)
+%      UnregisterICMImage(void)
 %
 */
-ModuleExport void UnregisterICCImage(void)
+ModuleExport void UnregisterICMImage(void)
 {
-  UnregisterMagickInfo("ICC");
+  UnregisterMagickInfo("ICM");
 }
 
 /*
@@ -211,21 +214,21 @@ ModuleExport void UnregisterICCImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   W r i t e I C C I m a g e                                                 %
+%   W r i t e I C M I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteICCImage writes an image in the ICC format.
+%  Method WriteICMImage writes an image in the ICM format.
 %
-%  The format of the WriteICCImage method is:
+%  The format of the WriteICMImage method is:
 %
-%      unsigned int WriteICCImage(const ImageInfo *image_info,Image *image)
+%      unsigned int WriteICMImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %
-%    o status: Method WriteICCImage return True if the image is written.
+%    o status: Method WriteICMImage return True if the image is written.
 %      False is returned is there is a memory shortage or if the image file
 %      fails to write.
 %
@@ -235,7 +238,7 @@ ModuleExport void UnregisterICCImage(void)
 %
 %
 */
-static unsigned int WriteICCImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteICMImage(const ImageInfo *image_info,Image *image)
 {
   unsigned int
     status;

@@ -170,8 +170,10 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocate_image->chromaticity.blue_primary.y=0.0;
   allocate_image->chromaticity.white_point.x=0.0;
   allocate_image->chromaticity.white_point.y=0.0;
+  allocate_image->color_profile.name=(char *) NULL;
   allocate_image->color_profile.length=0;
   allocate_image->color_profile.info=(unsigned char *) NULL;
+  allocate_image->iptc_profile.name=(char *) NULL;
   allocate_image->iptc_profile.length=0;
   allocate_image->iptc_profile.info=(unsigned char *) NULL;
   (void) QueryColorDatabase(BackgroundColor,&allocate_image->background_color);
@@ -3831,7 +3833,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
               Remove a ICC or IPTC profile from the image.
             */
             option=argv[++i];
-            if (LocaleCompare("icc",option) == 0)
+            if (LocaleCompare("icm",option) == 0)
               {
                 if ((*image)->color_profile.length != 0)
                   FreeMemory((void **) &(*image)->color_profile.info);
@@ -3861,7 +3863,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         profile=ReadImage(clone_info,&error);
         if (profile == (Image *) NULL)
           continue;
-        if (LocaleCompare("icc",profile->magick) == 0)
+        if (LocaleCompare("icm",profile->magick) == 0)
           {
             if ((*image)->color_profile.length != 0)
               FreeMemory((void **) &(*image)->color_profile.info);

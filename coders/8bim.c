@@ -157,6 +157,9 @@ static Image *Read8BIMImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+  image->columns=1;
+  image->rows=1;
+  SetImage(image,Opaque);
   /*
     Read 8BIM image.
   */

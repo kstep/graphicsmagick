@@ -466,7 +466,6 @@ static unsigned int IsPNG(const unsigned char *magick,const unsigned int length)
 %        o  pHYs
 %        o  sBIT
 %        o  bKGD
-%        o  iCCP (wait for libpng implementation).
 %        o  iTXt (wait for libpng implementation).
 %
 %    Use the scene signature to discover when an identical scene is
@@ -815,11 +814,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   char
     page_geometry[MaxTextExtent];
 
-  PixelPacket
-    mng_background_color,
-    mng_global_bkgd,
-    transparent_color;
-
   int
     have_global_bkgd,
     have_global_chrm,
@@ -853,6 +847,11 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     frame,
     image_box,
     previous_fb;
+
+  PixelPacket
+    mng_background_color,
+    mng_global_bkgd,
+    transparent_color;
 
   register IndexPacket
     *indexes;
@@ -1935,14 +1934,24 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image->depth=8;
           }
       }
+#if defined(PNG_READ_iCCP_SUPPORTED)
+    if (ping_info->valid & PNG_INFO_iCCP)
+      {
+        int
+          compression;
+
+        png_get_iCCP(ping,ping_info,&image->color_profile.name,
+          &compression,&image->color_profile.info,&image->color_profile.length);
+      }
+#endif
 #if defined(PNG_READ_sRGB_SUPPORTED)
     {
       int
         intent;
 
       if (have_global_srgb)
-        image->rendering_intent=
-          (RenderingIntent) (mng_info->global_srgb_intent+1);
+        image->rendering_intent=(RenderingIntent)
+          (mng_info->global_srgb_intent+1);
       if (png_get_sRGB(ping, ping_info, &intent))
         image->rendering_intent=(RenderingIntent) (intent+1);
     }
@@ -1957,7 +1966,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
          image->gamma=(float) file_gamma;
     }
     if (have_global_chrm)
-        image->chromaticity=mng_info->global_chrm;
+      image->chromaticity=mng_info->global_chrm;
     if (ping_info->valid & PNG_INFO_cHRM)
       {
         png_get_cHRM(ping, ping_info,
@@ -1972,20 +1981,24 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if (image->rendering_intent)
       {
-        image->gamma=.45455;
-        image->chromaticity.white_point.x  =0.3127;
-        image->chromaticity.white_point.y  =0.3290;
-        image->chromaticity.red_primary.x  =0.6400;
-        image->chromaticity.red_primary.y  =0.3300;
-        image->chromaticity.green_primary.x=0.3000;
-        image->chromaticity.green_primary.y=0.6000;
-        image->chromaticity.blue_primary.x =0.1500;
-        image->chromaticity.blue_primary.y =0.0600;
+        image->gamma=0.45455;
+        image->chromaticity.red_primary.x=0.6400f;
+        image->chromaticity.red_primary.y=0.3300f;
+        image->chromaticity.red_primary.z=1.0000f;
+        image->chromaticity.green_primary.x=0.3000f;
+        image->chromaticity.green_primary.y=0.6000f;
+        image->chromaticity.green_primary.z=1.0000f;
+        image->chromaticity.blue_primary.x=0.1500f;
+        image->chromaticity.blue_primary.y=0.0600f;
+        image->chromaticity.blue_primary.z=1.0000f;
+        image->chromaticity.white_point.x=0.3127f;
+        image->chromaticity.white_point.y=0.3290f;
+        image->chromaticity.white_point.z=1.0000f;
       }
     if (have_global_gama || image->rendering_intent)
-      ping_info->valid |= PNG_INFO_gAMA;
+      ping_info->valid|=PNG_INFO_gAMA;
     if (have_global_chrm || image->rendering_intent)
-      ping_info->valid |= PNG_INFO_cHRM;
+      ping_info->valid|=PNG_INFO_cHRM;
     if (ping_info->valid & PNG_INFO_pHYs)
       {
         /*
@@ -2856,8 +2869,6 @@ ModuleExport void UnregisterPNGImage(void)
 %    copying rules.
 %
 %    Write the iCCP chunk at MNG level when (image->color_profile.length > 0)
-%    Write the iCCP chunk at PNG level if appropriate, when libpng has
-%    implemented iCCP.
 %
 %    Improve selection of color type (use indexed-colour or indexed-colour
 %    with tRNS when 256 or fewer unique RGBA values are present).
@@ -3567,7 +3578,6 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         background.gray=
           (unsigned short) DownScale(Intensity(image->background_color));
         background.index=background.gray;
-
         png_set_bKGD(ping, ping_info, &background);
       }
     /*
@@ -3575,10 +3585,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     */
     if (IsMonochromeImage(image))
       {
+        ping_info->bit_depth=1;
         if (image->matte)
           ping_info->bit_depth=8;
-        else
-          ping_info->bit_depth=1;
       }
     ping_info->color_type=PNG_COLOR_TYPE_RGB;
     matte=image->matte;
@@ -3725,18 +3734,15 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                 palette=(png_color *)
                   AllocateMemory(image->colors*sizeof(png_color));
                 if (palette == (png_color *) NULL)
-                  ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
-                    image);
+                  ThrowWriterException(ResourceLimitWarning,
+                    "Memory allocation failed",image);
                 for (i=0; i < (int) image->colors; i++)
                 {
-                  palette[i].red=
-                    (unsigned short) DownScale(image->colormap[i].red);
-                  palette[i].green=
-                    (unsigned short) DownScale(image->colormap[i].green);
-                  palette[i].blue=
-                    (unsigned short) DownScale(image->colormap[i].blue);
+                  palette[i].red=DownScale(image->colormap[i].red);
+                  palette[i].green=DownScale(image->colormap[i].green);
+                  palette[i].blue=DownScale(image->colormap[i].blue);
                 }
-                png_set_PLTE(ping, ping_info, palette, num_palette);
+                png_set_PLTE(ping,ping_info,palette,num_palette);
               }
             ping_info->bit_depth=1;
             while ((1 << ping_info->bit_depth) < (int) image->colors)
@@ -3746,8 +3752,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             */
             ping_info->trans=(unsigned char *) AllocateMemory(image->colors);
             if (ping_info->trans == (unsigned char *) NULL)
-              ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
-                image);
+              ThrowWriterException(ResourceLimitWarning,
+                "Memory allocation failed",image);
             for (i=0; i < (int) image->colors; i++)
                ping_info->trans[i]=(png_byte) DownScale(Opaque);
             for (y=0; y < (int) image->rows; y++)
@@ -3774,7 +3780,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               if (ping_info->trans[i] != (png_byte) DownScale(Opaque))
                 ping_info->num_trans=i+1;
             if (ping_info->num_trans == 0)
-                ping_info->valid&=(~PNG_INFO_tRNS);
+              ping_info->valid&=(~PNG_INFO_tRNS);
             if (!(ping_info->valid & PNG_INFO_tRNS))
               ping_info->num_trans=0;
             /*
@@ -3783,13 +3789,13 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             for (i=0; i < (int) (image->colors-1); i++)
               if (ColorMatch(ping_info->background,image->colormap[i],0))
                 break;
-            ping_info->background.index=(unsigned short) i;
+            ping_info->background.index=i;
           }
       }
     else
       {
         if (image->depth < 8)
-            image->depth = 8;
+          image->depth=8;
         if (save_image_depth == 16 && image->depth == 8)
           {
             ping_info->trans_values.red*=0x0101;
@@ -3798,7 +3804,11 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             ping_info->trans_values.gray*=0x0101;
           }
       }
-    /* image->matte=matte; */
+#if defined(PNG_WRITE_iCCP_SUPPORTED)
+    if (ping_info->valid & PNG_INFO_iCCP)
+      png_set_iCCP(ping,ping_info,image->color_profile.name,0,
+        &image->color_profile.info,image->color_profile.length);
+#endif
 #if defined(PNG_WRITE_sRGB_SUPPORTED)
     if (!have_write_global_srgb &&
         ((image->rendering_intent != UndefinedIntent) ||
@@ -3920,7 +3930,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       AllocateMemory(image->rows*sizeof(unsigned char *));
     if ((png_pixels == (unsigned char *) NULL) ||
         (scanlines == (unsigned char **) NULL))
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowWriterException(ResourceLimitWarning,
+        "Memory allocation failed",image);
     /*
       Initialize image scanlines.
     */
@@ -4046,8 +4057,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     png_write_end(ping,ping_info);
     if (need_fram && image->dispose == 2)
       {
-        if (page.x || page.y ||
-            (ping_info->width != page.width) ||
+        if (page.x || page.y || (ping_info->width != page.width) ||
             (ping_info->height != page.height))
           {
             /*
@@ -4085,7 +4095,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     if (ping_info->valid & PNG_INFO_PLTE)
       {
         FreeMemory((void **) &ping_info->palette);
-        ping_info->valid &= (~PNG_INFO_PLTE);
+        ping_info->valid&=(~PNG_INFO_PLTE);
       }
     png_destroy_write_struct(&ping,&ping_info);
     FreeMemory((void **) &scanlines);

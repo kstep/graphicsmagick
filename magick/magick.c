@@ -169,7 +169,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       RegisterHDFImage();
       RegisterHISTOGRAMImage();
       RegisterHTMLImage();
-      RegisterICCImage();
+      RegisterICMImage();
       RegisterICONImage();
       RegisterIPTCImage();
       RegisterJBIGImage();

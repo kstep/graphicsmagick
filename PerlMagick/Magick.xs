@@ -1040,19 +1040,19 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         }
       if (strEQcase(attribute,"colorsp"))
         {
-          if (info)
+          sp=SvPOK(sval) ? LookupStr(ColorspaceTypes,SvPV(sval,na)) :
+            SvIV(sval);
+          if (sp < 0)
             {
-              sp=SvPOK(sval) ? LookupStr(ColorspaceTypes,SvPV(sval,na)) :
-                SvIV(sval);
-              if (sp < 0)
-                {
-                  MagickWarning(OptionWarning,"Invalid colorspace type",
-                    SvPV(sval,na));
-                  return;
-                }
-              if (info)
-                info->image_info->colorspace=(ColorspaceType) sp;
+              MagickWarning(OptionWarning,"Invalid colorspace type",
+                SvPV(sval,na));
+              return;
             }
+          if (info)
+            info->image_info->colorspace=(ColorspaceType) sp;
+          for ( ; image; image=image->next)
+            RGBTransformImage(image,(ColorspaceType) sp);
+          return;
         }
       if (strEQcase(attribute,"colors"))
         return;

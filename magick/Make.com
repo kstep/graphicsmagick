@@ -14,7 +14,7 @@ $endif
 $if (f$getsyi("HW_MODEL") .gt. 1023)
 $then     ! Alpha with DEC C
 $  define/nolog sys decc$library_include
-$  compile_options="/nodebug/optimize/prefix=all"
+$  compile_options="/nodebug/optimize/prefix=all/warning=(disable=rightshiftovr)"
 $endif
 $
 $write sys$output "Making Magick..."
@@ -23,6 +23,7 @@ $call Make animate.c
 $call Make annotate.c
 $call Make attributes.c
 $call Make blob.c
+$call Make cache.c
 $call Make cache_view.c
 $call Make colors.c
 $call Make compress.c
@@ -46,7 +47,6 @@ $call Make quantize.c
 $call Make segment.c
 $call Make shear.c
 $call Make signature.c
-$call Make cache.c
 $call Make stream.c
 $call Make timer.c
 $call Make transform.c
@@ -56,10 +56,10 @@ $call Make widget.c
 $call Make xwindows.c
 $call Make zoom.c
 $library/create libMagick.olb PreRvIcccm,animate,annotate,attributes,blob, -
-  cache_view,colors,compress,constitute,decorate,delegates,display,draw, -
+  cache,cache_view,colors,compress,constitute,decorate,delegates,display,draw, -
   effects,enhance,error,gems,image,magic,magick,memory,modules, -
-  monitor,montage,quantize,segment,shear,signature,cache, -
-  stream,timer,transform,utility,vms,widget,xwindows,zoom
+  monitor,montage,quantize,segment,shear,signature,stream,timer, -
+  transform,utility,vms,widget,xwindows,zoom
 $exit
 $
 $Make: subroutine

@@ -229,6 +229,9 @@ typedef struct _MontageInfo
 
 typedef struct _ProfileInfo
 {
+  char
+    *name;
+
   unsigned int
     length;
 
@@ -817,7 +820,7 @@ extern Export void
   RegisterHTMImage(void),
   RegisterHTMLImage(void),
   RegisterICBImage(void),
-  RegisterICCImage(void),
+  RegisterICMImage(void),
   RegisterICONImage(void),
   RegisterIMPLICITImage(void),
   RegisterIPTCImage(void),

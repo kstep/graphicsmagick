@@ -120,7 +120,8 @@ static unsigned int IsIPTC(const unsigned char *magick,
 %
 %  The format of the ReadIPTCImage method is:
 %
-%      Image *ReadIPTCImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadIPTCImage(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -134,7 +135,8 @@ static unsigned int IsIPTC(const unsigned char *magick,
 %
 %
 */
-static Image *ReadIPTCImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadIPTCImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   Image
     *image;
@@ -160,6 +162,9 @@ static Image *ReadIPTCImage(const ImageInfo *image_info,ExceptionInfo *exception
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+  image->columns=1;
+  image->rows=1;
+  SetImage(image,Opaque);
   /*
     Read IPTC image.
   */

@@ -743,14 +743,18 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Set CCIR 709 primaries with a D65 white point.
   */
-  image->chromaticity.red_primary.x=0.64f;
-  image->chromaticity.red_primary.y=0.33f;
-  image->chromaticity.green_primary.x=0.30f;
-  image->chromaticity.green_primary.y=0.60f;
-  image->chromaticity.blue_primary.x=0.15f;
-  image->chromaticity.blue_primary.y=0.06f;
+  image->chromaticity.red_primary.x=0.6400f;
+  image->chromaticity.red_primary.y=0.3300f;
+  image->chromaticity.red_primary.z=1.0000f;
+  image->chromaticity.green_primary.x=0.3000f;
+  image->chromaticity.green_primary.y=0.6000f;
+  image->chromaticity.green_primary.z=1.0000f;
+  image->chromaticity.blue_primary.x=0.1500f;
+  image->chromaticity.blue_primary.y=0.0600f;
+  image->chromaticity.blue_primary.z=1.0000f;
   image->chromaticity.white_point.x=0.3127f;
   image->chromaticity.white_point.y=0.3290f;
+  image->chromaticity.white_point.z=1.0000f;
   image->gamma=0.5;
   CloseBlob(image);
   return(image);
