@@ -10,7 +10,7 @@
 %                  LLLLL   OOO    CCCC  A   A  LLLLL  EEEEE                   % 
 %                                                                             % 
 %                                                                             % 
-%                   GraphicsMagick Locale Message Methods                     % 
+%                    ImageMagick Locale Message Methods                       % 
 %                                                                             % 
 %                                                                             % 
 %                              Software Design                                % 
@@ -1684,6 +1684,9 @@ const char *GetLocaleMessage(const char *tag)
             else
             if (p - tp == 20 && !LocaleNCompare(tp, "UnrecognizedPixelMap", 20))
               return *np ? tag : "Unrecognized pixel map";
+            else
+            if (p - tp == 23 && !LocaleNCompare(tp, "UnrecognizedPreviewType", 23))
+              return *np ? tag : "Unrecognized preview type";
             else
             if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedResourceType", 24))
               return *np ? tag : "Unrecognized resource type";

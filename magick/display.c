@@ -62,11 +62,16 @@
 #include "command.h"
 #include "composite.h"
 #include "constitute.h"
+#include "decorate.h"
 #include "delegate.h"
+#include "effect.h"
+#include "enhance.h"
+#include "fx.h"
 #include "log.h"
 #include "monitor.h"
 #include "montage.h"
 #include "paint.h"
+#include "quantize.h"
 #include "render.h"
 #include "resize.h"
 #include "shear.h"
@@ -5307,6 +5312,18 @@ static CommandType XImageWindowCommand(Display *display,
 %
 %
 */
+#define ReplaceImage(oldimage,func) \
+{ \
+  Image \
+    *temporary_image; \
+\
+  temporary_image=func; \
+  if (temporary_image) \
+  { \
+    DestroyImage(oldimage); \
+    oldimage=temporary_image; \
+  } \
+}
 static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
   XWindows *windows,const CommandType command,Image **image)
 {
@@ -5321,6 +5338,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
 
   ImageInfo
     *image_info;
+
+  RectangleInfo
+    rectangle;
 
   int
     status,
@@ -5666,8 +5686,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-flop";
-      (void) MogrifyImage(resource_info->image_info,2,argv,image);
+      ReplaceImage(*image,FlopImage(*image,&(*image)->exception));
       XSetCursorState(display,windows,False);
       if (windows->image.crop_geometry != (char *) NULL)
         {
@@ -5693,8 +5712,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-flip";
-      (void) MogrifyImage(resource_info->image_info,2,argv,image);
+      ReplaceImage(*image,FlipImage(*image,&(*image)->exception));
       XSetCursorState(display,windows,False);
       if (windows->image.crop_geometry != (char *) NULL)
         {
@@ -5760,6 +5778,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       static char
         geometry[MaxTextExtent] = "45.0x45.0";
 
+      double
+        x_shear,
+        y_shear;
+
       /*
         Query user for shear color and geometry.
       */
@@ -5776,11 +5798,13 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) XMagickCommand(display,resource_info,windows,ApplyCommand,image);
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-background";
-      argv[2]=color;
-      argv[3]=(char *) "-shear";
-      argv[4]=geometry;
-      (void) MogrifyImage(resource_info->image_info,5,argv,image);
+      (void) QueryColorDatabase(color,&(*image)->background_color,
+         &(*image)->exception);
+      x_shear=0.0;
+      y_shear=0.0;
+      (void) sscanf(geometry,"%lfx%lf",&x_shear,&y_shear);
+      ReplaceImage(*image,ShearImage(*image,x_shear,y_shear,
+        &(*image)->exception));
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -5808,9 +5832,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) XMagickCommand(display,resource_info,windows,ApplyCommand,image);
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-roll";
-      argv[2]=geometry;
-      (void) MogrifyImage(resource_info->image_info,3,argv,image);
+      (void) GetImageGeometry(*image,geometry,False,&rectangle);
+      ReplaceImage(*image,RollImage(*image,rectangle.x,rectangle.y,
+        &(*image)->exception));
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -5854,9 +5878,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) strcpy(modulate_factors,"100.0/100.0/");
       (void) strncat(modulate_factors,hue_percent,MaxTextExtent-
         strlen(modulate_factors)-1);
-      argv[1]=(char *) "-modulate";
-      argv[2]=modulate_factors;
-      (void) MogrifyImage(resource_info->image_info,3,argv,image);
+      ModulateImage(*image,modulate_factors);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -5884,9 +5906,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) strcpy(modulate_factors,"100.0/");
       (void) strncat(modulate_factors,saturation_percent,MaxTextExtent-
         strlen(modulate_factors)-1);
-      argv[1]=(char *) "-modulate";
-      argv[2]=modulate_factors;
-      (void) MogrifyImage(resource_info->image_info,3,argv,image);
+      ModulateImage(*image,modulate_factors);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -5912,9 +5932,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       (void) strncpy(modulate_factors,brightness_percent,MaxTextExtent-1);
-      argv[1]=(char *) "-modulate";
-      argv[2]=modulate_factors;
-      (void) MogrifyImage(resource_info->image_info,3,argv,image);
+      ModulateImage(*image,modulate_factors);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -5939,9 +5957,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-gamma";
-      argv[2]=factor;
-      (void) MogrifyImage(resource_info->image_info,3,argv,image);
+      GammaImage(*image,factor);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -5956,8 +5972,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-contrast";
-      (void) MogrifyImage(resource_info->image_info,2,argv,image);
+      ContrastImage(*image,True);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -5972,8 +5987,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "+contrast";
-      (void) MogrifyImage(resource_info->image_info,2,argv,image);
+      ContrastImage(*image,False);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -5988,8 +6002,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-equalize";
-      (void) MogrifyImage(resource_info->image_info,2,argv,image);
+      (void) EqualizeImage(*image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6004,8 +6017,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-normalize";
-      (void) MogrifyImage(resource_info->image_info,2,argv,image);
+      (void) NormalizeImage(*image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6020,8 +6032,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-negate";
-      (void) MogrifyImage(resource_info->image_info,2,argv,image);
+      (void) NegateImage(*image,False);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6036,9 +6047,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-colorspace";
-      argv[2]=(char *) "gray";
-      (void) MogrifyImage(resource_info->image_info,3,argv,image);
+      (void) RGBTransformImage(*image,GRAYColorspace);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6051,6 +6060,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       static char
         filename[MaxTextExtent] = "\0";
 
+      Image
+        *map_image;
+
       /*
         Request image file name from user.
       */
@@ -6062,9 +6074,12 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-map";
-      argv[2]=filename;
-      (void) MogrifyImage(resource_info->image_info,3,argv,image);
+      map_image=ReadImage(resource_info->image_info,&(*image)->exception);
+      if (map_image != (Image *) NULL)
+        {
+          (void) MapImage(*image,map_image,True);
+          DestroyImage(map_image);
+        }
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6076,6 +6091,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     {
       static char
         colors[MaxTextExtent] = "256";
+
+      QuantizeInfo
+        quantize_info;
 
       /*
         Query user for maximum number of colors.
@@ -6089,10 +6107,11 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-colors";
-      argv[2]=colors;
-      argv[3]=(char *) (status ? "-dither" : "+dither");
-      (void) MogrifyImage(resource_info->image_info,4,argv,image);
+      GetQuantizeInfo(&quantize_info);
+      quantize_info.number_colors=atol(colors);
+      quantize_info.dither=(status ? False : True);
+      quantize_info.colorspace=(*image)->colorspace;
+      (void) QuantizeImage(&quantize_info,*image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6107,8 +6126,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-despeckle";
-      (void) MogrifyImage(resource_info->image_info,2,argv,image);
+      ReplaceImage(*image,DespeckleImage(*image,&(*image)->exception));
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6119,23 +6137,29 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case EmbossCommand:
     {
       static char
-        radius[MaxTextExtent] = "0.0x1.0";
+        emboss_argument[MaxTextExtent] = "0.0x1.0";
+
+      double
+        radius,
+        sigma;
 
       /*
         Query user for emboss radius.
       */
       (void) XDialogWidget(display,windows,"Emboss",
-        "Enter the emboss radius and standard deviation:",radius);
-      if (*radius == '\0')
+        "Enter the emboss radius and standard deviation:",emboss_argument);
+      if (*emboss_argument == '\0')
         break;
       /*
         Reduce noise in the image.
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-emboss";
-      argv[2]=radius;
-      (void) MogrifyImage(resource_info->image_info,3,argv,image);
+      radius=0.0;
+      sigma=1.0;
+      (void) sscanf(emboss_argument,"%lfx%lf",&radius,&sigma);
+      ReplaceImage(*image,EmbossImage(*image,radius,sigma,
+        &(*image)->exception));
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6160,9 +6184,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-noise";
-      argv[2]=radius;
-      (void) MogrifyImage(resource_info->image_info,3,argv,image);
+      ReplaceImage(*image,ReduceNoiseImage(*image,atol(radius),
+        &(*image)->exception));
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6173,20 +6196,34 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case AddNoiseCommand:
     {
       static char
-        noise_type[MaxTextExtent] = "Gaussian";
+        option[MaxTextExtent] = "Gaussian";
+
+      NoiseType
+        noise_type;
 
       /*
         Add noise to the image.
       */
       XListBrowserWidget(display,windows,&windows->widget,NoiseTypes,
-        "Add Noise","Select a type of noise to add to your image:",noise_type);
-      if (*noise_type == '\0')
+        "Add Noise","Select a type of noise to add to your image:",
+        option);
+      if (*option == '\0')
         break;
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "+noise";
-      argv[2]=noise_type;
-      (void) MogrifyImage(resource_info->image_info,3,argv,image);
+      noise_type=UniformNoise;
+      if (LocaleCompare("Gaussian",option) == 0)
+        noise_type=GaussianNoise;
+      if (LocaleCompare("multiplicative",option) == 0)
+        noise_type=MultiplicativeGaussianNoise;
+      if (LocaleCompare("impulse",option) == 0)
+        noise_type=ImpulseNoise;
+      if (LocaleCompare("laplacian",option) == 0)
+        noise_type=LaplacianNoise;
+      if (LocaleCompare("Poisson",option) == 0)
+        noise_type=PoissonNoise;
+      ReplaceImage(*image,AddNoiseImage(*image,noise_type,
+        &(*image)->exception));
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6197,23 +6234,29 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case SharpenCommand:
     {
       static char
-        radius[MaxTextExtent] = "0.0x1.0";
+        option[MaxTextExtent] = "0.0x1.0";
+
+      double
+        radius,
+        sigma;
 
       /*
         Query user for sharpen radius.
       */
       (void) XDialogWidget(display,windows,"Sharpen",
-        "Enter the sharpen radius and standard deviation:",radius);
-      if (*radius == '\0')
+        "Enter the sharpen radius and standard deviation:",option);
+      if (*option == '\0')
         break;
       /*
         Sharpen image scanlines.
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-sharpen";
-      argv[2]=radius;
-      (void) MogrifyImage(resource_info->image_info,3,argv,image);
+      radius=0.0;
+      sigma=1.0;
+      (void) sscanf(option,"%lfx%lf",&radius,&sigma);
+      ReplaceImage(*image,SharpenImage(*image,radius,sigma,
+        &(*image)->exception));
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6224,23 +6267,29 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case BlurCommand:
     {
       static char
-        radius[MaxTextExtent] = "0.0x1.0";
+        option[MaxTextExtent] = "0.0x1.0";
+
+      double
+        radius,
+        sigma;
 
       /*
         Query user for blur radius.
       */
       (void) XDialogWidget(display,windows,"Blur",
-        "Enter the blur radius and standard deviation:",radius);
-      if (*radius == '\0')
+        "Enter the blur radius and standard deviation:",option);
+      if (*option == '\0')
         break;
       /*
         Blur an image.
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-blur";
-      argv[2]=radius;
-      (void) MogrifyImage(resource_info->image_info,3,argv,image);
+      radius=0.0;
+      sigma=1.0;
+      (void) sscanf(option,"%lfx%lf",&radius,&sigma);
+      ReplaceImage(*image,BlurImage(*image,radius,sigma,
+        &(*image)->exception));
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6251,23 +6300,22 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case ThresholdCommand:
     {
       static char
-        factor[MaxTextExtent] = "128";
+        factor[MaxTextExtent];
 
       /*
         Query user for threshold value.
       */
+      sprintf(factor,"%lu",(unsigned long)(MaxRGB+1)/2);
       (void) XDialogWidget(display,windows,"Threshold",
         "Enter threshold value:",factor);
       if (*factor == '\0')
         break;
       /*
-        Gamma correct image.
+        Threshold image.
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-threshold";
-      argv[2]=factor;
-      (void) MogrifyImage(resource_info->image_info,3,argv,image);
+      (void) ChannelThresholdImage(*image,factor);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6292,9 +6340,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-edge";
-      argv[2]=radius;
-      (void) MogrifyImage(resource_info->image_info,3,argv,image);
+      ReplaceImage(*image,EdgeImage(*image,atof(radius),
+        &(*image)->exception));
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6319,9 +6366,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-spread";
-      argv[2]=amount;
-      (void) MogrifyImage(resource_info->image_info,3,argv,image);
+      ReplaceImage(*image,SpreadImage(*image,atoi(amount),
+        &(*image)->exception));
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6334,6 +6380,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       static char
         geometry[MaxTextExtent] = "30x30";
 
+      double
+        azimuth,
+        elevation;
+      
       /*
         Query user for the shade geometry.
       */
@@ -6346,9 +6396,11 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) (status ? "+shade" : "-shade");
-      argv[2]=geometry;
-      (void) MogrifyImage(resource_info->image_info,3,argv,image);
+      azimuth=30.0;
+      elevation=30.0;
+      (void) sscanf(geometry,"%lfx%lf",&azimuth,&elevation);
+      ReplaceImage(*image,ShadeImage(*image,(status ? True : False),
+        azimuth,elevation,&(*image)->exception));
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6373,9 +6425,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) XMagickCommand(display,resource_info,windows,ApplyCommand,image);
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-raise";
-      argv[2]=bevel_width;
-      (void) MogrifyImage(resource_info->image_info,3,argv,image);
+      (void) GetImageGeometry(*image,bevel_width,False,&rectangle);
+      (void) RaiseImage(*image,&rectangle,True);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6387,6 +6438,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     {
       static char
         threshold[MaxTextExtent] = "1.0x1.5";
+
+      double
+        cluster_threshold,
+        smoothing_threshold;
 
       /*
         Query user for smoothing threshold.
@@ -6400,9 +6455,12 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-segment";
-      argv[2]=threshold;
-      (void) MogrifyImage(resource_info->image_info,3,argv,image);
+      cluster_threshold=1.0;
+      smoothing_threshold=1.5;
+      (void) sscanf(threshold,"%lfx%lf",&cluster_threshold,
+        &smoothing_threshold);
+      (void) SegmentImage(*image,(*image)->colorspace,False,
+        cluster_threshold,smoothing_threshold);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6427,9 +6485,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-solarize";
-      argv[2]=factor;
-      (void) MogrifyImage(resource_info->image_info,3,argv,image);
+      SolarizeImage(*image,StringToDouble(factor,MaxRGB));
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6454,9 +6510,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-swirl";
-      argv[2]=degrees;
-      (void) MogrifyImage(resource_info->image_info,3,argv,image);
+      ReplaceImage(*image,SwirlImage(*image,atof(degrees),
+        &(*image)->exception));
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6481,9 +6536,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-implode";
-      argv[2]=factor;
-      (void) MogrifyImage(resource_info->image_info,3,argv,image);
+      ReplaceImage(*image,ImplodeImage(*image,atof(factor),
+        &(*image)->exception));
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6495,6 +6549,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     {
       static char
         geometry[MaxTextExtent] = "25x150";
+
+      double
+        amplitude,
+        wavelength;
 
       /*
         Query user for the shade geometry.
@@ -6508,9 +6566,11 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-wave";
-      argv[2]=geometry;
-      (void) MogrifyImage(resource_info->image_info,3,argv,image);
+      amplitude=25.0;
+      wavelength=150.0;
+      (void) sscanf(geometry,"%lfx%lf",&amplitude,&wavelength);
+      ReplaceImage(*image,WaveImage(*image,amplitude,wavelength,
+        &(*image)->exception));
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6535,9 +6595,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-paint";
-      argv[2]=radius;
-      (void) MogrifyImage(resource_info->image_info,3,argv,image);
+      ReplaceImage(*image,OilPaintImage(*image,atof(radius),
+        &(*image)->exception));
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6548,14 +6607,18 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case CharcoalDrawCommand:
     {
       static char
-        radius[MaxTextExtent] = "0.0";
+        option[MaxTextExtent] = "0.0";
+
+      double
+        radius,
+        sigma;
 
       /*
         Query user for charcoal radius.
       */
       (void) XDialogWidget(display,windows,"Charcoal Draw",
-        "Enter the charcoal radius:",radius);
-      if (*radius == '\0')
+        "Enter the charcoal radius:",option);
+      if (*option == '\0')
         break;
       /*
         Charcoal the image.
@@ -6563,9 +6626,11 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) XMagickCommand(display,resource_info,windows,ApplyCommand,image);
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-charcoal";
-      argv[2]=radius;
-      (void) MogrifyImage(resource_info->image_info,3,argv,image);
+      radius=0.0;
+      sigma=1.0;
+      (void) sscanf(option,"%lfx%lf",&radius,&sigma);
+      ReplaceImage(*image,CharcoalImage(*image,radius,sigma,
+        &(*image)->exception));
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6664,11 +6729,11 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) XMagickCommand(display,resource_info,windows,ApplyCommand,image);
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-bordercolor";
-      argv[2]=color;
-      argv[3]=(char *) "-border";
-      argv[4]=geometry;
-      (void) MogrifyImage(resource_info->image_info,5,argv,image);
+      (void) QueryColorDatabase(color,&(*image)->border_color,
+        &(*image)->exception);
+      (void) GetImageGeometry(*image,geometry,False,&rectangle);
+      ReplaceImage(*image,BorderImage(*image,&rectangle,
+        &(*image)->exception));
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6682,6 +6747,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     {
       static char
         geometry[MaxTextExtent] = "6x6";
+
+      FrameInfo
+        frame_info;
 
       /*
         Query user for frame color and geometry.
@@ -6699,11 +6767,18 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) XMagickCommand(display,resource_info,windows,ApplyCommand,image);
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-mattecolor";
-      argv[2]=color;
-      argv[3]=(char *) "-frame";
-      argv[4]=geometry;
-      (void) MogrifyImage(resource_info->image_info,5,argv,image);
+      (void) QueryColorDatabase(color,&(*image)->matte_color,
+        &(*image)->exception);
+      (void) GetImageGeometry(*image,geometry,False,&rectangle);
+      frame_info.width=rectangle.width;
+      frame_info.height=rectangle.height;
+      frame_info.outer_bevel=rectangle.x;
+      frame_info.inner_bevel=rectangle.y;
+      frame_info.x=(long) frame_info.width;
+      frame_info.y=(long) frame_info.height;
+      frame_info.width=(*image)->columns+2*frame_info.width;
+      frame_info.height=(*image)->rows+2*frame_info.height;
+      ReplaceImage(*image,FrameImage(*image,&frame_info,&(*image)->exception));
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;

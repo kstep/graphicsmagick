@@ -1,66 +1,62 @@
 2003-02-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/command.c: Fixed preview error message.
+	* coders/preview.c: Previous update had broke noiseimage demo.
+	Also some cleanups.
+	* magick/display.c (XMagickCommand): No longer uses
+	MogrifyImage.
 	* coders/preview.c (WritePreviewImage): Re-wrote so that
- 	MogrifyImage() is no longer used. Resize image outside of the loop
- 	to improve performance.
+	MogrifyImage is no longer used. Resize image outside of the loop
+	to improve performance.
 
 2003-02-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/effect.c (ShadeImage): Use PixelIntensityToDouble macro.
-
 	* magick/image.h (PixelIntensityToDouble): Added
- 	PixelIntensityToDouble macro to handle the case where pixel
- 	intensity is used for floating arithmetic.
+	PixelIntensityToDouble macro to handle the case where pixel
+	intensity is used for floating arithmetic.
 
 2003-01-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Makefile.am: Distribute files ChangeLog, INSTALL-mac.txt,
- 	INSTALL-unix.txt, INSTALL-vms.txt INSTALL-windows.txt, and NEWS.
+	INSTALL-unix.txt, INSTALL-vms.txt INSTALL-windows.txt, and NEWS.
 
 2003-01-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/svg.c (SVGStartElement): Applied fix from ImageMagick to
- 	compute SVG +> MVG viewbox correctly.
-
+	compute SVG +> MVG viewbox correctly.
 	* magick/image.c (CloneImage): Applied fix from ImageMagick which
- 	is purported to solve the problem that "negative (x,y) page offsets
- 	did not clone properly".
-
+	is purported to solve the problem that "negative (x,y) page offsets
+	did not clone properly".
 	* magick/gem.c (TransformHWB): Replace implementation with
- 	ImageMagick's new version which is supposed to fix a rounding
- 	error problem.  Hard to say since implementation is totally
- 	different.
-
+	ImageMagick's new version which is supposed to fix a rounding
+	error problem.  Hard to say since implementation is totally
+	different.
 	* coders/msl.c (MSLStartElement): Applied fix for missing break
- 	from ImageMagick.
-
+	from ImageMagick.
 	* magick/integral_types.h: New header to include the integral
- 	types typedefs.  Needed new header in order to include in both
- 	studio.h and api.h at the right point.
-
+	types typedefs.  Needed new header in order to include in both
+	studio.h and api.h at the right point.
 	* magick/studio.h: Move nt_feature.h inclusion to the few modules
- 	which actually use functions from it.
-
+	which actually use functions from it.
 	* magick/api.h: Added typedefs gm_int16_t, gm_uint16_t,
- 	gm_int32_t, gm_uint32_t, gm_int64_t, gm_uint64_t to support
- 	specifically sized types.
-
+	gm_int32_t, gm_uint32_t, gm_int64_t, gm_uint64_t to support
+	specifically sized types.
 	* configure.ac: Test for size of 'short', 'unsigned short', 'int',
- 	'unsigned int', 'long', 'unsigned long', 'long long', 'unsigned
- 	long long' assigning the result to the defines SIZEOF_SHORT,
- 	SIZEOF_UNSIGNED_SHORT, SIZEOF_INT, SIZEOF_UNSIGNED_INT,
- 	SIZEOF_LONG, SIZEOF_UNSIGNED_LONG, SIZEOF_LONG_LONG, and
- 	SIZEOF_UNSIGNED_LONG_LONG respectively.
+	'unsigned int', 'long', 'unsigned long', 'long long', 'unsigned
+	long long' assigning the result to the defines SIZEOF_SHORT,
+	SIZEOF_UNSIGNED_SHORT, SIZEOF_INT, SIZEOF_UNSIGNED_INT,
+	SIZEOF_LONG, SIZEOF_UNSIGNED_LONG, SIZEOF_LONG_LONG, and
+	SIZEOF_UNSIGNED_LONG_LONG respectively.
 
 2003-01-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/fx.c (OilPaintImage): Compute histogram using 8-bit quantums
 	for more sensible performance with Q:16 and Q:32 builds.
-
 	* magick/image.h (PixelIntensityToQuantum): Compute using integral
- 	arithmetic for Q:8 and Q:16.  Much faster than floating point!
+	arithmetic for Q:8 and Q:16.  Much faster than floating point!
 	(PixelIntensity): Compute using integral arithmetic for Q:8 and
- 	Q:16. Much faster than floating point!
+	Q:16. Much faster than floating point!
 
 2002-01-28  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
@@ -71,30 +67,24 @@
 2003-01-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/effect.c (DespeckleImage): Put loops inside of case
- 	statement rather than outside.
+	statement rather than outside.
 	(SpreadImage): Improved algorithm so that -spread is 12X faster.
-
 	* magick/nt_feature.c (CropImageToHBITMAP): New function to return
  	a region of the image as a HBITMAP.
 
 2003-01-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Fixed Copyright statement on all source files.
-
 	* magick/effect.c (ThresholdImage): Optimized loop.
-
 	* coders/tiff.c (ReadTIFFImage): Read bits more efficiently for
- 	bits_per_sample=1.
-
+	bits_per_sample=1.
 	* magick/command.c (MogrifyImage): Set image->dither to
- 	image_info->dither prior to invoking SetImageType.
-
+	image_info->dither prior to invoking SetImageType.
 	* magick/constitute.c (WriteImage): Set image->dither to
- 	image_info->dither.
-
+	image_info->dither.
 	* magick/image.c (SetImageType): For case BilevelType, normalize
- 	image, and threshold 50% if dithering is disabled.  This is at
- 	least 10X faster than quantizing with dither.
+	image, and threshold 50% if dithering is disabled.  This is at
+	least 10X faster than quantizing with dither.
 	(AllocateImage): Initialize image->dither.
 	(CloneImage): Copy image->dither.
 
@@ -104,24 +94,17 @@
 
 	* PerlMagick/t/tiff/read.t: Added a test for reading 16-bit TIFF
 	images.
-
 	* coders/tiff.c (ReadTIFFImage): Support reading 16-bit TIFF images
 	with a Q:8 build.
-
 	* magick/color.c (ConstrainColormapIndex): Use VerifyColormapIndex.
-
 	* coders/pnm.c (ReadPNMImage): Use VerifyColormapIndex.
-
 	* coders/gif.c (DecodeImage): Use VerifyColormapIndex.
-
 	* magick/image.c (SyncImage): Use VerifyColormapIndex.
 
 2003-01-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/blob.c (ReadBlobByte): Use getc when reading from FILE stream.
-
 	* configure.ac: Added tests for getc_unlocked and putc_unlocked.
-
 	* magick/blob.c (ReadBlobByte): Optimized reading from BlobStream.
 	(ReadBlobLSBLong): Optimized reading from BlobStream.
 	(ReadBlobLSBShort): Optimized reading from BlobStream.
@@ -129,126 +112,98 @@
 	(ReadBlobMSBShort): Optimized reading from BlobStream.
 	(ReadBlobStream): New static inline function to read from BlobStream.
 	(WriteBlob): "Manually" copy data rather than using memcpy() for
- 	very small copy sizes.
+	very small copy sizes.
 	(WriteBlobByte): Use putc() when writing to a FILE stream.
 
 2003-01-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/gem.c (Hull): Count down loops.  Might help.
 	(InterpolateColor): Pre-compute common sub-expressions to improve
- 	performance.
-
+	performance.
 	* magick/segment.c (Classify): Implemented idea from Glenn
- 	Randers-Pehrson to avoid use of pow() when WeightingExponent is
- 	2.0 (which it is).  This makes image segmentation much faster
- 	(e.g. 8X).
-
+	Randers-Pehrson to avoid use of pow() when WeightingExponent is
+	2.0 (which it is).  This makes image segmentation much faster
+	(e.g. 8X).
 	* magick/annotate.c (RenderFreetype): For images with
- 	matte==False, simply set the opacity of the pixel to be updated to
- 	OpaqueOpacity before alpha-compositing the pixel rather than using
- 	SetImageType(TrueColorMatteType) to initialize the opacity of the
- 	entire image.  This is much faster and scales to large images.
-
+	matte==False, simply set the opacity of the pixel to be updated to
+	OpaqueOpacity before alpha-compositing the pixel rather than using
+	SetImageType(TrueColorMatteType) to initialize the opacity of the
+	entire image.  This is much faster and scales to large images.
 	* magick/image.c (SetImageType): Eliminated unnecessary conditionals.
 
 2003-01-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/effect.c (InsertMedianList): Assign computed quantum
- 	indexes to variables to avoid extra computations for
- 	QuantumDepth>8.
-
+	indexes to variables to avoid extra computations for
+	QuantumDepth>8.
 	* magick/composite.c (AlphaComposite): Pre-compute common
- 	expressions in order to improve performance.
-
+	expressions in order to improve performance.
 	* magick/fx.c (ConvolveImage): Optimized loops.
-
 	* magick/paint.c (TransparentImage): Optimize for case fuzz == 0.
-
 	* magick/color.c (FuzzyColorMatch): Minor cleanup and optimization.
-
 	* magick/locale.c: Added error messages for convolve option.
-
 	* coders/locale.c: Picked up recent changes from ImageMagick version.
-
 	* locale/C.mgk: Added error messages for convolve option.
-
 	* magick/command.c (MogrifyImage): Added support for convolve option.
-
 	* coders/xcf.c (ReadXCFImage): Recognize latest GIMP XCF header.
-
 	* coders/dcm.c: Transferred the apparent salient fixes from
- 	ImageMagick for a bug described as "Some DCM grayscale images did
- 	not display correctly.".
-
+	ImageMagick for a bug described as "Some DCM grayscale images did
+	not display correctly.".
 	* coders/miff.c (ReadMIFFImage): Reading RLE-compressed MIFFs is
- 	now about 4X faster.
-
+	now about 4X faster.
 	* magick/blob.c (OpenBlob): Use setvbuf() to increase stdio buffer
- 	size to 16K.  Solaris default is 1K.  This should minimize system
- 	call overhead for accessing large files.
+	size to 16K.  Solaris default is 1K.  This should minimize system
+	call overhead for accessing large files.
 	(ReadBlob): "Manually" copy data rather than using memcpy() for
- 	very small copy sizes.
+	very small copy sizes.
 	(ReadBlobZC): New method, similar to ReadBlob, but provides the
 	opportunity for zero copy on read.
-
 	* magick/constitute.c (PushImagePixels): CMYKA case for
- 	image->depth=16 was comparing with 8 instead.
+	image->depth=16 was comparing with 8 instead.
 
 2003-01-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/utility.c (GetMagickGeometry): Removed support for '~'
- 	and disabled centering code until we learn where it should go (if
- 	anywhere).
-
+	and disabled centering code until we learn where it should go (if
+	anywhere).
 	* magick/command.c : Add HWB colorspace transform support.
-
 	* PerlMagick/Magick.xs: Add HWB colorspace transform support.
-
 	* magick/image.c (RGBTransformImage): Add HWB colorspace transform
- 	support.
+	support.
 	(TransformRGBImage): Add HWB colorspace transform support.
 
 2003-01-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/utility.c (GetMagickGeometry): Add support for new new
- 	'~' geometry string flag.  This also fixes a montage bug in which
- 	thumbnails were mis-sized if the geometry specification incuded x
- 	or y offsets.
-
+	'~' geometry string flag.  This also fixes a montage bug in which
+	thumbnails were mis-sized if the geometry specification incuded x
+	or y offsets.
 	* magick/image.h (GeometryFlags): Added CenterValue enumeration to
- 	correspond with new '~' geometry string flag.  Taking
- 	ImageMagick's lead on this.
-
+	correspond with new '~' geometry string flag.  Taking
+	ImageMagick's lead on this.
 	* magick/render.c: Transferred fixes from ImageMagick for an
- 	artifact which occured at the 360 degree point when rendering
- 	circles, ellipses, and arcs.  Bug reported by io219@attbi.com.
-
+	artifact which occured at the 360 degree point when rendering
+	circles, ellipses, and arcs.  Bug reported by io219@attbi.com.
 	* PerlMagick/Magick.xs: Add HSL colorspace transform support.
-
 	* magick/command.c: Add HSL colorspace transform support.
-
 	* magick/image.c (RGBTransformImage): Add HSL colorspace transform
- 	support.
+	support.
 	(TransformRGBImage): Add HSL colorspace transform support.
 
 2003-01-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Updated copyright statement on source files to reflect
- 	the GraphicsMagick Group rather than ImageMagick Studio.
-
+	the GraphicsMagick Group rather than ImageMagick Studio.
 	* magick/constitute.c (ConstituteImage): Simplified the switch
- 	statement for inner loops by creating a simplified map in advance.
+	statement for inner loops by creating a simplified map in advance.
 	(DispatchImage): Simplified the switch statement for inner loops
- 	by creating a simplified map in advance.
-
+	by creating a simplified map in advance.
 	* magick/compress.c (HuffmanEncodeImage): Test and cache the
- 	return value of LocaleCompare(image_info->magick,"FAX") so that
- 	LocaleCompare is not executed repeatedly in the output loop.
-
+	return value of LocaleCompare(image_info->magick,"FAX") so that
+	LocaleCompare is not executed repeatedly in the output loop.
 	* magick/color.c (IsGrayImage): Optimized loops.
 	(IsMonochromeImage): Optimized loops.
 	(IsOpaqueImage): Optimized loop.
-
 	* magick/delegate.c (InvokePostscriptDelegate): When using the
 	Ghostscript library, identify the library as "[ghostscript library]"
 	rather then "gsdll32" so that -verbose prints something useful for
@@ -257,13 +212,11 @@
 2003-01-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* NEWS: New file.
-
 	* magick/montage.c (MontageImages): Use ThumbnailImage() rather
- 	than ZoomImage() to resize montage thumbnails provided that the
- 	user has not specified an image filter, and the montage thumbnail
- 	is smaller than the image. This should provide faster montages
+	than ZoomImage() to resize montage thumbnails provided that the
+	user has not specified an image filter, and the montage thumbnail
+	is smaller than the image. This should provide faster montages
 	for large images.
-
 	* magick/resize.c (ResizeImage): Added logging support.
 	(MagnifyImage): Added logging support.
 	(MinifyImage): Added logging support.
@@ -273,20 +226,16 @@
 2003-01-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/transform.c (ProfileImage): Duplicate ImageMagick changes
- 	to image colorspace handling.  Avoids using
- 	SetImageType(image,ColorSeparationMatteType).
-
+	to image colorspace handling.  Avoids using
+	SetImageType(image,ColorSeparationMatteType).
 	* magick/fx.c (OilPaintImage): Replaced with ImageMagick version
- 	since ImageMagick version has been updated to not penalize Q:8.
+	since ImageMagick version has been updated to not penalize Q:8.
 	Optimized loops.
-
 	* magick/display.c (XDisplayImage): Display to 100% of
 	the screen size rather than 90% of the screen size.
-
 	* magick/enhance.c (ModulateImage): Ensure that arguments
 	are always positive values.  Optimized loops.
 	(ContrastImage): Optimized loops.
-
 	* magick/gem.c (HSLTransform): Optimized performance by
 	eliminating redundant intermediate calculations. This
 	makes 'gm convert -contrast' 21% faster.
@@ -302,7 +251,7 @@
 	* magick/blob.c
 	* magick/blob.h
 	Added new stream type flag and support to match with the one
-        added to ImageMagick.
+	added to ImageMagick.
 
 2003-01-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* magick/image.c (RGBTransformImage): Fixed bug (thanks to
@@ -310,7 +259,6 @@
 	creation.
 	(AverageImages): Optimized loops.
 	(ChannelImage): Optimized loops.  3X speed-up for SPARC.
-
 	* magick/enhance.c: Optimized NegateImage().
 
 2003-01-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>

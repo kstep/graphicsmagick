@@ -175,6 +175,18 @@ ModuleExport void UnregisterPREVIEWImage(void)
 %
 %
 */
+#define ReplaceImage(oldimage,func) \
+{ \
+  Image \
+    *temporary_image; \
+\
+  temporary_image=func; \
+  if (temporary_image) \
+  { \
+    DestroyImage(oldimage); \
+    oldimage=temporary_image; \
+  } \
+}
 static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
 {
 #define NumberTiles  9
@@ -196,8 +208,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
     *images,
     *montage_image,
     *preview_image,
-    *master_image,
-    *temp_image;
+    *master_image;
 
   ImageInfo
     *clone_info;
@@ -275,12 +286,8 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         FormatString(factor,"%.1f",degrees+=45.0);
         FormatString(label,"rotate %.1024s",factor);
-        temp_image=RotateImage(preview_image,degrees,&image->exception);
-        if (temp_image != (Image *) NULL)
-          {
-            DestroyImage(preview_image);
-            preview_image=temp_image;
-          }
+        ReplaceImage(preview_image,RotateImage(preview_image,degrees,
+          &image->exception));
         break;
       }
       case ShearPreview:
@@ -288,12 +295,8 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
         degrees+=10.0;
         FormatString(factor,"%.1fx%.1f",degrees,2.0*degrees);
         FormatString(label,"shear %.1024s",factor);
-        temp_image=ShearImage(preview_image,degrees,2.0*degrees,&image->exception);
-        if (temp_image != (Image *) NULL)
-          {
-            DestroyImage(preview_image);
-            preview_image=temp_image;
-          }
+        ReplaceImage(preview_image,ShearImage(preview_image,degrees,
+          2.0*degrees,&image->exception));
         break;
       }
       case RollPreview:
@@ -302,12 +305,8 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
         y=(long) ((i+1)*preview_image->rows)/NumberTiles;
         FormatString(factor,"%+ld%+ld",x,y);
         FormatString(label,"roll %.1024s",factor);
-        temp_image=RollImage(preview_image,x,y,&image->exception);
-        if (temp_image != (Image *) NULL)
-          {
-            DestroyImage(preview_image);
-            preview_image=temp_image;
-          }
+        ReplaceImage(preview_image,RollImage(preview_image,x,y,
+          &image->exception));
         break;
       }
       case HuePreview:
@@ -390,12 +389,8 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         for (x=0; x < i; x++)
           {
-            temp_image=DespeckleImage(preview_image,&image->exception);
-            if (temp_image != (Image *) NULL)
-              {
-                DestroyImage(preview_image);
-                preview_image=temp_image;
-              }
+            ReplaceImage(preview_image,DespeckleImage(preview_image,
+              &image->exception));
           }
         FormatString(label,"despeckle %ld",i+1);
         break;
@@ -404,12 +399,8 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         FormatString(factor,"%gx%g",radius,sigma);
         FormatString(label,"noise %.1024s",factor);
-        temp_image=ReduceNoiseImage(preview_image,radius,&image->exception);
-        if (temp_image != (Image *) NULL)
-          {
-            DestroyImage(preview_image);
-            preview_image=temp_image;
-          }
+        ReplaceImage(preview_image,ReduceNoiseImage(preview_image,radius,
+          &image->exception));
         break;
       }
       case AddNoisePreview:
@@ -450,31 +441,24 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
         }
         x++;
         FormatString(label,"+noise %.1024s",factor);
-        (void) AddNoiseImage(preview_image,noise,&image->exception);
+        ReplaceImage(preview_image,AddNoiseImage(preview_image,noise,
+          &image->exception));
         break;
       }
       case SharpenPreview:
       {
         FormatString(factor,"%gx%g",radius,sigma);
         FormatString(label,"sharpen %.1024s",factor);
-        temp_image=SharpenImage(preview_image,radius,sigma,&image->exception);
-        if (temp_image != (Image *) NULL)
-          {
-            DestroyImage(preview_image);
-            preview_image=temp_image;
-          }
+        ReplaceImage(preview_image,SharpenImage(preview_image,radius,sigma,
+          &image->exception));
         break;
       }
       case BlurPreview:
       {
         FormatString(factor,"%gx%g",radius,sigma);
         FormatString(label,"-blur %.1024s",factor);
-        temp_image=BlurImage(preview_image,radius,sigma,&image->exception);
-        if (temp_image != (Image *) NULL)
-          {
-            DestroyImage(preview_image);
-            preview_image=temp_image;
-          }
+        ReplaceImage(preview_image,BlurImage(preview_image,radius,sigma,
+          &image->exception));
         break;
       }
       case ThresholdPreview:
@@ -482,31 +466,24 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
         FormatString(factor,"%lu",(unsigned long)
           ((percentage*((double) MaxRGB+1.0))/100));
         FormatString(label,"threshold %.1024s",factor);
-        (void ) ThresholdImage(preview_image,(percentage*((double) MaxRGB+1.0))/100);
+        (void ) ThresholdImage(preview_image,
+          (percentage*((double) MaxRGB+1.0))/100);
         break;
       }
       case EdgeDetectPreview:
       {
         FormatString(factor,"%gx%g",radius,sigma);
         FormatString(label,"edge %.1024s",factor);
-        temp_image=EdgeImage(preview_image,radius,&image->exception);
-        if (temp_image != (Image *) NULL)
-          {
-            DestroyImage(preview_image);
-            preview_image=temp_image;
-          }
+        ReplaceImage(preview_image,EdgeImage(preview_image,radius,
+          &image->exception));
         break;
       }
       case SpreadPreview:
       {
         FormatString(factor,"%ld",i+1);
         FormatString(label,"spread %.1024s",factor);
-        temp_image=SpreadImage(preview_image,i+1,&image->exception);
-        if (temp_image != (Image *) NULL)
-          {
-            DestroyImage(preview_image);
-            preview_image=temp_image;
-          }
+        ReplaceImage(preview_image,SpreadImage(preview_image,i+1,
+          &image->exception));
         break;
       }
       case SolarizePreview:
@@ -522,23 +499,15 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
           {
             FormatString(factor,"30x30");
             FormatString(label,"+shade %.1024s",factor);
-            temp_image=ShadeImage(preview_image,False,30,30,&image->exception);
-            if (temp_image != (Image *) NULL)
-              {
-                DestroyImage(preview_image);
-                preview_image=temp_image;
-              }
+            ReplaceImage(preview_image,ShadeImage(preview_image,False,30,30,
+              &image->exception));
             break;
           }
         degrees+=10.0;
         FormatString(factor,"%gx%g",degrees,degrees);
         FormatString(label,"shade %.1024s",factor);
-        temp_image=ShadeImage(preview_image,True,degrees,degrees,&image->exception);
-        if (temp_image != (Image *) NULL)
-          {
-            DestroyImage(preview_image);
-            preview_image=temp_image;
-          }
+        ReplaceImage(preview_image,ShadeImage(preview_image,True,degrees,
+          degrees,&image->exception));
         break;
       }
       case RaisePreview:
@@ -568,12 +537,8 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         FormatString(factor,"%.1f",degrees);
         FormatString(label,"swirl %.1024s",factor);
-        temp_image=SwirlImage(preview_image,degrees,&image->exception);
-        if (temp_image != (Image *) NULL)
-          {
-            DestroyImage(preview_image);
-            preview_image=temp_image;
-          }
+        ReplaceImage(preview_image,SwirlImage(preview_image,degrees,
+          &image->exception));
         degrees+=45.0;
         break;
       }
@@ -581,12 +546,8 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         FormatString(factor,"%.1f",percentage/100.0);
         FormatString(label,"implode %.1024s",factor);
-        temp_image=ImplodeImage(preview_image,percentage/100.0,&image->exception);
-        if (temp_image != (Image *) NULL)
-          {
-            DestroyImage(preview_image);
-            preview_image=temp_image;
-          }
+        ReplaceImage(preview_image,ImplodeImage(preview_image,
+          percentage/100.0,&image->exception));
         break;
       }
       case WavePreview:
@@ -594,36 +555,24 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
         degrees+=5.0;
         FormatString(factor,"%.1fx%.1f",0.5*degrees,2.0*degrees);
         FormatString(label,"wave %.1024s",factor);
-        temp_image=WaveImage(preview_image,0.5*degrees,2.0*degrees,&image->exception);
-        if (temp_image != (Image *) NULL)
-          {
-            DestroyImage(preview_image);
-            preview_image=temp_image;
-          }
+        ReplaceImage(preview_image,WaveImage(preview_image,0.5*degrees,
+          2.0*degrees,&image->exception));
         break;
       }
       case OilPaintPreview:
       {
         FormatString(factor,"%g",0.5*(i+1));
         FormatString(label,"paint %.1024s",factor);
-        temp_image=OilPaintImage(preview_image,0.5*(i+1),&image->exception);
-        if (temp_image != (Image *) NULL)
-          {
-            DestroyImage(preview_image);
-            preview_image=temp_image;
-          }
+        ReplaceImage(preview_image,OilPaintImage(preview_image,0.5*(i+1),
+          &image->exception));
         break;
       }
       case CharcoalDrawingPreview:
       {
         FormatString(factor,"%gx%g",radius,sigma);
         FormatString(label,"charcoal %.1024s",factor);
-        temp_image=CharcoalImage(preview_image,radius,sigma,&image->exception);
-        if (temp_image != (Image *) NULL)
-          {
-            DestroyImage(preview_image);
-            preview_image=temp_image;
-          }
+        ReplaceImage(preview_image,CharcoalImage(preview_image,radius,sigma,
+          &image->exception));
         break;
       }
       case JPEGPreview:
