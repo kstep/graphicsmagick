@@ -1,5 +1,5 @@
 /*
-  Display a smilely on your X server.
+  Display a smiley on your X server.
 */
 #include <stdio.h>
 #include <time.h>
