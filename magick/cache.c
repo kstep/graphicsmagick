@@ -1152,6 +1152,7 @@ else
         {
           cache_info->type=MemoryMappedCache;
           cache_info->pixels=(PixelPacket *) allocation;
+          cache_info->indexes=(IndexPacket *) NULL;
           if ((cache_info->storage_class == PseudoClass) ||
               (cache_info->colorspace == CMYKColorspace))
             cache_info->indexes=(IndexPacket *)
@@ -1462,8 +1463,8 @@ MagickExport PixelPacket *SetCacheNexus(Cache cache,const unsigned int id,
         nexus->indexes=(IndexPacket *) NULL;
         if ((cache_info->storage_class == PseudoClass) ||
             (cache_info->colorspace == CMYKColorspace))
-          nexus->indexes=
-            cache_info->indexes+nexus->y*cache_info->columns+nexus->x;
+          nexus->indexes=cache_info->indexes+
+            nexus->y*cache_info->columns+nexus->x;
         return(nexus->pixels);
       }
   /*
