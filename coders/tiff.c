@@ -439,6 +439,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_MINSAMPLEVALUE,&min_sample_value);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_MAXSAMPLEVALUE,&max_sample_value);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_PHOTOMETRIC,&photometric);
+    if (photometric == PHOTOMETRIC_CIELAB)
+      {
+        TIFFClose(tiff);
+        ThrowReaderException(CorruptImageWarning,"Unable to read CIELAB image",
+          image);
+      }
     if (photometric == PHOTOMETRIC_SEPARATED)
       image->colorspace=CMYKColorspace;
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,
@@ -1523,11 +1529,25 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     }
     (void) TIFFSetField(tiff,TIFFTAG_PHOTOMETRIC,photometric);
     (void) TIFFSetField(tiff,TIFFTAG_COMPRESSION,compress_tag);
-    if (image_info->endian == LSBEndian)
-      (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_LSB2MSB);
-    else
-      if (image_info->endian == MSBEndian)
+    switch (image_info->endian)
+    {
+      case LSBEndian:
+        (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_LSB2MSB);
+        break;
+      case MSBEndian:
         (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_MSB2LSB);
+        break;
+      default:
+      case UndefinedEndian:
+      {
+#if defined(HOST_BIGENDIAN)
+        (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_MSB2LSB);
+#else
+        (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_LSB2MSB);
+#endif
+        break;
+      }
+    }
     (void) TIFFSetField(tiff,TIFFTAG_ORIENTATION,ORIENTATION_TOPLEFT);
     (void) TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_CONTIG);
     if (photometric == PHOTOMETRIC_RGB)
@@ -1541,9 +1561,17 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     else
       if ((compress_tag == COMPRESSION_CCITTFAX4) ||
           (compress_tag == COMPRESSION_ADOBE_DEFLATE))
-        (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
+        {
+          /* ignored for FAX4, but makes deflate very agressive and matches
+             what Photoshop does */
+          (void) TIFFSetField(tiff,TIFFTAG_PREDICTOR,2);
+          (void) TIFFSetField(tiff,TIFFTAG_ZIPQUALITY,9);
+          (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
+        }
       else
-        (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,strip_size);
+        {
+          (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,strip_size);
+        }
     if ((image->x_resolution != 0) && (image->y_resolution != 0))
       {
         unsigned short
