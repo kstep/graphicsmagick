@@ -82,7 +82,7 @@
 
 #ifndef STDC
 #  ifndef const /* cannot use !defined(STDC) && !defined(const) on Mac */
-#    define const
+#    define constt
 #  endif
 #endif
 
@@ -161,17 +161,32 @@
 #endif
 
 /* Compile with -DZLIB_DLL for Windows DLL support */
+
+#if defined (_VISUALC_)
+#if defined(_MT) && defined(_DLL) && !defined(_LIB)
+#  define ZLIB_DLL
+#else
+#  define ZLIB_LIB
+#endif
+#endif
+
 #if defined(ZLIB_DLL)
 #  if defined(_WINDOWS) || defined(WINDOWS)
 #    ifdef FAR
 #      undef FAR
 #    endif
 #    include <windows.h>
-#    define ZEXPORT  WINAPI
-#    ifdef WIN32
-#      define ZEXPORTVA  WINAPIV
+#    if defined (_VISUALC_)
+#      define ZEXTERN extern __declspec(dllexport)
 #    else
-#      define ZEXPORTVA  FAR _cdecl _export
+#      define ZEXPORT  WINAPI
+#      define ZEXPORT  ZEXPORT __declspec(dllexport)
+#      ifdef WIN32
+#        define ZEXPORTVA  WINAPIV
+#        define ZEXPORTVA  __declspec(dllexport)
+#      else
+#        define ZEXPORTVA  FAR _cdecl _export
+#      endif
 #    endif
 #  endif
 #  if defined (__BORLANDC__)
@@ -187,7 +202,6 @@
 #    endif
 #  endif
 #endif
-
 #if defined (__BEOS__)
 #  if defined (ZLIB_DLL)
 #    define ZEXTERN extern __declspec(dllexport)
@@ -195,6 +209,7 @@
 #    define ZEXTERN extern __declspec(dllimport)
 #  endif
 #endif
+
 
 #ifndef ZEXPORT
 #  define ZEXPORT

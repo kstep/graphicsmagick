@@ -1,20 +1,16 @@
-/*
- * Warning, this file was automatically created by the TIFF configure script
- * VERSION:	 v3.5.6
- * RELEASE:    beta
- * DATE:	 Tue Jan 30 09:49:39 EST 2001
- * TARGET:	 i686-unknown-linux
- * CCOMPILER:	 /usr/bin/gcc-7.0.
- */
 #ifndef _PORT_
 #define _PORT_ 1
 #ifdef __cplusplus
 extern "C" {
 #endif
 #include <sys/types.h>
-#define HOST_FILLORDER FILLORDER_MSB2LSB
+typedef unsigned char u_char;
+typedef unsigned short u_short;
+typedef unsigned int u_int;
+typedef unsigned long u_long;
+
+#define HOST_FILLORDER FILLORDER_LSB2MSB
 #define HOST_BIGENDIAN	0
-#define HAVE_MMAP 1
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>

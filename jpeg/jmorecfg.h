@@ -184,10 +184,40 @@ typedef unsigned int JDIMENSION;
 #define METHODDEF(type)		static type
 /* a function used only in its module: */
 #define LOCAL(type)		static type
+
+#if !defined(_VISUALC_)
+#	error Something is very very wrong. This header must only be used under Visual C++.
+#endif
+/**
+ * Under VISUALC we have single threaded static libraries, or
+ * mutli-threaded DLLs using the multithreaded runtime DLLs.
+ **/
+#	if defined(_MT) && defined(_DLL) && !defined(_JPEGDLL_) && !defined(_LIB)
+#		define _JPEGDLL_
+#	endif
+#	if defined(_JPEGDLL_)
+#		pragma warning( disable: 4273 )	/* Disable the stupid dll linkage warnings */
+#		if !defined(_JPEGLIB_)
 /* a function referenced thru EXTERNs: */
-#define GLOBAL(type)		type
+#     define GLOBAL(type) __declspec(dllimport) type
 /* a reference to a GLOBAL function: */
-#define EXTERN(type)		extern type
+#     define EXTERN(type) extern __declspec(dllimport) type
+#		else
+/* a function referenced thru EXTERNs: */
+#     define GLOBAL(type) __declspec(dllexport) type
+/* a reference to a GLOBAL function: */
+#     define EXTERN(type) extern __declspec(dllexport) type
+#		endif
+#	else
+/* a function referenced thru EXTERNs: */
+#   define GLOBAL(type) type
+/* a reference to a GLOBAL function: */
+#   define EXTERN(type) extern type
+#	endif
+
+#pragma warning(disable : 4018)
+#pragma warning(disable : 4244)
+#pragma warning(disable : 4142)
 
 
 /* This macro is used to declare a "method", that is, a function pointer.
@@ -212,7 +242,9 @@ typedef unsigned int JDIMENSION;
 #ifdef NEED_FAR_POINTERS
 #define FAR  far
 #else
+#ifndef FAR
 #define FAR
+#endif
 #endif
 
 
@@ -222,9 +254,8 @@ typedef unsigned int JDIMENSION;
  * specific header files that you want to include together with these files.
  * Defining HAVE_BOOLEAN before including jpeglib.h should make it work.
  */
-
 #ifndef HAVE_BOOLEAN
-typedef int boolean;
+typedef unsigned char boolean;
 #endif
 #ifndef FALSE			/* in case these macros already exist */
 #define FALSE	0		/* values of boolean */
@@ -329,7 +360,7 @@ typedef int boolean;
 #define INLINE __inline__
 #endif
 #ifndef INLINE
-#define INLINE			/* default is to define it as empty */
+#define INLINE inline
 #endif
 #endif
 

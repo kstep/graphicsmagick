@@ -65,7 +65,7 @@
 #endif
 
 #ifndef USE_64BIT_API
-#  define USE_64BIT_API	0
+#  define USE_64BIT_API	1
 #endif
 
 #ifndef FEATURE_SUPPORT
@@ -82,6 +82,8 @@
 #define	COLORIMETRY_SUPPORT
 #define	YCBCR_SUPPORT
 #define	CMYK_SUPPORT
+#define JPEG_SUPPORT
+#define ZIP_SUPPORT
 #define	ICC_SUPPORT
 #define PHOTOSHOP_SUPPORT
 #define IPTC_SUPPORT
@@ -97,7 +99,7 @@
  *    THUNDER_SUPPORT	enable support for ThunderScan 4-bit RLE algorithm
  *    NEXT_SUPPORT	enable support for NeXT 2-bit RLE algorithm
  *    OJPEG_SUPPORT	enable support for 6.0-style JPEG DCT algorithms
- *			(requires IJG software)
+ *			(no builtin support, only a codec hook)
  *    JPEG_SUPPORT	enable support for post-6.0-style JPEG DCT algorithms
  *			(requires freely available IJG software, see tif_jpeg.c)
  *    ZIP_SUPPORT	enable support for Deflate algorithm
