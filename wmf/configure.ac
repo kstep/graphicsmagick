@@ -1,5 +1,7 @@
-dnl Process this file with autoconf to produce a configure script.
-AC_INIT(src/player.c)
+AC_INIT([libwmf],[0.2.4],[wvware-devel@sourceforge.net])
+AC_CONFIG_SRCDIR([src/player.c])
+
+WMF_PACKAGE=libwmf
 
 dnl This next section is courtesy gtk+
 dnl 
@@ -13,7 +15,7 @@ dnl
 #
 WMF_MAJOR_VERSION=0
 WMF_MINOR_VERSION=2
-WMF_MICRO_VERSION=3
+WMF_MICRO_VERSION=4
 WMF_INTERFACE_AGE=0
 WMF_BINARY_AGE=0
 WMF_VERSION=$WMF_MAJOR_VERSION.$WMF_MINOR_VERSION.$WMF_MICRO_VERSION
@@ -24,6 +26,14 @@ AC_SUBST(WMF_MICRO_VERSION)
 AC_SUBST(WMF_INTERFACE_AGE)
 AC_SUBST(WMF_BINARY_AGE)
 AC_SUBST(WMF_VERSION)
+
+dnl spec file substitutions
+LIBWMF_PACKAGE=$WMF_PACKAGE
+LIBWMF_VERSION=$WMF_VERSION
+LIBWMF_RELEASE=1
+AC_SUBST(LIBWMF_PACKAGE)
+AC_SUBST(LIBWMF_VERSION)
+AC_SUBST(LIBWMF_RELEASE)
 
 # libtool versioning
 LT_RELEASE=$WMF_MAJOR_VERSION.$WMF_MINOR_VERSION
@@ -37,13 +47,18 @@ AC_SUBST(LT_AGE)
 
 # For automake.
 VERSION=$WMF_VERSION
-PACKAGE=libwmf
+PACKAGE=$WMF_PACKAGE
 
 dnl Initialize automake stuff
 AM_INIT_AUTOMAKE($PACKAGE, $VERSION, no-define)
 
 # Specify a configuration file
 AM_CONFIG_HEADER(wmfconfig.h)
+
+AH_TOP([
+#ifndef LIBWMF_CONFIG_H
+#define LIBWMF_CONFIG_H
+])
 
 # CFLAGS to be listed by libwmf-config should be added to this:
 WMF_CONFIG_CFLAGS=
@@ -52,7 +67,7 @@ WMF_CONFIG_CFLAGS=
 WMF_CFLAGS=
 
 # LDFLAGS to be listed by libwmf-config should be added to this:
-WMF_LDFLAGS=
+WMF_LIBFLAGS=
 
 # WMF_DEFS is for flags such as -DDEBUG which are to applied only to
 # libwmf source not extra packages such as gd - more global defs should be
@@ -139,8 +154,8 @@ if [ test "x$check_for_vsnprintf" = "xyes" ]; then
 		dnl This should, hopefully, solve the problem with Tru64 4.x
 		dnl which is incompatible with trio (the latter's fault).
 		AC_CHECK_LIB(db,vsnprintf,[
-			AC_DEFINE(HAVE_VSNPRINTF)
-			WMF_LDFLAGS="$WMF_LDFLAGS -ldb"
+			AC_DEFINE(HAVE_VSNPRINTF,1,[define if you have vsnprintf])
+			WMF_LIBFLAGS="$WMF_LIBFLAGS -ldb"
 		],[	require_trio=yes
 		])
 	])
@@ -171,7 +186,7 @@ fi
 AM_CONDITIONAL(LIBWMF_OPT_TRIO,[ test "x$require_trio" = "xyes" ])
 
 dnl - but always define this; the re-definitions are selective anyway...
-AC_DEFINE(TRIO_REPLACE_STDIO,1,[If any *printf/*scanf functions are missing, cover them with trio functions])
+AC_DEFINE(TRIO_REPLACE_STDIO,1,[If any *printf or *scanf functions are missing, cover them with trio functions])
 
 dnl Checks for libraries, etc.
 
@@ -797,10 +812,10 @@ WMF_CONFIG_CFLAGS="$WMF_FT_CONFIG_CFLAGS $WMF_Z_CONFIG_CFLAGS $WMF_X_CONFIG_CFLA
 
 AC_SUBST(WMF_CONFIG_CFLAGS)
 
-WMF_LDFLAGS="$WMF_PLOT_LDFLAGS $WMF_GD_LDFLAGS $WMF_X_LDFLAGS $WMF_EXPAT_LDFLAGS $WMF_XML_LDFLAGS"
-WMF_LDFLAGS="$WMF_LDFLAGS $WMF_FT_LDFLAGS $WMF_JPEG_LDFLAGS $WMF_PNG_LDFLAGS $WMF_Z_LDFLAGS -lm"
+WMF_LIBFLAGS="$WMF_PLOT_LDFLAGS $WMF_GD_LDFLAGS $WMF_X_LDFLAGS $WMF_EXPAT_LDFLAGS $WMF_XML_LDFLAGS"
+WMF_LIBFLAGS="$WMF_LIBFLAGS $WMF_FT_LDFLAGS $WMF_JPEG_LDFLAGS $WMF_PNG_LDFLAGS $WMF_Z_LDFLAGS -lm"
 
-AC_SUBST(WMF_LDFLAGS)
+AC_SUBST(WMF_LIBFLAGS)
 
 AC_SUBST(WMF_DOCDIR)
 AC_SUBST(WMF_FONTDIR)
@@ -812,7 +827,14 @@ AC_SUBST(WMF_GS_FONTDIR)
 AC_SUBST(WMF_DEFS)
 AC_SUBST(GD_DEFS)
 
-AC_OUTPUT([
+AH_BOTTOM([
+/* If any *printf or *scanf functions are missing, cover them with trio functions */
+#define TRIO_REPLACE_STDIO 1
+
+#endif /* ! LIBWMF_CONFIG_H */
+])
+
+AC_CONFIG_FILES([
 Makefile
 doc/Makefile
 doc/caolan/Makefile
@@ -830,7 +852,9 @@ src/extra/gd/Makefile
 src/ipa/Makefile
 src/convert/Makefile
 libwmf-config
+libwmf.spec
 ])
+AC_OUTPUT
 
 echo ""
 echo "	Support for X:			$libwmf_x"

@@ -1,3 +1,13 @@
+	* docs update
+	* add draw_polypolygon () callback to IPA - will default to
+	  old behaviour; initialize function reference entries to 0 (fjf)
+v. 0.2.3 (this is not a release)
+	* config update - move acconfig to patches, etc. (fjf)
+	* RPM spec file update (c. Michal Jaegermann)
+	* gd: support for bitmap transparency (fjf)
+	* new RPM spec file (fjf)
+	* don't add libwmflite.la into libwmf.la (fjf)
+	* config clean-up (fjf)
 	* install font.h (Bob Friesenhahn)
 	* remove wmf_api_destroy from api.c (Bob Friesenhahn)
 	* configure.ac: define TRIO_REPLACE_STDIO (Masafumi Matsumura)

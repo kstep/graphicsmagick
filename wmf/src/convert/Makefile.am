@@ -1,6 +1,6 @@
 CFLAGS = @CFLAGS@ @WMF_CFLAGS@
 
-LDFLAGS = -L$(top_builddir)/src/.libs @WMF_LDFLAGS@ @LDFLAGS@
+LDFLAGS = -L$(top_builddir)/src/.libs @WMF_LIBFLAGS@ @LDFLAGS@
 
 DEFS = @DEFS@ @WMF_DEFS@ \
 	-DPACKAGE=\"@PACKAGE@\" \

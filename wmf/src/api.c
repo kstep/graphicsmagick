@@ -55,6 +55,7 @@ wmf_error_t wmf_lite_create (wmfAPI** API_return,unsigned long flags,wmfAPI_Opti
 {	wmfAPI* API = 0;
 
 	wmfMemoryManager* MM = 0;
+	wmfFunctionReference* FR = 0;
 
 	wmf_error_t err = wmf_E_None;
 
@@ -224,6 +225,37 @@ wmf_error_t wmf_lite_create (wmfAPI** API_return,unsigned long flags,wmfAPI_Opti
 		err = wmf_lite_destroy (API);
 		return (err);
 	}
+
+	FR = (wmfFunctionReference*) API->function_reference;
+
+	FR->device_open      = 0;
+	FR->device_close     = 0;
+	FR->device_begin     = 0;
+	FR->device_end       = 0;
+	FR->flood_interior   = 0;
+	FR->flood_exterior   = 0;
+	FR->draw_pixel       = 0;
+	FR->draw_pie         = 0;
+	FR->draw_chord       = 0;
+	FR->draw_arc         = 0;
+	FR->draw_ellipse     = 0;
+	FR->draw_line        = 0;
+	FR->poly_line        = 0;
+	FR->draw_polygon     = 0;
+	FR->draw_polypolygon = 0;
+	FR->draw_rectangle   = 0;
+	FR->rop_draw         = 0;
+	FR->bmp_draw         = 0;
+	FR->bmp_read         = 0;
+	FR->bmp_free         = 0;
+	FR->draw_text        = 0;
+	FR->udata_init       = 0;
+	FR->udata_copy       = 0;
+	FR->udata_set        = 0;
+	FR->udata_free       = 0;
+	FR->region_frame     = 0;
+	FR->region_paint     = 0;
+	FR->region_clip	     = 0;
 
 /* Create ipa-device data
  */
@@ -636,7 +668,7 @@ char* wmf_str_append (wmfAPI* API,char* pre,char* post)
 /**
  * Substring search.
  * 
- * @param hatstack a string
+ * @param haystack a string
  * @param needle   a substring to search for in haystack
  * 
  * With syntax identical to strstr(), wmf_strstr() searches for string \p needle in string \p haystack.

@@ -82,6 +82,7 @@ static void wmf_gd_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
 
 	gd_t* gd = (gd_t*) ddata->gd_data;
 
+	wmfRGB bg;
 	wmfRGB rgb;
 
 	int opacity;
@@ -98,7 +99,11 @@ static void wmf_gd_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
 	unsigned int width;
 	unsigned int height;
 
+	int alpha;
 	int color;
+
+	unsigned long tfg;
+	unsigned long tbg;
 
 	gdPoint pt;
 
@@ -123,8 +128,49 @@ static void wmf_gd_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
 			opacity = wmf_ipa_bmp_interpolate (API,&(bmp_draw->bmp),&rgb,x,y);
 
 			if (opacity < 0) break;
+			if (opacity == 0) continue;
+			if (opacity < 0xff)
+			{	color = gdImageGetPixel (gd->image,i+pt.x,(height-1-j)+pt.y);
 
-			color = gdImageColorResolve (gd->image,rgb.r,rgb.g,rgb.b);
+				alpha = gdImageAlpha (gd->image, color);
+				alpha = (((0x7f - alpha) + 1) << 1) - 1;
+
+				bg.r = (unsigned char) (gdImageRed   (gd->image, color) & 0xff);
+				bg.g = (unsigned char) (gdImageGreen (gd->image, color) & 0xff);
+				bg.b = (unsigned char) (gdImageBlue  (gd->image, color) & 0xff);
+
+				/* not sure if this is correct, but...
+				 */
+				tfg = (1 + (unsigned long) opacity)
+				    * (1 + (unsigned long) rgb.r);
+				tbg = (1 + (unsigned long) (0xff - opacity))
+				    * (1 + (unsigned long) bg.r);
+				rgb.r = (unsigned char) ((((tfg + tbg) >> 8) - 1) & 0xff);
+
+				tfg = (1 + (unsigned long) opacity)
+				    * (1 + (unsigned long) rgb.g);
+				tbg = (1 + (unsigned long) (0xff - opacity))
+				    * (1 + (unsigned long) bg.g);
+				rgb.g = (unsigned char) ((((tfg + tbg) >> 8) - 1) & 0xff);
+
+				tfg = (1 + (unsigned long) opacity)
+				    * (1 + (unsigned long) rgb.b);
+				tbg = (1 + (unsigned long) (0xff - opacity))
+				    * (1 + (unsigned long) bg.b);
+				rgb.b = (unsigned char) ((((tfg + tbg) >> 8) - 1) & 0xff);
+
+				tbg = (unsigned long) opacity;
+				tbg *= 0x100 - (unsigned long) alpha;
+				tbg = ((tbg - 1) >> 8) + (unsigned long) alpha;
+				alpha = (int) (tbg & 0xff);
+
+				alpha = 0x7f - (((alpha + 1) >> 1) - 1);
+			}
+			else
+			{	alpha = 0x7f - (((opacity + 1) >> 1) - 1);
+			}
+
+			color = gdImageColorResolveAlpha (gd->image,rgb.r,rgb.g,rgb.b,alpha);
 
 			gdImageSetPixel (gd->image,i+pt.x,(height-1-j)+pt.y,color);
 		}

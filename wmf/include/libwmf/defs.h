@@ -128,20 +128,35 @@
 #define R2_LAST            16
 
 /* Ternary raster operations */
+#undef  SRCCOPY
 #define SRCCOPY        (U32)0x00CC0020 /* dest = source                   */
+#undef  SRCPAINT
 #define SRCPAINT       (U32)0x00EE0086 /* dest = source OR dest           */
+#undef  SRCAND
 #define SRCAND         (U32)0x008800C6 /* dest = source AND dest          */
+#undef  SRCINVERT
 #define SRCINVERT      (U32)0x00660046 /* dest = source XOR dest          */
+#undef  SRCERASE
 #define SRCERASE       (U32)0x00440328 /* dest = source AND (NOT dest )   */
+#undef  NOTSRCCOPY
 #define NOTSRCCOPY     (U32)0x00330008 /* dest = (NOT source)             */
+#undef  NOTSRCERASE
 #define NOTSRCERASE    (U32)0x001100A6 /* dest = (NOT src) AND (NOT dest) */
+#undef  MERGECOPY
 #define MERGECOPY      (U32)0x00C000CA /* dest = (source AND pattern)     */
+#undef  MERGEPAINT
 #define MERGEPAINT     (U32)0x00BB0226 /* dest = (NOT source) OR dest     */
+#undef  PATCOPY
 #define PATCOPY        (U32)0x00F00021 /* dest = pattern                  */
+#undef  PATINVERT
 #define PATPAINT       (U32)0x00FB0A09 /* dest = DPSnoo                   */
+#undef  PATINVERT
 #define PATINVERT      (U32)0x005A0049 /* dest = pattern XOR dest         */
+#undef  DSTINVERT
 #define DSTINVERT      (U32)0x00550009 /* dest = (NOT dest)               */
+#undef  BLACKNESS
 #define BLACKNESS      (U32)0x00000042 /* dest = BLACK                    */
+#undef  WHITENESS
 #define WHITENESS      (U32)0x00FF0062 /* dest = WHITE                    */
 
 /* StretchBlt() Modes */

@@ -2,8 +2,6 @@ SUBDIRS = extra ipa . convert
 
 CFLAGS = @CFLAGS@ @WMF_CFLAGS@
 
-LDFLAGS = @WMF_LDFLAGS@ @LDFLAGS@
-
 DEFS = @DEFS@ @WMF_DEFS@ \
 	-DPACKAGE=\"@PACKAGE@\" \
 	-DVERSION=\"@VERSION@\" \
@@ -19,7 +17,8 @@ lib_LTLIBRARIES = libwmflite.la libwmf.la
 
 libwmflite_la_SOURCES = api.c bbuf.c meta.c player.c
 
-libwmflite_la_LDFLAGS = \
+libwmflite_la_LDFLAGS = -lm \
+	-no-undefined \
 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
 	-release $(LT_RELEASE) -export-dynamic
 
@@ -37,9 +36,10 @@ else
 LIBGD = extra/gd/libgd.la
 endif
 
-libwmf_la_LIBADD = ipa/libipa.la $(LIBGD) $(LIBTRIO)
+libwmf_la_LIBADD = ipa/libipa.la libwmflite.la $(LIBGD) $(LIBTRIO)
 
-libwmf_la_LDFLAGS = \
+libwmf_la_LDFLAGS = @WMF_LIBFLAGS@ \
+	-no-undefined \
 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
 	-release $(LT_RELEASE) -export-dynamic
 

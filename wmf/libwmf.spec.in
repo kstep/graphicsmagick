@@ -1,6 +1,6 @@
-%define name libwmf
-%define version 0.2.4
-%define release 1
+%define name @LIBWMF_PACKAGE@
+%define version @LIBWMF_VERSION@
+%define release @LIBWMF_RELEASE@
 %define prefix /usr
 %define bindir %{prefix}/bin
 %define libdir %{prefix}/lib

@@ -2,7 +2,7 @@ INCLUDES = -I$(srcdir)
 
 CFLAGS = @CFLAGS@ @WMF_CFLAGS@
 
-LDFLAGS = @LDFLAGS@
+LDFLAGS = @LDFLAGS@ -no-undefined
 
 DEFS = @DEFS@ @GD_DEFS@
 

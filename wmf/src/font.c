@@ -833,8 +833,8 @@ static void exmlfontmap_read (wmfAPI* API,wmfXML_FontData* FD,char* xmlfontmap)
 
 #ifdef HAVE_XML2
 
-#include <parser.h>
-#include <parserInternals.h>
+#include <libxml/parser.h>
+#include <libxml/parserInternals.h>
 
 static void xml2_start (void* user_data,const char* tag,const char** attributes)
 {	const char** attr;

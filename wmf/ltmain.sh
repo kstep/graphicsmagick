@@ -49,14 +49,14 @@ EOF
 fi
 
 # The name of this program.
-progname=`$echo "$0" | sed 's%^.*/%%'`
+progname=`$echo "$0" | ${SED} 's%^.*/%%'`
 modename="$progname"
 
 # Constants.
 PROGRAM=ltmain.sh
 PACKAGE=libtool
-VERSION=1.4c
-TIMESTAMP=" (1.1065 2001/09/22 16:43:43)"
+VERSION=1.4e
+TIMESTAMP=" (1.1108 2002/05/06 15:08:31)"
 
 default_mode=
 help="Try \`$progname --help' for more information."
@@ -67,10 +67,19 @@ rm="rm -f"
 
 # Sed substitution that helps us do robust quoting.  It backslashifies
 # metacharacters that are still active within double-quoted strings.
-Xsed='sed -e 1s/^X//'
+Xsed="${SED}"' -e 1s/^X//'
 sed_quote_subst='s/\([\\`\\"$\\\\]\)/\\\1/g'
-SP2NL='tr \040 \012'
-NL2SP='tr \015\012 \040\040'
+# test EBCDIC or ASCII                                                         
+case `echo A|od -x` in                                                         
+ *[Cc]1*) # EBCDIC based system                                                
+  SP2NL="tr '\100' '\n'"                                                       
+  NL2SP="tr '\r\n' '\100\100'"                                                 
+  ;;                                                                           
+ *) # Assume ASCII based system                                                
+  SP2NL="tr '\040' '\012'"                                                     
+  NL2SP="tr '\015\012' '\040\040'"                                             
+  ;;                                                                           
+esac                                                                           
 
 # NLS nuisances.
 # Only set LANG and LC_ALL to C if already set.
@@ -142,7 +151,7 @@ do
 	if grep "^# ### BEGIN LIBTOOL TAG CONFIG: $tagname$" < "$0" > /dev/null; then
 	  taglist="$taglist $tagname"
 	  # Evaluate the configuration.
-	  eval "`sed -n -e '/^# ### BEGIN LIBTOOL TAG CONFIG: '$tagname'$/,/^# ### END LIBTOOL TAG CONFIG: '$tagname'$/p' < $0`"
+	  eval "`${SED} -n -e '/^# ### BEGIN LIBTOOL TAG CONFIG: '$tagname'$/,/^# ### END LIBTOOL TAG CONFIG: '$tagname'$/p' < $0`"
 	else
 	  echo "$progname: ignoring unknown tag $tagname" 1>&2
 	fi
@@ -176,10 +185,10 @@ do
     ;;
 
   --config)
-    sed -e '1,/^# ### BEGIN LIBTOOL CONFIG/d' -e '/^# ### END LIBTOOL CONFIG/,$d' $0
+    ${SED} -e '1,/^# ### BEGIN LIBTOOL CONFIG/d' -e '/^# ### END LIBTOOL CONFIG/,$d' $0
     # Now print the configurations for the tags.
     for tagname in $taglist; do
-      sed -n -e "/^# ### BEGIN LIBTOOL TAG CONFIG: $tagname$/,/^# ### END LIBTOOL TAG CONFIG: $tagname$/p" < "$0"
+      ${SED} -n -e "/^# ### BEGIN LIBTOOL TAG CONFIG: $tagname$/,/^# ### END LIBTOOL TAG CONFIG: $tagname$/p" < "$0"
     done
     exit 0
     ;;
@@ -212,6 +221,8 @@ do
 
   --mode) prevopt="--mode" prev=mode ;;
   --mode=*) mode="$optarg" ;;
+
+  --preserve-dup-deps) duplicate_deps="yes" ;;
 
   --quiet | --silent)
     show=:
@@ -313,152 +324,121 @@ if test -z "$show_help"; then
     modename="$modename: compile"
     # Get the compilation command and the source file.
     base_compile=
-    prev=
-    lastarg=
-    srcfile="$nonopt"
+    srcfile="$nonopt"  #  always keep a non-empty value in "srcfile"
     suppress_output=
+    arg_mode=normal
+    libobj=
 
-    user_target=no
     for arg
     do
-      case $prev in
-      "") ;;
-      xcompiler)
-	# Aesthetically quote the previous argument.
-	prev=
-	lastarg=`$echo "X$arg" | $Xsed -e "$sed_quote_subst"`
-
-	case $arg in
-	# Double-quote args containing other shell metacharacters.
-	# Many Bourne shells cannot handle close brackets correctly
-	# in scan sets, so we specify it separately.
-	*[\[\~\#\^\&\*\(\)\{\}\|\;\<\>\?\'\ \	]*|*]*|"")
-	  arg="\"$arg\""
-	  ;;
-	esac
-
-	# Add the previous argument to base_compile.
-	if test -z "$base_compile"; then
-	  base_compile="$lastarg"
-	else
-	  base_compile="$base_compile $lastarg"
-	fi
-	continue
-	;;
-      esac
-
-      # Accept any command-line options.
-      case $arg in
-      -o)
-	if test "$user_target" != "no"; then
-	  $echo "$modename: you cannot specify \`-o' more than once" 1>&2
-	  exit 1
-	fi
-	user_target=next
+      case "$arg_mode" in
+      arg  )
+	# do not "continue".  Instead, add this to base_compile
+	lastarg="$arg"
+	arg_mode=normal
 	;;
 
-      -static)
-	build_old_libs=yes
-	continue
-	;;
-
-      -prefer-pic)
-	pic_mode=yes
-	continue
-	;;
-
-      -prefer-non-pic)
-	pic_mode=no
-	continue
-	;;
-
-      -Xcompiler)
-	prev=xcompiler
-	continue
-	;;
-
-      -Wc,*)
-	args=`$echo "X$arg" | $Xsed -e "s/^-Wc,//"`
-	lastarg=
-	save_ifs="$IFS"; IFS=','
-	for arg in $args; do
-	  IFS="$save_ifs"
-
-	  # Double-quote args containing other shell metacharacters.
-	  # Many Bourne shells cannot handle close brackets correctly
-	  # in scan sets, so we specify it separately.
-	  case $arg in
-	    *[\[\~\#\^\&\*\(\)\{\}\|\;\<\>\?\'\ \	]*|*]*|"")
-	    arg="\"$arg\""
-	    ;;
-	  esac
-	  lastarg="$lastarg $arg"
-	done
-	IFS="$save_ifs"
-	lastarg=`$echo "X$lastarg" | $Xsed -e "s/^ //"`
-
-	# Add the arguments to base_compile.
-	if test -z "$base_compile"; then
-	  base_compile="$lastarg"
-	else
-	  base_compile="$base_compile $lastarg"
-	fi
-	continue
-	;;
-      esac
-
-      case $user_target in
-      next)
-	# The next one is the -o target name
-	user_target=yes
-	continue
-	;;
-      yes)
-	# We got the output file
-	user_target=set
+      target )
 	libobj="$arg"
+	arg_mode=normal
 	continue
 	;;
-      esac
 
-      # Accept the current argument as the source file.
-      lastarg="$srcfile"
-      srcfile="$arg"
+      normal )
+	# Accept any command-line options.
+	case $arg in
+	-o)
+	  if test -n "$libobj" ; then
+	    $echo "$modename: you cannot specify \`-o' more than once" 1>&2
+	    exit 1
+	  fi
+	  arg_mode=target
+	  continue
+	  ;;
+
+	-static)
+	  build_old_libs=yes
+	  continue
+	  ;;
+
+	-prefer-pic)
+	  pic_mode=yes
+	  continue
+	  ;;
+
+	-prefer-non-pic)
+	  pic_mode=no
+	  continue
+	  ;;
+
+	-Xcompiler)
+	  arg_mode=arg  #  the next one goes into the "base_compile" arg list
+	  continue      #  The current "srcfile" will either be retained or
+	  ;;            #  replaced later.  I would guess that would be a bug.
+
+	-Wc,*)
+	  args=`$echo "X$arg" | $Xsed -e "s/^-Wc,//"`
+	  lastarg=
+	  save_ifs="$IFS"; IFS=','
+	  for arg in $args; do
+	    IFS="$save_ifs"
+
+	    # Double-quote args containing other shell metacharacters.
+	    # Many Bourne shells cannot handle close brackets correctly
+	    # in scan sets, so we specify it separately.
+	    case $arg in
+	      *[\[\~\#\^\&\*\(\)\{\}\|\;\<\>\?\'\ \	]*|*]*|"")
+	      arg="\"$arg\""
+	      ;;
+	    esac
+	    lastarg="$lastarg $arg"
+	  done
+	  IFS="$save_ifs"
+	  lastarg=`$echo "X$lastarg" | $Xsed -e "s/^ //"`
+
+	  # Add the arguments to base_compile.
+	  base_compile="$base_compile $lastarg"
+	  continue
+	  ;;
+
+	* )
+	  # Accept the current argument as the source file.
+	  # The previous "srcfile" becomes the current argument.
+	  #
+	  lastarg="$srcfile"
+	  srcfile="$arg"
+	  ;;
+	esac  #  case $arg
+	;;
+      esac    #  case $arg_mode
 
       # Aesthetically quote the previous argument.
-
-      # Backslashify any backslashes, double quotes, and dollar signs.
-      # These are the only characters that are still specially
-      # interpreted inside of double-quoted scrings.
       lastarg=`$echo "X$lastarg" | $Xsed -e "$sed_quote_subst"`
 
+      case $lastarg in
       # Double-quote args containing other shell metacharacters.
       # Many Bourne shells cannot handle close brackets correctly
       # in scan sets, so we specify it separately.
-      case $lastarg in
       *[\[\~\#\^\&\*\(\)\{\}\|\;\<\>\?\'\ \	]*|*]*|"")
 	lastarg="\"$lastarg\""
 	;;
       esac
 
-      # Add the previous argument to base_compile.
-      if test -z "$base_compile"; then
-	base_compile="$lastarg"
-      else
-	base_compile="$base_compile $lastarg"
-      fi
-    done
+      base_compile="$base_compile $lastarg"
+    done # for arg
 
-    case $user_target in
-    set)
+    case $arg_mode in
+    arg)
+      $echo "$modename: you must specify an argument for -Xcompile"
+      exit 1
       ;;
-    no)
-      # Get the name of the library object.
-      libobj=`$echo "X$srcfile" | $Xsed -e 's%^.*/%%'`
-      ;;
-    *)
+    target)
       $echo "$modename: you must specify a target with \`-o'" 1>&2
       exit 1
+      ;;
+    *)
+      # Get the name of the library object.
+      [ -z "$libobj" ] && libobj=`$echo "X$srcfile" | $Xsed -e 's%^.*/%%'`
       ;;
     esac
 
@@ -496,25 +476,22 @@ if test -z "$show_help"; then
     # Only attempt this if the compiler in the base compile
     # command doesn't match the default compiler.
     if test -n "$available_tags" && test -z "$tagname"; then
-      case "$base_compile " in
-      "$CC "*) ;;
+      case $base_compile in
       # Blanks in the command may have been stripped by the calling shell,
       # but not from the CC environment variable when ltconfig was run.
-      "`$echo $CC` "*) ;;
+      " $CC "* | "$CC "* | " `$echo $CC` "* | "`$echo $CC` "*) ;;
+      # Blanks at the start of $base_compile will cause this to fail
+      # if we don't check for them as well.
       *)
 	for z in $available_tags; do
 	  if grep "^# ### BEGIN LIBTOOL TAG CONFIG: $z$" < "$0" > /dev/null; then
 	    # Evaluate the configuration.
-	    eval "`sed -n -e '/^# ### BEGIN LIBTOOL TAG CONFIG: '$z'$/,/^# ### END LIBTOOL TAG CONFIG: '$z'$/p' < $0`"
+	    eval "`${SED} -n -e '/^# ### BEGIN LIBTOOL TAG CONFIG: '$z'$/,/^# ### END LIBTOOL TAG CONFIG: '$z'$/p' < $0`"
 	    case "$base_compile " in
-	    "$CC "*)
+	    "$CC "* | " $CC "* | "`$echo $CC` "* | " `$echo $CC` "*)
 	      # The compiler in the base compile command matches
 	      # the one in the tagged configuration.
 	      # Assume this is the tagged configuration we want.
-	      tagname=$z
-	      break
-	      ;;
-	    "`$echo $CC` "*)
 	      tagname=$z
 	      break
 	      ;;
@@ -978,7 +955,7 @@ EOF
 	      # A libtool-controlled object.
 
 	      # Check to see that this really is a libtool object.
-	      if (sed -e '2q' $arg | egrep "^# Generated by .*$PACKAGE") >/dev/null 2>&1; then
+	      if (${SED} -e '2q' $arg | egrep "^# Generated by .*$PACKAGE") >/dev/null 2>&1; then
 		pic_object=
 		non_pic_object=
 
@@ -1225,7 +1202,7 @@ EOF
 	    # These systems don't actually have a C library (as such)
 	    test "X$arg" = "X-lc" && continue
 	    ;;
-	  *-*-openbsd*)
+	  *-*-openbsd* | *-*-freebsd*)
 	    # Do not include libc due to us having libc/libc_r.
 	    test "X$arg" = "X-lc" && continue
 	    ;;
@@ -1236,7 +1213,7 @@ EOF
 	  esac
 	elif test "X$arg" = "X-lc_r"; then
 	 case $host in
-	 *-*-openbsd*)
+	 *-*-openbsd* | *-*-freebsd*)
 	   # Do not include libc_r directly, use -pthread flag.
 	   continue
 	   ;;
@@ -1401,7 +1378,7 @@ EOF
 	# A libtool-controlled object.
 
 	# Check to see that this really is a libtool object.
-	if (sed -e '2q' $arg | egrep "^# Generated by .*$PACKAGE") >/dev/null 2>&1; then
+	if (${SED} -e '2q' $arg | egrep "^# Generated by .*$PACKAGE") >/dev/null 2>&1; then
 	  pic_object=
 	  non_pic_object=
 
@@ -1546,24 +1523,21 @@ EOF
     # command doesn't match the default compiler.
     if test -n "$available_tags" && test -z "$tagname"; then
       case $base_compile in
-      "$CC "*) ;;
       # Blanks in the command may have been stripped by the calling shell,
       # but not from the CC environment variable when ltconfig was run.
-      "`$echo $CC` "*) ;;
+      "$CC "* | " $CC "* | "`$echo $CC` "* | " `$echo $CC` "*) ;;
+      # Blanks at the start of $base_compile will cause this to fail
+      # if we don't check for them as well.
       *)
 	for z in $available_tags; do
 	  if grep "^# ### BEGIN LIBTOOL TAG CONFIG: $z$" < "$0" > /dev/null; then
 	    # Evaluate the configuration.
-	    eval "`sed -n -e '/^# ### BEGIN LIBTOOL TAG CONFIG: '$z'$/,/^# ### END LIBTOOL TAG CONFIG: '$z'$/p' < $0`"
+	    eval "`${SED} -n -e '/^# ### BEGIN LIBTOOL TAG CONFIG: '$z'$/,/^# ### END LIBTOOL TAG CONFIG: '$z'$/p' < $0`"
 	    case $base_compile in
-	    "$CC "*)
+	    "$CC "* | " $CC "* | "`$echo $CC` "* | " `$echo $CC` "*)
 	      # The compiler in $compile_command matches
 	      # the one in the tagged configuration.
 	      # Assume this is the tagged configuration we want.
-	      tagname=$z
-	      break
-	      ;;
-	    "`$echo $CC` "*)
 	      tagname=$z
 	      break
 	      ;;
@@ -1633,14 +1607,39 @@ EOF
     *) linkmode=prog ;; # Anything else should be a program.
     esac
 
-    specialdeplibs=
+    case $host in
+    *cygwin*)
+      # This is a hack, but we run into problems on cygwin.
+      # libgcc.a depends on libcygwin, but gcc puts -lgcc onto
+      # the link line twice: once before the "normal" libs
+      # (-lcygwin -luser32 -lkernel32 -ladvapi32 -lshell32) and
+      # once AFTER those.  However, the "eliminate dup deps"
+      # proceedure keeps only the LAST duplicate -- thus
+      # messing up the order, since after dup elimination
+      # -lgcc comes AFTER -lcygwin.  In normal C operation,
+      # you don't notice the problem, because -lgcc isn't
+      # really used.  However, now that C++ libraries are
+      # libtool-able, you DO see the problem.  So, it must
+      # be fixed.  We could always force "--preserve-dup-deps"
+      # but that could lead to other problems.  So, on cygwin,
+      # always preserve dups of -lgcc...but only -lgcc. That
+      # way, the dependency order won't get corrupted.
+      specialdeplibs="-lgcc"
+      ;;
+    *)
+      specialdeplibs=
+      ;;
+    esac
+
     libs=
     # Find all interdependent deplibs by searching for libraries
     # that are linked more than once (e.g. -la -lb -la)
     for deplib in $deplibs; do
-      case "$libs " in
-      *" $deplib "*) specialdeplibs="$specialdeplibs $deplib" ;;
-      esac
+      if test "X$duplicate_deps" = "Xyes" ; then
+	case "$libs " in
+	*" $deplib "*) specialdeplibs="$specialdeplibs $deplib" ;;
+	esac
+      fi
       libs="$libs $deplib"
     done
 
@@ -1651,12 +1650,14 @@ EOF
       # $postdeps and mark them as special (i.e., whose duplicates are
       # not to be eliminated).
       pre_post_deps=
-      for pre_post_dep in $predeps $postdeps; do
-	case "$pre_post_deps " in
-	*" $pre_post_dep "*) specialdeplibs="$specialdeplibs $pre_post_deps" ;;
-	esac
-	pre_post_deps="$pre_post_deps $pre_post_dep"
-      done
+      if test "X$duplicate_deps" = "Xyes" ; then
+	for pre_post_dep in $predeps $postdeps; do
+	  case "$pre_post_deps " in
+	  *" $pre_post_dep "*) specialdeplibs="$specialdeplibs $pre_post_deps" ;;
+	  esac
+	  pre_post_deps="$pre_post_deps $pre_post_dep"
+	done
+      fi
       pre_post_deps=
     fi
 
@@ -1844,7 +1845,7 @@ EOF
 	fi
 
 	# Check to see that this really is a libtool archive.
-	if (sed -e '2q' $lib | egrep "^# Generated by .*$PACKAGE") >/dev/null 2>&1; then :
+	if (${SED} -e '2q' $lib | egrep "^# Generated by .*$PACKAGE") >/dev/null 2>&1; then :
 	else
 	  $echo "$modename: \`$lib' is not a valid libtool archive" 1>&2
 	  exit 1
@@ -1890,9 +1891,11 @@ EOF
 	    tmp_libs=
 	    for deplib in $dependency_libs; do
 	      deplibs="$deplib $deplibs"
-	      case "$tmp_libs " in
-	      *" $deplib "*) specialdeplibs="$specialdeplibs $deplib" ;;
-	      esac
+              if test "X$duplicate_deps" = "Xyes" ; then
+	        case "$tmp_libs " in
+	        *" $deplib "*) specialdeplibs="$specialdeplibs $deplib" ;;
+	        esac
+              fi
 	      tmp_libs="$tmp_libs $deplib"
 	    done
 	  elif test "$linkmode" != prog && test "$linkmode" != lib; then
@@ -2017,9 +2020,11 @@ EOF
 	      # or/and link against static libraries
 	      newdependency_libs="$deplib $newdependency_libs"
 	    fi
-	    case "$tmp_libs " in
-	    *" $deplib "*) specialdeplibs="$specialdeplibs $deplib" ;;
-	    esac
+	    if test "X$duplicate_deps" = "Xyes" ; then
+	      case "$tmp_libs " in
+	      *" $deplib "*) specialdeplibs="$specialdeplibs $deplib" ;;
+	      esac
+	    fi
 	    tmp_libs="$tmp_libs $deplib"
 	  done # for deplib
 	  continue
@@ -2127,8 +2132,8 @@ EOF
 
 	    # Make a new name for the extract_expsyms_cmds to use
 	    soroot="$soname"
-	    soname=`echo $soroot | sed -e 's/^.*\///'`
-	    newlib="libimp-`echo $soname | sed 's/^lib//;s/\.dll$//'`.a"
+	    soname=`echo $soroot | ${SED} -e 's/^.*\///'`
+	    newlib="libimp-`echo $soname | ${SED} 's/^lib//;s/\.dll$//'`.a"
 
 	    # If the library has no export list, then create one now
 	    if test -f "$output_objdir/$soname-def"; then :
@@ -2334,9 +2339,11 @@ EOF
 	  tmp_libs=
 	  for deplib in $dependency_libs; do
 	    newdependency_libs="$deplib $newdependency_libs"
-	    case "$tmp_libs " in
-	    *" $deplib "*) specialdeplibs="$specialdeplibs $deplib" ;;
-	    esac
+	    if test "X$duplicate_deps" = "Xyes" ; then
+	      case "$tmp_libs " in
+	      *" $deplib "*) specialdeplibs="$specialdeplibs $deplib" ;;
+	      esac
+	    fi
 	    tmp_libs="$tmp_libs $deplib"
 	  done
 
@@ -2362,7 +2369,7 @@ EOF
 		if grep "^installed=no" $deplib > /dev/null; then
 		  path="-L$absdir/$objdir"
 		else
-		  eval libdir=`sed -n -e 's/^libdir=\(.*\)$/\1/p' $deplib`
+		  eval libdir=`${SED} -n -e 's/^libdir=\(.*\)$/\1/p' $deplib`
 		  if test -z "$libdir"; then
 		    $echo "$modename: \`$deplib' is not a valid libtool archive" 1>&2
 		    exit 1
@@ -2647,16 +2654,21 @@ EOF
 	  versuffix=".$current";
 	  ;;
 
-	irix)
+	irix | nonstopux)
+	  case $version_type in
+	    nonstopux) verstring_prefix=nonstopux ;;
+	    *)         verstring_prefix=sgi ;;
+	  esac
+	  verstring="$verstring_prefix$major.$revision"
+
 	  major=`expr $current - $age + 1`
-	  verstring="sgi$major.$revision"
 
 	  # Add in all the interfaces that we are compatible with.
 	  loop=$revision
 	  while test "$loop" -ne 0; do
 	    iface=`expr $revision - $loop`
 	    loop=`expr $loop - 1`
-	    verstring="sgi$major.$iface:$verstring"
+	    verstring="$verstring_prefix$major.$iface:$verstring"
 	  done
 
 	  # Before this point, $major must not contain `.'.
@@ -2776,9 +2788,9 @@ EOF
 
       # Eliminate all temporary directories.
       for path in $notinst_path; do
-	lib_search_path=`echo "$lib_search_path " | sed -e 's% $path % %g'`
-	deplibs=`echo "$deplibs " | sed -e 's% -L$path % %g'`
-	dependency_libs=`echo "$dependency_libs " | sed -e 's% -L$path % %g'`
+	lib_search_path=`echo "$lib_search_path " | ${SED} -e 's% $path % %g'`
+	deplibs=`echo "$deplibs " | ${SED} -e 's% -L$path % %g'`
+	dependency_libs=`echo "$dependency_libs " | ${SED} -e 's% -L$path % %g'`
       done
 
       if test -n "$xrpath"; then
@@ -2829,7 +2841,7 @@ EOF
 	  *-*-netbsd*)
 	    # Don't link with libc until the a.out ld.so is fixed.
 	    ;;
-	  *-*-openbsd*)
+	  *-*-openbsd* | *-*-freebsd*)
 	    # Do not include libc due to us having libc/libc_r.
 	    test "X$arg" = "X-lc" && continue
 	    ;;
@@ -2881,7 +2893,7 @@ EOF
 	    for i in $deplibs; do
 	      name="`expr $i : '-l\(.*\)'`"
 	      # If $name is empty we are operating on a -L argument.
-	      if test "$name" != "" -a "$name" -ne "0"; then
+             if test "$name" != "" && test "$name" -ne "0"; then
 		libname=`eval \\$echo \"$libname_spec\"`
 		deplib_matches=`eval \\$echo \"$library_names_spec\"`
 		set dummy $deplib_matches
@@ -2903,12 +2915,12 @@ EOF
 	      fi
 	    done
 	  else
-	    # Error occured in the first compile.  Let's try to salvage the situation:
-	    # Compile a seperate program for each library.
+	    # Error occured in the first compile.  Let's try to salvage
+	    # the situation: Compile a separate program for each library.
 	    for i in $deplibs; do
 	      name="`expr $i : '-l\(.*\)'`"
 	     # If $name is empty we are operating on a -L argument.
-	      if test "$name" != "" -a "$name" != "0"; then
+             if test "$name" != "" && test "$name" != "0"; then
 		$rm conftest
 		$LTCC -o conftest conftest.c $i
 		# Did it work?
@@ -2950,7 +2962,7 @@ EOF
 	  for a_deplib in $deplibs; do
 	    name="`expr $a_deplib : '-l\(.*\)'`"
 	    # If $name is empty we are operating on a -L argument.
-	    if test "$name" != "" -a "$name" != "0"; then
+           if test "$name" != "" && test  "$name" != "0"; then
 	      libname=`eval \\$echo \"$libname_spec\"`
 	      for i in $lib_search_path $sys_lib_search_path $shlib_search_path; do
 		    potential_libs=`ls $i/$libname[.-]* 2>/dev/null`
@@ -2967,14 +2979,14 @@ EOF
 		      # but so what?
 		      potlib="$potent_lib"
 		      while test -h "$potlib" 2>/dev/null; do
-			potliblink=`ls -ld $potlib | sed 's/.* -> //'`
+			potliblink=`ls -ld $potlib | ${SED} 's/.* -> //'`
 			case $potliblink in
 			[\\/]* | [A-Za-z]:[\\/]*) potlib="$potliblink";;
 			*) potlib=`$echo "X$potlib" | $Xsed -e 's,[^/]*$,,'`"$potliblink";;
 			esac
 		      done
 		      if eval $file_magic_cmd \"\$potlib\" 2>/dev/null \
-			 | sed 10q \
+			 | ${SED} 10q \
 			 | egrep "$file_magic_regex" > /dev/null; then
 			newdeplibs="$newdeplibs $a_deplib"
 			a_deplib=""
@@ -3016,7 +3028,7 @@ EOF
 		for potent_lib in $potential_libs; do
 		  potlib="$potent_lib" # see symlink-check above in file_magic test
 		  if eval echo \"$potent_lib\" 2>/dev/null \
-		      | sed 10q \
+		      | ${SED} 10q \
 		      | egrep "$match_pattern_regex" > /dev/null; then
 		    newdeplibs="$newdeplibs $a_deplib"
 		    a_deplib=""
@@ -3288,7 +3300,18 @@ EOF
 	if test -n "$export_symbols" && test -n "$archive_expsym_cmds"; then
 	  eval cmds=\"$archive_expsym_cmds\"
 	else
+	  save_deplibs="$deplibs"
+	  for conv in $convenience; do
+	    tmp_deplibs=
+	    for test_deplib in $deplibs; do
+	      if test "$test_deplib" != "$conv"; then
+		tmp_deplibs="$tmp_deplibs $test_deplib"
+	      fi
+	    done
+	    deplibs="$tmp_deplibs"
+	  done
 	  eval cmds=\"$archive_cmds\"
+	  deplibs="$save_deplibs"
 	fi
 
 	if len=`expr "X$cmds" : ".*"` &&
@@ -3576,7 +3599,7 @@ EOF
 
     prog)
       case $host in
-	*cygwin*) output=`echo $output | sed -e 's,.exe$,,;s,$,.exe,'` ;;
+	*cygwin*) output=`echo $output | ${SED} -e 's,.exe$,,;s,$,.exe,'` ;;
       esac
       if test -n "$vinfo"; then
 	$echo "$modename: warning: \`-version-info' is ignored for programs" 1>&2
@@ -3764,9 +3787,9 @@ extern \"C\" {
 	    if test -z "$export_symbols"; then
 	      export_symbols="$output_objdir/$output.exp"
 	      $run $rm $export_symbols
-	      $run eval "sed -n -e '/^: @PROGRAM@$/d' -e 's/^.* \(.*\)$/\1/p' "'< "$nlist" > "$export_symbols"'
+	      $run eval "${SED} -n -e '/^: @PROGRAM@$/d' -e 's/^.* \(.*\)$/\1/p' "'< "$nlist" > "$export_symbols"'
 	    else
-	      $run eval "sed -e 's/\([][.*^$]\)/\\\1/g' -e 's/^/ /' -e 's/$/$/'"' < "$export_symbols" > "$output_objdir/$output.exp"'
+	      $run eval "${SED} -e 's/\([][.*^$]\)/\\\1/g' -e 's/^/ /' -e 's/$/$/'"' < "$export_symbols" > "$output_objdir/$output.exp"'
 	      $run eval 'grep -f "$output_objdir/$output.exp" < "$nlist" > "$nlist"T'
 	      $run eval 'mv "$nlist"T "$nlist"'
 	    fi
@@ -3774,7 +3797,7 @@ extern \"C\" {
 
 	  for arg in $dlprefiles; do
 	    $show "extracting global C symbols from \`$arg'"
-	    name=`echo "$arg" | sed -e 's%^.*/%%'`
+	    name=`echo "$arg" | ${SED} -e 's%^.*/%%'`
 	    $run eval 'echo ": $name " >> "$nlist"'
 	    $run eval "$NM $arg | $global_symbol_pipe >> '$nlist'"
 	  done
@@ -3789,7 +3812,13 @@ extern \"C\" {
 	    fi
 
 	    # Try sorting and uniquifying the output.
-	    if grep -v "^: " < "$nlist" | sort +2 | uniq > "$nlist"S; then
+	    if grep -v "^: " < "$nlist" |
+		if sort -k 3 </dev/null >/dev/null 2>&1; then
+		  sort -k 3
+		else
+		  sort +2
+		fi |
+		uniq > "$nlist"S; then
 	      :
 	    else
 	      grep -v "^: " < "$nlist" > "$nlist"S
@@ -4011,7 +4040,7 @@ static const void *lt_preloaded_setup() {
 	    relink_command="$var=\"$var_value\"; export $var; $relink_command"
 	  fi
 	done
-	relink_command="cd `pwd`; $relink_command"
+	relink_command="(cd `pwd`; $relink_command)"
 	relink_command=`$echo "X$relink_command" | $Xsed -e "$sed_quote_subst"`
       fi
 
@@ -4031,11 +4060,13 @@ static const void *lt_preloaded_setup() {
 	# win32 will think the script is a binary if it has
 	# a .exe suffix, so we strip it off here.
 	case $output in
-	  *.exe) output=`echo $output|sed 's,.exe$,,'` ;;
+	  *.exe) output=`echo $output|${SED} 's,.exe$,,'` ;;
 	esac
 	# test for cygwin because mv fails w/o .exe extensions
 	case $host in
-	  *cygwin*) exeext=.exe ;;
+	  *cygwin*)
+	    exeext=.exe
+	    outputname=`echo $outputname|${SED} 's,.exe$,,'` ;;
 	  *) exeext= ;;
 	esac
 	$rm $output
@@ -4055,7 +4086,7 @@ static const void *lt_preloaded_setup() {
 
 # Sed substitution that helps us do robust quoting.  It backslashifies
 # metacharacters that are still active within double-quoted strings.
-Xsed='sed -e 1s/^X//'
+Xsed='${SED} -e 1s/^X//'
 sed_quote_subst='$sed_quote_subst'
 
 # The HP-UX ksh and POSIX shell print the target directory to stdout
@@ -4093,7 +4124,7 @@ else
   test \"x\$thisdir\" = \"x\$file\" && thisdir=.
 
   # Follow symbolic links until we get to the real thisdir.
-  file=\`ls -ld \"\$file\" | sed -n 's/.*-> //p'\`
+  file=\`ls -ld \"\$file\" | ${SED} -n 's/.*-> //p'\`
   while test -n \"\$file\"; do
     destdir=\`\$echo \"X\$file\" | \$Xsed -e 's%/[^/]*\$%%'\`
 
@@ -4106,7 +4137,7 @@ else
     fi
 
     file=\`\$echo \"X\$file\" | \$Xsed -e 's%^.*/%%'\`
-    file=\`ls -ld \"\$thisdir/\$file\" | sed -n 's/.*-> //p'\`
+    file=\`ls -ld \"\$thisdir/\$file\" | ${SED} -n 's/.*-> //p'\`
   done
 
   # Try to get the absolute directory name.
@@ -4120,7 +4151,7 @@ else
   progdir=\"\$thisdir/$objdir\"
 
   if test ! -f \"\$progdir/\$program\" || \\
-     { file=\`ls -1dt \"\$progdir/\$program\" \"\$progdir/../\$program\" 2>/dev/null | sed 1q\`; \\
+     { file=\`ls -1dt \"\$progdir/\$program\" \"\$progdir/../\$program\" 2>/dev/null | ${SED} 1q\`; \\
        test \"X\$file\" != \"X\$progdir/\$program\"; }; then
 
     file=\"\$\$-\$program\"
@@ -4242,7 +4273,7 @@ fi\
 	  oldobjs="$libobjs_save"
 	  build_libtool_libs=no
 	else
-	  oldobjs="$objs$old_deplibs $non_pic_objects"
+	  oldobjs="$oldobjs$old_deplibs $non_pic_objects"
 	fi
 	addlibs="$old_convenience"
       fi
@@ -4301,6 +4332,20 @@ fi\
 	  objlist=
 	  concat_cmds=
 	  save_oldobjs=$oldobjs
+	  # GNU ar 2.10+ was changed to match POSIX; thus no paths are
+	  # encoded into archives.  This makes 'ar r' malfunction in
+	  # this piecewise linking case whenever conflicting object
+	  # names appear in distinct ar calls; check, warn and compensate.
+	    if (for obj in $save_oldobjs
+	    do
+	      $echo "X$obj" | $Xsed -e 's%^.*/%%'
+	    done | sort | sort -uc >/dev/null 2>&1); then
+	    :
+	  else
+	    $echo "$modename: warning: object name conflicts; overriding AR_FLAGS to 'cq'" 1>&2
+	    $echo "$modename: warning: to ensure that POSIX-compatible ar will work" 1>&2
+	    AR_FLAGS=cq
+	  fi
 	  for obj in $save_oldobjs
 	  do
 	    oldobjs="$objlist $obj"
@@ -4355,7 +4400,7 @@ fi\
 	fi
       done
       # Quote the link command for shipping.
-      relink_command="cd `pwd`; $SHELL $0 --mode=relink $libtool_args"
+      relink_command="(cd `pwd`; $SHELL $0 --mode=relink $libtool_args)"
       relink_command=`$echo "X$relink_command" | $Xsed -e "$sed_quote_subst"`
 
       # Only create the output if not a dry run.
@@ -4372,7 +4417,7 @@ fi\
 	      case $deplib in
 	      *.la)
 		name=`$echo "X$deplib" | $Xsed -e 's%^.*/%%'`
-		eval libdir=`sed -n -e 's/^libdir=\(.*\)$/\1/p' $deplib`
+		eval libdir=`${SED} -n -e 's/^libdir=\(.*\)$/\1/p' $deplib`
 		if test -z "$libdir"; then
 		  $echo "$modename: \`$deplib' is not a valid libtool archive" 1>&2
 		  exit 1
@@ -4386,7 +4431,7 @@ fi\
 	    newdlfiles=
 	    for lib in $dlfiles; do
 	      name=`$echo "X$lib" | $Xsed -e 's%^.*/%%'`
-	      eval libdir=`sed -n -e 's/^libdir=\(.*\)$/\1/p' $lib`
+	      eval libdir=`${SED} -n -e 's/^libdir=\(.*\)$/\1/p' $lib`
 	      if test -z "$libdir"; then
 		$echo "$modename: \`$lib' is not a valid libtool archive" 1>&2
 		exit 1
@@ -4397,7 +4442,7 @@ fi\
 	    newdlprefiles=
 	    for lib in $dlprefiles; do
 	      name=`$echo "X$lib" | $Xsed -e 's%^.*/%%'`
-	      eval libdir=`sed -n -e 's/^libdir=\(.*\)$/\1/p' $lib`
+	      eval libdir=`${SED} -n -e 's/^libdir=\(.*\)$/\1/p' $lib`
 	      if test -z "$libdir"; then
 		$echo "$modename: \`$lib' is not a valid libtool archive" 1>&2
 		exit 1
@@ -4621,7 +4666,7 @@ relink_command=\"$relink_command\""
 
       *.la)
 	# Check to see that this really is a libtool archive.
-	if (sed -e '2q' $file | egrep "^# Generated by .*$PACKAGE") >/dev/null 2>&1; then :
+	if (${SED} -e '2q' $file | egrep "^# Generated by .*$PACKAGE") >/dev/null 2>&1; then :
 	else
 	  $echo "$modename: \`$file' is not a valid libtool archive" 1>&2
 	  $echo "$help" 1>&2
@@ -4769,16 +4814,29 @@ relink_command=\"$relink_command\""
 	  destfile="$destdir/$destfile"
 	fi
 
+	# If the file is missing, and there is a .exe on the end, strip it
+	# because it is most likely a libtool script we actually want to
+	# install
+	stripped_ext=""
+	case $file in
+	  *.exe)
+	    if test ! -f "$file"; then
+	      file=`echo $file|${SED} 's,.exe$,,'`
+	      stripped_ext=".exe"
+	    fi
+	    ;;
+	esac
+
 	# Do a test to see if this is really a libtool program.
 	case $host in
 	*cygwin*|*mingw*)
-	    wrapper=`echo $file | sed -e 's,.exe$,,'`
+	    wrapper=`echo $file | ${SED} -e 's,.exe$,,'`
 	    ;;
 	*)
 	    wrapper=$file
 	    ;;
 	esac
-	if (sed -e '4q' $wrapper | egrep "^# Generated by .*$PACKAGE")>/dev/null 2>&1; then
+	if (${SED} -e '4q' $wrapper | egrep "^# Generated by .*$PACKAGE")>/dev/null 2>&1; then
 	  notinst_deplibs=
 	  relink_command=
 
@@ -4830,7 +4888,7 @@ relink_command=\"$relink_command\""
 		$echo "$modename: error: cannot create temporary directory \`$tmpdir'" 1>&2
 		continue
 	      fi
-	      file=`$echo "X$file" | $Xsed -e 's%^.*/%%'`
+	      file=`$echo "X$file$stripped_ext" | $Xsed -e 's%^.*/%%'`
 	      outputname="$tmpdir/$file"
 	      # Replace the output file specification.
 	      relink_command=`$echo "X$relink_command" | $Xsed -e 's%@OUTPUT@%'"$outputname"'%g'`
@@ -4848,7 +4906,7 @@ relink_command=\"$relink_command\""
 	    fi
 	  else
 	    # Install the binary that we compiled earlier.
-	    file=`$echo "X$file" | $Xsed -e "s%\([^/]*\)$%$objdir/\1%"`
+	    file=`$echo "X$file$stripped_ext" | $Xsed -e "s%\([^/]*\)$%$objdir/\1%"`
 	  fi
 	fi
 
@@ -4864,7 +4922,7 @@ relink_command=\"$relink_command\""
 	    destfile=$destfile.exe
 	    ;;
 	  *:*.exe)
-	    destfile=`echo $destfile | sed -e 's,.exe$,,'`
+	    destfile=`echo $destfile | ${SED} -e 's,.exe$,,'`
 	    ;;
 	  esac
 	  ;;
@@ -5012,7 +5070,7 @@ relink_command=\"$relink_command\""
       case $file in
       *.la)
 	# Check to see that this really is a libtool archive.
-	if (sed -e '2q' $file | egrep "^# Generated by .*$PACKAGE") >/dev/null 2>&1; then :
+	if (${SED} -e '2q' $file | egrep "^# Generated by .*$PACKAGE") >/dev/null 2>&1; then :
 	else
 	  $echo "$modename: \`$lib' is not a valid libtool archive" 1>&2
 	  $echo "$help" 1>&2
@@ -5083,7 +5141,7 @@ relink_command=\"$relink_command\""
       -*) ;;
       *)
 	# Do a test to see if this is really a libtool program.
-	if (sed -e '4q' $file | egrep "^# Generated by .*$PACKAGE") >/dev/null 2>&1; then
+	if (${SED} -e '4q' $file | egrep "^# Generated by .*$PACKAGE") >/dev/null 2>&1; then
 	  # If there is no directory component, then add one.
 	  case $file in
 	  */* | *\\*) . $file ;;
@@ -5192,7 +5250,7 @@ relink_command=\"$relink_command\""
       case $name in
       *.la)
 	# Possibly a libtool archive, so verify it.
-	if (sed -e '2q' $file | egrep "^# Generated by .*$PACKAGE") >/dev/null 2>&1; then
+	if (${SED} -e '2q' $file | egrep "^# Generated by .*$PACKAGE") >/dev/null 2>&1; then
 	  . $dir/$name
 
 	  # Delete the libtool libraries and symlinks.
@@ -5239,7 +5297,7 @@ relink_command=\"$relink_command\""
 
       *.lo)
 	# Possibly a libtool object, so verify it.
-	if (sed -e '2q' $file | egrep "^# Generated by .*$PACKAGE") >/dev/null 2>&1; then
+	if (${SED} -e '2q' $file | egrep "^# Generated by .*$PACKAGE") >/dev/null 2>&1; then
 
 	  # Read the .lo file
 	  . $dir/$name
@@ -5261,7 +5319,7 @@ relink_command=\"$relink_command\""
       *)
 	# Do a test to see if this is a libtool program.
 	if test "$mode" = clean &&
-	   (sed -e '4q' $file | egrep "^# Generated by .*$PACKAGE") >/dev/null 2>&1; then
+	   (${SED} -e '4q' $file | egrep "^# Generated by .*$PACKAGE") >/dev/null 2>&1; then
 	  relink_command=
 	  . $dir/$file
 

@@ -1,6 +1,6 @@
-# aclocal.m4 generated automatically by aclocal 1.5
+# aclocal.m4 generated automatically by aclocal 1.6 -*- Autoconf -*-
 
-# Copyright 1996, 1997, 1998, 1999, 2000, 2001
+# Copyright 1996, 1997, 1998, 1999, 2000, 2001, 2002
 # Free Software Foundation, Inc.
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -143,11 +143,30 @@ AC_DEFUN([AC_LIBPLOT_LIBS],[
 	fi
 ])
 
-# Do all the work for Automake.  This macro actually does too much --
-# some checks are only needed if your package does certain things.
-# But this isn't really a big deal.
+# Do all the work for Automake.                            -*- Autoconf -*-
 
-# serial 5
+# This macro actually does too much some checks are only needed if
+# your package does certain things.  But this isn't really a big deal.
+
+# Copyright 1996, 1997, 1998, 1999, 2000, 2001, 2002
+# Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+# serial 8
 
 # There are a few dirty hacks below to avoid letting `AC_PROG_CC' be
 # written in clear, in which case automake, when reading aclocal.m4,
@@ -156,62 +175,52 @@ AC_DEFUN([AC_LIBPLOT_LIBS],[
 # CC etc. in the Makefile, will ask for an AC_PROG_CC use...
 
 
-# We require 2.13 because we rely on SHELL being computed by configure.
-AC_PREREQ([2.13])
-
-# AC_PROVIDE_IFELSE(MACRO-NAME, IF-PROVIDED, IF-NOT-PROVIDED)
-# -----------------------------------------------------------
-# If MACRO-NAME is provided do IF-PROVIDED, else IF-NOT-PROVIDED.
-# The purpose of this macro is to provide the user with a means to
-# check macros which are provided without letting her know how the
-# information is coded.
-# If this macro is not defined by Autoconf, define it here.
-ifdef([AC_PROVIDE_IFELSE],
-      [],
-      [define([AC_PROVIDE_IFELSE],
-              [ifdef([AC_PROVIDE_$1],
-                     [$2], [$3])])])
-
-
-# AM_INIT_AUTOMAKE(PACKAGE,VERSION, [NO-DEFINE])
-# ----------------------------------------------
-AC_DEFUN([AM_INIT_AUTOMAKE],
-[AC_REQUIRE([AC_PROG_INSTALL])dnl
-# test to see if srcdir already configured
-if test "`CDPATH=:; cd $srcdir && pwd`" != "`pwd`" &&
-   test -f $srcdir/config.status; then
-  AC_MSG_ERROR([source directory already configured; run \"make distclean\" there first])
-fi
-
-# Define the identity of the package.
-PACKAGE=$1
-AC_SUBST(PACKAGE)dnl
-VERSION=$2
-AC_SUBST(VERSION)dnl
-ifelse([$3],,
-[AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE", [Name of package])
-AC_DEFINE_UNQUOTED(VERSION, "$VERSION", [Version number of package])])
+AC_PREREQ([2.52])
 
 # Autoconf 2.50 wants to disallow AM_ names.  We explicitly allow
 # the ones we care about.
-ifdef([m4_pattern_allow],
-      [m4_pattern_allow([^AM_[A-Z]+FLAGS])])dnl
+m4_pattern_allow([^AM_[A-Z]+FLAGS$])dnl
 
-# Autoconf 2.50 always computes EXEEXT.  However we need to be
-# compatible with 2.13, for now.  So we always define EXEEXT, but we
-# don't compute it.
-AC_SUBST(EXEEXT)
-# Similar for OBJEXT -- only we only use OBJEXT if the user actually
-# requests that it be used.  This is a bit dumb.
-: ${OBJEXT=o}
-AC_SUBST(OBJEXT)
+# AM_INIT_AUTOMAKE(PACKAGE, VERSION, [NO-DEFINE])
+# AM_INIT_AUTOMAKE([OPTIONS])
+# -----------------------------------------------
+# The call with PACKAGE and VERSION arguments is the old style
+# call (pre autoconf-2.50), which is being phased out.  PACKAGE
+# and VERSION should now be passed to AC_INIT and removed from
+# the call to AM_INIT_AUTOMAKE.
+# We support both call styles for the transition.  After
+# the next Automake release, Autoconf can make the AC_INIT
+# arguments mandatory, and then we can depend on a new Autoconf
+# release and drop the old call support.
+AC_DEFUN([AM_INIT_AUTOMAKE],
+[AC_REQUIRE([AM_SET_CURRENT_AUTOMAKE_VERSION])dnl
+ AC_REQUIRE([AC_PROG_INSTALL])dnl
+# test to see if srcdir already configured
+if test "`cd $srcdir && pwd`" != "`pwd`" &&
+   test -f $srcdir/config.status; then
+  AC_MSG_ERROR([source directory already configured; run "make distclean" there first])
+fi
+
+# Define the identity of the package.
+dnl Distinguish between old-style and new-style calls.
+m4_ifval([$2],
+[m4_ifval([$3], [_AM_SET_OPTION([no-define])])dnl
+ AC_SUBST([PACKAGE], [$1])dnl
+ AC_SUBST([VERSION], [$2])],
+[_AM_SET_OPTIONS([$1])dnl
+ AC_SUBST([PACKAGE], [AC_PACKAGE_TARNAME])dnl
+ AC_SUBST([VERSION], [AC_PACKAGE_VERSION])])dnl
+
+_AM_IF_OPTION([no-define],,
+[AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE", [Name of package])
+ AC_DEFINE_UNQUOTED(VERSION, "$VERSION", [Version number of package])])dnl
 
 # Some tools Automake needs.
 AC_REQUIRE([AM_SANITY_CHECK])dnl
 AC_REQUIRE([AC_ARG_PROGRAM])dnl
-AM_MISSING_PROG(ACLOCAL, aclocal)
+AM_MISSING_PROG(ACLOCAL, "aclocal-${am__api_version}")
 AM_MISSING_PROG(AUTOCONF, autoconf)
-AM_MISSING_PROG(AUTOMAKE, automake)
+AM_MISSING_PROG(AUTOMAKE, "automake-${am__api_version}")
 AM_MISSING_PROG(AUTOHEADER, autoheader)
 AM_MISSING_PROG(MAKEINFO, makeinfo)
 AM_MISSING_PROG(AMTAR, tar)
@@ -221,9 +230,9 @@ AM_PROG_INSTALL_STRIP
 # some platforms.
 AC_REQUIRE([AC_PROG_AWK])dnl
 AC_REQUIRE([AC_PROG_MAKE_SET])dnl
-AC_REQUIRE([AM_DEP_TRACK])dnl
-AC_REQUIRE([AM_SET_DEPDIR])dnl
-AC_PROVIDE_IFELSE([AC_PROG_][CC],
+
+_AM_IF_OPTION([no-dependencies],,
+[AC_PROVIDE_IFELSE([AC_PROG_][CC],
                   [_AM_DEPENDENCIES(CC)],
                   [define([AC_PROG_][CC],
                           defn([AC_PROG_][CC])[_AM_DEPENDENCIES(CC)])])dnl
@@ -232,10 +241,101 @@ AC_PROVIDE_IFELSE([AC_PROG_][CXX],
                   [define([AC_PROG_][CXX],
                           defn([AC_PROG_][CXX])[_AM_DEPENDENCIES(CXX)])])dnl
 ])
+])
+
+# Copyright 2002  Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+
+# AM_AUTOMAKE_VERSION(VERSION)
+# ----------------------------
+# Automake X.Y traces this macro to ensure aclocal.m4 has been
+# generated from the m4 files accompanying Automake X.Y.
+AC_DEFUN([AM_AUTOMAKE_VERSION],[am__api_version="1.6"])
+
+# AM_SET_CURRENT_AUTOMAKE_VERSION
+# -------------------------------
+# Call AM_AUTOMAKE_VERSION so it can be traced.
+# This function is AC_REQUIREd by AC_INIT_AUTOMAKE.
+AC_DEFUN([AM_SET_CURRENT_AUTOMAKE_VERSION],
+	 [AM_AUTOMAKE_VERSION([1.6])])
+
+# Helper functions for option handling.                    -*- Autoconf -*-
+
+# Copyright 2001, 2002  Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+# serial 2
+
+# _AM_MANGLE_OPTION(NAME)
+# -----------------------
+AC_DEFUN([_AM_MANGLE_OPTION],
+[[_AM_OPTION_]m4_bpatsubst($1, [[^a-zA-Z0-9_]], [_])])
+
+# _AM_SET_OPTION(NAME)
+# ------------------------------
+# Set option NAME.  Presently that only means defining a flag for this option.
+AC_DEFUN([_AM_SET_OPTION],
+[m4_define(_AM_MANGLE_OPTION([$1]), 1)])
+
+# _AM_SET_OPTIONS(OPTIONS)
+# ----------------------------------
+# OPTIONS is a space-separated list of Automake options.
+AC_DEFUN([_AM_SET_OPTIONS],
+[AC_FOREACH([_AM_Option], [$1], [_AM_SET_OPTION(_AM_Option)])])
+
+# _AM_IF_OPTION(OPTION, IF-SET, [IF-NOT-SET])
+# -------------------------------------------
+# Execute IF-SET if OPTION is set, IF-NOT-SET otherwise.
+AC_DEFUN([_AM_IF_OPTION],
+[m4_ifset(_AM_MANGLE_OPTION([$1]), [$2], [$3])])
 
 #
 # Check to make sure that the build environment is sane.
 #
+
+# Copyright 1996, 1997, 2000, 2001 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
 
 # serial 3
 
@@ -280,8 +380,27 @@ Check your system clock])
 fi
 AC_MSG_RESULT(yes)])
 
+#  -*- Autoconf -*-
 
-# serial 2
+
+# Copyright 1997, 1999, 2000, 2001 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+# serial 3
 
 # AM_MISSING_PROG(NAME, PROGRAM)
 # ------------------------------
@@ -303,12 +422,28 @@ if eval "$MISSING --run true"; then
   am_missing_run="$MISSING --run "
 else
   am_missing_run=
-  am_backtick='`'
-  AC_MSG_WARN([${am_backtick}missing' script is too old or missing])
+  AC_MSG_WARN([`missing' script is too old or missing])
 fi
 ])
 
 # AM_AUX_DIR_EXPAND
+
+# Copyright 2001 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
 
 # For projects using AC_CONFIG_AUX_DIR([foo]), Autoconf sets
 # $ac_aux_dir to `$srcdir/foo'.  In other projects, it is set to
@@ -348,18 +483,58 @@ fi
 # absolute PATH.  The drawback is that using absolute paths prevent a
 # configured tree to be moved without reconfiguration.
 
+# Rely on autoconf to set up CDPATH properly.
+AC_PREREQ([2.50])
+
 AC_DEFUN([AM_AUX_DIR_EXPAND], [
 # expand $ac_aux_dir to an absolute path
-am_aux_dir=`CDPATH=:; cd $ac_aux_dir && pwd`
+am_aux_dir=`cd $ac_aux_dir && pwd`
 ])
 
 # AM_PROG_INSTALL_SH
 # ------------------
 # Define $install_sh.
+
+# Copyright 2001 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
 AC_DEFUN([AM_PROG_INSTALL_SH],
 [AC_REQUIRE([AM_AUX_DIR_EXPAND])dnl
 install_sh=${install_sh-"$am_aux_dir/install-sh"}
 AC_SUBST(install_sh)])
+
+# AM_PROG_INSTALL_STRIP
+
+# Copyright 2001 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
 
 # One issue with vendor `install' (even GNU) is that you can't
 # specify the program used to strip binaries.  This is especially
@@ -370,11 +545,35 @@ AC_SUBST(install_sh)])
 # STRIPPROG with the value of the STRIP variable (set by the user).
 AC_DEFUN([AM_PROG_INSTALL_STRIP],
 [AC_REQUIRE([AM_PROG_INSTALL_SH])dnl
+# Installed binaries are usually stripped using `strip' when the user
+# run `make install-strip'.  However `strip' might not be the right
+# tool to use in cross-compilation environments, therefore Automake
+# will honor the `STRIP' environment variable to overrule this program.
+dnl Don't test for $cross_compiling = yes, because it might be `maybe'.
+if test "$cross_compiling" != no; then
+  AC_CHECK_TOOL([STRIP], [strip], :)
+fi
 INSTALL_STRIP_PROGRAM="\${SHELL} \$(install_sh) -c -s"
 AC_SUBST([INSTALL_STRIP_PROGRAM])])
 
 # serial 4						-*- Autoconf -*-
 
+# Copyright 1999, 2000, 2001 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
 
 
 # There are a few dirty hacks below to avoid letting `AC_PROG_CC' be
@@ -386,9 +585,9 @@ AC_SUBST([INSTALL_STRIP_PROGRAM])])
 
 
 # _AM_DEPENDENCIES(NAME)
-# ---------------------
+# ----------------------
 # See how the compiler implements dependency checking.
-# NAME is "CC", "CXX" or "OBJC".
+# NAME is "CC", "CXX", "GCJ", or "OBJC".
 # We try a few techniques and use that to set a single cache variable.
 #
 # We don't AC_REQUIRE the corresponding AC_PROG_CC since the latter was
@@ -465,8 +664,7 @@ else
   am_cv_$1_dependencies_compiler_type=none
 fi
 ])
-$1DEPMODE="depmode=$am_cv_$1_dependencies_compiler_type"
-AC_SUBST([$1DEPMODE])
+AC_SUBST([$1DEPMODE], [depmode=$am_cv_$1_dependencies_compiler_type])
 ])
 
 
@@ -484,7 +682,7 @@ else
   DEPDIR=_deps
 fi
 rmdir .deps 2>/dev/null
-AC_SUBST(DEPDIR)
+AC_SUBST([DEPDIR])
 ])
 
 
@@ -499,30 +697,42 @@ if test "x$enable_dependency_tracking" != xno; then
   AMDEPBACKSLASH='\'
 fi
 AM_CONDITIONAL([AMDEP], [test "x$enable_dependency_tracking" != xno])
-pushdef([subst], defn([AC_SUBST]))
-subst(AMDEPBACKSLASH)
-popdef([subst])
+AC_SUBST([AMDEPBACKSLASH])
 ])
 
-# Generate code to set up dependency tracking.
-# This macro should only be invoked once -- use via AC_REQUIRE.
-# Usage:
-# AM_OUTPUT_DEPENDENCY_COMMANDS
+# Generate code to set up dependency tracking.   -*- Autoconf -*-
 
-#
-# This code is only required when automatic dependency tracking
-# is enabled.  FIXME.  This creates each `.P' file that we will
-# need in order to bootstrap the dependency handling code.
-AC_DEFUN([AM_OUTPUT_DEPENDENCY_COMMANDS],[
-AC_OUTPUT_COMMANDS([
-test x"$AMDEP_TRUE" != x"" ||
-for mf in $CONFIG_FILES; do
-  case "$mf" in
-  Makefile) dirpart=.;;
-  */Makefile) dirpart=`echo "$mf" | sed -e 's|/[^/]*$||'`;;
-  *) continue;;
-  esac
-  grep '^DEP_FILES *= *[^ #]' < "$mf" > /dev/null || continue
+# Copyright 1999, 2000, 2001, 2002 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+#serial 2
+
+# _AM_OUTPUT_DEPENDENCY_COMMANDS
+# ------------------------------
+AC_DEFUN([_AM_OUTPUT_DEPENDENCY_COMMANDS],
+[for mf in $CONFIG_FILES; do
+  # Strip MF so we end up with the name of the file.
+  mf=`echo "$mf" | sed -e 's/:.*$//'`
+  if (sed 1q $mf | fgrep 'generated by automake') > /dev/null 2>&1; then
+    dirpart=`AS_DIRNAME("$mf")`
+  else
+    continue
+  fi
+  grep '^DEP_FILES *= *[[^ @%:@]]' < "$mf" > /dev/null || continue
   # Extract the definition of DEP_FILES from the Makefile without
   # running `make'.
   DEPDIR=`sed -n -e '/^DEPDIR = / s///p' < "$mf"`
@@ -546,14 +756,46 @@ for mf in $CONFIG_FILES; do
        sed -e 's/\$(DEPDIR)/'"$DEPDIR"'/g' -e 's/\$U/'"$U"'/g'`; do
     # Make sure the directory exists.
     test -f "$dirpart/$file" && continue
-    fdir=`echo "$file" | sed -e 's|/[^/]*$||'`
-    $ac_aux_dir/mkinstalldirs "$dirpart/$fdir" > /dev/null 2>&1
+    fdir=`AS_DIRNAME(["$file"])`
+    AS_MKDIR_P([$dirpart/$fdir])
     # echo "creating $dirpart/$file"
     echo '# dummy' > "$dirpart/$file"
   done
 done
-], [AMDEP_TRUE="$AMDEP_TRUE"
-ac_aux_dir="$ac_aux_dir"])])
+])# _AM_OUTPUT_DEPENDENCY_COMMANDS
+
+
+# AM_OUTPUT_DEPENDENCY_COMMANDS
+# -----------------------------
+# This macro should only be invoked once -- use via AC_REQUIRE.
+#
+# This code is only required when automatic dependency tracking
+# is enabled.  FIXME.  This creates each `.P' file that we will
+# need in order to bootstrap the dependency handling code.
+AC_DEFUN([AM_OUTPUT_DEPENDENCY_COMMANDS],
+[AC_CONFIG_COMMANDS([depfiles],
+     [test x"$AMDEP_TRUE" != x"" || _AM_OUTPUT_DEPENDENCY_COMMANDS],
+     [AMDEP_TRUE="$AMDEP_TRUE" ac_aux_dir="$ac_aux_dir"])
+])
+
+# Copyright 2001 Free Software Foundation, Inc.             -*- Autoconf -*-
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+# serial 2
 
 # AM_MAKE_INCLUDE()
 # -----------------
@@ -566,7 +808,7 @@ doit:
 END
 # If we don't find an include directive, just comment out the code.
 AC_MSG_CHECKING([for style of include used by $am_make])
-am__include='#'
+am__include="#"
 am__quote=
 _am_result=none
 # First try GNU make style include.
@@ -586,7 +828,7 @@ if test "$am__include" = "#"; then
    echo '.include "confinc"' > confmf
    if test "`$am_make -s -f confmf 2> /dev/null`" = "done"; then
       am__include=.include
-      am__quote='"'
+      am__quote="\""
       _am_result=BSD
    fi
 fi
@@ -596,23 +838,35 @@ AC_MSG_RESULT($_am_result)
 rm -f confinc confmf
 ])
 
-# serial 3
+# AM_CONDITIONAL                                              -*- Autoconf -*-
+
+# Copyright 1997, 2000, 2001 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+# serial 5
+
+AC_PREREQ(2.52)
 
 # AM_CONDITIONAL(NAME, SHELL-CONDITION)
 # -------------------------------------
 # Define a conditional.
-#
-# FIXME: Once using 2.50, use this:
-# m4_match([$1], [^TRUE\|FALSE$], [AC_FATAL([$0: invalid condition: $1])])dnl
 AC_DEFUN([AM_CONDITIONAL],
-[ifelse([$1], [TRUE],
-        [errprint(__file__:__line__: [$0: invalid condition: $1
-])dnl
-m4exit(1)])dnl
-ifelse([$1], [FALSE],
-       [errprint(__file__:__line__: [$0: invalid condition: $1
-])dnl
-m4exit(1)])dnl
+[ifelse([$1], [TRUE],  [AC_FATAL([$0: invalid condition: $1])],
+        [$1], [FALSE], [AC_FATAL([$0: invalid condition: $1])])dnl
 AC_SUBST([$1_TRUE])
 AC_SUBST([$1_FALSE])
 if $2; then
@@ -621,74 +875,90 @@ if $2; then
 else
   $1_TRUE='#'
   $1_FALSE=
-fi])
+fi
+AC_CONFIG_COMMANDS_PRE(
+[if test -z "${$1_TRUE}" && test -z "${$1_FALSE}"; then
+  AC_MSG_ERROR([conditional \"$1\" was never defined.
+Usually this means the macro was only invoked conditionally.])
+fi])])
 
-# Like AC_CONFIG_HEADER, but automatically create stamp file.
+# Like AC_CONFIG_HEADER, but automatically create stamp file. -*- Autoconf -*-
 
-# serial 3
+# Copyright 1996, 1997, 2000, 2001 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+AC_PREREQ([2.52])
+
+# serial 6
 
 # When config.status generates a header, we must update the stamp-h file.
 # This file resides in the same directory as the config header
 # that is generated.  We must strip everything past the first ":",
 # and everything past the last "/".
 
-AC_PREREQ([2.12])
-
-AC_DEFUN([AM_CONFIG_HEADER],
-[ifdef([AC_FOREACH],dnl
-	 [dnl init our file count if it isn't already
-	 m4_ifndef([_AM_Config_Header_Index], m4_define([_AM_Config_Header_Index], [0]))
-	 dnl prepare to store our destination file list for use in config.status
-	 AC_FOREACH([_AM_File], [$1],
-		    [m4_pushdef([_AM_Dest], m4_patsubst(_AM_File, [:.*]))
-		    m4_define([_AM_Config_Header_Index], m4_incr(_AM_Config_Header_Index))
-		    dnl and add it to the list of files AC keeps track of, along
-		    dnl with our hook
-		    AC_CONFIG_HEADERS(_AM_File,
-dnl COMMANDS, [, INIT-CMDS]
-[# update the timestamp
-echo timestamp >"AS_ESCAPE(_AM_DIRNAME(]_AM_Dest[))/stamp-h]_AM_Config_Header_Index["
-][$2]m4_ifval([$3], [, [$3]]))dnl AC_CONFIG_HEADERS
-		    m4_popdef([_AM_Dest])])],dnl
-[AC_CONFIG_HEADER([$1])
-  AC_OUTPUT_COMMANDS(
-   ifelse(patsubst([$1], [[^ ]], []),
-	  [],
-	  [test -z "$CONFIG_HEADERS" || echo timestamp >dnl
-	   patsubst([$1], [^\([^:]*/\)?.*], [\1])stamp-h]),dnl
-[am_indx=1
-for am_file in $1; do
-  case " \$CONFIG_HEADERS " in
-  *" \$am_file "*)
-    am_dir=\`echo \$am_file |sed 's%:.*%%;s%[^/]*\$%%'\`
-    if test -n "\$am_dir"; then
-      am_tmpdir=\`echo \$am_dir |sed 's%^\(/*\).*\$%\1%'\`
-      for am_subdir in \`echo \$am_dir |sed 's%/% %'\`; do
-        am_tmpdir=\$am_tmpdir\$am_subdir/
-        if test ! -d \$am_tmpdir; then
-          mkdir \$am_tmpdir
-        fi
-      done
-    fi
-    echo timestamp > "\$am_dir"stamp-h\$am_indx
-    ;;
-  esac
-  am_indx=\`expr \$am_indx + 1\`
-done])
-])]) # AM_CONFIG_HEADER
-
 # _AM_DIRNAME(PATH)
 # -----------------
 # Like AS_DIRNAME, only do it during macro expansion
 AC_DEFUN([_AM_DIRNAME],
-       [m4_if(m4_regexp([$1], [^.*[^/]//*[^/][^/]*/*$]), -1,
-	      m4_if(m4_regexp([$1], [^//\([^/]\|$\)]), -1,
-		    m4_if(m4_regexp([$1], [^/.*]), -1,
+       [m4_if(regexp([$1], [^.*[^/]//*[^/][^/]*/*$]), -1,
+	      m4_if(regexp([$1], [^//\([^/]\|$\)]), -1,
+		    m4_if(regexp([$1], [^/.*]), -1,
 			  [.],
-			  m4_patsubst([$1], [^\(/\).*], [\1])),
-		    m4_patsubst([$1], [^\(//\)\([^/].*\|$\)], [\1])),
-	      m4_patsubst([$1], [^\(.*[^/]\)//*[^/][^/]*/*$], [\1]))[]dnl
-]) # _AM_DIRNAME
+			  patsubst([$1], [^\(/\).*], [\1])),
+		    patsubst([$1], [^\(//\)\([^/].*\|$\)], [\1])),
+	      patsubst([$1], [^\(.*[^/]\)//*[^/][^/]*/*$], [\1]))[]dnl
+])# _AM_DIRNAME
+
+
+# The stamp files are numbered to have different names.
+# We could number them on a directory basis, but that's additional
+# complications, let's have a unique counter.
+m4_define([_AM_STAMP_Count], [0])
+
+
+# _AM_STAMP(HEADER)
+# -----------------
+# The name of the stamp file for HEADER.
+AC_DEFUN([_AM_STAMP],
+[m4_define([_AM_STAMP_Count], m4_incr(_AM_STAMP_Count))dnl
+AS_ESCAPE(_AM_DIRNAME(patsubst([$1],
+                               [:.*])))/stamp-h[]_AM_STAMP_Count])
+
+
+# _AM_CONFIG_HEADER(HEADER[:SOURCES], COMMANDS, INIT-COMMANDS)
+# ------------------------------------------------------------
+# We used to try to get a real timestamp in stamp-h.  But the fear is that
+# that will cause unnecessary cvs conflicts.
+AC_DEFUN([_AM_CONFIG_HEADER],
+[# Add the stamp file to the list of files AC keeps track of,
+# along with our hook.
+AC_CONFIG_HEADERS([$1],
+                  [# update the timestamp
+echo 'timestamp for $1' >"_AM_STAMP([$1])"
+$2],
+                  [$3])
+])# _AM_CONFIG_HEADER
+
+
+# AM_CONFIG_HEADER(HEADER[:SOURCES]..., COMMANDS, INIT-COMMANDS)
+# --------------------------------------------------------------
+AC_DEFUN([AM_CONFIG_HEADER],
+[AC_FOREACH([_AM_File], [$1], [_AM_CONFIG_HEADER(_AM_File, [$2], [$3])])
+])# AM_CONFIG_HEADER
 
 # libtool.m4 - Configure libtool for the host system. -*-Autoconf-*-
 
@@ -756,6 +1026,8 @@ AC_REQUIRE([AC_PROG_CC])dnl
 AC_REQUIRE([AC_PROG_LD])dnl
 AC_REQUIRE([AC_PROG_LD_RELOAD_FLAG])dnl
 AC_REQUIRE([AC_PROG_NM])dnl
+AC_REQUIRE([LT_AC_PROG_SED])dnl
+
 AC_REQUIRE([AC_PROG_LN_S])dnl
 AC_REQUIRE([AC_DEPLIBS_CHECK_METHOD])dnl
 # Autoconf 2.13's AC_OBJEXT and AC_EXEEXT macros only works for C compilers!
@@ -828,6 +1100,7 @@ test -z "$LD" && LD=ld
 test -z "$LN_S" && LN_S="ln -s"
 test -z "$MAGIC_CMD" && MAGIC_CMD=file
 test -z "$NM" && NM=nm
+test -z "$SED" && SED=sed
 test -z "$OBJDUMP" && OBJDUMP=objdump
 test -z "$RANLIB" && RANLIB=:
 test -z "$STRIP" && STRIP=:
@@ -1244,7 +1517,7 @@ AC_CACHE_VAL([lt_cv_sys_max_cmd_len], [dnl
   i=0
   testring="ABCD"
 
-  case $host_os in
+  case $build_os in
   msdosdjgpp*)
     # On DJGPP, this test can blow up pretty badly due to problems in libc
     # (any single argument exceeding 2000 bytes causes a buffer overrun
@@ -1264,8 +1537,8 @@ AC_CACHE_VAL([lt_cv_sys_max_cmd_len], [dnl
     # If test is not a shell built-in, we'll probably end up computing a
     # maximum length that is only half of the actual maximum length, but
     # we can't tell.
-    while test "X"`$CONFIG_SHELL [$]0 --fallback-echo "X$testring" 2>/dev/null` \
-	       = "XX$testring" &&
+    while (test "X"`$CONFIG_SHELL [$]0 --fallback-echo "X$testring" 2>/dev/null` \
+	       = "XX$testring") >/dev/null 2>&1 &&
 	    new_result=`expr "X$testring" : ".*" 2>&1` &&
 	    lt_cv_sys_max_cmd_len=$new_result &&
 	    test $i != 17 # 1/2 MB should be enough
@@ -1274,11 +1547,10 @@ AC_CACHE_VAL([lt_cv_sys_max_cmd_len], [dnl
       testring=$testring$testring
     done
     testring=
-    # add a significant safety factor because C++ compilers can tack on massive
-    # amounts of additional arguments before passing them to the linker.  1/4
-    # should be good.
-    len=`expr $lt_cv_sys_max_cmd_len \/ 4`
-    lt_cv_sys_max_cmd_len=`expr $lt_cv_sys_max_cmd_len - $len`
+    # Add a significant safety factor because C++ compilers can tack on massive
+    # amounts of additional arguments before passing them to the linker.
+    # It appears as though 1/2 is a usable value.
+    lt_cv_sys_max_cmd_len=`expr $lt_cv_sys_max_cmd_len \/ 2`
     ;;
   esac
 ])
@@ -1500,8 +1772,8 @@ AC_CACHE_CHECK([if $compiler supports -c -o file.$ac_objext],
 		   CFLAGS="$CFLAGS -o out/conftest2.$ac_objext"],
 	  [$1],[CXX],[save_CXXFLAGS="$CXXFLAGS"
 		   CXXFLAGS="$CXXFLAGS -o out/conftest2.$ac_objext"],
-	  [$1],[GCJ],[save_GCJFLAGS="$GCJFLAGS"
-		   GCJFLAGS="$GCJFLAGS -o out/conftest2.$ac_objext"])
+	  [$1],[GCJ],[save_GCJFLAGS="$CFLAGS"
+		   CFLAGS="$GCJFLAGS -o out/conftest2.$ac_objext"])
    echo "$lt_simple_compile_test_code" > conftest.$ac_ext
 
    # According to Tom Tromey, Ian Lance Taylor reported there are C compilers
@@ -1524,7 +1796,7 @@ AC_CACHE_CHECK([if $compiler supports -c -o file.$ac_objext],
    fi
    ifelse([$1],[],[CFLAGS="$save_CFLAGS"],
 	  [$1],[CXX],[CXXFLAGS="$save_CXXFLAGS"],
-	  [$1],[GCJ],[GCJFLAGS="$save_GCJFLAGS"])
+	  [$1],[GCJ],[CFLAGS="$save_CFLAGS"])
    chmod u+w .
    $rm conftest* out/*
    rmdir out
@@ -1652,7 +1924,20 @@ shlibpath_overrides_runpath=unknown
 version_type=none
 dynamic_linker="$host_os ld.so"
 sys_lib_dlsearch_path_spec="/lib /usr/lib"
-sys_lib_search_path_spec="/lib /usr/lib /usr/local/lib"
+if test "$GCC" = yes; then
+  sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | sed -e "s/^libraries://"`
+  if echo "$sys_lib_search_path_spec" | egrep ';' >/dev/null ; then
+    # if the path contains ";" then we assume it to be the separator
+    # otherwise default to the standard path separator (i.e. ":") - it is
+    # assumed that no part of a normal pathname contains ";" but that should
+    # okay in the real world where ";" in dirpaths is itself problematic.
+    sys_lib_search_path_spec=`echo "$sys_lib_search_path_spec" | sed -e 's/;/ /g'`
+  else
+    sys_lib_search_path_spec=`echo "$sys_lib_search_path_spec" | sed  -e "s/$PATH_SEPARATOR/ /g"`
+  fi
+else
+  sys_lib_search_path_spec="/lib /usr/lib /usr/local/lib"
+fi
 need_lib_prefix=unknown
 hardcode_into_libs=no
 
@@ -1753,6 +2038,7 @@ cygwin* | mingw* | pw32*)
     postuninstall_cmds='dldll=`bash 2>&1 -c '\''. $file; echo \$dlname'\''`~
       dlpath=$dir/\$dldll~
        $rm \$dlpath'
+    shlibpath_overrides_runpath=yes
     ;;
   yes,mingw*)
     library_names_spec='${libname}`echo ${release} | sed -e 's/[[.]]/-/g'`${versuffix}.dll'
@@ -1878,14 +2164,17 @@ hpux9* | hpux10* | hpux11*)
   postinstall_cmds='chmod 555 $lib'
   ;;
 
-irix5* | irix6*)
-  version_type=irix
+irix5* | irix6* | nonstopux*)
+  case $host_os in
+    nonstopux*) version_type=nonstopux ;;
+    *)          version_type=irix ;;
+  esac
   need_lib_prefix=no
   need_version=no
   soname_spec='${libname}${release}.so$major'
   library_names_spec='${libname}${release}.so$versuffix ${libname}${release}.so$major ${libname}${release}.so $libname.so'
   case $host_os in
-  irix5*)
+  irix5* | nonstopux*)
     libsuff= shlibsuff=
     ;;
   *)
@@ -2047,6 +2336,12 @@ sysv4 | sysv4.2uw2* | sysv4.3* | sysv5*)
   case $host_vendor in
     sni)
       shlibpath_overrides_runpath=no
+      need_lib_prefix=no
+      export_dynamic_flag_spec='${wl}-Blargedynsym'
+      runpath_var=LD_RUN_PATH
+      ;;
+    siemens)
+      need_lib_prefix=no
       ;;
     motorola)
       need_lib_prefix=no
@@ -2116,7 +2411,7 @@ if test -f "$ltmain" && test -n "$tagnames"; then
   for tagname in $tagnames; do
     IFS="$lt_save_ifs"
     # Check whether tagname contains only valid characters
-    case `$echo "X$tagname" | $Xsed -e 's/[[-_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890,/]]//g'` in
+    case `$echo "X$tagname" | $Xsed -e 's:[[-_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890,/]]::g'` in
     "") ;;
     *)  AC_MSG_ERROR([invalid tag name: $tagname])
 	;;
@@ -2584,9 +2879,9 @@ hpux10.20* | hpux11*)
   fi
   ;;
 
-irix5* | irix6*)
+irix5* | irix6* | nonstopux*)
   case $host_os in
-  irix5*)
+  irix5* | nonstopux*)
     # this will be overridden with pass_all, but let us keep it just in case
     lt_cv_deplibs_check_method="file_magic ELF 32-bit MSB dynamic lib MIPS - version 1"
     ;;
@@ -2679,6 +2974,9 @@ sysv4 | sysv4.2uw2* | sysv4.3* | sysv5*)
     lt_cv_deplibs_check_method="file_magic ELF [[0-9]][[0-9]]*-bit [[LM]]SB dynamic lib"
     lt_cv_file_magic_test_file=/lib/libc.so
     ;;
+  siemens)
+    lt_cv_deplibs_check_method=pass_all
+    ;;
   esac
   ;;
 
@@ -2755,11 +3053,11 @@ esac
 # AC_LIBLTDL_CONVENIENCE([DIRECTORY])
 # -----------------------------------
 # sets LIBLTDL to the link flags for the libltdl convenience library and
-# INCLTDL to the include flags for the libltdl header and adds
+# LTDLINCL to the include flags for the libltdl header and adds
 # --enable-ltdl-convenience to the configure arguments.  Note that LIBLTDL
-# and INCLTDL are not AC_SUBSTed, nor is AC_CONFIG_SUBDIRS called.  If
+# and LTDLINCL are not AC_SUBSTed, nor is AC_CONFIG_SUBDIRS called.  If
 # DIRECTORY is not provided, it is assumed to be `libltdl'.  LIBLTDL will
-# be prefixed with '${top_builddir}/' and INCLTDL will be prefixed with
+# be prefixed with '${top_builddir}/' and LTDLINCL will be prefixed with
 # '${top_srcdir}/' (note the single quotes!).  If your package is not
 # flat and you're not using automake, define top_builddir and
 # top_srcdir appropriately in the Makefiles.
@@ -2771,19 +3069,21 @@ AC_DEFUN([AC_LIBLTDL_CONVENIENCE],
       ac_configure_args="$ac_configure_args --enable-ltdl-convenience" ;;
   esac
   LIBLTDL='${top_builddir}/'ifelse($#,1,[$1],['libltdl'])/libltdlc.la
-  INCLTDL='-I${top_srcdir}/'ifelse($#,1,[$1],['libltdl'])
+  LTDLINCL='-I${top_srcdir}/'ifelse($#,1,[$1],['libltdl'])
+  # For backwards non-gettext consistent compatibility...
+  INCLTDL="$LTDLINCL"
 ])# AC_LIBLTDL_CONVENIENCE
 
 
 # AC_LIBLTDL_INSTALLABLE([DIRECTORY])
 # -----------------------------------
 # sets LIBLTDL to the link flags for the libltdl installable library and
-# INCLTDL to the include flags for the libltdl header and adds
+# LTDLINCL to the include flags for the libltdl header and adds
 # --enable-ltdl-install to the configure arguments.  Note that LIBLTDL
-# and INCLTDL are not AC_SUBSTed, nor is AC_CONFIG_SUBDIRS called.  If
+# and LTDLINCL are not AC_SUBSTed, nor is AC_CONFIG_SUBDIRS called.  If
 # DIRECTORY is not provided and an installed libltdl is not found, it is
 # assumed to be `libltdl'.  LIBLTDL will be prefixed with '${top_builddir}/'
-# and INCLTDL will be prefixed with '${top_srcdir}/' (note the single
+# and LTDLINCL will be prefixed with '${top_srcdir}/' (note the single
 # quotes!).  If your package is not flat and you're not using automake,
 # define top_builddir and top_srcdir appropriately in the Makefiles.
 # In the future, this macro may have to be called after AC_PROG_LIBTOOL.
@@ -2800,12 +3100,14 @@ AC_DEFUN([AC_LIBLTDL_INSTALLABLE],
   if test x"$enable_ltdl_install" = x"yes"; then
     ac_configure_args="$ac_configure_args --enable-ltdl-install"
     LIBLTDL='${top_builddir}/'ifelse($#,1,[$1],['libltdl'])/libltdl.la
-    INCLTDL='-I${top_srcdir}/'ifelse($#,1,[$1],['libltdl'])
+    LTDLINCL='-I${top_srcdir}/'ifelse($#,1,[$1],['libltdl'])
   else
     ac_configure_args="$ac_configure_args --enable-ltdl-install=no"
     LIBLTDL="-lltdl"
-    INCLTDL=
+    LTDLINCL=
   fi
+  # For backwards non-gettext consistent compatibility...
+  INCLTDL="$LTDLINCL"
 ])# AC_LIBLTDL_INSTALLABLE
 
 
@@ -3204,6 +3506,27 @@ case $host_os in
 	;;
     esac
     ;;
+
+  cygwin*)
+    # _LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1) is actually meaningless,
+    # as there is no search path for DLLs.
+    _LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)='-L$libdir'
+    _LT_AC_TAGVAR(allow_undefined_flag, $1)=unsupported
+    _LT_AC_TAGVAR(always_export_symbols, $1)=yes
+
+    if $LD --help 2>&1 | egrep 'auto-import' > /dev/null; then
+      _LT_AC_TAGVAR(archive_cmds, $1)='$CC -shared -nostdlib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000 ${wl}--out-implib,$lib'
+      _LT_AC_TAGVAR(archive_expsym_cmds, $1)='$CC -shared -nostdlib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags -o $output_objdir/$soname ${wl}-retain-symbols-file $wl$export_symbols ${wl}--out-implib,$lib'
+    else
+      _LT_AC_TAGVAR(ld_shlibs, $1)=no
+    fi
+	 ;;
+
+  mingw* | pw32*)
+    # FIXME: insert proper C++ library support
+  	  _LT_AC_TAGVAR(ld_shlibs, $1)=no
+	 ;;
+
   dgux*)
     case $cc_basename in
       ec++)
@@ -3808,7 +4131,7 @@ objext=o
 _LT_AC_TAGVAR(objext, $1)=$objext
 
 # Code to be used in simple compile tests
-lt_simple_compile_test_code="class foo {}"
+lt_simple_compile_test_code="class foo {};"
 
 # Code to be used in simple link tests
 lt_simple_link_test_code='public class conftest { public static void main(String[] argv) {}; }'
@@ -3898,7 +4221,7 @@ if test -f "$ltmain"; then
   # Now quote all the things that may contain metacharacters while being
   # careful not to overquote the AC_SUBSTed values.  We take copies of the
   # variables and quote the copies for generation of the libtool script.
-  for var in echo old_CC old_CFLAGS AR AR_FLAGS RANLIB LN_S NM SHELL \
+  for var in echo old_CC old_CFLAGS AR AR_FLAGS RANLIB LN_S LTCC NM SED SHELL \
     libname_spec library_names_spec soname_spec extract_expsyms_cmds \
     old_striplib striplib file_magic_cmd finish_cmds finish_eval \
     deplibs_check_method reload_flag reload_cmds need_locks \
@@ -4045,7 +4368,7 @@ AR=$lt_AR
 AR_FLAGS=$lt_AR_FLAGS
 
 # A C compiler.
-LTCC=$LTCC
+LTCC=$lt_LTCC
 
 # A language-specific compiler.
 CC=$lt_[]_LT_AC_TAGVAR(compiler, $1)
@@ -4061,6 +4384,9 @@ LN_S=$lt_LN_S
 
 # A BSD-compatible nm program.
 NM=$lt_NM
+
+# A sed program that does not truncate output.
+SED=$lt_SED
 
 # A symbol stripping program
 STRIP=$STRIP
@@ -4400,7 +4726,7 @@ hpux*) # Its linker distinguishes data from code symbols
   lt_cv_sys_global_symbol_to_cdecl="sed -n -e 's/^T .* \(.*\)$/extern int \1();/p' -e 's/^$symcode* .* \(.*\)$/extern char \1;/p'"
   lt_cv_sys_global_symbol_to_c_name_address="sed -n -e 's/^: \([[^ ]]*\) $/  {\\\"\1\\\", (lt_ptr) 0},/p' -e 's/^$symcode* \([[^ ]]*\) \([[^ ]]*\)$/  {\"\2\", (lt_ptr) \&\2},/p'"
   ;;
-irix*)
+irix* | nonstopux*)
   symcode='[[BCDEGRST]]'
   ;;
 solaris* | sysv5*)
@@ -4567,10 +4893,10 @@ AC_MSG_CHECKING([for $compiler option to produce PIC])
       # like `-m68040'.
       _LT_AC_TAGVAR(lt_prog_compiler_pic, $1)='-m68020 -resident32 -malways-restore-a4'
       ;;
-    beos* | irix5* | irix6* | osf3* | osf4* | osf5*)
+    beos* | cygwin* | irix5* | irix6* | nonstopux* | osf3* | osf4* | osf5*)
       # PIC is the default for these OSes.
       ;;
-    cygwin* | mingw* | os2*)
+    mingw* | os2*)
       # This hack is so that the source file can tell whether it is being
       # built for inclusion in a dll (and should export symbols for example).
       _LT_AC_TAGVAR(lt_prog_compiler_pic, $1)='-DDLL_EXPORT'
@@ -4654,7 +4980,7 @@ AC_MSG_CHECKING([for $compiler option to produce PIC])
 	    ;;
 	esac
 	;;
-      irix5* | irix6*)
+      irix5* | irix6* | nonstopux*)
 	case $cc_basename in
 	  CC)
 	    _LT_AC_TAGVAR(lt_prog_compiler_wl, $1)='-Wl,'
@@ -4802,11 +5128,11 @@ AC_MSG_CHECKING([for $compiler option to produce PIC])
       _LT_AC_TAGVAR(lt_prog_compiler_pic, $1)='-m68020 -resident32 -malways-restore-a4'
       ;;
 
-    beos* | irix5* | irix6* | osf3* | osf4* | osf5*)
+    beos* | cygwin* | irix5* | irix6* | nonstopux* | osf3* | osf4* | osf5*)
       # PIC is the default for these OSes.
       ;;
 
-    cygwin* | mingw* | pw32* | os2*)
+    mingw* | pw32* | os2*)
       # This hack is so that the source file can tell whether it is being
       # built for inclusion in a dll (and should export symbols for example).
       _LT_AC_TAGVAR(lt_prog_compiler_pic, $1)='-DDLL_EXPORT'
@@ -4855,7 +5181,7 @@ AC_MSG_CHECKING([for $compiler option to produce PIC])
       fi
       ;;
 
-    cygwin* | mingw* | pw32* | os2*)
+    mingw* | pw32* | os2*)
       # This hack is so that the source file can tell whether it is being
       # built for inclusion in a dll (and should export symbols for example).
       _LT_AC_TAGVAR(lt_prog_compiler_pic, $1)='-DDLL_EXPORT'
@@ -4870,7 +5196,7 @@ AC_MSG_CHECKING([for $compiler option to produce PIC])
       _LT_AC_TAGVAR(lt_prog_compiler_static, $1)='${wl}-a ${wl}archive'
       ;;
 
-    irix5* | irix6*)
+    irix5* | irix6* | nonstopux*)
       _LT_AC_TAGVAR(lt_prog_compiler_wl, $1)='-Wl,'
       # PIC (with -KPIC) is the default.
       _LT_AC_TAGVAR(lt_prog_compiler_static, $1)='-non_shared'
@@ -4905,11 +5231,7 @@ AC_MSG_CHECKING([for $compiler option to produce PIC])
       ;;
 
     sysv4 | sysv4.2uw2* | sysv4.3* | sysv5*)
-      if test "x$host_vendor" = xsni; then
-	_LT_AC_TAGVAR(lt_prog_compiler_wl, $1)='-LD'
-      else
-	_LT_AC_TAGVAR(lt_prog_compiler_wl, $1)='-Wl,'
-      fi
+      _LT_AC_TAGVAR(lt_prog_compiler_wl, $1)='-Wl,'
       _LT_AC_TAGVAR(lt_prog_compiler_pic, $1)='-KPIC'
       _LT_AC_TAGVAR(lt_prog_compiler_static, $1)='-Bstatic'
       ;;
@@ -4940,7 +5262,7 @@ AC_MSG_RESULT([$_LT_AC_TAGVAR(lt_prog_compiler_pic, $1)])
 if test -n "$_LT_AC_TAGVAR(lt_prog_compiler_pic, $1)"; then
   AC_LIBTOOL_COMPILER_OPTION([if $compiler PIC flag $_LT_AC_TAGVAR(lt_prog_compiler_pic, $1) works],
     _LT_AC_TAGVAR(lt_prog_compiler_pic_works, $1),
-    [$_LT_AC_TAGVAR(lt_prog_compiler_pic, $1) -DPIC], [],
+    [$_LT_AC_TAGVAR(lt_prog_compiler_pic, $1)ifelse([$1],[GCJ],[],[ -DPIC])], [],
     [case $_LT_AC_TAGVAR(lt_prog_compiler_pic, $1) in
      "" | " "*) ;;
      *) _LT_AC_TAGVAR(lt_prog_compiler_pic, $1)=" $_LT_AC_TAGVAR(lt_prog_compiler_pic, $1)" ;;
@@ -4954,7 +5276,7 @@ case "$host_os" in
     _LT_AC_TAGVAR(lt_prog_compiler_pic, $1)=
     ;;
   *)
-    _LT_AC_TAGVAR(lt_prog_compiler_pic, $1)="$_LT_AC_TAGVAR(lt_prog_compiler_pic, $1) -DPIC"
+    _LT_AC_TAGVAR(lt_prog_compiler_pic, $1)="$_LT_AC_TAGVAR(lt_prog_compiler_pic, $1)ifelse([$1],[GCJ],[],[ -DPIC])"
     ;;
 esac
 ])
@@ -4977,8 +5299,8 @@ ifelse([$1],[CXX],[
       _LT_AC_TAGVAR(export_symbols_cmds, $1)='$NM -BCpg $libobjs $convenience | awk '\''{ if (((\[$]2 == "T") || (\[$]2 == "D") || (\[$]2 == "B")) && ([substr](\[$]3,1,1) != ".")) { print \[$]3 } }'\'' | sort -u > $export_symbols'
     fi
     ;;
-  cygwin* | mingw* | pw32*)
-    _LT_AC_TAGVAR(export_symbols_cmds, $1)="$ltdll_cmds"'
+  mingw* | pw32*)
+    _LT_AC_TAGVAR(export_symbols_cmds, $1)="$ltdll_cmds"
   ;;
   *)
     _LT_AC_TAGVAR(export_symbols_cmds, $1)='$NM $libobjs $convenience | $global_symbol_pipe | sed '\''s/.* //'\'' | sort | uniq > $export_symbols'
@@ -5081,7 +5403,22 @@ EOF
       fi
       ;;
 
-    cygwin* | mingw* | pw32*)
+    cygwin*)
+      # _LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1) is actually meaningless,
+      # as there is no search path for DLLs.
+      _LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)='-L$libdir'
+      _LT_AC_TAGVAR(allow_undefined_flag, $1)=unsupported
+      _LT_AC_TAGVAR(always_export_symbols, $1)=yes
+
+      if $LD --help 2>&1 | egrep 'auto-import' > /dev/null; then
+        _LT_AC_TAGVAR(archive_cmds, $1)='$CC -shared $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000 ${wl}--out-implib,$lib'
+	_LT_AC_TAGVAR(archive_expsym_cmds, $1)='$CC -shared $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}-retain-symbols-file $wl$export_symbols ${wl}--out-implib,$lib'
+      else
+	ld_shlibs=no
+      fi
+      ;;
+
+    mingw* | pw32*)
       # _LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1) is actually meaningless, as there is
       # no search path for DLLs.
       _LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)='-L$libdir'
@@ -5097,21 +5434,15 @@ EOF
 
       _LT_AC_TAGVAR(old_archive_from_expsyms_cmds, $1)='$DLLTOOL --as=$AS --dllname $soname --def $output_objdir/$soname-def --output-lib $output_objdir/$newlib'
 
-      # cygwin and mingw dlls have different entry points and sets of symbols
-      # to exclude.
       # FIXME: what about values for MSVC?
       dll_entry=__cygwin_dll_entry@12
-      dll_exclude_symbols=DllMain@12,_cygwin_dll_entry@12,_cygwin_noncygwin_dll_entry@12~
       case $host_os in
       mingw*)
 	# mingw values
 	dll_entry=_DllMainCRTStartup@12
-	dll_exclude_symbols=DllMain@12,DllMainCRTStartup@12,DllEntryPoint@12~
 	;;
       esac
 
-      # mingw and cygwin differ, and it's simplest to just exclude the union
-      # of the two symbol sets.
       dll_exclude_symbols=DllMain@12,_cygwin_dll_entry@12,_cygwin_noncygwin_dll_entry@12,DllMainCRTStartup@12,DllEntryPoint@12
 
       # recent cygwin and mingw systems supply a stub DllMain which the user
@@ -5136,7 +5467,7 @@ EOF
       # If the export-symbols file already is a .def file (1st line
       # is EXPORTS), use it as is.
       # If DATA tags from a recent dlltool are present, honour them!
-      _LT_AC_TAGVAR(archive_expsym_cmds, $1)='if test "x`head -1 $export_symbols`" = xEXPORTS; then
+      _LT_AC_TAGVAR(archive_expsym_cmds, $1)='if test "x`sed 1q $export_symbols`" = xEXPORTS; then
 	  cp $export_symbols $output_objdir/$soname-def;
 	else
 	  echo EXPORTS > $output_objdir/$soname-def;
@@ -5145,6 +5476,7 @@ EOF
 	   set dummy \$symbol;
 	   case \[$]# in
 	     2) echo "   \[$]2 @ \$_lt_hint ; " >> $output_objdir/$soname-def;;
+	     4) echo "   \[$]2 \[$]3 \[$]4 ; " >> $output_objdir/$soname-def; _lt_hint=`expr \$_lt_hint - 1`;;
 	     *) echo "   \[$]2 @ \$_lt_hint \[$]3 ; " >> $output_objdir/$soname-def;;
 	   esac;
 	   _lt_hint=`expr 1 + \$_lt_hint`;
@@ -5490,7 +5822,7 @@ EOF
       _LT_AC_TAGVAR(export_dynamic_flag_spec, $1)='${wl}-E'
       ;;
 
-    irix5* | irix6*)
+    irix5* | irix6* | nonstopux*)
       if test "$GCC" = yes; then
 	_LT_AC_TAGVAR(archive_cmds, $1)='$CC -shared $libobjs $deplibs $compiler_flags ${wl}-soname ${wl}$soname `test -n "$verstring" && echo ${wl}-set_version ${wl}$verstring` ${wl}-update_registry ${wl}${output_objdir}/so_locations -o $lib'
       else
@@ -5623,13 +5955,23 @@ EOF
       ;;
 
     sysv4)
-      if test "x$host_vendor" = xsni; then
-	_LT_AC_TAGVAR(archive_cmds, $1)='$LD -G -Bsymbolic -h $soname -o $lib $libobjs $deplibs $linker_flags'
-	_LT_AC_TAGVAR(hardcode_direct, $1)=yes # is this really true???
-      else
-	_LT_AC_TAGVAR(archive_cmds, $1)='$LD -G -h $soname -o $lib $libobjs $deplibs $linker_flags'
-	_LT_AC_TAGVAR(hardcode_direct, $1)=no #Motorola manual says yes, but my tests say they lie
-      fi
+      case $host_vendor in
+	sni)
+	  _LT_AC_TAGVAR(archive_cmds, $1)='$LD -G -h $soname -o $lib $libobjs $deplibs $linker_flags'
+	  _LT_AC_TAGVAR(hardcode_direct, $1)=yes # is this really true???
+	;;
+	siemens)
+	  ## LD is ld it makes a PLAMLIB
+	  ## CC just makes a GrossModule.
+	  _LT_AC_TAGVAR(archive_cmds, $1)='$LD -G -o $lib $libobjs $deplibs $linker_flags'
+	  _LT_AC_TAGVAR(reload_cmds, $1)='$CC -r -o $output$reload_objs'
+	  _LT_AC_TAGVAR(hardcode_direct, $1)=no
+        ;;
+	motorola)
+	  _LT_AC_TAGVAR(archive_cmds, $1)='$LD -G -h $soname -o $lib $libobjs $deplibs $linker_flags'
+	  _LT_AC_TAGVAR(hardcode_direct, $1)=no #Motorola manual says yes, but my tests say they lie
+	;;
+      esac
       runpath_var='LD_RUN_PATH'
       _LT_AC_TAGVAR(hardcode_shlibpath_var, $1)=no
       ;;
@@ -5955,5 +6297,66 @@ AC_DEFUN([LT_AC_PROG_GCJ],
 
 AC_DEFUN([LT_AC_PROG_RC],
 [AC_CHECK_TOOL(RC, windres, no)
+])
+
+# NOTE: This macro has been submitted for inclusion into   #
+#  GNU Autoconf as AC_PROG_SED.  When it is available in   #
+#  a released version of Autoconf we should remove this    #
+#  macro and use it instead.                               #
+# LT_AC_PROG_SED
+# --------------
+# Check for a fully-functional sed program, that truncates
+# as few characters as possible.  Prefer GNU sed if found.
+AC_DEFUN([LT_AC_PROG_SED],
+[AC_MSG_CHECKING([for a sed that does not truncate output])
+AC_CACHE_VAL(lt_cv_path_SED,
+[# Loop through the user's path and test for sed and gsed.
+# Then use that list of sed's as ones to test for truncation.
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for lt_ac_prog in sed gsed; do
+    for ac_exec_ext in '' $ac_executable_extensions; do
+      if $as_executable_p "$as_dir/$lt_ac_prog$ac_exec_ext"; then
+        lt_ac_sed_list="$lt_ac_sed_list $as_dir/$lt_ac_prog$ac_exec_ext"
+      fi
+    done
+  done
+done
+lt_ac_max=0
+lt_ac_count=0
+# Add /usr/xpg4/bin/sed as it is typically found on Solaris
+# along with /bin/sed that truncates output.
+for lt_ac_sed in $lt_ac_sed_list /usr/xpg4/bin/sed; do
+  test ! -f $lt_ac_sed && break
+  cat /dev/null > conftest.in
+  lt_ac_count=0
+  echo $ECHO_N "0123456789$ECHO_C" >conftest.in
+  # Check for GNU sed and select it if it is found.
+  if "$lt_ac_sed" --version 2>&1 < /dev/null | grep 'GNU' > /dev/null; then
+    lt_cv_path_SED=$lt_ac_sed
+    break;
+  fi
+  while true; do
+    cat conftest.in conftest.in >conftest.tmp
+    mv conftest.tmp conftest.in
+    cp conftest.in conftest.nl
+    echo >>conftest.nl
+    $lt_ac_sed -e 's/a$//' < conftest.nl >conftest.out || break
+    cmp -s conftest.out conftest.nl || break
+    # 10000 chars as input seems more than enough
+    test $lt_ac_count -gt 10 && break
+    lt_ac_count=`expr $lt_ac_count + 1`
+    if test $lt_ac_count -gt $lt_ac_max; then
+      lt_ac_max=$lt_ac_count
+      lt_cv_path_SED=$lt_ac_sed
+    fi
+  done
+done
+SED=$lt_cv_path_SED
+])
+AC_MSG_RESULT([$SED])
 ])
 

@@ -47,6 +47,7 @@ typedef struct _wmfDrawPixel_t         wmfDrawPixel_t;
 typedef struct _wmfDrawArc_t           wmfDrawArc_t;
 typedef struct _wmfDrawLine_t          wmfDrawLine_t;
 typedef struct _wmfPolyLine_t          wmfPolyLine_t;
+typedef struct _wmfPolyPoly_t          wmfPolyPoly_t;
 typedef struct _wmfDrawRectangle_t     wmfDrawRectangle_t;
 typedef struct _wmfPolyRectangle_t     wmfPolyRectangle_t;
 typedef struct _wmfBMP_Read_t          wmfBMP_Read_t;
@@ -257,6 +258,15 @@ struct _wmfPolyLine_t
 	U16 count;
 };
 
+struct _wmfPolyPoly_t
+{	wmfDC* dc;
+
+	wmfD_Coord** pt; /* pt[i][*] = points of ith polygon */
+
+	U16* count;      /* points in ith polygon */
+	U16  npoly;      /* number of polygons */
+};
+
 struct _wmfDrawRectangle_t
 {	wmfDC* dc;
 
@@ -368,6 +378,7 @@ struct _wmfFunctionReference
 	void (*draw_line) (wmfAPI*,wmfDrawLine_t*);
 	void (*poly_line) (wmfAPI*,wmfPolyLine_t*);
 	void (*draw_polygon) (wmfAPI*,wmfPolyLine_t*);
+	void (*draw_polypolygon) (wmfAPI*,wmfPolyPoly_t*);
 	void (*draw_rectangle) (wmfAPI*,wmfDrawRectangle_t*);
 
 	void (*rop_draw) (wmfAPI*,wmfROP_Draw_t*);
