@@ -481,7 +481,7 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
     "save more than one image of a\nsequence to the same blob or file.\n\n");
   (void) fprintf(file,"    Format  Mode  Description\n");
   (void) fprintf(file,"--------------------------------------------------------"
-    "-----------------\n");
+    "-----------------------\n");
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
   OpenModules(exception);
 #endif    

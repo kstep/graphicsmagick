@@ -85,6 +85,7 @@ extern "C" {
 #include "magick/blob.h"
 #include "magick/cache.h"
 #include "magick/cache_view.h"
+#include "magick/magic.h"
 #include "magick/delegates.h"
 #include "magick/timer.h"
 #include "magick/semaphore.h"

@@ -2,7 +2,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%                                                                             %
 %                    M   M   AAA    GGGG  IIIII   CCCC                        %
 %                    MM MM  A   A  G        I    C                            %
 %                    M M M  AAAAA  G GGG    I    C                            %
@@ -10,12 +9,12 @@
 %                    M   M  A   A   GGGG  IIIII   CCCC                        %
 %                                                                             %
 %                                                                             %
-%                    Methods to Recognize Image formats                       %
+%                     ImageMagick Image Magic Methods                         %
 %                                                                             %
 %                                                                             %
-%                             Software Design                                 %
-%                             Bob Friesenhahn                                 %
-%                               March 2000                                    %
+%                              Software Design                                %
+%                                John Cristy                                  %
+%                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
 %  Copyright (C) 2001 ImageMagick Studio, a non-profit organization dedicated %
@@ -54,40 +53,21 @@
 */
 #include "magick.h"
 #include "defines.h"
-#include "magic.h"
 
 /*
-  Define declaration.
-*/
-#define MagicInfoListExtent  256
-#define StringMethodArgumentExtent  64
-
-/*
-  Typedef declarations.
-*/
-typedef struct _StringMethodArgument
-{
-  unsigned char
-    value[StringMethodArgumentExtent];
-
-  unsigned int
-    length,
-    offset;
-} StringMethodArgument;
-
-/*
-  Global declarations.
+  Static declarations.
 */
 static MagicInfo
-  **magic_list = (MagicInfo **) NULL;
+  *magic_list = (MagicInfo *) NULL;
 
 static SemaphoreInfo
   *magic_semaphore = (SemaphoreInfo *) NULL;
+
 /*
   Forward declarations.
 */
-static int
-  ReadConfigurationFile(const char *filename);
+static unsigned int
+  ReadConfigurationFile(const char *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -104,7 +84,8 @@ static int
 %
 %  The format of the DestroyMagicInfo method is:
 %
-%      void DestroyMagicInfo(void)
+%      DestroyMagicInfo(void)
+%
 %
 */
 
@@ -112,32 +93,23 @@ static int
 extern "C" {
 #endif
 
-static void DestroyMagicInfo(void)
+MagickExport void DestroyMagicInfo(void)
 {
-  MagicInfoMember
-    *entry,
-    *member;
+  register MagicInfo
+    *p;
 
-  register int
-    i;
-
-  if (magic_list == (MagicInfo **) NULL)
-    return;
   AcquireSemaphore(&magic_semaphore);
-  for (i=0; magic_list[i] != (MagicInfo *) NULL; i++)
+  for (p=magic_list; p != (MagicInfo *) NULL; )
   {
-    LiberateMemory((void **) &magic_list[i]->tag);
-    for (member=magic_list[i]->member; member != (MagicInfoMember *) NULL; )
-    {
-      entry=member;
-      member=member->next;
-      LiberateMemory((void **) &entry->argument);
-      LiberateMemory((void **) &entry);
-    }
-    LiberateMemory((void **) &magic_list[i]);
+    if (p->name != (char *) NULL)
+      LiberateMemory((void **) &p->name);
+    if (p->target != (char *) NULL)
+      LiberateMemory((void **) &p->target);
+    magic_list=p;
+    p=p->next;
+    LiberateMemory((void **) &magic_list);
   }
-  LiberateMemory((void **) &magic_list);
-  magic_list=(MagicInfo **) NULL;
+  magic_list=(MagicInfo *) NULL;
   LiberateSemaphore(&magic_semaphore);
 }
 
@@ -156,9 +128,8 @@ static void DestroyMagicInfo(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetMagicInfo searches the magic list for any image format tag that
-%  matches the specified image signature and if found returns attributes for
-%  that image format.
+%  Method GetMagicInfo searches the magic list for the specified name and if
+%  found returns attributes for that magic.
 %
 %  The format of the GetMagicInfo method is:
 %
@@ -185,64 +156,34 @@ static void DestroyMagicInfo(void)
 MagickExport MagicInfo *GetMagicInfo(const unsigned char *magick,
   const unsigned int length,ExceptionInfo *exception)
 {
-  MagicInfoMember
-    *member;
-
-  register int
-    i;
-
-  register StringMethodArgument
+  register MagicInfo
     *p;
 
-  assert(magick != (const unsigned char *) NULL);
   AcquireSemaphore(&magic_semaphore);
-  if (magic_list == (MagicInfo **) NULL)
+  if (magic_list == (MagicInfo *) NULL)
     {
       unsigned int
         status;
 
       /*
-        Read magiclist.
+        Read magic list.
       */
       status=ReadConfigurationFile("magic.mgk");
       if (status == False)
         ThrowException(exception,FileOpenWarning,
-          "Unable to read font configuration file","magic.mgk");
+          "Unable to read magic configuration file","magic.mgk");
       atexit(DestroyMagicInfo);
     }
   LiberateSemaphore(&magic_semaphore);
-  if (magic_list == (MagicInfo **) NULL)
-    return((MagicInfo *) NULL);
+  if (LocaleCompare(magick,"*") == 0)
+    return(magic_list);
   /*
-    Search for requested signature.
+    Search for requested magic.
   */
-  for (i=0; magic_list[i] != (MagicInfo *) NULL; i++)
-  {
-    switch (magic_list[i]->member->method)
-    {
-      case StringMagicMethod:
-      {
-        for (member=magic_list[i]->member; member != (MagicInfoMember *) NULL; )
-        {
-          p=(StringMethodArgument *) member->argument;
-          if ((p->offset+p->length) > length)
-            break;
-          if (memcmp(magick+p->offset,p->value,p->length) == 0)
-            {
-              if (member->status != True)
-                break;
-              if (member->next == (MagicInfoMember *) NULL)
-                return(magic_list[i]);
-             }
-          member=member->next;
-        }
-        break;
-      }
-      default:
-        break;
-    }
-  }
-  return((MagicInfo *) NULL);
+  for (p=magic_list; p != (MagicInfo *) NULL; p=p->next)
+    if (memcmp(magick+p->offset,p->target,Extent(p->target)) == 0)
+      break;
+  return(p);
 }
 
 /*
@@ -250,19 +191,70 @@ MagickExport MagicInfo *GetMagicInfo(const unsigned char *magick,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d M a g i c C o n f i g u r e F i l e                               %
+%  L i s t M a g i c I n f o                                                  %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadConfigurationFile reads the magic configuration file.  This file
-%  contains one or tag and magic combinations to help identify which image
-%  format a particular image file or blob may be.  For example,
+%  Method ListMagicInfo lists the magic info to a file.
 %
-%    JPEG    string(0,"\377\330\377")
-%    PNG     string(0,"\211PNG\r\n\032\n")
-%    TIFF    string(0,"\115\115\000\052")
+%  The format of the ListMagicInfo method is:
+%
+%      unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
+%
+%  A description of each parameter follows.
+%
+%    o file:  An pointer to a FILE.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
+{
+  register MagicInfo
+    *p;
+
+  register int
+    i;
+
+  if (file == (const FILE *) NULL)
+    file=stdout;
+  (void) fprintf(file,"\n\nImageMagick understands these magic strings:\n\n");
+  (void) fprintf(file,"Name      Offset Target\n");
+  (void) fprintf(file,"-------------------------------------------------------"
+    "------------------------\n");
+  p=GetMagicInfo("*",0,exception);
+  if (p == (MagicInfo *) NULL)
+    return(False);
+  for (p=magic_list; p != (MagicInfo *) NULL; p=p->next)
+  {
+    (void) fprintf(file,"%.1024s",p->name);
+    for (i=Extent(p->name); i <= 9; i++)
+      (void) fprintf(file," ");
+    (void) fprintf(file,"%6d ",p->offset);
+    if (p->target != (char *) NULL)
+      (void) fprintf(file,"%.1024s",p->target);
+    (void) fprintf(file,"\n");
+  }
+  (void) fflush(file);
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   R e a d C o n f i g u r a t i o n F i l e                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadConfigurationFile reads the magic configuration file which maps
+%  magic strings with a particular image format.
 %
 %  The format of the ReadConfigurationFile method is:
 %
@@ -270,52 +262,31 @@ MagickExport MagicInfo *GetMagicInfo(const unsigned char *magick,
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method ReadConfigurationFile returns True if the
-%      configuration file is parsed properly, otherwise False is returned.
+%    o status: Method ReadConfigurationFile returns True if at least one magic
+%      is defined otherwise False.
 %
-%    o filename:  This character string is the filename of the magic
-%      configuration file.
+%    o filename:  The magic configuration filename.
+%
 %
 */
-static int ReadConfigurationFile(const char *filename)
+static unsigned int ReadConfigurationFile(const char *filename)
 {
   char
-    buffer[MaxTextExtent],
-    *p,
+    keyword[MaxTextExtent],
     *path,
-    tag[MaxTextExtent];
+    value[MaxTextExtent];
 
   FILE
     *file;
 
   int
-    j,
-    line_number;
+    c;
 
-  MagicInfoMember
-    *test_member;
+  register char
+    *p;
 
-  register int
-    i;
-
-  register unsigned char
-    *q;
-
-  assert(filename != (const char *) NULL);
-  if (magic_list == (MagicInfo **) NULL)
-    {
-      /*
-        Allocate the magic format list.
-      */
-      magic_list=(MagicInfo **)
-        AcquireMemory(MagicInfoListExtent*sizeof(MagicInfo *));
-      if (magic_list == (MagicInfo **) NULL)
-        MagickError(ResourceLimitError,"Unable to allocate image",
-          "Memory allocation failed");
-      magic_list[0]=(MagicInfo *) NULL;
-    }
   /*
-    Allocate and initialize the format list.
+    Read the magic configuration file.
   */
   path=GetMagickConfigurePath(filename);
   if (path == (char *) NULL)
@@ -324,189 +295,113 @@ static int ReadConfigurationFile(const char *filename)
   LiberateMemory((void **) &path);
   if (file == (FILE *) NULL)
     return(False);
-  for (i=0; magic_list[i] != (MagicInfo *) NULL; i++);
-  for (line_number=0; (i < MagicInfoListExtent-1) && !feof(file); )
+  for (c=fgetc(file); c != EOF; c=fgetc(file))
   {
-    line_number++;
-    (void) fgets(buffer,MaxTextExtent,file);
-    buffer[MaxTextExtent-1]='\0';
-    Strip(buffer);
-    if ((*buffer == '\0') || (*buffer == '#'))
-      continue;
-    p=buffer;
-    for (j=0; isalnum((int) *p); j++)
-      tag[j]=(*p++);
-    tag[j]='\0';
-    if (*p == '\0')
-      goto eol_error;
-    magic_list[i]=(MagicInfo *) AcquireMemory(sizeof(MagicInfo));
-    if (magic_list[i] == (MagicInfo *) NULL)
-      MagickError(ResourceLimitError,"Unable to allocate image",
-        "Memory allocation failed");
-    magic_list[i]->tag=AllocateString(tag);
-    magic_list[i]->member=(MagicInfoMember *) NULL;
     /*
-      Parse sequence of match rules.
+      Parse keyword.
     */
-    for ( ; ; )
+    while (isspace(c))
+      c=fgetc(file);
+    p=keyword;
+    do
     {
-      while (isspace((int) *p))
-        p++;
-      if (*p == '\0')
-        goto eol_error;
-      test_member=(MagicInfoMember *) AcquireMemory(sizeof(MagicInfoMember));
-      if (test_member == (MagicInfoMember *) NULL)
-        MagickError(ResourceLimitError,"Unable to allocate image",
-          "Memory allocation failed");
-      test_member->method=UndefinedMagicMethod;
-      test_member->argument=(void *) NULL;
-      test_member->status=True;
-      test_member->next=(MagicInfoMember *) NULL;
-      if (*p == '!')
-        {
-          test_member->status=False;
-          p++;
-        }
-      while (isspace((int) *p))
-        p++;
-      if (*p == '\0')
-        goto eol_error;
-      if (LocaleNCompare(p,"string(",7) == 0)
-        {
-          StringMethodArgument
-            *argument;
+      if ((p-keyword) < (MaxTextExtent-1))
+        *p++=c;
+      c=fgetc(file);
+    } while ((c == '<') || isalnum(c));
+    *p='\0';
+    if (LocaleCompare(keyword,"<magic") == 0)
+      {
+        MagicInfo
+          *magic_info;
 
-          argument=(StringMethodArgument *)
-            AcquireMemory(sizeof(StringMethodArgument));
-          if (argument == (StringMethodArgument*)NULL)
-            MagickError(ResourceLimitError,"Unable to allocate image",
-              "Memory allocation failed");
-          test_member->argument=(void *) argument;
-          test_member->method=StringMagicMethod;
-          argument->length=0;
-          argument->offset=0;
-          *argument->value='\0';
-          p+=7;
-          while (isspace((int) *p))
-            p++;
-          if (*p == '\0')
-            goto eol_error;
-          argument->offset=strtol(p,&p,10);
-          while (isspace((int) *p))
-            p++;
-          if (*p == '\0')
-            goto eol_error;
-          if (*p != ',')
-            goto syntax_error;
-          p++;
-          while (isspace((int) *p))
-            p++;
-          if (*p == '\0')
-            goto eol_error;
-          if (*p != '"')
-            goto syntax_error;
-          p++;
-          q=argument->value;
-          for ( ; ; )
-          {
-            if (*p == '\0')
-              goto eol_error;
-            if (*p == '"')
-              {
-                *q='\0';
-                p++;
-                break;
-              }
-            if (*p == '\\')
-              {
-                p++;
-                if (isdigit((int) *p))
-                  {
-                    *q=(unsigned char) strtol(p,&p,8);
-                    q++;
-                    argument->length++;
-                    continue;
-                  }
-                switch (*p)
-                {
-                  case 'b': *q='\b'; break;
-                  case 'f': *q='\f'; break;
-                  case 'n': *q='\n'; break;
-                  case 'r': *q='\r'; break;
-                  case 't': *q='\t'; break;
-                  case 'v': *q='\v'; break;
-                  case 'a': *q='a'; break;
-                  case '?': *q='\?'; break;
-                  default: *q=(*p); break;
-                }
-                q++;
-                p++;
-                argument->length++;
-                continue;
-              }
-              *q=(*p);
-              q++;
-              p++;
-              argument->length++;
-            }
-            while (isspace((int) *p))
-              p++;
-            if (*p == '\0')
-              goto eol_error;
-            if (*p != ')')
-              goto syntax_error;
-            p++;
-            if (magic_list[i]->member == (MagicInfoMember *) NULL)
-              magic_list[i]->member=test_member;
-            else
-              {
-                MagicInfoMember
-                  *member;
-
-                member=magic_list[i]->member;
-                while (member->next != (MagicInfoMember *) NULL)
-                  member=member->next;
-                member->next=test_member;
-              }
-            while (isspace((int) *p))
-              p++;
-            if (*p == ';')
-              {
-                p++;
-                continue;
-              }
-            if (*p == '\0')
-              break;
-          }
+        /*
+          Allocate memory for the magic list.
+        */
+        magic_info=(MagicInfo *) AcquireMemory(sizeof(MagicInfo));
+        if (magic_info == (MagicInfo *) NULL)
+          MagickError(ResourceLimitError,"Unable to allocate magic list",
+            "Memory allocation failed");
+        memset(magic_info,0,sizeof(MagicInfo));
+        if (magic_list == (MagicInfo *) NULL)
+          magic_list=magic_info;
         else
-          goto syntax_error;
-    }
-    i++;
-    magic_list[i]=(MagicInfo *) NULL;
-    continue;
-    syntax_error:
-    {
-      char
-        message[MaxTextExtent];
-
-      FormatString(message,"%.1024s:%d: syntax: \"%.1024s\"\n",filename,
-        line_number,p);
-      MagickWarning(OptionWarning,message,(char *) NULL);
+          {
+            magic_list->next=magic_info;
+            magic_info->previous=magic_list;
+            magic_list=magic_list->next;
+          }
+      }
+    if (*keyword == '<')
       continue;
-    }
-    eol_error:
-    {
-      char
-        message[MaxTextExtent];
-
-      FormatString(message,"%.1024s:%d: syntax: \"%.1024s\"\n",message,
-        line_number,"unexpected end of line");
-      MagickWarning(OptionWarning,message,(char *) NULL);
+    while (isspace(c))
+      c=fgetc(file);
+    if (c != '=')
       continue;
+    do
+    {
+      c=fgetc(file);
+    }
+    while (isspace(c));
+    if ((c != '"') && (c != '\''))
+      continue;
+    /*
+      Parse value.
+    */
+    p=value;
+    if (c == '"')
+      {
+        for (c=fgetc(file); (c != '"') && (c != EOF); c=fgetc(file))
+          if ((p-value) < (MaxTextExtent-1))
+            *p++=c;
+      }
+    else
+      for (c=fgetc(file); (c != '\'') && (c != EOF); c=fgetc(file))
+        if ((p-value) < (MaxTextExtent-1))
+          *p++=c;
+    *p='\0';
+    if (magic_list == (MagicInfo *) NULL)
+      continue;
+    switch (*keyword) 
+    {
+      case 'N':
+      case 'n':
+      {
+        if (LocaleCompare((char *) keyword,"name") == 0)
+          {
+            magic_list->name=AllocateString(value);
+            break;
+          }
+        break;
+      }
+      case 'O':
+      case 'o':
+      {
+        if (LocaleCompare((char *) keyword,"offset") == 0)
+          {
+            magic_list->offset=atoi(value);
+            break;
+          }
+        break;
+      }
+      case 'T':
+      case 't':
+      {
+        if (LocaleCompare((char *) keyword,"target") == 0)
+          {
+            magic_list->target=AllocateString(value);
+            break;
+          }
+        break;
+      }
+      default:
+        break;
     }
   }
   (void) fclose(file);
-  if (magic_list == (MagicInfo **) NULL)
+  if (magic_list == (MagicInfo *) NULL)
     return(False);
+  while (magic_list->previous != (MagicInfo *) NULL)
+    magic_list=magic_list->previous;
   return(True);
 }

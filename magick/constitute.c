@@ -2158,10 +2158,10 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
             &image->exception);
           if ((delegate_info != (DelegateInfo *) NULL) &&
               (clone_info->page == (char *) NULL))
-            if (delegate_info->direction == 0)
+            if (delegate_info->mode == 0)
               {
                 /*
-                  Let our bi-directional delegate process the image.
+                  Let our bi-modal delegate process the image.
                 */
                 (void) strcpy(image->filename,image->magick_filename);
                 status=InvokeDelegate(clone_info,image,image->magick,

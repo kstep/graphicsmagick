@@ -14,15 +14,15 @@ extern "C" {
 typedef struct _DelegateInfo
 {
   char
-    decode_tag[MaxTextExtent],
-    encode_tag[MaxTextExtent],
+    *decode,
+    *encode,
     *commands;
 
   int
-    direction;
+    mode;
 
-  unsigned long
-    signature;
+  unsigned int
+    wait;
 
   struct _DelegateInfo
     *previous,

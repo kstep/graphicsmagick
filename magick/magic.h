@@ -1,5 +1,5 @@
 /*
-  ImageMagick Magic Methods.
+  Magic methods.
 */
 #ifndef _MAGIC_H
 #define _MAGIC_H
@@ -9,37 +9,33 @@ extern "C" {
 #endif
 
 /*
-  Typedef declaractions.
+  Typedef declarations.
 */
-typedef struct _MagicInfoMember
-{
-  MagicMethod
-    method;
-
-  void
-    *argument;
-
-  int
-    status;
-
-  struct _MagicInfoMember
-    *next;
-} MagicInfoMember;
-
 typedef struct _MagicInfo
-{
+{  
   char
-    *tag;
+    *name,
+    *target;
 
-  struct _MagicInfoMember
-    *member;
+  unsigned int
+    offset;
+
+  struct _MagicInfo
+    *previous,
+    *next;
 } MagicInfo;
 
 /*
-  Magic method declarations.
+  Method declarations.
 */
 extern MagickExport MagicInfo
   *GetMagicInfo(const unsigned char *,const unsigned int,ExceptionInfo *);
+
+extern MagickExport unsigned int
+  ListMagicInfo(FILE *,ExceptionInfo *);
+
+extern MagickExport void
+  DestroyMagicInfo(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -111,6 +111,10 @@ static void DestroyDelegateInfo(void)
   AcquireSemaphore(&delegate_semaphore);
   for (p=delegate_list; p != (DelegateInfo *) NULL; )
   {
+    if (p->decode != (char *) NULL)
+      LiberateMemory((void **) &p->decode);
+    if (p->encode != (char *) NULL)
+      LiberateMemory((void **) &p->encode);
     if (p->commands != (char *) NULL)
       LiberateMemory((void **) &p->commands);
     delegate=p;
@@ -141,26 +145,26 @@ static void DestroyDelegateInfo(void)
 %
 %  The format of the GetDelegateInfo method is:
 %
-%      DelegateInfo *GetDelegateInfo(const char *decode_tag,
-%        const char *encode_tag,ExceptionInfo *exception)
+%      DelegateInfo *GetDelegateInfo(const char *decode,const char *encode,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o delgate_info: Method GetDelegateInfo returns any delegates associated
 %      with the specified tag.  
 %
-%    o decode_tag: Specifies the decode delegate we are searching for as a
+%    o decode: Specifies the decode delegate we are searching for as a
 %      character string.
 %
-%    o encode_tag: Specifies the encode delegate we are searching for as a
+%    o encode: Specifies the encode delegate we are searching for as a
 %      character string.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 %
 */
-MagickExport DelegateInfo *GetDelegateInfo(const char *decode_tag,
-  const char *encode_tag,ExceptionInfo *exception)
+MagickExport DelegateInfo *GetDelegateInfo(const char *decode,
+  const char *encode,ExceptionInfo *exception)
 {
   register DelegateInfo
     *p;
@@ -181,34 +185,33 @@ MagickExport DelegateInfo *GetDelegateInfo(const char *decode_tag,
       atexit(DestroyDelegateInfo);
     }
   LiberateSemaphore(&delegate_semaphore);
-  if ((LocaleCompare(decode_tag,"*") == 0) &&
-      (LocaleCompare(encode_tag,"*") == 0))
+  if ((LocaleCompare(decode,"*") == 0) && (LocaleCompare(encode,"*") == 0))
     return(delegate_list);
   /*
     Search for requested delegate.
   */
   for (p=delegate_list; p != (DelegateInfo *) NULL; p=p->next)
   {
-    if (p->direction > 0)
+    if (p->mode > 0)
       {
-        if (LocaleCompare(p->decode_tag,decode_tag) == 0)
+        if (LocaleCompare(p->decode,decode) == 0)
           break;
         continue;
       }
-    if (p->direction < 0)
+    if (p->mode < 0)
       {
-        if (LocaleCompare(p->encode_tag,encode_tag) == 0)
+        if (LocaleCompare(p->encode,encode) == 0)
           break;
         continue;
       }
-    if (LocaleCompare(decode_tag,p->decode_tag) == 0)
-      if (LocaleCompare(encode_tag,p->encode_tag) == 0)
+    if (LocaleCompare(decode,p->decode) == 0)
+      if (LocaleCompare(encode,p->encode) == 0)
         break;
-    if (LocaleCompare(decode_tag,"*") == 0)
-      if (LocaleCompare(encode_tag,p->encode_tag) == 0)
+    if (LocaleCompare(decode,"*") == 0)
+      if (LocaleCompare(encode,p->encode) == 0)
         break;
-    if (LocaleCompare(decode_tag,p->decode_tag) == 0)
-      if (LocaleCompare(encode_tag,"*") == 0)
+    if (LocaleCompare(decode,p->decode) == 0)
+      if (LocaleCompare(encode,"*") == 0)
         break;
   }
   return(p);
@@ -231,7 +234,7 @@ MagickExport DelegateInfo *GetDelegateInfo(const char *decode_tag,
 %  The format of the GetDelegateCommand method is:
 %
 %      char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
-%        const char *decode_tag,const char *encode_tag)
+%        const char *decode,const char *encode)
 %
 %  A description of each parameter follows:
 %
@@ -242,16 +245,16 @@ MagickExport DelegateInfo *GetDelegateInfo(const char *decode_tag,
 %
 %    o image: The address of a structure of type Image.
 %
-%    o decode_tag: Specifies the decode delegate we are searching for as a
+%    o decode: Specifies the decode delegate we are searching for as a
 %      character string.
 %
-%    o encode_tag: Specifies the encode delegate we are searching for as a
+%    o encode: Specifies the encode delegate we are searching for as a
 %      character string.
 %
 %
 */
 MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
-  const char *decode_tag,const char *encode_tag)
+  const char *decode,const char *encode)
 {
   char
     *command,
@@ -267,19 +270,19 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  assert(decode_tag != (char *) NULL);
-  delegate_info=GetDelegateInfo(decode_tag,encode_tag,&image->exception);
+  assert(decode!= (char *) NULL);
+  delegate_info=GetDelegateInfo(decode,encode,&image->exception);
   if (delegate_info == (DelegateInfo *) NULL)
     {
       ThrowException(&image->exception,MissingDelegateWarning,"no tag found",
-        decode_tag ? decode_tag : encode_tag);
+        decode ? decode : encode);
       return((char *) NULL);
     }
   commands=StringToList(delegate_info->commands);
   if (commands == (char **) NULL)
     {
       ThrowException(&image->exception,ResourceLimitWarning,
-        "Memory allocation failed",decode_tag ? decode_tag : encode_tag);
+        "Memory allocation failed",decode ? decode : encode);
       return((char *) NULL);
     }
   command=TranslateText(image_info,image,commands[0]);
@@ -313,7 +316,7 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
 %  The format of the InvokeDelegate method is:
 %
 %      unsigned int InvokeDelegate(const ImageInfo *image_info,
-%        Image *image,const char *decode_tag,const char *encode_tag)
+%        Image *image,const char *decode,const char *encode)
 %
 %  A description of each parameter follows:
 %
@@ -324,7 +327,7 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
 %
 */
 MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
-  Image *image,const char *decode_tag,const char *encode_tag)
+  Image *image,const char *decode,const char *encode)
 {
   char
     *command,
@@ -345,13 +348,13 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   (void) strcpy(filename,image->filename);
-  delegate_info=GetDelegateInfo(decode_tag,encode_tag,&image->exception);
+  delegate_info=GetDelegateInfo(decode,encode,&image->exception);
   if (delegate_info == (DelegateInfo *) NULL)
     ThrowBinaryException(MissingDelegateWarning,"no tag found",
-      decode_tag ? decode_tag : encode_tag);
-  if (LocaleCompare(delegate_info->decode_tag,"YUV") == 0)
-    if ((LocaleCompare(delegate_info->encode_tag,"M2V") == 0) ||
-        (LocaleCompare(delegate_info->encode_tag,"MPG") == 0))
+      decode ? decode : encode);
+  if (LocaleCompare(delegate_info->decode,"YUV") == 0)
+    if ((LocaleCompare(delegate_info->encode,"M2V") == 0) ||
+        (LocaleCompare(delegate_info->encode,"MPG") == 0))
       {
         FILE
           *file;
@@ -363,11 +366,11 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
           Write parameter file (see mpeg2encode documentation for details).
         */
         CoalesceImages(image,&image->exception);
-        mpeg=LocaleCompare(delegate_info->encode_tag,"M2V") != 0;
+        mpeg=LocaleCompare(delegate_info->encode,"M2V") != 0;
         file=fopen(image_info->unique,"w");
         if (file == (FILE *) NULL)
           ThrowBinaryException(DelegateWarning,"delegate failed",
-            decode_tag ? decode_tag : encode_tag);
+            decode ? decode : encode);
         (void) fprintf(file,"MPEG\n");
         (void) fprintf(file,"%.1024s%%d\n",image->filename);
         (void) fprintf(file,"-\n");
@@ -430,9 +433,9 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
         (void) fclose(file);
         (void) strcat(image->filename,"%d.yuv");
       }
-  if (delegate_info->direction != 0)
-    if ((decode_tag && (*delegate_info->encode_tag != '\0')) ||
-        (encode_tag && (*delegate_info->decode_tag != '\0')))
+  if (delegate_info->mode != 0)
+    if ((decode && (*delegate_info->encode != '\0')) ||
+        (encode && (*delegate_info->decode != '\0')))
       {
         char
           filename[MaxTextExtent],
@@ -447,11 +450,11 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
         /*
           Delegate requires a particular image format.
         */
-        magick=TranslateText(image_info,image,decode_tag != (char *) NULL ?
-          delegate_info->encode_tag : delegate_info->decode_tag);
+        magick=TranslateText(image_info,image,decode != (char *) NULL ?
+          delegate_info->encode : delegate_info->decode);
         if (magick == (char *) NULL)
           ThrowBinaryException(DelegateWarning,"delegate failed",
-            decode_tag ? decode_tag : encode_tag);
+            decode ? decode : encode);
         LocaleUpper(magick);
         (void) strcpy((char *) image_info->magick,magick);
         (void) strcpy(image->magick,magick);
@@ -461,16 +464,16 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
         if (clone_info == (ImageInfo *) NULL)
           ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
             (char *) NULL);
-        FormatString(clone_info->filename,"%.1024s:",delegate_info->decode_tag);
+        FormatString(clone_info->filename,"%.1024s:",delegate_info->decode);
         SetImageInfo(clone_info,True,&image->exception);
         for (p=image; p != (Image *) NULL; p=p->next)
         {
-          FormatString(p->filename,"%.1024s:%.1024s",delegate_info->decode_tag,
+          FormatString(p->filename,"%.1024s:%.1024s",delegate_info->decode,
             filename);
           status=WriteImage(clone_info,p);
           if (status == False)
             ThrowBinaryException(DelegateWarning,"delegate failed",
-              decode_tag ? decode_tag : encode_tag);
+              decode ? decode : encode);
           if (clone_info->adjoin)
             break;
         }
@@ -480,7 +483,7 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
   commands=StringToList(delegate_info->commands);
   if (commands == (char **) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
-      decode_tag ? decode_tag : encode_tag);
+      decode ? decode : encode);
   command=(char *) NULL;
   status=True;
   for (i=0; commands[i] != (char *) NULL; i++)
@@ -551,8 +554,8 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
   (void) fprintf(file,"\nImageMagick uses these delegates to read or write "
     "image formats it does not\ndirectly support:\n\n");
   (void) fprintf(file,"Decode-Tag   Encode-Tag  Delegate\n");
-  (void) fprintf(file,"--------------------------------------------------------"
-    "-----------------\n");
+  (void) fprintf(file,"-------------------------------------------------------"
+    "------------------------\n");
   p=GetDelegateInfo("*","*",exception);
   if (p == (DelegateInfo *) NULL)
     return(False);
@@ -566,11 +569,11 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
     for (i=0; i < 10; i++)
       tag[i]=' ';
     tag[i]='\0';
-    if (p->encode_tag != (char *) NULL)
-      (void) strncpy(tag,p->encode_tag,Extent(p->encode_tag));
+    if (p->encode != (char *) NULL)
+      (void) strncpy(tag,p->encode,Extent(p->encode));
     (void) fprintf(file,"%10s%.1024s=%.1024s%.1024s  %s\n",
-      p->decode_tag ? p->decode_tag : "",p->direction <= 0 ? "<" : " ",
-      p->direction >= 0 ? ">" : " ",tag,delegate);
+      p->decode ? p->decode : "",p->mode <= 0 ? "<" : " ",
+      p->mode >= 0 ? ">" : " ",tag,delegate);
   }
   (void) fflush(file);
   return(True);
@@ -587,7 +590,8 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadConfigurationFile reads the delegates configuration file.
+%  Method ReadConfigurationFile reads the delegate configuration file which
+%  maps external delegates to a a particular image format.
 %
 %  The format of the ReadConfigurationFile method is:
 %
@@ -595,8 +599,8 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method ReadConfigurationFile returns True if at least one
-%      delegate is defined otherwise False.
+%    o status: Method ReadConfigurationFile returns True if at least one delegate
+%      is defined otherwise False.
 %
 %    o filename:  The delegate configuration filename.
 %
@@ -605,21 +609,19 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
 static unsigned int ReadConfigurationFile(const char *filename)
 {
   char
+    keyword[MaxTextExtent],
     *path,
-    text[MaxTextExtent];
-
-  DelegateInfo
-    delegate_info;
+    value[MaxTextExtent];
 
   FILE
     *file;
 
+  int
+    c;
+
   register char
     *p;
 
-  /*
-    Read delegate file.
-  */
   path=GetMagickConfigurePath(filename);
   if (path == (char *) NULL)
     return(False);
@@ -627,75 +629,142 @@ static unsigned int ReadConfigurationFile(const char *filename)
   LiberateMemory((void **) &path);
   if (file == (FILE *) NULL)
     return(False);
-  while (fgets(text,MaxTextExtent,file) != (char *) NULL)
+  for (c=fgetc(file); c != EOF; c=fgetc(file))
   {
-    if (*text == '#')
-      continue;
-    Strip(text);
-    if (*text == '\0')
-      continue;
-    *delegate_info.decode_tag='\0';
-    *delegate_info.encode_tag='\0';
-    for (p=text; (*p != '<') && (*p != '=') && (*p != '\0'); p++);
-    (void) strncpy(delegate_info.decode_tag,text,p-text);
-    delegate_info.decode_tag[p-text]='\0';
-    Strip(delegate_info.decode_tag);
-    delegate_info.direction=0;
-    if (*p == '<')
-      {
-        delegate_info.direction--;
-        p++;
-      }
-    if (*p == '=')
-      p++;
-    if (*p == '>')
-      {
-        delegate_info.direction++;
-        p++;
-      }
-    while (isspace((int) *p))
-      p++;
-    if (*p != '0')
-      (void) strcpy(delegate_info.encode_tag,p);
-    Strip(delegate_info.encode_tag);
-    delegate_info.commands=(char *) NULL;
-    while (fgets(text,MaxTextExtent,file) != (char *) NULL)
+    /*
+      Parse keyword.
+    */
+    while (isspace(c))
+      c=fgetc(file);
+    p=keyword;
+    do
     {
-      if (*text != '\t')
-        break;
-      Strip(text);
-      if (delegate_info.commands != (char *) NULL)
-        ReacquireMemory((void **) &delegate_info.commands,
-          (Extent(delegate_info.commands)+Extent(text)+3));
-      else
-        {
-          delegate_info.commands=(char *) AcquireMemory(Extent(text)+3);
-          if (delegate_info.commands != (char *) NULL)
-            *delegate_info.commands='\0';
-        }
-      if (delegate_info.commands == (char *) NULL)
-        break;
-      (void) strcat(delegate_info.commands,text);
-      if (delegate_info.commands[Extent(delegate_info.commands)-1] != '\\')
-        (void) strcat(delegate_info.commands,"\n");
-      else
-        delegate_info.commands[Extent(delegate_info.commands)-1]='\0';
-    }
-    if (delegate_info.commands == (char *) NULL)
-      MagickWarning(DelegateWarning,"no command for this delegate",
-        delegate_info.decode_tag);
-    else
+      if ((p-keyword) < (MaxTextExtent-1))
+        *p++=c;
+      c=fgetc(file);
+    } while ((c == '<') || isalnum(c));
+    *p='\0';
+    if (LocaleCompare(keyword,"<delegate") == 0)
       {
+        DelegateInfo
+          *delegate_info;
+
         /*
-          Add delegate to the delegate list.
+          Allocate memory for the delegate list.
         */
-        Strip(delegate_info.commands);
-        (void) SetDelegateInfo(&delegate_info);
-        LiberateMemory((void **) &delegate_info.commands);
+        delegate_info=(DelegateInfo *) AcquireMemory(sizeof(DelegateInfo));
+        if (delegate_info == (DelegateInfo *) NULL)
+          MagickError(ResourceLimitError,"Unable to allocate delegates",
+            "Memory allocation failed");
+        memset(delegate_info,0,sizeof(DelegateInfo));
+        if (delegate_list == (DelegateInfo *) NULL)
+          delegate_list=delegate_info;
+        else
+          {
+            delegate_list->next=delegate_info;
+            delegate_info->previous=delegate_list;
+            delegate_list=delegate_list->next;
+          }
       }
+    if (*keyword == '<')
+      continue;
+    while (isspace(c))
+      c=fgetc(file);
+    if (c != '=')
+      continue;
+    do
+    {
+      c=fgetc(file);
+    }
+    while (isspace(c));
+    if ((c != '"') && (c != '\''))
+      continue;
+    /*
+      Parse value.
+    */
+    p=value;
+    if (c == '"')
+      {
+        for (c=fgetc(file); (c != '"') && (c != EOF); c=fgetc(file))
+          if ((p-value) < (MaxTextExtent-1))
+            *p++=c;
+      }
+    else
+      for (c=fgetc(file); (c != '\'') && (c != EOF); c=fgetc(file))
+        if ((p-value) < (MaxTextExtent-1))
+          *p++=c;
+    *p='\0';
+    if (delegate_list == (DelegateInfo *) NULL)
+      continue;
+    switch (*keyword) 
+    {
+      case 'C':
+      case 'c':
+      {
+        if (LocaleCompare((char *) keyword,"command") == 0)
+          {
+            delegate_list->commands=AllocateString(value);
+            break;
+          }
+        break;
+      }
+      case 'D':
+      case 'd':
+      {
+        if (LocaleCompare((char *) keyword,"decode") == 0)
+          {
+            delegate_list->decode=AllocateString(value);
+            delegate_list->mode=1;
+            break;
+          }
+        break;
+      }
+      case 'E':
+      case 'e':
+      {
+        if (LocaleCompare((char *) keyword,"encode") == 0)
+          {
+            delegate_list->encode=AllocateString(value);
+            delegate_list->mode=(-1);
+            break;
+          }
+        break;
+      }
+      case 'M':
+      case 'm':
+      {
+        if (LocaleCompare((char *) keyword,"mode") == 0)
+          {
+            delegate_list->mode=1;
+            if (LocaleCompare(value,"bi") == 0)
+              delegate_list->mode=0;
+            else
+              if (LocaleCompare(value,"encode") == 0)
+                delegate_list->mode=(-1);
+            break;
+          }
+        break;
+      }
+      case 'W':
+      case 'w':
+      {
+        if (LocaleCompare((char *) keyword,"wait") == 0)
+          {
+            delegate_list->wait=LocaleCompare(value,"no") == 0;
+            break;
+          }
+        break;
+      }
+      default:
+        break;
+    }
   }
   (void) fclose(file);
-  return(delegate_list != (DelegateInfo *) NULL);
+  if (delegate_list == (DelegateInfo *) NULL)
+    return(False);
+  while (delegate_list->previous != (DelegateInfo *) NULL)
+    delegate_list=delegate_list->previous;
+  return(True);
 }
 
 /*
@@ -742,9 +811,9 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
   delegate=(DelegateInfo *) AcquireMemory(sizeof(DelegateInfo));
   if (delegate == (DelegateInfo *) NULL)
     return(delegate_list);
-  (void) strcpy(delegate->decode_tag,delegate_info->decode_tag);
-  (void) strcpy(delegate->encode_tag,delegate_info->encode_tag);
-  delegate->direction=delegate_info->direction;
+  (void) strcpy(delegate->decode,delegate_info->decode);
+  (void) strcpy(delegate->encode,delegate_info->encode);
+  delegate->mode=delegate_info->mode;
   delegate->commands=(char *) NULL;
   if (delegate_info->commands != (char *) NULL)
     {
@@ -757,7 +826,6 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
         return(delegate_list);
       (void) strcpy(delegate->commands,delegate_info->commands);
     }
-  delegate->signature=MagickSignature;
   delegate->previous=(DelegateInfo *) NULL;
   delegate->next=(DelegateInfo *) NULL;
   if (delegate_list == (DelegateInfo *) NULL)
@@ -767,9 +835,9 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
     }
   for (p=delegate_list; p != (DelegateInfo *) NULL; p=p->next)
   {
-    if ((LocaleCompare(p->decode_tag,delegate_info->decode_tag) == 0) &&
-        (LocaleCompare(p->encode_tag,delegate_info->encode_tag) == 0) &&
-        (p->direction == delegate_info->direction))
+    if ((LocaleCompare(p->decode,delegate_info->decode) == 0) &&
+        (LocaleCompare(p->encode,delegate_info->encode) == 0) &&
+        (p->mode == delegate_info->mode))
       {
         /*
           Delegate overrides an existing one with the same tags.

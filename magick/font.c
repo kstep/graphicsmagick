@@ -220,9 +220,6 @@ MagickExport FontInfo *GetFontInfo(const char *name,ExceptionInfo *exception)
 */
 MagickExport unsigned int ListFontInfo(FILE *file,ExceptionInfo *exception)
 {
-  char
-    name[MaxTextExtent];
-
   register FontInfo
     *p;
 
@@ -233,7 +230,8 @@ MagickExport unsigned int ListFontInfo(FILE *file,ExceptionInfo *exception)
     file=stdout;
   (void) fprintf(file,"\n\nImageMagick supports these built-in fonts:\n\n");
   (void) fprintf(file,"Name                         Description\n");
-  (void) fprintf(file,"--------------------------------------------------------"    "-----------------\n");
+  (void) fprintf(file,"-------------------------------------------------------"
+    "------------------------\n");
   p=GetFontInfo("*",exception);
   if (p == (FontInfo *) NULL)
     return(False);
@@ -293,6 +291,9 @@ static unsigned int ReadConfigurationFile(const char *filename)
   register char
     *p;
 
+  /*
+    Read the font configuration file.
+  */
   path=GetMagickConfigurePath(filename);
   if (path == (char *) NULL)
     return(False);
@@ -348,15 +349,22 @@ static unsigned int ReadConfigurationFile(const char *filename)
       c=fgetc(file);
     }
     while (isspace(c));
-    if (c != '"')
+    if ((c != '"') && (c != '\''))
       continue;
     /*
       Parse value.
     */
     p=value;
-    for (c=fgetc(file); (c != '"') && (c != EOF); c=fgetc(file))
-      if ((p-value) < (MaxTextExtent-1))
-        *p++=c;
+    if (c == '"')
+      {
+        for (c=fgetc(file); (c != '"') && (c != EOF); c=fgetc(file))
+          if ((p-value) < (MaxTextExtent-1))
+            *p++=c;
+      }
+    else
+      for (c=fgetc(file); (c != '\'') && (c != EOF); c=fgetc(file))
+        if ((p-value) < (MaxTextExtent-1))
+          *p++=c;
     *p='\0';
     if (font_list == (FontInfo *) NULL)
       continue;

@@ -80,10 +80,11 @@
 typedef struct _ModuleAlias
 {
   char
-    *alias,
-    *module;
+    *name,
+    *alias;
 
   struct _ModuleAlias
+    *previous,
     *next;
 } ModuleAlias;
 
@@ -168,10 +169,10 @@ static void DestroyModuleInfo(void)
   AcquireSemaphore(&module_semaphore);
   for (q=module_aliases; q != (ModuleAlias *) NULL; )
   {
+    if (q->name != (char *) NULL)
+      LiberateMemory((void **) &q->name);
     if (q->alias != (char *) NULL)
       LiberateMemory((void **) &q->alias);
-    if (q->module != (char *) NULL)
-      LiberateMemory((void **) &q->module);
     module_aliases=q;
     q=q->next;
     LiberateMemory((void **) &module_aliases);
@@ -524,7 +525,7 @@ MagickExport unsigned int OpenModule(const char *module,
       for (p=module_aliases; p != (ModuleAlias *) NULL; p=p->next)
         if (LocaleCompare(p->alias,module) == 0)
           {
-            (void) strcpy(module_name,p->module);
+            (void) strcpy(module_name,p->name);
             break;
           }
     }
@@ -641,7 +642,8 @@ MagickExport unsigned int OpenModules(ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadConfigurationFile reads the module configuration file.
+%  Method ReadConfigurationFile reads the module configuration file which maps
+%  module modulees with a particular image format.
 %
 %  The format of the ReadConfigurationFile method is:
 %
@@ -654,25 +656,23 @@ MagickExport unsigned int OpenModules(ExceptionInfo *exception)
 %
 %    o filename:  The font configuration filename.
 %
+%
 */
 static unsigned int ReadConfigurationFile(const char *filename)
 {
-#define MaxPathElements  31
-
   char
-    alias[MaxTextExtent],
-    module[MaxTextExtent],
-    *path;
+    keyword[MaxTextExtent],
+    *path,
+    value[MaxTextExtent];
 
   FILE
     *file;
 
-  ModuleAlias
-    *aliases,
-    *module_alias;
+  int
+    c;
 
-  unsigned int
-    match;
+  register char
+    *p;
 
   /*
     Initialize ltdl.
@@ -681,9 +681,8 @@ static unsigned int ReadConfigurationFile(const char *filename)
     MagickError(DelegateError,"unable to initialize module loader",
       lt_dlerror());
   /*
-    Read the module configuration files.
+    Read the module configuration file.
   */
-  module_aliases=(ModuleAlias *) NULL;
   path=GetMagickConfigurePath(filename);
   if (path == (char *) NULL)
     return(False);
@@ -691,41 +690,105 @@ static unsigned int ReadConfigurationFile(const char *filename)
   LiberateMemory((void **) &path);
   if (file == (FILE *) NULL)
     return(False);
-  aliases=module_aliases;
-  while (!feof(file))
+  for (c=fgetc(file); c != EOF; c=fgetc(file))
   {
-    if (fscanf(file,"%s %s",alias,module) != 2)
-      continue;
-    match=False;
-    module_alias=module_aliases;
-    while (module_alias != (ModuleAlias *) NULL)
+    /*
+      Parse keyword.
+    */
+    while (isspace(c))
+      c=fgetc(file);
+    p=keyword;
+    do
     {
-      if (LocaleCompare(module_alias->alias,alias) == 0)
-        {
-          match=True;
-          break;
-        }
-      module_alias=module_alias->next;
-    }
-    if (match != False)
-      continue;
-    module_alias=(ModuleAlias *) AcquireMemory(sizeof(ModuleAlias));
-    if (module_alias == (ModuleAlias *) NULL)
-      continue;
-    memset(module_alias,0,sizeof(ModuleAlias));
-    module_alias->alias=AllocateString(alias);
-    module_alias->module=AllocateString(module);
-    if (module_aliases == (ModuleAlias *) NULL)
+      if ((p-keyword) < (MaxTextExtent-1))
+        *p++=c;
+      c=fgetc(file);
+    } while ((c == '<') || isalnum(c));
+    *p='\0';
+    if (LocaleCompare(keyword,"<module") == 0)
       {
-        module_aliases=module_alias;
-        aliases=module_aliases;
-        continue;
+        ModuleAlias
+          *alias_info;
+
+        /*
+          Allocate memory for the font list.
+        */
+        alias_info=(ModuleAlias *) AcquireMemory(sizeof(ModuleAlias));
+        if (alias_info == (ModuleAlias *) NULL)
+          MagickError(ResourceLimitError,"Unable to allocate fonts",
+            "Memory allocation failed");
+        memset(alias_info,0,sizeof(ModuleAlias));
+        if (module_aliases == (ModuleAlias *) NULL)
+          module_aliases=alias_info;
+        else
+          {
+            module_aliases->next=alias_info;
+            alias_info->previous=module_aliases;
+            module_aliases=module_aliases->next;
+          }
       }
-    aliases->next=module_alias;
-    aliases=aliases->next;
+    if (*keyword == '<')
+      continue;
+    while (isspace(c))
+      c=fgetc(file);
+    if (c != '=')
+      continue;
+    do
+    {
+      c=fgetc(file);
+    }
+    while (isspace(c));
+    if ((c != '"') && (c != '\''))
+      continue;
+    /*
+      Parse value.
+    */
+    p=value;
+    if (c == '"')
+      {
+        for (c=fgetc(file); (c != '"') && (c != EOF); c=fgetc(file))
+          if ((p-value) < (MaxTextExtent-1))
+            *p++=c;
+      }
+    else
+      for (c=fgetc(file); (c != '\'') && (c != EOF); c=fgetc(file))
+        if ((p-value) < (MaxTextExtent-1))
+          *p++=c;
+    *p='\0';
+    if (module_aliases == (ModuleAlias *) NULL)
+      continue;
+    switch (*keyword) 
+    {
+      case 'A':
+      case 'a':
+      {
+        if (LocaleCompare((char *) keyword,"alias") == 0)
+          {
+            module_aliases->alias=AllocateString(value);
+            break;
+          }
+        break;
+      }
+      case 'N':
+      case 'n':
+      {
+        if (LocaleCompare((char *) keyword,"name") == 0)
+          {
+            module_aliases->name=AllocateString(value);
+            break;
+          }
+        break;
+      }
+      default:
+        break;
+    }
   }
   (void) fclose(file);
-  return(module_aliases != (ModuleAlias *) NULL);
+  if (module_aliases == (ModuleAlias *) NULL)
+    return(False);
+  while (module_aliases->previous != (ModuleAlias *) NULL)
+    module_aliases=module_aliases->previous;
+  return(True);
 }
 
 /*

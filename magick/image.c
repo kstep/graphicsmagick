@@ -6068,7 +6068,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
     (void) strcpy(image_info->magick,p);
   magic_info=GetMagicInfo(magick,2*MaxTextExtent,exception);
   if (magic_info != (MagicInfo *) NULL)
-    (void) strcpy(image_info->magick,magic_info->tag);
+    (void) strcpy(image_info->magick,magic_info->name);
   return(True);
 }
 
