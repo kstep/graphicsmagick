@@ -13,6 +13,8 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+const char *MODULE_PREFIX = "IM_MOD_";
+
 // /base:"0x66200000"
 unsigned long dllbaselocation = 0x67000000L;
 
@@ -42,7 +44,7 @@ CConfigureApp theApp;
 
 enum {MULTITHREADEDDLL, SINGLETHREADEDSTATIC, MULTITHREADEDSTATIC, MULTITHREADEDSTATICDLL};
 
-enum {DISABLED, UTILITY, LIBRARY, STATICLIB, MODULE, THIRDPARTY, PROJECT};
+enum {DISABLED, UTILITY, LIBRARY, STATICLIB, MODULE, ADD_ON, THIRDPARTY, PROJECT};
 
 BOOL useX11Stubs = TRUE;
 BOOL decorateFiles = FALSE;
@@ -184,7 +186,7 @@ void CConfigureApp::generate_dependencies(
 		it5++)
 	{
     strDepends = (*it5).c_str();
-    if (strDepends.FindNoCase("IM_MOD_",0) == 0)
+    if (strDepends.FindNoCase(MODULE_PREFIX,0) == 0)
     {
       strDepends.Format((*it5).c_str(),"","");
 		  add_project_dependency(dsw, strDepends );
@@ -747,11 +749,15 @@ do_it_again:
 }
 
 void CConfigureApp::process_module(ofstream &dsw,
-  WIN32_FIND_DATA	&data, const char *filename, int runtime, int project_type)
+  WIN32_FIND_DATA	&data, const char *filename,
+    int runtime, int project_type)
 {
 	CStringEx basename = filename;
   std::string name = basename.GetField('.',0);
-  std::string prefix = "IM_MOD_";
+  std::string prefix;
+
+  if (project_type == MODULE)
+    prefix = MODULE_PREFIX;    
 
 	std::list<std::string> libs_list_release;
 	std::list<std::string> libs_list_debug;
@@ -852,6 +858,16 @@ void CConfigureApp::process_module(ofstream &dsw,
     FindClose(libhandle);
   }
 
+  std::string envpath;
+  envpath = "..\\";
+  envpath += name;
+  if (project_type == MODULE)
+    envpath += "\\MODULE.txt";
+  if (project_type == ADD_ON)
+    envpath += "\\ADD_ON.txt";
+  load_environment_file(envpath.c_str(),
+    defines_list, includes_list, source_list, exclude_list);
+
  	write_lib_dsp(
     (runtime == MULTITHREADEDDLL),
     runtime, // multi-threaded
@@ -875,7 +891,10 @@ void CConfigureApp::process_module(ofstream &dsw,
   project += data.cFileName;
   project += "\\";
   project += pname;
-	dependency_list.push_back(prefix + "%s" + name + "%s");
+  if (project_type == MODULE)
+	  dependency_list.push_back(prefix + "%s" + name + "%s");
+  if (project_type == ADD_ON)
+	  dependency_list.push_back(name);
   switch(runtime)
   {
     case SINGLETHREADEDSTATIC:
@@ -1028,6 +1047,7 @@ void CConfigureApp::process_one_folder(ofstream &dsw,
   case STATICLIB:
     process_library(dsw, data.cFileName, false, runtimeOption, project_type);
     break;
+  case ADD_ON:
   case MODULE:
     {
 	    subpath = "..\\..\\";
@@ -1039,7 +1059,8 @@ void CConfigureApp::process_one_folder(ofstream &dsw,
       {
 	      do
 	      {
-          process_module(dsw, data, subdata.cFileName, runtimeOption, project_type);
+          process_module(dsw, data, subdata.cFileName,
+            runtimeOption, project_type);
 	      } while (FindNextFile(subhandle, &subdata));
         FindClose(subhandle);
       }
@@ -1052,7 +1073,8 @@ void CConfigureApp::process_one_folder(ofstream &dsw,
       {
 	      do
 	      {
-          process_module(dsw, data, subdata.cFileName, runtimeOption, project_type);
+          process_module(dsw, data, subdata.cFileName,
+            runtimeOption, project_type);
 	      } while (FindNextFile(subhandle, &subdata));
         FindClose(subhandle);
       }
@@ -1087,6 +1109,9 @@ bool CConfigureApp::is_project_type(const char *root, const int project_type)
     break;
   case MODULE:
     searchpath += "MODULE.txt";
+    break;
+  case ADD_ON:
+    searchpath += "ADD_ON.txt";
     break;
   case THIRDPARTY:
     searchpath += "THIRDPARTY.txt";
@@ -1428,6 +1453,8 @@ BOOL CConfigureApp::InitInstance()
     waitdlg.Pumpit();
     process_project_type(dsw,"..",projectType,"MODULE.txt",    MODULE);
     waitdlg.Pumpit();
+    process_project_type(dsw,"..",projectType,"ADD_ON.txt",    ADD_ON);
+    waitdlg.Pumpit();
     consoleMode = TRUE;
     process_project_type(dsw,"..",projectType,"UTILITY.txt",   UTILITY);
     waitdlg.Pumpit();
@@ -1732,11 +1759,14 @@ void CConfigureApp::write_lib_dsp(
   else
 	  dsp << " /nologo /machine:I386 ";
   outname = prefix.c_str();
-  outname += "RL_";
+  if (project_type != ADD_ON)
+    outname += "RL_";
   outname += dspname.c_str();
+  if (project_type != ADD_ON)
+    outname += "_";
   if (dll)
   {
-    dsp << "/pdb:\"" << bin_loc << outname << "_.pdb\"";
+    dsp << "/pdb:\"" << bin_loc << outname << ".pdb\"";
     {
 	    WIN32_FIND_DATA	defdata;
 	    CString defname = "..\\";
@@ -1744,19 +1774,19 @@ void CConfigureApp::write_lib_dsp(
       defname += directory.c_str();
       defname += "\\";
       defname += outname;
-      defname += "_.def";
+      defname += ".def";
 	    HANDLE defhandle = FindFirstFile(defname, &defdata);
 	    if (defhandle != INVALID_HANDLE_VALUE)
       {
         FindClose(defhandle);
-        dsp << " /def:\".\\" << outname << "_.def\"";
+        dsp << " /def:\".\\" << outname << ".def\"";
       }
     }
-    dsp << " /out:\"" << bin_loc << outname << "_.dll\"";
+    dsp << " /out:\"" << bin_loc << outname << ".dll\"";
   }
   else
   {
-    dsp << " /out:\"" << lib_loc << outname << "_.lib\"";
+    dsp << " /out:\"" << lib_loc << outname << ".lib\"";
   }
 	dsp << endl;
 	dsp << endl;
@@ -1855,8 +1885,11 @@ void CConfigureApp::write_lib_dsp(
 		}
 	}
   outname = prefix.c_str();
-  outname += "DB_";
+  if (project_type != ADD_ON)
+    outname += "DB_";
   outname += dspname.c_str();
+  if (project_type != ADD_ON)
+    outname += "_";
   if (dll)
   {
 	  dsp << " /nologo /subsystem:windows /dll";
@@ -1872,7 +1905,7 @@ void CConfigureApp::write_lib_dsp(
 	  dsp << " /nologo /machine:I386 ";
   if (dll)
   {
-    dsp << "/pdb:\"" << bin_loc << outname << "_.pdb\"";
+    dsp << "/pdb:\"" << bin_loc << outname << ".pdb\"";
     {
 	    WIN32_FIND_DATA	defdata;
 	    CString defname = "..\\";
@@ -1880,19 +1913,19 @@ void CConfigureApp::write_lib_dsp(
       defname += directory.c_str();
       defname += "\\";
       defname += outname;
-      defname += "_.def";
+      defname += ".def";
 	    HANDLE defhandle = FindFirstFile(defname, &defdata);
 	    if (defhandle != INVALID_HANDLE_VALUE)
       {
         FindClose(defhandle);
-        dsp << " /def:\".\\" << outname << "_.def\"";
+        dsp << " /def:\".\\" << outname << ".def\"";
       }
     }
-    dsp << " /out:\"" << bin_loc << outname << "_.dll\"";
+    dsp << " /out:\"" << bin_loc << outname << ".dll\"";
   }
   else
   {
-    dsp << " /out:\"" << lib_loc << outname << "_.lib\"";
+    dsp << " /out:\"" << lib_loc << outname << ".lib\"";
   }
 	dsp << endl;
 
@@ -2139,10 +2172,15 @@ void CConfigureApp::write_exe_dsp(
 		        it1a++)
 	        {
             strTemp = (*it1a).c_str();
-            if (strTemp.FindNoCase("UTIL_",0) != 0)
+            /* look for entries with a xxx%syyy%szzz format */
+            if (strTemp.FindNoCase("%s",0) > 0)
             {
-              strDepends.Format((*it1a).c_str(),"RL_","_.lib");
-			        dsp << " " << strDepends << "";
+              /* ignore any entries for utility programs as well */
+              if (strTemp.FindNoCase("UTIL_",0) != 0)
+              {
+                strDepends.Format((*it1a).c_str(),"RL_","_.lib");
+			          dsp << " " << strDepends << "";
+              }
             }
           }
         }
@@ -2307,10 +2345,16 @@ void CConfigureApp::write_exe_dsp(
 		        it1a++)
 	        {
             strTemp = (*it1a).c_str();
-            if (strTemp.FindNoCase("UTIL_",0) != 0)
+            strTemp = (*it1a).c_str();
+            /* look for entries with a xxx%syyy%szzz format */
+            if (strTemp.FindNoCase("%s",0) > 0)
             {
-              strDepends.Format((*it1a).c_str(),"DB_","_.lib");
-			        dsp << " " << strDepends << "";
+              /* ignore any entries for utility programs as well */
+              if (strTemp.FindNoCase("UTIL_",0) != 0)
+              {
+                strDepends.Format((*it1a).c_str(),"DB_","_.lib");
+			          dsp << " " << strDepends << "";
+              }
             }
           }
         }
