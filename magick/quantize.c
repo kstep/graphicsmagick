@@ -1326,8 +1326,8 @@ Export void GetQuantizeInfo(QuantizeInfo *quantize_info)
 %
 %  The format of the HilbertCurve method is:
 %
-%      unsigned int MapImages(Image *images,const Image *map_image,
-%        const unsigned int dither)
+%      void HilbertCurve(CubeInfo *cube_info,Image *image,const int level,
+%        const unsigned int direction)
 %
 %  A description of each parameter follows.
 %

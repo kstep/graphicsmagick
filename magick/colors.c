@@ -1466,7 +1466,7 @@ Export unsigned int IsMonochromeImage(Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method IsPseudoClass returns True if the image is PseudoClass and has 256
-%  unique colors or less.  If the image is DirectClass and has less 256 colors
+%  unique colors or less.  If the image is DirectClass and has 256 colors
 %  or less, the image is demoted to PseudoClass.
 %
 %  The format of the IsPseudoClass method is:
@@ -1597,8 +1597,7 @@ Export unsigned int IsPseudoClass(Image *image)
     nodes=color_cube.node_list->next;
     FreeMemory((char *) color_cube.node_list);
     color_cube.node_list=nodes;
-  }
-  while (color_cube.node_list != (Nodes *) NULL);
+  } while (color_cube.node_list != (Nodes *) NULL);
   if (color_cube.colors <= 256)
     {
       QuantizeInfo

@@ -3,11 +3,11 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                     BBBB   L       OOO   BBBB   SSSSS                       %
-%                     B   B  L      O   O  B   B  SS                          %
-%                     BBBB   L      O   O  BBBB    SSS                        %
-%                     B   B  L      O   O  B   B     SS                       %
-%                     BBBB   LLLLL   OOO   BBBB   SSSSS                       %
+%                         BBBB   L       OOO   BBBB                           %
+%                         B   B  L      O   O  B   B                          %
+%                         BBBB   L      O   O  BBBB                           %
+%                         B   B  L      O   O  B   B                          %
+%                         BBBB   LLLLL   OOO   BBBB                           %
 %                                                                             %
 %                                                                             %
 %                    ImageMagick Binary Large OBjectS Methods                 %
@@ -104,6 +104,10 @@ Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
     *magick_info;
 
   local_info=CloneImageInfo(image_info);
+  local_info->blob.data=(char *) blob;
+  local_info->blob.offset=0;
+  local_info->blob.length=length;
+  SetImageInfo(local_info,True);
   magick_info=(MagickInfo *) GetMagickInfo(local_info->magick);
   if (magick_info == (MagickInfo *) NULL)
     {
@@ -129,6 +133,7 @@ Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
   /*
     Write blob to a temporary file on disk.
   */
+  local_info->blob.data=(char *) NULL;
   TemporaryFilename(local_info->filename);
   file=fopen(local_info->filename,"w");
   if (file == (FILE *) NULL)
