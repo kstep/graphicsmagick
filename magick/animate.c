@@ -126,7 +126,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
 
       Image
         *image,
-        *next_image;
+        *next;
 
       ImageInfo
         *clone_info;
@@ -189,17 +189,17 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           handler=SetMonitorHandler((MonitorHandler) NULL);
         (void) strncpy(clone_info->filename,filelist[i],MaxTextExtent-1);
         *clone_info->magick='\0';
-        next_image=ReadImage(clone_info,&exception);
+        next=ReadImage(clone_info,&exception);
         if (exception.severity != UndefinedException)
           MagickWarning(exception.severity,exception.reason,
             exception.description);
-        if (next_image != (Image *) NULL)
+        if (next != (Image *) NULL)
           {
             if (image == (Image *) NULL)
-              image=next_image;
+              image=next;
             else
               {
-                image->next=next_image;
+                image->next=next;
                 image->next->previous=image;
                 image=image->next;
               }
@@ -402,7 +402,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
 %  The format of the XAnimateBackgroundImage method is:
 %
 %      void XAnimateBackgroundImage(Display *display,
-%        XResourceInfo *resource_info, Image *image)
+%        XResourceInfo *resource_info,Image *images)
 %
 %  A description of each parameter follows:
 %
@@ -411,8 +411,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
 %
 %    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
 %
-%    o image: Specifies a pointer to a Image structure; returned from
-%      ReadImage.
+%    o images: The image list.
 %
 %
 */
@@ -437,7 +436,7 @@ static int SceneCompare(const void *x,const void *y)
 #endif
 
 MagickExport void XAnimateBackgroundImage(Display *display,
-  XResourceInfo *resource_info,Image *image)
+  XResourceInfo *resource_info,Image *images)
 {
   char
     geometry[MaxTextExtent],
@@ -460,9 +459,8 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     window_info;
 
   Image
-    *coalesce_image,
     *display_image,
-    **images;
+    **image_list;
 
   int
     scene;
@@ -474,6 +472,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     number_scenes;
 
   unsigned int
+	  coalesce,
     status;
 
   unsigned long
@@ -501,8 +500,8 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   /*
     Determine target window.
   */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(images != (Image *) NULL);
+  assert(images->signature == MagickSignature);
   resources=(*resource_info);
   window_info.id=(Window) NULL;
   root_window=XRootWindow(display,XDefaultScreen(display));
@@ -566,34 +565,36 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   */
   if (window_info.id == root_window)
     (void) XDestroyWindowColors(display,root_window);
-  coalesce_image=(Image *) NULL;
-  if (image->next != (Image *)NULL)
+  coalesce=False;
+  if (images->next != (Image *) NULL)
     {
       Image
-        *next_image;
+        *next;
 
       /*
         Determine if the sequence of images have identical page info.
       */
-      for (next_image=image; next_image != (Image *) NULL; )
+      for (next=images; next != (Image *) NULL; )
       {
-        if ((image->columns != next_image->columns) ||
-            (image->rows != next_image->rows))
+        if ((images->columns != next->columns) ||
+            (images->rows != next->rows))
           break;
-        if ((image->page.x != next_image->page.x) ||
-            (image->page.y != next_image->page.y))
+        if ((images->page.x != next->page.x) ||
+            (images->page.y != next->page.y))
           break;
-        next_image=next_image->next;
+        next=next->next;
       }
-      if (next_image != (Image *) NULL)
+      coalesce=next != (Image *) NULL;
+      if (coalesce)
         {
-          coalesce_image=CoalesceImages(image,&image->exception);
+          Image
+            *coalesce_image;
+
+          coalesce_image=CoalesceImages(images,&images->exception);
           if (coalesce_image == (Image *) NULL)
-            MagickError(image->exception.severity,image->exception.reason,
-              image->exception.description);
-          if (!resource_info->immutable)
-            DestroyImageList(image);
-          image=coalesce_image;
+            MagickError(images->exception.severity,images->exception.reason,
+              images->exception.description);
+          images=coalesce_image;
         }
     }
   if (resources.map_type == (char *) NULL)
@@ -601,56 +602,56 @@ MagickExport void XAnimateBackgroundImage(Display *display,
         (visual_info->storage_class != DirectColor))
       {
         Image
-          *next_image;
+          *next;
 
         /*
           Determine if the sequence of images has the identical colormap.
         */
-        for (next_image=image; next_image != (Image *) NULL; )
+        for (next=images; next != (Image *) NULL; )
         {
-          next_image->matte=False;
-          if ((next_image->storage_class == DirectClass) ||
-              (next_image->colors != image->colors) ||
-              (next_image->colors > (unsigned long) visual_info->colormap_size))
+          next->matte=False;
+          if ((next->storage_class == DirectClass) ||
+              (next->colors != images->colors) ||
+              (next->colors > (unsigned long) visual_info->colormap_size))
             break;
-          for (i=0; i < (long) image->colors; i++)
-            if (!ColorMatch(next_image->colormap+i,image->colormap+i,0))
+          for (i=0; i < (long) images->colors; i++)
+            if (!ColorMatch(next->colormap+i,images->colormap+i,0))
               break;
-          if (i < (long) image->colors)
+          if (i < (long) images->colors)
             break;
-          next_image=next_image->next;
+          next=next->next;
         }
-        if (next_image != (Image *) NULL)
-          (void) MapImages(image,(Image *) NULL,
+        if (next != (Image *) NULL)
+          (void) MapImages(images,(Image *) NULL,
             resources.quantize_info->dither);
       }
   /*
     Sort images by increasing scene number.
   */
-  number_scenes=GetImageListSize(image);
-  images=ImageListToGroup(image,&image->exception);
-  if (images == (Image **) NULL)
+  number_scenes=GetImageListSize(images);
+  image_list=ImageListToGroup(images,&images->exception);
+  if (image_list == (Image **) NULL)
     MagickError(ResourceLimitError,"Unable to animate images",
       "Memory allocation failed");
-  for (scene=0; scene < (int) number_scenes; scene++)
-    if (images[scene]->scene == 0)
+  for (i=0; i < (long) number_scenes; i++)
+    if (image_list[i]->scene == 0)
       break;
-  if (scene == (int) number_scenes)
-    qsort((void *) images,number_scenes,sizeof(Image *),SceneCompare);
+  if (i == (long) number_scenes)
+    qsort((void *) image_list,number_scenes,sizeof(Image *),SceneCompare);
   /*
     Initialize Standard Colormap.
   */
   resources.colormap=SharedColormap;
-  display_image=images[0];
+  display_image=image_list[0];
   for (scene=0; scene < (int) number_scenes; scene++)
   {
     if ((resource_info->map_type != (char *) NULL) ||
         (visual_info->storage_class == TrueColor) ||
         (visual_info->storage_class == DirectColor))
-      SetImageType(images[scene],TrueColorType);
-    if ((display_image->columns < images[scene]->columns) &&
-        (display_image->rows < images[scene]->rows))
-      display_image=images[scene];
+      SetImageType(image_list[scene],TrueColorType);
+    if ((display_image->columns < image_list[scene]->columns) &&
+        (display_image->rows < image_list[scene]->rows))
+      display_image=image_list[scene];
   }
   if ((resource_info->map_type != (char *) NULL) ||
       (visual_info->storage_class == TrueColor) ||
@@ -675,8 +676,8 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   /*
     Create the X image.
   */
-  window_info.width=(unsigned int) images[0]->columns;
-  window_info.height=(unsigned int) images[0]->rows;
+  window_info.width=(unsigned int) image_list[0]->columns;
+  window_info.height=(unsigned int) image_list[0]->rows;
   FormatString(geometry,"%ux%u+0+0>",window_attributes.width,
     window_attributes.height);
   width=window_info.width;
@@ -688,19 +689,20 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   window_info.height=(unsigned int) height;
   window_info.x=(int) x;
   window_info.y=(int) y;
-  status=XMakeImage(display,&resources,&window_info,images[0],window_info.width,
-    window_info.height);
+  status=XMakeImage(display,&resources,&window_info,image_list[0],
+    window_info.width,window_info.height);
   if (status == False)
     MagickError(XServerError,"Unable to create X image",(char *) NULL);
   window_info.x=0;
   window_info.y=0;
   if (resources.debug)
     {
-      (void) fprintf(stderr,"Image: %.1024s[%lu] %lux%lu ",images[0]->filename,
-        images[0]->scene,images[0]->columns,images[0]->rows);
-      if (images[0]->colors != 0)
-        (void) fprintf(stderr,"%luc ",images[0]->colors);
-      (void) fprintf(stderr,"%.1024s\n",images[0]->magick);
+      (void) fprintf(stderr,"Image: %.1024s[%lu] %lux%lu ",
+        image_list[0]->filename,image_list[0]->scene,image_list[0]->columns,
+        image_list[0]->rows);
+      if (image_list[0]->colors != 0)
+        (void) fprintf(stderr,"%luc ",image_list[0]->colors);
+      (void) fprintf(stderr,"%.1024s\n",image_list[0]->magick);
     }
   /*
     Adjust image dimensions as specified by backdrop or geometry options.
@@ -794,27 +796,28 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     if ((resources.map_type != (char *) NULL) ||
         (visual_info->storage_class == TrueColor) ||
         (visual_info->storage_class == DirectColor))
-      if (images[scene]->storage_class == PseudoClass)
+      if (image_list[scene]->storage_class == PseudoClass)
         {
           /*
             Get pixel info for this scene.
           */
-          XGetPixelPacket(display,visual_info,map_info,&resources,images[scene],
-            &scene_info);
+          XGetPixelPacket(display,visual_info,map_info,&resources,
+            image_list[scene],&scene_info);
           window_info.pixel_info=(&scene_info);
         }
-    status=XMakeImage(display,&resources,&window_info,images[scene],
-      (unsigned int) images[scene]->columns,(unsigned int) images[scene]->rows);
+    status=XMakeImage(display,&resources,&window_info,image_list[scene],
+      (unsigned int) image_list[scene]->columns,
+      (unsigned int) image_list[scene]->rows);
     if (status == False)
       MagickError(XServerError,"Unable to create X image",(char *) NULL);
     if (resources.debug)
       {
         (void) fprintf(stderr,"Image: [%lu] %.1024s %lux%lu ",
-          images[scene]->scene,images[scene]->filename,images[scene]->columns,
-          images[scene]->rows);
-        if (images[scene]->colors != 0)
-          (void) fprintf(stderr,"%luc ",images[scene]->colors);
-        (void) fprintf(stderr,"%.1024s\n",images[scene]->magick);
+          image_list[scene]->scene,image_list[scene]->filename,
+          image_list[scene]->columns,image_list[scene]->rows);
+        if (image_list[scene]->colors != 0)
+          (void) fprintf(stderr,"%luc ",image_list[scene]->colors);
+        (void) fprintf(stderr,"%.1024s\n",image_list[scene]->magick);
       }
     /*
       Create the X pixmap.
@@ -839,9 +842,9 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     (void) XClearWindow(display,window_info.id);
     window_info.pixmaps[scene]=window_info.pixmap;
     window_info.matte_pixmaps[scene]=window_info.matte_pixmap;
-    if (images[scene]->matte)
+    if (image_list[scene]->matte)
       (void) XClearWindow(display,window_info.id);
-    XDelay(display,(unsigned long) resources.delay*10*Max(image->delay,1));
+    XDelay(display,(unsigned long) resources.delay*10*Max(images->delay,1));
   }
   window_info.pixel_info=(&pixel);
   /*
@@ -866,12 +869,15 @@ MagickExport void XAnimateBackgroundImage(Display *display,
       (void) XClearWindow(display,window_info.id);
       (void) XSync(display,False);
       XDelay(display,(unsigned long) resources.delay*10*
-        Max(images[scene]->delay,1));
+        Max(image_list[scene]->delay,1));
     }
   } while (event.type != DestroyNotify);
   (void) XSync(display,False);
-  if (coalesce_image != (Image *) NULL)
-    DestroyImageList(image);
+	for (i=0; i < (long) number_scenes; i++)
+	  DestroyImage(image_list[i]);
+  LiberateMemory((void **) &image_list);
+  if (coalesce)
+    DestroyImageList(images);
 }
 
 /*
@@ -890,7 +896,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
 %  The format of the XAnimateImages method is:
 %
 %      Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
-%        char **argv,const int argc,Image *image)
+%        char **argv,const int argc,Image *images)
 %
 %  A description of each parameter follows:
 %
@@ -903,13 +909,12 @@ MagickExport void XAnimateBackgroundImage(Display *display,
 %
 %    o argc: Specifies the number of arguments.
 %
-%    o image: Specifies a pointer to a Image structure; returned from
-%      ReadImage.
+%    o images: The image list.
 %
 %
 */
 MagickExport Image *XAnimateImages(Display *display,
-  XResourceInfo *resource_info,char **argv,const int argc,Image *image)
+  XResourceInfo *resource_info,char **argv,const int argc,Image *images)
 {
 #define MagickMenus  4
 #define MaxWindows  8
@@ -1017,9 +1022,9 @@ MagickExport Image *XAnimateImages(Display *display,
     command_type;
 
   Image
-    *coalesce_image,
     *display_image,
-    **images,
+		*image,
+    **image_list,
     *nexus;
 
   int
@@ -1058,6 +1063,7 @@ MagickExport Image *XAnimateImages(Display *display,
 
   unsigned int
     context_mask,
+		coalesce,
     state;
 
   WarningHandler
@@ -1103,8 +1109,8 @@ MagickExport Image *XAnimateImages(Display *display,
   XWMHints
     *manager_hints;
 
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(images != (Image *) NULL);
+  assert(images->signature == MagickSignature);
   monitor_handler=(MonitorHandler) NULL;
   warning_handler=(WarningHandler) NULL;
   windows=XSetWindows((XWindows *) ~0);
@@ -1126,7 +1132,7 @@ MagickExport Image *XAnimateImages(Display *display,
       /*
         Initialize window structure.
       */
-      for (p=image; p != (Image *) NULL; p=p->next)
+      for (p=images; p != (Image *) NULL; p=p->next)
       {
         if (p->storage_class == DirectClass)
           {
@@ -1176,34 +1182,36 @@ MagickExport Image *XAnimateImages(Display *display,
   class_hints=windows->class_hints;
   manager_hints=windows->manager_hints;
   root_window=XRootWindow(display,visual_info->screen);
-  coalesce_image=(Image *) NULL;
-  if (image->next != (Image *)NULL)
+	coalesce=False;
+  if (images->next != (Image *) NULL)
     {
       Image
-        *next_image;
+        *next;
 
       /*
         Determine if the sequence of images have identical page info.
       */
-      for (next_image=image; next_image != (Image *) NULL; )
+      for (next=images; next != (Image *) NULL; )
       {
-        if ((image->columns != next_image->columns) ||
-            (image->rows != next_image->rows))
+        if ((images->columns != next->columns) ||
+            (images->rows != next->rows))
           break;
-        if ((image->page.x != next_image->page.x) ||
-            (image->page.y != next_image->page.y))
+        if ((images->page.x != next->page.x) ||
+            (images->page.y != next->page.y))
           break;
-        next_image=next_image->next;
+        next=next->next;
       }
-      if (next_image != (Image *) NULL)
+      coalesce=next != (Image *) NULL;
+      if (coalesce)
         {
-          coalesce_image=CoalesceImages(image,&image->exception);
+          Image
+            *coalesce_image;
+
+          coalesce_image=CoalesceImages(images,&images->exception);
           if (coalesce_image == (Image *) NULL)
-            MagickError(image->exception.severity,image->exception.reason,
-              image->exception.description);
-          if (!resource_info->immutable)
-            DestroyImageList(image);
-          image=coalesce_image;
+            MagickError(images->exception.severity,images->exception.reason,
+              images->exception.description);
+          images=coalesce_image;
         }
     }
   if (resource_info->map_type == (char *) NULL)
@@ -1211,57 +1219,57 @@ MagickExport Image *XAnimateImages(Display *display,
         (visual_info->storage_class != DirectColor))
       {
         Image
-          *next_image;
+          *next;
 
         /*
           Determine if the sequence of images has the identical colormap.
         */
-        for (next_image=image; next_image != (Image *) NULL; )
+        for (next=images; next != (Image *) NULL; )
         {
-          next_image->matte=False;
-          if ((next_image->storage_class == DirectClass) ||
-              (next_image->colors != image->colors) ||
-              (next_image->colors > (unsigned long) visual_info->colormap_size))
+          next->matte=False;
+          if ((next->storage_class == DirectClass) ||
+              (next->colors != images->colors) ||
+              (next->colors > (unsigned long) visual_info->colormap_size))
             break;
-          for (i=0; i < (long) image->colors; i++)
-            if (!ColorMatch(next_image->colormap+i,image->colormap+i,0))
+          for (i=0; i < (long) images->colors; i++)
+            if (!ColorMatch(next->colormap+i,images->colormap+i,0))
               break;
-          if (i < (long) image->colors)
+          if (i < (long) images->colors)
             break;
-          next_image=next_image->next;
+          next=next->next;
         }
-        if (next_image != (Image *) NULL)
-          (void) MapImages(image,(Image *) NULL,
+        if (next != (Image *) NULL)
+          (void) MapImages(images,(Image *) NULL,
             resource_info->quantize_info->dither);
       }
   /*
     Sort images by increasing scene number.
   */
-  number_scenes=GetImageListSize(image);
-  images=ImageListToGroup(image,&image->exception);
-  if (images == (Image **) NULL)
+  number_scenes=GetImageListSize(images);
+  image_list=ImageListToGroup(images,&images->exception);
+  if (image_list == (Image **) NULL)
     MagickError(ResourceLimitError,"Unable to animate images",
       "Memory allocation failed");
   for (scene=0; scene < (int) number_scenes; scene++)
-    if (images[scene]->scene == 0)
+    if (image_list[scene]->scene == 0)
       break;
   if (scene == (int) number_scenes)
-    qsort((void *) images,number_scenes,sizeof(Image *),SceneCompare);
+    qsort((void *) image_list,number_scenes,sizeof(Image *),SceneCompare);
   /*
     Initialize Standard Colormap.
   */
   nexus=(Image *) NULL;
-  display_image=images[0];
+  display_image=image_list[0];
   (void) TransformRGBImage(display_image,RGBColorspace);
   for (scene=0; scene < (int) number_scenes; scene++)
   {
     if ((resource_info->map_type != (char *) NULL) ||
         (visual_info->storage_class == TrueColor) ||
         (visual_info->storage_class == DirectColor))
-      SetImageType(images[scene],TrueColorType);
-    if ((display_image->columns < images[scene]->columns) &&
-        (display_image->rows < images[scene]->rows))
-      display_image=images[scene];
+      SetImageType(image_list[scene],TrueColorType);
+    if ((display_image->columns < image_list[scene]->columns) &&
+        (display_image->rows < image_list[scene]->rows))
+      display_image=image_list[scene];
   }
   if (resource_info->debug)
     {
@@ -1636,44 +1644,45 @@ MagickExport Image *XAnimateImages(Display *display,
     /*
       Create X image.
     */
-    (void) TransformRGBImage(images[scene],RGBColorspace);
+    (void) TransformRGBImage(image_list[scene],RGBColorspace);
     windows->image.pixmap=(Pixmap) NULL;
     windows->image.matte_pixmap=(Pixmap) NULL;
     if ((resource_info->map_type != (char *) NULL) ||
         (visual_info->storage_class == TrueColor) ||
         (visual_info->storage_class == DirectColor))
-      if (images[scene]->storage_class == PseudoClass)
+      if (image_list[scene]->storage_class == PseudoClass)
         {
           /*
             Get pixel info for this scene.
           */
           XGetPixelPacket(display,visual_info,map_info,resource_info,
-            images[scene],&scene_info);
+            image_list[scene],&scene_info);
           windows->image.pixel_info=(&scene_info);
         }
-    status=XMakeImage(display,resource_info,&windows->image,images[scene],
-      (unsigned int) images[scene]->columns,(unsigned int) images[scene]->rows);
+    status=XMakeImage(display,resource_info,&windows->image,image_list[scene],
+      (unsigned int) image_list[scene]->columns,
+      (unsigned int) image_list[scene]->rows);
     if (status == False)
       MagickError(XServerError,"Unable to create X image",(char *) NULL);
     if (resource_info->debug)
       {
         (void) fprintf(stderr,"Image: [%lu] %.1024s %lux%lu ",
-          images[scene]->scene,images[scene]->filename,images[scene]->columns,
-          images[scene]->rows);
-        if (images[scene]->colors != 0)
-          (void) fprintf(stderr,"%luc ",images[scene]->colors);
-        (void) fprintf(stderr,"%.1024s\n",images[scene]->magick);
+          image_list[scene]->scene,image_list[scene]->filename,
+          image_list[scene]->columns,image_list[scene]->rows);
+        if (image_list[scene]->colors != 0)
+          (void) fprintf(stderr,"%luc ",image_list[scene]->colors);
+        (void) fprintf(stderr,"%.1024s\n",image_list[scene]->magick);
       }
     /*
       Window name is the base of the filename.
     */
     if (resource_info->title != (char *) NULL)
-      windows->image.name=TranslateText(resource_info->image_info,images[scene],
-        resource_info->title);
+      windows->image.name=TranslateText(resource_info->image_info,
+        image_list[scene],resource_info->title);
     else
       {
-        p=images[scene]->filename+strlen(images[scene]->filename)-1;
-        while ((p > images[scene]->filename) && (*(p-1) != '/'))
+        p=image_list[scene]->filename+strlen(image_list[scene]->filename)-1;
+        while ((p > image_list[scene]->filename) && (*(p-1) != '/'))
           p--;
         FormatString(windows->image.name,"ImageMagick: %.1024s[%lu of %lu]",p,
           scene,number_scenes);
@@ -1688,10 +1697,10 @@ MagickExport Image *XAnimateImages(Display *display,
     windows->image.matte_pixmaps[scene]=windows->image.matte_pixmap;
     event.xexpose.x=0;
     event.xexpose.y=0;
-    event.xexpose.width=(unsigned int) images[scene]->columns;
-    event.xexpose.height=(unsigned int) images[scene]->rows;
+    event.xexpose.width=(unsigned int) image_list[scene]->columns;
+    event.xexpose.height=(unsigned int) image_list[scene]->rows;
     XRefreshWindow(display,&windows->image,&event);
-    XDelay(display,(unsigned long) resource_info->delay*10*Max(image->delay,1));
+    XDelay(display,(unsigned long) resource_info->delay*10*Max(images->delay,1));
   }
   if (windows->command.mapped)
     (void) XMapRaised(display,windows->command.id);
@@ -1701,9 +1710,9 @@ MagickExport Image *XAnimateImages(Display *display,
   nexus=(Image *) NULL;
   scene=0;
   first_scene=0;
-  image=images[0];
+  image=image_list[0];
   state=ForwardAnimationState | RepeatAnimationState;
-  (void) XMagickCommand(display,resource_info,windows,PlayCommand,&image,
+  (void) XMagickCommand(display,resource_info,windows,PlayCommand,&images,
     &state);
   do
   {
@@ -1752,7 +1761,7 @@ MagickExport Image *XAnimateImages(Display *display,
                     scene=(long) number_scenes-1;
                   }
             }
-          image=images[scene];
+          image=image_list[scene];
           if ((image != (Image *) NULL) && image->start_loop)
             first_scene=scene;
           if ((state & StepAnimationState) ||
@@ -1761,8 +1770,9 @@ MagickExport Image *XAnimateImages(Display *display,
               /*
                 Update window title.
               */
-              p=images[scene]->filename+strlen(images[scene]->filename)-1;
-              while ((p > images[scene]->filename) && (*(p-1) != '/'))
+              p=image_list[scene]->filename+
+                strlen(image_list[scene]->filename)-1;
+              while ((p > image_list[scene]->filename) && (*(p-1) != '/'))
                 p--;
               FormatString(windows->image.name,
                 "ImageMagick: %.1024s[%lu of %lu]",p,scene,number_scenes);
@@ -1781,7 +1791,7 @@ MagickExport Image *XAnimateImages(Display *display,
             Copy X pixmap to Image window.
           */
           XGetPixelPacket(display,visual_info,map_info,resource_info,
-            images[scene],&scene_info);
+            image_list[scene],&scene_info);
           windows->image.pixel_info=(&scene_info);
           windows->image.ximage->width=(unsigned int) image->columns;
           windows->image.ximage->height=(unsigned int) image->rows;
@@ -2241,7 +2251,7 @@ MagickExport Image *XAnimateImages(Display *display,
           {
             if (windows->backdrop.id != (Window) NULL)
               (void) XInstallColormap(display,map_info->colormap);
-            if (LocaleCompare(images[0]->magick,"LOGO") == 0)
+            if (LocaleCompare(image_list[0]->magick,"LOGO") == 0)
               {
                 if (LocaleCompare(display_image->filename,"Untitled") == 0)
                   nexus=XMagickCommand(display,resource_info,windows,
@@ -2408,6 +2418,11 @@ MagickExport Image *XAnimateImages(Display *display,
     }
   }
   while (!(state & ExitState));
+	for (i=0; i < (long) number_scenes; i++)
+	  DestroyImage(image_list[i]);
+  LiberateMemory((void **) &image_list);
+  if (coalesce)
+    DestroyImageList(images);
   if ((windows->visual_info->storage_class == GrayScale) ||
       (windows->visual_info->storage_class == PseudoColor) ||
       (windows->visual_info->storage_class == DirectColor))
@@ -2508,8 +2523,6 @@ MagickExport Image *XAnimateImages(Display *display,
       (void) XSetWindows((XWindows *) NULL);
     }
   (void) XSync(display,False);
-  if (coalesce_image != (Image *) NULL)
-    DestroyImageList(image);
   /*
     Restore our progress monitor and warning handlers.
   */
