@@ -46,6 +46,7 @@ AC_SUBST(LD)
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_PROG_LN_S
+RSSH_CHECK_SUNPRO_C
 
 #
 # Tests for Windows
@@ -1436,6 +1437,7 @@ then
  AC_CXX_NEW_FOR_SCOPING
  AC_CXX_STATIC_CAST
  AC_CXX_TEMPLATES
+ RSSH_CHECK_SUNPRO_CC
 
  AC_MSG_CHECKING(whether C++ compiler is sufficient for Magick++)
  if test \
