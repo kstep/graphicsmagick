@@ -678,37 +678,34 @@ static unsigned int ConvertUtility(int argc,char **argv)
           }
         if (LocaleCompare("copy",option+1) == 0)
           {
-            if ((*option == '-') || (*option == '+'))
+            Image
+              *clone_image;
+
+            ImageInfo
+              *clone_info;
+
+            i++;
+            if (i == argc)
+              MagickError(OptionError,"Missing output filename",option);
+            if (image == (Image *) NULL)
+              MagickError(OptionError,"Missing source image",(char *) NULL);
+            clone_info=CloneImageInfo(image_info);
+            clone_image=CloneImage(image,0,0,True,&image->exception);
+            if (clone_image == (Image *) NULL)
+              MagickError(OptionError,"Missing an image file name",
+                (char *) NULL);
+            status&=MogrifyImages(image_info,i-j,argv+j,&clone_image);
+            (void) CatchImageException(clone_image);
+            status&=WriteImages(clone_info,clone_image,argv[i],&exception);
+            DestroyImageInfo(clone_info);
+            if (*option == '-')
+              DestroyImageList(clone_image);
+            else
               {
-                Image
-                  *clone_image;
-
-                ImageInfo
-                  *clone_info;
-
-                i++;
-                if (i == argc)
-                  MagickError(OptionError,"Missing output filename",option);
-                if (image == (Image *) NULL)
-                  MagickError(OptionError,"Missing source image",(char *) NULL);
-                clone_info=CloneImageInfo(image_info);
-                clone_image=CloneImage(image,0,0,True,&image->exception);
-                if (clone_image == (Image *) NULL)
-                  MagickError(OptionError,"Missing an image file name",
-                    (char *) NULL);
-                status&=MogrifyImages(image_info,i-j,argv+j,&clone_image);
-                (void) CatchImageException(clone_image);
-                status&=WriteImages(clone_info,clone_image,argv[i],&exception);
-                if (*option == '-')
-                  DestroyImageList(clone_image);
-                else
-                  {
-                    DestroyImageList(image);
-                    image=clone_image;
-                  }
-                DestroyImageInfo(clone_info);
-                k=i;
+                DestroyImageList(image);
+                image=clone_image;
               }
+            k=i;
             break;
           }
         if (LocaleCompare("cycle",option+1) == 0)
