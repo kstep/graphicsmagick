@@ -607,6 +607,13 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         graphic_context[0].linewidth=1;
         graphic_context[0].pointsize=12;
         graphic_context[0].antialias=True;
+        element.cx=0.0;
+        element.cy=0.0;
+        element.minor=0.0;
+        element.major=0.0;
+        element.angle=0.0;
+        translate.x=0.0;
+        translate.y=0.0;
         (void) CloneString(&keyword,token);
         continue;
       }
