@@ -1304,7 +1304,13 @@ static void ScaleSpace(const long *histogram,const double tau,
   alpha=1.0/(tau*sqrt((double) (2.0*MagickPI)));
   beta=(-1.0/(2.0*tau*tau));
   for (x=0; x <= (int) DownScale(MaxRGB); x++)
+    gamma[x]=0.0;
+  for (x=0; x <= (int) DownScale(MaxRGB); x++)
+  {
     gamma[x]=exp(beta*x*x);
+    if (gamma[x] < MagickEpsilon)
+      break;
+  }
   for (x=0; x <= (int) DownScale(MaxRGB); x++)
   {
     sum=0.0;
