@@ -138,8 +138,12 @@ MagickExport void Contrast(const int sign,Quantum *red,Quantum *green,
 */
 MagickExport double ExpandAffine(const AffineInfo *affine)
 {
+  double
+    expand;
+
   assert(affine != (const AffineInfo *) NULL);
-  return(sqrt(fabs(affine->sx*affine->sy)-fabs(affine->rx*affine->ry)));
+  expand=fabs(affine->sx*affine->sy)-fabs(affine->rx*affine->ry);
+  return(sqrt(fabs(expand)));
 }
 
 /*
