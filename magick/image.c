@@ -6204,19 +6204,23 @@ MagickExport unsigned int TransformRGBImage(Image *image,
           blue=red_map[q->red+B]+green_map[q->green+B]+blue_map[q->blue+B];
           if (colorspace == sRGBColorspace)
             {
-              red=sRGBMap[(red < 0) ? 0 : (red > 350) ? 350 : (int) (red+0.5)];
-              green=sRGBMap[
-                (green < 0) ? 0 : (green > 350) ? 350 : (int) (green+0.5)];
-              blue=
-                sRGBMap[(blue < 0) ? 0 : (blue > 350) ? 350 : (int) (blue+0.5)];
+              red=(red < 0) ? 0 : (red > UpScale(350)) ? UpScale(350) : red;
+              green=
+                (green < 0) ? 0 : (green > UpScale(350)) ? UpScale(350) : green;
+              blue=(blue < 0) ? 0 : (blue > UpScale(350)) ? UpScale(350) : blue;
+              red=sRGBMap[(int) (red+0.5)];
+              green=sRGBMap[(int) (green+0.5)];
+              blue=sRGBMap[(int) (blue+0.5)];
             }
           if (colorspace == YCCColorspace)
             {
-              red=YCCMap[(red < 0) ? 0 : (red > 350) ? 350 : (int) (red+0.5)];
-              green=YCCMap[
-                (green < 0) ? 0 : (green > 350) ? 350 : (int) (green+0.5)];
-              blue=
-                YCCMap[(blue < 0) ? 0 : (blue > 350) ? 350 : (int) (blue+0.5)];
+              red=(red < 0) ? 0 : (red > UpScale(350)) ? UpScale(350) : red;
+              green=
+                (green < 0) ? 0 : (green > UpScale(350)) ? UpScale(350) : green;
+              blue=(blue < 0) ? 0 : (blue > UpScale(350)) ? UpScale(350) : blue;
+              red=YCCMap[(int) (red+0.5)];
+              green=YCCMap[(int) (green+0.5)];
+              blue=YCCMap[(int) (blue+0.5)];
             }
           q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
           q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
@@ -6248,18 +6252,23 @@ MagickExport unsigned int TransformRGBImage(Image *image,
           blue_map[image->colormap[i].blue+B];
         if (colorspace == sRGBColorspace)
           {
-            red=sRGBMap[(red < 0) ? 0 : (red > 350) ? 350 : (int) (red+0.5)];
-            green=sRGBMap[
-              (green < 0) ? 0 : (green > 350) ? 350 : (int) (green+0.5)];
-            blue=
-              sRGBMap[(blue < 0) ? 0 : (blue > 350) ? 350 : (int) (blue+0.5)];
+            red=(red < 0) ? 0 : (red > UpScale(350)) ? UpScale(350) : red;
+            green=
+              (green < 0) ? 0 : (green > UpScale(350)) ? UpScale(350) : green;
+            blue=(blue < 0) ? 0 : (blue > UpScale(350)) ? UpScale(350) : blue;
+            red=sRGBMap[(int) (red+0.5)];
+            green=sRGBMap[(int) (green+0.5)];
+            blue=sRGBMap[(int) (blue+0.5)];
           }
         if (colorspace == YCCColorspace)
           {
-            red=YCCMap[(red < 0) ? 0 : (red > 350) ? 350 : (int) (red+0.5)];
+            red=(red < 0) ? 0 : (red > UpScale(350)) ? UpScale(350) : red;
             green=
-              YCCMap[(green < 0) ? 0 : (green > 350) ? 350 : (int) (green+0.5)];
-            blue=YCCMap[(blue < 0) ? 0 : (blue > 350) ? 350 : (int) (blue+0.5)];
+              (green < 0) ? 0 : (green > UpScale(350)) ? UpScale(350) : green;
+            blue=(blue < 0) ? 0 : (blue > UpScale(350)) ? UpScale(350) : blue;
+            red=YCCMap[(int) (red+0.5)];
+            green=YCCMap[(int) (green+0.5)];
+            blue=YCCMap[(int) (blue+0.5)];
           }
         image->colormap[i].red=
           (red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
