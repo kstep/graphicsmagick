@@ -1304,10 +1304,10 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       q=GetImagePixels(image,x,y,n+1,1);
       if (q == (PixelPacket *) NULL)
         break;
+      target.y=y;
       for ( ; x <= (int) floor(bounds.x2-0.5); x++)
       {
         target.x=x;
-        target.y=y;
         stroke_opacity=IntersectPrimitive(primitive_info,clone_info,image,
           &target,&fill_opacity);
         color=clone_info->fill;
@@ -1353,13 +1353,11 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               q->opacity*stroke_opacity));
           }
         q++;
-        target.x++;
       }
       if (!SyncImagePixels(image))
         break;
       if (QuantumTick(y,image->rows))
         MagickMonitor(DrawImageText,y,image->rows);
-      target.y++;
     }
   }
   /*
