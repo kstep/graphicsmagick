@@ -520,7 +520,7 @@ MagickExport unsigned int SignatureImage(Image *image)
     signature_info.digest[0],signature_info.digest[1],signature_info.digest[2],
     signature_info.digest[3],signature_info.digest[4],signature_info.digest[5],
     signature_info.digest[6],signature_info.digest[7]);
-  while (SetImageAttribute(image,"Signature",(char *) NULL) != False);
-  (void) SetImageAttribute(image,"Signature",signature);
+  while (SetImageAttribute(image,"signature",(char *) NULL) != False);
+  (void) SetImageAttribute(image,"signature",signature);
   return(True);
 }
