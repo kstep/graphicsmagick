@@ -1185,10 +1185,10 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
       }
     }
   }
-  if ((i != (argc-1))
+  if (i != (argc-1))
     return(False);
   if (image == (Image *) NULL)
-    ThrowMontageException(OptionError,"Missing an image file name",
+    ThrowCompositeException(OptionError,"Missing an image file name",
       (char *) NULL);
   status&=MogrifyImages(image_info,i-j,argv+j,&image);
   (void) CatchImageException(image);
