@@ -87,6 +87,7 @@
 #endif
 
 #if defined(VMS)
+#define inline __inline
 #define HasJPEG
 #define HasPNG
 #define HasTIFF
@@ -96,6 +97,7 @@
 #endif
 
 #if defined(WIN32)
+#define inline __inline
 #define HasJBIG
 #define HasJPEG
 #define HasPNG
