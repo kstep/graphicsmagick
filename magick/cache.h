@@ -70,6 +70,12 @@ typedef struct _CacheInfo
   IndexPacket
     *indexes;
 
+  VirtualPixelType
+    virtual_type;
+
+  PixelPacket
+    virtual_pixel;
+
   char
     cache_filename[MaxTextExtent];
 

@@ -284,30 +284,30 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
             Transfer a single pixel.
           */
           span=1;
-          switch (image->virtual_pixel.method)
+          switch (cache_info->virtual_type)
           {
-            case EdgeVPMethod:
+            case EdgeVPType:
             default:
             {
               p=AcquireCacheNexus(image,EdgeX(x+u),EdgeY(y+v),1,1,image_nexus,
                 exception);
               break;
             }
-            case TileVPMethod:
+            case TileVPType:
             {
               p=AcquireCacheNexus(image,TileX(x+u),TileY(y+v),1,1,image_nexus,
                 exception);
               break;
             }
-            case MirrorVPMethod:
+            case MirrorVPType:
             {
               p=AcquireCacheNexus(image,MirrorX(x+u),MirrorY(y+v),1,1,
                 image_nexus,exception);
               break;
             }
-            case ConstantVPMethod:
+            case ConstantVPType:
             {
-              p=(&image->virtual_pixel.pixel);
+              p=(&cache_info->virtual_pixel);
               break;
             }
           }
@@ -2401,6 +2401,63 @@ MagickExport PixelPacket *SetImagePixels(Image *image,const long x,const long y,
   if (set_pixel_handler == (SetPixelHandler) NULL)
     return((PixelPacket *) NULL);
   return((*set_pixel_handler)(image,x,y,columns,rows));
+}
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t I m a g e V i r t u a l P i x e l T y p e                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  
+%  SetImageVirtualPixelType() sets the method used to define "virtual" pixels.
+%  A virtual pixel is any pixel access that is outside the boundaries of the
+%  image.
+%  
+%  The format of the SetImageVirtualPixelType() method is:
+%      
+%      SetImageVirtualPixelType(Image *image,const VirtualPixelType type,
+%        const PixelPacket *pixel)
+%  
+%  A description of each parameter follows:
+%    
+%    o image: The image.
+%
+%    o type: choose from these access types:
+%
+%        ConstantVPType:  every value outside the image is a constant as
+%        defines by the pixel parameter.
+%
+%        EdgeVPType:  the edge pixels of the image extend infinitely.
+%        Any pixel outside the image is assigned the same value as the
+%        pixel at the edge closest to it.
+%
+%        TileVPType:  the image extends periodically or tiled.  The pixels
+%        wrap around the edges of the image.
+%
+%        MirrorVPType:  mirror the image at the boundaries.
+%
+%    o pixel: the constant pixel value for the ConstantVPType method.
+%      This value is ignored for other access methods.
+%
+%
+*/
+MagickExport void SetImageVirtualPixelType(Image *image,
+  const VirtualPixelType type,const PixelPacket *pixel)
+{
+  CacheInfo
+    *cache_info;
+
+  assert(image != (Image *) NULL);
+  assert(image->cache != (Cache) NULL);
+  assert(image->signature == MagickSignature);
+  cache_info=(CacheInfo *) image->cache;
+  cache_info->virtual_type=type;
+  if (pixel != (const PixelPacket *) NULL)
+    cache_info->virtual_pixel=(*pixel);
 }
 
 /*
