@@ -2211,7 +2211,8 @@ namespace Magick
     MagickLib::MagickInfo *magickInfo = GetMagickInfo( "*", &exceptionInfo );
     throwException( exceptionInfo );
     if( !magickInfo )
-      throwExceptionExplicit(MagickLib::MissingDelegateError, "Coder list not returned!", 0 );
+      throwExceptionExplicit(MagickLib::MissingDelegateError,
+                             "Coder list not returned!", 0 );
 
     // Clear out container
     container_->clear();
@@ -2222,53 +2223,28 @@ namespace Magick
         if ( magickInfo->stealth )
           continue;
 
+        CoderInfo coderInfo( magickInfo );
+
         // Test isReadable_
-        if ( isReadable_ != AnyMatch )
-          {
-            if (magickInfo->decoder)
-              {              
-                if(isReadable_ != TrueMatch)
-                  continue;
-              }
-            else
-              {
-                if(isReadable_ != FalseMatch)
-                  continue;
-              }
-          }
+        if ( isReadable_ != AnyMatch &&
+             (( coderInfo.isReadable() && isReadable_ != TrueMatch ) ||
+              ( !coderInfo.isReadable() && isReadable_ != FalseMatch )) )
+          continue;
 
         // Test isWritable_
-        if ( isWritable_ != AnyMatch )
-          {
-            if (magickInfo->encoder)
-              {              
-                if(isWritable_ != TrueMatch)
-                  continue;
-              }
-            else
-              {
-                if(isWritable_ != FalseMatch)
-                  continue;
-              }
-          }
+        if ( isWritable_ != AnyMatch &&
+             (( coderInfo.isWritable() && isWritable_ != TrueMatch ) ||
+              ( !coderInfo.isWritable() && isWritable_ != FalseMatch )) )
+          continue;
 
         // Test isMultiFrame_
-        if ( isMultiFrame_ != AnyMatch )
-          {
-            if (magickInfo->adjoin)
-              {              
-                if(isMultiFrame_ != TrueMatch)
-                  continue;
-              }
-            else
-              {
-                if(isMultiFrame_ != FalseMatch)
-                  continue;
-              }
-          }
+        if ( isMultiFrame_ != AnyMatch &&
+             (( coderInfo.isMultiFrame() && isMultiFrame_ != TrueMatch ) ||
+              ( !coderInfo.isMultiFrame() && isMultiFrame_ != FalseMatch )) )
+          continue;
 
         // Append matches to container
-        container_->push_back( CoderInfo( magickInfo ) );
+        container_->push_back( coderInfo );
       }
   }
 

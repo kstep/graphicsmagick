@@ -2,7 +2,7 @@
 //
 // Copyright Bob Friesenhahn, 2001
 //
-// Test Magick::CoderInfo class
+// Test Magick::CoderInfo class and Magick::coderInfoList
 //
 
 #include <string>
@@ -15,6 +15,62 @@ using namespace std;
 
 using namespace Magick;
 
+int test( MatchType isReadable_, MatchType isWritable_, MatchType isMultiFrame_ )
+{
+  int result = 0;
+  list<CoderInfo> coderList;
+  coderInfoList( &coderList, isReadable_, isWritable_, isMultiFrame_ );
+  list<CoderInfo>::iterator entry = coderList.begin();
+  while( entry != coderList.end() )
+    {
+      // Readable
+      if ( isReadable_ != AnyMatch &&
+           (( entry->isReadable() && isReadable_ != TrueMatch ) ||
+            ( !entry->isReadable() && isReadable_ != FalseMatch )) )
+        {
+          cout << "Entry \""
+               << entry->name()
+               << "\" has unexpected readablity state ("
+               << static_cast<int>(entry->isReadable())
+               << ")"
+               << endl;
+          ++result;
+        }
+
+      // Writable
+      if ( isWritable_ != AnyMatch &&
+           (( entry->isWritable() && isWritable_ != TrueMatch ) ||
+            ( !entry->isWritable() && isWritable_ != FalseMatch )) )
+        {
+          cout << "Entry \""
+               << entry->name()
+               << "\" has unexpected writablity state ("
+               << static_cast<int>(entry->isWritable())
+               << ")"
+               << endl;
+          ++result;
+        }
+
+      // MultiFrame
+      if ( isMultiFrame_ != AnyMatch &&
+           (( entry->isMultiFrame() && isMultiFrame_ != TrueMatch ) ||
+            ( !entry->isMultiFrame() && isMultiFrame_ != FalseMatch )) )
+        {
+          cout << "Entry \""
+               << entry->name()
+               << "\" has unexpected multiframe state ("
+               << static_cast<int>(entry->isMultiFrame())
+               << ")"
+               << endl;
+          ++result;
+        }
+
+      entry++;
+    }
+
+  return result;
+}
+
 int main( int /*argc*/, char **argv)
 {
 
@@ -25,34 +81,36 @@ int main( int /*argc*/, char **argv)
 
   try {
 
-
-//     CoderInfo coderInfo("GIF");
-
-//     cout << "Name: \"" << coderInfo.name()
-//          << "\"  Description:" << coderInfo.description()
-//          << endl;
-
-    // Emulate ListMagickInfo
-
-    cout << "Here is a list of image formats recognized by ImageMagick.  Mode 'rw+'"
-         << "means ImageMagick can read, write, and save more than one image of a"
-         << "sequence to the same blob or file."
-         << endl
-         << endl
-         << "    Format  Mode  Description"
-         << endl
-         << "-------------------------------------------------------------------------------"
-         << endl;
-
-    list<CoderInfo> coderList;
-    coderInfoList( &coderList, FalseMatch, TrueMatch, FalseMatch );
-    list<CoderInfo>::iterator entry = coderList.begin();
-    while( entry != coderList.end() )
+    CoderInfo coderInfo("GIF");
+    if( coderInfo.name() != string("GIF") )
       {
-        cout << entry->name() << ": " << entry->description() << endl;
-        entry++;
+        cout << "Unexpected coder name \""
+             << coderInfo.name()
+             << "\""
+             << endl;
+        ++failures;
       }
 
+    if( coderInfo.description() != string("CompuServe graphics interchange format") )
+      {
+        cout << "Unexpected coder description \""
+             << coderInfo.description()
+             << "\""
+             << endl;
+        ++failures;
+      }
+
+    failures += test(AnyMatch,AnyMatch,AnyMatch);
+    failures += test(FalseMatch,FalseMatch,FalseMatch);
+
+    failures += test(TrueMatch,AnyMatch,AnyMatch);
+    failures += test(FalseMatch,AnyMatch,AnyMatch);
+
+    failures += test(AnyMatch,TrueMatch,AnyMatch);
+    failures += test(AnyMatch,FalseMatch,AnyMatch);
+
+    failures += test(AnyMatch,AnyMatch,TrueMatch);
+    failures += test(AnyMatch,AnyMatch,FalseMatch);
   }
   catch( Exception &error_ )
     {
