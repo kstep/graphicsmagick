@@ -167,6 +167,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
   PixelPacket
     pixel;
 
+  QuantumType
+    quantum_type;
+
   register IndexPacket
     *indexes;
 
@@ -809,6 +812,27 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     /*
       Read image pixels.
     */
+    quantum_type=RGBQuantum;
+    if (image->storage_class == PseudoClass)
+      {
+        if (!image->matte)
+          quantum_type=IndexQuantum;
+        else
+          quantum_type=IndexAlphaQuantum;
+      }
+    else
+      if (image->colorspace == CMYKColorspace)
+        {
+          if (!image->matte)
+            quantum_type=CMYKQuantum;
+          else
+            quantum_type=CMYKAQuantum;
+        }
+      else
+        if (!image->matte)
+          quantum_type=RGBQuantum;
+        else
+          quantum_type=RGBAQuantum;
     index=0;
     length=0;
     for (y=0; y < (long) image->rows; y++)
@@ -887,28 +911,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           if (image->compression != RunlengthEncodedCompression)
             (void) ReadBlob(image,packet_size*image->columns,pixels);
       if (image->compression != RunlengthEncodedCompression)
-        {
-          if (image->storage_class == PseudoClass)
-            {
-              if (!image->matte)
-                (void) PushImagePixels(image,IndexQuantum,pixels);
-              else
-                (void) PushImagePixels(image,IndexAlphaQuantum,pixels);
-            }
-          else
-            if (image->colorspace == CMYKColorspace)
-              {
-                if (!image->matte)
-                  (void) PushImagePixels(image,CMYKQuantum,pixels);
-                else
-                  (void) PushImagePixels(image,CMYKAQuantum,pixels);
-              }
-            else
-              if (!image->matte)
-                (void) PushImagePixels(image,RGBQuantum,pixels);
-              else
-                (void) PushImagePixels(image,RGBAQuantum,pixels);
-        }
+        (void) PushImagePixels(image,quantum_type,pixels);
       else
         {
           if (y == 0)
@@ -1318,6 +1321,9 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
   PixelPacket
     pixel;
 
+  QuantumType
+    quantum_type;
+
   register const PixelPacket
     *p;
 
@@ -1659,6 +1665,27 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     /*
       Write image pixels to file.
     */
+    quantum_type=RGBQuantum;
+    if (image->storage_class == PseudoClass)
+      {
+        if (!image->matte)
+          quantum_type=IndexQuantum;
+        else
+          quantum_type=IndexAlphaQuantum;
+      }
+    else
+      if (image->colorspace == CMYKColorspace)
+        {
+          if (!image->matte)
+            quantum_type=CMYKQuantum;
+          else
+            quantum_type=CMYKAQuantum;
+        }
+      else
+        if (!image->matte)
+          quantum_type=RGBQuantum;
+        else
+          quantum_type=RGBAQuantum;
     status=True;
     for (y=0; y < (long) image->rows; y++)
     {
@@ -1668,28 +1695,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       indexes=GetIndexes(image);
       q=pixels;
       if (compression != RunlengthEncodedCompression)
-        {
-          if (image->storage_class == PseudoClass)
-            {
-              if (!image->matte)
-                (void) PopImagePixels(image,IndexQuantum,pixels);
-              else
-                (void) PopImagePixels(image,IndexAlphaQuantum,pixels);
-            }
-          else
-            if (image->colorspace == CMYKColorspace)
-              {
-                if (!image->matte)
-                  (void) PopImagePixels(image,CMYKQuantum,pixels);
-                else
-                  (void) PopImagePixels(image,CMYKAQuantum,pixels);
-              }
-            else
-              if (!image->matte)
-                (void) PopImagePixels(image,RGBQuantum,pixels);
-              else
-                (void) PopImagePixels(image,RGBAQuantum,pixels);
-        }
+        (void) PopImagePixels(image,quantum_type,pixels);
       else
         {
           pixel=(*p);
