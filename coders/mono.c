@@ -160,7 +160,7 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
     {
       if (bit == 0)
         byte=ReadBlobByte(image);
-      indexes[x]=(byte & 0x01) ? 0 : 1;
+      indexes[x]=(byte & 0x01) ? 0x01 : 0x00;
       bit++;
       if (bit == 8)
         bit=0;
