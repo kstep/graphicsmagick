@@ -1,31 +1,19 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
-	"http://www.w3.org/TR/REC-html40/loose.dtd">
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-  <meta name="description" content="ImageMagick, version 5.1.1, is a
-    robust collection of tools and libraries to read, write, and manipulate
-    an image in any of the more popular image formats including GIF, JPEG,
-    PNG, PDF, and Photo CD.  With ImageMagick you can create GIFs dynamically
-    making it suitable for Web applications.  You can also resize, rotate,
-    sharpen, color reduce, or add special effects to an image and save your
-    completed work in the same or  differing image format.">
-  <meta name="keywords" content="ImageMagick, Image Magick, Image Magic,
-    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,
-    WebMagick, Web Magic, visualization, image processing, software 
-    development, simulation, image, software, AniMagick, Animagic,
-    Magick++">
-  <title>ImageMagick - Image Processing and Display Package</title>
-  <link rev="made" href="mailto:magick@wizards.dupont.com">
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="description" content="ImageMagick, version 5.1.1, is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With ImageMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
+   <meta name="keywords" content="ImageMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
+   <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <title>ImageMagick - Image Processing and Display Package</title>
+<link rev="made" href="mailto:magick@wizards.dupont.com">
 </head>
-<body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"
-  vlink="#9900DD">
+<body text="#000000" bgcolor="#FFFFFF" link="#1F00FF" vlink="#9900DD" alink="#FF0000">
 
-<center>
-  <img SRC="../images/magick.png" ALT="ImageMagick" height=125 width=129
-    align=BOTTOM>
-</center>
+<center><img SRC="../images/magick_small.png" height=125 width=121></center>
+
 <p><br>
+<br>
 <p><b>ImageMagick</b> has a number of functions that allow you to read,
 manipulate, write, or display an image. These functions are accessible
 through the various <a href="tools.html">tools</a> or the object-oriented
@@ -134,7 +122,7 @@ found in <tt>image.c</tt> and <tt>effects.c</tt>.
 <p>Here is a full example of a program, <tt>example.c</tt>, that reads
 a JPEG image, creates a thumbnail, and writes it to disk in the GIF image
 format.
-<pre>&nbsp;&nbsp;&nbsp; #include &lt;magick.h&gt;
+<pre>&nbsp;&nbsp;&nbsp; #include &lt;magick.h>
 
 &nbsp;&nbsp;&nbsp; int main(int argc,char **argv)
 &nbsp;&nbsp;&nbsp; {
@@ -165,7 +153,7 @@ format.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Write the image as GIF and destroy it.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void) strcpy(image-&gt;filename,"image.png");
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void) strcpy(image->filename,"image.png");
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WriteImage(&amp;image_info,image);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DestroyImage(image);
 &nbsp;&nbsp;&nbsp; }</pre>
@@ -179,14 +167,14 @@ to display a smiley face on your X server.
 a C++ reserved word). The <tt>class</tt> element of the <tt>Image</tt>
 structure in C++ is defined as <tt>c_class</tt>. Both of these requirements
 are illustrated here:
-<pre>&nbsp;&nbsp;&nbsp; #include &lt;magick.h&gt;
+<pre>&nbsp;&nbsp;&nbsp; #include &lt;magick.h>
 &nbsp;&nbsp;&nbsp; #if defined(__cplusplus) || defined(c_plusplus)
 &nbsp;&nbsp;&nbsp; #undef class
 &nbsp;&nbsp;&nbsp; #endif
 
 &nbsp;&nbsp;&nbsp; ...
 
-&nbsp;&nbsp;&nbsp; if (image-&gt;c_class == DirectClass)</pre>
+&nbsp;&nbsp;&nbsp; if (image->c_class == DirectClass)</pre>
 
 <hr>
 <p><a href="../ImageMagick.html"><img SRC="../images/home.png" ALT="Home Page" BORDER=0 height=40 width=40 align=CENTER></a><font size=-2>&nbsp;&nbsp;

@@ -1,102 +1,75 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
-	"http://www.w3.org/TR/REC-html40/loose.dtd">
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-  <meta name="description" content="ImageMagick, version 5.1.1, is a
-    robust collection of tools and libraries to read, write, and manipulate
-    an image in any of the more popular image formats including GIF, JPEG,
-    PNG, PDF, and Photo CD.  With ImageMagick you can create GIFs dynamically
-    making it suitable for Web applications.  You can also resize, rotate,
-    sharpen, color reduce, or add special effects to an image and save your
-    completed work in the same or  differing image format.">
-  <meta name="keywords" content="ImageMagick, Image Magick, Image Magic,
-    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,
-    WebMagick, Web Magic, visualization, image processing, software 
-    development, simulation, image, software, AniMagick, Animagic,
-    Magick++">
-  <title>ImageMagick - Image Processing and Display Package</title>
-  <link rev="made" href="mailto:magick@wizards.dupont.com">
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="description" content="ImageMagick, version 5.1.1, is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With ImageMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
+   <meta name="keywords" content="ImageMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
+   <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <title>ImageMagick - Image Processing and Display Package</title>
+<link rev="made" href="mailto:magick@wizards.dupont.com">
 </head>
-<body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"
-  vlink="#9900DD">
+<body text="#000000" bgcolor="#FFFFFF" link="#1F00FF" vlink="#9900DD" alink="#FF0000">
 
-<center>
-  <img SRC="../images/magick.png" ALT="ImageMagick" height=125 width=129
-    align=BOTTOM>
-</center>
-
-<p>
-<br>
+<center><img SRC="../images/magick_small.png" height=125 width=121></center>
 
 <h3>
 <a href="../ImageMagick.html">ImageMagick</a> 5.1.1, January 1, 2000</h3>
 
 <ul>
-<li> Image sizes are limited by physical memory plus available disk
-space on the machine, or the file addressing limits of the
-operating system, whichever comes first. This means that if you
-can figure out how to build a big enough machine (and have
-plenty of time) terabyte images can be processed.
-<p>
-<li> An image cache subsystem and API are provided to map portions
-(as small as one pixel or as large as the entire image) of
-images into memory and to save any updates.
-<p>
+<li>
+Image sizes are limited by physical memory plus available disk space on
+the machine, or the file addressing limits of the operating system, whichever
+comes first. This means that if you can figure out how to build a big enough
+machine (and have plenty of time) terabyte images can be processed.</li>
 
-<li> Memory mapping is used to access files. This is the most
-efficient access mechanism available.
-<p>
+<li>
+An image cache subsystem and API are provided to map portions (as small
+as one pixel or as large as the entire image) of images into memory and
+to save any updates.</li>
 
-<li> DirectColor pixels are now stored in an efficient 32-bit
-structure (or 64-bit when QuantumLeap is enabled).
-<p>
+<li>
+Memory mapping is used to access files. This is the most efficient access
+mechanism available.</li>
 
-<li> PseudoColor indices are now stored separately from the
-DirectColor pixels (PseudoColor and DirectColor representations
-are still available simultaneously).
-<p>
+<li>
+DirectColor pixels are now stored in an efficient 32-bit structure (or
+64-bit when QuantumLeap is enabled).</li>
 
-<li> In-memory run-length encoding is eliminated.
-<p>
+<li>
+PseudoColor indices are now stored separately from the DirectColor pixels
+(PseudoColor and DirectColor representations are still available simultaneously).</li>
 
-<li> Compressed images are decompressed and compressed incrementally
-in order to limit memory consumption.
-<p>
+<li>
+In-memory run-length encoding is eliminated.</li>
 
-<li> Lots of minor C API fixes and improvements.
-<p>
+<li>
+Compressed images are decompressed and compressed incrementally in order
+to limit memory consumption.</li>
 
-<li> Cache threshold setting for setting the boundary between use of
-RAM or RAM + disk when processing an image:
-<p>
-- Use the --enable-cache option (e.g. --enable-cache=160) to
-  set the compiled-in default when running the configure script.
-<p>
+<li>
+Lots of minor C API fixes and improvements.</li>
 
-- Use -cache for ImageMagick utilities
-<p>
+<li>
+Cache threshold setting for setting the boundary between use of RAM or
+RAM + disk when processing an image:</li>
 
-- Set the cache_threshold attribute in PerlMagick
-<p>
+<p><br>- Use the --enable-cache option (e.g. --enable-cache=160) to set
+the compiled-in default when running the configure script.
+<p>- Use -cache for ImageMagick utilities
+<p>- Set the cache_threshold attribute in PerlMagick
+<p>- Set the cacheThreshold attribute in Magick++
+<li>
+The identify utility now displays precise read-time values.</li>
 
-- Set the cacheThreshold attribute in Magick++
-<p>
-
-<li> The identify utility now displays precise read-time values.
-
-<p>
-<li> The Win32 build environment (now called "VisualMagick") is
-completely re-done and supports building both multi-thread DLL
-as well as static libraries.
-
+<li>
+The Win32 build environment (now called "VisualMagick") is completely re-done
+and supports building both multi-thread DLL as well as static libraries.</li>
 </ul>
 
 <br>&nbsp;
-<p>&nbsp;
-
+<p>
 <hr>
-<p><a href="../ImageMagick.html"><img SRC="../images/home.png" ALT="Home Page" BORDER=0 height=40 width=40 align=CENTER></a><font size=-2>  Image
-manipulation software that works like magic.</font>
+<p><a href="../ImageMagick.html"><img SRC="../images/home.png" ALT="Home Page" BORDER=0 height=40 width=40 align=CENTER></a><font size=-2>
+Image manipulation software that works like magic.</font>
 </body>
 </html>
