@@ -502,10 +502,7 @@ MagickExport Image **ImageListToArray(const Image *images,
   while (images->previous != (Image *) NULL)
     images=images->previous;
   for (i=0; images != (Image *) NULL; images=images->next)
-  {
-    group[i]=(Image *) images;
-    i++;
-  }
+    group[i++]=(Image *) images;
   return(group);
 }
 
