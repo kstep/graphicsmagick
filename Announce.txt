@@ -57,7 +57,7 @@ The ImageMagick 5.5.1 source code is available via ftp as
 
 The ImageMagick 5.5.1 Windows install package is available via ftp as
 
- ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-5.5.1-xp.exe
+  ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-i686-pc-windows.exe
 
 If ftp.imagemagick.org is overloaded, check the list of mirrors at
 http://www.imagemagick.org/www/archives.html for other mirrors.
