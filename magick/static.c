@@ -92,9 +92,18 @@ void OpenStaticModules(void)
 #endif
 }
 
+#if !defined(HasMODULES)
+extern unsigned int mslImage(Image *image,
+  const int argc,char **argv);
+#endif
+
 unsigned int ExecuteStaticModuleProcess(const char *tag,
     Image *image,const int argc,char **argv)
 {
+#if !defined(HasMODULES)
+  if (LocaleCompare("msl",tag) == 0)
+    return mslImage(image,argc,argv);
+#endif
   return(False);
 }
 
