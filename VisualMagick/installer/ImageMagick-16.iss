@@ -40,7 +40,7 @@
 ;   o Release date in AppVerName should reflect the release date.
 ;   o Ensure that the word "Beta" occurs in AppVerName before the date
 ;     if this is a beta release snapshot.  For example:
-;     "ImageMagick 5.5.2 Q:16 Beta (August 26, 2002)"
+;     "ImageMagick 1.0.0 Q:16 Beta (August 26, 2002)"
 ;   o Ensure that the quantum depth indication ("Q:8", "Q:16", or "Q:32")
 ;     is correct.  The normal release build should be Q:16.
 ;
@@ -49,19 +49,19 @@
 ; final build step.
 
 [Setup]
-AppName=ImageMagick 5.5.2 Q:16
+AppName=ImageMagick 1.0.0 Q:16
 ; When updating the version string, remember to also update the version in
 ; the [Registry] section
-AppVerName=ImageMagick 5.5.2 Q:16 Beta (November 26, 2002)
-AppVersion=5.5.2
+AppVerName=ImageMagick 1.0.0 Q:16 Beta (November 26, 2002)
+AppVersion=1.0.0
 AppCopyright=Copyright (C) 2002 ImageMagick Studio LLC
 AppPublisher=ImageMagick Studio
 AppPublisherURL=http://www.imagemagick.org/
 AppSupportURL=http://www.imagemagick.org/www/magick-list.html
 AppUpdatesURL=http://www.imagemagick.org/www/archives.html
-; Default install is under "C:\Program Files\ImageMagick-5.5.2-Q16":
-DefaultDirName={pf}\ImageMagick-5.5.2-Q16
-DefaultGroupName=ImageMagick 5.5.2 Q16
+; Default install is under "C:\Program Files\ImageMagick-1.0.0-Q16":
+DefaultDirName={pf}\ImageMagick-1.0.0-Q16
+DefaultGroupName=ImageMagick 1.0.0 Q16
 Compression=zip/9
 ChangesAssociations=1
 AllowRootDirectory=no
@@ -69,7 +69,7 @@ InfoBeforeFile=before.txt
 InfoAfterFile=after.txt
 UninstallDisplayIcon={app}\ImageMagick.ico
 OutputDir=..\bin
-OutputBaseFilename=ImageMagick-5.5.2-Q16-windows
+OutputBaseFilename=ImageMagick-1.0.0-Q16-windows
 ; uncomment the following line if you want your installation to run on NT 3.51 too.
 ; MinVersion=4,3.51
 
@@ -87,15 +87,15 @@ Name: install_PerlMagick; Description: "Install PerlMagick for ActiveState Perl 
 ; Record installation paths
 ;
 Root: HKLM; Subkey: "Software\ImageMagick"; ValueType: none; Flags: uninsdeletekeyifempty
-Root: HKLM; Subkey: "Software\ImageMagick\5.5.2"; ValueType: none; Flags: uninsdeletekeyifempty
-Root: HKLM; Subkey: "Software\ImageMagick\5.5.2\Q:16"; ValueType: none; Flags: uninsdeletekey
-Root: HKLM; Subkey: "Software\ImageMagick\5.5.2\Q:16"; ValueType: string; ValueName: "BinPath"; ValueData: "{app}"
-Root: HKLM; Subkey: "Software\ImageMagick\5.5.2\Q:16"; ValueType: string; ValueName: "ConfigurePath"; ValueData: "{app}\config"
-Root: HKLM; Subkey: "Software\ImageMagick\5.5.2\Q:16"; ValueType: string; ValueName: "LibPath"; ValueData: "{app}"
-Root: HKLM; Subkey: "Software\ImageMagick\5.5.2\Q:16"; ValueType: string; ValueName: "ModulesPath"; ValueData: "{app}\modules"
+Root: HKLM; Subkey: "Software\ImageMagick\1.0.0"; ValueType: none; Flags: uninsdeletekeyifempty
+Root: HKLM; Subkey: "Software\ImageMagick\1.0.0\Q:16"; ValueType: none; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\ImageMagick\1.0.0\Q:16"; ValueType: string; ValueName: "BinPath"; ValueData: "{app}"
+Root: HKLM; Subkey: "Software\ImageMagick\1.0.0\Q:16"; ValueType: string; ValueName: "ConfigurePath"; ValueData: "{app}\config"
+Root: HKLM; Subkey: "Software\ImageMagick\1.0.0\Q:16"; ValueType: string; ValueName: "LibPath"; ValueData: "{app}"
+Root: HKLM; Subkey: "Software\ImageMagick\1.0.0\Q:16"; ValueType: string; ValueName: "ModulesPath"; ValueData: "{app}\modules"
 
 Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: none; Flags: uninsdeletekey
-Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: string; ValueName: "Version"; ValueData: "5.5.2"
+Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: string; ValueName: "Version"; ValueData: "1.0.0"
 Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: dword; ValueName: "QuantumDepth"; ValueData: 16
 
 Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: string; ValueName: "BinPath"; ValueData: "{app}"

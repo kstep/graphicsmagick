@@ -1,20 +1,20 @@
-Welcome to Open ImageMagick.
+Welcome to GraphicsMagick.
 
-Open ImageMagick provides a comprehensive collection of utilities,
+GraphicsMagick provides a comprehensive collection of utilities,
 programming interfaces, and GUIs, to support image processing and 2D
 vector rendering.
 
-Open ImageMagick is originally based on ImageMagick from ImageMagick
+GraphicsMagick is originally based on ImageMagick from ImageMagick
 Studio (which was originally written at Dupont). The goal of Open
 ImageMagick is to provide the highest quality product possible while
 encouraging open and active participation from all interested
-developers. The Open ImageMagick usage license is designed to allow it
+developers. The GraphicsMagick usage license is designed to allow it
 to be used for any application, including proprietary or GPLed
 applications.
 
 AVAILABILITY
 
-  Open ImageMagick is currently under development.  It may be retrieved
+  GraphicsMagick is currently under development.  It may be retrieved
   via CVS using the procedure
 
   cvs -d ":pserver:anonymous@cvs.simplesystems.org:/StableMagick" login
@@ -35,7 +35,7 @@ DOCUMENTATION
 
 INSTALLATION
 
-  Open ImageMagick may be compiled from source code for virtually any
+  GraphicsMagick may be compiled from source code for virtually any
   modern Unix system (including Linux and MacOS X), Microsoft Windows,
   MacOS9, and VMS. Installation instructions may be found in the
   following files:

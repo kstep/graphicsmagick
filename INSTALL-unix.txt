@@ -10,8 +10,8 @@ UNIX/Cygwin/MinGW COMPILATION
 
   Type:
 
-    gzip -dc Open ImageMagick-5.5.1.tar.gz | tar xvf -
-    cd Open ImageMagick-5.5.1
+    gzip -dc GraphicsMagick-1.0.0.tar.gz | tar xvf -
+    cd GraphicsMagick-1.0.0
 
   If you do not have gzip(1), the source for the gzip package is
   available as a shell archive at
@@ -23,12 +23,12 @@ UNIX/Cygwin/MinGW COMPILATION
     ftp://ftp.gnu.org/gnu/gzip/gzip-1.2.4a.tar
 
   Use 'configure' to automatically configure, build, and install
-  Open ImageMagick. The configure script may be executed from the Open ImageMagick
+  GraphicsMagick. The configure script may be executed from the GraphicsMagick
   source directory (e.g ./configure) or from a seperate build directory by
   specifying the full path to configure (e.g.
-  /src/Open ImageMagick-5.5.1/configure). The advantage of using a seperate
-  build directory is that multiple Open ImageMagick builds may share the same
-  Open ImageMagick source directory while allowing each build to use a unique
+  /src/GraphicsMagick-1.0.0/configure). The advantage of using a seperate
+  build directory is that multiple GraphicsMagick builds may share the same
+  GraphicsMagick source directory while allowing each build to use a unique
   set of options.
 
   If you are willing to accept configure's default options, and build from
@@ -96,7 +96,7 @@ UNIX/Cygwin/MinGW COMPILATION
   automatically, but if it doesn't, you can use the `configure' options
   `--x-includes=DIR' and `--x-libraries=DIR' to specify their locations.
 
-  The configure script provides a number of Open ImageMagick specific
+  The configure script provides a number of GraphicsMagick specific
   options.  When disabling an option --disable-something is equivalent to
   specifying --enable-something=no and --without-something is equivalent
   to --with-something=no.  The configure options are as
@@ -141,12 +141,12 @@ UNIX/Cygwin/MinGW COMPILATION
    --without-zlib          disable ZLIB support
    --with-x                use the X Window System
    --with-share-path=DIR   Alternate path to share directory
-                           (default share/Open ImageMagick)
+                           (default share/GraphicsMagick)
    --with-libstdc=DIR      use libstdc++ in DIR (for GNU C++)
 
-  Open ImageMagick options represent either features to be enabled, disabled,
+  GraphicsMagick options represent either features to be enabled, disabled,
   or packages to be included in the build.  When a feature is enabled (via
-  --enable-something), it enables code already present in Open ImageMagick.
+  --enable-something), it enables code already present in GraphicsMagick.
   When a package is enabled (via --with-something), the configure script
   will search for it, and if is is properly installed and ready to use
   (headers and built libraries are found by compiler) it will be included
@@ -164,15 +164,15 @@ UNIX/Cygwin/MinGW COMPILATION
       addition shared libraries are required in order for PerlMagick to
       be dynamically loaded by an installed PERL (otherwise an additional
       PERL (PerlMagick) must be installed. This option is not the default
-      because all libraries used by Open ImageMagick must also be dynamic
-      libraries if Open ImageMagick itself is to be dynamically loaded (such
+      because all libraries used by GraphicsMagick must also be dynamic
+      libraries if GraphicsMagick itself is to be dynamically loaded (such
       as for PerlMagick).
 
-      Open ImageMagick built with delegates (see MAGICK PLUG-INS below)
-      can pose additional challenges. If Open ImageMagick is built using
+      GraphicsMagick built with delegates (see MAGICK PLUG-INS below)
+      can pose additional challenges. If GraphicsMagick is built using
       static libraries (the default without --enable-shared) then
       delegate libraries may be built as either static libraries or
-      shared libraries. However, if Open ImageMagick is built using shared
+      shared libraries. However, if GraphicsMagick is built using shared
       libraries, then all delegate libraries must also be built as
       shared libraries.  Static libraries usually have the extension .a,
       while shared libraries typically have extensions like .so, .sa,
@@ -195,12 +195,12 @@ UNIX/Cygwin/MinGW COMPILATION
       If --enable-shared is not specified, a new PERL interpreter
       (PerlMagick) is built which is statically linked against the
       PerlMagick extension. This new interpreter is installed into the
-      same directory as the Open ImageMagick utilities. If --enable-shared
+      same directory as the GraphicsMagick utilities. If --enable-shared
       is specified, the PerlMagick extension is built as a dynamically
       loadable object which is loaded into your current PERL interpreter
       at run-time. Use of dynamically-loaded extensions is preferable over
       statically linked extensions so --enable-shared should be specified
-      if possible (note that all libraries used with Open ImageMagick must
+      if possible (note that all libraries used with GraphicsMagick must
       be shared libraries!).
 
     o --disable-static: static archive libraries (with extension .a)
@@ -212,8 +212,8 @@ UNIX/Cygwin/MinGW COMPILATION
       expertise and effort; 4) you are unable to build shared libraries.
 
     o --with-modules: image format coders are built as loadable modules
-      which are installed in [prefix]/lib/Open ImageMagick/modules/coders.
-      Support for modules allows the formats supported by Open ImageMagick
+      which are installed in [prefix]/lib/GraphicsMagick/modules/coders.
+      Support for modules allows the formats supported by GraphicsMagick
       to be extended by simply adding additional modules to the module
       search path.  The modules option is only available in conjunction
       with --enable-shared.  If --enable-shared is not also specified,
@@ -222,7 +222,7 @@ UNIX/Cygwin/MinGW COMPILATION
     o --enable-lzw: Unisys claims a patent on the algorithm supporting
       LZW compression (e.g. used by GIF and TIFF). To avoid possibly
       infringing on this patent, support for LZW is disabled by default.
-      With LZW support, GIF files written by Open ImageMagick will be much
+      With LZW support, GIF files written by GraphicsMagick will be much
       larger than expected. Note that the TIFF library must be patched
       in order to support LZW compression, and that this support must
       be explicitly enabled in the libtiff Makefiles.
@@ -230,11 +230,11 @@ UNIX/Cygwin/MinGW COMPILATION
     o --with-quantum-depth: This option allows the user to specify the
       number of bits to use per pixel quantum (the size of the red,
       green, blue, and alpha pixel components. For example,
-      "--with-quantum-depth=8" builds Open ImageMagick using 8-bit quantums.
+      "--with-quantum-depth=8" builds GraphicsMagick using 8-bit quantums.
       Most computer display adaptors use 8-bit quantums. Currently
       supported arguments are 8, 16, or 32. The default is 16. This
       option is the most important option in determining the overall
-      run-time performance of Open ImageMagick.
+      run-time performance of GraphicsMagick.
 
       The number of bits in a quantum determines how many values it may
       contain. Each quantum level supports 256 times as many values as
@@ -246,9 +246,9 @@ UNIX/Cygwin/MinGW COMPILATION
                16           0-65535                0000-FFFF
                32         0-4294967295         00000000-FFFFFFFF
 
-      Larger pixel quantums cause Open ImageMagick to run more slowly and to
+      Larger pixel quantums cause GraphicsMagick to run more slowly and to
       require more memory. For example, using sixteen-bit pixel quantums
-      causes Open ImageMagick to run 15% to 50% slower (and take twice as
+      causes GraphicsMagick to run 15% to 50% slower (and take twice as
       much memory) than when it is built to support eight-bit pixel
       quantums.
 
@@ -265,7 +265,7 @@ UNIX/Cygwin/MinGW COMPILATION
              32             15MB
 
     o --without-magick-plus-plus: Disable building Magick++, the C++
-      application programming interface to Open ImageMagick. A suitable C++
+      application programming interface to GraphicsMagick. A suitable C++
       compiler is required in order to build Magick++. Specify the CXX
       configure variable to select the C++ compiler to use (default
       "g++"), and CXXFLAGS to select the desired compiler opimization
@@ -278,28 +278,28 @@ UNIX/Cygwin/MinGW COMPILATION
       saved to the delegates.mgk file. Specify this option to disable
       saving full paths to programs.
 
-    o --without-threads: By default, the Open ImageMagick library is compiled
+    o --without-threads: By default, the GraphicsMagick library is compiled
       with multi-thread support.  If this is undesireable, then specify
       --without-threads.
 
     o --with-cache: Specify a different image pixel cache threshold
       using the --with-cache option. This sets the maximum amount of
-      heap memory that Open ImageMagick is allowed to consume before
+      heap memory that GraphicsMagick is allowed to consume before
       switching to using memory-mapped temporary files to store raw
       pixel data.
 
-    o --disable-largefile: By default, Open ImageMagick is compiled with
+    o --disable-largefile: By default, GraphicsMagick is compiled with
       support for large (> 2GB on a 32-bit CPU) files if the operating
       system supports large files.  All applications which use the
-      Open ImageMagick library must then also include support for large
+      GraphicsMagick library must then also include support for large
       files. By disabling support for large files via --disable-largefile,
       dependent applications do not require special compilation options
       for large files in order to use the library.
 
     o --without-perl: By default, PerlMagick is conveniently compiled
-      and installed as part of Open ImageMagick's normal "configure", "make",
+      and installed as part of GraphicsMagick's normal "configure", "make",
       "make install" process.. When --without-perl is specified, you must
-      first install Open ImageMagick, change to the PerlMagick subdirectory,
+      first install GraphicsMagick, change to the PerlMagick subdirectory,
       build, and finally install PerlMagick. Note, PerlMagick is
       configured even if --without-perl is specified. If the argument
       --with-perl=/path/to/perl is supplied, then /path/to/perl will be
@@ -309,7 +309,7 @@ UNIX/Cygwin/MinGW COMPILATION
 
     o --with-perl-options: The PerlMagick module is normally installed
       using the Perl interpreter's installation PREFIX, rather than
-      Open ImageMagick's. If Open ImageMagick's installation prefix is not
+      GraphicsMagick's. If GraphicsMagick's installation prefix is not
       the same as PERL's PREFIX, then you may find that PerlMagick's
       'make install' step tries to install into a directory tree that
       you don't have write permissions to. This is common when PERL is
@@ -321,7 +321,7 @@ UNIX/Cygwin/MinGW COMPILATION
       the ExtUtils::MakeMaker(3) manual page for more information on
       configuring PERL extensions.
 
-    o --without-x: By default, Open ImageMagick will use X11 libraries if
+    o --without-x: By default, GraphicsMagick will use X11 libraries if
       they are available. When --without-x is specified, use of X11 is
       disabled. The display, animate, and import programs are not built or
       installed. The remaining programs have reduced functionality such
@@ -338,12 +338,12 @@ UNIX/Cygwin/MinGW COMPILATION
       be located automatically, or the location needs to be overridden.
 
     o --with-windows-font-dir: Specify the directory containing
-      MS-Windows-compatible fonts. This is not necessary when Open ImageMagick
+      MS-Windows-compatible fonts. This is not necessary when GraphicsMagick
       is running under MS-Windows.
 
   Building under Cygwin
 
-    Open ImageMagick may be built under the Windows '95-XP Cygwin
+    GraphicsMagick may be built under the Windows '95-XP Cygwin
     Unix-emulation environment available for free from
 
       http://www.cygwin.com/
@@ -353,7 +353,7 @@ UNIX/Cygwin/MinGW COMPILATION
       http://xfree86.cygwin.com/
 
     It is strongly recommended that the
-    X11R6 package be installed since this enables Open ImageMagick's X11
+    X11R6 package be installed since this enables GraphicsMagick's X11
     support (animate, display, and import will work) and it includes the
     Freetype v2 DLL required to support TrueType and Postscript Type 1
     fonts. Make sure that /usr/X11R6/bin is in your PATH prior to running
@@ -365,7 +365,7 @@ UNIX/Cygwin/MinGW COMPILATION
 
   Building under MinGW & MSYS
 
-    Open ImageMagick may be built using the free MinGW ("Minimalistic GNU for
+    GraphicsMagick may be built using the free MinGW ("Minimalistic GNU for
     Windows") package version 1.1, available from
 
       http://www.mingw.org
@@ -374,7 +374,7 @@ UNIX/Cygwin/MinGW COMPILATION
     headers and libraries required to build programs which are entirely
     based on standard Microsoft Windows DLLs. MSYS provides a Unix-like
     console shell window with sufficient functionality to run the
-    Open ImageMagick configure script and execute make.
+    GraphicsMagick configure script and execute make.
 
     Unlike the Cygwin build which creates programs based on a
     Unix-emulation DLL, and which uses Unix-style paths to access
@@ -390,19 +390,19 @@ UNIX/Cygwin/MinGW COMPILATION
     and build instructions. Note that the default installation prefix is
     "/usr/local" which installs the package into a MSYS directory. To
     install outside of the MSYS directory tree, you may specify an
-    installation prefix like "/c/Open ImageMagick" which causes the package
-    to be installed under the Windows directory "C:\Open ImageMagick". The
+    installation prefix like "/c/GraphicsMagick" which causes the package
+    to be installed under the Windows directory "C:\GraphicsMagick". The
     installation directory structure will look very much like the Unix
-    installation layout (e.g. "C:\Open ImageMagick\bin",
-    "C:\Open ImageMagick\lib", "C:\Open ImageMagick\share", etc.). Any additional
+    installation layout (e.g. "C:\GraphicsMagick\bin",
+    "C:\GraphicsMagick\lib", "C:\GraphicsMagick\share", etc.). Any additional
     delegate libraries (e.g. libpng) will need to be built under MinGW
     in order to be used.
 
   Dealing with configuration failures:
 
-    While configure is designed to ease installation of Open ImageMagick, it
+    While configure is designed to ease installation of GraphicsMagick, it
     often discovers problems that would otherwise be encountered later
-    when compiling Open ImageMagick. The configure script tests for headers
+    when compiling GraphicsMagick. The configure script tests for headers
     and libraries by executing the compiler (CC) with the specified
     compilation flags (CFLAGS), pre-processor flags (CPPFLAGS), and linker
     flags (LDFLAGS). Any errors are logged to the file 'config.log'. If
@@ -435,7 +435,7 @@ UNIX/Cygwin/MinGW COMPILATION
 
   Makefile Build Targets
 
-    Once Open ImageMagick is configured, these standard build targets are
+    Once GraphicsMagick is configured, these standard build targets are
     available from the generated Makefiles:
   
        'make'
@@ -445,7 +445,7 @@ UNIX/Cygwin/MinGW COMPILATION
           Install the package
   
        'make check'
-          Run tests using the installed Open ImageMagick ('make install' must
+          Run tests using the installed GraphicsMagick ('make install' must
           be done first!).
   
        'make clean'
@@ -463,7 +463,7 @@ UNIX/Cygwin/MinGW COMPILATION
 
   Build & Install:
 
-    Now that Open ImageMagick is configured, type
+    Now that GraphicsMagick is configured, type
 
        make
 
@@ -475,18 +475,18 @@ UNIX/Cygwin/MinGW COMPILATION
 
   Verifying The Build:
 
-    To confirm your installation of the Open ImageMagick distribution was
+    To confirm your installation of the GraphicsMagick distribution was
     successful, type:
   
         ./utilities/display
 
-    The Open ImageMagick logo is displayed.
+    The GraphicsMagick logo is displayed.
   
     If the image colors are not correct use this command:
   
         ./utilities/display -visual default
   
-    For a more serious test, you may run the Open ImageMagick test suite by
+    For a more serious test, you may run the GraphicsMagick test suite by
     typing
   
         make check
@@ -495,42 +495,42 @@ UNIX/Cygwin/MinGW COMPILATION
     your own it is possible that some tests may be indicated as failed
     even though the results are ok. Differences between the developer's
     environment environment and your own may include the compiler, the
-    CPU type, and the library versions used. The Open ImageMagick developers
+    CPU type, and the library versions used. The GraphicsMagick developers
     use the current release of all dependent libraries.
 
 
 MAGICK DELEGATES
 
-  To further enhance the capabilities of Open ImageMagick, you may want to
+  To further enhance the capabilities of GraphicsMagick, you may want to
   get these programs or libraries:
 
-    o Open ImageMagick requires the BZLIB library from
+    o GraphicsMagick requires the BZLIB library from
 
         http://sourceware.cygnus.com/bzip2/index.html
 
       to read and write BZip compressed MIFF images.
 
-    o Open ImageMagick requires ralcgm from
+    o GraphicsMagick requires ralcgm from
 
         http://www.agocg.ac.uk/train/cgm/ralcgm.htm
 
       to read the Computer Graphics Metafile image format (may not
       compile under linux).  You also need Ghostscript (see below).
 
-    o Open ImageMagick requires fig2dev from
+    o GraphicsMagick requires fig2dev from
 
         ftp://ftp.x.org/contrib/applications/drawing_tools/transfig
 
       to read the Fig image format.
 
-    o Open ImageMagick requires the FreeType software, version 2.0 or above,
+    o GraphicsMagick requires the FreeType software, version 2.0 or above,
       available as
 
         http://www.freetype.org/
 
       to annotate with TrueType and Postscript Type 1 fonts.
 
-    o Open ImageMagick requires Ghostscript software available from
+    o GraphicsMagick requires Ghostscript software available from
 
         http://www.cs.wisc.edu/~ghost/
 
@@ -545,15 +545,15 @@ MAGICK DELEGATES
       rasterize one page of a multi-page document.
 
       Ghostscript (released 7.0 and later) may optionally install a
-      library (libgs). If this library is installed, Open ImageMagick will
+      library (libgs). If this library is installed, GraphicsMagick will
       attempt to use it unless the option --without-gslib is passed to
       configure. Note that Ghostscript provides its own modified version
       of libjpeg and that symbols from this libjpeg may be confused with
       symbols with the stand-alone libjpeg. If conflicts cause JPEG to
       fail, it may be necessary to use Ghostscript's copy of libjpeg for
-      Open ImageMagick, and all delegate libraries which depend on libjpeg.
+      GraphicsMagick, and all delegate libraries which depend on libjpeg.
 
-    o Open ImageMagick requires hp2xx available from
+    o GraphicsMagick requires hp2xx available from
 
          http://www.gnu.org/software/hp2xx/hp2xx.html
 
@@ -561,25 +561,25 @@ MAGICK DELEGATES
       format. HP printers usually accept PCL format rather than HPGL
       format.
 
-    o Open ImageMagick requires the LCMS library available from
+    o GraphicsMagick requires the LCMS library available from
 
          http://www.littlecms.com/
 
       to perform color management.
 
-    o Open ImageMagick requires gnuplot available via anonymous FTP as
+    o GraphicsMagick requires gnuplot available via anonymous FTP as
 
          ftp://ftp.dartmouth.edu/pub/gnuplot/gnuplot-3.7.tar.gz
 
       to read GNUPLOT plot files (with extension gplt).
 
-    o Open ImageMagick requires html2ps available from
+    o GraphicsMagick requires html2ps available from
 
          http://www.tdb.uu.se/~jan/html2ps.html
 
       to read the HTML image format.
 
-    o Open ImageMagick requires the JBIG-Kit software available via
+    o GraphicsMagick requires the JBIG-Kit software available via
       HTTP from
 
          http://www.cl.cam.ac.uk/~mgk25/jbigkit/
@@ -590,7 +590,7 @@ MAGICK DELEGATES
 
       to read the JBIG image format.
 
-    o Open ImageMagick requires the Independent JPEG Group's software
+    o GraphicsMagick requires the Independent JPEG Group's software
       available via anonymous FTP as
 
          ftp://ftp.uu.net/graphics/jpeg/jpegsrc.v6b.tar.gz
@@ -601,52 +601,52 @@ MAGICK DELEGATES
       distribution if you want to read lossless jpeg-encoded DICOM
       (medical) images:
 
-         ftp://ftp.imagemagick.org/pub/Open ImageMagick/delegates/ljpeg-6b.tar.gz
+         ftp://ftp.imagemagick.org/pub/GraphicsMagick/delegates/ljpeg-6b.tar.gz
 
       Use of lossless JPEG is not encouraged. Unless you have a requirement
       to read lossless jpeg-encoded DICOM images, please disregard the patch.
 
-    o Open ImageMagick requires the JasPer Project's Jasper library available
+    o GraphicsMagick requires the JasPer Project's Jasper library available
       via http from
 
          http://www.ece.uvic.ca/~mdadams/jasper/
 
       to read and write the JPEG v2 format.
 
-    o Open ImageMagick requires the MPEG utilities from the MPEG Software
+    o GraphicsMagick requires the MPEG utilities from the MPEG Software
       Simulation Group, which are available via anonymous FTP as
 
          ftp://ftp.mpeg.org/pub/mpeg/mssg/mpeg2vidcodec_v12.tar.gz
 
       to read or write the MPEG image format.
 
-    o Open ImageMagick requires the PNG library, version 1.0 or above, from
+    o GraphicsMagick requires the PNG library, version 1.0 or above, from
 
          http://www.libpng.org/pub/png/pngcode.html
 
       to read the PNG image format.
 
-    o Open ImageMagick requires ra_ppm from Greg Ward's Radiance software
+    o GraphicsMagick requires ra_ppm from Greg Ward's Radiance software
       available from
 
          http://radsite.lbl.gov/radiance/HOME.html
 
       to read the Radiance image format.
 
-    o Open ImageMagick requires rawtorle from the Utah Raster Toolkit
+    o GraphicsMagick requires rawtorle from the Utah Raster Toolkit
       available via anonymous FTP as
 
          ftp://ftp.cs.utah.edu/pub/dept/OLD/pub/urt-3.1b.tar.Z
 
       to write the RLE image format (may not compile under linux).
 
-    o Open ImageMagick requires scanimage from
+    o GraphicsMagick requires scanimage from
 
          http://www.mostang.com/sane/
 								 
       to import an image from a scanner device.
 
-    o Open ImageMagick requires Sam Leffler's TIFF software available via
+    o GraphicsMagick requires Sam Leffler's TIFF software available via
       anonymous FTP at
 
          ftp://ftp.remotesensing.org/pub/libtiff/
@@ -662,7 +662,7 @@ MAGICK DELEGATES
       issues. If you need to use LZW compression, support is available via
       a seperate LZW compression kit (a patch) at the sites listed above.
 
-    o Open ImageMagick requires libwmf 0.2.5 (or 0.2.2) available from
+    o GraphicsMagick requires libwmf 0.2.5 (or 0.2.2) available from
 
          http://sourceforge.net/projects/wvware/
 
@@ -672,15 +672,15 @@ MAGICK DELEGATES
       computer or technical book store). WMF support requires the
       FreeType 2 library in order to render TrueType and Postscript fonts.
 
-      While Open ImageMagick uses the libwmflite (parser) component of the
+      While GraphicsMagick uses the libwmflite (parser) component of the
       libwmf package which does not depend on any special libraries, the
       libwmf package as a whole depends on FreeType 2 and either the
-      xmlsoft libxml, or expat libraries. Since Open ImageMagick already uses
+      xmlsoft libxml, or expat libraries. Since GraphicsMagick already uses
       libxml (for reading SVG and to retrieve files via HTTP or FTP), it
       is recommended that the options '--without-expat --with-xml' be
       supplied to libwmf's configure script.
 
-      Open ImageMagick's WMF renderer provides some of the finest WMF
+      GraphicsMagick's WMF renderer provides some of the finest WMF
       rendering available due its use of antialiased drawing algorithms.
       You may select a background color or texture image to render on.
       For example, "-background '#ffffffff'" renders on a transparent
@@ -691,15 +691,15 @@ MAGICK DELEGATES
       0.2.2. Windows fonts are fully supported when using libwmf 0.2.5
       or later.
 
-    o Open ImageMagick requires the FlashPIX library version 1.2.0 from
+    o GraphicsMagick requires the FlashPIX library version 1.2.0 from
       the Digital Imaging Group in order to support the FlashPIX
-      format. The FlashPIX library may be obtained from Open ImageMagick
+      format. The FlashPIX library may be obtained from GraphicsMagick
       anonymous CVS by checking out the 'fpx' module, or retrieving the
       file libfpx-1.2.0.4.tar.gz from the ftp directory
 
-         ftp://ftp.imagemagick.org/pub/Open ImageMagick/delegates/.
+         ftp://ftp.imagemagick.org/pub/GraphicsMagick/delegates/.
 
-    o Open ImageMagick requires an X server for display and animate to work
+    o GraphicsMagick requires an X server for display and animate to work
       properly. Unix systems usually provide an X server as part of
       their standard installation.
 
@@ -716,20 +716,20 @@ MAGICK DELEGATES
 
          http://www.microimages.com/freestuf/mix/
 
-    o Open ImageMagick requires libxml available from
+    o GraphicsMagick requires libxml available from
 
          http://xmlsoft.org/
 
       to read the SVG image format and to retrieve files from over a
       network via FTP and HTTP.
 
-    o Open ImageMagick requires the ZLIB library from
+    o GraphicsMagick requires the ZLIB library from
 
          http://www.gzip.org/zlib/
 
       to read or write the PNG or Zip compressed MIFF images.
 
-    o Open ImageMagick requires a background texture for the TILE
+    o GraphicsMagick requires a background texture for the TILE
       format and for the -texture option of montage(1).  You can use
       your own or get samples from
 

@@ -1,3 +1,9 @@
+2002-12-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* Major smashing of ImageMagick to GraphicsMagick in .txt files
+	and .html files.
+	* ImageMagick.html: Renamed to index.html.
+	* www/ImageMagick.html: Renamed to www/GraphicsMagick.html
+
 2002-12-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* magick/list.c: Added GetFirstImageInList() function.
 	* magick/list.c: Added GetLastImageInList() function.

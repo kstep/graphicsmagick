@@ -55,8 +55,8 @@ pkgdatadir = @MagickSharePath@
 pkgdata_DATA = Copyright.txt QuickStart.txt
 
 # Additional files to distribute
-EXTRA_DIST = Copyright.txt TODO.txt ImageMagick.html Magickshr.opt Make.com \
-	Manifest.ps PLATFORMS.txt QuickStart.txt README.txt lndir.sh winpath.sh
+EXTRA_DIST = Copyright.txt TODO.txt index.html Magickshr.opt Make.com \
+	PLATFORMS.txt QuickStart.txt README.txt lndir.sh winpath.sh
 
 # Non-Automake subdirectories to distribute
 DISTDIRS = guide images locale scenes scripts www PerlMagick
@@ -81,7 +81,7 @@ pkgdocdir = @MagickSharePath@
 DOCDIRS = images www www/api www/api/types www/Magick++
 install-data-html:
 	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)
-	$(INSTALL_DATA) $(srcdir)/ImageMagick.html $(DESTDIR)$(pkgdocdir)
+	$(INSTALL_DATA) $(srcdir)/index.html $(DESTDIR)$(pkgdocdir)
 	@for dir in $(DOCDIRS) ; do \
 	  $(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/$$dir && \
 	  for file in $(srcdir)/$$dir/*.* ; do \
@@ -92,7 +92,7 @@ install-data-html:
 
 # Uninstall HTML files
 uninstall-data-html:
-	rm -f $(DESTDIR)$(pkgdocdir)/ImageMagick.html
+	rm -f $(DESTDIR)$(pkgdocdir)/index.html
 	for dir in $(DOCDIRS) ; do \
 	  rm -rf $(DESTDIR)$(pkgdocdir)$$dir ; \
 	done

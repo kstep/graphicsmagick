@@ -1,27 +1,27 @@
-The Open ImageMagick Studio LLC development group announces the release of
-Open ImageMagick 5.5.2.  Version 5.5.2 provides a number of significant
-enhancements over earlier Open ImageMagick versions.
+The GraphicsMagick Group announces the release of GraphicsMagick 1.0.0.
+GraphicsMagick is originally derived from a development version of
+ImageMagick 5.5.2 from ImageMagick Studio.
 
-Open ImageMagick is a robust collection of tools and libraries to read,
+GraphicsMagick is a robust collection of tools and libraries to read,
 write, and manipulate an image in many image formats (over 87 major
 formats) including popular formats like FlashPIX, GIF, JPEG, PDF, PNG,
-Photo CD, SVG, TIFF, and WMF.  With Open ImageMagick images can be created
-dynamically, making it suitable for Web applications.  You can also
+Photo CD, SVG, TIFF, and WMF. With GraphicsMagick images can be created
+dynamically, making it suitable for Web applications. You can also
 resize, rotate, sharpen, color reduce, or add special effects to an
 image and save your completed work in the same or differing image
-format.  Image processing operations are available from the command line,
+format. Image processing operations are available from the command line,
 as well as through C, C++, PERL, Visual Basic, VBscript, and Jscript-
-based programming interfaces.  Support for programming with Java and
+based programming interfaces. Support for programming with Java and
 Python is provided by 3rd parties.
 
-Open ImageMagick is copyrighted by Open ImageMagick Studio, a nonprofit
+GraphicsMagick is copyrighted by GraphicsMagick Group, a nonprofit
 organization dedicated to making software imaging solutions freely
-available.  Open ImageMagick is available for free, may be used to support
+available. GraphicsMagick is available for free, may be used to support
 both open and proprietary applications, and may be redistributed without
 fee.
 
-Significant changes from the 5.5.1 release (see ChangeLog in the distribution
-for details):
+Significant changes from the ImageMagick 5.5.1 release (see ChangeLog in
+the distribution for details):
 
   o General:
 
@@ -34,7 +34,7 @@ for details):
 
       + Local adaptive thresholding is now supported via the -lat option.
 
-      + Open ImageMagick now reads CMYK + alpha layered PSD files correctly.
+      + GraphicsMagick now reads CMYK + alpha layered PSD files correctly.
 
       + PNG coder now supports the PNG8, PNG24, and PNG32 magick tag
         specifications in order to provide the user with more control
@@ -82,46 +82,46 @@ for details):
   o Perl API enhancements:
      - No changes in this release.
 
-The Open ImageMagick WWW page is
+The GraphicsMagick WWW page is
 
   http://www.imagemagick.org/
  
-The Open ImageMagick 5.5.2 source code is available via ftp as
+The GraphicsMagick 1.0.0 source code is available via ftp as
 
-  ftp://ftp.imagemagick.org/pub/Open ImageMagick/Open ImageMagick-5.5.2.tar.gz
+  ftp://ftp.imagemagick.org/pub/GraphicsMagick/GraphicsMagick-1.0.0.tar.gz
 
-The Open ImageMagick 5.5.2 Windows install package is available via ftp as
+The GraphicsMagick 1.0.0 Windows install package is available via ftp as
 
-  ftp://ftp.imagemagick.org/pub/Open ImageMagick/binaries/Open ImageMagick-i686-pc-windows.exe
+  ftp://ftp.imagemagick.org/pub/GraphicsMagick/binaries/GraphicsMagick-i686-pc-windows.exe
 
 or (QuantumDepth=8 version)
 
-  ftp://ftp.imagemagick.org/pub/Open ImageMagick/binaries/Open ImageMagick-i686-Q8-windows.exe
+  ftp://ftp.imagemagick.org/pub/GraphicsMagick/binaries/GraphicsMagick-i686-Q8-windows.exe
 
 If ftp.imagemagick.org is overloaded, check the list of mirrors at
 http://www.imagemagick.org/www/archives.html for other mirrors.
 
-Open ImageMagick is developed by the members of the Open ImageMagick Studio
-team:
+GraphicsMagick is currently developed by the members of the
+GraphicsMagick Group:
 
-John Cristy           - Principal designer and author.
-Bob Friesenhahn       - Magick++, Unix modules, magic, configure, CVS,
-                        tests, bug tracking, Windows install, WMF.
+Bob Friesenhahn       - Magick++, Unix modules, file header magic, configure,
+                        CVS, tests, bug tracking, Windows install, WMF.
 William Radcliffe     - VisualMagick, FlashPix, TIFF, timers,
                         watermarking, Windows modules, and fast polygon
                         renderer.
-Glenn Randers-Pehrson - PNG, MNG, test scripts, documentation
+Glenn Randers-Pehrson - Utilities, PNG, MNG, test scripts, documentation
                         enhancements.
 Leonard Rosenthol     - Mac support, XCF, PSD, conjure, drawing
                         enhancements.
+Tim Hunter            - Ruby (RMagick) development.
 
 We would like to give special thanks to several people who assist with
-Open ImageMagick:
+GraphicsMagick:
 
 Alexander Zimmermann  - Linux binary distributions.
 Jaroslav Fojtik       - CUT, ART, and MATLAB coder modules.
 
 There are many other individual contributors, some of whom made
-significant contributions to Open ImageMagick but shall remain anonymous
+significant contributions to GraphicsMagick but shall remain anonymous
 anyway.
 

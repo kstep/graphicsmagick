@@ -34,7 +34,7 @@ Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
   or use X11 "stubs". Either option is available because X11 DLLs are
   provided with the VisualMagick build environment. Most Windows users
   do not use X11 so they can accept the default X11 "stubs" option.
-  Users that use X11 or want to build a full Open ImageMagick, will want to
+  Users that use X11 or want to build a full GraphicsMagick, will want to
   de-select the X11 "stubs" option. When X11 is stubbed out, the X11
   utility programs animate, display, and import will not work.
 
@@ -59,7 +59,7 @@ Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
      Edit "magick_config.h"
 
   Clicking this button brings up magick_config.h in Windows notepad for
-  changing any preprocessor defines in Open ImageMagick's magick_config.h file.
+  changing any preprocessor defines in GraphicsMagick's magick_config.h file.
   This file is copied to magick\magick_config.h. You may safely modify
   magick\magick_config.h and recompile without re-running the configure
   program.
@@ -72,16 +72,16 @@ Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
       of 8 uses half the memory than 16 and may run 30% faster, but
       provides 256 times less color precision than a value of 16.
 
-    UseInstalledOpen ImageMagick (default undefined)
+    UseInstalledGraphicsMagick (default undefined)
 
-      Define to build an Open ImageMagick which uses registry settings or
+      Define to build an GraphicsMagick which uses registry settings or
       embedded paths to locate installed components (coder modules and
       configuration files). The default is to look for all files in the
       same directory as the executable.
 
     ProvideDllMain (default undefined)
 
-      Define to include a DllMain() function ensures that the Open ImageMagick
+      Define to include a DllMain() function ensures that the GraphicsMagick
       DLL is properly initialized without participation from dependent
       applications.
 
@@ -127,11 +127,11 @@ Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
 
   NOTE #1:
 
-  The Visual C++ distribution of Open ImageMagick comes with the Magick++
+  The Visual C++ distribution of GraphicsMagick comes with the Magick++
   C++ wrapper by default. This add-on layer has a large number of demo
-  and test files that can be found in Open ImageMagick\Magick++\demo, and
-  Open ImageMagick\Magick++\tests. There are also a variety of tests that
-  use the straight C API as well in Open ImageMagick\tests.
+  and test files that can be found in GraphicsMagick\Magick++\demo, and
+  GraphicsMagick\Magick++\tests. There are also a variety of tests that
+  use the straight C API as well in GraphicsMagick\tests.
 
   All of these programs are NOT configured to be built in the default
   workspace created by the configure program. You can cause all of these
@@ -184,34 +184,34 @@ Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
 
   For straight C API command line applications use something from:
 
-    Open ImageMagick\tests or Open ImageMagick\utilities (source code)
-    Open ImageMagick\VisualMagick\tests or Open ImageMagick\Visualmagick\utilities
+    GraphicsMagick\tests or GraphicsMagick\utilities (source code)
+    GraphicsMagick\VisualMagick\tests or GraphicsMagick\Visualmagick\utilities
       (project - DSP)
 
   For C++ and Magick++ command line applications use something from:
 
-    Open ImageMagick\Magick++\tests or Open ImageMagick\Magick++\demo
+    GraphicsMagick\Magick++\tests or GraphicsMagick\Magick++\demo
       (source code)
-    Open ImageMagick\VisualMagick\Magick++\tests or
-      Open ImageMagick\VisualMagick\Magick++\demo (project - DSP)
+    GraphicsMagick\VisualMagick\Magick++\tests or
+      GraphicsMagick\VisualMagick\Magick++\demo (project - DSP)
 
   For C++ and Magick++ and MFC windows applications use:
    
-    Open ImageMagick\contrib\win32\MFC\NtMagick (source code)
-    Open ImageMagick\VisualMagick\contrib\win32\MFC\NtMagick
+    GraphicsMagick\contrib\win32\MFC\NtMagick (source code)
+    GraphicsMagick\VisualMagick\contrib\win32\MFC\NtMagick
       (project - DSP)
 
   NOTE #2:
 
-  The Open ImageMagick distribution is very modular. The default
+  The GraphicsMagick distribution is very modular. The default
   configuration is there to get you rolling, but you need to make some
   serious choices when you wish to change things around.
 
   The binary distribution and default options are all targeted at
   having all the components in one place - the "bin" directory of the
-  VisualMagick build tree AND the C:\Open ImageMagick folder.
+  VisualMagick build tree AND the C:\GraphicsMagick folder.
 
-  The C:\Open ImageMagick folder should contain the following files:
+  The C:\GraphicsMagick folder should contain the following files:
 
       1) magic.mgk
       2) delegates.mgk (derived from nt.mgk)
@@ -226,14 +226,14 @@ Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
   way by doing something like "pushd e:\xxx\yyy\bin" in any scripts you
   write to execute "out of" this directory.
 
-  ALSO, By default the core of Open ImageMagick on Win32 always looks in the
+  ALSO, By default the core of GraphicsMagick on Win32 always looks in the
   place were the exe program is run from in order to find all of the
   files as well as the DLL's it needs.
 
   Of course - all of this is configurable and there are certain
   environment variables and compiler switches that allow you to do
   whatever you want. Some of these are Windows things and the rest are
-  looked at by the core Open ImageMagick code.
+  looked at by the core GraphicsMagick code.
 
   ENVIRONMENT VARIABLES:
 
@@ -249,7 +249,7 @@ Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
    you wish to run any of utilities from another location then you must
    add the path to your "bin" directory in. For instance, you might add:
 
-      D:\CVS\Open ImageMagick\VisualMagick\bin
+      D:\CVS\GraphicsMagick\VisualMagick\bin
 
    to do this for the default build environment like I do.  One slight
    problem with this is that fact that Windows has another program called
@@ -259,10 +259,10 @@ Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
   MAGICK_HOME
 
    If all you do is modify the PATH variable, the first problem you
-   will run into is that Open ImageMagick may not be able to find any of
+   will run into is that GraphicsMagick may not be able to find any of
    its "modules. Modules are all the IM_MOD*.DLL files you see in the
    distribution. There is one of these for each and every file format
-   that Open ImageMagick supports. This environment variable tells the system
+   that GraphicsMagick supports. This environment variable tells the system
    were to look for these DLL's. The compiled in "default" is "execution
    path" - which says - look in the same place that the application is
    running "in". If you are running from somewhere other then "bin" -
@@ -271,13 +271,13 @@ Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
    then you can simply set this to the same place
    as you did the PATH variable. In my case:
 
-      D:\\Open ImageMagick\coders
+      D:\\GraphicsMagick\coders
 
-   This is also the place were Open ImageMagick expects to find the
+   This is also the place were GraphicsMagick expects to find the
    "colors.mgk", "delegates.mgk", "magic.mgk", "modules.mgk", and
    "type.mgk" files.
 
-   One cool thing about the modules build of Open ImageMagick is that you can
+   One cool thing about the modules build of GraphicsMagick is that you can
    now leave out file formats and lighten you load. If all you ever need
    is GIF and JPEG, then simply drop all the other DLL's into the local
    trash can and get on with your life.
@@ -290,7 +290,7 @@ Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
 
   defines.h has 
 
-      #define MagickConfigurePath  "c:\\Open ImageMagick\\"
+      #define MagickConfigurePath  "c:\\GraphicsMagick\\"
 
   NOTE #3:
 
@@ -309,7 +309,7 @@ Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
   convert or view a Postscript document.
 
   Make sure iexplore (Internet Explorer) is in your execution path,
-  otherwise, you will be unable to browse the Open ImageMagick documentation.
+  otherwise, you will be unable to browse the GraphicsMagick documentation.
 
   The Win2K executables will work under Windows 95/98.
 

@@ -1,5 +1,5 @@
 This file provides platform specific portability notes which don't
-belong in README.txt. Usually Open ImageMagick compiles fine according to the
+belong in README.txt. Usually GraphicsMagick compiles fine according to the
 procedures described in README.txt, but sometimes a platform related
 oddity causes a failure.
 
@@ -8,7 +8,7 @@ SGI Irix
 
   Problem
 
-    How to successfully configure Open ImageMagick using SGI's commercial
+    How to successfully configure GraphicsMagick using SGI's commercial
     compiler (e.g. IRIX C/C++ v7.3.1.X)?
 
   Indications
@@ -59,13 +59,13 @@ FreeBSD 3.X and 4.X
 
   Problem
   
-    Open ImageMagick does not run after it is installed. The system does not
+    GraphicsMagick does not run after it is installed. The system does not
     see an installed shared library until the 'ldconfig' command has
     been executed (as root) using the correct options.
 
   Indications
   
-    System fails to find shared library needed by Open ImageMagick.
+    System fails to find shared library needed by GraphicsMagick.
 
   Solution
   
@@ -74,7 +74,7 @@ FreeBSD 3.X and 4.X
 
       /sbin/ldconfig -m ${PREFIX}/lib
 
-    where ${PREFIX} is the prefix used when configuring Open ImageMagick
+    where ${PREFIX} is the prefix used when configuring GraphicsMagick
     (default /usr/local).
 
 Digital Unix and OSF/1
@@ -87,7 +87,7 @@ Digital Unix and OSF/1
     
   Indications
 
-    Open ImageMagick fails to link.
+    GraphicsMagick fails to link.
 
   Solution
   
@@ -129,7 +129,7 @@ Solaris 2.X
 
   Indications
   
-    Open ImageMagick fails to link or load TIFF files.
+    GraphicsMagick fails to link or load TIFF files.
 
   Solution
 
