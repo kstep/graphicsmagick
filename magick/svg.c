@@ -547,7 +547,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         draw_info->linewidth=graphic_context[n].linewidth;
         draw_info->antialias=graphic_context[n].antialias;
         draw_info->pointsize=graphic_context[n].pointsize;
-        draw_info->degrees=ellipse.angle;
+        draw_info->angle=ellipse.angle;
         (void) CloneString(&draw_info->primitive,command);
         (void) printf("draw: %d %s %s\n",n,draw_info->pen,draw_info->primitive);
         status=DrawImage(canvas,draw_info);

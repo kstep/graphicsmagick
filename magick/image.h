@@ -109,7 +109,7 @@ typedef struct _AnnotateInfo
 
   double
     pointsize,
-    angle;
+    degrees;
 
   char
     *font_name;
@@ -434,7 +434,7 @@ typedef struct _DrawInfo
 
   double
     pointsize,
-    degrees;
+    angle;
 
   PixelPacket
     border_color;
