@@ -287,7 +287,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *draw_info->text='\0';
   p=ReadBlobString(image,text);
 
-  if (IsTXT(p,strlen((char *)p)))
+  if (IsTXT((unsigned char *)p,strlen(p)))
     {
       ThrowReaderException(CoderError,NotASupportedImageFile,image);
     }
