@@ -54,10 +54,8 @@ Operations to memory are significantly faster but if your computer does not
 have a sufficient amount of free memory you may want to adjust this threshold
 value.
 .TP
-.B "-charcoal \fIorder\fP"
+.B "-charcoal \fIradius\fP"
 simulate a charcoal drawing.
-
-Good order values are odd numbers from 3 to 31.
 .TP
 .B "-colorize \fIvalue\fP"
 colorize the image with the fill color.
@@ -339,15 +337,11 @@ You can set the primitive color, font color, and font bounding box color with
 processed in command line order so be sure to use \fB-fill\fP
 \fIbefore\fP the \fB-draw\fP option.
 .TP
-.B "-edge \fIfactor\fP"
+.B "-edge \fIradius\fP"
 detect edges with an image. 
-
-Good order values are odd numbers from 3 to 31.
 .TP
-.B "-emboss \fIorder\fP"
+.B "-emboss \fIradius\fP"
 emboss the image.
-
-Good order values are odd numbers from 3 to 31.
 .TP
 .B "-enhance"
 apply a digital filter to enhance a noisy image.
@@ -560,10 +554,8 @@ optimal set of colors that best represent all the images.
 .B "-matte"
 store matte channel if the image has one otherwise create an opaque one.
 .TP
-.B "-median \fIorder\fP"
+.B "-median \fIradius\fP"
 apply a median filter to the image.
-
-Good order values are odd numbers from 3 to 31.
 .TP
 .B "-modulate \fIvalue\fP"
 vary the brightness, saturation, and hue of an image.
@@ -592,7 +584,7 @@ creating undesired structures.  The central idea of the algorithm is to
 replace a pixel with its next neighbor in value within a pixel window,
 if this pixel has been found to be noise.  A pixel is defined as noise
 if and only if this pixel is a maximum or minimum within the pixel window.
-Use \fIorder\fP to specify the width of the neighborhood.
+Use \fIradius\fP to specify the width of the neighborhood.
 
 Use \fB+noise\fP followed by a noise type to add noise to an image.  Choose
 from these noise types:

@@ -67,13 +67,13 @@ testFilter('input.miff', 'Despeckle',
 ++$test;
 testFilter('input.miff', 'Edge',
   q/3/,
-  '96410e56794d7daa3d25226df6d1f347',
+  '29c6f3e24fb5dbae9468efd7b4b391ae',
   '89457006d11b4d9ea348d90f2fa75ec7');
 
 ++$test;
 testFilter('input.miff', 'Emboss',
   q/3/,
-  'a504b9b851511b2d2795cce045663454',
+  '4a84d8bcd2c7c494cc913a845caf7b9a',
   'e8e5eb03ca6563f34db3692747a8d9f8');
 
 ++$test;
@@ -153,7 +153,7 @@ testFilter('input.miff', 'Normalize',
 ++$test;
 testFilter('input.miff', 'OilPaint',
   q/3/,
-  'eaa4da0ea1326b7d553d5f2c9d1957d8',
+  'a70161481478c896def77f29b0f8f997',
   'e16d40c46206f6c3dc682139de76f76d');
 
 ++$test;

@@ -260,7 +260,7 @@ MagickExport Image *BlurImage(Image *image,const double radius,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=ceil(radius);
+  width=2*ceil(radius)+1;
   if (radius <= 0.0)
     {
       double
@@ -296,8 +296,8 @@ MagickExport Image *BlurImage(Image *image,const double radius,
       "Memory allocation failed");
   for (i=0; i < (width+1); i++)
     kernel[i]=exp((double) (-i*i)/(sigma*sigma));
-  if ((radius > 0.0) && (radius < width))
-    kernel[width]*=(radius-width+1.0);
+  if ((radius > 0.0) && ((2*radius+1) < width))
+    kernel[width]*=((2*radius+1)-width+1.0);
   normalize=0.0;
   for (i=0; i < (width+1); i++)
     normalize+=kernel[i];
@@ -550,7 +550,7 @@ MagickExport Image *ColorizeImage(Image *image,const char *opacity,
 %
 %  The format of the ConvolveImage method is:
 %
-%      Image *ConvolveImage(Image *image,const unsigned int radius,
+%      Image *ConvolveImage(Image *image,const unsigned int order,
 %        const double *kernel,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -562,7 +562,7 @@ MagickExport Image *ColorizeImage(Image *image,const char *opacity,
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
-%    o radius:  The number of columns and rows in the filter kernel.
+%    o order:  The number of columns and rows in the filter kernel.
 %
 %    o kernel:  An array of double representing the convolution kernel.
 %
@@ -570,7 +570,7 @@ MagickExport Image *ColorizeImage(Image *image,const char *opacity,
 %
 %
 */
-MagickExport Image *ConvolveImage(Image *image,const unsigned int radius,
+MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
   const double *kernel,ExceptionInfo *exception)
 {
 #define ConvolveImageText  "  Convolve image...  "
@@ -616,12 +616,12 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int radius,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if ((radius % 2) == 0)
+  if ((order % 2) == 0)
     ThrowImageException(ResourceLimitWarning,"Unable to convolve image",
-      "kernel radius must be an odd");
-  if ((image->columns < radius) || (image->rows < radius))
+      "kernel order must be an odd");
+  if ((image->columns < order) || (image->rows < order))
     ThrowImageException(ResourceLimitWarning,"Unable to convolve image",
-      "image smaller than kernel radius");
+      "image smaller than kernel order");
   convolve_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (convolve_image == (Image *) NULL)
     return((Image *) NULL);
@@ -630,7 +630,7 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int radius,
     Convolve image.
   */
   normalize=0.0;
-  for (i=0; i < (radius*radius); i++)
+  for (i=0; i < (order*order); i++)
     normalize+=kernel[i];
   for (y=0; y < (int) convolve_image->rows; y++)
   {
@@ -645,12 +645,12 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int radius,
       blue=0.0;
       opacity=0.0;
       k=kernel;
-      if ((x < (int) (0.5*radius)) || (x >= (int) (image->columns-0.5*radius)) ||
-          (y < (int) (0.5*radius)) || (y >= (int) (image->rows-0.5*radius)))
+      if ((x < (int) (0.5*order)) || (x >= (int) (image->columns-0.5*order)) ||
+          (y < (int) (0.5*order)) || (y >= (int) (image->rows-0.5*order)))
         {
-          for (v=(int) (-0.5*radius); v <= (int) (0.5*radius); v++)
+          for (v=(int) (-0.5*order); v <= (int) (0.5*order); v++)
           {
-            for (u=(int) (-0.5*radius); u <= (int) (0.5*radius); u++)
+            for (u=(int) (-0.5*order); u <= (int) (0.5*order); u++)
             {
               pixel=GetOnePixel(image,Cx(x+u),Cy(y+v));
               red+=(*k)*pixel.red;
@@ -664,11 +664,11 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int radius,
       else
         {
           if (p == (PixelPacket *) NULL)
-            p=GetImagePixels(image,0,y-(0.5*radius),image->columns,radius);
+            p=GetImagePixels(image,0,y-(0.5*order),image->columns,order);
           s=p+x;
-          for (v=(int) (-0.5*radius); v <= (int) (0.5*radius); v++)
+          for (v=(int) (-0.5*order); v <= (int) (0.5*order); v++)
           {
-            for (u=(int) (-0.5*radius); u <= (int) (0.5*radius); u++)
+            for (u=(int) (-0.5*order); u <= (int) (0.5*order); u++)
             {
               red+=(*k)*s[u].red;
               green+=(*k)*s[u].green;
@@ -917,7 +917,7 @@ MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
 %
 %  The format of the EdgeImage method is:
 %
-%      Image *EdgeImage(Image *image,const unsigned int radius,
+%      Image *EdgeImage(Image *image,const double radius,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -926,16 +926,16 @@ MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
 %      after it is edge.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: the address of a structure of type Image;  returned from
 %      ReadImage.
 %
-%    o radius: An unsigned int that is the radius of the pixel neighborhood.
+%    o radius: the radius of the pixel neighborhood.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 %
 */
-MagickExport Image *EdgeImage(Image *image,const unsigned int radius,
+MagickExport Image *EdgeImage(Image *image,const double radius,
   ExceptionInfo *exception)
 {
   double
@@ -945,23 +945,22 @@ MagickExport Image *EdgeImage(Image *image,const unsigned int radius,
     *edge_image;
 
   int
+    width,
     i;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if ((radius % 2) == 0)
-    ThrowImageException(ResourceLimitWarning,"Unable to edge image",
-      "kernel radius must be an odd number");
-  kernel=(double *) AcquireMemory(radius*radius*sizeof(double));
+  width=2*ceil(radius)+1;
+  kernel=(double *) AcquireMemory(width*width*sizeof(double));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to detect edges",
       "Memory allocation failed");
-  for (i=0; i < (radius*radius); i++)
+  for (i=0; i < (width*width); i++)
     kernel[i]=(-1.0);
-  kernel[i/2]=radius*radius-1.0;
-  edge_image=ConvolveImage(image,radius,kernel,exception);
+  kernel[i/2]=width*width-1.0;
+  edge_image=ConvolveImage(image,width,kernel,exception);
   LiberateMemory((void **) &kernel);
   return(edge_image);
 }
@@ -982,7 +981,7 @@ MagickExport Image *EdgeImage(Image *image,const unsigned int radius,
 %
 %  The format of the EmbossImage method is:
 %
-%      Image *EmbossImage(Image *image,unsigned int radius,
+%      Image *EmbossImage(Image *image,const double radius,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -994,13 +993,13 @@ MagickExport Image *EdgeImage(Image *image,const unsigned int radius,
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
-%    o radius: An unsigned int that is the radius of the pixel neighborhood.
+%    o radius: the radius of the pixel neighborhood.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 %
 */
-MagickExport Image *EmbossImage(Image *image,const unsigned int radius,
+MagickExport Image *EmbossImage(Image *image,const double radius,
   ExceptionInfo *exception)
 {
   double
@@ -1011,7 +1010,8 @@ MagickExport Image *EmbossImage(Image *image,const unsigned int radius,
 
   int
     i,
-    j;
+    j,
+    width;
 
   register int
     u,
@@ -1021,18 +1021,16 @@ MagickExport Image *EmbossImage(Image *image,const unsigned int radius,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if ((radius % 2) == 0)
-    ThrowImageException(ResourceLimitWarning,"Unable to convolve image",
-      "kernel radius must be an odd number");
-  kernel=(double *) AcquireMemory(radius*radius*sizeof(double));
+  width=2*ceil(radius)+1;
+  kernel=(double *) AcquireMemory(width*width*sizeof(double));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to emboss image",
       "Memory allocation failed");
   i=0;
-  j=(int) radius/2;
-  for (v=(-(int) radius/2); v <= ((int) radius/2); v++)
+  j=(int) width/2;
+  for (v=(int) (-0.5*width); v <= (int) (0.5*width); v++)
   {
-    for (u=(-(int) radius/2); u <= ((int) radius/2); u++)
+    for (u=(int) (0.5*width); u <= (int) (0.5*width); u++)
     {
       kernel[i]=(int) ((u < 0 || v < 0 ? -8.0 : 8.0)*exp((double) -(u*u+v*v)));
       if (u == j)
@@ -1041,7 +1039,7 @@ MagickExport Image *EmbossImage(Image *image,const unsigned int radius,
     }
     j--;
   }
-  emboss_image=ConvolveImage(image,radius,kernel,exception);
+  emboss_image=ConvolveImage(image,width,kernel,exception);
   if (emboss_image != (Image *) NULL)
     EqualizeImage(emboss_image);
   LiberateMemory((void **) &kernel);
@@ -1239,10 +1237,10 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
 %      after it is blur.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o radius: The radius of the gaussian, in pixels, not counting the center
+%    o radius: the radius of the gaussian, in pixels, not counting the center
 %      pixel.
 %
-%    o sigma: The standard deviation of the gaussian, in pixels.
+%    o sigma: the standard deviation of the gaussian, in pixels.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -1270,7 +1268,7 @@ MagickExport Image *GaussianBlurImage(Image *image,const double radius,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=ceil(radius);
+  width=2*ceil(radius)+1;
   if (radius <= 0.0)
     {
       double
@@ -1465,7 +1463,7 @@ MagickExport Image *ImplodeImage(Image *image,const double factor,
 %
 %  The format of the MedianFilterImage method is:
 %
-%      Image *MedianFilterImage(Image *image,const unsigned int radius,
+%      Image *MedianFilterImage(Image *image,const double radius,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1474,10 +1472,10 @@ MagickExport Image *ImplodeImage(Image *image,const double factor,
 %      after it is `filtered'.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: the address of a structure of type Image;  returned from
 %      ReadImage.
 %
-%    o radius: An unsigned int that is the radius of the pixel neighborhood.
+%    o radius: the radius of the pixel neighborhood.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -1528,7 +1526,7 @@ static int RedCompare(const void *x,const void *y)
   return((int) color_1->red-color_2->red);
 }
 
-MagickExport Image *MedianFilterImage(Image *image,const unsigned int radius,
+MagickExport Image *MedianFilterImage(Image *image,const double radius,
   ExceptionInfo *exception)
 {
 #define MedianFilterImageText  "  Filter image with neighborhood ranking...  "
@@ -1538,6 +1536,7 @@ MagickExport Image *MedianFilterImage(Image *image,const unsigned int radius,
 
   int
     center,
+    width,
     y;
 
   PixelPacket
@@ -1561,7 +1560,8 @@ MagickExport Image *MedianFilterImage(Image *image,const unsigned int radius,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if ((image->columns < radius) || (image->rows < radius))
+  width=2*ceil(radius)+1;
+  if ((image->columns < width) || (image->rows < width))
     ThrowImageException(ResourceLimitWarning,"Unable to median filter image",
       "image smaller than kernel radius");
   median_image=CloneImage(image,image->columns,image->rows,False,exception);
@@ -1571,7 +1571,7 @@ MagickExport Image *MedianFilterImage(Image *image,const unsigned int radius,
   /*
     Allocate window.
   */
-  window=(PixelPacket *) AcquireMemory(radius*radius*sizeof(PixelPacket));
+  window=(PixelPacket *) AcquireMemory(width*width*sizeof(PixelPacket));
   if (window == (PixelPacket *) NULL)
     {
       DestroyImage(median_image);
@@ -1581,34 +1581,34 @@ MagickExport Image *MedianFilterImage(Image *image,const unsigned int radius,
   /*
     Median filter each image row.
   */
-  center=0.5*radius*radius;
+  center=0.5*width*width;
   for (y=0; y < (int) median_image->rows; y++)
   {
-    v=Min(Max(y-0.5*radius,0),image->rows-radius);
-    p=GetImagePixels(image,0,v,image->columns,radius);
+    v=Min(Max(y-0.5*width,0),image->rows-width);
+    p=GetImagePixels(image,0,v,image->columns,width);
     q=SetImagePixels(median_image,0,y,median_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     for (x=0; x < (int) median_image->columns; x++)
     {
       w=window;
-      s=p+Min(Max(x-radius/2,0),image->columns-radius);
-      for (v=0; v < radius; v++)
+      s=p+Min(Max(x-width/2,0),image->columns-width);
+      for (v=0; v < width; v++)
       {
-        for (u=0; u < radius; u++)
+        for (u=0; u < width; u++)
           *w++=s[u];
         s+=image->columns;
       }
-      qsort((void *) window,radius*radius,sizeof(PixelPacket),
+      qsort((void *) window,width*width,sizeof(PixelPacket),
         (int (*)(const void *,const void *)) RedCompare);
       q->red=window[center].red;
-      qsort((void *) window,radius*radius,sizeof(PixelPacket),
+      qsort((void *) window,width*width,sizeof(PixelPacket),
         (int (*)(const void *,const void *)) GreenCompare);
       q->green=window[center].green;
-      qsort((void *) window,radius*radius,sizeof(PixelPacket),
+      qsort((void *) window,width*width,sizeof(PixelPacket),
         (int (*)(const void *,const void *)) BlueCompare);
       q->blue=window[center].blue;
-      qsort((void *) window,radius*radius,sizeof(PixelPacket),
+      qsort((void *) window,width*width,sizeof(PixelPacket),
         (int (*)(const void *,const void *)) OpacityCompare);
       q->opacity=window[center].opacity;
       q++;
@@ -1795,7 +1795,7 @@ MagickExport Image *MorphImages(Image *image,const unsigned int number_frames,
 %
 %  The format of the OilPaintImage method is:
 %
-%      Image *OilPaintImage(Image *image,const unsigned int radius,
+%      Image *OilPaintImage(Image *image,const double radius,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1807,14 +1807,13 @@ MagickExport Image *MorphImages(Image *image,const unsigned int number_frames,
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
-%    o radius: An unsigned int that is the radius of the circular
-%      neighborhood.
+%    o radius: The radius of the circular neighborhood.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 %
 */
-MagickExport Image *OilPaintImage(Image *image,const unsigned int radius,
+MagickExport Image *OilPaintImage(Image *image,const double radius,
   ExceptionInfo *exception)
 {
 #define OilPaintImageText  "  Oil paint image...  "
@@ -1826,6 +1825,7 @@ MagickExport Image *OilPaintImage(Image *image,const unsigned int radius,
     count,
     j,
     k,
+    width,
     y;
 
   register int
@@ -1847,7 +1847,8 @@ MagickExport Image *OilPaintImage(Image *image,const unsigned int radius,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if ((image->columns < (2*radius+1)) || (image->rows < (2*radius+1)))
+  width=2*ceil(radius)+1;
+  if ((image->columns < (2*width+1)) || (image->rows < (2*width+1)))
     ThrowImageException(ResourceLimitWarning,"Unable to oil paint",
       "image smaller than radius");
   paint_image=CloneImage(image,image->columns,image->rows,False,exception);
@@ -1868,15 +1869,15 @@ MagickExport Image *OilPaintImage(Image *image,const unsigned int radius,
     Paint each row of the image.
   */
   k=0;
-  for (y=radius; y < (int) (image->rows-radius-1); y++)
+  for (y=width; y < (int) (image->rows-width-1); y++)
   {
-    p=GetImagePixels(image,0,y-radius,image->columns,2*radius+1);
+    p=GetImagePixels(image,0,y-width,image->columns,2*width+1);
     q=SetImagePixels(paint_image,0,y,paint_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    p+=radius*image->columns+radius;
-    q+=radius;
-    for (x=radius; x < (int) (image->columns-radius); x++)
+    p+=width*image->columns+width;
+    q+=width;
+    for (x=width; x < (int) (image->columns-width); x++)
     {
       /*
         Determine most frequent color.
@@ -1884,9 +1885,9 @@ MagickExport Image *OilPaintImage(Image *image,const unsigned int radius,
       count=0;
       for (i=0; i < (int) (MaxRGB+1); i++)
         histogram[i]=0;
-      for (i=0; i < (int) radius; i++)
+      for (i=0; i < (int) width; i++)
       {
-        s=p-(radius-i)*image->columns-i-1;
+        s=p-(width-i)*image->columns-i-1;
         for (j=0; j < (2*i+1); j++)
         {
           k=(int) Intensity(*s);
@@ -1898,7 +1899,7 @@ MagickExport Image *OilPaintImage(Image *image,const unsigned int radius,
             }
           s++;
         }
-        s=p+(radius-i)*image->columns-i-1;
+        s=p+(width-i)*image->columns-i-1;
         for (j=0; j < (2*i+1); j++)
         {
           k=(int) Intensity(*s);
@@ -1911,8 +1912,8 @@ MagickExport Image *OilPaintImage(Image *image,const unsigned int radius,
           s++;
         }
       }
-      s=p-radius;
-      for (j=0; j < (int) (radius+radius+1); j++)
+      s=p-width;
+      for (j=0; j < (int) (width+width+1); j++)
       {
         k=(int) Intensity(*s);
         histogram[k]++;
@@ -2154,7 +2155,7 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
 %
 %  The format of the ReduceNoiseImage method is:
 %
-%      Image *ReduceNoiseImage(Image *image,const unsigned int,
+%      Image *ReduceNoiseImage(Image *image,const double,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -2163,16 +2164,16 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
 %      after the noise is minified.  A null image is returned if there is a
 %      memory shortage.
 %
-%    o image: The address of a structure of type Image;  returned from
+%    o image: the address of a structure of type Image;  returned from
 %      ReadImage.
 %
-%    o radius: An unsigned int that is the radius of the pixel neighborhood.
+%    o radius: the radius of the pixel neighborhood.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 %
 */
-MagickExport Image *ReduceNoiseImage(Image *image,const unsigned int radius,
+MagickExport Image *ReduceNoiseImage(Image *image,const double radius,
   ExceptionInfo *exception)
 {
 #define ReduceNoiseImageText  "  Reduce the image noise...  "
@@ -2183,6 +2184,7 @@ MagickExport Image *ReduceNoiseImage(Image *image,const unsigned int radius,
   int
     center,
     i,
+    width,
     y;
 
   PixelPacket
@@ -2207,7 +2209,8 @@ MagickExport Image *ReduceNoiseImage(Image *image,const unsigned int radius,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if ((image->columns < radius) || (image->rows < radius))
+  width=2*ceil(radius)+1;
+  if ((image->columns < width) || (image->rows < width))
     ThrowImageException(ResourceLimitWarning,"Unable to noise filter image",
       "image smaller than kernel radius");
   noise_image=CloneImage(image,image->columns,image->rows,False,exception);
@@ -2217,7 +2220,7 @@ MagickExport Image *ReduceNoiseImage(Image *image,const unsigned int radius,
   /*
     Allocate window.
   */
-  window=(PixelPacket *) AcquireMemory(radius*radius*sizeof(PixelPacket));
+  window=(PixelPacket *) AcquireMemory(width*width*sizeof(PixelPacket));
   if (window == (PixelPacket *) NULL)
     {
       DestroyImage(noise_image);
@@ -2227,96 +2230,96 @@ MagickExport Image *ReduceNoiseImage(Image *image,const unsigned int radius,
   /*
     Median filter each image row.
   */
-  center=radius*radius/2;
+  center=width*width/2;
   for (y=0; y < (int) noise_image->rows; y++)
   {
-    i=Min(Max(y-(int) radius/2,0),image->rows-radius);
-    p=GetImagePixels(image,0,i,image->columns,radius);
+    i=Min(Max(y-(int) width/2,0),image->rows-width);
+    p=GetImagePixels(image,0,i,image->columns,width);
     q=SetImagePixels(noise_image,0,y,noise_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     for (x=0; x < (int) noise_image->columns; x++)
     {
       w=window;
-      s=p+Min(Max(x-(int) radius/2,0),image->columns-radius);
-      for (v=0; v < radius; v++)
+      s=p+Min(Max(x-(int) width/2,0),image->columns-width);
+      for (v=0; v < width; v++)
       {
-        for (u=0; u < radius; u++)
+        for (u=0; u < width; u++)
           *w++=s[u];
         s+=image->columns;
       }
-      qsort((void *) window,radius*radius,sizeof(PixelPacket),
+      qsort((void *) window,width*width,sizeof(PixelPacket),
         (int (*)(const void *,const void *)) RedCompare);
       pixel=window[center];
       if (pixel.red == window[0].red)
         {
-          for (i=1; i < (radius*radius-1); i++)
+          for (i=1; i < (width*width-1); i++)
             if (window[i].red != window[0].red)
               break;
           pixel=window[i];
         }
       else
-        if (pixel.red == window[radius*radius-1].red)
+        if (pixel.red == window[width*width-1].red)
           {
-            for (i=(radius*radius-2); i > 0; i--)
-              if (window[i].red != window[radius*radius-1].red)
+            for (i=(width*width-2); i > 0; i--)
+              if (window[i].red != window[width*width-1].red)
                 break;
             pixel=window[i];
           }
       q->red=pixel.red;
-      qsort((void *) window,radius*radius,sizeof(PixelPacket),
+      qsort((void *) window,width*width,sizeof(PixelPacket),
         (int (*)(const void *,const void *)) GreenCompare);
       pixel=window[center];
       if (pixel.green == window[0].green)
         {
-          for (i=1; i < (radius*radius-1); i++)
+          for (i=1; i < (width*width-1); i++)
             if (window[i].green != window[0].green)
               break;
           pixel=window[i];
         }
       else
-        if (pixel.green == window[radius*radius-1].green)
+        if (pixel.green == window[width*width-1].green)
           {
-            for (i=(radius*radius-2); i > 0; i--)
-              if (window[i].green != window[radius*radius-1].green)
+            for (i=(width*width-2); i > 0; i--)
+              if (window[i].green != window[width*width-1].green)
                 break;
             pixel=window[i];
           }
       q->green=pixel.green;
-      qsort((void *) window,radius*radius,sizeof(PixelPacket),
+      qsort((void *) window,width*width,sizeof(PixelPacket),
         (int (*)(const void *,const void *)) BlueCompare);
       pixel=window[center];
       if (pixel.blue == window[0].blue)
         {
-          for (i=1; i < (radius*radius-1); i++)
+          for (i=1; i < (width*width-1); i++)
             if (window[i].blue != window[0].blue)
               break;
           pixel=window[i];
         }
       else
-        if (pixel.blue == window[radius*radius-1].blue)
+        if (pixel.blue == window[width*width-1].blue)
           {
-            for (i=(radius*radius-2); i > 0; i--)
-              if (window[i].blue != window[radius*radius-1].blue)
+            for (i=(width*width-2); i > 0; i--)
+              if (window[i].blue != window[width*width-1].blue)
                 break;
             pixel=window[i];
           }
       q->blue=pixel.blue;
-      qsort((void *) window,radius*radius,sizeof(PixelPacket),
+      qsort((void *) window,width*width,sizeof(PixelPacket),
         (int (*)(const void *,const void *)) OpacityCompare);
       pixel=window[center];
       if (pixel.opacity == window[0].opacity)
         {
-          for (i=1; i < (radius*radius-1); i++)
+          for (i=1; i < (width*width-1); i++)
             if (window[i].opacity != window[0].opacity)
               break;
           pixel=window[i];
         }
       else
-        if (pixel.opacity == window[radius*radius-1].opacity)
+        if (pixel.opacity == window[width*width-1].opacity)
           {
-            for (i=(radius*radius-2); i > 0; i--)
-              if (window[i].opacity != window[radius*radius-1].opacity)
+            for (i=(width*width-2); i > 0; i--)
+              if (window[i].opacity != window[width*width-1].opacity)
                 break;
             pixel=window[i];
           }

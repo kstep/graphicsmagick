@@ -294,8 +294,8 @@ static struct
       {"height", IntegerReference}, {"x", IntegerReference},
       {"y", IntegerReference} } },
     { "Despeckle", },
-    { "Edge", { {"order", IntegerReference} } },
-    { "Emboss", { {"order", IntegerReference} } },
+    { "Edge", { {"radius", DoubleReference} } },
+    { "Emboss", { {"radius", DoubleReference} } },
     { "Enhance", },
     { "Flip", },
     { "Flop", },
@@ -304,10 +304,10 @@ static struct
       {"outer", IntegerReference}, {"color", StringReference} } },
     { "Implode", { {"factor", DoubleReference} } },
     { "Magnify", },
-    { "MedianFilter", { {"radius", IntegerReference} } },
+    { "MedianFilter", { {"radius", DoubleReference} } },
     { "Minify", },
-    { "OilPaint", { {"radius", IntegerReference} } },
-    { "ReduceNoise", { {"order", IntegerReference} } },
+    { "OilPaint", { {"radius", DoubleReference} } },
+    { "ReduceNoise", { {"radius", DoubleReference} } },
     { "Roll", { {"geom", StringReference}, {"x", IntegerReference},
       {"y", IntegerReference} } },
     { "Rotate", { {"degree", DoubleReference} } },
@@ -4066,15 +4066,15 @@ Mogrify(ref,...)
         case 10:  /* Edge */
         {
           if (!attribute_flag[0])
-            argument_list[0].int_reference=3;
-          image=EdgeImage(image,argument_list[0].int_reference,&exception);
+            argument_list[0].double_reference=1;
+          image=EdgeImage(image,argument_list[0].double_reference,&exception);
           break;
         }
         case 11:  /* Emboss */
         {
           if (!attribute_flag[0])
-            argument_list[0].int_reference=3;
-          image=EmbossImage(image,argument_list[0].int_reference,&exception);
+            argument_list[0].double_reference=1;
+          image=EmbossImage(image,argument_list[0].double_reference,&exception);
           break;
         }
         case 12:  /* Enhance */
@@ -4148,9 +4148,9 @@ Mogrify(ref,...)
         case 18:  /* MedianFilter */
         {
           if (!attribute_flag[0])
-            argument_list[0].int_reference=3;
-          image=
-            MedianFilterImage(image,argument_list[0].int_reference,&exception);
+            argument_list[0].double_reference=1;
+          image=MedianFilterImage(image,argument_list[0].double_reference,
+            &exception);
           break;
         }
         case 19:  /* Minify */
@@ -4161,16 +4161,17 @@ Mogrify(ref,...)
         case 20:  /* OilPaint */
         {
           if (!attribute_flag[0])
-            argument_list[0].int_reference=3;
-          image=OilPaintImage(image,argument_list[0].int_reference,&exception);
+            argument_list[0].double_reference=1;
+          image=OilPaintImage(image,argument_list[0].double_reference,
+            &exception);
           break;
         }
         case 21:  /* ReduceNoise */
         {
           if (!attribute_flag[0])
-            argument_list[0].int_reference=3;
-          image=
-            ReduceNoiseImage(image,argument_list[0].int_reference,&exception);
+            argument_list[0].double_reference=3;
+          image=ReduceNoiseImage(image,argument_list[0].double_reference,
+            &exception);
           break;
         }
         case 22:  /* Roll */

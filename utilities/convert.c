@@ -65,7 +65,7 @@
 %    -bordercolor color   border color
 %    -box color           color for annotation bounding box
 %    -cache threshold     number of megabytes available to the pixel cache
-%    -charcoal order      simulate a charcoal drawing
+%    -charcoal radius     simulate a charcoal drawing
 %    -coalesce            merge a sequence of images
 %    -colorize value      colorize the image with the fill color
 %    -colors value        preferred number of colors in the image
@@ -84,8 +84,8 @@
 %    -dispose method      GIF disposal method
 %    -dither              apply Floyd/Steinberg error diffusion to image
 %    -draw string         annotate the image with a graphic primitive
-%    -edge order          apply a filter to detect edges in the image
-%    -emboss order        emboss an image
+%    -edge radius         apply a filter to detect edges in the image
+%    -emboss radius       emboss an image
 %    -enhance             apply a digital filter to enhance a noisy image
 %    -equalize            perform histogram equalization to an image
 %    -fill color          color to use when filling a graphic primitive
@@ -108,7 +108,7 @@
 %    -loop iterations     add Netscape loop extension to your GIF animation
 %    -map filename        transform image colors to match this set of colors
 %    -matte               store matte channel if the image has one
-%    -median order        apply a median filter to the image
+%    -median radius       apply a median filter to the image
 %    -modulate value      vary the brightness, saturation and hue
 %    -monochrome          transform image to black and white
 %    -morph value         morph an image sequence
@@ -262,7 +262,7 @@ static void Usage()
       "-bordercolor color   border color",
       "-box color           color for annotation bounding box",
       "-cache threshold     megabytes of memory available to the pixel cache",
-      "-charcoal order      simulate a charcoal drawing",
+      "-charcoal radius     simulate a charcoal drawing",
       "-coalesce            merge a sequence of images",
       "-colorize value      colorize the image with the fill color",
       "-colors value        preferred number of colors in the image",
@@ -281,8 +281,8 @@ static void Usage()
       "-dispose method      GIF disposal method",
       "-dither              apply Floyd/Steinberg error diffusion to image",
       "-draw string         annotate the image with a graphic primitive",
-      "-edge order          apply a filter to detect edges in the image",
-      "-emboss order        emboss an image",
+      "-edge radius         apply a filter to detect edges in the image",
+      "-emboss radius       emboss an image",
       "-enhance             apply a digital filter to enhance a noisy image",
       "-equalize            perform histogram equalization to an image",
       "-fill color          color to use when filling a graphic primitive",
@@ -306,7 +306,7 @@ static void Usage()
       "-loop iterations     add Netscape loop extension to your GIF animation",
       "-map filename        transform image colors to match this set of colors",
       "-matte               store matte channel if the image has one",
-      "-median order        apply a median filter to the image",
+      "-median radius       apply a median filter to the image",
       "-modulate value      vary the brightness, saturation, and hue",
       "-monochrome          transform image to black and white",
       "-morph value         morph an image sequence",
@@ -622,7 +622,7 @@ int main(int argc,char **argv)
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                    MagickError(OptionError,"Missing order",option);
+                    MagickError(OptionError,"Missing radius",option);
                 }
               break;
             }
@@ -850,7 +850,7 @@ int main(int argc,char **argv)
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                    MagickError(OptionError,"Missing order",option);
+                    MagickError(OptionError,"Missing radius",option);
                 }
               break;
             }
@@ -860,7 +860,7 @@ int main(int argc,char **argv)
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                    MagickError(OptionError,"Missing order",option);
+                    MagickError(OptionError,"Missing radius",option);
                 }
               break;
             }

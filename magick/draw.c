@@ -983,7 +983,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           {
             for (p++; *p != '\0'; p++)
             {
-              if (isalpha(*p))
+              if (isalpha((int) *p))
                 number_attributes++;
               if ((*p == '"') && (*(p-1) != '\\'))
                 break;
@@ -994,7 +994,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             {
               for (p++; *p != '\0'; p++)
               {
-                if (isalpha(*p))
+                if (isalpha((int) *p))
                   number_attributes++;
                 if ((*p == '\'') && (*(p-1) != '\\'))
                   break;
@@ -1003,7 +1003,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           else
             for (p++;  *p != '\0'; p++)
             {
-              if (isalpha(*p))
+              if (isalpha((int) *p))
                 number_attributes++;
               if (isspace((int) *p) && (*(p-1) != '\\') && (*p != '\0'))
                 break;

@@ -273,6 +273,7 @@ static unsigned int TIFFWarningHandler(const char *module,const char *format,
   (void) strcat(p,".");
   if (image != (Image *) NULL)
     ThrowBinaryException(DelegateWarning,message,image->filename);
+  return(True);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
