@@ -1187,7 +1187,7 @@ static void mng_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
                       Skip the bKGD data byte and CRC.
                     */
                     check=(png_size_t)
-                   ReadBlob(image,5,(char *) mng_info->read_buffer);
+                      ReadBlob(image,5,(char *) mng_info->read_buffer);
                     check=(png_size_t) ReadBlob(image,(size_t) length,
                       (char *) mng_info->read_buffer);
                     mng_info->saved_bkgd_index=mng_info->read_buffer[0];
@@ -2127,7 +2127,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   if (image->delay != 0)
     mng_info->scenes_found++;
   if (image_info->ping && (image_info->subrange != 0) &&
-      mng_info->scenes_found > image_info->subimage+image_info->subrange)
+      mng_info->scenes_found > (long) (image_info->subimage+image_info->subrange))
     {
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2160,7 +2160,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   png_read_end(ping,ping_info);
 
   if (image_info->subrange != 0 && mng_info->scenes_found-1 <
-      image_info->subimage)
+      (long) image_info->subimage)
     {
       png_destroy_read_struct(&ping,&ping_info,&end_info);
       LiberateMemory((void **) &png_pixels);
@@ -3236,8 +3236,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
             image->page.y=mng_get_long(&p[4]);
             if ((int) p[9] != 0)
               {
-                image->page.x=image->page.x/10000;
-                image->page.y=image->page.y/10000;
+                image->page.x/=10000;
+                image->page.y/=10000;
               }
           }
         if (length)
@@ -3587,6 +3587,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   volatile unsigned long
     default_frame_delay,
     final_delay,
+    final_image_delay,
     frame_delay,
 #ifdef MNG_INSERT_LAYERS
     insert_layers,
@@ -3836,6 +3837,15 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 image->iterations=mng_iterations;
                 term_chunk_found=True;
               }
+            if (logging)
+              {
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                    "    repeat=%d",repeat);
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                    "    final_delay=%ld",final_delay);
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                    "    image->iterations=%ld",image->iterations);
+              }
             LiberateMemory((void **) &chunk);
             continue;
           }
@@ -4074,6 +4084,9 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (length)
               if (p[0])
                 mng_info->framing_mode=p[0];
+            if (logging)
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "    Framing_mode=%d",mng_info->framing_mode);
             if (length > 6)
               {
                 /*
@@ -4101,6 +4114,9 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         if (change_delay == 2)
                           default_frame_delay=frame_delay;
                         p+=4;
+                        if (logging)
+                          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                              "    Framing_delay=%ld",frame_delay);
                       }
                     if (change_timeout)
                       {
@@ -4109,15 +4125,22 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         if (change_delay == 2)
                           default_frame_timeout=frame_timeout;
                         p+=4;
+                        if (logging)
+                          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                              "    Framing_timeout=%ld",frame_timeout);
                       }
                     if (change_clipping)
                       {
                         fb=mng_read_box(previous_fb,p[0],&p[1]);
                         p+=17;
                         previous_fb=fb;
+                        if (logging)
+                          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                              "    Frame_clipping: L=%ld R=%ld T=%ld B=%ld",
+                              fb.left, fb.right,fb.top,fb.bottom);
+                        if (change_clipping == 2)
+                          default_fb=fb;
                       }
-                    if (change_clipping == 2)
-                      default_fb=fb;
                   }
               }
             mng_info->clip=fb;
@@ -4128,6 +4151,10 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Insert a background layer behind the frame if framing_mode is 4.
             */
 #ifdef MNG_INSERT_LAYERS
+            if (logging)
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "   subframe_width=%lu, subframe_height=%lu",
+                  subframe_width, subframe_height);
             if (insert_layers && (mng_info->framing_mode == 4) &&
                 (subframe_width) && (subframe_height))
               {
@@ -4164,6 +4191,11 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 image->matte=False;
                 image->delay=0;
                 SetImage(image,OpaqueOpacity);
+                if (logging)
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                      "  Inserted background layer, L=%ld, R=%ld, T=%ld, B=%ld",
+                      mng_info->clip.left,mng_info->clip.right,
+                      mng_info->clip.top,mng_info->clip.bottom);
               }
 #endif
             LiberateMemory((void **) &chunk);
@@ -4625,13 +4657,17 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 image->page.y=0;
                 image->background_color=mng_background_color;
                 SetImage(image,TransparentOpacity);
+                if (logging)
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                      "  Inserted transparent background layer, W=%lud, H=%lud",
+                      mng_info->mng_width,mng_info->mng_height);
               }
           }
         /*
           Insert a background layer behind the upcoming image if
           framing_mode is 3, and we haven't already inserted one.
         */
-        else if (insert_layers && (mng_info->framing_mode == 3) &&
+        if (insert_layers && (mng_info->framing_mode == 3) &&
                 (subframe_width) && (subframe_height) && (simplicity == 0 ||
                 (simplicity & 0x08)))
           {
@@ -4668,6 +4704,11 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image->background_color=mng_background_color;
             image->matte=False;
             SetImage(image,OpaqueOpacity);
+            if (logging)
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "  Inserted background layer, L=%ld, R=%ld, T=%ld, B=%ld",
+                  mng_info->clip.left,mng_info->clip.right,
+                  mng_info->clip.top,mng_info->clip.bottom);
           }
 #endif /* MNG_INSERT_LAYERS */
         first_mng_object=False;
@@ -5280,7 +5321,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       CatchImageException(image);
       if (image_info->subrange != 0)
         {
-          if (mng_info->scenes_found > image_info->subimage+image_info->subrange)
+          if (mng_info->scenes_found > (long) (image_info->subimage+image_info->subrange))
             break;
         }
       if (logging)
@@ -5331,13 +5372,6 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       mng_info->image_found++;
     }
 #endif
-  if (mng_info->ticks_per_second)
-     image->delay=(100*final_delay/mng_info->ticks_per_second);
-  else
-    {
-     image->delay=final_delay;
-     image->start_loop=True;
-    }
   image->iterations=mng_iterations;
   if (mng_iterations == 1)
     image->start_loop=True;
@@ -5383,6 +5417,47 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       MngInfoFreeStruct(mng_info,&have_mng_structure);
       return((Image *) NULL);
     }
+
+  if (mng_info->ticks_per_second)
+    final_delay=100*final_delay/mng_info->ticks_per_second;
+  else
+    image->start_loop=True;
+  /* Find final nonzero image delay */
+  final_image_delay=0;
+  while (image->next != (Image *) NULL)
+    {
+      if (image->delay)
+        final_image_delay=image->delay;
+      image=image->next;
+    }
+  if (final_delay < final_image_delay)
+    final_delay=final_image_delay;
+  image->delay=final_delay;
+  if (logging)
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "  image->delay=%lu, final_delay=%lu",image->delay,final_delay);
+  if (logging)
+    {
+      int
+        scene;
+
+      scene=0;
+      while (image->previous != (Image *) NULL)
+        image=image->previous;
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "  Before coalesce:");
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "    scene 0 delay=%lu",image->delay);
+      while (image->next != (Image *) NULL)
+        {
+          image=image->next;
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "    scene %d delay=%lu",++scene,image->delay);
+        }
+    }
+
+  while (image->previous != (Image *) NULL)
+    image=image->previous;
 #ifdef MNG_COALESCE_LAYERS
   if (insert_layers)
     {
@@ -5425,6 +5500,31 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     }
 #endif
+
+  while (image->next != (Image *) NULL)
+      image=image->next;
+  image->dispose=BackgroundDispose;
+
+  if (logging)
+    {
+      int
+        scene;
+
+      scene=0;
+      while (image->previous != (Image *) NULL)
+        image=image->previous;
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "  After coalesce:");
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "    scene 0 delay=%lu dispose=%d",image->delay,(int) image->dispose);
+      while (image->next != (Image *) NULL)
+        {
+          image=image->next;
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "    scene %d delay=%lu dispose=%d",++scene,
+              image->delay,(int) image->dispose);
+        }
+    }
   while (image->previous != (Image *) NULL)
     image=image->previous;
   MngInfoFreeStruct(mng_info,&have_mng_structure);
@@ -7031,7 +7131,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "  Writing PNG end info");
   png_write_end(ping,ping_info);
-  if (mng_info->need_fram && (int) image->dispose == 2)
+  if (mng_info->need_fram && (int) image->dispose == BackgroundDispose)
     {
       if (mng_info->page.x || mng_info->page.y || (ping_info->width != mng_info->page.width) ||
           (ping_info->height != mng_info->page.height))
@@ -7465,7 +7565,7 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
           /* Copy IDAT chunks */
           len=0;
           p=(unsigned char *) (blob+8);
-          for (i=8; i<length; i+=len+12)
+          for (i=8; i<(long) length; i+=len+12)
           {
             len=(*p<<24)|((*(p+1))<<16)|((*(p+2))<<8)|(*(p+3));
             p+=4;
@@ -7867,8 +7967,8 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
             Determine image bounding box.
           */
           SetGeometry(image,&mng_info->page);
-          (void) GetMagickGeometry(image_info->page,&mng_info->page.x,&mng_info->page.y,
-            &mng_info->page.width,&mng_info->page.height);
+          (void) GetMagickGeometry(image_info->page,&mng_info->page.x,
+            &mng_info->page.y,&mng_info->page.width,&mng_info->page.height);
         }
   if (write_mng)
     {
@@ -7914,7 +8014,7 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
           need_defi=True;
         if (next_image->matte)
           need_matte=True;
-        if ((int) next_image->dispose >= 2)
+        if ((int) next_image->dispose >= BackgroundDispose)
           if (next_image->matte || next_image->page.x || next_image->page.y ||
               ((next_image->columns < mng_info->page.width) &&
                (next_image->rows < mng_info->page.height)))

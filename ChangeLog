@@ -1,3 +1,7 @@
+2002-02-10  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* Brought MNG handling of final delay into compliance with MNG spec.
+
 2003-02-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/bmp.c (WriteBMPImage): Added support for
