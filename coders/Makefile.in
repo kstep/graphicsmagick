@@ -232,7 +232,7 @@ noinst_HEADERS =
 @WITH_MODULES_TRUE@pkgdir = @WITH_MODULES_TRUE@$(libdir)/ImageMagick/modules/coders
 
 # Architecture-dependent data files installed with modules
-@WITH_MODULES_TRUE@pkg_DATA = @WITH_MODULES_TRUE@modules.mgk
+@WITH_MODULES_TRUE@pkg_DATA = @WITH_MODULES_TRUE@
 
 # Architecture independent data files installed in the package's data directory
 @WITH_MODULES_TRUE@pkgdata_DATA = 
@@ -1596,22 +1596,22 @@ distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
 
-# Install delegates files
-install-data-delegates: 
+# Install config files
+install-data-config: 
 	$(mkinstalldirs) $(pkglibdir)
 	$(INSTALL_DATA) delegates.mgk $(pkglibdir)
 	$(INSTALL_DATA) fonts.mgk $(pkglibdir)
 	$(INSTALL_DATA) modules.mgk $(pkglibdir)
 
-# Uninstall delegates files
-uninstall-data-delegates:
+# Uninstall config files
+uninstall-data-config:
 	rm -f $(pkglibdir)/delegates.mgk
 	rm -f $(pkglibdir)/fonts.mgk
 	rm -f $(pkglibdir)/modules.mgk
 
-install-exec-local: install-data-delegates
+install-exec-local: install-data-config
 
-uninstall-local: uninstall-data-delegates
+uninstall-local: uninstall-data-config
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
