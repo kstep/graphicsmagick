@@ -62,8 +62,12 @@
  */
 #include "studio.h"
 #include "blob.h"
+#include "draw.h"
+#include "list.h"
 #include "magick.h"
+#include "monitor.h"
 #include "utility.h"
+#include "version.h"
 #if defined(WIN32)
 #define M_PI MagickPI
 #endif

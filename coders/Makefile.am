@@ -70,7 +70,7 @@ endif # WITH_MODULES
 EXTRA_DIST = modules.mgk delegates.mgk.in type.mgk.in
 
 # Headers which are not installed but which are distributed
-noinst_HEADERS = 
+noinst_HEADERS = pscommon.h
 
 # Location of libMagick.la
 LIBMAGICK = ../magick/libMagick.la
