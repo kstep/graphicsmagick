@@ -2147,12 +2147,11 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
   assert(image != (Image *) NULL);
   assert(image->cache != (Cache) NULL);
   assert(image->signature == MagickSignature);
-  ModifyCache(image,&image->exception);
   if ((image->storage_class != GetCacheClass(image->cache)) ||
       (image->colorspace != GetCacheColorspace(image->cache)))
     {
       /*
-        Allocate pixel cache.
+        Open pixel cache.
       */
       status=OpenCache(image);
       if (status == False)
@@ -2162,6 +2161,7 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
           return((PixelPacket *) NULL);
         }
     }
+  (void) ModifyCache(image,&image->exception);
   /*
     Validate pixel cache geometry.
   */
