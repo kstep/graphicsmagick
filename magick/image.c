@@ -1856,15 +1856,60 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       DestroyImageInfo(image_info);
     }
   /*
-    Display image attributes.
+    Display formatted image attributes.
   */
   attribute=GetImageAttribute(image,(char *) NULL);
-  for ( ; attribute != (const ImageAttribute *) NULL; attribute=attribute->next)
   {
-    if (*attribute->key == '[')
-      continue;
-    (void) fprintf(file,"  %.1024s: ",attribute->key);
-    (void) fprintf(file,"%s\n",attribute->value);
+#if defined(WRAP_ATTRIBUTES)
+    int
+      screen_width=79;
+
+    if (getenv("COLUMNS"))
+        screen_width=atoi(getenv("COLUMNS"))-1;
+#endif /* defined(WRAP_ATTRIBUTES) */
+
+    for ( ; attribute != (const ImageAttribute *) NULL; attribute=attribute->next)
+      {
+        (void) fprintf(file,"  %c", toupper((int)attribute->key[0]));
+        if (strlen(attribute->key) > 1)
+          (void) fprintf(file,"%.1024s",attribute->key+1);
+#if defined(WRAP_ATTRIBUTES)
+        {
+          int
+            attribute_length,
+            formatted_chars=0,
+            length=0,
+            start_column=4,
+            strip_length;
+
+          char
+            *s;
+
+          (void) fprintf(file,":\n");
+          attribute_length=strlen(attribute->value);
+          for (s=attribute->value; length < attribute_length; s+=formatted_chars)
+            {
+              fprintf(file,"%*s",start_column,"");
+              strip_length=screen_width-start_column;
+              if (length+strip_length < attribute_length)
+                {
+                  char
+                    *e;
+
+                  for(e=s+strip_length; (e > s) && ( !isspace((int)(*(e-1)))) ; e--);
+                  if ((e > s) && (*(e-1) == ' '))
+                    strip_length=e-s;
+                }
+              formatted_chars=fprintf(file,"%.*s",strip_length,s);
+              length+=formatted_chars;
+              fprintf(file,"\n");
+            }
+        }
+#else
+        (void) fprintf(file,": ");
+        (void) fprintf(file,"%s\n",attribute->value);
+#endif
+      }
   }
   if (image->taint)
     (void) fprintf(file,"  Tainted: True\n");

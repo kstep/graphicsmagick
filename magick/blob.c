@@ -1838,9 +1838,12 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
 #endif
           }
 #if defined(HasZLIB)
-      if ((strlen(filename) > 3) &&
-          ((LocaleCompare(filename+strlen(filename)-3,".gz") == 0) ||
-           (LocaleCompare(filename+strlen(filename)-2,".Z") == 0)))
+      if (((strlen(filename) > 2) &&
+           (LocaleCompare(filename+strlen(filename)-2,".Z") == 0)) ||
+          ((strlen(filename) > 3) &&
+           (LocaleCompare(filename+strlen(filename)-3,".gz") == 0)) ||
+          ((strlen(filename) > 5) &&
+           (LocaleCompare(filename+strlen(filename)-5,".svgz") == 0)))
         {
           image->blob->file=(FILE *) gzopen(filename,type);
           if (image->blob->file != (FILE *) NULL)

@@ -417,6 +417,7 @@ ModuleExport void RegisterPSImage(void)
     AcquireString("Adobe Encapsulated PostScript Interchange format");
   entry->module=AcquireString("PS");
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("EPS");
   entry->decoder=(DecoderHandler) ReadPSImage;
   entry->encoder=(EncoderHandler) WritePSImage;
@@ -425,6 +426,7 @@ ModuleExport void RegisterPSImage(void)
   entry->description=AcquireString("Adobe Encapsulated PostScript");
   entry->module=AcquireString("PS");
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("EPSF");
   entry->decoder=(DecoderHandler) ReadPSImage;
   entry->encoder=(EncoderHandler) WritePSImage;
@@ -433,6 +435,7 @@ ModuleExport void RegisterPSImage(void)
   entry->description=AcquireString("Adobe Encapsulated PostScript");
   entry->module=AcquireString("PS");
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("EPSI");
   entry->decoder=(DecoderHandler) ReadPSImage;
   entry->encoder=(EncoderHandler) WritePSImage;
@@ -442,6 +445,7 @@ ModuleExport void RegisterPSImage(void)
     AcquireString("Adobe Encapsulated PostScript Interchange format");
   entry->module=AcquireString("PS");
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("PS");
   entry->decoder=(DecoderHandler) ReadPSImage;
   entry->encoder=(EncoderHandler) WritePSImage;

@@ -2786,6 +2786,17 @@ ModuleExport void RegisterSVGImage(void)
     entry->version=AcquireString(version);
   entry->module=AcquireString("SVG");
   (void) RegisterMagickInfo(entry);
+
+  entry=SetMagickInfo("SVGZ");
+#if defined(HasXML)
+  entry->decoder=(DecoderHandler) ReadSVGImage;
+#endif
+  entry->encoder=(EncoderHandler) WriteSVGImage;
+  entry->description=AcquireString("Scalable Vector Gaphics (ZIP compressed)");
+  if (*version != '\0')
+    entry->version=AcquireString(version);
+  entry->module=AcquireString("SVG");
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -2810,7 +2821,7 @@ ModuleExport void RegisterSVGImage(void)
 ModuleExport void UnregisterSVGImage(void)
 {
   (void) UnregisterMagickInfo("SVG");
-  (void) UnregisterMagickInfo("XML");
+  (void) UnregisterMagickInfo("SVGZ");
 }
 
 /*

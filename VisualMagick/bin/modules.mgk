@@ -75,6 +75,7 @@
   <module magick="RGBA" name="RGB" />
   <module magick="ROSE" name="LOGO" />
   <module magick="SHTML" name="HTML" />
+  <module magick="SVGZ" name="SVG" />
   <module magick="TEXT" name="TXT" />
   <module magick="TIF" name="TIFF" />
   <module magick="VDA" name="TGA" />

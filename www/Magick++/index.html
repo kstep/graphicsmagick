@@ -3,12 +3,12 @@
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
 	<TITLE>Magick++</TITLE>
-	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.0  (Win32)">
+	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
 	<META NAME="AUTHOR" CONTENT="Bob Friesenhahn">
 	<META NAME="CREATED" CONTENT="20020805;13455306">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20020805;13501305">
-	<META NAME="DESCRIPTION" CONTENT="C++ API for ImageMagick">
+	<META NAME="CHANGED" CONTENT="20030528;11224400">
+	<META NAME="DESCRIPTION" CONTENT="C++ API for GraphicsMagick">
 	<STYLE>
 	<!--
 		P { color: #000000 }
@@ -21,13 +21,12 @@
 </HEAD>
 <BODY LANG="en-US" TEXT="#000000" LINK="#0000ee" VLINK="#551a8b" BGCOLOR="#ffffff">
 <P ALIGN=CENTER><IMG SRC="Magick++.png" NAME="Graphic1" ALIGN=BOTTOM WIDTH=464 HEIGHT=134 BORDER=0></P>
-<P>Magick++ is the object-oriented C++ API to the <A HREF="../../index.html"><SPAN LANG="en-US">ImageMagick</SPAN></A>
+<P>Magick++ is the object-oriented C++ API to the <A HREF="../../index.html">GraphicsMagick</A>
 image-processing library, the most comprehensive open-source image
 processing package available. Read the latest <A HREF="NEWS.html">NEWS</A>
-and <A HREF="ChangeLog.html"><SPAN LANG="en-US">ChangeLog</SPAN></A>
-for <SPAN LANG="en-US">Magick</SPAN>++. 
+and <A HREF="ChangeLog.html">ChangeLog</A> for Magick++. 
 </P>
-<P><IMG SRC="ImageMagick.png" NAME="Graphic2" ALIGN=RIGHT WIDTH=250 HEIGHT=259 BORDER=0>Magick++
+<P><IMG SRC="../../images/magick.png" NAME="Graphic2" ALIGN=RIGHT WIDTH=229 HEIGHT=146 BORDER=0>Magick++
 supports an object model which is inspired by <A HREF="../perl.html">PerlMagick</A>.
 Images support implicit reference counting so that copy constructors
 and assignment incur almost no cost. The cost of actually copying an
@@ -39,14 +38,13 @@ of an image in memory at one time.
 </P>
 <P>Magick++ provides integrated support for the <A HREF="http://www.sgi.com/tech/stl/">Standard
 Template Library</A> (STL) so that the powerful containers available
-(e.g. <A HREF="http://www.sgi.com/tech/stl/Deque.html"><SPAN LANG="en-US">deque</SPAN></A>,
+(e.g. <A HREF="http://www.sgi.com/tech/stl/Deque.html">deque</A>,
 <A HREF="http://www.sgi.com/tech/stl/Vector.html">vector</A>, <A HREF="http://www.sgi.com/tech/stl/List.html">list</A>,
 and <A HREF="http://www.sgi.com/tech/stl/Map.html">map</A>)&nbsp; can
-be used to write programs similar to those possible with PERL &amp;<SPAN LANG="en-US">
-PerlMagick. </SPAN>STL-<SPAN LANG="en-US">compatible</SPAN> template
-versions of <SPAN LANG="en-US">ImageMagick's</SPAN> list-style
-operations are provided so that operations may be performed on
-multiple images stored in STL containers. 
+be used to write programs similar to those possible with PERL &amp;
+PerlMagick. STL-compatible template versions of GraphicsMagick's
+list-style operations are provided so that operations may be
+performed on multiple images stored in STL containers. 
 </P>
 <H3>Documentation</H3>
 <P>Detailed <A HREF="Documentation.html">documentation</A> are
@@ -54,9 +52,9 @@ provided for all Magick++ classes, class methods, and template
 functions which comprise the API. 
 </P>
 <H3>Obtaining Magick++</H3>
-<P>Magick++ is included as part of <A HREF="../../index.html">ImageMagick</A>
-source releases and may be retrieved via <A HREF="http://www.imagemagick.org/www/archives.html"><SPAN LANG="en-US">ftp</SPAN></A>
-or <A HREF="http://www.imagemagick.org/www/cvs.html">CVS.</A> 
+<P>Magick++ is included as part of <A HREF="../../index.html">GraphicsMagick</A>
+source releases and may be retrieved via <A HREF="http://www.graphicsmagick.org/www/download.html">ftp</A>
+or <A HREF="http://www.graphicsmagick.org/www/cvs.html">CVS.</A> 
 </P>
 <H3>Installation</H3>
 <P>Once you have the sources available, follow these detailed
@@ -65,33 +63,32 @@ Windows.
 </P>
 <P><B><FONT SIZE=4>Usage</FONT></B> 
 </P>
-<P>A helper script named <I>Magick++-config</I> is installed under
-Unix which assists with recalling compilation options required to
-compile and link programs which use Magick++.&nbsp; For example, the
+<P>A helper script named <I>GraphicsMagick++-config</I> is installed
+under Unix which assists with recalling compilation options required
+to compile and link programs which use Magick++. For example, the
 following command will compile and link the source file <I>example.cpp</I>
 to produce the executable <I>example</I> (notice that quotes are
 backward quotes): 
 </P>
-<BLOCKQUOTE><TT><FONT SIZE=2>c++ `Magick++-config --cxxflags
---cppflags --ldflags --libs` -o example example.cpp</FONT></TT></BLOCKQUOTE>
+<BLOCKQUOTE><TT><FONT SIZE=2>c++ -o example example.cpp
+`GraphicsMagick++-config --cppflags --cxxflags --ldflags --libs`</FONT></TT></BLOCKQUOTE>
 <P>Windows users may get started by manually editing a project file
 for one of the Magick++ demo programs. 
 </P>
 <P><B>Please note that under Windows (and possibly the Mac) it is
-necessary to initialize the ImageMagick library prior to using the
+necessary to initialize the GraphicsMagick library prior to using the
 Magick++ library</B>. This initialization is performed by passing the
-path to the ImageMagick DLLs (assumed to be in the same directory as
-your program) to the InitializeMagick() function call. This is
+path to the GraphicsMagick DLLs (assumed to be in the same directory
+as your program) to the InitializeMagick() function call. This is
 commonly performed by providing the path to your program (argv[0]) as
 shown in the following example: 
 </P>
 <BLOCKQUOTE><TT><FONT COLOR="#663366">int main( int /*argc*/, char **
 argv)</FONT></TT> <BR><TT><FONT COLOR="#663366">{</FONT></TT> <BR><TT><FONT COLOR="#663366">&nbsp;
 InitializeMagick(*argv);</FONT></TT></BLOCKQUOTE>
-<P>This<SPAN LANG="en-US"> initialization </SPAN>step is not required
-under Unix, Linux, <SPAN LANG="en-US">Cygwin</SPAN>, or any other
-operating environment that supports the notion of &quot;installing&quot;
-ImageMagick in a known location. 
+<P>This initialization step is not required under Unix, Linux,
+Cygwin, or any other operating environment that supports the notion
+of &quot;installing&quot; GraphicsMagick in a known location. 
 </P>
 <H3>Reporting Bugs</H3>
 <P>Please report any bugs via the <A HREF="http://www.simplesystems.org/Magick++/bugs">Magick++

@@ -53,6 +53,55 @@
 </tr>
 </table>
 <p>
+2003-05-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> VisualMagick/bin/modules.mgk: Add mapping from SVGZ to SVG.
+  <LI> coders/modules.mgk: Add mapping from SVGZ to SVG.
+  <LI> coders/svg.c (RegisterSVGImage): Add registration for SVGZ
+        format.<BR>
+  <LI> PerlMagick/t/zlib/read.t: Added test to check reading a file
+        with .gz extension. The blob portion of the test currently fails.
+  <LI> coders/wpg.c (ReadWPGImage): Fix reading WPGs with embedded
+        Postscript. Ensure that scene numbers are sane. Bugs remain.
+  <LI> magick/blob.c (OpenBlob): Recognize the .svgz extension as a
+        gzipped format.  Not required in order to read .svgz files since
+        the blob file magic detects gzip files.
+  <LI> magick/command.c (MontageImageCommand): Wrong exception
+        macro was being invoked.  Steps have been taken to ensure that
+        this doesn't happen again.<BR>
+        (ImportUsage): Fix spelling of 'type'.
+  <LI> magick/magick.c (DestroyMagick): Decided that initialization
+        state should be tracked via an enum so that DestroyMagick will
+        take effect even if InitializeMagick has never been called.
+
+</UL>
+<p>
+2003-05-27  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> coders/png.c: png.c would dump core when writing a grayscale
+        image in png24 or png32 format.
+
+</UL>
+<p>
+2003-05-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/ept.c (WriteEPTImage): Fixed writing EPT preview image and
+        added logging.<BR>
+  <LI> magick/enhance.c (NegateImage): If image is in CMYK colorspace,
+        then negate the `K' channel as well.
+  <LI> PerlMagick/Magick.xs: Fix spelling of 'elevation' argument to
+        Shade method.<BR>
+  <LI> magick/image.h (ImageInfo): Added more documenting comments.
+  <LI> magick/image.c (CloneImage): Don't clone huffman ascii85
+        encoding support structure since it is not useful outside of the
+        current image context. Cloning a structure via pointer assignment
+        causes a memory leak.
+
+</UL>
+<p>
 2003-05-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -58,13 +58,19 @@
 /*
   Global declarations.
 */
+typedef enum  {
+  InitDefault,
+  InitUninitialized,
+  InitInitialized
+} MagickInitializationState;
+
 static SemaphoreInfo
   *magick_semaphore = (SemaphoreInfo *) NULL;
 
 static MagickInfo
   *magick_list = (MagickInfo *) NULL;
 
-static int MagickInitialized = False;
+static MagickInitializationState MagickInitialized = InitDefault;
 
 
 /*
@@ -89,7 +95,7 @@ static int MagickInitialized = False;
 MagickExport void DestroyMagick(void)
 {
 
-  if (MagickInitialized == False)
+  if (MagickInitialized == InitUninitialized)
     return;
 
   DestroyColorInfo();
@@ -109,7 +115,7 @@ MagickExport void DestroyMagick(void)
   NTGhostscriptUnLoadDLL();
 #endif
 
-  MagickInitialized=False;
+  MagickInitialized=InitUninitialized;
 }
 
 /*
@@ -444,10 +450,10 @@ MagickExport void InitializeMagick(const char *path)
   char
     execution_path[MaxTextExtent];
 
-  if (MagickInitialized == True)
+  if (MagickInitialized == InitInitialized)
     return;
 
-  MagickInitialized=True;
+  MagickInitialized=InitInitialized;
 
   (void) setlocale(LC_ALL,"");
   (void) setlocale(LC_NUMERIC,"C");

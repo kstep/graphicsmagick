@@ -8,7 +8,7 @@
 	<META NAME="CREATED" CONTENT="20020805;17491620">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
 	<META NAME="CHANGED" CONTENT="20021125;10502900">
-	<META NAME="DESCRIPTION" CONTENT="Documentation for ImageMagick enumerations">
+	<META NAME="DESCRIPTION" CONTENT="Documentation for GraphicsMagick enumerations">
 	<STYLE>
 	<!--
 		TD P { color: #000000 }
@@ -637,7 +637,7 @@ Specify <I>CompositeOperator</I> to select a different algorithm.
 express the desired compression type when encoding an image. Be aware
 that most image types only support a sub-set of the available
 compression types. If the compression type specified is incompatable
-with the image, ImageMagick selects a compression type compatable
+with the image, GraphicsMagick selects a compression type compatable
 with the image type. 
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>CompressionType</B></P>
@@ -883,7 +883,7 @@ property for usage details.
 <P STYLE="margin-bottom: 0in"><I>FilterTypes</I> is used to adjust
 the filter algorithm used when resizing images. Different filters
 experience varying degrees of success with various images and can
-take sipngicantly different amounts of processing time. ImageMagick
+take sipngicantly different amounts of processing time. GraphicsMagick
 uses the <I>LanczosFilter</I> by default since this filter has been
 shown to provide the best results for most images in a reasonable
 amount of time. Other filter types (e.g. <I>TriangleFilter</I>) may
@@ -1815,7 +1815,7 @@ Quantums</B></P>
 </TABLE>
 <P>Rendering intent is a concept defined by <A HREF="http://www.color.org/">ICC</A>
 Spec ICC.1:1998-09, &quot;File Format for Color Profiles&quot;.
-ImageMagick uses <I>RenderingIntent</I> in order to support ICC Color
+GraphicsMagick uses <I>RenderingIntent</I> in order to support ICC Color
 Profiles. 
 </P>
 <P STYLE="margin-bottom: 0in">From the specification: &quot;Rendering
@@ -1890,7 +1890,7 @@ intent dynamically at runtime or embedding time.&quot;
 		</TD>
 	</TR>
 </TABLE>
-<P STYLE="margin-bottom: 0in">By default, ImageMagick defines
+<P STYLE="margin-bottom: 0in">By default, GraphicsMagick defines
 resolutions in pixels per inch. <I>ResolutionType</I> provides a
 means to adjust this. 
 </P>

@@ -1,3 +1,24 @@
+2003-05-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* VisualMagick/bin/modules.mgk: Add mapping from SVGZ to SVG.
+	* coders/modules.mgk: Add mapping from SVGZ to SVG.
+	* coders/svg.c (RegisterSVGImage): Add registration for SVGZ
+	format.
+	* PerlMagick/t/zlib/read.t: Added test to check reading a file
+	with .gz extension. The blob portion of the test currently fails.
+	* coders/wpg.c (ReadWPGImage): Fix reading WPGs with embedded
+	Postscript. Ensure that scene numbers are sane. Bugs remain.
+	* magick/blob.c (OpenBlob): Recognize the .svgz extension as a
+	gzipped format.  Not required in order to read .svgz files since
+	the blob file magic detects gzip files.
+	* magick/command.c (MontageImageCommand): Wrong exception
+	macro was being invoked.  Steps have been taken to ensure that
+	this doesn't happen again.
+	(ImportUsage): Fix spelling of 'type'.
+	* magick/magick.c (DestroyMagick): Decided that initialization
+	state should be tracked via an enum so that DestroyMagick will
+	take effect even if InitializeMagick has never been called.
+
 2003-05-27  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* coders/png.c: png.c would dump core when writing a grayscale

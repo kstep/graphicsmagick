@@ -3,12 +3,12 @@
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
 	<TITLE>Installing Magick++</TITLE>
-	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.0  (Win32)">
+	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
 	<META NAME="AUTHOR" CONTENT="Bob Friesenhahn">
 	<META NAME="CREATED" CONTENT="20020805;17455123">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20020805;17485600">
-	<META NAME="DESCRIPTION" CONTENT="C++ API for ImageMagick">
+	<META NAME="CHANGED" CONTENT="20030528;11273200">
+	<META NAME="DESCRIPTION" CONTENT="C++ API for GraphicsMagick">
 	<STYLE>
 	<!--
 		TD P { color: #000000 }
@@ -27,11 +27,13 @@
 <H3>General</H3>
 <P>In order to compile Magick++ you must have access to a standard
 C++ implementation. The author uses <A HREF="http://gcc.gnu.org/index.html">gcc
-3.1 (GNU C++)</A> which is available under UNIX and under the <A HREF="http://www.cygwin.com/">Cygwin
-UNIX-emulation environment</A> for Windows. Standards compliant
-commercial C++ compilers should also work fine. Most modern C++
-compilers for Microsoft Windows or the Mac should work (project files
-are provided for Microsoft Visual C++ 6.0). 
+3.3 (GNU C++)</A> which is available under UNIX and under the <A HREF="http://www.cygwin.com/">Cygwin
+UNIX-emulation environment</A>, and <A HREF="http://www.mingw.org/">MinGW</A>
+compilation toolset, for Windows. Standards compliant commercial C++
+compilers should also work fine. Most modern C++ compilers for
+Microsoft Windows or the Mac should work. A project file generation
+tool is provided as part of VisualMagick which generates
+Workspace/Solution files for Microsoft Visual C++ 6.0 and 7.0. 
 </P>
 <P>It was decided that Magick++ will be around for the long-haul, so
 its API definition depends on valuable C++ features which should be
@@ -39,148 +41,162 @@ common in all current and future C++ compilers. The compiler must
 support the following C++ standard features: 
 </P>
 <UL>
-	<LI><P STYLE="margin-bottom: 0cm">templates 
+	<LI><P STYLE="margin-bottom: 0in">templates 
 	</P>
-	<LI><P STYLE="margin-bottom: 0cm">static constructors 
+	<LI><P STYLE="margin-bottom: 0in">static constructors 
 	</P>
-	<LI><P STYLE="margin-bottom: 0cm">C++-style casts (e.g. static_cast)
+	<LI><P STYLE="margin-bottom: 0in">C++-style casts (e.g. static_cast)
 		</P>
-	<LI><P STYLE="margin-bottom: 0cm">bool type 
+	<LI><P STYLE="margin-bottom: 0in">bool type 
 	</P>
-	<LI><P STYLE="margin-bottom: 0cm">string class (<TT>&lt;string&gt;</TT>)
+	<LI><P STYLE="margin-bottom: 0in">string class (<TT>&lt;string&gt;</TT>)
 		</P>
-	<LI><P STYLE="margin-bottom: 0cm">exceptions (<TT>&lt;exception&gt;</TT>)
+	<LI><P STYLE="margin-bottom: 0in">exceptions (<TT>&lt;exception&gt;</TT>)
 		</P>
-	<LI><P STYLE="margin-bottom: 0cm">namespaces 
+	<LI><P STYLE="margin-bottom: 0in">namespaces 
 	</P>
 	<LI><P>Standard Template Library (STL) (e.g. <TT>&lt;list&gt;</TT>,
 	<TT>&lt;vector&gt;</TT>) 
 	</P>
 </UL>
-<P STYLE="margin-bottom: 0cm">The author has personally verified that
+<P STYLE="margin-bottom: 0in">The author has personally verified that
 Magick++ compiles and runs using the following compiler/platform
-combinations: <BR><BR>
+combinations: 
 </P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>Tested Configurations</B></P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>Tested Configurations</B></P>
 <TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=3>
+	<COL WIDTH=108*>
+	<COL WIDTH=38*>
+	<COL WIDTH=109*>
 	<TR>
-		<TD>
+		<TD WIDTH=42%>
 			<P ALIGN=CENTER><B>Operating System</B></P>
 		</TD>
-		<TD>
+		<TD WIDTH=15%>
 			<P ALIGN=CENTER><B>Architecture</B></P>
 		</TD>
-		<TD>
+		<TD WIDTH=43%>
 			<P ALIGN=CENTER><B>Compiler</B></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
-			<P><FONT SIZE=2>SunOS 5.6, 5.7, 5.8 (&quot;Solaris 2.6, 7, &amp;
-			8)</FONT></P>
+		<TD WIDTH=42%>
+			<P><FONT SIZE=2>SunOS 5.6, 5.7, 5.8, 5.9 (&quot;Solaris 2.6, 7, 8,
+			&amp; 9)</FONT></P>
 		</TD>
-		<TD>
+		<TD WIDTH=15%>
 			<P><FONT SIZE=2>SPARC</FONT></P>
 		</TD>
-		<TD>
-			<P><FONT SIZE=2>GCC 3.0.4</FONT></P>
+		<TD WIDTH=43%>
+			<P><FONT SIZE=2>GCC 3.0.4, GCC 3.3</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
+		<TD WIDTH=42%>
 			<P><FONT SIZE=2>SunOS 5.7 (&quot;Solaris 7&quot;)</FONT></P>
 		</TD>
-		<TD>
+		<TD WIDTH=15%>
 			<P><FONT SIZE=2>SPARC</FONT></P>
 		</TD>
-		<TD>
+		<TD WIDTH=43%>
 			<P><FONT SIZE=2>Sun Workshop 5.0 C++</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
+		<TD WIDTH=42%>
 			<P><FONT SIZE=2>SunOS 5.8 (&quot;Solaris 8&quot;)</FONT></P>
 		</TD>
-		<TD>
+		<TD WIDTH=15%>
 			<P><FONT SIZE=2>SPARC</FONT></P>
 		</TD>
-		<TD>
+		<TD WIDTH=43%>
 			<P><FONT SIZE=2>Sun WorkShop 6 update 2 C++ 5.3</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
+		<TD WIDTH=42%>
 			<P><FONT SIZE=2>FreeBSD 4.0</FONT></P>
 		</TD>
-		<TD>
+		<TD WIDTH=15%>
 			<P><FONT SIZE=2>Intel Pentium II</FONT></P>
 		</TD>
-		<TD>
+		<TD WIDTH=43%>
 			<P><FONT SIZE=2>GCC 2.95</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
+		<TD WIDTH=42%>
 			<P><FONT SIZE=2>Windows NT 4.0 SP6a</FONT></P>
 		</TD>
-		<TD>
+		<TD WIDTH=15%>
 			<P><FONT SIZE=2>Intel Pentium II</FONT></P>
 		</TD>
-		<TD>
+		<TD WIDTH=43%>
 			<P><FONT SIZE=2>Visual C++ 6.0 Standard Edition</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
+		<TD WIDTH=42%>
 			<P><FONT SIZE=2>Windows XP</FONT></P>
 		</TD>
-		<TD>
+		<TD WIDTH=15%>
 			<P><FONT SIZE=2>Intel Pentium IV</FONT></P>
 		</TD>
-		<TD>
+		<TD WIDTH=43%>
 			<P><FONT SIZE=2>Visual C++ 6.0 Standard Edition Service Pack 5</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
+		<TD WIDTH=42%>
+			<P><FONT SIZE=2>Windows XP</FONT></P>
+		</TD>
+		<TD WIDTH=15%>
+			<P><FONT SIZE=2>Intel Pentium IV</FONT></P>
+		</TD>
+		<TD WIDTH=43%>
+			<P><FONT SIZE=2>Visual Studio .net Professional (Visual C++ 7.0)</FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=42%>
 			<P><FONT SIZE=2>Windows '98 + <A HREF="http://www.cygwin.com/">Cygwin</A>
 			1.3.10</FONT></P>
 		</TD>
-		<TD>
+		<TD WIDTH=15%>
 			<P><FONT SIZE=2>Intel Pentium III</FONT></P>
 		</TD>
-		<TD>
+		<TD WIDTH=43%>
 			<P><FONT SIZE=2>GCC 2.95.3-5</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
+		<TD WIDTH=42%>
 			<P><FONT SIZE=2>Windows NT 4.0 SP6a</FONT></P>
 		</TD>
-		<TD>
+		<TD WIDTH=15%>
 			<P><FONT SIZE=2>Intel Pentium II</FONT></P>
 		</TD>
-		<TD>
+		<TD WIDTH=43%>
 			<P><FONT SIZE=2>GCC 2.95.3-5</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
+		<TD WIDTH=42%>
 			<P><FONT SIZE=2>Windows XP + <A HREF="http://www.cygwin.com/">Cygwin</A>
 			1.3.10</FONT></P>
 		</TD>
-		<TD>
+		<TD WIDTH=15%>
 			<P><FONT SIZE=2>Intel Pentium IV</FONT></P>
 		</TD>
-		<TD>
+		<TD WIDTH=43%>
 			<P><FONT SIZE=2>GCC 2.95.3-5</FONT></P>
 		</TD>
 	</TR>
 </TABLE>
-<P STYLE="margin-bottom: 0cm">Users of Magick++ have reported that
-the following configurations work with Magick++: <BR><BR>
+<P STYLE="margin-bottom: 0in">Users of Magick++ have reported that
+the following configurations work with Magick++: 
 </P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>Other Known Working
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>Other Known Working
 Configurations</B></P>
 <TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2>
 	<TR>
@@ -348,32 +364,32 @@ table of verified configurations.
 <HR>
 <H3 ALIGN=CENTER>Unix/Linux</H3>
 <H4>Building From Source</H4>
-<P>Magick++ is now built using the ImageMagick configure script and
+<P>Magick++ is built using the GraphicsMagick configure script and
 Makefiles. Please follow the installation instructions provided by
 its README.txt file. The following instructions pertain to the
 Magick++ specific configuration and build options. 
 </P>
-<P>To install ImageMagick plus Magick++ under Unix, installation
+<P>To install GraphicsMagick plus Magick++ under Unix, installation
 should be similar to 
 </P>
 <P><TT>./configure [ --prefix=/prefix ]</TT> <BR><TT>make</TT> <BR><TT>make
 install</TT> 
 </P>
-<P>The library is currently named similar to 'libMagick++.a' (and/or
-libMagick++.so.5.0.39) and is installed under prefix/lib while the
-headers are installed with Magick++.h being installed in
-prefix/include and the remaining headers in prefix/include/Magick++. 
+<P>The library is currently named similar to 'libGraphicsMagick++.a'
+(and/or libGraphicsMagick++.so.0.0.2) and is installed under
+prefix/lib while the headers are installed with Magick++.h being
+installed in prefix/include and the remaining headers in
+prefix/include/Magick++. 
 </P>
 <P>To influence the options the configure script chooses, you may
 specify 'make' option variables when running the configure script.
-For example, the command <BR>&nbsp; 
+For example, the command <BR><BR><BR>
 </P>
 <BLOCKQUOTE><TT>./configure CXX=CC CXXFLAGS=-O2 LIBS=-lposix</TT></BLOCKQUOTE>
-<P STYLE="margin-bottom: 0cm"><BR>specifies additional options to the
-configure script. The following table shows the available options. <BR>
-<BR>
+<P STYLE="margin-bottom: 0in"><BR>specifies additional options to the
+configure script. The following table shows the available options. 
 </P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0cm">Environment Variables That
+<P ALIGN=CENTER STYLE="margin-bottom: 0in">Environment Variables That
 Effect Configure</P>
 <TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=3>
 	<COL WIDTH=40*>
@@ -430,32 +446,23 @@ Effect Configure</P>
 		</TD>
 	</TR>
 </TABLE>
-<H4>Installing Linux RPMs</H4>
-<P STYLE="margin-bottom: 0cm"><A HREF="mailto:Alexander.Zimmermann@FMI.Uni-Passau.De">Dr.
-Alexander Zimmermann</A> maintains Linux RPMs of ImageMagick and
-Magick++. These may be downloaded from
-<A HREF="ftp://ftp.forwiss.uni-passau.de/pub/linux/local/ImageMagick/">ftp://ftp.forwiss.uni-passau.de/pub/linux/local/ImageMagick/</A>.
-This site is&nbsp; mirrored periodically to the <A HREF="ftp://ftp.imagemagick.org/pub/ImageMagick/linux/">ImageMagick
-linux directory</A> and from there to the many ImageMagick and Linux
-mirror sites. Please note that the default version of the C++
-compiler delivered with the system may not be sufficient to support
-Magick++. Use of GCC 2.95 or later is strongly recommended under
-Linux. 
-</P>
+<H4><BR><BR>
+</H4>
 <HR>
 <H3 ALIGN=CENTER>Windows '9X, NT, 2000, ME, &amp; XP</H3>
 <H4>Visual C++</H4>
-<P>Windows '95 through Windows XP are supported by the ImageMagick
-source package for NT available in the 'win2k' subdirectory of the
-ImageMagick ftp site (and mirrors). The ImageMagick source package
-for NT provides sources to ImageMagick, Magick++, add-on libraries
-(e.g. JPEG), and a ready-made Visual C++ 6.0 build environment.
-Please read the configuration and build instructions in README.txt
-(under the heading &quot;Windows Win2K/95 VISUAL C++ 6.0
-COMPILATION&quot;) in order to build Magick++. 
+<P>Windows '95 through Windows XP are supported by the GraphicsMagick
+source package for NT available in the 'windows' subdirectory of the
+GraphicsMagick ftp site (and mirrors). The GraphicsMagick source
+package for NT provides sources to GraphicsMagick, Magick++, add-on
+libraries (e.g. JPEG), and a ready-made Visual C++ 6.0 &amp; 7.0
+build environments. Please read the configuration and build
+instructions in INSTALL-windows.txt (under the heading &quot;Windows
+Win2K/95 VISUAL C++ 7.0 COMPILATION&quot;) in order to build
+Magick++. 
 </P>
 <H4>Cygwin &amp; GCC</H4>
-<P>It is possible to build both ImageMagick and Magick++ under the
+<P>It is possible to build both GraphicsMagick and Magick++ under the
 Cygwin Unix-emulation environment for Windows NT. Obtain and install
 Cgywin from <A HREF="http://www.cygwin.com/">http://www.cygwin.com/</A>
 . An X11R6 environment for Cygwin is available from

@@ -321,9 +321,9 @@ a  specific scene from a multi-frame image.</font></td>
      , <a href="#depth">depth</a>
      , <a href="#magick">magick</a>
       (format) may also be specified. Some image formats require that size
- be  specified. The default ImageMagick uses for depth depends on the compiled-in
-  Quantum size (8 or 16).&nbsp; If ImageMagick's Quantum size does not match
-  that of the image, the depth may need to be specified. ImageMagick can
+ be  specified. The default GraphicsMagick uses for depth depends on the compiled-in
+  Quantum size (8 or 16).&nbsp; If GraphicsMagick's Quantum size does not match
+  that of the image, the depth may need to be specified. GraphicsMagick can
 usually   automatically detect the image's format. When a format can't be
 automatically   detected, the format (<a href="#magick">magick</a>
      ) must be specified.</font></td>
@@ -423,7 +423,7 @@ parameters.</font></td>
      Image Manipulation Methods</h3>
                    </center>
       <i>Image</i> supports access to all the single-image (versus image-list)
-   manipulation operations provided by the ImageMagick library. If you must
+   manipulation operations provided by the GraphicsMagick library. If you must
   process a multi-image file (such as an animation), the <a href="STL.html">
     STL interface</a>
      , which provides a multi-image abstraction on top of <i>Image</i>, must
@@ -1145,9 +1145,9 @@ image   to give a 3-D raised or lowered effect)</font></td>
  from  an in-memory <a href="Blob.html">BLOB</a>
       into current object. Depending on the method arguments, the Blob size,
   depth, and format may also be specified. Some image formats require that
- size be specified. The default ImageMagick uses for depth depends on its
-Quantum size (8 or 16).&nbsp; If ImageMagick's Quantum size does not match
-that of the image, the depth may need to be specified. ImageMagick can usually
+ size be specified. The default GraphicsMagick uses for depth depends on its
+Quantum size (8 or 16).&nbsp; If GraphicsMagick's Quantum size does not match
+that of the image, the depth may need to be specified. GraphicsMagick can usually
 automatically detect the image's format. When a format can't be automatically
 detected, the format must be specified.</font></td>
       </tr>
@@ -1943,7 +1943,7 @@ entries_<br>
 in the colormap. Setting the colormap size may extend or truncate the colormap. 
 The maximum number of supported entries is specified by the <i>MaxColormapSize 
                         </i>constant, and is dependent on the value of QuantumDepth 
-when ImageMagick is compiled. An exception is thrown if more entries are requested
+when GraphicsMagick is compiled. An exception is thrown if more entries are requested
 than may be supported. Care should be taken when truncating the colormap
 to ensure that the image colormap indexes reference valid colormap entries.</font><br>
                          </td>
@@ -2010,7 +2010,7 @@ the case  of CMY(K).</font></td>
        <td><font size="-1">void</font></td>
        <td><font size="-1">bool flag_</font></td>
        <td><font size="-1">Enable printing of internal debug messages from
- ImageMagick   as it executes.</font></td>
+ GraphicsMagick   as it executes.</font></td>
       </tr>
        <tr>
       <td>                                                              
@@ -2038,7 +2038,7 @@ the case  of CMY(K).</font></td>
        <td><font size="-1">unsigned int depth_</font></td>
        <td><font size="-1">Image depth. Used to specify the bit depth when
  reading   or writing&nbsp; raw images or when the output format supports
-multiple depths. Defaults to the quantum depth that ImageMagick is compiled
+multiple depths. Defaults to the quantum depth that GraphicsMagick is compiled
 with.</font></td>
       </tr>
        <tr>
@@ -2252,7 +2252,7 @@ of)  when creating a GIF animation.</font></td>
       &amp;colorProfile_</font></td>
        <td><font size="-1">ICC color profile. Supplied via a <a href="Blob.html">
      Blob</a>
-      since Magick++/ and ImageMagick do not currently support formating
+      since Magick++/ and GraphicsMagick do not currently support formating
 this   data structure directly.&nbsp; Specifications are available from the
                         <a href="http://www.color.org/">     International
 Color Consortium</a>
@@ -2294,7 +2294,7 @@ JPEG  image.</font></td>
      &amp; iptcProfile_</font></td>
        <td><font size="-1">IPTC profile. Supplied via a <a href="Blob.html">
    Blob</a>
-      since Magick++ and ImageMagick do not currently&nbsp; support formating
+      since Magick++ and GraphicsMagick do not currently&nbsp; support formating
   this data structure directly. Specifications are available from the <a href="http://www.iptc.org/">
      International Press Telecommunications Council</a>
       for IPTC profiles.</font></td>

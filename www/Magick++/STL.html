@@ -10,7 +10,7 @@
         
   <meta name="Description" content="Documentation on Magick++&apos;s STL support templates.">
         
-  <meta name="Keywords" content="STL,Magick++,ImageMagick">
+  <meta name="Keywords" content="STL,Magick++,GraphicsMagick">
   <title>Magick++ STL Support</title>
 </head>
   <body text="#000000" bgcolor="#ffffff" link="#0000ff" vlink="#ff0000" alink="#000088">
@@ -1406,7 +1406,7 @@ Portable Document page. Often used with <i>psPageSize</i>.</font></td>
    <td><font size="-1">unsigned int depth_</font></td>
    <td><font size="-1">Image depth. Used to specify the bit depth when reading
  or writing&nbsp; raw images or thwn the output format supports multiple
-depths. Defaults to the quantum depth that ImageMagick is compiled with.</font></td>
+depths. Defaults to the quantum depth that GraphicsMagick is compiled with.</font></td>
   </tr>
    <tr>
   <td>                      
@@ -1852,14 +1852,14 @@ capture image from</font></td>
                </center>
   Magick++ provides the&nbsp;<a name="coderInfoList"></a>
                <i>coderInfoList()</i> function to support obtaining information 
-about the image formats supported by ImageMagick. Support for image formats 
-in ImageMagick is provided by modules known as "coders". A user-provided container
+about the image formats supported by GraphicsMagick. Support for image formats 
+in GraphicsMagick is provided by modules known as "coders". A user-provided container
 is updated based on a boolean truth-table match. The truth-table supports
-matching based on whether ImageMagick can read the format, write the format,
+matching based on whether GraphicsMagick can read the format, write the format,
 or supports multiple frames for the format. A wildcard specifier is supported
 for any "don't care" field. The data obtained via coderInfoList() may be
 useful for preparing GUI dialog boxes or for deciding which output format
-to write based on support within the ImageMagick build.                
+to write based on support within the GraphicsMagick build.                
               <p>The definition of coderInfoList is: </p>
                
               <p><tt><font color="#000066">&nbsp; class CoderInfo</font></tt>

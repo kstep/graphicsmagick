@@ -1403,6 +1403,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
   LiberateArgumentList(argc,argv);
   return(status);
 }
+#undef ThrowCompositeException
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -3315,6 +3316,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
   LiberateArgumentList(argc,argv);
   return(status);
 }
+#undef ThrowConvertException
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -3695,6 +3697,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
   LiberateArgumentList(argc,argv);
   return(status);
 }
+#undef ThrowIdentifyException
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -9089,7 +9092,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
   if ((image == (Image *) NULL) && (image_list == (Image *) NULL))
     {
       if (exception->severity == UndefinedException)
-        ThrowConvertException(OptionError,"MissingAnImageFilename",
+        ThrowMontageException(OptionError,"MissingAnImageFilename",
           (char *) NULL);
       return(False);
     }
@@ -9137,7 +9140,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
   LiberateArgumentList(argc,argv);
   return(status);
 }
-
+#undef ThrowMontageException
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -10208,7 +10211,7 @@ MagickExport void ImportUsage(void)
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorspace",
       "-comment string      annotate image with comment",
-      "-compress type       image compression tyhpe",
+      "-compress type       image compression type",
       "-crop geometry       preferred size and location of the cropped image",
       "-debug events        display copious debugging information",
       "-delay value         display the next image after pausing",

@@ -24,7 +24,7 @@
 <H1 ALIGN=CENTER>Magick::Color</H1>
 <P><A HREF="#Color">Color</A> is the base color class in Magick++. It
 is a simple container class for the pixel red, green, blue, and alpha
-values scaled to fit ImageMagick's Quantum size. Normally users will
+values scaled to fit GraphicsMagick's Quantum size. Normally users will
 instantiate a class derived from Color which supports the color model
 that fits the needs of the application. The Color class may be
 constructed directly from an X11-style color string. 
@@ -74,12 +74,12 @@ classes are shown in the following table:
 		</TR>
 	</TABLE>
 </CENTER>
-<P STYLE="margin-bottom: 0cm">ImageMagick may be compiled to support
+<P STYLE="margin-bottom: 0cm">GraphicsMagick may be compiled to support
 32 or 64 bit pixels of type<SPAN LANG="en-US"> PixelPacket. </SPAN>This
 is controlled by the value of the QuantumDepth define. The default is
 64 bit pixels, which provides the best accuracy. If memory
 consumption and/or processing time must be minimized, then
-ImageMagick may be compiled with QuantumDepth=8. The following table
+GraphicsMagick may be compiled with QuantumDepth=8. The following table
 shows the relationship between <I>QuantumDepth</I>, the type of
 <I>Quantum</I>, and the overall <I>PixelPacket</I> size. 
 </P>
@@ -211,15 +211,15 @@ Return X11 color specification string</FONT></FONT></TT> <BR><TT><FONT SIZE=2><F
 /* virtual */ operator std::string() const;</FONT></FONT></TT> 
 </P>
 <P><TT><FONT SIZE=2><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; //
-Return ImageMagick PixelPacket</FONT></FONT></TT> <BR><TT><FONT SIZE=2><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
+Return GraphicsMagick PixelPacket</FONT></FONT></TT> <BR><TT><FONT SIZE=2><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
 operator PixelPacket() const;</FONT></FONT></TT> 
 </P>
 <P><TT><FONT SIZE=2><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; //
-Construct color via ImageMagick PixelPacket</FONT></FONT></TT> <BR><TT><FONT SIZE=2><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
+Construct color via GraphicsMagick PixelPacket</FONT></FONT></TT> <BR><TT><FONT SIZE=2><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
 Color ( const PixelPacket &amp;color_ );</FONT></FONT></TT> 
 </P>
 <P><TT><FONT SIZE=2><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; // Set
-color via ImageMagick PixelPacket</FONT></FONT></TT> <BR><TT><FONT SIZE=2><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
+color via GraphicsMagick PixelPacket</FONT></FONT></TT> <BR><TT><FONT SIZE=2><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
 const Color&amp; operator= ( PixelPacket &amp;color_ );</FONT></FONT></TT>
 <BR><TT><FONT SIZE=2><FONT COLOR="#000066">};</FONT></FONT></TT> <BR>&nbsp;
 </P>
