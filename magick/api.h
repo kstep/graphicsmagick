@@ -1,9 +1,12 @@
 /*
   ImageMagick Application Programming Interface declarations.
 
-  This must not include any system system headers.  The header
-  <stdio.h> must be included before this header in order to use the
-  ImageMagick C API.
+  Developers Note: This must not include any system system headers.
+
+  The headers <stdio.h>, <time.h>, and <sys/types.h> must be
+  included prior to this header in order to use the ImageMagick C API.
+
+  Include this header like <magick/api.h>
 */
 
 #ifndef _MAGICK_API_H
