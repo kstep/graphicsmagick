@@ -206,7 +206,7 @@ print("WBMP (Wireless Bitmap (level 0) image) ...\n");
 testReadWrite( 'WBMP:input.wbmp',
   'WBMP:output.wbmp',
   q//,
-  '457634d93ea3dc70de0bd4d75844b92d00698423c1268a8aefaf7d54b84d394a');
+  'ccde39dba836a36bbc076e7e6f20f06b034dab0eb2613b350b17c2759533b2ca');
 
 print("X Windows system bitmap (black and white only) ...\n");
 ++$test;

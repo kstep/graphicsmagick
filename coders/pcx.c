@@ -934,7 +934,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
           */
           polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
           if (image->colors == 2)
-            polarity=PixelIntensityToQuantum(&image->colormap[0]) >
+            polarity=PixelIntensityToQuantum(&image->colormap[0]) <
               PixelIntensityToQuantum(&image->colormap[1]);
           for (y=0; y < (long) image->rows; y++)
           {

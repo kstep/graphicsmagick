@@ -1880,7 +1880,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         else
           if (image->colors == 2)
             {
-              polarity=PixelIntensityToQuantum(&image->colormap[0]) >
+              polarity=PixelIntensityToQuantum(&image->colormap[0]) <
                 PixelIntensityToQuantum(&image->colormap[1]);
               if (photometric == PHOTOMETRIC_MINISBLACK)
                 polarity=!polarity;

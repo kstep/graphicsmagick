@@ -1269,7 +1269,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               SetImageType(image,BilevelType);
             polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
             if (image->colors == 2)
-              polarity=PixelIntensityToQuantum(&image->colormap[1]) >
+              polarity=PixelIntensityToQuantum(&image->colormap[1]) <
                 PixelIntensityToQuantum(&image->colormap[0]);
             count=0;
             for (y=0; y < (long) image->rows; y++)

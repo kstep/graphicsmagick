@@ -339,7 +339,7 @@ static unsigned int WriteOTBImage(const ImageInfo *image_info,Image *image)
     }
   polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
   if (image->colors == 2)
-    polarity=PixelIntensityToQuantum(&image->colormap[0]) >
+    polarity=PixelIntensityToQuantum(&image->colormap[0]) <
       PixelIntensityToQuantum(&image->colormap[1]);
   info=0;
   if ((image->columns >= 256) || (image->rows >= 256))

@@ -421,13 +421,13 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < ((long) image->columns-7); x+=8)
         {
           for (bit=7; bit >= 0; bit--)
-            indexes[x+7-bit]=((*p) & (0x01 << bit) ? 0x01 " 0x00);
+            indexes[x+7-bit]=((*p) & (0x01 << bit) ? 0x01 : 0x00);
           p++;
         }
         if ((image->columns % 8) != 0)
           {
             for (bit=7; bit >= (long) (8-(image->columns % 8)); bit--)
-              indexes[x+7-bit]=((*p) & (0x01 << bit) ? 0x01 " 0x00);
+              indexes[x+7-bit]=((*p) & (0x01 << bit) ? 0x01 : 0x00);
             p++;
           }
         if ((((image->columns/8)+(image->columns % 8 ? 1 : 0)) % 2) != 0)
@@ -801,7 +801,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
           */
           polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
           if (image->colors == 2)
-            polarity=PixelIntensityToQuantum(&image->colormap[0]) >
+            polarity=PixelIntensityToQuantum(&image->colormap[0]) <
               PixelIntensityToQuantum(&image->colormap[1]);
           for (y=0; y < (long) image->rows; y++)
           {

@@ -5390,8 +5390,8 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
         PixelIntensity(&window->pixel_info->foreground_color) ?  0x80 : 0x00);
       polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
       if (image->colors == 2)
-        polarity=PixelIntensity(image->colormap+0) >
-          PixelIntensity(image->colormap+1);
+        polarity=PixelIntensity(&image->colormap[0]) <
+          PixelIntensity(&image->colormap[1]);
       for (y=0; y < (long) image->rows; y++)
       {
         p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
@@ -5923,8 +5923,8 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
         PixelIntensity(&window->pixel_info->foreground_color) ?  0x01 : 0x00);
       polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
       if (image->colors == 2)
-        polarity=PixelIntensity(image->colormap+0) >
-          PixelIntensity(image->colormap+1);
+        polarity=PixelIntensity(&image->colormap[0]) <
+          PixelIntensity(&image->colormap[1]);
       for (y=0; y < (long) image->rows; y++)
       {
         p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);

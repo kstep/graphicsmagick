@@ -349,7 +349,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       if (bit == 0)
         byte=(*p++);
-      indexes[x]=byte & 0x01 ? 0x01 : 0x00
+      indexes[x]=byte & 0x01 ? 0x01 : 0x00;
       bit++;
       byte>>=1;
       if (bit == 8)
@@ -518,7 +518,7 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
     SetImageType(image,BilevelType);
   polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
   if (image->colors == 2)
-    polarity=PixelIntensityToQuantum(&image->colormap[0]) >
+    polarity=PixelIntensityToQuantum(&image->colormap[0]) <
       PixelIntensityToQuantum(&image->colormap[1]);
   bit=0;
   byte=0;

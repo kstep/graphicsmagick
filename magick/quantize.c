@@ -450,7 +450,7 @@ static unsigned int AssignImageColors(CubeInfo *cube_info,Image *image)
           unsigned int
             polarity;
 
-          polarity=PixelIntensityToQuantum(&image->colormap[0]) >
+          polarity=PixelIntensityToQuantum(&image->colormap[0]) <
             PixelIntensityToQuantum(&image->colormap[1]);
           image->colormap[polarity].red=0;
           image->colormap[polarity].green=0;
