@@ -2028,6 +2028,8 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
               break;
             if (LocaleCompare("defs",token) == 0)
               break;
+            if (LocaleCompare("gradient",token) == 0)
+              break;
             if (LocaleCompare("graphic-context",token) == 0)
               {
                 if (graphic_context[n]->clip_path != (char *) NULL)
@@ -2041,8 +2043,6 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                     "unbalanced graphic context push/pop",token);
                 break;
               }
-            if (LocaleCompare("gradient",token) == 0)
-              break;
             if (LocaleCompare("pattern",token) == 0)
               break;
             status=False;
@@ -2081,25 +2081,40 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                   name[MaxTextExtent],
                   type[MaxTextExtent];
 
+                ElementInfo
+                  element;
+
+                SegmentInfo
+                  segment;
+
                 GetToken(q,&q,token);
                 (void) strncpy(name,token,MaxTextExtent-1);
                 GetToken(q,&q,token);
                 (void) strncpy(type,token,MaxTextExtent-1);
                 GetToken(q,&q,token);
+                segment.x1=atof(token);
+		element.cx=atof(token);
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
+                segment.y1=atof(token);
+		element.cy=atof(token);
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
+                segment.x2=atof(token);
+		element.major=atof(token);
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
+                segment.y2=atof(token);
+		element.minor=atof(token);
                 if (LocaleCompare(type,"radial") == 0)
                   {
                     GetToken(q,&q,token);
                     if (*token == ',')
                       GetToken(q,&q,token);
+                    element.angle=atof(token);
                   }
                 for (p=q; *q != '\0'; )
                 {
@@ -2113,10 +2128,12 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                 }
                 (void) strncpy(token,p,q-p-4);
                 token[q-p-4]='\0';
-                FormatString(key,"[%.1024s-gradient]",name);
+                FormatString(key,"[%.1024s]",name);
                 (void) SetImageAttribute(image,key,token);
-                FormatString(key,"[%.1024s-stops]",name);
-                (void) SetImageAttribute(image,key,"null");
+                FormatString(key,"[%.1024s-geometry]",name);
+                FormatString(geometry,"%gx%g%+g%+g",segment.x2,segment.y2,
+                  segment.x1,segment.y1);
+                (void) SetImageAttribute(image,key,geometry);
                 GetToken(q,&q,token);
                 break;
               }

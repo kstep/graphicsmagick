@@ -3248,6 +3248,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
                     GetToken(q,&q,token);
                     if (*token == ',')
                       GetToken(q,&q,token);
+                    svg_info.element.angle=atof(token);
                     FormatString(message,"<%sGradient id=\"%s\" cx=\"%g\" "
                       "cy=\"%g\" r=\"%g\" fx=\"%g\" fy=\"%g\">\n",type,name,
                       svg_info.element.cx,svg_info.element.cy,
