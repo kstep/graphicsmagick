@@ -70,7 +70,8 @@ extern MagickExport void
   LocaleLower(char *),
   LocaleUpper(char *),
   ReacquireMemory(void **,const size_t),
-  Strip(char *);
+  Strip(char *),
+  TemporaryFilename(char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

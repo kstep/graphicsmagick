@@ -2426,7 +2426,7 @@ MagickExport int SystemCommand(const unsigned int verbose,const char *command)
 MagickExport void TemporaryFilename(char *filename)
 {
   assert(filename != (char *) NULL);
-  (void) strcpy(filename,"XXXXXX");
+  (void) strcpy(filename,"magickXXXXXX");
 #if defined(HAVE_MKSTEMP)
   {
     int
