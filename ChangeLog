@@ -1,3 +1,8 @@
+2005-04-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/tempfile.c (DestroyTemporaryFiles): Back port memory leak
+	fix from version 1.1.
+
 2005-03-09  Alexander Yaworsky  <yaworsky@users.sourceforge.net>
 
 	* coders/jbig.c (WriteJBIGImage): JBIG was writing an empty output

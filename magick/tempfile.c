@@ -452,6 +452,7 @@ MagickExport void DestroyTemporaryFiles(void)
       LiberateMemory((void **)&liberate);
     }
   LiberateSemaphoreInfo(&templist_semaphore);
+  DestroySemaphoreInfo(&templist_semaphore);
 }
 
 /*

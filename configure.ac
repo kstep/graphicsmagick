@@ -47,6 +47,9 @@ AC_CONFIG_HEADERS([magick/magick_config.h magick/magick_config_api.h])
 
 AM_INIT_AUTOMAKE($PACKAGE_NAME,"${PACKAGE_VERSION}${PACKAGE_VERSION_ADDENDUM}", ' ')
 
+# Regenerate config.status if ChangeLog or version.sh is updated.
+AC_SUBST([CONFIG_STATUS_DEPENDENCIES],['$(top_srcdir)/ChangeLog $(top_srcdir)/version.sh'])
+
 #
 # Save initial user-tunable values
 #
