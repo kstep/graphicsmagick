@@ -276,6 +276,9 @@ ModuleExport void UnregisterFAXImage(void)
 */
 static unsigned int WriteFAXImage(const ImageInfo *image_info,Image *image)
 {
+  ImageInfo
+    *clone_info;
+
   unsigned int
     scene,
     status;
@@ -286,7 +289,8 @@ static unsigned int WriteFAXImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  (void) strcpy(image_info->magick,"FAX");
+  clone_info=CloneImageInfo(image_info);
+  (void) strcpy(clone_info->magick,"FAX");
   scene=0;
   do
   {
@@ -294,12 +298,13 @@ static unsigned int WriteFAXImage(const ImageInfo *image_info,Image *image)
       Convert MIFF to monochrome.
     */
     (void) TransformRGBImage(image,RGBColorspace);
-    status=HuffmanEncodeImage((ImageInfo *) image_info,image);
+    status=HuffmanEncodeImage(clone_info,image);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
     MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
-  } while (image_info->adjoin);
+  } while (clone_info->adjoin);
+  DestroyImageInfo(clone_info);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;
