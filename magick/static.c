@@ -93,15 +93,12 @@ MagickExport void OpenStaticModules(void)
 }
 
 #if !defined(HasMODULES)
-extern unsigned int mslImage(Image *,const int,char **);
 #endif
 
 MagickExport unsigned int ExecuteStaticModuleProcess(const char *tag,
   Image *image,const int argc,char **argv)
 {
 #if !defined(HasMODULES)
-  if (LocaleCompare("msl",tag) == 0)
-    return(mslImage(image,argc,argv));
 #endif
   return(False);
 }
