@@ -377,14 +377,8 @@ typedef struct _Image
 
   double
     blur;
-
-  double
-    total_colors;
-
-  unsigned int
-    mean_error_per_pixel;
-
-  double
+    total_colors,
+    mean_error_per_pixel,
     normalized_mean_error,
     normalized_maximum_error;
 

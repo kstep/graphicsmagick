@@ -391,7 +391,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               if (LocaleCompare(keyword,"error") == 0)
                 {
-                  image->mean_error_per_pixel=atoi(values);
+                  image->mean_error_per_pixel=atof(values);
                   break;
                 }
               (void) SetImageAttribute(image,keyword,

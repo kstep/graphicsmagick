@@ -2359,8 +2359,8 @@ MagickExport unsigned int WriteCacheInfo(Image *image)
       if (image->dispose != 0)
         (void) fprintf(file,"dispose=%u\n",image->dispose);
     }
-  if (image->mean_error_per_pixel != 0)
-    (void) fprintf(file,"error=%u  mean-error=%g  maximum-error=%g\n",
+  if (image->mean_error_per_pixel != 0.0)
+    (void) fprintf(file,"error=%g  mean-error=%g  maximum-error=%g\n",
       image->mean_error_per_pixel,image->normalized_mean_error,
       image->normalized_maximum_error);
   if (image->rendering_intent != UndefinedIntent)

@@ -3094,7 +3094,7 @@ Get(ref,...)
           if (LocaleCompare(attribute,"error") == 0)
             {
               if (image)
-                s=newSViv(image->mean_error_per_pixel);
+                s=newSVnv(image->mean_error_per_pixel);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }

@@ -1762,7 +1762,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           {
             (void) fprintf(file,"PseudoClass %ld=>%uc ",
               (long) image->total_colors,image->colors);
-            (void) fprintf(file,"%u/%.6f/%.6fe ",image->mean_error_per_pixel,
+            (void) fprintf(file,"%g/%g/%ge ",image->mean_error_per_pixel,
               image->normalized_mean_error,image->normalized_maximum_error);
           }
       (void) fprintf(file,"%u-bit ",image->depth);
@@ -1884,14 +1884,14 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         p++;
       }
     }
-  if (image->mean_error_per_pixel != 0)
-    (void) fprintf(file,"  Mean Exception Per Pixel: %d\n",
+  if (image->mean_error_per_pixel != 0.0)
+    (void) fprintf(file,"  Mean Exception Per Pixel: %g\n",
       image->mean_error_per_pixel);
-  if (image->normalized_mean_error != 0)
-    (void) fprintf(file,"  Normalized Mean Exception: %.6f\n",
+  if (image->normalized_mean_error != 0.0)
+    (void) fprintf(file,"  Normalized Mean Exception: %g\n",
       image->normalized_mean_error);
-  if (image->normalized_maximum_error != 0)
-    (void) fprintf(file,"  Normalized Maximum Exception: %.6f\n",
+  if (image->normalized_maximum_error != 0.0)
+    (void) fprintf(file,"  Normalized Maximum Exception: %g\n",
       image->normalized_maximum_error);
   if (image->rendering_intent == SaturationIntent)
     (void) fprintf(file,"  Rendering-Intent: saturation\n");
@@ -2978,7 +2978,7 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
   assert(reference != (Image *) NULL);
   assert(reference->signature == MagickSignature);
   image->total_colors=GetNumberColors(image,(FILE *) NULL);
-  image->mean_error_per_pixel=0;
+  image->mean_error_per_pixel=0.0;
   image->normalized_mean_error=0.0;
   image->normalized_maximum_error=0.0;
   if ((image->rows != reference->rows) ||
@@ -3020,8 +3020,7 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
   normalize=3.0*(MaxRGB+1)*(MaxRGB+1);
   if (image->matte)
     normalize=4.0*(MaxRGB+1)*(MaxRGB+1);
-  image->mean_error_per_pixel=(unsigned int)
-    (total_error/image->columns/image->rows);
+  image->mean_error_per_pixel=total_error/image->columns/image->rows;
   image->normalized_mean_error=image->mean_error_per_pixel/normalize;
   image->normalized_maximum_error=maximum_error_per_pixel/normalize;
   return(image->normalized_mean_error == 0.0);
