@@ -52,12 +52,11 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% PerlMagick, version 5.10, is an objected-oriented Perl interface to
-% ImageMagick.  Use the module to read,manipulate,or write an image or
-% image sequence from within a Perl script.  This makes it very suitable
-% for Web CGI scripts.  You must have ImageMagick 4.1.5 or above and Perl
-% version 5.002 or greater installed on your system for either of these
-% utilities to work.
+% PerlMagick is an objected-oriented Perl interface to ImageMagick.  Use
+% the module to read,manipulate,or write an image or image sequence from
+% within a Perl script.  This makes it very suitable for Web CGI scripts.
+% You must have ImageMagick 4.1.5 or above and Perl version 5.002 or greater
+% installed on your system for either of these utilities to work.
 %
 */
 
@@ -4684,6 +4683,8 @@ Mogrify(ref,...)
                 /*
                   Rotate.
                 */
+                if (angle == 0.0)
+                  break;
                 affine[0]=(-cos(DegreesToRadians(fmod(angle,360.0))));
                 affine[1]=sin(DegreesToRadians(fmod(angle,360.0)));
                 affine[2]=(-sin(DegreesToRadians(fmod(angle,360.0))));
@@ -4728,11 +4729,11 @@ Mogrify(ref,...)
           if (attribute_flag[1])
             {
               (void) strcat(draw_info->primitive," ");
-              if (argument_list[0].int_reference == (int) PathPrimitive);
+              if (!IsGeometry(argument_list[1].string_reference))
                 (void) strcat(draw_info->primitive,"'");
               (void) strcat(draw_info->primitive,
                 argument_list[1].string_reference);
-              if (argument_list[0].int_reference == (int) PathPrimitive);
+              if (!IsGeometry(argument_list[1].string_reference))
                 (void) strcat(draw_info->primitive,"'");
             }
           if (attribute_flag[2])
