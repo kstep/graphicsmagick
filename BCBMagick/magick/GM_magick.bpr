@@ -266,13 +266,13 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=GraphicsMagick Studio
 FileDescription=GraphicsMagick Image Library
-FileVersion=1.1.0.1
+FileVersion=1.2.0.1
 InternalName=GraphicsMagick - Borland C++ Builder porting by Mike Chiarappa, mikechiarappa@libero.it
 LegalCopyright=
 LegalTrademarks=
 OriginalFilename=GraphicsMagick
 ProductName=GraphicsMagick
-ProductVersion=1.1 (23 Oct 2003)
+ProductVersion=1.2 (01 July 2004)
 Comments=www.graphicsMagick.org
 
 [HistoryLists\hlIncludePath]
