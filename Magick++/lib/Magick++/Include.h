@@ -62,11 +62,20 @@ namespace MagickLib
 #    pragma warning( disable: 4273 )      /* Disable the stupid dll linkage warnings */
 #    if !defined(MAGICK_IMPLEMENTATION)
 #      define MagickDLLDecl __declspec(dllimport)
+#      if defined(_VISUALC_)
+#        pragma message( "Magick++ lib DLL import" )
+#      endif
 #    else
 #      define MagickDLLDecl __declspec(dllexport)
+#      if defined(_VISUALC_)
+#        pragma message( "Magick++ lib DLL export" )
+#      endif
 #    endif
 #  else
 #    define MagickDLLDecl
+#    if defined(_VISUALC_)
+#      pragma message( "Magick++ lib static interface" )
+#    endif
 #  endif
 #else
 #  define MagickDLLDecl
