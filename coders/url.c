@@ -131,9 +131,6 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   void
     *context;
 
-  int
-    status;
-
   image=(Image *) NULL;
   clone_info=CloneImageInfo(image_info);
   DetachBlob(clone_info->blob);
@@ -180,7 +177,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
     }
   (void) fclose(file);
-  if (!IsAccessible(clone_info->filename)
+  if (!IsAccessible(clone_info->filename))
     ThrowException(exception,FileOpenWarning,"No data returned from:",filename);
   else
     {
