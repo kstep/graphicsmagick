@@ -3250,7 +3250,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   p++;
                 }
               else if (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
-                for (x=(long) image->columns; x > 0; x--)
+                for (x=(long) (2*image->columns); x > 0; x--)
                 {
                   *r++=*p++;
                   p++;
