@@ -111,14 +111,13 @@ $call Make xcf.c
 $call Make xpm.c
 $call Make xwd.c
 $call Make yuv.c
-$library/create libCoders.olb art,avi,avs,bmp,clipboard,cmyk,cut,dcm,dib,dps,dpx,emf,ept, -
-  fax,fits,fpx,gif,gradient,gray,hdf,histogram,html,icon,jbig,jpeg,jp2,label, -
-  caption,palm,locale, -
-	logo,map,mat,matte,meta,miff,mpc,mpr,msl,mpeg,mono,mtv,mvg,null,otb,pcd,pcl, -
-	pcx,pdb,pdf,pict,pix,plasma,png,pnm,preview,ps,ps2,ps3,psd,pwp,rgb, -
-	rla,rle,sct,sfw,sgi,stegano,sun,svg,tga,tiff,tile,tim,ttf,txt,uil,url,uyvy, -
-	vicar,vid,viff,wbmp,wmf,wpg,x,xbm,xc,xcf,xpm,xwd,yuv,[-.magick]compress, -
-  [-.magick]prervicccm
+$library/create libCoders.olb art,avi,avs,bmp,clipboard,cmyk,cut,dcm,dib, -
+  dps,dpx,emf,ept,fax,fits,fpx,gif,gradient,gray,hdf,histogram,html,icon, -
+  jbig,jpeg,jp2,label,caption,palm,locale,logo,map,mat,matte,meta,miff,mpc, -
+  mpr,msl,mpeg,mono,mtv,mvg,null,otb,pcd,pcl,pcx,pdb,pdf,pict,pix,plasma,png, -
+  pnm,preview,ps,ps2,ps3,psd,pwp,rgb,rla,rle,sct,sfw,sgi,stegano, -
+  sun,svg,tga,tiff,tile,tim,ttf,txt,uil,url,uyvy,vicar,vid,viff,wbmp,wmf, -
+  wpg,x,xbm,xc,xcf,xpm,xwd,yuv,[-.magick]compress,[-.magick]prervicccm
 $exit
 $
 $Make: subroutine
