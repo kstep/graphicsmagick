@@ -1534,52 +1534,54 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc, const BrushApply brush_appl
             mode = CopyCompositeOp;  /* Default is copy */
             switch (WMF_DC_ROP(dc))
               {
-              case SRCCOPY:  /* dest = source */
+                /* Binary raster ops */
+              case R2_BLACK:
+                printf("util_set_brush R2_BLACK ROP2 mode not supported!\n");
+                break;
+              case R2_NOTMERGEPEN:
+                printf("util_set_brush R2_NOTMERGEPEN ROP2 mode not supported!\n");
+                break;
+              case R2_MASKNOTPEN:
+                printf("util_set_brush R2_MASKNOTPEN ROP2 mode not supported!\n");
+                break;
+              case R2_NOTCOPYPEN:
+                printf("util_set_brush R2_NOTCOPYPEN ROP2 mode not supported!\n");
+                break;
+              case R2_MASKPENNOT:
+                printf("util_set_brush R2_MASKPENNOT ROP2 mode not supported!\n");
+                break;
+              case R2_NOT:
+                printf("util_set_brush R2_NOT ROP2 mode not supported!\n");
+                break;
+              case R2_XORPEN:
+                printf("util_set_brush R2_XORPEN ROP2 mode not supported!\n");
+                break;
+              case R2_NOTMASKPEN:
+                printf("util_set_brush R2_NOTMASKPEN ROP2 mode not supported!\n");
+                break;
+              case R2_MASKPEN:
+                printf("util_set_brush R2_MASKPEN ROP2 mode not supported!\n");
+                break;
+              case R2_NOTXORPEN:
+                printf("util_set_brush R2_NOTXORPEN ROP2 mode not supported!\n");
+                break;
+              case R2_NOP:
+                printf("util_set_brush R2_NOP ROP2 mode not supported!\n");
+                break;
+              case R2_MERGENOTPEN:
+                printf("util_set_brush R2_MERGENOTPEN ROP2 mode not supported!\n");
+                break;
+              case R2_COPYPEN:
                 mode = CopyCompositeOp;
                 break;
-              case SRCPAINT:  /* dest = source OR dest */
-                printf("util_set_brush SRCPAINT ROP mode not supported!\n");
+              case R2_MERGEPENNOT:
+                printf("util_set_brush R2_MERGEPENNOT ROP2 mode not supported!\n");
                 break;
-              case SRCAND:  /* dest = source AND dest */
-                printf("util_set_brush SRCAND ROP mode not supported!\n");
+              case R2_MERGEPEN:
+                printf("util_set_brush R2_MERGEPEN ROP2 mode not supported!\n");
                 break;
-              case SRCINVERT:  /* dest = source XOR dest */
-                mode = XorCompositeOp;
-                break;
-              case SRCERASE:  /* dest = source AND (NOT dest) */
-                printf("util_set_brush SRCERASE ROP mode not supported!\n");
-                break;
-              case NOTSRCCOPY:  /* dest = (NOT source) */
-                /*                 NegateImage(image, False); */
-                /* mode = "Copy"; */
-                printf("util_set_brush NOTSRCCOPY ROP mode not supported!\n");
-                break;
-              case NOTSRCERASE:  /* dest = (NOT source) AND (NOT dest) */
-                printf("util_set_brush NOTSRCERASE ROP mode not supported!\n");
-                break;
-              case MERGECOPY:  /* dest = (source AND pattern) */
-                printf("util_set_brush MERGECOPY ROP mode not supported!\n");
-                break;
-              case MERGEPAINT:  /* dest = (NOT source) OR dest */
-                printf("util_set_brush MERGEPAINT ROP mode not supported!\n");
-                break;
-              case PATCOPY:  /* dest = pattern */
-                printf("util_set_brush PATCOPY ROP mode not supported!\n");
-                break;
-              case PATPAINT:  /* dest = DPSnoo */
-                printf("util_set_brush PATPAINT ROP mode not supported!\n");
-                break;
-              case PATINVERT:  /* dest = pattern XOR dest */
-                printf("util_set_brush PATINVERT ROP mode not supported!\n");
-                break;
-              case DSTINVERT:  /* dest = (NOT dest) */
-                printf("util_set_brush DSTINVERT ROP mode not supported!\n");
-                break;
-              case BLACKNESS:  /* dest = BLACK bits */
-                printf("util_set_brush BLACKNESS ROP mode not supported!\n");
-                break;
-              case WHITENESS:  /* dest = WHITE bits */
-                printf("util_set_brush WHITENESS ROP mode not supported!\n");
+              case R2_WHITE:
+                printf("util_set_brush R2_WHITE ROP2 mode not supported!\n");
                 break;
               default:
                 {
