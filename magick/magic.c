@@ -453,6 +453,8 @@ static unsigned int ReadMagicConfigureFiles(const char *filename)
   status|=ReadMagicConfigureFile(path);
   FormatString(path,"%.1024s%.1024s",X11ConfigurePath,filename);
   status|=ReadMagicConfigureFile(path);
+  FormatString(path,"%.1024s",filename);
+  status|=ReadMagicConfigureFile(path);
   LiberateMemory((void **) &path);
   atexit(DestroyMagicInfo);
   return(status);

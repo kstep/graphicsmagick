@@ -248,6 +248,9 @@ MagickExport char *GetMagickConfigurePath(const char *filename)
   FormatString(path,"%.1024s%.1024s",X11ConfigurePath,filename);
   if (IsAccessible(path))
     return(path);
+  FormatString(path,"%.1024s",filename);
+  if (IsAccessible(path))
+    return(path);
   LiberateMemory((void **) &path);
   return((char *) NULL);
 }
