@@ -78,7 +78,8 @@ static MonitorHandler
 %
 %  The format of the MagickMonitor method is:
 %
-%      void MagickMonitor(const char *text,const off_t quantum,const off_t span)
+%      void MagickMonitor(const char *text,const size_t quantum,
+%        const size_t span)
 %
 %  A description of each parameter follows:
 %
@@ -89,8 +90,8 @@ static MonitorHandler
 %
 %
 */
-MagickExport void MagickMonitor(const char *text,const off_t quantum,
-  const off_t span)
+MagickExport void MagickMonitor(const char *text,const size_t quantum,
+  const size_t span)
 {
   assert(text != (const char *) NULL);
   ProcessPendingEvents(text);

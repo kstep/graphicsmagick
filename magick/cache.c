@@ -1621,7 +1621,7 @@ MagickExport void ResetPixelCacheMethods(void)
 %
 %  The format of the SetCacheThreshold method is:
 %
-%      void SetCacheThreshold(const off_t threshold)
+%      void SetCacheThreshold(const long threshold)
 %
 %  A description of each parameter follows:
 %
@@ -1630,7 +1630,7 @@ MagickExport void ResetPixelCacheMethods(void)
 %
 %
 */
-MagickExport void SetCacheThreshold(const off_t threshold)
+MagickExport void SetCacheThreshold(const long threshold)
 {
   off_t
     offset;

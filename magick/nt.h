@@ -101,7 +101,7 @@ extern MagickExport char
 
 extern MagickExport void
   closedir(DIR *),
-  *mmap(char *,size_t,int,int,int,off_t),
+  *mmap(char *,size_t,int,int,int,size_t),
   NTErrorHandler(const ExceptionType,const char *,const char *),
   NTWarningHandler(const ExceptionType,const char *,const char *),
   seekdir(DIR *,long),

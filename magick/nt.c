@@ -426,7 +426,7 @@ void *lt_dlsym(void *h,char *s)
 %
 */
 MagickExport void *mmap(char *address,size_t length,int protection,int access,
-  int file,off_t offset)
+  int file,size_t offset)
 {
   void
     *map;
