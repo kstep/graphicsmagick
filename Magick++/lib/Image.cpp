@@ -162,7 +162,7 @@ Magick::Image::~Image()
 {
   bool doDelete = false;
   {
-    Lock( _imgRef->_mutexLock );
+    Lock( &_imgRef->_mutexLock );
     if ( --_imgRef->_refCount == 0 )
       doDelete = true;
   }
@@ -2793,7 +2793,7 @@ double Magick::Image::yResolution ( void ) const
 Magick::Image::Image( const Image & image_ )
   : _imgRef(image_._imgRef)
 {
-  Lock( _imgRef->_mutexLock );
+  Lock( &_imgRef->_mutexLock );
 
   // Increase reference count
   ++_imgRef->_refCount;
@@ -2803,13 +2803,13 @@ Magick::Image::Image( const Image & image_ )
 Magick::Image Magick::Image::operator=( const Magick::Image &image_ )
 {
   {
-    Lock(image_._imgRef->_mutexLock);
+    Lock( &image_._imgRef->_mutexLock );
     ++image_._imgRef->_refCount;
   }
 
   bool doDelete = false;
   {
-    Lock( _imgRef->_mutexLock );
+    Lock( &_imgRef->_mutexLock );
     if ( --_imgRef->_refCount == 0 )
       doDelete = true;
   }
@@ -2913,7 +2913,7 @@ Magick::Image::Image ( MagickLib::Image* image_, Magick::Options* options_ )
 //
 MagickLib::Image * Magick::Image::replaceImage( MagickLib::Image* replacement_ )
 {
-  Lock( _imgRef->_mutexLock );
+  Lock( &_imgRef->_mutexLock );
   if ( _imgRef->_refCount == 1 )
     {
       // We own the image, just replace it
@@ -2945,7 +2945,7 @@ void Magick::Image::modifyImage( void )
 {
   // Nothing to do if we are sole owner of image
   {
-    Lock( _imgRef->_mutexLock );
+    Lock( &_imgRef->_mutexLock );
     if ( _imgRef->_refCount == 1 )
       return;
   }

@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000
+// Copyright Bob Friesenhahn, 1999, 2000, 2001
 //
 // Definition of types and classes to support threads
 //
@@ -67,7 +67,7 @@ namespace Magick
   {
   public:
     // Construct with mutex lock (locks mutex)
-    Lock(  MutexLock &mutexLock_ );
+    Lock( MutexLock *mutexLock_ );
 
     // Destrutor (unlocks mutex)
     ~Lock( void );
@@ -84,8 +84,8 @@ namespace Magick
 }
 
 // Construct with mutex lock (locks mutex)
-inline Magick::Lock::Lock( MutexLock &mutexLock_ )
-  : _mutexLock(&mutexLock_)
+inline Magick::Lock::Lock( MutexLock *mutexLock_ )
+  : _mutexLock(mutexLock_)
 {
   _mutexLock->lock();
 }

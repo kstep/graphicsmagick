@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000
+// Copyright Bob Friesenhahn, 1999, 2000, 2001
 //
 // Implementation of thread support
 //
@@ -20,7 +20,10 @@ Magick::MutexLock::MutexLock(void)
   int sysError;
   if ( (sysError = ::pthread_mutexattr_init( &attr )) == 0 )
     if ( (sysError = ::pthread_mutex_init( &_mutex, &attr )) == 0 )
-      return;
+      {
+        ::pthread_mutexattr_destroy( &attr );
+        return;
+      }
   throw Magick::ErrorOption( "mutex initialization failed" );
 }
 #else
